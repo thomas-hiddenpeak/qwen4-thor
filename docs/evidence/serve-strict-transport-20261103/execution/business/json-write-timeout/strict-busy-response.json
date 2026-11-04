@@ -1,0 +1,10 @@
+{
+  "status": 503,
+  "headers": {
+    "Content-Type": "application/json",
+    "Content-Length": "148",
+    "X-Request-Id": "req-8dd54eb59a19c2c65c5b44097fc3da6a",
+    "Connection": "close"
+  },
+  "raw": "{\"error\":{\"message\":\"structured request capacity exhausted\",\"type\":\"service_unavailable_error\",\"code\":\"structured_capacity_exhausted\",\"param\":null}}"
+}

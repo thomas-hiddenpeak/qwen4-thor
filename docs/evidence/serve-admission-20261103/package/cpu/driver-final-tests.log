@@ -1,0 +1,6 @@
+test_request_shapes_and_bounded_payload (tools.serve_admission.test_driver.DriverTests.test_request_shapes_and_bounded_payload) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.139s
+
+OK

@@ -1,0 +1,9 @@
+{
+  "name": "client",
+  "argv": [
+    "/usr/bin/python3.12",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/examples/test_chat_client.py"
+  ],
+  "timeout": 100
+}

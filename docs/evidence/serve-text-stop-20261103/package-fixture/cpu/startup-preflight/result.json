@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "cases": 5,
+  "binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-20261103/cpu/startup-preflight/startup_preflight",
+    "sha256": "28fdb701d12e9b97485487c7f7cd47d2a1d2f764cf341d709da64a85e6e62172",
+    "bytes": 149552
+  },
+  "sources": {
+    "tools/serve_thinking_budget/startup_preflight.cpp": "7e50375055ec20ac08f01bf06ccbd5700cc0f4a8d1ec475ec0fc0bac265443bc",
+    "src/server/server_options.cpp": "06e9470e9d294b8604677fefd74ab9d9b23c5dbe70b17a652174c7b1e4a4c1fc",
+    "src/server/session_cache.cpp": "68fc36654c7f3a7c14ac41b26e3abd10697e87ffc94bf70fe2052edb9cf751f6",
+    "src/trace/sha256.cpp": "f4bf76148014282f5283c9c2fab9c87b6aa678d6ace2a983126b31f5c8492883"
+  },
+  "scope": "Production option parser and SessionCache.Open direct IO; no model, GPU or HTTP evidence",
+  "reuse_from": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-20261103/cpu/startup-preflight/result.json",
+  "reuse_from_sha256": "c32eb5110dc6358b2e246bccbb4f19f7d49e406fcc6751416604fd5c93ee4e24"
+}

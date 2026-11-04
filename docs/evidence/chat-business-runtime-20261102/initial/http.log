@@ -1,0 +1,25 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/verify.py", line 503, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/verify.py", line 483, in main
+    run.run()
+  File "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/verify.py", line 459, in run
+    self.model('baseline-plain', self.args.baseline, False, baseline)
+  File "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/verify.py", line 376, in model
+    action(folder)
+  File "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/verify.py", line 397, in baseline
+    reference[kind] = self.chat(folder, kind, body(kind))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/verify.py", line 207, in chat
+    status, raw = self.request('POST', '/v1/chat/completions', request)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/verify.py", line 188, in request
+    connection.request(method, path,
+  File "/usr/lib/python3.12/http/client.py", line 1365, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/usr/lib/python3.12/http/client.py", line 1410, in _send_request
+    body = _encode(body, 'body')
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/http/client.py", line 171, in _encode
+    raise UnicodeEncodeError(
+UnicodeEncodeError: 'latin-1' codec can't encode characters in position 237-241: Body ('只回复数字') is not valid Latin-1. Use body.encode('utf-8') if you want to send it encoded in UTF-8.

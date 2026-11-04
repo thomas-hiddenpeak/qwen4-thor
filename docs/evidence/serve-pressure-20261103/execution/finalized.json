@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "elapsed_seconds": 656.4175064563751,
+  "installed_binary_unchanged": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+  "sidecar_unchanged": "c520333192c04ddb499dd0188496789ec8ddc20fc5e0f00491ca01f52517aa75",
+  "performance_acceptance": false,
+  "physical_ram_hard_limit_proved": false,
+  "long_duration_soak_proved": false
+}

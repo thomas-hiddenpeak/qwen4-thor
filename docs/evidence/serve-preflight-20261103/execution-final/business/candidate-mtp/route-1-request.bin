@@ -1,0 +1,7 @@
+POST /v1/config HTTP/1.1
+Host: localhost
+X-Request-Id: trace-route-1
+Content-Type: application/json
+Content-Length: 2
+
+{}

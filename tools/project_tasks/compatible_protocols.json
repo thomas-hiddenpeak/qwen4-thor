@@ -1,0 +1,38 @@
+{
+  "format": "q4t.project.task.protocols.v1",
+  "releases": [
+    {
+      "archive_sha256": "2cac5cd4f6e85f9742438403d05d4076f71754dd5372c67853cf79fdc7bd583c",
+      "basis": "Error parameter paths only: 91-case differential, including 14 unchanged successful prompts/grammars; 36 real HTTP rejections and 6 successes, including 2 read-only project tools. No model, template, request budgets or response parsing change.",
+      "contract": "q4t-project-readonly-protocol-v1",
+      "evidence": "docs/evidence/serve-error-params-20261104/records.tar.gz",
+      "from_protocol_sha256": "63b29f137b9c7057201de50c3a711930e9d76431f443ea29a083d9b429fced25",
+      "model": "qwen3.8-flash-next",
+      "release": "srv01c-ac1a3e4d",
+      "template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+      "to_protocol_sha256": "fc63db28261a37ead3b633e0cd704a128e91b4eac264ea8125f715ac4b2834aa"
+    },
+    {
+      "archive_sha256": "b26f2dfa69ca2ad68f0b7cb36ed392f317775e30b226e03807d04acd6cefa2ab",
+      "basis": "Reviewed 222 runtime files: 212 unchanged; 10 listener/metrics/config changes. Request planning matches after formatting; model, template, tools, budgets and response parsing unchanged. Reuse SRV-12g public Chat: 5 successes and 2 real read-only tools. Private operations/config are not wire-identical; only directed public project-task history compatibility is approved.",
+      "contract": "q4t-project-readonly-protocol-v1",
+      "evidence": "docs/evidence/serve-task-operations-review-20261104/records.tar.gz",
+      "from_protocol_sha256": "fc63db28261a37ead3b633e0cd704a128e91b4eac264ea8125f715ac4b2834aa",
+      "model": "qwen3.8-flash-next",
+      "release": "srv12g-5e52dc17",
+      "template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+      "to_protocol_sha256": "ddfba8c002d8fb899b4c00d42612b0a26669036a1acc65e8292a10c0a9b69342"
+    },
+    {
+      "archive_sha256": "8603c872b6225b0a160687f6cc408027e378bdd706faa03e78f776ebfcb6b71e",
+      "basis": "Reviewed 222 to 223 runtime files: 219 unchanged, 3 listener lifecycle changes and 1 new listener owner. Seven schemas and HTTP dispatch after listener publication are identical; public capabilities differ only in protocol identity. Reuse SRV-12k and the accepted SRV-12l business prefix. Startup TCP queues before readiness; only directed readonly task history compatibility is approved.",
+      "contract": "q4t-project-readonly-protocol-v1",
+      "evidence": "docs/evidence/serve-task-startup-review-20261104/records.tar.gz",
+      "from_protocol_sha256": "ddfba8c002d8fb899b4c00d42612b0a26669036a1acc65e8292a10c0a9b69342",
+      "model": "qwen3.8-flash-next",
+      "release": "srv12k-d073eb8f",
+      "template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+      "to_protocol_sha256": "15d7ccb103258ea5ec8ca3cfa66c9bfe1245eadb7d38ad6ee149ad97075ec30e"
+    }
+  ]
+}

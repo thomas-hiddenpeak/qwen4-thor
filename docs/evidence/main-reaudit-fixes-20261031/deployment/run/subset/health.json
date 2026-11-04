@@ -1,0 +1,47 @@
+{
+  "source": {
+    "text": "I cannot fulfill the request to output code repeatedly until asked to stop, as this",
+    "usage": {
+      "prompt_tokens": 9216,
+      "completion_tokens": 16,
+      "total_tokens": 9232,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "finish": [
+      "length"
+    ],
+    "errors": []
+  },
+  "child": {
+    "text": "831907",
+    "usage": {
+      "prompt_tokens": 9263,
+      "completion_tokens": 7,
+      "total_tokens": 9270,
+      "prompt_tokens_details": {
+        "cached_tokens": 8192
+      }
+    },
+    "finish": [
+      "stop"
+    ],
+    "errors": []
+  },
+  "resume": {
+    "text": "44",
+    "usage": {
+      "prompt_tokens": 9253,
+      "completion_tokens": 3,
+      "total_tokens": 9256,
+      "prompt_tokens_details": {
+        "cached_tokens": 9230
+      }
+    },
+    "finish": [
+      "stop"
+    ],
+    "errors": []
+  }
+}

@@ -1,0 +1,171 @@
+# 应用服务层与 OpenAI 兼容矩阵
+
+更新：2026-11-04；本轮源码审查起点93d4fac4。当前为单台Thor、单模型的
+文本Chat服务，以及只读项目资料查询应用。工具调用、有限结构化输出、
+错误/取消、运行保障和持久任务恢复已有分阶段短验；不宣称全部OpenAI
+接口、所有客户端、任意配置组合或长期生产负载已验。
+
+当前发布身份和下一项工作只在[STATUS](STATUS.md)维护；本页维护能力与
+边界。原逐阶段叙述移入[历史快照](APPLICATION_SERVICE_HISTORY_2026-11-04.md)，
+原结果、失败、证据和日志均保留。[SRV-20合同复核](SERVE_CONTRACT_REAUDIT_2026-11-04.md)
+只核对源码与证据；后续[03c锁等待取消](SERVE_PREPARE_LOCK_RESULT_2026-11-04.md)
+已新增原生/真实工具短验并交付默认。
+
+## 边界与成熟度
+
+模型计算正确、模板一致、响应可解析、客户端可接入和工具业务正确是
+五个不同层次；一层通过不能替代另一层。近期接受范围由
+[12k原生监听](SERVE_STARTUP_LISTENERS_RESULT_2026-11-04.md)、
+[12l托管截止与停止](SERVE_SUPERVISOR_DEADLINES_RESULT_2026-11-04.md)和
+[11k当前协议任务交接](SERVE_TASK_STARTUP_PROTOCOL_RESULT_2026-11-04.md)
+分别证明。12l保留首轮监控归属错误的ENV_ABORT，采用通过业务段与定向
+停止补验，不能合成为一次连续全流程成功。
+03c的新默认协议为a56aed21；11k/12l继续绑定旧15d7ccb1，尚未把新
+协议登记到任务迁移或重验新ELF托管生命周期，旧包不会自动升级。
+
+“限定已验”仅指链接结果的源码身份、运行配置、客户端版本和用例范围。
+当前托管包的短验配置为单槽、8192上下文、2048预填充及独立运维端口；
+不能把它扩张成208896上下文、多槽或所有可选项同时开启的组合验收。
+历史证据需按依赖变化判断可复用性；版本摘要一致也不等于语义完备证明。
+
+## 运行方式与可选能力
+
+用户明确高级功能在执行时选择启用。基础直连开发不要求先提供LAN、
+证书、来源网段或API Key；启用某项时才核对其配置、依赖和实际部署。
+已有内存准入等基础保护保持默认行为，不把“可选高级部署”理解为关闭
+既有保护。准备包不等于启动、安装或验收。
+
+| 运行方式 / 能力 | 启用边界 | 已有证据与限制 |
+|---|---|---|
+| 本机文本Chat | 原生serve；默认loopback，不要求TLS材料 | JSON/SSE、工具与错误合同；[03c当前默认短验](SERVE_PREPARE_LOCK_RESULT_2026-11-04.md) |
+| 独立运维入口 | 显式`--operations-port`，默认0；仅loopback | 公共慢头满额下运维可用；自身控制/观测仍各4额 |
+| TLS、独立Key、来源限制 | 显式网关包；runner以`--client-policy-file`绑定client策略；CIDR显式选择 | [来源短验](SERVE_GATEWAY_SOURCES_RESULT_2026-11-04.md)与[托管组合](SERVE_MANAGED_PROFILE_RESULT_2026-11-04.md)；实际LAN/DNS/防火墙另验 |
+| 服务托管 / 重启 | 显式prepare/run；重启次数配置，默认0 | [12l](SERVE_SUPERVISOR_DEADLINES_RESULT_2026-11-04.md)；无自动常驻安装或恢复旧请求 |
+| host记账域 | 显式host memory high/max及tasks max配置 | [02k](SERVE_HOST_ENVELOPE_RESULT_2026-11-04.md)；不覆盖全部CUDA物理RAM记账 |
+| CUDA申请额度 | 原生默认auto，可显式调整`--cuda-allocation-limit-mib` | [02j2生产接线](SERVE_CUDA_QUOTA_INTEGRATION_RESULT_2026-11-04.md)；申请额度不是整机物理RAM硬限额 |
+| 告警、通知与私有留存 | 显式观察器、接收器、目的地及保留策略 | [12c](SERVE_NOTIFY_RESULT_2026-11-04.md)、[12e](SERVE_RETENTION_RESULT_2026-11-04.md)等本机短验；正式渠道按需验收 |
+| 持久项目任务 | 独立应用入口和显式TLS连接profile；原生Chat本身不持久化业务 | [11k](SERVE_TASK_STARTUP_PROTOCOL_RESULT_2026-11-04.md)：已存工具结果复用、永久保键、显式兼容迁移；UNKNOWN不自动重放 |
+
+## API 兼容矩阵
+
+本项目支持的完整输入见[38字段schema](serve-chat-request-v1.schema.json)
+与[必需原生语义](serve-input-semantics-v1.json)；10条路由见
+[OpenAPI](serve-openapi-v1.json)。下表按调用者可见行为分组，不以静态
+schema代替动态预算、模板、语法编译或真实业务验收。
+
+| API / 能力 | 当前状态 | 限制与证据 / 行动 |
+|---|---|---|
+| POST /v1/chat/completions | 已验，子集 | 单模型、单 choice；chat_generation.cpp |
+| GET /v1/models | 已验，SDK 3.42.1 | 单个配置模型；不支持模型详情 / 管理 |
+| GET /v1/capabilities | 已验，Q4T 扩展 | 实现身份，不是发布或质量证明 |
+| messages | profile限定已验 | 默认解析；system/developer/user/assistant/tool；system或developer仅第0条且不能混用 |
+| message.name | 明确拒绝非null | 模板不表达名称；省略/null允许，含空串的其他值400；tool_call_id负责工具关联 |
+| prompt / parse_response=false | 已验，Q4T 扩展 | raw 文本；不解析工具或推理 |
+| JSON / stream=true | 限定已验 | 首帧提前；5秒注释心跳；finish → 可选 usage → DONE；中断不能当完整响应 |
+| content / reasoning_content / reasoning | 05a限定已验 | 默认reasoning_content，可用reasoning_field选择；JSON/SSE固定单字段；历史别名相等合并/冲突拒绝 |
+| include_reasoning | 05a限定已验 | bool默认true；false隐藏解析出的推理，计算/usage保留；raw/unparsed与null拒绝，不是正文过滤或隐私隔离 |
+| thinking_token_budget | 05b限定已验 | parsed messages精确整数0..2147483647/null；自然配额+最多14强制边界token，总输出优先；MTP预留pending后回退；不是FLOPs上限 |
+| function tools / tool_call_id | 已验 | ID 唯一完整批次；文本结果可乱序归一；客户端执行 |
+| tool_choice | 已验，子集组合 | auto / none / required / named；named 恰好一个调用，显式约束模式仅 parsed messages |
+| parallel_tool_calls | 已验 | false 最多一个；true 允许多调用，不代表应用并发执行 |
+| strict / JSON Schema 输出约束 | 有限 profile 已验 | q4t-json-schema-v1，逐 token 掩码＋最终验证；未知关键字拒绝，应用仍须验证业务 |
+| max_tokens | 已验 | 正整数；包含推理 / 模板生成 token；受上下文容量约束 |
+| max_completion_tokens | 已验 | 与 max_tokens 共用生成预算；两个字段同时非空时拒绝歧义 |
+| temperature / top_p / n | 部分 | 仅 0 / 1 / 1；不可声称支持采样 |
+| penalties / seed | 部分 | 仅中性 penalty；seed 在 greedy 下不改变结果 |
+| stop | 已验，有限profile | 字符串或最多4串，每串256 UTF-8字节；null/[]禁用；匹配包含推理/工具标记，截断工具错误；严格输出/cache组合拒绝 |
+| logprobs / logit_bias | 明确拒绝有效设置 | 仅接受现有中性空值，未实现 |
+| response_format | 已验，有限 schema | text / null / json_object / json_schema；与非空 tools 同用须 none |
+| stream_options.include_usage | 已验 | choices块usage:null，最后独立usage；choices的logprobs:null；中断不保证收到尾帧 |
+| chat_template_kwargs | 已验，Q4T 扩展 | thinking/preserve/effort/vision ID；能力端点给出范围 |
+| unknown fields | 明确拒绝 | 不静默丢弃；Responses/store/metadata 等不可直接透传 |
+| 错误 JSON | 已验，Q4T 错误码 | 显式输入位置param、统一封套与追踪头；01c补齐工具/控制/递归schema路径，转义键不混淆层级；无法归属输入字段的运行错误仍可null |
+| SSE 错误 | 已验 | 首帧后HTTP200内error＋DONE；部分写失败直接截断，不追加第二终态 |
+| POST /v1/requests/cancel / deadline | 已验，Q4T 扩展 | 202仅接受，404不证明未执行；03c准备tokenizer等待已检查自身取消，其他锁/GPU在途计算无硬抢占保证 |
+| request_id / session_id | 已验，Q4T 扩展 | 活跃 ID 去重 / 同进程 KV 缓存；不是持久任务与幂等键 |
+| X-Request-Id | 已验 | 128字节受限ASCII，自动128随机位；与JSON请求/取消ID独立，不提供幂等 |
+| GET /healthz、/livez、/readyz | 限定已验 | 三者语义不同；监听在模型加载前保留，HTTP在Start成功且Run接管后服务；TCP连接成功不等于ready；GPU unhealthy/排空/内存压力或观测失效可使ready503 |
+| HTTP媒体 / 方法 / query | 已验 | application/json UTF-8；405＋Allow、query400、GET body400；连接关闭 |
+| 控制入口 / 慢读 | 限定已验 | 4控制连接预留；业务/观测满仍健康和有效取消；普通增量流真实EAGAIN后取消回收；不保证慢头洪泛 |
+| GET /metrics / 观测入口 | 12b/12g/12l限定已验 | 公共4观测/4控制；可另启loopback运维监听，136公共慢头满时已验可用；每个入口自身仍有上限，监督器观测有总截止并响应stop |
+| POST /v1/chat/preflight | SRV-07限定已验 | 共用合同/模板/分词/预算；可选prompt/IDs；不预留资源或保证执行 |
+| GET /v1/config | SRV-07/02b/12b/02i限定已验 | 实际容量/来源、准入/等候、连接分区及媒体解码/函数能力；私有v1 schema/指纹随合同更新，固定消费者需选版本；不暴露模型目录/凭据 |
+| 请求准入 / slot队列 | 02b/10c限定已验 | chat/preflight共享上限、准备后的容量FIFO；可配置每client并发/正文/输入输出预算和状态域隔离；不保证租户公平、RPM/TPM或RAM预留 |
+| 内存准入 / 申请额度 | 02c至02e/02j2/02k限定已验 | MemAvailable准入、生产CUDA申请额度、可选host记账域；各有计量口径，不能合称Thor整机物理RAM硬上限 |
+| 设备/host资源错误 | 02f至02i限定已验 | 已知OOM恢复，未知设备/释放错误停服，host固定错误封套，视觉加载失败拒绝启动；不覆盖所有外部库故障或物理OOM |
+| 机器schema | SRV-08限定交付 | 38字段/10路由OpenAPI加必需原生语义清单；396 CPU差分，实际25 wire/56封套；标准schema本身不证明动态准入 |
+| Responses / Assistants / Batch | 未实现 | 不能通过更换 base_url 使用 |
+| 图片 / 视频 / 音频 | 非首批文本兼容范围；图片/两帧实验限定通过 | 02h+02i红图/两帧、准入/配额与取消恢复已验；需显式无MTP媒体配置，不扩广泛质量；音频未支持 |
+| OpenAI Python SDK | 3.42.1 限定互通通过 | models、JSON/SSE、工具往返、预算与参数错误；关闭自动重试 |
+| OpenAI JS SDK | 7.47.0限定HTTP通过 | Node24.18.0；models、JSON/SSE、真实工具成功/错误/双结果、截断后显式答案恢复；完整终态批次门，零自动重试 |
+| 其他 SDK / 框架 | 未验证 | 不从 Python / JS 或自有客户端通过外推 |
+| 鉴权 / TLS / 多客户端隔离 | 可选网关及runner策略已本机短验 | 显式Key、TLS/CA、CIDR与预算；实际LAN、正式证书及通知启用时验收；不提供完整多租户计费或浏览器CORS接入合同 |
+
+
+实现入口：[请求合同](../src/server/chat_contract.cpp)、
+[模板](../src/server/chat_template.cpp)、[能力声明](../src/server/chat_capabilities.cpp)、
+[HTTP接入](../src/server/chat_http.cpp)、[输出](../src/server/http_response.cpp)。
+工具的执行与业务参数校验属于应用；runner发布完整调用，不能把生成的
+工具名、参数或资料文本当作运行任意代码的许可。
+
+## 客户端与恢复边界
+
+| 入口 | 可用合同 | 不能外推的部分 |
+|---|---|---|
+| 标准库`ChatClient`与项目示例 | JSON/SSE完整终态、工具整批验证、显式取消、可传api_key | `urllib`单次I/O超时，尚无严格整轮截止；不等同持久任务TLS传输层 |
+| 项目JS SDK适配器 | 固定Node24.18.0/openai7.47.0、总截止、原wire与SDK解析交叉核对、零自动重试 | 当前辅助类固定本机占位Key，不提供独立Key/CA配置；内部消费流后返回完整事务，无UI delta回调；这些限制不代表官方SDK没有相应能力 |
+| 持久任务客户端 | [11j全程TCP/TLS/写/读截止](SERVE_TASK_DEADLINE_RESULT_2026-11-04.md)、client绑定、预算/预检、显式恢复与迁移 | 当前协议交接[11k](SERVE_TASK_STARTUP_PROTOCOL_RESULT_2026-11-04.md)只支持登记的有向单步；不自动跳版本/换模型/换地址，归档迁移接受路径和连续三跳仅CPU证明 |
+| 官方OpenAI SDK或其他应用 | 走已支持的Chat/API子集及扩展参数；调用方管理连接、重试和工具 | 本项目只验表内固定Python/JS版本；无全SDK、全框架或全部OpenAI平台等价保证 |
+
+持久任务的幂等键、事件日志、工具结果和永久保键属于应用层；
+`request_id`只去重活跃请求，`session_id`只标识KV状态，均不能替代
+任务库。备份目前为源可核对的同机单活交接，不支持源盘丢失后强制
+启用旧副本，也不宣称通用exactly-once。
+
+## 当前剩余项与顺序
+
+执行队列以[PHASES](PHASES.md#队列与依赖)为准，具体审查位置见
+[本轮复核](SERVE_CONTRACT_REAUDIT_2026-11-04.md)。
+
+1. **基础等待已补齐：** [03c](SERVE_PREPARE_LOCK_RESULT_2026-11-04.md)
+   已验thinking准备/encode/preflight等待期取消与回收；GPU在途计算
+   仍属于协作取消的边界，不把全部锁或内核称为可抢占。
+2. **下一项客户端边界：** 标准库示例全程网络截止、JS辅助类Key/CA接入分别
+   有缺口；按实际选用入口补齐，不把持久客户端的证明推广到全部示例。
+3. **资源与多人SLO：** 当前有配额、没有租户公平或RPM/TPM合同；Thor
+   整机物理RAM硬保护尚未证明。明确需求与计量后独立推进，不能以改名
+   “CPU卸载”或已有memcg/CUDA额度代替容量保护。
+4. **用户验证/可选部署：** 当前ELF小时与天级长稳交用户；正式LAN、
+   证书/来源/通知/留存策略仅在选择时验收。三份day计划仍未执行。
+5. **范围扩展：** 任意schema、工具参数逐token增量、更多模型/模板、
+   采样、多choice、Responses、音频及分布式按具体业务立项。
+
+与成熟参考系统相比，当前主要差距在可组合范围、更多客户端、长期
+负载及运营证明。已交付的工具响应、developer适配、推理/stop、预检、
+客户端配额与任务恢复不再作为“尚未实现”排期；也不以功能表覆盖率
+给出工业化成熟度百分比。[vLLM固定版本对照](VLLM_SERVICE_GAPS_2026-11-02.md)
+用于检查职责范围，不将当时的官方网页或本地快照称作最新线上实现。
+
+## 冻结阶段
+
+旧P0至P3计划与预算见[历史快照](APPLICATION_SERVICE_HISTORY_2026-11-04.md#冻结阶段)。
+后续每批重新冻结受影响合同、有限预算和退出条件；已通过且身份未变
+的证据直接复用，不以整理文档为由再跑模型。
+
+## 本轮验证与交付合同
+
+本次仅修正文档与证据索引。核对现有源码/发布摘要、三个近期归档的
+内部摘要、路由清单及本次文档链接；没有运行CPU业务测试、HTTP、CUDA、
+模型或长稳。核对结果见[复核记录](SERVE_CONTRACT_REAUDIT_2026-11-04.md)。
+
+## 官方协议依据
+
+最初官方协议核对日期为2026-11-02，来源与当时结论保留在
+[历史依据](APPLICATION_SERVICE_HISTORY_2026-11-04.md#官方协议依据)。本轮只
+核对本地实现与已存证据，没有刷新外部版本或新增外部兼容承诺。
+
+## 首批交付历史
+
+[原始逐阶段快照](APPLICATION_SERVICE_HISTORY_2026-11-04.md)保留曾经的待办、
+默认身份、预算及失败。当前能力以本页和源码为准，各阶段实际接受
+范围仍以对应结果文档及原件为准；历史中的“未验”不自动表示当前缺失。

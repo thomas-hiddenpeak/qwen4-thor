@@ -1,0 +1,19 @@
+{
+  "time": "2026-11-03T09:11:09.414651+08:00",
+  "lock_available": true,
+  "recovery_markers": [],
+  "meminfo": "MemTotal:       128828748 kB\nMemFree:        26654060 kB\nMemAvailable:   122670860 kB\nBuffers:          653388 kB\nCached:         10447260 kB\nSwapCached:        54236 kB\nActive:          7614084 kB\nInactive:        6409068 kB\nActive(anon):    1576712 kB\nInactive(anon):  1649128 kB\nActive(file):    6037372 kB\nInactive(file):  4759940 kB\nUnevictable:       30628 kB\nMlocked:            2608 kB\nSwapTotal:       2097148 kB\nSwapFree:          86348 kB\nDirty:               288 kB\nWriteback:             0 kB\nAnonPages:       2814600 kB\nMapped:           560604 kB\nShmem:            275304 kB\nKReclaimable:   86366108 kB\nSlab:             866128 kB\nSReclaimable:     615128 kB\nSUnreclaim:       251000 kB\nKernelStack:        9248 kB\nPageTables:        23016 kB\nSecPageTables:         0 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    66511520 kB\nCommitted_AS:    6321092 kB\nVmallocTotal:   133141626880 kB\nVmallocUsed:      114788 kB\nVmallocChunk:          0 kB\nPercpu:             7168 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:   2088960 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nCmaTotal:         524288 kB\nCmaFree:          227600 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\n",
+  "installed": {
+    "q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+      "sha256": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+      "bytes": 7086768
+    },
+    "q4t.release.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json",
+      "sha256": "c520333192c04ddb499dd0188496789ec8ddc20fc5e0f00491ca01f52517aa75",
+      "bytes": 42438
+    }
+  },
+  "remaining_goal": "Whole-server physical accounting, sustained mixed load, deployment operations and general task recovery remain open"
+}

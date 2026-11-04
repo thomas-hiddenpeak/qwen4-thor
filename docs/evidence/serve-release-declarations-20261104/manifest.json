@@ -1,0 +1,395 @@
+{
+  "schema": 1,
+  "records": [
+    {
+      "name": "candidate/q4t.release.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/candidate/q4t.release.json",
+      "sha256": "cc83bf3a36c2b9658221554f39a7e6bb807f2618cb37b87b2f19fd7d7ea91d04",
+      "bytes": 45187
+    },
+    {
+      "name": "cpu/offline.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/cpu/offline.json",
+      "sha256": "aa50ffe3117e369528c708d704765ad350b237c7b5932f7ba0aaa1c0dae38a51",
+      "bytes": 249
+    },
+    {
+      "name": "cpu/result.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/cpu/result.json",
+      "sha256": "9f73dbd13d7749f72c4ecbbda7a1ba12f8a2a22f80edfeb68479a28496351856",
+      "bytes": 7012
+    },
+    {
+      "name": "cpu/unittest.log",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/cpu/unittest.log",
+      "sha256": "b5610a8601fdf5957d1c033ae6fe7e693c6759a105433be5ea25d72bfb26fb9a",
+      "bytes": 10488
+    },
+    {
+      "name": "declarations/capabilities.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/declarations/capabilities.json",
+      "sha256": "15b81e6a449efae11e9a0f9a68686502b302594c00847caa52bcb2d3e628f700",
+      "bytes": 11343
+    },
+    {
+      "name": "declarations/configuration.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/declarations/configuration.json",
+      "sha256": "c30d566d0d49f1da917a455230dc5e4a05f2ebabf5e7d769eb7f9fe324d1abcd",
+      "bytes": 4848
+    },
+    {
+      "name": "declarations/schemas/config.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/declarations/schemas/config.json",
+      "sha256": "9dca3f258b03e9b84d96abbfb2412365b5961e7ffc71b9feb6808c374adfbb02",
+      "bytes": 28772
+    },
+    {
+      "name": "declarations/schemas/message.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/declarations/schemas/message.json",
+      "sha256": "0618a6b85fee0f37f2df9347b1f260eee6882b74854f5177cef4b5527bb3bd61",
+      "bytes": 1755
+    },
+    {
+      "name": "declarations/schemas/preflight.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/declarations/schemas/preflight.json",
+      "sha256": "fcee5c9bddede4ba62032bd7e0007152d8899d421d2f3d473bdfab2c16348ba5",
+      "bytes": 6093
+    },
+    {
+      "name": "declarations/schemas/reasoning.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/declarations/schemas/reasoning.json",
+      "sha256": "e0e24e50afc2146757deac6fd8028377613e1305ff4dad4a1756c74961b938a4",
+      "bytes": 2702
+    },
+    {
+      "name": "declarations/schemas/response.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/declarations/schemas/response.json",
+      "sha256": "47c9f9068a88ec1977788c892c90fe89dae43ec02e1e6e381d67707eaea1ec62",
+      "bytes": 4493
+    },
+    {
+      "name": "declarations/schemas/stop.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/declarations/schemas/stop.json",
+      "sha256": "25989a444b4dc6a8ad7a0b8f723dbe96a26f9b97feb1e75016452e30536d4067",
+      "bytes": 1584
+    },
+    {
+      "name": "declarations/schemas/thinking.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/declarations/schemas/thinking.json",
+      "sha256": "1353743d9290215253fab2d8d0952ff99d833444e24323a01efacc6b10cf1bd7",
+      "bytes": 2690
+    },
+    {
+      "name": "delivery.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/delivery.json",
+      "sha256": "00c6ab71d39312d9d2dbd3d0a015c06e216d7a6201eaa0ecd8483fdf67e65339",
+      "bytes": 770
+    },
+    {
+      "name": "freeze.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/freeze.json",
+      "sha256": "9092f1ea8d541d9dc8f527ff75838d70aa4e3042cc09355098325792ba775242",
+      "bytes": 8020
+    },
+    {
+      "name": "isolated-entry.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/isolated-entry.json",
+      "sha256": "f0d8d4b41daff80e87cea57e1140e9e06b397ce707a6d5c1e7a78b9db9237ef4",
+      "bytes": 680
+    },
+    {
+      "name": "isolated-entry.stderr",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/isolated-entry.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "isolated-entry.stdout",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/isolated-entry.stdout",
+      "sha256": "3bdd1c2aa941a06b5fed50cba86e8dec8e4013d6a19e57deb2494e86cf2e5f64",
+      "bytes": 823
+    },
+    {
+      "name": "isolated-invocation-01.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/isolated-invocation-01.json",
+      "sha256": "271d6baabd49821a12d5c0804175121cef1eef26ae9b5f54c85a6dd11714cfad",
+      "bytes": 375
+    },
+    {
+      "name": "postflight.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/postflight.json",
+      "sha256": "10dc906bdab36d832edfadb1c32cad0ad5070d235d3dab818e94ab8bb96c88fd",
+      "bytes": 506
+    },
+    {
+      "name": "prepared-backend/CMakeCache.txt",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/CMakeCache.txt",
+      "sha256": "f8f9672e8b45124f877758fdc53f81d83131a4ca9891c060d527e6dfec4430df",
+      "bytes": 39190
+    },
+    {
+      "name": "prepared-backend/acceptance.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/acceptance.json",
+      "sha256": "dc7b4e0b504f056075fbab974c13a084e469e3f1266bf09b76598aac6372289f",
+      "bytes": 409
+    },
+    {
+      "name": "prepared-backend/declarations/capabilities.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/declarations/capabilities.json",
+      "sha256": "15b81e6a449efae11e9a0f9a68686502b302594c00847caa52bcb2d3e628f700",
+      "bytes": 11343
+    },
+    {
+      "name": "prepared-backend/declarations/configuration.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/declarations/configuration.json",
+      "sha256": "c30d566d0d49f1da917a455230dc5e4a05f2ebabf5e7d769eb7f9fe324d1abcd",
+      "bytes": 4848
+    },
+    {
+      "name": "prepared-backend/declarations/schemas/config.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/declarations/schemas/config.json",
+      "sha256": "9dca3f258b03e9b84d96abbfb2412365b5961e7ffc71b9feb6808c374adfbb02",
+      "bytes": 28772
+    },
+    {
+      "name": "prepared-backend/declarations/schemas/message.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/declarations/schemas/message.json",
+      "sha256": "0618a6b85fee0f37f2df9347b1f260eee6882b74854f5177cef4b5527bb3bd61",
+      "bytes": 1755
+    },
+    {
+      "name": "prepared-backend/declarations/schemas/preflight.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/declarations/schemas/preflight.json",
+      "sha256": "fcee5c9bddede4ba62032bd7e0007152d8899d421d2f3d473bdfab2c16348ba5",
+      "bytes": 6093
+    },
+    {
+      "name": "prepared-backend/declarations/schemas/reasoning.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/declarations/schemas/reasoning.json",
+      "sha256": "e0e24e50afc2146757deac6fd8028377613e1305ff4dad4a1756c74961b938a4",
+      "bytes": 2702
+    },
+    {
+      "name": "prepared-backend/declarations/schemas/response.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/declarations/schemas/response.json",
+      "sha256": "47c9f9068a88ec1977788c892c90fe89dae43ec02e1e6e381d67707eaea1ec62",
+      "bytes": 4493
+    },
+    {
+      "name": "prepared-backend/declarations/schemas/stop.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/declarations/schemas/stop.json",
+      "sha256": "25989a444b4dc6a8ad7a0b8f723dbe96a26f9b97feb1e75016452e30536d4067",
+      "bytes": 1584
+    },
+    {
+      "name": "prepared-backend/declarations/schemas/thinking.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/declarations/schemas/thinking.json",
+      "sha256": "1353743d9290215253fab2d8d0952ff99d833444e24323a01efacc6b10cf1bd7",
+      "bytes": 2690
+    },
+    {
+      "name": "prepared-backend/manifest.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/manifest.json",
+      "sha256": "2c142bdd197206ad9faf025ed9ff57fb1f00cc804a0fc260287c1a87416b0823",
+      "bytes": 5696
+    },
+    {
+      "name": "prepared-backend/q4t.release.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/q4t.release.json",
+      "sha256": "cc83bf3a36c2b9658221554f39a7e6bb807f2618cb37b87b2f19fd7d7ea91d04",
+      "bytes": 45187
+    },
+    {
+      "name": "prepared-backend/source/tools/evalscope/bounded_log.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/source/tools/evalscope/bounded_log.py",
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+      "bytes": 1784
+    },
+    {
+      "name": "prepared-backend/source/tools/evalscope/gpu_exclusive.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/source/tools/evalscope/gpu_exclusive.py",
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2",
+      "bytes": 18395
+    },
+    {
+      "name": "prepared-backend/source/tools/evalscope/nvml_process_query.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/source/tools/evalscope/nvml_process_query.py",
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+      "bytes": 7182
+    },
+    {
+      "name": "prepared-backend/source/tools/release/release.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/source/tools/release/release.py",
+      "sha256": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+      "bytes": 20261
+    },
+    {
+      "name": "prepared-backend/source/tools/serve_gateway/client_policy.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/source/tools/serve_gateway/client_policy.py",
+      "sha256": "ab0256ee376ae62373fd1e89b18ca79d9490295aa1607795b209c5e5bdee6c1c",
+      "bytes": 3923
+    },
+    {
+      "name": "prepared-backend/source/tools/serve_ops/contracts.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/source/tools/serve_ops/contracts.py",
+      "sha256": "0ceb9a926f7e6ddb573a8a7847ae1d2adc0d3cd862a4fcb76efe7746554244e7",
+      "bytes": 13824
+    },
+    {
+      "name": "prepared-backend/source/tools/serve_ops/identity.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/source/tools/serve_ops/identity.py",
+      "sha256": "74001ea851d3a7b0d5aee843b3ccee4b669485ed93543bb04799ab42e16847b9",
+      "bytes": 4762
+    },
+    {
+      "name": "prepared-backend/source/tools/serve_ops/transport.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/source/tools/serve_ops/transport.py",
+      "sha256": "ece3d93bc6f14dc31f6fb92697e9b188eee4f1b33915f7285d9fd320a9f9ffa4",
+      "bytes": 5331
+    },
+    {
+      "name": "prepared-backend/source/tools/serve_service/backend.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/source/tools/serve_service/backend.py",
+      "sha256": "2845329d81c3a9ea4f7223432daa1e865a414a305fe0419d2ca934d137463112",
+      "bytes": 1853
+    },
+    {
+      "name": "prepared-backend/source/tools/serve_service/inspection.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/source/tools/serve_service/inspection.py",
+      "sha256": "2930af5fe6564b567a39bb6c9280dfe098be4e78227250660246a9722cfb90b9",
+      "bytes": 15290
+    },
+    {
+      "name": "prepared-backend/source/tools/serve_service/memory.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/source/tools/serve_service/memory.py",
+      "sha256": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+      "bytes": 6019
+    },
+    {
+      "name": "prepared-backend/source/tools/serve_service/package.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/source/tools/serve_service/package.py",
+      "sha256": "f8fb029c92b7b213f37fe20977a5bb40ece15d287fce49daf3dbb05e2f11ff21",
+      "bytes": 17732
+    },
+    {
+      "name": "prepared-backend/source/tools/serve_service/resources.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/source/tools/serve_service/resources.py",
+      "sha256": "31da926fea3e5da1273b6130328cd68cfeb2d7d04c760db9a5ae827035553af1",
+      "bytes": 14151
+    },
+    {
+      "name": "prepared-backend/source/tools/serve_service/service.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/source/tools/serve_service/service.py",
+      "sha256": "f98c60807612c2b3aa044f1b03c685d6185d36c13c9157ed76cc94ea513f23f5",
+      "bytes": 11531
+    },
+    {
+      "name": "prepared-backend/source/tools/serve_service/supervisor.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/source/tools/serve_service/supervisor.py",
+      "sha256": "67d20c66c58e4a0bb2bb89b907972869a119e313c93947922d7c71ac9a789962",
+      "bytes": 15855
+    },
+    {
+      "name": "prepared.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared.json",
+      "sha256": "b8698f7f6a7705066cfac9889a53950ea9f47aa9638d533e912751073ed08336",
+      "bytes": 291
+    },
+    {
+      "name": "previous/CMakeCache.txt",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/previous/CMakeCache.txt",
+      "sha256": "f8f9672e8b45124f877758fdc53f81d83131a4ca9891c060d527e6dfec4430df",
+      "bytes": 39190
+    },
+    {
+      "name": "previous/acceptance.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/previous/acceptance.json",
+      "sha256": "dc7b4e0b504f056075fbab974c13a084e469e3f1266bf09b76598aac6372289f",
+      "bytes": 409
+    },
+    {
+      "name": "previous/q4t.release.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/previous/q4t.release.json",
+      "sha256": "abfaeff90bf460f1ff0cf0ee1f32da70d186e5ada0ab735e4576fc0d51c78e53",
+      "bytes": 41719
+    },
+    {
+      "name": "real-regression.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/real-regression.json",
+      "sha256": "4d8d2b78c5d4c3868e28aa0167c9557898d3339809fa12064ca7b4aa79446e0e",
+      "bytes": 363
+    },
+    {
+      "name": "report-source.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/report-source.py",
+      "sha256": "827bfcf6ba8d23862860b7f6641190add91ff4e13af7cd27d4c910526057a652",
+      "bytes": 6769
+    },
+    {
+      "name": "runtime-source.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/runtime-source.json",
+      "sha256": "bee62663231e09bd4145c296d6c6e071610a5e77ec133128be6510cb189bc730",
+      "bytes": 23139
+    },
+    {
+      "name": "source/tools/serve_release_declarations/stage.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/source/tools/serve_release_declarations/stage.py",
+      "sha256": "b2440b39485eb094c6078b4a40f80343ee3930bf6ba82c2fb24e8edbf6a21b39",
+      "bytes": 11589
+    },
+    {
+      "name": "source/tools/serve_service/package.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/source/tools/serve_service/package.py",
+      "sha256": "f8fb029c92b7b213f37fe20977a5bb40ece15d287fce49daf3dbb05e2f11ff21",
+      "bytes": 17732
+    },
+    {
+      "name": "source/tools/serve_service/test_declarations.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/source/tools/serve_service/test_declarations.py",
+      "sha256": "82f2de6f8207285b6e959bf9d0980e33b7692dbd05c11b4d86679f5b060afcf5",
+      "bytes": 7649
+    },
+    {
+      "name": "source/tools/serve_service/test_service.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/source/tools/serve_service/test_service.py",
+      "sha256": "76aff028e221cb99feac2dfa01c51596db0a68466fa30a90bd1889bf230574e0",
+      "bytes": 29641
+    },
+    {
+      "name": "source/tools/verify/startup_delivery/deploy.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/source/tools/verify/startup_delivery/deploy.py",
+      "sha256": "a458927aaa544ba48010f58d3a0f61ef5c3197df6234cadd78d6fd381c22db47",
+      "bytes": 40936
+    },
+    {
+      "name": "version.stderr",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/version.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "name": "version.stdout",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/version.stdout",
+      "sha256": "641e6cceea77e2f0d85b4f6926c2fc11f70630d4f7ed4efb3c618417e796aaad",
+      "bytes": 99
+    }
+  ],
+  "local_only": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/client-policy.json",
+      "sha256": "aed9b6a3acbaf617c28b2a08874913a5556515bb4c3e25f244d7b4f9549fc659",
+      "bytes": 394
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/prepared-backend/q4t",
+      "sha256": "7eff020de66b96f3175b3e123909be9e2f58142d54d1dd5992750d23cbe9c769",
+      "bytes": 7297520
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-release-declarations-20261104/previous/q4t",
+      "sha256": "7eff020de66b96f3175b3e123909be9e2f58142d54d1dd5992750d23cbe9c769",
+      "bytes": 7297520
+    }
+  ],
+  "archive_sha256": "45b0fdb2fcfd04e9dd8624cfd4e60ed20dc124d3fe27bfd07429a72be61bcbae"
+}

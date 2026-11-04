@@ -4,7 +4,23 @@
 #include <fstream>
 #include <string>
 
+#ifdef Q4T_ENABLE_XGRAMMAR
+#include "q4t/server/structured_decoder.h"
+#endif
+
+#ifdef Q4T_GRAMMAR_PROCESS_TESTS
+int GrammarProcessFixture(int argc, char** argv);
+#endif
+
 int main(int argc, char** argv) {
+#ifdef Q4T_ENABLE_XGRAMMAR
+  const int worker = q4t::server::MaybeRunGrammarWorker(argc, argv);
+  if (worker >= 0) return worker;
+#endif
+#ifdef Q4T_GRAMMAR_PROCESS_TESTS
+  const int fixture = GrammarProcessFixture(argc, argv);
+  if (fixture >= 0) return fixture;
+#endif
   std::string filter, required;
   bool list = false, allow_skips = false, has_filter = false;
   for (int i = 1; i < argc; ++i) {

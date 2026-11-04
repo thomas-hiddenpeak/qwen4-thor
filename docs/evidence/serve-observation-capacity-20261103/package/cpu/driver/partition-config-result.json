@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "accepted_native_fixtures": 7,
+  "raw_source": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/cpu/driver/config/stdout.jsonl",
+    "sha256": "44735d8eb79e5219e4b21faaba2d82a69e12ab6ef302b553820bf2e17de17eb5",
+    "bytes": 18131
+  },
+  "schema": {
+    "path": "/home/rm01/models/dev/qwen4-thor/docs/serve-config-v1.schema.json",
+    "sha256": "2b3391c70fb483417851058e767e834c398b57986203735d215e76c4cb970f49",
+    "bytes": 11825
+  },
+  "http_or_model_started": false
+}

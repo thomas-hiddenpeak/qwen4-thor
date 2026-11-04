@@ -1,0 +1,7 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-operations-listener-20261104/engine/q4t_host_tests",
+    "structured_decoder_"
+  ],
+  "timeout": 180
+}

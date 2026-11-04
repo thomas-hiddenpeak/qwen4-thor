@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/deps/prometheus",
+    "--config.file=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/execution/business/prometheus/config.json",
+    "--storage.tsdb.path=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/execution/business/prometheus/tsdb",
+    "--web.listen-address=127.0.0.1:19092",
+    "--storage.tsdb.retention.time=1h",
+    "--storage.tsdb.retention.size=64MB"
+  ],
+  "notification_receivers": []
+}

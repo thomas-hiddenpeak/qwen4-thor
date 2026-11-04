@@ -1,0 +1,68 @@
+{
+  "passed": true,
+  "cpu_tests": 61,
+  "driver_tests": 4,
+  "driver_correction_tests": 1,
+  "original_assertion_error_preserved": true,
+  "models": 1,
+  "gateways": 2,
+  "successful_responses": 4,
+  "real_tools": 2,
+  "completed_tasks": 2,
+  "response_usage": {
+    "alpha": [
+      {
+        "completion_tokens": 55,
+        "prompt_tokens": 647,
+        "total_tokens": 702
+      },
+      {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    ],
+    "beta": [
+      {
+        "completion_tokens": 55,
+        "prompt_tokens": 647,
+        "total_tokens": 702
+      },
+      {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    ]
+  },
+  "leaf_sha256": [
+    "6c0dd82e05f4b10f86feb4db7c0de450ef182cd85c3ea5ce93760826658a8022",
+    "e727ad1107e2c3e548e2fa89c3f95ffc27ced180cba7f4c00ebbd8e899553810"
+  ],
+  "renewal_seconds": 2.1461410978809,
+  "gpu_seconds": 62.235037960112095,
+  "gpu_observations": 59,
+  "seconds": 64.2712135380134,
+  "controls": 7,
+  "memcg_peak_bytes": 16545222656,
+  "memcg_events": {
+    "low": 0,
+    "high": 0,
+    "max": 0,
+    "oom": 0,
+    "oom_kill": 0,
+    "oom_group_kill": 0
+  },
+  "pids_events": {
+    "max": 0
+  },
+  "owned_exited": 10,
+  "sealed_generations": 3,
+  "cleanup_confirmed": true,
+  "long_run": false,
+  "actual_lan_accepted": false,
+  "zero_downtime_claim": false,
+  "actual_waited_expiry": false,
+  "performance_acceptance": false,
+  "original_offline_terminal_identity_error_preserved": true
+}

@@ -1,0 +1,180 @@
+[q4t][capabilities] requested=experimental mtp=1 media=0 max_seq=1
+[q4t][startup] tokenizer 302 ms
+[q4t][budget] mem_total=131.92 GB fraction=0.90 budget=118.73 GB
+[q4t][budget]   allocation estimate only; excludes file cache, driver overlap and other processes; not a physical RAM limit
+[q4t][budget]   requested max_len=8192 max_seq=1 max_prefill=2048 feasible=1 reason=estimate_fits
+[q4t][budget]   weights=84.00 GB  fixed=93.36 GB (estimated allocations+margin)
+[q4t][budget]   main_workspace=687669248 mtp_workspace=926107648 forward_buffers=104898564 ple_working=76571648 mtp=1
+[q4t][budget]   per_request=1.24 GB (peak admitted MTP request allocations)  state_pool=0.39 GB
+[q4t][budget]   => max_len=8192 max_seq=1
+[q4t][budget]   MTP allocation scope: text pooled sequences, k in [1,16]; allocation estimate, not a physical RAM guarantee
+[q4t][budget]   mtp_weights=5214301696 mtp_buffers=522240 mtp_scratch=6476920 mtp_checkpoints=346927104 mtp_forward_temp=4206736
+[q4t][budget]   loading_host_peak=3355443200 startup_envelope=97103842376 runtime_peak=94990027992 estimated_total=97103842376
+[q4t][startup] budget 407 ms
+[q4t][capacity] requested_max_len=8192 requested_max_seq=1 requested_max_prefill=2048 effective_max_len=8192 effective_max_seq=1 effective_max_prefill=2048 budget_enabled=1 budget_feasible=true
+[startup-reservation] {"schema":1,"event":"prepared","status":"PASS","count":1606,"device_bytes":85541278088,"allocated":1606,"consumed":0,"freed":0,"unhanded_remaining":1606,"handed_live":0,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":false,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"281c12b1a51f1fe344326d8223d0a2b47b3141f47255a7d39023c6417b25b3b5"}
+[q4t][startup-plan] mode=auto active=1
+[q4t][startup] startup_resource_plan 2574 ms
+[q4t][startup] model_load 28674 ms
+[q4t] generation stop token ids: 248046 248044
+[q4t] MTP loaded (k=3 max_seq=1)
+[q4t][startup] mtp_load 2940 ms
+[q4t] media disabled; vision tower not loaded
+[q4t][capabilities] effective mtp=1 media_allowed=0 vision_loaded=0 max_seq=1
+[q4t] continuous-batching scheduler started (max_seq=1)
+[startup-reservation] {"schema":1,"event":"startup_complete","status":"PASS","count":1606,"device_bytes":85541278088,"allocated":1606,"consumed":1606,"freed":0,"unhanded_remaining":0,"handed_live":1606,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":true,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"281c12b1a51f1fe344326d8223d0a2b47b3141f47255a7d39023c6417b25b3b5"}
+[q4t][startup] startup_total 34898 ms
+[q4t] serving on port 18099 (host 127.0.0.1, model qwen3.8-flash-next)
+[q4t][request] instance=0 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=trace-length-match
+[q4t][request] instance=0 id=chatcmpl-auto-ccb7d9f08922358dfd3d7be15207bfbb event=registered stage=validation seq=-1 elapsed_ms=0.065 trace_id=trace-length-match
+[q4t][http] trace_id=trace-length-match completion_id=chatcmpl-auto-ccb7d9f08922358dfd3d7be15207bfbb
+[q4t][request] instance=0 id=chatcmpl-auto-ccb7d9f08922358dfd3d7be15207bfbb event=stage stage=slot_admission seq=-1 elapsed_ms=0.136 trace_id=trace-length-match
+[q4t][request] instance=0 id=chatcmpl-auto-ccb7d9f08922358dfd3d7be15207bfbb event=admitted stage=slot_admission seq=0 elapsed_ms=0.145 trace_id=trace-length-match
+[q4t][request] instance=0 id=chatcmpl-auto-ccb7d9f08922358dfd3d7be15207bfbb event=stage stage=encode seq=0 elapsed_ms=0.147 trace_id=trace-length-match
+[q4t][request] instance=0 id=chatcmpl-auto-ccb7d9f08922358dfd3d7be15207bfbb event=stage stage=prefill seq=0 elapsed_ms=0.715 trace_id=trace-length-match
+[q4t][request] instance=0 id=chatcmpl-auto-ccb7d9f08922358dfd3d7be15207bfbb event=stage stage=decode seq=0 elapsed_ms=238.844 trace_id=trace-length-match
+[mtp-accept] request=chatcmpl-auto-ccb7d9f08922358dfd3d7be15207bfbb draft_counts=0,0,0,0
+[q4t][mem] phase=request_end id=chatcmpl-auto-ccb7d9f08922358dfd3d7be15207bfbb dev_used_gb=103.965 dev_total_gb=131.921 rss_mb=927.8 mem_free_gb=27.140 mem_avail_gb=35.397 cached_gb=7.844
+[q4t][request] instance=0 id=chatcmpl-auto-ccb7d9f08922358dfd3d7be15207bfbb event=stage stage=response seq=0 elapsed_ms=259.376 trace_id=trace-length-match
+[text-stop] request=chatcmpl-auto-ccb7d9f08922358dfd3d7be15207bfbb matched_index=0 tokens=1 mtp_steps=0 mtp_tokens=0 mtp_discarded=0
+[q4t][request] instance=0 id=chatcmpl-auto-ccb7d9f08922358dfd3d7be15207bfbb event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=259.508 slot_wait_ms=0.002 model_lock_ms=0.001 tokenizer_lock_ms=0.000 scheduler_completion_ms=0.000 stream_write_ms=0.051 scheduler_waits=0 trace_id=trace-length-match
+[q4t][request] instance=1 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=trace-length-miss
+[q4t][request] instance=1 id=chatcmpl-auto-0f4d13ec3f80a712528fe167c928883c event=registered stage=validation seq=-1 elapsed_ms=0.056 trace_id=trace-length-miss
+[q4t][http] trace_id=trace-length-miss completion_id=chatcmpl-auto-0f4d13ec3f80a712528fe167c928883c
+[q4t][request] instance=1 id=chatcmpl-auto-0f4d13ec3f80a712528fe167c928883c event=stage stage=slot_admission seq=-1 elapsed_ms=0.152 trace_id=trace-length-miss
+[q4t][request] instance=1 id=chatcmpl-auto-0f4d13ec3f80a712528fe167c928883c event=admitted stage=slot_admission seq=0 elapsed_ms=0.158 trace_id=trace-length-miss
+[q4t][request] instance=1 id=chatcmpl-auto-0f4d13ec3f80a712528fe167c928883c event=stage stage=encode seq=0 elapsed_ms=0.160 trace_id=trace-length-miss
+[q4t][request] instance=1 id=chatcmpl-auto-0f4d13ec3f80a712528fe167c928883c event=stage stage=prefill seq=0 elapsed_ms=0.421 trace_id=trace-length-miss
+[q4t][request] instance=1 id=chatcmpl-auto-0f4d13ec3f80a712528fe167c928883c event=stage stage=decode seq=0 elapsed_ms=150.443 trace_id=trace-length-miss
+[mtp-accept] request=chatcmpl-auto-0f4d13ec3f80a712528fe167c928883c draft_counts=0,0,0,0
+[q4t][mem] phase=request_end id=chatcmpl-auto-0f4d13ec3f80a712528fe167c928883c dev_used_gb=103.965 dev_total_gb=131.921 rss_mb=927.9 mem_free_gb=27.139 mem_avail_gb=35.397 cached_gb=7.844
+[q4t][request] instance=1 id=chatcmpl-auto-0f4d13ec3f80a712528fe167c928883c event=stage stage=response seq=0 elapsed_ms=166.623 trace_id=trace-length-miss
+[text-stop] request=chatcmpl-auto-0f4d13ec3f80a712528fe167c928883c matched_index=-1 tokens=1 mtp_steps=0 mtp_tokens=0 mtp_discarded=0
+[q4t][request] instance=1 id=chatcmpl-auto-0f4d13ec3f80a712528fe167c928883c event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=166.752 slot_wait_ms=0.002 model_lock_ms=0.001 tokenizer_lock_ms=0.000 scheduler_completion_ms=0.000 stream_write_ms=0.053 scheduler_waits=0 trace_id=trace-length-miss
+[q4t][request] instance=2 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=trace-raw-prompt
+[q4t][request] instance=2 id=chatcmpl-auto-04febfa9e3cfc8f4723c512bc5d190ab event=registered stage=validation seq=-1 elapsed_ms=0.036 trace_id=trace-raw-prompt
+[q4t][http] trace_id=trace-raw-prompt completion_id=chatcmpl-auto-04febfa9e3cfc8f4723c512bc5d190ab
+[q4t][request] instance=2 id=chatcmpl-auto-04febfa9e3cfc8f4723c512bc5d190ab event=stage stage=slot_admission seq=-1 elapsed_ms=0.045 trace_id=trace-raw-prompt
+[q4t][request] instance=2 id=chatcmpl-auto-04febfa9e3cfc8f4723c512bc5d190ab event=admitted stage=slot_admission seq=0 elapsed_ms=0.049 trace_id=trace-raw-prompt
+[q4t][request] instance=2 id=chatcmpl-auto-04febfa9e3cfc8f4723c512bc5d190ab event=stage stage=encode seq=0 elapsed_ms=0.050 trace_id=trace-raw-prompt
+[q4t][request] instance=2 id=chatcmpl-auto-04febfa9e3cfc8f4723c512bc5d190ab event=stage stage=prefill seq=0 elapsed_ms=0.338 trace_id=trace-raw-prompt
+[q4t][request] instance=2 id=chatcmpl-auto-04febfa9e3cfc8f4723c512bc5d190ab event=stage stage=decode seq=0 elapsed_ms=179.666 trace_id=trace-raw-prompt
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[mtp-accept] request=chatcmpl-auto-04febfa9e3cfc8f4723c512bc5d190ab draft_counts=0,0,1,3
+[q4t][mem] phase=request_end id=chatcmpl-auto-04febfa9e3cfc8f4723c512bc5d190ab dev_used_gb=103.915 dev_total_gb=131.921 rss_mb=932.4 mem_free_gb=27.156 mem_avail_gb=35.447 cached_gb=7.845
+[q4t][request] instance=2 id=chatcmpl-auto-04febfa9e3cfc8f4723c512bc5d190ab event=stage stage=response seq=0 elapsed_ms=568.675 trace_id=trace-raw-prompt
+[text-stop] request=chatcmpl-auto-04febfa9e3cfc8f4723c512bc5d190ab matched_index=0 tokens=13 mtp_steps=4 mtp_tokens=15 mtp_discarded=2
+[q4t][request] instance=2 id=chatcmpl-auto-04febfa9e3cfc8f4723c512bc5d190ab event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=568.759 slot_wait_ms=0.002 model_lock_ms=0.001 tokenizer_lock_ms=0.001 scheduler_completion_ms=368.519 stream_write_ms=0.000 scheduler_waits=4 trace_id=trace-raw-prompt
+[q4t][request] instance=3 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=trace-reasoning
+[q4t][request] instance=3 id=chatcmpl-auto-7c1704b83de1407eadee3a9bcfbaadb3 event=registered stage=validation seq=-1 elapsed_ms=0.055 trace_id=trace-reasoning
+[q4t][http] trace_id=trace-reasoning completion_id=chatcmpl-auto-7c1704b83de1407eadee3a9bcfbaadb3
+[q4t][request] instance=3 id=chatcmpl-auto-7c1704b83de1407eadee3a9bcfbaadb3 event=stage stage=slot_admission seq=-1 elapsed_ms=0.074 trace_id=trace-reasoning
+[q4t][request] instance=3 id=chatcmpl-auto-7c1704b83de1407eadee3a9bcfbaadb3 event=admitted stage=slot_admission seq=0 elapsed_ms=0.078 trace_id=trace-reasoning
+[q4t][request] instance=3 id=chatcmpl-auto-7c1704b83de1407eadee3a9bcfbaadb3 event=stage stage=encode seq=0 elapsed_ms=0.080 trace_id=trace-reasoning
+[q4t][request] instance=3 id=chatcmpl-auto-7c1704b83de1407eadee3a9bcfbaadb3 event=stage stage=prefill seq=0 elapsed_ms=0.501 trace_id=trace-reasoning
+[q4t][request] instance=3 id=chatcmpl-auto-7c1704b83de1407eadee3a9bcfbaadb3 event=stage stage=decode seq=0 elapsed_ms=210.130 trace_id=trace-reasoning
+[mtp-accept] request=chatcmpl-auto-7c1704b83de1407eadee3a9bcfbaadb3 draft_counts=0,1,0,4
+[q4t][mem] phase=request_end id=chatcmpl-auto-7c1704b83de1407eadee3a9bcfbaadb3 dev_used_gb=103.898 dev_total_gb=131.921 rss_mb=932.8 mem_free_gb=27.174 mem_avail_gb=35.465 cached_gb=7.845
+[q4t][request] instance=3 id=chatcmpl-auto-7c1704b83de1407eadee3a9bcfbaadb3 event=stage stage=response seq=0 elapsed_ms=689.803 trace_id=trace-reasoning
+[text-stop] request=chatcmpl-auto-7c1704b83de1407eadee3a9bcfbaadb3 matched_index=0 tokens=18 mtp_steps=5 mtp_tokens=18 mtp_discarded=0
+[q4t][request] instance=3 id=chatcmpl-auto-7c1704b83de1407eadee3a9bcfbaadb3 event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=689.917 slot_wait_ms=0.002 model_lock_ms=0.001 tokenizer_lock_ms=0.002 scheduler_completion_ms=452.794 stream_write_ms=0.000 scheduler_waits=5 trace_id=trace-reasoning
+[q4t][request] instance=4 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=trace-reasoning-hidden
+[q4t][request] instance=4 id=chatcmpl-auto-3cf09699e9bfe004969aabaa3c0e61c2 event=registered stage=validation seq=-1 elapsed_ms=0.062 trace_id=trace-reasoning-hidden
+[q4t][http] trace_id=trace-reasoning-hidden completion_id=chatcmpl-auto-3cf09699e9bfe004969aabaa3c0e61c2
+[q4t][request] instance=4 id=chatcmpl-auto-3cf09699e9bfe004969aabaa3c0e61c2 event=stage stage=slot_admission seq=-1 elapsed_ms=0.171 trace_id=trace-reasoning-hidden
+[q4t][request] instance=4 id=chatcmpl-auto-3cf09699e9bfe004969aabaa3c0e61c2 event=admitted stage=slot_admission seq=0 elapsed_ms=0.179 trace_id=trace-reasoning-hidden
+[q4t][request] instance=4 id=chatcmpl-auto-3cf09699e9bfe004969aabaa3c0e61c2 event=stage stage=encode seq=0 elapsed_ms=0.181 trace_id=trace-reasoning-hidden
+[q4t][request] instance=4 id=chatcmpl-auto-3cf09699e9bfe004969aabaa3c0e61c2 event=stage stage=prefill seq=0 elapsed_ms=0.591 trace_id=trace-reasoning-hidden
+[q4t][request] instance=4 id=chatcmpl-auto-3cf09699e9bfe004969aabaa3c0e61c2 event=stage stage=decode seq=0 elapsed_ms=202.899 trace_id=trace-reasoning-hidden
+[mtp-accept] request=chatcmpl-auto-3cf09699e9bfe004969aabaa3c0e61c2 draft_counts=0,1,0,4
+[q4t][mem] phase=request_end id=chatcmpl-auto-3cf09699e9bfe004969aabaa3c0e61c2 dev_used_gb=103.899 dev_total_gb=131.921 rss_mb=932.8 mem_free_gb=27.173 mem_avail_gb=35.464 cached_gb=7.845
+[q4t][request] instance=4 id=chatcmpl-auto-3cf09699e9bfe004969aabaa3c0e61c2 event=stage stage=response seq=0 elapsed_ms=681.159 trace_id=trace-reasoning-hidden
+[text-stop] request=chatcmpl-auto-3cf09699e9bfe004969aabaa3c0e61c2 matched_index=0 tokens=18 mtp_steps=5 mtp_tokens=18 mtp_discarded=0
+[q4t][request] instance=4 id=chatcmpl-auto-3cf09699e9bfe004969aabaa3c0e61c2 event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=681.297 slot_wait_ms=0.002 model_lock_ms=0.001 tokenizer_lock_ms=0.002 scheduler_completion_ms=455.284 stream_write_ms=0.043 scheduler_waits=5 trace_id=trace-reasoning-hidden
+[q4t][request] instance=5 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=trace-budget-stop
+[q4t][request] instance=5 id=chatcmpl-auto-337dc6229bd1b5d875221e3efd0c7a58 event=registered stage=validation seq=-1 elapsed_ms=0.067 trace_id=trace-budget-stop
+[q4t][http] trace_id=trace-budget-stop completion_id=chatcmpl-auto-337dc6229bd1b5d875221e3efd0c7a58
+[q4t][request] instance=5 id=chatcmpl-auto-337dc6229bd1b5d875221e3efd0c7a58 event=stage stage=slot_admission seq=-1 elapsed_ms=0.513 trace_id=trace-budget-stop
+[q4t][request] instance=5 id=chatcmpl-auto-337dc6229bd1b5d875221e3efd0c7a58 event=admitted stage=slot_admission seq=0 elapsed_ms=0.520 trace_id=trace-budget-stop
+[q4t][request] instance=5 id=chatcmpl-auto-337dc6229bd1b5d875221e3efd0c7a58 event=stage stage=encode seq=0 elapsed_ms=0.522 trace_id=trace-budget-stop
+[q4t][request] instance=5 id=chatcmpl-auto-337dc6229bd1b5d875221e3efd0c7a58 event=stage stage=prefill seq=0 elapsed_ms=0.898 trace_id=trace-budget-stop
+[q4t][request] instance=5 id=chatcmpl-auto-337dc6229bd1b5d875221e3efd0c7a58 event=stage stage=decode seq=0 elapsed_ms=203.193 trace_id=trace-budget-stop
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 mode=per-row cuBLASLt=130501
+[thinking-budget] request=chatcmpl-auto-337dc6229bd1b5d875221e3efd0c7a58 limit=0 consumed=0 forced=3 reasoning_tokens=3 mtp_steps=0 mtp_tokens=0 fallback=0
+[q4t][mem] phase=request_end id=chatcmpl-auto-337dc6229bd1b5d875221e3efd0c7a58 dev_used_gb=103.883 dev_total_gb=131.921 rss_mb=934.5 mem_free_gb=27.188 mem_avail_gb=35.479 cached_gb=7.845
+[q4t][request] instance=5 id=chatcmpl-auto-337dc6229bd1b5d875221e3efd0c7a58 event=stage stage=response seq=0 elapsed_ms=313.953 trace_id=trace-budget-stop
+[text-stop] request=chatcmpl-auto-337dc6229bd1b5d875221e3efd0c7a58 matched_index=0 tokens=3 mtp_steps=0 mtp_tokens=0 mtp_discarded=0
+[q4t][request] instance=5 id=chatcmpl-auto-337dc6229bd1b5d875221e3efd0c7a58 event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=314.072 slot_wait_ms=0.002 model_lock_ms=0.001 tokenizer_lock_ms=0.001 scheduler_completion_ms=0.000 stream_write_ms=0.050 scheduler_waits=0 trace_id=trace-budget-stop
+[q4t][request] instance=6 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=trace-tool-truncated-json
+[q4t][request] instance=6 id=chatcmpl-auto-ff3f50b2c8a447be59c2c080ffb94a7d event=registered stage=validation seq=-1 elapsed_ms=0.074 trace_id=trace-tool-truncated-json
+[q4t][http] trace_id=trace-tool-truncated-json completion_id=chatcmpl-auto-ff3f50b2c8a447be59c2c080ffb94a7d
+[q4t][request] instance=6 id=chatcmpl-auto-ff3f50b2c8a447be59c2c080ffb94a7d event=stage stage=slot_admission seq=-1 elapsed_ms=0.102 trace_id=trace-tool-truncated-json
+[q4t][request] instance=6 id=chatcmpl-auto-ff3f50b2c8a447be59c2c080ffb94a7d event=admitted stage=slot_admission seq=0 elapsed_ms=0.107 trace_id=trace-tool-truncated-json
+[q4t][request] instance=6 id=chatcmpl-auto-ff3f50b2c8a447be59c2c080ffb94a7d event=stage stage=encode seq=0 elapsed_ms=0.110 trace_id=trace-tool-truncated-json
+[q4t][request] instance=6 id=chatcmpl-auto-ff3f50b2c8a447be59c2c080ffb94a7d event=stage stage=prefill seq=0 elapsed_ms=1.798 trace_id=trace-tool-truncated-json
+[q4t][request] instance=6 id=chatcmpl-auto-ff3f50b2c8a447be59c2c080ffb94a7d event=stage stage=decode seq=0 elapsed_ms=504.043 trace_id=trace-tool-truncated-json
+[mtp-accept] request=chatcmpl-auto-ff3f50b2c8a447be59c2c080ffb94a7d draft_counts=0,0,1,5
+[q4t][mem] phase=request_end id=chatcmpl-auto-ff3f50b2c8a447be59c2c080ffb94a7d dev_used_gb=103.872 dev_total_gb=131.921 rss_mb=935.2 mem_free_gb=27.204 mem_avail_gb=35.491 cached_gb=7.845
+[q4t][request] instance=6 id=chatcmpl-auto-ff3f50b2c8a447be59c2c080ffb94a7d event=stage stage=response seq=0 elapsed_ms=1116.496 trace_id=trace-tool-truncated-json
+[text-stop] request=chatcmpl-auto-ff3f50b2c8a447be59c2c080ffb94a7d matched_index=0 tokens=20 mtp_steps=6 mtp_tokens=23 mtp_discarded=3
+[q4t][http] trace_id=trace-tool-truncated-json status=502 error=response_parse_failed
+[q4t][request] instance=6 id=chatcmpl-auto-ff3f50b2c8a447be59c2c080ffb94a7d event=end stage=response seq=0 released=1 outcome=error reason=response_parse_failed elapsed_ms=1116.627 slot_wait_ms=0.002 model_lock_ms=0.000 tokenizer_lock_ms=0.002 scheduler_completion_ms=563.350 stream_write_ms=0.000 scheduler_waits=6 trace_id=trace-tool-truncated-json
+[q4t][request] instance=7 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=trace-tool-truncated-sse
+[q4t][request] instance=7 id=chatcmpl-auto-685bb7760f8d1ef1871f281f4fd30953 event=registered stage=validation seq=-1 elapsed_ms=0.067 trace_id=trace-tool-truncated-sse
+[q4t][http] trace_id=trace-tool-truncated-sse completion_id=chatcmpl-auto-685bb7760f8d1ef1871f281f4fd30953
+[q4t][request] instance=7 id=chatcmpl-auto-685bb7760f8d1ef1871f281f4fd30953 event=stage stage=slot_admission seq=-1 elapsed_ms=0.170 trace_id=trace-tool-truncated-sse
+[q4t][request] instance=7 id=chatcmpl-auto-685bb7760f8d1ef1871f281f4fd30953 event=admitted stage=slot_admission seq=0 elapsed_ms=0.177 trace_id=trace-tool-truncated-sse
+[q4t][request] instance=7 id=chatcmpl-auto-685bb7760f8d1ef1871f281f4fd30953 event=stage stage=encode seq=0 elapsed_ms=0.178 trace_id=trace-tool-truncated-sse
+[q4t][request] instance=7 id=chatcmpl-auto-685bb7760f8d1ef1871f281f4fd30953 event=stage stage=prefill seq=0 elapsed_ms=1.907 trace_id=trace-tool-truncated-sse
+[q4t][request] instance=7 id=chatcmpl-auto-685bb7760f8d1ef1871f281f4fd30953 event=stage stage=decode seq=0 elapsed_ms=486.192 trace_id=trace-tool-truncated-sse
+[mtp-accept] request=chatcmpl-auto-685bb7760f8d1ef1871f281f4fd30953 draft_counts=0,0,1,5
+[q4t][mem] phase=request_end id=chatcmpl-auto-685bb7760f8d1ef1871f281f4fd30953 dev_used_gb=103.838 dev_total_gb=131.921 rss_mb=935.2 mem_free_gb=27.238 mem_avail_gb=35.525 cached_gb=7.845
+[q4t][request] instance=7 id=chatcmpl-auto-685bb7760f8d1ef1871f281f4fd30953 event=stage stage=response seq=0 elapsed_ms=1089.155 trace_id=trace-tool-truncated-sse
+[text-stop] request=chatcmpl-auto-685bb7760f8d1ef1871f281f4fd30953 matched_index=0 tokens=20 mtp_steps=6 mtp_tokens=23 mtp_discarded=3
+[q4t][request] instance=7 id=chatcmpl-auto-685bb7760f8d1ef1871f281f4fd30953 event=end stage=response seq=0 released=1 outcome=error reason=response_parse_failed elapsed_ms=1089.311 slot_wait_ms=0.002 model_lock_ms=0.000 tokenizer_lock_ms=0.002 scheduler_completion_ms=563.941 stream_write_ms=0.000 scheduler_waits=6 trace_id=trace-tool-truncated-sse
+[q4t][request] instance=8 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=trace-project-read
+[q4t][request] instance=8 id=chatcmpl-auto-5daec20b2f1da8cf2ebaed1cd64fe8e6 event=registered stage=validation seq=-1 elapsed_ms=0.082 trace_id=trace-project-read
+[q4t][http] trace_id=trace-project-read completion_id=chatcmpl-auto-5daec20b2f1da8cf2ebaed1cd64fe8e6
+[q4t][request] instance=8 id=chatcmpl-auto-5daec20b2f1da8cf2ebaed1cd64fe8e6 event=stage stage=slot_admission seq=-1 elapsed_ms=0.198 trace_id=trace-project-read
+[q4t][request] instance=8 id=chatcmpl-auto-5daec20b2f1da8cf2ebaed1cd64fe8e6 event=admitted stage=slot_admission seq=0 elapsed_ms=0.218 trace_id=trace-project-read
+[q4t][request] instance=8 id=chatcmpl-auto-5daec20b2f1da8cf2ebaed1cd64fe8e6 event=stage stage=encode seq=0 elapsed_ms=0.220 trace_id=trace-project-read
+[q4t][request] instance=8 id=chatcmpl-auto-5daec20b2f1da8cf2ebaed1cd64fe8e6 event=stage stage=prefill seq=0 elapsed_ms=2.524 trace_id=trace-project-read
+[q4t][request] instance=8 id=chatcmpl-auto-5daec20b2f1da8cf2ebaed1cd64fe8e6 event=stage stage=decode seq=0 elapsed_ms=510.948 trace_id=trace-project-read
+[mtp-accept] request=chatcmpl-auto-5daec20b2f1da8cf2ebaed1cd64fe8e6 draft_counts=0,1,1,12
+[q4t][mem] phase=request_end id=chatcmpl-auto-5daec20b2f1da8cf2ebaed1cd64fe8e6 dev_used_gb=103.794 dev_total_gb=131.921 rss_mb=936.2 mem_free_gb=27.281 mem_avail_gb=35.569 cached_gb=7.845
+[q4t][request] instance=8 id=chatcmpl-auto-5daec20b2f1da8cf2ebaed1cd64fe8e6 event=stage stage=response seq=0 elapsed_ms=1868.296 trace_id=trace-project-read
+[text-stop] request=chatcmpl-auto-5daec20b2f1da8cf2ebaed1cd64fe8e6 matched_index=-1 tokens=54 mtp_steps=14 mtp_tokens=53 mtp_discarded=0
+[q4t][request] instance=8 id=chatcmpl-auto-5daec20b2f1da8cf2ebaed1cd64fe8e6 event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=1868.414 slot_wait_ms=0.002 model_lock_ms=0.001 tokenizer_lock_ms=0.005 scheduler_completion_ms=1316.671 stream_write_ms=0.071 scheduler_waits=14 trace_id=trace-project-read
+[q4t][request] instance=9 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=trace-project-answer
+[q4t][request] instance=9 id=chatcmpl-auto-ebb139538d8effc7954af1ed61dfa52d event=registered stage=validation seq=-1 elapsed_ms=0.096 trace_id=trace-project-answer
+[q4t][http] trace_id=trace-project-answer completion_id=chatcmpl-auto-ebb139538d8effc7954af1ed61dfa52d
+[q4t][request] instance=9 id=chatcmpl-auto-ebb139538d8effc7954af1ed61dfa52d event=stage stage=slot_admission seq=-1 elapsed_ms=0.216 trace_id=trace-project-answer
+[q4t][request] instance=9 id=chatcmpl-auto-ebb139538d8effc7954af1ed61dfa52d event=admitted stage=slot_admission seq=0 elapsed_ms=0.223 trace_id=trace-project-answer
+[q4t][request] instance=9 id=chatcmpl-auto-ebb139538d8effc7954af1ed61dfa52d event=stage stage=encode seq=0 elapsed_ms=0.225 trace_id=trace-project-answer
+[q4t][request] instance=9 id=chatcmpl-auto-ebb139538d8effc7954af1ed61dfa52d event=stage stage=prefill seq=0 elapsed_ms=2.876 trace_id=trace-project-answer
+[q4t][request] instance=9 id=chatcmpl-auto-ebb139538d8effc7954af1ed61dfa52d event=stage stage=decode seq=0 elapsed_ms=722.746 trace_id=trace-project-answer
+[mtp-accept] request=chatcmpl-auto-ebb139538d8effc7954af1ed61dfa52d draft_counts=0,3,2,11
+[q4t][mem] phase=request_end id=chatcmpl-auto-ebb139538d8effc7954af1ed61dfa52d dev_used_gb=103.773 dev_total_gb=131.921 rss_mb=937.4 mem_free_gb=27.308 mem_avail_gb=35.590 cached_gb=7.845
+[q4t][request] instance=9 id=chatcmpl-auto-ebb139538d8effc7954af1ed61dfa52d event=stage stage=response seq=0 elapsed_ms=2275.992 trace_id=trace-project-answer
+[text-stop] request=chatcmpl-auto-ebb139538d8effc7954af1ed61dfa52d matched_index=-1 tokens=57 mtp_steps=16 mtp_tokens=56 mtp_discarded=0
+[q4t][request] instance=9 id=chatcmpl-auto-ebb139538d8effc7954af1ed61dfa52d event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=2276.112 slot_wait_ms=0.002 model_lock_ms=0.000 tokenizer_lock_ms=0.005 scheduler_completion_ms=1500.074 stream_write_ms=0.424 scheduler_waits=16 trace_id=trace-project-answer
+[q4t][request] instance=10 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=trace-strict-disabled-stop
+[q4t][request] instance=10 id=chatcmpl-auto-6b8a975f7d764afd4e0b94ca5a79cbe0 event=registered stage=validation seq=-1 elapsed_ms=0.094 trace_id=trace-strict-disabled-stop
+[q4t][http] trace_id=trace-strict-disabled-stop completion_id=chatcmpl-auto-6b8a975f7d764afd4e0b94ca5a79cbe0
+[q4t][request] instance=10 id=chatcmpl-auto-6b8a975f7d764afd4e0b94ca5a79cbe0 event=stage stage=grammar_compile seq=-1 elapsed_ms=0.700 trace_id=trace-strict-disabled-stop
+[q4t][request] instance=10 id=chatcmpl-auto-6b8a975f7d764afd4e0b94ca5a79cbe0 event=stage stage=slot_admission seq=-1 elapsed_ms=219.359 trace_id=trace-strict-disabled-stop
+[q4t][request] instance=10 id=chatcmpl-auto-6b8a975f7d764afd4e0b94ca5a79cbe0 event=admitted stage=slot_admission seq=0 elapsed_ms=219.391 trace_id=trace-strict-disabled-stop
+[q4t][request] instance=10 id=chatcmpl-auto-6b8a975f7d764afd4e0b94ca5a79cbe0 event=stage stage=encode seq=0 elapsed_ms=219.393 trace_id=trace-strict-disabled-stop
+[q4t][request] instance=10 id=chatcmpl-auto-6b8a975f7d764afd4e0b94ca5a79cbe0 event=stage stage=prefill seq=0 elapsed_ms=219.735 trace_id=trace-strict-disabled-stop
+[q4t][request] instance=10 id=chatcmpl-auto-6b8a975f7d764afd4e0b94ca5a79cbe0 event=stage stage=decode seq=0 elapsed_ms=435.710 trace_id=trace-strict-disabled-stop
+[thinking-budget] request=chatcmpl-auto-6b8a975f7d764afd4e0b94ca5a79cbe0 limit=1 consumed=1 forced=3 reasoning_tokens=4 mtp_steps=0 mtp_tokens=0 fallback=0
+[q4t][mem] phase=request_end id=chatcmpl-auto-6b8a975f7d764afd4e0b94ca5a79cbe0 dev_used_gb=103.586 dev_total_gb=131.921 rss_mb=947.6 mem_free_gb=27.496 mem_avail_gb=35.777 cached_gb=7.845
+[q4t][request] instance=10 id=chatcmpl-auto-6b8a975f7d764afd4e0b94ca5a79cbe0 event=stage stage=response seq=0 elapsed_ms=1222.941 trace_id=trace-strict-disabled-stop
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4093034496 reported_post_exec_rss_bytes=235274240 wait_status=9
+[q4t][request] instance=10 id=chatcmpl-auto-6b8a975f7d764afd4e0b94ca5a79cbe0 event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=1230.515 slot_wait_ms=0.004 model_lock_ms=0.002 tokenizer_lock_ms=0.002 scheduler_completion_ms=0.000 stream_write_ms=0.057 scheduler_waits=0 trace_id=trace-strict-disabled-stop
+[q4t] shutting down: draining in-flight requests...
+[mtp-batches] rows=1 suffix=0 steps=56
+[q4t] shutdown complete (0 in-flight remaining)
+[startup-reservation] {"schema":1,"event":"finalized","status":"PASS","count":1606,"device_bytes":85541278088,"allocated":1606,"consumed":1606,"freed":1606,"unhanded_remaining":0,"handed_live":0,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":true,"finalized":true,"active":false,"strategy":"stable_descending_bytes","plan_sha256":"281c12b1a51f1fe344326d8223d0a2b47b3141f47255a7d39023c6417b25b3b5"}

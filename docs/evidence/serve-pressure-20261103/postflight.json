@@ -1,0 +1,29 @@
+{
+  "time": "2026-11-03T09:52:06.294450+08:00",
+  "gpu": [],
+  "lock_available": true,
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "owned_model_running": false,
+  "owned_scope_removed": true,
+  "scope": "q4t-serve-pressure-20261103-1994152.scope",
+  "recovery_markers": [],
+  "memory": {
+    "MemTotal": 131920637952,
+    "MemFree": 27152293888,
+    "MemAvailable": 125621374976
+  },
+  "installed_binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "sha256": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+    "bytes": 7086768
+  },
+  "sidecar": {
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json",
+    "sha256": "c520333192c04ddb499dd0188496789ec8ddc20fc5e0f00491ca01f52517aa75",
+    "bytes": 42438
+  },
+  "kernel": "6.8.12-1021-tegra\n",
+  "driver": "NVRM version: NVIDIA UNIX Open Kernel Module for aarch64  TempVersion  Release Build  (r595_00)  (buildbrain@74e043fc-6c96-4a54-a660-50b30a72108d-97k4-j97dd)  Thu Aug  6 10:18:15 PM PDT 2026\nGCC version:  gcc version 13.2.0 (crosstool-NG 1.26.0) \n",
+  "dropped_caches": false,
+  "other_services_modified": false
+}

@@ -1,0 +1,529 @@
+{
+  "records": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/accepted-package.json",
+      "sha256": "cb15b31201ad3f407414cc9ca0482b2d1a00c787e555128081aaf086415d429b",
+      "bytes": 1509,
+      "member": "accepted-package.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/cpu/result.json",
+      "sha256": "225a745b6494415e5430028f6c618f2f81965974d642180ad75462da65f1cd9a",
+      "bytes": 3517,
+      "member": "cpu/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/cpu/unittest.log",
+      "sha256": "71071ecc3dc95107f983584b5ebe8ded1e2d28e65a506f98899ca37911f43c77",
+      "bytes": 7663,
+      "member": "cpu/unittest.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/cpu-final/result.json",
+      "sha256": "5c53971109727b19b623988c81d4feefec02d8cb3310302fe2bce6384f8f2ca1",
+      "bytes": 3819,
+      "member": "cpu-final/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/cpu-final/unittest.log",
+      "sha256": "3de9cb0e78ede01ba2bcb72a3202bfc3c30a59cd93e5d735a176f2a7df87f599",
+      "bytes": 5007,
+      "member": "cpu-final/unittest.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/begin.json",
+      "sha256": "bad1b46eda7ef9a18a8503de12687753d300e4ce8fe0286b8fcbe9abfe46db35",
+      "bytes": 4405,
+      "member": "execution/begin.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/cleanup-unit-before.json",
+      "sha256": "7bfe046cb1b9f0d65112ccb8533b13be2a66ea8aa1480b63b36cb3eaaada6eab",
+      "bytes": 913,
+      "member": "execution/cleanup-unit-before.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/cleanup-unit-stop.json",
+      "sha256": "fd9952214321f28952e077a308209c72161cc651febcc9cdd432cd155c8358e9",
+      "bytes": 165,
+      "member": "execution/cleanup-unit-stop.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/counts.json",
+      "sha256": "fa6dd2e8e842a089c5860d9154afbebb9aa64293a3a3d34d6d5ae263b8707183",
+      "bytes": 59,
+      "member": "execution/counts.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/first-ready-ownership.json",
+      "sha256": "1ae4a6f7c33bd4057047f38dabff5bdb3b7358fc2f451a1dbba9672e6cfedd96",
+      "bytes": 1637,
+      "member": "execution/first-ready-ownership.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/first-ready-unit.json",
+      "sha256": "2bf68b8186bf674c89f9953aa6c4cd8ef7fbbe045d98ce80f642a6f7582c80db",
+      "bytes": 1018,
+      "member": "execution/first-ready-unit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/gpu-after-pressure.json",
+      "sha256": "16cb2ea6c44339a7467117527637e4bda67be3529285ba0e45b383dede8ad954",
+      "bytes": 2257,
+      "member": "execution/gpu-after-pressure.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/gpu-before.json",
+      "sha256": "138989f0cffbecd9952b30a1acf774b3ddc1c6494b6d0ce61f951f78e2291b2e",
+      "bytes": 2260,
+      "member": "execution/gpu-before.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/gpu-final.json",
+      "sha256": "7db78f4b4c872a09ab21f4b33457cc2ede387f0ae434fc80f453caa455d20a88",
+      "bytes": 2256,
+      "member": "execution/gpu-final.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/idempotent-stop.json",
+      "sha256": "cc1125e4a87fb5dceeefa9482f9ce62f424993a6d93240ea10a1fc70470e2909",
+      "bytes": 9093,
+      "member": "execution/idempotent-stop.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/idle-before-pressure-metrics.json",
+      "sha256": "37666757274322ae4eefc0a6f990023b653073a63dbee8b5b177115089082a1e",
+      "bytes": 26258,
+      "member": "execution/idle-before-pressure-metrics.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/managed-run/attempt-1.json",
+      "sha256": "59ec1d964a666127ade5f46097162a06150707bae5c7806893b4f5e59353327b",
+      "bytes": 819,
+      "member": "execution/managed-run/attempt-1.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/managed-run/backend.log",
+      "sha256": "324d2d5bb94c5d3f70f4968bf9e8882fabbcd68ca3c6ee5995d7c29137e53a53",
+      "bytes": 14598,
+      "member": "execution/managed-run/backend.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/managed-run/controller.json",
+      "sha256": "0fbff19ed7751a9c1c9773c7c47bb0916af86a2de128dddb507d20f926952f57",
+      "bytes": 440,
+      "member": "execution/managed-run/controller.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/managed-run/events.log",
+      "sha256": "8de2203648f98c846770c4377cdcea7656a2e82edc15c681508d07e29c079eee",
+      "bytes": 94,
+      "member": "execution/managed-run/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/managed-run/lease/events.jsonl",
+      "sha256": "b46525f3401f092c199753fd183d8f6676c3ab13713d7a8fa2124d3897c60044",
+      "bytes": 10399,
+      "member": "execution/managed-run/lease/events.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/managed-run/lease/exit.json",
+      "sha256": "97f4d549a471d24925f4d64b337e5cccfd34c09ab194302f536c4a217bbcce35",
+      "bytes": 925,
+      "member": "execution/managed-run/lease/exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/managed-run/lease/nvml-queries.jsonl",
+      "sha256": "163c5e1f19ec7dd03071f31fdf9f5488594467f3efd80bf06c184fc1c3e343f4",
+      "bytes": 124544,
+      "member": "execution/managed-run/lease/nvml-queries.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/managed-run/status.json",
+      "sha256": "bffed6e2d68814ffd214ab29a96d4dc9e8ad47878c5a35ee35f76d7689289b81",
+      "bytes": 7857,
+      "member": "execution/managed-run/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/managed-run/terminal.json",
+      "sha256": "8e32b5b04b88983fa6e27f633b2843d996984ced7eb6a07872af4d48e0d151ce",
+      "bytes": 9352,
+      "member": "execution/managed-run/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/ordinary-json-http.json",
+      "sha256": "ad7dc483909501636ef2542e6717e4f47c35efa5f72f5ad83706972918b83455",
+      "bytes": 245,
+      "member": "execution/ordinary-json-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/ordinary-json-request.json",
+      "sha256": "97f04027b1c6c31f1e38798097031399980cb3ae883f85fb1f3ac540b0f43eaf",
+      "bytes": 634,
+      "member": "execution/ordinary-json-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/ordinary-json-response.json",
+      "sha256": "7b366f2632758d2bf5ad5b70b651954b89dcf2053e0fec65e6c458c82bb07bfb",
+      "bytes": 276,
+      "member": "execution/ordinary-json-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/ordinary-json-wire.bin",
+      "sha256": "c7ab68e12900257b38fbe0efdf7d4700bb068627e2184678d89cc3964f421184",
+      "bytes": 306,
+      "member": "execution/ordinary-json-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/pressure-before.json",
+      "sha256": "c5a955ae181b36a91263f87397cb280520d64296b268b25c370e634a66884dbc",
+      "bytes": 88,
+      "member": "execution/pressure-before.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/pressure-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "execution/pressure-stderr.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/pressure-trigger.json",
+      "sha256": "09c60e525b9c0911ecc9f19bc87d1e07a4633b41f342576ead731354de9c87d3",
+      "bytes": 314,
+      "member": "execution/pressure-trigger.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/pressure.jsonl",
+      "sha256": "1a209816babd65e8c271e2a0460def51a38967c0f65f8b699f6c677063bccecd",
+      "bytes": 13873,
+      "member": "execution/pressure.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/project-answer-http.json",
+      "sha256": "f59f476c1aa3218a48b6212b1ef79d67fe0bae7fa4479e9dc0a0171477cd4308",
+      "bytes": 280,
+      "member": "execution/project-answer-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/project-answer-request.json",
+      "sha256": "ef65b00fcd44acf7d3830d504e9577390f65a7755a8c5806c2bcff6516bbad49",
+      "bytes": 5890,
+      "member": "execution/project-answer-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/project-answer-response.json",
+      "sha256": "ea7c2faf13ede0a868108086186c789739a5f3186c2e5d5df007c0e89b01beeb",
+      "bytes": 497,
+      "member": "execution/project-answer-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/project-answer-wire.bin",
+      "sha256": "27922670a12637c0ffd3c4e29593b3407ec19d50075262bd43669e8aa221f591",
+      "bytes": 1137,
+      "member": "execution/project-answer-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/project-read-http.json",
+      "sha256": "bd61e93a3130ddee86f4493c4cb882b60fda074f67ec031ad73c128e350f59b2",
+      "bytes": 281,
+      "member": "execution/project-read-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/project-read-request.json",
+      "sha256": "17c14c2d3244899109ff4653745e8b1998c6efdfafc2bf384ac81eb6a61ef9c5",
+      "bytes": 3442,
+      "member": "execution/project-read-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/project-read-response.json",
+      "sha256": "bc6dceb129b6cae5b2512dbdd2c3054595a1d9261994ac264d20a125fe306625",
+      "bytes": 577,
+      "member": "execution/project-read-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/project-read-wire.bin",
+      "sha256": "7bc0cd101696fb98cdbac3fd157b3ad3a2bf2525c0ae9a9a6617be8aded9f8e1",
+      "bytes": 1184,
+      "member": "execution/project-read-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/project-tool-result.json",
+      "sha256": "4507ac989e0c4c71ab452792d973b5f810ca86886e0152fbb88bcfc79c2cdd23",
+      "bytes": 2036,
+      "member": "execution/project-tool-result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/project-tool-started.json",
+      "sha256": "33c41ea1d3642f2cd1012981aa45f1b7f4e93b073db208d2115e38037df077be",
+      "bytes": 191,
+      "member": "execution/project-tool-started.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/protective-stop-verified.json",
+      "sha256": "58a92ee7ba774dea21491817bf0da079c4f4c7352e4dfb2c9698410e2fad6cb2",
+      "bytes": 446,
+      "member": "execution/protective-stop-verified.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/q4t-memory-stop-4b7db518ca62df8cec99.service",
+      "sha256": "e71d12a784d8edc6a34e1858de7bdee1e7dc783d39e3a8cf6757ca93f14e7e3a",
+      "bytes": 766,
+      "member": "execution/q4t-memory-stop-4b7db518ca62df8cec99.service"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/result.json",
+      "sha256": "071207914981ffe93c007c3e7d1a18c5dfc013d22b5a7ecda7b6b6ed57cc44c3",
+      "bytes": 531,
+      "member": "execution/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/sealed-files.json",
+      "sha256": "f67a7e3585f32d6e19a9b90967288361bef20b8373a477f6cf92e7ad7425b9cc",
+      "bytes": 5384,
+      "member": "execution/sealed-files.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/status-snapshots.jsonl",
+      "sha256": "e8f1fd4a457999c124fd1634806e22486cf2846d6a57815b374aeb6c7dc00dba",
+      "bytes": 20055,
+      "member": "execution/status-snapshots.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/strict-json-http.json",
+      "sha256": "29b77ba2a42ae88d50f1eea04ec746ea304870b29249f85bdf67cb5fb8ab885d",
+      "bytes": 245,
+      "member": "execution/strict-json-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/strict-json-request.json",
+      "sha256": "9c4abb3f7041bca779261ee5f064e40b704ad5ce743e49c18229326ed8546239",
+      "bytes": 1064,
+      "member": "execution/strict-json-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/strict-json-response.json",
+      "sha256": "32ed1f32f93a345a2635b8271422f107fc17a4c9d1032105c16db942d955e529",
+      "bytes": 284,
+      "member": "execution/strict-json-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/strict-json-wire.bin",
+      "sha256": "e5514e23e499cdcaa012f7da7bd2ea6d14b7f4ad685209a51ac12be99626abca",
+      "bytes": 314,
+      "member": "execution/strict-json-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/unit-after-pressure.json",
+      "sha256": "7bfe046cb1b9f0d65112ccb8533b13be2a66ea8aa1480b63b36cb3eaaada6eab",
+      "bytes": 913,
+      "member": "execution/unit-after-pressure.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/unit-before.json",
+      "sha256": "0e275725929b993f3b7d4911b348687bb73d02587ebc7396612cc1e3411cea5f",
+      "bytes": 842,
+      "member": "execution/unit-before.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/unit-journal.json",
+      "sha256": "3a071f600295708068724b1afdddb96e9d058268ba37bef6627fcd512902edf0",
+      "bytes": 281,
+      "member": "execution/unit-journal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/unit-link.json",
+      "sha256": "476e6fe5f27eada652b8574a2536d474d09aa7f690a2e5e25a9f802696aba57b",
+      "bytes": 485,
+      "member": "execution/unit-link.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/unit-linked.json",
+      "sha256": "b0379ff4a759577bb6aee0563e5e4d7cfed3eaea2b7877b8e0d0a1287af114d7",
+      "bytes": 911,
+      "member": "execution/unit-linked.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/unit-reload.json",
+      "sha256": "a19196c7a69bf16f38ae5d07e9fbe8c07b49984b8b07c2b7a11c46f5adf9c8ff",
+      "bytes": 122,
+      "member": "execution/unit-reload.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/unit-removed.json",
+      "sha256": "0e275725929b993f3b7d4911b348687bb73d02587ebc7396612cc1e3411cea5f",
+      "bytes": 842,
+      "member": "execution/unit-removed.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/unit-reset.json",
+      "sha256": "53b9d610a8ae9130fe28490c328274de8c39ae6758d284dbc3f77772a6a309f2",
+      "bytes": 173,
+      "member": "execution/unit-reset.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/unit-start.json",
+      "sha256": "a8446de71b667fa0980f751d298b731fbcbc1b8be8d6007da8b7184a9a6a8f4c",
+      "bytes": 166,
+      "member": "execution/unit-start.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/unit-verify.json",
+      "sha256": "8d9936e47c6490f4282ca43f3d7e4996b7b2f049522e9d88158af881678bb990",
+      "bytes": 253,
+      "member": "execution/unit-verify.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/package/CMakeCache.txt",
+      "sha256": "fd1130b57a00a839279dab7875cbdd7eb942016069927ad57fdea4ba574e4111",
+      "bytes": 39184,
+      "member": "package/CMakeCache.txt"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/package/acceptance.json",
+      "sha256": "41c1f1d776502620942f2fe24392b622bbf77125d28618cf82f3845e5167d4f9",
+      "bytes": 902,
+      "member": "package/acceptance.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/package/manifest.json",
+      "sha256": "dd94fb050aa23adad672cbf15935cb2c6d35bedf58468b086f39c42160dc030a",
+      "bytes": 4042,
+      "member": "package/manifest.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/package/q4t.release.json",
+      "sha256": "42d7672ab473aceb315889be8eeac54310121fd47d4ac861d4d40fcc2bfea1f5",
+      "bytes": 48517,
+      "member": "package/q4t.release.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/package/source/tools/evalscope/bounded_log.py",
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+      "bytes": 1784,
+      "member": "package/source/tools/evalscope/bounded_log.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/package/source/tools/evalscope/gpu_exclusive.py",
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2",
+      "bytes": 18395,
+      "member": "package/source/tools/evalscope/gpu_exclusive.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/package/source/tools/evalscope/nvml_process_query.py",
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+      "bytes": 7182,
+      "member": "package/source/tools/evalscope/nvml_process_query.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/package/source/tools/release/release.py",
+      "sha256": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+      "bytes": 20261,
+      "member": "package/source/tools/release/release.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/package/source/tools/serve_ops/contracts.py",
+      "sha256": "709aaf35b476225f42d7c64bcee2ffd55f48a310bb01b939785a2006eb340816",
+      "bytes": 11582,
+      "member": "package/source/tools/serve_ops/contracts.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/package/source/tools/serve_ops/identity.py",
+      "sha256": "1b80467eba0fe84397155d29a62d8ace363aea32b85c58f4ffce5412bc74aa3a",
+      "bytes": 4202,
+      "member": "package/source/tools/serve_ops/identity.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/package/source/tools/serve_ops/transport.py",
+      "sha256": "5885dab1835afa07c4a4c871726548fad95cb7888b4af29f8835e7d98d6d806b",
+      "bytes": 4609,
+      "member": "package/source/tools/serve_ops/transport.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/package/source/tools/serve_service/backend.py",
+      "sha256": "9ef97c4a60d73598faac56f312e009299b00dd63c9e45333cea50cd89ac89b5f",
+      "bytes": 1703,
+      "member": "package/source/tools/serve_service/backend.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/package/source/tools/serve_service/memory.py",
+      "sha256": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+      "bytes": 6019,
+      "member": "package/source/tools/serve_service/memory.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/package/source/tools/serve_service/package.py",
+      "sha256": "ffc6880571b967106877d8f8835f94db1b2a1142aa5d211abcdbedcf8b420397",
+      "bytes": 8914,
+      "member": "package/source/tools/serve_service/package.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/package/source/tools/serve_service/service.py",
+      "sha256": "3eedfcd515865f00a2751c275d4adba7b956f83b13b30353fce1f4f9bb7476d9",
+      "bytes": 10095,
+      "member": "package/source/tools/serve_service/service.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/package/source/tools/serve_service/supervisor.py",
+      "sha256": "bb0e0ded132b4047c909788667bc72bc6b87fd4fa54a86bcc51ecaf4cb2f79cd",
+      "bytes": 12708,
+      "member": "package/source/tools/serve_service/supervisor.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/plan.json",
+      "sha256": "f11a03d978cd7a1b6260b4add4284f26dbc7f8a411ca979cb6f8b57b0bdca4ba",
+      "bytes": 4223,
+      "member": "plan.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/postflight.json",
+      "sha256": "280533317d7246cd0c067187a892c8ec9286cfdb1c78245f54cda6804fb214de",
+      "bytes": 571,
+      "member": "postflight.json"
+    }
+  ],
+  "local_artifacts": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/package/q4t",
+      "sha256": "d66f2bb9df3a34eda1b885da148e6971c25137564e500b9357bd5f9a5f8dfb1b",
+      "bytes": 7159544
+    }
+  ],
+  "aliases": {
+    "plan.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/plan.json",
+      "sha256": "f11a03d978cd7a1b6260b4add4284f26dbc7f8a411ca979cb6f8b57b0bdca4ba",
+      "bytes": 4223
+    },
+    "result.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/result.json",
+      "sha256": "071207914981ffe93c007c3e7d1a18c5dfc013d22b5a7ecda7b6b6ed57cc44c3",
+      "bytes": 531
+    },
+    "terminal.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/managed-run/terminal.json",
+      "sha256": "8e32b5b04b88983fa6e27f633b2843d996984ced7eb6a07872af4d48e0d151ce",
+      "bytes": 9352
+    },
+    "accepted_package.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/accepted-package.json",
+      "sha256": "cb15b31201ad3f407414cc9ca0482b2d1a00c787e555128081aaf086415d429b",
+      "bytes": 1509
+    },
+    "postflight.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/postflight.json",
+      "sha256": "280533317d7246cd0c067187a892c8ec9286cfdb1c78245f54cda6804fb214de",
+      "bytes": 571
+    },
+    "cpu.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/cpu-final/result.json",
+      "sha256": "5c53971109727b19b623988c81d4feefec02d8cb3310302fe2bce6384f8f2ca1",
+      "bytes": 3819
+    }
+  },
+  "archiver": {
+    "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_service/memory_closeout.py",
+    "sha256": "7e4afadc351746afb89d9ce39377489bfdd9c0ed81d5a5aef90fbbb2b6737a4f",
+    "bytes": 7951
+  },
+  "scope": "One real managed launch, four successful requests, project tool, 30GiB critical floor, bounded real pressure and terminal cleanup. No physical RAM cap, default-1GiB GPU test or persistent deployment."
+}

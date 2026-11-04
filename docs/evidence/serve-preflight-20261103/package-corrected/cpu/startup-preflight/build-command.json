@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "g++-14",
+    "-std=c++23",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-pthread",
+    "-Iinclude",
+    "tools/serve_thinking_budget/startup_preflight.cpp",
+    "src/server/server_options.cpp",
+    "src/server/session_cache.cpp",
+    "src/trace/sha256.cpp",
+    "-o",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/cpu/startup-preflight/startup_preflight"
+  ]
+}

@@ -37,6 +37,22 @@ struct ProcessorConfig {
   float image_std[3] = {0.5f, 0.5f, 0.5f};
 };
 
+inline constexpr size_t kDecoderOwnedBytes = 256ull * 1024 * 1024;
+struct MediaItemPlan;
+struct ProcessorResult {
+  // Static code; normal invalid input, quota and cancellation are not OOM.
+  const char* code = "ok";
+  size_t frame = 0;
+  size_t decoder_peak_bytes = 0;
+};
+struct ProcessorOptions {
+  size_t decoder_owned_bytes = kDecoderOwnedBytes;
+  bool (*cancelled)(void*) = nullptr;
+  void* cancel_context = nullptr;
+  const MediaItemPlan* admission = nullptr;
+  ProcessorResult* result = nullptr;
+};
+
 // Processed image (ready for the vision tower).
 struct ProcessedImage {
   std::vector<float> pixel_values;  // [L, C*T*P*P] float32, block-major
@@ -76,7 +92,7 @@ struct ProcessedVideo {
 // Returns false on failure.
 bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
                   const ProcessorConfig& cfg, ProcessedImage* out,
-                  std::string* err);
+                  std::string* err, const ProcessorOptions& options = {});
 
 // Video processor (Qwen3-VL, transformers 5.16.1 Qwen3VLVideoProcessor).
 //
@@ -102,7 +118,7 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
 bool ProcessVideo(const std::vector<const uint8_t*>& frames,
                   const std::vector<size_t>& frame_bytes,
                   const ProcessorConfig& cfg, ProcessedVideo* out,
-                  std::string* err);
+                  std::string* err, const ProcessorOptions& options = {});
 
 }  // namespace vision
 }  // namespace q4t

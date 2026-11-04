@@ -1,0 +1,18 @@
+{
+  "checks": {
+    "generated": true,
+    "inventory": true,
+    "public-host": true,
+    "python": true,
+    "required-host": true,
+    "rules-generated": true,
+    "rules-v3": true,
+    "rules-v4": true,
+    "rules-v5": true,
+    "structured": true
+  },
+  "gpu": 0,
+  "http": 0,
+  "models": 0,
+  "passed": true
+}

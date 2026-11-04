@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/grammar-isolation-final-20261102/package/candidate/q4t",
+    "serve",
+    "--model-dir",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "18099",
+    "--max-seq",
+    "1",
+    "--max-prefill",
+    "2048",
+    "--max-len",
+    "8192"
+  ],
+  "sha256": "c8c412c4ab0f24c238d83e3e5def78baf4b25c99883eda382b0da7f560ed15d4"
+}

@@ -1,0 +1,131 @@
+{
+  "passed": true,
+  "records": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/negatives/unknown-wire.bin",
+      "sha256": "ec82f67a13274cf8c4e3e0d93b1a87d8870c5e6d364314616fd005c6c53eaee2",
+      "envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/negatives/temperature-wire.bin",
+      "sha256": "f176efba9b4c09d8016968dd9a8035faa123dc361beb6fcaafd0a87f69346463",
+      "envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/negatives/top-p-wire.bin",
+      "sha256": "6fbb258a262c21703e7cdd6cb51fbb89cf0f9c7260b5a35ededa2d1abe7c746f",
+      "envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/negatives/n-wire.bin",
+      "sha256": "dbcdfa88772b2631e629382b865647c556b51dbbb8045202c264631d3794d89e",
+      "envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/negatives/seed-wire.bin",
+      "sha256": "fa7292331246e36f8791823fe48ae727010a5d9bd135ff9f64a5af6b691b15b3",
+      "envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/negatives/repetition-wire.bin",
+      "sha256": "f87d4ea86783ecbf6968903af9f3dfcbc528c7ddfcece5c81373a119c8e79721",
+      "envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/negatives/reasoning-field-wire.bin",
+      "sha256": "ac6ce10f1b31b2d38ef8b5406145d2ad117fea1b7a0a1ef6def1a7ba8ffb2ecf",
+      "envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/negatives/zero-output-wire.bin",
+      "sha256": "b72ba5b18a20b73991a0eb28c8d489ce0529fab3873155d7a362297b3bd586e1",
+      "envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/negatives/limits-wire.bin",
+      "sha256": "71ec6625e16dd6b081ef248b7bcfd462bcea0115e33e049950ee75b1e3461c27",
+      "envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/negatives/stream-options-wire.bin",
+      "sha256": "283ccb8a9db3ec3dc62d1dc8ad781bd97b534e4b7cd42542de8c8706c6e6dc14",
+      "envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/negatives/user-wire.bin",
+      "sha256": "bd09d2e518f125c6ecbf2658808839cc6861e775dbcf43c7cf4b6cc0db6bdcfc",
+      "envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/negatives/null-parse-wire.bin",
+      "sha256": "289859b57aee10bffb33fa48d5c20ea74b92b2d4630b9d880b3b885494ddba7b",
+      "envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/negatives/role-wire.bin",
+      "sha256": "854dff5490e3f280ad472b0704ba8c15ec3a7fecaad03f81edd99f4582a6dad8",
+      "envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/negatives/message-name-wire.bin",
+      "sha256": "799e07618b027f8c61ca2a0318704bd2d86e9e78bd3beb6501bd362660698fd3",
+      "envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/negatives/tools-wire.bin",
+      "sha256": "e48629d7ca72a345fbebc2ae2bc675f47a2376d4229a5d2e396e3bcbdc018f94",
+      "envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/negatives/stop-constraint-wire.bin",
+      "sha256": "fdccfe4c4652c7b9ce3d8cc10ce6c2aa0acc5096ff2655e75b156b08e628c97e",
+      "envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/normal-json/round-00-wire.bin",
+      "sha256": "aef594779efb8ad9fe2bdb0efda204c4be1954dee991ebb5bb598ffb5eec15b6",
+      "envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/normal-sse/round-00-wire.bin",
+      "sha256": "04e5d200854905d193437d0b193155f7ce31e1df9d5d3f5608138a2ff0a134de",
+      "envelopes": 9
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/read-success/round-00-wire.bin",
+      "sha256": "32b379cd62b2fe0fa10e8ed7286b1d22df2d5aca724a56a9c1ca30bf8db80622",
+      "envelopes": 4
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/read-success/round-01-wire.bin",
+      "sha256": "6db6a32a10085015a2b8a419f7508414104a3f3048c2f92230c68ac48bd9cdfc",
+      "envelopes": 4
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/read-business-error/round-00-wire.bin",
+      "sha256": "7a14895e1b108415189c47ea7f847532497decec06142a1351bebf717d21a08e",
+      "envelopes": 4
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/read-business-error/round-01-wire.bin",
+      "sha256": "ab53eafb9918ec13ddc4658a478e33a2ca2645d302c7f2e025950c777efb6d62",
+      "envelopes": 4
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/read-two-sources/round-00-wire.bin",
+      "sha256": "7bf4615bf025b7a8ab7cdb5f020a3823785fe356cd7322a7be2d7e75a49cebf1",
+      "envelopes": 6
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/read-two-sources/round-01-wire.bin",
+      "sha256": "529bd340c183e83c066dc41649387e496a16ba40788598700d5fc55b87b0d1fe",
+      "envelopes": 4
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/explicit-recovery/round-00-wire.bin",
+      "sha256": "d383faa44c7b6e454968f8466b5e8b4c4b35e0f7fd6605e5b8f7e2292f330857",
+      "envelopes": 4
+    }
+  ],
+  "intentional_partial": "interrupted-final/round-00-wire.bin; rejected by client, no success receipt"
+}

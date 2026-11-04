@@ -1,0 +1,21 @@
+{
+  "cancelled": 1,
+  "counts": {
+    "controls": 8,
+    "generation_attempts": 6,
+    "starts": 1
+  },
+  "limits": {
+    "controls": 100,
+    "generation_attempts": 6,
+    "seconds": 300,
+    "starts": 1
+  },
+  "native_reused": true,
+  "negative_probes": 2,
+  "real_tools": 2,
+  "reused_negative_probes": 4,
+  "seconds": 52.763898006873205,
+  "status": "PASS_BOUNDED_OPERATIONS_LISTENER",
+  "successes": 5
+}

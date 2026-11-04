@@ -1,0 +1,5 @@
+{
+  "passed": true,
+  "requests": 2,
+  "source": "two production count_abort log events; no post-exit metric fabricated"
+}

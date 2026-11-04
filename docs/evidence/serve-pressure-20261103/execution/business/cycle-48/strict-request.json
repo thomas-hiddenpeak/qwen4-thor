@@ -1,0 +1,48 @@
+{
+  "model": "qwen3.8-flash-next",
+  "messages": [
+    {
+      "role": "user",
+      "content": "\u4ec5\u8f93\u51fa\u7b26\u5408schema\u7684JSON\u3002"
+    }
+  ],
+  "tools": [],
+  "parse_response": true,
+  "temperature": 0,
+  "top_p": 1,
+  "n": 1,
+  "stream": false,
+  "max_tokens": 128,
+  "tool_choice": "none",
+  "parallel_tool_calls": true,
+  "request_timeout_ms": 180000,
+  "request_id": "agent-d38aa87394ca96180bd5cb7b6e4a6678",
+  "cancel_token": "46a40c17c132e25dddece87c7b7cff486a3ef33b26e979e97166c2e6c746a0b9",
+  "chat_template_kwargs": {
+    "enable_thinking": false,
+    "preserve_thinking": true,
+    "reasoning_effort": "low"
+  },
+  "response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "admission",
+      "strict": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          }
+        },
+        "required": [
+          "ok"
+        ],
+        "additionalProperties": false
+      }
+    }
+  }
+}

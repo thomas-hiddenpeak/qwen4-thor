@@ -1,0 +1,2 @@
+{"op": "add", "allocated": 134217728, "before": {"MemTotal": 131920637952, "MemFree": 27236945920, "MemAvailable": 125614489600}, "after": {"MemTotal": 131920637952, "MemFree": 27102470144, "MemAvailable": 125480013824}, "monotonic": 1859990.859208693, "pid": 1992648}
+{"final": true, "allocated": 0, "error": null, "monotonic": 1859990.860687576, "pid": 1992648}

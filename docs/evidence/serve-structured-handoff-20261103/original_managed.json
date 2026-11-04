@@ -1,0 +1,17 @@
+{
+  "status": "FAILED",
+  "automatic_request_retry": false,
+  "performance_acceptance": false,
+  "persistent_service_installed": false,
+  "error": "RuntimeError('generation HTTP failure')",
+  "cleanup_confirmed": true,
+  "counts": {
+    "generations": 4,
+    "negatives": 3,
+    "controls": 15
+  },
+  "elapsed_seconds": 43.71813843608834,
+  "supervision_http_upper_bound": null,
+  "full_observation_upper_bound": null,
+  "gpu_window_elapsed": null
+}

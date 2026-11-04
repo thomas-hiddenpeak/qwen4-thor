@@ -1,0 +1,25 @@
+{
+  "id": "chatcmpl-auto-0",
+  "model": "qwen3.8-flash-next",
+  "message": {
+    "role": "assistant",
+    "content": null,
+    "tool_calls": [
+      {
+        "id": "call_chatcmpl-auto-0_0",
+        "type": "function",
+        "function": {
+          "name": "read_project_record",
+          "arguments": "{\"path\":\"build/q4t.release.json\",\"start_line\":1,\"line_count\":10}"
+        }
+      }
+    ]
+  },
+  "finish_reason": "tool_calls",
+  "usage": {
+    "prompt_tokens": 383,
+    "completion_tokens": 56,
+    "total_tokens": 439
+  },
+  "seconds": 2.012681249063462
+}

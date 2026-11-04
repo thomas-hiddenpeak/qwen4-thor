@@ -1,0 +1,17 @@
+{
+  "status": "ACCEPT_BOUNDED_PROTOCOL_CLIENT",
+  "seconds": 105.73164701461792,
+  "binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "sha256": "5642eb68d0e2d9296aeb0d5f4197797a18d064b2de749c4368a86fce918167ce",
+    "bytes": 7083976
+  },
+  "sidecar": {
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json",
+    "sha256": "6aca6a3ebf951ed8e625ff4944b73c34f40f3854b92497be2a8abe485315e382",
+    "bytes": 39636
+  },
+  "default_replaced": false,
+  "performance_acceptance": false,
+  "scope": "Complete supported text input surface plus required native semantics; pinned JS SDK and bounded business/transport recovery. No full OpenAI/multi-tenant acceptance."
+}

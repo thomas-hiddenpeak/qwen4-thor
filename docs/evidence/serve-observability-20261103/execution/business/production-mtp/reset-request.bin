@@ -1,0 +1,7 @@
+POST /v1/chat/completions HTTP/1.1
+Host: localhost
+X-Request-Id: srv01b.reset
+Content-Type: application/json
+Content-Length: 914
+
+{"model": "qwen3.8-flash-next", "messages": [{"role": "user", "content": "\u4ec5\u8f93\u51fa\u7b26\u5408schema\u7684JSON\u3002"}], "tools": [], "parse_response": true, "temperature": 0, "top_p": 1, "n": 1, "stream": true, "max_tokens": 1024, "tool_choice": "none", "parallel_tool_calls": true, "request_timeout_ms": 180000, "request_id": "agent-b82c0d963d41bf2babdd113182301319", "cancel_token": "b6649bc324e74de24c0d2b561dad8d4329633976d092a7b9d571676503309ae8", "chat_template_kwargs": {"enable_thinking": false, "preserve_thinking": true, "reasoning_effort": "low"}, "stream_options": {"include_usage": true}, "response_format": {"type": "json_schema", "json_schema": {"name": "admission", "strict": true, "schema": {"type": "object", "properties": {"data": {"type": "array", "minItems": 64, "maxItems": 64, "items": {"type": "boolean", "enum": [true]}}}, "required": ["data"], "additionalProperties": false}}}}

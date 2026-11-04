@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "soar_unit": "MainPID=0\nActiveState=inactive\nUnitFileState=masked\n",
+  "container_inventory": "",
+  "lock_inode": 3294067,
+  "lock_available": true,
+  "recovery_marker": false,
+  "gpu": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-inspection-20261103/execution/gpu-final.json",
+    "sha256": "f8812c8add9fe203db90adc6eaef88374378d9b712285256dde630e55cdc3cf1",
+    "bytes": 2258
+  },
+  "new_model_or_http": 0
+}

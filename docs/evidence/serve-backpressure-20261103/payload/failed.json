@@ -1,0 +1,7 @@
+{
+  "status": "CPU_FIXTURE_REJECTED",
+  "error": "enum string exceeds the existing 256-byte per-value limit",
+  "scope": "two native request initializations; no HTTP/model/GPU",
+  "source": "planner-first.py",
+  "request_ids": "not retained; irrelevant to the enum-length rejection"
+}

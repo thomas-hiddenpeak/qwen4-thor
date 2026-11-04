@@ -1,0 +1,14 @@
+{
+  "id": "agent-b0078fc167d3c21898ef7a4fab4a7c54",
+  "model": "qwen3.8-flash-next",
+  "message": {
+    "role": "assistant",
+    "content": "{\"ok\": true}"
+  },
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 19,
+    "completion_tokens": 6,
+    "total_tokens": 25
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "source_commit": "590e9ca0b3b1dfd8f05ee1ce084f850412009957",
+  "candidate": "/home/rm01/models/dev/qwen4-thor/.q4t-work/grammar-isolation-final-20261102/package/candidate/q4t",
+  "candidate_sha256": "c8c412c4ab0f24c238d83e3e5def78baf4b25c99883eda382b0da7f560ed15d4",
+  "old_hashes": {
+    "q4t": "f03ee0d465419c2320552cfc20a589c5104e139120baa7204fed60a71d80b56b",
+    "q4t.release.json": "a1e9d24e3119a76939ed0859ac3d2f27bf49610df1a5d653efea93482ff08402"
+  },
+  "previous_binary_sha256": "f03ee0d465419c2320552cfc20a589c5104e139120baa7204fed60a71d80b56b",
+  "protocol_sha256": "c2f485ec014af820ae4796f57a192ca70c49f780494e51cab966fbf2b19dcf4a",
+  "model_dir": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "model_inputs": {
+    "config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+    "tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+    "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+    "chat_template.jinja": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+  },
+  "sdk_version": "3.42.1",
+  "limits": {
+    "starts": 1,
+    "generations": 4,
+    "negatives": 5,
+    "seconds": 1800
+  },
+  "http_contract": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/grammar-isolation-20261102-repair/engine/q4t_http_lifecycle_tests",
+    "sha256": "cf505f2b2918f99823370d9563b1c8f10166507a951553dc0e90dd4c635bc93e",
+    "bytes": 566872
+  },
+  "source_manifest_sha256": "945ae54a9aa3ab65e3aaa59849602d09f293371c4ee9a2398c40f633e2f273b5",
+  "runtime_source_commit": "ad69ce4",
+  "started": 1793622950.2460473,
+  "original_started": 1793622950.2460473,
+  "prior_attempts": 8,
+  "prior_starts": 2,
+  "prior_seal": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/grammar-isolation-20261102-repair/execution/sealed-files.json",
+    "sha256": "d7de557e012b3653dd9b6243948af021ec06c4a825dc53cf0c01adfedf9f9f60",
+    "bytes": 6881
+  }
+}

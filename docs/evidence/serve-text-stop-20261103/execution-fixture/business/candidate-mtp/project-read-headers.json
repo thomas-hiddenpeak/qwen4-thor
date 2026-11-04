@@ -1,0 +1,7 @@
+{
+  "content-type": "text/event-stream",
+  "cache-control": "no-cache",
+  "x-accel-buffering": "no",
+  "x-request-id": "trace-project-read",
+  "connection": "close"
+}

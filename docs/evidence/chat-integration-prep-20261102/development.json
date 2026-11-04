@@ -1,0 +1,51 @@
+{
+  "status": "DEVELOPMENT_BUILD_ONLY_TESTS_DEFERRED",
+  "time": "2026-11-02T05:07:39.641162+08:00",
+  "parent_commit": "3756269973ab99bc5432fd6a02a76930e66dfae1",
+  "tests_executed": 0,
+  "model_http_requests": 0,
+  "capability_http_requests": 0,
+  "model_starts": 0,
+  "services_modified": false,
+  "deployed": false,
+  "automatic_ci": "skip ci marker required",
+  "compiler_warnings": 0,
+  "artifacts_sha256": {
+    "build/q4t": "0c5ab1de85ff68f9d757ac3bfad04187756a1b2c6634108c3112a5861c209483",
+    "build/q4t.release.json": "e6fdd13b7d140926ed4a0d42bcda37b6ec6689305960e3deab03b3f73dc294d6",
+    ".q4t-work/chat-integration-prep-20261102/q4t-candidate": "830694ce26621cdd852b9d0b064d42c217958e17c9444935dd9298ebcb645f51",
+    ".q4t-work/chat-integration-prep-20261102/q4t_host_tests": "9e66abd4c49aa4c6997fddc7f4915138a2bd4cd8aa803f2098df960c186f6a7d",
+    ".q4t-work/chat-integration-prep-20261102/verify_chat_template": "f1aff9120be63d5f20f1f81bf1df247ac50c565c18eeb7bc232223c622b939f7",
+    ".q4t-work/chat-integration-prep-20261102/candidate-CMakeCache.txt": "52e07d3ce862297a21979fcef81df00a3c838238eb2c5bf12e6fde92f25906b3",
+    ".q4t-work/chat-integration-prep-20261102/chat_protocol_identity.h": "dadb2aa3e2d8bed6ae748c0adcbac3d30c3e7ee48f7e96037ef2b54086022366",
+    ".q4t-work/chat-integration-prep-20261102/chat_protocol_sources.json": "7ea2483482a51488fd64d2bdf5109a5748ce630dbfd62ab922e6ac90caf72b79"
+  },
+  "runtime_source_count": 164,
+  "protocol_sources": 15,
+  "protocol_sha256": "a765c021575bd68f46ecdbf099c9450e4b05e318e5b2d132215b3a880420a569",
+  "python_syntax_compiled_only": 8,
+  "new_host_contract_definitions": [
+    "chat_capabilities_identity",
+    "chat_capabilities_option_contract",
+    "chat_capabilities_runtime_flags",
+    "chat_capabilities_model_escaping"
+  ],
+  "required_host_definitions": 97,
+  "python_contract_definitions": {
+    "tools/examples/test_chat_client.py": 22,
+    "tools/examples/test_tool_recovery.py": 11,
+    "tools/response_protocol/test_acceptance.py": 3
+  },
+  "template_checker": "Reused unchanged compiled f1aff912; never executed this stage",
+  "acceptance_entrypoints_executed": false,
+  "recovery_entrypoint_executed": false,
+  "planned_http": {
+    "generations": 23,
+    "maximum_generations": 24,
+    "negatives": 10,
+    "model_starts": 3,
+    "capability_gets": 3,
+    "maximum_seconds": 1800,
+    "overall_stage_seconds": 2400
+  }
+}

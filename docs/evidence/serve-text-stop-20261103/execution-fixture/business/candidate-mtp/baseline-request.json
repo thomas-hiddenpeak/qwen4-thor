@@ -1,0 +1,26 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": 0,
+  "max_completion_tokens": 128,
+  "stream": false,
+  "messages": [
+    {
+      "role": "developer",
+      "content": "遵循用户请求。"
+    },
+    {
+      "role": "user",
+      "content": "严格逐字复制下一行，不加解释或引号：\nALPHA0123456789ENDOMEGA"
+    }
+  ],
+  "extra_body": {
+    "chat_template_kwargs": {
+      "enable_thinking": false,
+      "reasoning_effort": "low"
+    },
+    "request_timeout_ms": 180000
+  },
+  "extra_headers": {
+    "X-Request-Id": "trace-baseline"
+  }
+}

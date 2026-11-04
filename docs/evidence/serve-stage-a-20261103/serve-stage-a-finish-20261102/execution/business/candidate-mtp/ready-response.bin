@@ -1,0 +1,7 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 43
+X-Request-Id: req-876bd53c9d80699f3a0a74c418479991
+Connection: close
+
+{"status":"ready","live":true,"ready":true}

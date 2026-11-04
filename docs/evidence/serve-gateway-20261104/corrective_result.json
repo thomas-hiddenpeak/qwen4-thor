@@ -1,0 +1,19 @@
+{
+  "status": "PASS_TLS_MODEL_TOOL_CANCEL",
+  "performance_acceptance": false,
+  "long_test_started": false,
+  "starts": 1,
+  "cancelled_requests": 1,
+  "successful_requests": 2,
+  "real_tool_executions": 0,
+  "rejections": 2,
+  "cleanup_confirmed": true,
+  "counts": {
+    "generations": 3,
+    "negatives": 2,
+    "controls": 6
+  },
+  "elapsed_seconds": 48.82968161604367,
+  "gpu_window_elapsed": 38.623611715156585,
+  "supervisor_http_upper_bound": 252
+}

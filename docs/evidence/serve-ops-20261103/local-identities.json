@@ -1,0 +1,32 @@
+{
+  "execution/business/prometheus/tsdb/queries.active": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/execution/business/prometheus/tsdb/queries.active",
+    "sha256": "4d53b2cb8f39eaa2434c0c213d53ac997b1075226374d30a40504f33caf8d8f7",
+    "bytes": 20001
+  },
+  "execution/business/prometheus/tsdb/wal/00000000": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/execution/business/prometheus/tsdb/wal/00000000",
+    "sha256": "5410148a9a9be44b98ea9f9882a4a3c88c0d8da91e2bf8f5e024f0dee032244f",
+    "bytes": 32768
+  },
+  "dependencies/prometheus": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/deps/prometheus",
+    "sha256": "aeebc0ffc6529c87221ab12ff1f9fc276be488869ebc942ce3e4d7ffcfe6a97a",
+    "bytes": 154293542
+  },
+  "dependencies/promtool": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/deps/promtool",
+    "sha256": "d4ff433304144fae3d4490bd381be983e99064c601bc35e8dfe29f52300a9bc4",
+    "bytes": 145870402
+  },
+  "installed/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "sha256": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+    "bytes": 7086768
+  },
+  "installed/q4t.release.json": {
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json",
+    "sha256": "c520333192c04ddb499dd0188496789ec8ddc20fc5e0f00491ca01f52517aa75",
+    "bytes": 42438
+  }
+}

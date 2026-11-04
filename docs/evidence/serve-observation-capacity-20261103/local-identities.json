@@ -1,0 +1,67 @@
+{
+  "execution/business/prometheus/tsdb/queries.active": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/execution/business/prometheus/tsdb/queries.active",
+    "sha256": "4d53b2cb8f39eaa2434c0c213d53ac997b1075226374d30a40504f33caf8d8f7",
+    "bytes": 20001
+  },
+  "execution/business/prometheus/tsdb/wal/00000000": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/execution/business/prometheus/tsdb/wal/00000000",
+    "sha256": "cc4d7269646c4bca439a1c645b14d94ddbe5bfa705ed96acfe1c5aad800bfcfa",
+    "bytes": 32768
+  },
+  "execution/pair/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/execution/pair/q4t",
+    "sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+    "bytes": 7087224
+  },
+  "package/candidate/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/candidate/q4t",
+    "sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+    "bytes": 7087224
+  },
+  "package/candidate/q4t_http_lifecycle_tests": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/candidate/q4t_http_lifecycle_tests",
+    "sha256": "8aedc98d40bb9ff7d968cf39a0f81ab87c1951afd3f7cd45e54b08eb0877fe0c",
+    "bytes": 864824
+  },
+  "package/cpu/driver/config/config_probe": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/cpu/driver/config/config_probe",
+    "sha256": "5039807c1e7ebf783eec477d72df0b52f18d6883d252b5ed64df861f17ddccec",
+    "bytes": 429056
+  },
+  "package/cpu/driver/config/probe.o": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/cpu/driver/config/probe.o",
+    "sha256": "03ba9572a4af5773d79e6602fa0f10334c6887e1873234f53cc527c5e921c598",
+    "bytes": 19232
+  },
+  "package/previous/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/previous/q4t",
+    "sha256": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+    "bytes": 7086768
+  },
+  "package/source.bundle": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/source.bundle",
+    "sha256": "2c4734517834daa0d95a4d55fb21d042cbe71bfd6ac2bcbd36c80bae4737ffba",
+    "bytes": 34925
+  },
+  "dependencies/promtool": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/deps/promtool",
+    "sha256": "d4ff433304144fae3d4490bd381be983e99064c601bc35e8dfe29f52300a9bc4",
+    "bytes": 145870402
+  },
+  "dependencies/prometheus": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/deps/prometheus",
+    "sha256": "aeebc0ffc6529c87221ab12ff1f9fc276be488869ebc942ce3e4d7ffcfe6a97a",
+    "bytes": 154293542
+  },
+  "installed/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+    "bytes": 7087224
+  },
+  "installed/q4t.release.json": {
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json",
+    "sha256": "bb620240dfbbe0437066f6827bf54d00f9e107327f244997fb437fe30727b1b2",
+    "bytes": 44671
+  }
+}

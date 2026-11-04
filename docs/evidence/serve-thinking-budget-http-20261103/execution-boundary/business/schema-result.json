@@ -1,0 +1,127 @@
+{
+  "passed": true,
+  "schema_id": "urn:q4t:serve-transport:v1",
+  "jsonschema_version": "4.26.0",
+  "records": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/cache-fresh-wire.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/cache-restored-wire.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/cache-seed-wire.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/closed-prefix-wire.bin",
+      "validated_envelopes": 9
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/natural-wire.bin",
+      "validated_envelopes": 27
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/negative-0-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/negative-1-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/negative-10-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/negative-11-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/negative-2-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/negative-3-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/negative-4-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/negative-5-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/negative-6-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/negative-7-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/negative-8-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/negative-9-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/null-budget-wire.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/one-hidden-wire.bin",
+      "validated_envelopes": 10
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/ordinary-length-wire.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/project-answer-wire.bin",
+      "validated_envelopes": 4
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/project-read-wire.bin",
+      "validated_envelopes": 6
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/schema-wire.bin",
+      "validated_envelopes": 4
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/sixteen-hidden-wire.bin",
+      "validated_envelopes": 10
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/sixteen-wire.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/strict-length-response.bin",
+      "validated_envelopes": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/unbudgeted-wire.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/zero-wire.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-plain/plain-0-wire.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-plain/plain-16-wire.bin",
+      "validated_envelopes": 27
+    }
+  ]
+}

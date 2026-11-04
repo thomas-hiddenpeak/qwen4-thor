@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "tests": 14,
+  "scope": "13 passed initially; incomplete offline stub corrected and 1 affected case rerun",
+  "original_log": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/cpu/driver-fixture.log",
+    "sha256": "6131ee77b2f369770049eeea4df2ac0924703ebdd9baa2632c795142af0e3431",
+    "bytes": 1548
+  },
+  "corrected_log": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/cpu/driver-fixture-corrected.log",
+    "sha256": "d10ffbd9f0faa72cd6837063279524e199b59fbc3d035051302a1e8dbc4b36ad",
+    "bytes": 98
+  }
+}

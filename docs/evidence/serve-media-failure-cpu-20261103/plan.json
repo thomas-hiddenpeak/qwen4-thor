@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "root": "/home/rm01/models/dev/qwen4-thor",
+  "limits": {
+    "generations": 18,
+    "negatives": 10,
+    "starts": 10,
+    "observations": 256,
+    "seconds": 1800
+  },
+  "planned": {
+    "generations": 17,
+    "negatives": 8,
+    "starts": 9
+  },
+  "source_commit": "4b5bf5da6e4dfc610cb3c9e449560c5291207ee3",
+  "candidate": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-failure-20261103/package/candidate/q4t",
+  "candidate_sha256": "20fadc22004f4e8692362c69a1a044eda58a64498ba95829974b69dd18c7da5b",
+  "binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-failure-20261103/package/candidate/q4t",
+    "sha256": "20fadc22004f4e8692362c69a1a044eda58a64498ba95829974b69dd18c7da5b",
+    "bytes": 7157024
+  },
+  "sidecar": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-failure-20261103/package/candidate/diagnostic-identity.json",
+    "sha256": "c1d3bb355dab45fef06b36ee3a62fc5213468a26ae5b2aa3641a7a8931fe241a",
+    "bytes": 303
+  },
+  "old_hashes": {
+    "q4t": "3fd31a217ee145c9a56659bacd2ca015041d02bd1bc0603cf6f5845cb362d1c3",
+    "q4t.release.json": "3ba0b8d3ba421851bd423150928e299720bb8ba749c03885378858473670e39f"
+  },
+  "previous_binary_sha256": "3fd31a217ee145c9a56659bacd2ca015041d02bd1bc0603cf6f5845cb362d1c3",
+  "source_manifest_sha256": "e22c03815c850283b99d5b107db65739bd6c01271fa15fd46b2321f81dc38d8e",
+  "protocol_sha256": "44c4ea8bf93fd5368988973d783c934653e8e366bbc120b455ffed074d225269",
+  "model_dir": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "model_inputs": {
+    "config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+    "tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+    "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+    "chat_template.jinja": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+  },
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "port": 18110,
+  "performance_acceptance": false,
+  "validation_binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-failure-20261103/package/validation/q4t",
+    "sha256": "9b12d758e9c800f2888ddfb9f871972d6f162c837fbe06a7a8027d930dc4c2e3",
+    "bytes": 7158152
+  },
+  "lifecycle_probe": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-failure-20261103/package/candidate/q4t_http_lifecycle_tests",
+    "sha256": "55066b48a57f5dac36fcb98da3bb077eb9923189f29a6fcacf515e7926147796",
+    "bytes": 865528
+  },
+  "vision_probe": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-failure-20261103/package/candidate/q4t_vision_contract",
+    "sha256": "a12f47383d60a3d6c3834630d0ecc8542b36c88e1a477958d434f89fba88e311",
+    "bytes": 441392
+  },
+  "upload_probe": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-failure-20261103/package/candidate/q4t_vision_upload",
+    "sha256": "3ee5b7db33232778fd87d527aae7fa9038c60dd04e1857a9573ae8a2096458c8",
+    "bytes": 441872
+  },
+  "fixtures": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-failure-20261103/package/fixtures"
+}

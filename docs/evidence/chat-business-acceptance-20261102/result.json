@@ -1,0 +1,63 @@
+{
+  "status": "CPU_PASS_GPU_ADMISSION_ENV_ABORT",
+  "utc": "2026-11-02T05:32:24.343901+00:00",
+  "source_commit": "bef9d247082107d83f8e47e79933eaf275b43910",
+  "cpu_passed": {
+    "host": 97,
+    "client": 22,
+    "recovery": 13,
+    "orchestration": 4,
+    "template": 21
+  },
+  "gpu_admission": "LEASE_BUSY",
+  "generation_requests": 0,
+  "model_starts": 0,
+  "real_signal_fault_cases": 0,
+  "service_mutations": 0,
+  "artifacts": {
+    "candidate": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-integration-prep-20261102/q4t-candidate",
+      "sha256": "830694ce26621cdd852b9d0b064d42c217958e17c9444935dd9298ebcb645f51",
+      "after_sha256": "830694ce26621cdd852b9d0b064d42c217958e17c9444935dd9298ebcb645f51"
+    },
+    "baseline": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/response-parsing-20261102/previous/q4t",
+      "sha256": "0c5ab1de85ff68f9d757ac3bfad04187756a1b2c6634108c3112a5861c209483",
+      "after_sha256": "0c5ab1de85ff68f9d757ac3bfad04187756a1b2c6634108c3112a5861c209483"
+    },
+    "host_tests": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-integration-prep-20261102/q4t_host_tests",
+      "sha256": "9e66abd4c49aa4c6997fddc7f4915138a2bd4cd8aa803f2098df960c186f6a7d",
+      "after_sha256": "9e66abd4c49aa4c6997fddc7f4915138a2bd4cd8aa803f2098df960c186f6a7d"
+    },
+    "template_checker": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-integration-prep-20261102/verify_chat_template",
+      "sha256": "f1aff9120be63d5f20f1f81bf1df247ac50c565c18eeb7bc232223c622b939f7",
+      "after_sha256": "f1aff9120be63d5f20f1f81bf1df247ac50c565c18eeb7bc232223c622b939f7"
+    },
+    "identity_header": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-integration-prep-20261102/chat_protocol_identity.h",
+      "sha256": "dadb2aa3e2d8bed6ae748c0adcbac3d30c3e7ee48f7e96037ef2b54086022366",
+      "after_sha256": "dadb2aa3e2d8bed6ae748c0adcbac3d30c3e7ee48f7e96037ef2b54086022366"
+    },
+    "python": {
+      "path": "/usr/bin/python3.12",
+      "sha256": "c86f21d0da9290ece2d7d49a3f7ed52aed59cb029abdf0ea25c79634f6cbe960",
+      "after_sha256": "c86f21d0da9290ece2d7d49a3f7ed52aed59cb029abdf0ea25c79634f6cbe960"
+    },
+    "identity_sources": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-integration-prep-20261102/chat_protocol_sources.json",
+      "sha256": "7ea2483482a51488fd64d2bdf5109a5748ce630dbfd62ab922e6ac90caf72b79",
+      "after_sha256": "7ea2483482a51488fd64d2bdf5109a5748ce630dbfd62ab922e6ac90caf72b79"
+    }
+  },
+  "default_binary_sha256": "0c5ab1de85ff68f9d757ac3bfad04187756a1b2c6634108c3112a5861c209483",
+  "default_sidecar_sha256": "e6fdd13b7d140926ed4a0d42bcda37b6ec6689305960e3deab03b3f73dc294d6",
+  "performance_acceptance": false,
+  "deployed": false,
+  "remaining": [
+    "8 real process fault cases under GPU lease",
+    "23 generation + 10 negative HTTP requests across 3 model starts"
+  ],
+  "frozen_plan_sha256": "b2df890b9040f8e40abbaa15b23f0a7173c503ecc250d1de9268be9e152d4562"
+}

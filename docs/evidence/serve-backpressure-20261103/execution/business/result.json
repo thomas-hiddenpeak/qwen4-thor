@@ -1,0 +1,12 @@
+{
+  "status": "FAILED",
+  "error": "ProtocolError('strict response did not reach real EAGAIN')",
+  "counts": {
+    "generations": 1,
+    "negatives": 0,
+    "starts": 1
+  },
+  "seconds": 206.7392355739139,
+  "default_replaced": false,
+  "performance_acceptance": false
+}

@@ -1,0 +1,7 @@
+test_absolute_ancestor_and_lease_path_match_deployment_guard (tools.serve_operations_listener.test_continue.Continuation.test_absolute_ancestor_and_lease_path_match_deployment_guard) ... ok
+test_only_zero_work_command_failure_can_continue (tools.serve_operations_listener.test_continue.Continuation.test_only_zero_work_command_failure_can_continue) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.001s
+
+OK

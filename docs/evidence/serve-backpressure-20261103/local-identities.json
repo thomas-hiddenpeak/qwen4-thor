@@ -1,0 +1,12 @@
+{
+  "package/candidate/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backpressure-20261103/package/candidate/q4t",
+    "sha256": "903c4f77b19e9a1d0802d22e6a64267afa2a357cc55cf20172628507962450d3",
+    "bytes": 7084352
+  },
+  "package/source.bundle": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backpressure-20261103/package/source.bundle",
+    "sha256": "4306131c469bde79a3e876faa5ddcdb0e432ef84bfddd49d3cc9e17bf49580f7",
+    "bytes": 14797
+  }
+}

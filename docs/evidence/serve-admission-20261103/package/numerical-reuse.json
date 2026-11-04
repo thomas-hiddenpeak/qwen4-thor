@@ -1,0 +1,28 @@
+{
+  "changed": [
+    "include/q4t/server/chat_plan.h",
+    "include/q4t/server/chat_server.h",
+    "include/q4t/server/server_options.h",
+    "src/main.cpp",
+    "src/server/chat_generation.cpp",
+    "src/server/chat_metrics.cpp",
+    "src/server/chat_plan.cpp",
+    "src/server/chat_preflight.cpp",
+    "src/server/chat_scheduler.cpp",
+    "src/server/chat_server.cpp",
+    "src/server/server_options.cpp"
+  ],
+  "added": [
+    "include/q4t/server/request_admission.h",
+    "include/q4t/server/sequence_admission.h",
+    "src/server/chat_admission.cpp"
+  ],
+  "previous_manifest": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package-final/candidate/runtime-source.json",
+    "sha256": "7bcd56110d992bba095a795bf58d6f21983a937c1ffb4ae736a63eaa4edb0105",
+    "bytes": 19596
+  },
+  "unchanged_model_and_numerical_sources": true,
+  "performance_acceptance": false,
+  "text_contract_reuse": "Input validation, renderer/tool history and tokenizer unchanged. Configuration formatting and admission semantics are retested; protocol hash changes intentionally."
+}

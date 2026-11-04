@@ -1,0 +1,18 @@
+{
+  "status": 415,
+  "trace_id": "srv01b.media",
+  "reason": "unsupported_media",
+  "response": {
+    "error": {
+      "message": "Content-Type must be application/json with UTF-8",
+      "type": "invalid_request_error",
+      "code": "unsupported_media_type",
+      "param": "Content-Type"
+    }
+  },
+  "wire": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/execution/business/production-mtp/media-response.bin",
+    "sha256": "dfdec1b7ad3990e4df3381d755476413b9f29d1e529e6f202c5bf4e85c4bb259",
+    "bytes": 297
+  }
+}

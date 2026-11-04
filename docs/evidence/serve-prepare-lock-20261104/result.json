@@ -1,0 +1,153 @@
+{
+  "actual_lan_accepted": false,
+  "archived_records": 283,
+  "cancelled": 1,
+  "cooperative_lock_poll_ms": 5,
+  "declarations_verified": true,
+  "first_native_phase": "FAILED; policy fixture; zero model starts",
+  "generation_attempts": 6,
+  "hard_realtime": false,
+  "installed": {
+    "q4t": "8e9b4ce7cb76b0731e9f087bd15ea84ffac31bec038b87f88df853275dc1a3a1",
+    "q4t.release.json": "e61bed7cc67ae5b90e8cfb0148dc010d5d95dd73cad763d118fe3669b41222f7"
+  },
+  "lease_observations": 52,
+  "lease_seconds": 55.931097713066265,
+  "local_references": 311,
+  "long_runs": false,
+  "managed_lifecycle_accepted": false,
+  "models": 1,
+  "native_cases": 23,
+  "native_cases_new": 7,
+  "native_cases_reused": 16,
+  "numerical_reuse": {
+    "changed": [
+      "CMakeLists.txt",
+      "include/q4t/server/request_control.h",
+      "include/q4t/server/request_diagnostics.h",
+      "src/server/chat_generation.cpp",
+      "src/server/chat_preflight.cpp"
+    ],
+    "current": {
+      "bytes": 23247,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-prepare-lock-20261104/package/candidate/runtime-source.json",
+      "sha256": "2a3b4b064672ea3c9bbab3cfdb521a7d496585dfc84c8b2fcbe575a1385bea1c"
+    },
+    "model_math_tokenizer_template_cache_scheduler_unchanged": true,
+    "performance_acceptance": false,
+    "previous": {
+      "bytes": 23247,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-startup-listeners-20261104/package/candidate/runtime-source.json",
+      "sha256": "d186696b0cdb237edf824edf78a2ad52f7a2a2fabaac228dd61979f823856dff"
+    },
+    "unchanged_runtime_sources": 218
+  },
+  "performance_acceptance": false,
+  "physical_ram_hard_limit": false,
+  "previous_binary_sha256": "61abe09fb0d2585c4f8efa3e5740fa4d0ea5af06971e4490df2d17000453ecce",
+  "privacy": "Raw secret-bearing requests/keys and ELF stay local as hash references; archive is not a disaster-recovery backup.",
+  "protocol_sha256": "a56aed213bc1c96318a61168da907f882b96eb2511c870246552396d01e4dbe8",
+  "real_tools": 2,
+  "resources": {
+    "containers_empty": true,
+    "gpu_empty": true,
+    "lock": {
+      "available": true,
+      "dev": 66305,
+      "inode": 3294067
+    },
+    "long_runs": false,
+    "owned": [
+      {
+        "gone": true,
+        "pid": 2732235,
+        "role": "native",
+        "start_ticks": 198511145
+      },
+      {
+        "gone": true,
+        "pid": 2733434,
+        "role": "nginx",
+        "start_ticks": 198514779
+      },
+      {
+        "gone": true,
+        "pid": 2732251,
+        "role": "scoped-model",
+        "start_ticks": 198511217
+      }
+    ],
+    "passed": true,
+    "ports": [
+      18136,
+      18137,
+      18456
+    ],
+    "restore_unit_masked": true
+  },
+  "rollback": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-prepare-lock-20261104/package-native-fix/previous",
+  "runtime_sources": 223,
+  "source_commit": "530824baa4b2a5bbb6f6a1c384c28f631ee2cff6",
+  "status": "ACCEPT_BOUNDED_PREPARE_LOCK",
+  "successes": [
+    {
+      "finish_reason": "stop",
+      "label": "thinking-recovery",
+      "seconds": 0.4742720080539584,
+      "usage": {
+        "completion_tokens": 7,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_tokens": 22,
+        "q4t_thinking_budget": {
+          "consumed": 0,
+          "forced_closure_tokens": 0,
+          "limit": 0
+        },
+        "total_tokens": 29
+      }
+    },
+    {
+      "finish_reason": "tool_calls",
+      "label": "project-alpha-read",
+      "seconds": 3.766900544986129,
+      "usage": {
+        "completion_tokens": 55,
+        "prompt_tokens": 564,
+        "total_tokens": 619
+      }
+    },
+    {
+      "finish_reason": "stop",
+      "label": "project-alpha-answer",
+      "seconds": 4.047148901037872,
+      "usage": {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    },
+    {
+      "finish_reason": "tool_calls",
+      "label": "project-beta-read",
+      "seconds": 3.7323509389534593,
+      "usage": {
+        "completion_tokens": 55,
+        "prompt_tokens": 564,
+        "total_tokens": 619
+      }
+    },
+    {
+      "finish_reason": "stop",
+      "label": "project-beta-answer",
+      "seconds": 4.036273122066632,
+      "usage": {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    }
+  ],
+  "successful_responses": 5
+}

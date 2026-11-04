@@ -1,0 +1,6 @@
+POST /v1/chat/completions HTTP/1.1
+Host: localhost
+Content-Type: application/json
+Content-Length: 215
+
+{"messages": [{"role": "developer", "content": [{"type": "image_url", "image_url": {"url": "invalid-base64"}}]}, {"role": "user", "content": "只回复数字710003。"}], "stream": false, "max_completion_tokens": 1}

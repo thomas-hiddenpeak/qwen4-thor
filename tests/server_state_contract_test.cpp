@@ -155,6 +155,9 @@ Q4T_TEST(server_state_deadline_and_shutdown_preserve_terminal_reason) {
   auto finished = registry.Register("finished", "key", kNoDeadline);
   Q4T_CHECK(expired->Cancelled() && finished->Finish());
   registry.CancelAll();
+  auto late = registry.Register("late", "key", kNoDeadline);
+  Q4T_CHECK(late->Cancelled());
+  Q4T_CHECK(std::string(late->Reason()) == "server_shutdown");
   Q4T_CHECK(std::string(expired->Reason()) == "deadline_exceeded");
   Q4T_CHECK(std::string(active->Reason()) == "server_shutdown");
   Q4T_CHECK(!finished->Cancelled() && !finished->Cancel());

@@ -1,0 +1,23 @@
+{
+  "runtime_commit": "ea2dbcfb",
+  "guard_repair_commit": "8e305938",
+  "sdk_repair_commit": "cd2892ae",
+  "accepted_source_commit": "85e309c1e5e24fb1d6bda91386d860a80cf1f866",
+  "default_pair": {
+    "q4t": "a3fd64a34a67f619bf2978faf152d6f455652d048a1e7a2cdc48caf784898184",
+    "q4t.release.json": "49c7c63159c806d8b8f28d5a5a46e5f1c2b6562cc608f46bc43d921c48d0d35a"
+  },
+  "actual": {
+    "generations": 22,
+    "negatives": 16,
+    "model_starts": 4,
+    "guard_attempts": 4
+  },
+  "accepted_cases": {
+    "reused_generations": 7,
+    "new_generations": 14,
+    "reused_negatives": 16
+  },
+  "installed_health": "real build/q4t --no-mtp; plain JSON/SSE + health; MTP uses same ELF pre-install evidence",
+  "copied_records": 530
+}

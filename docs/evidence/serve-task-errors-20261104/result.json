@@ -1,0 +1,64 @@
+{
+  "status": "ACCEPT_PROJECT_TASK_ERRORS_SHORT",
+  "application_cpu_tests": 106,
+  "driver_tests": 2,
+  "original_fixture_errors": 18,
+  "targeted_correction_tests": 18,
+  "targeted_driver_tests": 2,
+  "original_live_driver_failed": true,
+  "offline_finish_commands": 5,
+  "offline_finish_seconds": 0.6610443878453225,
+  "cpu_file_operation_kills": 23,
+  "model_starts": 1,
+  "gateway_starts": 1,
+  "completed_tasks": 2,
+  "ready_after_auth_error": 1,
+  "duplicate_submissions": 3,
+  "nonexecuting_resumes": 2,
+  "classified_errors": 6,
+  "preflights": 4,
+  "requests": 4,
+  "responses": 4,
+  "tools": 2,
+  "capability_attempts": 3,
+  "response_usage": {
+    "alpha": [
+      {
+        "completion_tokens": 55,
+        "prompt_tokens": 647,
+        "total_tokens": 702
+      },
+      {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    ],
+    "beta": [
+      {
+        "completion_tokens": 55,
+        "prompt_tokens": 647,
+        "total_tokens": 702
+      },
+      {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    ]
+  },
+  "grammar_reaped": 4,
+  "owned_exited": 7,
+  "controls": 16,
+  "seconds": 60.83381974790245,
+  "gpu_seconds": 60.03149110893719,
+  "gpu_observations": 57,
+  "successful_request_end_seconds_sum": 15.839094000000001,
+  "successful_server_response_count": 4,
+  "timing_source": "backend_request_end_logs",
+  "final_metrics_collected": false,
+  "cleanup_confirmed": true,
+  "default_changed": false,
+  "long_run": false,
+  "performance_acceptance": false
+}

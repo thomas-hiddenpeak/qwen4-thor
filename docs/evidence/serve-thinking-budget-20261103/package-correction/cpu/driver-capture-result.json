@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "tests": 8,
+  "log": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-20261103/cpu/driver-capture.log",
+  "log_sha256": "33ca2b73d673d9a7d76182af185f32365af7fd88428484659efd7dd739daaf6a",
+  "sources": {
+    "tools/serve_thinking_budget/prepare_cpu.py": "077efc60d15062f8db097ddcb7cec124612c75bff5f2ecf4eff1cf49caf3fc0c",
+    "tools/serve_thinking_budget/stage.py": "76daeee19ffd88fae6a781af622d3079bb8fb865230415a2954087e04c6383b9",
+    "tools/serve_thinking_budget/check_schema.py": "a8d7bd59c60d388d76de0365cb8db3080ac31d936462bb1d424d711f740266eb",
+    "tools/serve_thinking_budget/verify.py": "fcf351a3681ac5d1d70b1c1c2cc642b52a10b3f74c8d63dac823373387917f95",
+    "tools/serve_thinking_budget/test_stage.py": "61957d10d766c893b8c9ae15a6f87441e5c6d1f166e72977676eddd97e983755"
+  }
+}

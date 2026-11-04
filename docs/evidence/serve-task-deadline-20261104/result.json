@@ -1,0 +1,53 @@
+{
+  "status": "ACCEPT_TASK_NETWORK_DEADLINE",
+  "cpu_effective_tests": 16,
+  "driver_tests": 2,
+  "original_fixture_failures": 2,
+  "repaired_fixture_tests": 2,
+  "original_defect_reproduced": true,
+  "real_tls_probes": 12,
+  "models": 1,
+  "complete_responses": 4,
+  "real_tools": 2,
+  "usage": {
+    "alpha": [
+      {
+        "completion_tokens": 55,
+        "prompt_tokens": 647,
+        "total_tokens": 702
+      },
+      {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    ],
+    "beta": [
+      {
+        "completion_tokens": 55,
+        "prompt_tokens": 647,
+        "total_tokens": 702
+      },
+      {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    ]
+  },
+  "application_kills": 2,
+  "source_migrations": 1,
+  "duplicate_submits": 2,
+  "gpu_seconds": 63.5156534621492,
+  "guard_observations": 57,
+  "owned_exited": 4,
+  "default_unchanged": true,
+  "long_run": false,
+  "performance_acceptance": false,
+  "retry_gpu_seconds": 60.08155561215244,
+  "original_gpu_seconds": 3.4340978499967605,
+  "original_probe_attempts": 1,
+  "total_probe_attempts": 13,
+  "peer_repair_tests": 2,
+  "original_probe_cleanup_failure_preserved": true
+}

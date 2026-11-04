@@ -1,0 +1,18 @@
+{
+  "status": 408,
+  "trace_id": "req-5812105353e9eef17cd47b9726b9e368",
+  "reason": "header_deadline",
+  "response": {
+    "error": {
+      "message": "Request Timeout",
+      "type": "timeout_error",
+      "code": "request_timeout",
+      "param": null
+    }
+  },
+  "wire": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/execution/business/production-mtp/header-deadline-response.bin",
+    "sha256": "c859aab1c7caf60685f1dadb55992a481c208ead8ad4b31bb59b5bca6167e9fd",
+    "bytes": 256
+  }
+}

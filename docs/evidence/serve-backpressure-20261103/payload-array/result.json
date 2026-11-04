@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "scope": "CPU planning only; no real HTTP/model/grammar acceptance",
+  "payload_characters": 12288,
+  "content_bytes": 12443,
+  "schema_bytes": 429,
+  "canonical_tokens": 243,
+  "max_tokens": 1024,
+  "request_deadline_ms": 180000,
+  "tokenizers_version": "0.23.2",
+  "tokenizer": {
+    "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/tokenizer.json",
+    "sha256": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+  },
+  "probe": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/cpu/contract-build/contract_probe",
+    "sha256": "80f112672fd5be2f7a00c3d642067845ca68bbe7f02ce0cbd329dc7d089ec2f1"
+  },
+  "planner": {
+    "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_backpressure/prepare_payload.py",
+    "sha256": "e864a3ed4da5e911f8eef4e331d5c5a84b19156c2d702e45329f84cefb40e890"
+  },
+  "actual_generation_tokens_guaranteed": false
+}

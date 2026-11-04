@@ -1,0 +1,30 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/package/candidate/q4t",
+    "serve",
+    "--model-dir",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "18105",
+    "--max-prefill",
+    "2048",
+    "--max-len",
+    "8192",
+    "--max-seq",
+    "1",
+    "--max-inflight-requests",
+    "8",
+    "--max-queued-requests",
+    "2",
+    "--min-available-memory-mib",
+    "1048576"
+  ],
+  "binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/package/candidate/q4t",
+    "sha256": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+    "bytes": 7086768
+  },
+  "validation_env": {}
+}

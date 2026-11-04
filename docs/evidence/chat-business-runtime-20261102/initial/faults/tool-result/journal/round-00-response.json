@@ -1,0 +1,28 @@
+{
+  "id": "agent-1cb1832ae0a61598bb7f2c983d1923f0",
+  "model": "qwen3.8-flash-next",
+  "message": {
+    "role": "assistant",
+    "content": null,
+    "reasoning_content": "思考\n",
+    "tool_calls": [
+      {
+        "id": "call-0",
+        "type": "function",
+        "function": {
+          "name": "lookup",
+          "arguments": "{\"key\":\"audit\"}"
+        }
+      }
+    ]
+  },
+  "finish_reason": "tool_calls",
+  "usage": {
+    "prompt_tokens": 10,
+    "completion_tokens": 4,
+    "total_tokens": 14,
+    "prompt_tokens_details": {
+      "cached_tokens": 3
+    }
+  }
+}

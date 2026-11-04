@@ -3,7 +3,179 @@
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
 阶段收尾：[五个参考项目成果、已吸收特性与重启条件](REFERENCE_LEARNING_CLOSEOUT_2026-10-29.md)。
 实际接入：[1长主agent＋3子代理，suffix与两级缓存完整示例](AGENT_CACHE_INTEGRATION.md)。
-最新专项：[main修复后复审：4项P2既有遗漏与回归检查](MAIN_REAUDIT_2026-10-31.md)；
+应用服务：[能力与 OpenAI 兼容矩阵、vLLM 差距与分阶段计划](APPLICATION_SERVICE.md)。
+[已验Serve基线的主线合入边界与后续独立交付](SERVE_MAINLINE_READINESS_2026-11-04.md)。
+[当前合同复核、可选运行方式与剩余优先级](SERVE_CONTRACT_REAUDIT_2026-11-04.md)；
+[旧应用矩阵逐阶段历史快照](APPLICATION_SERVICE_HISTORY_2026-11-04.md)。
+[SRV-03c准备锁等待取消、23原生场景及真实工具交付](SERVE_PREPARE_LOCK_RESULT_2026-11-04.md)。
+[SRV-11k的15d7ccb1启动协议任务交接限定接受](SERVE_TASK_STARTUP_PROTOCOL_RESULT_2026-11-04.md)。
+[SRV-12l托管观测截止与停止优先限定交付](SERVE_SUPERVISOR_DEADLINES_RESULT_2026-11-04.md)。
+[SRV-12k原生启动监听所有权合同](SERVE_STARTUP_LISTENERS_2026-11-04.md)与
+[41原生/真实工具短验及默认交付结果](SERVE_STARTUP_LISTENERS_RESULT_2026-11-04.md)。
+[SRV-12j托管双监听启动前冲突检查](SERVE_PORT_PREFLIGHT_2026-11-04.md)。
+[SRV-12j实际冲突零启动、真实工具与182原件结果](SERVE_PORT_PREFLIGHT_RESULT_2026-11-04.md)。
+[SRV-12i发布声明、独立运维与host域组合短验](SERVE_MANAGED_PROFILE_2026-11-04.md)。
+[SRV-12i同锁70秒、真实工具及152原件验收结果](SERVE_MANAGED_PROFILE_RESULT_2026-11-04.md)。
+[SRV-11j持久任务网络截止时间修复与有界验收](SERVE_TASK_DEADLINE_2026-11-04.md)。
+[SRV-11j首轮TLS探针退出重绑失败与定向修正](SERVE_TASK_DEADLINE_REPAIR_2026-11-04.md)。
+[SRV-11j全程网络期限、真实恢复与249原件验收结果](SERVE_TASK_DEADLINE_RESULT_2026-11-04.md)。
+[SRV-11i当前运维协议的持久任务交接](SERVE_TASK_OPERATIONS_2026-11-04.md)。
+[SRV-11i两版本真实恢复、278原件及原失败保全结果](SERVE_TASK_OPERATIONS_RESULT_2026-11-04.md)。
+[SRV-19发布声明与schema冻结合同](SERVE_RELEASE_DECLARATIONS_2026-11-04.md)及
+[元数据修正、62项CPU与默认sidecar交付](SERVE_RELEASE_DECLARATIONS_RESULT_2026-11-04.md)。
+[Serve阶段A交付、HTTP/SSE合同与剩余边界](SERVE_STAGE_A_RESULT_2026-11-03.md)。
+[Serve阶段B1角色profile交付、模板差分与真实工具闭环](SERVE_STAGE_B1_RESULT_2026-11-03.md)。
+[Serve B2a推理字段/隐藏交付及真实工具历史回填](SERVE_STAGE_B2A_RESULT_2026-11-03.md)。
+[SRV-07预检/有效配置交付、真实usage/槽位与完整证据](SERVE_PREFLIGHT_RESULT_2026-11-03.md)。
+[SRV-08完整输入机器合同、固定JS SDK与失败恢复验收](SERVE_PROTOCOL_2026-11-03.md)。
+[SRV-08交付、真实双工具/业务错误/答案流恢复及版本证据](SERVE_PROTOCOL_RESULT_2026-11-03.md)。
+[SRV-03b严格输出背压、受载控制及后续资源任务冻结](SERVE_BACKPRESSURE_2026-11-03.md)。
+[SRV-03b本轮未通过、取证缺口及证据](SERVE_BACKPRESSURE_RESULT_2026-11-03.md)，
+[SRV-02b准入与容量适配排队开发合同](SERVE_ADMISSION_2026-11-03.md)。
+[SRV-02b准入/容量FIFO交付、真实队列/工具/回退证据](SERVE_ADMISSION_RESULT_2026-11-03.md)；
+[SRV-01b接收拒绝/输出失败观测合同](SERVE_OBSERVABILITY_2026-11-03.md)；
+[SRV-01b交付、首次原因/固定计数/真实工具与回退证据](SERVE_OBSERVABILITY_RESULT_2026-11-03.md)。
+[严格长输出先验、实际token取证及独立冻结](SERVE_STRICT_TRANSPORT_2026-11-03.md)；
+[严格复制12443字节实际背压、取消/写截止与恢复结果](SERVE_STRICT_TRANSPORT_RESULT_2026-11-03.md)。
+[统一内存准入合同与安全触发验证](SERVE_MEMORY_ADMISSION_2026-11-03.md)；
+[统一内存准入交付、真实工具闭环、证据限制与回退](SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md)；
+[同模型动态压力恢复与持续混合业务合同](SERVE_PRESSURE_2026-11-03.md)；
+[同PID受压恢复、64轮混合业务与资源核算结果](SERVE_PRESSURE_RESULT_2026-11-03.md)。
+[SRV-12本地运营能力与有界验收合同](SERVE_OPERATIONS_2026-11-03.md)；
+[只读诊断、告警处置与日志/诊断包留存手册](SERVE_OPERATIONS.md)。
+[SRV-12g独立运维监听合同](SERVE_OPERATIONS_LISTENER_2026-11-04.md)及
+[慢头隔离、双Key闭环与默认交付](SERVE_OPERATIONS_LISTENER_RESULT_2026-11-04.md)。
+[SRV-12h独立运维托管短验合同](SERVE_OPERATIONS_MANAGED_2026-11-04.md)及
+[生产监督器、两代TLS网关与双Key闭环结果](SERVE_OPERATIONS_MANAGED_RESULT_2026-11-04.md)。
+[SRV-12限定接受、实际工具/监控、owner告警修订与剩余缺口](SERVE_OPERATIONS_RESULT_2026-11-03.md)。
+[SRV-12b观测连接隔离有界验收合同](SERVE_OBSERVATION_CAPACITY_2026-11-03.md)与
+[实际受载、真实工具恢复和默认交付结果](SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md)。
+[SRV-02e启动可用内存及Thor计量合同](SERVE_STARTUP_MEMORY_2026-11-03.md)及
+[限定交付结果](SERVE_STARTUP_MEMORY_RESULT_2026-11-03.md)；
+[SRV-02k host记账域与进程树边界合同](SERVE_HOST_ENVELOPE_2026-11-04.md)与
+[内核故障/真实TLS工具短验限定结果](SERVE_HOST_ENVELOPE_RESULT_2026-11-04.md)；
+[SRV-12f host资源观测与告警](SERVE_HOST_OBSERVATION_2026-11-04.md)、
+[真实采集/过期恢复/终态与工具短验](SERVE_HOST_OBSERVATION_RESULT_2026-11-04.md)及
+[运行与告警手册](../tools/serve_host/README.md)；
+[SRV-02j1 CUDA申请额度核心合同](SERVE_CUDA_QUOTA_CORE_2026-11-04.md)、
+[SRV-02j2生产额度接线合同](SERVE_CUDA_QUOTA_INTEGRATION_2026-11-04.md)及
+[限定交付结果](SERVE_CUDA_QUOTA_INTEGRATION_RESULT_2026-11-04.md)、
+[新默认用户长验交接](SERVE_CUDA_QUOTA_OPERATOR_2026-11-04.md)、
+[使用与验证入口](../tools/serve_cuda_quota_integration/README.md)、
+[短进程保管修正](SERVE_CUDA_QUOTA_CORRECTION_2026-11-04.md)及
+[核心限定结果与待接线边界](SERVE_CUDA_QUOTA_CORE_RESULT_2026-11-04.md)；
+[SRV-02g内部清理合同](SERVE_BACKEND_CLEANUP_2026-11-03.md)、
+[预留探针纠正](SERVE_BACKEND_CLEANUP_CORRECTION_2026-11-03.md)及
+[真实工具/内部故障与交付](SERVE_BACKEND_CLEANUP_RESULT_2026-11-03.md)；
+[SRV-02h媒体/host失败合同](SERVE_MEDIA_FAILURE_2026-11-03.md)、
+[CPU历史结果](SERVE_MEDIA_FAILURE_CPU_2026-11-03.md)及
+[02i媒体资源审计](SERVE_MEDIA_RESOURCE_AUDIT_2026-11-03.md)、
+[02i共享媒体预检核心](SERVE_MEDIA_PLAN_CORE_2026-11-03.md)及
+[核心CPU结果](SERVE_MEDIA_PLAN_CORE_RESULT_2026-11-03.md)、
+[接线合同](SERVE_MEDIA_INTEGRATION_2026-11-03.md)及
+[接线CPU结果与原失败](SERVE_MEDIA_INTEGRATION_CPU_2026-11-03.md)；
+[组合GPU验收范围](SERVE_MEDIA_COMPOSITE_2026-11-03.md)及
+[驱动/压缩夹具CPU结果](SERVE_MEDIA_COMPOSITE_CPU_2026-11-03.md)、
+[组合GPU/真实工具/媒体负例与取消交付](SERVE_MEDIA_COMPOSITE_RESULT_2026-11-03.md)；
+[SRV-14当前发布的受控托管合同](SERVE_MANAGED_SERVICE_2026-11-03.md)及
+[托管29/guard30 CPU结果，实际生命周期待验](SERVE_MANAGED_SERVICE_CPU_2026-11-03.md)；
+[实际托管发现的结构化终态交接修复](SERVE_STRUCTURED_HANDOFF_2026-11-03.md)；
+[交接修复限定交付与原失败保留](SERVE_STRUCTURED_HANDOFF_RESULT_2026-11-03.md)；
+[新默认实际托管恢复/停止补验](SERVE_MANAGED_SERVICE_SUPPLEMENT_2026-11-03.md)；
+[SRV-14实际托管限定通过、停止后无复起](SERVE_MANAGED_SERVICE_RESULT_2026-11-03.md)；
+[SRV-15低内存退场合同](SERVE_MEMORY_STOP_2026-11-03.md)及
+[实际压力/工具闭环限定通过](SERVE_MEMORY_STOP_RESULT_2026-11-03.md)；
+[SRV-16独立控制器死亡合同](SERVE_CONTROLLER_DEATH_2026-11-03.md)及
+[真实活跃/排队请求自然退场结果](SERVE_CONTROLLER_DEATH_RESULT_2026-11-03.md)；
+[SRV-18短验与用户长稳交接](SERVE_SOAK_2026-11-03.md)及
+[当前版本短验实际限定通过](SERVE_SOAK_RESULT_2026-11-03.md)；
+[SRV-10a内网TLS与独立客户端网关合同](SERVE_GATEWAY_2026-11-03.md)、
+[实际取消错接修复与补验](SERVE_GATEWAY_CORRECTION_2026-11-04.md)及
+[本机TLS与双客户端业务限定交付](SERVE_GATEWAY_RESULT_2026-11-04.md)；
+[SRV-10b网关托管、依赖身份和有界日志合同](SERVE_GATEWAY_MANAGED_2026-11-04.md)及
+[真实排空/失联/崩溃/依赖退场短验](SERVE_GATEWAY_MANAGED_RESULT_2026-11-04.md)；
+[SRV-10e TLS材料、证书有效期与同CA换证](SERVE_TLS_LIFECYCLE_2026-11-04.md)及
+[双证书真实工具短验与交付](SERVE_TLS_LIFECYCLE_RESULT_2026-11-04.md)；
+[SRV-10f TLS观测与到期告警合同](SERVE_TLS_OBSERVATION_2026-11-04.md)、
+[SRV-10g 显式客户端来源边界合同](SERVE_GATEWAY_SOURCES_2026-11-04.md)及
+[本机来源/双Key真实闭环限定接受](SERVE_GATEWAY_SOURCES_RESULT_2026-11-04.md)、
+[本机通知与真实工具短验](SERVE_TLS_OBSERVATION_RESULT_2026-11-04.md)及
+[只读观察器操作手册](../tools/serve_tls/README.md)；
+[SRV-10c客户端状态隔离与请求预算开发合同](SERVE_CLIENT_ISOLATION_2026-11-04.md)、
+[本机限定接受](SERVE_CLIENT_RESULT_2026-11-04.md)及
+[实际默认交付与回退](SERVE_CLIENT_DELIVERED_2026-11-04.md)；
+[SRV-11项目任务持久化与恢复](SERVE_PROJECT_TASKS_2026-11-04.md)、
+[真实进程恢复结果](SERVE_PROJECT_TASKS_RESULT_2026-11-04.md)、
+[短验冻结](SERVE_PROJECT_TASKS_SHORT_2026-11-04.md)及
+[任务操作说明](../tools/project_tasks/README.md)；
+[SRV-11b任务预算与逐轮预检](SERVE_PROJECT_TASK_BUDGET_2026-11-04.md)及
+[双客户端真实闭环结果](SERVE_PROJECT_TASK_BUDGET_RESULT_2026-11-04.md)；
+[SRV-11c任务源码/同客户端Key迁移](SERVE_TASK_MIGRATION_2026-11-04.md)、
+[原失败后的有界续验](SERVE_TASK_MIGRATION_CONTINUE_2026-11-04.md)及
+[真实迁移结果](SERVE_TASK_MIGRATION_RESULT_2026-11-04.md)；
+[SRV-11d终态归档与永久保键](SERVE_TASK_ARCHIVE_2026-11-04.md)及
+[真实文件操作中断/双客户端短验](SERVE_TASK_ARCHIVE_RESULT_2026-11-04.md)；
+[SRV-11e一致性备份与单活恢复交接](SERVE_TASK_BACKUP_2026-11-04.md)、
+[有界短验清单](SERVE_TASK_BACKUP_SHORT_2026-11-04.md)及
+[真实工具结果跨库续完/未知保持](SERVE_TASK_BACKUP_RESULT_2026-11-04.md)；
+[SRV-11f管理命令错误合同](SERVE_TASK_ERRORS_2026-11-04.md)与
+[错误JSON Schema](project-task-errors-v1.schema.json)、
+[原驱动失败后的离线续验](SERVE_TASK_ERRORS_FINISH_2026-11-04.md)与
+[真实短验限定结果](SERVE_TASK_ERRORS_RESULT_2026-11-04.md)；
+[SRV-11g任务CA迁移与连接材料绑定](SERVE_TASK_TRUST_2026-11-04.md)及
+[双CA真实恢复与永久键限定验收](SERVE_TASK_TRUST_RESULT_2026-11-04.md)；
+[SRV-11h已审核协议迁移合同](SERVE_TASK_PROTOCOL_2026-11-04.md)及
+[真实两版本交接与永久键限定验收](SERVE_TASK_PROTOCOL_RESULT_2026-11-04.md)；
+[工具与结构化输入错误路径](SERVE_ERROR_PARAMS_2026-11-04.md)及
+[真实双Key短验与默认交付](SERVE_ERROR_PARAMS_RESULT_2026-11-04.md)；
+[SRV-12e跨运行目录准入与私有留存](SERVE_RETENTION_2026-11-04.md)、
+[本机短验结果](SERVE_RETENTION_RESULT_2026-11-04.md)及
+[运行/留存说明](../tools/serve_retention/README.md)；
+[SRV-10d客户端策略托管闭环与长验交接](SERVE_CLIENT_MANAGED_2026-11-04.md)、
+[本机短验结果](SERVE_CLIENT_MANAGED_RESULT_2026-11-04.md)及
+[用户长验入口](../tools/serve_clients/README.md)；
+[SRV-12c通知链路开发合同](SERVE_NOTIFY_2026-11-04.md)、
+[真实通知/恢复冻结矩阵](SERVE_NOTIFY_GPU_2026-11-04.md)及
+[本机接收/真实服务恢复限定结果](SERVE_NOTIFY_RESULT_2026-11-04.md)；
+[SRV-12d独立接收端心跳合同](SERVE_NOTIFY_WATCHDOG_2026-11-04.md)、
+[真实静默/恢复短验矩阵](SERVE_NOTIFY_WATCHDOG_GPU_2026-11-04.md)及
+[本机限定接受结果](SERVE_NOTIFY_WATCHDOG_RESULT_2026-11-04.md)；
+[SRV-17失联后的只读核验合同](SERVE_INSPECTION_2026-11-03.md)及
+[真实托管/工具/只读状态结果](SERVE_INSPECTION_RESULT_2026-11-03.md)；
+[SRV-02f设备资源故障合同](SERVE_DEVICE_MEMORY_2026-11-03.md)、
+[SSE取证纠正](SERVE_DEVICE_MEMORY_CORRECTION_2026-11-03.md)及
+[实际工具/缓存/故障验收与交付](SERVE_DEVICE_MEMORY_RESULT_2026-11-03.md)；
+[SRV-13发布身份、小时段及退出/重启/回退合同](SERVE_LIFECYCLE_2026-11-03.md)；
+[原停机失败、定向修复与实际回退/安装结果](SERVE_LIFECYCLE_RESULT_2026-11-03.md)。
+[SRV-06文本停止交付、跨块/MTP/工具终态、失败与回退](SERVE_TEXT_STOP_RESULT_2026-11-03.md)。
+[SRV-05b真实预算交付、质量修复、MTP/缓存及完整证据](SERVE_THINKING_HTTP_RESULT_2026-11-03.md)；
+[先前开发和未完成HTTP记录](SERVE_THINKING_BUDGET_RESULT_2026-11-03.md)保留。
+[当前 serve 任务队列、依赖与每批验收出口](PHASES.md#队列与依赖)。
+[serve 全链路审计、具体遗漏与防漏检查](SERVE_COMPLETENESS_AUDIT_2026-11-02.md)。
+[输入合同 A 组修复、真实 JSON/SSE 工具闭环与默认交付](SERVE_INPUT_CONTRACT_2026-11-02.md)。
+[观测与资源首组](SERVE_RESOURCE_BOUNDARIES_2026-11-02.md)、
+[编译/匹配隔离交付、超时/地址空间限制与回退](SERVE_GRAMMAR_ISOLATION_2026-11-02.md)。
+[工具选择 / 结构化输出实现合同](STRUCTURED_OUTPUT_DEVELOPMENT_2026-11-02.md)、
+[有界验收与交付结果](STRUCTURED_OUTPUT_RESULT_2026-11-02.md)。
+[32项 vLLM 服务遗漏盘点](VLLM_SERVICE_GAPS_2026-11-02.md)；
+[首批交付、真实 SDK/资料查询、275份证据与回退](APPLICATION_SERVICE_RESULT_2026-11-02.md)。
+
+聊天接入：[messages客户端、流式重组与只读工具往返](AGENT_TOOL_CLIENT_2026-11-02.md)；
+[服务端工具/推理输出协议](RESPONSE_PARSING_2026-11-02.md)。
+[带ID工具历史关联与后续开发准备](CHAT_TOOL_HISTORY_2026-11-02.md)。
+[能力声明、统一有界验收入口与失败恢复](CHAT_INTEGRATION_PREP_2026-11-02.md)
+有界业务验收通过：158项CPU/模板、8真实故障、23生成/10负例HTTP；
+见[验收结果与证据](CHAT_BUSINESS_ACCEPTANCE_2026-11-02.md)。
+聊天接入 830694ce、应用服务 c3772d11 的后续默认为结构化输出
+957211c7 / 9eba5472，再更新输入合同 ea678009 / 90372798；当前为
+停机修复c597adc3 / a350c978；直接上一版观测隔离3cd3994d / bb620240
+及更早内存准入84d16983 / c5203331保留完整回退链。
+外部 vLLM 已按授权停止，当前交付后 GPU 释放；
+原[正式交付、98份证据与回退](CHAT_DELIVERY_2026-11-02.md)保留。
+[完整工具往返、真实中断与日志崩溃场景准备](CHAT_ACCEPTANCE_SCENARIOS_2026-11-02.md)。
+最新专项：[main复审四项修复交付、证据与回退](MAIN_REAUDIT_FIX_RESULT_2026-10-31.md)；
+[修复范围与冻结预算](MAIN_REAUDIT_FIX_PLAN_2026-10-31.md)；
+[main修复后复审：4项P2既有遗漏与回归检查](MAIN_REAUDIT_2026-10-31.md)；
 [审计8项P2主线合入与分支清理](AUDIT_P2_RESULT_2026-10-31.md#主线合入2026-10-31)；
 [全部交付、证据与回退](AUDIT_P2_RESULT_2026-10-31.md)；
 [权重/SSD驻留修复结果](AUDIT_P2_STAGE1_RESULT_2026-10-31.md)；
@@ -216,6 +388,8 @@
 | [MOE_RESIDENCY_L2_PREDICTION_2026-10-01.md](MOE_RESIDENCY_L2_PREDICTION_2026-10-01.md) | L2 命中率离线预测与 C 容量扫描（第二轮预判/第三轮决策输入） | 已完成（离线分析） |
 | [MOE_RESIDENCY_MEMORY_LEDGER_2026-10-01.md](MOE_RESIDENCY_MEMORY_LEDGER_2026-10-01.md) | 262144容量完整内存账（预算侧+实测侧） | 历史内存账与当时缺项 |
 
+- [serve 编译/匹配隔离与资源合同](SERVE_GRAMMAR_ISOLATION_2026-11-02.md)
+
 ## 现行入口（2026-10-17）
 
 先读 [STATUS.md](STATUS.md) 与 [EVALUATION.md](EVALUATION.md)。
@@ -254,3 +428,6 @@
 - [固定 k3 suffix 同步收尾合同](MTP_SUFFIX_SYNCHRONOUS_2026-10-26.md)
 
 - [固定 k3 suffix 报告路径绑定修复](MTP_SUFFIX_REPORT_BINDING_2026-10-26.md)
+
+- [Serve工业化持续目标与验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)
+- [Serve B2推理协议与控制](SERVE_STAGE_B2_2026-11-03.md)

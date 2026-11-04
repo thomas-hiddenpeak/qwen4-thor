@@ -15,12 +15,25 @@ namespace q4t::server {
 // Parsing/queued requests have a separate bound from active GPU slots.
 inline int TextAdmissionLimit(int slots) { return std::max(32, slots * 2); }
 
+struct AdmissionLimits {
+  int inflight = 32;
+  int queued = 31;
+};
+
 enum class StartupPlanMode { kAuto, kOff, kRequired };
 
 struct ServerOptions {
+  // Option names only, retained transactionally by the CLI parser. Values
+  // such as model/cache paths are never included in configuration discovery.
+  std::vector<std::string> supplied_options;
   // Numeric IPv4 only. Remote access requires an explicit address.
   std::string host = "127.0.0.1";
+  std::string
+      client_policy_file;  // Private immutable gateway policy, optional.
   int port = 8000;
+  // Optional independent local operations listener; 0 disables. Always
+  // 127.0.0.1, with its own bounded handlers; never serves generation.
+  int operations_port = 0;
   std::string model_dir;
   int max_tokens = 256;  // default cap when the request omits max_tokens
   int max_prefill = 0;   // 0 = use ModelConfig default (2048); >0 overrides
@@ -32,13 +45,17 @@ struct ServerOptions {
   // in-flight request owns one seq_id; the model's SSM/conv/PLE-conv/KV/indexer
   // state is pooled [max_seq, ...] so concurrent requests are isolated.
   int max_seq = 1;
+  // Internal auto sentinels; explicit CLI values are 1..4096 and 0..4096.
+  // Inflight includes preflight/preparation/output; queued only slot waiters.
+  int max_inflight_requests = 0;
+  int max_queued_requests = -1;
   std::vector<int> seq_capacities;  // Empty keeps uniform slot capacity.
   // MTP speculative decode is the default (k=3, ~2x decode speedup, five-tier
   // E2E accepted 2026-10-14); --no-mtp opts back to plain greedy decode.
   bool no_mtp = false;
   bool mtp_suffix = false;  // Explicit request-local text, fixed-k3 suffix.
   std::string session_cache_dir;  // Explicit bounded same-process SSD cache.
-  std::string prefix_cache_dir;  // Separate bounded, scope-keyed shared pool.
+  std::string prefix_cache_dir;   // Separate bounded, scope-keyed shared pool.
   std::vector<int> prefix_cache_checkpoints{8192, 32768, 65536};
   std::string mtp_subset_head;  // Explicit experimental BF16 artifact.
   // MTP speculative steps k (draft tokens per step); only meaningful when
@@ -46,14 +63,22 @@ struct ServerOptions {
   int mtp_k = 3;
   // Experimental media path; default service contract is text-only.
   bool allow_media = false;
-  // Startup memory budget (vllm-style gpu_memory_utilization). The server
-  // reserves mem_fraction x MemTotal for the whole engine (weights + state
-  // pools + per-request headroom) and caps max_len/max_seq to what fits, so
-  // many oversized configurations can be capped before allocation. This is
-  // not a bound on media decoding or other processes. The default is 0.90.
-  // Set no_budget=true to disable the cap (legacy behavior, user's own risk).
+  // Startup allocation estimate: caps max_len/max_seq to fit the modeled
+  // costs within mem_fraction x MemTotal. It reserves no physical memory.
+  // File cache, driver ownership and other processes need separate accounting.
+  // no_budget bypasses both sizing and the estimate-based startup check.
   double mem_fraction = 0.90;
   bool no_budget = false;
+  // Process-lived quota for project-linked CUDA requested bytes. -1 = auto
+  // mem_fraction x MemTotal; 0 explicitly disables; independent of no_budget.
+  int cuda_allocation_limit_mib = -1;
+  // Before large allocations require MemAvailable >= estimated_total + this
+  // headroom. 0 disables the check; ignored with no_budget. Not a hard limit.
+  int startup_memory_headroom_mib = 2048;
+  // Runtime global MemAvailable admission, independent of startup sizing.
+  // 0 disables the gate; reopening needs floor + recovery margin. MiB.
+  int min_available_memory_mib = 2048;
+  int memory_recovery_margin_mib = 512;
   // Auto reserves supported text startup resources before pinned loading.
   // Off preserves the existing allocator; required rejects unsupported modes.
   StartupPlanMode startup_plan = StartupPlanMode::kAuto;
@@ -87,6 +112,10 @@ struct ServerCapabilities {
 
 ServerCapabilities CapabilitiesFor(const ServerOptions& options);
 Status ValidateServerOptions(const ServerOptions& options);
+// Resolve only after the startup memory budget has fixed effective slots.
+// Failure leaves output unchanged. Does not reserve RAM or connections.
+Status ResolveAdmissionLimits(const ServerOptions& options, int effective_slots,
+                              AdmissionLimits* output);
 // Parse transactionally; invalid arguments leave the supplied options intact.
 Status ParseServerOptions(std::span<const std::string_view> args,
                           ServerOptions* options);

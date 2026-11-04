@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "raw_records": 457,
+  "local_artifacts": 14,
+  "git_files": 17,
+  "git_bytes": 774384,
+  "staged_git_blobs_verified": 17,
+  "compressed_sha256": "2b88d1e460e841ec9fc54a932077197e845c32fe8d675278de2669ee52906465",
+  "changed_document_links_checked": 579,
+  "installed": {
+    "q4t": "f69982d52d66214b5ce45e250fba1c93bd46e37054f147e09f10fb362f7a6692",
+    "q4t.release.json": "34de1c8fbdc715a885c21ea660db5bfe0cafc5be9f4923f3ebab6ad6b038e7db"
+  },
+  "original_failure_retained": true,
+  "no_additional_model_or_http_tests": true,
+  "preexisting_repository_link_gap": "14 historical missing links remain separate backlog",
+  "goal_complete": false,
+  "checker": {
+    "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_startup_memory/archive.py",
+    "sha256": "2c530dba420d2dd70f08b85da832730ad4603e4dbc751721466d8cda22dcc1bf",
+    "bytes": 8030
+  }
+}

@@ -142,13 +142,12 @@ MemoryBudget ComputeMemoryBudget(const BudgetModelParams& params,
                                  size_t mem_total);
 
 // Read MemAvailable from /proc/meminfo (bytes). Returns 0 on failure.
-// Used for runtime OOM preflight checks.
+// Prefer ReadSystemMemory when distinguishing missing data from zero matters.
 size_t ReadMemAvailable();
 
 // Read MemFree from /proc/meminfo (bytes). Returns 0 on failure. Unlike
-// MemAvailable this excludes the reclaimable page cache: it is the memory the
-// kernel can hand to a fresh cudaMalloc WITHOUT first evicting cache, so it is
-// the right gauge for the OOM preflight (the OOM killer reacts to MemFree).
+// MemAvailable this excludes reclaimable cache. Neither metric guarantees
+// success of a CUDA allocation or predicts the kernel's OOM decision.
 size_t ReadMemFree();
 
 // Read MemTotal from /proc/meminfo (bytes). Returns 0 on failure.

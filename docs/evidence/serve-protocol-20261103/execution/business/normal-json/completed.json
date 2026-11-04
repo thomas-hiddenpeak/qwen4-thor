@@ -1,0 +1,18 @@
+{
+  "messages": [
+    {
+      "role": "developer",
+      "content": "遵循用户请求。"
+    },
+    {
+      "role": "user",
+      "content": "只回复数字710003。"
+    },
+    {
+      "role": "assistant",
+      "content": "710003"
+    }
+  ],
+  "tool_calls": 0,
+  "requests": 1
+}

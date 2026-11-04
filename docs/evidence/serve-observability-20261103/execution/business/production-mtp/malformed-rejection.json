@@ -1,0 +1,18 @@
+{
+  "status": 400,
+  "trace_id": "req-7b5d78b5cd33cd3870115a997926b2f6",
+  "reason": "malformed",
+  "response": {
+    "error": {
+      "message": "Bad Request",
+      "type": "invalid_request_error",
+      "code": "invalid_request",
+      "param": null
+    }
+  },
+  "wire": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/execution/business/production-mtp/malformed-response.bin",
+    "sha256": "b9411095b32f3959ca307007acb48e1b18196ca770e035e357a70d1cf0b4cf60",
+    "bytes": 256
+  }
+}

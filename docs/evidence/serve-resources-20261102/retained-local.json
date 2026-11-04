@@ -1,0 +1,17 @@
+{
+  "source.bundle": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-resources-20261102/package/source.bundle",
+    "sha256": "328e49f36017b76beda812c9e1c97fb3ace827674ff00c7b9b173a9f74a700e2",
+    "bytes": 22474
+  },
+  "previous/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-resources-20261102/package/previous/q4t",
+    "sha256": "ea678009413bd4d63a2b456a697e9c7844b47f71e6e2b3e3447b5044f9cbdf0a",
+    "bytes": 6865336
+  },
+  "candidate/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-resources-20261102/package/candidate/q4t",
+    "sha256": "f03ee0d465419c2320552cfc20a589c5104e139120baa7204fed60a71d80b56b",
+    "bytes": 6864976
+  }
+}

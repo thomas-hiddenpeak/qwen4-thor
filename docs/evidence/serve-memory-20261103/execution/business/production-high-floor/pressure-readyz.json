@@ -1,0 +1,10 @@
+{
+  "status": 503,
+  "headers": {
+    "Content-Type": "application/json",
+    "Content-Length": "54",
+    "X-Request-Id": "req-0a3bf1240e6bf04d0e97e9d46f29f30b",
+    "Connection": "close"
+  },
+  "raw": "{\"status\":\"memory_pressure\",\"live\":true,\"ready\":false}"
+}

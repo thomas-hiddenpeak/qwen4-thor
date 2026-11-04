@@ -1,0 +1,34 @@
+{
+  "seconds": 4.207323909038678,
+  "response": {
+    "id": "agent-42b52a6b59913d9ffa028186b2e86c3d",
+    "model": "qwen3.8-flash-next",
+    "message": {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_agent-42b52a6b59913d9ffa028186b2e86c3d_0",
+          "type": "function",
+          "function": {
+            "name": "read_project_record",
+            "arguments": "{\"path\":\"docs/SRV08-intentionally-absent.md\",\"start_line\":1,\"line_count\":24}"
+          }
+        }
+      ]
+    },
+    "finish_reason": "tool_calls",
+    "usage": {
+      "prompt_tokens": 575,
+      "completion_tokens": 61,
+      "total_tokens": 636
+    }
+  },
+  "headers": {
+    "cache-control": "no-cache",
+    "connection": "close",
+    "content-type": "text/event-stream",
+    "x-accel-buffering": "no",
+    "x-request-id": "req-f9c209f7ed16cb5af719322ffcb4a72e"
+  }
+}

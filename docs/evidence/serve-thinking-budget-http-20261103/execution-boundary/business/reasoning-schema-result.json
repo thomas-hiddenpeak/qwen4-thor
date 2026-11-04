@@ -1,0 +1,108 @@
+{
+  "passed": true,
+  "schema_id": "urn:q4t:serve-reasoning-v1",
+  "records": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/cache-fresh-wire.bin",
+      "field": "reasoning",
+      "include_reasoning": true,
+      "validated_messages": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/cache-restored-wire.bin",
+      "field": "reasoning",
+      "include_reasoning": true,
+      "validated_messages": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/cache-seed-wire.bin",
+      "field": "reasoning",
+      "include_reasoning": true,
+      "validated_messages": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/closed-prefix-wire.bin",
+      "field": "reasoning",
+      "include_reasoning": true,
+      "validated_messages": 8
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/natural-wire.bin",
+      "field": "reasoning",
+      "include_reasoning": true,
+      "validated_messages": 26
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/null-budget-wire.bin",
+      "field": "reasoning_content",
+      "include_reasoning": true,
+      "validated_messages": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/one-hidden-wire.bin",
+      "field": "reasoning",
+      "include_reasoning": false,
+      "validated_messages": 9
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/ordinary-length-wire.bin",
+      "field": "reasoning",
+      "include_reasoning": true,
+      "validated_messages": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/project-answer-wire.bin",
+      "field": "reasoning",
+      "include_reasoning": false,
+      "validated_messages": 3
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/project-read-wire.bin",
+      "field": "reasoning",
+      "include_reasoning": true,
+      "validated_messages": 5
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/schema-wire.bin",
+      "field": "reasoning",
+      "include_reasoning": false,
+      "validated_messages": 3
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/sixteen-hidden-wire.bin",
+      "field": "reasoning",
+      "include_reasoning": false,
+      "validated_messages": 9
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/sixteen-wire.bin",
+      "field": "reasoning",
+      "include_reasoning": true,
+      "validated_messages": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/unbudgeted-wire.bin",
+      "field": "reasoning_content",
+      "include_reasoning": true,
+      "validated_messages": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/zero-wire.bin",
+      "field": "reasoning",
+      "include_reasoning": true,
+      "validated_messages": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-plain/plain-0-wire.bin",
+      "field": "reasoning",
+      "include_reasoning": true,
+      "validated_messages": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-plain/plain-16-wire.bin",
+      "field": "reasoning",
+      "include_reasoning": true,
+      "validated_messages": 26
+    }
+  ]
+}

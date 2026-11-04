@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 140
+X-Request-Id: trace-negative-2-chat
+Connection: close
+
+{"error":{"message":"stop is not supported with constrained output","type":"invalid_request_error","code":"invalid_request","param":"stop"}}

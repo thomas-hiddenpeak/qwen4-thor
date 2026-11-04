@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "zero_warnings": true,
+  "runtime_sources_unchanged_during_build": true,
+  "binaries": {
+    "engine/q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-failure-20261103/engine/q4t",
+      "sha256": "20fadc22004f4e8692362c69a1a044eda58a64498ba95829974b69dd18c7da5b",
+      "bytes": 7157024
+    },
+    "validation/q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-failure-20261103/validation/q4t",
+      "sha256": "9b12d758e9c800f2888ddfb9f871972d6f162c837fbe06a7a8027d930dc4c2e3",
+      "bytes": 7158152
+    },
+    "engine/q4t_vision_contract": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-failure-20261103/engine/q4t_vision_contract",
+      "sha256": "a12f47383d60a3d6c3834630d0ecc8542b36c88e1a477958d434f89fba88e311",
+      "bytes": 441392
+    },
+    "engine/q4t_vision_upload": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-failure-20261103/engine/q4t_vision_upload",
+      "sha256": "3ee5b7db33232778fd87d527aae7fa9038c60dd04e1857a9573ae8a2096458c8",
+      "bytes": 441872
+    },
+    "engine/q4t_host_memory_contract": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-failure-20261103/engine/q4t_host_memory_contract",
+      "sha256": "2dd8a66e5b4a11a9deb1c62ed446d7ea76acf15258991786a9b2cdfab6d3337e",
+      "bytes": 291712
+    },
+    "engine/q4t_host_tests": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-failure-20261103/engine/q4t_host_tests",
+      "sha256": "f726e6608f8adab7895513c3f028cfd49a65d58eebdcb95babb617896d59cf8d",
+      "bytes": 3779576
+    },
+    "engine/q4t_http_lifecycle_tests": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-failure-20261103/engine/q4t_http_lifecycle_tests",
+      "sha256": "55066b48a57f5dac36fcb98da3bb077eb9923189f29a6fcacf515e7926147796",
+      "bytes": 865528
+    }
+  }
+}

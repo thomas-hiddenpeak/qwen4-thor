@@ -1,0 +1,10 @@
+{
+  "status": 503,
+  "headers": {
+    "Content-Type": "application/json",
+    "Content-Length": "137",
+    "X-Request-Id": "req-8c19c7958140c0e16751c4c5a9fb59ad",
+    "Connection": "close"
+  },
+  "raw": "{\"error\":{\"message\":\"slot waiting capacity exhausted\",\"type\":\"service_unavailable_error\",\"code\":\"queue_capacity_exhausted\",\"param\":null}}"
+}

@@ -1,0 +1,11 @@
+{
+  "README.md": "87fdd381776ebade0a093761afe914311e07f543ac22858053e136daddc874fc",
+  "build-result.json": "93113e4a7e5031a76167d8a612d0ad8f2067cba8539081572b0a4c80f50ca913",
+  "cpu-result.json": "216213dc7805f23a56f6ddf5c918d7935005b799e88a56e9c178b8bdd34d1c42",
+  "environment-gate.json": "039639e0128428466cd6b0aa130bd5ecd6393c70e0d4a06e6fd3b56cd4cd0be3",
+  "manifest.json": "0fdb5c3e1f76f7691ab346b9ccf00c00ff8abf357a0b55b2b0ebad209d9ce971",
+  "original-cpu-result.json": "8a543e00ff3a1dc4008d8b11d24fb16a4025c88b2028453b0811701915b9967b",
+  "pixel-reference.json": "cc7373aaeacf4b30f0a942c2697e26af79254218a5b411fd674d3a5ea54972dd",
+  "plan.json": "607224c9fb7f42cc11e4f2e49ad58023f4beeddce0adbb031841bbe166f72e27",
+  "raw-records.tar.gz": "b1ecfa2323bbc804ef5f96dd62e044071c2dccb79514e6693c306c5565e67690"
+}

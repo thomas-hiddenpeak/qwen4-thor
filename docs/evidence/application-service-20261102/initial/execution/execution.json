@@ -1,0 +1,6 @@
+{
+  "status": "FAILED",
+  "started": 1793605281.1428385,
+  "error": "ProtocolError('no request budget for tool results')",
+  "finished": 1793605343.6802092
+}

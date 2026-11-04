@@ -1,0 +1,41 @@
+{
+  "callback_attempts": 5,
+  "callback_statuses": {
+    "202": 1,
+    "204": 2,
+    "401": 1,
+    "422": 1
+  },
+  "driver_cpu_tests": 4,
+  "effective_cpu_tests": 26,
+  "explicit_http": 3,
+  "external_receiver_accepted": false,
+  "generations": 0,
+  "guard": {
+    "observations": 213,
+    "passed": true,
+    "records": 217,
+    "seconds": 228.6354735181667
+  },
+  "heartbeats_confirmed": 2,
+  "initial_failures_preserved": true,
+  "long_test_started": false,
+  "missing_age_seconds": 180.05162867205217,
+  "models": 0,
+  "monitor_starts": 4,
+  "official_rule_scenarios": 11,
+  "passed": true,
+  "physical_cpu_tests": 32,
+  "silence_samples": 873,
+  "source_commit": "c48b764e199cd3534bdc2d8a7b092a0d280460af",
+  "source_freshness_or_authenticated_replay_guaranteed": false,
+  "stale_observer_seconds": 20.1075656414032,
+  "transition_states": [
+    "WAITING",
+    "PRESENT",
+    "MISSING",
+    "PRESENT"
+  ],
+  "watchdog_starts": 2,
+  "whole_work_seconds": 227.85994801181369
+}

@@ -1,0 +1,83 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": 0,
+  "max_completion_tokens": 512,
+  "stream": true,
+  "messages": [
+    {
+      "role": "developer",
+      "content": "遵循用户请求。"
+    },
+    {
+      "role": "user",
+      "content": "调用read_project_record读取docs/MODEL.md第1行，line_count=8。根据读取内容告诉我模型架构名称，并逐字引用工具给出的citation。"
+    },
+    {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_chatcmpl-auto-381b668dcae0d5c2a0bb1272cd6a06d5_0",
+          "type": "function",
+          "function": {
+            "name": "read_project_record",
+            "arguments": "{\"path\":\"docs/MODEL.md\",\"start_line\":1,\"line_count\":8}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_chatcmpl-auto-381b668dcae0d5c2a0bb1272cd6a06d5_0",
+      "content": "{\"ok\": true, \"source\": {\"path\": \"docs/MODEL.md\", \"sha256\": \"7409269429d9e61ac6f560e829acd0613906d29e03e902c84af3a8db2d17a97c\", \"start_line\": 1, \"end_line\": 8, \"citation\": \"[docs/MODEL.md:L1-L8]\", \"text\": \"1: # MODEL.md — Qwen3.8-Flash-Next (qwen4_exp) 架构笔记\\n2: \\n3: > 对目标模型的理解笔记, 随研读深入持续更新。\\n4: > 来源: 模型目录 `config.json` / `ssd-stream.json` /\\n5: > sglang-ssd-stream 源码 / SGLang `qwen4_exp.py` (权威 forward pass)。\\n6: > **未确认的语义标注 [待确认]**, 不臆测。\\n7: >\\n8: > **权威参考**: `reference/sglang-qwen4-exp/qwen4_exp.py`\", \"truncated\": false}, \"total_lines\": 311}"
+    }
+  ],
+  "extra_body": {
+    "chat_template_kwargs": {
+      "enable_thinking": false,
+      "reasoning_effort": "low"
+    },
+    "request_timeout_ms": 180000
+  },
+  "stream_options": {
+    "include_usage": true
+  },
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "read_project_record",
+        "description": "Read real project documentation or acceptance JSON under docs/, or the installed release metadata build/q4t.release.json. Returns numbered lines, a source SHA256 and an exact citation. Use the returned citation verbatim in the answer.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "enum": [
+                "docs/MODEL.md"
+              ]
+            },
+            "start_line": {
+              "type": "integer"
+            },
+            "line_count": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "path",
+            "start_line",
+            "line_count"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    }
+  ],
+  "tool_choice": "none",
+  "parallel_tool_calls": false,
+  "extra_headers": {
+    "X-Request-Id": "trace-project-answer"
+  }
+}

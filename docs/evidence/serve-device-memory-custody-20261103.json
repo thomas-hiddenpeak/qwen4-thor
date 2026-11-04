@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "raw_records": 839,
+  "local_artifacts": 20,
+  "git_files": 19,
+  "git_bytes": 1384773,
+  "staged_git_blobs_verified": 19,
+  "compressed_sha256": "853582aa676b7646c7205b3e37e3485dc5af58142a800a736a5bdb13cf565572",
+  "changed_document_links_checked": 594,
+  "installed": {
+    "q4t": "40cf6376b06fb9182c194cb44b4723946d4f09253bf681b7eb06707fee0314cf",
+    "q4t.release.json": "79d4a6578404b270648861a0ec1d344ae4e5bf75cae750fc5ac0d7adb150b515"
+  },
+  "original_sse_failure_and_cpu_reuse_rejection_retained": true,
+  "no_additional_model_or_http_tests": true,
+  "preexisting_repository_link_gap": "14 historical missing links remain separate backlog",
+  "goal_complete": false,
+  "checker": {
+    "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_device_memory/archive.py",
+    "sha256": "f37a776de00cd1718c6fd39220bd317ee9c3d864dd3be3da23d2bf19d29539d0",
+    "bytes": 8389
+  }
+}

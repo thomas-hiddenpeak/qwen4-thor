@@ -1,0 +1,5 @@
+{"name": "defaults", "argv": [], "effective_slots": 1, "expected": [32, 31]}
+{"name": "requested_slots", "argv": ["--max-seq", "32"], "effective_slots": 32, "expected": [64, 32]}
+{"name": "budget_shrink", "argv": ["--max-seq", "32"], "effective_slots": 2, "expected": [32, 30]}
+{"name": "single_inflight", "argv": ["--max-inflight-requests", "1"], "effective_slots": 2, "expected": [1, 0]}
+{"name": "no_waiting", "argv": ["--max-queued-requests", "0"], "effective_slots": 1, "expected": [32, 0]}

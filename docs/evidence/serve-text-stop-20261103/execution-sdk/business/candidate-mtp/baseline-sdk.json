@@ -1,0 +1,33 @@
+{
+  "id": "chatcmpl-auto-f973aee70389396f05f3b330e6d88c6c",
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "logprobs": null,
+      "message": {
+        "content": "ALPHA0123456789ENDOMEGA",
+        "refusal": null,
+        "role": "assistant",
+        "annotations": null,
+        "audio": null,
+        "function_call": null,
+        "tool_calls": null
+      }
+    }
+  ],
+  "created": 1793648992,
+  "model": "qwen3.8-flash-next",
+  "object": "chat.completion",
+  "metadata": null,
+  "moderation": null,
+  "service_tier": null,
+  "system_fingerprint": null,
+  "usage": {
+    "completion_tokens": 16,
+    "prompt_tokens": 50,
+    "total_tokens": 66,
+    "completion_tokens_details": null,
+    "prompt_tokens_details": null
+  }
+}

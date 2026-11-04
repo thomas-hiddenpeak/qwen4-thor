@@ -1,0 +1,18 @@
+{
+  "status": 408,
+  "trace_id": "srv01b.body-deadline",
+  "reason": "body_deadline",
+  "response": {
+    "error": {
+      "message": "Request Timeout",
+      "type": "timeout_error",
+      "code": "request_timeout",
+      "param": null
+    }
+  },
+  "wire": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/execution/business/production-mtp/body-deadline-response.bin",
+    "sha256": "0b3eff41aecd80d1b0ca2dd22e554901ac66f43d300ee17e3230450334169710",
+    "bytes": 240
+  }
+}

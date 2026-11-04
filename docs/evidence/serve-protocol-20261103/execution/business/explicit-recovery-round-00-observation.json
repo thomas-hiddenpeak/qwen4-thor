@@ -1,0 +1,24 @@
+{
+  "seconds": 4.164945689961314,
+  "response": {
+    "id": "agent-643808e3a1e65ab24d613fd85189d834",
+    "model": "qwen3.8-flash-next",
+    "message": {
+      "role": "assistant",
+      "content": "根据 `docs/MODEL.md` 第 1 到 24 行的内容，`architectures` 字段的准确值为：\n\n`Qwen4ExpForConditionalGeneration`\n\n引用：[docs/MODEL.md:L1-L24]"
+    },
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 890,
+      "completion_tokens": 58,
+      "total_tokens": 948
+    }
+  },
+  "headers": {
+    "cache-control": "no-cache",
+    "connection": "close",
+    "content-type": "text/event-stream",
+    "x-accel-buffering": "no",
+    "x-request-id": "req-47c2782389359c2f31abb2cbff44d113"
+  }
+}

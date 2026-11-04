@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 162
+X-Request-Id: trace-context-overflow-preflight
+Connection: close
+
+{"error":{"message":"prompt tokens must be positive and below context capacity","type":"invalid_request_error","code":"context_length_exceeded","param":"prompt"}}

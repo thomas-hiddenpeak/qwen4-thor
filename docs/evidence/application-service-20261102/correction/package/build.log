@@ -1,0 +1,38 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Configuring done (0.1s)
+-- Generating done (0.1s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/build
+[  0%] Built target q4t_runtime
+[  8%] Built target q4t_ple
+[ 16%] Built target q4t_io
+[ 20%] Built target q4t_trace
+[ 24%] Built target q4t_text
+[ 36%] Built target q4t_quant
+[ 72%] Built target q4t_model
+[ 76%] Built target q4t_startup_plan
+[ 80%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_server.cpp.o
+[ 80%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_capabilities.cpp.o
+[ 84%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_http.cpp.o
+[ 84%] Building CXX object CMakeFiles/q4t_server.dir/src/server/http_response.cpp.o
+[ 88%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_response_parser.cpp.o
+[ 88%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_input.cpp.o
+[ 88%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_metrics.cpp.o
+[ 92%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_scheduler.cpp.o
+[ 92%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_generation.cpp.o
+[ 92%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_contract.cpp.o
+[ 92%] Linking CXX static library libq4t_server.a
+[100%] Built target q4t_server
+[ 15%] Built target q4t_io
+[ 23%] Built target q4t_text
+[ 23%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/chat_capabilities.cpp.o
+[ 30%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/chat_contract.cpp.o
+[ 38%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/chat_response_parser.cpp.o
+[ 46%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/http_response.cpp.o
+[ 46%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_chat_capabilities_test.cpp.o
+[ 46%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_chat_contract_test.cpp.o
+[ 46%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_chat_response_parser_test.cpp.o
+[ 46%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_http_response_test.cpp.o
+[ 46%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/text_tokenizer_test.cpp.o
+[ 46%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests

@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "previous": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-composite-20261103/cpu-before-deadline-review/tests/result.json",
+    "sha256": "614cf9836f1bc4bc076395b2838112350a3a15e7e9e772328dc56a6facf17a72",
+    "bytes": 200
+  },
+  "binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-composite-20261103/cpu/fixture_contract",
+    "sha256": "93386f913c0953c72f724eb760f71b2b33896580803bfd1436f3a7e937a70ad8",
+    "bytes": 568032
+  },
+  "same_elf": true,
+  "reason": "Only C++ line wrapping and Python driver deadline/transaction changes."
+}

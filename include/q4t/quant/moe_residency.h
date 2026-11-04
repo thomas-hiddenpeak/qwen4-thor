@@ -239,6 +239,9 @@ class MoEResidency {
     std::vector<uint8_t> needed_mark;
     // LoadPhase1 resets this to 0; a worker stores 1 on stage failure.
     std::atomic<int> first_err{0};
+    // Set without allocating on a worker's exception path; the caller
+    // constructs the failed Status after every worker has notified done.
+    std::atomic<bool> host_exception{false};
     // First stage error message (written by the first failing worker only;
     // LoadPhase1 reads it after waiting on every worker, so no race).
     std::string first_err_msg;
@@ -256,6 +259,7 @@ class MoEResidency {
       next_stage = 0;
       next_commit = 0;
       first_err.store(0, std::memory_order_relaxed);
+      host_exception.store(false, std::memory_order_relaxed);
       first_err_msg.clear();
     }
   };
@@ -478,8 +482,8 @@ class MoEResidency {
   // when >=2 adjacent misses), swizzle, and commit each entry. Per-entry
   // failure semantics match the legacy per-entry path (first failure
   // recorded in plan.first_err; remaining entries still run).
-  Status StageTask(LoadPlan& plan, const std::vector<int>& entries,
-                   StatsDelta* delta, cudaStream_t stream) const;
+  void StageTask(LoadPlan& plan, const std::vector<int>& entries,
+                 StatsDelta* delta, cudaStream_t stream) const noexcept;
 
   // Undo a miss-path stage bookkeeping after a stage or commit failure:
   // drop the buffer<->expert mapping (miss only; a hit buffer still holds

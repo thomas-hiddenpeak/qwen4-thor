@@ -1,0 +1,30 @@
+{
+  "status": "COMPLETED",
+  "command": [
+    "/usr/bin/python3.12",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/package/source/tools/serve_service/service.py",
+    "_worker",
+    "--run",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/managed-run"
+  ],
+  "compute_backend": "nvml",
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 0,
+  "external_lease": false,
+  "retention": {
+    "bytes_per_file": 4194304,
+    "generations": 2,
+    "complete_history_retained": false
+  },
+  "lease_inherited_by_child": true,
+  "finished": {
+    "utc": "2026-11-03T13:35:28.018804+00:00",
+    "monotonic": 1903010.535689685,
+    "pid": 2444144
+  }
+}

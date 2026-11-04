@@ -1,0 +1,13 @@
+{
+  "status": "PASS_BOUNDED_BACKEND_CLEANUP",
+  "physical_oom_or_gpu_damage": false,
+  "performance_acceptance": false,
+  "no_retry": true,
+  "counts": {
+    "generations": 10,
+    "negatives": 6,
+    "starts": 7
+  },
+  "control_requests": 52,
+  "elapsed_seconds": 250.50745918089524
+}

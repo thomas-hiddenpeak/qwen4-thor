@@ -1,0 +1,47 @@
+{
+  "command": [
+    "/usr/bin/python3.12",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/gpu_exclusive.py",
+    "--output",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-operations-listener-20261104/execution-02/lease",
+    "--",
+    "/usr/bin/python3.12",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/serve_operations_listener/continue_stage.py",
+    "execute"
+  ],
+  "commit": "eb86676b836bca6ab4b6e57fd18468b8659c2ab9",
+  "limits": {
+    "controls": 100,
+    "generation_attempts": 6,
+    "seconds": 300,
+    "starts": 1
+  },
+  "original": {
+    "bytes": 282,
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-operations-listener-20261104/execution/sealed-files.json",
+    "sha256": "4ea557bb2ab35d86fc03b13f7fbfbadbe013549af4ca906ddfc3e034636565f5"
+  },
+  "package": {
+    "bytes": 1610,
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-operations-listener-20261104/package/sealed-files.json",
+    "sha256": "b6f8364c4611bdd7c317e6e38646e27b315283c6249f030038ded750f90e28e3"
+  },
+  "planned": {
+    "cancelled": 1,
+    "models": 1,
+    "native_processes": 1,
+    "negative_probes": 6,
+    "public_slow_headers": 135,
+    "real_tools": 2,
+    "successes": 5
+  },
+  "prior_http": 0,
+  "prior_models": 0,
+  "reason": "absolute guard argv required; original command failed before begin",
+  "sources": {
+    "tools/serve_operations_listener/continue_stage.py": "db4c166d3593cad297c5e57b96a4bb1ae71ba21d0711bbbd1d9c6e3068e66eaa",
+    "tools/serve_operations_listener/test_continue.py": "5c48c5d9664ed299c90d6316d21bb55c5e29e359031f275f0f3d19b2d3395d7a"
+  }
+}

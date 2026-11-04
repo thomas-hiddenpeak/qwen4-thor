@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "observed_tests": 19,
+  "observed_passed": 19,
+  "observed_failed": 0,
+  "observed_skipped": 0,
+  "binary_sha256": "36dd676f5660a1a4f9fa93e28858b96464260ee9dea9ff804c0f4c5d48f987a3",
+  "guard_exit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/native-lease/exit.json",
+  "guard_exit_sha256": "2acd81dbffc77bb96d39b889368a9ce519b467fc4653755d42e54f7d9991a56b",
+  "raw_output_archived": false,
+  "output_source": "exec_command/write_stdin tool transcript in this chat; summary is derived, not a raw log",
+  "rerun": false
+}

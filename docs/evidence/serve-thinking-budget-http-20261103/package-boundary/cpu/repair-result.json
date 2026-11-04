@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "counts": {
+    "budget": 8,
+    "grammar": 1,
+    "capabilities": 4,
+    "client": 1,
+    "driver": 13
+  },
+  "log_sha256": {
+    "budget.log": "00515bc246a7d0657b87a1834d4dde49c77377b2acb173715b9940c96ca4f16a",
+    "grammar.log": "b2591dc8c1ce522badffa6655cfc98d7be3521de9c0e5e6a4fc444e86c6bf2d6",
+    "capabilities.log": "7ef8b77d550c10d11485452674bf74d812589121d01d55506ace3ea1d260b5df",
+    "client-budget.log": "d10ffbd9f0faa72cd6837063279524e199b59fbc3d035051302a1e8dbc4b36ad",
+    "driver.log": "8a59b606868acbad76259a0c1bdbaae21475951c09be73fe19f18573e16270b3",
+    "build-native.log": "b9825ffd122e9b7eaf2d3ad424e027c4c6f703a87fdecd34f15ed7dbc3839b0d"
+  },
+  "reuse": "Other CPU contracts reuse prior sealed evidence; runtime change limited to enabled budget boundary and capabilities"
+}

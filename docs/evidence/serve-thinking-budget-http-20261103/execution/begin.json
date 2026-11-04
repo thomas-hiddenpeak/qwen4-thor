@@ -1,0 +1,9 @@
+{
+  "started": 1793645388.189334,
+  "limits": {
+    "starts": 5,
+    "generations": 22,
+    "negatives": 12,
+    "seconds": 1800
+  }
+}

@@ -12,6 +12,50 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 
 ## 能力概览
 
+当前默认程序（身份见[STATUS](docs/STATUS.md)）已包含工具/推理输出解析、JSON/SSE、带ID工具
+历史、单条开头developer适配和`/v1/capabilities`能力/模板身份查询。
+`messages`默认解析；`parse_response: false`保留原始输出，`prompt`
+始终为raw。none / required / named、禁止多调用、strict工具参数和
+有限JSON Schema已验，受约束请求仍普通解码，完整校验后发布SSE内容，
+暂不组合缓存或媒体。范围见[应用兼容矩阵](docs/APPLICATION_SERVICE.md)。
+固定12KiB严格复制输出的真实TCP取消/写截止及后续恢复已验，见
+[限定结果](docs/SERVE_STRICT_TRANSPORT_RESULT_2026-11-03.md)；生成仍可能因
+token预算不足而失败，canonical分词长度不构成生成上限。
+
+启动增加metadata前、模型分配前、ready前的可用内存检查；默认2GiB
+余量、绕过方式及[Thor四类分配计量](docs/SERVE_STARTUP_MEMORY_RESULT_2026-11-03.md)
+均有实际证据。可用量快照不是预留，cgroup限制不覆盖全部CUDA物理RAM。
+
+`reasoning_field`可选择`reasoning`或默认`reasoning_content`；
+`include_reasoning: false`隐藏已解析的推理正文，计算和usage不变。
+这两个选项只支持parsed messages。历史推理字段别名、流式字段稳定、
+真实只读工具回填及安装HTTP通过，见[本批结果与回退](docs/SERVE_STAGE_B2A_RESULT_2026-11-03.md)。
+`thinking_token_budget`现支持parsed messages的精确整数/null，耗尽后以真实
+控制token闭合并转入答案；总输出预算优先，usage分别记录自然与强制token。
+预算、MTP回退、工具/schema及缓存恢复见[本批交付](docs/SERVE_THINKING_HTTP_RESULT_2026-11-03.md)；
+接口示例见[messages客户端](docs/AGENT_TOOL_CLIENT_2026-11-02.md)。
+`stop`支持字符串或最多4串，每串256 UTF-8字节；null/[]禁用。
+跨token与MTP批的停止串/尾部不会发布，JSON/SSE共用匹配，usage计至触发
+停止的token。普通工具截断仍报错，严格输出及缓存组合首批拒绝；
+[实际工具闭环、安装与回退证据](docs/SERVE_TEXT_STOP_RESULT_2026-11-03.md)。
+`POST /v1/chat/preflight`只读返回实际token数量、输出预算和合格槽位，
+`GET /v1/config`提供有效配置与来源；预检不会预留资源或保证生成成功。
+包装格式、文本范围与[真实验证证据](docs/SERVE_PREFLIGHT_RESULT_2026-11-03.md)已公开。
+`--max-inflight-requests`配置chat/preflight共同准入上限，
+`--max-queued-requests`配置slot等候上限。准备完成后按容量适配FIFO授予
+槽位，队列满时拒绝等待，空闲小槽仍可供不阻碍先来请求的小请求使用；
+[真实队列、取消/工具恢复与回退证据](docs/SERVE_ADMISSION_RESULT_2026-11-03.md)。
+接收拒绝与首次写失败分别用固定原因计数并关联trace日志；body额度
+耗尽返回`body_capacity_exhausted`。写超时、取消与断连可分别定位，
+计数范围及[真实HTTP/工具恢复证据](docs/SERVE_OBSERVABILITY_RESULT_2026-11-03.md)已公开。
+最新验收限完整head，旧subset证据不自动扩张到新候选。
+内存准入默认在全局MemAvailable低于2048MiB或读数失效时拒绝新工作，
+达到2560MiB恢复，readyz同步；进行中的生成继续。可配置门限与恢复
+余量，详见[限定业务验收与边界](docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md)。
+这是提前准入，不是物理RAM硬限额或OOM保证。
+当前未启动常驻模型服务，GPU保持释放；通用SDK、完整JSON Schema、
+多人运行边界和长期稳定仍按[工业化验收账](docs/SERVE_INDUSTRIAL_PLAN_2026-11-03.md)推进。
+
 - **文本推理**: 48 层完整 forward (36 linear_attention + 12 full_attention),
   MoE 专家使用 NVFP4 W4A4，其他路径含 BF16/FP32；Paged KV cache、greedy 生成
 - **多模态**: 27 层 ViT, 图像 + 视频输入 (OpenAI `image_url` / `video_frames`
@@ -77,7 +121,7 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 #   sudo apt-get install g++-14 pkg-config liburing-dev libicu-dev
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_CXX_COMPILER=g++-14 -DCMAKE_CUDA_HOST_COMPILER=g++-14 \
-  -DQ4T_CUDA_ARCHITECTURES=110a
+  -DQ4T_CUDA_ARCHITECTURES=110a -DQ4T_ENABLE_XGRAMMAR=ON
 cmake --build build --parallel
 
 # 开发测试（默认SKIP也非零退出；发布范围与入口见tools/release）
@@ -87,6 +131,10 @@ python3 tools/evalscope/gpu_exclusive.py \
 ```
 
 ## 使用
+
+构建参数 ON 复现当前默认的工具控制 / 结构化输出能力，并拉取固定
+XGrammar C++ 依赖。CMake 选项自身默认 OFF，公共 host 构建不联网；
+OFF 构建遇到需要约束的请求会明确拒绝，不降级为普通生成。
 
 ```bash
 # 版本与硬件探测
@@ -125,6 +173,8 @@ python3 tools/evalscope/gpu_exclusive.py \
 |---|---|
 | `--host` / `--port` | `127.0.0.1` / `8000`；host 接受数字 IPv4 |
 | `--max-seq` | `1` |
+| `--max-inflight-requests` | 省略为max(32,2×有效槽数)；显式1..4096，共享chat/preflight，含准备/等待/输出 |
+| `--max-queued-requests` | 省略为max(0,有效inflight−有效槽数)；显式0..4096且不超过inflight，0表示不等待 |
 | `--seq-capacities` | 默认等长槽；显式逗号列表为每槽输入＋输出容量，须与max-seq/max-len匹配，预算不足时拒绝；推荐agent布局见上例 |
 | `--max-prefill` | `0` 表示使用模型默认 `2048`；可显式设至 `8192` |
 | `--max-len` | `0`，默认预算开启时自动推导有效长度 |
@@ -137,7 +187,11 @@ python3 tools/evalscope/gpu_exclusive.py \
 | `--prefix-cache-checkpoints N,...` | 默认8192,32768,65536；1～4个严格递增的1024～131072边界，请求用prefix_cache_write_tokens选择最多一个写点 |
 | `--request-deadline-ms` | `1200000`（20分钟）；含等待槽位和生成，显式范围1000～10800000；客户端超时需匹配 |
 | `--allow-media` | 默认不启用，显式启用实验媒体路径 |
-| `--mem-fraction` | `0.90`，启动内存预算比例 |
+| `--mem-fraction` | `0.90`，启动分配估算占总内存的比例，不是物理预留 |
+| `--cuda-allocation-limit-mib` | `auto`，生产wrapper请求字节额度为mem_fraction×MemTotal；0显式关闭，正整数指定MiB，独立于`--no-budget`。不覆盖DSO内部/host堆/driver/文件缓存/CUDA池保留，不是整机RAM硬限额；交付状态见STATUS |
+| `--startup-memory-headroom-mib` | `2048`，大分配前要求真实MemAvailable容纳估算总量及余量；元数据前/ready前复查余量，0禁用，`--no-budget`同时绕过此估算检查 |
+| `--min-available-memory-mib` | `2048`，运行时全局内存准入门限；0显式禁用，独立于`--no-budget` |
+| `--memory-recovery-margin-mib` | `512`，正数；关闭后需达到门限+余量才恢复；门限0时忽略 |
 | `--moe-resident-slots` | `0`，所有专家驻留；非零启用按需驻留 |
 | `--startup-plan` | 默认`auto`；`off`保留旧分配路径，`required`要求支持并启用预留计划 |
 
@@ -218,7 +272,7 @@ install -d -m 700 .q4t-work/agent-session-cache
 要稳定命中，客户端需保留原始模板文本及生成历史。本轮收益使用预渲染
 `prompt`测量；`messages`恢复前也逐token检查，但模板会trim文本、重建
 thinking和工具调用。带thinking的整段输出直接放回`content`可能被重复
-包裹，结构化接入需正确保留`reasoning_content`、`content`和`tool_calls`。
+包裹，结构化接入需保留响应选定的`reasoning_content`或`reasoning`、`content`和`tool_calls`。
 历史被改写、压缩或模板选项改变时可能未命中并重新prefill。当前没有针对
 某个agent SDK的即插即用适配验收。
 

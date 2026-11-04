@@ -1,0 +1,20 @@
+{
+  "status": "COMPLETED",
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-business-runtime-utf8-20261102/runtime.py"
+  ],
+  "compute_backend": "nvml",
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 0,
+  "external_lease": false,
+  "finished": {
+    "utc": "2026-11-02T05:46:24.732193+00:00",
+    "monotonic": 1788467.249080856,
+    "pid": 1077361
+  }
+}

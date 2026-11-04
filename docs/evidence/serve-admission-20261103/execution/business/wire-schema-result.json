@@ -1,0 +1,95 @@
+{
+  "passed": true,
+  "records": [
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/execution/business/production-mtp/inflight-holder-wire.bin",
+        "sha256": "654d18b87b36c7141d73449d7d5c08baac1b73bc8f58bb062e6ed5f5c2a17ec4",
+        "bytes": 384
+      },
+      "envelopes": 2,
+      "success": false
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/execution/business/production-mtp/ordinary-recovery-wire.bin",
+        "sha256": "d67d7b116605ef3090140ab4cb500cbe8db3ca8876cfd898ae2bf97f3e4f93fb",
+        "bytes": 306
+      },
+      "envelopes": 1,
+      "success": true
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/execution/business/production-mtp/project-read-wire.bin",
+        "sha256": "aef5ec00886661ddfcfd43cc1325b9d2013c254e84983f44a3090e3be1d9521a",
+        "bytes": 1184
+      },
+      "envelopes": 4,
+      "success": true
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/execution/business/production-mtp/project-answer-wire.bin",
+        "sha256": "07a49f8da7ce7212b6f10e6e5721c2947f10ea3d585b4867f8a047a0700c83c2",
+        "bytes": 1137
+      },
+      "envelopes": 4,
+      "success": true
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/execution/business/capacity-fault/small-bypass-wire.bin",
+        "sha256": "ba0ed10e5197ad36b144def14e5293757b25efc4937f6e9167807ad0ff51f538",
+        "bytes": 306
+      },
+      "envelopes": 1,
+      "success": true
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/execution/business/capacity-fault/first-cancelled-wire.bin",
+        "sha256": "36d5ce5d902b08520c5d690b8c9f362a9148aecdc995b0ca54f4305f4b4bce2c",
+        "bytes": 120
+      },
+      "envelopes": 1,
+      "success": false
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/execution/business/capacity-fault/holder-wire.bin",
+        "sha256": "bb56d7dd57bb81eedbb6311462118aed271f193c1afc6be39a38762b9737ddc1",
+        "bytes": 290
+      },
+      "envelopes": 1,
+      "success": true
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/execution/business/capacity-fault/second-wire.bin",
+        "sha256": "af1df0aaa91f369d5b7ff8a70fa80e878d7d8aa014396df17ead74eac962d824",
+        "bytes": 306
+      },
+      "envelopes": 1,
+      "success": true
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/execution/business/capacity-fault/last-wire.bin",
+        "sha256": "5cff4a23ef382e8de337c065b40996e88cfe052a3d4981d6e8c5db34ffda55bd",
+        "bytes": 306
+      },
+      "envelopes": 1,
+      "success": true
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/execution/business/capacity-fault/strict-recovery-wire.bin",
+        "sha256": "543f4b448f90909f4e1ebe977b07f617bdb8e8930b293ecb706b16b39b8ebe3e",
+        "bytes": 314
+      },
+      "envelopes": 1,
+      "success": true
+    }
+  ]
+}

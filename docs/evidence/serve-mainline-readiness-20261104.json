@@ -1,0 +1,58 @@
+{
+  "scope": "Integration readiness identity check; no new runtime acceptance",
+  "base": "ef88d970489c3ab21894572258922d535e51e6f4",
+  "accepted_anchor": "92129c713008b5a30aa2948ba842f9bfb01b25c9",
+  "branch_commits_ahead": 212,
+  "base_is_ancestor": true,
+  "changed_paths": {
+    ".github": 1,
+    "cmake": 5,
+    "deploy": 9,
+    "docs": 202,
+    "docs/evidence": 10053,
+    "include": 51,
+    "root": 4,
+    "src": 50,
+    "tests": 33,
+    "third_party": 5,
+    "tools": 592
+  },
+  "runtime_sources_checked": 223,
+  "runtime_matches_accepted_anchor": true,
+  "installed": {
+    "q4t": "8e9b4ce7cb76b0731e9f087bd15ea84ffac31bec038b87f88df853275dc1a3a1",
+    "q4t.release.json": "e61bed7cc67ae5b90e8cfb0148dc010d5d95dd73cad763d118fe3669b41222f7"
+  },
+  "protocol": "a56aed213bc1c96318a61168da907f882b96eb2511c870246552396d01e4dbe8",
+  "archives": [
+    {
+      "name": "serve-prepare-lock-20261104",
+      "records": 283,
+      "archive_sha256": "c2f59bc80b92072a7c00b14323fb7588099719e798be65e7bf261d54ec03823c"
+    },
+    {
+      "name": "serve-supervisor-deadlines-20261104",
+      "records": 256,
+      "archive_sha256": "6b30961ba6a50b5fad0354f26336bff263a0c5c447cf758f2cba53520991b451"
+    },
+    {
+      "name": "serve-task-startup-protocol-20261104",
+      "records": 263,
+      "archive_sha256": "c5aa379ab4e8b1a211a63bdd13a638bbacd0dc436c956ebf752c19a5659d413b"
+    }
+  ],
+  "archive_records_checked": 802,
+  "exclusions": [
+    "Uncommitted SRV-08b client code and tests"
+  ],
+  "new_tests": false,
+  "new_build": false,
+  "gpu": false,
+  "models": 0,
+  "http": false,
+  "main_updated": false,
+  "full_industrial_acceptance": false,
+  "current_protocol_task_migration_accepted": false,
+  "current_elf_managed_lifecycle_accepted": false,
+  "passed": true
+}

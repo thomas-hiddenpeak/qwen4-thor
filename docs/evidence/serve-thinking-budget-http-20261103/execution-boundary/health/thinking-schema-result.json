@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "schema_id": "urn:q4t:serve-thinking-v1",
+  "accounting_checked": true,
+  "records": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/health/candidate-installed/installed-zero-wire.bin",
+      "usage": {
+        "prompt_tokens": 55,
+        "completion_tokens": 10,
+        "total_tokens": 65,
+        "completion_tokens_details": {
+          "reasoning_tokens": 3
+        },
+        "q4t_thinking_budget": {
+          "limit": 0,
+          "consumed": 0,
+          "forced_closure_tokens": 3
+        }
+      }
+    }
+  ]
+}

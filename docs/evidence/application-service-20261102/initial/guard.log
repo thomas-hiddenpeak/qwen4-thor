@@ -1,0 +1,27 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/application_service/stage.py", line 290, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/tools/application_service/stage.py", line 286, in main
+    globals()[args.action]()
+  File "/home/rm01/models/dev/qwen4-thor/tools/application_service/stage.py", line 219, in execute
+    verifier(plan)
+  File "/home/rm01/models/dev/qwen4-thor/tools/application_service/stage.py", line 139, in verifier
+    installed=installed).run()
+                         ^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/application_service/verify.py", line 240, in run
+    self.model("candidate-ordinary", binary, False, self.ordinary)
+  File "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/verify.py", line 377, in model
+    action(folder)
+  File "/home/rm01/models/dev/qwen4-thor/tools/application_service/verify.py", line 195, in ordinary
+    self.query(folder, "acceptance-query",
+  File "/home/rm01/models/dev/qwen4-thor/tools/application_service/verify.py", line 149, in query
+    answer = project_query.run(folder / label, url, question, stream=stream,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/examples/project_query.py", line 51, in run
+    return _run(directory, client, base_url, question, stream,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/examples/project_query.py", line 86, in _run
+    require(turn + 1 < rounds, "no request budget for tool results")
+  File "/home/rm01/models/dev/qwen4-thor/tools/examples/chat_client.py", line 49, in require
+    raise ProtocolError(message)
+chat_client.ProtocolError: no request budget for tool results

@@ -1,0 +1,1918 @@
+{
+  "records": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/CMakeCache.txt",
+      "sha256": "f8f9672e8b45124f877758fdc53f81d83131a4ca9891c060d527e6dfec4430df",
+      "bytes": 39190
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/acceptance.json",
+      "sha256": "dc7b4e0b504f056075fbab974c13a084e469e3f1266bf09b76598aac6372289f",
+      "bytes": 409,
+      "artifact": "backend-package/acceptance.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/client-policy.json",
+      "sha256": "aed9b6a3acbaf617c28b2a08874913a5556515bb4c3e25f244d7b4f9549fc659",
+      "bytes": 394
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/declarations/capabilities.json",
+      "sha256": "15b81e6a449efae11e9a0f9a68686502b302594c00847caa52bcb2d3e628f700",
+      "bytes": 11343,
+      "artifact": "backend-package/declarations/capabilities.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/declarations/configuration.json",
+      "sha256": "c30d566d0d49f1da917a455230dc5e4a05f2ebabf5e7d769eb7f9fe324d1abcd",
+      "bytes": 4848,
+      "artifact": "backend-package/declarations/configuration.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/declarations/schemas/config.json",
+      "sha256": "9dca3f258b03e9b84d96abbfb2412365b5961e7ffc71b9feb6808c374adfbb02",
+      "bytes": 28772,
+      "artifact": "backend-package/declarations/schemas/config.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/declarations/schemas/message.json",
+      "sha256": "0618a6b85fee0f37f2df9347b1f260eee6882b74854f5177cef4b5527bb3bd61",
+      "bytes": 1755,
+      "artifact": "backend-package/declarations/schemas/message.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/declarations/schemas/preflight.json",
+      "sha256": "fcee5c9bddede4ba62032bd7e0007152d8899d421d2f3d473bdfab2c16348ba5",
+      "bytes": 6093,
+      "artifact": "backend-package/declarations/schemas/preflight.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/declarations/schemas/reasoning.json",
+      "sha256": "e0e24e50afc2146757deac6fd8028377613e1305ff4dad4a1756c74961b938a4",
+      "bytes": 2702,
+      "artifact": "backend-package/declarations/schemas/reasoning.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/declarations/schemas/response.json",
+      "sha256": "47c9f9068a88ec1977788c892c90fe89dae43ec02e1e6e381d67707eaea1ec62",
+      "bytes": 4493,
+      "artifact": "backend-package/declarations/schemas/response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/declarations/schemas/stop.json",
+      "sha256": "25989a444b4dc6a8ad7a0b8f723dbe96a26f9b97feb1e75016452e30536d4067",
+      "bytes": 1584,
+      "artifact": "backend-package/declarations/schemas/stop.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/declarations/schemas/thinking.json",
+      "sha256": "1353743d9290215253fab2d8d0952ff99d833444e24323a01efacc6b10cf1bd7",
+      "bytes": 2690,
+      "artifact": "backend-package/declarations/schemas/thinking.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/manifest.json",
+      "sha256": "14f8d6fc96f0ef10d228cc13ad6325d39ddec1f84d14a3777370c73ad0d22604",
+      "bytes": 6329,
+      "artifact": "backend-package/manifest.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/q4t",
+      "sha256": "7eff020de66b96f3175b3e123909be9e2f58142d54d1dd5992750d23cbe9c769",
+      "bytes": 7297520
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/q4t.release.json",
+      "sha256": "cc83bf3a36c2b9658221554f39a7e6bb807f2618cb37b87b2f19fd7d7ea91d04",
+      "bytes": 45187,
+      "artifact": "backend-package/q4t.release.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/source/tools/evalscope/bounded_log.py",
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+      "bytes": 1784
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/source/tools/evalscope/gpu_exclusive.py",
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2",
+      "bytes": 18395
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/source/tools/evalscope/nvml_process_query.py",
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+      "bytes": 7182
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/source/tools/release/release.py",
+      "sha256": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+      "bytes": 20261
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/source/tools/serve_gateway/client_policy.py",
+      "sha256": "ab0256ee376ae62373fd1e89b18ca79d9490295aa1607795b209c5e5bdee6c1c",
+      "bytes": 3923
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/source/tools/serve_ops/contracts.py",
+      "sha256": "0ceb9a926f7e6ddb573a8a7847ae1d2adc0d3cd862a4fcb76efe7746554244e7",
+      "bytes": 13824
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/source/tools/serve_ops/identity.py",
+      "sha256": "74001ea851d3a7b0d5aee843b3ccee4b669485ed93543bb04799ab42e16847b9",
+      "bytes": 4762
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/source/tools/serve_ops/transport.py",
+      "sha256": "ece3d93bc6f14dc31f6fb92697e9b188eee4f1b33915f7285d9fd320a9f9ffa4",
+      "bytes": 5331
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/source/tools/serve_service/backend.py",
+      "sha256": "2845329d81c3a9ea4f7223432daa1e865a414a305fe0419d2ca934d137463112",
+      "bytes": 1853
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/source/tools/serve_service/inspection.py",
+      "sha256": "2930af5fe6564b567a39bb6c9280dfe098be4e78227250660246a9722cfb90b9",
+      "bytes": 15290
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/source/tools/serve_service/memory.py",
+      "sha256": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+      "bytes": 6019
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/source/tools/serve_service/package.py",
+      "sha256": "f8fb029c92b7b213f37fe20977a5bb40ece15d287fce49daf3dbb05e2f11ff21",
+      "bytes": 17732
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/source/tools/serve_service/resources.py",
+      "sha256": "31da926fea3e5da1273b6130328cd68cfeb2d7d04c760db9a5ae827035553af1",
+      "bytes": 14151
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/source/tools/serve_service/service.py",
+      "sha256": "f98c60807612c2b3aa044f1b03c685d6185d36c13c9157ed76cc94ea513f23f5",
+      "bytes": 11531
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/backend-package/source/tools/serve_service/supervisor.py",
+      "sha256": "ea4f8f97991d6aab143b13cffbe27e3a8d1bb45c9a1a02fcc33dac8a7e7cfb26",
+      "bytes": 16495
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/cpu-01/result.json",
+      "sha256": "8b10afda4a733a3aeb13f99388dc974c31da82839249ece474da3922f56119ad",
+      "bytes": 213478,
+      "artifact": "cpu-01/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/cpu-01/tests.log",
+      "sha256": "720dca18ef9550ff180cf34691852c26dadf2751dea5ccd6702e654330a4a717",
+      "bytes": 5738,
+      "artifact": "cpu-01/tests.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/empty-argv-analysis.json",
+      "sha256": "701532dfd32bd7342d44d1b067f25cf14546641db1d5d33835516845c2f78045",
+      "bytes": 866,
+      "artifact": "empty-argv-analysis.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/begin.json",
+      "sha256": "7a61a960d43e952da1b57df19c6474e222a2fae87336110d32186fa354208052",
+      "bytes": 75,
+      "artifact": "execution/begin.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/alpha-idle-11-http.json",
+      "sha256": "16fb47768c1a921eb5c130d8a0a0882b1c1a0b24545d77da64689f9ffe87b5e2",
+      "bytes": 26227,
+      "artifact": "execution/business/alpha-idle-11-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/attempt-controls-001.json",
+      "sha256": "37b3fccd5a0f6d692e21b2d11426ebd506c7ed373d0afa95ab9e378b17528719",
+      "bytes": 63,
+      "artifact": "execution/business/attempt-controls-001.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/attempt-controls-002.json",
+      "sha256": "4c12af7953e45e929ec44c0a210318037e5c0dea0cf723b684117b0969778ba1",
+      "bytes": 63,
+      "artifact": "execution/business/attempt-controls-002.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/attempt-controls-003.json",
+      "sha256": "cbbe3c2881b25eeb897fbe8d285ea87a8fe6a9247caa14aadc715d81fe58026d",
+      "bytes": 63,
+      "artifact": "execution/business/attempt-controls-003.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/attempt-controls-004.json",
+      "sha256": "e02d564ca7e3047a5f67cca371a2f50959d599f1f005df1ba857b9375a092a6f",
+      "bytes": 63,
+      "artifact": "execution/business/attempt-controls-004.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/attempt-controls-005.json",
+      "sha256": "406a3e4c08b0dbf0d4b7d55aafd1e5bcb513e7d720a66df7398414cb35d3f177",
+      "bytes": 63,
+      "artifact": "execution/business/attempt-controls-005.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/attempt-controls-006.json",
+      "sha256": "a0b427373031a18b39910500029b96a015cce97b2a038e8d55b48f8fcb379347",
+      "bytes": 63,
+      "artifact": "execution/business/attempt-controls-006.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/attempt-controls-007.json",
+      "sha256": "1c5d3579e3bd97ed487ede26c000e41771d506ef471677f93dc76777bc8cf208",
+      "bytes": 63,
+      "artifact": "execution/business/attempt-controls-007.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/attempt-controls-008.json",
+      "sha256": "c93bebb807509896e8ffcac873eda94ddab959c9dbd22f0ecf6f7515980851c4",
+      "bytes": 63,
+      "artifact": "execution/business/attempt-controls-008.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/attempt-controls-009.json",
+      "sha256": "cc624e0552367f7cfe8292b63b7876ddbb4cad108f3defcbc0dd3eaca9573e69",
+      "bytes": 63,
+      "artifact": "execution/business/attempt-controls-009.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/attempt-controls-010.json",
+      "sha256": "ab716713efa515c21dcab107dc9b058c8fb6e497554f282207148ba40e21e285",
+      "bytes": 64,
+      "artifact": "execution/business/attempt-controls-010.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/attempt-controls-011.json",
+      "sha256": "194c3c69ec092c1b1e8c0b339f976c799a7849b577faf7c3645686bebc4a44b0",
+      "bytes": 64,
+      "artifact": "execution/business/attempt-controls-011.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/attempt-controls-012.json",
+      "sha256": "f41b819c28cea9eaa2c89140531462fe38c00350e106ae502e750cea90667bb9",
+      "bytes": 64,
+      "artifact": "execution/business/attempt-controls-012.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/attempt-controls-013.json",
+      "sha256": "a2470e0b69bf9a434f29f5d2eaacfd770a5dd691bcf03a0792f3330e9606dea0",
+      "bytes": 64,
+      "artifact": "execution/business/attempt-controls-013.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/attempt-generation_attempts-001.json",
+      "sha256": "f255ae32ce1066537ffb421fe51d035538cce8a303cb9dcfd8ace22c7eec4b6a",
+      "bytes": 64,
+      "artifact": "execution/business/attempt-generation_attempts-001.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/attempt-generation_attempts-002.json",
+      "sha256": "90966536f4f8ba81e3fed83507d83c3695065aab42039e45e998bb7a20e4a37e",
+      "bytes": 64,
+      "artifact": "execution/business/attempt-generation_attempts-002.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/attempt-generation_attempts-003.json",
+      "sha256": "27565436403b83fe5cc1564aba7af2f67f5ffd9cbe0629a1a25f7ccfbad913f9",
+      "bytes": 64,
+      "artifact": "execution/business/attempt-generation_attempts-003.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/attempt-generation_attempts-004.json",
+      "sha256": "956bb8f49f64721bc3bc2f31ff011043994c5aba031f091ccb6759eef1067959",
+      "bytes": 64,
+      "artifact": "execution/business/attempt-generation_attempts-004.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/attempt-starts-001.json",
+      "sha256": "7daa965b79359947102b1684448910400bc1bfbb760a98c484207d1e2779ce37",
+      "bytes": 63,
+      "artifact": "execution/business/attempt-starts-001.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/final-idle-12-http.json",
+      "sha256": "25031dc382dd8c21d0c71852bcbe6ece31b35503a8188ba90a28fbe1aa3165e7",
+      "bytes": 26231,
+      "artifact": "execution/business/final-idle-12-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/pressure-recovery-10-http.json",
+      "sha256": "ce4da17b6fc819b41009b004ef27d44f3fd5b29a9afb338a061ce4dec1383948",
+      "bytes": 26202,
+      "artifact": "execution/business/pressure-recovery-10-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/project-alpha-answer-http.json",
+      "sha256": "736dd0dfb17268fb3e48b178d55e2a551c4c9364f96fea7dd05bb802b05395fa",
+      "bytes": 379,
+      "artifact": "execution/business/project-alpha-answer-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/project-alpha-answer-request.json",
+      "sha256": "98aaebf4e95bbc2a4f94ae9f6ae8544e480beb17c2a51ad0a6af164cd4965721",
+      "bytes": 6158
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/project-alpha-answer-response.json",
+      "sha256": "6804299e5a6c585fd341e5999344a6bea508ef29d4c46a122a40d6459f6bd849",
+      "bytes": 529,
+      "artifact": "execution/business/project-alpha-answer-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/project-alpha-answer-wire.bin",
+      "sha256": "acf4dc21fcd79bba8a6ac238ca9a5ceaec1042dee89bfc2a7d76b106fa373fef",
+      "bytes": 1137,
+      "artifact": "execution/business/project-alpha-answer-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/project-alpha-read-http.json",
+      "sha256": "6216430b25617a414023e6ef917ec7a8c2a08abd5ac27acd5006bf2546660707",
+      "bytes": 379,
+      "artifact": "execution/business/project-alpha-read-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/project-alpha-read-request.json",
+      "sha256": "a372f326e8d156eedd299a1031c761f4965f9be451202597c954c3087cec9595",
+      "bytes": 3672
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/project-alpha-read-response.json",
+      "sha256": "0a0fdb446ada25eb7206d2c9e417877af0f4d37e46e50bac6ba0e611b951fa00",
+      "bytes": 610,
+      "artifact": "execution/business/project-alpha-read-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/project-alpha-read-wire.bin",
+      "sha256": "5d23cc6bce9dce0d53119883ecdb7c46bb1e60fb1111524c5dd40fa356ee2b3c",
+      "bytes": 1184,
+      "artifact": "execution/business/project-alpha-read-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/project-alpha-tool-result.json",
+      "sha256": "a5c1a0ed2b9fe6c6ad1971e085fedece8069913f02c725ad6bab1b3952775047",
+      "bytes": 2036,
+      "artifact": "execution/business/project-alpha-tool-result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/project-alpha-tool-started.json",
+      "sha256": "19241e2553dbbae72d5e689c0baa4e7b779b102246eb1e113df9c2a95974e00b",
+      "bytes": 191,
+      "artifact": "execution/business/project-alpha-tool-started.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/project-beta-answer-http.json",
+      "sha256": "fa3872bcb54ca4f02ab4acc8cda317090213a98a836b918b5cea006e49050a61",
+      "bytes": 379,
+      "artifact": "execution/business/project-beta-answer-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/project-beta-answer-request.json",
+      "sha256": "885ec6997cf573b008c848d5ca111286c2fa75670c70c78bda28306c41d2b17f",
+      "bytes": 6157
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/project-beta-answer-response.json",
+      "sha256": "77dc5c5e0e4d706cb1ddafd50c3d3b216940a9580594aa95816299ea1ea9815c",
+      "bytes": 529,
+      "artifact": "execution/business/project-beta-answer-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/project-beta-answer-wire.bin",
+      "sha256": "be0c1032a8a9350aa21f1cea792b7edb2f821d2c397346d5c2dd8f36c37018af",
+      "bytes": 1137,
+      "artifact": "execution/business/project-beta-answer-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/project-beta-read-http.json",
+      "sha256": "1552328afc5c4f1a81c123236b687346b38b8c6313651ad66a5d9719827625eb",
+      "bytes": 379,
+      "artifact": "execution/business/project-beta-read-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/project-beta-read-request.json",
+      "sha256": "0c1b6258f24d8de5134175f2a16c994a9f0466f7606f66a4a39c95cc2f46e6ac",
+      "bytes": 3671
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/project-beta-read-response.json",
+      "sha256": "d2eba6acec18caa8915d82bc5b697c9c583e60abee56bfa8360ad7253a571e9b",
+      "bytes": 610,
+      "artifact": "execution/business/project-beta-read-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/project-beta-read-wire.bin",
+      "sha256": "bbeca96a519080a11a47246b6f93c59d748ea6ebec3c1ce86226c7982155d31f",
+      "bytes": 1184,
+      "artifact": "execution/business/project-beta-read-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/project-beta-tool-result.json",
+      "sha256": "32dae05d33c0fa885c92616d3998d61ef9e63e0897ca903c0e913abc65e4f600",
+      "bytes": 2036,
+      "artifact": "execution/business/project-beta-tool-result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/project-beta-tool-started.json",
+      "sha256": "82195784ee6afd2f1ddf5f1b4af6ea5adfd6a48e2cad908b4fac6fb70afafe7b",
+      "bytes": 191,
+      "artifact": "execution/business/project-beta-tool-started.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/saturated-capabilities-http.json",
+      "sha256": "7f09bae7ea12c05c05925123aac49936d5a2e067cf79c99085395bed5720d8ea",
+      "bytes": 371,
+      "artifact": "execution/business/saturated-capabilities-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/saturated-capabilities-request.json",
+      "sha256": "5ac7a68b8c43ea594adfd7ebe9fb4adb4610f8d5fab8962cb1df04daabc436be",
+      "bytes": 102
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/saturated-capabilities-wire.bin",
+      "sha256": "15b81e6a449efae11e9a0f9a68686502b302594c00847caa52bcb2d3e628f700",
+      "bytes": 11343,
+      "artifact": "execution/business/saturated-capabilities-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/saturated-final-http.json",
+      "sha256": "a592c8d5d927b4b47c49337dd8cff019cf68c768ed1e976c852e1aa49045d431",
+      "bytes": 26204,
+      "artifact": "execution/business/saturated-final-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/saturated-models-http.json",
+      "sha256": "cc6e8493b54b1cb8d10ff5c531e3004b9045c11fca4c724e2313eeb3920d9680",
+      "bytes": 369,
+      "artifact": "execution/business/saturated-models-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/saturated-models-request.json",
+      "sha256": "ddc1c32eeff8e8c234eafc2503a0ed79b75698cd7390dab4a4403f16e360ae54",
+      "bytes": 96
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/business/saturated-models-wire.bin",
+      "sha256": "a1d906442c3690c582a41e5be2c2788b6372505dc4711e8f00e2bf498190ce4e",
+      "bytes": 109,
+      "artifact": "execution/business/saturated-models-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/cgroup-binding.json",
+      "sha256": "fa256fe66a8d8323d06cf11493ad2cb9853122167b334b9143f677275faec316",
+      "bytes": 1734,
+      "artifact": "execution/cgroup-binding.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/controller-identity.json",
+      "sha256": "b23434a92581432a634a5dc3d01044e03eefe0f7a06f0651ef89aa403776b70e",
+      "bytes": 102,
+      "artifact": "execution/controller-identity.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/controller.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "artifact": "execution/controller.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/custody/events.jsonl",
+      "sha256": "27380ef26a1172982fdde687359af8e3dd3ee8826d535d7600a83f3fd54df41c",
+      "bytes": 2851,
+      "artifact": "execution/custody/events.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/custody/exit.json",
+      "sha256": "4f687e2c5fba59fe61b783bacfd5993bb22785b556023eccd37749b129013d94",
+      "bytes": 99,
+      "artifact": "execution/custody/exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/custody/lease-copy.json",
+      "sha256": "90a337cf4b38c6009e9b4f747def26b1cb92758be3330f0040639482451eb314",
+      "bytes": 486,
+      "artifact": "execution/custody/lease-copy.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/custody/nvml.jsonl",
+      "sha256": "093cc079e7c49eae74c030dffd38ea235e257ff59f9d496d5269c7666e92988a",
+      "bytes": 54297,
+      "artifact": "execution/custody/nvml.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/final-gpu.json",
+      "sha256": "7b871426fa62e94d5e76e680167965ce42251a86106b1fdfcd66838fccd3cbd2",
+      "bytes": 2257,
+      "artifact": "execution/final-gpu.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/final-metrics.json",
+      "sha256": "94b7bb1aeff7079854e2fe2e878299d183918536c82edac15af8bec8d73fbec0",
+      "bytes": 5861,
+      "artifact": "execution/final-metrics.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/first-ready.json",
+      "sha256": "e8cb79c01c779c814e7cfc17b45d0b90ad52149d40dfc455326abc11b2875232",
+      "bytes": 10164,
+      "artifact": "execution/first-ready.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/front-1/controller.json",
+      "sha256": "14b1063220093d736b91ec1e122edb822643412802a5dfd7ad63df3347aebe83",
+      "bytes": 1949,
+      "artifact": "execution/front-1/controller.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/front-1/events.log",
+      "sha256": "f2d31ada12841b8dd55f619c860fb26c572f4c74dc8f17afc5c58c25c391d5bc",
+      "bytes": 455,
+      "artifact": "execution/front-1/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/front-1/gateway.log",
+      "sha256": "2fa31b364f57e3cfa0917683fada9a86b10d1036c17ea081a96edef6131cb329",
+      "bytes": 870,
+      "artifact": "execution/front-1/gateway.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/front-1/status.json",
+      "sha256": "fb0c7029933a01d9e599d6dfc23e68f07e5891173ddb0f7f2888620ea1770ab2",
+      "bytes": 1202,
+      "artifact": "execution/front-1/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/front-1/stop.request.json",
+      "sha256": "d3e7cb4a92629e2a0f53b9a2fe621de3c8c9529780e0daa57301e62e15ea0bcf",
+      "bytes": 62,
+      "artifact": "execution/front-1/stop.request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/front-1/terminal.json",
+      "sha256": "f948e6d7617103dcde7af27312b3184f7d8ba7ac86f2ed20e37251392538029b",
+      "bytes": 1315,
+      "artifact": "execution/front-1/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/front-1-identity.json",
+      "sha256": "4d8c699d81dc0c236069cb42ece773502b0f2dbab296298e9a1fa4d2d0421cc0",
+      "bytes": 102,
+      "artifact": "execution/front-1-identity.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/front-1-ready.json",
+      "sha256": "ca471464b0ba1c21d55d722c620fc084ef045f821aeb34d0166f7d2b4c28417c",
+      "bytes": 3524,
+      "artifact": "execution/front-1-ready.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/front-1.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "artifact": "execution/front-1.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/front-2/controller.json",
+      "sha256": "589f3c3fcbf2886221f748e1b6c6aeae970cd9c3ea21a802205c035dac7b0b52",
+      "bytes": 1949,
+      "artifact": "execution/front-2/controller.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/front-2/events.log",
+      "sha256": "9d9c2e94833d1d04e9c68587a1a1d0d83168001e451985739ba25ce05594b934",
+      "bytes": 454,
+      "artifact": "execution/front-2/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/front-2/gateway.log",
+      "sha256": "ef8250c53dc470109d0dbee5889b0aa690d619ae9f1fcd6889f07aa299ca338b",
+      "bytes": 430,
+      "artifact": "execution/front-2/gateway.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/front-2/status.json",
+      "sha256": "39afb26e77f958a5432b79943e6a7b44c2fb2ab27c5550dd7f1e34f0345ac247",
+      "bytes": 1202,
+      "artifact": "execution/front-2/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/front-2/stop.request.json",
+      "sha256": "916f6205fdeae6baf8aac66e4aeb58cdc4fe196619da2c7c171979a64605c604",
+      "bytes": 62,
+      "artifact": "execution/front-2/stop.request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/front-2/terminal.json",
+      "sha256": "f533295231802fe679ed1ccab7c7bf9e1da46d3e5bd387b81d5211df60847743",
+      "bytes": 1315,
+      "artifact": "execution/front-2/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/front-2-identity.json",
+      "sha256": "d9664540ef2ebd42936ec11b27178382fdfc35325ea2a54cb08a067ea1b2ef1b",
+      "bytes": 102,
+      "artifact": "execution/front-2-identity.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/front-2-ready.json",
+      "sha256": "6a2003fa60a1fe1b21ceedaa964179306a46430a1803e1db955abd0ee885b76a",
+      "bytes": 3525,
+      "artifact": "execution/front-2-ready.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/front-2.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "artifact": "execution/front-2.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/host-capture.json",
+      "sha256": "4e4561863cc6878f22ae56863393c1405a9675b39ba663a4a5ace6c9cf474642",
+      "bytes": 57,
+      "artifact": "execution/host-capture.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/host-samples.jsonl",
+      "sha256": "4c2f67442792765dcfb04b83ccb6f1a129a8477e0478f231b67f56198e664661",
+      "bytes": 148747,
+      "artifact": "execution/host-samples.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/initial-gpu.json",
+      "sha256": "e8acd02d57a28b2403016da1b22b2241fd67e24cb5e6128e051f9bf9c31d002c",
+      "bytes": 2257,
+      "artifact": "execution/initial-gpu.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/live-declaration.json",
+      "sha256": "cd4ee97c09a51dd43355abb6d25c0ec77103885c76c9c029595446aaa3bb9c56",
+      "bytes": 199,
+      "artifact": "execution/live-declaration.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/live-inspection.json",
+      "sha256": "36cdf8038d9f024e1265f3e93cb9176033db3c8da2cd22c0866bf9a5206b4faa",
+      "bytes": 1860,
+      "artifact": "execution/live-inspection.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/managed-run/attempt-1.json",
+      "sha256": "0da56277ef3b24c17601970a939e296efaa9f38e41ce333209f89f38dfa05633",
+      "bytes": 1011,
+      "artifact": "execution/managed-run/attempt-1.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/managed-run/backend.log",
+      "sha256": "ec25c5f998e0c3d9e7c5c6a501bc14f17bdf81b540ddd60c36726ac657fc2dfb",
+      "bytes": 42896,
+      "artifact": "execution/managed-run/backend.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/managed-run/controller.json",
+      "sha256": "495f28806bdf44d95cba5e3b22e61c3c32cd20b847f7e32bfe1159540bc82a73",
+      "bytes": 788,
+      "artifact": "execution/managed-run/controller.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/managed-run/events.log",
+      "sha256": "abdecde1e13814a79f81993fbbddca69b17a5749347898d528ec0fdc8516c090",
+      "bytes": 122,
+      "artifact": "execution/managed-run/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/managed-run/lease/events.jsonl",
+      "sha256": "12e5dce742bebfe13db9eeabc879e91acff1a96085b43c8f594b120749863459",
+      "bytes": 11883,
+      "artifact": "execution/managed-run/lease/events.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/managed-run/lease/exit.json",
+      "sha256": "8c685622c644e439070fbfafdaa5d7394511d2fabc05c95fc0d667ed1180834b",
+      "bytes": 934,
+      "artifact": "execution/managed-run/lease/exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/managed-run/lease/nvml-queries.jsonl",
+      "sha256": "6eb47a9f2972f7cf9be87875478222db240364e7f8bff3d763ba2af612560ce7",
+      "bytes": 143741,
+      "artifact": "execution/managed-run/lease/nvml-queries.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/managed-run/resource-backend-2691978.json",
+      "sha256": "708db1688f2deae66ba730a261300e6728dd42b5ec58b7d6f296d32c5e061863",
+      "bytes": 647,
+      "artifact": "execution/managed-run/resource-backend-2691978.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/managed-run/resource-intent.json",
+      "sha256": "e8bdc86c86ecc26ab670cdab796ef0745b10f780b0924d117197331eadc7713e",
+      "bytes": 556,
+      "artifact": "execution/managed-run/resource-intent.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/managed-run/resources-final.json",
+      "sha256": "de149e082bc7f78c69b4710193cfcf0f2c280e72689db6f84b647316ac40c5d1",
+      "bytes": 1675,
+      "artifact": "execution/managed-run/resources-final.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/managed-run/resources.json",
+      "sha256": "294d745a727b81b33aac56941966b620d1861252a3092a405a275f15055ac4db",
+      "bytes": 883,
+      "artifact": "execution/managed-run/resources.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/managed-run/status.json",
+      "sha256": "010b31c3ea95d7abc4d7a71593f54fb8ff43661106377a381e1f3268e9f6c50c",
+      "bytes": 10076,
+      "artifact": "execution/managed-run/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/managed-run/stop.request.json",
+      "sha256": "2197381d2ce29908e8aad094fdedb8e911e4c65d8d89d5316da3ed79ec6b0ce5",
+      "bytes": 70,
+      "artifact": "execution/managed-run/stop.request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/managed-run/terminal.json",
+      "sha256": "00b22b17025a9beb3673a73999858eb21b5deced8070dbdb17c4d6550c694a17",
+      "bytes": 11866,
+      "artifact": "execution/managed-run/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/port-check-operations/events.log",
+      "sha256": "97215d516a2de245f6abd5e2fd81566dd81d1f169218e4c477cb8dd053bc0411",
+      "bytes": 26,
+      "artifact": "execution/port-check-operations/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/port-check-operations/probe-result.json",
+      "sha256": "a049a6bfe99431a9625104dd0233e2b90a47a28362a46b0664ab2315ec2bad8e",
+      "bytes": 441,
+      "artifact": "execution/port-check-operations/probe-result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/port-check-operations/resource-intent.json",
+      "sha256": "6cdb2ed038bed7a01694d34fd68ff83d53d7fe78c4a85b1f01b0e561a73868b3",
+      "bytes": 556,
+      "artifact": "execution/port-check-operations/resource-intent.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/port-check-operations/resources-final.json",
+      "sha256": "bdb4f1ce85433d1e1442f7434dce9c701b8a1f35a490f19119e28daa951963c5",
+      "bytes": 1660,
+      "artifact": "execution/port-check-operations/resources-final.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/port-check-operations/resources.json",
+      "sha256": "5bd6955ca1b024812ee9b26e2d37619d5f4047a4219c9a9a0243b74b6312965c",
+      "bytes": 883,
+      "artifact": "execution/port-check-operations/resources.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/port-check-operations/status.json",
+      "sha256": "5a9e3bb77d1cf5db837b78974a3c3dc48e0e93c6505a5935b764c586839bf1df",
+      "bytes": 1859,
+      "artifact": "execution/port-check-operations/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/port-check-operations/verified.json",
+      "sha256": "b6366ecd690568301f948529642193976c10beddb5e7094a4bd03ae16ec8c95d",
+      "bytes": 1062,
+      "artifact": "execution/port-check-operations/verified.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/port-check-operations-identity.json",
+      "sha256": "9a104f356f65c7b059732b595ff64926c876dd5979f71060573a055ed43aa83f",
+      "bytes": 102,
+      "artifact": "execution/port-check-operations-identity.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/port-check-operations.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "artifact": "execution/port-check-operations.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/port-check-public/events.log",
+      "sha256": "f6b9b7b7eaecfaef4908922be8dddd08f00538ccd3bcc704cc5594b46bd670a4",
+      "bytes": 25,
+      "artifact": "execution/port-check-public/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/port-check-public/probe-result.json",
+      "sha256": "be54716a4c8e36ec2e880fee55e2b2d9623336c4b3a821ee52691808344f5385",
+      "bytes": 429,
+      "artifact": "execution/port-check-public/probe-result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/port-check-public/resource-intent.json",
+      "sha256": "62875ea5f2789a41ecb0cad34a05cbd35c194415232c23f83c45719eed8fa1b1",
+      "bytes": 556,
+      "artifact": "execution/port-check-public/resource-intent.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/port-check-public/resources-final.json",
+      "sha256": "a5baf4b34b954e857b34d9d08da337d47b64206fdaaf69eef6dbf3a94c2c6049",
+      "bytes": 1660,
+      "artifact": "execution/port-check-public/resources-final.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/port-check-public/resources.json",
+      "sha256": "663363a5f581354483bda1b5b6d0e162c295af073e08f1520b6d41f2dd8ef640",
+      "bytes": 883,
+      "artifact": "execution/port-check-public/resources.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/port-check-public/status.json",
+      "sha256": "b0e9b5b791ed27e15934b8eb26d280c4919ee51d4393a114772e4f6a34bd7790",
+      "bytes": 1855,
+      "artifact": "execution/port-check-public/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/port-check-public/verified.json",
+      "sha256": "1d8ffb446489eb3f0374fd98f3b69af399974fd4dda2520e2f1294e6407d2289",
+      "bytes": 1058,
+      "artifact": "execution/port-check-public/verified.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/port-check-public-identity.json",
+      "sha256": "69f3e9ad3febdf7ebff936b0932d0f5199194424834adc8b30543c509a95e5c9",
+      "bytes": 102,
+      "artifact": "execution/port-check-public-identity.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/port-check-public.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "artifact": "execution/port-check-public.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/rejected-0/controller.json",
+      "sha256": "77977a7e430a6496a662141a288ec46091979e6685037a2fbed77de64f7f1b44",
+      "bytes": 499,
+      "artifact": "execution/rejected-0/controller.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/rejected-0/terminal.json",
+      "sha256": "3b7c21d95e482f80e791b3029b89f730ed5c19105958710f4d8615729dfd0d1a",
+      "bytes": 226,
+      "artifact": "execution/rejected-0/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/rejected-0-identity.json",
+      "sha256": "83596c33f688e44423f2f340b0c8b5b120b5498216ce586f9d9034391495c0e8",
+      "bytes": 102,
+      "artifact": "execution/rejected-0-identity.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/rejected-0.log",
+      "sha256": "8f4f446df1769582d483cfb71c27e84d86ec35d3b914ea36e1573fb7a3efc165",
+      "bytes": 1612,
+      "artifact": "execution/rejected-0.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/rejected-1/controller.json",
+      "sha256": "d45441b598b4e8fc5bd5937a482ba56b4817c6c122dc2993ad0679846cd3a93c",
+      "bytes": 496,
+      "artifact": "execution/rejected-1/controller.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/rejected-1/terminal.json",
+      "sha256": "2d246e3c35287b14e35440a5b4c7fd8fe5f1ee7e1d141779ab5ab351a845a4db",
+      "bytes": 225,
+      "artifact": "execution/rejected-1/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/rejected-1-identity.json",
+      "sha256": "22e637ba1a92ac148b7d871b9f8ea1aea9d8f6bc1cecfd1792eebfe6da37457a",
+      "bytes": 102,
+      "artifact": "execution/rejected-1-identity.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/rejected-1.log",
+      "sha256": "41138fd0ea08bf7ff88d1f04e3fce68b4618859a158e42badf58e0e9971b3f10",
+      "bytes": 1600,
+      "artifact": "execution/rejected-1.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/result.json",
+      "sha256": "ca84f8aa60d4ae1376c34545d5a862230a76b3ef95b7917da879ce7695585989",
+      "bytes": 347,
+      "artifact": "execution/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/saturated-diagnostic.json",
+      "sha256": "483119453b9cc728dd1bd0ef4f0ce5b5fa2d03e6adcebcfc21958f9955ef517f",
+      "bytes": 9043,
+      "artifact": "execution/saturated-diagnostic.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/saturated-supervisor.json",
+      "sha256": "10a8e969c990b5b20a87b361359ffed2930ab3c93f7e3a439ad2eac957800db1",
+      "bytes": 10168,
+      "artifact": "execution/saturated-supervisor.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/execution/stopped-inspection.json",
+      "sha256": "4f056a21194385b8e3bd9e1df329341bd0754307a291c0d7da872be65660657c",
+      "bytes": 1209,
+      "artifact": "execution/stopped-inspection.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/gateway/certificate.pem",
+      "sha256": "b50c00ef4a75c7b7bc920bc862ae9d5f9cb6ab41b1faff52baf6f15bef54bd5c",
+      "bytes": 1176
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/gateway/client-policy.json",
+      "sha256": "aed9b6a3acbaf617c28b2a08874913a5556515bb4c3e25f244d7b4f9549fc659",
+      "bytes": 394
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/gateway/manifest.json",
+      "sha256": "b7c0908da94f24dfdca78fb58777926542c8d6bec18831d0715a2fa78ea12714",
+      "bytes": 2613
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/gateway/nginx.conf",
+      "sha256": "fa0b34f895cd700c1e8eaf96da05eb5670c3f699cfe6e6859492deae1e26f666",
+      "bytes": 9580
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/gateway/private-key.pem",
+      "sha256": "2a8801f01d12208cd39a1ffc00bf289ec81b918aa8db17ac97908c2c3dcd4125",
+      "bytes": 1704
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/gateway/runtime/managed.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/gateway/syntax-private.log",
+      "sha256": "1250812d1812730b7b9a4a40cec047bcedeada89d1943eaf03caaa12b50628b8",
+      "bytes": 302
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/gateway/trusted-ca.pem",
+      "sha256": "b50c00ef4a75c7b7bc920bc862ae9d5f9cb6ab41b1faff52baf6f15bef54bd5c",
+      "bytes": 1176
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/manifest.json",
+      "sha256": "d68b8b4637c70184fcc9ac8797fe2677fece70ff0479b51561439a34339d7ae4",
+      "bytes": 2884,
+      "artifact": "gateway-good-1/manifest.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/nginx",
+      "sha256": "38c84d74ea5e54b177afba3926a4a60d9597e648e01e5c11401791d6f8a64ace",
+      "bytes": 1760872
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/source/docs/serve-openapi-v1.json",
+      "sha256": "6ace0ec55ddcc358b16b453980bfa6536a4e63fdd7edb566d8b952bdcf0168d7",
+      "bytes": 26775
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/source/tools/evalscope/bounded_log.py",
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+      "bytes": 1784
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/source/tools/evalscope/gpu_exclusive.py",
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2",
+      "bytes": 18395
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/source/tools/evalscope/nvml_process_query.py",
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+      "bytes": 7182
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/source/tools/release/release.py",
+      "sha256": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+      "bytes": 20261
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/source/tools/serve_gateway/client_policy.py",
+      "sha256": "ab0256ee376ae62373fd1e89b18ca79d9490295aa1607795b209c5e5bdee6c1c",
+      "bytes": 3923
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/source/tools/serve_gateway/gateway.py",
+      "sha256": "338c046e946127b8be50c68286f8101aee68340778149c3d6c4f59fee25573fe",
+      "bytes": 25372
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/source/tools/serve_gateway/managed.py",
+      "sha256": "56ba6b9eeb4b1817545b1f2b2209fff6524241ab14de32c50449b45cdc8e4c56",
+      "bytes": 20654
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/source/tools/serve_gateway/managed_child.py",
+      "sha256": "b976d0180035bab72e7049c5fb60cdab5a63074f4869bb628403bef483002eea",
+      "bytes": 1484
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/source/tools/serve_gateway/tls.py",
+      "sha256": "cca002a24c6731ec5f8a08b7d4c3e1a4e61cd10a8e4bac7224fc68fda88e183a",
+      "bytes": 6972
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/source/tools/serve_ops/contracts.py",
+      "sha256": "0ceb9a926f7e6ddb573a8a7847ae1d2adc0d3cd862a4fcb76efe7746554244e7",
+      "bytes": 13824
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/source/tools/serve_ops/identity.py",
+      "sha256": "74001ea851d3a7b0d5aee843b3ccee4b669485ed93543bb04799ab42e16847b9",
+      "bytes": 4762
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/source/tools/serve_ops/transport.py",
+      "sha256": "ece3d93bc6f14dc31f6fb92697e9b188eee4f1b33915f7285d9fd320a9f9ffa4",
+      "bytes": 5331
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/source/tools/serve_service/backend.py",
+      "sha256": "2845329d81c3a9ea4f7223432daa1e865a414a305fe0419d2ca934d137463112",
+      "bytes": 1853
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/source/tools/serve_service/inspection.py",
+      "sha256": "2930af5fe6564b567a39bb6c9280dfe098be4e78227250660246a9722cfb90b9",
+      "bytes": 15290
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/source/tools/serve_service/memory.py",
+      "sha256": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+      "bytes": 6019
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/source/tools/serve_service/package.py",
+      "sha256": "f8fb029c92b7b213f37fe20977a5bb40ece15d287fce49daf3dbb05e2f11ff21",
+      "bytes": 17732
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/source/tools/serve_service/resources.py",
+      "sha256": "31da926fea3e5da1273b6130328cd68cfeb2d7d04c760db9a5ae827035553af1",
+      "bytes": 14151
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/source/tools/serve_service/service.py",
+      "sha256": "f98c60807612c2b3aa044f1b03c685d6185d36c13c9157ed76cc94ea513f23f5",
+      "bytes": 11531
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-1/source/tools/serve_service/supervisor.py",
+      "sha256": "ea4f8f97991d6aab143b13cffbe27e3a8d1bb45c9a1a02fcc33dac8a7e7cfb26",
+      "bytes": 16495
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/gateway/certificate.pem",
+      "sha256": "b50c00ef4a75c7b7bc920bc862ae9d5f9cb6ab41b1faff52baf6f15bef54bd5c",
+      "bytes": 1176
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/gateway/client-policy.json",
+      "sha256": "aed9b6a3acbaf617c28b2a08874913a5556515bb4c3e25f244d7b4f9549fc659",
+      "bytes": 394
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/gateway/manifest.json",
+      "sha256": "b6c505a5900a84f7819bad7498f49653564e67385e61d91034bc032df4b9c60d",
+      "bytes": 2613
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/gateway/nginx.conf",
+      "sha256": "c50c88d24cb6cc436057e9b8720db829b587990a03a55fed8b334c1b49ddfcff",
+      "bytes": 9580
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/gateway/private-key.pem",
+      "sha256": "2a8801f01d12208cd39a1ffc00bf289ec81b918aa8db17ac97908c2c3dcd4125",
+      "bytes": 1704
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/gateway/runtime/managed.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/gateway/syntax-private.log",
+      "sha256": "738ceffc49d6325e4c0acc5ab588b3a26ecc57af0acafe50ed3fbbc52cc21528",
+      "bytes": 302
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/gateway/trusted-ca.pem",
+      "sha256": "b50c00ef4a75c7b7bc920bc862ae9d5f9cb6ab41b1faff52baf6f15bef54bd5c",
+      "bytes": 1176
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/manifest.json",
+      "sha256": "de3deb62cdb0000e365cb6b8e02d86686b6235804395bdfb9171de6dbf76cb26",
+      "bytes": 2884,
+      "artifact": "gateway-good-2/manifest.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/nginx",
+      "sha256": "38c84d74ea5e54b177afba3926a4a60d9597e648e01e5c11401791d6f8a64ace",
+      "bytes": 1760872
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/source/docs/serve-openapi-v1.json",
+      "sha256": "6ace0ec55ddcc358b16b453980bfa6536a4e63fdd7edb566d8b952bdcf0168d7",
+      "bytes": 26775
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/source/tools/evalscope/bounded_log.py",
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+      "bytes": 1784
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/source/tools/evalscope/gpu_exclusive.py",
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2",
+      "bytes": 18395
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/source/tools/evalscope/nvml_process_query.py",
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+      "bytes": 7182
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/source/tools/release/release.py",
+      "sha256": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+      "bytes": 20261
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/source/tools/serve_gateway/client_policy.py",
+      "sha256": "ab0256ee376ae62373fd1e89b18ca79d9490295aa1607795b209c5e5bdee6c1c",
+      "bytes": 3923
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/source/tools/serve_gateway/gateway.py",
+      "sha256": "338c046e946127b8be50c68286f8101aee68340778149c3d6c4f59fee25573fe",
+      "bytes": 25372
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/source/tools/serve_gateway/managed.py",
+      "sha256": "56ba6b9eeb4b1817545b1f2b2209fff6524241ab14de32c50449b45cdc8e4c56",
+      "bytes": 20654
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/source/tools/serve_gateway/managed_child.py",
+      "sha256": "b976d0180035bab72e7049c5fb60cdab5a63074f4869bb628403bef483002eea",
+      "bytes": 1484
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/source/tools/serve_gateway/tls.py",
+      "sha256": "cca002a24c6731ec5f8a08b7d4c3e1a4e61cd10a8e4bac7224fc68fda88e183a",
+      "bytes": 6972
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/source/tools/serve_ops/contracts.py",
+      "sha256": "0ceb9a926f7e6ddb573a8a7847ae1d2adc0d3cd862a4fcb76efe7746554244e7",
+      "bytes": 13824
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/source/tools/serve_ops/identity.py",
+      "sha256": "74001ea851d3a7b0d5aee843b3ccee4b669485ed93543bb04799ab42e16847b9",
+      "bytes": 4762
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/source/tools/serve_ops/transport.py",
+      "sha256": "ece3d93bc6f14dc31f6fb92697e9b188eee4f1b33915f7285d9fd320a9f9ffa4",
+      "bytes": 5331
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/source/tools/serve_service/backend.py",
+      "sha256": "2845329d81c3a9ea4f7223432daa1e865a414a305fe0419d2ca934d137463112",
+      "bytes": 1853
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/source/tools/serve_service/inspection.py",
+      "sha256": "2930af5fe6564b567a39bb6c9280dfe098be4e78227250660246a9722cfb90b9",
+      "bytes": 15290
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/source/tools/serve_service/memory.py",
+      "sha256": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+      "bytes": 6019
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/source/tools/serve_service/package.py",
+      "sha256": "f8fb029c92b7b213f37fe20977a5bb40ece15d287fce49daf3dbb05e2f11ff21",
+      "bytes": 17732
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/source/tools/serve_service/resources.py",
+      "sha256": "31da926fea3e5da1273b6130328cd68cfeb2d7d04c760db9a5ae827035553af1",
+      "bytes": 14151
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/source/tools/serve_service/service.py",
+      "sha256": "f98c60807612c2b3aa044f1b03c685d6185d36c13c9157ed76cc94ea513f23f5",
+      "bytes": 11531
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-good-2/source/tools/serve_service/supervisor.py",
+      "sha256": "ea4f8f97991d6aab143b13cffbe27e3a8d1bb45c9a1a02fcc33dac8a7e7cfb26",
+      "bytes": 16495
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/gateway/certificate.pem",
+      "sha256": "b50c00ef4a75c7b7bc920bc862ae9d5f9cb6ab41b1faff52baf6f15bef54bd5c",
+      "bytes": 1176
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/gateway/client-policy.json",
+      "sha256": "aed9b6a3acbaf617c28b2a08874913a5556515bb4c3e25f244d7b4f9549fc659",
+      "bytes": 394
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/gateway/manifest.json",
+      "sha256": "3cc3fb6cbc368d26d13b6323eaff743eca9084ea4557a8de0efa81f239e2ad00",
+      "bytes": 2586
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/gateway/nginx.conf",
+      "sha256": "870c9fb17e457395cfed77db7374e9a951eb02cdf6dd844b682cc916affe85a6",
+      "bytes": 9584
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/gateway/private-key.pem",
+      "sha256": "2a8801f01d12208cd39a1ffc00bf289ec81b918aa8db17ac97908c2c3dcd4125",
+      "bytes": 1704
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/gateway/runtime/managed.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/gateway/syntax-private.log",
+      "sha256": "155fd9a731a4733f6c84002823f1112128e349aa0755fac17776c583c542d051",
+      "bytes": 326
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/gateway/trusted-ca.pem",
+      "sha256": "b50c00ef4a75c7b7bc920bc862ae9d5f9cb6ab41b1faff52baf6f15bef54bd5c",
+      "bytes": 1176
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/manifest.json",
+      "sha256": "bd6f1c21a81a2098a5ac5bb58e709e6479abf647daa94d549af54239ca4327d1",
+      "bytes": 2896,
+      "artifact": "gateway-missing-operations/manifest.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/nginx",
+      "sha256": "38c84d74ea5e54b177afba3926a4a60d9597e648e01e5c11401791d6f8a64ace",
+      "bytes": 1760872
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/source/docs/serve-openapi-v1.json",
+      "sha256": "6ace0ec55ddcc358b16b453980bfa6536a4e63fdd7edb566d8b952bdcf0168d7",
+      "bytes": 26775
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/source/tools/evalscope/bounded_log.py",
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+      "bytes": 1784
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/source/tools/evalscope/gpu_exclusive.py",
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2",
+      "bytes": 18395
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/source/tools/evalscope/nvml_process_query.py",
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+      "bytes": 7182
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/source/tools/release/release.py",
+      "sha256": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+      "bytes": 20261
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/source/tools/serve_gateway/client_policy.py",
+      "sha256": "ab0256ee376ae62373fd1e89b18ca79d9490295aa1607795b209c5e5bdee6c1c",
+      "bytes": 3923
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/source/tools/serve_gateway/gateway.py",
+      "sha256": "338c046e946127b8be50c68286f8101aee68340778149c3d6c4f59fee25573fe",
+      "bytes": 25372
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/source/tools/serve_gateway/managed.py",
+      "sha256": "56ba6b9eeb4b1817545b1f2b2209fff6524241ab14de32c50449b45cdc8e4c56",
+      "bytes": 20654
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/source/tools/serve_gateway/managed_child.py",
+      "sha256": "b976d0180035bab72e7049c5fb60cdab5a63074f4869bb628403bef483002eea",
+      "bytes": 1484
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/source/tools/serve_gateway/tls.py",
+      "sha256": "cca002a24c6731ec5f8a08b7d4c3e1a4e61cd10a8e4bac7224fc68fda88e183a",
+      "bytes": 6972
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/source/tools/serve_ops/contracts.py",
+      "sha256": "0ceb9a926f7e6ddb573a8a7847ae1d2adc0d3cd862a4fcb76efe7746554244e7",
+      "bytes": 13824
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/source/tools/serve_ops/identity.py",
+      "sha256": "74001ea851d3a7b0d5aee843b3ccee4b669485ed93543bb04799ab42e16847b9",
+      "bytes": 4762
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/source/tools/serve_ops/transport.py",
+      "sha256": "ece3d93bc6f14dc31f6fb92697e9b188eee4f1b33915f7285d9fd320a9f9ffa4",
+      "bytes": 5331
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/source/tools/serve_service/backend.py",
+      "sha256": "2845329d81c3a9ea4f7223432daa1e865a414a305fe0419d2ca934d137463112",
+      "bytes": 1853
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/source/tools/serve_service/inspection.py",
+      "sha256": "2930af5fe6564b567a39bb6c9280dfe098be4e78227250660246a9722cfb90b9",
+      "bytes": 15290
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/source/tools/serve_service/memory.py",
+      "sha256": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+      "bytes": 6019
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/source/tools/serve_service/package.py",
+      "sha256": "f8fb029c92b7b213f37fe20977a5bb40ece15d287fce49daf3dbb05e2f11ff21",
+      "bytes": 17732
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/source/tools/serve_service/resources.py",
+      "sha256": "31da926fea3e5da1273b6130328cd68cfeb2d7d04c760db9a5ae827035553af1",
+      "bytes": 14151
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/source/tools/serve_service/service.py",
+      "sha256": "f98c60807612c2b3aa044f1b03c685d6185d36c13c9157ed76cc94ea513f23f5",
+      "bytes": 11531
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-missing-operations/source/tools/serve_service/supervisor.py",
+      "sha256": "ea4f8f97991d6aab143b13cffbe27e3a8d1bb45c9a1a02fcc33dac8a7e7cfb26",
+      "bytes": 16495
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/gateway/certificate.pem",
+      "sha256": "b50c00ef4a75c7b7bc920bc862ae9d5f9cb6ab41b1faff52baf6f15bef54bd5c",
+      "bytes": 1176
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/gateway/client-policy.json",
+      "sha256": "aed9b6a3acbaf617c28b2a08874913a5556515bb4c3e25f244d7b4f9549fc659",
+      "bytes": 394
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/gateway/manifest.json",
+      "sha256": "77f8cf0aa8b270d3696067c924646d4b5e341d47c29a08a10b2144f9e1d8600d",
+      "bytes": 2623
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/gateway/nginx.conf",
+      "sha256": "cc0c42b028480a44b6d1e05d36f8d465587777b14c77539a4490e9fa496073f1",
+      "bytes": 9660
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/gateway/private-key.pem",
+      "sha256": "2a8801f01d12208cd39a1ffc00bf289ec81b918aa8db17ac97908c2c3dcd4125",
+      "bytes": 1704
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/gateway/runtime/managed.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/gateway/syntax-private.log",
+      "sha256": "8e88f10d13daa98136efcf58ff293a121c345d7b2a6cc677f5611ec8b533e565",
+      "bytes": 322
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/gateway/trusted-ca.pem",
+      "sha256": "b50c00ef4a75c7b7bc920bc862ae9d5f9cb6ab41b1faff52baf6f15bef54bd5c",
+      "bytes": 1176
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/manifest.json",
+      "sha256": "99868c20617997e8568cdba3f77c77d52a1c2fe6bbd4711724e49440551608c4",
+      "bytes": 2894,
+      "artifact": "gateway-wrong-operations/manifest.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/nginx",
+      "sha256": "38c84d74ea5e54b177afba3926a4a60d9597e648e01e5c11401791d6f8a64ace",
+      "bytes": 1760872
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/source/docs/serve-openapi-v1.json",
+      "sha256": "6ace0ec55ddcc358b16b453980bfa6536a4e63fdd7edb566d8b952bdcf0168d7",
+      "bytes": 26775
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/source/tools/evalscope/bounded_log.py",
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+      "bytes": 1784
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/source/tools/evalscope/gpu_exclusive.py",
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2",
+      "bytes": 18395
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/source/tools/evalscope/nvml_process_query.py",
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+      "bytes": 7182
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/source/tools/release/release.py",
+      "sha256": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+      "bytes": 20261
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/source/tools/serve_gateway/client_policy.py",
+      "sha256": "ab0256ee376ae62373fd1e89b18ca79d9490295aa1607795b209c5e5bdee6c1c",
+      "bytes": 3923
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/source/tools/serve_gateway/gateway.py",
+      "sha256": "338c046e946127b8be50c68286f8101aee68340778149c3d6c4f59fee25573fe",
+      "bytes": 25372
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/source/tools/serve_gateway/managed.py",
+      "sha256": "56ba6b9eeb4b1817545b1f2b2209fff6524241ab14de32c50449b45cdc8e4c56",
+      "bytes": 20654
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/source/tools/serve_gateway/managed_child.py",
+      "sha256": "b976d0180035bab72e7049c5fb60cdab5a63074f4869bb628403bef483002eea",
+      "bytes": 1484
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/source/tools/serve_gateway/tls.py",
+      "sha256": "cca002a24c6731ec5f8a08b7d4c3e1a4e61cd10a8e4bac7224fc68fda88e183a",
+      "bytes": 6972
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/source/tools/serve_ops/contracts.py",
+      "sha256": "0ceb9a926f7e6ddb573a8a7847ae1d2adc0d3cd862a4fcb76efe7746554244e7",
+      "bytes": 13824
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/source/tools/serve_ops/identity.py",
+      "sha256": "74001ea851d3a7b0d5aee843b3ccee4b669485ed93543bb04799ab42e16847b9",
+      "bytes": 4762
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/source/tools/serve_ops/transport.py",
+      "sha256": "ece3d93bc6f14dc31f6fb92697e9b188eee4f1b33915f7285d9fd320a9f9ffa4",
+      "bytes": 5331
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/source/tools/serve_service/backend.py",
+      "sha256": "2845329d81c3a9ea4f7223432daa1e865a414a305fe0419d2ca934d137463112",
+      "bytes": 1853
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/source/tools/serve_service/inspection.py",
+      "sha256": "2930af5fe6564b567a39bb6c9280dfe098be4e78227250660246a9722cfb90b9",
+      "bytes": 15290
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/source/tools/serve_service/memory.py",
+      "sha256": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+      "bytes": 6019
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/source/tools/serve_service/package.py",
+      "sha256": "f8fb029c92b7b213f37fe20977a5bb40ece15d287fce49daf3dbb05e2f11ff21",
+      "bytes": 17732
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/source/tools/serve_service/resources.py",
+      "sha256": "31da926fea3e5da1273b6130328cd68cfeb2d7d04c760db9a5ae827035553af1",
+      "bytes": 14151
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/source/tools/serve_service/service.py",
+      "sha256": "f98c60807612c2b3aa044f1b03c685d6185d36c13c9157ed76cc94ea513f23f5",
+      "bytes": 11531
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/gateway-wrong-operations/source/tools/serve_service/supervisor.py",
+      "sha256": "ea4f8f97991d6aab143b13cffbe27e3a8d1bb45c9a1a02fcc33dac8a7e7cfb26",
+      "bytes": 16495
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/CMakeCache.txt",
+      "sha256": "f8f9672e8b45124f877758fdc53f81d83131a4ca9891c060d527e6dfec4430df",
+      "bytes": 39190
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/acceptance.json",
+      "sha256": "dc7b4e0b504f056075fbab974c13a084e469e3f1266bf09b76598aac6372289f",
+      "bytes": 409,
+      "artifact": "operations-conflict-package/acceptance.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/client-policy.json",
+      "sha256": "aed9b6a3acbaf617c28b2a08874913a5556515bb4c3e25f244d7b4f9549fc659",
+      "bytes": 394
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/declarations/capabilities.json",
+      "sha256": "15b81e6a449efae11e9a0f9a68686502b302594c00847caa52bcb2d3e628f700",
+      "bytes": 11343,
+      "artifact": "operations-conflict-package/declarations/capabilities.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/declarations/configuration.json",
+      "sha256": "c30d566d0d49f1da917a455230dc5e4a05f2ebabf5e7d769eb7f9fe324d1abcd",
+      "bytes": 4848,
+      "artifact": "operations-conflict-package/declarations/configuration.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/declarations/schemas/config.json",
+      "sha256": "9dca3f258b03e9b84d96abbfb2412365b5961e7ffc71b9feb6808c374adfbb02",
+      "bytes": 28772,
+      "artifact": "operations-conflict-package/declarations/schemas/config.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/declarations/schemas/message.json",
+      "sha256": "0618a6b85fee0f37f2df9347b1f260eee6882b74854f5177cef4b5527bb3bd61",
+      "bytes": 1755,
+      "artifact": "operations-conflict-package/declarations/schemas/message.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/declarations/schemas/preflight.json",
+      "sha256": "fcee5c9bddede4ba62032bd7e0007152d8899d421d2f3d473bdfab2c16348ba5",
+      "bytes": 6093,
+      "artifact": "operations-conflict-package/declarations/schemas/preflight.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/declarations/schemas/reasoning.json",
+      "sha256": "e0e24e50afc2146757deac6fd8028377613e1305ff4dad4a1756c74961b938a4",
+      "bytes": 2702,
+      "artifact": "operations-conflict-package/declarations/schemas/reasoning.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/declarations/schemas/response.json",
+      "sha256": "47c9f9068a88ec1977788c892c90fe89dae43ec02e1e6e381d67707eaea1ec62",
+      "bytes": 4493,
+      "artifact": "operations-conflict-package/declarations/schemas/response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/declarations/schemas/stop.json",
+      "sha256": "25989a444b4dc6a8ad7a0b8f723dbe96a26f9b97feb1e75016452e30536d4067",
+      "bytes": 1584,
+      "artifact": "operations-conflict-package/declarations/schemas/stop.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/declarations/schemas/thinking.json",
+      "sha256": "1353743d9290215253fab2d8d0952ff99d833444e24323a01efacc6b10cf1bd7",
+      "bytes": 2690,
+      "artifact": "operations-conflict-package/declarations/schemas/thinking.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/manifest.json",
+      "sha256": "4cb6294f4a5098fb1cb0308d164a2437d898f4a108959b8100624a9a83d8d9d9",
+      "bytes": 6329,
+      "artifact": "operations-conflict-package/manifest.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/q4t",
+      "sha256": "7eff020de66b96f3175b3e123909be9e2f58142d54d1dd5992750d23cbe9c769",
+      "bytes": 7297520
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/q4t.release.json",
+      "sha256": "cc83bf3a36c2b9658221554f39a7e6bb807f2618cb37b87b2f19fd7d7ea91d04",
+      "bytes": 45187,
+      "artifact": "operations-conflict-package/q4t.release.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/source/tools/evalscope/bounded_log.py",
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+      "bytes": 1784
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/source/tools/evalscope/gpu_exclusive.py",
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2",
+      "bytes": 18395
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/source/tools/evalscope/nvml_process_query.py",
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+      "bytes": 7182
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/source/tools/release/release.py",
+      "sha256": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+      "bytes": 20261
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/source/tools/serve_gateway/client_policy.py",
+      "sha256": "ab0256ee376ae62373fd1e89b18ca79d9490295aa1607795b209c5e5bdee6c1c",
+      "bytes": 3923
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/source/tools/serve_ops/contracts.py",
+      "sha256": "0ceb9a926f7e6ddb573a8a7847ae1d2adc0d3cd862a4fcb76efe7746554244e7",
+      "bytes": 13824
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/source/tools/serve_ops/identity.py",
+      "sha256": "74001ea851d3a7b0d5aee843b3ccee4b669485ed93543bb04799ab42e16847b9",
+      "bytes": 4762
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/source/tools/serve_ops/transport.py",
+      "sha256": "ece3d93bc6f14dc31f6fb92697e9b188eee4f1b33915f7285d9fd320a9f9ffa4",
+      "bytes": 5331
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/source/tools/serve_service/backend.py",
+      "sha256": "2845329d81c3a9ea4f7223432daa1e865a414a305fe0419d2ca934d137463112",
+      "bytes": 1853
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/source/tools/serve_service/inspection.py",
+      "sha256": "2930af5fe6564b567a39bb6c9280dfe098be4e78227250660246a9722cfb90b9",
+      "bytes": 15290
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/source/tools/serve_service/memory.py",
+      "sha256": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+      "bytes": 6019
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/source/tools/serve_service/package.py",
+      "sha256": "f8fb029c92b7b213f37fe20977a5bb40ece15d287fce49daf3dbb05e2f11ff21",
+      "bytes": 17732
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/source/tools/serve_service/resources.py",
+      "sha256": "31da926fea3e5da1273b6130328cd68cfeb2d7d04c760db9a5ae827035553af1",
+      "bytes": 14151
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/source/tools/serve_service/service.py",
+      "sha256": "f98c60807612c2b3aa044f1b03c685d6185d36c13c9157ed76cc94ea513f23f5",
+      "bytes": 11531
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/operations-conflict-package/source/tools/serve_service/supervisor.py",
+      "sha256": "ea4f8f97991d6aab143b13cffbe27e3a8d1bb45c9a1a02fcc33dac8a7e7cfb26",
+      "bytes": 16495
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/plan.json",
+      "sha256": "1048876be94f1abec4423dfb7d535f1704e382ba45a8d044c29be5e47a909cb0",
+      "bytes": 241495,
+      "artifact": "plan.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/postflight/containers.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "artifact": "postflight/containers.txt"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/postflight/gpu.json",
+      "sha256": "b2eaa46d273018737ea6a0d85710b12778030625be60b80bbf368e5009181ed8",
+      "bytes": 2257,
+      "artifact": "postflight/gpu.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/postflight/result.json",
+      "sha256": "3e8b857077b4a5bf26f5f53f5cc068da77cdd35fdc9fa0546f42cad705c2cbe1",
+      "bytes": 1836,
+      "artifact": "postflight/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/postflight/soar-unit.txt",
+      "sha256": "a7113c47c735ee2a1776daa03c674d2c25174779048ccbe8a72862923a0b9efa",
+      "bytes": 62,
+      "artifact": "postflight/soar-unit.txt"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/prepare.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "artifact": "prepare.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/prepare.stdout",
+      "sha256": "2a511264d0368ce995139ad9015858cfbba335909da87ccfa4ef9c8694cbe01f",
+      "bytes": 328,
+      "artifact": "prepare.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/private/gateway.json",
+      "sha256": "7576e58b55a4191144f0e4cbc23ba982ddd7531b8827cde7e46c9da4fae2131c",
+      "bytes": 531
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/private/good-1.json",
+      "sha256": "7576e58b55a4191144f0e4cbc23ba982ddd7531b8827cde7e46c9da4fae2131c",
+      "bytes": 531
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/private/good-2.json",
+      "sha256": "7576e58b55a4191144f0e4cbc23ba982ddd7531b8827cde7e46c9da4fae2131c",
+      "bytes": 531
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/private/missing-operations.json",
+      "sha256": "6e4fe71d6565f3d59901773709bf2103beac4ff32e7a83efd3c2801c9edebf36",
+      "bytes": 494
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/private/wrong-operations.json",
+      "sha256": "fd8390a482ccdb5d0697ab8efef2580ad083745075b1b9c8862c3e436232708d",
+      "bytes": 531
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/report-correction.json",
+      "sha256": "a1e7fb4d357d7c570c5d9a23f0e325efac46e75fa942185b79baf25457dc9255",
+      "bytes": 741,
+      "artifact": "report-correction.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/report-cpu/result.json",
+      "sha256": "4edf6312b23b7cb954d47f0a5af84be068109902137fce64c54d701daa8c4a0c",
+      "bytes": 385,
+      "artifact": "report-cpu/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/report-cpu/tests.log",
+      "sha256": "5579a41d0ece650cc019c7cda9e40d2bdee58e4a62b828777abe9ee8eabf5e39",
+      "bytes": 794,
+      "artifact": "report-cpu/tests.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/report-failure-01.json",
+      "sha256": "9418eeaabb2bce86fac6d7380367f9c3c6ae0237e1c6a6cd145bdf3f114c62e0",
+      "bytes": 936,
+      "artifact": "report-failure-01.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/reproduction-02.json",
+      "sha256": "008d9525491b295274afb1652fe94e66117379cbdc77a227fed03d84fda416ea",
+      "bytes": 480,
+      "artifact": "reproduction-02.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/reproduction-02.log",
+      "sha256": "e975c2933787065e0d209c446513d0ea793a1dfe7fda91a30bd2754e4ef00926",
+      "bytes": 1120,
+      "artifact": "reproduction-02.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/reproduction.json",
+      "sha256": "a53b4217a40aff39aed2c0cbf0aa509d0e1d53e9fa4907076b9556cc3602342f",
+      "bytes": 223,
+      "artifact": "reproduction.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/reproduction.log",
+      "sha256": "6ff44e8740748179678c518f41639d6e32d51c48c505907d169b2f1a478bad72",
+      "bytes": 1077,
+      "artifact": "reproduction.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/reviewed-source/docs/SERVE_PORT_PREFLIGHT_2026-11-04.md",
+      "sha256": "8e530f008394d691899dcb2c611ce63485515235b80fd57250c6fc1a65c09a36",
+      "bytes": 2632,
+      "artifact": "reviewed-source/docs/SERVE_PORT_PREFLIGHT_2026-11-04.md"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/reviewed-source/tools/serve_managed_profile/report.py",
+      "sha256": "4ceba4c1351e5de8b8f4126edad45206739373bff73fdf4b43b6576bd4c8ffe9",
+      "bytes": 10803,
+      "artifact": "reviewed-source/tools/serve_managed_profile/report.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/reviewed-source/tools/serve_managed_profile/stage.py",
+      "sha256": "c05ac4ee9caa64af97936629f5564c98deafdf782e271b9cfe45da8a00111f55",
+      "bytes": 14506,
+      "artifact": "reviewed-source/tools/serve_managed_profile/stage.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/reviewed-source/tools/serve_operations_managed/report.py",
+      "sha256": "ba133d99b9dc780d10a7fd7f9e606b5f47bd13c57fd6f0ed38bbf7fd98706252",
+      "bytes": 12436,
+      "artifact": "reviewed-source/tools/serve_operations_managed/report.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/reviewed-source/tools/serve_operations_managed/stage.py",
+      "sha256": "ad7c9195cb55b105d75f1e200acdba261ebf23c01eb09718a6f4e1ff1279c525",
+      "bytes": 21796,
+      "artifact": "reviewed-source/tools/serve_operations_managed/stage.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/reviewed-source/tools/serve_port_preflight/finish.py",
+      "sha256": "c450a2a5a4ea2f41da89dd6270e6bb9b9e0f4d9e20a326f5c706429fbc7c51f4",
+      "bytes": 6631,
+      "artifact": "reviewed-source/tools/serve_port_preflight/finish.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/reviewed-source/tools/serve_port_preflight/probe.py",
+      "sha256": "20ee02c3d52438f8e405237b264f1b52b53c3c944920374988adb8965b10ac2d",
+      "bytes": 1114,
+      "artifact": "reviewed-source/tools/serve_port_preflight/probe.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/reviewed-source/tools/serve_port_preflight/report.py",
+      "sha256": "8285e410ed56f59440781656bd24be7af31ba7bcc8b8b0c6a530559901cd14d0",
+      "bytes": 7146,
+      "artifact": "reviewed-source/tools/serve_port_preflight/report.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/reviewed-source/tools/serve_port_preflight/stage.py",
+      "sha256": "a7c4f34a6e2c239ceedddd58c9c7e8024d24fa67efe504c212af7f3ce5b8d3fc",
+      "bytes": 9121,
+      "artifact": "reviewed-source/tools/serve_port_preflight/stage.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/reviewed-source/tools/serve_port_preflight/test_finish.py",
+      "sha256": "dd96abbe1530d6390d151eefbc3f1097c6fc3ad9da2dafd1dba65cfa3d3db0b6",
+      "bytes": 2490,
+      "artifact": "reviewed-source/tools/serve_port_preflight/test_finish.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/reviewed-source/tools/serve_port_preflight/test_stage.py",
+      "sha256": "1bc0b5b36292bc589caeda4a0c3fd1e244a7e17bf2cae2d613b0eee83e5c28a3",
+      "bytes": 1354,
+      "artifact": "reviewed-source/tools/serve_port_preflight/test_stage.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/reviewed-source/tools/serve_service/supervisor.py",
+      "sha256": "ea4f8f97991d6aab143b13cffbe27e3a8d1bb45c9a1a02fcc33dac8a7e7cfb26",
+      "bytes": 16495,
+      "artifact": "reviewed-source/tools/serve_service/supervisor.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/reviewed-source/tools/serve_service/test_ports.py",
+      "sha256": "af81590aa622f478a1eec625b841eaacf46a870a473299727d66f3911e46cdb2",
+      "bytes": 5971,
+      "artifact": "reviewed-source/tools/serve_service/test_ports.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/run.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "artifact": "run.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/run.stdout",
+      "sha256": "b6a12219411635381ae365af8a1f1746463b40380314c09c3a0f126c82307e75",
+      "bytes": 309,
+      "artifact": "run.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-port-preflight-20261104/supervisor-before.py",
+      "sha256": "67d20c66c58e4a0bb2bb89b907972869a119e313c93947922d7c71ac9a789962",
+      "bytes": 15855,
+      "artifact": "supervisor-before.py"
+    }
+  ],
+  "archive_sha256": "b18c0d16653b53b01d49fc608bd972a6b806ff6076c87ffb4701b165a4b881fd",
+  "result_sha256": "6adf99a080847670739553f1cdd9010a513fe68b9ede6e8f69a387275eb72de0",
+  "verifier": {
+    "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_operations_managed/report.py",
+    "sha256": "ba133d99b9dc780d10a7fd7f9e606b5f47bd13c57fd6f0ed38bbf7fd98706252"
+  },
+  "privacy": "Private API keys, internal/cancellation tokens and TLS private keys stay local; hash-only references are not backups."
+}

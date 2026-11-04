@@ -1,0 +1,6 @@
+[q4t][http] trace_id=req-fb66b3ee705ac5b5819fb0071c146d73 error=internal_error
+[q4t][http-write] trace_id=req-fb66b3ee705ac5b5819fb0071c146d73 reason=exception origin=handler transferred=8 system_error=0 poll_events=0
+[q4t][http-write] trace_id=req-a3006cebb0bf00739dceba618084ece1 reason=exception origin=heartbeat transferred=0 system_error=0 poll_events=0
+[PASS] observation_runtime_partial_header_exception_remains_first
+[PASS] observation_runtime_heartbeat_exception_joins_and_counts_once
+2 tests, 2 passed, 0 failed, 0 skipped

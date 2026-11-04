@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package-final/candidate/q4t",
+    "serve",
+    "--model-dir",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "18099",
+    "--max-seq",
+    "2",
+    "--max-prefill",
+    "2048",
+    "--max-len",
+    "8192",
+    "--no-mtp",
+    "--seq-capacities",
+    "2048,8192"
+  ],
+  "sha256": "5642eb68d0e2d9296aeb0d5f4197797a18d064b2de749c4368a86fce918167ce"
+}

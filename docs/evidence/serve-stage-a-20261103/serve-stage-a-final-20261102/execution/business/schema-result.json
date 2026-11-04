@@ -1,0 +1,83 @@
+{
+  "passed": true,
+  "schema_id": "urn:q4t:serve-transport:v1",
+  "jsonschema_version": "4.26.0",
+  "records": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/after-slow-wire.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/schema-wire.bin",
+      "validated_envelopes": 4
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/shutdown-wire.bin",
+      "validated_envelopes": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/slow-response.bin",
+      "scope": "partial write: checked by live driver"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/duplicate-id-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/get-body-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/media-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/method-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/missing-media-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/ordinary-wire.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/parameter-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/project-answer-wire.bin",
+      "validated_envelopes": 4
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/project-read-wire.bin",
+      "validated_envelopes": 4
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/query-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/ready-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/unknown-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/reused-mixed/deadline-response.bin",
+      "validated_envelopes": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/reused-mixed/proxy-response.bin",
+      "validated_envelopes": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/reused-mixed/queued-ordinary-wire.bin",
+      "validated_envelopes": 1
+    }
+  ]
+}

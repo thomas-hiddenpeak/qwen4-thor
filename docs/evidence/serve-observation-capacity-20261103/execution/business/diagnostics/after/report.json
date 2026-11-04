@@ -1,0 +1,2509 @@
+{
+  "automatic_restart": false,
+  "automatic_retry": false,
+  "collected_at": "2026-11-03T03:53:43.866408+00:00",
+  "comparison": {
+    "counters": {
+      "q4t_connection_rejections_total{kind=\"business\"}": 1,
+      "q4t_connection_rejections_total{kind=\"control\"}": 0,
+      "q4t_connection_rejections_total{kind=\"observation\"}": 4,
+      "q4t_connection_rejections_total{kind=\"unclassified\"}": 0,
+      "q4t_execution_steps_total": 181,
+      "q4t_generation_tokens_total": 365,
+      "q4t_http_receive_failures_total{reason=\"admission\"}": 0,
+      "q4t_http_receive_failures_total{reason=\"body_capacity\"}": 0,
+      "q4t_http_receive_failures_total{reason=\"body_deadline\"}": 0,
+      "q4t_http_receive_failures_total{reason=\"body_eof\"}": 127,
+      "q4t_http_receive_failures_total{reason=\"body_too_large\"}": 0,
+      "q4t_http_receive_failures_total{reason=\"connection_capacity\"}": 5,
+      "q4t_http_receive_failures_total{reason=\"exception\"}": 0,
+      "q4t_http_receive_failures_total{reason=\"header_deadline\"}": 0,
+      "q4t_http_receive_failures_total{reason=\"header_eof\"}": 0,
+      "q4t_http_receive_failures_total{reason=\"header_too_large\"}": 0,
+      "q4t_http_receive_failures_total{reason=\"malformed\"}": 0,
+      "q4t_http_receive_failures_total{reason=\"method\"}": 0,
+      "q4t_http_receive_failures_total{reason=\"query\"}": 0,
+      "q4t_http_receive_failures_total{reason=\"route\"}": 0,
+      "q4t_http_receive_failures_total{reason=\"server_draining\"}": 0,
+      "q4t_http_receive_failures_total{reason=\"socket_error\"}": 0,
+      "q4t_http_receive_failures_total{reason=\"unexpected_body\"}": 4,
+      "q4t_http_receive_failures_total{reason=\"unsupported_media\"}": 0,
+      "q4t_http_write_failures_total{origin=\"handler\",reason=\"exception\"}": 0,
+      "q4t_http_write_failures_total{origin=\"handler\",reason=\"explicit_cancel\"}": 0,
+      "q4t_http_write_failures_total{origin=\"handler\",reason=\"peer_closed\"}": 0,
+      "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_deadline\"}": 0,
+      "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_failure\"}": 0,
+      "q4t_http_write_failures_total{origin=\"handler\",reason=\"server_shutdown\"}": 0,
+      "q4t_http_write_failures_total{origin=\"handler\",reason=\"socket_error\"}": 0,
+      "q4t_http_write_failures_total{origin=\"handler\",reason=\"write_deadline\"}": 0,
+      "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"exception\"}": 0,
+      "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"explicit_cancel\"}": 0,
+      "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"peer_closed\"}": 0,
+      "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_deadline\"}": 0,
+      "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_failure\"}": 0,
+      "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"server_shutdown\"}": 0,
+      "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"socket_error\"}": 0,
+      "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"write_deadline\"}": 0,
+      "q4t_memory_admission_transitions_total": 0,
+      "q4t_memory_observation_failures_total": 0,
+      "q4t_memory_observations_total": 16,
+      "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_observation_unavailable\"}": 0,
+      "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_pressure\"}": 0,
+      "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_observation_unavailable\"}": 0,
+      "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_pressure\"}": 0,
+      "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_observation_unavailable\"}": 0,
+      "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_pressure\"}": 0,
+      "q4t_prompt_tokens_total": 1515,
+      "q4t_queue_rejected_total": 0,
+      "q4t_requests_aborted_by_reason_total{reason=\"client_disconnected\"}": 0,
+      "q4t_requests_aborted_by_reason_total{reason=\"deadline_exceeded\"}": 0,
+      "q4t_requests_aborted_by_reason_total{reason=\"explicit_cancel\"}": 1,
+      "q4t_requests_aborted_by_reason_total{reason=\"other\"}": 0,
+      "q4t_requests_aborted_by_reason_total{reason=\"request_failed\"}": 0,
+      "q4t_requests_aborted_by_reason_total{reason=\"server_shutdown\"}": 0,
+      "q4t_requests_aborted_total": 1,
+      "q4t_requests_error_total": 0,
+      "q4t_requests_success_total": 3,
+      "q4t_requests_total": 4,
+      "q4t_structured_compile_timeouts_total": 0,
+      "q4t_structured_prepare_failed_total": 0,
+      "q4t_structured_rejected_total": 0,
+      "q4t_structured_resource_exhausted_total": 0,
+      "q4t_structured_workers_reaped_total": 2,
+      "q4t_structured_workers_started_total": 2,
+      "q4t_text_admission_rejected_total": 0
+    },
+    "scope": "same verified process only; per-counter, non-atomic; not additive outcomes",
+    "seconds": 14.957280421862379,
+    "state": "available"
+  },
+  "configuration": {
+    "business_connections": 128,
+    "connection_handlers": 136,
+    "control_connections": 4,
+    "max_context_tokens": 8192,
+    "max_inflight_requests": 8,
+    "max_queued_requests": 2,
+    "max_sequences": 1,
+    "memory_enabled": true,
+    "memory_floor_mib": 2048,
+    "memory_recovery_mib": 2560,
+    "mtp_enabled": true,
+    "observation_connections": 4,
+    "prefill_chunk_tokens": 2048,
+    "protocol_sha256": "da1466be364b9d177669a6a6b3209d77ef832bd4c8e059e3d93820bfeb336b05",
+    "request_deadline_ms": 1200000,
+    "structured_backend": true,
+    "whole_server_ram_limit": false
+  },
+  "duration_seconds": 0.03145313402637839,
+  "findings": [
+    {
+      "action": "consult_runbook",
+      "automatic_restart": false,
+      "automatic_retry": false,
+      "code": "admission_rejections_observed",
+      "evidence": {
+        "q4t_connection_rejections_total{kind=\"business\"}": 1,
+        "q4t_connection_rejections_total{kind=\"observation\"}": 4
+      },
+      "severity": "warning"
+    }
+  ],
+  "identity": {
+    "capability_protocol": "da1466be364b9d177669a6a6b3209d77ef832bd4c8e059e3d93820bfeb336b05",
+    "expected": {
+      "binary_sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+      "protocol_sha256": "da1466be364b9d177669a6a6b3209d77ef832bd4c8e059e3d93820bfeb336b05"
+    },
+    "process": {
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+      "executable_sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+      "listener_inode": 27608918,
+      "listener_scope": "loopback",
+      "net_namespace_device": 4,
+      "net_namespace_inode": 4026531840,
+      "pid": 2094142,
+      "start_ticks": 186805707
+    },
+    "state": "verified"
+  },
+  "log": {
+    "events": [
+      {
+        "elapsed_ms": 0.0,
+        "event": "begin",
+        "id_hash": "1bcae1990af84292f12935226895b6b1643313cf4271e8636836fd2f3ef8294c",
+        "instance": 0,
+        "kind": "request",
+        "seq": -1,
+        "stage": "validation",
+        "trace_id_hash": "6906730dad6659b48bd36399fe7777e0b7d1489b8a4bc126550d0463aa1f854d"
+      },
+      {
+        "elapsed_ms": 0.107,
+        "event": "registered",
+        "id_hash": "203b87cb851a01a02d2e0bcbc20ebdd3c2967e5fa9efa3f15a441e5ca2df6aa7",
+        "instance": 0,
+        "kind": "request",
+        "seq": -1,
+        "stage": "validation",
+        "trace_id_hash": "6906730dad6659b48bd36399fe7777e0b7d1489b8a4bc126550d0463aa1f854d"
+      },
+      {
+        "completion_id_hash": "203b87cb851a01a02d2e0bcbc20ebdd3c2967e5fa9efa3f15a441e5ca2df6aa7",
+        "kind": "http",
+        "trace_id_hash": "6906730dad6659b48bd36399fe7777e0b7d1489b8a4bc126550d0463aa1f854d"
+      },
+      {
+        "elapsed_ms": 0.19,
+        "event": "stage",
+        "id_hash": "203b87cb851a01a02d2e0bcbc20ebdd3c2967e5fa9efa3f15a441e5ca2df6aa7",
+        "instance": 0,
+        "kind": "request",
+        "seq": -1,
+        "stage": "encode",
+        "trace_id_hash": "6906730dad6659b48bd36399fe7777e0b7d1489b8a4bc126550d0463aa1f854d"
+      },
+      {
+        "elapsed_ms": 0.391,
+        "event": "stage",
+        "id_hash": "203b87cb851a01a02d2e0bcbc20ebdd3c2967e5fa9efa3f15a441e5ca2df6aa7",
+        "instance": 0,
+        "kind": "request",
+        "seq": -1,
+        "stage": "slot_admission",
+        "trace_id_hash": "6906730dad6659b48bd36399fe7777e0b7d1489b8a4bc126550d0463aa1f854d"
+      },
+      {
+        "elapsed_ms": 0.412,
+        "event": "admitted",
+        "id_hash": "203b87cb851a01a02d2e0bcbc20ebdd3c2967e5fa9efa3f15a441e5ca2df6aa7",
+        "instance": 0,
+        "kind": "request",
+        "seq": 0,
+        "stage": "slot_admission",
+        "trace_id_hash": "6906730dad6659b48bd36399fe7777e0b7d1489b8a4bc126550d0463aa1f854d"
+      },
+      {
+        "elapsed_ms": 0.415,
+        "event": "stage",
+        "id_hash": "203b87cb851a01a02d2e0bcbc20ebdd3c2967e5fa9efa3f15a441e5ca2df6aa7",
+        "instance": 0,
+        "kind": "request",
+        "seq": 0,
+        "stage": "encode",
+        "trace_id_hash": "6906730dad6659b48bd36399fe7777e0b7d1489b8a4bc126550d0463aa1f854d"
+      },
+      {
+        "elapsed_ms": 0.498,
+        "event": "stage",
+        "id_hash": "203b87cb851a01a02d2e0bcbc20ebdd3c2967e5fa9efa3f15a441e5ca2df6aa7",
+        "instance": 0,
+        "kind": "request",
+        "seq": 0,
+        "stage": "prefill",
+        "trace_id_hash": "6906730dad6659b48bd36399fe7777e0b7d1489b8a4bc126550d0463aa1f854d"
+      },
+      {
+        "elapsed_ms": 246.548,
+        "event": "stage",
+        "id_hash": "203b87cb851a01a02d2e0bcbc20ebdd3c2967e5fa9efa3f15a441e5ca2df6aa7",
+        "instance": 0,
+        "kind": "request",
+        "seq": 0,
+        "stage": "decode",
+        "trace_id_hash": "6906730dad6659b48bd36399fe7777e0b7d1489b8a4bc126550d0463aa1f854d"
+      },
+      {
+        "error": "capacity_exhausted",
+        "kind": "http",
+        "status": 503,
+        "trace_id_hash": "cc80158dd979edfebb9ba088c48a362b35f560cce1857b0ed97b40af6de6a1d7"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "connection_capacity",
+        "status": 503,
+        "system_error": 0,
+        "trace_id_hash": "cc80158dd979edfebb9ba088c48a362b35f560cce1857b0ed97b40af6de6a1d7"
+      },
+      {
+        "error": "observation_capacity_exhausted",
+        "kind": "http",
+        "status": 503,
+        "trace_id_hash": "480fe965fa6be888090cdddb4c768125368fd574d31b5720453b2eef53ba6039"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "connection_capacity",
+        "status": 503,
+        "system_error": 0,
+        "trace_id_hash": "480fe965fa6be888090cdddb4c768125368fd574d31b5720453b2eef53ba6039"
+      },
+      {
+        "error": "observation_capacity_exhausted",
+        "kind": "http",
+        "status": 503,
+        "trace_id_hash": "817f57533f8df5c73a982ef0932755f45260f291d4c80b68e848074cf1a31f63"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "connection_capacity",
+        "status": 503,
+        "system_error": 0,
+        "trace_id_hash": "817f57533f8df5c73a982ef0932755f45260f291d4c80b68e848074cf1a31f63"
+      },
+      {
+        "error": "observation_capacity_exhausted",
+        "kind": "http",
+        "status": 503,
+        "trace_id_hash": "839b62e58607148762b2ed73fc440e3bb65e2065a7a8da8705b5bb011a95c4e1"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "connection_capacity",
+        "status": 503,
+        "system_error": 0,
+        "trace_id_hash": "839b62e58607148762b2ed73fc440e3bb65e2065a7a8da8705b5bb011a95c4e1"
+      },
+      {
+        "error": "observation_capacity_exhausted",
+        "kind": "http",
+        "status": 503,
+        "trace_id_hash": "bc55faa81225c46f036a58a95ba98114a8ecf74a46b34a188380f958409fd199"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "connection_capacity",
+        "status": 503,
+        "system_error": 0,
+        "trace_id_hash": "bc55faa81225c46f036a58a95ba98114a8ecf74a46b34a188380f958409fd199"
+      },
+      {
+        "elapsed_ms": 6019.498,
+        "event": "end",
+        "id_hash": "203b87cb851a01a02d2e0bcbc20ebdd3c2967e5fa9efa3f15a441e5ca2df6aa7",
+        "instance": 0,
+        "kind": "request",
+        "model_lock_ms": 0.0,
+        "outcome": "cancelled",
+        "reason": "explicit_cancel",
+        "released": 1,
+        "scheduler_completion_ms": 5746.601,
+        "scheduler_waits": 62,
+        "seq": 0,
+        "slot_wait_ms": 0.017,
+        "stage": "decode",
+        "stream_write_ms": 2.397,
+        "tokenizer_lock_ms": 0.025,
+        "trace_id_hash": "6906730dad6659b48bd36399fe7777e0b7d1489b8a4bc126550d0463aa1f854d"
+      },
+      {
+        "error": "unexpected_body",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "c0832b6e3b4910313c59701c43feee12557cb3bedfa71b2ed9aa2d385981e488"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "unexpected_body",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "c0832b6e3b4910313c59701c43feee12557cb3bedfa71b2ed9aa2d385981e488"
+      },
+      {
+        "error": "unexpected_body",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "1a0ee2f55d912c7bf74bf67bea345a59ec6f8c7d5e49b0b4d195161679a5066f"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "unexpected_body",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "1a0ee2f55d912c7bf74bf67bea345a59ec6f8c7d5e49b0b4d195161679a5066f"
+      },
+      {
+        "error": "unexpected_body",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "c5da2854214759a6ebf5d8ed2e6252a20aeb649a95c60a1fcb34dc44b615779e"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "unexpected_body",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "c5da2854214759a6ebf5d8ed2e6252a20aeb649a95c60a1fcb34dc44b615779e"
+      },
+      {
+        "error": "unexpected_body",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "e0b125f8f77ed452a3280b1c9083c965a48696a131d7e33547c38080fce4a439"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "unexpected_body",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "e0b125f8f77ed452a3280b1c9083c965a48696a131d7e33547c38080fce4a439"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "b4696c6e37da0743c0294000f9a9fa410a040647f89af3a7e7058c7f4943a6a0"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "b4696c6e37da0743c0294000f9a9fa410a040647f89af3a7e7058c7f4943a6a0"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "f54d57e1fd819c0a09dab76670c17c432c2151d3cd2d3e1e1301c0a491ef6c06"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "f54d57e1fd819c0a09dab76670c17c432c2151d3cd2d3e1e1301c0a491ef6c06"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "4f738d647e8c7f97b29b895bbd1dc660930f969e00140db9ed80c9c2cb06fb73"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "4f738d647e8c7f97b29b895bbd1dc660930f969e00140db9ed80c9c2cb06fb73"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "dd5e9e5cb2272fae6ca92f6edd224b464e5c4ca4df57c56a36b977d6cbbdf56a"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "dd5e9e5cb2272fae6ca92f6edd224b464e5c4ca4df57c56a36b977d6cbbdf56a"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "05064172d0c33ed881d1361f14ade194c994084b485aa55a43388fbea835c3cd"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "05064172d0c33ed881d1361f14ade194c994084b485aa55a43388fbea835c3cd"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "3f6601f25c724474e2f346917ecb6235af5074e8c9be3846b169709bcecd1c33"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "3f6601f25c724474e2f346917ecb6235af5074e8c9be3846b169709bcecd1c33"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "5380d5aea20ed66ecf2c189211f022bd8a2ce8387585a8fac83e80fd71ba75eb"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "5380d5aea20ed66ecf2c189211f022bd8a2ce8387585a8fac83e80fd71ba75eb"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "d86b1ac18e5b8ed67bac200a774dc50192c0657479e7598409217139b8503634"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "d86b1ac18e5b8ed67bac200a774dc50192c0657479e7598409217139b8503634"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "1173b67e9cd9324f7f253c22da1f0c082fc7e19352b353fd8908a86d4ac397a1"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "1173b67e9cd9324f7f253c22da1f0c082fc7e19352b353fd8908a86d4ac397a1"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "be40a66a5e27d5f459a236253d53c9aa0527c13b69054ce6d121b2ccde1b86b9"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "be40a66a5e27d5f459a236253d53c9aa0527c13b69054ce6d121b2ccde1b86b9"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "4d98f961738dfca563736bd40ea3f66397795a7bbd19c0a45f6cec890aed8861"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "4d98f961738dfca563736bd40ea3f66397795a7bbd19c0a45f6cec890aed8861"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "a5d2f35db716db996d60e4bdb01baf123ed200903d54bfcec24f4f76af8cc584"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "a5d2f35db716db996d60e4bdb01baf123ed200903d54bfcec24f4f76af8cc584"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "d06e4f9d285f9a22734b1820447347353ae1ec0a3da22cf0f9812da34ad0c6d7"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "d06e4f9d285f9a22734b1820447347353ae1ec0a3da22cf0f9812da34ad0c6d7"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "2b3d82b981eb0f7ec0774961c32be4e42e225ced202b24182507c3673e99331c"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "2b3d82b981eb0f7ec0774961c32be4e42e225ced202b24182507c3673e99331c"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "ae5a8d172c7b84de095f83b510d135dabc5f299989b5a437d9e83494f3eb33c8"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "ae5a8d172c7b84de095f83b510d135dabc5f299989b5a437d9e83494f3eb33c8"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "0dff6f60b86be4aae18d84cc42fe8067cc165b769173c71edb3fe1c4a67bccc2"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "0dff6f60b86be4aae18d84cc42fe8067cc165b769173c71edb3fe1c4a67bccc2"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "756f5a9f7ad35a1e5fcb53694479774f16c5ca644a6a35065f2b60e65e5177e8"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "756f5a9f7ad35a1e5fcb53694479774f16c5ca644a6a35065f2b60e65e5177e8"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "500b914cc97289d90dbb31efb832e6e4241e072b94ab4b6634c7f8ad0dddcfdb"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "500b914cc97289d90dbb31efb832e6e4241e072b94ab4b6634c7f8ad0dddcfdb"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "66fec186314dba9be5d770a1d3445e158a1c6a2ca6c512932dae8092683de7c3"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "66fec186314dba9be5d770a1d3445e158a1c6a2ca6c512932dae8092683de7c3"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "8aa903cc1cb1a780dddec9b13b71bac3ccc40b667572459469b7dd307ffc7db1"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "8aa903cc1cb1a780dddec9b13b71bac3ccc40b667572459469b7dd307ffc7db1"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "704ecd89c7c4f997e309880b7c7c0aaa75b1f4b024350229f2d9a3babce5267f"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "704ecd89c7c4f997e309880b7c7c0aaa75b1f4b024350229f2d9a3babce5267f"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "b6b2b13122cff032b01ce412f16917ace2c7a834b2d56a7d346f574d0105e100"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "b6b2b13122cff032b01ce412f16917ace2c7a834b2d56a7d346f574d0105e100"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "6bc1c9a2c82da74b13c47f933a3d67395719da158402755f5fde5729aa11604d"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "6bc1c9a2c82da74b13c47f933a3d67395719da158402755f5fde5729aa11604d"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "77cca29860afcb24ad0ab260f2ae73ba18a8956bc2d91abaa2ae2fe5b7d19052"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "77cca29860afcb24ad0ab260f2ae73ba18a8956bc2d91abaa2ae2fe5b7d19052"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "ae731b32c7fd81aa5ad2547606138e40e3b59b38833bb665b9eba343ee5fd267"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "ae731b32c7fd81aa5ad2547606138e40e3b59b38833bb665b9eba343ee5fd267"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "69b3afdee2ba6fe2d0accf0fd3b39cfdb007383a81967176a906555357769acb"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "69b3afdee2ba6fe2d0accf0fd3b39cfdb007383a81967176a906555357769acb"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "79e1a6b6d69e88800817c22e73011f47bfc1b9ae54a67dfcd0c9d9758eeb5787"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "79e1a6b6d69e88800817c22e73011f47bfc1b9ae54a67dfcd0c9d9758eeb5787"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "43b44c46089c495c5e4489f67a033de3646bdc6e3c9d03e28bd3ba244bc96723"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "43b44c46089c495c5e4489f67a033de3646bdc6e3c9d03e28bd3ba244bc96723"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "fa91de49b2a6d832e8ebb320aaac6d4055a451b93de41d56fe2231fd198f43b9"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "fa91de49b2a6d832e8ebb320aaac6d4055a451b93de41d56fe2231fd198f43b9"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "77e6c8446ae29e28420790f22d9fda0a53946b85ea7c0265c89066afd805fee5"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "77e6c8446ae29e28420790f22d9fda0a53946b85ea7c0265c89066afd805fee5"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "a7767becfb9f1216268ed40be1fb5f8ac364b634143ed1279957bcac2801ca21"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "a7767becfb9f1216268ed40be1fb5f8ac364b634143ed1279957bcac2801ca21"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "d172c8a7b0f9c914ff80e31e44673eece92a62097dbd81a0f54091d73ec9bd1e"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "d172c8a7b0f9c914ff80e31e44673eece92a62097dbd81a0f54091d73ec9bd1e"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "79cf6b9d8d4e8cb30e7cb9eb48c3415af52fa65115dae2ada4a0232d22a8b31a"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "79cf6b9d8d4e8cb30e7cb9eb48c3415af52fa65115dae2ada4a0232d22a8b31a"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "993b67f88c17a6b545f14f3bfe000892c368c2c564b8eef629ce473251f66395"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "993b67f88c17a6b545f14f3bfe000892c368c2c564b8eef629ce473251f66395"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "58897d365a490739b749bfc0e2f79e6734ba3827e6b4d616e2f4f1d560c71694"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "58897d365a490739b749bfc0e2f79e6734ba3827e6b4d616e2f4f1d560c71694"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "6a0bf187592b9beea3e1aa2983ee6998000b1b49fd710ebe99596fc19d9c23a3"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "6a0bf187592b9beea3e1aa2983ee6998000b1b49fd710ebe99596fc19d9c23a3"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "4da73526eb6fe254773fb85b3514567955ffc90e5718d9e81d259a8ea7e8fb09"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "4da73526eb6fe254773fb85b3514567955ffc90e5718d9e81d259a8ea7e8fb09"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "70ca3b4bff552961e8ed5dc7448847de33c4de5b4228974c2a6135fed337ebea"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "70ca3b4bff552961e8ed5dc7448847de33c4de5b4228974c2a6135fed337ebea"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "dce889c49d5d6b9fa8266b3f91d72feaf7651b00c52c8ad56610552b92599cff"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "dce889c49d5d6b9fa8266b3f91d72feaf7651b00c52c8ad56610552b92599cff"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "428b125ab6ca548e7ca5509e682a63a977cdad0bdc6972717f8771199d0bb542"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "428b125ab6ca548e7ca5509e682a63a977cdad0bdc6972717f8771199d0bb542"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "3678b9156f9dd84d8ec82a779f9598f8390d6adc7c57811841876fc13e0d0a80"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "3678b9156f9dd84d8ec82a779f9598f8390d6adc7c57811841876fc13e0d0a80"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "49cadb3c392d34fc171addad9aaa2bec163d401763e9d79dea81a0056025ab3c"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "49cadb3c392d34fc171addad9aaa2bec163d401763e9d79dea81a0056025ab3c"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "cea6349f669b9981993de61be5ec2f177b0b26333f57c33f23683d3906353794"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "cea6349f669b9981993de61be5ec2f177b0b26333f57c33f23683d3906353794"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "6a548722aa8c1dbfd4cf192f088633a5c6a80f179622c77e089be238c175b45b"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "6a548722aa8c1dbfd4cf192f088633a5c6a80f179622c77e089be238c175b45b"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "5cffc3af12041c6e9f4ff09015d6f22905e7fc467e987f61d47547b384385cd0"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "5cffc3af12041c6e9f4ff09015d6f22905e7fc467e987f61d47547b384385cd0"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "bf14eaa42d288e1459876a6b22154977f4244259c5befeebc095e752ea9c273c"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "bf14eaa42d288e1459876a6b22154977f4244259c5befeebc095e752ea9c273c"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "7df837401718d98c311a9a87ba2268ab48b4a4a794ed6369b71a90646a78cc0a"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "7df837401718d98c311a9a87ba2268ab48b4a4a794ed6369b71a90646a78cc0a"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "6ac00fcda1c6882229dd7f023e6aa82bc43a2507b9500d5e7672b1c6c908444b"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "6ac00fcda1c6882229dd7f023e6aa82bc43a2507b9500d5e7672b1c6c908444b"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "3d59dd2cc7d15eb5ed96d27037c0c3732660891f2e0de8400730a68e9383234d"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "3d59dd2cc7d15eb5ed96d27037c0c3732660891f2e0de8400730a68e9383234d"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "939cf220d625c0c1b82e3e7c0e7befa0fd01be10ccf0840035462f5b2fd2f06c"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "939cf220d625c0c1b82e3e7c0e7befa0fd01be10ccf0840035462f5b2fd2f06c"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "30dbd1c7070913568ff19d42e5bcc6fc00af4e1b70e003e712feeb5e1a844be8"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "30dbd1c7070913568ff19d42e5bcc6fc00af4e1b70e003e712feeb5e1a844be8"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "75345eb09d1ee5809fb784a0530b16ad3742e72a5fd299d3369dd1ba5efe4411"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "75345eb09d1ee5809fb784a0530b16ad3742e72a5fd299d3369dd1ba5efe4411"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "cad4b5a8220036195fd7da49ee106a8eff9b708bbafae0a7cc7ed805820cb173"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "cad4b5a8220036195fd7da49ee106a8eff9b708bbafae0a7cc7ed805820cb173"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "44cd9aef54eeba729bd64b92a6fc66e1eac8fb99b3ac0af5053b6612eb501af9"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "44cd9aef54eeba729bd64b92a6fc66e1eac8fb99b3ac0af5053b6612eb501af9"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "7d2f556c5d9383d6bbad1edee988accf0a3c1f3cd49badc378f5e8dcea41dcf9"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "7d2f556c5d9383d6bbad1edee988accf0a3c1f3cd49badc378f5e8dcea41dcf9"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "40ef776764379d8dd2a8477b6d5805db30d2b8104dc54194545e0cb01d2c6f37"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "40ef776764379d8dd2a8477b6d5805db30d2b8104dc54194545e0cb01d2c6f37"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "4e678047655a6f4c2e37e3c9448e733c31d2256060f995d50506b6d5a1ff7650"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "4e678047655a6f4c2e37e3c9448e733c31d2256060f995d50506b6d5a1ff7650"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "7f715d10570f543abeeef2930fb99099ec475b9f1a0ce75b21f7832ab3d27c93"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "7f715d10570f543abeeef2930fb99099ec475b9f1a0ce75b21f7832ab3d27c93"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "892f8cd32a07e443d3e3f6cf65c248aec047c5d69d7eb8febd19c9c3e7a3ee0f"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "892f8cd32a07e443d3e3f6cf65c248aec047c5d69d7eb8febd19c9c3e7a3ee0f"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "01afbbc12b6fe0e05e4357a1117bbe28ceb060202cad59229fb3ea495edc4220"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "01afbbc12b6fe0e05e4357a1117bbe28ceb060202cad59229fb3ea495edc4220"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "472f3cb926182d6264ad38b4390ae2b93d6f1af652ecf3b8586b2d04ae309965"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "472f3cb926182d6264ad38b4390ae2b93d6f1af652ecf3b8586b2d04ae309965"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "7b61be3cb9c8c2be30a5b2c691358a83d8bba0ab5d93a0fde8637a86a52477b6"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "7b61be3cb9c8c2be30a5b2c691358a83d8bba0ab5d93a0fde8637a86a52477b6"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "859526d3baa61cfbf06779e15482d1bf7365d789f22a0874f43767608cb129ef"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "859526d3baa61cfbf06779e15482d1bf7365d789f22a0874f43767608cb129ef"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "c7fabb62c6d731259e0d05837c4d35fda2994870c8a40ab42801b2b8f97aaa4b"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "c7fabb62c6d731259e0d05837c4d35fda2994870c8a40ab42801b2b8f97aaa4b"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "784ade4e9c2c402fb3a2520f111388ed462eded640ba9568598ca3d2a6b79ce5"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "784ade4e9c2c402fb3a2520f111388ed462eded640ba9568598ca3d2a6b79ce5"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "7de77030d705341051a220a286296291c9560926b846c4fab3c0a5c93070837f"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "7de77030d705341051a220a286296291c9560926b846c4fab3c0a5c93070837f"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "2103d7e5bdf585d5290d0e77765ff4ffae34471e0cf2c04c37d7679312a2849f"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "2103d7e5bdf585d5290d0e77765ff4ffae34471e0cf2c04c37d7679312a2849f"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "fed65149b38eb7cb26e0743e86d63aedda1ac83b3f185be73e028362465faff2"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "fed65149b38eb7cb26e0743e86d63aedda1ac83b3f185be73e028362465faff2"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "ee039c78f76293cbe6296d0fce400227ea21b52d5c559c679af1627ce41fa10d"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "ee039c78f76293cbe6296d0fce400227ea21b52d5c559c679af1627ce41fa10d"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "ebe0c741151b1e0d95cd0df3487c0ffc3a8078bc36333c75ec59a4da243f0034"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "ebe0c741151b1e0d95cd0df3487c0ffc3a8078bc36333c75ec59a4da243f0034"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "c8e0191e87402e6b19c313fd63fa0ba7edf4a1bbd0f4dd6c7db53fe808997668"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "c8e0191e87402e6b19c313fd63fa0ba7edf4a1bbd0f4dd6c7db53fe808997668"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "52721da20f8eb3a314a6916c6584fd9b78515a7f48efd975721b66c10b3c5e08"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "52721da20f8eb3a314a6916c6584fd9b78515a7f48efd975721b66c10b3c5e08"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "70c7386ca5aefe13a742691bed8af2d7aa694aaa3d00ea16ad9e9fc8c61499a8"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "70c7386ca5aefe13a742691bed8af2d7aa694aaa3d00ea16ad9e9fc8c61499a8"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "eb0efa9f08afa1c6f36abdef7dfe96955519baa5b113cd46b89256c2f6e6d6aa"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "eb0efa9f08afa1c6f36abdef7dfe96955519baa5b113cd46b89256c2f6e6d6aa"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "ec998c19436407dfa70536840794f0e4e3ea57b585ac6f229cce95169d64dff0"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "ec998c19436407dfa70536840794f0e4e3ea57b585ac6f229cce95169d64dff0"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "af3b0974b8e75e663d93f1d9e278ed6f98993a61d5894e48f2e7fde672a52e0a"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "af3b0974b8e75e663d93f1d9e278ed6f98993a61d5894e48f2e7fde672a52e0a"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "2d40647a8f3ea1307edcc06ddac252bf95b9b73febedd825e6a58ecb09935432"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "2d40647a8f3ea1307edcc06ddac252bf95b9b73febedd825e6a58ecb09935432"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "8f4a74f33d7641b310ae4a285fd78a0ab5bf9b035ac1e1a1a2793468fb048e2e"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "8f4a74f33d7641b310ae4a285fd78a0ab5bf9b035ac1e1a1a2793468fb048e2e"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "db453d2f0e3a9ce98a33af281b4b07c1a7642c8d01612b3d61dd5c8b1b28b91d"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "db453d2f0e3a9ce98a33af281b4b07c1a7642c8d01612b3d61dd5c8b1b28b91d"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "ca64e380f998bb2f14598feb1ad33f04e89783e7ff99b0b93fd89f23ae7a3b57"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "ca64e380f998bb2f14598feb1ad33f04e89783e7ff99b0b93fd89f23ae7a3b57"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "2b3cc785a7b15417c19207bcfa29aa9b1b80b05281cc0eb673fb9fa2af37afd7"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "2b3cc785a7b15417c19207bcfa29aa9b1b80b05281cc0eb673fb9fa2af37afd7"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "04a9c64d025213fac744d1f4a916158b631aa23d67d39388cf6b46d27aaeedab"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "04a9c64d025213fac744d1f4a916158b631aa23d67d39388cf6b46d27aaeedab"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "195565cb437780ffb4f38a2e08110ab46271f6b75a2274012a4fe185cc877fd7"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "195565cb437780ffb4f38a2e08110ab46271f6b75a2274012a4fe185cc877fd7"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "082097f5c1b2813b3d3ab09647502896a295ddbab810bdcad7f89f311564819c"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "082097f5c1b2813b3d3ab09647502896a295ddbab810bdcad7f89f311564819c"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "cfe5298180643a2c6ca0b0fdc580de3ef7f7f05dc8c02b4b2f8ed38ad7efc60b"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "cfe5298180643a2c6ca0b0fdc580de3ef7f7f05dc8c02b4b2f8ed38ad7efc60b"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "d9e7b3773331787ae131a40a30856a69dd671ed162c76f72c2891cc0a7430c86"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "d9e7b3773331787ae131a40a30856a69dd671ed162c76f72c2891cc0a7430c86"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "1094071508d4fd15c759fe06629468c0ae6ff5e29482437f98a6b6539ea172e4"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "1094071508d4fd15c759fe06629468c0ae6ff5e29482437f98a6b6539ea172e4"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "ec5c55b652f641307d35666a41f9817f6b82e899041c5f888a1aa2b486c13069"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "ec5c55b652f641307d35666a41f9817f6b82e899041c5f888a1aa2b486c13069"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "9983c517d344c841461e9af9ce3cd2714619f9fac8541896b520c771ac777b7e"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "9983c517d344c841461e9af9ce3cd2714619f9fac8541896b520c771ac777b7e"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "a50d975c30f064b0248d2125a4936c4df3f8f37fba8956d0ca48ba798523015b"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "a50d975c30f064b0248d2125a4936c4df3f8f37fba8956d0ca48ba798523015b"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "23787f02fd5605d7ef51ee6d2564e8c8ae29995bbd50be1452675b85f1c6751d"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "23787f02fd5605d7ef51ee6d2564e8c8ae29995bbd50be1452675b85f1c6751d"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "6a5e58aec8584cec3ccaacf04a8e6b3f8a1b532987fcae0056d14a67264027a2"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "6a5e58aec8584cec3ccaacf04a8e6b3f8a1b532987fcae0056d14a67264027a2"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "a2a85e012dd0d6da1da66498f59ea9cb369e74d8e6535543dbba4e0d65b0ea61"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "a2a85e012dd0d6da1da66498f59ea9cb369e74d8e6535543dbba4e0d65b0ea61"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "b9fae5087b1d9d8c016c34f4acb73606eb48d738e42bef2719844aa6bd01ccd3"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "b9fae5087b1d9d8c016c34f4acb73606eb48d738e42bef2719844aa6bd01ccd3"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "53f0d6c168ef2deb10b5e29b819b5974309d1ed56d38fb2270d5119961ae70ba"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "53f0d6c168ef2deb10b5e29b819b5974309d1ed56d38fb2270d5119961ae70ba"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "7d9076620731d4b8c385e3de71af4d468549d8dd25ea30d2b5edf29ee0cd44ad"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "7d9076620731d4b8c385e3de71af4d468549d8dd25ea30d2b5edf29ee0cd44ad"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "2365f49cfe887eac48a14389880e5f5849f8468652d8c51de08854514e4851a6"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "2365f49cfe887eac48a14389880e5f5849f8468652d8c51de08854514e4851a6"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "a562bd9308725a91cbf2028b8faea559752c5d1e859de86167f9bc416129f600"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "a562bd9308725a91cbf2028b8faea559752c5d1e859de86167f9bc416129f600"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "3516bf88cc952f204967089b96d6aa60805a683bd8a4f5955947d2fbd3ded337"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "3516bf88cc952f204967089b96d6aa60805a683bd8a4f5955947d2fbd3ded337"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "c344eac4c4bf72eaf67a5ff580a30aeaf7ef29acf3fe4061e544e40a9093adf2"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "c344eac4c4bf72eaf67a5ff580a30aeaf7ef29acf3fe4061e544e40a9093adf2"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "60b631b9c93bacce317885a0689c8b3d1021c86b1e7bbb3e9dd6e01de2d3c3b4"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "60b631b9c93bacce317885a0689c8b3d1021c86b1e7bbb3e9dd6e01de2d3c3b4"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "d5d713e534fa3e275746b68a21312b2b91082d240d553377d3e0dd18fcb889b3"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "d5d713e534fa3e275746b68a21312b2b91082d240d553377d3e0dd18fcb889b3"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "c1d520ab49289073ae57e43f925af26cd93815520b39477e0f2ee13d1bf3bc51"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "c1d520ab49289073ae57e43f925af26cd93815520b39477e0f2ee13d1bf3bc51"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "9bb868f776d79467e023fa7391aa40b3cc3c4fe99e425578e6a63002d0f312f3"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "9bb868f776d79467e023fa7391aa40b3cc3c4fe99e425578e6a63002d0f312f3"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "c586fed452210345d7b23cfbee8b884cb34f46c2a4928b465c0e6d7b3096a36b"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "c586fed452210345d7b23cfbee8b884cb34f46c2a4928b465c0e6d7b3096a36b"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "12c71fa61bc9f130ac86756308104f16f2a0904d25c96ea70cf4f25fe9fecb53"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "12c71fa61bc9f130ac86756308104f16f2a0904d25c96ea70cf4f25fe9fecb53"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "f4c1a3ec62f549e84f48ce02429755a79ea4aaead929c122b53441fc133b3e4a"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "f4c1a3ec62f549e84f48ce02429755a79ea4aaead929c122b53441fc133b3e4a"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "d3b3e931cd1f8279934d772d4b0d9128e55a1b4cbd6e2f95c1148e24003e84a0"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "d3b3e931cd1f8279934d772d4b0d9128e55a1b4cbd6e2f95c1148e24003e84a0"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "b40bad0b26d557913b88867fbe6279f645fa7e089ff2618ada09005cfe2c6f14"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "b40bad0b26d557913b88867fbe6279f645fa7e089ff2618ada09005cfe2c6f14"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "fd2793a8d561a4d617fef448222cd93989389b9c383a73357778de0b07abbb9e"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "fd2793a8d561a4d617fef448222cd93989389b9c383a73357778de0b07abbb9e"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "dd46f9a46b6c1fc92f7a9461727a6cf6251e51471129c9cd69f0d861ec59ffb7"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "dd46f9a46b6c1fc92f7a9461727a6cf6251e51471129c9cd69f0d861ec59ffb7"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "609c4be056fd37d8d3400c6235f2166aa0bb2e6804106f3fbec0d478546f530b"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "609c4be056fd37d8d3400c6235f2166aa0bb2e6804106f3fbec0d478546f530b"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "33f56565026b60befc16c90883a2dcb0481547fcd5a2f45a772089b247d6b920"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "33f56565026b60befc16c90883a2dcb0481547fcd5a2f45a772089b247d6b920"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "ed267dceda7235d832e428f321d2a8564ba3e4edc45cc986632d57030c27636a"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "ed267dceda7235d832e428f321d2a8564ba3e4edc45cc986632d57030c27636a"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "8035234f436c8ae46f08f9c08b1a0cedbdf541ca4992be159c7fab8617997f7b"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "8035234f436c8ae46f08f9c08b1a0cedbdf541ca4992be159c7fab8617997f7b"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "93eaeb8708cab5b189a6393b97dce3e3eb2c5b136a27ae49c9dd4371e3d01fa1"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "93eaeb8708cab5b189a6393b97dce3e3eb2c5b136a27ae49c9dd4371e3d01fa1"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "ab8f2a4fdc4f6ed1ff30c4263128b49a6ddf44861c6084b2fb967c9ee3da39a0"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "ab8f2a4fdc4f6ed1ff30c4263128b49a6ddf44861c6084b2fb967c9ee3da39a0"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "d71817e67fbcaaefc346735b628e121fe4fbdd1c17fe08c9a9a751b74fe7e16b"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "d71817e67fbcaaefc346735b628e121fe4fbdd1c17fe08c9a9a751b74fe7e16b"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "95bec81a932161dd3c48fcedc1408a1e41bdbed22364e07fb48f8dbc15f64154"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "95bec81a932161dd3c48fcedc1408a1e41bdbed22364e07fb48f8dbc15f64154"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "c01735233c6f9a8833dfb8a5ac475c22747c52cdd3b8e4512e79b8a8f71ce386"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "c01735233c6f9a8833dfb8a5ac475c22747c52cdd3b8e4512e79b8a8f71ce386"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "0936921a6890b16cd0abb894c0b2bcd53f565c152b872f79e24588cf1d727e49"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "0936921a6890b16cd0abb894c0b2bcd53f565c152b872f79e24588cf1d727e49"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "4ba813b2aad520aae5ad9f464c52847966771a9bbaa557c596d774fa5adb7cef"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "4ba813b2aad520aae5ad9f464c52847966771a9bbaa557c596d774fa5adb7cef"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "5319b156ee0af8663a9b2a77cb5f17a6547e165b54a423d45c92546fdfc8fed8"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "5319b156ee0af8663a9b2a77cb5f17a6547e165b54a423d45c92546fdfc8fed8"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "9d69ccc1031d89bb4fbbf4aac52b4994d2b1c9d9d3ce0f12de3ac21a8a430950"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "9d69ccc1031d89bb4fbbf4aac52b4994d2b1c9d9d3ce0f12de3ac21a8a430950"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "9e6967ea0dddb9d70f9e5716a2afcda6ccdff4143b01007b472c3ef502a8ce32"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "9e6967ea0dddb9d70f9e5716a2afcda6ccdff4143b01007b472c3ef502a8ce32"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "d91c20de51eb2c68100074e16e1e08fc56cc5ab9492131b5fbb6292e463c6304"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "d91c20de51eb2c68100074e16e1e08fc56cc5ab9492131b5fbb6292e463c6304"
+      },
+      {
+        "error": "invalid_request",
+        "kind": "http",
+        "status": 400,
+        "trace_id_hash": "f458aa7bae629651c3694712c0e92836ab83a59c7bb5becb9bbb227b084becde"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "body_eof",
+        "status": 400,
+        "system_error": 0,
+        "trace_id_hash": "f458aa7bae629651c3694712c0e92836ab83a59c7bb5becb9bbb227b084becde"
+      },
+      {
+        "elapsed_ms": 0.0,
+        "event": "begin",
+        "id_hash": "1bcae1990af84292f12935226895b6b1643313cf4271e8636836fd2f3ef8294c",
+        "instance": 1,
+        "kind": "request",
+        "seq": -1,
+        "stage": "validation",
+        "trace_id_hash": "490900285badb096475bd8f9032281da05dd80c10ebd27a7db305df43a85b5f8"
+      },
+      {
+        "elapsed_ms": 0.08,
+        "event": "registered",
+        "id_hash": "ff81f3fbde442ee14e9a8217d3c55f8f95dd5f5edea394dfa865c194398a21b1",
+        "instance": 1,
+        "kind": "request",
+        "seq": -1,
+        "stage": "validation",
+        "trace_id_hash": "490900285badb096475bd8f9032281da05dd80c10ebd27a7db305df43a85b5f8"
+      },
+      {
+        "completion_id_hash": "ff81f3fbde442ee14e9a8217d3c55f8f95dd5f5edea394dfa865c194398a21b1",
+        "kind": "http",
+        "trace_id_hash": "490900285badb096475bd8f9032281da05dd80c10ebd27a7db305df43a85b5f8"
+      },
+      {
+        "elapsed_ms": 0.094,
+        "event": "stage",
+        "id_hash": "ff81f3fbde442ee14e9a8217d3c55f8f95dd5f5edea394dfa865c194398a21b1",
+        "instance": 1,
+        "kind": "request",
+        "seq": -1,
+        "stage": "encode",
+        "trace_id_hash": "490900285badb096475bd8f9032281da05dd80c10ebd27a7db305df43a85b5f8"
+      },
+      {
+        "elapsed_ms": 0.227,
+        "event": "stage",
+        "id_hash": "ff81f3fbde442ee14e9a8217d3c55f8f95dd5f5edea394dfa865c194398a21b1",
+        "instance": 1,
+        "kind": "request",
+        "seq": -1,
+        "stage": "slot_admission",
+        "trace_id_hash": "490900285badb096475bd8f9032281da05dd80c10ebd27a7db305df43a85b5f8"
+      },
+      {
+        "elapsed_ms": 0.241,
+        "event": "admitted",
+        "id_hash": "ff81f3fbde442ee14e9a8217d3c55f8f95dd5f5edea394dfa865c194398a21b1",
+        "instance": 1,
+        "kind": "request",
+        "seq": 0,
+        "stage": "slot_admission",
+        "trace_id_hash": "490900285badb096475bd8f9032281da05dd80c10ebd27a7db305df43a85b5f8"
+      },
+      {
+        "elapsed_ms": 0.244,
+        "event": "stage",
+        "id_hash": "ff81f3fbde442ee14e9a8217d3c55f8f95dd5f5edea394dfa865c194398a21b1",
+        "instance": 1,
+        "kind": "request",
+        "seq": 0,
+        "stage": "encode",
+        "trace_id_hash": "490900285badb096475bd8f9032281da05dd80c10ebd27a7db305df43a85b5f8"
+      },
+      {
+        "elapsed_ms": 0.32,
+        "event": "stage",
+        "id_hash": "ff81f3fbde442ee14e9a8217d3c55f8f95dd5f5edea394dfa865c194398a21b1",
+        "instance": 1,
+        "kind": "request",
+        "seq": 0,
+        "stage": "prefill",
+        "trace_id_hash": "490900285badb096475bd8f9032281da05dd80c10ebd27a7db305df43a85b5f8"
+      },
+      {
+        "elapsed_ms": 143.31,
+        "event": "stage",
+        "id_hash": "ff81f3fbde442ee14e9a8217d3c55f8f95dd5f5edea394dfa865c194398a21b1",
+        "instance": 1,
+        "kind": "request",
+        "seq": 0,
+        "stage": "decode",
+        "trace_id_hash": "490900285badb096475bd8f9032281da05dd80c10ebd27a7db305df43a85b5f8"
+      },
+      {
+        "elapsed_ms": 332.217,
+        "event": "stage",
+        "id_hash": "ff81f3fbde442ee14e9a8217d3c55f8f95dd5f5edea394dfa865c194398a21b1",
+        "instance": 1,
+        "kind": "request",
+        "seq": 0,
+        "stage": "response",
+        "trace_id_hash": "490900285badb096475bd8f9032281da05dd80c10ebd27a7db305df43a85b5f8"
+      },
+      {
+        "elapsed_ms": 332.294,
+        "event": "end",
+        "id_hash": "ff81f3fbde442ee14e9a8217d3c55f8f95dd5f5edea394dfa865c194398a21b1",
+        "instance": 1,
+        "kind": "request",
+        "model_lock_ms": 0.001,
+        "outcome": "success",
+        "reason": "completed",
+        "released": 1,
+        "scheduler_completion_ms": 172.454,
+        "scheduler_waits": 2,
+        "seq": 0,
+        "slot_wait_ms": 0.011,
+        "stage": "response",
+        "stream_write_ms": 0.0,
+        "tokenizer_lock_ms": 0.0,
+        "trace_id_hash": "490900285badb096475bd8f9032281da05dd80c10ebd27a7db305df43a85b5f8"
+      },
+      {
+        "elapsed_ms": 0.0,
+        "event": "begin",
+        "id_hash": "1bcae1990af84292f12935226895b6b1643313cf4271e8636836fd2f3ef8294c",
+        "instance": 2,
+        "kind": "request",
+        "seq": -1,
+        "stage": "validation",
+        "trace_id_hash": "1366dd192a95b407f63e2cc414c86a85dd7b29b2e2649a64d1718a914470c348"
+      },
+      {
+        "elapsed_ms": 0.112,
+        "event": "registered",
+        "id_hash": "55efb01963fadd405ad0fcb2eeb5a9ae1c892b830cf8dfbd69932f51101dfa40",
+        "instance": 2,
+        "kind": "request",
+        "seq": -1,
+        "stage": "validation",
+        "trace_id_hash": "1366dd192a95b407f63e2cc414c86a85dd7b29b2e2649a64d1718a914470c348"
+      },
+      {
+        "completion_id_hash": "55efb01963fadd405ad0fcb2eeb5a9ae1c892b830cf8dfbd69932f51101dfa40",
+        "kind": "http",
+        "trace_id_hash": "1366dd192a95b407f63e2cc414c86a85dd7b29b2e2649a64d1718a914470c348"
+      },
+      {
+        "elapsed_ms": 0.232,
+        "event": "stage",
+        "id_hash": "55efb01963fadd405ad0fcb2eeb5a9ae1c892b830cf8dfbd69932f51101dfa40",
+        "instance": 2,
+        "kind": "request",
+        "seq": -1,
+        "stage": "grammar_compile",
+        "trace_id_hash": "1366dd192a95b407f63e2cc414c86a85dd7b29b2e2649a64d1718a914470c348"
+      },
+      {
+        "elapsed_ms": 198.724,
+        "event": "stage",
+        "id_hash": "55efb01963fadd405ad0fcb2eeb5a9ae1c892b830cf8dfbd69932f51101dfa40",
+        "instance": 2,
+        "kind": "request",
+        "seq": -1,
+        "stage": "encode",
+        "trace_id_hash": "1366dd192a95b407f63e2cc414c86a85dd7b29b2e2649a64d1718a914470c348"
+      },
+      {
+        "elapsed_ms": 200.558,
+        "event": "stage",
+        "id_hash": "55efb01963fadd405ad0fcb2eeb5a9ae1c892b830cf8dfbd69932f51101dfa40",
+        "instance": 2,
+        "kind": "request",
+        "seq": -1,
+        "stage": "slot_admission",
+        "trace_id_hash": "1366dd192a95b407f63e2cc414c86a85dd7b29b2e2649a64d1718a914470c348"
+      },
+      {
+        "elapsed_ms": 200.597,
+        "event": "admitted",
+        "id_hash": "55efb01963fadd405ad0fcb2eeb5a9ae1c892b830cf8dfbd69932f51101dfa40",
+        "instance": 2,
+        "kind": "request",
+        "seq": 0,
+        "stage": "slot_admission",
+        "trace_id_hash": "1366dd192a95b407f63e2cc414c86a85dd7b29b2e2649a64d1718a914470c348"
+      },
+      {
+        "elapsed_ms": 200.6,
+        "event": "stage",
+        "id_hash": "55efb01963fadd405ad0fcb2eeb5a9ae1c892b830cf8dfbd69932f51101dfa40",
+        "instance": 2,
+        "kind": "request",
+        "seq": 0,
+        "stage": "encode",
+        "trace_id_hash": "1366dd192a95b407f63e2cc414c86a85dd7b29b2e2649a64d1718a914470c348"
+      },
+      {
+        "elapsed_ms": 200.612,
+        "event": "stage",
+        "id_hash": "55efb01963fadd405ad0fcb2eeb5a9ae1c892b830cf8dfbd69932f51101dfa40",
+        "instance": 2,
+        "kind": "request",
+        "seq": 0,
+        "stage": "prefill",
+        "trace_id_hash": "1366dd192a95b407f63e2cc414c86a85dd7b29b2e2649a64d1718a914470c348"
+      },
+      {
+        "elapsed_ms": 824.082,
+        "event": "stage",
+        "id_hash": "55efb01963fadd405ad0fcb2eeb5a9ae1c892b830cf8dfbd69932f51101dfa40",
+        "instance": 2,
+        "kind": "request",
+        "seq": 0,
+        "stage": "decode",
+        "trace_id_hash": "1366dd192a95b407f63e2cc414c86a85dd7b29b2e2649a64d1718a914470c348"
+      },
+      {
+        "elapsed_ms": 3720.93,
+        "event": "stage",
+        "id_hash": "55efb01963fadd405ad0fcb2eeb5a9ae1c892b830cf8dfbd69932f51101dfa40",
+        "instance": 2,
+        "kind": "request",
+        "seq": 0,
+        "stage": "response",
+        "trace_id_hash": "1366dd192a95b407f63e2cc414c86a85dd7b29b2e2649a64d1718a914470c348"
+      },
+      {
+        "elapsed_ms": 3727.822,
+        "event": "end",
+        "id_hash": "55efb01963fadd405ad0fcb2eeb5a9ae1c892b830cf8dfbd69932f51101dfa40",
+        "instance": 2,
+        "kind": "request",
+        "model_lock_ms": 0.005,
+        "outcome": "success",
+        "reason": "completed",
+        "released": 1,
+        "scheduler_completion_ms": 0.0,
+        "scheduler_waits": 0,
+        "seq": 0,
+        "slot_wait_ms": 0.031,
+        "stage": "response",
+        "stream_write_ms": 0.056,
+        "tokenizer_lock_ms": 0.005,
+        "trace_id_hash": "1366dd192a95b407f63e2cc414c86a85dd7b29b2e2649a64d1718a914470c348"
+      },
+      {
+        "elapsed_ms": 0.0,
+        "event": "begin",
+        "id_hash": "1bcae1990af84292f12935226895b6b1643313cf4271e8636836fd2f3ef8294c",
+        "instance": 3,
+        "kind": "request",
+        "seq": -1,
+        "stage": "validation",
+        "trace_id_hash": "00251636daa95f40103b5ebd37ed89ae718d69c90eafa337ec2c1d2c991b717c"
+      },
+      {
+        "elapsed_ms": 0.107,
+        "event": "registered",
+        "id_hash": "1b6a6b3be20ce73c3e72149ad8eae31ca3d9e2c76e75d5194176f1060a3a1529",
+        "instance": 3,
+        "kind": "request",
+        "seq": -1,
+        "stage": "validation",
+        "trace_id_hash": "00251636daa95f40103b5ebd37ed89ae718d69c90eafa337ec2c1d2c991b717c"
+      },
+      {
+        "completion_id_hash": "1b6a6b3be20ce73c3e72149ad8eae31ca3d9e2c76e75d5194176f1060a3a1529",
+        "kind": "http",
+        "trace_id_hash": "00251636daa95f40103b5ebd37ed89ae718d69c90eafa337ec2c1d2c991b717c"
+      },
+      {
+        "elapsed_ms": 0.239,
+        "event": "stage",
+        "id_hash": "1b6a6b3be20ce73c3e72149ad8eae31ca3d9e2c76e75d5194176f1060a3a1529",
+        "instance": 3,
+        "kind": "request",
+        "seq": -1,
+        "stage": "grammar_compile",
+        "trace_id_hash": "00251636daa95f40103b5ebd37ed89ae718d69c90eafa337ec2c1d2c991b717c"
+      },
+      {
+        "elapsed_ms": 210.419,
+        "event": "stage",
+        "id_hash": "1b6a6b3be20ce73c3e72149ad8eae31ca3d9e2c76e75d5194176f1060a3a1529",
+        "instance": 3,
+        "kind": "request",
+        "seq": -1,
+        "stage": "encode",
+        "trace_id_hash": "00251636daa95f40103b5ebd37ed89ae718d69c90eafa337ec2c1d2c991b717c"
+      },
+      {
+        "elapsed_ms": 212.688,
+        "event": "stage",
+        "id_hash": "1b6a6b3be20ce73c3e72149ad8eae31ca3d9e2c76e75d5194176f1060a3a1529",
+        "instance": 3,
+        "kind": "request",
+        "seq": -1,
+        "stage": "slot_admission",
+        "trace_id_hash": "00251636daa95f40103b5ebd37ed89ae718d69c90eafa337ec2c1d2c991b717c"
+      },
+      {
+        "elapsed_ms": 212.731,
+        "event": "admitted",
+        "id_hash": "1b6a6b3be20ce73c3e72149ad8eae31ca3d9e2c76e75d5194176f1060a3a1529",
+        "instance": 3,
+        "kind": "request",
+        "seq": 0,
+        "stage": "slot_admission",
+        "trace_id_hash": "00251636daa95f40103b5ebd37ed89ae718d69c90eafa337ec2c1d2c991b717c"
+      },
+      {
+        "elapsed_ms": 212.733,
+        "event": "stage",
+        "id_hash": "1b6a6b3be20ce73c3e72149ad8eae31ca3d9e2c76e75d5194176f1060a3a1529",
+        "instance": 3,
+        "kind": "request",
+        "seq": 0,
+        "stage": "encode",
+        "trace_id_hash": "00251636daa95f40103b5ebd37ed89ae718d69c90eafa337ec2c1d2c991b717c"
+      },
+      {
+        "elapsed_ms": 212.746,
+        "event": "stage",
+        "id_hash": "1b6a6b3be20ce73c3e72149ad8eae31ca3d9e2c76e75d5194176f1060a3a1529",
+        "instance": 3,
+        "kind": "request",
+        "seq": 0,
+        "stage": "prefill",
+        "trace_id_hash": "00251636daa95f40103b5ebd37ed89ae718d69c90eafa337ec2c1d2c991b717c"
+      },
+      {
+        "elapsed_ms": 915.583,
+        "event": "stage",
+        "id_hash": "1b6a6b3be20ce73c3e72149ad8eae31ca3d9e2c76e75d5194176f1060a3a1529",
+        "instance": 3,
+        "kind": "request",
+        "seq": 0,
+        "stage": "decode",
+        "trace_id_hash": "00251636daa95f40103b5ebd37ed89ae718d69c90eafa337ec2c1d2c991b717c"
+      },
+      {
+        "elapsed_ms": 4021.697,
+        "event": "stage",
+        "id_hash": "1b6a6b3be20ce73c3e72149ad8eae31ca3d9e2c76e75d5194176f1060a3a1529",
+        "instance": 3,
+        "kind": "request",
+        "seq": 0,
+        "stage": "response",
+        "trace_id_hash": "00251636daa95f40103b5ebd37ed89ae718d69c90eafa337ec2c1d2c991b717c"
+      },
+      {
+        "elapsed_ms": 4028.684,
+        "event": "end",
+        "id_hash": "1b6a6b3be20ce73c3e72149ad8eae31ca3d9e2c76e75d5194176f1060a3a1529",
+        "instance": 3,
+        "kind": "request",
+        "model_lock_ms": 0.005,
+        "outcome": "success",
+        "reason": "completed",
+        "released": 1,
+        "scheduler_completion_ms": 0.0,
+        "scheduler_waits": 0,
+        "seq": 0,
+        "slot_wait_ms": 0.031,
+        "stage": "response",
+        "stream_write_ms": 0.058,
+        "tokenizer_lock_ms": 0.007,
+        "trace_id_hash": "00251636daa95f40103b5ebd37ed89ae718d69c90eafa337ec2c1d2c991b717c"
+      }
+    ],
+    "id_policy": "per_bundle_hmac_sha256; key discarded; no cross_bundle_correlation",
+    "omitted_lines": 41,
+    "omitted_older_events": 0,
+    "raw_log_included": false,
+    "sampled_bytes": 36439,
+    "state": "available",
+    "tail_only": false,
+    "tail_window_bytes": 2097152,
+    "unknown_fields": 0
+  },
+  "metrics": {
+    "q4t_active_chats": 0,
+    "q4t_business_connections": 0,
+    "q4t_connection_rejections_total{kind=\"business\"}": 1,
+    "q4t_connection_rejections_total{kind=\"control\"}": 0,
+    "q4t_connection_rejections_total{kind=\"observation\"}": 4,
+    "q4t_connection_rejections_total{kind=\"unclassified\"}": 0,
+    "q4t_control_connections": 0,
+    "q4t_execution_steps_total": 181,
+    "q4t_generation_tokens_total": 365,
+    "q4t_gpu_healthy": 1,
+    "q4t_http_receive_failures_total{reason=\"admission\"}": 0,
+    "q4t_http_receive_failures_total{reason=\"body_capacity\"}": 0,
+    "q4t_http_receive_failures_total{reason=\"body_deadline\"}": 0,
+    "q4t_http_receive_failures_total{reason=\"body_eof\"}": 127,
+    "q4t_http_receive_failures_total{reason=\"body_too_large\"}": 0,
+    "q4t_http_receive_failures_total{reason=\"connection_capacity\"}": 5,
+    "q4t_http_receive_failures_total{reason=\"exception\"}": 0,
+    "q4t_http_receive_failures_total{reason=\"header_deadline\"}": 0,
+    "q4t_http_receive_failures_total{reason=\"header_eof\"}": 0,
+    "q4t_http_receive_failures_total{reason=\"header_too_large\"}": 0,
+    "q4t_http_receive_failures_total{reason=\"malformed\"}": 0,
+    "q4t_http_receive_failures_total{reason=\"method\"}": 0,
+    "q4t_http_receive_failures_total{reason=\"query\"}": 0,
+    "q4t_http_receive_failures_total{reason=\"route\"}": 0,
+    "q4t_http_receive_failures_total{reason=\"server_draining\"}": 0,
+    "q4t_http_receive_failures_total{reason=\"socket_error\"}": 0,
+    "q4t_http_receive_failures_total{reason=\"unexpected_body\"}": 4,
+    "q4t_http_receive_failures_total{reason=\"unsupported_media\"}": 0,
+    "q4t_http_write_failures_total{origin=\"handler\",reason=\"exception\"}": 0,
+    "q4t_http_write_failures_total{origin=\"handler\",reason=\"explicit_cancel\"}": 0,
+    "q4t_http_write_failures_total{origin=\"handler\",reason=\"peer_closed\"}": 0,
+    "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_deadline\"}": 0,
+    "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_failure\"}": 0,
+    "q4t_http_write_failures_total{origin=\"handler\",reason=\"server_shutdown\"}": 0,
+    "q4t_http_write_failures_total{origin=\"handler\",reason=\"socket_error\"}": 0,
+    "q4t_http_write_failures_total{origin=\"handler\",reason=\"write_deadline\"}": 0,
+    "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"exception\"}": 0,
+    "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"explicit_cancel\"}": 0,
+    "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"peer_closed\"}": 0,
+    "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_deadline\"}": 0,
+    "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_failure\"}": 0,
+    "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"server_shutdown\"}": 0,
+    "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"socket_error\"}": 0,
+    "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"write_deadline\"}": 0,
+    "q4t_memory_admission_enabled": 1,
+    "q4t_memory_admission_floor_bytes": 2147483648,
+    "q4t_memory_admission_open": 1,
+    "q4t_memory_admission_recovery_bytes": 2684354560,
+    "q4t_memory_admission_state{state=\"disabled\"}": 0,
+    "q4t_memory_admission_state{state=\"memory_observation_unavailable\"}": 0,
+    "q4t_memory_admission_state{state=\"memory_pressure\"}": 0,
+    "q4t_memory_admission_state{state=\"open\"}": 1,
+    "q4t_memory_admission_transitions_total": 1,
+    "q4t_memory_available_bytes": 35876425728,
+    "q4t_memory_observation_failures_total": 0,
+    "q4t_memory_observation_valid": 1,
+    "q4t_memory_observations_total": 17,
+    "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_observation_unavailable\"}": 0,
+    "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_pressure\"}": 0,
+    "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_observation_unavailable\"}": 0,
+    "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_pressure\"}": 0,
+    "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_observation_unavailable\"}": 0,
+    "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_pressure\"}": 0,
+    "q4t_observation_connections": 1,
+    "q4t_prompt_tokens_total": 1515,
+    "q4t_queue_rejected_total": 0,
+    "q4t_queued_requests": 0,
+    "q4t_ready": 1,
+    "q4t_request_body_bytes": 0,
+    "q4t_requests_aborted_by_reason_total{reason=\"client_disconnected\"}": 0,
+    "q4t_requests_aborted_by_reason_total{reason=\"deadline_exceeded\"}": 0,
+    "q4t_requests_aborted_by_reason_total{reason=\"explicit_cancel\"}": 1,
+    "q4t_requests_aborted_by_reason_total{reason=\"other\"}": 0,
+    "q4t_requests_aborted_by_reason_total{reason=\"request_failed\"}": 0,
+    "q4t_requests_aborted_by_reason_total{reason=\"server_shutdown\"}": 0,
+    "q4t_requests_aborted_total": 1,
+    "q4t_requests_error_total": 0,
+    "q4t_requests_success_total": 3,
+    "q4t_requests_total": 4,
+    "q4t_seq_slots_free": 1,
+    "q4t_seq_slots_total": 1,
+    "q4t_structured_active": 0,
+    "q4t_structured_compile_timeouts_total": 0,
+    "q4t_structured_prepare_failed_total": 0,
+    "q4t_structured_preparing": 0,
+    "q4t_structured_rejected_total": 0,
+    "q4t_structured_resource_exhausted_total": 0,
+    "q4t_structured_vocab_bytes": 0,
+    "q4t_structured_workers_active": 0,
+    "q4t_structured_workers_reaped_total": 2,
+    "q4t_structured_workers_started_total": 2,
+    "q4t_text_admission_rejected_total": 0
+  },
+  "monotonic": 1868106.383281872,
+  "observability_version": 4,
+  "physical_ram_hard_limit_proved": false,
+  "port": 18108,
+  "probes": {
+    "/livez": {
+      "http_status": 200,
+      "readiness": {
+        "live": true,
+        "ready": true,
+        "status": "ready"
+      }
+    },
+    "/metrics": {
+      "http_status": 200,
+      "omitted_series": 163
+    },
+    "/readyz": {
+      "http_status": 200,
+      "readiness": {
+        "live": true,
+        "ready": true,
+        "status": "ready"
+      }
+    },
+    "/v1/capabilities": {
+      "http_status": 200
+    },
+    "/v1/config": {
+      "http_status": 200
+    }
+  },
+  "read_only": true,
+  "snapshot_atomic": false,
+  "state": "WARNING",
+  "unix_seconds": 1793678023.866408,
+  "version": "q4t.ops.snapshot.v1"
+}

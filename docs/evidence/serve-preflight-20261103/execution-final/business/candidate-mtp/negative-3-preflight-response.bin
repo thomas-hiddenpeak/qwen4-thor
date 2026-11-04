@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 129
+X-Request-Id: trace-negative-3-preflight
+Connection: close
+
+{"error":{"message":"session cache is not enabled","type":"invalid_request_error","code":"invalid_request","param":"session_id"}}

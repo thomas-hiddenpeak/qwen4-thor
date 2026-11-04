@@ -1,0 +1,131 @@
+{
+  "version": 1,
+  "root": "/home/rm01/models/dev/qwen4-thor",
+  "destination": "/home/rm01/models/dev/qwen4-thor/build",
+  "releases": {
+    "current": {
+      "pair": {
+        "binary": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261103/package/releases/current/q4t",
+          "sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+          "bytes": 7087224
+        },
+        "sidecar": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261103/package/releases/current/q4t.release.json",
+          "sha256": "bb620240dfbbe0437066f6827bf54d00f9e107327f244997fb437fe30727b1b2",
+          "bytes": 44671
+        },
+        "cache": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261103/package/releases/current/CMakeCache.txt",
+          "sha256": "2bcb7e3f956aed13c9ac72cc05d4052653236e214c65e11fb65126ffcfd3be69",
+          "bytes": 38825
+        },
+        "version": "serve-observation-capacity-20261103",
+        "protocol_sha256": "da1466be364b9d177669a6a6b3209d77ef832bd4c8e059e3d93820bfeb336b05",
+        "observability_version": 4,
+        "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/previous/q4t",
+        "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/previous/q4t.release.json",
+        "previous_release_was_stale": false,
+        "pair_identity_verified": true,
+        "business_acceptance_revalidated": false
+      },
+      "hashes": {
+        "q4t": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+        "q4t.release.json": "bb620240dfbbe0437066f6827bf54d00f9e107327f244997fb437fe30727b1b2"
+      },
+      "rules": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261103/package/releases/current/q4t.rules.yml",
+        "sha256": "849bf0cdeb4de4225c134183a678b8eb7985f50a5fa22ece4dd3c502067e0ff8",
+        "bytes": 13565
+      },
+      "source": {
+        "binary": {
+          "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+          "sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+          "bytes": 7087224
+        },
+        "sidecar": {
+          "path": "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json",
+          "sha256": "bb620240dfbbe0437066f6827bf54d00f9e107327f244997fb437fe30727b1b2",
+          "bytes": 44671
+        },
+        "cache": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/candidate/CMakeCache.txt",
+          "sha256": "2bcb7e3f956aed13c9ac72cc05d4052653236e214c65e11fb65126ffcfd3be69",
+          "bytes": 38825
+        },
+        "version": "serve-observation-capacity-20261103",
+        "protocol_sha256": "da1466be364b9d177669a6a6b3209d77ef832bd4c8e059e3d93820bfeb336b05",
+        "observability_version": 4,
+        "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/previous/q4t",
+        "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/previous/q4t.release.json",
+        "previous_release_was_stale": false,
+        "pair_identity_verified": true,
+        "business_acceptance_revalidated": false
+      }
+    },
+    "previous": {
+      "pair": {
+        "binary": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261103/package/releases/previous/q4t",
+          "sha256": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+          "bytes": 7086768
+        },
+        "sidecar": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261103/package/releases/previous/q4t.release.json",
+          "sha256": "c520333192c04ddb499dd0188496789ec8ddc20fc5e0f00491ca01f52517aa75",
+          "bytes": 42438
+        },
+        "cache": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261103/package/releases/previous/CMakeCache.txt",
+          "sha256": "7fb9a8f1e6d6ad2b754f732c8c88704a351e2111f86ba0a3c02097f3d86fde15",
+          "bytes": 38741
+        },
+        "version": "serve-memory-20261103",
+        "protocol_sha256": "aeb66adc439c31b23d943ffe9d9f40253fe2df275f89767b87927ab979bd4bd5",
+        "observability_version": 3,
+        "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/package/previous/q4t",
+        "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/package/previous/q4t.release.json",
+        "previous_release_was_stale": false,
+        "pair_identity_verified": true,
+        "business_acceptance_revalidated": false
+      },
+      "hashes": {
+        "q4t": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+        "q4t.release.json": "c520333192c04ddb499dd0188496789ec8ddc20fc5e0f00491ca01f52517aa75"
+      },
+      "rules": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261103/package/releases/previous/q4t.rules.yml",
+        "sha256": "77a4ddc613b002508be336ab41dfae17c9d9e6421f1638c15ccbfcca0eed637e",
+        "bytes": 13437
+      },
+      "source": {
+        "binary": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/previous/q4t",
+          "sha256": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+          "bytes": 7086768
+        },
+        "sidecar": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/previous/q4t.release.json",
+          "sha256": "c520333192c04ddb499dd0188496789ec8ddc20fc5e0f00491ca01f52517aa75",
+          "bytes": 42438
+        },
+        "cache": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/package/candidate/CMakeCache.txt",
+          "sha256": "7fb9a8f1e6d6ad2b754f732c8c88704a351e2111f86ba0a3c02097f3d86fde15",
+          "bytes": 38741
+        },
+        "version": "serve-memory-20261103",
+        "protocol_sha256": "aeb66adc439c31b23d943ffe9d9f40253fe2df275f89767b87927ab979bd4bd5",
+        "observability_version": 3,
+        "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/package/previous/q4t",
+        "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/package/previous/q4t.release.json",
+        "previous_release_was_stale": false,
+        "pair_identity_verified": true,
+        "business_acceptance_revalidated": false
+      }
+    }
+  },
+  "semantics": "individual atomic replaces with a durable recovery marker; not a cross-file power-loss transaction",
+  "qualification": "frozen existing identities only; business acceptance is independent"
+}

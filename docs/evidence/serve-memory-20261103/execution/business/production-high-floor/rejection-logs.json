@@ -1,0 +1,17 @@
+[
+  [
+    "memory.chat-json",
+    "headers",
+    "memory_pressure"
+  ],
+  [
+    "memory.chat-stream-intent",
+    "headers",
+    "memory_pressure"
+  ],
+  [
+    "memory.preflight",
+    "headers",
+    "memory_pressure"
+  ]
+]

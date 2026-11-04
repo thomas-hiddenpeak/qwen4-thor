@@ -1,0 +1,6 @@
+{
+  "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/input-contract-20261102/execution/pair/q4t",
+  "sha256": "ea678009413bd4d63a2b456a697e9c7844b47f71e6e2b3e3447b5044f9cbdf0a",
+  "bytes": 6865336,
+  "reason": "build artifact retained only in .q4t-work; archive stores receipt"
+}

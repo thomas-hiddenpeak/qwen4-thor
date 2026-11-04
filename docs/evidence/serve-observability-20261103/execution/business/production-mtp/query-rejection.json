@@ -1,0 +1,18 @@
+{
+  "status": 400,
+  "trace_id": "srv01b.query",
+  "reason": "query",
+  "response": {
+    "error": {
+      "message": "query parameters are not supported",
+      "type": "invalid_request_error",
+      "code": "unsupported_query",
+      "param": "path"
+    }
+  },
+  "wire": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/execution/business/production-mtp/query-response.bin",
+    "sha256": "79421f2b35ce0f5ff7ef76f891f5d6c463b18e3986ddbde75d0a7851ffe23d9c",
+    "bytes": 259
+  }
+}

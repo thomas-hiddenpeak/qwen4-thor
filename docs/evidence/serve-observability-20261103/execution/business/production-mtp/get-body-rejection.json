@@ -1,0 +1,18 @@
+{
+  "status": 400,
+  "trace_id": "srv01b.get-body",
+  "reason": "unexpected_body",
+  "response": {
+    "error": {
+      "message": "GET body is not supported",
+      "type": "invalid_request_error",
+      "code": "unexpected_body",
+      "param": "body"
+    }
+  },
+  "wire": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/execution/business/production-mtp/get-body-response.bin",
+    "sha256": "568152de24644f74ccdadd175942d68dd685e5bfc678c76ad0f44cba17843f3a",
+    "bytes": 251
+  }
+}

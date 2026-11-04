@@ -1,0 +1,9 @@
+{
+  "status": "DELIVERED",
+  "time": 1793663691.5026426,
+  "installed": {
+    "q4t": "ed672a65b586f8445e51e3ba6d63659b4a098386e87e1ed38e3c8893a352a139",
+    "q4t.release.json": "67897c817dfccd6db3d4e2c0d0af3cfc70fb97a2c840887905c03fbf0bd6be23"
+  },
+  "source_commit": "2425044b49aaab3b8754319b5bf33a135e9c5911"
+}

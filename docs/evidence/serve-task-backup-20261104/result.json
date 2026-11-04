@@ -1,0 +1,61 @@
+{
+  "status": "ACCEPT_PROJECT_TASK_BACKUP_SHORT",
+  "application_cpu_tests": 88,
+  "driver_tests": 4,
+  "cpu_file_operation_kills": 23,
+  "model_starts": 1,
+  "gateway_starts": 1,
+  "completed_tasks": 2,
+  "unknown_tasks": 1,
+  "restored_stores": 1,
+  "actual_process_kills": 4,
+  "duplicate_submissions": 4,
+  "nonexecuting_resumes": 2,
+  "retired_source_refusals": 2,
+  "repeated_restores": 1,
+  "preflights": 5,
+  "intents": 5,
+  "responses": 4,
+  "tools": 2,
+  "capabilities": 4,
+  "response_usage": {
+    "alpha": [
+      {
+        "completion_tokens": 55,
+        "prompt_tokens": 647,
+        "total_tokens": 702
+      },
+      {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    ],
+    "beta": [
+      {
+        "completion_tokens": 55,
+        "prompt_tokens": 647,
+        "total_tokens": 702
+      },
+      {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    ]
+  },
+  "grammar_reaped": 4,
+  "owned_exited": 11,
+  "controls": 24,
+  "seconds": 73.21092097600922,
+  "gpu_seconds": 62.45393621711992,
+  "gpu_observations": 59,
+  "successful_server_response_seconds_sum": 15.820519,
+  "successful_server_response_count": 4,
+  "cleanup_confirmed": true,
+  "default_changed": false,
+  "long_run": false,
+  "performance_acceptance": false,
+  "stale_snapshot_activation": false,
+  "missing_source_disaster_recovery": false
+}

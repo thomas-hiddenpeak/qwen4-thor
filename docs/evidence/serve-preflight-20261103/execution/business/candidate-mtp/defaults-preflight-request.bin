@@ -1,0 +1,7 @@
+POST /v1/chat/preflight HTTP/1.1
+Host: localhost
+X-Request-Id: trace-defaults-preflight
+Content-Type: application/json
+Content-Length: 95
+
+{"request": {"prompt": "é 中文 🚀"}, "include_prompt": false, "include_token_ids": false}

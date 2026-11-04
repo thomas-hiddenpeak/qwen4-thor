@@ -1,0 +1,34 @@
+{
+  "status": "PASS_SAME_ELF_HTTP_HEALTH_REUSED",
+  "binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "sha256": "ed672a65b586f8445e51e3ba6d63659b4a098386e87e1ed38e3c8893a352a139",
+    "bytes": 7084248
+  },
+  "http_result": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/execution/business/result.json",
+    "sha256": "ebe916bc5ae9b7365ccbeab1ae55def7caef440799eef0a7e148e4ead1ad7f34",
+    "bytes": 218
+  },
+  "http_proofs": {
+    "ordinary-recovery": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/execution/business/production-mtp/ordinary-recovery-result.json",
+      "sha256": "3b273da71cabeda9d477edd6bdf4aad33bbd6f46d3a7d490cb029054c99d9340",
+      "bytes": 276
+    },
+    "project-read": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/execution/business/production-mtp/project-read-result.json",
+      "sha256": "8c59017b6b87ce31382a904d5adb9a2038bf99e5e3361737f9f01ab0f2a2baac",
+      "bytes": 577
+    },
+    "project-answer": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/execution/business/production-mtp/project-answer-result.json",
+      "sha256": "81c064e09e3fd93535620eb656de6b4ce4d6ac226808e97f8adba95acb2383ef",
+      "bytes": 497
+    }
+  },
+  "installed_cli_stdout": "q4t (Qwen4-Thor) v0.1.0\n  target: Jetson AGX Thor, SM110a\n  model:  Qwen3.8-Flash-Next (qwen4_exp)\n",
+  "worker_reported_rss_bytes": 183119872,
+  "new_model_requests": 0,
+  "new_model_starts": 0
+}

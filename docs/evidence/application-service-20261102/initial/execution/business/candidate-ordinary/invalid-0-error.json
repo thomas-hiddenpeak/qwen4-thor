@@ -1,0 +1,8 @@
+{
+  "status": 400,
+  "raw": "{\"error\":{\"message\":\"provide only one of max_tokens or max_completion_tokens\",\"type\":\"invalid_request_error\",\"code\":\"invalid_request\",\"param\":null}}",
+  "sdk_class": "BadRequestError",
+  "code": "invalid_request",
+  "type": "invalid_request_error",
+  "param": null
+}

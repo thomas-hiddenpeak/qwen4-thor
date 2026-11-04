@@ -1,0 +1,13 @@
+{
+  "raw_records": 174,
+  "source_commit": "24c831da04d89d680196103e63fe7889432805f9",
+  "runtime_acceptance": "ACCEPT_BOUNDED_SERVE_STAGE_B2A",
+  "generation_attempts": 13,
+  "negative_requests": 12,
+  "model_starts": 3,
+  "guard": "COMPLETED",
+  "retained_failures": [
+    "CPU backend CLI --filter rejected before test execution; corrected invocation passed 7/7"
+  ],
+  "scope": "SRV-05a fields/hiding only; true thinking budget and industrial goal incomplete; not performance acceptance"
+}

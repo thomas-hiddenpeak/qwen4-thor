@@ -1,0 +1,109 @@
+{
+  "passed": true,
+  "time": "2026-11-03T16:04:35.265313+08:00",
+  "lock_available": true,
+  "gpu": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-correction-20261103/postflight-gpu.json",
+    "sha256": "704c64a982ddec916f2f6bc1a7214cff6539463be8d8efce482544f7382fd5ec",
+    "bytes": 2255
+  },
+  "owned": [
+    {
+      "pid": 2324010,
+      "identity": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-correction-20261103/execution/business/model/scope/identity.json",
+        "sha256": "0ec7c6553b31e9db515d8915d84c2fc209249b874dad9bdd36d32079c3a10660",
+        "bytes": 609
+      },
+      "still_alive": false
+    },
+    {
+      "pid": 2325797,
+      "identity": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-correction-20261103/execution/business/legacy-mtp/scope/identity.json",
+        "sha256": "dbb18f735ef7f8cd84d019408a49defd7b473d9fbbcbf43172ba7706753f406f",
+        "bytes": 619
+      },
+      "still_alive": false
+    },
+    {
+      "pid": 2331729,
+      "identity": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-correction-20261103/execution/business/model-event-release/scope/identity.json",
+        "sha256": "589d8289889f2a1198577f7385e3b18f6232d7331db57f7a93de597c591b5cf6",
+        "bytes": 637
+      },
+      "still_alive": false
+    },
+    {
+      "pid": 2333340,
+      "identity": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-correction-20261103/execution/business/handled-release/scope/identity.json",
+        "sha256": "bc5a625a2ac9cc0d70b36eeb0787846dbf050f0dfab53248c8905a26d3a7ce18",
+        "bytes": 629
+      },
+      "still_alive": false
+    },
+    {
+      "pid": 2328697,
+      "identity": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-correction-20261103/execution/business/model-release/scope/identity.json",
+        "sha256": "fb142f696d028e2b4b76ffcf7bc9183f00482e85730289a8fc360be1300a8f7d",
+        "bytes": 625
+      },
+      "still_alive": false
+    },
+    {
+      "pid": 2327166,
+      "identity": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-correction-20261103/execution/business/mtp-release/scope/identity.json",
+        "sha256": "e6dffb0febad6b57efe1655f448e9728c752e093cf49316785bf822b2f012990",
+        "bytes": 621
+      },
+      "still_alive": false
+    },
+    {
+      "pid": 2330194,
+      "identity": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-correction-20261103/execution/business/model-host-release/scope/identity.json",
+        "sha256": "766be1f07843db3cbfe28fdf8f93e05c85e8dedf755a83f54ade5d0f8151a25e",
+        "bytes": 635
+      },
+      "still_alive": false
+    }
+  ],
+  "mem_available_gib": 115.78667449951172,
+  "no_recovery_marker": true,
+  "current": {
+    "binary": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+      "sha256": "3fd31a217ee145c9a56659bacd2ca015041d02bd1bc0603cf6f5845cb362d1c3",
+      "bytes": 7155768
+    },
+    "sidecar": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json",
+      "sha256": "3ba0b8d3ba421851bd423150928e299720bb8ba749c03885378858473670e39f",
+      "bytes": 46873
+    },
+    "cache": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/package/candidate/CMakeCache.txt",
+      "sha256": "bbea3bcd4bf8d7e62a2e09ef4fdc238951436db0a3a94ce8ffed295e7b5262da",
+      "bytes": 38795
+    },
+    "version": "serve-backend-cleanup-20261103",
+    "protocol_sha256": "044ef2f3758a7ceac74870ac9669b4e3d1708de0f12d5b5dedafad55dd9ef815",
+    "observability_version": 4,
+    "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/package/previous/q4t",
+    "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/package/previous/q4t.release.json",
+    "previous_release_was_stale": false,
+    "pair_identity_verified": true,
+    "business_acceptance_revalidated": false
+  },
+  "rollback_bundle": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-correction-20261103/rollback-bundle/manifest.json",
+    "sha256": "1d88af826b916b7688edf12070c03b78ec0c347de70a1b57057148f94fb32517",
+    "bytes": 7014
+  },
+  "rollback_performed": false,
+  "cumulative_finalize_seconds": 641.3356156349182
+}

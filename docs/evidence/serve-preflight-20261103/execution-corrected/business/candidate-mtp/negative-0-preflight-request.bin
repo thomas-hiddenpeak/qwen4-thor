@@ -1,0 +1,7 @@
+POST /v1/chat/preflight HTTP/1.1
+Host: localhost
+X-Request-Id: trace-negative-0-preflight
+Content-Type: application/json
+Content-Length: 174
+
+{"request": {"messages": [{"role": "user", "content": "q"}], "stream": false, "max_completion_tokens": 1, "unknown": true}, "include_prompt": true, "include_token_ids": true}

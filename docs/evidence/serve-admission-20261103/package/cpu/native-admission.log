@@ -1,0 +1,7 @@
+[PASS] admission_runtime_fifo_survives_later_arrival_and_slot_transfer
+[PASS] admission_runtime_zero_and_full_queue_reject_without_slot_loss
+[PASS] admission_runtime_full_queue_allows_incompatible_idle_slot
+[PASS] admission_runtime_cancel_head_middle_tail_wakes_successors
+[PASS] admission_runtime_deadline_disconnect_stop_and_gpu_failure_cleanup
+[PASS] admission_runtime_exception_unlinks_before_successor_recovery
+6 tests, 6 passed, 0 failed, 0 skipped

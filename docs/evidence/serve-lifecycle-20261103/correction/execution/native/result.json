@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "tests": 24,
+  "model_loaded": false,
+  "binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/package/candidate/q4t_http_lifecycle_tests",
+    "sha256": "76b4d0d9c28d990c26668a07c01750919bfc3701f361548a9f82c8a4abb4e639",
+    "bytes": 864936
+  }
+}

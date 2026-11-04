@@ -9,7 +9,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 include(../../cmake/HostTestSources.cmake)
 find_package(Threads REQUIRED)
 add_executable(q4t_host_tests ${Q4T_HOST_TEST_SOURCES} ../../src/io/json.cpp)
+target_compile_definitions(q4t_host_tests PRIVATE Q4T_GRAMMAR_PROCESS_TESTS=1)
+q4t_link_structured_output(q4t_host_tests)
 target_include_directories(q4t_host_tests PRIVATE ../../include)
+target_include_directories(q4t_host_tests PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
 target_compile_options(q4t_host_tests PRIVATE -Wall -Wextra -Werror)
 target_link_libraries(q4t_host_tests PRIVATE Threads::Threads)
 
@@ -108,6 +111,24 @@ q4t_add_python_contract(q4t_physical_ram_contracts
   tools/evalscope/test_physical_ram.py)
 q4t_add_python_contract(q4t_response_identity_contracts
   tools/evalscope/test_response_identity.py)
+q4t_add_python_contract(q4t_agent_tool_client_contracts
+  tools/examples/test_chat_client.py)
+q4t_add_python_contract(q4t_tool_recovery_contracts
+  tools/examples/test_tool_recovery.py)
+q4t_add_python_contract(q4t_project_query_contracts
+  tools/examples/test_project_query.py)
+q4t_add_python_contract(q4t_application_delivery_contracts
+  tools/application_service/test_stage.py)
+q4t_add_python_contract(q4t_structured_output_stage_contracts
+  tools/structured_output/test_stage.py)
+q4t_add_python_contract(q4t_input_contract_stage_contracts
+  tools/input_contract/test_stage.py)
+q4t_add_python_contract(q4t_serve_resource_stage_contracts
+  tools/serve_resources/test_stage.py)
+q4t_add_python_contract(q4t_serve_role_stage_contracts
+  tools/serve_stage_b1/test_stage.py)
+q4t_add_python_contract(q4t_chat_acceptance_contracts
+  tools/response_protocol/test_acceptance.py)
 # A build of Python can omit pidfd APIs despite a new version number. Probe the
 # guard's actual contract before assigning its real descendant-cleanup tests.
 set(Q4T_GPU_GUARD_PYTHON "" CACHE FILEPATH
@@ -145,3 +166,6 @@ q4t_add_python_contract(q4t_supervisor_contracts
   tools/release/test_supervisor.py)
 q4t_add_python_contract(q4t_audit_rollback_contracts
   tools/verify/audit_p2/test_rollback.py)
+
+q4t_add_python_contract(q4t_grammar_isolation_stage_contracts
+  tools/grammar_isolation/test_stage.py)

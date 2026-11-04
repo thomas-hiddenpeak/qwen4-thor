@@ -1,0 +1,15 @@
+[Unit]
+Description=Qwen4 Thor explicit managed serving generation
+[Service]
+Type=exec
+ExecStart="/usr/bin/python3.12" "-I" "-B" "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/package-cpu/source/tools/serve_service/service.py" "run" "--package" "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/package-cpu" "--manifest-sha256" "e33a0ac2771d450a380c2b49eed8d6a5221b5e67c6b10ea6c70eca5199de5787" "--output" "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/unstarted-smoke-run"
+Restart=no
+KillMode=control-group
+TimeoutStopSec=90
+NoNewPrivileges=yes
+UMask=0077
+LimitCORE=0
+UnsetEnvironment=LD_PRELOAD PYTHONPATH PYTHONHOME
+StandardOutput=journal
+StandardError=journal
+# Deliberately no Install section or automatic restart.

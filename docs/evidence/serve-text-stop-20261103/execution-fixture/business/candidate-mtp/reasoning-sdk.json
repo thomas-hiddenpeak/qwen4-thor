@@ -1,0 +1,34 @@
+{
+  "id": "chatcmpl-auto-7c1704b83de1407eadee3a9bcfbaadb3",
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "logprobs": null,
+      "message": {
+        "content": "",
+        "refusal": null,
+        "role": "assistant",
+        "annotations": null,
+        "audio": null,
+        "function_call": null,
+        "tool_calls": null,
+        "reasoning_content": "用户要求我只回复数字710003，不需要其他内容。\n"
+      }
+    }
+  ],
+  "created": 1793649321,
+  "model": "qwen3.8-flash-next",
+  "object": "chat.completion",
+  "metadata": null,
+  "moderation": null,
+  "service_tier": null,
+  "system_fingerprint": null,
+  "usage": {
+    "completion_tokens": 18,
+    "prompt_tokens": 55,
+    "total_tokens": 73,
+    "completion_tokens_details": null,
+    "prompt_tokens_details": null
+  }
+}

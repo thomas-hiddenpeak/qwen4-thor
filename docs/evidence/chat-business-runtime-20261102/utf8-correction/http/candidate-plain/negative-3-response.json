@@ -1,0 +1,5 @@
+{
+  "status": 400,
+  "raw": "{\"error\":{\"message\":\"only parallel_tool_calls=true with parsed messages is supported\",\"type\":\"invalid_request_error\",\"code\":null}}",
+  "elapsed_seconds": 0.00027297018095850945
+}

@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "/usr/bin/python3.12",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/gpu_exclusive.py",
+    "--output",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-delivery-20261102/deployment/lease",
+    "--",
+    "/usr/bin/python3.12",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/delivery.py",
+    "deploy"
+  ],
+  "started": 1793600655.7701705
+}

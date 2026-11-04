@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 167
+X-Request-Id: trace-negative-7-preflight
+Connection: close
+
+{"error":{"message":"provide only one of max_tokens or max_completion_tokens","type":"invalid_request_error","code":"invalid_request","param":"max_completion_tokens"}}

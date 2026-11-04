@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_text_stop/stage.py", line 253, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_text_stop/stage.py", line 244, in main
+    a.execute()
+  File "/home/rm01/models/dev/qwen4-thor/tools/application_service/stage.py", line 275, in execute
+    verifier(plan)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_text_stop/stage.py", line 162, in verifier
+    v.Run(plan, OUTPUT / ("health" if installed else "business"), installed=installed).run()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_text_stop/verify.py", line 264, in run
+    self.model("candidate-mtp", binary, True, self.business)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_text_stop/verify.py", line 255, in model
+    super().model(name, binary, mtp, action)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_stage_b1/verify.py", line 138, in model
+    with self.sdk() as client:
+         ^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/application_service/verify.py", line 58, in sdk
+    import openai
+ModuleNotFoundError: No module named 'openai'

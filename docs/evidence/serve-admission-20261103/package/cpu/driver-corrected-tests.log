@@ -1,0 +1,54 @@
+test_request_shapes_and_bounded_payload (tools.serve_admission.test_driver.DriverTests.test_request_shapes_and_bounded_payload) ... ERROR
+
+======================================================================
+ERROR: test_request_shapes_and_bounded_payload (tools.serve_admission.test_driver.DriverTests.test_request_shapes_and_bounded_payload)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_admission/test_driver.py", line 26, in test_request_shapes_and_bounded_payload
+    validators["chat"].validate(body)
+  File "/home/rm01/.local/lib/python3.12/site-packages/jsonschema/validators.py", line 450, in validate
+    raise error
+jsonschema.exceptions.ValidationError: {'type': 'json_schema', 'json_schema': {'name': 'admission', 'strict': True, 'schema': {'type': 'object', 'properties': {'data': {'type': 'array', 'minItems': 128, 'maxItems': 128, 'items': {'type': 'boolean', 'enum': [True]}}}, 'required': ['data'], 'additionalProperties': False}}} is not valid under any of the given schemas
+
+Failed validating 'anyOf' in schema['properties']['response_format']:
+    {'anyOf': [{'oneOf': [{'type': 'object',
+                           'properties': {'type': {'enum': ['text',
+                                                            'json_object']}},
+                           'required': ['type'],
+                           'additionalProperties': False},
+                          {'type': 'object',
+                           'properties': {'type': {'const': 'json_schema'},
+                                          'json_schema': {'type': 'object',
+                                                          'properties': {'name': {'type': 'string',
+                                                                                  'minLength': 1,
+                                                                                  'maxLength': 64,
+                                                                                  'pattern': '^[A-Za-z0-9_-]+$'},
+                                                                         'description': {'type': 'string'},
+                                                                         'strict': {'type': ['boolean',
+                                                                                             'null']},
+                                                                         'schema': {'allOf': [{'$ref': '#/$defs/schemaNode'},
+                                                                                              {'properties': {'type': {'const': 'object'}}}]}},
+                                                          'required': ['name',
+                                                                       'schema'],
+                                                          'additionalProperties': False}},
+                           'required': ['type', 'json_schema'],
+                           'additionalProperties': False}]},
+               {'type': 'null'}]}
+
+On instance['response_format']:
+    {'type': 'json_schema',
+     'json_schema': {'name': 'admission',
+                     'strict': True,
+                     'schema': {'type': 'object',
+                                'properties': {'data': {'type': 'array',
+                                                        'minItems': 128,
+                                                        'maxItems': 128,
+                                                        'items': {'type': 'boolean',
+                                                                  'enum': [True]}}},
+                                'required': ['data'],
+                                'additionalProperties': False}}}
+
+----------------------------------------------------------------------
+Ran 1 test in 0.137s
+
+FAILED (errors=1)

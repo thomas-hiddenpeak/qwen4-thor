@@ -1,0 +1,7 @@
+{
+  "status": "FAILED",
+  "started": 1793644341.2671597,
+  "original_started": 1793644231.1028798,
+  "error": "AssertionError('unclean shutdown')",
+  "finished": 1793644341.924715
+}

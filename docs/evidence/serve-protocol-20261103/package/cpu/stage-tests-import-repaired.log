@@ -1,0 +1,10 @@
+test_cut_proxy_forwards_actual_prefix_and_no_complete_terminal (tools.serve_protocol.test_stage.Contracts.test_cut_proxy_forwards_actual_prefix_and_no_complete_terminal) ... ok
+test_every_attempt_charged_and_original_deadline_not_reset (tools.serve_protocol.test_stage.Contracts.test_every_attempt_charged_and_original_deadline_not_reset) ... ok
+test_http_negative_fixtures_fail_production_contract_before_gpu (tools.serve_protocol.test_stage.Contracts.test_http_negative_fixtures_fail_production_contract_before_gpu) ... ok
+test_sdk_missing_before_any_model_start (tools.serve_protocol.test_stage.Contracts.test_sdk_missing_before_any_model_start) ... ok
+test_strict_tool_request_shapes_and_final_history_contract (tools.serve_protocol.test_stage.Contracts.test_strict_tool_request_shapes_and_final_history_contract) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.144s
+
+OK

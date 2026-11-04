@@ -1,0 +1,24 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": null,
+  "max_completion_tokens": 512,
+  "stream": null,
+  "messages": [
+    {
+      "role": "user",
+      "content": "只回复数字710003。"
+    }
+  ],
+  "extra_body": {
+    "chat_template_kwargs": {
+      "enable_thinking": false,
+      "reasoning_effort": "low"
+    }
+  },
+  "top_p": null,
+  "n": null,
+  "frequency_penalty": null,
+  "presence_penalty": null,
+  "stream_options": null,
+  "user": null
+}

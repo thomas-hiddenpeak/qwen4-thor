@@ -1,0 +1,35 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/engine/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+-- Configuring done (0.1s)
+-- Generating done (0.1s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/engine
+[  0%] Built target q4t_runtime
+[  3%] Built target q4t_trace
+[  6%] Built target q4t_io
+[  9%] Built target q4t_ple
+[ 12%] Built target q4t_text
+[ 22%] Built target q4t_quant
+[ 51%] Built target xgrammar
+[ 74%] Built target q4t_model
+[ 77%] Built target q4t_startup_plan
+[ 80%] Building CXX object CMakeFiles/q4t_server.dir/src/server/text_stop.cpp.o
+[ 80%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_capabilities.cpp.o
+[ 80%] Linking CXX static library libq4t_server.a
+[100%] Built target q4t_server
+[100%] Linking CXX executable q4t
+[100%] Built target q4t
+[  4%] Built target q4t_io
+[ 43%] Built target xgrammar
+[ 47%] Built target q4t_text
+[ 52%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/chat_capabilities.cpp.o
+[ 52%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/text_stop.cpp.o
+[ 52%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_chat_capabilities_test.cpp.o
+[ 56%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_text_stop_test.cpp.o
+[ 56%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests

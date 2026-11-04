@@ -1,0 +1,244 @@
+{
+  "started": 1860426.574276419,
+  "ended": 1860426.582636751,
+  "memory": {
+    "MemTotal": 131920637952,
+    "MemFree": 25204899840,
+    "MemAvailable": 37160443904
+  },
+  "process_memory": {
+    "monotonic": 1860426.581904523,
+    "processes": {
+      "1994177": "Name:\tq4t\nUmask:\t0022\nState:\tS (sleeping)\nTgid:\t1994177\nNgid:\t0\nPid:\t1994177\nPPid:\t1994176\nTracerPid:\t0\nUid:\t2002\t2002\t2002\t2002\nGid:\t2002\t2002\t2002\t2002\nFDSize:\t256\nGroups:\t4 24 27 29 30 44 46 100 108 111 122 983 984 993 2002 2003 \nNStgid:\t1994177\nNSpid:\t1994177\nNSpgid:\t1994152\nNSsid:\t1994152\nKthread:\t0\nVmPeak:\t144939716 kB\nVmSize:\t144931424 kB\nVmLck:\t       0 kB\nVmPin:\t   32768 kB\nVmHWM:\t 3997220 kB\nVmRSS:\t  988852 kB\nRssAnon:\t  795540 kB\nRssFile:\t  146016 kB\nRssShmem:\t   47296 kB\nVmData:\t  987736 kB\nVmStk:\t     132 kB\nVmExe:\t    6116 kB\nVmLib:\t  715432 kB\nVmPTE:\t    2580 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffff\nThreads:\t5\nSigQ:\t0/501100\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000000000000\nSigCgt:\t0000000100004002\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tunknown\nCpus_allowed:\t3fff\nCpus_allowed_list:\t0-13\nMems_allowed:\t0001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t16693\nnonvoluntary_ctxt_switches:\t1121\n"
+    },
+    "process_start_ticks": {
+      "1994177": 186011818
+    },
+    "child_discovery": "proc_stat_ppid",
+    "sampling_errors": [],
+    "meminfo": "MemTotal:       128828748 kB\nMemFree:        24614160 kB\nMemAvailable:   36289496 kB\nBuffers:          666176 kB\nCached:         10580992 kB\nSwapCached:        54204 kB\nActive:          7647196 kB\nInactive:        7406296 kB\nActive(anon):    1583116 kB\nInactive(anon):  2573844 kB\nActive(file):    6064080 kB\nInactive(file):  4832452 kB\nUnevictable:       30628 kB\nMlocked:            2608 kB\nSwapTotal:       2097148 kB\nSwapFree:          86416 kB\nDirty:               140 kB\nWriteback:            72 kB\nAnonPages:       3725328 kB\nMapped:           750136 kB\nShmem:            322604 kB\nKReclaimable:    1925424 kB\nSlab:            1402844 kB\nSReclaimable:     620644 kB\nSUnreclaim:       782200 kB\nKernelStack:        9520 kB\nPageTables:        25956 kB\nSecPageTables:         0 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    66511520 kB\nCommitted_AS:    7504176 kB\nVmallocTotal:   133141626880 kB\nVmallocUsed:      551624 kB\nVmallocChunk:          0 kB\nPercpu:             7168 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:   2482176 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nCmaTotal:         524288 kB\nCmaFree:          227612 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\n"
+  },
+  "resources": {
+    "schema_version": 1,
+    "start_t": 1793670344.0650604,
+    "end_t": 1793670344.0657372,
+    "binding": {
+      "root_pid": 1994177,
+      "actual_cgroup_path": "/sys/fs/cgroup/system.slice/q4t-serve-pressure-20261103-1994152.scope",
+      "expected_cgroup_path": "/sys/fs/cgroup/system.slice/q4t-serve-pressure-20261103-1994152.scope",
+      "expected_matches_actual": true,
+      "status": "bound_to_live_pid"
+    },
+    "processes": [
+      {
+        "pid": 1994177,
+        "identity": {
+          "pid": 1994177,
+          "start_ticks": 186011818
+        },
+        "identity_error": null,
+        "consistent_identity": true,
+        "io": {
+          "value": {
+            "rchar": 83183191797,
+            "wchar": 344606,
+            "syscr": 268738,
+            "syscw": 4162,
+            "read_bytes": 83061485568,
+            "write_bytes": 532480,
+            "cancelled_write_bytes": 0
+          },
+          "error": null
+        },
+        "cgroup_membership": {
+          "value": "/system.slice/q4t-serve-pressure-20261103-1994152.scope",
+          "error": null
+        }
+      }
+    ],
+    "cgroup": {
+      "path": "/sys/fs/cgroup/system.slice/q4t-serve-pressure-20261103-1994152.scope",
+      "identity": {
+        "device": 29,
+        "inode": 131828
+      },
+      "identity_error": null,
+      "consistent_identity": true,
+      "observations": {
+        "memory.current": {
+          "value": 877850624,
+          "error": null
+        },
+        "memory.peak": {
+          "value": 17113141248,
+          "error": null
+        },
+        "memory.swap.current": {
+          "value": 0,
+          "error": null
+        },
+        "memory.swap.peak": {
+          "value": 0,
+          "error": null
+        },
+        "pids.current": {
+          "value": 6,
+          "error": null
+        },
+        "memory.max": {
+          "value": "max",
+          "error": null
+        },
+        "memory.high": {
+          "value": "max",
+          "error": null
+        },
+        "memory.swap.max": {
+          "value": 0,
+          "error": null
+        },
+        "memory.stat": {
+          "value": {
+            "anon": 820416512,
+            "file": 50614272,
+            "kernel": 6557696,
+            "kernel_stack": 81920,
+            "pagetables": 2715648,
+            "sec_pagetables": 0,
+            "percpu": 512,
+            "sock": 0,
+            "vmalloc": 0,
+            "shmem": 48431104,
+            "file_mapped": 50556928,
+            "file_dirty": 8192,
+            "file_writeback": 0,
+            "swapcached": 0,
+            "anon_thp": 333447168,
+            "file_thp": 0,
+            "shmem_thp": 0,
+            "inactive_anon": 862195712,
+            "active_anon": 6651904,
+            "inactive_file": 2179072,
+            "active_file": 4096,
+            "unevictable": 0,
+            "slab_reclaimable": 318704,
+            "slab_unreclaimable": 239376,
+            "slab": 558080,
+            "workingset_refault_anon": 0,
+            "workingset_refault_file": 10,
+            "workingset_activate_anon": 0,
+            "workingset_activate_file": 0,
+            "workingset_restore_anon": 0,
+            "workingset_restore_file": 0,
+            "workingset_nodereclaim": 0,
+            "pgscan": 0,
+            "pgsteal": 0,
+            "pgscan_kswapd": 0,
+            "pgscan_direct": 0,
+            "pgscan_khugepaged": 0,
+            "pgsteal_kswapd": 0,
+            "pgsteal_direct": 0,
+            "pgsteal_khugepaged": 0,
+            "pgfault": 1206888,
+            "pgmajfault": 0,
+            "pgrefill": 0,
+            "pgactivate": 103158,
+            "pgdeactivate": 0,
+            "pglazyfree": 0,
+            "pglazyfreed": 0,
+            "thp_fault_alloc": 8871,
+            "thp_collapse_alloc": 0,
+            "thp_swpout": 0,
+            "thp_swpout_fallback": 0
+          },
+          "error": null
+        },
+        "memory.events": {
+          "value": {
+            "low": 0,
+            "high": 0,
+            "max": 0,
+            "oom": 0,
+            "oom_kill": 0,
+            "oom_group_kill": 0
+          },
+          "error": null
+        },
+        "memory.events.local": {
+          "value": {
+            "low": 0,
+            "high": 0,
+            "max": 0,
+            "oom": 0,
+            "oom_kill": 0,
+            "oom_group_kill": 0
+          },
+          "error": null
+        },
+        "memory.swap.events": {
+          "value": {
+            "high": 0,
+            "max": 0,
+            "fail": 0
+          },
+          "error": null
+        },
+        "cgroup.events": {
+          "value": {
+            "populated": 1,
+            "frozen": 0
+          },
+          "error": null
+        },
+        "io.stat": {
+          "value": {
+            "259:0": {
+              "rbytes": 83061485568,
+              "wbytes": 528384,
+              "rios": 677345,
+              "wios": 90,
+              "dbytes": 0,
+              "dios": 0
+            }
+          },
+          "error": null
+        },
+        "memory.pressure": {
+          "value": null,
+          "error": {
+            "reason": "read_or_parse_failed",
+            "message": "[Errno 2] No such file or directory: '/sys/fs/cgroup/system.slice/q4t-serve-pressure-20261103-1994152.scope/memory.pressure'",
+            "errno": 2
+          }
+        },
+        "io.pressure": {
+          "value": null,
+          "error": {
+            "reason": "read_or_parse_failed",
+            "message": "[Errno 2] No such file or directory: '/sys/fs/cgroup/system.slice/q4t-serve-pressure-20261103-1994152.scope/io.pressure'",
+            "errno": 2
+          }
+        },
+        "cgroup.procs": {
+          "value": [
+            1994176,
+            1994177
+          ],
+          "error": null
+        }
+      }
+    },
+    "model_devices": {
+      "devices": {},
+      "errors": [],
+      "scope": "model filesystem devices, global background; no device sum"
+    }
+  },
+  "parent": {
+    "VmHWM": 4093153280,
+    "VmRSS": 1012584448,
+    "Threads": 5,
+    "fds": 49
+  },
+  "scope": "separate overlapping observations, non-atomic; no physical RAM sum"
+}

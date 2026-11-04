@@ -1,0 +1,18 @@
+{
+  "time": "2026-11-03T03:56:31.755289+08:00",
+  "gpu": {
+    "status": "OK",
+    "pids": [],
+    "request_id": "cb7e5439f10fa452073a7a02562af6e0",
+    "worker_pid": 1718019,
+    "stdout": "{\"request_id\": \"cb7e5439f10fa452073a7a02562af6e0\", \"monotonic\": 1839474.302414634, \"event\": \"begin\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"cb7e5439f10fa452073a7a02562af6e0\", \"monotonic\": 1839474.310139685, \"event\": \"end\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"cb7e5439f10fa452073a7a02562af6e0\", \"monotonic\": 1839474.310171482, \"event\": \"begin\", \"api\": \"init\"}\n{\"request_id\": \"cb7e5439f10fa452073a7a02562af6e0\", \"monotonic\": 1839474.314222011, \"event\": \"end\", \"api\": \"init\", \"seconds\": 0.0040386030450463295}\n{\"request_id\": \"cb7e5439f10fa452073a7a02562af6e0\", \"monotonic\": 1839474.31426715, \"event\": \"begin\", \"api\": \"device_count\"}\n{\"request_id\": \"cb7e5439f10fa452073a7a02562af6e0\", \"monotonic\": 1839474.314311187, \"event\": \"end\", \"api\": \"device_count\", \"seconds\": 3.42030543833971e-05}\n{\"request_id\": \"cb7e5439f10fa452073a7a02562af6e0\", \"monotonic\": 1839474.314325909, \"event\": \"begin\", \"api\": \"handle[0]\"}\n{\"request_id\": \"cb7e5439f10fa452073a7a02562af6e0\", \"monotonic\": 1839474.320838197, \"event\": \"end\", \"api\": \"handle[0]\", \"seconds\": 0.006504453951492906}\n{\"request_id\": \"cb7e5439f10fa452073a7a02562af6e0\", \"monotonic\": 1839474.320858233, \"event\": \"begin\", \"api\": \"compute_v3[0]\"}\n{\"request_id\": \"cb7e5439f10fa452073a7a02562af6e0\", \"monotonic\": 1839474.321940451, \"event\": \"end\", \"api\": \"compute_v3[0]\", \"seconds\": 0.0010753939859569073}\n{\"request_id\": \"cb7e5439f10fa452073a7a02562af6e0\", \"monotonic\": 1839474.321958756, \"event\": \"begin\", \"api\": \"shutdown\"}\n{\"request_id\": \"cb7e5439f10fa452073a7a02562af6e0\", \"monotonic\": 1839474.323233557, \"event\": \"end\", \"api\": \"shutdown\", \"seconds\": 0.0012677630875259638}\n{\"request_id\": \"cb7e5439f10fa452073a7a02562af6e0\", \"monotonic\": 1839474.323255176, \"event\": \"result\", \"status\": \"OK\", \"error\": null, \"device_count\": 1, \"pids\": [], \"process_memory\": []}\n",
+    "stderr": "",
+    "returncode": 0,
+    "seconds": 0.062637432012707,
+    "process_memory": [],
+    "device_count": 1
+  },
+  "lock_available": true,
+  "recovery_markers": [],
+  "mem_available_gib": 116.3398666381836
+}

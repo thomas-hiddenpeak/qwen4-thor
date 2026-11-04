@@ -1,0 +1,35 @@
+{
+  "status": "FAILED",
+  "automatic_retries": 0,
+  "requests_replayed": 0,
+  "error": "RuntimeError('graceful client error classification')",
+  "counts": {
+    "generations": 1202,
+    "negatives": 0,
+    "starts": 1
+  },
+  "preflights": 240,
+  "control_requests_used": 1719,
+  "instances": [
+    {
+      "mode": "SIGTERM",
+      "passed": true,
+      "pid": 2124227,
+      "start_ticks": 187050647,
+      "continuous_samples": 3600,
+      "returncode": 0,
+      "exit_seconds": 0.6433715810999274,
+      "child_exit": [
+        {
+          "pid": 2186879,
+          "start_ticks": 187414325,
+          "state": "absent",
+          "running": false
+        }
+      ],
+      "scope_removed": true,
+      "elapsed_seconds": 1.0276712600607425
+    }
+  ],
+  "elapsed_seconds": 3638.4913841409143
+}

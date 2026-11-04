@@ -1,0 +1,30 @@
+{
+  "prior_package": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/sealed-files.json",
+    "sha256": "304a5d8cc4eef51f3efbd38f6ca8a47c134f0f9707b789b928c9e51e2ba94b2a",
+    "bytes": 4135
+  },
+  "prior_execution": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/sealed-files.json",
+    "sha256": "0309b963b9f55774c42851bc00493fa9fee69a01d094645d4910e3eaa12fe193",
+    "bytes": 5656
+  },
+  "completed": [
+    "transport 8 negatives + readiness",
+    "ordinary",
+    "real project tool and answer"
+  ],
+  "not_reused": [
+    "proxy and mixed cancellation",
+    "deadline",
+    "TCP backpressure",
+    "shutdown",
+    "installed health"
+  ],
+  "initial_runtime_source": "e0d9f9d8ec769cfef8d20cd52df3ee49cd95be39",
+  "runtime_unchanged": true,
+  "remaining_starts": 2,
+  "remaining_request_attempts": 8,
+  "remaining_negatives": 8,
+  "validation_scope": "Pending long-wait/mixed/backpressure/shutdown cases share the instrumented build. Installed health uses production ELF."
+}

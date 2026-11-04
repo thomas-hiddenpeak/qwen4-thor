@@ -1,0 +1,20 @@
+data: {"id":"chatcmpl-auto-5ee2b13be6cf29c9c0d9e170a2aab7d1","object":"chat.completion.chunk","created":1793646596,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"chatcmpl-auto-5ee2b13be6cf29c9c0d9e170a2aab7d1","object":"chat.completion.chunk","created":1793646596,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"7"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"chatcmpl-auto-5ee2b13be6cf29c9c0d9e170a2aab7d1","object":"chat.completion.chunk","created":1793646596,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"1"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"chatcmpl-auto-5ee2b13be6cf29c9c0d9e170a2aab7d1","object":"chat.completion.chunk","created":1793646596,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"0"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"chatcmpl-auto-5ee2b13be6cf29c9c0d9e170a2aab7d1","object":"chat.completion.chunk","created":1793646596,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"0"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"chatcmpl-auto-5ee2b13be6cf29c9c0d9e170a2aab7d1","object":"chat.completion.chunk","created":1793646596,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"0"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"chatcmpl-auto-5ee2b13be6cf29c9c0d9e170a2aab7d1","object":"chat.completion.chunk","created":1793646596,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"3"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"chatcmpl-auto-5ee2b13be6cf29c9c0d9e170a2aab7d1","object":"chat.completion.chunk","created":1793646596,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+data: {"id":"chatcmpl-auto-5ee2b13be6cf29c9c0d9e170a2aab7d1","object":"chat.completion.chunk","created":1793646596,"model":"qwen3.8-flash-next","choices":[],"usage":{"prompt_tokens":31,"completion_tokens":7,"total_tokens":38,"completion_tokens_details":{"reasoning_tokens":0},"q4t_thinking_budget":{"limit":0,"consumed":0,"forced_closure_tokens":0}}}
+
+data: [DONE]
+

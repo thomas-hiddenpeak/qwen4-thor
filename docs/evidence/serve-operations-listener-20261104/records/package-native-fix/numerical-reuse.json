@@ -1,0 +1,27 @@
+{
+  "changed": [
+    "include/q4t/server/chat_server.h",
+    "include/q4t/server/http_connection.h",
+    "include/q4t/server/server_options.h",
+    "src/main.cpp",
+    "src/server/chat_capabilities.cpp",
+    "src/server/chat_http.cpp",
+    "src/server/chat_metrics.cpp",
+    "src/server/chat_plan.cpp",
+    "src/server/chat_server.cpp",
+    "src/server/server_options.cpp"
+  ],
+  "current": {
+    "bytes": 23139,
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-operations-listener-20261104/package/candidate/runtime-source.json",
+    "sha256": "bee62663231e09bd4145c296d6c6e071610a5e77ec133128be6510cb189bc730"
+  },
+  "model_math_tokenizer_template_cache_scheduler_unchanged": true,
+  "performance_acceptance": false,
+  "previous": {
+    "bytes": 23139,
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-error-params-20261104/package/candidate/runtime-source.json",
+    "sha256": "6e7775df88324b763b3adf28cc267898781062c249a1a11db8ac8792a11fe081"
+  },
+  "unchanged_runtime_sources": 212
+}

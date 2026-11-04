@@ -1,0 +1,1 @@
+{"model": "qwen3.8-flash-next", "temperature": 0, "max_completion_tokens": 640e-1, "stream": false, "messages": [{"role": "user", "content": "\u53ea\u56de\u590d\u6570\u5b57710003\u3002"}], "chat_template_kwargs": {"enable_thinking": false, "reasoning_effort": "low"}}

@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 161
+X-Request-Id: req-5bcf441af63bdf6ad3fe7759cf48768b
+Connection: close
+
+{"error":{"message":"message name is not represented by this model template","type":"invalid_request_error","code":"invalid_request","param":"messages[0].name"}}

@@ -1,0 +1,5 @@
+{
+  "error": "ProtocolError('no request budget for tool results')",
+  "completed_tool_calls": 2,
+  "automatic_retry": false
+}

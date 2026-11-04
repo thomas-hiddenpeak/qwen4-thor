@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "cmake",
+    "-S",
+    "/home/rm01/models/dev/qwen4-thor",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/engine",
+    "-DCMAKE_BUILD_TYPE=Release",
+    "-DCMAKE_CXX_COMPILER=/usr/bin/g++-14",
+    "-DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-14",
+    "-DCMAKE_CUDA_COMPILER=/usr/local/cuda-13.3/bin/nvcc",
+    "-DQ4T_CUDA_ARCHITECTURES=110a",
+    "-DQ4T_ENABLE_XGRAMMAR=ON",
+    "-DQ4T_SERVE_FAULT_INJECTION=OFF",
+    "-DQ4T_STARTUP_RESOURCE_PLAN=OFF",
+    "-DQ4T_BUILD_TESTS=ON",
+    "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+    "-DFETCHCONTENT_SOURCE_DIR_Q4T_XGRAMMAR=/home/rm01/models/dev/qwen4-thor/.q4t-work/structured-control-20261102/xgrammar"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor",
+  "started": 1793667232.3416665
+}

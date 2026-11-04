@@ -1,0 +1,6 @@
+{
+  "class": "SyntaxError",
+  "message": "Error reading response: malformed server-sent event JSON.",
+  "automatic_retry": false,
+  "tools_executed": 0
+}

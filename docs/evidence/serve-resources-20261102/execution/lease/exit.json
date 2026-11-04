@@ -1,0 +1,21 @@
+{
+  "status": "COMPLETED",
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-20261102/sdk-env/bin/python",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/serve_resources/stage.py",
+    "execute"
+  ],
+  "compute_backend": "nvml",
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 0,
+  "external_lease": false,
+  "finished": {
+    "utc": "2026-11-02T11:12:53.779033+00:00",
+    "monotonic": 1808056.295915971,
+    "pid": 1306482
+  }
+}

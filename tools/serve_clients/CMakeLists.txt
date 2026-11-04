@@ -1,0 +1,10 @@
+cmake_minimum_required(VERSION 3.25)
+project(q4t_client_storage_contract LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+find_package(Threads REQUIRED)
+add_executable(client_storage storage.cpp ../../src/server/session_cache.cpp
+  ../../src/trace/sha256.cpp)
+target_include_directories(client_storage PRIVATE ../../include)
+target_compile_options(client_storage PRIVATE -Wall -Wextra -Werror)
+target_link_libraries(client_storage PRIVATE Threads::Threads)

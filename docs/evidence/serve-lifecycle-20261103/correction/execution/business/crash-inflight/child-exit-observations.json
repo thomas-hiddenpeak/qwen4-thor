@@ -1,0 +1,18 @@
+{
+  "samples": [
+    {
+      "monotonic": 1874959.776300849,
+      "children": [
+        {
+          "pid": 2200189,
+          "start_ticks": 187495908,
+          "state": "absent",
+          "running": false
+        }
+      ]
+    }
+  ],
+  "observed_before_scope_cleanup": true,
+  "controller_signalled_workers": false,
+  "zombie_means_address_space_exited_not_parent_reaped": true
+}

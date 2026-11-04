@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "commands": {
+    "host-off": true,
+    "host-required": true,
+    "backend": true,
+    "inventory": true,
+    "generated": true
+  },
+  "runtime_unchanged": true,
+  "model_or_http_started": false,
+  "gpu_tests": 0
+}

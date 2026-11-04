@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 146
+X-Request-Id: transport-test
+Connection: close
+
+{"error":{"message":"temperature unsupported value in greedy mode","type":"invalid_request_error","code":"invalid_request","param":"temperature"}}

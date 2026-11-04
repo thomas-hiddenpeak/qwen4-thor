@@ -1,0 +1,9 @@
+{
+  "name": "orchestration",
+  "argv": [
+    "/usr/bin/python3.12",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/test_acceptance.py"
+  ],
+  "timeout": 100
+}

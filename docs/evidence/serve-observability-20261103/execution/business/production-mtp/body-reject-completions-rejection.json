@@ -1,0 +1,18 @@
+{
+  "status": 503,
+  "trace_id": "srv01b.body-reject-completions",
+  "reason": "body_capacity",
+  "response": {
+    "error": {
+      "message": "Service Unavailable",
+      "type": "service_unavailable_error",
+      "code": "body_capacity_exhausted",
+      "param": "body"
+    }
+  },
+  "wire": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/execution/business/production-mtp/body-reject-completions-response.bin",
+    "sha256": "3a428a8615103a420c1f71e0a59168cb4f9a8ac29cdae6f7be18b6b3f3d92c17",
+    "bytes": 280
+  }
+}

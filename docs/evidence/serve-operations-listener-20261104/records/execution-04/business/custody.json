@@ -1,0 +1,32 @@
+{
+  "acknowledgement": {
+    "monitor": {
+      "conflicts": [],
+      "event": "monitor",
+      "monotonic": 1964344.41932687,
+      "pid": 2650352,
+      "retired_owned_contexts": [],
+      "unreadable_processes": 0,
+      "utc": "2026-11-04T06:37:41.902430+00:00"
+    },
+    "query_begin": 1964344.332592739,
+    "query_end": 1964344.369774001,
+    "request_id": "315c572e0171efd1bb02277d3ec7dbf4"
+  },
+  "retained": [
+    {
+      "pgid": 2650356,
+      "pid": 2650416,
+      "ppid": 2650356,
+      "start_ticks": 196429191,
+      "state": "Z"
+    },
+    {
+      "pgid": 2650356,
+      "pid": 2651174,
+      "ppid": 2650356,
+      "start_ticks": 196432761,
+      "state": "Z"
+    }
+  ]
+}

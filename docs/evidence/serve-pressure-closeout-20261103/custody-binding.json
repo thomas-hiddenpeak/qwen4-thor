@@ -1,0 +1,24 @@
+{
+  "custody": {
+    "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-pressure-custody-20261103.json",
+    "sha256": "83d8d35f4a29d8f5f6cc2f45d65b6413304761bed485a6790b4776c1d37a5590",
+    "bytes": 604761
+  },
+  "stage_archive": {
+    "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-pressure-20261103/sealed-files.json",
+    "sha256": "83c5b7244f3f9de193b0f19176c66f4d39e23da657f684c8927b536d816e0002",
+    "bytes": 334763
+  },
+  "sources": {
+    "audit_custody.py": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-pressure-20261103/audit_custody.py",
+      "sha256": "3ee302779ec341eedc9ecb341fc9a8c16d0a6be502bf03bc900ac18b1920b9ee",
+      "bytes": 4034
+    },
+    "historical-link-audit.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-pressure-20261103/historical-link-audit.json",
+      "sha256": "78ab8497571d3db5e642019d79f1ccb05ef586a750d4952415c6336440365fd9",
+      "bytes": 4115
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/serve_ops/diagnose.py",
+    "--base-url",
+    "http://127.0.0.1:18108",
+    "--pid",
+    "2094142",
+    "--release",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/candidate/diagnostic-identity.json",
+    "--log",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/execution/business/model/server.log",
+    "--output",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/execution/business/diagnostics/business-full",
+    "--previous",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/execution/business/diagnostics/before"
+  ],
+  "returncode": 1
+}

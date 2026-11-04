@@ -1,0 +1,45 @@
+[PASS] http_stop_before_and_during_listener_publication
+[PASS] http_exception_keeps_server_and_releases_connections
+[PASS] http_cancel_validates_before_registry_mutation
+[PASS] http_thread_creation_failure_rolls_back
+[PASS] http_validation_gate_is_an_explicit_handshake
+[PASS] http_methods_media_queries_and_trace_headers
+[PASS] http_control_reserve_and_draining_readiness
+7 tests, 7 passed, 0 failed, 0 skipped
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t][http] trace_id=exception-1 error=internal_error
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t][http] trace_id=req-a1e5a305115b02295d34d2a951375a04 status=400 error=invalid_cancellation
+[q4t][http] trace_id=req-14340072c23308c74c57160cd2e503a9 status=400 error=invalid_cancellation
+[q4t][http] trace_id=req-0696acefcf135be42842a0b9c2aafad4 status=400 error=invalid_cancellation
+[q4t][http] trace_id=req-014f85036e8ef12b1ac5bdfbb9232ef1 status=400 error=invalid_cancellation
+[q4t][http] trace_id=req-1c5dac8a76bfa4e0c01bb48157464024 status=404 error=request_not_found
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t] accept/thread exception: std::bad_alloc
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t][http] trace_id=route-1 status=405 error=method_not_allowed
+[q4t][http] trace_id=req-5cb1c425639b6519a8e8eab5627006ce status=400 error=unsupported_query
+[q4t][http] trace_id=req-e0834eecb027592df6a20c62055afeee status=404 error=not_found
+[q4t][http] trace_id=req-b7ed0d25cbc91f4d7d6dc5af980f3b47 status=415 error=unsupported_media_type
+[q4t][http] trace_id=req-33033cf2a024e24e8566efd071bd4bfe status=415 error=unsupported_media_type
+[q4t][http] trace_id=req-3076f523b30ce662564fc693a9e19d12 status=415 error=unsupported_media_type
+[q4t][http] trace_id=req-3985150074eda71b7c7d1f13fc77a041 error=internal_error
+[q4t][http] trace_id=req-662485383fdf2da8ab57327e44aa550e status=400 error=invalid_request_id_header
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t][http] trace_id=req-72f7fdc751b963d64555360019e79e1c status=503 error=capacity_exhausted
+[q4t][http] trace_id=req-46f7066368528733813f82d1b9aac18b status=503 error=server_draining
+[q4t][http] trace_id=req-99503b366c89edd0750ce6d36d60f236 status=400 error=invalid_request
+[q4t][http] trace_id=req-6506abbdc2c57e693da09682dff8b081 status=400 error=invalid_request
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)

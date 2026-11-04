@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/application_service/stage.py", line 328, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/tools/application_service/stage.py", line 324, in main
+    globals()[args.action]()
+  File "/home/rm01/models/dev/qwen4-thor/tools/application_service/stage.py", line 275, in execute
+    h.require(final["status"] == "OK" and not final["pids"], "GPU not released")
+  File "/home/rm01/models/dev/qwen4-thor/tools/verify/startup_delivery/build.py", line 47, in require
+    raise RuntimeError(message)
+RuntimeError: GPU not released

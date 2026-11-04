@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "commands": {
+    "host-host-off": true,
+    "host-host-on": true,
+    "host-engine": true,
+    "processor-quota": true,
+    "persistent-host": true,
+    "processor-reference": true
+  },
+  "runtime_unchanged": true,
+  "model_or_http_started": false,
+  "gpu_tests": 0,
+  "original_failure_retained": true,
+  "reuse": "All other first-run successful tests, sources unchanged. Old C-only failure count 68 is superseded: it included C++ allocations."
+}

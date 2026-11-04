@@ -1,0 +1,14 @@
+[q4t][http-receive] trace_id=req-5bb135e5a819ba2db220c6a92c4360a5 reason=malformed status=400 system_error=0
+[q4t][http-write] trace_id=req-5bb135e5a819ba2db220c6a92c4360a5 reason=write_deadline origin=handler transferred=2240 system_error=0 poll_events=0
+[q4t][http-write] trace_id=req-38b56d65e462125a78e897e3c3343dd2 reason=explicit_cancel origin=handler transferred=0 system_error=0 poll_events=0
+[q4t][http-write] trace_id=req-98949a541e55773f69a9a69ff6b67798 reason=peer_closed origin=handler transferred=0 system_error=0 poll_events=0
+[q4t][http-write] trace_id=req-0b0f2d9b833226a04ee62a7e4f7cb06a reason=server_shutdown origin=handler transferred=0 system_error=0 poll_events=0
+[q4t][http-write] trace_id=req-fd9e3dc0b7215c914e2cfb5fe32d4629 reason=request_failure origin=handler transferred=0 system_error=0 poll_events=0
+[q4t][http-write] trace_id=req-1ee3cc2da23fab440de6936a24383151 reason=request_deadline origin=handler transferred=0 system_error=0 poll_events=0
+[q4t][http-write] trace_id=req-656558cc1ec5073f1043f1e048fda7f6 reason=peer_closed origin=heartbeat transferred=0 system_error=32 poll_events=0
+[q4t][http] trace_id=client.trace-1 status=400 error=invalid_request
+[q4t][http] trace_id=client.trace-1 error=internal_error
+[q4t][http] trace_id=client.trace-1 status=500 error=internal_error
+[q4t][http] trace_id=client.trace-1 status=400 error=invalid_request
+[q4t][http] trace_id=client.trace-1 error=internal_error
+[q4t][http] trace_id=client.trace-1 status=500 error=internal_error

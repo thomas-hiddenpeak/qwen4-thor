@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "raw_records": 140,
+  "local_artifacts": 19,
+  "git_files": 9,
+  "git_bytes": 424928,
+  "staged_blobs": 9,
+  "model_or_http_started": false,
+  "gpu_acceptance": false,
+  "default_replaced": false,
+  "whole_goal_complete": false,
+  "checker": {
+    "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_media_composite_custody.py",
+    "sha256": "97da495a38fe59a55350e54d3c35d44f2f1471825531dc5d5dc40f0d0278a658",
+    "bytes": 5933
+  }
+}

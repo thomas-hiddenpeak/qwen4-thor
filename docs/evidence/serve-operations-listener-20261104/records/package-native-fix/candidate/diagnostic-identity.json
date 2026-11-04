@@ -1,0 +1,8 @@
+{
+  "acceptance": "PENDING",
+  "binary_sha256": "7eff020de66b96f3175b3e123909be9e2f58142d54d1dd5992750d23cbe9c769",
+  "candidate_identity_only": true,
+  "chat_protocol": {
+    "protocol_sha256": "ddfba8c002d8fb899b4c00d42612b0a26669036a1acc65e8292a10c0a9b69342"
+  }
+}

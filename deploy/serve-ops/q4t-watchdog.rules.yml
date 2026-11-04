@@ -1,0 +1,30 @@
+# Load on the RECEIVER'S independent Prometheus, not the monitored Thor.
+# Expected deployment inventory must be provisioned separately. This generic
+# group cannot discover a deployment removed from both inventory and metrics.
+groups:
+  - name: q4t-independent-watchdog
+    interval: 5s
+    rules:
+      - alert: Q4THeartbeatMissing
+        expr: q4t_watchdog_state{state=~"MISSING|RESOLVED|UNKNOWN"} == 1
+        labels:
+          severity: critical
+          component: q4t-watchdog
+        annotations:
+          summary: The notification heartbeat is missing, resolved or unknown.
+      - alert: Q4TWatchdogEvaluationStale
+        expr: >-
+          (time() - q4t_watchdog_evaluated_timestamp_seconds > 15)
+          or (q4t_watchdog_evaluated_timestamp_seconds - time() > 30)
+        labels:
+          severity: critical
+          component: q4t-watchdog
+        annotations:
+          summary: The independent heartbeat observer is stale or clock-skewed.
+      - alert: Q4TWatchdogCollectionMissing
+        expr: absent(q4t_watchdog_evaluated_timestamp_seconds)
+        labels:
+          severity: critical
+          component: q4t-watchdog
+        annotations:
+          summary: No independent heartbeat observation is being collected.

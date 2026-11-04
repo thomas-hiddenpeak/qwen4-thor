@@ -1,0 +1,24 @@
+{
+  "id": "agent-43d67592c2f9040211cd9ab4ea94066f",
+  "model": "qwen3.8-flash-next",
+  "message": {
+    "role": "assistant",
+    "content": "I'll read the release metadata file as requested.\n\n",
+    "tool_calls": [
+      {
+        "id": "call_agent-43d67592c2f9040211cd9ab4ea94066f_0",
+        "type": "function",
+        "function": {
+          "name": "read_project_record",
+          "arguments": "{\"path\":\"build/q4t.release.json\",\"start_line\":1,\"line_count\":20}"
+        }
+      }
+    ]
+  },
+  "finish_reason": "tool_calls",
+  "usage": {
+    "prompt_tokens": 626,
+    "completion_tokens": 67,
+    "total_tokens": 693
+  }
+}

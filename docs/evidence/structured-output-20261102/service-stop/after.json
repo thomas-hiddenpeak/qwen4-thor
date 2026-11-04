@@ -1,0 +1,20 @@
+{
+  "time": "2026-11-02T17:12:22.084966+08:00",
+  "unit": "soar-flash-fast-v3-resume-qualified-rollback-v1-20261102.service",
+  "properties": "MainPID=0\nActiveState=failed\nSubState=failed\n",
+  "gpu": [
+    {
+      "index": 0,
+      "compute": []
+    }
+  ],
+  "cleanup": {
+    "ownedCleanupConfirmed": true,
+    "recoveryMarkerRetained": false,
+    "q4tRestarted": false,
+    "recordedAt": "2026-11-02T09:12:06.545323+00:00"
+  },
+  "lock_free": true,
+  "marker_exists": false,
+  "memory": "MemTotal:       128828748 kB\nMemFree:        20672636 kB\nMemAvailable:   122827668 kB\nBuffers:          193472 kB\nCached:          9275048 kB\nSwapCached:        93268 kB\nActive:          3871416 kB\nInactive:        8399420 kB\nActive(anon):    1672620 kB\nInactive(anon):  1433040 kB\nActive(file):    2198796 kB\nInactive(file):  6966380 kB\nUnevictable:       30564 kB\nMlocked:            2544 kB\nSwapTotal:       2097148 kB\nSwapFree:            776 kB\nDirty:              4056 kB\nWriteback:             0 kB\nAnonPages:       2600272 kB\nMapped:           232596 kB\nShmem:            275316 kB\nKReclaimable:   94136476 kB\nSlab:             730860 kB\nSReclaimable:     494552 kB\nSUnreclaim:       236308 kB\nKernelStack:        9312 kB\nPageTables:        22432 kB\nSecPageTables:         0 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    66511520 kB\nCommitted_AS:    6306400 kB\nVmallocTotal:   133141626880 kB\nVmallocUsed:      115032 kB\nVmallocChunk:          0 kB\nPercpu:             7168 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:   1779712 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nCmaTotal:         524288 kB\nCmaFree:           81404 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\n"
+}

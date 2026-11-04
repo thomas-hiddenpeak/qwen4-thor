@@ -1,0 +1,36 @@
+[q4t] retaining residency payloads: drain failed
+[PASS] residency_init_free_lifecycle
+[PASS] residency_load_matches_reference
+  merge=0 inline=0 experts=1
+  merge=0 inline=0 experts=2
+  merge=0 inline=0 experts=4
+  merge=0 inline=0 experts=9
+  merge=0 inline=1 experts=1
+  merge=0 inline=1 experts=2
+  merge=0 inline=1 experts=4
+  merge=0 inline=1 experts=9
+  merge=1 inline=0 experts=1
+  merge=1 inline=0 experts=2
+  merge=1 inline=0 experts=4
+  merge=1 inline=0 experts=9
+  merge=1 inline=1 experts=1
+  merge=1 inline=1 experts=2
+  merge=1 inline=1 experts=4
+  merge=1 inline=1 experts=9
+[PASS] residency_pread_merge_dispatch_contract
+[PASS] residency_resolve_hit_miss_evict
+[PASS] residency_hot_list_dedup_cap
+[PASS] residency_l2_cache_hit_evict
+[PASS] residency_mirror_ring_hit
+[PASS] residency_invalid_inputs
+  payload fault type=1 nth=2 persistent=0 mirror=0 target=2: PASS
+  payload fault type=1 nth=8 persistent=0 mirror=0 target=2: PASS
+  payload fault type=3 nth=1 persistent=0 mirror=0 target=2: PASS
+  payload fault type=2 nth=2 persistent=0 mirror=1 target=2: PASS
+  payload fault type=3 nth=1 persistent=0 mirror=1 target=2: PASS
+  payload fault type=1 nth=2 persistent=1 mirror=0 target=2: PASS
+  payload fault type=1 nth=2 persistent=0 mirror=1 target=0: PASS
+  payload fault type=3 nth=1 persistent=0 mirror=1 target=0: PASS
+[PASS] residency_partial_payload_failure
+[PASS] residency_partial_payload_parallel_failure
+10 tests, 10 passed, 0 failed, 0 skipped

@@ -1,0 +1,482 @@
+{
+  "automatic_restart": false,
+  "automatic_retry": false,
+  "collected_at": "2026-11-03T02:56:10.897388+00:00",
+  "comparison": {
+    "counters": {},
+    "reason": "instance_or_contract_changed",
+    "state": "unavailable"
+  },
+  "configuration": null,
+  "duration_seconds": 0.0057172090746462345,
+  "findings": [
+    {
+      "action": "consult_runbook",
+      "automatic_restart": false,
+      "automatic_retry": false,
+      "code": "identity_unverified",
+      "evidence": "unavailable",
+      "severity": "unknown"
+    },
+    {
+      "action": "consult_runbook",
+      "automatic_restart": false,
+      "automatic_retry": false,
+      "code": "endpoint_observation_failed",
+      "evidence": {
+        "error": "connection_refused",
+        "route": "/livez"
+      },
+      "severity": "unknown"
+    },
+    {
+      "action": "consult_runbook",
+      "automatic_restart": false,
+      "automatic_retry": false,
+      "code": "endpoint_observation_failed",
+      "evidence": {
+        "error": "connection_refused",
+        "route": "/readyz"
+      },
+      "severity": "unknown"
+    },
+    {
+      "action": "consult_runbook",
+      "automatic_restart": false,
+      "automatic_retry": false,
+      "code": "endpoint_observation_failed",
+      "evidence": {
+        "error": "connection_refused",
+        "route": "/v1/config"
+      },
+      "severity": "unknown"
+    },
+    {
+      "action": "consult_runbook",
+      "automatic_restart": false,
+      "automatic_retry": false,
+      "code": "endpoint_observation_failed",
+      "evidence": {
+        "error": "connection_refused",
+        "route": "/v1/capabilities"
+      },
+      "severity": "unknown"
+    },
+    {
+      "action": "consult_runbook",
+      "automatic_restart": false,
+      "automatic_retry": false,
+      "code": "endpoint_observation_failed",
+      "evidence": {
+        "error": "connection_refused",
+        "route": "/metrics"
+      },
+      "severity": "unknown"
+    }
+  ],
+  "identity": {
+    "error": "process_identity_unavailable",
+    "state": "unavailable"
+  },
+  "log": {
+    "events": [
+      {
+        "elapsed_ms": 0.0,
+        "event": "begin",
+        "id_hash": "735ea91226e2f0302089cb5673201ec308c798c99810bf36387c57de629117cb",
+        "instance": 0,
+        "kind": "request",
+        "seq": -1,
+        "stage": "validation",
+        "trace_id_hash": "9b560c97ca3f7abdfd72b1fe53556610fab9e5cf6b24653b359c7e581b3d4d1e"
+      },
+      {
+        "elapsed_ms": 0.097,
+        "event": "registered",
+        "id_hash": "41bd6ff9df5ac5433c09d1c8b6d8af3e696132fa3f6d8d8f0dea2cfba22833c2",
+        "instance": 0,
+        "kind": "request",
+        "seq": -1,
+        "stage": "validation",
+        "trace_id_hash": "9b560c97ca3f7abdfd72b1fe53556610fab9e5cf6b24653b359c7e581b3d4d1e"
+      },
+      {
+        "completion_id_hash": "41bd6ff9df5ac5433c09d1c8b6d8af3e696132fa3f6d8d8f0dea2cfba22833c2",
+        "kind": "http",
+        "trace_id_hash": "9b560c97ca3f7abdfd72b1fe53556610fab9e5cf6b24653b359c7e581b3d4d1e"
+      },
+      {
+        "elapsed_ms": 0.114,
+        "event": "stage",
+        "id_hash": "41bd6ff9df5ac5433c09d1c8b6d8af3e696132fa3f6d8d8f0dea2cfba22833c2",
+        "instance": 0,
+        "kind": "request",
+        "seq": -1,
+        "stage": "encode",
+        "trace_id_hash": "9b560c97ca3f7abdfd72b1fe53556610fab9e5cf6b24653b359c7e581b3d4d1e"
+      },
+      {
+        "elapsed_ms": 0.349,
+        "event": "stage",
+        "id_hash": "41bd6ff9df5ac5433c09d1c8b6d8af3e696132fa3f6d8d8f0dea2cfba22833c2",
+        "instance": 0,
+        "kind": "request",
+        "seq": -1,
+        "stage": "slot_admission",
+        "trace_id_hash": "9b560c97ca3f7abdfd72b1fe53556610fab9e5cf6b24653b359c7e581b3d4d1e"
+      },
+      {
+        "elapsed_ms": 0.364,
+        "event": "admitted",
+        "id_hash": "41bd6ff9df5ac5433c09d1c8b6d8af3e696132fa3f6d8d8f0dea2cfba22833c2",
+        "instance": 0,
+        "kind": "request",
+        "seq": 0,
+        "stage": "slot_admission",
+        "trace_id_hash": "9b560c97ca3f7abdfd72b1fe53556610fab9e5cf6b24653b359c7e581b3d4d1e"
+      },
+      {
+        "elapsed_ms": 0.367,
+        "event": "stage",
+        "id_hash": "41bd6ff9df5ac5433c09d1c8b6d8af3e696132fa3f6d8d8f0dea2cfba22833c2",
+        "instance": 0,
+        "kind": "request",
+        "seq": 0,
+        "stage": "encode",
+        "trace_id_hash": "9b560c97ca3f7abdfd72b1fe53556610fab9e5cf6b24653b359c7e581b3d4d1e"
+      },
+      {
+        "elapsed_ms": 0.706,
+        "event": "stage",
+        "id_hash": "41bd6ff9df5ac5433c09d1c8b6d8af3e696132fa3f6d8d8f0dea2cfba22833c2",
+        "instance": 0,
+        "kind": "request",
+        "seq": 0,
+        "stage": "prefill",
+        "trace_id_hash": "9b560c97ca3f7abdfd72b1fe53556610fab9e5cf6b24653b359c7e581b3d4d1e"
+      },
+      {
+        "elapsed_ms": 272.887,
+        "event": "stage",
+        "id_hash": "41bd6ff9df5ac5433c09d1c8b6d8af3e696132fa3f6d8d8f0dea2cfba22833c2",
+        "instance": 0,
+        "kind": "request",
+        "seq": 0,
+        "stage": "decode",
+        "trace_id_hash": "9b560c97ca3f7abdfd72b1fe53556610fab9e5cf6b24653b359c7e581b3d4d1e"
+      },
+      {
+        "elapsed_ms": 493.512,
+        "event": "stage",
+        "id_hash": "41bd6ff9df5ac5433c09d1c8b6d8af3e696132fa3f6d8d8f0dea2cfba22833c2",
+        "instance": 0,
+        "kind": "request",
+        "seq": 0,
+        "stage": "response",
+        "trace_id_hash": "9b560c97ca3f7abdfd72b1fe53556610fab9e5cf6b24653b359c7e581b3d4d1e"
+      },
+      {
+        "elapsed_ms": 493.614,
+        "event": "end",
+        "id_hash": "41bd6ff9df5ac5433c09d1c8b6d8af3e696132fa3f6d8d8f0dea2cfba22833c2",
+        "instance": 0,
+        "kind": "request",
+        "model_lock_ms": 0.0,
+        "outcome": "success",
+        "reason": "completed",
+        "released": 1,
+        "scheduler_completion_ms": 192.422,
+        "scheduler_waits": 2,
+        "seq": 0,
+        "slot_wait_ms": 0.011,
+        "stage": "response",
+        "stream_write_ms": 0.0,
+        "tokenizer_lock_ms": 0.0,
+        "trace_id_hash": "9b560c97ca3f7abdfd72b1fe53556610fab9e5cf6b24653b359c7e581b3d4d1e"
+      },
+      {
+        "elapsed_ms": 0.0,
+        "event": "begin",
+        "id_hash": "735ea91226e2f0302089cb5673201ec308c798c99810bf36387c57de629117cb",
+        "instance": 1,
+        "kind": "request",
+        "seq": -1,
+        "stage": "validation",
+        "trace_id_hash": "5024d41f447a69ede8585dfe69fe35fdcff1d36cf9c56fe1f01c622663865225"
+      },
+      {
+        "elapsed_ms": 0.125,
+        "event": "registered",
+        "id_hash": "757087bb725484e12940b48d577077557d04789429e6132d0fccb4e1f8983940",
+        "instance": 1,
+        "kind": "request",
+        "seq": -1,
+        "stage": "validation",
+        "trace_id_hash": "5024d41f447a69ede8585dfe69fe35fdcff1d36cf9c56fe1f01c622663865225"
+      },
+      {
+        "completion_id_hash": "757087bb725484e12940b48d577077557d04789429e6132d0fccb4e1f8983940",
+        "kind": "http",
+        "trace_id_hash": "5024d41f447a69ede8585dfe69fe35fdcff1d36cf9c56fe1f01c622663865225"
+      },
+      {
+        "elapsed_ms": 0.257,
+        "event": "stage",
+        "id_hash": "757087bb725484e12940b48d577077557d04789429e6132d0fccb4e1f8983940",
+        "instance": 1,
+        "kind": "request",
+        "seq": -1,
+        "stage": "grammar_compile",
+        "trace_id_hash": "5024d41f447a69ede8585dfe69fe35fdcff1d36cf9c56fe1f01c622663865225"
+      },
+      {
+        "elapsed_ms": 205.663,
+        "event": "stage",
+        "id_hash": "757087bb725484e12940b48d577077557d04789429e6132d0fccb4e1f8983940",
+        "instance": 1,
+        "kind": "request",
+        "seq": -1,
+        "stage": "encode",
+        "trace_id_hash": "5024d41f447a69ede8585dfe69fe35fdcff1d36cf9c56fe1f01c622663865225"
+      },
+      {
+        "elapsed_ms": 207.475,
+        "event": "stage",
+        "id_hash": "757087bb725484e12940b48d577077557d04789429e6132d0fccb4e1f8983940",
+        "instance": 1,
+        "kind": "request",
+        "seq": -1,
+        "stage": "slot_admission",
+        "trace_id_hash": "5024d41f447a69ede8585dfe69fe35fdcff1d36cf9c56fe1f01c622663865225"
+      },
+      {
+        "elapsed_ms": 207.519,
+        "event": "admitted",
+        "id_hash": "757087bb725484e12940b48d577077557d04789429e6132d0fccb4e1f8983940",
+        "instance": 1,
+        "kind": "request",
+        "seq": 0,
+        "stage": "slot_admission",
+        "trace_id_hash": "5024d41f447a69ede8585dfe69fe35fdcff1d36cf9c56fe1f01c622663865225"
+      },
+      {
+        "elapsed_ms": 207.522,
+        "event": "stage",
+        "id_hash": "757087bb725484e12940b48d577077557d04789429e6132d0fccb4e1f8983940",
+        "instance": 1,
+        "kind": "request",
+        "seq": 0,
+        "stage": "encode",
+        "trace_id_hash": "5024d41f447a69ede8585dfe69fe35fdcff1d36cf9c56fe1f01c622663865225"
+      },
+      {
+        "elapsed_ms": 207.535,
+        "event": "stage",
+        "id_hash": "757087bb725484e12940b48d577077557d04789429e6132d0fccb4e1f8983940",
+        "instance": 1,
+        "kind": "request",
+        "seq": 0,
+        "stage": "prefill",
+        "trace_id_hash": "5024d41f447a69ede8585dfe69fe35fdcff1d36cf9c56fe1f01c622663865225"
+      },
+      {
+        "elapsed_ms": 839.837,
+        "event": "stage",
+        "id_hash": "757087bb725484e12940b48d577077557d04789429e6132d0fccb4e1f8983940",
+        "instance": 1,
+        "kind": "request",
+        "seq": 0,
+        "stage": "decode",
+        "trace_id_hash": "5024d41f447a69ede8585dfe69fe35fdcff1d36cf9c56fe1f01c622663865225"
+      },
+      {
+        "elapsed_ms": 3753.742,
+        "event": "stage",
+        "id_hash": "757087bb725484e12940b48d577077557d04789429e6132d0fccb4e1f8983940",
+        "instance": 1,
+        "kind": "request",
+        "seq": 0,
+        "stage": "response",
+        "trace_id_hash": "5024d41f447a69ede8585dfe69fe35fdcff1d36cf9c56fe1f01c622663865225"
+      },
+      {
+        "elapsed_ms": 3761.223,
+        "event": "end",
+        "id_hash": "757087bb725484e12940b48d577077557d04789429e6132d0fccb4e1f8983940",
+        "instance": 1,
+        "kind": "request",
+        "model_lock_ms": 0.005,
+        "outcome": "success",
+        "reason": "completed",
+        "released": 1,
+        "scheduler_completion_ms": 0.0,
+        "scheduler_waits": 0,
+        "seq": 0,
+        "slot_wait_ms": 0.034,
+        "stage": "response",
+        "stream_write_ms": 0.056,
+        "tokenizer_lock_ms": 0.009,
+        "trace_id_hash": "5024d41f447a69ede8585dfe69fe35fdcff1d36cf9c56fe1f01c622663865225"
+      },
+      {
+        "elapsed_ms": 0.0,
+        "event": "begin",
+        "id_hash": "735ea91226e2f0302089cb5673201ec308c798c99810bf36387c57de629117cb",
+        "instance": 2,
+        "kind": "request",
+        "seq": -1,
+        "stage": "validation",
+        "trace_id_hash": "920a09daa2a6472c686e63ee740c9ea8c64cc5dd773e4e8306b5e544db5da389"
+      },
+      {
+        "elapsed_ms": 0.114,
+        "event": "registered",
+        "id_hash": "e94d51ef06ccd5e6391b03c07bc6e7a08d74143ceef89cb6e0dbd6d59e8f72ee",
+        "instance": 2,
+        "kind": "request",
+        "seq": -1,
+        "stage": "validation",
+        "trace_id_hash": "920a09daa2a6472c686e63ee740c9ea8c64cc5dd773e4e8306b5e544db5da389"
+      },
+      {
+        "completion_id_hash": "e94d51ef06ccd5e6391b03c07bc6e7a08d74143ceef89cb6e0dbd6d59e8f72ee",
+        "kind": "http",
+        "trace_id_hash": "920a09daa2a6472c686e63ee740c9ea8c64cc5dd773e4e8306b5e544db5da389"
+      },
+      {
+        "elapsed_ms": 0.26,
+        "event": "stage",
+        "id_hash": "e94d51ef06ccd5e6391b03c07bc6e7a08d74143ceef89cb6e0dbd6d59e8f72ee",
+        "instance": 2,
+        "kind": "request",
+        "seq": -1,
+        "stage": "grammar_compile",
+        "trace_id_hash": "920a09daa2a6472c686e63ee740c9ea8c64cc5dd773e4e8306b5e544db5da389"
+      },
+      {
+        "elapsed_ms": 212.933,
+        "event": "stage",
+        "id_hash": "e94d51ef06ccd5e6391b03c07bc6e7a08d74143ceef89cb6e0dbd6d59e8f72ee",
+        "instance": 2,
+        "kind": "request",
+        "seq": -1,
+        "stage": "encode",
+        "trace_id_hash": "920a09daa2a6472c686e63ee740c9ea8c64cc5dd773e4e8306b5e544db5da389"
+      },
+      {
+        "elapsed_ms": 215.071,
+        "event": "stage",
+        "id_hash": "e94d51ef06ccd5e6391b03c07bc6e7a08d74143ceef89cb6e0dbd6d59e8f72ee",
+        "instance": 2,
+        "kind": "request",
+        "seq": -1,
+        "stage": "slot_admission",
+        "trace_id_hash": "920a09daa2a6472c686e63ee740c9ea8c64cc5dd773e4e8306b5e544db5da389"
+      },
+      {
+        "elapsed_ms": 215.101,
+        "event": "admitted",
+        "id_hash": "e94d51ef06ccd5e6391b03c07bc6e7a08d74143ceef89cb6e0dbd6d59e8f72ee",
+        "instance": 2,
+        "kind": "request",
+        "seq": 0,
+        "stage": "slot_admission",
+        "trace_id_hash": "920a09daa2a6472c686e63ee740c9ea8c64cc5dd773e4e8306b5e544db5da389"
+      },
+      {
+        "elapsed_ms": 215.103,
+        "event": "stage",
+        "id_hash": "e94d51ef06ccd5e6391b03c07bc6e7a08d74143ceef89cb6e0dbd6d59e8f72ee",
+        "instance": 2,
+        "kind": "request",
+        "seq": 0,
+        "stage": "encode",
+        "trace_id_hash": "920a09daa2a6472c686e63ee740c9ea8c64cc5dd773e4e8306b5e544db5da389"
+      },
+      {
+        "elapsed_ms": 215.116,
+        "event": "stage",
+        "id_hash": "e94d51ef06ccd5e6391b03c07bc6e7a08d74143ceef89cb6e0dbd6d59e8f72ee",
+        "instance": 2,
+        "kind": "request",
+        "seq": 0,
+        "stage": "prefill",
+        "trace_id_hash": "920a09daa2a6472c686e63ee740c9ea8c64cc5dd773e4e8306b5e544db5da389"
+      },
+      {
+        "elapsed_ms": 918.779,
+        "event": "stage",
+        "id_hash": "e94d51ef06ccd5e6391b03c07bc6e7a08d74143ceef89cb6e0dbd6d59e8f72ee",
+        "instance": 2,
+        "kind": "request",
+        "seq": 0,
+        "stage": "decode",
+        "trace_id_hash": "920a09daa2a6472c686e63ee740c9ea8c64cc5dd773e4e8306b5e544db5da389"
+      },
+      {
+        "elapsed_ms": 4037.119,
+        "event": "stage",
+        "id_hash": "e94d51ef06ccd5e6391b03c07bc6e7a08d74143ceef89cb6e0dbd6d59e8f72ee",
+        "instance": 2,
+        "kind": "request",
+        "seq": 0,
+        "stage": "response",
+        "trace_id_hash": "920a09daa2a6472c686e63ee740c9ea8c64cc5dd773e4e8306b5e544db5da389"
+      },
+      {
+        "elapsed_ms": 4043.449,
+        "event": "end",
+        "id_hash": "e94d51ef06ccd5e6391b03c07bc6e7a08d74143ceef89cb6e0dbd6d59e8f72ee",
+        "instance": 2,
+        "kind": "request",
+        "model_lock_ms": 0.005,
+        "outcome": "success",
+        "reason": "completed",
+        "released": 1,
+        "scheduler_completion_ms": 0.0,
+        "scheduler_waits": 0,
+        "seq": 0,
+        "slot_wait_ms": 0.023,
+        "stage": "response",
+        "stream_write_ms": 0.059,
+        "tokenizer_lock_ms": 0.008,
+        "trace_id_hash": "920a09daa2a6472c686e63ee740c9ea8c64cc5dd773e4e8306b5e544db5da389"
+      }
+    ],
+    "id_policy": "per_bundle_hmac_sha256; key discarded; no cross_bundle_correlation",
+    "omitted_lines": 42,
+    "omitted_older_events": 0,
+    "raw_log_included": false,
+    "sampled_bytes": 10867,
+    "state": "available",
+    "tail_only": false,
+    "tail_window_bytes": 2097152,
+    "unknown_fields": 0
+  },
+  "metrics": null,
+  "monotonic": 1864653.414260902,
+  "physical_ram_hard_limit_proved": false,
+  "port": 18107,
+  "probes": {
+    "/livez": {
+      "error": "connection_refused"
+    },
+    "/metrics": {
+      "error": "connection_refused"
+    },
+    "/readyz": {
+      "error": "connection_refused"
+    },
+    "/v1/capabilities": {
+      "error": "connection_refused"
+    },
+    "/v1/config": {
+      "error": "connection_refused"
+    }
+  },
+  "read_only": true,
+  "snapshot_atomic": false,
+  "state": "UNKNOWN",
+  "unix_seconds": 1793674570.8973877,
+  "version": "q4t.ops.snapshot.v1"
+}

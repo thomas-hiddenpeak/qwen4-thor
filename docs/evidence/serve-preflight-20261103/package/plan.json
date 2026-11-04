@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "source_commit": "b3ae710edb00ba81c3b239141d1f6ba0ffb7e7e1",
+  "sdk_environment": {
+    "python": "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-20261102/sdk-env/bin/python",
+    "prefix": "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-20261102/sdk-env",
+    "openai": "3.42.1",
+    "packages": {
+      "anyio": "4.16.0",
+      "typing_extensions": "4.16.0",
+      "truststore": "0.10.5",
+      "httpx2": "2.16.0",
+      "openai": "3.42.1",
+      "jiter": "0.18.0",
+      "sniffio": "1.3.1",
+      "httpcore2": "2.16.0",
+      "annotated-types": "0.8.0",
+      "idna": "3.20",
+      "pydantic_core": "2.50.2",
+      "h11": "0.16.0",
+      "pydantic": "2.14.2",
+      "typing-inspection": "0.4.4"
+    },
+    "module": "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-20261102/sdk-env/lib/python3.12/site-packages/openai/__init__.py",
+    "module_identity": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-20261102/sdk-env/lib/python3.12/site-packages/openai/__init__.py",
+      "sha256": "c9f81677ff05227f7051ef9e91729a7f2e566c506c839c5779b7f28a288bb77b",
+      "bytes": 12625
+    }
+  },
+  "candidate": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package/candidate/q4t",
+  "candidate_sha256": "5642eb68d0e2d9296aeb0d5f4197797a18d064b2de749c4368a86fce918167ce",
+  "old_hashes": {
+    "q4t": "a3fd64a34a67f619bf2978faf152d6f455652d048a1e7a2cdc48caf784898184",
+    "q4t.release.json": "49c7c63159c806d8b8f28d5a5a46e5f1c2b6562cc608f46bc43d921c48d0d35a"
+  },
+  "previous_binary_sha256": "a3fd64a34a67f619bf2978faf152d6f455652d048a1e7a2cdc48caf784898184",
+  "protocol_sha256": "a6468bf23a7bfb9e870c047cda6d68565e968e13ac4e551fea983f9476f5f747",
+  "model_dir": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "model_inputs": {
+    "config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+    "tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+    "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+    "chat_template.jinja": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+  },
+  "sdk_version": "3.42.1",
+  "limits": {
+    "starts": 3,
+    "generations": 12,
+    "negatives": 20,
+    "preflights": 32,
+    "seconds": 1800
+  },
+  "source_manifest_sha256": "555b8b559cea992f9c0e660b577d579a04c045f1df3c8705113c9bc3df316586",
+  "planned": {
+    "starts": 3,
+    "generations": 12,
+    "preflights": 29,
+    "negatives": 16
+  },
+  "startup_preflight": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package/candidate/startup_preflight",
+    "sha256": "a830ac2154244a1e83ac79b2a1a281790e7adfd0c82eb0be026aa32a3bb77d2f",
+    "bytes": 149576
+  },
+  "prompt_probe": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package/candidate/q4t_preflight_probe",
+    "sha256": "1b2589bd2a29cb9b56ece8cb29cdeb3453f4e1299d2191df18609bc3293df989",
+    "bytes": 502520
+  },
+  "lifecycle_probe": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package/candidate/q4t_http_lifecycle_tests",
+    "sha256": "a44de2776bbd01628ad36d26d7e242939f1e907ee92d6f79fd05b2a105c4314a",
+    "bytes": 590800
+  }
+}

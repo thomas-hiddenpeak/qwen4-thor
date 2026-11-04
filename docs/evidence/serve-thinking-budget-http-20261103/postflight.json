@@ -1,0 +1,33 @@
+{
+  "time": 1793646800.5575953,
+  "gpu": {
+    "status": "OK",
+    "pids": [],
+    "request_id": "2ac80e1d54be3302e03733becd1b2f53",
+    "worker_pid": 1680161,
+    "stdout": "{\"request_id\": \"2ac80e1d54be3302e03733becd1b2f53\", \"monotonic\": 1836883.038248487, \"event\": \"begin\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"2ac80e1d54be3302e03733becd1b2f53\", \"monotonic\": 1836883.046946787, \"event\": \"end\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"2ac80e1d54be3302e03733becd1b2f53\", \"monotonic\": 1836883.046986814, \"event\": \"begin\", \"api\": \"init\"}\n{\"request_id\": \"2ac80e1d54be3302e03733becd1b2f53\", \"monotonic\": 1836883.051250237, \"event\": \"end\", \"api\": \"init\", \"seconds\": 0.0042526558972895145}\n{\"request_id\": \"2ac80e1d54be3302e03733becd1b2f53\", \"monotonic\": 1836883.0512852, \"event\": \"begin\", \"api\": \"device_count\"}\n{\"request_id\": \"2ac80e1d54be3302e03733becd1b2f53\", \"monotonic\": 1836883.051323237, \"event\": \"end\", \"api\": \"device_count\", \"seconds\": 2.8804875910282135e-05}\n{\"request_id\": \"2ac80e1d54be3302e03733becd1b2f53\", \"monotonic\": 1836883.05133583, \"event\": \"begin\", \"api\": \"handle[0]\"}\n{\"request_id\": \"2ac80e1d54be3302e03733becd1b2f53\", \"monotonic\": 1836883.057786539, \"event\": \"end\", \"api\": \"handle[0]\", \"seconds\": 0.006443487014621496}\n{\"request_id\": \"2ac80e1d54be3302e03733becd1b2f53\", \"monotonic\": 1836883.057806826, \"event\": \"begin\", \"api\": \"compute_v3[0]\"}\n{\"request_id\": \"2ac80e1d54be3302e03733becd1b2f53\", \"monotonic\": 1836883.05935142, \"event\": \"end\", \"api\": \"compute_v3[0]\", \"seconds\": 0.0015369448810815811}\n{\"request_id\": \"2ac80e1d54be3302e03733becd1b2f53\", \"monotonic\": 1836883.059375059, \"event\": \"begin\", \"api\": \"shutdown\"}\n{\"request_id\": \"2ac80e1d54be3302e03733becd1b2f53\", \"monotonic\": 1836883.060935422, \"event\": \"end\", \"api\": \"shutdown\", \"seconds\": 0.0015527431387454271}\n{\"request_id\": \"2ac80e1d54be3302e03733becd1b2f53\", \"monotonic\": 1836883.060959857, \"event\": \"result\", \"status\": \"OK\", \"error\": null, \"device_count\": 1, \"pids\": [], \"process_memory\": []}\n",
+    "stderr": "",
+    "returncode": 0,
+    "seconds": 0.06860035611316562,
+    "process_memory": [],
+    "device_count": 1
+  },
+  "lock_available": true,
+  "recovery_markers": [],
+  "memory_KiB": {
+    "MemTotal": 128828748,
+    "MemAvailable": 122207952
+  },
+  "default": {
+    "q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+      "sha256": "31ffc41efefe7e407a0848041e03673906e8965865b9464019aa54a99fd5dee6",
+      "bytes": 7012672
+    },
+    "q4t.release.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json",
+      "sha256": "9a71a0a72e76da3b3850a340fb30b882da633a867e51bf454bee92ba9f5f9a72",
+      "bytes": 34040
+    }
+  }
+}

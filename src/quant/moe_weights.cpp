@@ -1,6 +1,7 @@
 // NVFP4 routed-expert MoE weight loader (direct-to-packed).
 #include "q4t/quant/moe_weights.h"
 #include "q4t/io/pending_host_storage.h"
+#include "q4t/quant/moe_tensor_contract.h"
 #include <chrono>
 #include <cstdio>
 #include <cstdlib>
@@ -53,6 +54,11 @@ Status LoadMoEWeights(const io::WeightLoader& loader, int layer_id, int E,
   if ((2 * moe_is) % 128 != 0 || (hs % 128) != 0) {
     return Status::Fail(
         "2*moe_is and hs must be multiples of 128 (per-expert SF blocks)");
+  }
+
+  for (int e = 0; e < E; ++e) {
+    const Status status = ValidateMoEExpert(loader, layer_id, e, hs, moe_is);
+    if (!status.ok()) return status;
   }
 
   out->E = E;
@@ -157,17 +163,17 @@ Status LoadMoEWeights(const io::WeightLoader& loader, int layer_id, int E,
         // --- Phase 1: host reads of the three packed weights ---
         const double t0 = lt ? nowms() : 0.0;
         n = ExpertName(layer_id, e, "gate_proj", "weight");
-        if (!(es = loader.ReadTensor(n, gu_w.data()))) {
+        if (!(es = loader.ReadTensor(n, gu_w.data(), gu_w.size()))) {
           first_err.store(-1, std::memory_order_relaxed);
           return;
         }
         n = ExpertName(layer_id, e, "up_proj", "weight");
-        if (!(es = loader.ReadTensor(n, up_w.data()))) {
+        if (!(es = loader.ReadTensor(n, up_w.data(), up_w.size()))) {
           first_err.store(-1, std::memory_order_relaxed);
           return;
         }
         n = ExpertName(layer_id, e, "down_proj", "weight");
-        if (!(es = loader.ReadTensor(n, dn_w.data()))) {
+        if (!(es = loader.ReadTensor(n, dn_w.data(), dn_w.size()))) {
           first_err.store(-1, std::memory_order_relaxed);
           return;
         }
@@ -194,17 +200,17 @@ Status LoadMoEWeights(const io::WeightLoader& loader, int layer_id, int E,
         // --- Phase 3: host reads of the three weight_scales ---
         const double t2 = lt ? nowms() : 0.0;
         n = ExpertName(layer_id, e, "gate_proj", "weight_scale");
-        if (!(es = loader.ReadTensor(n, gate_s.data()))) {
+        if (!(es = loader.ReadTensor(n, gate_s.data(), gate_s.size()))) {
           first_err.store(-1, std::memory_order_relaxed);
           return;
         }
         n = ExpertName(layer_id, e, "up_proj", "weight_scale");
-        if (!(es = loader.ReadTensor(n, up_s.data()))) {
+        if (!(es = loader.ReadTensor(n, up_s.data(), up_s.size()))) {
           first_err.store(-1, std::memory_order_relaxed);
           return;
         }
         n = ExpertName(layer_id, e, "down_proj", "weight_scale");
-        if (!(es = loader.ReadTensor(n, dn_s.data()))) {
+        if (!(es = loader.ReadTensor(n, dn_s.data(), dn_s.size()))) {
           first_err.store(-1, std::memory_order_relaxed);
           return;
         }
@@ -232,22 +238,22 @@ Status LoadMoEWeights(const io::WeightLoader& loader, int layer_id, int E,
         // --- Phase 6: host reads of the four scalar scales ---
         const double t5 = lt ? nowms() : 0.0;
         n = ExpertName(layer_id, e, "gate_proj", "weight_scale_2");
-        if (!(es = loader.ReadTensor(n, &scal[0]))) {
+        if (!(es = loader.ReadTensor(n, &scal[0], sizeof(float)))) {
           first_err.store(-1, std::memory_order_relaxed);
           return;
         }
         n = ExpertName(layer_id, e, "gate_proj", "input_scale");
-        if (!(es = loader.ReadTensor(n, &scal[1]))) {
+        if (!(es = loader.ReadTensor(n, &scal[1], sizeof(float)))) {
           first_err.store(-1, std::memory_order_relaxed);
           return;
         }
         n = ExpertName(layer_id, e, "down_proj", "weight_scale_2");
-        if (!(es = loader.ReadTensor(n, &scal[2]))) {
+        if (!(es = loader.ReadTensor(n, &scal[2], sizeof(float)))) {
           first_err.store(-1, std::memory_order_relaxed);
           return;
         }
         n = ExpertName(layer_id, e, "down_proj", "input_scale");
-        if (!(es = loader.ReadTensor(n, &scal[3]))) {
+        if (!(es = loader.ReadTensor(n, &scal[3], sizeof(float)))) {
           first_err.store(-1, std::memory_order_relaxed);
           return;
         }

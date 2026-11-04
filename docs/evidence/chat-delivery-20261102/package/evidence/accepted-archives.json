@@ -1,0 +1,18 @@
+{
+  "chat-business-acceptance-20261102": {
+    "count": 34,
+    "manifest": {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/chat-business-acceptance-20261102/sealed-files.json",
+      "sha256": "77306a57e0db019c9798fa68e62ecc7f25578d91b5b1768359347f48ae03a1e4",
+      "bytes": 3270
+    }
+  },
+  "chat-business-runtime-20261102": {
+    "count": 313,
+    "manifest": {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/chat-business-runtime-20261102/sealed-files.json",
+      "sha256": "d225db4144ac40ebdec9c98c8814e1640661e5d013c6ed1a6cc3f4608ee0aa72",
+      "bytes": 39199
+    }
+  }
+}

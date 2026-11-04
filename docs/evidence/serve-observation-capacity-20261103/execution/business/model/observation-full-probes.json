@@ -1,0 +1,12 @@
+[
+  {
+    "status": 503,
+    "headers": {
+      "Content-Type": "application/json",
+      "Content-Length": "131",
+      "X-Request-Id": "req-1c1fb63bae53158660d75619167daeb2",
+      "Connection": "close"
+    },
+    "raw": "{\"error\":{\"message\":\"Service Unavailable\",\"type\":\"service_unavailable_error\",\"code\":\"observation_capacity_exhausted\",\"param\":null}}"
+  }
+]

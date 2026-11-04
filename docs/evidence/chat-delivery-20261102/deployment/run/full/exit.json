@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "server_exit": 0,
+  "endings": [
+    "[q4t][request] instance=0 id=agent-b1b787cde01b7007b0b4680ebffebfc6 event=end stage=response seq=1 released=1 outcome=success reason=completed elapsed_ms=1159.328 slot_wait_ms=0.001 model_lock_ms=0.000 tokenizer_lock_ms=0.000 scheduler_completion_ms=569.497 stream_write_ms=0.000 scheduler_waits=6",
+    "[q4t][request] instance=1 id=agent-c43d3b4f3b51c90970d2861b0244b9d8 event=end stage=response seq=1 released=1 outcome=success reason=completed elapsed_ms=720.462 slot_wait_ms=0.002 model_lock_ms=0.000 tokenizer_lock_ms=0.000 scheduler_completion_ms=176.761 stream_write_ms=0.000 scheduler_waits=2",
+    "[q4t][request] instance=2 id=protocol-c34ac5697aa1dea7671754ceec28874a event=end stage=response seq=1 released=1 outcome=success reason=completed elapsed_ms=1807.905 slot_wait_ms=0.001 model_lock_ms=0.000 tokenizer_lock_ms=0.005 scheduler_completion_ms=1542.903 stream_write_ms=0.484 scheduler_waits=17"
+  ],
+  "reservation_final": [
+    {
+      "schema": 1,
+      "event": "finalized",
+      "status": "PASS",
+      "count": 1619,
+      "device_bytes": 101714040916,
+      "allocated": 1619,
+      "consumed": 1619,
+      "freed": 1619,
+      "unhanded_remaining": 0,
+      "handed_live": 0,
+      "release_unknown": 0,
+      "error": "none",
+      "backend_rc": 0,
+      "error_index": 0,
+      "prepared": true,
+      "startup_complete": true,
+      "finalized": true,
+      "active": false,
+      "strategy": "stable_descending_bytes",
+      "plan_sha256": "a46382d4a43bb9c22696cea918c5d50f14d112e0820c9fe95564fb2a84aa7887"
+    }
+  ]
+}

@@ -238,6 +238,21 @@ Status WeightLoader::ReadTensor(const std::string& name, void* dst) const {
   return sh->ReadTensor(*info, dst);
 }
 
+Status WeightLoader::ReadTensor(const std::string& name, void* dst,
+                                size_t expected_bytes) const {
+  const std::string* shard = impl_->index->ShardOf(name);
+  if (!shard) return Status::Fail("tensor not in index: " + name);
+  std::shared_ptr<SafetensorsFile> sh;
+  Status s = impl_->EnsureOpen(*shard, &sh);
+  if (!s.ok()) return s;
+  const TensorInfo* info = sh->Find(name);
+  if (!info || info->byte_size() != expected_bytes ||
+      (!dst && expected_bytes != 0)) {
+    return Status::Fail("tensor destination/size mismatch: " + name);
+  }
+  return sh->ReadTensor(*info, dst);
+}
+
 Status WeightLoader::ReadRange(const std::string& name, uint64_t offset,
                                size_t length, void* dst) const {
   const std::string* shard = impl_->index->ShardOf(name);
@@ -288,7 +303,7 @@ Status WeightLoader::LoadTensorToDevice(const std::string& name,
     return Status::Fail("load tensor: destination/size mismatch: " + name);
   try {
     PendingHostStorage<std::vector<uint8_t>> host(stream, expected_bytes);
-    Status status = ReadTensor(name, host.Get().data());
+    Status status = ReadTensor(name, host.Get().data(), expected_bytes);
     if (!status.ok()) return status;
     host.MarkPending();
     const cudaError_t error = cudaMemcpyAsync(

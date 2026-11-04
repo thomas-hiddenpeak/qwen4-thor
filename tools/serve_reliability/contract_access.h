@@ -1,0 +1,149 @@
+// Unloaded production-server seam for CPU lifecycle/slot contracts.
+#pragma once
+
+#include "q4t/server/chat_server.h"
+
+#include <arpa/inet.h>
+#include <sys/socket.h>
+
+namespace q4t::server {
+struct ServeContractAccess {
+  static void Memory(ChatServer& server, uint64_t floor, uint64_t margin,
+                     MemoryAdmission::Reader reader) {
+    server.memory_admission_.Configure(floor, margin, reader);
+  }
+  static MemoryAdmissionSnapshot RefreshMemory(ChatServer& server) {
+    return server.memory_admission_.Observe(true);
+  }
+  static uint64_t MemoryRejected(ChatServer& server, MemoryCheckpoint point,
+                                 size_t reason) {
+    return server.metrics_.memory_rejected[static_cast<size_t>(point)][reason]
+        .load();
+  }
+  static bool CheckMemory(ChatServer& server, int fd, MemoryCheckpoint point) {
+    return server.CheckMemoryAdmission(fd, point);
+  }
+  static HttpBodyBudget& BodyBudget(ChatServer& server) {
+    return server.body_budget_;
+  }
+  static uint64_t ReceiveFailures(ChatServer& server,
+                                  HttpReceiveFailure reason) {
+    return server.metrics_.http_transport.receive[static_cast<size_t>(reason)]
+        .load();
+  }
+  static void Slots(ChatServer& server, std::vector<int> capacities,
+                    int queued) {
+    server.max_seq_ = capacities.size();
+    server.max_len_ = *std::max_element(capacities.begin(), capacities.end());
+    server.seq_capacities_ = std::move(capacities);
+    server.seq_free_.assign(server.max_seq_, false);
+    server.admission_limits_.queued = queued;
+  }
+  static int Allocate(ChatServer& server, RequestControl& control, int fd,
+                      size_t required) {
+    return server.AllocSeqId(&control, fd, required);
+  }
+  static void Release(ChatServer& server, int slot) { server.FreeSeqId(slot); }
+  static void Notify(ChatServer& server) { server.seq_cv_.notify_all(); }
+  static size_t Queued(ChatServer& server) {
+    const std::lock_guard<std::mutex> lock(server.seq_mu_);
+    return server.seq_waiters_.Size();
+  }
+  static int Free(ChatServer& server) {
+    const std::lock_guard<std::mutex> lock(server.seq_mu_);
+    return std::count(server.seq_free_.begin(), server.seq_free_.end(), true);
+  }
+  static uint64_t Rejected(ChatServer& server) {
+    return server.metrics_.queue_rejected.load();
+  }
+  static void StopAdmissions(ChatServer& server) {
+    const std::lock_guard<std::mutex> lock(server.seq_mu_);
+    server.seq_stopping_ = true;
+    server.seq_cv_.notify_all();
+  }
+  static std::shared_ptr<RequestControl> Register(
+      ChatServer& server, const std::string& token,
+      std::string_view client = {}) {
+    return server.requests_.Register(
+        "cancel-contract", token,
+        std::chrono::steady_clock::now() + std::chrono::seconds(30), client);
+  }
+  static ClientAdmission& Clients(ChatServer& server) {
+    return server.clients_;
+  }
+  static void Configure(ChatServer& server, int operations_port = 0,
+                        int public_port = 0) {
+    server.port_ = public_port;
+    server.operations_port_ = operations_port;
+    server.conn_cap_ = 2;
+    server.model_ready_.store(true);
+  }
+  static Status ReserveListeners(ChatServer& server) {
+    return server.startup_listeners_.Open(
+        server.host_, server.port_, server.operations_port_);
+  }
+  static int Business(ChatServer& server) {
+    return server.business_conns_.load();
+  }
+  static int Observation(ChatServer& server) {
+    return server.observation_conns_.load();
+  }
+  static int Control(ChatServer& server) {
+    return server.control_conns_.load();
+  }
+  static int ActiveConnections(ChatServer& server) {
+    return server.active_conns_.load();
+  }
+  static int Operations(ChatServer& server) {
+    return server.operations_conns_.load();
+  }
+  static int OperationsObservation(ChatServer& server) {
+    return server.operations_observation_conns_.load();
+  }
+  static int OperationsControl(ChatServer& server) {
+    return server.operations_control_conns_.load();
+  }
+  static uint64_t OperationsRejected(ChatServer& server,
+                                     HttpConnectionClass kind) {
+    return server.metrics_
+        .operations_connection_rejections[static_cast<size_t>(kind)]
+        .load();
+  }
+  static uint64_t ConnectionRejected(ChatServer& server,
+                                     HttpConnectionClass kind) {
+    return server.metrics_.connection_rejections[static_cast<size_t>(kind)]
+        .load();
+  }
+  static void Healthy(ChatServer& server, bool healthy) {
+    server.gpu_healthy_.store(healthy);
+  }
+  static void DeviceFailure(ChatServer& server,
+                            const DeviceMemoryResult& result) {
+    server.RecordDeviceMemoryFailure(result, "native.contract");
+  }
+  static int Port(ChatServer& server, bool operations = false) {
+    const int fd = operations ? server.operations_listen_fd_.load()
+                              : server.listen_fd_.load();
+    sockaddr_in addr{};
+    socklen_t length = sizeof(addr);
+    return fd >= 0 &&
+                   !getsockname(fd, reinterpret_cast<sockaddr*>(&addr), &length)
+               ? ntohs(addr.sin_port)
+               : -1;
+  }
+  static bool Empty(ChatServer& server) {
+    const std::lock_guard<std::mutex> lock(server.connections_mu_);
+    return server.connections_.empty() && server.active_conns_.load() == 0 &&
+           server.business_conns_.load() == 0 &&
+           server.observation_conns_.load() == 0 &&
+           server.control_conns_.load() == 0 &&
+           server.listen_fd_.load() == -1 && server.public_conns_.load() == 0 &&
+           server.operations_conns_.load() == 0 &&
+           server.operations_control_conns_.load() == 0 &&
+           server.operations_observation_conns_.load() == 0 &&
+           server.operations_listen_fd_.load() == -1 &&
+           server.startup_listeners_.Public() == -1 &&
+           server.startup_listeners_.Operations() == -1;
+  }
+};
+}  // namespace q4t::server

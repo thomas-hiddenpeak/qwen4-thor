@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "tests": 8,
+  "log": ".q4t-work/serve-thinking-budget-20261103/cpu/driver-correction.log",
+  "log_sha256": "1065d6c1869979319fcc8f1366d377adb3e675432bb1e0cbb9d93c228860aa45",
+  "scope": "CLI capacity flag and unchanged driver contracts; original failed startup retained"
+}

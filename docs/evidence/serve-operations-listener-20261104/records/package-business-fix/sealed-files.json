@@ -1,0 +1,18 @@
+{
+  "candidate/CMakeCache.txt": "f8f9672e8b45124f877758fdc53f81d83131a4ca9891c060d527e6dfec4430df",
+  "candidate/compile_commands.json": "343c39d6504b97a33dbc07e83567fcbb923e47f78e3fe857b5ac8c6fdb80ea62",
+  "candidate/diagnostic-identity.json": "3960996107b63568404b7cbc916b0885b096e1846cc685fcae63dc7008ea6192",
+  "candidate/generated/q4t/server/chat_protocol_identity.h": "a87e50b6ca094c90ff958a244f3c5fc5f6aa31de8da2e2d8e699548cbb570656",
+  "candidate/generated/q4t/server/chat_protocol_sources.json": "d8822ac20cb909b9f32dbafd2fedeea3cc3d47b1168df361ff3ad16744f7cac6",
+  "candidate/q4t": "7eff020de66b96f3175b3e123909be9e2f58142d54d1dd5992750d23cbe9c769",
+  "candidate/q4t.rules.yml": "2d2f14f832b9aa13c4d384c3b2a18bae6074a75c4e1c7ed59b0011da1ed1c015",
+  "candidate/q4t_http_lifecycle_tests": "22fc035c29a58b6dd377f20f241cc0d45b232a00d3b7a22e7fc9cc5fe0fe841d",
+  "candidate/runtime-source.json": "bee62663231e09bd4145c296d6c6e071610a5e77ec133128be6510cb189bc730",
+  "numerical-reuse.json": "dfd2fc6d8d1afd4f7d4ae816beee5fdc9b119d2b5102d0476683f7f6e3212f1f",
+  "plan.json": "98cf4659156ae43b66dc9d69289843a176871024d51f9b20958ce21ba441b478",
+  "previous/CMakeCache.txt": "86c3216d572cd72847d15f319b4b25659526d0e249a14c1dead7c7d4d438d1d7",
+  "previous/q4t": "49cc78cdf03ba56f7a9b51f682cc61e636f6b36d2784289071b3c6ac5352c38a",
+  "previous/q4t.release.json": "055f4f3e406e05cdded906ae64ec72eaf687e381d3f09974be0e3a94c04d2067",
+  "previous/q4t.rules.yml": "849bf0cdeb4de4225c134183a678b8eb7985f50a5fa22ece4dd3c502067e0ff8",
+  "sources.json": "f7e0a5ae47ff6207451d3b55274c127c30581d5386db7f853100c9ef169899e1"
+}

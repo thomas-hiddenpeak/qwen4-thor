@@ -1,0 +1,6 @@
+POST /v1/chat/completions HTTP/1.1
+Host: localhost
+Content-Type: application/json
+Content-Length: 143
+
+{"messages": [{"role": "user", "content": "q"}], "stream": true, "max_completion_tokens": 1, "parse_response": false,"thinking_token_budget":0}

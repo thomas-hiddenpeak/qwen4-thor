@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "limits": {
+    "starts": 3,
+    "generations": 6,
+    "negatives": 5,
+    "observations": 240,
+    "seconds": 1200
+  },
+  "gpu_window_seconds": 220,
+  "source_commit": "b6e4ce93cb97af596f29c1c4640e10f2f7b61f45",
+  "source_files": {
+    "tools/serve_service/package.py": "c493bf2122cc5c6dcbbfa4ebc371a30e1b7f7616a729108a8f0c175207cc043e",
+    "tools/serve_service/supervisor.py": "f78d3c7019ad444fedca48e12a1c11108862ddf1d70b4edcd1fa6a27a466be37",
+    "tools/serve_service/backend.py": "9ef97c4a60d73598faac56f312e009299b00dd63c9e45333cea50cd89ac89b5f",
+    "tools/serve_service/service.py": "27b481a31720c18c0cf7b5a3fb83a8d0d20e8362a20d5f2f2993b75be330a9f1",
+    "tools/evalscope/gpu_exclusive.py": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2",
+    "tools/evalscope/bounded_log.py": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+    "tools/evalscope/nvml_process_query.py": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+    "tools/release/release.py": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+    "tools/serve_ops/contracts.py": "709aaf35b476225f42d7c64bcee2ffd55f48a310bb01b939785a2006eb340816",
+    "tools/serve_ops/identity.py": "1b80467eba0fe84397155d29a62d8ace363aea32b85c58f4ffce5412bc74aa3a",
+    "tools/serve_ops/transport.py": "5885dab1835afa07c4a4c871726548fad95cb7888b4af29f8835e7d98d6d806b",
+    "tools/serve_service/acceptance.py": "a0d52e8c055c6afc1478ee5f65e93daa563c6143e79f529a92d0e73723488cf7",
+    "tools/serve_service/test_acceptance.py": "9305521b0aff9d6329e84224e5c8527160c635ddfdb902f135bfd0de86e78797",
+    "tools/examples/chat_client.py": "a2613333395a511b7741d8ce5fac125ba44dd9ec92fa198aa90ef5f9ba662f32",
+    "tools/examples/project_query.py": "dbf70665fef0d144d18fc0ef16b04029a7dd595664efe45b7de07579b3997206",
+    "tools/examples/project_records.py": "abd47d37ddcbd482f147ef172ee01e4a8be3bfcb78f29f7156d00b0073eb8b3c",
+    "tools/examples/agent_tools_demo.py": "acf6ee24c66d372d95ec08e672c2ec5dc423999890a537b9495a96ced4d89ca4",
+    "tools/examples/tool_recovery.py": "e3fba1d9d028ff532c59e826b76e4434b64599a8b3c42b79d4ae0c1c59341f90",
+    "docs/MODEL.md": "7409269429d9e61ac6f560e829acd0613906d29e03e902c84af3a8db2d17a97c",
+    "docs/SERVE_MANAGED_SERVICE_GPU_2026-11-03.md": "fd2dd8ad086dbcbd961a76eb12189dcb33beb4a0c49a0feca9986e57a944c547",
+    "tools/serve_service/supplement.py": "7da3cd37f6a0c1bf746aa8856570b9c7724ba155745c2b9910f5ffc2e8d65d57",
+    "docs/SERVE_MANAGED_SERVICE_SUPPLEMENT_2026-11-03.md": "ac3117c3fcbede30998dc0cbfd98f6bd903f094667653cf6de99462be67cc5be"
+  },
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/package",
+    "manifest_sha256": "71da1a1d05e3d83dbf28df052c249646e5e80a48639af54b9513debff266af0d",
+    "binary_sha256": "d66f2bb9df3a34eda1b885da148e6971c25137564e500b9357bd5f9a5f8dfb1b"
+  },
+  "default_release_sha256": "42d7672ab473aceb315889be8eeac54310121fd47d4ac861d4d40fcc2bfea1f5",
+  "binary_sha256": "d66f2bb9df3a34eda1b885da148e6971c25137564e500b9357bd5f9a5f8dfb1b",
+  "protocol_sha256": "55a3e67b0f543cb6e3770df08d38fc36c5bc8b1ef7b3e0d555068b080939fd69",
+  "unit": "q4t-managed-srv14-fix-119a59821e66a28990c6.service",
+  "token": "119a59821e66a28990c6",
+  "planned": {
+    "starts": 2,
+    "generations": 6,
+    "negative_scenarios": 3
+  },
+  "reused_negatives": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/lease-contention.json": "6d99b5d403b0a7bd629703d3ba4778959ddee17b14ed468c5aac9b96d8a79e08",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/duplicate-runtime.json": "8a49159ea09bea72c9c92aa943c349d898035027895d24a50196558b6eb356c4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/changed-manifest.json": "71445fbbe54031cbc6fbc5094bd1bd9d00051091800d23c5141d6cea4d54992c"
+  },
+  "reused_cpu_sha256": "d95189e24e6b9e6eaf77653677137446f2fac21f0f3bae73b4c16c3aed3a6573",
+  "original_plan_sha256": "3c13ab36ff7af3b1bbd7fe540bf7401554dfee412d246914744008ecdef88dea",
+  "original_failure_sha256": "9ca45d18c347c7ef3e20db89222756a04abecb7ce9cec6d0805a903e07bc2f3d",
+  "original_runtime_differs": true,
+  "supervisor_http_reservation": 188,
+  "explicit_control_limit": 48,
+  "performance_acceptance": false,
+  "operator_notifications": false
+}

@@ -1,0 +1,11 @@
+HTTP/1.1 200 OK
+Content-Type: text/event-stream
+Cache-Control: no-cache
+Connection: close
+
+data: {"id":"resource-long","object":"chat.completion.chunk","created":1793617924,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+data: {"error":{"message":"request cancelled","type":"conflict_error","code":"explicit_cancel","param":null}}
+
+data: [DONE]
+

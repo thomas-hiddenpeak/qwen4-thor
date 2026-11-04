@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/candidate/q4t",
+    "serve",
+    "--model-dir",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "18108",
+    "--max-prefill",
+    "2048",
+    "--max-len",
+    "8192",
+    "--max-seq",
+    "1",
+    "--max-inflight-requests",
+    "8",
+    "--max-queued-requests",
+    "2"
+  ],
+  "binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/candidate/q4t",
+    "sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+    "bytes": 7087224
+  },
+  "validation_env": {}
+}

@@ -1,0 +1,7 @@
+POST /v1/chat/completions HTTP/1.1
+Host: localhost
+X-Request-Id: trace-slot-overflow-chat
+Content-Type: application/json
+Content-Length: 52
+
+{"prompt": "q", "max_completion_tokens": 2147483647}

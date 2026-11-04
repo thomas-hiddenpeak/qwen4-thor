@@ -1,0 +1,20 @@
+{
+  "status": "PASS_CONTROLLER_DEATH_ACTIVE_QUEUE",
+  "helper_cleanup_signals": 0,
+  "persistent_service_installed": false,
+  "performance_acceptance": false,
+  "starts": 1,
+  "successes": 4,
+  "shutdown_errors": 2,
+  "real_tool_executions": 1,
+  "cleanup_confirmed": true,
+  "counts": {
+    "generations": 6,
+    "negatives": 1,
+    "controls": 5
+  },
+  "elapsed_seconds": 61.469024433987215,
+  "gpu_window_elapsed": 61.21853936207481,
+  "original_guard_intentionally_interrupted": true,
+  "custody_completed": true
+}

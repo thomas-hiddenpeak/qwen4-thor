@@ -1,0 +1,15 @@
+{
+  "status": "FAILED",
+  "performance_acceptance": false,
+  "long_test_started": false,
+  "error": "ValueError('unexpected gateway status/identity: explicit-cancel')",
+  "cleanup_confirmed": true,
+  "counts": {
+    "generations": 7,
+    "negatives": 2,
+    "controls": 6
+  },
+  "elapsed_seconds": 153.423934383085,
+  "gpu_window_elapsed": 153.29016562411562,
+  "supervisor_http_upper_bound": 492
+}

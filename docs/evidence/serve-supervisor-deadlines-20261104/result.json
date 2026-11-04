@@ -1,0 +1,228 @@
+{
+  "status": "ACCEPT_SUPERVISOR_DEADLINES_SCOPED",
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-supervisor-deadlines-20261104/backend-package",
+    "manifest_sha256": "fcff7218de3b8616d641d3e8780077ca577d3ba9e012350a7723390031428240",
+    "binary_sha256": "61abe09fb0d2585c4f8efa3e5740fa4d0ea5af06971e4490df2d17000453ecce"
+  },
+  "previous_package": {
+    "binary_sha256": "61abe09fb0d2585c4f8efa3e5740fa4d0ea5af06971e4490df2d17000453ecce",
+    "manifest_sha256": "51ccb951073cb923a7dc38c4b4ab9e072bb87649b13a77ed3efc1790d3c8ef46",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-startup-listeners-20261104/accepted-backend"
+  },
+  "source_commit": "8790c8e12c40816b3a140065bcfec635c9effd3e",
+  "recheck_commit": "03ee447b47ea58a2198b9617668781b865ebbcfa",
+  "default_sha256": "61abe09fb0d2585c4f8efa3e5740fa4d0ea5af06971e4490df2d17000453ecce",
+  "sidecar_sha256": "ce925d517adee1b7dfdc17c8c90b11e4bd06260e5a87701b6e6268a0fb0329fc",
+  "protocol": "15d7ccb103258ea5ec8ca3cfa66c9bfe1245eadb7d38ad6ee149ad97075ec30e",
+  "cpu_checks": 114,
+  "driver_checks": 6,
+  "recheck_cpu_checks": 3,
+  "original_cpu_failures": 3,
+  "original_run_status": "ENV_ABORT",
+  "original_custody_status": "ENV_ABORT",
+  "original_failure_explanation": "driver PID used as PGID; reproduced in isolation, original conflict list absent",
+  "successful_prefix_reused": true,
+  "continuous_successful_whole_run": false,
+  "actual_backend_attempts": 3,
+  "complete_models": 1,
+  "successful_responses": 4,
+  "real_tools": 2,
+  "startup_stops_accepted": 1,
+  "startup_stop_seconds": 1.2848296838346869,
+  "responses": [
+    {
+      "client": "alpha",
+      "part": "read",
+      "seconds": 3.8392188798170537,
+      "usage": {
+        "prompt_tokens": 564,
+        "completion_tokens": 55,
+        "total_tokens": 619
+      }
+    },
+    {
+      "client": "alpha",
+      "part": "answer",
+      "seconds": 4.0498399280477315,
+      "usage": {
+        "prompt_tokens": 890,
+        "completion_tokens": 58,
+        "total_tokens": 948
+      }
+    },
+    {
+      "client": "beta",
+      "part": "read",
+      "seconds": 3.734972777077928,
+      "usage": {
+        "prompt_tokens": 564,
+        "completion_tokens": 55,
+        "total_tokens": 619
+      }
+    },
+    {
+      "client": "beta",
+      "part": "answer",
+      "seconds": 4.030505164992064,
+      "usage": {
+        "prompt_tokens": 890,
+        "completion_tokens": 58,
+        "total_tokens": 948
+      }
+    }
+  ],
+  "transport": {
+    "passed": true,
+    "requests": 3,
+    "models": 0,
+    "rows": [
+      {
+        "mode": "cancel-no-response",
+        "seconds": 0.10037578991614282,
+        "reason": "observation_stopped",
+        "response": null,
+        "port": 37085,
+        "peer_closed": true
+      },
+      {
+        "mode": "absolute-drip-deadline",
+        "seconds": 0.15009475499391556,
+        "reason": "http_deadline",
+        "response": null,
+        "port": 54823,
+        "peer_closed": true
+      },
+      {
+        "mode": "healthy-after-refusal",
+        "seconds": 0.0004146301653236151,
+        "reason": null,
+        "response": {
+          "http_status": 200,
+          "content_type": "application/json",
+          "body": "{}"
+        },
+        "port": 60191,
+        "peer_closed": true
+      }
+    ],
+    "transport_sha256": "98d3c326baaa7731078aa706911c743ae10b2278763d5de86f2bc7828650e2aa"
+  },
+  "gateway_starts": 2,
+  "rejected_gateways": 2,
+  "public_connections_at_new_supervisor_sample": 136,
+  "guard_observations": [
+    60,
+    3,
+    7
+  ],
+  "custody_observations": [
+    25,
+    3
+  ],
+  "initial_guard_seconds": 64.54106737300754,
+  "initial_lease_until_abort_seconds": 66.78633025404997,
+  "recheck_lease_seconds": 6.955842423951253,
+  "monitored_shared_lock_seconds": 73.74217267800122,
+  "lease_time_scope": "sum of two separate intervals; initial includes preserved ENV_ABORT",
+  "initial_driver_seconds": 68.1558326780796,
+  "recheck_driver_seconds": 18.289054421009496,
+  "owned_processes": [
+    {
+      "role": "controller",
+      "pid": 2709597,
+      "start_ticks": 197994497,
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+    },
+    {
+      "role": "worker",
+      "pid": 2709601,
+      "start_ticks": 197994538,
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+    },
+    {
+      "role": "backend",
+      "pid": 2709606,
+      "start_ticks": 197994564,
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+    },
+    {
+      "role": "front-1",
+      "pid": 2710456,
+      "start_ticks": 197998716,
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+    },
+    {
+      "role": "nginx-1",
+      "pid": 2710482,
+      "start_ticks": 197998766,
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+    },
+    {
+      "role": "front-2",
+      "pid": 2710723,
+      "start_ticks": 197999903,
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+    },
+    {
+      "role": "nginx-2",
+      "pid": 2710742,
+      "start_ticks": 197999952,
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+    },
+    {
+      "role": "initial-startup-controller",
+      "pid": 2710890,
+      "start_ticks": 198001035,
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+    },
+    {
+      "role": "initial-startup-worker",
+      "pid": 2710896,
+      "start_ticks": 198001063,
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+    },
+    {
+      "role": "initial-startup-backend",
+      "pid": 2710901,
+      "start_ticks": 198001090,
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+    },
+    {
+      "role": "transport-probes",
+      "pid": 2710885,
+      "start_ticks": 198000993,
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+    },
+    {
+      "role": "recheck-controller",
+      "pid": 2714526,
+      "start_ticks": 198040408,
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+    },
+    {
+      "role": "recheck-worker",
+      "pid": 2714530,
+      "start_ticks": 198040450,
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+    },
+    {
+      "role": "recheck-backend",
+      "pid": 2714535,
+      "start_ticks": 198040476,
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+    }
+  ],
+  "cleanup_observed": true,
+  "release_declarations_verified_live": true,
+  "default_changed": false,
+  "host_envelope_enabled_in_package": false,
+  "physical_ram_hard_limit_proved": false,
+  "actual_lan_accepted": false,
+  "long_runs_executed": false,
+  "persistent_installation": false,
+  "performance_acceptance": false,
+  "archived_records": 256,
+  "archived_bytes": 1796443,
+  "local_references": 407
+}

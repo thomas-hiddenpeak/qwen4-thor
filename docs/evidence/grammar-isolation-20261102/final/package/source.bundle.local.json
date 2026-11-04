@@ -1,0 +1,8 @@
+{
+  "local_artifact": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/grammar-isolation-final-20261102/package/source.bundle",
+    "sha256": "0bb647ad86fa6ec4638eecb97fa47409bc68fa202b8b8c9d41bebc3b03e535be",
+    "bytes": 40812
+  },
+  "archived_binary": false
+}

@@ -1,0 +1,32 @@
+HTTP/1.1 200 OK
+Content-Type: text/event-stream
+Cache-Control: no-cache
+X-Accel-Buffering: no
+X-Request-Id: req-0dcf7122925a04d199bef76da533bc72
+Connection: close
+
+data: {"id":"transport-slow","object":"chat.completion.chunk","created":1793635347,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"transport-slow","object":"chat.completion.chunk","created":1793635347,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"1"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"transport-slow","object":"chat.completion.chunk","created":1793635347,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"\n"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"transport-slow","object":"chat.completion.chunk","created":1793635347,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"2"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"transport-slow","object":"chat.completion.chunk","created":1793635347,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"\n"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"transport-slow","object":"chat.completion.chunk","created":1793635347,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"3"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"transport-slow","object":"chat.completion.chunk","created":1793635347,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"\n"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"transport-slow","object":"chat.completion.chunk","created":1793635347,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"4"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"transport-slow","object":"chat.completion.chunk","created":1793635347,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"\n"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"transport-slow","object":"chat.completion.chunk","created":1793635347,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"5"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"transport-slow","object":"chat.completion.chunk","created":1793635347,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"\n"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"transport-slow","object":"chat.completion.chunk","created":1793635347,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"6"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":

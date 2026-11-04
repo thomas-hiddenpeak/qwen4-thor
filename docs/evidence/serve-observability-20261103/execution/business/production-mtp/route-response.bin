@@ -1,0 +1,7 @@
+HTTP/1.1 404 Not Found
+Content-Type: application/json
+Content-Length: 112
+X-Request-Id: srv01b.route
+Connection: close
+
+{"error":{"message":"route or method not found","type":"invalid_request_error","code":"not_found","param":null}}

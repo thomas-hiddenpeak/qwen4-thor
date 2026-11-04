@@ -1,0 +1,6 @@
+data: {"id":"agent-8d195403caf427e7359ec7351a1c5282","object":"chat.completion.chunk","created":1793684832,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"error":{"message":"request cancelled before admission","type":"conflict_error","code":"server_shutdown","param":null}}
+
+data: [DONE]
+

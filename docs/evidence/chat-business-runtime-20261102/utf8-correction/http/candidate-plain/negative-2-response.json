@@ -1,0 +1,5 @@
+{
+  "status": 400,
+  "raw": "{\"error\":{\"message\":\"only tool_choice=auto with parsed messages is supported\",\"type\":\"invalid_request_error\",\"code\":null}}",
+  "elapsed_seconds": 0.0002967680338770151
+}

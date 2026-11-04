@@ -1,0 +1,28 @@
+{
+  "status": "ACCEPT_MANAGED_CLIENT_SHORT",
+  "cpu_effective_tests": 38,
+  "model_starts": 1,
+  "gateway_starts": 2,
+  "successful_requests": 12,
+  "real_tool_executions": 2,
+  "client_successes": {
+    "alpha": 9,
+    "beta": 3
+  },
+  "grammar_reaped": 6,
+  "controls": 29,
+  "guard_seconds": 78.71348844608292,
+  "guard_observations": 74,
+  "elapsed_seconds": 89.85620452091098,
+  "soak_seconds": 30.00005976902321,
+  "resource_samples": 37,
+  "http_seconds": {
+    "min": 0.3319372369442135,
+    "median": 0.7062032484682277,
+    "max": 4.074777506990358,
+    "scope": "connection request through complete EOF; bounded business, not performance acceptance"
+  },
+  "cleanup_confirmed": true,
+  "performance_acceptance": false,
+  "day_scale_stability_proved": false
+}

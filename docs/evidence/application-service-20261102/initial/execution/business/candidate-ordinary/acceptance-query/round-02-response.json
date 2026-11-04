@@ -1,0 +1,24 @@
+{
+  "id": "agent-7fc936319ec8d2b0938e5723f893b935",
+  "model": "qwen3.8-flash-next",
+  "message": {
+    "role": "assistant",
+    "content": null,
+    "tool_calls": [
+      {
+        "id": "call_agent-7fc936319ec8d2b0938e5723f893b935_0",
+        "type": "function",
+        "function": {
+          "name": "search_project_docs",
+          "arguments": "{\"query\":\"最终831907\"}"
+        }
+      }
+    ]
+  },
+  "finish_reason": "tool_calls",
+  "usage": {
+    "prompt_tokens": 3137,
+    "completion_tokens": 32,
+    "total_tokens": 3169
+  }
+}

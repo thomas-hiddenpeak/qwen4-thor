@@ -1,0 +1,73 @@
+{
+  "status": "PASS_CPU_ONLY",
+  "service_tests": 29,
+  "guard_tests": 30,
+  "source_sha256": {
+    "tools/serve_service/package.py": "c493bf2122cc5c6dcbbfa4ebc371a30e1b7f7616a729108a8f0c175207cc043e",
+    "tools/serve_service/supervisor.py": "f78d3c7019ad444fedca48e12a1c11108862ddf1d70b4edcd1fa6a27a466be37",
+    "tools/serve_service/backend.py": "9ef97c4a60d73598faac56f312e009299b00dd63c9e45333cea50cd89ac89b5f",
+    "tools/serve_service/service.py": "27b481a31720c18c0cf7b5a3fb83a8d0d20e8362a20d5f2f2993b75be330a9f1",
+    "tools/evalscope/gpu_exclusive.py": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2",
+    "tools/evalscope/bounded_log.py": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+    "tools/evalscope/nvml_process_query.py": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+    "tools/release/release.py": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+    "tools/serve_ops/contracts.py": "709aaf35b476225f42d7c64bcee2ffd55f48a310bb01b939785a2006eb340816",
+    "tools/serve_ops/identity.py": "1b80467eba0fe84397155d29a62d8ace363aea32b85c58f4ffce5412bc74aa3a",
+    "tools/serve_ops/transport.py": "5885dab1835afa07c4a4c871726548fad95cb7888b4af29f8835e7d98d6d806b",
+    "tools/serve_service/test_service.py": "ece656e81810a759cb6d5e4d7ca89a99b64ab3f43ae448e2e24da3b06646349b"
+  },
+  "default_binary_sha256": "280b95dceabe5a3b1fd794019102de0dc9f0b62e8a3aa9fcc30eb5c57fdfd793",
+  "default_release_sha256": "18c9d2c50c847c90c6b033b4350fa0cf10c59777bf3a9dacd01391250a341f19",
+  "runtime_source_count": 211,
+  "runtime_sources_unchanged": true,
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/package-cpu",
+    "manifest_sha256": "e33a0ac2771d450a380c2b49eed8d6a5221b5e67c6b10ea6c70eca5199de5787",
+    "binary_sha256": "280b95dceabe5a3b1fd794019102de0dc9f0b62e8a3aa9fcc30eb5c57fdfd793"
+  },
+  "unit_sha256": "eeb98eab6a493cc872fe2b4726a498806b0ad33d2096660ebcd6dfe052af18ce",
+  "isolated_unit_cli": {
+    "argv": [
+      "/usr/bin/python3.12",
+      "-I",
+      "-B",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/package-cpu/source/tools/serve_service/service.py",
+      "unit",
+      "--package",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/package-cpu",
+      "--manifest-sha256",
+      "e33a0ac2771d450a380c2b49eed8d6a5221b5e67c6b10ea6c70eca5199de5787",
+      "--output",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/unstarted-smoke-run"
+    ],
+    "returncode": 0,
+    "stderr": ""
+  },
+  "systemd_syntax": {
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "profile_http_evidence_reuse": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-composite-20261103/execution/business/model/configuration.json",
+    "sha256": "59572b2fc17c946f42d5942da97ae7330fcbfe286b51cebee0a34d1c46e1eff4",
+    "effective_config": {
+      "max_context_tokens": 8192,
+      "max_sequences": 1,
+      "prefill_chunk_tokens": 2048,
+      "max_inflight_requests": 8,
+      "max_queued_requests": 2,
+      "mtp_enabled": true,
+      "structured_backend": true,
+      "memory_enabled": true,
+      "memory_floor_mib": 2048,
+      "memory_recovery_mib": 2560
+    },
+    "no_new_http": true,
+    "managed_service_proved": false
+  },
+  "new_model_starts": 0,
+  "new_http_requests": 0,
+  "gpu_business_pending": true,
+  "persistent_service_installed": false
+}

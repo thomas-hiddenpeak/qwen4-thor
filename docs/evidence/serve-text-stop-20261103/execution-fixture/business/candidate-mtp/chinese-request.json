@@ -1,0 +1,30 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": 0,
+  "max_completion_tokens": 128,
+  "stream": true,
+  "messages": [
+    {
+      "role": "developer",
+      "content": "遵循用户请求。"
+    },
+    {
+      "role": "user",
+      "content": "严格逐字复制下一行，不加解释或引号：\n开始中文停止之后"
+    }
+  ],
+  "extra_body": {
+    "chat_template_kwargs": {
+      "enable_thinking": false,
+      "reasoning_effort": "low"
+    },
+    "request_timeout_ms": 180000
+  },
+  "stream_options": {
+    "include_usage": true
+  },
+  "stop": "中文停止",
+  "extra_headers": {
+    "X-Request-Id": "trace-chinese"
+  }
+}

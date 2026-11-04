@@ -1,0 +1,14 @@
+{
+  "original_output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261103/execution",
+  "seal": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261103/execution/sealed-files.json",
+    "sha256": "9fc405db9793bf131353ba8583c3a803a4f5c1c8391044bdd9e58d8341da72db",
+    "bytes": 1138349
+  },
+  "failure": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261103/execution/business/result.json",
+    "sha256": "452f6288c1140884b7ac588f7c29e0eaeec3e1d74a274e43c4f7b9f398963c97",
+    "bytes": 795
+  },
+  "preparation_failure": "Receipt requested nonexistent SHA256SUMS; no build/test started. Corrected to actual sealed-files.json."
+}

@@ -9,8 +9,16 @@
 #include <string>
 #include <vector>
 
+#include "q4t/runtime/cleanup_policy.h"
+#include "q4t/runtime/cuda_allocation_quota.h"
 #include "q4t/runtime/startup_plan.h"
 #include "q4t/trace/sha256.h"
+#include "cuda_quota_backend.h"
+
+#ifdef Q4T_SERVE_FAULT_INJECTION
+#include <cstdlib>
+#include <cstring>
+#endif
 
 extern "C" cudaError_t __real_cudaMalloc(void**, size_t);
 extern "C" cudaError_t __real_cudaFree(void*);
@@ -18,17 +26,51 @@ extern "C" cudaError_t __real_cudaHostAlloc(void**, size_t, unsigned int);
 extern "C" cudaError_t __real_cudaMallocHost(void**, size_t);
 extern "C" cudaError_t __real_cudaMallocAsync(void**, size_t, cudaStream_t);
 extern "C" cudaError_t __real_cudaFreeAsync(void*, cudaStream_t);
+extern "C" cudaError_t __real_cudaFreeHost(void*);
+extern "C" cudaError_t __real_cudaEventDestroy(cudaEvent_t);
+extern "C" cudaError_t __real_cudaStreamDestroy(cudaStream_t);
+extern "C" cudaError_t __real_cudaStreamSynchronize(cudaStream_t);
+extern "C" cudaError_t __real_cudaDeviceSynchronize();
+extern "C" cudaError_t __real_cudaEventSynchronize(cudaEvent_t);
 
 namespace {
 namespace reserve = q4t::runtime::reservation;
 using Summary = q4t::runtime::StartupReservationSummary;
 
+#ifdef Q4T_SERVE_FAULT_INJECTION
+std::atomic<bool> cleanup_fault_fired{false};
+#endif
+
+template <typename Call>
+cudaError_t Cleanup(const char* api, Call call,
+                    bool device_release = false) noexcept {
+  cudaError_t error = cudaSuccess;
+#ifdef Q4T_SERVE_FAULT_INJECTION
+  // Validation executable only. Skip the selected real operation once; this
+  // tests status propagation without corrupting CUDA or exhausting memory.
+  const char* selected = std::getenv("Q4T_CLEANUP_FAULT_API");
+  const char* phase = std::getenv("Q4T_CLEANUP_FAULT_PHASE");
+  if (selected && phase && !std::strcmp(selected, api) &&
+      !std::strcmp(phase, q4t::runtime::cleanup_phase) &&
+      !cleanup_fault_fired.exchange(true)) {
+    error = cudaErrorInvalidValue;
+    std::fprintf(stderr, "[cleanup-test] api=%s phase=%s error=%d\n", api,
+                 phase, static_cast<int>(error));
+  }
+#endif
+  if (error == cudaSuccess) error = call();
+  return static_cast<cudaError_t>(q4t::runtime::RequireCleanupSuccess(
+      static_cast<int>(error), api, device_release));
+}
+
 struct Backend {
   int Allocate(size_t, size_t bytes, void** pointer) noexcept {
-    return static_cast<int>(__real_cudaMalloc(pointer, bytes));
+    return static_cast<int>(q4t::runtime::QuotaCudaMalloc(pointer, bytes));
   }
   int Release(size_t, size_t, void* pointer, reserve::ReleaseReason) noexcept {
-    return static_cast<int>(__real_cudaFree(pointer));
+    return static_cast<int>(Cleanup(
+        "cudaFree", [pointer] { return q4t::runtime::QuotaCudaFree(pointer); },
+        true));
   }
 };
 using Owner = reserve::Owner<Backend>;
@@ -226,8 +268,9 @@ StartupReservationSummary StartupReservation::Finalize() noexcept {
 
 extern "C" cudaError_t __wrap_cudaMalloc(void** pointer, size_t bytes) {
   const Guard guard;
+  q4t::runtime::ClearCudaQuotaRejection();
   Owner* owner = registry.active;
-  if (!owner) return __real_cudaMalloc(pointer, bytes);
+  if (!owner) return q4t::runtime::QuotaCudaMalloc(pointer, bytes);
   if (!owner->startup_complete())
     return CudaResult(owner->Take(bytes, pointer));
   const auto allowed = owner->RequireRuntime();
@@ -235,7 +278,7 @@ extern "C" cudaError_t __wrap_cudaMalloc(void** pointer, size_t bytes) {
     if (pointer) *pointer = nullptr;
     return CudaResult(allowed);
   }
-  const cudaError_t rc = __real_cudaMalloc(pointer, bytes);
+  const cudaError_t rc = q4t::runtime::QuotaCudaMalloc(pointer, bytes);
   if (rc != cudaSuccess) return rc;
   return CudaResult(
       owner->ObserveExternalAllocation(pointer ? *pointer : nullptr));
@@ -243,10 +286,29 @@ extern "C" cudaError_t __wrap_cudaMalloc(void** pointer, size_t bytes) {
 
 extern "C" cudaError_t __wrap_cudaFree(void* pointer) {
   const Guard guard;
-  if (!registry.active) return __real_cudaFree(pointer);
-  const auto result = registry.active->Release(pointer);
-  return result.error == reserve::Error::kNotOwned ? __real_cudaFree(pointer)
-                                                   : CudaResult(result);
+  if (registry.active) {
+    const auto result = registry.active->Release(pointer);
+    if (result.error != reserve::Error::kNotOwned) {
+      return static_cast<cudaError_t>(q4t::runtime::RequireCleanupSuccess(
+          CudaResult(result), "cudaFree", true));
+    }
+  }
+  return Cleanup(
+      "cudaFree", [pointer] { return q4t::runtime::QuotaCudaFree(pointer); },
+      true);
+}
+
+extern "C" cudaError_t __wrap_cudaMallocManaged(void** pointer, size_t bytes,
+                                                unsigned int flags) {
+  const Guard guard;
+  if (registry.active) {
+    const auto allowed = registry.active->RequirePrepared();
+    if (!allowed.ok()) {
+      if (pointer) *pointer = nullptr;
+      return CudaResult(allowed);
+    }
+  }
+  return q4t::runtime::QuotaCudaMallocManaged(pointer, bytes, flags);
 }
 
 extern "C" cudaError_t __wrap_cudaHostAlloc(void** pointer, size_t bytes,
@@ -259,7 +321,7 @@ extern "C" cudaError_t __wrap_cudaHostAlloc(void** pointer, size_t bytes,
       return CudaResult(allowed);
     }
   }
-  return __real_cudaHostAlloc(pointer, bytes, flags);
+  return q4t::runtime::QuotaCudaHostAlloc(pointer, bytes, flags);
 }
 
 extern "C" cudaError_t __wrap_cudaMallocHost(void** pointer, size_t bytes) {
@@ -271,20 +333,21 @@ extern "C" cudaError_t __wrap_cudaMallocHost(void** pointer, size_t bytes) {
       return CudaResult(allowed);
     }
   }
-  return __real_cudaMallocHost(pointer, bytes);
+  return q4t::runtime::QuotaCudaMallocHost(pointer, bytes);
 }
 
 extern "C" cudaError_t __wrap_cudaMallocAsync(void** pointer, size_t bytes,
                                               cudaStream_t stream) {
   const Guard guard;
   Owner* owner = registry.active;
-  if (!owner) return __real_cudaMallocAsync(pointer, bytes, stream);
+  if (!owner) return q4t::runtime::QuotaCudaMallocAsync(pointer, bytes, stream);
   const auto allowed = owner->RequireRuntime();
   if (!allowed.ok()) {
     if (pointer) *pointer = nullptr;
     return CudaResult(allowed);
   }
-  const cudaError_t rc = __real_cudaMallocAsync(pointer, bytes, stream);
+  const cudaError_t rc =
+      q4t::runtime::QuotaCudaMallocAsync(pointer, bytes, stream);
   if (rc != cudaSuccess) return rc;
   return CudaResult(
       owner->ObserveExternalAllocation(pointer ? *pointer : nullptr));
@@ -294,7 +357,57 @@ extern "C" cudaError_t __wrap_cudaFreeAsync(void* pointer,
                                             cudaStream_t stream) {
   const Guard guard;
   if (registry.active && registry.active->Contains(pointer)) {
-    return CudaResult(registry.active->Reject(reserve::Error::kWrongPhase));
+    return static_cast<cudaError_t>(q4t::runtime::RequireCleanupSuccess(
+        CudaResult(registry.active->Reject(reserve::Error::kWrongPhase)),
+        "cudaFreeAsync"));
   }
-  return __real_cudaFreeAsync(pointer, stream);
+  return Cleanup("cudaFreeAsync", [=] {
+    return q4t::runtime::QuotaCudaFreeAsync(pointer, stream);
+  });
+}
+
+extern "C" cudaError_t __wrap_cudaFreeHost(void* pointer) {
+  return Cleanup("cudaFreeHost",
+                 [=] { return q4t::runtime::QuotaCudaFreeHost(pointer); });
+}
+
+extern "C" cudaError_t __wrap_cudaStreamCreate(cudaStream_t* stream) {
+  return q4t::runtime::QuotaCudaStreamCreate(stream, 0, 0, 0);
+}
+extern "C" cudaError_t __wrap_cudaStreamCreateWithFlags(cudaStream_t* stream,
+                                                        unsigned int flags) {
+  return q4t::runtime::QuotaCudaStreamCreate(stream, flags, 0, 1);
+}
+extern "C" cudaError_t __wrap_cudaStreamCreateWithPriority(cudaStream_t* stream,
+                                                           unsigned int flags,
+                                                           int priority) {
+  return q4t::runtime::QuotaCudaStreamCreate(stream, flags, priority, 2);
+}
+
+extern "C" cudaError_t __wrap_cudaEventDestroy(cudaEvent_t event) {
+  return Cleanup("cudaEventDestroy", [=] {
+    return __real_cudaEventDestroy(event);
+  });
+}
+
+extern "C" cudaError_t __wrap_cudaStreamDestroy(cudaStream_t stream) {
+  return Cleanup("cudaStreamDestroy",
+                 [=] { return q4t::runtime::QuotaCudaStreamDestroy(stream); });
+}
+
+extern "C" cudaError_t __wrap_cudaStreamSynchronize(cudaStream_t stream) {
+  return Cleanup("cudaStreamSynchronize", [=] {
+    return q4t::runtime::QuotaCudaStreamSynchronize(stream);
+  });
+}
+
+extern "C" cudaError_t __wrap_cudaDeviceSynchronize() {
+  return Cleanup("cudaDeviceSynchronize",
+                 [] { return q4t::runtime::QuotaCudaDeviceSynchronize(); });
+}
+
+extern "C" cudaError_t __wrap_cudaEventSynchronize(cudaEvent_t event) {
+  return Cleanup("cudaEventSynchronize", [=] {
+    return __real_cudaEventSynchronize(event);
+  });
 }

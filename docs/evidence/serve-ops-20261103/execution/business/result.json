@@ -1,0 +1,25 @@
+{
+  "status": "PASS_BOUNDED_LOCAL_OPERATIONS",
+  "healthy_scrape": {
+    "passed": true,
+    "firing": [],
+    "samples": 7
+  },
+  "stopped_target_alert": {
+    "passed": true,
+    "firing": [
+      "Q4TTargetDown"
+    ],
+    "samples": 24
+  },
+  "notification_receivers_deployed": false,
+  "deployment_changed": false,
+  "automatic_retries": 0,
+  "performance_acceptance": false,
+  "counts": {
+    "generations": 3,
+    "negatives": 0,
+    "starts": 1
+  },
+  "elapsed_seconds": 133.30970273190178
+}

@@ -1,0 +1,7 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 318
+X-Request-Id: trace-raw-prompt
+Connection: close
+
+{"id":"chatcmpl-auto-04febfa9e3cfc8f4723c512bc5d190ab","object":"chat.completion","created":1793649321,"model":"qwen3.8-flash-next","choices":[{"index":0,"message":{"role":"assistant","content":"ALPHA0123"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":41,"completion_tokens":13,"total_tokens":54}}

@@ -1,0 +1,17 @@
+{
+  "cpu/contract-build/contract_probe": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/cpu/contract-build/contract_probe",
+    "sha256": "80f112672fd5be2f7a00c3d642067845ca68bbe7f02ce0cbd329dc7d089ec2f1",
+    "bytes": 511000
+  },
+  "package/cpu/contract-build/contract_probe": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/package/cpu/contract-build/contract_probe",
+    "sha256": "80f112672fd5be2f7a00c3d642067845ca68bbe7f02ce0cbd329dc7d089ec2f1",
+    "bytes": 511000
+  },
+  "package/source.bundle": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/package/source.bundle",
+    "sha256": "e7d5bd7fed933a7db4d8783a2e718fcd52831a972653e38c08dcd654fd2c10dd",
+    "bytes": 70503
+  }
+}

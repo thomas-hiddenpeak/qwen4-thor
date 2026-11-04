@@ -1,0 +1,34 @@
+{
+  "id": "chatcmpl-auto-8",
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "logprobs": null,
+      "message": {
+        "content": "\n\n{\"answer\": 323, \"label\": \"中文\"}",
+        "refusal": null,
+        "role": "assistant",
+        "annotations": null,
+        "audio": null,
+        "function_call": null,
+        "tool_calls": null,
+        "reasoning_content": "用户要求计算17乘19，并且要求：\n- answer为乘积\n- label为中文\n\n17 × 19 = 323\n\n用户要求label为中文，answer为乘积。\n"
+      }
+    }
+  ],
+  "created": 1793611536,
+  "model": "qwen3.8-flash-next",
+  "object": "chat.completion",
+  "metadata": null,
+  "moderation": null,
+  "service_tier": null,
+  "system_fingerprint": null,
+  "usage": {
+    "completion_tokens": 65,
+    "prompt_tokens": 56,
+    "total_tokens": 121,
+    "completion_tokens_details": null,
+    "prompt_tokens_details": null
+  }
+}

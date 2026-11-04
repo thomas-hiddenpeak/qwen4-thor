@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "root": "/home/rm01/models/dev/qwen4-thor",
+  "limits": {
+    "generations": 6,
+    "negatives": 150,
+    "starts": 2,
+    "observations": 256,
+    "seconds": 1800
+  },
+  "planned": {
+    "generations": 4,
+    "negatives": 136,
+    "starts": 1
+  },
+  "source_commit": "362f42a8c6bca47d853eb47acd9c79f7022885dd",
+  "candidate": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/candidate/q4t",
+  "candidate_sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+  "binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/candidate/q4t",
+    "sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+    "bytes": 7087224
+  },
+  "sidecar": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/candidate/diagnostic-identity.json",
+    "sha256": "207cdab888ce16f9213a7713109b1e49544a299d336dedc2d7cac271e01586ec",
+    "bytes": 303
+  },
+  "old_hashes": {
+    "q4t": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+    "q4t.release.json": "c520333192c04ddb499dd0188496789ec8ddc20fc5e0f00491ca01f52517aa75"
+  },
+  "previous_binary_sha256": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+  "source_manifest_sha256": "b058a5653bb1b6ce8cd8cf07adaeff0f4e868f8403f51b76cf4e4984800f18f3",
+  "protocol_sha256": "da1466be364b9d177669a6a6b3209d77ef832bd4c8e059e3d93820bfeb336b05",
+  "model_dir": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "model_inputs": {
+    "config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+    "tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+    "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+    "chat_template.jinja": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+  },
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "port": 18108,
+  "prometheus_port": 19093,
+  "prometheus": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/deps/prometheus",
+    "sha256": "aeebc0ffc6529c87221ab12ff1f9fc276be488869ebc942ce3e4d7ffcfe6a97a",
+    "bytes": 154293542
+  },
+  "performance_acceptance": false,
+  "lifecycle_probe": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/candidate/q4t_http_lifecycle_tests",
+    "sha256": "8aedc98d40bb9ff7d968cf39a0f81ab87c1951afd3f7cd45e54b08eb0877fe0c",
+    "bytes": 864824
+  }
+}

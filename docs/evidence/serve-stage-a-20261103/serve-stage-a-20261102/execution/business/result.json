@@ -1,0 +1,9 @@
+{
+  "status": "FAILED",
+  "error": "AssertionError('no heartbeat through seven-second idle proxy')",
+  "request_attempts": 4,
+  "negative_requests": 8,
+  "starts": 1,
+  "seconds": 56.08636228577234,
+  "performance_acceptance": false
+}

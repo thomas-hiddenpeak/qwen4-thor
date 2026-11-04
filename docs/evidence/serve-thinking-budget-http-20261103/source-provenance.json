@@ -1,0 +1,27 @@
+{
+  "accepted_runtime_and_driver_commit": "97e2f573",
+  "initial_http_entry_commit": "35e9246d",
+  "path_repair_commit": "279e5f30",
+  "candidate": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/package-boundary/candidate/q4t",
+    "sha256": "31ffc41efefe7e407a0848041e03673906e8965865b9464019aa54a99fd5dee6",
+    "bytes": 7012672
+  },
+  "default_pair": {
+    "q4t": "31ffc41efefe7e407a0848041e03673906e8965865b9464019aa54a99fd5dee6",
+    "q4t.release.json": "9a71a0a72e76da3b3850a340fb30b882da633a867e51bf454bee92ba9f5f9a72"
+  },
+  "original_implementation_commit": "55cfae11",
+  "prior_unaccepted_evidence": "docs/evidence/serve-thinking-budget-20261103",
+  "reused_http": {
+    "generations": 2,
+    "negatives": 12
+  },
+  "new_after_boundary_repair": 17,
+  "actual_stage_counts": {
+    "generations": 21,
+    "negatives": 12,
+    "start_attempts": 5
+  },
+  "prior_stage_start_attempts": 2
+}

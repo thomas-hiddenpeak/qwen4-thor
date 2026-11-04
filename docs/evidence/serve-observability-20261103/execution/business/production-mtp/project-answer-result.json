@@ -1,0 +1,14 @@
+{
+  "id": "agent-7f0c0ea112a4624e4e3d94112288b5fe",
+  "model": "qwen3.8-flash-next",
+  "message": {
+    "role": "assistant",
+    "content": "\u6839\u636e `docs/MODEL.md` \u7b2c 1 \u5230 24 \u884c\u7684\u5185\u5bb9\uff0c`architectures` \u5b57\u6bb5\u7684\u51c6\u786e\u503c\u4e3a\uff1a\n\n`Qwen4ExpForConditionalGeneration`\n\n\u5f15\u7528\uff1a[docs/MODEL.md:L1-L24]"
+  },
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 890,
+    "completion_tokens": 58,
+    "total_tokens": 948
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "passed": true,
+  "checks": {
+    "serve-structured-handoff-20261103": {
+      "staged_files": [
+        {
+          "path": "docs/evidence/serve-structured-handoff-20261103/accepted.json",
+          "sha256": "41c1f1d776502620942f2fe24392b622bbf77125d28618cf82f3845e5167d4f9"
+        },
+        {
+          "path": "docs/evidence/serve-structured-handoff-20261103/original_managed.json",
+          "sha256": "9ca45d18c347c7ef3e20db89222756a04abecb7ce9cec6d0805a903e07bc2f3d"
+        },
+        {
+          "path": "docs/evidence/serve-structured-handoff-20261103/finalized.json",
+          "sha256": "24dc4e11e93c227877e29de6688551075e640b61b943e15acbe053770e750146"
+        },
+        {
+          "path": "docs/evidence/serve-structured-handoff-20261103/manifest.json",
+          "sha256": "b9d3dfce93344daa0c21cbc1737f90704fe9c9516053ff6d3752f2a657c2167e"
+        },
+        {
+          "path": "docs/evidence/serve-structured-handoff-20261103/cpu.json",
+          "sha256": "2b1cfec96b0d744c9c3f9e665124ea8011b7cdf9e083285911a0aa32e61f0a9c"
+        },
+        {
+          "path": "docs/evidence/serve-structured-handoff-20261103/guard.json",
+          "sha256": "cf41a40c83d8bce1d7fbd5f0951f7bf32aaa4e9732c33a5b46178b8789e77bed"
+        },
+        {
+          "path": "docs/evidence/serve-structured-handoff-20261103/raw-records.tar.gz",
+          "sha256": "e669428bbb711a80ce1b1e59f93ee8aab7f45011c09a10c8340eb9a3de909f1a"
+        },
+        {
+          "path": "docs/evidence/serve-structured-handoff-20261103/postflight.json",
+          "sha256": "f7b7046e2660c7d1c0d87270bed1eae9accaf1e3d0db7bc72c26dfed8aa55a04"
+        },
+        {
+          "path": "docs/evidence/serve-structured-handoff-20261103/original_gpu.json",
+          "sha256": "ebe285a519be9c28d49f62a18a91fa85159de8bc29dee96c03d3775647d6b273"
+        },
+        {
+          "path": "docs/evidence/serve-structured-handoff-20261103/sealed-files.json",
+          "sha256": "ef73c555c3617aa52b0d21e52fda9acde27c96e44d7458d3e012bdd95c851d62"
+        }
+      ],
+      "records": 417,
+      "local_artifacts": 10
+    },
+    "serve-managed-service-20261103": {
+      "staged_files": [
+        {
+          "path": "docs/evidence/serve-managed-service-20261103/result.json",
+          "sha256": "9ebb7eaacdeaaf46e17e9d7d0fdafae95c43d301662f44c240ae2cecbd115e16"
+        },
+        {
+          "path": "docs/evidence/serve-managed-service-20261103/accepted_package.json",
+          "sha256": "4867a2c4ab09e0422d0805f2072e46b8bbb0475345b4fd5cb192ada9c9c7983d"
+        },
+        {
+          "path": "docs/evidence/serve-managed-service-20261103/plan.json",
+          "sha256": "a8f1d883965f4b2c1795e7d3df73041e83868648ae8b6ac6c9d278d1d0c3aa3a"
+        },
+        {
+          "path": "docs/evidence/serve-managed-service-20261103/terminal.json",
+          "sha256": "382881f2de6ba09bf51af44d7059d607b2c1c5ca5221927ab7dbf06deeacf3e7"
+        },
+        {
+          "path": "docs/evidence/serve-managed-service-20261103/manifest.json",
+          "sha256": "c338d22515a077ed3af36a94da36eeecc1e0899624ee655d5bad070dcde35518"
+        },
+        {
+          "path": "docs/evidence/serve-managed-service-20261103/guard.json",
+          "sha256": "d7c42dd245a8be2979e625df38ccedfee94e9cf89c7a334db4ce9bde23ddd417"
+        },
+        {
+          "path": "docs/evidence/serve-managed-service-20261103/raw-records.tar.gz",
+          "sha256": "94abbbedabdf73e43e6486c9d8d7e15df863a833777b11a792e4fa84e29be2ad"
+        },
+        {
+          "path": "docs/evidence/serve-managed-service-20261103/postflight.json",
+          "sha256": "e62f82fc96c645c82973b14b01943a25189463f583f2b7aa318e22fde5f5cf13"
+        },
+        {
+          "path": "docs/evidence/serve-managed-service-20261103/sealed-files.json",
+          "sha256": "f744cf954777005a9bed459d15a73863f36d4db390f158af725612f0c0afc9d7"
+        }
+      ],
+      "records": 88,
+      "local_artifacts": 1
+    }
+  },
+  "changed_document_links_checked": 581,
+  "missing_changed_document_links": 0,
+  "new_model_or_http": 0,
+  "industrial_goal_complete": false
+}

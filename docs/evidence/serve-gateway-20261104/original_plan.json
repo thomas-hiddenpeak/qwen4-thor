@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "limits": {
+    "starts": 1,
+    "generations": 8,
+    "negatives": 2,
+    "observations": 96,
+    "seconds": 720
+  },
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-inspection-20261103/package",
+    "manifest_sha256": "160796c3fc65d44cb36967952ca300abd48eb8228f59a8afee597a6b685e8606",
+    "binary_sha256": "d66f2bb9df3a34eda1b885da148e6971c25137564e500b9357bd5f9a5f8dfb1b"
+  },
+  "gateway": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-20261103/model-private/package",
+    "manifest_sha256": "26875209613f332be62a4290394cf94b87302ee3a52f34d6f9551bef622d5f66",
+    "automatic_start": false
+  },
+  "private_policy_sha256": "5d11e6398aff25fa19ff52d84856f787071815de35f222d2af563f579518939b",
+  "cpu_receipt_sha256": "ac18a5fbc43b71238113294b6f7bb35b652b65e26e1a0a085b90f8958c2eeb17",
+  "transport_result_sha256": "29d320a051006c8484ad1694f287b8e214230d7210ae2ee210a761e26b6acdfd",
+  "source_commit": "60b9b80108e2adc414cd0bb8932ac95e1bd2cc2a",
+  "source_files": {
+    "docs/MODEL.md": "7409269429d9e61ac6f560e829acd0613906d29e03e902c84af3a8db2d17a97c",
+    "docs/SERVE_GATEWAY_2026-11-03.md": "a471abd14595a298a31a9975ea1ca81aea7b8cec953dde94c4d0e8a36b678d4a",
+    "docs/SERVE_MANAGED_SERVICE_GPU_2026-11-03.md": "fd2dd8ad086dbcbd961a76eb12189dcb33beb4a0c49a0feca9986e57a944c547",
+    "docs/serve-transport-v1.schema.json": "992a666781a0f0b92c4d9d4a8ce9680c663f7bf89a1608eac37d4d63e17ce0e0",
+    "tools/evalscope/bounded_log.py": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+    "tools/evalscope/gpu_exclusive.py": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2",
+    "tools/evalscope/nvml_process_query.py": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+    "tools/examples/agent_tools_demo.py": "acf6ee24c66d372d95ec08e672c2ec5dc423999890a537b9495a96ced4d89ca4",
+    "tools/examples/chat_client.py": "a2613333395a511b7741d8ce5fac125ba44dd9ec92fa198aa90ef5f9ba662f32",
+    "tools/examples/project_query.py": "dbf70665fef0d144d18fc0ef16b04029a7dd595664efe45b7de07579b3997206",
+    "tools/examples/project_records.py": "abd47d37ddcbd482f147ef172ee01e4a8be3bfcb78f29f7156d00b0073eb8b3c",
+    "tools/examples/tool_recovery.py": "e3fba1d9d028ff532c59e826b76e4434b64599a8b3c42b79d4ae0c1c59341f90",
+    "tools/release/release.py": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+    "tools/serve_gateway/acceptance.py": "f63ff44d3b63ce69a61409514a8ca773e6054152aebe6380b2d08781f012788f",
+    "tools/serve_gateway/cpu.py": "f41bc73b3d764877f75f8ef8aa45166aaae0f2b7d1f3b85843de5c1444121c30",
+    "tools/serve_gateway/exec_gateway.py": "43306fd807dc95b5277917418deed62b51cf77b78852e5a17bd3da59234d7fce",
+    "tools/serve_gateway/gateway.py": "6ad3988a6366f37a34de5451e31971ad3791f56f9d1f36f0eb8b3cefe5a070be",
+    "tools/serve_gateway/test_gateway.py": "6a2c07bda4fe7e68aae0ab730d20828a1e8df2234b534c3d8b35db331247bfca",
+    "tools/serve_gateway/transport_tests.py": "123d1b9c95576d19f59a1d231492f7b716d1fa6d2ab72307b4d1db51c20ea8c2",
+    "tools/serve_ops/contracts.py": "709aaf35b476225f42d7c64bcee2ffd55f48a310bb01b939785a2006eb340816",
+    "tools/serve_ops/identity.py": "1b80467eba0fe84397155d29a62d8ace363aea32b85c58f4ffce5412bc74aa3a",
+    "tools/serve_ops/transport.py": "5885dab1835afa07c4a4c871726548fad95cb7888b4af29f8835e7d98d6d806b",
+    "tools/serve_service/acceptance.py": "a0d52e8c055c6afc1478ee5f65e93daa563c6143e79f529a92d0e73723488cf7",
+    "tools/serve_service/backend.py": "9ef97c4a60d73598faac56f312e009299b00dd63c9e45333cea50cd89ac89b5f",
+    "tools/serve_service/controller_exec.py": "7f37aa2881f2a5e174fee3583d39590c14356f12edfed307eae8718e9643e380",
+    "tools/serve_service/inspection.py": "d07c52c5fadc34e8d22348f3f89f4a7f3617c5fa83d477222a51ba1a3b95868a",
+    "tools/serve_service/memory.py": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+    "tools/serve_service/package.py": "694c7831ba721346afd677a8df2552d23eec0e63d96b3dc59a95d988d44cd05d",
+    "tools/serve_service/service.py": "c3f8020b1fa65a24f07e13f68aa7d0eb3ce6d102e4e5788de4197c4e0574cf1b",
+    "tools/serve_service/supervisor.py": "bb0e0ded132b4047c909788667bc72bc6b87fd4fa54a86bcc51ecaf4cb2f79cd",
+    "tools/serve_service/test_acceptance.py": "9305521b0aff9d6329e84224e5c8527160c635ddfdb902f135bfd0de86e78797"
+  },
+  "default_release_sha256": "42d7672ab473aceb315889be8eeac54310121fd47d4ac861d4d40fcc2bfea1f5",
+  "unit": "no-installed-gateway.service",
+  "token": "explicit-tls-short",
+  "gpu_window_seconds": 600,
+  "supervisor_http_upper_bound": 492,
+  "performance_acceptance": false
+}

@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "schema_id": "urn:q4t:serve-reasoning-v1",
+  "records": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/health/candidate-installed/installed-stop-wire.bin",
+      "field": "reasoning_content",
+      "include_reasoning": true,
+      "validated_messages": 8
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/health/candidate-installed/plain-json-wire.bin",
+      "field": "reasoning_content",
+      "include_reasoning": true,
+      "validated_messages": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/health/candidate-installed/plain-sse-wire.bin",
+      "field": "reasoning_content",
+      "include_reasoning": true,
+      "validated_messages": 8
+    }
+  ]
+}

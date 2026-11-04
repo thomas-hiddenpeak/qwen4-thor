@@ -17,10 +17,12 @@
 #include <cstdint>
 #include <cstring>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "q4t/io/weight_loader.h"
 #include "q4t/model/linear.h"
+#include "q4t/runtime/cleanup_policy.h"
 
 namespace q4t {
 namespace vision {
@@ -29,6 +31,48 @@ namespace {
 
 constexpr int kBlock = 256;
 constexpr float kRopeTheta = 10000.0f;
+
+// No server dependency: media and serving share the pure allocation policy.
+struct CudaAllocator {
+  static constexpr int kSuccess = cudaSuccess;
+  static constexpr int kExhausted = cudaErrorMemoryAllocation;
+  static constexpr int kInvalidValue = cudaErrorInvalidValue;
+  int Allocate(void** p, size_t n) noexcept { return cudaMalloc(p, n); }
+  int PeekLastError() noexcept { return cudaPeekAtLastError(); }
+  int ClearLastError() noexcept { return cudaGetLastError(); }
+};
+
+template <typename T>
+bool AllocateOwned(T*& pointer, size_t bytes,
+                   runtime::DeviceMemoryResult* failure) {
+  CudaAllocator allocator;
+  const auto result = runtime::AllocateDeviceMemory(allocator, pointer, bytes);
+  if (!result.ok() && failure) *failure = result;
+  return result.ok();
+}
+
+template <typename T>
+void FreeOwned(T*& pointer) noexcept {
+  if (auto* owned = std::exchange(pointer, nullptr))
+    runtime::RequireCleanupSuccess(cudaFree(owned), "cudaFree");
+}
+
+// A failed upload must drain before owners or the loader's staging die.
+struct PendingVision {
+  VisionTower& tower;
+  cudaStream_t stream;
+  bool weights;
+  bool committed = false;
+  ~PendingVision() {
+    if (committed) return;
+    runtime::RequireCleanupSuccess(cudaStreamSynchronize(stream),
+                                   "cudaStreamSynchronize");
+    if (weights)
+      tower.Free();
+    else
+      tower.FreeWorkspace();
+  }
+};
 
 __device__ __forceinline__ float Bf16ToFloat(uint16_t b) {
   uint32_t bits = static_cast<uint32_t>(b) << 16;
@@ -249,7 +293,8 @@ __global__ void AttentionKernel(const uint16_t* __restrict__ qkv,
 // Host: build 2D RoPE cos/sin tables for a max grid position.
 // Returns 4 device buffers (cos_h, sin_h, cos_w, sin_w), each [max_grid, 18].
 bool BuildRopeTables(int max_grid, float** d_cos_h, float** d_sin_h,
-                     float** d_cos_w, float** d_sin_w, int head_dim) {
+                     float** d_cos_w, float** d_sin_w, int head_dim,
+                     runtime::DeviceMemoryResult* failure) {
   const int half = head_dim / 2;  // 36 (rotary_dim)
   const int neox = half / 2;      // 18 (neox-style pairs)
   std::vector<float> cos_h(max_grid * neox), sin_h(max_grid * neox);
@@ -266,10 +311,12 @@ bool BuildRopeTables(int max_grid, float** d_cos_h, float** d_sin_h,
     }
   }
   const size_t bytes = max_grid * neox * sizeof(float);
-  auto alloc = [](float** p, const float* h, size_t b) {
-    if (cudaMalloc(reinterpret_cast<void**>(p), b) != cudaSuccess)
-      return false;
-    return cudaMemcpy(*p, h, b, cudaMemcpyHostToDevice) == cudaSuccess;
+  auto alloc = [failure](float** p, const float* h, size_t b) {
+    if (!AllocateOwned(*p, b, failure)) return false;
+    const auto error = cudaMemcpy(*p, h, b, cudaMemcpyHostToDevice);
+    if (error != cudaSuccess && failure)
+      *failure = {runtime::DeviceMemoryState::kFailure, error};
+    return error == cudaSuccess;
   };
   if (!alloc(d_cos_h, cos_h.data(), bytes)) return false;
   if (!alloc(d_sin_h, sin_h.data(), bytes)) return false;
@@ -386,83 +433,115 @@ bool BuildPosIds(int h, int w, int t, int* d_pos_ids) {
 
 }  // namespace
 
+cudaError_t VisionAttentionSharedBytes(uint64_t* bytes) {
+  if (!bytes) return cudaErrorInvalidValue;
+  *bytes = 0;
+  int device = 0, block_bytes = 0;
+  auto status = cudaGetDevice(&device);
+  if (status != cudaSuccess) return status;
+  status = cudaDeviceGetAttribute(&block_bytes,
+                                  cudaDevAttrMaxSharedMemoryPerBlock, device);
+  if (status != cudaSuccess) return status;
+  cudaFuncAttributes attributes{};
+  status = cudaFuncGetAttributes(&attributes, AttentionKernel);
+  if (status != cudaSuccess) return status;
+  if (block_bytes <= 0 || attributes.maxDynamicSharedSizeBytes <= 0 ||
+      attributes.maxThreadsPerBlock < kBlock ||
+      attributes.sharedSizeBytes >= static_cast<size_t>(block_bytes))
+    return cudaErrorInvalidConfiguration;
+  *bytes =
+      std::min(static_cast<uint64_t>(block_bytes) - attributes.sharedSizeBytes,
+               static_cast<uint64_t>(attributes.maxDynamicSharedSizeBytes));
+  return *bytes ? cudaSuccess : cudaErrorInvalidConfiguration;
+}
+
+bool VisionWeights::Empty() const noexcept {
+  if (d_patch_w) return false;
+  if (d_patch_b) return false;
+  if (d_pos_embed) return false;
+  if (d_merger_ln_w) return false;
+  if (d_merger_ln_b) return false;
+  if (d_merger_fc1_w) return false;
+  if (d_merger_fc1_b) return false;
+  if (d_merger_fc2_w) return false;
+  if (d_merger_fc2_b) return false;
+  const std::vector<uint16_t*>* blocks[] = {
+      &d_ln1_w, &d_ln1_b, &d_qkv_w, &d_qkv_b, &d_attn_proj_w, &d_attn_proj_b,
+      &d_ln2_w, &d_ln2_b, &d_fc1_w, &d_fc1_b, &d_fc2_w,       &d_fc2_b};
+  for (auto* block : blocks)
+    for (auto* p : *block)
+      if (p) return false;
+  return true;
+}
+
 void VisionWeights::Free() {
-  auto freep = [](void* p) {
-    if (p) cudaFree(p);
-  };
-  freep(d_patch_w);
-  freep(d_patch_b);
-  freep(d_pos_embed);
-  for (auto* p : d_ln1_w) freep(p);
-  for (auto* p : d_ln1_b) freep(p);
-  for (auto* p : d_qkv_w) freep(p);
-  for (auto* p : d_qkv_b) freep(p);
-  for (auto* p : d_attn_proj_w) freep(p);
-  for (auto* p : d_attn_proj_b) freep(p);
-  for (auto* p : d_ln2_w) freep(p);
-  for (auto* p : d_ln2_b) freep(p);
-  for (auto* p : d_fc1_w) freep(p);
-  for (auto* p : d_fc1_b) freep(p);
-  for (auto* p : d_fc2_w) freep(p);
-  for (auto* p : d_fc2_b) freep(p);
-  freep(d_merger_ln_w);
-  freep(d_merger_ln_b);
-  freep(d_merger_fc1_w);
-  freep(d_merger_fc1_b);
-  freep(d_merger_fc2_w);
-  freep(d_merger_fc2_b);
-  d_patch_w = d_patch_b = d_pos_embed = nullptr;
-  d_ln1_w.clear();
-  d_ln1_b.clear();
-  d_qkv_w.clear();
-  d_qkv_b.clear();
-  d_attn_proj_w.clear();
-  d_attn_proj_b.clear();
-  d_ln2_w.clear();
-  d_ln2_b.clear();
-  d_fc1_w.clear();
-  d_fc1_b.clear();
-  d_fc2_w.clear();
-  d_fc2_b.clear();
-  d_merger_ln_w = d_merger_ln_b = nullptr;
-  d_merger_fc1_w = d_merger_fc1_b = nullptr;
-  d_merger_fc2_w = d_merger_fc2_b = nullptr;
+  const runtime::CleanupPhase phase("vision.weights_release");
+  FreeOwned(d_patch_w);
+  FreeOwned(d_patch_b);
+  FreeOwned(d_pos_embed);
+  FreeOwned(d_merger_ln_w);
+  FreeOwned(d_merger_ln_b);
+  FreeOwned(d_merger_fc1_w);
+  FreeOwned(d_merger_fc1_b);
+  FreeOwned(d_merger_fc2_w);
+  FreeOwned(d_merger_fc2_b);
+  std::vector<uint16_t*>* blocks[] = {
+      &d_ln1_w, &d_ln1_b, &d_qkv_w, &d_qkv_b, &d_attn_proj_w, &d_attn_proj_b,
+      &d_ln2_w, &d_ln2_b, &d_fc1_w, &d_fc1_b, &d_fc2_w,       &d_fc2_b};
+  for (auto* block : blocks) {
+    for (auto*& p : *block) FreeOwned(p);
+    block->clear();
+  }
+}
+
+VisionTower::~VisionTower() { Free(); }
+
+bool VisionTower::Empty() const noexcept {
+  return w.Empty() && !d_cos && !d_sin && !d_cos_w && !d_sin_w && !d_pos_rows &&
+         !d_pos_weights && !d_pos_ids && !d_ws;
 }
 
 void VisionTower::Free() {
+  const runtime::CleanupPhase phase("vision.release");
+  if (!Empty())
+    runtime::RequireCleanupSuccess(cudaDeviceSynchronize(),
+                                   "cudaDeviceSynchronize");
+  FreeWorkspace();
   w.Free();
-  auto freep = [](void* p) {
-    if (p) cudaFree(p);
-  };
-  freep(d_cos);
-  freep(d_sin);
-  freep(d_cos_w);
-  freep(d_sin_w);
-  freep(d_pos_rows);
-  freep(d_pos_weights);
-  freep(d_pos_ids);
-  freep(d_ws);
-  d_cos = d_sin = nullptr;
-  d_cos_w = d_sin_w = nullptr;
-  d_pos_rows = nullptr;
-  d_pos_weights = nullptr;
-  d_pos_ids = nullptr;
-  d_ws = nullptr;
+}
+
+void VisionTower::FreeWorkspace() {
+  const runtime::CleanupPhase phase("vision.workspace_release");
+  FreeOwned(d_cos);
+  FreeOwned(d_sin);
+  FreeOwned(d_cos_w);
+  FreeOwned(d_sin_w);
+  FreeOwned(d_pos_rows);
+  FreeOwned(d_pos_weights);
+  FreeOwned(d_pos_ids);
+  FreeOwned(d_ws);
   ws_bytes = 0;
   max_grid = 0;
   host_scratch.clear();
 }
 
 bool VisionTower::Allocate(const std::vector<ImageShape>& shapes,
-                           cudaStream_t stream) {
-  (void)stream;
+                           cudaStream_t stream,
+                           runtime::DeviceMemoryResult* failure) {
+  const runtime::CleanupPhase phase("vision.allocate");
+  if (failure) *failure = {};
+  PendingVision pending{*this, stream, false};
   int total_L = 0;
   int need_grid = 0;
   for (const auto& s : shapes) {
     total_L += s.L();
     need_grid = std::max(need_grid, std::max(s.h, s.w));
   }
-  if (total_L <= 0) return false;
+  if (total_L <= 0) {
+    if (failure)
+      *failure = {runtime::DeviceMemoryState::kFailure, cudaErrorInvalidValue};
+    return false;
+  }
   const int H = cfg.hidden_size;
   const int I = cfg.intermediate_size;
   // Workspace layout (BF16), in elements:
@@ -491,61 +570,44 @@ bool VisionTower::Allocate(const std::vector<ImageShape>& shapes,
   ws_bytes = el * sizeof(uint16_t) + gemm_ws;
   // Re-allocate the workspace (idempotent: free any prior allocation so the
   // tower can be reused across requests of differing image sizes).
-  if (d_ws) cudaFree(d_ws);
-  d_ws = nullptr;
-  if (cudaMalloc(reinterpret_cast<void**>(&d_ws), ws_bytes) != cudaSuccess)
-    return false;
-  // RoPE tables (float) for the max grid position. Built once and cached;
-  // rebuilt only when a larger grid is requested. The tables are indexed by
-  // position id (<= max_grid) so a single allocation covers every image whose
-  // grid is <= max_grid.
+  FreeOwned(d_ws);
+  if (!AllocateOwned(d_ws, ws_bytes, failure)) return false;
+  // Newly allocated tables are attached immediately, even on partial failure.
   if (d_cos == nullptr || need_grid > max_grid) {
-    if (d_cos) {
-      cudaFree(d_cos);
-      cudaFree(d_sin);
-      cudaFree(d_cos_w);
-      cudaFree(d_sin_w);
-      d_cos = d_sin = nullptr;
-      d_cos_w = d_sin_w = nullptr;
-      max_grid = 0;
-    }
-    float* cos_h = nullptr;
-    float* sin_h = nullptr;
-    float* cos_w = nullptr;
-    float* sin_w = nullptr;
-    if (!BuildRopeTables(need_grid, &cos_h, &sin_h, &cos_w, &sin_w,
-                         cfg.head_dim)) {
+    FreeOwned(d_cos);
+    FreeOwned(d_sin);
+    FreeOwned(d_cos_w);
+    FreeOwned(d_sin_w);
+    max_grid = 0;
+    if (!BuildRopeTables(need_grid, &d_cos, &d_sin, &d_cos_w, &d_sin_w,
+                         cfg.head_dim, failure))
       return false;
-    }
-    d_cos = cos_h;
-    d_sin = sin_h;
-    d_cos_w = cos_w;
-    d_sin_w = sin_w;
     max_grid = need_grid;
   }
-  // Pos-embed tables (sized for the largest single image).
   int max_L = 0;
   for (const auto& s : shapes) max_L = std::max(max_L, s.L());
-  if (d_pos_rows) cudaFree(d_pos_rows);
-  if (d_pos_weights) cudaFree(d_pos_weights);
-  if (cudaMalloc(reinterpret_cast<void**>(&d_pos_rows),
-                 static_cast<size_t>(max_L) * 4 * sizeof(int)) !=
-      cudaSuccess)
+  FreeOwned(d_pos_rows);
+  FreeOwned(d_pos_weights);
+  FreeOwned(d_pos_ids);
+  if (!AllocateOwned(d_pos_rows, static_cast<size_t>(max_L) * 4 * sizeof(int),
+                     failure) ||
+      !AllocateOwned(d_pos_weights,
+                     static_cast<size_t>(max_L) * 4 * sizeof(float), failure) ||
+      !AllocateOwned(d_pos_ids, static_cast<size_t>(max_L) * 2 * sizeof(int),
+                     failure))
     return false;
-  if (cudaMalloc(reinterpret_cast<void**>(&d_pos_weights),
-                 static_cast<size_t>(max_L) * 4 * sizeof(float)) !=
-      cudaSuccess)
-    return false;
-  if (d_pos_ids) cudaFree(d_pos_ids);
-  if (cudaMalloc(reinterpret_cast<void**>(&d_pos_ids),
-                 static_cast<size_t>(max_L) * 2 * sizeof(int)) !=
-      cudaSuccess)
-    return false;
+  pending.committed = true;
   return true;
 }
 
 bool LoadVision(const io::WeightLoader& loader, const VisionConfig& cfg,
                 VisionTower* tower, std::string* err, cudaStream_t stream) {
+  const runtime::CleanupPhase phase("vision.load");
+  if (!tower || !tower->Empty()) {
+    if (err) *err = "vision load requires an empty owner";
+    return false;
+  }
+  PendingVision pending{*tower, stream, true};
   tower->cfg = cfg;
   const int H = cfg.hidden_size;
   const int I = cfg.intermediate_size;
@@ -595,21 +657,27 @@ bool LoadVision(const io::WeightLoader& loader, const VisionConfig& cfg,
     return false;
   }
   // blocks
-  tower->w.d_ln1_w.reserve(cfg.depth);
-  tower->w.d_ln1_b.reserve(cfg.depth);
-  tower->w.d_qkv_w.reserve(cfg.depth);
-  tower->w.d_qkv_b.reserve(cfg.depth);
-  tower->w.d_attn_proj_w.reserve(cfg.depth);
-  tower->w.d_attn_proj_b.reserve(cfg.depth);
-  tower->w.d_ln2_w.reserve(cfg.depth);
-  tower->w.d_ln2_b.reserve(cfg.depth);
-  tower->w.d_fc1_w.reserve(cfg.depth);
-  tower->w.d_fc1_b.reserve(cfg.depth);
-  tower->w.d_fc2_w.reserve(cfg.depth);
-  tower->w.d_fc2_b.reserve(cfg.depth);
+  tower->w.d_ln1_w.resize(cfg.depth, nullptr);
+  tower->w.d_ln1_b.resize(cfg.depth, nullptr);
+  tower->w.d_qkv_w.resize(cfg.depth, nullptr);
+  tower->w.d_qkv_b.resize(cfg.depth, nullptr);
+  tower->w.d_attn_proj_w.resize(cfg.depth, nullptr);
+  tower->w.d_attn_proj_b.resize(cfg.depth, nullptr);
+  tower->w.d_ln2_w.resize(cfg.depth, nullptr);
+  tower->w.d_ln2_b.resize(cfg.depth, nullptr);
+  tower->w.d_fc1_w.resize(cfg.depth, nullptr);
+  tower->w.d_fc1_b.resize(cfg.depth, nullptr);
+  tower->w.d_fc2_w.resize(cfg.depth, nullptr);
+  tower->w.d_fc2_b.resize(cfg.depth, nullptr);
   for (int i = 0; i < cfg.depth; ++i) {
     const std::string p = "model.visual.blocks." + std::to_string(i) + ".";
-    uint16_t* ptrs[12] = {nullptr};
+    uint16_t** ptrs[12] = {
+        &tower->w.d_ln1_w[i],       &tower->w.d_ln1_b[i],
+        &tower->w.d_qkv_w[i],       &tower->w.d_qkv_b[i],
+        &tower->w.d_attn_proj_w[i], &tower->w.d_attn_proj_b[i],
+        &tower->w.d_ln2_w[i],       &tower->w.d_ln2_b[i],
+        &tower->w.d_fc1_w[i],       &tower->w.d_fc1_b[i],
+        &tower->w.d_fc2_w[i],       &tower->w.d_fc2_b[i]};
     const size_t sizes[12] = {
         static_cast<size_t>(H) * sizeof(uint16_t),  // ln1_w
         static_cast<size_t>(H) * sizeof(uint16_t),  // ln1_b
@@ -630,29 +698,17 @@ bool LoadVision(const io::WeightLoader& loader, const VisionConfig& cfg,
         "mlp.linear_fc1.weight", "mlp.linear_fc1.bias",
         "mlp.linear_fc2.weight", "mlp.linear_fc2.bias"};
     for (int k = 0; k < 12; ++k) {
-      if (!alloc(&ptrs[k], sizes[k])) {
+      if (!alloc(ptrs[k], sizes[k])) {
         set_err("alloc block tensor " + std::string(names[k]));
         return false;
       }
     }
     for (int k = 0; k < 12; ++k) {
-      if (!load(p + names[k], ptrs[k], sizes[k])) {
+      if (!load(p + names[k], *ptrs[k], sizes[k])) {
         set_err("load " + p + names[k]);
         return false;
       }
     }
-    tower->w.d_ln1_w.push_back(ptrs[0]);
-    tower->w.d_ln1_b.push_back(ptrs[1]);
-    tower->w.d_qkv_w.push_back(ptrs[2]);
-    tower->w.d_qkv_b.push_back(ptrs[3]);
-    tower->w.d_attn_proj_w.push_back(ptrs[4]);
-    tower->w.d_attn_proj_b.push_back(ptrs[5]);
-    tower->w.d_ln2_w.push_back(ptrs[6]);
-    tower->w.d_ln2_b.push_back(ptrs[7]);
-    tower->w.d_fc1_w.push_back(ptrs[8]);
-    tower->w.d_fc1_b.push_back(ptrs[9]);
-    tower->w.d_fc2_w.push_back(ptrs[10]);
-    tower->w.d_fc2_b.push_back(ptrs[11]);
   }
   // merger
   const size_t mh = static_cast<size_t>(4 * H);
@@ -714,6 +770,9 @@ bool LoadVision(const io::WeightLoader& loader, const VisionConfig& cfg,
     set_err("load merger.linear_fc2.bias");
     return false;
   }
+  runtime::RequireCleanupSuccess(cudaStreamSynchronize(stream),
+                                 "cudaStreamSynchronize");
+  pending.committed = true;
   return true;
 }
 

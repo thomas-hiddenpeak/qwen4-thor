@@ -1,0 +1,7 @@
+POST /v1/chat/preflight HTTP/1.1
+Host: localhost
+X-Request-Id: trace-envelope-0-preflight
+Content-Type: application/json
+Content-Length: 39
+
+{"request": {}, "include_prompt": null}

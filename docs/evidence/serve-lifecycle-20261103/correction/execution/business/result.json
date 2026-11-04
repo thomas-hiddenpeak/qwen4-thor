@@ -1,0 +1,85 @@
+{
+  "status": "PASS_BOUNDED_LIFECYCLE_REPAIR",
+  "automatic_retries": 0,
+  "requests_replayed": 0,
+  "prior_counts": {
+    "generations": 1202,
+    "negatives": 0,
+    "starts": 1
+  },
+  "original_failed_run_retained": true,
+  "installed": false,
+  "reused_original_hour": true,
+  "new_candidate_hour_proved": false,
+  "counts": {
+    "generations": 1215,
+    "negatives": 4,
+    "starts": 5
+  },
+  "preflights": 240,
+  "control_requests_used": 1817,
+  "instances": [
+    {
+      "mode": "SIGTERM",
+      "passed": true,
+      "pid": 2197675,
+      "start_ticks": 187488156,
+      "continuous_samples": 34,
+      "returncode": 0,
+      "exit_seconds": 0.6416750298812985,
+      "child_exit": [
+        {
+          "pid": 2198819,
+          "start_ticks": 187491522,
+          "state": "absent",
+          "running": false
+        }
+      ],
+      "scope_removed": true,
+      "elapsed_seconds": 1.1065046759322286
+    },
+    {
+      "mode": "SIGKILL",
+      "passed": true,
+      "pid": 2198904,
+      "start_ticks": 187491685,
+      "continuous_samples": 42,
+      "returncode": -9,
+      "exit_seconds": 0.4024155961815268,
+      "child_exit": [
+        {
+          "pid": 2200189,
+          "start_ticks": 187495908,
+          "state": "absent",
+          "running": false
+        }
+      ],
+      "scope_removed": true,
+      "elapsed_seconds": 0.8227687960024923
+    },
+    {
+      "mode": "SIGTERM",
+      "passed": true,
+      "pid": 2200268,
+      "start_ticks": 187496043,
+      "continuous_samples": 42,
+      "returncode": 0,
+      "exit_seconds": 0.5367863969877362,
+      "scope_removed": true,
+      "elapsed_seconds": 0.9779567709192634
+    },
+    {
+      "mode": "SIGTERM",
+      "passed": true,
+      "pid": 2201612,
+      "start_ticks": 187500342,
+      "continuous_samples": 41,
+      "returncode": 0,
+      "exit_seconds": 0.6395528148859739,
+      "scope_removed": true,
+      "elapsed_seconds": 1.0610440969467163
+    }
+  ],
+  "elapsed_seconds": 164.90385188604705,
+  "original_elapsed_seconds": 4540.835028171539
+}

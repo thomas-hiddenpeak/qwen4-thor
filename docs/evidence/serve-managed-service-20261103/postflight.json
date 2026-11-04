@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "gpu": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/gpu-final.json",
+    "sha256": "76714eb77efe54683a95aad4fd6d5b35bb9bb8e4ab47074f2d49d5c64f4a633e",
+    "bytes": 2256
+  },
+  "shared_lock_available": true,
+  "lock_inode": 3294067,
+  "soar_mask": "/home/rm01/.config/systemd/user/soar-flash-fast-v3-fixture-retry-qualified-v1-20261103.service",
+  "soar_unit": "MainPID=0\nActiveState=inactive\nUnitFileState=masked\n",
+  "additional_readonly_systemd_queries": 1,
+  "new_model_or_http": 0,
+  "no_pending_recovery": true
+}

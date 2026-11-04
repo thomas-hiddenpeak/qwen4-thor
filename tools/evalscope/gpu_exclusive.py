@@ -19,6 +19,7 @@ import subprocess
 import time
 
 import nvml_process_query
+from bounded_log import open_log
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_COMPUTE_BACKEND = 'nvml'
@@ -81,9 +82,9 @@ def gpu_command(record):
         (name == 'nsys' and any(v in argv[1:3] for v in ('launch', 'profile'))))
 
 
-def nvml_pids(log_path):
+def nvml_pids(log_path, log_max_bytes=None):
     result = nvml_process_query.query(timeout=5)
-    with log_path.open('a') as log:
+    with open_log(log_path, 'a', log_max_bytes) as log:
         log.write(json.dumps(result) + '\n')
     if result['status'] != 'OK':
         raise RuntimeError('NVML process query: ' + result['status'] +
@@ -277,7 +278,8 @@ def borrowed_lock(fd, lock_path):
 
 
 def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None,
-              compute_backend=DEFAULT_COMPUTE_BACKEND):
+              compute_backend=DEFAULT_COMPUTE_BACKEND, log_max_bytes=None,
+              inherit_lease=False):
     if compute_backend not in ('nvidia-smi', 'nvml'):
         raise ValueError('unknown compute backend')
     out.mkdir(parents=True, exist_ok=False)
@@ -285,18 +287,24 @@ def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None,
     if compute_backend == 'nvml':
         def scan(*args):
             return inspect(*args, compute_query=lambda: nvml_pids(
-                out / 'nvml-queries.jsonl'))
+                out / 'nvml-queries.jsonl', log_max_bytes))
     status = {'status': 'INITIALIZING', 'command': command,
               'compute_backend': compute_backend,
               'lock_path': str(lock_path), 'poll_interval_seconds': interval,
               'poll_scope': 'cooperative flock plus /proc and NVIDIA compute polling',
               'performance_acceptance': False, 'child_returncode': None,
               'external_lease': lease_fd is not None}
+    if log_max_bytes is not None:
+        if type(log_max_bytes) is not int or log_max_bytes < 65536:
+            raise ValueError('monitor log limit must be at least 64KiB')
+        status['retention'] = dict(bytes_per_file=log_max_bytes, generations=2,
+                                  complete_history_retained=False)
     child = None
     owned_history = {}
     acquired = False
     lock_path.parent.mkdir(parents=True, exist_ok=True)
-    with contextlib.ExitStack() as stack, (out / 'events.jsonl').open('w') as events:
+    with contextlib.ExitStack() as stack, open_log(
+            out / 'events.jsonl', 'w', log_max_bytes) as events:
         def record(event, **values):
             events.write(json.dumps(dict(stamp(), event=event, **values)) + '\n')
             events.flush()
@@ -336,7 +344,16 @@ def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None,
                 status['status'] = 'ENV_ABORT'
                 status['reason'] = 'competing workload before launch'
                 return 75
-            child = subprocess.Popen(command, cwd=ROOT, start_new_session=True)
+            child_options = {}
+            if inherit_lease:
+                # Only explicit managed services inherit the open-file-
+                # description. Their backend keeps it until its own exit, so
+                # controller SIGKILL cannot expose an apparently free lease.
+                child_options = dict(pass_fds=(lock.fileno(),),
+                    env=dict(os.environ, Q4T_MANAGED_LEASE_FD=str(lock.fileno())))
+                status['lease_inherited_by_child'] = True
+            child = subprocess.Popen(command, cwd=ROOT, start_new_session=True,
+                                     **child_options)
             record('child_started', child_pid=child.pid)
             owned_history = {}
             while True:

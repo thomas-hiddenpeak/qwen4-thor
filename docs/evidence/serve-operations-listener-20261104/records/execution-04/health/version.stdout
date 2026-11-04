@@ -1,0 +1,3 @@
+q4t (Qwen4-Thor) v0.1.0
+  target: Jetson AGX Thor, SM110a
+  model:  Qwen3.8-Flash-Next (qwen4_exp)

@@ -1,0 +1,116 @@
+{
+  "scope": "static_identity_and_documentation_only",
+  "reviewed_commit": "93d4fac4",
+  "runtime_tests_executed": false,
+  "models_started": 0,
+  "http_requests": 0,
+  "gpu_lease_acquired": false,
+  "semantic_completeness_certified": false,
+  "verifier_sha256": "40665c8174a6e3014d92424845ed73df2e4ada1a2e099a97dee0cf95173c0650",
+  "default_binary_sha256": "61abe09fb0d2585c4f8efa3e5740fa4d0ea5af06971e4490df2d17000453ecce",
+  "sidecar_sha256": "ce925d517adee1b7dfdc17c8c90b11e4bd06260e5a87701b6e6268a0fb0329fc",
+  "protocol_sha256": "15d7ccb103258ea5ec8ca3cfa66c9bfe1245eadb7d38ad6ee149ad97075ec30e",
+  "native_surface": {
+    "fields": 38,
+    "routes": [
+      "GET /healthz",
+      "GET /v1/models",
+      "GET /v1/capabilities",
+      "GET /metrics",
+      "POST /v1/requests/cancel",
+      "POST /v1/chat/completions",
+      "GET /livez",
+      "GET /readyz",
+      "POST /v1/chat/preflight",
+      "GET /v1/config"
+    ],
+    "whitelists": 20,
+    "source_anchors": 112
+  },
+  "runtime_sources_count": 223,
+  "runtime_manifest_sha256": "d186696b0cdb237edf824edf78a2ad52f7a2a2fabaac228dd61979f823856dff",
+  "application_sources": {
+    "tools/project_tasks/store.py": "eee1356e67ab93b59860f679050cd77ddea13d49588fefc2e25099fb2d33f99a",
+    "tools/project_tasks/engine.py": "b37fd90eb44dbc4cc6e7ef6e9dba60969a6d0226e50e924ea51e1e3afa41cce9",
+    "tools/project_tasks/budget.py": "7328c9524eac3257a1b841089d9889975915d96b487d7886196106b560dc0412",
+    "tools/project_tasks/transport.py": "e49136f6bd3d2f14d1b153c42a639a50582381177f7214ed31a48664db5fdc4f",
+    "tools/project_tasks/runner.py": "ee07b7466310f242866ce2f6e1cea6e8aa6e4b0f570bf055694ede483950e51e",
+    "tools/project_tasks/migration.py": "57d123d3b61dbb01cc6eabc8c7d4a099987f8f5dc9c340d26236655af3a65be3",
+    "tools/project_tasks/compatible_runtimes.json": "3ee24c1430f5f742c4e8752475d2717273114f45fba926dd201c8652d78f4f6a",
+    "tools/project_tasks/protocol.py": "223478974f4c31932196a24262a09305684d42bf1f053f7f414f27072b168dc2",
+    "tools/project_tasks/compatible_protocols.json": "e4f8e59d16ffc7615886830a4db18e64b7516259c39e971231379e70fbe197ae",
+    "tools/project_tasks/retention.py": "71fe34a4405d4399fc397b6416f638c0668ccdd4f3730c29199caeca6f1b6593",
+    "tools/project_tasks/backup.py": "fe06d9a995396d9393b24dd13f31e25910634eceedc5309b6227818c34b0aae0",
+    "tools/project_tasks/errors.py": "dc74cafd2a5263c8a819dbcd79100f74086ae7a64975da100a0b371e374ae163",
+    "tools/examples/chat_client.py": "a2613333395a511b7741d8ce5fac125ba44dd9ec92fa198aa90ef5f9ba662f32",
+    "tools/examples/project_records.py": "abd47d37ddcbd482f147ef172ee01e4a8be3bfcb78f29f7156d00b0073eb8b3c",
+    "tools/examples/project_query.py": "dbf70665fef0d144d18fc0ef16b04029a7dd595664efe45b7de07579b3997206",
+    "tools/examples/agent_tools_demo.py": "acf6ee24c66d372d95ec08e672c2ec5dc423999890a537b9495a96ced4d89ca4",
+    "tools/examples/tool_recovery.py": "e3fba1d9d028ff532c59e826b76e4434b64599a8b3c42b79d4ae0c1c59341f90"
+  },
+  "managed_package": {
+    "manifest_sha256": "fcff7218de3b8616d641d3e8780077ca577d3ba9e012350a7723390031428240",
+    "files": 29,
+    "settings": {
+      "profile": {
+        "name": "text-mtp-managed-v1",
+        "host": "127.0.0.1",
+        "max_seq": 1,
+        "max_len": 8192,
+        "max_prefill": 2048,
+        "max_tokens": 256,
+        "mtp_k": 3,
+        "max_inflight_requests": 8,
+        "max_queued_requests": 2,
+        "min_available_memory_mib": 2048,
+        "memory_recovery_margin_mib": 512,
+        "startup_memory_headroom_mib": 2048
+      },
+      "port": 18132,
+      "restart_limit": 0,
+      "poll_seconds": 5,
+      "startup_seconds": 300,
+      "unavailable_seconds": 30,
+      "restart_delay_seconds": 5,
+      "stop_seconds": 30,
+      "kill_seconds": 5,
+      "log_bytes": 4194304,
+      "log_files": 2,
+      "critical_memory_mib": 1024,
+      "memory_poll_seconds": 1,
+      "memory_low_seconds": 2,
+      "memory_unknown_seconds": 5,
+      "operations_port": 18133
+    }
+  },
+  "previous_matrix_sha256": "b2812d0568fc75b06980bb0cefd6120c9071840bc96b17ef7b5fee325f2f7529",
+  "preserved_day_plans": {
+    ".q4t-work/serve-soak-20261103/day/plan.json": "d5201d2bba25e1d1b918ea0f7b5d2a3c41e69582ad37209b0e90f1c7e60362a1",
+    ".q4t-work/serve-cuda-quota-integration-20261104/operator-soak/day/plan.json": "a573e93322f2449139f42ce5f0e71d69ff931a10c4ddcc0db3df2caf6c4c5649",
+    ".q4t-work/serve-clients-managed-20261104/day/plan.json": "d8253f011a6f9825f3fed250acf740528938bc1d988d77bf81d4a9f7b1bbb184"
+  },
+  "archives": [
+    {
+      "path": "docs/evidence/serve-startup-listeners-20261104",
+      "archive_sha256": "9ed4a1dd316d0b919c83fec95969851dafaa10177c821c06da75939e675b0905",
+      "result_sha256": "e428bf1fb3ceb3ea0a5350207cc6ae476d889ba81ead10d0778e7b28e7ed7ef3",
+      "records": 291,
+      "result_status": "ACCEPT_BOUNDED_STARTUP_LISTENERS"
+    },
+    {
+      "path": "docs/evidence/serve-supervisor-deadlines-20261104",
+      "archive_sha256": "6b30961ba6a50b5fad0354f26336bff263a0c5c447cf758f2cba53520991b451",
+      "result_sha256": "b329800c33283d8d88de57f904c74169ff9b2ff6ff5f03eee25dc9bae10fe170",
+      "records": 256,
+      "result_status": "ACCEPT_SUPERVISOR_DEADLINES_SCOPED"
+    },
+    {
+      "path": "docs/evidence/serve-task-startup-protocol-20261104",
+      "archive_sha256": "c5aa379ab4e8b1a211a63bdd13a638bbacd0dc436c956ebf752c19a5659d413b",
+      "result_sha256": "ef89463b9f10f5118dab554e46b8bbb20404df4693757ea114cbf89dc38c9443",
+      "records": 263,
+      "result_status": "ACCEPT_TASK_STARTUP_PROTOCOL"
+    }
+  ],
+  "archived_members": 810
+}

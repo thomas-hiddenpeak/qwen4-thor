@@ -1,0 +1,22 @@
+{
+  "kind": "scope",
+  "token": "q4t-scope-fe8b5edf912ddf1a8fe32e8439b2a408",
+  "pid": 1994177,
+  "properties": {
+    "Result": "success",
+    "OOMPolicy": "continue",
+    "ControlGroup": "/system.slice/q4t-serve-pressure-20261103-1994152.scope",
+    "IOAccounting": "yes",
+    "MemoryAccounting": "yes",
+    "MemoryMax": "infinity",
+    "MemorySwapMax": "0",
+    "Description": "q4t-scope-fe8b5edf912ddf1a8fe32e8439b2a408",
+    "LoadState": "loaded",
+    "ActiveState": "active",
+    "SubState": "running"
+  },
+  "membership": [
+    "0::/system.slice/q4t-serve-pressure-20261103-1994152.scope"
+  ],
+  "start_ticks": 186011818
+}

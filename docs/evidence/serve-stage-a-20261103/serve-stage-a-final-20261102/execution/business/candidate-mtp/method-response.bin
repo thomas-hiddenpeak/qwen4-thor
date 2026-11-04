@@ -1,0 +1,8 @@
+HTTP/1.1 405 Method Not Allowed
+Content-Type: application/json
+Content-Length: 118
+X-Request-Id: transport-test
+Allow: POST
+Connection: close
+
+{"error":{"message":"method not allowed","type":"invalid_request_error","code":"method_not_allowed","param":"method"}}

@@ -1,0 +1,9 @@
+{
+  "name": "recovery",
+  "argv": [
+    "/usr/bin/python3.12",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/examples/test_tool_recovery.py"
+  ],
+  "timeout": 100
+}

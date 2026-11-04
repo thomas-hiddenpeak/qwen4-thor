@@ -1,0 +1,12 @@
+test_each_request_budget_refuses_before_increment (__main__.Driver.test_each_request_budget_refuses_before_increment) ... ok
+test_elapsed_deadline_never_resets (__main__.Driver.test_elapsed_deadline_never_resets) ... ok
+test_http_preflight_response_schema_is_loaded_explicitly (__main__.Driver.test_http_preflight_response_schema_is_loaded_explicitly) ... ok
+test_invalid_sample_cannot_be_presented_as_healthy (__main__.Driver.test_invalid_sample_cannot_be_presented_as_healthy) ... ok
+test_missing_or_extra_reason_is_rejected (__main__.Driver.test_missing_or_extra_reason_is_rejected) ... ok
+test_state_threshold_and_ready_must_agree (__main__.Driver.test_state_threshold_and_ready_must_agree) ... ok
+test_valid_open_and_closed_snapshots (__main__.Driver.test_valid_open_and_closed_snapshots) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.143s
+
+OK

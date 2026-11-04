@@ -1,0 +1,12 @@
+{
+  "status": "OK",
+  "pids": [],
+  "request_id": "8bd3281a046112c8d983c9fd9d890515",
+  "worker_pid": 1601093,
+  "stdout": "{\"request_id\": \"8bd3281a046112c8d983c9fd9d890515\", \"monotonic\": 1831033.128983815, \"event\": \"begin\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"8bd3281a046112c8d983c9fd9d890515\", \"monotonic\": 1831033.137725448, \"event\": \"end\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"8bd3281a046112c8d983c9fd9d890515\", \"monotonic\": 1831033.137765003, \"event\": \"begin\", \"api\": \"init\"}\n{\"request_id\": \"8bd3281a046112c8d983c9fd9d890515\", \"monotonic\": 1831033.141965579, \"event\": \"end\", \"api\": \"init\", \"seconds\": 0.004188280086964369}\n{\"request_id\": \"8bd3281a046112c8d983c9fd9d890515\", \"monotonic\": 1831033.142003728, \"event\": \"begin\", \"api\": \"device_count\"}\n{\"request_id\": \"8bd3281a046112c8d983c9fd9d890515\", \"monotonic\": 1831033.142046052, \"event\": \"end\", \"api\": \"device_count\", \"seconds\": 3.3082906156778336e-05}\n{\"request_id\": \"8bd3281a046112c8d983c9fd9d890515\", \"monotonic\": 1831033.142059912, \"event\": \"begin\", \"api\": \"handle[0]\"}\n{\"request_id\": \"8bd3281a046112c8d983c9fd9d890515\", \"monotonic\": 1831033.148890446, \"event\": \"end\", \"api\": \"handle[0]\", \"seconds\": 0.0068227851297706366}\n{\"request_id\": \"8bd3281a046112c8d983c9fd9d890515\", \"monotonic\": 1831033.148914187, \"event\": \"begin\", \"api\": \"compute_v3[0]\"}\n{\"request_id\": \"8bd3281a046112c8d983c9fd9d890515\", \"monotonic\": 1831033.149890555, \"event\": \"end\", \"api\": \"compute_v3[0]\", \"seconds\": 0.0009693128522485495}\n{\"request_id\": \"8bd3281a046112c8d983c9fd9d890515\", \"monotonic\": 1831033.149906315, \"event\": \"begin\", \"api\": \"shutdown\"}\n{\"request_id\": \"8bd3281a046112c8d983c9fd9d890515\", \"monotonic\": 1831033.151457692, \"event\": \"end\", \"api\": \"shutdown\", \"seconds\": 0.001543313032016158}\n{\"request_id\": \"8bd3281a046112c8d983c9fd9d890515\", \"monotonic\": 1831033.151485377, \"event\": \"result\", \"status\": \"OK\", \"error\": null, \"device_count\": 1, \"pids\": [], \"process_memory\": []}\n",
+  "stderr": "",
+  "returncode": 0,
+  "seconds": 0.06952264602296054,
+  "process_memory": [],
+  "device_count": 1
+}

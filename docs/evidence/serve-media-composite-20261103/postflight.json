@@ -1,0 +1,89 @@
+{
+  "passed": true,
+  "observed_at": "2026-11-03T19:15:06.101746+08:00",
+  "gpu_empty": true,
+  "lock_available": true,
+  "original_lock_inode_preserved": {
+    "device": 66305,
+    "inode": 3294067
+  },
+  "owned_processes": [
+    {
+      "scenario": "host-early",
+      "pid": 2418571,
+      "original_process_exited": true,
+      "cgroup_unpopulated_or_removed": true
+    },
+    {
+      "scenario": "host-sse",
+      "pid": 2419444,
+      "original_process_exited": true,
+      "cgroup_unpopulated_or_removed": true
+    },
+    {
+      "scenario": "media",
+      "pid": 2415167,
+      "original_process_exited": true,
+      "cgroup_unpopulated_or_removed": true
+    },
+    {
+      "scenario": "media-admission",
+      "pid": 2422037,
+      "original_process_exited": true,
+      "cgroup_unpopulated_or_removed": true
+    },
+    {
+      "scenario": "media-cancel",
+      "pid": 2422929,
+      "original_process_exited": true,
+      "cgroup_unpopulated_or_removed": true
+    },
+    {
+      "scenario": "media-copy",
+      "pid": 2416895,
+      "original_process_exited": true,
+      "cgroup_unpopulated_or_removed": true
+    },
+    {
+      "scenario": "media-free",
+      "pid": 2421211,
+      "original_process_exited": true,
+      "cgroup_unpopulated_or_removed": true
+    },
+    {
+      "scenario": "media-host",
+      "pid": 2417753,
+      "original_process_exited": true,
+      "cgroup_unpopulated_or_removed": true
+    },
+    {
+      "scenario": "media-oom",
+      "pid": 2416061,
+      "original_process_exited": true,
+      "cgroup_unpopulated_or_removed": true
+    },
+    {
+      "scenario": "model",
+      "pid": 2414174,
+      "original_process_exited": true,
+      "cgroup_unpopulated_or_removed": true
+    },
+    {
+      "scenario": "startup-media",
+      "pid": 2420342,
+      "original_process_exited": true,
+      "cgroup_unpopulated_or_removed": true
+    }
+  ],
+  "recovery_markers_absent": true,
+  "mem_available_bytes": 124248309760,
+  "soar_service_masked_inactive": true,
+  "soar_owned_container_absent": true,
+  "installed": {
+    "q4t": "280b95dceabe5a3b1fd794019102de0dc9f0b62e8a3aa9fcc30eb5c57fdfd793",
+    "q4t.release.json": "18c9d2c50c847c90c6b033b4350fa0cf10c59777bf3a9dacd01391250a341f19"
+  },
+  "rollback_bundles_verified": true,
+  "actual_rollback_executed": false,
+  "additional_model_or_http_requests": 0
+}

@@ -1,0 +1,6 @@
+test_node_report_formats_reject_failures_and_incomplete_output (tools.serve_protocol.test_stage.Contracts.test_node_report_formats_reject_failures_and_incomplete_output) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK

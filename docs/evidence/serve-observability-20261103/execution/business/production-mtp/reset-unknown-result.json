@@ -1,0 +1,9 @@
+{
+  "complete_assistant_turn": false,
+  "automatic_retry": false,
+  "prefix": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/execution/business/production-mtp/reset-prefix.bin",
+    "sha256": "77b439a02a425da8313050ad9d9acd383906c2f0c755437a9f9e20d14bb32009",
+    "bytes": 147
+  }
+}

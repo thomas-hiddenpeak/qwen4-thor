@@ -1,0 +1,30 @@
+{
+  "object": "q4t.capabilities",
+  "schema_version": 1,
+  "model": "qwen3.8-flash-next",
+  "protocol_source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "chat": {
+    "messages": true,
+    "reasoning_content": true,
+    "tool_calls": true,
+    "stream": true,
+    "stream_include_usage": true
+  },
+  "tools": {
+    "type": "function",
+    "execution": "client",
+    "tool_choice": [
+      "auto"
+    ],
+    "parallel_tool_calls": [
+      true
+    ]
+  },
+  "template": {
+    "id": "qwen4_exp-native-v1",
+    "reference_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "renderer_source_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "tool_history_source_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "fixture_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  }
+}

@@ -1,0 +1,2775 @@
+[
+  {
+    "unix_seconds": 1793674543.3164723,
+    "up": {
+      "status": "success",
+      "data": {
+        "resultType": "vector",
+        "result": []
+      }
+    },
+    "rules": {
+      "status": "success",
+      "data": {
+        "groups": [
+          {
+            "name": "q4t-operational",
+            "file": "/home/rm01/models/dev/qwen4-thor/deploy/serve-ops/q4t.rules.yml",
+            "rules": [
+              {
+                "state": "inactive",
+                "name": "Q4TTargetDown",
+                "query": "up{job=\"q4t\"} == 0",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#unavailable",
+                  "summary": "The configured q4t scrape target is unreachable."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TTargetMissing",
+                "query": "absent(up{job=\"q4t\"})",
+                "duration": 120,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#unavailable",
+                  "summary": "No q4t target series is present; inspect discovery and monitoring."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMetricContractMissing",
+                "query": "(up{job=\"q4t\"} == 1) unless on (job, instance) (count by (job, instance) ({__name__=~\"q4t_active_chats|q4t_business_connections|q4t_control_connections|q4t_execution_steps_total|q4t_generation_tokens_total|q4t_gpu_healthy|q4t_http_receive_failures_total|q4t_http_write_failures_total|q4t_memory_admission_enabled|q4t_memory_admission_floor_bytes|q4t_memory_admission_open|q4t_memory_admission_recovery_bytes|q4t_memory_admission_state|q4t_memory_admission_transitions_total|q4t_memory_available_bytes|q4t_memory_observation_failures_total|q4t_memory_observation_valid|q4t_memory_observations_total|q4t_memory_rejected_total|q4t_prompt_tokens_total|q4t_queue_rejected_total|q4t_queued_requests|q4t_ready|q4t_request_body_bytes|q4t_requests_aborted_by_reason_total|q4t_requests_aborted_total|q4t_requests_error_total|q4t_requests_success_total|q4t_requests_total|q4t_seq_slots_free|q4t_seq_slots_total|q4t_structured_active|q4t_structured_compile_timeouts_total|q4t_structured_prepare_failed_total|q4t_structured_preparing|q4t_structured_rejected_total|q4t_structured_resource_exhausted_total|q4t_structured_vocab_bytes|q4t_structured_workers_active|q4t_structured_workers_reaped_total|q4t_structured_workers_started_total|q4t_text_admission_rejected_total\",job=\"q4t\"}) == 87)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#observation",
+                  "summary": "The operational metric contract is incomplete."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMetricContractInvalid",
+                "query": "max by (job, instance) (({__name__=~\"q4t_gpu_healthy|q4t_memory_admission_enabled|q4t_memory_admission_open|q4t_memory_admission_state|q4t_memory_observation_valid|q4t_ready\",job=\"q4t\"} != 0 and on (__name__, job, instance, state) {__name__=~\"q4t_gpu_healthy|q4t_memory_admission_enabled|q4t_memory_admission_open|q4t_memory_admission_state|q4t_memory_observation_valid|q4t_ready\",job=\"q4t\"} != 1) or (sum by (job, instance) (q4t_memory_admission_state{job=\"q4t\"}) != 1) or (q4t_seq_slots_free{job=\"q4t\"} > on (job, instance) q4t_seq_slots_total{job=\"q4t\"})) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#observation",
+                  "summary": "Operational observations are contradictory or invalid."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TGpuUnhealthy",
+                "query": "max by (job, instance) (q4t_gpu_healthy{job=\"q4t\"} == 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#gpu",
+                  "summary": "The server has observed a sticky GPU failure."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMemoryObservationUnavailable",
+                "query": "max by (job, instance) (q4t_memory_admission_enabled{job=\"q4t\"} == 1 and q4t_memory_observation_valid{job=\"q4t\"} == 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#memory",
+                  "summary": "Memory observation is unavailable and new work is refused."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMemoryPressure",
+                "query": "max by (job, instance) (q4t_memory_admission_state{job=\"q4t\",state=\"memory_pressure\"} == 1) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#memory",
+                  "summary": "The memory gate is closed to new work."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMemoryGateDisabled",
+                "query": "max by (job, instance) (q4t_memory_admission_enabled{job=\"q4t\"} == 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 300,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "information"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#memory",
+                  "summary": "Global memory admission is explicitly disabled; verify deployment intent."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TNotReady",
+                "query": "max by (job, instance) (q4t_ready{job=\"q4t\"} == 0 and q4t_gpu_healthy{job=\"q4t\"} == 1 and q4t_memory_admission_open{job=\"q4t\"} == 1) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 120,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#unavailable",
+                  "summary": "The server remains unready outside the GPU and memory gates."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TAdmissionRejections",
+                "query": "max by (job, instance) (increase(q4t_queue_rejected_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_text_admission_rejected_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_structured_rejected_total{job=\"q4t\"}[5m]) > 0 or (increase(q4t_memory_rejected_total{job=\"q4t\"}[5m]) > 0) or (increase(q4t_http_receive_failures_total{job=\"q4t\",reason=\"body_capacity\"}[5m]) > 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#capacity",
+                  "summary": "Admission rejections increased; counters are separate views, not an additive failure total."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TStructuredFailures",
+                "query": "max by (job, instance) (increase(q4t_structured_prepare_failed_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_structured_compile_timeouts_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_structured_resource_exhausted_total{job=\"q4t\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#structured",
+                  "summary": "Structured preparation failures increased; inspect fixed error codes."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TChatErrorsObserved",
+                "query": "max by (job, instance) (increase(q4t_requests_error_total{job=\"q4t\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "information"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#errors",
+                  "summary": "Chat errors increased; this includes input rejection and is not a model error rate."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TTransportWriteFailures",
+                "query": "max by (job, instance) (increase(q4t_http_write_failures_total{job=\"q4t\",reason=~\"write_deadline|socket_error|exception\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#transport",
+                  "summary": "Unexpected write failures increased; delivery and task outcome differ."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TTransportReceiveFailures",
+                "query": "max by (job, instance) (increase(q4t_http_receive_failures_total{job=\"q4t\",reason=~\"header_deadline|body_deadline|socket_error|exception\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#transport",
+                  "summary": "Receive deadlines or transport faults increased."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TWorkerReapStalled",
+                "query": "max by (job, instance) (q4t_structured_workers_active{job=\"q4t\"} > 0 and q4t_structured_active{job=\"q4t\"} == 0 and q4t_structured_preparing{job=\"q4t\"} == 0 and (q4t_active_chats{job=\"q4t\"} == 0 and q4t_business_connections{job=\"q4t\"} == 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#owners",
+                  "summary": "A worker remains owned after requests and structured leases have drained."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TIdleResourcesRetained",
+                "query": "max by (job, instance) ((q4t_request_body_bytes{job=\"q4t\"} > 0 or q4t_structured_active{job=\"q4t\"} > 0 or (q4t_seq_slots_free{job=\"q4t\"} < on (job, instance) q4t_seq_slots_total{job=\"q4t\"})) and (q4t_active_chats{job=\"q4t\"} == 0 and q4t_business_connections{job=\"q4t\"} == 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#owners",
+                  "summary": "Resources remain retained while observed business work is idle."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TExecutionProgressStalled",
+                "query": "max by (job, instance) ((q4t_active_chats{job=\"q4t\"} > 0) and (q4t_seq_slots_free{job=\"q4t\"} < on (job, instance) q4t_seq_slots_total{job=\"q4t\"}) and (changes(q4t_execution_steps_total{job=\"q4t\"}[5m]) == 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 300,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#progress",
+                  "summary": "No execution boundary progress was observed; investigate before acting."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "name": "q4t:local_response_p95_seconds:5m",
+                "query": "histogram_quantile(0.95, sum by (job, instance, le) (rate(q4t_response_seconds_bucket{job=\"q4t\"}[5m])))",
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "recording"
+              },
+              {
+                "name": "q4t:slot_wait_p95_seconds:5m",
+                "query": "histogram_quantile(0.95, sum by (job, instance, le) (rate(q4t_slot_wait_seconds_bucket{job=\"q4t\"}[5m])))",
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "recording"
+              }
+            ],
+            "interval": 15,
+            "limit": 0,
+            "evaluationTime": 0,
+            "lastEvaluation": "0001-01-01T00:00:00Z"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "unix_seconds": 1793674546.318191,
+    "up": {
+      "status": "success",
+      "data": {
+        "resultType": "vector",
+        "result": []
+      }
+    },
+    "rules": {
+      "status": "success",
+      "data": {
+        "groups": [
+          {
+            "name": "q4t-operational",
+            "file": "/home/rm01/models/dev/qwen4-thor/deploy/serve-ops/q4t.rules.yml",
+            "rules": [
+              {
+                "state": "inactive",
+                "name": "Q4TTargetDown",
+                "query": "up{job=\"q4t\"} == 0",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#unavailable",
+                  "summary": "The configured q4t scrape target is unreachable."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TTargetMissing",
+                "query": "absent(up{job=\"q4t\"})",
+                "duration": 120,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#unavailable",
+                  "summary": "No q4t target series is present; inspect discovery and monitoring."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMetricContractMissing",
+                "query": "(up{job=\"q4t\"} == 1) unless on (job, instance) (count by (job, instance) ({__name__=~\"q4t_active_chats|q4t_business_connections|q4t_control_connections|q4t_execution_steps_total|q4t_generation_tokens_total|q4t_gpu_healthy|q4t_http_receive_failures_total|q4t_http_write_failures_total|q4t_memory_admission_enabled|q4t_memory_admission_floor_bytes|q4t_memory_admission_open|q4t_memory_admission_recovery_bytes|q4t_memory_admission_state|q4t_memory_admission_transitions_total|q4t_memory_available_bytes|q4t_memory_observation_failures_total|q4t_memory_observation_valid|q4t_memory_observations_total|q4t_memory_rejected_total|q4t_prompt_tokens_total|q4t_queue_rejected_total|q4t_queued_requests|q4t_ready|q4t_request_body_bytes|q4t_requests_aborted_by_reason_total|q4t_requests_aborted_total|q4t_requests_error_total|q4t_requests_success_total|q4t_requests_total|q4t_seq_slots_free|q4t_seq_slots_total|q4t_structured_active|q4t_structured_compile_timeouts_total|q4t_structured_prepare_failed_total|q4t_structured_preparing|q4t_structured_rejected_total|q4t_structured_resource_exhausted_total|q4t_structured_vocab_bytes|q4t_structured_workers_active|q4t_structured_workers_reaped_total|q4t_structured_workers_started_total|q4t_text_admission_rejected_total\",job=\"q4t\"}) == 87)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#observation",
+                  "summary": "The operational metric contract is incomplete."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMetricContractInvalid",
+                "query": "max by (job, instance) (({__name__=~\"q4t_gpu_healthy|q4t_memory_admission_enabled|q4t_memory_admission_open|q4t_memory_admission_state|q4t_memory_observation_valid|q4t_ready\",job=\"q4t\"} != 0 and on (__name__, job, instance, state) {__name__=~\"q4t_gpu_healthy|q4t_memory_admission_enabled|q4t_memory_admission_open|q4t_memory_admission_state|q4t_memory_observation_valid|q4t_ready\",job=\"q4t\"} != 1) or (sum by (job, instance) (q4t_memory_admission_state{job=\"q4t\"}) != 1) or (q4t_seq_slots_free{job=\"q4t\"} > on (job, instance) q4t_seq_slots_total{job=\"q4t\"})) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#observation",
+                  "summary": "Operational observations are contradictory or invalid."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TGpuUnhealthy",
+                "query": "max by (job, instance) (q4t_gpu_healthy{job=\"q4t\"} == 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#gpu",
+                  "summary": "The server has observed a sticky GPU failure."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMemoryObservationUnavailable",
+                "query": "max by (job, instance) (q4t_memory_admission_enabled{job=\"q4t\"} == 1 and q4t_memory_observation_valid{job=\"q4t\"} == 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#memory",
+                  "summary": "Memory observation is unavailable and new work is refused."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMemoryPressure",
+                "query": "max by (job, instance) (q4t_memory_admission_state{job=\"q4t\",state=\"memory_pressure\"} == 1) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#memory",
+                  "summary": "The memory gate is closed to new work."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMemoryGateDisabled",
+                "query": "max by (job, instance) (q4t_memory_admission_enabled{job=\"q4t\"} == 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 300,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "information"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#memory",
+                  "summary": "Global memory admission is explicitly disabled; verify deployment intent."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TNotReady",
+                "query": "max by (job, instance) (q4t_ready{job=\"q4t\"} == 0 and q4t_gpu_healthy{job=\"q4t\"} == 1 and q4t_memory_admission_open{job=\"q4t\"} == 1) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 120,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#unavailable",
+                  "summary": "The server remains unready outside the GPU and memory gates."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TAdmissionRejections",
+                "query": "max by (job, instance) (increase(q4t_queue_rejected_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_text_admission_rejected_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_structured_rejected_total{job=\"q4t\"}[5m]) > 0 or (increase(q4t_memory_rejected_total{job=\"q4t\"}[5m]) > 0) or (increase(q4t_http_receive_failures_total{job=\"q4t\",reason=\"body_capacity\"}[5m]) > 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#capacity",
+                  "summary": "Admission rejections increased; counters are separate views, not an additive failure total."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TStructuredFailures",
+                "query": "max by (job, instance) (increase(q4t_structured_prepare_failed_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_structured_compile_timeouts_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_structured_resource_exhausted_total{job=\"q4t\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#structured",
+                  "summary": "Structured preparation failures increased; inspect fixed error codes."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TChatErrorsObserved",
+                "query": "max by (job, instance) (increase(q4t_requests_error_total{job=\"q4t\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "information"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#errors",
+                  "summary": "Chat errors increased; this includes input rejection and is not a model error rate."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TTransportWriteFailures",
+                "query": "max by (job, instance) (increase(q4t_http_write_failures_total{job=\"q4t\",reason=~\"write_deadline|socket_error|exception\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#transport",
+                  "summary": "Unexpected write failures increased; delivery and task outcome differ."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TTransportReceiveFailures",
+                "query": "max by (job, instance) (increase(q4t_http_receive_failures_total{job=\"q4t\",reason=~\"header_deadline|body_deadline|socket_error|exception\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#transport",
+                  "summary": "Receive deadlines or transport faults increased."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TWorkerReapStalled",
+                "query": "max by (job, instance) (q4t_structured_workers_active{job=\"q4t\"} > 0 and q4t_structured_active{job=\"q4t\"} == 0 and q4t_structured_preparing{job=\"q4t\"} == 0 and (q4t_active_chats{job=\"q4t\"} == 0 and q4t_business_connections{job=\"q4t\"} == 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#owners",
+                  "summary": "A worker remains owned after requests and structured leases have drained."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TIdleResourcesRetained",
+                "query": "max by (job, instance) ((q4t_request_body_bytes{job=\"q4t\"} > 0 or q4t_structured_active{job=\"q4t\"} > 0 or (q4t_seq_slots_free{job=\"q4t\"} < on (job, instance) q4t_seq_slots_total{job=\"q4t\"})) and (q4t_active_chats{job=\"q4t\"} == 0 and q4t_business_connections{job=\"q4t\"} == 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#owners",
+                  "summary": "Resources remain retained while observed business work is idle."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TExecutionProgressStalled",
+                "query": "max by (job, instance) ((q4t_active_chats{job=\"q4t\"} > 0) and (q4t_seq_slots_free{job=\"q4t\"} < on (job, instance) q4t_seq_slots_total{job=\"q4t\"}) and (changes(q4t_execution_steps_total{job=\"q4t\"}[5m]) == 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 300,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#progress",
+                  "summary": "No execution boundary progress was observed; investigate before acting."
+                },
+                "alerts": [],
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "alerting"
+              },
+              {
+                "name": "q4t:local_response_p95_seconds:5m",
+                "query": "histogram_quantile(0.95, sum by (job, instance, le) (rate(q4t_response_seconds_bucket{job=\"q4t\"}[5m])))",
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "recording"
+              },
+              {
+                "name": "q4t:slot_wait_p95_seconds:5m",
+                "query": "histogram_quantile(0.95, sum by (job, instance, le) (rate(q4t_slot_wait_seconds_bucket{job=\"q4t\"}[5m])))",
+                "health": "unknown",
+                "evaluationTime": 0,
+                "lastEvaluation": "0001-01-01T00:00:00Z",
+                "type": "recording"
+              }
+            ],
+            "interval": 15,
+            "limit": 0,
+            "evaluationTime": 0,
+            "lastEvaluation": "0001-01-01T00:00:00Z"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "unix_seconds": 1793674549.3197777,
+    "up": {
+      "status": "success",
+      "data": {
+        "resultType": "vector",
+        "result": []
+      }
+    },
+    "rules": {
+      "status": "success",
+      "data": {
+        "groups": [
+          {
+            "name": "q4t-operational",
+            "file": "/home/rm01/models/dev/qwen4-thor/deploy/serve-ops/q4t.rules.yml",
+            "rules": [
+              {
+                "state": "inactive",
+                "name": "Q4TTargetDown",
+                "query": "up{job=\"q4t\"} == 0",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#unavailable",
+                  "summary": "The configured q4t scrape target is unreachable."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000225138,
+                "lastEvaluation": "2026-11-03T10:55:49.296547724+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "pending",
+                "name": "Q4TTargetMissing",
+                "query": "absent(up{job=\"q4t\"})",
+                "duration": 120,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#unavailable",
+                  "summary": "No q4t target series is present; inspect discovery and monitoring."
+                },
+                "alerts": [
+                  {
+                    "labels": {
+                      "alertname": "Q4TTargetMissing",
+                      "component": "q4t-serve",
+                      "job": "q4t",
+                      "severity": "critical"
+                    },
+                    "annotations": {
+                      "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#unavailable",
+                      "summary": "No q4t target series is present; inspect discovery and monitoring."
+                    },
+                    "state": "pending",
+                    "activeAt": "2026-11-03T02:55:49.295686652Z",
+                    "value": "1e+00"
+                  }
+                ],
+                "health": "ok",
+                "evaluationTime": 0.000184101,
+                "lastEvaluation": "2026-11-03T10:55:49.296777177+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMetricContractMissing",
+                "query": "(up{job=\"q4t\"} == 1) unless on (job, instance) (count by (job, instance) ({__name__=~\"q4t_active_chats|q4t_business_connections|q4t_control_connections|q4t_execution_steps_total|q4t_generation_tokens_total|q4t_gpu_healthy|q4t_http_receive_failures_total|q4t_http_write_failures_total|q4t_memory_admission_enabled|q4t_memory_admission_floor_bytes|q4t_memory_admission_open|q4t_memory_admission_recovery_bytes|q4t_memory_admission_state|q4t_memory_admission_transitions_total|q4t_memory_available_bytes|q4t_memory_observation_failures_total|q4t_memory_observation_valid|q4t_memory_observations_total|q4t_memory_rejected_total|q4t_prompt_tokens_total|q4t_queue_rejected_total|q4t_queued_requests|q4t_ready|q4t_request_body_bytes|q4t_requests_aborted_by_reason_total|q4t_requests_aborted_total|q4t_requests_error_total|q4t_requests_success_total|q4t_requests_total|q4t_seq_slots_free|q4t_seq_slots_total|q4t_structured_active|q4t_structured_compile_timeouts_total|q4t_structured_prepare_failed_total|q4t_structured_preparing|q4t_structured_rejected_total|q4t_structured_resource_exhausted_total|q4t_structured_vocab_bytes|q4t_structured_workers_active|q4t_structured_workers_reaped_total|q4t_structured_workers_started_total|q4t_text_admission_rejected_total\",job=\"q4t\"}) == 87)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#observation",
+                  "summary": "The operational metric contract is incomplete."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000167555,
+                "lastEvaluation": "2026-11-03T10:55:49.296963972+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMetricContractInvalid",
+                "query": "max by (job, instance) (({__name__=~\"q4t_gpu_healthy|q4t_memory_admission_enabled|q4t_memory_admission_open|q4t_memory_admission_state|q4t_memory_observation_valid|q4t_ready\",job=\"q4t\"} != 0 and on (__name__, job, instance, state) {__name__=~\"q4t_gpu_healthy|q4t_memory_admission_enabled|q4t_memory_admission_open|q4t_memory_admission_state|q4t_memory_observation_valid|q4t_ready\",job=\"q4t\"} != 1) or (sum by (job, instance) (q4t_memory_admission_state{job=\"q4t\"}) != 1) or (q4t_seq_slots_free{job=\"q4t\"} > on (job, instance) q4t_seq_slots_total{job=\"q4t\"})) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#observation",
+                  "summary": "Operational observations are contradictory or invalid."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000188898,
+                "lastEvaluation": "2026-11-03T10:55:49.297134111+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TGpuUnhealthy",
+                "query": "max by (job, instance) (q4t_gpu_healthy{job=\"q4t\"} == 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#gpu",
+                  "summary": "The server has observed a sticky GPU failure."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 5.649e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297327305+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMemoryObservationUnavailable",
+                "query": "max by (job, instance) (q4t_memory_admission_enabled{job=\"q4t\"} == 1 and q4t_memory_observation_valid{job=\"q4t\"} == 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#memory",
+                  "summary": "Memory observation is unavailable and new work is refused."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 6.8898e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297385675+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMemoryPressure",
+                "query": "max by (job, instance) (q4t_memory_admission_state{job=\"q4t\",state=\"memory_pressure\"} == 1) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#memory",
+                  "summary": "The memory gate is closed to new work."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 5.7924e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297456221+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMemoryGateDisabled",
+                "query": "max by (job, instance) (q4t_memory_admission_enabled{job=\"q4t\"} == 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 300,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "information"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#memory",
+                  "summary": "Global memory admission is explicitly disabled; verify deployment intent."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 4.8204e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297516044+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TNotReady",
+                "query": "max by (job, instance) (q4t_ready{job=\"q4t\"} == 0 and q4t_gpu_healthy{job=\"q4t\"} == 1 and q4t_memory_admission_open{job=\"q4t\"} == 1) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 120,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#unavailable",
+                  "summary": "The server remains unready outside the GPU and memory gates."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 8.0907e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297565942+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TAdmissionRejections",
+                "query": "max by (job, instance) (increase(q4t_queue_rejected_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_text_admission_rejected_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_structured_rejected_total{job=\"q4t\"}[5m]) > 0 or (increase(q4t_memory_rejected_total{job=\"q4t\"}[5m]) > 0) or (increase(q4t_http_receive_failures_total{job=\"q4t\",reason=\"body_capacity\"}[5m]) > 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#capacity",
+                  "summary": "Admission rejections increased; counters are separate views, not an additive failure total."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000183332,
+                "lastEvaluation": "2026-11-03T10:55:49.297648748+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TStructuredFailures",
+                "query": "max by (job, instance) (increase(q4t_structured_prepare_failed_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_structured_compile_timeouts_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_structured_resource_exhausted_total{job=\"q4t\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#structured",
+                  "summary": "Structured preparation failures increased; inspect fixed error codes."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 9.0111e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297833932+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TChatErrorsObserved",
+                "query": "max by (job, instance) (increase(q4t_requests_error_total{job=\"q4t\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "information"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#errors",
+                  "summary": "Chat errors increased; this includes input rejection and is not a model error rate."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 5.2232e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297925451+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TTransportWriteFailures",
+                "query": "max by (job, instance) (increase(q4t_http_write_failures_total{job=\"q4t\",reason=~\"write_deadline|socket_error|exception\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#transport",
+                  "summary": "Unexpected write failures increased; delivery and task outcome differ."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 6.0268e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.29797946+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TTransportReceiveFailures",
+                "query": "max by (job, instance) (increase(q4t_http_receive_failures_total{job=\"q4t\",reason=~\"header_deadline|body_deadline|socket_error|exception\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#transport",
+                  "summary": "Receive deadlines or transport faults increased."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 5.7491e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.298041413+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TWorkerReapStalled",
+                "query": "max by (job, instance) (q4t_structured_workers_active{job=\"q4t\"} > 0 and q4t_structured_active{job=\"q4t\"} == 0 and q4t_structured_preparing{job=\"q4t\"} == 0 and (q4t_active_chats{job=\"q4t\"} == 0 and q4t_business_connections{job=\"q4t\"} == 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#owners",
+                  "summary": "A worker remains owned after requests and structured leases have drained."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000115759,
+                "lastEvaluation": "2026-11-03T10:55:49.298100265+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TIdleResourcesRetained",
+                "query": "max by (job, instance) ((q4t_request_body_bytes{job=\"q4t\"} > 0 or q4t_structured_active{job=\"q4t\"} > 0 or (q4t_seq_slots_free{job=\"q4t\"} < on (job, instance) q4t_seq_slots_total{job=\"q4t\"})) and (q4t_active_chats{job=\"q4t\"} == 0 and q4t_business_connections{job=\"q4t\"} == 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#owners",
+                  "summary": "Resources remain retained while observed business work is idle."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.00011874,
+                "lastEvaluation": "2026-11-03T10:55:49.298217783+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TExecutionProgressStalled",
+                "query": "max by (job, instance) ((q4t_active_chats{job=\"q4t\"} > 0) and (q4t_seq_slots_free{job=\"q4t\"} < on (job, instance) q4t_seq_slots_total{job=\"q4t\"}) and (changes(q4t_execution_steps_total{job=\"q4t\"}[5m]) == 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 300,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#progress",
+                  "summary": "No execution boundary progress was observed; investigate before acting."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000109787,
+                "lastEvaluation": "2026-11-03T10:55:49.298339745+08:00",
+                "type": "alerting"
+              },
+              {
+                "name": "q4t:local_response_p95_seconds:5m",
+                "query": "histogram_quantile(0.95, sum by (job, instance, le) (rate(q4t_response_seconds_bucket{job=\"q4t\"}[5m])))",
+                "health": "ok",
+                "evaluationTime": 4.2343e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.298451801+08:00",
+                "type": "recording"
+              },
+              {
+                "name": "q4t:slot_wait_p95_seconds:5m",
+                "query": "histogram_quantile(0.95, sum by (job, instance, le) (rate(q4t_slot_wait_seconds_bucket{job=\"q4t\"}[5m])))",
+                "health": "ok",
+                "evaluationTime": 3.8999e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.298496227+08:00",
+                "type": "recording"
+              }
+            ],
+            "interval": 15,
+            "limit": 0,
+            "evaluationTime": 0.002026761,
+            "lastEvaluation": "2026-11-03T10:55:49.296510974+08:00"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "unix_seconds": 1793674552.3215384,
+    "up": {
+      "status": "success",
+      "data": {
+        "resultType": "vector",
+        "result": []
+      }
+    },
+    "rules": {
+      "status": "success",
+      "data": {
+        "groups": [
+          {
+            "name": "q4t-operational",
+            "file": "/home/rm01/models/dev/qwen4-thor/deploy/serve-ops/q4t.rules.yml",
+            "rules": [
+              {
+                "state": "inactive",
+                "name": "Q4TTargetDown",
+                "query": "up{job=\"q4t\"} == 0",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#unavailable",
+                  "summary": "The configured q4t scrape target is unreachable."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000225138,
+                "lastEvaluation": "2026-11-03T10:55:49.296547724+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "pending",
+                "name": "Q4TTargetMissing",
+                "query": "absent(up{job=\"q4t\"})",
+                "duration": 120,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#unavailable",
+                  "summary": "No q4t target series is present; inspect discovery and monitoring."
+                },
+                "alerts": [
+                  {
+                    "labels": {
+                      "alertname": "Q4TTargetMissing",
+                      "component": "q4t-serve",
+                      "job": "q4t",
+                      "severity": "critical"
+                    },
+                    "annotations": {
+                      "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#unavailable",
+                      "summary": "No q4t target series is present; inspect discovery and monitoring."
+                    },
+                    "state": "pending",
+                    "activeAt": "2026-11-03T02:55:49.295686652Z",
+                    "value": "1e+00"
+                  }
+                ],
+                "health": "ok",
+                "evaluationTime": 0.000184101,
+                "lastEvaluation": "2026-11-03T10:55:49.296777177+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMetricContractMissing",
+                "query": "(up{job=\"q4t\"} == 1) unless on (job, instance) (count by (job, instance) ({__name__=~\"q4t_active_chats|q4t_business_connections|q4t_control_connections|q4t_execution_steps_total|q4t_generation_tokens_total|q4t_gpu_healthy|q4t_http_receive_failures_total|q4t_http_write_failures_total|q4t_memory_admission_enabled|q4t_memory_admission_floor_bytes|q4t_memory_admission_open|q4t_memory_admission_recovery_bytes|q4t_memory_admission_state|q4t_memory_admission_transitions_total|q4t_memory_available_bytes|q4t_memory_observation_failures_total|q4t_memory_observation_valid|q4t_memory_observations_total|q4t_memory_rejected_total|q4t_prompt_tokens_total|q4t_queue_rejected_total|q4t_queued_requests|q4t_ready|q4t_request_body_bytes|q4t_requests_aborted_by_reason_total|q4t_requests_aborted_total|q4t_requests_error_total|q4t_requests_success_total|q4t_requests_total|q4t_seq_slots_free|q4t_seq_slots_total|q4t_structured_active|q4t_structured_compile_timeouts_total|q4t_structured_prepare_failed_total|q4t_structured_preparing|q4t_structured_rejected_total|q4t_structured_resource_exhausted_total|q4t_structured_vocab_bytes|q4t_structured_workers_active|q4t_structured_workers_reaped_total|q4t_structured_workers_started_total|q4t_text_admission_rejected_total\",job=\"q4t\"}) == 87)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#observation",
+                  "summary": "The operational metric contract is incomplete."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000167555,
+                "lastEvaluation": "2026-11-03T10:55:49.296963972+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMetricContractInvalid",
+                "query": "max by (job, instance) (({__name__=~\"q4t_gpu_healthy|q4t_memory_admission_enabled|q4t_memory_admission_open|q4t_memory_admission_state|q4t_memory_observation_valid|q4t_ready\",job=\"q4t\"} != 0 and on (__name__, job, instance, state) {__name__=~\"q4t_gpu_healthy|q4t_memory_admission_enabled|q4t_memory_admission_open|q4t_memory_admission_state|q4t_memory_observation_valid|q4t_ready\",job=\"q4t\"} != 1) or (sum by (job, instance) (q4t_memory_admission_state{job=\"q4t\"}) != 1) or (q4t_seq_slots_free{job=\"q4t\"} > on (job, instance) q4t_seq_slots_total{job=\"q4t\"})) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#observation",
+                  "summary": "Operational observations are contradictory or invalid."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000188898,
+                "lastEvaluation": "2026-11-03T10:55:49.297134111+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TGpuUnhealthy",
+                "query": "max by (job, instance) (q4t_gpu_healthy{job=\"q4t\"} == 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#gpu",
+                  "summary": "The server has observed a sticky GPU failure."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 5.649e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297327305+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMemoryObservationUnavailable",
+                "query": "max by (job, instance) (q4t_memory_admission_enabled{job=\"q4t\"} == 1 and q4t_memory_observation_valid{job=\"q4t\"} == 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#memory",
+                  "summary": "Memory observation is unavailable and new work is refused."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 6.8898e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297385675+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMemoryPressure",
+                "query": "max by (job, instance) (q4t_memory_admission_state{job=\"q4t\",state=\"memory_pressure\"} == 1) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#memory",
+                  "summary": "The memory gate is closed to new work."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 5.7924e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297456221+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMemoryGateDisabled",
+                "query": "max by (job, instance) (q4t_memory_admission_enabled{job=\"q4t\"} == 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 300,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "information"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#memory",
+                  "summary": "Global memory admission is explicitly disabled; verify deployment intent."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 4.8204e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297516044+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TNotReady",
+                "query": "max by (job, instance) (q4t_ready{job=\"q4t\"} == 0 and q4t_gpu_healthy{job=\"q4t\"} == 1 and q4t_memory_admission_open{job=\"q4t\"} == 1) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 120,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#unavailable",
+                  "summary": "The server remains unready outside the GPU and memory gates."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 8.0907e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297565942+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TAdmissionRejections",
+                "query": "max by (job, instance) (increase(q4t_queue_rejected_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_text_admission_rejected_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_structured_rejected_total{job=\"q4t\"}[5m]) > 0 or (increase(q4t_memory_rejected_total{job=\"q4t\"}[5m]) > 0) or (increase(q4t_http_receive_failures_total{job=\"q4t\",reason=\"body_capacity\"}[5m]) > 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#capacity",
+                  "summary": "Admission rejections increased; counters are separate views, not an additive failure total."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000183332,
+                "lastEvaluation": "2026-11-03T10:55:49.297648748+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TStructuredFailures",
+                "query": "max by (job, instance) (increase(q4t_structured_prepare_failed_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_structured_compile_timeouts_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_structured_resource_exhausted_total{job=\"q4t\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#structured",
+                  "summary": "Structured preparation failures increased; inspect fixed error codes."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 9.0111e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297833932+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TChatErrorsObserved",
+                "query": "max by (job, instance) (increase(q4t_requests_error_total{job=\"q4t\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "information"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#errors",
+                  "summary": "Chat errors increased; this includes input rejection and is not a model error rate."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 5.2232e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297925451+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TTransportWriteFailures",
+                "query": "max by (job, instance) (increase(q4t_http_write_failures_total{job=\"q4t\",reason=~\"write_deadline|socket_error|exception\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#transport",
+                  "summary": "Unexpected write failures increased; delivery and task outcome differ."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 6.0268e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.29797946+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TTransportReceiveFailures",
+                "query": "max by (job, instance) (increase(q4t_http_receive_failures_total{job=\"q4t\",reason=~\"header_deadline|body_deadline|socket_error|exception\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#transport",
+                  "summary": "Receive deadlines or transport faults increased."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 5.7491e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.298041413+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TWorkerReapStalled",
+                "query": "max by (job, instance) (q4t_structured_workers_active{job=\"q4t\"} > 0 and q4t_structured_active{job=\"q4t\"} == 0 and q4t_structured_preparing{job=\"q4t\"} == 0 and (q4t_active_chats{job=\"q4t\"} == 0 and q4t_business_connections{job=\"q4t\"} == 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#owners",
+                  "summary": "A worker remains owned after requests and structured leases have drained."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000115759,
+                "lastEvaluation": "2026-11-03T10:55:49.298100265+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TIdleResourcesRetained",
+                "query": "max by (job, instance) ((q4t_request_body_bytes{job=\"q4t\"} > 0 or q4t_structured_active{job=\"q4t\"} > 0 or (q4t_seq_slots_free{job=\"q4t\"} < on (job, instance) q4t_seq_slots_total{job=\"q4t\"})) and (q4t_active_chats{job=\"q4t\"} == 0 and q4t_business_connections{job=\"q4t\"} == 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#owners",
+                  "summary": "Resources remain retained while observed business work is idle."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.00011874,
+                "lastEvaluation": "2026-11-03T10:55:49.298217783+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TExecutionProgressStalled",
+                "query": "max by (job, instance) ((q4t_active_chats{job=\"q4t\"} > 0) and (q4t_seq_slots_free{job=\"q4t\"} < on (job, instance) q4t_seq_slots_total{job=\"q4t\"}) and (changes(q4t_execution_steps_total{job=\"q4t\"}[5m]) == 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 300,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#progress",
+                  "summary": "No execution boundary progress was observed; investigate before acting."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000109787,
+                "lastEvaluation": "2026-11-03T10:55:49.298339745+08:00",
+                "type": "alerting"
+              },
+              {
+                "name": "q4t:local_response_p95_seconds:5m",
+                "query": "histogram_quantile(0.95, sum by (job, instance, le) (rate(q4t_response_seconds_bucket{job=\"q4t\"}[5m])))",
+                "health": "ok",
+                "evaluationTime": 4.2343e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.298451801+08:00",
+                "type": "recording"
+              },
+              {
+                "name": "q4t:slot_wait_p95_seconds:5m",
+                "query": "histogram_quantile(0.95, sum by (job, instance, le) (rate(q4t_slot_wait_seconds_bucket{job=\"q4t\"}[5m])))",
+                "health": "ok",
+                "evaluationTime": 3.8999e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.298496227+08:00",
+                "type": "recording"
+              }
+            ],
+            "interval": 15,
+            "limit": 0,
+            "evaluationTime": 0.002026761,
+            "lastEvaluation": "2026-11-03T10:55:49.296510974+08:00"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "unix_seconds": 1793674555.323498,
+    "up": {
+      "status": "success",
+      "data": {
+        "resultType": "vector",
+        "result": []
+      }
+    },
+    "rules": {
+      "status": "success",
+      "data": {
+        "groups": [
+          {
+            "name": "q4t-operational",
+            "file": "/home/rm01/models/dev/qwen4-thor/deploy/serve-ops/q4t.rules.yml",
+            "rules": [
+              {
+                "state": "inactive",
+                "name": "Q4TTargetDown",
+                "query": "up{job=\"q4t\"} == 0",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#unavailable",
+                  "summary": "The configured q4t scrape target is unreachable."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000225138,
+                "lastEvaluation": "2026-11-03T10:55:49.296547724+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "pending",
+                "name": "Q4TTargetMissing",
+                "query": "absent(up{job=\"q4t\"})",
+                "duration": 120,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#unavailable",
+                  "summary": "No q4t target series is present; inspect discovery and monitoring."
+                },
+                "alerts": [
+                  {
+                    "labels": {
+                      "alertname": "Q4TTargetMissing",
+                      "component": "q4t-serve",
+                      "job": "q4t",
+                      "severity": "critical"
+                    },
+                    "annotations": {
+                      "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#unavailable",
+                      "summary": "No q4t target series is present; inspect discovery and monitoring."
+                    },
+                    "state": "pending",
+                    "activeAt": "2026-11-03T02:55:49.295686652Z",
+                    "value": "1e+00"
+                  }
+                ],
+                "health": "ok",
+                "evaluationTime": 0.000184101,
+                "lastEvaluation": "2026-11-03T10:55:49.296777177+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMetricContractMissing",
+                "query": "(up{job=\"q4t\"} == 1) unless on (job, instance) (count by (job, instance) ({__name__=~\"q4t_active_chats|q4t_business_connections|q4t_control_connections|q4t_execution_steps_total|q4t_generation_tokens_total|q4t_gpu_healthy|q4t_http_receive_failures_total|q4t_http_write_failures_total|q4t_memory_admission_enabled|q4t_memory_admission_floor_bytes|q4t_memory_admission_open|q4t_memory_admission_recovery_bytes|q4t_memory_admission_state|q4t_memory_admission_transitions_total|q4t_memory_available_bytes|q4t_memory_observation_failures_total|q4t_memory_observation_valid|q4t_memory_observations_total|q4t_memory_rejected_total|q4t_prompt_tokens_total|q4t_queue_rejected_total|q4t_queued_requests|q4t_ready|q4t_request_body_bytes|q4t_requests_aborted_by_reason_total|q4t_requests_aborted_total|q4t_requests_error_total|q4t_requests_success_total|q4t_requests_total|q4t_seq_slots_free|q4t_seq_slots_total|q4t_structured_active|q4t_structured_compile_timeouts_total|q4t_structured_prepare_failed_total|q4t_structured_preparing|q4t_structured_rejected_total|q4t_structured_resource_exhausted_total|q4t_structured_vocab_bytes|q4t_structured_workers_active|q4t_structured_workers_reaped_total|q4t_structured_workers_started_total|q4t_text_admission_rejected_total\",job=\"q4t\"}) == 87)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#observation",
+                  "summary": "The operational metric contract is incomplete."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000167555,
+                "lastEvaluation": "2026-11-03T10:55:49.296963972+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMetricContractInvalid",
+                "query": "max by (job, instance) (({__name__=~\"q4t_gpu_healthy|q4t_memory_admission_enabled|q4t_memory_admission_open|q4t_memory_admission_state|q4t_memory_observation_valid|q4t_ready\",job=\"q4t\"} != 0 and on (__name__, job, instance, state) {__name__=~\"q4t_gpu_healthy|q4t_memory_admission_enabled|q4t_memory_admission_open|q4t_memory_admission_state|q4t_memory_observation_valid|q4t_ready\",job=\"q4t\"} != 1) or (sum by (job, instance) (q4t_memory_admission_state{job=\"q4t\"}) != 1) or (q4t_seq_slots_free{job=\"q4t\"} > on (job, instance) q4t_seq_slots_total{job=\"q4t\"})) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#observation",
+                  "summary": "Operational observations are contradictory or invalid."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000188898,
+                "lastEvaluation": "2026-11-03T10:55:49.297134111+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TGpuUnhealthy",
+                "query": "max by (job, instance) (q4t_gpu_healthy{job=\"q4t\"} == 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#gpu",
+                  "summary": "The server has observed a sticky GPU failure."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 5.649e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297327305+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMemoryObservationUnavailable",
+                "query": "max by (job, instance) (q4t_memory_admission_enabled{job=\"q4t\"} == 1 and q4t_memory_observation_valid{job=\"q4t\"} == 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#memory",
+                  "summary": "Memory observation is unavailable and new work is refused."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 6.8898e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297385675+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMemoryPressure",
+                "query": "max by (job, instance) (q4t_memory_admission_state{job=\"q4t\",state=\"memory_pressure\"} == 1) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#memory",
+                  "summary": "The memory gate is closed to new work."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 5.7924e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297456221+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMemoryGateDisabled",
+                "query": "max by (job, instance) (q4t_memory_admission_enabled{job=\"q4t\"} == 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 300,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "information"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#memory",
+                  "summary": "Global memory admission is explicitly disabled; verify deployment intent."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 4.8204e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297516044+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TNotReady",
+                "query": "max by (job, instance) (q4t_ready{job=\"q4t\"} == 0 and q4t_gpu_healthy{job=\"q4t\"} == 1 and q4t_memory_admission_open{job=\"q4t\"} == 1) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 120,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#unavailable",
+                  "summary": "The server remains unready outside the GPU and memory gates."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 8.0907e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297565942+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TAdmissionRejections",
+                "query": "max by (job, instance) (increase(q4t_queue_rejected_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_text_admission_rejected_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_structured_rejected_total{job=\"q4t\"}[5m]) > 0 or (increase(q4t_memory_rejected_total{job=\"q4t\"}[5m]) > 0) or (increase(q4t_http_receive_failures_total{job=\"q4t\",reason=\"body_capacity\"}[5m]) > 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#capacity",
+                  "summary": "Admission rejections increased; counters are separate views, not an additive failure total."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000183332,
+                "lastEvaluation": "2026-11-03T10:55:49.297648748+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TStructuredFailures",
+                "query": "max by (job, instance) (increase(q4t_structured_prepare_failed_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_structured_compile_timeouts_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_structured_resource_exhausted_total{job=\"q4t\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#structured",
+                  "summary": "Structured preparation failures increased; inspect fixed error codes."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 9.0111e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297833932+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TChatErrorsObserved",
+                "query": "max by (job, instance) (increase(q4t_requests_error_total{job=\"q4t\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "information"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#errors",
+                  "summary": "Chat errors increased; this includes input rejection and is not a model error rate."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 5.2232e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297925451+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TTransportWriteFailures",
+                "query": "max by (job, instance) (increase(q4t_http_write_failures_total{job=\"q4t\",reason=~\"write_deadline|socket_error|exception\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#transport",
+                  "summary": "Unexpected write failures increased; delivery and task outcome differ."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 6.0268e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.29797946+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TTransportReceiveFailures",
+                "query": "max by (job, instance) (increase(q4t_http_receive_failures_total{job=\"q4t\",reason=~\"header_deadline|body_deadline|socket_error|exception\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#transport",
+                  "summary": "Receive deadlines or transport faults increased."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 5.7491e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.298041413+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TWorkerReapStalled",
+                "query": "max by (job, instance) (q4t_structured_workers_active{job=\"q4t\"} > 0 and q4t_structured_active{job=\"q4t\"} == 0 and q4t_structured_preparing{job=\"q4t\"} == 0 and (q4t_active_chats{job=\"q4t\"} == 0 and q4t_business_connections{job=\"q4t\"} == 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#owners",
+                  "summary": "A worker remains owned after requests and structured leases have drained."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000115759,
+                "lastEvaluation": "2026-11-03T10:55:49.298100265+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TIdleResourcesRetained",
+                "query": "max by (job, instance) ((q4t_request_body_bytes{job=\"q4t\"} > 0 or q4t_structured_active{job=\"q4t\"} > 0 or (q4t_seq_slots_free{job=\"q4t\"} < on (job, instance) q4t_seq_slots_total{job=\"q4t\"})) and (q4t_active_chats{job=\"q4t\"} == 0 and q4t_business_connections{job=\"q4t\"} == 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#owners",
+                  "summary": "Resources remain retained while observed business work is idle."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.00011874,
+                "lastEvaluation": "2026-11-03T10:55:49.298217783+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TExecutionProgressStalled",
+                "query": "max by (job, instance) ((q4t_active_chats{job=\"q4t\"} > 0) and (q4t_seq_slots_free{job=\"q4t\"} < on (job, instance) q4t_seq_slots_total{job=\"q4t\"}) and (changes(q4t_execution_steps_total{job=\"q4t\"}[5m]) == 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 300,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#progress",
+                  "summary": "No execution boundary progress was observed; investigate before acting."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000109787,
+                "lastEvaluation": "2026-11-03T10:55:49.298339745+08:00",
+                "type": "alerting"
+              },
+              {
+                "name": "q4t:local_response_p95_seconds:5m",
+                "query": "histogram_quantile(0.95, sum by (job, instance, le) (rate(q4t_response_seconds_bucket{job=\"q4t\"}[5m])))",
+                "health": "ok",
+                "evaluationTime": 4.2343e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.298451801+08:00",
+                "type": "recording"
+              },
+              {
+                "name": "q4t:slot_wait_p95_seconds:5m",
+                "query": "histogram_quantile(0.95, sum by (job, instance, le) (rate(q4t_slot_wait_seconds_bucket{job=\"q4t\"}[5m])))",
+                "health": "ok",
+                "evaluationTime": 3.8999e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.298496227+08:00",
+                "type": "recording"
+              }
+            ],
+            "interval": 15,
+            "limit": 0,
+            "evaluationTime": 0.002026761,
+            "lastEvaluation": "2026-11-03T10:55:49.296510974+08:00"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "unix_seconds": 1793674558.3250904,
+    "up": {
+      "status": "success",
+      "data": {
+        "resultType": "vector",
+        "result": []
+      }
+    },
+    "rules": {
+      "status": "success",
+      "data": {
+        "groups": [
+          {
+            "name": "q4t-operational",
+            "file": "/home/rm01/models/dev/qwen4-thor/deploy/serve-ops/q4t.rules.yml",
+            "rules": [
+              {
+                "state": "inactive",
+                "name": "Q4TTargetDown",
+                "query": "up{job=\"q4t\"} == 0",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#unavailable",
+                  "summary": "The configured q4t scrape target is unreachable."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000225138,
+                "lastEvaluation": "2026-11-03T10:55:49.296547724+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "pending",
+                "name": "Q4TTargetMissing",
+                "query": "absent(up{job=\"q4t\"})",
+                "duration": 120,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#unavailable",
+                  "summary": "No q4t target series is present; inspect discovery and monitoring."
+                },
+                "alerts": [
+                  {
+                    "labels": {
+                      "alertname": "Q4TTargetMissing",
+                      "component": "q4t-serve",
+                      "job": "q4t",
+                      "severity": "critical"
+                    },
+                    "annotations": {
+                      "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#unavailable",
+                      "summary": "No q4t target series is present; inspect discovery and monitoring."
+                    },
+                    "state": "pending",
+                    "activeAt": "2026-11-03T02:55:49.295686652Z",
+                    "value": "1e+00"
+                  }
+                ],
+                "health": "ok",
+                "evaluationTime": 0.000184101,
+                "lastEvaluation": "2026-11-03T10:55:49.296777177+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMetricContractMissing",
+                "query": "(up{job=\"q4t\"} == 1) unless on (job, instance) (count by (job, instance) ({__name__=~\"q4t_active_chats|q4t_business_connections|q4t_control_connections|q4t_execution_steps_total|q4t_generation_tokens_total|q4t_gpu_healthy|q4t_http_receive_failures_total|q4t_http_write_failures_total|q4t_memory_admission_enabled|q4t_memory_admission_floor_bytes|q4t_memory_admission_open|q4t_memory_admission_recovery_bytes|q4t_memory_admission_state|q4t_memory_admission_transitions_total|q4t_memory_available_bytes|q4t_memory_observation_failures_total|q4t_memory_observation_valid|q4t_memory_observations_total|q4t_memory_rejected_total|q4t_prompt_tokens_total|q4t_queue_rejected_total|q4t_queued_requests|q4t_ready|q4t_request_body_bytes|q4t_requests_aborted_by_reason_total|q4t_requests_aborted_total|q4t_requests_error_total|q4t_requests_success_total|q4t_requests_total|q4t_seq_slots_free|q4t_seq_slots_total|q4t_structured_active|q4t_structured_compile_timeouts_total|q4t_structured_prepare_failed_total|q4t_structured_preparing|q4t_structured_rejected_total|q4t_structured_resource_exhausted_total|q4t_structured_vocab_bytes|q4t_structured_workers_active|q4t_structured_workers_reaped_total|q4t_structured_workers_started_total|q4t_text_admission_rejected_total\",job=\"q4t\"}) == 87)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#observation",
+                  "summary": "The operational metric contract is incomplete."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000167555,
+                "lastEvaluation": "2026-11-03T10:55:49.296963972+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMetricContractInvalid",
+                "query": "max by (job, instance) (({__name__=~\"q4t_gpu_healthy|q4t_memory_admission_enabled|q4t_memory_admission_open|q4t_memory_admission_state|q4t_memory_observation_valid|q4t_ready\",job=\"q4t\"} != 0 and on (__name__, job, instance, state) {__name__=~\"q4t_gpu_healthy|q4t_memory_admission_enabled|q4t_memory_admission_open|q4t_memory_admission_state|q4t_memory_observation_valid|q4t_ready\",job=\"q4t\"} != 1) or (sum by (job, instance) (q4t_memory_admission_state{job=\"q4t\"}) != 1) or (q4t_seq_slots_free{job=\"q4t\"} > on (job, instance) q4t_seq_slots_total{job=\"q4t\"})) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#observation",
+                  "summary": "Operational observations are contradictory or invalid."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000188898,
+                "lastEvaluation": "2026-11-03T10:55:49.297134111+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TGpuUnhealthy",
+                "query": "max by (job, instance) (q4t_gpu_healthy{job=\"q4t\"} == 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#gpu",
+                  "summary": "The server has observed a sticky GPU failure."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 5.649e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297327305+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMemoryObservationUnavailable",
+                "query": "max by (job, instance) (q4t_memory_admission_enabled{job=\"q4t\"} == 1 and q4t_memory_observation_valid{job=\"q4t\"} == 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#memory",
+                  "summary": "Memory observation is unavailable and new work is refused."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 6.8898e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297385675+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMemoryPressure",
+                "query": "max by (job, instance) (q4t_memory_admission_state{job=\"q4t\",state=\"memory_pressure\"} == 1) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#memory",
+                  "summary": "The memory gate is closed to new work."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 5.7924e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297456221+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMemoryGateDisabled",
+                "query": "max by (job, instance) (q4t_memory_admission_enabled{job=\"q4t\"} == 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 300,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "information"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#memory",
+                  "summary": "Global memory admission is explicitly disabled; verify deployment intent."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 4.8204e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297516044+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TNotReady",
+                "query": "max by (job, instance) (q4t_ready{job=\"q4t\"} == 0 and q4t_gpu_healthy{job=\"q4t\"} == 1 and q4t_memory_admission_open{job=\"q4t\"} == 1) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 120,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#unavailable",
+                  "summary": "The server remains unready outside the GPU and memory gates."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 8.0907e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297565942+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TAdmissionRejections",
+                "query": "max by (job, instance) (increase(q4t_queue_rejected_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_text_admission_rejected_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_structured_rejected_total{job=\"q4t\"}[5m]) > 0 or (increase(q4t_memory_rejected_total{job=\"q4t\"}[5m]) > 0) or (increase(q4t_http_receive_failures_total{job=\"q4t\",reason=\"body_capacity\"}[5m]) > 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#capacity",
+                  "summary": "Admission rejections increased; counters are separate views, not an additive failure total."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000183332,
+                "lastEvaluation": "2026-11-03T10:55:49.297648748+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TStructuredFailures",
+                "query": "max by (job, instance) (increase(q4t_structured_prepare_failed_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_structured_compile_timeouts_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_structured_resource_exhausted_total{job=\"q4t\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#structured",
+                  "summary": "Structured preparation failures increased; inspect fixed error codes."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 9.0111e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297833932+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TChatErrorsObserved",
+                "query": "max by (job, instance) (increase(q4t_requests_error_total{job=\"q4t\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "information"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#errors",
+                  "summary": "Chat errors increased; this includes input rejection and is not a model error rate."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 5.2232e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297925451+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TTransportWriteFailures",
+                "query": "max by (job, instance) (increase(q4t_http_write_failures_total{job=\"q4t\",reason=~\"write_deadline|socket_error|exception\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#transport",
+                  "summary": "Unexpected write failures increased; delivery and task outcome differ."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 6.0268e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.29797946+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TTransportReceiveFailures",
+                "query": "max by (job, instance) (increase(q4t_http_receive_failures_total{job=\"q4t\",reason=~\"header_deadline|body_deadline|socket_error|exception\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#transport",
+                  "summary": "Receive deadlines or transport faults increased."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 5.7491e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.298041413+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TWorkerReapStalled",
+                "query": "max by (job, instance) (q4t_structured_workers_active{job=\"q4t\"} > 0 and q4t_structured_active{job=\"q4t\"} == 0 and q4t_structured_preparing{job=\"q4t\"} == 0 and (q4t_active_chats{job=\"q4t\"} == 0 and q4t_business_connections{job=\"q4t\"} == 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#owners",
+                  "summary": "A worker remains owned after requests and structured leases have drained."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000115759,
+                "lastEvaluation": "2026-11-03T10:55:49.298100265+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TIdleResourcesRetained",
+                "query": "max by (job, instance) ((q4t_request_body_bytes{job=\"q4t\"} > 0 or q4t_structured_active{job=\"q4t\"} > 0 or (q4t_seq_slots_free{job=\"q4t\"} < on (job, instance) q4t_seq_slots_total{job=\"q4t\"})) and (q4t_active_chats{job=\"q4t\"} == 0 and q4t_business_connections{job=\"q4t\"} == 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#owners",
+                  "summary": "Resources remain retained while observed business work is idle."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.00011874,
+                "lastEvaluation": "2026-11-03T10:55:49.298217783+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TExecutionProgressStalled",
+                "query": "max by (job, instance) ((q4t_active_chats{job=\"q4t\"} > 0) and (q4t_seq_slots_free{job=\"q4t\"} < on (job, instance) q4t_seq_slots_total{job=\"q4t\"}) and (changes(q4t_execution_steps_total{job=\"q4t\"}[5m]) == 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 300,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#progress",
+                  "summary": "No execution boundary progress was observed; investigate before acting."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000109787,
+                "lastEvaluation": "2026-11-03T10:55:49.298339745+08:00",
+                "type": "alerting"
+              },
+              {
+                "name": "q4t:local_response_p95_seconds:5m",
+                "query": "histogram_quantile(0.95, sum by (job, instance, le) (rate(q4t_response_seconds_bucket{job=\"q4t\"}[5m])))",
+                "health": "ok",
+                "evaluationTime": 4.2343e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.298451801+08:00",
+                "type": "recording"
+              },
+              {
+                "name": "q4t:slot_wait_p95_seconds:5m",
+                "query": "histogram_quantile(0.95, sum by (job, instance, le) (rate(q4t_slot_wait_seconds_bucket{job=\"q4t\"}[5m])))",
+                "health": "ok",
+                "evaluationTime": 3.8999e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.298496227+08:00",
+                "type": "recording"
+              }
+            ],
+            "interval": 15,
+            "limit": 0,
+            "evaluationTime": 0.002026761,
+            "lastEvaluation": "2026-11-03T10:55:49.296510974+08:00"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "unix_seconds": 1793674561.3270183,
+    "up": {
+      "status": "success",
+      "data": {
+        "resultType": "vector",
+        "result": [
+          {
+            "metric": {
+              "__name__": "up",
+              "instance": "127.0.0.1:18107",
+              "job": "q4t"
+            },
+            "value": [
+              1793674561.325,
+              "1"
+            ]
+          }
+        ]
+      }
+    },
+    "rules": {
+      "status": "success",
+      "data": {
+        "groups": [
+          {
+            "name": "q4t-operational",
+            "file": "/home/rm01/models/dev/qwen4-thor/deploy/serve-ops/q4t.rules.yml",
+            "rules": [
+              {
+                "state": "inactive",
+                "name": "Q4TTargetDown",
+                "query": "up{job=\"q4t\"} == 0",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#unavailable",
+                  "summary": "The configured q4t scrape target is unreachable."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000225138,
+                "lastEvaluation": "2026-11-03T10:55:49.296547724+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "pending",
+                "name": "Q4TTargetMissing",
+                "query": "absent(up{job=\"q4t\"})",
+                "duration": 120,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#unavailable",
+                  "summary": "No q4t target series is present; inspect discovery and monitoring."
+                },
+                "alerts": [
+                  {
+                    "labels": {
+                      "alertname": "Q4TTargetMissing",
+                      "component": "q4t-serve",
+                      "job": "q4t",
+                      "severity": "critical"
+                    },
+                    "annotations": {
+                      "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#unavailable",
+                      "summary": "No q4t target series is present; inspect discovery and monitoring."
+                    },
+                    "state": "pending",
+                    "activeAt": "2026-11-03T02:55:49.295686652Z",
+                    "value": "1e+00"
+                  }
+                ],
+                "health": "ok",
+                "evaluationTime": 0.000184101,
+                "lastEvaluation": "2026-11-03T10:55:49.296777177+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMetricContractMissing",
+                "query": "(up{job=\"q4t\"} == 1) unless on (job, instance) (count by (job, instance) ({__name__=~\"q4t_active_chats|q4t_business_connections|q4t_control_connections|q4t_execution_steps_total|q4t_generation_tokens_total|q4t_gpu_healthy|q4t_http_receive_failures_total|q4t_http_write_failures_total|q4t_memory_admission_enabled|q4t_memory_admission_floor_bytes|q4t_memory_admission_open|q4t_memory_admission_recovery_bytes|q4t_memory_admission_state|q4t_memory_admission_transitions_total|q4t_memory_available_bytes|q4t_memory_observation_failures_total|q4t_memory_observation_valid|q4t_memory_observations_total|q4t_memory_rejected_total|q4t_prompt_tokens_total|q4t_queue_rejected_total|q4t_queued_requests|q4t_ready|q4t_request_body_bytes|q4t_requests_aborted_by_reason_total|q4t_requests_aborted_total|q4t_requests_error_total|q4t_requests_success_total|q4t_requests_total|q4t_seq_slots_free|q4t_seq_slots_total|q4t_structured_active|q4t_structured_compile_timeouts_total|q4t_structured_prepare_failed_total|q4t_structured_preparing|q4t_structured_rejected_total|q4t_structured_resource_exhausted_total|q4t_structured_vocab_bytes|q4t_structured_workers_active|q4t_structured_workers_reaped_total|q4t_structured_workers_started_total|q4t_text_admission_rejected_total\",job=\"q4t\"}) == 87)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#observation",
+                  "summary": "The operational metric contract is incomplete."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000167555,
+                "lastEvaluation": "2026-11-03T10:55:49.296963972+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMetricContractInvalid",
+                "query": "max by (job, instance) (({__name__=~\"q4t_gpu_healthy|q4t_memory_admission_enabled|q4t_memory_admission_open|q4t_memory_admission_state|q4t_memory_observation_valid|q4t_ready\",job=\"q4t\"} != 0 and on (__name__, job, instance, state) {__name__=~\"q4t_gpu_healthy|q4t_memory_admission_enabled|q4t_memory_admission_open|q4t_memory_admission_state|q4t_memory_observation_valid|q4t_ready\",job=\"q4t\"} != 1) or (sum by (job, instance) (q4t_memory_admission_state{job=\"q4t\"}) != 1) or (q4t_seq_slots_free{job=\"q4t\"} > on (job, instance) q4t_seq_slots_total{job=\"q4t\"})) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#observation",
+                  "summary": "Operational observations are contradictory or invalid."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000188898,
+                "lastEvaluation": "2026-11-03T10:55:49.297134111+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TGpuUnhealthy",
+                "query": "max by (job, instance) (q4t_gpu_healthy{job=\"q4t\"} == 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#gpu",
+                  "summary": "The server has observed a sticky GPU failure."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 5.649e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297327305+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMemoryObservationUnavailable",
+                "query": "max by (job, instance) (q4t_memory_admission_enabled{job=\"q4t\"} == 1 and q4t_memory_observation_valid{job=\"q4t\"} == 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#memory",
+                  "summary": "Memory observation is unavailable and new work is refused."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 6.8898e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297385675+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMemoryPressure",
+                "query": "max by (job, instance) (q4t_memory_admission_state{job=\"q4t\",state=\"memory_pressure\"} == 1) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 30,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#memory",
+                  "summary": "The memory gate is closed to new work."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 5.7924e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297456221+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TMemoryGateDisabled",
+                "query": "max by (job, instance) (q4t_memory_admission_enabled{job=\"q4t\"} == 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 300,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "information"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#memory",
+                  "summary": "Global memory admission is explicitly disabled; verify deployment intent."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 4.8204e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297516044+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TNotReady",
+                "query": "max by (job, instance) (q4t_ready{job=\"q4t\"} == 0 and q4t_gpu_healthy{job=\"q4t\"} == 1 and q4t_memory_admission_open{job=\"q4t\"} == 1) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 120,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#unavailable",
+                  "summary": "The server remains unready outside the GPU and memory gates."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 8.0907e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297565942+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TAdmissionRejections",
+                "query": "max by (job, instance) (increase(q4t_queue_rejected_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_text_admission_rejected_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_structured_rejected_total{job=\"q4t\"}[5m]) > 0 or (increase(q4t_memory_rejected_total{job=\"q4t\"}[5m]) > 0) or (increase(q4t_http_receive_failures_total{job=\"q4t\",reason=\"body_capacity\"}[5m]) > 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#capacity",
+                  "summary": "Admission rejections increased; counters are separate views, not an additive failure total."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000183332,
+                "lastEvaluation": "2026-11-03T10:55:49.297648748+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TStructuredFailures",
+                "query": "max by (job, instance) (increase(q4t_structured_prepare_failed_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_structured_compile_timeouts_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_structured_resource_exhausted_total{job=\"q4t\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#structured",
+                  "summary": "Structured preparation failures increased; inspect fixed error codes."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 9.0111e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297833932+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TChatErrorsObserved",
+                "query": "max by (job, instance) (increase(q4t_requests_error_total{job=\"q4t\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "information"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#errors",
+                  "summary": "Chat errors increased; this includes input rejection and is not a model error rate."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 5.2232e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.297925451+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TTransportWriteFailures",
+                "query": "max by (job, instance) (increase(q4t_http_write_failures_total{job=\"q4t\",reason=~\"write_deadline|socket_error|exception\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#transport",
+                  "summary": "Unexpected write failures increased; delivery and task outcome differ."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 6.0268e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.29797946+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TTransportReceiveFailures",
+                "query": "max by (job, instance) (increase(q4t_http_receive_failures_total{job=\"q4t\",reason=~\"header_deadline|body_deadline|socket_error|exception\"}[5m]) > 0) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 0,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#transport",
+                  "summary": "Receive deadlines or transport faults increased."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 5.7491e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.298041413+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TWorkerReapStalled",
+                "query": "max by (job, instance) (q4t_structured_workers_active{job=\"q4t\"} > 0 and q4t_structured_active{job=\"q4t\"} == 0 and q4t_structured_preparing{job=\"q4t\"} == 0 and (q4t_active_chats{job=\"q4t\"} == 0 and q4t_business_connections{job=\"q4t\"} == 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#owners",
+                  "summary": "A worker remains owned after requests and structured leases have drained."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000115759,
+                "lastEvaluation": "2026-11-03T10:55:49.298100265+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TIdleResourcesRetained",
+                "query": "max by (job, instance) ((q4t_request_body_bytes{job=\"q4t\"} > 0 or q4t_structured_active{job=\"q4t\"} > 0 or (q4t_seq_slots_free{job=\"q4t\"} < on (job, instance) q4t_seq_slots_total{job=\"q4t\"})) and (q4t_active_chats{job=\"q4t\"} == 0 and q4t_business_connections{job=\"q4t\"} == 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 60,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#owners",
+                  "summary": "Resources remain retained while observed business work is idle."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.00011874,
+                "lastEvaluation": "2026-11-03T10:55:49.298217783+08:00",
+                "type": "alerting"
+              },
+              {
+                "state": "inactive",
+                "name": "Q4TExecutionProgressStalled",
+                "query": "max by (job, instance) ((q4t_active_chats{job=\"q4t\"} > 0) and (q4t_seq_slots_free{job=\"q4t\"} < on (job, instance) q4t_seq_slots_total{job=\"q4t\"}) and (changes(q4t_execution_steps_total{job=\"q4t\"}[5m]) == 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+                "duration": 300,
+                "keepFiringFor": 0,
+                "labels": {
+                  "component": "q4t-serve",
+                  "severity": "warning"
+                },
+                "annotations": {
+                  "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#progress",
+                  "summary": "No execution boundary progress was observed; investigate before acting."
+                },
+                "alerts": [],
+                "health": "ok",
+                "evaluationTime": 0.000109787,
+                "lastEvaluation": "2026-11-03T10:55:49.298339745+08:00",
+                "type": "alerting"
+              },
+              {
+                "name": "q4t:local_response_p95_seconds:5m",
+                "query": "histogram_quantile(0.95, sum by (job, instance, le) (rate(q4t_response_seconds_bucket{job=\"q4t\"}[5m])))",
+                "health": "ok",
+                "evaluationTime": 4.2343e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.298451801+08:00",
+                "type": "recording"
+              },
+              {
+                "name": "q4t:slot_wait_p95_seconds:5m",
+                "query": "histogram_quantile(0.95, sum by (job, instance, le) (rate(q4t_slot_wait_seconds_bucket{job=\"q4t\"}[5m])))",
+                "health": "ok",
+                "evaluationTime": 3.8999e-05,
+                "lastEvaluation": "2026-11-03T10:55:49.298496227+08:00",
+                "type": "recording"
+              }
+            ],
+            "interval": 15,
+            "limit": 0,
+            "evaluationTime": 0.002026761,
+            "lastEvaluation": "2026-11-03T10:55:49.296510974+08:00"
+          }
+        ]
+      }
+    }
+  }
+]

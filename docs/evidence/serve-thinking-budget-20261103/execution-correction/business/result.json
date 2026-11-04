@@ -1,0 +1,9 @@
+{
+  "status": "FAILED",
+  "error": "AssertionError('unclean shutdown')",
+  "request_attempts": 0,
+  "negative_requests": 0,
+  "starts": 1,
+  "seconds": 0.5070104850456119,
+  "performance_acceptance": false
+}

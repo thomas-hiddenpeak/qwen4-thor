@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 160
+X-Request-Id: req-b394477fde34a97d402b16c89b67b7a9
+Connection: close
+
+{"error":{"message":"reasoning_field must be reasoning or reasoning_content","type":"invalid_request_error","code":"invalid_request","param":"reasoning_field"}}

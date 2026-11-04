@@ -1,0 +1,26 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/frozen/candidate",
+    "serve",
+    "--model-dir",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "8764",
+    "--max-seq",
+    "2",
+    "--max-prefill",
+    "4096",
+    "--max-len",
+    "65536",
+    "--no-mtp",
+    "--moe-resident-slots",
+    "256"
+  ],
+  "environment": {
+    "Q4T_MOE_L2_SLOTS": "16",
+    "Q4T_MOE_MIRROR_K": "8",
+    "Q4T_MOE_LOAD_THREADS": "16"
+  }
+}

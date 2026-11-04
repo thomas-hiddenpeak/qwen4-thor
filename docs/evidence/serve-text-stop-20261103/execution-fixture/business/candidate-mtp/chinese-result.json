@@ -1,0 +1,15 @@
+{
+  "id": "chatcmpl-auto-99269db3ad8ccfbac51bfb874f1140f8",
+  "model": "qwen3.8-flash-next",
+  "message": {
+    "role": "assistant",
+    "content": "开始"
+  },
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 39,
+    "completion_tokens": 3,
+    "total_tokens": 42
+  },
+  "seconds": 0.27494831709191203
+}

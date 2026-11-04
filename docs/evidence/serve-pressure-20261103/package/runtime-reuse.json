@@ -1,0 +1,26 @@
+{
+  "runtime_sources": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/package/candidate/runtime-source.json",
+    "sha256": "b2272a8e0163f8304de26998c2fc79c5e1a2c9f73c4e50586253d4c86c91246e",
+    "bytes": 20563
+  },
+  "build_result": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/cpu/build-result.json",
+    "sha256": "605014d965a5f9733779bb2ff8582d9cb2d09c52780ddbccac68e2923cf17d57",
+    "bytes": 133
+  },
+  "host_required": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/cpu/host-gate/result.json",
+    "sha256": "83e27eb7be4c89de24c1230d605b25a3f4be100305cd986c25c36c396e68db2e",
+    "bytes": 10156
+  },
+  "actual_business": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/execution/business/result.json",
+    "sha256": "5621270e192064a6e690860ddb1f304cbd41d90ea338eb5dcbc1e68d7dd881eb",
+    "bytes": 414
+  },
+  "same_198_runtime_sources": true,
+  "new_build_needed": false,
+  "inherited_zero_warning_build": true,
+  "numerical_and_template_changes": false
+}

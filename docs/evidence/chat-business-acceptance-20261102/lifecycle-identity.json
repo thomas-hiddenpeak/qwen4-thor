@@ -1,0 +1,23 @@
+{
+  "script_sha256": "7a7bef75bc8efd42c49431a413b689805c252529ed7978b40167f0044d652858",
+  "plan_sha256": "b2df890b9040f8e40abbaa15b23f0a7173c503ecc250d1de9268be9e152d4562",
+  "container_id": "9fb0504fd908c42e0db4fb8e90cce7a037ecfe2c7bb2adbc256318144a715164",
+  "started_at": "2026-11-01T22:31:29.647037149Z",
+  "limits": {
+    "generations": 24,
+    "planned_generations": 23,
+    "negatives": 10,
+    "starts": 3,
+    "capability_gets": 6,
+    "agent_runs": 3,
+    "agent_rounds": 2,
+    "agent_tool_calls": 1,
+    "agent_max_tokens": 256,
+    "fault_cases": 8,
+    "fault_process_starts": 12,
+    "fault_seconds": 180,
+    "http_seconds": 1800,
+    "stage_seconds": 2400
+  },
+  "restore_timeout_seconds": 600
+}

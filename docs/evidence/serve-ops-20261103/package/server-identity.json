@@ -1,0 +1,10 @@
+{
+  "binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/deps/prometheus",
+    "sha256": "aeebc0ffc6529c87221ab12ff1f9fc276be488869ebc942ce3e4d7ffcfe6a97a",
+    "bytes": 154293542
+  },
+  "source_tar_sha256": "173389cc42bf09c4e6e54cb53fa07a5a835d7c261e14775d2183181d6e385d1c",
+  "global_install": false,
+  "daemon_started": false
+}

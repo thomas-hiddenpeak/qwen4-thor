@@ -1,0 +1,269 @@
+{
+  "passed": true,
+  "schema_id": "urn:q4t:serve-thinking-v1",
+  "accounting_checked": true,
+  "records": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/cache-fresh-wire.bin",
+      "usage": {
+        "prompt_tokens": 8507,
+        "completion_tokens": 18,
+        "total_tokens": 8525,
+        "completion_tokens_details": {
+          "reasoning_tokens": 11
+        },
+        "q4t_thinking_budget": {
+          "limit": 8,
+          "consumed": 8,
+          "forced_closure_tokens": 3
+        }
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/cache-restored-wire.bin",
+      "usage": {
+        "prompt_tokens": 8507,
+        "completion_tokens": 18,
+        "total_tokens": 8525,
+        "prompt_tokens_details": {
+          "cached_tokens": 8473
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 11
+        },
+        "q4t_thinking_budget": {
+          "limit": 8,
+          "consumed": 8,
+          "forced_closure_tokens": 3
+        }
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/cache-seed-wire.bin",
+      "usage": {
+        "prompt_tokens": 8467,
+        "completion_tokens": 18,
+        "total_tokens": 8485,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 11
+        },
+        "q4t_thinking_budget": {
+          "limit": 8,
+          "consumed": 8,
+          "forced_closure_tokens": 3
+        }
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/closed-prefix-wire.bin",
+      "usage": {
+        "prompt_tokens": 31,
+        "completion_tokens": 7,
+        "total_tokens": 38,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "q4t_thinking_budget": {
+          "limit": 0,
+          "consumed": 0,
+          "forced_closure_tokens": 0
+        }
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/natural-wire.bin",
+      "usage": {
+        "prompt_tokens": 55,
+        "completion_tokens": 26,
+        "total_tokens": 81,
+        "completion_tokens_details": {
+          "reasoning_tokens": 18
+        },
+        "q4t_thinking_budget": {
+          "limit": 128,
+          "consumed": 18,
+          "forced_closure_tokens": 0
+        }
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/null-budget-wire.bin",
+      "usage": {
+        "prompt_tokens": 55,
+        "completion_tokens": 26,
+        "total_tokens": 81
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/one-hidden-wire.bin",
+      "usage": {
+        "prompt_tokens": 55,
+        "completion_tokens": 11,
+        "total_tokens": 66,
+        "completion_tokens_details": {
+          "reasoning_tokens": 4
+        },
+        "q4t_thinking_budget": {
+          "limit": 1,
+          "consumed": 1,
+          "forced_closure_tokens": 3
+        }
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/ordinary-length-wire.bin",
+      "usage": {
+        "prompt_tokens": 55,
+        "completion_tokens": 1,
+        "total_tokens": 56,
+        "completion_tokens_details": {
+          "reasoning_tokens": 1
+        },
+        "q4t_thinking_budget": {
+          "limit": 0,
+          "consumed": 0,
+          "forced_closure_tokens": 1
+        }
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/project-answer-wire.bin",
+      "usage": {
+        "prompt_tokens": 415,
+        "completion_tokens": 51,
+        "total_tokens": 466,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "q4t_thinking_budget": {
+          "limit": 8,
+          "consumed": 0,
+          "forced_closure_tokens": 0
+        }
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/project-read-wire.bin",
+      "usage": {
+        "prompt_tokens": 424,
+        "completion_tokens": 65,
+        "total_tokens": 489,
+        "completion_tokens_details": {
+          "reasoning_tokens": 11
+        },
+        "q4t_thinking_budget": {
+          "limit": 8,
+          "consumed": 8,
+          "forced_closure_tokens": 3
+        }
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/schema-wire.bin",
+      "usage": {
+        "prompt_tokens": 60,
+        "completion_tokens": 16,
+        "total_tokens": 76,
+        "completion_tokens_details": {
+          "reasoning_tokens": 4
+        },
+        "q4t_thinking_budget": {
+          "limit": 1,
+          "consumed": 1,
+          "forced_closure_tokens": 3
+        }
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/sixteen-hidden-wire.bin",
+      "usage": {
+        "prompt_tokens": 55,
+        "completion_tokens": 26,
+        "total_tokens": 81,
+        "completion_tokens_details": {
+          "reasoning_tokens": 19
+        },
+        "q4t_thinking_budget": {
+          "limit": 16,
+          "consumed": 16,
+          "forced_closure_tokens": 3
+        }
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/sixteen-wire.bin",
+      "usage": {
+        "prompt_tokens": 55,
+        "completion_tokens": 26,
+        "total_tokens": 81,
+        "completion_tokens_details": {
+          "reasoning_tokens": 19
+        },
+        "q4t_thinking_budget": {
+          "limit": 16,
+          "consumed": 16,
+          "forced_closure_tokens": 3
+        }
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/unbudgeted-wire.bin",
+      "usage": {
+        "prompt_tokens": 55,
+        "completion_tokens": 26,
+        "total_tokens": 81
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-mtp/zero-wire.bin",
+      "usage": {
+        "prompt_tokens": 55,
+        "completion_tokens": 10,
+        "total_tokens": 65,
+        "completion_tokens_details": {
+          "reasoning_tokens": 3
+        },
+        "q4t_thinking_budget": {
+          "limit": 0,
+          "consumed": 0,
+          "forced_closure_tokens": 3
+        }
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-plain/plain-0-wire.bin",
+      "usage": {
+        "prompt_tokens": 55,
+        "completion_tokens": 10,
+        "total_tokens": 65,
+        "completion_tokens_details": {
+          "reasoning_tokens": 3
+        },
+        "q4t_thinking_budget": {
+          "limit": 0,
+          "consumed": 0,
+          "forced_closure_tokens": 3
+        }
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/business/candidate-plain/plain-16-wire.bin",
+      "usage": {
+        "prompt_tokens": 55,
+        "completion_tokens": 26,
+        "total_tokens": 81,
+        "completion_tokens_details": {
+          "reasoning_tokens": 19
+        },
+        "q4t_thinking_budget": {
+          "limit": 16,
+          "consumed": 16,
+          "forced_closure_tokens": 3
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+[
+  {
+    "message": {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_agent-f617d0ab53eed112946637138368568f_0",
+          "type": "function",
+          "function": {
+            "name": "lookup",
+            "arguments": "{\"key\":\"audit\"}"
+          }
+        }
+      ]
+    },
+    "finish": "tool_calls",
+    "usage": {
+      "prompt_tokens": 311,
+      "completion_tokens": 25,
+      "total_tokens": 336
+    }
+  },
+  {
+    "message": {
+      "role": "assistant",
+      "content": "831907"
+    },
+    "finish": "stop",
+    "usage": {
+      "prompt_tokens": 364,
+      "completion_tokens": 7,
+      "total_tokens": 371
+    }
+  }
+]

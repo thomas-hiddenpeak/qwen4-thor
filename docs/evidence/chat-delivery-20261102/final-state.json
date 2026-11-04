@@ -1,0 +1,53 @@
+{
+  "time": 1793601425.0130126,
+  "gpu": {
+    "status": "OK",
+    "pids": [],
+    "request_id": "f43a71adee9a2eb6dedc2286446ee4e8",
+    "worker_pid": 1115831,
+    "stdout": "{\"request_id\": \"f43a71adee9a2eb6dedc2286446ee4e8\", \"monotonic\": 1791507.495574326, \"event\": \"begin\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"f43a71adee9a2eb6dedc2286446ee4e8\", \"monotonic\": 1791507.503231718, \"event\": \"end\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"f43a71adee9a2eb6dedc2286446ee4e8\", \"monotonic\": 1791507.503264366, \"event\": \"begin\", \"api\": \"init\"}\n{\"request_id\": \"f43a71adee9a2eb6dedc2286446ee4e8\", \"monotonic\": 1791507.506855281, \"event\": \"end\", \"api\": \"init\", \"seconds\": 0.003576979972422123}\n{\"request_id\": \"f43a71adee9a2eb6dedc2286446ee4e8\", \"monotonic\": 1791507.506905207, \"event\": \"begin\", \"api\": \"device_count\"}\n{\"request_id\": \"f43a71adee9a2eb6dedc2286446ee4e8\", \"monotonic\": 1791507.506950882, \"event\": \"end\", \"api\": \"device_count\", \"seconds\": 3.442494198679924e-05}\n{\"request_id\": \"f43a71adee9a2eb6dedc2286446ee4e8\", \"monotonic\": 1791507.506966336, \"event\": \"begin\", \"api\": \"handle[0]\"}\n{\"request_id\": \"f43a71adee9a2eb6dedc2286446ee4e8\", \"monotonic\": 1791507.513472704, \"event\": \"end\", \"api\": \"handle[0]\", \"seconds\": 0.006498425034806132}\n{\"request_id\": \"f43a71adee9a2eb6dedc2286446ee4e8\", \"monotonic\": 1791507.513495362, \"event\": \"begin\", \"api\": \"compute_v3[0]\"}\n{\"request_id\": \"f43a71adee9a2eb6dedc2286446ee4e8\", \"monotonic\": 1791507.514554007, \"event\": \"end\", \"api\": \"compute_v3[0]\", \"seconds\": 0.0010519870556890965}\n{\"request_id\": \"f43a71adee9a2eb6dedc2286446ee4e8\", \"monotonic\": 1791507.514572035, \"event\": \"begin\", \"api\": \"shutdown\"}\n{\"request_id\": \"f43a71adee9a2eb6dedc2286446ee4e8\", \"monotonic\": 1791507.516440593, \"event\": \"end\", \"api\": \"shutdown\", \"seconds\": 0.001861365046352148}\n{\"request_id\": \"f43a71adee9a2eb6dedc2286446ee4e8\", \"monotonic\": 1791507.516464047, \"event\": \"result\", \"status\": \"OK\", \"error\": null, \"device_count\": 1, \"pids\": [], \"process_memory\": []}\n",
+    "stderr": "",
+    "returncode": 0,
+    "seconds": 0.062457285122945905,
+    "process_memory": [],
+    "device_count": 1
+  },
+  "shared_lock_available": true,
+  "global_recovery_marker": false,
+  "own_recovery_marker": false,
+  "sockets": "State  Recv-Q Send-Q Local Address:Port  Peer Address:PortProcess                                 \nLISTEN 0      4096         0.0.0.0:22         0.0.0.0:*                                           \nLISTEN 0      511        127.0.0.1:4141       0.0.0.0:*    users:((\"MainThread\",pid=715919,fd=21))\nLISTEN 0      128        127.0.0.1:62272      0.0.0.0:*                                           \nLISTEN 0      4096      127.0.0.54:53         0.0.0.0:*                                           \nLISTEN 0      4096   127.0.0.53%lo:53         0.0.0.0:*                                           \nLISTEN 0      5            0.0.0.0:58001      0.0.0.0:*    users:((\"python3\",pid=715229,fd=3))    \nLISTEN 0      4096               *:5201             *:*                                           \nLISTEN 0      4096               *:6566             *:*                                           \nLISTEN 0      4096            [::]:22            [::]:*                                           \n",
+  "finalized": {
+    "status": "DELIVERED",
+    "binary_sha256": "830694ce26621cdd852b9d0b064d42c217958e17c9444935dd9298ebcb645f51",
+    "sidecar_sha256": "0f28e0f08322c6ad513dc9117e95f6913d34876b43485534e150b67f8544f1aa",
+    "health": {
+      "status": "PASS",
+      "error": null,
+      "requests": 6,
+      "starts": 2,
+      "capability_gets": 2,
+      "agent_runs": 2,
+      "elapsed_seconds": 89.04621270415373
+    },
+    "persistent_service": false,
+    "performance_acceptance": false,
+    "finished": 1793601350.3007307
+  },
+  "metadata_chat": {
+    "protocol_sha256": "a765c021575bd68f46ecdbf099c9450e4b05e318e5b2d132215b3a880420a569",
+    "capabilities": "/v1/capabilities",
+    "tool_choice": [
+      "auto"
+    ],
+    "tool_calls": "complete validated calls only",
+    "reasoning": "reasoning_content",
+    "json_and_sse": true,
+    "tool_history_ids": true,
+    "constrained_decoding": false,
+    "media_acceptance": false,
+    "sdk_interoperability_acceptance": false,
+    "messages_parse_response_default": true,
+    "parse_response_false": true,
+    "raw_prompt_parsing": false
+  }
+}

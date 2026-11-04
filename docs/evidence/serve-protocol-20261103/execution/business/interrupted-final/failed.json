@@ -1,0 +1,5 @@
+{
+  "error": "JsSdkError('Error reading response: malformed server-sent event JSON.')",
+  "automatic_retry": false,
+  "completed_tool_calls": 0
+}

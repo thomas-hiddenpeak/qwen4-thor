@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 178
+X-Request-Id: trace-negative-6-chat
+Connection: close
+
+{"error":{"message":"max_completion_tokens must be an integer in [1,2147483647] or null","type":"invalid_request_error","code":"invalid_request","param":"max_completion_tokens"}}

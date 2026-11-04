@@ -1,0 +1,7 @@
+POST /v1/chat/preflight HTTP/1.1
+Host: localhost
+X-Request-Id: trace-route-2
+Content-Type: text/plain
+Content-Length: 2
+
+{}

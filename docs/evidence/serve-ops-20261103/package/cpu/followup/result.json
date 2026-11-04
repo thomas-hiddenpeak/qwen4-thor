@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "tools.serve_ops.test_driver",
+    "-v"
+  ],
+  "returncode": 0,
+  "seconds": 1.114980530925095,
+  "http_or_model_started": false
+}

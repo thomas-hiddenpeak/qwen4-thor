@@ -1,0 +1,1 @@
+{"id":"chatcmpl-auto-fb50f4e5e2475d2d4b58593c98d2c221","object":"chat.completion","created":1793645564,"model":"qwen3.8-flash-next","choices":[{"index":0,"message":{"role":"assistant","content":"\n\n710003","reasoning_content":"用户要求我只回复数字710003，不需要其他内容。\n"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":55,"completion_tokens":26,"total_tokens":81}}

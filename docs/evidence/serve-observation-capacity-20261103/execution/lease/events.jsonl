@@ -1,0 +1,55 @@
+{"utc": "2026-11-03T03:52:52.666512+00:00", "monotonic": 1868055.183391622, "pid": 2093972, "event": "lease_acquired"}
+{"utc": "2026-11-03T03:52:52.666560+00:00", "monotonic": 1868055.183437363, "pid": 2093972, "event": "cleanup_capabilities", "pidfd": true}
+{"utc": "2026-11-03T03:52:52.752716+00:00", "monotonic": 1868055.26960195, "pid": 2093972, "event": "preflight", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:52:52.753020+00:00", "monotonic": 1868055.269899709, "pid": 2093972, "event": "child_started", "child_pid": 2093976}
+{"utc": "2026-11-03T03:52:52.838406+00:00", "monotonic": 1868055.355293288, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:52:53.924691+00:00", "monotonic": 1868056.441580564, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:52:55.005527+00:00", "monotonic": 1868057.522419704, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:52:56.087165+00:00", "monotonic": 1868058.604054733, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:52:57.234075+00:00", "monotonic": 1868059.750969353, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:52:58.335896+00:00", "monotonic": 1868060.852788221, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:52:59.427201+00:00", "monotonic": 1868061.944092294, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:00.516944+00:00", "monotonic": 1868063.033837304, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:01.604669+00:00", "monotonic": 1868064.121561429, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:02.695198+00:00", "monotonic": 1868065.212092239, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:03.776778+00:00", "monotonic": 1868066.2936711, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:04.865738+00:00", "monotonic": 1868067.38262814, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:05.955030+00:00", "monotonic": 1868068.471929015, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:07.044787+00:00", "monotonic": 1868069.561678674, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:08.134917+00:00", "monotonic": 1868070.65180913, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:09.226605+00:00", "monotonic": 1868071.743494732, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:10.310827+00:00", "monotonic": 1868072.827719792, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:11.395287+00:00", "monotonic": 1868073.912182326, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:12.476761+00:00", "monotonic": 1868074.993652905, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:13.558427+00:00", "monotonic": 1868076.075318252, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:14.637625+00:00", "monotonic": 1868077.154515532, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:15.720175+00:00", "monotonic": 1868078.237066236, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:16.801133+00:00", "monotonic": 1868079.318023, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:17.884012+00:00", "monotonic": 1868080.400904494, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:18.974512+00:00", "monotonic": 1868081.491401519, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:20.057417+00:00", "monotonic": 1868082.574309605, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:21.140579+00:00", "monotonic": 1868083.657471439, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:22.229630+00:00", "monotonic": 1868084.746519488, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:23.317459+00:00", "monotonic": 1868085.834353328, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:24.400266+00:00", "monotonic": 1868086.917155263, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:25.480982+00:00", "monotonic": 1868087.997872191, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:26.564875+00:00", "monotonic": 1868089.081767568, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:27.660934+00:00", "monotonic": 1868090.177830388, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:28.747880+00:00", "monotonic": 1868091.264769956, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:29.836105+00:00", "monotonic": 1868092.353000399, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:30.924722+00:00", "monotonic": 1868093.44161591, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:32.015384+00:00", "monotonic": 1868094.532275437, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:33.110654+00:00", "monotonic": 1868095.6275524, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:34.201727+00:00", "monotonic": 1868096.718621357, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:35.282569+00:00", "monotonic": 1868097.799459004, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:36.380587+00:00", "monotonic": 1868098.89748709, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:37.486348+00:00", "monotonic": 1868100.003242384, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:38.577875+00:00", "monotonic": 1868101.094770005, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:39.660576+00:00", "monotonic": 1868102.177465941, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:40.752675+00:00", "monotonic": 1868103.269573909, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:41.847091+00:00", "monotonic": 1868104.3639848, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:42.942020+00:00", "monotonic": 1868105.458913521, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:44.159080+00:00", "monotonic": 1868106.675975853, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:45.238360+00:00", "monotonic": 1868107.755247249, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:46.318401+00:00", "monotonic": 1868108.835292271, "pid": 2093972, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-03T03:53:46.349294+00:00", "monotonic": 1868108.866171316, "pid": 2093972, "event": "lease_released", "status": "COMPLETED"}

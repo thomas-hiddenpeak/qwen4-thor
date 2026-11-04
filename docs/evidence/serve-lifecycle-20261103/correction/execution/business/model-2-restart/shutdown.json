@@ -1,0 +1,19 @@
+{
+  "mode": "SIGKILL",
+  "passed": true,
+  "pid": 2198904,
+  "start_ticks": 187491685,
+  "continuous_samples": 42,
+  "returncode": -9,
+  "exit_seconds": 0.4024155961815268,
+  "child_exit": [
+    {
+      "pid": 2200189,
+      "start_ticks": 187495908,
+      "state": "absent",
+      "running": false
+    }
+  ],
+  "scope_removed": true,
+  "elapsed_seconds": 0.8227687960024923
+}

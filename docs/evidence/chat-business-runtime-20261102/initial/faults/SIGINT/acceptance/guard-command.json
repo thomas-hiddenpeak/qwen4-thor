@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "/usr/bin/python3.12",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/gpu_exclusive.py",
+    "--output",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-business-runtime-20261102/faults/SIGINT/acceptance/lease",
+    "--",
+    "/usr/bin/python3.12",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/acceptance.py",
+    "worker",
+    "--plan",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-business-runtime-20261102/faults/SIGINT/acceptance/plan.json",
+    "--output",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-business-runtime-20261102/faults/SIGINT/acceptance"
+  ]
+}

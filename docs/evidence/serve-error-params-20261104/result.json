@@ -1,0 +1,65 @@
+{
+  "actual_lan_deployment": false,
+  "counts": {
+    "controls": 16,
+    "generation_attempts": 30,
+    "starts": 1
+  },
+  "cpu_public": 287,
+  "cpu_required": 253,
+  "cpu_structured": 9,
+  "differential": 91,
+  "driver_effective": 4,
+  "full_physical_ram_protection": false,
+  "generations": 6,
+  "gpu_seconds": 54.67696634680033,
+  "guard_observations": 52,
+  "http_refusals": 36,
+  "improved_error_locations": 77,
+  "installed": {
+    "q4t": "49cc78cdf03ba56f7a9b51f682cc61e636f6b36d2784289071b3c6ac5352c38a",
+    "q4t.release.json": "055f4f3e406e05cdded906ae64ec72eaf687e381d3f09974be0e3a94c04d2067"
+  },
+  "long_run": false,
+  "new_verification_http": 0,
+  "offline_failures_preserved": true,
+  "original_generated_failure_preserved": true,
+  "owned_processes_reaped": 2,
+  "performance_acceptance": false,
+  "protocol_sha256": "fc63db28261a37ead3b633e0cd704a128e91b4eac264ea8125f715ac4b2834aa",
+  "real_tools": 2,
+  "status": "ACCEPT_BOUNDED_ERROR_PARAMS",
+  "unchanged_successes": 14,
+  "usage": {
+    "ordinary": {
+      "completion_tokens": 7,
+      "prompt_tokens": 22,
+      "total_tokens": 29
+    },
+    "project-alpha-answer": {
+      "completion_tokens": 58,
+      "prompt_tokens": 890,
+      "total_tokens": 948
+    },
+    "project-alpha-read": {
+      "completion_tokens": 55,
+      "prompt_tokens": 564,
+      "total_tokens": 619
+    },
+    "project-beta-answer": {
+      "completion_tokens": 58,
+      "prompt_tokens": 890,
+      "total_tokens": 948
+    },
+    "project-beta-read": {
+      "completion_tokens": 55,
+      "prompt_tokens": 564,
+      "total_tokens": 619
+    },
+    "structured": {
+      "completion_tokens": 6,
+      "prompt_tokens": 19,
+      "total_tokens": 25
+    }
+  }
+}

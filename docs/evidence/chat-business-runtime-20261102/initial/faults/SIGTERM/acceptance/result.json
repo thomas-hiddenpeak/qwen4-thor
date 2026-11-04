@@ -1,0 +1,7 @@
+{
+  "status": "FAIL",
+  "error": "KeyboardInterrupt('acceptance interrupted by SIGTERM')",
+  "performance_acceptance": false,
+  "deployed": false,
+  "scope": "Bounded chat integration only; no deployment authorization."
+}

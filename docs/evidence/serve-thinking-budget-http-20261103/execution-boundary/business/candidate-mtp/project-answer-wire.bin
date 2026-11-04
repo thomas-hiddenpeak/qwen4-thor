@@ -1,0 +1,10 @@
+data: {"id":"chatcmpl-auto-d1a1c728c13339896ccdf00e160c85d5","object":"chat.completion.chunk","created":1793646601,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"chatcmpl-auto-d1a1c728c13339896ccdf00e160c85d5","object":"chat.completion.chunk","created":1793646601,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"根据读取到的内容：\n\n**模型架构名称：** `Qwen3.8-Flash-Next (qwen4_exp)`\n\n**逐字引用工具给出的 citation：**\n\n`[docs/MODEL.md:L1-L8]`"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"chatcmpl-auto-d1a1c728c13339896ccdf00e160c85d5","object":"chat.completion.chunk","created":1793646601,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+data: {"id":"chatcmpl-auto-d1a1c728c13339896ccdf00e160c85d5","object":"chat.completion.chunk","created":1793646601,"model":"qwen3.8-flash-next","choices":[],"usage":{"prompt_tokens":415,"completion_tokens":51,"total_tokens":466,"completion_tokens_details":{"reasoning_tokens":0},"q4t_thinking_budget":{"limit":8,"consumed":0,"forced_closure_tokens":0}}}
+
+data: [DONE]
+

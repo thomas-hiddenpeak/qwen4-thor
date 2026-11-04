@@ -1,0 +1,15 @@
+{
+  "status": "PASS_BOUNDED_GRAMMAR_ISOLATION",
+  "reused_prior_cases": "/home/rm01/models/dev/qwen4-thor/.q4t-work/grammar-isolation-20261102-repair/execution/business",
+  "reused_prior_seal": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/grammar-isolation-20261102-repair/execution/sealed-files.json",
+    "sha256": "d7de557e012b3653dd9b6243948af021ec06c4a825dc53cf0c01adfedf9f9f60",
+    "bytes": 6881
+  },
+  "total_attempts_with_failed_first": 11,
+  "total_starts": 3,
+  "request_attempts": 3,
+  "starts": 1,
+  "seconds": 46.65007488615811,
+  "performance_acceptance": false
+}

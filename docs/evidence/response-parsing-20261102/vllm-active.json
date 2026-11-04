@@ -1,0 +1,19 @@
+{
+  "time": "2026-11-02T03:12:01+0800",
+  "metrics": [
+    "vllm:num_requests_running{engine=\"0\",model_name=\"qwen3.8-flash-next\"} 1.0",
+    "vllm:num_requests_waiting{engine=\"0\",model_name=\"qwen3.8-flash-next\"} 0.0",
+    "vllm:num_requests_waiting_by_reason{engine=\"0\",model_name=\"qwen3.8-flash-next\",reason=\"capacity\"} 0.0",
+    "vllm:num_requests_waiting_by_reason{engine=\"0\",model_name=\"qwen3.8-flash-next\",reason=\"deferred\"} 0.0",
+    "vllm:prompt_tokens_total{engine=\"0\",model_name=\"qwen3.8-flash-next\"} 21854.0",
+    "vllm:generation_tokens_total{engine=\"0\",model_name=\"qwen3.8-flash-next\"} 5762.0",
+    "vllm:request_success_total{engine=\"0\",finished_reason=\"stop\",model_name=\"qwen3.8-flash-next\"} 8.0",
+    "vllm:request_success_total{engine=\"0\",finished_reason=\"length\",model_name=\"qwen3.8-flash-next\"} 0.0",
+    "vllm:request_success_total{engine=\"0\",finished_reason=\"abort\",model_name=\"qwen3.8-flash-next\"} 0.0",
+    "vllm:request_success_total{engine=\"0\",finished_reason=\"error\",model_name=\"qwen3.8-flash-next\"} 0.0",
+    "vllm:request_success_total{engine=\"0\",finished_reason=\"repetition\",model_name=\"qwen3.8-flash-next\"} 0.0"
+  ],
+  "gpu": "utilization.gpu [%]\n97 %\n",
+  "compute": "pid, process_name\n724780, VLLM::EngineCore\n",
+  "decision": "DEVELOPMENT_ONLY_NO_TESTS: live vLLM business; do not stop service"
+}

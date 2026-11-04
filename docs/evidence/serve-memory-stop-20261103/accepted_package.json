@@ -1,0 +1,34 @@
+{
+  "status": "PASS_MANAGED_MEMORY_STOP",
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/package",
+    "manifest_sha256": "dd94fb050aa23adad672cbf15935cb2c6d35bedf58468b086f39c42160dc030a",
+    "binary_sha256": "d66f2bb9df3a34eda1b885da148e6971c25137564e500b9357bd5f9a5f8dfb1b"
+  },
+  "operational_source_commit": "96e0d76a9882067c82dd3138fde91ad401ccffef",
+  "acceptance": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/result.json",
+    "sha256": "071207914981ffe93c007c3e7d1a18c5dfc013d22b5a7ecda7b6b6ed57cc44c3",
+    "bytes": 531
+  },
+  "statistics": {
+    "pressure_rows": 52,
+    "pressure_peak_bytes": 2415919104,
+    "minimum_available_bytes": 31964168192,
+    "minimum_free_bytes": 13345083392,
+    "guard_observations": 53,
+    "full_observation_upper_bound": 203
+  },
+  "default_binary_sha256": "d66f2bb9df3a34eda1b885da148e6971c25137564e500b9357bd5f9a5f8dfb1b",
+  "default_release_sha256": "42d7672ab473aceb315889be8eeac54310121fd47d4ac861d4d40fcc2bfea1f5",
+  "accepted_critical_memory_mib": 30720,
+  "default_1024_mib_threshold_cpu_only": true,
+  "physical_ram_hard_limit": false,
+  "persistent_service_installed": false,
+  "rollback_package": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/package",
+    "manifest_sha256": "71da1a1d05e3d83dbf28df052c249646e5e80a48639af54b9513debff266af0d",
+    "version": 1
+  },
+  "new_model_or_http": 0
+}

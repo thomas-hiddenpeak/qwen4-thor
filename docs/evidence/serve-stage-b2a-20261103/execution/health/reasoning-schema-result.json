@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "schema_id": "urn:q4t:serve-reasoning-v1",
+  "records": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/execution/health/candidate-installed/reasoning-installed-wire.bin",
+      "field": "reasoning",
+      "include_reasoning": true,
+      "validated_messages": 1
+    }
+  ]
+}

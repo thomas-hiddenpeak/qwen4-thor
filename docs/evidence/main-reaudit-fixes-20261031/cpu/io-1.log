@@ -1,0 +1,39 @@
+[  2%] Building CXX object CMakeFiles/q4t_io_contracts.dir/home/rm01/models/dev/qwen4-thor/tests/test_main.cpp.o
+[  5%] Building CXX object CMakeFiles/q4t_weight_loader_contracts.dir/home/rm01/models/dev/qwen4-thor/tests/test_main.cpp.o
+[  8%] Building CXX object CMakeFiles/q4t_safetensors_validation.dir/home/rm01/models/dev/qwen4-thor/tests/test_main.cpp.o
+[ 11%] Building CXX object CMakeFiles/q4t_residency_host_contracts.dir/home/rm01/models/dev/qwen4-thor/tests/test_main.cpp.o
+[ 14%] Building CXX object CMakeFiles/q4t_safetensors_validation.dir/home/rm01/models/dev/qwen4-thor/tests/safetensors_validation_test.cpp.o
+[ 17%] Building CXX object CMakeFiles/q4t_io_contracts.dir/home/rm01/models/dev/qwen4-thor/tests/io_read_contract_test.cpp.o
+[ 20%] Building CXX object CMakeFiles/q4t_weight_loader_contracts.dir/home/rm01/models/dev/qwen4-thor/tests/weight_loader_contract_test.cpp.o
+[ 23%] Building CXX object CMakeFiles/q4t_residency_host_contracts.dir/home/rm01/models/dev/qwen4-thor/tests/residency_host_contract_test.cpp.o
+[ 26%] Building CXX object CMakeFiles/q4t_safetensors_validation.dir/home/rm01/models/dev/qwen4-thor/src/io/json.cpp.o
+[ 29%] Building CXX object CMakeFiles/q4t_weight_loader_contracts.dir/home/rm01/models/dev/qwen4-thor/src/io/json.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_safetensors_validation.dir/home/rm01/models/dev/qwen4-thor/src/io/safetensors.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_io_contracts.dir/home/rm01/models/dev/qwen4-thor/src/io/json.cpp.o
+[ 38%] Building CXX object CMakeFiles/q4t_residency_host_contracts.dir/home/rm01/models/dev/qwen4-thor/src/quant/moe_residency.cpp.o
+[ 41%] Building CXX object CMakeFiles/q4t_weight_loader_contracts.dir/home/rm01/models/dev/qwen4-thor/src/io/safetensors.cpp.o
+[ 44%] Building CXX object CMakeFiles/q4t_io_contracts.dir/home/rm01/models/dev/qwen4-thor/src/io/safetensors.cpp.o
+[ 47%] Building CXX object CMakeFiles/q4t_safetensors_validation.dir/home/rm01/models/dev/qwen4-thor/src/io/weight_loader.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_weight_loader_contracts.dir/home/rm01/models/dev/qwen4-thor/src/io/weight_loader.cpp.o
+[ 52%] Building CXX object CMakeFiles/q4t_io_contracts.dir/home/rm01/models/dev/qwen4-thor/src/io/weight_loader.cpp.o
+[ 55%] Linking CXX executable q4t_safetensors_validation
+[ 55%] Built target q4t_safetensors_validation
+[ 58%] Building CXX object CMakeFiles/q4t_residency_cuda_contracts.dir/home/rm01/models/dev/qwen4-thor/tests/test_main.cpp.o
+[ 61%] Building CXX object CMakeFiles/q4t_residency_host_contracts.dir/home/rm01/models/dev/qwen4-thor/src/quant/moe_weights.cpp.o
+[ 64%] Building CXX object CMakeFiles/q4t_residency_cuda_contracts.dir/home/rm01/models/dev/qwen4-thor/tests/residency_host_contract_test.cpp.o
+[ 67%] Linking CXX executable q4t_weight_loader_contracts
+[ 67%] Built target q4t_weight_loader_contracts
+[ 70%] Building CXX object CMakeFiles/q4t_residency_cuda_contracts.dir/home/rm01/models/dev/qwen4-thor/src/quant/moe_residency.cpp.o
+[ 73%] Linking CXX executable q4t_io_contracts
+[ 73%] Built target q4t_io_contracts
+[ 76%] Building CXX object CMakeFiles/q4t_residency_host_contracts.dir/home/rm01/models/dev/qwen4-thor/src/io/json.cpp.o
+[ 79%] Building CXX object CMakeFiles/q4t_residency_host_contracts.dir/home/rm01/models/dev/qwen4-thor/src/io/safetensors.cpp.o
+[ 82%] Building CXX object CMakeFiles/q4t_residency_host_contracts.dir/home/rm01/models/dev/qwen4-thor/src/io/weight_loader.cpp.o
+[ 85%] Building CXX object CMakeFiles/q4t_residency_cuda_contracts.dir/home/rm01/models/dev/qwen4-thor/src/quant/moe_weights.cpp.o
+[ 88%] Building CXX object CMakeFiles/q4t_residency_cuda_contracts.dir/home/rm01/models/dev/qwen4-thor/src/io/json.cpp.o
+[ 91%] Building CXX object CMakeFiles/q4t_residency_cuda_contracts.dir/home/rm01/models/dev/qwen4-thor/src/io/safetensors.cpp.o
+[ 94%] Linking CXX executable q4t_residency_host_contracts
+[ 94%] Built target q4t_residency_host_contracts
+[ 97%] Building CXX object CMakeFiles/q4t_residency_cuda_contracts.dir/home/rm01/models/dev/qwen4-thor/src/io/weight_loader.cpp.o
+[100%] Linking CXX executable q4t_residency_cuda_contracts
+[100%] Built target q4t_residency_cuda_contracts

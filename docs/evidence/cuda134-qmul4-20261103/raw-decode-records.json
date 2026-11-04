@@ -1,0 +1,99 @@
+{
+  "schema": "q4t.raw_instruction_decode_evidence.v1",
+  "scope": "Software decoder support only; not a hardware execution result",
+  "local_root": "/home/rm01/models/dev/qwen4-thor/.q4t-work/cuda134-qmul4-20261103/raw-decode",
+  "records": [
+    {
+      "path": "SM100a-qmul4.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "text": ""
+    },
+    {
+      "path": "SM100a-qmul4.stdout.txt",
+      "bytes": 462,
+      "sha256": "f2e15a1818ffc15e4396a05a00ac6b88040e471b8aebaa5daa2dda87ad5ef9c6",
+      "text": "\t.headerflags\t@\"EF_CUDA_64BIT_ADDRESS EF_CUDA_ACCELERATORS EF_CUDA_SM100 EF_CUDA_VIRTUAL_SM(EF_CUDA_SM100)\"\n\t.headerflags\t@\"EF_CUDA_64BIT_ADDRESS EF_CUDA_ACCELERATORS EF_CUDA_SM100 EF_CUDA_VIRTUAL_SM(EF_CUDA_SM100)\"\n        /*0000*/                   QMUL4.E4M3x4.E2M1x4.E4M3x4.SATFINITE R5, R4.N3210, R5.B3210 ;  /* 0x000000050405727c */\n                                                                                                  /* 0x001fca000501b800 */\n"
+    },
+    {
+      "path": "SM103a-qmul4.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "text": ""
+    },
+    {
+      "path": "SM103a-qmul4.stdout.txt",
+      "bytes": 462,
+      "sha256": "0ec983e2cc145549d3fb9593fcb7f796f5380c42e893a5f3394d37e8f980d8db",
+      "text": "\t.headerflags\t@\"EF_CUDA_64BIT_ADDRESS EF_CUDA_ACCELERATORS EF_CUDA_SM103 EF_CUDA_VIRTUAL_SM(EF_CUDA_SM103)\"\n\t.headerflags\t@\"EF_CUDA_64BIT_ADDRESS EF_CUDA_ACCELERATORS EF_CUDA_SM103 EF_CUDA_VIRTUAL_SM(EF_CUDA_SM103)\"\n        /*0000*/                   QMUL4.E4M3x4.E2M1x4.E4M3x4.SATFINITE R5, R4.N3210, R5.B3210 ;  /* 0x000000050405727c */\n                                                                                                  /* 0x001fca000501b800 */\n"
+    },
+    {
+      "path": "SM110a-nop.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "text": ""
+    },
+    {
+      "path": "SM110a-nop.stdout.txt",
+      "bytes": 348,
+      "sha256": "20bb13883c947a04fce699e694cf72e8f76633284791685ad713855df6ec85a3",
+      "text": "\t.headerflags\t@\"EF_CUDA_64BIT_ADDRESS EF_CUDA_ACCELERATORS EF_CUDA_SM110 EF_CUDA_VIRTUAL_SM(EF_CUDA_SM110)\"\n\t.headerflags\t@\"EF_CUDA_64BIT_ADDRESS EF_CUDA_ACCELERATORS EF_CUDA_SM110 EF_CUDA_VIRTUAL_SM(EF_CUDA_SM110)\"\n        /*0000*/                   NOP;  /* 0x0000000000007918 */\n                                         /* 0x000fc00000000000 */\n"
+    },
+    {
+      "path": "SM110a-qmul4.stderr.txt",
+      "bytes": 134,
+      "sha256": "32ccc260bdf6b224c9da904f6617c8089585141f124a5e0b8ff99c7bc7404757",
+      "text": "nvdisasm error   : Unrecognized operation for functional unit 'uC' at address 0x00000000\nnvdisasm error   : Illegal instruction found\n"
+    },
+    {
+      "path": "SM110a-qmul4.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "text": ""
+    },
+    {
+      "path": "SM120a-qmul4.stderr.txt",
+      "bytes": 134,
+      "sha256": "32ccc260bdf6b224c9da904f6617c8089585141f124a5e0b8ff99c7bc7404757",
+      "text": "nvdisasm error   : Unrecognized operation for functional unit 'uC' at address 0x00000000\nnvdisasm error   : Illegal instruction found\n"
+    },
+    {
+      "path": "SM120a-qmul4.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "text": ""
+    },
+    {
+      "path": "SM90a-qmul4.stderr.txt",
+      "bytes": 134,
+      "sha256": "32ccc260bdf6b224c9da904f6617c8089585141f124a5e0b8ff99c7bc7404757",
+      "text": "nvdisasm error   : Unrecognized operation for functional unit 'uC' at address 0x00000000\nnvdisasm error   : Illegal instruction found\n"
+    },
+    {
+      "path": "SM90a-qmul4.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "text": ""
+    },
+    {
+      "path": "results.json",
+      "bytes": 3898,
+      "sha256": "bd4e79aff093e0c80ab66b150e72fe8143341ac31aa1a3baed8408a740c8f87c",
+      "text": "{\n  \"timestamp_asia_shanghai\": \"2026-11-03T23:16:55.889151+08:00\",\n  \"scope\": \"CPU_ONLY_RAW_INSTRUCTION_DECODER_NOT_HARDWARE_EXECUTION\",\n  \"source\": \"/home/rm01/models/dev/qwen4-thor/.q4t-work/cuda134-qmul4-20261103/evidence/assembly/sm_100a-qmul4.cubin\",\n  \"source_sha256\": \"21377033e0e8dfbac1c576ab98679c06a0dfdf45eadddb23a491a329135c5aaf\",\n  \"section\": \".text.Qmul4Probe\",\n  \"section_file_offset\": 1792,\n  \"qmul4_offset_in_section\": 64,\n  \"qmul4_bytes_hex\": \"7c7205040500000000b8010500ca1f00\",\n  \"nvdisasm_sha256\": \"9994b1bedb245ee5aee479cb7420abed189a13583a78bb0a0f4b62abef7bbd2d\",\n  \"cases\": [\n    {\n      \"target\": \"SM100a\",\n      \"input\": \"qmul4.bin\",\n      \"argv\": [\n        \"/home/rm01/models/dev/qwen4-thor/.q4t-work/cuda134-qmul4-20261103/toolchain/cuda_nvdisasm-linux-sbsa-13.4.92-archive/bin/nvdisasm\",\n        \"--binary\",\n        \"SM100a\",\n        \"--no-dataflow\",\n        \"--print-instruction-encoding\",\n        \"/home/rm01/models/dev/qwen4-thor/.q4t-work/cuda134-qmul4-20261103/raw-decode/qmul4.bin\"\n      ],\n      \"returncode\": 0,\n      \"stdout_file\": \"SM100a-qmul4.stdout.txt\",\n      \"stderr_file\": \"SM100a-qmul4.stderr.txt\"\n    },\n    {\n      \"target\": \"SM103a\",\n      \"input\": \"qmul4.bin\",\n      \"argv\": [\n        \"/home/rm01/models/dev/qwen4-thor/.q4t-work/cuda134-qmul4-20261103/toolchain/cuda_nvdisasm-linux-sbsa-13.4.92-archive/bin/nvdisasm\",\n        \"--binary\",\n        \"SM103a\",\n        \"--no-dataflow\",\n        \"--print-instruction-encoding\",\n        \"/home/rm01/models/dev/qwen4-thor/.q4t-work/cuda134-qmul4-20261103/raw-decode/qmul4.bin\"\n      ],\n      \"returncode\": 0,\n      \"stdout_file\": \"SM103a-qmul4.stdout.txt\",\n      \"stderr_file\": \"SM103a-qmul4.stderr.txt\"\n    },\n    {\n      \"target\": \"SM110a\",\n      \"input\": \"qmul4.bin\",\n      \"argv\": [\n        \"/home/rm01/models/dev/qwen4-thor/.q4t-work/cuda134-qmul4-20261103/toolchain/cuda_nvdisasm-linux-sbsa-13.4.92-archive/bin/nvdisasm\",\n        \"--binary\",\n        \"SM110a\",\n        \"--no-dataflow\",\n        \"--print-instruction-encoding\",\n        \"/home/rm01/models/dev/qwen4-thor/.q4t-work/cuda134-qmul4-20261103/raw-decode/qmul4.bin\"\n      ],\n      \"returncode\": 1,\n      \"stdout_file\": \"SM110a-qmul4.stdout.txt\",\n      \"stderr_file\": \"SM110a-qmul4.stderr.txt\"\n    },\n    {\n      \"target\": \"SM120a\",\n      \"input\": \"qmul4.bin\",\n      \"argv\": [\n        \"/home/rm01/models/dev/qwen4-thor/.q4t-work/cuda134-qmul4-20261103/toolchain/cuda_nvdisasm-linux-sbsa-13.4.92-archive/bin/nvdisasm\",\n        \"--binary\",\n        \"SM120a\",\n        \"--no-dataflow\",\n        \"--print-instruction-encoding\",\n        \"/home/rm01/models/dev/qwen4-thor/.q4t-work/cuda134-qmul4-20261103/raw-decode/qmul4.bin\"\n      ],\n      \"returncode\": 1,\n      \"stdout_file\": \"SM120a-qmul4.stdout.txt\",\n      \"stderr_file\": \"SM120a-qmul4.stderr.txt\"\n    },\n    {\n      \"target\": \"SM90a\",\n      \"input\": \"qmul4.bin\",\n      \"argv\": [\n        \"/home/rm01/models/dev/qwen4-thor/.q4t-work/cuda134-qmul4-20261103/toolchain/cuda_nvdisasm-linux-sbsa-13.4.92-archive/bin/nvdisasm\",\n        \"--binary\",\n        \"SM90a\",\n        \"--no-dataflow\",\n        \"--print-instruction-encoding\",\n        \"/home/rm01/models/dev/qwen4-thor/.q4t-work/cuda134-qmul4-20261103/raw-decode/qmul4.bin\"\n      ],\n      \"returncode\": 1,\n      \"stdout_file\": \"SM90a-qmul4.stdout.txt\",\n      \"stderr_file\": \"SM90a-qmul4.stderr.txt\"\n    },\n    {\n      \"target\": \"SM110a\",\n      \"input\": \"nop.bin\",\n      \"argv\": [\n        \"/home/rm01/models/dev/qwen4-thor/.q4t-work/cuda134-qmul4-20261103/toolchain/cuda_nvdisasm-linux-sbsa-13.4.92-archive/bin/nvdisasm\",\n        \"--binary\",\n        \"SM110a\",\n        \"--no-dataflow\",\n        \"--print-instruction-encoding\",\n        \"/home/rm01/models/dev/qwen4-thor/.q4t-work/cuda134-qmul4-20261103/raw-decode/nop.bin\"\n      ],\n      \"returncode\": 0,\n      \"stdout_file\": \"SM110a-nop.stdout.txt\",\n      \"stderr_file\": \"SM110a-nop.stderr.txt\"\n    }\n  ]\n}\n"
+    }
+  ],
+  "raw_inputs": [
+    {
+      "path": "nop.bin",
+      "bytes": 16,
+      "sha256": "1041156f43c29151c87b88265195e80cc7fa8aec0047efca2d5e2658dd73cf2f",
+      "hex": "18790000000000000000000000c00f00"
+    },
+    {
+      "path": "qmul4.bin",
+      "bytes": 16,
+      "sha256": "9d0fb5db4cd15dc20a6d909dacd9d7598410a5e67736ad67c598c21c4407d12e",
+      "hex": "7c7205040500000000b8010500ca1f00"
+    }
+  ]
+}

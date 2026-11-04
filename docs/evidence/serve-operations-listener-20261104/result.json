@@ -1,0 +1,183 @@
+{
+  "accepted_package": {
+    "binary_sha256": "7eff020de66b96f3175b3e123909be9e2f58142d54d1dd5992750d23cbe9c769",
+    "manifest_sha256": "c4775a10cf6c2d308729a0e6decd0f1178d4aa8f27f50391d7b090e96e1a349a",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-operations-listener-20261104/accepted-backend"
+  },
+  "actual_lan_accepted": false,
+  "archived_bytes": 5033292,
+  "archived_records": 337,
+  "business_repair_driver": 3,
+  "continuation_driver": 2,
+  "default_operations_listener_enabled": false,
+  "diagnostic_targeted": 33,
+  "explicit_cancel": 1,
+  "final_driver": 5,
+  "host_public": 289,
+  "host_required": 255,
+  "independent_operations_enabled_in_acceptance": true,
+  "installed": {
+    "q4t": "7eff020de66b96f3175b3e123909be9e2f58142d54d1dd5992750d23cbe9c769",
+    "q4t.release.json": "abfaeff90bf460f1ff0cf0ee1f32da70d186e5ada0ab735e4576fc0d51c78e53"
+  },
+  "leases": [
+    {
+      "observations": 2,
+      "run": "execution",
+      "seconds": 1.270285643870011,
+      "status": "COMMAND_FAILED"
+    },
+    {
+      "observations": 58,
+      "run": "execution-02",
+      "seconds": 61.816655098926276,
+      "status": "COMMAND_FAILED"
+    },
+    {
+      "observations": 39,
+      "run": "execution-03",
+      "seconds": 41.58040323597379,
+      "status": "COMMAND_FAILED"
+    },
+    {
+      "observations": 51,
+      "run": "execution-04",
+      "seconds": 54.627014325000346,
+      "status": "COMPLETED"
+    }
+  ],
+  "local_references": 893,
+  "long_runs_executed": false,
+  "managed_lifecycle_accepted": false,
+  "managed_package_version": 6,
+  "native_repair_driver": 2,
+  "native_tests": 33,
+  "negative_probes": 6,
+  "numerical_or_performance_acceptance": false,
+  "owned_processes": [
+    {
+      "pid": 2648421,
+      "role": "native",
+      "run": "execution-02",
+      "start_ticks": 196367607
+    },
+    {
+      "pid": 2649009,
+      "role": "native",
+      "run": "execution-03",
+      "start_ticks": 196395776
+    },
+    {
+      "pid": 2650025,
+      "role": "nginx",
+      "run": "execution-03",
+      "start_ticks": 196399657
+    },
+    {
+      "pid": 2649263,
+      "role": "scoped-model",
+      "run": "execution-03",
+      "start_ticks": 196396046
+    },
+    {
+      "pid": 2651174,
+      "role": "nginx",
+      "run": "execution-04",
+      "start_ticks": 196432761
+    },
+    {
+      "pid": 2650416,
+      "role": "scoped-model",
+      "run": "execution-04",
+      "start_ticks": 196429191
+    }
+  ],
+  "physical_ram_hard_limit_proved": false,
+  "previous_binary_sha256": "49cc78cdf03ba56f7a9b51f682cc61e636f6b36d2784289071b3c6ac5352c38a",
+  "prior_failures_preserved": true,
+  "privacy": "Live API keys, gateway token, cancellation credentials and private TLS material stay local; omitted originals are hash references, not backups.",
+  "production_commit": "5e52dc17",
+  "protocol_sha256": "ddfba8c002d8fb899b4c00d42612b0a26669036a1acc65e8292a10c0a9b69342",
+  "python_unique_base": 173,
+  "real_tools": 2,
+  "resources": {
+    "containers_empty": true,
+    "gpu_empty": true,
+    "lock_released": true,
+    "owned_processes_gone": true,
+    "passed": true,
+    "ports_released": [
+      18132,
+      18133,
+      18452
+    ],
+    "restore_masked": true
+  },
+  "rollback_pair": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-operations-listener-20261104/package-business-fix/previous",
+  "rules_scenarios": {
+    "v3": 26,
+    "v4": 31,
+    "v5": 41
+  },
+  "status": "ACCEPT_BOUNDED_OPERATIONS_LISTENER",
+  "structured_cpu": 9,
+  "successes": [
+    {
+      "finish_reason": "stop",
+      "label": "ordinary-recovery",
+      "seconds": 0.3566860069986433,
+      "usage": {
+        "completion_tokens": 7,
+        "prompt_tokens": 22,
+        "total_tokens": 29
+      }
+    },
+    {
+      "finish_reason": "tool_calls",
+      "label": "project-alpha-read",
+      "seconds": 3.761752433143556,
+      "usage": {
+        "completion_tokens": 55,
+        "prompt_tokens": 564,
+        "total_tokens": 619
+      }
+    },
+    {
+      "finish_reason": "stop",
+      "label": "project-alpha-answer",
+      "seconds": 4.045922894030809,
+      "usage": {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    },
+    {
+      "finish_reason": "tool_calls",
+      "label": "project-beta-read",
+      "seconds": 3.735018242150545,
+      "usage": {
+        "completion_tokens": 55,
+        "prompt_tokens": 564,
+        "total_tokens": 619
+      }
+    },
+    {
+      "finish_reason": "stop",
+      "label": "project-beta-answer",
+      "seconds": 4.027759286109358,
+      "usage": {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    }
+  ],
+  "successful_responses": 5,
+  "total_generation_attempts": 7,
+  "total_lease_seconds": 159.29435830377042,
+  "total_models": 2,
+  "total_observations": 150,
+  "validation_commit": "be6f634514164c53d4ef02a998dbf66eb8dab072",
+  "zero_warning_build": true
+}

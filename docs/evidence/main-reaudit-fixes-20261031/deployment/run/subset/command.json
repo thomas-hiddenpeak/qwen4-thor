@@ -1,0 +1,31 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "serve",
+    "--model-dir",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "8764",
+    "--max-seq",
+    "4",
+    "--max-prefill",
+    "4096",
+    "--max-len",
+    "208896",
+    "--seq-capacities",
+    "208896,65536,65536,65536",
+    "--prefix-cache-checkpoints",
+    "8192",
+    "--session-cache-dir",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/deployment/run/subset/session",
+    "--prefix-cache-dir",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/deployment/run/subset/prefix",
+    "--mtp-subset-head",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/delivery-package/artifact"
+  ],
+  "environment": {
+    "Q4T_SESSION_INCREMENTAL": "1"
+  }
+}

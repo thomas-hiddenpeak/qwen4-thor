@@ -1,0 +1,20 @@
+{
+  "status": "PASS_CURRENT_MANAGED_SHORT_SOAK",
+  "performance_acceptance": false,
+  "automatically_started": false,
+  "persistent_service_installed": false,
+  "profile": "short",
+  "day_scale_stability_proved": false,
+  "starts": 1,
+  "successful_requests": 40,
+  "real_tool_executions": 8,
+  "cleanup_confirmed": true,
+  "counts": {
+    "generations": 40,
+    "negatives": 0,
+    "controls": 46
+  },
+  "elapsed_seconds": 172.5797566450201,
+  "gpu_window_elapsed": 162.04584737913683,
+  "supervisor_http_upper_bound": 492
+}

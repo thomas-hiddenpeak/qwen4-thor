@@ -1,0 +1,37 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "mode": "off",
+      "selection": null,
+      "passed": true
+    },
+    {
+      "mode": "off",
+      "selection": "other",
+      "passed": true
+    },
+    {
+      "mode": "off",
+      "selection": "selected",
+      "passed": true
+    },
+    {
+      "mode": "on",
+      "selection": null,
+      "passed": true
+    },
+    {
+      "mode": "on",
+      "selection": "other",
+      "passed": true
+    },
+    {
+      "mode": "on",
+      "selection": "selected",
+      "passed": true
+    }
+  ],
+  "source_sha256": "86a290af1e1d121b843664d4441e955a998674ed5fb456ff5ac0d92d7b4890f6",
+  "header_sha256": "47db4bd8dc12f5713ef42c6c89aeee1151867991d17d9b8529d31b4a11123b3f"
+}

@@ -1,0 +1,30 @@
+{
+  "time": "2026-11-03T05:51:56.522691+08:00",
+  "gpu": {
+    "status": "OK",
+    "pids": [],
+    "request_id": "25b1285392e245aa523c40c9c6c14420",
+    "worker_pid": 1807360,
+    "stdout": "{\"request_id\": \"25b1285392e245aa523c40c9c6c14420\", \"monotonic\": 1846398.986513468, \"event\": \"begin\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"25b1285392e245aa523c40c9c6c14420\", \"monotonic\": 1846398.99516714, \"event\": \"end\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"25b1285392e245aa523c40c9c6c14420\", \"monotonic\": 1846398.995208594, \"event\": \"begin\", \"api\": \"init\"}\n{\"request_id\": \"25b1285392e245aa523c40c9c6c14420\", \"monotonic\": 1846398.999076297, \"event\": \"end\", \"api\": \"init\", \"seconds\": 0.0038554060738533735}\n{\"request_id\": \"25b1285392e245aa523c40c9c6c14420\", \"monotonic\": 1846398.999120426, \"event\": \"begin\", \"api\": \"device_count\"}\n{\"request_id\": \"25b1285392e245aa523c40c9c6c14420\", \"monotonic\": 1846398.999162639, \"event\": \"end\", \"api\": \"device_count\", \"seconds\": 3.2564857974648476e-05}\n{\"request_id\": \"25b1285392e245aa523c40c9c6c14420\", \"monotonic\": 1846398.999175889, \"event\": \"begin\", \"api\": \"handle[0]\"}\n{\"request_id\": \"25b1285392e245aa523c40c9c6c14420\", \"monotonic\": 1846399.006538192, \"event\": \"end\", \"api\": \"handle[0]\", \"seconds\": 0.007354478817433119}\n{\"request_id\": \"25b1285392e245aa523c40c9c6c14420\", \"monotonic\": 1846399.006565775, \"event\": \"begin\", \"api\": \"compute_v3[0]\"}\n{\"request_id\": \"25b1285392e245aa523c40c9c6c14420\", \"monotonic\": 1846399.007636571, \"event\": \"end\", \"api\": \"compute_v3[0]\", \"seconds\": 0.0010623051784932613}\n{\"request_id\": \"25b1285392e245aa523c40c9c6c14420\", \"monotonic\": 1846399.007654914, \"event\": \"begin\", \"api\": \"shutdown\"}\n{\"request_id\": \"25b1285392e245aa523c40c9c6c14420\", \"monotonic\": 1846399.008911441, \"event\": \"end\", \"api\": \"shutdown\", \"seconds\": 0.0012490639928728342}\n{\"request_id\": \"25b1285392e245aa523c40c9c6c14420\", \"monotonic\": 1846399.008938941, \"event\": \"result\", \"status\": \"OK\", \"error\": null, \"device_count\": 1, \"pids\": [], \"process_memory\": []}\n",
+    "stderr": "",
+    "returncode": 0,
+    "seconds": 0.0698538429569453,
+    "process_memory": [],
+    "device_count": 1
+  },
+  "lock_available": true,
+  "lock_state": "{\"utc\": \"2026-11-02T21:51:10.032165+00:00\", \"monotonic\": 1846352.549045954, \"pid\": 1804567, \"state\": \"released\", \"output\": \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/lease\"}\n",
+  "model_processes": [],
+  "recovery_markers": [],
+  "mem_available_gib": 116.98490524291992,
+  "binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "sha256": "5642eb68d0e2d9296aeb0d5f4197797a18d064b2de749c4368a86fce918167ce",
+    "bytes": 7083976
+  },
+  "sidecar": {
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json",
+    "sha256": "6aca6a3ebf951ed8e625ff4944b73c34f40f3854b92497be2a8abe485315e382",
+    "bytes": 39636
+  }
+}

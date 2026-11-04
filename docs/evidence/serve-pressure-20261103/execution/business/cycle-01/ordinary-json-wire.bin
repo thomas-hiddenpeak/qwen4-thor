@@ -1,0 +1,1 @@
+{"id":"agent-d3541b1f4e4b14e99a75c1a839e98fe4","object":"chat.completion","created":1793670082,"model":"qwen3.8-flash-next","choices":[{"index":0,"message":{"role":"assistant","content":"710003"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":22,"completion_tokens":7,"total_tokens":29}}

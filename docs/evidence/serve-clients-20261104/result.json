@@ -1,0 +1,82 @@
+{
+  "cancelled_generations": 2,
+  "candidate": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-clients-20261104/engine-handoff/q4t",
+  "candidate_sha256": "7619966ef2a5101e9a4bbc56d20805d980f85324e0313a71c248c701df6aa501",
+  "counts": {
+    "controls": 20,
+    "generation_attempts": 26,
+    "starts": 4
+  },
+  "cpu": {
+    "cache_driver": 4,
+    "new_handoff": 3,
+    "original_driver": 4,
+    "packages": 70,
+    "public": 280,
+    "required_before_repair": 246,
+    "storage_checkpoints": 28,
+    "structured": 9,
+    "targeted_each_mode": 29
+  },
+  "default_installed": false,
+  "long_run": false,
+  "managed_e2e": false,
+  "native_http_distinct": 27,
+  "native_http_executions": 29,
+  "original_cache_fixture_failure_preserved": true,
+  "original_handoff_failure_preserved": true,
+  "original_link_failure_preserved": true,
+  "performance_acceptance": false,
+  "pre_generation_refusals": 6,
+  "private_cache": {
+    "alpha-private": 8234,
+    "alpha-shared": 0,
+    "beta-isolated": 0,
+    "beta-shared": 0
+  },
+  "protocol_sha256": "63b29f137b9c7057201de50c3a711930e9d76431f443ea29a083d9b429fced25",
+  "real_project_tools": 1,
+  "request_seconds": {
+    "cache-short/scoped-quality": 0.33731503994204104,
+    "cache-short/shared-alpha-read": 0.709498428972438,
+    "cache-short/shared-alpha-seed": 6.315980206010863,
+    "cache-short/shared-beta-isolated-seed": 6.107386376010254,
+    "cache-short/shared-beta-read": 0.695138928014785,
+    "handoff-short/cache-alpha-private": 1.0373283650260419,
+    "handoff-short/cache-alpha-seed": 6.314313906012103,
+    "handoff-short/cache-alpha-shared": 5.73944563511759,
+    "handoff-short/cache-beta-isolated": 6.163528413977474,
+    "handoff-short/cache-beta-shared": 5.74251159094274,
+    "handoff-short/project-answer": 4.039857689989731,
+    "handoff-short/project-read": 3.7560230079106987,
+    "handoff-short/scoped-structured": 0.0001908969134092331,
+    "short/legacy-quality": 0.00030652713030576706,
+    "short/scoped-quality": 0.33440247108228505,
+    "short/scoped-structured": 0.00018022209405899048
+  },
+  "shared_cache": {
+    "alpha-read": 8192,
+    "alpha-seed": 0,
+    "beta-isolated-seed": 0,
+    "beta-read": 8192
+  },
+  "status": "ACCEPT_BOUNDED_CLIENT_ISOLATION",
+  "successful_generations": 18,
+  "windows": {
+    "cache-short": {
+      "observations": 48,
+      "seconds": 50.248852021060884,
+      "status": "COMPLETED"
+    },
+    "handoff-short": {
+      "observations": 68,
+      "seconds": 72.08763635600917,
+      "status": "COMMAND_FAILED"
+    },
+    "short": {
+      "observations": 73,
+      "seconds": 77.66139003797434,
+      "status": "COMMAND_FAILED"
+    }
+  }
+}

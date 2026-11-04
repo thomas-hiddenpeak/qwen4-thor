@@ -1,0 +1,79 @@
+{
+  "accepted_buffers": 12,
+  "accepted_bytes": 92274688,
+  "accepted_checkpoints": 15,
+  "accepted_native_starts": 6,
+  "controls": 8,
+  "cpu_effective": {
+    "backend": 9,
+    "public_host": 268,
+    "required_host": 234,
+    "wrappers": 28
+  },
+  "day_executed": false,
+  "default": {
+    "bytes": 7227688,
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "sha256": "a479d8ab02d133000bc7a029c307b60c9f42504faf20e679f5d292137550cb8d"
+  },
+  "driver_tests": 5,
+  "flags_oracle_tests": 3,
+  "gpu_windows": {
+    "execution": {
+      "observations": 3,
+      "records": 7,
+      "seconds": 1.277353033889085,
+      "status": "COMMAND_FAILED"
+    },
+    "execution-v2": {
+      "observations": 79,
+      "records": 83,
+      "seconds": 84.08523038914427,
+      "status": "COMPLETED"
+    }
+  },
+  "model_start_attempts": 3,
+  "models": {
+    "auto": {
+      "destroyed_live_requested_bytes": 111346176,
+      "grammar_reaped": 3.0,
+      "idle_requested_bytes": 85674644376.0,
+      "limit_bytes": 118728574156.0,
+      "peak_requested_bytes": 85736868120.0
+    },
+    "explicit": {
+      "destroyed_live_requested_bytes": 102964736,
+      "grammar_reaped": 0.0,
+      "idle_requested_bytes": 79519610172.0,
+      "limit_bytes": 105226698752.0,
+      "peak_requested_bytes": 79544561340.0
+    }
+  },
+  "native_http_tests": 25,
+  "native_starts": 7,
+  "operator_plan_prepared": true,
+  "original_cpu_failures_preserved": true,
+  "original_native_failure_preserved": true,
+  "performance_acceptance": false,
+  "physical_ram_hard_limit": false,
+  "protocol_sha256": "847aeb46483c46404a67d835ea62e5903d8738948fd64cccf9b2e941d74826d5",
+  "real_project_tool_executions": 1,
+  "request_seconds": {
+    "concurrent-0": 0.7365930159576237,
+    "concurrent-1": 0.7858766759745777,
+    "ordinary-json": 0.4336307388730347,
+    "ordinary-sse": 0.3283252199180424,
+    "project-answer": 4.032135012093931,
+    "project-read": 3.7563225659541786,
+    "strict-json": 0.6056634199339896
+  },
+  "runtime_sources": 217,
+  "sidecar": {
+    "bytes": 49302,
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json",
+    "sha256": "9ed141adb2fbb9f325959fea833bb0ed8949a9dc2010ad750296df6d7dece658"
+  },
+  "status": "ACCEPT_BOUNDED_CUDA_QUOTA_INTEGRATION",
+  "successful_generations": 7,
+  "successful_model_starts": 2
+}

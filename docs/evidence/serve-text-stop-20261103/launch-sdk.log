@@ -1,0 +1,22 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_text_stop/stage.py", line 298, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_text_stop/stage.py", line 289, in main
+    a.execute()
+  File "/home/rm01/models/dev/qwen4-thor/tools/application_service/stage.py", line 275, in execute
+    verifier(plan)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_text_stop/stage.py", line 200, in verifier
+    v.Run(plan, OUTPUT / ("health" if installed else "business"), installed=installed).run()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_text_stop/verify.py", line 269, in run
+    self.model("candidate-mtp", binary, True, self.business)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_text_stop/verify.py", line 257, in model
+    super().model(name, binary, mtp, action)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_stage_b1/verify.py", line 143, in model
+    action(folder)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_text_stop/verify.py", line 164, in business
+    check_text(result, expected, finish)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_text_stop/verify.py", line 47, in check_text
+    wire.require(result.message["content"].strip() == wanted and
+  File "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/verify.py", line 44, in require
+    raise AssertionError(message)
+AssertionError: text/finish mismatch: {'role': 'assistant', 'content': '7'}

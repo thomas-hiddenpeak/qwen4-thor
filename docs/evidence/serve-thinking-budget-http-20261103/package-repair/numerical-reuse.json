@@ -1,0 +1,21 @@
+{
+  "changed": [
+    "include/q4t/server/chat_response_parser.h",
+    "include/q4t/server/chat_server.h",
+    "include/q4t/server/reasoning_options.h",
+    "include/q4t/server/structured_decoder.h",
+    "src/server/chat_capabilities.cpp",
+    "src/server/chat_contract.cpp",
+    "src/server/chat_generation.cpp",
+    "src/server/chat_metrics.cpp",
+    "src/server/reasoning_options.cpp",
+    "src/server/structured_decoder.cpp"
+  ],
+  "added": [
+    "include/q4t/server/thinking_budget.h",
+    "src/server/thinking_budget.cpp"
+  ],
+  "previous_manifest": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/package/candidate/runtime-source.json",
+  "unchanged_model_and_numerical_sources": true,
+  "performance_acceptance": false
+}

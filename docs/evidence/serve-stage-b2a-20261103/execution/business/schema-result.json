@@ -1,0 +1,103 @@
+{
+  "passed": true,
+  "schema_id": "urn:q4t:serve-transport:v1",
+  "jsonschema_version": "4.26.0",
+  "records": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/execution/business/candidate-mtp/default-json-hidden-wire.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/execution/business/candidate-mtp/default-json-visible-wire.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/execution/business/candidate-mtp/default-sse-hidden-wire.bin",
+      "validated_envelopes": 10
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/execution/business/candidate-mtp/default-sse-visible-wire.bin",
+      "validated_envelopes": 27
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/execution/business/candidate-mtp/field-null-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/execution/business/candidate-mtp/field-unknown-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/execution/business/candidate-mtp/hidden-schema-wire.bin",
+      "validated_envelopes": 4
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/execution/business/candidate-mtp/history-conflict-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/execution/business/candidate-mtp/history-role-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/execution/business/candidate-mtp/history-type-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/execution/business/candidate-mtp/include-null-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/execution/business/candidate-mtp/include-number-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/execution/business/candidate-mtp/legacy-type-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/execution/business/candidate-mtp/project-answer-wire.bin",
+      "validated_envelopes": 4
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/execution/business/candidate-mtp/project-read-wire.bin",
+      "validated_envelopes": 6
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/execution/business/candidate-mtp/raw-field-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/execution/business/candidate-mtp/raw-hide-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/execution/business/candidate-mtp/reasoning-json-hidden-wire.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/execution/business/candidate-mtp/reasoning-json-visible-wire.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/execution/business/candidate-mtp/reasoning-sse-hidden-wire.bin",
+      "validated_envelopes": 10
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/execution/business/candidate-mtp/reasoning-sse-visible-wire.bin",
+      "validated_envelopes": 27
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/execution/business/candidate-mtp/unparsed-field-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/execution/business/candidate-mtp/unparsed-hide-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/execution/business/candidate-plain/hidden-plain-wire.bin",
+      "validated_envelopes": 10
+    }
+  ]
+}

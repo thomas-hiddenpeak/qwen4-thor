@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "reason": "Separate stdout and stderr prevents injected diagnostic bytes splitting PASS names",
+  "runtime_unchanged": true,
+  "original": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/cpu/host-gate/result.json",
+    "sha256": "a5ab9b54f38b2feeb3de89df88c0a6f5695b08ef5ad78150bdef58232ec61270",
+    "bytes": 9575
+  }
+}

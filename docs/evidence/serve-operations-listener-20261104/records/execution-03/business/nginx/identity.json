@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-20261103/vendor/root/usr/sbin/nginx",
+    "-e",
+    "stderr",
+    "-p",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-operations-listener-20261104/private/gateway/",
+    "-c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-operations-listener-20261104/private/gateway/nginx.conf"
+  ],
+  "pgid": 2648984,
+  "pid": 2650025,
+  "ppid": 2648984,
+  "registered_monotonic": 1963996.571559815,
+  "start_ticks": 196399657,
+  "state": "R"
+}

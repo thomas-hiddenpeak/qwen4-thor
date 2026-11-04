@@ -1,0 +1,8 @@
+tools/examples/agent_tools_demo.py: syntax compiled only; not imported or executed
+tools/examples/test_chat_client.py: syntax compiled only; not imported or executed
+tools/response_protocol/acceptance.py: syntax compiled only; not imported or executed
+tools/response_protocol/test_acceptance.py: syntax compiled only; not imported or executed
+tools/response_protocol/verify.py: syntax compiled only; not imported or executed
+tools/response_protocol/fault_fixture.py: syntax compiled only; not imported or executed
+tools/response_protocol/verify_failures.py: syntax compiled only; not imported or executed
+tools/response_protocol/verify_failures.py: syntax recompiled after missing-evidence handling; not imported or executed

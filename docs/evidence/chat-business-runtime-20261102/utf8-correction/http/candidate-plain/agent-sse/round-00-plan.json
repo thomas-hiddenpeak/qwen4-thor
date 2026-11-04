@@ -1,0 +1,9 @@
+[
+  {
+    "call_id": "call_agent-6cc79405ec3b1b66cc237d64914705f2_0",
+    "name": "lookup",
+    "arguments": {
+      "key": "audit"
+    }
+  }
+]

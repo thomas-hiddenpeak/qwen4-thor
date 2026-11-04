@@ -1,0 +1,55 @@
+{
+  "note": "Local large artifacts retained; not embedded in Git archive.",
+  "artifacts": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-20261103/cpu/startup-preflight/startup_preflight",
+      "sha256": "28fdb701d12e9b97485487c7f7cd47d2a1d2f764cf341d709da64a85e6e62172",
+      "bytes": 149552
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-20261103/package/candidate/q4t",
+      "sha256": "c02b94144c5a40c6118bd7dde306b298dce10c963045708f82082f6a5f2b8b54",
+      "bytes": 7012520
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-20261103/package/previous/q4t",
+      "sha256": "ecd5d21f7b3a9adb221b17a352499df5a5803020f15149ed6cef978c916f8dcc",
+      "bytes": 6943272
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-20261103/package/source.bundle",
+      "sha256": "cd77912140e733c5bc4ef20f76d4359cd6a2821f414f0a999a7460f8372d2a96",
+      "bytes": 417062
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-20261103/package-correction/candidate/q4t",
+      "sha256": "c02b94144c5a40c6118bd7dde306b298dce10c963045708f82082f6a5f2b8b54",
+      "bytes": 7012520
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-20261103/package-correction/previous/q4t",
+      "sha256": "ecd5d21f7b3a9adb221b17a352499df5a5803020f15149ed6cef978c916f8dcc",
+      "bytes": 6943272
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-20261103/package-correction/source.bundle",
+      "sha256": "ba08fb6bbcd527f1b3ae70ae4ee0b175f1381da1d220d86aef228947a2913fad",
+      "bytes": 418034
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-20261103/engine/q4t",
+      "sha256": "c02b94144c5a40c6118bd7dde306b298dce10c963045708f82082f6a5f2b8b54",
+      "bytes": 7012520
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-20261103/engine/q4t_host_tests",
+      "sha256": "96b3892f840ed0b71076ebaad3213ebf36611213f90edd9a0703a7b590633fd6",
+      "bytes": 3426496
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-20261103/engine/CMakeCache.txt",
+      "sha256": "c1939ba82cc77f9b47892244e637ad2d71261ab4e4913f94f29b27ac82d87f32",
+      "bytes": 38797
+    }
+  ]
+}

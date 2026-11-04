@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "error": null,
+  "requests": 23,
+  "negative": 10,
+  "starts": 3,
+  "capability_gets": 6,
+  "agent_runs": 3,
+  "elapsed_seconds": 133.0262110759504,
+  "limitation": "Bounded functional checks; no performance acceptance."
+}

@@ -1,0 +1,8 @@
+{
+  "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/source.bundle",
+  "sha256": "00de6e6dd200a2ccdf7fd046a7e62617c582214ce8cc3067b86d1b8ce386edd2",
+  "bytes": 33259,
+  "tip": "55299a0a98a329f758a13db7bf2a51090f781818",
+  "prerequisite": "ef88d970489c3ab21894572258922d535e51e6f4",
+  "verified": true
+}

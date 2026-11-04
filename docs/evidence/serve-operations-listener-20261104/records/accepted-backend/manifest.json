@@ -1,0 +1,83 @@
+{
+  "version": 6,
+  "repository": "/home/rm01/models/dev/qwen4-thor",
+  "model_dir": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "model_files": {
+    "config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+    "configuration.json": "7f5e4dab8f262b1731914cb110764c86dbfc0459a136de7cc3ae4ae375edc828",
+    "generation_config.json": "e70c136c1b78ddc1fb0905bac8e733a4dc448d4f852a5dd75143fffc70be550e",
+    "hf_quant_config.json": "7e69ef4b94302ae5b6f453b913621f698d5631a1d023d8b3e9e3b829721b98e8",
+    "model.safetensors.index.json": "aa702aa8cadb463b728cfd6829e172b1124114080231c75712155e2490f8c607",
+    "preprocessor_config.json": "27225450ac9c6529872ee1924fcb0962ff5634834f817040f444118116f4e516",
+    "ssd-stream.json": "331bcd03b9798a9688ffe1ddbbf0b334f0b7ba281ad669b768a3f22b1bc8034d",
+    "tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+    "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+    "video_preprocessor_config.json": "7768af27c1fafa9cc9011c1dc20067e03f8915e03b63504550e11d5066986d13",
+    "vocab.json": "ce99b4cb2983d118806ce0a8b777a35b093e2000a503ebde25853284c9dfa003"
+  },
+  "protocol_sha256": "ddfba8c002d8fb899b4c00d42612b0a26669036a1acc65e8292a10c0a9b69342",
+  "settings": {
+    "profile": {
+      "name": "text-mtp-managed-v1",
+      "host": "127.0.0.1",
+      "max_seq": 1,
+      "max_len": 8192,
+      "max_prefill": 2048,
+      "max_tokens": 256,
+      "mtp_k": 3,
+      "max_inflight_requests": 8,
+      "max_queued_requests": 2,
+      "min_available_memory_mib": 2048,
+      "memory_recovery_margin_mib": 512,
+      "startup_memory_headroom_mib": 2048
+    },
+    "port": 18132,
+    "restart_limit": 0,
+    "poll_seconds": 5,
+    "startup_seconds": 300,
+    "unavailable_seconds": 30,
+    "restart_delay_seconds": 5,
+    "stop_seconds": 30,
+    "kill_seconds": 5,
+    "log_bytes": 4194304,
+    "log_files": 2,
+    "critical_memory_mib": 1024,
+    "memory_poll_seconds": 1,
+    "memory_low_seconds": 2,
+    "memory_unknown_seconds": 5,
+    "operations_port": 18133
+  },
+  "python": {
+    "path": "/usr/bin/python3.12",
+    "sha256": "c86f21d0da9290ece2d7d49a3f7ed52aed59cb029abdf0ea25c79634f6cbe960"
+  },
+  "files": {
+    "q4t": "7eff020de66b96f3175b3e123909be9e2f58142d54d1dd5992750d23cbe9c769",
+    "q4t.release.json": "abfaeff90bf460f1ff0cf0ee1f32da70d186e5ada0ab735e4576fc0d51c78e53",
+    "CMakeCache.txt": "f8f9672e8b45124f877758fdc53f81d83131a4ca9891c060d527e6dfec4430df",
+    "acceptance.json": "dc7b4e0b504f056075fbab974c13a084e469e3f1266bf09b76598aac6372289f",
+    "source/tools/serve_service/package.py": "f3869ca75bfcfe1aed33e732adccb49013b177f667ae93cf6a0b655bbdeed4f2",
+    "source/tools/serve_service/supervisor.py": "67d20c66c58e4a0bb2bb89b907972869a119e313c93947922d7c71ac9a789962",
+    "source/tools/serve_service/backend.py": "2845329d81c3a9ea4f7223432daa1e865a414a305fe0419d2ca934d137463112",
+    "source/tools/serve_service/service.py": "f98c60807612c2b3aa044f1b03c685d6185d36c13c9157ed76cc94ea513f23f5",
+    "source/tools/evalscope/gpu_exclusive.py": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2",
+    "source/tools/evalscope/bounded_log.py": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+    "source/tools/evalscope/nvml_process_query.py": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+    "source/tools/release/release.py": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+    "source/tools/serve_ops/contracts.py": "0ceb9a926f7e6ddb573a8a7847ae1d2adc0d3cd862a4fcb76efe7746554244e7",
+    "source/tools/serve_ops/identity.py": "74001ea851d3a7b0d5aee843b3ccee4b669485ed93543bb04799ab42e16847b9",
+    "source/tools/serve_ops/transport.py": "ece3d93bc6f14dc31f6fb92697e9b188eee4f1b33915f7285d9fd320a9f9ffa4",
+    "source/tools/serve_service/memory.py": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+    "source/tools/serve_service/inspection.py": "2930af5fe6564b567a39bb6c9280dfe098be4e78227250660246a9722cfb90b9",
+    "source/tools/serve_gateway/client_policy.py": "ab0256ee376ae62373fd1e89b18ca79d9490295aa1607795b209c5e5bdee6c1c",
+    "source/tools/serve_service/resources.py": "31da926fea3e5da1273b6130328cd68cfeb2d7d04c760db9a5ae827035553af1",
+    "client-policy.json": "aed9b6a3acbaf617c28b2a08874913a5556515bb4c3e25f244d7b4f9549fc659"
+  },
+  "weight_shards_rehashed": false,
+  "managed_service_accepted": false,
+  "client_policy": {
+    "enabled": true,
+    "sha256": "aed9b6a3acbaf617c28b2a08874913a5556515bb4c3e25f244d7b4f9549fc659",
+    "clients": 2
+  }
+}

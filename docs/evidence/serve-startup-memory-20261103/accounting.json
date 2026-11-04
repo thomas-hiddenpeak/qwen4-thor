@@ -1,0 +1,372 @@
+{
+  "passed": true,
+  "kinds": {
+    "anonymous": {
+      "passed": true,
+      "initial_memory": {
+        "MemTotal": 131920637952,
+        "MemFree": 25121177600,
+        "MemAvailable": 125499392000
+      },
+      "fixed_bytes": 268435456,
+      "device": {
+        "driver": 13020,
+        "runtime": 13030,
+        "major": 11,
+        "minor": 0,
+        "integrated": 1,
+        "pageable_memory_access": 1,
+        "concurrent_managed_access": 1
+      },
+      "deltas": {
+        "baseline": {
+          "delta_from_baseline": [
+            {
+              "parent_rss": 0,
+              "cgroup_current": 0,
+              "cgroup_anon": 0,
+              "cgroup_file": 0,
+              "global_available": 0,
+              "cuda_free": 0
+            },
+            {
+              "parent_rss": 0,
+              "cgroup_current": 0,
+              "cgroup_anon": 0,
+              "cgroup_file": 0,
+              "global_available": 0,
+              "cuda_free": 0
+            }
+          ],
+          "sign": "positive means counter increased; free/available decrease on allocation"
+        },
+        "held": {
+          "delta_from_baseline": [
+            {
+              "parent_rss": 268435456,
+              "cgroup_current": 268861440,
+              "cgroup_anon": 268435456,
+              "cgroup_file": 4096,
+              "global_available": -261951488,
+              "cuda_free": -262037504
+            },
+            {
+              "parent_rss": 268435456,
+              "cgroup_current": 268709888,
+              "cgroup_anon": 268435456,
+              "cgroup_file": 4096,
+              "global_available": -258121728,
+              "cuda_free": -262037504
+            }
+          ],
+          "sign": "positive means counter increased; free/available decrease on allocation"
+        },
+        "freed": {
+          "delta_from_baseline": [
+            {
+              "parent_rss": 0,
+              "cgroup_current": -385024,
+              "cgroup_anon": 0,
+              "cgroup_file": 8192,
+              "global_available": -62259200,
+              "cuda_free": -62382080
+            },
+            {
+              "parent_rss": 0,
+              "cgroup_current": -286720,
+              "cgroup_anon": 0,
+              "cgroup_file": 8192,
+              "global_available": -56356864,
+              "cuda_free": -62382080
+            }
+          ],
+          "sign": "positive means counter increased; free/available decrease on allocation"
+        }
+      },
+      "physical_ram_hard_limit_proved": false,
+      "exact_physical_bytes_proved": false
+    },
+    "device": {
+      "passed": true,
+      "initial_memory": {
+        "MemTotal": 131920637952,
+        "MemFree": 25121759232,
+        "MemAvailable": 125500198912
+      },
+      "fixed_bytes": 268435456,
+      "device": {
+        "driver": 13020,
+        "runtime": 13030,
+        "major": 11,
+        "minor": 0,
+        "integrated": 1,
+        "pageable_memory_access": 1,
+        "concurrent_managed_access": 1
+      },
+      "deltas": {
+        "baseline": {
+          "delta_from_baseline": [
+            {
+              "parent_rss": 0,
+              "cgroup_current": 0,
+              "cgroup_anon": 0,
+              "cgroup_file": 0,
+              "global_available": 0,
+              "cuda_free": 0
+            },
+            {
+              "parent_rss": 0,
+              "cgroup_current": 0,
+              "cgroup_anon": 0,
+              "cgroup_file": 0,
+              "global_available": 0,
+              "cuda_free": 0
+            }
+          ],
+          "sign": "positive means counter increased; free/available decrease on allocation"
+        },
+        "held": {
+          "delta_from_baseline": [
+            {
+              "parent_rss": 155648,
+              "cgroup_current": -8192,
+              "cgroup_anon": 0,
+              "cgroup_file": 0,
+              "global_available": -269934592,
+              "cuda_free": -270004224
+            },
+            {
+              "parent_rss": 155648,
+              "cgroup_current": 0,
+              "cgroup_anon": 24576,
+              "cgroup_file": 4096,
+              "global_available": -269688832,
+              "cuda_free": -270004224
+            }
+          ],
+          "sign": "positive means counter increased; free/available decrease on allocation"
+        },
+        "freed": {
+          "delta_from_baseline": [
+            {
+              "parent_rss": 155648,
+              "cgroup_current": -8192,
+              "cgroup_anon": 24576,
+              "cgroup_file": 4096,
+              "global_available": -393216,
+              "cuda_free": -520192
+            },
+            {
+              "parent_rss": 155648,
+              "cgroup_current": -532480,
+              "cgroup_anon": 24576,
+              "cgroup_file": 8192,
+              "global_available": 9404416,
+              "cuda_free": -520192
+            }
+          ],
+          "sign": "positive means counter increased; free/available decrease on allocation"
+        }
+      },
+      "physical_ram_hard_limit_proved": false,
+      "exact_physical_bytes_proved": false
+    },
+    "pinned": {
+      "passed": true,
+      "initial_memory": {
+        "MemTotal": 131920637952,
+        "MemFree": 25134755840,
+        "MemAvailable": 125513494528
+      },
+      "fixed_bytes": 268435456,
+      "device": {
+        "driver": 13020,
+        "runtime": 13030,
+        "major": 11,
+        "minor": 0,
+        "integrated": 1,
+        "pageable_memory_access": 1,
+        "concurrent_managed_access": 1
+      },
+      "deltas": {
+        "baseline": {
+          "delta_from_baseline": [
+            {
+              "parent_rss": 0,
+              "cgroup_current": 0,
+              "cgroup_anon": 0,
+              "cgroup_file": 0,
+              "global_available": 0,
+              "cuda_free": 0
+            },
+            {
+              "parent_rss": 0,
+              "cgroup_current": 0,
+              "cgroup_anon": 0,
+              "cgroup_file": 0,
+              "global_available": 0,
+              "cuda_free": 0
+            }
+          ],
+          "sign": "positive means counter increased; free/available decrease on allocation"
+        },
+        "held": {
+          "delta_from_baseline": [
+            {
+              "parent_rss": 268500992,
+              "cgroup_current": 270024704,
+              "cgroup_anon": 0,
+              "cgroup_file": 268439552,
+              "global_available": -294703104,
+              "cuda_free": -297263104
+            },
+            {
+              "parent_rss": 268500992,
+              "cgroup_current": 270270464,
+              "cgroup_anon": 0,
+              "cgroup_file": 268439552,
+              "global_available": -279474176,
+              "cuda_free": -297263104
+            }
+          ],
+          "sign": "positive means counter increased; free/available decrease on allocation"
+        },
+        "freed": {
+          "delta_from_baseline": [
+            {
+              "parent_rss": 65536,
+              "cgroup_current": 266240,
+              "cgroup_anon": 0,
+              "cgroup_file": 8192,
+              "global_available": -293568512,
+              "cuda_free": -293978112
+            },
+            {
+              "parent_rss": 65536,
+              "cgroup_current": -45056,
+              "cgroup_anon": 0,
+              "cgroup_file": 8192,
+              "global_available": -170840064,
+              "cuda_free": -293978112
+            }
+          ],
+          "sign": "positive means counter increased; free/available decrease on allocation"
+        }
+      },
+      "physical_ram_hard_limit_proved": false,
+      "exact_physical_bytes_proved": false
+    },
+    "managed": {
+      "passed": true,
+      "initial_memory": {
+        "MemTotal": 131920637952,
+        "MemFree": 24936177664,
+        "MemAvailable": 125315203072
+      },
+      "fixed_bytes": 268435456,
+      "device": {
+        "driver": 13020,
+        "runtime": 13030,
+        "major": 11,
+        "minor": 0,
+        "integrated": 1,
+        "pageable_memory_access": 1,
+        "concurrent_managed_access": 1
+      },
+      "deltas": {
+        "baseline": {
+          "delta_from_baseline": [
+            {
+              "parent_rss": 0,
+              "cgroup_current": 0,
+              "cgroup_anon": 0,
+              "cgroup_file": 0,
+              "global_available": 0,
+              "cuda_free": 0
+            },
+            {
+              "parent_rss": 0,
+              "cgroup_current": 0,
+              "cgroup_anon": 0,
+              "cgroup_file": 0,
+              "global_available": 0,
+              "cuda_free": 0
+            }
+          ],
+          "sign": "positive means counter increased; free/available decrease on allocation"
+        },
+        "host": {
+          "delta_from_baseline": [
+            {
+              "parent_rss": 268455936,
+              "cgroup_current": 269348864,
+              "cgroup_anon": 0,
+              "cgroup_file": 430080,
+              "global_available": -256593920,
+              "cuda_free": -258285568
+            },
+            {
+              "parent_rss": 268455936,
+              "cgroup_current": 269484032,
+              "cgroup_anon": 0,
+              "cgroup_file": 430080,
+              "global_available": -261238784,
+              "cuda_free": -258285568
+            }
+          ],
+          "sign": "positive means counter increased; free/available decrease on allocation"
+        },
+        "held": {
+          "delta_from_baseline": [
+            {
+              "parent_rss": 268611584,
+              "cgroup_current": 269348864,
+              "cgroup_anon": 0,
+              "cgroup_file": 430080,
+              "global_available": -252837888,
+              "cuda_free": -253943808
+            },
+            {
+              "parent_rss": 268611584,
+              "cgroup_current": 269484032,
+              "cgroup_anon": 24576,
+              "cgroup_file": 434176,
+              "global_available": -259141632,
+              "cuda_free": -253943808
+            }
+          ],
+          "sign": "positive means counter increased; free/available decrease on allocation"
+        },
+        "freed": {
+          "delta_from_baseline": [
+            {
+              "parent_rss": 208896,
+              "cgroup_current": -143360,
+              "cgroup_anon": 24576,
+              "cgroup_file": 438272,
+              "global_available": -7049216,
+              "cuda_free": -8183808
+            },
+            {
+              "parent_rss": 208896,
+              "cgroup_current": -12288,
+              "cgroup_anon": 24576,
+              "cgroup_file": 438272,
+              "global_available": -14897152,
+              "cuda_free": -8183808
+            }
+          ],
+          "sign": "positive means counter increased; free/available decrease on allocation"
+        }
+      },
+      "physical_ram_hard_limit_proved": false,
+      "exact_physical_bytes_proved": false
+    }
+  },
+  "allocation_bytes_each": 268435456,
+  "samples_each_phase": 2,
+  "concurrent_allocations": 1,
+  "no_model_concurrent": true,
+  "cgroup_max_is_only_controller_limit": true,
+  "physical_ram_hard_limit_proved": false
+}

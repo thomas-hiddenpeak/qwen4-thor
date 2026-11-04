@@ -1,0 +1,422 @@
+{
+  "passed": true,
+  "native_tests": 25,
+  "mtp_lifecycle_processes": 1,
+  "actual_mtp_load_attempts_with_weights": 3,
+  "probes": [
+    {
+      "name": "cudaFree",
+      "accepted": true,
+      "command": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaFree/command.json",
+        "sha256": "d10a3987e50fb1de8ffa6c5b5001a1215f09eb0663be5d528bf371183e8c2b1a",
+        "bytes": 482
+      },
+      "stdout": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaFree/stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "stderr": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaFree/stderr",
+        "sha256": "abc990551feec756f942ce94844f386c0fb03758ca35035bc58a3c82c5e007b3",
+        "bytes": 102
+      },
+      "exit": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaFree/exit.json",
+        "sha256": "b9f87d4ceb14f54a8787da14c5985aa499e13197fe39c8f0f4ecf87e7a01957e",
+        "bytes": 22
+      }
+    },
+    {
+      "name": "cudaFreeAsync",
+      "accepted": true,
+      "command": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaFreeAsync/command.json",
+        "sha256": "d861bbd53df7985d1fc66d319f1b719c17d08ffa616711f0c43b1851534a8afa",
+        "bytes": 487
+      },
+      "stdout": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaFreeAsync/stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "stderr": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaFreeAsync/stderr",
+        "sha256": "af39101ebdedb2a3bcf69c19a9f8d0f266333ce24cc5df35ade409a163a5f4a1",
+        "bytes": 112
+      },
+      "exit": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaFreeAsync/exit.json",
+        "sha256": "b9f87d4ceb14f54a8787da14c5985aa499e13197fe39c8f0f4ecf87e7a01957e",
+        "bytes": 22
+      }
+    },
+    {
+      "name": "cudaFreeHost",
+      "accepted": true,
+      "command": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaFreeHost/command.json",
+        "sha256": "7eecd914cba717ec85efe0eb9dcc64ca70a6182af70d385699bb265498abaa86",
+        "bytes": 486
+      },
+      "stdout": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaFreeHost/stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "stderr": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaFreeHost/stderr",
+        "sha256": "4f1344610a8342989c2123d239ecbc87ecc304a5f8ff136836c78a20b566f66c",
+        "bytes": 110
+      },
+      "exit": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaFreeHost/exit.json",
+        "sha256": "b9f87d4ceb14f54a8787da14c5985aa499e13197fe39c8f0f4ecf87e7a01957e",
+        "bytes": 22
+      }
+    },
+    {
+      "name": "cudaEventDestroy",
+      "accepted": true,
+      "command": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaEventDestroy/command.json",
+        "sha256": "06caedab1f637a31574ea5db313f8addcf617beb7fba9a5c8caf413ac498acdf",
+        "bytes": 490
+      },
+      "stdout": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaEventDestroy/stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "stderr": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaEventDestroy/stderr",
+        "sha256": "5ddaac2371a24297cb6c9c5ba97e67947e3682ee1d730d6b9be2aa231dd40a40",
+        "bytes": 118
+      },
+      "exit": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaEventDestroy/exit.json",
+        "sha256": "b9f87d4ceb14f54a8787da14c5985aa499e13197fe39c8f0f4ecf87e7a01957e",
+        "bytes": 22
+      }
+    },
+    {
+      "name": "cudaStreamDestroy",
+      "accepted": true,
+      "command": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaStreamDestroy/command.json",
+        "sha256": "d939b8b8d62aab48c5fc4f9d5e8cabac5650ca86ebfb6cb91593d1edbf2c6297",
+        "bytes": 491
+      },
+      "stdout": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaStreamDestroy/stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "stderr": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaStreamDestroy/stderr",
+        "sha256": "8787cf6204eda6732e95218dfad9e3d42ce5175d693eb430163bbe07ce3d55c6",
+        "bytes": 120
+      },
+      "exit": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaStreamDestroy/exit.json",
+        "sha256": "b9f87d4ceb14f54a8787da14c5985aa499e13197fe39c8f0f4ecf87e7a01957e",
+        "bytes": 22
+      }
+    },
+    {
+      "name": "cudaStreamSynchronize",
+      "accepted": true,
+      "command": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaStreamSynchronize/command.json",
+        "sha256": "29c61f7085b6ae1769a5f5827a19c062440ba0eabd7d7e915ed5ad136c66c78b",
+        "bytes": 495
+      },
+      "stdout": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaStreamSynchronize/stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "stderr": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaStreamSynchronize/stderr",
+        "sha256": "46fd7c9aa9cbf65b5424b795a2775ce6ad19dd9471fd6d89ca3057e1b916bfc2",
+        "bytes": 128
+      },
+      "exit": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaStreamSynchronize/exit.json",
+        "sha256": "b9f87d4ceb14f54a8787da14c5985aa499e13197fe39c8f0f4ecf87e7a01957e",
+        "bytes": 22
+      }
+    },
+    {
+      "name": "cudaDeviceSynchronize",
+      "accepted": true,
+      "command": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaDeviceSynchronize/command.json",
+        "sha256": "8680953ac0b9a65dda5a79af459078ae020af7a53275fd714d2a5ce6f7a1171c",
+        "bytes": 495
+      },
+      "stdout": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaDeviceSynchronize/stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "stderr": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaDeviceSynchronize/stderr",
+        "sha256": "764ac338d8bda6bcaff48bdcfcc4d4fb24bee83a6c8921e40539b8ded3ceaaae",
+        "bytes": 128
+      },
+      "exit": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaDeviceSynchronize/exit.json",
+        "sha256": "b9f87d4ceb14f54a8787da14c5985aa499e13197fe39c8f0f4ecf87e7a01957e",
+        "bytes": 22
+      }
+    },
+    {
+      "name": "cudaEventSynchronize",
+      "accepted": true,
+      "command": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaEventSynchronize/command.json",
+        "sha256": "c1cd836d281c753284bede12d47cb6d13ca011a3c5ba80cf345097faff6aa984",
+        "bytes": 494
+      },
+      "stdout": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaEventSynchronize/stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "stderr": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaEventSynchronize/stderr",
+        "sha256": "62c73ccde5df7c5bfd06da1afeee4399bb821edb02f09ae8938499e952103ee7",
+        "bytes": 126
+      },
+      "exit": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/cudaEventSynchronize/exit.json",
+        "sha256": "b9f87d4ceb14f54a8787da14c5985aa499e13197fe39c8f0f4ecf87e7a01957e",
+        "bytes": 22
+      }
+    },
+    {
+      "name": "forward",
+      "accepted": true,
+      "command": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/forward/command.json",
+        "sha256": "04332a8082988d63cafd55a770ddd454601a9656b724b258d5f2ce05e5da04d7",
+        "bytes": 473
+      },
+      "stdout": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/forward/stdout",
+        "sha256": "2c5d0b0a721c4d0dc2b42bf5160484fc4d4e2c0f96cca89286c56e1ebf9dd21f",
+        "bytes": 24
+      },
+      "stderr": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/forward/stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "exit": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/forward/exit.json",
+        "sha256": "1e3f6691f455051e8adb15d961e4bf3c7a17e83dd88b2afdd13315cc288250bb",
+        "bytes": 22
+      }
+    },
+    {
+      "name": "production-hook-absent",
+      "accepted": true,
+      "command": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/production-hook-absent/command.json",
+        "sha256": "c68d3bb7615a2452cb97d778e8f7d483510ff9235f9bb7a64ce254141d77da53",
+        "bytes": 479
+      },
+      "stdout": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/production-hook-absent/stdout",
+        "sha256": "2c5d0b0a721c4d0dc2b42bf5160484fc4d4e2c0f96cca89286c56e1ebf9dd21f",
+        "bytes": 24
+      },
+      "stderr": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/production-hook-absent/stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "exit": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/production-hook-absent/exit.json",
+        "sha256": "1e3f6691f455051e8adb15d961e4bf3c7a17e83dd88b2afdd13315cc288250bb",
+        "bytes": 22
+      }
+    },
+    {
+      "name": "handled",
+      "accepted": true,
+      "command": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/handled/command.json",
+        "sha256": "30f742b89e3b0eeae139972a8418a8dd260f4c518ed5ca1baf35ad2d601fa176",
+        "bytes": 494
+      },
+      "stdout": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/handled/stdout",
+        "sha256": "6ad1b0537dab71b246c13e1b5cc13b620695683e2bba0523400698b9c976d1c5",
+        "bytes": 36
+      },
+      "stderr": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/handled/stderr",
+        "sha256": "a965df8362cdb18b2d9f53a20a8cdb3a76bf189225623d6bf0f44dd1ee3b4ff0",
+        "bytes": 48
+      },
+      "exit": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/handled/exit.json",
+        "sha256": "1e3f6691f455051e8adb15d961e4bf3c7a17e83dd88b2afdd13315cc288250bb",
+        "bytes": 22
+      }
+    },
+    {
+      "name": "scratch-fatal",
+      "accepted": true,
+      "command": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/scratch-fatal/command.json",
+        "sha256": "45a06f9808d2d5e835ec40a7135f8e6546dd4950dc3fe5025b15340ebf57fe7c",
+        "bytes": 496
+      },
+      "stdout": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/scratch-fatal/stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "stderr": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/scratch-fatal/stderr",
+        "sha256": "71c465b2b8645f65e5f2527dc57fe42abbf413675ca86de331b0c0c493f4b5d9",
+        "bytes": 114
+      },
+      "exit": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/scratch-fatal/exit.json",
+        "sha256": "b9f87d4ceb14f54a8787da14c5985aa499e13197fe39c8f0f4ecf87e7a01957e",
+        "bytes": 22
+      }
+    },
+    {
+      "name": "load-drain-fatal",
+      "accepted": true,
+      "command": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/load-drain-fatal/command.json",
+        "sha256": "d39e5c611d8793c70e5f5463f218cda36613e459730def5f75cb862748be3fa0",
+        "bytes": 634
+      },
+      "stdout": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/load-drain-fatal/stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "stderr": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/load-drain-fatal/stderr",
+        "sha256": "386541762594a407f37d184b042a85cd17de5015bc6e1a098a75d70d9ea5ca5a",
+        "bytes": 134
+      },
+      "exit": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/load-drain-fatal/exit.json",
+        "sha256": "b9f87d4ceb14f54a8787da14c5985aa499e13197fe39c8f0f4ecf87e7a01957e",
+        "bytes": 22
+      }
+    },
+    {
+      "name": "unhanded-fatal",
+      "accepted": true,
+      "command": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/unhanded-fatal/command.json",
+        "sha256": "1e1424f387709543095a57a6324aa5cc7b3a4c1fff812cd0eff6dc6b3513aa1f",
+        "bytes": 498
+      },
+      "stdout": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/unhanded-fatal/stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "stderr": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/unhanded-fatal/stderr",
+        "sha256": "5d42d1598a6e489c011e227a63d1ffbde95551fc9d5103dc247dd35912296fc7",
+        "bytes": 535
+      },
+      "exit": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/unhanded-fatal/exit.json",
+        "sha256": "b9f87d4ceb14f54a8787da14c5985aa499e13197fe39c8f0f4ecf87e7a01957e",
+        "bytes": 22
+      }
+    },
+    {
+      "name": "scratch-success",
+      "accepted": true,
+      "command": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/scratch-success/command.json",
+        "sha256": "88aae71a5e82c791d0e234cbbe1df2c947d1c2b4d875144f4785bd0fa81e6fa9",
+        "bytes": 481
+      },
+      "stdout": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/scratch-success/stdout",
+        "sha256": "e9a7ef4eb4eb7a74c85162ff9f961468daa30489ec6e2438cdd8638dbacb9529",
+        "bytes": 32
+      },
+      "stderr": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/scratch-success/stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "exit": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/scratch-success/exit.json",
+        "sha256": "1e3f6691f455051e8adb15d961e4bf3c7a17e83dd88b2afdd13315cc288250bb",
+        "bytes": 22
+      }
+    },
+    {
+      "name": "load-cleanup-success",
+      "accepted": true,
+      "command": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/load-cleanup-success/command.json",
+        "sha256": "fecb86f14552ad62d1ff2d42ee20f0c97fbd69e42bad79dd23e12f4c112eb69b",
+        "bytes": 613
+      },
+      "stdout": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/load-cleanup-success/stdout",
+        "sha256": "f5c35ec8ae83cc98de3aa3b9644603e80d9fd36a9dac48e0079616b4274685ac",
+        "bytes": 29
+      },
+      "stderr": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/load-cleanup-success/stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "exit": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/load-cleanup-success/exit.json",
+        "sha256": "1e3f6691f455051e8adb15d961e4bf3c7a17e83dd88b2afdd13315cc288250bb",
+        "bytes": 22
+      }
+    },
+    {
+      "name": "unhanded-success",
+      "accepted": false,
+      "command": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/unhanded-success/command.json",
+        "sha256": "c98793f216bd4043d5c0459ff4a61e61e745e8c1eedff3c322d9bbaa513f73cc",
+        "bytes": 489
+      },
+      "stdout": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/unhanded-success/stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "stderr": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/unhanded-success/stderr",
+        "sha256": "42eeecb971f5c60a6ac275f08592e3f6b4927109e0cb269239b4d1e5714530eb",
+        "bytes": 913
+      },
+      "exit": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/native-cleanup/unhanded-success/exit.json",
+        "sha256": "2142d1b55fc95249a3beba00108cf2b67145e9f0a9d536d93b6c5455b007062b",
+        "bytes": 22
+      }
+    }
+  ],
+  "reused_passed_probes": 16,
+  "original_failed_probe": "unhanded-success",
+  "old_probes": 17,
+  "old_full_server_starts": 0,
+  "old_generation_attempts": 0,
+  "original_stage_remains_failed": true
+}

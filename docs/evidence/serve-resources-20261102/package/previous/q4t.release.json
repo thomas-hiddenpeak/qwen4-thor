@@ -1,0 +1,645 @@
+{
+  "version": "input-contract-20261102",
+  "binary_sha256": "ea678009413bd4d63a2b456a697e9c7844b47f71e6e2b3e3447b5044f9cbdf0a",
+  "source_commit": "b71f026d0305750614531388d7d7ff38eafcd064",
+  "source_note": "Serve input contracts repaired; real JSON/SSE project tool loops accepted. Numerical sources unchanged.",
+  "tested_source_manifest": "/home/rm01/models/dev/qwen4-thor/.q4t-work/input-contract-20261102/package/candidate/runtime-source.json",
+  "tested_source_manifest_sha256": "88dd7e1da91389fa7253b4660d19079b5d01227033b660ed1f98bce9eb09fe2e",
+  "build_cache": "/home/rm01/models/dev/qwen4-thor/.q4t-work/input-contract-20261102/package/candidate/CMakeCache.txt",
+  "build_cache_sha256": "ff377dacb682bd8a505cd01414a819500bfd4088ae2bcce5e010a65a254786f7",
+  "acceptance": "ACCEPT_BOUNDED_INPUT_CONTRACT",
+  "acceptance_decision": "/home/rm01/models/dev/qwen4-thor/.q4t-work/input-contract-20261102/execution/business/result.json",
+  "acceptance_decision_sha256": "260dbbcddc4494d999ecbd3938530b78c4a30dd23d17a3d1acb0003ca859cf20",
+  "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/input-contract-20261102/package/previous/q4t",
+  "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/input-contract-20261102/package/previous/q4t.release.json",
+  "subset_artifact": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-delivery-20261102/package/artifact",
+  "subset_manifest_sha256": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce",
+  "defaults": {
+    "head": "full",
+    "mtp": true,
+    "mtp_k": 3,
+    "suffix": false,
+    "max_seq": 1,
+    "session_cache": false,
+    "prefix_cache": false,
+    "session_incremental": false
+  },
+  "agent_configuration": {
+    "max_seq": 4,
+    "max_prefill": 4096,
+    "max_len": 208896,
+    "seq_capacities": [
+      208896,
+      65536,
+      65536,
+      65536
+    ],
+    "admitted_requests": 32
+  },
+  "session_cache": {
+    "enabled_by": "--session-cache-dir DIR plus session_id",
+    "max_entries": 8,
+    "disk_budget_bytes": 25769803776,
+    "ram_budget_bytes": 33554432,
+    "ttl_seconds": 1800,
+    "min_prefix": 8192,
+    "same_process_only": true
+  },
+  "prefix_cache": {
+    "enabled_by": "--prefix-cache-dir DIR plus prefix_cache_scope",
+    "checkpoints": [
+      8192,
+      32768,
+      65536
+    ],
+    "write_field": "prefix_cache_write_tokens",
+    "default_readonly": true,
+    "max_writes_per_request": 1,
+    "max_checkpoints": 4,
+    "checkpoint_range": [
+      1024,
+      131072
+    ],
+    "max_entries": 8,
+    "disk_budget_bytes": 8589934592,
+    "ram_budget_bytes": 33554432,
+    "ttl_seconds": 1800,
+    "same_process_only": true
+  },
+  "scope": {
+    "hardware": "local Thor",
+    "decoding": "text greedy MTP k3",
+    "heads": [
+      "full",
+      "65536-row BF16 subset"
+    ],
+    "slots": [
+      208896,
+      65536,
+      65536,
+      65536
+    ],
+    "max_prefill": 4096,
+    "shared_boundaries_tested": [
+      8192,
+      32768
+    ],
+    "request_policy": "one explicit seed per successful source request; children readonly by default",
+    "prefix_cache_default": false,
+    "same_process_only": true
+  },
+  "atomicity": "Individual atomic replaces, durable recovery marker, identity-checked rollback; not a two-file power-loss transaction",
+  "incremental": {
+    "enabled_by": "Q4T_SESSION_INCREMENTAL=1",
+    "default": false,
+    "private_only": true,
+    "block_bytes": 8388608,
+    "max_ranges": 1024,
+    "max_blocks": 8192,
+    "max_entries": 8,
+    "first_save": "full",
+    "restore_required_in_current_lease": true,
+    "checksums": "all valid bytes every save and restore",
+    "same_process_only": true,
+    "statistical_noninferiority": false
+  },
+  "serving": {
+    "utf8": "complete scalars per event; invalid terminal bytes replaced",
+    "send_success": "complete local write and request completion wins cancellation",
+    "ttft": "raw: first nonempty content local write; parsed: first content, reasoning, or complete tool delta local write",
+    "target_ready": "separate legacy first-target-ready metric",
+    "logical_write_deadline_seconds": 30,
+    "terminal_write_budget_ms": 250,
+    "batching": "existing all-active selection",
+    "fault_injection": false,
+    "performance_acceptance": false,
+    "header_state": "actual successful writes; partial headers close on exception",
+    "private_publication": "actual saved token prefix; matching positive and negative continuation"
+  },
+  "audit_p2": {
+    "fixed": [
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5",
+      "A6",
+      "A7",
+      "A8"
+    ],
+    "pending": []
+  },
+  "tool_source_commit": "b71f026d0305750614531388d7d7ff38eafcd064",
+  "tool_acceptance": "/home/rm01/models/dev/qwen4-thor/.q4t-work/input-contract-20261102/execution/business/result.json",
+  "tool_acceptance_sha256": "260dbbcddc4494d999ecbd3938530b78c4a30dd23d17a3d1acb0003ca859cf20",
+  "main_reaudit": {
+    "fixed": [
+      "R1",
+      "R2",
+      "R3",
+      "R4"
+    ],
+    "pending": []
+  },
+  "chat_protocol": {
+    "protocol_sha256": "5b328d66bc60a4d01373bc001e9dc2ce6e551f3a571da292662862be22f339e8",
+    "capabilities": "/v1/capabilities",
+    "tool_choice": [
+      "auto"
+    ],
+    "tool_calls": "complete validated calls only",
+    "reasoning": "reasoning_content",
+    "json_and_sse": true,
+    "tool_history_ids": true,
+    "constrained_decoding": false,
+    "media_acceptance": false,
+    "sdk_interoperability_acceptance": {
+      "python": "3.42.1",
+      "scope": "models, Chat JSON/SSE, function loop, validation errors"
+    },
+    "messages_parse_response_default": true,
+    "parse_response_false": true,
+    "raw_prompt_parsing": false,
+    "token_limit_fields": [
+      "max_tokens",
+      "max_completion_tokens"
+    ],
+    "errors": {
+      "envelope": [
+        "message",
+        "type",
+        "code",
+        "param"
+      ],
+      "code_namespace": "q4t",
+      "automatic_retry_safe": false,
+      "sse_error_then_done": true
+    },
+    "structured_output": {
+      "available": true,
+      "backend": "xgrammar",
+      "backend_revision": "ca1acf28bf35b9ba9092800b69aebc7d4ce1f7a7",
+      "schema_profile": "q4t-json-schema-v1",
+      "response_format": [
+        "text",
+        "json_object",
+        "json_schema"
+      ],
+      "validation": "complete_response_before_publication",
+      "stream_payload": "buffered_until_validated",
+      "decode": "plain_host_masked_greedy",
+      "mtp": false,
+      "packed_decode": false,
+      "session_cache": false,
+      "prefix_cache": false,
+      "media": false,
+      "length_terminal": "error",
+      "named_tool_max_calls": 1,
+      "max_tools": 16,
+      "max_response_bytes": 1048576,
+      "max_schema_bytes": 16384,
+      "max_schema_depth": 8,
+      "max_schema_nodes": 128,
+      "object_key_order": "schema",
+      "json_with_tools": "requires_tool_choice_none"
+    },
+    "tool_control": {
+      "type": "function",
+      "execution": "client",
+      "tool_choice": [
+        "auto",
+        "none",
+        "required",
+        "named"
+      ],
+      "parallel_tool_calls": [
+        true,
+        false
+      ],
+      "strict": true,
+      "constrained_decoding": true,
+      "options_require_parsed_messages": true,
+      "definition_unknown_fields": "reject_all_modes",
+      "strict_null": "false",
+      "full_json_schema_validation": false,
+      "max_calls": 128,
+      "max_id_bytes": 256,
+      "history": {
+        "identified_results": "complete_unique_batch",
+        "unordered_text_results": true,
+        "unordered_media_results": false,
+        "legacy_without_ids": true,
+        "legacy_shape_validation": true,
+        "arguments": "required_object_or_json_object_text",
+        "result_content": "required_string_or_array"
+      }
+    },
+    "constrained_stream_payload": "buffered_until_validated",
+    "input_contract": "q4t-input-v2",
+    "null_as_default": [
+      "temperature",
+      "top_p",
+      "n",
+      "frequency_penalty",
+      "presence_penalty",
+      "stream",
+      "stream_options",
+      "user"
+    ],
+    "cancellation": {
+      "endpoint": "/v1/requests/cancel",
+      "accepted_status": 202,
+      "acceptance_is_drained": false,
+      "unknown_fields": "reject",
+      "malformed_status": 400,
+      "unknown_credentials_status": 404,
+      "request_replay_idempotent": false
+    }
+  },
+  "inherited_acceptance": {
+    "acceptance": "ACCEPT_BOUNDED_STRUCTURED_OUTPUT",
+    "acceptance_decision": "/home/rm01/models/dev/qwen4-thor/.q4t-work/structured-control-20261102/execution/business/result.json",
+    "acceptance_decision_sha256": "27adcf727cd1be463b488009f127af1feabb3b75462f6b0c8759737f6e87d44a",
+    "chat_protocol": {
+      "protocol_sha256": "5b328d66bc60a4d01373bc001e9dc2ce6e551f3a571da292662862be22f339e8",
+      "capabilities": "/v1/capabilities",
+      "tool_choice": [
+        "auto"
+      ],
+      "tool_calls": "complete validated calls only",
+      "reasoning": "reasoning_content",
+      "json_and_sse": true,
+      "tool_history_ids": true,
+      "constrained_decoding": false,
+      "media_acceptance": false,
+      "sdk_interoperability_acceptance": {
+        "python": "3.42.1",
+        "scope": "models, Chat JSON/SSE, function loop, validation errors"
+      },
+      "messages_parse_response_default": true,
+      "parse_response_false": true,
+      "raw_prompt_parsing": false,
+      "token_limit_fields": [
+        "max_tokens",
+        "max_completion_tokens"
+      ],
+      "errors": {
+        "envelope": [
+          "message",
+          "type",
+          "code",
+          "param"
+        ],
+        "code_namespace": "q4t",
+        "automatic_retry_safe": false,
+        "sse_error_then_done": true
+      },
+      "structured_output": {
+        "available": true,
+        "backend": "xgrammar",
+        "backend_revision": "ca1acf28bf35b9ba9092800b69aebc7d4ce1f7a7",
+        "schema_profile": "q4t-json-schema-v1",
+        "response_format": [
+          "text",
+          "json_object",
+          "json_schema"
+        ],
+        "validation": "complete_response_before_publication",
+        "stream_payload": "buffered_until_validated",
+        "decode": "plain_host_masked_greedy",
+        "mtp": false,
+        "packed_decode": false,
+        "session_cache": false,
+        "prefix_cache": false,
+        "media": false,
+        "length_terminal": "error",
+        "named_tool_max_calls": 1,
+        "max_tools": 16,
+        "max_response_bytes": 1048576,
+        "max_schema_bytes": 16384,
+        "max_schema_depth": 8,
+        "max_schema_nodes": 128,
+        "object_key_order": "schema",
+        "json_with_tools": "requires_tool_choice_none"
+      },
+      "tool_control": {
+        "type": "function",
+        "execution": "client",
+        "tool_choice": [
+          "auto",
+          "none",
+          "required",
+          "named"
+        ],
+        "parallel_tool_calls": [
+          true,
+          false
+        ],
+        "strict": true,
+        "constrained_decoding": true,
+        "options_require_parsed_messages": true,
+        "definition_unknown_fields": "reject_all_modes",
+        "strict_null": "false",
+        "full_json_schema_validation": false,
+        "max_calls": 128,
+        "max_id_bytes": 256,
+        "history": {
+          "identified_results": "complete_unique_batch",
+          "unordered_text_results": true,
+          "unordered_media_results": false,
+          "legacy_without_ids": true,
+          "legacy_shape_validation": true,
+          "arguments": "required_object_or_json_object_text",
+          "result_content": "required_string_or_array"
+        }
+      },
+      "constrained_stream_payload": "buffered_until_validated",
+      "input_contract": "q4t-input-v2",
+      "null_as_default": [
+        "temperature",
+        "top_p",
+        "n",
+        "frequency_penalty",
+        "presence_penalty",
+        "stream",
+        "stream_options",
+        "user"
+      ],
+      "cancellation": {
+        "endpoint": "/v1/requests/cancel",
+        "accepted_status": 202,
+        "acceptance_is_drained": false,
+        "unknown_fields": "reject",
+        "malformed_status": 400,
+        "unknown_credentials_status": 404,
+        "request_replay_idempotent": false
+      }
+    },
+    "inherited_acceptance": {
+      "acceptance": "ACCEPT_BOUNDED_APPLICATION_SERVICE",
+      "acceptance_decision": "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-correction-20261102/execution/business/result.json",
+      "acceptance_decision_sha256": "57da3d76f9a23015a36f943c92a7b6b9fd4b848212948ae29aba62959d1be5f7",
+      "chat_protocol": {
+        "protocol_sha256": "cda1fc473e24057ce46ad90bba7764928f901b9122b7e06bd789b86304adc5af",
+        "capabilities": "/v1/capabilities",
+        "tool_choice": [
+          "auto"
+        ],
+        "tool_calls": "complete validated calls only",
+        "reasoning": "reasoning_content",
+        "json_and_sse": true,
+        "tool_history_ids": true,
+        "constrained_decoding": false,
+        "media_acceptance": false,
+        "sdk_interoperability_acceptance": {
+          "python": "3.42.1",
+          "scope": "models, Chat JSON/SSE, function loop, validation errors"
+        },
+        "messages_parse_response_default": true,
+        "parse_response_false": true,
+        "raw_prompt_parsing": false,
+        "token_limit_fields": [
+          "max_tokens",
+          "max_completion_tokens"
+        ],
+        "errors": {
+          "envelope": [
+            "message",
+            "type",
+            "code",
+            "param"
+          ],
+          "code_namespace": "q4t",
+          "automatic_retry_safe": false,
+          "sse_error_then_done": true
+        },
+        "structured_output": {
+          "available": true,
+          "backend": "xgrammar",
+          "backend_revision": "ca1acf28bf35b9ba9092800b69aebc7d4ce1f7a7",
+          "schema_profile": "q4t-json-schema-v1",
+          "response_format": [
+            "text",
+            "json_object",
+            "json_schema"
+          ],
+          "validation": "complete_response_before_publication",
+          "stream_payload": "buffered_until_validated",
+          "decode": "plain_host_masked_greedy",
+          "mtp": false,
+          "packed_decode": false,
+          "session_cache": false,
+          "prefix_cache": false,
+          "media": false,
+          "length_terminal": "error",
+          "named_tool_max_calls": 1,
+          "max_tools": 16,
+          "max_response_bytes": 1048576,
+          "max_schema_bytes": 16384,
+          "max_schema_depth": 8,
+          "max_schema_nodes": 128,
+          "object_key_order": "schema",
+          "json_with_tools": "requires_tool_choice_none"
+        },
+        "tool_control": {
+          "type": "function",
+          "execution": "client",
+          "tool_choice": [
+            "auto",
+            "none",
+            "required",
+            "named"
+          ],
+          "parallel_tool_calls": [
+            true,
+            false
+          ],
+          "strict": true,
+          "constrained_decoding": true,
+          "options_require_parsed_messages": true,
+          "full_json_schema_validation": false,
+          "max_calls": 128,
+          "max_id_bytes": 256,
+          "history": {
+            "identified_results": "complete_unique_batch",
+            "unordered_text_results": true,
+            "unordered_media_results": false,
+            "legacy_without_ids": true
+          }
+        },
+        "constrained_stream_payload": "buffered_until_validated"
+      },
+      "inherited_acceptance": {
+        "acceptance_snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-delivery-20261102/package/business-acceptance.md",
+        "acceptance_snapshot_sha256": "88cd7061ef66f2ce01a100551ac70960b3beef38649e878eddcb6273b52207da",
+        "acceptance_audit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-delivery-20261102/package/evidence/accepted-archives.json",
+        "acceptance_audit_sha256": "ea35d968af4af6ced2e461d11ecb90155ad9b54228d38fcc1f7ac37f3a7775fc"
+      }
+    }
+  },
+  "implementation_capabilities": {
+    "object": "q4t.capabilities",
+    "schema_version": 1,
+    "implementation_only": true,
+    "release_attestation": false,
+    "model": "qwen3.8-flash-next",
+    "protocol_source_sha256": "5b328d66bc60a4d01373bc001e9dc2ce6e551f3a571da292662862be22f339e8",
+    "chat": {
+      "messages": true,
+      "raw_prompt": true,
+      "messages_parse_response_default": true,
+      "parse_response_false": true,
+      "raw_prompt_parsing": false,
+      "content": true,
+      "reasoning_content": true,
+      "tool_calls": true,
+      "stream": true,
+      "stream_include_usage": true,
+      "token_limit_fields": [
+        "max_tokens",
+        "max_completion_tokens"
+      ],
+      "token_limit_conflict": "reject_both_nonnull",
+      "input_contract": "q4t-input-v2",
+      "exact_integer_spelling": true,
+      "null_as_default": [
+        "temperature",
+        "top_p",
+        "n",
+        "frequency_penalty",
+        "presence_penalty",
+        "stream",
+        "stream_options",
+        "user"
+      ],
+      "reasoning_field": "reasoning_content",
+      "stream_tool_arguments": "complete_call",
+      "stream_terminal_order": [
+        "finish",
+        "usage_if_requested",
+        "DONE"
+      ],
+      "parse_error": {
+        "http_status": 502,
+        "sse_error_then_done": true,
+        "successful_finish": false
+      },
+      "sampling": "greedy",
+      "choices": 1
+    },
+    "tools": {
+      "type": "function",
+      "execution": "client",
+      "tool_choice": [
+        "auto",
+        "none",
+        "required",
+        "named"
+      ],
+      "parallel_tool_calls": [
+        true,
+        false
+      ],
+      "strict": true,
+      "constrained_decoding": true,
+      "options_require_parsed_messages": true,
+      "definition_unknown_fields": "reject_all_modes",
+      "strict_null": "false",
+      "full_json_schema_validation": false,
+      "max_calls": 128,
+      "max_id_bytes": 256,
+      "history": {
+        "identified_results": "complete_unique_batch",
+        "unordered_text_results": true,
+        "unordered_media_results": false,
+        "legacy_without_ids": true,
+        "legacy_shape_validation": true,
+        "arguments": "required_object_or_json_object_text",
+        "result_content": "required_string_or_array"
+      }
+    },
+    "structured_output": {
+      "available": true,
+      "backend": "xgrammar",
+      "backend_revision": "ca1acf28bf35b9ba9092800b69aebc7d4ce1f7a7",
+      "schema_profile": "q4t-json-schema-v1",
+      "response_format": [
+        "text",
+        "json_object",
+        "json_schema"
+      ],
+      "validation": "complete_response_before_publication",
+      "stream_payload": "buffered_until_validated",
+      "decode": "plain_host_masked_greedy",
+      "mtp": false,
+      "packed_decode": false,
+      "session_cache": false,
+      "prefix_cache": false,
+      "media": false,
+      "length_terminal": "error",
+      "named_tool_max_calls": 1,
+      "max_tools": 16,
+      "max_response_bytes": 1048576,
+      "max_schema_bytes": 16384,
+      "max_schema_depth": 8,
+      "max_schema_nodes": 128,
+      "object_key_order": "schema",
+      "json_with_tools": "requires_tool_choice_none"
+    },
+    "template": {
+      "id": "qwen4_exp-native-v1",
+      "reference_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+      "renderer_source_sha256": "351677cef7accf3461dc40a8b2d6e896bbfb2f25fc94ebb33b7e8b4b1f01d3a0",
+      "tool_history_source_sha256": "3514a29df574c5b21c4dd8b6ecd9407aa3ff50a43a30b51d97fa93c6cd247bed",
+      "fixture_sha256": "670afc63b321539c2f86aff7c15a1b351bd7bb35ca9e01373466c7ad2353f27c",
+      "options": [
+        "enable_thinking",
+        "preserve_thinking",
+        "reasoning_effort",
+        "add_vision_id"
+      ],
+      "reasoning_effort": [
+        "low",
+        "medium",
+        "xhigh"
+      ]
+    },
+    "runtime": {
+      "media_enabled": false,
+      "mtp_enabled": true
+    },
+    "cancellation": {
+      "endpoint": "/v1/requests/cancel",
+      "accepted_status": 202,
+      "acceptance_is_drained": false,
+      "unknown_fields": "reject",
+      "malformed_status": 400,
+      "unknown_credentials_status": 404,
+      "request_replay_idempotent": false
+    },
+    "errors": {
+      "envelope": [
+        "message",
+        "type",
+        "code",
+        "param"
+      ],
+      "code_namespace": "q4t",
+      "automatic_retry_safe": false,
+      "sse_error_then_done": true
+    },
+    "unsupported": [
+      "sampling",
+      "full_json_schema"
+    ]
+  },
+  "deployment_completion": {
+    "previous_stage_status": "ENV_ABORT_FINAL_MONITOR_IMPORT",
+    "raw_guard_status": "COMMAND_FAILED",
+    "monitor_python": "/usr/bin/python3",
+    "reused_health": "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-correction-20261102/execution/health/result.json",
+    "reused_health_sha256": "ae771aa0b158df35b35f3297971a8222b3b4d07e43db7acb21fbcde6397fec20",
+    "model_requests_added": 0,
+    "source_commit": "8922c44685f72fa592c3fe89321cde83eaf10d09"
+  }
+}

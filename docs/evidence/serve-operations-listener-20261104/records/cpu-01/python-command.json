@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/serve_operations_listener/cpu.py",
+    "unit",
+    "--label",
+    "cpu-01"
+  ],
+  "timeout": 240
+}

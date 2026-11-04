@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 129
+X-Request-Id: trace-negative-1-chat
+Connection: close
+
+{"error":{"message":"model must match the served model","type":"invalid_request_error","code":"invalid_request","param":"model"}}

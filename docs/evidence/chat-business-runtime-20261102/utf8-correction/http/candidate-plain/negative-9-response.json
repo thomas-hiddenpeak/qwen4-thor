@@ -1,0 +1,5 @@
+{
+  "status": 400,
+  "raw": "{\"error\":{\"message\":\"parsed responses require function tool definitions\",\"type\":\"invalid_request_error\",\"code\":null}}",
+  "elapsed_seconds": 0.00023605301976203918
+}

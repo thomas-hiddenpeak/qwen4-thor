@@ -1,0 +1,19 @@
+{
+  "status": "COMPLETED",
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/engine/q4t_http_lifecycle_tests",
+    "http_exception_keeps_server_and_releases_connections"
+  ],
+  "compute_backend": "nvml",
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 0,
+  "external_lease": false,
+  "finished": {
+    "utc": "2026-11-02T15:39:28.451928+00:00",
+    "monotonic": 1824050.968813485,
+    "pid": 1507181
+  }
+}

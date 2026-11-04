@@ -1,0 +1,92 @@
+{
+  "passed": true,
+  "cpu_tests": 57,
+  "driver_tests": 4,
+  "official_rule_scenarios": 29,
+  "original_rule_parse_failure_preserved": true,
+  "models": 1,
+  "gateways": 1,
+  "successful_responses": 4,
+  "real_tools": 2,
+  "completed_tasks": 2,
+  "response_usage": {
+    "alpha": [
+      {
+        "completion_tokens": 55,
+        "prompt_tokens": 647,
+        "total_tokens": 702
+      },
+      {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    ],
+    "beta": [
+      {
+        "completion_tokens": 55,
+        "prompt_tokens": 647,
+        "total_tokens": 702
+      },
+      {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    ]
+  },
+  "notifications": [
+    {
+      "name": "Q4TTLSCertificateExpiring",
+      "status": "firing",
+      "receipts": [
+        1
+      ]
+    },
+    {
+      "name": "Q4TTLSObserverStale",
+      "status": "firing",
+      "receipts": [
+        3
+      ]
+    },
+    {
+      "name": "Q4TTLSObserverStale",
+      "status": "resolved",
+      "receipts": [
+        4
+      ]
+    },
+    {
+      "name": "Q4TTLSGenerationTerminal",
+      "status": "firing",
+      "receipts": [
+        6
+      ]
+    }
+  ],
+  "gpu_seconds": 145.75795410294086,
+  "gpu_observations": 136,
+  "seconds": 146.956387569895,
+  "controls": 25,
+  "memcg_peak_bytes": 15443484672,
+  "memcg_events": {
+    "low": 0,
+    "high": 0,
+    "max": 0,
+    "oom": 0,
+    "oom_kill": 0,
+    "oom_group_kill": 0
+  },
+  "pids_events": {
+    "max": 0
+  },
+  "owned_exited": 11,
+  "cleanup_confirmed": true,
+  "long_run": false,
+  "actual_lan_accepted": false,
+  "external_notifications": false,
+  "actual_waited_expiry": false,
+  "physical_ram_limit": false,
+  "performance_acceptance": false
+}

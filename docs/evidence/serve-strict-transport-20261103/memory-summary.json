@@ -1,0 +1,726 @@
+{
+  "sample_count": 36,
+  "samples": [
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/json-write-timeout/generation-memory-samples.json",
+      "monotonic": 1855726.736411918,
+      "parents": [
+        {
+          "pid": 1937159,
+          "rss_bytes": 744169472,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [],
+      "memavailable_bytes": 43153797120,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/json-write-timeout/generation-memory-samples.json",
+      "monotonic": 1855727.751752535,
+      "parents": [
+        {
+          "pid": 1937159,
+          "rss_bytes": 982016000,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1938225,
+          "rss_bytes": 234926080,
+          "state": "S (sleeping)"
+        }
+      ],
+      "memavailable_bytes": 42666733568,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/json-write-timeout/generation-memory-samples.json",
+      "monotonic": 1855728.766784727,
+      "parents": [
+        {
+          "pid": 1937159,
+          "rss_bytes": 982016000,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1938225,
+          "rss_bytes": 234954752,
+          "state": "S (sleeping)"
+        }
+      ],
+      "memavailable_bytes": 42674655232,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/json-write-timeout/generation-memory-samples.json",
+      "monotonic": 1855729.781800251,
+      "parents": [
+        {
+          "pid": 1937159,
+          "rss_bytes": 982016000,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1938225,
+          "rss_bytes": 234954752,
+          "state": "S (sleeping)"
+        }
+      ],
+      "memavailable_bytes": 42698272768,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/json-write-timeout/generation-memory-samples.json",
+      "monotonic": 1855730.796895544,
+      "parents": [
+        {
+          "pid": 1937159,
+          "rss_bytes": 982016000,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1938225,
+          "rss_bytes": 234954752,
+          "state": "S (sleeping)"
+        }
+      ],
+      "memavailable_bytes": 42713485312,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/json-write-timeout/generation-memory-samples.json",
+      "monotonic": 1855731.811816364,
+      "parents": [
+        {
+          "pid": 1937159,
+          "rss_bytes": 982016000,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1938225,
+          "rss_bytes": 234958848,
+          "state": "S (sleeping)"
+        }
+      ],
+      "memavailable_bytes": 42727452672,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/json-write-timeout/generation-memory-samples.json",
+      "monotonic": 1855732.827241994,
+      "parents": [
+        {
+          "pid": 1937159,
+          "rss_bytes": 982016000,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1938225,
+          "rss_bytes": 234958848,
+          "state": "S (sleeping)"
+        }
+      ],
+      "memavailable_bytes": 42723733504,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/json-write-timeout/generation-memory-samples.json",
+      "monotonic": 1855733.842289662,
+      "parents": [
+        {
+          "pid": 1937159,
+          "rss_bytes": 982016000,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1938225,
+          "rss_bytes": 234962944,
+          "state": "S (sleeping)"
+        }
+      ],
+      "memavailable_bytes": 42736852992,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/json-write-timeout/generation-memory-samples.json",
+      "monotonic": 1855734.856691422,
+      "parents": [
+        {
+          "pid": 1937159,
+          "rss_bytes": 982016000,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1938225,
+          "rss_bytes": 234967040,
+          "state": "S (sleeping)"
+        }
+      ],
+      "memavailable_bytes": 42756726784,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/json-write-timeout/generation-memory-samples.json",
+      "monotonic": 1855735.871320134,
+      "parents": [
+        {
+          "pid": 1937159,
+          "rss_bytes": 982016000,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1938225,
+          "rss_bytes": 234967040,
+          "state": "S (sleeping)"
+        }
+      ],
+      "memavailable_bytes": 42768855040,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/json-write-timeout/generation-memory-samples.json",
+      "monotonic": 1855736.886092038,
+      "parents": [
+        {
+          "pid": 1937159,
+          "rss_bytes": 982016000,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1938225,
+          "rss_bytes": 235339776,
+          "state": "S (sleeping)"
+        }
+      ],
+      "memavailable_bytes": 42780663808,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/json-write-timeout/generation-memory-samples.json",
+      "monotonic": 1855737.901871797,
+      "parents": [
+        {
+          "pid": 1937159,
+          "rss_bytes": 982016000,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1938225,
+          "rss_bytes": 235376640,
+          "state": "S (sleeping)"
+        }
+      ],
+      "memavailable_bytes": 42793959424,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/json-write-timeout/generation-memory-samples.json",
+      "monotonic": 1855738.916821612,
+      "parents": [
+        {
+          "pid": 1937159,
+          "rss_bytes": 982016000,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1938225,
+          "rss_bytes": 235417600,
+          "state": "S (sleeping)"
+        }
+      ],
+      "memavailable_bytes": 42818637824,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/json-write-timeout/generation-memory-samples.json",
+      "monotonic": 1855739.931222717,
+      "parents": [
+        {
+          "pid": 1937159,
+          "rss_bytes": 982016000,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1938225,
+          "rss_bytes": 235454464,
+          "state": "S (sleeping)"
+        }
+      ],
+      "memavailable_bytes": 42838642688,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/json-write-timeout/after-blocked-resources.json",
+      "monotonic": 1855770.956457263,
+      "parents": [
+        {
+          "pid": 1937159,
+          "rss_bytes": 982491136,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [],
+      "memavailable_bytes": 43734794240,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/json-write-timeout/final-resources.json",
+      "monotonic": 1855772.004522365,
+      "parents": [
+        {
+          "pid": 1937159,
+          "rss_bytes": 990654464,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [],
+      "memavailable_bytes": 43711967232,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/json-write-timeout/blocked-resources.json",
+      "monotonic": 1855740.385115445,
+      "parents": [
+        {
+          "pid": 1937159,
+          "rss_bytes": 982016000,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1938225,
+          "rss_bytes": null,
+          "state": "Z (zombie)"
+        }
+      ],
+      "memavailable_bytes": 42948124672,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/json-write-timeout/queued-resources.json",
+      "monotonic": 1855740.417955668,
+      "parents": [
+        {
+          "pid": 1937159,
+          "rss_bytes": 982016000,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1938225,
+          "rss_bytes": null,
+          "state": "Z (zombie)"
+        }
+      ],
+      "memavailable_bytes": 42981634048,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/sse-cancel/generation-memory-samples.json",
+      "monotonic": 1855679.30531527,
+      "parents": [
+        {
+          "pid": 1935680,
+          "rss_bytes": 744173568,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [],
+      "memavailable_bytes": 43441737728,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/sse-cancel/generation-memory-samples.json",
+      "monotonic": 1855680.320038809,
+      "parents": [
+        {
+          "pid": 1935680,
+          "rss_bytes": 982020096,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1936916,
+          "rss_bytes": 234921984,
+          "state": "S (sleeping)"
+        }
+      ],
+      "memavailable_bytes": 42895433728,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/sse-cancel/generation-memory-samples.json",
+      "monotonic": 1855681.334631619,
+      "parents": [
+        {
+          "pid": 1935680,
+          "rss_bytes": 982020096,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1936916,
+          "rss_bytes": 234950656,
+          "state": "S (sleeping)"
+        }
+      ],
+      "memavailable_bytes": 42908610560,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/sse-cancel/generation-memory-samples.json",
+      "monotonic": 1855682.349106285,
+      "parents": [
+        {
+          "pid": 1935680,
+          "rss_bytes": 982020096,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1936916,
+          "rss_bytes": 234950656,
+          "state": "S (sleeping)"
+        }
+      ],
+      "memavailable_bytes": 42908839936,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/sse-cancel/generation-memory-samples.json",
+      "monotonic": 1855683.363671595,
+      "parents": [
+        {
+          "pid": 1935680,
+          "rss_bytes": 982020096,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1936916,
+          "rss_bytes": 234950656,
+          "state": "S (sleeping)"
+        }
+      ],
+      "memavailable_bytes": 42913075200,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/sse-cancel/generation-memory-samples.json",
+      "monotonic": 1855684.378563889,
+      "parents": [
+        {
+          "pid": 1935680,
+          "rss_bytes": 982020096,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1936916,
+          "rss_bytes": 234954752,
+          "state": "S (sleeping)"
+        }
+      ],
+      "memavailable_bytes": 42931658752,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/sse-cancel/generation-memory-samples.json",
+      "monotonic": 1855685.393039146,
+      "parents": [
+        {
+          "pid": 1935680,
+          "rss_bytes": 982020096,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1936916,
+          "rss_bytes": 234954752,
+          "state": "S (sleeping)"
+        }
+      ],
+      "memavailable_bytes": 42928254976,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/sse-cancel/generation-memory-samples.json",
+      "monotonic": 1855686.408117428,
+      "parents": [
+        {
+          "pid": 1935680,
+          "rss_bytes": 982020096,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1936916,
+          "rss_bytes": 234958848,
+          "state": "S (sleeping)"
+        }
+      ],
+      "memavailable_bytes": 42945236992,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/sse-cancel/generation-memory-samples.json",
+      "monotonic": 1855687.423072905,
+      "parents": [
+        {
+          "pid": 1935680,
+          "rss_bytes": 982020096,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1936916,
+          "rss_bytes": 234962944,
+          "state": "S (sleeping)"
+        }
+      ],
+      "memavailable_bytes": 42955603968,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/sse-cancel/generation-memory-samples.json",
+      "monotonic": 1855688.437908457,
+      "parents": [
+        {
+          "pid": 1935680,
+          "rss_bytes": 982020096,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1936916,
+          "rss_bytes": 234962944,
+          "state": "S (sleeping)"
+        }
+      ],
+      "memavailable_bytes": 42973097984,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/sse-cancel/generation-memory-samples.json",
+      "monotonic": 1855689.453067518,
+      "parents": [
+        {
+          "pid": 1935680,
+          "rss_bytes": 982020096,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1936916,
+          "rss_bytes": 235331584,
+          "state": "S (sleeping)"
+        }
+      ],
+      "memavailable_bytes": 42982686720,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/sse-cancel/generation-memory-samples.json",
+      "monotonic": 1855690.467987133,
+      "parents": [
+        {
+          "pid": 1935680,
+          "rss_bytes": 982020096,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1936916,
+          "rss_bytes": 235372544,
+          "state": "S (sleeping)"
+        }
+      ],
+      "memavailable_bytes": 42987954176,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/sse-cancel/generation-memory-samples.json",
+      "monotonic": 1855691.485578202,
+      "parents": [
+        {
+          "pid": 1935680,
+          "rss_bytes": 982020096,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1936916,
+          "rss_bytes": 235413504,
+          "state": "S (sleeping)"
+        }
+      ],
+      "memavailable_bytes": 42983964672,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/sse-cancel/generation-memory-samples.json",
+      "monotonic": 1855692.500820493,
+      "parents": [
+        {
+          "pid": 1935680,
+          "rss_bytes": 982020096,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1936916,
+          "rss_bytes": 235450368,
+          "state": "S (sleeping)"
+        }
+      ],
+      "memavailable_bytes": 43000909824,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/sse-cancel/after-blocked-resources.json",
+      "monotonic": 1855693.629711757,
+      "parents": [
+        {
+          "pid": 1935680,
+          "rss_bytes": 982618112,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [],
+      "memavailable_bytes": 43103174656,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/sse-cancel/final-resources.json",
+      "monotonic": 1855694.678837239,
+      "parents": [
+        {
+          "pid": 1935680,
+          "rss_bytes": 990781440,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [],
+      "memavailable_bytes": 43049304064,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/sse-cancel/blocked-resources.json",
+      "monotonic": 1855692.975581747,
+      "parents": [
+        {
+          "pid": 1935680,
+          "rss_bytes": 982020096,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1936916,
+          "rss_bytes": null,
+          "state": "R (running)"
+        }
+      ],
+      "memavailable_bytes": 43050856448,
+      "errors": []
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/sse-cancel/queued-resources.json",
+      "monotonic": 1855693.009679731,
+      "parents": [
+        {
+          "pid": 1935680,
+          "rss_bytes": 982138880,
+          "state": "S (sleeping)"
+        }
+      ],
+      "workers": [
+        {
+          "pid": 1936916,
+          "rss_bytes": null,
+          "state": "Z (zombie)"
+        }
+      ],
+      "memavailable_bytes": 43106721792,
+      "errors": []
+    }
+  ],
+  "worker_reports": [
+    {
+      "case": "json-write-timeout",
+      "reaped": 1,
+      "lifetime_max_rss_bytes": 1906552832,
+      "reported_post_exec_rss_bytes": 235470848,
+      "wait_status": 0
+    },
+    {
+      "case": "json-write-timeout",
+      "reaped": 1,
+      "lifetime_max_rss_bytes": 1906552832,
+      "reported_post_exec_rss_bytes": 234012672,
+      "wait_status": 9
+    },
+    {
+      "case": "sse-cancel",
+      "reaped": 1,
+      "lifetime_max_rss_bytes": 1906561024,
+      "reported_post_exec_rss_bytes": 235466752,
+      "wait_status": 0
+    },
+    {
+      "case": "sse-cancel",
+      "reaped": 1,
+      "lifetime_max_rss_bytes": 1906561024,
+      "reported_post_exec_rss_bytes": 234008576,
+      "wait_status": 9
+    }
+  ],
+  "parent_rss_max_bytes": 990781440,
+  "worker_rss_max_bytes": 235454464,
+  "worker_rss_missing_samples": 4,
+  "global_memavailable_min_bytes": 42666733568,
+  "worker_reported_post_exec_max_bytes": 235470848,
+  "worker_lifetime_max_bytes": 1906561024,
+  "note": "Sparse observations, not full peaks or additive physical RAM. Missing VmRSS is null, not zero. wait4 lifetime includes pre-exec inheritance."
+}

@@ -1,0 +1,17 @@
+{
+  "source.bundle": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/input-contract-20261102/package/source.bundle",
+    "sha256": "14a86b2ba4b6ff369f97027431523c784ef9ab4cfed59003dd2aeb72733e87c2",
+    "bytes": 28171
+  },
+  "previous/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/input-contract-20261102/package/previous/q4t",
+    "sha256": "957211c7807a5189e5c124b13d52c4fe5a95a4213dfbce087007783cb479d5fc",
+    "bytes": 6866792
+  },
+  "candidate/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/input-contract-20261102/package/candidate/q4t",
+    "sha256": "ea678009413bd4d63a2b456a697e9c7844b47f71e6e2b3e3447b5044f9cbdf0a",
+    "bytes": 6865336
+  }
+}

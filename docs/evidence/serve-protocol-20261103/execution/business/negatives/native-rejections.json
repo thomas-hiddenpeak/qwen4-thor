@@ -1,0 +1,178 @@
+[
+  {
+    "accepted": false,
+    "response": {
+      "error": {
+        "message": "unsupported field: unknown",
+        "type": "invalid_request_error",
+        "code": "invalid_request",
+        "param": "unknown"
+      }
+    }
+  },
+  {
+    "accepted": false,
+    "response": {
+      "error": {
+        "message": "temperature unsupported value in greedy mode",
+        "type": "invalid_request_error",
+        "code": "invalid_request",
+        "param": "temperature"
+      }
+    }
+  },
+  {
+    "accepted": false,
+    "response": {
+      "error": {
+        "message": "top_p unsupported value in greedy mode",
+        "type": "invalid_request_error",
+        "code": "invalid_request",
+        "param": "top_p"
+      }
+    }
+  },
+  {
+    "accepted": false,
+    "response": {
+      "error": {
+        "message": "n unsupported value in greedy mode",
+        "type": "invalid_request_error",
+        "code": "invalid_request",
+        "param": "n"
+      }
+    }
+  },
+  {
+    "accepted": false,
+    "response": {
+      "error": {
+        "message": "seed must be an exact binary64 integer or null",
+        "type": "invalid_request_error",
+        "code": "invalid_request",
+        "param": "seed"
+      }
+    }
+  },
+  {
+    "accepted": false,
+    "response": {
+      "error": {
+        "message": "repetition_penalty unsupported value in greedy mode",
+        "type": "invalid_request_error",
+        "code": "invalid_request",
+        "param": "repetition_penalty"
+      }
+    }
+  },
+  {
+    "accepted": false,
+    "response": {
+      "error": {
+        "message": "reasoning_field must be reasoning or reasoning_content",
+        "type": "invalid_request_error",
+        "code": "invalid_request",
+        "param": "reasoning_field"
+      }
+    }
+  },
+  {
+    "accepted": false,
+    "response": {
+      "error": {
+        "message": "max_tokens must be an integer in [1,2147483647] or null",
+        "type": "invalid_request_error",
+        "code": "invalid_request",
+        "param": "max_tokens"
+      }
+    }
+  },
+  {
+    "accepted": false,
+    "response": {
+      "error": {
+        "message": "provide only one of max_tokens or max_completion_tokens",
+        "type": "invalid_request_error",
+        "code": "invalid_request",
+        "param": "max_completion_tokens"
+      }
+    }
+  },
+  {
+    "accepted": false,
+    "response": {
+      "error": {
+        "message": "include_usage must be boolean",
+        "type": "invalid_request_error",
+        "code": "invalid_request",
+        "param": "stream_options.include_usage"
+      }
+    }
+  },
+  {
+    "accepted": false,
+    "response": {
+      "error": {
+        "message": "user must be a string or null (metadata only)",
+        "type": "invalid_request_error",
+        "code": "invalid_request",
+        "param": "user"
+      }
+    }
+  },
+  {
+    "accepted": false,
+    "response": {
+      "error": {
+        "message": "parse_response=true requires messages",
+        "type": "invalid_request_error",
+        "code": "invalid_request",
+        "param": "parse_response"
+      }
+    }
+  },
+  {
+    "accepted": false,
+    "response": {
+      "error": {
+        "message": "unsupported message role",
+        "type": "invalid_request_error",
+        "code": "invalid_request",
+        "param": "messages[0].role"
+      }
+    }
+  },
+  {
+    "accepted": false,
+    "response": {
+      "error": {
+        "message": "message name is not represented by this model template",
+        "type": "invalid_request_error",
+        "code": "invalid_request",
+        "param": "messages[0].name"
+      }
+    }
+  },
+  {
+    "accepted": false,
+    "response": {
+      "error": {
+        "message": "unsupported field: extra",
+        "type": "invalid_request_error",
+        "code": "invalid_request",
+        "param": null
+      }
+    }
+  },
+  {
+    "accepted": false,
+    "response": {
+      "error": {
+        "message": "stop is not supported with constrained output",
+        "type": "invalid_request_error",
+        "code": "invalid_request",
+        "param": "stop"
+      }
+    }
+  }
+]

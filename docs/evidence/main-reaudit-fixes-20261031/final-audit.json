@@ -1,0 +1,64 @@
+{
+  "passed": true,
+  "source_commit": "55299a0a98a329f758a13db7bf2a51090f781818",
+  "runtime_files": 170,
+  "tool_files": 13,
+  "binary_sha256": "0c5ab1de85ff68f9d757ac3bfad04187756a1b2c6634108c3112a5861c209483",
+  "sidecar_sha256": "e6fdd13b7d140926ed4a0d42bcda37b6ec6689305960e3deab03b3f73dc294d6",
+  "rollback_binary": "b11ed66cd94f943957e83edbfa223cb3e65f758e409eb4d125b4911d1164e015",
+  "rollback_sidecar": "982c888c2c9d6e63a608398472bc692f8340e117361011d123593fd7c6d45fab",
+  "total_http": 22,
+  "total_starts": 10,
+  "gpu_contracts": 21,
+  "gpu_processes": 2,
+  "environment_aborts": 0,
+  "elapsed_seconds": 643.7373614311218,
+  "fixed": [
+    "R1",
+    "R2",
+    "R3",
+    "R4"
+  ],
+  "pending": [],
+  "sealed": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/delivery-package": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/delivery-package/sealed-files.json",
+      "sha256": "2929ad750adec0464b16eea96595bcc79742e1a1f4e8e6ff520e8ff4ac749676",
+      "bytes": 22878
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/evidence-archive": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/evidence-archive/sealed-files.json",
+      "sha256": "352a0b326d9f967396915f8dc510fbcefab0337ac752e706fbffa8a12d3ece96",
+      "bytes": 13789
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/health-archive": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/health-archive/sealed-files.json",
+      "sha256": "56553a119d4237b3aa3152c2bd7a730b39bb2f9d5c7951fd4ffb8392ee95fa4d",
+      "bytes": 2886
+    }
+  },
+  "recovery_marker_absent": true,
+  "persistent_service": false,
+  "default_moe_resident_slots": 0,
+  "default_mtp": {
+    "head": "full",
+    "mtp": true,
+    "mtp_k": 3,
+    "suffix": false,
+    "max_seq": 1,
+    "session_cache": false,
+    "prefix_cache": false,
+    "session_incremental": false
+  },
+  "source_ci": {
+    "run_id": 41135985870,
+    "head_sha": "55299a0a98a329f758a13db7bf2a51090f781818",
+    "name": "Public host contracts",
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/41135985870",
+    "observed_unix": 1793398486.0488198
+  },
+  "frozen_input_count": 226,
+  "audited_unix": 1793398754.8801658
+}

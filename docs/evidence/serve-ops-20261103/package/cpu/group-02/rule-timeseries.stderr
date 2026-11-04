@@ -1,0 +1,42 @@
+  FAILED:
+    name: scrape contract missing,
+    alertname: Q4TMetricContractMissing, time: 1m30s, 
+        exp:[
+            0:
+              Labels:{alertname="Q4TMetricContractMissing", component="q4t-serve", instance="a:8080", job="q4t", severity="critical"}
+              Annotations:{runbook_url="https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#observation", summary="The operational metric contract is incomplete."}
+            ], 
+        got:[]
+82:44: parse error: unexpected identifier "NaNx39" in series values, expected number or "stale"
+    name: explicitly disabled without unknown-memory false positive,
+    alertname: Q4TMetricContractInvalid, time: 15m, 
+        exp:[], 
+        got:[
+            0:
+              Labels:{alertname="Q4TMetricContractInvalid", component="q4t-serve", instance="a:8080", job="q4t", severity="critical"}
+              Annotations:{runbook_url="https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#observation", summary="Operational observations are contradictory or invalid."}
+            ]
+    name: idle worker ownership,
+    alertname: Q4TWorkerReapStalled, time: 2m, 
+        exp:[
+            0:
+              Labels:{alertname="Q4TWorkerReapStalled", component="q4t-serve", instance="a:8080", job="q4t", severity="warning"}
+              Annotations:{runbook_url="https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#owners", summary="A worker remains owned after requests and structured leases have drained."}
+            ], 
+        got:[]
+    name: idle body retained,
+    alertname: Q4TIdleResourcesRetained, time: 2m, 
+        exp:[
+            0:
+              Labels:{alertname="Q4TIdleResourcesRetained", component="q4t-serve", instance="a:8080", job="q4t", severity="warning"}
+              Annotations:{runbook_url="https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#owners", summary="Resources remain retained while observed business work is idle."}
+            ], 
+        got:[]
+    name: idle slot retained,
+    alertname: Q4TIdleResourcesRetained, time: 2m, 
+        exp:[
+            0:
+              Labels:{alertname="Q4TIdleResourcesRetained", component="q4t-serve", instance="a:8080", job="q4t", severity="warning"}
+              Annotations:{runbook_url="https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#owners", summary="Resources remain retained while observed business work is idle."}
+            ], 
+        got:[]

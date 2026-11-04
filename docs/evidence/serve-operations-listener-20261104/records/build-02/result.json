@@ -1,0 +1,16 @@
+{
+  "binaries": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-operations-listener-20261104/engine/q4t": "7eff020de66b96f3175b3e123909be9e2f58142d54d1dd5992750d23cbe9c769",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-operations-listener-20261104/engine/q4t_host_tests": "56d18bb8f89ea427b97f3e748188bb83dd3936b35d30b6f128bf385d47aeb8ee",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-operations-listener-20261104/engine/q4t_http_lifecycle_tests": "ab1c5a7a0eec33db87630c209dc432db48afc37d434fca30a9f03609c5316523",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-operations-listener-20261104/host/q4t_host_tests": "922e4c7300eb92380b7236a8801ca7dd92629b902a37bb33df27d0267341321d"
+  },
+  "checks": {
+    "build-engine": true,
+    "build-host": true,
+    "configure-engine": true,
+    "configure-host": true
+  },
+  "passed": true,
+  "zero_warnings": true
+}

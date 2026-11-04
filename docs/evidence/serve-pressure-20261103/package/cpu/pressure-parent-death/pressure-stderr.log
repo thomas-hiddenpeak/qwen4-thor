@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_pressure/pressure.py", line 191, in <module>
+    sys.exit(helper())
+             ^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_pressure/pressure.py", line 126, in helper
+    emit(dict(final=True, allocated=0, error=failure,
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_pressure/pressure.py", line 60, in emit
+    print(json.dumps(value), flush=True)
+BrokenPipeError: [Errno 32] Broken pipe
+Exception ignored in: <_io.TextIOWrapper name='<stdout>' mode='w' encoding='utf-8'>
+BrokenPipeError: [Errno 32] Broken pipe

@@ -1,0 +1,15 @@
+{"name": "defaults", "argv": [], "effective_slots": 1, "expected": [32, 31]}
+{"name": "requested_slots", "argv": ["--max-seq", "32"], "effective_slots": 32, "expected": [64, 32]}
+{"name": "budget_shrink", "argv": ["--max-seq", "32"], "effective_slots": 2, "expected": [32, 30]}
+{"name": "explicit", "argv": ["--max-inflight-requests", "4", "--max-queued-requests", "2"], "effective_slots": 2, "expected": [4, 2]}
+{"name": "single_inflight", "argv": ["--max-inflight-requests", "1"], "effective_slots": 2, "expected": [1, 0]}
+{"name": "upper_bounds", "argv": ["--max-inflight-requests", "4096", "--max-queued-requests", "4096"], "effective_slots": 1, "expected": [4096, 4096]}
+{"name": "no_waiting", "argv": ["--max-queued-requests", "0"], "effective_slots": 1, "expected": [32, 0]}
+{"name": "zero_inflight", "argv": ["--max-inflight-requests", "0"], "effective_slots": 1, "expected": null}
+{"name": "negative_queue", "argv": ["--max-queued-requests", "-1"], "effective_slots": 1, "expected": null}
+{"name": "inflight_overflow", "argv": ["--max-inflight-requests", "4097"], "effective_slots": 1, "expected": null}
+{"name": "queue_overflow", "argv": ["--max-queued-requests", "4097"], "effective_slots": 1, "expected": null}
+{"name": "cross_limit", "argv": ["--max-inflight-requests", "4", "--max-queued-requests", "5"], "effective_slots": 1, "expected": null}
+{"name": "budget_shrink_invalid", "argv": ["--max-seq", "32", "--max-queued-requests", "40"], "effective_slots": 2, "expected": null}
+{"name": "zero_slots", "argv": [], "effective_slots": 0, "expected": null}
+{"name": "slots_overflow", "argv": [], "effective_slots": 8193, "expected": null}

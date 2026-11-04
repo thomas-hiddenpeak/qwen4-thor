@@ -1,0 +1,13 @@
+HTTP/1.1 200 OK
+Content-Type: text/event-stream
+Cache-Control: no-cache
+X-Accel-Buffering: no
+X-Request-Id: trace-strict-length
+Connection: close
+
+data: {"id":"chatcmpl-auto-d0cc504120b0b4525ee774b94caef39c","object":"chat.completion.chunk","created":1793646606,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"error":{"message":"constrained response did not reach a grammar-accepted stop token","type":"server_error","code":"structured_output_incomplete","param":null}}
+
+data: [DONE]
+

@@ -1,0 +1,42 @@
+{
+  "id": "chatcmpl-auto-0",
+  "choices": [
+    {
+      "finish_reason": "tool_calls",
+      "index": 0,
+      "logprobs": null,
+      "message": {
+        "content": null,
+        "refusal": null,
+        "role": "assistant",
+        "annotations": null,
+        "audio": null,
+        "function_call": null,
+        "tool_calls": [
+          {
+            "id": "call_chatcmpl-auto-0_0",
+            "function": {
+              "arguments": "{\"path\":\"build/q4t.release.json\",\"start_line\":1,\"line_count\":10}",
+              "name": "read_project_record"
+            },
+            "type": "function"
+          }
+        ]
+      }
+    }
+  ],
+  "created": 1793605934,
+  "model": "qwen3.8-flash-next",
+  "object": "chat.completion",
+  "metadata": null,
+  "moderation": null,
+  "service_tier": null,
+  "system_fingerprint": null,
+  "usage": {
+    "completion_tokens": 56,
+    "prompt_tokens": 383,
+    "total_tokens": 439,
+    "completion_tokens_details": null,
+    "prompt_tokens_details": null
+  }
+}

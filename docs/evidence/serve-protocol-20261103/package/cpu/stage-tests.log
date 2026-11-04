@@ -1,0 +1,63 @@
+test_all_38_fields_have_positive_null_wrong_shape_and_omission (test_stage.Contracts.test_all_38_fields_have_positive_null_wrong_shape_and_omission) ... ok
+test_cut_proxy_forwards_actual_prefix_and_no_complete_terminal (test_stage.Contracts.test_cut_proxy_forwards_actual_prefix_and_no_complete_terminal) ... ERROR
+test_every_attempt_charged_and_original_deadline_not_reset (test_stage.Contracts.test_every_attempt_charged_and_original_deadline_not_reset) ... ERROR
+test_guard_argv_and_guard_check_precedes_all_work (test_stage.Contracts.test_guard_argv_and_guard_check_precedes_all_work) ... ok
+test_http_negative_fixtures_fail_production_contract_before_gpu (test_stage.Contracts.test_http_negative_fixtures_fail_production_contract_before_gpu) ... ERROR
+test_openapi_refs_routes_and_explicit_semantic_boundaries (test_stage.Contracts.test_openapi_refs_routes_and_explicit_semantic_boundaries) ... ok
+test_sdk_missing_before_any_model_start (test_stage.Contracts.test_sdk_missing_before_any_model_start) ... ERROR
+test_strict_tool_request_shapes_and_final_history_contract (test_stage.Contracts.test_strict_tool_request_shapes_and_final_history_contract) ... ERROR
+
+======================================================================
+ERROR: test_cut_proxy_forwards_actual_prefix_and_no_complete_terminal (test_stage.Contracts.test_cut_proxy_forwards_actual_prefix_and_no_complete_terminal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 147, in test_cut_proxy_forwards_actual_prefix_and_no_complete_terminal
+    proxy = object.__new__(verify.CutProxy)
+                           ^^^^^^^^^^^^^^^
+AttributeError: module 'verify' has no attribute 'CutProxy'
+
+======================================================================
+ERROR: test_every_attempt_charged_and_original_deadline_not_reset (test_stage.Contracts.test_every_attempt_charged_and_original_deadline_not_reset)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 38, in test_every_attempt_charged_and_original_deadline_not_reset
+    run.budget(kind)
+TypeError: Run.budget() takes 1 positional argument but 2 were given
+
+======================================================================
+ERROR: test_http_negative_fixtures_fail_production_contract_before_gpu (test_stage.Contracts.test_http_negative_fixtures_fail_production_contract_before_gpu)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 101, in test_http_negative_fixtures_fail_production_contract_before_gpu
+    rows = verify.negative_requests()
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'verify' has no attribute 'negative_requests'
+
+======================================================================
+ERROR: test_sdk_missing_before_any_model_start (test_stage.Contracts.test_sdk_missing_before_any_model_start)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 61, in test_sdk_missing_before_any_model_start
+    result = json.loads((run.out / "result.json").read_text())
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/tmpe0cmtunz/result.json'
+
+======================================================================
+ERROR: test_strict_tool_request_shapes_and_final_history_contract (test_stage.Contracts.test_strict_tool_request_shapes_and_final_history_contract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/test_stage.py", line 115, in test_strict_tool_request_shapes_and_final_history_contract
+    tools = verify.strict_read_tools(["docs/MODEL.md", "docs/ARCHITECTURE.md"])
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'verify' has no attribute 'strict_read_tools'
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.012s
+
+FAILED (errors=5)

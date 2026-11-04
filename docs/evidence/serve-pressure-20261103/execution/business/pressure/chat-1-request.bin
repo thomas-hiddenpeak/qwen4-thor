@@ -1,0 +1,6 @@
+POST /v1/chat/completions HTTP/1.1
+Host: localhost
+X-Request-Id: pressure.chat-1
+Content-Type: application/json
+Content-Length: 16777216
+

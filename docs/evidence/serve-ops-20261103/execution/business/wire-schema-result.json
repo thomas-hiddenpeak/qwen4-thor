@@ -1,0 +1,32 @@
+{
+  "passed": true,
+  "records": [
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/execution/business/model/ordinary-wire.bin",
+        "sha256": "19e5275ae0041dcd799d8020be9f8b4812df5233c90715d8b002ec2725a3a4a3",
+        "bytes": 309
+      },
+      "envelopes": 1,
+      "success": true
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/execution/business/model/project-read-wire.bin",
+        "sha256": "c9fca976dadc1939d4b0990fefae84119fd94191d003ca95794e8d5798c64539",
+        "bytes": 1184
+      },
+      "envelopes": 4,
+      "success": true
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/execution/business/model/project-answer-wire.bin",
+        "sha256": "44184aa10c5f45f26f1aecaf272ca2dc1d1b49f80d43d1b42bb9c826eb078ac3",
+        "bytes": 1137
+      },
+      "envelopes": 4,
+      "success": true
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "message": {
+    "role": "assistant",
+    "content": "用户要求计算17×19，然后只写三位数字的结果。\n\n17×19 = 17×20 - 17 = 340 - 17 = 323\n\n结果是323，三位数字。\n</think>\n\n323"
+  },
+  "finish": "stop",
+  "usage": {
+    "prompt_tokens": 61,
+    "completion_tokens": 63,
+    "total_tokens": 124
+  }
+}

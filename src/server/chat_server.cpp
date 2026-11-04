@@ -2,6 +2,7 @@
 #include "q4t/mtp/suffix_drafter.h"
 // Existing ChatServer responsibilities; shared state stays in ChatServer.
 #include "chat_server_internal.h"
+#include "cuda_memory_backend.h"
 
 #include <arpa/inet.h>
 #include <sys/socket.h>
@@ -22,6 +23,7 @@
 #include "q4t/quant/moe_residency.h"
 #include "q4t/runtime/memory_budget.h"
 #include "q4t/runtime/residency_config.h"
+#include "q4t/server/cuda_quota_policy.h"
 #if defined(Q4T_STARTUP_RESOURCE_PLAN) || defined(Q4T_STARTUP_RESERVATION)
 #include "q4t/runtime/startup_plan.h"
 #endif
@@ -35,36 +37,38 @@ constexpr const char* kDefaultModelName = "qwen3.8-flash-next";
 }
 
 ChatServer::~ChatServer() {
+  // Start may have succeeded without a subsequent Run. Stop accepting TCP
+  // connections before releasing the model, including partial startup state.
+  startup_listeners_.Close();
   // Release any requests queued in AllocSeqId so their threads can exit.
   {
     const std::lock_guard<std::mutex> lock(seq_mu_);
     seq_stopping_ = true;
   }
   seq_cv_.notify_all();
-  // B2b: stop the scheduler thread FIRST (it touches model_.Get() + d_sched_logits_
-  // under model_mu_, so it must be joined before those are freed).
+  // B2b: stop the scheduler thread FIRST (it touches model_.Get() +
+  // d_sched_logits_ under model_mu_, so it must be joined before those are
+  // freed).
   StopScheduler();
   model_.Get().router_trace = nullptr;
   router_trace_.reset();
-  if (d_sched_logits_) {
-    cudaFree(d_sched_logits_);
-    d_sched_logits_ = nullptr;
-  }
-  if (d_sched_tokens_) {
-    cudaFree(d_sched_tokens_);
-    d_sched_tokens_ = nullptr;
-  }
-  if (d_prefill_logits_) {
-    cudaFree(d_prefill_logits_);
-    d_prefill_logits_ = nullptr;
-  }
+  const auto release = [&](auto*& pointer, const char* site) {
+    const auto result = detail::ReleaseCudaMemory(pointer, site);
+    RecordDeviceMemoryFailure(result, site);
+    // Run() may already have returned success. Do not turn an unknown release
+    // into a clean process exit or retry the same pointer in another owner.
+    if (!result.ok()) std::_Exit(1);
+  };
+  release(d_sched_logits_, "shutdown.scheduler_logits");
+  release(d_sched_tokens_, "shutdown.scheduler_tokens");
+  release(d_prefill_logits_, "shutdown.prefill_logits");
   if (vision_tower_) {
     vision_tower_->Free();
     vision_tower_.reset();
   }
   // MTP draft model: free its device weights before model_.Get() (the borrowed
-  // embed/lm_head point into model_.Get()'s memory). Then the rolling draft-trunk
-  // buffers.
+  // embed/lm_head point into model_.Get()'s memory). Then the rolling
+  // draft-trunk buffers.
   if (mtp_loaded_) {
     mtp_.Free();
     mtp_loaded_ = false;
@@ -77,8 +81,7 @@ ChatServer::~ChatServer() {
                  "[suffix-classes] event=release bytes=%zu peak_bytes=%zu "
                  "checks=%llu lookups=%llu decodes=%llu unknown=%llu "
                  "allocations=%llu allocation_ns=%llu release_ns=%llu\n",
-                 bytes, c.peak_bytes,
-                 static_cast<unsigned long long>(c.checks),
+                 bytes, c.peak_bytes, static_cast<unsigned long long>(c.checks),
                  static_cast<unsigned long long>(c.lookups),
                  static_cast<unsigned long long>(c.decodes),
                  static_cast<unsigned long long>(c.unknown),
@@ -95,20 +98,56 @@ namespace {
 struct PhaseTimer {
   const char* phase;
   std::chrono::steady_clock::time_point t0;
-  explicit PhaseTimer(const char* p) : phase(p), t0(std::chrono::steady_clock::now()) {}
+  explicit PhaseTimer(const char* p)
+      : phase(p), t0(std::chrono::steady_clock::now()) {}
   ~PhaseTimer() {
-    const double ms =
-        std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - t0)
-            .count();
+    const double ms = std::chrono::duration<double, std::milli>(
+                          std::chrono::steady_clock::now() - t0)
+                          .count();
     std::fprintf(stderr, "[q4t][startup] %s %.0f ms\n", phase, ms);
   }
 };
 }  // namespace
 
 Status ChatServer::Start(const ServerOptions& opts) {
+  if (start_attempted_) return Status::Fail("server startup already attempted");
+  start_attempted_ = true;
   // Validate before loading the tokenizer or allocating model resources.
   const Status validated = ValidateServerOptions(opts);
   if (!validated.ok()) return validated;
+  if (!opts.client_policy_file.empty()) {
+    GatewayClientPolicy policy;
+    auto status = LoadGatewayClientPolicy(opts.client_policy_file, &policy);
+    if (status) status = clients_.Configure(std::move(policy));
+    if (!status) return status;
+  }
+  // Keep the actual listening descriptors across startup. A probe followed by
+  // close would let another process take the port while model loading runs.
+  HttpListeners pending_listeners;
+  const auto listeners =
+      pending_listeners.Open(opts.host, opts.port, opts.operations_port);
+  if (!listeners) return listeners;
+  memory_admission_.Configure(
+      static_cast<uint64_t>(opts.min_available_memory_mib) * 1024 * 1024,
+      static_cast<uint64_t>(opts.memory_recovery_margin_mib) * 1024 * 1024);
+  const auto check_startup_memory = [&](const char* checkpoint,
+                                        uint64_t estimate, bool full,
+                                        StartupMemorySnapshot* snapshot) {
+    *snapshot = ObserveStartupMemory(
+        !opts.no_budget, estimate,
+        static_cast<uint64_t>(opts.startup_memory_headroom_mib) * 1024 * 1024,
+        full);
+    std::fprintf(stderr,
+                 "[q4t][startup-memory] {\"checkpoint\":\"%s\","
+                 "\"admission\":%s}\n",
+                 checkpoint, StartupMemorySnapshotJson(*snapshot).c_str());
+    return snapshot->Allowed() ? Status()
+                               : Status::Fail(std::string(snapshot->Reason()) +
+                                              ": " + checkpoint);
+  };
+  Status s = check_startup_memory("before_metadata", 0, false,
+                                  &startup_memory_.before_metadata);
+  if (!s.ok()) return s;
   const ServerCapabilities capabilities = CapabilitiesFor(opts);
   std::fprintf(stderr,
                "[q4t][capabilities] requested=%s mtp=%d media=%d max_seq=%d\n",
@@ -120,10 +159,10 @@ Status ChatServer::Start(const ServerOptions& opts) {
   mtp_suffix_ = opts.mtp_suffix;
   if (!opts.session_cache_dir.empty()) {
     const char* incremental = std::getenv("Q4T_SESSION_INCREMENTAL");
-    const Status cache_status = session_cache_.Open(
-        opts.session_cache_dir, SessionCache::kMinPrefix,
-        SessionCache::kDiskBudget,
-        incremental && std::strcmp(incremental, "1") == 0);
+    const Status cache_status =
+        session_cache_.Open(opts.session_cache_dir, SessionCache::kMinPrefix,
+                            SessionCache::kDiskBudget,
+                            incremental && std::strcmp(incremental, "1") == 0);
     if (!cache_status.ok()) return cache_status;
     std::fprintf(stderr,
                  "[session-cache] enabled=1 entries=8 disk_bytes=%zu "
@@ -132,8 +171,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
                  SessionCache::kStagingBytes);
   }
   if (!opts.prefix_cache_dir.empty()) {
-    const Status cache_status = prefix_cache_.Open(
-        opts.prefix_cache_dir, 1024, size_t{8} << 30);
+    const Status cache_status =
+        prefix_cache_.Open(opts.prefix_cache_dir, 1024, size_t{8} << 30);
     if (!cache_status.ok()) return cache_status;
     prefix_cache_checkpoints_ = opts.prefix_cache_checkpoints;
     std::fprintf(stderr,
@@ -151,8 +190,6 @@ Status ChatServer::Start(const ServerOptions& opts) {
       return Status::Fail("tokenizer load failed: " + s.message());
     }
   }
-  Status s;
-
   model::ModelConfig cfg;
   cfg.model_dir = opts.model_dir;
   cfg.index_path = opts.model_dir + "/model.safetensors.index.json";
@@ -163,7 +200,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
   cfg.moe_hot_protect = opts.moe_hot_protect;
   runtime::ResidencyConfig residency_config;
   s = runtime::LoadResidencyConfig(cfg.moe_hot_list, cfg.num_layers, cfg.E,
-                                    cfg.moe_resident_slots, &residency_config);
+                                   cfg.moe_resident_slots, &residency_config);
   if (!s.ok()) return s;
 
   // Estimate allocation capacity before model load. This is not a physical
@@ -198,9 +235,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
       if (opts.moe_resident_slots > 0) {
         const size_t slot_bytes =
             quant::MoEResidencyLayerBytes(cfg.hs, cfg.moe_is, 1);
-        const size_t offloaded =
-            static_cast<size_t>(cfg.E) * cfg.num_layers -
-            residency_config.total_slots;
+        const size_t offloaded = static_cast<size_t>(cfg.E) * cfg.num_layers -
+                                 residency_config.total_slots;
         if (offloaded > weights / slot_bytes) {
           return Status::Fail("weight index smaller than offloaded estimate");
         }
@@ -244,8 +280,10 @@ Status ChatServer::Start(const ServerOptions& opts) {
         breq.mtp_k = mtp_k_;
         if (!opts.mtp_subset_head.empty()) {
           breq.extra_fixed_bytes += mtp::kSubsetReadCacheBudget;
-          breq.mtp_weights_bytes += mtp::kSubsetWeightBytes + mtp::kSubsetIdBytes;
-          breq.mtp_load_host_bytes = mtp::kSubsetWeightBytes + mtp::kSubsetIdBytes;
+          breq.mtp_weights_bytes +=
+              mtp::kSubsetWeightBytes + mtp::kSubsetIdBytes;
+          breq.mtp_load_host_bytes =
+              mtp::kSubsetWeightBytes + mtp::kSubsetIdBytes;
         }
         io::WeightIndex* raw_index = nullptr;
         s = io::WeightIndex::Open(
@@ -274,8 +312,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
             const io::TensorInfo* tensor = mtp_loader->FindTensor(name);
             if (!tensor) return Status::Fail("MTP budget tensor: " + name);
             const size_t bytes = static_cast<size_t>(tensor->byte_size());
-            if (bytes > std::numeric_limits<size_t>::max() -
-                            breq.mtp_weights_bytes)
+            if (bytes >
+                std::numeric_limits<size_t>::max() - breq.mtp_weights_bytes)
               return Status::Fail("MTP budget weight bytes overflow");
             breq.mtp_weights_bytes += bytes;
             breq.mtp_load_host_bytes =
@@ -324,8 +362,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
     std::fprintf(stderr,
                  "[q4t] suffix enabled: k=3 match=3..64 candidates=4 "
                  "capacity=%d global_ids=1 numeric_gate=1 "
-                 "min_admitted_match=%d lazy_classes=1\n", cfg.max_len,
-                 mtp::SuffixDrafter::kMinAdmittedMatch);
+                 "min_admitted_match=%d lazy_classes=1\n",
+                 cfg.max_len, mtp::SuffixDrafter::kMinAdmittedMatch);
   }
   std::fprintf(stderr,
                "[q4t][capacity] requested_max_len=%d requested_max_seq=%d "
@@ -340,6 +378,12 @@ Status ChatServer::Start(const ServerOptions& opts) {
   // B1: pool the per-sequence recurrent state for up to max_seq concurrent
   // requests. Each in-flight request owns one seq_id.
   max_seq_ = eff_max_seq;
+  s = ResolveAdmissionLimits(opts, max_seq_, &admission_limits_);
+  if (!s.ok()) return s;
+  std::fprintf(stderr,
+               "[q4t][admission] inflight=%d queued=%d "
+               "policy=capacity_fifo_best_fit\n",
+               admission_limits_.inflight, admission_limits_.queued);
   cfg.max_seq = max_seq_;
   cfg.seq_capacities = opts.seq_capacities;
   seq_capacities_ = opts.seq_capacities;
@@ -347,10 +391,30 @@ Status ChatServer::Start(const ServerOptions& opts) {
     std::fprintf(stderr, "[q4t][slots] capacities=");
     for (size_t i = 0; i < seq_capacities_.size(); ++i)
       std::fprintf(stderr, "%s%d", i ? "," : "", seq_capacities_[i]);
-    std::fprintf(stderr, " stream_mtp_prefill=%d text_admission=32\n",
-                 capabilities.mtp);
+    std::fprintf(stderr, " stream_mtp_prefill=%d text_admission=%d\n",
+                 capabilities.mtp, admission_limits_.inflight);
   }
+  // The tokenizer and metadata are already loaded. Sample again here, before
+  // either planned reservation or legacy model loading can allocate weights.
+  s = check_startup_memory("before_allocations", budget_.estimated_total, true,
+                           &startup_memory_.before_allocations);
+  if (!s.ok()) return s;
   bool planned_startup = false;
+#ifdef Q4T_STARTUP_RESERVATION
+  s = ResolveCudaQuotaLimit(opts.cuda_allocation_limit_mib, opts.mem_fraction,
+                            opts.cuda_allocation_limit_mib < 0
+                                ? runtime::ReadSystemMemory()
+                                : runtime::SystemMemory{},
+                            &cuda_quota_limit_bytes_);
+  if (!s.ok()) return s;
+  s = runtime::ConfigureCudaAllocationQuota(cuda_quota_limit_bytes_);
+  if (!s.ok()) return s;
+#else
+  if (opts.cuda_allocation_limit_mib != 0)
+    return Status::Fail(
+        "CUDA quota unavailable in experimental startup build; "
+        "explicitly select --cuda-allocation-limit-mib 0");
+#endif
 #ifdef Q4T_STARTUP_RESOURCE_PLAN
   {
     PhaseTimer pt("startup_resource_plan");
@@ -365,8 +429,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
     const Status supported = runtime::CheckStartupPlanSupport(cfg, opts);
     if (!supported.ok()) {
       if (opts.startup_plan == StartupPlanMode::kRequired) return supported;
-      std::fprintf(stderr,
-                   "[q4t][startup-plan] mode=auto active=0 reason=%s\n",
+      std::fprintf(stderr, "[q4t][startup-plan] mode=auto active=0 reason=%s\n",
                    supported.message().c_str());
     } else {
       PhaseTimer pt("startup_resource_plan");
@@ -374,8 +437,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
       if (!s.ok()) return s;
       planned_startup = true;
       std::fprintf(stderr, "[q4t][startup-plan] mode=%s active=1\n",
-                   opts.startup_plan == StartupPlanMode::kRequired
-                       ? "required" : "auto");
+                   opts.startup_plan == StartupPlanMode::kRequired ? "required"
+                                                                   : "auto");
     }
   }
 #endif
@@ -439,10 +502,9 @@ Status ChatServer::Start(const ServerOptions& opts) {
   for (int32_t id : stop_token_ids_) std::fprintf(stderr, " %d", id);
   std::fprintf(stderr, "\n");
 
-  // Load the MTP draft model (optional). Borrowed embed/lm_head from the main
-  // model. Legacy loading falls back to plain decode on failure; a selected
-  // startup plan must fail because its resource contract includes MTP.
-  // Skipped entirely when opts.no_mtp is set.
+  // A requested MTP model must load successfully in either startup mode.
+  // Untyped load errors cannot establish that plain decode remains healthy.
+  // --no-mtp is the explicit opt-out; borrowed weights stay with the model.
   if (!capabilities.mtp) {
     std::fprintf(stderr, "[q4t] MTP disabled; plain decode\n");
   } else {
@@ -459,14 +521,12 @@ Status ChatServer::Start(const ServerOptions& opts) {
     mcfg.max_seq = max_seq_;
     mcfg.seq_capacities = cfg.seq_capacities;
     if (planned_startup) mcfg.initial_scratch_capacity = mtp_k_ + 1;
-    s = mtp::LoadMtp(mcfg, model_.Get().head.embed_tokens, model_.Get().head.lm_head,
-                     &mtp_, nullptr);
+    s = detail::DeviceMemoryFault("startup.mtp_load", nullptr) != cudaSuccess
+            ? Status::Fail("injected MTP load failure")
+            : mtp::LoadMtp(mcfg, model_.Get().head.embed_tokens,
+                           model_.Get().head.lm_head, &mtp_, nullptr);
     if (!s.ok()) {
-      if (planned_startup || !opts.mtp_subset_head.empty()) {
-        return Status::Fail("planned MTP load failed: " + s.message());
-      }
-      std::fprintf(stderr, "[q4t] MTP load failed (%s); plain decode only\n",
-                   s.message().c_str());
+      return Status::Fail("requested MTP load failed: " + s.message());
     } else {
       mtp_loaded_ = true;
       if (planned_startup) {
@@ -478,34 +538,38 @@ Status ChatServer::Start(const ServerOptions& opts) {
     }
   }
 
-  // Load the vision tower (multimodal). Optional: if the checkpoint has no
-  // "model.visual." tensors, skip gracefully (the server then serves text
-  // only and rejects image parts). The loader is read-only (mmap) and is
-  // released after the weights are copied to device.
+  // Explicitly requested media must initialize completely before readiness.
   if (capabilities.media) {
     PhaseTimer pt("vision_load");
-    io::WeightIndex* index = nullptr;
-    s = io::WeightIndex::Open(cfg.index_path, &index);
-    if (s.ok()) {
-      io::WeightLoader* loader = nullptr;
-      s = io::WeightLoader::Create(opts.model_dir, *index, 8, &loader);
-      if (s.ok()) {
-        vision::VisionConfig vcfg;  // defaults match this model's vision_config
-        auto tower = std::make_unique<vision::VisionTower>();
-        std::string verr;
-        if (vision::LoadVision(*loader, vcfg, tower.get(), &verr, nullptr)) {
-          vision_tower_ = std::move(tower);
-          std::fprintf(stderr, "[q4t] vision tower loaded (%d blocks)\n",
-                       vcfg.depth);
-        } else {
-          std::fprintf(stderr,
-                       "[q4t] vision tower unavailable (%s); text-only mode\n",
-                       verr.c_str());
-        }
-        delete loader;
-      }
-      delete index;
-    }
+    io::WeightIndex* raw_index = nullptr;
+    s = io::WeightIndex::Open(cfg.index_path, &raw_index);
+    if (!s.ok()) return s;
+    std::unique_ptr<io::WeightIndex> index(raw_index);
+    io::WeightLoader* raw_loader = nullptr;
+    s = io::WeightLoader::Create(opts.model_dir, *index, 8, &raw_loader);
+    if (!s.ok()) return s;
+    std::unique_ptr<io::WeightLoader> loader(raw_loader);
+    vision::VisionConfig vcfg;
+    if (vcfg.patch_size != proc_cfg_.patch_size ||
+        vcfg.temporal_patch_size != proc_cfg_.temporal_patch_size ||
+        vcfg.spatial_merge_size != proc_cfg_.merge_size ||
+        vcfg.in_channels != 3)
+      return Status::Fail("vision processor configuration mismatch");
+    const auto attention = vision::VisionAttentionSharedBytes(
+        &vision_device_budget_.attention_shared_bytes);
+    if (attention != cudaSuccess)
+      return Status::Fail("vision attention capability unavailable");
+    vision_device_budget_.hidden_size = vcfg.hidden_size;
+    vision_device_budget_.intermediate_size = vcfg.intermediate_size;
+    vision_device_budget_.out_hidden_size = vcfg.out_hidden_size;
+    auto tower = std::make_unique<vision::VisionTower>();
+    std::string error;
+    if (detail::DeviceMemoryFault("startup.vision_load", nullptr) !=
+            cudaSuccess ||
+        !vision::LoadVision(*loader, vcfg, tower.get(), &error, nullptr))
+      return Status::Fail("requested vision load failed: " + error);
+    vision_tower_ = std::move(tower);
+    std::fprintf(stderr, "[q4t] vision tower loaded (%d blocks)\n", vcfg.depth);
   } else {
     std::fprintf(stderr, "[q4t] media disabled; vision tower not loaded\n");
   }
@@ -515,6 +579,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
                mtp_loaded_, allow_media_, vision_tower_ != nullptr, max_seq_);
 
   port_ = opts.port;
+  operations_port_ = opts.operations_port;
   max_tokens_default_ = opts.max_tokens;
   max_prefill_ = cfg.max_prefill;
   max_len_ = cfg.max_len;
@@ -532,8 +597,10 @@ Status ChatServer::Start(const ServerOptions& opts) {
     } else {
       auto capture = std::make_unique<trace::RouterCollector>();
       trace::RouterTraceConfig tc;
-      tc.layers = cfg.num_layers; tc.experts = cfg.E;
-      tc.top_k = cfg.topk; tc.max_rows = cfg.max_prefill;
+      tc.layers = cfg.num_layers;
+      tc.experts = cfg.E;
+      tc.top_k = cfg.topk;
+      tc.max_rows = cfg.max_prefill;
       Status capture_status = capture->Start(
           opts.moe_trace_dir, opts.moe_trace_workload, cfg.index_path, tc,
           cfg.max_len, uint64_t(opts.moe_trace_max_mib) * 1024 * 1024);
@@ -551,15 +618,29 @@ Status ChatServer::Start(const ServerOptions& opts) {
   // B2b continuous batching: the scheduler's packed-logits buffer (device
   // [max_seq, vocab]) + a GPU-argmax token buffer (device [max_seq] + host
   // mirror) + the scheduler thread.
-  if (cudaMalloc(reinterpret_cast<void**>(&d_sched_logits_),
-                 static_cast<size_t>(max_seq_) * cfg.vocab * 2) != cudaSuccess) {
-    std::fprintf(stderr, "[q4t] scheduler logits alloc failed; plain decode\n");
-  } else if (cudaMalloc(reinterpret_cast<void**>(&d_sched_tokens_),
-                        static_cast<size_t>(max_seq_) * sizeof(int32_t)) !=
-             cudaSuccess) {
-    std::fprintf(stderr, "[q4t] scheduler tokens alloc failed; plain decode\n");
-    cudaFree(d_sched_logits_);
-    d_sched_logits_ = nullptr;
+  const auto allocate = [&](auto*& pointer, size_t bytes, const char* site) {
+    const auto result = detail::AllocateCudaMemory(pointer, bytes, site);
+    RecordDeviceMemoryFailure(result, site);
+    return result;
+  };
+  const auto logits =
+      allocate(d_sched_logits_, static_cast<size_t>(max_seq_) * cfg.vocab * 2,
+               "startup.scheduler_logits");
+  if (!logits.ok() && !logits.exhausted())
+    return Status::Fail("scheduler logits device memory failure");
+  const auto tokens =
+      logits.ok() ? allocate(d_sched_tokens_,
+                             static_cast<size_t>(max_seq_) * sizeof(int32_t),
+                             "startup.scheduler_tokens")
+                  : logits;
+  if (!tokens.ok()) {
+    const auto released = detail::ReleaseCudaMemory(
+        d_sched_logits_, "startup.scheduler_logits_rollback");
+    RecordDeviceMemoryFailure(released, "startup.scheduler_logits_rollback");
+    if (!tokens.exhausted() || !released.ok())
+      return Status::Fail("scheduler device memory failure");
+    std::fprintf(stderr,
+                 "[q4t] scheduler allocation exhausted; plain decode\n");
   } else {
     h_sched_tokens_.assign(static_cast<size_t>(max_seq_), 0);
     try {
@@ -578,17 +659,17 @@ Status ChatServer::Start(const ServerOptions& opts) {
       return Status::Fail("thread failed");
     }
     scheduler_active_ = true;
-    std::fprintf(stderr, "[q4t] continuous-batching scheduler started "
-                         "(max_seq=%d)\n",
+    std::fprintf(stderr,
+                 "[q4t] continuous-batching scheduler started "
+                 "(max_seq=%d)\n",
                  max_seq_);
   }
   // Every serve prefill consumes one row per sequence. The shared buffer
   // holds at most max_seq rows, and all accesses are under model_mu_.
-  if (cudaMalloc(reinterpret_cast<void**>(&d_prefill_logits_),
-                 static_cast<size_t>(max_seq_) * cfg.vocab * 2) !=
-      cudaSuccess) {
-    return Status::Fail("prefill logits buffer alloc failed (out of memory)");
-  }
+  const auto prefill =
+      allocate(d_prefill_logits_, static_cast<size_t>(max_seq_) * cfg.vocab * 2,
+               "startup.prefill_logits");
+  if (!prefill.ok()) return Status::Fail(prefill.Reason());
 #ifdef Q4T_STARTUP_RESOURCE_PLAN
   s = runtime::CompleteStartupReservation();
   if (!s.ok()) return s;
@@ -598,6 +679,16 @@ Status ChatServer::Start(const ServerOptions& opts) {
     if (!s.ok()) return s;
   }
 #endif
+  // A successful estimate is not a reservation against competing allocators.
+  // Recheck residual headroom before readiness; sockets are already reserved.
+  s = check_startup_memory("before_ready", 0, false,
+                           &startup_memory_.before_ready);
+  if (!s.ok()) return s;
+  effective_config_ =
+      EffectiveServeConfigJson(opts, PlanningConfig(), budget_valid_,
+                               mtp_loaded_, conn_cap_, &startup_memory_);
+  startup_listeners_ = std::move(pending_listeners);
+  model_ready_.store(true);
   return Status();
 }
 

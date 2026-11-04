@@ -1,0 +1,304 @@
+{
+  "purpose": "audit_reproduction_not_release_acceptance",
+  "all_observations_match": true,
+  "cases": 30,
+  "checks": [
+    {
+      "case": "outer_strict_silently_unenforced",
+      "finding": "F1",
+      "matches_current_observation": true,
+      "checks": {
+        "contract": true,
+        "parser_init": true,
+        "constrained": true,
+        "finish": true
+      }
+    },
+    {
+      "case": "correct_strict_rejects_missing_argument",
+      "finding": null,
+      "matches_current_observation": true,
+      "checks": {
+        "contract": true,
+        "constrained": true,
+        "finish": true
+      }
+    },
+    {
+      "case": "misspelled_parameters_accepted",
+      "finding": "F1",
+      "matches_current_observation": true,
+      "checks": {
+        "contract": true,
+        "parser_init": true,
+        "constrained": true,
+        "finish": true
+      }
+    },
+    {
+      "case": "identified_history_control",
+      "finding": null,
+      "matches_current_observation": true,
+      "checks": {
+        "contract": true,
+        "render": true,
+        "parser_init": true,
+        "prompt_contains": true
+      }
+    },
+    {
+      "case": "history_arguments_typo_lost",
+      "finding": "F2",
+      "matches_current_observation": true,
+      "checks": {
+        "contract": true,
+        "render": true,
+        "parser_init": true,
+        "prompt_excludes": true
+      }
+    },
+    {
+      "case": "missing_tool_result_content_accepted",
+      "finding": "F2",
+      "matches_current_observation": true,
+      "checks": {
+        "contract": true,
+        "render": true,
+        "parser_init": true
+      }
+    },
+    {
+      "case": "legacy_unknown_type_rendered_as_function",
+      "finding": "F2",
+      "matches_current_observation": true,
+      "checks": {
+        "contract": true,
+        "render": true,
+        "prompt_contains": true
+      }
+    },
+    {
+      "case": "identified_custom_type_rejected",
+      "finding": null,
+      "matches_current_observation": true,
+      "checks": {
+        "contract": true
+      }
+    },
+    {
+      "case": "nullable_temperature",
+      "finding": "F3",
+      "matches_current_observation": true,
+      "checks": {
+        "contract": true
+      }
+    },
+    {
+      "case": "nullable_top_p",
+      "finding": "F3",
+      "matches_current_observation": true,
+      "checks": {
+        "contract": true
+      }
+    },
+    {
+      "case": "nullable_n",
+      "finding": "F3",
+      "matches_current_observation": true,
+      "checks": {
+        "contract": true
+      }
+    },
+    {
+      "case": "nullable_frequency_penalty",
+      "finding": "F3",
+      "matches_current_observation": true,
+      "checks": {
+        "contract": true
+      }
+    },
+    {
+      "case": "nullable_presence_penalty",
+      "finding": "F3",
+      "matches_current_observation": true,
+      "checks": {
+        "contract": true
+      }
+    },
+    {
+      "case": "nullable_stream",
+      "finding": "F3",
+      "matches_current_observation": true,
+      "checks": {
+        "contract": true
+      }
+    },
+    {
+      "case": "nullable_stream_options",
+      "finding": "F3",
+      "matches_current_observation": true,
+      "checks": {
+        "contract": true
+      }
+    },
+    {
+      "case": "nullable_user",
+      "finding": "F3",
+      "matches_current_observation": true,
+      "checks": {
+        "contract": true
+      }
+    },
+    {
+      "case": "neutral_parameters_control",
+      "finding": null,
+      "matches_current_observation": true,
+      "checks": {
+        "contract": true,
+        "parser_init": true
+      }
+    },
+    {
+      "case": "nullable_budget_alias_control",
+      "finding": null,
+      "matches_current_observation": true,
+      "checks": {
+        "contract": true,
+        "parser_init": true
+      }
+    },
+    {
+      "case": "fraction_rounded_into_integer_budget",
+      "finding": "F7",
+      "matches_current_observation": true,
+      "checks": {
+        "contract": true,
+        "parser_init": true
+      }
+    },
+    {
+      "case": "ordinary_fraction_budget_rejected",
+      "finding": null,
+      "matches_current_observation": true,
+      "checks": {
+        "contract": true
+      }
+    },
+    {
+      "case": "cancel_unknown_control_accepted",
+      "finding": "F4",
+      "matches_current_observation": true,
+      "checks": {
+        "status": true,
+        "cancelled": true
+      }
+    },
+    {
+      "case": "cancel_control",
+      "finding": null,
+      "matches_current_observation": true,
+      "checks": {
+        "status": true,
+        "cancelled": true
+      }
+    },
+    {
+      "case": "cancel_wrong_key",
+      "finding": null,
+      "matches_current_observation": true,
+      "checks": {
+        "status": true,
+        "cancelled": true
+      }
+    },
+    {
+      "case": "cancel_missing_id",
+      "finding": "F4",
+      "matches_current_observation": true,
+      "checks": {
+        "status": true,
+        "cancelled": true
+      }
+    },
+    {
+      "case": "wrong_media_type_reaches_stub",
+      "finding": "G6",
+      "matches_current_observation": true,
+      "checks": {
+        "status": true,
+        "cancelled": true
+      }
+    },
+    {
+      "case": "expect_rejected",
+      "finding": null,
+      "matches_current_observation": true,
+      "checks": {
+        "status": true,
+        "cancelled": true
+      }
+    },
+    {
+      "case": "transfer_encoding_rejected",
+      "finding": null,
+      "matches_current_observation": true,
+      "checks": {
+        "status": true,
+        "cancelled": true
+      }
+    },
+    {
+      "case": "wrong_method_is_404",
+      "finding": "G6",
+      "matches_current_observation": true,
+      "checks": {
+        "status": true,
+        "cancelled": true
+      }
+    },
+    {
+      "case": "query_string_is_404",
+      "finding": "G6",
+      "matches_current_observation": true,
+      "checks": {
+        "status": true,
+        "cancelled": true
+      }
+    },
+    {
+      "case": "model_list_control",
+      "finding": null,
+      "matches_current_observation": true,
+      "checks": {
+        "status": true,
+        "cancelled": true
+      }
+    }
+  ],
+  "model_requests": 0,
+  "listeners_started": 0,
+  "synthetic_outputs": true,
+  "runtime_fixes": false,
+  "elapsed_seconds": 15.218376375036314,
+  "sources_and_dependencies_sha256": {
+    "tools/serve_audit/probe.cpp": "cd52998abfe41f1c95ba26126dfa4926897ef439d0037d060010562cd891eee0",
+    "src/io/json.cpp": "594c940466b10fbd0efa9c1bc05dd3092d7d1a4041d552716914fd84a740c0e0",
+    "src/server/chat_http.cpp": "f1d28a9deca860b21cdab20d34947f96024bbb5c8eaf6476a83d88f348084adb",
+    "src/server/chat_metrics.cpp": "1e08a6115d85f7a8cffd37e62d17b1b585585d08a4b115dd719516fe76e6a41a",
+    "src/server/chat_capabilities.cpp": "c31f8d84bdf0cdffe0cef9b2528e795b0f25f94a88080db68bb631d7c8b37e90",
+    "src/server/http_request.cpp": "a0609922a91e8517b410bf0c6e236dd524f0584be152362fd17e316039c66aaa",
+    "src/server/http_response.cpp": "004372d91bf53297fc4d7d6bef61abd6569425345968f656a86e2e4490ccdcb1",
+    "src/server/chat_contract.cpp": "057bf794530f17db9c171e29e46a0643e1010e6feeffc76260f7284d86b2699d",
+    "src/server/chat_template.cpp": "d616835ffaa3fc8555f69b8d1b7a2fafd8c06cc2d8791f6fad43b9e15bdeeeae",
+    "src/server/chat_tool_history.cpp": "29b94f2a8f7d0001e609c5bb1425f6001044017e446a83f28587b96ef225d09a",
+    "src/server/chat_response_parser.cpp": "7ff219ef215f18972ffb9e164fd4a011521c8f413fb1902d0a5bfae454b47bb6",
+    "src/server/output_constraints.cpp": "07cb69c6cf039ad84b6f61a7c4b941d0b0d9ade803fde4a634b7a62480c51133",
+    "src/server/output_schema.cpp": "3e5d7520d0d5d6a2d5dbf87cc5d73d5d79a22fa8432442ef6359a0c5e331a963",
+    ".q4t-work/structured-control-20261102/engine/libq4t_text.a": "571c5da9ea91bf09460264572e108695d9bd8e8d1701892fe06b38bd5f510925",
+    ".q4t-work/structured-control-20261102/engine/libq4t_io.a": "141e0618669e2782f4a1ac406da3bdc278c5316a608f2ac588ce16387523e03c",
+    ".q4t-work/structured-control-20261102/engine/generated/q4t/server/chat_protocol_identity.h": "8e8115f57ce6a12a2afe3d0f1720e24912d57e09ebbc5848e21fec8098dbbf41",
+    "build/q4t": "957211c7807a5189e5c124b13d52c4fe5a95a4213dfbce087007783cb479d5fc",
+    "build/q4t.release.json": "9eba5472f952372464bf0a903c63074b2e73cd51321d0d19a0601f7f05426fad"
+  },
+  "probe_sha256": "834ad49386252407046a3cfd89e96ad935a74f7aaeaadfdf18161dc3dee90e01"
+}

@@ -1,0 +1,16 @@
+{
+  "status": "PASS_BOUNDED_PRESSURE_AND_MIXED",
+  "same_process_model_recovery_tested": true,
+  "fixed_mixed_cycles": 64,
+  "physical_ram_hard_limit_proved": false,
+  "long_duration_soak_proved": false,
+  "deployment_changed": false,
+  "automatic_retries": 0,
+  "counts": {
+    "generations": 326,
+    "negatives": 4,
+    "starts": 1
+  },
+  "preflights": 65,
+  "elapsed_seconds": 645.9719646628946
+}

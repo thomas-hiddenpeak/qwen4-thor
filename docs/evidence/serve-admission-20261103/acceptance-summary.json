@@ -1,0 +1,28 @@
+{
+  "business": {
+    "status": "PASS_BOUNDED_ADMISSION",
+    "counts": {
+      "generations": 10,
+      "negatives": 4,
+      "starts": 2
+    },
+    "seconds": 81.57272930489853,
+    "performance_acceptance": false,
+    "automatic_retry": false
+  },
+  "finalize_seconds": 110.00831031799316,
+  "source_commit": "919cc01f807c7c6cc6b096edfdd2c1576dc8b9ba",
+  "default": {
+    "q4t": "c16caf0573ed2ecdf23237229a54a23a0d4ead46e86f6b25e7a44436d3caafe0",
+    "q4t.release.json": "be4cd02115f97a232aa885b487fa5e42bf044e9ccfa1bca8be31701a0c8d4463"
+  },
+  "wire_records": 10,
+  "wire_envelopes": 17,
+  "negative_responses": 4,
+  "sampled_parent_rss_max_bytes": 990203904,
+  "sampled_worker_rss_max_bytes": 231821312,
+  "sampled_mem_available_min_bytes": 35437809664,
+  "memory_samples": 10,
+  "memory_sampling_errors": [],
+  "limitation": "Sparse phase observations, not whole-run peaks; RSS per process and global memory separately, never summed as unique RAM"
+}

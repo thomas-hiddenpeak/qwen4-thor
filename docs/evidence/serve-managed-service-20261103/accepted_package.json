@@ -1,0 +1,28 @@
+{
+  "status": "PASS_MANAGED_SYSTEMD_MTP",
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/package",
+    "manifest_sha256": "71da1a1d05e3d83dbf28df052c249646e5e80a48639af54b9513debff266af0d",
+    "binary_sha256": "d66f2bb9df3a34eda1b885da148e6971c25137564e500b9357bd5f9a5f8dfb1b"
+  },
+  "runtime_source_commit": "fded390d",
+  "operational_tool_commit": "b6e4ce93cb97af596f29c1c4640e10f2f7b61f45",
+  "acceptance": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/result.json",
+    "sha256": "9ebb7eaacdeaaf46e17e9d7d0fdafae95c43d301662f44c240ae2cecbd115e16",
+    "bytes": 604
+  },
+  "terminal": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/managed-run/terminal.json",
+    "sha256": "382881f2de6ba09bf51af44d7059d607b2c1c5ca5221927ab7dbf06deeacf3e7",
+    "bytes": 8894
+  },
+  "installed_pair": {
+    "binary_sha256": "d66f2bb9df3a34eda1b885da148e6971c25137564e500b9357bd5f9a5f8dfb1b",
+    "release_sha256": "42d7672ab473aceb315889be8eeac54310121fd47d4ac861d4d40fcc2bfea1f5"
+  },
+  "preparation_manifest_unchanged": true,
+  "new_persistent_service": false,
+  "physical_ram_bound": false,
+  "performance_acceptance": false
+}

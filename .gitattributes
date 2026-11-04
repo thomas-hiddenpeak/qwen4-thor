@@ -1,0 +1,6 @@
+# Preserve captured HTTP/SSE bytes, including CRLF, across all checkouts.
+docs/evidence/structured-output-20261102/**/*-wire.bin binary
+docs/evidence/serve-input-contract-20261102/**/*.bin binary
+docs/evidence/serve-resources-20261102/**/*.bin binary
+docs/evidence/grammar-isolation-20261102/**/*.bin binary
+docs/evidence/serve-lifecycle-20261103/**/*-wire.bin binary

@@ -1,0 +1,20 @@
+{
+  "status": "PASS_MANAGED_MEMORY_STOP",
+  "physical_ram_hard_limit": false,
+  "performance_acceptance": false,
+  "persistent_service_installed": false,
+  "starts": 1,
+  "successful_requests": 4,
+  "real_tool_executions": 1,
+  "automatic_restarts": 0,
+  "terminal_guard_status": "COMMAND_FAILED",
+  "protective_failure_preserved": true,
+  "cleanup_confirmed": true,
+  "counts": {
+    "generations": 4,
+    "negatives": 1,
+    "controls": 15
+  },
+  "elapsed_seconds": 66.81299676699564,
+  "gpu_window_elapsed": 56.11785427015275
+}

@@ -224,7 +224,7 @@ OpenAI结构化tool_calls解析。裸prompt由调用方负责模板。
 ```bash
 g++-14 -std=c++23 -O2 -Wall -Wextra -Iinclude \
   tools/verify/verify_chat_template.cpp src/server/chat_template.cpp \
-  src/io/json.cpp -o build/verify_chat_template
+  src/server/chat_tool_history.cpp src/io/json.cpp -o build/verify_chat_template
 build/verify_chat_template tools/evalscope/fixtures/chat_template_cases.jsonl
 ```
 

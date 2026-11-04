@@ -1,0 +1,33 @@
+{
+  "changed": [
+    "include/q4t/runtime/memory_budget.h",
+    "include/q4t/server/chat_server.h",
+    "include/q4t/server/serve_fault.h",
+    "include/q4t/server/server_options.h",
+    "src/main.cpp",
+    "src/server/chat_admission.cpp",
+    "src/server/chat_capabilities.cpp",
+    "src/server/chat_generation.cpp",
+    "src/server/chat_http.cpp",
+    "src/server/chat_metrics.cpp",
+    "src/server/chat_plan.cpp",
+    "src/server/chat_preflight.cpp",
+    "src/server/chat_server.cpp",
+    "src/server/server_options.cpp"
+  ],
+  "added": [
+    "include/q4t/runtime/system_memory.h",
+    "include/q4t/server/memory_admission.h",
+    "src/runtime/system_memory.cpp",
+    "src/server/chat_memory.cpp",
+    "src/server/memory_admission.cpp"
+  ],
+  "previous_manifest": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/package/candidate/runtime-source.json",
+    "sha256": "7a72be6fb36627ddb47d284b59959f881c43cd382407740fff980674be69366c",
+    "bytes": 20035
+  },
+  "unchanged_model_and_numerical_sources": true,
+  "performance_acceptance": false,
+  "text_contract_reuse": "Template/tool history, tokenizer, grammar and model math unchanged. Memory admission changes request acceptance and unknown MTP optional allocation fallback; protocol hash intentionally changes."
+}

@@ -1,0 +1,7 @@
+{"utc": "2026-11-02T06:31:36.505515+00:00", "monotonic": 1791179.022393907, "pid": 1112352, "event": "lease_acquired"}
+{"utc": "2026-11-02T06:31:36.505563+00:00", "monotonic": 1791179.022440657, "pid": 1112352, "event": "cleanup_capabilities", "pidfd": true}
+{"utc": "2026-11-02T06:31:36.585587+00:00", "monotonic": 1791179.102474867, "pid": 1112352, "event": "preflight", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-02T06:31:36.585951+00:00", "monotonic": 1791179.102831737, "pid": 1112352, "event": "child_started", "child_pid": 1112356}
+{"utc": "2026-11-02T06:31:36.664538+00:00", "monotonic": 1791179.181424534, "pid": 1112352, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-02T06:31:37.746317+00:00", "monotonic": 1791180.26321264, "pid": 1112352, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-11-02T06:31:37.777219+00:00", "monotonic": 1791180.294096358, "pid": 1112352, "event": "lease_released", "status": "COMPLETED"}

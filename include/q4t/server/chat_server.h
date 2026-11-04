@@ -1,10 +1,9 @@
 // OpenAI-compatible HTTP server for q4t (Phase 1 `serve` command).
 //
 // A minimal, dependency-free HTTP/1.1 server built on POSIX sockets. It serves
-// three endpoints:
-//   GET  /healthz               -> 200 "ok"
-//   GET  /v1/models             -> 200 OpenAI model list
-//   POST /v1/chat/completions   -> 200 OpenAI chat completion (stream or not)
+// bounded routes: /healthz, /livez, /readyz, /metrics, /v1/models,
+// /v1/capabilities, /v1/config, /v1/chat/preflight, /v1/chat/completions,
+// and /v1/requests/cancel. Preflight/config are private protocol extensions.
 //
 // The model is stateful (per-layer SSM/conv/KV caches persist across decode
 // steps). B1 makes requests concurrent: each client is handled on its own
@@ -30,33 +29,33 @@
 #include "q4t/server/suffix_token_cache.h"
 #include "q4t/server/session_cache.h"
 #include "q4t/server/http_request.h"
+#include "q4t/server/http_listener.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/server_options.h"
+#include "q4t/server/sequence_admission.h"
+#include "q4t/server/chat_plan.h"
+#include "q4t/server/chat_prompt.h"
 #include "q4t/model/model_owner.h"
 #include "q4t/mtp/mtp.h"
 #include "q4t/server/request_control.h"
 #include "q4t/status.h"
 #include "q4t/runtime/memory_budget.h"
 #ifdef Q4T_STARTUP_RESERVATION
+#include "q4t/runtime/cuda_allocation_quota.h"
 #include "q4t/runtime/startup_reservation.h"
 #endif
 #include "q4t/text/tokenizer.h"
+#include "q4t/server/abort_reason.h"
+#include "q4t/server/memory_admission.h"
+#include "q4t/server/startup_admission.h"
+#include "q4t/server/structured_admission.h"
+#include "q4t/server/device_memory.h"
 #include "q4t/vision/processor.h"
+#include "q4t/vision/media_plan.h"
 #include "q4t/vision/vision.h"
 
 namespace q4t {
 namespace server {
-
-// One multimodal content part: a single image (1 frame) or a video (N frames).
-// `frames` holds raw decoded PNG/JPEG byte buffers. `kind` selects the
-// processor budget (image vs video) and the placeholder token (image_token_id
-// vs video_token_id). Items are kept in content-part (prompt position) order
-// so the vision feature rows line up with the placeholders left-to-right.
-struct VisionItem {
-  enum Kind { kImage, kVideo };
-  Kind kind = kImage;
-  std::vector<std::string> frames;  // decoded PNG/JPEG bytes (1 for an image)
-};
 
 // Fixed-bucket, lock-free latency histogram (Prometheus style). Buckets are
 // le boundaries in seconds; sum is accumulated in microseconds.
@@ -71,19 +70,51 @@ struct MetricHistogram {
 
 // serve/scheduler observability counters + histograms (exposed at /metrics).
 struct ServeMetrics {
+  HttpTransportMetrics http_transport;
+  std::array<std::atomic<uint64_t>, kHttpConnectionClasses.size()>
+      connection_rejections{};
+  std::array<std::atomic<uint64_t>, kHttpConnectionClasses.size()>
+      operations_connection_rejections{};
   std::atomic<uint64_t> requests_total{0};
   std::atomic<uint64_t> requests_success{0};
   std::atomic<uint64_t> requests_error{0};    // rejected before generation
-  std::atomic<uint64_t> requests_aborted{0};  // client disconnect mid-stream
+  std::atomic<uint64_t> requests_aborted{0};  // all cooperative abort reasons
+  std::atomic<uint64_t> text_admission_rejected{0};
+  std::atomic<uint64_t> queue_rejected{0};
+  std::array<std::array<std::atomic<uint64_t>, 2>, 3> memory_rejected{};
+  std::array<std::atomic<uint64_t>, kAbortReasons.size()> abort_reasons{};
+  std::atomic<int> structured_active{0};  // prep through response cleanup
+  std::atomic<int> structured_preparing{0};
+  std::atomic<uint64_t> structured_rejected{0};
+  std::atomic<uint64_t> structured_prepare_failed{0};
+  std::atomic<uint64_t> structured_vocab_bytes{0};
+  std::atomic<int> structured_workers_active{0};
+  std::atomic<uint64_t> structured_workers_started{0};
+  std::atomic<uint64_t> structured_workers_ready{0};
+  std::atomic<uint64_t> structured_compiles_started{0};
+  std::atomic<uint64_t> structured_workers_reaped{0};
+  std::atomic<uint64_t> structured_worker_max_rss_bytes{0};
+  std::atomic<uint64_t> structured_worker_reported_rss_bytes{0};
+  std::atomic<uint64_t> structured_worker_rss_reports{0};
+  std::atomic<uint64_t> structured_compile_timeouts{0};
+  std::atomic<uint64_t> structured_resource_exhausted{0};
   std::atomic<uint64_t> prompt_tokens_total{0};
   std::atomic<uint64_t> generation_tokens_total{0};
+  std::atomic<uint64_t> reasoning_budget_tokens_total{0};
+  std::atomic<uint64_t> reasoning_forced_tokens_total{0};
+  std::atomic<uint64_t> reasoning_forced_requests{0};
+  std::atomic<uint64_t> reasoning_mtp_fallbacks{0};
   std::atomic<uint64_t> execution_steps_total{0};
-  MetricHistogram ttft_seconds;   // streaming: arrival -> first content sent
+  MetricHistogram ttft_seconds;  // streaming: arrival -> first content sent
   MetricHistogram target_ready_seconds;  // arrival -> first target token ready
-  MetricHistogram response_seconds;  // arrival -> full local response write
-  MetricHistogram e2e_seconds;    // arrival -> last token
-  MetricHistogram queue_seconds;  // arrival -> seq slot acquired
+  MetricHistogram response_seconds;      // arrival -> full local response write
+  MetricHistogram e2e_seconds;           // arrival -> last token
+  MetricHistogram queue_seconds;         // arrival -> seq slot acquired
+  MetricHistogram slot_wait_seconds;     // only AllocSeqId
+  MetricHistogram structured_prepare_seconds;  // vocabulary + compile
 };
+
+struct DeviceMemoryResult;
 
 class ChatServer {
  public:
@@ -93,9 +124,10 @@ class ChatServer {
   ChatServer(const ChatServer&) = delete;
   ChatServer& operator=(const ChatServer&) = delete;
 
-  // Load the tokenizer + full model. On success returns ok and the server is
-  // ready to Run(); on failure the Status carries a message and nothing is
-  // running.
+  // Reserve listeners before loading the tokenizer + full model, then become
+  // ready to Run(). On failure listeners close immediately; destroy this
+  // single-use server to release partial model/scheduler resources. Start,
+  // Run and destruction must be sequenced by the owner, never concurrent.
   Status Start(const ServerOptions& opts);
 
   // Accept loop: blocks, spawning one thread per client (concurrent requests;
@@ -104,41 +136,57 @@ class ChatServer {
   Status Run();
 
   // Request a graceful shutdown from a signal handler: sets a flag and
-  // shutdown(2)s the listen socket to interrupt the blocked accept, so Run()
-  // stops accepting, drains in-flight requests, and returns. Async-signal-safe
-  // (atomic store + shutdown(2)).
+  // wakes the bounded accept poll, so Run() rejects new business, briefly
+  // serves control requests while draining, and returns. Async-signal-safe.
   void RequestStop();
 
  private:
   friend struct ServeContractAccess;
 #ifdef Q4T_STARTUP_RESERVATION
+  runtime::CudaQuotaReportOnDestruction cuda_quota_report_;
   // Destroy last: model, MTP, scheduler and request buffers release their
   // handed allocations before the reservation reclaims unhanded blocks.
   runtime::StartupReservation startup_reservation_;
 #endif
-  void HandleClient(int fd);
-  void FinishConnection(int fd) noexcept;
+  uint64_t cuda_quota_limit_bytes_ = 0;
+  void RecordDeviceMemoryFailure(const DeviceMemoryResult& result,
+                                 const char* site) noexcept;
+  void HandleClient(int fd, bool operations = false);
+  void StartConnection(int fd, bool operations);
+  void FinishConnection(int fd, bool operations) noexcept;
   void Dispatch(int fd, const std::string& method, const std::string& path,
                 const std::string& body);
   void HandleHealth(int fd);
+  void HandleReadiness(int fd, bool liveness);
+  bool CheckMemoryAdmission(int fd, MemoryCheckpoint checkpoint);
+  void RecordMemoryRejection(int fd, MemoryState state,
+                             MemoryCheckpoint checkpoint);
+  void RejectMemoryAdmission(int fd, MemoryState state,
+                             MemoryCheckpoint checkpoint);
   void HandleModels(int fd);
+  void HandleCapabilities(int fd);
   void HandleMetrics(int fd);
+  void HandlePreflight(int fd, const std::string& body);
+  void HandleConfig(int fd);
+  ChatPlanConfig PlanningConfig(int fd = -1) const;
   void HandleChat(int fd, const std::string& body);
   void HandleChatImpl(int fd, const std::string& body,
                       detail::ResponseState* response_state);
 
   // Shared scratch is protected by model_mu_ through default-stream GPU
   // completion and host readback. Only then can another request reuse it.
-  // Negative results: -1 stopping, -2 cancelled, -3 GPU unhealthy.
+  // Negative: -1 stopping, -2 cancelled, -3 GPU unhealthy, -4 queue full,
+  // -5 memory pressure, -6 memory observation unavailable.
   // Admission is provisional: recheck GPU health under model_mu_ at submit.
   int AllocSeqId(RequestControl* control, int fd, size_t required = 0);
   RequestRegistry requests_;
+  ClientAdmission clients_;
   std::mutex connections_mu_;
   std::unordered_set<int> connections_;
-  std::atomic<uint64_t> next_request_id_{0};
   void FreeSeqId(int seq_id);
-  std::mutex model_mu_;   // serializes all model forwards (main + MTP + vision)
-  std::mutex seq_mu_;     // guards the seq_id free pool
+  std::mutex model_mu_;  // serializes all model forwards (main + MTP + vision)
+  std::mutex seq_mu_;    // guards the seq_id free pool
+  SequenceAdmissionQueue seq_waiters_;  // also guarded by seq_mu_
   std::condition_variable seq_cv_;  // requests queue here for a free seq slot
   bool seq_stopping_ = false;       // set on shutdown to release seq waiters
 
@@ -181,15 +229,16 @@ class ChatServer {
     bool is_mtp = false;
     bool complete_terminal_draft = false;
     uint16_t* session_last_trunk = nullptr;
-    int32_t mtp_b = 0;         // bonus token t_P (step input)
-    int32_t mtp_d0 = 0;        // first draft token (step input)
+    int32_t mtp_b = 0;   // bonus token t_P (step input)
+    int32_t mtp_d0 = 0;  // first draft token (step input)
     bool mtp_suffix_ready = false;
     std::array<int32_t, 3> mtp_suffix_tokens{};
-    uint16_t* mtp_g = nullptr;  // draft trunk [hc*hs] (step input + next output)
-    int32_t mtp_next_b = 0;     // correction / next bonus (step output)
-    int32_t mtp_next_d0 = 0;    // next first draft (step output)
+    uint16_t* mtp_g =
+        nullptr;              // draft trunk [hc*hs] (step input + next output)
+    int32_t mtp_next_b = 0;   // correction / next bonus (step output)
+    int32_t mtp_next_d0 = 0;  // next first draft (step output)
     int mtp_accepted_count = 0;  // accepted tokens this step (step output)
-    int32_t mtp_accepted[64];   // accepted tokens (bonus + drafts, step output)
+    int32_t mtp_accepted[64];  // accepted tokens (bonus + drafts, step output)
     std::condition_variable cv;  // request thread waits here for `done`
   };
   // Batched prefill (Phase 2, plain path). Concurrent requests that need a
@@ -236,23 +285,25 @@ class ChatServer {
   void ReleaseActiveRequest(ActiveRequest* request) noexcept;
   void AbortBackendExecution() noexcept;  // model_mu_ held; drain before unlock
   void AbortScheduler(std::span<PrefillReq* const> selected = {},
-                        ChunkPrefillReq* chunk = nullptr) noexcept;
+                      ChunkPrefillReq* chunk = nullptr) noexcept;
   void SchedulerLoop();
   void StopScheduler();  // signal + join the scheduler thread (destructor)
   std::mutex sched_mu_;  // guards active_ + the pending/done handshake
-  std::condition_variable sched_cv_;  // scheduler waits for pending work
+  std::condition_variable sched_cv_;    // scheduler waits for pending work
   std::vector<ActiveRequest*> active_;  // live plain-decode requests
-  std::vector<PrefillReq*> prefill_pending_;  // requests awaiting batched prefill
+  std::vector<PrefillReq*>
+      prefill_pending_;  // requests awaiting batched prefill
   std::vector<ChunkPrefillReq*> chunk_prefill_pending_;
   std::thread scheduler_thread_;
   bool scheduler_stop_ = false;
-  bool scheduler_active_ = false;  // false if the scheduler buffer alloc failed
-                                    // (plain decode then uses the per-request path)
+  bool scheduler_active_ =
+      false;  // false if the scheduler buffer alloc failed
+              // (plain decode then uses the per-request path)
   // Scheduler's packed-logits buffers (device [max_seq, vocab] + host mirror).
   // Only the scheduler thread touches these (the write is under model_mu_).
   uint16_t* d_sched_logits_ = nullptr;
-  int32_t* d_sched_tokens_ = nullptr;        // [max_seq] GPU argmax result
-  std::vector<int32_t> h_sched_tokens_;      // host mirror (B ints, not vocab)
+  int32_t* d_sched_tokens_ = nullptr;    // [max_seq] GPU argmax result
+  std::vector<int32_t> h_sched_tokens_;  // host mirror (B ints, not vocab)
   // Shared prefill logits [max_seq, vocab], accessed under model_mu_.
   // Batched prefill writes B selected rows; single/inline/vision/MTP main
   // prefill and fallback decode write one row. Full trunk output is separate.
@@ -263,23 +314,38 @@ class ChatServer {
   std::mutex tok_mu_;
   std::vector<bool> seq_free_;  // [max_seq]; true = available
   int max_seq_ = 8;
+  AdmissionLimits admission_limits_;
   std::vector<int> seq_capacities_;
   // In-flight request-thread cap: bounds how many connections may be waiting
   // in the AllocSeqId queue at once, so a connection flood cannot spawn
   // unbounded threads. Excess connections are refused (503) to shed load.
-  HttpBodyBudget body_budget_{48 * 1024 * 1024};
+  HttpBodyBudget body_budget_{kAggregateChatBodyBytes};
   std::atomic<int> active_chats_{0};
   std::atomic<int> active_conns_{0};
+  std::atomic<int> public_conns_{0};
+  std::atomic<int> operations_conns_{0};
+  std::atomic<int> operations_observation_conns_{0};
+  std::atomic<int> operations_control_conns_{0};
+  std::atomic<int> business_conns_{0};
+  std::atomic<int> observation_conns_{0};
+  std::atomic<int> control_conns_{0};
+  static constexpr int kControlConnections = kReservedControlConnections;
+  static constexpr int kObservationConnections =
+      kReservedObservationConnections;
   int conn_cap_ = 512;
-  // Graceful shutdown (signal handler -> RequestStop): stop_requested_ breaks
-  // the accept loop; listen_fd_ is shutdown(2) to interrupt a blocked accept.
+  // Poll observes stop within 25ms. Draining serves control and observation
+  // for at most 2 seconds; remaining owned sockets then close before cleanup.
   std::atomic<bool> stop_requested_{false};
+  bool start_attempted_ = false;
+  HttpListeners startup_listeners_;
   std::atomic<int> listen_fd_{-1};
+  std::atomic<int> operations_listen_fd_{-1};
   // GPU health: a forward's CUDA error is sticky (it poisons every later
   // forward), so once one is observed the server reports unhealthy (healthz
   // 503) and refuses new requests (503) instead of silently failing them all.
   std::atomic<bool> gpu_healthy_{true};
   std::atomic<bool> serving_failed_{false};
+  std::atomic<bool> model_ready_{false};
   ServeMetrics metrics_;  // /metrics observability
 
   // Multimodal pipeline: run the image/video processor + vision tower over the
@@ -292,15 +358,20 @@ class ChatServer {
   // ViT grid (t, h, w) in PATCH units (same order as `items`). The grids feed
   // the 3D MRoPE position computation (model::VisionFeatures::grids).
   bool RunVisionPipeline(const std::vector<VisionItem>& items,
-                         uint16_t** out_feats, int* out_num_tokens,
-                         std::vector<int>* out_counts,
+                         const vision::MediaPlan& plan, uint16_t** out_feats,
+                         int* out_num_tokens, std::vector<int>* out_counts,
                          std::vector<std::array<int, 3>>* out_grids,
-                         std::string* err);
+                         std::string* err, DeviceMemoryResult* device_result,
+                         const char* request_id,
+                         const std::function<bool()>& cancelled,
+                         ChatPlanError* media_error);
 
+  std::string effective_config_;
   std::string model_name_;
   std::string host_ = "127.0.0.1";
   bool allow_media_ = false;
   int port_ = 8000;
+  int operations_port_ = 0;
   int max_tokens_default_ = 256;
   std::vector<int32_t> stop_token_ids_;  // generation_config, not PLE padding
   int max_prefill_ = 2048;
@@ -309,6 +380,9 @@ class ChatServer {
   // terms, not a physical RAM/OOM guarantee. False when --no-budget.
   runtime::MemoryBudget budget_;
   bool budget_valid_ = false;
+  MemoryAdmission memory_admission_;
+  StartupMemoryChecks startup_memory_;
+  StructuredAdmission structured_admission_;
   std::unique_ptr<text::Tokenizer> tok_;
   model::ModelOwner model_;
   std::unique_ptr<trace::RouterCollector> router_trace_;
@@ -342,8 +416,9 @@ class ChatServer {
   // per-request and freed by HandleChat's cleanup lambda.
   // Vision tower (multimodal). Null if the model has no visual weights.
   std::unique_ptr<vision::VisionTower> vision_tower_;
-  vision::ProcessorConfig proc_cfg_;       // image budget (65536/16777216)
+  vision::ProcessorConfig proc_cfg_;        // image budget (65536/16777216)
   vision::ProcessorConfig video_proc_cfg_;  // video budget (4096/25165824)
+  vision::MediaDeviceBudget vision_device_budget_;
 };
 
 }  // namespace server

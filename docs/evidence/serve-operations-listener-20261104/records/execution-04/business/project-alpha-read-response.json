@@ -1,0 +1,25 @@
+{
+  "elapsed": 3.761752433143556,
+  "finish_reason": "tool_calls",
+  "id": "agent-bfa99cd871c28806af151565ff59f64a",
+  "message": {
+    "content": null,
+    "role": "assistant",
+    "tool_calls": [
+      {
+        "function": {
+          "arguments": "{\"path\":\"docs/MODEL.md\",\"start_line\":1,\"line_count\":24}",
+          "name": "read_project_record"
+        },
+        "id": "call_agent-bfa99cd871c28806af151565ff59f64a_0",
+        "type": "function"
+      }
+    ]
+  },
+  "model": "qwen3.8-flash-next",
+  "usage": {
+    "completion_tokens": 55,
+    "prompt_tokens": 564,
+    "total_tokens": 619
+  }
+}

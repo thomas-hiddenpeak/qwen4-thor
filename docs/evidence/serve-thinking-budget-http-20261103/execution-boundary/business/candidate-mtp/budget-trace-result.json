@@ -1,0 +1,131 @@
+{
+  "passed": true,
+  "requests": {
+    "zero": {
+      "limit": 0,
+      "consumed": 0,
+      "forced": 3,
+      "reasoning_tokens": 3,
+      "mtp_steps": 0,
+      "mtp_tokens": 0,
+      "fallback": 0
+    },
+    "one-hidden": {
+      "limit": 1,
+      "consumed": 1,
+      "forced": 3,
+      "reasoning_tokens": 4,
+      "mtp_steps": 0,
+      "mtp_tokens": 0,
+      "fallback": 0
+    },
+    "sixteen": {
+      "limit": 16,
+      "consumed": 16,
+      "forced": 3,
+      "reasoning_tokens": 19,
+      "mtp_steps": 4,
+      "mtp_tokens": 14,
+      "fallback": 1
+    },
+    "sixteen-hidden": {
+      "limit": 16,
+      "consumed": 16,
+      "forced": 3,
+      "reasoning_tokens": 19,
+      "mtp_steps": 4,
+      "mtp_tokens": 14,
+      "fallback": 1
+    },
+    "natural": {
+      "limit": 128,
+      "consumed": 18,
+      "forced": 0,
+      "reasoning_tokens": 18,
+      "mtp_steps": 7,
+      "mtp_tokens": 25,
+      "fallback": 0
+    },
+    "closed-prefix": {
+      "limit": 0,
+      "consumed": 0,
+      "forced": 0,
+      "reasoning_tokens": 0,
+      "mtp_steps": 0,
+      "mtp_tokens": 0,
+      "fallback": 0
+    },
+    "project-read": {
+      "limit": 8,
+      "consumed": 8,
+      "forced": 3,
+      "reasoning_tokens": 11,
+      "mtp_steps": 0,
+      "mtp_tokens": 0,
+      "fallback": 0
+    },
+    "project-answer": {
+      "limit": 8,
+      "consumed": 0,
+      "forced": 0,
+      "reasoning_tokens": 0,
+      "mtp_steps": 0,
+      "mtp_tokens": 0,
+      "fallback": 0
+    },
+    "schema": {
+      "limit": 1,
+      "consumed": 1,
+      "forced": 3,
+      "reasoning_tokens": 4,
+      "mtp_steps": 0,
+      "mtp_tokens": 0,
+      "fallback": 0
+    },
+    "ordinary-length": {
+      "limit": 0,
+      "consumed": 0,
+      "forced": 1,
+      "reasoning_tokens": 1,
+      "mtp_steps": 0,
+      "mtp_tokens": 0,
+      "fallback": 0
+    },
+    "strict-length": {
+      "limit": 0,
+      "consumed": 0,
+      "forced": 1,
+      "reasoning_tokens": 1,
+      "mtp_steps": 0,
+      "mtp_tokens": 0,
+      "fallback": 0
+    },
+    "cache-seed": {
+      "limit": 8,
+      "consumed": 8,
+      "forced": 3,
+      "reasoning_tokens": 11,
+      "mtp_steps": 2,
+      "mtp_tokens": 6,
+      "fallback": 1
+    },
+    "cache-restored": {
+      "limit": 8,
+      "consumed": 8,
+      "forced": 3,
+      "reasoning_tokens": 11,
+      "mtp_steps": 2,
+      "mtp_tokens": 6,
+      "fallback": 1
+    },
+    "cache-fresh": {
+      "limit": 8,
+      "consumed": 8,
+      "forced": 3,
+      "reasoning_tokens": 11,
+      "mtp_steps": 2,
+      "mtp_tokens": 6,
+      "fallback": 1
+    }
+  }
+}

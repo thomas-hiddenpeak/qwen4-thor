@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "tests": 6,
+  "log_sha256": "065c7d15facfd20f14fb9182747be315f3349fa1d5e1a0e966047509f4bfa9b1",
+  "source_sha256": {
+    "tools/structured_output/stage.py": "4e31d26447072076a0c102960946bf3b75d051c75cc27ca97f92ee8db27a52b6",
+    "tools/structured_output/verify.py": "e5168e3f0deea424b2f964c25269a158935451404e766826b37c3c023ab7d003",
+    "tools/structured_output/test_stage.py": "74b5bcb62d345249a54f61db5dda19d8b5bd0edec52a35ab2e92c2afde7e538c"
+  }
+}

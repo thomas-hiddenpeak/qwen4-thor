@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/fault_fixture.py", line 193, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/fault_fixture.py", line 188, in main
+    {'parent': parent, 'guard': guard, 'leaf': leaf,
+  File "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/fault_fixture.py", line 120, in parent
+    acceptance.execute(plan, args.directory / 'acceptance')
+  File "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/acceptance.py", line 227, in execute
+    guard.wait(timeout=LIMITS['stage_seconds'] + 120)
+  File "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/fault_fixture.py", line 106, in wait
+    return self.child.wait(timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 1264, in wait
+    return self._wait(timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 2047, in _wait
+    time.sleep(delay)
+  File "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/acceptance.py", line 39, in interrupt
+    raise KeyboardInterrupt('acceptance interrupted by ' +
+KeyboardInterrupt: acceptance interrupted by SIGTERM

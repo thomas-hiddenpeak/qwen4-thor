@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 178
+X-Request-Id: req-441f1cbd298dff7f3debd3dfd954b439
+Connection: close
+
+{"error":{"message":"thinking_token_budget must be an integer in [0,2147483647] or null","type":"invalid_request_error","code":"invalid_request","param":"thinking_token_budget"}}

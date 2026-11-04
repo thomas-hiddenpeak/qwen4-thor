@@ -1,0 +1,9 @@
+{
+  "class": "BadRequestError",
+  "message": "400 provide only one of max_tokens or max_completion_tokens",
+  "status": 400,
+  "code": "invalid_request",
+  "param": "max_completion_tokens",
+  "automatic_retry": false,
+  "tools_executed": 0
+}

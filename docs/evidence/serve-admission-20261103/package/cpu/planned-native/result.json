@@ -1,0 +1,32 @@
+{
+  "passed": true,
+  "fixtures": 7,
+  "binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/cpu/planned-native/contract_probe",
+    "sha256": "d63791169f9382fb84d427d2fffba19033a886a6ee15b8410916e27f9ec77646",
+    "bytes": 497504
+  },
+  "native": [
+    {
+      "accepted": true
+    },
+    {
+      "accepted": true
+    },
+    {
+      "accepted": true
+    },
+    {
+      "accepted": true
+    },
+    {
+      "accepted": true
+    },
+    {
+      "accepted": true
+    },
+    {
+      "accepted": true
+    }
+  ]
+}

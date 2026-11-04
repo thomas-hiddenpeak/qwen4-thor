@@ -1,0 +1,8 @@
+{
+  "directory": "/home/rm01/models/dev/qwen4-thor/docs/evidence/chat-business-acceptance-20261102",
+  "sha256": {
+    "sealed-files.json": "77306a57e0db019c9798fa68e62ecc7f25578d91b5b1768359347f48ae03a1e4",
+    "frozen-plan.json": "b2df890b9040f8e40abbaa15b23f0a7173c503ecc250d1de9268be9e152d4562",
+    "cpu-01/result.json": "87965fe841cda6129b5cd6cfd0a06e6562a647fa308a2241171c568f2604a813"
+  }
+}

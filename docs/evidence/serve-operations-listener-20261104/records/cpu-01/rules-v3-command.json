@@ -1,0 +1,9 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/deps/promtool",
+    "test",
+    "rules",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-operations-listener-20261104/cpu-01/rules-v3.json"
+  ],
+  "timeout": 180
+}

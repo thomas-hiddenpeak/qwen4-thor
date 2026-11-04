@@ -1,0 +1,9 @@
+{
+  "class": "BadRequestError",
+  "message": "400 parse_response=true requires messages",
+  "status": 400,
+  "code": "invalid_request",
+  "param": "parse_response",
+  "automatic_retry": false,
+  "tools_executed": 0
+}

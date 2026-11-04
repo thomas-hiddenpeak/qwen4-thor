@@ -1,0 +1,7 @@
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"messages must be a nonempty array","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}

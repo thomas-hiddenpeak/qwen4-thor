@@ -1,0 +1,11 @@
+[Unit]
+Description=CPU syntax fixture only
+# Merge only into a service you own. This is not an executable service unit.
+[Service]
+LogNamespace=q4t
+StandardOutput=journal
+StandardError=journal
+UMask=0077
+LogRateLimitIntervalSec=0
+
+ExecStart=/usr/bin/true

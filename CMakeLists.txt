@@ -192,6 +192,7 @@ add_library(q4t_model STATIC
   src/mtp/subset_head.cpp
   src/mtp/suffix_drafter.cpp
   src/vision/vision.cu
+  src/vision/media_plan.cpp
   src/vision/processor.cpp)
 target_include_directories(q4t_model PUBLIC include third_party)
 target_link_libraries(q4t_model PUBLIC q4t_trace q4t_io q4t_quant q4t_ple CUDA::cudart
@@ -248,26 +249,52 @@ endif()
 # q4t_runtime — host-side runtime utilities (memory budget, OOM preflight).
 # No CUDA dependency: pure host logic over /proc/meminfo + architecture math.
 # ---------------------------------------------------------------------------
-add_library(q4t_runtime STATIC src/runtime/memory_budget.cpp)
+add_library(q4t_runtime STATIC src/runtime/memory_budget.cpp
+  src/runtime/system_memory.cpp)
 target_include_directories(q4t_runtime PUBLIC include)
 
 # ---------------------------------------------------------------------------
 # q4t_server — OpenAI-compatible HTTP server (POSIX sockets, no deps)
 # ---------------------------------------------------------------------------
+include(cmake/ChatProtocolIdentity.cmake)
 add_library(q4t_server STATIC src/server/chat_server.cpp
+  src/server/client_policy.cpp
+  src/server/client_request.cpp
+  src/server/chat_device_memory.cpp
+  src/server/memory_admission.cpp
+  src/server/chat_memory.cpp
+  src/server/chat_capabilities.cpp
   src/server/server_options.cpp
   src/server/chat_http.cpp
   src/server/http_response.cpp
+  src/server/chat_response_parser.cpp
+  src/server/thinking_budget.cpp
+  src/server/text_stop.cpp
+  src/server/reasoning_options.cpp
+  src/server/output_schema.cpp
+  src/server/output_constraints.cpp
+  src/server/grammar_process.cpp
+  src/server/grammar_worker.cpp
+  src/server/structured_decoder.cpp
   src/server/chat_input.cpp
+  src/server/media_admission.cpp
+  src/server/chat_prompt.cpp
+  src/server/chat_plan.cpp
+  src/server/chat_preflight.cpp
   src/server/chat_metrics.cpp
+  src/server/chat_admission.cpp
   src/server/chat_scheduler.cpp
   src/server/chat_generation.cpp
   src/server/session_cache.cpp
   src/server/session_state.cpp
   src/server/http_request.cpp
+  src/server/input_contract.cpp
   src/server/chat_contract.cpp
+  src/server/chat_tool_history.cpp
                              src/server/chat_template.cpp)
 target_include_directories(q4t_server PUBLIC include)
+target_include_directories(q4t_server PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
+q4t_link_structured_output(q4t_server)
 option(Q4T_SERVE_FAULT_INJECTION "Validation-only serving fault hooks" OFF)
 if(Q4T_SERVE_FAULT_INJECTION)
   target_compile_definitions(q4t_server PRIVATE Q4T_SERVE_FAULT_INJECTION=1)
@@ -279,6 +306,7 @@ target_link_libraries(q4t_server PUBLIC q4t_model q4t_text q4t_io q4t_runtime
 # q4t — CLI executable
 # ---------------------------------------------------------------------------
 add_executable(q4t src/main.cpp)
+q4t_link_structured_output(q4t)
 target_include_directories(q4t PRIVATE include)
 target_link_libraries(q4t PRIVATE q4t_model q4t_text q4t_ple q4t_quant
                                   q4t_server CUDA::cudart)
@@ -303,13 +331,19 @@ if(Q4T_STARTUP_RESOURCE_PLAN)
 else()
   # PUBLIC keeps ChatServer's member layout identical in all translation units.
   target_compile_definitions(q4t_server PUBLIC Q4T_STARTUP_RESERVATION=1)
-  target_sources(q4t PRIVATE src/runtime/startup_reservation.cpp)
-  # Only allocation ownership is intercepted; no event/sync tracing is linked
-  # into the production executable. Non-planned operation passes through.
-  foreach(api cudaMalloc cudaFree cudaHostAlloc cudaMallocHost
-              cudaMallocAsync cudaFreeAsync)
-    target_link_options(q4t PRIVATE "LINKER:--wrap=${api}")
-  endforeach()
+  target_sources(q4t PRIVATE src/runtime/startup_reservation.cpp
+                            src/runtime/cuda_allocation_quota.cpp)
+  # No per-operation tracing. Unknown cleanup/completion fails closed even
+  # with --startup-plan off; existing handled serve releases retain errors.
+  include(cmake/CudaCleanupBoundary.cmake)
+  q4t_link_cuda_cleanup(q4t)
+
+  add_executable(q4t_cleanup_probe EXCLUDE_FROM_ALL
+    tools/serve_backend_cleanup/cleanup_probe.cpp
+    src/runtime/startup_reservation.cpp src/runtime/cuda_allocation_quota.cpp)
+  target_include_directories(q4t_cleanup_probe PRIVATE include)
+  target_link_libraries(q4t_cleanup_probe PRIVATE q4t_startup_plan CUDA::cudart)
+  q4t_link_cuda_cleanup(q4t_cleanup_probe)
 endif()
 
 # ---------------------------------------------------------------------------
@@ -370,6 +404,25 @@ add_executable(q4t_gemm_roofline_bench tools/gemm_roofline_bench.cu)
 target_link_libraries(q4t_gemm_roofline_bench PRIVATE CUDA::cudart
                                                      CUDA::cublasLt)
 
+# CPU-only request planner probe; linking the runner does not execute CUDA.
+add_executable(q4t_preflight_probe EXCLUDE_FROM_ALL
+  tools/serve_preflight/prompt_probe.cpp)
+target_link_libraries(q4t_preflight_probe PRIVATE q4t_server)
+target_compile_options(q4t_preflight_probe PRIVATE -Wall -Wextra -Werror)
+q4t_link_structured_output(q4t_preflight_probe)
+
+# Actual preparation/HTTP handlers; no model load. Run under gpu_exclusive.
+add_executable(q4t_prepare_lock_probe EXCLUDE_FROM_ALL
+  tools/serve_prepare_lock/probe.cpp)
+target_link_libraries(q4t_prepare_lock_probe PRIVATE q4t_server)
+target_compile_options(q4t_prepare_lock_probe PRIVATE -Wall -Wextra -Werror)
+q4t_link_structured_output(q4t_prepare_lock_probe)
+if(NOT Q4T_STARTUP_RESOURCE_PLAN)
+  target_sources(q4t_prepare_lock_probe PRIVATE
+    src/runtime/startup_reservation.cpp src/runtime/cuda_allocation_quota.cpp)
+  q4t_link_cuda_cleanup(q4t_prepare_lock_probe)
+endif()
+
 # ---------------------------------------------------------------------------
 # Tests
 # ---------------------------------------------------------------------------
@@ -383,10 +436,39 @@ if(Q4T_BUILD_TESTS)
     tests/ple_working_memory_test.cpp
     tests/io_json_test.cpp
     tests/runtime_memory_budget_test.cpp
+    tests/server_memory_admission_test.cpp
+    src/server/memory_admission.cpp
     tests/model_sequence_test.cpp
     tests/server_http_request_test.cpp
+    tests/server_http_observation_test.cpp
     tests/server_chat_contract_test.cpp
+    src/server/chat_capabilities.cpp
+    tests/server_chat_capabilities_test.cpp
+    src/server/chat_tool_history.cpp
+    src/server/chat_template.cpp
+    tests/server_chat_tool_history_test.cpp
+    src/server/chat_response_parser.cpp
+    src/server/thinking_budget.cpp
+    src/server/text_stop.cpp
+    src/server/reasoning_options.cpp
+    tests/server_chat_response_parser_test.cpp
+    tests/server_thinking_budget_test.cpp
+    tests/server_text_stop_test.cpp
+    src/server/output_schema.cpp
+    src/server/output_constraints.cpp
+    src/server/grammar_process.cpp
+    src/server/grammar_worker.cpp
+    src/server/structured_decoder.cpp
+    tests/server_output_constraints_test.cpp
+    src/server/input_contract.cpp
     src/server/chat_contract.cpp
+    src/server/chat_prompt.cpp
+    src/server/media_admission.cpp
+    src/server/chat_plan.cpp
+    tests/server_media_admission_test.cpp
+    tests/server_chat_plan_test.cpp
+    tests/server_sequence_admission_test.cpp
+    src/server/server_options.cpp
     src/server/http_response.cpp
     tests/server_http_response_test.cpp
     src/server/http_request.cpp
@@ -447,7 +529,12 @@ if(Q4T_BUILD_TESTS)
   target_link_libraries(q4t_agent_capacity PRIVATE ${Q4T_TEST_LIBS})
 
   add_executable(q4t_tests ${Q4T_TEST_SOURCES})
+  q4t_link_structured_output(q4t_tests)
+  if(Q4T_ENABLE_XGRAMMAR)
+    target_sources(q4t_tests PRIVATE tests/server_structured_decoder_test.cpp)
+  endif()
   target_include_directories(q4t_tests PRIVATE include)
+  target_include_directories(q4t_tests PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
   target_link_libraries(q4t_tests PRIVATE ${Q4T_TEST_LIBS})
   add_test(NAME q4t_tests COMMAND q4t_tests)
 
@@ -480,6 +567,29 @@ if(Q4T_BUILD_TESTS)
     LINKER:--wrap=cudaMalloc LINKER:--wrap=cudaFree
     LINKER:--wrap=cudaStreamSynchronize)
 
+  add_executable(q4t_vision_contract EXCLUDE_FROM_ALL
+    tools/serve_media_failure/vision_contract.cpp)
+  target_include_directories(q4t_vision_contract PRIVATE include)
+  target_link_libraries(q4t_vision_contract PRIVATE ${Q4T_TEST_LIBS})
+  target_link_options(q4t_vision_contract PRIVATE
+    LINKER:--wrap=cudaMalloc LINKER:--wrap=cudaFree
+    LINKER:--wrap=cudaMemcpy LINKER:--wrap=cudaMemcpyAsync
+    LINKER:--wrap=cudaStreamSynchronize LINKER:--wrap=_Znwm)
+  add_executable(q4t_vision_upload EXCLUDE_FROM_ALL
+    tools/verify/inference_metadata/vision_load_test.cpp)
+  target_include_directories(q4t_vision_upload PRIVATE include)
+  target_link_libraries(q4t_vision_upload PRIVATE ${Q4T_TEST_LIBS})
+  target_link_options(q4t_vision_upload PRIVATE LINKER:--wrap=cudaMemcpyAsync)
+
+  add_executable(q4t_host_memory_contract EXCLUDE_FROM_ALL
+    tools/serve_media_failure/host_contract.cpp src/server/http_response.cpp
+    src/vision/media_plan.cpp
+    src/vision/processor.cpp)
+  target_include_directories(q4t_host_memory_contract PRIVATE include third_party)
+  target_link_libraries(q4t_host_memory_contract PRIVATE Threads::Threads)
+  target_link_options(q4t_host_memory_contract PRIVATE LINKER:--wrap=malloc
+    LINKER:--wrap=realloc LINKER:--wrap=free LINKER:--wrap=send)
+
   # Repeatable real-CUDA copy contract; no checkpoint or private input.
   add_executable(q4t_mtp_position_copy
     tests/mtp_position_copy_test.cpp)
@@ -498,14 +608,25 @@ if(Q4T_BUILD_TESTS)
   include(cmake/HostTestSources.cmake)
   find_package(Threads REQUIRED)
   add_executable(q4t_host_tests ${Q4T_HOST_TEST_SOURCES})
+  target_compile_definitions(q4t_host_tests PRIVATE Q4T_GRAMMAR_PROCESS_TESTS=1)
+  q4t_link_structured_output(q4t_host_tests)
   target_include_directories(q4t_host_tests PRIVATE include)
+  target_include_directories(q4t_host_tests PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
   target_link_libraries(q4t_host_tests PRIVATE q4t_io Threads::Threads)
   if(Q4T_HAS_ICU)
     target_sources(q4t_host_tests PRIVATE tests/text_tokenizer_test.cpp)
     target_link_libraries(q4t_host_tests PRIVATE q4t_text)
     add_executable(q4t_http_lifecycle_tests
       tools/serve_reliability/http_lifecycle_test.cpp tests/test_main.cpp
+      tools/serve_reliability/admission_contract_test.cpp
+      src/runtime/system_memory.cpp src/server/memory_admission.cpp
+      src/server/chat_memory.cpp
+      src/server/chat_device_memory.cpp
+      src/server/chat_admission.cpp
       src/server/chat_http.cpp src/server/http_request.cpp
+      src/server/client_policy.cpp src/server/client_request.cpp
+      src/trace/sha256.cpp
+      src/server/input_contract.cpp src/server/output_schema.cpp
       src/server/http_response.cpp src/trace/router_trace.cpp)
     target_include_directories(q4t_http_lifecycle_tests PRIVATE
       include ${CUDAToolkit_INCLUDE_DIRS})
@@ -606,7 +727,13 @@ target_compile_options(q4t_prefix_state_contract PRIVATE -Wall -Wextra)
 
 add_executable(q4t_prefix_seed_contract EXCLUDE_FROM_ALL
   tests/test_main.cpp tests/server_chat_contract_test.cpp
+  src/server/input_contract.cpp
   tools/prefix_seed/policy_contract.cpp src/server/chat_contract.cpp
-  src/io/json.cpp)
+  src/server/chat_tool_history.cpp src/server/output_constraints.cpp
+  src/server/chat_template.cpp src/server/chat_response_parser.cpp
+  src/server/thinking_budget.cpp
+  src/server/text_stop.cpp
+  src/server/reasoning_options.cpp
+  src/server/output_schema.cpp src/server/http_response.cpp src/io/json.cpp)
 target_include_directories(q4t_prefix_seed_contract PRIVATE include)
 target_compile_options(q4t_prefix_seed_contract PRIVATE -Wall -Wextra)

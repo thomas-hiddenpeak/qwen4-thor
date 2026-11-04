@@ -1,0 +1,69 @@
+{
+  "passed": true,
+  "schema_sha256": "9e02ce2caf41fa9081a15e67fc63fb89a190a1e8caac509f04601449ad509f8c",
+  "records": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/sse-cancel/queued-wire.bin",
+      "sha256": "35f84772e98bd0ca08067f5d9db1e2e55f97fe45b0ba60ce13a14d9e8c9462cf",
+      "envelopes": 1,
+      "scope": "complete_generation"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/sse-cancel/strict-recovery-wire.bin",
+      "sha256": "ad19b7a47693d4447d71c8b8614fd571c8885fc6494f824d0edd05922d8a5b48",
+      "envelopes": 1,
+      "scope": "complete_generation"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/sse-cancel/strict-busy-response.json",
+      "sha256": "5e4b0e004c8514a61a8dbca3134be67cd48546717e895448ffa03ede817a10b4",
+      "status": 503,
+      "envelopes": 1,
+      "scope": "expected_rejection"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/sse-cancel/wrong-cancel-response.json",
+      "sha256": "cb4f89bb542ace02cc6e0f76c5990b45009aaf1bce5aae1c9053521e70232f55",
+      "status": 404,
+      "envelopes": 1,
+      "scope": "expected_rejection"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/sse-cancel/long-wire.bin",
+      "sha256": "05753585da17f4dbbb3448cc0d7495ff41b84de9efdefd812f5b3c4ea299ed94",
+      "scope": "expected_incomplete_transport; live driver rejects complete turn"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/json-write-timeout/queued-wire.bin",
+      "sha256": "35cc7b53080b9cda5aaad170d08f9731d85291ef6c13fd30e2fb7aae5b6df0db",
+      "envelopes": 1,
+      "scope": "complete_generation"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/json-write-timeout/strict-recovery-wire.bin",
+      "sha256": "ac461858c954b3be16408e4981b6bfd50caf541dcd1679ebdf9742c14b26e61f",
+      "envelopes": 1,
+      "scope": "complete_generation"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/json-write-timeout/strict-busy-response.json",
+      "sha256": "ee585b662eca9b1f0e80c587b884a626be7aee83493248caf61958f4fed661ef",
+      "status": 503,
+      "envelopes": 1,
+      "scope": "expected_rejection"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/json-write-timeout/wrong-cancel-response.json",
+      "sha256": "434325bf4971bab90a9ca08cbd94a2c1de9f00af26b25b118b3b16a7347b0fe7",
+      "status": 404,
+      "envelopes": 1,
+      "scope": "expected_rejection"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/execution/business/json-write-timeout/long-wire.bin",
+      "sha256": "f4ade0e503256af52973faec74cd1ccce8dc2ccf8c9b565834696fa069eeb3f0",
+      "scope": "expected_incomplete_transport; live driver rejects complete turn"
+    }
+  ],
+  "complete_envelopes": 8
+}

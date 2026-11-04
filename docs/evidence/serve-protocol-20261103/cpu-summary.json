@@ -1,0 +1,39 @@
+{
+  "scope": "CPU only: no HTTP listener/model/GPU",
+  "fields": 38,
+  "routes": 10,
+  "native_cases": 396,
+  "accepted": 250,
+  "rejected": 146,
+  "shape_initial_pass": 391,
+  "shape_initial_failed": 5,
+  "shape_targeted_repaired": 5,
+  "js_in_memory_tests": 35,
+  "bridge_and_journal_tests": 12,
+  "business_argument_pairs": 31,
+  "driver_tests": 9,
+  "driver_initial_pass": 3,
+  "driver_import_repaired": 5,
+  "reporter_gate": 1,
+  "native_http_negative_fixtures": 16,
+  "strict_request_probe_checks": 2,
+  "runtime_sources_unchanged": 189,
+  "node": "24.18.0",
+  "openai": "7.47.0",
+  "passed": true,
+  "performance_acceptance": false,
+  "scope_excludes": [
+    "tokenization",
+    "dynamic admission",
+    "grammar compilation",
+    "model quality"
+  ],
+  "retained_setup_failures": [
+    "schema resource missing id",
+    "JS syntax parenthesis",
+    "SDK package export",
+    "legacy module name collision",
+    "Node reporter format",
+    "Python singular test report"
+  ]
+}

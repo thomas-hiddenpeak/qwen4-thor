@@ -1,0 +1,24 @@
+{
+  "seconds": 0.4808027797844261,
+  "response": {
+    "id": "agent-69f403fbf347914309df32e4c0015ff7",
+    "model": "qwen3.8-flash-next",
+    "message": {
+      "role": "assistant",
+      "content": "710003"
+    },
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 31,
+      "completion_tokens": 7,
+      "total_tokens": 38
+    }
+  },
+  "headers": {
+    "cache-control": "no-cache",
+    "connection": "close",
+    "content-type": "text/event-stream",
+    "x-accel-buffering": "no",
+    "x-request-id": "req-43f8166cf663cad93a48cf91320e6c5e"
+  }
+}

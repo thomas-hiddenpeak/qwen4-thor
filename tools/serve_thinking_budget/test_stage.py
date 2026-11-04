@@ -1,0 +1,178 @@
+"""Offline checks of the acceptance controls, not model validation."""
+import copy
+from decimal import Decimal
+import json
+from pathlib import Path
+import tempfile
+import time
+from types import SimpleNamespace
+import unittest
+from unittest.mock import patch
+
+import stage
+v = stage.module("budget_contract_checks", Path(__file__).with_name("verify.py"))
+import check_schema as schema
+
+
+class Contracts(unittest.TestCase):
+    def test_disabled_and_zero_are_distinct(self):
+        usage = dict(prompt_tokens=2, completion_tokens=4, total_tokens=6)
+        schema.check_usage(usage, None)
+        with self.assertRaises(Exception):
+            schema.check_usage(usage, 0)
+        usage.update(completion_tokens_details=dict(reasoning_tokens=1),
+            q4t_thinking_budget=dict(limit=0, consumed=0, forced_closure_tokens=1))
+        schema.check_usage(usage, 0)
+        with self.assertRaises(ValueError):
+            schema.check_usage(usage, None)
+
+    def test_usage_equations_are_not_just_json_schema(self):
+        usage = dict(prompt_tokens=2, completion_tokens=20, total_tokens=22,
+            completion_tokens_details=dict(reasoning_tokens=17),
+            q4t_thinking_budget=dict(limit=16, consumed=16, forced_closure_tokens=1))
+        schema.check_usage(usage, 16)
+        for key, value in (("consumed", 17), ("forced_closure_tokens", 15), ("limit", 15)):
+            changed = copy.deepcopy(usage)
+            changed["q4t_thinking_budget"][key] = value
+            with self.assertRaises(Exception):
+                schema.check_usage(changed, 16)
+        with self.assertRaises(ValueError):
+            schema.check_usage(usage, 8)
+
+    def test_lexical_negatives_and_projection(self):
+        cases = v.negative_cases()
+        self.assertEqual(len(cases), 12)
+        self.assertEqual(len({name for name, _ in cases}), 12)
+        validator = schema.validator("request")
+        for _, raw in cases:
+            body = json.loads(raw, parse_float=Decimal)
+            self.assertFalse(validator.is_valid(body), raw)
+        self.assertTrue(validator.is_valid(dict(prompt="raw", thinking_token_budget=None)))
+        self.assertTrue(validator.is_valid(dict(messages=[{}], thinking_token_budget=2147483647)))
+
+    def test_total_limit_and_sdk_extensions(self):
+        body = v.schema_body(0, maximum=1)
+        self.assertEqual(body["max_completion_tokens"], 1)
+        self.assertEqual(body["extra_body"]["thinking_token_budget"], 0)
+        self.assertEqual(body["stream_options"], dict(include_usage=True))
+        self.assertNotIn("thinking_token_budget", body)
+
+    def test_command_limits_and_private_cache(self):
+        mtp = v.command("candidate", "model", 18098, True, Path("/private/cache"))
+        self.assertEqual(mtp[mtp.index("--max-len") + 1], "16384")
+        self.assertEqual(mtp[mtp.index("--seq-capacities") + 1], "16384")
+        self.assertNotIn("--no-mtp", mtp)
+        plain = v.command("candidate", "model", 18098, False)
+        self.assertIn("--no-mtp", plain)
+        self.assertNotIn("--session-cache-dir", plain)
+        body = v.cache_seed()
+        self.assertTrue(body["extra_body"]["chat_template_kwargs"]["preserve_thinking"])
+        self.assertEqual(len(body["extra_body"]["session_id"]), 64)
+
+    def test_request_start_and_time_limits(self):
+        run = object.__new__(v.Run)
+        run.installed, run.deadline = False, time.time() + 60
+        run.requests, run.negative, run.starts, run.capability_gets = 21, 12, 3, 3
+        run.budget()
+        with self.assertRaises(AssertionError):
+            run.counted()
+        run.requests, run.starts = 21, 4
+        with self.assertRaises(AssertionError):
+            run.budget()
+        run.starts, run.deadline = 3, time.time() - 1
+        with self.assertRaises(AssertionError):
+            run.budget()
+
+    def test_guard_before_install(self):
+        stage.bind()
+        with patch.object(stage.h, "require_guard", side_effect=RuntimeError("no lease")), \
+             patch.object(stage.a, "check") as checked:
+            with self.assertRaises(RuntimeError):
+                stage.a.execute()
+            checked.assert_not_called()
+
+    def test_sdk_failure_preserves_raw_error(self):
+        run = object.__new__(v.Run)
+        run.counted = lambda: None
+        error = RuntimeError("expected failure")
+        error.response = SimpleNamespace(content=b'{"error":{"code":"failed"}}',
+                                         headers={"x-request-id": "trace-failure"})
+        def fail(**unused):
+            raise error
+        client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(
+            with_raw_response=SimpleNamespace(create=fail))))
+        with tempfile.TemporaryDirectory() as directory:
+            folder = Path(directory)
+            with self.assertRaises(RuntimeError):
+                run.sdk_chat(client, folder, "failure", {})
+            self.assertEqual((folder / "failure-wire.bin").read_bytes(), error.response.content)
+            self.assertIn("expected failure", (folder / "failure-failure.json").read_text())
+
+    def test_cache_directory_is_private_and_never_reuses_existing(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "private-cache"
+            v.prepare_cache(path)
+            self.assertEqual(path.stat().st_mode & 0o777, 0o700)
+            (path / "evidence").write_text("keep")
+            with self.assertRaises(FileExistsError):
+                v.prepare_cache(path)
+            self.assertEqual((path / "evidence").read_text(), "keep")
+
+    def test_current_phase_ledger_reserves_installation(self):
+        run = object.__new__(v.Run)
+        run.plan = dict(limits=dict(starts=5, generations=22, negatives=12),
+                        prior_counts=dict(starts=1, generations=2, negatives=3))
+        run.installed, run.deadline = False, time.time() + 60
+        run.requests, run.negative, run.starts, run.capability_gets = 19, 9, 3, 3
+        run.budget()
+        with self.assertRaises(AssertionError):
+            run.counted()
+        run.requests, run.negative = 19, 10
+        with self.assertRaises(AssertionError):
+            run.budget()
+        run.negative, run.starts = 9, 4
+        with self.assertRaises(AssertionError):
+            run.budget()
+
+    def test_repair_does_not_reset_deadline(self):
+        run = object.__new__(v.Run)
+        plan = dict(started=300, original_started=100, limits=dict(seconds=1800))
+        with patch.object(v.b.Run, "__init__", return_value=None):
+            run.__init__(plan, Path("unused"))
+        self.assertEqual(run.deadline, 1870)
+
+    def test_launch_preflight_uses_serialized_path_and_actual_directory(self):
+        with tempfile.TemporaryDirectory() as directory:
+            run = object.__new__(v.Run)
+            run.out = Path(directory)
+            probe = run.out / "preflight"
+            probe.write_bytes(b"identity fixture")
+            run.plan = dict(startup_preflight=stage.h.identity(probe))
+            def before_popen(self, name, binary, mtp, action):
+                (self.out / name).mkdir(mode=0o700)
+                return v.b.command(binary, "model", 18099, mtp)
+            def preflight(argv, **unused):
+                self.assertEqual(argv[0], str(probe))
+                cache = Path(argv[argv.index("--session-cache-dir") + 1])
+                self.assertTrue(cache.is_dir())
+                self.assertEqual(cache.stat().st_mode & 0o777, 0o700)
+                return SimpleNamespace(returncode=0, stdout="{}", stderr="")
+            with patch.object(v.b.Run, "model", before_popen), \
+                 patch.object(v.subprocess, "run", side_effect=preflight) as called:
+                argv = run.model("candidate-mtp", Path("candidate"), True, None)
+            called.assert_called_once()
+            self.assertTrue((run.out / "candidate-mtp/startup-preflight.json").is_file())
+
+    def test_budget_trace_joins_distinct_trace_and_completion_ids(self):
+        log = ("[q4t][http] trace_id=trace-one-hidden completion_id=chatcmpl-random\n"
+               "[thinking-budget] request=chatcmpl-random limit=1 consumed=1 "
+               "forced=3 reasoning_tokens=4 mtp_steps=0 mtp_tokens=0 fallback=0\n")
+        self.assertEqual(v.budget_traces(log)["one-hidden"]["forced"], 3)
+        with self.assertRaises(AssertionError):
+            v.budget_traces(log.split("\n", 1)[1])
+        with self.assertRaises(AssertionError):
+            v.budget_traces(log + log)
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -1,0 +1,5 @@
+{
+  "passed": false,
+  "kind": "CPU tooling invocation",
+  "detail": "First native template probe was passed a model directory instead of tokenizer.json; process SIGABRT. No model weights/GPU loaded; corrected input below."
+}

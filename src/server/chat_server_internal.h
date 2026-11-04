@@ -15,6 +15,4 @@ Status FinishHostReadback(cudaError_t copy_error,
                           const Status& submitted = Status(),
                           trace::RouterCollector* trace = nullptr,
                           std::atomic<uint64_t>* execution_steps = nullptr);
-bool PrepareChatInput(int fd, const io::Json& req, std::string* prompt_out,
-                      std::vector<VisionItem>* items_out);
 }  // namespace q4t::server::detail

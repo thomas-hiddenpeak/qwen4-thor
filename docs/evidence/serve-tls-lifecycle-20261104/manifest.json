@@ -1,0 +1,1158 @@
+{
+  "files": {
+    "archive-failure.log": {
+      "bytes": 821,
+      "sha256": "9c24f1f47a2f1da37ef24f24947b125c1ea5a75cd1b5b8aeabb547371eb94d2f"
+    },
+    "cpu-01/result.json": {
+      "bytes": 3227,
+      "sha256": "df84829fa0ccd87f9e24492ab9f90b5def762620c584901766944e9dab511326"
+    },
+    "cpu-01/source/docs/SERVE_TLS_LIFECYCLE_2026-11-04.md": {
+      "bytes": 3441,
+      "sha256": "87c47fcb811f11866cca3a67904199aa378a13dfdb7ada52e3c942fbbd05a0b5"
+    },
+    "cpu-01/source/docs/serve-openapi-v1.json": {
+      "bytes": 26775,
+      "sha256": "6ace0ec55ddcc358b16b453980bfa6536a4e63fdd7edb566d8b952bdcf0168d7"
+    },
+    "cpu-01/source/tools/evalscope/bounded_log.py": {
+      "bytes": 1784,
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb"
+    },
+    "cpu-01/source/tools/evalscope/gpu_exclusive.py": {
+      "bytes": 18395,
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2"
+    },
+    "cpu-01/source/tools/evalscope/nvml_process_query.py": {
+      "bytes": 7182,
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f"
+    },
+    "cpu-01/source/tools/release/release.py": {
+      "bytes": 20261,
+      "sha256": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab"
+    },
+    "cpu-01/source/tools/serve_clients/test_packages.py": {
+      "bytes": 9577,
+      "sha256": "a5d11cc9d832a60f2ebc7bf5e6c496da1af6475c7ab11c3271f2b570cc44faf1"
+    },
+    "cpu-01/source/tools/serve_gateway/client_policy.py": {
+      "bytes": 3923,
+      "sha256": "ab0256ee376ae62373fd1e89b18ca79d9490295aa1607795b209c5e5bdee6c1c"
+    },
+    "cpu-01/source/tools/serve_gateway/gateway.py": {
+      "bytes": 21623,
+      "sha256": "9d8a9979de3f22d4bab7f03da02b0cd324f301532c83bd526f80e314279ecba7"
+    },
+    "cpu-01/source/tools/serve_gateway/managed.py": {
+      "bytes": 20075,
+      "sha256": "1d50c3e5bd4f782627c60ddd0b77b839ea32cc1c54a3252ae07d35f71e732070"
+    },
+    "cpu-01/source/tools/serve_gateway/managed_child.py": {
+      "bytes": 1484,
+      "sha256": "b976d0180035bab72e7049c5fb60cdab5a63074f4869bb628403bef483002eea"
+    },
+    "cpu-01/source/tools/serve_gateway/test_gateway.py": {
+      "bytes": 8608,
+      "sha256": "6a2c07bda4fe7e68aae0ab730d20828a1e8df2234b534c3d8b35db331247bfca"
+    },
+    "cpu-01/source/tools/serve_gateway/test_managed.py": {
+      "bytes": 14752,
+      "sha256": "7e7fd528ed1548a288067b3aa13caa4258b33c4fcfb4f2fedead25d0fd79e915"
+    },
+    "cpu-01/source/tools/serve_gateway/test_tls.py": {
+      "bytes": 9128,
+      "sha256": "34f7a29d017ec19fc56db89d1748b7afc297089c7f34781d6519c06f17dd66db"
+    },
+    "cpu-01/source/tools/serve_gateway/tls.py": {
+      "bytes": 6972,
+      "sha256": "cca002a24c6731ec5f8a08b7d4c3e1a4e61cd10a8e4bac7224fc68fda88e183a"
+    },
+    "cpu-01/source/tools/serve_gateway/tls_cpu.py": {
+      "bytes": 1941,
+      "sha256": "b50a769680fd47d53071020ec9896332c33a5fe6506d02c02eac7a32dbf851e6"
+    },
+    "cpu-01/source/tools/serve_gateway/tls_fixture.py": {
+      "bytes": 2331,
+      "sha256": "4d863066b20c14142f31aef4ebc864a12fe3e518e8071255efe7233f736fb6e4"
+    },
+    "cpu-01/source/tools/serve_ops/contracts.py": {
+      "bytes": 11582,
+      "sha256": "709aaf35b476225f42d7c64bcee2ffd55f48a310bb01b939785a2006eb340816"
+    },
+    "cpu-01/source/tools/serve_ops/identity.py": {
+      "bytes": 4202,
+      "sha256": "1b80467eba0fe84397155d29a62d8ace363aea32b85c58f4ffce5412bc74aa3a"
+    },
+    "cpu-01/source/tools/serve_ops/transport.py": {
+      "bytes": 4609,
+      "sha256": "5885dab1835afa07c4a4c871726548fad95cb7888b4af29f8835e7d98d6d806b"
+    },
+    "cpu-01/source/tools/serve_service/backend.py": {
+      "bytes": 1853,
+      "sha256": "2845329d81c3a9ea4f7223432daa1e865a414a305fe0419d2ca934d137463112"
+    },
+    "cpu-01/source/tools/serve_service/inspection.py": {
+      "bytes": 15056,
+      "sha256": "d07c52c5fadc34e8d22348f3f89f4a7f3617c5fa83d477222a51ba1a3b95868a"
+    },
+    "cpu-01/source/tools/serve_service/memory.py": {
+      "bytes": 6019,
+      "sha256": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145"
+    },
+    "cpu-01/source/tools/serve_service/package.py": {
+      "bytes": 11873,
+      "sha256": "91873fbc4bdf4f8b01d1b2398e661d61585aee9b96cec6cedd59f6392c0b3c33"
+    },
+    "cpu-01/source/tools/serve_service/resources.py": {
+      "bytes": 14151,
+      "sha256": "31da926fea3e5da1273b6130328cd68cfeb2d7d04c760db9a5ae827035553af1"
+    },
+    "cpu-01/source/tools/serve_service/service.py": {
+      "bytes": 11419,
+      "sha256": "621a7adaacfa8e38059e06c0868bbb758f3d2857b35eeb6a0908cb6337b755e6"
+    },
+    "cpu-01/source/tools/serve_service/supervisor.py": {
+      "bytes": 14077,
+      "sha256": "b0587c89a36f3789a6b8cee74f3571df5756f22758817ae56e7b3d64c4e69108"
+    },
+    "cpu-01/tests.log": {
+      "bytes": 9412,
+      "sha256": "1101031eeb8f87a253096f901d5a684f453397af21e58aa7aaa7df3d2860124c"
+    },
+    "cpu-driver/result.json": {
+      "bytes": 7280,
+      "sha256": "fd1e57a8d7b2977ddb7416484f097df0633244f2bfe7ddc2fdb6567ff18da4eb"
+    },
+    "cpu-driver/source/docs/MODEL.md": {
+      "bytes": 14620,
+      "sha256": "7409269429d9e61ac6f560e829acd0613906d29e03e902c84af3a8db2d17a97c"
+    },
+    "cpu-driver/source/docs/SERVE_GATEWAY_2026-11-03.md": {
+      "bytes": 5242,
+      "sha256": "a471abd14595a298a31a9975ea1ca81aea7b8cec953dde94c4d0e8a36b678d4a"
+    },
+    "cpu-driver/source/docs/SERVE_MANAGED_SERVICE_GPU_2026-11-03.md": {
+      "bytes": 4614,
+      "sha256": "fd2dd8ad086dbcbd961a76eb12189dcb33beb4a0c49a0feca9986e57a944c547"
+    },
+    "cpu-driver/source/docs/SERVE_RETENTION_2026-11-04.md": {
+      "bytes": 4413,
+      "sha256": "fa11e5ba8b3e3ed9833fa1bde95b913fbe69fa635874a10704c07b2816569103"
+    },
+    "cpu-driver/source/docs/SERVE_TLS_LIFECYCLE_2026-11-04.md": {
+      "bytes": 3441,
+      "sha256": "87c47fcb811f11866cca3a67904199aa378a13dfdb7ada52e3c942fbbd05a0b5"
+    },
+    "cpu-driver/source/docs/serve-openapi-v1.json": {
+      "bytes": 26775,
+      "sha256": "6ace0ec55ddcc358b16b453980bfa6536a4e63fdd7edb566d8b952bdcf0168d7"
+    },
+    "cpu-driver/source/docs/serve-transport-v1.schema.json": {
+      "bytes": 4493,
+      "sha256": "47c9f9068a88ec1977788c892c90fe89dae43ec02e1e6e381d67707eaea1ec62"
+    },
+    "cpu-driver/source/tools/evalscope/bounded_log.py": {
+      "bytes": 1784,
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb"
+    },
+    "cpu-driver/source/tools/evalscope/gpu_exclusive.py": {
+      "bytes": 18395,
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2"
+    },
+    "cpu-driver/source/tools/evalscope/nvml_process_query.py": {
+      "bytes": 7182,
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f"
+    },
+    "cpu-driver/source/tools/examples/agent_tools_demo.py": {
+      "bytes": 7208,
+      "sha256": "acf6ee24c66d372d95ec08e672c2ec5dc423999890a537b9495a96ced4d89ca4"
+    },
+    "cpu-driver/source/tools/examples/chat_client.py": {
+      "bytes": 28871,
+      "sha256": "a2613333395a511b7741d8ce5fac125ba44dd9ec92fa198aa90ef5f9ba662f32"
+    },
+    "cpu-driver/source/tools/examples/project_query.py": {
+      "bytes": 6953,
+      "sha256": "dbf70665fef0d144d18fc0ef16b04029a7dd595664efe45b7de07579b3997206"
+    },
+    "cpu-driver/source/tools/examples/project_records.py": {
+      "bytes": 8033,
+      "sha256": "abd47d37ddcbd482f147ef172ee01e4a8be3bfcb78f29f7156d00b0073eb8b3c"
+    },
+    "cpu-driver/source/tools/examples/tool_recovery.py": {
+      "bytes": 12913,
+      "sha256": "e3fba1d9d028ff532c59e826b76e4434b64599a8b3c42b79d4ae0c1c59341f90"
+    },
+    "cpu-driver/source/tools/project_tasks/backup.py": {
+      "bytes": 31671,
+      "sha256": "fe06d9a995396d9393b24dd13f31e25910634eceedc5309b6227818c34b0aae0"
+    },
+    "cpu-driver/source/tools/project_tasks/budget.py": {
+      "bytes": 4517,
+      "sha256": "7328c9524eac3257a1b841089d9889975915d96b487d7886196106b560dc0412"
+    },
+    "cpu-driver/source/tools/project_tasks/compatible_runtimes.json": {
+      "bytes": 8021,
+      "sha256": "7edafd4458a56d6dd53ea65d6042a591d5a4011a1d509874b6d510830039608c"
+    },
+    "cpu-driver/source/tools/project_tasks/engine.py": {
+      "bytes": 24979,
+      "sha256": "d39536af1224422cbefa558f351c6e0874e34ed13e6515db192de537c95203e5"
+    },
+    "cpu-driver/source/tools/project_tasks/errors.py": {
+      "bytes": 8942,
+      "sha256": "47fa079bdea97f280bd4acda0367907e73aca4f313c1daffd8f8b5f90adf08a9"
+    },
+    "cpu-driver/source/tools/project_tasks/migration.py": {
+      "bytes": 8164,
+      "sha256": "dffc969621ce149c8df387f972e32f80fe4da0c031d1b62dc8b8474dc2d7101b"
+    },
+    "cpu-driver/source/tools/project_tasks/retention.py": {
+      "bytes": 30982,
+      "sha256": "a7ab459314ef0202ff278772ecf0ad9ba65253289e935e1a053467ccfb78d64b"
+    },
+    "cpu-driver/source/tools/project_tasks/runner.py": {
+      "bytes": 7748,
+      "sha256": "b5e5dfed3e9f1f41c66f7f15218220b24c108ffbfa664997c32852cb1e8677f4"
+    },
+    "cpu-driver/source/tools/project_tasks/store.py": {
+      "bytes": 11289,
+      "sha256": "eee1356e67ab93b59860f679050cd77ddea13d49588fefc2e25099fb2d33f99a"
+    },
+    "cpu-driver/source/tools/project_tasks/transport.py": {
+      "bytes": 8224,
+      "sha256": "fb75b3c2b7f7f27c7c5ab0b8f9f1f9f7db1dd690fc349fcf0831769f39b6f18f"
+    },
+    "cpu-driver/source/tools/release/release.py": {
+      "bytes": 20261,
+      "sha256": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab"
+    },
+    "cpu-driver/source/tools/serve_clients/test_packages.py": {
+      "bytes": 9577,
+      "sha256": "a5d11cc9d832a60f2ebc7bf5e6c496da1af6475c7ab11c3271f2b570cc44faf1"
+    },
+    "cpu-driver/source/tools/serve_gateway/acceptance.py": {
+      "bytes": 19672,
+      "sha256": "41d8e5360fbbe24263f16f58f7421c3b246cd0554879322fdcdc7f1ffec16a40"
+    },
+    "cpu-driver/source/tools/serve_gateway/client_policy.py": {
+      "bytes": 3923,
+      "sha256": "ab0256ee376ae62373fd1e89b18ca79d9490295aa1607795b209c5e5bdee6c1c"
+    },
+    "cpu-driver/source/tools/serve_gateway/cpu.py": {
+      "bytes": 1621,
+      "sha256": "f41bc73b3d764877f75f8ef8aa45166aaae0f2b7d1f3b85843de5c1444121c30"
+    },
+    "cpu-driver/source/tools/serve_gateway/exec_gateway.py": {
+      "bytes": 894,
+      "sha256": "43306fd807dc95b5277917418deed62b51cf77b78852e5a17bd3da59234d7fce"
+    },
+    "cpu-driver/source/tools/serve_gateway/gateway.py": {
+      "bytes": 21623,
+      "sha256": "9d8a9979de3f22d4bab7f03da02b0cd324f301532c83bd526f80e314279ecba7"
+    },
+    "cpu-driver/source/tools/serve_gateway/managed.py": {
+      "bytes": 20075,
+      "sha256": "1d50c3e5bd4f782627c60ddd0b77b839ea32cc1c54a3252ae07d35f71e732070"
+    },
+    "cpu-driver/source/tools/serve_gateway/managed_child.py": {
+      "bytes": 1484,
+      "sha256": "b976d0180035bab72e7049c5fb60cdab5a63074f4869bb628403bef483002eea"
+    },
+    "cpu-driver/source/tools/serve_gateway/test_gateway.py": {
+      "bytes": 8608,
+      "sha256": "6a2c07bda4fe7e68aae0ab730d20828a1e8df2234b534c3d8b35db331247bfca"
+    },
+    "cpu-driver/source/tools/serve_gateway/test_managed.py": {
+      "bytes": 14752,
+      "sha256": "7e7fd528ed1548a288067b3aa13caa4258b33c4fcfb4f2fedead25d0fd79e915"
+    },
+    "cpu-driver/source/tools/serve_gateway/test_tls.py": {
+      "bytes": 9128,
+      "sha256": "34f7a29d017ec19fc56db89d1748b7afc297089c7f34781d6519c06f17dd66db"
+    },
+    "cpu-driver/source/tools/serve_gateway/tls.py": {
+      "bytes": 6972,
+      "sha256": "cca002a24c6731ec5f8a08b7d4c3e1a4e61cd10a8e4bac7224fc68fda88e183a"
+    },
+    "cpu-driver/source/tools/serve_gateway/tls_cpu.py": {
+      "bytes": 1941,
+      "sha256": "b50a769680fd47d53071020ec9896332c33a5fe6506d02c02eac7a32dbf851e6"
+    },
+    "cpu-driver/source/tools/serve_gateway/tls_driver_cpu.py": {
+      "bytes": 4314,
+      "sha256": "653ee9700517ec499bd7f44a4699975b9a3139efefe76718620e77da7338f59c"
+    },
+    "cpu-driver/source/tools/serve_gateway/tls_fixture.py": {
+      "bytes": 2331,
+      "sha256": "4d863066b20c14142f31aef4ebc864a12fe3e518e8071255efe7233f736fb6e4"
+    },
+    "cpu-driver/source/tools/serve_gateway/tls_report.py": {
+      "bytes": 13444,
+      "sha256": "6bbee38c12f307a290fa82a6d39ab0f048e147f056e44b5f379500cb0e5905df"
+    },
+    "cpu-driver/source/tools/serve_gateway/tls_stage.py": {
+      "bytes": 15902,
+      "sha256": "d97f1a64ff1d1fab00da41232401539f6e4405b9d3b96808e85f906dcea7ec6d"
+    },
+    "cpu-driver/source/tools/serve_gateway/transport_tests.py": {
+      "bytes": 15425,
+      "sha256": "2ce03405123863eb77125685ca2021e66d531a8cdf74b93a59dcc1c5dc0719ee"
+    },
+    "cpu-driver/source/tools/serve_host/report.py": {
+      "bytes": 22056,
+      "sha256": "8470fde645dff147bc84a459167a4d54261daf76e281b13b88a4d5479ceeae5b"
+    },
+    "cpu-driver/source/tools/serve_ops/contracts.py": {
+      "bytes": 11582,
+      "sha256": "709aaf35b476225f42d7c64bcee2ffd55f48a310bb01b939785a2006eb340816"
+    },
+    "cpu-driver/source/tools/serve_ops/identity.py": {
+      "bytes": 4202,
+      "sha256": "1b80467eba0fe84397155d29a62d8ace363aea32b85c58f4ffce5412bc74aa3a"
+    },
+    "cpu-driver/source/tools/serve_ops/transport.py": {
+      "bytes": 4609,
+      "sha256": "5885dab1835afa07c4a4c871726548fad95cb7888b4af29f8835e7d98d6d806b"
+    },
+    "cpu-driver/source/tools/serve_retention/cpu.py": {
+      "bytes": 5654,
+      "sha256": "a343913063ef6df660aeba0f9b10691042bc2d9a44d4c0c92572f773ca92d80f"
+    },
+    "cpu-driver/source/tools/serve_retention/exec_managed.py": {
+      "bytes": 999,
+      "sha256": "d8b94c267ef7466b6a97d548e4d956af727909aabfb0edb06f26aa3097ee4ce3"
+    },
+    "cpu-driver/source/tools/serve_retention/runner.py": {
+      "bytes": 12484,
+      "sha256": "cd10b53ff08624b81f8cef702a3366113034b3083163fd5d3ea0056dd587f164"
+    },
+    "cpu-driver/source/tools/serve_retention/stage.py": {
+      "bytes": 16414,
+      "sha256": "d5bbce69c112637e6db9afcb636c4a1c031625a8dc2a4a2b829b4d21f654e6cf"
+    },
+    "cpu-driver/source/tools/serve_retention/store.py": {
+      "bytes": 17147,
+      "sha256": "cbfd248e8f1e826766c3aa2c355789306567e13075cde44d9bec46a978540a63"
+    },
+    "cpu-driver/source/tools/serve_retention/test_retention.py": {
+      "bytes": 15133,
+      "sha256": "d2feb2454236542ba0041281670bfafd15f45c702c7ac9a673a0457771f070bd"
+    },
+    "cpu-driver/source/tools/serve_retention/test_stage.py": {
+      "bytes": 1901,
+      "sha256": "a4b406c17cd0538ff5bea031f62a86737e9a608e6b84326249195abc751ad717"
+    },
+    "cpu-driver/source/tools/serve_service/acceptance.py": {
+      "bytes": 27400,
+      "sha256": "a0d52e8c055c6afc1478ee5f65e93daa563c6143e79f529a92d0e73723488cf7"
+    },
+    "cpu-driver/source/tools/serve_service/backend.py": {
+      "bytes": 1853,
+      "sha256": "2845329d81c3a9ea4f7223432daa1e865a414a305fe0419d2ca934d137463112"
+    },
+    "cpu-driver/source/tools/serve_service/controller_exec.py": {
+      "bytes": 1298,
+      "sha256": "7f37aa2881f2a5e174fee3583d39590c14356f12edfed307eae8718e9643e380"
+    },
+    "cpu-driver/source/tools/serve_service/inspection.py": {
+      "bytes": 15056,
+      "sha256": "d07c52c5fadc34e8d22348f3f89f4a7f3617c5fa83d477222a51ba1a3b95868a"
+    },
+    "cpu-driver/source/tools/serve_service/memory.py": {
+      "bytes": 6019,
+      "sha256": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145"
+    },
+    "cpu-driver/source/tools/serve_service/package.py": {
+      "bytes": 11873,
+      "sha256": "91873fbc4bdf4f8b01d1b2398e661d61585aee9b96cec6cedd59f6392c0b3c33"
+    },
+    "cpu-driver/source/tools/serve_service/resources.py": {
+      "bytes": 14151,
+      "sha256": "31da926fea3e5da1273b6130328cd68cfeb2d7d04c760db9a5ae827035553af1"
+    },
+    "cpu-driver/source/tools/serve_service/service.py": {
+      "bytes": 11419,
+      "sha256": "621a7adaacfa8e38059e06c0868bbb758f3d2857b35eeb6a0908cb6337b755e6"
+    },
+    "cpu-driver/source/tools/serve_service/supervisor.py": {
+      "bytes": 14077,
+      "sha256": "b0587c89a36f3789a6b8cee74f3571df5756f22758817ae56e7b3d64c4e69108"
+    },
+    "cpu-driver/source/tools/serve_service/test_acceptance.py": {
+      "bytes": 6513,
+      "sha256": "9305521b0aff9d6329e84224e5c8527160c635ddfdb902f135bfd0de86e78797"
+    },
+    "cpu-driver/source/tools/serve_service/test_service.py": {
+      "bytes": 28358,
+      "sha256": "eabe6f3836971d590a897bdc733146bf15d86044b9a5122192480eb9abe5a1bd"
+    },
+    "cpu-driver/tests.log": {
+      "bytes": 1747,
+      "sha256": "b4f92e3bcae9ba244315a1219b3f7a37211aa6fae132eff7998b0762da401f10"
+    },
+    "cpu-driver-fix/result.json": {
+      "bytes": 7485,
+      "sha256": "e0222830c18a59c133d45516cdf0aa9f3de643e8fb8896b8abf066e6d626e218"
+    },
+    "cpu-driver-fix/source/docs/MODEL.md": {
+      "bytes": 14620,
+      "sha256": "7409269429d9e61ac6f560e829acd0613906d29e03e902c84af3a8db2d17a97c"
+    },
+    "cpu-driver-fix/source/docs/SERVE_GATEWAY_2026-11-03.md": {
+      "bytes": 5242,
+      "sha256": "a471abd14595a298a31a9975ea1ca81aea7b8cec953dde94c4d0e8a36b678d4a"
+    },
+    "cpu-driver-fix/source/docs/SERVE_MANAGED_SERVICE_GPU_2026-11-03.md": {
+      "bytes": 4614,
+      "sha256": "fd2dd8ad086dbcbd961a76eb12189dcb33beb4a0c49a0feca9986e57a944c547"
+    },
+    "cpu-driver-fix/source/docs/SERVE_RETENTION_2026-11-04.md": {
+      "bytes": 4413,
+      "sha256": "fa11e5ba8b3e3ed9833fa1bde95b913fbe69fa635874a10704c07b2816569103"
+    },
+    "cpu-driver-fix/source/docs/SERVE_TLS_LIFECYCLE_2026-11-04.md": {
+      "bytes": 3441,
+      "sha256": "87c47fcb811f11866cca3a67904199aa378a13dfdb7ada52e3c942fbbd05a0b5"
+    },
+    "cpu-driver-fix/source/docs/serve-openapi-v1.json": {
+      "bytes": 26775,
+      "sha256": "6ace0ec55ddcc358b16b453980bfa6536a4e63fdd7edb566d8b952bdcf0168d7"
+    },
+    "cpu-driver-fix/source/docs/serve-transport-v1.schema.json": {
+      "bytes": 4493,
+      "sha256": "47c9f9068a88ec1977788c892c90fe89dae43ec02e1e6e381d67707eaea1ec62"
+    },
+    "cpu-driver-fix/source/tools/evalscope/bounded_log.py": {
+      "bytes": 1784,
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb"
+    },
+    "cpu-driver-fix/source/tools/evalscope/gpu_exclusive.py": {
+      "bytes": 18395,
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2"
+    },
+    "cpu-driver-fix/source/tools/evalscope/nvml_process_query.py": {
+      "bytes": 7182,
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f"
+    },
+    "cpu-driver-fix/source/tools/examples/agent_tools_demo.py": {
+      "bytes": 7208,
+      "sha256": "acf6ee24c66d372d95ec08e672c2ec5dc423999890a537b9495a96ced4d89ca4"
+    },
+    "cpu-driver-fix/source/tools/examples/chat_client.py": {
+      "bytes": 28871,
+      "sha256": "a2613333395a511b7741d8ce5fac125ba44dd9ec92fa198aa90ef5f9ba662f32"
+    },
+    "cpu-driver-fix/source/tools/examples/project_query.py": {
+      "bytes": 6953,
+      "sha256": "dbf70665fef0d144d18fc0ef16b04029a7dd595664efe45b7de07579b3997206"
+    },
+    "cpu-driver-fix/source/tools/examples/project_records.py": {
+      "bytes": 8033,
+      "sha256": "abd47d37ddcbd482f147ef172ee01e4a8be3bfcb78f29f7156d00b0073eb8b3c"
+    },
+    "cpu-driver-fix/source/tools/examples/tool_recovery.py": {
+      "bytes": 12913,
+      "sha256": "e3fba1d9d028ff532c59e826b76e4434b64599a8b3c42b79d4ae0c1c59341f90"
+    },
+    "cpu-driver-fix/source/tools/project_tasks/backup.py": {
+      "bytes": 31671,
+      "sha256": "fe06d9a995396d9393b24dd13f31e25910634eceedc5309b6227818c34b0aae0"
+    },
+    "cpu-driver-fix/source/tools/project_tasks/budget.py": {
+      "bytes": 4517,
+      "sha256": "7328c9524eac3257a1b841089d9889975915d96b487d7886196106b560dc0412"
+    },
+    "cpu-driver-fix/source/tools/project_tasks/compatible_runtimes.json": {
+      "bytes": 8021,
+      "sha256": "7edafd4458a56d6dd53ea65d6042a591d5a4011a1d509874b6d510830039608c"
+    },
+    "cpu-driver-fix/source/tools/project_tasks/engine.py": {
+      "bytes": 24979,
+      "sha256": "d39536af1224422cbefa558f351c6e0874e34ed13e6515db192de537c95203e5"
+    },
+    "cpu-driver-fix/source/tools/project_tasks/errors.py": {
+      "bytes": 8942,
+      "sha256": "47fa079bdea97f280bd4acda0367907e73aca4f313c1daffd8f8b5f90adf08a9"
+    },
+    "cpu-driver-fix/source/tools/project_tasks/migration.py": {
+      "bytes": 8164,
+      "sha256": "dffc969621ce149c8df387f972e32f80fe4da0c031d1b62dc8b8474dc2d7101b"
+    },
+    "cpu-driver-fix/source/tools/project_tasks/retention.py": {
+      "bytes": 30982,
+      "sha256": "a7ab459314ef0202ff278772ecf0ad9ba65253289e935e1a053467ccfb78d64b"
+    },
+    "cpu-driver-fix/source/tools/project_tasks/runner.py": {
+      "bytes": 7748,
+      "sha256": "b5e5dfed3e9f1f41c66f7f15218220b24c108ffbfa664997c32852cb1e8677f4"
+    },
+    "cpu-driver-fix/source/tools/project_tasks/store.py": {
+      "bytes": 11289,
+      "sha256": "eee1356e67ab93b59860f679050cd77ddea13d49588fefc2e25099fb2d33f99a"
+    },
+    "cpu-driver-fix/source/tools/project_tasks/transport.py": {
+      "bytes": 8224,
+      "sha256": "fb75b3c2b7f7f27c7c5ab0b8f9f1f9f7db1dd690fc349fcf0831769f39b6f18f"
+    },
+    "cpu-driver-fix/source/tools/release/release.py": {
+      "bytes": 20261,
+      "sha256": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab"
+    },
+    "cpu-driver-fix/source/tools/serve_clients/test_packages.py": {
+      "bytes": 9577,
+      "sha256": "a5d11cc9d832a60f2ebc7bf5e6c496da1af6475c7ab11c3271f2b570cc44faf1"
+    },
+    "cpu-driver-fix/source/tools/serve_gateway/acceptance.py": {
+      "bytes": 19672,
+      "sha256": "41d8e5360fbbe24263f16f58f7421c3b246cd0554879322fdcdc7f1ffec16a40"
+    },
+    "cpu-driver-fix/source/tools/serve_gateway/client_policy.py": {
+      "bytes": 3923,
+      "sha256": "ab0256ee376ae62373fd1e89b18ca79d9490295aa1607795b209c5e5bdee6c1c"
+    },
+    "cpu-driver-fix/source/tools/serve_gateway/cpu.py": {
+      "bytes": 1621,
+      "sha256": "f41bc73b3d764877f75f8ef8aa45166aaae0f2b7d1f3b85843de5c1444121c30"
+    },
+    "cpu-driver-fix/source/tools/serve_gateway/exec_gateway.py": {
+      "bytes": 894,
+      "sha256": "43306fd807dc95b5277917418deed62b51cf77b78852e5a17bd3da59234d7fce"
+    },
+    "cpu-driver-fix/source/tools/serve_gateway/gateway.py": {
+      "bytes": 21623,
+      "sha256": "9d8a9979de3f22d4bab7f03da02b0cd324f301532c83bd526f80e314279ecba7"
+    },
+    "cpu-driver-fix/source/tools/serve_gateway/managed.py": {
+      "bytes": 20075,
+      "sha256": "1d50c3e5bd4f782627c60ddd0b77b839ea32cc1c54a3252ae07d35f71e732070"
+    },
+    "cpu-driver-fix/source/tools/serve_gateway/managed_child.py": {
+      "bytes": 1484,
+      "sha256": "b976d0180035bab72e7049c5fb60cdab5a63074f4869bb628403bef483002eea"
+    },
+    "cpu-driver-fix/source/tools/serve_gateway/test_gateway.py": {
+      "bytes": 8608,
+      "sha256": "6a2c07bda4fe7e68aae0ab730d20828a1e8df2234b534c3d8b35db331247bfca"
+    },
+    "cpu-driver-fix/source/tools/serve_gateway/test_managed.py": {
+      "bytes": 14752,
+      "sha256": "7e7fd528ed1548a288067b3aa13caa4258b33c4fcfb4f2fedead25d0fd79e915"
+    },
+    "cpu-driver-fix/source/tools/serve_gateway/test_tls.py": {
+      "bytes": 9128,
+      "sha256": "34f7a29d017ec19fc56db89d1748b7afc297089c7f34781d6519c06f17dd66db"
+    },
+    "cpu-driver-fix/source/tools/serve_gateway/tls.py": {
+      "bytes": 6972,
+      "sha256": "cca002a24c6731ec5f8a08b7d4c3e1a4e61cd10a8e4bac7224fc68fda88e183a"
+    },
+    "cpu-driver-fix/source/tools/serve_gateway/tls_cpu.py": {
+      "bytes": 1941,
+      "sha256": "b50a769680fd47d53071020ec9896332c33a5fe6506d02c02eac7a32dbf851e6"
+    },
+    "cpu-driver-fix/source/tools/serve_gateway/tls_driver_cpu.py": {
+      "bytes": 4316,
+      "sha256": "d74b959373839dffb9dcb5ab39e6c2358a6ffea4d50d42d632331b93e4bfcb02"
+    },
+    "cpu-driver-fix/source/tools/serve_gateway/tls_driver_fix.py": {
+      "bytes": 1300,
+      "sha256": "59ad3cb7fed4136d6dc4ea3692d0e5ea79560496705cc8abd050aff8b3564a18"
+    },
+    "cpu-driver-fix/source/tools/serve_gateway/tls_fixture.py": {
+      "bytes": 2331,
+      "sha256": "4d863066b20c14142f31aef4ebc864a12fe3e518e8071255efe7233f736fb6e4"
+    },
+    "cpu-driver-fix/source/tools/serve_gateway/tls_report.py": {
+      "bytes": 14273,
+      "sha256": "35ca0c275aee260ef6a5f74fb9f744c7f80ce97ff2636b3c7a12231dea8aa308"
+    },
+    "cpu-driver-fix/source/tools/serve_gateway/tls_stage.py": {
+      "bytes": 16167,
+      "sha256": "c9c66cef671e0f14988e621d881e53e8bbb3486ccfd385f5ed7ee22385e5c8c8"
+    },
+    "cpu-driver-fix/source/tools/serve_gateway/transport_tests.py": {
+      "bytes": 15425,
+      "sha256": "2ce03405123863eb77125685ca2021e66d531a8cdf74b93a59dcc1c5dc0719ee"
+    },
+    "cpu-driver-fix/source/tools/serve_host/report.py": {
+      "bytes": 22056,
+      "sha256": "8470fde645dff147bc84a459167a4d54261daf76e281b13b88a4d5479ceeae5b"
+    },
+    "cpu-driver-fix/source/tools/serve_ops/contracts.py": {
+      "bytes": 11582,
+      "sha256": "709aaf35b476225f42d7c64bcee2ffd55f48a310bb01b939785a2006eb340816"
+    },
+    "cpu-driver-fix/source/tools/serve_ops/identity.py": {
+      "bytes": 4202,
+      "sha256": "1b80467eba0fe84397155d29a62d8ace363aea32b85c58f4ffce5412bc74aa3a"
+    },
+    "cpu-driver-fix/source/tools/serve_ops/transport.py": {
+      "bytes": 4609,
+      "sha256": "5885dab1835afa07c4a4c871726548fad95cb7888b4af29f8835e7d98d6d806b"
+    },
+    "cpu-driver-fix/source/tools/serve_retention/cpu.py": {
+      "bytes": 5654,
+      "sha256": "a343913063ef6df660aeba0f9b10691042bc2d9a44d4c0c92572f773ca92d80f"
+    },
+    "cpu-driver-fix/source/tools/serve_retention/exec_managed.py": {
+      "bytes": 999,
+      "sha256": "d8b94c267ef7466b6a97d548e4d956af727909aabfb0edb06f26aa3097ee4ce3"
+    },
+    "cpu-driver-fix/source/tools/serve_retention/runner.py": {
+      "bytes": 12484,
+      "sha256": "cd10b53ff08624b81f8cef702a3366113034b3083163fd5d3ea0056dd587f164"
+    },
+    "cpu-driver-fix/source/tools/serve_retention/stage.py": {
+      "bytes": 16414,
+      "sha256": "d5bbce69c112637e6db9afcb636c4a1c031625a8dc2a4a2b829b4d21f654e6cf"
+    },
+    "cpu-driver-fix/source/tools/serve_retention/store.py": {
+      "bytes": 17147,
+      "sha256": "cbfd248e8f1e826766c3aa2c355789306567e13075cde44d9bec46a978540a63"
+    },
+    "cpu-driver-fix/source/tools/serve_retention/test_retention.py": {
+      "bytes": 15133,
+      "sha256": "d2feb2454236542ba0041281670bfafd15f45c702c7ac9a673a0457771f070bd"
+    },
+    "cpu-driver-fix/source/tools/serve_retention/test_stage.py": {
+      "bytes": 1901,
+      "sha256": "a4b406c17cd0538ff5bea031f62a86737e9a608e6b84326249195abc751ad717"
+    },
+    "cpu-driver-fix/source/tools/serve_service/acceptance.py": {
+      "bytes": 27400,
+      "sha256": "a0d52e8c055c6afc1478ee5f65e93daa563c6143e79f529a92d0e73723488cf7"
+    },
+    "cpu-driver-fix/source/tools/serve_service/backend.py": {
+      "bytes": 1853,
+      "sha256": "2845329d81c3a9ea4f7223432daa1e865a414a305fe0419d2ca934d137463112"
+    },
+    "cpu-driver-fix/source/tools/serve_service/controller_exec.py": {
+      "bytes": 1298,
+      "sha256": "7f37aa2881f2a5e174fee3583d39590c14356f12edfed307eae8718e9643e380"
+    },
+    "cpu-driver-fix/source/tools/serve_service/inspection.py": {
+      "bytes": 15056,
+      "sha256": "d07c52c5fadc34e8d22348f3f89f4a7f3617c5fa83d477222a51ba1a3b95868a"
+    },
+    "cpu-driver-fix/source/tools/serve_service/memory.py": {
+      "bytes": 6019,
+      "sha256": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145"
+    },
+    "cpu-driver-fix/source/tools/serve_service/package.py": {
+      "bytes": 11873,
+      "sha256": "91873fbc4bdf4f8b01d1b2398e661d61585aee9b96cec6cedd59f6392c0b3c33"
+    },
+    "cpu-driver-fix/source/tools/serve_service/resources.py": {
+      "bytes": 14151,
+      "sha256": "31da926fea3e5da1273b6130328cd68cfeb2d7d04c760db9a5ae827035553af1"
+    },
+    "cpu-driver-fix/source/tools/serve_service/service.py": {
+      "bytes": 11419,
+      "sha256": "621a7adaacfa8e38059e06c0868bbb758f3d2857b35eeb6a0908cb6337b755e6"
+    },
+    "cpu-driver-fix/source/tools/serve_service/supervisor.py": {
+      "bytes": 14077,
+      "sha256": "b0587c89a36f3789a6b8cee74f3571df5756f22758817ae56e7b3d64c4e69108"
+    },
+    "cpu-driver-fix/source/tools/serve_service/test_acceptance.py": {
+      "bytes": 6513,
+      "sha256": "9305521b0aff9d6329e84224e5c8527160c635ddfdb902f135bfd0de86e78797"
+    },
+    "cpu-driver-fix/source/tools/serve_service/test_service.py": {
+      "bytes": 28358,
+      "sha256": "eabe6f3836971d590a897bdc733146bf15d86044b9a5122192480eb9abe5a1bd"
+    },
+    "cpu-driver-fix/tests.log": {
+      "bytes": 286,
+      "sha256": "b7c57106bc7c0dbb4b99b6e528591ccac33891a5606b4a2c2a4468ea9cadfd7a"
+    },
+    "execution/alpha-completed.json": {
+      "bytes": 1615,
+      "sha256": "39ea253f49c304453d09773d35ae40c00e771d65e51e0523c66885ad42f3de4d"
+    },
+    "execution/alpha-ledger.json": {
+      "bytes": 36003,
+      "sha256": "125894d502442906c41f2d1ec16564f1fcd01c8b572528ffee35af0397f4e6aa"
+    },
+    "execution/backend-ownership.json": {
+      "bytes": 1439,
+      "sha256": "60ec000bfb5452c3970efe1fe3d7e9965a84855c958540ce5aa307213f0e6c98"
+    },
+    "execution/backend-stop.json": {
+      "bytes": 447,
+      "sha256": "5328e00be828fc2c11835b4f9bd087bd744a0e2ee8c71fa603e43659e52d4d52"
+    },
+    "execution/backend-wrapper.log": {
+      "bytes": 258,
+      "sha256": "91a0609f64fdcbf029db0d46afd738d7004dafe345fde8fa46132daa40ccd6be"
+    },
+    "execution/begin.json": {
+      "bytes": 74,
+      "sha256": "58004877a3c31eb3123a85e08398cc39a8adff8ea6aa2bc3859e1a1bd712e904"
+    },
+    "execution/beta-completed.json": {
+      "bytes": 1612,
+      "sha256": "4da751ed800fdb0c6fc576dc3e6cf98ac27dd0dd89609b5bcd6c559006cb8c03"
+    },
+    "execution/beta-ledger.json": {
+      "bytes": 35989,
+      "sha256": "b1710ffa72bcaf6a25624e86d89ae3ad692b776ce828cc4e4450f0bb4ff2d5e6"
+    },
+    "execution/counts.json": {
+      "bytes": 58,
+      "sha256": "825843e6936782f4a5c89212c0e789632477849e55f1bb57926433d4ff7be3bd"
+    },
+    "execution/final-idle-00.json": {
+      "bytes": 30582,
+      "sha256": "467d21a790cb0a8788c1c204018aa13b71478d554da7b540fbd1736568c54650"
+    },
+    "execution/final-metrics.json": {
+      "bytes": 5377,
+      "sha256": "75b669c3fd0488f469ba462951b03b1ec9ba5f2b6fbbcc7f49516490d41af893"
+    },
+    "execution/front-1-gone.json": {
+      "bytes": 749,
+      "sha256": "a3903de56387eb320289002bee11f7380a873449a8bea9bfd6667b00807015ac"
+    },
+    "execution/front-1-ready.json": {
+      "bytes": 3294,
+      "sha256": "0932d27021834b247a17b9494ba4a886b9b8e6436dce9e41a4ab45e1ffc85f71"
+    },
+    "execution/front-1-stop.json": {
+      "bytes": 447,
+      "sha256": "550a549b39808cc1d2c34263ec3e87dd05377244d4cb425e4221731fae336128"
+    },
+    "execution/front-1-tls.json": {
+      "bytes": 344,
+      "sha256": "23e8dce639996c83b47ee604de14daf16db728d1338d82afe66893ef5a14a256"
+    },
+    "execution/front-1-wrapper.log": {
+      "bytes": 258,
+      "sha256": "9b37f56f2dd794ac37c9888441eb12fb8bea1866521b53d13abf4237348b9010"
+    },
+    "execution/front-2-gone.json": {
+      "bytes": 1124,
+      "sha256": "d8be9c0ababea032f21422640c79dc5760e5caa56cd67f0683cc33b33447e2d2"
+    },
+    "execution/front-2-ready.json": {
+      "bytes": 3295,
+      "sha256": "a1abaa3dc9cc64468459d832a67b76fc616eb8420377714643885bb2e3c1d77a"
+    },
+    "execution/front-2-stop.json": {
+      "bytes": 447,
+      "sha256": "f2c02d5b7c3ba818e794c1cbe1375716077d23a64a124e3030b567813099cf21"
+    },
+    "execution/front-2-tls.json": {
+      "bytes": 344,
+      "sha256": "5a0230d6a4c3d991620dd3ffbbcd5031ace5a315c964eba52a299ad93f759e1a"
+    },
+    "execution/front-2-wrapper.log": {
+      "bytes": 258,
+      "sha256": "b1ec43fc3bbae7a5c5319ed45374b4633809f4c7a28576afcc2f9b70aca575af"
+    },
+    "execution/gpu-before.json": {
+      "bytes": 2256,
+      "sha256": "0d4b7e5d04ffae3e4a87b4eb6bf1ca2c39848d7fc2acf77be8ddd3aecf4e596b"
+    },
+    "execution/gpu-final.json": {
+      "bytes": 2255,
+      "sha256": "62440af4ae4891f5e9626b483f7a99c91a1706d87bf99bc2455f5b444c2b9bfb"
+    },
+    "execution/guard-archive.json": {
+      "bytes": 93,
+      "sha256": "41877a754751cb37121e8ff8cb89e6935ee2a2c94269cb05627f1dbdfa2fa196"
+    },
+    "execution/initial-idle-00.json": {
+      "bytes": 30578,
+      "sha256": "f7a289a48908d2c9d1f08a0bffd1d99d0ec36febfaf31e33a4f39b6276126342"
+    },
+    "execution/renewal.json": {
+      "bytes": 376,
+      "sha256": "1e37792ff8c79ef9d6b7dfd4b67a511f8246905cf0593df3fe2a44187dd4ee9f"
+    },
+    "execution/result.json": {
+      "bytes": 345,
+      "sha256": "e880fa10ed0e041edbded9dc5d439bd90bd8dfdfaae0c7b824678aae1a653ffe"
+    },
+    "execution/status-snapshots.jsonl": {
+      "bytes": 20713,
+      "sha256": "bce9691395634215bd6bec587d409a47bf6b2eefd36df3eade68bab43d54eef0"
+    },
+    "gateway-1/gateway/certificate.pem": {
+      "bytes": 1259,
+      "sha256": "729fc510e0d99e85861b7c415e98ba799646cded1bf9f9c3b1551fd075f17894"
+    },
+    "gateway-1/gateway/manifest.json": {
+      "bytes": 2679,
+      "sha256": "9028c621c874e40a46f3729d55510df7122557810a5a33df9925296550eee8a3"
+    },
+    "gateway-1/gateway/trusted-ca.pem": {
+      "bytes": 538,
+      "sha256": "7b36048ba9a98210783304eadc4a458bd97513273fbea4be0256490ed35a8cfe"
+    },
+    "gateway-1/manifest.json": {
+      "bytes": 2878,
+      "sha256": "8a8c0849dc665e98720c8db630ca2a43ad1d11c715e7c6cfd38786d96df11c02"
+    },
+    "gateway-2/gateway/certificate.pem": {
+      "bytes": 1259,
+      "sha256": "e19f985480431725f06c2a2b5ec5c27b3975475eecb2ff2f22c8dcfa47f49fbc"
+    },
+    "gateway-2/gateway/manifest.json": {
+      "bytes": 2679,
+      "sha256": "cfa93b8c7c8c85594cf6fe8f5aebe824af1db390516642ab95e1c5572dc881e2"
+    },
+    "gateway-2/gateway/trusted-ca.pem": {
+      "bytes": 538,
+      "sha256": "7b36048ba9a98210783304eadc4a458bd97513273fbea4be0256490ed35a8cfe"
+    },
+    "gateway-2/manifest.json": {
+      "bytes": 2878,
+      "sha256": "1ae1e52812be033fbb5480bacd7c77858886c5a63a5a18048592bdfbb9887657"
+    },
+    "live-command.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "old-entry.json": {
+      "bytes": 1274,
+      "sha256": "58d30ff5ce04655e1f94ab81ed86e60d99a5b17dfa0c565a9c77489cdb68c8ad"
+    },
+    "owned-generations/.lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "owned-generations/generations/g-032f421b1265bbfd43142619f330b846/.lease": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "owned-generations/generations/g-032f421b1265bbfd43142619f330b846/entry.py": {
+      "bytes": 999,
+      "sha256": "d8b94c267ef7466b6a97d548e4d956af727909aabfb0edb06f26aa3097ee4ce3"
+    },
+    "owned-generations/generations/g-032f421b1265bbfd43142619f330b846/launcher.json": {
+      "bytes": 919,
+      "sha256": "683cc6c34e15635d0e89af171d7f8ed7868aa0c31df27d6f88d9a93b57e23f3e"
+    },
+    "owned-generations/generations/g-032f421b1265bbfd43142619f330b846/managed-owner.json": {
+      "bytes": 102,
+      "sha256": "ac52dea6399cbb23572759e82ef9a4ca07c0399dd06fd260d57534ed2d88289a"
+    },
+    "owned-generations/generations/g-032f421b1265bbfd43142619f330b846/reservation.json": {
+      "bytes": 1074,
+      "sha256": "2e15ac50740ee005340b01b85da8284d74bd30e7b23325c1c3a95ff9e52ccf65"
+    },
+    "owned-generations/generations/g-032f421b1265bbfd43142619f330b846/run/attempt-1.json": {
+      "bytes": 972,
+      "sha256": "7174bfff3d551afb342c44c1db39d4363edfd3405794116d6d268049963ade4b"
+    },
+    "owned-generations/generations/g-032f421b1265bbfd43142619f330b846/run/backend.log": {
+      "bytes": 15512,
+      "sha256": "f6a53bf8dcf3faeb9217eb7feced5e843e9bb8e79ee0890e91d05bb365316364"
+    },
+    "owned-generations/generations/g-032f421b1265bbfd43142619f330b846/run/controller.json": {
+      "bytes": 787,
+      "sha256": "282ba9fb8e2aeb4469c8275b347659a78403853f49bf54c3c7e4f238fdd21d1c"
+    },
+    "owned-generations/generations/g-032f421b1265bbfd43142619f330b846/run/events.log": {
+      "bytes": 122,
+      "sha256": "55b3aee5385027a947d84835efcfbad1d79c5d1180cdb79a5278b284e5fba06f"
+    },
+    "owned-generations/generations/g-032f421b1265bbfd43142619f330b846/run/lease/events.jsonl": {
+      "bytes": 11507,
+      "sha256": "e169214d8ac8c75fde9ac5416880b06957424e957b402a64b4e96e9e44694674"
+    },
+    "owned-generations/generations/g-032f421b1265bbfd43142619f330b846/run/lease/exit.json": {
+      "bytes": 979,
+      "sha256": "2c9757063b22e32e8b7ff3d9ba0ccd3db53d8c3981e207b138a429e2c4aefff2"
+    },
+    "owned-generations/generations/g-032f421b1265bbfd43142619f330b846/run/lease/nvml-queries.jsonl": {
+      "bytes": 138997,
+      "sha256": "b9c98393de500d044fa9e7e6870ce236976d6cb548bee0eb5589db4a70594975"
+    },
+    "owned-generations/generations/g-032f421b1265bbfd43142619f330b846/run/resource-backend-2605664.json": {
+      "bytes": 647,
+      "sha256": "b3fb839343bea2e53d3d1e9851057e542793c9d821c3e0f4fa90cfdbe48e1a65"
+    },
+    "owned-generations/generations/g-032f421b1265bbfd43142619f330b846/run/resource-intent.json": {
+      "bytes": 556,
+      "sha256": "b60b7b8c67d5c7f816b177cc7d7ede6ae873c6f8147aeb6b6511806a1cb8e03c"
+    },
+    "owned-generations/generations/g-032f421b1265bbfd43142619f330b846/run/resources-final.json": {
+      "bytes": 1674,
+      "sha256": "049230ec9e342275fda729b86eaa182b7d5836451ae3d32a60d7dece563d639a"
+    },
+    "owned-generations/generations/g-032f421b1265bbfd43142619f330b846/run/resources.json": {
+      "bytes": 883,
+      "sha256": "c8680ae3a11001d00310eb2924aa80791a6fb176c1512e6239336ad373d2c4d3"
+    },
+    "owned-generations/generations/g-032f421b1265bbfd43142619f330b846/run/status.json": {
+      "bytes": 9015,
+      "sha256": "951c19f58ee56ed0bf04bd1b302aa9b853eea7ede72a1cd07b0dd3a01217994b"
+    },
+    "owned-generations/generations/g-032f421b1265bbfd43142619f330b846/run/stop.request.json": {
+      "bytes": 69,
+      "sha256": "16e7f3cc94c6d81644a6c414758566b04f34b0c5fb0d16e4148ae46c1eb88bea"
+    },
+    "owned-generations/generations/g-032f421b1265bbfd43142619f330b846/run/terminal.json": {
+      "bytes": 10802,
+      "sha256": "3727148302c064455f230f1d9458406c56e7a2c78d3be9ba22bd194307c94561"
+    },
+    "owned-generations/generations/g-032f421b1265bbfd43142619f330b846/seal.json": {
+      "bytes": 6867,
+      "sha256": "46c25c17ffa3b3a94d068b18dfd574b797ba62d8fe00b4b02ed65077ecd774e8"
+    },
+    "owned-generations/generations/g-032f421b1265bbfd43142619f330b846/stop-response.json": {
+      "bytes": 140,
+      "sha256": "9cdd74ad55c9793b7ed3aebda8a32181e955829980ad3577e27010ad1713afe2"
+    },
+    "owned-generations/generations/g-032f421b1265bbfd43142619f330b846/stop.request.json": {
+      "bytes": 69,
+      "sha256": "be1a493cf361550890b616e1c7c9021ad6b7adbe5e918f3856554a9b2de001a0"
+    },
+    "owned-generations/generations/g-032f421b1265bbfd43142619f330b846/wrapper-terminal.json": {
+      "bytes": 254,
+      "sha256": "9fe723b7d400ab4741612cf01512824c691aec46b8d8b80ac06451c254613d50"
+    },
+    "owned-generations/generations/g-e5b6751c273450836fcd4c0920d8406c/.lease": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "owned-generations/generations/g-e5b6751c273450836fcd4c0920d8406c/entry.py": {
+      "bytes": 999,
+      "sha256": "d8b94c267ef7466b6a97d548e4d956af727909aabfb0edb06f26aa3097ee4ce3"
+    },
+    "owned-generations/generations/g-e5b6751c273450836fcd4c0920d8406c/launcher.json": {
+      "bytes": 1076,
+      "sha256": "11e1cd6faf883950de0a1804de87ef912687a37670f63cef7fe9ef5c4f559fce"
+    },
+    "owned-generations/generations/g-e5b6751c273450836fcd4c0920d8406c/managed-owner.json": {
+      "bytes": 102,
+      "sha256": "7239982fd0d0c8f5145b8539d0e847e97a8a53c11610d8a3a31510333410700d"
+    },
+    "owned-generations/generations/g-e5b6751c273450836fcd4c0920d8406c/reservation.json": {
+      "bytes": 1199,
+      "sha256": "da5066c863fe70dcc9d38f80726e31e806052fc5d7cbe54acc47987b554725b6"
+    },
+    "owned-generations/generations/g-e5b6751c273450836fcd4c0920d8406c/run/controller.json": {
+      "bytes": 1621,
+      "sha256": "9432bf75ba0e946ed89b8ddec79b60d55053f039e86fc902ab2ab39fee849ead"
+    },
+    "owned-generations/generations/g-e5b6751c273450836fcd4c0920d8406c/run/events.log": {
+      "bytes": 451,
+      "sha256": "c1d623447c81bd7512d42485a43ab16a1d7ce94087e5182717a832eef6f06639"
+    },
+    "owned-generations/generations/g-e5b6751c273450836fcd4c0920d8406c/run/gateway.log": {
+      "bytes": 984,
+      "sha256": "079cc3518cb04a996521f255605b13ed941e8615a48763f8fd995d309c62ad93"
+    },
+    "owned-generations/generations/g-e5b6751c273450836fcd4c0920d8406c/run/status.json": {
+      "bytes": 1200,
+      "sha256": "9c7fb295af41a94c461fb6cd857af8a7e19e50f1fbcbe8eb13c4c6ece7d99c14"
+    },
+    "owned-generations/generations/g-e5b6751c273450836fcd4c0920d8406c/run/stop.request.json": {
+      "bytes": 62,
+      "sha256": "20f9cad67be8762d5f3e9b0769331d9d6262026b60722cae83ceba71bbb34c1b"
+    },
+    "owned-generations/generations/g-e5b6751c273450836fcd4c0920d8406c/run/terminal.json": {
+      "bytes": 1313,
+      "sha256": "64cd3bac1deb5d9f87036ea5b13e29f884d6e9d0587cd725bd140e56601c6f20"
+    },
+    "owned-generations/generations/g-e5b6751c273450836fcd4c0920d8406c/seal.json": {
+      "bytes": 4582,
+      "sha256": "112bbfe36cef0d5cab2dd5a95caa4977c82764c7e29eb839a8f8a2a34fc92935"
+    },
+    "owned-generations/generations/g-e5b6751c273450836fcd4c0920d8406c/stop-response.json": {
+      "bytes": 140,
+      "sha256": "9cdd74ad55c9793b7ed3aebda8a32181e955829980ad3577e27010ad1713afe2"
+    },
+    "owned-generations/generations/g-e5b6751c273450836fcd4c0920d8406c/stop.request.json": {
+      "bytes": 70,
+      "sha256": "27ae20238cd4e4c61f4e4b498682e6f140a27cafa252bfe8de3698b80a3756e9"
+    },
+    "owned-generations/generations/g-e5b6751c273450836fcd4c0920d8406c/wrapper-terminal.json": {
+      "bytes": 254,
+      "sha256": "b9d88ac5f6c1d1b20e8ffbc87af9877fde2def224bac8e62cfad39bb524e306e"
+    },
+    "owned-generations/generations/g-f98843fece651d5ada7dc281936a104b/.lease": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "owned-generations/generations/g-f98843fece651d5ada7dc281936a104b/entry.py": {
+      "bytes": 999,
+      "sha256": "d8b94c267ef7466b6a97d548e4d956af727909aabfb0edb06f26aa3097ee4ce3"
+    },
+    "owned-generations/generations/g-f98843fece651d5ada7dc281936a104b/launcher.json": {
+      "bytes": 1075,
+      "sha256": "e56f9427172f9da666835b3cafb6a1c8c16cab7568319508717db2c414b75de2"
+    },
+    "owned-generations/generations/g-f98843fece651d5ada7dc281936a104b/managed-owner.json": {
+      "bytes": 102,
+      "sha256": "6c12527675c171c4666cbd88a058e6f2a7fd8d36b288e159e28ef92c63201ad0"
+    },
+    "owned-generations/generations/g-f98843fece651d5ada7dc281936a104b/reservation.json": {
+      "bytes": 1199,
+      "sha256": "bf555c99a3f899e900d2ff5a455014234c6b658b7ea47cc32acf4f5e64d24ca5"
+    },
+    "owned-generations/generations/g-f98843fece651d5ada7dc281936a104b/run/controller.json": {
+      "bytes": 1621,
+      "sha256": "90f8ac7405639132c0eeff29e03354f9a3daab6d897cf67719c28cd5d2282fec"
+    },
+    "owned-generations/generations/g-f98843fece651d5ada7dc281936a104b/run/events.log": {
+      "bytes": 452,
+      "sha256": "71ac239f799301a5179a64c150a23f8371d5ba162cfa0e63ad1e1d74c3905479"
+    },
+    "owned-generations/generations/g-f98843fece651d5ada7dc281936a104b/run/gateway.log": {
+      "bytes": 989,
+      "sha256": "89f73c95c28a5f3b8a7cd7433ad8b77bc922cb923a9097b433c482548089a9a8"
+    },
+    "owned-generations/generations/g-f98843fece651d5ada7dc281936a104b/run/status.json": {
+      "bytes": 1201,
+      "sha256": "5b5d73fd1ab94b68aa5282c6db42616acec53b70e27b2b0b25f658791151bbbd"
+    },
+    "owned-generations/generations/g-f98843fece651d5ada7dc281936a104b/run/stop.request.json": {
+      "bytes": 63,
+      "sha256": "62a436c0138686618f2364179b3003a5f785a58275c149b037addac5e225bfa4"
+    },
+    "owned-generations/generations/g-f98843fece651d5ada7dc281936a104b/run/terminal.json": {
+      "bytes": 1313,
+      "sha256": "892d42bedcb715d9c24baa07d6bb8925e03b904849aacca5393823f54bb89ad7"
+    },
+    "owned-generations/generations/g-f98843fece651d5ada7dc281936a104b/seal.json": {
+      "bytes": 4583,
+      "sha256": "16ea9b9c957c87e47f307d6032a688ac355ab3d376b0fc6efc480c5b132250ca"
+    },
+    "owned-generations/generations/g-f98843fece651d5ada7dc281936a104b/stop-response.json": {
+      "bytes": 140,
+      "sha256": "9cdd74ad55c9793b7ed3aebda8a32181e955829980ad3577e27010ad1713afe2"
+    },
+    "owned-generations/generations/g-f98843fece651d5ada7dc281936a104b/stop.request.json": {
+      "bytes": 70,
+      "sha256": "bb77c9a4b58ce350f5a5fb204206396635c2b85d6dca866fad6930f7ca650933"
+    },
+    "owned-generations/generations/g-f98843fece651d5ada7dc281936a104b/wrapper-terminal.json": {
+      "bytes": 254,
+      "sha256": "2251ce8cc0e34825ee8f626241bcaff700d5f3a1a023f04f63c6dc70de22f936"
+    },
+    "owned-generations/store.json": {
+      "bytes": 467,
+      "sha256": "587f4da7eb963e2d259562e704c3ff721bbd771a7fbbce82f36c9bf2c1a64af7"
+    },
+    "plan.json": {
+      "bytes": 13384,
+      "sha256": "5aaa2adc9254dc1bd749242b382c650b5156933e6351fcfd4c6bda05073cd83e"
+    },
+    "postflight/containers.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "postflight/gpu.json": {
+      "bytes": 2257,
+      "sha256": "d305b1d01b3777d1eafc9d67c67c32f91e647a95a7a27b044624268843953af1"
+    },
+    "postflight/result.json": {
+      "bytes": 26777,
+      "sha256": "9352289e800dc5db598a7d13946000bc8a429e538ebefaac610d98330b508ea0"
+    },
+    "postflight/soar-unit.txt": {
+      "bytes": 62,
+      "sha256": "a7113c47c735ee2a1776daa03c674d2c25174779048ccbe8a72862923a0b9efa"
+    },
+    "preflight-gpu.json": {
+      "bytes": 2258,
+      "sha256": "14b7587325234537e72509f0464ef55770daf495e6d2bafa8c8e5f71123c4650"
+    },
+    "tasks/.lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tasks/store.json": {
+      "bytes": 180,
+      "sha256": "22e6a928098e4a9af7e8f925c0adb030c805b0b31a910386461deb53a66912c0"
+    },
+    "tasks/tasks/158ed6a7daefc62cc51efc8ebf8993829317869aad88bd5b55c3ebed51987158/.lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tasks/tasks/158ed6a7daefc62cc51efc8ebf8993829317869aad88bd5b55c3ebed51987158/check-001.bin": {
+      "bytes": 1053,
+      "sha256": "b1742e38ec49aaebed9a2e87b94025b7d9c6fd8df2d368107cd7e717d96d28c2"
+    },
+    "tasks/tasks/158ed6a7daefc62cc51efc8ebf8993829317869aad88bd5b55c3ebed51987158/check-002.bin": {
+      "bytes": 1053,
+      "sha256": "1f0025d2bfb945502fa9c6ec56b975f0a6c3eae7651993b7e42ffd812f04b2b6"
+    },
+    "tasks/tasks/158ed6a7daefc62cc51efc8ebf8993829317869aad88bd5b55c3ebed51987158/ledger.db": {
+      "bytes": 36864,
+      "sha256": "2b5b1d24fd9b06852ce5895a6a8052b0ecf9335acbb170eecd85e8b4ba3319bd"
+    },
+    "tasks/tasks/158ed6a7daefc62cc51efc8ebf8993829317869aad88bd5b55c3ebed51987158/wire-001.bin": {
+      "bytes": 1184,
+      "sha256": "06a48be7816b21110f88d13c68b31a31f3593043a1ac4f542049af384ddb47bb"
+    },
+    "tasks/tasks/158ed6a7daefc62cc51efc8ebf8993829317869aad88bd5b55c3ebed51987158/wire-002.bin": {
+      "bytes": 1137,
+      "sha256": "e34179412bc28b862935880b42777da5c61c155f10a30b36f9818c69701780de"
+    },
+    "tasks/tasks/9c1fcee0b969005f5cf3744ca9568d2bf0c0dd8c453c848443fc641e2ae6b45c/.lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tasks/tasks/9c1fcee0b969005f5cf3744ca9568d2bf0c0dd8c453c848443fc641e2ae6b45c/check-001.bin": {
+      "bytes": 1049,
+      "sha256": "8d87153a8f0ad31c5fb810b09ad79b8c5537c13949f5c50765b223e3b27ef675"
+    },
+    "tasks/tasks/9c1fcee0b969005f5cf3744ca9568d2bf0c0dd8c453c848443fc641e2ae6b45c/check-002.bin": {
+      "bytes": 1049,
+      "sha256": "ac74c17f285fdcf9f52996b995a31c59b16bcdad20e0c26d479bd179a20cbf23"
+    },
+    "tasks/tasks/9c1fcee0b969005f5cf3744ca9568d2bf0c0dd8c453c848443fc641e2ae6b45c/ledger.db": {
+      "bytes": 36864,
+      "sha256": "38a3a994a27b47c57fd13b8ba7f1a3ea81881749f2716ae15bfeff14bfa5fb82"
+    },
+    "tasks/tasks/9c1fcee0b969005f5cf3744ca9568d2bf0c0dd8c453c848443fc641e2ae6b45c/wire-001.bin": {
+      "bytes": 1184,
+      "sha256": "06eb3360a548b819f6316738adac64312cb13c58d25f4452441a08aa91e5c7a4"
+    },
+    "tasks/tasks/9c1fcee0b969005f5cf3744ca9568d2bf0c0dd8c453c848443fc641e2ae6b45c/wire-002.bin": {
+      "bytes": 1137,
+      "sha256": "e7abb01b65dc63f1a77cc209c5ea1b70563cb6008373d8305c5f1ca5ccf712f6"
+    },
+    "reconstruction/tools/serve_gateway/tls_report.py": {
+      "bytes": 14687,
+      "sha256": "f93b26172604b548450823594c854ac711f85f1454bd5b4a49c6f41ee55eb1a1"
+    }
+  },
+  "local_identities": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-host-envelope-20261104/backend-package/q4t": {
+      "bytes": 7229952,
+      "sha256": "7619966ef2a5101e9a4bbc56d20805d980f85324e0313a71c248c701df6aa501"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tls-lifecycle-20261104/gateway-1/nginx": {
+      "bytes": 1760872,
+      "sha256": "38c84d74ea5e54b177afba3926a4a60d9597e648e01e5c11401791d6f8a64ace"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tls-lifecycle-20261104/gateway-2/nginx": {
+      "bytes": 1760872,
+      "sha256": "38c84d74ea5e54b177afba3926a4a60d9597e648e01e5c11401791d6f8a64ace"
+    },
+    "/usr/bin/openssl": {
+      "bytes": 1017208,
+      "sha256": "a2044013d30169104887d7823bf7a0a1d443eafc34d7501876e22da532f24f0e"
+    },
+    "/usr/bin/python3.12": {
+      "bytes": 7845048,
+      "sha256": "c86f21d0da9290ece2d7d49a3f7ed52aed59cb029abdf0ea25c79634f6cbe960"
+    }
+  },
+  "archive": {
+    "bytes": 571676,
+    "sha256": "915701dfbd55641276c27db7e7d8ee7af5c3630b133174b1c6c6a954f171b8ce"
+  },
+  "reconstruction": {
+    "path": "tools/serve_gateway/tls_report.py",
+    "sha256": "f93b26172604b548450823594c854ac711f85f1454bd5b4a49c6f41ee55eb1a1"
+  }
+}

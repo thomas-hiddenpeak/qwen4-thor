@@ -1,0 +1,49 @@
+UpdateCTestConfiguration  from :/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/budget-host/DartConfiguration.tcl
+Test project /home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/budget-host
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 1
+    Start 1: q4t_budget_contracts
+
+1: Test command: /home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/budget-host/q4t_budget_contracts
+1: Working Directory: /home/rm01/models/dev/qwen4-thor/tests/budget_host/../..
+1: Test timeout computed to be: 30
+1: [PASS] budget_agent_explicit_slots_are_atomic
+1: [PASS] budget_infeasible_capacity_never_becomes_a_minimum
+1: [PASS] budget_exact_fit_and_one_byte_short
+1: [PASS] budget_minimum_boundaries_fail_without_capacity_fallback
+1: [PASS] budget_sequence_cap_keeps_requested_and_effective_distinct
+1: [PASS] budget_auto_search_finds_largest_supported_capacity
+1: [PASS] budget_auto_minimum_preserves_requested_sequence_count
+1: [PASS] budget_default_fraction_and_prefill_use_effective_parameters
+1: [PASS] budget_decode_rows_bound_explicit_and_automatic_sequences
+1: [PASS] budget_text_baseline_tracks_resident_allocations
+1: [PASS] budget_context_ceiling_is_applied_to_explicit_requests
+1: [PASS] budget_mtp_off_has_no_draft_reservation
+1: [PASS] budget_mtp_accounts_for_loaded_and_lazy_allocations
+1: [PASS] budget_mtp_loading_and_request_peaks_are_separate
+1: [PASS] budget_mtp_loading_peak_exact_and_one_byte_short
+1: [PASS] budget_mtp_runtime_peak_caps_length_without_dropping_charges
+1: [PASS] budget_mtp_chunk_bound_is_monotone_across_full_last_chunk
+1: [PASS] budget_mtp_requires_independent_weight_staging_and_workspace_inputs
+1: [PASS] budget_mtp_scope_rejects_unsupported_configurations
+1: [PASS] budget_mtp_overflowed_weight_or_loading_peak_fails_closed
+1: [PASS] budget_ple_counts_all_ngram_heads_and_registered_pool
+1: [PASS] budget_runtime_workspace_sizes_override_reference_estimates
+1: [PASS] budget_kv_page_rounding_matches_allocated_state
+1: [PASS] budget_invalid_or_overflowed_estimate_fails_closed
+1: [PASS] residency_capacity_empty_missing_and_nonuniform_layers
+1: [PASS] residency_capacity_rejects_ambiguous_or_invalid_lists
+1: [PASS] residency_capacity_counts_distinct_hot_experts
+1: [PASS] residency_capacity_file_errors_fail_before_loading
+1: [PASS] budget_mtp_concurrent_held_trunks_and_pooled_scratch
+1: 29 tests, 29 passed, 0 failed, 0 skipped
+1/1 Test #1: q4t_budget_contracts .............   Passed    0.00 sec
+
+100% tests passed out of 1
+
+Total Test time (real) =   0.00 sec

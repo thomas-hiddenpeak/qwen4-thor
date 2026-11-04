@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "tools.serve_admission.test_rollback",
+    "-v"
+  ],
+  "exit": 0,
+  "sources": {
+    "tools/serve_admission/stage.py": "7a5c6ce516af317729682202fd4351b08cdad2a3c3f85151c32fa3689d6e9c3c",
+    "tools/serve_admission/test_rollback.py": "b9bcbb8eb976cad3d5e6890e8246dc580c30e4af07ab9e3f413807a08a81bb07"
+  }
+}

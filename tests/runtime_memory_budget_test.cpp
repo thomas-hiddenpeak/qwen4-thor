@@ -504,6 +504,18 @@ Q4T_TEST(residency_capacity_rejects_ambiguous_or_invalid_lists) {
   return true;
 }
 
+Q4T_TEST(residency_capacity_counts_distinct_hot_experts) {
+  ResidencyConfig config;
+  Q4T_CHECK(q4t::runtime::ParseResidencyConfig(
+      R"({"0":[0,0,1],"1":[3,3,3],"2":[4,4,2,2,1,0]})", 4, 8, 4, &config));
+  Q4T_CHECK(config.hot_lists[0] == std::vector<int>({0, 1}));
+  Q4T_CHECK(config.hot_lists[1] == std::vector<int>({3}));
+  Q4T_CHECK(config.hot_lists[2] == std::vector<int>({4, 2, 1, 0}));
+  Q4T_CHECK(config.layer_slots == std::vector<int>({2, 1, 4, 4}));
+  Q4T_CHECK(config.total_slots == 11);
+  return true;
+}
+
 Q4T_TEST(residency_capacity_file_errors_fail_before_loading) {
   char pattern[] = ".q4t-work/budget-config-XXXXXX";
   char* name = mkdtemp(pattern);

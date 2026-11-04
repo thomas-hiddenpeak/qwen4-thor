@@ -1,0 +1,5526 @@
+[
+  {
+    "id": "model-valid",
+    "field": "model",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "model-null",
+    "field": "model",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "None is not of type 'string'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "model must match the served model",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "model"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "model-wrong-shape",
+    "field": "model",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not of type 'string'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "model must match the served model",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "model"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "model-omitted",
+    "field": "model",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "prompt-valid",
+    "field": "prompt",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "prompt-null",
+    "field": "prompt",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "None is not of type 'string'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "prompt must be a nonempty string",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "prompt"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "prompt-wrong-shape",
+    "field": "prompt",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not of type 'string'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "prompt must be a nonempty string",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "prompt"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "prompt-omitted",
+    "field": "prompt",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "provide exactly one of prompt or messages",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "messages-valid",
+    "field": "messages",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "messages-null",
+    "field": "messages",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "None is not of type 'array'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "messages must be a nonempty array",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "messages-wrong-shape",
+    "field": "messages",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not of type 'array'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "messages must be a nonempty array",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "messages-omitted",
+    "field": "messages",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'enable_thinking': False} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "provide exactly one of prompt or messages",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "max_tokens-valid",
+    "field": "max_tokens",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "max_tokens-null",
+    "field": "max_tokens",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "max_tokens-wrong-shape",
+    "field": "max_tokens",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "max_tokens must be an integer in [1,2147483647] or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "max_tokens"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "max_tokens-omitted",
+    "field": "max_tokens",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "max_completion_tokens-valid",
+    "field": "max_completion_tokens",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "max_completion_tokens-null",
+    "field": "max_completion_tokens",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "max_completion_tokens-wrong-shape",
+    "field": "max_completion_tokens",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "max_completion_tokens must be an integer in [1,2147483647] or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "max_completion_tokens"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "max_completion_tokens-omitted",
+    "field": "max_completion_tokens",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "stream-valid",
+    "field": "stream",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "stream-null",
+    "field": "stream",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "stream-wrong-shape",
+    "field": "stream",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not of type 'boolean', 'null'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "stream must be boolean or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "stream"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "stream-omitted",
+    "field": "stream",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "stream_options-valid",
+    "field": "stream_options",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "stream_options-null",
+    "field": "stream_options",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "stream_options-wrong-shape",
+    "field": "stream_options",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "unsupported field: unexpected",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "stream_options"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "stream_options-omitted",
+    "field": "stream_options",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "request_id-valid",
+    "field": "request_id",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "request_id-null",
+    "field": "request_id",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "None is not of type 'string'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "request_id requires a fresh 64-hex cancel_token",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "request_id"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "request_id-wrong-shape",
+    "field": "request_id",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not of type 'string'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "request_id requires a fresh 64-hex cancel_token",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "request_id"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "request_id-omitted",
+    "field": "request_id",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'request_id' is a dependency of 'cancel_token'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "request_id requires a fresh 64-hex cancel_token",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "request_id"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "cancel_token-valid",
+    "field": "cancel_token",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "cancel_token-null",
+    "field": "cancel_token",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "None is not of type 'string'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "request_id requires a fresh 64-hex cancel_token",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "cancel_token"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "cancel_token-wrong-shape",
+    "field": "cancel_token",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not of type 'string'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "request_id requires a fresh 64-hex cancel_token",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "cancel_token"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "cancel_token-omitted",
+    "field": "cancel_token",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'cancel_token' is a dependency of 'request_id'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "request_id requires a fresh 64-hex cancel_token",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "cancel_token"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "request_timeout_ms-valid",
+    "field": "request_timeout_ms",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "request_timeout_ms-null",
+    "field": "request_timeout_ms",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "None is not of type 'integer'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "request_timeout_ms must be an integer in [1,10800000]",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "request_timeout_ms"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "request_timeout_ms-wrong-shape",
+    "field": "request_timeout_ms",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not of type 'integer'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "request_timeout_ms must be an integer in [1,10800000]",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "request_timeout_ms"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "request_timeout_ms-omitted",
+    "field": "request_timeout_ms",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "tools-valid",
+    "field": "tools",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "tools-null",
+    "field": "tools",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "tools-wrong-shape",
+    "field": "tools",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "tools must be an array or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "tools-omitted",
+    "field": "tools",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "chat_template_kwargs-valid",
+    "field": "chat_template_kwargs",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "chat_template_kwargs-null",
+    "field": "chat_template_kwargs",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "None is not of type 'object'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "expected JSON object",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "chat_template_kwargs"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "chat_template_kwargs-wrong-shape",
+    "field": "chat_template_kwargs",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "Additional properties are not allowed ('unexpected' was unexpected)",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "unsupported field: unexpected",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "chat_template_kwargs"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "chat_template_kwargs-omitted",
+    "field": "chat_template_kwargs",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "enable_thinking-valid",
+    "field": "enable_thinking",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "enable_thinking-null",
+    "field": "enable_thinking",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "None is not of type 'boolean'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "enable_thinking must be boolean",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "enable_thinking"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "enable_thinking-wrong-shape",
+    "field": "enable_thinking",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not of type 'boolean'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "enable_thinking must be boolean",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "enable_thinking"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "enable_thinking-omitted",
+    "field": "enable_thinking",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "preserve_thinking-valid",
+    "field": "preserve_thinking",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "preserve_thinking-null",
+    "field": "preserve_thinking",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "None is not of type 'boolean'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "preserve_thinking must be boolean",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "preserve_thinking"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "preserve_thinking-wrong-shape",
+    "field": "preserve_thinking",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not of type 'boolean'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "preserve_thinking must be boolean",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "preserve_thinking"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "preserve_thinking-omitted",
+    "field": "preserve_thinking",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reasoning_effort-valid",
+    "field": "reasoning_effort",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reasoning_effort-null",
+    "field": "reasoning_effort",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "None is not one of ['low', 'medium', 'xhigh']",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "reasoning_effort must be low, medium or xhigh",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "reasoning_effort"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "reasoning_effort-wrong-shape",
+    "field": "reasoning_effort",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not one of ['low', 'medium', 'xhigh']",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "reasoning_effort must be low, medium or xhigh",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "reasoning_effort"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "reasoning_effort-omitted",
+    "field": "reasoning_effort",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "add_vision_id-valid",
+    "field": "add_vision_id",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "add_vision_id-null",
+    "field": "add_vision_id",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "None is not of type 'boolean'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "add_vision_id must be boolean",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "add_vision_id"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "add_vision_id-wrong-shape",
+    "field": "add_vision_id",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not of type 'boolean'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "add_vision_id must be boolean",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "add_vision_id"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "add_vision_id-omitted",
+    "field": "add_vision_id",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reasoning_field-valid",
+    "field": "reasoning_field",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reasoning_field-null",
+    "field": "reasoning_field",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "None is not one of ['reasoning_content', 'reasoning']",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "reasoning_field must be reasoning or reasoning_content",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "reasoning_field"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "reasoning_field-wrong-shape",
+    "field": "reasoning_field",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not one of ['reasoning_content', 'reasoning']",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "reasoning_field must be reasoning or reasoning_content",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "reasoning_field"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "reasoning_field-omitted",
+    "field": "reasoning_field",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "include_reasoning-valid",
+    "field": "include_reasoning",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "include_reasoning-null",
+    "field": "include_reasoning",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "None is not of type 'boolean'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "include_reasoning must be boolean",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "include_reasoning"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "include_reasoning-wrong-shape",
+    "field": "include_reasoning",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not of type 'boolean'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "include_reasoning must be boolean",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "include_reasoning"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "include_reasoning-omitted",
+    "field": "include_reasoning",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "thinking_token_budget-valid",
+    "field": "thinking_token_budget",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "thinking_token_budget-null",
+    "field": "thinking_token_budget",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "thinking_token_budget-wrong-shape",
+    "field": "thinking_token_budget",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "thinking_token_budget must be an integer in [0,2147483647] or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "thinking_token_budget"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "thinking_token_budget-omitted",
+    "field": "thinking_token_budget",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "temperature-valid",
+    "field": "temperature",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "temperature-null",
+    "field": "temperature",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "temperature-wrong-shape",
+    "field": "temperature",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not one of [0, None]",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "temperature unsupported value in greedy mode",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "temperature"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "temperature-omitted",
+    "field": "temperature",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "top_p-valid",
+    "field": "top_p",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "top_p-null",
+    "field": "top_p",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "top_p-wrong-shape",
+    "field": "top_p",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not one of [1, None]",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "top_p unsupported value in greedy mode",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "top_p"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "top_p-omitted",
+    "field": "top_p",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "n-valid",
+    "field": "n",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "n-null",
+    "field": "n",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "n-wrong-shape",
+    "field": "n",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not one of [1, None]",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "n unsupported value in greedy mode",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "n"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "n-omitted",
+    "field": "n",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "frequency_penalty-valid",
+    "field": "frequency_penalty",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "frequency_penalty-null",
+    "field": "frequency_penalty",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "frequency_penalty-wrong-shape",
+    "field": "frequency_penalty",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not one of [0, None]",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "frequency_penalty unsupported value in greedy mode",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "frequency_penalty"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "frequency_penalty-omitted",
+    "field": "frequency_penalty",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "presence_penalty-valid",
+    "field": "presence_penalty",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "presence_penalty-null",
+    "field": "presence_penalty",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "presence_penalty-wrong-shape",
+    "field": "presence_penalty",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not one of [0, None]",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "presence_penalty unsupported value in greedy mode",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "presence_penalty"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "presence_penalty-omitted",
+    "field": "presence_penalty",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "repetition_penalty-valid",
+    "field": "repetition_penalty",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "repetition_penalty-null",
+    "field": "repetition_penalty",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "1 was expected",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "repetition_penalty unsupported value in greedy mode",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "repetition_penalty"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "repetition_penalty-wrong-shape",
+    "field": "repetition_penalty",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "1 was expected",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "repetition_penalty unsupported value in greedy mode",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "repetition_penalty"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "repetition_penalty-omitted",
+    "field": "repetition_penalty",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "seed-valid",
+    "field": "seed",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "seed-null",
+    "field": "seed",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "seed-wrong-shape",
+    "field": "seed",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "seed must be an exact binary64 integer or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "seed"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "seed-omitted",
+    "field": "seed",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "stop-valid",
+    "field": "stop",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "stop-null",
+    "field": "stop",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "stop-wrong-shape",
+    "field": "stop",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "stop must be a string, string array or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "stop"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "stop-omitted",
+    "field": "stop",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "logprobs-valid",
+    "field": "logprobs",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "logprobs-null",
+    "field": "logprobs",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "logprobs-wrong-shape",
+    "field": "logprobs",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not one of [False, None]",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "logprobs is not supported",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "logprobs"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "logprobs-omitted",
+    "field": "logprobs",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "top_logprobs-valid",
+    "field": "top_logprobs",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "top_logprobs-null",
+    "field": "top_logprobs",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "top_logprobs-wrong-shape",
+    "field": "top_logprobs",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not one of [0, None]",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "top_logprobs is not supported",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "top_logprobs"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "top_logprobs-omitted",
+    "field": "top_logprobs",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "logit_bias-valid",
+    "field": "logit_bias",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "logit_bias-null",
+    "field": "logit_bias",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "logit_bias-wrong-shape",
+    "field": "logit_bias",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "logit_bias is not supported",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "logit_bias"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "logit_bias-omitted",
+    "field": "logit_bias",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "response_format-valid",
+    "field": "response_format",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "response_format-null",
+    "field": "response_format",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "response_format-wrong-shape",
+    "field": "response_format",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "unsupported constraint field: unexpected",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "response_format-omitted",
+    "field": "response_format",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "user-valid",
+    "field": "user",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "user-null",
+    "field": "user",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "user-wrong-shape",
+    "field": "user",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not of type 'string', 'null'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "user must be a string or null (metadata only)",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "user"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "user-omitted",
+    "field": "user",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "session_id-valid",
+    "field": "session_id",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "session_id-null",
+    "field": "session_id",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "None is not of type 'string'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "session_id must be a 64-hex capability",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "session_id"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "session_id-wrong-shape",
+    "field": "session_id",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not of type 'string'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "session_id must be a 64-hex capability",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "session_id"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "session_id-omitted",
+    "field": "session_id",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "prefix_cache_scope-valid",
+    "field": "prefix_cache_scope",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "prefix_cache_scope-null",
+    "field": "prefix_cache_scope",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "None is not of type 'string'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "prefix_cache_scope must be a 64-hex capability",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "prefix_cache_scope"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "prefix_cache_scope-wrong-shape",
+    "field": "prefix_cache_scope",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not of type 'string'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "prefix_cache_scope must be a 64-hex capability",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "prefix_cache_scope"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "prefix_cache_scope-omitted",
+    "field": "prefix_cache_scope",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "prefix_cache_write_tokens-valid",
+    "field": "prefix_cache_write_tokens",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "prefix_cache_write_tokens-null",
+    "field": "prefix_cache_write_tokens",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "None is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "prefix_cache_write_tokens must be 0 or an integer in [1024,131072]",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "prefix_cache_write_tokens"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "prefix_cache_write_tokens-wrong-shape",
+    "field": "prefix_cache_write_tokens",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "prefix_cache_write_tokens must be 0 or an integer in [1024,131072]",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "prefix_cache_write_tokens"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "prefix_cache_write_tokens-omitted",
+    "field": "prefix_cache_write_tokens",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "parse_response-valid",
+    "field": "parse_response",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "parse_response-null",
+    "field": "parse_response",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "None is not of type 'boolean'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "parse_response=true requires messages",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "parse_response"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "parse_response-wrong-shape",
+    "field": "parse_response",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not of type 'boolean'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "parse_response=true requires messages",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "parse_response"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "parse_response-omitted",
+    "field": "parse_response",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "tool_choice-valid",
+    "field": "tool_choice",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "tool_choice-null",
+    "field": "tool_choice",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "None is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "expected constraint object",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "tool_choice-wrong-shape",
+    "field": "tool_choice",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "unsupported constraint field: unexpected",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "tool_choice-omitted",
+    "field": "tool_choice",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "parallel_tool_calls-valid",
+    "field": "parallel_tool_calls",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "parallel_tool_calls-null",
+    "field": "parallel_tool_calls",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "None is not of type 'boolean'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "parallel_tool_calls requires parsed messages / bool",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "parallel_tool_calls-wrong-shape",
+    "field": "parallel_tool_calls",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'unexpected': True} is not of type 'boolean'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "parallel_tool_calls requires parsed messages / bool",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "parallel_tool_calls-omitted",
+    "field": "parallel_tool_calls",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "root-array",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "[] is not of type 'object'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "expected JSON object",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "body"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "unknown-field",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "Additional properties are not allowed ('unknown' was unexpected)",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "unsupported field: unknown",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "unknown"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "both-inputs",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'prompt': 'q'} is valid under each of {'required': ['prompt'], 'properties': {'prompt': {}}}, {'required': ['messages'], 'properties': {'messages': {}}}",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "provide exactly one of prompt or messages",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "raw-template-option",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'prompt': 'q', 'enable_thinking': False} should not be valid under {'anyOf': [{'required': ['tools'], 'properties': {'tools': {}}}, {'required': ['chat_template_kwargs'], 'properties': {'chat_template_kwargs': {}}}, {'required': ['enable_thinking'], 'properties': {'enable_thinking': {}}}, {'required': ['preserve_thinking'], 'properties': {'preserve_thinking': {}}}, {'required': ['reasoning_effort'], 'properties': {'reasoning_effort': {}}}, {'required': ['add_vision_id'], 'properties': {'add_vision_id': {}}}]}",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "template options require messages",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "enable_thinking"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "raw-null-thinking-budget",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "raw-active-thinking-budget",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'messages' is a required property",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "thinking_token_budget requires parsed messages",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "thinking_token_budget"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "raw-unparsed",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "raw-parsed",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'messages' is a required property",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "parse_response=true requires messages",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "parse_response"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "limit-both-active",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'max_tokens': 1, 'max_completion_tokens': 2} should not be valid under {'required': ['max_tokens', 'max_completion_tokens'], 'properties': {'max_tokens': {'not': {'type': 'null'}}, 'max_completion_tokens': {'not': {'type': 'null'}}}}",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "provide only one of max_tokens or max_completion_tokens",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "max_completion_tokens"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "limit-null-alias-None-2",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "limit-null-alias-2-None",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "limit-null-alias-None-None",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "max_completion_tokens-edge-0",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "0 is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "max_completion_tokens must be an integer in [1,2147483647] or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "max_completion_tokens"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "max_completion_tokens-edge-1",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "max_completion_tokens-edge-2",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "max_completion_tokens-edge-3",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "2147483648 is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "max_completion_tokens must be an integer in [1,2147483647] or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "max_completion_tokens"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "thinking_token_budget-edge-0",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "-1 is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "thinking_token_budget must be an integer in [0,2147483647] or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "thinking_token_budget"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "thinking_token_budget-edge-1",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "thinking_token_budget-edge-2",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "thinking_token_budget-edge-3",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "2147483648 is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "thinking_token_budget must be an integer in [0,2147483647] or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "thinking_token_budget"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "request_timeout_ms-edge-0",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "0 is less than the minimum of 1",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "request_timeout_ms must be an integer in [1,10800000]",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "request_timeout_ms"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "request_timeout_ms-edge-1",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "request_timeout_ms-edge-2",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "request_timeout_ms-edge-3",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "10800001 is greater than the maximum of 10800000",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "request_timeout_ms must be an integer in [1,10800000]",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "request_timeout_ms"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "seed-edge-0",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "-9007199254740992 is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "seed must be an exact binary64 integer or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "seed"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "seed-edge-1",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "seed-edge-2",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "seed-edge-3",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "9007199254740992 is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "seed must be an exact binary64 integer or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "seed"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "exact-number-2.0",
+    "field": null,
+    "expected": true,
+    "shape_accepted": false,
+    "shape_error": "Decimal('2.0') is not valid under any of the given schemas",
+    "native": {
+      "accepted": true
+    },
+    "passed": false
+  },
+  {
+    "id": "exact-number-2e0",
+    "field": null,
+    "expected": true,
+    "shape_accepted": false,
+    "shape_error": "Decimal('2') is not valid under any of the given schemas",
+    "native": {
+      "accepted": true
+    },
+    "passed": false
+  },
+  {
+    "id": "exact-number-20e-1",
+    "field": null,
+    "expected": true,
+    "shape_accepted": false,
+    "shape_error": "Decimal('2.0') is not valid under any of the given schemas",
+    "native": {
+      "accepted": true
+    },
+    "passed": false
+  },
+  {
+    "id": "exact-number-2.0000000000000000001",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "Decimal('2.0000000000000000001') is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "max_completion_tokens must be an integer in [1,2147483647] or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "max_completion_tokens"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "exact-number-1.9999999999999999999",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "Decimal('1.9999999999999999999') is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "max_completion_tokens must be an integer in [1,2147483647] or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "max_completion_tokens"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "invalid-json-185",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "duplicate JSON key",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "JSON parse error: duplicate object key at offset 22",
+          "type": "invalid_request_error",
+          "code": "invalid_json",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "invalid-json-186",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "nonfinite JSON constant",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "JSON parse error: expected number digit at offset 28",
+          "type": "invalid_request_error",
+          "code": "invalid_json",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "invalid-json-187",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "Extra data: line 1 column 16 (char 15)",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "JSON parse error: trailing characters at offset 15",
+          "type": "invalid_request_error",
+          "code": "invalid_json",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "invalid-json-188",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'utf-8' codec can't encode character '\\ud800' in position 0: surrogates not allowed",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "JSON parse error: missing low surrogate at offset 17",
+          "type": "invalid_request_error",
+          "code": "invalid_json",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "invalid-json-189",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "Expecting value: line 1 column 15 (char 14)",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "JSON parse error: unexpected end of input at offset 14",
+          "type": "invalid_request_error",
+          "code": "invalid_json",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "invalid-json-190",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "nonfinite or unrepresentable JSON number",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "JSON parse error: number outside supported finite range at offset 26",
+          "type": "invalid_request_error",
+          "code": "invalid_json",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "stop-bytes-191",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "stop-bytes-192",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "stop entries must be valid UTF-8 strings of 1..256 bytes",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "stop"
+        }
+      }
+    },
+    "passed": false
+  },
+  {
+    "id": "stop-bytes-193",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'' is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "stop entries must be valid UTF-8 strings of 1..256 bytes",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "stop"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "stop-bytes-194",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "stop-bytes-195",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "stop-bytes-196",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "['a', 'a', 'a', 'a', 'a'] is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "stop allows at most 4 strings",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "stop"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "stop-cache",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'end' is not one of [None, []]",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "stop is not supported with state caches",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "stop"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "stop-inactive-cache-seed",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "session_id-disabled",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "session cache is not enabled",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "session_id"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "prefix_cache_scope-disabled",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "prefix cache is not enabled",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "prefix_cache_scope"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "different-served-model",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "model must match the served model",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "model"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "configured-served-alias",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "id-reserved-prefix",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'chatcmpl-auto-test' should not be valid under {'pattern': '^chatcmpl-auto-'}",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "request_id requires a fresh 64-hex cancel_token",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "request_id"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "template-overrides",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "null-nested-template",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "None is not of type 'boolean'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "enable_thinking must be boolean",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "chat_template_kwargs"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "system-first",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "system-late",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'system' is not one of ['user', 'assistant', 'tool']",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "system or developer must be the single leading instruction message; mixing or repeating is unsupported",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[1].role"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "developer-first",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "developer-late",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'developer' is not one of ['user', 'assistant', 'tool']",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "system or developer must be the single leading instruction message; mixing or repeating is unsupported",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[1].role"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "mixed-instructions",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'developer' is not one of ['user', 'assistant', 'tool']",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "system or developer must be the single leading instruction message; mixing or repeating is unsupported",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[1].role"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "no-user",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "[{'role': 'assistant', 'content': 'hi'}] does not contain items matching the given schema",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "No user query found.",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "tool-wrapper-not-query",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "No user query found.",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-name-None",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "message-name-",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'' is not of type 'null'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "message name is not represented by this model template",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].name"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "message-name-name",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'name' is not of type 'null'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "message name is not represented by this model template",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].name"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "text-parts",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "media-disabled",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "[{'type': 'image_url', 'image_url': {'url': 'AA=='}}] is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "media disabled; experimental --allow-media required",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0]"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "reason-alias-218",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reason-alias-219",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reason-alias-220",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "conflicting reasoning history aliases",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].reasoning"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "reason-on-user",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'role': 'user', 'content': 'q', 'reasoning': None} should not be valid under {'anyOf': [{'required': ['reasoning'], 'properties': {'reasoning': {}}}, {'required': ['reasoning_content'], 'properties': {'reasoning_content': {}}}, {'required': ['tool_calls'], 'properties': {'tool_calls': {}}}]}",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "reasoning history requires an assistant message",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].reasoning"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "history-reordered",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "history-missing-result",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "all tool results are required before continuing",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "history-duplicate-result",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "duplicate result for tool_call_id",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "history-foreign-result",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "tool_call_id does not match the preceding batch",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "history-duplicate-call",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "duplicate tool call id within assistant batch",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "history-mixed-ids",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "tool calls require function type and valid batch IDs",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "history-id-missing-type",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "tool calls require function type and valid batch IDs",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "history-null-result",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "None is not of type 'string', 'array'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "tool result requires string or array content",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "history-id-reused-next-batch",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "history-args-231",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "history-args-232",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "history-args-233",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "tool arguments require an object or JSON object text",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "history-args-234",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid historical arguments JSON",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "history-args-235",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid historical parameter name",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "history-args-236",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "[{'id': 'a', 'type': 'function', 'function': {'name': 'read', 'arguments': None}}, {'id': 'b', 'type': 'function', 'function': {'name': 'read', 'arguments': {}}}] is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "tool arguments require an object or JSON object text",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-flat-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "orphan-tool-id",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "orphan tool_call_id result",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "tools-duplicate-names",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid or duplicate function name",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "tools-unicode-name",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "tools-name-byte-overflow",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid or duplicate function name",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": null
+        }
+      }
+    },
+    "passed": false
+  },
+  {
+    "id": "advisory-schema",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "none-ignores-argument-schema",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "strict-compiles-schema",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "unsupported schema keyword: unsupported",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "tool-choice-245",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "tool-choice-246",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "tool-choice-247",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "named-not-declared",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "named tool is not declared",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "required-no-tools",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'tools' is a required property",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "required/named tool_choice requires nonempty tools",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "strict-unparsed",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "True was expected",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "output constraints require parsed messages",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "none-backend-missing",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "structured decoding backend is not built",
+          "type": "invalid_request_error",
+          "code": "structured_backend_unavailable",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "none-stop",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'END' is not one of [None, []]",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "stop is not supported with constrained output",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "stop"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "none-empty-stop",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "json-with-tools-auto",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'tool_choice' is a required property",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "response_format plus tools requires tool_choice=none",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "json-with-tools-none",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "output-schema-256",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "output-schema-257",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'type': 'json_schema', 'json_schema': {'name': 'answer', 'schema': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False, 'maximum': 1}}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "unsupported schema keyword: maximum",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "output-schema-258",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "output-schema-259",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'type': 'json_schema', 'json_schema': {'name': 'answer', 'schema': {'type': 'object', 'properties': {'a': {'type': 'integer', 'enum': [1]}}, 'required': [], 'additionalProperties': False}}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "enum requires distinct matching string/bool/null values without XML delimiters",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "output-schema-260",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'type': 'json_schema', 'json_schema': {'name': 'answer', 'schema': {'type': 'object', 'properties': {}, 'additionalProperties': True}}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "object schema requires <=32 properties and additionalProperties=false",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "strict-all-required",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "strict schema requires every property in required",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "json-nullable-string",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "xml-nullable-string",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "nullable top-level XML strings are not supported",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "cancel-264",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "cancel-265",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'cancel_token' is a required property",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "request_id requires a fresh 64-hex cancel_token",
+          "type": "invalid_request_error",
+          "code": "invalid_cancellation",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "cancel-266",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "Additional properties are not allowed ('unknown' was unexpected)",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "unsupported field: unknown",
+          "type": "invalid_request_error",
+          "code": "invalid_cancellation",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "preflight-267",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "preflight-268",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "preflight-269",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "None is not of type 'boolean'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "preview option must be boolean",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "include_prompt"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "preflight-270",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "Additional properties are not allowed ('unknown' was unexpected)",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "unsupported preflight field",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "unknown"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-system-user",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-developer-system-user",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-user-only",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-developer-user-only",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-multi-turn",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-developer-multi-turn",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-text-parts",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-developer-text-parts",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-chinese",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-developer-chinese",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-whitespace",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-developer-whitespace",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-thinking-default",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-developer-thinking-default",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-thinking-true",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-developer-thinking-true",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-thinking-low",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-developer-thinking-low",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-thinking-medium",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-developer-thinking-medium",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-empty-system",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-developer-empty-system",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-unicode-trim",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-developer-unicode-trim",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-history-preserve",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-developer-history-preserve",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-history-discard",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-developer-history-discard",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-null-assistant",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-developer-null-assistant",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-tools-schema",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-developer-tools-schema",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-tools-object-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-developer-tools-object-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-tools-string-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-developer-tools-string-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-consecutive-tools",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-developer-consecutive-tools",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-tool-current-thinking-preserved",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-developer-tool-current-thinking-preserved",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-tool-response-user",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-developer-tool-response-user",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-developer-null",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-developer-empty",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-developer-parts",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-developer-unordered-identified-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-mixed-system-first",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'developer' is not one of ['user', 'assistant', 'tool']",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "system or developer must be the single leading instruction message; mixing or repeating is unsupported",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[1].role"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-mixed-developer-first",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'system' is not one of ['user', 'assistant', 'tool']",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "system or developer must be the single leading instruction message; mixing or repeating is unsupported",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[1].role"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-repeated-developer",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'developer' is not one of ['user', 'assistant', 'tool']",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "system or developer must be the single leading instruction message; mixing or repeating is unsupported",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[1].role"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-repeated-system",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'system' is not one of ['user', 'assistant', 'tool']",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "system or developer must be the single leading instruction message; mixing or repeating is unsupported",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[1].role"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-late-developer",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'developer' is not one of ['user', 'assistant', 'tool']",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "system or developer must be the single leading instruction message; mixing or repeating is unsupported",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[1].role"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-late-system",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'system' is not one of ['user', 'assistant', 'tool']",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "system or developer must be the single leading instruction message; mixing or repeating is unsupported",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[1].role"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-user-name",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'alice' is not of type 'null'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "message name is not represented by this model template",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].name"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-empty-name",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'' is not of type 'null'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "message name is not represented by this model template",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].name"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-developer-media",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "[{'type': 'image_url', 'image_url': {'url': 'invalid-base64'}}] is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "instruction content parts must contain only text",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content[0]"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-tool-name",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'lookup' is not of type 'null'",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "message name is not represented by this model template",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[1].name"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-unknown-role",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'function' is not one of ['system', 'developer', 'user', 'assistant', 'tool']",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "unsupported message role",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].role"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-unknown-instruction-part",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "[{'text': 'x', 'unknown': True}] is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "instruction content parts must contain only text",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].content[0]"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-alias-history-preserve",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-equal-history-preserve",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-legacy-null-history-preserve",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-canonical-null-history-preserve",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-alias-developer-history-preserve",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-equal-developer-history-preserve",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-legacy-null-developer-history-preserve",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-canonical-null-developer-history-preserve",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-alias-history-discard",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-equal-history-discard",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-legacy-null-history-discard",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-canonical-null-history-discard",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-alias-developer-history-discard",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-equal-developer-history-discard",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-legacy-null-developer-history-discard",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-canonical-null-developer-history-discard",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-alias-tools-object-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-equal-tools-object-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-legacy-null-tools-object-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-canonical-null-tools-object-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-alias-developer-tools-object-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-equal-developer-tools-object-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-legacy-null-developer-tools-object-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-canonical-null-developer-tools-object-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-alias-tools-string-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-equal-tools-string-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-legacy-null-tools-string-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-canonical-null-tools-string-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-alias-developer-tools-string-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-equal-developer-tools-string-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-legacy-null-developer-tools-string-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-canonical-null-developer-tools-string-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-alias-consecutive-tools",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-equal-consecutive-tools",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-legacy-null-consecutive-tools",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-canonical-null-consecutive-tools",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-alias-developer-consecutive-tools",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-equal-developer-consecutive-tools",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-legacy-null-developer-consecutive-tools",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-canonical-null-developer-consecutive-tools",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-alias-tool-current-thinking-preserved",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-equal-tool-current-thinking-preserved",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-legacy-null-tool-current-thinking-preserved",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-canonical-null-tool-current-thinking-preserved",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-alias-developer-tool-current-thinking-preserved",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-equal-developer-tool-current-thinking-preserved",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-legacy-null-developer-tool-current-thinking-preserved",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-canonical-null-developer-tool-current-thinking-preserved",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-alias-tool-response-user",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-equal-tool-response-user",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-legacy-null-tool-response-user",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-canonical-null-tool-response-user",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-alias-developer-tool-response-user",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-equal-developer-tool-response-user",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-legacy-null-developer-tool-response-user",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-canonical-null-developer-tool-response-user",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-alias-developer-unordered-identified-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-equal-developer-unordered-identified-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-legacy-null-developer-unordered-identified-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-canonical-null-developer-unordered-identified-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-reasoning-empty-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-reasoning_content-empty-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-constraint-none",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-constraint-named",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-long-tool-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-raw-123",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "reused-shape-raw-124",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "raw_records": 137,
+  "source_commit": "c299c647bd4f4387155fc56e6dc59902e30c1520",
+  "runtime_acceptance": "ACCEPT_BOUNDED_SERVE_STAGE_B1",
+  "generation_attempts": 7,
+  "negative_requests": 12,
+  "model_starts": 3,
+  "guard": "COMPLETED",
+  "retained_failures": [],
+  "scope": "SRV-04 profile only; not all stage B or performance acceptance"
+}

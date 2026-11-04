@@ -1,0 +1,115 @@
+{
+  "passed": true,
+  "requests": {
+    "length-match": {
+      "matched_index": 0,
+      "tokens": 1,
+      "mtp_steps": 0,
+      "mtp_tokens": 0,
+      "mtp_discarded": 0
+    },
+    "length-miss": {
+      "matched_index": -1,
+      "tokens": 1,
+      "mtp_steps": 0,
+      "mtp_tokens": 0,
+      "mtp_discarded": 0
+    },
+    "raw-prompt": {
+      "matched_index": 0,
+      "tokens": 13,
+      "mtp_steps": 4,
+      "mtp_tokens": 15,
+      "mtp_discarded": 2
+    },
+    "reasoning": {
+      "matched_index": 0,
+      "tokens": 18,
+      "mtp_steps": 5,
+      "mtp_tokens": 18,
+      "mtp_discarded": 0
+    },
+    "reasoning-hidden": {
+      "matched_index": 0,
+      "tokens": 18,
+      "mtp_steps": 5,
+      "mtp_tokens": 18,
+      "mtp_discarded": 0
+    },
+    "budget-stop": {
+      "matched_index": 0,
+      "tokens": 3,
+      "mtp_steps": 0,
+      "mtp_tokens": 0,
+      "mtp_discarded": 0
+    },
+    "tool-truncated-json": {
+      "matched_index": 0,
+      "tokens": 20,
+      "mtp_steps": 6,
+      "mtp_tokens": 23,
+      "mtp_discarded": 3
+    },
+    "tool-truncated-sse": {
+      "matched_index": 0,
+      "tokens": 20,
+      "mtp_steps": 6,
+      "mtp_tokens": 23,
+      "mtp_discarded": 3
+    },
+    "project-read": {
+      "matched_index": -1,
+      "tokens": 54,
+      "mtp_steps": 14,
+      "mtp_tokens": 53,
+      "mtp_discarded": 0
+    },
+    "project-answer": {
+      "matched_index": -1,
+      "tokens": 57,
+      "mtp_steps": 16,
+      "mtp_tokens": 56,
+      "mtp_discarded": 0
+    },
+    "ascii-json": {
+      "matched_index": 0,
+      "tokens": 13,
+      "mtp_steps": 4,
+      "mtp_tokens": 15,
+      "mtp_discarded": 2,
+      "reused_from": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-sdk/business/candidate-mtp/server.log"
+    },
+    "ascii-sse": {
+      "matched_index": 0,
+      "tokens": 13,
+      "mtp_steps": 4,
+      "mtp_tokens": 15,
+      "mtp_discarded": 2,
+      "reused_from": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-sdk/business/candidate-mtp/server.log"
+    },
+    "chinese": {
+      "matched_index": 0,
+      "tokens": 3,
+      "mtp_steps": 1,
+      "mtp_tokens": 4,
+      "mtp_discarded": 1,
+      "reused_from": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-sdk/business/candidate-mtp/server.log"
+    },
+    "overlap": {
+      "matched_index": 1,
+      "tokens": 4,
+      "mtp_steps": 1,
+      "mtp_tokens": 4,
+      "mtp_discarded": 0,
+      "reused_from": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-sdk/business/candidate-mtp/server.log"
+    },
+    "unmatched-prefix": {
+      "matched_index": -1,
+      "tokens": 4,
+      "mtp_steps": 1,
+      "mtp_tokens": 3,
+      "mtp_discarded": 0,
+      "reused_from": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-sdk/business/candidate-mtp/server.log"
+    }
+  }
+}

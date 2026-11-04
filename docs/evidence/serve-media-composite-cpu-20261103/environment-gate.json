@@ -1,0 +1,8 @@
+{
+  "status": "ENV_ABORT",
+  "source": "gpu-after-cpu.json",
+  "gpu_tests_started": false,
+  "service_intervened": false,
+  "model_or_http_started": false,
+  "reason": "Preserve the unrelated live GPU service; prepare the composite package without launching."
+}

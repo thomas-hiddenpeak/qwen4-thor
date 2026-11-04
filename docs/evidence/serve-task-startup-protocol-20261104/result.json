@@ -1,0 +1,68 @@
+{
+  "status": "ACCEPT_TASK_STARTUP_PROTOCOL",
+  "cpu_tests": 24,
+  "file_operation_kills": 4,
+  "models": 2,
+  "gateways": 2,
+  "responses": 4,
+  "real_tools": 2,
+  "application_kills": 2,
+  "active_migrations": 2,
+  "duplicate_applies": 2,
+  "duplicate_submits": 4,
+  "archive_resumes_without_execution": 2,
+  "metadata_refusals": 6,
+  "archived_protocol_migrations_cpu_only": true,
+  "three_hop_migration_cpu_only": true,
+  "permanent_keys": 2,
+  "retained_payloads": 1,
+  "usage": {
+    "alpha": [
+      {
+        "completion_tokens": 55,
+        "prompt_tokens": 647,
+        "total_tokens": 702
+      },
+      {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    ],
+    "beta": [
+      {
+        "completion_tokens": 55,
+        "prompt_tokens": 647,
+        "total_tokens": 702
+      },
+      {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    ]
+  },
+  "seconds": 91.64705473091453,
+  "controls": 30,
+  "gpu_seconds": 92.850691229105,
+  "guard_observations": 87,
+  "owned_exited": 6,
+  "default_unchanged": true,
+  "runtime_sources_unchanged": 223,
+  "reviewed_transition": {
+    "archive_sha256": "8603c872b6225b0a160687f6cc408027e378bdd706faa03e78f776ebfcb6b71e",
+    "basis": "Reviewed 222 to 223 runtime files: 219 unchanged, 3 listener lifecycle changes and 1 new listener owner. Seven schemas and HTTP dispatch after listener publication are identical; public capabilities differ only in protocol identity. Reuse SRV-12k and the accepted SRV-12l business prefix. Startup TCP queues before readiness; only directed readonly task history compatibility is approved.",
+    "contract": "q4t-project-readonly-protocol-v1",
+    "evidence": "docs/evidence/serve-task-startup-review-20261104/records.tar.gz",
+    "from_protocol_sha256": "ddfba8c002d8fb899b4c00d42612b0a26669036a1acc65e8292a10c0a9b69342",
+    "model": "qwen3.8-flash-next",
+    "release": "srv12k-d073eb8f",
+    "template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+    "to_protocol_sha256": "15d7ccb103258ea5ec8ca3cfa66c9bfe1245eadb7d38ad6ee149ad97075ec30e"
+  },
+  "source_commit": "f4705009ef79b761ded6be9cb46f89dce3792970",
+  "long_run": false,
+  "actual_lan_accepted": false,
+  "physical_ram_limit": false,
+  "performance_acceptance": false
+}

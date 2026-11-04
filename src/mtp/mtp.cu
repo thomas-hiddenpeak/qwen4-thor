@@ -49,6 +49,7 @@
 #include "q4t/model/linear.h"
 #include "q4t/model/model_head.h"
 #include "q4t/model/moe.h"
+#include "q4t/runtime/cleanup_policy.h"
 
 namespace q4t {
 namespace mtp {
@@ -170,6 +171,7 @@ Status CheckGemm(const model::Bf16GemmResult& r) {
 }
 
 void FreeScratch(MtpModel& m) {
+  const runtime::CleanupPhase phase("mtp.scratch");
   if (m.d_ids_scratch) cudaFree(m.d_ids_scratch);
   if (m.d_pos_scratch) cudaFree(m.d_pos_scratch);
   if (m.d_spec_logits) cudaFree(m.d_spec_logits);
@@ -223,6 +225,7 @@ void FreeScratch(MtpModel& m) {
 }  // namespace
 
 void MtpModel::Free() {
+  const runtime::CleanupPhase phase("mtp.release");
   metadata_upload.reset();
   if (subset_head) cudaFree(subset_head);
   if (subset_ids) cudaFree(subset_ids);
@@ -272,6 +275,7 @@ void MtpModel::Free() {
 Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
                const uint16_t* main_lm_head, MtpModel* out,
                cudaStream_t stream) {
+  const runtime::CleanupPhase phase("mtp.load");
   if (!runtime::ValidSequenceCapacities(cfg.seq_capacities, cfg.max_len,
                                         cfg.max_seq))
     return Status::Fail("invalid MTP slot capacities");
@@ -283,6 +287,9 @@ Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
       out->lm_head || out->fc_embedding ||
       out->d_ids_scratch || out->k_max > 0)
     return Status::Fail("LoadMtp: output already owns resources");
+  // Declared before the drain owner so failure cleanup precedes source release.
+  std::unique_ptr<io::WeightIndex> index;
+  std::unique_ptr<io::WeightLoader> loader;
   // Sub-loaders attach allocations to out as they proceed. Keep one failure
   // owner until every load and copy has completed, including the null stream.
   struct PendingLoad {
@@ -291,10 +298,7 @@ Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
     ~PendingLoad() {
       if (!model) return;
       const cudaError_t error = cudaStreamSynchronize(stream);
-      if (error != cudaSuccess) {
-        std::fprintf(stderr, "[q4t] MTP failed-load drain: %s\n",
-                     cudaGetErrorString(error));
-      }
+      runtime::RequireCleanupSuccess(error, "MTP failed-load drain");
       model->Free();
     }
   } pending{out, stream};
@@ -306,7 +310,6 @@ Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
 
   // RAII: the mmap'd MTP shards must be released on every exit path (same
   // unified-memory constraint as the main model).
-  std::unique_ptr<io::WeightIndex> index;
   {
     io::WeightIndex* raw = nullptr;
     Status s = io::WeightIndex::Open(
@@ -314,7 +317,6 @@ Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
     if (!s.ok()) return s;
     index.reset(raw);
   }
-  std::unique_ptr<io::WeightLoader> loader;
   {
     io::WeightLoader* raw = nullptr;
     Status s = io::WeightLoader::Create(cfg.mtp_dir, *index, 8, &raw);

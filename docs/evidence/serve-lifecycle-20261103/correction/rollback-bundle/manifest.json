@@ -1,0 +1,131 @@
+{
+  "version": 1,
+  "root": "/home/rm01/models/dev/qwen4-thor",
+  "destination": "/home/rm01/models/dev/qwen4-thor/build",
+  "releases": {
+    "current": {
+      "pair": {
+        "binary": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/rollback-bundle/current/q4t",
+          "sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+          "bytes": 7087224
+        },
+        "sidecar": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/rollback-bundle/current/q4t.release.json",
+          "sha256": "a350c9782c42bd2008026b35e61ed3d0acadc5e254a746caa6ee53743322fca9",
+          "bytes": 44957
+        },
+        "cache": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/rollback-bundle/current/CMakeCache.txt",
+          "sha256": "d6ecfb327ab19f4beb0ffd048db153266b6ae767b5c333e597d9cff8ebd1ba8a",
+          "bytes": 38801
+        },
+        "version": "serve-lifecycle-repair-20261103",
+        "protocol_sha256": "f79cf82274e4e3df0732f09e8362b1145c207ced1bd53a783a711b05aca3b589",
+        "observability_version": 4,
+        "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/package/previous/q4t",
+        "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/package/previous/q4t.release.json",
+        "previous_release_was_stale": false,
+        "pair_identity_verified": true,
+        "business_acceptance_revalidated": false
+      },
+      "hashes": {
+        "q4t": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+        "q4t.release.json": "a350c9782c42bd2008026b35e61ed3d0acadc5e254a746caa6ee53743322fca9"
+      },
+      "rules": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/rollback-bundle/current/q4t.rules.yml",
+        "sha256": "849bf0cdeb4de4225c134183a678b8eb7985f50a5fa22ece4dd3c502067e0ff8",
+        "bytes": 13565
+      },
+      "source": {
+        "binary": {
+          "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+          "sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+          "bytes": 7087224
+        },
+        "sidecar": {
+          "path": "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json",
+          "sha256": "a350c9782c42bd2008026b35e61ed3d0acadc5e254a746caa6ee53743322fca9",
+          "bytes": 44957
+        },
+        "cache": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/package/candidate/CMakeCache.txt",
+          "sha256": "d6ecfb327ab19f4beb0ffd048db153266b6ae767b5c333e597d9cff8ebd1ba8a",
+          "bytes": 38801
+        },
+        "version": "serve-lifecycle-repair-20261103",
+        "protocol_sha256": "f79cf82274e4e3df0732f09e8362b1145c207ced1bd53a783a711b05aca3b589",
+        "observability_version": 4,
+        "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/package/previous/q4t",
+        "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/package/previous/q4t.release.json",
+        "previous_release_was_stale": false,
+        "pair_identity_verified": true,
+        "business_acceptance_revalidated": false
+      }
+    },
+    "previous": {
+      "pair": {
+        "binary": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/rollback-bundle/previous/q4t",
+          "sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+          "bytes": 7087224
+        },
+        "sidecar": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/rollback-bundle/previous/q4t.release.json",
+          "sha256": "bb620240dfbbe0437066f6827bf54d00f9e107327f244997fb437fe30727b1b2",
+          "bytes": 44671
+        },
+        "cache": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/rollback-bundle/previous/CMakeCache.txt",
+          "sha256": "2bcb7e3f956aed13c9ac72cc05d4052653236e214c65e11fb65126ffcfd3be69",
+          "bytes": 38825
+        },
+        "version": "serve-observation-capacity-20261103",
+        "protocol_sha256": "da1466be364b9d177669a6a6b3209d77ef832bd4c8e059e3d93820bfeb336b05",
+        "observability_version": 4,
+        "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/previous/q4t",
+        "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/previous/q4t.release.json",
+        "previous_release_was_stale": false,
+        "pair_identity_verified": true,
+        "business_acceptance_revalidated": false
+      },
+      "hashes": {
+        "q4t": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+        "q4t.release.json": "bb620240dfbbe0437066f6827bf54d00f9e107327f244997fb437fe30727b1b2"
+      },
+      "rules": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/rollback-bundle/previous/q4t.rules.yml",
+        "sha256": "849bf0cdeb4de4225c134183a678b8eb7985f50a5fa22ece4dd3c502067e0ff8",
+        "bytes": 13565
+      },
+      "source": {
+        "binary": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/package/previous/q4t",
+          "sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+          "bytes": 7087224
+        },
+        "sidecar": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/package/previous/q4t.release.json",
+          "sha256": "bb620240dfbbe0437066f6827bf54d00f9e107327f244997fb437fe30727b1b2",
+          "bytes": 44671
+        },
+        "cache": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/candidate/CMakeCache.txt",
+          "sha256": "2bcb7e3f956aed13c9ac72cc05d4052653236e214c65e11fb65126ffcfd3be69",
+          "bytes": 38825
+        },
+        "version": "serve-observation-capacity-20261103",
+        "protocol_sha256": "da1466be364b9d177669a6a6b3209d77ef832bd4c8e059e3d93820bfeb336b05",
+        "observability_version": 4,
+        "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/previous/q4t",
+        "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/previous/q4t.release.json",
+        "previous_release_was_stale": false,
+        "pair_identity_verified": true,
+        "business_acceptance_revalidated": false
+      }
+    }
+  },
+  "semantics": "individual atomic replaces with a durable recovery marker; not a cross-file power-loss transaction",
+  "qualification": "frozen existing identities only; business acceptance is independent"
+}

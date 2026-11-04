@@ -1,0 +1,9 @@
+{
+  "sample_count": 170,
+  "system_mem_available_min_gib": 33.13985061645508,
+  "process_peak_rss_kib": {
+    "1831188": 955116
+  },
+  "scope": "Sampled process RSS and host-global available RAM, not additive unique physical RAM or a hard limit.",
+  "no_successful_output_or_backpressure": true
+}

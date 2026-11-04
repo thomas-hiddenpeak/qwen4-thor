@@ -1,0 +1,77 @@
+UpdateCTestConfiguration  from :/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/io-host/DartConfiguration.tcl
+Test project /home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/io-host
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 1
+    Start 1: q4t_io_contracts
+
+1: Test command: /home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/io-host/q4t_io_contracts
+1: Working Directory: /home/rm01/models/dev/qwen4-thor/tests/io_host/../..
+1: Test timeout computed to be: 60
+1: [PASS] io_contract_scatter_short_reads_and_eintr
+1: [PASS] io_contract_scatter_eof_and_error
+1: [PASS] io_contract_scatter_iovec_limit
+1: [PASS] io_contract_scatter_bounds
+1: [PASS] io_contract_metadata_survives_eviction
+1: [PASS] io_contract_active_read_survives_eviction
+1: [PASS] io_contract_concurrent_small_cache
+1: 7 tests, 7 passed, 0 failed, 0 skipped
+1/4 Test #1: q4t_io_contracts .................   Passed    0.02 sec
+test 2
+    Start 2: q4t_weight_loader_contracts
+
+2: Test command: /home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/io-host/q4t_weight_loader_contracts
+2: Working Directory: /home/rm01/models/dev/qwen4-thor/tests/io_host/../..
+2: Test timeout computed to be: 60
+2: [PASS] weight_loader_metadata_survives_eviction
+2: [PASS] weight_loader_read_survives_eviction
+2: [PASS] weight_loader_device_read_survives_eviction
+2: [PASS] weight_loader_device_enqueue_survives_eviction
+2: [PASS] weight_loader_missing_tensor_and_shard
+2: [PASS] weight_loader_exact_read_rejects_before_destination_write
+2: [PASS] weight_loader_concurrent_small_cache
+2: 7 tests, 7 passed, 0 failed, 0 skipped
+2/4 Test #2: q4t_weight_loader_contracts ......   Passed    0.02 sec
+test 3
+    Start 3: q4t_safetensors_validation
+
+3: Test command: /home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/io-host/q4t_safetensors_validation
+3: Working Directory: /home/rm01/models/dev/qwen4-thor/tests/io_host/../..
+3: Test timeout computed to be: 60
+3: [PASS] safetensors_rejects_invalid_integer_shapes_and_extents
+3: [PASS] safetensors_rejects_overlap_and_duplicate_keys
+3: [PASS] safetensors_preserves_scalar_empty_and_exact_large_dimensions
+3: [PASS] safetensors_range_and_forged_tensor_reject_before_writing
+3: [PASS] safetensors_failed_open_releases_fd_and_mapping
+3: [PASS] safetensors_allocation_exception_releases_fd_and_mapping
+3: 6 tests, 6 passed, 0 failed, 0 skipped
+3/4 Test #3: q4t_safetensors_validation .......   Passed    0.00 sec
+test 4
+    Start 4: q4t_residency_host_contracts
+
+4: Test command: /home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/io-host/q4t_residency_host_contracts
+4: Working Directory: /home/rm01/models/dev/qwen4-thor/tests/io_host/../..
+4: Test timeout computed to be: 60
+4: [q4t] retaining residency payloads: drain failed
+4: [q4t] retaining residency payloads: drain failed
+4: [PASS] residency_synthetic_same_and_split_shards_match_all_bytes
+4: [PASS] residency_every_cuda_init_failure_rolls_back_and_retries
+4: [PASS] residency_mutex_and_worker_allocation_failures_roll_back
+4: [PASS] residency_later_thread_creation_exception_joins_prior_worker
+4: [PASS] residency_drain_failure_retains_payloads_until_completion
+4: [PASS] moe_malformed_tensors_rejected_before_any_payload_allocation
+4: [PASS] moe_full_resident_valid_payload_matches_oracle
+4: [PASS] residency_hot_duplicates_retry_capacity_and_protection
+4: [PASS] residency_worker_host_exception_notifies_releases_and_retries
+4: [PASS] residency_inline_exception_releases_claims_and_retries
+4: [PASS] residency_commit_exception_drains_or_retains_partial_dma
+4: 11 tests, 11 passed, 0 failed, 0 skipped
+4/4 Test #4: q4t_residency_host_contracts .....   Passed    0.02 sec
+
+100% tests passed out of 4
+
+Total Test time (real) =   0.06 sec

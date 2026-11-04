@@ -1,0 +1,18 @@
+{
+  "status": "PASS_LOCAL_NOTIFICATION_AND_RECOVERY",
+  "model_starts": 2,
+  "monitor_starts": 3,
+  "external_receiver_accepted": false,
+  "performance_acceptance": false,
+  "long_test_started": false,
+  "successful_requests": 4,
+  "real_tool_executions": 1,
+  "cleanup_confirmed": true,
+  "counts": {
+    "generations": 4,
+    "negatives": 0,
+    "controls": 13
+  },
+  "elapsed_seconds": 275.6345688959118,
+  "scrape_http_upper_bound": 78
+}

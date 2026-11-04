@@ -1,0 +1,36 @@
+{
+  "status": "PASS_BOUNDED_LIFECYCLE_REPAIR",
+  "automatic_retries": 0,
+  "requests_replayed": 0,
+  "prior_counts": {
+    "generations": 1202,
+    "negatives": 0,
+    "starts": 1
+  },
+  "original_failed_run_retained": true,
+  "installed": true,
+  "reused_original_hour": true,
+  "new_candidate_hour_proved": false,
+  "counts": {
+    "generations": 1218,
+    "negatives": 4,
+    "starts": 6
+  },
+  "preflights": 240,
+  "control_requests_used": 1839,
+  "instances": [
+    {
+      "mode": "SIGTERM",
+      "passed": true,
+      "pid": 2202992,
+      "start_ticks": 187504814,
+      "continuous_samples": 42,
+      "returncode": 0,
+      "exit_seconds": 0.5407859021797776,
+      "scope_removed": true,
+      "elapsed_seconds": 0.918379268143326
+    }
+  ],
+  "elapsed_seconds": 42.919752199202776,
+  "original_elapsed_seconds": 4585.475771903992
+}

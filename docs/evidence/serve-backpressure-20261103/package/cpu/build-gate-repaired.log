@@ -1,0 +1,6 @@
+test_build_matches_runtime_and_only_explicit_fault_setting_changes (tools.serve_backpressure.test_stage.Contracts.test_build_matches_runtime_and_only_explicit_fault_setting_changes) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.020s
+
+OK

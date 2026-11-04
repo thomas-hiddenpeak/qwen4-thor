@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backpressure-20261103/engine/q4t",
+    "sha256": "903c4f77b19e9a1d0802d22e6a64267afa2a357cc55cf20172628507962450d3",
+    "bytes": 7084352
+  },
+  "runtime_files": 189,
+  "zero_warnings": true
+}

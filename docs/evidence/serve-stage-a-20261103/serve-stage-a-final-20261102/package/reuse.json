@@ -1,0 +1,31 @@
+{
+  "prior_package": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/sealed-files.json",
+    "sha256": "7a99a913fe1704fa6f0e0c3963dd8186448d4b77a1257d43cbf8ccbe274b25c1",
+    "bytes": 4415
+  },
+  "prior_execution": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/sealed-files.json",
+    "sha256": "f2698c197e1988234535b1c4f997cb3c9589548dda8c40019067af82ab4cd589",
+    "bytes": 7552
+  },
+  "first_execution": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/sealed-files.json",
+    "sha256": "0309b963b9f55774c42851bc00493fa9fee69a01d094645d4910e3eaa12fe193",
+    "bytes": 5656
+  },
+  "runtime_source_commit": "e0d9f9d",
+  "runtime_unchanged": true,
+  "prior_attempts": 8,
+  "prior_starts": 2,
+  "remaining_attempts": 4,
+  "remaining_starts": 1,
+  "remaining": [
+    "incremental SSE real TCP backpressure",
+    "ordinary recovery",
+    "schema quality",
+    "active shutdown"
+  ],
+  "not_proven": "strict full buffered response did not reach writer within 180 seconds",
+  "installed_health": "reuse identical production ELF ordinary/strict-tool HTTP; probe installed CLI and worker"
+}

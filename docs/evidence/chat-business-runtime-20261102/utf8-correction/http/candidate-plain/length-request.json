@@ -1,0 +1,23 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": 0,
+  "max_tokens": 1,
+  "stream": true,
+  "request_timeout_ms": 120000,
+  "chat_template_kwargs": {
+    "enable_thinking": true,
+    "reasoning_effort": "low"
+  },
+  "parse_response": true,
+  "stream_options": {
+    "include_usage": true
+  },
+  "messages": [
+    {
+      "role": "user",
+      "content": "计算17乘19。简短思考后，最终回答只写乘积的三位数字。"
+    }
+  ],
+  "request_id": "protocol-66294a6fed072cadad4b4b44a60cde94",
+  "cancel_token": "214b48222023893a61a666c38760d38f784a3a2282cf2e9dcb824a7639e21389"
+}

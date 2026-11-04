@@ -1,0 +1,1 @@
+{"error":{"message":"unsupported message role","type":"invalid_request_error","code":"invalid_request","param":"messages[0].role"}}

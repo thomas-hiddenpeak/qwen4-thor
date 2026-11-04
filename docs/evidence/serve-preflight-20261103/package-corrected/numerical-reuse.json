@@ -1,0 +1,25 @@
+{
+  "changed": [
+    "include/q4t/server/chat_server.h",
+    "include/q4t/server/http_request.h",
+    "include/q4t/server/server_options.h",
+    "src/server/chat_capabilities.cpp",
+    "src/server/chat_generation.cpp",
+    "src/server/chat_http.cpp",
+    "src/server/chat_input.cpp",
+    "src/server/chat_server.cpp",
+    "src/server/chat_server_internal.h",
+    "src/server/http_request.cpp",
+    "src/server/server_options.cpp"
+  ],
+  "added": [
+    "include/q4t/server/chat_plan.h",
+    "include/q4t/server/chat_prompt.h",
+    "src/server/chat_plan.cpp",
+    "src/server/chat_preflight.cpp",
+    "src/server/chat_prompt.cpp"
+  ],
+  "previous_manifest": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package-fixture/candidate/runtime-source.json",
+  "unchanged_model_and_numerical_sources": true,
+  "performance_acceptance": false
+}

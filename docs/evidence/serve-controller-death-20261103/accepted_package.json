@@ -1,0 +1,31 @@
+{
+  "status": "PASS_CONTROLLER_DEATH_ACTIVE_QUEUE",
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/package",
+    "manifest_sha256": "35ca281fb34b5deb48b2acd2dfd82e2e9a4c8de522c9049ec114b0b182061979",
+    "binary_sha256": "d66f2bb9df3a34eda1b885da148e6971c25137564e500b9357bd5f9a5f8dfb1b"
+  },
+  "validation_source_commit": "4c780befb221d540922a9069eddd0088415912a0",
+  "statistics": {
+    "original_guard_observations": 47,
+    "independent_guard_observations": 21,
+    "explicit_controls": 5,
+    "supervisor_http_upper_bound": 188,
+    "full_observation_upper_bound": 193
+  },
+  "production_service_unchanged": true,
+  "default_pair_unchanged": true,
+  "acceptance": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/result.json",
+    "sha256": "01452ddf144664b2062a2ef6138ca4c4b77ce98fa2dfdb100a69f4b57ebb832e",
+    "bytes": 519
+  },
+  "original_guard_intentionally_has_no_terminal": true,
+  "custody": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/custody/exit.json",
+    "sha256": "09b9378c912b926c159fe4786fb6949f7d016d0b90d9d425eb346499c93b78a8",
+    "bytes": 99
+  },
+  "persistent_service_installed": false,
+  "physical_ram_limit_proved": false
+}

@@ -1,0 +1,25 @@
+test_all_planned_requests_pass_native_contract (tools.serve_strict_transport.test_driver.DriverTests.test_all_planned_requests_pass_native_contract) ... ok
+test_capacity_queue_cannot_be_ignored_by_drain (tools.serve_strict_transport.test_driver.DriverTests.test_capacity_queue_cannot_be_ignored_by_drain) ... ok
+test_case_requires_complete_tokens_first_write_and_delayed_read (tools.serve_strict_transport.test_driver.DriverTests.test_case_requires_complete_tokens_first_write_and_delayed_read) ... ERROR
+test_changed_runtime_is_only_opt_in_diagnostics (tools.serve_strict_transport.test_driver.DriverTests.test_changed_runtime_is_only_opt_in_diagnostics) ... ok
+test_generated_evidence_refuses_ambiguous_or_corrupt_ids (tools.serve_strict_transport.test_driver.DriverTests.test_generated_evidence_refuses_ambiguous_or_corrupt_ids) ... ok
+test_guard_before_any_check_or_dispatch (tools.serve_strict_transport.test_driver.DriverTests.test_guard_before_any_check_or_dispatch) ... ok
+test_long_generated_content_requires_eos_and_exact_schema_value (tools.serve_strict_transport.test_driver.DriverTests.test_long_generated_content_requires_eos_and_exact_schema_value) ... ok
+test_missing_evidence_is_recorded_without_inventing_tokens (tools.serve_strict_transport.test_driver.DriverTests.test_missing_evidence_is_recorded_without_inventing_tokens) ... ok
+test_no_retry_budget_and_original_deadline (tools.serve_strict_transport.test_driver.DriverTests.test_no_retry_budget_and_original_deadline) ... ok
+
+======================================================================
+ERROR: test_case_requires_complete_tokens_first_write_and_delayed_read (tools.serve_strict_transport.test_driver.DriverTests.test_case_requires_complete_tokens_first_write_and_delayed_read)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_strict_transport/test_driver.py", line 163, in test_case_requires_complete_tokens_first_write_and_delayed_read
+    run.case(folder, True)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_strict_transport/verify.py", line 121, in case
+    server_log=log, actual_receive_buffer=sock.getsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF)))
+                                                          ^^^^^^
+NameError: name 'socket' is not defined. Did you mean: 'sock'? Or did you forget to import 'socket'
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.662s
+
+FAILED (errors=1)

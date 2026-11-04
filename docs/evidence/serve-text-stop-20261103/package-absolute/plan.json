@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "source_commit": "8e30593866e90d7dd9f02ca4d4c783d16a117f9e",
+  "candidate": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package-absolute/candidate/q4t",
+  "candidate_sha256": "a3fd64a34a67f619bf2978faf152d6f455652d048a1e7a2cdc48caf784898184",
+  "old_hashes": {
+    "q4t": "31ffc41efefe7e407a0848041e03673906e8965865b9464019aa54a99fd5dee6",
+    "q4t.release.json": "9a71a0a72e76da3b3850a340fb30b882da633a867e51bf454bee92ba9f5f9a72"
+  },
+  "previous_binary_sha256": "31ffc41efefe7e407a0848041e03673906e8965865b9464019aa54a99fd5dee6",
+  "protocol_sha256": "ecfc9d583e90bd83e81734656270903cf673da5fc89b3e0be9f9d0ebdfc2e02c",
+  "model_dir": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "model_inputs": {
+    "config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+    "tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+    "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+    "chat_template.jinja": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+  },
+  "sdk_version": "3.42.1",
+  "limits": {
+    "starts": 4,
+    "generations": 22,
+    "negatives": 16,
+    "seconds": 1800
+  },
+  "source_manifest_sha256": "65c4d0f60ca82677a9489daef87b39aef4f00094c06cf43b2dca8329be68a0d7",
+  "planned": {
+    "starts": 3,
+    "generations": 21,
+    "negatives": 16
+  },
+  "startup_preflight": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package-absolute/candidate/startup_preflight",
+    "sha256": "28fdb701d12e9b97485487c7f7cd47d2a1d2f764cf341d709da64a85e6e62172",
+    "bytes": 149552
+  },
+  "original_started": 1793648558.697788,
+  "prior_invocation": {
+    "generations": 0,
+    "negatives": 0,
+    "starts": 0,
+    "guard_attempts": 1,
+    "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution",
+    "exit": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution/lease/exit.json",
+      "sha256": "eec5c9d36c7bbfbbd89368d3146756cbb8783f53a9c9de3a0471854ac6587b16",
+      "bytes": 565
+    },
+    "log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/launch.log",
+      "sha256": "ed3b215660d2959a44a0dc643ad89118ab06997a229f3cec148eb1ac4dd42460",
+      "bytes": 488
+    }
+  }
+}

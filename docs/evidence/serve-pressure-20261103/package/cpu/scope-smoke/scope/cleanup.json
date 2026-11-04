@@ -1,0 +1,19 @@
+{
+  "stop_rc": 0,
+  "reset_rc": 1,
+  "already_absent": false,
+  "properties_after": {
+    "Result": "success",
+    "OOMPolicy": "",
+    "ControlGroup": "",
+    "IOAccounting": "no",
+    "MemoryAccounting": "yes",
+    "MemoryMax": "infinity",
+    "MemorySwapMax": "infinity",
+    "Description": "q4t-pressure-cpu-1992538.scope",
+    "LoadState": "not-found",
+    "ActiveState": "inactive",
+    "SubState": "dead"
+  },
+  "unit_removed": true
+}

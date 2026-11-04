@@ -1,0 +1,10 @@
+{
+  "status": 503,
+  "headers": {
+    "Content-Type": "application/json",
+    "Content-Length": "119",
+    "X-Request-Id": "req-5fb03b620bb6f6fa298ae6fae7c3173f",
+    "Connection": "close"
+  },
+  "raw": "{\"error\":{\"message\":\"Service Unavailable\",\"type\":\"service_unavailable_error\",\"code\":\"capacity_exhausted\",\"param\":null}}"
+}

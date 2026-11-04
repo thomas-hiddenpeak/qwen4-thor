@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-business-acceptance-20261102/lifecycle.py", line 201, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-business-acceptance-20261102/lifecycle.py", line 99, in main
+    fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+BlockingIOError: [Errno 11] Resource temporarily unavailable

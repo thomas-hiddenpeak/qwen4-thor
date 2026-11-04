@@ -1,0 +1,15 @@
+{
+  "status": "DEVELOPMENT_BUILD_ONLY_TESTS_DEFERRED",
+  "tests_run": false,
+  "gpu_or_http_tests_run": false,
+  "deployed": false,
+  "reason": "User requested development only while vLLM has active business.",
+  "candidate_binary_sha256": "354b20ae391aae0cf40824df9ebff00cfd24680584465beeb24ecaba83a4f266",
+  "default_binary_sha256": "0c5ab1de85ff68f9d757ac3bfad04187756a1b2c6634108c3112a5861c209483",
+  "default_release_sha256": "e6fdd13b7d140926ed4a0d42bcda37b6ec6689305960e3deab03b3f73dc294d6",
+  "host_binary_sha256": "1fafe83a9a44e5508f36c28081684fe83c32e404ef6717ba285560d30e788b6a",
+  "public_host_binary_sha256": "ec618a928b4d869e7c2b959ad72f72588fad28d4d04576f636974a05f680739a",
+  "build_cache_sha256": "52e07d3ce862297a21979fcef81df00a3c838238eb2c5bf12e6fde92f25906b3",
+  "warnings": 0,
+  "retained_build_failure": "candidate-link-missing-object.log; missing startup_reservation object, compiled CMake object target before relinking"
+}

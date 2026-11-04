@@ -1,0 +1,26 @@
+[
+  {
+    "role": "user",
+    "content": "请先调用lookup工具，key必须是audit。拿到工具结果后，只回复其中code字段的六位数字。在工具返回之前不要猜测答案。"
+  },
+  {
+    "role": "assistant",
+    "content": null,
+    "reasoning_content": "思考\n",
+    "tool_calls": [
+      {
+        "id": "call-0",
+        "type": "function",
+        "function": {
+          "name": "lookup",
+          "arguments": "{\"key\":\"audit\"}"
+        }
+      }
+    ]
+  },
+  {
+    "role": "tool",
+    "tool_call_id": "call-0",
+    "content": "{\"code\": \"831907\"}"
+  }
+]

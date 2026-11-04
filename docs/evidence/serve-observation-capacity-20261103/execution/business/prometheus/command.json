@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/deps/prometheus",
+    "--config.file=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/execution/business/prometheus/config.json",
+    "--storage.tsdb.path=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/execution/business/prometheus/tsdb",
+    "--web.listen-address=127.0.0.1:19093",
+    "--storage.tsdb.retention.time=1h",
+    "--storage.tsdb.retention.size=64MB"
+  ],
+  "target_request_reservation": 35,
+  "notification_receivers": [],
+  "source_policy": {
+    "path": "/home/rm01/models/dev/qwen4-thor/deploy/serve-ops/q4t.rules.yml",
+    "sha256": "849bf0cdeb4de4225c134183a678b8eb7985f50a5fa22ece4dd3c502067e0ff8",
+    "bytes": 13565
+  },
+  "validation_interval_seconds": 1,
+  "production_rule_interval_seconds": 15,
+  "purpose": "Actual metric parsing and saturated scraping, not production alert timing proof"
+}

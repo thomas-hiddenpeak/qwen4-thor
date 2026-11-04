@@ -1,0 +1,51 @@
+{
+  "status": "PASS_DELIVERED_CHAT_INTEGRATION",
+  "binary_sha256": "830694ce26621cdd852b9d0b064d42c217958e17c9444935dd9298ebcb645f51",
+  "sidecar_sha256": "0f28e0f08322c6ad513dc9117e95f6913d34876b43485534e150b67f8544f1aa",
+  "runtime_source_count": 164,
+  "reused_source_count": 1553,
+  "new_recovery_contracts": 9,
+  "health": {
+    "status": "PASS",
+    "error": null,
+    "requests": 6,
+    "starts": 2,
+    "capability_gets": 2,
+    "agent_runs": 2,
+    "elapsed_seconds": 89.04621270415373
+  },
+  "heads": {
+    "full": {
+      "tool_answer": "831907",
+      "reasoning_answer": "323",
+      "requests": 3,
+      "resources_allocated": 1619,
+      "resources_freed": 1619
+    },
+    "subset": {
+      "tool_answer": "831907",
+      "reasoning_answer": "323",
+      "requests": 3,
+      "resources_allocated": 1621,
+      "resources_freed": 1621
+    }
+  },
+  "original_package_seal": "bdd7c70f8d1e9e3c44830b46d6ee987cb2e46c33039a5b2f79cf8777650a9a4e",
+  "metadata_correction_seal": "89ef677a116416ef070bd9328dce2740a7339ec9f9a3fb449147e49a7da24290",
+  "bundles": {
+    "original": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-delivery-20261102/package/source.bundle",
+      "sha256": "44b0670780ab22c0d3792143d09712af446c309c85199d0226af048cde9902c2"
+    },
+    "correction": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-delivery-20261102/metadata-correction/source.bundle",
+      "sha256": "146f9db3b4fce94e0c015724b6c738c548472ce7e2b0434c9f9654aafcc3a2d5"
+    }
+  },
+  "finalize_before_original_deadline": true,
+  "seconds_from_installation_to_finalize": 694.0385534763336,
+  "model_rebuilt": false,
+  "additional_performance_acceptance": false,
+  "persistent_service": false,
+  "finished": 1793601515.3342292
+}

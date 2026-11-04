@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "source_commit": "e0d9f9d8ec769cfef8d20cd52df3ee49cd95be39",
+  "candidate": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/candidate/q4t",
+  "candidate_sha256": "142bb9d41b2b972d61d995f391cb890c4068b3fd6b7a68b71aa9dafe1f506317",
+  "fault_candidate": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/candidate/fault-q4t",
+    "sha256": "7647ca9fa9edbaf6c7e780f4bf03885a7e165749d4ff05a669e77cd9758a446c",
+    "bytes": 6942712
+  },
+  "old_hashes": {
+    "q4t": "c8c412c4ab0f24c238d83e3e5def78baf4b25c99883eda382b0da7f560ed15d4",
+    "q4t.release.json": "da9f3ac5b41215157a6fbbb0d24ec540be7836c24d75d3bc6ed5228627032800"
+  },
+  "previous_binary_sha256": "c8c412c4ab0f24c238d83e3e5def78baf4b25c99883eda382b0da7f560ed15d4",
+  "protocol_sha256": "fe17b50a921973de8da7ad5190a1590707a543053ad63ebd72a34892b3c6ac13",
+  "model_dir": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "model_inputs": {
+    "config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+    "tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+    "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+    "chat_template.jinja": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+  },
+  "sdk_version": "3.42.1",
+  "limits": {
+    "starts": 3,
+    "generations": 12,
+    "negatives": 16,
+    "seconds": 1800
+  },
+  "http_contract": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/engine/q4t_http_lifecycle_tests",
+    "sha256": "782608cf116a2a6c1e0ae2b5fce9ddd1565f8a3173b03655e0ef65af771071a0",
+    "bytes": 590608
+  },
+  "source_manifest_sha256": "0d8e3bf78def416f6b33dd11c48db411d95a6958f36f89003e141526c42957af"
+}

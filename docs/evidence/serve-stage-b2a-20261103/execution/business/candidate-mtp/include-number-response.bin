@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 141
+X-Request-Id: req-12dab19731005c2980d38a2c647aadc9
+Connection: close
+
+{"error":{"message":"include_reasoning must be boolean","type":"invalid_request_error","code":"invalid_request","param":"include_reasoning"}}

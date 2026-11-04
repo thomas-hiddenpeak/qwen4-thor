@@ -1,0 +1,6 @@
+POST /v1/chat/completions HTTP/1.1
+Host: localhost
+Content-Type: application/json
+Content-Length: 221
+
+{"messages": [{"role": "system", "content": "只回复数字。"}, {"role": "system", "content": "只回复数字。"}, {"role": "user", "content": "只回复数字710003。"}], "stream": true, "max_completion_tokens": 1}

@@ -1,0 +1,398 @@
+[q4t][startup-memory] {"checkpoint":"before_metadata","admission":{"state":"admitted","estimate_bytes":null,"headroom_bytes":2147483648,"required_bytes":2147483648,"observed_total_bytes":131920637952,"observed_available_bytes":125428801536}}
+[q4t][capabilities] requested=experimental mtp=1 media=0 max_seq=1
+[q4t][startup] tokenizer 333 ms
+[q4t][budget] mem_total=131.92 GB fraction=0.90 budget=118.73 GB
+[q4t][budget]   allocation estimate only; excludes file cache, driver overlap and other processes; not a physical RAM limit
+[q4t][budget]   requested max_len=8192 max_seq=1 max_prefill=2048 feasible=1 reason=estimate_fits
+[q4t][budget]   weights=84.00 GB  fixed=93.36 GB (estimated allocations+margin)
+[q4t][budget]   main_workspace=687669248 mtp_workspace=926107648 forward_buffers=104898564 ple_working=76571648 mtp=1
+[q4t][budget]   per_request=1.24 GB (peak admitted MTP request allocations)  state_pool=0.39 GB
+[q4t][budget]   => max_len=8192 max_seq=1
+[q4t][budget]   MTP allocation scope: text pooled sequences, k in [1,16]; allocation estimate, not a physical RAM guarantee
+[q4t][budget]   mtp_weights=5214301696 mtp_buffers=522240 mtp_scratch=6476920 mtp_checkpoints=346927104 mtp_forward_temp=4206736
+[q4t][budget]   loading_host_peak=3355443200 startup_envelope=97103842376 runtime_peak=94990027992 estimated_total=97103842376
+[q4t][startup] budget 415 ms
+[q4t][capacity] requested_max_len=8192 requested_max_seq=1 requested_max_prefill=2048 effective_max_len=8192 effective_max_seq=1 effective_max_prefill=2048 budget_enabled=1 budget_feasible=true
+[q4t][admission] inflight=8 queued=2 policy=capacity_fifo_best_fit
+[q4t][startup-memory] {"checkpoint":"before_allocations","admission":{"state":"admitted","estimate_bytes":97103842376,"headroom_bytes":2147483648,"required_bytes":99251326024,"observed_total_bytes":131920637952,"observed_available_bytes":125109063680}}
+[q4t][cuda-quota] {"event":"configured","enabled":true,"limit_bytes":118728574156,"charged_bytes":0,"live_bytes":0,"pending_bytes":0,"unknown_bytes":0,"peak_bytes":0,"entries":0,"poisoned":false,"byte_rejections":0,"entry_rejections":0,"stream_rejections":0,"contract_failures":0,"backend_failures":0,"scope":"process_requested_cuda_bytes","physical_ram_limit":false}
+[startup-reservation] {"schema":1,"event":"prepared","status":"PASS","count":1606,"device_bytes":85541278088,"allocated":1606,"consumed":0,"freed":0,"unhanded_remaining":1606,"handed_live":0,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":false,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"281c12b1a51f1fe344326d8223d0a2b47b3141f47255a7d39023c6417b25b3b5"}
+[q4t][startup-plan] mode=auto active=1
+[q4t][startup] startup_resource_plan 2636 ms
+[q4t][startup] model_load 29099 ms
+[q4t] generation stop token ids: 248046 248044
+[q4t] MTP loaded (k=3 max_seq=1)
+[q4t][startup] mtp_load 2976 ms
+[q4t] media disabled; vision tower not loaded
+[q4t][capabilities] effective mtp=1 media_allowed=0 vision_loaded=0 max_seq=1
+[q4t] continuous-batching scheduler started (max_seq=1)
+[startup-reservation] {"schema":1,"event":"startup_complete","status":"PASS","count":1606,"device_bytes":85541278088,"allocated":1606,"consumed":1606,"freed":0,"unhanded_remaining":0,"handed_live":1606,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":true,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"281c12b1a51f1fe344326d8223d0a2b47b3141f47255a7d39023c6417b25b3b5"}
+[q4t][startup-memory] {"checkpoint":"before_ready","admission":{"state":"admitted","estimate_bytes":null,"headroom_bytes":2147483648,"required_bytes":2147483648,"observed_total_bytes":131920637952,"observed_available_bytes":36717096960}}
+[q4t][startup] startup_total 35460 ms
+[q4t] serving on port 18132 (host 127.0.0.1, model qwen3.8-flash-next)
+[q4t] operations on port 18133 (host 127.0.0.1)
+[q4t][request] instance=0 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=agent-9d01f44dc32a867ea319adba8ba060a0
+[q4t][request] instance=0 id=agent-9d01f44dc32a867ea319adba8ba060a0 event=registered stage=validation seq=-1 elapsed_ms=0.092 trace_id=agent-9d01f44dc32a867ea319adba8ba060a0
+[q4t][http] trace_id=agent-9d01f44dc32a867ea319adba8ba060a0 completion_id=agent-9d01f44dc32a867ea319adba8ba060a0
+[q4t][request] instance=0 id=agent-9d01f44dc32a867ea319adba8ba060a0 event=stage stage=encode seq=-1 elapsed_ms=0.106 trace_id=agent-9d01f44dc32a867ea319adba8ba060a0
+[q4t][request] instance=0 id=agent-9d01f44dc32a867ea319adba8ba060a0 event=stage stage=slot_admission seq=-1 elapsed_ms=0.355 trace_id=agent-9d01f44dc32a867ea319adba8ba060a0
+[q4t][request] instance=0 id=agent-9d01f44dc32a867ea319adba8ba060a0 event=admitted stage=slot_admission seq=0 elapsed_ms=0.374 trace_id=agent-9d01f44dc32a867ea319adba8ba060a0
+[q4t][request] instance=0 id=agent-9d01f44dc32a867ea319adba8ba060a0 event=stage stage=encode seq=0 elapsed_ms=0.376 trace_id=agent-9d01f44dc32a867ea319adba8ba060a0
+[q4t][request] instance=0 id=agent-9d01f44dc32a867ea319adba8ba060a0 event=stage stage=prefill seq=0 elapsed_ms=0.566 trace_id=agent-9d01f44dc32a867ea319adba8ba060a0
+[q4t][http] trace_id=agent-9d01f44dc32a867ea319adba8ba060a0 status=404 error=request_not_found
+[q4t] prefill cancelled seq=0 position=27 total=27
+[q4t] request cancelled id=agent-9d01f44dc32a867ea319adba8ba060a0 reason=explicit_cancel
+[q4t][http] trace_id=agent-9d01f44dc32a867ea319adba8ba060a0 status=409 error=explicit_cancel
+[q4t][request] instance=0 id=agent-9d01f44dc32a867ea319adba8ba060a0 event=end stage=prefill seq=0 released=1 outcome=cancelled reason=explicit_cancel elapsed_ms=233.798 slot_wait_ms=0.014 model_lock_ms=0.000 tokenizer_lock_ms=0.000 scheduler_completion_ms=0.000 stream_write_ms=0.000 scheduler_waits=0 trace_id=agent-9d01f44dc32a867ea319adba8ba060a0
+[q4t][http] trace_id=req-874a555383417abf9566be5d86c619a4 status=400 error=invalid_request
+[q4t][http] trace_id=req-a6e9febed23569e0333db018fe3e29e5 status=400 error=invalid_request
+[q4t][http] trace_id=req-c43a3ceb8faf0a24e5e067e7277d853b status=400 error=invalid_request
+[q4t][http] trace_id=req-8e720bb7e3de015dd28bcf70040d549b status=400 error=invalid_request
+[q4t][http] trace_id=req-1b01f32c2486ebbb0b2c2155b5356d07 status=400 error=invalid_request
+[q4t][http] trace_id=req-d918252771bb4c3f6748b93579fe6afe status=400 error=invalid_request
+[q4t][http] trace_id=req-27c29e54f48a10b86242333bb0e1da30 status=400 error=invalid_request
+[q4t][http] trace_id=req-a7cd04c95aee39bc5435df89854c40f3 status=400 error=invalid_request
+[q4t][http] trace_id=req-55e1fa15674363989b4a90f2151bd320 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-8e720bb7e3de015dd28bcf70040d549b reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-dc0090c107c866b0de13773a413c4f30 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-1b01f32c2486ebbb0b2c2155b5356d07 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-604af9d16d53a8509045bfec0ffe169d status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-d918252771bb4c3f6748b93579fe6afe reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-869a23f1a108ecd329e123c854184eee status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-874a555383417abf9566be5d86c619a4 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-68ca4e3db80c2e6394569f3820b0c393 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-27c29e54f48a10b86242333bb0e1da30 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-dc0090c107c866b0de13773a413c4f30 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-0e56b22e85d39720a3a6c34b16b14dd6 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-68ca4e3db80c2e6394569f3820b0c393 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-869a23f1a108ecd329e123c854184eee reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-ea0a21233c05b195781f6cb97949a060 status=400 error=invalid_request
+[q4t][http] trace_id=req-8a97501dd31d83eb01c7cd139769c4b1 status=400 error=invalid_request
+[q4t][http] trace_id=req-865301e236c19d7ddc6ab2651cada870 status=400 error=invalid_request
+[q4t][http] trace_id=req-3c7121f99dfeb9a346e97c3d5b117040 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-a7cd04c95aee39bc5435df89854c40f3 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-9254132b950c8f72e45ee595bb532a6f status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-3c7121f99dfeb9a346e97c3d5b117040 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-dea91bcfb574404b2dc5d7ef1e0bc3e0 status=400 error=invalid_request
+[q4t][http] trace_id=req-46233e7c8e61459af173f0573de48b08 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-0e56b22e85d39720a3a6c34b16b14dd6 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-7fd347ec126f52ff08ca4ff57a5ed202 status=400 error=invalid_request
+[q4t][http] trace_id=req-e30eaade2ea7b9a39207069089b5b2bb status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-dea91bcfb574404b2dc5d7ef1e0bc3e0 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-72bf770fcb2f1712938d9a2cfe25b0b5 status=400 error=invalid_request
+[q4t][http] trace_id=req-756bb5482c3c65c6aab1335b044c0fa7 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-7fd347ec126f52ff08ca4ff57a5ed202 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-e30eaade2ea7b9a39207069089b5b2bb reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-72bf770fcb2f1712938d9a2cfe25b0b5 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-b3d198db5f812c57e0221944cafe48b1 status=400 error=invalid_request
+[q4t][http] trace_id=req-36c25e923fc5dae87a7aa1194fca898f status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-55e1fa15674363989b4a90f2151bd320 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-4adbee1f4dccaf507735f264504bc9b0 status=400 error=invalid_request
+[q4t][http] trace_id=req-8965a0d32f76592c8a2850636dbb37d4 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-b3d198db5f812c57e0221944cafe48b1 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-4adbee1f4dccaf507735f264504bc9b0 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-ea0a21233c05b195781f6cb97949a060 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-6bc9de84b7b6e761f13cb927d83c92cd status=400 error=invalid_request
+[q4t][http] trace_id=req-82ffde35a95783ddc8b667c9a395b949 status=400 error=invalid_request
+[q4t][http] trace_id=req-8a50ccb0d98136cfa426fd3b130d6b47 status=400 error=invalid_request
+[q4t][http] trace_id=req-c58ecec4543acd9884e9c30397e2bb79 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-8965a0d32f76592c8a2850636dbb37d4 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-36c25e923fc5dae87a7aa1194fca898f reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-6bc9de84b7b6e761f13cb927d83c92cd reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-8a50ccb0d98136cfa426fd3b130d6b47 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-9b438239e1b273c05515f22d3080ad62 status=400 error=invalid_request
+[q4t][http] trace_id=req-21cd14b46b508f350e2fe9e8215becbe status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-c58ecec4543acd9884e9c30397e2bb79 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-2fa1ad8efca96267c458dfa9024e9449 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-9b438239e1b273c05515f22d3080ad62 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-eae7a7e37cfcf8b54092aa8d95a3369f status=400 error=invalid_request
+[q4t][http] trace_id=req-cbe93352eb52ce9a9d87790c06f540c5 status=400 error=invalid_request
+[q4t][http] trace_id=req-79357b46fefabeb2ea2e4c7278295501 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-2fa1ad8efca96267c458dfa9024e9449 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-8a97501dd31d83eb01c7cd139769c4b1 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-cbe93352eb52ce9a9d87790c06f540c5 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-79357b46fefabeb2ea2e4c7278295501 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-68754df0bb9717f0f39e85d6ad321163 status=400 error=invalid_request
+[q4t][http] trace_id=req-20bb89078489b9d653b330c508a87602 status=400 error=invalid_request
+[q4t][http] trace_id=req-e61857be9febe898059165073f643f16 status=400 error=invalid_request
+[q4t][http] trace_id=req-a890b5c85c85e7904693206b4cfd68e2 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-20bb89078489b9d653b330c508a87602 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-69514836745a4353f5050637550dd8a8 status=400 error=invalid_request
+[q4t][http] trace_id=req-2b35f1f49e6de6b33513b7991aa76961 status=400 error=invalid_request
+[q4t][http] trace_id=req-137c0d77bc11c4be6dab48362ca9c8b1 status=400 error=invalid_request
+[q4t][http] trace_id=req-2266b749a0727278007077118ef4f70f status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-a890b5c85c85e7904693206b4cfd68e2 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-069778440e1f0702479c29fc3e316d37 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-2b35f1f49e6de6b33513b7991aa76961 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-69514836745a4353f5050637550dd8a8 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-604af9d16d53a8509045bfec0ffe169d reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-4ba38f2eacf2826e01f460aa62b05f8f status=400 error=invalid_request
+[q4t][http] trace_id=req-06372c9c1a94dc1e14c326aa67c87760 status=400 error=invalid_request
+[q4t][http] trace_id=req-0d4e1dceb3d47f894eb033ee0ae970a2 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-069778440e1f0702479c29fc3e316d37 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-412d25c5d2d8d9d070419b87d4397073 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-a6e9febed23569e0333db018fe3e29e5 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-82ffde35a95783ddc8b667c9a395b949 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-8de144cdae38b8195c69fc7f90445a3e status=400 error=invalid_request
+[q4t][http] trace_id=req-fd3c13a99a4476e3e52f102f2cdecaab status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-865301e236c19d7ddc6ab2651cada870 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-412d25c5d2d8d9d070419b87d4397073 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-9254132b950c8f72e45ee595bb532a6f reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-fe5b0554f8c99ad4aaf31f4f8ccf6edf status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-137c0d77bc11c4be6dab48362ca9c8b1 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-e2caad5bdba1fb7d86daf00eeacdd040 status=400 error=invalid_request
+[q4t][http] trace_id=req-dfc03ad8c2e232be1b99fc1761bca9e3 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-fe5b0554f8c99ad4aaf31f4f8ccf6edf reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-8c7eb168aa27782777cdd93b6acff694 status=400 error=invalid_request
+[q4t][http] trace_id=req-ae5da67079d7b07fc6e38abb67bf0e5d status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-e2caad5bdba1fb7d86daf00eeacdd040 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-dfc03ad8c2e232be1b99fc1761bca9e3 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-8c7eb168aa27782777cdd93b6acff694 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-2266b749a0727278007077118ef4f70f reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-d7e3b0189631616b40f577cfeb1527e2 status=400 error=invalid_request
+[q4t][http] trace_id=req-2ad35e59ab135df7eb3daf12913471d8 status=400 error=invalid_request
+[q4t][http] trace_id=req-cf54d571e610f5ba3827313fed9abeb3 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-46233e7c8e61459af173f0573de48b08 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-80313af70475e8392f81047c10bd6292 status=400 error=invalid_request
+[q4t][http] trace_id=req-657483a122f8c6649cf1a777b2cef9e4 status=400 error=invalid_request
+[q4t][http] trace_id=req-5ddac0b07c52974f0946b838af72db83 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-756bb5482c3c65c6aab1335b044c0fa7 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-657483a122f8c6649cf1a777b2cef9e4 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-c53920f851a466249fa8d70c92b845b7 status=400 error=invalid_request
+[q4t][http] trace_id=req-4527ec0f27222444072981ad9d3059d5 status=400 error=invalid_request
+[q4t][http] trace_id=req-7f33cc0c76f003a5eee3b1db585f4177 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-c53920f851a466249fa8d70c92b845b7 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-4527ec0f27222444072981ad9d3059d5 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-150c4d7bcd24bf4214384f2688f7b6e0 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-7f33cc0c76f003a5eee3b1db585f4177 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-150c4d7bcd24bf4214384f2688f7b6e0 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-21cd14b46b508f350e2fe9e8215becbe reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-98d0cfe0ec8c551a1b96352c90ccab5b status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-4ba38f2eacf2826e01f460aa62b05f8f reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-1ad5f34a03eb132f85cae3cabb882f04 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-0d4e1dceb3d47f894eb033ee0ae970a2 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-eae7a7e37cfcf8b54092aa8d95a3369f reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-e61857be9febe898059165073f643f16 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-1ad5f34a03eb132f85cae3cabb882f04 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-2ad35e59ab135df7eb3daf12913471d8 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-fd3c13a99a4476e3e52f102f2cdecaab reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-06372c9c1a94dc1e14c326aa67c87760 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-a37a3e4e2885052924d2f171dd39008a status=400 error=invalid_request
+[q4t][http] trace_id=req-2b45789173e02c83868d035747f1e5a3 status=400 error=invalid_request
+[q4t][http] trace_id=req-9062ea970771585853ad8088de5f751b status=400 error=invalid_request
+[q4t][http] trace_id=req-f8dd2de066e99156b4992446ee202415 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-ae5da67079d7b07fc6e38abb67bf0e5d reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-2b45789173e02c83868d035747f1e5a3 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-05773ee2d896bf564dd8d03fe7dc2711 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-9062ea970771585853ad8088de5f751b reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-628d70a99b1835ceb884df4fd54ec457 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-68754df0bb9717f0f39e85d6ad321163 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-d7e3b0189631616b40f577cfeb1527e2 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-cf54d571e610f5ba3827313fed9abeb3 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-05773ee2d896bf564dd8d03fe7dc2711 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-bcdb4a3380d0b329623a33d3f5e3d5ab status=400 error=invalid_request
+[q4t][http] trace_id=req-8a4b0a1a82aa1dd2ddcdd008401b57cb status=400 error=invalid_request
+[q4t][http] trace_id=req-4b6d36cdd9053ac99bb715f19f05248c status=400 error=invalid_request
+[q4t][http] trace_id=req-17bc93b6810ef1c5e2060deadfe85d63 status=400 error=invalid_request
+[q4t][http] trace_id=req-14366f3a6a401deba2cb53b3c32cb3e0 status=400 error=invalid_request
+[q4t][http] trace_id=req-adb8dbe68db86c5410e75a309744633b status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-17bc93b6810ef1c5e2060deadfe85d63 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-098097f90ee80522e5089b4949ae5969 status=400 error=invalid_request
+[q4t][http] trace_id=req-e6be0985617f3de3807aed9d99186ae1 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-8de144cdae38b8195c69fc7f90445a3e reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-0dc49e7c54995573db1e6aff464fe764 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-adb8dbe68db86c5410e75a309744633b reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-098097f90ee80522e5089b4949ae5969 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-5c4175e31e009c2b0455b81ae57b05a3 status=400 error=invalid_request
+[q4t][http] trace_id=req-65795ad49b5f7c3bfb594fd43b1d9212 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-0dc49e7c54995573db1e6aff464fe764 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-8caec092fdf756dda4d894f476e1703d status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-5c4175e31e009c2b0455b81ae57b05a3 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-0e5333ddbcc57a9d8d360efd6a717ee7 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-65795ad49b5f7c3bfb594fd43b1d9212 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-b15b84851f465824757df528e924a1e3 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-8caec092fdf756dda4d894f476e1703d reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-0e5333ddbcc57a9d8d360efd6a717ee7 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-b15b84851f465824757df528e924a1e3 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-7920b94ccde3d2e223b391f92869fde0 status=400 error=invalid_request
+[q4t][http] trace_id=req-948f98a005088b79894827765c369c81 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-7920b94ccde3d2e223b391f92869fde0 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-2f09539c81be8c58c7728d267321e0f8 status=400 error=invalid_request
+[q4t][http] trace_id=req-7de8c8680e5ec7fa34c459a95f4178f1 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-f8dd2de066e99156b4992446ee202415 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-c03080ebebcfd2b702a54bf1ce4ad519 status=400 error=invalid_request
+[q4t][http] trace_id=req-d6814eada81b95cf279c1126618f3d93 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-2f09539c81be8c58c7728d267321e0f8 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-98d50d6d6c2662bdd6eb54681be17810 status=400 error=invalid_request
+[q4t][http] trace_id=req-d4faa9bf269596006948d4130f4abf63 status=400 error=invalid_request
+[q4t][http] trace_id=req-84b91c6e00dc4fbc57ef6af3873b38ae status=400 error=invalid_request
+[q4t][http] trace_id=req-a4495881abf9a05a88784af1d2331c68 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-d6814eada81b95cf279c1126618f3d93 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-a37a3e4e2885052924d2f171dd39008a reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-4a23c9e238b614bfe784353799ae3e98 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-bcdb4a3380d0b329623a33d3f5e3d5ab reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-d4faa9bf269596006948d4130f4abf63 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-4a23c9e238b614bfe784353799ae3e98 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-6996d78393c629bbebf623d63346afdd status=400 error=invalid_request
+[q4t][http] trace_id=req-c10b7674958674bf7e53c04a08750e1c status=400 error=invalid_request
+[q4t][http] trace_id=req-090cbb8198f5137699b23d65be5b64ea status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-6996d78393c629bbebf623d63346afdd reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-c10b7674958674bf7e53c04a08750e1c reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-0b57a9f6954f22915e6b572585f6df4b status=400 error=invalid_request
+[q4t][http] trace_id=req-ae92dcb1a9970968669673d77f4cbea9 status=400 error=invalid_request
+[q4t][http] trace_id=req-45ad0538e1d748a8fc9a3215284102c6 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-98d0cfe0ec8c551a1b96352c90ccab5b reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-ae92dcb1a9970968669673d77f4cbea9 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-45ad0538e1d748a8fc9a3215284102c6 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-6af8693553510314767b3a881ede84bb status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-e6be0985617f3de3807aed9d99186ae1 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-14366f3a6a401deba2cb53b3c32cb3e0 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-6af8693553510314767b3a881ede84bb reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-08239c557cc69428c241acefb52b2810 status=400 error=invalid_request
+[q4t][http] trace_id=req-8ca57191730c9ba9f60b32dd74cb7cd5 status=400 error=invalid_request
+[q4t][http] trace_id=req-a734690869a4928e6c2c761934e6ed3c status=400 error=invalid_request
+[q4t][http] trace_id=req-276c0a94d83e348553fa970459fa717f status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-08239c557cc69428c241acefb52b2810 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-3201fdc6073c6f4382b6af93e2eb2ca9 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-c43a3ceb8faf0a24e5e067e7277d853b reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-7de8c8680e5ec7fa34c459a95f4178f1 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-1ed53ae6faf6e649e74e1e419e150557 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-276c0a94d83e348553fa970459fa717f reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-73ef3a5680dc166d0b77de0079007e4d status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-c03080ebebcfd2b702a54bf1ce4ad519 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-1ed53ae6faf6e649e74e1e419e150557 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-73ef3a5680dc166d0b77de0079007e4d reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-df589d4c4100d713675a2317737d9c4f status=400 error=invalid_request
+[q4t][http] trace_id=req-fcd33f2a8fa25f5c0271fc35d6f1b8cc status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-a4495881abf9a05a88784af1d2331c68 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-df589d4c4100d713675a2317737d9c4f reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-8a4b0a1a82aa1dd2ddcdd008401b57cb reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-fcd33f2a8fa25f5c0271fc35d6f1b8cc reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-628d70a99b1835ceb884df4fd54ec457 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-a517af783e3683bb29f912d72b655824 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-a517af783e3683bb29f912d72b655824 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-caccb4dd19c55e729e5e610131f73db7 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-4b6d36cdd9053ac99bb715f19f05248c reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-11d976a9502766db2cae35d78e19f3d6 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-caccb4dd19c55e729e5e610131f73db7 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-9c3a7d58fa5984f4b92bc4de4da635be status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-11d976a9502766db2cae35d78e19f3d6 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-20d18fa115e50884dbb8235d08a246a3 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-9c3a7d58fa5984f4b92bc4de4da635be reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-2b19ca85c7a1415549154acfa7fe01f0 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-20d18fa115e50884dbb8235d08a246a3 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-0b57a9f6954f22915e6b572585f6df4b reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-4452ea7b9d2741285a9306cc62de9341 status=400 error=invalid_request
+[q4t][http] trace_id=req-1f98c65c70b28c108b5629297bf9e4e5 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-2b19ca85c7a1415549154acfa7fe01f0 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-8ca57191730c9ba9f60b32dd74cb7cd5 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-80313af70475e8392f81047c10bd6292 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-1f98c65c70b28c108b5629297bf9e4e5 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-4452ea7b9d2741285a9306cc62de9341 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-a734690869a4928e6c2c761934e6ed3c reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-a8261752d12b9020b025ae19081a54ab status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-948f98a005088b79894827765c369c81 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-a8261752d12b9020b025ae19081a54ab reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-49e97fcbbce3cff91c2a877203f54748 status=400 error=invalid_request
+[q4t][http] trace_id=req-6a161e45a9eedee94d4f80ab94ec7634 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-98d50d6d6c2662bdd6eb54681be17810 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-05fef87daadb8986575183d728a1ace5 status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-49e97fcbbce3cff91c2a877203f54748 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-84b91c6e00dc4fbc57ef6af3873b38ae reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-a223d77e210da2d15a72388cd61a2eaa status=400 error=invalid_request
+[q4t][http] trace_id=req-0e1a161d0bbf6c18f1035f1c45481a1a status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-5ddac0b07c52974f0946b838af72db83 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-a223d77e210da2d15a72388cd61a2eaa reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-3d5afffffd53d074e8e893782164a28d status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-0e1a161d0bbf6c18f1035f1c45481a1a reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-3d5afffffd53d074e8e893782164a28d reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-3201fdc6073c6f4382b6af93e2eb2ca9 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-05fef87daadb8986575183d728a1ace5 reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-6a161e45a9eedee94d4f80ab94ec7634 reason=header_eof status=400 system_error=0
+[q4t][http] trace_id=req-6df053dba27174734488f64effd626d5 status=400 error=invalid_request
+[q4t][http] trace_id=req-2f0dbfd4cf55a1d87389ef447fb0508b status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-090cbb8198f5137699b23d65be5b64ea reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-2f0dbfd4cf55a1d87389ef447fb0508b reason=header_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-6df053dba27174734488f64effd626d5 reason=header_eof status=400 system_error=0
+[q4t][request] instance=1 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=agent-4f6df1d48525c9697fda4f393128f5aa
+[q4t][request] instance=1 id=agent-4f6df1d48525c9697fda4f393128f5aa event=registered stage=validation seq=-1 elapsed_ms=0.086 trace_id=agent-4f6df1d48525c9697fda4f393128f5aa
+[q4t][http] trace_id=agent-4f6df1d48525c9697fda4f393128f5aa completion_id=agent-4f6df1d48525c9697fda4f393128f5aa
+[q4t][request] instance=1 id=agent-4f6df1d48525c9697fda4f393128f5aa event=stage stage=encode seq=-1 elapsed_ms=0.100 trace_id=agent-4f6df1d48525c9697fda4f393128f5aa
+[q4t][request] instance=1 id=agent-4f6df1d48525c9697fda4f393128f5aa event=stage stage=slot_admission seq=-1 elapsed_ms=0.283 trace_id=agent-4f6df1d48525c9697fda4f393128f5aa
+[q4t][request] instance=1 id=agent-4f6df1d48525c9697fda4f393128f5aa event=admitted stage=slot_admission seq=0 elapsed_ms=0.300 trace_id=agent-4f6df1d48525c9697fda4f393128f5aa
+[q4t][request] instance=1 id=agent-4f6df1d48525c9697fda4f393128f5aa event=stage stage=encode seq=0 elapsed_ms=0.302 trace_id=agent-4f6df1d48525c9697fda4f393128f5aa
+[q4t][request] instance=1 id=agent-4f6df1d48525c9697fda4f393128f5aa event=stage stage=prefill seq=0 elapsed_ms=0.591 trace_id=agent-4f6df1d48525c9697fda4f393128f5aa
+[q4t][request] instance=1 id=agent-4f6df1d48525c9697fda4f393128f5aa event=stage stage=decode seq=0 elapsed_ms=145.365 trace_id=agent-4f6df1d48525c9697fda4f393128f5aa
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[mtp-accept] request=agent-4f6df1d48525c9697fda4f393128f5aa draft_counts=0,1,0,1
+[q4t][mem] phase=request_end id=agent-4f6df1d48525c9697fda4f393128f5aa dev_used_gb=111.721 dev_total_gb=131.921 rss_mb=924.4 mem_free_gb=16.360 mem_avail_gb=36.488 cached_gb=12.298
+[q4t][request] instance=1 id=agent-4f6df1d48525c9697fda4f393128f5aa event=stage stage=response seq=0 elapsed_ms=356.600 trace_id=agent-4f6df1d48525c9697fda4f393128f5aa
+[q4t][request] instance=1 id=agent-4f6df1d48525c9697fda4f393128f5aa event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=356.694 slot_wait_ms=0.013 model_lock_ms=0.000 tokenizer_lock_ms=0.001 scheduler_completion_ms=192.166 stream_write_ms=0.106 scheduler_waits=2 trace_id=agent-4f6df1d48525c9697fda4f393128f5aa
+[q4t][request] instance=2 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=agent-bfa99cd871c28806af151565ff59f64a
+[q4t][request] instance=2 id=agent-bfa99cd871c28806af151565ff59f64a event=registered stage=validation seq=-1 elapsed_ms=0.118 trace_id=agent-bfa99cd871c28806af151565ff59f64a
+[q4t][http] trace_id=agent-bfa99cd871c28806af151565ff59f64a completion_id=agent-bfa99cd871c28806af151565ff59f64a
+[q4t][request] instance=2 id=agent-bfa99cd871c28806af151565ff59f64a event=stage stage=encode seq=-1 elapsed_ms=0.156 trace_id=agent-bfa99cd871c28806af151565ff59f64a
+[q4t][request] instance=2 id=agent-bfa99cd871c28806af151565ff59f64a event=stage stage=structured_admission seq=-1 elapsed_ms=1.978 trace_id=agent-bfa99cd871c28806af151565ff59f64a
+[q4t][request] instance=2 id=agent-bfa99cd871c28806af151565ff59f64a event=stage stage=grammar_compile seq=-1 elapsed_ms=2.065 trace_id=agent-bfa99cd871c28806af151565ff59f64a
+[q4t][request] instance=2 id=agent-bfa99cd871c28806af151565ff59f64a event=stage stage=slot_admission seq=-1 elapsed_ms=201.045 trace_id=agent-bfa99cd871c28806af151565ff59f64a
+[q4t][request] instance=2 id=agent-bfa99cd871c28806af151565ff59f64a event=admitted stage=slot_admission seq=0 elapsed_ms=201.103 trace_id=agent-bfa99cd871c28806af151565ff59f64a
+[q4t][request] instance=2 id=agent-bfa99cd871c28806af151565ff59f64a event=stage stage=encode seq=0 elapsed_ms=201.106 trace_id=agent-bfa99cd871c28806af151565ff59f64a
+[q4t][request] instance=2 id=agent-bfa99cd871c28806af151565ff59f64a event=stage stage=prefill seq=0 elapsed_ms=201.216 trace_id=agent-bfa99cd871c28806af151565ff59f64a
+[q4t][request] instance=2 id=agent-bfa99cd871c28806af151565ff59f64a event=stage stage=decode seq=0 elapsed_ms=841.423 trace_id=agent-bfa99cd871c28806af151565ff59f64a
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 mode=per-row cuBLASLt=130501
+[q4t][mem] phase=request_end id=agent-bfa99cd871c28806af151565ff59f64a dev_used_gb=111.870 dev_total_gb=131.921 rss_mb=934.7 mem_free_gb=16.221 mem_avail_gb=36.341 cached_gb=12.300
+[q4t][request] instance=2 id=agent-bfa99cd871c28806af151565ff59f64a event=stage stage=response seq=0 elapsed_ms=3757.292 trace_id=agent-bfa99cd871c28806af151565ff59f64a
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4080816128 reported_post_exec_rss_bytes=234762240 wait_status=9
+[q4t][request] instance=2 id=agent-bfa99cd871c28806af151565ff59f64a event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=3763.473 slot_wait_ms=0.033 model_lock_ms=0.004 tokenizer_lock_ms=0.005 scheduler_completion_ms=0.000 stream_write_ms=0.059 scheduler_waits=0 trace_id=agent-bfa99cd871c28806af151565ff59f64a
+[q4t][request] instance=3 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=agent-809658a05b29c06293a1b50ed3ccb560
+[q4t][request] instance=3 id=agent-809658a05b29c06293a1b50ed3ccb560 event=registered stage=validation seq=-1 elapsed_ms=0.110 trace_id=agent-809658a05b29c06293a1b50ed3ccb560
+[q4t][http] trace_id=agent-809658a05b29c06293a1b50ed3ccb560 completion_id=agent-809658a05b29c06293a1b50ed3ccb560
+[q4t][request] instance=3 id=agent-809658a05b29c06293a1b50ed3ccb560 event=stage stage=encode seq=-1 elapsed_ms=0.150 trace_id=agent-809658a05b29c06293a1b50ed3ccb560
+[q4t][request] instance=3 id=agent-809658a05b29c06293a1b50ed3ccb560 event=stage stage=structured_admission seq=-1 elapsed_ms=2.395 trace_id=agent-809658a05b29c06293a1b50ed3ccb560
+[q4t][request] instance=3 id=agent-809658a05b29c06293a1b50ed3ccb560 event=stage stage=grammar_compile seq=-1 elapsed_ms=2.486 trace_id=agent-809658a05b29c06293a1b50ed3ccb560
+[q4t][request] instance=3 id=agent-809658a05b29c06293a1b50ed3ccb560 event=stage stage=slot_admission seq=-1 elapsed_ms=212.163 trace_id=agent-809658a05b29c06293a1b50ed3ccb560
+[q4t][request] instance=3 id=agent-809658a05b29c06293a1b50ed3ccb560 event=admitted stage=slot_admission seq=0 elapsed_ms=212.222 trace_id=agent-809658a05b29c06293a1b50ed3ccb560
+[q4t][request] instance=3 id=agent-809658a05b29c06293a1b50ed3ccb560 event=stage stage=encode seq=0 elapsed_ms=212.225 trace_id=agent-809658a05b29c06293a1b50ed3ccb560
+[q4t][request] instance=3 id=agent-809658a05b29c06293a1b50ed3ccb560 event=stage stage=prefill seq=0 elapsed_ms=212.324 trace_id=agent-809658a05b29c06293a1b50ed3ccb560
+[q4t][request] instance=3 id=agent-809658a05b29c06293a1b50ed3ccb560 event=stage stage=decode seq=0 elapsed_ms=920.552 trace_id=agent-809658a05b29c06293a1b50ed3ccb560
+[q4t][mem] phase=request_end id=agent-809658a05b29c06293a1b50ed3ccb560 dev_used_gb=111.833 dev_total_gb=131.921 rss_mb=936.8 mem_free_gb=16.259 mem_avail_gb=36.379 cached_gb=12.301
+[q4t][request] instance=3 id=agent-809658a05b29c06293a1b50ed3ccb560 event=stage stage=response seq=0 elapsed_ms=4042.755 trace_id=agent-809658a05b29c06293a1b50ed3ccb560
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4080816128 reported_post_exec_rss_bytes=228311040 wait_status=9
+[q4t][request] instance=3 id=agent-809658a05b29c06293a1b50ed3ccb560 event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=4048.124 slot_wait_ms=0.034 model_lock_ms=0.005 tokenizer_lock_ms=0.007 scheduler_completion_ms=0.000 stream_write_ms=0.057 scheduler_waits=0 trace_id=agent-809658a05b29c06293a1b50ed3ccb560
+[q4t][request] instance=4 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=agent-59587fb36a7399d5ecc926fd97a488dd
+[q4t][request] instance=4 id=agent-59587fb36a7399d5ecc926fd97a488dd event=registered stage=validation seq=-1 elapsed_ms=0.136 trace_id=agent-59587fb36a7399d5ecc926fd97a488dd
+[q4t][http] trace_id=agent-59587fb36a7399d5ecc926fd97a488dd completion_id=agent-59587fb36a7399d5ecc926fd97a488dd
+[q4t][request] instance=4 id=agent-59587fb36a7399d5ecc926fd97a488dd event=stage stage=encode seq=-1 elapsed_ms=0.176 trace_id=agent-59587fb36a7399d5ecc926fd97a488dd
+[q4t][request] instance=4 id=agent-59587fb36a7399d5ecc926fd97a488dd event=stage stage=structured_admission seq=-1 elapsed_ms=2.004 trace_id=agent-59587fb36a7399d5ecc926fd97a488dd
+[q4t][request] instance=4 id=agent-59587fb36a7399d5ecc926fd97a488dd event=stage stage=grammar_compile seq=-1 elapsed_ms=2.089 trace_id=agent-59587fb36a7399d5ecc926fd97a488dd
+[q4t][request] instance=4 id=agent-59587fb36a7399d5ecc926fd97a488dd event=stage stage=slot_admission seq=-1 elapsed_ms=199.918 trace_id=agent-59587fb36a7399d5ecc926fd97a488dd
+[q4t][request] instance=4 id=agent-59587fb36a7399d5ecc926fd97a488dd event=admitted stage=slot_admission seq=0 elapsed_ms=199.963 trace_id=agent-59587fb36a7399d5ecc926fd97a488dd
+[q4t][request] instance=4 id=agent-59587fb36a7399d5ecc926fd97a488dd event=stage stage=encode seq=0 elapsed_ms=199.966 trace_id=agent-59587fb36a7399d5ecc926fd97a488dd
+[q4t][request] instance=4 id=agent-59587fb36a7399d5ecc926fd97a488dd event=stage stage=prefill seq=0 elapsed_ms=200.065 trace_id=agent-59587fb36a7399d5ecc926fd97a488dd
+[q4t][request] instance=4 id=agent-59587fb36a7399d5ecc926fd97a488dd event=stage stage=decode seq=0 elapsed_ms=810.331 trace_id=agent-59587fb36a7399d5ecc926fd97a488dd
+[q4t][mem] phase=request_end id=agent-59587fb36a7399d5ecc926fd97a488dd dev_used_gb=111.798 dev_total_gb=131.921 rss_mb=937.4 mem_free_gb=16.293 mem_avail_gb=36.415 cached_gb=12.302
+[q4t][request] instance=4 id=agent-59587fb36a7399d5ecc926fd97a488dd event=stage stage=response seq=0 elapsed_ms=3730.103 trace_id=agent-59587fb36a7399d5ecc926fd97a488dd
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4080816128 reported_post_exec_rss_bytes=234770432 wait_status=9
+[q4t][request] instance=4 id=agent-59587fb36a7399d5ecc926fd97a488dd event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=3736.800 slot_wait_ms=0.026 model_lock_ms=0.004 tokenizer_lock_ms=0.007 scheduler_completion_ms=0.000 stream_write_ms=0.063 scheduler_waits=0 trace_id=agent-59587fb36a7399d5ecc926fd97a488dd
+[q4t][request] instance=5 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=agent-1eee133ed8bd8ec49018de8fe6723dac
+[q4t][request] instance=5 id=agent-1eee133ed8bd8ec49018de8fe6723dac event=registered stage=validation seq=-1 elapsed_ms=0.111 trace_id=agent-1eee133ed8bd8ec49018de8fe6723dac
+[q4t][http] trace_id=agent-1eee133ed8bd8ec49018de8fe6723dac completion_id=agent-1eee133ed8bd8ec49018de8fe6723dac
+[q4t][request] instance=5 id=agent-1eee133ed8bd8ec49018de8fe6723dac event=stage stage=encode seq=-1 elapsed_ms=0.155 trace_id=agent-1eee133ed8bd8ec49018de8fe6723dac
+[q4t][request] instance=5 id=agent-1eee133ed8bd8ec49018de8fe6723dac event=stage stage=structured_admission seq=-1 elapsed_ms=2.383 trace_id=agent-1eee133ed8bd8ec49018de8fe6723dac
+[q4t][request] instance=5 id=agent-1eee133ed8bd8ec49018de8fe6723dac event=stage stage=grammar_compile seq=-1 elapsed_ms=2.477 trace_id=agent-1eee133ed8bd8ec49018de8fe6723dac
+[q4t][request] instance=5 id=agent-1eee133ed8bd8ec49018de8fe6723dac event=stage stage=slot_admission seq=-1 elapsed_ms=208.837 trace_id=agent-1eee133ed8bd8ec49018de8fe6723dac
+[q4t][request] instance=5 id=agent-1eee133ed8bd8ec49018de8fe6723dac event=admitted stage=slot_admission seq=0 elapsed_ms=208.883 trace_id=agent-1eee133ed8bd8ec49018de8fe6723dac
+[q4t][request] instance=5 id=agent-1eee133ed8bd8ec49018de8fe6723dac event=stage stage=encode seq=0 elapsed_ms=208.886 trace_id=agent-1eee133ed8bd8ec49018de8fe6723dac
+[q4t][request] instance=5 id=agent-1eee133ed8bd8ec49018de8fe6723dac event=stage stage=prefill seq=0 elapsed_ms=208.986 trace_id=agent-1eee133ed8bd8ec49018de8fe6723dac
+[q4t][request] instance=5 id=agent-1eee133ed8bd8ec49018de8fe6723dac event=stage stage=decode seq=0 elapsed_ms=900.009 trace_id=agent-1eee133ed8bd8ec49018de8fe6723dac
+[q4t][mem] phase=request_end id=agent-1eee133ed8bd8ec49018de8fe6723dac dev_used_gb=111.830 dev_total_gb=131.921 rss_mb=937.4 mem_free_gb=16.261 mem_avail_gb=36.383 cached_gb=12.302
+[q4t][request] instance=5 id=agent-1eee133ed8bd8ec49018de8fe6723dac event=stage stage=response seq=0 elapsed_ms=4025.229 trace_id=agent-1eee133ed8bd8ec49018de8fe6723dac
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4080816128 reported_post_exec_rss_bytes=228323328 wait_status=9
+[q4t][request] instance=5 id=agent-1eee133ed8bd8ec49018de8fe6723dac event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=4029.994 slot_wait_ms=0.029 model_lock_ms=0.005 tokenizer_lock_ms=0.006 scheduler_completion_ms=0.000 stream_write_ms=0.059 scheduler_waits=0 trace_id=agent-1eee133ed8bd8ec49018de8fe6723dac
+[q4t] shutting down: draining in-flight requests...
+[mtp-batches] rows=1 suffix=0 steps=2
+[q4t] shutdown complete (0 in-flight remaining)
+[startup-reservation] {"schema":1,"event":"finalized","status":"PASS","count":1606,"device_bytes":85541278088,"allocated":1606,"consumed":1606,"freed":1606,"unhanded_remaining":0,"handed_live":0,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":true,"finalized":true,"active":false,"strategy":"stable_descending_bytes","plan_sha256":"281c12b1a51f1fe344326d8223d0a2b47b3141f47255a7d39023c6417b25b3b5"}
+[q4t][cuda-quota] {"event":"server_destroyed","enabled":true,"limit_bytes":118728574156,"charged_bytes":111346176,"live_bytes":111346176,"pending_bytes":0,"unknown_bytes":0,"peak_bytes":85736868120,"entries":6,"poisoned":false,"byte_rejections":0,"entry_rejections":0,"stream_rejections":0,"contract_failures":0,"backend_failures":0,"scope":"process_requested_cuda_bytes","physical_ram_limit":false}

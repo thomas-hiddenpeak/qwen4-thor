@@ -1,0 +1,960 @@
+{
+  "schema_version": 1,
+  "audit_base_commit": "7606435f3f3191570fca376379cdf010b066ac15",
+  "audit_report": "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+  "meaning": "Surface inventory only; every row retains explicit limitations. Source drift requires renewed review, not blind hash refresh.",
+  "fields": {
+    "model": {
+      "semantics": "必须等于固定服务名；省略可用",
+      "boundary": "无别名和详情；名称由常量设定",
+      "evidence": [
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+      ]
+    },
+    "prompt": {
+      "semantics": "非空原始 prompt，输出 raw",
+      "boundary": "与 messages 互斥；不解析工具/推理",
+      "evidence": [
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+      ]
+    },
+    "messages": {
+      "semantics": "原生模板与parsed默认；单条开头developer作为system替代；历史调用形状与结果必填；assistant推理历史双字段相等合并/null为空/冲突拒绝",
+      "boundary": "Native text profile unchanged; experimental media requires user role, closed image_url/video_frames fields, auto detail and canonical PNG/JPEG payload. No public multimodal quality acceptance; logical budgets are not physical RAM reservation.",
+      "evidence": [
+        "tests/server_chat_tool_history_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
+        "tests/server_chat_message_profile_test.cpp",
+        "docs/SERVE_STAGE_B1_2026-11-03.md",
+        "docs/serve-message-profile-v2.schema.json",
+        "docs/SERVE_STAGE_B1_RESULT_2026-11-03.md",
+        "docs/SERVE_STAGE_B2_2026-11-03.md",
+        "docs/SERVE_MEDIA_INTEGRATION_2026-11-03.md",
+        "tests/server_media_admission_test.cpp"
+      ]
+    },
+    "max_tokens": {
+      "semantics": "数字原文精确整数 [1,2147483647] 或 null，总生成 token 预算含推理",
+      "boundary": "两个预算只能一个非 null；容量可能进一步限制；非法舍入值拒绝",
+      "evidence": [
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+      ]
+    },
+    "max_completion_tokens": {
+      "semantics": "数字原文精确整数 [1,2147483647] 或 null，总生成 token 预算含推理",
+      "boundary": "两个预算只能一个非 null；容量可能进一步限制；非法舍入值拒绝",
+      "evidence": [
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+      ]
+    },
+    "stream": {
+      "semantics": "bool 或 null；null=false，JSON 或 SSE",
+      "boundary": "结构化payload完整校验后发布；首角色提前、空闲5秒注释心跳；首帧后失败为SSE error，写失败可截断",
+      "evidence": [
+        "tests/server_http_response_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
+        "tools/serve_stage_a/verify.py"
+      ]
+    },
+    "stream_options": {
+      "semantics": "对象或 null；null 不请求 usage",
+      "boundary": "仅 include_usage bool；尚无其他流控选项",
+      "evidence": [
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+      ]
+    },
+    "request_id": {
+      "semantics": "ASCII 字母数字/下划线/短横线，1..128；需合法 cancel_token",
+      "boundary": "JSON ID绑定取消凭据；与HTTP追踪头独立；自动ID为128随机位，不提供幂等重放 Optional gateway client policy namespaces this value by authenticated client; independent cancellation credentials and exact prefix checks still apply.",
+      "evidence": [
+        "tests/server_state_contract_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
+        "docs/SERVE_CLIENT_ISOLATION_2026-11-04.md"
+      ]
+    },
+    "cancel_token": {
+      "semantics": "显式 request_id 配套 64 位小写 hex；注册前检查",
+      "boundary": "取消 handler 共用凭据形状；不是网关鉴权 Optional gateway client policy namespaces this value by authenticated client; independent cancellation credentials and exact prefix checks still apply.",
+      "evidence": [
+        "tests/server_state_contract_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
+        "docs/SERVE_CLIENT_ISOLATION_2026-11-04.md"
+      ]
+    },
+    "request_timeout_ms": {
+      "semantics": "原文精确整数 [1,10800000]；注册前拒绝错误值",
+      "boundary": "不含读取 body；编译内不可抢占，前后协作取消；shutdown等待in-flight编译，非硬时间保证",
+      "evidence": [
+        "tests/server_state_contract_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+      ]
+    },
+    "tools": {
+      "semantics": "各模式共用函数定义白名单；strict:null=false",
+      "boundary": "普通 schema 仍为提示，不保证完整 JSON Schema；强约束有限 profile 不变; constrained compiler/matcher isolated in one exec worker with 2GiB RLIMIT_AS and interruptible 10s/2s budgets; no whole-server memory guarantee",
+      "evidence": [
+        "tests/server_chat_response_parser_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
+        "docs/SERVE_GRAMMAR_ISOLATION_2026-11-02.md"
+      ]
+    },
+    "chat_template_kwargs": {
+      "semantics": "原生模板四个选项；嵌套值覆盖顶层",
+      "boundary": "仅 messages；非通用 Jinja 注入接口",
+      "evidence": [
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+      ]
+    },
+    "enable_thinking": {
+      "semantics": "控制模板的初始思考前缀",
+      "boundary": "不是响应隐藏开关；嵌套参数优先",
+      "evidence": [
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+      ]
+    },
+    "preserve_thinking": {
+      "semantics": "保留历史reasoning/reasoning_content的单一原生推理槽",
+      "boundary": "模板选项，不是持久会话；别名非null冲突拒绝，assistant缺省/null为空",
+      "evidence": [
+        "tests/server_chat_tool_history_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "tests/server_chat_message_profile_test.cpp"
+      ]
+    },
+    "reasoning_effort": {
+      "semantics": "low/medium/xhigh 提示词选择",
+      "boundary": "无独立计算预算；与现代 reasoning 字段不等同 G2",
+      "evidence": [
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+      ]
+    },
+    "add_vision_id": {
+      "semantics": "实验媒体占位的编号选项",
+      "boundary": "纯文本无效果；媒体默认禁用",
+      "evidence": [
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+      ]
+    },
+    "temperature": {
+      "semantics": "中性值或 null；null 使用 greedy 默认值",
+      "boundary": "非中性采样值拒绝；中性值比较先检查数字原文为精确整数",
+      "evidence": [
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+      ]
+    },
+    "top_p": {
+      "semantics": "中性值或 null；null 使用 greedy 默认值",
+      "boundary": "非中性采样值拒绝；中性值比较先检查数字原文为精确整数",
+      "evidence": [
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+      ]
+    },
+    "n": {
+      "semantics": "中性值或 null；null 使用 greedy 默认值",
+      "boundary": "非中性采样值拒绝；中性值比较先检查数字原文为精确整数",
+      "evidence": [
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+      ]
+    },
+    "frequency_penalty": {
+      "semantics": "中性值或 null；null 使用 greedy 默认值",
+      "boundary": "非中性采样值拒绝；中性值比较先检查数字原文为精确整数",
+      "evidence": [
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+      ]
+    },
+    "presence_penalty": {
+      "semantics": "中性值或 null；null 使用 greedy 默认值",
+      "boundary": "非中性采样值拒绝；中性值比较先检查数字原文为精确整数",
+      "evidence": [
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+      ]
+    },
+    "repetition_penalty": {
+      "semantics": "仅数学精确的 1",
+      "boundary": "扩展选项 null 仍拒绝；其他值不支持",
+      "evidence": [
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+      ]
+    },
+    "seed": {
+      "semantics": "原文精确整数且绝对值不超过 2^53-1，或 null",
+      "boundary": "greedy 无随机效果；不保证跨版本/配置重现",
+      "evidence": [
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+      ]
+    },
+    "stop": {
+      "semantics": "已验：单串或最多4个非空UTF-8字符串，每串256字节；null/[]禁用，增量匹配后不发布停止串/尾部",
+      "boundary": "strict输出和state cache组合拒绝；包含推理/工具标记，部分工具错误；MTP已算后缀不计completion，不宣称没有额外计算",
+      "evidence": [
+        "tests/server_text_stop_test.cpp",
+        "docs/SERVE_TEXT_STOP_2026-11-03.md",
+        "docs/serve-stop-v1.schema.json",
+        "docs/SERVE_TEXT_STOP_RESULT_2026-11-03.md"
+      ]
+    },
+    "logprobs": {
+      "semantics": "只接受 null 或 false",
+      "boundary": "未实现 token 概率 G8",
+      "evidence": [
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+      ]
+    },
+    "top_logprobs": {
+      "semantics": "仅 null 或精确数学零的数值",
+      "boundary": "不返回 logprobs；浮点舍入后的零不视为合法控制值",
+      "evidence": [
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+      ]
+    },
+    "logit_bias": {
+      "semantics": "只接受 null 或空对象",
+      "boundary": "未实现 logit 调整 G8",
+      "evidence": [
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+      ]
+    },
+    "response_format": {
+      "semantics": "text/null 或受约束 JSON 对象/有限 schema；schema.strict:null=false",
+      "boundary": "XGrammar ON；tools 同用须 none；数组界限精确整数 0..64；缓存/媒体拒绝；constrained独立租约限1，忙时503；编译仍协作取消; constrained compiler/matcher isolated in one exec worker with 2GiB RLIMIT_AS and interruptible 10s/2s budgets; no whole-server memory guarantee",
+      "evidence": [
+        "tests/server_output_constraints_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
+        "tests/server_structured_admission_test.cpp",
+        "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
+        "docs/SERVE_GRAMMAR_ISOLATION_2026-11-02.md"
+      ]
+    },
+    "user": {
+      "semantics": "字符串或 null，可选元数据",
+      "boundary": "不用于鉴权、隔离、路由或日志标签",
+      "evidence": [
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+      ]
+    },
+    "session_id": {
+      "semantics": "同进程独占 SSD KV cache 能力 key",
+      "boundary": "显式启用；不是持久对话或恢复 API；结构化不组合 Optional gateway client policy namespaces this value by authenticated client; independent cancellation credentials and exact prefix checks still apply.",
+      "evidence": [
+        "tests/server_state_contract_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_CLIENT_ISOLATION_2026-11-04.md"
+      ]
+    },
+    "prefix_cache_scope": {
+      "semantics": "同进程共享前缀 cache 能力 key",
+      "boundary": "显式启用；不是租户隔离或 OpenAI prompt_cache_key Optional gateway client policy namespaces this value by authenticated client; independent cancellation credentials and exact prefix checks still apply.",
+      "evidence": [
+        "tests/server_state_contract_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_CLIENT_ISOLATION_2026-11-04.md"
+      ]
+    },
+    "prefix_cache_write_tokens": {
+      "semantics": "原文精确整数 0 或 [1024,131072]",
+      "boundary": "正值必须提供 prefix_cache_scope；不扩大缓存组合支持",
+      "evidence": [
+        "tests/server_state_contract_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+      ]
+    },
+    "parse_response": {
+      "semantics": "messages 默认 true；false 返回 raw",
+      "boundary": "false 不可与工具控制或约束保证组合",
+      "evidence": [
+        "tests/server_chat_response_parser_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+      ]
+    },
+    "tool_choice": {
+      "semantics": "auto/none/required/named",
+      "boundary": "非 auto 需约束后端；named 恰好一次；只 parsed messages；constrained独立租约限1，忙时503；编译仍协作取消; constrained compiler/matcher isolated in one exec worker with 2GiB RLIMIT_AS and interruptible 10s/2s budgets; no whole-server memory guarantee",
+      "evidence": [
+        "tests/server_output_constraints_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "tests/server_structured_admission_test.cpp",
+        "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
+        "docs/SERVE_GRAMMAR_ISOLATION_2026-11-02.md"
+      ]
+    },
+    "parallel_tool_calls": {
+      "semantics": "false 最多一次；true 允许多调用",
+      "boundary": "不是工具执行并发开关；false+tools 走约束；constrained独立租约限1，忙时503；编译仍协作取消; constrained compiler/matcher isolated in one exec worker with 2GiB RLIMIT_AS and interruptible 10s/2s budgets; no whole-server memory guarantee",
+      "evidence": [
+        "tests/server_output_constraints_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "tests/server_structured_admission_test.cpp",
+        "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
+        "docs/SERVE_GRAMMAR_ISOLATION_2026-11-02.md"
+      ]
+    },
+    "include_reasoning": {
+      "semantics": "默认true；false不收集/发布已解析的推理正文；解析与错误终态保留",
+      "boundary": "只支持parsed messages，显式null拒绝；不减少生成或usage，不过滤content中的自述；05a限定CPU/HTTP/工具闭环已验",
+      "evidence": [
+        "tests/server_chat_response_parser_test.cpp",
+        "tests/server_chat_message_profile_test.cpp",
+        "docs/SERVE_STAGE_B2_2026-11-03.md",
+        "docs/SERVE_STAGE_B2A_RESULT_2026-11-03.md"
+      ]
+    },
+    "reasoning_field": {
+      "semantics": "选择reasoning或reasoning_content，默认后者；JSON/SSE同一响应只使用一个字段",
+      "boundary": "仅parsed messages，非法值/null拒绝；非Responses API，不代表推理预算",
+      "evidence": [
+        "tests/server_chat_response_parser_test.cpp",
+        "tools/examples/test_chat_client.py",
+        "docs/serve-reasoning-v1.schema.json",
+        "docs/SERVE_STAGE_B2A_RESULT_2026-11-03.md"
+      ]
+    },
+    "thinking_token_budget": {
+      "semantics": "缺省/null关闭；parsed messages精确整数0..2147483647；自然token计量/有限强制闭合并继续答案",
+      "boundary": "自然closing计预算；forced为原生换行/闭合/空行及必要UTF8补齐，最多14并计completion；总输出优先；MTP批前留pending再host尾部；真实HTTP预算1原失败保留，修正后19用例限定通过；完整head/seq1",
+      "evidence": [
+        "tests/server_thinking_budget_test.cpp",
+        "tests/server_structured_decoder_test.cpp",
+        "docs/SERVE_THINKING_BUDGET_2026-11-03.md",
+        "docs/serve-thinking-v1.schema.json",
+        "tools/serve_thinking_budget/verify.py",
+        "docs/SERVE_THINKING_HTTP_RESULT_2026-11-03.md"
+      ]
+    }
+  },
+  "routes": {
+    "GET /healthz": {
+      "semantics": "GPU sticky 健康及槽/连接计数",
+      "boundary": "保留旧健康语义；与livez/readyz、cancel共享4个控制连接名额；未分类连接仍计总上限",
+      "evidence": [
+        "docs/SERVE_RELIABILITY_2026-10-30.md",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+      ]
+    },
+    "GET /v1/models": {
+      "semantics": "固定单模型列表",
+      "boundary": "created 为查询时刻；无详情/别名；普通模型名固定；SRV-12b独立观测额度4已限定受载验收，完整头后分类，未分类慢头仍共享总额",
+      "evidence": [
+        "docs/APPLICATION_SERVICE_RESULT_2026-11-02.md",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_OBSERVATION_CAPACITY_2026-11-03.md",
+        "include/q4t/server/http_connection.h",
+        "docs/SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md"
+      ]
+    },
+    "GET /v1/capabilities": {
+      "semantics": "实现/模板源码身份与能力边界",
+      "boundary": "implementation_only；不是发布/实际配置完整证明；明示单constrained租约、编译不可抢占及非RSS硬上限；SRV-12b独立观测额度4已限定受载验收，完整头后分类，未分类慢头仍共享总额",
+      "evidence": [
+        "tests/server_chat_capabilities_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
+        "docs/SERVE_OBSERVATION_CAPACITY_2026-11-03.md",
+        "include/q4t/server/http_connection.h",
+        "docs/SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md"
+      ]
+    },
+    "GET /metrics": {
+      "semantics": "独立slot_wait/admission/generation_exit/response；固定原因取消计数；constrained准备与租约指标；SRV-02b已验slot等候数、queue/text准入拒绝固定计数；SRV-01b已验每连接首次接收/写失败固定原因/来源，心跳join后发布，与chat结果分开；新增固定4内存状态、3检查点×2拒绝原因及有效读数/阈值，不计为物理峰值",
+      "boundary": "queue/e2e保留原语义的弃用别名；存储计量非compiler峰值；局部写完不保证客户端消费；SRV-12b独立观测额度4已限定受载验收，完整头后分类，未分类慢头仍共享总额",
+      "evidence": [
+        "src/server/chat_metrics.cpp",
+        "tools/serve_resources/verify.py",
+        "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
+        "docs/SERVE_OBSERVABILITY_RESULT_2026-11-03.md",
+        "docs/SERVE_MEMORY_ADMISSION_2026-11-03.md",
+        "tests/server_memory_admission_test.cpp",
+        "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md",
+        "docs/SERVE_OBSERVATION_CAPACITY_2026-11-03.md",
+        "include/q4t/server/http_connection.h",
+        "docs/SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md"
+      ]
+    },
+    "POST /v1/requests/cancel": {
+      "semantics": "仅 request_id/cancel_token；未知/形状错误400，无匹配404，匹配202",
+      "boundary": "400不触发取消；202不等于drained；重启无持久状态",
+      "evidence": [
+        "tools/serve_reliability/http_lifecycle_test.cpp",
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+      ]
+    },
+    "POST /v1/chat/completions": {
+      "semantics": "messages/prompt，JSON/SSE，单模型文本生成；新增body前/准备/slot交接的全局MemAvailable准入，失效读数也拒绝；CPU/原生未加载HTTP及真实高floor/默认业务已验；同模型动态压力恢复未验",
+      "boundary": "application/json UTF-8；方法405、query400；普通连接与active chat仍有界；首帧后错误走SSE",
+      "evidence": [
+        "docs/STRUCTURED_OUTPUT_RESULT_2026-11-02.md",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_MEMORY_ADMISSION_2026-11-03.md",
+        "tests/server_memory_admission_test.cpp",
+        "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md"
+      ]
+    },
+    "GET /livez": {
+      "semantics": "进程服务循环存活；GPU unhealthy 不等同进程死亡；内存准入关闭不改变liveness",
+      "boundary": "加载后才监听；控制入口4连接预留、排空窗口至多2秒；不保证header洪泛下可用",
+      "evidence": [
+        "tools/serve_reliability/http_lifecycle_test.cpp",
+        "tools/serve_stage_a/verify.py",
+        "docs/PHASES.md",
+        "docs/SERVE_MEMORY_ADMISSION_2026-11-03.md",
+        "tests/server_memory_admission_test.cpp",
+        "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md"
+      ]
+    },
+    "GET /readyz": {
+      "semantics": "模型已加载、服务/GPU健康且未排空；普通忙不改变ready；现在还要求内存准入开放，压力/观测失效有独立状态",
+      "boundary": "加载后才监听；控制入口4连接预留、排空窗口至多2秒；不保证header洪泛下可用",
+      "evidence": [
+        "tools/serve_reliability/http_lifecycle_test.cpp",
+        "tools/serve_stage_a/verify.py",
+        "docs/PHASES.md",
+        "docs/SERVE_MEMORY_ADMISSION_2026-11-03.md",
+        "tests/server_memory_admission_test.cpp",
+        "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md"
+      ]
+    },
+    "POST /v1/chat/preflight": {
+      "semantics": "私有q4t-preflight-v1：共用真实校验、模板、分词和预算；包装请求/可选文本与ID；同一内存准入门，body前及准备前检查，不能用预检绕过",
+      "boundary": "仅文本；不预留槽位/注册请求/访问缓存/编译grammar/执行GPU；CPU与限定HTTP已验；不保证未来执行成功",
+      "evidence": [
+        "docs/SERVE_PREFLIGHT_2026-11-03.md",
+        "docs/serve-preflight-v1.schema.json",
+        "tests/server_chat_plan_test.cpp",
+        "tools/serve_preflight/template_diff.py",
+        "docs/SERVE_PREFLIGHT_RESULT_2026-11-03.md",
+        "docs/SERVE_MEMORY_ADMISSION_2026-11-03.md",
+        "tests/server_memory_admission_test.cpp",
+        "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md"
+      ]
+    },
+    "GET /v1/config": {
+      "semantics": "启动后实际上下文、输出默认、槽位、限制和来源，只读；SRV-02b已验inflight/queued请求值与预算后有效值、capacity_fifo_best_fit策略；新增独立于启动预算的内存门限/恢复余量/样本时效配置，0可显式禁用，不是整机硬限额",
+      "boundary": "不公开路径/凭据；不保证可用槽位、全机RAM或未来执行成功；限定HTTP已验；SRV-12b独立观测额度4已限定受载验收，完整头后分类，未分类慢头仍共享总额",
+      "evidence": [
+        "docs/SERVE_PREFLIGHT_2026-11-03.md",
+        "docs/serve-config-v1.schema.json",
+        "tests/server_chat_plan_test.cpp",
+        "docs/SERVE_PREFLIGHT_RESULT_2026-11-03.md",
+        "docs/SERVE_MEMORY_ADMISSION_2026-11-03.md",
+        "tests/server_memory_admission_test.cpp",
+        "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md",
+        "docs/SERVE_OBSERVATION_CAPACITY_2026-11-03.md",
+        "include/q4t/server/http_connection.h",
+        "docs/SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md"
+      ]
+    }
+  },
+  "whitelists": {
+    "chat_contract.cpp:0:options": [
+      "enable_thinking",
+      "preserve_thinking",
+      "reasoning_effort",
+      "add_vision_id"
+    ],
+    "chat_contract.cpp:1:req": [
+      "model",
+      "prompt",
+      "messages",
+      "max_tokens",
+      "max_completion_tokens",
+      "stream",
+      "stream_options",
+      "request_id",
+      "cancel_token",
+      "request_timeout_ms",
+      "tools",
+      "chat_template_kwargs",
+      "enable_thinking",
+      "preserve_thinking",
+      "reasoning_effort",
+      "reasoning_field",
+      "include_reasoning",
+      "thinking_token_budget",
+      "add_vision_id",
+      "temperature",
+      "top_p",
+      "n",
+      "frequency_penalty",
+      "presence_penalty",
+      "repetition_penalty",
+      "seed",
+      "stop",
+      "logprobs",
+      "top_logprobs",
+      "logit_bias",
+      "response_format",
+      "user",
+      "session_id",
+      "prefix_cache_scope",
+      "prefix_cache_write_tokens",
+      "parse_response",
+      "tool_choice",
+      "parallel_tool_calls"
+    ],
+    "chat_contract.cpp:2:*options": [
+      "include_usage"
+    ],
+    "chat_contract.cpp:3:message": [
+      "role",
+      "content",
+      "reasoning_content",
+      "reasoning",
+      "tool_calls",
+      "tool_call_id",
+      "name",
+      "refusal",
+      "audio",
+      "annotations",
+      "function_call"
+    ],
+    "chat_contract.cpp:4:part": [
+      "type",
+      "text"
+    ],
+    "chat_contract.cpp:5:part": [
+      "type",
+      "image_url"
+    ],
+    "chat_contract.cpp:6:part": [
+      "type",
+      "video_frames"
+    ],
+    "chat_contract.cpp:7:value": [
+      "url",
+      "detail"
+    ],
+    "output_constraints.cpp:0:*choice": [
+      "type",
+      "function"
+    ],
+    "output_constraints.cpp:1:*fn": [
+      "name"
+    ],
+    "output_constraints.cpp:2:*spec": [
+      "name",
+      "description",
+      "strict",
+      "schema"
+    ],
+    "output_constraints.cpp:3:tool": [
+      "type",
+      "function"
+    ],
+    "output_constraints.cpp:4:*fn": [
+      "name",
+      "description",
+      "parameters",
+      "strict"
+    ],
+    "input_contract.cpp:0:tool": [
+      "type",
+      "function"
+    ],
+    "input_contract.cpp:1:*fn": [
+      "name",
+      "description",
+      "parameters",
+      "strict"
+    ],
+    "input_contract.cpp:2:request": [
+      "request_id",
+      "cancel_token"
+    ],
+    "chat_tool_history.cpp:0:call": [
+      "id",
+      "type",
+      "function"
+    ],
+    "chat_tool_history.cpp:1:call": [
+      "type",
+      "name",
+      "arguments"
+    ],
+    "chat_tool_history.cpp:2:*fn": [
+      "name",
+      "arguments"
+    ],
+    "chat_template.cpp:0:part": [
+      "type",
+      "text"
+    ]
+  },
+  "sources_sha256": {
+    "CMakeLists.txt": "a8219a66aebb3f8958bf50bca62ac8713e4f964d1877fc61570c928f4d5c9b12",
+    "cmake/ChatProtocolIdentity.cmake": "d59b1b06abf9e0cb8867c03fd749398da5e118838d39ea87364d7b02a787e13e",
+    "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
+    "cmake/StructuredOutput.cmake": "fd8c800791a39e03d6447716554eb67cc626a1d20855de512fdc5dc715dd8b30",
+    "include/q4t/runtime/allocation_quota.h": "f3707f500c3dc5492bcd56e434c52e98b64cdfb83113139d32161ee3ddbb381c",
+    "include/q4t/runtime/cleanup_policy.h": "41acdb66d9bf371534a0b110efc5ab73d233be2c5930dafdec130485a17f3ee7",
+    "include/q4t/runtime/cuda_allocation_quota.h": "2d0fcac32d91fb4629036d3b4bb3d39b902ef2e687eba63d7e658596cdaffb47",
+    "include/q4t/runtime/device_memory.h": "23a00cc4a04e7fde691f13fe1c046d7cc05a2661e5bf4fc7cbaeda72751a5585",
+    "include/q4t/runtime/system_memory.h": "52febc4f0b9f067748507224d9924a955470371de88a796e1ea78d379b637d49",
+    "include/q4t/server/abort_reason.h": "2bad04553ca1e40595e10d6549d2a3a798bed05fcadd92527f722c48aecb70b5",
+    "include/q4t/server/chat_capabilities.h": "058093147c83d2bf541cb17b19fa67e92ec3168e5d250dd3a20567696748cc49",
+    "include/q4t/server/chat_contract.h": "c1aaef06a1ae22f96ce143211a3c6a5a462bb8223d0f86c474f896ab3bb906e0",
+    "include/q4t/server/chat_plan.h": "0f5f2e299a9a67f95b1923f3213e64e1e4c79f00468301431cd5d13b7423ad09",
+    "include/q4t/server/chat_prompt.h": "1a758fed12a2ef5b3eadc6109cbc99be29de63e088d0d60111ed171730daa54f",
+    "include/q4t/server/chat_response_parser.h": "15b41a19e4eb3c3897e71c3b584b25ed0b669a7aa1119ade57b71d6ea9d57246",
+    "include/q4t/server/chat_server.h": "3df4a1fafaf056ae360fa0004b16b53f779d869d78741d625ac4e646bd2cf9b0",
+    "include/q4t/server/chat_template.h": "f89fa01d5352cc6ec47ecff09c24bdb58f8bb0a3edfa5c89fe840791ac76bb51",
+    "include/q4t/server/chat_tool_history.h": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
+    "include/q4t/server/client_identity.h": "c05aad5dc655e91962eae55aab25c09fdcbc2a72ddc37a95585c7288dfac54be",
+    "include/q4t/server/client_policy.h": "aad6ebc15364ebcc7bb7182553b47821cf9e326fb6fc2244e56f295b4e1ef26d",
+    "include/q4t/server/client_request.h": "d08159942c0f0f95c5040546b3aab647eac435546767e96a1c922f3d88957998",
+    "include/q4t/server/cuda_quota_metrics.h": "40ea24b9df80e446f13c89cf4e5d8ce09741fc67ce3d413096cc1ac10e59cbc2",
+    "include/q4t/server/cuda_quota_policy.h": "e4143f1ec2f099edd81796bfca6db5cf916d547456af96c370d43991e176e297",
+    "include/q4t/server/device_memory.h": "1099e20d3b205d3ae03daba0308be7221f5097c78a2fd58c8ca16298277dfc4c",
+    "include/q4t/server/grammar_process.h": "5a43df744adf5647177ee723d806c63e0e20c9d6555cfca45bb80863f995e760",
+    "include/q4t/server/http_connection.h": "dcd12b3f713b9c0318b2f394ee55fb5666a2cfdb092e9a0cb4697cb2e61a4d54",
+    "include/q4t/server/http_listener.h": "bf5ec9d8e4567b3cb479803de66d52f9576c9a9df19f6a5e238ef69c266a2f11",
+    "include/q4t/server/http_observation.h": "4a5c07a112faa4d60f834b2d5e4067522a7fe565ca6ff8acd145ad603999dbdc",
+    "include/q4t/server/http_request.h": "6746ddda5b84feff0330b524befb1344102c1d99921ef397f7a0f13248f34045",
+    "include/q4t/server/http_response.h": "b75293da777e66c304bc75a9e7248e6ee6d48827fbd576aff479342c56bed070",
+    "include/q4t/server/input_contract.h": "03c1dfcc666986f5e06a91fb34cf95bf1818bd67df783794ae0ada63b7ae8881",
+    "include/q4t/server/lifetime.h": "11c9b381a7f6c5e019dcb57fbc18e2ad76492fca5c5e42960c381e954e5068bc",
+    "include/q4t/server/media_admission.h": "7a233d5f468747949e853d6f579d32e642227dc121d301adeb3b779a7c282ba1",
+    "include/q4t/server/memory_admission.h": "ae72d092757e41739e5d85ae7b2a975dccd13e43de8e9286dd831831ba7a7196",
+    "include/q4t/server/mtp_policy.h": "28f10c5c885f9465c0f26c22a36bf6be541933a0ed9d9c2da5f0d3983e0a8285",
+    "include/q4t/server/output_constraints.h": "600766a6ba8e7d9bf3f3d5bbec194f1d8e01d7b91e07aef23eb35cb761491fc7",
+    "include/q4t/server/output_schema.h": "10db6834ae6cc075af9a4948709192e9cafd5f98cad07e7c1016aa5bf240eebe",
+    "include/q4t/server/prefix_cache_policy.h": "91ef4f963c51a8098f1e333a74ac3cc56c046cf87f987b0e026a1e27d4c304c4",
+    "include/q4t/server/reasoning_options.h": "19fbaf8e6e9f31767ac5dfd485d4cdaca160e5928069741868402ee7639bfe44",
+    "include/q4t/server/request_admission.h": "e0b802ab08dd1857cb26b5323e35538bfd0f778add9298da6a972ebdc9fb8f64",
+    "include/q4t/server/request_control.h": "fc0c1ab81056c5ab3ddb4b0da8783338312ecedc5f2c4f149df678019c199814",
+    "include/q4t/server/request_diagnostics.h": "6a260ff44d95c7d828503c24351fc9d0b659c72033b75577b7d37209cd39c6de",
+    "include/q4t/server/request_json.h": "3c9b06ae9945a775b2aae2d7a85a831d12ddc6cfb9850f4f27454202056d5a22",
+    "include/q4t/server/scheduler_submission.h": "2a960c668c25a0c694b811a2c5640c6e6605db7d386b1ba0075e64061aa1c416",
+    "include/q4t/server/sequence_admission.h": "1dd2ef39526bdaf839ebeb1d348b837d388d0cbae8d4f0c15837a75123ae6f1c",
+    "include/q4t/server/serve_fault.h": "47db4bd8dc12f5713ef42c6c89aeee1151867991d17d9b8529d31b4a11123b3f",
+    "include/q4t/server/server_options.h": "87eeefdc39085628d020b752e1cf24cb573e9bbf76e64e1fdf565bcdefb41210",
+    "include/q4t/server/session_cache.h": "127b61a11a7e3e7078d0c5403f2ce2eb7114e57828594e8fe76c62ea93e14e6d",
+    "include/q4t/server/session_save_timing.h": "317a0c125930305e10596efa2345e5af23f57345ad8059fd4065cb9f9ab5db06",
+    "include/q4t/server/session_state.h": "dfab02068951eed30bfd1b5dc4d6926afdea7ce9094533f6bb1f7fc168c61d4a",
+    "include/q4t/server/startup_admission.h": "2da630f79ddebd82e5dc7e410a279a971772b854171c88006929f4c28975d79b",
+    "include/q4t/server/structured_admission.h": "d092c28d78e214396c26d2f7eb96e56e94f5148f9355a6d0cb84926b20fca007",
+    "include/q4t/server/structured_decoder.h": "1638718dda90f146037e8adc30705687e0a9aa8347930dc524a344f32c86b5f7",
+    "include/q4t/server/suffix_causal.h": "a0bad73c2a8293367a4e907e06a40d21baec389ba81e9131a248f99432165f2b",
+    "include/q4t/server/suffix_token_cache.h": "5cf8881109604764d9deb7869901c0f8f8141b181b47865e7d81018eadd21a9b",
+    "include/q4t/server/text_stop.h": "560dde9da5f9ea673a22eb2b6ad9ef59e227d55122d041a51ae2c45ef4114f66",
+    "include/q4t/server/thinking_budget.h": "902d062939a5f8cc43ac2dd761d4267624645d1a401c47f9ed748f28b2ee36ff",
+    "include/q4t/vision/media_plan.h": "5c07ef92049ea664d5c21ea32c40ea63293526460de6022fab3168f66857e5c3",
+    "include/q4t/vision/processor.h": "2f6a79b9a7099cd776b70ad52ee1eb93cc1ae5bb831ac93d712ebcab526bcf4b",
+    "include/q4t/vision/vision.h": "bee9f105fe509936ca90368e5e59868d41f9f7a84a795e46d29edb678947a527",
+    "src/io/json.cpp": "594c940466b10fbd0efa9c1bc05dd3092d7d1a4041d552716914fd84a740c0e0",
+    "src/main.cpp": "a289b15b8876f4314fc8678075d51359bfdff7dd57df04998946fa985131df7d",
+    "src/model/model.cu": "ddf5df2ef04770369785b4dd93d928bea7fa4ca4484e670ada9c7a944ed068fb",
+    "src/model/model_owner.cpp": "cc3a998e52d4cca44bd695f40e1bf01f4ee2d75ce9f0c437d07757582d60e2bf",
+    "src/mtp/mtp.cu": "290a8a32eac18b138d0ec850126b1482a0ddeea554a90a0753ff77aece7530e4",
+    "src/runtime/cuda_allocation_quota.cpp": "d19e53e7ec20b5924d01482760b638df74fbf5c7ef4aec7647dc2dffe8e760c5",
+    "src/runtime/cuda_quota_backend.h": "ed5a378f24a18d4fbd91ee6a4473e5c14a93f10a9a221bf4a1e2c581ccf7e9ca",
+    "src/runtime/startup_reservation.cpp": "3c979fd0e8eb5dec8185148c77677ddad246f401faa92641d2a5f1ec2c033e09",
+    "src/runtime/system_memory.cpp": "231e9a7ce5ed49e27e604a7bfa4066b35e83f286026c15986898d996a66acd2f",
+    "src/server/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/server/chat_admission.cpp": "ce33753d06a1859511e6c596b1b03154f39de278f6c3b3c2dae986fc317ef69d",
+    "src/server/chat_capabilities.cpp": "4081e64dd459db48927e9032d73780d8841b8c906dcd744a11ee74adc24a2898",
+    "src/server/chat_contract.cpp": "e87d5f90c7e6e03c57e8c05243c35267a0ade8f6c65ef36a98c70c6b6dba3469",
+    "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
+    "src/server/chat_generation.cpp": "a323df5d66b67d03108a59fe008b9759a848b7de75c890680b73faf283ad1cc4",
+    "src/server/chat_http.cpp": "699098a50ee52ce3eb35e2837db797e6231b5aaa5860d6dc181270cb87a98ba5",
+    "src/server/chat_input.cpp": "d126a90ec3e3fdba5f516c53ee0d6ded6dbc3da34af64b86d93d35115d05c8e6",
+    "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
+    "src/server/chat_metrics.cpp": "3c2738770c331f3bc8e66e7917b12123478c46d70a7f5b6fef53d4e5544f8b26",
+    "src/server/chat_plan.cpp": "bf2118f123823731b000f5aa10959c0f8018b5fba25f37e39c4bd85ac168eafb",
+    "src/server/chat_preflight.cpp": "7a3e12bc8bd0b33b7de041a45c013fdab4590df902cd9905ca3b553ef7af763c",
+    "src/server/chat_prompt.cpp": "b87c13319b7eb1e58908f4e607ab2827b6f5191e6e1e70040fa57d8dae5c84c2",
+    "src/server/chat_response_parser.cpp": "ffa2ce62aeffbfac4c67c97c591854db8cec8eac389e7e2e0cdfe57e05f392f7",
+    "src/server/chat_scheduler.cpp": "3bbbc18b7d836b0ec1fb9e1bef4fb4c85b6dc60b4fc1a26a23916196326832cf",
+    "src/server/chat_server.cpp": "1e525bcd4639686868d7aff7c72f00e33bf90df413708a6c6c051ff1b98dc5b1",
+    "src/server/chat_server_internal.h": "f648da039df39e84f9f867c55210afeff3eceac0c3578c61edfaa210957d4286",
+    "src/server/chat_template.cpp": "a030f020b91227e143827754a3b45e36804a8e2f72c727d5e36291c688193244",
+    "src/server/chat_tool_history.cpp": "3514a29df574c5b21c4dd8b6ecd9407aa3ff50a43a30b51d97fa93c6cd247bed",
+    "src/server/client_policy.cpp": "79f51b5497fe3032ea873be525209c1686539e519e5028e5c04a1054a5f3cbc4",
+    "src/server/client_request.cpp": "418f478a0d94cb270ea507cb6843f0a88a97de0ad2a22192e9f563c67f6fe83e",
+    "src/server/cuda_memory_backend.h": "aabc6d78d2925ec5280e270964d79d3164ce706732a674b88215554a34d0e6a5",
+    "src/server/grammar_process.cpp": "14345c6e0470133fe9a1a57659503eabe0b477b2438f5b82f76ab07a57ae02bb",
+    "src/server/grammar_worker.cpp": "aca2920b675dce548ceb194690440f00763352ed2d482751100b6345580e560c",
+    "src/server/grammar_worker_internal.h": "79d8963200990a0d6b8dacee12c0f886c5612c57bc86e8a3479d942d6bef091a",
+    "src/server/http_request.cpp": "b700d8b4a0e22bf4511a2f5729cb8d07b7ba4ca41bcf4b89cdcb5e156294ae29",
+    "src/server/http_response.cpp": "0415e486060ee978080cef3a7874a5b594cfb1eea098ac4f577b14ca87bde88e",
+    "src/server/input_contract.cpp": "ad9adbffc9638792ec15debeebee803fb43d2085f639281dabd6230146c5cf6a",
+    "src/server/media_admission.cpp": "2e8669fd1265cb40e25e1c9efdd0376cabf2dd3a5506fafa71b625a3cfb3fa7f",
+    "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
+    "src/server/output_constraints.cpp": "19529eb9ae9fa51c08f96c20ae0d4c48a5468a7ee6ba31f360fbd27ecef913c8",
+    "src/server/output_schema.cpp": "d1ac1506c823dc128d8f2c95e5489c90d360813b35b37b2bfd52a9bbc512315d",
+    "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
+    "src/server/server_options.cpp": "813cdf5912f28ab23c200220af797158787f40fb1cb1cd7b8e2a1a1d36a03bad",
+    "src/server/session_cache.cpp": "68fc36654c7f3a7c14ac41b26e3abd10697e87ffc94bf70fe2052edb9cf751f6",
+    "src/server/session_state.cpp": "bc34bd240a68cfb7ba57f78604d898c51e61bc5705b5d9db64bd546f91d64f12",
+    "src/server/structured_decoder.cpp": "3d3c9d07a516e0cc10999183d1e2a3770daecac9257c8514a26f43873c877ddd",
+    "src/server/text_stop.cpp": "2397b27adc873b3ac0697af68352a73c8481830da6053fde0adeca536eaba4dc",
+    "src/server/thinking_budget.cpp": "4c91e8320115ee86096bf7287d4950599ca311f137c3a0051b9d64fb53abf259",
+    "src/text/tokenizer.cpp": "bfa059ee7dc64a37eb42d749710b4ad039f125675a93718902cab3b6ade2e7e8",
+    "src/vision/media_plan.cpp": "52f68275c6ccf33c12d84b07761ef5da4c13b6fc9a93de36080fd8961aacfb4e",
+    "src/vision/processor.cpp": "63768f83b7a6de3a87fea733443c99cc556eb2eadae91749b8db7037c5ad143e",
+    "src/vision/vision.cu": "6bb69371b244ff7a3c025a377a0be64d954f0f4b814c99ea3d997fad7c705832"
+  },
+  "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
+  "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
+  "stage_a_review": {
+    "base_commit": "48ac853",
+    "scope": "identity, explicit param, admission/readiness/drain, serialized SSE and HTTP boundaries",
+    "evidence": [
+      "tests/server_http_request_test.cpp",
+      "tests/server_http_response_test.cpp",
+      "tools/serve_reliability/http_lifecycle_test.cpp",
+      "tools/serve_stage_a/verify.py",
+      "docs/SERVE_STAGE_A_RESULT_2026-11-03.md"
+    ],
+    "real_acceptance": "Bounded delivery 2026-11-03, runtime e0d9f9d / ELF 142bb9d4; strict long buffered backpressure not proven"
+  },
+  "stage_b1_review": {
+    "scope": "SRV-04 only: shared role/profile validation and leading developer mapping",
+    "source_changes": [
+      "include/q4t/server/chat_template.h",
+      "src/server/chat_capabilities.cpp",
+      "src/server/chat_contract.cpp",
+      "src/server/chat_input.cpp",
+      "src/server/chat_template.cpp"
+    ],
+    "cpu_template_cases": 58,
+    "http_status": "accepted_within_profile",
+    "report": "docs/SERVE_STAGE_B1_RESULT_2026-11-03.md"
+  },
+  "thinking_budget_review": {
+    "base_commit": "8bda4b31",
+    "scope": "SRV-05b generation admission; raw UTF8/delimiter state, forced selection intersecting grammar, MTP batch reserve, private snapshot earlier boundary, usage/metrics/client validation",
+    "changed_sources": [
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/server/chat_response_parser.h",
+      "include/q4t/server/chat_server.h",
+      "include/q4t/server/reasoning_options.h",
+      "include/q4t/server/structured_decoder.h",
+      "include/q4t/server/thinking_budget.h",
+      "src/server/chat_capabilities.cpp",
+      "src/server/chat_contract.cpp",
+      "src/server/chat_generation.cpp",
+      "src/server/chat_metrics.cpp",
+      "src/server/reasoning_options.cpp",
+      "src/server/structured_decoder.cpp",
+      "src/server/thinking_budget.cpp"
+    ],
+    "http_status": "accepted_bounded_after_native_boundary_repair",
+    "report": "docs/SERVE_THINKING_BUDGET_2026-11-03.md",
+    "result": "docs/SERVE_THINKING_HTTP_RESULT_2026-11-03.md"
+  },
+  "text_stop_review": {
+    "status": "accepted_within_profile",
+    "source_commit": "85e309c1",
+    "runtime_sha256": "a3fd64a34a67f619bf2978faf152d6f455652d048a1e7a2cdc48caf784898184",
+    "report": "docs/SERVE_TEXT_STOP_RESULT_2026-11-03.md"
+  },
+  "review_note": "2026-11-03 SRV-07：审核共用规划/渲染拆分、生成前分词、两类预算保留、只读资源边界与配置来源；CPU有证据，真实HTTP尚待验。",
+  "admission_review_20261103": {
+    "status": "accepted_bounded",
+    "scope": "CAS inflight lease, capacity FIFO slot queue, cancellation cleanup and discovery/metrics",
+    "contract": "docs/SERVE_ADMISSION_2026-11-03.md",
+    "result": "docs/SERVE_ADMISSION_RESULT_2026-11-03.md",
+    "runtime_source": "919cc01f807c7c6cc6b096edfdd2c1576dc8b9ba",
+    "production_sha256": "c16caf0573ed2ecdf23237229a54a23a0d4ead46e86f6b25e7a44436d3caafe0",
+    "evidence": "docs/evidence/serve-admission-20261103",
+    "limitation": "No strict long-payload backpressure, public-network or long-soak acceptance"
+  },
+  "observability_review_20261103": {
+    "status": "accepted_bounded",
+    "scope": "Fixed first receive/write transport causes; join before publication; body capacity error; business validation excluded only from receive counters",
+    "contract": "docs/SERVE_OBSERVABILITY_2026-11-03.md",
+    "tests": [
+      "tests/server_http_observation_test.cpp",
+      "tests/server_chat_capabilities_test.cpp",
+      "tools/serve_reliability/http_lifecycle_test.cpp"
+    ],
+    "result": "docs/SERVE_OBSERVABILITY_RESULT_2026-11-03.md",
+    "runtime_source": "2425044b49aaab3b8754319b5bf33a135e9c5911",
+    "production_sha256": "ed672a65b586f8445e51e3ba6d63659b4a098386e87e1ed38e3c8893a352a139",
+    "evidence": "docs/evidence/serve-observability-20261103",
+    "limitation": "Ordinary TCP backpressure only; strict long payload, long soak and public network not accepted"
+  },
+  "memory_review": {
+    "base": "e67ad06e",
+    "contract": "docs/SERVE_MEMORY_ADMISSION_2026-11-03.md",
+    "scope": "Reviewed new memory input/admission/metrics/config and unchanged 38 fields/10 routes. Prior serve_fault token diagnostic remains validation-only; no production dump. Native HTTP passes; model high-floor refusals and default business passed; no actual exhaustion.",
+    "delivery": {
+      "source": "326eff19",
+      "binary": "84d16983",
+      "result": "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md",
+      "physical_hard_limit": false,
+      "same_process_model_pressure_recovery": false
+    }
+  },
+  "observation_partition_review": {
+    "status": "accepted_bounded",
+    "base_commit": "5174ab76",
+    "changed_sources": [
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/server/chat_server.h",
+      "include/q4t/server/http_connection.h",
+      "include/q4t/server/http_request.h",
+      "src/server/chat_capabilities.cpp",
+      "src/server/chat_http.cpp",
+      "src/server/chat_metrics.cpp",
+      "src/server/chat_plan.cpp"
+    ],
+    "contract": "docs/SERVE_OBSERVATION_CAPACITY_2026-11-03.md",
+    "review": "Exact method/path classification, atomic partition ownership, exception/drain release, fixed refusal counters, v4 capabilities/config plus v3-compatible diagnostic. No request fields/routes/whitelists changed. Unclassified headers share total bound; no network flood isolation claim.",
+    "source_commit": "362f42a8c6bca47d853eb47acd9c79f7022885dd",
+    "binary_sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+    "result": "docs/SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md",
+    "native_cases": 23,
+    "real_generations": 4,
+    "real_negatives": 136,
+    "real_starts": 1,
+    "unclassified_header_flood_isolated": false
+  },
+  "lifecycle_shutdown_review_20261103": {
+    "changed": [
+      "src/server/chat_admission.cpp"
+    ],
+    "contract": "docs/SERVE_LIFECYCLE_REPAIR_2026-11-03.md",
+    "review": "Stopping admission cancels with kShutdown and returns the existing cancellation branch; first terminal reason wins, abort accounting and SSE error terminal share the established path. No wire fields/routes changed.",
+    "status": "ACCEPT_BOUNDED_LIFECYCLE_REPAIR",
+    "evidence": [
+      "tools/serve_reliability/admission_contract_test.cpp",
+      "tools/serve_lifecycle/repair.py"
+    ],
+    "source_commit": "279c9abb0d0572f1d706ebf6161d0ee08f548d2d",
+    "binary_sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+    "result": "docs/SERVE_LIFECYCLE_RESULT_2026-11-03.md",
+    "native_cases": 24,
+    "original_failed_run_retained": true,
+    "new_candidate_hour_proved": false
+  },
+  "media_admission_review_20261103": {
+    "base": "8837e680",
+    "status": "DEVELOPED_CPU_PENDING",
+    "changed_sources": [
+      "CMakeLists.txt",
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/server/chat_capabilities.h",
+      "include/q4t/server/chat_plan.h",
+      "include/q4t/server/chat_prompt.h",
+      "include/q4t/server/chat_server.h",
+      "include/q4t/server/media_admission.h",
+      "include/q4t/vision/media_plan.h",
+      "include/q4t/vision/processor.h",
+      "include/q4t/vision/vision.h",
+      "src/server/chat_capabilities.cpp",
+      "src/server/chat_contract.cpp",
+      "src/server/chat_generation.cpp",
+      "src/server/chat_input.cpp",
+      "src/server/chat_metrics.cpp",
+      "src/server/chat_plan.cpp",
+      "src/server/chat_preflight.cpp",
+      "src/server/chat_prompt.cpp",
+      "src/server/chat_server.cpp",
+      "src/server/media_admission.cpp",
+      "src/vision/media_plan.cpp",
+      "src/vision/processor.cpp",
+      "src/vision/vision.cu"
+    ],
+    "contract": "docs/SERVE_MEDIA_INTEGRATION_2026-11-03.md",
+    "review": "User-only closed media shapes and canonical base64; PNG/JPEG metadata before decoding; shared source and geometry plans, aggregate resource and expanded slot budgeting; owned C decoder quota and decoded-size recheck; cooperative cancellation and queried effective attention shared capacity. No route/top-level field addition, numerical kernels or resampler math change. Physical RAM and runtime GPU acceptance remain open."
+  },
+  "error_param_review": {
+    "date": "2026-11-04",
+    "scope": "Tool/output-constraint explicit paths; acceptance, errors, prompt and grammar must remain unchanged",
+    "contract": "docs/SERVE_ERROR_PARAMS_2026-11-04.md"
+  },
+  "operations_listener_review": {
+    "date": "2026-11-04",
+    "stage": "SRV-12g",
+    "review": "Explicit loopback listener, independent total and classified ownership, body-before-route refusal, unchanged client authentication, dual setup/shutdown ownership, v5 configuration and metrics. No wire Chat fields or primary routes changed. Development reviewed; CPU and native/model acceptance pending.",
+    "evidence": [
+      "docs/SERVE_OPERATIONS_LISTENER_2026-11-04.md",
+      "tools/serve_reliability/http_lifecycle_test.cpp",
+      "tools/serve_operations_listener/test_tools.py"
+    ]
+  },
+  "startup_listener_review": {
+    "date": "2026-11-04",
+    "stage": "SRV-12k",
+    "changed_sources": [
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/server/chat_server.h",
+      "include/q4t/server/http_listener.h",
+      "src/server/chat_http.cpp",
+      "src/server/chat_server.cpp"
+    ],
+    "review": "Actual dual listeners before tokenizer/cache/model/CUDA allocation, transactional RAII ownership, unchanged handlers/authentication/route and field allowlists. Warmup TCP queue is not HTTP readiness; no startup response thread or signal-handler change. Single-use Start and partial model destruction contract explicit. CPU inventory failure preserved; native and real startup acceptance pending.",
+    "evidence": [
+      "docs/SERVE_STARTUP_LISTENERS_2026-11-04.md",
+      "tools/serve_reliability/http_lifecycle_test.cpp",
+      "tools/serve_startup_listeners/test_stage.py"
+    ]
+  },
+  "prepare_lock_review": {
+    "date": "2026-11-04",
+    "stage": "SRV-03c",
+    "changed_sources": [
+      "CMakeLists.txt",
+      "include/q4t/server/request_control.h",
+      "include/q4t/server/request_diagnostics.h",
+      "src/server/chat_generation.cpp",
+      "src/server/chat_preflight.cpp"
+    ],
+    "review": "Cancellation-aware tokenizer acquisition only in thinking preparation, Chat encode and preflight. Waiter own cancellation before/during/after acquire; owner unaffected, unchanged errors/JSON/SSE/lease owners and tokenizer numerical work. No fields/routes/schema or scheduling change; cooperative 5ms polling, not a realtime guarantee. Validation pending. CMake adds EXCLUDE_FROM_ALL real-handler probe with the same production startup reservation/quota/cleanup linkage; no default runner link behavior changes. Initial probe link failure and inventory CMake-anchor omission retained; targeted fixes do not change runtime code.",
+    "evidence": [
+      "docs/SERVE_PREPARE_LOCK_2026-11-04.md",
+      "tests/server_request_diagnostics_test.cpp",
+      "tools/serve_prepare_lock/probe.cpp"
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "soar_unit": "MainPID=0\nActiveState=inactive\nUnitFileState=masked\n",
+  "lock_inode": 3294067,
+  "lock_available": true,
+  "last_lock_record": {
+    "utc": "2026-11-03T14:26:25.787994+00:00",
+    "monotonic": 1906068.30488592,
+    "pid": 2455321,
+    "command": [
+      "/usr/bin/python3.12",
+      "-I",
+      "-B",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/package/source/tools/serve_service/service.py",
+      "_worker",
+      "--run",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/managed-run"
+    ],
+    "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/managed-run/lease",
+    "state": "held"
+  },
+  "stale_held_metadata_is_not_a_live_lock": true,
+  "recovery_marker": false,
+  "gpu": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/gpu-final.json",
+    "sha256": "a9d16f6aa07e9d0cfcd4c10b05b8f91249d52fca3cd8be6f423b2272daeed96e",
+    "bytes": 2257
+  },
+  "additional_systemd_queries": 1,
+  "new_model_or_http": 0
+}

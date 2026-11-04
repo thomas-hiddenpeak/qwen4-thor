@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "schema_id": "urn:q4t:serve-stop-v1",
+  "utf8_byte_bound_checked": true,
+  "requests": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/health/candidate-installed/installed-stop-request.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/health/candidate-installed/plain-json-request.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/health/candidate-installed/plain-sse-request.json"
+  ]
+}

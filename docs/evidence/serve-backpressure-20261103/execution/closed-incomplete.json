@@ -1,0 +1,16 @@
+{
+  "status": "NOT_ACCEPTED_STRICT_BACKPRESSURE_UNOBSERVED",
+  "reason": "structured_output_incomplete before EAGAIN; no write-stage proof",
+  "counts": {
+    "generations": 1,
+    "negatives": 0,
+    "starts": 1
+  },
+  "seconds_since_first_guard": 246.68072819709778,
+  "budget_not_extended": true,
+  "remaining_budget_not_used": true,
+  "no_retry": true,
+  "default_replaced": false,
+  "performance_acceptance": false,
+  "wire_limitation": "The first driver did not receive the error wire before closing its intentionally unread socket; server diagnostic retained. No HTTP-wire success/rejection claim."
+}

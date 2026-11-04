@@ -1,0 +1,8 @@
+{
+  "scope": "offline memory summary after accepted HTTP",
+  "error": "TypeError: 'NoneType' object is not subscriptable",
+  "cause": "Assumed every /proc status sample has VmRSS. Four exiting/zombie worker snapshots omit it.",
+  "repair": "Retain null RSS with observed State; summarize only measured values, not zero.",
+  "runtime_acceptance_changed": false,
+  "additional_model_attempts": 0
+}

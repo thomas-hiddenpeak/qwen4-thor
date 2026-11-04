@@ -1,0 +1,5 @@
+{
+  "status": 502,
+  "raw": "{\"error\":{\"message\":\"constrained response did not reach a grammar-accepted stop token\",\"type\":\"server_error\",\"code\":\"structured_output_incomplete\",\"param\":null}}",
+  "seconds": 0.3125260388478637
+}

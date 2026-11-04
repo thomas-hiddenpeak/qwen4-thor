@@ -1,0 +1,112 @@
+[
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package/candidate/q4t",
+    "sha256": "a3fd64a34a67f619bf2978faf152d6f455652d048a1e7a2cdc48caf784898184",
+    "bytes": 7012688
+  },
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package/candidate/startup_preflight",
+    "sha256": "28fdb701d12e9b97485487c7f7cd47d2a1d2f764cf341d709da64a85e6e62172",
+    "bytes": 149552
+  },
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package/previous/q4t",
+    "sha256": "31ffc41efefe7e407a0848041e03673906e8965865b9464019aa54a99fd5dee6",
+    "bytes": 7012672
+  },
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package/source.bundle",
+    "sha256": "b7b5b2fd25f2a10b7ba9e61351085191b13ffc61fce5f4be69299b1b5323a25a",
+    "bytes": 680824
+  },
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package-absolute/candidate/q4t",
+    "sha256": "a3fd64a34a67f619bf2978faf152d6f455652d048a1e7a2cdc48caf784898184",
+    "bytes": 7012688
+  },
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package-absolute/candidate/startup_preflight",
+    "sha256": "28fdb701d12e9b97485487c7f7cd47d2a1d2f764cf341d709da64a85e6e62172",
+    "bytes": 149552
+  },
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package-absolute/previous/q4t",
+    "sha256": "31ffc41efefe7e407a0848041e03673906e8965865b9464019aa54a99fd5dee6",
+    "bytes": 7012672
+  },
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package-absolute/source.bundle",
+    "sha256": "956aeb114bc39567b0b24550614519ae1bda651747df8367b708efad94ebc111",
+    "bytes": 759637
+  },
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package-sdk/candidate/q4t",
+    "sha256": "a3fd64a34a67f619bf2978faf152d6f455652d048a1e7a2cdc48caf784898184",
+    "bytes": 7012688
+  },
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package-sdk/candidate/startup_preflight",
+    "sha256": "28fdb701d12e9b97485487c7f7cd47d2a1d2f764cf341d709da64a85e6e62172",
+    "bytes": 149552
+  },
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package-sdk/previous/q4t",
+    "sha256": "31ffc41efefe7e407a0848041e03673906e8965865b9464019aa54a99fd5dee6",
+    "bytes": 7012672
+  },
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package-sdk/source.bundle",
+    "sha256": "9a33a8b5a77a5ffc9208d17e87547592d3bc6a511b87467685b9c3f253b84f3e",
+    "bytes": 682514
+  },
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package-fixture/candidate/q4t",
+    "sha256": "a3fd64a34a67f619bf2978faf152d6f455652d048a1e7a2cdc48caf784898184",
+    "bytes": 7012688
+  },
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package-fixture/candidate/startup_preflight",
+    "sha256": "28fdb701d12e9b97485487c7f7cd47d2a1d2f764cf341d709da64a85e6e62172",
+    "bytes": 149552
+  },
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package-fixture/previous/q4t",
+    "sha256": "31ffc41efefe7e407a0848041e03673906e8965865b9464019aa54a99fd5dee6",
+    "bytes": 7012672
+  },
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package-fixture/source.bundle",
+    "sha256": "9c280c718ffd8eb5d23f919a4b778f13e99f1993e64c34d784b406ad210a5bd0",
+    "bytes": 683950
+  },
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/pair/q4t",
+    "sha256": "a3fd64a34a67f619bf2978faf152d6f455652d048a1e7a2cdc48caf784898184",
+    "bytes": 7012688
+  },
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/engine/q4t",
+    "sha256": "a3fd64a34a67f619bf2978faf152d6f455652d048a1e7a2cdc48caf784898184",
+    "bytes": 7012688
+  },
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/engine/q4t_host_tests",
+    "sha256": "251d29a710589b99e51a972b601ceb196fd842dc58baf1bbca0e94d7b3542bdc",
+    "bytes": 3493864
+  },
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/engine/q4t_tests",
+    "sha256": "bed3660b448d5203a9df590dddaabc71212e1c15d7e648bf09e6746c1226b876",
+    "bytes": 8441696
+  },
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/host-on/q4t_host_tests",
+    "sha256": "1ab0af96abd0e48ff1c9b363b88cf12e2ba33c299899cbe13ffa34234cfa71c6",
+    "bytes": 3417600
+  },
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/host-off/q4t_host_tests",
+    "sha256": "e571b54a525b8f3d35655593cf89783e4214c764be75928c3812a27f33e257d1",
+    "bytes": 1372504
+  }
+]

@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 104
+X-Request-Id: observation.business-010
+Connection: close
+
+{"error":{"message":"Bad Request","type":"invalid_request_error","code":"invalid_request","param":null}}

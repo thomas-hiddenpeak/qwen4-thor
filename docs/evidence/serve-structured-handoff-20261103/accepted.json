@@ -1,0 +1,31 @@
+{
+  "status": "PASS_BOUNDED_STRUCTURED_HANDOFF",
+  "original_result": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/result.json",
+    "sha256": "ebe285a519be9c28d49f62a18a91fa85159de8bc29dee96c03d3775647d6b273",
+    "bytes": 326
+  },
+  "corrected_driver_only": true,
+  "counts": {
+    "generations": 9,
+    "negatives": 1,
+    "controls": 7,
+    "starts": 1
+  },
+  "successful_requests": 8,
+  "expected_errors": 1,
+  "new_model_starts": 0,
+  "new_generations": 0,
+  "new_http_observations": 0,
+  "missing_healthz": true,
+  "actual_health_evidence": [
+    "final-livez.json",
+    "final-readyz.json",
+    "final-metrics.json"
+  ],
+  "missing_final_standalone_sample": true,
+  "cleanup_source": "owned scope fallback stop; returncode 0",
+  "cleanup_confirmed": true,
+  "automatic_request_retry": false,
+  "performance_acceptance": false
+}

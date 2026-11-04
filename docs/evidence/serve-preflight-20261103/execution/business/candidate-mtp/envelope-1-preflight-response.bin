@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 125
+X-Request-Id: trace-envelope-1-preflight
+Connection: close
+
+{"error":{"message":"unsupported preflight field","type":"invalid_request_error","code":"invalid_request","param":"unknown"}}

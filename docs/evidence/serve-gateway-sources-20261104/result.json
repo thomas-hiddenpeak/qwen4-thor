@@ -1,0 +1,57 @@
+{
+  "status": "ACCEPT_BOUNDED_GATEWAY_SOURCES",
+  "effective_cpu": 78,
+  "final_driver_tests": 6,
+  "first_cpu_error_preserved": true,
+  "models": 1,
+  "gateways": 1,
+  "tls_requests": 25,
+  "source_refusals": 16,
+  "successful_responses": 4,
+  "real_tools": 2,
+  "usage": {
+    "project-alpha-read": {
+      "prompt_tokens": 564,
+      "completion_tokens": 55,
+      "total_tokens": 619
+    },
+    "project-alpha-answer": {
+      "prompt_tokens": 890,
+      "completion_tokens": 58,
+      "total_tokens": 948
+    },
+    "project-beta-read": {
+      "prompt_tokens": 564,
+      "completion_tokens": 55,
+      "total_tokens": 619
+    },
+    "project-beta-answer": {
+      "prompt_tokens": 890,
+      "completion_tokens": 58,
+      "total_tokens": 948
+    }
+  },
+  "counts": {
+    "starts": 1,
+    "generation_attempts": 7,
+    "controls": 22
+  },
+  "gpu_seconds": 54.6640947079286,
+  "guard_observations": 52,
+  "driver_seconds": 52.99333999096416,
+  "owned_processes_reaped": 2,
+  "default": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "49cc78cdf03ba56f7a9b51f682cc61e636f6b36d2784289071b3c6ac5352c38a",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "055f4f3e406e05cdded906ae64ec72eaf687e381d3f09974be0e3a94c04d2067"
+  },
+  "runtime_sources": 222,
+  "access_log_regressions": 3,
+  "original_postrun_assertion_preserved": true,
+  "original_guard_status": "COMMAND_FAILED",
+  "acceptance_reconstructed_offline": true,
+  "actual_lan_deployment": false,
+  "new_managed_lifecycle": false,
+  "long_run": false,
+  "performance_acceptance": false,
+  "new_verification_http": 0
+}

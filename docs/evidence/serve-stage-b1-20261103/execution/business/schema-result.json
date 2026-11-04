@@ -1,0 +1,79 @@
+{
+  "passed": true,
+  "schema_id": "urn:q4t:serve-transport:v1",
+  "jsonschema_version": "4.26.0",
+  "records": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b1-20261103/execution/business/candidate-mtp/developer-json-wire.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b1-20261103/execution/business/candidate-mtp/developer-media-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b1-20261103/execution/business/candidate-mtp/developer-thinking-sse-wire.bin",
+      "validated_envelopes": 27
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b1-20261103/execution/business/candidate-mtp/empty-name-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b1-20261103/execution/business/candidate-mtp/late-developer-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b1-20261103/execution/business/candidate-mtp/late-system-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b1-20261103/execution/business/candidate-mtp/mixed-developer-first-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b1-20261103/execution/business/candidate-mtp/mixed-system-first-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b1-20261103/execution/business/candidate-mtp/project-answer-wire.bin",
+      "validated_envelopes": 4
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b1-20261103/execution/business/candidate-mtp/project-read-wire.bin",
+      "validated_envelopes": 4
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b1-20261103/execution/business/candidate-mtp/repeated-developer-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b1-20261103/execution/business/candidate-mtp/repeated-system-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b1-20261103/execution/business/candidate-mtp/system-json-wire.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b1-20261103/execution/business/candidate-mtp/tool-name-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b1-20261103/execution/business/candidate-mtp/unknown-instruction-part-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b1-20261103/execution/business/candidate-mtp/unknown-role-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b1-20261103/execution/business/candidate-mtp/user-name-response.bin",
+      "validated_envelopes": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b1-20261103/execution/business/candidate-plain/developer-plain-sse-wire.bin",
+      "validated_envelopes": 9
+    }
+  ]
+}

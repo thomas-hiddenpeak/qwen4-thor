@@ -1,0 +1,33 @@
+{
+  "id": "chatcmpl-auto-1",
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "logprobs": null,
+      "message": {
+        "content": "根据读取的内容：\n\n- **模型架构名称**：Qwen3.8-Flash-Next（内部代号 `qwen4_exp`）\n- **工具给出的 citation（逐字引用）**：`[docs/MODEL.md:L1-L8]`",
+        "refusal": null,
+        "role": "assistant",
+        "annotations": null,
+        "audio": null,
+        "function_call": null,
+        "tool_calls": null
+      }
+    }
+  ],
+  "created": 1793616380,
+  "model": "qwen3.8-flash-next",
+  "object": "chat.completion",
+  "metadata": null,
+  "moderation": null,
+  "service_tier": null,
+  "system_fingerprint": null,
+  "usage": {
+    "completion_tokens": 57,
+    "prompt_tokens": 745,
+    "total_tokens": 802,
+    "completion_tokens_details": null,
+    "prompt_tokens_details": null
+  }
+}

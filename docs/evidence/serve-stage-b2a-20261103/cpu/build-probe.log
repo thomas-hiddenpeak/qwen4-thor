@@ -1,0 +1,14 @@
+[ 15%] Building CXX object CMakeFiles/template_probe.dir/template_probe.cpp.o
+[ 15%] Building CXX object CMakeFiles/template_probe.dir/home/rm01/models/dev/qwen4-thor/src/server/reasoning_options.cpp.o
+[ 30%] Building CXX object CMakeFiles/template_probe.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_template.cpp.o
+[ 30%] Building CXX object CMakeFiles/template_probe.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_contract.cpp.o
+[ 38%] Building CXX object CMakeFiles/template_probe.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_tool_history.cpp.o
+[ 46%] Building CXX object CMakeFiles/template_probe.dir/home/rm01/models/dev/qwen4-thor/src/server/input_contract.cpp.o
+[ 53%] Building CXX object CMakeFiles/template_probe.dir/home/rm01/models/dev/qwen4-thor/src/server/output_constraints.cpp.o
+[ 61%] Building CXX object CMakeFiles/template_probe.dir/home/rm01/models/dev/qwen4-thor/src/server/output_schema.cpp.o
+[ 69%] Building CXX object CMakeFiles/template_probe.dir/home/rm01/models/dev/qwen4-thor/src/server/http_response.cpp.o
+[ 76%] Building CXX object CMakeFiles/template_probe.dir/home/rm01/models/dev/qwen4-thor/src/server/http_request.cpp.o
+[ 84%] Building CXX object CMakeFiles/template_probe.dir/home/rm01/models/dev/qwen4-thor/src/io/json.cpp.o
+[ 92%] Building CXX object CMakeFiles/template_probe.dir/home/rm01/models/dev/qwen4-thor/src/text/tokenizer.cpp.o
+[100%] Linking CXX executable template_probe
+[100%] Built target template_probe

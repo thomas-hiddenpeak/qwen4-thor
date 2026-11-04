@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "cmake",
+    "--build",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/engine",
+    "--target",
+    "q4t",
+    "q4t_host_tests",
+    "q4t_http_lifecycle_tests",
+    "q4t_preflight_probe",
+    "--parallel",
+    "8"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor",
+  "started": 1793667234.4618652
+}

@@ -1,0 +1,11 @@
+START faults
+PASS faults
+START http
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-business-runtime-20261102/runtime.py", line 92, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-business-runtime-20261102/runtime.py", line 76, in main
+    acceptance.require(run.returncode == 0, 'step failed: ' + name)
+  File "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/acceptance.py", line 28, in require
+    raise RuntimeError(message)
+RuntimeError: step failed: http

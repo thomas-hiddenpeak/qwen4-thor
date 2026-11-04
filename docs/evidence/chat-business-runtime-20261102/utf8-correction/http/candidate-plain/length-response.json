@@ -1,0 +1,5 @@
+{
+  "status": 200,
+  "raw": "data: {\"id\":\"protocol-66294a6fed072cadad4b4b44a60cde94\",\"object\":\"chat.completion.chunk\",\"created\":1793598339,\"model\":\"qwen3.8-flash-next\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\r\n\r\ndata: {\"id\":\"protocol-66294a6fed072cadad4b4b44a60cde94\",\"object\":\"chat.completion.chunk\",\"created\":1793598339,\"model\":\"qwen3.8-flash-next\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning_content\":\"用户\"},\"finish_reason\":null}]}\r\n\r\ndata: {\"id\":\"protocol-66294a6fed072cadad4b4b44a60cde94\",\"object\":\"chat.completion.chunk\",\"created\":1793598339,\"model\":\"qwen3.8-flash-next\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\"},\"finish_reason\":\"length\"}]}\r\n\r\ndata: {\"id\":\"protocol-66294a6fed072cadad4b4b44a60cde94\",\"object\":\"chat.completion.chunk\",\"created\":1793598339,\"model\":\"qwen3.8-flash-next\",\"choices\":[],\"usage\":{\"prompt_tokens\":61,\"completion_tokens\":1,\"total_tokens\":62}}\r\n\r\ndata: [DONE]\r\n\r\n",
+  "elapsed_seconds": 0.21076605492271483
+}

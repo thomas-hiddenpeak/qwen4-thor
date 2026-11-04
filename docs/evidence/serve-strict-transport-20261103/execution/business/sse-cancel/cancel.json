@@ -1,0 +1,10 @@
+{
+  "status": 202,
+  "headers": {
+    "Content-Type": "application/json",
+    "Content-Length": "25",
+    "X-Request-Id": "req-622dce0db67c2fc804a6fffd6c80229c",
+    "Connection": "close"
+  },
+  "raw": "{\"cancel_requested\":true}"
+}

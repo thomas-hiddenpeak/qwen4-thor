@@ -1,0 +1,9 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "tools/serve_ops/rules.py",
+    "--check"
+  ],
+  "timeout": 180
+}

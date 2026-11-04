@@ -1,0 +1,20 @@
+data: {"id":"agent-65729c80b0d4fe5faa7dd6c7de5e2584","object":"chat.completion.chunk","created":1793670446,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"agent-65729c80b0d4fe5faa7dd6c7de5e2584","object":"chat.completion.chunk","created":1793670446,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"7"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"agent-65729c80b0d4fe5faa7dd6c7de5e2584","object":"chat.completion.chunk","created":1793670446,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"1"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"agent-65729c80b0d4fe5faa7dd6c7de5e2584","object":"chat.completion.chunk","created":1793670446,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"0"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"agent-65729c80b0d4fe5faa7dd6c7de5e2584","object":"chat.completion.chunk","created":1793670446,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"0"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"agent-65729c80b0d4fe5faa7dd6c7de5e2584","object":"chat.completion.chunk","created":1793670446,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"0"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"agent-65729c80b0d4fe5faa7dd6c7de5e2584","object":"chat.completion.chunk","created":1793670446,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"3"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"agent-65729c80b0d4fe5faa7dd6c7de5e2584","object":"chat.completion.chunk","created":1793670446,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+data: {"id":"agent-65729c80b0d4fe5faa7dd6c7de5e2584","object":"chat.completion.chunk","created":1793670446,"model":"qwen3.8-flash-next","choices":[],"usage":{"prompt_tokens":22,"completion_tokens":7,"total_tokens":29}}
+
+data: [DONE]
+

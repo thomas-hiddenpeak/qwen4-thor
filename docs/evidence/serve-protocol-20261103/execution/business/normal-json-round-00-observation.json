@@ -1,0 +1,23 @@
+{
+  "seconds": 0.5801716488786042,
+  "response": {
+    "id": "agent-6367b5d182913969437be6048a4c8c69",
+    "model": "qwen3.8-flash-next",
+    "message": {
+      "role": "assistant",
+      "content": "710003"
+    },
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 31,
+      "completion_tokens": 7,
+      "total_tokens": 38
+    }
+  },
+  "headers": {
+    "connection": "close",
+    "content-length": "306",
+    "content-type": "application/json",
+    "x-request-id": "req-20ecb780de0d71b01acc8f7f69de349a"
+  }
+}

@@ -1,0 +1,6 @@
+test_case_requires_complete_tokens_first_write_and_delayed_read (tools.serve_strict_transport.test_driver.DriverTests.test_case_requires_complete_tokens_first_write_and_delayed_read) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.006s
+
+OK

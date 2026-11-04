@@ -1,0 +1,7 @@
+POST /v1/chat/preflight HTTP/1.1
+Host: localhost
+X-Request-Id: trace-strict-schema-preflight
+Content-Type: application/json
+Content-Length: 802
+
+{"request": {"model": "qwen3.8-flash-next", "temperature": 0, "max_completion_tokens": 512, "stream": true, "messages": [{"role": "developer", "content": "遵循用户请求。"}, {"role": "user", "content": "输出JSON对象，answer必须为字符串710003。"}], "stream_options": {"include_usage": true}, "response_format": {"type": "json_schema", "json_schema": {"name": "answer", "strict": true, "schema": {"type": "object", "properties": {"answer": {"type": "string", "enum": ["710003"]}}, "required": ["answer"], "additionalProperties": false}}}, "chat_template_kwargs": {"enable_thinking": true, "reasoning_effort": "low"}, "thinking_token_budget": 1, "reasoning_field": "reasoning", "include_reasoning": false, "request_timeout_ms": 180000}, "include_prompt": true, "include_token_ids": true}

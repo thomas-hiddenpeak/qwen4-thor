@@ -1,5 +1,21 @@
 # Shared by the Thor release gate and the standalone public host build.
+include(${CMAKE_CURRENT_LIST_DIR}/ChatProtocolIdentity.cmake)
 set(Q4T_HOST_TEST_SOURCES
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/client_policy.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/client_request.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_client_policy_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/runtime_cleanup_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/runtime/system_memory.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/memory_admission.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_memory_admission_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_startup_memory_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_device_memory_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_cuda_quota_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/grammar_process.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/grammar_worker.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_grammar_process_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_capabilities.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_capabilities_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/mtp/suffix_drafter.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/suffix_drafter_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/trace/sha256.cpp
@@ -8,16 +24,46 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/trace/router_trace.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/test_main.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_options_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_sequence_admission_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_mtp_policy_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_scheduler_submission_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_state_contract_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_request_diagnostics_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_structured_admission_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/server_options.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/io_json_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/model_sequence_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_http_request_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_http_observation_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_http_response_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/http_response.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_contract_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_message_profile_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_tool_history.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_template.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_tool_history_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_response_parser.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/thinking_budget.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/text_stop.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/reasoning_options.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_response_parser_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_thinking_budget_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_text_stop_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/output_schema.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/output_constraints.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/structured_decoder.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_output_constraints_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/http_request.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_contract.cpp)
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/input_contract.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_contract.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_prompt.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/media_admission.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/vision/media_plan.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_plan.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_plan_test.cpp)
+list(APPEND Q4T_HOST_TEST_SOURCES
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_media_admission_test.cpp)
+if(Q4T_ENABLE_XGRAMMAR)
+  list(APPEND Q4T_HOST_TEST_SOURCES
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_structured_decoder_test.cpp)
+endif()

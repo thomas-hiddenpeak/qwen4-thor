@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "tools/release/check_host_contracts.py",
+    "--test-binary",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-operations-listener-20261104/engine/q4t_host_tests",
+    "--output",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-operations-listener-20261104/cpu-01/host-gate"
+  ],
+  "timeout": 180
+}

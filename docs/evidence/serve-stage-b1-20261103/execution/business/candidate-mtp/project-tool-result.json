@@ -1,0 +1,13 @@
+{
+  "ok": true,
+  "source": {
+    "path": "docs/MODEL.md",
+    "sha256": "7409269429d9e61ac6f560e829acd0613906d29e03e902c84af3a8db2d17a97c",
+    "start_line": 1,
+    "end_line": 8,
+    "citation": "[docs/MODEL.md:L1-L8]",
+    "text": "1: # MODEL.md — Qwen3.8-Flash-Next (qwen4_exp) 架构笔记\n2: \n3: > 对目标模型的理解笔记, 随研读深入持续更新。\n4: > 来源: 模型目录 `config.json` / `ssd-stream.json` /\n5: > sglang-ssd-stream 源码 / SGLang `qwen4_exp.py` (权威 forward pass)。\n6: > **未确认的语义标注 [待确认]**, 不臆测。\n7: >\n8: > **权威参考**: `reference/sglang-qwen4-exp/qwen4_exp.py`",
+    "truncated": false
+  },
+  "total_lines": 311
+}

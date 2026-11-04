@@ -1,0 +1,11 @@
+{
+  "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business",
+  "seal": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/sealed-files.json",
+    "sha256": "0309b963b9f55774c42851bc00493fa9fee69a01d094645d4910e3eaa12fe193",
+    "bytes": 5656
+  },
+  "prior_attempts": 4,
+  "prior_negatives": 8,
+  "prior_starts": 1
+}

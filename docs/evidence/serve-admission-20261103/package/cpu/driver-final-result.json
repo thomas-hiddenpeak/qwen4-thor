@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "tools.serve_admission.test_driver.DriverTests.test_request_shapes_and_bounded_payload",
+    "-v"
+  ],
+  "exit": 0,
+  "reused": 10,
+  "sources": {
+    "tools/serve_admission/stage.py": "5beffeb9949a1edbfb532c9bb557d213cb41ffdbfeea8354a8b22e9cfe65fb3d",
+    "tools/serve_admission/installed_health.py": "40b2fef911ea2080069a8f03a0d04fa78b045dcd311c4bd7a968972344d7c69f",
+    "tools/serve_admission/test_driver.py": "f2b4105dff84b3cd0d101ef8778207118b038a830d313ed49aca3aeec252e5a6",
+    "tools/serve_admission/verify.py": "e6fb4d0c30833a3381d2268d282d2be05723a0f0ebb4b2de26de1e235681ffb4",
+    "tools/serve_admission/config_check.py": "1581b283f28df5f80c433367be3eb5571964b11b9c904f6e480e42b5eaf20126"
+  }
+}

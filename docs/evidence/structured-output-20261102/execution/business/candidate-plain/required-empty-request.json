@@ -1,0 +1,20 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": 0,
+  "max_completion_tokens": 512,
+  "stream": false,
+  "messages": [
+    {
+      "role": "user",
+      "content": "调用read_project_record读取docs/MODEL.md第1行，line_count=8。"
+    }
+  ],
+  "extra_body": {
+    "chat_template_kwargs": {
+      "enable_thinking": false,
+      "reasoning_effort": "low"
+    }
+  },
+  "tools": [],
+  "tool_choice": "required"
+}

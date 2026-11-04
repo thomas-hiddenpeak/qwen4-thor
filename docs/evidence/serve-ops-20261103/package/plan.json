@@ -1,0 +1,48 @@
+{
+  "limits": {
+    "generations": 4,
+    "negatives": 2,
+    "starts": 2,
+    "seconds": 1800
+  },
+  "planned": {
+    "generations": 3,
+    "negatives": 0,
+    "starts": 1
+  },
+  "source_commit": "52ada55642ea9d5f86ea319f7b9a2e254c8f5dfb",
+  "binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "sha256": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+    "bytes": 7086768
+  },
+  "sidecar": {
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json",
+    "sha256": "c520333192c04ddb499dd0188496789ec8ddc20fc5e0f00491ca01f52517aa75",
+    "bytes": 42438
+  },
+  "protocol_sha256": "aeb66adc439c31b23d943ffe9d9f40253fe2df275f89767b87927ab979bd4bd5",
+  "model_dir": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "model_inputs": {
+    "config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+    "tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+    "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+    "chat_template.jinja": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+  },
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "port": 18107,
+  "prometheus_port": 19092,
+  "prometheus": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/deps/prometheus",
+    "sha256": "aeebc0ffc6529c87221ab12ff1f9fc276be488869ebc942ce3e4d7ffcfe6a97a",
+    "bytes": 154293542
+  },
+  "reuse": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-pressure-20261103/execution/finalized.json",
+    "sha256": "d3468b8c84e37104672b08953b3a99171cf176deda90f92ba1cc8641e198d111",
+    "bytes": 368
+  },
+  "runtime_changed": false,
+  "performance_acceptance": false,
+  "deployment_changed": false
+}

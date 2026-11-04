@@ -1,0 +1,6 @@
+POST /v1/requests/cancel HTTP/1.1
+Host: localhost
+X-Request-Id: transport-test
+Content-Length: 2
+
+{}

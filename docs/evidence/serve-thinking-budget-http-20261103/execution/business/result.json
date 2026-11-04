@@ -1,0 +1,9 @@
+{
+  "status": "FAILED",
+  "error": "AttributeError(\"'str' object has no attribute 'read_bytes'\")",
+  "request_attempts": 0,
+  "negative_requests": 0,
+  "starts": 1,
+  "seconds": 0.00024923007003962994,
+  "performance_acceptance": false
+}

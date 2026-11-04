@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "tests": 7,
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "tools.serve_admission.test_driver.DriverTests.test_json_rejection_exact_code",
+    "tools.serve_admission.test_driver.DriverTests.test_sse_error_is_logical_rejection_after_200",
+    "tools.serve_admission.test_driver.DriverTests.test_sse_rejects_duplicate_or_missing_terminal",
+    "tools.serve_admission.test_driver.DriverTests.test_rejection_cannot_contain_success",
+    "tools.serve_admission.test_driver.DriverTests.test_rejection_cannot_end_before_error",
+    "tools.serve_admission.test_driver.DriverTests.test_sse_initial_role_before_error_is_not_success",
+    "tools.serve_admission.test_driver.DriverTests.test_sse_role_cannot_hide_generated_content",
+    "-v"
+  ],
+  "exit": 0,
+  "sources": {
+    "tools/serve_admission/stage.py": "95f5cb3cb0acb3ae0a31c37c7a56788a804b08dc3aa58fc7f6943f14e9593ce8",
+    "tools/serve_admission/installed_health.py": "40b2fef911ea2080069a8f03a0d04fa78b045dcd311c4bd7a968972344d7c69f",
+    "tools/serve_admission/test_driver.py": "c85ce9e1369e5d2b60a99ea26440d22460c76de42491d3c54a954c90b701773b",
+    "tools/serve_admission/verify.py": "f091cdefc4bc93c1e380ecbba859002212167b43196e8cc6a1534948ca87cf47",
+    "tools/serve_admission/config_check.py": "1581b283f28df5f80c433367be3eb5571964b11b9c904f6e480e42b5eaf20126"
+  }
+}

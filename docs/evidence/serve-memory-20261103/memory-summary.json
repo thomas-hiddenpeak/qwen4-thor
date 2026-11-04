@@ -1,0 +1,103 @@
+{
+  "sparse_samples": [
+    {
+      "source": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/execution/business/production-high-floor/after-refusals-resources.json",
+        "sha256": "9ee00d14da57f7c872c32247c9f88a3d3a704595b26707f37f30dae9ce8c1fb3",
+        "bytes": 17669
+      },
+      "available_bytes": 36394610688,
+      "rss_bytes": {
+        "1969469": 739123200
+      },
+      "sampling_errors": []
+    },
+    {
+      "source": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/execution/business/production-high-floor/before-refusals-resources.json",
+        "sha256": "ffe15927584a11c7268a52d889813da349b8c6c00817c60c4694ec9bbbea3b4b",
+        "bytes": 17669
+      },
+      "available_bytes": 36386615296,
+      "rss_bytes": {
+        "1969469": 739123200
+      },
+      "sampling_errors": []
+    },
+    {
+      "source": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/execution/business/production-mtp/after-business-resources.json",
+        "sha256": "e9019663340580044f9e5073ebdc5e70ba9d997424d4ea2613964c7ca65ea02a",
+        "bytes": 17732
+      },
+      "available_bytes": 36615282688,
+      "rss_bytes": {
+        "1970628": 989851648
+      },
+      "sampling_errors": []
+    },
+    {
+      "source": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/execution/business/production-mtp/after-project-resources.json",
+        "sha256": "867f6f0d5003b66d85a9549c5c120ef27d89c5afa1de63c4996accda12ac4b32",
+        "bytes": 17732
+      },
+      "available_bytes": 36615770112,
+      "rss_bytes": {
+        "1970628": 989851648
+      },
+      "sampling_errors": []
+    },
+    {
+      "source": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/execution/business/production-mtp/before-business-resources.json",
+        "sha256": "88585e9c9b921fea3c03659a989bd3f65eae244ce7c006523f86b7c0f5ec0e14",
+        "bytes": 17662
+      },
+      "available_bytes": 37416755200,
+      "rss_bytes": {
+        "1970628": 739057664
+      },
+      "sampling_errors": []
+    }
+  ],
+  "sample_count": 5,
+  "sampled_rss_max_bytes": 989851648,
+  "global_available_min_bytes": 36386615296,
+  "worker_reports": [
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/execution/business/production-mtp/server.log",
+      "reaped": 1,
+      "lifetime_bytes": 4093444096,
+      "post_exec_bytes": 233947136,
+      "wait_status": 9
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/execution/business/production-mtp/server.log",
+      "reaped": 1,
+      "lifetime_bytes": 4093444096,
+      "post_exec_bytes": 233947136,
+      "wait_status": 9
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/execution/business/production-mtp/server.log",
+      "reaped": 1,
+      "lifetime_bytes": 4093444096,
+      "post_exec_bytes": 234942464,
+      "wait_status": 9
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/execution/business/production-mtp/server.log",
+      "reaped": 1,
+      "lifetime_bytes": 4093444096,
+      "post_exec_bytes": 228495360,
+      "wait_status": 9
+    }
+  ],
+  "reported_post_exec_max_bytes": 234942464,
+  "lifetime_ru_maxrss_max_bytes": 4093444096,
+  "sampling_scope": "Between business operations; no continuous trace or concurrent worker RSS captured",
+  "complete_process_or_system_peak": false,
+  "counters_additive": false,
+  "lifetime_ru_maxrss_includes_pre_exec": true
+}

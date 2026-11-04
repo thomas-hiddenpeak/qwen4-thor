@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 131
+X-Request-Id: req-3bd26d944915cb58d6348ee6b698c4bd
+Connection: close
+
+{"error":{"message":"unsupported message role","type":"invalid_request_error","code":"invalid_request","param":"messages[0].role"}}

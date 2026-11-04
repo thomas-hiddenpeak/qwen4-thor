@@ -1,0 +1,9 @@
+{
+  "status": "FAILED",
+  "error": "AssertionError('answer quality')",
+  "request_attempts": 4,
+  "negative_requests": 12,
+  "starts": 1,
+  "seconds": 41.12540415185504,
+  "performance_acceptance": false
+}

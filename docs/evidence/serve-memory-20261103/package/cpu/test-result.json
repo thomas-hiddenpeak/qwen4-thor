@@ -1,0 +1,11 @@
+{
+  "passed": false,
+  "commands": {
+    "host-off": true,
+    "host-on": true,
+    "host-required": true,
+    "backend": true,
+    "inventory": false,
+    "generated": true
+  }
+}

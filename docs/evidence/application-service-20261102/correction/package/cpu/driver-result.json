@@ -1,0 +1,20 @@
+[
+  {
+    "label": "delivery",
+    "command": [
+      "python3",
+      "-B",
+      "tools/application_service/test_stage.py"
+    ],
+    "returncode": 0
+  },
+  {
+    "label": "sdk",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-20261102/sdk-env/bin/python",
+      "-B",
+      "tools/application_service/test_sdk.py"
+    ],
+    "returncode": 0
+  }
+]

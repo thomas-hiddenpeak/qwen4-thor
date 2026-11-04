@@ -1,0 +1,10 @@
+{
+  "old": {
+    "q4t": "5642eb68d0e2d9296aeb0d5f4197797a18d064b2de749c4368a86fce918167ce",
+    "q4t.release.json": "6aca6a3ebf951ed8e625ff4944b73c34f40f3854b92497be2a8abe485315e382"
+  },
+  "new": {
+    "q4t": "c16caf0573ed2ecdf23237229a54a23a0d4ead46e86f6b25e7a44436d3caafe0",
+    "q4t.release.json": "be4cd02115f97a232aa885b487fa5e42bf044e9ccfa1bca8be31701a0c8d4463"
+  }
+}

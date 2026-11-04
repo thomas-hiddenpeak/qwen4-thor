@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/input_contract/stage.py", line 197, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/tools/input_contract/stage.py", line 180, in main
+    h.require_guard(OUTPUT)
+  File "/home/rm01/models/dev/qwen4-thor/tools/verify/startup_delivery/deploy.py", line 488, in require_guard
+    raise RuntimeError('no matching deployment guard ancestor')
+RuntimeError: no matching deployment guard ancestor

@@ -1,0 +1,16 @@
+{
+  "counts": {
+    "controls": 18,
+    "generation_attempts": 1,
+    "starts": 1
+  },
+  "error": "<ValidationError: \"{'error': {'message': 'Gateway rejected request', 'type': 'gateway_error', 'param': None, 'code': 'gateway_unauthorized'}} is not valid under any of the given schemas\">",
+  "limits": {
+    "controls": 100,
+    "generation_attempts": 6,
+    "seconds": 300,
+    "starts": 1
+  },
+  "seconds": 39.71323639107868,
+  "status": "FAILED"
+}

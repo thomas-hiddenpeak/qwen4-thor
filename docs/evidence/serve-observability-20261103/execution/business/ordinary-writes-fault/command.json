@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/package/fault/q4t",
+    "serve",
+    "--model-dir",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "18103",
+    "--max-prefill",
+    "2048",
+    "--max-len",
+    "8192",
+    "--max-seq",
+    "1",
+    "--max-inflight-requests",
+    "8",
+    "--max-queued-requests",
+    "2",
+    "--no-mtp"
+  ],
+  "binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/package/fault/q4t",
+    "sha256": "4da3c5d095e4723a60a87e51f9aa681ac1b6a13ab45fdd7fa926dabb2e892762",
+    "bytes": 7085704
+  },
+  "validation_env": {
+    "Q4T_SERVE_TEST_SNDBUF": "1",
+    "Q4T_SERVE_PAUSE": "write.backpressure",
+    "Q4T_SERVE_GATE": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/execution/business/ordinary-writes-fault/backpressure"
+  }
+}

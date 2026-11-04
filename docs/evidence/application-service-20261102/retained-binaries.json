@@ -1,0 +1,37 @@
+[
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-20261102/package/candidate/q4t",
+    "bytes": 4822512,
+    "sha256": "c3772d111088f8dbd7f07b6b482367da05c50112dd6502f047cd4627da2ea23a"
+  },
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-20261102/package/previous/q4t",
+    "bytes": 4821280,
+    "sha256": "830694ce26621cdd852b9d0b064d42c217958e17c9444935dd9298ebcb645f51"
+  },
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-correction-20261102/execution/pair/q4t",
+    "bytes": 4822512,
+    "sha256": "c3772d111088f8dbd7f07b6b482367da05c50112dd6502f047cd4627da2ea23a"
+  },
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-correction-20261102/package/candidate/q4t",
+    "bytes": 4822512,
+    "sha256": "c3772d111088f8dbd7f07b6b482367da05c50112dd6502f047cd4627da2ea23a"
+  },
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-correction-20261102/package/previous/q4t",
+    "bytes": 4821280,
+    "sha256": "830694ce26621cdd852b9d0b064d42c217958e17c9444935dd9298ebcb645f51"
+  },
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-final-20261102/package/candidate/q4t",
+    "bytes": 4822512,
+    "sha256": "c3772d111088f8dbd7f07b6b482367da05c50112dd6502f047cd4627da2ea23a"
+  },
+  {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-final-20261102/package/previous/q4t",
+    "bytes": 4821280,
+    "sha256": "830694ce26621cdd852b9d0b064d42c217958e17c9444935dd9298ebcb645f51"
+  }
+]

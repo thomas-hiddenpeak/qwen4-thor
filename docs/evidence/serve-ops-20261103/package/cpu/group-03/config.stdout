@@ -1,0 +1,7 @@
+Checking /home/rm01/models/dev/qwen4-thor/deploy/serve-ops/prometheus.example.yml
+  SUCCESS: 1 rule files found
+ SUCCESS: /home/rm01/models/dev/qwen4-thor/deploy/serve-ops/prometheus.example.yml is valid prometheus config file syntax
+
+Checking /home/rm01/models/dev/qwen4-thor/deploy/serve-ops/q4t.rules.yml
+  SUCCESS: 19 rules found
+

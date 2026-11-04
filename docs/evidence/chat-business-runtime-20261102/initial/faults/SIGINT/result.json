@@ -1,0 +1,85 @@
+{
+  "status": "PASS",
+  "error": null,
+  "signals": [
+    {
+      "pid": 1076481,
+      "signal": "SIGINT"
+    },
+    {
+      "pid": 1076481,
+      "signal": "SIGINT"
+    }
+  ],
+  "identities": {
+    "1076481": {
+      "state": "S",
+      "ppid": 1076469,
+      "pgid": 1076481,
+      "start_ticks": 178807704,
+      "argv": [
+        "/usr/bin/python3.12",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/fault_fixture.py",
+        "--role",
+        "parent",
+        "--case",
+        "SIGINT",
+        "--directory",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-business-runtime-20261102/faults/SIGINT",
+        "--lease-root",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-business-runtime-20261102"
+      ],
+      "executable": "/usr/bin/python3.12"
+    },
+    "1076483": {
+      "state": "S",
+      "ppid": 1076481,
+      "pgid": 1076481,
+      "start_ticks": 178807717,
+      "argv": [
+        "/usr/bin/python3.12",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/fault_fixture.py",
+        "--role",
+        "guard",
+        "--case",
+        "SIGINT",
+        "--directory",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-business-runtime-20261102/faults/SIGINT",
+        "--lease-root",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-business-runtime-20261102"
+      ],
+      "executable": "/usr/bin/python3.12"
+    },
+    "1076485": {
+      "state": "S",
+      "ppid": 1076483,
+      "pgid": 1076485,
+      "start_ticks": 178807729,
+      "argv": [
+        "/usr/bin/python3.12",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/fault_fixture.py",
+        "--role",
+        "leaf",
+        "--case",
+        "SIGINT",
+        "--directory",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-business-runtime-20261102/faults/SIGINT",
+        "--lease-root",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-business-runtime-20261102"
+      ],
+      "executable": "/usr/bin/python3.12"
+    }
+  },
+  "forced_cleanup": false,
+  "fixture_pids": [
+    1076481,
+    1076483,
+    1076485
+  ],
+  "child_returncode": -2,
+  "network_requests": 0,
+  "model_starts": 0
+}

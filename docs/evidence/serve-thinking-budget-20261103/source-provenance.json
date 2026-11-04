@@ -1,0 +1,17 @@
+{
+  "runtime_commit": "55cfae11",
+  "first_cli_correction_commit": "91652746",
+  "final_preflight_files": {
+    "tools/serve_thinking_budget/README.md": "0da22af8b376d037078adf691e17c59be4a7d9122a4d623c897f2aa54cf47036",
+    "tools/serve_thinking_budget/check_schema.py": "a8d7bd59c60d388d76de0365cb8db3080ac31d936462bb1d424d711f740266eb",
+    "tools/serve_thinking_budget/prepare_cpu.py": "7f895e0018865388880510dcccd67fbf2fa498691fca5a8dd8d9543cd6e0d925",
+    "tools/serve_thinking_budget/stage.py": "d824b8ca1f6c76ee36f717c1ba8a8ba6cd14502268049600f5b8874cc9238c32",
+    "tools/serve_thinking_budget/startup_preflight.cpp": "7e50375055ec20ac08f01bf06ccbd5700cc0f4a8d1ec475ec0fc0bac265443bc",
+    "tools/serve_thinking_budget/startup_preflight.py": "57b2b4d5c7344040b779f1e61df1deb8b3773a5e480d1f9b0d02b476e7f2112f",
+    "tools/serve_thinking_budget/test_stage.py": "15bba9f2692443e9a94b20b367737eec48f24f98f9a1a32ccb8956dcc98c7707",
+    "tools/serve_thinking_budget/verify.py": "78c3858deb1457a7ca8c197e5058b29f48ada6e42cb58b03eb6889a62d727263"
+  },
+  "candidate_sha256": "c02b94144c5a40c6118bd7dde306b298dce10c963045708f82082f6a5f2b8b54",
+  "http_accepted": false,
+  "default_unchanged": true
+}

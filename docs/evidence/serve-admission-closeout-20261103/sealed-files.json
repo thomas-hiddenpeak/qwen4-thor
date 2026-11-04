@@ -1,0 +1,8 @@
+{
+  "README.md": "e56f41e0e6fb9c156fa8be4e8743d894da365aab3e970753084fd9cabb411c80",
+  "rollback-result.json": "4554e97fae7ff7e8d9eeaeca39645fa48d1ade3fda961caad1e18a5f2bafe5dd",
+  "rollback-tests.log": "c5fae7d5da33b773506eb363584d7dbe49087308e8e2eb0dabd8f179687f6b1d",
+  "source-map.json": "3feaf219f096c19cdf88c62c9afa8c8243d839282bd8cd88d600f419e52c6f45",
+  "stage-after-delivery.py": "7a5c6ce516af317729682202fd4351b08cdad2a3c3f85151c32fa3689d6e9c3c",
+  "test_rollback.py": "b9bcbb8eb976cad3d5e6890e8246dc580c30e4af07ab9e3f413807a08a81bb07"
+}

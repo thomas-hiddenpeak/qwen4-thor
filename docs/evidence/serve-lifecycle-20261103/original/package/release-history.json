@@ -1,0 +1,946 @@
+{
+  "state": "VERIFIED_TO_LEGACY_BOUNDARY",
+  "pairs": [
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+        "sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+        "bytes": 7087224
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json",
+        "sha256": "bb620240dfbbe0437066f6827bf54d00f9e107327f244997fb437fe30727b1b2",
+        "bytes": 44671
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/candidate/CMakeCache.txt",
+        "sha256": "2bcb7e3f956aed13c9ac72cc05d4052653236e214c65e11fb65126ffcfd3be69",
+        "bytes": 38825
+      },
+      "version": "serve-observation-capacity-20261103",
+      "protocol_sha256": "da1466be364b9d177669a6a6b3209d77ef832bd4c8e059e3d93820bfeb336b05",
+      "observability_version": 4,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/previous/q4t",
+        "sha256": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+        "bytes": 7086768
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/previous/q4t.release.json",
+        "sha256": "c520333192c04ddb499dd0188496789ec8ddc20fc5e0f00491ca01f52517aa75",
+        "bytes": 42438
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/package/candidate/CMakeCache.txt",
+        "sha256": "7fb9a8f1e6d6ad2b754f732c8c88704a351e2111f86ba0a3c02097f3d86fde15",
+        "bytes": 38741
+      },
+      "version": "serve-memory-20261103",
+      "protocol_sha256": "aeb66adc439c31b23d943ffe9d9f40253fe2df275f89767b87927ab979bd4bd5",
+      "observability_version": 3,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/package/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/package/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/package/previous/q4t",
+        "sha256": "ed672a65b586f8445e51e3ba6d63659b4a098386e87e1ed38e3c8893a352a139",
+        "bytes": 7084248
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/package/previous/q4t.release.json",
+        "sha256": "67897c817dfccd6db3d4e2c0d0af3cfc70fb97a2c840887905c03fbf0bd6be23",
+        "bytes": 41102
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/package/candidate/CMakeCache.txt",
+        "sha256": "9827ceb6fbfafa0299f0a13b8bca1ec9c7f4884fbc50ee122976d08b721e7c3b",
+        "bytes": 38783
+      },
+      "version": "serve-observability-20261103",
+      "protocol_sha256": "0e252868586d1d78e59fd951f8e327d7cb5f6a0e903148a622198decd6645a8f",
+      "observability_version": 3,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/package/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/package/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/package/previous/q4t",
+        "sha256": "c16caf0573ed2ecdf23237229a54a23a0d4ead46e86f6b25e7a44436d3caafe0",
+        "bytes": 7083456
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/package/previous/q4t.release.json",
+        "sha256": "be4cd02115f97a232aa885b487fa5e42bf044e9ccfa1bca8be31701a0c8d4463",
+        "bytes": 40823
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/package/candidate/CMakeCache.txt",
+        "sha256": "f8846984bd823dfe11311c6159b009730d3860024c28a19533f4416019a21736",
+        "bytes": 38759
+      },
+      "version": "serve-admission-20261103",
+      "protocol_sha256": "b70fc28ab551740f3543061decadbac8f945f8ea8e1923364ce11a8aa48c7ca6",
+      "observability_version": 2,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/package/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/package/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/package/previous/q4t",
+        "sha256": "5642eb68d0e2d9296aeb0d5f4197797a18d064b2de749c4368a86fce918167ce",
+        "bytes": 7083976
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/package/previous/q4t.release.json",
+        "sha256": "6aca6a3ebf951ed8e625ff4944b73c34f40f3854b92497be2a8abe485315e382",
+        "bytes": 39636
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package-final/candidate/CMakeCache.txt",
+        "sha256": "1f22c1535f02767828ca55a255029596b51f3bc18c0310d7f4554b6f5757dbe7",
+        "bytes": 38761
+      },
+      "version": "serve-preflight-20261103",
+      "protocol_sha256": "a6468bf23a7bfb9e870c047cda6d68565e968e13ac4e551fea983f9476f5f747",
+      "observability_version": 2,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package-final/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package-final/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package-final/previous/q4t",
+        "sha256": "a3fd64a34a67f619bf2978faf152d6f455652d048a1e7a2cdc48caf784898184",
+        "bytes": 7012688
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package-final/previous/q4t.release.json",
+        "sha256": "49c7c63159c806d8b8f28d5a5a46e5f1c2b6562cc608f46bc43d921c48d0d35a",
+        "bytes": 36733
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package-fixture/candidate/CMakeCache.txt",
+        "sha256": "27edbfe3827aa7c44ff840d97e7faad80c516a4a2e653bf6005b56dce7b8bbd0",
+        "bytes": 38761
+      },
+      "version": "serve-text-stop-20261103",
+      "protocol_sha256": "ecfc9d583e90bd83e81734656270903cf673da5fc89b3e0be9f9d0ebdfc2e02c",
+      "observability_version": 2,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package-fixture/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package-fixture/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package-fixture/previous/q4t",
+        "sha256": "31ffc41efefe7e407a0848041e03673906e8965865b9464019aa54a99fd5dee6",
+        "bytes": 7012672
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package-fixture/previous/q4t.release.json",
+        "sha256": "9a71a0a72e76da3b3850a340fb30b882da633a867e51bf454bee92ba9f5f9a72",
+        "bytes": 34040
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/package-boundary/candidate/CMakeCache.txt",
+        "sha256": "c53c81d11e2ca07a5c44a524732412a75ca32be2adb4140534b36322fb1cffcf",
+        "bytes": 38827
+      },
+      "version": "serve-thinking-budget-http-20261103",
+      "protocol_sha256": "2918e45ab872d1768dd2a514d393a0a010bb1f3855f8d51cf94a09d1ac1ff563",
+      "observability_version": 2,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/package-boundary/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/package-boundary/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/package-boundary/previous/q4t",
+        "sha256": "ecd5d21f7b3a9adb221b17a352499df5a5803020f15149ed6cef978c916f8dcc",
+        "bytes": 6943272
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/package-boundary/previous/q4t.release.json",
+        "sha256": "91ce0ed94e4ee2c9bcb30895258a6bb30bef3cfe8e37f0dd6ac9160fb314ecfb",
+        "bytes": 31470
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/package/candidate/CMakeCache.txt",
+        "sha256": "c4c81d192e0a6d493d1b5849a854986e9e50bc670627aff19e7a9ed6c22e42b0",
+        "bytes": 38761
+      },
+      "version": "serve-stage-b2a-20261103",
+      "protocol_sha256": "ca823ac15bd4b7012d3cb6ec6189d52e620baa225d1f1c784e50a660476d7be5",
+      "observability_version": 2,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/package/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/package/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/package/previous/q4t",
+        "sha256": "f1133bcc539caa5148200e2603269646ab46047fb32ff22f722ac4830b88a305",
+        "bytes": 6942384
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/package/previous/q4t.release.json",
+        "sha256": "2edfb882a543195cf03608c8ad5ed1876aa66c3c991a81e9b5227a25000c1507",
+        "bytes": 28648
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b1-20261103/package/candidate/CMakeCache.txt",
+        "sha256": "f4ddf0a2d42266471aae3ba8275381984507952877dc75ce3a7fba1deeb48152",
+        "bytes": 38755
+      },
+      "version": "serve-stage-b1-20261103",
+      "protocol_sha256": "9dce35d88b8792ebb4704dfbb974c92144d661e85cc80a929978fa1975d88cb1",
+      "observability_version": 2,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b1-20261103/package/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b1-20261103/package/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b1-20261103/package/previous/q4t",
+        "sha256": "142bb9d41b2b972d61d995f391cb890c4068b3fd6b7a68b71aa9dafe1f506317",
+        "bytes": 6942472
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b1-20261103/package/previous/q4t.release.json",
+        "sha256": "94ce08253aa345db4775de3b1002c9daf29a91d058fea682ede946c6bcde5fdf",
+        "bytes": 25259
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/candidate/CMakeCache.txt",
+        "sha256": "8838010e4678528613bc0607703a98af0250018767f6b9f643dd6c81301ac26d",
+        "bytes": 38749
+      },
+      "version": "serve-stage-a-20261102",
+      "protocol_sha256": "fe17b50a921973de8da7ad5190a1590707a543053ad63ebd72a34892b3c6ac13",
+      "observability_version": 2,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/previous/q4t",
+        "sha256": "c8c412c4ab0f24c238d83e3e5def78baf4b25c99883eda382b0da7f560ed15d4",
+        "bytes": 6938016
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/previous/q4t.release.json",
+        "sha256": "da9f3ac5b41215157a6fbbb0d24ec540be7836c24d75d3bc6ed5228627032800",
+        "bytes": 21267
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/grammar-isolation-final-20261102/package/candidate/CMakeCache.txt",
+        "sha256": "ff4d572d3b0b98b7fc7c64d55befedf84faab1f8585e36ad283af8e8785adba4",
+        "bytes": 38815
+      },
+      "version": "grammar-isolation-20261102",
+      "protocol_sha256": "c2f485ec014af820ae4796f57a192ca70c49f780494e51cab966fbf2b19dcf4a",
+      "observability_version": 2,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/grammar-isolation-final-20261102/package/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/grammar-isolation-final-20261102/package/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/grammar-isolation-final-20261102/package/previous/q4t",
+        "sha256": "f03ee0d465419c2320552cfc20a589c5104e139120baa7204fed60a71d80b56b",
+        "bytes": 6864976
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/grammar-isolation-final-20261102/package/previous/q4t.release.json",
+        "sha256": "a1e9d24e3119a76939ed0859ac3d2f27bf49610df1a5d653efea93482ff08402",
+        "bytes": 19169
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-resources-20261102/package/candidate/CMakeCache.txt",
+        "sha256": "eabca0d462486b727f344283b48bc2314ef261904365054efe1cd28a5bca71d7",
+        "bytes": 38761
+      },
+      "version": "serve-resources-20261102",
+      "protocol_sha256": "3961281bafac11cb67971b345c127275f163ed8ac5b0c8593c32f6aa4f9a71a6",
+      "observability_version": 2,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-resources-20261102/package/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-resources-20261102/package/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-resources-20261102/package/previous/q4t",
+        "sha256": "ea678009413bd4d63a2b456a697e9c7844b47f71e6e2b3e3447b5044f9cbdf0a",
+        "bytes": 6865336
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-resources-20261102/package/previous/q4t.release.json",
+        "sha256": "90372798114d61fac6a15a409169596248716c6553561aa26bfa739ab1ca07ce",
+        "bytes": 21065
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/input-contract-20261102/package/candidate/CMakeCache.txt",
+        "sha256": "ff377dacb682bd8a505cd01414a819500bfd4088ae2bcce5e010a65a254786f7",
+        "bytes": 38869
+      },
+      "version": "input-contract-20261102",
+      "protocol_sha256": "5b328d66bc60a4d01373bc001e9dc2ce6e551f3a571da292662862be22f339e8",
+      "observability_version": null,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/input-contract-20261102/package/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/input-contract-20261102/package/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/input-contract-20261102/package/previous/q4t",
+        "sha256": "957211c7807a5189e5c124b13d52c4fe5a95a4213dfbce087007783cb479d5fc",
+        "bytes": 6866792
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/input-contract-20261102/package/previous/q4t.release.json",
+        "sha256": "9eba5472f952372464bf0a903c63074b2e73cd51321d0d19a0601f7f05426fad",
+        "bytes": 15613
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/structured-control-20261102/package/candidate/CMakeCache.txt",
+        "sha256": "5725f9768359ae60e27678fd08e2ecf375b1bc12e75f1edf0dfe0a5cdb9b6086",
+        "bytes": 38779
+      },
+      "version": "structured-output-20261102",
+      "protocol_sha256": "cda1fc473e24057ce46ad90bba7764928f901b9122b7e06bd789b86304adc5af",
+      "observability_version": null,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/structured-control-20261102/package/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/structured-control-20261102/package/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/structured-control-20261102/package/previous/q4t",
+        "sha256": "c3772d111088f8dbd7f07b6b482367da05c50112dd6502f047cd4627da2ea23a",
+        "bytes": 4822512
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/structured-control-20261102/package/previous/q4t.release.json",
+        "sha256": "c80f1f14b1abe39a24e45a9fe37a0fa4e9b8a5fd47a4537799f816dca852e5a1",
+        "bytes": 10182
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-correction-20261102/package/candidate/CMakeCache.txt",
+        "sha256": "52e07d3ce862297a21979fcef81df00a3c838238eb2c5bf12e6fde92f25906b3",
+        "bytes": 37466
+      },
+      "version": "application-service-20261102",
+      "protocol_sha256": "b3ea31054e08629acd711aa85f0386e509d335e597f509c4662ed706b749a1b2",
+      "observability_version": null,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-correction-20261102/package/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-correction-20261102/package/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-correction-20261102/package/previous/q4t",
+        "sha256": "830694ce26621cdd852b9d0b064d42c217958e17c9444935dd9298ebcb645f51",
+        "bytes": 4821280
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-correction-20261102/package/previous/q4t.release.json",
+        "sha256": "0f28e0f08322c6ad513dc9117e95f6913d34876b43485534e150b67f8544f1aa",
+        "bytes": 6119
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-delivery-20261102/package/candidate/CMakeCache.txt",
+        "sha256": "52e07d3ce862297a21979fcef81df00a3c838238eb2c5bf12e6fde92f25906b3",
+        "bytes": 37466
+      },
+      "version": "chat-integration-20261102",
+      "protocol_sha256": "a765c021575bd68f46ecdbf099c9450e4b05e318e5b2d132215b3a880420a569",
+      "observability_version": null,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-delivery-20261102/package/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-delivery-20261102/package/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-delivery-20261102/package/previous/q4t",
+        "sha256": "0c5ab1de85ff68f9d757ac3bfad04187756a1b2c6634108c3112a5861c209483",
+        "bytes": 4748920
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-delivery-20261102/package/previous/q4t.release.json",
+        "sha256": "e6fdd13b7d140926ed4a0d42bcda37b6ec6689305960e3deab03b3f73dc294d6",
+        "bytes": 5474
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/delivery-package/candidate/CMakeCache.txt",
+        "sha256": "276e16e4338fa3e24cf3d48db9a1f721fa60c03ea6754b66cbb768e78a2a15ba",
+        "bytes": 37450
+      },
+      "version": "main-reaudit-repairs-20261031",
+      "protocol_sha256": null,
+      "observability_version": null,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/delivery-package/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/delivery-package/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/delivery-package/previous/q4t",
+        "sha256": "b11ed66cd94f943957e83edbfa223cb3e65f758e409eb4d125b4911d1164e015",
+        "bytes": 4748168
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/delivery-package/previous/q4t.release.json",
+        "sha256": "982c888c2c9d6e63a608398472bc692f8340e117361011d123593fd7c6d45fab",
+        "bytes": 5323
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage2/delivery-package/candidate/CMakeCache.txt",
+        "sha256": "172fc1ad4ed7ec2b9cf199de32e59125854895984628bafdf16058c4071b1e4c",
+        "bytes": 37438
+      },
+      "version": "audit-p2-complete-20261031",
+      "protocol_sha256": null,
+      "observability_version": null,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/delivery-package/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/delivery-package/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/delivery-package/previous/q4t",
+        "sha256": "5e6249fcd2eb9849ef047d7fff89489c3d0218ba2c40ace40f4b79b3affe8b05",
+        "bytes": 4747056
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/delivery-package/previous/q4t.release.json",
+        "sha256": "cb90c388034bc33b80b378faac73216082074b15d993fa8f00d59fc26575c908",
+        "bytes": 5037
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/delivery-package/candidate/CMakeCache.txt",
+        "sha256": "387d0cdbac6bca2af84961d315c4bc00fe73d84c32d52ca97fc26eb6ffa58117",
+        "bytes": 37438
+      },
+      "version": "audit-p2-stage1-20261031",
+      "protocol_sha256": null,
+      "observability_version": null,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/delivery-package/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/delivery-package/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/delivery-package/previous/q4t",
+        "sha256": "037328bb5c8788920ef44d1dfac2df94f908760f5626a95f1a674568c0dac4f7",
+        "bytes": 4680960
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/delivery-package/previous/q4t.release.json",
+        "sha256": "3200266ea8778507b9e9acdfc0cf0a8b2bb97ae02aa8262cd572fd0a9b060d06",
+        "bytes": 4864
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261031/delivery-package/candidate/CMakeCache.txt",
+        "sha256": "843fdbf8c15ae94534412400d6ebd3aae98b6c25c90b194d410cf472a0d3e560",
+        "bytes": 37456
+      },
+      "version": "serve-closeout-20261031",
+      "protocol_sha256": null,
+      "observability_version": null,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261031/delivery-package/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261031/delivery-package/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261031/delivery-package/previous/q4t",
+        "sha256": "27a483a31e5799b67342efbabea6812c6ec7efce1f0b03ffc304f31318fcbf28",
+        "bytes": 4747320
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261031/delivery-package/previous/q4t.release.json",
+        "sha256": "af6b3a4466390b11b01034a9194fbc41fe5e8d522d90b44107496473fdc97a6a",
+        "bytes": 4766
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-reliability-20261030/delivery-package-v2/candidate/CMakeCache.txt",
+        "sha256": "f7e29b8c527b84e45904e82fc68ef8ad74439e79f1a635ae5800b42bd39308b9",
+        "bytes": 37446
+      },
+      "version": "serve-reliability-20261030",
+      "protocol_sha256": null,
+      "observability_version": null,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-reliability-20261030/delivery-package-v2/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-reliability-20261030/delivery-package-v2/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-reliability-20261030/delivery-package-v2/previous/q4t",
+        "sha256": "21eb5204e094cf8f86b02780b168ac62cd354c47ad9ae3348759e05860594097",
+        "bytes": 4743328
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-reliability-20261030/delivery-package-v2/previous/q4t.release.json",
+        "sha256": "9698b4300edba168cbdb60040239741275ec079b372113610bb714396a9c8a57",
+        "bytes": 4375
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-incremental-delivery-20261029/delivery-package/candidate/CMakeCache.txt",
+        "sha256": "20632aea414236b57bdece8a4403da402e29f9bf1a99ee2ce0cb1d82482d2efe",
+        "bytes": 37416
+      },
+      "version": "session-incremental-k3-20261029",
+      "protocol_sha256": null,
+      "observability_version": null,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-incremental-delivery-20261029/delivery-package/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-incremental-delivery-20261029/delivery-package/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-incremental-delivery-20261029/delivery-package/previous/q4t",
+        "sha256": "6f3722b26e5b9d1b08d405e873d1f90d72f4b5c1aec2dd14589d1e27390b7965",
+        "bytes": 4675568
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-incremental-delivery-20261029/delivery-package/previous/q4t.release.json",
+        "sha256": "5fdca879f84da6795b66113833de7167df6edbcff0d97e09d474113e47a67de2",
+        "bytes": 3757
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-seed-20261028/delivery-package/candidate/CMakeCache.txt",
+        "sha256": "a699581310e57b72656ce76dc96f0f62eb3f80523509a4f85af3f62bc1214edc",
+        "bytes": 37348
+      },
+      "version": "explicit-prefix-seed-k3-20261028",
+      "protocol_sha256": null,
+      "observability_version": null,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-seed-20261028/delivery-package/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-seed-20261028/delivery-package/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-seed-20261028/delivery-package/previous/q4t",
+        "sha256": "09fe25ba5db65ae0bd343a110f2b7042de06f1bc7184bba51d10704638ad26b3",
+        "bytes": 4674760
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-seed-20261028/delivery-package/previous/q4t.release.json",
+        "sha256": "5027b9d4229e97edf35fa482e0351581434b8e270cebd8b91b055a671ec0082e",
+        "bytes": 3993
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-cache-20261027/delivery-package/candidate/CMakeCache.txt",
+        "sha256": "21574a3e3575341a411a0751b37a238e0d1b03c5701ce254fab5e3281dc67bad",
+        "bytes": 37356
+      },
+      "version": "session-cache-k3-20261027",
+      "protocol_sha256": null,
+      "observability_version": null,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-cache-20261027/delivery-package/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-cache-20261027/delivery-package/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-cache-20261027/delivery-package/previous/q4t",
+        "sha256": "f2a6de360e05676c5fee2f86fbd314c9a9ff3ea0378fa104e0185cef6b4ec164",
+        "bytes": 4602416
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-cache-20261027/delivery-package/previous/q4t.release.json",
+        "sha256": "26325699af40325e384c4aae4d615679f2d7e2aa69f9eecbc5743e68db6032cf",
+        "bytes": 3038
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/package-v2/candidate/CMakeCache.txt",
+        "sha256": "bddfa6a8e65ead27e0361531ecd3cbd989d8e52a230a22f66bada2ae9b77b8d3",
+        "bytes": 37352
+      },
+      "version": "suffix-agent-k3-20261027",
+      "protocol_sha256": null,
+      "observability_version": null,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/package-v2/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/package-v2/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/package-v2/previous/q4t",
+        "sha256": "90f24f49ea93e7ddbb359e817f05a9d39f87a54f66433c01a8d46f198f489bd4",
+        "bytes": 4598616
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/package-v2/previous/q4t.release.json",
+        "sha256": "45cfe74a761f9b3a9ab1db613b42e8fde64192d869f17a0596ea5925b73e61ec",
+        "bytes": 1830
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-causal-20261026/delivery-package-v2/candidate/CMakeCache.txt",
+        "sha256": "dbdb21db6c896d5416e2bf9696860c6e77468e438d7b18436071b084e376c654",
+        "bytes": 37398
+      },
+      "version": "suffix-k3-lazy-20261026",
+      "protocol_sha256": null,
+      "observability_version": null,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-causal-20261026/delivery-package-v2/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-causal-20261026/delivery-package-v2/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-causal-20261026/delivery-package-v2/previous/q4t",
+        "sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+        "bytes": 4513624
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-causal-20261026/delivery-package-v2/previous/q4t.release.json",
+        "sha256": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96",
+        "bytes": 1613
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/candidate/CMakeCache.txt",
+        "sha256": "9e40007a1decff5ebfdde8b9ee241990e47339717f700d7511417bf950ad4d69",
+        "bytes": 37436
+      },
+      "version": "sha2-startup-20261023",
+      "protocol_sha256": null,
+      "observability_version": null,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/previous/q4t",
+        "sha256": "75e85bac509b793b9b69612539809a17b64d45febe1b408e019641fe01c2eb2d",
+        "bytes": 4513656
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/previous/q4t.release.json",
+        "sha256": "9cbfaf7d76e62198fbc4f48b0e5ed1187d84a47705007ff5212411272ba47ab5",
+        "bytes": 1759
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/delivery-package-v2/candidate/CMakeCache.txt",
+        "sha256": "30fc9b3edce11e5bfc6d3971f1ba18a54887d93a2de62d2099b1b188be183c7e",
+        "bytes": 37448
+      },
+      "version": "mtp-subset-bf16-20261023",
+      "protocol_sha256": null,
+      "observability_version": null,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/delivery-package-v2/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/delivery-package-v2/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/delivery-package-v2/previous/q4t",
+        "sha256": "5a456351ac7230607e69b6d03e24aace3efb4c7ba521bf0a348a9b92d6c21191",
+        "bytes": 4445872
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/delivery-package-v2/previous/q4t.release.json",
+        "sha256": "e1a14429064aae3d046bbea6c743c2355071b09893cb9bc090deb7aecdf6be10",
+        "bytes": 2161
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/releases/startup-delivery-20261021/CMakeCache.txt",
+        "sha256": "513c572778f77f03837a8c54650270d4c45bf548185a31380848005571f37d98",
+        "bytes": 37788
+      },
+      "version": "startup-delivery-20261021",
+      "protocol_sha256": null,
+      "observability_version": null,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/deploy-v1/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/deploy-v1/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/deploy-v1/previous/q4t",
+        "sha256": "19ea4e57bf3a0e4f568a3e59c31ccbb4e71ad535db997682d8160d4be2f9c469",
+        "bytes": 4304904
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/deploy-v1/previous/q4t.release.json",
+        "sha256": "471e2debe81e1231d9060ff36ddae31db3fe9fb042fa5cf1ad8753cd1d514b8a",
+        "bytes": 1552
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/releases/offload-foundation-20261020/CMakeCache.txt",
+        "sha256": "04d94c25bbf28a17de86b6addaf55f8d762196086487b173fd6a190124ec62af",
+        "bytes": 37280
+      },
+      "version": "offload-foundation-20261020",
+      "protocol_sha256": null,
+      "observability_version": null,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-foundation-20261020/deploy-v1/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-foundation-20261020/deploy-v1/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-foundation-20261020/deploy-v1/previous/q4t",
+        "sha256": "3ae53f268119d0b391e974d6989cc1ee6a182e38e79503f793d562f0a822ea98",
+        "bytes": 4303320
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-foundation-20261020/deploy-v1/previous/q4t.release.json",
+        "sha256": "f720cb21137a210d10f1213ed2f16b55b54b9f1255cec925e487b66bd2907415",
+        "bytes": 1554
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/releases/resource-admission-20261020/CMakeCache.txt",
+        "sha256": "d09abbfcfc9d513894071478642facdc9904940d1d996d960e9faba01e2d062e",
+        "bytes": 37280
+      },
+      "version": "resource-admission-20261020",
+      "protocol_sha256": null,
+      "observability_version": null,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/resource-admission-20261020/deploy-v1/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/resource-admission-20261020/deploy-v1/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/resource-admission-20261020/deploy-v1/previous/q4t",
+        "sha256": "3eb9b2a032db927988468e38855d67892a2a21482e7e2142ae64ce6de513a9a8",
+        "bytes": 4303416
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/resource-admission-20261020/deploy-v1/previous/q4t.release.json",
+        "sha256": "44e4311fd3f6940ec235f041dd413e21ec7e26de4335a6a5979aca959b0c58df",
+        "bytes": 1556
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/releases/request-diagnostics-20261020/CMakeCache.txt",
+        "sha256": "b260993602550b400e75dca827416691ae3c3c22804e8e7ea02441897cc94eea",
+        "bytes": 37284
+      },
+      "version": "request-diagnostics-20261020",
+      "protocol_sha256": null,
+      "observability_version": null,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/request-diagnostics-20261020/deploy-v1/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/request-diagnostics-20261020/deploy-v1/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/request-diagnostics-20261020/deploy-v1/previous/q4t",
+        "sha256": "d4232b63e53bece8c82bd87d8dcac628fb089f4f7eddc163535030133107f7a6",
+        "bytes": 4302936
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/request-diagnostics-20261020/deploy-v1/previous/q4t.release.json",
+        "sha256": "057415ce09f340827b30bee225fbc1479ecb632298f20ed48ca7f3223b01437c",
+        "bytes": 1509
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/releases/moe-hot-upload-20261020/CMakeCache.txt",
+        "sha256": "bc48bbca5d4f486b2fb70bec01c3b61529af6ff5345b3664e04c510cfa9ae45a",
+        "bytes": 37264
+      },
+      "version": "moe-hot-upload-20261020",
+      "protocol_sha256": null,
+      "observability_version": null,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-hot-upload-20261020/deploy-v1/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-hot-upload-20261020/deploy-v1/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-hot-upload-20261020/deploy-v1/previous/q4t",
+        "sha256": "bc348458db08f7d8006ab9416fd83dd4810fc905af9bd6d2a766fecab937790a",
+        "bytes": 4301656
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-hot-upload-20261020/deploy-v1/previous/q4t.release.json",
+        "sha256": "34ddb994c79dfb3c7d7de098a904f2b174613e0d3377547f9525080081cafd2e",
+        "bytes": 1264
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/releases/megatron-reliability-20261020/CMakeCache.txt",
+        "sha256": "483a7f71446a1111740c305cb2223d46943bc9dadc5d97b78a2fa28700c90221",
+        "bytes": 37288
+      },
+      "version": "megatron-reliability-20261020",
+      "protocol_sha256": null,
+      "observability_version": null,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/megatron-reliability-20261020/deploy-v1/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/megatron-reliability-20261020/deploy-v1/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/megatron-reliability-20261020/deploy-v1/previous/q4t",
+        "sha256": "753d9769f96e9848800eae88b4800bef65e20885fd2ec025b8f3bc91fc497542",
+        "bytes": 4301960
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/megatron-reliability-20261020/deploy-v1/previous/q4t.release.json",
+        "sha256": "cbf089607c600dd4245901a79db2777d070928d62510e85d06c3430aeabd6c4b",
+        "bytes": 1246
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/releases/metadata-batch-20261020/CMakeCache.txt",
+        "sha256": "7b9347bd5fc029e9c5887119b70b80138fbbd94365744b32acefa04634ceb8fb",
+        "bytes": 37444
+      },
+      "version": "metadata-batch-hardening-20261020",
+      "protocol_sha256": null,
+      "observability_version": null,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/metadata-followup-20261020/batch-deploy-v1/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/metadata-followup-20261020/batch-deploy-v1/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/metadata-followup-20261020/batch-deploy-v1/previous/q4t",
+        "sha256": "c8f4b241f67b2818e92791f688082e338f6981a5db923cf09fb07e30b99e887d",
+        "bytes": 4301008
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/metadata-followup-20261020/batch-deploy-v1/previous/q4t.release.json",
+        "sha256": "e4d5033a8a9cd55eae523263c72c0bcb164bc8cb80693109f36f4f8a703df0e9",
+        "bytes": 878
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/releases/metadata-20261020/CMakeCache.txt",
+        "sha256": "28833e67982cbcf27e8cf3763b5c987376240519fb8b8aec4479d54f47d35e24",
+        "bytes": 37280
+      },
+      "version": "metadata-hardening-20261020",
+      "protocol_sha256": null,
+      "observability_version": null,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/metadata-followup-20261020/deploy-v1/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/metadata-followup-20261020/deploy-v1/previous/q4t.release.json",
+      "previous_release_was_stale": false,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    },
+    {
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/metadata-followup-20261020/deploy-v1/previous/q4t",
+        "sha256": "44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03",
+        "bytes": 4300056
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/metadata-followup-20261020/deploy-v1/previous/q4t.release.json",
+        "sha256": "e77f600510c9acfc8987392479203306348ac0776a8600a257360cef396bbdca",
+        "bytes": 1030
+      },
+      "cache": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/releases/b1a-20261018/CMakeCache.txt",
+        "sha256": "ca2e60a10bb4c6c3d653a73437283e543797d119b5fbd7e9cdc82835af549e06",
+        "bytes": 37296
+      },
+      "version": "mtp-position-b1a-20261018",
+      "protocol_sha256": null,
+      "observability_version": null,
+      "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/b1a-deploy-20261018/previous/q4t",
+      "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/b1a-deploy-20261018/previous/q4t.release.json",
+      "previous_release_was_stale": true,
+      "pair_identity_verified": true,
+      "business_acceptance_revalidated": false
+    }
+  ],
+  "terminal": {
+    "kind": "explicit_stale_history",
+    "installable": false,
+    "binary": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/b1a-deploy-20261018/previous/q4t",
+      "sha256": "8685d8bf4068b81df0f5162d6c55924d93eae793d17664a1b465ca7587d6c6ee",
+      "bytes": 4300080
+    },
+    "sidecar": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/b1a-deploy-20261018/previous/q4t.release.json",
+      "sha256": "cef96e24197d4e16b0a2a4f03566c59c1133ee385950970e24dd9c69c3e8796d",
+      "bytes": 998
+    }
+  },
+  "automatic_restore": false,
+  "atomic_snapshot": false
+}

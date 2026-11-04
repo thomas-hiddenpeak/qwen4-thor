@@ -1,0 +1,53 @@
+[
+  {
+    "argv": [],
+    "effective_slots": 1
+  },
+  {
+    "argv": [
+      "--min-available-memory-mib",
+      "0"
+    ],
+    "effective_slots": 1
+  },
+  {
+    "argv": [
+      "--min-available-memory-mib",
+      "4096",
+      "--memory-recovery-margin-mib",
+      "128",
+      "--no-budget"
+    ],
+    "effective_slots": 1
+  },
+  {
+    "argv": [
+      "--min-available-memory-mib",
+      "1048576",
+      "--memory-recovery-margin-mib",
+      "1048576"
+    ],
+    "effective_slots": 1
+  },
+  {
+    "argv": [
+      "--min-available-memory-mib",
+      "-1"
+    ],
+    "effective_slots": 1
+  },
+  {
+    "argv": [
+      "--memory-recovery-margin-mib",
+      "0"
+    ],
+    "effective_slots": 1
+  },
+  {
+    "argv": [
+      "--min-available-memory-mib",
+      "1048577"
+    ],
+    "effective_slots": 1
+  }
+]

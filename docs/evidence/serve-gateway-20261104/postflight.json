@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "soar_state": "MainPID=0\nActiveState=inactive\nUnitFileState=masked\n",
+  "containers": "",
+  "lock_inode": 3294067,
+  "lock_available": true,
+  "owned_processes_gone": true,
+  "day_prepared_not_started": true,
+  "default_binary_sha256": "d66f2bb9df3a34eda1b885da148e6971c25137564e500b9357bd5f9a5f8dfb1b",
+  "default_sidecar_sha256": "42d7672ab473aceb315889be8eeac54310121fd47d4ac861d4d40fcc2bfea1f5"
+}

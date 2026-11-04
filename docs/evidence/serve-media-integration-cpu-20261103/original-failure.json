@@ -1,0 +1,22 @@
+{
+  "passed": false,
+  "commands": {
+    "host-off": false,
+    "host-on": false,
+    "host-required": false,
+    "backend": true,
+    "config": true,
+    "inventory": true,
+    "generated": true,
+    "core": true,
+    "fixtures": true,
+    "processor": true,
+    "processor-quota": false,
+    "startup-config": true,
+    "persistent-host": true,
+    "processor-reference": true
+  },
+  "sources_unchanged": true,
+  "model_or_http_started": false,
+  "gpu_tests": 0
+}

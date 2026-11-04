@@ -1,0 +1,1 @@
+{"passed": true, "fixtures": 15, "reused": 0, "positives": 7, "failures": [], "binary_sha256": "5039807c1e7ebf783eec477d72df0b52f18d6883d252b5ed64df861f17ddccec", "schema_sha256": "2b3391c70fb483417851058e767e834c398b57986203735d215e76c4cb970f49", "scope": "Hypothetical effective slot counts, production CLI/config only; no GPU/HTTP."}

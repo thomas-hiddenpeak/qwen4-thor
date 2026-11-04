@@ -1,0 +1,29 @@
+{
+  "changed": [
+    "src/model/model.cu",
+    "src/model/model_owner.cpp",
+    "src/mtp/mtp.cu",
+    "src/runtime/startup_reservation.cpp",
+    "src/server/chat_capabilities.cpp",
+    "src/server/chat_server.cpp",
+    "src/server/cuda_memory_backend.h"
+  ],
+  "added": [
+    "CMakeLists.txt",
+    "cmake/CudaCleanupBoundary.cmake",
+    "include/q4t/runtime/cleanup_policy.h"
+  ],
+  "previous_manifest": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-20261103/package/candidate/runtime-source.json",
+    "sha256": "642af507ba54c630f1aff36bffd5122fee978ad7a0091df4eca98a9f46f4bc02",
+    "bytes": 21106
+  },
+  "review": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/numerical-review.json",
+    "sha256": "37af704c411c547036beb31a37146444be7dbd85adb6864de8bbdaa0c00480e5",
+    "bytes": 6942
+  },
+  "model_math_unchanged": true,
+  "performance_acceptance": false,
+  "scope": "Host lifecycle/drain changes in model/MTP and default q4t direct CUDA cleanup binding; no kernel arithmetic, precision, dispatch, template or scheduling change. Prior numerical evidence reused for unchanged computation only."
+}

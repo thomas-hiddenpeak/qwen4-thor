@@ -1,0 +1,41 @@
+[
+  {
+    "argv": [
+      "cmake",
+      "-S",
+      "/home/rm01/models/dev/qwen4-thor/tests/io_host",
+      "-B",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/io-host",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_COMPILER=g++-14",
+      "-DQ4T_BUILD_RESIDENCY_CUDA_CONTRACTS=ON"
+    ],
+    "log": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/io-0.log",
+    "returncode": 0,
+    "seconds": 0.3278038501739502
+  },
+  {
+    "argv": [
+      "cmake",
+      "--build",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/io-host",
+      "--parallel",
+      "4"
+    ],
+    "log": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/io-1.log",
+    "returncode": 0,
+    "seconds": 17.238319873809814
+  },
+  {
+    "argv": [
+      "ctest",
+      "--test-dir",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/io-host",
+      "--output-on-failure",
+      "--verbose"
+    ],
+    "log": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/io-2.log",
+    "returncode": 0,
+    "seconds": 0.16919994354248047
+  }
+]

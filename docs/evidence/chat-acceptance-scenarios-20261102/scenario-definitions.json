@@ -1,0 +1,49 @@
+{
+  "limits": {
+    "generations": 24,
+    "planned_generations": 23,
+    "negatives": 10,
+    "starts": 3,
+    "capability_gets": 6,
+    "agent_runs": 3,
+    "agent_rounds": 2,
+    "agent_tool_calls": 1,
+    "agent_max_tokens": 256,
+    "fault_cases": 8,
+    "fault_process_starts": 12,
+    "fault_seconds": 180,
+    "http_seconds": 1800,
+    "stage_seconds": 2400
+  },
+  "CRASH_CASES": {
+    "submitted": [
+      "round-00-submitted.json",
+      "REQUEST_OUTCOME_UNKNOWN"
+    ],
+    "partial-wire": [
+      null,
+      "REQUEST_OUTCOME_UNKNOWN"
+    ],
+    "tool-started": [
+      "round-00-tool-000-started.json",
+      "TOOL_OUTCOME_UNKNOWN"
+    ],
+    "tool-result": [
+      "round-00-tool-000-result.json",
+      "READY_TO_REQUEST"
+    ],
+    "tool-history": [
+      "round-00-history.json",
+      "READY_TO_REQUEST"
+    ],
+    "final-response": [
+      "round-01-response.json",
+      "FINAL_RESPONSE_SAVED"
+    ]
+  },
+  "SIGNAL_CASES": [
+    "SIGTERM",
+    "SIGINT"
+  ],
+  "source": "AST literals only; no project module imported"
+}

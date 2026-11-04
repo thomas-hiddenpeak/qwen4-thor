@@ -1,0 +1,7 @@
+<|im_start|>user
+仅输出符合给定schema的JSON对象。<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

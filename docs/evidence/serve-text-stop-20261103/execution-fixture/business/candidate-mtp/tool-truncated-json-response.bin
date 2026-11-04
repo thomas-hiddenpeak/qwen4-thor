@@ -1,0 +1,7 @@
+HTTP/1.1 502 Bad Gateway
+Content-Type: application/json
+Content-Length: 110
+X-Request-Id: trace-tool-truncated-json
+Connection: close
+
+{"error":{"message":"incomplete tool call","type":"server_error","code":"response_parse_failed","param":null}}

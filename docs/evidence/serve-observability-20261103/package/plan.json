@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "root": "/home/rm01/models/dev/qwen4-thor",
+  "limits": {
+    "generations": 10,
+    "negatives": 20,
+    "starts": 3,
+    "seconds": 1800
+  },
+  "planned": {
+    "generations": 8,
+    "negatives": 16,
+    "starts": 2
+  },
+  "source_commit": "2425044b49aaab3b8754319b5bf33a135e9c5911",
+  "candidate": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/package/candidate/q4t",
+  "candidate_sha256": "ed672a65b586f8445e51e3ba6d63659b4a098386e87e1ed38e3c8893a352a139",
+  "binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/package/candidate/q4t",
+    "sha256": "ed672a65b586f8445e51e3ba6d63659b4a098386e87e1ed38e3c8893a352a139",
+    "bytes": 7084248
+  },
+  "fault_binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/package/fault/q4t",
+    "sha256": "4da3c5d095e4723a60a87e51f9aa681ac1b6a13ab45fdd7fa926dabb2e892762",
+    "bytes": 7085704
+  },
+  "old_hashes": {
+    "q4t": "c16caf0573ed2ecdf23237229a54a23a0d4ead46e86f6b25e7a44436d3caafe0",
+    "q4t.release.json": "be4cd02115f97a232aa885b487fa5e42bf044e9ccfa1bca8be31701a0c8d4463"
+  },
+  "previous_binary_sha256": "c16caf0573ed2ecdf23237229a54a23a0d4ead46e86f6b25e7a44436d3caafe0",
+  "source_manifest_sha256": "5e8748cf48e6bb6d5e708098e99d88ceb79d42f07043f83f4640a4d0721d9387",
+  "protocol_sha256": "0e252868586d1d78e59fd951f8e327d7cb5f6a0e903148a622198decd6645a8f",
+  "model_dir": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "model_inputs": {
+    "config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+    "tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+    "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+    "chat_template.jinja": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+  },
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "port": 18103,
+  "performance_acceptance": false,
+  "lifecycle_probe": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/package/candidate/q4t_http_lifecycle_tests",
+    "sha256": "0bad52f7ea8344cdc3e07d585adaf6333f43e1ec875d745d2572015107cd20ce",
+    "bytes": 682976
+  }
+}

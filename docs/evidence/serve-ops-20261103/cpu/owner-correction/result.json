@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "old_omission_demonstrated": true,
+  "affected_rules": [
+    "Q4TWorkerReapStalled",
+    "Q4TIdleResourcesRetained"
+  ],
+  "scenarios": 8,
+  "assertions": 97,
+  "actual_metric_evidence": {
+    "before": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/execution/business/diagnostics/before/report.json",
+      "sha256": "4f7e55f1fb259e6a39efc133f4e9398bab0a55ca22304ec09f816e72fdec6736",
+      "bytes": 7861
+    },
+    "after": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/execution/business/diagnostics/after/report.json",
+      "sha256": "9bd48628f67f67c04ab7809b94c7668592cc2f999437c2e3d1ef94980bf2a790",
+      "bytes": 25230
+    }
+  },
+  "corrected_rule_sha256": "77a4ddc613b002508be336ab41dfae17c9d9e6421f1638c15ccbfcca0eed637e",
+  "correction_source_hashes": {
+    "tools/serve_ops/rules.py": "b03ae564d546fa3bafad41b576da86b3fcf2cdb22b5636d84b472c252dd4d04a",
+    "tools/serve_ops/fixtures.py": "313c716156c0bb6ab09bd0ee4419c015132e981f25482a6e4c2566da0be11bc5",
+    "tools/serve_ops/rule_tests.py": "eec0e4b29d1d876f6cabf31ddd8058f0d2ffde98b2ebdbfe70b0a169ce9c1e0e"
+  },
+  "runtime_changed": false,
+  "model_or_http_repeated": false,
+  "unaffected_15_alerts_and_2_records_reused": true,
+  "frozen_real_run_retained": true,
+  "actual_live_monitor_used_original_rules": true,
+  "checker_repair": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/audit-owner-correction.py",
+    "sha256": "0204cae0dc0c6d2f264d67d3f475e793f953d312500919c86082d0e10ea6418c",
+    "bytes": 2521
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "label": "resource-driver",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/serve_resources/test_stage.py"
+      ],
+      "returncode": 0,
+      "seconds": 0.16403035912662745
+    },
+    {
+      "label": "rollback",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/application_service/test_stage.py"
+      ],
+      "returncode": 0,
+      "seconds": 0.11385605903342366
+    }
+  ]
+}

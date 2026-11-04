@@ -3,6 +3,8 @@
 All state stays under build/ or .q4t-work/. No public listener or system install.
 """
 import argparse
+from contextlib import contextmanager
+import ctypes
 import fcntl
 import hashlib
 import http.client
@@ -119,11 +121,15 @@ def running(root):
 
 
 def stop(root):
+    if (root/'cleanup-failure.json').exists():
+        raise RuntimeError('unresolved process cleanup; retained state for diagnosis')
     state = running(root)
     if not state:
         return
     os.kill(state['pid'], signal.SIGTERM)
     for _ in range(400):
+        if (root/'cleanup-failure.json').exists():
+            raise RuntimeError('supervisor process cleanup failed; retained state')
         if not running(root):
             return
         time.sleep(.1)
@@ -143,6 +149,8 @@ def request(port, route):
 def start(root):
     if running(root):
         raise RuntimeError('already running')
+    if (root/'cleanup-failure.json').exists():
+        raise RuntimeError('unresolved process cleanup; retained state for diagnosis')
     package_path = (root / 'current').resolve(strict=True)
     verify(package_path)
     config = json.loads((root/'config.json').read_text())
@@ -196,10 +204,109 @@ def switch(root, target):
         os.replace(temp, root/'previous')
 
 
+@contextmanager
+def child_subreaper():
+    # Adopt only orphaned descendants of this supervisor, so nginx workers
+    # can be reaped even after their master exits. Restore the caller's mode.
+    libc = ctypes.CDLL(None, use_errno=True)
+    previous = ctypes.c_int()
+    if libc.prctl(37, ctypes.byref(previous), 0, 0, 0) != 0:
+        raise OSError(ctypes.get_errno(), 'PR_GET_CHILD_SUBREAPER')
+    if libc.prctl(36, 1, 0, 0, 0) != 0:
+        raise OSError(ctypes.get_errno(), 'PR_SET_CHILD_SUBREAPER')
+    try:
+        # Fail before launching children if exact-process signalling is absent.
+        fd = os.pidfd_open(os.getpid())
+        try:
+            signal.pidfd_send_signal(fd, 0)
+        finally:
+            os.close(fd)
+        yield
+    finally:
+        if libc.prctl(36, previous.value, 0, 0, 0) != 0:
+            raise OSError(ctypes.get_errno(), 'restore child subreaper')
+
+
+def group_members(pgid):
+    members = {}
+    for entry in Path('/proc').iterdir():
+        if not entry.name.isdigit():
+            continue
+        try:
+            fields = (entry/'stat').read_text().rsplit(') ', 1)[1].split()
+        except (FileNotFoundError, ProcessLookupError):
+            continue
+        # Every managed leader starts a fresh session/group. Do not include
+        # another session's processes, even if a stale group id is supplied.
+        if int(fields[2]) == pgid and int(fields[3]) == pgid:
+            members[int(entry.name)] = dict(start=fields[19], state=fields[0],
+                                            parent=int(fields[1]))
+    return members
+
+
+def signal_member(pid, start, sig):
+    try:
+        fd = os.pidfd_open(pid)
+    except ProcessLookupError:
+        return
+    try:
+        if identity(pid) != start:
+            return
+        try:
+            signal.pidfd_send_signal(fd, sig)
+        except ProcessLookupError:
+            pass
+    finally:
+        os.close(fd)
+
+
+def stop_children(children, readers, grace=30, kill_grace=5):
+    # Retain groups after their leader exits. A successful Popen.wait alone
+    # says nothing about the lifetime of that leader's workers.
+    pending = dict(children)
+    term_sent = set()
+    deadline = time.monotonic() + grace
+    while pending:
+        force = time.monotonic() >= deadline
+        for name, child in list(pending.items()):
+            child.poll()  # Reap the leader through Popen, preserving its status.
+            members = group_members(child.pid)
+            for pid, info in members.items():
+                if info['state'] == 'Z' and pid != child.pid:
+                    if info['parent'] == os.getpid():
+                        try:
+                            os.waitpid(pid, os.WNOHANG)
+                        except ChildProcessError:
+                            pass
+                    continue
+                key = (pid, info['start'])
+                if force or key not in term_sent:
+                    signal_member(pid, info['start'],
+                                  signal.SIGKILL if force else signal.SIGTERM)
+                    term_sent.add(key)
+            if not group_members(child.pid):
+                child.wait(timeout=.1)
+                del pending[name]
+        if not pending:
+            break
+        if time.monotonic() >= deadline + kill_grace:
+            raise RuntimeError('managed process groups did not stop: ' +
+                               ','.join(pending))
+        time.sleep(.02)
+    reader_deadline = time.monotonic() + 2
+    for reader in readers.values():
+        reader.join(timeout=max(0, reader_deadline-time.monotonic()))
+        if reader.is_alive():
+            raise RuntimeError('process log reader did not stop')
+
+
 def supervise(root):
+    if (root/'cleanup-failure.json').exists():
+        raise RuntimeError('unresolved process cleanup; retained state for diagnosis')
     with (root/'supervisor.lock').open('a') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        _supervise_locked(root)
+        with child_subreaper():
+            _supervise_locked(root)
 
 
 def _supervise_locked(root):
@@ -279,10 +386,8 @@ def _supervise_locked(root):
             for name,p in list(children.items()):
                 if p.poll() is None:
                     continue
-                # Reap surviving nginx workers before restarting their master.
-                try: os.killpg(p.pid,signal.SIGKILL)
-                except ProcessLookupError: pass
-                readers[name].join(timeout=5)
+                # No replacement master until every old worker has gone.
+                stop_children({name: p}, {name: readers[name]}, grace=0)
                 restarts = [t for t in restarts if now-t < 300]
                 if len(restarts) >= 5:
                     raise RuntimeError('restart budget exhausted (5 per 300s)')
@@ -296,15 +401,13 @@ def _supervise_locked(root):
         save(root/'failure.json',{'error':repr(error),'time':time.time()})
         raise
     finally:
-        for p in children.values():
-            try: os.killpg(p.pid,signal.SIGTERM)
-            except ProcessLookupError: pass
-        deadline=time.monotonic()+30
-        for p in children.values():
-            try: p.wait(timeout=max(.1,deadline-time.monotonic()))
-            except subprocess.TimeoutExpired:
-                os.killpg(p.pid,signal.SIGKILL); p.wait()
-        for reader in readers.values(): reader.join(timeout=5)
+        try:
+            stop_children(children, readers)
+        except BaseException as error:
+            save(root/'cleanup-failure.json',
+                 {'error': repr(error), 'time': time.time(),
+                  'groups': {name: child.pid for name, child in children.items()}})
+            raise
         bounded_log(root/'events.log',b'supervisor stopped\n')
         (root/'supervisor.json').unlink(missing_ok=True)
 

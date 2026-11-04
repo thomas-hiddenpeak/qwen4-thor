@@ -1,0 +1,246 @@
+{
+  "source_commit": "4fd5ec7ca4fd66422c958c7b3b58dcdcd7c890b3",
+  "installed_binary_sha256": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+  "sidecar_sha256": "c520333192c04ddb499dd0188496789ec8ddc20fc5e0f00491ca01f52517aa75",
+  "business": {
+    "status": "PASS_BOUNDED_PRESSURE_AND_MIXED",
+    "same_process_model_recovery_tested": true,
+    "fixed_mixed_cycles": 64,
+    "physical_ram_hard_limit_proved": false,
+    "long_duration_soak_proved": false,
+    "deployment_changed": false,
+    "automatic_retries": 0,
+    "counts": {
+      "generations": 326,
+      "negatives": 4,
+      "starts": 1
+    },
+    "preflights": 65,
+    "elapsed_seconds": 645.9719646628946
+  },
+  "guard": {
+    "status": "COMPLETED",
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      "/home/rm01/models/dev/qwen4-thor/tools/serve_pressure/stage.py",
+      "execute"
+    ],
+    "compute_backend": "nvml",
+    "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+    "poll_interval_seconds": 1.0,
+    "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+    "performance_acceptance": false,
+    "child_returncode": 0,
+    "external_lease": false,
+    "finished": {
+      "utc": "2026-11-03T01:51:22.173681+00:00",
+      "monotonic": 1860764.690564602,
+      "pid": 1994148
+    }
+  },
+  "finalized": {
+    "passed": true,
+    "elapsed_seconds": 656.4175064563751,
+    "installed_binary_unchanged": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+    "sidecar_unchanged": "c520333192c04ddb499dd0188496789ec8ddc20fc5e0f00491ca01f52517aa75",
+    "performance_acceptance": false,
+    "physical_ram_hard_limit_proved": false,
+    "long_duration_soak_proved": false
+  },
+  "protocol_sha256": "aeb66adc439c31b23d943ffe9d9f40253fe2df275f89767b87927ab979bd4bd5",
+  "cpu": {
+    "core": {
+      "passed": true,
+      "tests": 19,
+      "failures": 0,
+      "errors": 0,
+      "model_or_http_started": false
+    },
+    "oom": {
+      "passed": true,
+      "tests": 1
+    }
+  },
+  "same_process": {
+    "pid": 1994177,
+    "start_ticks": 186011818,
+    "continuous_samples": 638
+  },
+  "pressure": {
+    "peak_bytes": 5234491392,
+    "min_available_bytes": 31551881216,
+    "min_free_bytes": 19651551232,
+    "command_steps": 60,
+    "final_receipt": {
+      "final": true,
+      "allocated": 0,
+      "error": null,
+      "monotonic": 1860155.612275017,
+      "pid": 1995377
+    },
+    "states": {
+      "memory-closed": {
+        "q4t_memory_available_bytes": 31552135168.0,
+        "q4t_memory_admission_open": 0.0,
+        "q4t_queued_requests": 1.0,
+        "q4t_structured_workers_active": 1.0,
+        "q4t_seq_slots_free": 0.0
+      },
+      "queued-reaped": {
+        "q4t_memory_available_bytes": 31552135168.0,
+        "q4t_memory_admission_open": 0.0,
+        "q4t_queued_requests": 0.0,
+        "q4t_structured_workers_active": 0.0,
+        "q4t_seq_slots_free": 0.0
+      },
+      "holder-continues": {
+        "q4t_memory_available_bytes": 31552135168.0,
+        "q4t_memory_admission_open": 0.0,
+        "q4t_queued_requests": 0.0,
+        "q4t_structured_workers_active": 0.0,
+        "q4t_seq_slots_free": 0.0
+      },
+      "closed-drained": {
+        "q4t_memory_available_bytes": 31552135168.0,
+        "q4t_memory_admission_open": 0.0,
+        "q4t_queued_requests": 0.0,
+        "q4t_structured_workers_active": 0.0,
+        "q4t_seq_slots_free": 1.0
+      },
+      "hysteresis-band": {
+        "q4t_memory_available_bytes": 32389369856.0,
+        "q4t_memory_admission_open": 0.0,
+        "q4t_queued_requests": 0.0,
+        "q4t_structured_workers_active": 0.0,
+        "q4t_seq_slots_free": 1.0
+      },
+      "same-process-recovered": {
+        "q4t_memory_available_bytes": 35756617728.0,
+        "q4t_memory_admission_open": 1.0,
+        "q4t_queued_requests": 0.0,
+        "q4t_structured_workers_active": 0.0,
+        "q4t_seq_slots_free": 1.0
+      }
+    },
+    "active_progress": {
+      "before": 28,
+      "after": 32
+    },
+    "rejections": [
+      [
+        "req-eb17d8ebede1b6d9596cd306c778edfa",
+        "execute",
+        "memory_pressure"
+      ],
+      [
+        "pressure.chat-1",
+        "headers",
+        "memory_pressure"
+      ],
+      [
+        "pressure.chat-2",
+        "headers",
+        "memory_pressure"
+      ],
+      [
+        "pressure.preflight",
+        "headers",
+        "memory_pressure"
+      ]
+    ]
+  },
+  "mixed": {
+    "cycles": 64,
+    "first_to_last_quiescent_seconds": 588.5465923130978,
+    "success_generation_count": 320,
+    "actual_tool_executions": 64,
+    "request_seconds": {
+      "min": 0.34584808885119855,
+      "max": 4.179182129912078
+    },
+    "envelope": {
+      "warmup_cycles": 8,
+      "measured_cycles": 56,
+      "baseline": {
+        "rss": 1007894528,
+        "anon": 815726592,
+        "fds": 49,
+        "threads": 5
+      },
+      "maxima": {
+        "rss": 1012613120,
+        "anon": 820445184,
+        "fds": 49,
+        "threads": 5
+      },
+      "additive_envelope": {
+        "rss": 67108864,
+        "anon": 134217728,
+        "fds": 2,
+        "threads": 2
+      },
+      "physical_ram_peak_proved": false,
+      "indefinite_leak_freedom_proved": false
+    }
+  },
+  "final_metrics": {
+    "q4t_requests_total": 326.0,
+    "q4t_requests_success_total": 324.0,
+    "q4t_requests_error_total": 1.0,
+    "q4t_requests_aborted_total": 1.0,
+    "q4t_structured_workers_started_total": 196.0,
+    "q4t_structured_workers_reaped_total": 196.0,
+    "q4t_seq_slots_free": 1.0,
+    "q4t_seq_slots_total": 1.0,
+    "q4t_queued_requests": 0.0,
+    "q4t_active_chats": 0.0,
+    "q4t_request_body_bytes": 0.0
+  },
+  "memory_observations": {
+    "samples": 638,
+    "duration_seconds": 643.9988738149405,
+    "max_sample_gap_seconds": 1.0336643820628524,
+    "parent_rss_sample_max": 4094545920,
+    "child_rss_sample_max": 234942464,
+    "child_rss_samples": 558,
+    "child_missing_rss_samples": 2,
+    "child_scope": "direct child at observation, includes possible pre-exec; no zero for missing RSS",
+    "global_available_min": 33982754816,
+    "global_free_min": 8766853120,
+    "cgroup_current_sample_max": 16500572160,
+    "cgroup_kernel_peak": 17113141248,
+    "cgroup_exit_events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0
+    },
+    "nvml_process_sample_max": 86554402816,
+    "worker_log_records": 196,
+    "worker_post_exec_rss_max": 234942464,
+    "worker_wait4_lifetime_rss_max": 4093153280,
+    "overlap_policy": "Do not sum RSS/memcg/NVML/global fields or subtract to claim an exclusive total",
+    "physical_ram_peak_proved": false
+  },
+  "wires": {
+    "files": 329,
+    "envelopes": 1361,
+    "source": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-pressure-20261103/execution/business/wire-schema-result.json",
+      "sha256": "6248c7010bbf5b64871522896816edccbcb53c200dba58fed83060850af02a1c",
+      "bytes": 106964
+    }
+  },
+  "shutdown": {
+    "clean": true,
+    "returncode": 0,
+    "scope_removed": true,
+    "clients_joined": true
+  },
+  "performance_acceptance": false,
+  "long_duration_soak_proved": false,
+  "physical_ram_hard_limit_proved": false
+}

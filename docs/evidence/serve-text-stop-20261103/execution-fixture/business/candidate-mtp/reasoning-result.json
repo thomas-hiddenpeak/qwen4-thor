@@ -1,0 +1,16 @@
+{
+  "id": "chatcmpl-auto-7c1704b83de1407eadee3a9bcfbaadb3",
+  "model": "qwen3.8-flash-next",
+  "message": {
+    "role": "assistant",
+    "content": "",
+    "reasoning_content": "用户要求我只回复数字710003，不需要其他内容。\n"
+  },
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 55,
+    "completion_tokens": 18,
+    "total_tokens": 73
+  },
+  "seconds": 0.695266367867589
+}

@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "systemctl",
+    "--user",
+    "stop",
+    "soar-flash-fast-v3-qualified-rollback-20261102.service"
+  ],
+  "started": "2026-11-02T13:38:27.972774",
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "",
+  "finished": "2026-11-02T13:38:32.036354"
+}

@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "raw_records": 669,
+  "local_artifacts": 22,
+  "git_files": 15,
+  "git_bytes": 1213881,
+  "staged_blobs": 15,
+  "installed": {
+    "q4t": "280b95dceabe5a3b1fd794019102de0dc9f0b62e8a3aa9fcc30eb5c57fdfd793",
+    "q4t.release.json": "18c9d2c50c847c90c6b033b4350fa0cf10c59777bf3a9dacd01391250a341f19"
+  },
+  "additional_model_or_http_requests": 0,
+  "whole_goal_complete": false,
+  "checker": {
+    "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_media_composite_archive.py",
+    "sha256": "6ed6aec85fdd4087f2dbfa34c61407d361b0c6a3de9c777fd45404e0f50d27c1",
+    "bytes": 7254
+  }
+}

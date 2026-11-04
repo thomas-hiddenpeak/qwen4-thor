@@ -1,0 +1,9 @@
+{
+  "status": "PASS_BOUNDED_SERVE_STAGE_B2A",
+  "request_attempts": 12,
+  "negative_requests": 12,
+  "starts": 2,
+  "seconds": 91.55149391293526,
+  "performance_acceptance": false,
+  "thinking_token_budget_accepted": false
+}

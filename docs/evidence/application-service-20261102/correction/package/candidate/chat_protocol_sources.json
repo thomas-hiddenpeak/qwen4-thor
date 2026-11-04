@@ -1,0 +1,19 @@
+{
+  "include/q4t/server/chat_capabilities.h" : "7258dd026c08b16d5a09f55ea318036a86e1ad4c93d816d1aa2163f23d01540c",
+  "include/q4t/server/chat_contract.h" : "cc1fc63b8f551dcf705c1692cc9b551d64040487245827ea74fbb190010c7bdf",
+  "include/q4t/server/chat_response_parser.h" : "b5f92492a6deb6ae66a9a1157e48d4dc7bd5fe4eaec58bab8cf1705e518a1a0d",
+  "include/q4t/server/chat_template.h" : "5be2647b6559eca3373642188ce5f79bd7672139991ecc148d4e722c4730c1b0",
+  "include/q4t/server/chat_tool_history.h" : "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
+  "include/q4t/server/http_response.h" : "ccef6de1c08b214625ffbfcaf7bd3719dcb2615773621cc90d0b54547c13d21c",
+  "include/q4t/server/request_json.h" : "3c9b06ae9945a775b2aae2d7a85a831d12ddc6cfb9850f4f27454202056d5a22",
+  "src/server/chat_capabilities.cpp" : "e7ec09378f342e820b7f8785bdc6ca22a0d8826eac6b0bffcbe4b02860a62823",
+  "src/server/chat_contract.cpp" : "b35b7d7686dae3fa68e772a4f2ee0a6ef07cfd78c44dc92d3e9c0f580b9c4fd5",
+  "src/server/chat_generation.cpp" : "9700a8a88a3e2b0c12cb20c4beaf1aa2ea4a117e618cf6515c338f20ef1cb0d8",
+  "src/server/chat_http.cpp" : "f1d28a9deca860b21cdab20d34947f96024bbb5c8eaf6476a83d88f348084adb",
+  "src/server/chat_input.cpp" : "1b1c5baf72f418c1377c07c48e8499adb3e01ad72d0b3ebccaa09cbfc7075992",
+  "src/server/chat_metrics.cpp" : "1e08a6115d85f7a8cffd37e62d17b1b585585d08a4b115dd719516fe76e6a41a",
+  "src/server/chat_response_parser.cpp" : "813706ed292a822f482bc5a43a2b4128ed1894040e03833bb5d874f3d51bde72",
+  "src/server/chat_template.cpp" : "d616835ffaa3fc8555f69b8d1b7a2fafd8c06cc2d8791f6fad43b9e15bdeeeae",
+  "src/server/chat_tool_history.cpp" : "29b94f2a8f7d0001e609c5bb1425f6001044017e446a83f28587b96ef225d09a",
+  "src/server/http_response.cpp" : "b9a317a4d930e7b3e1f64eb4d530431b08f14c51451e7b4373a9372084a1103b"
+}

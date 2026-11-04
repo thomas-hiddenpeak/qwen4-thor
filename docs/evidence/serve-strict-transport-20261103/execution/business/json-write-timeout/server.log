@@ -1,0 +1,78 @@
+[q4t][capabilities] requested=text-greedy mtp=0 media=0 max_seq=1
+[q4t][startup] tokenizer 509 ms
+[q4t][budget] mem_total=131.92 GB fraction=0.90 budget=118.73 GB
+[q4t][budget]   allocation estimate only; excludes file cache, driver overlap and other processes; not a physical RAM limit
+[q4t][budget]   requested max_len=8192 max_seq=1 max_prefill=2048 feasible=1 reason=estimate_fits
+[q4t][budget]   weights=84.00 GB  fixed=86.86 GB (estimated allocations+margin)
+[q4t][budget]   main_workspace=687669248 mtp_workspace=0 forward_buffers=104898564 ple_working=76571648 mtp=0
+[q4t][budget]   per_request=0.00 GB (peak admitted MTP request allocations)  state_pool=0.37 GB
+[q4t][budget]   => max_len=8192 max_seq=1
+[q4t][startup] budget 414 ms
+[q4t][capacity] requested_max_len=8192 requested_max_seq=1 requested_max_prefill=2048 effective_max_len=8192 effective_max_seq=1 effective_max_prefill=2048 budget_enabled=1 budget_feasible=true
+[q4t][admission] inflight=32 queued=31 policy=capacity_fifo_best_fit
+[startup-reservation] {"schema":1,"event":"prepared","status":"PASS","count":1541,"device_bytes":79025839888,"allocated":1541,"consumed":0,"freed":0,"unhanded_remaining":1541,"handed_live":0,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":false,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"0e6a148bcc76f8507e42326e4029148aa680700390ed5f00d3303f5c0c793bc9"}
+[q4t][startup-plan] mode=auto active=1
+[q4t][startup] startup_resource_plan 2530 ms
+[q4t][startup] model_load 27835 ms
+[q4t] generation stop token ids: 248046 248044
+[q4t] MTP disabled; plain decode
+[q4t] media disabled; vision tower not loaded
+[q4t][capabilities] effective mtp=0 media_allowed=0 vision_loaded=0 max_seq=1
+[q4t] continuous-batching scheduler started (max_seq=1)
+[startup-reservation] {"schema":1,"event":"startup_complete","status":"PASS","count":1541,"device_bytes":79025839888,"allocated":1541,"consumed":1541,"freed":0,"unhanded_remaining":0,"handed_live":1541,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":true,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"0e6a148bcc76f8507e42326e4029148aa680700390ed5f00d3303f5c0c793bc9"}
+[q4t][startup] startup_total 31290 ms
+[q4t] serving on port 18104 (host 127.0.0.1, model qwen3.8-flash-next)
+[q4t][request] instance=0 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=req-75958660e286c2169f276b0cb1155396
+[q4t][request] instance=0 id=strict-copy-json event=registered stage=validation seq=-1 elapsed_ms=0.153 trace_id=req-75958660e286c2169f276b0cb1155396
+[q4t][http] trace_id=req-75958660e286c2169f276b0cb1155396 completion_id=strict-copy-json
+[q4t][request] instance=0 id=strict-copy-json event=stage stage=grammar_compile seq=-1 elapsed_ms=0.208 trace_id=req-75958660e286c2169f276b0cb1155396
+[q4t][request] instance=0 id=strict-copy-json event=stage stage=encode seq=-1 elapsed_ms=200.132 trace_id=req-75958660e286c2169f276b0cb1155396
+[q4t][request] instance=0 id=strict-copy-json event=stage stage=slot_admission seq=-1 elapsed_ms=203.473 trace_id=req-75958660e286c2169f276b0cb1155396
+[q4t][request] instance=0 id=strict-copy-json event=admitted stage=slot_admission seq=0 elapsed_ms=203.488 trace_id=req-75958660e286c2169f276b0cb1155396
+[q4t][request] instance=0 id=strict-copy-json event=stage stage=encode seq=0 elapsed_ms=203.492 trace_id=req-75958660e286c2169f276b0cb1155396
+[q4t][request] instance=0 id=strict-copy-json event=stage stage=prefill seq=0 elapsed_ms=203.503 trace_id=req-75958660e286c2169f276b0cb1155396
+[q4t][request] instance=0 id=strict-copy-json event=stage stage=decode seq=0 elapsed_ms=615.539 trace_id=req-75958660e286c2169f276b0cb1155396
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 mode=per-row cuBLASLt=130501
+[q4t][mem] phase=request_end id=strict-copy-json dev_used_gb=99.257 dev_total_gb=131.921 rss_mb=936.5 mem_free_gb=24.780 mem_avail_gb=42.873 cached_gb=10.461
+[serve-test-generated] request=strict-copy-json total=244 captured=244 truncated=0 tokens=[4754,927,35580,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,2129,7895,7895,7895,7895,89254,248046]
+[q4t][request] instance=0 id=strict-copy-json event=stage stage=response seq=0 elapsed_ms=13641.423 trace_id=req-75958660e286c2169f276b0cb1155396
+[q4t][request] instance=1 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=req-0b047c96426205499fe07ee35d9c3bf1
+[q4t][request] instance=1 id=agent-5600ff1648113bbd198f69896020e43e event=registered stage=validation seq=-1 elapsed_ms=0.059 trace_id=req-0b047c96426205499fe07ee35d9c3bf1
+[q4t][http] trace_id=req-0b047c96426205499fe07ee35d9c3bf1 completion_id=agent-5600ff1648113bbd198f69896020e43e
+[q4t][request] instance=1 id=agent-5600ff1648113bbd198f69896020e43e event=stage stage=encode seq=-1 elapsed_ms=0.073 trace_id=req-0b047c96426205499fe07ee35d9c3bf1
+[q4t][request] instance=1 id=agent-5600ff1648113bbd198f69896020e43e event=stage stage=slot_admission seq=-1 elapsed_ms=0.201 trace_id=req-0b047c96426205499fe07ee35d9c3bf1
+[q4t][request] instance=2 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=req-8dd54eb59a19c2c65c5b44097fc3da6a
+[q4t][request] instance=2 id=agent-525ddf2b3c02e2225b41c0756447596f event=registered stage=validation seq=-1 elapsed_ms=0.088 trace_id=req-8dd54eb59a19c2c65c5b44097fc3da6a
+[q4t][http] trace_id=req-8dd54eb59a19c2c65c5b44097fc3da6a completion_id=agent-525ddf2b3c02e2225b41c0756447596f
+[q4t][http] trace_id=req-8dd54eb59a19c2c65c5b44097fc3da6a status=503 error=structured_capacity_exhausted
+[q4t][request] instance=2 id=agent-525ddf2b3c02e2225b41c0756447596f event=end stage=validation seq=-1 released=0 outcome=error reason=handler_error elapsed_ms=0.132 slot_wait_ms=0.000 model_lock_ms=0.000 tokenizer_lock_ms=0.000 scheduler_completion_ms=0.000 stream_write_ms=0.000 scheduler_waits=0 trace_id=req-8dd54eb59a19c2c65c5b44097fc3da6a
+[q4t][http] trace_id=req-1206aaec8cc85153eaa368a3ab338583 status=404 error=request_not_found
+[q4t] request cancelled id=strict-copy-json reason=client_disconnected
+[q4t][request] instance=1 id=agent-5600ff1648113bbd198f69896020e43e event=admitted stage=slot_admission seq=0 elapsed_ms=29962.495 trace_id=req-0b047c96426205499fe07ee35d9c3bf1
+[q4t][request] instance=1 id=agent-5600ff1648113bbd198f69896020e43e event=stage stage=encode seq=0 elapsed_ms=29962.515 trace_id=req-0b047c96426205499fe07ee35d9c3bf1
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=1906552832 reported_post_exec_rss_bytes=235470848 wait_status=0
+[q4t][request] instance=1 id=agent-5600ff1648113bbd198f69896020e43e event=stage stage=prefill seq=0 elapsed_ms=29962.535 trace_id=req-0b047c96426205499fe07ee35d9c3bf1
+[q4t][request] instance=0 id=strict-copy-json event=end stage=response seq=0 released=1 outcome=cancelled reason=client_disconnected elapsed_ms=43642.265 slot_wait_ms=0.002 model_lock_ms=0.028 tokenizer_lock_ms=0.001 scheduler_completion_ms=412.030 stream_write_ms=0.000 scheduler_waits=1 trace_id=req-75958660e286c2169f276b0cb1155396
+[q4t][http-write] trace_id=req-75958660e286c2169f276b0cb1155396 reason=write_deadline origin=handler transferred=2880 system_error=0 poll_events=0
+[q4t][request] instance=1 id=agent-5600ff1648113bbd198f69896020e43e event=stage stage=decode seq=0 elapsed_ms=30106.328 trace_id=req-0b047c96426205499fe07ee35d9c3bf1
+[q4t][mem] phase=request_end id=agent-5600ff1648113bbd198f69896020e43e dev_used_gb=98.407 dev_total_gb=131.921 rss_mb=937.0 mem_free_gb=25.633 mem_avail_gb=43.725 cached_gb=10.462
+[q4t][request] instance=1 id=agent-5600ff1648113bbd198f69896020e43e event=stage stage=response seq=0 elapsed_ms=30408.559 trace_id=req-0b047c96426205499fe07ee35d9c3bf1
+[q4t][request] instance=1 id=agent-5600ff1648113bbd198f69896020e43e event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=30408.641 slot_wait_ms=29962.291 model_lock_ms=0.000 tokenizer_lock_ms=0.000 scheduler_completion_ms=445.602 stream_write_ms=0.000 scheduler_waits=7 trace_id=req-0b047c96426205499fe07ee35d9c3bf1
+[q4t][request] instance=3 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=req-3cda2cf497c9284dba44d12e00ea2dab
+[q4t][request] instance=3 id=agent-bad8860ae5a27bb1aeedd55b9b78e27a event=registered stage=validation seq=-1 elapsed_ms=0.081 trace_id=req-3cda2cf497c9284dba44d12e00ea2dab
+[q4t][http] trace_id=req-3cda2cf497c9284dba44d12e00ea2dab completion_id=agent-bad8860ae5a27bb1aeedd55b9b78e27a
+[q4t][request] instance=3 id=agent-bad8860ae5a27bb1aeedd55b9b78e27a event=stage stage=grammar_compile seq=-1 elapsed_ms=0.103 trace_id=req-3cda2cf497c9284dba44d12e00ea2dab
+[q4t][request] instance=3 id=agent-bad8860ae5a27bb1aeedd55b9b78e27a event=stage stage=encode seq=-1 elapsed_ms=197.517 trace_id=req-3cda2cf497c9284dba44d12e00ea2dab
+[q4t][request] instance=3 id=agent-bad8860ae5a27bb1aeedd55b9b78e27a event=stage stage=slot_admission seq=-1 elapsed_ms=197.673 trace_id=req-3cda2cf497c9284dba44d12e00ea2dab
+[q4t][request] instance=3 id=agent-bad8860ae5a27bb1aeedd55b9b78e27a event=admitted stage=slot_admission seq=0 elapsed_ms=197.679 trace_id=req-3cda2cf497c9284dba44d12e00ea2dab
+[q4t][request] instance=3 id=agent-bad8860ae5a27bb1aeedd55b9b78e27a event=stage stage=encode seq=0 elapsed_ms=197.681 trace_id=req-3cda2cf497c9284dba44d12e00ea2dab
+[q4t][request] instance=3 id=agent-bad8860ae5a27bb1aeedd55b9b78e27a event=stage stage=prefill seq=0 elapsed_ms=197.693 trace_id=req-3cda2cf497c9284dba44d12e00ea2dab
+[q4t][request] instance=3 id=agent-bad8860ae5a27bb1aeedd55b9b78e27a event=stage stage=decode seq=0 elapsed_ms=331.765 trace_id=req-3cda2cf497c9284dba44d12e00ea2dab
+[q4t][mem] phase=request_end id=agent-bad8860ae5a27bb1aeedd55b9b78e27a dev_used_gb=98.558 dev_total_gb=131.921 rss_mb=944.8 mem_free_gb=25.481 mem_avail_gb=43.576 cached_gb=10.465
+[q4t][request] instance=3 id=agent-bad8860ae5a27bb1aeedd55b9b78e27a event=stage stage=response seq=0 elapsed_ms=595.582 trace_id=req-3cda2cf497c9284dba44d12e00ea2dab
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=1906552832 reported_post_exec_rss_bytes=234012672 wait_status=9
+[q4t][request] instance=3 id=agent-bad8860ae5a27bb1aeedd55b9b78e27a event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=603.232 slot_wait_ms=0.003 model_lock_ms=0.001 tokenizer_lock_ms=0.001 scheduler_completion_ms=134.068 stream_write_ms=0.000 scheduler_waits=1 trace_id=req-3cda2cf497c9284dba44d12e00ea2dab
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[startup-reservation] {"schema":1,"event":"finalized","status":"PASS","count":1541,"device_bytes":79025839888,"allocated":1541,"consumed":1541,"freed":1541,"unhanded_remaining":0,"handed_live":0,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":true,"finalized":true,"active":false,"strategy":"stable_descending_bytes","plan_sha256":"0e6a148bcc76f8507e42326e4029148aa680700390ed5f00d3303f5c0c793bc9"}

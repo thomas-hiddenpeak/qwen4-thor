@@ -1,0 +1,27 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_preflight/stage.py", line 261, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_preflight/stage.py", line 252, in main
+    a.execute()
+  File "/home/rm01/models/dev/qwen4-thor/tools/application_service/stage.py", line 275, in execute
+    verifier(plan)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_preflight/stage.py", line 170, in verifier
+    v.Run(plan, OUTPUT / ("health" if installed else "business"), installed=installed).run()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_preflight/verify.py", line 330, in run
+    self.model("candidate-explicit", binary, True, self.corrected_explicit)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_preflight/verify.py", line 312, in model
+    super().model(name, binary, mtp, action)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_stage_b1/verify.py", line 143, in model
+    action(folder)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_preflight/verify.py", line 261, in corrected_explicit
+    base = self.preflight(folder, "slot-count", b.simple())
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_preflight/verify.py", line 78, in preflight
+    self.wait_slot(label)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_stage_a/verify.py", line 108, in wait_slot
+    super().wait_slot(name)
+  File "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/verify.py", line 240, in wait_slot
+    require(time.monotonic() < released_by, name + ': slot not released')
+  File "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/verify.py", line 44, in require
+    raise AssertionError(message)
+AssertionError: slot-count: slot not released

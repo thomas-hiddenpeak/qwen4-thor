@@ -1,0 +1,13 @@
+{
+  "hashes": {
+    "q4t": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+    "q4t.release.json": "bb620240dfbbe0437066f6827bf54d00f9e107327f244997fb437fe30727b1b2"
+  },
+  "role": "current",
+  "consistent": true,
+  "selected_rules": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261103/package/releases/current/q4t.rules.yml",
+    "sha256": "849bf0cdeb4de4225c134183a678b8eb7985f50a5fa22ece4dd3c502067e0ff8",
+    "bytes": 13565
+  }
+}

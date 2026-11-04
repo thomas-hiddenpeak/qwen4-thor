@@ -1,0 +1,9 @@
+{
+  "class": "BadRequestError",
+  "message": "400 top_p unsupported value in greedy mode",
+  "status": 400,
+  "code": "invalid_request",
+  "param": "top_p",
+  "automatic_retry": false,
+  "tools_executed": 0
+}

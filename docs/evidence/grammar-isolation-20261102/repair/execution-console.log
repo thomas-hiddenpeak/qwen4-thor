@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/grammar_isolation/stage.py", line 205, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/tools/grammar_isolation/stage.py", line 196, in main
+    a.execute()
+  File "/home/rm01/models/dev/qwen4-thor/tools/application_service/stage.py", line 275, in execute
+    verifier(plan)
+  File "/home/rm01/models/dev/qwen4-thor/tools/grammar_isolation/stage.py", line 128, in verifier
+    v.Run(plan, OUTPUT / ("health" if installed else "business"), installed=installed).run()
+  File "/home/rm01/models/dev/qwen4-thor/tools/grammar_isolation/verify.py", line 162, in run
+    self.model("candidate-installed" if self.installed else "candidate-mtp",
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_resources/verify.py", line 266, in model
+    action(folder)
+  File "/home/rm01/models/dev/qwen4-thor/tools/grammar_isolation/verify.py", line 141, in business
+    worker_contract(rows)
+  File "/home/rm01/models/dev/qwen4-thor/tools/grammar_isolation/verify.py", line 18, in worker_contract
+    wire.require(rows["q4t_structured_workers_active"] == 0 and
+  File "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/verify.py", line 44, in require
+    raise AssertionError(message)
+AssertionError: worker leak or missing reap

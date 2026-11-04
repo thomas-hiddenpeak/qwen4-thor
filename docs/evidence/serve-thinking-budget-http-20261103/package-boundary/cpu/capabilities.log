@@ -1,0 +1,5 @@
+[PASS] chat_capabilities_identity
+[PASS] chat_capabilities_option_contract
+[PASS] chat_capabilities_runtime_flags
+[PASS] chat_capabilities_model_escaping
+4 tests, 4 passed, 0 failed, 0 skipped

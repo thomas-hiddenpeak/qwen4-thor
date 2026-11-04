@@ -1,0 +1,12 @@
+{
+  "default_sha256": "ed672a65b586f8445e51e3ba6d63659b4a098386e87e1ed38e3c8893a352a139",
+  "changed": [
+    "include/q4t/server/serve_fault.h",
+    "src/server/chat_generation.cpp"
+  ],
+  "model_template_tokenizer_grammar_parser_unchanged": true,
+  "validation_only_generated_ids": true,
+  "production_replaced": false,
+  "old_experiment_restarted": false,
+  "performance_acceptance": false
+}

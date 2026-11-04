@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "successful_requests": 6,
+  "interrupted_requests": 2,
+  "real_tools": 1,
+  "model_starts": 1,
+  "gateway_starts": 4,
+  "grammar_started_reaped": 3,
+  "backend_identity": {
+    "pid": 2488968,
+    "start_ticks": 191496165,
+    "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+  },
+  "independent_owner_absent_preserved": true,
+  "guard": {
+    "passed": true,
+    "records": 62,
+    "observations": 58,
+    "seconds": 61.17237557703629
+  },
+  "custody_samples": 30,
+  "gpu_window_seconds": 72.00902182911523,
+  "elapsed_seconds": 72.07921112305485,
+  "explicit_controls": 19,
+  "new_model_or_http": 0,
+  "performance_acceptance": false,
+  "actual_lan_accepted": false,
+  "long_test_started": false
+}

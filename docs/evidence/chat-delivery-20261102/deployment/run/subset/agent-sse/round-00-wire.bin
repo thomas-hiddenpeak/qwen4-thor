@@ -1,0 +1,10 @@
+data: {"id":"agent-f617d0ab53eed112946637138368568f","object":"chat.completion.chunk","created":1793600741,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+data: {"id":"agent-f617d0ab53eed112946637138368568f","object":"chat.completion.chunk","created":1793600742,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_agent-f617d0ab53eed112946637138368568f_0","type":"function","function":{"name":"lookup","arguments":"{\"key\":\"audit\"}"}}]},"finish_reason":null}]}
+
+data: {"id":"agent-f617d0ab53eed112946637138368568f","object":"chat.completion.chunk","created":1793600742,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":""},"finish_reason":"tool_calls"}]}
+
+data: {"id":"agent-f617d0ab53eed112946637138368568f","object":"chat.completion.chunk","created":1793600741,"model":"qwen3.8-flash-next","choices":[],"usage":{"prompt_tokens":311,"completion_tokens":25,"total_tokens":336}}
+
+data: [DONE]
+

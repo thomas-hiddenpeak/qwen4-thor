@@ -1,0 +1,461 @@
+{
+  "passed": true,
+  "jsonschema_version": "4.26.0",
+  "records": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/context-clip-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "preflight"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/context-overflow-chat-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/context-overflow-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/defaults-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "preflight"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/duplicate-envelope-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/effective-config-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "config"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/envelope-0-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/envelope-1-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/envelope-2-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/long-history-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "preflight"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/long-history-wire.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/negative-0-chat-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/negative-0-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/negative-1-chat-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/negative-1-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/negative-2-chat-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/negative-2-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/negative-3-chat-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/negative-3-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/negative-4-chat-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/negative-4-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/negative-5-chat-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/negative-5-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/negative-6-chat-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/negative-6-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/negative-7-chat-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/negative-7-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/ordinary-json-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "preflight"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/ordinary-json-wire.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/ordinary-sse-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "preflight"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/ordinary-sse-wire.bin",
+      "envelopes": 9,
+      "kinds": [
+        "transport",
+        "transport",
+        "transport",
+        "transport",
+        "transport",
+        "transport",
+        "transport",
+        "transport",
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/preflight-not-registered-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/project-answer-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "preflight"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/project-answer-wire.bin",
+      "envelopes": 4,
+      "kinds": [
+        "transport",
+        "transport",
+        "transport",
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/project-read-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "preflight"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/project-read-wire.bin",
+      "envelopes": 4,
+      "kinds": [
+        "transport",
+        "transport",
+        "transport",
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/route-0-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/route-1-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/route-2-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/route-3-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/route-4-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/strict-schema-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "preflight"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/strict-schema-wire.bin",
+      "envelopes": 4,
+      "kinds": [
+        "transport",
+        "transport",
+        "transport",
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/text-stop-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "preflight"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/text-stop-wire.bin",
+      "envelopes": 9,
+      "kinds": [
+        "transport",
+        "transport",
+        "transport",
+        "transport",
+        "transport",
+        "transport",
+        "transport",
+        "transport",
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/thinking-close-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "preflight"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/thinking-close-wire.bin",
+      "envelopes": 3,
+      "kinds": [
+        "transport",
+        "transport",
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-plain-explicit/effective-config-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "config"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-plain-explicit/long-history-final-answer-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "preflight"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-plain-explicit/long-history-final-answer-wire.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-plain-explicit/plain-json-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "preflight"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-plain-explicit/plain-json-wire.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-plain-explicit/plain-sse-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "preflight"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-plain-explicit/plain-sse-wire.bin",
+      "envelopes": 9,
+      "kinds": [
+        "transport",
+        "transport",
+        "transport",
+        "transport",
+        "transport",
+        "transport",
+        "transport",
+        "transport",
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-plain-explicit/slot-count-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "preflight"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-plain-explicit/slot-edge-readonly-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "preflight"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-plain-explicit/slot-overflow-chat-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-plain-explicit/slot-overflow-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-plain-explicit/slot-short-preflight-response.bin",
+      "envelopes": 1,
+      "kinds": [
+        "preflight"
+      ]
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-plain-explicit/slot-short-wire.bin",
+      "envelopes": 1,
+      "kinds": [
+        "transport"
+      ]
+    }
+  ]
+}

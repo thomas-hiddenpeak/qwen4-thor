@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "prior_tests": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-20261103/cpu/tests/result.json",
+    "sha256": "91fed7fe190dbb65eff77312cae7c59656d8bbeab79d596d8a4d3c0658b34c67",
+    "bytes": 280
+  },
+  "reused": "Host OFF/ON and decoder/driver source semantics unchanged; protocol digest consumers retested in final engine/config binary. Native not yet run.",
+  "changed_runtime_source": "src/server/chat_generation.cpp",
+  "checks": {
+    "host-required": true,
+    "config": true,
+    "inventory": true,
+    "generated": true,
+    "startup-config": true
+  },
+  "model_or_http_started": false
+}

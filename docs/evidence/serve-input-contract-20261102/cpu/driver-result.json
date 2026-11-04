@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "label": "input-driver",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/input_contract/test_stage.py"
+      ],
+      "returncode": 0,
+      "seconds": 0.16391480900347233
+    },
+    {
+      "label": "rollback",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/application_service/test_stage.py"
+      ],
+      "returncode": 0,
+      "seconds": 0.11390531319193542
+    },
+    {
+      "label": "client",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/examples/test_chat_client.py"
+      ],
+      "returncode": 0,
+      "seconds": 0.3642526459880173
+    }
+  ]
+}

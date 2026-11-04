@@ -1,0 +1,76 @@
+{
+  "passed": true,
+  "cpu_effective_tests": 140,
+  "driver_tests": 5,
+  "original_driver_tests": 4,
+  "cpu_file_operation_kills": 31,
+  "models": 3,
+  "gateways": 3,
+  "retry_models": 2,
+  "complete_responses": 4,
+  "real_tools": 2,
+  "application_kills": 2,
+  "active_protocol_migrations": 2,
+  "duplicate_applies": 2,
+  "duplicate_submits": 4,
+  "archive_resumes_without_execution": 2,
+  "metadata_refusals": 6,
+  "permanent_keys": 2,
+  "retained_payloads": 1,
+  "usage": {
+    "alpha": [
+      {
+        "completion_tokens": 55,
+        "prompt_tokens": 647,
+        "total_tokens": 702
+      },
+      {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    ],
+    "beta": [
+      {
+        "completion_tokens": 55,
+        "prompt_tokens": 647,
+        "total_tokens": 702
+      },
+      {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    ]
+  },
+  "gpu_seconds": 131.07805686583742,
+  "retry_gpu_seconds": 91.64849105780013,
+  "original_gpu_seconds": 39.429565808037296,
+  "guard_observations": 124,
+  "retry_guard_observations": 86,
+  "seconds": 127.98125099297613,
+  "retry_seconds": 90.14935374399647,
+  "controls": 29,
+  "owned_exited": 9,
+  "default_unchanged": true,
+  "original_profile_path_failure_preserved": true,
+  "original_business_requests": 0,
+  "reviewed_transition": {
+    "archive_sha256": "2cac5cd4f6e85f9742438403d05d4076f71754dd5372c67853cf79fdc7bd583c",
+    "basis": "Error parameter paths only: 91-case differential, including 14 unchanged successful prompts/grammars; 36 real HTTP rejections and 6 successes, including 2 read-only project tools. No model, template, request budgets or response parsing change.",
+    "contract": "q4t-project-readonly-protocol-v1",
+    "evidence": "docs/evidence/serve-error-params-20261104/records.tar.gz",
+    "from_protocol_sha256": "63b29f137b9c7057201de50c3a711930e9d76431f443ea29a083d9b429fced25",
+    "model": "qwen3.8-flash-next",
+    "release": "srv01c-ac1a3e4d",
+    "template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+    "to_protocol_sha256": "fc63db28261a37ead3b633e0cd704a128e91b4eac264ea8125f715ac4b2834aa"
+  },
+  "original_fixture_failure_preserved": true,
+  "actual_archived_protocol_migrations": 0,
+  "archived_protocol_migrations_cpu_only": true,
+  "long_run": false,
+  "performance_acceptance": false,
+  "actual_lan_accepted": false,
+  "physical_ram_limit": false
+}

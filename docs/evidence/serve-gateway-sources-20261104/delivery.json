@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "status": "GATEWAY_SOURCE_POLICY_DELIVERED",
+  "production_source_commit": "e69640bd9812de0e60247afdc09a6d65c87faffb",
+  "gateway": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-sources-20261104/gateway",
+    "manifest_sha256": "e7bd54a7217cd5fe9dc90f6b49ff25287cffb4aacbd1a309bbc60330ff5d2e8a",
+    "automatic_start": false
+  },
+  "acceptance_result": "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-gateway-sources-20261104/result.json",
+  "acceptance_sha256": "d9dda35746d54bc5f34ab93cfa6eb3350e11789e0452cfb717c8b1d62a62f88c",
+  "archive_sha256": "494582f5d4cea8ca71d287827540210208ea65590bc0721131718c0e615bc89d",
+  "default": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "49cc78cdf03ba56f7a9b51f682cc61e636f6b36d2784289071b3c6ac5352c38a",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "055f4f3e406e05cdded906ae64ec72eaf687e381d3f09974be0e3a94c04d2067"
+  },
+  "runtime_sources": 222,
+  "policy_version": 2,
+  "package_version": 4,
+  "inner_version": 3,
+  "automatic_start": false,
+  "actual_lan_deployed": false,
+  "new_managed_lifecycle_tested": false,
+  "preserved_original_guard_status": "COMMAND_FAILED",
+  "long_run": false,
+  "scope": "New gateway source policy; loopback real-peer and dual-client tool evidence only"
+}

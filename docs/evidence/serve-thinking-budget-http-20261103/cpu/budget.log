@@ -1,0 +1,9 @@
+[PASS] thinking_budget_input_exact_integer_and_modes
+[PASS] thinking_budget_zero_and_forced_accounting
+[PASS] thinking_budget_partial_close_never_duplicates_delimiter
+[PASS] thinking_budget_utf8_closure_preserves_scalars
+[PASS] thinking_budget_natural_close_reentry_and_literals
+[PASS] thinking_budget_matches_parser_across_all_chunks
+[PASS] thinking_budget_speculation_reserves_pending_token
+[PASS] thinking_budget_bad_closure_and_total_limit_fail_closed
+8 tests, 8 passed, 0 failed, 0 skipped

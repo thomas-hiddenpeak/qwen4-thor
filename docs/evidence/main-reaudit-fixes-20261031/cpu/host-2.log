@@ -1,0 +1,448 @@
+UpdateCTestConfiguration  from :/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/DartConfiguration.tcl
+Test project /home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 1
+      Start  1: q4t_public_host_contracts
+
+1: Test command: /home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_host_tests
+1: Working Directory: /home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host
+1: Test timeout computed to be: 180
+1: [PASS] suffix_pending_view_global_ids_and_query_immutability
+1: [PASS] suffix_longest_match_and_newest_tie_independent_scan
+1: [PASS] suffix_longest_candidate_does_not_search_around_d0_gate
+1: [PASS] suffix_requires_complete_three_and_allows_periodic_pending
+1: [PASS] suffix_match_range_and_candidate_count_are_bounded
+1: [PASS] suffix_hash_collision_requires_exact_token_comparison
+1: [PASS] suffix_appends_only_supplied_committed_prefix
+1: [PASS] suffix_capacity_exhaustion_is_transactional_neural_fallback
+1: [PASS] suffix_invalid_inputs_do_not_partially_index_or_allocate
+1: [PASS] suffix_reset_releases_storage_and_request_history
+1: [PASS] suffix_numeric_token_classification_byte_truth_table
+1: [PASS] suffix_numeric_admission_is_independent_of_token_partition
+1: [PASS] suffix_numeric_rejection_keeps_global_proposal_and_history
+1: [PASS] suffix_numeric_uses_full_longest_match_not_only_trigram
+1: [PASS] suffix_numeric_existing_gates_and_newest_tie_are_preserved
+1: [PASS] suffix_short_gate_applies_after_numeric_and_without_table
+1: [PASS] suffix_numeric_table_size_and_request_reset_contract
+1: [PASS] suffix_numeric_filter_preserves_fixed_maximum_match_range
+1: [PASS] suffix_long_copy_admission_boundary_and_global_continuation
+1: [PASS] suffix_short_fallback_commits_can_become_a_long_copy
+1: [PASS] suffix_numeric_and_d0_gates_precede_short_copy_gate
+1: [PASS] suffix_lazy_classifier_follows_full_d0_minimum_gates
+1: [PASS] suffix_lazy_numeric_rejection_preserves_global_candidate
+1: [PASS] suffix_lazy_failure_disables_without_committing_and_recovers_fresh
+1: [PASS] suffix_lazy_and_eager_are_exclusive_and_reset_drops_callback
+1: [PASS] suffix_lazy_ready_matches_eager_reference_across_boundaries
+1: [PASS] suffix_lazy_no_match_incomplete_and_invalid_skip_classifier
+1: [PASS] router_trace_hash_known_vectors
+1: [PASS] router_trace_chunked_prefill_and_decode
+1: [PASS] router_trace_commit_requires_all_evidence
+1: [PASS] router_trace_rejects_layer_and_id_corruption
+1: [PASS] router_trace_positions_and_request_identity
+1: [PASS] router_trace_failed_forward_is_diagnostic
+1: [PASS] router_trace_bounds_and_empty_run
+1: [PASS] router_trace_wire_roundtrip_and_truncation
+1: [PASS] router_trace_write_failure_cannot_finish
+1: [PASS] router_trace_undrained_work_prevents_reuse
+1: [PASS] router_trace_counters_and_flush_failure
+1: [PASS] serve_agent_slot_capacity_and_admission
+1: [PASS] serve_default_is_single_text_greedy
+1: [PASS] serve_capabilities_allow_explicit_combinations
+1: [PASS] serve_rejects_malformed_numeric_options
+1: [PASS] serve_mtp_k_is_explicit_and_bounded
+1: [PASS] serve_validates_before_load_and_preserves_failed_parse
+1: [PASS] serve_prefill_bound_precedes_workspace_sizing
+1: [PASS] serve_decode_batch_fits_effective_forward_rows
+1: [PASS] serve_trace_options_are_explicit_and_bounded
+1: [PASS] serve_startup_plan_modes_are_explicit_and_transactional
+1: [PASS] serve_suffix_requires_text_fixed_k3
+1: [PASS] mtp_step_preserves_context_tail
+1: [PASS] mtp_step_rejects_invalid_or_overflowing_ranges
+1: [PASS] mtp_generation_step_preserves_output_and_context_tail
+1: [PASS] mtp_generation_step_rejects_invalid_or_overflowing_ranges
+1: [PASS] mtp_sequential_step_compatibility_name
+1: [PASS] scheduler_cancel_retires_waiters_preserves_completed_results
+1: [PASS] scheduler_submission_rejects_after_stop
+1: [PASS] scheduler_exception_waits_for_borrowed_completion
+1: [PASS] scheduler_submission_drains_before_shutdown
+1: [PASS] scheduler_submission_keeps_borrowed_buffer_until_done
+1: [PASS] server_exception_drains_before_ownership_release
+1: [PASS] server_state_nonmonotonic_slots_and_survivors
+1: [PASS] server_state_cancel_does_not_release_pending_work
+1: [PASS] server_state_stale_cleanup_cannot_remove_reused_identity
+1: [PASS] server_state_cancel_and_finish_have_one_winner
+1: [PASS] server_state_deadline_and_shutdown_preserve_terminal_reason
+1: [PASS] request_diagnostics_terminal_and_reuse
+1: [PASS] request_diagnostics_wait_accounting
+1: [PASS] json_parse_object_scalars
+1: [PASS] json_parse_nested_arrays
+1: [PASS] json_parse_string_escapes
+1: [PASS] json_parse_errors
+1: [PASS] json_rejects_deep_input_before_recursing
+1: [PASS] json_resource_limits_and_duplicate_keys
+1: [PASS] json_strict_numbers_and_safe_integer_conversion
+1: [PASS] json_strict_unicode_and_controls
+1: [PASS] sequence_commit_requires_completion
+1: [PASS] sequence_rejects_reentry_and_early_recycle
+1: [PASS] sequence_failed_submission_still_drains
+1: [PASS] sequence_completion_failure_preserves_prefix
+1: [PASS] sequence_invalid_input_does_not_poison_prefix
+1: [PASS] sequence_chunk_and_decode_share_commit
+1: [PASS] sequence_batch_failure_is_atomic
+1: [PASS] sequence_rejects_duplicate_completion
+1: [PASS] http_valid_length_and_header_names
+1: [PASS] http_rejects_ambiguous_framing
+1: [PASS] http_request_line_and_header_budget
+1: [PASS] http_body_capacity_and_trailing_bytes
+1: [PASS] http_absolute_deadline_and_body_budget
+1: [PASS] server_utf8_stream_boundaries
+1: [PASS] server_utf8_malformed_subparts
+1: [PASS] server_http_response_send_status
+1: [PASS] server_http_exception_terminal_states
+1: [PASS] server_http_header_completion
+1: [PASS] server_http_exception_cannot_append_after_terminal
+1: [PASS] server_http_response_partial_writes
+1: [PASS] server_http_write_deadline_despite_progress_and_interrupts
+1: [PASS] server_http_write_cancel_and_request_deadline
+1: [PASS] chat_contract_greedy_neutral_options
+1: [PASS] chat_contract_rejects_unimplemented_constraints
+1: [PASS] chat_contract_rejects_wrong_types_and_ambiguous_input
+1: [PASS] chat_contract_template_options_are_explicit
+1: [PASS] chat_contract_media_rejected_before_decoding
+1: 102 tests, 102 passed, 0 failed, 0 skipped
+ 1/22 Test  #1: q4t_public_host_contracts ................   Passed    0.39 sec
+test 2
+      Start  2: q4t_router_trace_wire_contracts
+
+2: Test command: /usr/bin/python3 "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_wire.py" "--checker" "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_router_trace_check" "--output" "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/trace-wire-tests"
+2: Working Directory: /home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host
+2: Test timeout computed to be: 180
+2: 49 independent wire/CLI cases passed; evidence: /home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/trace-wire-tests/run-gnt45agg
+ 2/22 Test  #2: q4t_router_trace_wire_contracts ..........   Passed    0.09 sec
+test 3
+      Start  3: q4t_router_trace_source_contracts
+
+3: Test command: /usr/bin/python3 "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_analyze.py" "--checker" "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_router_trace_check" "--output" "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/trace-analysis-tests"
+3: Working Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace
+3: Environment variables: 
+3:  Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_router_trace_source_contracts
+3:  TMPDIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_router_trace_source_contracts
+3:  PYTHONDONTWRITEBYTECODE=1
+3: Test timeout computed to be: 180
+3: 15 capture analysis checks passed; evidence: /home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/trace-analysis-tests/run-wtf9ud8z
+ 3/22 Test  #3: q4t_router_trace_source_contracts ........   Passed    0.06 sec
+test 4
+      Start  4: q4t_router_cache_replay_contracts
+
+4: Test command: /usr/bin/python3 "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_replay.py"
+4: Working Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace
+4: Environment variables: 
+4:  Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_router_cache_replay_contracts
+4:  TMPDIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_router_cache_replay_contracts
+4:  PYTHONDONTWRITEBYTECODE=1
+4: Test timeout computed to be: 180
+4: .............
+4: ----------------------------------------------------------------------
+4: Ran 13 tests in 0.008s
+4: 
+4: OK
+ 4/22 Test  #4: q4t_router_cache_replay_contracts ........   Passed    0.08 sec
+test 5
+      Start  5: q4t_router_shadow_contracts
+
+5: Test command: /usr/bin/python3 "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_shadow.py" "--checker" "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_router_trace_check" "--output" "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/shadow-contracts"
+5: Working Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace
+5: Environment variables: 
+5:  Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_router_shadow_contracts
+5:  TMPDIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_router_shadow_contracts
+5:  PYTHONDONTWRITEBYTECODE=1
+5: Test timeout computed to be: 180
+5: .............
+5: ----------------------------------------------------------------------
+5: Ran 13 tests in 10.291s
+5: 
+5: OK
+ 5/22 Test  #5: q4t_router_shadow_contracts ..............   Passed   10.38 sec
+test 6
+      Start  6: q4t_router_distribution_contracts
+
+6: Test command: /home/rm01/models/dev/qwen4-thor/.q4t-work/venvs/public-host/bin/python3 "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_distribution.py" "--checker" "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_router_trace_check"
+6: Working Directory: /home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host
+6: Test timeout computed to be: 180
+6: ........
+6: ----------------------------------------------------------------------
+6: Ran 8 tests in 0.080s
+6: 
+6: OK
+ 6/22 Test  #6: q4t_router_distribution_contracts ........   Passed    0.33 sec
+test 7
+      Start  7: q4t_router_hybrid_contracts
+
+7: Test command: /usr/bin/python3 "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_hybrid.py"
+7: Working Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace
+7: Environment variables: 
+7:  Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_router_hybrid_contracts
+7:  TMPDIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_router_hybrid_contracts
+7:  PYTHONDONTWRITEBYTECODE=1
+7: Test timeout computed to be: 180
+7: ......
+7: ----------------------------------------------------------------------
+7: Ran 6 tests in 0.000s
+7: 
+7: OK
+ 7/22 Test  #7: q4t_router_hybrid_contracts ..............   Passed    0.08 sec
+test 8
+      Start  8: q4t_offload_trace_contracts
+
+8: Test command: /usr/bin/python3 "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_offload_trace.py" "--checker" "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_router_trace_check" "--output" "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/offload-trace-contracts"
+8: Working Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace
+8: Environment variables: 
+8:  Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_offload_trace_contracts
+8:  TMPDIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_offload_trace_contracts
+8:  PYTHONDONTWRITEBYTECODE=1
+8: Test timeout computed to be: 180
+8: .................
+8: ----------------------------------------------------------------------
+8: Ran 17 tests in 0.048s
+8: 
+8: OK
+ 8/22 Test  #8: q4t_offload_trace_contracts ..............   Passed    0.11 sec
+test 9
+      Start  9: q4t_offload_log_contracts
+
+9: Test command: /usr/bin/python3 "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_offload_log.py"
+9: Working Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace
+9: Environment variables: 
+9:  Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_offload_log_contracts
+9:  TMPDIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_offload_log_contracts
+9:  PYTHONDONTWRITEBYTECODE=1
+9: Test timeout computed to be: 180
+9: ...
+9: ----------------------------------------------------------------------
+9: Ran 3 tests in 0.003s
+9: 
+9: OK
+ 9/22 Test  #9: q4t_offload_log_contracts ................   Passed    0.06 sec
+test 10
+      Start 10: q4t_gpu_cache_schedule_contracts
+
+10: Test command: /usr/bin/python3 "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_gpu_cache_schedule.py" "--helper" "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_gpu_cache_schedule" "--sort-helper" "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_offload_sort"
+10: Working Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace
+10: Environment variables: 
+10:  Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_gpu_cache_schedule_contracts
+10:  TMPDIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_gpu_cache_schedule_contracts
+10:  PYTHONDONTWRITEBYTECODE=1
+10: Test timeout computed to be: 180
+10: ...........
+10: ----------------------------------------------------------------------
+10: Ran 11 tests in 0.094s
+10: 
+10: OK
+10/22 Test #10: q4t_gpu_cache_schedule_contracts .........   Passed    0.15 sec
+test 11
+      Start 11: q4t_gpu_cache_replay_contracts
+
+11: Test command: /usr/bin/python3 "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_gpu_cache_replay.py"
+11: Working Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace
+11: Environment variables: 
+11:  Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_gpu_cache_replay_contracts
+11:  TMPDIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_gpu_cache_replay_contracts
+11:  PYTHONDONTWRITEBYTECODE=1
+11: Test timeout computed to be: 180
+11: ...........................
+11: ----------------------------------------------------------------------
+11: Ran 27 tests in 0.053s
+11: 
+11: OK
+11/22 Test #11: q4t_gpu_cache_replay_contracts ...........   Passed    0.10 sec
+test 12
+      Start 12: q4t_gpu_cache_study_contracts
+
+12: Test command: /usr/bin/python3 "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_gpu_cache_study.py"
+12: Working Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace
+12: Environment variables: 
+12:  Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_gpu_cache_study_contracts
+12:  TMPDIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_gpu_cache_study_contracts
+12:  PYTHONDONTWRITEBYTECODE=1
+12: Test timeout computed to be: 180
+12: ...................
+12: ----------------------------------------------------------------------
+12: Ran 19 tests in 8.372s
+12: 
+12: OK
+12/22 Test #12: q4t_gpu_cache_study_contracts ............   Passed    8.48 sec
+test 13
+      Start 13: q4t_decode_supply_bounds_contracts
+
+13: Test command: /usr/bin/python3 "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_decode_supply_bounds.py"
+13: Working Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace
+13: Environment variables: 
+13:  Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_decode_supply_bounds_contracts
+13:  TMPDIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_decode_supply_bounds_contracts
+13:  PYTHONDONTWRITEBYTECODE=1
+13: Test timeout computed to be: 180
+13: ......................
+13: ----------------------------------------------------------------------
+13: Ran 22 tests in 0.028s
+13: 
+13: OK
+13/22 Test #13: q4t_decode_supply_bounds_contracts .......   Passed    0.08 sec
+test 14
+      Start 14: q4t_analyze_decode_supply_contracts
+
+14: Test command: /usr/bin/python3 "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_analyze_decode_supply.py"
+14: Working Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace
+14: Environment variables: 
+14:  Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_analyze_decode_supply_contracts
+14:  TMPDIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_analyze_decode_supply_contracts
+14:  PYTHONDONTWRITEBYTECODE=1
+14: Test timeout computed to be: 180
+14: ...................
+14: ----------------------------------------------------------------------
+14: Ran 19 tests in 1.930s
+14: 
+14: OK
+14/22 Test #14: q4t_analyze_decode_supply_contracts ......   Passed    2.02 sec
+test 15
+      Start 15: q4t_mirror_retention_contracts
+
+15: Test command: /usr/bin/python3 "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_mirror_retention.py"
+15: Working Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace
+15: Environment variables: 
+15:  Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_mirror_retention_contracts
+15:  TMPDIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_mirror_retention_contracts
+15:  PYTHONDONTWRITEBYTECODE=1
+15: Test timeout computed to be: 180
+15: ..........................
+15: ----------------------------------------------------------------------
+15: Ran 26 tests in 0.005s
+15: 
+15: OK
+15/22 Test #15: q4t_mirror_retention_contracts ...........   Passed    0.05 sec
+test 16
+      Start 16: q4t_analyze_mirror_retention_contracts
+
+16: Test command: /usr/bin/python3 "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_analyze_mirror_retention.py"
+16: Working Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace
+16: Environment variables: 
+16:  Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_analyze_mirror_retention_contracts
+16:  TMPDIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_analyze_mirror_retention_contracts
+16:  PYTHONDONTWRITEBYTECODE=1
+16: Test timeout computed to be: 180
+16: ....................
+16: ----------------------------------------------------------------------
+16: Ran 20 tests in 2.485s
+16: 
+16: OK
+16/22 Test #16: q4t_analyze_mirror_retention_contracts ...   Passed    2.59 sec
+test 17
+      Start 17: q4t_physical_ram_contracts
+
+17: Test command: /usr/bin/python3 "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/evalscope/test_physical_ram.py"
+17: Working Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/evalscope
+17: Environment variables: 
+17:  Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_physical_ram_contracts
+17:  TMPDIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_physical_ram_contracts
+17:  PYTHONDONTWRITEBYTECODE=1
+17: Test timeout computed to be: 180
+17: ............
+17: ----------------------------------------------------------------------
+17: Ran 12 tests in 0.050s
+17: 
+17: OK
+17: {"gate": "INDETERMINATE", "sample_count": 2, "stop_reason": "STOP_FILE", "summary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_physical_ram_contracts/tmpj7s08ad5/out/summary.json"}
+17/22 Test #17: q4t_physical_ram_contracts ...............   Passed    0.15 sec
+test 18
+      Start 18: q4t_response_identity_contracts
+
+18: Test command: /usr/bin/python3 "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/evalscope/test_response_identity.py"
+18: Working Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/evalscope
+18: Environment variables: 
+18:  Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_response_identity_contracts
+18:  TMPDIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_response_identity_contracts
+18:  PYTHONDONTWRITEBYTECODE=1
+18: Test timeout computed to be: 180
+18: ........
+18: ----------------------------------------------------------------------
+18: Ran 8 tests in 0.000s
+18: 
+18: OK
+18/22 Test #18: q4t_response_identity_contracts ..........   Passed    0.04 sec
+test 19
+      Start 19: q4t_gpu_exclusive_contracts
+
+19: Test command: /usr/bin/python3 "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/evalscope/test_gpu_exclusive.py"
+19: Working Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/evalscope
+19: Environment variables: 
+19:  Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_gpu_exclusive_contracts
+19:  TMPDIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_gpu_exclusive_contracts
+19:  PYTHONDONTWRITEBYTECODE=1
+19: Test timeout computed to be: 180
+19: ..........................Traceback (most recent call last):
+19:   File "<string>", line 1, in <module>
+19: KeyboardInterrupt
+19: ....
+19: ----------------------------------------------------------------------
+19: Ran 30 tests in 1.257s
+19: 
+19: OK
+19/22 Test #19: q4t_gpu_exclusive_contracts ..............   Passed    1.35 sec
+test 20
+      Start 20: q4t_request_cancellation_contracts
+
+20: Test command: /usr/bin/python3 "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/evalscope/test_request_cancellation.py"
+20: Working Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/evalscope
+20: Environment variables: 
+20:  Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_request_cancellation_contracts
+20:  TMPDIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_request_cancellation_contracts
+20:  PYTHONDONTWRITEBYTECODE=1
+20: Test timeout computed to be: 180
+20: .....................
+20: ----------------------------------------------------------------------
+20: Ran 21 tests in 0.002s
+20: 
+20: OK
+20/22 Test #20: q4t_request_cancellation_contracts .......   Passed    0.07 sec
+test 21
+      Start 21: q4t_supervisor_contracts
+
+21: Test command: /usr/bin/python3 "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/release/test_supervisor.py"
+21: Working Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/release
+21: Environment variables: 
+21:  Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_supervisor_contracts
+21:  TMPDIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_supervisor_contracts
+21:  PYTHONDONTWRITEBYTECODE=1
+21: Test timeout computed to be: 180
+21: ..........
+21: ----------------------------------------------------------------------
+21: Ran 10 tests in 1.496s
+21: 
+21: OK
+21/22 Test #21: q4t_supervisor_contracts .................   Passed    1.60 sec
+test 22
+      Start 22: q4t_audit_rollback_contracts
+
+22: Test command: /usr/bin/python3 "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/verify/audit_p2/test_rollback.py"
+22: Working Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/verify/audit_p2
+22: Environment variables: 
+22:  Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_audit_rollback_contracts
+22:  TMPDIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/host/q4t_audit_rollback_contracts
+22:  PYTHONDONTWRITEBYTECODE=1
+22: Test timeout computed to be: 180
+22: .....
+22: ----------------------------------------------------------------------
+22: Ran 5 tests in 0.036s
+22: 
+22: OK
+22: Sealed previous/candidate pairs and installed identities verified.
+22: Sealed previous/candidate pairs and installed identities verified.
+22/22 Test #22: q4t_audit_rollback_contracts .............   Passed    0.13 sec
+
+100% tests passed out of 22
+
+Total Test time (real) =  28.39 sec

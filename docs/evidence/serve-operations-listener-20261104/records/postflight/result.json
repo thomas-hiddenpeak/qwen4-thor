@@ -1,0 +1,13 @@
+{
+  "containers_empty": true,
+  "gpu_empty": true,
+  "lock_released": true,
+  "owned_processes_gone": true,
+  "passed": true,
+  "ports_released": [
+    18132,
+    18133,
+    18452
+  ],
+  "restore_masked": true
+}

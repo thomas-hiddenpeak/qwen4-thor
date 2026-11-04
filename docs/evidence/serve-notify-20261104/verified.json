@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "source_commit": "b166cee718be8c468beacfe93be2030c607ff07f",
+  "model_starts": 2,
+  "successful_requests": 4,
+  "real_tool_executions": 1,
+  "grammar_workers_reaped": 2,
+  "monitor_starts": 3,
+  "callback_attempts": 10,
+  "callback_confirmed": 7,
+  "response_codes": {
+    "204": 7,
+    "307": 1,
+    "503": 2
+  },
+  "target_down_and_recovery_confirmed": true,
+  "synthetic_probe_reported_separately": true,
+  "restart_dedup_seconds": 20.00650800508447,
+  "guard": {
+    "passed": true,
+    "records": 261,
+    "observations": 257,
+    "seconds": 276.8433863380924
+  },
+  "elapsed_seconds": 275.6345688959118,
+  "explicit_controls": 13,
+  "model_or_http_started": 0,
+  "external_receiver_accepted": false,
+  "long_validation_owner": "user",
+  "performance_acceptance": false
+}

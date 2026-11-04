@@ -1,0 +1,11 @@
+{
+  "passed": false,
+  "commands": {
+    "host": true,
+    "required": true,
+    "driver": true,
+    "inventory": false,
+    "generated": false
+  },
+  "http_or_model_started": false
+}

@@ -1,0 +1,11 @@
+{
+  "status": "PASS_BOUNDED_OBSERVABILITY",
+  "counts": {
+    "generations": 8,
+    "negatives": 16,
+    "starts": 2
+  },
+  "seconds": 148.9548025841359,
+  "performance_acceptance": false,
+  "automatic_retry": false
+}

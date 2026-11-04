@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "root": "/home/rm01/models/dev/qwen4-thor",
+  "limits": {
+    "generations": 12,
+    "negatives": 8,
+    "starts": 3,
+    "seconds": 1800
+  },
+  "planned": {
+    "generations": 10,
+    "negatives": 4,
+    "starts": 2
+  },
+  "source_commit": "919cc01f807c7c6cc6b096edfdd2c1576dc8b9ba",
+  "candidate": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/package/candidate/q4t",
+  "candidate_sha256": "c16caf0573ed2ecdf23237229a54a23a0d4ead46e86f6b25e7a44436d3caafe0",
+  "binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/package/candidate/q4t",
+    "sha256": "c16caf0573ed2ecdf23237229a54a23a0d4ead46e86f6b25e7a44436d3caafe0",
+    "bytes": 7083456
+  },
+  "fault_binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/package/fault/q4t",
+    "sha256": "234fae71f3970a85c97383405eecd57ea6477cc0ad75dbeade6c2a147bef396b",
+    "bytes": 7085416
+  },
+  "old_hashes": {
+    "q4t": "5642eb68d0e2d9296aeb0d5f4197797a18d064b2de749c4368a86fce918167ce",
+    "q4t.release.json": "6aca6a3ebf951ed8e625ff4944b73c34f40f3854b92497be2a8abe485315e382"
+  },
+  "previous_binary_sha256": "5642eb68d0e2d9296aeb0d5f4197797a18d064b2de749c4368a86fce918167ce",
+  "source_manifest_sha256": "389a60e52172b7ee59d684e5cf915544b52217edae3b71f588fc3e569a772f1c",
+  "protocol_sha256": "b70fc28ab551740f3543061decadbac8f945f8ea8e1923364ce11a8aa48c7ca6",
+  "model_dir": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "model_inputs": {
+    "config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+    "tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+    "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+    "chat_template.jinja": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+  },
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "port": 18101,
+  "performance_acceptance": false,
+  "lifecycle_probe": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/package/candidate/q4t_http_lifecycle_tests",
+    "sha256": "ff4d71a4423c4a0c5d010495897af3997da174cd81322e29a77f5785a2db3679",
+    "bytes": 672328
+  }
+}

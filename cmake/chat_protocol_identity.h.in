@@ -1,0 +1,10 @@
+#pragma once
+
+// Generated at configure time; no runtime release/quality attestation.
+namespace q4t::server::identity {
+inline constexpr char kProtocol[] = "@Q4T_PROTOCOL_SHA256@";
+inline constexpr char kRenderer[] = "@Q4T_RENDERER_SHA256@";
+inline constexpr char kToolHistory[] = "@Q4T_TOOL_HISTORY_SHA256@";
+inline constexpr char kTemplateReference[] = "@Q4T_TEMPLATE_REFERENCE_SHA256@";
+inline constexpr char kTemplateFixture[] = "@Q4T_TEMPLATE_FIXTURE_SHA256@";
+}  // namespace q4t::server::identity

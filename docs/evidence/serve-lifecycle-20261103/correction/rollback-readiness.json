@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "bundle": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/rollback-bundle",
+  "seal": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/rollback-bundle/sealed-files.json",
+    "sha256": "3ad29786bdd290cb230c41adc93f0fdae00cf5c55ec0396d7b34f881d6a53ca4",
+    "bytes": 842
+  },
+  "installed": {
+    "hashes": {
+      "q4t": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+      "q4t.release.json": "a350c9782c42bd2008026b35e61ed3d0acadc5e254a746caa6ee53743322fca9"
+    },
+    "role": "current",
+    "consistent": true
+  },
+  "current_to_direct_previous_live_retest": false,
+  "scope": "Readonly identity/seal verification. Actual live old A -> B -> A and new C installed business are separate evidence."
+}

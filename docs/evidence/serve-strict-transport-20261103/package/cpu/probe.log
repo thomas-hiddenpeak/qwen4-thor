@@ -1,0 +1,8 @@
+{"phase":"tokenizer","model_vocab":248320,"decoded_vocab":248077,"stop_ids":[248046,248044],"canonical_text_tokens":243,"content_bytes":12443}
+{"phase":"plan","name":"original","prompt_bytes":112,"prompt_tokens":21,"contains_expected":false,"max_tokens":1024}
+{"phase":"plan","name":"copy-sse","prompt_bytes":12660,"prompt_tokens":289,"contains_expected":true,"max_tokens":1024}
+{"phase":"plan","name":"copy-json","prompt_bytes":12660,"prompt_tokens":289,"contains_expected":true,"max_tokens":1024}
+{"phase":"replay","name":"canonical","accepted_text_tokens":243,"eos_accepted":true,"workers_started":1,"workers_reaped":1,"reported_post_exec_rss_bytes":234512384,"lifetime_max_rss_bytes":304230400,"wait_status":9,"seconds":0.22055}
+{"phase":"replay","name":"bytewise-prefix","accepted_text_tokens":1100,"eos_accepted":false,"workers_started":1,"workers_reaped":1,"reported_post_exec_rss_bytes":234475520,"lifetime_max_rss_bytes":304230400,"wait_status":9,"seconds":0.341414}
+{"phase":"parser","name":"sse","content_bytes":12443,"message_bytes":12574,"content_frame_bytes":12751,"content_deltas":1,"incomplete_prefix_released":false}
+{"phase":"parser","name":"json","content_bytes":12443,"message_bytes":12574,"content_frame_bytes":12751,"content_deltas":1,"incomplete_prefix_released":false}

@@ -1,0 +1,396 @@
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"model must match the served model","type":"invalid_request_error","code":"invalid_request","param":"model"}}}
+{"accepted":false,"response":{"error":{"message":"model must match the served model","type":"invalid_request_error","code":"invalid_request","param":"model"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"prompt must be a nonempty string","type":"invalid_request_error","code":"invalid_request","param":"prompt"}}}
+{"accepted":false,"response":{"error":{"message":"prompt must be a nonempty string","type":"invalid_request_error","code":"invalid_request","param":"prompt"}}}
+{"accepted":false,"response":{"error":{"message":"provide exactly one of prompt or messages","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"messages must be a nonempty array","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"messages must be a nonempty array","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"provide exactly one of prompt or messages","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"max_tokens must be an integer in [1,2147483647] or null","type":"invalid_request_error","code":"invalid_request","param":"max_tokens"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"max_completion_tokens must be an integer in [1,2147483647] or null","type":"invalid_request_error","code":"invalid_request","param":"max_completion_tokens"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"stream must be boolean or null","type":"invalid_request_error","code":"invalid_request","param":"stream"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"unsupported field: unexpected","type":"invalid_request_error","code":"invalid_request","param":"stream_options"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"request_id requires a fresh 64-hex cancel_token","type":"invalid_request_error","code":"invalid_request","param":"request_id"}}}
+{"accepted":false,"response":{"error":{"message":"request_id requires a fresh 64-hex cancel_token","type":"invalid_request_error","code":"invalid_request","param":"request_id"}}}
+{"accepted":false,"response":{"error":{"message":"request_id requires a fresh 64-hex cancel_token","type":"invalid_request_error","code":"invalid_request","param":"request_id"}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"request_id requires a fresh 64-hex cancel_token","type":"invalid_request_error","code":"invalid_request","param":"cancel_token"}}}
+{"accepted":false,"response":{"error":{"message":"request_id requires a fresh 64-hex cancel_token","type":"invalid_request_error","code":"invalid_request","param":"cancel_token"}}}
+{"accepted":false,"response":{"error":{"message":"request_id requires a fresh 64-hex cancel_token","type":"invalid_request_error","code":"invalid_request","param":"cancel_token"}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"request_timeout_ms must be an integer in [1,10800000]","type":"invalid_request_error","code":"invalid_request","param":"request_timeout_ms"}}}
+{"accepted":false,"response":{"error":{"message":"request_timeout_ms must be an integer in [1,10800000]","type":"invalid_request_error","code":"invalid_request","param":"request_timeout_ms"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"tools must be an array or null","type":"invalid_request_error","code":"invalid_request","param":null}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"expected JSON object","type":"invalid_request_error","code":"invalid_request","param":"chat_template_kwargs"}}}
+{"accepted":false,"response":{"error":{"message":"unsupported field: unexpected","type":"invalid_request_error","code":"invalid_request","param":"chat_template_kwargs"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"enable_thinking must be boolean","type":"invalid_request_error","code":"invalid_request","param":"enable_thinking"}}}
+{"accepted":false,"response":{"error":{"message":"enable_thinking must be boolean","type":"invalid_request_error","code":"invalid_request","param":"enable_thinking"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"preserve_thinking must be boolean","type":"invalid_request_error","code":"invalid_request","param":"preserve_thinking"}}}
+{"accepted":false,"response":{"error":{"message":"preserve_thinking must be boolean","type":"invalid_request_error","code":"invalid_request","param":"preserve_thinking"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"reasoning_effort must be low, medium or xhigh","type":"invalid_request_error","code":"invalid_request","param":"reasoning_effort"}}}
+{"accepted":false,"response":{"error":{"message":"reasoning_effort must be low, medium or xhigh","type":"invalid_request_error","code":"invalid_request","param":"reasoning_effort"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"add_vision_id must be boolean","type":"invalid_request_error","code":"invalid_request","param":"add_vision_id"}}}
+{"accepted":false,"response":{"error":{"message":"add_vision_id must be boolean","type":"invalid_request_error","code":"invalid_request","param":"add_vision_id"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"reasoning_field must be reasoning or reasoning_content","type":"invalid_request_error","code":"invalid_request","param":"reasoning_field"}}}
+{"accepted":false,"response":{"error":{"message":"reasoning_field must be reasoning or reasoning_content","type":"invalid_request_error","code":"invalid_request","param":"reasoning_field"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"include_reasoning must be boolean","type":"invalid_request_error","code":"invalid_request","param":"include_reasoning"}}}
+{"accepted":false,"response":{"error":{"message":"include_reasoning must be boolean","type":"invalid_request_error","code":"invalid_request","param":"include_reasoning"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"thinking_token_budget must be an integer in [0,2147483647] or null","type":"invalid_request_error","code":"invalid_request","param":"thinking_token_budget"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"temperature unsupported value in greedy mode","type":"invalid_request_error","code":"invalid_request","param":"temperature"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"top_p unsupported value in greedy mode","type":"invalid_request_error","code":"invalid_request","param":"top_p"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"n unsupported value in greedy mode","type":"invalid_request_error","code":"invalid_request","param":"n"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"frequency_penalty unsupported value in greedy mode","type":"invalid_request_error","code":"invalid_request","param":"frequency_penalty"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"presence_penalty unsupported value in greedy mode","type":"invalid_request_error","code":"invalid_request","param":"presence_penalty"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"repetition_penalty unsupported value in greedy mode","type":"invalid_request_error","code":"invalid_request","param":"repetition_penalty"}}}
+{"accepted":false,"response":{"error":{"message":"repetition_penalty unsupported value in greedy mode","type":"invalid_request_error","code":"invalid_request","param":"repetition_penalty"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"seed must be an exact binary64 integer or null","type":"invalid_request_error","code":"invalid_request","param":"seed"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"stop must be a string, string array or null","type":"invalid_request_error","code":"invalid_request","param":"stop"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"logprobs is not supported","type":"invalid_request_error","code":"invalid_request","param":"logprobs"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"top_logprobs is not supported","type":"invalid_request_error","code":"invalid_request","param":"top_logprobs"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"logit_bias is not supported","type":"invalid_request_error","code":"invalid_request","param":"logit_bias"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"unsupported constraint field: unexpected","type":"invalid_request_error","code":"invalid_request","param":null}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"user must be a string or null (metadata only)","type":"invalid_request_error","code":"invalid_request","param":"user"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"session_id must be a 64-hex capability","type":"invalid_request_error","code":"invalid_request","param":"session_id"}}}
+{"accepted":false,"response":{"error":{"message":"session_id must be a 64-hex capability","type":"invalid_request_error","code":"invalid_request","param":"session_id"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"prefix_cache_scope must be a 64-hex capability","type":"invalid_request_error","code":"invalid_request","param":"prefix_cache_scope"}}}
+{"accepted":false,"response":{"error":{"message":"prefix_cache_scope must be a 64-hex capability","type":"invalid_request_error","code":"invalid_request","param":"prefix_cache_scope"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"prefix_cache_write_tokens must be 0 or an integer in [1024,131072]","type":"invalid_request_error","code":"invalid_request","param":"prefix_cache_write_tokens"}}}
+{"accepted":false,"response":{"error":{"message":"prefix_cache_write_tokens must be 0 or an integer in [1024,131072]","type":"invalid_request_error","code":"invalid_request","param":"prefix_cache_write_tokens"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"parse_response=true requires messages","type":"invalid_request_error","code":"invalid_request","param":"parse_response"}}}
+{"accepted":false,"response":{"error":{"message":"parse_response=true requires messages","type":"invalid_request_error","code":"invalid_request","param":"parse_response"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"expected constraint object","type":"invalid_request_error","code":"invalid_request","param":null}}}
+{"accepted":false,"response":{"error":{"message":"unsupported constraint field: unexpected","type":"invalid_request_error","code":"invalid_request","param":null}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"parallel_tool_calls requires parsed messages / bool","type":"invalid_request_error","code":"invalid_request","param":null}}}
+{"accepted":false,"response":{"error":{"message":"parallel_tool_calls requires parsed messages / bool","type":"invalid_request_error","code":"invalid_request","param":null}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"expected JSON object","type":"invalid_request_error","code":"invalid_request","param":"body"}}}
+{"accepted":false,"response":{"error":{"message":"unsupported field: unknown","type":"invalid_request_error","code":"invalid_request","param":"unknown"}}}
+{"accepted":false,"response":{"error":{"message":"provide exactly one of prompt or messages","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"template options require messages","type":"invalid_request_error","code":"invalid_request","param":"enable_thinking"}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"thinking_token_budget requires parsed messages","type":"invalid_request_error","code":"invalid_request","param":"thinking_token_budget"}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"parse_response=true requires messages","type":"invalid_request_error","code":"invalid_request","param":"parse_response"}}}
+{"accepted":false,"response":{"error":{"message":"provide only one of max_tokens or max_completion_tokens","type":"invalid_request_error","code":"invalid_request","param":"max_completion_tokens"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"max_completion_tokens must be an integer in [1,2147483647] or null","type":"invalid_request_error","code":"invalid_request","param":"max_completion_tokens"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"max_completion_tokens must be an integer in [1,2147483647] or null","type":"invalid_request_error","code":"invalid_request","param":"max_completion_tokens"}}}
+{"accepted":false,"response":{"error":{"message":"thinking_token_budget must be an integer in [0,2147483647] or null","type":"invalid_request_error","code":"invalid_request","param":"thinking_token_budget"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"thinking_token_budget must be an integer in [0,2147483647] or null","type":"invalid_request_error","code":"invalid_request","param":"thinking_token_budget"}}}
+{"accepted":false,"response":{"error":{"message":"request_timeout_ms must be an integer in [1,10800000]","type":"invalid_request_error","code":"invalid_request","param":"request_timeout_ms"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"request_timeout_ms must be an integer in [1,10800000]","type":"invalid_request_error","code":"invalid_request","param":"request_timeout_ms"}}}
+{"accepted":false,"response":{"error":{"message":"seed must be an exact binary64 integer or null","type":"invalid_request_error","code":"invalid_request","param":"seed"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"seed must be an exact binary64 integer or null","type":"invalid_request_error","code":"invalid_request","param":"seed"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"max_completion_tokens must be an integer in [1,2147483647] or null","type":"invalid_request_error","code":"invalid_request","param":"max_completion_tokens"}}}
+{"accepted":false,"response":{"error":{"message":"max_completion_tokens must be an integer in [1,2147483647] or null","type":"invalid_request_error","code":"invalid_request","param":"max_completion_tokens"}}}
+{"accepted":false,"response":{"error":{"message":"JSON parse error: duplicate object key at offset 22","type":"invalid_request_error","code":"invalid_json","param":null}}}
+{"accepted":false,"response":{"error":{"message":"JSON parse error: expected number digit at offset 28","type":"invalid_request_error","code":"invalid_json","param":null}}}
+{"accepted":false,"response":{"error":{"message":"JSON parse error: trailing characters at offset 15","type":"invalid_request_error","code":"invalid_json","param":null}}}
+{"accepted":false,"response":{"error":{"message":"JSON parse error: missing low surrogate at offset 17","type":"invalid_request_error","code":"invalid_json","param":null}}}
+{"accepted":false,"response":{"error":{"message":"JSON parse error: unexpected end of input at offset 14","type":"invalid_request_error","code":"invalid_json","param":null}}}
+{"accepted":false,"response":{"error":{"message":"JSON parse error: number outside supported finite range at offset 26","type":"invalid_request_error","code":"invalid_json","param":null}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"stop entries must be valid UTF-8 strings of 1..256 bytes","type":"invalid_request_error","code":"invalid_request","param":"stop"}}}
+{"accepted":false,"response":{"error":{"message":"stop entries must be valid UTF-8 strings of 1..256 bytes","type":"invalid_request_error","code":"invalid_request","param":"stop"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"stop allows at most 4 strings","type":"invalid_request_error","code":"invalid_request","param":"stop"}}}
+{"accepted":false,"response":{"error":{"message":"stop is not supported with state caches","type":"invalid_request_error","code":"invalid_request","param":"stop"}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"session cache is not enabled","type":"invalid_request_error","code":"invalid_request","param":"session_id"}}}
+{"accepted":false,"response":{"error":{"message":"prefix cache is not enabled","type":"invalid_request_error","code":"invalid_request","param":"prefix_cache_scope"}}}
+{"accepted":false,"response":{"error":{"message":"model must match the served model","type":"invalid_request_error","code":"invalid_request","param":"model"}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"request_id requires a fresh 64-hex cancel_token","type":"invalid_request_error","code":"invalid_request","param":"request_id"}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"enable_thinking must be boolean","type":"invalid_request_error","code":"invalid_request","param":"chat_template_kwargs"}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"system or developer must be the single leading instruction message; mixing or repeating is unsupported","type":"invalid_request_error","code":"invalid_request","param":"messages[1].role"}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"system or developer must be the single leading instruction message; mixing or repeating is unsupported","type":"invalid_request_error","code":"invalid_request","param":"messages[1].role"}}}
+{"accepted":false,"response":{"error":{"message":"system or developer must be the single leading instruction message; mixing or repeating is unsupported","type":"invalid_request_error","code":"invalid_request","param":"messages[1].role"}}}
+{"accepted":false,"response":{"error":{"message":"No user query found.","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"No user query found.","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"message name is not represented by this model template","type":"invalid_request_error","code":"invalid_request","param":"messages[0].name"}}}
+{"accepted":false,"response":{"error":{"message":"message name is not represented by this model template","type":"invalid_request_error","code":"invalid_request","param":"messages[0].name"}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"media disabled; experimental --allow-media required","type":"invalid_request_error","code":"invalid_request","param":"messages[0]"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"conflicting reasoning history aliases","type":"invalid_request_error","code":"invalid_request","param":"messages[0].reasoning"}}}
+{"accepted":false,"response":{"error":{"message":"reasoning history requires an assistant message","type":"invalid_request_error","code":"invalid_request","param":"messages[0].reasoning"}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"all tool results are required before continuing","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"duplicate result for tool_call_id","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"tool_call_id does not match the preceding batch","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"duplicate tool call id within assistant batch","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"tool calls require function type and valid batch IDs","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"tool calls require function type and valid batch IDs","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"tool result requires string or array content","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"tool arguments require an object or JSON object text","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"invalid historical arguments JSON","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"invalid historical parameter name","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"tool arguments require an object or JSON object text","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"orphan tool_call_id result","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"invalid or duplicate function name","type":"invalid_request_error","code":"invalid_request","param":null}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"invalid or duplicate function name","type":"invalid_request_error","code":"invalid_request","param":null}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"unsupported schema keyword: unsupported","type":"invalid_request_error","code":"invalid_request","param":null}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"named tool is not declared","type":"invalid_request_error","code":"invalid_request","param":null}}}
+{"accepted":false,"response":{"error":{"message":"required/named tool_choice requires nonempty tools","type":"invalid_request_error","code":"invalid_request","param":null}}}
+{"accepted":false,"response":{"error":{"message":"output constraints require parsed messages","type":"invalid_request_error","code":"invalid_request","param":null}}}
+{"accepted":false,"response":{"error":{"message":"structured decoding backend is not built","type":"invalid_request_error","code":"structured_backend_unavailable","param":null}}}
+{"accepted":false,"response":{"error":{"message":"stop is not supported with constrained output","type":"invalid_request_error","code":"invalid_request","param":"stop"}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"response_format plus tools requires tool_choice=none","type":"invalid_request_error","code":"invalid_request","param":null}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"unsupported schema keyword: maximum","type":"invalid_request_error","code":"invalid_request","param":null}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"enum requires distinct matching string/bool/null values without XML delimiters","type":"invalid_request_error","code":"invalid_request","param":null}}}
+{"accepted":false,"response":{"error":{"message":"object schema requires <=32 properties and additionalProperties=false","type":"invalid_request_error","code":"invalid_request","param":null}}}
+{"accepted":false,"response":{"error":{"message":"strict schema requires every property in required","type":"invalid_request_error","code":"invalid_request","param":null}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"nullable top-level XML strings are not supported","type":"invalid_request_error","code":"invalid_request","param":null}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"request_id requires a fresh 64-hex cancel_token","type":"invalid_request_error","code":"invalid_cancellation","param":null}}}
+{"accepted":false,"response":{"error":{"message":"unsupported field: unknown","type":"invalid_request_error","code":"invalid_cancellation","param":null}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"preview option must be boolean","type":"invalid_request_error","code":"invalid_request","param":"include_prompt"}}}
+{"accepted":false,"response":{"error":{"message":"unsupported preflight field","type":"invalid_request_error","code":"invalid_request","param":"unknown"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"system or developer must be the single leading instruction message; mixing or repeating is unsupported","type":"invalid_request_error","code":"invalid_request","param":"messages[1].role"}}}
+{"accepted":false,"response":{"error":{"message":"system or developer must be the single leading instruction message; mixing or repeating is unsupported","type":"invalid_request_error","code":"invalid_request","param":"messages[1].role"}}}
+{"accepted":false,"response":{"error":{"message":"system or developer must be the single leading instruction message; mixing or repeating is unsupported","type":"invalid_request_error","code":"invalid_request","param":"messages[1].role"}}}
+{"accepted":false,"response":{"error":{"message":"system or developer must be the single leading instruction message; mixing or repeating is unsupported","type":"invalid_request_error","code":"invalid_request","param":"messages[1].role"}}}
+{"accepted":false,"response":{"error":{"message":"system or developer must be the single leading instruction message; mixing or repeating is unsupported","type":"invalid_request_error","code":"invalid_request","param":"messages[1].role"}}}
+{"accepted":false,"response":{"error":{"message":"system or developer must be the single leading instruction message; mixing or repeating is unsupported","type":"invalid_request_error","code":"invalid_request","param":"messages[1].role"}}}
+{"accepted":false,"response":{"error":{"message":"message name is not represented by this model template","type":"invalid_request_error","code":"invalid_request","param":"messages[0].name"}}}
+{"accepted":false,"response":{"error":{"message":"message name is not represented by this model template","type":"invalid_request_error","code":"invalid_request","param":"messages[0].name"}}}
+{"accepted":false,"response":{"error":{"message":"instruction content parts must contain only text","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content[0]"}}}
+{"accepted":false,"response":{"error":{"message":"message name is not represented by this model template","type":"invalid_request_error","code":"invalid_request","param":"messages[1].name"}}}
+{"accepted":false,"response":{"error":{"message":"unsupported message role","type":"invalid_request_error","code":"invalid_request","param":"messages[0].role"}}}
+{"accepted":false,"response":{"error":{"message":"instruction content parts must contain only text","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content[0]"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}

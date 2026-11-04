@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "commands": {
+    "driver": true,
+    "fixture": true
+  },
+  "gpu_tests": 0,
+  "model_or_http_started": false,
+  "previous_cpu_reused": true,
+  "physical_oom_or_damage": false
+}

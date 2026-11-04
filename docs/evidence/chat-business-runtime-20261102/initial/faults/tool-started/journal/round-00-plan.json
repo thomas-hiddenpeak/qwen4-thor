@@ -1,0 +1,9 @@
+[
+  {
+    "call_id": "call-0",
+    "name": "lookup",
+    "arguments": {
+      "key": "audit"
+    }
+  }
+]
