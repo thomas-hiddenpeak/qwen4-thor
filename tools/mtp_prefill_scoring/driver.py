@@ -24,13 +24,43 @@ metrics = module('scoring_metrics', 'tools/mtp_suffix_agent/analyze.py')
 save = legacy.save
 
 
+def verify_reuse(plan):
+    record = json.loads(Path(plan['reuse_record']).read_text())
+    if (record['completed_requests'] != 26 or record['original_admitted'] != 34
+            or record['candidate_sha256'] != plan['candidate_sha256']
+            or record['absolute_deadline_unchanged'] != plan['task_deadline_unix']):
+        raise ValueError('partial evidence identity or budget changed')
+    for key in ('original_plan', 'original_raw_seal'):
+        item = record[key]
+        if legacy.sha(Path(item['path'])) != item['sha256']:
+            raise ValueError('original evidence changed: ' + key)
+    old = json.loads(Path(record['original_plan']['path']).read_text())
+    for name, digest in old['files'].items():
+        snapshot = record['original_tools'].get(name, {}).get('path', name)
+        if legacy.sha(Path(snapshot)) != digest:
+            raise ValueError('original dependency changed: ' + name)
+    seal = Path(record['original_raw_seal']['path'])
+    for name, digest in json.loads(seal.read_text()).items():
+        if legacy.sha(seal.parent / name) != digest:
+            raise ValueError('partial raw evidence changed: ' + name)
+    for case in record['cases']:
+        path = Path(case['reused_from'])
+        if legacy.sha(path) != case['reused_sha256']:
+            raise ValueError('completed case changed')
+        expected = {k: v for k, v in case.items() if not k.startswith('reused_')}
+        if json.loads(path.read_text()) != expected:
+            raise ValueError('completed case content changed')
+    return record
+
+
 def validate(plan):
     if plan['stage'] != 'SCORING_ADOPTION':
         raise ValueError('unexpected stage')
+    requests = 172 if plan.get('reuse_record') else 198
     if (plan['http_requests'], plan['http_loads'],
-            plan['maximum_gpu_contracts']) != (198, 10, 2):
+            plan['maximum_gpu_contracts']) != (requests, 10, 2):
         raise ValueError('frozen budget')
-    if sum(s['http_requests'] for s in plan['steps']) != 198:
+    if sum(s['http_requests'] for s in plan['steps']) != requests:
         raise ValueError('request ledger')
     if sum(s['http_loads'] for s in plan['steps']) != 10:
         raise ValueError('service ledger')
@@ -44,6 +74,17 @@ def validate(plan):
         if s['kind'] == 'matrix' and (
                 sum(c['count'] for c in s['cases']) != s['http_requests']):
             raise ValueError('case budget')
+        for case in s.get('cases', []):
+            if case['id'].startswith('repeat-') and case['tokens'] != 256:
+                raise ValueError('repeat output budget must be explicit')
+    if plan.get('reuse_record'):
+        record = verify_reuse(plan)
+        first = plan['steps'][0]
+        if (first['name'] != '00-agent-full-candidate' or
+                first['http_requests'] != 8 or
+                {c['id'] for c in first['cases']} != {'repeat-code', 'repeat-text'} or
+                sum(len(c['rows']) for c in record['cases']) != 26):
+            raise ValueError('continuation scope')
 
 
 def paired(plan, mode):
@@ -198,7 +239,8 @@ def custom_step(plan, name):
             save(out / 'capacity.json', capacity)
             http.event(out, 'server_ready', pid=server.pid, capacity=capacity)
             if step['kind'] == 'matrix':
-                results = []
+                results = (verify_reuse(plan)['cases'] if plan.get('reuse_record')
+                           and name == '00-agent-full-candidate' else [])
                 for case in step['cases']:
                     result = multi.case(plan, step, case, out, env, check)
                     if case.get('prompts'):

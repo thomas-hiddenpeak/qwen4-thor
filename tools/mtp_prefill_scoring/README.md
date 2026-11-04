@@ -17,3 +17,10 @@ deployment occurs in this driver; results still require protection review.
 
 The detailed scope, stopping rules, budgets and evidence reuse are frozen in
 [the acceptance plan](../../docs/MTP_PREFILL_ADOPTION_PLAN_2026-11-04.md).
+
+The first execution inherited an unintended 2048-token repeat output budget.
+Its immutable evidence and original tools remain under `scoring-acceptance` and
+`scoring-continuation/original-tools`. `resume.py` freezes only incomplete work,
+with 256 repeat outputs and the unchanged absolute deadline. `review.py`
+validates the completed stage and reused windows without accepting deployment.
+See [the amendment](../../docs/MTP_PREFILL_ADOPTION_CONTINUATION_2026-11-04.md).

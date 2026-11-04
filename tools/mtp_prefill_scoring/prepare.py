@@ -68,6 +68,7 @@ def prepare(original, build):
     repeats = copy.deepcopy(old['suffix_cases'])
     for case in repeats:
         case['path'] = material(case['path'], case['id'] + '.jsonl')
+        case['tokens'] = 256
     release = json.loads((frozen / 'parent.release.json').read_text())
     plan_path = base / 'plan.json'
     plan = dict(stage='SCORING_ADOPTION', output=str(base / 'run'),

@@ -41,10 +41,12 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
-[多槽草稿评分最小提取](MTP_PREFILL_ADOPTION_PLAN_2026-11-04.md)已获用户授权：
-以f2f45526和默认8e9b4ce7为父版，隔离原10个客户端WIP，只提取评分与
-独立合同。性能优化预算198HTTP/10服务/2GPU夹具、接受后6健康HTTP；
-q4t和独立夹具已零警告构建；未测试、未接受，原研究NO_GO与Serve工业化暂停保持。
+[多槽草稿评分最小提取](MTP_PREFILL_ADOPTION_PLAN_2026-11-04.md)：
+a4009460已隔离提取，a56bd448候选零警告构建。首次真实HTTP完成五档15和
+质量11；并发夹具误继承2048输出，已停止自有服务，原阶段STOPPED。
+[续验修正](MTP_PREFILL_ADOPTION_CONTINUATION_2026-11-04.md)仅复用这26个
+完整窗口，剩余172请求统一并发256输出；总截止不延长。默认8e9b4ce7、
+10个客户端WIP和研究分支保持，不宣称通过或恢复工业化任务。
 
 [Serve主线交接清单](SERVE_HANDOFF_2026-11-04.md)已按11ddaa9e基线整理：
 列明原生可用合同、15d7ccb1旧托管/持久迁移组合、10个本机未验客户端
