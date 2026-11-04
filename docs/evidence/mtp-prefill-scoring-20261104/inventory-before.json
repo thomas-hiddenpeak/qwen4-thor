@@ -1,0 +1,11 @@
+{
+  "inventory_current": false,
+  "semantics_certified": false,
+  "fields": 38,
+  "routes": 10,
+  "reviewed_source_anchors": 112,
+  "mutation_checks": 3,
+  "errors": [
+    "sources_sha256 requires renewed review: ['CMakeLists.txt', 'src/mtp/mtp.cu']"
+  ]
+}
