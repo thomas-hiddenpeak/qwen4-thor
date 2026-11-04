@@ -35,8 +35,12 @@ struct ServeContractAccess {
     server.max_seq_ = 1;
     if (!scoped) return;
     GatewayClientPolicy policy;
-    policy.gateway_token = std::string(64, 'a');
-    policy.clients.push_back({"alpha", 1, 2, 4096, 512, 131072});
+    const std::string raw = R"({"version":1,"gateway_token":")" +
+        std::string(64, 'a') + R"(","clients":[{"id":"alpha",)"
+        R"("max_inflight":1,"max_control_inflight":2,)"
+        R"("max_prompt_tokens":4096,"max_output_tokens":512,)"
+        R"("max_body_bytes":131072}]})";
+    Require(ParseGatewayClientPolicy(raw, &policy).ok(), "policy parse");
     Require(server.clients_.Configure(std::move(policy)).ok(), "policy");
   }
   static std::mutex& Mutex(ChatServer& server) { return server.tok_mu_; }
@@ -207,11 +211,15 @@ void Case(const std::string& mode, const std::string& cause) {
 }
 }  // namespace
 
-int main() {
+int main(int argc, char** argv) {
+  const bool remaining = argc == 2 && std::string(argv[1]) == "--remaining";
+  Require(argc == 1 || remaining, "unsupported probe scope");
   for (const auto* mode : {"encode-json", "encode-sse", "thinking-json",
                            "thinking-sse", "scoped-sse", "preflight"})
     for (const auto* cause : {"explicit", "deadline", "disconnect", "shutdown"})
-      if (!(std::string(mode) == "preflight" &&
+      if ((!remaining || std::string(mode) == "scoped-sse" ||
+           std::string(mode) == "preflight") &&
+          !(std::string(mode) == "preflight" &&
             std::string(cause) == "explicit"))
         Case(mode, cause);
 }
