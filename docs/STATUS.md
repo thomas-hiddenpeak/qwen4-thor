@@ -41,13 +41,16 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
-SRV-12j[托管双监听启动前检查已实现](SERVE_PORT_PREFLIGHT_2026-11-04.md)：
-只改supervisor，每次启动/恢复前检查主入口及显式运维端口；冲突指出
-地址且backend Popen前退出，不干预原占用者，不承诺消除后续竞争。
-首个复现夹具KeyError保留、不算缺陷证据；修正夹具后旧实现确实越过
-占用检查到达launch入口，零模型。38项成组CPU首次全部通过，含7新
-端口合同、既有监督生命周期、host组合和2驱动故障；下一步同锁短验。
-当前默认/旧包保持，尚未验收；高级配置按需、长验交用户，目标active。
+SRV-12j[托管双监听启动前检查已限定交付](SERVE_PORT_PREFLIGHT_RESULT_2026-11-04.md)：
+8c052db6只改supervisor；38 CPU首轮通过，已占用主/运维端口分别
+0.387914/0.387640秒在backend前拒绝、零启动、原占用者身份保持。
+同锁1模型/两代TLS/4响应2真实工具、双预算512/64与136公共满额运维
+通过；新包14f8d6fc，88 host样本见四grammar归属和回收。GPU同锁
+64.645733秒/60+23重叠观察，三scope/监听/GPU/原锁释放，容器空/
+SOAR masked。初次复现夹具/离线空argv假设失败保留，4定向报告检查
+通过、只修核对器无补推理；182原件/345本机引用重建。默认pair、222
+来源/Key/旧包/day保持；下一步原生serve的启动监听与资源生命周期。
+高级配置按需、用户长验未执行，物理RAM/后续端口竞争边界保持，目标active。
 
 SRV-12i[声明/独立运维/host域组合已限定接受](SERVE_MANAGED_PROFILE_RESULT_2026-11-04.md)：
 13cfaffb驱动，新v6包7a5d411c；9+1 CPU含八配置组合通过，原prepare
