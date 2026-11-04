@@ -7,6 +7,7 @@
 [双客户端预算与恢复预检验收](../../docs/SERVE_PROJECT_TASK_BUDGET_RESULT_2026-11-04.md)。
 [源码升级与同客户端Key轮换验收](../../docs/SERVE_TASK_MIGRATION_RESULT_2026-11-04.md)。
 [终态归档、永久保键与中断恢复验收](../../docs/SERVE_TASK_ARCHIVE_RESULT_2026-11-04.md)。
+[一致性备份与单活恢复交接验收](../../docs/SERVE_TASK_BACKUP_RESULT_2026-11-04.md)。
 
 先显式创建新 store，任务不会自动删除，幂等键一直保留：
 
@@ -102,7 +103,7 @@ python3 -B tools/project_tasks/runner.py apply-migration \
 计划/迁移操作成功，不表示业务任务完成。之后用新profile显式resume。
 已知结果复用、未知状态及原预算保持；旧Key不能继续操作新绑定任务。
 
-当前登记已验SRV-11/SRV-11b/SRV-11c到本版的源码升级及同client Key轮换；
+当前登记已验SRV-11/SRV-11b/SRV-11c/SRV-11d到本版的源码升级及同client Key轮换；
 不允许换client、TLS origin/IP/CA、模型/协议/模板、问题或预算。
 未知源码须先审查适配。实际Key撤销仍需先准备新网关私有包、停旧
 网关并确认清理、再运行新包；迁移命令不管理服务，不证明新Key的
@@ -161,14 +162,62 @@ python3 -B tools/project_tasks/runner.py finish-retention \
 
 finish仅保存最近一次完成回执；同计划apply按该键历史核对已执行。
 这些管理命令退出0只表示管理操作成功，不表示新业务完成。正文
-清理前如需备份，应另行保存私有原件；当前不提供跨路径备份恢复或
-策略扩容命令，不能手改store/目录簿或删键绕过准入。
+清理前如需备份，可用下方完整快照入口；当前不提供策略扩容命令，
+不能手改store/目录簿或删键绕过准入。
+
+完整备份会短暂锁住整个store及其任务；请先停妥旧版客户端，并选择
+没有活跃任务的维护窗口。忙锁、未完成留存操作、未知文件或容量
+不足时拒绝，不强行停止进程。先创建0700私有父目录，显式保存到
+新快照目录；备份包本身不能当作可执行任务库。
+
+```bash
+python3 -B tools/project_tasks/backup.py backup \
+  --root .q4t-work/project-tasks \
+  --snapshot .q4t-work/private/task-backup-001 --max-bytes 2147483648
+python3 -B tools/project_tasks/backup.py verify \
+  --snapshot .q4t-work/private/task-backup-001 \
+  --snapshot-sha256 EXACT_SNAPSHOT_SHA256
+```
+
+verify不依赖模型/HTTP，也不会恢复任务。输出SHA是manifest内容摘要，
+逐文件原件还会全部核对；备份包含业务正文，继续按私有资料保存。
+未生成seal的草稿不可使用；源保持完全一致时可再次backup继续。
+源已有新写则需新快照目录，旧草稿保留，不自动删除或收编异常文件。
+
+需要更换任务库路径时，先停写，用刚完成的快照生成交接计划。源
+路径必须仍可逐项核对且完全未变；源不可达或已变化会拒绝，不能
+将旧快照强制激活。目标必须不存在，禁止覆盖旧库或放在源/快照内部。
+
+```bash
+python3 -B tools/project_tasks/backup.py plan-restore \
+  --root .q4t-work/project-tasks \
+  --snapshot .q4t-work/private/task-backup-001 \
+  --snapshot-sha256 EXACT_SNAPSHOT_SHA256 \
+  --destination .q4t-work/private/project-tasks-restored \
+  --plan .q4t-work/private/store-restore.json \
+  --reason '维护窗口内迁移任务库，保持原业务与幂等记录'
+python3 -B tools/project_tasks/backup.py apply-restore \
+  --plan .q4t-work/private/store-restore.json --plan-sha256 EXACT_PLAN_SHA256
+```
+
+命令先准备不可执行的目标、更新物理身份，再持久封源并原子发布
+目标。之后所有任务命令显式换用新root；原profile/key/预算不改，
+源码升级仍使用原迁移合同。已知结果复用，UNKNOWN仍需原有显式
+处置，恢复不表示未知调用未发生。归档键增加placement身份记录，
+原事件/正文/保留期保持；已清理的正文不会从另一个旧备份补回。
+
+若中断，重新apply相同计划和摘要；目标已发布时返回已应用，不
+覆盖新任务结果。封源后只能显式继续该交接，不能删handoff.json
+或改store.json来启用旧路径。未完成的初始化元数据可能需要保留
+草稿并另做新计划；源已封时须保留原工作目录并继续原计划。
+源/快照/交接工作记录均不自动删除。最多8次交接，新增归档身份
+记录仍计入原存储额度；本机交接不等同于源盘丢失后的灾备恢复。
 
 store、SQLite账本和wire都是私有资料；同UID是可信边界。没有自动
 清理、自动任务迁移、队列服务或后台恢复，不提供多机协调或通用exactly-once。
 运行本入口不启动或停止模型服务；开发HTTP验证仍需在共享GPU租约内。
 
-CA/模型/协议或未登记版本迁移、正式保留/容量变更仍需明确策略。
+CA/模型/协议或未登记版本迁移、正式保留/容量变更及源盘丢失灾备仍需明确策略。
 旧版本账本可离线核验，但不能自动迁移到新执行源码。已保存的本机验收证据
 可以离线核对，不启动模型或HTTP：
 
@@ -177,4 +226,5 @@ python3 -B tools/project_tasks/report.py verify
 python3 -B tools/project_tasks/budget_report.py verify
 python3 -B tools/project_tasks/migration_report.py verify
 python3 -B tools/project_tasks/archive_report.py verify
+python3 -B tools/project_tasks/backup_report.py verify
 ```
