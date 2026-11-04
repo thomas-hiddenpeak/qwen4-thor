@@ -41,18 +41,19 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
-SRV-12f[host资源观测与告警短验待执行](SERVE_HOST_OBSERVATION_2026-11-04.md)：
-只读代次/新鲜度、UNKNOWN/current/final及显式notify v2已开发。
-37有效CPU、5驱动、22官方规则场景通过，保留2次nginx原失败及1次
-早期子进程清理失败，定向修正通过。真实驱动冻结1模型/1TLS网关、
-4生成2工具、观察器/指标nginx/Prometheus各1；240秒/GPU210秒。
-同一guard锁副本及独立监控覆盖后端退出后的HTTP。原驱动64MiB留存
-配置低于现有128MiB最小值，在模型/监听/GPU启动前拒绝，原件保持。
-新目录续验修正该配置，3定向CPU通过。首次实机在业务前因JSON事件
-键排序与指标行序不同导致驱动误拒绝，0生成/3控制；GPU56.080052秒、
-guard/同锁custody均COMPLETED并清理。原指标逐项一致，3定向检查
-证明仅行序变化放行、缺项/重复/改值仍拒绝；生产不改，独立修正轮
-最多再1模型、余下4生成2工具，GPU150秒/总180秒；累计210/240秒不扩大。
+SRV-12f[host资源观测与告警限定接受](SERVE_HOST_OBSERVATION_RESULT_2026-11-04.md)：
+350fa2f6实现、d2c5ea51驱动修正；只读代次/新鲜度、UNKNOWN/current/
+final、10告警和显式notify v2。37有效CPU、5+3+3驱动、22官方时序
+通过，保留nginx/早期清理、GPU前留存夹具及实机指标行序误断言失败。
+修正轮1模型1TLS网关、alpha512/beta64各2成功1真实资料工具，答案/
+引用正确、grammar4/4；真实Stale触发/恢复、STOPPED/final采集及终态
+告警通过。host峰值15.211826GiB，无high/max/OOM/pids事件，非物理RAM。
+两轮累计2模型、4成功/2工具、GPU185.835368秒、总186.978612秒/
+33父控制。622原件/7二进制路径身份离线重建通过；原报告历史包装器
+版本比较错误保留并离线修正。10自有身份退/1网关代次SEALED，scope/
+GPU/原锁/监听释放，容器空、SOAR masked；默认/原Key/02k包/3份day
+保持且day未跑。实际LAN、正式通知/容量/备份介质、完整物理RAM与
+用户长验仍待，工业化目标active。
 
 SRV-02k[host记账域与进程树边界限定接受](SERVE_HOST_ENVELOPE_RESULT_2026-11-04.md)：
 冻结70b629db，显式v5后端/网关v3、owned scope内control/payload隔离、

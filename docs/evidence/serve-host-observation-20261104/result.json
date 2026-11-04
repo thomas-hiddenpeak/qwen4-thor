@@ -1,0 +1,78 @@
+{
+  "status": "ACCEPT_HOST_OBSERVATION_SHORT",
+  "effective_cpu_tests": 37,
+  "driver_tests": 5,
+  "rule_scenarios": 22,
+  "original_nginx_failures_preserved": 2,
+  "original_cleanup_failure_preserved": 1,
+  "model_starts": 1,
+  "gateway_starts": 1,
+  "observer_starts": 1,
+  "monitor_starts": 1,
+  "responses": 4,
+  "real_tools": 2,
+  "completed_tasks": 2,
+  "response_usage": {
+    "alpha": [
+      {
+        "completion_tokens": 55,
+        "prompt_tokens": 647,
+        "total_tokens": 702
+      },
+      {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    ],
+    "beta": [
+      {
+        "completion_tokens": 55,
+        "prompt_tokens": 647,
+        "total_tokens": 702
+      },
+      {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    ]
+  },
+  "grammar_reaped": 4,
+  "memcg_peak_bytes": 16333574144,
+  "memcg_events": {
+    "low": 0,
+    "high": 0,
+    "max": 0,
+    "oom": 0,
+    "oom_kill": 0,
+    "oom_group_kill": 0
+  },
+  "pids_events": {
+    "max": 0
+  },
+  "stale_firing": true,
+  "freshness_recovered": true,
+  "terminal_firing": true,
+  "paused_seconds": 45.30502288695425,
+  "controls": 30,
+  "gpu_seconds": 129.75531643396243,
+  "guard_observations": 111,
+  "custody_observations": 83,
+  "seconds": 130.25738756614737,
+  "owned_exited": 10,
+  "source_read_only": true,
+  "external_notifications": false,
+  "physical_ram_limit_proved": false,
+  "long_run": false,
+  "performance_acceptance": false,
+  "cleanup_confirmed": true,
+  "original_pre_gpu_failure_preserved": true,
+  "original_projection_failure_preserved": true,
+  "continuation_driver_tests": 3,
+  "projection_driver_tests": 3,
+  "cumulative_model_starts": 2,
+  "cumulative_gpu_seconds": 185.8353684390895,
+  "cumulative_seconds": 186.97861225507222,
+  "cumulative_controls": 33
+}

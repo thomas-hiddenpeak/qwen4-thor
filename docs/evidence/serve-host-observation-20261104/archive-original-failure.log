@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_host/projection_fix.py", line 135, in <module>
+    if action in ('postflight','archive','verify'):value=report(action)
+                                                         ^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_host/projection_fix.py", line 128, in report
+    try:return getattr(r,action)()
+               ^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_host/report.py", line 245, in archive
+    data,local=collect();result=evaluate(data);DEST.mkdir()
+                                ^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_host/projection_fix.py", line 100, in evaluate
+    result=original_evaluate(data);read=lambda name:json.loads(data[name]);plan=read('plan.json')
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_host/report.py", line 93, in evaluate
+    require(plan['source_files'][name]==checksum,'unaffected source reuse')
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 38, in require
+    raise RuntimeError(message)
+RuntimeError: unaffected source reuse

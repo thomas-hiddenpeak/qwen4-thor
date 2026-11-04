@@ -7,6 +7,8 @@
 
 当前验收状态以 [STATUS](../../docs/STATUS.md) 为准，范围见
 [SRV-12f](../../docs/SERVE_HOST_OBSERVATION_2026-11-04.md)。
+[本机真实采集、过期恢复、终态及工具短验已限定接受](../../docs/SERVE_HOST_OBSERVATION_RESULT_2026-11-04.md)，
+原夹具与验收行序误判保留；未部署正式通知渠道或执行长稳。
 
 ## 准备与显式运行
 
@@ -98,5 +100,5 @@ host scrape 为 15 秒、规则为 5 秒；30 秒过期门限并不等于最坏�
 封存后的离线核验不加载模型或访问 HTTP：
 
 ```bash
-python3 -B tools/serve_host/report.py verify
+python3 -B tools/serve_host/projection_fix.py verify
 ```

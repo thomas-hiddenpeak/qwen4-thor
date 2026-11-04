@@ -1,0 +1,11 @@
+{
+  "original_archive_failure": {
+    "path": "archive-original-failure.log",
+    "sha256": "ac788485cd3bf2b1142231cb5cd87831eadda1697217b8869b81ca9f9bc9af27",
+    "reason": "Historical cpu-fix.py wrapper changed output-directory argument; the failed snapshot must remain bound to its own bytes."
+  },
+  "correction": "Only this failed wrapper identity comparison is exempted; latest corrected wrapper and every preserved snapshot still checked.",
+  "production_changed": false,
+  "new_models_or_http": 0,
+  "archive_sha256": "b14a758ba6858046ccfd1843695c09abd3605d2f1bcb76a1e640aa1c4747ddcf"
+}

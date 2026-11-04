@@ -88,6 +88,7 @@ def evaluate(data):
             require(sha(data[folder+'/source/'+name])==checksum,'CPU source bytes')
             changed={'tools/serve_host/observer.py','tools/serve_host/child.py','tools/serve_host/stage.py','tools/serve_host/report.py'}
             if folder=='cpu-driver':changed.update(('tools/serve_host/stage.py','tools/serve_host/report.py','tools/serve_host/driver_cpu.py'))
+            if folder=='cpu-fix':changed.add('tools/serve_host/cpu_fix.py')
             if (folder in ('cpu-runtime-fix','cpu-driver-02') and name not in ('tools/serve_host/stage.py','tools/serve_host/report.py')) or name not in changed or (
                     folder in ('cpu-fix-02','cpu-runtime','cpu-driver') and name=='tools/serve_host/child.py'):
                 require(plan['source_files'][name]==checksum,'unaffected source reuse')
@@ -229,6 +230,10 @@ def collect():
     paths.extend((BASE/'cpu-fixtures').glob('*/observer/syntax-private.log'))
     data={str(p.relative_to(BASE)):p.read_bytes() for p in sorted(set(paths)) if p.is_file() and not p.is_symlink()}
     data.update({'notification/'+name:(notification/name).read_bytes() for name in records})
+    # Reconstruction tooling can be corrected after the runtime is frozen.
+    # Archive its exact bytes separately; never rewrite the tested sources.
+    for name in ('tools/serve_host/report.py','tools/serve_host/projection_fix.py','tools/serve_host/stage.py'):
+        data['reconstruction-source/'+name]=(ROOT/name).read_bytes()
     policy=pkg.read(s.retained.prior.BASE/'model-private/policy-private.json')
     secrets=[v['api_key'] for v in policy['clients']]+[pkg.read(s.retained.prior.BASE/'model-private/clients.json')['gateway_token'],
         (notification/'token-private').read_text().strip()]
@@ -250,12 +255,16 @@ def archive():
             target.addfile(info,io.BytesIO(raw))
     packed=gzip.compress(stream.getvalue(),mtime=0);(DEST/'records.tar.gz').write_bytes(packed)
     pkg.save(DEST/'manifest.json',dict(files={n:dict(bytes=len(raw),sha256=sha(raw)) for n,raw in data.items()},
-        local_identities=local,archive=dict(bytes=len(packed),sha256=sha(packed))))
+        local_identities=local,archive=dict(bytes=len(packed),sha256=sha(packed)),
+        reconstruction_sources={name.removeprefix('reconstruction-source/'):sha(raw)
+            for name,raw in data.items() if name.startswith('reconstruction-source/')}))
     pkg.save(DEST/'result.json',result);return dict(records=len(data),compressed_bytes=len(packed),result=result)
 
 
 def verify():
     manifest=pkg.read(DEST/'manifest.json');packed=(DEST/'records.tar.gz').read_bytes()
+    for name,checksum in manifest['reconstruction_sources'].items():
+        require(pkg.sha(ROOT/name)==checksum,'use archived reconstruction source: '+name)
     require(len(packed)==manifest['archive']['bytes'] and sha(packed)==manifest['archive']['sha256'],'archive changed')
     data={}
     with tarfile.open(fileobj=io.BytesIO(packed),mode='r:gz') as source:
