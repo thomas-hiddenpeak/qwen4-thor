@@ -41,6 +41,14 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+SRV-12j[托管双监听启动前检查已实现](SERVE_PORT_PREFLIGHT_2026-11-04.md)：
+只改supervisor，每次启动/恢复前检查主入口及显式运维端口；冲突指出
+地址且backend Popen前退出，不干预原占用者，不承诺消除后续竞争。
+首个复现夹具KeyError保留、不算缺陷证据；修正夹具后旧实现确实越过
+占用检查到达launch入口，零模型。38项成组CPU首次全部通过，含7新
+端口合同、既有监督生命周期、host组合和2驱动故障；下一步同锁短验。
+当前默认/旧包保持，尚未验收；高级配置按需、长验交用户，目标active。
+
 SRV-12i[声明/独立运维/host域组合已限定接受](SERVE_MANAGED_PROFILE_RESULT_2026-11-04.md)：
 13cfaffb驱动，新v6包7a5d411c；9+1 CPU含八配置组合通过，原prepare
 路径错误零业务失败保持。实机1模型/2网关/2错误上游启动拒绝、4响应

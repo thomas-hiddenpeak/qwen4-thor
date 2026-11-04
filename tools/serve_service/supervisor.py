@@ -175,6 +175,25 @@ def restart_allowed(returncode, was_ready, used, limit, stopping):
     return (not stopping and was_ready and returncode < 0 and used < limit)
 
 
+def preflight_ports(config):
+    """Reject known listener conflicts before loading a managed backend.
+
+    These checks reserve no sockets for exec. The native listener still owns
+    the authoritative bind, including races after this observation.
+    """
+    endpoints = [('public', config['port'])]
+    if config.get('operations_port', 0):
+        endpoints.append(('operations', config['operations_port']))
+    for role, port in endpoints:
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+                probe.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                probe.bind(('127.0.0.1', port))
+        except OSError as error:
+            raise RuntimeError(
+                f'{role} listener unavailable at 127.0.0.1:{port}: {error}') from error
+
+
 def run(package, digest, output, *, observe=probe, read_memory=None):
     package, output = Path(package), Path(output)
     manifest = pkg.verify(package, digest)
@@ -227,9 +246,7 @@ def run(package, digest, output, *, observe=probe, read_memory=None):
                 while not stopped():
                     watchdog.check()
                     pkg.verify(package, digest)
-                    with socket.socket() as port_check:
-                        port_check.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-                        port_check.bind(('127.0.0.1', cfg['port']))
+                    preflight_ports(cfg)
                     # No Q4T fault hooks, linker injection, or caller cache
                     # settings cross the managed-service boundary.
                     env = dict(PATH='/usr/bin:/bin', LANG='C.UTF-8',
