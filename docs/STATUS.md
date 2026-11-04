@@ -41,6 +41,11 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+[Serve主线交接清单](SERVE_HANDOFF_2026-11-04.md)已按11ddaa9e基线整理：
+列明原生可用合同、15d7ccb1旧托管/持久迁移组合、10个本机未验客户端
+文件和恢复前置；新增deadline_http依赖尚未进入应用来源清单也已记录。
+本轮只读核对并更新文档，未开发、测试、启动服务或部署；工业化仍暂停。
+
 [PR #8](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/8)已于
 2026-11-04合入main，合并提交668c1921；PR与push两项host检查均通过，
 合并树与已验PR head ca4f8ed9完全一致。223运行来源/默认pair保持；
