@@ -1,0 +1,74 @@
+{
+  "status": "ACCEPT_TASK_OPERATIONS_PROTOCOL",
+  "cpu_tests": 23,
+  "application_cpu_tests": 17,
+  "driver_cpu_tests": 6,
+  "entry_repair_tests": 2,
+  "file_operation_kills": 4,
+  "models": 2,
+  "gateways": 2,
+  "responses": 4,
+  "real_tools": 2,
+  "application_kills": 2,
+  "active_migrations": 2,
+  "duplicate_applies": 2,
+  "duplicate_submits": 4,
+  "archive_resumes_without_execution": 2,
+  "metadata_refusals": 6,
+  "actual_archived_protocol_migrations": 0,
+  "archived_protocol_migrations_cpu_only": true,
+  "permanent_keys": 2,
+  "retained_payloads": 1,
+  "usage": {
+    "alpha": [
+      {
+        "completion_tokens": 55,
+        "prompt_tokens": 647,
+        "total_tokens": 702
+      },
+      {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    ],
+    "beta": [
+      {
+        "completion_tokens": 55,
+        "prompt_tokens": 647,
+        "total_tokens": 702
+      },
+      {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    ]
+  },
+  "seconds": 91.21890524309129,
+  "controls": 30,
+  "gpu_seconds": 94.05283415596932,
+  "failed_gpu_seconds": 1.268744942964986,
+  "retry_gpu_seconds": 92.78408921300434,
+  "guard_observations": 90,
+  "owned_exited": 6,
+  "default_unchanged": true,
+  "original_cpu_import_failure_preserved": true,
+  "original_guard_invocation_failure_preserved": true,
+  "original_models": 0,
+  "reviewed_transition": {
+    "archive_sha256": "b26f2dfa69ca2ad68f0b7cb36ed392f317775e30b226e03807d04acd6cefa2ab",
+    "basis": "Reviewed 222 runtime files: 212 unchanged; 10 listener/metrics/config changes. Request planning matches after formatting; model, template, tools, budgets and response parsing unchanged. Reuse SRV-12g public Chat: 5 successes and 2 real read-only tools. Private operations/config are not wire-identical; only directed public project-task history compatibility is approved.",
+    "contract": "q4t-project-readonly-protocol-v1",
+    "evidence": "docs/evidence/serve-task-operations-review-20261104/records.tar.gz",
+    "from_protocol_sha256": "fc63db28261a37ead3b633e0cd704a128e91b4eac264ea8125f715ac4b2834aa",
+    "model": "qwen3.8-flash-next",
+    "release": "srv12g-5e52dc17",
+    "template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+    "to_protocol_sha256": "ddfba8c002d8fb899b4c00d42612b0a26669036a1acc65e8292a10c0a9b69342"
+  },
+  "long_run": false,
+  "actual_lan_accepted": false,
+  "physical_ram_limit": false,
+  "performance_acceptance": false
+}
