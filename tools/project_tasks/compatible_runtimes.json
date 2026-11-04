@@ -169,6 +169,31 @@
         "tools/project_tasks/store.py": "eee1356e67ab93b59860f679050cd77ddea13d49588fefc2e25099fb2d33f99a",
         "tools/project_tasks/transport.py": "317d186669c889666d7b36e2851c5b3d25036822f9d70789b933f72d4ecba9bd"
       }
+    },
+    {
+      "archive_sha256": "a5abc4911ef435fde0e403fa780317a89ed4cdcf5e8e097058781844089a3571",
+      "budget_profile": "q4t-project-budget-v1",
+      "evidence": "docs/evidence/serve-task-operations-20261104/records.tar.gz",
+      "release": "srv11i-3967b862",
+      "runtime_sources": {
+        "tools/examples/agent_tools_demo.py": "acf6ee24c66d372d95ec08e672c2ec5dc423999890a537b9495a96ced4d89ca4",
+        "tools/examples/chat_client.py": "a2613333395a511b7741d8ce5fac125ba44dd9ec92fa198aa90ef5f9ba662f32",
+        "tools/examples/project_query.py": "dbf70665fef0d144d18fc0ef16b04029a7dd595664efe45b7de07579b3997206",
+        "tools/examples/project_records.py": "abd47d37ddcbd482f147ef172ee01e4a8be3bfcb78f29f7156d00b0073eb8b3c",
+        "tools/examples/tool_recovery.py": "e3fba1d9d028ff532c59e826b76e4434b64599a8b3c42b79d4ae0c1c59341f90",
+        "tools/project_tasks/backup.py": "fe06d9a995396d9393b24dd13f31e25910634eceedc5309b6227818c34b0aae0",
+        "tools/project_tasks/budget.py": "7328c9524eac3257a1b841089d9889975915d96b487d7886196106b560dc0412",
+        "tools/project_tasks/compatible_protocols.json": "c73ee3188aec9f8f0d3d13c118140f4cc02b7f141d9ccb0b681987abbd949cb5",
+        "tools/project_tasks/compatible_runtimes.json": "71ee02e762ba8586d7437a8c91e5f8d7fbe6151d8076524df584b4207798124c",
+        "tools/project_tasks/engine.py": "b37fd90eb44dbc4cc6e7ef6e9dba60969a6d0226e50e924ea51e1e3afa41cce9",
+        "tools/project_tasks/errors.py": "dc74cafd2a5263c8a819dbcd79100f74086ae7a64975da100a0b371e374ae163",
+        "tools/project_tasks/migration.py": "57d123d3b61dbb01cc6eabc8c7d4a099987f8f5dc9c340d26236655af3a65be3",
+        "tools/project_tasks/protocol.py": "223478974f4c31932196a24262a09305684d42bf1f053f7f414f27072b168dc2",
+        "tools/project_tasks/retention.py": "71fe34a4405d4399fc397b6416f638c0668ccdd4f3730c29199caeca6f1b6593",
+        "tools/project_tasks/runner.py": "ee07b7466310f242866ce2f6e1cea6e8aa6e4b0f570bf055694ede483950e51e",
+        "tools/project_tasks/store.py": "eee1356e67ab93b59860f679050cd77ddea13d49588fefc2e25099fb2d33f99a",
+        "tools/project_tasks/transport.py": "317d186669c889666d7b36e2851c5b3d25036822f9d70789b933f72d4ecba9bd"
+      }
     }
   ]
 }

@@ -3,8 +3,10 @@ import hashlib
 from collections.abc import Mapping
 from dataclasses import dataclass
 import http.client
+import io
 import ipaddress
 import json
+import math
 import os
 from pathlib import Path
 import re
@@ -108,18 +110,80 @@ def read_profile(path):
     return PreparedProfile(MappingProxyType(value), ca), public
 
 
+def remaining(deadline):
+    seconds = deadline - time.monotonic()
+    if seconds <= 0:
+        raise TimeoutError("request wall deadline")
+    return seconds
+
+
+class DeadlineInput(io.RawIOBase):
+    """Keep SocketIO ownership, but bound every buffered header/body refill."""
+    def __init__(self, raw, sock, deadline):
+        self.raw, self.sock, self.deadline = raw, sock, deadline
+
+    def readable(self):
+        return True
+
+    def readinto(self, buffer):
+        self.sock.settimeout(remaining(self.deadline))
+        return self.raw.readinto(buffer)
+
+    def close(self):
+        try:
+            self.raw.close()
+        finally:
+            super().close()
+
+
+class DeadlineSocket:
+    """HTTPConnection socket facade; a response retains its own IO reference."""
+    def __init__(self, sock, deadline):
+        self.sock, self.deadline = sock, deadline
+
+    def __getattr__(self, name):
+        return getattr(self.sock, name)
+
+    def makefile(self, mode):
+        store.require(mode == 'rb', 'HTTP response reader required')
+        raw = self.sock.makefile(mode, buffering=0)
+        try:
+            return io.BufferedReader(DeadlineInput(raw, self.sock, self.deadline))
+        except BaseException:
+            raw.close()
+            raise
+
+    def sendall(self, data):
+        # SSLSocket.sendall in our Python runtime loops over send(); a single
+        # timeout set before that loop would give each TLS write a new budget.
+        with memoryview(data).cast('B') as view:
+            offset = 0
+            while offset < len(view):
+                self.sock.settimeout(remaining(self.deadline))
+                sent = self.sock.send(view[offset:offset + 65536])
+                if sent <= 0:
+                    raise ConnectionError('request write failed')
+                offset += sent
+
+
 class Connection(http.client.HTTPSConnection):
-    def __init__(self, value, context, timeout):
+    def __init__(self, value, context, timeout, *, deadline=None):
         url = urlsplit(value["base_url"])
         super().__init__(url.hostname, url.port or 443, context=context, timeout=timeout)
         self.connect_host = value["connect_host"]
+        self.deadline = time.monotonic() + timeout if deadline is None else deadline
 
     def connect(self):
-        sock = socket.create_connection((self.connect_host, self.port), self.timeout)
+        sock = socket.create_connection((self.connect_host, self.port),
+                                        remaining(self.deadline))
+        secured = None
         try:
-            self.sock = self._context.wrap_socket(sock, server_hostname=self.host)
+            sock.settimeout(remaining(self.deadline))
+            secured = self._context.wrap_socket(sock, server_hostname=self.host)
+            remaining(self.deadline)
+            self.sock = DeadlineSocket(secured, self.deadline)
         except BaseException:
-            sock.close()
+            (secured if secured is not None else sock).close()
             raise
 
 
@@ -130,10 +194,7 @@ class DeadlineReader:
         self.eof = False
 
     def remaining(self):
-        remaining = self.deadline - time.monotonic()
-        if remaining <= 0:
-            raise TimeoutError("request wall deadline")
-        self.sock.settimeout(remaining)
+        self.sock.settimeout(remaining(self.deadline))
 
     def read(self, size=-1):
         store.require(0 <= size <= store.MAX_WIRE_BYTES + 1, "bounded reads required")
@@ -177,8 +238,10 @@ class Client:
         self.context = ca_context(value.ca_pem)
 
     def request(self, method, route, body, timeout, consume, *, trace_id=None, error_sink=None):
+        store.require(type(timeout) in (int, float) and math.isfinite(timeout) and
+                      timeout > 0, 'positive finite request timeout required')
         deadline = time.monotonic() + timeout
-        conn = Connection(self.value, self.context, timeout)
+        conn = Connection(self.value, self.context, timeout, deadline=deadline)
         headers = {"Authorization": "Bearer " + self.value["api_key"],
                    "Accept": "application/json", "Connection": "close"}
         raw = None
@@ -201,7 +264,9 @@ class Client:
                     if error_sink:
                         error_sink(raw_error)
                     raise engine.chat.RemoteError(response.status, raw_error)
-                return consume(response, reader)
+                value = consume(response, reader)
+                remaining(deadline)
+                return value
         finally:
             conn.close()
 

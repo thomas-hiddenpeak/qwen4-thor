@@ -46,6 +46,7 @@ C项按明确业务条件单独冻结。
 | SRV-11g | 持久任务CA交接与连接材料绑定 | [限定接受](SERVE_TASK_TRUST_RESULT_2026-11-04.md) | 124 CPU/4驱动/27文件SIGKILL；1模型2不同CA网关、2旧应用保存工具后停止、新版只续2最终回答，共4响应2工具；旧CA拒绝/归档保键/重复零执行，394原件重建、GPU69.817秒释放；两处离线报告错误保留并修正 |
 | SRV-11h | 已审核协议升级与任务交接 | [限定接受](SERVE_TASK_PROTOCOL_RESULT_2026-11-04.md) | 140有效应用/5最终驱动/31文件SIGKILL；修正轮同锁2版本4响应2工具，原配置路径失败0业务保留；656原件重建、两轮GPU131.078秒释放，未登记对仍拒绝 |
 | SRV-11i | 当前运维协议版本任务交接 | [限定接受](SERVE_TASK_OPERATIONS_RESULT_2026-11-04.md) | fc63→dd/11h来源登记；23 CPU+2入口、4事务SIGKILL，同锁2模型4成功2真实工具/重复零执行；原导入/入口/封存错误保持后离线接受，278记录、GPU94.053秒释放，默认pair/day保持 |
+| SRV-11j | 持久任务全程网络截止时间 | [开发/CPU通过，真实待验](SERVE_TASK_DEADLINE_2026-11-04.md) | 原慢头超时缺陷已复现；16有效CPU+2入口，原2夹具失败保留后定向修正；TCP/TLS/写入/响应头与chunk统一期限、UNKNOWN不重试、11i来源登记 |
 | SRV-11b | 项目任务输出预算与逐轮预检 | [本机限定接受](SERVE_PROJECT_TASK_BUDGET_RESULT_2026-11-04.md) | 31应用CPU/3驱动；alpha512/beta64各真实工具/引用通过，超额拒绝、批准后SIGKILL重新预检；4成功/6预检/3重复零执行，GPU60.126秒释放；263原件封存，day未跑 |
 | SRV-11c | 任务源码升级与同客户端Key轮换 | [本机限定接受](SERVE_TASK_MIGRATION_RESULT_2026-11-04.md) | 49应用CPU/3原驱动/5定向；原容量拒绝保持，2原任务迁移后复用结果完成，旧Key401；累计4成功/2工具，重复迁移/提交零执行，468原件封存，GPU释放 |
 | SRV-11d | 终态归档、永久保键与任务容量 | [本机短验限定接受](SERVE_TASK_ARCHIVE_RESULT_2026-11-04.md) | 69应用/5驱动有效CPU；1模型1网关4成功2工具，2文件操作SIGKILL恢复、3重复提交/3恢复零执行；402原件封存，GPU62.342秒释放；原夹具失败保留 |
@@ -65,7 +66,8 @@ C项按明确业务条件单独冻结。
 | SRV-02g | 默认文本启动降级与内部资源错误传播 | [已限定交付](SERVE_BACKEND_CLEANUP_RESULT_2026-11-03.md)；3fd31a21 | 请求MTP失败拒绝启动；直接CUDA清理/完成失败退出1，已有serve错误协议保持；原探针误断言保留，18探针/7启动/10生成/6负场景通过，非完整分配或物理保护 |
 | SRV-02h | 媒体与host异常/错误响应完整性 | [组合限定交付](SERVE_MEDIA_COMPOSITE_RESULT_2026-11-03.md)；280b95dc | 原生25、视觉所有权/333上传、真实文本/工具/图片/两帧、OOM恢复/fatal/host/SSE/启动拒绝通过；原CPU失败保留 |
 | SRV-02i | 媒体解压与几何资源边界 | [组合限定交付](SERVE_MEDIA_COMPOSITE_RESULT_2026-11-03.md)；280b95dc | 实际11类准入拒绝、配额、分配哨兵/同PID恢复及媒体SSE取消通过；组合32/21/11首轮完成，物理RAM硬保护与广泛媒体质量仍待办 |
-| SRV-02j1 | CUDA申请额度核心 | [核心限定通过](SERVE_CUDA_QUOTA_CORE_RESULT_2026-11-04.md) | 26有效CPU/4驱动/6保管CPU；修正后4 native/112MiB/14检查点，同锁2.380秒；原CPU失败/ENV_ABORT保持；默认/day不改，02j2生产接线与真实业务待验，非物理RAM限额 |
+| SRV-02j1 | CUDA申请额度核心 | [核心限定通过](SERVE_CUDA_QUOTA_CORE_RESULT_2026-11-04.md) | 26有效CPU/4驱动/6保管CPU；修正后4 native/112MiB/14检查点，同锁2.380秒；原CPU失败/ENV_ABORT保持；该阶段默认/day不改，生产接线由02j2补齐，非物理RAM限额 |
+| SRV-02j2 | 生产CUDA申请额度接线 | [限定交付](SERVE_CUDA_QUOTA_INTEGRATION_RESULT_2026-11-04.md) | 生产wrapper/启动/CLI/指标接线；28 wrapper/268公共/234必需/9后端，修正轮6 native/25 HTTP生命周期/7生成与真实资料工具通过；463原件，原flags失败保持，非整机物理RAM硬保护 |
 | SRV-02k | 托管host记账域与进程树保护 | [限定接受](SERVE_HOST_ENVELOPE_RESULT_2026-11-04.md) | 155 CPU+3驱动、六类内核；1模型1TLS/4成功2工具、385原件封存；原high探针超时保持，GPU释放，非物理RAM限额 |
 | SRV-14 | 当前发布的受控服务托管 | [实际限定通过](SERVE_MANAGED_SERVICE_RESULT_2026-11-03.md) | 首轮交接503已修复；新默认同锁2启动/6成功/2真实工具、1替换及退避stop取消通过；累计托管10次、原失败保持，无常驻服务安装 |
 | SRV-15 | 托管低内存保护退场 | [实际限定通过](SERVE_MEMORY_STOP_RESULT_2026-11-03.md) | CPU51有效；实际1启动/4成功/真实工具，2.25GiB有界压力触发30GiB门限退场，禁重启/清理通过；默认1GiB策略CPU证据，不代替物理RAM硬限额 |
