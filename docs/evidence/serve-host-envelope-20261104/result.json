@@ -1,0 +1,141 @@
+{
+  "status": "ACCEPT_HOST_ENVELOPE_SHORT",
+  "cpu_tests": 155,
+  "corrected_driver_tests": 1,
+  "stage_driver_tests": 2,
+  "original_high_probe_timeout_preserved": true,
+  "kernel_cases": 6,
+  "kernel": {
+    "normal": {
+      "violation": null,
+      "memory_peak_bytes": 8765440,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      },
+      "pids_events": {
+        "max": 0
+      }
+    },
+    "high": {
+      "violation": null,
+      "memory_peak_bytes": 34627584,
+      "memory_events": {
+        "low": 0,
+        "high": 18,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      },
+      "pids_events": {
+        "max": 0
+      }
+    },
+    "oom": {
+      "violation": "host_resource_oom",
+      "memory_peak_bytes": 67108864,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 38,
+        "oom": 1,
+        "oom_kill": 3,
+        "oom_group_kill": 1
+      },
+      "pids_events": {
+        "max": 0
+      }
+    },
+    "tasks": {
+      "violation": "host_resource_tasks",
+      "memory_peak_bytes": 10977280,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      },
+      "pids_events": {
+        "max": 1
+      }
+    },
+    "drift": {
+      "violation": "host_resource_observation_unavailable",
+      "memory_peak_bytes": 1388544,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      },
+      "pids_events": {
+        "max": 0
+      }
+    }
+  },
+  "model_starts": 1,
+  "gateway_starts": 1,
+  "responses": 4,
+  "real_tools": 2,
+  "completed_tasks": 2,
+  "response_usage": {
+    "alpha": [
+      {
+        "completion_tokens": 55,
+        "prompt_tokens": 647,
+        "total_tokens": 702
+      },
+      {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    ],
+    "beta": [
+      {
+        "completion_tokens": 55,
+        "prompt_tokens": 647,
+        "total_tokens": 702
+      },
+      {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    ]
+  },
+  "grammar_reaped": 4,
+  "memcg_peak_bytes": 17109327872,
+  "memcg_events": {
+    "low": 0,
+    "high": 0,
+    "max": 0,
+    "oom": 0,
+    "oom_kill": 0,
+    "oom_group_kill": 0
+  },
+  "pids_events": {
+    "max": 0
+  },
+  "observed_tasks_max": 8,
+  "sampled_processes": 5,
+  "host_samples": 70,
+  "controls": 5,
+  "gpu_seconds": 60.12703463691287,
+  "gpu_observations": 57,
+  "seconds": 71.02419332880527,
+  "owned_exited": 11,
+  "physical_ram_limit_proved": false,
+  "long_run": false,
+  "performance_acceptance": false,
+  "cleanup_confirmed": true
+}

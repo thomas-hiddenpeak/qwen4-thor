@@ -118,8 +118,8 @@ inflight8/queued2、2GiB内存准入/启动余量与512MiB恢复滞回。配置�
 `prepare`同时指定`--host-memory-high-mib`、`--host-memory-max-mib`和
 `--host-tasks-max`启用host memcg/pids保护，可与`--client-policy`组合。
 三个参数必须完整明确；默认不改变已有v1-v4包。实现及当前验收状态见
-[SRV-02k](../../docs/SERVE_HOST_ENVELOPE_2026-11-04.md)。16/20GiB与512
-任务是本机短验候选，不是所有业务的推荐容量。
+[SRV-02k](../../docs/SERVE_HOST_ENVELOPE_2026-11-04.md)。该配置已[通过内核与真实短验](../../docs/SERVE_HOST_ENVELOPE_RESULT_2026-11-04.md)。
+16/20GiB与512任务仅是已验配置，不是所有业务的推荐容量。
 
 依赖本机systemd user manager及memory/pids委派。包固定busctl和
 systemctl身份；工具升级后需显式重新准备包。每代次创建唯一临时scope，

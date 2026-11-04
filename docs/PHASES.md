@@ -56,7 +56,7 @@ C项按明确业务条件单独冻结。
 | SRV-02h | 媒体与host异常/错误响应完整性 | [组合限定交付](SERVE_MEDIA_COMPOSITE_RESULT_2026-11-03.md)；280b95dc | 原生25、视觉所有权/333上传、真实文本/工具/图片/两帧、OOM恢复/fatal/host/SSE/启动拒绝通过；原CPU失败保留 |
 | SRV-02i | 媒体解压与几何资源边界 | [组合限定交付](SERVE_MEDIA_COMPOSITE_RESULT_2026-11-03.md)；280b95dc | 实际11类准入拒绝、配额、分配哨兵/同PID恢复及媒体SSE取消通过；组合32/21/11首轮完成，物理RAM硬保护与广泛媒体质量仍待办 |
 | SRV-02j1 | CUDA申请额度核心 | [核心限定通过](SERVE_CUDA_QUOTA_CORE_RESULT_2026-11-04.md) | 26有效CPU/4驱动/6保管CPU；修正后4 native/112MiB/14检查点，同锁2.380秒；原CPU失败/ENV_ABORT保持；默认/day不改，02j2生产接线与真实业务待验，非物理RAM限额 |
-| SRV-02k | 托管host记账域与进程树保护 | [开发中](SERVE_HOST_ENVELOPE_2026-11-04.md) | 显式memcg/pids、监督器隔离、OOM不重启；155 CPU+3驱动、六类内核边界通过，短业务待验；非物理RAM限额 |
+| SRV-02k | 托管host记账域与进程树保护 | [限定接受](SERVE_HOST_ENVELOPE_RESULT_2026-11-04.md) | 155 CPU+3驱动、六类内核；1模型1TLS/4成功2工具、385原件封存；原high探针超时保持，GPU释放，非物理RAM限额 |
 | SRV-14 | 当前发布的受控服务托管 | [实际限定通过](SERVE_MANAGED_SERVICE_RESULT_2026-11-03.md) | 首轮交接503已修复；新默认同锁2启动/6成功/2真实工具、1替换及退避stop取消通过；累计托管10次、原失败保持，无常驻服务安装 |
 | SRV-15 | 托管低内存保护退场 | [实际限定通过](SERVE_MEMORY_STOP_RESULT_2026-11-03.md) | CPU51有效；实际1启动/4成功/真实工具，2.25GiB有界压力触发30GiB门限退场，禁重启/清理通过；默认1GiB策略CPU证据，不代替物理RAM硬限额 |
 | SRV-16 | 独立前台控制器死亡 | [实际限定通过](SERVE_CONTROLLER_DEATH_RESULT_2026-11-03.md) | CPU8有效；1启动/4成功/2完整shutdown错误，活跃/排队grammar自然退场且无辅助清理；同一锁副本与独立监控到结束，无复起；生产实现不改 |

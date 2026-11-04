@@ -41,11 +41,17 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
-SRV-02k[host记账域与进程树边界开发中](SERVE_HOST_ENVELOPE_2026-11-04.md)：
-显式v5托管资源包、委派scope内control/payload隔离、memcg/pids限额及
-OOM禁止重启；155 CPU、1探针修正与2驱动检查通过，六类真实内核
-边界通过。首轮high探针超时已保留，仅改测试收尾；1模型1网关短验
-待执行。并非统一物理RAM硬限额。
+SRV-02k[host记账域与进程树边界限定接受](SERVE_HOST_ENVELOPE_RESULT_2026-11-04.md)：
+冻结70b629db，显式v5后端/网关v3、owned scope内control/payload隔离、
+memcg/pids限额和OOM禁重启。155 CPU、1探针修正、2驱动通过，六类
+真实内核场景通过；原high探针超时保留，仅改测试收尾，生产未改。
+1模型1TLS网关、alpha512/beta64各2成功1工具，答案/引用正确，
+grammar4/4。host记账峰值15.934GiB、70份样本及5个payload进程，
+无high/max/OOM/pids事件；非完整物理RAM限额。GPU60.127035秒/
+57观察、总71.024193秒/5父控制；385原件/2 ELF身份离线重建通过。
+11自有身份退、2代次SEALED、scope/GPU/原锁释放，容器空、SOAR masked，
+默认/原Key/固定旧包/3份day保持且day未跑。新策略仅显式启用；实际
+LAN/正式容量与备份介质、物理RAM及用户长稳仍待，工业化目标active。
 
 SRV-11f[管理入口错误合同限定接受](SERVE_TASK_ERRORS_RESULT_2026-11-04.md)：
 冻结225e82bd，固定错误码/处置提示、SQLite/意外异常安全出口、逐命令
