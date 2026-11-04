@@ -1,15 +1,66 @@
 """Explicit TLS destination and private API key; no redirects/proxy/retries."""
 import hashlib
+from collections.abc import Mapping
+from dataclasses import dataclass
 import http.client
 import ipaddress
 import json
+import os
 from pathlib import Path
+import re
 import socket
 import ssl
+import stat
 import time
+from types import MappingProxyType
 from urllib.parse import urlsplit
 
 from tools.project_tasks import engine, store
+
+
+@dataclass(frozen=True)
+class PreparedProfile(Mapping):
+    data: Mapping
+    ca_pem: bytes
+
+    def __getitem__(self, key): return self.data[key]
+    def __iter__(self): return iter(self.data)
+    def __len__(self): return len(self.data)
+
+
+def ca_context(raw):
+    # No ambient trust store or SSLKEYLOGFILE. Both the binding and each
+    # connection use these exact bytes, never a second read of ca_file.
+    blocks = re.findall(rb"-----BEGIN CERTIFICATE-----[\r\n]+[A-Za-z0-9+/=\r\n]+-----END CERTIFICATE-----", raw)
+    store.require(1 <= len(blocks) <= 8 and not re.sub(
+        rb"-----BEGIN CERTIFICATE-----[\r\n]+[A-Za-z0-9+/=\r\n]+-----END CERTIFICATE-----", b"", raw).strip(),
+        "explicit bounded PEM CA bundle required", code='invalid_profile')
+    context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+    context.minimum_version = ssl.TLSVersion.TLSv1_2
+    context.load_verify_locations(cadata=raw.decode('ascii'))
+    store.require(context.cert_store_stats()['x509_ca'] > 0,
+                  "CA certificate required", code='invalid_profile')
+    return context
+
+
+def ca_snapshot(path):
+    path = Path(path)
+    store.require(path.is_absolute() and not path.is_symlink(),
+                  "explicit CA file required", code='invalid_profile')
+    before = path.lstat()
+    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    with os.fdopen(fd, 'rb') as stream:
+        info = os.fstat(stream.fileno())
+        signature = lambda row: (row.st_dev, row.st_ino, row.st_size,
+                                row.st_mtime_ns, row.st_ctime_ns)
+        store.require(stat.S_ISREG(info.st_mode) and 0 < info.st_size <= 65536 and
+            signature(info) == signature(before), "bounded CA file changed", code='invalid_profile')
+        raw = stream.read(65537)
+        store.require(len(raw) == info.st_size and
+            signature(os.fstat(stream.fileno())) == signature(info) == signature(path.lstat()),
+            "CA changed during read", code='invalid_profile')
+    ca_context(raw)
+    return raw
 
 
 def profile(path):
@@ -21,7 +72,7 @@ def profile(path):
         if error.code == "unsafe_path":
             raise
         raise store.ContractError("invalid client profile", "invalid_profile") from None
-    except (ValueError, KeyError, TypeError, AttributeError):
+    except (ValueError, KeyError, TypeError, AttributeError, ssl.SSLError):
         raise store.ContractError("invalid client profile", "invalid_profile") from None
 
 
@@ -48,15 +99,13 @@ def read_profile(path):
                       all(c in "0123456789abcdef" for c in text), "protocol/template identity")
     store.require(isinstance(value["model"], str) and 0 < len(value["model"]) <= 128,
                   "model identity")
-    ca = Path(value["ca_file"])
-    store.require(ca.is_absolute() and not ca.is_symlink() and ca.is_file() and
-                  ca.stat().st_size <= 65536, "explicit CA file required")
+    ca = ca_snapshot(value["ca_file"])
     value["base_url"] = f"https://{url.netloc}/v1"
     public = {key: value[key] for key in ("client_id", "base_url", "connect_host",
               "model", "protocol_sha256", "template_sha256")}
-    public["ca_sha256"] = hashlib.sha256(ca.read_bytes()).hexdigest()
+    public["ca_sha256"] = hashlib.sha256(ca).hexdigest()
     public["key_sha256"] = hashlib.sha256(value["api_key"].encode()).hexdigest()
-    return value, public
+    return PreparedProfile(MappingProxyType(value), ca), public
 
 
 class Connection(http.client.HTTPSConnection):
@@ -122,8 +171,10 @@ class DeadlineReader:
 
 class Client:
     def __init__(self, value):
-        self.value = value
-        self.context = ssl.create_default_context(cafile=value["ca_file"])
+        store.require(isinstance(value, PreparedProfile),
+                      "validated profile snapshot required", code='invalid_profile')
+        self.value = dict(value)
+        self.context = ca_context(value.ca_pem)
 
     def request(self, method, route, body, timeout, consume, *, trace_id=None, error_sink=None):
         deadline = time.monotonic() + timeout

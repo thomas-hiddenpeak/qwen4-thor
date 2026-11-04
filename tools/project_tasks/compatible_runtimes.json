@@ -98,6 +98,29 @@
         "tools/project_tasks/store.py": "b152ebf6515ea4b5d979039471075dbb0d0bbe4097837578c3abd271831f365f",
         "tools/project_tasks/transport.py": "d841d7116ff023b5f83b0418cf2841df4a910ffd91dd7dbea66f2daa09a9bfde"
       }
+    },
+    {
+      "archive_sha256": "d41d810779569f9e7d9ac4f75887c8890f63cecf0ae6a0122fc94e82933e1c07",
+      "budget_profile": "q4t-project-budget-v1",
+      "evidence": "docs/evidence/serve-tls-observation-20261104/records.tar.gz",
+      "release": "srv11f-225e82bd",
+      "runtime_sources": {
+        "tools/examples/agent_tools_demo.py": "acf6ee24c66d372d95ec08e672c2ec5dc423999890a537b9495a96ced4d89ca4",
+        "tools/examples/chat_client.py": "a2613333395a511b7741d8ce5fac125ba44dd9ec92fa198aa90ef5f9ba662f32",
+        "tools/examples/project_query.py": "dbf70665fef0d144d18fc0ef16b04029a7dd595664efe45b7de07579b3997206",
+        "tools/examples/project_records.py": "abd47d37ddcbd482f147ef172ee01e4a8be3bfcb78f29f7156d00b0073eb8b3c",
+        "tools/examples/tool_recovery.py": "e3fba1d9d028ff532c59e826b76e4434b64599a8b3c42b79d4ae0c1c59341f90",
+        "tools/project_tasks/backup.py": "fe06d9a995396d9393b24dd13f31e25910634eceedc5309b6227818c34b0aae0",
+        "tools/project_tasks/budget.py": "7328c9524eac3257a1b841089d9889975915d96b487d7886196106b560dc0412",
+        "tools/project_tasks/compatible_runtimes.json": "7edafd4458a56d6dd53ea65d6042a591d5a4011a1d509874b6d510830039608c",
+        "tools/project_tasks/engine.py": "d39536af1224422cbefa558f351c6e0874e34ed13e6515db192de537c95203e5",
+        "tools/project_tasks/errors.py": "47fa079bdea97f280bd4acda0367907e73aca4f313c1daffd8f8b5f90adf08a9",
+        "tools/project_tasks/migration.py": "dffc969621ce149c8df387f972e32f80fe4da0c031d1b62dc8b8474dc2d7101b",
+        "tools/project_tasks/retention.py": "a7ab459314ef0202ff278772ecf0ad9ba65253289e935e1a053467ccfb78d64b",
+        "tools/project_tasks/runner.py": "b5e5dfed3e9f1f41c66f7f15218220b24c108ffbfa664997c32852cb1e8677f4",
+        "tools/project_tasks/store.py": "eee1356e67ab93b59860f679050cd77ddea13d49588fefc2e25099fb2d33f99a",
+        "tools/project_tasks/transport.py": "fb75b3c2b7f7f27c7c5ab0b8f9f1f9f7db1dd690fc349fcf0831769f39b6f18f"
+      }
     }
   ]
 }

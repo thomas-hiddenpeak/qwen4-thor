@@ -124,12 +124,42 @@ python3 -B tools/project_tasks/runner.py apply-migration \
 计划/迁移操作成功，不表示业务任务完成。之后用新profile显式resume。
 已知结果复用、未知状态及原预算保持；旧Key不能继续操作新绑定任务。
 
-当前登记已验SRV-11/SRV-11b/SRV-11c/SRV-11d到本版的源码升级及同client Key轮换；
-不允许换client、TLS origin/IP/CA、模型/协议/模板、问题或预算。
+当前登记已验SRV-11到SRV-11f的精确源码来源；同client Key轮换仍只
+能使用原CA，不允许同时换client、TLS origin/IP、模型/协议/模板、
+问题或预算。
 未知源码须先审查适配。实际Key撤销仍需先准备新网关私有包、停旧
 网关并确认清理、再运行新包；迁移命令不管理服务，不证明新Key的
 远端client映射。原因中不要填写凭据。详见
 [迁移合同](../../docs/SERVE_TASK_MIGRATION_2026-11-04.md)。
+
+CA交接使用独立的显式计划，见[信任迁移合同](../../docs/SERVE_TASK_TRUST_2026-11-04.md)。
+新profile仅更换ca_file对应材料，client、origin/IP、Key、模型、
+协议/模板保持；先停妥旧任务进程，核对计划旧/新CA SHA、revision、
+来源及预算，再应用摘要。不能用普通apply-migration应用信任计划。
+
+```bash
+python3 -B tools/project_tasks/runner.py plan-trust \
+  --root .q4t-work/project-tasks --profile .q4t-work/alpha-new-ca.json \
+  --key release-question-001 --plan .q4t-work/alpha-trust-plan.json \
+  --reason '同一服务更换经运维确认的CA，保留已保存业务结果'
+python3 -B tools/project_tasks/runner.py apply-trust \
+  --root .q4t-work/project-tasks --profile .q4t-work/alpha-new-ca.json \
+  --key release-question-001 --plan .q4t-work/alpha-trust-plan.json \
+  --plan-sha256 EXACT_PLAN_SHA256
+```
+
+信任计划不联网、不管理网关、不撤销旧CA。应用后再显式resume，
+完整TLS/主机名校验、能力发现与预算预检仍会执行；未知请求/工具
+保持UNKNOWN，不能借迁移重放。CA来源需由运维独立确认，计划仅
+记录显式配置选择。更换Key和CA必须分开操作，不能混成一次迁移。
+已完成任务保持答案，归档/已清正文的永久键只追加信任绑定事件，
+不改正文或原合同摘要。重复apply/submit保持零执行，旧绑定拒绝。
+
+profile读取至多65536字节、1至8张PEM证书并检查包含CA；拒绝
+非证书附带数据。摘要与TLS上下文使用同一不可变材料快照，运行中
+原文件替换不改变该进程的信任集。新进程读取新材料后仍需匹配任务
+绑定。上下文不继承系统默认CA或SSLKEYLOGFILE，不关闭验证。只接受
+由profile返回的已验证快照来构造内部Client。
 
 要回收终态任务占用的活跃名额，先停妥该store的旧版任务客户端，
 再显式启用留存；之后只用支持留存的版本访问，不能回退旧代码继续
@@ -169,8 +199,9 @@ python3 -B tools/project_tasks/runner.py inspect-archive \
 不删除键。重复submit/resume返回ARCHIVED且退出2，不返回答案或
 再次执行；只有inspect-archive在正文仍在时返回原答案，清理后只
 返回payload_state=purged。同键修改问题/预算会拒绝。归档任务的
-同client Key轮换继续使用plan-migration/apply-migration，最多8次，
-只更新归档绑定链，不改正文，也不发送HTTP或撤销远端Key。
+同client Key轮换继续使用plan-migration/apply-migration，CA交接用
+plan-trust/apply-trust，两类共用原8次归档绑定变更上限；只更新
+绑定链，不改正文，也不发送HTTP或撤销远端Key/CA。
 
 如操作中断，retention-status返回RETENTION_PENDING和operation_sha256。
 核对操作日志后按该摘要恢复；未恢复前普通提交/查找拒绝。若事务在
@@ -238,7 +269,8 @@ store、SQLite账本和wire都是私有资料；同UID是可信边界。没有�
 清理、自动任务迁移、队列服务或后台恢复，不提供多机协调或通用exactly-once。
 运行本入口不启动或停止模型服务；开发HTTP验证仍需在共享GPU租约内。
 
-CA/模型/协议或未登记版本迁移、正式保留/容量变更及源盘丢失灾备仍需明确策略。
+CA迁移状态以[STATUS](../../docs/STATUS.md)为准；模型/协议或未登记
+版本迁移、正式保留/容量变更及源盘丢失灾备仍需明确策略。
 旧版本账本可离线核验，但不能自动迁移到新执行源码。已保存的本机验收证据
 可以离线核对，不启动模型或HTTP：
 

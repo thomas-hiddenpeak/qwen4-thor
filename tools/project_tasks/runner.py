@@ -55,7 +55,7 @@ def main():
     os.umask(0o077)
     parser = errors.Parser(description=__doc__)
     parser.add_argument("action", choices=("init", "submit", "inspect", "resume", "resolve",
-        "plan-migration", "apply-migration", "enable-retention", "retention-status", "finish-retention",
+        "plan-migration", "apply-migration", "plan-trust", "apply-trust", "enable-retention", "retention-status", "finish-retention",
         "plan-archive", "apply-archive", "plan-prune", "apply-prune", "inspect-archive"))
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--max-tasks", type=int)
@@ -86,7 +86,7 @@ def main():
         "inspect": (task, ()), "resume": (task, ()), "inspect-archive": (task, ()),
         "resolve": ((*task, "decision", "revision", "reason"), ()),
     }
-    for kind in ("migration", "archive", "prune"):
+    for kind in ("migration", "trust", "archive", "prune"):
         requirements["plan-" + kind] = ((*task, "plan", "reason"), ())
         requirements["apply-" + kind] = ((*task, "plan", "plan_sha256"), ())
     errors.options(args, *requirements[args.action])
@@ -114,14 +114,14 @@ def main():
             result = inspect(args.root, binding, args.key)
         elif args.action == "resume":
             result = resume(args.root, binding, args.key, transport.Client(value))
-        elif args.action == "plan-migration":
+        elif args.action in ("plan-migration", "plan-trust"):
             store.require(args.plan is not None and args.plan_sha256 is None,
                           "new private plan path required", code='invalid_arguments')
-            result = migration.prepare(args.root, binding, args.key, args.plan, args.reason)
-        elif args.action == "apply-migration":
+            result = migration.prepare(args.root, binding, args.key, args.plan, args.reason, trust=args.action == "plan-trust")
+        elif args.action in ("apply-migration", "apply-trust"):
             store.require(args.plan is not None and args.plan_sha256 is not None,
                           "exact private plan and digest required")
-            result = migration.apply(args.root, binding, args.key, args.plan, args.plan_sha256)
+            result = migration.apply(args.root, binding, args.key, args.plan, args.plan_sha256, trust=args.action == "apply-trust")
         elif args.action in ("plan-archive", "plan-prune"):
             store.require(args.plan is not None and args.plan_sha256 is None, "new private retention plan required")
             result = retention.prepare(args.root, binding, args.key, args.action.removeprefix("plan-"), args.plan, args.reason)

@@ -357,7 +357,8 @@ class Tasks(unittest.TestCase):
         process.kill(); process.wait(5)
 
     def test_profile_is_private_tls_bound_and_secret_free_projection(self):
-        ca = self.directory / "ca.pem"; ca.write_text("test certificate identity")
+        ca = self.directory / "ca.pem"
+        ca.write_bytes((store.ROOT / ".q4t-work/serve-tls-lifecycle-20261104/gateway-1/gateway/trusted-ca.pem").read_bytes())
         path = self.directory / "profile.json"
         value = {k: BINDING[k] for k in ("client_id", "base_url", "connect_host", "model",
                                        "protocol_sha256", "template_sha256")}

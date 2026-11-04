@@ -52,7 +52,7 @@ CATALOG = {
     "internal_error": ("internal", "An unexpected command failure occurred.", "preserve_and_inspect"),
 }
 OPERATIONS = frozenset(("init", "submit", "inspect", "resume", "resolve",
-    "plan-migration", "apply-migration", "enable-retention", "retention-status",
+    "plan-migration", "apply-migration", "plan-trust", "apply-trust", "enable-retention", "retention-status",
     "finish-retention", "plan-archive", "apply-archive", "plan-prune",
     "apply-prune", "inspect-archive", "backup", "verify", "plan-restore", "apply-restore"))
 OPERATION = ContextVar("project_task_operation", default=None)

@@ -41,6 +41,12 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+SRV-11g[持久任务CA迁移与连接材料绑定开发中](SERVE_TASK_TRUST_2026-11-04.md)：
+代码确认仅支持Key迁移，且CA摘要/上下文两次按路径读取存在错接窗口。
+已实现显式同身份CA交接、活跃/未知/归档保键与一次材料快照；124
+应用CPU/4驱动首轮通过，含27文件操作SIGKILL及六代历史证据。
+待1模型2网关4响应2工具真实双CA恢复短验，不运行用户day。
+
 SRV-10f[TLS运行观测与本机通知限定接受](SERVE_TLS_OBSERVATION_RESULT_2026-11-04.md)：
 d94cc246实现，host包v2/notify包v3补齐TLS依赖与早期child回收；
 只读绑定、材料/生命周期分离、有限指标/10规则和显式notify策略v3。

@@ -14,6 +14,7 @@ from tools.project_tasks import store
 
 FORMAT = "q4t.project.retention.v1"
 PLAN_FORMAT = "q4t.project.retention.plan.v1"
+TRUST_PLAN_FORMAT = "q4t.project.retention.trust.plan.v1"
 KEY_FORMAT = "q4t.project.archived.key.v1"
 OP_FORMAT = "q4t.project.retention.operation.v1"
 META_BYTES = 256 * 1024
@@ -231,8 +232,8 @@ def key_state(value, meta, name):
                 state["files"][filename]["identity"] = item
             state.update(payload_identity=payload["directory_identity"], placements=state["placements"] + 1)
         else:
-            store.require(kind == "rekey" and state["rekeys"] < 8 and payload["before"] == state["binding"], "archive key rotation")
-            migration.same_identity(state["binding"], payload["after"])
+            store.require(kind in ("rekey", "trust") and state["rekeys"] < 8 and payload["before"] == state["binding"], "archive key rotation")
+            (migration.same_trust_identity if kind == "trust" else migration.same_identity)(state["binding"], payload["after"])
             store.require(payload["after"] != state["binding"], "empty archive key rotation")
             state.update(binding=deepcopy(payload["after"]), rekeys=state["rekeys"] + 1)
         state["revision"] = event["digest"]; state["plan_ids"].append(payload["plan_sha256"])
@@ -275,7 +276,13 @@ def lookup(root, binding, key, *, spec=None, include_answer=False):
         value, state = load_key(path, meta, name)
         store.require(state["binding"] == binding, "archived task/client binding changed", code='binding_changed')
         if spec is not None:
-            store.require(business_contract(spec) == value["base"]["contract_sha256"], "idempotency key conflicts with archived task", code='key_conflict')
+            # Historical contract hashes include the original CA. Validate the
+            # current binding, then compare the original business identity;
+            # never rewrite the archived payload or its contract digest.
+            original = deepcopy(spec)
+            original["binding"]["ca_sha256"] = value["base"]["binding"]["ca_sha256"]
+            store.require(spec["binding"] == binding and business_contract(original) == value["base"]["contract_sha256"],
+                          "idempotency key conflicts with archived task", code='key_conflict')
         result = public(value, state)
         if include_answer and state["payload"] == "retained":
             folder = path / "payloads" / name
@@ -332,7 +339,7 @@ def status(root):
 
 def skeleton(root, meta, path, name, kind, binding, reason):
     store.require(isinstance(reason, str) and 0 < len(reason) <= 512, "explicit retention reason required", code='invalid_arguments')
-    return dict(format=PLAN_FORMAT, kind=kind, root=str(root), store_id=meta["store_id"],
+    return dict(format=TRUST_PLAN_FORMAT if kind == "trust" else PLAN_FORMAT, kind=kind, root=str(root), store_id=meta["store_id"],
         root_identity=[meta["root_device"], meta["root_inode"]], name=name,
         policy_sha256=store.digest(extension(root, meta)[1]), binding=deepcopy(binding), reason=reason)
 
@@ -371,8 +378,8 @@ def build(root, meta, path, policy, name, kind, binding, reason):
             store.require(identity(store.private(folder, True)) == state["payload_identity"], "payload directory changed")
             files(folder, expected=state["files"])
         else:
-            store.require(kind == "rekey" and state["rekeys"] < 8, "archive key rotation limit", code='task_budget')
-            migration.same_identity(state["binding"], binding)
+            store.require(kind in ("rekey", "trust") and state["rekeys"] < 8, "archive key rotation limit", code='task_budget')
+            (migration.same_trust_identity if kind == "trust" else migration.same_identity)(state["binding"], binding)
             store.require(state["binding"] != binding, "archived key already has this credential", code='already_exists')
     return plan
 
@@ -416,7 +423,7 @@ def operation_for(root, meta, path, policy, plan):
     else:
         before, state = load_key(path, meta, name)
         payload = dict(plan_sha256=checksum, reason=plan["reason"])
-        if kind == "rekey": payload.update(before=state["binding"], after=plan["binding"])
+        if kind in ("rekey", "trust"): payload.update(before=state["binding"], after=plan["binding"])
         after = add_event(before, meta, name, kind, payload)
     key_state(after, meta, name)
     size = len(store.encode(after)); store.require(size <= KEY_BYTES, "archive key size")
@@ -486,7 +493,7 @@ def finish_locked(root, meta, path, operation, checkpoint=None):
                     file.unlink(); store.sync(payload); checkpoint("payload_file_removed", operation)
                 payload.rmdir(); store.sync(payload.parent)
             checkpoint("payload_removed", operation)
-        else: store.require(kind == "rekey", "unknown retention operation")
+        else: store.require(kind in ("rekey", "trust"), "unknown retention operation")
         checkpoint("key_published", operation)
         receipt = dict(operation_sha256=store.digest(operation), plan_sha256=operation["plan_sha256"],
                        kind=kind, name=name, completed=True)
@@ -511,7 +518,8 @@ def apply(root, binding, key, plan_path, expected, *, checkpoint=None):
     plan_path = store.local(plan_path); plan = read(plan_path)
     root, meta = store.checked_root(root); name = store.task_name(binding["client_id"], key)
     store.require(migration.checksum(expected) and store.digest(plan) == expected and
-        plan["format"] == PLAN_FORMAT and plan["root"] == str(root) and plan["store_id"] == meta["store_id"] and
+        plan["format"] == (TRUST_PLAN_FORMAT if plan["kind"] == "trust" else PLAN_FORMAT) and
+        plan["root"] == str(root) and plan["store_id"] == meta["store_id"] and
         plan["root_identity"] == [meta["root_device"], meta["root_inode"]] and plan["name"] == name and
         plan["binding"] == binding, "retention plan/destination changed", code='plan_changed')
     with store.root_lock(root), ExitStack() as stack:
