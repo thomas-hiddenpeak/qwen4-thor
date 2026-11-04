@@ -142,6 +142,10 @@ python3 -B tools/project_tasks/runner.py apply-migration \
 未知执行仍不重放。准备和应用均不联网，不能证明目标服务已部署；
 恢复会重新发现能力并逐轮预检。参见
 [协议迁移合同与当前验收边界](../../docs/SERVE_TASK_PROTOCOL_2026-11-04.md)。
+[两版本真实恢复已限定接受](../../docs/SERVE_TASK_PROTOCOL_RESULT_2026-11-04.md)：
+旧应用已保存的工具结果不重放，新版只续最终答案。归档协议迁移的
+接受路径以CPU事务/进程中断证据为准；真实模型轮验证归档去重和反向
+拒绝。已迁移账本不能用旧读者继续执行，不通过删除事件或回滚预算降级。
 
 CA交接使用独立的显式计划，见[信任迁移合同](../../docs/SERVE_TASK_TRUST_2026-11-04.md)。
 [双CA真实恢复与归档保键短验已限定接受](../../docs/SERVE_TASK_TRUST_RESULT_2026-11-04.md)。
@@ -212,8 +216,9 @@ python3 -B tools/project_tasks/runner.py inspect-archive \
 再次执行；只有inspect-archive在正文仍在时返回原答案，清理后只
 返回payload_state=purged。同键修改问题/预算会拒绝。归档任务的
 同client Key轮换继续使用plan-migration/apply-migration，CA交接用
-plan-trust/apply-trust，两类共用原8次归档绑定变更上限；只更新
-绑定链，不改正文，也不发送HTTP或撤销远端Key/CA。
+plan-trust/apply-trust，已审核协议升级用plan-protocol/apply-protocol。
+三类共用原8次归档绑定变更上限；只更新绑定链，不改正文，也不发送
+HTTP或撤销远端Key/CA。
 
 如操作中断，retention-status返回RETENTION_PENDING和operation_sha256。
 核对操作日志后按该摘要恢复；未恢复前普通提交/查找拒绝。若事务在
@@ -281,8 +286,9 @@ store、SQLite账本和wire都是私有资料；同UID是可信边界。没有�
 清理、自动任务迁移、队列服务或后台恢复，不提供多机协调或通用exactly-once。
 运行本入口不启动或停止模型服务；开发HTTP验证仍需在共享GPU租约内。
 
-CA迁移状态以[STATUS](../../docs/STATUS.md)为准；模型/协议或未登记
-版本迁移、正式保留/容量变更及源盘丢失灾备仍需明确策略。
+CA和已审核协议迁移状态以[STATUS](../../docs/STATUS.md)为准；模型/
+模板/目标地址或未登记协议迁移、正式保留/容量变更及源盘丢失灾备
+仍需明确策略。
 旧版本账本可离线核验，但不能自动迁移到新执行源码。已保存的本机验收证据
 可以离线核对，不启动模型或HTTP：
 
@@ -292,4 +298,5 @@ python3 -B tools/project_tasks/budget_report.py verify
 python3 -B tools/project_tasks/migration_report.py verify
 python3 -B tools/project_tasks/archive_report.py verify
 python3 -B tools/project_tasks/backup_report.py verify
+python3 -B tools/project_tasks/protocol_report.py verify
 ```

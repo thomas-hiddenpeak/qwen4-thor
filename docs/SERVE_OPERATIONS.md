@@ -5,6 +5,14 @@
 [SRV-12 合同](SERVE_OPERATIONS_2026-11-03.md)，当前交付身份以
 [STATUS](STATUS.md)及本机发布 sidecar 为准。
 
+服务升级若改变协议摘要，持久任务仍绑定原协议，不会自动续写。
+已审核的兼容版本对可按[SRV-11h交接流程](SERVE_TASK_PROTOCOL_RESULT_2026-11-04.md)
+使用独立`plan-protocol`/`apply-protocol`：先停妥旧任务进程，核对
+目标profile、计划摘要、任务revision与剩余预算，再显式应用和resume。
+当前只接受63b29f13→fc63db28，client/Key/CA/origin/模型/模板保持；
+CA交接和Key轮换使用各自入口。迁移不证明目标已部署，不自动请求
+模型或重试UNKNOWN；已迁移账本不能换回旧读者或删事件降级。
+
 ## 收集诊断
 
 先确认自己负责的服务 PID 与端口，记录业务是否仍在输出。不要用同名
