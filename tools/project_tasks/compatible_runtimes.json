@@ -57,8 +57,10 @@
       }
     },
     {
-      "release": "srv11d-241bf36c",
+      "archive_sha256": "344f022f29619e3eacd82510c9119576e751de7354c03aeb2c208982fb8168d6",
       "budget_profile": "q4t-project-budget-v1",
+      "evidence": "docs/evidence/serve-task-archive-20261104/records.tar.gz",
+      "release": "srv11d-241bf36c",
       "runtime_sources": {
         "tools/examples/agent_tools_demo.py": "acf6ee24c66d372d95ec08e672c2ec5dc423999890a537b9495a96ced4d89ca4",
         "tools/examples/chat_client.py": "a2613333395a511b7741d8ce5fac125ba44dd9ec92fa198aa90ef5f9ba662f32",
@@ -73,9 +75,29 @@
         "tools/project_tasks/runner.py": "a22020b41ab4c1f7096c3dabb05e8640412cbc28dc23e4e0fce7d68d6dbd5737",
         "tools/project_tasks/store.py": "6808b52683b63d606bb777804987179a5c7424136e63399ba6571a4a3dad6687",
         "tools/project_tasks/transport.py": "d841d7116ff023b5f83b0418cf2841df4a910ffd91dd7dbea66f2daa09a9bfde"
-      },
-      "evidence": "docs/evidence/serve-task-archive-20261104/records.tar.gz",
-      "archive_sha256": "344f022f29619e3eacd82510c9119576e751de7354c03aeb2c208982fb8168d6"
+      }
+    },
+    {
+      "archive_sha256": "b4b25092b57d186a439f1c2b9002474d35f5a847616b7e2780d05ca0c5adcf7c",
+      "budget_profile": "q4t-project-budget-v1",
+      "evidence": "docs/evidence/serve-task-backup-20261104/records.tar.gz",
+      "release": "srv11e-186de913",
+      "runtime_sources": {
+        "tools/examples/agent_tools_demo.py": "acf6ee24c66d372d95ec08e672c2ec5dc423999890a537b9495a96ced4d89ca4",
+        "tools/examples/chat_client.py": "a2613333395a511b7741d8ce5fac125ba44dd9ec92fa198aa90ef5f9ba662f32",
+        "tools/examples/project_query.py": "dbf70665fef0d144d18fc0ef16b04029a7dd595664efe45b7de07579b3997206",
+        "tools/examples/project_records.py": "abd47d37ddcbd482f147ef172ee01e4a8be3bfcb78f29f7156d00b0073eb8b3c",
+        "tools/examples/tool_recovery.py": "e3fba1d9d028ff532c59e826b76e4434b64599a8b3c42b79d4ae0c1c59341f90",
+        "tools/project_tasks/backup.py": "57c3f9d875a63c4ab007c3de0a5db1b093abfe16086fb50aa895748ae651323b",
+        "tools/project_tasks/budget.py": "7328c9524eac3257a1b841089d9889975915d96b487d7886196106b560dc0412",
+        "tools/project_tasks/compatible_runtimes.json": "76e43a5496bb2ca0c43c4bef4227dc732845084def47d7b9cfd69af11e3f96c5",
+        "tools/project_tasks/engine.py": "258ff808477ff68c103420558af8c7a0dde5b264d8412d29f18008bf0ead199c",
+        "tools/project_tasks/migration.py": "30ba3c0a73b3515e2db0ab3b150a1d4057bfaf3bce85ba48702d501f7fccdbfe",
+        "tools/project_tasks/retention.py": "931d9b5bc3485bccdf61ac3a513ed5090f8c1b7c0201ede35811c5da21cf4fb3",
+        "tools/project_tasks/runner.py": "a22020b41ab4c1f7096c3dabb05e8640412cbc28dc23e4e0fce7d68d6dbd5737",
+        "tools/project_tasks/store.py": "b152ebf6515ea4b5d979039471075dbb0d0bbe4097837578c3abd271831f365f",
+        "tools/project_tasks/transport.py": "d841d7116ff023b5f83b0418cf2841df4a910ffd91dd7dbea66f2daa09a9bfde"
+      }
     }
   ]
 }

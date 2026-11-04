@@ -176,8 +176,9 @@ class Budget(unittest.TestCase):
     def test_resume_cannot_silently_ignore_budget_override(self):
         for action in ("resume", "inspect", "resolve"):
             with patch.object(sys, "argv", ["runner", action, "--root", str(self.root), "--max-tokens", "64"]):
-                with self.assertRaisesRegex(ValueError, "only to submit"):
+                with self.assertRaises(runner.errors.ContractError) as caught:
                     runner.main()
+                self.assertEqual(caught.exception.code, "invalid_arguments")
 
     def test_actual_process_death_after_approval_requires_a_new_check(self):
         process, marker = self.child("preflight_result")

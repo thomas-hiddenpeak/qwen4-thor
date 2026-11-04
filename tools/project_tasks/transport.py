@@ -15,6 +15,17 @@ from tools.project_tasks import engine, store
 def profile(path):
     path = store.local(path)
     store.private(path)
+    try:
+        return read_profile(path)
+    except store.ContractError as error:
+        if error.code == "unsafe_path":
+            raise
+        raise store.ContractError("invalid client profile", "invalid_profile") from None
+    except (ValueError, KeyError, TypeError, AttributeError):
+        raise store.ContractError("invalid client profile", "invalid_profile") from None
+
+
+def read_profile(path):
     store.require(path.stat().st_size <= 16384, "profile size")
     value = engine.chat.load_json(path.read_bytes())
     store.require(set(value) == {"client_id", "base_url", "connect_host", "ca_file",
@@ -24,6 +35,7 @@ def profile(path):
     store.require(url.scheme == "https" and url.hostname and not url.username and
         not url.password and not url.query and not url.fragment and
         url.path.rstrip("/") in ("", "/v1"), "explicit TLS origin required")
+    store.require(url.port is None or 1 <= url.port <= 65535, "TLS port")
     address = ipaddress.ip_address(value["connect_host"])
     store.require(address.is_private and not address.is_unspecified and
                   not address.is_multicast, "controlled LAN/loopback destination required")

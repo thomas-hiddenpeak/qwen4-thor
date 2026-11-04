@@ -49,6 +49,26 @@ python3 -B tools/project_tasks/runner.py submit \
 的业务答案。submit/resume退出0表示任务流程完成，退出2表示需要继续或处置，退出1
 表示拒绝/异常。状态和outcome都应检查，不能只看进程退出码。
 
+管理错误遵循[错误合同](../../docs/SERVE_TASK_ERRORS_2026-11-04.md)与
+[JSON Schema](../../docs/project-task-errors-v1.schema.json)：stderr单个JSON，
+`profile=q4t-project-error-v1`，按`code`和`next_action`处理；不输出原始
+异常/argv/HTTP正文。`error`字段为规范化类别，`automatic_retry=false`。
+参数错误也退出1（原argparse退出2），键盘中断退出130。缺少、重复、
+缩写或不适用参数在读取profile前拒绝；不再静默忽略`--reason`等参数。
+
+| 常见code | 处置方向 |
+|---|---|
+| `invalid_arguments` / `invalid_profile` | 修正命令或私有配置 |
+| `busy` | 核对持有者；退出后重新检查，不自动重放 |
+| `task_capacity` / `key_capacity` / `archive_capacity` | 核对相应容量与保留政策；永久键不自动删除 |
+| `plan_changed` / `plan_stale` | 核对摘要/目标及当前revision，再显式重做计划 |
+| `retention_pending` / `store_retired` | 核对未完成操作或交接计划 |
+| `remote_auth` / `transport_error` / `internal_error` | 先检查任务持久状态，再处理认证/连接或保留现场 |
+
+错误码不会证明一次调用没有执行。`REQUEST_UNKNOWN`/`TOOL_UNKNOWN`
+仍是有效任务状态，必须按原revision显式resolve，不能仅因异常而重试。
+
+
 ```bash
 python3 -B tools/project_tasks/runner.py inspect \
   --root .q4t-work/project-tasks --profile .q4t-work/alpha.json \

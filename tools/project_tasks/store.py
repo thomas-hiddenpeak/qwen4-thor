@@ -11,6 +11,8 @@ import sqlite3
 import stat
 import uuid
 
+from tools.project_tasks.errors import ContractError
+
 ROOT = Path(__file__).resolve().parents[2]
 FORMAT = "q4t.project.tasks.v1"
 MAX_EVENTS = 256
@@ -23,9 +25,9 @@ class ArchivedTask(ValueError):
     """A permanent key exists; callers must never recreate this task."""
 
 
-def require(value, message):
+def require(value, message, *, code="contract_violation"):
     if not value:
-        raise ValueError(message)
+        raise ContractError(message, code)
 
 
 def encode(value):
@@ -43,18 +45,18 @@ def private(path, directory=False):
              stat.S_ISREG(info.st_mode) and info.st_nlink == 1) and
             info.st_uid == os.getuid() and
             stat.S_IMODE(info.st_mode) == (0o700 if directory else 0o600),
-            "private local object required: " + str(path))
+            "private local object required: " + str(path), code="unsafe_path")
     return info
 
 
 def local(path):
     path = Path(os.path.abspath(path))
     require(path.is_relative_to(ROOT / ".q4t-work") or
-            path.is_relative_to(ROOT / "build"), "use build or .q4t-work")
+            path.is_relative_to(ROOT / "build"), "use build or .q4t-work", code='unsafe_path')
     current = Path(path.anchor)
     for part in path.parts[1:]:
         current /= part
-        require(not current.is_symlink(), "symlink path refused")
+        require(not current.is_symlink(), "symlink path refused", code='unsafe_path')
     return path
 
 
@@ -92,7 +94,7 @@ def lock(path, *, exclusive=True):
 
 def init(path, max_tasks=16):
     require(type(max_tasks) is int and 1 <= max_tasks <= 64,
-            "max_tasks must be 1..64")
+            "max_tasks must be 1..64", code='invalid_arguments')
     path = local(path)
     path.mkdir(parents=True, mode=0o700)
     write_new(path / ".lock", b"")
@@ -116,9 +118,11 @@ def checked_root(path, *, allow_handoff=False, logical_root=None):
             (info.st_dev, info.st_ino) and
             1 <= meta["max_tasks"] <= 64 and
             meta["reserved_bytes_per_task"] == RESERVED_BYTES,
-            "store identity/policy changed")
+            "store identity/policy changed", code='integrity_error')
     entries = {p.name for p in path.iterdir()}
     allowed = {".lock", "store.json", "tasks", "retention", "restored.json"}
+    require(allow_handoff or not entries.intersection({"handoff.json", ".handoff.next"}),
+            "unknown store entry or retired store", code="store_retired")
     if allow_handoff:
         allowed.update(("handoff.json", ".handoff.next"))
     require({".lock", "store.json", "tasks"} <= entries <= allowed, "unknown store entry or retired store")
@@ -143,9 +147,9 @@ def root_lock(path, *, exclusive=True, allow_handoff=False, logical_root=None):
 
 def task_name(client_id, key):
     require(isinstance(key, str) and 1 <= len(key.encode()) <= 256,
-            "idempotency key must be 1..256 bytes")
+            "idempotency key must be 1..256 bytes", code='invalid_arguments')
     require(isinstance(client_id, str) and
-            re.fullmatch(r"[a-zA-Z0-9_-]{1,64}", client_id), "client ID")
+            re.fullmatch(r"[a-zA-Z0-9_-]{1,64}", client_id), "client ID", code='invalid_arguments')
     return digest([client_id, key])
 
 
@@ -164,7 +168,7 @@ def connection(path):
         db.execute("PRAGMA max_page_count=8192")
         require(db.execute("PRAGMA page_size").fetchone()[0] == 4096 and
                 db.execute("PRAGMA quick_check").fetchall() == [("ok",)],
-                "ledger format/integrity")
+                "ledger format/integrity", code='integrity_error')
         return db
     except BaseException:
         db.close()
@@ -183,12 +187,12 @@ def create(root, name, spec):
             private(path, True)
             return path, False
         entries = list((root / "tasks").iterdir())
-        require(len(entries) < meta["max_tasks"], "task capacity exhausted")
+        require(len(entries) < meta["max_tasks"], "task capacity exhausted", code='task_capacity')
         require(all(re.fullmatch(r"[0-9a-f]{64}", p.name) for p in entries),
                 "interrupted task creation; preserve and inspect")
         retention.admit(root, meta)
         require(shutil.disk_usage(root).free >= RESERVED_BYTES,
-                "insufficient task storage headroom")
+                "insufficient task storage headroom", code='storage_full')
         temporary = root / "tasks" / (".creating-" + uuid.uuid4().hex)
         temporary.mkdir(mode=0o700)
         write_new(temporary / ".lock", b"")
@@ -216,7 +220,7 @@ class Ledger:
         self.meta = json.loads(db.execute("SELECT value FROM meta WHERE id=1").fetchone()[0])
         require(self.meta["format"] == FORMAT and
                 self.meta["task_id"] == path.name and
-                self.meta["store_id"] == store_id, "task identity changed")
+                self.meta["store_id"] == store_id, "task identity changed", code='integrity_error')
         self.spec = self.meta["spec"]
         self.initial = digest(self.meta)
 
@@ -226,10 +230,10 @@ class Ledger:
         result, previous = [], self.initial
         for index, (seq, kind, text, parent, checksum) in enumerate(rows, 1):
             require(seq == index and parent == previous and
-                    len(text.encode()) <= MAX_EVENT_BYTES, "event sequence/size")
+                    len(text.encode()) <= MAX_EVENT_BYTES, "event sequence/size", code='integrity_error')
             payload = json.loads(text)
             require(digest([seq, kind, payload, parent]) == checksum,
-                    "event content changed")
+                    "event content changed", code='integrity_error')
             result.append(dict(seq=seq, kind=kind, payload=payload,
                                digest=checksum))
             previous = checksum
@@ -238,7 +242,7 @@ class Ledger:
     def append(self, kind, payload):
         events = self.events()
         require(len(events) < MAX_EVENTS and
-                len(encode(payload)) <= MAX_EVENT_BYTES, "event budget exhausted")
+                len(encode(payload)) <= MAX_EVENT_BYTES, "event budget exhausted", code='task_budget')
         seq = len(events) + 1
         previous = events[-1]["digest"] if events else self.initial
         checksum = digest([seq, kind, payload, previous])

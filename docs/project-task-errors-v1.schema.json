@@ -1,0 +1,194 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Project task command error v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "profile",
+    "error",
+    "code",
+    "category",
+    "message",
+    "next_action",
+    "operation",
+    "http_status",
+    "automatic_retry"
+  ],
+  "properties": {
+    "profile": {
+      "const": "q4t-project-error-v1"
+    },
+    "error": {
+      "enum": [
+        "ValueError",
+        "OSError",
+        "DatabaseError",
+        "RemoteError",
+        "KeyboardInterrupt",
+        "Exception"
+      ]
+    },
+    "code": {
+      "enum": [
+        "already_exists",
+        "archive_capacity",
+        "binding_changed",
+        "busy",
+        "contract_violation",
+        "database_error",
+        "integrity_error",
+        "internal_error",
+        "interrupted",
+        "invalid_arguments",
+        "invalid_profile",
+        "key_capacity",
+        "key_conflict",
+        "not_found",
+        "plan_changed",
+        "plan_stale",
+        "policy_conflict",
+        "remote_auth",
+        "remote_capacity",
+        "remote_error",
+        "resolution_conflict",
+        "retention_pending",
+        "retention_period",
+        "runtime_changed",
+        "runtime_unsupported",
+        "snapshot_capacity",
+        "snapshot_stale",
+        "storage_error",
+        "storage_full",
+        "storage_permission",
+        "store_retired",
+        "task_budget",
+        "task_capacity",
+        "task_not_terminal",
+        "tls_error",
+        "transport_error",
+        "unsafe_path"
+      ]
+    },
+    "category": {
+      "enum": [
+        "capacity",
+        "conflict",
+        "contract",
+        "input",
+        "integrity",
+        "internal",
+        "interruption",
+        "recovery",
+        "remote",
+        "storage",
+        "transport"
+      ]
+    },
+    "message": {
+      "enum": [
+        "A database operation failed.",
+        "A durable task or migration budget is exhausted.",
+        "A required contract could not be verified.",
+        "A required local object is missing.",
+        "A retention operation requires explicit completion.",
+        "A storage operation failed.",
+        "A task or store is in use.",
+        "An unexpected command failure occurred.",
+        "Invalid or inapplicable command arguments.",
+        "Invalid private client profile.",
+        "Only terminal tasks can be archived.",
+        "Path or private file permissions are not accepted.",
+        "Saved data failed integrity validation.",
+        "Storage access was denied or is read-only.",
+        "Storage space or transaction headroom is insufficient.",
+        "TLS verification or negotiation failed.",
+        "The active task capacity is exhausted.",
+        "The archive byte capacity is exhausted.",
+        "The command was interrupted.",
+        "The decision does not match the current task state.",
+        "The destination already exists.",
+        "The existing retention policy is immutable.",
+        "The idempotency key belongs to a different task contract.",
+        "The minimum payload retention period has not elapsed.",
+        "The permanent key capacity is exhausted.",
+        "The plan, digest or destination does not match.",
+        "The saved client binding does not match.",
+        "The saved runtime has no registered migration.",
+        "The saved task runtime requires explicit migration.",
+        "The service rejected admission or is unavailable.",
+        "The service rejected authentication or access.",
+        "The service returned an error.",
+        "The service transport failed.",
+        "The snapshot capacity is exhausted.",
+        "The snapshot no longer matches the source.",
+        "The source store is fenced for handoff.",
+        "The task or source has changed since planning."
+      ]
+    },
+    "next_action": {
+      "enum": [
+        "check_private_paths",
+        "check_profile",
+        "check_retention_period",
+        "check_tls_and_task",
+        "correct_arguments",
+        "inspect_after_owner_exits",
+        "inspect_before_any_resume",
+        "inspect_destination",
+        "inspect_handoff_plan",
+        "inspect_retention_then_finish",
+        "inspect_storage",
+        "inspect_task",
+        "inspect_task_and_connection",
+        "inspect_task_and_credentials",
+        "inspect_task_and_service",
+        "inspect_then_replan",
+        "inspect_then_resolve",
+        "preserve_and_inspect",
+        "preserve_then_new_snapshot",
+        "review_binding_migration",
+        "review_capacity_policy",
+        "review_plan",
+        "review_runtime_adapter",
+        "review_runtime_migration",
+        "review_snapshot_budget",
+        "review_task_retention"
+      ]
+    },
+    "operation": {
+      "enum": [
+        null,
+        "apply-archive",
+        "apply-migration",
+        "apply-prune",
+        "apply-restore",
+        "backup",
+        "enable-retention",
+        "finish-retention",
+        "init",
+        "inspect",
+        "inspect-archive",
+        "plan-archive",
+        "plan-migration",
+        "plan-prune",
+        "plan-restore",
+        "resolve",
+        "resume",
+        "retention-status",
+        "submit",
+        "verify"
+      ]
+    },
+    "http_status": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 100,
+      "maximum": 599
+    },
+    "automatic_retry": {
+      "const": false
+    }
+  }
+}

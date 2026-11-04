@@ -1,5 +1,4 @@
 """Private consistent snapshots and explicit single-active-store handoff."""
-import argparse
 from contextlib import contextmanager, ExitStack
 from copy import deepcopy
 import json
@@ -16,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(ROOT))
 from tools.project_tasks import store, retention as r
+from tools.project_tasks import errors
 
 SNAPSHOT = "q4t.project.snapshot.v1"
 RESTORE = "q4t.project.restore.v1"
@@ -51,7 +51,7 @@ def regular_tree(root, *, exclude=()):
             relative = path.relative_to(root).as_posix()
             if relative in exclude: continue
             store.require(len(files) + len(directories) < MAX_FILES and len(relative) <= 512,
-                          "snapshot entry/path budget")
+                          "snapshot entry/path budget", code='snapshot_capacity')
             if path.is_dir() and not path.is_symlink():
                 directories[relative] = r.identity(store.private(path, True)); pending.append(path)
             else:
@@ -67,7 +67,7 @@ def readonly_db(path):
     store.require(not os.path.lexists(path.with_name(path.name + "-journal")), "unsettled backup journal")
     db = sqlite3.connect(path.as_uri() + "?mode=ro", uri=True, timeout=2)
     try:
-        store.require(db.execute("PRAGMA quick_check").fetchall() == [("ok",)], "backup database integrity")
+        store.require(db.execute("PRAGMA quick_check").fetchall() == [("ok",)], "backup database integrity", code='integrity_error')
         yield db
     finally: db.close()
 
@@ -91,7 +91,7 @@ def audit(root, meta, *, physical, logical_root=None):
         with readonly_db(folder / "ledger.db") as db:
             ledger = store.Ledger(folder, db, meta["store_id"])
             state = engine.replay(ledger); spec = state["execution_spec"]
-            store.require(store.digest(spec["runtime_sources"]) in known, "unregistered snapshot task runtime")
+            store.require(store.digest(spec["runtime_sources"]) in known, "unregistered snapshot task runtime", code='runtime_unsupported')
             tasks[folder.name] = dict(state=state["phase"], revision=state["revision"],
                 counters=migration.counters(state), meta_sha256=store.digest(ledger.meta),
                 spec_sha256=store.digest(spec), public_sha256=store.digest(engine.public(ledger, state)))
@@ -102,7 +102,7 @@ def audit(root, meta, *, physical, logical_root=None):
         if physical: r.extension(root, meta)
         with readonly_db(path / "catalog.db") as db:
             policy = r.get_record(db, "settings", "policy")
-            store.require(r.get_record(db, "control", "operation") is None, "retention operation pending")
+            store.require(r.get_record(db, "control", "operation") is None, "retention operation pending", code='retention_pending')
             rows = db.execute("SELECT name,value FROM keys ORDER BY name").fetchmany(r.MAX_KEYS + 1)
         store.require(policy["format"] == r.FORMAT and policy["store_id"] == meta["store_id"] and
             policy["automatic_prune"] is False and policy["limits"] == r.limits(**policy["limits"]) and
@@ -112,7 +112,7 @@ def audit(root, meta, *, physical, logical_root=None):
             store.require(re.fullmatch(r"[0-9a-f]{64}", name) and name not in tasks and len(raw.encode()) <= r.KEY_BYTES,
                           "snapshot key identity/size")
             value = json.loads(raw); state = r.key_state(value, meta, name); base = value["base"]
-            store.require(store.digest(base["runtime_sources"]) in known, "unregistered archived runtime")
+            store.require(store.digest(base["runtime_sources"]) in known, "unregistered archived runtime", code='runtime_unsupported')
             keys[name] = dict(revision=state["revision"], payload=state["payload"], key_sha256=store.digest(value))
             charge += len(raw.encode())
             folder = path / "payloads" / name
@@ -153,7 +153,7 @@ def capture(root, meta):
 
 
 def safe_snapshot_path(root, output):
-    store.require(not output.is_relative_to(root) and not root.is_relative_to(output), "snapshot/store path overlap")
+    store.require(not output.is_relative_to(root) and not root.is_relative_to(output), "snapshot/store path overlap", code='unsafe_path')
     store.private(output.parent, True)
 
 
@@ -205,20 +205,20 @@ def copy_tree(source, target, manifest, checkpoint):
 def snapshot(root, output, max_bytes=2 * 1024**3, *, checkpoint=None):
     checkpoint = checkpoint or (lambda *args: None)
     output = store.local(output); root = store.local(root); safe_snapshot_path(root, output)
-    store.require(type(max_bytes) is int and 1024**2 <= max_bytes <= 2**40, "snapshot byte budget")
+    store.require(type(max_bytes) is int and 1024**2 <= max_bytes <= 2**40, "snapshot byte budget", code='invalid_arguments')
     with quiescent(root) as (root, meta):
         current = capture(root, meta)
         if output.exists():
             store.private(output, True)
             store.require({p.name for p in output.iterdir()} <= {"manifest.json", "data", "seal.json"}, "unknown snapshot draft")
             value = r.read(output / "manifest.json", MAX_MANIFEST)
-            store.require(value["capture"] == current and value["max_bytes"] == max_bytes, "snapshot source changed; preserve draft and use a new snapshot")
+            store.require(value["capture"] == current and value["max_bytes"] == max_bytes, "snapshot source changed; preserve draft and use a new snapshot", code='snapshot_stale')
         else:
             value = dict(format=SNAPSHOT, snapshot_id=uuid.uuid4().hex, created_ns=time.time_ns(),
                          max_bytes=max_bytes, capture=current)
             total = sum(row["bytes"] for row in current["files"].values()) + len(store.encode(value)) + 4096
-            store.require(total <= max_bytes and len(store.encode(value)) <= MAX_MANIFEST, "snapshot byte/manifest capacity")
-            store.require(shutil.disk_usage(output.parent).free >= total, "snapshot disk headroom")
+            store.require(total <= max_bytes and len(store.encode(value)) <= MAX_MANIFEST, "snapshot byte/manifest capacity", code='snapshot_capacity')
+            store.require(shutil.disk_usage(output.parent).free >= total, "snapshot disk headroom", code='storage_full')
             output.mkdir(mode=0o700); r.save(output / "manifest.json", value, MAX_MANIFEST)
         checksum = store.digest(value)
         if (output / "seal.json").exists(): verify(output, checksum); return dict(snapshot=str(output), snapshot_sha256=checksum, already_created=True, no_execution=True)
@@ -238,13 +238,13 @@ def verify(path, expected):
     store.require({p.name for p in path.iterdir()} == {"manifest.json", "data", "seal.json"}, "incomplete snapshot")
     value = r.read(path / "manifest.json", MAX_MANIFEST)
     store.require(migration.checksum(expected) and store.digest(value) == expected and value["format"] == SNAPSHOT and
-        r.read(path / "seal.json") == dict(format=SNAPSHOT, snapshot_sha256=expected), "snapshot seal/digest")
+        r.read(path / "seal.json") == dict(format=SNAPSHOT, snapshot_sha256=expected), "snapshot seal/digest", code='plan_changed')
     captured = value["capture"]; actual = regular_tree(path / "data")
     store.require(actual["directories"].keys() == captured["directories"].keys() and actual["files"].keys() == captured["files"].keys() and
-        all(row[key] == captured["files"][name][key] for name, row in actual["files"].items() for key in ("bytes", "sha256")), "snapshot content differs")
-    store.require(audit(path / "data", captured["store"], physical=False) == captured["summary"], "snapshot semantic state")
+        all(row[key] == captured["files"][name][key] for name, row in actual["files"].items() for key in ("bytes", "sha256")), "snapshot content differs", code='integrity_error')
+    store.require(audit(path / "data", captured["store"], physical=False) == captured["summary"], "snapshot semantic state", code='integrity_error')
     total = sum(row["bytes"] for row in actual["files"].values()) + len(store.encode(value)) + 4096
-    store.require(total <= value["max_bytes"] <= 2**40, "snapshot byte capacity")
+    store.require(total <= value["max_bytes"] <= 2**40, "snapshot byte capacity", code='snapshot_capacity')
     return value
 
 
@@ -253,16 +253,16 @@ def restore_plan(root, snapshot_path, snapshot_sha256, destination, output, reas
     snapshot_path, output = store.local(snapshot_path), store.local(output)
     snapshot_value = verify(snapshot_path, snapshot_sha256)
     store.private(destination.parent, True); store.private(output.parent, True)
-    store.require(isinstance(reason, str) and 0 < len(reason) <= 512, "explicit restore reason")
+    store.require(isinstance(reason, str) and 0 < len(reason) <= 512, "explicit restore reason", code='invalid_arguments')
     for protected in (root, snapshot_path):
         store.require(not destination.is_relative_to(protected) and not protected.is_relative_to(destination) and
-            not output.is_relative_to(protected), "restore path overlap")
-    store.require(not os.path.lexists(destination) and not output.is_relative_to(destination), "new restore destination required")
+            not output.is_relative_to(protected), "restore path overlap", code='unsafe_path')
+    store.require(not os.path.lexists(destination) and not output.is_relative_to(destination), "new restore destination required", code='already_exists')
     with quiescent(root) as (root, meta):
         current = capture(root, meta)
-        store.require(current == snapshot_value["capture"], "snapshot is stale; source changed")
+        store.require(current == snapshot_value["capture"], "snapshot is stale; source changed", code='snapshot_stale')
         previous = r.read(root / "restored.json") if (root / "restored.json").exists() else None
-        store.require(previous is None or len(previous["history"]) < MAX_HANDOFFS, "store handoff limit")
+        store.require(previous is None or len(previous["history"]) < MAX_HANDOFFS, "store handoff limit", code='task_budget')
         plan = dict(format=RESTORE, source=str(root), source_identity=r.identity(root.stat()),
             store_id=meta["store_id"], snapshot=str(snapshot_path), snapshot_sha256=snapshot_sha256,
             destination=str(destination), parent_identity=r.identity(destination.parent.stat()),
@@ -362,26 +362,26 @@ def restore_apply(plan_path, expected, *, checkpoint=None):
     checkpoint = checkpoint or (lambda *args: None)
     plan_path = store.local(plan_path); plan = r.read(plan_path)
     store.require(migration.checksum(expected) and store.digest(plan) == expected and plan["format"] == RESTORE and
-        isinstance(plan["reason"], str) and 0 < len(plan["reason"]) <= 512, "restore plan digest/reason")
+        isinstance(plan["reason"], str) and 0 < len(plan["reason"]) <= 512, "restore plan digest/reason", code='plan_changed')
     root, destination = store.local(plan["source"]), store.local(plan["destination"])
     snapshot_path = store.local(plan["snapshot"])
     snapshot_value = verify(snapshot_path, plan["snapshot_sha256"])
     store.require(plan["store_id"] == snapshot_value["capture"]["store"]["store_id"] and
         snapshot_value["capture"]["source"] == str(root) and
         store.digest(snapshot_value["capture"]) == plan["source_capture_sha256"] and
-        r.identity(store.private(destination.parent, True)) == plan["parent_identity"], "restore source/destination binding")
+        r.identity(store.private(destination.parent, True)) == plan["parent_identity"], "restore source/destination binding", code='plan_changed')
     for protected in (root, snapshot_path):
-        store.require(not destination.is_relative_to(protected) and not protected.is_relative_to(destination), "restore overlap")
+        store.require(not destination.is_relative_to(protected) and not protected.is_relative_to(destination), "restore overlap", code='unsafe_path')
     work = destination.parent / (".q4t-restore-" + expected)
     candidate = work / "candidate"
     with quiescent(root, allow_handoff=True) as (root, meta):
-        store.require(r.identity(root.stat()) == plan["source_identity"] and meta["store_id"] == plan["store_id"], "restore source identity")
+        store.require(r.identity(root.stat()) == plan["source_identity"] and meta["store_id"] == plan["store_id"], "restore source identity", code='plan_changed')
         current = capture(root, meta)
-        store.require(current == snapshot_value["capture"], "snapshot is stale; preserve the original source")
+        store.require(current == snapshot_value["capture"], "snapshot is stale; preserve the original source", code='snapshot_stale')
         if not work.exists():
             store.require(not (root / "handoff.json").exists() and not os.path.lexists(destination), "handoff work missing or destination exists")
             need = sum(row["bytes"] for row in current["files"].values()) + r.CATALOG_RESERVE
-            store.require(shutil.disk_usage(destination.parent).free >= need, "restore disk headroom")
+            store.require(shutil.disk_usage(destination.parent).free >= need, "restore disk headroom", code='storage_full')
             work.mkdir(mode=0o700); store.write_new(work / ".lock", b"")
             r.save(work / "job.json", dict(plan=plan, plan_sha256=expected, identity=r.identity(work.stat())))
         store.private(work, True)
@@ -419,7 +419,7 @@ def restore_apply(plan_path, expected, *, checkpoint=None):
             store.require(regular_tree(candidate) == ready["tree"] and
                 audit(candidate, ready["store"], physical=True, logical_root=destination) == ready["summary"], "ready candidate changed")
             checkpoint("candidate_ready", dict(plan_sha256=expected))
-            store.require(capture(root, meta) == snapshot_value["capture"], "source changed before handoff")
+            store.require(capture(root, meta) == snapshot_value["capture"], "source changed before handoff", code='snapshot_stale')
             fence = dict(format=RESTORE, plan_sha256=expected, destination=str(destination), identity=ready["identity"],
                 ready_sha256=store.digest(ready), snapshot_sha256=plan["snapshot_sha256"])
             if (root / "handoff.json").exists():
@@ -439,7 +439,7 @@ def restore_apply(plan_path, expected, *, checkpoint=None):
 
 def main():
     os.umask(0o077)
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = errors.Parser(description=__doc__)
     parser.add_argument("action", choices=("backup", "verify", "plan-restore", "apply-restore"))
     parser.add_argument("--root", type=Path)
     parser.add_argument("--snapshot", type=Path)
@@ -450,6 +450,13 @@ def main():
     parser.add_argument("--plan-sha256")
     parser.add_argument("--reason")
     args = parser.parse_args()
+    requirements = {
+        "backup": (("root", "snapshot"), ("max_bytes",)),
+        "verify": (("snapshot", "snapshot_sha256"), ()),
+        "plan-restore": (("root", "snapshot", "snapshot_sha256", "destination", "plan", "reason"), ()),
+        "apply-restore": (("plan", "plan_sha256"), ()),
+    }
+    errors.options(args, *requirements[args.action])
     if args.action == "backup":
         store.require(args.root is not None and args.snapshot is not None and all(v is None for v in
             (args.snapshot_sha256, args.destination, args.plan, args.plan_sha256, args.reason)), "backup arguments")
@@ -471,7 +478,4 @@ def main():
 
 
 if __name__ == "__main__":
-    try: main()
-    except (OSError, ValueError, RuntimeError, sqlite3.Error) as error:
-        print(json.dumps(dict(error=type(error).__name__, automatic_retry=False)), file=sys.stderr)
-        raise SystemExit(1)
+    raise SystemExit(errors.run(main))

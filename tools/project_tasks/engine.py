@@ -20,7 +20,7 @@ RUNTIME_FILES = (
     "tools/project_tasks/transport.py", "tools/project_tasks/runner.py",
     "tools/project_tasks/migration.py", "tools/project_tasks/compatible_runtimes.json",
     "tools/project_tasks/retention.py",
-    "tools/project_tasks/backup.py",
+    "tools/project_tasks/backup.py", "tools/project_tasks/errors.py",
     "tools/examples/chat_client.py", "tools/examples/project_records.py",
     "tools/examples/project_query.py", "tools/examples/agent_tools_demo.py",
     "tools/examples/tool_recovery.py")
@@ -37,11 +37,11 @@ def sources():
 def specification(binding, question, *, max_requests=4, max_tools=8,
                   stream=True, max_tokens=512):
     store.require(isinstance(question, str) and 0 < len(question) <= 4096,
-                  "question must be 1..4096 characters")
+                  "question must be 1..4096 characters", code='invalid_arguments')
     store.require(type(max_requests) is int and 2 <= max_requests <= 8 and
                   type(max_tools) is int and 1 <= max_tools <= 32 and
                   type(stream) is bool and type(max_tokens) is int and
-                  1 <= max_tokens <= 512, "task budgets/mode")
+                  1 <= max_tokens <= 512, "task budgets/mode", code='invalid_arguments')
     return dict(binding=deepcopy(binding), question=question,
                 max_requests=max_requests, max_tools=max_tools, stream=stream,
                 max_tokens=max_tokens, budget_profile=budget.PROFILE, runtime_sources=sources())
@@ -262,9 +262,9 @@ def public(ledger, state):
 
 def check_binding(ledger, binding, state=None):
     spec = (state or replay(ledger))["execution_spec"]
-    store.require(spec["binding"] == binding, "task/client binding changed")
+    store.require(spec["binding"] == binding, "task/client binding changed", code='binding_changed')
     store.require(spec["runtime_sources"] == sources(),
-                  "task runtime changed; explicit migration required")
+                  "task runtime changed; explicit migration required", code='runtime_changed')
 
 
 def validate_next(ledger, kind, value):
@@ -279,6 +279,13 @@ def validate_next(ledger, kind, value):
 
 def resolve(ledger, binding, decision, expected_revision, reason):
     check_binding(ledger, binding)
+    state = replay(ledger)
+    store.require(decision in ("discard-request", "repeat-read", "abandon") and
+        isinstance(reason, str) and 0 < len(reason) <= 512 and
+        isinstance(expected_revision, str), "resolution input", code="invalid_arguments")
+    store.require(expected_revision == state["revision"] and
+        decision in public(ledger, state)["allowed_actions"],
+        "resolution requires exact current state and reason", code="resolution_conflict")
     value = dict(decision=decision, expected_revision=expected_revision, reason=reason)
     # Validate the prospective transition without publishing an invalid event.
     validate_next(ledger, "resolve", value)
@@ -293,7 +300,7 @@ def run(ledger, binding, client, *, records=None, checkpoint=None):
     if state["phase"] in ("COMPLETED", "FAILED", "ABANDONED",
                           "REQUEST_UNKNOWN", "TOOL_UNKNOWN"):
         return public(ledger, state)
-    store.require(state["runs"] < 16, "explicit resume budget exhausted")
+    store.require(state["runs"] < 16, "explicit resume budget exhausted", code='task_budget')
     records = records or ProjectRecords(store.ROOT)
     checkpoint = checkpoint or (lambda *args: None)
     ledger.append("run", dict(number=state["runs"] + 1))

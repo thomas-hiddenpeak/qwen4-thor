@@ -1,5 +1,4 @@
 """Explicit durable project queries. Never starts/stops services or retries."""
-import argparse
 import json
 import os
 from pathlib import Path
@@ -8,7 +7,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[2]
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(ROOT))
-from tools.project_tasks import store, engine, transport, migration, retention
+from tools.project_tasks import store, engine, transport, migration, retention, errors
 
 
 def submit(root, binding, key, question, client, **options):
@@ -18,7 +17,7 @@ def submit(root, binding, key, question, client, **options):
         _, created = store.create(root, name, spec)
         with store.open_task(root, name) as ledger:
             state = engine.replay(ledger)
-            store.require(state["execution_spec"] == spec, "idempotency key conflicts with existing task")
+            store.require(state["execution_spec"] == spec, "idempotency key conflicts with existing task", code='key_conflict')
             result = (engine.run(ledger, binding, client) if created else engine.public(ledger, state))
             return dict(result, created=created)
     except store.ArchivedTask:
@@ -54,7 +53,7 @@ def resolve(root, binding, key, decision, revision, reason):
 
 def main():
     os.umask(0o077)
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = errors.Parser(description=__doc__)
     parser.add_argument("action", choices=("init", "submit", "inspect", "resume", "resolve",
         "plan-migration", "apply-migration", "enable-retention", "retention-status", "finish-retention",
         "plan-archive", "apply-archive", "plan-prune", "apply-prune", "inspect-archive"))
@@ -70,23 +69,27 @@ def main():
     parser.add_argument("--max-requests", type=int)
     parser.add_argument("--max-tools", type=int)
     parser.add_argument("--max-tokens", type=int)
-    parser.add_argument("--no-stream", action="store_true")
+    parser.add_argument("--no-stream", action="store_true", default=None)
     parser.add_argument("--decision", choices=("discard-request", "repeat-read", "abandon"))
     parser.add_argument("--revision")
     parser.add_argument("--reason")
     parser.add_argument("--plan", type=Path)
     parser.add_argument("--plan-sha256")
     args = parser.parse_args()
-    if args.action != "submit":
-        store.require(all(value is None for value in (args.question, args.max_requests,
-            args.max_tools, args.max_tokens)) and not args.no_stream,
-            "question and request budgets apply only to submit; resume keeps the saved contract")
-    store.require(args.action in ("plan-migration", "apply-migration", "plan-archive", "apply-archive", "plan-prune", "apply-prune") or
-        args.plan is None and args.plan_sha256 is None, "plan parameters require an explicit plan/apply command")
-    store.require(args.action == "init" or args.max_tasks is None, "max-tasks applies only to init")
-    store.require(args.action == "enable-retention" or all(value is None for value in
-        (args.max_keys, args.archive_bytes, args.min_retain_seconds)), "retention policy is immutable after enabling")
-    store.require(args.action == "finish-retention" or args.operation_sha256 is None, "operation digest requires finish-retention")
+    task = ("root", "profile", "key")
+    requirements = {
+        "init": (("root",), ("max_tasks",)),
+        "enable-retention": (("root",), ("max_keys", "archive_bytes", "min_retain_seconds")),
+        "retention-status": (("root",), ()),
+        "finish-retention": (("root", "operation_sha256"), ()),
+        "submit": ((*task, "question"), ("max_requests", "max_tools", "max_tokens", "no_stream")),
+        "inspect": (task, ()), "resume": (task, ()), "inspect-archive": (task, ()),
+        "resolve": ((*task, "decision", "revision", "reason"), ()),
+    }
+    for kind in ("migration", "archive", "prune"):
+        requirements["plan-" + kind] = ((*task, "plan", "reason"), ())
+        requirements["apply-" + kind] = ((*task, "plan", "plan_sha256"), ())
+    errors.options(args, *requirements[args.action])
     if args.action == "init":
         result = store.init(args.root, 16 if args.max_tasks is None else args.max_tasks)
     elif args.action == "enable-retention":
@@ -113,7 +116,7 @@ def main():
             result = resume(args.root, binding, args.key, transport.Client(value))
         elif args.action == "plan-migration":
             store.require(args.plan is not None and args.plan_sha256 is None,
-                          "new private plan path required")
+                          "new private plan path required", code='invalid_arguments')
             result = migration.prepare(args.root, binding, args.key, args.plan, args.reason)
         elif args.action == "apply-migration":
             store.require(args.plan is not None and args.plan_sha256 is not None,
@@ -124,7 +127,7 @@ def main():
             result = retention.prepare(args.root, binding, args.key, args.action.removeprefix("plan-"), args.plan, args.reason)
         elif args.action in ("apply-archive", "apply-prune"):
             store.require(args.plan is not None and args.plan_sha256 is not None, "exact retention plan and digest required")
-            store.require(retention.read(args.plan)["kind"] == args.action.removeprefix("apply-"), "wrong retention operation")
+            store.require(retention.read(args.plan)["kind"] == args.action.removeprefix("apply-"), "wrong retention operation", code='invalid_arguments')
             result = retention.apply(args.root, binding, args.key, args.plan, args.plan_sha256)
         elif args.action == "inspect-archive":
             result = retention.lookup(args.root, binding, args.key, include_answer=True)
@@ -138,9 +141,4 @@ def main():
 
 
 if __name__ == "__main__":
-    try:
-        raise SystemExit(main())
-    except (OSError, ValueError, RuntimeError) as error:
-        # Raw HTTP bodies and private profile values never enter terminal errors.
-        print(json.dumps(dict(error=type(error).__name__, automatic_retry=False)), file=sys.stderr)
-        raise SystemExit(1)
+    raise SystemExit(errors.run(main))

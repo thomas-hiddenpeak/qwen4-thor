@@ -19,7 +19,7 @@ def same_identity(before, after):
     store.require(set(before) == set(after) and checksum(after.get("key_sha256")) and
         {key: value for key, value in before.items() if key != "key_sha256"} ==
         {key: value for key, value in after.items() if key != "key_sha256"},
-        "migration may rotate the key, not the client, TLS origin, CA, model or protocol")
+        "migration may rotate the key, not the client, TLS origin, CA, model or protocol", code='binding_changed')
 
 
 def source_map(value):
@@ -67,18 +67,19 @@ def supported(spec, current):
         if (spec["runtime_sources"] == release["runtime_sources"] and
                 spec.get("budget_profile") == release["budget_profile"]):
             return release["release"]
-    raise ValueError("unregistered task runtime; a reviewed adapter is required")
+    store.require(False, "unregistered task runtime; a reviewed adapter is required",
+                  code="runtime_unsupported")
 
 
 def build(ledger, state, binding, root, root_meta, reason):
     from tools.project_tasks import engine
-    store.require(isinstance(reason, str) and 0 < len(reason) <= 512, "migration reason required")
+    store.require(isinstance(reason, str) and 0 < len(reason) <= 512, "migration reason required", code='invalid_arguments')
     spec, current = state["execution_spec"], engine.sources()
     release = supported(spec, current)
     target = dict(deepcopy(spec), binding=deepcopy(binding), runtime_sources=current, budget_profile=budget.PROFILE)
     transition(spec, target)
-    store.require(target != spec, "task already has this runtime and credential binding")
-    store.require(state["migrations"] < MAX_MIGRATIONS, "migration count exhausted")
+    store.require(target != spec, "task already has this runtime and credential binding", code='already_exists')
+    store.require(state["migrations"] < MAX_MIGRATIONS, "migration count exhausted", code='task_budget')
     files = {path.name: dict(bytes=store.private(path).st_size,
         sha256=hashlib.sha256(path.read_bytes()).hexdigest()) for path in ledger.path.iterdir()
         if path.name != ".lock"}
@@ -95,7 +96,7 @@ def prepare(root, binding, key, output, reason):
     root, meta = store.checked_root(root)
     output = store.local(output)
     store.private(output.parent, True)
-    store.require(not output.is_relative_to(root), "store contains only its managed task entries")
+    store.require(not output.is_relative_to(root), "store contains only its managed task entries", code='unsafe_path')
     name = store.task_name(binding["client_id"], key)
     try:
         with store.open_task(root, name) as ledger:
@@ -112,20 +113,20 @@ def prepare(root, binding, key, output, reason):
 def apply(root, binding, key, path, expected, *, checkpoint=None):
     from tools.project_tasks import engine, retention
     path = store.local(path)
-    store.require(store.private(path).st_size <= 65536 and checksum(expected), "bounded plan and exact digest required")
+    store.require(store.private(path).st_size <= 65536 and checksum(expected), "bounded plan and exact digest required", code='invalid_arguments')
     plan = engine.chat.load_json(path.read_bytes())
     if plan.get("format") == retention.PLAN_FORMAT:
         store.require(plan["kind"] == "rekey", "only credential migration for archived tasks")
         result = retention.apply(root, binding, key, path, expected, checkpoint=checkpoint)
         result["migration_applied"] = result.pop("applied")
         return result
-    store.require(store.digest(plan) == expected and plan["format"] == FORMAT, "migration plan changed")
+    store.require(store.digest(plan) == expected and plan["format"] == FORMAT, "migration plan changed", code='plan_changed')
     root, meta = store.checked_root(root)
     name = store.task_name(binding["client_id"], key)
     store.require(plan["root"] == str(root) and plan["store_id"] == meta["store_id"] and
         plan["root_device"] == meta["root_device"] and plan["root_inode"] == meta["root_inode"] and
         plan["task_id"] == name and plan["target_spec"]["binding"] == binding and
-        plan["target_spec"]["runtime_sources"] == engine.sources(), "migration destination/runtime changed")
+        plan["target_spec"]["runtime_sources"] == engine.sources(), "migration destination/runtime changed", code='plan_changed')
     with store.open_task(root, name) as ledger:
         state = engine.replay(ledger)
         applied = [row for row in ledger.events() if row["kind"] == "migration"]
@@ -133,7 +134,7 @@ def apply(root, binding, key, path, expected, *, checkpoint=None):
             engine.check_binding(ledger, binding, state)
             return dict(engine.public(ledger, state), migration_applied=False, already_applied=True, no_execution=True)
         store.require(plan == build(ledger, state, binding, root, meta, plan["reason"]),
-                      "migration plan is stale or task evidence changed")
+                      "migration plan is stale or task evidence changed", code='plan_stale')
         payload = dict(plan=plan, plan_sha256=expected)
         engine.validate_next(ledger, "migration", payload)
         if checkpoint: checkpoint("before_commit", ledger)

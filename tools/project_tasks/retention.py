@@ -58,7 +58,7 @@ def limits(max_keys, max_bytes, min_retain_seconds):
     store.require(type(max_keys) is int and 1 <= max_keys <= MAX_KEYS and
         type(max_bytes) is int and CATALOG_RESERVE + 1024**2 <= max_bytes <= 2**40 and
         type(min_retain_seconds) is int and 0 <= min_retain_seconds <= 10 * 365 * 86400,
-        "invalid retention capacity/period")
+        "invalid retention capacity/period", code='invalid_arguments')
     return dict(max_keys=max_keys, max_bytes=max_bytes, min_retain_seconds=min_retain_seconds)
 
 
@@ -74,7 +74,7 @@ def catalog(path):
         db.execute("PRAGMA synchronous=FULL")
         store.require(db.execute("PRAGMA max_page_count=8192").fetchone()[0] == 8192, "catalog page limit")
         store.require(db.execute("PRAGMA page_size").fetchone()[0] == 4096 and
-            db.execute("PRAGMA quick_check").fetchall() == [("ok",)], "catalog integrity")
+            db.execute("PRAGMA quick_check").fetchall() == [("ok",)], "catalog integrity", code='integrity_error')
         yield db
     finally: db.close()
 
@@ -116,7 +116,7 @@ def extension(root, meta):
 
 
 def ready(path):
-    store.require(control(path, "operation") is None, "retention operation incomplete; explicit finish required")
+    store.require(control(path, "operation") is None, "retention operation incomplete; explicit finish required", code='retention_pending')
 
 
 def enable(root, *, max_keys=4096, max_bytes=1024**3, min_retain_seconds=86400):
@@ -125,9 +125,9 @@ def enable(root, *, max_keys=4096, max_bytes=1024**3, min_retain_seconds=86400):
     with store.root_lock(root):
         if (root / "retention").exists():
             path, policy = extension(root, meta); ready(path)
-            store.require(policy["limits"] == selected, "existing retention policy cannot be replaced")
+            store.require(policy["limits"] == selected, "existing retention policy cannot be replaced", code='policy_conflict')
             return dict(enabled=True, created=False, limits=selected, no_execution=True)
-        store.require(len(list((root / "tasks").iterdir())) <= max_keys, "existing tasks exceed key capacity")
+        store.require(len(list((root / "tasks").iterdir())) <= max_keys, "existing tasks exceed key capacity", code='key_capacity')
         # Build beside the store. Before publication there are no archived keys,
         # so an interrupted setup cannot hide an executed task from old readers.
         draft = root.parent / (".q4t-retention-" + meta["store_id"])
@@ -180,7 +180,7 @@ def admit(root, meta):
     path, policy = extension(root, meta); ready(path)
     with catalog(path) as db: count = db.execute("SELECT count(*) FROM keys").fetchone()[0]
     store.require(count + len(list((root / "tasks").iterdir())) < policy["limits"]["max_keys"],
-                  "permanent idempotency key capacity exhausted")
+                  "permanent idempotency key capacity exhausted", code='key_capacity')
 
 
 def files(folder, *, expected=None, partial=False, hashes=True):
@@ -245,7 +245,7 @@ def placement(state):
 
 def load_key(path, meta, name):
     value = key_value(path, name)
-    store.require(value is not None, "archived task key not found")
+    store.require(value is not None, "archived task key not found", code='not_found')
     return value, key_state(value, meta, name)
 
 
@@ -273,9 +273,9 @@ def lookup(root, binding, key, *, spec=None, include_answer=False):
     with store.root_lock(root, exclusive=False):
         path, _ = extension(root, meta); ready(path)
         value, state = load_key(path, meta, name)
-        store.require(state["binding"] == binding, "archived task/client binding changed")
+        store.require(state["binding"] == binding, "archived task/client binding changed", code='binding_changed')
         if spec is not None:
-            store.require(business_contract(spec) == value["base"]["contract_sha256"], "idempotency key conflicts with archived task")
+            store.require(business_contract(spec) == value["base"]["contract_sha256"], "idempotency key conflicts with archived task", code='key_conflict')
         result = public(value, state)
         if include_answer and state["payload"] == "retained":
             folder = path / "payloads" / name
@@ -331,7 +331,7 @@ def status(root):
 
 
 def skeleton(root, meta, path, name, kind, binding, reason):
-    store.require(isinstance(reason, str) and 0 < len(reason) <= 512, "explicit retention reason required")
+    store.require(isinstance(reason, str) and 0 < len(reason) <= 512, "explicit retention reason required", code='invalid_arguments')
     return dict(format=PLAN_FORMAT, kind=kind, root=str(root), store_id=meta["store_id"],
         root_identity=[meta["root_device"], meta["root_inode"]], name=name,
         policy_sha256=store.digest(extension(root, meta)[1]), binding=deepcopy(binding), reason=reason)
@@ -343,7 +343,7 @@ def build(root, meta, path, policy, name, kind, binding, reason):
     plan = skeleton(root, meta, path, name, kind, binding, reason)
     inventory(root, meta, path, policy)
     if kind == "archive":
-        store.require(key_value(path, name) is None, "task already archived")
+        store.require(key_value(path, name) is None, "task already archived", code='already_exists')
         folder = root / "tasks" / name
         store.private(folder, True)
         # Caller holds the task lock, so replay and a later rename see one task.
@@ -351,8 +351,8 @@ def build(root, meta, path, policy, name, kind, binding, reason):
         try:
             ledger = store.Ledger(folder, db, meta["store_id"])
             state = engine.replay(ledger); spec = state["execution_spec"]
-            store.require(state["phase"] in TERMINAL, "only terminal tasks may be archived")
-            store.require(spec["binding"] == binding, "task/client binding changed")
+            store.require(state["phase"] in TERMINAL, "only terminal tasks may be archived", code='task_not_terminal')
+            store.require(spec["binding"] == binding, "task/client binding changed", code='binding_changed')
             migration.supported(spec, engine.sources())
             terminal = engine.public(ledger, state)
             answer = terminal.pop("answer", None)
@@ -366,21 +366,21 @@ def build(root, meta, path, policy, name, kind, binding, reason):
         plan["key_sha256"] = store.digest(value)
         if kind == "prune":
             store.require(state["binding"] == binding and state["payload"] == "retained", "payload/client state")
-            store.require(time.time_ns() >= value["base"]["purge_after_ns"], "minimum payload retention has not elapsed")
+            store.require(time.time_ns() >= value["base"]["purge_after_ns"], "minimum payload retention has not elapsed", code='retention_period')
             folder = path / "payloads" / name
             store.require(identity(store.private(folder, True)) == state["payload_identity"], "payload directory changed")
             files(folder, expected=state["files"])
         else:
-            store.require(kind == "rekey" and state["rekeys"] < 8, "archive key rotation limit")
+            store.require(kind == "rekey" and state["rekeys"] < 8, "archive key rotation limit", code='task_budget')
             migration.same_identity(state["binding"], binding)
-            store.require(state["binding"] != binding, "archived key already has this credential")
+            store.require(state["binding"] != binding, "archived key already has this credential", code='already_exists')
     return plan
 
 
 def prepare(root, binding, key, kind, output, reason):
     root, meta = store.checked_root(root); name = store.task_name(binding["client_id"], key)
     output = store.local(output); store.private(output.parent, True)
-    store.require(not output.is_relative_to(root), "retention plan must be outside managed store")
+    store.require(not output.is_relative_to(root), "retention plan must be outside managed store", code='unsafe_path')
     with store.root_lock(root), ExitStack() as stack:
         path, policy = extension(root, meta); ready(path)
         if kind == "archive": stack.enter_context(store.lock(root / "tasks" / name / ".lock"))
@@ -424,8 +424,8 @@ def operation_for(root, meta, path, policy, plan):
     delta = size - (len(store.encode(before)) if before is not None else 0)
     if kind == "archive": delta += after["base"]["payload_bytes"]
     if kind == "prune": delta -= before["base"]["payload_bytes"]
-    store.require(usage + delta <= policy["limits"]["max_bytes"], "archive byte capacity exhausted")
-    store.require(shutil.disk_usage(root).free >= CATALOG_RESERVE, "insufficient retention transaction headroom")
+    store.require(usage + delta <= policy["limits"]["max_bytes"], "archive byte capacity exhausted", code='archive_capacity')
+    store.require(shutil.disk_usage(root).free >= CATALOG_RESERVE, "insufficient retention transaction headroom", code='storage_full')
     return dict(format=OP_FORMAT, store_id=meta["store_id"], name=name, kind=kind, plan=plan,
                 plan_sha256=checksum, before=before, after=after)
 
@@ -436,7 +436,7 @@ def reserve_operation(path, operation, checkpoint=None):
     with catalog(path) as db:
         db.execute("BEGIN IMMEDIATE")
         try:
-            store.require(get_record(db, "control", "operation") is None, "another retention operation pending")
+            store.require(get_record(db, "control", "operation") is None, "another retention operation pending", code='retention_pending')
             # Reserve all key metadata before moving/deleting any payload.
             # Readers refuse while the operation is present. Completion only
             # deletes that row and cannot require a larger catalog allocation.
@@ -513,22 +513,22 @@ def apply(root, binding, key, plan_path, expected, *, checkpoint=None):
     store.require(migration.checksum(expected) and store.digest(plan) == expected and
         plan["format"] == PLAN_FORMAT and plan["root"] == str(root) and plan["store_id"] == meta["store_id"] and
         plan["root_identity"] == [meta["root_device"], meta["root_inode"]] and plan["name"] == name and
-        plan["binding"] == binding, "retention plan/destination changed")
+        plan["binding"] == binding, "retention plan/destination changed", code='plan_changed')
     with store.root_lock(root), ExitStack() as stack:
         path, policy = extension(root, meta)
         operation = control(path, "operation")
         if operation is not None:
-            store.require(operation["plan_sha256"] == expected and operation["plan"] == plan, "different retention operation pending")
+            store.require(operation["plan_sha256"] == expected and operation["plan"] == plan, "different retention operation pending", code='retention_pending')
         else:
             ready(path)
             if key_value(path, name) is not None:
                 value, state = load_key(path, meta, name)
                 if expected in state["plan_ids"]:
-                    store.require(state["binding"] == binding, "archived task/client binding changed")
+                    store.require(state["binding"] == binding, "archived task/client binding changed", code='binding_changed')
                     return dict(public(value, state), applied=False, already_applied=True)
             if plan["kind"] == "archive": stack.enter_context(store.lock(root / "tasks" / name / ".lock"))
             current = build(root, meta, path, policy, name, plan["kind"], binding, plan["reason"])
-            store.require(current == plan, "retention plan stale or task changed")
+            store.require(current == plan, "retention plan stale or task changed", code='plan_stale')
             operation = operation_for(root, meta, path, policy, plan)
             reserve_operation(path, operation, checkpoint)
             # Release the task lock before the transaction resumes it below;
@@ -547,8 +547,8 @@ def finish(root, expected, *, checkpoint=None):
         operation = control(path, "operation")
         if operation is None:
             ready(path); previous = control(path, "last")
-            store.require(previous is not None, "no retained operation receipt")
-            store.require(previous["operation_sha256"] == expected and previous["completed"], "no matching completed operation")
+            store.require(previous is not None, "no retained operation receipt", code='not_found')
+            store.require(previous["operation_sha256"] == expected and previous["completed"], "no matching completed operation", code='plan_changed')
             return dict(previous, already_finished=True, no_execution=True)
-        store.require(store.digest(operation) == expected, "pending operation digest changed")
+        store.require(store.digest(operation) == expected, "pending operation digest changed", code='plan_changed')
         return dict(finish_locked(root, meta, path, operation, checkpoint), already_finished=False, no_execution=True)
