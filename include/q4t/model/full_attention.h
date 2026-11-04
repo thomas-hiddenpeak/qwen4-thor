@@ -158,6 +158,10 @@ Status LoadFullAttention(const io::WeightLoader& loader, const std::string& pref
 // max_position is the EXACT maximum of positions[0:T] (logical, not MRoPE).
 // Supply it from the same host array uploaded to positions to avoid a D2H
 // synchronization. -1 preserves readback for callers with device-only inputs.
+// single_sequence_scores: optional compressed-key slice for a known uniform
+// prefill batch (T > 4, d_seq_id non-null). Only index scoring uses this view;
+// all persistent state still uses the pooled pointers and per-token slot IDs.
+// This selects the existing BF16 GEMM scoring arithmetic, not SIMT FP32 dots.
 Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
                             uint16_t* out, const int* positions,
                             const int* rope_pos,
@@ -165,7 +169,8 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
                             uint16_t* idx_raw, uint16_t* idx_comp, int T,
                             void* workspace, size_t workspace_bytes,
                             cudaStream_t stream, const int* d_seq_id = nullptr,
-                            int max_position = -1, int layer_id = -1);
+                            int max_position = -1, int layer_id = -1,
+                            const uint16_t* single_sequence_scores = nullptr);
 
 // Exact workspace bytes FullAttentionForward carves for `T` tokens: the
 // projection/logits/topk intermediates (256-byte aligned each, sized from the
