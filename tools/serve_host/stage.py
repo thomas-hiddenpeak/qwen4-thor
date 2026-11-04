@@ -43,6 +43,13 @@ def configure():
     retained.configure()
 
 
+def projection_matches(raw,value,deployment,digest):
+    # JSON storage sorts mapping keys; Prometheus event series have no order
+    # contract. Preserve multiplicity, values and labels while comparing.
+    expected=o.c.metrics(value,deployment,digest).encode()
+    return sorted(raw.splitlines())==sorted(expected.splitlines())
+
+
 def cpu_gate():
     first=pkg.read(BASE/'cpu-01/result.json');fixed=pkg.read(BASE/'cpu-fix-02/result.json')
     pkg.require(not first['passed'] and first['tests_run']==33 and first['errors']==1 and first['failures']==0 and
@@ -247,8 +254,8 @@ class Run(retained.Run):
         def stable():
             raw=(self.observer/'metrics.prom').read_bytes();value=pkg.read(self.observer/'status.json')
             if raw!=(self.observer/'metrics.prom').read_bytes():return None
-            expected=o.c.metrics(value,'thor-host-short',self.plan['observer']['policy_sha256']).encode()
-            return (raw,value) if raw==expected and value['state']==state and value['kind']==kind else None
+            return (raw,value) if projection_matches(raw,value,'thor-host-short',self.plan['observer']['policy_sha256']) and \
+                value['state']==state and value['kind']==kind else None
         raw,value=self.wait(stable,10,'consistent projection')
         (OUT/(label+'-metrics.prom')).write_bytes(raw);pkg.save(OUT/(label+'-projection.json'),value)
         if kind=='current':

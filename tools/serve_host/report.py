@@ -86,9 +86,9 @@ def evaluate(data):
         require(sha(data[folder+'/result.json'])==plan['receipts'][folder],'receipt binding')
         for name,checksum in value['sources'].items():
             require(sha(data[folder+'/source/'+name])==checksum,'CPU source bytes')
-            changed={'tools/serve_host/observer.py','tools/serve_host/child.py'}
+            changed={'tools/serve_host/observer.py','tools/serve_host/child.py','tools/serve_host/stage.py','tools/serve_host/report.py'}
             if folder=='cpu-driver':changed.update(('tools/serve_host/stage.py','tools/serve_host/report.py','tools/serve_host/driver_cpu.py'))
-            if folder in ('cpu-runtime-fix','cpu-driver-02') or name not in changed or (
+            if (folder in ('cpu-runtime-fix','cpu-driver-02') and name not in ('tools/serve_host/stage.py','tools/serve_host/report.py')) or name not in changed or (
                     folder in ('cpu-fix-02','cpu-runtime','cpu-driver') and name=='tools/serve_host/child.py'):
                 require(plan['source_files'][name]==checksum,'unaffected source reuse')
     require(plan['reused_archive_sha256']==first['reused_host_evidence_sha256']==
@@ -107,8 +107,8 @@ def evaluate(data):
     for label,state,kind in (('running','RUNNING','current'),('recovered','RUNNING','current'),('final','STOPPED','final')):
         value=read('execution/'+label+'-projection.json')
         require(value['state']==state and value['kind']==kind and value['reason']=='none','actual source disposition')
-        wire=s.o.c.metrics(value,'thor-host-short',digest).encode()
-        require(wire==data['execution/'+label+'-metrics.prom'],'exact public projection')
+        wire=data['execution/'+label+'-metrics.prom']
+        require(s.projection_matches(wire,value,'thor-host-short',digest),'exact public metric series')
         require(str(BASE).encode() not in wire and b'pid=' not in wire and b'api_key' not in wire,'public metric privacy')
         if kind=='current':
             raw=read('execution/'+label+'-kernel.json')
@@ -219,23 +219,24 @@ def postflight():
 def collect():
     paths=[BASE/'plan.json',BASE/'live-command.log']
     for folder in ('cpu-01','cpu-fix','cpu-fix-02','cpu-runtime','cpu-runtime-fix','cpu-driver','cpu-driver-02',
-                   'execution','owned-generations','tasks','postflight'):
+                   'execution','owned-generations','tasks','postflight','cpu-continuation','cpu-projection-fix',
+                   'original-before-gpu','original-projection-failure'):
         paths.extend(p for p in (BASE/folder).rglob('*') if p.is_file())
     paths.extend((BASE/'observer'/name) for name in ('policy.json','nginx.conf','syntax-private.log','observer.json',
         'binding.json','status.json','metrics.prom','exporter.json','exporter.log','observer-terminal.json'))
-    paths.extend((BASE/'notification'/name) for name in ('manifest.json','prometheus.json','alertmanager.json','notify.rules.json',
-        'validation-0-private.log','validation-1-private.log') if (BASE/'notification'/name).exists())
+    plan=pkg.read(BASE/'plan.json');notification=Path(plan['notification']['package'])
+    records=('manifest.json','prometheus.json','alertmanager.json','notify.rules.json','validation-0-private.log','validation-1-private.log')
     paths.extend((BASE/'cpu-fixtures').glob('*/observer/syntax-private.log'))
-    data={str(p.relative_to(BASE)):p.read_bytes() for p in sorted(set(paths)) if not p.is_symlink()}
+    data={str(p.relative_to(BASE)):p.read_bytes() for p in sorted(set(paths)) if p.is_file() and not p.is_symlink()}
+    data.update({'notification/'+name:(notification/name).read_bytes() for name in records})
     policy=pkg.read(s.retained.prior.BASE/'model-private/policy-private.json')
     secrets=[v['api_key'] for v in policy['clients']]+[pkg.read(s.retained.prior.BASE/'model-private/clients.json')['gateway_token'],
-        (BASE/'notification/token-private').read_text().strip()]
+        (notification/'token-private').read_text().strip()]
     for name,raw in data.items():
         require(all(secret.encode() not in raw for secret in secrets) and not any(b'-----BEGIN '+k+b'PRIVATE KEY-----' in raw
             for k in (b'',b'RSA ',b'EC ',b'ENCRYPTED ')),'secret in public evidence: '+name)
-    plan=pkg.read(BASE/'plan.json')
     paths=[Path(plan['package']['package'])/'q4t',Path(plan['gateways'][0]['package'])/'nginx',BASE/'observer/nginx',
-           BASE/'notification/prometheus',BASE/'notification/promtool',BASE/'notification/alertmanager',BASE/'notification/amtool']
+           *(notification/name for name in s.n.BINARIES)]
     local={str(p):dict(bytes=p.stat().st_size,sha256=pkg.sha(p)) for p in paths}
     return data,local
 
