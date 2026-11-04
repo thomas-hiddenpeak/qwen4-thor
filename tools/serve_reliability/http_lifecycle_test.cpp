@@ -21,7 +21,9 @@
 
 namespace {
 std::atomic<bool> observation_failure{false};
-}
+[[maybe_unused]] const int stdout_buffering =
+    std::setvbuf(stdout, nullptr, _IOLBF, 0);
+}  // namespace
 
 Q4T_TEST(http_fatal_device_memory_before_run_fails_without_listener) {
   using namespace q4t::server;
@@ -1082,8 +1084,14 @@ Q4T_TEST(http_operations_early_fault_and_shutdown_release_both_planes) {
     ChatServer server;
     ServeContractAccess::Configure(server, port.port);
     port.Release();
-    if (fault) setenv("Q4T_SERVE_FAULT", "connection.before_thread", 1);
-    ScopeExit environment([] { unsetenv("Q4T_SERVE_FAULT"); });
+    if (fault) {
+      q4t::server::detail::serve_test_hook = +[](const char* name) {
+        if (std::string_view(name) == "connection.before_thread")
+          throw std::bad_alloc();
+      };
+    }
+    ScopeExit environment(
+        [] { q4t::server::detail::serve_test_hook = nullptr; });
     auto run = std::async(std::launch::async, [&] { return server.Run(); });
     ScopeExit stop([&] { server.RequestStop(); });
     const int fd = Connect(server, true);
@@ -1111,8 +1119,11 @@ Q4T_TEST(http_operations_prepublication_exception_releases_both_sockets) {
   ServeContractAccess::Configure(server, ops.port, primary.port);
   ops.Release();
   primary.Release();
-  setenv("Q4T_SERVE_FAULT", "connection.before_publish", 1);
-  ScopeExit clear([] { unsetenv("Q4T_SERVE_FAULT"); });
+  q4t::server::detail::serve_test_hook = +[](const char* name) {
+    if (std::string_view(name) == "connection.before_publish")
+      throw std::bad_alloc();
+  };
+  ScopeExit clear([] { q4t::server::detail::serve_test_hook = nullptr; });
   bool failed = false;
   try {
     server.Run();
