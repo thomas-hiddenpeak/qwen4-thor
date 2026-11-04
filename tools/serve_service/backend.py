@@ -32,6 +32,9 @@ def main():
         pass
     os.set_inheritable(lease_fd, True)
     del os.environ['Q4T_MANAGED_LEASE_FD']
+    if 'host_resources' in manifest:
+        from tools.serve_service import resources
+        resources.attach(args.run, manifest['host_resources'])
     command = pkg.command(control['package'], manifest)
     os.execv(command[0], command)
 

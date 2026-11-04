@@ -111,3 +111,29 @@ JSON。写日志失败会停服。不同运行目录/发布包不会自动清除
 inflight8/queued2、2GiB内存准入/启动余量与512MiB恢复滞回。配置与
 当前已验HTTP与实际托管结果保持这一范围。
 其他上下文、媒体或代理入口应另有明确配置和适用验收。
+
+
+## 显式后端host资源域（v5）
+
+`prepare`同时指定`--host-memory-high-mib`、`--host-memory-max-mib`和
+`--host-tasks-max`启用host memcg/pids保护，可与`--client-policy`组合。
+三个参数必须完整明确；默认不改变已有v1-v4包。实现及当前验收状态见
+[SRV-02k](../../docs/SERVE_HOST_ENVELOPE_2026-11-04.md)。16/20GiB与512
+任务是本机短验候选，不是所有业务的推荐容量。
+
+依赖本机systemd user manager及memory/pids委派。包固定busctl和
+systemctl身份；工具升级后需显式重新准备包。每代次创建唯一临时scope，
+监督器在control、后端和子进程在payload；GPU锁控制器在该scope外。
+payload禁swap、OOM按组终止，pids同时计线程；OOM/任务额度耗尽/
+限额漂移/观测失效都会停服且不自动重启，即使设置了restart-limit。
+
+运行目录`resources.json`记录配置和scope身份，`resource-backend-*.json`
+记录exec前实际加入，status中`host_resources`为最近观测，
+`resources-final.json`记录退出计量和payload移除，terminal另确认scope
+退场；异常缺失不补造。全局MemAvailable监视器与CUDA申请额度仍有
+独立作用。memcg未完整覆盖Thor CUDA或历史文件缓存，不与CUDA额度
+简单相加，也不表示整个统一物理RAM有硬上限；同UID恶意迁移不在沙箱承诺内。
+
+此入口不安装开机服务；旧包/旧day计划不会自动迁移。v5后端搭配新的
+托管网关v3快照，旧网关源码不认识v5时会拒绝绑定。实际LAN监听地址、
+CA/DNS和网段需另有明确配置；本次只做loopback TLS验收。

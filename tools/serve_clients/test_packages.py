@@ -120,7 +120,7 @@ class Clients(unittest.TestCase):
         receipt = m.prepare(front, pkg.read(VENDOR)['binary'], cert, key,
                             self.root/'managed', self.path)
         manifest, gateway = m.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(manifest['version'], 2)
+        self.assertEqual(manifest['version'], 3)
         self.assertEqual(gateway['version'], 2)
         self.assertIn('tools/serve_gateway/client_policy.py', manifest['sources'])
 

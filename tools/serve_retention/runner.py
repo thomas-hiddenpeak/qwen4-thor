@@ -28,7 +28,7 @@ def binding(kind,package,digest,backend_run=None):
     package=Path(package).resolve(strict=True)
     if kind=='backend':
         manifest=pkg.verify(package,digest)
-        require(manifest['version'] in (1,2,3,4) and backend_run is None,'backend contract')
+        require(manifest['version'] in (1,2,3,4,5) and backend_run is None,'backend contract')
         entry=package/'source/tools/serve_service/service.py'
     elif kind=='gateway':
         manifest,_=gateway.verify(package,digest)

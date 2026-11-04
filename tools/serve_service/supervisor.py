@@ -163,6 +163,7 @@ def run(package, digest, output, *, observe=probe, read_memory=None):
                  attempts=0, restarts=0, replayed_requests=0,
                  package_manifest_sha256=digest, backend=None)
     child, logger = None, None
+    envelope = None
     events = RotatingLog(output/'events.log', 256*1024)
     watchdog = memory.Watchdog(cfg,
         lambda owner: signal_owner(owner, signal.SIGTERM),
@@ -175,6 +176,9 @@ def run(package, digest, output, *, observe=probe, read_memory=None):
         changed = status != state['state']
         state.update(state=status, updated_unix=time.time(),
                      memory=watchdog.snapshot(), **changes)
+        if envelope is not None:
+            state['host_resources'] = dict(policy=envelope.selected, observation=envelope.latest,
+                violation=envelope.error, payload_removed=envelope.closed)
         pkg.save(output/'status.json', state)
         if changed:
             events.write(f'{time.time()} {status}\n'.encode())
@@ -192,6 +196,9 @@ def run(package, digest, output, *, observe=probe, read_memory=None):
     try:
         with processes.child_subreaper():
             try:
+                if 'host_resources' in manifest:
+                    from tools.serve_service import resources
+                    envelope = resources.Envelope(manifest['host_resources'], output)
                 watchdog.start()
                 while not stopped():
                     watchdog.check()
@@ -228,6 +235,7 @@ def run(package, digest, output, *, observe=probe, read_memory=None):
                     start, missing, was_ready = time.monotonic(), None, False
                     while not stopped() and child.poll() is None:
                         watchdog.check()
+                        if envelope is not None: envelope.check()
                         pkg.require(logger.error is None, 'backend log capture failed')
                         now = time.monotonic()
                         try:
@@ -255,6 +263,7 @@ def run(package, digest, output, *, observe=probe, read_memory=None):
                     # Even a dead parent can leave grammar descendants. Cleanup
                     # precedes replacement and stays inside the same GPU lease.
                     clean()
+                    if envelope is not None: envelope.check()
                     watchdog.check()
                     if stopped():
                         break
@@ -272,14 +281,20 @@ def run(package, digest, output, *, observe=probe, read_memory=None):
                 try:
                     clean()
                 finally:
-                    watchdog.close()
+                    try:
+                        watchdog.close()
+                    finally:
+                        if envelope is not None: envelope.close()
         watchdog.check()
+        if envelope is not None:
+            pkg.require(envelope.error is None, envelope.error)
         publish('STOPPED', backend=None, cleanup_confirmed=True)
         return 0
     except Exception as error:
         # If cleanup failed, retain identities and failure instead of claiming
         # a successful stop. The outer lease guard also drains owned children.
-        publish('FAILED', error=str(error), cleanup_confirmed=child is None)
+        publish('FAILED', error=str(error), cleanup_confirmed=child is None and
+                (envelope is None or envelope.closed))
         return 1
     finally:
         for sig, handler in previous.items():

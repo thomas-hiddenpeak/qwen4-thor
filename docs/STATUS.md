@@ -41,6 +41,12 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+SRV-02k[host记账域与进程树边界开发中](SERVE_HOST_ENVELOPE_2026-11-04.md)：
+显式v5托管资源包、委派scope内control/payload隔离、memcg/pids限额及
+OOM禁止重启；155 CPU、1探针修正与2驱动检查通过，六类真实内核
+边界通过。首轮high探针超时已保留，仅改测试收尾；1模型1网关短验
+待执行。并非统一物理RAM硬限额。
+
 SRV-11f[管理入口错误合同限定接受](SERVE_TASK_ERRORS_RESULT_2026-11-04.md)：
 冻结225e82bd，固定错误码/处置提示、SQLite/意外异常安全出口、逐命令
 参数；原11e来源已登记，任务仍需显式升级，未知结果不自动重试。

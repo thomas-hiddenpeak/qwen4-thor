@@ -20,6 +20,7 @@ LEGACY_SOURCES = (
 V2_SOURCES = (*LEGACY_SOURCES, 'tools/serve_service/memory.py')
 SOURCES = (*V2_SOURCES, 'tools/serve_service/inspection.py')
 V4_SOURCES = (*SOURCES, 'tools/serve_gateway/client_policy.py')
+V5_SOURCES = (*V4_SOURCES, 'tools/serve_service/resources.py')
 FILES = ('q4t', 'q4t.release.json', 'CMakeCache.txt', 'acceptance.json')
 # Some releases combine preserved failed attempts and targeted successful
 # repairs into an explicit acceptance decision. Do not accept arbitrary
@@ -118,8 +119,11 @@ def accepted_release(metadata, decision):
 
 
 def prepare(binary, release, model, output, port=8080, restart_limit=0,
-            critical_memory_mib=1024, client_policy=None):
+            critical_memory_mib=1024, client_policy=None, host_resources=None):
     policy_raw = None
+    if host_resources is not None:
+        from tools.serve_service import resources
+        resources.validate(host_resources)
     if client_policy is not None:
         from tools.serve_gateway import client_policy as cp
         policy_raw, _ = cp.read(client_policy)
@@ -148,7 +152,7 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
     for source, name in zip((binary, release, cache, acceptance), FILES):
         shutil.copyfile(source, target/name)
         os.chmod(target/name, 0o500 if name == 'q4t' else 0o400)
-    sources = V4_SOURCES if policy_raw is not None else SOURCES
+    sources = V5_SOURCES if host_resources is not None else (V4_SOURCES if policy_raw is not None else SOURCES)
     for name in sources:
         source, dest = ROOT/name, target/'source'/name
         regular(source)
@@ -170,6 +174,10 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
     if policy_raw is not None:
         manifest['version'] = 4
         manifest['client_policy'] = cp.binding(policy_raw)
+    if host_resources is not None:
+        manifest['version'] = 5
+        manifest['host_resources'] = dict(host_resources)
+        manifest['resource_dependencies'] = resources.dependencies()
     save(target/'manifest.json', manifest)
     verify(target, sha(target/'manifest.json'))
     return dict(package=str(target), manifest_sha256=sha(target/'manifest.json'),
@@ -180,7 +188,7 @@ def verify(package, digest):
     package = Path(package).resolve(strict=True)
     require(sha(package/'manifest.json') == digest, 'package manifest changed')
     manifest = read(package/'manifest.json')
-    require(type(manifest['version']) is int and manifest['version'] in (1, 2, 3, 4),
+    require(type(manifest['version']) is int and manifest['version'] in (1, 2, 3, 4, 5),
             'unsupported package version')
     config = manifest['settings']
     wanted = settings(config['port'], config['restart_limit'],
@@ -191,9 +199,9 @@ def verify(package, digest):
             del wanted[key]
     require(config == wanted, 'unknown managed configuration')
     sources = {1: LEGACY_SOURCES, 2: V2_SOURCES, 3: SOURCES,
-               4: V4_SOURCES}[manifest['version']]
+               4: V4_SOURCES, 5: V5_SOURCES}[manifest['version']]
     expected = {*FILES, *('source/'+name for name in sources)}
-    if manifest['version'] == 4:
+    if manifest['version'] == 4 or manifest['version'] == 5 and 'client_policy' in manifest:
         from tools.serve_gateway import client_policy as cp
         expected.add('client-policy.json')
         raw, _ = cp.read(package/'client-policy.json')
@@ -201,6 +209,13 @@ def verify(package, digest):
                 'client policy binding differs')
     else:
         require('client_policy' not in manifest, 'legacy package cannot scope clients')
+    if manifest['version'] == 5:
+        from tools.serve_service import resources
+        resources.validate(manifest['host_resources'])
+        resources.verify_dependencies(manifest['resource_dependencies'])
+    else:
+        require('host_resources' not in manifest and 'resource_dependencies' not in manifest,
+                'legacy package cannot declare host resource protection')
     require(set(manifest['files']) == expected, 'package inventory differs')
     for name, wanted in manifest['files'].items():
         path = package/name
@@ -235,6 +250,6 @@ def command(package, manifest):
     for key, value in PROFILE.items():
         if key not in ('name', 'host'):
             args += ['--'+key.replace('_', '-'), str(value)]
-    if manifest['version'] == 4:
+    if 'client_policy' in manifest:
         args += ['--client-policy-file', str(Path(package)/'client-policy.json')]
     return args

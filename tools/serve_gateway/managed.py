@@ -26,6 +26,7 @@ LEGACY_SOURCES=(*pkg.SOURCES,'tools/serve_gateway/gateway.py',
          'tools/serve_gateway/managed.py','tools/serve_gateway/managed_child.py',
          'docs/serve-openapi-v1.json')
 SOURCES=(*LEGACY_SOURCES, 'tools/serve_gateway/client_policy.py')
+V3_SOURCES=(*SOURCES, 'tools/serve_service/resources.py')
 SETTINGS=dict(poll_seconds=1,startup_seconds=10,drain_seconds=35,
               term_seconds=5,kill_seconds=5,log_bytes=4*1024**2,
               event_bytes=256*1024,restarts=0)
@@ -50,13 +51,13 @@ def prepare(policy,nginx,certificate,key,output,client_policy=None):
     g.save(binary,g.read_file(nginx,maximum=32*1024**2));binary.chmod(0o500)
     g.require(pkg.sha(binary)==original,'nginx changed while copying')
     gateway=g.prepare(policy,binary,certificate,key,target/'gateway',client_policy)
-    for name in SOURCES:
+    for name in V3_SOURCES:
         dest=target/'source'/name;dest.parent.mkdir(parents=True,exist_ok=True)
         g.save(dest,g.read_file(ROOT/name,maximum=2*1024**2));dest.chmod(0o400)
     python=Path(sys.executable).resolve()
-    manifest=dict(version=2,repository=str(ROOT),gateway=gateway,settings=SETTINGS,
+    manifest=dict(version=3,repository=str(ROOT),gateway=gateway,settings=SETTINGS,
         python=dict(path=str(python),sha256=pkg.sha(python)),
-        sources={n:pkg.sha(target/'source'/n) for n in SOURCES},
+        sources={n:pkg.sha(target/'source'/n) for n in V3_SOURCES},
         automatic_start=False,managed_gateway_accepted=False)
     pkg.save(target/'manifest.json',manifest)
     digest=pkg.sha(target/'manifest.json')
@@ -68,7 +69,7 @@ def verify(package,digest):
     package=private(Path(package).resolve(strict=True))
     g.require(pkg.sha(package/'manifest.json')==digest,'managed manifest changed')
     manifest=read(package/'manifest.json')
-    sources={1:LEGACY_SOURCES,2:SOURCES}.get(manifest['version'])
+    sources={1:LEGACY_SOURCES,2:SOURCES,3:V3_SOURCES}.get(manifest['version'])
     g.require(type(manifest['version']) is int and sources is not None and
               manifest['settings']==SETTINGS and
               set(manifest['sources'])==set(sources),'unknown managed gateway contract')
