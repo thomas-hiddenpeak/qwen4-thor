@@ -62,39 +62,54 @@ bool XmlMarker(const std::string& value) {
 }
 
 Status Schema(const io::Json& schema, bool strict, bool xml, size_t depth,
-              size_t* nodes) {
+              size_t* nodes, const std::string& path,
+              std::string* error_param) {
+  const auto invalid = [&](const std::string& location, std::string message) {
+    if (error_param) *error_param = location;
+    return Status::Fail(std::move(message));
+  };
   if (!schema.IsObject() || depth > 8 || ++*nodes > 128)
-    return Status::Fail("schema must be an object within depth 8 / 128 nodes");
+    return invalid(path, "schema must be an object within depth 8 / 128 nodes");
   const auto types = Types(schema);
   if (types.empty() || types.size() > 2 ||
       (types.size() == 2 && (!Has(types, "null") || types[0] == types[1])))
-    return Status::Fail("schema type must be a type or [type, null]");
-  for (const auto& type : types) {
+    return invalid(path + ".type",
+                   "schema type must be a type or [type, null]");
+  for (size_t index = 0; index < types.size(); ++index) {
+    const auto& type = types[index];
     if (type != "object" && type != "array" && type != "string" &&
         type != "integer" && type != "number" && type != "boolean" &&
         type != "null")
-      return Status::Fail("unsupported schema type: " + type);
+      return invalid(path + ".type" +
+                         (schema.Find("type")->IsArray()
+                              ? "[" + std::to_string(index) + "]"
+                              : ""),
+                     "unsupported schema type: " + type);
   }
   // A raw XML string cannot distinguish the string "null" from JSON null.
   if (xml && depth == 1 && Has(types, "string") && types.size() != 1)
-    return Status::Fail("nullable top-level XML strings are not supported");
+    return invalid(path + ".type",
+                   "nullable top-level XML strings are not supported");
   for (const auto& [key, item] : schema.object) {
+    const auto location = InputParamPath(path, key);
     if (key == "type") continue;
     if (key == "title" || key == "description") {
       if (!item.IsString() || item.str.size() > 2048)
-        return Status::Fail("schema annotation must be a string <= 2048 bytes");
+        return invalid(location,
+                       "schema annotation must be a string <= 2048 bytes");
     } else if (key == "properties" || key == "required" ||
                key == "additionalProperties") {
       if (!Has(types, "object"))
-        return Status::Fail("object keyword on a non-object schema");
+        return invalid(location, "object keyword on a non-object schema");
     } else if (key == "items" || key == "minItems" || key == "maxItems") {
       if (!Has(types, "array"))
-        return Status::Fail("array keyword on a non-array schema");
+        return invalid(location, "array keyword on a non-array schema");
     } else if (key == "enum") {
       if (!item.IsArray() || item.array.empty() || item.array.size() > 32)
-        return Status::Fail("enum must contain 1..32 scalar values");
+        return invalid(location, "enum must contain 1..32 scalar values");
       std::unordered_set<std::string> seen;
-      for (const auto& value : item.array) {
+      for (size_t index = 0; index < item.array.size(); ++index) {
+        const auto& value = item.array[index];
         if (!(value.IsString() || value.IsBool() || value.IsNull()) ||
             (value.IsString() &&
              (value.str.size() > 256 || (xml && XmlMarker(value.str)))) ||
@@ -102,55 +117,64 @@ Status Schema(const io::Json& schema, bool strict, bool xml, size_t depth,
                 types.begin(), types.end(),
                 [&](const auto& type) { return Matches(value, type); }) ||
             !seen.insert(OutputJson(value)).second)
-          return Status::Fail(
-              "enum requires distinct matching string/bool/null "
-              "values without XML delimiters");
+          return invalid(location + "[" + std::to_string(index) + "]",
+                         "enum requires distinct matching string/bool/null "
+                         "values without XML delimiters");
       }
     } else {
-      return Status::Fail("unsupported schema keyword: " + key);
+      return invalid(location, "unsupported schema keyword: " + key);
     }
   }
   if (Has(types, "object")) {
     const auto* properties = schema.Find("properties");
     const auto* additional = schema.Find("additionalProperties");
-    if (!properties || !properties->IsObject() ||
-        properties->object.size() > 32 || !additional ||
-        !additional->IsBool() || additional->boolean)
-      return Status::Fail(
+    const bool invalid_properties = !properties || !properties->IsObject() ||
+                                    properties->object.size() > 32;
+    if (invalid_properties || !additional || !additional->IsBool() ||
+        additional->boolean)
+      return invalid(
+          path + (invalid_properties ? ".properties" : ".additionalProperties"),
           "object schema requires <=32 properties and "
           "additionalProperties=false");
     std::unordered_set<std::string> required;
     if (const auto* list = schema.Find("required")) {
-      if (!list->IsArray()) return Status::Fail("required must be an array");
-      for (const auto& key : list->array) {
+      if (!list->IsArray())
+        return invalid(path + ".required", "required must be an array");
+      for (size_t index = 0; index < list->array.size(); ++index) {
+        const auto& key = list->array[index];
         if (!key.IsString() || !properties->Has(key.str) ||
             !required.insert(key.str).second)
-          return Status::Fail(
-              "required keys must be unique declared properties");
+          return invalid(path + ".required[" + std::to_string(index) + "]",
+                         "required keys must be unique declared properties");
       }
     }
     if (strict && required.size() != properties->object.size())
-      return Status::Fail("strict schema requires every property in required");
+      return invalid(path + ".required",
+                     "strict schema requires every property in required");
     for (const auto& [key, child] : properties->object) {
+      const auto child_path = InputParamPath(path + ".properties", key);
       if (key.size() > 128 || (xml && depth == 0 && !XmlName(key)) ||
           (xml && XmlMarker(key)))
-        return Status::Fail("invalid schema property name");
-      auto status = Schema(child, strict, xml, depth + 1, nodes);
+        return invalid(child_path, "invalid schema property name");
+      auto status =
+          Schema(child, strict, xml, depth + 1, nodes, child_path, error_param);
       if (!status) return status;
     }
   }
   if (Has(types, "array")) {
     const auto* items = schema.Find("items");
-    if (!items) return Status::Fail("array schema requires items");
+    if (!items) return invalid(path + ".items", "array schema requires items");
     for (const char* key : {"minItems", "maxItems"}) {
       const auto* bound = schema.Find(key);
       if (bound &&
           (!IsInputInteger(*bound) || bound->number < 0 || bound->number > 64))
-        return Status::Fail("array bounds must be integers in [0,64]");
+        return invalid(InputParamPath(path, key),
+                       "array bounds must be integers in [0,64]");
     }
     if (schema.GetInt("minItems", 0) > schema.GetInt("maxItems", 64))
-      return Status::Fail("minItems exceeds maxItems");
-    auto status = Schema(*items, strict, xml, depth + 1, nodes);
+      return invalid(path + ".minItems", "minItems exceeds maxItems");
+    auto status = Schema(*items, strict, xml, depth + 1, nodes, path + ".items",
+                         error_param);
     if (!status) return status;
   }
   return Status();
@@ -257,13 +281,22 @@ bool IsExactJsonInteger(std::string_view number) {
 }
 
 Status ValidateOutputSchema(const io::Json& schema, bool strict,
-                            bool xml_parameters) {
-  if (OutputJson(schema).size() > 16384)
+                            bool xml_parameters, std::string* error_param,
+                            std::string_view path) {
+  if (error_param) error_param->clear();
+  if (OutputJson(schema).size() > 16384) {
+    if (error_param) *error_param = path;
     return Status::Fail("schema exceeds 16 KiB");
-  if (schema.GetString("type") != "object")
+  }
+  if (schema.GetString("type") != "object") {
+    if (error_param)
+      *error_param =
+          schema.IsObject() ? InputParamPath(path, "type") : std::string(path);
     return Status::Fail("output/parameters schema root must be an object");
+  }
   size_t nodes = 0;
-  return Schema(schema, strict, xml_parameters, 0, &nodes);
+  return Schema(schema, strict, xml_parameters, 0, &nodes, std::string(path),
+                error_param);
 }
 
 Status ValidateOutputValue(const io::Json& schema, const io::Json& value) {

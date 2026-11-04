@@ -43,6 +43,35 @@ Q4T_TEST(chat_contract_error_param_is_explicit) {
   return true;
 }
 
+Q4T_TEST(chat_contract_tool_definition_error_locations) {
+  const std::pair<const char*, const char*> cases[] = {
+      {R"(false)", "tools"},
+      {R"([null])", "tools[0]"},
+      {R"([{"type":"other","function":{}}])", "tools[0].type"},
+      {R"([{"type":"function"}])", "tools[0].function"},
+      {R"([{"type":"function","function":{"name":"f","strict":1}}])",
+       "tools[0].function.strict"},
+      {R"([{"type":"function","function":{"name":"f","parameters":null}}])",
+       "tools[0].function.parameters"},
+      {R"([{"type":"function","function":{"name":"f"}},
+            {"type":"function","function":{"name":"f"}}])",
+       "tools[1].function.name"},
+      {R"([{"type":"function","function":{"name":"f","a.b":true}}])",
+       "tools[0].function[\"a.b\"]"}};
+  for (const auto& [tools, expected] : cases) {
+    q4t::io::Json request;
+    Q4T_CHECK(q4t::io::ParseJson(
+        std::string(
+            R"({"messages":[{"role":"user","content":"hi"}],"tools":)") +
+            tools + "}",
+        &request, true));
+    std::string param = "stale";
+    Q4T_CHECK(!q4t::server::ValidateChatContract(request, "m", false, &param));
+    Q4T_CHECK(param == expected);
+  }
+  return true;
+}
+
 Q4T_TEST(chat_contract_greedy_neutral_options) {
   Q4T_CHECK(Accept(R"({"prompt":"hello","temperature":0,"top_p":1,
     "n":1,"seed":20260920,"presence_penalty":0,"frequency_penalty":0,

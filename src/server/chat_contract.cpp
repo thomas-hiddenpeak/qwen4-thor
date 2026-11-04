@@ -178,7 +178,7 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
   ReasoningOptions reasoning;
   status = ParseReasoningOptions(req, &reasoning, error_param);
   if (!status) return status;
-  status = PlanOutputConstraints(req, &constraints);
+  status = PlanOutputConstraints(req, &constraints, error_param);
   if (!status) return status;
   std::vector<std::string> stops;
   status = ParseTextStop(req, constraints.active, &stops, error_param);

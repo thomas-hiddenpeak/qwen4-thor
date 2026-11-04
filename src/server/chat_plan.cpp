@@ -67,9 +67,10 @@ Status PlanChatRequest(const io::Json& req, const ChatPlanConfig& config,
           static_cast<int>(config.client_limits->max_output_tokens))
     return Fail(error, "client_output_limit_exceeded", OutputSource(req),
                 "requested output exceeds client token limit");
-  status = PlanOutputConstraints(req, &plan->constraints);
+  status = PlanOutputConstraints(req, &plan->constraints, &error->param);
   if (!status)
-    return Fail(error, "invalid_output_constraint", "", status.message());
+    return Fail(error, "invalid_output_constraint", error->param,
+                status.message());
   if (plan->constraints.active && !config.structured)
     return Fail(error, "structured_backend_unavailable", "",
                 "structured decoding backend is not built");

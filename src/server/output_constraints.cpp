@@ -14,12 +14,19 @@ std::string Quote(std::string_view text) {
 }
 
 Status Fields(const io::Json& object,
-              std::initializer_list<std::string_view> allowed) {
-  if (!object.IsObject()) return Status::Fail("expected constraint object");
+              std::initializer_list<std::string_view> allowed,
+              std::string* error_param, std::string_view path) {
+  if (error_param) error_param->clear();
+  if (!object.IsObject()) {
+    if (error_param) *error_param = path;
+    return Status::Fail("expected constraint object");
+  }
   for (const auto& [key, value] : object.object) {
     (void)value;
-    if (std::find(allowed.begin(), allowed.end(), key) == allowed.end())
+    if (std::find(allowed.begin(), allowed.end(), key) == allowed.end()) {
+      if (error_param) *error_param = InputParamPath(path, key);
       return Status::Fail("unsupported constraint field: " + key);
+    }
   }
   return Status();
 }
@@ -67,39 +74,51 @@ Status ParseDocument(std::string_view input, io::Json* out) {
 }
 }  // namespace
 
-Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out) {
+Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
+                             std::string* error_param) {
   *out = {};
-  auto definitions = ValidateToolDefinitions(request);
+  if (error_param) error_param->clear();
+  const auto invalid = [&](std::string_view path, std::string message) {
+    if (error_param) *error_param = path;
+    return Status::Fail(std::move(message));
+  };
+  auto definitions = ValidateToolDefinitions(request, error_param);
   if (!definitions) return definitions;
   const bool parsed =
       request.Has("messages") && request.GetBool("parse_response", true);
   const auto* choice = request.Find("tool_choice");
   if (choice) {
-    if (!parsed) return Status::Fail("tool_choice requires parsed messages");
+    if (!parsed)
+      return invalid("tool_choice", "tool_choice requires parsed messages");
     if (choice->IsString()) {
       if (choice->str == "none")
         out->choice = OutputConstraints::ToolChoice::kNone;
       else if (choice->str == "required")
         out->choice = OutputConstraints::ToolChoice::kRequired;
       else if (choice->str != "auto")
-        return Status::Fail("invalid tool_choice");
+        return invalid("tool_choice", "invalid tool_choice");
     } else {
-      auto status = Fields(*choice, {"type", "function"});
+      auto status =
+          Fields(*choice, {"type", "function"}, error_param, "tool_choice");
       if (!status) return status;
       const auto* fn = choice->Find("function");
       if (choice->GetString("type") != "function" || !fn)
-        return Status::Fail("named tool_choice requires a function");
-      status = Fields(*fn, {"name"});
+        return invalid(choice->GetString("type") != "function"
+                           ? "tool_choice.type"
+                           : "tool_choice.function",
+                       "named tool_choice requires a function");
+      status = Fields(*fn, {"name"}, error_param, "tool_choice.function");
       if (!status) return status;
       out->named_tool = fn->GetString("name");
-      if (!SafeName(out->named_tool)) return Status::Fail("invalid named tool");
+      if (!SafeName(out->named_tool))
+        return invalid("tool_choice.function.name", "invalid named tool");
       out->choice = OutputConstraints::ToolChoice::kNamed;
     }
   }
   if (const auto* parallel = request.Find("parallel_tool_calls")) {
     if (!parsed || !parallel->IsBool())
-      return Status::Fail(
-          "parallel_tool_calls requires parsed messages / bool");
+      return invalid("parallel_tool_calls",
+                     "parallel_tool_calls requires parsed messages / bool");
     out->parallel = parallel->boolean;
   }
   const auto* tools = request.GetArray("tools");
@@ -107,7 +126,8 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out) {
   const bool forced = out->choice == OutputConstraints::ToolChoice::kRequired ||
                       out->choice == OutputConstraints::ToolChoice::kNamed;
   if (forced && !has_tools)
-    return Status::Fail("required/named tool_choice requires nonempty tools");
+    return invalid("tools",
+                   "required/named tool_choice requires nonempty tools");
   bool strict_tools = false;
   if (tools) {
     for (const auto& tool : tools->array) {
@@ -125,29 +145,40 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out) {
         *format,
         type == "json_schema"
             ? std::initializer_list<std::string_view>{"type", "json_schema"}
-            : std::initializer_list<std::string_view>{"type"});
+            : std::initializer_list<std::string_view>{"type"},
+        error_param, "response_format");
     if (!status) return status;
     if (type != "text" && type != "json_object" && type != "json_schema")
-      return Status::Fail("unsupported response_format.type");
+      return invalid("response_format.type",
+                     "unsupported response_format.type");
     out->json_output = type != "text";
     if (type == "json_schema") {
       const auto* spec = format->Find("json_schema");
-      if (!spec) return Status::Fail("response_format requires json_schema");
-      status = Fields(*spec, {"name", "description", "strict", "schema"});
+      if (!spec)
+        return invalid("response_format.json_schema",
+                       "response_format requires json_schema");
+      status = Fields(*spec, {"name", "description", "strict", "schema"},
+                      error_param, "response_format.json_schema");
       if (!status) return status;
       if (!SafeName(spec->GetString("name")))
-        return Status::Fail("invalid response schema name");
+        return invalid("response_format.json_schema.name",
+                       "invalid response schema name");
       if (const auto* strict = spec->Find("strict")) {
         if (!strict->IsNull() && !strict->IsBool())
-          return Status::Fail("schema.strict must be bool or null");
+          return invalid("response_format.json_schema.strict",
+                         "schema.strict must be bool or null");
         strict_schema = strict->IsBool() && strict->boolean;
       }
       if (const auto* description = spec->Find("description");
           description && !description->IsString())
-        return Status::Fail("schema description must be a string");
+        return invalid("response_format.json_schema.description",
+                       "schema description must be a string");
       schema = spec->Find("schema");
-      if (!schema) return Status::Fail("missing response schema");
-      status = ValidateOutputSchema(*schema, strict_schema);
+      if (!schema)
+        return invalid("response_format.json_schema.schema",
+                       "missing response schema");
+      status = ValidateOutputSchema(*schema, strict_schema, false, error_param,
+                                    "response_format.json_schema.schema");
       if (!status) return status;
     }
   }
@@ -156,14 +187,17 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out) {
                 (!out->parallel && has_tools);
   if (!out->active) return Status();
   if (!parsed)
-    return Status::Fail("output constraints require parsed messages");
+    return invalid(request.Has("messages") ? "parse_response" : "messages",
+                   "output constraints require parsed messages");
   if (request.Has("session_id") || request.Has("prefix_cache_scope"))
-    return Status::Fail(
+    return invalid(
+        request.Has("session_id") ? "session_id" : "prefix_cache_scope",
         "output constraints with session/prefix cache are not "
         "supported in this stage");
   if (out->json_output && has_tools &&
       out->choice != OutputConstraints::ToolChoice::kNone)
-    return Status::Fail("response_format plus tools requires tool_choice=none");
+    return invalid("tool_choice",
+                   "response_format plus tools requires tool_choice=none");
 
   std::string payload;
   if (out->json_output) {
@@ -177,27 +211,36 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out) {
     payload = TextFormat();
   } else {
     if (tools->array.size() > 16)
-      return Status::Fail("constrained requests allow at most 16 tools");
+      return invalid("tools", "constrained requests allow at most 16 tools");
     std::unordered_set<std::string> names;
     std::string tags;
-    for (const auto& tool : tools->array) {
-      auto status = Fields(tool, {"type", "function"});
+    for (size_t index = 0; index < tools->array.size(); ++index) {
+      const auto& tool = tools->array[index];
+      const auto path = "tools[" + std::to_string(index) + "]";
+      const auto fn_path = path + ".function";
+      auto status = Fields(tool, {"type", "function"}, error_param, path);
       if (!status) return status;
       const auto* fn = tool.Find("function");
       if (tool.GetString("type") != "function" || !fn)
-        return Status::Fail("constraints require function tools");
-      status = Fields(*fn, {"name", "description", "parameters", "strict"});
+        return invalid(
+            tool.GetString("type") != "function" ? path + ".type" : fn_path,
+            "constraints require function tools");
+      status = Fields(*fn, {"name", "description", "parameters", "strict"},
+                      error_param, fn_path);
       if (!status) return status;
       const auto name = fn->GetString("name");
       if (!SafeName(name) || !names.insert(name).second)
-        return Status::Fail("invalid or duplicate constrained tool name");
+        return invalid(fn_path + ".name",
+                       "invalid or duplicate constrained tool name");
       if (const auto* description = fn->Find("description");
           description && !description->IsString())
-        return Status::Fail("function description must be a string");
+        return invalid(fn_path + ".description",
+                       "function description must be a string");
       // Even ignored tool definitions must not contain unsupported strict
       // schemas. None mode intentionally never compiles argument schemas.
       const auto parameters = Parameters(*fn);
-      status = ValidateOutputSchema(parameters, fn->GetBool("strict"), true);
+      status = ValidateOutputSchema(parameters, fn->GetBool("strict"), true,
+                                    error_param, fn_path + ".parameters");
       if (!status) return status;
       if (out->choice == OutputConstraints::ToolChoice::kNamed &&
           name != out->named_tool)
@@ -208,7 +251,8 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out) {
               R"(,"content":)" + SchemaFormat(parameters, true) +
               R"(,"end":"\n</function>\n</tool_call>"})";
     }
-    if (tags.empty()) return Status::Fail("named tool is not declared");
+    if (tags.empty())
+      return invalid("tool_choice.function.name", "named tool is not declared");
     const bool single =
         !out->parallel || out->choice == OutputConstraints::ToolChoice::kNamed;
     if (forced) {
@@ -238,7 +282,8 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out) {
                         R"({"type":"sequence","elements":[)" +
                         prefix + kWhitespace + ',' + payload + "]}}";
   if (out->structural_tag.size() > 65536)
-    return Status::Fail("compiled request description exceeds 64 KiB");
+    return invalid(out->json_output ? "response_format" : "tools",
+                   "compiled request description exceeds 64 KiB");
   return Status();
 }
 

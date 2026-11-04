@@ -8,6 +8,7 @@
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/chat_response_parser.h"
 #include "q4t/server/chat_template.h"
+#include "q4t/server/input_contract.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/test.h"
 
@@ -49,6 +50,91 @@ std::string Call(std::string_view name = "read",
          std::string(args) + "\n</function>\n</tool_call>";
 }
 }  // namespace
+
+Q4T_TEST(output_constraints_error_paths_survive_chat_validation) {
+  const std::pair<const char*, const char*> cases[] = {
+      {R"("tool_choice":"force")", "tool_choice"},
+      {R"("parallel_tool_calls":0)", "parallel_tool_calls"},
+      {R"("tool_choice":{"type":"function","function":{"name":"absent"}})",
+       "tool_choice.function.name"},
+      {R"("tool_choice":{"type":"function","function":{"name":"read","x":1}})",
+       "tool_choice.function.x"},
+      {R"("response_format":{"type":"json_schema","json_schema":{"name":"x"}})",
+       "response_format.json_schema.schema"},
+      {R"("response_format":{"type":"json_object"})", "tool_choice"},
+      {R"("tool_choice":"required","session_id":")"
+       "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef\"",
+       "session_id"}};
+  for (const auto& [options, expected] : cases) {
+    const auto request = Request(options);
+    std::string param = "stale";
+    OutputConstraints plan;
+    const auto direct =
+        q4t::server::PlanOutputConstraints(request, &plan, &param);
+    Q4T_CHECK(!direct && param == expected);
+    param = "stale";
+    const auto chat =
+        q4t::server::ValidateChatContract(request, "m", false, &param);
+    Q4T_CHECK(!chat && param == expected);
+    Q4T_CHECK(direct.message() == chat.message());
+  }
+  std::string param = "stale";
+  OutputConstraints plan;
+  Q4T_CHECK(q4t::server::PlanOutputConstraints(Request(), &plan, &param));
+  Q4T_CHECK(param.empty());
+  return true;
+}
+
+Q4T_TEST(output_schema_nested_error_paths_and_escaped_keys) {
+  const auto schema = Parse(R"({"type":"object","properties":{
+    "a.b[0]":{"type":"array","items":{"type":"object","properties":{
+      "quote\"\n":{"type":"string","enum":["ok","ok"]}},
+      "additionalProperties":false}}},"additionalProperties":false})");
+  std::string param = "stale";
+  Q4T_CHECK(!q4t::server::ValidateOutputSchema(
+      schema, false, false, &param, "response_format.json_schema.schema"));
+  Q4T_CHECK(param ==
+            "response_format.json_schema.schema.properties"
+            "[\"a.b[0]\"].items.properties[\"quote\\\"\\n\"].enum[1]");
+  Q4T_CHECK(q4t::server::InputParamPath("x", "") == "x[\"\"]");
+  Q4T_CHECK(q4t::server::InputParamPath("x", "0") == "x[\"0\"]");
+  Q4T_CHECK(q4t::server::InputParamPath("x", "中文") == "x[\"中文\"]");
+  Q4T_CHECK(
+      q4t::server::ValidateOutputSchema(Parse(kSchema), true, false, &param));
+  Q4T_CHECK(param.empty());
+  return true;
+}
+
+Q4T_TEST(output_schema_container_and_missing_field_locations) {
+  const std::pair<const char*, const char*> cases[] = {
+      {R"(null)", "schema"},
+      {R"({})", "schema.type"},
+      {R"({"type":"object","additionalProperties":false})",
+       "schema.properties"},
+      {R"({"type":"object","properties":{}})", "schema.additionalProperties"},
+      {R"({"type":"object","properties":{"x":{"type":"string"}},
+            "required":["x","x"],"additionalProperties":false})",
+       "schema.required[1]"},
+      {R"({"type":"object","properties":{"x":{"type":"string"}},
+            "additionalProperties":false})",
+       "schema.required"},
+      {R"({"type":"object","properties":{"x":{"type":"array"}},
+            "required":["x"],"additionalProperties":false})",
+       "schema.properties.x.items"},
+      {R"({"type":"object","properties":{"x":{"type":["bogus","null"]}},
+            "required":["x"],"additionalProperties":false})",
+       "schema.properties.x.type[0]"}};
+  for (const auto& [wire, expected] : cases) {
+    std::string param = "stale";
+    const auto schema = Parse(wire);
+    const auto result =
+        q4t::server::ValidateOutputSchema(schema, true, false, &param);
+    Q4T_CHECK(!result && param == expected);
+    Q4T_CHECK(result.message() ==
+              q4t::server::ValidateOutputSchema(schema, true).message());
+  }
+  return true;
+}
 
 Q4T_TEST(output_constraints_tool_choice_plan) {
   OutputConstraints plan;

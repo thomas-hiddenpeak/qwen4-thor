@@ -22,7 +22,8 @@ struct OutputConstraints {
 
 // Pure request/schema planning. Backend availability is checked separately,
 // before tokenization, slot acquisition and any model work.
-Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out);
+Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
+                             std::string* error_param = nullptr);
 io::Json ConstraintTemplateRequest(const io::Json& request,
                                    const OutputConstraints& plan);
 Status ValidateConstrainedArguments(const io::Json& function,
