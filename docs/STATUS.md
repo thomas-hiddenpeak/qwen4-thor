@@ -41,6 +41,20 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+用户指出工业化任务阻塞后续开发，当前优先级调整为
+[先集成已验基础、再独立补强](SERVE_MAINLINE_READINESS_2026-11-04.md)。
+刷新远端后main ef88d970落后已验锚点92129c71共212提交，可快进；
+223运行来源/默认pair和三归档802成员离线核对通过，无新增业务验证。
+准备基于已验实现的主线PR，main尚未更新；SRV-08b未验代码排除。
+新a56aed21任务迁移/托管组合仍需专项交接，旧15d7ccb1包继续按原证据
+使用；可选部署和用户长验不阻塞文本Chat基础开发，持续目标保持。
+
+SRV-08b[客户端截止/可选连接配置](SERVE_CLIENT_TRANSPORT_2026-11-04.md)已冻结：
+已验基线的ChatClient仍为单IO超时，JS辅助类仍固定占位Key；限定补齐总
+网络预算、可选Key/CA/连接IP与Python→Node桥，保留默认直连和零重试。
+旧源已封存，本机已有未验代码，CPU与同锁有界HTTP/真实工具验收待做；
+默认8e9b4ce7/e61bed7c、原包/Key/day保持，不启动长验或常驻部署。
+
 SRV-03c[准备阶段锁等待取消已限定交付](SERVE_PREPARE_LOCK_RESULT_2026-11-04.md)：
 默认8e9b4ce7/sidecar e61bed7c、协议a56aed21。thinking准备/encode/
 preflight等待检查自身取消，owner及模型调度保持。2旧锁复现、294
