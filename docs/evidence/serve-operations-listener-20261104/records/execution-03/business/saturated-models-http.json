@@ -1,0 +1,13 @@
+{
+  "headers": {
+    "Cache-Control": "no-store",
+    "Connection": "keep-alive",
+    "Content-Length": "109",
+    "Content-Type": "application/json",
+    "Date": "Wed, 04 Nov 2026 06:31:54 GMT",
+    "Server": "nginx",
+    "X-Q4T-Gateway-Request-Id": "c2c1823709d9c5875ef21fab88acfc54",
+    "X-Request-Id": "req-9f545f1d0074515fe4a99f74dcd7a9ac"
+  },
+  "status": 200
+}

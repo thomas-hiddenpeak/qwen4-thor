@@ -1,0 +1,16 @@
+{
+  "counts": {
+    "controls": 0,
+    "generation_attempts": 0,
+    "starts": 0
+  },
+  "error": "TimeoutError('owned child exceeded deadline')",
+  "limits": {
+    "controls": 100,
+    "generation_attempts": 6,
+    "seconds": 300,
+    "starts": 1
+  },
+  "seconds": 60.12681686296128,
+  "status": "FAILED"
+}

@@ -1,0 +1,11 @@
+{
+  "gpu": 0,
+  "http": 0,
+  "models": 0,
+  "passed": true,
+  "sources": {
+    "tools/serve_operations_listener/continue_stage.py": "db4c166d3593cad297c5e57b96a4bb1ae71ba21d0711bbbd1d9c6e3068e66eaa",
+    "tools/serve_operations_listener/test_continue.py": "5c48c5d9664ed299c90d6316d21bb55c5e29e359031f275f0f3d19b2d3395d7a"
+  },
+  "tests": 2
+}

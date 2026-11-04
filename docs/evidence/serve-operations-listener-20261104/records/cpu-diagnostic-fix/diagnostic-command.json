@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "tools.serve_operations_listener.test_tools.Diagnostic",
+    "tools.serve_ops.test_ops",
+    "-v"
+  ],
+  "timeout": 180
+}

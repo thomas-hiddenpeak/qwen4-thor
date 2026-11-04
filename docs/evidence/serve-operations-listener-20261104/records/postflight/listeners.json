@@ -1,0 +1,9 @@
+{
+  "argv": [
+    "ss",
+    "-ltn"
+  ],
+  "returncode": 0,
+  "stderr": "",
+  "stdout": "State  Recv-Q Send-Q Local Address:Port  Peer Address:PortProcess\nLISTEN 0      4096         0.0.0.0:22         0.0.0.0:*          \nLISTEN 0      511        127.0.0.1:4141       0.0.0.0:*          \nLISTEN 0      128        127.0.0.1:62427      0.0.0.0:*          \nLISTEN 0      4096      127.0.0.54:53         0.0.0.0:*          \nLISTEN 0      4096   127.0.0.53%lo:53         0.0.0.0:*          \nLISTEN 0      5            0.0.0.0:58001      0.0.0.0:*          \nLISTEN 0      4096               *:5201             *:*          \nLISTEN 0      4096               *:6566             *:*          \nLISTEN 0      4096            [::]:22            [::]:*          \n"
+}

@@ -1,0 +1,15 @@
+{
+  "acceptance": {
+    "bytes": 409,
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-operations-listener-20261104/execution-04/business/result.json",
+    "sha256": "dc7b4e0b504f056075fbab974c13a084e469e3f1266bf09b76598aac6372289f"
+  },
+  "installed": {
+    "bytes": 7297520,
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "sha256": "7eff020de66b96f3175b3e123909be9e2f58142d54d1dd5992750d23cbe9c769"
+  },
+  "new_http": 0,
+  "new_models": 0,
+  "passed": true
+}

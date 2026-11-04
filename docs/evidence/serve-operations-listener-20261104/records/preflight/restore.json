@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "systemctl",
+    "--user",
+    "show",
+    "soar-flash-fast-v3-fixture-retry-qualified-v1-20261103.service",
+    "--property=LoadState,UnitFileState,ActiveState,SubState,MainPID"
+  ],
+  "returncode": 0,
+  "stderr": "",
+  "stdout": "MainPID=0\nLoadState=masked\nActiveState=inactive\nSubState=dead\nUnitFileState=masked\n"
+}

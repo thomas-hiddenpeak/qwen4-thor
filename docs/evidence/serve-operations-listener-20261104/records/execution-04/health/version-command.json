@@ -1,0 +1,7 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "version"
+  ],
+  "timeout": 10
+}

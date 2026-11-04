@@ -1,0 +1,27 @@
+[q4t][cleanup-fatal] api=release phase=host.fatal error=719
+[q4t][cleanup-fatal] api=release phase=host.fatal error=719
+[q4t][cleanup-fatal] api=synchronize phase=host.fatal error=719
+[q4t][http-receive] trace_id=req-60adb926583aacf410ec923845cc8011 reason=malformed status=400 system_error=0
+[q4t][http-write] trace_id=req-60adb926583aacf410ec923845cc8011 reason=write_deadline origin=handler transferred=2240 system_error=0 poll_events=0
+[q4t][http-write] trace_id=req-a06f9328a4753f55d44582ce51f132c6 reason=explicit_cancel origin=handler transferred=0 system_error=0 poll_events=0
+[q4t][http-write] trace_id=req-f90974ddcf97be74b522685a280cfd5d reason=peer_closed origin=handler transferred=0 system_error=0 poll_events=0
+[q4t][http-write] trace_id=req-a9766214d87c9ef46f10ccf8cf342d19 reason=server_shutdown origin=handler transferred=0 system_error=0 poll_events=0
+[q4t][http-write] trace_id=req-a692b317363971a58ec052aa97cffa75 reason=request_failure origin=handler transferred=0 system_error=0 poll_events=0
+[q4t][http-write] trace_id=req-783a8a858681b112dd120dac50bf62bf reason=request_deadline origin=handler transferred=0 system_error=0 poll_events=0
+[q4t][http-write] trace_id=req-0f8e96e6aa02051a2d0df675d8d9e476 reason=peer_closed origin=heartbeat transferred=0 system_error=32 poll_events=0
+[q4t][http] trace_id=req-710f58552c20c3bab02f2cb295ace599 status=503 error=service_unavailable
+[q4t][http] trace_id=req-e1e72aa44891ef661b1a087575ff4626 status=503 error=service_unavailable
+[q4t][http] trace_id=req-8c137a66e5739349a67645b81e6cba58 error=internal_error
+[q4t][http] trace_id=client.trace-1 status=400 error=invalid_request
+[q4t][http] trace_id=client.trace-1 error=internal_error
+[q4t][http] trace_id=client.trace-1 status=500 error=internal_error
+[q4t][http] trace_id=client.trace-1 status=400 error=invalid_request
+[q4t][http] trace_id=client.trace-1 error=internal_error
+[q4t][http] trace_id=client.trace-1 status=500 error=internal_error
+[q4t][http] trace_id=memory-contract error=host_memory_exhausted
+[q4t][http] trace_id=memory-contract error=host_memory_exhausted
+[q4t][http] trace_id=memory-contract error=host_memory_exhausted
+[q4t][http] trace_id=memory-contract error=host_memory_exhausted
+[q4t][http] trace_id=req-828dec7ad573cd7781e2fe6544ef8e65 error=host_memory_exhausted
+[q4t][http] trace_id=req-4d5bc8b0ecccabc2e94c0478237198b0 error=host_memory_exhausted
+[q4t][http] trace_id=req-4576622533e93c0978227ff92519a8fe error=host_memory_exhausted

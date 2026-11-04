@@ -1,0 +1,7 @@
+{
+  "status": "FAILED",
+  "started": 1793773875.1148527,
+  "original_started": 1793773874.9052422,
+  "error": "<ValidationError: \"{'error': {'message': 'Gateway rejected request', 'type': 'gateway_error', 'param': None, 'code': 'gateway_unauthorized'}} is not valid under any of the given schemas\">",
+  "finished": 1793773914.8923175
+}

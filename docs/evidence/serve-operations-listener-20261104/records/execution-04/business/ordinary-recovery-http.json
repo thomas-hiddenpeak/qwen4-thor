@@ -1,0 +1,13 @@
+{
+  "headers": {
+    "Cache-Control": "no-store",
+    "Connection": "keep-alive",
+    "Content-Type": "text/event-stream",
+    "Date": "Wed, 04 Nov 2026 06:37:25 GMT",
+    "Server": "nginx",
+    "Transfer-Encoding": "chunked",
+    "X-Q4T-Gateway-Request-Id": "00111c59adac8c844c007a87cab7b5d0",
+    "X-Request-Id": "agent-4f6df1d48525c9697fda4f393128f5aa"
+  },
+  "status": 200
+}

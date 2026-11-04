@@ -1,0 +1,38 @@
+test_authenticated_local_diagnostic_uses_only_operations_listener (tools.serve_operations_listener.test_tools.Diagnostic.test_authenticated_local_diagnostic_uses_only_operations_listener) ... ok
+test_interval_does_not_join_two_operations_listener_identities (tools.serve_operations_listener.test_tools.Diagnostic.test_interval_does_not_join_two_operations_listener_identities) ... ok
+test_private_credential_never_sent_to_unverified_or_replaced_owner (tools.serve_operations_listener.test_tools.Diagnostic.test_private_credential_never_sent_to_unverified_or_replaced_owner) ... ok
+test_rebound_listener_config_policy_and_anonymous_discovery_are_not_healthy (tools.serve_operations_listener.test_tools.Diagnostic.test_rebound_listener_config_policy_and_anonymous_discovery_are_not_healthy) ... ok
+test_gpu_failure_is_critical_and_bad_release_is_unknown (tools.serve_ops.test_ops.Diagnosis.test_gpu_failure_is_critical_and_bad_release_is_unknown) ... ok
+test_malformed_capabilities_and_protocol_never_leak (tools.serve_ops.test_ops.Diagnosis.test_malformed_capabilities_and_protocol_never_leak) ... ok
+test_observation_loss_or_changed_process_is_unknown (tools.serve_ops.test_ops.Diagnosis.test_observation_loss_or_changed_process_is_unknown) ... ok
+test_restart_bad_previous_reset_and_stale_never_zero (tools.serve_ops.test_ops.Diagnosis.test_restart_bad_previous_reset_and_stale_never_zero) ... ok
+test_valid_snapshot_and_precise_same_instance_delta (tools.serve_ops.test_ops.Diagnosis.test_valid_snapshot_and_precise_same_instance_delta) ... ok
+test_foreign_or_ambiguous_listener_is_unknown (tools.serve_ops.test_ops.Identity.test_foreign_or_ambiguous_listener_is_unknown) ... ok
+test_pid_changed_mid_observation_rejected (tools.serve_ops.test_ops.Identity.test_pid_changed_mid_observation_rejected) ... ok
+test_process_listener_executable_and_namespace_binding (tools.serve_ops.test_ops.Identity.test_process_listener_executable_and_namespace_binding) ... ok
+test_release_and_file_limit_symlink_fail_closed (tools.serve_ops.test_ops.Identity.test_release_and_file_limit_symlink_fail_closed) ... ok
+test_configuration_projection_and_types (tools.serve_ops.test_ops.MetricContract.test_configuration_projection_and_types) ... ok
+test_disabled_and_unknown_are_distinct (tools.serve_ops.test_ops.MetricContract.test_disabled_and_unknown_are_distinct) ... ok
+test_impossible_states_slots_and_untrusted_expansion (tools.serve_ops.test_ops.MetricContract.test_impossible_states_slots_and_untrusted_expansion) ... ok
+test_json_duplicate_depth_nonfinite_and_root (tools.serve_ops.test_ops.MetricContract.test_json_duplicate_depth_nonfinite_and_root) ... ok
+test_no_silent_missing_duplicate_or_label_replacement (tools.serve_ops.test_ops.MetricContract.test_no_silent_missing_duplicate_or_label_replacement) ... ok
+test_nonfinite_fractional_negative_and_overflow_rejected (tools.serve_ops.test_ops.MetricContract.test_nonfinite_fractional_negative_and_overflow_rejected) ... ok
+test_readiness_status_contract (tools.serve_ops.test_ops.MetricContract.test_readiness_status_contract) ... ok
+test_real_archived_family_projection_and_integer_precision (tools.serve_ops.test_ops.MetricContract.test_real_archived_family_projection_and_integer_precision) ... ok
+test_allowlist_id_correlation_without_sensitive_payload (tools.serve_ops.test_ops.PrivacyAndRetention.test_allowlist_id_correlation_without_sensitive_payload) ... ok
+test_private_immutable_bundle_integrity (tools.serve_ops.test_ops.PrivacyAndRetention.test_private_immutable_bundle_integrity) ... ok
+test_public_permission_extra_file_and_symlink_refused (tools.serve_ops.test_ops.PrivacyAndRetention.test_public_permission_extra_file_and_symlink_refused) ... ok
+test_retention_change_aborts_before_deleting_any_bundle (tools.serve_ops.test_ops.PrivacyAndRetention.test_retention_change_aborts_before_deleting_any_bundle) ... ok
+test_retention_dry_run_then_owned_apply_preserves_unknown (tools.serve_ops.test_ops.PrivacyAndRetention.test_retention_dry_run_then_owned_apply_preserves_unknown) ... ok
+test_retention_limits_and_root_replacement_refused (tools.serve_ops.test_ops.PrivacyAndRetention.test_retention_limits_and_root_replacement_refused) ... ok
+test_rotation_is_unknown (tools.serve_ops.test_ops.PrivacyAndRetention.test_rotation_is_unknown) ... ok
+test_tail_truncation_event_limit_and_link_refusal (tools.serve_ops.test_ops.PrivacyAndRetention.test_tail_truncation_event_limit_and_link_refusal) ... ok
+test_exact_framing_utf8_and_header_whitelist (tools.serve_ops.test_ops.Transport.test_exact_framing_utf8_and_header_whitelist) ... ok
+test_only_direct_numeric_loopback (tools.serve_ops.test_ops.Transport.test_only_direct_numeric_loopback) ... ok
+test_response_limit_and_expired_group_deadline (tools.serve_ops.test_ops.Transport.test_response_limit_and_expired_group_deadline) ... ok
+test_slow_drip_obeys_absolute_deadline_no_proxy_or_retry (tools.serve_ops.test_ops.Transport.test_slow_drip_obeys_absolute_deadline_no_proxy_or_retry) ... ok
+
+----------------------------------------------------------------------
+Ran 33 tests in 0.083s
+
+OK

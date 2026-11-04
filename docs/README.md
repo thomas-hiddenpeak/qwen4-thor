@@ -24,6 +24,8 @@
 [同PID受压恢复、64轮混合业务与资源核算结果](SERVE_PRESSURE_RESULT_2026-11-03.md)。
 [SRV-12本地运营能力与有界验收合同](SERVE_OPERATIONS_2026-11-03.md)；
 [只读诊断、告警处置与日志/诊断包留存手册](SERVE_OPERATIONS.md)。
+[SRV-12g独立运维监听合同](SERVE_OPERATIONS_LISTENER_2026-11-04.md)及
+[慢头隔离、双Key闭环与默认交付](SERVE_OPERATIONS_LISTENER_RESULT_2026-11-04.md)。
 [SRV-12限定接受、实际工具/监控、owner告警修订与剩余缺口](SERVE_OPERATIONS_RESULT_2026-11-03.md)。
 [SRV-12b观测连接隔离有界验收合同](SERVE_OBSERVATION_CAPACITY_2026-11-03.md)与
 [实际受载、真实工具恢复和默认交付结果](SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md)。

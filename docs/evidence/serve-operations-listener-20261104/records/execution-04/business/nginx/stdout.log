@@ -1,0 +1,9 @@
+{"gateway_id":"93fab752c8a1b141544cdd728800d5d4","client":"alpha","lane":"","status":404,"bytes":117,"seconds":0.000,"upstream_status":"","connection_limit":"","rate_limit":"","source_allowed":1}
+{"gateway_id":"17bc97ddc0f1914d512e625408667813","client":"beta","lane":"control","status":404,"bytes":140,"seconds":0.000,"upstream_status":"404","connection_limit":"PASSED","rate_limit":"PASSED","source_allowed":1}
+{"gateway_id":"b6a9ec297d0d57830f988d112655162a","client":"alpha","lane":"control","status":202,"bytes":25,"seconds":0.000,"upstream_status":"202","connection_limit":"PASSED","rate_limit":"PASSED","source_allowed":1}
+{"gateway_id":"8891c7a463bb59da6706d87ff276fb71","client":"alpha","lane":"data","status":200,"bytes":418,"seconds":0.234,"upstream_status":"200","connection_limit":"PASSED","rate_limit":"PASSED","source_allowed":1}
+{"gateway_id":"00111c59adac8c844c007a87cab7b5d0","client":"alpha","lane":"data","status":200,"bytes":2221,"seconds":0.357,"upstream_status":"200","connection_limit":"PASSED","rate_limit":"PASSED","source_allowed":1}
+{"gateway_id":"e41cb26d48503b463e1d22217a07d7d0","client":"alpha","lane":"data","status":200,"bytes":1203,"seconds":3.763,"upstream_status":"200","connection_limit":"PASSED","rate_limit":"PASSED","source_allowed":1}
+{"gateway_id":"0048df9781851a4b10e33306cd4b2da5","client":"alpha","lane":"data","status":200,"bytes":1163,"seconds":4.048,"upstream_status":"200","connection_limit":"PASSED","rate_limit":"PASSED","source_allowed":1}
+{"gateway_id":"0efa53d34a82c81dac8b01897fc14a49","client":"beta","lane":"data","status":200,"bytes":1210,"seconds":3.737,"upstream_status":"200","connection_limit":"PASSED","rate_limit":"PASSED","source_allowed":1}
+{"gateway_id":"9a50a4d74906009bbdafa1abfabf5732","client":"beta","lane":"data","status":200,"bytes":1163,"seconds":4.030,"upstream_status":"200","connection_limit":"PASSED","rate_limit":"PASSED","source_allowed":1}

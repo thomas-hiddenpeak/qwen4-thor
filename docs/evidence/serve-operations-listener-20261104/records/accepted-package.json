@@ -1,0 +1,12 @@
+{
+  "http": 0,
+  "managed_lifecycle_accepted": false,
+  "package": {
+    "binary_sha256": "7eff020de66b96f3175b3e123909be9e2f58142d54d1dd5992750d23cbe9c769",
+    "manifest_sha256": "c4775a10cf6c2d308729a0e6decd0f1178d4aa8f27f50391d7b090e96e1a349a",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-operations-listener-20261104/accepted-backend"
+  },
+  "prepared_verified": true,
+  "starts": 0,
+  "version": 6
+}

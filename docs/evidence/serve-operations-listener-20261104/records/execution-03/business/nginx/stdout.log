@@ -1,0 +1,4 @@
+{"gateway_id":"c2c1823709d9c5875ef21fab88acfc54","client":"alpha","lane":"control","status":200,"bytes":109,"seconds":0.000,"upstream_status":"200","connection_limit":"PASSED","rate_limit":"PASSED","source_allowed":1}
+{"gateway_id":"7eb71ad350326d73cdffd75ed44a6c67","client":"alpha","lane":"control","status":200,"bytes":11343,"seconds":0.000,"upstream_status":"200","connection_limit":"PASSED","rate_limit":"PASSED","source_allowed":1}
+{"gateway_id":"5564161990a27f94acaeb002c045e71e","client":"","lane":"control","status":401,"bytes":114,"seconds":0.000,"upstream_status":"","connection_limit":"","rate_limit":"","source_allowed":1}
+{"gateway_id":"6bdb7d2f21c5492a7201ae45ca6aa5af","client":"alpha","lane":"data","status":200,"bytes":263,"seconds":0.151,"upstream_status":"200","connection_limit":"PASSED","rate_limit":"PASSED","source_allowed":1}

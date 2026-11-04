@@ -1,0 +1,42 @@
+{
+  "include/q4t/server/chat_server.h": {
+    "after": "7699817e7a1a4b7792ba990f8f475700695e534577b444d997bc7375e3224267",
+    "before": "027cea7189e7d960ebb967a851bd86ec66c25a85edae5b8d99c3035f6c91e6a6"
+  },
+  "include/q4t/server/http_connection.h": {
+    "after": "dcd12b3f713b9c0318b2f394ee55fb5666a2cfdb092e9a0cb4697cb2e61a4d54",
+    "before": "a30ff01c169aa8c992d76d44a698b7451adbbc6e0c9041798998c37d1da0bfe9"
+  },
+  "include/q4t/server/server_options.h": {
+    "after": "87eeefdc39085628d020b752e1cf24cb573e9bbf76e64e1fdf565bcdefb41210",
+    "before": "5aa3b258c847d6126a422f32ebbcfc91515bc7567faca777a0c0d44bc8de625f"
+  },
+  "src/main.cpp": {
+    "after": "a289b15b8876f4314fc8678075d51359bfdff7dd57df04998946fa985131df7d",
+    "before": "b1af2201e4b376a346b9477645c607ccccddcb10811b1a43aeaf7cd311d1da0d"
+  },
+  "src/server/chat_capabilities.cpp": {
+    "after": "4081e64dd459db48927e9032d73780d8841b8c906dcd744a11ee74adc24a2898",
+    "before": "efd007dd8ba59bcbceb0b5100501fa45ac2d7b10b52d3168d67a8ab38c6ed023"
+  },
+  "src/server/chat_http.cpp": {
+    "after": "6dcf4af26ea45d9c201efb4bf5c99f504a1aa460ff2c3af589f3dcfc984bcf4d",
+    "before": "6e775c5b9f000008079ec74ecb7631711c12d541f8eebeca66161b1b8ed28f8a"
+  },
+  "src/server/chat_metrics.cpp": {
+    "after": "3c2738770c331f3bc8e66e7917b12123478c46d70a7f5b6fef53d4e5544f8b26",
+    "before": "ba9716b71dde5fc29f64388a12840b513a213d29b45ee0efa7202857b2bb7c92"
+  },
+  "src/server/chat_plan.cpp": {
+    "after": "bf2118f123823731b000f5aa10959c0f8018b5fba25f37e39c4bd85ac168eafb",
+    "before": "34382bcc3e36ff8dbecfbd1d1c87bdfa8b7a9661e2392f6243fd52c97a62d70f"
+  },
+  "src/server/chat_server.cpp": {
+    "after": "3dd04e05f2e7e7d3708ef2b7dcc58b2bfb2bb4c60a6eb6a527f741f32856cbad",
+    "before": "58b74a0372cff73273cd29c08d9b0d9c23142397caad57f5e0b4e4d9c2d67ada"
+  },
+  "src/server/server_options.cpp": {
+    "after": "813cdf5912f28ab23c200220af797158787f40fb1cb1cd7b8e2a1a1d36a03bad",
+    "before": "30fc178732559cc73fc202e28e8e9e86f9be1efaae70ffaddf3b47cfd3ad6d7d"
+  }
+}

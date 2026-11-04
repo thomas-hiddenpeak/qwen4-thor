@@ -1,0 +1,23 @@
+{
+  "diagnostic": {
+    "bytes": 9045,
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-operations-listener-20261104/execution-03/business/saturated-diagnostic.json",
+    "sha256": "544fa4b02963434ddc4760954e9c003e0faaccd8a74b97f7394529c49215e189"
+  },
+  "native": {
+    "bytes": 2148,
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-operations-listener-20261104/execution-03/business/native/stdout.log",
+    "sha256": "5486fe96f6a5c8d7fb088288be93c765b1bdfafe8ba4d9e51dab293d91d9177a"
+  },
+  "native_processes_started": 0,
+  "original_failure": {
+    "bytes": 452,
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-operations-listener-20261104/execution-03/business/result.json",
+    "sha256": "bcd46acae4e35543f5b25cd2f4b57ae6f5c9168b5030d0fa18f3a4be89562926"
+  },
+  "supervisor": {
+    "bytes": 7905,
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-operations-listener-20261104/execution-03/business/saturated-supervisor.json",
+    "sha256": "00216ef71c3b26a3a2ac72dba150f3fb6b41ce44e374f93cc8318bd7ae7a0dda"
+  }
+}

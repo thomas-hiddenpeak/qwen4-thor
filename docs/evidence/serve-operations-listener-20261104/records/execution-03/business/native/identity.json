@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-operations-listener-20261104/package-native-fix/candidate/q4t_http_lifecycle_tests"
+  ],
+  "pgid": 2648984,
+  "pid": 2649009,
+  "ppid": 2648984,
+  "registered_monotonic": 1963957.762662271,
+  "start_ticks": 196395776,
+  "state": "R"
+}

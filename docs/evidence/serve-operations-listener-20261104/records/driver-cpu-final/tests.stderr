@@ -1,0 +1,10 @@
+test_candidate_command_matches_managed_profile_and_both_ports (tools.serve_operations_listener.test_stage.Driver.test_candidate_command_matches_managed_profile_and_both_ports) ... ok
+test_cpu_gate_accepts_only_the_reviewed_diagnostic_repair (tools.serve_operations_listener.test_stage.Driver.test_cpu_gate_accepts_only_the_reviewed_diagnostic_repair) ... ok
+test_generation_and_long_run_scope_is_bounded (tools.serve_operations_listener.test_stage.Driver.test_generation_and_long_run_scope_is_bounded) ... ok
+test_outputs_preserve_each_client_budget_without_mutating_caller (tools.serve_operations_listener.test_stage.Driver.test_outputs_preserve_each_client_budget_without_mutating_caller) ... ok
+test_saturation_cannot_be_inferred_from_ready_or_partial_pressure (tools.serve_operations_listener.test_stage.Driver.test_saturation_cannot_be_inferred_from_ready_or_partial_pressure) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.025s
+
+OK
