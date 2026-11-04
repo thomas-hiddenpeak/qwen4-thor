@@ -5,6 +5,7 @@
 实际接入：[1长主agent＋3子代理，suffix与两级缓存完整示例](AGENT_CACHE_INTEGRATION.md)。
 应用服务：[能力与 OpenAI 兼容矩阵、vLLM 差距与分阶段计划](APPLICATION_SERVICE.md)。
 [SRV-12i发布声明、独立运维与host域组合短验](SERVE_MANAGED_PROFILE_2026-11-04.md)。
+[SRV-12i同锁70秒、真实工具及152原件验收结果](SERVE_MANAGED_PROFILE_RESULT_2026-11-04.md)。
 [SRV-11j持久任务网络截止时间修复与有界验收](SERVE_TASK_DEADLINE_2026-11-04.md)。
 [SRV-11j首轮TLS探针退出重绑失败与定向修正](SERVE_TASK_DEADLINE_REPAIR_2026-11-04.md)。
 [SRV-11j全程网络期限、真实恢复与249原件验收结果](SERVE_TASK_DEADLINE_RESULT_2026-11-04.md)。

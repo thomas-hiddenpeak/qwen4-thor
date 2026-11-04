@@ -41,14 +41,18 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
-SRV-12i[声明/独立运维/host域组合已冻结](SERVE_MANAGED_PROFILE_2026-11-04.md)：
-9项新增CPU首轮通过，含八种显式配置组合、发布副本/依赖绑定、READY
-不能掩盖host失败、缺少委派在启动前拒绝及采样失败仍清理。沿用当前
-7eff020d/cc83bf3a，不改生产实现；下一步在同锁运行1模型/4响应2工具、
-两代TLS网关及136公共满额的组合短验。初次prepare误取内层nginx路径，
-零模型/HTTP；失败现场保持，1定向路径检查通过、原9项及生产身份复用。
-改用已校验manifest中的外层可执行文件。尚未实机接受，不安装常驻服务。
-高级配置按执行需要启用，长验仍交用户，持续目标active。
+SRV-12i[声明/独立运维/host域组合已限定接受](SERVE_MANAGED_PROFILE_RESULT_2026-11-04.md)：
+13cfaffb驱动，新v6包7a5d411c；9+1 CPU含八配置组合通过，原prepare
+路径错误零业务失败保持。实机1模型/2网关/2错误上游启动拒绝、4响应
+2真实工具/引用及512/64预算通过；136公共满额下新READY/诊断/发现
+正常，实际capabilities与声明一致。88 host采样观察四grammar继承
+payload，全部回收；记账峰值15.924GiB/无high/max/OOM/pids事件。
+同锁70.047570秒/65+24重叠观察COMPLETED，scope/监听/GPU/原锁释放，
+10秒未复起，容器空/SOAR masked；152原件/296本机引用核对。首份归档
+误采尚未关闭的自身stdout导致摘要变化，原件保持、仅离线重新采集。
+默认7eff020d/cc83bf3a、222运行来源/Key/旧包/day保持，无常驻安装。
+下一步修正托管启动仅预检主端口而遗漏运维端口冲突；部署按需启用、
+长验交用户，物理RAM边界保持，持续目标active。
 
 SRV-11j[持久任务全程网络期限已限定交付](SERVE_TASK_DEADLINE_RESULT_2026-11-04.md)：
 acf6f3d1统一TCP/TLS/分段写/底层读期限及11i来源登记；16有效CPU/2
