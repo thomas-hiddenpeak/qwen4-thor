@@ -122,7 +122,7 @@ def ready(path):
 def enable(root, *, max_keys=4096, max_bytes=1024**3, min_retain_seconds=86400):
     selected = limits(max_keys, max_bytes, min_retain_seconds)
     root, meta = store.checked_root(root)
-    with store.lock(root / ".lock"):
+    with store.root_lock(root):
         if (root / "retention").exists():
             path, policy = extension(root, meta); ready(path)
             store.require(policy["limits"] == selected, "existing retention policy cannot be replaced")
@@ -203,13 +203,14 @@ def files(folder, *, expected=None, partial=False, hashes=True):
 
 def key_state(value, meta, name):
     from tools.project_tasks import migration
-    store.require(set(value) == {"base", "events"} and len(value["events"]) <= 9, "archive key shape")
+    store.require(set(value) == {"base", "events"} and len(value["events"]) <= 17, "archive key shape")
     base = value["base"]
     store.require(base["format"] == KEY_FORMAT and base["store_id"] == meta["store_id"] and base["task_id"] == name and
         base["terminal"]["state"] in TERMINAL and base["payload_bytes"] == sum(row["bytes"] for row in base["files"].values()),
         "archive key identity/terminal")
     state = dict(binding=deepcopy(base["binding"]), payload="retained", rekeys=0, revision=store.digest(base),
-                 plan_ids=[base["archive_plan_sha256"]])
+                 plan_ids=[base["archive_plan_sha256"]], placements=0,
+                 files=deepcopy(base["files"]), payload_identity=base["payload_identity"])
     for seq, event in enumerate(value["events"], 1):
         kind, payload = event["kind"], event["payload"]
         store.require(event["seq"] == seq and event["previous"] == state["revision"] and
@@ -219,6 +220,16 @@ def key_state(value, meta, name):
         if kind == "prune":
             store.require(state["payload"] == "retained", "payload already pruned")
             state["payload"] = "purged"
+        elif kind == "placement":
+            store.require(state["payload"] == "retained" and state["placements"] < 8 and
+                payload["before"] == store.digest(placement(state)) and
+                set(payload["file_identities"]) == set(state["files"]), "archive placement transition")
+            for item in (payload["directory_identity"], *payload["file_identities"].values()):
+                store.require(isinstance(item, list) and len(item) == 2 and
+                    all(type(number) is int and number >= 0 for number in item), "archive placement identity")
+            for filename, item in payload["file_identities"].items():
+                state["files"][filename]["identity"] = item
+            state.update(payload_identity=payload["directory_identity"], placements=state["placements"] + 1)
         else:
             store.require(kind == "rekey" and state["rekeys"] < 8 and payload["before"] == state["binding"], "archive key rotation")
             migration.same_identity(state["binding"], payload["after"])
@@ -226,6 +237,10 @@ def key_state(value, meta, name):
             state.update(binding=deepcopy(payload["after"]), rekeys=state["rekeys"] + 1)
         state["revision"] = event["digest"]; state["plan_ids"].append(payload["plan_sha256"])
     return state
+
+
+def placement(state):
+    return {key: state[key] for key in ("files", "payload_identity")}
 
 
 def load_key(path, meta, name):
@@ -255,7 +270,7 @@ def lookup(root, binding, key, *, spec=None, include_answer=False):
     from tools.project_tasks import engine
     root, meta = store.checked_root(root)
     name = store.task_name(binding["client_id"], key)
-    with store.lock(root / ".lock", exclusive=False):
+    with store.root_lock(root, exclusive=False):
         path, _ = extension(root, meta); ready(path)
         value, state = load_key(path, meta, name)
         store.require(state["binding"] == binding, "archived task/client binding changed")
@@ -264,8 +279,8 @@ def lookup(root, binding, key, *, spec=None, include_answer=False):
         result = public(value, state)
         if include_answer and state["payload"] == "retained":
             folder = path / "payloads" / name
-            store.require(identity(store.private(folder, True)) == value["base"]["payload_identity"], "archive directory changed")
-            files(folder, expected=value["base"]["files"])
+            store.require(identity(store.private(folder, True)) == state["payload_identity"], "archive directory changed")
+            files(folder, expected=state["files"])
             with store.lock(folder / ".lock", exclusive=False):
                 db = store.connection(folder)
                 try:
@@ -290,8 +305,8 @@ def inventory(root, meta, path, policy):
         total += len(raw.encode())
         folder = path / "payloads" / name
         if state["payload"] == "retained":
-            store.require(identity(store.private(folder, True)) == value["base"]["payload_identity"], "payload identity")
-            actual = files(folder, expected=value["base"]["files"], hashes=False)
+            store.require(identity(store.private(folder, True)) == state["payload_identity"], "payload identity")
+            actual = files(folder, expected=state["files"], hashes=False)
             total += sum(row["bytes"] for row in actual.values()); count += 1
         else: store.require(not os.path.lexists(folder), "purged payload reappeared")
         keys.append(name)
@@ -306,7 +321,7 @@ def inventory(root, meta, path, policy):
 
 def status(root):
     root, meta = store.checked_root(root)
-    with store.lock(root / ".lock", exclusive=False):
+    with store.root_lock(root, exclusive=False):
         path, policy = extension(root, meta)
         operation = control(path, "operation")
         if operation is not None:
@@ -353,8 +368,8 @@ def build(root, meta, path, policy, name, kind, binding, reason):
             store.require(state["binding"] == binding and state["payload"] == "retained", "payload/client state")
             store.require(time.time_ns() >= value["base"]["purge_after_ns"], "minimum payload retention has not elapsed")
             folder = path / "payloads" / name
-            store.require(identity(store.private(folder, True)) == value["base"]["payload_identity"], "payload directory changed")
-            files(folder, expected=value["base"]["files"])
+            store.require(identity(store.private(folder, True)) == state["payload_identity"], "payload directory changed")
+            files(folder, expected=state["files"])
         else:
             store.require(kind == "rekey" and state["rekeys"] < 8, "archive key rotation limit")
             migration.same_identity(state["binding"], binding)
@@ -366,7 +381,7 @@ def prepare(root, binding, key, kind, output, reason):
     root, meta = store.checked_root(root); name = store.task_name(binding["client_id"], key)
     output = store.local(output); store.private(output.parent, True)
     store.require(not output.is_relative_to(root), "retention plan must be outside managed store")
-    with store.lock(root / ".lock"), ExitStack() as stack:
+    with store.root_lock(root), ExitStack() as stack:
         path, policy = extension(root, meta); ready(path)
         if kind == "archive": stack.enter_context(store.lock(root / "tasks" / name / ".lock"))
         plan = build(root, meta, path, policy, name, kind, binding, reason)
@@ -460,10 +475,10 @@ def finish_locked(root, meta, path, operation, checkpoint=None):
                 os.rename(active, payload); store.sync(active.parent); store.sync(payload.parent)
             checkpoint("payload_moved", operation)
         elif kind == "prune":
-            base = operation["before"]["base"]
+            prior = key_state(operation["before"], meta, name)
             if os.path.lexists(payload):
-                store.require(identity(store.private(payload, True)) == base["payload_identity"], "prune directory changed")
-                remaining = files(payload, expected=base["files"], partial=True)
+                store.require(identity(store.private(payload, True)) == prior["payload_identity"], "prune directory changed")
+                remaining = files(payload, expected=prior["files"], partial=True)
                 for filename in sorted(remaining, key=lambda item: (item == ".lock", item)):
                     file = payload / filename
                     store.require(identity(store.private(file)) == remaining[filename]["identity"] and
@@ -499,7 +514,7 @@ def apply(root, binding, key, plan_path, expected, *, checkpoint=None):
         plan["format"] == PLAN_FORMAT and plan["root"] == str(root) and plan["store_id"] == meta["store_id"] and
         plan["root_identity"] == [meta["root_device"], meta["root_inode"]] and plan["name"] == name and
         plan["binding"] == binding, "retention plan/destination changed")
-    with store.lock(root / ".lock"), ExitStack() as stack:
+    with store.root_lock(root), ExitStack() as stack:
         path, policy = extension(root, meta)
         operation = control(path, "operation")
         if operation is not None:
@@ -527,7 +542,7 @@ def apply(root, binding, key, plan_path, expected, *, checkpoint=None):
 
 def finish(root, expected, *, checkpoint=None):
     root, meta = store.checked_root(root)
-    with store.lock(root / ".lock"):
+    with store.root_lock(root):
         path, _ = extension(root, meta)
         operation = control(path, "operation")
         if operation is None:

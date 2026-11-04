@@ -20,6 +20,7 @@ RUNTIME_FILES = (
     "tools/project_tasks/transport.py", "tools/project_tasks/runner.py",
     "tools/project_tasks/migration.py", "tools/project_tasks/compatible_runtimes.json",
     "tools/project_tasks/retention.py",
+    "tools/project_tasks/backup.py",
     "tools/examples/chat_client.py", "tools/examples/project_records.py",
     "tools/examples/project_query.py", "tools/examples/agent_tools_demo.py",
     "tools/examples/tool_recovery.py")

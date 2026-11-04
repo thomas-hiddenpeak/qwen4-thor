@@ -105,7 +105,7 @@ def init(path, max_tasks=16):
     return dict(created=True, max_tasks=max_tasks)
 
 
-def checked_root(path):
+def checked_root(path, *, allow_handoff=False, logical_root=None):
     path = local(path)
     info = private(path, True)
     private(path / "tasks", True)
@@ -118,12 +118,27 @@ def checked_root(path):
             meta["reserved_bytes_per_task"] == RESERVED_BYTES,
             "store identity/policy changed")
     entries = {p.name for p in path.iterdir()}
-    require({".lock", "store.json", "tasks"} <= entries <=
-            {".lock", "store.json", "tasks", "retention"}, "unknown store entry")
+    allowed = {".lock", "store.json", "tasks", "retention", "restored.json"}
+    if allow_handoff:
+        allowed.update(("handoff.json", ".handoff.next"))
+    require({".lock", "store.json", "tasks"} <= entries <= allowed, "unknown store entry or retired store")
+    if "restored.json" in entries:
+        from tools.project_tasks import backup
+        backup.check_placement(path, meta, logical_root=logical_root)
     if "retention" in entries:
         from tools.project_tasks import retention
         retention.extension(path, meta)
     return path, meta
+
+
+@contextmanager
+def root_lock(path, *, exclusive=True, allow_handoff=False, logical_root=None):
+    options = dict(allow_handoff=allow_handoff, logical_root=logical_root)
+    path, _ = checked_root(path, **options)
+    with lock(path / ".lock", exclusive=exclusive):
+        # A checked path can be retired while this process is between its
+        # first lookup and lock acquisition. Never use that stale approval.
+        yield checked_root(path, **options)
 
 
 def task_name(client_id, key):
@@ -159,7 +174,7 @@ def connection(path):
 def create(root, name, spec):
     root, meta = checked_root(root)
     require(re.fullmatch(r"[0-9a-f]{64}", name), "task identity")
-    with lock(root / ".lock"):
+    with root_lock(root):
         from tools.project_tasks import retention
         if retention.present(root, meta, name):
             raise ArchivedTask("task key was archived")
@@ -251,7 +266,7 @@ def open_task(root, name, *, exclusive=True):
     with ExitStack() as stack:
         # Stabilize lookup and claim against archive rename; release the root
         # lock before any model work so other task keys can still proceed.
-        with lock(root / ".lock", exclusive=False):
+        with root_lock(root, exclusive=False):
             from tools.project_tasks import retention
             if retention.present(root, meta, name):
                 raise ArchivedTask("task key was archived")

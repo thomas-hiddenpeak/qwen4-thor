@@ -55,6 +55,27 @@
         "tools/project_tasks/store.py": "d1816b8fe27b10ea8f7bcf18db12c2ecb545f985980146f6495a28eb3417f590",
         "tools/project_tasks/transport.py": "d841d7116ff023b5f83b0418cf2841df4a910ffd91dd7dbea66f2daa09a9bfde"
       }
+    },
+    {
+      "release": "srv11d-241bf36c",
+      "budget_profile": "q4t-project-budget-v1",
+      "runtime_sources": {
+        "tools/examples/agent_tools_demo.py": "acf6ee24c66d372d95ec08e672c2ec5dc423999890a537b9495a96ced4d89ca4",
+        "tools/examples/chat_client.py": "a2613333395a511b7741d8ce5fac125ba44dd9ec92fa198aa90ef5f9ba662f32",
+        "tools/examples/project_query.py": "dbf70665fef0d144d18fc0ef16b04029a7dd595664efe45b7de07579b3997206",
+        "tools/examples/project_records.py": "abd47d37ddcbd482f147ef172ee01e4a8be3bfcb78f29f7156d00b0073eb8b3c",
+        "tools/examples/tool_recovery.py": "e3fba1d9d028ff532c59e826b76e4434b64599a8b3c42b79d4ae0c1c59341f90",
+        "tools/project_tasks/budget.py": "7328c9524eac3257a1b841089d9889975915d96b487d7886196106b560dc0412",
+        "tools/project_tasks/compatible_runtimes.json": "0cff9b079ec9bbb235ea7950d21d772417feb37c000c104b43386c541792d2d6",
+        "tools/project_tasks/engine.py": "06cc52ee845b5bb2c4508b1c685d16505f6ce2600688d9fe34225995dca5d178",
+        "tools/project_tasks/migration.py": "30ba3c0a73b3515e2db0ab3b150a1d4057bfaf3bce85ba48702d501f7fccdbfe",
+        "tools/project_tasks/retention.py": "84aa32d31f9c4c6404b7852d62c5c43979826ca2831267a7bfd81103a17f9647",
+        "tools/project_tasks/runner.py": "a22020b41ab4c1f7096c3dabb05e8640412cbc28dc23e4e0fce7d68d6dbd5737",
+        "tools/project_tasks/store.py": "6808b52683b63d606bb777804987179a5c7424136e63399ba6571a4a3dad6687",
+        "tools/project_tasks/transport.py": "d841d7116ff023b5f83b0418cf2841df4a910ffd91dd7dbea66f2daa09a9bfde"
+      },
+      "evidence": "docs/evidence/serve-task-archive-20261104/records.tar.gz",
+      "archive_sha256": "344f022f29619e3eacd82510c9119576e751de7354c03aeb2c208982fb8168d6"
     }
   ]
 }
