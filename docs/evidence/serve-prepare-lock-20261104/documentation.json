@@ -1,0 +1,80 @@
+{
+  "passed": true,
+  "scope": "added Markdown local targets only; no historical all-repo sweep",
+  "links": [
+    {
+      "source": "docs/APPLICATION_SERVICE.md",
+      "target": "SERVE_CONTRACT_REAUDIT_2026-11-04.md"
+    },
+    {
+      "source": "docs/APPLICATION_SERVICE.md",
+      "target": "SERVE_PREPARE_LOCK_RESULT_2026-11-04.md"
+    },
+    {
+      "source": "docs/APPLICATION_SERVICE.md",
+      "target": "SERVE_PREPARE_LOCK_RESULT_2026-11-04.md"
+    },
+    {
+      "source": "docs/APPLICATION_SERVICE.md",
+      "target": "SERVE_PREPARE_LOCK_RESULT_2026-11-04.md"
+    },
+    {
+      "source": "docs/PHASES.md",
+      "target": "SERVE_PREPARE_LOCK_RESULT_2026-11-04.md"
+    },
+    {
+      "source": "docs/README.md",
+      "target": "SERVE_PREPARE_LOCK_RESULT_2026-11-04.md"
+    },
+    {
+      "source": "docs/README.md",
+      "target": "SERVE_TASK_STARTUP_PROTOCOL_RESULT_2026-11-04.md"
+    },
+    {
+      "source": "docs/SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "target": "SERVE_PREPARE_LOCK_RESULT_2026-11-04.md"
+    },
+    {
+      "source": "docs/SERVE_INDUSTRIAL_PLAN_2026-11-03.md",
+      "target": "SERVE_TASK_DEADLINE_RESULT_2026-11-04.md"
+    },
+    {
+      "source": "docs/SERVE_INDUSTRIAL_PLAN_2026-11-03.md",
+      "target": "SERVE_PREPARE_LOCK_RESULT_2026-11-04.md"
+    },
+    {
+      "source": "docs/STATUS.md",
+      "target": "SERVE_PREPARE_LOCK_RESULT_2026-11-04.md"
+    },
+    {
+      "source": "docs/SERVE_PREPARE_LOCK_RESULT_2026-11-04.md",
+      "target": "SERVE_PREPARE_LOCK_2026-11-04.md"
+    },
+    {
+      "source": "docs/SERVE_PREPARE_LOCK_RESULT_2026-11-04.md",
+      "target": "evidence/serve-prepare-lock-20261104/result.json"
+    },
+    {
+      "source": "docs/SERVE_PREPARE_LOCK_RESULT_2026-11-04.md",
+      "target": "evidence/serve-prepare-lock-20261104/manifest.json"
+    },
+    {
+      "source": "docs/SERVE_PREPARE_LOCK_RESULT_2026-11-04.md",
+      "target": "../tools/serve_prepare_lock/report.py"
+    }
+  ],
+  "files": {
+    "docs/APPLICATION_SERVICE.md": "46372dfd08e07faaef7ada6dc99092845318261aa663df585d7680abcbf87df6",
+    "docs/PHASES.md": "916b86b0bea4ddc1f7fc7b4d135d74d9f5a160212bbed94e3f88640b4ec67bc4",
+    "docs/README.md": "db3a492a3522d156243dc4b562d96c16864a7207e0270e50db8efb6a2b74a86b",
+    "docs/SERVE_CONTRACT_REAUDIT_2026-11-04.md": "c1c0189e96138e4c5be829b2b1b75e96c8de12bc11e4bb4310b9d9e80e4e49b8",
+    "docs/SERVE_INDUSTRIAL_PLAN_2026-11-03.md": "1f54eace4b005d3528f8b280c1dc0b291dae7d0aef29b9f91922316747c66cf8",
+    "docs/SERVE_PREPARE_LOCK_RESULT_2026-11-04.md": "ac411734e968c0c9e149cff4c33b6a0ce8d15229298ef61b07abe3218969b8a9",
+    "docs/STATUS.md": "9b5d8b4a99399bfeec3b4aa47c8208c3ae6865ed232750ab6c4de1f7c9ecb696",
+    "docs/log/2026-11-04.md": "b0749198a774a246098a735208656228274f0253fbf1292a26adedb59ccbd581"
+  },
+  "source_commit": "530824baa4b2a5bbb6f6a1c384c28f631ee2cff6",
+  "gpu": 0,
+  "http": 0,
+  "models": 0
+}

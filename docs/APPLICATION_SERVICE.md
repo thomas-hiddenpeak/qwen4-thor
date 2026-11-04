@@ -7,8 +7,9 @@
 
 当前发布身份和下一项工作只在[STATUS](STATUS.md)维护；本页维护能力与
 边界。原逐阶段叙述移入[历史快照](APPLICATION_SERVICE_HISTORY_2026-11-04.md)，
-原结果、失败、证据和日志均保留。本次[合同复核](SERVE_CONTRACT_REAUDIT_2026-11-04.md)
-只核对源码、文档与封存记录，没有新增模型或HTTP测试。
+原结果、失败、证据和日志均保留。[SRV-20合同复核](SERVE_CONTRACT_REAUDIT_2026-11-04.md)
+只核对源码与证据；后续[03c锁等待取消](SERVE_PREPARE_LOCK_RESULT_2026-11-04.md)
+已新增原生/真实工具短验并交付默认。
 
 ## 边界与成熟度
 
@@ -19,6 +20,8 @@
 [11k当前协议任务交接](SERVE_TASK_STARTUP_PROTOCOL_RESULT_2026-11-04.md)
 分别证明。12l保留首轮监控归属错误的ENV_ABORT，采用通过业务段与定向
 停止补验，不能合成为一次连续全流程成功。
+03c的新默认协议为a56aed21；11k/12l继续绑定旧15d7ccb1，尚未把新
+协议登记到任务迁移或重验新ELF托管生命周期，旧包不会自动升级。
 
 “限定已验”仅指链接结果的源码身份、运行配置、客户端版本和用例范围。
 当前托管包的短验配置为单槽、8192上下文、2048预填充及独立运维端口；
@@ -34,7 +37,7 @@
 
 | 运行方式 / 能力 | 启用边界 | 已有证据与限制 |
 |---|---|---|
-| 本机文本Chat | 原生serve；默认loopback，不要求TLS材料 | JSON/SSE、工具与错误合同；[12k当前默认短验](SERVE_STARTUP_LISTENERS_RESULT_2026-11-04.md) |
+| 本机文本Chat | 原生serve；默认loopback，不要求TLS材料 | JSON/SSE、工具与错误合同；[03c当前默认短验](SERVE_PREPARE_LOCK_RESULT_2026-11-04.md) |
 | 独立运维入口 | 显式`--operations-port`，默认0；仅loopback | 公共慢头满额下运维可用；自身控制/观测仍各4额 |
 | TLS、独立Key、来源限制 | 显式网关包；runner以`--client-policy-file`绑定client策略；CIDR显式选择 | [来源短验](SERVE_GATEWAY_SOURCES_RESULT_2026-11-04.md)与[托管组合](SERVE_MANAGED_PROFILE_RESULT_2026-11-04.md)；实际LAN/DNS/防火墙另验 |
 | 服务托管 / 重启 | 显式prepare/run；重启次数配置，默认0 | [12l](SERVE_SUPERVISOR_DEADLINES_RESULT_2026-11-04.md)；无自动常驻安装或恢复旧请求 |
@@ -78,7 +81,7 @@ schema代替动态预算、模板、语法编译或真实业务验收。
 | unknown fields | 明确拒绝 | 不静默丢弃；Responses/store/metadata 等不可直接透传 |
 | 错误 JSON | 已验，Q4T 错误码 | 显式输入位置param、统一封套与追踪头；01c补齐工具/控制/递归schema路径，转义键不混淆层级；无法归属输入字段的运行错误仍可null |
 | SSE 错误 | 已验 | 首帧后HTTP200内error＋DONE；部分写失败直接截断，不追加第二终态 |
-| POST /v1/requests/cancel / deadline | 已验，Q4T 扩展 | 协作式取消，202仅接受；404不证明未执行；GPU在途计算及阻塞锁等待不承诺即时停止 |
+| POST /v1/requests/cancel / deadline | 已验，Q4T 扩展 | 202仅接受，404不证明未执行；03c准备tokenizer等待已检查自身取消，其他锁/GPU在途计算无硬抢占保证 |
 | request_id / session_id | 已验，Q4T 扩展 | 活跃 ID 去重 / 同进程 KV 缓存；不是持久任务与幂等键 |
 | X-Request-Id | 已验 | 128字节受限ASCII，自动128随机位；与JSON请求/取消ID独立，不提供幂等 |
 | GET /healthz、/livez、/readyz | 限定已验 | 三者语义不同；监听在模型加载前保留，HTTP在Start成功且Run接管后服务；TCP连接成功不等于ready；GPU unhealthy/排空/内存压力或观测失效可使ready503 |
@@ -124,10 +127,10 @@ schema代替动态预算、模板、语法编译或真实业务验收。
 执行队列以[PHASES](PHASES.md#队列与依赖)为准，具体审查位置见
 [本轮复核](SERVE_CONTRACT_REAUDIT_2026-11-04.md)。
 
-1. **基础可用性优先：** 准备阶段的tokenizer锁等待尚未响应等待请求
-   自身的取消。先有界复现，再补等待期取消/截止与资源释放；保留GPU
-   在途计算属于协作取消的边界，不把全部锁或内核称为可抢占。
-2. **客户端边界：** 标准库示例全程网络截止、JS辅助类Key/CA接入分别
+1. **基础等待已补齐：** [03c](SERVE_PREPARE_LOCK_RESULT_2026-11-04.md)
+   已验thinking准备/encode/preflight等待期取消与回收；GPU在途计算
+   仍属于协作取消的边界，不把全部锁或内核称为可抢占。
+2. **下一项客户端边界：** 标准库示例全程网络截止、JS辅助类Key/CA接入分别
    有缺口；按实际选用入口补齐，不把持久客户端的证明推广到全部示例。
 3. **资源与多人SLO：** 当前有配额、没有租户公平或RPM/TPM合同；Thor
    整机物理RAM硬保护尚未证明。明确需求与计量后独立推进，不能以改名
