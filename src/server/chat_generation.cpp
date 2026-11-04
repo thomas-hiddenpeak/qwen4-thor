@@ -274,7 +274,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         (request_tools && !request_tools->array.empty()) ||
             constraints.choice == OutputConstraints::ToolChoice::kNone);
   if (s && thinking_budget.Enabled()) {
-    auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
+    auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer, cancelled);
+    if (!lock.owns_lock()) {
+      count_abort();
+      send_cancel_error("request cancelled waiting for thinking tokenizer");
+      return;
+    }
     const auto encode = [&](std::string_view text, std::vector<int32_t>* out) {
       std::vector<uint32_t> ids;
       auto status = tok_->Encode(text, &ids, {.cancelled = cancelled});
@@ -303,7 +308,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   ChatPromptBudget prompt_budget;
   const auto encode_prompt = [&] {
     diagnostic.Stage("encode");
-    auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
+    auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer, cancelled);
+    if (!lock.owns_lock())
+      return Status::Fail("request cancelled waiting for prompt tokenizer");
     return EncodeChatPrompt(
         req, planning_config, prompt,
         [&](std::string_view text, std::vector<uint32_t>* out) {

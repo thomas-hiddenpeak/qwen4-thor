@@ -411,6 +411,18 @@ target_link_libraries(q4t_preflight_probe PRIVATE q4t_server)
 target_compile_options(q4t_preflight_probe PRIVATE -Wall -Wextra -Werror)
 q4t_link_structured_output(q4t_preflight_probe)
 
+# Actual preparation/HTTP handlers; no model load. Run under gpu_exclusive.
+add_executable(q4t_prepare_lock_probe EXCLUDE_FROM_ALL
+  tools/serve_prepare_lock/probe.cpp)
+target_link_libraries(q4t_prepare_lock_probe PRIVATE q4t_server)
+target_compile_options(q4t_prepare_lock_probe PRIVATE -Wall -Wextra -Werror)
+q4t_link_structured_output(q4t_prepare_lock_probe)
+if(NOT Q4T_STARTUP_RESOURCE_PLAN)
+  target_sources(q4t_prepare_lock_probe PRIVATE
+    src/runtime/startup_reservation.cpp src/runtime/cuda_allocation_quota.cpp)
+  q4t_link_cuda_cleanup(q4t_prepare_lock_probe)
+endif()
+
 # ---------------------------------------------------------------------------
 # Tests
 # ---------------------------------------------------------------------------

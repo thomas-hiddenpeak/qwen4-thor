@@ -115,7 +115,11 @@ void ChatServer::HandlePreflight(int fd, const std::string& body) {
   std::vector<uint32_t> tokens;
   ChatPromptBudget budget;
   {
-    const std::lock_guard lock(tok_mu_);
+    auto lock = LockUnlessCancelled(tok_mu_, cancelled);
+    if (!lock.owns_lock()) {
+      send_cancel();
+      return;
+    }
     status = EncodeChatPrompt(
         req, config, prompt,
         [&](std::string_view text, std::vector<uint32_t>* out) {

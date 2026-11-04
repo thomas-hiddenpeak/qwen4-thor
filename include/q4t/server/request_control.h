@@ -6,12 +6,31 @@
 #include <memory>
 #include <mutex>
 #include <string>
+#include <thread>
 #include <unordered_map>
 #include <utility>
 
 #include "q4t/server/client_identity.h"
 
 namespace q4t::server {
+
+// Only the waiter is cancelled; the current owner keeps its work and lock.
+// The callback is checked again after acquisition so a cancellation observed
+// at handoff cannot enter the protected operation. This is cooperative polling,
+// not a real-time scheduling guarantee or an interrupt of work already begun.
+template <typename Cancelled>
+std::unique_lock<std::mutex> LockUnlessCancelled(
+    std::mutex& mutex, const Cancelled& cancelled) {
+  std::unique_lock lock(mutex, std::defer_lock);
+  for (;;) {
+    if (cancelled()) return lock;
+    if (lock.try_lock()) {
+      if (cancelled()) lock.unlock();
+      return lock;
+    }
+    std::this_thread::sleep_for(std::chrono::milliseconds(5));
+  }
+}
 
 class RequestControl {
  public:

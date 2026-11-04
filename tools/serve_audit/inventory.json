@@ -629,7 +629,7 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "7a1f3b4a15a26ee347254019ac5d58a1b8483abca68e26b1394ad32e6b7511ce",
+    "CMakeLists.txt": "a8219a66aebb3f8958bf50bca62ac8713e4f964d1877fc61570c928f4d5c9b12",
     "cmake/ChatProtocolIdentity.cmake": "d59b1b06abf9e0cb8867c03fd749398da5e118838d39ea87364d7b02a787e13e",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/StructuredOutput.cmake": "fd8c800791a39e03d6447716554eb67cc626a1d20855de512fdc5dc715dd8b30",
@@ -669,8 +669,8 @@
     "include/q4t/server/prefix_cache_policy.h": "91ef4f963c51a8098f1e333a74ac3cc56c046cf87f987b0e026a1e27d4c304c4",
     "include/q4t/server/reasoning_options.h": "19fbaf8e6e9f31767ac5dfd485d4cdaca160e5928069741868402ee7639bfe44",
     "include/q4t/server/request_admission.h": "e0b802ab08dd1857cb26b5323e35538bfd0f778add9298da6a972ebdc9fb8f64",
-    "include/q4t/server/request_control.h": "37b313121f6ff18b5e071b58cfc842546a195f303309f9cbe0828eef8abeae88",
-    "include/q4t/server/request_diagnostics.h": "1317e9ff60dfb0094c22cb28292b46b0330293dcbda161fb7a6f1c8095bcca6a",
+    "include/q4t/server/request_control.h": "fc0c1ab81056c5ab3ddb4b0da8783338312ecedc5f2c4f149df678019c199814",
+    "include/q4t/server/request_diagnostics.h": "6a260ff44d95c7d828503c24351fc9d0b659c72033b75577b7d37209cd39c6de",
     "include/q4t/server/request_json.h": "3c9b06ae9945a775b2aae2d7a85a831d12ddc6cfb9850f4f27454202056d5a22",
     "include/q4t/server/scheduler_submission.h": "2a960c668c25a0c694b811a2c5640c6e6605db7d386b1ba0075e64061aa1c416",
     "include/q4t/server/sequence_admission.h": "1dd2ef39526bdaf839ebeb1d348b837d388d0cbae8d4f0c15837a75123ae6f1c",
@@ -703,13 +703,13 @@
     "src/server/chat_capabilities.cpp": "4081e64dd459db48927e9032d73780d8841b8c906dcd744a11ee74adc24a2898",
     "src/server/chat_contract.cpp": "e87d5f90c7e6e03c57e8c05243c35267a0ade8f6c65ef36a98c70c6b6dba3469",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
-    "src/server/chat_generation.cpp": "e8ec1e1073dd2d4b61389b6d916a6cdb9ea4d0ed17762a3e9f25c722f7af7eb4",
+    "src/server/chat_generation.cpp": "a323df5d66b67d03108a59fe008b9759a848b7de75c890680b73faf283ad1cc4",
     "src/server/chat_http.cpp": "699098a50ee52ce3eb35e2837db797e6231b5aaa5860d6dc181270cb87a98ba5",
     "src/server/chat_input.cpp": "d126a90ec3e3fdba5f516c53ee0d6ded6dbc3da34af64b86d93d35115d05c8e6",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
     "src/server/chat_metrics.cpp": "3c2738770c331f3bc8e66e7917b12123478c46d70a7f5b6fef53d4e5544f8b26",
     "src/server/chat_plan.cpp": "bf2118f123823731b000f5aa10959c0f8018b5fba25f37e39c4bd85ac168eafb",
-    "src/server/chat_preflight.cpp": "23cee856ac9fdd55b283f699b0c499db189c39f05bce30e709ca4c193d4c6cf0",
+    "src/server/chat_preflight.cpp": "7a3e12bc8bd0b33b7de041a45c013fdab4590df902cd9905ca3b553ef7af763c",
     "src/server/chat_prompt.cpp": "b87c13319b7eb1e58908f4e607ab2827b6f5191e6e1e70040fa57d8dae5c84c2",
     "src/server/chat_response_parser.cpp": "ffa2ce62aeffbfac4c67c97c591854db8cec8eac389e7e2e0cdfe57e05f392f7",
     "src/server/chat_scheduler.cpp": "3bbbc18b7d836b0ec1fb9e1bef4fb4c85b6dc60b4fc1a26a23916196326832cf",
@@ -938,6 +938,23 @@
       "docs/SERVE_STARTUP_LISTENERS_2026-11-04.md",
       "tools/serve_reliability/http_lifecycle_test.cpp",
       "tools/serve_startup_listeners/test_stage.py"
+    ]
+  },
+  "prepare_lock_review": {
+    "date": "2026-11-04",
+    "stage": "SRV-03c",
+    "changed_sources": [
+      "CMakeLists.txt",
+      "include/q4t/server/request_control.h",
+      "include/q4t/server/request_diagnostics.h",
+      "src/server/chat_generation.cpp",
+      "src/server/chat_preflight.cpp"
+    ],
+    "review": "Cancellation-aware tokenizer acquisition only in thinking preparation, Chat encode and preflight. Waiter own cancellation before/during/after acquire; owner unaffected, unchanged errors/JSON/SSE/lease owners and tokenizer numerical work. No fields/routes/schema or scheduling change; cooperative 5ms polling, not a realtime guarantee. Validation pending. CMake adds EXCLUDE_FROM_ALL real-handler probe with the same production startup reservation/quota/cleanup linkage; no default runner link behavior changes. Initial probe link failure and inventory CMake-anchor omission retained; targeted fixes do not change runtime code.",
+    "evidence": [
+      "docs/SERVE_PREPARE_LOCK_2026-11-04.md",
+      "tests/server_request_diagnostics_test.cpp",
+      "tools/serve_prepare_lock/probe.cpp"
     ]
   }
 }

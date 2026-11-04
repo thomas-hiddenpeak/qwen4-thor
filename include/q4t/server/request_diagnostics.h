@@ -8,6 +8,8 @@
 #include <mutex>
 #include <string>
 
+#include "q4t/server/request_control.h"
+
 namespace q4t::server {
 
 class RequestDiagnostics {
@@ -61,6 +63,12 @@ class RequestDiagnostics {
   std::unique_lock<std::mutex> Lock(std::mutex& mutex, Wait kind) {
     Scope wait(*this, kind);
     return std::unique_lock<std::mutex>(mutex);
+  }
+  template <typename Cancelled>
+  std::unique_lock<std::mutex> Lock(std::mutex& mutex, Wait kind,
+                                  const Cancelled& cancelled) {
+    Scope wait(*this, kind);
+    return LockUnlessCancelled(mutex, cancelled);
   }
   double Total(Wait kind) const { return totals_[static_cast<size_t>(kind)]; }
 
