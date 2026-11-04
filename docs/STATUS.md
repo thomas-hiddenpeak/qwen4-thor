@@ -50,6 +50,9 @@ SRV-11j[持久任务全程网络截止时间修复中](SERVE_TASK_DEADLINE_2026-
 CPU首轮16项14过/2夹具失败保留，定向修正完整正文读取及确定CA元数据
 变更后2项通过，14项身份复用；另2入口检查通过。生产修复未再变更，
 12真实TLS探针及1模型短验驱动已冻结，待执行。
+acf6f3d1首轮在第一个TLS探针退出重绑失败，0模型/生成，原3.434098秒
+COMMAND_FAILED保留、GPU/原锁释放。[探针修正](SERVE_TASK_DEADLINE_REPAIR_2026-11-04.md)
+仅让测试监听器bind前启用地址复用；原来源/CPU保持，新retry-01继续。
 
 SRV-11i[当前运维协议任务交接已限定接受](SERVE_TASK_OPERATIONS_RESULT_2026-11-04.md)：
 3967b862注册/4c774826入口；111审核原件，fc63db28→ddfba8c0及11h
