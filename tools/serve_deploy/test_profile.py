@@ -122,6 +122,26 @@ class Selection(unittest.TestCase):
 
 
 class Driver(unittest.TestCase):
+    def test_quota_extension_survives_operations_whitelist(self):
+        from tools.serve_deploy import stage as s
+        values = {key: 0 for key in s.base.contracts.METRIC_PROFILES[5]}
+        values['q4t_memory_admission_state{state="disabled"}'] = 1
+        values['q4t_memory_admission_open'] = 1
+        quota = dict(enabled=1, charged_bytes=10, live_bytes=10, reserved_bytes=0,
+            releasing_bytes=0, pending_bytes=0, unknown_bytes=0, peak_bytes=10,
+            limit_bytes=20, poisoned=0, entry_capacity=16384, stream_capacity=256,
+            byte_rejections_total=0, entry_rejections_total=0, stream_rejections_total=0,
+            contract_failures_total=0, backend_failures_total=0)
+        values.update({'q4t_cuda_quota_' + key: value for key, value in quota.items()})
+        raw = ''.join(f'{key} {value}\n' for key, value in values.items())
+        basic, omitted = s.base.contracts.parse_metrics(raw, version=5)
+        self.assertNotIn('q4t_cuda_quota_live_bytes', basic)
+        self.assertGreater(omitted, 0)
+        self.assertGreater(s.cuda_accounting(raw)['q4t_cuda_quota_live_bytes'], 0)
+        with self.assertRaises(RuntimeError):
+            s.cuda_accounting(raw.replace('q4t_cuda_quota_poisoned 0\n',
+                                         'q4t_cuda_quota_poisoned 1\n'))
+
     def test_cleanup_failure_preserves_environment_abort(self):
         from tools.serve_deploy.stage import failed_status
         self.assertEqual(failed_status('ENV_ABORT', 'cleanup incomplete'), 'ENV_ABORT')

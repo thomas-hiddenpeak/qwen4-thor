@@ -44,8 +44,10 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 用户授权按[有界交付队列](SERVE_BOUNDED_DELIVERY_2026-11-05.md)继续：
 先部署/资源组合，再单进程配额与公平；全物理RAM另给可行性结论。
 PR #10已合入main c9759954，两项host检查通过，合并树与3fef5671相同。
-本批复用当前分支，离线部署profile及驱动13项CPU通过；已冻结1模型/
-6请求资源短验，尚未运行或宣布组合接受。[物理RAM审查](SERVE_PHYSICAL_RAM_DECISION_2026-11-05.md)
+本批离线部署profile及驱动13项CPU通过；原短验4成功响应/2真实工具后
+因驱动误取CUDA扩展指标失败，正常清理/guard/custody完成、GPU/锁释放。
+原压力两请求未执行，已定向修复并准备[额外1启动补验](SERVE_BOUNDED_FOLLOWUP_2026-11-05.md)，
+原FAILED保持，组合尚未接受。[物理RAM审查](SERVE_PHYSICAL_RAM_DECISION_2026-11-05.md)
 以NO_GO_CURRENT_CONTRACT结束本轮可行性关卡。长稳由用户负责，实际LAN/正式
 通知选择启用时验收，既有默认与回退包不变。下方暂停描述为历史边界。
 

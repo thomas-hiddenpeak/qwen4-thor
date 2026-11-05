@@ -20,12 +20,22 @@ def audit(read):
     def obj(name):
         return json.loads(read(name))
     plan, result = obj('plan.json'), obj('execution/result.json')
+    previous = obj('original/execution/result.json')
+    s.pkg.require(previous['status'] == 'FAILED' and
+        previous['error'] == "KeyError('q4t_cuda_quota_live_bytes')" and
+        previous['counts'] == dict(starts=1, generation_attempts=4, controls=3) and
+        previous['cleanup_confirmed'], 'original failure changed')
     s.pkg.require(result['status'] == 'PASS_BOUNDED_DEPLOYMENT' and
         result['cleanup_confirmed'] and result['counts']['starts'] == 1 and
-        result['counts']['generation_attempts'] == 6 and
-        result['counts']['controls'] <= 120 and result['seconds'] < 420, 'stage result')
-    cpu = obj('cpu-02/result.json')
+        result['counts']['generation_attempts'] == 2 and
+        result['counts']['controls'] <= 80 and result['seconds'] < 240 and
+        result['seconds'] + previous['seconds'] < 420, 'stage result')
+    cpu = obj('cpu-01/result.json')
     s.pkg.require(cpu['passed'] and cpu['models'] == cpu['http'] == 0, 'CPU gate')
+    old_terminal = obj('original/execution/managed-run/terminal.json')
+    s.pkg.require(old_terminal['state'] == 'STOPPED' and old_terminal['cleanup_confirmed'] and
+                  old_terminal['guard']['status'] == 'COMPLETED', 'original lifecycle')
+    quota = s.cuda_accounting(obj('original/execution/business/business-final-http.json')['body'])
     terminal = obj('execution/managed-run/terminal.json')
     s.protected_terminal(terminal)
     s.pkg.require(terminal['worker']['replayed_requests'] == 0 and
@@ -83,7 +93,10 @@ def audit(read):
             responses.append(dict(client=client, part=part, usage=value.usage, seconds=seconds))
     log = read('execution/managed-run/backend.log').decode()
     reaped = s.re.findall(r'grammar worker reaped=(\d+) ', log)
-    s.pkg.require(len(reaped) == 5 and all(n == '1' for n in reaped) and
+    old_log = read('original/execution/managed-run/backend.log').decode()
+    old_reaped = s.re.findall(r'grammar worker reaped=(\d+) ', old_log)
+    s.pkg.require(len(old_reaped) == 4 and all(n == '1' for n in old_reaped), 'original grammar cleanup')
+    s.pkg.require(len(reaped) == 1 and reaped[0] == '1' and
                   'shutdown complete (0 in-flight remaining)' in log, 'native cleanup')
     frontend = obj('execution/front-1/terminal.json')
     s.pkg.require(frontend['state'] == 'FAILED' and frontend['cleanup_confirmed'] and
@@ -102,12 +115,24 @@ def audit(read):
         not observed['listeners'] and not observed['gpu']['pids'] and
         observed['lock']['state'] == 'AVAILABLE', 'remaining resource')
     elapsed = custody[-1]['monotonic'] - guard[0]['monotonic']
-    s.pkg.require(elapsed <= 300, 'GPU window')
+    old_guard = [json.loads(line) for line in read('original/execution/managed-run/lease/events.jsonl').splitlines()]
+    old_custody = [json.loads(line) for line in read('original/execution/custody/events.jsonl').splitlines()]
+    s.pkg.require(old_guard[0]['event'] == 'lease_acquired' and
+        old_guard[-1]['event'] == 'lease_released' and
+        obj('original/execution/custody/exit.json')['status'] == 'COMPLETED' and
+        all(not r['conflicts'] and not r['unreadable_processes'] for r in old_guard
+            if r['event'] in ('monitor', 'preflight')) and
+        all(not r['observation']['conflicts'] and not r['observation']['unreadable_processes']
+            for r in old_custody), 'original monitored lease')
+    old_elapsed = old_custody[-1]['monotonic'] - old_guard[0]['monotonic']
+    s.pkg.require(elapsed <= 180 and elapsed + old_elapsed <= 300, 'GPU window')
     return dict(status='ACCEPT_BOUNDED_DEPLOYMENT_SHORT', package=plan['package'],
-        deployment=plan['deployment'], rollback=plan['rollback'], models=1,
+        deployment=plan['deployment'], rollback=plan['rollback'], models=2,
         responses=responses, real_tools=2, interrupted_streams=2, grammar_reaped=5,
-        cpu_checks=cpu['tests_run'], controls=result['counts']['controls'],
-        driver_seconds=result['seconds'], monitored_lock_seconds=elapsed,
+        cpu_checks=13 + cpu['tests_run'], controls=result['counts']['controls'] + 3,
+        driver_seconds=result['seconds'] + previous['seconds'],
+        monitored_lock_seconds=elapsed + old_elapsed, separate_leases=2,
+        original_failure_preserved=True, reused_responses=4, cuda_accounting=quota,
         pressure_peak_bytes=peak, minimum_available_bytes=available, minimum_free_bytes=free,
         host_peak_bytes=final['final'].get('memory.peak'),
         critical_memory_mib=s.FLOOR_MIB, physical_ram_hard_limit=False,
@@ -115,17 +140,26 @@ def audit(read):
 
 
 def archive():
-    s.configure()
-    plan = s.check()
+    from tools.serve_deploy import continuation as follow
+    follow.configure()
+    plan = follow.check()
     selected = {}
-    for path in s.OUT.rglob('*'):
-        if path.is_file() and not path.name.endswith('-request.json') and path.suffix in (
-                '.json', '.jsonl', '.log', '.bin'):
-            selected[str(path.relative_to(s.BASE))] = path.read_bytes()
+    for folder, prefix in ((s.OUT, ''), (follow.ORIGINAL / 'execution', 'original/')):
+        for path in folder.rglob('*'):
+            if path.is_file() and not path.name.endswith('-request.json') and path.suffix in (
+                    '.json', '.jsonl', '.log', '.bin'):
+                selected[prefix + str(path.relative_to(folder.parent))] = path.read_bytes()
+                if prefix and path.parent == folder / 'business' and path.name.startswith('project-'):
+                    selected['execution/business/' + path.name] = path.read_bytes()
+    for relative in ('plan.json', 'cpu-01/result.json', 'cpu-01/tests.log'):
+        selected[relative] = (s.BASE / relative).read_bytes()
     for relative in ('plan.json', 'cpu-01/result.json', 'cpu-01/tests.log',
                      'cpu-02/result.json', 'cpu-02/tests.log',
                      'deployment/profile.json', 'backend-package/manifest.json'):
-        selected[relative] = (s.BASE / relative).read_bytes()
+        selected['original/' + relative] = (follow.ORIGINAL / relative).read_bytes()
+    for path in (follow.ORIGINAL / 'frozen-source').rglob('*'):
+        if path.is_file():
+            selected['original-source/' + str(path.relative_to(follow.ORIGINAL / 'frozen-source'))] = path.read_bytes()
     selected['schema.json'] = (ROOT / 'docs/serve-transport-v1.schema.json').read_bytes()
     selected['model-document.md'] = (ROOT / 'docs/MODEL.md').read_bytes()
     for path in (ROOT / 'tools/serve_deploy').glob('*'):

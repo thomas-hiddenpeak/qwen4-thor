@@ -21,6 +21,8 @@ from tools.serve_managed_profile import stage as host
 from tools.serve_service import package as pkg, resources, inspection
 from tools.serve_service.memory_acceptance import protected_terminal
 from tools.serve_pressure import pressure
+from tools.serve_cuda_quota_integration.verify import quota_metrics
+from tools.serve_backpressure.verify import metrics as parse_all_metrics
 from tools.serve_lifecycle.verify import terminal as stream_terminal
 from jsonschema import Draft202012Validator
 
@@ -137,6 +139,14 @@ def failed_status(previous, error):
     return 'ENV_ABORT' if previous == 'ENV_ABORT' or 'ENV_ABORT' in str(error) else 'FAILED'
 
 
+def cuda_accounting(raw):
+    # The operations parser intentionally omits metrics outside its fixed
+    # profile. Validate the CUDA extension using its existing quota contract.
+    values = quota_metrics(parse_all_metrics(raw))
+    pkg.require(values['q4t_cuda_quota_live_bytes'] > 0, 'empty model CUDA account')
+    return values
+
+
 class Stream:
     def __init__(self, run, label, body, client):
         self.label, self.body = label, body
@@ -174,6 +184,7 @@ class Run(host.Run):
         super().__init__(plan)
         self.calls = []
         self.protected = False
+        self.expected_workers = 5
 
     def wait_active(self, call):
         until = time.monotonic() + 20
@@ -249,11 +260,13 @@ class Run(host.Run):
                     'id=' + call.body['request_id'] + ' ' in s]
             pkg.require(len(ends) == 1 and 'reason=server_shutdown' in ends[0], 'shutdown accounting')
         reaped = re.findall(r'grammar worker reaped=(\d+) ', log)
-        pkg.require(len(reaped) == 5 and all(n == '1' for n in reaped), 'grammar not fully reaped')
+        pkg.require(len(reaped) == self.expected_workers and all(n == '1' for n in reaped),
+                    'grammar not fully reaped')
         final = pkg.read(self.run_dir / 'resources-final.json')
         pkg.require(final['payload_removed'] and final['violation'] is None and
                     terminal['host_resource_cleanup']['scope_removed'], 'host cleanup')
-        pkg.save(OUT / 'protected-stop.json', dict(passed=True, terminal=terminal, grammar_reaped=5))
+        pkg.save(OUT / 'protected-stop.json', dict(passed=True, terminal=terminal,
+                 grammar_reaped=self.expected_workers))
 
     def stop_front(self, index):
         name = 'front-' + str(index)
@@ -291,6 +304,17 @@ class Run(host.Run):
                 call.thread.join(5)
             pkg.require(not any(c.thread.is_alive() for c in self.calls), 'client thread retained')
 
+    def business(self):
+        for index, label in enumerate(('alpha', 'beta')):
+            self.current_client = index
+            self.tools('project-' + label)
+            self.idle(label + '-idle')
+        metrics, raw = self.get_metrics('business-final')
+        pkg.require(metrics['q4t_requests_success_total'] == 4 and
+            metrics['q4t_structured_workers_reaped_total'] == 4, 'business accounting')
+        pkg.save(OUT / 'business-final.json', metrics)
+        pkg.save(OUT / 'cuda-accounting.json', cuda_accounting(raw))
+
     def execute(self):
         result = dict(status='FAILED', physical_ram_hard_limit=False, long_run=False)
         pkg.save(OUT / 'begin.json', dict(monotonic=self.started, unix_seconds=time.time()))
@@ -302,18 +326,11 @@ class Run(host.Run):
             base.client.a.require_idle(OUT / 'initial-gpu.json')
             self.launch()
             self.frontend(1)
-            for index, label in enumerate(('alpha', 'beta')):
-                self.current_client = index
-                self.tools('project-' + label)
-                self.idle(label + '-idle')
-            metrics = self.get_metrics('business-final')[0]
-            pkg.require(metrics['q4t_requests_success_total'] == 4 and
-                metrics['q4t_structured_workers_reaped_total'] == 4 and
-                metrics['q4t_cuda_quota_live_bytes'] > 0, 'business/resource accounting')
-            pkg.save(OUT / 'business-final.json', metrics)
+            self.business()
             self.trip()
-            result.update(status='PASS_BOUNDED_DEPLOYMENT', responses=4, real_tools=2,
-                          shutdown_streams=2, grammar_reaped=5)
+            result.update(status='PASS_BOUNDED_DEPLOYMENT', responses=self.successes,
+                          real_tools=self.successes // 2, shutdown_streams=2,
+                          grammar_reaped=self.expected_workers)
         except BaseException as error:
             result.update(error=repr(error), status=failed_status(result['status'], error))
             raise
