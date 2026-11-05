@@ -177,7 +177,7 @@ def audit_server(output, expected_requests):
                      if line.startswith(('[mtp-', '[suffix]', '[suffix-', '[mtp-suffix'))]))
 
 
-def run_stage(plan, plan_path):
+def run_stage(plan, plan_path, *, final_monitor=None):
     require_guard()
     output = Path(plan['output'])
     if not output.is_relative_to(ROOT / '.q4t-work'):
@@ -240,6 +240,8 @@ def run_stage(plan, plan_path):
         verify_files(plan)
         if sha(plan_path) != state['plan_sha256']:
             raise RuntimeError('plan changed at completion')
+        if final_monitor is not None:
+            final_monitor(sampler, failures, heartbeat, deadline)
         require_monitor(sampler, failures, heartbeat,
                         plan['resource_sample_max_age_seconds'])
         if time.monotonic() >= deadline:
@@ -262,15 +264,17 @@ def run_stage(plan, plan_path):
         sampler.join(timeout=5)
         if sampler.is_alive():
             cleanup_errors.append('resource monitor did not stop within five seconds')
-        if cleanup_errors:
+        # A sampler may append its final failure only after stop.set(). Check
+        # again after join so direct callers cannot report that run as measured.
+        if cleanup_errors or failures:
             state.update(status='ENV_ABORT', cleanup_errors=cleanup_errors)
         state.update(finished=time.time(), elapsed_seconds=time.monotonic() - started,
                      monitor_failures=failures)
         save(output / 'state.json', state)
         save(output / 'files.json', {str(p.relative_to(output)): sha(p)
              for p in output.rglob('*') if p.is_file() and p.name != 'files.json'})
-        if cleanup_errors:
-            raise EnvironmentAbort('; '.join(cleanup_errors))
+        if cleanup_errors or failures:
+            raise EnvironmentAbort('; '.join(cleanup_errors + failures))
 
 
 def lifecycle(plan, step, output):

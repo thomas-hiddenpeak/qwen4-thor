@@ -78,6 +78,26 @@ MTP 可能成组输出 token，本工具不把 SSE chunk 间隔当成精确 toke
 一致性并采集计时，性能仍需按总 decode token/总 decode 时间、每档重复
 范围与对照版本分析；不得用任意固定容忍百分比替代现行接受条件。
 
+## 阶段监控收尾
+
+使用suffix阶段驱动和完整telemetry的验收，统一通过
+`monitored_stage.run_stage(legacy, telemetry, plan, plan_path,
+audit_server=...)`收尾。原`tools/mtp_suffix_zero_hit/run_rerun.py`已调用
+该入口；阶段特定预算和来源冻结仍由调用方负责，GPU阶段仍持有原
+`gpu_exclusive.py`共享锁。
+
+公共入口等待服务/子进程退出后的完整采样，受原阶段截止时间约束；
+采样线程join后核对summary、未确认身份和落盘计数，在原sealed output
+外写postflight。独立分析在生成决定前调用
+`monitored_stage.require_complete_monitor(plan)`核对状态、摘要与屏障。
+若plan目录不等于output父目录，显式传`postflight_path`。
+缺失、损坏、过期或矛盾证据均拒绝，历史decision不改写。
+
+`MEASURED_REQUIRES_REVIEW`仅允许继续审查；不代表外层租约、模型质量或
+性能已通过。旧驱动直接调用仅新增join后失败复核，不代替完整入口。
+本次迁移范围、CPU负控与历史证据边界见
+[监控收尾交接](../../docs/EVAL_MONITOR_CLOSEOUT_2026-11-06.md)。
+
 ## 有界资源探索与独立服务
 
 Thor的MoE容量后备只在SSD；CPU/GPU分配共用物理RAM，host中转、

@@ -49,6 +49,9 @@ function(q4t_add_python_contract name script)
     ENVIRONMENT "Q4T_TEST_OUTPUT_DIR=${output_dir};TMPDIR=${output_dir};PYTHONDONTWRITEBYTECODE=1")
 endfunction()
 
+q4t_add_python_contract(q4t_monitored_stage_contracts
+  tools/evalscope/test_monitored_stage.py)
+
 q4t_add_python_contract(q4t_router_trace_source_contracts
   tools/trace/test_analyze.py
   --checker $<TARGET_FILE:q4t_router_trace_check>

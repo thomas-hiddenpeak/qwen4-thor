@@ -1,6 +1,16 @@
 # 当前状态
 
-更新：2026-11-05。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
+更新：2026-11-06。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
+
+## 验收工具收尾
+
+[验收监控工具已完成限定收尾](EVAL_MONITOR_CLOSEOUT_2026-11-06.md)：
+公共入口等待退出后完整采样、join后复核及只读分析门禁；旧驱动直接
+调用也拒绝晚到错误。20新/38原telemetry/25退出pending合同通过，
+1旧重放明确跳过；夹具路径首次失败原件保留，仅受影响项重验。
+定向host CTest通过，旧驱动负控按预期失败，真实ENV_ABORT仍被拒绝，
+四历史摘要不变。工具独立交付，推理代码及默认c1bdb0a7/0efc2c0d不变，
+模型/HTTP/GPU均0；量化head保持研究和ENV_ABORT，下一项优化未启动。
 
 ## CUDA 13.4 指令支持核验
 

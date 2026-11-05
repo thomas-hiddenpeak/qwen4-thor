@@ -18,6 +18,7 @@ SPEC.loader.exec_module(admission)
 legacy = admission.legacy
 http = admission.http_runner
 save = legacy.save
+import monitored_stage
 
 
 from rerun_spec import validate
@@ -126,92 +127,8 @@ def main():
     if args.custom_step:
         custom_step(plan, args.custom_step)
     else:
-        legacy.require_guard()
-        telemetry.configure_sources(plan['telemetry_sources'])
-        monitor = {}
-        final_barrier = {}
-        original_verify = legacy.verify_files
-        verify_calls = 0
-
-        def sample(output, stop, failures, heartbeat):
-            monitor.update(failures=failures, heartbeat=heartbeat)
-            telemetry.sample(output, stop, failures, heartbeat)
-
-        def verify_with_final_flush(value):
-            nonlocal verify_calls
-            original_verify(value)
-            verify_calls += 1
-            if verify_calls != 2:
-                return
-            # The second verification follows every service shutdown and the
-            # driver's child/process cleanup. Keep monitoring until a complete
-            # sample has started and flushed after this boundary. Do not end
-            # sampling early to avoid the process-exit path being investigated.
-            boundary = time.monotonic()
-            deadline = boundary + value['resource_sample_max_age_seconds']
-            while True:
-                if monitor.get('failures'):
-                    raise legacy.EnvironmentAbort('final monitor flush failed: ' +
-                                                  repr(monitor['failures']))
-                heartbeat = dict(monitor.get('heartbeat', {}))
-                flushed = heartbeat.get('last_sample', 0)
-                sample_started = flushed - heartbeat.get('last_cycle_duration_seconds', 0)
-                if ('last_cycle_duration_seconds' in heartbeat and
-                        sample_started >= boundary):
-                    final_barrier.update(boundary_monotonic=boundary,
-                                         sample_started_monotonic=sample_started,
-                                         flushed_monotonic=flushed)
-                    return
-                if time.monotonic() >= deadline:
-                    raise legacy.EnvironmentAbort('no final post-shutdown monitor flush')
-                time.sleep(.05)
-
-        legacy.sample_memory = sample
-        legacy.verify_files = verify_with_final_flush
-        legacy.audit_server = admission.audit_server
-        try:
-            legacy.run_stage(plan, args.plan.resolve())
-        finally:
-            # The sampler can fail between the legacy driver's last heartbeat
-            # check and its join. Preserve its raw state/seal, and separately
-            # reject any such final failure before the guard sees a clean exit.
-            state_path = Path(plan['output']) / 'state.json'
-            if state_path.is_file():
-                state = json.loads(state_path.read_text())
-                final_errors = []
-                summary_path = Path(plan['output']) / 'telemetry-summary.json'
-                summary_sha = None
-                try:
-                    summary = json.loads(summary_path.read_text())
-                    summary_sha = legacy.sha(summary_path)
-                    if (summary['sampler_status'] != 'STOPPED' or
-                            summary['sampler_failure'] is not None or
-                            summary['failures_at_exit'] or
-                            summary['unflushed_attempts'] != 0 or
-                            summary['sample_attempts'] != summary['flushed_samples'] or
-                            summary['flushed_samples'] < 1):
-                        final_errors.append('final sampler summary is incomplete/failed')
-                    if state.get('status') == 'MEASURED_REQUIRES_REVIEW' and (
-                            not final_barrier or summary['last_flushed_heartbeat'] -
-                            summary['final_successful_cycle_duration_seconds'] <
-                            final_barrier['boundary_monotonic']):
-                        final_errors.append('final summary lacks post-shutdown flush')
-                except (OSError, KeyError, ValueError, TypeError) as error:
-                    final_errors.append('final sampler summary: ' + repr(error))
-                failed = bool(state.get('monitor_failures') or
-                              state.get('cleanup_errors') or
-                              state.get('status') == 'ENV_ABORT' or final_errors)
-                save(args.plan.resolve().parent / 'postflight.json', dict(
-                    status='ENV_ABORT' if failed else state.get('status'),
-                    state_sha256=legacy.sha(state_path),
-                    monitor_failures=state.get('monitor_failures', []),
-                    cleanup_errors=state.get('cleanup_errors', []),
-                    final_summary_sha256=summary_sha,
-                    final_monitor_barrier=final_barrier,
-                    final_monitor_errors=final_errors,
-                    note='Final sampler join reviewed; original raw state/seal remain unchanged.'))
-                if failed:
-                    raise legacy.EnvironmentAbort('final telemetry/cleanup failure')
+        monitored_stage.run_stage(legacy, telemetry, plan, args.plan,
+                                  audit_server=admission.audit_server)
 
 
 if __name__ == '__main__':
