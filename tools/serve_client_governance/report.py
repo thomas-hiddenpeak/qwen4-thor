@@ -6,6 +6,7 @@ import hashlib
 import io
 import json
 import os
+import re
 from pathlib import Path
 import socket
 import subprocess
@@ -15,7 +16,7 @@ import tarfile
 ROOT=Path(__file__).resolve().parents[2]
 sys.dont_write_bytecode=True
 sys.path.insert(0,str(ROOT))
-from tools.serve_client_governance import stage as s,cpu
+from tools.serve_client_governance import stage as s,cpu,reuse
 from tools.examples import chat_client
 
 BASE,OUTPUT,PACKAGE=s.BASE,s.OUTPUT,s.PACKAGE
@@ -55,6 +56,11 @@ def resources(label):
         restore_unit_masked=True,containers_empty=True,long_runs=False))
 
 
+def latest_poll(folder, label):
+    return max(folder.glob(label+'-*-wire.bin'),
+               key=lambda p: int(re.search(r'-(\d+)-wire\.bin$', p.name)[1]))
+
+
 def audit():
     plan=s.check();s.h.verify_seal(OUTPUT)
     final=cpu.read(OUTPUT/'finalized.json')
@@ -65,8 +71,8 @@ def audit():
     cpu.require(build['passed'] and build['zero_warnings'] and gate['passed'],'build/CPU gate')
     b=OUTPUT/'business';result=cpu.read(b/'result.json')
     cpu.require(result['status']=='PASS_BOUNDED_CLIENT_GOVERNANCE' and
-        result['successes']==12 and result['cancelled']==2 and result['real_tools']==2,'business totals')
-    cpu.require(result['counts']['starts']==2 and result['counts']['generation_attempts']==16 and
+        result['successes']==10 and result['cancelled']==2 and result['real_tools']==0,'business totals')
+    cpu.require(result['counts']['starts']==2 and result['counts']['generation_attempts']==14 and
         all(result['counts'][k]<=plan['limits'][k] for k in result['counts']),'budget')
     successes=[]
     for path in sorted(b.glob('*-response.json')):
@@ -80,7 +86,11 @@ def audit():
         if not label.startswith('project-'):
             cpu.require(parsed.finish_reason=='stop' and parsed.message['content'].strip()=='710003','echo quality')
         successes.append(dict(label=label,usage=parsed.usage,body_read_seconds=elapsed))
-    cpu.require(len(successes)==12,'wire response count')
+    cpu.require(len(successes)==10,'wire response count')
+    reused=reuse.check()
+    cpu.require(reused==cpu.read(PACKAGE/'reused-evidence.json'),'reuse drift')
+    current_b=b
+    b=reuse.FIRST/'business'
     for name in ('alpha','beta'):
         label='project-'+name
         call_response=chat_client.read_sse(io.BytesIO((b/(label+'-read-wire.bin')).read_bytes()))
@@ -93,6 +103,7 @@ def audit():
         answer=cpu.read(b/(label+'-answer-response.json'))
         s.s.a.validate_answer(answer['message']['content'],{actual['source']['citation']},1)
         cpu.require(answer['finish_reason']=='stop' and 'Qwen4ExpForConditionalGeneration' in answer['message']['content'],'project quality')
+    b=current_b
     for label in ('active','a3'):
         body=cpu.read(b/(label+'-request.json'))['body']
         s.s.cancelled_wire((b/(label+'-wire.bin')).read_bytes(),body['request_id'])
@@ -102,25 +113,24 @@ def audit():
     log=(b/'scoped-model/stderr.log').read_text()
     order=s.admitted(log)
     expected=[cpu.read(b/(label+'-request.json'))['body']['request_id'] for label in ('active','b1','a1','a2')]
-    # Two tool loops precede the fair batch; recovery follows it.
-    cpu.require(order[4:8]==expected and cpu.read(b/'a3-request.json')['body']['request_id'] not in order,'admission order')
+    # Two RPM seed requests precede the fair batch; recovery follows it.
+    cpu.require(order[2:6]==expected and cpu.read(b/'a3-request.json')['body']['request_id'] not in order,'admission order')
     fairness=cpu.read(b/'fairness.json')
     before=s.s.parse_metrics((b/'before-queued-cancel-wire.bin').read_text())
-    after_paths=list(b.glob('after-queued-cancel-*-wire.bin'))
-    after=s.s.parse_metrics(max(after_paths,key=lambda p:int(p.name.split('-')[-3])).read_text())
+    after=s.s.parse_metrics(latest_poll(b,'after-queued-cancel').read_text())
     cost=cpu.read(b/'a3-preflight-wire.bin')
     reserved=cost['prompt_tokens']+cost['output']['available_tokens']
     cpu.require(s.rate(before,'alpha','reserved_tokens')-s.rate(after,'alpha','reserved_tokens')==reserved and
         s.rate(before,'alpha','settled_tokens_total')==s.rate(after,'alpha','settled_tokens_total'),'queued refund')
     quotas=cpu.read(b/'quotas.json');values=quotas['final']
-    raw_final=max(b.glob('quota-final-*-wire.bin'),key=lambda p:int(p.name.split('-')[-3]))
+    raw_final=latest_poll(b,'quota-final')
     cpu.require(values==s.s.parse_metrics(raw_final.read_text()),'final raw metrics')
     cpu.require(sum(s.rate(values,c,'settled_tokens_total') for c in ('alpha','beta'))==
         values['q4t_prompt_tokens_total']+values['q4t_generation_tokens_total'],'logical settlement ledger')
     for c in ('alpha','beta'):
         cpu.require(s.rate(values,c,'reserved_tokens')==0 and s.rate(values,c,'requests')==1,'minute accounting')
-    cpu.require(values['q4t_requests_success_total']==10 and values['q4t_requests_aborted_total']==2 and
-        values['q4t_structured_workers_started_total']==values['q4t_structured_workers_reaped_total']==4,'model outcome/grammar')
+    cpu.require(values['q4t_requests_success_total']==8 and values['q4t_requests_aborted_total']==2 and
+        values['q4t_structured_workers_started_total']==values['q4t_structured_workers_reaped_total']==0,'model outcome/grammar')
     for key in s.s.a.EMPTY:
         cpu.require(values[key]==0,'idle resource: '+key)
     events=[json.loads(line) for line in (OUTPUT/'lease/events.jsonl').read_text().splitlines()]
@@ -129,16 +139,17 @@ def audit():
         cpu.read(OUTPUT/'lease/exit.json')['status']=='COMPLETED' and observations and
         all(not r['conflicts'] and r['unreadable_processes']==0 for r in observations),'guard')
     duration=events[-1]['monotonic']-events[0]['monotonic']
-    cpu.require(0<duration<480 and result['seconds']<480,'GPU duration')
+    cpu.require(0<duration<420 and duration+reused['lease_seconds']<480 and result['seconds']<420,'GPU duration')
     post=cpu.read(BASE/'postflight/result.json')
     cpu.require(post['passed'] and len(post['owned'])==3,'owned process cleanup')
     s.pkg.verify_declarations(cpu.read(ROOT/'build/q4t.release.json'),required=True)
     import re
     latencies=[float(n) for n in re.findall(r'event=end [^\n]* elapsed_ms=([0-9.]+)',log)]
     return dict(status='ACCEPT_BOUNDED_CLIENT_GOVERNANCE',installed=final['installed'],
-        protocol_sha256=plan['protocol'],source_commit=plan['source_commit'],models=2,
-        generation_attempts=16,successful_responses=12,real_tools=2,cancelled=2,refusals=2,
-        successes=successes,handler_elapsed_ms=latencies,lease_seconds=duration,
+        protocol_sha256=plan['protocol'],source_commit=plan['source_commit'],models=3,
+        generation_attempts=18,successful_responses=14,real_tools=2,cancelled=2,refusals=2,
+        successes=successes,reused=reused,handler_elapsed_ms=latencies,lease_seconds=duration,
+        cumulative_lease_seconds=duration+reused['lease_seconds'],
         lease_observations=len(observations),resources=post,rollback=str(PACKAGE/'previous'),
         previous_binary_sha256=plan['previous_binary_sha256'],cpu_checks=gate['checks'],
         numerical_reuse=cpu.read(PACKAGE/'numerical-reuse.json'),declarations_verified=True,

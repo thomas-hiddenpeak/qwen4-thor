@@ -11,13 +11,37 @@ class DriverTests(unittest.TestCase):
         self.assertTrue(p['fair_queue'])
         self.assertEqual(sum(c['max_inflight'] for c in p['clients']), 8)
         self.assertEqual([c['requests_per_minute'] for c in p['clients']], [6, 20])
-        self.assertEqual(s.LIMITS, dict(starts=2, generation_attempts=24, controls=250, seconds=480))
-        self.assertEqual(s.PLANNED['successes']+s.PLANNED['cancelled']+s.PLANNED['refusals'], 16)
+        self.assertEqual(s.LIMITS, dict(starts=1, generation_attempts=20, controls=246, seconds=300))
+        self.assertEqual(s.PLANNED['successes']+s.PLANNED['cancelled']+s.PLANNED['refusals'], 12)
 
     def test_frontend_with_real_validator_reserves_control_room(self):
         front = s.s.g.policy(s.frozen_frontend())
         self.assertEqual(front['global_inflight'], 8)
         self.assertGreater(front['per_client_inflight'], 4)
+
+    def test_preflight_uses_existing_closed_envelope(self):
+        body = s.echo()
+        envelope = s.preflight_envelope(body)
+        self.assertEqual(set(envelope), {'request'})
+        self.assertEqual(envelope['request'], body)
+        schema = s.cpu.read(s.ROOT/'docs/serve-preflight-v1.schema.json')
+        from jsonschema import ValidationError
+        with self.assertRaises(ValidationError):
+            s.s.Draft202012Validator(schema['$defs']['request']).validate(body)
+
+    def test_poll_file_selection_uses_numeric_suffix(self):
+        from tools.serve_client_governance.report import latest_poll
+        from tempfile import TemporaryDirectory
+        from pathlib import Path
+        root = s.BASE/'cpu-fixtures'
+        root.mkdir(exist_ok=True)
+        with TemporaryDirectory(dir=root) as folder:
+            folder = Path(folder)
+            for number in (8, 10, 100):
+                (folder/f'queue-{number}-wire.bin').write_text('')
+            self.assertEqual(latest_poll(folder, 'queue').name, 'queue-100-wire.bin')
+            with self.assertRaises(ValueError):
+                latest_poll(folder, 'absent')
 
     def test_order_requires_actual_admission_event(self):
         log = ('[q4t][request] instance=1 id=a event=stage stage=encode seq=-1\n'

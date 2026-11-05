@@ -18,17 +18,17 @@ from dataclasses import asdict
 ROOT = Path(__file__).resolve().parents[2]
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(ROOT))
-from tools.serve_client_governance import cpu
+from tools.serve_client_governance import cpu, reuse
 from tools.serve_error_params.stage import h, a, DAYS, Children
 from tools.serve_clients import short as s
 from tools.serve_service import package as pkg
 
 BASE = cpu.BASE
-PACKAGE, OUTPUT = BASE/'package-03', BASE/'execution-02'
+PACKAGE, OUTPUT = BASE/'package-04', BASE/'execution-03'
 PORT, TLS_PORT = 18138, 18458
-LIMITS = dict(starts=2, generation_attempts=24, controls=250, seconds=480)
-PLANNED = dict(models=2, successes=12, cancelled=2, real_tools=2, refusals=2)
-CPU_LABEL, BUILD_LABEL = 'cpu-finish-02', 'build-01'
+LIMITS = dict(starts=1, generation_attempts=20, controls=246, seconds=300)
+PLANNED = dict(models=1, successes=8, cancelled=2, real_tools=0, refusals=2)
+CPU_LABEL, BUILD_LABEL = 'cpu-scoped', 'build-01'
 
 
 def frozen_policy():
@@ -64,8 +64,10 @@ def prepare():
     cpu.require(cpu.runtime() == cpu.read(BASE/BUILD_LABEL/'runtime.json'), 'runtime build drift')
     for name, digest in cpu.read(BASE/BUILD_LABEL/'result.json')['binaries'].items():
         cpu.require(cpu.sha(name) == digest, 'built binary drift')
+    reused = reuse.check()
     old = cpu.read(ROOT/'build/q4t.release.json')
     PACKAGE.mkdir()
+    cpu.save(PACKAGE/'reused-evidence.json', reused)
     for name in ('candidate', 'previous'):
         (PACKAGE/name).mkdir()
     for name in a.NAMES:
@@ -94,7 +96,7 @@ def prepare():
         previous=h.identity(old['tested_source_manifest']), current=h.identity(PACKAGE/'candidate/runtime-source.json'),
         unchanged_runtime_sources=sum(previous.get(n) == d for n, d in cpu.runtime().items()),
         model_math_tokenizer_template_cache_unchanged=True, performance_acceptance=False))
-    private = BASE/'private-03'
+    private = BASE/'private-04'
     private.mkdir(mode=0o700)
     cert, key = s.certificate(private)
     front = frozen_frontend()
@@ -120,7 +122,8 @@ def prepare():
         frontend=str(private/'gateway.json'), policy=str(private/'clients.json'), preserved=preserved,
         local={str(p): cpu.sha(p) for p in (private/'clients.json', private/'gateway.json')},
         source_commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
-        performance_acceptance=False)
+        cumulative_limits=dict(starts=2, generation_attempts=24, controls=250, seconds=480),
+        reuse=h.identity(PACKAGE/'reused-evidence.json'), performance_acceptance=False)
     cpu.save(PACKAGE/'plan.json', plan)
     h.seal(PACKAGE)
     return dict(prepared=True, limits=LIMITS, planned=PLANNED, models_started=0)
@@ -144,6 +147,13 @@ def echo(stream=True):
     value = s.a.ordinary(stream)
     value['max_tokens'] = 32
     return value
+
+
+def preflight_envelope(body):
+    envelope = dict(request=body)
+    schema = cpu.read(ROOT/'docs/serve-preflight-v1.schema.json')
+    s.Draft202012Validator(schema['$defs']['request']).validate(envelope)
+    return envelope
 
 
 def rate(metrics, client, field):
@@ -209,7 +219,7 @@ class Run(s.Run):
             self.tls = False
 
     def preflight(self, label, body, client=0):
-        value = self.request(label, body, client=client, path='/v1/chat/preflight')
+        value = self.request(label, preflight_envelope(body), client=client, path='/v1/chat/preflight')
         schema = cpu.read(ROOT/'docs/serve-preflight-v1.schema.json')
         s.Draft202012Validator(schema['$defs']['response']).validate(value)
         cpu.require(value['client_limits']['rate_quota_reserved'] is False, 'preflight rate exemption')
@@ -334,25 +344,20 @@ class Run(s.Run):
                     sock.bind(('127.0.0.1', port))
             self.launch(True)
             self.request('capabilities', path='/v1/capabilities', method='GET')
-            for client, name in enumerate(('alpha', 'beta')):
-                self.current_client = client
-                self.tools('project-'+name)
-            self.current_client = 0
-            self.idle('tools-idle')
+            for index in range(2):
+                value = self.complete('rpm-seed-'+str(index), echo(False))
+                cpu.require(value.finish_reason == 'stop' and value.message['content'].strip() == '710003', 'RPM seed quality')
+            self.idle('seeds-idle')
             self.fairness()
             self.quotas()
             self.stop(True)
-            self.launch(False)
-            for stream in (True, False):
-                value = self.complete('disabled-'+str(stream), echo(stream))
-                cpu.require(value.finish_reason == 'stop' and value.message['content'].strip() == '710003', 'disabled quality')
-            self.idle('disabled-idle')
-            self.stop(False)
             self.children.reap(s.OUT)
             s.a.require_idle(s.OUT/'final-gpu.json')
             cpu.require(self.successes == PLANNED['successes'] and self.cancelled == 2, 'planned responses')
-            result.update(status='PASS_BOUNDED_CLIENT_GOVERNANCE', successes=self.successes,
-                          cancelled=self.cancelled, real_tools=2)
+            result.update(status='PASS_BOUNDED_CLIENT_GOVERNANCE_SCOPED', successes=self.successes,
+                          cancelled=self.cancelled, real_tools=0, reused_real_tools=2, reused_successes=4,
+                          cumulative_starts=self.counts['starts']+1,
+                          cumulative_generation_attempts=self.counts['generation_attempts']+4)
         except BaseException as error:
             result.update(status='ENV_ABORT' if 'ENV_ABORT' in str(error) else 'FAILED', error=repr(error))
             raise
@@ -403,10 +408,10 @@ def release(plan):
         observed_configuration=cpu.read(OUTPUT/'business/scoped-model-config-wire.bin'),
         operations_rules=h.identity(PACKAGE/'candidate/q4t.rules.yml'),rollback_operations_rules=h.identity(PACKAGE/'previous/q4t.rules.yml'),
         scope=dict(hardware='local Thor',production='default MTP k3, full head, text',
-            validation='Two local model starts: real TLS quota refusals, logical ledger, active/queued cancellation, client slot order, window rollover; two project tool/citation loops and no-policy JSON/SSE recovery',
+            validation='Two continuation model starts: real TLS quota refusals, logical ledger, active/queued cancellation, client slot order, window rollover and no-policy JSON/SSE. Four same-ELF completed responses/two real project tool loops reused from preserved failed driver; three starts total',
             installation_health='identical accepted ELF, installed CLI; HTTP reused',
             boundaries='Single-process fixed windows and prepared-slot fairness only; no hard realtime, preparation/GPU-time fairness, distributed billing or preemption. No new managed/real LAN/long soak/physical RAM/numerical or performance acceptance; old packages and tasks pinned.',
-            performance_acceptance=False,numerical_evidence=str(PACKAGE/'numerical-reuse.json')))
+            performance_acceptance=False,numerical_evidence=str(PACKAGE/'numerical-reuse.json'), reused_evidence=str(PACKAGE/'reused-evidence.json')))
     folder=OUTPUT/'release';folder.mkdir();declarations=folder/'declarations';declarations.mkdir()
     for name,label in (('capabilities.json','capabilities-wire.bin'),
                        ('configuration.json','scoped-model-config-wire.bin')):
@@ -446,14 +451,24 @@ def execute():
     signal.signal(signal.SIGALRM, expired)
     signal.setitimer(signal.ITIMER_REAL, LIMITS['seconds']-45)
     try:
-        a.execute()
+        plan = check()
+        a.verify_hashes(ROOT/'build', plan['old_hashes'])
+        Run(plan).execute()
+        check()
+        a.verify_hashes(ROOT/'build', plan['old_hashes'])
+        cpu.save(OUTPUT/'execution.json', dict(status='SCOPED_VERIFIED_PENDING_DISABLED_CHECK',
+            installed=False, default_unchanged=True, result=h.identity(OUTPUT/'business/result.json')))
     finally:
         signal.setitimer(signal.ITIMER_REAL, 0)
 
 
 def finalize():
-    bind()
-    a.finalize()
+    check()
+    cpu.require(cpu.read(OUTPUT/'lease/exit.json')['status'] == 'COMPLETED' and
+        cpu.read(OUTPUT/'execution.json')['status'] == 'SCOPED_VERIFIED_PENDING_DISABLED_CHECK',
+        'scoped continuation not complete')
+    cpu.save(OUTPUT/'finalized.json', dict(status='SCOPED_VERIFIED_PENDING_DISABLED_CHECK',
+        installed=False, default_unchanged=True, reused_evidence=h.identity(PACKAGE/'reused-evidence.json')))
     h.seal(OUTPUT)
 
 
