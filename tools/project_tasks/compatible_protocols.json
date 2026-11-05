@@ -33,6 +33,17 @@
       "release": "srv12k-d073eb8f",
       "template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
       "to_protocol_sha256": "15d7ccb103258ea5ec8ca3cfa66c9bfe1245eadb7d38ad6ee149ad97075ec30e"
+    },
+    {
+      "archive_sha256": "a9737e5eebb9654cf122f6ef72d19453b7972b4227f8d1b3d8492992bd0c7568",
+      "basis": "Reviewed 223 runtime sources: 214 unchanged; cancellable preparation waits and accepted prefill scoring. Seven schemas and template are identical; capabilities differ only in protocol identity. Shared response/tool parsing is unchanged across 17-to-18 application sources. Directed readonly task history only; saved results stay immutable, with no bitwise generation guarantee.",
+      "contract": "q4t-project-readonly-protocol-v1",
+      "evidence": "docs/evidence/serve-task-current-review-20261105/records.tar.gz",
+      "from_protocol_sha256": "15d7ccb103258ea5ec8ca3cfa66c9bfe1245eadb7d38ad6ee149ad97075ec30e",
+      "model": "qwen3.8-flash-next",
+      "release": "srv-current-a56bd448",
+      "template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+      "to_protocol_sha256": "cc321239ced843d6d618d07b72ed81ed65958b2fdc29261fc2b042d9118c40d5"
     }
   ]
 }
