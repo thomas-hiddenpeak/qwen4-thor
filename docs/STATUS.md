@@ -41,13 +41,18 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+[评分缺项补验](MTP_PREFILL_COMPLETION_PLAN_2026-11-05.md)已获用户“继续吧”
+授权：新增最多20分钟、27HTTP/3服务/2状态夹具，只补原缺项，复用171
+完整结果；前两阶段失败状态和归档保持。新驱动显式导入冻结source，
+未改推理实现或客户端；补验与逐项保护审查通过前仍保留原默认。
+
 [评分最小提取的本轮结果](MTP_PREFILL_ADOPTION_RESULT_2026-11-05.md)：
 a4009460运行实现、a56bd448候选零警告；仅四个评分运行文件及配套校验。
 两多槽200K TTFT中位数降低33.836%/33.733%，完整对照输出一致，22质量
 题通过；单槽MTP五档完成。171完整HTTP结果（26复用+145新）已封存，
 原夹具预算错误和续验截止STOPPED均保留，不把采样清理当整阶段通过。
 普通decode父版200K完整三请求组、24缓存请求及2状态夹具未完成，故
-NOT_ACCEPTED_INCOMPLETE_MEASUREMENTS；额外20分钟缺项预算待用户确认。
+NOT_ACCEPTED_INCOMPLETE_MEASUREMENTS；新增缺项预算与进展见上方独立计划。
 9服务退出、端口/GPU空、原共享锁可用；3001路径/2915归档内容独立核对。
 默认8e9b4ce7/e61bed7c、10客户端WIP、研究tip保持。PR #9为草稿，
 d9f6d746两项host检查成功；不自动合入或发布，不恢复工业化任务。
