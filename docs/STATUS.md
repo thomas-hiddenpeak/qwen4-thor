@@ -41,6 +41,14 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+用户授权按[有界交付队列](SERVE_BOUNDED_DELIVERY_2026-11-05.md)继续：
+先部署/资源组合，再单进程配额与公平；全物理RAM另给可行性结论。
+PR #10已合入main c9759954，两项host检查通过，合并树与3fef5671相同。
+本批复用当前分支，离线部署profile及驱动13项CPU通过；已冻结1模型/
+6请求资源短验，尚未运行或宣布组合接受。[物理RAM审查](SERVE_PHYSICAL_RAM_DECISION_2026-11-05.md)
+以NO_GO_CURRENT_CONTRACT结束本轮可行性关卡。长稳由用户负责，实际LAN/正式
+通知选择启用时验收，既有默认与回退包不变。下方暂停描述为历史边界。
+
 [SRV-08b客户端已限定接受](SERVE_CLIENT_TRANSPORT_RESULT_2026-11-05.md)：
 83 Python/40 Node纯CPU、34网络场景及1模型6响应/2真实资料工具通过。
 两次夹具失败（均0模型）原件保留，复用8观察后补齐26项；累计36网络

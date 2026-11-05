@@ -1,5 +1,8 @@
 # docs/ — 开发记录文档体系
 
+[剩余Serve有界交付队列](SERVE_BOUNDED_DELIVERY_2026-11-05.md)与
+[物理RAM硬上限可行性结论](SERVE_PHYSICAL_RAM_DECISION_2026-11-05.md)。
+
 [2026-11-05有限收尾交接：客户端、当前托管与任务迁移](SERVE_CLOSEOUT_HANDOFF_2026-11-05.md)。
 
 [当前默认托管组合短验结果](SERVE_CURRENT_MANAGED_RESULT_2026-11-05.md)。
