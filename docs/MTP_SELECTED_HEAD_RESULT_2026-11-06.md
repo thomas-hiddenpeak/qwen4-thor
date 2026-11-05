@@ -108,3 +108,21 @@ device/inode；模型权重仅做元数据核对，不声称重新hash所有权�
 
 研究分支保留独有实现与本结果，默认及主线运行时保持原身份。
 下一项优化需另立有界假设，本轮不自动展开其他路线。
+
+## 推送后的来源清单收尾
+
+首次[公共host检查](https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/42093076017)
+在host用例、严格runner及冻结证据审查通过后，被serve来源清单拒绝：
+`src/mtp/mtp.cu`仍登记父版本摘要。原[CI状态](evidence/mtp-selected-head-rows-20261106/host-ci-result.json)
+及[失败日志](evidence/mtp-selected-head-rows-20261106/host-ci-failure.log)保留。
+
+逐项复核两个运行文件差异，记录选行/打包与原stream清理边界；请求
+字段、路由、白名单、模板、解析、准入、取消及错误封装未变。只更新
+该来源锚点并补充`selected_head_rows_research_review`，明确数值、多槽
+和性能未接受。定向[清单自检](evidence/mtp-selected-head-rows-20261106/inventory-review-check.json)
+通过：38字段、10路由、112锚点、3个反遗漏变异；仍为
+`semantics_certified=false`。未改候选实现或追加GPU/HTTP。
+
+冻结计划绑定的是实测e99925b3输入，原清单也在既有归档中保留。
+后续清单修订不追改plan、decision、postflight或原封存；复核当次
+来源应使用归档快照，不能拿后续工作区文件冒充原输入。

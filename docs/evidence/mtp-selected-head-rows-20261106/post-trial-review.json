@@ -1,0 +1,20 @@
+{
+  "status": "VERIFIED",
+  "measured_source_commit": "e99925b32edd4e0d9ce5886c33a7542773743829",
+  "post_measurement_source_changes": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/tools/serve_audit/inventory.json",
+      "measured_sha256": "def45ed73de8d66d557155961ce7f63167a1e1c8b13d1fd2267b51779a0590fa",
+      "current_sha256": "bd6bb81e602adc5aef2832bb93f6482ceb036394d0361f4b080baff472d3ddff"
+    }
+  ],
+  "original_inventory_archived": true,
+  "runtime_unchanged": true,
+  "original_plan_and_raw_seal_unchanged": true,
+  "reason": "Source inventory review after first CI rejection; no inference rerun or acceptance change.",
+  "files": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/host-ci-result.json": "c51149e6c8c4ada712ffe79bb684ca96c47960ed43cae9d00cbf0892243df1ab",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/host-ci-failure.log": "979591979e8e3343024059d68bc49d664f96de7466531bfaea7d56effbf9c5b9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/inventory-review-check.json": "5e16636a6b5bf20943e45c1b2d62f05b2b77309d4c256adec0d055d7cf2ec30c"
+  }
+}

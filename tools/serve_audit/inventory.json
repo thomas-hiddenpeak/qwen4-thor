@@ -693,7 +693,7 @@
     "src/main.cpp": "a289b15b8876f4314fc8678075d51359bfdff7dd57df04998946fa985131df7d",
     "src/model/model.cu": "ddf5df2ef04770369785b4dd93d928bea7fa4ca4484e670ada9c7a944ed068fb",
     "src/model/model_owner.cpp": "cc3a998e52d4cca44bd695f40e1bf01f4ee2d75ce9f0c437d07757582d60e2bf",
-    "src/mtp/mtp.cu": "c2e6bb780cc42c80c649dc0e4fa18b6b7e714da17c6baaf46a97938099d07184",
+    "src/mtp/mtp.cu": "b55d82ceb34dfaaf4a1101bb03b7ba7ca041fc3115c85926aa637ed3ec83e5f4",
     "src/runtime/cuda_allocation_quota.cpp": "d19e53e7ec20b5924d01482760b638df74fbf5c7ef4aec7647dc2dffe8e760c5",
     "src/runtime/cuda_quota_backend.h": "ed5a378f24a18d4fbd91ee6a4473e5c14a93f10a9a221bf4a1e2c581ccf7e9ca",
     "src/runtime/startup_reservation.cpp": "3c979fd0e8eb5dec8185148c77677ddad246f401faa92641d2a5f1ec2c033e09",
@@ -995,5 +995,21 @@
       "tests/server_client_policy_test.cpp",
       "tests/server_sequence_admission_test.cpp"
     ]
+  },
+  "selected_head_rows_research_review": {
+    "date": "2026-11-06",
+    "source_commit": "e99925b32edd4e0d9ce5886c33a7542773743829",
+    "baseline_commit": "def8cc96e7f94b50fbc917303c8570ec23e841ea",
+    "reviewed_files": [
+      "src/mtp/mtp.cu",
+      "include/q4t/mtp/mtp.h"
+    ],
+    "review": "Research only. Multi-step extend keeps the complete forward and state updates, then projects only consumed rows for original fixed-reduction small-M shapes 2..8. Single row offsets input; multiple rows reuse existing scratch after ordered, bounded row validation. Existing stream cleanup is retained; logits use packed live-slot order while next hidden remains indexed by original extend row. No persistent allocation, capacity, admission, request field, route, whitelist, template, output-parser, cancellation or error-envelope change. Original shapes greater than eight and existing ablations keep their old path. Kernel dispatch and arithmetic shape for selected logits change; direct numerical, multi-slot and full performance acceptance remain unperformed. HTTP outputs and quality passed, but the frozen performance investment target failed. This inventory does not certify model math, API compatibility of the new runtime identity, or deployment.",
+    "outcome": "NO_GO_FEASIBILITY_TARGET_RESEARCH_ONLY",
+    "evidence": [
+      "docs/MTP_SELECTED_HEAD_RESULT_2026-11-06.md"
+    ],
+    "first_ci_failure": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/42093076017",
+    "frozen_evidence": "Original e99925b3 inputs, including the old inventory, remain sealed in evidence.tar; this post-trial inventory review does not alter measured binaries or raw evidence."
   }
 }
