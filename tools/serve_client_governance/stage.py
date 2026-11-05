@@ -24,11 +24,11 @@ from tools.serve_clients import short as s
 from tools.serve_service import package as pkg
 
 BASE = cpu.BASE
-PACKAGE, OUTPUT = BASE/'package-02', BASE/'execution'
+PACKAGE, OUTPUT = BASE/'package-03', BASE/'execution-02'
 PORT, TLS_PORT = 18138, 18458
 LIMITS = dict(starts=2, generation_attempts=24, controls=250, seconds=480)
 PLANNED = dict(models=2, successes=12, cancelled=2, real_tools=2, refusals=2)
-CPU_LABEL, BUILD_LABEL = 'cpu-finish', 'build-01'
+CPU_LABEL, BUILD_LABEL = 'cpu-finish-02', 'build-01'
 
 
 def frozen_policy():
@@ -94,7 +94,7 @@ def prepare():
         previous=h.identity(old['tested_source_manifest']), current=h.identity(PACKAGE/'candidate/runtime-source.json'),
         unchanged_runtime_sources=sum(previous.get(n) == d for n, d in cpu.runtime().items()),
         model_math_tokenizer_template_cache_unchanged=True, performance_acceptance=False))
-    private = BASE/'private-02'
+    private = BASE/'private-03'
     private.mkdir(mode=0o700)
     cert, key = s.certificate(private)
     front = frozen_frontend()
