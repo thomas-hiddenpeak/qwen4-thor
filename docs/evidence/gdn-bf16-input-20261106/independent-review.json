@@ -1,0 +1,255 @@
+{
+  "status": "VERIFIED",
+  "decision": "NO_GO_FEASIBILITY_TARGET",
+  "source_commit": "39d69b8f6b84cf8f75923955c9305691bc018faf",
+  "baseline_commit": "def8cc96e7f94b50fbc917303c8570ec23e841ea",
+  "frozen_files_checked": 4548,
+  "raw_files_checked": 218,
+  "model_metadata_checked": 197,
+  "model_weight_content_hash_claim": false,
+  "database_count": 12,
+  "http_requests": 68,
+  "quality_passed": 44,
+  "loads": 4,
+  "elapsed_seconds": 1680.2285666828975,
+  "lease_seconds": 1681.084534891881,
+  "guard_monitors": 1541,
+  "nvml_queries": 1542,
+  "telemetry_samples": 1681,
+  "pending_at_exit": 0,
+  "telemetry_sources": 53,
+  "unavailable_sources": [
+    {
+      "label": "pressure_cpu",
+      "path": "/proc/pressure/cpu",
+      "status": "UNAVAILABLE",
+      "reason": "missing_or_not_readable_at_discovery"
+    },
+    {
+      "label": "pressure_io",
+      "path": "/proc/pressure/io",
+      "status": "UNAVAILABLE",
+      "reason": "missing_or_not_readable_at_discovery"
+    },
+    {
+      "label": "pressure_memory",
+      "path": "/proc/pressure/memory",
+      "status": "UNAVAILABLE",
+      "reason": "missing_or_not_readable_at_discovery"
+    }
+  ],
+  "final_barrier": {
+    "boundary_monotonic": 2102754.276853597,
+    "sample_started_monotonic": 2102754.346332606,
+    "flushed_monotonic": 2102754.365114805
+  },
+  "final_nvml_pids": [],
+  "observed_server_pids": [
+    3799560,
+    3802950,
+    3806342,
+    3809561
+  ],
+  "comparisons": {
+    "full": {
+      "context-1024": {
+        "parent": {
+          "aggregate_decode": 35.556684835540445,
+          "aggregate_e2e": 24.43293211515993,
+          "latency": [
+            8.254811501130462,
+            8.082661139778793,
+            8.095459474250674
+          ],
+          "ttft": [
+            1.0854558642022312,
+            0.9199163937009871,
+            0.9126181933097541
+          ],
+          "decode": [
+            35.56805003319055,
+            35.60087774168325,
+            35.501271714944
+          ]
+        },
+        "candidate": {
+          "aggregate_decode": 35.57282960203648,
+          "aggregate_e2e": 24.45047994563356,
+          "latency": [
+            8.287897838745266,
+            8.086927889846265,
+            8.075654217042029
+          ],
+          "ttft": [
+            1.1139025916345417,
+            0.9197490201331675,
+            0.9116512490436435
+          ],
+          "decode": [
+            35.54504724584247,
+            35.57885252139768,
+            35.59462511937606
+          ]
+        },
+        "decode_gain": 0.0004540571363924606,
+        "e2e_change": 0.0007182040367044173,
+        "outputs_identical": true,
+        "acceptance_histograms_identical": true,
+        "target_met": false
+      },
+      "context-45056": {
+        "parent": {
+          "aggregate_decode": 35.915214870221256,
+          "aggregate_e2e": 117.27964911749586,
+          "latency": [
+            39.16629272978753,
+            39.04697527177632,
+            39.06638111593202
+          ],
+          "ttft": [
+            32.070909277070314,
+            31.949425619095564,
+            31.959149297792464
+          ],
+          "decode": [
+            35.938861049482306,
+            35.927892368274755,
+            35.878947883643235
+          ]
+        },
+        "candidate": {
+          "aggregate_decode": 35.9603565495474,
+          "aggregate_e2e": 117.36098983511329,
+          "latency": [
+            39.152851107064635,
+            39.07896227296442,
+            39.129176455084234
+          ],
+          "ttft": [
+            32.05765168182552,
+            31.995887783821672,
+            32.03402392426506
+          ],
+          "decode": [
+            35.9397931921281,
+            36.0013155856084,
+            35.94003073117284
+          ]
+        },
+        "decode_gain": 0.0012568957053231689,
+        "e2e_change": 0.0006935620819936705,
+        "outputs_identical": true,
+        "acceptance_histograms_identical": true,
+        "target_met": false
+      }
+    },
+    "subset": {
+      "context-1024": {
+        "parent": {
+          "aggregate_decode": 38.71517458637601,
+          "aggregate_e2e": 22.577483213040978,
+          "latency": [
+            7.629311691969633,
+            7.46827974403277,
+            7.479891777038574
+          ],
+          "ttft": [
+            1.0454698130488396,
+            0.885471380315721,
+            0.8868480967357755
+          ],
+          "decode": [
+            38.73118533062324,
+            38.737266210801806,
+            38.67712885959351
+          ]
+        },
+        "candidate": {
+          "aggregate_decode": 38.587580590969935,
+          "aggregate_e2e": 22.66344411019236,
+          "latency": [
+            7.673953391145915,
+            7.494404720142484,
+            7.49508599890396
+          ],
+          "ttft": [
+            1.0605860189534724,
+            0.8879771209321916,
+            0.8898494890891016
+          ],
+          "decode": [
+            38.55826928233434,
+            38.598773114607624,
+            38.60573343908128
+          ]
+        },
+        "decode_gain": -0.0032957101903647867,
+        "e2e_change": 0.00380737287412658,
+        "outputs_identical": true,
+        "acceptance_histograms_identical": true,
+        "target_met": false
+      },
+      "context-45056": {
+        "parent": {
+          "aggregate_decode": 39.43319677178694,
+          "aggregate_e2e": 115.20765393413603,
+          "latency": [
+            38.445989036001265,
+            38.37661918718368,
+            38.38504571095109
+          ],
+          "ttft": [
+            31.972676588222384,
+            31.917850106023252,
+            31.917229117825627
+          ],
+          "decode": [
+            39.392506086662856,
+            39.48120714577165,
+            39.42597881811234
+          ]
+        },
+        "candidate": {
+          "aggregate_decode": 39.47986376234008,
+          "aggregate_e2e": 115.13735052431002,
+          "latency": [
+            38.4441290688701,
+            38.35572733124718,
+            38.337494124192744
+          ],
+          "ttft": [
+            31.99148169113323,
+            31.890410964842886,
+            31.8784913062118
+          ],
+          "decode": [
+            39.518663437244264,
+            39.44122538613203,
+            39.479778409465354
+          ]
+        },
+        "decode_gain": 0.0011834442645677345,
+        "e2e_change": -0.0006102321106739028,
+        "outputs_identical": true,
+        "acceptance_histograms_identical": true,
+        "target_met": false
+      }
+    }
+  },
+  "statistics": "DESCRIPTIVE_SINGLE_START_NOT_NONINFERIORITY",
+  "next_phase": "NOT_TRIGGERED",
+  "performance_accepted": false,
+  "independent_numerical_contract": "NOT_RUN",
+  "file_references": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/gdn-bf16-input-20261106/review.py": "6080cab5b72d44178e8e63aee3386b68b23389db28c8faafcde0880e1250cb2c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/gdn-bf16-input-20261106/plan.json": "18ecf6c13f163a6933356ca4a7fa59bf6ec9a75c57995e24e6d6e0467450a206",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/gdn-bf16-input-20261106/decision.json": "6b15cbd223805625a53719eb256b09923781633e29ff0502a0450e04d301fd99",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/gdn-bf16-input-20261106/postflight.json": "83c90ec19f8a92dfd94822c973837a9edb173ecf7de9a51526ca220c1a413ca7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/gdn-bf16-input-20261106/run/files.json": "0571610aa36b464263e350b28fc6c567fa141d0e757f3556a68fab8972fb4436",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/gdn-bf16-input-20261106/run/state.json": "4b63d4cbf49bae6c0f9911a429b48dac427717c06ac9a1f95e49f3ab20c86d4b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/gdn-bf16-input-20261106/run/telemetry-summary.json": "ca5916d4fd353d26bba5023cc72037a42c24dd4405fa033e857ef15617e78309",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/gdn-bf16-input-20261106/lease/exit.json": "17770a9fdec1e0462dbafecc496c92334ade1379f520ea68d27cbbde36beba33",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/gdn-bf16-input-20261106/lease/events.jsonl": "b7a4fcb686ecf843e3e8e04750b8c301487fde0eb040813796a07dc0bcd1b108",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/gdn-bf16-input-20261106/lease/nvml-queries.jsonl": "145a2d3d2c1b5c3953f6c399caa6019a34b084c98783d6d05ac2835aab23e596"
+  }
+}

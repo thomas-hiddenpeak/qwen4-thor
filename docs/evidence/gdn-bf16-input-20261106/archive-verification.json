@@ -1,0 +1,14 @@
+{
+  "status": "ARCHIVE_REOPEN_VERIFIED",
+  "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/gdn-bf16-input-20261106/evidence.tar",
+  "sha256": "2bc1e69494b911beb35ec5c6a2bdd38117b9840f9c6240d9437d6c2dba48fb5e",
+  "bytes": 470773760,
+  "paths": 4797,
+  "unique_objects": 3219,
+  "all_frozen_inputs_included": 4548,
+  "default_modified": false,
+  "original_evidence_modified": false,
+  "original_model_directory_included": false,
+  "subset_head_artifact_included": true,
+  "original_absolute_paths_in_catalog": true
+}

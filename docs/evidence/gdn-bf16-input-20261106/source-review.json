@@ -1,0 +1,23 @@
+{
+  "source_commit": "39d69b8f6b84cf8f75923955c9305691bc018faf",
+  "runtime_files": [
+    "include/q4t/model/gemv.h",
+    "src/model/linear_attention.cu",
+    "src/model/small_m_gemm.cu"
+  ],
+  "original_mtp_runtime_restored": true,
+  "preserved_research_anchor": "64ee7ce679e89d61f1b5222d77fc9525a99d5b7d",
+  "shape": "checkpointed single-sequence verify T=4 K=2560 N=10240/6144 only",
+  "routing": "GDN call-site guard; no global shape redirection; requires both checkpoint pointers and num_ckpt=3, no ragged, absent ablations; FP8 shadow checked per projection.",
+  "shared_layout": "[row, BF16-pair-within-8-vector, K/8] float2; every element written once before CTA barrier; 4*4*320 float2 = 40960 bytes.",
+  "arithmetic": "Same per-lane i=lane+32*t; same j=0..3 fma.rn.f32x2 order per row; same x+y and shuffle offsets 16,8,4,2,1; same BF16 RN output with alpha=1. Only exact BF16-to-FP32 conversion placement/shared layout changes.",
+  "error_behavior": "An eligible specialized launch failure returns Status::Fail; no silent fallback.",
+  "unaffected": "Original small-M false specialization, M!=4/nonverify, other projections, states/checkpoints, head, serving protocol and allocation ownership.",
+  "evidence_level": "STATIC_SOURCE_REVIEW_NOT_INDEPENDENT_NUMERICAL_ACCEPTANCE",
+  "runtime_execution_and_bitwise_contract": "Phase B only if HTTP feasibility target passes",
+  "references": [
+    "include/q4t/model/gemv.h:107:bool Bf16GdnInput4Gemm(const uint16_t* x, const uint16_t* w, uint16_t* y,",
+    "src/model/small_m_gemm.cu:236:bool Bf16GdnInput4Gemm(const uint16_t* x, const uint16_t* w, uint16_t* y,",
+    "src/model/linear_attention.cu:1445:      if (!Bf16GdnInput4Gemm(x, weight, result, columns, stream))"
+  ]
+}

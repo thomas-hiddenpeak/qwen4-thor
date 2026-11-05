@@ -1,0 +1,3112 @@
+{
+  "comparisons": {
+    "full": {
+      "contexts": {
+        "context-1024": {
+          "parent": {
+            "aggregate_decode": 35.556684835540445,
+            "aggregate_e2e": 24.43293211515993,
+            "ttft": [
+              1.0854558642022312,
+              0.9199163937009871,
+              0.9126181933097541
+            ],
+            "latency": [
+              8.254811501130462,
+              8.082661139778793,
+              8.095459474250674
+            ],
+            "decode": [
+              35.56805003319055,
+              35.60087774168325,
+              35.501271714944
+            ]
+          },
+          "candidate": {
+            "aggregate_decode": 35.57282960203648,
+            "aggregate_e2e": 24.45047994563356,
+            "ttft": [
+              1.1139025916345417,
+              0.9197490201331675,
+              0.9116512490436435
+            ],
+            "latency": [
+              8.287897838745266,
+              8.086927889846265,
+              8.075654217042029
+            ],
+            "decode": [
+              35.54504724584247,
+              35.57885252139768,
+              35.59462511937606
+            ]
+          },
+          "decode_gain": 0.0004540571363924606,
+          "e2e_change": 0.0007182040367044173,
+          "target_met": false
+        },
+        "context-45056": {
+          "parent": {
+            "aggregate_decode": 35.915214870221256,
+            "aggregate_e2e": 117.27964911749586,
+            "ttft": [
+              32.070909277070314,
+              31.949425619095564,
+              31.959149297792464
+            ],
+            "latency": [
+              39.16629272978753,
+              39.04697527177632,
+              39.06638111593202
+            ],
+            "decode": [
+              35.938861049482306,
+              35.927892368274755,
+              35.878947883643235
+            ]
+          },
+          "candidate": {
+            "aggregate_decode": 35.9603565495474,
+            "aggregate_e2e": 117.36098983511329,
+            "ttft": [
+              32.05765168182552,
+              31.995887783821672,
+              32.03402392426506
+            ],
+            "latency": [
+              39.152851107064635,
+              39.07896227296442,
+              39.129176455084234
+            ],
+            "decode": [
+              35.9397931921281,
+              36.0013155856084,
+              35.94003073117284
+            ]
+          },
+          "decode_gain": 0.0012568957053231689,
+          "e2e_change": 0.0006935620819936705,
+          "target_met": false
+        }
+      },
+      "outputs_identical": true,
+      "acceptance_histograms_identical": true,
+      "target_met": false
+    },
+    "subset": {
+      "contexts": {
+        "context-1024": {
+          "parent": {
+            "aggregate_decode": 38.71517458637601,
+            "aggregate_e2e": 22.577483213040978,
+            "ttft": [
+              1.0454698130488396,
+              0.885471380315721,
+              0.8868480967357755
+            ],
+            "latency": [
+              7.629311691969633,
+              7.46827974403277,
+              7.479891777038574
+            ],
+            "decode": [
+              38.73118533062324,
+              38.737266210801806,
+              38.67712885959351
+            ]
+          },
+          "candidate": {
+            "aggregate_decode": 38.587580590969935,
+            "aggregate_e2e": 22.66344411019236,
+            "ttft": [
+              1.0605860189534724,
+              0.8879771209321916,
+              0.8898494890891016
+            ],
+            "latency": [
+              7.673953391145915,
+              7.494404720142484,
+              7.49508599890396
+            ],
+            "decode": [
+              38.55826928233434,
+              38.598773114607624,
+              38.60573343908128
+            ]
+          },
+          "decode_gain": -0.0032957101903647867,
+          "e2e_change": 0.00380737287412658,
+          "target_met": false
+        },
+        "context-45056": {
+          "parent": {
+            "aggregate_decode": 39.43319677178694,
+            "aggregate_e2e": 115.20765393413603,
+            "ttft": [
+              31.972676588222384,
+              31.917850106023252,
+              31.917229117825627
+            ],
+            "latency": [
+              38.445989036001265,
+              38.37661918718368,
+              38.38504571095109
+            ],
+            "decode": [
+              39.392506086662856,
+              39.48120714577165,
+              39.42597881811234
+            ]
+          },
+          "candidate": {
+            "aggregate_decode": 39.47986376234008,
+            "aggregate_e2e": 115.13735052431002,
+            "ttft": [
+              31.99148169113323,
+              31.890410964842886,
+              31.8784913062118
+            ],
+            "latency": [
+              38.4441290688701,
+              38.35572733124718,
+              38.337494124192744
+            ],
+            "decode": [
+              39.518663437244264,
+              39.44122538613203,
+              39.479778409465354
+            ]
+          },
+          "decode_gain": 0.0011834442645677345,
+          "e2e_change": -0.0006102321106739028,
+          "target_met": false
+        }
+      },
+      "outputs_identical": true,
+      "acceptance_histograms_identical": true,
+      "target_met": false
+    }
+  },
+  "performance_accepted": false,
+  "arms": {
+    "full-parent": {
+      "cases": [
+        {
+          "id": "context-1024",
+          "rows": [
+            {
+              "success": 1,
+              "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the distinct activities from the observations:\n\n1. Planetarium (Observations 1, 4, 5, 14, 22, 31) - Darkening dome, aligning star projector, comparing projected horizon with marked reference circle\n2. Tea workshop (Observations 2, 21, 26, 30) - Heating identical cups, comparing infusions, describing aroma separately from bitterness and mouthfeel\n3. Public aquarium (Observations 3, 10, 23) - Dimming room, observing nocturnal animals, guide explains shelter placement changes behavior\n4. Bicycle class (Observations 6, 15, 28, 29) - Braking demonstration on quiet paved courtyard, riders explain wet surfaces alter stopping distance\n5. Costume studio (Observations 7, 12, 16) - Pinning paper pattern onto inexpensive cotton, fitting reveals",
+              "output_sha256": "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0",
+              "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+              "response_id": "chatcmpl-auto-760a0a2c67f2e0677e1902b2cee8ad4f",
+              "input_tokens": 998,
+              "output_tokens": 256,
+              "latency": 8.254811501130462,
+              "ttft": 1.0854558642022312,
+              "start": 2101113.467968307,
+              "end": 2101121.722779808,
+              "finish": [
+                "length"
+              ],
+              "requested_max_tokens": 256,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101113.467968307,
+                "end_monotonic_seconds": 2101121.722779808,
+                "start_utc_estimate": "2026-11-05T20:37:10.951094+00:00",
+                "end_utc_estimate": "2026-11-05T20:37:19.205905+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 7.152557373046875e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the distinct activities from the observations:\n\n1. Planetarium (Observations 1, 4, 5, 14, 22, 31) - Darkening dome, aligning star projector, comparing projected horizon with marked reference circle\n2. Tea workshop (Observations 2, 21, 26, 30) - Heating identical cups, comparing infusions, describing aroma separately from bitterness and mouthfeel\n3. Public aquarium (Observations 3, 10, 23) - Dimming room, observing nocturnal animals, guide explains shelter placement changes behavior\n4. Bicycle class (Observations 6, 15, 28, 29) - Braking demonstration on quiet paved courtyard, riders explain wet surfaces alter stopping distance\n5. Costume studio (Observations 7, 12, 16) - Pinning paper pattern onto inexpensive cotton, fitting reveals",
+              "output_sha256": "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0",
+              "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+              "response_id": "chatcmpl-auto-9c1b454beb1d564f505fbcd53cd7cdac",
+              "input_tokens": 998,
+              "output_tokens": 256,
+              "latency": 8.082661139778793,
+              "ttft": 0.9199163937009871,
+              "start": 2101121.723155353,
+              "end": 2101129.805816493,
+              "finish": [
+                "length"
+              ],
+              "requested_max_tokens": 256,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101121.723155353,
+                "end_monotonic_seconds": 2101129.805816493,
+                "start_utc_estimate": "2026-11-05T20:37:19.206281+00:00",
+                "end_utc_estimate": "2026-11-05T20:37:27.288942+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 7.152557373046875e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the distinct activities from the observations:\n\n1. Planetarium (Observations 1, 4, 5, 14, 22, 31) - Darkening dome, aligning star projector, comparing projected horizon with marked reference circle\n2. Tea workshop (Observations 2, 21, 26, 30) - Heating identical cups, comparing infusions, describing aroma separately from bitterness and mouthfeel\n3. Public aquarium (Observations 3, 10, 23) - Dimming room, observing nocturnal animals, guide explains shelter placement changes behavior\n4. Bicycle class (Observations 6, 15, 28, 29) - Braking demonstration on quiet paved courtyard, riders explain wet surfaces alter stopping distance\n5. Costume studio (Observations 7, 12, 16) - Pinning paper pattern onto inexpensive cotton, fitting reveals",
+              "output_sha256": "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0",
+              "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+              "response_id": "chatcmpl-auto-5b27530b5deba43c3c7eb27435d80189",
+              "input_tokens": 998,
+              "output_tokens": 256,
+              "latency": 8.095459474250674,
+              "ttft": 0.9126181933097541,
+              "start": 2101129.806154586,
+              "end": 2101137.90161406,
+              "finish": [
+                "length"
+              ],
+              "requested_max_tokens": 256,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101129.806154586,
+                "end_monotonic_seconds": 2101137.90161406,
+                "start_utc_estimate": "2026-11-05T20:37:27.289280+00:00",
+                "end_utc_estimate": "2026-11-05T20:37:35.384739+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 7.152557373046875e-07,
+                "within_client_boundaries": true
+              }
+            }
+          ],
+          "makespan_seconds": 24.43364575318992,
+          "total_output_tokens": 768,
+          "throughput": 31.432067394188778
+        },
+        {
+          "id": "context-45056",
+          "rows": [
+            {
+              "success": 1,
+              "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the numbered observations. I need to cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations. The review must be at least 600 words.\n\nLet me analyze the observations to identify the distinct learning activities:\n\n1. **Planetarium** - Operator darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle\n2. **Tea workshop** - Heats identical cups, compares infusions, participants describe aroma separately from bitterness and mouthfeel\n3. **Public aquarium** - Dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior\n4. **Bicycle class** - Demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance\n5. **Costume studio** - Pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth\n6. **Pottery instructor** - Places fired tiles beside unfired samples, students explain how glaze thickness changes reflected color\n7. **Climbing center** - Closes route while wall anchors examined, next group practices knot inspection beside training mat\n8. **Tidal station**",
+              "output_sha256": "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a",
+              "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+              "response_id": "chatcmpl-auto-e1b780adcb02cefcf035a4f8736f380c",
+              "input_tokens": 45044,
+              "output_tokens": 256,
+              "latency": 39.16629272978753,
+              "ttft": 32.070909277070314,
+              "start": 2101143.324616155,
+              "end": 2101182.490908885,
+              "finish": [
+                "length"
+              ],
+              "requested_max_tokens": 256,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101143.324616155,
+                "end_monotonic_seconds": 2101182.490908885,
+                "start_utc_estimate": "2026-11-05T20:37:40.807742+00:00",
+                "end_utc_estimate": "2026-11-05T20:38:19.974035+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the numbered observations. I need to cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations. The review must be at least 600 words.\n\nLet me analyze the observations to identify the distinct learning activities:\n\n1. **Planetarium** - Operator darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle\n2. **Tea workshop** - Heats identical cups, compares infusions, participants describe aroma separately from bitterness and mouthfeel\n3. **Public aquarium** - Dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior\n4. **Bicycle class** - Demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance\n5. **Costume studio** - Pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth\n6. **Pottery instructor** - Places fired tiles beside unfired samples, students explain how glaze thickness changes reflected color\n7. **Climbing center** - Closes route while wall anchors examined, next group practices knot inspection beside training mat\n8. **Tidal station**",
+              "output_sha256": "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a",
+              "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+              "response_id": "chatcmpl-auto-fabd87af68dd21f705de54139a87755a",
+              "input_tokens": 45044,
+              "output_tokens": 256,
+              "latency": 39.04697527177632,
+              "ttft": 31.949425619095564,
+              "start": 2101182.491937383,
+              "end": 2101221.538912655,
+              "finish": [
+                "length"
+              ],
+              "requested_max_tokens": 256,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101182.491937383,
+                "end_monotonic_seconds": 2101221.538912655,
+                "start_utc_estimate": "2026-11-05T20:38:19.975063+00:00",
+                "end_utc_estimate": "2026-11-05T20:38:59.022038+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the numbered observations. I need to cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations. The review must be at least 600 words.\n\nLet me analyze the observations to identify the distinct learning activities:\n\n1. **Planetarium** - Operator darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle\n2. **Tea workshop** - Heats identical cups, compares infusions, participants describe aroma separately from bitterness and mouthfeel\n3. **Public aquarium** - Dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior\n4. **Bicycle class** - Demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance\n5. **Costume studio** - Pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth\n6. **Pottery instructor** - Places fired tiles beside unfired samples, students explain how glaze thickness changes reflected color\n7. **Climbing center** - Closes route while wall anchors examined, next group practices knot inspection beside training mat\n8. **Tidal station**",
+              "output_sha256": "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a",
+              "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+              "response_id": "chatcmpl-auto-1ecfccedf8662de40692f46585339942",
+              "input_tokens": 45044,
+              "output_tokens": 256,
+              "latency": 39.06638111593202,
+              "ttft": 31.959149297792464,
+              "start": 2101221.539936366,
+              "end": 2101260.606317482,
+              "finish": [
+                "length"
+              ],
+              "requested_max_tokens": 256,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101221.539936366,
+                "end_monotonic_seconds": 2101260.606317482,
+                "start_utc_estimate": "2026-11-05T20:38:59.023062+00:00",
+                "end_utc_estimate": "2026-11-05T20:39:38.089443+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            }
+          ],
+          "makespan_seconds": 117.2817013268359,
+          "total_output_tokens": 768,
+          "throughput": 6.548336111357804
+        },
+        {
+          "id": "quality",
+          "rows": [
+            {
+              "success": 1,
+              "text": "710003",
+              "output_sha256": "4236b5fda71f8600cb789858b7796a921cad5bffa7e9431bb6fbc760ae9527c4",
+              "prompt_sha256": "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392",
+              "response_id": "chatcmpl-auto-490e696855f90a1c48b7f88f9119769e",
+              "input_tokens": 1024,
+              "output_tokens": 7,
+              "latency": 1.0256940550170839,
+              "ttft": 0.9371303138323128,
+              "start": 2101266.056880977,
+              "end": 2101267.082575032,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101266.056880977,
+                "end_monotonic_seconds": 2101267.082575032,
+                "start_utc_estimate": "2026-11-05T20:39:43.540007+00:00",
+                "end_utc_estimate": "2026-11-05T20:39:44.565701+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710130",
+              "output_sha256": "a2d3058d185e332f041c82d19f9e69c72ee0083b5cd12d0aa139e5f0a3a82517",
+              "prompt_sha256": "f17889bf3cec9aead6db4da85c4d517a4d795407932c30b9f273363dec239dd0",
+              "response_id": "chatcmpl-auto-17f7f7b31d7c4cc5073f89677c773542",
+              "input_tokens": 1024,
+              "output_tokens": 7,
+              "latency": 1.0089259259402752,
+              "ttft": 0.9202936412766576,
+              "start": 2101267.082920495,
+              "end": 2101268.091846421,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101267.082920495,
+                "end_monotonic_seconds": 2101268.091846421,
+                "start_utc_estimate": "2026-11-05T20:39:44.566046+00:00",
+                "end_utc_estimate": "2026-11-05T20:39:45.574972+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710257",
+              "output_sha256": "6c77bcf6c38b5d7a4e7cffc80092afb9276df254c5b3ceca9ec683100cd9b15b",
+              "prompt_sha256": "e647c72568b4bf9589fd5c63e8a214898769f0285839cf53987c0e47ec12e4ff",
+              "response_id": "chatcmpl-auto-7467c8e3e84cc6da12d2606910a814bc",
+              "input_tokens": 1024,
+              "output_tokens": 7,
+              "latency": 1.0135135459713638,
+              "ttft": 0.9255127492360771,
+              "start": 2101268.092153791,
+              "end": 2101269.105667337,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101268.092153791,
+                "end_monotonic_seconds": 2101269.105667337,
+                "start_utc_estimate": "2026-11-05T20:39:45.575280+00:00",
+                "end_utc_estimate": "2026-11-05T20:39:46.588793+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710384",
+              "output_sha256": "cb357112f8e9ee220cb97e543bfe842800f5a805c9ab781ef48ef97eb0333c99",
+              "prompt_sha256": "4e4b462f767736bc27913543654afae84da78917924d4f2d60f8990a6b7a3a94",
+              "response_id": "chatcmpl-auto-ecfb4b914c2b82a0df599950947217c8",
+              "input_tokens": 4096,
+              "output_tokens": 7,
+              "latency": 3.0357300541363657,
+              "ttft": 2.9417109470814466,
+              "start": 2101269.105982752,
+              "end": 2101272.141712806,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101269.105982752,
+                "end_monotonic_seconds": 2101272.141712806,
+                "start_utc_estimate": "2026-11-05T20:39:46.589109+00:00",
+                "end_utc_estimate": "2026-11-05T20:39:49.624839+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710511",
+              "output_sha256": "7124ab808804eb53398068b38e68ca591057e6540584d3fc02f2c861fe27bbc0",
+              "prompt_sha256": "0e349879840c9c0cf3261f3263359482be3c1b4a9383c9bd68561014acefba6f",
+              "response_id": "chatcmpl-auto-57b3b3cb9de4b208b98e38ea5d4b3e13",
+              "input_tokens": 4096,
+              "output_tokens": 7,
+              "latency": 3.0296355173923075,
+              "ttft": 2.935842543374747,
+              "start": 2101272.142035973,
+              "end": 2101275.17167149,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101272.142035973,
+                "end_monotonic_seconds": 2101275.17167149,
+                "start_utc_estimate": "2026-11-05T20:39:49.625162+00:00",
+                "end_utc_estimate": "2026-11-05T20:39:52.654797+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710638",
+              "output_sha256": "4cac386c0b8783d90abab0b55d91ed878017db3723bb7c24a548b59e9811cd8b",
+              "prompt_sha256": "c40c8baf22c4a45590d30a327475c9f2163af28cee13baef0bf290cd74779074",
+              "response_id": "chatcmpl-auto-d759cc49adca0568f5007241703ea1fb",
+              "input_tokens": 4096,
+              "output_tokens": 7,
+              "latency": 3.0371943470090628,
+              "ttft": 2.9424883164465427,
+              "start": 2101275.17196999,
+              "end": 2101278.209164337,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101275.17196999,
+                "end_monotonic_seconds": 2101278.209164337,
+                "start_utc_estimate": "2026-11-05T20:39:52.655096+00:00",
+                "end_utc_estimate": "2026-11-05T20:39:55.692290+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710765",
+              "output_sha256": "e6319db514d30728158a3a306638d85f9c44eb72a08e3b6306867fda70359402",
+              "prompt_sha256": "b8198a7998b20d7edd3ada87edecbce958843b6bcafcf9d4983a239c6324fa02",
+              "response_id": "chatcmpl-auto-211bfed3aa7b0f85c75001acff15f12f",
+              "input_tokens": 8192,
+              "output_tokens": 7,
+              "latency": 5.80242035118863,
+              "ttft": 5.712045362219214,
+              "start": 2101278.209522735,
+              "end": 2101284.011943086,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101278.209522735,
+                "end_monotonic_seconds": 2101284.011943086,
+                "start_utc_estimate": "2026-11-05T20:39:55.692649+00:00",
+                "end_utc_estimate": "2026-11-05T20:40:01.495069+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710892",
+              "output_sha256": "9f2945cea215d6515a7b36b46b71cb0562a0629edc90aee47b435bb56f25d4a6",
+              "prompt_sha256": "d3f37a78f3f642d958c455757b859a222ab47784de1833847a5a5954aa37abb6",
+              "response_id": "chatcmpl-auto-16aa62043763f9a037d9750f83c42e74",
+              "input_tokens": 8192,
+              "output_tokens": 7,
+              "latency": 5.801052720751613,
+              "ttft": 5.711041857022792,
+              "start": 2101284.012331956,
+              "end": 2101289.813384677,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101284.012331956,
+                "end_monotonic_seconds": 2101289.813384677,
+                "start_utc_estimate": "2026-11-05T20:40:01.495458+00:00",
+                "end_utc_estimate": "2026-11-05T20:40:07.296511+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "711019",
+              "output_sha256": "a12687ff57e7602233020a95916bd75746473bbd1c262f3cb071b11de48634b7",
+              "prompt_sha256": "46616386557835b6e297f422fe33ed022202e321bde2729c7232a741939c9a47",
+              "response_id": "chatcmpl-auto-df56a3d2fad2cc715bbac3df1d75aa3f",
+              "input_tokens": 8192,
+              "output_tokens": 7,
+              "latency": 5.79782485589385,
+              "ttft": 5.707385465037078,
+              "start": 2101289.813759426,
+              "end": 2101295.611584282,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101289.813759426,
+                "end_monotonic_seconds": 2101295.611584282,
+                "start_utc_estimate": "2026-11-05T20:40:07.296885+00:00",
+                "end_utc_estimate": "2026-11-05T20:40:13.094710+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "711146",
+              "output_sha256": "c73f4e0e82deddf53f30ac110a0d599c2ba4b45b59b262ad3f4892b1b2373a4a",
+              "prompt_sha256": "8e7d6e535925c3552adaf57319be27d987365520fa852409366c05cf32b6c423",
+              "response_id": "chatcmpl-auto-d3c2f007708dc10c9c6988080968eb0d",
+              "input_tokens": 45056,
+              "output_tokens": 7,
+              "latency": 32.004890033975244,
+              "ttft": 31.912716920953244,
+              "start": 2101295.612444696,
+              "end": 2101327.61733473,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101295.612444696,
+                "end_monotonic_seconds": 2101327.61733473,
+                "start_utc_estimate": "2026-11-05T20:40:13.095571+00:00",
+                "end_utc_estimate": "2026-11-05T20:40:45.100461+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "711273",
+              "output_sha256": "7f9c8412ad575e46516d69c53b9e2e64a20b45f3c0a027524b3848dbd00aa21d",
+              "prompt_sha256": "12ba2ea94933c44aea775a49a5380161413c7d377208ae35c8ad20fab8c6f150",
+              "response_id": "chatcmpl-auto-ee39b3c78bb908baa2f5b388d1e99ffe",
+              "input_tokens": 204800,
+              "output_tokens": 7,
+              "latency": 167.25071702711284,
+              "ttft": 167.14616127405316,
+              "start": 2101327.620042761,
+              "end": 2101494.870759788,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101327.620042761,
+                "end_monotonic_seconds": 2101494.870759788,
+                "start_utc_estimate": "2026-11-05T20:40:45.103169+00:00",
+                "end_utc_estimate": "2026-11-05T20:43:32.353886+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            }
+          ],
+          "makespan_seconds": 228.81387881096452,
+          "total_output_tokens": 77,
+          "throughput": 0.33651804864342977
+        }
+      ],
+      "audit": {
+        "admitted": 17,
+        "released": 17,
+        "quota": {
+          "event": "server_destroyed",
+          "enabled": true,
+          "limit_bytes": 118728574156,
+          "charged_bytes": 200953856,
+          "live_bytes": 200953856,
+          "pending_bytes": 0,
+          "unknown_bytes": 0,
+          "peak_bytes": 105745766808,
+          "entries": 8,
+          "poisoned": false,
+          "byte_rejections": 0,
+          "entry_rejections": 0,
+          "stream_rejections": 0,
+          "contract_failures": 0,
+          "backend_failures": 0,
+          "scope": "process_requested_cuda_bytes",
+          "physical_ram_limit": false
+        }
+      },
+      "trajectories": {
+        "context-1024": [
+          [
+            "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+            [
+              8,
+              6,
+              7,
+              53
+            ]
+          ],
+          [
+            "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+            [
+              8,
+              6,
+              7,
+              53
+            ]
+          ],
+          [
+            "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+            [
+              8,
+              6,
+              7,
+              53
+            ]
+          ]
+        ],
+        "context-45056": [
+          [
+            "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+            [
+              6,
+              3,
+              5,
+              57
+            ]
+          ],
+          [
+            "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+            [
+              6,
+              3,
+              5,
+              57
+            ]
+          ],
+          [
+            "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+            [
+              6,
+              3,
+              5,
+              57
+            ]
+          ]
+        ],
+        "quality": [
+          [
+            "0e349879840c9c0cf3261f3263359482be3c1b4a9383c9bd68561014acefba6f",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "12ba2ea94933c44aea775a49a5380161413c7d377208ae35c8ad20fab8c6f150",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "46616386557835b6e297f422fe33ed022202e321bde2729c7232a741939c9a47",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "4e4b462f767736bc27913543654afae84da78917924d4f2d60f8990a6b7a3a94",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "8e7d6e535925c3552adaf57319be27d987365520fa852409366c05cf32b6c423",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "b8198a7998b20d7edd3ada87edecbce958843b6bcafcf9d4983a239c6324fa02",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "c40c8baf22c4a45590d30a327475c9f2163af28cee13baef0bf290cd74779074",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "d3f37a78f3f642d958c455757b859a222ab47784de1833847a5a5954aa37abb6",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "e647c72568b4bf9589fd5c63e8a214898769f0285839cf53987c0e47ec12e4ff",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "f17889bf3cec9aead6db4da85c4d517a4d795407932c30b9f273363dec239dd0",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ]
+        ]
+      },
+      "quality_passed": 11,
+      "metrics": {
+        "context-1024": {
+          "aggregate_decode": 35.556684835540445,
+          "aggregate_e2e": 24.43293211515993,
+          "ttft": [
+            1.0854558642022312,
+            0.9199163937009871,
+            0.9126181933097541
+          ],
+          "latency": [
+            8.254811501130462,
+            8.082661139778793,
+            8.095459474250674
+          ],
+          "decode": [
+            35.56805003319055,
+            35.60087774168325,
+            35.501271714944
+          ]
+        },
+        "context-45056": {
+          "aggregate_decode": 35.915214870221256,
+          "aggregate_e2e": 117.27964911749586,
+          "ttft": [
+            32.070909277070314,
+            31.949425619095564,
+            31.959149297792464
+          ],
+          "latency": [
+            39.16629272978753,
+            39.04697527177632,
+            39.06638111593202
+          ],
+          "decode": [
+            35.938861049482306,
+            35.927892368274755,
+            35.878947883643235
+          ]
+        }
+      }
+    },
+    "full-candidate": {
+      "cases": [
+        {
+          "id": "context-1024",
+          "rows": [
+            {
+              "success": 1,
+              "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the distinct activities from the observations:\n\n1. Planetarium (Observations 1, 4, 5, 14, 22, 31) - Darkening dome, aligning star projector, comparing projected horizon with marked reference circle\n2. Tea workshop (Observations 2, 21, 26, 30) - Heating identical cups, comparing infusions, describing aroma separately from bitterness and mouthfeel\n3. Public aquarium (Observations 3, 10, 23) - Dimming room, observing nocturnal animals, guide explains shelter placement changes behavior\n4. Bicycle class (Observations 6, 15, 28, 29) - Braking demonstration on quiet paved courtyard, riders explain wet surfaces alter stopping distance\n5. Costume studio (Observations 7, 12, 16) - Pinning paper pattern onto inexpensive cotton, fitting reveals",
+              "output_sha256": "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0",
+              "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+              "response_id": "chatcmpl-auto-b282261c0f4adb958dad30b669fe0b6d",
+              "input_tokens": 998,
+              "output_tokens": 256,
+              "latency": 8.287897838745266,
+              "ttft": 1.1139025916345417,
+              "start": 2101534.327532904,
+              "end": 2101542.615430743,
+              "finish": [
+                "length"
+              ],
+              "requested_max_tokens": 256,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101534.327532904,
+                "end_monotonic_seconds": 2101542.615430743,
+                "start_utc_estimate": "2026-11-05T20:44:11.810658+00:00",
+                "end_utc_estimate": "2026-11-05T20:44:20.098556+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 7.152557373046875e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the distinct activities from the observations:\n\n1. Planetarium (Observations 1, 4, 5, 14, 22, 31) - Darkening dome, aligning star projector, comparing projected horizon with marked reference circle\n2. Tea workshop (Observations 2, 21, 26, 30) - Heating identical cups, comparing infusions, describing aroma separately from bitterness and mouthfeel\n3. Public aquarium (Observations 3, 10, 23) - Dimming room, observing nocturnal animals, guide explains shelter placement changes behavior\n4. Bicycle class (Observations 6, 15, 28, 29) - Braking demonstration on quiet paved courtyard, riders explain wet surfaces alter stopping distance\n5. Costume studio (Observations 7, 12, 16) - Pinning paper pattern onto inexpensive cotton, fitting reveals",
+              "output_sha256": "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0",
+              "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+              "response_id": "chatcmpl-auto-34ff9147aa4df5725b8c405a6186ab94",
+              "input_tokens": 998,
+              "output_tokens": 256,
+              "latency": 8.086927889846265,
+              "ttft": 0.9197490201331675,
+              "start": 2101542.615796233,
+              "end": 2101550.702724123,
+              "finish": [
+                "length"
+              ],
+              "requested_max_tokens": 256,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101542.615796233,
+                "end_monotonic_seconds": 2101550.702724123,
+                "start_utc_estimate": "2026-11-05T20:44:20.098922+00:00",
+                "end_utc_estimate": "2026-11-05T20:44:28.185850+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 7.152557373046875e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the distinct activities from the observations:\n\n1. Planetarium (Observations 1, 4, 5, 14, 22, 31) - Darkening dome, aligning star projector, comparing projected horizon with marked reference circle\n2. Tea workshop (Observations 2, 21, 26, 30) - Heating identical cups, comparing infusions, describing aroma separately from bitterness and mouthfeel\n3. Public aquarium (Observations 3, 10, 23) - Dimming room, observing nocturnal animals, guide explains shelter placement changes behavior\n4. Bicycle class (Observations 6, 15, 28, 29) - Braking demonstration on quiet paved courtyard, riders explain wet surfaces alter stopping distance\n5. Costume studio (Observations 7, 12, 16) - Pinning paper pattern onto inexpensive cotton, fitting reveals",
+              "output_sha256": "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0",
+              "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+              "response_id": "chatcmpl-auto-104f51bf763020fbb64339ca57082f0e",
+              "input_tokens": 998,
+              "output_tokens": 256,
+              "latency": 8.075654217042029,
+              "ttft": 0.9116512490436435,
+              "start": 2101550.703066307,
+              "end": 2101558.778720524,
+              "finish": [
+                "length"
+              ],
+              "requested_max_tokens": 256,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101550.703066307,
+                "end_monotonic_seconds": 2101558.778720524,
+                "start_utc_estimate": "2026-11-05T20:44:28.186192+00:00",
+                "end_utc_estimate": "2026-11-05T20:44:36.261846+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 7.152557373046875e-07,
+                "within_client_boundaries": true
+              }
+            }
+          ],
+          "makespan_seconds": 24.451187619939446,
+          "total_output_tokens": 768,
+          "throughput": 31.40951727734123
+        },
+        {
+          "id": "context-45056",
+          "rows": [
+            {
+              "success": 1,
+              "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the numbered observations. I need to cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations. The review must be at least 600 words.\n\nLet me analyze the observations to identify the distinct learning activities:\n\n1. **Planetarium** - Operator darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle\n2. **Tea workshop** - Heats identical cups, compares infusions, participants describe aroma separately from bitterness and mouthfeel\n3. **Public aquarium** - Dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior\n4. **Bicycle class** - Demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance\n5. **Costume studio** - Pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth\n6. **Pottery instructor** - Places fired tiles beside unfired samples, students explain how glaze thickness changes reflected color\n7. **Climbing center** - Closes route while wall anchors examined, next group practices knot inspection beside training mat\n8. **Tidal station**",
+              "output_sha256": "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a",
+              "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+              "response_id": "chatcmpl-auto-244b6cb942acef383d8db5f34f7af8f8",
+              "input_tokens": 45044,
+              "output_tokens": 256,
+              "latency": 39.152851107064635,
+              "ttft": 32.05765168182552,
+              "start": 2101564.170740297,
+              "end": 2101603.323591404,
+              "finish": [
+                "length"
+              ],
+              "requested_max_tokens": 256,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101564.170740297,
+                "end_monotonic_seconds": 2101603.323591404,
+                "start_utc_estimate": "2026-11-05T20:44:41.653867+00:00",
+                "end_utc_estimate": "2026-11-05T20:45:20.806718+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": -2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the numbered observations. I need to cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations. The review must be at least 600 words.\n\nLet me analyze the observations to identify the distinct learning activities:\n\n1. **Planetarium** - Operator darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle\n2. **Tea workshop** - Heats identical cups, compares infusions, participants describe aroma separately from bitterness and mouthfeel\n3. **Public aquarium** - Dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior\n4. **Bicycle class** - Demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance\n5. **Costume studio** - Pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth\n6. **Pottery instructor** - Places fired tiles beside unfired samples, students explain how glaze thickness changes reflected color\n7. **Climbing center** - Closes route while wall anchors examined, next group practices knot inspection beside training mat\n8. **Tidal station**",
+              "output_sha256": "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a",
+              "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+              "response_id": "chatcmpl-auto-357f1ad9d42ad092dacce02bfe5fc423",
+              "input_tokens": 45044,
+              "output_tokens": 256,
+              "latency": 39.07896227296442,
+              "ttft": 31.995887783821672,
+              "start": 2101603.324640586,
+              "end": 2101642.403602859,
+              "finish": [
+                "length"
+              ],
+              "requested_max_tokens": 256,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101603.324640586,
+                "end_monotonic_seconds": 2101642.403602859,
+                "start_utc_estimate": "2026-11-05T20:45:20.807767+00:00",
+                "end_utc_estimate": "2026-11-05T20:45:59.886729+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": -2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the numbered observations. I need to cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations. The review must be at least 600 words.\n\nLet me analyze the observations to identify the distinct learning activities:\n\n1. **Planetarium** - Operator darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle\n2. **Tea workshop** - Heats identical cups, compares infusions, participants describe aroma separately from bitterness and mouthfeel\n3. **Public aquarium** - Dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior\n4. **Bicycle class** - Demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance\n5. **Costume studio** - Pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth\n6. **Pottery instructor** - Places fired tiles beside unfired samples, students explain how glaze thickness changes reflected color\n7. **Climbing center** - Closes route while wall anchors examined, next group practices knot inspection beside training mat\n8. **Tidal station**",
+              "output_sha256": "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a",
+              "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+              "response_id": "chatcmpl-auto-0488f5b7a6af1e065e4b9ee8aad85b4f",
+              "input_tokens": 45044,
+              "output_tokens": 256,
+              "latency": 39.129176455084234,
+              "ttft": 32.03402392426506,
+              "start": 2101642.404640013,
+              "end": 2101681.533816468,
+              "finish": [
+                "length"
+              ],
+              "requested_max_tokens": 256,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101642.404640013,
+                "end_monotonic_seconds": 2101681.533816468,
+                "start_utc_estimate": "2026-11-05T20:45:59.887766+00:00",
+                "end_utc_estimate": "2026-11-05T20:46:39.016943+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": -2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            }
+          ],
+          "makespan_seconds": 117.36307617090642,
+          "total_output_tokens": 768,
+          "throughput": 6.543795758059573
+        },
+        {
+          "id": "quality",
+          "rows": [
+            {
+              "success": 1,
+              "text": "710003",
+              "output_sha256": "4236b5fda71f8600cb789858b7796a921cad5bffa7e9431bb6fbc760ae9527c4",
+              "prompt_sha256": "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392",
+              "response_id": "chatcmpl-auto-b040c9195248ca101a2e213011ef2c32",
+              "input_tokens": 1024,
+              "output_tokens": 7,
+              "latency": 1.0186515897512436,
+              "ttft": 0.9302336117252707,
+              "start": 2101686.972141947,
+              "end": 2101687.990793537,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101686.972141947,
+                "end_monotonic_seconds": 2101687.990793537,
+                "start_utc_estimate": "2026-11-05T20:46:44.455268+00:00",
+                "end_utc_estimate": "2026-11-05T20:46:45.473919+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710130",
+              "output_sha256": "a2d3058d185e332f041c82d19f9e69c72ee0083b5cd12d0aa139e5f0a3a82517",
+              "prompt_sha256": "f17889bf3cec9aead6db4da85c4d517a4d795407932c30b9f273363dec239dd0",
+              "response_id": "chatcmpl-auto-2fba56eaf0b17b11afe37acb74788c65",
+              "input_tokens": 1024,
+              "output_tokens": 7,
+              "latency": 1.0113814361393452,
+              "ttft": 0.9221808449365199,
+              "start": 2101687.991101184,
+              "end": 2101689.00248262,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101687.991101184,
+                "end_monotonic_seconds": 2101689.00248262,
+                "start_utc_estimate": "2026-11-05T20:46:45.474227+00:00",
+                "end_utc_estimate": "2026-11-05T20:46:46.485608+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710257",
+              "output_sha256": "6c77bcf6c38b5d7a4e7cffc80092afb9276df254c5b3ceca9ec683100cd9b15b",
+              "prompt_sha256": "e647c72568b4bf9589fd5c63e8a214898769f0285839cf53987c0e47ec12e4ff",
+              "response_id": "chatcmpl-auto-3d0c66bf38061c26289985d08818c4c3",
+              "input_tokens": 1024,
+              "output_tokens": 7,
+              "latency": 1.0124362809583545,
+              "ttft": 0.9233358311466873,
+              "start": 2101689.002804554,
+              "end": 2101690.015240835,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101689.002804554,
+                "end_monotonic_seconds": 2101690.015240835,
+                "start_utc_estimate": "2026-11-05T20:46:46.485930+00:00",
+                "end_utc_estimate": "2026-11-05T20:46:47.498367+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710384",
+              "output_sha256": "cb357112f8e9ee220cb97e543bfe842800f5a805c9ab781ef48ef97eb0333c99",
+              "prompt_sha256": "4e4b462f767736bc27913543654afae84da78917924d4f2d60f8990a6b7a3a94",
+              "response_id": "chatcmpl-auto-bd8b12e39204d89ec5c3c42febc0e31e",
+              "input_tokens": 4096,
+              "output_tokens": 7,
+              "latency": 3.0362339601852,
+              "ttft": 2.9429949251934886,
+              "start": 2101690.015553352,
+              "end": 2101693.051787312,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101690.015553352,
+                "end_monotonic_seconds": 2101693.051787312,
+                "start_utc_estimate": "2026-11-05T20:46:47.498679+00:00",
+                "end_utc_estimate": "2026-11-05T20:46:50.534913+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710511",
+              "output_sha256": "7124ab808804eb53398068b38e68ca591057e6540584d3fc02f2c861fe27bbc0",
+              "prompt_sha256": "0e349879840c9c0cf3261f3263359482be3c1b4a9383c9bd68561014acefba6f",
+              "response_id": "chatcmpl-auto-c7d98ed216213c493da1e72f48666506",
+              "input_tokens": 4096,
+              "output_tokens": 7,
+              "latency": 3.029120698105544,
+              "ttft": 2.935477081220597,
+              "start": 2101693.052129061,
+              "end": 2101696.081249759,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101693.052129061,
+                "end_monotonic_seconds": 2101696.081249759,
+                "start_utc_estimate": "2026-11-05T20:46:50.535255+00:00",
+                "end_utc_estimate": "2026-11-05T20:46:53.564375+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710638",
+              "output_sha256": "4cac386c0b8783d90abab0b55d91ed878017db3723bb7c24a548b59e9811cd8b",
+              "prompt_sha256": "c40c8baf22c4a45590d30a327475c9f2163af28cee13baef0bf290cd74779074",
+              "response_id": "chatcmpl-auto-187df2927e11f04680a67edbc8817da8",
+              "input_tokens": 4096,
+              "output_tokens": 7,
+              "latency": 3.0321832024492323,
+              "ttft": 2.9386870129965246,
+              "start": 2101696.081562998,
+              "end": 2101699.1137462,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101696.081562998,
+                "end_monotonic_seconds": 2101699.1137462,
+                "start_utc_estimate": "2026-11-05T20:46:53.564689+00:00",
+                "end_utc_estimate": "2026-11-05T20:46:56.596872+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710765",
+              "output_sha256": "e6319db514d30728158a3a306638d85f9c44eb72a08e3b6306867fda70359402",
+              "prompt_sha256": "b8198a7998b20d7edd3ada87edecbce958843b6bcafcf9d4983a239c6324fa02",
+              "response_id": "chatcmpl-auto-1820541b12e3a0630530a8c37d5b6138",
+              "input_tokens": 8192,
+              "output_tokens": 7,
+              "latency": 5.781779737211764,
+              "ttft": 5.692444351036102,
+              "start": 2101699.114117189,
+              "end": 2101704.895896926,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101699.114117189,
+                "end_monotonic_seconds": 2101704.895896926,
+                "start_utc_estimate": "2026-11-05T20:46:56.597243+00:00",
+                "end_utc_estimate": "2026-11-05T20:47:02.379023+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710892",
+              "output_sha256": "9f2945cea215d6515a7b36b46b71cb0562a0629edc90aee47b435bb56f25d4a6",
+              "prompt_sha256": "d3f37a78f3f642d958c455757b859a222ab47784de1833847a5a5954aa37abb6",
+              "response_id": "chatcmpl-auto-9b7bf5d2db1f11a1725d0580f2c2ff4c",
+              "input_tokens": 8192,
+              "output_tokens": 7,
+              "latency": 5.783355623949319,
+              "ttft": 5.693720498122275,
+              "start": 2101704.897096572,
+              "end": 2101710.680452196,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101704.897096572,
+                "end_monotonic_seconds": 2101710.680452196,
+                "start_utc_estimate": "2026-11-05T20:47:02.380222+00:00",
+                "end_utc_estimate": "2026-11-05T20:47:08.163578+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "711019",
+              "output_sha256": "a12687ff57e7602233020a95916bd75746473bbd1c262f3cb071b11de48634b7",
+              "prompt_sha256": "46616386557835b6e297f422fe33ed022202e321bde2729c7232a741939c9a47",
+              "response_id": "chatcmpl-auto-d0c7bc92d92417a7180dda1e95d80f67",
+              "input_tokens": 8192,
+              "output_tokens": 7,
+              "latency": 5.790188365150243,
+              "ttft": 5.700623760931194,
+              "start": 2101710.680806223,
+              "end": 2101716.470994588,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101710.680806223,
+                "end_monotonic_seconds": 2101716.470994588,
+                "start_utc_estimate": "2026-11-05T20:47:08.163932+00:00",
+                "end_utc_estimate": "2026-11-05T20:47:13.954120+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "711146",
+              "output_sha256": "c73f4e0e82deddf53f30ac110a0d599c2ba4b45b59b262ad3f4892b1b2373a4a",
+              "prompt_sha256": "8e7d6e535925c3552adaf57319be27d987365520fa852409366c05cf32b6c423",
+              "response_id": "chatcmpl-auto-075cf016c9dedc986c7dedb599ff132c",
+              "input_tokens": 45056,
+              "output_tokens": 7,
+              "latency": 31.963209518697113,
+              "ttft": 31.87012427393347,
+              "start": 2101716.471778836,
+              "end": 2101748.434988355,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101716.471778836,
+                "end_monotonic_seconds": 2101748.434988355,
+                "start_utc_estimate": "2026-11-05T20:47:13.954905+00:00",
+                "end_utc_estimate": "2026-11-05T20:47:45.918114+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "711273",
+              "output_sha256": "7f9c8412ad575e46516d69c53b9e2e64a20b45f3c0a027524b3848dbd00aa21d",
+              "prompt_sha256": "12ba2ea94933c44aea775a49a5380161413c7d377208ae35c8ad20fab8c6f150",
+              "response_id": "chatcmpl-auto-19bb3846c8d0b4766eb4cc5f8f04e022",
+              "input_tokens": 204800,
+              "output_tokens": 7,
+              "latency": 167.0351075846702,
+              "ttft": 166.93132661562413,
+              "start": 2101748.437672579,
+              "end": 2101915.472780164,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101748.437672579,
+                "end_monotonic_seconds": 2101915.472780164,
+                "start_utc_estimate": "2026-11-05T20:47:45.920798+00:00",
+                "end_utc_estimate": "2026-11-05T20:50:32.955906+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            }
+          ],
+          "makespan_seconds": 228.50063821673393,
+          "total_output_tokens": 77,
+          "throughput": 0.3369793651384253
+        }
+      ],
+      "audit": {
+        "admitted": 17,
+        "released": 17,
+        "quota": {
+          "event": "server_destroyed",
+          "enabled": true,
+          "limit_bytes": 118728574156,
+          "charged_bytes": 200953856,
+          "live_bytes": 200953856,
+          "pending_bytes": 0,
+          "unknown_bytes": 0,
+          "peak_bytes": 105745766808,
+          "entries": 8,
+          "poisoned": false,
+          "byte_rejections": 0,
+          "entry_rejections": 0,
+          "stream_rejections": 0,
+          "contract_failures": 0,
+          "backend_failures": 0,
+          "scope": "process_requested_cuda_bytes",
+          "physical_ram_limit": false
+        }
+      },
+      "trajectories": {
+        "context-1024": [
+          [
+            "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+            [
+              8,
+              6,
+              7,
+              53
+            ]
+          ],
+          [
+            "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+            [
+              8,
+              6,
+              7,
+              53
+            ]
+          ],
+          [
+            "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+            [
+              8,
+              6,
+              7,
+              53
+            ]
+          ]
+        ],
+        "context-45056": [
+          [
+            "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+            [
+              6,
+              3,
+              5,
+              57
+            ]
+          ],
+          [
+            "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+            [
+              6,
+              3,
+              5,
+              57
+            ]
+          ],
+          [
+            "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+            [
+              6,
+              3,
+              5,
+              57
+            ]
+          ]
+        ],
+        "quality": [
+          [
+            "0e349879840c9c0cf3261f3263359482be3c1b4a9383c9bd68561014acefba6f",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "12ba2ea94933c44aea775a49a5380161413c7d377208ae35c8ad20fab8c6f150",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "46616386557835b6e297f422fe33ed022202e321bde2729c7232a741939c9a47",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "4e4b462f767736bc27913543654afae84da78917924d4f2d60f8990a6b7a3a94",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "8e7d6e535925c3552adaf57319be27d987365520fa852409366c05cf32b6c423",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "b8198a7998b20d7edd3ada87edecbce958843b6bcafcf9d4983a239c6324fa02",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "c40c8baf22c4a45590d30a327475c9f2163af28cee13baef0bf290cd74779074",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "d3f37a78f3f642d958c455757b859a222ab47784de1833847a5a5954aa37abb6",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "e647c72568b4bf9589fd5c63e8a214898769f0285839cf53987c0e47ec12e4ff",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "f17889bf3cec9aead6db4da85c4d517a4d795407932c30b9f273363dec239dd0",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ]
+        ]
+      },
+      "quality_passed": 11,
+      "metrics": {
+        "context-1024": {
+          "aggregate_decode": 35.57282960203648,
+          "aggregate_e2e": 24.45047994563356,
+          "ttft": [
+            1.1139025916345417,
+            0.9197490201331675,
+            0.9116512490436435
+          ],
+          "latency": [
+            8.287897838745266,
+            8.086927889846265,
+            8.075654217042029
+          ],
+          "decode": [
+            35.54504724584247,
+            35.57885252139768,
+            35.59462511937606
+          ]
+        },
+        "context-45056": {
+          "aggregate_decode": 35.9603565495474,
+          "aggregate_e2e": 117.36098983511329,
+          "ttft": [
+            32.05765168182552,
+            31.995887783821672,
+            32.03402392426506
+          ],
+          "latency": [
+            39.152851107064635,
+            39.07896227296442,
+            39.129176455084234
+          ],
+          "decode": [
+            35.9397931921281,
+            36.0013155856084,
+            35.94003073117284
+          ]
+        }
+      }
+    },
+    "subset-candidate": {
+      "cases": [
+        {
+          "id": "context-1024",
+          "rows": [
+            {
+              "success": 1,
+              "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the distinct activities from the observations:\n\n1. Planetarium (Observations 1, 4, 5, 14, 22, 31) - Darkening dome, aligning star projector, comparing projected horizon with marked reference circle\n2. Tea workshop (Observations 2, 21, 26, 30) - Heating identical cups, comparing infusions, describing aroma separately from bitterness and mouthfeel\n3. Public aquarium (Observations 3, 10, 23) - Dimming room, observing nocturnal animals, guide explains shelter placement changes behavior\n4. Bicycle class (Observations 6, 15, 28, 29) - Braking demonstration on quiet paved courtyard, riders explain wet surfaces alter stopping distance\n5. Costume studio (Observations 7, 12, 16) - Pinning paper pattern onto inexpensive cotton, fitting reveals",
+              "output_sha256": "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0",
+              "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+              "response_id": "chatcmpl-auto-80436985000d481bf989ca59d60d71cd",
+              "input_tokens": 998,
+              "output_tokens": 256,
+              "latency": 7.673953391145915,
+              "ttft": 1.0605860189534724,
+              "start": 2101957.507266949,
+              "end": 2101965.18122034,
+              "finish": [
+                "length"
+              ],
+              "requested_max_tokens": 256,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101957.507266949,
+                "end_monotonic_seconds": 2101965.18122034,
+                "start_utc_estimate": "2026-11-05T20:51:14.990393+00:00",
+                "end_utc_estimate": "2026-11-05T20:51:22.664346+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the distinct activities from the observations:\n\n1. Planetarium (Observations 1, 4, 5, 14, 22, 31) - Darkening dome, aligning star projector, comparing projected horizon with marked reference circle\n2. Tea workshop (Observations 2, 21, 26, 30) - Heating identical cups, comparing infusions, describing aroma separately from bitterness and mouthfeel\n3. Public aquarium (Observations 3, 10, 23) - Dimming room, observing nocturnal animals, guide explains shelter placement changes behavior\n4. Bicycle class (Observations 6, 15, 28, 29) - Braking demonstration on quiet paved courtyard, riders explain wet surfaces alter stopping distance\n5. Costume studio (Observations 7, 12, 16) - Pinning paper pattern onto inexpensive cotton, fitting reveals",
+              "output_sha256": "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0",
+              "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+              "response_id": "chatcmpl-auto-c1fa8561ebb809641c697317ee83b3e9",
+              "input_tokens": 998,
+              "output_tokens": 256,
+              "latency": 7.494404720142484,
+              "ttft": 0.8879771209321916,
+              "start": 2101965.181594422,
+              "end": 2101972.675999142,
+              "finish": [
+                "length"
+              ],
+              "requested_max_tokens": 256,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101965.181594422,
+                "end_monotonic_seconds": 2101972.675999142,
+                "start_utc_estimate": "2026-11-05T20:51:22.664720+00:00",
+                "end_utc_estimate": "2026-11-05T20:51:30.159125+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the distinct activities from the observations:\n\n1. Planetarium (Observations 1, 4, 5, 14, 22, 31) - Darkening dome, aligning star projector, comparing projected horizon with marked reference circle\n2. Tea workshop (Observations 2, 21, 26, 30) - Heating identical cups, comparing infusions, describing aroma separately from bitterness and mouthfeel\n3. Public aquarium (Observations 3, 10, 23) - Dimming room, observing nocturnal animals, guide explains shelter placement changes behavior\n4. Bicycle class (Observations 6, 15, 28, 29) - Braking demonstration on quiet paved courtyard, riders explain wet surfaces alter stopping distance\n5. Costume studio (Observations 7, 12, 16) - Pinning paper pattern onto inexpensive cotton, fitting reveals",
+              "output_sha256": "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0",
+              "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+              "response_id": "chatcmpl-auto-2c46613260da9b882fce691bb294e83e",
+              "input_tokens": 998,
+              "output_tokens": 256,
+              "latency": 7.49508599890396,
+              "ttft": 0.8898494890891016,
+              "start": 2101972.676369113,
+              "end": 2101980.171455112,
+              "finish": [
+                "length"
+              ],
+              "requested_max_tokens": 256,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101972.676369113,
+                "end_monotonic_seconds": 2101980.171455112,
+                "start_utc_estimate": "2026-11-05T20:51:30.159495+00:00",
+                "end_utc_estimate": "2026-11-05T20:51:37.654581+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 2.384185791015625e-07,
+                "within_client_boundaries": true
+              }
+            }
+          ],
+          "makespan_seconds": 22.66418816288933,
+          "total_output_tokens": 768,
+          "throughput": 33.88605823779447
+        },
+        {
+          "id": "context-45056",
+          "rows": [
+            {
+              "success": 1,
+              "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the numbered observations. I need to cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations. The review must be at least 600 words.\n\nLet me analyze the observations to identify the distinct learning activities:\n\n1. **Planetarium** - Operator darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle\n2. **Tea workshop** - Heats identical cups, compares infusions, participants describe aroma separately from bitterness and mouthfeel\n3. **Public aquarium** - Dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior\n4. **Bicycle class** - Demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance\n5. **Costume studio** - Pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth\n6. **Pottery instructor** - Places fired tiles beside unfired samples, students explain how glaze thickness changes reflected color\n7. **Climbing center** - Closes route while wall anchors examined, next group practices knot inspection beside training mat\n8. **Tidal station**",
+              "output_sha256": "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a",
+              "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+              "response_id": "chatcmpl-auto-098715add5c1728ffd950000175e1c69",
+              "input_tokens": 45044,
+              "output_tokens": 256,
+              "latency": 38.4441290688701,
+              "ttft": 31.99148169113323,
+              "start": 2101985.479410593,
+              "end": 2102023.923539662,
+              "finish": [
+                "length"
+              ],
+              "requested_max_tokens": 256,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2101985.479410593,
+                "end_monotonic_seconds": 2102023.923539662,
+                "start_utc_estimate": "2026-11-05T20:51:42.962536+00:00",
+                "end_utc_estimate": "2026-11-05T20:52:21.406665+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 4.76837158203125e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the numbered observations. I need to cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations. The review must be at least 600 words.\n\nLet me analyze the observations to identify the distinct learning activities:\n\n1. **Planetarium** - Operator darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle\n2. **Tea workshop** - Heats identical cups, compares infusions, participants describe aroma separately from bitterness and mouthfeel\n3. **Public aquarium** - Dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior\n4. **Bicycle class** - Demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance\n5. **Costume studio** - Pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth\n6. **Pottery instructor** - Places fired tiles beside unfired samples, students explain how glaze thickness changes reflected color\n7. **Climbing center** - Closes route while wall anchors examined, next group practices knot inspection beside training mat\n8. **Tidal station**",
+              "output_sha256": "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a",
+              "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+              "response_id": "chatcmpl-auto-128344f1337bed19c578a1edb16aa875",
+              "input_tokens": 45044,
+              "output_tokens": 256,
+              "latency": 38.35572733124718,
+              "ttft": 31.890410964842886,
+              "start": 2102023.924602808,
+              "end": 2102062.280330139,
+              "finish": [
+                "length"
+              ],
+              "requested_max_tokens": 256,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102023.924602808,
+                "end_monotonic_seconds": 2102062.280330139,
+                "start_utc_estimate": "2026-11-05T20:52:21.407728+00:00",
+                "end_utc_estimate": "2026-11-05T20:52:59.763456+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 4.76837158203125e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the numbered observations. I need to cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations. The review must be at least 600 words.\n\nLet me analyze the observations to identify the distinct learning activities:\n\n1. **Planetarium** - Operator darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle\n2. **Tea workshop** - Heats identical cups, compares infusions, participants describe aroma separately from bitterness and mouthfeel\n3. **Public aquarium** - Dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior\n4. **Bicycle class** - Demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance\n5. **Costume studio** - Pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth\n6. **Pottery instructor** - Places fired tiles beside unfired samples, students explain how glaze thickness changes reflected color\n7. **Climbing center** - Closes route while wall anchors examined, next group practices knot inspection beside training mat\n8. **Tidal station**",
+              "output_sha256": "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a",
+              "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+              "response_id": "chatcmpl-auto-7a9710b031beafbff4874af69f71191b",
+              "input_tokens": 45044,
+              "output_tokens": 256,
+              "latency": 38.337494124192744,
+              "ttft": 31.8784913062118,
+              "start": 2102062.281343904,
+              "end": 2102100.618838028,
+              "finish": [
+                "length"
+              ],
+              "requested_max_tokens": 256,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102062.281343904,
+                "end_monotonic_seconds": 2102100.618838028,
+                "start_utc_estimate": "2026-11-05T20:52:59.764470+00:00",
+                "end_utc_estimate": "2026-11-05T20:53:38.101964+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 4.76837158203125e-07,
+                "within_client_boundaries": true
+              }
+            }
+          ],
+          "makespan_seconds": 115.1394274351187,
+          "total_output_tokens": 768,
+          "throughput": 6.67017386752917
+        },
+        {
+          "id": "quality",
+          "rows": [
+            {
+              "success": 1,
+              "text": "710003",
+              "output_sha256": "4236b5fda71f8600cb789858b7796a921cad5bffa7e9431bb6fbc760ae9527c4",
+              "prompt_sha256": "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392",
+              "response_id": "chatcmpl-auto-b65f8ce4c152c27e509502d086910bea",
+              "input_tokens": 1024,
+              "output_tokens": 7,
+              "latency": 0.9845263781026006,
+              "ttft": 0.9034560499712825,
+              "start": 2102105.989942471,
+              "end": 2102106.974468849,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102105.989942471,
+                "end_monotonic_seconds": 2102106.974468849,
+                "start_utc_estimate": "2026-11-05T20:53:43.473068+00:00",
+                "end_utc_estimate": "2026-11-05T20:53:44.457595+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 4.76837158203125e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710130",
+              "output_sha256": "a2d3058d185e332f041c82d19f9e69c72ee0083b5cd12d0aa139e5f0a3a82517",
+              "prompt_sha256": "f17889bf3cec9aead6db4da85c4d517a4d795407932c30b9f273363dec239dd0",
+              "response_id": "chatcmpl-auto-48b249a74df773422e4d4de3e0c19c97",
+              "input_tokens": 1024,
+              "output_tokens": 7,
+              "latency": 0.9714541169814765,
+              "ttft": 0.8904126030392945,
+              "start": 2102106.974781515,
+              "end": 2102107.946235632,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102106.974781515,
+                "end_monotonic_seconds": 2102107.946235632,
+                "start_utc_estimate": "2026-11-05T20:53:44.457907+00:00",
+                "end_utc_estimate": "2026-11-05T20:53:45.429361+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 4.76837158203125e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710257",
+              "output_sha256": "6c77bcf6c38b5d7a4e7cffc80092afb9276df254c5b3ceca9ec683100cd9b15b",
+              "prompt_sha256": "e647c72568b4bf9589fd5c63e8a214898769f0285839cf53987c0e47ec12e4ff",
+              "response_id": "chatcmpl-auto-fd1d62a05ecf82f8593bc3135a771b26",
+              "input_tokens": 1024,
+              "output_tokens": 7,
+              "latency": 0.9803180010057986,
+              "ttft": 0.899865189101547,
+              "start": 2102107.946549288,
+              "end": 2102108.926867289,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102107.946549288,
+                "end_monotonic_seconds": 2102108.926867289,
+                "start_utc_estimate": "2026-11-05T20:53:45.429675+00:00",
+                "end_utc_estimate": "2026-11-05T20:53:46.409993+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 4.76837158203125e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710384",
+              "output_sha256": "cb357112f8e9ee220cb97e543bfe842800f5a805c9ab781ef48ef97eb0333c99",
+              "prompt_sha256": "4e4b462f767736bc27913543654afae84da78917924d4f2d60f8990a6b7a3a94",
+              "response_id": "chatcmpl-auto-73eb2e9bded7751c2886a6be447de238",
+              "input_tokens": 4096,
+              "output_tokens": 7,
+              "latency": 2.9289444610476494,
+              "ttft": 2.8431776468642056,
+              "start": 2102108.92719713,
+              "end": 2102111.856141591,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102108.92719713,
+                "end_monotonic_seconds": 2102111.856141591,
+                "start_utc_estimate": "2026-11-05T20:53:46.410323+00:00",
+                "end_utc_estimate": "2026-11-05T20:53:49.339267+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 4.76837158203125e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710511",
+              "output_sha256": "7124ab808804eb53398068b38e68ca591057e6540584d3fc02f2c861fe27bbc0",
+              "prompt_sha256": "0e349879840c9c0cf3261f3263359482be3c1b4a9383c9bd68561014acefba6f",
+              "response_id": "chatcmpl-auto-e04590c1178d4b43bcea45c4ca97ec51",
+              "input_tokens": 4096,
+              "output_tokens": 7,
+              "latency": 2.9266559570096433,
+              "ttft": 2.840643279720098,
+              "start": 2102111.856462534,
+              "end": 2102114.783118491,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102111.856462534,
+                "end_monotonic_seconds": 2102114.783118491,
+                "start_utc_estimate": "2026-11-05T20:53:49.339588+00:00",
+                "end_utc_estimate": "2026-11-05T20:53:52.266244+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 4.76837158203125e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710638",
+              "output_sha256": "4cac386c0b8783d90abab0b55d91ed878017db3723bb7c24a548b59e9811cd8b",
+              "prompt_sha256": "c40c8baf22c4a45590d30a327475c9f2163af28cee13baef0bf290cd74779074",
+              "response_id": "chatcmpl-auto-10174fd2b8abf13d92ed06a79655eade",
+              "input_tokens": 4096,
+              "output_tokens": 7,
+              "latency": 2.928229455370456,
+              "ttft": 2.8424239363521338,
+              "start": 2102114.783444795,
+              "end": 2102117.71167425,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102114.783444795,
+                "end_monotonic_seconds": 2102117.71167425,
+                "start_utc_estimate": "2026-11-05T20:53:52.266571+00:00",
+                "end_utc_estimate": "2026-11-05T20:53:55.194800+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 4.76837158203125e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710765",
+              "output_sha256": "e6319db514d30728158a3a306638d85f9c44eb72a08e3b6306867fda70359402",
+              "prompt_sha256": "b8198a7998b20d7edd3ada87edecbce958843b6bcafcf9d4983a239c6324fa02",
+              "response_id": "chatcmpl-auto-15eb3d18a0296f51485c093c3c7ab8c7",
+              "input_tokens": 8192,
+              "output_tokens": 7,
+              "latency": 5.608181035146117,
+              "ttft": 5.525495845358819,
+              "start": 2102117.712052629,
+              "end": 2102123.320233664,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102117.712052629,
+                "end_monotonic_seconds": 2102123.320233664,
+                "start_utc_estimate": "2026-11-05T20:53:55.195178+00:00",
+                "end_utc_estimate": "2026-11-05T20:54:00.803359+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 4.76837158203125e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710892",
+              "output_sha256": "9f2945cea215d6515a7b36b46b71cb0562a0629edc90aee47b435bb56f25d4a6",
+              "prompt_sha256": "d3f37a78f3f642d958c455757b859a222ab47784de1833847a5a5954aa37abb6",
+              "response_id": "chatcmpl-auto-72d1c2f47205b7ae291263b65a5cefe5",
+              "input_tokens": 8192,
+              "output_tokens": 7,
+              "latency": 5.614572654943913,
+              "ttft": 5.532496383879334,
+              "start": 2102123.320610089,
+              "end": 2102128.935182744,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102123.320610089,
+                "end_monotonic_seconds": 2102128.935182744,
+                "start_utc_estimate": "2026-11-05T20:54:00.803736+00:00",
+                "end_utc_estimate": "2026-11-05T20:54:06.418308+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 4.76837158203125e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "711019",
+              "output_sha256": "a12687ff57e7602233020a95916bd75746473bbd1c262f3cb071b11de48634b7",
+              "prompt_sha256": "46616386557835b6e297f422fe33ed022202e321bde2729c7232a741939c9a47",
+              "response_id": "chatcmpl-auto-ce658c93ec83eeb2b8cce6e2fa44835d",
+              "input_tokens": 8192,
+              "output_tokens": 7,
+              "latency": 5.615516134072095,
+              "ttft": 5.5321123488247395,
+              "start": 2102128.935555724,
+              "end": 2102134.551071858,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102128.935555724,
+                "end_monotonic_seconds": 2102134.551071858,
+                "start_utc_estimate": "2026-11-05T20:54:06.418681+00:00",
+                "end_utc_estimate": "2026-11-05T20:54:12.034198+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 4.76837158203125e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "711146",
+              "output_sha256": "c73f4e0e82deddf53f30ac110a0d599c2ba4b45b59b262ad3f4892b1b2373a4a",
+              "prompt_sha256": "8e7d6e535925c3552adaf57319be27d987365520fa852409366c05cf32b6c423",
+              "response_id": "chatcmpl-auto-7db2ce9a7056608712246f41c5d1cc4d",
+              "input_tokens": 45056,
+              "output_tokens": 7,
+              "latency": 31.939445310737938,
+              "ttft": 31.85431929398328,
+              "start": 2102134.551894652,
+              "end": 2102166.491339963,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102134.551894652,
+                "end_monotonic_seconds": 2102166.491339963,
+                "start_utc_estimate": "2026-11-05T20:54:12.035020+00:00",
+                "end_utc_estimate": "2026-11-05T20:54:43.974466+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 4.76837158203125e-07,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "711273",
+              "output_sha256": "7f9c8412ad575e46516d69c53b9e2e64a20b45f3c0a027524b3848dbd00aa21d",
+              "prompt_sha256": "12ba2ea94933c44aea775a49a5380161413c7d377208ae35c8ad20fab8c6f150",
+              "response_id": "chatcmpl-auto-109863ce60b209744e865c45f5574566",
+              "input_tokens": 204800,
+              "output_tokens": 7,
+              "latency": 166.9733661278151,
+              "ttft": 166.87754162074998,
+              "start": 2102166.494085687,
+              "end": 2102333.467451815,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102166.494085687,
+                "end_monotonic_seconds": 2102333.467451815,
+                "start_utc_estimate": "2026-11-05T20:54:43.977211+00:00",
+                "end_utc_estimate": "2026-11-05T20:57:30.950577+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 4.76837158203125e-07,
+                "within_client_boundaries": true
+              }
+            }
+          ],
+          "makespan_seconds": 227.47750934399664,
+          "total_output_tokens": 77,
+          "throughput": 0.33849500208637706
+        }
+      ],
+      "audit": {
+        "admitted": 17,
+        "released": 17,
+        "quota": {
+          "event": "server_destroyed",
+          "enabled": true,
+          "limit_bytes": 118728574156,
+          "charged_bytes": 200953856,
+          "live_bytes": 200953856,
+          "pending_bytes": 0,
+          "unknown_bytes": 0,
+          "peak_bytes": 103086840216,
+          "entries": 8,
+          "poisoned": false,
+          "byte_rejections": 0,
+          "entry_rejections": 0,
+          "stream_rejections": 0,
+          "contract_failures": 0,
+          "backend_failures": 0,
+          "scope": "process_requested_cuda_bytes",
+          "physical_ram_limit": false
+        }
+      },
+      "trajectories": {
+        "context-1024": [
+          [
+            "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+            [
+              10,
+              9,
+              7,
+              51
+            ]
+          ],
+          [
+            "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+            [
+              10,
+              9,
+              7,
+              51
+            ]
+          ],
+          [
+            "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+            [
+              10,
+              9,
+              7,
+              51
+            ]
+          ]
+        ],
+        "context-45056": [
+          [
+            "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+            [
+              7,
+              5,
+              6,
+              55
+            ]
+          ],
+          [
+            "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+            [
+              7,
+              5,
+              6,
+              55
+            ]
+          ],
+          [
+            "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+            [
+              7,
+              5,
+              6,
+              55
+            ]
+          ]
+        ],
+        "quality": [
+          [
+            "0e349879840c9c0cf3261f3263359482be3c1b4a9383c9bd68561014acefba6f",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "12ba2ea94933c44aea775a49a5380161413c7d377208ae35c8ad20fab8c6f150",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "46616386557835b6e297f422fe33ed022202e321bde2729c7232a741939c9a47",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "4e4b462f767736bc27913543654afae84da78917924d4f2d60f8990a6b7a3a94",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "8e7d6e535925c3552adaf57319be27d987365520fa852409366c05cf32b6c423",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "b8198a7998b20d7edd3ada87edecbce958843b6bcafcf9d4983a239c6324fa02",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "c40c8baf22c4a45590d30a327475c9f2163af28cee13baef0bf290cd74779074",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "d3f37a78f3f642d958c455757b859a222ab47784de1833847a5a5954aa37abb6",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "e647c72568b4bf9589fd5c63e8a214898769f0285839cf53987c0e47ec12e4ff",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "f17889bf3cec9aead6db4da85c4d517a4d795407932c30b9f273363dec239dd0",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ]
+        ]
+      },
+      "quality_passed": 11,
+      "metrics": {
+        "context-1024": {
+          "aggregate_decode": 38.587580590969935,
+          "aggregate_e2e": 22.66344411019236,
+          "ttft": [
+            1.0605860189534724,
+            0.8879771209321916,
+            0.8898494890891016
+          ],
+          "latency": [
+            7.673953391145915,
+            7.494404720142484,
+            7.49508599890396
+          ],
+          "decode": [
+            38.55826928233434,
+            38.598773114607624,
+            38.60573343908128
+          ]
+        },
+        "context-45056": {
+          "aggregate_decode": 39.47986376234008,
+          "aggregate_e2e": 115.13735052431002,
+          "ttft": [
+            31.99148169113323,
+            31.890410964842886,
+            31.8784913062118
+          ],
+          "latency": [
+            38.4441290688701,
+            38.35572733124718,
+            38.337494124192744
+          ],
+          "decode": [
+            39.518663437244264,
+            39.44122538613203,
+            39.479778409465354
+          ]
+        }
+      }
+    },
+    "subset-parent": {
+      "cases": [
+        {
+          "id": "context-1024",
+          "rows": [
+            {
+              "success": 1,
+              "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the distinct activities from the observations:\n\n1. Planetarium (Observations 1, 4, 5, 14, 22, 31) - Darkening dome, aligning star projector, comparing projected horizon with marked reference circle\n2. Tea workshop (Observations 2, 21, 26, 30) - Heating identical cups, comparing infusions, describing aroma separately from bitterness and mouthfeel\n3. Public aquarium (Observations 3, 10, 23) - Dimming room, observing nocturnal animals, guide explains shelter placement changes behavior\n4. Bicycle class (Observations 6, 15, 28, 29) - Braking demonstration on quiet paved courtyard, riders explain wet surfaces alter stopping distance\n5. Costume studio (Observations 7, 12, 16) - Pinning paper pattern onto inexpensive cotton, fitting reveals",
+              "output_sha256": "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0",
+              "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+              "response_id": "chatcmpl-auto-1f87e09a2f1d54d7b5866f37c655c000",
+              "input_tokens": 998,
+              "output_tokens": 256,
+              "latency": 7.629311691969633,
+              "ttft": 1.0454698130488396,
+              "start": 2102375.780703545,
+              "end": 2102383.410015237,
+              "finish": [
+                "length"
+              ],
+              "requested_max_tokens": 256,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102375.780703545,
+                "end_monotonic_seconds": 2102383.410015237,
+                "start_utc_estimate": "2026-11-05T20:58:13.263830+00:00",
+                "end_utc_estimate": "2026-11-05T20:58:20.893142+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 0.0,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the distinct activities from the observations:\n\n1. Planetarium (Observations 1, 4, 5, 14, 22, 31) - Darkening dome, aligning star projector, comparing projected horizon with marked reference circle\n2. Tea workshop (Observations 2, 21, 26, 30) - Heating identical cups, comparing infusions, describing aroma separately from bitterness and mouthfeel\n3. Public aquarium (Observations 3, 10, 23) - Dimming room, observing nocturnal animals, guide explains shelter placement changes behavior\n4. Bicycle class (Observations 6, 15, 28, 29) - Braking demonstration on quiet paved courtyard, riders explain wet surfaces alter stopping distance\n5. Costume studio (Observations 7, 12, 16) - Pinning paper pattern onto inexpensive cotton, fitting reveals",
+              "output_sha256": "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0",
+              "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+              "response_id": "chatcmpl-auto-43c4c229781c649196211afbb9c45f7e",
+              "input_tokens": 998,
+              "output_tokens": 256,
+              "latency": 7.46827974403277,
+              "ttft": 0.885471380315721,
+              "start": 2102383.410377457,
+              "end": 2102390.878657201,
+              "finish": [
+                "length"
+              ],
+              "requested_max_tokens": 256,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102383.410377457,
+                "end_monotonic_seconds": 2102390.878657201,
+                "start_utc_estimate": "2026-11-05T20:58:20.893504+00:00",
+                "end_utc_estimate": "2026-11-05T20:58:28.361783+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 0.0,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the distinct activities from the observations:\n\n1. Planetarium (Observations 1, 4, 5, 14, 22, 31) - Darkening dome, aligning star projector, comparing projected horizon with marked reference circle\n2. Tea workshop (Observations 2, 21, 26, 30) - Heating identical cups, comparing infusions, describing aroma separately from bitterness and mouthfeel\n3. Public aquarium (Observations 3, 10, 23) - Dimming room, observing nocturnal animals, guide explains shelter placement changes behavior\n4. Bicycle class (Observations 6, 15, 28, 29) - Braking demonstration on quiet paved courtyard, riders explain wet surfaces alter stopping distance\n5. Costume studio (Observations 7, 12, 16) - Pinning paper pattern onto inexpensive cotton, fitting reveals",
+              "output_sha256": "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0",
+              "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+              "response_id": "chatcmpl-auto-d0057f423697f74650ed13601949967d",
+              "input_tokens": 998,
+              "output_tokens": 256,
+              "latency": 7.479891777038574,
+              "ttft": 0.8868480967357755,
+              "start": 2102390.878975496,
+              "end": 2102398.358867273,
+              "finish": [
+                "length"
+              ],
+              "requested_max_tokens": 256,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102390.878975496,
+                "end_monotonic_seconds": 2102398.358867273,
+                "start_utc_estimate": "2026-11-05T20:58:28.362102+00:00",
+                "end_utc_estimate": "2026-11-05T20:58:35.841993+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 0.0,
+                "within_client_boundaries": true
+              }
+            }
+          ],
+          "makespan_seconds": 22.578163728117943,
+          "total_output_tokens": 768,
+          "throughput": 34.01516656749032
+        },
+        {
+          "id": "context-45056",
+          "rows": [
+            {
+              "success": 1,
+              "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the numbered observations. I need to cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations. The review must be at least 600 words.\n\nLet me analyze the observations to identify the distinct learning activities:\n\n1. **Planetarium** - Operator darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle\n2. **Tea workshop** - Heats identical cups, compares infusions, participants describe aroma separately from bitterness and mouthfeel\n3. **Public aquarium** - Dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior\n4. **Bicycle class** - Demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance\n5. **Costume studio** - Pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth\n6. **Pottery instructor** - Places fired tiles beside unfired samples, students explain how glaze thickness changes reflected color\n7. **Climbing center** - Closes route while wall anchors examined, next group practices knot inspection beside training mat\n8. **Tidal station**",
+              "output_sha256": "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a",
+              "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+              "response_id": "chatcmpl-auto-180fd5df42d8ff1c59c4593ca08eed7c",
+              "input_tokens": 45044,
+              "output_tokens": 256,
+              "latency": 38.445989036001265,
+              "ttft": 31.972676588222384,
+              "start": 2102403.705720055,
+              "end": 2102442.151709091,
+              "finish": [
+                "length"
+              ],
+              "requested_max_tokens": 256,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102403.705720055,
+                "end_monotonic_seconds": 2102442.151709091,
+                "start_utc_estimate": "2026-11-05T20:58:41.188846+00:00",
+                "end_utc_estimate": "2026-11-05T20:59:19.634835+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 0.0,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the numbered observations. I need to cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations. The review must be at least 600 words.\n\nLet me analyze the observations to identify the distinct learning activities:\n\n1. **Planetarium** - Operator darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle\n2. **Tea workshop** - Heats identical cups, compares infusions, participants describe aroma separately from bitterness and mouthfeel\n3. **Public aquarium** - Dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior\n4. **Bicycle class** - Demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance\n5. **Costume studio** - Pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth\n6. **Pottery instructor** - Places fired tiles beside unfired samples, students explain how glaze thickness changes reflected color\n7. **Climbing center** - Closes route while wall anchors examined, next group practices knot inspection beside training mat\n8. **Tidal station**",
+              "output_sha256": "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a",
+              "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+              "response_id": "chatcmpl-auto-1709a58e885d0811f7aee6dc26da7bb5",
+              "input_tokens": 45044,
+              "output_tokens": 256,
+              "latency": 38.37661918718368,
+              "ttft": 31.917850106023252,
+              "start": 2102442.152743593,
+              "end": 2102480.52936278,
+              "finish": [
+                "length"
+              ],
+              "requested_max_tokens": 256,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102442.152743593,
+                "end_monotonic_seconds": 2102480.52936278,
+                "start_utc_estimate": "2026-11-05T20:59:19.635870+00:00",
+                "end_utc_estimate": "2026-11-05T20:59:58.012489+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 0.0,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the numbered observations. I need to cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations. The review must be at least 600 words.\n\nLet me analyze the observations to identify the distinct learning activities:\n\n1. **Planetarium** - Operator darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle\n2. **Tea workshop** - Heats identical cups, compares infusions, participants describe aroma separately from bitterness and mouthfeel\n3. **Public aquarium** - Dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior\n4. **Bicycle class** - Demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance\n5. **Costume studio** - Pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth\n6. **Pottery instructor** - Places fired tiles beside unfired samples, students explain how glaze thickness changes reflected color\n7. **Climbing center** - Closes route while wall anchors examined, next group practices knot inspection beside training mat\n8. **Tidal station**",
+              "output_sha256": "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a",
+              "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+              "response_id": "chatcmpl-auto-cd23ce7ddde87b37179a215a17879527",
+              "input_tokens": 45044,
+              "output_tokens": 256,
+              "latency": 38.38504571095109,
+              "ttft": 31.917229117825627,
+              "start": 2102480.530374225,
+              "end": 2102518.915419936,
+              "finish": [
+                "length"
+              ],
+              "requested_max_tokens": 256,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102480.530374225,
+                "end_monotonic_seconds": 2102518.915419936,
+                "start_utc_estimate": "2026-11-05T20:59:58.013500+00:00",
+                "end_utc_estimate": "2026-11-05T21:00:36.398546+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 0.0,
+                "within_client_boundaries": true
+              }
+            }
+          ],
+          "makespan_seconds": 115.20969988126308,
+          "total_output_tokens": 768,
+          "throughput": 6.6661053782061135
+        },
+        {
+          "id": "quality",
+          "rows": [
+            {
+              "success": 1,
+              "text": "710003",
+              "output_sha256": "4236b5fda71f8600cb789858b7796a921cad5bffa7e9431bb6fbc760ae9527c4",
+              "prompt_sha256": "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392",
+              "response_id": "chatcmpl-auto-fc10f0453a649d9e8bf1fb3687f23fe9",
+              "input_tokens": 1024,
+              "output_tokens": 7,
+              "latency": 0.9810089087113738,
+              "ttft": 0.9004540159367025,
+              "start": 2102524.29006903,
+              "end": 2102525.271077939,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102524.29006903,
+                "end_monotonic_seconds": 2102525.271077939,
+                "start_utc_estimate": "2026-11-05T21:00:41.773195+00:00",
+                "end_utc_estimate": "2026-11-05T21:00:42.754204+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 0.0,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710130",
+              "output_sha256": "a2d3058d185e332f041c82d19f9e69c72ee0083b5cd12d0aa139e5f0a3a82517",
+              "prompt_sha256": "f17889bf3cec9aead6db4da85c4d517a4d795407932c30b9f273363dec239dd0",
+              "response_id": "chatcmpl-auto-c2c0b84140dffd5048452bad3bcb5890",
+              "input_tokens": 1024,
+              "output_tokens": 7,
+              "latency": 0.9743666420690715,
+              "ttft": 0.8938002251088619,
+              "start": 2102525.271410278,
+              "end": 2102526.24577692,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102525.271410278,
+                "end_monotonic_seconds": 2102526.24577692,
+                "start_utc_estimate": "2026-11-05T21:00:42.754536+00:00",
+                "end_utc_estimate": "2026-11-05T21:00:43.728903+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 0.0,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710257",
+              "output_sha256": "6c77bcf6c38b5d7a4e7cffc80092afb9276df254c5b3ceca9ec683100cd9b15b",
+              "prompt_sha256": "e647c72568b4bf9589fd5c63e8a214898769f0285839cf53987c0e47ec12e4ff",
+              "response_id": "chatcmpl-auto-ba684e5d9284fcf926190c8005353766",
+              "input_tokens": 1024,
+              "output_tokens": 7,
+              "latency": 0.981027320958674,
+              "ttft": 0.9002744033932686,
+              "start": 2102526.246068943,
+              "end": 2102527.227096264,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102526.246068943,
+                "end_monotonic_seconds": 2102527.227096264,
+                "start_utc_estimate": "2026-11-05T21:00:43.729195+00:00",
+                "end_utc_estimate": "2026-11-05T21:00:44.710222+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 0.0,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710384",
+              "output_sha256": "cb357112f8e9ee220cb97e543bfe842800f5a805c9ab781ef48ef97eb0333c99",
+              "prompt_sha256": "4e4b462f767736bc27913543654afae84da78917924d4f2d60f8990a6b7a3a94",
+              "response_id": "chatcmpl-auto-5dd79ea7f236b7c67a7c7a2012e50813",
+              "input_tokens": 4096,
+              "output_tokens": 7,
+              "latency": 2.9242670382373035,
+              "ttft": 2.838319248985499,
+              "start": 2102527.227390131,
+              "end": 2102530.151657169,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102527.227390131,
+                "end_monotonic_seconds": 2102530.151657169,
+                "start_utc_estimate": "2026-11-05T21:00:44.710516+00:00",
+                "end_utc_estimate": "2026-11-05T21:00:47.634783+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 0.0,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710511",
+              "output_sha256": "7124ab808804eb53398068b38e68ca591057e6540584d3fc02f2c861fe27bbc0",
+              "prompt_sha256": "0e349879840c9c0cf3261f3263359482be3c1b4a9383c9bd68561014acefba6f",
+              "response_id": "chatcmpl-auto-407ce03db6d84864d1441a1fc5f17a23",
+              "input_tokens": 4096,
+              "output_tokens": 7,
+              "latency": 2.927073959261179,
+              "ttft": 2.841073501855135,
+              "start": 2102530.151979961,
+              "end": 2102533.07905392,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102530.151979961,
+                "end_monotonic_seconds": 2102533.07905392,
+                "start_utc_estimate": "2026-11-05T21:00:47.635106+00:00",
+                "end_utc_estimate": "2026-11-05T21:00:50.562180+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 0.0,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710638",
+              "output_sha256": "4cac386c0b8783d90abab0b55d91ed878017db3723bb7c24a548b59e9811cd8b",
+              "prompt_sha256": "c40c8baf22c4a45590d30a327475c9f2163af28cee13baef0bf290cd74779074",
+              "response_id": "chatcmpl-auto-0c110bc859476ca2b7cce01b479d7281",
+              "input_tokens": 4096,
+              "output_tokens": 7,
+              "latency": 2.9287115740589797,
+              "ttft": 2.8427986009046435,
+              "start": 2102533.079367491,
+              "end": 2102536.008079065,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102533.079367491,
+                "end_monotonic_seconds": 2102536.008079065,
+                "start_utc_estimate": "2026-11-05T21:00:50.562493+00:00",
+                "end_utc_estimate": "2026-11-05T21:00:53.491205+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 0.0,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710765",
+              "output_sha256": "e6319db514d30728158a3a306638d85f9c44eb72a08e3b6306867fda70359402",
+              "prompt_sha256": "b8198a7998b20d7edd3ada87edecbce958843b6bcafcf9d4983a239c6324fa02",
+              "response_id": "chatcmpl-auto-8ca9cf40245a730a16860f795153f0ae",
+              "input_tokens": 8192,
+              "output_tokens": 7,
+              "latency": 5.604267873801291,
+              "ttft": 5.522079601883888,
+              "start": 2102536.008455979,
+              "end": 2102541.612723853,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102536.008455979,
+                "end_monotonic_seconds": 2102541.612723853,
+                "start_utc_estimate": "2026-11-05T21:00:53.491582+00:00",
+                "end_utc_estimate": "2026-11-05T21:00:59.095850+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 0.0,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "710892",
+              "output_sha256": "9f2945cea215d6515a7b36b46b71cb0562a0629edc90aee47b435bb56f25d4a6",
+              "prompt_sha256": "d3f37a78f3f642d958c455757b859a222ab47784de1833847a5a5954aa37abb6",
+              "response_id": "chatcmpl-auto-7ec3615528ee90c788d468124a36f277",
+              "input_tokens": 8192,
+              "output_tokens": 7,
+              "latency": 5.611062007956207,
+              "ttft": 5.528623093850911,
+              "start": 2102541.613101804,
+              "end": 2102547.224163812,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102541.613101804,
+                "end_monotonic_seconds": 2102547.224163812,
+                "start_utc_estimate": "2026-11-05T21:00:59.096228+00:00",
+                "end_utc_estimate": "2026-11-05T21:01:04.707290+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 0.0,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "711019",
+              "output_sha256": "a12687ff57e7602233020a95916bd75746473bbd1c262f3cb071b11de48634b7",
+              "prompt_sha256": "46616386557835b6e297f422fe33ed022202e321bde2729c7232a741939c9a47",
+              "response_id": "chatcmpl-auto-05fc83d841dff60d34c15b4e0064db5f",
+              "input_tokens": 8192,
+              "output_tokens": 7,
+              "latency": 5.603398722130805,
+              "ttft": 5.521080082748085,
+              "start": 2102547.224522781,
+              "end": 2102552.827921503,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102547.224522781,
+                "end_monotonic_seconds": 2102552.827921503,
+                "start_utc_estimate": "2026-11-05T21:01:04.707649+00:00",
+                "end_utc_estimate": "2026-11-05T21:01:10.311047+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 0.0,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "711146",
+              "output_sha256": "c73f4e0e82deddf53f30ac110a0d599c2ba4b45b59b262ad3f4892b1b2373a4a",
+              "prompt_sha256": "8e7d6e535925c3552adaf57319be27d987365520fa852409366c05cf32b6c423",
+              "response_id": "chatcmpl-auto-77f4d27e57798d6537da78bd76f61f8f",
+              "input_tokens": 45056,
+              "output_tokens": 7,
+              "latency": 31.95227463496849,
+              "ttft": 31.866698401980102,
+              "start": 2102552.828773341,
+              "end": 2102584.781047976,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102552.828773341,
+                "end_monotonic_seconds": 2102584.781047976,
+                "start_utc_estimate": "2026-11-05T21:01:10.311899+00:00",
+                "end_utc_estimate": "2026-11-05T21:01:42.264174+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 0.0,
+                "within_client_boundaries": true
+              }
+            },
+            {
+              "success": 1,
+              "text": "711273",
+              "output_sha256": "7f9c8412ad575e46516d69c53b9e2e64a20b45f3c0a027524b3848dbd00aa21d",
+              "prompt_sha256": "12ba2ea94933c44aea775a49a5380161413c7d377208ae35c8ad20fab8c6f150",
+              "response_id": "chatcmpl-auto-27f4ac12fa40253fc6eddb9a9890bf1a",
+              "input_tokens": 204800,
+              "output_tokens": 7,
+              "latency": 166.9751588711515,
+              "ttft": 166.87939685909078,
+              "start": 2102584.783724249,
+              "end": 2102751.75888312,
+              "finish": [
+                "stop"
+              ],
+              "requested_max_tokens": 32,
+              "stream": true,
+              "timing": {
+                "start_monotonic_seconds": 2102584.783724249,
+                "end_monotonic_seconds": 2102751.75888312,
+                "start_utc_estimate": "2026-11-05T21:01:42.266850+00:00",
+                "end_utc_estimate": "2026-11-05T21:04:29.242009+00:00",
+                "source": "evalscope result.start_time/completed_time (perf_counter)",
+                "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+                "clock_offset_change_seconds": 0.0,
+                "within_client_boundaries": true
+              }
+            }
+          ],
+          "makespan_seconds": 227.4688140898943,
+          "total_output_tokens": 77,
+          "throughput": 0.33850794144277757
+        }
+      ],
+      "audit": {
+        "admitted": 17,
+        "released": 17,
+        "quota": {
+          "event": "server_destroyed",
+          "enabled": true,
+          "limit_bytes": 118728574156,
+          "charged_bytes": 200953856,
+          "live_bytes": 200953856,
+          "pending_bytes": 0,
+          "unknown_bytes": 0,
+          "peak_bytes": 103086840216,
+          "entries": 8,
+          "poisoned": false,
+          "byte_rejections": 0,
+          "entry_rejections": 0,
+          "stream_rejections": 0,
+          "contract_failures": 0,
+          "backend_failures": 0,
+          "scope": "process_requested_cuda_bytes",
+          "physical_ram_limit": false
+        }
+      },
+      "trajectories": {
+        "context-1024": [
+          [
+            "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+            [
+              10,
+              9,
+              7,
+              51
+            ]
+          ],
+          [
+            "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+            [
+              10,
+              9,
+              7,
+              51
+            ]
+          ],
+          [
+            "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+            [
+              10,
+              9,
+              7,
+              51
+            ]
+          ]
+        ],
+        "context-45056": [
+          [
+            "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+            [
+              7,
+              5,
+              6,
+              55
+            ]
+          ],
+          [
+            "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+            [
+              7,
+              5,
+              6,
+              55
+            ]
+          ],
+          [
+            "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+            [
+              7,
+              5,
+              6,
+              55
+            ]
+          ]
+        ],
+        "quality": [
+          [
+            "0e349879840c9c0cf3261f3263359482be3c1b4a9383c9bd68561014acefba6f",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "12ba2ea94933c44aea775a49a5380161413c7d377208ae35c8ad20fab8c6f150",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "46616386557835b6e297f422fe33ed022202e321bde2729c7232a741939c9a47",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "4e4b462f767736bc27913543654afae84da78917924d4f2d60f8990a6b7a3a94",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "8e7d6e535925c3552adaf57319be27d987365520fa852409366c05cf32b6c423",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "b8198a7998b20d7edd3ada87edecbce958843b6bcafcf9d4983a239c6324fa02",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "c40c8baf22c4a45590d30a327475c9f2163af28cee13baef0bf290cd74779074",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "d3f37a78f3f642d958c455757b859a222ab47784de1833847a5a5954aa37abb6",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "e647c72568b4bf9589fd5c63e8a214898769f0285839cf53987c0e47ec12e4ff",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ],
+          [
+            "f17889bf3cec9aead6db4da85c4d517a4d795407932c30b9f273363dec239dd0",
+            [
+              0,
+              1,
+              0,
+              1
+            ]
+          ]
+        ]
+      },
+      "quality_passed": 11,
+      "metrics": {
+        "context-1024": {
+          "aggregate_decode": 38.71517458637601,
+          "aggregate_e2e": 22.577483213040978,
+          "ttft": [
+            1.0454698130488396,
+            0.885471380315721,
+            0.8868480967357755
+          ],
+          "latency": [
+            7.629311691969633,
+            7.46827974403277,
+            7.479891777038574
+          ],
+          "decode": [
+            38.73118533062324,
+            38.737266210801806,
+            38.67712885959351
+          ]
+        },
+        "context-45056": {
+          "aggregate_decode": 39.43319677178694,
+          "aggregate_e2e": 115.20765393413603,
+          "ttft": [
+            31.972676588222384,
+            31.917850106023252,
+            31.917229117825627
+          ],
+          "latency": [
+            38.445989036001265,
+            38.37661918718368,
+            38.38504571095109
+          ],
+          "decode": [
+            39.392506086662856,
+            39.48120714577165,
+            39.42597881811234
+          ]
+        }
+      }
+    }
+  },
+  "statistics": "DESCRIPTIVE_SINGLE_START_PER_HEAD_ARM_NOT_NONINFERIORITY",
+  "cold_request": "Each arm starts at 1K; all three requests retained individually.",
+  "decision": "NO_GO_FEASIBILITY_TARGET"
+}

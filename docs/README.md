@@ -1,6 +1,7 @@
 # docs/ — 开发记录文档体系
 
-[GDN qkv/z BF16小批输入转换复用有界判定卡](GDN_BF16_INPUT_PLAN_2026-11-06.md)。
+[GDN qkv/z BF16转换复用：HTTP首验NO_GO结果](GDN_BF16_INPUT_RESULT_2026-11-06.md)
+与[有界判定卡](GDN_BF16_INPUT_PLAN_2026-11-06.md)。
 
 [RPM/TPM与客户端公平准入有界交付](SERVE_CLIENT_GOVERNANCE_DELIVERY_2026-11-05.md)：
 原生默认c1bdb0a7/0efc2c0d，协议9c8758c4，旧托管/任务/Key/day仍固定。

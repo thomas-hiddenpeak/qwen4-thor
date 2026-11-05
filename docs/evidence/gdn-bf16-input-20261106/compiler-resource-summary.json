@@ -1,0 +1,20 @@
+{
+  "source": "ELF compiler resource metadata; no GPU execution or occupancy measurement",
+  "m4_original_specialization": {
+    "registers": 40,
+    "stack": 0,
+    "local": 0,
+    "dynamic_shared_bytes": 20480,
+    "static_shared_bytes": 1024
+  },
+  "m4_candidate_specialization": {
+    "registers": 54,
+    "stack": 0,
+    "local": 0,
+    "dynamic_shared_bytes": 40960,
+    "static_shared_bytes": 1024
+  },
+  "logical_bf16_weight_bytes_per_verify_round": 3019898880,
+  "physical_dram_bytes_measured": false,
+  "causal_attribution": "NOT_MEASURED"
+}

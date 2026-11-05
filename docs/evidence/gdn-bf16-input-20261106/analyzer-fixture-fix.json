@@ -1,0 +1,13 @@
+{
+  "initial_test_count": 8,
+  "initial_passed": 7,
+  "affected_test": "EvidenceContract.test_invalid_decode_interval_and_count",
+  "failure_type": "TEST_FIXTURE_ERROR",
+  "initial_ttft": 1.0,
+  "latency": 8.0,
+  "corrected_ttft": 8.0,
+  "explanation": "Initial supposed zero-interval fixture had a valid seven-second interval; corrected TTFT to equal latency. Analyzer/runtime/measured inputs unchanged.",
+  "targeted_test_passed": true,
+  "unaffected_tests_reused": 7,
+  "added_gpu_requests": 0
+}
