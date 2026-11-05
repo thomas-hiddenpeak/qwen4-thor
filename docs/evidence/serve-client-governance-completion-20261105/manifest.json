@@ -1,0 +1,712 @@
+{
+  "archive_sha256": "ad0c43ffb3e4092c8d18562991dc8e96d1510ff9d2e694613f9411b99a4afa6f",
+  "records": [
+    {
+      "artifact": "records/cpu/driver-command.json",
+      "bytes": 160,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/cpu/driver-command.json",
+      "sha256": "3bca47e4d6e1ca048fb8eeda16c725957ceb3cd71046c28631b6ee85d8be4b14"
+    },
+    {
+      "artifact": "records/cpu/driver-exit.json",
+      "bytes": 55,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/cpu/driver-exit.json",
+      "sha256": "a6ae0daeb3e375298082bb8a03459cdb513ee8e6de32f670eda599995215181a"
+    },
+    {
+      "artifact": "records/cpu/driver.stderr",
+      "bytes": 1158,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/cpu/driver.stderr",
+      "sha256": "c796d3fb6a30cd8ec662a0aca860550b0b64b9526a6815eeb6b05ab0a90a3a9b"
+    },
+    {
+      "artifact": "records/cpu/driver.stdout",
+      "bytes": 0,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/cpu/driver.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "artifact": "records/cpu/result.json",
+      "bytes": 179,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/cpu/result.json",
+      "sha256": "2e507935c94bd9fc8bd4cbef7d7ed6b938b168f0dafd35be446046828c4f884a"
+    },
+    {
+      "artifact": "records/cpu/sources.json",
+      "bytes": 251162,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/cpu/sources.json",
+      "sha256": "79235ce62cef7bb293b01c19d21ac5588d1141320e945713e63e18c9c48edd7b"
+    },
+    {
+      "artifact": "records/cpu-final/driver-command.json",
+      "bytes": 160,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/cpu-final/driver-command.json",
+      "sha256": "3bca47e4d6e1ca048fb8eeda16c725957ceb3cd71046c28631b6ee85d8be4b14"
+    },
+    {
+      "artifact": "records/cpu-final/driver-exit.json",
+      "bytes": 56,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/cpu-final/driver-exit.json",
+      "sha256": "78022ba7569735750d6319a34e850f137a2b6b1120b71b80bf60939adfc2ac60"
+    },
+    {
+      "artifact": "records/cpu-final/driver.stderr",
+      "bytes": 1158,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/cpu-final/driver.stderr",
+      "sha256": "c796d3fb6a30cd8ec662a0aca860550b0b64b9526a6815eeb6b05ab0a90a3a9b"
+    },
+    {
+      "artifact": "records/cpu-final/driver.stdout",
+      "bytes": 0,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/cpu-final/driver.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "artifact": "records/cpu-final/result.json",
+      "bytes": 179,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/cpu-final/result.json",
+      "sha256": "2e507935c94bd9fc8bd4cbef7d7ed6b938b168f0dafd35be446046828c4f884a"
+    },
+    {
+      "artifact": "records/cpu-final/sources.json",
+      "bytes": 251286,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/cpu-final/sources.json",
+      "sha256": "058b9d2d760deea54f8631442a5a687c4e28e63d5d4c6347d4614630314fc4c1"
+    },
+    {
+      "artifact": "records/execution/acceptance.json",
+      "bytes": 1562,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/acceptance.json",
+      "sha256": "386e6643e8a66b218d2871ca257f8604232775618b2dd5420ae239e582b3b0d1"
+    },
+    {
+      "artifact": "records/execution/begin.json",
+      "bytes": 141,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/begin.json",
+      "sha256": "585bdb4aa3e87fae74e0ce2dc366a67965213f56254d6e78fa46116b70cfec46"
+    },
+    {
+      "artifact": "records/execution/business/attempt-controls-001.json",
+      "bytes": 63,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/attempt-controls-001.json",
+      "sha256": "37b3fccd5a0f6d692e21b2d11426ebd506c7ed373d0afa95ab9e378b17528719"
+    },
+    {
+      "artifact": "records/execution/business/attempt-controls-002.json",
+      "bytes": 63,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/attempt-controls-002.json",
+      "sha256": "4c12af7953e45e929ec44c0a210318037e5c0dea0cf723b684117b0969778ba1"
+    },
+    {
+      "artifact": "records/execution/business/attempt-controls-003.json",
+      "bytes": 63,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/attempt-controls-003.json",
+      "sha256": "1aefbe3f461a7a4b6c64b978e1cc4c98003460e165fdb1b3820a7a37208c8032"
+    },
+    {
+      "artifact": "records/execution/business/attempt-generation_attempts-001.json",
+      "bytes": 63,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/attempt-generation_attempts-001.json",
+      "sha256": "5c265a472286cc4022bbb4ddb902f78f3ed6c5d2244062e705d01589b315c049"
+    },
+    {
+      "artifact": "records/execution/business/attempt-generation_attempts-002.json",
+      "bytes": 63,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/attempt-generation_attempts-002.json",
+      "sha256": "ae5de2781f800c793b6eabdabaeaef9668de18a3d8061104bc3a42ef67da5d53"
+    },
+    {
+      "artifact": "records/execution/business/attempt-starts-001.json",
+      "bytes": 63,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/attempt-starts-001.json",
+      "sha256": "7daa965b79359947102b1684448910400bc1bfbb760a98c484207d1e2779ce37"
+    },
+    {
+      "artifact": "records/execution/business/capabilities-http.json",
+      "bytes": 197,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/capabilities-http.json",
+      "sha256": "abc1ac5d5d6c0e4da56c208c8f7af59bbb72360d46e1cd014c349adfc64e0bed"
+    },
+    {
+      "bytes": 102,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/capabilities-request.json",
+      "sha256": "5ac7a68b8c43ea594adfd7ebe9fb4adb4610f8d5fab8962cb1df04daabc436be"
+    },
+    {
+      "artifact": "records/execution/business/capabilities-wire.bin",
+      "bytes": 11837,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/capabilities-wire.bin",
+      "sha256": "7ca6f33ad53da9bcce8dbd2c46d6a40fd1117619aa8119e13f1d0d6e51a3325f"
+    },
+    {
+      "artifact": "records/execution/business/custody.json",
+      "bytes": 559,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/custody.json",
+      "sha256": "b392630552c07cfdd72d6097cc99de32d9af8f1893307788c7c3b0edac87f4c7"
+    },
+    {
+      "artifact": "records/execution/business/disabled-json-http.json",
+      "bytes": 197,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/disabled-json-http.json",
+      "sha256": "208541d3e07ba9d7a7d8456fd2f66b3c2eac9cbb47f98484e834eba3fe709c91"
+    },
+    {
+      "bytes": 785,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/disabled-json-request.json",
+      "sha256": "28becee324ce86c521a4eb191d41b024f41bcf54b2d20216ff6a0b629f59825b"
+    },
+    {
+      "artifact": "records/execution/business/disabled-json-response.json",
+      "bytes": 313,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/disabled-json-response.json",
+      "sha256": "c6544b407b08609d79c1d83d1c871edcc4a2d394d3b648e68a70b9ada555a62e"
+    },
+    {
+      "artifact": "records/execution/business/disabled-json-wire.bin",
+      "bytes": 306,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/disabled-json-wire.bin",
+      "sha256": "82eac69fd54e03049e71f81885c9d43bcb6a50b8eb2fae8280eab188fcf15a81"
+    },
+    {
+      "artifact": "records/execution/business/disabled-sse-http.json",
+      "bytes": 233,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/disabled-sse-http.json",
+      "sha256": "36e2f42992e50c46f6dba9454aa06b45a23e1fd392ac91e8dc3463b135a43478"
+    },
+    {
+      "bytes": 843,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/disabled-sse-request.json",
+      "sha256": "e09a4e670d9bdb2d391b9c8ecd104ab17acb09b24d964d2719458d35240bc0d0"
+    },
+    {
+      "artifact": "records/execution/business/disabled-sse-response.json",
+      "bytes": 310,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/disabled-sse-response.json",
+      "sha256": "3bc2814657b07705200462e5fc64fcfbacaf3a8121b197cdeea0c3900a3a7499"
+    },
+    {
+      "artifact": "records/execution/business/disabled-sse-wire.bin",
+      "bytes": 2161,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/disabled-sse-wire.bin",
+      "sha256": "236addb11867e7bf302aa8b6a2e163777e0fbed0bdeab2a5bef0dc98d63ad983"
+    },
+    {
+      "artifact": "records/execution/business/final-gpu.json",
+      "bytes": 2259,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/final-gpu.json",
+      "sha256": "0eb05b8a9e372651585e1e0382663074a6d65568f654b9818b20785502aae761"
+    },
+    {
+      "artifact": "records/execution/business/final-idle-2-http.json",
+      "bytes": 206,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/final-idle-2-http.json",
+      "sha256": "e6e05a0a84f1648068aeee08902245a35e5a4ed5030b4ad4405b37554488441e"
+    },
+    {
+      "bytes": 93,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/final-idle-2-request.json",
+      "sha256": "ad8b9962cb7005075a79ba7a4eaea03ebcaed06e165686c5c577d5dae7cade47"
+    },
+    {
+      "artifact": "records/execution/business/final-idle-2-wire.bin",
+      "bytes": 25388,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/final-idle-2-wire.bin",
+      "sha256": "8fba715d24d5c0e7fa81302940cebb10321204ef40c94ee2e631085c6d7bc072"
+    },
+    {
+      "artifact": "records/execution/business/final-metrics.json",
+      "bytes": 15747,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/final-metrics.json",
+      "sha256": "d638f02c2d699c02a5307c7ae64469d943e6294d734ae961e7f61efa59500e51"
+    },
+    {
+      "artifact": "records/execution/business/initial-gpu.json",
+      "bytes": 2256,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/initial-gpu.json",
+      "sha256": "02d7836fe99dbeac04088c77a60420265a788f093353697152746fb478d951a6"
+    },
+    {
+      "artifact": "records/execution/business/legacy-model/command.json",
+      "bytes": 474,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/legacy-model/command.json",
+      "sha256": "08fa37de4e7b4b5c9613290de0d0768b96da31d67645a40dd9033f04cc71f875"
+    },
+    {
+      "artifact": "records/execution/business/legacy-model/identity.json",
+      "bytes": 619,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/legacy-model/identity.json",
+      "sha256": "bbc06f7c697f2a91cf42ac470fbb43a6191eb06ce382a24709bc8c053bc61a07"
+    },
+    {
+      "artifact": "records/execution/business/legacy-model/reaped.json",
+      "bytes": 40,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/legacy-model/reaped.json",
+      "sha256": "8980dd8f6f276dc30c8b004ee57549203d5673a1e882ba326c7fcd1ba8aff8fa"
+    },
+    {
+      "artifact": "records/execution/business/legacy-model/stderr.log",
+      "bytes": 9548,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/legacy-model/stderr.log",
+      "sha256": "6527835397a457ef279c637ace97979d0ee0e5835c7d5047d08c324ee697ec16"
+    },
+    {
+      "artifact": "records/execution/business/legacy-model/stdout.log",
+      "bytes": 0,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/legacy-model/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "artifact": "records/execution/business/legacy-model/waitable.json",
+      "bytes": 186,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/legacy-model/waitable.json",
+      "sha256": "69029fa3c71101194e09057a58ef05bc84094061bb277578bc42911892d49a06"
+    },
+    {
+      "artifact": "records/execution/business/legacy-model-config-http.json",
+      "bytes": 196,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/legacy-model-config-http.json",
+      "sha256": "89543760c67f8fea9a1b6b1dc4c324691409b6fb644db79a8f62db623011bf79"
+    },
+    {
+      "bytes": 95,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/legacy-model-config-request.json",
+      "sha256": "419eed121d193bbec1d97d19a45465b3450da5f76cd555392d5dd45ee62d904a"
+    },
+    {
+      "artifact": "records/execution/business/legacy-model-config-wire.bin",
+      "bytes": 5290,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/legacy-model-config-wire.bin",
+      "sha256": "54f2405803a8170d401336bb7f0953f999701d2ad2a5716d32b589bb9294f8b9"
+    },
+    {
+      "artifact": "records/execution/business/result.json",
+      "bytes": 299,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/business/result.json",
+      "sha256": "59f1a1e291d6d96d9c3072217145d30a2761280fc8c627eea3571a9238e70154"
+    },
+    {
+      "artifact": "records/execution/execution.json",
+      "bytes": 155,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/execution.json",
+      "sha256": "d0527d77599dced839b1b96cfaf80744eb339cc4114aa9bda8d64f6c2659e286"
+    },
+    {
+      "artifact": "records/execution/final-gpu.json",
+      "bytes": 2256,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/final-gpu.json",
+      "sha256": "ba546615a4729a95e1875698745ec13f25e775cf751353916c4a1db3ae0f8893"
+    },
+    {
+      "artifact": "records/execution/finalized.json",
+      "bytes": 313,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/finalized.json",
+      "sha256": "90a7b2879635db020f0cdecef3516b7ce000d16c7eba1ee15f6fbe218ec94c22"
+    },
+    {
+      "artifact": "records/execution/health/result.json",
+      "bytes": 505,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/health/result.json",
+      "sha256": "17adb2625ce11624a323ef7fd428d87094852f7f532efedf6498c6e101f51503"
+    },
+    {
+      "artifact": "records/execution/health/version-command.json",
+      "bytes": 101,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/health/version-command.json",
+      "sha256": "8a20f8fb8c055e7b3af3e3d7c7640ad24d5e8443a092e254845dd9a42ba8bbdb"
+    },
+    {
+      "artifact": "records/execution/health/version-exit.json",
+      "bytes": 56,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/health/version-exit.json",
+      "sha256": "32f3724a0e05370d5fb769953e6534c85a5f98aafd35903661dff79cbac3cb39"
+    },
+    {
+      "artifact": "records/execution/health/version.stderr",
+      "bytes": 0,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/health/version.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "artifact": "records/execution/health/version.stdout",
+      "bytes": 99,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/health/version.stdout",
+      "sha256": "641e6cceea77e2f0d85b4f6926c2fc11f70630d4f7ed4efb3c618417e796aaad"
+    },
+    {
+      "artifact": "records/execution/initial-gpu.json",
+      "bytes": 2258,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/initial-gpu.json",
+      "sha256": "fe3aa7d87e8323ea70f0c61fddfa369a1e2983ea9ad5781eca7ee4ebb8002287"
+    },
+    {
+      "artifact": "records/execution/lease/events.jsonl",
+      "bytes": 7978,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/lease/events.jsonl",
+      "sha256": "c361e4d13ae9065219c06a0aa55a1ea9cf42a817c8d2419d25d1635c6ddcc204"
+    },
+    {
+      "artifact": "records/execution/lease/exit.json",
+      "bytes": 597,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/lease/exit.json",
+      "sha256": "06ee8bd40c95f29fc76780f757ad8c7cc1c740a2abdb0b1121993fbfc0a8b35d"
+    },
+    {
+      "artifact": "records/execution/lease/nvml-queries.jsonl",
+      "bytes": 93919,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/lease/nvml-queries.jsonl",
+      "sha256": "88b63ab4a12cc3c8653eeb1eaa248c48cf1ed21ea1758d886154fcaddfb4eea4"
+    },
+    {
+      "bytes": 7298648,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/pair/q4t",
+      "sha256": "c1bdb0a7599ba3f61d9cb48597069a66f6e27e02f38cf32e495fc80059008636"
+    },
+    {
+      "artifact": "records/execution/pair/q4t.release.json",
+      "bytes": 47845,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/pair/q4t.release.json",
+      "sha256": "0efc2c0dc309e42a7b7761860edce7888aa8139f5ea305f54eae054a81fdbcf3"
+    },
+    {
+      "artifact": "records/execution/release/binding.json",
+      "bytes": 375,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/release/binding.json",
+      "sha256": "c243dc22b11088dcca1fd71086e54babd059f43538b47b0c663e1e6e26ab971b"
+    },
+    {
+      "artifact": "records/execution/release/declarations/capabilities.json",
+      "bytes": 11837,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/release/declarations/capabilities.json",
+      "sha256": "7ca6f33ad53da9bcce8dbd2c46d6a40fd1117619aa8119e13f1d0d6e51a3325f"
+    },
+    {
+      "artifact": "records/execution/release/declarations/configuration.json",
+      "bytes": 5290,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/release/declarations/configuration.json",
+      "sha256": "54f2405803a8170d401336bb7f0953f999701d2ad2a5716d32b589bb9294f8b9"
+    },
+    {
+      "artifact": "records/execution/release/declarations/schemas/config.json",
+      "bytes": 30435,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/release/declarations/schemas/config.json",
+      "sha256": "a38e3073974a2c179740ea2bbefad9f079208cb908d4b0eec5c20bd0a7661ae1"
+    },
+    {
+      "artifact": "records/execution/release/declarations/schemas/message.json",
+      "bytes": 1755,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/release/declarations/schemas/message.json",
+      "sha256": "0618a6b85fee0f37f2df9347b1f260eee6882b74854f5177cef4b5527bb3bd61"
+    },
+    {
+      "artifact": "records/execution/release/declarations/schemas/preflight.json",
+      "bytes": 6467,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/release/declarations/schemas/preflight.json",
+      "sha256": "be52ee06d516b643ad7051145a14af5eda4ef7721482fb22e200fe574bfc263b"
+    },
+    {
+      "artifact": "records/execution/release/declarations/schemas/reasoning.json",
+      "bytes": 2702,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/release/declarations/schemas/reasoning.json",
+      "sha256": "e0e24e50afc2146757deac6fd8028377613e1305ff4dad4a1756c74961b938a4"
+    },
+    {
+      "artifact": "records/execution/release/declarations/schemas/response.json",
+      "bytes": 4493,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/release/declarations/schemas/response.json",
+      "sha256": "47c9f9068a88ec1977788c892c90fe89dae43ec02e1e6e381d67707eaea1ec62"
+    },
+    {
+      "artifact": "records/execution/release/declarations/schemas/stop.json",
+      "bytes": 1584,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/release/declarations/schemas/stop.json",
+      "sha256": "25989a444b4dc6a8ad7a0b8f723dbe96a26f9b97feb1e75016452e30536d4067"
+    },
+    {
+      "artifact": "records/execution/release/declarations/schemas/thinking.json",
+      "bytes": 2690,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/release/declarations/schemas/thinking.json",
+      "sha256": "1353743d9290215253fab2d8d0952ff99d833444e24323a01efacc6b10cf1bd7"
+    },
+    {
+      "artifact": "records/execution/release/q4t.release.json",
+      "bytes": 47845,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/release/q4t.release.json",
+      "sha256": "0efc2c0dc309e42a7b7761860edce7888aa8139f5ea305f54eae054a81fdbcf3"
+    },
+    {
+      "artifact": "records/execution/release/sealed-files.json",
+      "bytes": 1139,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/release/sealed-files.json",
+      "sha256": "fd1eb07e25ed256ed89ea22c115049fa6d1e8751263cfdc6efb7dea8e52513f7"
+    },
+    {
+      "artifact": "records/execution/sealed-files.json",
+      "bytes": 6417,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/execution/sealed-files.json",
+      "sha256": "11d9605249a81b1e58ba73c406d5124dd9b26c1a2cfe02391e5d524931eac883"
+    },
+    {
+      "artifact": "records/package/candidate/CMakeCache.txt",
+      "bytes": 38807,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/candidate/CMakeCache.txt",
+      "sha256": "ea39d1ecd7a7bc8b978f1da1b0caefd624bb7dbe962716f4da8559b60bb0334b"
+    },
+    {
+      "artifact": "records/package/candidate/compile_commands.json",
+      "bytes": 353456,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/candidate/compile_commands.json",
+      "sha256": "db94c0fce2d54a069e75bd2141ae572f6b530fd2eeec547326c1718ced15102a"
+    },
+    {
+      "artifact": "records/package/candidate/generated/q4t/server/chat_protocol_identity.h",
+      "bytes": 697,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/candidate/generated/q4t/server/chat_protocol_identity.h",
+      "sha256": "cd45f4bd57c0fd55b4d0fd586262d5eaad5908362df557b014a3fbbd1e1aa9e7"
+    },
+    {
+      "artifact": "records/package/candidate/generated/q4t/server/chat_protocol_sources.json",
+      "bytes": 10155,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/candidate/generated/q4t/server/chat_protocol_sources.json",
+      "sha256": "cdae5b4c7f68eedc0d84a4057636a4c5c437f39b03354b695873df03a8b20b26"
+    },
+    {
+      "bytes": 7298648,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/candidate/q4t",
+      "sha256": "c1bdb0a7599ba3f61d9cb48597069a66f6e27e02f38cf32e495fc80059008636"
+    },
+    {
+      "artifact": "records/package/candidate/q4t.rules.yml",
+      "bytes": 14279,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/candidate/q4t.rules.yml",
+      "sha256": "2d2f14f832b9aa13c4d384c3b2a18bae6074a75c4e1c7ed59b0011da1ed1c015"
+    },
+    {
+      "artifact": "records/package/candidate/runtime-source.json",
+      "bytes": 23247,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/candidate/runtime-source.json",
+      "sha256": "bc3a7fba0bb36c403994b9ec401c3010afdbe5ada4476612a97f507be8f63d4f"
+    },
+    {
+      "artifact": "records/package/candidate/schemas/config.json",
+      "bytes": 30435,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/candidate/schemas/config.json",
+      "sha256": "a38e3073974a2c179740ea2bbefad9f079208cb908d4b0eec5c20bd0a7661ae1"
+    },
+    {
+      "artifact": "records/package/candidate/schemas/message.json",
+      "bytes": 1755,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/candidate/schemas/message.json",
+      "sha256": "0618a6b85fee0f37f2df9347b1f260eee6882b74854f5177cef4b5527bb3bd61"
+    },
+    {
+      "artifact": "records/package/candidate/schemas/preflight.json",
+      "bytes": 6467,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/candidate/schemas/preflight.json",
+      "sha256": "be52ee06d516b643ad7051145a14af5eda4ef7721482fb22e200fe574bfc263b"
+    },
+    {
+      "artifact": "records/package/candidate/schemas/reasoning.json",
+      "bytes": 2702,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/candidate/schemas/reasoning.json",
+      "sha256": "e0e24e50afc2146757deac6fd8028377613e1305ff4dad4a1756c74961b938a4"
+    },
+    {
+      "artifact": "records/package/candidate/schemas/response.json",
+      "bytes": 4493,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/candidate/schemas/response.json",
+      "sha256": "47c9f9068a88ec1977788c892c90fe89dae43ec02e1e6e381d67707eaea1ec62"
+    },
+    {
+      "artifact": "records/package/candidate/schemas/stop.json",
+      "bytes": 1584,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/candidate/schemas/stop.json",
+      "sha256": "25989a444b4dc6a8ad7a0b8f723dbe96a26f9b97feb1e75016452e30536d4067"
+    },
+    {
+      "artifact": "records/package/candidate/schemas/thinking.json",
+      "bytes": 2690,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/candidate/schemas/thinking.json",
+      "sha256": "1353743d9290215253fab2d8d0952ff99d833444e24323a01efacc6b10cf1bd7"
+    },
+    {
+      "artifact": "records/package/numerical-reuse.json",
+      "bytes": 1041,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/numerical-reuse.json",
+      "sha256": "31a738f38295014f4ced7e94be173e11f7c0dcd30b7227f99bff6daa3ea75183"
+    },
+    {
+      "artifact": "records/package/plan.json",
+      "bytes": 5088,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/plan.json",
+      "sha256": "1125729da4a865723474745f47c3c27c5ef818299d6e29f72d426f934d555353"
+    },
+    {
+      "artifact": "records/package/previous/CMakeCache.txt",
+      "bytes": 38855,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/previous/CMakeCache.txt",
+      "sha256": "cd945ee0507015a966f65908593a94b9cd600a264c93e4343cbf1469ba430c4e"
+    },
+    {
+      "artifact": "records/package/previous/acceptance.json",
+      "bytes": 2774,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/previous/acceptance.json",
+      "sha256": "1048ebbabcc0ddfa1dc0c4e1ae5c1091e218ba996acbd4abec46a488c3ea7f98"
+    },
+    {
+      "artifact": "records/package/previous/declarations/capabilities.json",
+      "bytes": 11343,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/previous/declarations/capabilities.json",
+      "sha256": "cf54c3d9ec2fe5bd336c6b9aafa12715bc5177b87b638f96d383271927de1995"
+    },
+    {
+      "artifact": "records/package/previous/declarations/configuration.json",
+      "bytes": 4922,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/previous/declarations/configuration.json",
+      "sha256": "9a006591d805c70d632ad9bb61c1987e4accb75f17740395d25dd75dd8cd3256"
+    },
+    {
+      "artifact": "records/package/previous/declarations/schemas/config.json",
+      "bytes": 28772,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/previous/declarations/schemas/config.json",
+      "sha256": "9dca3f258b03e9b84d96abbfb2412365b5961e7ffc71b9feb6808c374adfbb02"
+    },
+    {
+      "artifact": "records/package/previous/declarations/schemas/message.json",
+      "bytes": 1755,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/previous/declarations/schemas/message.json",
+      "sha256": "0618a6b85fee0f37f2df9347b1f260eee6882b74854f5177cef4b5527bb3bd61"
+    },
+    {
+      "artifact": "records/package/previous/declarations/schemas/preflight.json",
+      "bytes": 6093,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/previous/declarations/schemas/preflight.json",
+      "sha256": "fcee5c9bddede4ba62032bd7e0007152d8899d421d2f3d473bdfab2c16348ba5"
+    },
+    {
+      "artifact": "records/package/previous/declarations/schemas/reasoning.json",
+      "bytes": 2702,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/previous/declarations/schemas/reasoning.json",
+      "sha256": "e0e24e50afc2146757deac6fd8028377613e1305ff4dad4a1756c74961b938a4"
+    },
+    {
+      "artifact": "records/package/previous/declarations/schemas/response.json",
+      "bytes": 4493,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/previous/declarations/schemas/response.json",
+      "sha256": "47c9f9068a88ec1977788c892c90fe89dae43ec02e1e6e381d67707eaea1ec62"
+    },
+    {
+      "artifact": "records/package/previous/declarations/schemas/stop.json",
+      "bytes": 1584,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/previous/declarations/schemas/stop.json",
+      "sha256": "25989a444b4dc6a8ad7a0b8f723dbe96a26f9b97feb1e75016452e30536d4067"
+    },
+    {
+      "artifact": "records/package/previous/declarations/schemas/thinking.json",
+      "bytes": 2690,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/previous/declarations/schemas/thinking.json",
+      "sha256": "1353743d9290215253fab2d8d0952ff99d833444e24323a01efacc6b10cf1bd7"
+    },
+    {
+      "bytes": 7298320,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/previous/q4t",
+      "sha256": "a56bd448ba45e31ba223e73212090a3aea76be9d9a17b06ad0d13c44196544a6"
+    },
+    {
+      "artifact": "records/package/previous/q4t.release.json",
+      "bytes": 29086,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/previous/q4t.release.json",
+      "sha256": "914e067febf6d6bab36cafb65548f3f64c3f34c9f0181ba95fb1b7c68752f861"
+    },
+    {
+      "artifact": "records/package/previous/q4t.rules.yml",
+      "bytes": 14279,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/previous/q4t.rules.yml",
+      "sha256": "2d2f14f832b9aa13c4d384c3b2a18bae6074a75c4e1c7ed59b0011da1ed1c015"
+    },
+    {
+      "artifact": "records/package/previous/runtime-source.json",
+      "bytes": 23247,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/previous/runtime-source.json",
+      "sha256": "9422c8714bf7da37a665942b9e0dfe769af773be9224c41728dab2ca635dbe8f"
+    },
+    {
+      "artifact": "records/package/reused-evidence.json",
+      "bytes": 2662,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/reused-evidence.json",
+      "sha256": "aa4753a0095239c0ae48ffba74b2ea8892117e59ac054cd76124e09bf652354f"
+    },
+    {
+      "artifact": "records/package/scoped-acceptance.json",
+      "bytes": 7869,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/scoped-acceptance.json",
+      "sha256": "fdf68fec348fbc93233c3cc9c8b3605e464f7c2e01c393fbaa627c1692cc4b9e"
+    },
+    {
+      "artifact": "records/package/sealed-files.json",
+      "bytes": 3555,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/sealed-files.json",
+      "sha256": "246ee1930e1dfb72974654c85aa0102b0798f2759c08f4ce775d7d90aa63ec72"
+    },
+    {
+      "artifact": "records/package/sources.json",
+      "bytes": 251286,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/sources.json",
+      "sha256": "058b9d2d760deea54f8631442a5a687c4e28e63d5d4c6347d4614630314fc4c1"
+    },
+    {
+      "artifact": "records/postflight/containers.txt",
+      "bytes": 0,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/postflight/containers.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "artifact": "records/postflight/gpu.json",
+      "bytes": 2254,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/postflight/gpu.json",
+      "sha256": "7e7ed41532c9cda4ed066aeaff9617b22a19f5650188ab349b0cc058407d0feb"
+    },
+    {
+      "artifact": "records/postflight/result.json",
+      "bytes": 374,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/postflight/result.json",
+      "sha256": "21338d3caafd1451f6a6d6a6b483e7853dbd75c197869d25f5cc1d5bbc49ed10"
+    },
+    {
+      "artifact": "records/postflight/soar-unit.txt",
+      "bytes": 62,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/postflight/soar-unit.txt",
+      "sha256": "a7113c47c735ee2a1776daa03c674d2c25174779048ccbe8a72862923a0b9efa"
+    },
+    {
+      "artifact": "records/preflight/containers.txt",
+      "bytes": 0,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/preflight/containers.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "artifact": "records/preflight/gpu.json",
+      "bytes": 2257,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/preflight/gpu.json",
+      "sha256": "10118b91854bd2c3a3f330f72826033a7b67f303bf876ba1231b26eb69387a30"
+    },
+    {
+      "artifact": "records/preflight/result.json",
+      "bytes": 256,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/preflight/result.json",
+      "sha256": "7a23e4e7ff759e80042308db8e7aff50f3bf0b303d846a4ee669dc4d15169aca"
+    },
+    {
+      "artifact": "records/preflight/soar-unit.txt",
+      "bytes": 62,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/preflight/soar-unit.txt",
+      "sha256": "a7113c47c735ee2a1776daa03c674d2c25174779048ccbe8a72862923a0b9efa"
+    }
+  ],
+  "result_sha256": "fba39b721d27c8fb81b3574b73437d320298ffcb0572f8de66a45637344e8f67",
+  "verifier": {
+    "bytes": 13160,
+    "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_client_governance/completion_report.py",
+    "sha256": "ee53fb23b81fb837cb353889b86657513a4c748e2737411e7a03359292a42742"
+  },
+  "version": 1
+}

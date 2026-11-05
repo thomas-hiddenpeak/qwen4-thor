@@ -836,20 +836,38 @@
         "data/control inflight",
         "body bytes",
         "encoded prompt tokens",
-        "total output tokens"
+        "total output tokens",
+        "optional v2 fixed-window requests/tokens per minute"
       ],
       "refusals": {
         "authentication": 401,
         "local_admin_with_identity": 403,
         "body_limit": 413,
         "concurrency_limit": 429,
-        "token_limit": 400
+        "token_limit": 400,
+        "minute_quota": 429
+      },
+      "governance": {
+        "profile": "q4t-client-governance-v1",
+        "policy_versions": [
+          1,
+          2
+        ],
+        "enabled_by": "explicit v2 policy fields; zero disables rates",
+        "window_seconds": 60,
+        "window": "fixed_monotonic",
+        "restart": "reset",
+        "reservation": "full prompt plus available output, retained across windows",
+        "settlement": "slot-admitted full prompt plus logical output, including failure/cancellation",
+        "fair_queue": "prepared-slot client round robin, per-client bounded queue share",
+        "preflight_charged": false,
+        "automatic_retry": false
       },
       "defaults": "omitted/null output budget is min(server default, client output limit)",
       "local_admin": "exact GET health/liveness/readiness/config/metrics remain trusted same-host routes; gateway denies them",
       "no_guarantee": [
         "per-client physical RAM",
-        "fair scheduling",
+        "GPU-time or preparation fairness",
         "distributed quotas",
         "automatic in-flight key revocation"
       ]

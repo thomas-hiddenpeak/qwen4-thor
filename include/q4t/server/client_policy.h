@@ -28,9 +28,13 @@ struct ClientLimits {
   uint32_t max_prompt_tokens = 0;
   uint32_t max_output_tokens = 0;
   uint32_t max_body_bytes = 0;
+  uint32_t requests_per_minute = 0;
+  uint32_t tokens_per_minute = 0;
 };
 
 struct GatewayClientPolicy {
+  uint32_t version = 1;
+  bool fair_queue = false;
   std::string gateway_token;
   std::string sha256;
   std::vector<ClientLimits> clients;
@@ -46,6 +50,7 @@ Status LoadGatewayClientPolicy(const std::string& path,
 
 class ClientAdmission;
 class ClientLease;
+class ClientRateLease;
 
 // Valid only while its ClientAdmission lives. Default identities deny access;
 // only Authenticate can create a legacy or authenticated identity.
@@ -54,6 +59,7 @@ class ClientIdentity {
   bool Allowed() const { return owner_ != nullptr; }
   bool Scoped() const { return limits_ != nullptr; }
   const ClientLimits* Limits() const { return limits_; }
+  size_t Index() const { return index_; }
   std::string_view Id() const {
     return limits_ ? std::string_view(limits_->id) : std::string_view();
   }
@@ -61,6 +67,7 @@ class ClientIdentity {
  private:
   friend class ClientAdmission;
   friend class ClientLease;
+  friend class ClientRateLease;
   const ClientAdmission* owner_ = nullptr;
   const ClientLimits* limits_ = nullptr;
   size_t index_ = kMaxClients;
@@ -75,6 +82,18 @@ struct ClientUsage {
   uint64_t control_rejected = 0;
 };
 
+using ClientClock = std::chrono::steady_clock;
+struct ClientRateUsage {
+  uint64_t requests = 0;
+  uint64_t tokens = 0;
+  uint64_t reserved = 0;
+  uint64_t rpm_rejected = 0;
+  uint64_t tpm_rejected = 0;
+  uint64_t admitted = 0;
+  uint64_t settled_tokens = 0;
+  uint64_t window_remaining_ms = 0;
+};
+
 // Configure at most once, before publishing to handlers. Global server limits
 // still apply. Clients cannot allocate new quota keys through request headers.
 class ClientAdmission {
@@ -82,16 +101,22 @@ class ClientAdmission {
   Status Configure(GatewayClientPolicy policy);
   bool Enabled() const { return !policy_.clients.empty(); }
   size_t Size() const { return policy_.clients.size(); }
+  uint32_t Version() const { return policy_.version; }
+  bool FairQueue() const { return policy_.fair_queue; }
+  bool FairCapacity(int inflight, int queued) const;
   const std::string& PolicySha256() const { return policy_.sha256; }
   ClientIdentity Authenticate(std::string_view id,
                               std::string_view gateway_token) const;
   const ClientLimits& Limits(size_t index) const;
   ClientUsage Usage(size_t index) const;
+  ClientRateUsage RateUsage(
+      size_t index, ClientClock::time_point now = ClientClock::now()) const;
 
  private:
   friend class ClientLease;
+  friend class ClientRateLease;
   struct Counters {
-    std::mutex mutex;
+    mutable std::mutex mutex;
     std::condition_variable changed;
     uint32_t data_finishing = 0;  // Protected by mutex; still charged.
     uint32_t control_finishing = 0;
@@ -99,9 +124,41 @@ class ClientAdmission {
     std::atomic<uint32_t> control{0};
     std::atomic<uint64_t> data_rejected{0};
     std::atomic<uint64_t> control_rejected{0};
+    bool window_started = false;
+    ClientClock::time_point window;
+    ClientRateUsage rate;
+    void Advance(ClientClock::time_point now);
   };
   GatewayClientPolicy policy_;
   std::array<Counters, kMaxClients> counters_;
+};
+
+enum class ClientRateResult { kAllowed, kRpm, kTpm, kInvalid };
+
+// Fixed-window request/token accounting. Outstanding reservations survive
+// window rollover; actual logical usage is settled in the completion window.
+// Handler-thread owned; settlement is idempotent and runs on scope unwind.
+class ClientRateLease {
+ public:
+  ~ClientRateLease() { Settle(); }
+  ClientRateLease() = default;
+  ClientRateLease(const ClientRateLease&) = delete;
+  ClientRateLease& operator=(const ClientRateLease&) = delete;
+  ClientRateResult Reserve(ClientAdmission& admission,
+                           const ClientIdentity& identity, uint64_t prompt,
+                           uint64_t output,
+                           ClientClock::time_point now = ClientClock::now());
+  void Start() noexcept { started_ = true; }
+  void Completion(uint64_t count) noexcept { completion_ = count; }
+  void Settle(ClientClock::time_point now = ClientClock::now()) noexcept;
+
+ private:
+  ClientAdmission::Counters* counters_ = nullptr;
+  uint64_t prompt_ = 0;
+  uint64_t reserved_ = 0;
+  uint64_t completion_ = 0;
+  bool started_ = false;
+  bool attempted_ = false;
 };
 
 // Holds a client's quota through headers/body/preparation/queue/response.

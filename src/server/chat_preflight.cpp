@@ -29,6 +29,8 @@ ChatPlanConfig ChatServer::PlanningConfig(int fd) const {
           .cuda_quota_limit_bytes = cuda_quota_limit_bytes_,
           .client_policy_sha256 = clients_.PolicySha256(),
           .client_count = clients_.Size(),
+          .client_policy_version = clients_.Version(),
+          .client_fair_queue = clients_.FairQueue(),
           .client_limits = http ? http->Client().Limits() : nullptr};
 }
 

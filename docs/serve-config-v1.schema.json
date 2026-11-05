@@ -425,7 +425,10 @@
           "minimum": 0
         },
         "queue_policy": {
-          "const": "capacity_fifo_best_fit"
+          "enum": [
+            "capacity_fifo_best_fit",
+            "client_round_robin_best_fit"
+          ]
         },
         "queue_order": {
           "const": "slot_admission_arrival"
@@ -1090,6 +1093,77 @@
       "required": [
         "public",
         "operations"
+      ]
+    },
+    "client_governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "profile": {
+          "const": "q4t-client-governance-v1"
+        },
+        "policy_version": {
+          "enum": [
+            1,
+            2
+          ]
+        },
+        "fair_queue": {
+          "type": "boolean"
+        },
+        "window_seconds": {
+          "const": 60
+        },
+        "window": {
+          "const": "fixed_monotonic"
+        },
+        "zero_disables": {
+          "const": true
+        },
+        "scope": {
+          "const": "single_process"
+        },
+        "restart": {
+          "const": "reset"
+        },
+        "preflight_charged": {
+          "const": false
+        },
+        "reservation": {
+          "const": "prompt_plus_available_output"
+        },
+        "settlement": {
+          "const": "logical_tokens_in_completion_window"
+        },
+        "pending_survives_window": {
+          "const": true
+        },
+        "fairness_scope": {
+          "const": "prepared_slot_admission"
+        },
+        "preemption": {
+          "const": false
+        },
+        "latency_guarantee": {
+          "const": false
+        }
+      },
+      "required": [
+        "profile",
+        "policy_version",
+        "fair_queue",
+        "window_seconds",
+        "window",
+        "zero_disables",
+        "scope",
+        "restart",
+        "preflight_charged",
+        "reservation",
+        "settlement",
+        "pending_survives_window",
+        "fairness_scope",
+        "preemption",
+        "latency_guarantee"
       ]
     }
   },

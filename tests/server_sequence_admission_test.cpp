@@ -13,6 +13,42 @@ using Queue = q4t::server::SequenceAdmissionQueue;
 using Ticket = Queue::Ticket;
 }  // namespace
 
+Q4T_TEST(admission_client_rotation_and_per_client_oldest_eligible) {
+  Queue queue;
+  queue.ConfigureClients(2);
+  Ticket active(1, 0), a1(1, 0), a2(1, 0), b1(1, 1), b2(1, 1);
+  const std::array free{true};
+  queue.Granted(active);
+  Q4T_CHECK(queue.Enqueue(a1, 4) && queue.Enqueue(a2, 4) &&
+            queue.Enqueue(b1, 4) && queue.Enqueue(b2, 4));
+  for (auto* expected : {&b1, &a1, &b2, &a2}) {
+    Q4T_CHECK(queue.Select(*expected, {}, 8192, free) == 0);
+    queue.Granted(*expected);
+    queue.Remove(*expected);
+  }
+  Q4T_CHECK(queue.Size() == 0);
+  return true;
+}
+
+Q4T_TEST(admission_client_queue_share_cancel_and_idle_work_conservation) {
+  Queue queue;
+  queue.ConfigureClients(2);
+  Ticket a1(9000, 0), a2(1, 0), b1(1, 1), newcomer(1, 0);
+  Q4T_CHECK(queue.Enqueue(a1, 2) && !queue.Enqueue(a2, 2) &&
+            queue.Enqueue(b1, 2));
+  const std::array free{true};
+  Q4T_CHECK(queue.Select(b1, {}, 8192, free) == 0);
+  queue.Granted(b1);
+  queue.Remove(b1);
+  // An ineligible request does not reserve an idle slot for its client.
+  Q4T_CHECK(queue.Select(newcomer, {}, 8192, free) == 0);
+  queue.Remove(a1);
+  Q4T_CHECK(queue.Enqueue(a2, 2) && queue.Enqueue(b1, 2));
+  queue.Remove(a2);  // Cancellation doesn't consume the next client's turn.
+  Q4T_CHECK(queue.Select(b1, {}, 8192, free) == 0);
+  return true;
+}
+
 Q4T_TEST(admission_request_lease_concurrent_count_never_exceeds_bound) {
   std::atomic<int> active{0}, accepted{0};
   std::barrier ready(17), release(17);

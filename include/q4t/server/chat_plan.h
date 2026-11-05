@@ -36,6 +36,8 @@ struct ChatPlanConfig {
   uint64_t cuda_quota_limit_bytes = 0;
   std::string client_policy_sha256;
   size_t client_count = 0;
+  uint32_t client_policy_version = 1;
+  bool client_fair_queue = false;
   const ClientLimits* client_limits = nullptr;
 };
 

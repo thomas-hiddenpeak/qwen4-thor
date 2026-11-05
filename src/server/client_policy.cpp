@@ -29,7 +29,8 @@ bool Fields(const io::Json& value,
   return true;
 }
 
-bool Integer(const io::Json* value, uint32_t maximum, uint32_t* output) {
+bool Integer(const io::Json* value, uint32_t maximum, uint32_t* output,
+             bool allow_zero = false) {
   if (!value || !value->IsNumber() || value->str.empty()) return false;
   for (char c : value->str)
     if (c < '0' || c > '9') return false;
@@ -37,8 +38,8 @@ bool Integer(const io::Json* value, uint32_t maximum, uint32_t* output) {
   const auto result = std::from_chars(
       value->str.data(), value->str.data() + value->str.size(), number);
   if (result.ec != std::errc() ||
-      result.ptr != value->str.data() + value->str.size() || !number ||
-      number > maximum)
+      result.ptr != value->str.data() + value->str.size() ||
+      (!number && !allow_zero) || number > maximum)
     return false;
   *output = number;
   return true;
@@ -57,16 +58,23 @@ bool ValidLimits(const ClientLimits& value) {
          value.max_control_inflight <= 64 && value.max_prompt_tokens >= 1 &&
          value.max_prompt_tokens <= 1048576 && value.max_output_tokens >= 1 &&
          value.max_output_tokens <= 1048576 && value.max_body_bytes >= 1024 &&
-         value.max_body_bytes <= 16 * 1024 * 1024;
+         value.max_body_bytes <= 16 * 1024 * 1024 &&
+         value.requests_per_minute <= 1000000 &&
+         value.tokens_per_minute <= 1000000000;
 }
 
 bool ValidPolicy(const GatewayClientPolicy& policy) {
-  if (!Hex64(policy.gateway_token) || !Hex64(policy.sha256) ||
+  if ((policy.version != 1 && policy.version != 2) ||
+      (policy.version == 1 && policy.fair_queue) ||
+      !Hex64(policy.gateway_token) || !Hex64(policy.sha256) ||
       policy.clients.empty() || policy.clients.size() > kMaxClients)
     return false;
   std::set<std::string> ids;
   for (const auto& limits : policy.clients)
-    if (!ValidLimits(limits) || !ids.insert(limits.id).second) return false;
+    if (!ValidLimits(limits) || !ids.insert(limits.id).second ||
+        (policy.version == 1 &&
+         (limits.requests_per_minute || limits.tokens_per_minute)))
+      return false;
   return true;
 }
 
@@ -93,21 +101,39 @@ Status ParseGatewayClientPolicy(std::string_view raw,
                                    .max_values = 2048,
                                    .max_string_bytes = kClientPolicyBytes,
                                    .reject_duplicate_keys = true};
-  if (!io::ParseJson(std::string(raw), &root, true, limits) ||
-      !Fields(root, {"version", "gateway_token", "clients"}))
-    return Invalid();
+  if (!io::ParseJson(std::string(raw), &root, true, limits)) return Invalid();
   uint32_t version = 0;
-  if (!Integer(root.Find("version"), 1, &version)) return Invalid();
+  if (!Integer(root.Find("version"), 2, &version) ||
+      !(version == 1 ? Fields(root, {"version", "gateway_token", "clients"})
+                     : Fields(root, {"version", "gateway_token", "clients",
+                                     "fair_queue"})))
+    return Invalid();
   GatewayClientPolicy policy;
+  policy.version = version;
+  if (version == 2) {
+    const auto* fair = root.Find("fair_queue");
+    if (!fair || !fair->IsBool()) return Invalid();
+    policy.fair_queue = root.GetBool("fair_queue");
+  }
   policy.gateway_token = root.GetString("gateway_token");
   const auto* clients = root.GetArray("clients");
   if (!clients || clients->array.empty() || clients->array.size() > kMaxClients)
     return Invalid();
   for (const auto& entry : clients->array) {
     ClientLimits value;
-    if (!Fields(entry,
-                {"id", "max_inflight", "max_control_inflight",
-                 "max_prompt_tokens", "max_output_tokens", "max_body_bytes"}))
+    if (!(version == 1
+              ? Fields(entry, {"id", "max_inflight", "max_control_inflight",
+                               "max_prompt_tokens", "max_output_tokens",
+                               "max_body_bytes"})
+              : Fields(entry, {"id", "max_inflight", "max_control_inflight",
+                               "max_prompt_tokens", "max_output_tokens",
+                               "max_body_bytes", "requests_per_minute",
+                               "tokens_per_minute"})))
+      return Invalid();
+    if (version == 2 && (!Integer(entry.Find("requests_per_minute"), 1000000,
+                                  &value.requests_per_minute, true) ||
+                         !Integer(entry.Find("tokens_per_minute"), 1000000000,
+                                  &value.tokens_per_minute, true)))
       return Invalid();
     value.id = entry.GetString("id");
     if (!Integer(entry.Find("max_inflight"), 4096, &value.max_inflight) ||
@@ -167,6 +193,95 @@ Status ClientAdmission::Configure(GatewayClientPolicy policy) {
   if (!ValidPolicy(policy)) return Invalid();
   policy_ = std::move(policy);
   return Status();
+}
+
+bool ClientAdmission::FairCapacity(int inflight, int queued) const {
+  if (!FairQueue()) return true;
+  uint64_t total = 0;
+  for (const auto& client : policy_.clients) total += client.max_inflight;
+  return inflight > 0 && queued >= static_cast<int>(Size()) &&
+         total <= static_cast<uint64_t>(inflight);
+}
+
+void ClientAdmission::Counters::Advance(ClientClock::time_point now) {
+  if (!window_started || now - window >= std::chrono::seconds(60)) {
+    window_started = true;
+    window = now;
+    rate.requests = rate.tokens = 0;
+  }
+}
+
+ClientRateUsage ClientAdmission::RateUsage(size_t index,
+                                           ClientClock::time_point now) const {
+  if (index >= Size()) throw std::out_of_range("client rate index");
+  const auto& counter = counters_[index];
+  const std::lock_guard lock(counter.mutex);
+  auto value = counter.rate;
+  if (!counter.window_started ||
+      now - counter.window >= std::chrono::seconds(60)) {
+    value.requests = value.tokens = 0;
+  } else {
+    value.window_remaining_ms = static_cast<uint64_t>(
+        std::chrono::duration_cast<std::chrono::milliseconds>(
+            counter.window + std::chrono::seconds(60) - now)
+            .count());
+  }
+  return value;
+}
+
+ClientRateResult ClientRateLease::Reserve(ClientAdmission& admission,
+                                          const ClientIdentity& identity,
+                                          uint64_t prompt, uint64_t output,
+                                          ClientClock::time_point now) {
+  if (attempted_) return ClientRateResult::kInvalid;
+  attempted_ = true;
+  if (identity.owner_ != &admission) return ClientRateResult::kInvalid;
+  if (!identity.Scoped())
+    return admission.Enabled() ? ClientRateResult::kInvalid
+                               : ClientRateResult::kAllowed;
+  const auto* limits = identity.limits_;
+  if (identity.index_ >= admission.Size() ||
+      limits != &admission.policy_.clients[identity.index_] ||
+      prompt > limits->max_prompt_tokens || output > limits->max_output_tokens)
+    return ClientRateResult::kInvalid;
+  if (!limits->requests_per_minute && !limits->tokens_per_minute)
+    return ClientRateResult::kAllowed;
+  auto& counter = admission.counters_[identity.index_];
+  const std::lock_guard lock(counter.mutex);
+  counter.Advance(now);
+  auto& rate = counter.rate;
+  if (limits->requests_per_minute &&
+      rate.requests >= limits->requests_per_minute) {
+    ++rate.rpm_rejected;
+    return ClientRateResult::kRpm;
+  }
+  const uint64_t amount = prompt + output;
+  if (limits->tokens_per_minute &&
+      rate.tokens + rate.reserved + amount > limits->tokens_per_minute) {
+    ++rate.tpm_rejected;
+    return ClientRateResult::kTpm;
+  }
+  ++rate.requests;
+  ++rate.admitted;
+  rate.reserved += amount;
+  counters_ = &counter;
+  prompt_ = prompt;
+  reserved_ = amount;
+  return ClientRateResult::kAllowed;
+}
+
+void ClientRateLease::Settle(ClientClock::time_point now) noexcept {
+  if (!counters_) return;
+  const std::lock_guard lock(counters_->mutex);
+  counters_->Advance(now);
+  // Charge observed logical usage even if a handler ever exceeds its budget.
+  // Such a bug must not silently turn into unaccounted tokens.
+  const uint64_t actual = started_ ? prompt_ + completion_ : 0;
+  auto& rate = counters_->rate;
+  rate.reserved -= reserved_;
+  rate.tokens += actual;
+  rate.settled_tokens += actual;
+  counters_ = nullptr;
 }
 
 ClientIdentity ClientAdmission::Authenticate(
@@ -273,9 +388,46 @@ std::string ClientPolicyMetrics(const ClientAdmission& admission) {
          "gauge");
   header("q4t_client_capacity_rejected_total", "Client quota refusals.",
          "counter");
+  header("q4t_client_rate_requests", "Accepted chats in current fixed window.",
+         "gauge");
+  header("q4t_client_rate_tokens", "Settled tokens in current fixed window.",
+         "gauge");
+  header("q4t_client_rate_reserved_tokens", "Outstanding token reservations.",
+         "gauge");
+  header("q4t_client_rate_window_remaining_ms",
+         "Fixed window remaining milliseconds.", "gauge");
+  header("q4t_client_rate_admitted_total",
+         "Chats accepted by enabled rate policy.", "counter");
+  header("q4t_client_rate_settled_tokens_total",
+         "Logical tokens settled since startup.", "counter");
+  header("q4t_client_rate_rejected_total", "Minute quota refusals by reason.",
+         "counter");
+  header("q4t_client_rate_limit", "Configured minute quota; zero disables.",
+         "gauge");
   for (size_t i = 0; i < admission.Size(); ++i) {
     const auto& limits = admission.Limits(i);
     const auto usage = admission.Usage(i);
+    const auto rate = admission.RateUsage(i);
+    const auto client_label = "{client=\"" + limits.id + "\"} ";
+    const auto gauge = [&](const char* name, uint64_t value) {
+      out += std::string(name) + client_label + std::to_string(value) + '\n';
+    };
+    gauge("q4t_client_rate_requests", rate.requests);
+    gauge("q4t_client_rate_tokens", rate.tokens);
+    gauge("q4t_client_rate_reserved_tokens", rate.reserved);
+    gauge("q4t_client_rate_window_remaining_ms", rate.window_remaining_ms);
+    gauge("q4t_client_rate_admitted_total", rate.admitted);
+    gauge("q4t_client_rate_settled_tokens_total", rate.settled_tokens);
+    for (bool tpm : {false, true}) {
+      const auto labels = "{client=\"" + limits.id + "\",kind=\"" +
+                          (tpm ? "tpm" : "rpm") + "\"} ";
+      out += "q4t_client_rate_rejected_total" + labels +
+             std::to_string(tpm ? rate.tpm_rejected : rate.rpm_rejected) + '\n';
+      out += "q4t_client_rate_limit" + labels +
+             std::to_string(tpm ? limits.tokens_per_minute
+                                : limits.requests_per_minute) +
+             '\n';
+    }
     for (const bool control : {false, true}) {
       const auto labels = "{client=\"" + limits.id + "\",lane=\"" +
                           (control ? "control" : "data") + "\"} ";

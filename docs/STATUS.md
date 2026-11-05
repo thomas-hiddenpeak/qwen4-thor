@@ -41,6 +41,19 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+[RPM/TPM与客户端公平准入已完成有界交付](SERVE_CLIENT_GOVERNANCE_DELIVERY_2026-11-05.md)：
+默认c1bdb0a7/sidecar0efc2c0d、协议9c8758c4，精确父pair a56bd448/
+914e067f及依赖保留。v2可选分钟预留/结算、准备后轮转与等槽份额，
+不传策略默认关闭。303公共host/269必需/9结构化、24 Python复用，
+新增6驱动合同及同ELF无策略JSON/SSE通过；累计3模型18尝试、14完整
+响应/2真实资料工具、2取消/2配额拒绝，GPU租约197.303秒。
+最终COMPLETED、进程/端口/GPU/原锁释放，恢复单元masked、容器空。
+110原件/118引用与原415原件/506引用独立重建，原失败不改写。
+主线入口[PR #12](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/12)；
+不再扩工业化。旧托管包41dc8fdb、
+持久任务/Key/day保持原身份，不自动兼容新协议；长稳仍由用户执行。
+准备/GPU时间/SLO公平、分布式计费、实际LAN及整机物理RAM不作接受。
+
 用户授权按[有界交付队列](SERVE_BOUNDED_DELIVERY_2026-11-05.md)继续：
 先部署/资源组合，再单进程配额与公平；全物理RAM另给可行性结论。
 PR #10已合入main c9759954，两项host检查通过，合并树与3fef5671相同。
@@ -50,7 +63,7 @@ PR #10已合入main c9759954，两项host检查通过，合并树与3fef5671相�
 限制下一块，未触发30GiB退场，明确NO_GO_MEMORY_STOP_COMBINATION。
 两轮FAILED与2截断流保留，不再追加模型；169记录独立重建，累计2启动/
 106.274秒受监控锁，自有服务/GPU/原锁释放。c1653470不提升为已接受包，
-继续使用41dc8fdb；下一项独立开发为RPM/TPM及准入公平，尚未开始。
+继续使用41dc8fdb；RPM/TPM及准入公平现按上方独立合同开发。
 [物理RAM审查](SERVE_PHYSICAL_RAM_DECISION_2026-11-05.md)
 以NO_GO_CURRENT_CONTRACT结束本轮可行性关卡。长稳由用户负责，实际LAN/正式
 通知选择启用时验收，既有默认与回退包不变。下方暂停描述为历史边界。
