@@ -20,11 +20,14 @@ save, sha = legacy.save, legacy.sha
 
 
 def validate(plan):
+    resumed = 'reused_plain' in plan
     if (plan['stage'] != 'QUANTIZED_HEAD_FEASIBILITY' or
             [s['head'] for s in plan['steps']] !=
-            ['plain', 'full', 'nvfp4', 'subset'] or
-            (plan['http_requests'], plan['http_loads'],
-             plan['stage_timeout_seconds']) != (56, 4, 1800)):
+            (['full', 'nvfp4', 'subset'] if resumed else
+             ['plain', 'full', 'nvfp4', 'subset']) or
+            (plan['http_requests'], plan['http_loads']) !=
+            ((42, 3) if resumed else (56, 4)) or
+            not 0 < plan['stage_timeout_seconds'] <= 1800):
         raise ValueError('frozen feasibility scope')
     if time.time() >= plan['task_deadline_unix']:
         raise TimeoutError('frozen deadline')
@@ -153,19 +156,28 @@ def audit_server(out, expected):
              if line.startswith('[q4t][cuda-quota] ') and
              '"event":"server_destroyed"' in line]
     if (len(quota) != 1 or quota[0]['poisoned'] or any(quota[0][key] != 0 for key
-            in ('live_bytes', 'charged_bytes', 'pending_bytes', 'unknown_bytes',
-                'entries', 'contract_failures', 'backend_failures'))):
-        raise RuntimeError('CUDA ownership did not drain')
-    save(out / 'server-audit.json', dict(admitted=admitted, ended=ended,
-         quota=quota[0], allocation_mode='off'))
+            in ('pending_bytes', 'unknown_bytes', 'contract_failures',
+                'backend_failures')) or
+            quota[0]['charged_bytes'] != quota[0]['live_bytes']):
+        raise RuntimeError('CUDA quota accounting failure')
+    # Global operator caches outlive ChatServer in the accepted parent too.
+    # This receipt is not a process-exit sample or a proof that live==0.
+    # Preserve the values; process exit plus the outer NVML guard establishes
+    # release of the process's GPU context. Never rewrite reused raw evidence.
+    return dict(admitted=admitted, ended=ended, quota=quota[0],
+                allocation_mode='off', all_cuda_freed_before_process_exit=False)
 
 
 def analyze(plan):
     result = dict(arms={}, performance_accepted=False,
                   statistics='DESCRIPTIVE_SINGLE_START_NOT_NONINFERIORITY')
     full = None
-    for step in plan['steps']:
-        out = Path(plan['output']) / step['name']
+    steps = list(plan['steps'])
+    if 'reused_plain' in plan:
+        steps.insert(0, dict(head='plain', name='00-plain'))
+    for step in steps:
+        out = (Path(plan['reused_plain']) if step['head'] == 'plain' and
+               'reused_plain' in plan else Path(plan['output']) / step['name'])
         audit_server(out, 14)
         cases = json.loads((out / 'results.json').read_text())
         rows = cases[0]['rows']

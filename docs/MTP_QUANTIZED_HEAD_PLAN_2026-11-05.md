@@ -42,6 +42,10 @@ cubin、或该 shape 在 Thor 已测快的证明。本阶段实现小范围原�
 4. 目标验证 head 保持 BF16，所有最终 token 必须仍通过现有验证。
    HTTP 质量、完整输出及 greedy 对照独立检查；不能凭“目标没改”
    忽略近 tie、实际形状、状态或输出差异。
+5. 量化候选首个HTTP请求前复查并补齐：MtpDraftExtend预填充只消费
+   最后一行logits，显式跳过整批head并调用单行量化head；普通
+   MtpForward仍返回调用者需要的全部行。chunked与单chunk两个入口
+   均处理，已有BF16两路径保持。量化kernel每行归约不依赖M。
 
 ## 资源合同
 
@@ -67,8 +71,18 @@ BF16 subset。每臂再跑同一既有 11 题质量集；上限 4 次模型加�
 命令、模型/ELF/工具身份在执行前写入机器可读 plan。
 四臂统一 `--startup-plan off`，max_seq=1/max_prefill=8192/max_len=208896；
 量化加载尚未接入预留计划，不能让父侧预留、候选侧自动回退造成
-启动分配路径混杂。进程CUDA配额和内存预算保持启用，退出检查配额
-live/charged/pending/unknown 全归零；此关卡不验收 auto/required 组合。
+启动分配路径混杂。进程CUDA配额和内存预算保持启用。初版要求
+server_destroyed时live/charged全归零，首个父plain组实测后发现
+该断言错误：已接受父版14请求成功退出，但记录200953856 bytes、
+8项live，pending/unknown/失败计数均0。现有进程级算子缓存会晚于
+ChatServer存活，不能把该采样点当进程退出；也不把全部live字节
+未经归属审计就称为缓存。修正为检查计费一致、无未知/待定/失败，
+原值保留；另以进程退出和外层NVML确认上下文释放。不宣称析构前
+全部CUDA分配释放；此关卡不验收auto/required组合。
+
+原run维持STOPPED/COMMAND_FAILED，14有效HTTP只读复用，不追认为
+整阶段成功。剩余3模型/42HTTP使用新目录、原绝对截止时间和总56
+请求上限；量化候选此前0请求，补齐预填充入口后重新冻结ELF。
 
 - 输出/质量失败：保留首次失败，停止性能接受；只有具体缺陷才做
   一次有界定位，未授权的额外模型请求不自动追加。

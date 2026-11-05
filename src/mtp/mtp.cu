@@ -963,7 +963,14 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
       s = MtpForward(m, d_ids, d_pos,
                      main_trunk + static_cast<size_t>(base) * hc_dim, d_sample,
                      d_multi, last ? d_logits : nullptr, c, stream, d_seqid,
-                     last, -1, m.max_seq > 1 && c > 4 ? seq_id : -1);
+                     last && !m.cfg.quantized_head, -1,
+                     m.max_seq > 1 && c > 4 ? seq_id : -1);
+      if (!s.ok()) return cleanup(s);
+    }
+    if (m.cfg.quantized_head) {
+      s = QuantizedHeadForward(
+          m.quantized_head, d_sample + static_cast<size_t>(last_c - 1) * hs,
+          d_logits + static_cast<size_t>(last_c - 1) * vocab, 1, stream);
       if (!s.ok()) return cleanup(s);
     }
     // out_g = last row's multi_hidden (draft trunk g_{last}).
@@ -1054,9 +1061,18 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
   }
 
   Status s = MtpForward(m, d_ids, d_pos, main_trunk, d_sample, d_multi,
-                        d_logits, T, stream, d_seqid, finalize, -1,
+                        d_logits, T, stream, d_seqid,
+                        finalize && !m.cfg.quantized_head, -1,
                         m.max_seq > 1 && T > 4 ? seq_id : -1);
   if (!s.ok() || (!finalize && !capture_g)) return cleanup(s);
+  // Only the final row is consumed below. The row-independent NVFP4 kernel
+  // would otherwise re-read the packed head for every prefill token.
+  if (finalize && m.cfg.quantized_head) {
+    s = QuantizedHeadForward(
+        m.quantized_head, d_sample + static_cast<size_t>(T - 1) * hs,
+        d_logits + static_cast<size_t>(T - 1) * vocab, 1, stream);
+    if (!s.ok()) return cleanup(s);
+  }
 
   // out_g = last row's multi_hidden (draft trunk g_{last}).
   if (ObserveExecution("mtp.api.prompt_out_g_d2d", [&] {
