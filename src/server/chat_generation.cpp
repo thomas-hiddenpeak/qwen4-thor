@@ -136,10 +136,19 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   // Outlives request/grammar/response buffers; release only after cleanup.
   StructuredRequestLease structured_lease(structured_admission_,
                                            metrics_.structured_active);
+  ClientRateLease rate_lease;
+  struct TerminalLeases {
+    StructuredRequestLease& structured;
+    ClientRateLease& rate;
+  } terminal_leases{structured_lease, rate_lease};
   if (http)
-    http->SetBeforeTerminal([](void* lease) noexcept {
-      static_cast<StructuredRequestLease*>(lease)->BeginHandoff();
-    }, &structured_lease);
+    http->SetBeforeTerminal(
+        [](void* lease) noexcept {
+          auto& leases = *static_cast<TerminalLeases*>(lease);
+          leases.rate.Settle();
+          leases.structured.BeginHandoff();
+        },
+        &terminal_leases);
   ScopeExit clear_terminal_hook([&] {
     if (http) http->SetBeforeTerminal(nullptr, nullptr);
   });
@@ -329,6 +338,18 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         SendError(fd, 400, s.message(), {}, planning_error.code,
                   planning_error.param);
       }
+      return;
+    }
+    const auto result = rate_lease.Reserve(
+        clients_, http->Client(), prompt_u32.size(),
+        static_cast<uint64_t>(prompt_budget.available_output));
+    if (result != ClientRateResult::kAllowed) {
+      const char* code =
+          result == ClientRateResult::kRpm   ? "client_rpm_exhausted"
+          : result == ClientRateResult::kTpm ? "client_tpm_exhausted"
+                                             : "client_rate_invalid";
+      SendError(fd, result == ClientRateResult::kInvalid ? 500 : 429,
+                "client minute quota unavailable", {}, code);
       return;
     }
   }
@@ -593,6 +614,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     return;
   }
   diagnostic.Admitted(seq_id);
+  rate_lease.Start();
   const int request_capacity = model_.Get().cfg.Capacity(seq_id);
   if (explicit_slots)
     std::fprintf(stderr,
@@ -1535,6 +1557,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       if (!mtp_sched) break;
       if (is_stop_token(mtp_b)) {
         generated.push_back(mtp_b);
+        rate_lease.Completion(generated.size());
         finish_reason = "stop";
         break;
       }
@@ -1606,6 +1629,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
            ++i) {
         const int32_t tok_id = mtp_ar.mtp_accepted[i];
         generated.push_back(tok_id);
+        rate_lease.Completion(generated.size());
         if (!consume_token(tok_id)) {
           if (text_stop.Matched())
             stop_mtp_discarded = mtp_ar.mtp_accepted_count - i - 1;
@@ -1796,6 +1820,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
          step < max_tokens; ++step) {
       if (cancelled() || !response_status) break;
       generated.push_back(next_token);
+      rate_lease.Completion(generated.size());
       if (is_stop_token(next_token)) {
         finish_reason = "stop";
         break;

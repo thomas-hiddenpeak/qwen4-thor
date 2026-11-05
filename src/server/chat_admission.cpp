@@ -8,7 +8,9 @@ int ChatServer::AllocSeqId(RequestControl* control, int fd, size_t required) {
   // Destruction order: unlink ticket, notify successors, then unlock. Every
   // return/exception removes exactly this waiter without allocating storage.
   ScopeExit notify([&] { seq_cv_.notify_all(); });
-  SequenceAdmissionQueue::Ticket ticket(required);
+  const auto* http = detail::HttpResponseContext::Current(fd);
+  SequenceAdmissionQueue::Ticket ticket(
+      required, http ? http->Client().Index() : kMaxClients);
   for (;;) {
     if (seq_stopping_) {
       // Use the cancellation path for both the response and abort accounting.
@@ -27,6 +29,7 @@ int ChatServer::AllocSeqId(RequestControl* control, int fd, size_t required) {
       return memory.state == MemoryState::kLow ? -5 : -6;
     if (slot >= 0) {
       seq_free_[slot] = false;
+      seq_waiters_.Granted(ticket);
       return slot;
     }
     if (!ticket.Queued()) {

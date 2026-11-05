@@ -380,10 +380,18 @@ Status ChatServer::Start(const ServerOptions& opts) {
   max_seq_ = eff_max_seq;
   s = ResolveAdmissionLimits(opts, max_seq_, &admission_limits_);
   if (!s.ok()) return s;
+  if (!clients_.FairCapacity(admission_limits_.inflight,
+                             admission_limits_.queued))
+    return Status::Fail(
+        "fair queue requires queue >= clients and total client "
+        "inflight <= global inflight");
+  if (clients_.FairQueue()) seq_waiters_.ConfigureClients(clients_.Size());
   std::fprintf(stderr,
                "[q4t][admission] inflight=%d queued=%d "
-               "policy=capacity_fifo_best_fit\n",
-               admission_limits_.inflight, admission_limits_.queued);
+               "policy=%s\n",
+               admission_limits_.inflight, admission_limits_.queued,
+               clients_.FairQueue() ? "client_round_robin_best_fit"
+                                    : "capacity_fifo_best_fit");
   cfg.max_seq = max_seq_;
   cfg.seq_capacities = opts.seq_capacities;
   seq_capacities_ = opts.seq_capacities;

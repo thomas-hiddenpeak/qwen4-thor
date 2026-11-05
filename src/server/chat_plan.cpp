@@ -215,7 +215,12 @@ Status ChatPreflightJson(const io::Json& envelope, const ChatPlanConfig& config,
     out += R"(,"client_limits":{"max_prompt_tokens":)" +
            std::to_string(config.client_limits->max_prompt_tokens) +
            R"(,"max_output_tokens":)" +
-           std::to_string(config.client_limits->max_output_tokens) + '}';
+           std::to_string(config.client_limits->max_output_tokens) +
+           R"(,"requests_per_minute":)" +
+           std::to_string(config.client_limits->requests_per_minute) +
+           R"(,"tokens_per_minute":)" +
+           std::to_string(config.client_limits->tokens_per_minute) +
+           R"(,"rate_quota_reserved":false})";
   }
   // Compute the escaped size before allocating it. The optional preview has
   // a hard response bound, not silent truncation or an unbounded token array.
@@ -278,6 +283,18 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
          std::to_string(config.client_count) +
          R"(,"namespace":"client_id","credential_values_redacted":true,)"
          R"("mutable":false,"per_client_ram_limit":false},)"
+         R"("client_governance":{"profile":"q4t-client-governance-v1",)"
+         R"("policy_version":)" +
+         std::to_string(config.client_policy_version) + R"(,"fair_queue":)" +
+         Bool(config.client_fair_queue) +
+         R"(,"window_seconds":60,"window":"fixed_monotonic",)"
+         R"("zero_disables":true,"scope":"single_process",)"
+         R"("restart":"reset","preflight_charged":false,)"
+         R"("reservation":"prompt_plus_available_output",)"
+         R"("settlement":"logical_tokens_in_completion_window",)"
+         R"("pending_survives_window":true,)"
+         R"("fairness_scope":"prepared_slot_admission",)"
+         R"("preemption":false,"latency_guarantee":false},)"
          R"("listeners":{"public":{"host":)" +
          Quote(requested.host) + R"(,"port":)" +
          std::to_string(requested.port) +
@@ -395,8 +412,10 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
          R"("active_generation":"continue","hard_limit":false},)"
          R"("limits":{"text_requests":)" +
          std::to_string(config.admission.inflight) + R"(,"queued_requests":)" +
-         std::to_string(config.admission.queued) +
-         R"(,"queue_policy":"capacity_fifo_best_fit",)"
+         std::to_string(config.admission.queued) + R"(,"queue_policy":)" +
+         Quote(config.client_fair_queue ? "client_round_robin_best_fit"
+                                        : "capacity_fifo_best_fit") +
+         ',' +
          R"("queue_order":"slot_admission_arrival",)"
          R"("queue_excludes_preparation":true)" +
          R"(,"preflight_shares_text_admission":true,"business_connections":)" +

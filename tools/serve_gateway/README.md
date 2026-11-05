@@ -137,3 +137,31 @@ cancel）走该端口，Chat/preflight仍走业务端口；路由只由固定方
 监听属于同一进程，每轮依赖检查也核对运维socket。旧包及省略该字段
 的配置不自动升级。具体开发和短验边界见
 [SRV-12g](../../docs/SERVE_OPERATIONS_LISTENER_2026-11-04.md)。
+
+
+## 可选 RPM/TPM 与准备后公平准入
+
+原生 runner 的私有 client policy 可选择 `version: 2`，在根节点加入
+`"fair_queue": true`（或 false），每个 client 加入整数
+`requests_per_minute` 与 `tokens_per_minute`，0 关闭对应分钟配额。
+v1 文件继续按原严格格式解析，不能直接加入 v2 字段。Key 与私有文件
+权限规则保持；配置只在重启后生效，分钟账也在进程重启时清零。
+
+分钟额度使用每身份60秒单调时钟固定窗口，不是任意滚动60秒上限。
+Chat 在模板分词后、SSE/grammar 前预留1请求及完整 prompt+可输出
+预算；拒绝返回429和 `client_rpm_exhausted` / `client_tpm_exhausted`。
+取消不退 RPM；槽位未获准则全退 token，获准后结算完整 prompt 和
+实际逻辑输出。跨窗未完成预留保留，结算计入完成窗。preflight 与
+控制请求不计分钟账，也不预留将来额度。网关原有 RPS 限制仍独立适用。
+
+`fair_queue` 开启后，client.max_inflight 总和须不超过全局
+`--max-inflight-requests`，`--max-queued-requests` 须至少为 client 数量。
+每身份最多等待 floor(全局队列/client数) 项；准备完成的请求按身份
+轮转、身份内按最老可容纳请求、槽位 best-fit 准入。不会抢占活跃请求，
+不保证准备阶段或 GPU 时间公平；不配置 policy 时仍是原全局 FIFO。
+
+`/v1/config` 与 `/v1/capabilities` 的 `client_governance` 声明合同；
+preflight 只返回当前身份限额，`q4t_client_rate_*` 指标使用固定配置
+身份标签。不要把分钟账用于跨实例计费或推断精确重试时间。
+[开发和短验范围](../../docs/SERVE_CLIENT_GOVERNANCE_2026-11-05.md)列明接受边界。
+旧已验托管包与持久任务继续固定原身份；此功能不自动升级它们。

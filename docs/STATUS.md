@@ -41,6 +41,12 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+用户继续授权[RPM/TPM与客户端公平准入](SERVE_CLIENT_GOVERNANCE_2026-11-05.md)：
+现冻结v2可选策略、60秒固定窗口预留/结算、准备后轮转与每client等槽
+额度；默认关闭，零警告构建、303公共host/269必需/9结构化及21 Python
+检查通过；同锁2启动/24生成/480秒GPU短验待执行，尚无业务接受。
+PR #11已合入main40eefd06；旧内存退场NO_GO、默认及旧包保持。
+
 用户授权按[有界交付队列](SERVE_BOUNDED_DELIVERY_2026-11-05.md)继续：
 先部署/资源组合，再单进程配额与公平；全物理RAM另给可行性结论。
 PR #10已合入main c9759954，两项host检查通过，合并树与3fef5671相同。
@@ -50,7 +56,7 @@ PR #10已合入main c9759954，两项host检查通过，合并树与3fef5671相�
 限制下一块，未触发30GiB退场，明确NO_GO_MEMORY_STOP_COMBINATION。
 两轮FAILED与2截断流保留，不再追加模型；169记录独立重建，累计2启动/
 106.274秒受监控锁，自有服务/GPU/原锁释放。c1653470不提升为已接受包，
-继续使用41dc8fdb；下一项独立开发为RPM/TPM及准入公平，尚未开始。
+继续使用41dc8fdb；RPM/TPM及准入公平现按上方独立合同开发。
 [物理RAM审查](SERVE_PHYSICAL_RAM_DECISION_2026-11-05.md)
 以NO_GO_CURRENT_CONTRACT结束本轮可行性关卡。长稳由用户负责，实际LAN/正式
 通知选择启用时验收，既有默认与回退包不变。下方暂停描述为历史边界。

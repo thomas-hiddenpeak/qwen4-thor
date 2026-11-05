@@ -57,6 +57,35 @@ class Clients(unittest.TestCase):
         with self.assertRaises(ValueError):
             cp.validate(p)
 
+    def test_v2_optional_rates_strict_and_version_binding(self):
+        value = copy.deepcopy(self.p)
+        value.update(version=2, fair_queue=True)
+        for client in value['clients']:
+            client.update(requests_per_minute=0, tokens_per_minute=1000)
+        raw = json.dumps(value).encode()
+        self.assertEqual(cp.parse(raw), value)
+        self.assertNotEqual(cp.binding(raw), cp.binding(self.path.read_bytes()))
+        for field, bad in [('requests_per_minute', -1), ('requests_per_minute', True),
+                           ('requests_per_minute', 1000001), ('tokens_per_minute', 1.0),
+                           ('tokens_per_minute', 1000000001), ('tokens_per_minute', None)]:
+            wrong = copy.deepcopy(value)
+            wrong['clients'][0][field] = bad
+            with self.assertRaises(ValueError):
+                cp.validate(wrong)
+        for wrong in [dict(value, version=1), dict(value, fair_queue=1),
+                      {k: v for k, v in value.items() if k != 'fair_queue'}]:
+            with self.assertRaises(ValueError):
+                cp.validate(wrong)
+        self.path.write_bytes(raw)
+        cert, key = certificate(self.root)
+        front = self.root/'gateway.json'
+        front.write_text(json.dumps(example()))
+        front.chmod(0o600)
+        receipt = g.prepare(front, pkg.read(VENDOR)['binary'], cert, key,
+                            self.root/'v2-gateway', self.path)
+        manifest = g.check(receipt['package'], receipt['manifest_sha256'])
+        self.assertEqual(manifest['client_policy'], cp.binding(raw))
+
     def test_private_file_and_raw_digest_binding(self):
         raw, _ = cp.read(self.path)
         self.assertNotEqual(cp.binding(raw), cp.binding(raw+b'\n'))

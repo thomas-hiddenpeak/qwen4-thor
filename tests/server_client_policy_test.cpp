@@ -40,6 +40,18 @@ bool Configure(ClientAdmission* admission) {
   return ParseGatewayClientPolicy(Policy(), &policy) &&
          admission->Configure(std::move(policy));
 }
+GatewayClientPolicy RatePolicy(uint32_t rpm, uint32_t tpm, bool fair = true) {
+  GatewayClientPolicy policy;
+  if (!ParseGatewayClientPolicy(Policy(), &policy))
+    throw std::runtime_error("rate policy fixture");
+  policy.version = 2;
+  policy.fair_queue = fair;
+  for (auto& client : policy.clients) {
+    client.requests_per_minute = rpm;
+    client.tokens_per_minute = tpm;
+  }
+  return policy;
+}
 std::string Replace(std::string value, const std::string& old,
                     const std::string& replacement) {
   const auto pos = value.find(old);
@@ -116,6 +128,213 @@ std::string Wire(const std::string& headers,
          "Content-Length: 2\r\n\r\n{}";
 }
 }  // namespace
+
+Q4T_TEST(client_rate_policy_v2_strict_and_v1_unchanged) {
+  auto v2 =
+      Replace(Policy(), "\"version\":1", "\"version\":2,\"fair_queue\":true");
+  const auto field = std::string("\"max_body_bytes\":1024");
+  size_t at = 0;
+  while ((at = v2.find(field, at)) != v2.npos) {
+    at += field.size();
+    const std::string rates =
+        ",\"requests_per_minute\":0,\"tokens_per_minute\":100";
+    v2.insert(at, rates);
+    at += rates.size();
+  }
+  GatewayClientPolicy parsed;
+  Q4T_CHECK(ParseGatewayClientPolicy(v2, &parsed));
+  Q4T_CHECK(parsed.version == 2 && parsed.fair_queue &&
+            parsed.clients[0].tokens_per_minute == 100);
+  const auto hash = parsed.sha256;
+  for (const auto& raw :
+       {Replace(v2, "\"fair_queue\":true", "\"fair_queue\":1"),
+        Replace(v2, "\"version\":2", "\"version\":1"),
+        Replace(v2, "\"requests_per_minute\":0", "\"requests_per_minute\":-1"),
+        Replace(v2, "\"requests_per_minute\":0", "\"requests_per_minute\":1.0"),
+        Replace(v2, "\"requests_per_minute\":0",
+                "\"requests_per_minute\":1000001"),
+        Replace(v2, "\"tokens_per_minute\":100",
+                "\"tokens_per_minute\":1000000001"),
+        Replace(v2, "\"tokens_per_minute\":100",
+                "\"tokens_per_minute\":null")}) {
+    Q4T_CHECK(!ParseGatewayClientPolicy(raw, &parsed) && parsed.sha256 == hash);
+  }
+  Q4T_CHECK(ParseGatewayClientPolicy(Policy(), &parsed));
+  Q4T_CHECK(parsed.version == 1 && !parsed.fair_queue &&
+            parsed.clients[0].tokens_per_minute == 0);
+  return true;
+}
+
+Q4T_TEST(client_rate_atomic_concurrency_and_per_client_isolation) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(RatePolicy(4, 128)));
+  const auto alpha = admission.Authenticate("alpha", kSecret);
+  const auto now = ClientClock::now();
+  std::atomic<int> accepted{0};
+  std::barrier ready(17), release(17);
+  std::vector<std::thread> threads;
+  for (int i = 0; i < 16; ++i)
+    threads.emplace_back([&] {
+      ClientRateLease lease;
+      if (lease.Reserve(admission, alpha, 16, 16, now) ==
+          ClientRateResult::kAllowed)
+        ++accepted;
+      ready.arrive_and_wait();
+      release.arrive_and_wait();
+    });
+  ready.arrive_and_wait();
+  const auto full = admission.RateUsage(0, now);
+  ClientRateLease beta;
+  const auto separate = beta.Reserve(
+      admission, admission.Authenticate("beta", kSecret), 16, 16, now);
+  release.arrive_and_wait();
+  for (auto& thread : threads) thread.join();
+  Q4T_CHECK(accepted == 4 && full.reserved == 128 && full.requests == 4);
+  Q4T_CHECK(separate == ClientRateResult::kAllowed);
+  const auto ended = admission.RateUsage(0, now);
+  Q4T_CHECK(ended.reserved == 0 && ended.tokens == 0 && ended.requests == 4 &&
+            ended.rpm_rejected == 12);
+  return true;
+}
+
+Q4T_TEST(client_rate_refund_cancel_failure_and_preterminal_idempotence) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(RatePolicy(10, 100)));
+  const auto alpha = admission.Authenticate("alpha", kSecret);
+  const auto now = ClientClock::now();
+  ClientRateLease first, rejected;
+  Q4T_CHECK(first.Reserve(admission, alpha, 50, 16, now) ==
+            ClientRateResult::kAllowed);
+  Q4T_CHECK(rejected.Reserve(admission, alpha, 50, 16, now) ==
+            ClientRateResult::kTpm);
+  first.Start();
+  first.Completion(3);
+  first.Settle(now);
+  first.Settle(now);
+  auto value = admission.RateUsage(0, now);
+  Q4T_CHECK(value.tokens == 53 && value.reserved == 0 && value.requests == 1 &&
+            value.tpm_rejected == 1);
+  try {
+    ClientRateLease queued;
+    Q4T_CHECK(queued.Reserve(admission, alpha, 20, 16, now) ==
+              ClientRateResult::kAllowed);
+    throw std::runtime_error("cancel or exception before slot");
+  } catch (const std::runtime_error&) {
+  }
+  value = admission.RateUsage(0, now);
+  Q4T_CHECK(value.tokens == 53 && value.reserved == 0 && value.requests == 2);
+  {
+    ClientRateLease running;
+    Q4T_CHECK(running.Reserve(admission, alpha, 20, 16, now) ==
+              ClientRateResult::kAllowed);
+    running.Start();
+    running.Completion(7);
+  }
+  value = admission.RateUsage(0, now);
+  Q4T_CHECK(value.tokens == 80 && value.settled_tokens == 80 &&
+            value.requests == 3);
+  return true;
+}
+
+Q4T_TEST(client_rate_pending_survives_window_and_settles_in_current_window) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(RatePolicy(1, 100)));
+  const auto alpha = admission.Authenticate("alpha", kSecret);
+  const auto now = ClientClock::now();
+  ClientRateLease old;
+  Q4T_CHECK(old.Reserve(admission, alpha, 60, 16, now) ==
+            ClientRateResult::kAllowed);
+  ClientRateLease early, blocked, next;
+  Q4T_CHECK(
+      early.Reserve(admission, alpha, 10, 10, now + std::chrono::seconds(59)) ==
+      ClientRateResult::kRpm);
+  const auto later = now + std::chrono::seconds(60);
+  Q4T_CHECK(admission.RateUsage(0, later).reserved == 76);
+  Q4T_CHECK(blocked.Reserve(admission, alpha, 20, 16, later) ==
+            ClientRateResult::kTpm);
+  old.Start();
+  old.Completion(4);
+  old.Settle(later);
+  Q4T_CHECK(admission.RateUsage(0, later).tokens == 64);
+  Q4T_CHECK(next.Reserve(admission, alpha, 20, 16, later) ==
+            ClientRateResult::kAllowed);
+  next.Settle(later);
+  Q4T_CHECK(admission.RateUsage(0, later).tokens == 64 &&
+            admission.RateUsage(0, later).requests == 1);
+  return true;
+}
+
+Q4T_TEST(client_rate_disabled_restart_authentication_and_fair_capacity) {
+  ClientAdmission disabled, fresh;
+  Q4T_CHECK(disabled.Configure(RatePolicy(0, 0)) &&
+            fresh.Configure(RatePolicy(1, 100)));
+  ClientRateLease no_rate, invalid, wrong, valid;
+  Q4T_CHECK(no_rate.Reserve(disabled, disabled.Authenticate("alpha", kSecret),
+                            10, 5) == ClientRateResult::kAllowed);
+  Q4T_CHECK(disabled.RateUsage(0).admitted == 0);
+  Q4T_CHECK(invalid.Reserve(fresh, {}, 10, 5) == ClientRateResult::kInvalid);
+  Q4T_CHECK(wrong.Reserve(fresh, disabled.Authenticate("alpha", kSecret), 10,
+                          5) == ClientRateResult::kInvalid);
+  Q4T_CHECK(fresh.RateUsage(0).requests == 0 &&
+            valid.Reserve(fresh, fresh.Authenticate("alpha", kSecret), 10, 5) ==
+                ClientRateResult::kAllowed);
+  Q4T_CHECK(fresh.FairCapacity(4, 2) && !fresh.FairCapacity(3, 2) &&
+            !fresh.FairCapacity(4, 1));
+  return true;
+}
+
+Q4T_TEST(client_rate_tpm_only_atomic_and_restart_reset) {
+  ClientAdmission first;
+  Q4T_CHECK(first.Configure(RatePolicy(0, 32)));
+  const auto alpha = first.Authenticate("alpha", kSecret);
+  std::barrier ready(17), release(17);
+  std::atomic<int> accepted{0};
+  std::vector<std::thread> threads;
+  for (int i = 0; i < 16; ++i)
+    threads.emplace_back([&] {
+      ClientRateLease lease;
+      if (lease.Reserve(first, alpha, 16, 16) == ClientRateResult::kAllowed)
+        ++accepted;
+      ready.arrive_and_wait();
+      release.arrive_and_wait();
+    });
+  ready.arrive_and_wait();
+  const auto full = first.RateUsage(0);
+  release.arrive_and_wait();
+  for (auto& thread : threads) thread.join();
+  Q4T_CHECK(accepted == 1 && full.reserved == 32 && full.tpm_rejected == 15);
+  ClientAdmission restarted;
+  Q4T_CHECK(restarted.Configure(RatePolicy(0, 32)));
+  Q4T_CHECK(restarted.RateUsage(0).admitted == 0 &&
+            first.RateUsage(0).admitted == 1);
+  ClientRateLease fresh;
+  Q4T_CHECK(fresh.Reserve(restarted, restarted.Authenticate("alpha", kSecret),
+                          16, 16) == ClientRateResult::kAllowed);
+  fresh.Start();
+  fresh.Completion(2);
+  fresh.Settle();
+  const auto metrics = ClientPolicyMetrics(restarted);
+  Q4T_CHECK(metrics.find(
+                "q4t_client_rate_settled_tokens_total{client=\"alpha\"} 18") !=
+            metrics.npos);
+  Q4T_CHECK(metrics.find(kSecret) == metrics.npos);
+  return true;
+}
+
+Q4T_TEST(client_rate_configuration_discloses_optional_contract) {
+  ServerOptions options;
+  ChatPlanConfig config;
+  config.client_policy_version = 2;
+  config.client_fair_queue = true;
+  Json value;
+  Q4T_CHECK(q4t::io::ParseJson(
+      EffectiveServeConfigJson(options, config, true, true, 8), &value));
+  Q4T_CHECK(value.Find("client_governance")->GetInt("policy_version") == 2);
+  Q4T_CHECK(value.Find("client_governance")->GetBool("fair_queue"));
+  Q4T_CHECK(value.Find("limits")->GetString("queue_policy") ==
+            "client_round_robin_best_fit");
+  return true;
+}
 
 Q4T_TEST(client_policy_strict_transactional_schema) {
   GatewayClientPolicy parsed;

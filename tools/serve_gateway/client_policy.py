@@ -10,6 +10,8 @@ MAX_BYTES = 64 * 1024
 BOUNDS = dict(max_inflight=(1, 4096), max_control_inflight=(1, 64),
               max_prompt_tokens=(1, 1048576), max_output_tokens=(1, 1048576),
               max_body_bytes=(1024, 16 * 1024**2))
+RATE_BOUNDS = dict(requests_per_minute=(0, 1000000),
+                   tokens_per_minute=(0, 1000000000))
 
 
 def require(value):
@@ -26,21 +28,26 @@ def unique(pairs):
 
 
 def validate(value):
-    require(type(value) is dict and value.keys() ==
-            {'version', 'gateway_token', 'clients'})
-    require(type(value['version']) is int and value['version'] == 1)
+    require(type(value) is dict and type(value.get('version')) is int and
+            value['version'] in (1, 2))
+    v2 = value['version'] == 2
+    require(value.keys() == ({'version', 'gateway_token', 'clients', 'fair_queue'}
+                            if v2 else {'version', 'gateway_token', 'clients'}))
+    if v2:
+        require(type(value['fair_queue']) is bool)
     require(type(value['gateway_token']) is str and
             re.fullmatch('[a-f0-9]{64}', value['gateway_token']))
     clients = value['clients']
     require(type(clients) is list and 1 <= len(clients) <= 64)
     ids = set()
     for client in clients:
-        require(type(client) is dict and client.keys() == {'id', *BOUNDS})
+        bounds = {**BOUNDS, **RATE_BOUNDS} if v2 else BOUNDS
+        require(type(client) is dict and client.keys() == {'id', *bounds})
         name = client['id']
         require(type(name) is str and re.fullmatch('[a-z][a-z0-9_-]{0,31}', name))
         require(name not in ids)
         ids.add(name)
-        for field, (minimum, maximum) in BOUNDS.items():
+        for field, (minimum, maximum) in bounds.items():
             require(type(client[field]) is int and minimum <= client[field] <= maximum)
     return value
 
