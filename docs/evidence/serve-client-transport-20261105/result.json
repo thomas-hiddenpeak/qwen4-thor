@@ -1,0 +1,89 @@
+{
+  "status": "PASS_CLIENT_TRANSPORT",
+  "passed": true,
+  "cpu_python": 83,
+  "cpu_node": 40,
+  "network_cases": 34,
+  "model_starts": 1,
+  "successful_generations": 6,
+  "real_tools": 2,
+  "responses": [
+    {
+      "label": "python-ordinary",
+      "stream": false,
+      "wire_sha256": "8775412f81dacac104d61dac0906a4fb43ee964d8b1a95aa58fbc64e816fa53c",
+      "request_id": "agent-a79e4f851c2fe4f00295844698cbe243",
+      "finish_reason": "stop"
+    },
+    {
+      "label": "python-read",
+      "stream": false,
+      "wire_sha256": "b6f4d4125f17d76eb34700ff7ef921d60a076a5e9a1d242e567654ca42c12e50",
+      "request_id": "agent-3fa6eefe03339340d81886ea30e4bd5c",
+      "finish_reason": "tool_calls"
+    },
+    {
+      "label": "python-answer",
+      "stream": true,
+      "wire_sha256": "241397ba9f0868cd4d7430e9ab60d2edd162b0e162bca00829fa581f9d9ff7f3",
+      "request_id": "agent-e1b4bc0c891ab6f8895e68e6113b4a3f",
+      "finish_reason": "stop"
+    },
+    {
+      "label": "node-ordinary",
+      "stream": true,
+      "wire_sha256": "8573960ee5ec0bd29a90e0a4cfd18a16e9b50e18ffcf88281e0cec57f2d5248c",
+      "request_id": "agent-a6269ffc38d9d39d655d376a824cd21d",
+      "finish_reason": "stop"
+    },
+    {
+      "label": "node-read",
+      "stream": true,
+      "wire_sha256": "adf43e3ae7dd4673bec211d82b33c16dbebddb1ea220d8457ccba324393513a5",
+      "request_id": "agent-9f7b007ce5ae8dd99a97f4ec47f46e99",
+      "finish_reason": "tool_calls"
+    },
+    {
+      "label": "node-answer",
+      "stream": false,
+      "wire_sha256": "41f45d6079ecef7aa0d74a3bbb341a52e6293ea05a052713bb032e77436f2eef",
+      "request_id": "agent-afe5484b6acf20af1a7267691ccc6721",
+      "finish_reason": "stop"
+    }
+  ],
+  "seconds": 63.02626671991311,
+  "guard": "COMPLETED",
+  "owners": [
+    {
+      "role": "scoped-model",
+      "pid": 3495939,
+      "start_ticks": 204696767,
+      "gone": true
+    },
+    {
+      "role": "nginx",
+      "pid": 3497166,
+      "start_ticks": 204700547,
+      "gone": true
+    }
+  ],
+  "lock": {
+    "dev": 66305,
+    "inode": 3294067,
+    "available": true
+  },
+  "default_pair_unchanged": {
+    "build/q4t": "a56bd448ba45e31ba223e73212090a3aea76be9d9a17b06ad0d13c44196544a6",
+    "build/q4t.release.json": "914e067febf6d6bab36cafb65548f3f64c3f34c9f0181ba95fb1b7c68752f861"
+  },
+  "protocol": "cc321239ced843d6d618d07b72ed81ed65958b2fdc29261fc2b042d9118c40d5",
+  "source_commit": "8f05676220ba1f5247541da37de85faf4dcea637",
+  "current_task_migration_accepted": false,
+  "managed_package_accepted": false,
+  "long_run": false,
+  "attempts": 3,
+  "network_attempts": 36,
+  "reused_network_observations": 8,
+  "original_failure": "Local TLS fixture closed before consuming the complete POST request; no model started.",
+  "note": "Native and fixed JS SDK client acceptance only; no new managed lifecycle or durable migration qualification."
+}
