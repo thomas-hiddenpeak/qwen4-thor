@@ -1,0 +1,60 @@
+{
+  "date": "2026-11-06",
+  "status": "TOOL_CONTRACTS_PASSED",
+  "base_commit": "d8880693d050385cf155655b62196aee1ff50b7a",
+  "source_sha256": {
+    "tools/evalscope/monitored_stage.py": "ff9ffa866a96f58cb9de000b445b955ce3e4c89a7d660d9794134562e41bb992",
+    "tools/evalscope/test_monitored_stage.py": "8939227f696f7eec08a0252d0256f51a43849996bd3dcb0c686bf823a61d1740",
+    "tools/mtp_suffix/run_stage.py": "8c9404a8b89231f8fbda7e957d909b051e786e1a32a978aeac8967190ffe7228",
+    "tools/mtp_suffix_zero_hit/run_rerun.py": "02762ff44227429f20c056bb47e714f19e6631c2e0b2bee2e07b63073bc14ef9",
+    "tools/mtp_suffix_zero_hit/telemetry.py": "f93f79314d3cbf29bc3062994af7ea1b343e9fb225241c9b45e84775813d6b1a",
+    "tests/host/CMakeLists.txt": "d7df9f8e8c5f05a1167097366177627acb593fc36ea657f175a3481baffa090d"
+  },
+  "tests": {
+    "new_monitor": 20,
+    "existing_telemetry_passed": 38,
+    "existing_telemetry_skipped": 1,
+    "exit_pending_passed": 25,
+    "unique_passed": 83,
+    "ctest_new_contract_passed": true,
+    "counts_do_not_add_duplicate_ctest": true
+  },
+  "first_failure": "Historical exit_pending fixture missing in isolated checkout; one affected test rerun after exact copy, no production change.",
+  "negative_controls": {
+    "legacy_before_sha256": "9e26bffdb78979fa7e0c78c43e9d8a44e02a799c753ca5fabd72758ae3c81edd",
+    "original_bug_reproduced": true,
+    "expected_failure": "EnvironmentAbort not raised",
+    "historical_env_abort_rejected": true,
+    "rejection": "missing/invalid final monitoring evidence",
+    "historical_files_unchanged": {
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-quantized-head-20261105/source/.q4t-work/feasibility-resume/plan.json": "998fb390becc0c9ced63cddf389612c18252ad4140797e69a21d2b0785601867",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-quantized-head-20261105/source/.q4t-work/feasibility-resume/run/state.json": "3b8b7ddc4ba28656d4883a8d7e2f80f4320f00934980fa5df3cc70c6a1c16e00",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-quantized-head-20261105/source/.q4t-work/feasibility-resume/run/telemetry-summary.json": "f8005413c8b456c4569167a3529e51ff59b8a5cc87b0b0bc07520534e443c71a",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-quantized-head-20261105/source/.q4t-work/feasibility-resume/run/decision.json": "c7a71eead0c93f442e18ac21dbd853e60f3f6a20d6c0d51444117aec0bf1bdea"
+    },
+    "model_loads": 0,
+    "http_requests": 0,
+    "gpu_tests": 0
+  },
+  "unchanged_default": {
+    "build/q4t": "c1bdb0a7599ba3f61d9cb48597069a66f6e27e02f38cf32e495fc80059008636",
+    "build/q4t.release.json": "0efc2c0dc309e42a7b7761860edce7888aa8139f5ea305f54eae054a81fdbcf3"
+  },
+  "model_loads": 0,
+  "http_requests": 0,
+  "gpu_tests": 0,
+  "records": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/eval-monitor-closeout-20261106/source/.q4t-work/validation/cpu-01.log": "f7ffbc82995307e302d8e20f30731e70c691391d36de73968879e6f08a03ff3c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/eval-monitor-closeout-20261106/source/.q4t-work/validation/cpu-02.log": "2b851bdebefec1676e6e0810ecdd4951e089d1753510f32b9b14ace2cd59e602",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/eval-monitor-closeout-20261106/source/.q4t-work/validation/cpu-03.log": "46792aefbd4a9748740f3deaed2d2c2e8b39e7e0e1325ba9c6f3f7e696109983",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/eval-monitor-closeout-20261106/source/.q4t-work/validation/cpu-03-fixture-repair.log": "e28ed58a161f47d1fd41cb76b6ea6b47612fb6761a60dddb7564125c7d7cfc75",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/eval-monitor-closeout-20261106/source/.q4t-work/validation/cpu-04-receipt-errors.log": "2a513067d5d74038b3741bc781f8bf80cf427dbe12b7ceaecbc1902a407cc66a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/eval-monitor-closeout-20261106/source/.q4t-work/validation/host-configure.log": "dc72406a181a5b3d537fe67ff078b8701ef99898c70a04f6b1b5635fe74d071f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/eval-monitor-closeout-20261106/source/.q4t-work/validation/host-contract.log": "52784fe5d0c1df1f1a96b798b8ac9ad00d38d3c62c75770cabc373a64a73f247",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/eval-monitor-closeout-20261106/source/.q4t-work/validation/legacy-negative.log": "b1db1e3d61e9e1f61087d020aca55aac834445fa2b7219e2fb4c12692aa5a67f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/eval-monitor-closeout-20261106/source/.q4t-work/validation/negative-controls.json": "a5eed2bb25a86d52459ac07facd662c4933fe6a0cf1038667faaac48c402c41c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/eval-monitor-closeout-20261106/source/.q4t-work/validation/entry-help.log": "722a2ef79bb3d0d807d2133f1b711d3cfc033452742db67516c53e94f92c3117",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/eval-monitor-closeout-20261106/source/.q4t-work/validation/cpu-results.json": "76c5f58da9f51cd7c0cd9dc42ad2591b27d2d6f355f37c1a6658ec52baacdd8e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/eval-monitor-closeout-20261106/source/.q4t-work/validation/fixture-repair.json": "0f8fddd658500cc5483d79cd8933c053bd709a923cfeaacf1a4b718b72b1825b"
+  }
+}

@@ -385,6 +385,7 @@
 | [REPRODUCIBILITY_2026-09-20.md](REPRODUCIBILITY_2026-09-20.md) | 稀疏注意力输出非确定性定位与 E2E 证据 | 后续验证更新 |
 | [DISCONNECT_FIX_2026-09-20.md](DISCONNECT_FIX_2026-09-20.md) | SIGPIPE 修复、断连 E2E 与输出复现阻塞 | 新验证追加记录 |
 | [EVALUATION.md](EVALUATION.md) | E2E 优先规则、五档矩阵、证据与接受条件 | 用户规则或评估口径变化时 |
+| [验收监控收尾](EVAL_MONITOR_CLOSEOUT_2026-11-06.md) | 公共阶段入口、join后失败复核与只读分析门禁 | 仅工具交付，历史ENV_ABORT不追认通过 |
 | [STATUS.md](STATUS.md) | 当前状态快照: 当前焦点、进行中、卡在哪、下一步 | 每次有意义的改动后 |
 | [DONE.md](DONE.md) | 已完成 / 已解决归档 (从 STATUS 分离) | 条目完成时追加 |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | 整体架构设计: 模块划分、数据流、关键设计决策 | 架构变化时 |
