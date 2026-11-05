@@ -15,6 +15,8 @@ namespace q4t::runtime {
 namespace {
 
 Status CheckMtpCapacity(const mtp::MtpConfig& cfg) {
+  if (cfg.quantized_head)
+    return Status::Fail("startup MTP plan: quantized draft head unsupported");
   if (!ValidSequenceCapacities(cfg.seq_capacities, cfg.max_len, cfg.max_seq))
     return Status::Fail("startup MTP plan: invalid slot capacities");
   // The current kernels and LoadMtp implement this architecture. Capacities

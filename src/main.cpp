@@ -68,6 +68,7 @@ void PrintUsage(const char* prog) {
       "[--session-cache-dir DIR] [--prefix-cache-dir DIR] "
       "[--prefix-cache-checkpoints 8192,32768,65536] "
       "[--mtp-subset-head DIR] "
+      "[--mtp-head-quantization nvfp4] "
       "[--allow-media] "
       "[--startup-plan auto|off|required]\n"
       "       [--moe-trace-dir DIR --moe-trace-workload FILE] "

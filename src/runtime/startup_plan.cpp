@@ -112,6 +112,8 @@ Status StartupPlan::AddTensor(const io::WeightLoader& loader,
 
 Status CheckStartupPlanSupport(const model::ModelConfig& cfg,
                                const server::ServerOptions& opts) {
+  if (!opts.mtp_head_quantization.empty())
+    return Status::Fail("startup plan: quantized draft head unsupported");
   // Bound dimensions before invoking existing workspace formulas, some of
   // which use int intermediates. A new architecture requires its own contract.
   if (cfg.num_layers != 48 || cfg.hs != 2560 || cfg.hc != 4 ||

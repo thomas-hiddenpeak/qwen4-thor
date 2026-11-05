@@ -46,6 +46,7 @@
 #include "q4t/model/model.h"
 #include "q4t/model/moe.h"
 #include "q4t/mtp/moe_bf16.h"
+#include "q4t/mtp/quantized_head.h"
 #include "q4t/mtp/suffix_drafter.h"
 #include "q4t/status.h"
 
@@ -54,6 +55,7 @@ namespace mtp {
 
 // Static configuration of the MTP draft model.
 struct MtpConfig {
+  bool quantized_head = false;  // Experimental full-vocabulary NVFP4 W4A16.
   std::string subset_head_dir;  // Empty: borrowed full head.
   std::string mtp_dir;  // dir with model.safetensors.index.json + shards
   int hs = 2560;
@@ -102,6 +104,7 @@ struct MtpModel {
   // Borrowed from the main model (must outlive this MtpModel).
   const uint16_t* embed_tokens = nullptr;  // [vocab, hs]
   const uint16_t* lm_head = nullptr;  // [vocab, hs]
+  QuantizedHead quantized_head;
 
   // Owned independent BF16 head; full main head remains resident.
   uint16_t* subset_head = nullptr;

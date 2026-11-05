@@ -189,6 +189,7 @@ add_library(q4t_model STATIC
   src/model/small_m_gemm.cu
   src/mtp/moe_bf16.cu
   src/mtp/mtp.cu
+  src/mtp/quantized_head.cu
   src/mtp/subset_head.cpp
   src/mtp/suffix_drafter.cpp
   src/vision/vision.cu

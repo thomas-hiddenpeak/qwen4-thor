@@ -81,6 +81,15 @@ Status ValidateServerOptions(const ServerOptions& options) {
   if (!options.mtp_subset_head.empty() &&
       (options.no_mtp || options.mtp_k != 3))
     return Status::Fail("mtp-subset-head requires MTP with fixed k=3");
+  if (!options.mtp_head_quantization.empty() &&
+      (options.mtp_head_quantization != "nvfp4" || options.no_mtp ||
+       options.mtp_k != 3 || options.max_seq != 1 || options.allow_media ||
+       !options.mtp_subset_head.empty() || options.mtp_suffix ||
+       !options.prefix_cache_dir.empty() || !options.session_cache_dir.empty() ||
+       options.startup_plan == StartupPlanMode::kRequired))
+    return Status::Fail(
+        "mtp-head-quantization nvfp4 requires single-slot text MTP k=3; "
+        "subset, suffix, caches and startup-plan required are unsupported");
   if (!runtime::ValidSequenceCapacities(options.seq_capacities, options.max_len,
                                         options.max_seq) ||
       (!options.seq_capacities.empty() &&
@@ -208,6 +217,7 @@ Status ParseServerOptions(std::span<const std::string_view> args,
         key != "--mem-fraction" && key != "--moe-trace-dir" &&
         key != "--moe-trace-workload" && key != "--moe-hot-list" &&
         key != "--startup-plan" && key != "--mtp-subset-head" &&
+        key != "--mtp-head-quantization" &&
         key != "--seq-capacities" && key != "--session-cache-dir" &&
         key != "--prefix-cache-dir" && key != "--prefix-cache-checkpoints" &&
         key != "--client-policy-file")
@@ -248,6 +258,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       parsed.session_cache_dir = value;
     } else if (key == "--mtp-subset-head") {
       parsed.mtp_subset_head = value;
+    } else if (key == "--mtp-head-quantization") {
+      parsed.mtp_head_quantization = value;
     } else if (key == "--client-policy-file") {
       parsed.client_policy_file = value;
     } else if (key == "--host") {

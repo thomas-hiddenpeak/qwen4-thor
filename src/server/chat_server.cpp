@@ -278,6 +278,11 @@ Status ChatServer::Start(const ServerOptions& opts) {
         breq.mtp_workspace_bytes =
             mtp::MtpWorkspaceBytes(mcfg, cfg.max_prefill, full);
         breq.mtp_k = mtp_k_;
+        if (!opts.mtp_head_quantization.empty()) {
+          breq.mtp_weights_bytes += mtp::kQuantizedHeadBytes;
+          // Peak includes device reduction scratch and host readback array.
+          breq.extra_fixed_bytes += 2 * mtp::kQuantizedHeadTemporaryBytes;
+        }
         if (!opts.mtp_subset_head.empty()) {
           breq.extra_fixed_bytes += mtp::kSubsetReadCacheBudget;
           breq.mtp_weights_bytes +=
@@ -520,6 +525,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
     mtp::MtpConfig mcfg;
     mcfg.mtp_dir = opts.model_dir + "/mtp";
     mcfg.subset_head_dir = opts.mtp_subset_head;
+    mcfg.quantized_head = !opts.mtp_head_quantization.empty();
     mcfg.max_prefill = cfg.max_prefill;  // MTP draft-extend runs over the whole
                                          // prompt; size its workspace to match.
     mcfg.max_len = cfg.max_len;  // draft full-attn KV/indexer tracks the main

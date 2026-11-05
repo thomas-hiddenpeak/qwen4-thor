@@ -41,6 +41,16 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+[独立 NVFP4 草稿 head 可行性关卡](MTP_QUANTIZED_HEAD_PLAN_2026-11-05.md)
+已冻结：基于 main d8880693，在隔离分支实现默认关闭的在线量化副本
+与融合 W4A16 点积，仅单槽文本 k=3；目标 BF16 head 保持，新增权重
+341.015625 MiB及有界加载暂存已纳入预算。候选已零警告构建；首次
+缺失math_constants头文件的构建失败原件保留，尚无模型或测试。
+首测为真实HTTP，4模型/56生成/1800秒的1K与质量关卡；通过只允许
+进入完整五档及直接合同，不代表接受或默认部署。缓存正确性检查
+复用旧证据，不自动扩展工业化、QSA/PLE或FP8 KV任务。默认c1bdb0a7
+及其元数据保持；源工作区和研究40768107保持。
+
 [RPM/TPM与客户端公平准入已完成有界交付](SERVE_CLIENT_GOVERNANCE_DELIVERY_2026-11-05.md)：
 默认c1bdb0a7/sidecar0efc2c0d、协议9c8758c4，精确父pair a56bd448/
 914e067f及依赖保留。v2可选分钟预留/结算、准备后轮转与等槽份额，

@@ -227,6 +227,7 @@ void FreeScratch(MtpModel& m) {
 void MtpModel::Free() {
   const runtime::CleanupPhase phase("mtp.release");
   metadata_upload.reset();
+  quantized_head.Free();
   if (subset_head) cudaFree(subset_head);
   if (subset_ids) cudaFree(subset_ids);
   subset_head = nullptr;
@@ -281,9 +282,14 @@ Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
     return Status::Fail("invalid MTP slot capacities");
   if (!out || !main_embed || !main_lm_head)
     return Status::Fail("LoadMtp: model and borrowed weights are required");
+  if (cfg.quantized_head &&
+      (!cfg.subset_head_dir.empty() || cfg.hs != kQuantizedHeadHidden ||
+       cfg.vocab != kQuantizedHeadVocab || cfg.max_seq != 1))
+    return Status::Fail("LoadMtp: unsupported quantized head configuration");
   if (cfg.initial_scratch_capacity < 0 || cfg.initial_scratch_capacity > 17)
     return Status::Fail("LoadMtp: initial scratch capacity must be in [0,17]");
-  if (out->subset_head || out->subset_ids || out->embed_tokens ||
+  if (out->quantized_head.packed || out->quantized_head.scales ||
+      out->subset_head || out->subset_ids || out->embed_tokens ||
       out->lm_head || out->fc_embedding ||
       out->d_ids_scratch || out->k_max > 0)
     return Status::Fail("LoadMtp: output already owns resources");
@@ -335,6 +341,10 @@ Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
   };
 
   Status s;
+  if (cfg.quantized_head) {
+    s = BuildQuantizedHead(main_lm_head, &out->quantized_head, stream);
+    if (!s.ok()) return s;
+  }
   if (!cfg.subset_head_dir.empty()) {
     SubsetHeadData data;
     s = ReadSubsetHead(cfg.subset_head_dir,
@@ -2116,6 +2126,9 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
   // a full-prompt logits buffer would be ~130 GB).
   if (compute_logits) {
     diagnostic::Scope head_scope("mtp.head", max_position, T);
+    if (m.cfg.quantized_head)
+      return QuantizedHeadForward(m.quantized_head, sample_hidden, logits, T,
+                                  stream);
     model::ModelHeadWeights head_view;
     head_view.lm_head = m.subset_head ? m.subset_head
                                     : const_cast<uint16_t*>(m.lm_head);
