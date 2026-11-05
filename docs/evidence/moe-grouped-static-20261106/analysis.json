@@ -1,0 +1,264 @@
+{
+  "status": "STATIC_REVIEW_COMPLETE_NOT_RUNTIME_ACCEPTANCE",
+  "new_measurements": 0,
+  "authorization": "Static review only; no tests, builds, model or GPU use.",
+  "inputs": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/src/quant/moe_decode.cu",
+      "sha256": "eca5bda705b838e70a5035828b2611174f81c6fc8b3bc590701e8bd56999467f"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/src/quant/moe_decode.cu",
+      "sha256": "eca5bda705b838e70a5035828b2611174f81c6fc8b3bc590701e8bd56999467f"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/tests/moe_decode_grouped_test.cpp",
+      "sha256": "3bd309a8fcf94b30de9d007da363786dba03d5b2d7229f186f2ef3b5dad359c0"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/src/quant/moe_gemm.cu",
+      "sha256": "89fc66033ea6550def218146022f1543fc0f2ef66d06bbe65497b1010189da98"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/src/model/decoder_layer.cu",
+      "sha256": "ca7d591c7f37f6a6ac21d2d044c87960b4d7328431b58a835bb8e96058618638"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/include/q4t/quant/lt_cache.h",
+      "sha256": "170448767e135617098b3a0378d5e0d8775d5f880a35aff0812e03d69db38dfe"
+    },
+    {
+      "path": "/usr/local/cuda/include/cublasLt.h",
+      "sha256": "6dbb2e5d45751e8dc0dce5254a840e0c0f459fadc81b7dc8c155099a1c53849e"
+    },
+    {
+      "path": "/usr/local/cuda/include/cublas_api.h",
+      "sha256": "fcfd3456bdc5d0f20a219a008a57390fd73ca81e8853f4180431cc24dc66af0e"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/docs/evidence/default-verify-profile-20261106/analysis.json",
+      "sha256": "ed1a6dad651ac553d90f0344ba6172df1bdc15344a3efd0c12d1e80efa4d6706"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/candidate/runtime-source.json",
+      "sha256": "bc3a7fba0bb36c403994b9ec401c3010afdbe5ada4476612a97f507be8f63d4f"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-share-diag-174406/server.log",
+      "sha256": "1681743d8fc803308fd9281fc17a892e7e3586ae05422866046af3aa17ecc138"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-share-diag-174406/commit.txt",
+      "sha256": "62907a5eb41524fe0d227ee1e73c1e42287109d6002580d9dd0e1498e88ceac4"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-share-diag-174406/binary.sha256",
+      "sha256": "a1b26c36edf4a3f7bbf1d6d23da17488169909656cce6811bcfa8a5afd98e8ad"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+      "sha256": "c1bdb0a7599ba3f61d9cb48597069a66f6e27e02f38cf32e495fc80059008636"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json",
+      "sha256": "0efc2c0dc309e42a7b7761860edce7888aa8139f5ea305f54eae054a81fdbcf3"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/default-verify-profile-20261106/run/02-coarse-full/server.log",
+      "sha256": "887270178a49fe0b245fd5552b414fda39774f029eec9d1adfd299d3a8217075"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/default-verify-profile-20261106/run/04-fine-full/server.log",
+      "sha256": "de1e4dac72ae7444cfb88edf490502bfe783383b35721286a3059cfe8b02086c"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/default-verify-profile-20261106/run/05-fine-subset/server.log",
+      "sha256": "4c28bcf1c9168dcdc667134cfea9cb7a3e40d52dd2ef25b3d3f60bcc9113037f"
+    }
+  ],
+  "accepted_runtime_source_count": 223,
+  "main_runtime_source_mismatches": [],
+  "research_runtime_differences_from_accepted": [
+    "include/q4t/model/gemv.h",
+    "src/model/linear_attention.cu",
+    "src/model/small_m_gemm.cu"
+  ],
+  "fixed_group_shape": {
+    "T": 4,
+    "top_k": 10,
+    "descriptor_count": 40,
+    "sum_active_rows": 40,
+    "mean_over_all_descriptors": 1,
+    "active_expert_count_runtime_known_to_host": false,
+    "current_M_e_distribution": "NOT_CAPTURED_IN_REUSED_CURRENT_PROFILE"
+  },
+  "historical_diagnostic_not_current_distribution": {
+    "commit": "5330e50ed2db5a065183d4c88c3ec352a15670df",
+    "elf_sha256": "cbc6ad93dadba77d0ff2a45875ba4541184ea17edbbdc50ab115e7250a5a1abf",
+    "last_cumulative": {
+      "layers": 2560,
+      "rows": 102400,
+      "unique": 70018
+    },
+    "unique_fraction": 0.68376953125,
+    "mean_rows_per_active_expert": 1.4624810762946672,
+    "limitation": "Cumulative totals only, no M_e histogram; older runtime."
+  },
+  "cases": {
+    "04-fine-full/context-1024": {
+      "coarse_round_ms": 97.42432432432433,
+      "fine_moe_mean_ms": {
+        "prep_gu": 0.729054054054054,
+        "gemm_gu": 11.092837837837838,
+        "prep_dn": 0.6063513513513513,
+        "gemm_dn": 5.778243243243243,
+        "combine": 0.26891891891891895,
+        "total": 18.47418918918919
+      },
+      "fine_prepare_gu_dn_ms": 1.3354054054054054,
+      "fine_gemm_gu_dn_ms": 16.87108108108108,
+      "round_saving_ms_for_3pct_throughput": 2.837601679349251,
+      "gemm_fraction_to_remove_for_3pct": 0.16819323348112442,
+      "ideal_round_gain_if_all_prepare_removed_pct": 1.3897600477035699,
+      "normal_http_ttft_fraction": 0.13175171755240156,
+      "normal_http_time_drop_if_decode_3pct_faster_pct": 2.5288784925658194
+    },
+    "04-fine-full/context-45056": {
+      "coarse_round_ms": 101.6112676056338,
+      "fine_moe_mean_ms": {
+        "prep_gu": 0.7277464788732395,
+        "gemm_gu": 10.771267605633803,
+        "prep_dn": 0.6080281690140845,
+        "gemm_dn": 5.560845070422535,
+        "combine": 0.27056338028169014,
+        "total": 17.9387323943662
+      },
+      "fine_prepare_gu_dn_ms": 1.335774647887324,
+      "fine_gemm_gu_dn_ms": 16.332112676056337,
+      "round_saving_ms_for_3pct_throughput": 2.9595514836592356,
+      "gemm_fraction_to_remove_for_3pct": 0.18121057222425857,
+      "ideal_round_gain_if_all_prepare_removed_pct": 1.3321047929928165,
+      "normal_http_ttft_fraction": 0.8184907863673118,
+      "normal_http_time_drop_if_decode_3pct_faster_pct": 0.5286676125223927
+    },
+    "05-fine-subset/context-1024": {
+      "coarse_round_ms": 85.74545454545455,
+      "fine_moe_mean_ms": {
+        "prep_gu": 0.7194805194805195,
+        "gemm_gu": 11.095714285714285,
+        "prep_dn": 0.6074025974025974,
+        "gemm_dn": 5.788051948051948,
+        "combine": 0.2644155844155844,
+        "total": 18.473896103896102
+      },
+      "fine_prepare_gu_dn_ms": 1.326883116883117,
+      "fine_gemm_gu_dn_ms": 16.883766233766234,
+      "round_saving_ms_for_3pct_throughput": 2.497440423654015,
+      "gemm_fraction_to_remove_for_3pct": 0.14791962818457688,
+      "ideal_round_gain_if_all_prepare_removed_pct": 1.5717905366425589,
+      "normal_http_ttft_fraction": 0.13637863186113344,
+      "normal_http_time_drop_if_decode_3pct_faster_pct": 2.515402043122911
+    },
+    "05-fine-subset/context-45056": {
+      "coarse_round_ms": 90.13561643835617,
+      "fine_moe_mean_ms": {
+        "prep_gu": 0.7241095890410959,
+        "gemm_gu": 10.793835616438356,
+        "prep_dn": 0.6075342465753425,
+        "gemm_dn": 5.5887671232876714,
+        "combine": 0.2654794520547945,
+        "total": 17.97931506849315
+      },
+      "fine_prepare_gu_dn_ms": 1.3316438356164384,
+      "fine_gemm_gu_dn_ms": 16.38260273972603,
+      "round_saving_ms_for_3pct_throughput": 2.625309216651149,
+      "gemm_fraction_to_remove_for_3pct": 0.16024982466827814,
+      "ideal_round_gain_if_all_prepare_removed_pct": 1.4995318301507465,
+      "normal_http_ttft_fraction": 0.8313214416249186,
+      "normal_http_time_drop_if_decode_3pct_faster_pct": 0.49129677196625643
+    }
+  },
+  "prefill_existing_record_reduction": {
+    "04-fine-full/context-45056": {
+      "rows": 45044,
+      "chunks": [
+        {
+          "tokens": 4084,
+          "count": 1
+        },
+        {
+          "tokens": 8192,
+          "count": 5
+        }
+      ],
+      "fine_sum_ms": {
+        "total": 30329.949999999997,
+        "lin_state": 8703.550000000001,
+        "full_core": 9207.66,
+        "moe": 5937.85
+      },
+      "source": {
+        "log": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/default-verify-profile-20261106/run/04-fine-full/server.log",
+        "begin": 356,
+        "end": 664
+      }
+    },
+    "05-fine-subset/context-45056": {
+      "rows": 45044,
+      "chunks": [
+        {
+          "tokens": 4084,
+          "count": 1
+        },
+        {
+          "tokens": 8192,
+          "count": 5
+        }
+      ],
+      "fine_sum_ms": {
+        "total": 30296.109999999997,
+        "lin_state": 8695.7,
+        "full_core": 9199.689999999999,
+        "moe": 5916.0599999999995
+      },
+      "source": {
+        "log": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/default-verify-profile-20261106/run/05-fine-subset/server.log",
+        "begin": 369,
+        "end": 685
+      }
+    }
+  },
+  "batch_grid": {
+    "source_launch_sites": 2,
+    "T4_blocks_per_two_launches_before": 80,
+    "T4_blocks_per_two_launches_proposed": 2,
+    "launch_count_change": 0,
+    "group_count_change": 0,
+    "supports_T": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "max_R": 80,
+    "proposed_block_threads": 128,
+    "patch_applied": false,
+    "patch": "--- a/src/quant/moe_decode.cu\n+++ b/src/quant/moe_decode.cu\n@@ -36,6 +36,7 @@\n constexpr int kSlots = 10;\n constexpr int kMaxT = 8;\n constexpr int kMaxRows = kMaxT * kSlots;  // 80\n+static_assert(kMaxRows <= 128, \"Grouped batch needs one 128-thread block\");\n constexpr int kArraySize = kMaxRows;  // Every pointer/shape array is\n                                       // 16-byte aligned (80 * 8 = 640 B).\n constexpr int kHidden = 2560;\n@@ -713,7 +714,7 @@\n                  cudaGetErrorString(e1));\n     return Status::Fail(\"MoE device decode GU preparation\");\n   }\n-  MoEDecodeGroupBatchKernel<<<R, 128, 0, stream>>>(\n+  MoEDecodeGroupBatchKernel<<<1, 128, 0, stream>>>(\n       gu, d_offset, d_expert_list, d_U, batch, packed, scales, ws.gu_out, R,\n       2 * kIntermediate, kHidden, kGuAtom, kPackedStride);\n   if (const auto e2 = cudaGetLastError(); e2 != cudaSuccess) {\n@@ -734,7 +735,7 @@\n       <<<(R * (kIntermediate / 16) + 255) / 256, 256, 0, stream>>>(\n           ws.gu_out, expert_ids, d_offset, d_row_pos, d_row_of_flat, dn,\n           packed, scales, nullptr, R, k);\n-  MoEDecodeGroupBatchKernel<<<R, 128, 0, stream>>>(\n+  MoEDecodeGroupBatchKernel<<<1, 128, 0, stream>>>(\n       dn, d_offset, d_expert_list, d_U, batch, packed, scales, ws.dn_out, R,\n       kHidden, kIntermediate, kDnAtom, kDnPackedStride);\n   if (cudaGetLastError() != cudaSuccess) {\n"
+  },
+  "decisions": {
+    "change_average_hint_to_active_mean": "NO_STATIC_JUSTIFICATION",
+    "heuristic_search_or_algorithm_replacement": "DEFER_NO_3PCT_EVIDENCE",
+    "descriptor_grid": "MINIMAL_UNAPPLIED_PROPOSAL_NOT_3PCT_CANDIDATE",
+    "deploy_or_merge": "NOT_ACCEPTED"
+  },
+  "limitations": [
+    "Fine timings include observer effects and possible submission gaps.",
+    "Combining fine/coarse for ideal savings is a screening estimate only.",
+    "No measured occupancy, DRAM traffic, alternative algorithm or grid speedup.",
+    "No new tests or cuBLAS heuristic/library calls were performed.",
+    "The repeated-store correction has no independent runtime evidence yet."
+  ]
+}

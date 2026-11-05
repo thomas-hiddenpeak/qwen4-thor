@@ -1,0 +1,28 @@
+--- a/src/quant/moe_decode.cu
++++ b/src/quant/moe_decode.cu
+@@ -36,6 +36,7 @@
+ constexpr int kSlots = 10;
+ constexpr int kMaxT = 8;
+ constexpr int kMaxRows = kMaxT * kSlots;  // 80
++static_assert(kMaxRows <= 128, "Grouped batch needs one 128-thread block");
+ constexpr int kArraySize = kMaxRows;  // Every pointer/shape array is
+                                       // 16-byte aligned (80 * 8 = 640 B).
+ constexpr int kHidden = 2560;
+@@ -713,7 +714,7 @@
+                  cudaGetErrorString(e1));
+     return Status::Fail("MoE device decode GU preparation");
+   }
+-  MoEDecodeGroupBatchKernel<<<R, 128, 0, stream>>>(
++  MoEDecodeGroupBatchKernel<<<1, 128, 0, stream>>>(
+       gu, d_offset, d_expert_list, d_U, batch, packed, scales, ws.gu_out, R,
+       2 * kIntermediate, kHidden, kGuAtom, kPackedStride);
+   if (const auto e2 = cudaGetLastError(); e2 != cudaSuccess) {
+@@ -734,7 +735,7 @@
+       <<<(R * (kIntermediate / 16) + 255) / 256, 256, 0, stream>>>(
+           ws.gu_out, expert_ids, d_offset, d_row_pos, d_row_of_flat, dn,
+           packed, scales, nullptr, R, k);
+-  MoEDecodeGroupBatchKernel<<<R, 128, 0, stream>>>(
++  MoEDecodeGroupBatchKernel<<<1, 128, 0, stream>>>(
+       dn, d_offset, d_expert_list, d_U, batch, packed, scales, ws.dn_out, R,
+       kHidden, kIntermediate, kDnAtom, kDnPackedStride);
+   if (cudaGetLastError() != cudaSuccess) {

@@ -1,5 +1,9 @@
 # docs/ — 开发记录文档体系
 
+[MoE grouped GEMM静态审查与最小未应用提案](MOE_GROUPED_STATIC_REVIEW_2026-11-06.md)：
+固定分组平均提示未证实错误；描述符grid重复构建可简化，未承诺3%收益，
+只读既有数据，无新增测试或GPU执行。
+
 [GDN qkv/z BF16转换复用：HTTP首验NO_GO结果](GDN_BF16_INPUT_RESULT_2026-11-06.md)
 与[有界判定卡](GDN_BF16_INPUT_PLAN_2026-11-06.md)。
 

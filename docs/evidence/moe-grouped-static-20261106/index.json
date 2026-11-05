@@ -1,0 +1,47 @@
+{
+  "status": "STATIC_REVIEW_ONLY",
+  "runtime_patch_applied": false,
+  "new_builds": 0,
+  "new_tests": 0,
+  "new_http_requests": 0,
+  "new_model_loads": 0,
+  "new_gpu_execution": 0,
+  "entry_commit": "067cfc5ddf719636a8967f424ccf121f3f756e14",
+  "accepted_main": "def8cc96e7f94b50fbc917303c8570ec23e841ea",
+  "files": [
+    {
+      "path": "derive.py",
+      "sha256": "485bdc6faf498995180e196a352a391e77c62be31438d4f95c12a12c65450e6e",
+      "bytes": 6997
+    },
+    {
+      "path": "analysis.json",
+      "sha256": "c116fc75455bf5b0ffd31a6bdabff3455edcb39e0206b943fcb6a6cfc7dab99a",
+      "bytes": 11670
+    },
+    {
+      "path": "descriptor-grid.patch",
+      "sha256": "833999a7df87825050d36dc63e3a1107df546be10dad56d51f91042cbce704ba",
+      "bytes": 1366
+    }
+  ],
+  "external_sources": [
+    {
+      "url": "https://docs.nvidia.com/cuda/cublas/index.html#cublasltmatmulpreferenceattributes-t",
+      "accessed": "2026-11-06",
+      "version_displayed": "13.5",
+      "use": "Average hints describe D dimensions; local header agrees; zero-group handling not specified."
+    },
+    {
+      "url": "https://docs.nvidia.com/cuda/cublas/index.html#cublasltmatmulalgogetheuristic",
+      "accessed": "2026-11-06",
+      "version_displayed": "13.5",
+      "use": "Heuristic ordering by estimated time; query may load CUDA kernels, so not invoked."
+    },
+    {
+      "url": "https://docs.github.com/en/actions/how-tos/manage-workflow-runs/skip-workflow-runs",
+      "accessed": "2026-11-06",
+      "use": "Skip push/pull_request workflows with explicit commit marker."
+    }
+  ]
+}
