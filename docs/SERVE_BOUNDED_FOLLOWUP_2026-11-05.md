@@ -25,5 +25,7 @@ limit=118,728,574,156字节，unknown/poisoned/拒绝/失败均0。
   与补验结果，只在独立核对全部证据后给出组合接受。
 
 入口：`tools/serve_deploy/continuation.py prepare/check/run`。
-`run`要求显式`--approved-followup`；准备和check不启动服务。当前等待
-用户决定是否执行额外启动，其余实现、离线审核和回退包不受影响。
+`run`要求显式`--approved-followup`；准备和check不启动服务。用户随后
+回复“可以推进”，额外1启动/2请求已执行，57.261秒后按压力安全边界
+停止；没有触发内存退场，两条截断流不接受。见[最终结果](SERVE_BOUNDED_DEPLOYMENT_RESULT_2026-11-05.md)。
+两轮FAILED保持、预算关闭，不再自动重跑或将候选提升为接受包。

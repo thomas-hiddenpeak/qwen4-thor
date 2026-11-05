@@ -1,4 +1,4 @@
-"""Independently rebuild the bounded deployment result from preserved bytes."""
+"""Rebuild the bounded deployment's unaccepted pressure outcome from bytes."""
 import argparse
 from dataclasses import asdict
 import hashlib
@@ -14,6 +14,45 @@ sys.path.insert(0, str(ROOT))
 from tools.serve_deploy import stage as s
 
 ARCHIVE = ROOT / 'docs/evidence/serve-bounded-deploy-20261105'
+POSTPROCESS_ONLY = {'tools/serve_deploy/report.py'}
+
+
+def no_secrets(name, raw, secrets):
+    # Match an actual PEM header, not this verifier's source-code literals.
+    private = s.re.search(br'-----BEGIN (?:[A-Z]+ )?PRIVATE KEY-----\r?\n', raw)
+    s.pkg.require(not private and not any(secret.encode() in raw for secret in secrets),
+                  'secret in ' + name)
+
+
+def archive_plan(follow):
+    """Freeze runtime identity; only this offline report may change afterward."""
+    plan = s.pkg.read(s.PLAN)
+    proof = s.pkg.read(s.BASE / 'postflight-identity.json')
+    s.pkg.require(proof['passed'] and proof['plan_sha256'] == s.pkg.sha(s.PLAN) and
+        proof['execution_result_sha256'] == s.pkg.sha(s.OUT / 'result.json'),
+        'postflight identity differs')
+    for name, digest in plan['sources'].items():
+        path = (s.BASE / 'frozen-source' / name if name in POSTPROCESS_ONLY else ROOT / name)
+        s.pkg.require(s.pkg.sha(path) == digest, 'frozen source changed: ' + name)
+    for name, digest in plan['runtime'].items():
+        s.pkg.require(s.pkg.sha(ROOT / name) == digest, 'runtime changed: ' + name)
+    for name, digest in {**plan['preserved'], **plan['original_references']}.items():
+        s.pkg.require(s.pkg.sha(name) == digest, 'preserved record changed: ' + name)
+    for name, digest in plan['model_inputs'].items():
+        s.pkg.require(s.pkg.sha(Path(plan['model_dir']) / name) == digest, 'model changed')
+    for path in s.base.DAYS:
+        s.pkg.require(not (path.parent / 'execution').exists(), 'user day executed')
+    s.pkg.require(s.pkg.sha(s.BASE / 'cpu-01/result.json') == plan['cpu_sha256'], 'CPU changed')
+    s.pkg.require(plan['limits'] == follow.LIMITS and plan['gpu_seconds'] == 180,
+                  'follow-up budget changed')
+    backend = s.pkg.verify(plan['package']['package'], plan['package']['manifest_sha256'])
+    s.pkg.require(backend['host_resources'] == s.POLICY and
+        backend['settings']['critical_memory_mib'] == s.FLOOR_MIB and
+        backend['settings']['restart_limit'] == 0, 'resource policy changed')
+    for row in plan['gateways'] + plan['rejected_gateways']:
+        s.base.gateway.verify(row['package'], row['manifest_sha256'])
+    s.profile.check(plan['deployment']['profile'], plan['deployment']['sha256'])
+    return plan
 
 
 def audit(read):
@@ -25,19 +64,33 @@ def audit(read):
         previous['error'] == "KeyError('q4t_cuda_quota_live_bytes')" and
         previous['counts'] == dict(starts=1, generation_attempts=4, controls=3) and
         previous['cleanup_confirmed'], 'original failure changed')
-    s.pkg.require(result['status'] == 'PASS_BOUNDED_DEPLOYMENT' and
+    s.pkg.require(result['status'] == 'FAILED' and
+        'pressure safety reserve/cap reached' in result['error'] and
         result['cleanup_confirmed'] and result['counts']['starts'] == 1 and
         result['counts']['generation_attempts'] == 2 and
         result['counts']['controls'] <= 80 and result['seconds'] < 240 and
         result['seconds'] + previous['seconds'] < 420, 'stage result')
     cpu = obj('cpu-01/result.json')
-    s.pkg.require(cpu['passed'] and cpu['models'] == cpu['http'] == 0, 'CPU gate')
+    old_cpu = obj('original/cpu-02/result.json')
+    old_plan = obj('original/plan.json')
+    s.pkg.require(cpu['passed'] and cpu['models'] == cpu['http'] == 0 and
+        cpu['tests_run'] == 4 and old_cpu['passed'] and old_cpu['tests_run'] == 13 and
+        old_cpu['models'] == old_cpu['http'] == 0 and
+        hashlib.sha256(read('original/cpu-02/result.json')).hexdigest() ==
+        old_plan['final_cpu_sha256'], 'CPU gate')
     old_terminal = obj('original/execution/managed-run/terminal.json')
     s.pkg.require(old_terminal['state'] == 'STOPPED' and old_terminal['cleanup_confirmed'] and
-                  old_terminal['guard']['status'] == 'COMPLETED', 'original lifecycle')
+        old_terminal['guard']['status'] == 'COMPLETED' and
+        old_terminal['worker']['attempts'] == 1 and old_terminal['worker']['restarts'] == 0 and
+        old_terminal['worker']['replayed_requests'] == 0, 'original lifecycle')
     quota = s.cuda_accounting(obj('original/execution/business/business-final-http.json')['body'])
     terminal = obj('execution/managed-run/terminal.json')
-    s.protected_terminal(terminal)
+    s.pkg.require(terminal['state'] == 'STOPPED' and terminal['manual_stop'] and
+        terminal['cleanup_confirmed'] and terminal['guard']['status'] == 'COMPLETED' and
+        terminal['worker']['attempts'] == 1 and terminal['worker']['restarts'] == 0 and
+        not terminal['worker']['memory']['signal_sent'] and
+        terminal['worker']['memory']['reason'] is None and
+        not terminal['automatic_reactivation'], 'not the recorded manual cleanup')
     s.pkg.require(terminal['worker']['replayed_requests'] == 0 and
                   terminal['host_resource_cleanup']['scope_removed'], 'replay or host residual')
     final = obj('execution/managed-run/resources-final.json')
@@ -53,22 +106,26 @@ def audit(read):
                   'host policy differs')
     rows = [json.loads(line) for line in read('execution/pressure.jsonl').splitlines()]
     s.pkg.require(rows[-1]['final'] and rows[-1]['allocated'] == 0 and
-                  rows[-1]['error'] is None, 'pressure helper cleanup')
+        rows[-1]['error'] == "RuntimeError('pressure safety reserve/cap reached')",
+        'pressure helper cleanup')
     samples = [row[key] for row in rows for key in ('before', 'after') if key in row]
     peak = max(row['allocated'] for row in rows)
     available = min(row['MemAvailable'] for row in samples)
     free = min(row['MemFree'] for row in samples)
     s.pkg.require(peak <= s.pressure.MAX_BYTES and available >= s.pressure.MIN_AVAILABLE and
         free >= s.pressure.MIN_FREE, 'pressure safety bound')
-    trip = obj('execution/pressure-trigger.json')
-    s.pkg.require(trip['monotonic'] > before['monotonic'] and
-        trip['after']['MemAvailable'] < s.FLOOR_MIB*s.pressure.MIB-s.pressure.CHUNK,
-        'real memory pressure missing')
+    last = rows[-2]
+    s.pkg.require(last['monotonic'] > before['monotonic'] and
+        available >= s.FLOOR_MIB*s.pressure.MIB and
+        last['after']['MemFree'] < s.pressure.MIN_FREE + s.pressure.CHUNK and
+        last['after']['MemAvailable'] >= s.pressure.MIN_AVAILABLE + s.pressure.CHUNK and
+        peak + s.pressure.CHUNK < s.pressure.MAX_BYTES,
+        'expected free-memory reserve prevented the next allocation')
     validator = s.Draft202012Validator(obj('schema.json'))
+    streams = {}
     for label in ('active', 'queued'):
         raw = read('execution/business/' + label + '-wire.bin')
-        checked = s.stream_terminal(raw, graceful=True, validator=validator)
-        s.pkg.require(checked == obj('execution/' + label + '-verified.json'), 'SSE proof differs')
+        streams[label] = s.stream_terminal(raw, graceful=False, validator=validator)
     active = read('execution/business/active-wire.bin')
     s.pkg.require(any(any(c.get('delta', {}).get('content') for c in
         json.loads(line[6:]).get('choices', [])) for line in active.splitlines()
@@ -99,7 +156,7 @@ def audit(read):
     s.pkg.require(len(reaped) == 1 and reaped[0] == '1' and
                   'shutdown complete (0 in-flight remaining)' in log, 'native cleanup')
     frontend = obj('execution/front-1/terminal.json')
-    s.pkg.require(frontend['state'] == 'FAILED' and frontend['cleanup_confirmed'] and
+    s.pkg.require(frontend['state'] == 'STOPPED' and frontend['cleanup_confirmed'] and
                   not frontend['automatic_reactivation'], 'gateway cleanup')
     guard = [json.loads(line) for line in read('execution/managed-run/lease/events.jsonl').splitlines()]
     s.pkg.require(guard[0]['event'] == 'lease_acquired' and guard[-1]['event'] == 'lease_released', 'guard lease')
@@ -126,23 +183,35 @@ def audit(read):
             for r in old_custody), 'original monitored lease')
     old_elapsed = old_custody[-1]['monotonic'] - old_guard[0]['monotonic']
     s.pkg.require(elapsed <= 180 and elapsed + old_elapsed <= 300, 'GPU window')
-    return dict(status='ACCEPT_BOUNDED_DEPLOYMENT_SHORT', package=plan['package'],
+    proof = obj('postflight-identity.json')
+    s.pkg.require(proof['passed'] and
+        proof['plan_sha256'] == hashlib.sha256(read('plan.json')).hexdigest() and
+        proof['execution_result_sha256'] == hashlib.sha256(read('execution/result.json')).hexdigest(),
+        'postflight evidence identity')
+    for name in POSTPROCESS_ONLY:
+        s.pkg.require(hashlib.sha256(read('frozen-source/' + name)).hexdigest() ==
+                      plan['sources'][name], 'runtime-era verifier snapshot differs')
+    return dict(status='NO_GO_MEMORY_STOP_COMBINATION', package=plan['package'],
         deployment=plan['deployment'], rollback=plan['rollback'], models=2,
-        responses=responses, real_tools=2, interrupted_streams=2, grammar_reaped=5,
-        cpu_checks=13 + cpu['tests_run'], controls=result['counts']['controls'] + 3,
+        responses=responses, real_tools=2, validated_shutdown_streams=0,
+        incomplete_streams=streams, grammar_reaped=5,
+        original_cpu_checks=13, followup_driver_checks=cpu['tests_run'],
+        controls=result['counts']['controls'] + 3,
         driver_seconds=result['seconds'] + previous['seconds'],
         monitored_lock_seconds=elapsed + old_elapsed, separate_leases=2,
-        original_failure_preserved=True, reused_responses=4, cuda_accounting=quota,
+        original_failure_preserved=True, followup_failure_preserved=True,
+        reused_responses=4, cuda_accounting=quota,
         pressure_peak_bytes=peak, minimum_available_bytes=available, minimum_free_bytes=free,
         host_peak_bytes=final['final'].get('memory.peak'),
         critical_memory_mib=s.FLOOR_MIB, physical_ram_hard_limit=False,
+        memory_stop_accepted=False, offline_profile_checked=True,
         actual_lan_accepted=False, long_run=False, default_changed=False)
 
 
 def archive():
     from tools.serve_deploy import continuation as follow
     follow.configure()
-    plan = follow.check()
+    plan = archive_plan(follow)
     selected = {}
     for folder, prefix in ((s.OUT, ''), (follow.ORIGINAL / 'execution', 'original/')):
         for path in folder.rglob('*'):
@@ -153,6 +222,10 @@ def archive():
                     selected['execution/business/' + path.name] = path.read_bytes()
     for relative in ('plan.json', 'cpu-01/result.json', 'cpu-01/tests.log'):
         selected[relative] = (s.BASE / relative).read_bytes()
+    selected['postflight-identity.json'] = (s.BASE / 'postflight-identity.json').read_bytes()
+    for path in (s.BASE / 'frozen-source').rglob('*'):
+        if path.is_file():
+            selected['frozen-source/' + str(path.relative_to(s.BASE / 'frozen-source'))] = path.read_bytes()
     for relative in ('plan.json', 'cpu-01/result.json', 'cpu-01/tests.log',
                      'cpu-02/result.json', 'cpu-02/tests.log',
                      'deployment/profile.json', 'backend-package/manifest.json'):
@@ -167,13 +240,13 @@ def archive():
             selected['source/' + path.name] = path.read_bytes()
     secrets = [s.pkg.read(plan['policy'])['gateway_token']]
     secrets += [c['api_key'] for c in s.pkg.read(plan['frontend'])['clients']]
-    for path in (s.OUT / 'business').glob('*-request.json'):
-        body = s.pkg.read(path).get('body') or {}
-        if body.get('cancel_token'):
-            secrets.append(body['cancel_token'])
+    for folder in (s.OUT, follow.ORIGINAL / 'execution'):
+        for path in (folder / 'business').glob('*-request.json'):
+            body = s.pkg.read(path).get('body') or {}
+            if body.get('cancel_token'):
+                secrets.append(body['cancel_token'])
     for name, raw in selected.items():
-        s.pkg.require(b'PRIVATE KEY' not in raw and
-                      not any(secret.encode() in raw for secret in secrets), 'secret in ' + name)
+        no_secrets(name, raw, secrets)
     result = audit(selected.__getitem__)
     ARCHIVE.mkdir(parents=True)
     records = []
@@ -186,8 +259,8 @@ def archive():
     s.pkg.save(ARCHIVE / 'manifest.json', dict(records=records,
         archive_sha256=s.pkg.sha(ARCHIVE / 'records.tar.gz')))
     s.pkg.save(ARCHIVE / 'result.json', result)
-    s.pkg.save(s.BASE / 'accepted-package.json', dict(package=plan['package'],
-        acceptance=result['status'], deployment=plan['deployment'],
+    s.pkg.save(s.BASE / 'bounded-outcome.json', dict(package=plan['package'],
+        status=result['status'], memory_stop_accepted=False, deployment=plan['deployment'],
         archive=str(ARCHIVE), archive_sha256=s.pkg.sha(ARCHIVE / 'records.tar.gz')))
     return verify()
 

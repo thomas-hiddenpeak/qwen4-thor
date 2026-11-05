@@ -1,0 +1,124 @@
+{
+  "status": "NO_GO_MEMORY_STOP_COMBINATION",
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-bounded-deploy-20261105/backend-package",
+    "manifest_sha256": "c16534700168736c46cf67fa18b5f4b353a56790e226618cf35f8dbe51427d3d",
+    "binary_sha256": "a56bd448ba45e31ba223e73212090a3aea76be9d9a17b06ad0d13c44196544a6"
+  },
+  "deployment": {
+    "profile": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-bounded-deploy-20261105/deployment/profile.json",
+    "sha256": "6532435b6a9eb7a3fe3671928af3ea58a007a88595cd9fbdc428409697aed2cf",
+    "services_started": false,
+    "installation": false,
+    "business_acceptance": false,
+    "actual_lan_acceptance": false,
+    "physical_ram_hard_limit": false,
+    "long_run": false
+  },
+  "rollback": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-current-managed-20261105/backend-package",
+    "manifest_sha256": "41dc8fdb9ff3b2e0fe8d216267ed0d8d4875dcd27a43cf361f5ce42d1b32c521",
+    "binary_sha256": "a56bd448ba45e31ba223e73212090a3aea76be9d9a17b06ad0d13c44196544a6"
+  },
+  "models": 2,
+  "responses": [
+    {
+      "client": "alpha",
+      "part": "read",
+      "usage": {
+        "prompt_tokens": 564,
+        "completion_tokens": 55,
+        "total_tokens": 619
+      },
+      "seconds": 3.845346124842763
+    },
+    {
+      "client": "alpha",
+      "part": "answer",
+      "usage": {
+        "prompt_tokens": 890,
+        "completion_tokens": 58,
+        "total_tokens": 948
+      },
+      "seconds": 4.04984337487258
+    },
+    {
+      "client": "beta",
+      "part": "read",
+      "usage": {
+        "prompt_tokens": 564,
+        "completion_tokens": 55,
+        "total_tokens": 619
+      },
+      "seconds": 3.7425293559208512
+    },
+    {
+      "client": "beta",
+      "part": "answer",
+      "usage": {
+        "prompt_tokens": 890,
+        "completion_tokens": 58,
+        "total_tokens": 948
+      },
+      "seconds": 4.053561449050903
+    }
+  ],
+  "real_tools": 2,
+  "validated_shutdown_streams": 0,
+  "incomplete_streams": {
+    "active": {
+      "envelopes": 29,
+      "terminal_complete": false,
+      "outcome": "REQUEST_OUTCOME_UNKNOWN",
+      "success": false
+    },
+    "queued": {
+      "envelopes": 1,
+      "terminal_complete": false,
+      "outcome": "REQUEST_OUTCOME_UNKNOWN",
+      "success": false
+    }
+  },
+  "grammar_reaped": 5,
+  "original_cpu_checks": 13,
+  "followup_driver_checks": 4,
+  "controls": 7,
+  "driver_seconds": 128.79816524893977,
+  "monitored_lock_seconds": 106.27388697699644,
+  "separate_leases": 2,
+  "original_failure_preserved": true,
+  "followup_failure_preserved": true,
+  "reused_responses": 4,
+  "cuda_accounting": {
+    "q4t_cuda_quota_enabled": 1.0,
+    "q4t_cuda_quota_limit_bytes": 118728574156.0,
+    "q4t_cuda_quota_charged_bytes": 85674644376.0,
+    "q4t_cuda_quota_reserved_bytes": 0.0,
+    "q4t_cuda_quota_live_bytes": 85674644376.0,
+    "q4t_cuda_quota_releasing_bytes": 0.0,
+    "q4t_cuda_quota_pending_bytes": 0.0,
+    "q4t_cuda_quota_unknown_bytes": 0.0,
+    "q4t_cuda_quota_peak_bytes": 85736868120.0,
+    "q4t_cuda_quota_entries": 1615.0,
+    "q4t_cuda_quota_entry_capacity": 16384.0,
+    "q4t_cuda_quota_stream_entries": 7.0,
+    "q4t_cuda_quota_stream_capacity": 256.0,
+    "q4t_cuda_quota_poisoned": 0.0,
+    "q4t_cuda_quota_byte_rejections_total": 0.0,
+    "q4t_cuda_quota_entry_rejections_total": 0.0,
+    "q4t_cuda_quota_stream_rejections_total": 0.0,
+    "q4t_cuda_quota_contract_failures_total": 0.0,
+    "q4t_cuda_quota_backend_failures_total": 0.0
+  },
+  "pressure_peak_bytes": 2281701376,
+  "minimum_available_bytes": 32488783872,
+  "minimum_free_bytes": 12981727232,
+  "host_peak_bytes": 16872251392,
+  "critical_memory_mib": 30720,
+  "physical_ram_hard_limit": false,
+  "memory_stop_accepted": false,
+  "offline_profile_checked": true,
+  "actual_lan_accepted": false,
+  "long_run": false,
+  "default_changed": false
+}

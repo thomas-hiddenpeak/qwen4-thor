@@ -44,10 +44,14 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 用户授权按[有界交付队列](SERVE_BOUNDED_DELIVERY_2026-11-05.md)继续：
 先部署/资源组合，再单进程配额与公平；全物理RAM另给可行性结论。
 PR #10已合入main c9759954，两项host检查通过，合并树与3fef5671相同。
-本批离线部署profile及驱动13项CPU通过；原短验4成功响应/2真实工具后
-因驱动误取CUDA扩展指标失败，正常清理/guard/custody完成、GPU/锁释放。
-原压力两请求未执行，已定向修复并准备[额外1启动补验](SERVE_BOUNDED_FOLLOWUP_2026-11-05.md)，
-原FAILED保持，组合尚未接受。[物理RAM审查](SERVE_PHYSICAL_RAM_DECISION_2026-11-05.md)
+本批[部署检查工具及有限结论](SERVE_BOUNDED_DEPLOYMENT_RESULT_2026-11-05.md)
+已收尾：原13 CPU、4定向驱动和8离线报告检查通过，4完整TLS响应/2真实
+工具独立复核。授权补验已执行2请求；加压2.125GiB后MemFree保留线先
+限制下一块，未触发30GiB退场，明确NO_GO_MEMORY_STOP_COMBINATION。
+两轮FAILED与2截断流保留，不再追加模型；169记录独立重建，累计2启动/
+106.274秒受监控锁，自有服务/GPU/原锁释放。c1653470不提升为已接受包，
+继续使用41dc8fdb；下一项独立开发为RPM/TPM及准入公平，尚未开始。
+[物理RAM审查](SERVE_PHYSICAL_RAM_DECISION_2026-11-05.md)
 以NO_GO_CURRENT_CONTRACT结束本轮可行性关卡。长稳由用户负责，实际LAN/正式
 通知选择启用时验收，既有默认与回退包不变。下方暂停描述为历史边界。
 
@@ -67,7 +71,7 @@ PR #10已合入main c9759954，两项host检查通过，合并树与3fef5671相�
 迁移后只续最终回答，重复零执行/6拒绝/永久键通过。GPU92.904秒完成，
 273原件独立重放；6身份/监听/GPU/原锁释放，SOAR仍masked、容器空。
 [最新交接](SERVE_CLOSEOUT_HANDOFF_2026-11-05.md)列明三项收尾及四组
-剩余边界；当前分支提交待PR合入，默认与研究分支不改，不自动扩展
+剩余边界；三项已随PR #10合入，默认与研究分支不改，不自动扩展
 长稳、部署、公平或物理RAM。下方“暂停/未验”保留为此前历史记录。
 
 [PR #9已合入main](MTP_PREFILL_MAINLINE_2026-11-05.md)，合并提交cdea60e0，

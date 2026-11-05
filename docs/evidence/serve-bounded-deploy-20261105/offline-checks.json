@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "records": 169,
+  "audited_status": "NO_GO_MEMORY_STOP_COMBINATION",
+  "report_tests": 8,
+  "models": 0,
+  "http": 0,
+  "gpu": 0,
+  "sources": {
+    "tools/serve_deploy/report.py": "033ca5b9626ac0690ae383b04285d69b57cd90d807186106a14838e8b80b1d63",
+    "tools/serve_deploy/test_report.py": "d7117f9a24a412f361fa12e4376168937077516636d0cd157d70e66fe5efe237"
+  },
+  "archive_sha256": "ff88d8d666c6414664f1574ee613307cf49d115091442a309738531d4297af70",
+  "result_sha256": "e3d1d7048c8ddf1aa895e38fcfa479261ec351d7331c716e1701ed4f614d679a",
+  "tests_log": "test_actual_failed_fixture_is_not_memory_stop_acceptance (tools.serve_deploy.test_report.Evidence.test_actual_failed_fixture_is_not_memory_stop_acceptance) ... ok\ntest_failure_reason_cannot_be_erased (tools.serve_deploy.test_report.Evidence.test_failure_reason_cannot_be_erased) ... ok\ntest_manual_stop_cannot_claim_memory_signal (tools.serve_deploy.test_report.Evidence.test_manual_stop_cannot_claim_memory_signal) ... ok\ntest_success_label_cannot_override_failure (tools.serve_deploy.test_report.Evidence.test_success_label_cannot_override_failure) ... ok\ntest_truncated_stream_cannot_gain_done (tools.serve_deploy.test_report.Evidence.test_truncated_stream_cannot_gain_done) ... ok\ntest_credentials_are_rejected_outside_pem (tools.serve_deploy.test_report.SecretFilter.test_credentials_are_rejected_outside_pem) ... ok\ntest_pem_variants_are_rejected (tools.serve_deploy.test_report.SecretFilter.test_pem_variants_are_rejected) ... ok\ntest_verifier_literal_is_not_a_private_key (tools.serve_deploy.test_report.SecretFilter.test_verifier_literal_is_not_a_private_key) ... ok\n\n----------------------------------------------------------------------\nRan 8 tests in 0.040s\n\nOK\n"
+}
