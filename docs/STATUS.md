@@ -41,6 +41,11 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+用户已授权[最后1次模型启动与默认交付](SERVE_CLIENT_GOVERNANCE_COMPLETION_2026-11-05.md)：
+只补同ELF无策略JSON/SSE两请求，累计3启动/24生成/480秒GPU上限；
+原已通过治理与工具证据复用。准备有界驱动和精确回退，默认尚未替换，
+PR #12仍draft；通过后直接交付并完成主线收尾，不扩工业化或长稳。
+
 [RPM/TPM与客户端公平准入已限定通过](SERVE_CLIENT_GOVERNANCE_RESULT_2026-11-05.md)：
 v2可选原子分钟账/结算、准备后轮转与等槽份额完成，303公共host/
 269必需/9结构化及24不同Python案例通过。2模型累计16生成，12完整
