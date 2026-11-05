@@ -1,5 +1,9 @@
 # REFERENCE.md — 参考项目说明
 
+2026-11-06用户新授权的[全量增量审查与两个有界工作包](REFERENCE_REFRESH_2026-11-06.md)
+已启动。覆盖20个已登记GitHub项目、TileKernels与模型报告，冻结当日
+上游身份；以下本地pin继续只读保留，不应误称为上游最新版本。
+
 KVMem、NInfer、ActKV、Strata、Megatron Inference 的本轮源码研究与适用
 特性吸收已于2026-10-29收尾。固定版本、实际采用的能力、未移植算法与
 重新启动条件见[阶段收尾](REFERENCE_LEARNING_CLOSEOUT_2026-10-29.md)。
@@ -140,8 +144,9 @@ reference/
 - 固定 commit: `c1c8e3e` (main, 2026-09-15)
 - 背景: prefill 瓶颈定位在 QSA 稀疏 attention (nsys 2026-09-15:
   SparseAttentionKernel 78.8% + IndexerLogitsKernel 5.8%), 需要参考
-  领先实现。Thor SM110a 为 Blackwell, 与 SM100/SM120 共享 tcgen05/TMA
-  等核心特性, 这些代码路径可直接参考。
+  领先实现。这是历史采样比例，不代表当前默认。Thor SM110a的指令、
+  shared容量和算子分派须分别核对；不能由Blackwell名称推导SM100/
+  SM120路径、tcgen05或TMA变体可直接执行。当前QSA适配限制见上方增量审查。
 - **重点研读**:
   1. `include/flashinfer/attention/blackwell/fmha_cutlass_sm100.cuh` +
      `blackwell/{collective,kernel,device}/` — Blackwell FMHA (CUTLASS,

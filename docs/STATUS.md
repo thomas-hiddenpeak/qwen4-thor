@@ -2,6 +2,16 @@
 
 更新：2026-11-06。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+## 全部参考项目增量目标
+
+[首轮清单与工作包](REFERENCE_REFRESH_2026-11-06.md)已冻结：20个GitHub
+项目、TileKernels及模型报告，固定当日身份，5仓无增量/15仓更新；
+80份重点源码与查询原件归档，明确大仓compare截断，非全提交审计。
+选择R1层类型别名/明确拒绝、R2可选QSA prefill分段计时；未验收。
+FlashInfer架构、FA4输入及TokenSpeed顺序合同不支持直接替换默认。
+继续不追加测试/HTTP/GPU/CI，不部署；先复用有效分支完成开发准备，
+旧GDN NO_GO及接受默认保留，其余工业化/分布式/近似淘汰不扩展。
+
 ## MoE grouped GEMM静态审查收尾
 
 [静态审查与候选取舍](MOE_GROUPED_STATIC_REVIEW_2026-11-06.md)已完成：
@@ -13,7 +23,7 @@ fixed-R含空组时平均M为1，没有依据改为活跃均值；heuristic已�
 旧RoutingA实际U40及FP32输出先转BF16的用例边界已登记，测试未改。
 223接受来源与主线一致，研究原3个GDN差异仍NO_GO；默认c1bdb0a7/
 0efc2c0d保持。只有离线重算/文档，构建、测试、HTTP和GPU均0；
-文档推送显式skip CI。下一优先建议为QSA prefill静态审查，尚未启动。
+文档推送显式skip CI。后续QSA prefill审查现归入上方增量目标R2。
 
 ## GDN qkv/z BF16输入转换复用研究收尾
 

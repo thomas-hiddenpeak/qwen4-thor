@@ -1,0 +1,2564 @@
+{
+  "captured_at": "2026-11-05T22:18:57.876140+00:00",
+  "scope": "20 registered GitHub repositories; compare files/commits may be truncated by GitHub; recent commits limited to 12",
+  "projects": [
+    {
+      "repository": "garnermccloud/sglang-ssd-stream",
+      "base": "155a94967afa8eb861dbead881730c20b7d5bdb0",
+      "captured_at": "2026-11-05T22:18:29.547209+00:00",
+      "default_branch": "main",
+      "archived": false,
+      "head": "155a94967afa8eb861dbead881730c20b7d5bdb0",
+      "head_date": "2026-09-10T18:48:07Z",
+      "subject": "Document clean RTX default validation and mixed benchmark results",
+      "release": "v0.3.0",
+      "release_status": 0,
+      "compare_status": "identical",
+      "ahead_by": 0,
+      "behind_by": 0,
+      "compare_total_commits": 0,
+      "returned_commits": 0,
+      "returned_files": 0,
+      "release_metadata": {
+        "tag_name": "v0.3.0",
+        "prerelease": false,
+        "published_at": "2026-09-10T18:51:15Z",
+        "html_url": "https://github.com/garnermccloud/sglang-ssd-stream/releases/tag/v0.3.0"
+      },
+      "commit_url": "https://github.com/garnermccloud/sglang-ssd-stream/commit/155a94967afa8eb861dbead881730c20b7d5bdb0",
+      "compare_scope": "GitHub first page only; files capped at 300, commits capped at 100; not an exhaustive diff audit",
+      "recent_commits": [
+        {
+          "sha": "155a94967afa8eb861dbead881730c20b7d5bdb0",
+          "subject": "Document clean RTX default validation and mixed benchmark results"
+        },
+        {
+          "sha": "9ee402523c2d5fee67b30c1aa18ebce69aadb595",
+          "subject": "Include shared-read phase contracts in the RTX runtime port"
+        },
+        {
+          "sha": "fb98f8050ae9e6ca1f45f5d9a43cf6b99d329c2a",
+          "subject": "Validate clean installs and isolate versioned CUDA toolkit views"
+        },
+        {
+          "sha": "dfb7e32d01b500ecede71cede63d02c54f4f61a5",
+          "subject": "Enable isolated adaptive RTX runtime and atomic versioned installation"
+        },
+        {
+          "sha": "216c7026f5628b25fe8107e2020fee6d35bde215",
+          "subject": "Publish qualified RTX PRO 6000 adaptive MTP source and evidence"
+        },
+        {
+          "sha": "176a522ef9d6dbb5056ae1f467fe49af0f1258a5",
+          "subject": "Add grouped CPU offload for smaller NVIDIA GPUs"
+        },
+        {
+          "sha": "5aeffa316e111d77aa6032a9956e4bcd4b752d9d",
+          "subject": "Initial release"
+        }
+      ],
+      "targeted_history": []
+    },
+    {
+      "repository": "vllm-project/vllm",
+      "base": "67111973eeb104e83bc6707a2d0f139737b711a0",
+      "captured_at": "2026-11-05T22:18:29.530761+00:00",
+      "default_branch": "main",
+      "archived": false,
+      "head": "bc9a3ac5dc77981f7185ac402e96e47706c4e93e",
+      "head_date": "2026-11-05T22:03:41Z",
+      "subject": "[Bugfix] Update humming-kernels version to 0.1.19 (#64802)",
+      "release": "v0.33.0rc3",
+      "release_status": 0,
+      "compare_status": "ahead",
+      "ahead_by": 3450,
+      "behind_by": 0,
+      "compare_total_commits": 3450,
+      "returned_commits": 100,
+      "returned_files": 300,
+      "release_metadata": {
+        "tag_name": "v0.33.0rc3",
+        "prerelease": false,
+        "published_at": "2026-11-02T10:10:05Z",
+        "html_url": "https://github.com/vllm-project/vllm/releases/tag/v0.33.0rc3"
+      },
+      "commit_url": "https://github.com/vllm-project/vllm/commit/bc9a3ac5dc77981f7185ac402e96e47706c4e93e",
+      "compare_scope": "GitHub first page only; files capped at 300, commits capped at 100; not an exhaustive diff audit",
+      "recent_commits": [
+        {
+          "sha": "bc9a3ac5dc77981f7185ac402e96e47706c4e93e",
+          "subject": "[Bugfix] Update humming-kernels version to 0.1.19 (#64802)"
+        },
+        {
+          "sha": "ef8870b09f501943c0eb7d2778715e813cd821fd",
+          "subject": "[Bugfix][Multimodal] Encoder CUDA graph: cap each graph's frame slots at its token budget (#65761)"
+        },
+        {
+          "sha": "644f0520529fda4381fa9d86663acd3496403697",
+          "subject": "[Perf][MiniMax-M3] Don't sync when building sparse-attention prefill metadata (#65883)"
+        },
+        {
+          "sha": "24a49203eeb9f2d61ef8d7b86e89470d26e45dea",
+          "subject": "[MoE][DeepEPV2] Add PaddedStandard activation format (#54109)"
+        },
+        {
+          "sha": "073049553c20514625761e8fcafed58d956996bc",
+          "subject": "[Build] Bump vllm-flash-attn to compress fatbins with --compress-mode=size (#65518)"
+        },
+        {
+          "sha": "d60c4404e2b5c4ffb54873fb18e06a335e1f2a94",
+          "subject": "[Kernel] Integrate FA4 SM90 FP8 MMA for Gemma-4 full attention (#60372)"
+        },
+        {
+          "sha": "14d3ec2b89385a80829b964dec8d387b0448d6f7",
+          "subject": "[Perf][Core] Cache parked async KV loads' admission reservations (#65285)"
+        },
+        {
+          "sha": "ef70c6a23fc4875bf014345c264d06e03e174719",
+          "subject": "[Bugfix][Distributed] Fix PP rank derivation when prefill context parallelism is enabled (#65539)"
+        },
+        {
+          "sha": "df05643664168683efa5328bc58a3227f8fbd9a5",
+          "subject": "[Quant] LUT-B MoE with MXFP8 activations: native Rubin kernel + emulation (#62759)"
+        },
+        {
+          "sha": "cb95d994f4ec066b75672035ca3ae7e1c9745e84",
+          "subject": "[Perf][ToolParser] Scan required-tool streaming deltas incrementally (#60882)"
+        },
+        {
+          "sha": "beb72da79fe63262086418324c1101ad537e6601",
+          "subject": "[Bugfix][Frontend] Accept Anthropic thinking.type=between_tools on the Messages API (#65954)"
+        },
+        {
+          "sha": "96a6a37e86f803e564b91c436a5c37005dad366a",
+          "subject": "[ROCm][Build][2/5] Speed up ROCm build: split the topk softplus-sqrt instantiations per dtype (#62717)"
+        }
+      ],
+      "targeted_history": [
+        {
+          "endpoint": "repos/vllm-project/vllm/commits?sha=bc9a3ac5dc77981f7185ac402e96e47706c4e93e&path=vllm/models/qwen4_exp/&per_page=15",
+          "commits": [
+            {
+              "sha": "c2bc949186b5cffa5c7b9dea18c973089e7f98ef",
+              "subject": "[Bugfix] Honor checkpoint FP8 KV scales in Qwen4Exp QSA (#65812)"
+            },
+            {
+              "sha": "83fcf52ec34afae4fccce6772c1bef12260aa9f3",
+              "subject": "[Perf][Qwen4Exp] Fuse HyperConnection up projection and gate mix for long prefills (#64898)"
+            },
+            {
+              "sha": "4d7230955b44404e40e380fd637bc344e2cb3fbc",
+              "subject": "[Perf][Qwen4Exp] Route the PLE shard copy through copy_weight_ (#65692)"
+            },
+            {
+              "sha": "9b34fec74490b1549c2461ca7d25574100b1d95c",
+              "subject": "[Bugfix][ROCm][Qwen4Exp] Remap Quark layer names for the MTP draft model (#61770)"
+            },
+            {
+              "sha": "9a56d4fec6b0a30a0a989f1cd06cd3c2f7325619",
+              "subject": "[Perf][Qwen4Exp] Share the QSA top-k buffer across layers (#65619)"
+            },
+            {
+              "sha": "9b14bef3be65331e0e7754a266b0d91c47b48a3e",
+              "subject": "[Bugfix][Kernel] Fix cooperative top-k dispatch on SM110 (#56102)"
+            },
+            {
+              "sha": "900b8b08e2552c28a004e075866b5e1a39b99ac3",
+              "subject": "[Perf][Qwen3.8] Add SM103 skinny GEMM plans for TP=1 (#64650)"
+            },
+            {
+              "sha": "58f245c69dd3f9ee3449529681e3f97edbce927d",
+              "subject": "[Kernel] Qwen4Exp: compute HyperConnection and PLE gate row offsets in int64 (#64820)"
+            },
+            {
+              "sha": "b44a48cef1c08cbdc30a0953c724f18cd434e612",
+              "subject": "[Qwen4Exp] PLE disk offload (#59958)"
+            },
+            {
+              "sha": "d492ee786266e17b984a5772715186a416425e17",
+              "subject": "[Qwen4Exp] Remove FlashAttention dependency and standardize QSA naming (#64110)"
+            },
+            {
+              "sha": "3765000a372042125f9a17c203558368a21f0803",
+              "subject": "[Perf][Qwen3.8] Add SM100 skinny GEMM plans for TP=1 (#64482)"
+            },
+            {
+              "sha": "45fd60d4d556d4a9eb7894287eb67dd28f02dc2b",
+              "subject": "[ROCm][Qwen4Exp] Enable fp8 KV and indexer caches on the AMD QSA path (#61529)"
+            },
+            {
+              "sha": "af4db2a675f79ed20a8888ee0ec0c71ad581ad25",
+              "subject": "[Quantization] Enable per-layer fused shared expert selection (#61457)"
+            },
+            {
+              "sha": "a91a1d06b72a53d6ba05840164b27a61e3b03d4e",
+              "subject": "[Bugfix][Model] Qwen3.8-Flash-Next: load checkpoints with quantized q/k/v and a BF16 QSA indexer (#62318)"
+            },
+            {
+              "sha": "90309f6b742cdb1d6305778b81063918cf61be81",
+              "subject": "[Bugfix][Qwen4Exp] Reserve QSA indexer prefill workspace during memory profiling (#60490)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": "antirez/ds4",
+      "base": "8db1d1d155cb0400a86a86b9c62d0defb3a6148b",
+      "captured_at": "2026-11-05T22:18:29.459644+00:00",
+      "default_branch": "main",
+      "archived": false,
+      "head": "b3f50180ec2c7324892be1f50bc83555ccb8d5e7",
+      "head_date": "2026-11-03T15:55:02Z",
+      "subject": "Read half-aligned Qwen Q2 weight rows correctly on Metal",
+      "release": null,
+      "release_status": 1,
+      "compare_status": "ahead",
+      "ahead_by": 301,
+      "behind_by": 0,
+      "compare_total_commits": 301,
+      "returned_commits": 100,
+      "returned_files": 300,
+      "release_metadata": {
+        "tag_name": null,
+        "prerelease": null,
+        "published_at": null,
+        "html_url": null
+      },
+      "commit_url": "https://github.com/antirez/ds4/commit/b3f50180ec2c7324892be1f50bc83555ccb8d5e7",
+      "compare_scope": "GitHub first page only; files capped at 300, commits capped at 100; not an exhaustive diff audit",
+      "recent_commits": [
+        {
+          "sha": "b3f50180ec2c7324892be1f50bc83555ccb8d5e7",
+          "subject": "Read half-aligned Qwen Q2 weight rows correctly on Metal"
+        },
+        {
+          "sha": "5e3a3449e2e3b44dcd47d07ab31f9d81706356a4",
+          "subject": "Check both staging widths in the Qwen compact expert dispatch test"
+        },
+        {
+          "sha": "cd1c5507b660a2e0348520d34501dac1bdb2aafb",
+          "subject": "Preserve resident Qwen prefill speed with speculative decoding"
+        },
+        {
+          "sha": "2cd0ae7064ce55dfcfd251841df68919ce182fd3",
+          "subject": "Keep M6 Qwen tuning separate from DeepSeek and GLM kernel selection"
+        },
+        {
+          "sha": "5c9ed63c16cb9d72e6d9e0ecc5bdd835f138fc61",
+          "subject": "Keep generated Qwen research dumps out of the release tree"
+        },
+        {
+          "sha": "7bba0f7d2cea4633006c5b004674a2c9791276fd",
+          "subject": "Load Qwen version 2 checkpoints and rebuild missing predictor history on demand"
+        },
+        {
+          "sha": "a2798605b7b0b0c3f32218322db8fbc0bc94039b",
+          "subject": "Use resident Qwen arithmetic when experts are streamed from SSD"
+        },
+        {
+          "sha": "0dbfd05e169ea39225a7bfcb9cb202755c3f46ee",
+          "subject": "Keep Metal-only Qwen predictor kernel tests out of the CUDA binary"
+        },
+        {
+          "sha": "afd33efab25b8025412f17529b5e071bda63695a",
+          "subject": "Keep current M5 expert tuning alongside the streamed Metal path"
+        },
+        {
+          "sha": "c942a90fdd00247d2be37b8740eaf8e289748709",
+          "subject": "Restore Qwen predictor scratch views after the fused resident expert path"
+        },
+        {
+          "sha": "4ef9e4d0d0a6b4759ff3485196be5ef3d11cb461",
+          "subject": "Merge #1056: Giorgio Oppo’s Qwen3.8 Metal SSD expert streaming"
+        },
+        {
+          "sha": "9eb4a12f253407719f5a14d5de7b1a46267b0c12",
+          "subject": "Merge upstream/main into qwen-kernel-opt"
+        }
+      ],
+      "targeted_history": []
+    },
+    {
+      "repository": "lightseekorg/tokenspeed",
+      "base": "78c6518720e41b7a4a82697e593bda7a5ab05dc3",
+      "captured_at": "2026-11-05T22:18:29.588261+00:00",
+      "default_branch": "main",
+      "archived": false,
+      "head": "23791cea04c42d5b6c50980914ccca5a5c4eeb9e",
+      "head_date": "2026-11-05T21:30:00Z",
+      "subject": "feat(kimi-k31): support Kimi-K3.1 (#3015)",
+      "release": "v0.1.1",
+      "release_status": 0,
+      "compare_status": "ahead",
+      "ahead_by": 1067,
+      "behind_by": 0,
+      "compare_total_commits": 1067,
+      "returned_commits": 100,
+      "returned_files": 300,
+      "release_metadata": {
+        "tag_name": "v0.1.1",
+        "prerelease": false,
+        "published_at": "2026-10-06T05:42:25Z",
+        "html_url": "https://github.com/lightseekorg/tokenspeed/releases/tag/v0.1.1"
+      },
+      "commit_url": "https://github.com/lightseekorg/tokenspeed/commit/23791cea04c42d5b6c50980914ccca5a5c4eeb9e",
+      "compare_scope": "GitHub first page only; files capped at 300, commits capped at 100; not an exhaustive diff audit",
+      "recent_commits": [
+        {
+          "sha": "23791cea04c42d5b6c50980914ccca5a5c4eeb9e",
+          "subject": "feat(kimi-k31): support Kimi-K3.1 (#3015)"
+        },
+        {
+          "sha": "03d3d713b3e0570abb1ee7c2fb5ff3a5df0f1c69",
+          "subject": "refactor(models): run every decoder layer on CommManager (#3079)"
+        },
+        {
+          "sha": "c1636476a57011d801326fcd8e91fd62661cdb11",
+          "subject": "perf(scheduler): defer KV-event registration until admission succeeds (#3072)"
+        },
+        {
+          "sha": "b3b376b0d2501db7932e515bfcc6c007e1db9c3d",
+          "subject": "build: pin Hopper Mooncake to 0.3.13.post20261026 (#3077)"
+        },
+        {
+          "sha": "168784aae966702866e94183819174295e6593a1",
+          "subject": "perf(kernel): launch the DSV4.1 mHC and FP8 quantizer kernels with PDL (#3002)"
+        },
+        {
+          "sha": "f1891fd2bf595851efb58c7a884fde9f988918b6",
+          "subject": "feat(spec): probabilistic drafting with block verification for DSpark and EAGLE3 chains (#2914)"
+        },
+        {
+          "sha": "65a0c7f292ceac080dd94fd5154d1ed0fb7b7f37",
+          "subject": "perf(dsv41): group paged queries and prepare native scores once (#2996)"
+        },
+        {
+          "sha": "d9f6552b5bedfd9dfe574d1c54a94030132e1a68",
+          "subject": "perf(execution): hoist input-fill list casts and cache sampling route (#3026)"
+        },
+        {
+          "sha": "3cb1e93c9d8e02102c79841b06202f6db37a0d30",
+          "subject": "perf(scheduler): expose the forward token vectors as read-only ndarray views (#3027)"
+        },
+        {
+          "sha": "42d5f8f5e513c49908d9726f1254da9a37070afe",
+          "subject": "feat(kda): add cuDNN prefill and CUDA graph support (#3005)"
+        },
+        {
+          "sha": "ca15afb288175cc168ff3d6c27e2361dd00ff0ba",
+          "subject": "feat(gdn): optimize CuTe WY verification and unify kernel dispatch (#2583)"
+        },
+        {
+          "sha": "95ebe619731a8179ae493c293e73b18c5bbde3ef",
+          "subject": "perf(control): walk the prompt ids only when prompt logprobs need them (#3023)"
+        }
+      ],
+      "targeted_history": []
+    },
+    {
+      "repository": "flashinfer-ai/flashinfer",
+      "base": "c1c8e3e5821ac65d9710c7e1d540d65847013a3c",
+      "captured_at": "2026-11-05T22:18:29.562336+00:00",
+      "default_branch": "main",
+      "archived": false,
+      "head": "096ca39406ef58a89f016a37b861e48786daa1c1",
+      "head_date": "2026-11-05T22:05:12Z",
+      "subject": "perf(cake_dense_projection_det_gemm): launch the K1 entry points from a binding of their key (#8843)",
+      "release": "v0.7.3",
+      "release_status": 0,
+      "compare_status": "ahead",
+      "ahead_by": 2471,
+      "behind_by": 0,
+      "compare_total_commits": 2471,
+      "returned_commits": 100,
+      "returned_files": 300,
+      "release_metadata": {
+        "tag_name": "v0.7.3",
+        "prerelease": false,
+        "published_at": "2026-11-04T05:57:12Z",
+        "html_url": "https://github.com/flashinfer-ai/flashinfer/releases/tag/v0.7.3"
+      },
+      "commit_url": "https://github.com/flashinfer-ai/flashinfer/commit/096ca39406ef58a89f016a37b861e48786daa1c1",
+      "compare_scope": "GitHub first page only; files capped at 300, commits capped at 100; not an exhaustive diff audit",
+      "recent_commits": [
+        {
+          "sha": "096ca39406ef58a89f016a37b861e48786daa1c1",
+          "subject": "perf(cake_dense_projection_det_gemm): launch the K1 entry points from a binding of their key (#8843)"
+        },
+        {
+          "sha": "3985cf93e2968aa06f2b9447120a60583917bffd",
+          "subject": "fix(gemm): validate cached GEMV tactics while preserving warmup reuse (#8727)"
+        },
+        {
+          "sha": "fc63d8ec43a15b7df0c21bfbdfc8bbb6c74a9499",
+          "subject": "feat(autotuner): more reproducible, auditable tactic selection and representative routed-MoE profiling routes (#8451)"
+        },
+        {
+          "sha": "f16f4ec95af5bbfcb5b2211aea9124f5f27144ef",
+          "subject": "feat(mamba): add inference causal conv1d prefill and state update (#8273)"
+        },
+        {
+          "sha": "824a58c1dc52bcb4ea7082de431310dfe52bd587",
+          "subject": "perf(cake_rmsnorm_silu_gate_train): FP32 two-sum fold on SM100 from 800 rows per SM (#8840)"
+        },
+        {
+          "sha": "48903c68b22d8ef52d6294b5af8f2855928ec355",
+          "subject": "perf(cake_hopper_msa): single-pass exact top-k select for the plain 2-chunk program (#8839)"
+        },
+        {
+          "sha": "5a94f96ec0d0d4a909fcfefaf23ada0574ef6551",
+          "subject": "fix(cake_mla): keep small V block scales in the NVFP4 MLA paged decode wide route (#7163) (#8837)"
+        },
+        {
+          "sha": "8550527512be6b5f1b75b0096ddea50cdcb07f65",
+          "subject": "feat(batch_invariant): bias for `mm_bf16(batch_invariant=True)` (#8535)"
+        },
+        {
+          "sha": "752758c02c4ada7b0653864bda2163e294c2e0ea",
+          "subject": "perf(cake_comm): keep one WGMMA group in flight in the SM90 QKV norm-RoPE exchange (#8826)"
+        },
+        {
+          "sha": "887514eb356dc065cf1bc0884515f5211af59511",
+          "subject": "fix(norm): cap the RMSNorm cluster at the device's largest launchable size (#8752)"
+        },
+        {
+          "sha": "f53e2001fe6c1d1fbf7de1251fe87c1f81f67e5c",
+          "subject": "perf(gemm): avoid constructing a Stream in _get_stream_cache_buf (#8696)"
+        },
+        {
+          "sha": "dcf0753fac6d691cb46b6034d6d82e0410972613",
+          "subject": "fix(cake_gdn_det): key the chunk-table cache on the dhu_scan pin (#8834)"
+        }
+      ],
+      "targeted_history": []
+    },
+    {
+      "repository": "Dao-AILab/flash-attention",
+      "base": "0dc2cb48e484894c48a6cc5c6503fa5cded350c3",
+      "captured_at": "2026-11-05T22:18:35.441921+00:00",
+      "default_branch": "main",
+      "archived": false,
+      "head": "34a06b99d60ea26bfce91432c9fbb6de1a1b94ec",
+      "head_date": "2026-11-05T17:54:21Z",
+      "subject": "[FA2] Don't dispatch Is_even_MN kernels when leftpad_k / seqused_k is set (#3075) (#3092)",
+      "release": "v2.8.3.post2",
+      "release_status": 0,
+      "compare_status": "ahead",
+      "ahead_by": 60,
+      "behind_by": 0,
+      "compare_total_commits": 60,
+      "returned_commits": 60,
+      "returned_files": 105,
+      "release_metadata": {
+        "tag_name": "v2.8.3.post2",
+        "prerelease": false,
+        "published_at": "2026-10-13T05:41:17Z",
+        "html_url": "https://github.com/Dao-AILab/flash-attention/releases/tag/v2.8.3.post2"
+      },
+      "commit_url": "https://github.com/Dao-AILab/flash-attention/commit/34a06b99d60ea26bfce91432c9fbb6de1a1b94ec",
+      "compare_scope": "GitHub first page only; files capped at 300, commits capped at 100; not an exhaustive diff audit",
+      "recent_commits": [
+        {
+          "sha": "34a06b99d60ea26bfce91432c9fbb6de1a1b94ec",
+          "subject": "[FA2] Don't dispatch Is_even_MN kernels when leftpad_k / seqused_k is set (#3075) (#3092)"
+        },
+        {
+          "sha": "2ed4a1f0fc0e36a6ca7b861bfbf86ebb82c4c592",
+          "subject": "[mla] pad all dense 2CTA MQA head counts in-kernel (#3140)"
+        },
+        {
+          "sha": "5f7b05a78bf05cb33fb8ed07f74d2b82c9839dcd",
+          "subject": "[mla] pad dense 2CTA MQA heads to the 128-row tile for 65-127 heads (#3118)"
+        },
+        {
+          "sha": "1dc8232fe209e2c48b1d3e677f26d68e4b856212",
+          "subject": "[mla] expose kernel cta choice for autotuning (#3091)"
+        },
+        {
+          "sha": "54b044c8cf897dfcc2577a665559d1bfda0bfc80",
+          "subject": "[CuTe] Add explicit forward config autotuning (#2743)"
+        },
+        {
+          "sha": "33555791fd24890eba0fa461b1a629a24d615806",
+          "subject": "[CuTe] Tune GB300 forward scheduling (#2738)"
+        },
+        {
+          "sha": "34640b0dbc1a0e1877b9eab9916c6e88cb394f3a",
+          "subject": "[CuTe] Add explicit forward config benchmark (#2735)"
+        },
+        {
+          "sha": "b7639cbba7a669870607e04aa342277182bce739",
+          "subject": "[CuTe, SM100] Put the forward shared-memory layout in the config (#3056)"
+        },
+        {
+          "sha": "b1b7e5b1e77531144f4165b08e3672c2ad7dbf26",
+          "subject": "[CuTe] Route MLA forward through typed configs (#3054)"
+        },
+        {
+          "sha": "460e91c87ba82109e73d00b8fb854a98d43707f3",
+          "subject": "[CuTe] Route backward through typed configs (#3044)"
+        },
+        {
+          "sha": "6d6392ddc66d918b87d58e03712a7c49026cb1aa",
+          "subject": "[CuTe, SM100] Run causal forward on CLC by default (#3062)"
+        },
+        {
+          "sha": "4616f5116d33e3ba3cbb71d582caffcfcb49649c",
+          "subject": "[CuTe, SM100] Add swap-AB split-KV decode (#2973)"
+        }
+      ],
+      "targeted_history": []
+    },
+    {
+      "repository": "thomas-hiddenpeak/qwen35-thor",
+      "base": "57e29777c2aff8a97f42df6e3d9487b1327f014f",
+      "captured_at": "2026-11-05T22:18:36.471484+00:00",
+      "default_branch": "master",
+      "archived": false,
+      "head": "57e29777c2aff8a97f42df6e3d9487b1327f014f",
+      "head_date": "2026-04-02T14:11:18Z",
+      "subject": "feat: WebUI port separation (9527), docs reorganization, HTML refactor, config audit",
+      "release": "v3.1.0",
+      "release_status": 0,
+      "compare_status": "identical",
+      "ahead_by": 0,
+      "behind_by": 0,
+      "compare_total_commits": 0,
+      "returned_commits": 0,
+      "returned_files": 0,
+      "release_metadata": {
+        "tag_name": "v3.1.0",
+        "prerelease": false,
+        "published_at": "2026-03-12T13:31:09Z",
+        "html_url": "https://github.com/thomas-hiddenpeak/qwen35-thor/releases/tag/v3.1.0"
+      },
+      "commit_url": "https://github.com/thomas-hiddenpeak/qwen35-thor/commit/57e29777c2aff8a97f42df6e3d9487b1327f014f",
+      "compare_scope": "GitHub first page only; files capped at 300, commits capped at 100; not an exhaustive diff audit",
+      "recent_commits": [
+        {
+          "sha": "57e29777c2aff8a97f42df6e3d9487b1327f014f",
+          "subject": "feat: WebUI port separation (9527), docs reorganization, HTML refactor, config audit"
+        },
+        {
+          "sha": "da36deea6389275fe7d12ac3779c22e8bd777109",
+          "subject": "asr: tune temporal blending and diarization smoothing"
+        },
+        {
+          "sha": "52f5d3327b40fead813bb95cdb5cd930505d6243",
+          "subject": "perf(asr): PCA-16 + gaussian temporal kernel + LAPACK — diarization 74.1% → 79.4% (+5.3pp)"
+        },
+        {
+          "sha": "3dbb68fe9e3b7c733f3985590b9d73a459c2719a",
+          "subject": "refactor: remove V2 pipeline, speaker=true always routes to V4"
+        },
+        {
+          "sha": "510097f22a00e123f795697899786d4ca8299d74",
+          "subject": "feat: ERes2NetV2 GPU speaker encoder with buffer overwrite fixes"
+        },
+        {
+          "sha": "5718ac0cff4d6e626737e6bb6752595ecf6ad22f",
+          "subject": "asr: improve speaker diarization post-processing — segments +36%, >20s -68%"
+        },
+        {
+          "sha": "f4506455e7216b94f836a39703a7a23ef676625d",
+          "subject": "docs: update ASR_PLUGIN_AUDIT.md — P2 FSMN-VAD 已完成, 实时识别 5★"
+        },
+        {
+          "sha": "59e4bf5ae66049948b3c08a6c3b25b9c3e717a83",
+          "subject": "feat: 实时 FSMN-VAD 集成 (P2) — 替代 RMS 能量检测"
+        },
+        {
+          "sha": "a766d84fbc6dc9fccd520142df5e5a302c73c6a1",
+          "subject": "docs: update ASR_PLUGIN_AUDIT.md — P0 target_speaker + P1 WS统一 已完成, 评分升级"
+        },
+        {
+          "sha": "d1c0a819c589c93ca7980d1fac36a2c39b3b2cd6",
+          "subject": "refactor: 统一 WS 语音会话 (VoiceSession), serve.cpp -1551 行 (P1)"
+        },
+        {
+          "sha": "0a8f3f14dc35b8023363f8aef455056cfd91edc2",
+          "subject": "docs: update ASR_PLUGIN_AUDIT.md — reflect pipeline refactoring"
+        },
+        {
+          "sha": "196f01f748881b0ed773b9d4592747a2d5f723e3",
+          "subject": "refactor: extract ASR pipeline from serve.cpp to plugins/asr/"
+        }
+      ],
+      "targeted_history": []
+    },
+    {
+      "repository": "thomas-hiddenpeak/Qwen3x-Orin",
+      "base": "1688f50ecc46e6e7c5696bcae541593c1aed6e2f",
+      "captured_at": "2026-11-05T22:18:36.932439+00:00",
+      "default_branch": "main",
+      "archived": false,
+      "head": "7aa0dd2b69a77807669650c4fcbdabd37498e4cc",
+      "head_date": "2026-10-20T20:12:52Z",
+      "subject": "docs: retain exact NV palette assessment without implementation selection",
+      "release": null,
+      "release_status": 1,
+      "compare_status": "ahead",
+      "ahead_by": 317,
+      "behind_by": 0,
+      "compare_total_commits": 317,
+      "returned_commits": 100,
+      "returned_files": 300,
+      "release_metadata": {
+        "tag_name": null,
+        "prerelease": null,
+        "published_at": null,
+        "html_url": null
+      },
+      "commit_url": "https://github.com/thomas-hiddenpeak/Qwen3x-Orin/commit/7aa0dd2b69a77807669650c4fcbdabd37498e4cc",
+      "compare_scope": "GitHub first page only; files capped at 300, commits capped at 100; not an exhaustive diff audit",
+      "recent_commits": [
+        {
+          "sha": "7aa0dd2b69a77807669650c4fcbdabd37498e4cc",
+          "subject": "docs: retain exact NV palette assessment without implementation selection"
+        },
+        {
+          "sha": "1d60c627ac3712b308ad13e4d6891514884e872d",
+          "subject": "docs: close fixed NV factorization after real-weight validation"
+        },
+        {
+          "sha": "e78448451a3067ad7ce0ad1f6dedb77f17aab6e6",
+          "subject": "docs: bind fixed NV resource reconciliation and audit closed lineages"
+        },
+        {
+          "sha": "079e1b93bf32ad6828f9ff63835ad0cbbc38c994",
+          "subject": "docs: close fixed NV factor prototype at static resource gate"
+        },
+        {
+          "sha": "1de8a24abc6e807bdd1fdd7d469148485f90d78c",
+          "subject": "docs: admit exact NVFP4 factorization proof and bound native prototype"
+        },
+        {
+          "sha": "60ad8c9d90f195d05f95f394a5429859aa436f50",
+          "subject": "docs: close fixed output-lane prototype after real-weight rejection"
+        },
+        {
+          "sha": "625560498c7f290d10daead7203944613a3efc53",
+          "subject": "docs: close decode node attribution and select bounded projection prototype"
+        },
+        {
+          "sha": "02da73f7624fc9987e82d151edff637f79eb38c5",
+          "subject": "docs: bind Nsight session ownership for missing long decode capture"
+        },
+        {
+          "sha": "f0afef35c7cfc4ae7b387557d728ae765cc6187c",
+          "subject": "docs: activate staged decode acceleration goal against installed MTP"
+        },
+        {
+          "sha": "39213f1d6a66f8fee8ffdc620f29a4dbc21b2247",
+          "subject": "docs: complete qualified fixed-cap MTP delivery"
+        },
+        {
+          "sha": "d738fbb50b5ef979088c3a8f51eaab1389f69d2e",
+          "subject": "docs: record installed MTP reliability and artifact integrity"
+        },
+        {
+          "sha": "b8b62ec2b9cb2b770556d5ef9b0a3eb390305ac7",
+          "subject": "docs: qualify installed MTP capacity and recovery"
+        }
+      ],
+      "targeted_history": []
+    },
+    {
+      "repository": "thomas-hiddenpeak/thor-probe",
+      "base": "481668514756b8decda421290c32dbbc130b897f",
+      "captured_at": "2026-11-05T22:18:38.392753+00:00",
+      "default_branch": "main",
+      "archived": false,
+      "head": "481668514756b8decda421290c32dbbc130b897f",
+      "head_date": "2026-05-02T20:01:19Z",
+      "subject": "release: v1.0.0 — version bump, CHANGELOG, install.sh, CI enhancement, README polish",
+      "release": "v1.0.0",
+      "release_status": 0,
+      "compare_status": "identical",
+      "ahead_by": 0,
+      "behind_by": 0,
+      "compare_total_commits": 0,
+      "returned_commits": 0,
+      "returned_files": 0,
+      "release_metadata": {
+        "tag_name": "v1.0.0",
+        "prerelease": false,
+        "published_at": "2026-05-02T20:07:31Z",
+        "html_url": "https://github.com/thomas-hiddenpeak/thor-probe/releases/tag/v1.0.0"
+      },
+      "commit_url": "https://github.com/thomas-hiddenpeak/thor-probe/commit/481668514756b8decda421290c32dbbc130b897f",
+      "compare_scope": "GitHub first page only; files capped at 300, commits capped at 100; not an exhaustive diff audit",
+      "recent_commits": [
+        {
+          "sha": "481668514756b8decda421290c32dbbc130b897f",
+          "subject": "release: v1.0.0 — version bump, CHANGELOG, install.sh, CI enhancement, README polish"
+        },
+        {
+          "sha": "756beb74dc20fec1a8281df226f23a26a0ee9c19",
+          "subject": "ci: add enable_testing, CTest integration, and CI workflow"
+        },
+        {
+          "sha": "3192cfd17b065189047e71fd31a7d12a76fd67ae",
+          "subject": "test: add Catch2 unit tests for communis utilities (48 tests)"
+        },
+        {
+          "sha": "f0e1d4115dd9c69e13d1ba06df66d0ded7917df4",
+          "subject": "feat: add CMake install/export targets for downstream integration"
+        },
+        {
+          "sha": "bec885550c843ed85b025bfe98dc9cdf3b6f6c13",
+          "subject": "feat: add JSON Schema validation and timeout example"
+        },
+        {
+          "sha": "2b0ba12ae81c177f6e7e839f5054064fbfc19da1",
+          "subject": "feat: add --samples N and --sustain SEC CLI flags"
+        },
+        {
+          "sha": "8bbb4b616dfb039a3e55dc86a7ebe8ea49d2a161",
+          "subject": "feat: add measured vs nominal spec comparison to probe output"
+        },
+        {
+          "sha": "828231dc12a0785e32cf1e0ff040ad055d1a4f58",
+          "subject": "feat: add spec reference module for T5000/T4000 nominal data"
+        },
+        {
+          "sha": "39da69500a501eca916893956dd06942323b364b",
+          "subject": "fix: probe_main orchestration hardening (data loss, error messaging, int64_t)"
+        },
+        {
+          "sha": "dacc6c558c68ab263770281a09c3d6f8d2199200",
+          "subject": "fix: GPU probe safety (kernel races, CUDA cleanup, error codes)"
+        },
+        {
+          "sha": "361b6cc404f4d3a9fe8779b293e934151cee187a",
+          "subject": "fix: harden CMake build (remove --use_fast_math, CUDA headers PRIVATE)"
+        },
+        {
+          "sha": "b8791fadec1377124f0c4ac97666c29212888744",
+          "subject": "fix: harden probe_main orchestration and output"
+        }
+      ],
+      "targeted_history": []
+    },
+    {
+      "repository": "thomas-hiddenpeak/thor-bench",
+      "base": "3a33a90579acd5ab58f1df1f96c8df4b941a14a7",
+      "captured_at": "2026-11-05T22:18:38.470358+00:00",
+      "default_branch": "main",
+      "archived": false,
+      "head": "3a33a90579acd5ab58f1df1f96c8df4b941a14a7",
+      "head_date": "2026-05-09T05:36:23Z",
+      "subject": "fix: sm_compute catches (ws) workstream error from driver 595.58.03 cumulative bug",
+      "release": null,
+      "release_status": 1,
+      "compare_status": "identical",
+      "ahead_by": 0,
+      "behind_by": 0,
+      "compare_total_commits": 0,
+      "returned_commits": 0,
+      "returned_files": 0,
+      "release_metadata": {
+        "tag_name": null,
+        "prerelease": null,
+        "published_at": null,
+        "html_url": null
+      },
+      "commit_url": "https://github.com/thomas-hiddenpeak/thor-bench/commit/3a33a90579acd5ab58f1df1f96c8df4b941a14a7",
+      "compare_scope": "GitHub first page only; files capped at 300, commits capped at 100; not an exhaustive diff audit",
+      "recent_commits": [
+        {
+          "sha": "3a33a90579acd5ab58f1df1f96c8df4b941a14a7",
+          "subject": "fix: sm_compute catches (ws) workstream error from driver 595.58.03 cumulative bug"
+        },
+        {
+          "sha": "968b1cba8666a47fd3b6562e35442cd65b05daf0",
+          "subject": "fix: cudaPeekAtLastError pre/post-suite checks for (ws) workstream leak detection"
+        },
+        {
+          "sha": "f864ad2c81fcf6240519542376178c8097b71935",
+          "subject": "fix: context recovery — cudaEvent timeout sync + reset on any error + FP4 stub"
+        },
+        {
+          "sha": "5f5bac7fc866388986ccb6e5d4af2182454dfd4d",
+          "subject": "fix: context recovery — cudaEvent timeout sync + reset on any error + FP4 stub"
+        },
+        {
+          "sha": "7fdbd5e714d96aafdf899541116a8ee46f8d8913",
+          "subject": "chore: add build2/ to .gitignore + remove tracked build2 artifacts"
+        },
+        {
+          "sha": "31cf5aee43710c49eccb87506caf6b31ff6411bb",
+          "subject": "feat: add BENCH_REGISTER_SUITE for 6 core compute suites"
+        },
+        {
+          "sha": "8b2e07dc273ec2dedc1d36f98eda317dc81a94fb",
+          "subject": "fix: revert tcgen05 probes to return false to prevent context poisoning"
+        },
+        {
+          "sha": "0a5a7bcbc76bbc99e0c3d2c39b03ed748bb2313d",
+          "subject": "feat: add encode/decode suites, tcgen05 context recovery, CSV formatter, power monitor, sweep runner"
+        },
+        {
+          "sha": "679ed2ce02e3aba7d6a828a97045c85ec4471c06",
+          "subject": "fix: tcgen05 probe kernels — correct a_format_ bit position + replace stubs with real probes"
+        },
+        {
+          "sha": "d2c18b561fa731a1fac97d16972a7f2fd1cdc20c",
+          "subject": "docs: clarify tcgen05 stubs are probe bugs, not hardware limitations"
+        },
+        {
+          "sha": "9058c6c976195c083ea7fefe908b12bd9fddcd3c",
+          "subject": "fix: reduce thermal_throttle and multi_stream run times to fit --timeout 60s"
+        },
+        {
+          "sha": "e91f44d13fd6e7f72b6281c4d7922c829a0fd655",
+          "subject": "fix: README — FP4 sparse is working (595/480 TFLOPS), tcgen05 stubs are probe issues not hardware limits"
+        }
+      ],
+      "targeted_history": []
+    },
+    {
+      "repository": "sgl-project/sglang",
+      "base": "0a79825b7baa3e2aafd54e89097a5aba83d00b4e",
+      "captured_at": "2026-11-05T22:18:42.688828+00:00",
+      "default_branch": "main",
+      "archived": false,
+      "head": "a99c1a851e6e347f58197cb329b2d1277b035f39",
+      "head_date": "2026-11-05T21:55:17Z",
+      "subject": "[Perf] deepseek_v4: call the current DeepGEMM paged MQA API for DSv4.1 decode (#48622)",
+      "release": "v0.5.23",
+      "release_status": 0,
+      "compare_status": "diverged",
+      "ahead_by": 5017,
+      "behind_by": 8,
+      "compare_total_commits": 5017,
+      "returned_commits": 100,
+      "returned_files": 300,
+      "release_metadata": {
+        "tag_name": "v0.5.23",
+        "prerelease": false,
+        "published_at": "2026-11-02T22:14:10Z",
+        "html_url": "https://github.com/sgl-project/sglang/releases/tag/v0.5.23"
+      },
+      "commit_url": "https://github.com/sgl-project/sglang/commit/a99c1a851e6e347f58197cb329b2d1277b035f39",
+      "compare_scope": "GitHub first page only; files capped at 300, commits capped at 100; not an exhaustive diff audit",
+      "recent_commits": [
+        {
+          "sha": "a99c1a851e6e347f58197cb329b2d1277b035f39",
+          "subject": "[Perf] deepseek_v4: call the current DeepGEMM paged MQA API for DSv4.1 decode (#48622)"
+        },
+        {
+          "sha": "06c60f412ac3618339e76a670c2b714f3697d18c",
+          "subject": "[Perf] [NVIDIA] deepseek-v4.1: Reuse dequantized compressed KV in PD CP prefill (7/N) (#40421)"
+        },
+        {
+          "sha": "8898429e9b8dbae2406894445b94c0dafa4bb6f3",
+          "subject": "[Refactor] scheduler: Release every PD disaggregation exit through RequestRetirer (#48491)"
+        },
+        {
+          "sha": "542a7325f0933b5b9d2ebad5ad23f580db63cb83",
+          "subject": "[Chore] CODEOWNERS: Update code owners (#48708)"
+        },
+        {
+          "sha": "5629a8f60d8d8e3f54e0aa355af77392f85a53c2",
+          "subject": "[Doc] cookbook: Add TPU v7 to Muse Spark Open (#48277)"
+        },
+        {
+          "sha": "cf6133a16cd7b705077fa4e05366d3a2ce5e8e72",
+          "subject": "[Feat] dsa: Extend interleave-CP breakable prefill graphs to GlmMoeDs… (#46890)"
+        },
+        {
+          "sha": "c03b6b3df5fe9aa86c1d56c0cdbb30d7a9158f5c",
+          "subject": "[Perf] [NVIDIA] speculative-decoding: Add generic CUDA runtime fast paths (#47200)"
+        },
+        {
+          "sha": "e838360ffd706c1a45a390e30d4c9f01c56bf81c",
+          "subject": "[Fix] HiCache: Reject partial L3 prefetch allocation for hybrid models (#48421)"
+        },
+        {
+          "sha": "3fa242f27c5e6caca28ccd2538f2043eec654740",
+          "subject": "[CI] [AMD] spur: Run AMD CI suites on MI35x nodes scheduled through Spur (#44538)"
+        },
+        {
+          "sha": "89b264138157429f3b5615c6d1e5606b38a7d337",
+          "subject": "[Fix] [AMD] aiter: Fix garbage decode output with unified attention at page size 1 under CUDA graph (#46928)"
+        },
+        {
+          "sha": "1305b1830a1285fdfa9e4f6dbe40f51563d5576e",
+          "subject": "[Doc] cookbook: Refresh SemiAnalysis AgentX launches to InferenceX main 2ad2c9f9 (#48634)"
+        },
+        {
+          "sha": "c07ec416dabfae09b7dea24d5dd5ef84d7d1f5a7",
+          "subject": "[Perf] [NVIDIA] qwen3: Fuse prefill QK norm and RoPE with contiguous Q (#47785)"
+        }
+      ],
+      "targeted_history": [
+        {
+          "endpoint": "repos/sgl-project/sglang/commits?sha=a99c1a851e6e347f58197cb329b2d1277b035f39&path=python/sglang/srt/models/qwen4_exp.py&per_page=15",
+          "commits": [
+            {
+              "sha": "ab1464c8d377b2f816326dbe031481aa0514a713",
+              "subject": "[Fix] qwen4: Release loader parameter snapshot before quantization post-processing (#38900)"
+            },
+            {
+              "sha": "18a879f847d620ded1825c88870ad6b700a425e7",
+              "subject": "[Refactor] mem_cache: Own state and fixed payloads in the KV storage plan and size from them (#48004)"
+            },
+            {
+              "sha": "efdcb420c75e7014bc9148b085a8fcdd3154e7e1",
+              "subject": "[Perf] imports: Keep light modules off HF patches, model configs, and the scheduler (#47731)"
+            },
+            {
+              "sha": "80afdc1280bf37c1440e6e7009741cbc94e2fba0",
+              "subject": "[Feat] xpu: Consolidate simple XPU enablements (#46623)"
+            },
+            {
+              "sha": "306a699a6096e761485053af1c7d3e9113f64e1f",
+              "subject": "[Refactor] mem-cache: Centralize recurrent state ownership and access (#46980)"
+            },
+            {
+              "sha": "5e420a1258679719f88bee2b2cd5d19cde2da8dc",
+              "subject": "[Refactor] qwen4: Write QSA top-k and PLE batch breaks into caller-held outputs (#46543)"
+            },
+            {
+              "sha": "154e29c1ec7582d6eed287c58050060548cd2f41",
+              "subject": "[Perf] CP: QSA Context Parallel Optimization (#43792)"
+            },
+            {
+              "sha": "9ab74b85179464277b5015a54c4a494ece24bcfe",
+              "subject": "[Fix] Qwen3.8next: Stop retaining per-size PLE outputs in breakable prefill CUDA graphs (#44150)"
+            },
+            {
+              "sha": "0d130f191574c3dbb7d402caf344084e91ded585",
+              "subject": "[Qwen3.8 CP 4/4] Prefill context parallel E2E support of Qwen3.8 (#39724)"
+            },
+            {
+              "sha": "2a8e9db3b09f260ce7b381c989063a199303cbb5",
+              "subject": "[lora] Support LoRA for the NemotronH_Nano_VL_V2 model family (#39798)"
+            },
+            {
+              "sha": "234ccba7f625e12639e621044496bcc6197c3758",
+              "subject": "[Refactor] Declare every model's stages from a shared function and drop the meta-device neighbour build (#43460)"
+            },
+            {
+              "sha": "0eb24e7d5b0b1593bd96723882679aaecbf417b6",
+              "subject": "[Performance] Optimize Qwen3.8-Flash-Next BF16 decode on Blackwell (#42175)"
+            },
+            {
+              "sha": "dc0b394471be5bb0738ea43d9ff24fe0aad2dba9",
+              "subject": "[Refactor] Remove Kimi K3's own layer communication and let the consumer set an FFN's exit (#42936)"
+            },
+            {
+              "sha": "1f299e9f2f34fa5df9c13f79afe70e815b248ded",
+              "subject": "[Refactor] Build layer stacks in order with append_stages (#42481)"
+            },
+            {
+              "sha": "f07c1a398efdf1772beb59916634c1338574ee91",
+              "subject": "[Refactor] Build the Qwen4 experimental decoders from stage boundaries (#42478)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": "huggingface/transformers",
+      "base": "v5.16.1",
+      "captured_at": "2026-11-05T22:18:42.895521+00:00",
+      "default_branch": "main",
+      "archived": false,
+      "head": "cdb75de4adf71059c01f58dbd2d24d85084a397d",
+      "head_date": "2026-11-05T18:32:33Z",
+      "subject": "Fix Mistral Large 4 config (#50418)",
+      "release": "v5.22.1",
+      "release_status": 0,
+      "compare_status": "diverged",
+      "ahead_by": 898,
+      "behind_by": 7,
+      "compare_total_commits": 898,
+      "returned_commits": 100,
+      "returned_files": 300,
+      "release_metadata": {
+        "tag_name": "v5.22.1",
+        "prerelease": false,
+        "published_at": "2026-10-30T09:36:03Z",
+        "html_url": "https://github.com/huggingface/transformers/releases/tag/v5.22.1"
+      },
+      "commit_url": "https://github.com/huggingface/transformers/commit/cdb75de4adf71059c01f58dbd2d24d85084a397d",
+      "compare_scope": "GitHub first page only; files capped at 300, commits capped at 100; not an exhaustive diff audit",
+      "recent_commits": [
+        {
+          "sha": "cdb75de4adf71059c01f58dbd2d24d85084a397d",
+          "subject": "Fix Mistral Large 4 config (#50418)"
+        },
+        {
+          "sha": "7d5d6d667fb7b91580aebc3cf1bedab976fb61f5",
+          "subject": "[docs] Common quantization tasks (#50095)"
+        },
+        {
+          "sha": "084b1fd1b9983dca2ce12441aec4478371b9fe8f",
+          "subject": "Fix flaky `Gemma4Audio2TextModelTest::test_training_gradient_checkpointing_use_reentrant_true` (#50410)"
+        },
+        {
+          "sha": "7b0fec70d8070d7d673d0edfd3c73259f0c05bc3",
+          "subject": "Fix flaky `T5GemmaModelTest::test_decoder_model_past_with_large_inputs` (#50409)"
+        },
+        {
+          "sha": "7d6cae0807abded46f6e911855f1b14d42d9dd6c",
+          "subject": "[Model] LFM3 Family: LFM3-Text (#50322)"
+        },
+        {
+          "sha": "5ea23808403f2e434e47e83cc696aa61a62ac7f2",
+          "subject": "Don't pick torchcodec when it can't load or has no FFmpeg (#50362)"
+        },
+        {
+          "sha": "2ffebc8c37cabaa20d1a310cb2952c9e35b96e83",
+          "subject": "[CB] Disable streams on MPS to fix continuous batching with torch 2.15 (#50404)"
+        },
+        {
+          "sha": "a15175e3cc679f6b1f11d7ffdd04cb00bead4c43",
+          "subject": "Keep enabling checkpointing on models that only define gradient_checkpointing_enable (#50349)"
+        },
+        {
+          "sha": "f1eff6352f15b8ed1c22561f03656c2520997c55",
+          "subject": "Fix flaky `Owlv2ModelTest::test_eager_matches_sdpa_inference_01_fp16_pad_left` (#50403)"
+        },
+        {
+          "sha": "9bb266d5e4646a4e37a91d83f33607858d5df8ff",
+          "subject": "Fix flaky `PocketTTSAudioTokenizerModelTest::test_batching_equivalence` on CPU (#50402)"
+        },
+        {
+          "sha": "2aab563bd5c98d748e1db3e055d1527468631b8d",
+          "subject": "[`SDPA`] Fix decode under compile (#50388)"
+        },
+        {
+          "sha": "b55e0761510c16c109614c99b333c44d8fbf1216",
+          "subject": "fix(pipelines): validate zero-shot detection batch labels (#50318)"
+        }
+      ],
+      "targeted_history": [
+        {
+          "endpoint": "repos/huggingface/transformers/commits?sha=cdb75de4adf71059c01f58dbd2d24d85084a397d&path=src/transformers/models/qwen4_exp/&per_page=15",
+          "commits": [
+            {
+              "sha": "fd3cf0140de03f7619ac95b5cfed05b711ff9e22",
+              "subject": "Replace torch.FloatTensor with torch.Tensor in the model files (#50183)"
+            },
+            {
+              "sha": "d6c0ec4b16cfb0c643e33085f668fe9928424fe0",
+              "subject": ":rotating_light: Finally drop rope deltas from ModelOutput! (#50153)"
+            },
+            {
+              "sha": "23ab86437c7d19451d3de618dcafaac9bc178c74",
+              "subject": "Fix Qwen4-Exp eager attention NaNs with left padding (#49923)"
+            },
+            {
+              "sha": "f90e93c4f83974f634860e246cdfd2c68666d605",
+              "subject": "Config annotations (#50067)"
+            },
+            {
+              "sha": "4db5b9463b1992196285c8621e3762152d29ba73",
+              "subject": "[Qwen4 Exp] Fix _no_split_modules naming a class that does not exist (#50138)"
+            },
+            {
+              "sha": "674c0e396a06aa9d96cdc4741ce9c0853eae64b8",
+              "subject": "Make sub-config-defaults easier (#49906)"
+            },
+            {
+              "sha": "5c65f7c651a646bca8a6f85ae3cfa866ee6a606f",
+              "subject": "Fix Qwen4-Exp indexer position cache lifecycle (#49840)"
+            },
+            {
+              "sha": "a672eb5f474b8b30173e9f96eab66adf292da635",
+              "subject": "logits_to_keep bool mask for all ForXXX classes (#48825)"
+            },
+            {
+              "sha": "3bb8b72786c7cb5abc9bd05c2e1f451e44dcc9b3",
+              "subject": "[Cache] Linear attn cache: use new getters (#49375)"
+            },
+            {
+              "sha": "bd7e7a8e84f2dbc57c194d002e908daa75756dbf",
+              "subject": "[Cache] Get conv states (#49309)"
+            },
+            {
+              "sha": "734ca824436c746ee9acdf3100207fdeca637ba2",
+              "subject": "[Cache] Add get_recurrent_state (#49306)"
+            },
+            {
+              "sha": "1bbd6a4d7313b27677b810039e7254a786d7bcc2",
+              "subject": "[Cache] Add is_recording_past (#49305)"
+            },
+            {
+              "sha": "718d12a9012a100c86afa105145b723200d3fffc",
+              "subject": "🚨 TP: give embeddings their own style, shard input embeddings by default, and shard widths that don't divide by the TP size (#49570)"
+            },
+            {
+              "sha": "4c414256ddce7b3c896cb624d55d1299ad963d20",
+              "subject": "Declare the input modalities of the VLMs that report text only (#49677)"
+            },
+            {
+              "sha": "e0eb2810ac1b2caf6d082f247d8d37162ecf67a0",
+              "subject": "Composite lm head tp plan (#49080)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": "kvmem/kvmem",
+      "base": "0af10ece3d78edb905c62357e52a62147df69d58",
+      "captured_at": "2026-11-05T22:18:44.252783+00:00",
+      "default_branch": "master",
+      "archived": false,
+      "head": "a2d8d9bf194d5ebbea34d3b923aec9e3d552be0e",
+      "head_date": "2026-11-05T09:13:48Z",
+      "subject": "Merge pull request #265 from kvmem/feat/llamacpp-lora-20261105",
+      "release": "v0.19.1",
+      "release_status": 0,
+      "compare_status": "ahead",
+      "ahead_by": 302,
+      "behind_by": 0,
+      "compare_total_commits": 302,
+      "returned_commits": 100,
+      "returned_files": 300,
+      "release_metadata": {
+        "tag_name": "v0.19.1",
+        "prerelease": false,
+        "published_at": "2026-10-31T05:25:17Z",
+        "html_url": "https://github.com/kvmem/kvmem/releases/tag/v0.19.1"
+      },
+      "commit_url": "https://github.com/kvmem/kvmem/commit/a2d8d9bf194d5ebbea34d3b923aec9e3d552be0e",
+      "compare_scope": "GitHub first page only; files capped at 300, commits capped at 100; not an exhaustive diff audit",
+      "recent_commits": [
+        {
+          "sha": "a2d8d9bf194d5ebbea34d3b923aec9e3d552be0e",
+          "subject": "Merge pull request #265 from kvmem/feat/llamacpp-lora-20261105"
+        },
+        {
+          "sha": "8660e555b228923aad3ef13da51dbfb92f3c3f42",
+          "subject": "fix(test): use synthetic GPU identity in LoRA launcher checks"
+        },
+        {
+          "sha": "fd6369a4289750addd0b46ed8c149d0a1fa5ad38",
+          "subject": "feat(llamacpp): support startup-fixed GGUF LoRA adapters"
+        },
+        {
+          "sha": "c9e09345ab6ba786ca53aa4124c5ab1e42ed034e",
+          "subject": "Merge pull request #262 from smashdog/llamacpp-v0.9.0"
+        },
+        {
+          "sha": "598555029ff95c416d168d63ca485e38cfe333de",
+          "subject": "Merge branch 'master' into llamacpp-v0.9.0"
+        },
+        {
+          "sha": "5aa66dafa6d07096db9ffe9c2a7cf4b7cedf6b1b",
+          "subject": "Merge pull request #264 from kvmem/fix/llama-fork-checkpoint-catalog-20261105"
+        },
+        {
+          "sha": "45ddebe4be38ec9d7562b9fe93ad620694091e63",
+          "subject": "fix(cache): preserve checkpoint coverage when forking llama sessions"
+        },
+        {
+          "sha": "4486d82c163624dc44e918923ffc473d83671e4f",
+          "subject": "fix(ui): widen typed route id in lightweight build"
+        },
+        {
+          "sha": "1366c33a6afb6e81cb8a3c3fcf7b50e545ff8c57",
+          "subject": "feat(backend): migrate llama.cpp engine to v0.9.0"
+        },
+        {
+          "sha": "001bb7c4534d39b93b4c4df1d75f24b9cabfd72c",
+          "subject": "Merge pull request #260: upgrade NInfer to 2026-11-04.2"
+        },
+        {
+          "sha": "9e597e97d065f8736cbe990238d6d70e4c6b76dd",
+          "subject": "chore(ninfer): upgrade to 2026-11-04.2"
+        },
+        {
+          "sha": "d469a933f49cd7b32ccfb2fe5fd29be5c5f6c45b",
+          "subject": "Merge pull request #259 from kvmem/codex/content-cache-master-20261104"
+        }
+      ],
+      "targeted_history": [
+        {
+          "endpoint": "repos/kvmem/kvmem/commits?sha=a2d8d9bf194d5ebbea34d3b923aec9e3d552be0e&path=kvmem/src/host/checkpoint_policy.cpp&per_page=15",
+          "commits": [
+            {
+              "sha": "cc2ca440f32a597c2d1279808ea3e453fb244e05",
+              "subject": "feat(ninfer): integrate dense heads TP and bounded checkpoint reuse"
+            },
+            {
+              "sha": "4120ba72fe5849064de2cb7f2c2542f5d8eecbe9",
+              "subject": "feat(checkpoints): add opt-in coverage and bounded snapshot storage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "base": "81c8ce093b2c1646a87566a8e59d807fcf0ec95c",
+      "captured_at": "2026-11-05T22:18:44.345598+00:00",
+      "default_branch": "master",
+      "archived": false,
+      "head": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "head_date": "2026-11-02T05:08:36Z",
+      "subject": "fix(runtime): prevent request starvation under context pressure",
+      "release": null,
+      "release_status": 1,
+      "compare_status": "ahead",
+      "ahead_by": 305,
+      "behind_by": 0,
+      "compare_total_commits": 305,
+      "returned_commits": 100,
+      "returned_files": 300,
+      "release_metadata": {
+        "tag_name": null,
+        "prerelease": null,
+        "published_at": null,
+        "html_url": null
+      },
+      "commit_url": "https://github.com/Neroued/ninfer/commit/a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "compare_scope": "GitHub first page only; files capped at 300, commits capped at 100; not an exhaustive diff audit",
+      "recent_commits": [
+        {
+          "sha": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+          "subject": "fix(runtime): prevent request starvation under context pressure"
+        },
+        {
+          "sha": "acb05ebfbf95760b0661605b006d4b989fc5f869",
+          "subject": "feat(bench): support distributed serving performance campaigns"
+        },
+        {
+          "sha": "c5627cdd5a3172144db8e5583a877cd2546330bc",
+          "subject": "feat(observability): distinguish request and cached context usage"
+        },
+        {
+          "sha": "b57eaddce3688866b259fcaee057ece8e55c0f8a",
+          "subject": "refactor(dashboard): make layout and chart config responsive"
+        },
+        {
+          "sha": "f008a3d4413d4d2bcd5cae96cc3c06b1237c4e6e",
+          "subject": "feat(dashboard): improve responsive layout and typography"
+        },
+        {
+          "sha": "e70ff85a12b6d180b5aa2d7356d9cc48f42edf1d",
+          "subject": "feat(dashboard): add Docker deployment support"
+        },
+        {
+          "sha": "76b5370bd192ddb2a529124609a3b05e52fa2acd",
+          "subject": "perf(cache): refine context retention and reclaim selection"
+        },
+        {
+          "sha": "169d8c1d802fcce5075e647ebe6d52fe138a3fe1",
+          "subject": "feat(dashboard): curate themes and default to Paper"
+        },
+        {
+          "sha": "b1388224afff14b06326520030353c616de4bf5a",
+          "subject": "feat(dashboard): refine telemetry rail and TTFT distribution"
+        },
+        {
+          "sha": "43fda58192ed41a83601ae8a4ca5a3a26660761f",
+          "subject": "feat(dashboard): add monitoring dashboard with persistent history"
+        },
+        {
+          "sha": "5b834fc350e4c0782f8f35a669a34978420f4f8a",
+          "subject": "feat(observability): expose engine monitoring snapshots and events"
+        },
+        {
+          "sha": "458863be202bcc9850cce0be2146d0bee45097fc",
+          "subject": "perf(ops): tune Spark TP2 projections"
+        }
+      ],
+      "targeted_history": [
+        {
+          "endpoint": "repos/Neroued/ninfer/commits?sha=a754fcf3bf524494aa927c2f54e0cbfb58f569ab&path=src/runtime/engine/engine_schedule.inl&per_page=15",
+          "commits": [
+            {
+              "sha": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+              "subject": "fix(runtime): prevent request starvation under context pressure"
+            },
+            {
+              "sha": "76b5370bd192ddb2a529124609a3b05e52fa2acd",
+              "subject": "perf(cache): refine context retention and reclaim selection"
+            },
+            {
+              "sha": "5b834fc350e4c0782f8f35a669a34978420f4f8a",
+              "subject": "feat(observability): expose engine monitoring snapshots and events"
+            },
+            {
+              "sha": "704fa68da9addc5e353ba14f10004d4c9829a1f0",
+              "subject": "fix(runtime): publish terminal responses after request cleanup"
+            },
+            {
+              "sha": "1b6c72321c22bcdb40c6e4c3170a88c73c89b3dd",
+              "subject": "fix(runtime): synchronize measurement boundaries across ranks"
+            },
+            {
+              "sha": "08ee5cff4808c21d1428a90e98a720f47bba2dbc",
+              "subject": "feat(models): add GLM resources and bounded vision windows"
+            },
+            {
+              "sha": "5cc161ca3f72b10573e593a87101c23ab807ca97",
+              "subject": "feat(context): add attention DP placement foundations"
+            },
+            {
+              "sha": "2705a72809443000f23708f567cff8da6a804cad",
+              "subject": "refactor(context): unify state and kv storage"
+            },
+            {
+              "sha": "77241ffb1015448d67737f21be60a306cdfcc370",
+              "subject": "fix(cache): honor host placement before context migration"
+            },
+            {
+              "sha": "049d5fb4186c00c00bf9e0fe3356bb37b85620af",
+              "subject": "feat(context): jointly plan cache capacity and retain prefix checkpoints"
+            },
+            {
+              "sha": "697979a46cbc70cb3714121d7b150f281c995c18",
+              "subject": "refactor(observability): unify engine statistics and reporting"
+            },
+            {
+              "sha": "71cdd61588c2aff09b778ed79e4fb85ae44ddb6f",
+              "subject": "refactor(runtime): separate native sessions and rank execution"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": "Niko1221/Strata",
+      "base": "296b59d2f73c8f04a805df29c2fa97655adace78",
+      "captured_at": "2026-11-05T22:18:44.761949+00:00",
+      "default_branch": "main",
+      "archived": false,
+      "head": "9f7d977d220e9fdf2ec53cf2620cdadac1cfb24e",
+      "head_date": "2026-11-05T13:54:54Z",
+      "subject": "README: a Loyal supporters section under the Sponsor and coffee buttons in all 8 languages, with the public GitHub sponsors as linked profile pictures (first: ryan4yin) and a one-line template for the next one",
+      "release": "v0.2.11",
+      "release_status": 0,
+      "compare_status": "ahead",
+      "ahead_by": 3671,
+      "behind_by": 0,
+      "compare_total_commits": 3671,
+      "returned_commits": 100,
+      "returned_files": 300,
+      "release_metadata": {
+        "tag_name": "v0.2.11",
+        "prerelease": false,
+        "published_at": "2026-11-05T12:49:59Z",
+        "html_url": "https://github.com/Niko1221/Strata/releases/tag/v0.2.11"
+      },
+      "commit_url": "https://github.com/Niko1221/Strata/commit/9f7d977d220e9fdf2ec53cf2620cdadac1cfb24e",
+      "compare_scope": "GitHub first page only; files capped at 300, commits capped at 100; not an exhaustive diff audit",
+      "recent_commits": [
+        {
+          "sha": "9f7d977d220e9fdf2ec53cf2620cdadac1cfb24e",
+          "subject": "README: a Loyal supporters section under the Sponsor and coffee buttons in all 8 languages, with the public GitHub sponsors as linked profile pictures (first: ryan4yin) and a one-line template for the next one"
+        },
+        {
+          "sha": "5d37280db1f70ef6b55d69ac1d9ad8630d7a62f0",
+          "subject": "Docker: build.sh copies metal/tools/metal_repack.py and stream_experts.py into the build context (the Terminal bundle carries them since the Mac Unsloth sets; the v0.2.11 image build stopped at the missing metal_repack.py); the context test checks every INSTALLER_METAL_TOOLS name"
+        },
+        {
+          "sha": "dc9dfcfd290afe3e42363d739c5904cf4ae5fa05",
+          "subject": "GitHub Sponsors: FUNDING.yml names github: Niko1221 (the repository's Sponsor button), and every README gets a Sponsor badge beside the coffee badge, a Sponsor button in Support Strata and a support line that names both"
+        },
+        {
+          "sha": "c3b3f5035506f3e966f1b4b7b188aeaabae92f1d",
+          "subject": "Merge f-0214-int d7f5c6dd1 (Strix first-launch plan fix: expert cache auto on UMA, Python only) into f-0211-rc"
+        },
+        {
+          "sha": "d7f5c6dd118189625f1f45fcefb0bd1100ba09f9",
+          "subject": "Merge f-0214-strixplan 0c0b7b875 (Strix plan fix) into f-0214-int"
+        },
+        {
+          "sha": "0c0b7b8751526de3a3cddbc27a160873f5ddbd8f",
+          "subject": "setup: uma_holds_experts is never true on a Mac (the signed Mac plans stay exactly as they were); test"
+        },
+        {
+          "sha": "86ffdbeb17aee305f37c1c5c8742be5bc09d6d87",
+          "subject": "setup: on a unified-memory GPU a v3.1 Unsloth set whose experts fit the shared pool gets expert cache auto and nothing pinned (UD-IQ2_XS's first launch failed with the fixed cache and the pinned part on a 64 GB Strix Halo); the other sets keep their plans; tests"
+        },
+        {
+          "sha": "aac067021caabb507257ec51ff3c37a787fc3156",
+          "subject": "Merge f-0214-int e2b53784 (METAL test-only change: metal/tests/moe_mm_parity.cpp) into f-0211-rc"
+        },
+        {
+          "sha": "e2b53784035b40647bf712ca513c2ca7194ed09a",
+          "subject": "Merge f-0214-metal ba5bef2d6 (parity test: IQ4_XS gate/up runs v2) into f-0214-int"
+        },
+        {
+          "sha": "ba5bef2d6159f23f3b6872c0c82fe9fad2507c1b",
+          "subject": "moe_mm_parity: IQ4_XS gate/up runs the v2 path (v1 is not an engine path and has no IQ4_XS kernel)"
+        },
+        {
+          "sha": "3e0210663b07deafce51310ae622862c2fe05901",
+          "subject": "Merge f-0214-int 437668151 (round 0214: the new Unsloth Qwen quants, the Q5_0 dot fix, the Mac app branch) into f-0211-rc"
+        },
+        {
+          "sha": "437668151ddd8f0b687af81329f251702cbdd27e",
+          "subject": "Merge f-0214-macapp 408a5ca37 (Mac app offers Unsloth sets) into f-0214-int"
+        }
+      ],
+      "targeted_history": []
+    },
+    {
+      "repository": "melis2023/kvmem-actkv",
+      "base": "fe4c5d9d57f6714f2ec1d6657d237813d7ec1a89",
+      "captured_at": "2026-11-05T22:18:50.427289+00:00",
+      "default_branch": "main",
+      "archived": false,
+      "head": "fe4c5d9d57f6714f2ec1d6657d237813d7ec1a89",
+      "head_date": "2026-10-10T08:25:28Z",
+      "subject": "Update README.md",
+      "release": null,
+      "release_status": 1,
+      "compare_status": "identical",
+      "ahead_by": 0,
+      "behind_by": 0,
+      "compare_total_commits": 0,
+      "returned_commits": 0,
+      "returned_files": 0,
+      "release_metadata": {
+        "tag_name": null,
+        "prerelease": null,
+        "published_at": null,
+        "html_url": null
+      },
+      "commit_url": "https://github.com/melis2023/kvmem-actkv/commit/fe4c5d9d57f6714f2ec1d6657d237813d7ec1a89",
+      "compare_scope": "GitHub first page only; files capped at 300, commits capped at 100; not an exhaustive diff audit",
+      "recent_commits": [
+        {
+          "sha": "fe4c5d9d57f6714f2ec1d6657d237813d7ec1a89",
+          "subject": "Update README.md"
+        },
+        {
+          "sha": "a7b24d9a06bf61dc12d49c0b5fa2868755578950",
+          "subject": "Update README.md"
+        },
+        {
+          "sha": "8fda81aa3225ab09dc8237bfc92e8f36062cac1f",
+          "subject": "kvmem-llama.cpp 0.17.0: KVMem virtualisation + ActKV (action-oriented LRFU eviction, GQA max scoring, confidence monitor)"
+        }
+      ],
+      "targeted_history": []
+    },
+    {
+      "repository": "Maurya30/actkv-open",
+      "base": "0345bd76123f78b0c6ce525a28db8cb7d4e271dd",
+      "captured_at": "2026-11-05T22:18:50.578684+00:00",
+      "default_branch": "main",
+      "archived": false,
+      "head": "2f832f7e8c4a12578baa16c2d111456b0ed528a0",
+      "head_date": "2026-10-25T19:49:05Z",
+      "subject": "docs: README describes the per-task slack and what the sweep covers",
+      "release": null,
+      "release_status": 1,
+      "compare_status": "ahead",
+      "ahead_by": 40,
+      "behind_by": 0,
+      "compare_total_commits": 40,
+      "returned_commits": 40,
+      "returned_files": 37,
+      "release_metadata": {
+        "tag_name": null,
+        "prerelease": null,
+        "published_at": null,
+        "html_url": null
+      },
+      "commit_url": "https://github.com/Maurya30/actkv-open/commit/2f832f7e8c4a12578baa16c2d111456b0ed528a0",
+      "compare_scope": "GitHub first page only; files capped at 300, commits capped at 100; not an exhaustive diff audit",
+      "recent_commits": [
+        {
+          "sha": "2f832f7e8c4a12578baa16c2d111456b0ed528a0",
+          "subject": "docs: README describes the per-task slack and what the sweep covers"
+        },
+        {
+          "sha": "8b4c0e4b5dfd793995e93d75d554fa6cd8d3ba43",
+          "subject": "test: cover the remaining fixed behaviours"
+        },
+        {
+          "sha": "46b085aeb7db12cb5722a45a5ef5491ee0506c81",
+          "subject": "test(alfworld): exercise the fix through the public constructor"
+        },
+        {
+          "sha": "f589f461d6d2dd1b0d61d2ad61f078886c10346b",
+          "subject": "test(update_readme): cover the benchmark and per-config GPU gates"
+        },
+        {
+          "sha": "617d409173351d147a955dd10c187adea8a7e03f",
+          "subject": "fix(update_readme): report episodes per config instead of assuming one run"
+        },
+        {
+          "sha": "dfbfc62e538bcad994adbec50be6528b62b87630",
+          "subject": "fix(scripts): run_a100.sh survives pod restarts and optional-step failures"
+        },
+        {
+          "sha": "1635aad51c4ac1b811000ff3afb9e7e6bd8c9510",
+          "subject": "fix(eval): budgets, slack and summaries use the matching FullKV run"
+        },
+        {
+          "sha": "6d21a7f9c63e106a58732038e16c3250b5e3b0ca",
+          "subject": "fix(paged): evict() keeps protecting the prompt across repeated evictions"
+        },
+        {
+          "sha": "7a8ddcceb3c0fc893a67e859dca9e1034aa05ef8",
+          "subject": "fix(run_eval): in a sweep, ratio configs see every FullKV run of the task"
+        },
+        {
+          "sha": "86e39eeb35998a4af251093443c86659c21afd6e",
+          "subject": "fix(run_eval): --hours after a resume finishes the partial task, then budgets"
+        },
+        {
+          "sha": "83ce80e68e8a06e0db2126cc90b457193402691d",
+          "subject": "fix(tests): bench tests use the device the bench accepts on the host"
+        },
+        {
+          "sha": "cbe56007646e5c28130d522f99469988b6ee9ae6",
+          "subject": "test: keep the packaging test importable on Python 3.10"
+        }
+      ],
+      "targeted_history": []
+    },
+    {
+      "repository": "NVIDIA/Megatron-LM",
+      "base": "3e2807ce5e787f81b7275be2383092fe0c3bfc71",
+      "captured_at": "2026-11-05T22:18:51.329422+00:00",
+      "default_branch": "main",
+      "archived": false,
+      "head": "9cfb771dbe631404081f2ae9176ae94b837f02d3",
+      "head_date": "2026-11-05T21:30:42Z",
+      "subject": "ci: restore Testmon baseline checkouts with safe PR metadata (#9030)",
+      "release": "core_v0.20.0",
+      "release_status": 0,
+      "compare_status": "ahead",
+      "ahead_by": 220,
+      "behind_by": 0,
+      "compare_total_commits": 220,
+      "returned_commits": 100,
+      "returned_files": 300,
+      "release_metadata": {
+        "tag_name": "core_v0.20.0",
+        "prerelease": false,
+        "published_at": "2026-10-29T21:06:49Z",
+        "html_url": "https://github.com/NVIDIA/Megatron-LM/releases/tag/core_v0.20.0"
+      },
+      "commit_url": "https://github.com/NVIDIA/Megatron-LM/commit/9cfb771dbe631404081f2ae9176ae94b837f02d3",
+      "compare_scope": "GitHub first page only; files capped at 300, commits capped at 100; not an exhaustive diff audit",
+      "recent_commits": [
+        {
+          "sha": "9cfb771dbe631404081f2ae9176ae94b837f02d3",
+          "subject": "ci: restore Testmon baseline checkouts with safe PR metadata (#9030)"
+        },
+        {
+          "sha": "b2d7bc33b76b188a2262f8e6598e6d169acd19ba",
+          "subject": "Revert \"ci: validate PR unit tests on the Testmon cache baseline\" (#9029)"
+        },
+        {
+          "sha": "63a3e862f2996caeaf17d8e540c8044dcce7ae03",
+          "subject": "ci: validate PR unit tests on the Testmon cache baseline (#9001)"
+        },
+        {
+          "sha": "5df61682324d4f92dd199c68932c751dfdb1f6c8",
+          "subject": "Unify residual connection dispatch for eager and checkpointed execution (#8657)"
+        },
+        {
+          "sha": "a11c84aecfc4cd3018bcb29a6f0888626ae2da1c",
+          "subject": "ci(queue): cache PR lookups and handle API rate limits (#9007)"
+        },
+        {
+          "sha": "52d0a9a25a52a3607038c75e12d52a5d7b2bf7ef",
+          "subject": "ci(queue): limit active PRs per author and base branch (#8781)"
+        },
+        {
+          "sha": "f3b2dc2dedf6ac72f312cda719e41576989dab35",
+          "subject": "feat(quantization): support transformer engine recipe attributes (#6341)"
+        },
+        {
+          "sha": "f0c9093db12c8acc59caf2fe4cb0f3d1035beca4",
+          "subject": "fix(moe): align chunked calls and replay routing per chunk (#8463)"
+        },
+        {
+          "sha": "1ec6a7551a16b20c85dcffc39f9f436c10d0ae4d",
+          "subject": "fix(fsdp): preserve delayed-wgrad markers on MFSDP v2 parameters (#8637)"
+        },
+        {
+          "sha": "161ae43fc493fd024a56a63b4e8dd6615ff19b0d",
+          "subject": "refactor(training): migrate TokenizerConfig (#8401)"
+        },
+        {
+          "sha": "33da44f8e02c1cdabdb00f5835f4c23032d1b25e",
+          "subject": "MInf: start_text_gen_server wait for replicas init (#7351)"
+        },
+        {
+          "sha": "99472eea9240c28d5ee5710a7ebc81cad26c9be5",
+          "subject": "ci: Add dev and other-branch test approval limits (#9003)"
+        }
+      ],
+      "targeted_history": [
+        {
+          "endpoint": "repos/NVIDIA/Megatron-LM/commits?sha=9cfb771dbe631404081f2ae9176ae94b837f02d3&path=megatron/core/inference/&per_page=15",
+          "commits": [
+            {
+              "sha": "33da44f8e02c1cdabdb00f5835f4c23032d1b25e",
+              "subject": "MInf: start_text_gen_server wait for replicas init (#7351)"
+            },
+            {
+              "sha": "611b430d5c02a24cc4092755c6dbc2f0177f2b5e",
+              "subject": "perf(moe): batch-invariant sigmoid routing with the Triton top-k kernel (#8602)"
+            },
+            {
+              "sha": "27173cef4e33c898c6082003e5a86c712a535816",
+              "subject": "Factor out the dynamic text generation server into smaller helpers (#7833)"
+            },
+            {
+              "sha": "21334a44ede0b8497d1770d0b80bc115e777bd00",
+              "subject": "Move prefix caching to separate classes (#5119)"
+            },
+            {
+              "sha": "4a4064f0631cd55a6f2a756cecb3e9ab9f5367cd",
+              "subject": "perf(moe): fused batch-invariant squared ReLU and MXFP8 quantization (#8645)"
+            },
+            {
+              "sha": "01fa4164c8b539958500c2314ad52eacfdd80774",
+              "subject": "MInf: Add support for token-level snapshotting (#8137)"
+            },
+            {
+              "sha": "38dd3e993a600bd226ade3eba94380b220a0a8dd",
+              "subject": "fix(inference): refresh EP consensus every step when there is no expert parallelism (#8504)"
+            },
+            {
+              "sha": "dda809cad59315fcb304bb5e8a36ea30880f3753",
+              "subject": "Inference: keep one copy of FlashInfer MXFP8 expert weights by refitting into the routed layout (#8560)"
+            },
+            {
+              "sha": "faf27c82f9b91c628ea941d8cb869e1489ad19fe",
+              "subject": "Optimize sigmoid MoE inference routing with bit-exact outputs (#8296)"
+            },
+            {
+              "sha": "0a513268eee94d8e903fecbc21fde862eecc31f3",
+              "subject": "Integrate five inference pairwise campaigns and prefix-cache prompt scores (#8426)"
+            },
+            {
+              "sha": "928fe9d1e3b5d014caca5fc1756af80487f38af3",
+              "subject": "Optimize uniform greedy Torch sampling (#7844)"
+            },
+            {
+              "sha": "a7147091851d14b13b1433037788c68748d80007",
+              "subject": "Fused tanh-clamped sqrelu activation for inference (#8013)"
+            },
+            {
+              "sha": "259f6a7c27117ea3aca8ca0fa38b33b3a937c026",
+              "subject": "Support disaggregated KV handoff when TP exceeds the KV-head count (#8506)"
+            },
+            {
+              "sha": "2abdd0d1c601cb19dd5f78b5e39497e818970903",
+              "subject": "Inference: Add support for expert tensor parallelism (#4743)"
+            },
+            {
+              "sha": "1142209a19054a89dba0c868d6af2cb474152bd9",
+              "subject": "inference: encode the images of waiting requests together before prefill (#8408)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": "deepseek-ai/DeepInfer",
+      "base": "774ce244b87cc0eb8d4b94ab9f5de2ab22049f01",
+      "captured_at": "2026-11-05T22:18:51.871822+00:00",
+      "default_branch": "main",
+      "archived": false,
+      "head": "a679bb86ce36e883a98a97733492b686e5b9a08e",
+      "head_date": "2026-11-03T07:31:40Z",
+      "subject": "docs: update V4.1 Flash Q&A to v0.2",
+      "release": null,
+      "release_status": 1,
+      "compare_status": "ahead",
+      "ahead_by": 3,
+      "behind_by": 0,
+      "compare_total_commits": 3,
+      "returned_commits": 3,
+      "returned_files": 4,
+      "release_metadata": {
+        "tag_name": null,
+        "prerelease": null,
+        "published_at": null,
+        "html_url": null
+      },
+      "commit_url": "https://github.com/deepseek-ai/DeepInfer/commit/a679bb86ce36e883a98a97733492b686e5b9a08e",
+      "compare_scope": "GitHub first page only; files capped at 300, commits capped at 100; not an exhaustive diff audit",
+      "recent_commits": [
+        {
+          "sha": "a679bb86ce36e883a98a97733492b686e5b9a08e",
+          "subject": "docs: update V4.1 Flash Q&A to v0.2"
+        },
+        {
+          "sha": "553741557a57df44a46fb3ab72b6aafeaf945337",
+          "subject": "fix: validate boolean environment variables with strict parsing (#218)"
+        },
+        {
+          "sha": "9bd9cf243fc53ef9afbf8f04d391d989117d6ab9",
+          "subject": "Bump DeepEP to f6aa38fe and drop the SSH->HTTPS rewrite (#157)"
+        },
+        {
+          "sha": "774ce244b87cc0eb8d4b94ab9f5de2ab22049f01",
+          "subject": "update Q&A EN doc"
+        },
+        {
+          "sha": "8b16149741a4935e1dec8cea27853f273b374c5b",
+          "subject": "update Q&A documentation"
+        },
+        {
+          "sha": "d585e6542c0571176272d703f03c4807ae901284",
+          "subject": "initial commit"
+        }
+      ],
+      "targeted_history": []
+    },
+    {
+      "repository": "deepseek-ai/DeepEP",
+      "base": "93eb6eb238127e96c6d7a4a625a6dad158348509",
+      "captured_at": "2026-11-05T22:18:52.161353+00:00",
+      "default_branch": "main",
+      "archived": false,
+      "head": "f6aa38fe06cd4a0489e7730365d4e0114970a2f3",
+      "head_date": "2026-10-21T03:50:43Z",
+      "subject": "fix: use HTTPS for DeepJIT submodule (#788)",
+      "release": "v1.2.1",
+      "release_status": 0,
+      "compare_status": "ahead",
+      "ahead_by": 2,
+      "behind_by": 0,
+      "compare_total_commits": 2,
+      "returned_commits": 2,
+      "returned_files": 6,
+      "release_metadata": {
+        "tag_name": "v1.2.1",
+        "prerelease": false,
+        "published_at": "2025-09-16T01:48:40Z",
+        "html_url": "https://github.com/deepseek-ai/DeepEP/releases/tag/v1.2.1"
+      },
+      "commit_url": "https://github.com/deepseek-ai/DeepEP/commit/f6aa38fe06cd4a0489e7730365d4e0114970a2f3",
+      "compare_scope": "GitHub first page only; files capped at 300, commits capped at 100; not an exhaustive diff audit",
+      "recent_commits": [
+        {
+          "sha": "f6aa38fe06cd4a0489e7730365d4e0114970a2f3",
+          "subject": "fix: use HTTPS for DeepJIT submodule (#788)"
+        },
+        {
+          "sha": "b5a33eefda39485f438dc764695b71ba7b9249b6",
+          "subject": "Remove formatting and lint checks (#781)"
+        },
+        {
+          "sha": "93eb6eb238127e96c6d7a4a625a6dad158348509",
+          "subject": "Update README"
+        },
+        {
+          "sha": "def865146e95aa9ea223e277c0a8a4c6b81e5ac7",
+          "subject": "DeepEP V2.5 (#763)"
+        },
+        {
+          "sha": "a56d6156febcd9976e55adc85b5155bfac9f28f8",
+          "subject": "Ensure that the last get rings the doorbell (#752)"
+        },
+        {
+          "sha": "01dc3aaac82068020353dce2c302e38153c0bfaa",
+          "subject": "Add comments"
+        },
+        {
+          "sha": "11d1cab604bba8ebe15022be44e09c22a659c857",
+          "subject": "fix: add system-scope release before the GIN barrier when scaleup spans NVLink and RDMA (#715)"
+        },
+        {
+          "sha": "dd758caf451848bd150e1046af3d0a73e5fff38d",
+          "subject": "NCCL Device API compat: use runtime version for ncclDevCommCreate (#688)"
+        },
+        {
+          "sha": "60d44037a702f651a6e18bd4aea65ed8409051c2",
+          "subject": "Fix SM90 compatibility (#178)"
+        },
+        {
+          "sha": "099d5f2bad488b9c534ea785062b12f2e91d1d41",
+          "subject": "Merge some updates (#674)"
+        },
+        {
+          "sha": "af9a0403188392824fc3057452822235873e0612",
+          "subject": "add Experimental branch intro (#664)"
+        },
+        {
+          "sha": "d4f41e4e93602a15e95f55f6ee8df8f1aaa0e4bb",
+          "subject": "Add fence.proxy.async.shared::cta between mbarrier wait and TMA load. (#642)"
+        }
+      ],
+      "targeted_history": []
+    }
+  ],
+  "additional_references": [
+    {
+      "name": "TileKernels",
+      "pinned_package": "2.1.0",
+      "latest_pypi": "2.1.0",
+      "url": "https://pypi.org/project/tile-kernels/",
+      "project_urls": {
+        "Homepage": "https://github.com/deepseek-ai/TileKernels"
+      },
+      "github_head": "c1cf914a82e6901c679445f872051ce44ac2cc63",
+      "github_head_date": "2026-10-14T05:49:06Z",
+      "github_subject": "Merge pull request #38 from deepseek-ai/v2.1.0-release",
+      "artifacts": [
+        {
+          "name": "tile_kernels-2.1.0-py3-none-any.whl",
+          "sha256": "df3ddffcf53ebc19404d2723bf2a629b46ce14cf4744a7739a80b0a9e366cf1f",
+          "upload_time": "2026-10-14T06:24:52.596839Z"
+        },
+        {
+          "name": "tile_kernels-2.1.0.tar.gz",
+          "sha256": "7c35ba7d181577f669beb84e7ac763549262923719e96648cea6b0d88b2968ff",
+          "upload_time": "2026-10-14T06:24:54.387580Z"
+        }
+      ]
+    },
+    {
+      "name": "Qwen3.8-Next technical report",
+      "local_path": "/home/rm01/models/dev/qwen4-thor/reference/pdf/tech_report.pdf",
+      "local_sha256": "04f263446d74a35cb7cea368574e0c561f3b05c133be2c777ac884404063655d",
+      "local_title_date": "2026-08-26",
+      "official_url": "https://arxiv.org/abs/2608.30320v1",
+      "arxiv_latest_version": "v1",
+      "arxiv_submitted": "2026-08-31T06:35:07Z",
+      "byte_equality_verified": false
+    }
+  ],
+  "source_files": [
+    {
+      "repository": "vllm-project/vllm",
+      "revision": "bc9a3ac5dc77981f7185ac402e96e47706c4e93e",
+      "path": "vllm/models/qwen4_exp/nvidia/qsa.py",
+      "url": "https://raw.githubusercontent.com/vllm-project/vllm/bc9a3ac5dc77981f7185ac402e96e47706c4e93e/vllm/models/qwen4_exp/nvidia/qsa.py",
+      "local": "vllm-project__vllm/sources/head/vllm/models/qwen4_exp/nvidia/qsa.py",
+      "size": 24393,
+      "sha256": "130488cfe025bfc03f2cfde76766ea464cbb739b9469327d42b1639525322c7a"
+    },
+    {
+      "repository": "vllm-project/vllm",
+      "revision": "bc9a3ac5dc77981f7185ac402e96e47706c4e93e",
+      "path": "vllm/models/qwen4_exp/nvidia/qsa_indexer.py",
+      "url": "https://raw.githubusercontent.com/vllm-project/vllm/bc9a3ac5dc77981f7185ac402e96e47706c4e93e/vllm/models/qwen4_exp/nvidia/qsa_indexer.py",
+      "local": "vllm-project__vllm/sources/head/vllm/models/qwen4_exp/nvidia/qsa_indexer.py",
+      "size": 17474,
+      "sha256": "27c377e98cb3de52776a56e58660f1a7d747ef6fb4c8f62d4e95dedf1e54199f"
+    },
+    {
+      "repository": "vllm-project/vllm",
+      "revision": "bc9a3ac5dc77981f7185ac402e96e47706c4e93e",
+      "path": "vllm/models/qwen4_exp/nvidia/ops/qsa.py",
+      "url": "https://raw.githubusercontent.com/vllm-project/vllm/bc9a3ac5dc77981f7185ac402e96e47706c4e93e/vllm/models/qwen4_exp/nvidia/ops/qsa.py",
+      "local": "vllm-project__vllm/sources/head/vllm/models/qwen4_exp/nvidia/ops/qsa.py",
+      "size": 40202,
+      "sha256": "cac685c7b31c32064be1251570b963b360f98e323dfae3f39d4f5bb5e67f7be8"
+    },
+    {
+      "repository": "vllm-project/vllm",
+      "revision": "bc9a3ac5dc77981f7185ac402e96e47706c4e93e",
+      "path": "vllm/models/qwen4_exp/nvidia/ops/qsa_prepare.py",
+      "url": "https://raw.githubusercontent.com/vllm-project/vllm/bc9a3ac5dc77981f7185ac402e96e47706c4e93e/vllm/models/qwen4_exp/nvidia/ops/qsa_prepare.py",
+      "local": "vllm-project__vllm/sources/head/vllm/models/qwen4_exp/nvidia/ops/qsa_prepare.py",
+      "size": 25247,
+      "sha256": "22049c20b85fea0d38fe03175de36acc02edc55802ae89efafef2dffdc813187"
+    },
+    {
+      "repository": "vllm-project/vllm",
+      "revision": "bc9a3ac5dc77981f7185ac402e96e47706c4e93e",
+      "path": "vllm/models/qwen4_exp/nvidia/low_latency_gemm.py",
+      "url": "https://raw.githubusercontent.com/vllm-project/vllm/bc9a3ac5dc77981f7185ac402e96e47706c4e93e/vllm/models/qwen4_exp/nvidia/low_latency_gemm.py",
+      "local": "vllm-project__vllm/sources/head/vllm/models/qwen4_exp/nvidia/low_latency_gemm.py",
+      "size": 20370,
+      "sha256": "9177e59c0e13bb6edd4db9d16e4c366f632868643697eb57012674ce5987c0bc"
+    },
+    {
+      "repository": "sgl-project/sglang",
+      "revision": "a99c1a851e6e347f58197cb329b2d1277b035f39",
+      "path": "python/sglang/srt/models/qwen4_exp.py",
+      "url": "https://raw.githubusercontent.com/sgl-project/sglang/a99c1a851e6e347f58197cb329b2d1277b035f39/python/sglang/srt/models/qwen4_exp.py",
+      "local": "sgl-project__sglang/sources/head/python/sglang/srt/models/qwen4_exp.py",
+      "size": 108092,
+      "sha256": "1d8ba8e35a9fa540a2af8407a192864093749d29b185d043310d544609d2b058"
+    },
+    {
+      "repository": "sgl-project/sglang",
+      "revision": "a99c1a851e6e347f58197cb329b2d1277b035f39",
+      "path": "python/sglang/srt/layers/attention/qsa/sparse_attn.py",
+      "url": "https://raw.githubusercontent.com/sgl-project/sglang/a99c1a851e6e347f58197cb329b2d1277b035f39/python/sglang/srt/layers/attention/qsa/sparse_attn.py",
+      "local": "sgl-project__sglang/sources/head/python/sglang/srt/layers/attention/qsa/sparse_attn.py",
+      "size": 25004,
+      "sha256": "b579bc6741937a54e81d7c560cdc69a6ab1bef656f3b8946f1a580db12faca11"
+    },
+    {
+      "repository": "sgl-project/sglang",
+      "revision": "a99c1a851e6e347f58197cb329b2d1277b035f39",
+      "path": "python/sglang/srt/layers/attention/qsa/qsa_indexer.py",
+      "url": "https://raw.githubusercontent.com/sgl-project/sglang/a99c1a851e6e347f58197cb329b2d1277b035f39/python/sglang/srt/layers/attention/qsa/qsa_indexer.py",
+      "local": "sgl-project__sglang/sources/head/python/sglang/srt/layers/attention/qsa/qsa_indexer.py",
+      "size": 34184,
+      "sha256": "4b31def7d5351815e77ba0ecc13e6425919bad2b759d68d0598e7f1676a7d335"
+    },
+    {
+      "repository": "sgl-project/sglang",
+      "revision": "a99c1a851e6e347f58197cb329b2d1277b035f39",
+      "path": "python/sglang/srt/layers/attention/qsa/config.py",
+      "url": "https://raw.githubusercontent.com/sgl-project/sglang/a99c1a851e6e347f58197cb329b2d1277b035f39/python/sglang/srt/layers/attention/qsa/config.py",
+      "local": "sgl-project__sglang/sources/head/python/sglang/srt/layers/attention/qsa/config.py",
+      "size": 3182,
+      "sha256": "54a7f0f88f189b9174ef04f722abd03f125de524209274ff80c9794849f36e3e"
+    },
+    {
+      "repository": "sgl-project/sglang",
+      "revision": "a99c1a851e6e347f58197cb329b2d1277b035f39",
+      "path": "python/sglang/srt/mem_cache/pool_host/qsa.py",
+      "url": "https://raw.githubusercontent.com/sgl-project/sglang/a99c1a851e6e347f58197cb329b2d1277b035f39/python/sglang/srt/mem_cache/pool_host/qsa.py",
+      "local": "sgl-project__sglang/sources/head/python/sglang/srt/mem_cache/pool_host/qsa.py",
+      "size": 1493,
+      "sha256": "c6c3e333d9910f5e815f5003d028fdd273936cdb72454dc89865d80f46cddf7f"
+    },
+    {
+      "repository": "huggingface/transformers",
+      "revision": "cdb75de4adf71059c01f58dbd2d24d85084a397d",
+      "path": "src/transformers/models/qwen4_exp/modeling_qwen4_exp.py",
+      "url": "https://raw.githubusercontent.com/huggingface/transformers/cdb75de4adf71059c01f58dbd2d24d85084a397d/src/transformers/models/qwen4_exp/modeling_qwen4_exp.py",
+      "local": "huggingface__transformers/sources/head/src/transformers/models/qwen4_exp/modeling_qwen4_exp.py",
+      "size": 120891,
+      "sha256": "3424f1b7a7e4d690c87a43758d791f37cede3fcb7e75f52e80ca498f9b84276e"
+    },
+    {
+      "repository": "huggingface/transformers",
+      "revision": "cdb75de4adf71059c01f58dbd2d24d85084a397d",
+      "path": "src/transformers/models/qwen4_exp/configuration_qwen4_exp.py",
+      "url": "https://raw.githubusercontent.com/huggingface/transformers/cdb75de4adf71059c01f58dbd2d24d85084a397d/src/transformers/models/qwen4_exp/configuration_qwen4_exp.py",
+      "local": "huggingface__transformers/sources/head/src/transformers/models/qwen4_exp/configuration_qwen4_exp.py",
+      "size": 16120,
+      "sha256": "bb1d71db625fb50d1bf86589032edaa9c0f00f8ba2b9f1d06946aa0a8eeae246"
+    },
+    {
+      "repository": "huggingface/transformers",
+      "revision": "cdb75de4adf71059c01f58dbd2d24d85084a397d",
+      "path": "src/transformers/models/qwen4_exp/modular_qwen4_exp.py",
+      "url": "https://raw.githubusercontent.com/huggingface/transformers/cdb75de4adf71059c01f58dbd2d24d85084a397d/src/transformers/models/qwen4_exp/modular_qwen4_exp.py",
+      "local": "huggingface__transformers/sources/head/src/transformers/models/qwen4_exp/modular_qwen4_exp.py",
+      "size": 55422,
+      "sha256": "a5350d43d3bd8169c566200ad7efc87580d39da0371eeaf3b3e14e6f9696dde2"
+    },
+    {
+      "repository": "flashinfer-ai/flashinfer",
+      "revision": "096ca39406ef58a89f016a37b861e48786daa1c1",
+      "path": "flashinfer/qsa.py",
+      "url": "https://raw.githubusercontent.com/flashinfer-ai/flashinfer/096ca39406ef58a89f016a37b861e48786daa1c1/flashinfer/qsa.py",
+      "local": "flashinfer-ai__flashinfer/sources/head/flashinfer/qsa.py",
+      "size": 5612,
+      "sha256": "2b45eafc57f0d79b3ed16bcc9995e86d38c20342229c915238ff91fc0484d528"
+    },
+    {
+      "repository": "flashinfer-ai/flashinfer",
+      "revision": "096ca39406ef58a89f016a37b861e48786daa1c1",
+      "path": "flashinfer/experimental/b12x/attention/qsa/_contract.py",
+      "url": "https://raw.githubusercontent.com/flashinfer-ai/flashinfer/096ca39406ef58a89f016a37b861e48786daa1c1/flashinfer/experimental/b12x/attention/qsa/_contract.py",
+      "local": "flashinfer-ai__flashinfer/sources/head/flashinfer/experimental/b12x/attention/qsa/_contract.py",
+      "size": 165715,
+      "sha256": "bd6fee66788ef4b9f144e5f3af52fdb3af99d677e62ceaf476850623cd29aa8f"
+    },
+    {
+      "repository": "flashinfer-ai/flashinfer",
+      "revision": "096ca39406ef58a89f016a37b861e48786daa1c1",
+      "path": "flashinfer/experimental/b12x/attention/qsa/_sparse_gqa.py",
+      "url": "https://raw.githubusercontent.com/flashinfer-ai/flashinfer/096ca39406ef58a89f016a37b861e48786daa1c1/flashinfer/experimental/b12x/attention/qsa/_sparse_gqa.py",
+      "local": "flashinfer-ai__flashinfer/sources/head/flashinfer/experimental/b12x/attention/qsa/_sparse_gqa.py",
+      "size": 17931,
+      "sha256": "c6eeacf726af6cc05b5f47bfc33cd664231279b3def42a10e08a663322afdaba"
+    },
+    {
+      "repository": "flashinfer-ai/flashinfer",
+      "revision": "096ca39406ef58a89f016a37b861e48786daa1c1",
+      "path": "flashinfer/experimental/b12x/attention/qsa/_stable_select_cute.py",
+      "url": "https://raw.githubusercontent.com/flashinfer-ai/flashinfer/096ca39406ef58a89f016a37b861e48786daa1c1/flashinfer/experimental/b12x/attention/qsa/_stable_select_cute.py",
+      "local": "flashinfer-ai__flashinfer/sources/head/flashinfer/experimental/b12x/attention/qsa/_stable_select_cute.py",
+      "size": 8290,
+      "sha256": "8094a89349faf4766f959bed96d8d6bc70c6bc1fd9d932f3292a6b9f51f23afa"
+    },
+    {
+      "repository": "Dao-AILab/flash-attention",
+      "revision": "34a06b99d60ea26bfce91432c9fbb6de1a1b94ec",
+      "path": "flash_attn/cute/interface.py",
+      "url": "https://raw.githubusercontent.com/Dao-AILab/flash-attention/34a06b99d60ea26bfce91432c9fbb6de1a1b94ec/flash_attn/cute/interface.py",
+      "local": "Dao-AILab__flash-attention/sources/head/flash_attn/cute/interface.py",
+      "size": 187332,
+      "sha256": "aa6598d8146949a7a33623ad1ac31e561d6523d441d5aa79e520e9681f940bee"
+    },
+    {
+      "repository": "Dao-AILab/flash-attention",
+      "revision": "34a06b99d60ea26bfce91432c9fbb6de1a1b94ec",
+      "path": "flash_attn/cute/flash_fwd_sm100.py",
+      "url": "https://raw.githubusercontent.com/Dao-AILab/flash-attention/34a06b99d60ea26bfce91432c9fbb6de1a1b94ec/flash_attn/cute/flash_fwd_sm100.py",
+      "local": "Dao-AILab__flash-attention/sources/head/flash_attn/cute/flash_fwd_sm100.py",
+      "size": 180004,
+      "sha256": "ec5b2d898852bc15d52e7886ae7ebd39ae98777a2d63c37e045cf66b4ee76723"
+    },
+    {
+      "repository": "Dao-AILab/flash-attention",
+      "revision": "34a06b99d60ea26bfce91432c9fbb6de1a1b94ec",
+      "path": "flash_attn/cute/flash_fwd_sm120.py",
+      "url": "https://raw.githubusercontent.com/Dao-AILab/flash-attention/34a06b99d60ea26bfce91432c9fbb6de1a1b94ec/flash_attn/cute/flash_fwd_sm120.py",
+      "local": "Dao-AILab__flash-attention/sources/head/flash_attn/cute/flash_fwd_sm120.py",
+      "size": 2203,
+      "sha256": "abd017add69914e46f0fcfc017ad51c3d07d79fd87d15f969036ddd82bcc7da2"
+    },
+    {
+      "repository": "Dao-AILab/flash-attention",
+      "revision": "34a06b99d60ea26bfce91432c9fbb6de1a1b94ec",
+      "path": "flash_attn/cute/block_sparsity.py",
+      "url": "https://raw.githubusercontent.com/Dao-AILab/flash-attention/34a06b99d60ea26bfce91432c9fbb6de1a1b94ec/flash_attn/cute/block_sparsity.py",
+      "local": "Dao-AILab__flash-attention/sources/head/flash_attn/cute/block_sparsity.py",
+      "size": 27346,
+      "sha256": "0c283b372c896517e0ec91de56ab07fed209623cf26fc5cb7868a8be6c58a315"
+    },
+    {
+      "repository": "Dao-AILab/flash-attention",
+      "revision": "34a06b99d60ea26bfce91432c9fbb6de1a1b94ec",
+      "path": "setup.py",
+      "url": "https://raw.githubusercontent.com/Dao-AILab/flash-attention/34a06b99d60ea26bfce91432c9fbb6de1a1b94ec/setup.py",
+      "local": "Dao-AILab__flash-attention/sources/head/setup.py",
+      "size": 38998,
+      "sha256": "c71c6ff06167c9a2d6e0ac7c65f9d03c0335baff681b9d5c0e6f1bfad8a34642"
+    },
+    {
+      "repository": "lightseekorg/tokenspeed",
+      "revision": "23791cea04c42d5b6c50980914ccca5a5c4eeb9e",
+      "path": "tokenspeed-kernel/python/tokenspeed_kernel/ops/attention/qsa/README.md",
+      "url": "https://raw.githubusercontent.com/lightseekorg/tokenspeed/23791cea04c42d5b6c50980914ccca5a5c4eeb9e/tokenspeed-kernel/python/tokenspeed_kernel/ops/attention/qsa/README.md",
+      "local": "lightseekorg__tokenspeed/sources/head/tokenspeed-kernel/python/tokenspeed_kernel/ops/attention/qsa/README.md",
+      "size": 16156,
+      "sha256": "2e439c7a8668617e64d33755dba29e57c34f00f2439b02788a669a46adaaec2c"
+    },
+    {
+      "repository": "lightseekorg/tokenspeed",
+      "revision": "23791cea04c42d5b6c50980914ccca5a5c4eeb9e",
+      "path": "tokenspeed-kernel/python/tokenspeed_kernel/ops/attention/qsa/cuda.py",
+      "url": "https://raw.githubusercontent.com/lightseekorg/tokenspeed/23791cea04c42d5b6c50980914ccca5a5c4eeb9e/tokenspeed-kernel/python/tokenspeed_kernel/ops/attention/qsa/cuda.py",
+      "local": "lightseekorg__tokenspeed/sources/head/tokenspeed-kernel/python/tokenspeed_kernel/ops/attention/qsa/cuda.py",
+      "size": 3619,
+      "sha256": "bbd764efc81788845ff8a2470a67d4af97800684e987ab0a07d41721e542c452"
+    },
+    {
+      "repository": "lightseekorg/tokenspeed",
+      "revision": "23791cea04c42d5b6c50980914ccca5a5c4eeb9e",
+      "path": "tokenspeed-kernel/python/tokenspeed_kernel/thirdparty/cute_dsl/qsa_sparse.py",
+      "url": "https://raw.githubusercontent.com/lightseekorg/tokenspeed/23791cea04c42d5b6c50980914ccca5a5c4eeb9e/tokenspeed-kernel/python/tokenspeed_kernel/thirdparty/cute_dsl/qsa_sparse.py",
+      "local": "lightseekorg__tokenspeed/sources/head/tokenspeed-kernel/python/tokenspeed_kernel/thirdparty/cute_dsl/qsa_sparse.py",
+      "size": 16824,
+      "sha256": "50f3a5a13274a85d97420cc4bfbb3bf41c86735ba16c535f09ebcc3712bf84af"
+    },
+    {
+      "repository": "lightseekorg/tokenspeed",
+      "revision": "23791cea04c42d5b6c50980914ccca5a5c4eeb9e",
+      "path": "tokenspeed-kernel/python/tokenspeed_kernel/thirdparty/cute_dsl/qsa_stream_topk.py",
+      "url": "https://raw.githubusercontent.com/lightseekorg/tokenspeed/23791cea04c42d5b6c50980914ccca5a5c4eeb9e/tokenspeed-kernel/python/tokenspeed_kernel/thirdparty/cute_dsl/qsa_stream_topk.py",
+      "local": "lightseekorg__tokenspeed/sources/head/tokenspeed-kernel/python/tokenspeed_kernel/thirdparty/cute_dsl/qsa_stream_topk.py",
+      "size": 18316,
+      "sha256": "9df9b9854fec251aaece6d8531575e37e54a86589d4d65dc14ca0375598d1e63"
+    },
+    {
+      "repository": "lightseekorg/tokenspeed",
+      "revision": "23791cea04c42d5b6c50980914ccca5a5c4eeb9e",
+      "path": "tokenspeed-kernel/python/tokenspeed_kernel/ops/attention/qsa/flashinfer_prims.py",
+      "url": "https://raw.githubusercontent.com/lightseekorg/tokenspeed/23791cea04c42d5b6c50980914ccca5a5c4eeb9e/tokenspeed-kernel/python/tokenspeed_kernel/ops/attention/qsa/flashinfer_prims.py",
+      "local": "lightseekorg__tokenspeed/sources/head/tokenspeed-kernel/python/tokenspeed_kernel/ops/attention/qsa/flashinfer_prims.py",
+      "size": 4929,
+      "sha256": "318cad43c2db8922876dd9cd2b2e75d71ffb19262bb6c025c8386d0d7090922b"
+    },
+    {
+      "repository": "lightseekorg/tokenspeed",
+      "revision": "23791cea04c42d5b6c50980914ccca5a5c4eeb9e",
+      "path": "python/tokenspeed/runtime/layers/attention/qsa/verify_state.py",
+      "url": "https://raw.githubusercontent.com/lightseekorg/tokenspeed/23791cea04c42d5b6c50980914ccca5a5c4eeb9e/python/tokenspeed/runtime/layers/attention/qsa/verify_state.py",
+      "local": "lightseekorg__tokenspeed/sources/head/python/tokenspeed/runtime/layers/attention/qsa/verify_state.py",
+      "size": 8913,
+      "sha256": "478edf99e2a269f2360834a64f9975440ab4b459cfb2710e4519ad7c7b19e891"
+    },
+    {
+      "repository": "antirez/ds4",
+      "revision": "b3f50180ec2c7324892be1f50bc83555ccb8d5e7",
+      "path": "ds4_qwen4_cuda.cuh",
+      "url": "https://raw.githubusercontent.com/antirez/ds4/b3f50180ec2c7324892be1f50bc83555ccb8d5e7/ds4_qwen4_cuda.cuh",
+      "local": "antirez__ds4/sources/head/ds4_qwen4_cuda.cuh",
+      "size": 119588,
+      "sha256": "cefd1d4978a024764bd4f2d870db2bea31127f2b47832c7fbe20ab705386905d"
+    },
+    {
+      "repository": "antirez/ds4",
+      "revision": "b3f50180ec2c7324892be1f50bc83555ccb8d5e7",
+      "path": "README.md",
+      "url": "https://raw.githubusercontent.com/antirez/ds4/b3f50180ec2c7324892be1f50bc83555ccb8d5e7/README.md",
+      "local": "antirez__ds4/sources/head/README.md",
+      "size": 13967,
+      "sha256": "459c30f1fb1c994938c88520a129d6f0b7ff89594508c012a69b4ead17bd36c3"
+    },
+    {
+      "repository": "Niko1221/Strata",
+      "revision": "9f7d977d220e9fdf2ec53cf2620cdadac1cfb24e",
+      "path": "src/kernels/cuda/qsa_prompt_attn.cu",
+      "url": "https://raw.githubusercontent.com/Niko1221/Strata/9f7d977d220e9fdf2ec53cf2620cdadac1cfb24e/src/kernels/cuda/qsa_prompt_attn.cu",
+      "local": "Niko1221__Strata/sources/head/src/kernels/cuda/qsa_prompt_attn.cu",
+      "size": 135207,
+      "sha256": "e2cec99c9d01eedaa400c0cdc88cc3ce26d3016f0a94129d0314b4d2b39975d1"
+    },
+    {
+      "repository": "Niko1221/Strata",
+      "revision": "9f7d977d220e9fdf2ec53cf2620cdadac1cfb24e",
+      "path": "src/kernels/cuda/qsa_select.cu",
+      "url": "https://raw.githubusercontent.com/Niko1221/Strata/9f7d977d220e9fdf2ec53cf2620cdadac1cfb24e/src/kernels/cuda/qsa_select.cu",
+      "local": "Niko1221__Strata/sources/head/src/kernels/cuda/qsa_select.cu",
+      "size": 169307,
+      "sha256": "f2981cf7bad1f323a312471df23d76b5f07f4c3914543d942927f7c637245006"
+    },
+    {
+      "repository": "Niko1221/Strata",
+      "revision": "9f7d977d220e9fdf2ec53cf2620cdadac1cfb24e",
+      "path": "src/kernels/cuda/native_qsa.cu",
+      "url": "https://raw.githubusercontent.com/Niko1221/Strata/9f7d977d220e9fdf2ec53cf2620cdadac1cfb24e/src/kernels/cuda/native_qsa.cu",
+      "local": "Niko1221__Strata/sources/head/src/kernels/cuda/native_qsa.cu",
+      "size": 8423,
+      "sha256": "91a21d493e9896b486e106ab53b26a4df9dfebb369880842a1a9add79c7604b4"
+    },
+    {
+      "repository": "Niko1221/Strata",
+      "revision": "9f7d977d220e9fdf2ec53cf2620cdadac1cfb24e",
+      "path": "README.md",
+      "url": "https://raw.githubusercontent.com/Niko1221/Strata/9f7d977d220e9fdf2ec53cf2620cdadac1cfb24e/README.md",
+      "local": "Niko1221__Strata/sources/head/README.md",
+      "size": 9110,
+      "sha256": "7b605c9d95055867b17acb921b972801eae78b0329e4f433d6b023529e64b308"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/models/qwen4_exp/execution/qsa.cpp",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/models/qwen4_exp/execution/qsa.cpp",
+      "local": "Neroued__ninfer/sources/head/src/models/qwen4_exp/execution/qsa.cpp",
+      "size": 6296,
+      "sha256": "58a7a457d49d9c9aec11c13111c57380e482f65dc36fc93d1f7401e730e8bf7d"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "docs/maintainer/qwen4_exp-model.md",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/docs/maintainer/qwen4_exp-model.md",
+      "local": "Neroued__ninfer/sources/head/docs/maintainer/qwen4_exp-model.md",
+      "size": 6223,
+      "sha256": "b1a9291427b756f2a6a2dc2e7c8a1cceab63adf436cefb5e27d957560d4e3ae1"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "README.md",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/README.md",
+      "local": "Neroued__ninfer/sources/head/README.md",
+      "size": 14437,
+      "sha256": "4c9d5c49bacc3c13bff598e61f323220e192f2fe424bee931dbcd1416a43da47"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/ops/softmax_attention/qsa/indexer/arguments.h",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/ops/softmax_attention/qsa/indexer/arguments.h",
+      "local": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/indexer/arguments.h",
+      "size": 1470,
+      "sha256": "a3e209c392ab018984956dead7dbfd6b2cc54b8a5824416614e2ed96805f1eea"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/ops/softmax_attention/qsa/indexer/dgx_spark/launch.cu",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/ops/softmax_attention/qsa/indexer/dgx_spark/launch.cu",
+      "local": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/indexer/dgx_spark/launch.cu",
+      "size": 4355,
+      "sha256": "f3f3df04e539d5cdb98b456abcc28259a9690b9fadfbd41d86291bae8a406497"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/ops/softmax_attention/qsa/indexer/dgx_spark/plan.cpp",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/ops/softmax_attention/qsa/indexer/dgx_spark/plan.cpp",
+      "local": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/indexer/dgx_spark/plan.cpp",
+      "size": 2094,
+      "sha256": "fb5630b023558a60d981c29ca6a32843c092efa05a2a830465a5b225a60706a0"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/ops/softmax_attention/qsa/indexer/dgx_spark/score.cuh",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/ops/softmax_attention/qsa/indexer/dgx_spark/score.cuh",
+      "local": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/indexer/dgx_spark/score.cuh",
+      "size": 6762,
+      "sha256": "6989492a16277df3e48b4222fe380e18a4b5c8826a6addf7a5d55706668a704f"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/ops/softmax_attention/qsa/indexer/dgx_spark/simt.cuh",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/ops/softmax_attention/qsa/indexer/dgx_spark/simt.cuh",
+      "local": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/indexer/dgx_spark/simt.cuh",
+      "size": 2442,
+      "sha256": "fb05dee1543caec817d40cab69fed17bfa86dc2539e132cb95be71b690766c70"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/ops/softmax_attention/qsa/indexer/indexer.cpp",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/ops/softmax_attention/qsa/indexer/indexer.cpp",
+      "local": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/indexer/indexer.cpp",
+      "size": 3711,
+      "sha256": "c9b22786d0b86dfb4d5989aa42cf0d016520a3e076b766cd39204dbabf448e24"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/ops/softmax_attention/qsa/indexer/launch.cu",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/ops/softmax_attention/qsa/indexer/launch.cu",
+      "local": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/indexer/launch.cu",
+      "size": 2373,
+      "sha256": "f7032c5e5d32ac7cc1238f1ce1d306900b271abb0cab1fbac7e5424bd2e62b61"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/ops/softmax_attention/qsa/indexer/plan.h",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/ops/softmax_attention/qsa/indexer/plan.h",
+      "local": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/indexer/plan.h",
+      "size": 2029,
+      "sha256": "48a2c5777cb6fe7ac1764e3c4a3398eec9e93b4d20b4da552dfc56b3334fa46c"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/ops/softmax_attention/qsa/indexer/rtx5090/launch.cu",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/ops/softmax_attention/qsa/indexer/rtx5090/launch.cu",
+      "local": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/indexer/rtx5090/launch.cu",
+      "size": 1769,
+      "sha256": "e688255db5c3dd0b3b5c6b44574710170797fec7d00e6d92533845f66b4b1014"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/ops/softmax_attention/qsa/indexer/rtx5090/plan.cpp",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/ops/softmax_attention/qsa/indexer/rtx5090/plan.cpp",
+      "local": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/indexer/rtx5090/plan.cpp",
+      "size": 777,
+      "sha256": "40aa535672055b3362034d7ace933785a4cfa8ce689139ce69c4d1facdbc74d0"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/ops/softmax_attention/qsa/indexer/score.cuh",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/ops/softmax_attention/qsa/indexer/score.cuh",
+      "local": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/indexer/score.cuh",
+      "size": 4737,
+      "sha256": "deccada9b10dbcdc42dba5cdce384910f9811298fe71148ea74f754ca859f54d"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/ops/softmax_attention/qsa/indexer/select.cuh",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/ops/softmax_attention/qsa/indexer/select.cuh",
+      "local": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/indexer/select.cuh",
+      "size": 3020,
+      "sha256": "3eb65fe056c17c011cec41ea3975757e1405b594c8fe60296159d797d8a1df60"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/ops/softmax_attention/qsa/indexer/work_map.cuh",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/ops/softmax_attention/qsa/indexer/work_map.cuh",
+      "local": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/indexer/work_map.cuh",
+      "size": 2588,
+      "sha256": "208d45bc62f00ded8c175c905021fcb64ab81c56dc1347e0cde010b449d5fb27"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/ops/softmax_attention/qsa/prepare/arguments.cuh",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/ops/softmax_attention/qsa/prepare/arguments.cuh",
+      "local": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/prepare/arguments.cuh",
+      "size": 1709,
+      "sha256": "9511c5a86e3384803905a413e29e69d07ba1b5323ac829e07a6a894dd863d9c5"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/ops/softmax_attention/qsa/prepare/cache.cuh",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/ops/softmax_attention/qsa/prepare/cache.cuh",
+      "local": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/prepare/cache.cuh",
+      "size": 5341,
+      "sha256": "c6b93753a5f6501befdb9efd0d0e76a76e879fb8a99685e1e428ab7529ce55a7"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/ops/softmax_attention/qsa/prepare/kernel.cuh",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/ops/softmax_attention/qsa/prepare/kernel.cuh",
+      "local": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/prepare/kernel.cuh",
+      "size": 4928,
+      "sha256": "6a6501bc99c72c8ff7d7542ae72dc35ba340f177e5704ae5bde568eb3b34d02e"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/ops/softmax_attention/qsa/prepare/launch.cu",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/ops/softmax_attention/qsa/prepare/launch.cu",
+      "local": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/prepare/launch.cu",
+      "size": 8657,
+      "sha256": "0d41ab8bff3851e690fa85ba33e02ce7f8782880525a4a785fa29cdab4ea41fc"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/ops/softmax_attention/qsa/prepare/launch.h",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/ops/softmax_attention/qsa/prepare/launch.h",
+      "local": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/prepare/launch.h",
+      "size": 880,
+      "sha256": "2b38f8ab116093b1ef0e7bd559fe4bb3b1a0b720e2f6cdfe3279bb8147138809"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/ops/softmax_attention/qsa/prepare/norm_rope.cuh",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/ops/softmax_attention/qsa/prepare/norm_rope.cuh",
+      "local": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/prepare/norm_rope.cuh",
+      "size": 5866,
+      "sha256": "4d0526c0e8c4148d27c1a965cde0653d70312a0c706f18a6600cc6521832e317"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/ops/softmax_attention/qsa/prepare/prepare.cpp",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/ops/softmax_attention/qsa/prepare/prepare.cpp",
+      "local": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/prepare/prepare.cpp",
+      "size": 7259,
+      "sha256": "000ef76a78bb3414fa7e40dba8bd0d4c251fe96cfe74b84114a349867bd153b7"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/ops/softmax_attention/qsa/sources.cmake",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/ops/softmax_attention/qsa/sources.cmake",
+      "local": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/sources.cmake",
+      "size": 949,
+      "sha256": "0db6f27b1fdbaee0a1f1095c8f702bc63acbf8c2a06d73e4b66a917c4c0ac399"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/ops/softmax_attention/qsa/sparse_gqa/arguments.h",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/ops/softmax_attention/qsa/sparse_gqa/arguments.h",
+      "local": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/sparse_gqa/arguments.h",
+      "size": 2560,
+      "sha256": "271c3aa22e997aa07e60a7e0db070f98edcafd4966906db6d33e3ef7d6f9bb9d"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/ops/softmax_attention/qsa/sparse_gqa/cache.cuh",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/ops/softmax_attention/qsa/sparse_gqa/cache.cuh",
+      "local": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/sparse_gqa/cache.cuh",
+      "size": 8516,
+      "sha256": "72ecf04b47408e306cdcc2ce8179f72e99d309523f58cd28e457423b99c1b68a"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/ops/softmax_attention/qsa/sparse_gqa/columns.cuh",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/ops/softmax_attention/qsa/sparse_gqa/columns.cuh",
+      "local": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/sparse_gqa/columns.cuh",
+      "size": 8293,
+      "sha256": "b6a2c3231bb58693efcda2332f392b21e5290a54defff98cc0a91eb90a49021b"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/ops/softmax_attention/qsa/sparse_gqa/dgx_spark/grouped.cu",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/ops/softmax_attention/qsa/sparse_gqa/dgx_spark/grouped.cu",
+      "local": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/sparse_gqa/dgx_spark/grouped.cu",
+      "size": 1466,
+      "sha256": "7c0066bdae6ae04af1cedff6a8484bafc2c345e8137bc00bf4d198e377a26446"
+    },
+    {
+      "repository": "kvmem/kvmem",
+      "revision": "a2d8d9bf194d5ebbea34d3b923aec9e3d552be0e",
+      "path": "README.md",
+      "url": "https://raw.githubusercontent.com/kvmem/kvmem/a2d8d9bf194d5ebbea34d3b923aec9e3d552be0e/README.md",
+      "local": "kvmem__kvmem/sources/head/README.md",
+      "size": 10539,
+      "sha256": "959db1ec6b6936729425d46260b89c27b4a19b5014b01814bb11999a38bde495"
+    },
+    {
+      "repository": "NVIDIA/Megatron-LM",
+      "revision": "9cfb771dbe631404081f2ae9176ae94b837f02d3",
+      "path": "README.md",
+      "url": "https://raw.githubusercontent.com/NVIDIA/Megatron-LM/9cfb771dbe631404081f2ae9176ae94b837f02d3/README.md",
+      "local": "NVIDIA__Megatron-LM/sources/head/README.md",
+      "size": 8429,
+      "sha256": "241f860a314ba3790d0161a52fe423be2779d6854829488b7fb8dbf15954ee14"
+    },
+    {
+      "repository": "NVIDIA/Megatron-LM",
+      "revision": "9cfb771dbe631404081f2ae9176ae94b837f02d3",
+      "path": "megatron/core/inference/contexts/dynamic_context.py",
+      "url": "https://raw.githubusercontent.com/NVIDIA/Megatron-LM/9cfb771dbe631404081f2ae9176ae94b837f02d3/megatron/core/inference/contexts/dynamic_context.py",
+      "local": "NVIDIA__Megatron-LM/sources/head/megatron/core/inference/contexts/dynamic_context.py",
+      "size": 278710,
+      "sha256": "cbac5e446fd185cf304de863743afb58241d259fa6deb74d80f3b90821813a11"
+    },
+    {
+      "repository": "NVIDIA/Megatron-LM",
+      "revision": "9cfb771dbe631404081f2ae9176ae94b837f02d3",
+      "path": "megatron/core/inference/engines/dynamic_engine.py",
+      "url": "https://raw.githubusercontent.com/NVIDIA/Megatron-LM/9cfb771dbe631404081f2ae9176ae94b837f02d3/megatron/core/inference/engines/dynamic_engine.py",
+      "local": "NVIDIA__Megatron-LM/sources/head/megatron/core/inference/engines/dynamic_engine.py",
+      "size": 282564,
+      "sha256": "2ce3de60838963b74907aa2f5e0e0329b108f8c3c22d9080840799edeb25ed90"
+    },
+    {
+      "repository": "Maurya30/actkv-open",
+      "revision": "2f832f7e8c4a12578baa16c2d111456b0ed528a0",
+      "path": "actkv/paged.py",
+      "url": "https://raw.githubusercontent.com/Maurya30/actkv-open/2f832f7e8c4a12578baa16c2d111456b0ed528a0/actkv/paged.py",
+      "local": "Maurya30__actkv-open/sources/head/actkv/paged.py",
+      "size": 7809,
+      "sha256": "fef1c60a4e4ed7eabbf1ff0d3e65812530b5033eeea1fffc897fdf0506453a5a"
+    },
+    {
+      "repository": "Maurya30/actkv-open",
+      "revision": "2f832f7e8c4a12578baa16c2d111456b0ed528a0",
+      "path": "actkv/eviction.py",
+      "url": "https://raw.githubusercontent.com/Maurya30/actkv-open/2f832f7e8c4a12578baa16c2d111456b0ed528a0/actkv/eviction.py",
+      "local": "Maurya30__actkv-open/sources/head/actkv/eviction.py",
+      "size": 9151,
+      "sha256": "b09478bc57638668a9374d36d74529dd27ba6fbbe6d17c56ba16a2fd61676023"
+    },
+    {
+      "repository": "Maurya30/actkv-open",
+      "revision": "2f832f7e8c4a12578baa16c2d111456b0ed528a0",
+      "path": "README.md",
+      "url": "https://raw.githubusercontent.com/Maurya30/actkv-open/2f832f7e8c4a12578baa16c2d111456b0ed528a0/README.md",
+      "local": "Maurya30__actkv-open/sources/head/README.md",
+      "size": 10207,
+      "sha256": "3073d04bf098d7ffffa2c48292b23d0efdfffdedf52a477d07c2cb844fb4b29e"
+    },
+    {
+      "repository": "thomas-hiddenpeak/Qwen3x-Orin",
+      "revision": "7aa0dd2b69a77807669650c4fcbdabd37498e4cc",
+      "path": "README.md",
+      "url": "https://raw.githubusercontent.com/thomas-hiddenpeak/Qwen3x-Orin/7aa0dd2b69a77807669650c4fcbdabd37498e4cc/README.md",
+      "local": "thomas-hiddenpeak__Qwen3x-Orin/sources/head/README.md",
+      "size": 15394,
+      "sha256": "473a7f064027e26512538ad3f97158f068b65f93cd5b695d6f15ca675e6be5ea"
+    },
+    {
+      "repository": "thomas-hiddenpeak/Qwen3x-Orin",
+      "revision": "7aa0dd2b69a77807669650c4fcbdabd37498e4cc",
+      "path": "src/text/tokenizer.cpp",
+      "url": "https://raw.githubusercontent.com/thomas-hiddenpeak/Qwen3x-Orin/7aa0dd2b69a77807669650c4fcbdabd37498e4cc/src/text/tokenizer.cpp",
+      "local": "thomas-hiddenpeak__Qwen3x-Orin/sources/head/src/text/tokenizer.cpp",
+      "size": 57003,
+      "sha256": "88486876e882743ac7f1d4921b117b77b33b177fddef054a02842570639b3c49"
+    },
+    {
+      "repository": "huggingface/transformers",
+      "revision": "v5.16.1",
+      "path": "src/transformers/models/qwen4_exp/modeling_qwen4_exp.py",
+      "url": "https://raw.githubusercontent.com/huggingface/transformers/v5.16.1/src/transformers/models/qwen4_exp/modeling_qwen4_exp.py",
+      "local": "huggingface__transformers/sources/base/src/transformers/models/qwen4_exp/modeling_qwen4_exp.py",
+      "size": 124924,
+      "sha256": "77fec77d87f2a0eb23b95fa04276fb5779698a7c7f523cf5061e49c118bcc459"
+    },
+    {
+      "repository": "huggingface/transformers",
+      "revision": "v5.16.1",
+      "path": "src/transformers/models/qwen4_exp/configuration_qwen4_exp.py",
+      "url": "https://raw.githubusercontent.com/huggingface/transformers/v5.16.1/src/transformers/models/qwen4_exp/configuration_qwen4_exp.py",
+      "local": "huggingface__transformers/sources/base/src/transformers/models/qwen4_exp/configuration_qwen4_exp.py",
+      "size": 16463,
+      "sha256": "26b47995740e3bc596b44b2011ee6c3d971d46136438b00dd5fad9557bec4254"
+    },
+    {
+      "repository": "huggingface/transformers",
+      "revision": "v5.16.1",
+      "path": "src/transformers/models/qwen4_exp/modular_qwen4_exp.py",
+      "url": "https://raw.githubusercontent.com/huggingface/transformers/v5.16.1/src/transformers/models/qwen4_exp/modular_qwen4_exp.py",
+      "local": "huggingface__transformers/sources/base/src/transformers/models/qwen4_exp/modular_qwen4_exp.py",
+      "size": 57088,
+      "sha256": "54b9e147c1e1b95169419a4258c0ea4cefeaf7c37b9af2456e57ebc92a4ecc56"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/runtime/engine/engine_schedule.inl",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/runtime/engine/engine_schedule.inl",
+      "local": "Neroued__ninfer/sources/head/src/runtime/engine/engine_schedule.inl",
+      "size": 58199,
+      "sha256": "5aea48e11735f2206f33429b58191bab9dfeaf812887f8af6e21849a584a2442"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/runtime/engine/scheduler.h",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/runtime/engine/scheduler.h",
+      "local": "Neroued__ninfer/sources/head/src/runtime/engine/scheduler.h",
+      "size": 13942,
+      "sha256": "6310f322d8f3c45737b6609c38cc3ffdc836a8c54a4347e073a6a05d7c489f96"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/ops/softmax_attention/qsa/sparse_gqa/prefill.cuh",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/ops/softmax_attention/qsa/sparse_gqa/prefill.cuh",
+      "local": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/sparse_gqa/prefill.cuh",
+      "size": 7332,
+      "sha256": "b632cec24b85b87f9bd6b7f31eee0a0a666c04dd9994364a811b45c9539f9ed3"
+    },
+    {
+      "repository": "Neroued/ninfer",
+      "revision": "a754fcf3bf524494aa927c2f54e0cbfb58f569ab",
+      "path": "src/ops/softmax_attention/qsa/sparse_gqa/dgx_spark/plan.cpp",
+      "url": "https://raw.githubusercontent.com/Neroued/ninfer/a754fcf3bf524494aa927c2f54e0cbfb58f569ab/src/ops/softmax_attention/qsa/sparse_gqa/dgx_spark/plan.cpp",
+      "local": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/sparse_gqa/dgx_spark/plan.cpp",
+      "size": 5422,
+      "sha256": "e69243fe783154b1bafb56b0df06607922db77fab944d089ce2fb0d8b5470ae6"
+    },
+    {
+      "repository": "kvmem/kvmem",
+      "revision": "a2d8d9bf194d5ebbea34d3b923aec9e3d552be0e",
+      "path": "docs/checkpoint-policy.md",
+      "url": "https://raw.githubusercontent.com/kvmem/kvmem/a2d8d9bf194d5ebbea34d3b923aec9e3d552be0e/docs/checkpoint-policy.md",
+      "local": "kvmem__kvmem/sources/head/docs/checkpoint-policy.md",
+      "size": 32490,
+      "sha256": "1cad495de8734366aa7e4aed98ad564fa5690801384c2c8c4f2c3fefd388c264"
+    },
+    {
+      "repository": "kvmem/kvmem",
+      "revision": "a2d8d9bf194d5ebbea34d3b923aec9e3d552be0e",
+      "path": "backends/patches/ninfer-cross-owner-fork.patch",
+      "url": "https://raw.githubusercontent.com/kvmem/kvmem/a2d8d9bf194d5ebbea34d3b923aec9e3d552be0e/backends/patches/ninfer-cross-owner-fork.patch",
+      "local": "kvmem__kvmem/sources/head/backends/patches/ninfer-cross-owner-fork.patch",
+      "size": 55035,
+      "sha256": "ded838bcd7dbbe9fa480d5160bb947ef2a3d0c38a5c49d44740ddd0f5c3fe0b5"
+    }
+  ],
+  "limitations": [
+    "All registered references inventoried, not all upstream changes line-by-line audited.",
+    "Default-branch SHA and latest-release metadata are separate identities.",
+    "vLLM latest tag contains rc3 although GitHub prerelease=false; no maturity inference.",
+    "SGLang old pin and Transformers release tag diverge from current main.",
+    "No upstream installation/import/build, no new model/test/HTTP/GPU/CI execution.",
+    "Upstream benchmark and test claims are not Thor acceptance."
+  ]
+}

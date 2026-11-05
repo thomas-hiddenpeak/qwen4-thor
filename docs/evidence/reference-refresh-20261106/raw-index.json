@@ -1,0 +1,1055 @@
+{
+  "archive_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/upstream-refresh-20261106",
+  "files": [
+    {
+      "path": "Dao-AILab__flash-attention/compare.json",
+      "bytes": 1657895,
+      "sha256": "dc6f9e7ae2ecd48d2cf42068cdfebec693fcfcd4ecb1ed7f2dc43037e3d4d1e4"
+    },
+    {
+      "path": "Dao-AILab__flash-attention/head.json",
+      "bytes": 13030,
+      "sha256": "de2166d961261a5f3ed34b7bc90935d45ec196456c41c13200a3605096cd5925"
+    },
+    {
+      "path": "Dao-AILab__flash-attention/recent.json",
+      "bytes": 130884,
+      "sha256": "05adfcd99f680d4a2666f03be2c249bef3b456cffa7cbfecef93bb2ba125a5f3"
+    },
+    {
+      "path": "Dao-AILab__flash-attention/release.json",
+      "bytes": 106917,
+      "sha256": "8e9b48a80e2971692be1c8c501a419af8161bd4327f5d241997559a4fe69db21"
+    },
+    {
+      "path": "Dao-AILab__flash-attention/repository.json",
+      "bytes": 7718,
+      "sha256": "17a49c4d3fb5199ad95e0b36ac8d0324d8df7cfe5a54d23e56ef7fdfe2230f6f"
+    },
+    {
+      "path": "Dao-AILab__flash-attention/sources/head/flash_attn/cute/block_sparsity.py",
+      "bytes": 27346,
+      "sha256": "0c283b372c896517e0ec91de56ab07fed209623cf26fc5cb7868a8be6c58a315"
+    },
+    {
+      "path": "Dao-AILab__flash-attention/sources/head/flash_attn/cute/flash_fwd_sm100.py",
+      "bytes": 180004,
+      "sha256": "ec5b2d898852bc15d52e7886ae7ebd39ae98777a2d63c37e045cf66b4ee76723"
+    },
+    {
+      "path": "Dao-AILab__flash-attention/sources/head/flash_attn/cute/flash_fwd_sm120.py",
+      "bytes": 2203,
+      "sha256": "abd017add69914e46f0fcfc017ad51c3d07d79fd87d15f969036ddd82bcc7da2"
+    },
+    {
+      "path": "Dao-AILab__flash-attention/sources/head/flash_attn/cute/interface.py",
+      "bytes": 187332,
+      "sha256": "aa6598d8146949a7a33623ad1ac31e561d6523d441d5aa79e520e9681f940bee"
+    },
+    {
+      "path": "Dao-AILab__flash-attention/sources/head/setup.py",
+      "bytes": 38998,
+      "sha256": "c71c6ff06167c9a2d6e0ac7c65f9d03c0335baff681b9d5c0e6f1bfad8a34642"
+    },
+    {
+      "path": "Dao-AILab__flash-attention/tree.json",
+      "bytes": 396698,
+      "sha256": "97aaa324418683f4d96a9ec49c3ebe20e08a0fd39f1e93b47dd9425b68628f37"
+    },
+    {
+      "path": "Maurya30__actkv-open/compare.json",
+      "bytes": 391858,
+      "sha256": "281d75322fcb29e55a875efe475193b5961e331b0a273948d70ae5bc07725a87"
+    },
+    {
+      "path": "Maurya30__actkv-open/head.json",
+      "bytes": 7058,
+      "sha256": "f73177c188146f0b8e5964beda47698360f0d3a05c0274fa4c25ed54035df700"
+    },
+    {
+      "path": "Maurya30__actkv-open/recent.json",
+      "bytes": 55477,
+      "sha256": "2557feb972a51c2bc0999cb91ee2e5870547c7942acf9dbbcdf54fed75117a4e"
+    },
+    {
+      "path": "Maurya30__actkv-open/release.json",
+      "bytes": 337,
+      "sha256": "8bfe763b02bb5e800506b9d35537fe2d189b02c17ce76631d93fb2747e5baa6c"
+    },
+    {
+      "path": "Maurya30__actkv-open/repository.json",
+      "bytes": 6273,
+      "sha256": "d5a00b5f3d9db5d8ff5e787ae1f09db2d950c3868b5d7523d95ba1d0e00f5cdb"
+    },
+    {
+      "path": "Maurya30__actkv-open/sources/head/README.md",
+      "bytes": 10207,
+      "sha256": "3073d04bf098d7ffffa2c48292b23d0efdfffdedf52a477d07c2cb844fb4b29e"
+    },
+    {
+      "path": "Maurya30__actkv-open/sources/head/actkv/eviction.py",
+      "bytes": 9151,
+      "sha256": "b09478bc57638668a9374d36d74529dd27ba6fbbe6d17c56ba16a2fd61676023"
+    },
+    {
+      "path": "Maurya30__actkv-open/sources/head/actkv/paged.py",
+      "bytes": 7809,
+      "sha256": "fef1c60a4e4ed7eabbf1ff0d3e65812530b5033eeea1fffc897fdf0506453a5a"
+    },
+    {
+      "path": "NVIDIA__Megatron-LM/compare.json",
+      "bytes": 1793044,
+      "sha256": "96e29e35eee2d831636251b54bcef5bc65b3840e2e10c2b22b9803dbc74dd8ff"
+    },
+    {
+      "path": "NVIDIA__Megatron-LM/head.json",
+      "bytes": 48275,
+      "sha256": "d711c0be81119c9dbdf3ed54d3771441d23abb7052ad646de1a08b3d4249b788"
+    },
+    {
+      "path": "NVIDIA__Megatron-LM/path-dc00f5cb2e.json",
+      "bytes": 82298,
+      "sha256": "90ecb5ce97dc1c11ee37ea1fe646cab5f1cb6778ac764559fe801338453717d9"
+    },
+    {
+      "path": "NVIDIA__Megatron-LM/recent.json",
+      "bytes": 69209,
+      "sha256": "46691c7eb43358b43f42e867e2476774ed6588128e7d81a517b09f34da25faca"
+    },
+    {
+      "path": "NVIDIA__Megatron-LM/release.json",
+      "bytes": 130701,
+      "sha256": "5818e46355ba25b47e69aeea87edee7d28dd4151f867c81861ce64cfd5958bbd"
+    },
+    {
+      "path": "NVIDIA__Megatron-LM/repository.json",
+      "bytes": 7477,
+      "sha256": "c69b721b1758faed0edd1b8cc1b3b43465023c147c92180809166342ce4d3b10"
+    },
+    {
+      "path": "NVIDIA__Megatron-LM/sources/head/README.md",
+      "bytes": 8429,
+      "sha256": "241f860a314ba3790d0161a52fe423be2779d6854829488b7fb8dbf15954ee14"
+    },
+    {
+      "path": "NVIDIA__Megatron-LM/sources/head/megatron/core/inference/contexts/dynamic_context.py",
+      "bytes": 278710,
+      "sha256": "cbac5e446fd185cf304de863743afb58241d259fa6deb74d80f3b90821813a11"
+    },
+    {
+      "path": "NVIDIA__Megatron-LM/sources/head/megatron/core/inference/engines/dynamic_engine.py",
+      "bytes": 282564,
+      "sha256": "2ce3de60838963b74907aa2f5e0e0329b108f8c3c22d9080840799edeb25ed90"
+    },
+    {
+      "path": "NVIDIA__Megatron-LM/tree.json",
+      "bytes": 1379886,
+      "sha256": "a7b689ea832c885115c291833cca54d58ab9044bd23016af4e092f457d05714c"
+    },
+    {
+      "path": "Neroued__ninfer/compare.json",
+      "bytes": 1651367,
+      "sha256": "7646b3d80d994340bfbb800a5b671977e94f88b9c1dffde9704780b842aea494"
+    },
+    {
+      "path": "Neroued__ninfer/head.json",
+      "bytes": 92977,
+      "sha256": "13de1c2ed14bd80aef547ff6fee8956146a6a43abb633d002410dc35bf2b01e0"
+    },
+    {
+      "path": "Neroued__ninfer/path-3a34a20996.json",
+      "bytes": 50868,
+      "sha256": "c22e6e59647c32e4898d67e23c3defe3edd224dab681d12718a62b1e9575eb3c"
+    },
+    {
+      "path": "Neroued__ninfer/recent.json",
+      "bytes": 49376,
+      "sha256": "a15fce016b50b3a8b1d402ae93b27c60942f97e0da5073fcddff8071661ef7a8"
+    },
+    {
+      "path": "Neroued__ninfer/release.json",
+      "bytes": 332,
+      "sha256": "ea2c5ba362a042d51b801697eb0c4a65c68547389f21695bf919b0cb1cb9c501"
+    },
+    {
+      "path": "Neroued__ninfer/repository.json",
+      "bytes": 6038,
+      "sha256": "e9f972850c71132bd2adf656ec6bffc9782bfe69082277ebc1c11ea548708407"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/README.md",
+      "bytes": 14437,
+      "sha256": "4c9d5c49bacc3c13bff598e61f323220e192f2fe424bee931dbcd1416a43da47"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/docs/maintainer/qwen4_exp-model.md",
+      "bytes": 6223,
+      "sha256": "b1a9291427b756f2a6a2dc2e7c8a1cceab63adf436cefb5e27d957560d4e3ae1"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/models/qwen4_exp/execution/qsa.cpp",
+      "bytes": 6296,
+      "sha256": "58a7a457d49d9c9aec11c13111c57380e482f65dc36fc93d1f7401e730e8bf7d"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/indexer/arguments.h",
+      "bytes": 1470,
+      "sha256": "a3e209c392ab018984956dead7dbfd6b2cc54b8a5824416614e2ed96805f1eea"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/indexer/dgx_spark/launch.cu",
+      "bytes": 4355,
+      "sha256": "f3f3df04e539d5cdb98b456abcc28259a9690b9fadfbd41d86291bae8a406497"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/indexer/dgx_spark/plan.cpp",
+      "bytes": 2094,
+      "sha256": "fb5630b023558a60d981c29ca6a32843c092efa05a2a830465a5b225a60706a0"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/indexer/dgx_spark/score.cuh",
+      "bytes": 6762,
+      "sha256": "6989492a16277df3e48b4222fe380e18a4b5c8826a6addf7a5d55706668a704f"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/indexer/dgx_spark/simt.cuh",
+      "bytes": 2442,
+      "sha256": "fb05dee1543caec817d40cab69fed17bfa86dc2539e132cb95be71b690766c70"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/indexer/indexer.cpp",
+      "bytes": 3711,
+      "sha256": "c9b22786d0b86dfb4d5989aa42cf0d016520a3e076b766cd39204dbabf448e24"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/indexer/launch.cu",
+      "bytes": 2373,
+      "sha256": "f7032c5e5d32ac7cc1238f1ce1d306900b271abb0cab1fbac7e5424bd2e62b61"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/indexer/plan.h",
+      "bytes": 2029,
+      "sha256": "48a2c5777cb6fe7ac1764e3c4a3398eec9e93b4d20b4da552dfc56b3334fa46c"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/indexer/rtx5090/launch.cu",
+      "bytes": 1769,
+      "sha256": "e688255db5c3dd0b3b5c6b44574710170797fec7d00e6d92533845f66b4b1014"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/indexer/rtx5090/plan.cpp",
+      "bytes": 777,
+      "sha256": "40aa535672055b3362034d7ace933785a4cfa8ce689139ce69c4d1facdbc74d0"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/indexer/score.cuh",
+      "bytes": 4737,
+      "sha256": "deccada9b10dbcdc42dba5cdce384910f9811298fe71148ea74f754ca859f54d"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/indexer/select.cuh",
+      "bytes": 3020,
+      "sha256": "3eb65fe056c17c011cec41ea3975757e1405b594c8fe60296159d797d8a1df60"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/indexer/work_map.cuh",
+      "bytes": 2588,
+      "sha256": "208d45bc62f00ded8c175c905021fcb64ab81c56dc1347e0cde010b449d5fb27"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/prepare/arguments.cuh",
+      "bytes": 1709,
+      "sha256": "9511c5a86e3384803905a413e29e69d07ba1b5323ac829e07a6a894dd863d9c5"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/prepare/cache.cuh",
+      "bytes": 5341,
+      "sha256": "c6b93753a5f6501befdb9efd0d0e76a76e879fb8a99685e1e428ab7529ce55a7"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/prepare/kernel.cuh",
+      "bytes": 4928,
+      "sha256": "6a6501bc99c72c8ff7d7542ae72dc35ba340f177e5704ae5bde568eb3b34d02e"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/prepare/launch.cu",
+      "bytes": 8657,
+      "sha256": "0d41ab8bff3851e690fa85ba33e02ce7f8782880525a4a785fa29cdab4ea41fc"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/prepare/launch.h",
+      "bytes": 880,
+      "sha256": "2b38f8ab116093b1ef0e7bd559fe4bb3b1a0b720e2f6cdfe3279bb8147138809"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/prepare/norm_rope.cuh",
+      "bytes": 5866,
+      "sha256": "4d0526c0e8c4148d27c1a965cde0653d70312a0c706f18a6600cc6521832e317"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/prepare/prepare.cpp",
+      "bytes": 7259,
+      "sha256": "000ef76a78bb3414fa7e40dba8bd0d4c251fe96cfe74b84114a349867bd153b7"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/sources.cmake",
+      "bytes": 949,
+      "sha256": "0db6f27b1fdbaee0a1f1095c8f702bc63acbf8c2a06d73e4b66a917c4c0ac399"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/sparse_gqa/arguments.h",
+      "bytes": 2560,
+      "sha256": "271c3aa22e997aa07e60a7e0db070f98edcafd4966906db6d33e3ef7d6f9bb9d"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/sparse_gqa/cache.cuh",
+      "bytes": 8516,
+      "sha256": "72ecf04b47408e306cdcc2ce8179f72e99d309523f58cd28e457423b99c1b68a"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/sparse_gqa/columns.cuh",
+      "bytes": 8293,
+      "sha256": "b6a2c3231bb58693efcda2332f392b21e5290a54defff98cc0a91eb90a49021b"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/sparse_gqa/dgx_spark/grouped.cu",
+      "bytes": 1466,
+      "sha256": "7c0066bdae6ae04af1cedff6a8484bafc2c345e8137bc00bf4d198e377a26446"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/sparse_gqa/dgx_spark/plan.cpp",
+      "bytes": 5422,
+      "sha256": "e69243fe783154b1bafb56b0df06607922db77fab944d089ce2fb0d8b5470ae6"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/ops/softmax_attention/qsa/sparse_gqa/prefill.cuh",
+      "bytes": 7332,
+      "sha256": "b632cec24b85b87f9bd6b7f31eee0a0a666c04dd9994364a811b45c9539f9ed3"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/runtime/engine/engine_schedule.inl",
+      "bytes": 58199,
+      "sha256": "5aea48e11735f2206f33429b58191bab9dfeaf812887f8af6e21849a584a2442"
+    },
+    {
+      "path": "Neroued__ninfer/sources/head/src/runtime/engine/scheduler.h",
+      "bytes": 13942,
+      "sha256": "6310f322d8f3c45737b6609c38cc3ffdc836a8c54a4347e073a6a05d7c489f96"
+    },
+    {
+      "path": "Neroued__ninfer/tree.json",
+      "bytes": 1191792,
+      "sha256": "49106c1904a1f08169733a7d458ce6f3d575c8a0533af1dbcc0508d2221daef6"
+    },
+    {
+      "path": "Niko1221__Strata/compare.json",
+      "bytes": 1831495,
+      "sha256": "6a5de28b11a262d117139ca97d541296269a2f33ebb22b9612711f6d04726f19"
+    },
+    {
+      "path": "Niko1221__Strata/head.json",
+      "bytes": 18400,
+      "sha256": "5d87deeaec335be0b19f5288d42fadae08cfb208a8d32f32e365e1283983fe06"
+    },
+    {
+      "path": "Niko1221__Strata/recent.json",
+      "bytes": 52105,
+      "sha256": "828d2cce3d54befe6aa4b20254346350046e1c12fcee42633bb0bf776a81bf21"
+    },
+    {
+      "path": "Niko1221__Strata/release.json",
+      "bytes": 150887,
+      "sha256": "6063e813f622ec69f0892b4b5471b10a6d849bc15fc7b200707848297c9edc8d"
+    },
+    {
+      "path": "Niko1221__Strata/repository.json",
+      "bytes": 6165,
+      "sha256": "4a8e4e3dc8034f120d4416b0114c871a7377bf0886ff26f70f4c421abca3f290"
+    },
+    {
+      "path": "Niko1221__Strata/sources/head/README.md",
+      "bytes": 9110,
+      "sha256": "7b605c9d95055867b17acb921b972801eae78b0329e4f433d6b023529e64b308"
+    },
+    {
+      "path": "Niko1221__Strata/sources/head/src/kernels/cuda/native_qsa.cu",
+      "bytes": 8423,
+      "sha256": "91a21d493e9896b486e106ab53b26a4df9dfebb369880842a1a9add79c7604b4"
+    },
+    {
+      "path": "Niko1221__Strata/sources/head/src/kernels/cuda/qsa_prompt_attn.cu",
+      "bytes": 135207,
+      "sha256": "e2cec99c9d01eedaa400c0cdc88cc3ce26d3016f0a94129d0314b4d2b39975d1"
+    },
+    {
+      "path": "Niko1221__Strata/sources/head/src/kernels/cuda/qsa_select.cu",
+      "bytes": 169307,
+      "sha256": "f2981cf7bad1f323a312471df23d76b5f07f4c3914543d942927f7c637245006"
+    },
+    {
+      "path": "Niko1221__Strata/tree.json",
+      "bytes": 2095339,
+      "sha256": "7dcd8f7d6c5d748f2db012acb3e067d05f063485c0609c90f5dd6e247b09c720"
+    },
+    {
+      "path": "antirez__ds4/compare.json",
+      "bytes": 1804638,
+      "sha256": "42465971e931c83f5574f531a79513a2667c3c2a9852fe0d25e87240636b0783"
+    },
+    {
+      "path": "antirez__ds4/head.json",
+      "bytes": 8992,
+      "sha256": "e2987ae2c8a194deeb9b8447e01e516f2a6f9ec47124945bed2497a04dbaa039"
+    },
+    {
+      "path": "antirez__ds4/recent.json",
+      "bytes": 51777,
+      "sha256": "402c6df2eafd1c5b260bc7d71cde9400ee5e5b0751d860d044bd49a2ff821d34"
+    },
+    {
+      "path": "antirez__ds4/release.json",
+      "bytes": 329,
+      "sha256": "dc3e2f36f28dbec102d8bb265c4246267d5ccacde18a135106cccf5282052d7f"
+    },
+    {
+      "path": "antirez__ds4/repository.json",
+      "bytes": 5866,
+      "sha256": "772e96a119e8b460362be4c3bade447aff1a66ad72ac2f031325ca9c0662514f"
+    },
+    {
+      "path": "antirez__ds4/sources/head/README.md",
+      "bytes": 13967,
+      "sha256": "459c30f1fb1c994938c88520a129d6f0b7ff89594508c012a69b4ead17bd36c3"
+    },
+    {
+      "path": "antirez__ds4/sources/head/ds4_qwen4_cuda.cuh",
+      "bytes": 119588,
+      "sha256": "cefd1d4978a024764bd4f2d870db2bea31127f2b47832c7fbe20ab705386905d"
+    },
+    {
+      "path": "antirez__ds4/tree.json",
+      "bytes": 1254320,
+      "sha256": "be22c77a1af3c5bf613134cc073a0b759bab536058ca8cc5d19b3f555fcec0da"
+    },
+    {
+      "path": "catalog.json",
+      "bytes": 1674,
+      "sha256": "d0d6c7f87e2b8a2ae4817fa22fee9ffa623ed1f7c1060819e6d9893074651448"
+    },
+    {
+      "path": "deepseek-ai__DeepEP/compare.json",
+      "bytes": 33360,
+      "sha256": "161f0e6d5ffbbe1f59d13dea445db094870927518a887da40a99c1c3cf793c36"
+    },
+    {
+      "path": "deepseek-ai__DeepEP/head.json",
+      "bytes": 6157,
+      "sha256": "806ba438942e13437c60fcb0918074a16e0721a99e4d7f272d8db85a48779dae"
+    },
+    {
+      "path": "deepseek-ai__DeepEP/recent.json",
+      "bytes": 68401,
+      "sha256": "007f20a7b5d3ea374e0fd687fe605fe3853c54a1db9c88cf38c5362ead2ef722"
+    },
+    {
+      "path": "deepseek-ai__DeepEP/release.json",
+      "bytes": 2473,
+      "sha256": "60afc0deff0db385d8061b15c3aba2c862618fbeef4089b64ee544caf5faaf88"
+    },
+    {
+      "path": "deepseek-ai__DeepEP/repository.json",
+      "bytes": 7404,
+      "sha256": "bfd80f5bd16bbd4e78b6b0d1cd3a77809e2fe2a9f766f0f91e4dddfb42e0d5d2"
+    },
+    {
+      "path": "deepseek-ai__DeepInfer/compare.json",
+      "bytes": 37849,
+      "sha256": "640668359ebd8a704c53e9986cecf51380a0042ea3229ea6591b81a5852c0f7e"
+    },
+    {
+      "path": "deepseek-ai__DeepInfer/head.json",
+      "bytes": 14292,
+      "sha256": "13f338d11d1c5bfd2e4d3d5ce32bdeb12d056197ce9d79f48f4754fa0016c328"
+    },
+    {
+      "path": "deepseek-ai__DeepInfer/recent.json",
+      "bytes": 24699,
+      "sha256": "de1eb4e49640e2673cfa2a8ef6f0c1b2abf1913a768d5c27990436a040dd9749"
+    },
+    {
+      "path": "deepseek-ai__DeepInfer/release.json",
+      "bytes": 339,
+      "sha256": "44f923ceb575d54ce1d6954aa5eabfac133a85c2bc80b8f6ba883c09b9091e14"
+    },
+    {
+      "path": "deepseek-ai__DeepInfer/repository.json",
+      "bytes": 7592,
+      "sha256": "fe05d2fd8fea3c4949e198c3ec5fe486404671ad6c7faa862d59b83dce0c0186"
+    },
+    {
+      "path": "deepseek-ai__TileKernels/head.json",
+      "bytes": 97643,
+      "sha256": "f2a76c604271a77bb6037cba72fd7a1dd6e3c7952f275cf03b1ff452ea62e842"
+    },
+    {
+      "path": "deepseek-ai__TileKernels/repository.json",
+      "bytes": 7564,
+      "sha256": "6e066ea35498e761f2026454737af267b583116d0389fc13e6563c02868c4db0"
+    },
+    {
+      "path": "flashinfer-ai__flashinfer/compare.json",
+      "bytes": 3570131,
+      "sha256": "e90125f701477f611b560a7de2b6efe26ef5f22aa1f126978fc959e651c9b85e"
+    },
+    {
+      "path": "flashinfer-ai__flashinfer/head.json",
+      "bytes": 87698,
+      "sha256": "00335c1f77355dc28eecd9d67c4ca868886dabe18251a2b88deea7e93ab1524f"
+    },
+    {
+      "path": "flashinfer-ai__flashinfer/pr-7532-files.json",
+      "bytes": 38439,
+      "sha256": "66ca77e01aa12121bd4792de0921ab6782df19a521ce7bad7f685e0c14a0b838"
+    },
+    {
+      "path": "flashinfer-ai__flashinfer/pr-7532.json",
+      "bytes": 60115,
+      "sha256": "27eee3c9c07b6249084aee6286f2c2a7c00107ba90c59fd8175171512b9024cb"
+    },
+    {
+      "path": "flashinfer-ai__flashinfer/recent.json",
+      "bytes": 319903,
+      "sha256": "4a0df73bacf12412ca885d566cf2e6f729ef3629b529ba27ef30396dc47f5e44"
+    },
+    {
+      "path": "flashinfer-ai__flashinfer/release.json",
+      "bytes": 237125,
+      "sha256": "bbd586db396558aa9cecfceb473ff2794ff4b4e8cfe01c3394f108a8bccd0a4c"
+    },
+    {
+      "path": "flashinfer-ai__flashinfer/repository.json",
+      "bytes": 7942,
+      "sha256": "8f1b26ac51530cc740cca8fa8f93a5256ecf9120299460ccdb04e62963e096ea"
+    },
+    {
+      "path": "flashinfer-ai__flashinfer/sources/head/flashinfer/experimental/b12x/attention/qsa/_contract.py",
+      "bytes": 165715,
+      "sha256": "bd6fee66788ef4b9f144e5f3af52fdb3af99d677e62ceaf476850623cd29aa8f"
+    },
+    {
+      "path": "flashinfer-ai__flashinfer/sources/head/flashinfer/experimental/b12x/attention/qsa/_sparse_gqa.py",
+      "bytes": 17931,
+      "sha256": "c6eeacf726af6cc05b5f47bfc33cd664231279b3def42a10e08a663322afdaba"
+    },
+    {
+      "path": "flashinfer-ai__flashinfer/sources/head/flashinfer/experimental/b12x/attention/qsa/_stable_select_cute.py",
+      "bytes": 8290,
+      "sha256": "8094a89349faf4766f959bed96d8d6bc70c6bc1fd9d932f3292a6b9f51f23afa"
+    },
+    {
+      "path": "flashinfer-ai__flashinfer/sources/head/flashinfer/qsa.py",
+      "bytes": 5612,
+      "sha256": "2b45eafc57f0d79b3ed16bcc9995e86d38c20342229c915238ff91fc0484d528"
+    },
+    {
+      "path": "flashinfer-ai__flashinfer/tree.json",
+      "bytes": 7055390,
+      "sha256": "f6636a5ce8ad2c2d50920a5d17d270ed2b1fec876b9ea3a2288f11341bbe6612"
+    },
+    {
+      "path": "garnermccloud__sglang-ssd-stream/compare.json",
+      "bytes": 9856,
+      "sha256": "dcf57bf0e3144d8a830a9f6384ad64ca69af783e66ef0125d4149a5d08edcdfe"
+    },
+    {
+      "path": "garnermccloud__sglang-ssd-stream/head.json",
+      "bytes": 56869,
+      "sha256": "ad05b17b2b99d12c7bf59887409ca8f6e00c809d5618785806768e03a738bacb"
+    },
+    {
+      "path": "garnermccloud__sglang-ssd-stream/recent.json",
+      "bytes": 30067,
+      "sha256": "65470f9abd74e7bb25fc3d347cd506b49aa22d958caaf2bfc66db152f6c81a98"
+    },
+    {
+      "path": "garnermccloud__sglang-ssd-stream/release.json",
+      "bytes": 10841,
+      "sha256": "3585e620b390199b50b3c1dc17f2f4f85ce00caf34a3855edb83331c9208f693"
+    },
+    {
+      "path": "garnermccloud__sglang-ssd-stream/repository.json",
+      "bytes": 6845,
+      "sha256": "c09e77db007ee5b8f8ad7a93f1e6eb158f1c870bb3b6e1271ccccce099a32dfd"
+    },
+    {
+      "path": "huggingface__transformers/compare.json",
+      "bytes": 1955361,
+      "sha256": "06bc9eb809e5d4139284005a055180f23a8e97b34accf34bc6a8aa382599b9e3"
+    },
+    {
+      "path": "huggingface__transformers/head.json",
+      "bytes": 13612,
+      "sha256": "b87f8683296945f94234959a94f2324bc81ca866c6eb9775b799a7201d744f70"
+    },
+    {
+      "path": "huggingface__transformers/path-6c121aa22b.json",
+      "bytes": 114082,
+      "sha256": "a58b56828f58d75f3672899df9790b7404fca24236c8483bac1cfa4fb95190be"
+    },
+    {
+      "path": "huggingface__transformers/recent.json",
+      "bytes": 71959,
+      "sha256": "29b2c0d34ac3e7ceb10a9dc4fda86f0aed53d9c2ffbce1695efb979ed984a8b2"
+    },
+    {
+      "path": "huggingface__transformers/release.json",
+      "bytes": 2475,
+      "sha256": "7f691378fe71e47fe6538c8335f0941b3262710fb0482e978542e01132126f83"
+    },
+    {
+      "path": "huggingface__transformers/repository.json",
+      "bytes": 8315,
+      "sha256": "e0ce3e8209085f6573eebbfd18251d53e05275d4d9cc832383e8e17d0fc87b0d"
+    },
+    {
+      "path": "huggingface__transformers/sources/base/src/transformers/models/qwen4_exp/configuration_qwen4_exp.py",
+      "bytes": 16463,
+      "sha256": "26b47995740e3bc596b44b2011ee6c3d971d46136438b00dd5fad9557bec4254"
+    },
+    {
+      "path": "huggingface__transformers/sources/base/src/transformers/models/qwen4_exp/modeling_qwen4_exp.py",
+      "bytes": 124924,
+      "sha256": "77fec77d87f2a0eb23b95fa04276fb5779698a7c7f523cf5061e49c118bcc459"
+    },
+    {
+      "path": "huggingface__transformers/sources/base/src/transformers/models/qwen4_exp/modular_qwen4_exp.py",
+      "bytes": 57088,
+      "sha256": "54b9e147c1e1b95169419a4258c0ea4cefeaf7c37b9af2456e57ebc92a4ecc56"
+    },
+    {
+      "path": "huggingface__transformers/sources/head/src/transformers/models/qwen4_exp/configuration_qwen4_exp.py",
+      "bytes": 16120,
+      "sha256": "bb1d71db625fb50d1bf86589032edaa9c0f00f8ba2b9f1d06946aa0a8eeae246"
+    },
+    {
+      "path": "huggingface__transformers/sources/head/src/transformers/models/qwen4_exp/modeling_qwen4_exp.py",
+      "bytes": 120891,
+      "sha256": "3424f1b7a7e4d690c87a43758d791f37cede3fcb7e75f52e80ca498f9b84276e"
+    },
+    {
+      "path": "huggingface__transformers/sources/head/src/transformers/models/qwen4_exp/modular_qwen4_exp.py",
+      "bytes": 55422,
+      "sha256": "a5350d43d3bd8169c566200ad7efc87580d39da0371eeaf3b3e14e6f9696dde2"
+    },
+    {
+      "path": "huggingface__transformers/tree.json",
+      "bytes": 2632428,
+      "sha256": "878a8a08eda0322f5fb4be0c5e361d1c661febe0bd53907144ad690ae3eb66e9"
+    },
+    {
+      "path": "kvmem__kvmem/compare.json",
+      "bytes": 1725453,
+      "sha256": "7532f85849041f199da9a25afcbf2fb5a100dc73893e51f6ff36137275b6bea1"
+    },
+    {
+      "path": "kvmem__kvmem/head.json",
+      "bytes": 43778,
+      "sha256": "47ffab6fa72c608b9156e0b66e824f8c3a47eaac67c80e3b83ca0b60733dd28d"
+    },
+    {
+      "path": "kvmem__kvmem/path-aa8dd63787.json",
+      "bytes": 9163,
+      "sha256": "8a77bff75e46132d87949355a60281f88a7df9ce0c1f9da23fd662a44a070e4e"
+    },
+    {
+      "path": "kvmem__kvmem/recent.json",
+      "bytes": 59073,
+      "sha256": "977096c87f0a9acca66af0961a5aab7081865b372aa58aaf04bbbe263a16c288"
+    },
+    {
+      "path": "kvmem__kvmem/release.json",
+      "bytes": 44083,
+      "sha256": "06b4f3674dd106d52b41421a9e855f9ec8c6ba4038916014a3c4eb2f0ded971a"
+    },
+    {
+      "path": "kvmem__kvmem/repository.json",
+      "bytes": 6843,
+      "sha256": "f1ce6b09d4fb6fcbf1ff2fb777e45e98972bb5dfd54a3d7553661641f04bb8f4"
+    },
+    {
+      "path": "kvmem__kvmem/sources/head/README.md",
+      "bytes": 10539,
+      "sha256": "959db1ec6b6936729425d46260b89c27b4a19b5014b01814bb11999a38bde495"
+    },
+    {
+      "path": "kvmem__kvmem/sources/head/backends/patches/ninfer-cross-owner-fork.patch",
+      "bytes": 55035,
+      "sha256": "ded838bcd7dbbe9fa480d5160bb947ef2a3d0c38a5c49d44740ddd0f5c3fe0b5"
+    },
+    {
+      "path": "kvmem__kvmem/sources/head/docs/checkpoint-policy.md",
+      "bytes": 32490,
+      "sha256": "1cad495de8734366aa7e4aed98ad564fa5690801384c2c8c4f2c3fefd388c264"
+    },
+    {
+      "path": "kvmem__kvmem/tree.json",
+      "bytes": 288770,
+      "sha256": "f5ff3dba32fba8527a7cb3774b22c5f58a0514dd87f7e301c4f9c951caba1ae8"
+    },
+    {
+      "path": "lightseekorg__tokenspeed/compare.json",
+      "bytes": 1824970,
+      "sha256": "04dad044d54730a1b06eab388b5883c28e390fbb5f128e3948a54bf5b0879109"
+    },
+    {
+      "path": "lightseekorg__tokenspeed/head.json",
+      "bytes": 999265,
+      "sha256": "c718c2bd49543038fdcb537946091e6adfdcaabc79eab9bdacb5ec6800fe1e5e"
+    },
+    {
+      "path": "lightseekorg__tokenspeed/recent.json",
+      "bytes": 190136,
+      "sha256": "852f627756a1e8678fc486dd440cbb97156c5d734af385d33a6a9613eaffcf27"
+    },
+    {
+      "path": "lightseekorg__tokenspeed/release.json",
+      "bytes": 104667,
+      "sha256": "9897f65fccac79159182931a3ca5f97076e5dbecaa3ec7368d98aefe114ecb29"
+    },
+    {
+      "path": "lightseekorg__tokenspeed/repository.json",
+      "bytes": 8019,
+      "sha256": "332ced66daa8d715f54989c8342069ca2fea2df9edef6121f7a8ff103583cfdc"
+    },
+    {
+      "path": "lightseekorg__tokenspeed/sources/head/python/tokenspeed/runtime/layers/attention/qsa/verify_state.py",
+      "bytes": 8913,
+      "sha256": "478edf99e2a269f2360834a64f9975440ab4b459cfb2710e4519ad7c7b19e891"
+    },
+    {
+      "path": "lightseekorg__tokenspeed/sources/head/tokenspeed-kernel/python/tokenspeed_kernel/ops/attention/qsa/README.md",
+      "bytes": 16156,
+      "sha256": "2e439c7a8668617e64d33755dba29e57c34f00f2439b02788a669a46adaaec2c"
+    },
+    {
+      "path": "lightseekorg__tokenspeed/sources/head/tokenspeed-kernel/python/tokenspeed_kernel/ops/attention/qsa/cuda.py",
+      "bytes": 3619,
+      "sha256": "bbd764efc81788845ff8a2470a67d4af97800684e987ab0a07d41721e542c452"
+    },
+    {
+      "path": "lightseekorg__tokenspeed/sources/head/tokenspeed-kernel/python/tokenspeed_kernel/ops/attention/qsa/flashinfer_prims.py",
+      "bytes": 4929,
+      "sha256": "318cad43c2db8922876dd9cd2b2e75d71ffb19262bb6c025c8386d0d7090922b"
+    },
+    {
+      "path": "lightseekorg__tokenspeed/sources/head/tokenspeed-kernel/python/tokenspeed_kernel/thirdparty/cute_dsl/qsa_sparse.py",
+      "bytes": 16824,
+      "sha256": "50f3a5a13274a85d97420cc4bfbb3bf41c86735ba16c535f09ebcc3712bf84af"
+    },
+    {
+      "path": "lightseekorg__tokenspeed/sources/head/tokenspeed-kernel/python/tokenspeed_kernel/thirdparty/cute_dsl/qsa_stream_topk.py",
+      "bytes": 18316,
+      "sha256": "9df9b9854fec251aaece6d8531575e37e54a86589d4d65dc14ca0375598d1e63"
+    },
+    {
+      "path": "lightseekorg__tokenspeed/tree.json",
+      "bytes": 1281579,
+      "sha256": "0340043ce1621375b5a3f0e7f116f7469d8dff66e962c790964e9a86f21e973e"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 13147,
+      "sha256": "322d1a3fc0bcc0992b605154f887dd703d030443951a3b4944bddbdcd5c24600"
+    },
+    {
+      "path": "melis2023__kvmem-actkv/compare.json",
+      "bytes": 11478,
+      "sha256": "60bbe054e34533b1157a08fab88fa15b44d7298781037931a14caed76534d313"
+    },
+    {
+      "path": "melis2023__kvmem-actkv/head.json",
+      "bytes": 29035,
+      "sha256": "a35da20f796405d9a56eaa4c052896104b6cadce051b72054f5d79228f073389"
+    },
+    {
+      "path": "melis2023__kvmem-actkv/recent.json",
+      "bytes": 14429,
+      "sha256": "9907b288db8f5ccbc69c17ef76843d195753b3c37dda36118e1078faaabc3dcf"
+    },
+    {
+      "path": "melis2023__kvmem-actkv/release.json",
+      "bytes": 339,
+      "sha256": "5bb4195640737904fed19248e96e94954210cecc68d553bde61570bba7442079"
+    },
+    {
+      "path": "melis2023__kvmem-actkv/repository.json",
+      "bytes": 6277,
+      "sha256": "daa525662b9b7b9cd7e3c0c087e1e6d4f58450069d99f422132c6d2c67b22d2f"
+    },
+    {
+      "path": "sgl-project__sglang/compare.json",
+      "bytes": 1835338,
+      "sha256": "69d993495de5a2f3b589d04ea3b97d5af08ba5745b1a7608eef29d5ac1dc1ea4"
+    },
+    {
+      "path": "sgl-project__sglang/head.json",
+      "bytes": 30328,
+      "sha256": "1d14f09e85d396f416844406e89ed6632e970f7dfe619c9901890e94f1b885e1"
+    },
+    {
+      "path": "sgl-project__sglang/path-e04cd42ea6.json",
+      "bytes": 80867,
+      "sha256": "a41de15fe5f6a8715be2dd1b980f161c4d2f57552ad25382bdf780bccf1ab941"
+    },
+    {
+      "path": "sgl-project__sglang/recent.json",
+      "bytes": 64303,
+      "sha256": "318e7767cd43d81d1a4460efb44e4c976efe905445bece89367b92534f841085"
+    },
+    {
+      "path": "sgl-project__sglang/release.json",
+      "bytes": 107465,
+      "sha256": "609ee63eaf256c4a90d2f6f822a9daf1ebd5026a9a59c036301bd8c1e2ca3577"
+    },
+    {
+      "path": "sgl-project__sglang/repository.json",
+      "bytes": 7808,
+      "sha256": "c9d7d59bac0c0750d6cddbf8f695cba50c17f8dd6f8dfaa359325a2fa0c1e59f"
+    },
+    {
+      "path": "sgl-project__sglang/sources/head/python/sglang/srt/layers/attention/qsa/config.py",
+      "bytes": 3182,
+      "sha256": "54a7f0f88f189b9174ef04f722abd03f125de524209274ff80c9794849f36e3e"
+    },
+    {
+      "path": "sgl-project__sglang/sources/head/python/sglang/srt/layers/attention/qsa/qsa_indexer.py",
+      "bytes": 34184,
+      "sha256": "4b31def7d5351815e77ba0ecc13e6425919bad2b759d68d0598e7f1676a7d335"
+    },
+    {
+      "path": "sgl-project__sglang/sources/head/python/sglang/srt/layers/attention/qsa/sparse_attn.py",
+      "bytes": 25004,
+      "sha256": "b579bc6741937a54e81d7c560cdc69a6ab1bef656f3b8946f1a580db12faca11"
+    },
+    {
+      "path": "sgl-project__sglang/sources/head/python/sglang/srt/mem_cache/pool_host/qsa.py",
+      "bytes": 1493,
+      "sha256": "c6c3e333d9910f5e815f5003d028fdd273936cdb72454dc89865d80f46cddf7f"
+    },
+    {
+      "path": "sgl-project__sglang/sources/head/python/sglang/srt/models/qwen4_exp.py",
+      "bytes": 108092,
+      "sha256": "1d8ba8e35a9fa540a2af8407a192864093749d29b185d043310d544609d2b058"
+    },
+    {
+      "path": "sgl-project__sglang/tree.json",
+      "bytes": 4622752,
+      "sha256": "c5ff95da4932c2c672506bcf22a48ba9b9ba7f53ff99d9f13950105c68db1646"
+    },
+    {
+      "path": "source-manifest.json",
+      "bytes": 40811,
+      "sha256": "ee50d75111999ba5d540009ed7d566af25a555254675ec7fb1ed32296641c97e"
+    },
+    {
+      "path": "thomas-hiddenpeak__Qwen3x-Orin/compare.json",
+      "bytes": 1836836,
+      "sha256": "3bf626b706e75d1f80a54acf8a60dbb2da35cd07a3a849b87b23ba548ec47341"
+    },
+    {
+      "path": "thomas-hiddenpeak__Qwen3x-Orin/head.json",
+      "bytes": 27259,
+      "sha256": "c898cc7c8e2162eb33302a8fcef9187eec556b1bcd32b8eaa83df15dfd8311bd"
+    },
+    {
+      "path": "thomas-hiddenpeak__Qwen3x-Orin/recent.json",
+      "bytes": 53024,
+      "sha256": "6154d9d4d81d2909146a88bc6e789909c2d01483a956618a7d8e452f4bc5f7ac"
+    },
+    {
+      "path": "thomas-hiddenpeak__Qwen3x-Orin/release.json",
+      "bytes": 347,
+      "sha256": "79fe01078933fb48e6c7c753fbcfdf3b8352e2399d7f4e4e00eb7573931c727a"
+    },
+    {
+      "path": "thomas-hiddenpeak__Qwen3x-Orin/repository.json",
+      "bytes": 7586,
+      "sha256": "caa82ba9a1edd46f52b361255614740d122b9bce1990661ccebe9f4c0930b74e"
+    },
+    {
+      "path": "thomas-hiddenpeak__Qwen3x-Orin/sources/head/README.md",
+      "bytes": 15394,
+      "sha256": "473a7f064027e26512538ad3f97158f068b65f93cd5b695d6f15ca675e6be5ea"
+    },
+    {
+      "path": "thomas-hiddenpeak__Qwen3x-Orin/sources/head/src/text/tokenizer.cpp",
+      "bytes": 57003,
+      "sha256": "88486876e882743ac7f1d4921b117b77b33b177fddef054a02842570639b3c49"
+    },
+    {
+      "path": "thomas-hiddenpeak__Qwen3x-Orin/tree.json",
+      "bytes": 772787,
+      "sha256": "9a59cd46331dbbe58323e68ff5fc663b188e4b4d3943dd09805056bc30243586"
+    },
+    {
+      "path": "thomas-hiddenpeak__qwen35-thor/compare.json",
+      "bytes": 7608,
+      "sha256": "ace1e7524fbb9e7f65cd7939b848837b2d3a94ce92579439513299548a1e1b0b"
+    },
+    {
+      "path": "thomas-hiddenpeak__qwen35-thor/head.json",
+      "bytes": 305926,
+      "sha256": "1450b26722811ec07894189f2ba82f54e3d6c8f4196c1a6c2b9b0fdb0cfca97d"
+    },
+    {
+      "path": "thomas-hiddenpeak__qwen35-thor/recent.json",
+      "bytes": 31220,
+      "sha256": "ac472c41acc7c1a691f6b96c69774617fe44ff5f213502b22783dfa8efc5cb4c"
+    },
+    {
+      "path": "thomas-hiddenpeak__qwen35-thor/release.json",
+      "bytes": 5806,
+      "sha256": "e1508ce46f22e045c804b5336e7b92dde5ce907a5967e5198d2e8918cf1354f8"
+    },
+    {
+      "path": "thomas-hiddenpeak__qwen35-thor/repository.json",
+      "bytes": 7734,
+      "sha256": "8f4d7e77e04a278b8aa54031b35bfffce9fd2957622c1a2e7e7e4d46f5589ec1"
+    },
+    {
+      "path": "thomas-hiddenpeak__thor-bench/compare.json",
+      "bytes": 10946,
+      "sha256": "63e6c3aed8c61407dea6f75750a98454775dc519b7fa9e43d0ffdde90fa96bf5"
+    },
+    {
+      "path": "thomas-hiddenpeak__thor-bench/head.json",
+      "bytes": 7277,
+      "sha256": "a7bdcba5b36feefa6bcaf31e9c42cdc2872e1cf137c8ef298c3f54953a0a0ad8"
+    },
+    {
+      "path": "thomas-hiddenpeak__thor-bench/recent.json",
+      "bytes": 58240,
+      "sha256": "a19b286d078d8df5be5e290967f3557252ca63917b652858f1c1dc42060f8591"
+    },
+    {
+      "path": "thomas-hiddenpeak__thor-bench/release.json",
+      "bytes": 346,
+      "sha256": "ae3d16a345f27a2259f331c1b258d06912a39514bcb2649364fb1aa2d64259c1"
+    },
+    {
+      "path": "thomas-hiddenpeak__thor-bench/repository.json",
+      "bytes": 7578,
+      "sha256": "e98b0821512ee2ea2e2058855e826fd6c7e9ee8a7244a61fe4ccbbabeae3b5db"
+    },
+    {
+      "path": "thomas-hiddenpeak__thor-probe/compare.json",
+      "bytes": 11084,
+      "sha256": "a25ad652eaa8fc13cc8d6f0c65b1757afa88f10e979dd8fde63e481ea9a3bde6"
+    },
+    {
+      "path": "thomas-hiddenpeak__thor-probe/head.json",
+      "bytes": 27838,
+      "sha256": "ce4f571427ba5cb519148aaaa3cb9bed644ddd3dbb40458d7a86dc2ab158e013"
+    },
+    {
+      "path": "thomas-hiddenpeak__thor-probe/recent.json",
+      "bytes": 58082,
+      "sha256": "fa73614f0cde2ba8c572a7a7bcebce12cab805e269ad08238b009fe02a57e116"
+    },
+    {
+      "path": "thomas-hiddenpeak__thor-probe/release.json",
+      "bytes": 7073,
+      "sha256": "e7c55fe6ca8ca87ea2108a72858925c2f68391da02643a952c0185f5c7757e48"
+    },
+    {
+      "path": "thomas-hiddenpeak__thor-probe/repository.json",
+      "bytes": 7510,
+      "sha256": "a31c9716188663adca7a76558bf00885e588ca3c0b947344cce1132ccef73a0c"
+    },
+    {
+      "path": "tile-kernels-pypi.json",
+      "bytes": 15274,
+      "sha256": "67fac832cb5bb53a144876ecd496c4aba49c455718b6e961ded97beb5d90238c"
+    },
+    {
+      "path": "vllm-project__vllm/compare.json",
+      "bytes": 1698831,
+      "sha256": "7cd17140030d124853ce53a072ca8d9b8b793c76cc1959085bfafddabfa48ca7"
+    },
+    {
+      "path": "vllm-project__vllm/head.json",
+      "bytes": 6270,
+      "sha256": "e8e21f75d0dc4f694e7803126867385cdfbf7441b05eda986df2e5c10b746c4b"
+    },
+    {
+      "path": "vllm-project__vllm/path-81ab99516b.json",
+      "bytes": 84518,
+      "sha256": "55fd68150773e5888a867e01ca7003c905755ad8934523b1d5a4772b2e30e3fa"
+    },
+    {
+      "path": "vllm-project__vllm/pr-57097-files.json",
+      "bytes": 30859,
+      "sha256": "9b22322d32d5c4d9fbbc007f2045ee3aade38492f5eb8a88a9bcf6af719d5cee"
+    },
+    {
+      "path": "vllm-project__vllm/pr-57097.json",
+      "bytes": 35925,
+      "sha256": "8a1788a5cd528256c4c0fde4314136423a82e11b5cbb8ca567e13d9772a19c03"
+    },
+    {
+      "path": "vllm-project__vllm/pr-59533-files.json",
+      "bytes": 29936,
+      "sha256": "d0e16f8cb1b73eec6ecea0c5f962f5173ae7feebc32305706dffafe730dd3953"
+    },
+    {
+      "path": "vllm-project__vllm/pr-59533.json",
+      "bytes": 45632,
+      "sha256": "88706fa127f72344b583870fdbbf2f53c9a6c3c799931284e8083574f073f402"
+    },
+    {
+      "path": "vllm-project__vllm/recent.json",
+      "bytes": 67530,
+      "sha256": "4c5034dab6b1b9b3b6b7610770a5b2422e70b33ae727c851f1ec8f1796f5fe45"
+    },
+    {
+      "path": "vllm-project__vllm/release.json",
+      "bytes": 53951,
+      "sha256": "bd3ab620b352451ffb129637c10f20afd095d1228c52f418fea36b5ad1c359fd"
+    },
+    {
+      "path": "vllm-project__vllm/repository.json",
+      "bytes": 7783,
+      "sha256": "fa987c0199cf1467e815f6e3a7fb65e44d46d7f5462635e963622b27bb7425f0"
+    },
+    {
+      "path": "vllm-project__vllm/sources/head/vllm/models/qwen4_exp/nvidia/low_latency_gemm.py",
+      "bytes": 20370,
+      "sha256": "9177e59c0e13bb6edd4db9d16e4c366f632868643697eb57012674ce5987c0bc"
+    },
+    {
+      "path": "vllm-project__vllm/sources/head/vllm/models/qwen4_exp/nvidia/ops/qsa.py",
+      "bytes": 40202,
+      "sha256": "cac685c7b31c32064be1251570b963b360f98e323dfae3f39d4f5bb5e67f7be8"
+    },
+    {
+      "path": "vllm-project__vllm/sources/head/vllm/models/qwen4_exp/nvidia/ops/qsa_prepare.py",
+      "bytes": 25247,
+      "sha256": "22049c20b85fea0d38fe03175de36acc02edc55802ae89efafef2dffdc813187"
+    },
+    {
+      "path": "vllm-project__vllm/sources/head/vllm/models/qwen4_exp/nvidia/qsa.py",
+      "bytes": 24393,
+      "sha256": "130488cfe025bfc03f2cfde76766ea464cbb739b9469327d42b1639525322c7a"
+    },
+    {
+      "path": "vllm-project__vllm/sources/head/vllm/models/qwen4_exp/nvidia/qsa_indexer.py",
+      "bytes": 17474,
+      "sha256": "27c377e98cb3de52776a56e58660f1a7d747ef6fb4c8f62d4e95dedf1e54199f"
+    },
+    {
+      "path": "vllm-project__vllm/tree.json",
+      "bytes": 3330458,
+      "sha256": "bd05b6a12690f8b521a892bbd41db3c192461e426d93c295dfe0d9bd5410cee4"
+    }
+  ]
+}
