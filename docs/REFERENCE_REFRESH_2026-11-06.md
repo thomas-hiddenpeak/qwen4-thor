@@ -1,6 +1,7 @@
 # 全部参考项目增量审查与首轮改进
 
-状态：来源清单冻结，R1开发及编译完成、未执行测试；R2开发中。
+状态：首轮来源清单、R1/R2开发及编译完成；测试/验收未执行。
+具体身份、失败保留、回退与待验清单见[开发准备结果](REFERENCE_REFRESH_DEVELOPMENT_2026-11-06.md)。
 检索日期：2026-11-06 CST。上游可继续变化；本文的“当前”
 仅指[来源清单](evidence/reference-refresh-20261106/upstream.json)中的精确提交。
 
@@ -39,7 +40,7 @@ vLLM标签带rc3但API标记prerelease=false，不能据此称为稳定版。
 | [FlashInfer](https://github.com/flashinfer-ai/flashinfer) | `096ca394` / v0.7.3 | cuDNN QSA前向、实验b12x QSA、GDN/causal-conv及可审计tactic；直接QSA接口有架构/布局限制，实验目录不视为已成熟支持 |
 | [FlashAttention](https://github.com/Dao-AILab/flash-attention) | `34a06b99` / v2.8.3.post2 | FA4显式调优、hd256 paged/varlen维护；11.x分派存在不等于本项目逐token稀疏名单可直接输入，见R2 |
 | [qwen35-thor](https://github.com/thomas-hiddenpeak/qwen35-thor) | `57e29777` / v3.1.0 | 无新增；硬件/引擎组织参考，模型与数值路线不同 |
-| [Qwen3x-Orin](https://github.com/thomas-hiddenpeak/Qwen3x-Orin) | `7aa0dd2b` / 无release | 新增精确NVFP4分解评估与NO_GO；无已接受的新投影可直接采用。tokenizer参考保留，不引入其治理体系 |
+| [Qwen3x-Orin](https://github.com/thomas-hiddenpeak/Qwen3x-Orin) | `7aa0dd2b` / 无release | 所阅增量含精确NVFP4分解评估与NO_GO，未提供可直接采用的已验新投影。tokenizer参考保留，不引入其治理体系 |
 | [thor-probe](https://github.com/thomas-hiddenpeak/thor-probe) | `48166851` / v1.0.0 | 无新增；不重跑硬件探测 |
 | [thor-bench](https://github.com/thomas-hiddenpeak/thor-bench) | `3a33a905` / 无release | 无新增；历史数据只读，不执行bench，不覆盖本项目后续实机指令证据 |
 | [KVMem](https://github.com/kvmem/kvmem) | `a2d8d9bf` / v0.19.1 | checkpoint覆盖/预算、fork源保护、LoRA接入；本项目已交付SSD完整会话与前缀种子，任意中断/跨进程持久恢复仍另立需求 |
@@ -118,7 +119,8 @@ padding，不能再把这些列为新增优化。旧五块评分优化也已在�
 
 开发内容限定为可选的QSA细分计时：主prepare、indexer投影、indexer
 prepare、score/select、sparse attention五段。复用现有layer计时机制，
-新增显式开关，仅large-T prefill记录；不开启时保持原计时事件集合。
+新增显式开关，仅large-T且无checkpoint写入的forward记录；选已知
+prefill调用作归因，mixed batch不冒充纯prefill。不开启时保持原计时事件集合。
 报告嵌套层次/完整性，不能把子项加到总耗时上，也不能把事件区间
 视为纯kernel或无观察扰动的真实E2E。
 
@@ -136,7 +138,7 @@ prepare、score/select、sparse attention五段。复用现有layer计时机制�
 
 两个工作包分别以提交为回退边界；不回写模型/reference，不覆写接受
 元数据。未构建/未验时只交付源码准备，默认pair与已验主线继续可用。
-具体完成身份、构建及测试状态另记阶段结果，不能由本计划推导通过。
+具体完成身份、构建及测试状态见开发准备结果，不能由本计划推导通过。
 
 [hf-config]: https://github.com/huggingface/transformers/blob/cdb75de4adf71059c01f58dbd2d24d85084a397d/src/transformers/models/qwen4_exp/configuration_qwen4_exp.py
 [fa-interface]: https://github.com/Dao-AILab/flash-attention/blob/34a06b99d60ea26bfce91432c9fbb6de1a1b94ec/flash_attn/cute/interface.py

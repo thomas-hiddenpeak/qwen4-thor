@@ -1,0 +1,109 @@
+[
+  {
+    "source": "src/model/full_attention.cu",
+    "source_sha256": "3b29cff023b0e041e3eb1d40d20c646c43d431b180f6b7fbc9fe2fe5e20409e4",
+    "headers": {
+      "include/q4t/model/layer_subtiming.h": "aef568e142dd4399ea18ecaf88879980c472dda7d93b72b6e581c1e8a6b2973c",
+      "tools/verify/qsa_subtiming/fake_cuda/cuda_runtime.h": "528aa1a5e7d693eb27cf70ce24175919f891fca36df58e0733fef2d92dd1d6bf"
+    },
+    "argv": [
+      "/usr/local/cuda-13.3/bin/nvcc",
+      "-forward-unknown-to-host-compiler",
+      "-ccbin=/usr/bin/g++-14",
+      "--options-file",
+      "CMakeFiles/q4t_model.dir/includes_CUDA.rsp",
+      "--expt-relaxed-constexpr",
+      "-O3",
+      "-O3",
+      "-DNDEBUG",
+      "-std=c++23",
+      "--generate-code=arch=compute_110a,code=[compute_110a,sm_110a]",
+      "-Wall",
+      "-Wextra",
+      "-x",
+      "cu",
+      "-c",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/src/model/full_attention.cu",
+      "-o",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/upstream-refresh-20261106/builds/objects-v4/full_attention.cu.o"
+    ],
+    "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/gdn-bf16-input-20261106/engine",
+    "started_at": "2026-11-05T22:44:46.993176+00:00",
+    "kind": "compile_only_no_execution",
+    "returncode": 0,
+    "log": ".q4t-work/upstream-refresh-20261106/builds/objects-v4/full_attention.cu.log",
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "log_bytes": 0,
+    "output_sha256": "4ccf707dd889aa2ce921f3784da152f0f7acb3ea686b3945b8b4e642bddaf805",
+    "finished_at": "2026-11-05T22:44:54.887038+00:00"
+  },
+  {
+    "source": "src/model/model.cu",
+    "source_sha256": "ac13268a79890ef979841f1f332a06c87f1a6c91e92ec651ad69841252459d64",
+    "headers": {
+      "include/q4t/model/layer_subtiming.h": "aef568e142dd4399ea18ecaf88879980c472dda7d93b72b6e581c1e8a6b2973c",
+      "tools/verify/qsa_subtiming/fake_cuda/cuda_runtime.h": "528aa1a5e7d693eb27cf70ce24175919f891fca36df58e0733fef2d92dd1d6bf"
+    },
+    "argv": [
+      "/usr/local/cuda-13.3/bin/nvcc",
+      "-forward-unknown-to-host-compiler",
+      "-ccbin=/usr/bin/g++-14",
+      "--options-file",
+      "CMakeFiles/q4t_model.dir/includes_CUDA.rsp",
+      "--expt-relaxed-constexpr",
+      "-O3",
+      "-O3",
+      "-DNDEBUG",
+      "-std=c++23",
+      "--generate-code=arch=compute_110a,code=[compute_110a,sm_110a]",
+      "-Wall",
+      "-Wextra",
+      "-x",
+      "cu",
+      "-c",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/src/model/model.cu",
+      "-o",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/upstream-refresh-20261106/builds/objects-v4/model.cu.o"
+    ],
+    "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/gdn-bf16-input-20261106/engine",
+    "started_at": "2026-11-05T22:44:46.993231+00:00",
+    "kind": "compile_only_no_execution",
+    "returncode": 0,
+    "log": ".q4t-work/upstream-refresh-20261106/builds/objects-v4/model.cu.log",
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "log_bytes": 0,
+    "output_sha256": "1b26ab8f4588a75203eb74bb6226a4cc2ecb6b055107a1958d5854e3ed3f6d15",
+    "finished_at": "2026-11-05T22:44:55.989824+00:00"
+  },
+  {
+    "source": "tools/verify/qsa_subtiming/contract_test.cpp",
+    "source_sha256": "67f92a44fcdaf3352a226a2798056adfa7ff565992ee7ceba7be724c1b7d13c6",
+    "headers": {
+      "include/q4t/model/layer_subtiming.h": "aef568e142dd4399ea18ecaf88879980c472dda7d93b72b6e581c1e8a6b2973c",
+      "tools/verify/qsa_subtiming/fake_cuda/cuda_runtime.h": "528aa1a5e7d693eb27cf70ce24175919f891fca36df58e0733fef2d92dd1d6bf"
+    },
+    "argv": [
+      "g++-14",
+      "-std=c++23",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I",
+      "tools/verify/qsa_subtiming/fake_cuda",
+      "-I",
+      "include",
+      "-o",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/upstream-refresh-20261106/builds/objects-v4/contract_test.cpp.exe",
+      "tools/verify/qsa_subtiming/contract_test.cpp"
+    ],
+    "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source",
+    "started_at": "2026-11-05T22:44:54.887183+00:00",
+    "kind": "compile_only_no_execution",
+    "returncode": 0,
+    "log": ".q4t-work/upstream-refresh-20261106/builds/objects-v4/contract_test.cpp.log",
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "log_bytes": 0,
+    "output_sha256": "8636a81a63c9daaa52f3c29551ec7e71c2eba45726bb9c2cb8f1fd058bc57e46",
+    "finished_at": "2026-11-05T22:44:55.523738+00:00"
+  }
+]

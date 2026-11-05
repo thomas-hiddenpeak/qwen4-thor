@@ -1,0 +1,5 @@
+{
+  "status": "PRE_BUILD_ABORT",
+  "compilers_started": 0,
+  "reason": "compile-command selection attempted relative_to on an external XGrammar source; fixed selection to exact paths"
+}

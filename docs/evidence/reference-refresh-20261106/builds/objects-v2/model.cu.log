@@ -1,0 +1,5 @@
+/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/src/model/model.cu(611): error: name followed by "::" must be a class or namespace name
+    if (layer_subtiming && T > 8 && diagnostic::EnvOne("Q4T_QSA_SUBTIMING")) {
+                                    ^
+
+1 error detected in the compilation of "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/src/model/model.cu".

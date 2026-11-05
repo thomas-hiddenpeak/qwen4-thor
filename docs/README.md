@@ -2,6 +2,7 @@
 
 [全部参考项目最新增量审查与有界改进目标](REFERENCE_REFRESH_2026-11-06.md)：
 20仓及2项参考资料；层类型兼容与QSA细分归因准备，不追加测试。
+[两个工作包开发准备结果与待验清单](REFERENCE_REFRESH_DEVELOPMENT_2026-11-06.md)。
 
 [MoE grouped GEMM静态审查与最小未应用提案](MOE_GROUPED_STATIC_REVIEW_2026-11-06.md)：
 固定分组平均提示未证实错误；描述符grid重复构建可简化，未承诺3%收益，

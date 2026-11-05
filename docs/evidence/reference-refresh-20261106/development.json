@@ -1,0 +1,50 @@
+{
+  "status": "SOURCE_READY_ACCEPTANCE_DEFERRED",
+  "captured_at": "2026-11-05T22:51:41.358373+00:00",
+  "default_pair": {
+    "build/q4t": "c1bdb0a7599ba3f61d9cb48597069a66f6e27e02f38cf32e495fc80059008636",
+    "build/q4t.release.json": "0efc2c0dc309e42a7b7761860edce7888aa8139f5ea305f54eae054a81fdbcf3"
+  },
+  "accepted_runtime_source_count": 223,
+  "root_runtime_differences": [],
+  "research_runtime_differences": {
+    "include/q4t/io/model_config.h": {
+      "accepted_sha256": "7a63bc468f44712945a5ad0e949fa571b0b0a6a5a614473d52d21df395dfcac1",
+      "candidate_sha256": "f9382f28fa6d1d51b6353b53ed43070810698f539ac2872dcfe119cafbf5e469"
+    },
+    "include/q4t/model/layer_subtiming.h": {
+      "accepted_sha256": "12704d88aa5d71240bd5ac0595a6ece5a1e23e939d07a1320e5223b8f9feeb01",
+      "candidate_sha256": "ecf6e4d01087f0a146be57adc26b419e1180d5cb7e1b7c0ee67b449de716fdf8"
+    },
+    "src/io/model_config.cpp": {
+      "accepted_sha256": "4791ce942c19cd0528bc6c713f979015b713e1658f0b0b9829b4f60d33da1caa",
+      "candidate_sha256": "1561e03ccc27e2cfcedaf1ebb3cbc1663435f2cc56347ccb70e301f7961b74cf"
+    },
+    "src/model/full_attention.cu": {
+      "accepted_sha256": "5651bdca6ef5ab3e9c06a1c6f18c773c1ab8786685a334083fe3bf46fe9bccd7",
+      "candidate_sha256": "3b29cff023b0e041e3eb1d40d20c646c43d431b180f6b7fbc9fe2fe5e20409e4"
+    },
+    "src/model/model.cu": {
+      "accepted_sha256": "ddf5df2ef04770369785b4dd93d928bea7fa4ca4484e670ada9c7a944ed068fb",
+      "candidate_sha256": "ac13268a79890ef979841f1f332a06c87f1a6c91e92ec651ad69841252459d64"
+    }
+  },
+  "restored_runtime_base": "92f5abaf",
+  "r1_commit": "631cc3c5",
+  "old_no_go_preserved": "f9488f70",
+  "raw_archive_files": 210,
+  "raw_archive_identity_drift": [],
+  "new_test_definitions": {
+    "config": 5,
+    "qsa_observer": 7
+  },
+  "executed_tests": 0,
+  "inference_http_requests": 0,
+  "model_loads": 0,
+  "gpu_executions": 0,
+  "new_engine_linked": false,
+  "deployment": false,
+  "inventory_check_executed": false,
+  "source_manifest_only_not_semantic_certification": true,
+  "final_qsa_build": "objects-v5 (format-only line wrapping after objects-v4; current source/header identities rebuilt)"
+}

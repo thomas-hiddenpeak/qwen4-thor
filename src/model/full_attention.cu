@@ -1575,6 +1575,7 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
 
   mt(9, 1);  // full_qkv end
   mt(10, 0);  // full_core start
+  mt(12, 0);  // optional QSA main prepare
   // 2. Fused q/k preprocessing: deinterleave qg -> q + gate + centered
   //    RMSNorm(q) AND centered RMSNorm(k) in one launch (disjoint heads).
   QKDeinterleaveNormKernel<<<T * (nq + nkv), hd, 0, stream>>>(
@@ -1592,7 +1593,9 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   WriteKVKernel<<<(T * nkv * hd + 255) / 256, 256, 0, stream>>>(
       d_k, d_v, kv_cache, nkv, hd, d_positions, page_table, T, d_seq_id,
       kv_seq_stride, pt_seq_stride);
+  mt(12, 1);
   // 6. indexer projections: iq = x @ W_iq^T [T,512], ik = x @ W_ik^T [T,128]
+  mt(13, 0);
   const int iq_dim = n_iq * idx_hd;
   const int ik_dim = n_ik * idx_hd;
   s = CheckGemm(Bf16Gemm(x, w.index_qk_proj, d_iq, T, iq_dim, hs, 1.f, 0.f,
@@ -1602,8 +1605,10 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
                          d_ik, T, ik_dim, hs, 1.f, 0.f, d_gemm_ws, gemm_ws,
                          stream));
   if (!s.ok()) return s;
+  mt(13, 1);
   // 7. Normalize and rotate queries only. Keys remain the raw projection
   //    until BuildCompressedKKernel pools and transforms each complete group.
+  mt(14, 0);
   IndexerQueryNormRopeKernel<<<T * n_iq, idx_hd, 0, stream>>>(
       d_iq, w.index_q_norm, d_positions, rope_pos, w.max_len, n_iq, idx_hd,
       w.rot_d, w.rope_theta, w.eps, d_seq_id, rope_seq_stride);
@@ -1617,7 +1622,9 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
       w.index_k_norm, idx_raw, idx_comp, d_positions, rope_pos, T,
       w.max_len, idx_hd, w.idx_compress, w.rope_theta, w.eps, d_seq_id,
       idx_seq_stride, rope_seq_stride);
+  mt(14, 1);
   // 9-10. Block scoring + top-k selection.
+  mt(15, 0);
   //
   // Short/medium context (max visible groups <= kMaxBlocks, i.e. <= 8192
   // tokens): score all blocks into one [T, max_blocks] buffer and bitonic-
@@ -1797,6 +1804,7 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
         d_run_idx, d_run_val, d_positions, T, w.idx_compress, block_topk,
         d_topk, d_topk_len, max_topk);
   }
+  mt(15, 1);
   // DEBUG (test-only, off by default): dump the one-pass block scores and the
   // selected top-block_topk token list for token 0 at a long-context small-T
   // (decode / MTP verify) step, for ground-truth verification of the top-k
@@ -1852,6 +1860,7 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   // T-dependence, to confirm whether QSA is the only T-dependence source in
   // the MTP vs plain-greedy divergence (see docs/log/2026-10-10.md). Default
   // runtime behavior is unchanged when the env var is unset.
+  mt(16, 0);
   const bool ablate_qsa_t1 = std::getenv("Q4T_ABLATE_QSA_T1") != nullptr;
   if (!ablate_qsa_t1 && T <= kSplitMaxT && nq == 24 && nkv == 2 && hd == 256) {
     s = QsaDecodeSplit(d_q, kv_cache, page_table, d_topk, d_topk_len, d_attn,
@@ -1863,6 +1872,7 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
         d_q, kv_cache, page_table, d_topk, d_topk_len, d_attn, d_gate, nq, nkv,
         hd, max_topk, d_seq_id, kv_seq_stride, pt_seq_stride);
   }
+  mt(16, 1);
   mt(10, 1);  // full_core end
   // 12. out = attn @ W_o^T
   mt(11, 0);  // full_oproj start
