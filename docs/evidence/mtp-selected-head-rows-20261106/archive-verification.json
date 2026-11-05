@@ -1,0 +1,10 @@
+{
+  "status": "VERIFIED",
+  "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/evidence.tar",
+  "sha256": "5e76620643ae2240c294a3edf379fa44ccec93e963bfbe112665a899ffd896f0",
+  "size": 447447040,
+  "referenced_paths": 3405,
+  "unique_objects": 3128,
+  "catalog_sha256": "fda1c7859444464146d92e6ced8145a989d7d80526d62957bf5f8aab6eef2823",
+  "raw_records_unchanged": true
+}

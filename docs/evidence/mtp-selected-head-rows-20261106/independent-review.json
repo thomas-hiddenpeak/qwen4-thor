@@ -1,0 +1,239 @@
+{
+  "status": "VERIFIED",
+  "decision": "NO_GO_FEASIBILITY_TARGET",
+  "source_commit": "e99925b32edd4e0d9ce5886c33a7542773743829",
+  "baseline_commit": "def8cc96e7f94b50fbc917303c8570ec23e841ea",
+  "frozen_files_checked": 3232,
+  "raw_files_checked": 160,
+  "model_metadata_checked": 197,
+  "model_weight_content_hash_claim": false,
+  "database_count": 8,
+  "http_requests": 56,
+  "quality_passed": 44,
+  "loads": 4,
+  "elapsed_seconds": 1195.2145513070282,
+  "lease_seconds": 1196.6592382681556,
+  "guard_monitors": 1097,
+  "nvml_queries": 1098,
+  "telemetry_samples": 1196,
+  "pending_at_exit": 0,
+  "telemetry_sources": 53,
+  "unavailable_sources": [
+    {
+      "label": "pressure_cpu",
+      "path": "/proc/pressure/cpu",
+      "status": "UNAVAILABLE",
+      "reason": "missing_or_not_readable_at_discovery"
+    },
+    {
+      "label": "pressure_io",
+      "path": "/proc/pressure/io",
+      "status": "UNAVAILABLE",
+      "reason": "missing_or_not_readable_at_discovery"
+    },
+    {
+      "label": "pressure_memory",
+      "path": "/proc/pressure/memory",
+      "status": "UNAVAILABLE",
+      "reason": "missing_or_not_readable_at_discovery"
+    }
+  ],
+  "final_barrier": {
+    "boundary_monotonic": 2095740.181906034,
+    "sample_started_monotonic": 2095740.320169691,
+    "flushed_monotonic": 2095740.339230497
+  },
+  "final_nvml_pids": [],
+  "observed_server_pids": [
+    3752831,
+    3755604,
+    3758313,
+    3762888
+  ],
+  "comparisons": {
+    "full": {
+      "parent": {
+        "aggregate_decode": 35.513407032491024,
+        "aggregate_e2e": 24.438667476875708,
+        "latency": [
+          8.250369240995497,
+          8.08851531194523,
+          8.099782923934981
+        ],
+        "ttft": [
+          1.0710919119883329,
+          0.9139798530377448,
+          0.9124352340586483
+        ],
+        "decode": [
+          35.51889533082913,
+          35.54237085599833,
+          35.479012704391316
+        ],
+        "process_quota": {
+          "event": "server_destroyed",
+          "enabled": true,
+          "limit_bytes": 118728574156,
+          "charged_bytes": 200953856,
+          "live_bytes": 200953856,
+          "pending_bytes": 0,
+          "unknown_bytes": 0,
+          "peak_bytes": 105745766808,
+          "entries": 8,
+          "poisoned": false,
+          "byte_rejections": 0,
+          "entry_rejections": 0,
+          "stream_rejections": 0,
+          "contract_failures": 0,
+          "backend_failures": 0,
+          "scope": "process_requested_cuda_bytes",
+          "physical_ram_limit": false
+        },
+        "quality_passed": 11
+      },
+      "candidate": {
+        "aggregate_decode": 35.46962450415744,
+        "aggregate_e2e": 24.50825247494504,
+        "latency": [
+          8.303256413899362,
+          8.113503196975216,
+          8.09149286407046
+        ],
+        "ttft": [
+          1.093667752109468,
+          0.9223200478591025,
+          0.9245145029854029
+        ],
+        "decode": [
+          35.369562947672,
+          35.460089767195356,
+          35.579847901395624
+        ],
+        "process_quota": {
+          "event": "server_destroyed",
+          "enabled": true,
+          "limit_bytes": 118728574156,
+          "charged_bytes": 200953856,
+          "live_bytes": 200953856,
+          "pending_bytes": 0,
+          "unknown_bytes": 0,
+          "peak_bytes": 105745766808,
+          "entries": 8,
+          "poisoned": false,
+          "byte_rejections": 0,
+          "entry_rejections": 0,
+          "stream_rejections": 0,
+          "contract_failures": 0,
+          "backend_failures": 0,
+          "scope": "process_requested_cuda_bytes",
+          "physical_ram_limit": false
+        },
+        "quality_passed": 11
+      },
+      "decode_gain": -0.0012328450574604632,
+      "e2e_change": 0.0028473319232800165,
+      "outputs_identical": true,
+      "target_met": false
+    },
+    "subset": {
+      "parent": {
+        "aggregate_decode": 38.65805677449035,
+        "aggregate_e2e": 22.621662709163502,
+        "latency": [
+          7.666765816975385,
+          7.4781035631895065,
+          7.47679332899861
+        ],
+        "ttft": [
+          1.0550624651368707,
+          0.890422489028424,
+          0.8872886118479073
+        ],
+        "decode": [
+          38.56797355088417,
+          38.708613414846184,
+          38.69790082042187
+        ],
+        "process_quota": {
+          "event": "server_destroyed",
+          "enabled": true,
+          "limit_bytes": 118728574156,
+          "charged_bytes": 200953856,
+          "live_bytes": 200953856,
+          "pending_bytes": 0,
+          "unknown_bytes": 0,
+          "peak_bytes": 103086840216,
+          "entries": 8,
+          "poisoned": false,
+          "byte_rejections": 0,
+          "entry_rejections": 0,
+          "stream_rejections": 0,
+          "contract_failures": 0,
+          "backend_failures": 0,
+          "scope": "process_requested_cuda_bytes",
+          "physical_ram_limit": false
+        },
+        "quality_passed": 11
+      },
+      "candidate": {
+        "aggregate_decode": 38.69783211608709,
+        "aggregate_e2e": 22.62579807685688,
+        "latency": [
+          7.6681426470167935,
+          7.48315842798911,
+          7.4744970018509775
+        ],
+        "ttft": [
+          1.0778864200692624,
+          0.889173063216731,
+          0.8901893449947238
+        ],
+        "decode": [
+          38.69348796444454,
+          38.671605393956234,
+          38.728445462974065
+        ],
+        "process_quota": {
+          "event": "server_destroyed",
+          "enabled": true,
+          "limit_bytes": 118728574156,
+          "charged_bytes": 200953856,
+          "live_bytes": 200953856,
+          "pending_bytes": 0,
+          "unknown_bytes": 0,
+          "peak_bytes": 103086840216,
+          "entries": 8,
+          "poisoned": false,
+          "byte_rejections": 0,
+          "entry_rejections": 0,
+          "stream_rejections": 0,
+          "contract_failures": 0,
+          "backend_failures": 0,
+          "scope": "process_requested_cuda_bytes",
+          "physical_ram_limit": false
+        },
+        "quality_passed": 11
+      },
+      "decode_gain": 0.0010289017326652328,
+      "e2e_change": 0.00018280564724815207,
+      "outputs_identical": true,
+      "target_met": false
+    }
+  },
+  "statistics": "DESCRIPTIVE_SINGLE_START_NOT_NONINFERIORITY",
+  "next_phase": "NOT_TRIGGERED",
+  "performance_accepted": false,
+  "independent_numerical_contract": "NOT_RUN",
+  "file_references": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/review.py": "689a9987d3ac3e367abbec15e45a27bfed2f6ca5229c94edd39fb31a0e8016fa",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/feasibility/plan.json": "458613a60cc62b01292f57d0ab0cb3756c71ba2280a193bff5efb978747cac0c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/feasibility/decision.json": "17b4472ce68e7b91c0328622e2bf51ccd873daf8d09c59b45d094bc984cb39e3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/feasibility/postflight.json": "5f0f4086adbca202a06b480f96c33f839e38dfb0510de777b7fd4738f155ba44",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/feasibility/run/files.json": "ad135dd4914d078bebad47c5a03f41f612b5eb33d253527da2e6746839210aa8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/feasibility/run/state.json": "fb65b44ad6a61f8740f33f628ab9689ab93d1e6cc34dae480dc6827ca643ac9a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/feasibility/run/telemetry-summary.json": "8c6891711e0ca69369b2952678654f838086cc48a53be5720f48ada1de62e5ad",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/http-lease/exit.json": "182416ff2a4c4dc939c92c20686ccdd6268c3c6145afa9f052e613e222d99013",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/http-lease/events.jsonl": "25e519052b2c78b9ed14d0c56b28e8b3cbf10e17c193cf53d43cbcbda4f17a23",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/http-lease/nvml-queries.jsonl": "91fb3e92173436727445c7c42e4398180e819b0001be924e71ab09c07e8850d0"
+  }
+}

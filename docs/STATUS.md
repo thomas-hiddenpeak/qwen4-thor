@@ -2,14 +2,21 @@
 
 更新：2026-11-06。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
-## 验收工具收尾
+## MTP扩展末行head试验收尾
 
-[MTP扩展末行head优化已按授权启动](MTP_SELECTED_HEAD_PLAN_2026-11-06.md)：
-仅T_ext=2..8固定归约路径减少未消费logits，完整状态forward保持，
-大批量cuBLASLt路径不变。先冻结4模型/56HTTP/1800秒可行性门，两head
-分别要求短档aggregate decode≥3%且E2E下降；通过才进入后续有界矩阵。
-候选已零警告构建，尚未测试；默认c1bdb0a7/0efc2c0d保持，量化研究
-不并入。首测经原共享锁和已交付公共监控入口执行。
+[末行head优化首轮有效，投入门槛未达到](MTP_SELECTED_HEAD_RESULT_2026-11-06.md)：
+4模型/56HTTP、44质量检查及同head输出对照通过；1K三请求aggregate
+decode完整head−0.123%、subset+0.103%，E2E分别+0.285%/+0.018%，
+均未达到事前各+3%且E2E下降的继续投入条件，记
+NO_GO_FEASIBILITY_TARGET。单启动描述性观察，不证明统计退化或持平。
+公共监控1196完整样本、pending0、最终屏障有效；原GPU租约1196.659秒
+COMPLETED。8数据库独立重建，3232输入/160原件/197模型元数据核对，
+3405路径/3128对象归档复核；17自有PID、端口/GPU/原锁均释放。
+默认c1bdb0a7/0efc2c0d、主线运行时保持。候选与证据留在
+`codex/mtp-selected-head-rows`；B阶段五档性能、独立数值、多槽/缓存
+未触发，不继续profile/补样，不作为已验优化合入主线。
+
+## 验收工具收尾
 
 [验收监控工具已完成限定收尾](EVAL_MONITOR_CLOSEOUT_2026-11-06.md)：
 公共入口等待退出后完整采样、join后复核及只读分析门禁；旧驱动直接
@@ -17,7 +24,7 @@
 1旧重放明确跳过；夹具路径首次失败原件保留，仅受影响项重验。
 定向host CTest通过，旧驱动负控按预期失败，真实ENV_ABORT仍被拒绝，
 四历史摘要不变。工具独立交付，推理代码及默认c1bdb0a7/0efc2c0d不变，
-模型/HTTP/GPU均0；量化head保持研究和ENV_ABORT，下一项优化未启动。
+工具收尾本身模型/HTTP/GPU均0；量化head保持研究和ENV_ABORT。
 
 ## CUDA 13.4 指令支持核验
 
