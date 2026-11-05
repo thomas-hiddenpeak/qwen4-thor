@@ -23,6 +23,9 @@
 当前默认协议cc321239的[托管组合](SERVE_CURRENT_MANAGED_RESULT_2026-11-05.md)
 与[持久任务交接](SERVE_CURRENT_TASK_RESULT_2026-11-05.md)已独立短验；
 旧15d7ccb1包保持，任务按已登记方向显式迁移，不会自动升级。
+[可选部署profile](SERVE_BOUNDED_DEPLOYMENT_RESULT_2026-11-05.md)已有离线
+检查入口；当前ELF+host域4响应/2工具通过，但压力在安全余量处停止，
+活跃/排队的内存退场组合未接受。c1653470候选不替代已验41dc8fdb。
 
 “限定已验”仅指链接结果的源码身份、运行配置、客户端版本和用例范围。
 当前托管包的短验配置为单槽、8192上下文、2048预填充及独立运维端口；
@@ -42,6 +45,7 @@
 | 独立运维入口 | 显式`--operations-port`，默认0；仅loopback | 公共慢头满额下运维可用；自身控制/观测仍各4额 |
 | TLS、独立Key、来源限制 | 显式网关包；runner以`--client-policy-file`绑定client策略；CIDR显式选择 | [来源短验](SERVE_GATEWAY_SOURCES_RESULT_2026-11-04.md)与[托管组合](SERVE_MANAGED_PROFILE_RESULT_2026-11-04.md)；实际LAN/DNS/防火墙另验 |
 | 服务托管 / 重启 | 显式prepare/run；重启次数配置，默认0 | [当前包短验](SERVE_CURRENT_MANAGED_RESULT_2026-11-05.md)；无自动常驻安装或恢复旧请求 |
+| 部署组合/回退检查 | 显式profile prepare/check，固定包摘要 | [工具与有限结果](SERVE_BOUNDED_DEPLOYMENT_RESULT_2026-11-05.md)；只检查身份与组合，不授予业务接受；内存退场组合NO_GO |
 | host记账域 | 显式host memory high/max及tasks max配置 | [02k](SERVE_HOST_ENVELOPE_RESULT_2026-11-04.md)；不覆盖全部CUDA物理RAM记账 |
 | CUDA申请额度 | 原生默认auto，可显式调整`--cuda-allocation-limit-mib` | [02j2生产接线](SERVE_CUDA_QUOTA_INTEGRATION_RESULT_2026-11-04.md)；申请额度不是整机物理RAM硬限额 |
 | 告警、通知与私有留存 | 显式观察器、接收器、目的地及保留策略 | [12c](SERVE_NOTIFY_RESULT_2026-11-04.md)、[12e](SERVE_RETENTION_RESULT_2026-11-04.md)等本机短验；正式渠道按需验收 |
