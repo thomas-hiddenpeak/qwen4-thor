@@ -1,6 +1,7 @@
 // Node consumer for Q4T's parsed text profile. The caller executes tools.
 import { randomBytes } from 'node:crypto';
 import { isDeepStrictEqual } from 'node:util';
+import { nodeFetch } from './node_transport.mjs';
 
 export const MAX_RESPONSE_BYTES = 8 * 1024 * 1024;
 export const MAX_EVENT_BYTES = 1024 * 1024;
@@ -300,14 +301,20 @@ export function validateCapabilities(value, model, protocolSha256) {
 }
 
 export class ChatClient {
+  #apiKey;
   constructor(OpenAI, { baseURL = 'http://127.0.0.1:8080/v1', model = 'qwen3.8-flash-next',
-    protocolSha256, timeoutMs = 120000, fetchImpl = globalThis.fetch } = {}) {
+    protocolSha256, timeoutMs = 120000, apiKey, caFile, connectHost, fetchImpl } = {}) {
     const url = new URL(baseURL);
     requireValue(['http:', 'https:'].includes(url.protocol) && !url.username && !url.password &&
       !url.search && !url.hash && url.pathname.replace(/\/$/, '') === '/v1', 'expected explicit /v1 base URL');
     requireValue(integer(timeoutMs) && timeoutMs > 0 && timeoutMs <= 1200000, 'invalid total deadline');
+    requireValue(apiKey === undefined || typeof apiKey === 'string' && /^[!-~]{1,4096}$/.test(apiKey), 'invalid API key');
+    requireValue(fetchImpl === undefined || typeof fetchImpl === 'function' && caFile === undefined &&
+      connectHost === undefined, 'custom Fetch cannot silently override CA or connection IP');
     this.OpenAI = OpenAI; this.baseURL = url.href.replace(/\/$/, ''); this.model = model;
-    this.protocolSha256 = protocolSha256; this.timeoutMs = timeoutMs; this.fetchImpl = fetchImpl;
+    this.protocolSha256 = protocolSha256; this.timeoutMs = timeoutMs;
+    this.#apiKey = apiKey ?? 'q4t-local-no-auth';
+    this.fetchImpl = fetchImpl ?? nodeFetch(this.baseURL, { caFile, connectHost });
   }
 
   async transaction(action, { signal, sink } = {}) {
@@ -344,7 +351,7 @@ export class ChatClient {
       record.finished.catch(() => {});
       return new Response(sdkBody, { status: response.status, statusText: response.statusText, headers: response.headers });
     };
-    const sdk = new this.OpenAI({ baseURL: this.baseURL, apiKey: 'q4t-local-no-auth',
+    const sdk = new this.OpenAI({ baseURL: this.baseURL, apiKey: this.#apiKey,
       maxRetries: 0, timeout: this.timeoutMs, fetch: captureFetch });
     try {
       const value = await action(sdk, controller.signal);

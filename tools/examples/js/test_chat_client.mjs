@@ -29,9 +29,9 @@ function jsonResponse(message = { role: 'assistant', content: '中文710003' }, 
   return { id: ID, model: MODEL, created: 42, object: 'chat.completion', usage: COUNTS,
     choices: [{ index: 0, message, finish_reason: finish, logprobs: null }] };
 }
-function client(bytes, { status = 200, stream = false, timeoutMs = 5000 } = {}) {
+function client(bytes, { status = 200, stream = false, timeoutMs = 5000, apiKey } = {}) {
   const requests = [];
-  return { requests, api: new ChatClient(OpenAI, { timeoutMs,
+  return { requests, api: new ChatClient(OpenAI, { timeoutMs, apiKey,
     fetchImpl: async (url, init) => {
       requests.push({ url: String(url), ...init });
       // Split every byte, including UTF-8 scalars and SSE/JSON delimiters.
@@ -63,6 +63,24 @@ test('SDK models discovery uses one GET with no unsupported query', async () => 
   const run = client(Buffer.from(JSON.stringify(models)));
   assert.deepEqual((await run.api.models()).models, models);
   assert.equal(new URL(run.requests[0].url).search, ''); assert.equal(run.requests[0].method, 'GET');
+});
+
+test('explicit API key reaches only the request and is absent from client serialization', async () => {
+  const apiKey = 'explicit-client-key', run = client(Buffer.from(JSON.stringify(jsonResponse())), { apiKey });
+  await run.api.chat(request(false));
+  assert.equal(new Headers(run.requests[0].headers).get('authorization'), 'Bearer ' + apiKey);
+  assert.equal(run.requests.length, 1);
+  assert.ok(!JSON.stringify(run.api).includes(apiKey));
+});
+
+test('optional connection settings reject ambiguity and malformed keys before requests', () => {
+  for (const apiKey of ['', 'x\r\nInjected: y', '含空格', 'x'.repeat(4097)])
+    assert.throws(() => new ChatClient(OpenAI, { apiKey }), ProtocolError);
+  for (const options of [{ caFile: 'unused', fetchImpl: async () => {} },
+    { connectHost: '127.0.0.1', fetchImpl: async () => {} }])
+    assert.throws(() => new ChatClient(OpenAI, options), ProtocolError);
+  assert.throws(() => new ChatClient(OpenAI, { caFile: 'unused' }), /CA requires HTTPS/);
+  assert.throws(() => new ChatClient(OpenAI, { connectHost: 'host.invalid' }), /connection IP required/);
 });
 
 test('capability validation binds protocol and template identities', async () => {

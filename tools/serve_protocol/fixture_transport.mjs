@@ -1,6 +1,17 @@
 // Test-only Node preload. In-memory Fetch; it never listens or opens a socket.
 import { appendFileSync, readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
+import { registerHooks } from 'node:module';
+
+// The production client now uses an explicit Node HTTP adapter. Substitute
+// that module only in this opt-in preload; CPU bridge tests must not open IO.
+registerHooks({ resolve(specifier, context, nextResolve) {
+  if (specifier === './node_transport.mjs' &&
+      context.parentURL?.endsWith('/tools/examples/js/chat_client.mjs'))
+    return { url: new URL('./fixture_node_transport.mjs', import.meta.url).href,
+      shortCircuit: true };
+  return nextResolve(specifier, context);
+} });
 
 const config = JSON.parse(readFileSync(process.env.Q4T_PROTOCOL_FIXTURE, 'utf8'));
 globalThis.fetch = async (url, init) => {

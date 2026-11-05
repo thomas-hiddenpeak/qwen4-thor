@@ -22,7 +22,8 @@ RUNTIME_FILES = (
     "tools/project_tasks/protocol.py", "tools/project_tasks/compatible_protocols.json",
     "tools/project_tasks/retention.py",
     "tools/project_tasks/backup.py", "tools/project_tasks/errors.py",
-    "tools/examples/chat_client.py", "tools/examples/project_records.py",
+    "tools/examples/chat_client.py", "tools/examples/deadline_http.py",
+    "tools/examples/project_records.py",
     "tools/examples/project_query.py", "tools/examples/agent_tools_demo.py",
     "tools/examples/tool_recovery.py")
 TOOLS = deepcopy(TOOLS)
