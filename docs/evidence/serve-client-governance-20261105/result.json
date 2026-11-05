@@ -1,0 +1,283 @@
+{
+  "active_cancel_usage": {
+    "generated": 5.0,
+    "prompt": 27
+  },
+  "actual_lan_accepted": false,
+  "archived_records": 415,
+  "cancelled": 2,
+  "candidate_sha256": "c1bdb0a7599ba3f61d9cb48597069a66f6e27e02f38cf32e495fc80059008636",
+  "cpu_checks": {
+    "driver": true,
+    "generated": true,
+    "inventory": true,
+    "public-host": true,
+    "python": true,
+    "required-host": true,
+    "structured": true
+  },
+  "cumulative_lease_seconds": 155.8157526787836,
+  "default_unchanged": true,
+  "final_settled_tokens": {
+    "alpha": 177.0,
+    "beta": 87.0
+  },
+  "generation_attempts": 16,
+  "handler_elapsed_ms": [
+    428.455,
+    326.077,
+    10.34,
+    357.714,
+    391.509,
+    736.363,
+    1056.372,
+    0.254,
+    6.453,
+    328.3,
+    326.281,
+    327.056
+  ],
+  "installed": {
+    "q4t": "a56bd448ba45e31ba223e73212090a3aea76be9d9a17b06ad0d13c44196544a6",
+    "q4t.release.json": "914e067febf6d6bab36cafb65548f3f64c3f34c9f0181ba95fb1b7c68752f861"
+  },
+  "lease_observations": 94,
+  "lease_seconds": 100.92925495398231,
+  "local_references": 506,
+  "long_runs": false,
+  "managed_lifecycle_accepted": false,
+  "models": 2,
+  "numerical_reuse": {
+    "changed": [
+      "include/q4t/server/chat_plan.h",
+      "include/q4t/server/client_policy.h",
+      "include/q4t/server/sequence_admission.h",
+      "src/server/chat_admission.cpp",
+      "src/server/chat_capabilities.cpp",
+      "src/server/chat_generation.cpp",
+      "src/server/chat_plan.cpp",
+      "src/server/chat_preflight.cpp",
+      "src/server/chat_server.cpp",
+      "src/server/client_policy.cpp"
+    ],
+    "current": {
+      "bytes": 23247,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/package-04/candidate/runtime-source.json",
+      "sha256": "bc3a7fba0bb36c403994b9ec401c3010afdbe5ada4476612a97f507be8f63d4f"
+    },
+    "model_math_tokenizer_template_cache_unchanged": true,
+    "performance_acceptance": false,
+    "previous": {
+      "bytes": 23247,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-adoption-20261104/delivery-package/candidate/runtime-source.json",
+      "sha256": "9422c8714bf7da37a665942b9e0dfe769af773be9224c41728dab2ca635dbe8f"
+    },
+    "unchanged_runtime_sources": 213
+  },
+  "owned": [
+    {
+      "gone": true,
+      "pid": 3568869,
+      "start_ticks": 205721880
+    },
+    {
+      "gone": true,
+      "pid": 3568085,
+      "start_ticks": 205718278
+    },
+    {
+      "gone": true,
+      "pid": 3570083,
+      "start_ticks": 205790543
+    },
+    {
+      "gone": true,
+      "pid": 3569323,
+      "start_ticks": 205786912
+    }
+  ],
+  "pending": [
+    "no-policy actual JSON/SSE check",
+    "default release installation and CLI health"
+  ],
+  "performance_acceptance": false,
+  "physical_ram_hard_limit": false,
+  "privacy": "Raw secret-bearing requests/keys and ELF stay local as hash references; archive is not a disaster-recovery backup.",
+  "protocol_sha256": "9c8758c4f85e1d4f7621bd8854c88f64d9cc739744669754aab18c7e183e9706",
+  "queue_order": [
+    "agent-d55f8a2b75f0a68386ee2f427b20ad92",
+    "agent-2cb5b6cc237d0023db048d2c0bc6e476",
+    "agent-4f0bfe3b3bb01f6cefe0bd5dd1a714c7",
+    "agent-adb6449335465ce11563f0c0ae615964"
+  ],
+  "queued_refunded_tokens": 54,
+  "real_tools": 2,
+  "refusals": 2,
+  "resources": {
+    "containers_empty": true,
+    "gpu_empty": true,
+    "lock": {
+      "available": true,
+      "dev": 66305,
+      "inode": 3294067
+    },
+    "long_runs": false,
+    "owned": [],
+    "passed": true,
+    "ports": [
+      18138,
+      18458
+    ],
+    "restore_unit_masked": true
+  },
+  "responses": [
+    {
+      "label": "a1",
+      "usage": {
+        "completion_tokens": 7,
+        "prompt_tokens": 22,
+        "total_tokens": 29
+      }
+    },
+    {
+      "label": "a2",
+      "usage": {
+        "completion_tokens": 7,
+        "prompt_tokens": 22,
+        "total_tokens": 29
+      }
+    },
+    {
+      "label": "b1",
+      "usage": {
+        "completion_tokens": 7,
+        "prompt_tokens": 22,
+        "total_tokens": 29
+      }
+    },
+    {
+      "label": "beta-after-refusal",
+      "usage": {
+        "completion_tokens": 7,
+        "prompt_tokens": 22,
+        "total_tokens": 29
+      }
+    },
+    {
+      "label": "rpm-seed-0",
+      "usage": {
+        "completion_tokens": 7,
+        "prompt_tokens": 22,
+        "total_tokens": 29
+      }
+    },
+    {
+      "label": "rpm-seed-1",
+      "usage": {
+        "completion_tokens": 7,
+        "prompt_tokens": 22,
+        "total_tokens": 29
+      }
+    },
+    {
+      "label": "window-recovery-alpha",
+      "usage": {
+        "completion_tokens": 7,
+        "prompt_tokens": 22,
+        "total_tokens": 29
+      }
+    },
+    {
+      "label": "window-recovery-beta",
+      "usage": {
+        "completion_tokens": 7,
+        "prompt_tokens": 22,
+        "total_tokens": 29
+      }
+    }
+  ],
+  "reused": {
+    "candidate_sha256": "c1bdb0a7599ba3f61d9cb48597069a66f6e27e02f38cf32e495fc80059008636",
+    "completed": [
+      {
+        "elapsed": 3.8291440790053457,
+        "label": "project-alpha-read",
+        "usage": {
+          "completion_tokens": 55,
+          "prompt_tokens": 564,
+          "total_tokens": 619
+        },
+        "wire": {
+          "bytes": 1184,
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/execution-02/business/project-alpha-read-wire.bin",
+          "sha256": "6bf2c0ed250731c7c3bc6ce2db25bf683647834c2c836edfa3d4c481fe9325d6"
+        }
+      },
+      {
+        "elapsed": 4.029415946919471,
+        "label": "project-alpha-answer",
+        "usage": {
+          "completion_tokens": 58,
+          "prompt_tokens": 890,
+          "total_tokens": 948
+        },
+        "wire": {
+          "bytes": 1137,
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/execution-02/business/project-alpha-answer-wire.bin",
+          "sha256": "df6863575f79f573b169aadfa51fe711625fd3e1f7192e35e08d749852120bda"
+        }
+      },
+      {
+        "elapsed": 3.730600575916469,
+        "label": "project-beta-read",
+        "usage": {
+          "completion_tokens": 55,
+          "prompt_tokens": 564,
+          "total_tokens": 619
+        },
+        "wire": {
+          "bytes": 1184,
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/execution-02/business/project-beta-read-wire.bin",
+          "sha256": "4a459c84b6c95f7f05d8114465450b859d1c6f2fbd2a1f9593021f9f10fdebfe"
+        }
+      },
+      {
+        "elapsed": 4.033426241017878,
+        "label": "project-beta-answer",
+        "usage": {
+          "completion_tokens": 58,
+          "prompt_tokens": 890,
+          "total_tokens": 948
+        },
+        "wire": {
+          "bytes": 1137,
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/execution-02/business/project-beta-answer-wire.bin",
+          "sha256": "0acfcefba02c98308f608b84944b86566f678b0c140d3f2f8556b72fbf042234"
+        }
+      }
+    ],
+    "lease_seconds": 54.8864977248013,
+    "leases": [
+      {
+        "observations": 2,
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/execution/lease",
+        "seconds": 1.275470261927694,
+        "status": "COMMAND_FAILED"
+      },
+      {
+        "observations": 50,
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/execution-02/lease",
+        "seconds": 53.61102746287361,
+        "status": "COMMAND_FAILED"
+      }
+    ],
+    "prior_stage_accepted": false,
+    "real_tools": 2,
+    "sources_unchanged": true,
+    "status": "REUSE_FOUR_COMPLETED_RESPONSES_ONLY"
+  },
+  "reused_responses": 4,
+  "source_commit": "00a4d196b1d83022703e06b3f2e91141fb8a3de6",
+  "status": "SCOPED_ACCEPTED_PENDING_DISABLED_CHECK",
+  "successful_responses": 12
+}
