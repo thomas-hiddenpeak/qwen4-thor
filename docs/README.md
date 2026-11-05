@@ -1,7 +1,8 @@
 # docs/ — 开发记录文档体系
 
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
-[评分优化最小提取：本轮不完整验收、收益与缺项](MTP_PREFILL_ADOPTION_RESULT_2026-11-05.md)；
+[评分优化最小提取：完整补验、限定接受与默认交付](MTP_PREFILL_COMPLETION_RESULT_2026-11-05.md)；
+[此前不完整验收和失败记录](MTP_PREFILL_ADOPTION_RESULT_2026-11-05.md)；
 [冻结范围和性能判定](MTP_PREFILL_ADOPTION_PLAN_2026-11-04.md)；
 [已授权20分钟缺项补验](MTP_PREFILL_COMPLETION_PLAN_2026-11-05.md)。
 阶段收尾：[五个参考项目成果、已吸收特性与重启条件](REFERENCE_LEARNING_CLOSEOUT_2026-10-29.md)。

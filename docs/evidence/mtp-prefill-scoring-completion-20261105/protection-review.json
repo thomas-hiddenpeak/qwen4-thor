@@ -1,0 +1,417 @@
+{
+  "reviewed_at": 1793853182.5771773,
+  "cases": [
+    {
+      "mode": "agent-full",
+      "case": "context-1024",
+      "ttft_percent": 1.830864414665645,
+      "decode_percent": -0.06404162868346441,
+      "e2e_percent": -0.27200902503983215,
+      "negative_metrics": [
+        "ttft_percent",
+        "decode_percent",
+        "e2e_percent"
+      ],
+      "output_same": true,
+      "mtp_draft_counts_identical": true,
+      "parent_minimum_mem_available": 19434401792,
+      "candidate_minimum_mem_available": 18679455744,
+      "q4t_swap_bytes": 0,
+      "review": "Mean TTFT rises while the median decreases in this sample; the cold first request is retained. Decode work counts match. No allocation/state/quality failure or confirmed attributable slowdown identified; a cold-start cost or small real regression cannot be excluded by one pair.",
+      "confirmed_attributable_regression": false
+    },
+    {
+      "mode": "agent-full",
+      "case": "context-4096",
+      "ttft_percent": -0.9195829345507445,
+      "decode_percent": -0.2847896972257069,
+      "e2e_percent": 0.07447404090685783,
+      "negative_metrics": [
+        "decode_percent"
+      ],
+      "output_same": true,
+      "mtp_draft_counts_identical": true,
+      "parent_minimum_mem_available": 19608719360,
+      "candidate_minimum_mem_available": 18946551808,
+      "q4t_swap_bytes": 0,
+      "review": "Uniform-slot prefill is the only altered computation; decode mixed-slot/T<=4 dispatch and per-request draft work counts match. The negative decode observations remain unresolved timing uncertainty, not classified as noise or compensated by long-context gains.",
+      "confirmed_attributable_regression": false
+    },
+    {
+      "mode": "agent-full",
+      "case": "context-8192",
+      "ttft_percent": -2.561210949815862,
+      "decode_percent": -0.15913472853158472,
+      "e2e_percent": 1.0678709437545786,
+      "negative_metrics": [
+        "decode_percent"
+      ],
+      "output_same": true,
+      "mtp_draft_counts_identical": true,
+      "parent_minimum_mem_available": 17667084288,
+      "candidate_minimum_mem_available": 17547182080,
+      "q4t_swap_bytes": 0,
+      "review": "Uniform-slot prefill is the only altered computation; decode mixed-slot/T<=4 dispatch and per-request draft work counts match. The negative decode observations remain unresolved timing uncertainty, not classified as noise or compensated by long-context gains.",
+      "confirmed_attributable_regression": false
+    },
+    {
+      "mode": "agent-full",
+      "case": "context-45056",
+      "ttft_percent": -11.460519533960866,
+      "decode_percent": 0.015068767249304393,
+      "e2e_percent": 10.664279636326746,
+      "negative_metrics": [],
+      "output_same": true,
+      "mtp_draft_counts_identical": true,
+      "parent_minimum_mem_available": 17769865216,
+      "candidate_minimum_mem_available": 17843105792,
+      "q4t_swap_bytes": 0,
+      "review": "Uniform-slot prefill is the only altered computation; decode mixed-slot/T<=4 dispatch and per-request draft work counts match. The negative decode observations remain unresolved timing uncertainty, not classified as noise or compensated by long-context gains.",
+      "confirmed_attributable_regression": false
+    },
+    {
+      "mode": "agent-full",
+      "case": "context-204800",
+      "ttft_percent": -33.836719162553294,
+      "decode_percent": -0.08654688883379391,
+      "e2e_percent": 48.94866325495857,
+      "negative_metrics": [
+        "decode_percent"
+      ],
+      "output_same": true,
+      "mtp_draft_counts_identical": true,
+      "parent_minimum_mem_available": 17770651648,
+      "candidate_minimum_mem_available": 17862569984,
+      "q4t_swap_bytes": 0,
+      "review": "Uniform-slot prefill is the only altered computation; decode mixed-slot/T<=4 dispatch and per-request draft work counts match. The negative decode observations remain unresolved timing uncertainty, not classified as noise or compensated by long-context gains.",
+      "confirmed_attributable_regression": false
+    },
+    {
+      "mode": "agent-full",
+      "case": "repeat-code",
+      "ttft_percent": -19.62664387974512,
+      "decode_percent": 0.17132746906936003,
+      "e2e_percent": 22.44413068528082,
+      "negative_metrics": [],
+      "output_same": true,
+      "mtp_draft_counts_identical": true,
+      "parent_minimum_mem_available": 17598447616,
+      "candidate_minimum_mem_available": 17447366656,
+      "q4t_swap_bytes": 0,
+      "review": "Uniform-slot prefill is the only altered computation; decode mixed-slot/T<=4 dispatch and per-request draft work counts match. The negative decode observations remain unresolved timing uncertainty, not classified as noise or compensated by long-context gains.",
+      "confirmed_attributable_regression": false
+    },
+    {
+      "mode": "agent-full",
+      "case": "repeat-text",
+      "ttft_percent": -19.680029880453752,
+      "decode_percent": 0.3675143702702721,
+      "e2e_percent": 22.512482330686943,
+      "negative_metrics": [],
+      "output_same": true,
+      "mtp_draft_counts_identical": true,
+      "parent_minimum_mem_available": 17419550720,
+      "candidate_minimum_mem_available": 19116224512,
+      "q4t_swap_bytes": 0,
+      "review": "Uniform-slot prefill is the only altered computation; decode mixed-slot/T<=4 dispatch and per-request draft work counts match. The negative decode observations remain unresolved timing uncertainty, not classified as noise or compensated by long-context gains.",
+      "confirmed_attributable_regression": false
+    },
+    {
+      "mode": "agent-subset",
+      "case": "context-1024",
+      "ttft_percent": 0.3921059300000307,
+      "decode_percent": -0.12425486688221188,
+      "e2e_percent": -0.1574027481251017,
+      "negative_metrics": [
+        "ttft_percent",
+        "decode_percent",
+        "e2e_percent"
+      ],
+      "output_same": true,
+      "mtp_draft_counts_identical": true,
+      "parent_minimum_mem_available": 18541473792,
+      "candidate_minimum_mem_available": 19034693632,
+      "q4t_swap_bytes": 0,
+      "review": "Mean TTFT rises while the median decreases in this sample; the cold first request is retained. Decode work counts match. No allocation/state/quality failure or confirmed attributable slowdown identified; a cold-start cost or small real regression cannot be excluded by one pair.",
+      "confirmed_attributable_regression": false
+    },
+    {
+      "mode": "agent-subset",
+      "case": "context-4096",
+      "ttft_percent": -1.010545445955613,
+      "decode_percent": -0.2725304543483409,
+      "e2e_percent": 0.13336415716656003,
+      "negative_metrics": [
+        "decode_percent"
+      ],
+      "output_same": true,
+      "mtp_draft_counts_identical": true,
+      "parent_minimum_mem_available": 18389491712,
+      "candidate_minimum_mem_available": 19041562624,
+      "q4t_swap_bytes": 0,
+      "review": "Uniform-slot prefill is the only altered computation; decode mixed-slot/T<=4 dispatch and per-request draft work counts match. The negative decode observations remain unresolved timing uncertainty, not classified as noise or compensated by long-context gains.",
+      "confirmed_attributable_regression": false
+    },
+    {
+      "mode": "agent-subset",
+      "case": "context-8192",
+      "ttft_percent": -2.7072203204792644,
+      "decode_percent": 0.3848793782970983,
+      "e2e_percent": 1.4968200483935323,
+      "negative_metrics": [],
+      "output_same": true,
+      "mtp_draft_counts_identical": true,
+      "parent_minimum_mem_available": 18249584640,
+      "candidate_minimum_mem_available": 19126915072,
+      "q4t_swap_bytes": 0,
+      "review": "Uniform-slot prefill is the only altered computation; decode mixed-slot/T<=4 dispatch and per-request draft work counts match. The negative decode observations remain unresolved timing uncertainty, not classified as noise or compensated by long-context gains.",
+      "confirmed_attributable_regression": false
+    },
+    {
+      "mode": "agent-subset",
+      "case": "context-45056",
+      "ttft_percent": -11.567345955962905,
+      "decode_percent": 0.14212330391925043,
+      "e2e_percent": 10.959939017120025,
+      "negative_metrics": [],
+      "output_same": true,
+      "mtp_draft_counts_identical": true,
+      "parent_minimum_mem_available": 18839625728,
+      "candidate_minimum_mem_available": 19149201408,
+      "q4t_swap_bytes": 0,
+      "review": "Uniform-slot prefill is the only altered computation; decode mixed-slot/T<=4 dispatch and per-request draft work counts match. The negative decode observations remain unresolved timing uncertainty, not classified as noise or compensated by long-context gains.",
+      "confirmed_attributable_regression": false
+    },
+    {
+      "mode": "agent-subset",
+      "case": "context-204800",
+      "ttft_percent": -33.748231529091164,
+      "decode_percent": 0.22753527634089554,
+      "e2e_percent": 48.84241289693847,
+      "negative_metrics": [],
+      "output_same": true,
+      "mtp_draft_counts_identical": true,
+      "parent_minimum_mem_available": 18871152640,
+      "candidate_minimum_mem_available": 18775412736,
+      "q4t_swap_bytes": 0,
+      "review": "Uniform-slot prefill is the only altered computation; decode mixed-slot/T<=4 dispatch and per-request draft work counts match. The negative decode observations remain unresolved timing uncertainty, not classified as noise or compensated by long-context gains.",
+      "confirmed_attributable_regression": false
+    },
+    {
+      "mode": "agent-subset",
+      "case": "repeat-code",
+      "ttft_percent": -19.931116465569975,
+      "decode_percent": -0.08723372806745955,
+      "e2e_percent": 22.869229643088683,
+      "negative_metrics": [
+        "decode_percent"
+      ],
+      "output_same": true,
+      "mtp_draft_counts_identical": true,
+      "parent_minimum_mem_available": 18817384448,
+      "candidate_minimum_mem_available": 18917494784,
+      "q4t_swap_bytes": 0,
+      "review": "Uniform-slot prefill is the only altered computation; decode mixed-slot/T<=4 dispatch and per-request draft work counts match. The negative decode observations remain unresolved timing uncertainty, not classified as noise or compensated by long-context gains.",
+      "confirmed_attributable_regression": false
+    },
+    {
+      "mode": "agent-subset",
+      "case": "repeat-text",
+      "ttft_percent": -19.814619123485976,
+      "decode_percent": -0.21871675121823975,
+      "e2e_percent": 22.56838114824591,
+      "negative_metrics": [
+        "decode_percent"
+      ],
+      "output_same": true,
+      "mtp_draft_counts_identical": true,
+      "parent_minimum_mem_available": 18635603968,
+      "candidate_minimum_mem_available": 18816335872,
+      "q4t_swap_bytes": 0,
+      "review": "Uniform-slot prefill is the only altered computation; decode mixed-slot/T<=4 dispatch and per-request draft work counts match. The negative decode observations remain unresolved timing uncertainty, not classified as noise or compensated by long-context gains.",
+      "confirmed_attributable_regression": false
+    },
+    {
+      "mode": "single-full",
+      "case": "context-1024",
+      "ttft_percent": 0.5904433138925302,
+      "decode_percent": 0.05648652367744589,
+      "e2e_percent": -0.020485285243532214,
+      "negative_metrics": [
+        "ttft_percent",
+        "e2e_percent"
+      ],
+      "output_same": true,
+      "mtp_draft_counts_identical": true,
+      "parent_minimum_mem_available": 24540979200,
+      "candidate_minimum_mem_available": 23871447040,
+      "q4t_swap_bytes": 0,
+      "review": "The new uniform multi-slot scoring dispatch is not selected. Output/length/finish match; no new allocation or scoring work. CPU validation and binary-layout timing effects are not ruled out. The signed per-tier observations remain descriptive, not a proof of equality.",
+      "confirmed_attributable_regression": false
+    },
+    {
+      "mode": "single-full",
+      "case": "context-4096",
+      "ttft_percent": 0.025440693420852867,
+      "decode_percent": -0.041496836618482025,
+      "e2e_percent": -0.03668900540508835,
+      "negative_metrics": [
+        "ttft_percent",
+        "decode_percent",
+        "e2e_percent"
+      ],
+      "output_same": true,
+      "mtp_draft_counts_identical": true,
+      "parent_minimum_mem_available": 24536850432,
+      "candidate_minimum_mem_available": 24204414976,
+      "q4t_swap_bytes": 0,
+      "review": "The new uniform multi-slot scoring dispatch is not selected. Output/length/finish match; no new allocation or scoring work. CPU validation and binary-layout timing effects are not ruled out. The signed per-tier observations remain descriptive, not a proof of equality.",
+      "confirmed_attributable_regression": false
+    },
+    {
+      "mode": "single-full",
+      "case": "context-8192",
+      "ttft_percent": -0.2353639851636391,
+      "decode_percent": 0.1000845381279758,
+      "e2e_percent": 0.15904869561713664,
+      "negative_metrics": [],
+      "output_same": true,
+      "mtp_draft_counts_identical": true,
+      "parent_minimum_mem_available": 24199090176,
+      "candidate_minimum_mem_available": 24059711488,
+      "q4t_swap_bytes": 0,
+      "review": "The new uniform multi-slot scoring dispatch is not selected. Output/length/finish match; no new allocation or scoring work. CPU validation and binary-layout timing effects are not ruled out. The signed per-tier observations remain descriptive, not a proof of equality.",
+      "confirmed_attributable_regression": false
+    },
+    {
+      "mode": "single-full",
+      "case": "context-45056",
+      "ttft_percent": -0.02248422620938495,
+      "decode_percent": -0.09852429375187821,
+      "e2e_percent": 0.0004592018997495728,
+      "negative_metrics": [
+        "decode_percent"
+      ],
+      "output_same": true,
+      "mtp_draft_counts_identical": true,
+      "parent_minimum_mem_available": 21680087040,
+      "candidate_minimum_mem_available": 21681033216,
+      "q4t_swap_bytes": 0,
+      "review": "The new uniform multi-slot scoring dispatch is not selected. Output/length/finish match; no new allocation or scoring work. CPU validation and binary-layout timing effects are not ruled out. The signed per-tier observations remain descriptive, not a proof of equality.",
+      "confirmed_attributable_regression": false
+    },
+    {
+      "mode": "single-full",
+      "case": "context-204800",
+      "ttft_percent": 0.026046242852162393,
+      "decode_percent": 0.37892878816556674,
+      "e2e_percent": -0.008080814444866302,
+      "negative_metrics": [
+        "ttft_percent",
+        "e2e_percent"
+      ],
+      "output_same": true,
+      "mtp_draft_counts_identical": true,
+      "parent_minimum_mem_available": 16287379456,
+      "candidate_minimum_mem_available": 16345337856,
+      "q4t_swap_bytes": 0,
+      "review": "The new uniform multi-slot scoring dispatch is not selected. Output/length/finish match; no new allocation or scoring work. CPU validation and binary-layout timing effects are not ruled out. The signed per-tier observations remain descriptive, not a proof of equality.",
+      "confirmed_attributable_regression": false
+    },
+    {
+      "mode": "single-plain",
+      "case": "context-1024",
+      "ttft_percent": -0.06769120726412003,
+      "decode_percent": -0.32304425637432743,
+      "e2e_percent": -0.3014862534056917,
+      "negative_metrics": [
+        "decode_percent",
+        "e2e_percent"
+      ],
+      "output_same": true,
+      "mtp_draft_counts_identical": null,
+      "parent_minimum_mem_available": 34001862656,
+      "candidate_minimum_mem_available": 33664299008,
+      "q4t_swap_bytes": 0,
+      "review": "The new uniform multi-slot scoring dispatch is not selected. Output/length/finish match; no new allocation or scoring work. CPU validation and binary-layout timing effects are not ruled out. The signed per-tier observations remain descriptive, not a proof of equality.",
+      "confirmed_attributable_regression": false
+    },
+    {
+      "mode": "single-plain",
+      "case": "context-4096",
+      "ttft_percent": -0.30980641787717866,
+      "decode_percent": -0.02007427250708682,
+      "e2e_percent": 0.031161760500708624,
+      "negative_metrics": [
+        "decode_percent"
+      ],
+      "output_same": true,
+      "mtp_draft_counts_identical": null,
+      "parent_minimum_mem_available": 34459160576,
+      "candidate_minimum_mem_available": 33975656448,
+      "q4t_swap_bytes": 0,
+      "review": "The new uniform multi-slot scoring dispatch is not selected. Output/length/finish match; no new allocation or scoring work. CPU validation and binary-layout timing effects are not ruled out. The signed per-tier observations remain descriptive, not a proof of equality.",
+      "confirmed_attributable_regression": false
+    },
+    {
+      "mode": "single-plain",
+      "case": "context-8192",
+      "ttft_percent": -0.27646033063556397,
+      "decode_percent": -0.11579232874912027,
+      "e2e_percent": -0.011783926243347231,
+      "negative_metrics": [
+        "decode_percent",
+        "e2e_percent"
+      ],
+      "output_same": true,
+      "mtp_draft_counts_identical": null,
+      "parent_minimum_mem_available": 34099654656,
+      "candidate_minimum_mem_available": 33883877376,
+      "q4t_swap_bytes": 0,
+      "review": "The new uniform multi-slot scoring dispatch is not selected. Output/length/finish match; no new allocation or scoring work. CPU validation and binary-layout timing effects are not ruled out. The signed per-tier observations remain descriptive, not a proof of equality.",
+      "confirmed_attributable_regression": false
+    },
+    {
+      "mode": "single-plain",
+      "case": "context-45056",
+      "ttft_percent": -0.11555394621629578,
+      "decode_percent": -0.06603552934479895,
+      "e2e_percent": 0.05759329493197907,
+      "negative_metrics": [
+        "decode_percent"
+      ],
+      "output_same": true,
+      "mtp_draft_counts_identical": null,
+      "parent_minimum_mem_available": 34079072256,
+      "candidate_minimum_mem_available": 33869963264,
+      "q4t_swap_bytes": 0,
+      "review": "The new uniform multi-slot scoring dispatch is not selected. Output/length/finish match; no new allocation or scoring work. CPU validation and binary-layout timing effects are not ruled out. The signed per-tier observations remain descriptive, not a proof of equality.",
+      "confirmed_attributable_regression": false
+    },
+    {
+      "mode": "single-plain",
+      "case": "context-204800",
+      "ttft_percent": -0.13445398259939179,
+      "decode_percent": -0.01804051297488174,
+      "e2e_percent": 0.1215120607827247,
+      "negative_metrics": [
+        "decode_percent"
+      ],
+      "output_same": true,
+      "mtp_draft_counts_identical": null,
+      "parent_minimum_mem_available": 33587458048,
+      "candidate_minimum_mem_available": 33880932352,
+      "q4t_swap_bytes": 0,
+      "review": "The new uniform multi-slot scoring dispatch is not selected. Output/length/finish match; no new allocation or scoring work. CPU validation and binary-layout timing effects are not ruled out. The signed per-tier observations remain descriptive, not a proof of equality.",
+      "confirmed_attributable_regression": false
+    }
+  ],
+  "first_requests_retained": true,
+  "negative_case_count": 17,
+  "new_plain_parent_200k_start": true,
+  "scope": "Individual protections reviewed without a post-hoc percentage tolerance or average-gain offset.",
+  "timing_limitations": "One descriptive pair per mode, interrupted reusable prior phases and a separate cold parent 200K start. No statistical noninferiority, no regression upper bound, no assertion that negative points are noise.",
+  "resources": "48 complete windows; no q4t swap; sampled GPU/EMC frequencies unchanged in these windows. MemAvailable is system-wide and is not a hard physical allocation bound.",
+  "source_review_sha256": "177c9526352788b28e8536c4aefbd585fd6c22d977c12e94e25f2793f84302e6",
+  "resource_review_sha256": "05b8ea3ce14a598730f3b7e7a598edc8a48dec1d4d01c4efacfc3fe5cb0b6824"
+}

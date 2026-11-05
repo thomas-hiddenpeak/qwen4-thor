@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-adoption-20261104/scoring-delivery-evidence.tar.gz",
+  "archive_sha256": "6e708f38ffa2f6d88d959ba91bcb7ac1255b86983d3260cd1161dfedd038f9ac",
+  "index_sha256": "8fb958e8d89cb11edb4d6745768b30e431a2009385c11b988e68505a677fe9e6",
+  "archive_bytes": 276415340,
+  "paths": 324,
+  "objects": 302,
+  "scope": "Accepted package and exact prior pair, tested runtime sources, declarations, raw two-head health, cleanup and completion archive reference. Retain historical absolute dependencies; not full model disaster recovery."
+}

@@ -1,0 +1,145 @@
+{
+  "passed": true,
+  "time_unix": 1793853488.169243,
+  "status": "DELIVERED",
+  "default_binary": "a56bd448ba45e31ba223e73212090a3aea76be9d9a17b06ad0d13c44196544a6",
+  "default_sidecar": "914e067febf6d6bab36cafb65548f3f64c3f34c9f0181ba95fb1b7c68752f861",
+  "protocol": "cc321239ced843d6d618d07b72ed81ed65958b2fdc29261fc2b042d9118c40d5",
+  "capability_changes": {
+    "full": [
+      "protocol_source_sha256"
+    ],
+    "subset": [
+      "protocol_source_sha256"
+    ]
+  },
+  "protected_client_hashes": {
+    "tools/examples/chat_client.py": "75826241a93fe54cc6bdbd2e620cbb038d9ee026c599ef928761462ca4e12e3c",
+    "tools/examples/js/chat_client.mjs": "ae4115c09b91a3ae6d90b2e7f44f5f5864488e035a03b00f9375a10febc845bf",
+    "tools/examples/js/test_chat_client.mjs": "678aa471226ad69636eae983999cb03779aedc36ad617e1e587fab1a048954bd",
+    "tools/examples/test_chat_client.py": "e75ae22b113461296e46675777795276b83ff99732fdb4b6a9d00b318a634ddc",
+    "tools/serve_protocol/js_client.py": "f43ac68179ac4fd385e25caaf6fe9a138d0d7f6821268c4f2afdbf993871ddc3",
+    "tools/serve_protocol/run_sdk.mjs": "509aea1f47828ca4384cf06e9f5ef16a2e32a00ffee0224ac37718dd970793d3",
+    "tools/examples/deadline_http.py": "3697f9cda3c4bd9ac75b630c8cbdb8e8690fa54ad5b67f2d996922cf028af374",
+    "tools/examples/js/node_transport.mjs": "f95b3c1e4f8a89605171e97a56af8bf107b19dbd5f7a2c2977d7acdff0569f5e",
+    "tools/examples/test_deadline_http.py": "3aa130e9e52b9e11f8bfd2c8b6dac5d8696ced331c876bd31cac6c0d9f16d01d",
+    "tools/serve_client_transport/baseline.py": "fb2950c4a3bf89892d22c123569a28bb54ddfe83d8f820e03e8f5b6a08a83112"
+  },
+  "original_stages_preserved": "NOT_ACCEPTED_INCOMPLETE_MEASUREMENTS",
+  "research_tip": "4076810748024f610bcfc1780d47715f84becabe",
+  "servers_gone": [
+    2809392,
+    2960683,
+    2848492,
+    2840632,
+    2948630,
+    2875773,
+    2926278,
+    2902234,
+    2937687,
+    3428537,
+    3438412,
+    3440317,
+    3445647,
+    3446894
+  ],
+  "port_listeners": [],
+  "compute_contexts": [],
+  "lock": {
+    "available": true,
+    "device": 66305,
+    "inode": 3294067
+  },
+  "recovery_marker_present": false,
+  "health_requests": 6,
+  "health_elapsed_seconds": 98.04279900691472,
+  "health_guard": "COMPLETED",
+  "health_telemetry": {
+    "schema": 1,
+    "sampler_status": "STOPPED",
+    "scope": "Sampler accounting only; not the inference stage outcome. Summary is written before the sampler thread returns.",
+    "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-adoption-20261104/source/.q4t-work/scoring-health/run/unified-memory.jsonl",
+    "started_monotonic": 2043408.818319431,
+    "started_unix_seconds": 1793853326.301446,
+    "finished_monotonic": 2043506.860157737,
+    "finished_unix_seconds": 1793853424.3433094,
+    "sampler_elapsed_seconds": 98.04183830600232,
+    "sample_attempts": 99,
+    "flushed_samples": 99,
+    "unflushed_attempts": 0,
+    "final_successful_cycle_duration_seconds": 0.01794699183665216,
+    "final_successful_write_flush_seconds": 0.0001826188527047634,
+    "successful_cycle_duration_total_seconds": 2.211234435206279,
+    "successful_write_flush_total_seconds": 0.035725718131288886,
+    "final_failed_attempt_elapsed_seconds": null,
+    "final_attempt_read_counts": {
+      "source_file_read_attempts": 53,
+      "ownership_file_read_attempts": 774,
+      "ownership_readlink_attempts": 387,
+      "owned_file_read_attempts": 5,
+      "directory_scan_attempts": 1,
+      "pidfd_open_attempts": 1,
+      "pidfd_binding_polls": 1,
+      "pidfd_wait_attempts": 0,
+      "pending_poll_attempts": 0
+    },
+    "total_read_counts": {
+      "source_file_read_attempts": 5247,
+      "ownership_file_read_attempts": 77560,
+      "ownership_readlink_attempts": 38780,
+      "owned_file_read_attempts": 4672,
+      "directory_scan_attempts": 195,
+      "pidfd_open_attempts": 291,
+      "pidfd_binding_polls": 291,
+      "pidfd_wait_attempts": 0,
+      "pending_poll_attempts": 0
+    },
+    "setup_file_read_attempts": 1,
+    "total_file_read_attempts": 87480,
+    "file_count_scope": "Content read attempts including failed reads and ownership scan; readlink/directory scans separate.",
+    "sampler_failure": null,
+    "failures_at_exit": [],
+    "sampler_failure_context": null,
+    "sampler_failure_traceback": null,
+    "sampler_failure_task_state": null,
+    "exit_confirmation_policy": {
+      "per_task_ms": 50,
+      "per_sample_ms": 100,
+      "io_retries": 0,
+      "zero_fill": false,
+      "pending_capacity": 16,
+      "pending_seconds": 5,
+      "pending_poll_timeout_ms": 0,
+      "pending_requires_pf_exiting": true
+    },
+    "exit_pending": {
+      "active": 0,
+      "admitted": 0,
+      "resolved": 0,
+      "maximum_active": 0,
+      "last_resolutions": [],
+      "entries": []
+    },
+    "last_flushed_heartbeat": 2043506.850690194,
+    "source_count": 53
+  },
+  "health_postflight": {
+    "status": "MEASURED_REQUIRES_REVIEW",
+    "state_sha256": "98ee22362788e8a4138558b56eb15bd616116101fada820bc262a16d5ef792b0",
+    "monitor_failures": [],
+    "cleanup_errors": [],
+    "final_summary_sha256": "1cc5a561165fb362b0cb09b4d591121f5d25024b586936f59fbe3fee3dfa4dcc",
+    "final_monitor_barrier": {
+      "boundary_monotonic": 2043506.409147492,
+      "sample_started_monotonic": 2043506.832743202,
+      "flushed_monotonic": 2043506.850690194
+    },
+    "final_monitor_errors": [],
+    "note": "Final sampler join reviewed; original raw state/seal remain unchanged."
+  },
+  "rollback_pair": {
+    "binary": "8e9b4ce7cb76b0731e9f087bd15ea84ffac31bec038b87f88df853275dc1a3a1",
+    "sidecar": "e61bed7cc67ae5b90e8cfb0148dc010d5d95dd73cad763d118fe3669b41222f7"
+  },
+  "rollback_note": "Previous exact pair and copied dependencies retained; prior sidecar absolute historical dependencies must remain available. deliver.py rollback is the unfinished-marker recovery entry, not an automatic post-delivery downgrade."
+}

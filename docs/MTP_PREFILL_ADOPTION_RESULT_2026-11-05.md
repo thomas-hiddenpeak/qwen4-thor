@@ -1,5 +1,8 @@
 # 多槽 MTP 预填充评分：本轮验收记录
 
+后续已按新授权补齐缺项并限定交付，见[完成结果](MTP_PREFILL_COMPLETION_RESULT_2026-11-05.md)。
+下文保留此前截止时的原始结论，不追改失败或预算记录。
+
 2026-11-05。本轮记录为 `NOT_ACCEPTED_INCOMPLETE_MEASUREMENTS`：
 评分收益已测得，但原预算内未完成所有必需项，不接受或发布候选。
 默认 ELF/sidecar 保持父版，PR #9 保持草稿。
