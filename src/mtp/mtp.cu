@@ -170,6 +170,15 @@ Status CheckGemm(const model::Bf16GemmResult& r) {
   return Status();
 }
 
+Status ProjectDraftHead(const MtpModel& m, const uint16_t* sample_hidden,
+                         uint16_t* logits, int rows, void* workspace,
+                         cudaStream_t stream) {
+  const uint16_t* head = m.subset_head ? m.subset_head : m.lm_head;
+  return CheckGemm(model::Bf16Gemm(sample_hidden, head, logits, rows,
+                                  m.DraftVocab(), m.cfg.hs, 1.0f, 0.0f,
+                                  workspace, kGemmWs, stream));
+}
+
 void FreeScratch(MtpModel& m) {
   const runtime::CleanupPhase phase("mtp.scratch");
   if (m.d_ids_scratch) cudaFree(m.d_ids_scratch);
@@ -1453,6 +1462,46 @@ __global__ void GatherDraftMatrixKernel(const int32_t* __restrict__ src,
 }
 }  // namespace
 
+Status MtpSelectedHeadRows(const MtpModel& m, const uint16_t* sample_hidden,
+                           int source_rows, std::span<const int> rows,
+                           uint16_t* logits, cudaStream_t stream) {
+  if (!sample_hidden || !logits || m.max_seq < 1 || m.cfg.hs < 1 ||
+      !(m.subset_head || m.lm_head) ||
+      !m.d_ws || m.ws_bytes < kGemmWs || rows.empty() ||
+      rows.size() > static_cast<size_t>(source_rows) ||
+      rows.size() > static_cast<size_t>(m.max_seq) ||
+      !model::Bf16SmallMShapeRouted(source_rows, m.DraftVocab(), m.cfg.hs) ||
+      std::getenv("Q4T_ABLATE_GEMV_T1") ||
+      std::getenv("Q4T_ABLATE_GEMM_TILE"))
+    return Status::Fail("MtpSelectedHeadRows: unsupported input or scratch");
+  int previous = -1;
+  for (const int row : rows) {
+    if (row <= previous || row >= source_rows)
+      return Status::Fail("MtpSelectedHeadRows: invalid row order/range");
+    previous = row;
+  }
+  const int count = static_cast<int>(rows.size());
+  const uint16_t* input = sample_hidden +
+                          static_cast<size_t>(rows.front()) * m.cfg.hs;
+  if (count > 1) {
+    if (!m.d_ms_gather_off || !m.d_ms_sample ||
+        rows.size() > m.gather_off_capacity)
+      return Status::Fail("MtpSelectedHeadRows: missing packed scratch");
+    if (cudaMemcpyAsync(m.d_ms_gather_off, rows.data(), rows.size_bytes(),
+                        cudaMemcpyHostToDevice, stream) != cudaSuccess)
+      return Status::Fail("MtpSelectedHeadRows: H2D rows");
+    GatherTrunkRowsKernel<<<count, 256, 0, stream>>>(
+        sample_hidden, m.d_ms_gather_off, m.d_ms_sample, m.cfg.hs, count);
+    if (cudaGetLastError() != cudaSuccess)
+      return Status::Fail("MtpSelectedHeadRows: gather launch");
+    input = m.d_ms_sample;
+  }
+  // Forward has finished using its temporary activations. Reuse its scratch
+  // in the same stream; sample_hidden and the packed rows are separate buffers.
+  diagnostic::Scope head_scope("mtp.head.selected", -1, count);
+  return ProjectDraftHead(m, input, logits, count, m.d_ws, stream);
+}
+
 Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
                                const model::ModelSequence* const* seqs,
                                const int32_t* b_tok, const int32_t* d0,
@@ -1836,6 +1885,8 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
   std::vector<int> ext_pos(T_ext);
   std::vector<int> ext_seq(T_ext);
   std::vector<int> gather_off(T_ext);
+  std::vector<int> head_rows;
+  head_rows.reserve(B);
   int r = 0;
   for (int b = 0; b < B; ++b) {
     if (terminal[b]) continue;
@@ -1851,6 +1902,7 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
     ext_pos[r] = P[b] + a[b];
     ext_seq[r] = seq_of[b];
     gather_off[r] = base + a[b];  // verify-trunk row h_{P_b+a_b}
+    head_rows.push_back(r);
     ++r;
   }
   if (T_ext > 0) {
@@ -1886,18 +1938,31 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
         cudaMemcpyAsync(d_ext_pos, ext_pos.data(), T_ext * sizeof(int),
                         cudaMemcpyHostToDevice, stream) != cudaSuccess)
       return cleanup(Status::Fail("MtpSpeculativeStepMulti: H2D extend"));
+    // Preserve the cuBLASLt path for larger batches and all existing ablations.
+    // For 2..8 rows the selected head uses the same per-row fixed reduction.
+    const bool select_head = head_rows.size() < static_cast<size_t>(T_ext) &&
+        model::Bf16SmallMShapeRouted(T_ext, mtp.DraftVocab(), mtp.cfg.hs) &&
+        !std::getenv("Q4T_ABLATE_GEMV_T1") &&
+        !std::getenv("Q4T_ABLATE_GEMM_TILE");
     s = MtpForward(mtp, d_ext_ids, d_ext_pos, d_gather, d_ext_sample, d_ext_multi,
-                   d_ext_logits, T_ext, stream, mtp.d_ms_ext_seq, true,
+                   d_ext_logits, T_ext, stream, mtp.d_ms_ext_seq, !select_head,
                    *std::max_element(ext_pos.begin(), ext_pos.end()));
     if (!s.ok()) return cleanup(s);
+    if (select_head) {
+      s = MtpSelectedHeadRows(mtp, d_ext_sample, T_ext, head_rows,
+                              d_ext_logits, stream);
+      if (!s.ok()) return cleanup(s);
+    }
     // Per-seq outputs: next_d0 = argmax of the sequence's last extend row;
     // next_g = that row's multi_hidden.
     r = 0;
+    int head_row = 0;
     for (int b = 0; b < B; ++b) {
       if (terminal[b]) continue;
       const int last = r + a[b];  // the correction row (0-indexed) of seq b.
       s = DraftArgmax(mtp,
-          d_ext_logits + static_cast<size_t>(last) * mtp.DraftVocab(),
+          d_ext_logits + static_cast<size_t>(select_head ? head_row : last) *
+                             mtp.DraftVocab(),
           1, d_ext_ids, stream);
       if (!s.ok()) return cleanup(s);
       if (ObserveExecution("mtp.api.next_d0_d2h", [&] {
@@ -1913,6 +1978,7 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
           }) != cudaSuccess)
         return cleanup(Status::Fail("MtpSpeculativeStepMulti: D2D next_g"));
       r += a[b] + 1;
+      ++head_row;
     }
   }
 
@@ -2116,14 +2182,7 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
   // a full-prompt logits buffer would be ~130 GB).
   if (compute_logits) {
     diagnostic::Scope head_scope("mtp.head", max_position, T);
-    model::ModelHeadWeights head_view;
-    head_view.lm_head = m.subset_head ? m.subset_head
-                                    : const_cast<uint16_t*>(m.lm_head);
-    head_view.vocab = m.DraftVocab();
-    head_view.hs = hs;
-    s = CheckGemm(model::Bf16Gemm(sample_hidden, head_view.lm_head, logits, T,
-                                  head_view.vocab, hs, 1.0f, 0.0f, d_hc_gemm, kGemmWs,
-                                  stream));
+    s = ProjectDraftHead(m, sample_hidden, logits, T, d_hc_gemm, stream);
     if (!s.ok()) return s;
   }
   return Status();

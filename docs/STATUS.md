@@ -4,6 +4,13 @@
 
 ## 验收工具收尾
 
+[MTP扩展末行head优化已按授权启动](MTP_SELECTED_HEAD_PLAN_2026-11-06.md)：
+仅T_ext=2..8固定归约路径减少未消费logits，完整状态forward保持，
+大批量cuBLASLt路径不变。先冻结4模型/56HTTP/1800秒可行性门，两head
+分别要求短档aggregate decode≥3%且E2E下降；通过才进入后续有界矩阵。
+候选已零警告构建，尚未测试；默认c1bdb0a7/0efc2c0d保持，量化研究
+不并入。首测经原共享锁和已交付公共监控入口执行。
+
 [验收监控工具已完成限定收尾](EVAL_MONITOR_CLOSEOUT_2026-11-06.md)：
 公共入口等待退出后完整采样、join后复核及只读分析门禁；旧驱动直接
 调用也拒绝晚到错误。20新/38原telemetry/25退出pending合同通过，
