@@ -1,0 +1,27 @@
+{
+  "decision": "SELECT_GDN_BF16_INPUT_PROJECTION",
+  "performance_accepted": false,
+  "runtime_modified": false,
+  "capture_commit": "fc4fc906",
+  "phase": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/default-verify-profile-20261106",
+  "report": "../../DEFAULT_VERIFY_PROFILE_RESULT_2026-11-06.md",
+  "archive": {
+    "status": "ARCHIVE_REOPEN_VERIFIED",
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/default-verify-profile-20261106/evidence.tar",
+    "sha256": "91d17e2c9ef916c9cdd412c901bbf9dcd3e82888105b73378b5972ed242ca7a9",
+    "bytes": 426874880,
+    "paths": 4557,
+    "unique_objects": 3202,
+    "all_frozen_inputs_included": 4292,
+    "default_modified": false,
+    "original_evidence_modified": false,
+    "model_weights_included": false,
+    "original_absolute_paths_in_catalog": true
+  },
+  "published_files": {
+    "docs/evidence/default-verify-profile-20261106/analysis.json": "ed1a6dad651ac553d90f0344ba6172df1bdc15344a3efd0c12d1e80efa4d6706",
+    "docs/evidence/default-verify-profile-20261106/analyzer-tests.log": "26ed5d0125a0e06cd8f4e7780a2ebf22078453889fbefa8eb961a9ee64ea0ac8",
+    "docs/evidence/default-verify-profile-20261106/archive-verification.json": "92ad51d901209b80ef955173dbf28057e2a9c946a1b11c7d496cf8c5194cf24c",
+    "docs/evidence/default-verify-profile-20261106/independent-review.json": "7e3b5379c677e7298dc8e79284ff90537fcb3e86332be9538b98a862e8f03478"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "status": "ARCHIVE_REOPEN_VERIFIED",
+  "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/default-verify-profile-20261106/evidence.tar",
+  "sha256": "91d17e2c9ef916c9cdd412c901bbf9dcd3e82888105b73378b5972ed242ca7a9",
+  "bytes": 426874880,
+  "paths": 4557,
+  "unique_objects": 3202,
+  "all_frozen_inputs_included": 4292,
+  "default_modified": false,
+  "original_evidence_modified": false,
+  "model_weights_included": false,
+  "original_absolute_paths_in_catalog": true
+}

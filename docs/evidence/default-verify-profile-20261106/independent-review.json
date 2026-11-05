@@ -1,0 +1,50 @@
+{
+  "status": "INDEPENDENT_REVIEW_PASSED",
+  "raw_files": 240,
+  "frozen_inputs": 4292,
+  "model_metadata_files": 197,
+  "requests": 12,
+  "loads": 6,
+  "phase_sum_checks": 48,
+  "complete_monitor_samples": 573,
+  "monitor_sources": 53,
+  "unavailable": [
+    {
+      "label": "pressure_cpu",
+      "path": "/proc/pressure/cpu",
+      "reason": "missing_or_not_readable_at_discovery",
+      "status": "UNAVAILABLE"
+    },
+    {
+      "label": "pressure_io",
+      "path": "/proc/pressure/io",
+      "reason": "missing_or_not_readable_at_discovery",
+      "status": "UNAVAILABLE"
+    },
+    {
+      "label": "pressure_memory",
+      "path": "/proc/pressure/memory",
+      "reason": "missing_or_not_readable_at_discovery",
+      "status": "UNAVAILABLE"
+    }
+  ],
+  "guard_scans": 528,
+  "nvml_queries": 528,
+  "stage_seconds": 572.1520362570882,
+  "lease_seconds": 573.5120853432454,
+  "observed_owned_identities": 25,
+  "live_owned": [],
+  "compute_pids": [],
+  "port_bindable": 8762,
+  "lock": {
+    "device": 66305,
+    "inode": 3294067
+  },
+  "lock_released": true,
+  "default": {
+    "q4t": "c1bdb0a7599ba3f61d9cb48597069a66f6e27e02f38cf32e495fc80059008636",
+    "q4t.release.json": "0efc2c0dc309e42a7b7761860edce7888aa8139f5ea305f54eae054a81fdbcf3"
+  },
+  "first_guard_failure_retained": true,
+  "scope": "Descriptive timing only; no performance acceptance or new runtime."
+}

@@ -1,0 +1,12 @@
+test_acceptance_bound_to_http_identity (test_analyze.RequestBindingTests.test_acceptance_bound_to_http_identity) ... ok
+test_failed_event_report_rejected (test_analyze.RequestBindingTests.test_failed_event_report_rejected) ... ok
+test_host_and_event_clocks_stay_separate (test_analyze.RequestBindingTests.test_host_and_event_clocks_stay_separate) ... ok
+test_missing_event_clock_rejected (test_analyze.RequestBindingTests.test_missing_event_clock_rejected) ... ok
+test_summary_preserves_first_and_rounding (test_analyze.RequestBindingTests.test_summary_preserves_first_and_rounding) ... ok
+test_unbound_timing_rejected (test_analyze.RequestBindingTests.test_unbound_timing_rejected) ... ok
+test_unclosed_request_rejected (test_analyze.RequestBindingTests.test_unclosed_request_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.001s
+
+OK
