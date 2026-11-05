@@ -1,5 +1,7 @@
 # docs/ — 开发记录文档体系
 
+[当前默认托管组合短验结果](SERVE_CURRENT_MANAGED_RESULT_2026-11-05.md)。
+
 [SRV-08b 客户端截止与可选连接收尾结果](SERVE_CLIENT_TRANSPORT_RESULT_2026-11-05.md)。
 
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
