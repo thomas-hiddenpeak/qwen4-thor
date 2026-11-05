@@ -1,0 +1,134 @@
+{
+  "actual_lan_accepted": false,
+  "archived_records": 110,
+  "cancelled": 2,
+  "controls": 31,
+  "cpu_checks": {
+    "driver": true,
+    "generated": true,
+    "inventory": true,
+    "public-host": true,
+    "python": true,
+    "required-host": true,
+    "structured": true
+  },
+  "cumulative_lease_seconds": 197.30318589974195,
+  "declarations_verified": true,
+  "disabled_responses": [
+    {
+      "body_read_seconds": 0.00023463787510991096,
+      "label": "disabled-json",
+      "usage": {
+        "completion_tokens": 7,
+        "prompt_tokens": 22,
+        "total_tokens": 29
+      }
+    },
+    {
+      "body_read_seconds": 0.32579582603648305,
+      "label": "disabled-sse",
+      "usage": {
+        "completion_tokens": 7,
+        "prompt_tokens": 22,
+        "total_tokens": 29
+      }
+    }
+  ],
+  "generation_attempts": 18,
+  "guard_finalized": true,
+  "handler_elapsed_ms": [
+    431.107,
+    325.677
+  ],
+  "installed": {
+    "q4t": "c1bdb0a7599ba3f61d9cb48597069a66f6e27e02f38cf32e495fc80059008636",
+    "q4t.release.json": "0efc2c0dc309e42a7b7761860edce7888aa8139f5ea305f54eae054a81fdbcf3"
+  },
+  "lease_observations": 39,
+  "lease_seconds": 41.48743322095834,
+  "local_references": 118,
+  "long_runs": false,
+  "managed_lifecycle_accepted": false,
+  "models": 3,
+  "new_driver_cases": 6,
+  "numerical_reuse": {
+    "changed": [
+      "include/q4t/server/chat_plan.h",
+      "include/q4t/server/client_policy.h",
+      "include/q4t/server/sequence_admission.h",
+      "src/server/chat_admission.cpp",
+      "src/server/chat_capabilities.cpp",
+      "src/server/chat_generation.cpp",
+      "src/server/chat_plan.cpp",
+      "src/server/chat_preflight.cpp",
+      "src/server/chat_server.cpp",
+      "src/server/client_policy.cpp"
+    ],
+    "current": {
+      "bytes": 23247,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/package-04/candidate/runtime-source.json",
+      "sha256": "bc3a7fba0bb36c403994b9ec401c3010afdbe5ada4476612a97f507be8f63d4f"
+    },
+    "model_math_tokenizer_template_cache_unchanged": true,
+    "performance_acceptance": false,
+    "previous": {
+      "bytes": 23247,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-adoption-20261104/delivery-package/candidate/runtime-source.json",
+      "sha256": "9422c8714bf7da37a665942b9e0dfe769af773be9224c41728dab2ca635dbe8f"
+    },
+    "unchanged_runtime_sources": 213
+  },
+  "performance_acceptance": false,
+  "physical_ram_hard_limit": false,
+  "previous_binary_sha256": "a56bd448ba45e31ba223e73212090a3aea76be9d9a17b06ad0d13c44196544a6",
+  "prior_failures_preserved": true,
+  "privacy": "All prior/current credentials screened. Secret requests and ELF remain local references; public archive is not a recovery backup.",
+  "protocol_sha256": "9c8758c4f85e1d4f7621bd8854c88f64d9cc739744669754aab18c7e183e9706",
+  "real_tools": 2,
+  "refusals": 2,
+  "resources": {
+    "containers_empty": true,
+    "gpu_empty": true,
+    "lock": {
+      "available": true,
+      "dev": 66305,
+      "inode": 3294067
+    },
+    "long_runs": false,
+    "owned": [
+      {
+        "gone": true,
+        "pid": 3577812,
+        "role": "legacy-model",
+        "start_ticks": 206537817
+      }
+    ],
+    "passed": true,
+    "ports": [
+      18138,
+      18458
+    ],
+    "restore_unit_masked": true
+  },
+  "rollback": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-client-governance-20261105/completion/package/previous",
+  "scoped_evidence": {
+    "manifest.json": {
+      "bytes": 155862,
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-client-governance-20261105/manifest.json",
+      "sha256": "454f96daa0b9bb9b104530a57a486a055b5ed6db00cd5a1fd38a6e8f82f70aa1"
+    },
+    "records.tar.gz": {
+      "bytes": 938788,
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-client-governance-20261105/records.tar.gz",
+      "sha256": "5807b831e331580242daac690378ca61564f583264ca10c290676782e7a42742"
+    },
+    "result.json": {
+      "bytes": 7869,
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-client-governance-20261105/result.json",
+      "sha256": "fdf68fec348fbc93233c3cc9c8b3605e464f7c2e01c393fbaa627c1692cc4b9e"
+    }
+  },
+  "source_commit": "95f86318e55f4e00e5cccf2845ce8cdfa3320ffa",
+  "status": "ACCEPT_BOUNDED_CLIENT_GOVERNANCE",
+  "successful_responses": 14
+}

@@ -41,20 +41,18 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
-用户已授权[最后1次模型启动与默认交付](SERVE_CLIENT_GOVERNANCE_COMPLETION_2026-11-05.md)：
-只补同ELF无策略JSON/SSE两请求，累计3启动/24生成/480秒GPU上限；
-原已通过治理与工具证据复用。准备有界驱动和精确回退，默认尚未替换，
-PR #12仍draft；通过后直接交付并完成主线收尾，不扩工业化或长稳。
-
-[RPM/TPM与客户端公平准入已限定通过](SERVE_CLIENT_GOVERNANCE_RESULT_2026-11-05.md)：
-v2可选原子分钟账/结算、准备后轮转与等槽份额完成，303公共host/
-269必需/9结构化及24不同Python案例通过。2模型累计16生成，12完整
-响应/2真实资料工具、2取消/2配额拒绝通过；原夹具FAILED与4已完成
-响应复用分开记录。累计租约155.816秒，最终COMPLETED、4自有进程/
-GPU/端口/原锁释放，415原件/506引用独立重建。候选c1bdb0a7、协议
-9c8758c4尚未安装；默认关闭策略的实机检查缺1启动预算，已提选择待答复。
-当前SCOPED_ACCEPTED_PENDING_DISABLED_CHECK；默认a56bd448/914e067f、
-旧包41dc8fdb与day保持。未完整交付/合main，不启动长稳或其他工业化。
+[RPM/TPM与客户端公平准入已完成有界交付](SERVE_CLIENT_GOVERNANCE_DELIVERY_2026-11-05.md)：
+默认c1bdb0a7/sidecar0efc2c0d、协议9c8758c4，精确父pair a56bd448/
+914e067f及依赖保留。v2可选分钟预留/结算、准备后轮转与等槽份额，
+不传策略默认关闭。303公共host/269必需/9结构化、24 Python复用，
+新增6驱动合同及同ELF无策略JSON/SSE通过；累计3模型18尝试、14完整
+响应/2真实资料工具、2取消/2配额拒绝，GPU租约197.303秒。
+最终COMPLETED、进程/端口/GPU/原锁释放，恢复单元masked、容器空。
+110原件/118引用与原415原件/506引用独立重建，原失败不改写。
+主线入口[PR #12](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/12)；
+不再扩工业化。旧托管包41dc8fdb、
+持久任务/Key/day保持原身份，不自动兼容新协议；长稳仍由用户执行。
+准备/GPU时间/SLO公平、分布式计费、实际LAN及整机物理RAM不作接受。
 
 用户授权按[有界交付队列](SERVE_BOUNDED_DELIVERY_2026-11-05.md)继续：
 先部署/资源组合，再单进程配额与公平；全物理RAM另给可行性结论。

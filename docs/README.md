@@ -1,5 +1,8 @@
 # docs/ — 开发记录文档体系
 
+[RPM/TPM与客户端公平准入有界交付](SERVE_CLIENT_GOVERNANCE_DELIVERY_2026-11-05.md)：
+原生默认c1bdb0a7/0efc2c0d，协议9c8758c4，旧托管/任务/Key/day仍固定。
+
 [剩余Serve有界交付队列](SERVE_BOUNDED_DELIVERY_2026-11-05.md)与
 [物理RAM硬上限可行性结论](SERVE_PHYSICAL_RAM_DECISION_2026-11-05.md)。
 [部署检查工具交付及内存退场组合NO_GO结果](SERVE_BOUNDED_DEPLOYMENT_RESULT_2026-11-05.md)。

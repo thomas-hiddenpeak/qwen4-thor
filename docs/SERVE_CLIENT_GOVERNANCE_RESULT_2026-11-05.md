@@ -1,5 +1,8 @@
 # RPM/TPM 与客户端公平准入：限定接受，默认交付待补验
 
+此页保留追加启动授权前的阶段观察，原归档不改。后续同ELF补验和默认
+交付已完成，当前结论、核验入口及边界见[最终交付](SERVE_CLIENT_GOVERNANCE_DELIVERY_2026-11-05.md)。
+
 2026-11-05。状态 **SCOPED_ACCEPTED_PENDING_DISABLED_CHECK**。
 开发、CPU合同及启用v2策略后的真实业务短验通过；未宣称完整交付。
 原预算2次模型启动已用完，默认关闭策略的独立JSON/SSE实机检查待做。
