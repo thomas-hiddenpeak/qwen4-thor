@@ -1,6 +1,6 @@
 # 应用服务层与 OpenAI 兼容矩阵
 
-更新：2026-11-04；本轮源码审查起点93d4fac4。当前为单台Thor、单模型的
+更新：2026-11-05；客户端、当前托管与任务交接已完成独立短验。当前为单台Thor、单模型的
 文本Chat服务，以及只读项目资料查询应用。工具调用、有限结构化输出、
 错误/取消、运行保障和持久任务恢复已有分阶段短验；不宣称全部OpenAI
 接口、所有客户端、任意配置组合或长期生产负载已验。
@@ -20,8 +20,9 @@
 [11k当前协议任务交接](SERVE_TASK_STARTUP_PROTOCOL_RESULT_2026-11-04.md)
 分别证明。12l保留首轮监控归属错误的ENV_ABORT，采用通过业务段与定向
 停止补验，不能合成为一次连续全流程成功。
-03c的新默认协议为a56aed21；11k/12l继续绑定旧15d7ccb1，尚未把新
-协议登记到任务迁移或重验新ELF托管生命周期，旧包不会自动升级。
+当前默认协议cc321239的[托管组合](SERVE_CURRENT_MANAGED_RESULT_2026-11-05.md)
+与[持久任务交接](SERVE_CURRENT_TASK_RESULT_2026-11-05.md)已独立短验；
+旧15d7ccb1包保持，任务按已登记方向显式迁移，不会自动升级。
 
 “限定已验”仅指链接结果的源码身份、运行配置、客户端版本和用例范围。
 当前托管包的短验配置为单槽、8192上下文、2048预填充及独立运维端口；
@@ -40,11 +41,11 @@
 | 本机文本Chat | 原生serve；默认loopback，不要求TLS材料 | JSON/SSE、工具与错误合同；[03c当前默认短验](SERVE_PREPARE_LOCK_RESULT_2026-11-04.md) |
 | 独立运维入口 | 显式`--operations-port`，默认0；仅loopback | 公共慢头满额下运维可用；自身控制/观测仍各4额 |
 | TLS、独立Key、来源限制 | 显式网关包；runner以`--client-policy-file`绑定client策略；CIDR显式选择 | [来源短验](SERVE_GATEWAY_SOURCES_RESULT_2026-11-04.md)与[托管组合](SERVE_MANAGED_PROFILE_RESULT_2026-11-04.md)；实际LAN/DNS/防火墙另验 |
-| 服务托管 / 重启 | 显式prepare/run；重启次数配置，默认0 | [12l](SERVE_SUPERVISOR_DEADLINES_RESULT_2026-11-04.md)；无自动常驻安装或恢复旧请求 |
+| 服务托管 / 重启 | 显式prepare/run；重启次数配置，默认0 | [当前包短验](SERVE_CURRENT_MANAGED_RESULT_2026-11-05.md)；无自动常驻安装或恢复旧请求 |
 | host记账域 | 显式host memory high/max及tasks max配置 | [02k](SERVE_HOST_ENVELOPE_RESULT_2026-11-04.md)；不覆盖全部CUDA物理RAM记账 |
 | CUDA申请额度 | 原生默认auto，可显式调整`--cuda-allocation-limit-mib` | [02j2生产接线](SERVE_CUDA_QUOTA_INTEGRATION_RESULT_2026-11-04.md)；申请额度不是整机物理RAM硬限额 |
 | 告警、通知与私有留存 | 显式观察器、接收器、目的地及保留策略 | [12c](SERVE_NOTIFY_RESULT_2026-11-04.md)、[12e](SERVE_RETENTION_RESULT_2026-11-04.md)等本机短验；正式渠道按需验收 |
-| 持久项目任务 | 独立应用入口和显式TLS连接profile；原生Chat本身不持久化业务 | [11k](SERVE_TASK_STARTUP_PROTOCOL_RESULT_2026-11-04.md)：已存工具结果复用、永久保键、显式兼容迁移；UNKNOWN不自动重放 |
+| 持久项目任务 | 独立应用入口和显式TLS连接profile；原生Chat本身不持久化业务 | [当前交接](SERVE_CURRENT_TASK_RESULT_2026-11-05.md)：已存工具结果复用、永久保键、显式兼容迁移；UNKNOWN不自动重放 |
 
 ## API 兼容矩阵
 
@@ -112,9 +113,9 @@ schema代替动态预算、模板、语法编译或真实业务验收。
 
 | 入口 | 可用合同 | 不能外推的部分 |
 |---|---|---|
-| 标准库`ChatClient`与项目示例 | JSON/SSE完整终态、工具整批验证、显式取消、可传api_key | `urllib`单次I/O超时，尚无严格整轮截止；不等同持久任务TLS传输层 |
-| 项目JS SDK适配器 | 固定Node24.18.0/openai7.47.0、总截止、原wire与SDK解析交叉核对、零自动重试 | 当前辅助类固定本机占位Key，不提供独立Key/CA配置；内部消费流后返回完整事务，无UI delta回调；这些限制不代表官方SDK没有相应能力 |
-| 持久任务客户端 | [11j全程TCP/TLS/写/读截止](SERVE_TASK_DEADLINE_RESULT_2026-11-04.md)、client绑定、预算/预检、显式恢复与迁移 | 当前协议交接[11k](SERVE_TASK_STARTUP_PROTOCOL_RESULT_2026-11-04.md)只支持登记的有向单步；不自动跳版本/换模型/换地址，归档迁移接受路径和连续三跳仅CPU证明 |
+| 标准库`ChatClient`与项目示例 | JSON/SSE完整终态、工具整批验证、显式取消、Key/CA/IP配置、全程网络截止与截断拒绝 | [08b短验](SERVE_CLIENT_TRANSPORT_RESULT_2026-11-05.md)；用户回调/CPU工作不可抢占，不声称硬实时 |
+| 项目JS SDK适配器 | 固定Node24.18.0/openai7.47.0、总截止、原wire/SDK交叉核对、独立Key/CA/IP、零重试 | [08b真实TLS/工具短验](SERVE_CLIENT_TRANSPORT_RESULT_2026-11-05.md)；内部消费流后返回完整事务，无UI delta回调；不外推其他SDK版本 |
+| 持久任务客户端 | [11j全程TCP/TLS/写/读截止](SERVE_TASK_DEADLINE_RESULT_2026-11-04.md)、client绑定、预算/预检、显式恢复与迁移 | [当前交接](SERVE_CURRENT_TASK_RESULT_2026-11-05.md)只支持登记的有向单步，含15d7ccb1→cc321239与精确17/18来源；不自动跳版本/换模型/换地址，归档迁移接受路径和连续三跳仅CPU证明 |
 | 官方OpenAI SDK或其他应用 | 走已支持的Chat/API子集及扩展参数；调用方管理连接、重试和工具 | 本项目只验表内固定Python/JS版本；无全SDK、全框架或全部OpenAI平台等价保证 |
 
 持久任务的幂等键、事件日志、工具结果和永久保键属于应用层；
@@ -130,8 +131,9 @@ schema代替动态预算、模板、语法编译或真实业务验收。
 1. **基础等待已补齐：** [03c](SERVE_PREPARE_LOCK_RESULT_2026-11-04.md)
    已验thinking准备/encode/preflight等待期取消与回收；GPU在途计算
    仍属于协作取消的边界，不把全部锁或内核称为可抢占。
-2. **下一项客户端边界：** 标准库示例全程网络截止、JS辅助类Key/CA接入分别
-   有缺口；按实际选用入口补齐，不把持久客户端的证明推广到全部示例。
+2. **客户端及版本交接已补齐：** [08b](SERVE_CLIENT_TRANSPORT_RESULT_2026-11-05.md)
+   已验全程网络截止和JS Key/CA/IP；当前托管/任务有独立结果。更多
+   SDK与组合按实际选用入口验收，不从固定版本外推。
 3. **资源与多人SLO：** 当前有配额、没有租户公平或RPM/TPM合同；Thor
    整机物理RAM硬保护尚未证明。明确需求与计量后独立推进，不能以改名
    “CPU卸载”或已有memcg/CUDA额度代替容量保护。
@@ -154,9 +156,10 @@ schema代替动态预算、模板、语法编译或真实业务验收。
 
 ## 本轮验证与交付合同
 
-本次仅修正文档与证据索引。核对现有源码/发布摘要、三个近期归档的
-内部摘要、路由清单及本次文档链接；没有运行CPU业务测试、HTTP、CUDA、
-模型或长稳。核对结果见[复核记录](SERVE_CONTRACT_REAUDIT_2026-11-04.md)。
+2026-11-04静态复核见[原记录](SERVE_CONTRACT_REAUDIT_2026-11-04.md)。
+2026-11-05客户端、托管与任务交接分别完成有限CPU/HTTP/模型验收，
+完整边界和剩余事项见[最新交接](SERVE_CLOSEOUT_HANDOFF_2026-11-05.md)。
+本页更新不追加推理，仍未开展当前发布长稳或正式LAN验收。
 
 ## 官方协议依据
 
