@@ -14,6 +14,11 @@ class DriverTests(unittest.TestCase):
         self.assertEqual(s.LIMITS, dict(starts=2, generation_attempts=24, controls=250, seconds=480))
         self.assertEqual(s.PLANNED['successes']+s.PLANNED['cancelled']+s.PLANNED['refusals'], 16)
 
+    def test_frontend_with_real_validator_reserves_control_room(self):
+        front = s.s.g.policy(s.frozen_frontend())
+        self.assertEqual(front['global_inflight'], 8)
+        self.assertGreater(front['per_client_inflight'], 4)
+
     def test_order_requires_actual_admission_event(self):
         log = ('[q4t][request] instance=1 id=a event=stage stage=encode seq=-1\n'
                '[q4t][request] instance=1 id=a event=admitted stage=queue seq=0\n'

@@ -24,11 +24,11 @@ from tools.serve_clients import short as s
 from tools.serve_service import package as pkg
 
 BASE = cpu.BASE
-PACKAGE, OUTPUT = BASE/'package', BASE/'execution'
+PACKAGE, OUTPUT = BASE/'package-02', BASE/'execution'
 PORT, TLS_PORT = 18138, 18458
 LIMITS = dict(starts=2, generation_attempts=24, controls=250, seconds=480)
 PLANNED = dict(models=2, successes=12, cancelled=2, real_tools=2, refusals=2)
-CPU_LABEL, BUILD_LABEL = 'cpu-01', 'build-01'
+CPU_LABEL, BUILD_LABEL = 'cpu-finish', 'build-01'
 
 
 def frozen_policy():
@@ -39,6 +39,12 @@ def frozen_policy():
         dict(id='beta', max_inflight=4, max_control_inflight=2, max_prompt_tokens=8000,
              max_output_tokens=64, max_body_bytes=65536, requests_per_minute=20,
              tokens_per_minute=2000)])
+
+
+def frozen_frontend():
+    front = s.example(TLS_PORT, PORT)
+    front.update(per_client_inflight=6, global_inflight=8, per_client_rps=100, burst=128)
+    return front
 
 
 def source_paths():
@@ -88,11 +94,10 @@ def prepare():
         previous=h.identity(old['tested_source_manifest']), current=h.identity(PACKAGE/'candidate/runtime-source.json'),
         unchanged_runtime_sources=sum(previous.get(n) == d for n, d in cpu.runtime().items()),
         model_math_tokenizer_template_cache_unchanged=True, performance_acceptance=False))
-    private = BASE/'private'
+    private = BASE/'private-02'
     private.mkdir(mode=0o700)
     cert, key = s.certificate(private)
-    front = s.example(TLS_PORT, PORT)
-    front.update(per_client_inflight=6, global_inflight=12, per_client_rps=100, burst=128)
+    front = frozen_frontend()
     policy = frozen_policy()
     s.g.save(private/'clients.json', json.dumps(policy).encode())
     s.g.save(private/'gateway.json', json.dumps(front).encode())

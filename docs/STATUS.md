@@ -44,7 +44,8 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 用户继续授权[RPM/TPM与客户端公平准入](SERVE_CLIENT_GOVERNANCE_2026-11-05.md)：
 现冻结v2可选策略、60秒固定窗口预留/结算、准备后轮转与每client等槽
 额度；默认关闭，零警告构建、303公共host/269必需/9结构化及21 Python
-检查通过；同锁2启动/24生成/480秒GPU短验待执行，尚无业务接受。
+检查通过；网关夹具12超现有上限8在打包时拒绝（0模型），改8后4项
+驱动检查通过。原件保持，同锁2启动/24生成/480秒GPU短验待执行。
 PR #11已合入main40eefd06；旧内存退场NO_GO、默认及旧包保持。
 
 用户授权按[有界交付队列](SERVE_BOUNDED_DELIVERY_2026-11-05.md)继续：

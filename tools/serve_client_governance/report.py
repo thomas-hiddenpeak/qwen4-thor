@@ -170,7 +170,7 @@ def archive():
     result=audit();secrets=private_values();records=[];payload={}
     for path in files():
         rel=path.relative_to(BASE);row=dict(path=str(path),sha256=cpu.sha(path),bytes=path.stat().st_size)
-        eligible=(rel.parts[0]!='private' and not path.name.endswith('-request.json') and
+        eligible=(not rel.parts[0].startswith('private') and not path.name.endswith('-request.json') and
             path.suffix in ('.json','.jsonl','.stdout','.stderr','.log','.txt','.bin','.yml','.h') and
             row['bytes']<=2*1024**2)
         if eligible:
