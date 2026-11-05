@@ -260,15 +260,6 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids, const int* positi
                   bool compute_logits = true, int max_position = -1,
                   int prefill_seq_id = -1);
 
-// Project selected rows after a complete MtpForward(compute_logits=false).
-// Limited to source_rows=2..8 on the fixed-reduction BF16 small-M path.
-// sample_hidden is [source_rows, hs]; logits is packed [rows.size(), vocab].
-// Uses existing per-step scratch; no model state or allocations are changed.
-// Host rows must remain alive until the stream drains, including on failure.
-Status MtpSelectedHeadRows(const MtpModel& m, const uint16_t* sample_hidden,
-                           int source_rows, std::span<const int> rows,
-                           uint16_t* logits, cudaStream_t stream);
-
 // Device bytes for the MtpForward `workspace` (the GEMM scratch plus the
 // forward intermediates for `T` tokens, the full-attention scratch, and the
 // BF16 MoE workspace). `full` is the MTP layer's full-attention weights (used

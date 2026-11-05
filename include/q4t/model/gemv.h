@@ -98,6 +98,15 @@ bool Fp8SmallMGemm(const uint16_t* x, const Fp8Shadow& w, uint16_t* y, int M,
 bool Bf16SmallMGemm(const uint16_t* x, const uint16_t* w, uint16_t* y, int M,
                     int N, int K, float alpha, cudaStream_t stream);
 
+// GDN qkv/z input projection only: M=4, K=2560, N=10240 or 6144, alpha=1.
+// Stages exact BF16 -> FP32 input conversions once per block; retains the
+// original small-M packed FMA/reduction order and BF16 output rounding.
+// The GDN caller gates checkpointed verify, BF16 weights and ablations.
+// Returns false on invalid arguments or launch failure; an eligible caller
+// must report failure rather than silently accepting an unmeasured fallback.
+bool Bf16GdnInput4Gemm(const uint16_t* x, const uint16_t* w, uint16_t* y,
+                      int N, cudaStream_t stream);
+
 // Pure shape policy of Bf16SmallMGemm (exposed for wiring tests): true iff
 // the (M, N, K) shape is routed to the hand-written small-M kernel.
 bool Bf16SmallMShapeRouted(int M, int N, int K);
