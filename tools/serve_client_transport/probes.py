@@ -25,6 +25,7 @@ class Peer:
     def __init__(self, context, case):
         self.context, self.case = context, case
         self.listener = socket.socket()
+        self.listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.listener.bind(('127.0.0.1', 0))
         self.listener.listen(2)
         self.listener.settimeout(2)

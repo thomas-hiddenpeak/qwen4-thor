@@ -14,11 +14,12 @@ sys.path.insert(0, str(ROOT))
 from tools.serve_client_transport import stage as s
 from tools.serve_service import package as pkg
 
-PLAN = s.BASE/'finish-plan.json'
-OUT = s.BASE/'execution-02'
+PLAN = s.BASE/'finish-plan-03.json'
+OUT = s.BASE/'execution-03'
 OLD = s.BASE/'execution'
 OLD_PLAN = s.BASE/'plan.json'
 ALLOWED = {'tools/serve_client_transport/probes.py',
+           'tools/serve_client_transport/finish.py',
            'tools/serve_client_transport/report.py'}
 
 
@@ -46,10 +47,12 @@ def prepare():
     pkg.require(not subprocess.check_output(['git','status','--porcelain'],cwd=ROOT),
                 'commit reviewed follow-up first')
     old = pkg.read(OLD_PLAN)
-    failed = pkg.read(OLD/'result.json')
-    pkg.require(failed['counts']==dict(starts=0,generation_attempts=0,controls=0,network=9)
-        and failed['status']=='FAILED' and pkg.read(OLD/'lease/exit.json')['status']=='COMMAND_FAILED',
-        'unexpected original failure identity')
+    previous = s.BASE/'execution-02'
+    failed = pkg.read(previous/'result.json')
+    pkg.require(failed['counts']==dict(starts=0,generation_attempts=0,controls=0,network=10)
+        and failed['status']=='FAILED' and pkg.read(previous/'lease/exit.json')['status']=='COMMAND_FAILED'
+        and failed['error']=="OSError(98, 'Address already in use')",
+        'unexpected follow-up failure identity')
     for name,digest in old['sources'].items():
         pkg.require(pkg.sha(s.BASE/'initial-source'/name)==digest,'original source lost')
         if name not in ALLOWED:
@@ -57,19 +60,21 @@ def prepare():
     plan = copy.deepcopy(old)
     plan.update(sources=s.source_files(), source_commit=subprocess.check_output(
         ['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-        prior=dict(plan_sha256=pkg.sha(OLD_PLAN), result_sha256=pkg.sha(OLD/'result.json'),
+        prior=dict(plan_sha256=pkg.sha(s.BASE/'finish-plan.json'), result_sha256=pkg.sha(previous/'result.json'),
                    seconds=failed['seconds'], counts=failed['counts']),
         reuse={f'python-{case}':str(OLD/'network'/f'python-{case}.json') for case in s.probes.SLOW},
         reuse_reason='Eight slow-phase deadlines completed before response close; client sources unchanged. '
           'The fixture now drains POST before closing, preventing an unread-body TLS reset.',
-        additional_network_probes=26, cumulative_network_attempts=35)
+        additional_network_probes=26, cumulative_network_attempts=36)
     plan['preserved'].update({str(OLD_PLAN):pkg.sha(OLD_PLAN),str(OLD/'result.json'):pkg.sha(OLD/'result.json')})
     plan['preserved'].update({name:pkg.sha(name) for name in plan['reuse'].values()})
+    for path in (s.BASE/'finish-plan.json',previous/'result.json'):
+        plan['preserved'][str(path)]=pkg.sha(path)
     pkg.save(s.BASE/'fixture-fixed.json',fixture_check())
     pkg.save(PLAN,plan)
     configure()
     s.check()
-    return dict(prepared=True,reused_network=8,new_network=26,total_network_attempts=35,
+    return dict(prepared=True,reused_network=8,new_network=26,total_network_attempts=36,
                 models_remaining=1,generations_remaining=6)
 
 
@@ -84,7 +89,7 @@ def configure():
     s.probes.execute = execute
     original_counts = s.verify_counts
     def counts(value, successes, real_tools):
-        pkg.require(value['network']==35,'cumulative network attempt count')
+        pkg.require(value['network']==36,'cumulative network attempt count')
         normalized = dict(value,network=34)
         original_counts(normalized,successes,real_tools)
     s.verify_counts = counts

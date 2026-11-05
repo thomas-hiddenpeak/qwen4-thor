@@ -92,7 +92,7 @@ def audit():
         lock=dict(dev=st.st_dev,inode=st.st_ino,available=True),default_pair_unchanged=plan['default'],
         protocol=plan['protocol'],source_commit=plan['source_commit'],
         current_task_migration_accepted=False,managed_package_accepted=False,long_run=False,
-        attempts=2,network_attempts=result['counts']['network'],reused_network_observations=8,
+        attempts=3,network_attempts=result['counts']['network'],reused_network_observations=8,
         original_failure='Local TLS fixture closed before consuming the complete POST request; no model started.',
         note='Native and fixed JS SDK client acceptance only; no new managed lifecycle or durable migration qualification.')
 
@@ -101,11 +101,12 @@ def collect():
     plan = pkg.read(s.PLAN)
     files = {}
     for directory in (s.BASE/s.CPU_LABEL,s.BASE/'pre-resume',s.OUT,
-                      s.BASE/'execution',s.BASE/'initial-source'):
+                      s.BASE/'execution',s.BASE/'initial-source',
+                      s.BASE/'execution-02',s.BASE/'second-source'):
         for path in sorted(directory.rglob('*')):
             if path.is_file() and 'private' not in path.relative_to(directory).parts:
                 files[str(path.relative_to(s.BASE))] = path.read_bytes()
-    for name in ('plan.json','finish-plan.json','sdk.json','pre-resume.json',
+    for name in ('plan.json','finish-plan.json','finish-plan-03.json','sdk.json','pre-resume.json',
                  'fixture-baseline.json','fixture-fixed.json'):
         files[name] = (s.BASE/name).read_bytes()
     old = ROOT/'.q4t-work/serve-client-transport-20261104/baseline'
