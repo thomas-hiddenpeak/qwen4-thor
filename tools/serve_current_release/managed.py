@@ -52,20 +52,31 @@ def prepare():
     pkg.require(not PLAN.exists() and not OUT.exists(),'preserve managed attempt')
     pkg.require(not subprocess.check_output(['git','status','--porcelain'],cwd=ROOT),'commit reviewed stage')
     tested=pkg.read(BASE/'cpu-01/result.json')
-    pkg.require(tested['passed'] and tested['sources']==sources(),'CPU source binding')
+    changed={n for n,d in tested['sources'].items() if pkg.sha(ROOT/n)!=d}
+    pkg.require(tested['passed'] and changed=={'tools/serve_current_release/managed.py'} and
+        pkg.read(BASE/'static-followup.json')['sources']==sources(),'CPU/source review binding')
     old=pkg.read(OLD/'plan.json')
     receipt=pkg.read(OLD/'accepted-package.json')['package']
     previous=pkg.verify(receipt['package'],receipt['manifest_sha256'])
-    backend=pkg.prepare(ROOT/'build/q4t',ROOT/'build/q4t.release.json',old['model_dir'],
-        BASE/'backend-package',port=base.PORT,operations_port=base.OPS_PORT,
-        client_policy=old['policy'],restart_limit=0)
+    target=BASE/'backend-package'
+    if target.exists():
+        # The first static gate rejected only its expected declaration filename.
+        # Keep the already sealed package byte-for-byte; never recreate it.
+        pkg.require(pkg.read(BASE/'prepare-01.json')['status']=='STATIC_PREPARE_FAILED',
+                    'unexplained existing package')
+        backend=dict(package=str(target),manifest_sha256=pkg.sha(target/'manifest.json'),
+                     binary_sha256=pkg.sha(target/'q4t'))
+    else:
+        backend=pkg.prepare(ROOT/'build/q4t',ROOT/'build/q4t.release.json',old['model_dir'],
+            target,port=base.PORT,operations_port=base.OPS_PORT,
+            client_policy=old['policy'],restart_limit=0)
     current=pkg.verify(backend['package'],backend['manifest_sha256'])
     changed=sorted(n for n,d in current['files'].items() if previous['files'].get(n)!=d)
     pkg.require(not any(n.startswith('source/') for n in changed) and
         current['settings']==previous['settings'] and current['client_policy']==previous['client_policy'],
         'managed implementation/profile changed')
     pkg.require(set(changed)=={'q4t','q4t.release.json','CMakeCache.txt','acceptance.json',
-        'declarations/capabilities.json','declarations/protocol-sources.json'},'unexpected package delta')
+        'declarations/capabilities.json','declarations/configuration.json'},'unexpected package delta')
     private=BASE/'private';private.mkdir(mode=0o700)
     cert,key=base.client.certificate(private)
     front=pkg.read(old['frontend']);pkg.save(private/'gateway.json',front)
