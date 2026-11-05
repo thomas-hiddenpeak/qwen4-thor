@@ -168,7 +168,36 @@ def audit_server(out, expected):
                 allocation_mode='off', all_cuda_freed_before_process_exit=False)
 
 
+def require_complete_monitor(plan):
+    output = Path(plan['output'])
+    try:
+        state = json.loads((output / 'state.json').read_text())
+        summary = json.loads((output / 'telemetry-summary.json').read_text())
+        post = json.loads((output.parent / 'postflight.json').read_text())
+        barrier = post['final_monitor_barrier']
+        valid = (state['status'] == 'MEASURED_REQUIRES_REVIEW' and
+            not state['monitor_failures'] and not state.get('cleanup_errors') and
+            summary['sampler_status'] == 'STOPPED' and
+            summary['sampler_failure'] is None and not summary['failures_at_exit'] and
+            summary['unflushed_attempts'] == 0 and
+            summary['sample_attempts'] == summary['flushed_samples'] > 0 and
+            summary['exit_pending']['active'] == 0 and
+            post['status'] == 'MEASURED_REQUIRES_REVIEW' and
+            not post['final_monitor_errors'] and not post['monitor_failures'] and
+            not post['cleanup_errors'] and
+            post['state_sha256'] == sha(output / 'state.json') and
+            post['final_summary_sha256'] == sha(output / 'telemetry-summary.json') and
+            summary['last_flushed_heartbeat'] -
+            summary['final_successful_cycle_duration_seconds'] >=
+            barrier['boundary_monotonic'])
+    except (OSError, ValueError, KeyError, TypeError) as error:
+        raise legacy.EnvironmentAbort('missing/invalid final monitoring evidence') from error
+    if not valid:
+        raise legacy.EnvironmentAbort('monitor finalization failed; no performance decision')
+
+
 def analyze(plan):
+    require_complete_monitor(plan)
     result = dict(arms={}, performance_accepted=False,
                   statistics='DESCRIPTIVE_SINGLE_START_NOT_NONINFERIORITY')
     full = None
@@ -218,10 +247,12 @@ def main():
     if args.step:
         custom_step(plan, args.step)
         return
-    telemetry.configure_sources(plan['telemetry_sources'])
-    legacy.sample_memory = telemetry.sample
-    legacy.audit_server = audit_server
-    legacy.run_stage(plan, args.plan)
+    # The delivered wrapper owns the final fresh-sample barrier AND reviews
+    # failures appended while joining the sampler. Calling legacy.run_stage
+    # directly bypasses both protections and can report false success.
+    multi.reuse.validate = validate
+    multi.reuse.admission.audit_server = audit_server
+    multi.reuse.main()
     analyze(plan)
 
 

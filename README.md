@@ -181,7 +181,7 @@ OFF 构建遇到需要约束的请求会明确拒绝，不降级为普通生成�
 | `--max-tokens` | 请求省略输出上限时使用 `256` |
 | `--mtp` / `--no-mtp` / `--mtp-k` | MTP 默认开，k 默认 `3`；serve 接受 k=1..16，验收仅覆盖 k=3 |
 | `--mtp-subset-head DIR` | 默认不启用，草稿使用完整 head；指定产物目录启用固定 65536 行 BF16 子集，要求 MTP 开启且 k=3 |
-| `--mtp-head-quantization nvfp4` | 研究候选，尚未验收；在线派生完整词表 W4A16 草稿 head，新增约 341 MiB，仅单槽文本 k=3，与子集/suffix/缓存/required 启动计划互斥；不传即原 BF16 路径 |
+| `--mtp-head-quantization nvfp4` | [研究候选，首轮ENV_ABORT，尚未验收](docs/MTP_QUANTIZED_HEAD_RESULT_2026-11-05.md)；在线派生完整词表 W4A16 草稿 head，新增约 341 MiB，仅单槽文本 k=3，与子集/suffix/缓存/required 启动计划互斥；不传即原 BF16 路径 |
 | `--mtp-suffix` | 默认关闭；要求文本、greedy、MTP k=3、有效max-len≤262144，可配合完整或子集 head；交付覆盖单流及上述4槽布局 |
 | `--session-cache-dir DIR` | 默认关闭；另须请求传session_id才缓存；同进程文本k3、显式槽位，8项/24GiB SSD/30分钟TTL；不组合媒体、trace或专家offload |
 | `--prefix-cache-dir DIR` | 默认关闭；另须请求传prefix_cache_scope；同进程公共池8项/8GiB SSD/30分钟TTL，请求默认只读 |

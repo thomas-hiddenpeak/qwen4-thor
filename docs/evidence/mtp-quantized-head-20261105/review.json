@@ -1,0 +1,423 @@
+{
+  "requests": 56,
+  "model_loads": 4,
+  "arms": {
+    "plain": {
+      "performance": [
+        {
+          "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+          "output_sha256": "2984ef17cfbb4565fc0e87811e0939a76832212c37158d69d19bc26862b5e76d",
+          "input_tokens": 998,
+          "output_tokens": 256,
+          "finish": [
+            "length"
+          ],
+          "ttft": 0.9031901301350445,
+          "latency": 14.664748842129484
+        },
+        {
+          "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+          "output_sha256": "2984ef17cfbb4565fc0e87811e0939a76832212c37158d69d19bc26862b5e76d",
+          "input_tokens": 998,
+          "output_tokens": 256,
+          "finish": [
+            "length"
+          ],
+          "ttft": 0.7660554279573262,
+          "latency": 14.476487029809505
+        },
+        {
+          "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+          "output_sha256": "2984ef17cfbb4565fc0e87811e0939a76832212c37158d69d19bc26862b5e76d",
+          "input_tokens": 998,
+          "output_tokens": 256,
+          "finish": [
+            "length"
+          ],
+          "ttft": 0.7699790389742702,
+          "latency": 14.500467370962724
+        }
+      ],
+      "quality_passed": 11,
+      "decode": [
+        18.529877707657093,
+        18.59897685245382,
+        18.571808506323592
+      ],
+      "decode_median": 18.571808506323592,
+      "ttft_median": 0.7699790389742702,
+      "draft_counts": [],
+      "server_quota": {
+        "event": "server_destroyed",
+        "enabled": true,
+        "limit_bytes": 118728574156,
+        "charged_bytes": 200953856,
+        "live_bytes": 200953856,
+        "pending_bytes": 0,
+        "unknown_bytes": 0,
+        "peak_bytes": 87974195488,
+        "entries": 8,
+        "poisoned": false,
+        "byte_rejections": 0,
+        "entry_rejections": 0,
+        "stream_rejections": 0,
+        "contract_failures": 0,
+        "backend_failures": 0,
+        "scope": "process_requested_cuda_bytes",
+        "physical_ram_limit": false
+      },
+      "full_output_identical": false
+    },
+    "full": {
+      "performance": [
+        {
+          "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+          "output_sha256": "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0",
+          "input_tokens": 998,
+          "output_tokens": 256,
+          "finish": [
+            "length"
+          ],
+          "ttft": 1.0781507128849626,
+          "latency": 8.255040499847382
+        },
+        {
+          "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+          "output_sha256": "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0",
+          "input_tokens": 998,
+          "output_tokens": 256,
+          "finish": [
+            "length"
+          ],
+          "ttft": 0.9116281741298735,
+          "latency": 8.087921041063964
+        },
+        {
+          "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+          "output_sha256": "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0",
+          "input_tokens": 998,
+          "output_tokens": 256,
+          "finish": [
+            "length"
+          ],
+          "ttft": 0.9110477478243411,
+          "latency": 8.087151113897562
+        }
+      ],
+      "quality_passed": 11,
+      "decode": [
+        35.53071143202373,
+        35.53366685673504,
+        35.53460520169967
+      ],
+      "decode_median": 35.53366685673504,
+      "ttft_median": 0.9116281741298735,
+      "draft_counts": [
+        [
+          8,
+          6,
+          7,
+          53
+        ],
+        [
+          8,
+          6,
+          7,
+          53
+        ],
+        [
+          8,
+          6,
+          7,
+          53
+        ]
+      ],
+      "server_quota": {
+        "event": "server_destroyed",
+        "enabled": true,
+        "limit_bytes": 118728574156,
+        "charged_bytes": 200953856,
+        "live_bytes": 200953856,
+        "pending_bytes": 0,
+        "unknown_bytes": 0,
+        "peak_bytes": 105745766808,
+        "entries": 8,
+        "poisoned": false,
+        "byte_rejections": 0,
+        "entry_rejections": 0,
+        "stream_rejections": 0,
+        "contract_failures": 0,
+        "backend_failures": 0,
+        "scope": "process_requested_cuda_bytes",
+        "physical_ram_limit": false
+      },
+      "full_output_identical": true
+    },
+    "nvfp4": {
+      "performance": [
+        {
+          "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+          "output_sha256": "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0",
+          "input_tokens": 998,
+          "output_tokens": 256,
+          "finish": [
+            "length"
+          ],
+          "ttft": 1.080766917206347,
+          "latency": 8.085812692996114
+        },
+        {
+          "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+          "output_sha256": "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0",
+          "input_tokens": 998,
+          "output_tokens": 256,
+          "finish": [
+            "length"
+          ],
+          "ttft": 0.9015945421997458,
+          "latency": 7.916739979060367
+        },
+        {
+          "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+          "output_sha256": "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0",
+          "input_tokens": 998,
+          "output_tokens": 256,
+          "finish": [
+            "length"
+          ],
+          "ttft": 0.8963747499510646,
+          "latency": 7.899033173918724
+        }
+      ],
+      "quality_passed": 11,
+      "decode": [
+        36.40233171370684,
+        36.349923504097184,
+        36.41474202528912
+      ],
+      "decode_median": 36.40233171370684,
+      "ttft_median": 0.9015945421997458,
+      "draft_counts": [
+        [
+          7,
+          9,
+          6,
+          53
+        ],
+        [
+          7,
+          9,
+          6,
+          53
+        ],
+        [
+          7,
+          9,
+          6,
+          53
+        ]
+      ],
+      "server_quota": {
+        "event": "server_destroyed",
+        "enabled": true,
+        "limit_bytes": 118728574156,
+        "charged_bytes": 198967296,
+        "live_bytes": 198967296,
+        "pending_bytes": 0,
+        "unknown_bytes": 0,
+        "peak_bytes": 106101361048,
+        "entries": 6,
+        "poisoned": false,
+        "byte_rejections": 0,
+        "entry_rejections": 0,
+        "stream_rejections": 0,
+        "contract_failures": 0,
+        "backend_failures": 0,
+        "scope": "process_requested_cuda_bytes",
+        "physical_ram_limit": false
+      },
+      "full_output_identical": true
+    },
+    "subset": {
+      "performance": [
+        {
+          "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+          "output_sha256": "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0",
+          "input_tokens": 998,
+          "output_tokens": 256,
+          "finish": [
+            "length"
+          ],
+          "ttft": 1.0689913500100374,
+          "latency": 7.684150096029043
+        },
+        {
+          "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+          "output_sha256": "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0",
+          "input_tokens": 998,
+          "output_tokens": 256,
+          "finish": [
+            "length"
+          ],
+          "ttft": 0.8905418899375945,
+          "latency": 7.496959358919412
+        },
+        {
+          "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+          "output_sha256": "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0",
+          "input_tokens": 998,
+          "output_tokens": 256,
+          "finish": [
+            "length"
+          ],
+          "ttft": 0.8989871519152075,
+          "latency": 7.515409264946356
+        }
+      ],
+      "quality_passed": 11,
+      "decode": [
+        38.547827768072636,
+        38.59883230166208,
+        38.54046728635608
+      ],
+      "decode_median": 38.547827768072636,
+      "ttft_median": 0.8989871519152075,
+      "draft_counts": [
+        [
+          10,
+          9,
+          7,
+          51
+        ],
+        [
+          10,
+          9,
+          7,
+          51
+        ],
+        [
+          10,
+          9,
+          7,
+          51
+        ]
+      ],
+      "server_quota": {
+        "event": "server_destroyed",
+        "enabled": true,
+        "limit_bytes": 118728574156,
+        "charged_bytes": 200953856,
+        "live_bytes": 200953856,
+        "pending_bytes": 0,
+        "unknown_bytes": 0,
+        "peak_bytes": 103086840216,
+        "entries": 8,
+        "poisoned": false,
+        "byte_rejections": 0,
+        "entry_rejections": 0,
+        "stream_rejections": 0,
+        "contract_failures": 0,
+        "backend_failures": 0,
+        "scope": "process_requested_cuda_bytes",
+        "physical_ram_limit": false
+      },
+      "full_output_identical": true
+    }
+  },
+  "decision": "ENV_ABORT_MONITOR_FINALIZATION",
+  "performance_accepted": false,
+  "deployed": false,
+  "old_source_resolved_from_commit": [
+    "docs/MTP_QUANTIZED_HEAD_PLAN_2026-11-05.md",
+    "src/mtp/mtp.cu",
+    "tools/mtp_quantized_head/stage.py",
+    "tools/mtp_quantized_head/stage.py"
+  ],
+  "original_deadline_unchanged": true,
+  "source_commit": "2dd98b1cd0ca280f948ce5e0e8b65a74623d655a",
+  "candidate_sha256": "1dbbc774acd38b307a7418245289664efb32fa7638d7319ce754d498c1fa4f01",
+  "parent_sha256": "c1bdb0a7599ba3f61d9cb48597069a66f6e27e02f38cf32e495fc80059008636",
+  "plans": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-quantized-head-20261105/source/.q4t-work/feasibility/plan.json": "874bffa7e447498e50bf9a695fb46abc055a173565f5da7d5c9b1cc49c636730",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-quantized-head-20261105/source/.q4t-work/feasibility-resume/plan.json": "998fb390becc0c9ced63cddf389612c18252ad4140797e69a21d2b0785601867"
+  },
+  "decode_gain_vs_full": 0.024446248693502204,
+  "decode_gain_vs_subset": -0.05565802740622405,
+  "observed_target_met": false,
+  "observations_only": true,
+  "http-lease": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-quantized-head-20261105/http-lease/exit.json",
+    "sha256": "187b24a50977b49f54a4e741717f8a2ac7d129309b3897439067eadda590ff9f",
+    "status": "COMMAND_FAILED"
+  },
+  "http-lease-02": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-quantized-head-20261105/http-lease-02/exit.json",
+    "sha256": "b0d194695ed10864fb3fa493f0f44fcf1c84f80683c879a3bc75ccd5806c1537",
+    "status": "COMPLETED"
+  },
+  "monitor": {
+    "sampler_status": "ENV_ABORT",
+    "failures": [
+      "ENV_ABORT telemetry stopped with unresolved exit identities"
+    ],
+    "flushed_samples": 895,
+    "note": "Outer guard succeeded but inner telemetry failed after its last check; no performance acceptance or candidate NO_GO follows from this stage.",
+    "pending_identity": {
+      "pid": 3638917,
+      "start_ticks": 208351577,
+      "pending_id": "3638917:208351577",
+      "admitted_ns": 2083814026291229,
+      "deadline_ns": 2083819026104146
+    }
+  },
+  "references": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-quantized-head-20261105/source/.q4t-work/feasibility-review.json": "b7b9488a112a9fb25df889a0e2291ce48bf124fab529ae37b4a0f5f7ae4faa76",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-quantized-head-20261105/source/.q4t-work/feasibility-final-review.json": "2308e55a88766a283cb29770c7c3ed460def34d97b2ba44fd0ed3684f16278ab",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-quantized-head-20261105/source/.q4t-work/feasibility/run/state.json": "6b414564afda945199c158d85b5f56fbce15d376d2d19de6aab0c83db667aaf2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-quantized-head-20261105/source/.q4t-work/feasibility/run/files.json": "908e0bbfaf8436d5f9e74f1748148379fe2c80e4bf049b3753c913f0d8ef5044",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-quantized-head-20261105/source/.q4t-work/feasibility/run/telemetry-summary.json": "2fab0298283d8e50be0465350d08b19b5821cd8ce1cefdb22e1e9475ceec2d9d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-quantized-head-20261105/source/.q4t-work/feasibility-resume/run/state.json": "3b8b7ddc4ba28656d4883a8d7e2f80f4320f00934980fa5df3cc70c6a1c16e00",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-quantized-head-20261105/source/.q4t-work/feasibility-resume/run/files.json": "ee334f9a5fa758df54319f53991303acf586231b610920ca1b81f2a7bdad98f7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-quantized-head-20261105/source/.q4t-work/feasibility-resume/run/telemetry-summary.json": "f8005413c8b456c4569167a3529e51ff59b8a5cc87b0b0bc07520534e443c71a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-quantized-head-20261105/source/.q4t-work/feasibility-resume/run/decision.json": "c7a71eead0c93f442e18ac21dbd853e60f3f6a20d6c0d51444117aec0bf1bdea",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-quantized-head-20261105/released.json": "f2826df5be57183a06879e3ddbc872d25c30677ba35580dcfd858f4e728e49c5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-quantized-head-20261105/source/.q4t-work/real-monitor-rejection.json": "41d9b2ebee8f48ec6c78a437715a54f20e880dacac43552b9dcd4ab0fe22cdc3"
+  },
+  "superseded": {
+    "first_review": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-quantized-head-20261105/source/.q4t-work/feasibility-review.json",
+      "sha256": "b7b9488a112a9fb25df889a0e2291ce48bf124fab529ae37b4a0f5f7ae4faa76",
+      "reason": "First review omitted final sampler status; raw record retained."
+    },
+    "driver_decision": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-quantized-head-20261105/source/.q4t-work/feasibility-resume/run/decision.json",
+      "reason": "Final sampler ENV_ABORT supersedes the derived NO_GO; arithmetic retained as observations only."
+    }
+  },
+  "cpu_regression": {
+    "tests": 7,
+    "passed": 7,
+    "command": "/usr/bin/python3 -B -m unittest discover -s tools/mtp_quantized_head -p test_monitor.py -v",
+    "source_sha256": "82c45e7224a14bebb6503d673ae3df56d0be2bfccebb5f805fe31736eb25a1db",
+    "gpu_requests": 0
+  },
+  "guard_observations": [
+    {
+      "lease": "http-lease",
+      "seconds": 310.5042673670687,
+      "observations": 284,
+      "conflicts": 0,
+      "status": "COMMAND_FAILED"
+    },
+    {
+      "lease": "http-lease-02",
+      "seconds": 895.4915085299872,
+      "observations": 818,
+      "conflicts": 0,
+      "status": "COMPLETED"
+    }
+  ],
+  "server_destroyed_scope": "Not process exit. Nonzero known charged/live bytes remain; not attributed entirely to caches, not a complete ownership proof.",
+  "plain_mtp_output_difference": "The repeated 1K performance prompt differs between accepted plain and accepted full MTP; all 11 quality answers match. Candidate and subset match full MTP exactly for this gate.",
+  "real_failed_monitor_rejected": true
+}

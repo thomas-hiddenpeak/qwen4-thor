@@ -1,6 +1,6 @@
 # 当前状态
 
-更新：2026-11-05。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
+更新：2026-11-06。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
 ## CUDA 13.4 指令支持核验
 
@@ -41,18 +41,18 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
-[独立 NVFP4 草稿 head 可行性关卡](MTP_QUANTIZED_HEAD_PLAN_2026-11-05.md)
-已冻结：基于 main d8880693，在隔离分支实现默认关闭的在线量化副本
-与融合 W4A16 点积，仅单槽文本 k=3；目标 BF16 head 保持，新增权重
-341.015625 MiB及有界加载暂存已纳入预算。候选已零警告构建；首次
-缺失math_constants头文件的构建失败原件保留。父plain的3性能/11质量
-HTTP通过，原驱动析构配额断言错误导致STOPPED；已修正并保留原件，
-补齐量化预填充只计算末行（候选此前0请求），复建通过。下一步只续
-未开始的3模型/42HTTP，原56请求与绝对截止保持，父14结果直接复用。
-首测为真实HTTP，4模型/56生成/1800秒的1K与质量关卡；通过只允许
-进入完整五档及直接合同，不代表接受或默认部署。缓存正确性检查
-复用旧证据，不自动扩展工业化、QSA/PLE或FP8 KV任务。默认c1bdb0a7
-及其元数据保持；源工作区和研究40768107保持。
+[独立 NVFP4 草稿 head 原型及首轮记录](MTP_QUANTIZED_HEAD_RESULT_2026-11-05.md)
+已完成，正式阶段状态ENV_ABORT_MONITOR_FINALIZATION，未验收或部署。
+隔离分支基于main d8880693，执行源码2dd98b1c/ELF1dbbc774，零警告；
+默认关闭、仅单槽文本k3，新增341.015625 MiB权重及有界暂存。
+4模型/56HTTP完成，44质量题输出符合期望，候选14响应与full相同。
+1K观测36.402 vs full35.534/subset38.548 token/s，但最后采样器join
+失败被旧驱动漏报，不能作为有效性能结论或候选NO_GO；原记录保留，
+独立SQLite复核及更正已封存。驱动复用完整退出采样屏障，并新增7个
+CPU回归通过，未追加模型。两HTTP租约共1205.996秒，4服务/GPU/8762/
+原锁已释放；默认c1bdb0a7/0efc2c0d、main及研究40768107保持。
+直接数值与有效HTTP/完整五档仍未验，后续需新有界范围；本轮不扩展
+工业化、其他vLLM优化或模型采样。缓存静态对照与已有证据边界见报告。
 
 [RPM/TPM与客户端公平准入已完成有界交付](SERVE_CLIENT_GOVERNANCE_DELIVERY_2026-11-05.md)：
 默认c1bdb0a7/sidecar0efc2c0d、协议9c8758c4，精确父pair a56bd448/
