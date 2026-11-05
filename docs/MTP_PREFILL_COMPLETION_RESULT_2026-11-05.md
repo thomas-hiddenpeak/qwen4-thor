@@ -151,5 +151,7 @@ SHA256为`6e708f38ffa2f6d88d959ba91bcb7ac1255b86983d3260cd1161dfedd038f9ac`。
 
 新协议cc321239不自动赋予旧托管包、持久任务迁移或SDK新身份资质；
 这些入口仍固定原已验包。未验客户端10文件和研究40768107保持，长稳
-及工业化不扩展。验收及交付均不等于主线合并；
-[PR #9](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/9)供独立审阅。
+及工业化不扩展。后续按用户“继续推进合并主线”的授权，
+[PR #9](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/9)已合入main，
+合并提交cdea60e0；[合入记录](MTP_PREFILL_MAINLINE_2026-11-05.md)单独
+记录树一致、检查与分支整理，不改变本页验收范围或原始证据。

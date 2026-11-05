@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "recorded_at": "2026-11-05T04:56:14.714761+00:00",
+  "status": "MERGED_VERIFIED",
+  "pr": {
+    "number": 9,
+    "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/9",
+    "state": "MERGED",
+    "merged_at": "2026-11-05T04:51:24Z",
+    "merge_commit": "cdea60e052a57899bce8081abd2d3bd3753a2a4d",
+    "parents": [
+      "f2f45526dbbe5acc69c997ad9af2c012b123636a",
+      "8019a10fa6f1a73d159733f708429463aa713cae"
+    ],
+    "head": "8019a10fa6f1a73d159733f708429463aa713cae",
+    "merge_tree": "ac33f88a2d5580981f53a076efdd4f3ddcf40a25",
+    "head_tree_matches": true,
+    "head_checks": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-05T04:44:26Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/41969428200/job/127053951313",
+        "name": "host-contracts",
+        "startedAt": "2026-11-05T04:42:13Z",
+        "status": "COMPLETED",
+        "workflowName": "Public host contracts"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-05T04:44:20Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/41969419725/job/127053926546",
+        "name": "host-contracts",
+        "startedAt": "2026-11-05T04:42:08Z",
+        "status": "COMPLETED",
+        "workflowName": "Public host contracts"
+      }
+    ],
+    "main_check": {
+      "conclusion": "success",
+      "headSha": "cdea60e052a57899bce8081abd2d3bd3753a2a4d",
+      "status": "completed",
+      "updatedAt": "2026-11-05T04:54:01Z",
+      "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/41970365965"
+    }
+  },
+  "acceptance_reuse": {
+    "runtime_files": 223,
+    "runtime_manifest_sha256": "9422c8714bf7da37a665942b9e0dfe769af773be9224c41728dab2ca635dbe8f",
+    "runtime_manifest": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-adoption-20261104/delivery-package/candidate/runtime-source.json",
+    "all_runtime_files_match": true,
+    "http_generation_requests": 198,
+    "installed_health_generation_requests": 6,
+    "new_model_http_gpu_tests": 0,
+    "new_deployments": 0,
+    "acceptance": "PASS_SCORING_ENGINEERING_ACCEPTANCE",
+    "limits": "Descriptive acceptance; prior failed attempts and negative timing observations preserved.",
+    "new_local_builds": 0
+  },
+  "default_pair": {
+    "binary": "a56bd448ba45e31ba223e73212090a3aea76be9d9a17b06ad0d13c44196544a6",
+    "sidecar": "914e067febf6d6bab36cafb65548f3f64c3f34c9f0181ba95fb1b7c68752f861",
+    "protocol": "cc321239ced843d6d618d07b72ed81ed65958b2fdc29261fc2b042d9118c40d5"
+  },
+  "client_worktree": {
+    "branch": "codex/main-reaudit-fixes",
+    "head": "f2f45526dbbe5acc69c997ad9af2c012b123636a",
+    "protected_files": 10,
+    "protected_record_sha256": "0c03b077335e8d956202d5b00cf0418a43b21bd754b46ab101d18771765561f7",
+    "all_hashes_and_status_match": true,
+    "changes_in_pr": []
+  },
+  "branch_cleanup": {
+    "recorded_at": "2026-11-05T04:53:53.070501+00:00",
+    "status": "COMPLETED",
+    "scope": [
+      "codex/mtp-prefill-adoption"
+    ],
+    "old_tip": "8019a10fa6f1a73d159733f708429463aa713cae",
+    "retained_anchor": "cdea60e052a57899bce8081abd2d3bd3753a2a4d",
+    "remote_deletion": "To https://github.com/thomas-hiddenpeak/qwen4-thor.git\n - [deleted]           codex/mtp-prefill-adoption",
+    "local_deletion": "Deleted branch codex/mtp-prefill-adoption (was 8019a10f).",
+    "worktree_paths_removed": [],
+    "kept": {
+      "research_branch": {
+        "name": "codex/mtp-prefill-scoring",
+        "tip": "4076810748024f610bcfc1780d47715f84becabe",
+        "unique_commits": 18
+      },
+      "dirty_root_branch": "codex/main-reaudit-fixes",
+      "source_worktree": "preserve frozen source and raw evidence",
+      "review_worktree": "preserve path and delivery helper identities"
+    }
+  },
+  "preserved_paths": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-adoption-20261104/source",
+    "source_head": "2a0a92c58310d56f2d6fe32a4f289baf5f6ffa4c",
+    "source_clean": true,
+    "review": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-adoption-20261104/review",
+    "review_note": "Preserve delivery helper and frozen plan identities; documentation-only closeout."
+  },
+  "local_records": {
+    "premerge.json": "578fdb94893382dae0f7c271389bdd50ab0ff3697d4fc3d4e9afe15469e2096f",
+    "cleanup-before.json": "fb4f86dee6bbe7c89d4088807d6599cf6c973598cb5d2c2618ee52697c74f8d8",
+    "cleanup-after.json": "fd1bdd2f735037d0e36e29a98dec5443f4639ec9ef60f9cdf0433debc1ccb705"
+  },
+  "scope": "Merge and documentation closeout only; old managed/task/SDK pins remain; industrialization paused."
+}

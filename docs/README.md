@@ -1,6 +1,7 @@
 # docs/ — 开发记录文档体系
 
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
+[PR #9评分优化已合入main、身份核对与分支整理](MTP_PREFILL_MAINLINE_2026-11-05.md)；
 [评分优化最小提取：完整补验、限定接受与默认交付](MTP_PREFILL_COMPLETION_RESULT_2026-11-05.md)；
 [此前不完整验收和失败记录](MTP_PREFILL_ADOPTION_RESULT_2026-11-05.md)；
 [冻结范围和性能判定](MTP_PREFILL_ADOPTION_PLAN_2026-11-04.md)；
