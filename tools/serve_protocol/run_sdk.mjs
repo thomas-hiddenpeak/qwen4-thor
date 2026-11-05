@@ -13,7 +13,9 @@ for await (const chunk of process.stdin) {
 const input = parseJson(new TextDecoder('utf-8', { fatal: true }).decode(Buffer.concat(buffers)));
 const { OpenAI, version } = loadSdk(process.env.Q4T_NODE_SDK_DIR);
 const client = new ChatClient(OpenAI, { baseURL: input.base_url, model: input.model,
-  protocolSha256: input.protocol_sha256, timeoutMs: input.timeout_ms ?? 120000 });
+  protocolSha256: input.protocol_sha256, timeoutMs: input.timeout_ms ?? 120000,
+  apiKey: input.api_key ?? undefined, caFile: input.ca_file ?? undefined,
+  connectHost: input.connect_host ?? undefined });
 const wire = [];
 const wireFd = process.env.Q4T_WIRE_FD;
 if (wireFd !== undefined) requireValue(/^[0-9]+$/.test(wireFd) && Number(wireFd) >= 3,

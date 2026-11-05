@@ -1,5 +1,11 @@
 # docs/ — 开发记录文档体系
 
+[2026-11-05有限收尾交接：客户端、当前托管与任务迁移](SERVE_CLOSEOUT_HANDOFF_2026-11-05.md)。
+
+[当前默认托管组合短验结果](SERVE_CURRENT_MANAGED_RESULT_2026-11-05.md)。
+
+[SRV-08b 客户端截止与可选连接收尾结果](SERVE_CLIENT_TRANSPORT_RESULT_2026-11-05.md)。
+
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
 [PR #9评分优化已合入main、身份核对与分支整理](MTP_PREFILL_MAINLINE_2026-11-05.md)；
 [评分优化最小提取：完整补验、限定接受与默认交付](MTP_PREFILL_COMPLETION_RESULT_2026-11-05.md)；

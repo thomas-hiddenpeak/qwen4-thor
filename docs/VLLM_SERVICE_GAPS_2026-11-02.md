@@ -1,5 +1,7 @@
 # vLLM 对外服务能力对照与遗漏清单
 
+2026-11-05仅更新Q4T侧：[客户端、当前托管和任务交接已短验](SERVE_CLOSEOUT_HANDOFF_2026-11-05.md)。参考vLLM身份仍保持原固定版本。
+
 用户要求（2026-11-02）：参考 vLLM 的整体服务能力，发现类似“有生成
 引擎却缺工具响应”的应用层遗漏。与[主兼容矩阵](APPLICATION_SERVICE.md)
 一起维护；不能仅用功能数量衡量成熟度。
@@ -98,7 +100,7 @@ Q4T 已具备相应的原生消息 / 响应解析、请求生命周期和能力�
 | 取消 / 断连 / 关闭 | serving 检查断连并传播 abort；生命周期管理 | 取消/deadline/断连已有；SRV-13修复排队shutdown分类与计数，实际活动/排队终态、worker及崩溃后恢复通过 | 原失败保留；[SRV-13限定证据](SERVE_LIFECYCLE_RESULT_2026-11-03.md)，不承诺未知请求自动重放 |
 | 压力与配额 | 调度、准入与服务配置；不等于完整租户计费平台 | 全局及每client并发、正文/输入输出预算、client状态域隔离已验 | [10c](SERVE_CLIENT_RESULT_2026-11-04.md)；尚无租户公平、RPM/TPM合同或整机物理RAM硬保护 |
 | 健康与观测 | health/load/version、Prometheus、请求 metrics | 公共4观测/4控制，显式独立运维入口、告警/通知/留存及托管总截止与停止优先已短验 | [12l](SERVE_SUPERVISOR_DEADLINES_RESULT_2026-11-04.md)；136公共慢头满额已验，运维自身仍有限额；正式渠道/周期按需部署 |
-| 鉴权 / CORS / TLS | middleware Bearer/CORS；服务 TLS 配置 | 原生不内置TLS；项目网关独立Key、TLS/CA、证书生命周期及显式CIDR已本机短验 | [10g](SERVE_GATEWAY_SOURCES_RESULT_2026-11-04.md)；实际LAN选用时验收，浏览器CORS合同未实现；JS辅助类当前固定本机Key |
+| 鉴权 / CORS / TLS | middleware Bearer/CORS；服务 TLS 配置 | 原生不内置TLS；项目网关独立Key、TLS/CA、证书生命周期及显式CIDR已本机短验 | [10g](SERVE_GATEWAY_SOURCES_RESULT_2026-11-04.md)；实际LAN选用时验收，浏览器CORS合同未实现；[JS辅助类Key/CA/IP已短验](SERVE_CLIENT_TRANSPORT_RESULT_2026-11-05.md) |
 | HTTP 媒体类型 / 方法 | 框架路由与 JSON request validation | application/json UTF-8、405＋Allow、query400、GET body400已验 | SRV-03限定交付；仍禁chunked上传/连接复用 |
 | OpenAPI / SDK | 协议类型生成文档、官方 SDK 接入示例 | 38字段/10路由机器合同＋必需原生语义；Python3.42.1与Node24.18.0/openai7.47.0限定真实工具互通 | [SRV-08限定交付](SERVE_PROTOCOL_RESULT_2026-11-03.md)；静态schema不证明动态准入，不外推其他SDK |
 | Embeddings / rerank / audio / 多模态 | 独立任务接口，取决于模型与 runner | 当前首版文本生成范围之外 | C：不能因为 vLLM 有端点就认为本模型有能力 |

@@ -8,9 +8,17 @@ from dataclasses import dataclass
 import json
 import math
 import secrets
+import ipaddress
+import ssl
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
+
+try:  # Both package import and the standalone examples entrypoints.
+    from . import deadline_http
+except ImportError:
+    import deadline_http
 
 
 MAX_RESPONSE_BYTES = 32 * 1024 * 1024
@@ -449,7 +457,8 @@ def validate_capabilities(value, model, *, protocol_sha256=None,
 
 
 class ChatClient:
-    def __init__(self, base_url, *, api_key=None):
+    def __init__(self, base_url, *, api_key=None, ca_file=None,
+                 connect_host=None, timeout=None):
         url = urllib.parse.urlsplit(base_url)
         require(url.scheme in ("http", "https") and url.hostname and
                 not url.username and not url.password and not url.query and
@@ -457,7 +466,21 @@ class ChatClient:
                 "base URL must be an http(s) origin or /v1 endpoint")
         self.base = urllib.parse.urlunsplit((url.scheme, url.netloc, "/v1", "", ""))
         self.api_key = api_key
-        self.opener = urllib.request.build_opener(_NoRedirect())
+        require(api_key is None or isinstance(api_key, str) and 1 <= len(api_key) <= 4096 and
+                all(33 <= ord(c) <= 126 for c in api_key), "invalid API key")
+        require(timeout is None or type(timeout) in (int, float) and
+                math.isfinite(timeout) and 0 < timeout <= 1210,
+                "invalid client network deadline")
+        require(ca_file is None or url.scheme == "https", "CA requires HTTPS")
+        if connect_host is not None:
+            ipaddress.ip_address(connect_host)
+        self.timeout = timeout
+        context = ssl.create_default_context(cafile=ca_file)
+        context.minimum_version = ssl.TLSVersion.TLSv1_2
+        self.opener = urllib.request.build_opener(
+            urllib.request.ProxyHandler({}), _NoRedirect(),
+            deadline_http.HTTPHandler(connect_host),
+            deadline_http.HTTPSHandler(context, connect_host))
 
     def _post(self, path, body, timeout):
         data = json.dumps(body, ensure_ascii=False, allow_nan=False).encode()
@@ -470,12 +493,22 @@ class ChatClient:
         return self._open(request, timeout)
 
     def _open(self, request, timeout):
+        require(type(timeout) in (int, float) and math.isfinite(timeout) and
+                timeout > 0, "positive finite request deadline required")
+        if self.timeout is not None:
+            timeout = min(timeout, self.timeout)
+        deadline = request.q4t_deadline = time.monotonic() + timeout
         try:
-            return self.opener.open(request, timeout=timeout)
+            return deadline_http.Response(
+                self.opener.open(request, timeout=timeout), deadline)
         except urllib.error.HTTPError as error:
-            with error:
-                raw = error.read(65536).decode("utf-8", errors="replace")
+            with deadline_http.Response(error, deadline) as response:
+                raw = response.read(65536).decode("utf-8", errors="replace")
             raise RemoteError(error.code, raw) from error
+        except urllib.error.URLError as error:
+            if isinstance(error.reason, TimeoutError):
+                raise TimeoutError("request network deadline") from error
+            raise
 
     def capabilities(self, *, model="qwen3.8-flash-next", protocol_sha256=None,
                      template_sha256=None):

@@ -22,7 +22,7 @@ class Versions:
 
 class Startup(Versions,old.Protocol):
     def test_three_explicit_hops_preserve_wire_budget_and_one_tool(self):
-        steps=json.loads((store.ROOT/protocol.REGISTRY).read_bytes())['releases']
+        steps=json.loads((store.ROOT/protocol.REGISTRY).read_bytes())['releases'][:3]
         self.binding=dict(self.binding,protocol_sha256=steps[0]['from_protocol_sha256'])
         self.root=self.directory/'chain';store.init(self.root)
         store.create(self.root,self.name,engine.specification(self.binding,'read current',stream=False))

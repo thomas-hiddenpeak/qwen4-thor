@@ -25,18 +25,21 @@ class JsSdkError(RuntimeError):
 
 
 class JsSdkClient:
-    def __init__(self, base_url, sdk_directory, *, protocol_sha256=None, timeout=180):
+    def __init__(self, base_url, sdk_directory, *, protocol_sha256=None, timeout=180,
+                 api_key=None, ca_file=None, connect_host=None):
         self.base_url = base_url.rstrip("/")
         if not self.base_url.endswith("/v1"):
             self.base_url += "/v1"
         self.sdk_directory = Path(sdk_directory).resolve(strict=True)
         self.protocol_sha256, self.timeout = protocol_sha256, timeout
+        self.connection = dict(api_key=api_key, ca_file=str(ca_file) if ca_file is not None else None,
+                               connect_host=connect_host)
         self.last_result = None
 
     def call(self, action, request=None, *, model="qwen3.8-flash-next", sink=None):
         command = dict(action=action, base_url=self.base_url, model=model,
             protocol_sha256=self.protocol_sha256, timeout_ms=int(self.timeout*1000),
-            request=request, tool_profile="project-records-v1")
+            request=request, tool_profile="project-records-v1", **self.connection)
         # A separate inherited pipe forwards raw bytes before the final JSON
         # result, including when the child fails. Only the parent owns the
         # journal writer. No ambient Node preload or module search override.

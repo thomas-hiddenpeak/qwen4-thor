@@ -13,6 +13,7 @@ import urllib.error
 
 import agent_tools_demo as demo
 import chat_client as client
+from test_deadline_http import DeadlineTests
 
 
 USAGE = dict(prompt_tokens=10, completion_tokens=4, total_tokens=14,

@@ -1,0 +1,313 @@
+{
+  "status": "ACCEPT_MANAGED_OPERATIONS_SHORT",
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-current-managed-20261105/backend-package",
+    "manifest_sha256": "41dc8fdb9ff3b2e0fe8d216267ed0d8d4875dcd27a43cf361f5ce42d1b32c521",
+    "binary_sha256": "a56bd448ba45e31ba223e73212090a3aea76be9d9a17b06ad0d13c44196544a6"
+  },
+  "source_commit": "d62c77428c7c40635ff75b153f2f592b01c8fa0e",
+  "default_sha256": "a56bd448ba45e31ba223e73212090a3aea76be9d9a17b06ad0d13c44196544a6",
+  "protocol": "cc321239ced843d6d618d07b72ed81ed65958b2fdc29261fc2b042d9118c40d5",
+  "cpu_checks": 5,
+  "models": 1,
+  "successful_responses": 4,
+  "real_tools": 2,
+  "gateway_starts": 2,
+  "rejected_gateway_starts": 2,
+  "responses": [
+    {
+      "client": "alpha",
+      "part": "read",
+      "usage": {
+        "prompt_tokens": 564,
+        "completion_tokens": 55,
+        "total_tokens": 619
+      },
+      "seconds": 3.8459686329588294
+    },
+    {
+      "client": "alpha",
+      "part": "answer",
+      "usage": {
+        "prompt_tokens": 890,
+        "completion_tokens": 58,
+        "total_tokens": 948
+      },
+      "seconds": 4.047700854018331
+    },
+    {
+      "client": "beta",
+      "part": "read",
+      "usage": {
+        "prompt_tokens": 564,
+        "completion_tokens": 55,
+        "total_tokens": 619
+      },
+      "seconds": 3.732851134845987
+    },
+    {
+      "client": "beta",
+      "part": "answer",
+      "usage": {
+        "prompt_tokens": 890,
+        "completion_tokens": 58,
+        "total_tokens": 948
+      },
+      "seconds": 4.040416343836114
+    }
+  ],
+  "frontend_lifecycles": [
+    {
+      "manifest_sha256": "65f2aced887fac5d2eaceebe832ff5af08104478e7cd871a71f94f081df1e635",
+      "terminal": {
+        "version": 1,
+        "state": "STOPPED",
+        "owner": {
+          "pid": 3502858,
+          "start_ticks": 204735149,
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+        },
+        "nginx": {
+          "pid": 3502885,
+          "start_ticks": 204735198,
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+        },
+        "starts": 1,
+        "restarts": 0,
+        "replayed_requests": 0,
+        "package_manifest_sha256": "65f2aced887fac5d2eaceebe832ff5af08104478e7cd871a71f94f081df1e635",
+        "cleanup_confirmed": true,
+        "updated_unix": 1793857280.9196463,
+        "tls": {
+          "state": "EXPIRING",
+          "reason": "none",
+          "remaining_seconds": 172730.20655870438,
+          "not_before": 1793857211,
+          "not_after": 1794030011,
+          "leaf_sha256": "57af04c2010a048b78eb8dc4d648fb5b5ca383c0e974da333c0a84c83b123785",
+          "trust": "explicit_ca",
+          "observed_unix": 1793857280.7934413
+        },
+        "listener": {
+          "owner": {
+            "pid": 3502885,
+            "start_ticks": 204735198,
+            "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+          },
+          "listener_inode": 30418608,
+          "net_namespace": [
+            4,
+            4026531840
+          ],
+          "executable_sha256": "38c84d74ea5e54b177afba3926a4a60d9597e648e01e5c11401791d6f8a64ace"
+        },
+        "error": null,
+        "nginx_returncode": 0,
+        "automatic_reactivation": false,
+        "backend_stopped_by_gateway": false,
+        "finished_unix": 1793857280.9209692
+      },
+      "binding": {
+        "run": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-current-managed-20261105/execution/managed-run",
+        "controller_sha256": "2fd84dac172137a1bf84e412868ae051abfe5a4bf9b531eed042aa50f7ddca80",
+        "controller": {
+          "pid": 3501449,
+          "start_ticks": 204730942,
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+        },
+        "worker": {
+          "pid": 3501461,
+          "start_ticks": 204730984,
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+        },
+        "backend": {
+          "pid": 3501470,
+          "start_ticks": 204731011,
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+        },
+        "process": {
+          "pid": 3501470,
+          "start_ticks": 204731011,
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+          "executable_sha256": "a56bd448ba45e31ba223e73212090a3aea76be9d9a17b06ad0d13c44196544a6",
+          "net_namespace_device": 4,
+          "net_namespace_inode": 4026531840,
+          "listener_inode": 30420608,
+          "listener_scope": "loopback"
+        },
+        "operations_port": 18133,
+        "operations_process": {
+          "pid": 3501470,
+          "start_ticks": 204731011,
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+          "executable_sha256": "a56bd448ba45e31ba223e73212090a3aea76be9d9a17b06ad0d13c44196544a6",
+          "net_namespace_device": 4,
+          "net_namespace_inode": 4026531840,
+          "listener_inode": 30420609,
+          "listener_scope": "loopback"
+        }
+      }
+    },
+    {
+      "manifest_sha256": "bbecb091a550d196e203c37cc2197ce241d59866f3220c4cb7911ccae3d46c7b",
+      "terminal": {
+        "version": 1,
+        "state": "STOPPED",
+        "owner": {
+          "pid": 3503224,
+          "start_ticks": 204736345,
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+        },
+        "nginx": {
+          "pid": 3503252,
+          "start_ticks": 204736396,
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+        },
+        "starts": 1,
+        "restarts": 0,
+        "replayed_requests": 0,
+        "package_manifest_sha256": "bbecb091a550d196e203c37cc2197ce241d59866f3220c4cb7911ccae3d46c7b",
+        "cleanup_confirmed": true,
+        "updated_unix": 1793857290.4335089,
+        "tls": {
+          "state": "EXPIRING",
+          "reason": "none",
+          "remaining_seconds": 172721.3063571453,
+          "not_before": 1793857211,
+          "not_after": 1794030011,
+          "leaf_sha256": "57af04c2010a048b78eb8dc4d648fb5b5ca383c0e974da333c0a84c83b123785",
+          "trust": "explicit_ca",
+          "observed_unix": 1793857289.6936429
+        },
+        "listener": {
+          "owner": {
+            "pid": 3503252,
+            "start_ticks": 204736396,
+            "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+          },
+          "listener_inode": 30417637,
+          "net_namespace": [
+            4,
+            4026531840
+          ],
+          "executable_sha256": "38c84d74ea5e54b177afba3926a4a60d9597e648e01e5c11401791d6f8a64ace"
+        },
+        "error": null,
+        "nginx_returncode": 0,
+        "automatic_reactivation": false,
+        "backend_stopped_by_gateway": false,
+        "finished_unix": 1793857290.4347162
+      },
+      "binding": {
+        "run": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-current-managed-20261105/execution/managed-run",
+        "controller_sha256": "2fd84dac172137a1bf84e412868ae051abfe5a4bf9b531eed042aa50f7ddca80",
+        "controller": {
+          "pid": 3501449,
+          "start_ticks": 204730942,
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+        },
+        "worker": {
+          "pid": 3501461,
+          "start_ticks": 204730984,
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+        },
+        "backend": {
+          "pid": 3501470,
+          "start_ticks": 204731011,
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+        },
+        "process": {
+          "pid": 3501470,
+          "start_ticks": 204731011,
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+          "executable_sha256": "a56bd448ba45e31ba223e73212090a3aea76be9d9a17b06ad0d13c44196544a6",
+          "net_namespace_device": 4,
+          "net_namespace_inode": 4026531840,
+          "listener_inode": 30420608,
+          "listener_scope": "loopback"
+        },
+        "operations_port": 18133,
+        "operations_process": {
+          "pid": 3501470,
+          "start_ticks": 204731011,
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+          "executable_sha256": "a56bd448ba45e31ba223e73212090a3aea76be9d9a17b06ad0d13c44196544a6",
+          "net_namespace_device": 4,
+          "net_namespace_inode": 4026531840,
+          "listener_inode": 30420609,
+          "listener_scope": "loopback"
+        }
+      }
+    }
+  ],
+  "public_connections_at_new_supervisor_sample": 136,
+  "model_identity": {
+    "pid": 3501470,
+    "start_ticks": 204731011,
+    "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+  },
+  "parent_controls": 13,
+  "supervisor_http_upper_bound": 204,
+  "gateway_binding_http_upper_bound": 8,
+  "production_guard_seconds": 64.57285847398452,
+  "monitored_shared_lock_seconds": 64.8044677679427,
+  "guard_observations": 60,
+  "custody_observations": 24,
+  "driver_seconds": 76.14666325808503,
+  "owned_processes": [
+    {
+      "role": "controller",
+      "pid": 3501449,
+      "start_ticks": 204730942,
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+    },
+    {
+      "role": "worker",
+      "pid": 3501461,
+      "start_ticks": 204730984,
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+    },
+    {
+      "role": "backend",
+      "pid": 3501470,
+      "start_ticks": 204731011,
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+    },
+    {
+      "role": "front-1",
+      "pid": 3502858,
+      "start_ticks": 204735149,
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+    },
+    {
+      "role": "nginx-1",
+      "pid": 3502885,
+      "start_ticks": 204735198,
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+    },
+    {
+      "role": "front-2",
+      "pid": 3503224,
+      "start_ticks": 204736345,
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+    },
+    {
+      "role": "nginx-2",
+      "pid": 3503252,
+      "start_ticks": 204736396,
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+    }
+  ],
+  "cleanup_observed": true,
+  "physical_ram_hard_limit_proved": false,
+  "host_envelope_enabled_in_package": false,
+  "persistent_installation": false,
+  "actual_lan_accepted": false,
+  "long_runs_executed": false,
+  "default_changed": false,
+  "protocol_migration_registered": false,
+  "performance_acceptance": false,
+  "archived_records": 116,
+  "archived_bytes": 1273336,
+  "local_references": 263
+}

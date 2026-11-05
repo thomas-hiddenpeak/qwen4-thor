@@ -219,6 +219,57 @@
         "tools/project_tasks/store.py": "eee1356e67ab93b59860f679050cd77ddea13d49588fefc2e25099fb2d33f99a",
         "tools/project_tasks/transport.py": "e49136f6bd3d2f14d1b153c42a639a50582381177f7214ed31a48664db5fdc4f"
       }
+    },
+    {
+      "archive_sha256": "c5aa379ab4e8b1a211a63bdd13a638bbacd0dc436c956ebf752c19a5659d413b",
+      "budget_profile": "q4t-project-budget-v1",
+      "evidence": "docs/evidence/serve-task-startup-protocol-20261104/records.tar.gz",
+      "release": "srv11k-f4705009",
+      "runtime_sources": {
+        "tools/examples/agent_tools_demo.py": "acf6ee24c66d372d95ec08e672c2ec5dc423999890a537b9495a96ced4d89ca4",
+        "tools/examples/chat_client.py": "a2613333395a511b7741d8ce5fac125ba44dd9ec92fa198aa90ef5f9ba662f32",
+        "tools/examples/project_query.py": "dbf70665fef0d144d18fc0ef16b04029a7dd595664efe45b7de07579b3997206",
+        "tools/examples/project_records.py": "abd47d37ddcbd482f147ef172ee01e4a8be3bfcb78f29f7156d00b0073eb8b3c",
+        "tools/examples/tool_recovery.py": "e3fba1d9d028ff532c59e826b76e4434b64599a8b3c42b79d4ae0c1c59341f90",
+        "tools/project_tasks/backup.py": "fe06d9a995396d9393b24dd13f31e25910634eceedc5309b6227818c34b0aae0",
+        "tools/project_tasks/budget.py": "7328c9524eac3257a1b841089d9889975915d96b487d7886196106b560dc0412",
+        "tools/project_tasks/compatible_protocols.json": "e4f8e59d16ffc7615886830a4db18e64b7516259c39e971231379e70fbe197ae",
+        "tools/project_tasks/compatible_runtimes.json": "3ee24c1430f5f742c4e8752475d2717273114f45fba926dd201c8652d78f4f6a",
+        "tools/project_tasks/engine.py": "b37fd90eb44dbc4cc6e7ef6e9dba60969a6d0226e50e924ea51e1e3afa41cce9",
+        "tools/project_tasks/errors.py": "dc74cafd2a5263c8a819dbcd79100f74086ae7a64975da100a0b371e374ae163",
+        "tools/project_tasks/migration.py": "57d123d3b61dbb01cc6eabc8c7d4a099987f8f5dc9c340d26236655af3a65be3",
+        "tools/project_tasks/protocol.py": "223478974f4c31932196a24262a09305684d42bf1f053f7f414f27072b168dc2",
+        "tools/project_tasks/retention.py": "71fe34a4405d4399fc397b6416f638c0668ccdd4f3730c29199caeca6f1b6593",
+        "tools/project_tasks/runner.py": "ee07b7466310f242866ce2f6e1cea6e8aa6e4b0f570bf055694ede483950e51e",
+        "tools/project_tasks/store.py": "eee1356e67ab93b59860f679050cd77ddea13d49588fefc2e25099fb2d33f99a",
+        "tools/project_tasks/transport.py": "e49136f6bd3d2f14d1b153c42a639a50582381177f7214ed31a48664db5fdc4f"
+      }
+    },
+    {
+      "archive_sha256": "1d4cd7f4f47848e3a35b7694085f963834bfbd18450348070eced43abc3885a5",
+      "budget_profile": "q4t-project-budget-v1",
+      "evidence": "docs/evidence/serve-client-transport-20261105/records.tar.gz",
+      "release": "srv08b-8f056762",
+      "runtime_sources": {
+        "tools/examples/agent_tools_demo.py": "acf6ee24c66d372d95ec08e672c2ec5dc423999890a537b9495a96ced4d89ca4",
+        "tools/examples/chat_client.py": "75826241a93fe54cc6bdbd2e620cbb038d9ee026c599ef928761462ca4e12e3c",
+        "tools/examples/deadline_http.py": "6fd8625e3705e269a255eb3b791bf7c77ac4dde7fed41a11c3106cc0da0ed792",
+        "tools/examples/project_query.py": "dbf70665fef0d144d18fc0ef16b04029a7dd595664efe45b7de07579b3997206",
+        "tools/examples/project_records.py": "abd47d37ddcbd482f147ef172ee01e4a8be3bfcb78f29f7156d00b0073eb8b3c",
+        "tools/examples/tool_recovery.py": "e3fba1d9d028ff532c59e826b76e4434b64599a8b3c42b79d4ae0c1c59341f90",
+        "tools/project_tasks/backup.py": "fe06d9a995396d9393b24dd13f31e25910634eceedc5309b6227818c34b0aae0",
+        "tools/project_tasks/budget.py": "7328c9524eac3257a1b841089d9889975915d96b487d7886196106b560dc0412",
+        "tools/project_tasks/compatible_protocols.json": "e4f8e59d16ffc7615886830a4db18e64b7516259c39e971231379e70fbe197ae",
+        "tools/project_tasks/compatible_runtimes.json": "3ee24c1430f5f742c4e8752475d2717273114f45fba926dd201c8652d78f4f6a",
+        "tools/project_tasks/engine.py": "283047907771ffd051200dd334765e44e2febee77b4dc873706160541369a7b0",
+        "tools/project_tasks/errors.py": "dc74cafd2a5263c8a819dbcd79100f74086ae7a64975da100a0b371e374ae163",
+        "tools/project_tasks/migration.py": "57d123d3b61dbb01cc6eabc8c7d4a099987f8f5dc9c340d26236655af3a65be3",
+        "tools/project_tasks/protocol.py": "223478974f4c31932196a24262a09305684d42bf1f053f7f414f27072b168dc2",
+        "tools/project_tasks/retention.py": "71fe34a4405d4399fc397b6416f638c0668ccdd4f3730c29199caeca6f1b6593",
+        "tools/project_tasks/runner.py": "ee07b7466310f242866ce2f6e1cea6e8aa6e4b0f570bf055694ede483950e51e",
+        "tools/project_tasks/store.py": "eee1356e67ab93b59860f679050cd77ddea13d49588fefc2e25099fb2d33f99a",
+        "tools/project_tasks/transport.py": "e49136f6bd3d2f14d1b153c42a639a50582381177f7214ed31a48664db5fdc4f"
+      }
     }
   ]
 }
