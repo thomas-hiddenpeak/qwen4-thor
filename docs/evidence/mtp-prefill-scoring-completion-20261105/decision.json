@@ -1,0 +1,35 @@
+{
+  "status": "PASS_SCORING_ENGINEERING_ACCEPTANCE",
+  "passed": true,
+  "time_unix": 1793853182.57797,
+  "task_type": "PERFORMANCE_OPTIMIZATION",
+  "route": "PREDECLARED_BOUNDED_TARGETS_AND_CONTRACTS_NOT_REDUNDANCY_EXCEPTION",
+  "candidate_sha256": "a56bd448ba45e31ba223e73212090a3aea76be9d9a17b06ad0d13c44196544a6",
+  "parent_sha256": "8e9b4ce7cb76b0731e9f087bd15ea84ffac31bec038b87f88df853275dc1a3a1",
+  "source_commit": "a40094600ecead9563383b20bfc143ec3826d5bf",
+  "review_sha256": "b8c63e7a29b8d2d65a20c1ffde66c0e764d12b986f08cfb2f04895b4f0ed0adb",
+  "protection_review_sha256": "4b61b9f2e53ee8cb9cfae6f29e09196aeb350104966144abd429034a07133f4e",
+  "closure_sha256": "dcba0af374d9aa21a2e299bbd5f1272686affe86cd5b398363a6aa9ab53bf648",
+  "statistics": "DESCRIPTIVE_NOT_STATISTICAL_NONINFERIORITY",
+  "reason": "All frozen applicable HTTP measurements, quality, independent BF16 scoring/state and cache contracts are complete. Both heads meet the 200K >=20% median TTFT and 45K net latency targets. All 24 paired performance cases and 17 negative-case observations were individually reviewed with work/state/resource evidence; no unresolved correctness issue or confirmed attributable regression was identified. Accept this bounded implementation with disclosed timing and arithmetic limits, without a universal loss tolerance or inference of statistical equality.",
+  "arithmetic": "Existing BF16 GEMM scoring rounding differs from old SIMT FP32; independently sliced BF16 reference matches exactly in 8 direct cases. HTTP output equality is confined to measured inputs, not arbitrary prompts.",
+  "measurement_counts": {
+    "valid": 198,
+    "reused": 171,
+    "new": 27,
+    "admissions": 208,
+    "services": 12,
+    "leases": 3,
+    "wrong_budget_attempts": 8,
+    "unfinished_client_attempts": 2,
+    "direct_gpu_contracts": 2
+  },
+  "limitations": [
+    "Two prior stages remain STOPPED/COMMAND_FAILED without final barriers; only sealed complete client windows are reused.",
+    "Plain parent 200K comes from another cold start. No statistical noninferiority or cross-start five-tier block claim.",
+    "Polling cannot exclude sub-sample or invisible interference.",
+    "State fixture covers four representative main layers plus draft; full-model behavior is assessed separately by HTTP."
+  ],
+  "deployment_authorization": "AGENTS 2026-10-20 closeout authorization and original scoring plan: after acceptance preserve rollback pair, replace applicable default, use at most 15 minutes / 2 service starts / 6 HTTP health requests. No PR merge, managed/SDK migration, client WIP, long soak or wider industrialization.",
+  "rollback": "Known parent ELF/sidecar and dependencies retained; legacy scoring environment option is not a separately measured release."
+}

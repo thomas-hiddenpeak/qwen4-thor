@@ -1,0 +1,2079 @@
+{
+  "measurement_passed": false,
+  "engineering_decision": "NOT_ACCEPTED_INCOMPLETE_MEASUREMENTS",
+  "evidence_validity": "PARTIAL_WINDOWS_ONLY_NO_STAGE_PASS",
+  "measurement_completeness": "INCOMPLETE",
+  "statistics": "DESCRIPTIVE_NOT_STATISTICAL_NONINFERIORITY",
+  "state": {
+    "status": "STOPPED",
+    "started": 1793802918.2780142,
+    "completed": [
+      "00-agent-full-candidate",
+      "01-agent-full-parent",
+      "02-agent-full-gate",
+      "03-agent-subset-parent",
+      "04-agent-subset-candidate",
+      "05-agent-subset-gate",
+      "06-single-full-parent",
+      "07-single-full-candidate",
+      "08-single-full-gate",
+      "09-single-plain-candidate"
+    ],
+    "requests_completed": 133,
+    "loads_started": 8,
+    "contract_seconds": 0,
+    "plan_sha256": "11cc7cf8cd1e237a5a4e72b2e514cfbb80659c8962ffb19d9f2c5a9d126fd258",
+    "current": "10-single-plain-parent",
+    "error": "RuntimeError('10-single-plain-parent failed with 1')",
+    "finished": 1793811414.899786,
+    "elapsed_seconds": 8496.621776418062,
+    "monitor_failures": []
+  },
+  "guard": {
+    "status": "COMMAND_FAILED",
+    "command": [
+      "python3",
+      "-B",
+      "tools/mtp_prefill_scoring/driver.py",
+      "--plan",
+      ".q4t-work/scoring-continuation/plan.json"
+    ],
+    "compute_backend": "nvml",
+    "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+    "poll_interval_seconds": 1.0,
+    "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+    "performance_acceptance": false,
+    "child_returncode": 1,
+    "external_lease": false,
+    "finished": {
+      "utc": "2026-11-04T16:56:56.045093+00:00",
+      "monotonic": 2001498.56197796,
+      "pid": 2840606
+    }
+  },
+  "postflight": {
+    "status": "STOPPED",
+    "state_sha256": "78cbef5c2a0963de4bf8ec52551aa9d596ff5d0eda156fe2db58cb9bc889d5b7",
+    "monitor_failures": [],
+    "cleanup_errors": [],
+    "final_summary_sha256": "e4b5026ce284c407a91e0832bff7f1f449589e5a64289823008fe6f8ea179ae6",
+    "final_monitor_barrier": {},
+    "final_monitor_errors": [],
+    "note": "Final sampler join reviewed; original raw state/seal remain unchanged."
+  },
+  "telemetry": {
+    "schema": 1,
+    "sampler_status": "STOPPED",
+    "scope": "Sampler accounting only; not the inference stage outcome. Summary is written before the sampler thread returns.",
+    "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-adoption-20261104/source/.q4t-work/scoring-continuation/run/unified-memory.jsonl",
+    "started_monotonic": 1993000.795548369,
+    "started_unix_seconds": 1793802918.2786748,
+    "finished_monotonic": 2001497.41597532,
+    "finished_unix_seconds": 1793811414.8991687,
+    "sampler_elapsed_seconds": 8496.620426950976,
+    "sample_attempts": 8496,
+    "flushed_samples": 8496,
+    "unflushed_attempts": 0,
+    "final_successful_cycle_duration_seconds": 0.021352777956053615,
+    "final_successful_write_flush_seconds": 0.00033359602093696594,
+    "successful_cycle_duration_total_seconds": 184.79505138797686,
+    "successful_write_flush_total_seconds": 2.9436573155689985,
+    "final_failed_attempt_elapsed_seconds": null,
+    "final_attempt_read_counts": {
+      "source_file_read_attempts": 53,
+      "ownership_file_read_attempts": 798,
+      "ownership_readlink_attempts": 399,
+      "owned_file_read_attempts": 15,
+      "directory_scan_attempts": 1,
+      "pidfd_open_attempts": 3,
+      "pidfd_binding_polls": 3,
+      "pidfd_wait_attempts": 0,
+      "pending_poll_attempts": 0
+    },
+    "total_read_counts": {
+      "source_file_read_attempts": 450288,
+      "ownership_file_read_attempts": 6790586,
+      "ownership_readlink_attempts": 3395028,
+      "owned_file_read_attempts": 294930,
+      "directory_scan_attempts": 12209,
+      "pidfd_open_attempts": 33683,
+      "pidfd_binding_polls": 33683,
+      "pidfd_wait_attempts": 0,
+      "pending_poll_attempts": 3
+    },
+    "setup_file_read_attempts": 1,
+    "total_file_read_attempts": 7535805,
+    "file_count_scope": "Content read attempts including failed reads and ownership scan; readlink/directory scans separate.",
+    "sampler_failure": null,
+    "failures_at_exit": [],
+    "sampler_failure_context": null,
+    "sampler_failure_traceback": null,
+    "sampler_failure_task_state": null,
+    "exit_confirmation_policy": {
+      "per_task_ms": 50,
+      "per_sample_ms": 100,
+      "io_retries": 0,
+      "zero_fill": false,
+      "pending_capacity": 16,
+      "pending_seconds": 5,
+      "pending_poll_timeout_ms": 0,
+      "pending_requires_pf_exiting": true
+    },
+    "exit_pending": {
+      "active": 0,
+      "admitted": 3,
+      "resolved": 3,
+      "maximum_active": 1,
+      "last_resolutions": [],
+      "entries": []
+    },
+    "last_flushed_heartbeat": 2001496.846510365,
+    "source_count": 53
+  },
+  "candidate_sha256": "a56bd448ba45e31ba223e73212090a3aea76be9d9a17b06ad0d13c44196544a6",
+  "parent_sha256": "8e9b4ce7cb76b0731e9f087bd15ea84ffac31bec038b87f88df853275dc1a3a1",
+  "plan_sha256": "11cc7cf8cd1e237a5a4e72b2e514cfbb80659c8962ffb19d9f2c5a9d126fd258",
+  "raw_seal_sha256": "322d1aa281667d79e8d2f5e268bde390abc5f0f8cef50dff8529c50c88b084e8",
+  "raw_files": 724,
+  "frozen_files": 2116,
+  "services": [
+    {
+      "name": "00-agent-full-candidate",
+      "admitted": 8,
+      "outcomes": {
+        "success": 8
+      },
+      "complete_cases": [
+        "context-1024",
+        "context-4096",
+        "context-8192",
+        "context-45056",
+        "context-204800",
+        "quality",
+        "repeat-code",
+        "repeat-text"
+      ],
+      "complete_case_rows": 34,
+      "reused_rows": 26,
+      "exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null
+      },
+      "log_sha256": "e7f0df464e317b6a61a760662fb921bd17ba3f4b6e8aa11d5ae2bb06bcdac300"
+    },
+    {
+      "name": "01-agent-full-parent",
+      "admitted": 23,
+      "outcomes": {
+        "success": 23
+      },
+      "complete_cases": [
+        "context-1024",
+        "context-4096",
+        "context-8192",
+        "context-45056",
+        "context-204800",
+        "repeat-code",
+        "repeat-text"
+      ],
+      "complete_case_rows": 23,
+      "reused_rows": 0,
+      "exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null
+      },
+      "log_sha256": "33f2b67ae95dbaf974e1a693aa6e7729ba20e7aa12c450cb1e2548e6f30c9e55"
+    },
+    {
+      "name": "03-agent-subset-parent",
+      "admitted": 23,
+      "outcomes": {
+        "success": 23
+      },
+      "complete_cases": [
+        "context-1024",
+        "context-4096",
+        "context-8192",
+        "context-45056",
+        "context-204800",
+        "repeat-code",
+        "repeat-text"
+      ],
+      "complete_case_rows": 23,
+      "reused_rows": 0,
+      "exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null
+      },
+      "log_sha256": "747eecf8c8cbc4edac3a15125ad143012177452eb009402a4c3b8acac39f153e"
+    },
+    {
+      "name": "04-agent-subset-candidate",
+      "admitted": 34,
+      "outcomes": {
+        "success": 34
+      },
+      "complete_cases": [
+        "context-1024",
+        "context-4096",
+        "context-8192",
+        "context-45056",
+        "context-204800",
+        "quality",
+        "repeat-code",
+        "repeat-text"
+      ],
+      "complete_case_rows": 34,
+      "reused_rows": 0,
+      "exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null
+      },
+      "log_sha256": "4c68caf6301233affb6cfe0559b8f3ec64e53d1d7031209df4e09bed7794ac1e"
+    },
+    {
+      "name": "06-single-full-parent",
+      "admitted": 15,
+      "outcomes": {
+        "success": 15
+      },
+      "complete_cases": [
+        "context-1024",
+        "context-4096",
+        "context-8192",
+        "context-45056",
+        "context-204800"
+      ],
+      "complete_case_rows": 15,
+      "reused_rows": 0,
+      "exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null
+      },
+      "log_sha256": "48f632891e24a75e89a0550e3f882a97288ebd9a3b07c49f070cf728474df498"
+    },
+    {
+      "name": "07-single-full-candidate",
+      "admitted": 15,
+      "outcomes": {
+        "success": 15
+      },
+      "complete_cases": [
+        "context-1024",
+        "context-4096",
+        "context-8192",
+        "context-45056",
+        "context-204800"
+      ],
+      "complete_case_rows": 15,
+      "reused_rows": 0,
+      "exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null
+      },
+      "log_sha256": "cef650440b56610e4ecf14d961eee2cc57587ba3cb3726cf02c26f5e6fc6b9db"
+    },
+    {
+      "name": "09-single-plain-candidate",
+      "admitted": 15,
+      "outcomes": {
+        "success": 15
+      },
+      "complete_cases": [
+        "context-1024",
+        "context-4096",
+        "context-8192",
+        "context-45056",
+        "context-204800"
+      ],
+      "complete_case_rows": 15,
+      "reused_rows": 0,
+      "exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null
+      },
+      "log_sha256": "e117e9eca11dbd47188e151ae9378463c22266960d46fb2ae7843cc51fcd98d9"
+    },
+    {
+      "name": "10-single-plain-parent",
+      "admitted": 14,
+      "outcomes": {
+        "cancelled": 1,
+        "success": 13
+      },
+      "complete_cases": [
+        "context-1024",
+        "context-4096",
+        "context-8192",
+        "context-45056"
+      ],
+      "complete_case_rows": 12,
+      "reused_rows": 0,
+      "exit": {
+        "server": 0,
+        "http_output_checks_passed": false,
+        "failure": "TimeoutError('bounded service deadline')"
+      },
+      "log_sha256": "df922a8271d84fa6c47a052877010244e1f68810cb889894feeaf9cbcab0b3e9"
+    }
+  ],
+  "completed_pairs": [
+    {
+      "mode": "agent-full",
+      "passed": true,
+      "results": [
+        {
+          "mode": "agent-full",
+          "case": "context-1024",
+          "off": {
+            "e2e": 31.34256476327237,
+            "decode": 35.40130950143098,
+            "ttft_mean": 0.9644535403543463,
+            "ttft_max": 1.0862969460431486,
+            "makespan": 24.50341909797862,
+            "total_output": 768,
+            "outputs": [
+              [
+                "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+                "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0"
+              ],
+              [
+                "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+                "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0"
+              ],
+              [
+                "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+                "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0"
+              ]
+            ]
+          },
+          "on": {
+            "e2e": 31.257310158437317,
+            "decode": 35.37863792625099,
+            "ttft_mean": 0.982111377020677,
+            "ttft_max": 1.1484794029965997,
+            "makespan": 24.57025240198709,
+            "total_output": 768,
+            "outputs": [
+              [
+                "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+                "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0"
+              ],
+              [
+                "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+                "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0"
+              ],
+              [
+                "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+                "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0"
+              ]
+            ]
+          },
+          "e2e_percent": -0.27200902503983215,
+          "decode_percent": -0.06404162868346441,
+          "ttft_percent": 1.830864414665645,
+          "output_same": true,
+          "parent_ttft": [
+            1.0862969460431486,
+            0.9030750310048461,
+            0.903988644015044
+          ],
+          "parent_latency": [
+            8.287320044124499,
+            8.113713608123362,
+            8.101697095902637
+          ],
+          "candidate_ttft": [
+            1.1484794029965997,
+            0.8995029570069164,
+            0.8983517710585147
+          ],
+          "candidate_latency": [
+            8.373269104864448,
+            8.092461646068841,
+            8.103821368189529
+          ],
+          "target_met": true
+        },
+        {
+          "mode": "agent-full",
+          "case": "context-4096",
+          "off": {
+            "e2e": 25.7301195542822,
+            "decode": 36.54478633731367,
+            "ttft_mean": 2.9714222283413014,
+            "ttft_max": 3.012122429907322,
+            "makespan": 29.848287272034213,
+            "total_output": 768,
+            "outputs": [
+              [
+                "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+                "97df3b589201d5bafe110a21c1d1bbfa8126501d4df2c8fe20071d17212b37cb"
+              ],
+              [
+                "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+                "97df3b589201d5bafe110a21c1d1bbfa8126501d4df2c8fe20071d17212b37cb"
+              ],
+              [
+                "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+                "97df3b589201d5bafe110a21c1d1bbfa8126501d4df2c8fe20071d17212b37cb"
+              ]
+            ]
+          },
+          "on": {
+            "e2e": 25.74928181404444,
+            "decode": 36.44071055095185,
+            "ttft_mean": 2.9440975366160274,
+            "ttft_max": 3.0050834759604186,
+            "makespan": 29.826074589043856,
+            "total_output": 768,
+            "outputs": [
+              [
+                "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+                "97df3b589201d5bafe110a21c1d1bbfa8126501d4df2c8fe20071d17212b37cb"
+              ],
+              [
+                "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+                "97df3b589201d5bafe110a21c1d1bbfa8126501d4df2c8fe20071d17212b37cb"
+              ],
+              [
+                "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+                "97df3b589201d5bafe110a21c1d1bbfa8126501d4df2c8fe20071d17212b37cb"
+              ]
+            ]
+          },
+          "e2e_percent": 0.07447404090685783,
+          "decode_percent": -0.2847896972257069,
+          "ttft_percent": -0.9195829345507445,
+          "output_same": true,
+          "parent_ttft": [
+            3.012122429907322,
+            2.9497284260578454,
+            2.9524158290587366
+          ],
+          "parent_latency": [
+            9.997755374992266,
+            9.92939345818013,
+            9.920336422044784
+          ],
+          "candidate_ttft": [
+            3.0050834759604186,
+            2.9149424410425127,
+            2.912266692845151
+          ],
+          "candidate_latency": [
+            10.041513639967889,
+            9.8887070750352,
+            9.895076378947124
+          ],
+          "target_met": true
+        },
+        {
+          "mode": "agent-full",
+          "case": "context-8192",
+          "off": {
+            "e2e": 19.16723256648578,
+            "decode": 34.5216921257734,
+            "ttft_mean": 5.969158416303496,
+            "ttft_max": 5.991068270988762,
+            "makespan": 40.06838219007477,
+            "total_output": 768,
+            "outputs": [
+              [
+                "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+                "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e"
+              ],
+              [
+                "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+                "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e"
+              ],
+              [
+                "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+                "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e"
+              ]
+            ]
+          },
+          "on": {
+            "e2e": 19.371913873785147,
+            "decode": 34.46675612472454,
+            "ttft_mean": 5.816275677333276,
+            "ttft_max": 5.8408379019238055,
+            "makespan": 39.645024492871016,
+            "total_output": 768,
+            "outputs": [
+              [
+                "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+                "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e"
+              ],
+              [
+                "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+                "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e"
+              ],
+              [
+                "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+                "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e"
+              ]
+            ]
+          },
+          "e2e_percent": 1.0678709437545786,
+          "decode_percent": -0.15913472853158472,
+          "ttft_percent": -2.561210949815862,
+          "output_same": true,
+          "parent_ttft": [
+            5.991068270988762,
+            5.958471629070118,
+            5.957935348851606
+          ],
+          "parent_latency": [
+            13.373375001130626,
+            13.33894511195831,
+            13.355134930927306
+          ],
+          "candidate_ttft": [
+            5.8408379019238055,
+            5.806073004147038,
+            5.801916125928983
+          ],
+          "candidate_latency": [
+            13.243940974818543,
+            13.202250372152776,
+            13.197935910895467
+          ],
+          "target_met": true
+        },
+        {
+          "mode": "agent-full",
+          "case": "context-45056",
+          "off": {
+            "e2e": 5.723761862334731,
+            "decode": 35.7809637660727,
+            "ttft_mean": 37.59846567735076,
+            "ttft_max": 37.61258028494194,
+            "makespan": 134.1774899919983,
+            "total_output": 768,
+            "outputs": [
+              [
+                "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+                "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a"
+              ],
+              [
+                "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+                "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a"
+              ],
+              [
+                "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+                "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a"
+              ]
+            ]
+          },
+          "on": {
+            "e2e": 6.3341598330515305,
+            "decode": 35.78635551622217,
+            "ttft_mean": 33.2894861739284,
+            "ttft_max": 33.32321850792505,
+            "makespan": 121.24733512289822,
+            "total_output": 768,
+            "outputs": [
+              [
+                "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+                "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a"
+              ],
+              [
+                "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+                "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a"
+              ],
+              [
+                "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+                "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a"
+              ]
+            ]
+          },
+          "e2e_percent": 10.664279636326746,
+          "decode_percent": 0.015068767249304393,
+          "ttft_percent": -11.460519533960866,
+          "output_same": true,
+          "parent_ttft": [
+            37.61258028494194,
+            37.58409868204035,
+            37.59871806506999
+          ],
+          "parent_latency": [
+            44.73395786783658,
+            44.71491800388321,
+            44.72660485515371
+          ],
+          "candidate_ttft": [
+            33.32321850792505,
+            33.273174221860245,
+            33.27206579199992
+          ],
+          "candidate_latency": [
+            40.44627097900957,
+            40.40371953393333,
+            40.39533047401346
+          ],
+          "target_met": true,
+          "median_ttft_reduction": 0.11504498200507174
+        },
+        {
+          "mode": "agent-full",
+          "case": "context-204800",
+          "off": {
+            "e2e": 0.9455610069803626,
+            "decode": 32.81540315613817,
+            "ttft_mean": 262.9657889655791,
+            "ttft_max": 262.97369029186666,
+            "makespan": 812.2162338870112,
+            "total_output": 768,
+            "outputs": [
+              [
+                "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+                "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe"
+              ],
+              [
+                "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+                "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe"
+              ],
+              [
+                "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+                "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe"
+              ]
+            ]
+          },
+          "on": {
+            "e2e": 1.4084004801573755,
+            "decode": 32.78700244564826,
+            "ttft_mean": 173.98679345970353,
+            "ttft_max": 173.99538783100434,
+            "makespan": 545.299444881035,
+            "total_output": 768,
+            "outputs": [
+              [
+                "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+                "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe"
+              ],
+              [
+                "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+                "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe"
+              ],
+              [
+                "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+                "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe"
+              ]
+            ]
+          },
+          "e2e_percent": 48.94866325495857,
+          "decode_percent": -0.08654688883379391,
+          "ttft_percent": -33.836719162553294,
+          "output_same": true,
+          "parent_ttft": [
+            262.97369029186666,
+            262.9646595539525,
+            262.9590170509182
+          ],
+          "parent_latency": [
+            270.72818218707107,
+            270.7366064360831,
+            270.74480138905346
+          ],
+          "candidate_ttft": [
+            173.99538783100434,
+            173.97747474513017,
+            173.98751780297607
+          ],
+          "candidate_latency": [
+            181.76809413009323,
+            181.7482639150694,
+            181.7764389300719
+          ],
+          "target_met": true,
+          "median_ttft_reduction": 0.33836159543986555
+        },
+        {
+          "mode": "agent-full",
+          "case": "repeat-code",
+          "off": {
+            "e2e": 3.6012916868286076,
+            "decode": 13.396177730755088,
+            "ttft_mean": 265.2614800622687,
+            "ttft_max": 265.34226091811433,
+            "makespan": 284.34242184413597,
+            "total_output": 1024,
+            "outputs": [
+              [
+                "3d0ab2d22ef9be07497aea06cf93f6e41abed844b680f99aa91842f6f7a904e1",
+                "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021"
+              ],
+              [
+                "61b95914182a65c18931f1df11996632e7043dbf694e58d7a8804b1909bf8e2d",
+                "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021"
+              ],
+              [
+                "8f62631a70f48769fd9fdf422b1cdff081e3f79bb9e214333be2b2e3c27d50e1",
+                "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021"
+              ],
+              [
+                "c879a97738a78e3a998be6e8fec9f632fccc413e356513953c55504a28f583cc",
+                "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021"
+              ]
+            ]
+          },
+          "on": {
+            "e2e": 4.409570299378574,
+            "decode": 13.419129063013223,
+            "ttft_mean": 213.1995540203061,
+            "ttft_max": 213.28109323699027,
+            "makespan": 232.22217369894497,
+            "total_output": 1024,
+            "outputs": [
+              [
+                "3d0ab2d22ef9be07497aea06cf93f6e41abed844b680f99aa91842f6f7a904e1",
+                "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021"
+              ],
+              [
+                "61b95914182a65c18931f1df11996632e7043dbf694e58d7a8804b1909bf8e2d",
+                "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021"
+              ],
+              [
+                "8f62631a70f48769fd9fdf422b1cdff081e3f79bb9e214333be2b2e3c27d50e1",
+                "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021"
+              ],
+              [
+                "c879a97738a78e3a998be6e8fec9f632fccc413e356513953c55504a28f583cc",
+                "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021"
+              ]
+            ]
+          },
+          "e2e_percent": 22.44413068528082,
+          "decode_percent": 0.17132746906936003,
+          "ttft_percent": -19.62664387974512,
+          "output_same": true,
+          "parent_ttft": [
+            265.34226091811433,
+            265.02434931788594,
+            265.3401098009199,
+            265.33920021215454
+          ],
+          "parent_latency": [
+            284.34242184413597,
+            284.2824447979219,
+            284.281753503019,
+            284.2804218851961
+          ],
+          "candidate_ttft": [
+            213.28109323699027,
+            212.96040809107944,
+            213.27896349597722,
+            213.27775125717744
+          ],
+          "candidate_latency": [
+            232.22217369894497,
+            232.1487197021488,
+            232.2196211440023,
+            232.21859577600844
+          ],
+          "target_met": true
+        },
+        {
+          "mode": "agent-full",
+          "case": "repeat-text",
+          "off": {
+            "e2e": 3.6009577155626693,
+            "decode": 13.226956993938112,
+            "ttft_mean": 265.04622688592644,
+            "ttft_max": 265.1248914541211,
+            "makespan": 284.3687932169996,
+            "total_output": 1024,
+            "outputs": [
+              [
+                "5c08051a9863de4c9e2e01a837949523354bcc8ffb3be85e13ac1a1ea23c8b60",
+                "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21"
+              ],
+              [
+                "999a5fa1c1e865a3bcb70ea8a309e61161a7f0fcc75f84b839785107a22b5dc0",
+                "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21"
+              ],
+              [
+                "b9cf1a31c02949342eac1d8600e52f37c9c74cf6fe261ebb0d5a34b95dae3f8c",
+                "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21"
+              ],
+              [
+                "f37f68fa0b74b784c830d06768e4d384662228fcff644de6369d6d8de6385753",
+                "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21"
+              ]
+            ]
+          },
+          "on": {
+            "e2e": 4.4116226850142235,
+            "decode": 13.275567961640304,
+            "ttft_mean": 212.88505023776088,
+            "ttft_max": 212.96361768594943,
+            "makespan": 232.1141387450043,
+            "total_output": 1024,
+            "outputs": [
+              [
+                "5c08051a9863de4c9e2e01a837949523354bcc8ffb3be85e13ac1a1ea23c8b60",
+                "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21"
+              ],
+              [
+                "999a5fa1c1e865a3bcb70ea8a309e61161a7f0fcc75f84b839785107a22b5dc0",
+                "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21"
+              ],
+              [
+                "b9cf1a31c02949342eac1d8600e52f37c9c74cf6fe261ebb0d5a34b95dae3f8c",
+                "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21"
+              ],
+              [
+                "f37f68fa0b74b784c830d06768e4d384662228fcff644de6369d6d8de6385753",
+                "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21"
+              ]
+            ]
+          },
+          "e2e_percent": 22.512482330686943,
+          "decode_percent": 0.3675143702702721,
+          "ttft_percent": -19.680029880453752,
+          "output_same": true,
+          "parent_ttft": [
+            265.1248914541211,
+            264.81522658187896,
+            265.122919194866,
+            265.12187031283975
+          ],
+          "parent_latency": [
+            284.31167277204804,
+            284.3105669338256,
+            284.3123335009441,
+            284.36557712987997
+          ],
+          "candidate_ttft": [
+            212.96361768594943,
+            212.6548389350064,
+            212.9612947620917,
+            212.96044956799597
+          ],
+          "candidate_latency": [
+            232.1141387450043,
+            232.0392134420108,
+            232.11034532496706,
+            232.10937439021654
+          ],
+          "target_met": true
+        }
+      ],
+      "statistics": "DESCRIPTIVE_NOT_NONINFERIORITY",
+      "protection_review": "REQUIRED_NO_AUTOMATIC_TOLERANCE",
+      "negative_observations": [
+        "context-1024",
+        "context-4096",
+        "context-8192",
+        "context-204800"
+      ]
+    },
+    {
+      "mode": "agent-subset",
+      "passed": true,
+      "results": [
+        {
+          "mode": "agent-subset",
+          "case": "context-1024",
+          "off": {
+            "e2e": 33.85931628395526,
+            "decode": 38.46117703556138,
+            "ttft_mean": 0.9303969546842078,
+            "ttft_max": 1.041640296112746,
+            "makespan": 22.682088248897344,
+            "total_output": 768,
+            "outputs": [
+              [
+                "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+                "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0"
+              ],
+              [
+                "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+                "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0"
+              ],
+              [
+                "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+                "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0"
+              ]
+            ]
+          },
+          "on": {
+            "e2e": 33.806020789627944,
+            "decode": 38.41338715123451,
+            "ttft_mean": 0.9340450963160644,
+            "ttft_max": 1.0572295649908483,
+            "makespan": 22.71784676401876,
+            "total_output": 768,
+            "outputs": [
+              [
+                "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+                "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0"
+              ],
+              [
+                "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+                "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0"
+              ],
+              [
+                "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+                "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0"
+              ]
+            ]
+          },
+          "e2e_percent": -0.1574027481251017,
+          "decode_percent": -0.12425486688221188,
+          "ttft_percent": 0.3921059300000307,
+          "output_same": true,
+          "parent_ttft": [
+            1.041640296112746,
+            0.8768463230226189,
+            0.8727042449172586
+          ],
+          "parent_latency": [
+            7.684104250976816,
+            7.508722822880372,
+            7.4885506997816265
+          ],
+          "candidate_ttft": [
+            1.0572295649908483,
+            0.8749299279879779,
+            0.869975795969367
+          ],
+          "candidate_latency": [
+            7.6999704339541495,
+            7.5108664620202035,
+            7.506230575032532
+          ],
+          "target_met": true
+        },
+        {
+          "mode": "agent-subset",
+          "case": "context-4096",
+          "off": {
+            "e2e": 28.256549967160375,
+            "decode": 41.181533967227715,
+            "ttft_mean": 2.867482975979025,
+            "ttft_max": 2.896425117040053,
+            "makespan": 27.179538934957236,
+            "total_output": 768,
+            "outputs": [
+              [
+                "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+                "97df3b589201d5bafe110a21c1d1bbfa8126501d4df2c8fe20071d17212b37cb"
+              ],
+              [
+                "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+                "97df3b589201d5bafe110a21c1d1bbfa8126501d4df2c8fe20071d17212b37cb"
+              ],
+              [
+                "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+                "97df3b589201d5bafe110a21c1d1bbfa8126501d4df2c8fe20071d17212b37cb"
+              ]
+            ]
+          },
+          "on": {
+            "e2e": 28.294234076868428,
+            "decode": 41.06930174559921,
+            "ttft_mean": 2.8385057573517165,
+            "ttft_max": 2.8724336710292846,
+            "makespan": 27.14333944907412,
+            "total_output": 768,
+            "outputs": [
+              [
+                "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+                "97df3b589201d5bafe110a21c1d1bbfa8126501d4df2c8fe20071d17212b37cb"
+              ],
+              [
+                "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+                "97df3b589201d5bafe110a21c1d1bbfa8126501d4df2c8fe20071d17212b37cb"
+              ],
+              [
+                "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+                "97df3b589201d5bafe110a21c1d1bbfa8126501d4df2c8fe20071d17212b37cb"
+              ]
+            ]
+          },
+          "e2e_percent": 0.13336415716656003,
+          "decode_percent": -0.2725304543483409,
+          "ttft_percent": -1.010545445955613,
+          "output_same": true,
+          "parent_ttft": [
+            2.896425117040053,
+            2.8506271350197494,
+            2.855396675877273
+          ],
+          "parent_latency": [
+            9.090093362843618,
+            9.042414854979143,
+            9.046227853978053
+          ],
+          "candidate_ttft": [
+            2.8724336710292846,
+            2.8236488150432706,
+            2.819434785982594
+          ],
+          "candidate_latency": [
+            9.08562352694571,
+            9.033716785022989,
+            9.023228492122144
+          ],
+          "target_met": true
+        },
+        {
+          "mode": "agent-subset",
+          "case": "context-8192",
+          "off": {
+            "e2e": 20.447658974831814,
+            "decode": 38.40448043630684,
+            "ttft_mean": 5.8796068740387755,
+            "ttft_max": 5.885199818992987,
+            "makespan": 37.5593118481338,
+            "total_output": 768,
+            "outputs": [
+              [
+                "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+                "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e"
+              ],
+              [
+                "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+                "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e"
+              ],
+              [
+                "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+                "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e"
+              ]
+            ]
+          },
+          "on": {
+            "e2e": 20.753723633794234,
+            "decode": 38.55229136184833,
+            "ttft_mean": 5.720432961980502,
+            "ttft_max": 5.733161699026823,
+            "makespan": 37.005407489836216,
+            "total_output": 768,
+            "outputs": [
+              [
+                "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+                "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e"
+              ],
+              [
+                "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+                "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e"
+              ],
+              [
+                "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+                "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e"
+              ]
+            ]
+          },
+          "e2e_percent": 1.4968200483935323,
+          "decode_percent": 0.3848793782970983,
+          "ttft_percent": -2.7072203204792644,
+          "output_same": true,
+          "parent_ttft": [
+            5.885199818992987,
+            5.871378930984065,
+            5.882241872139275
+          ],
+          "parent_latency": [
+            12.523386470042169,
+            12.508937838021666,
+            12.526047140127048
+          ],
+          "candidate_ttft": [
+            5.733161699026823,
+            5.712347697000951,
+            5.715789489913732
+          ],
+          "candidate_latency": [
+            12.357850190950558,
+            12.32410989003256,
+            12.322517328895628
+          ],
+          "target_met": true
+        },
+        {
+          "mode": "agent-subset",
+          "case": "context-45056",
+          "off": {
+            "e2e": 5.817873636509265,
+            "decode": 39.184413049286164,
+            "ttft_mean": 37.49396209504145,
+            "ttft_max": 37.49832022609189,
+            "makespan": 132.0069922420662,
+            "total_output": 768,
+            "outputs": [
+              [
+                "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+                "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a"
+              ],
+              [
+                "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+                "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a"
+              ],
+              [
+                "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+                "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a"
+              ]
+            ]
+          },
+          "on": {
+            "e2e": 6.4555090391637835,
+            "decode": 39.24010323173317,
+            "ttft_mean": 33.15690578691041,
+            "ttft_max": 33.18395859701559,
+            "makespan": 118.96815500385128,
+            "total_output": 768,
+            "outputs": [
+              [
+                "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+                "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a"
+              ],
+              [
+                "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+                "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a"
+              ],
+              [
+                "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+                "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a"
+              ]
+            ]
+          },
+          "e2e_percent": 10.959939017120025,
+          "decode_percent": 0.14212330391925043,
+          "ttft_percent": -11.567345955962905,
+          "output_same": true,
+          "parent_ttft": [
+            37.49321880098432,
+            37.49034725804813,
+            37.49832022609189
+          ],
+          "parent_latency": [
+            44.004658930934966,
+            43.99997002212331,
+            44.00032634008676
+          ],
+          "candidate_ttft": [
+            33.16031012288295,
+            33.18395859701559,
+            33.12644864083268
+          ],
+          "candidate_latency": [
+            39.666674319887534,
+            39.67904225899838,
+            39.6203623379115
+          ],
+          "target_met": true,
+          "median_ttft_reduction": 0.11556512928646234
+        },
+        {
+          "mode": "agent-subset",
+          "case": "context-204800",
+          "off": {
+            "e2e": 0.9472175852709587,
+            "decode": 33.894872964931395,
+            "ttft_mean": 262.7397789163515,
+            "ttft_max": 262.8070170530118,
+            "makespan": 810.7957579570357,
+            "total_output": 768,
+            "outputs": [
+              [
+                "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+                "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe"
+              ],
+              [
+                "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+                "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe"
+              ],
+              [
+                "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+                "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe"
+              ]
+            ]
+          },
+          "on": {
+            "e2e": 1.4098615093014106,
+            "decode": 33.97199575779754,
+            "ttft_mean": 174.06975000863895,
+            "ttft_max": 174.1290352109354,
+            "makespan": 544.7343550648075,
+            "total_output": 768,
+            "outputs": [
+              [
+                "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+                "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe"
+              ],
+              [
+                "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+                "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe"
+              ],
+              [
+                "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+                "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe"
+              ]
+            ]
+          },
+          "e2e_percent": 48.84241289693847,
+          "decode_percent": 0.22753527634089554,
+          "ttft_percent": -33.748231529091164,
+          "output_same": true,
+          "parent_ttft": [
+            262.72408114094287,
+            262.8070170530118,
+            262.6882385550998
+          ],
+          "parent_latency": [
+            270.23189239995554,
+            270.3331289801281,
+            270.2241005040705
+          ],
+          "candidate_ttft": [
+            174.09809566196054,
+            173.9821191530209,
+            174.1290352109354
+          ],
+          "candidate_latency": [
+            181.59093925287016,
+            181.48039823304862,
+            181.65646003582515
+          ],
+          "target_met": true,
+          "median_ttft_reduction": 0.3373348384895003
+        },
+        {
+          "mode": "agent-subset",
+          "case": "repeat-code",
+          "off": {
+            "e2e": 3.611145290555347,
+            "decode": 13.667332086926734,
+            "ttft_mean": 264.88876677217195,
+            "ttft_max": 264.9663519950118,
+            "makespan": 283.56654679006897,
+            "total_output": 1024,
+            "outputs": [
+              [
+                "3d0ab2d22ef9be07497aea06cf93f6e41abed844b680f99aa91842f6f7a904e1",
+                "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021"
+              ],
+              [
+                "61b95914182a65c18931f1df11996632e7043dbf694e58d7a8804b1909bf8e2d",
+                "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021"
+              ],
+              [
+                "8f62631a70f48769fd9fdf422b1cdff081e3f79bb9e214333be2b2e3c27d50e1",
+                "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021"
+              ],
+              [
+                "c879a97738a78e3a998be6e8fec9f632fccc413e356513953c55504a28f583cc",
+                "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021"
+              ]
+            ]
+          },
+          "on": {
+            "e2e": 4.436986399798031,
+            "decode": 13.655409563619948,
+            "ttft_mean": 212.09347816259833,
+            "ttft_max": 212.1711605351884,
+            "makespan": 230.78727490501478,
+            "total_output": 1024,
+            "outputs": [
+              [
+                "3d0ab2d22ef9be07497aea06cf93f6e41abed844b680f99aa91842f6f7a904e1",
+                "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021"
+              ],
+              [
+                "61b95914182a65c18931f1df11996632e7043dbf694e58d7a8804b1909bf8e2d",
+                "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021"
+              ],
+              [
+                "8f62631a70f48769fd9fdf422b1cdff081e3f79bb9e214333be2b2e3c27d50e1",
+                "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021"
+              ],
+              [
+                "c879a97738a78e3a998be6e8fec9f632fccc413e356513953c55504a28f583cc",
+                "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021"
+              ]
+            ]
+          },
+          "e2e_percent": 22.869229643088683,
+          "decode_percent": -0.08723372806745955,
+          "ttft_percent": -19.931116465569975,
+          "output_same": true,
+          "parent_ttft": [
+            264.9663519950118,
+            264.66143986186944,
+            264.9641550448723,
+            264.96312018693425
+          ],
+          "parent_latency": [
+            283.56517468299717,
+            283.4928637018893,
+            283.5642604958266,
+            283.56328084296547
+          ],
+          "candidate_ttft": [
+            212.1711605351884,
+            211.86595563404262,
+            212.1689945741091,
+            212.16780190705322
+          ],
+          "candidate_latency": [
+            230.78703933604993,
+            230.71381668397225,
+            230.78476204816252,
+            230.78396703698672
+          ],
+          "target_met": true
+        },
+        {
+          "mode": "agent-subset",
+          "case": "repeat-text",
+          "off": {
+            "e2e": 3.598109608156288,
+            "decode": 12.873314956987006,
+            "ttft_mean": 264.7653913774411,
+            "ttft_max": 264.8410259329248,
+            "makespan": 284.59388721198775,
+            "total_output": 1024,
+            "outputs": [
+              [
+                "5c08051a9863de4c9e2e01a837949523354bcc8ffb3be85e13ac1a1ea23c8b60",
+                "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21"
+              ],
+              [
+                "999a5fa1c1e865a3bcb70ea8a309e61161a7f0fcc75f84b839785107a22b5dc0",
+                "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21"
+              ],
+              [
+                "b9cf1a31c02949342eac1d8600e52f37c9c74cf6fe261ebb0d5a34b95dae3f8c",
+                "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21"
+              ],
+              [
+                "f37f68fa0b74b784c830d06768e4d384662228fcff644de6369d6d8de6385753",
+                "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21"
+              ]
+            ]
+          },
+          "on": {
+            "e2e": 4.410144698656657,
+            "decode": 12.845158860738993,
+            "ttft_mean": 212.30313750519417,
+            "ttft_max": 212.37943201395683,
+            "makespan": 232.1919279228896,
+            "total_output": 1024,
+            "outputs": [
+              [
+                "5c08051a9863de4c9e2e01a837949523354bcc8ffb3be85e13ac1a1ea23c8b60",
+                "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21"
+              ],
+              [
+                "999a5fa1c1e865a3bcb70ea8a309e61161a7f0fcc75f84b839785107a22b5dc0",
+                "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21"
+              ],
+              [
+                "b9cf1a31c02949342eac1d8600e52f37c9c74cf6fe261ebb0d5a34b95dae3f8c",
+                "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21"
+              ],
+              [
+                "f37f68fa0b74b784c830d06768e4d384662228fcff644de6369d6d8de6385753",
+                "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21"
+              ]
+            ]
+          },
+          "e2e_percent": 22.56838114824591,
+          "decode_percent": -0.21871675121823975,
+          "ttft_percent": -19.814619123485976,
+          "output_same": true,
+          "parent_ttft": [
+            264.8410259329248,
+            264.5440929699689,
+            264.8386972709559,
+            264.83774933591485
+          ],
+          "parent_latency": [
+            284.59388721198775,
+            284.51933606597595,
+            284.591606521979,
+            284.59040655591525
+          ],
+          "candidate_ttft": [
+            212.37943201395683,
+            212.080152150942,
+            212.37702816491947,
+            212.37593769095838
+          ],
+          "candidate_latency": [
+            232.1919279228896,
+            232.1222850040067,
+            232.18791336589493,
+            232.11777174589224
+          ],
+          "target_met": true
+        }
+      ],
+      "statistics": "DESCRIPTIVE_NOT_NONINFERIORITY",
+      "protection_review": "REQUIRED_NO_AUTOMATIC_TOLERANCE",
+      "negative_observations": [
+        "context-1024",
+        "context-4096",
+        "repeat-code",
+        "repeat-text"
+      ]
+    },
+    {
+      "mode": "single-full",
+      "passed": true,
+      "results": [
+        {
+          "mode": "single-full",
+          "case": "context-1024",
+          "off": {
+            "e2e": 31.338511407321405,
+            "decode": 35.430964993403805,
+            "ttft_mean": 0.9715409249377748,
+            "ttft_max": 1.0889180558733642,
+            "makespan": 24.506588395917788,
+            "total_output": 768,
+            "outputs": [
+              [
+                "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+                "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0"
+              ],
+              [
+                "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+                "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0"
+              ],
+              [
+                "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+                "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0"
+              ]
+            ]
+          },
+          "on": {
+            "e2e": 31.33209162386854,
+            "decode": 35.45097871383395,
+            "ttft_mean": 0.9772773233707994,
+            "ttft_max": 1.0886391361709684,
+            "makespan": 24.51160966907628,
+            "total_output": 768,
+            "outputs": [
+              [
+                "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+                "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0"
+              ],
+              [
+                "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+                "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0"
+              ],
+              [
+                "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+                "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0"
+              ]
+            ]
+          },
+          "e2e_percent": -0.020485285243532214,
+          "decode_percent": 0.05648652367744589,
+          "ttft_percent": 0.5904433138925302,
+          "output_same": true,
+          "parent_ttft": [
+            1.0889180558733642,
+            0.9137883160728961,
+            0.9119164028670639
+          ],
+          "parent_latency": [
+            8.284535759827122,
+            8.111112961079925,
+            8.110257275868207
+          ],
+          "candidate_ttft": [
+            1.0886391361709684,
+            0.9196851029992104,
+            0.9235077309422195
+          ],
+          "candidate_latency": [
+            8.300278570968658,
+            8.107713662087917,
+            8.102933679008856
+          ],
+          "target_met": true
+        },
+        {
+          "mode": "single-full",
+          "case": "context-4096",
+          "off": {
+            "e2e": 25.821748355911513,
+            "decode": 36.618839077910756,
+            "ttft_mean": 2.9502236902868995,
+            "ttft_max": 2.985921300947666,
+            "makespan": 29.742370245978236,
+            "total_output": 768,
+            "outputs": [
+              [
+                "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+                "97df3b589201d5bafe110a21c1d1bbfa8126501d4df2c8fe20071d17212b37cb"
+              ],
+              [
+                "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+                "97df3b589201d5bafe110a21c1d1bbfa8126501d4df2c8fe20071d17212b37cb"
+              ],
+              [
+                "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+                "97df3b589201d5bafe110a21c1d1bbfa8126501d4df2c8fe20071d17212b37cb"
+              ]
+            ]
+          },
+          "on": {
+            "e2e": 25.812274613261526,
+            "decode": 36.60364341808701,
+            "ttft_mean": 2.9509742476511747,
+            "ttft_max": 2.9887699538376182,
+            "makespan": 29.753286430845037,
+            "total_output": 768,
+            "outputs": [
+              [
+                "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+                "97df3b589201d5bafe110a21c1d1bbfa8126501d4df2c8fe20071d17212b37cb"
+              ],
+              [
+                "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+                "97df3b589201d5bafe110a21c1d1bbfa8126501d4df2c8fe20071d17212b37cb"
+              ],
+              [
+                "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+                "97df3b589201d5bafe110a21c1d1bbfa8126501d4df2c8fe20071d17212b37cb"
+              ]
+            ]
+          },
+          "e2e_percent": -0.03668900540508835,
+          "decode_percent": -0.041496836618482025,
+          "ttft_percent": 0.025440693420852867,
+          "output_same": true,
+          "parent_ttft": [
+            2.985921300947666,
+            2.9284299979917705,
+            2.936319771921262
+          ],
+          "parent_latency": [
+            9.95339350309223,
+            9.883713255170733,
+            9.90445051388815
+          ],
+          "candidate_ttft": [
+            2.9887699538376182,
+            2.9391046720556915,
+            2.9250481170602143
+          ],
+          "candidate_latency": [
+            9.97292616800405,
+            9.899993715109304,
+            9.87956171692349
+          ],
+          "target_met": true
+        },
+        {
+          "mode": "single-full",
+          "case": "context-8192",
+          "off": {
+            "e2e": 19.583297155714735,
+            "decode": 34.467810380704655,
+            "ttft_mean": 5.6738443945844965,
+            "ttft_max": 5.705422597937286,
+            "makespan": 39.217093724990264,
+            "total_output": 768,
+            "outputs": [
+              [
+                "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+                "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e"
+              ],
+              [
+                "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+                "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e"
+              ],
+              [
+                "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+                "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e"
+              ]
+            ]
+          },
+          "on": {
+            "e2e": 19.61444413439973,
+            "decode": 34.50230732952701,
+            "ttft_mean": 5.6604902083054185,
+            "ttft_max": 5.672745845047757,
+            "makespan": 39.15481849689968,
+            "total_output": 768,
+            "outputs": [
+              [
+                "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+                "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e"
+              ],
+              [
+                "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+                "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e"
+              ],
+              [
+                "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+                "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e"
+              ]
+            ]
+          },
+          "e2e_percent": 0.15904869561713664,
+          "decode_percent": 0.1000845381279758,
+          "ttft_percent": -0.2353639851636391,
+          "output_same": true,
+          "parent_ttft": [
+            5.705422597937286,
+            5.654294839827344,
+            5.661815745988861
+          ],
+          "parent_latency": [
+            13.099270776147023,
+            13.055768797872588,
+            13.061114954994991
+          ],
+          "candidate_ttft": [
+            5.672745845047757,
+            5.657113462919369,
+            5.651611316949129
+          ],
+          "candidate_latency": [
+            13.061524607939646,
+            13.048764612991363,
+            13.043611574918032
+          ],
+          "target_met": true
+        },
+        {
+          "mode": "single-full",
+          "case": "context-45056",
+          "off": {
+            "e2e": 6.549712571549894,
+            "decode": 35.850509148140006,
+            "ttft_mean": 31.972133023431525,
+            "ttft_max": 31.978152183117345,
+            "makespan": 117.25705389515497,
+            "total_output": 768,
+            "outputs": [
+              [
+                "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+                "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a"
+              ],
+              [
+                "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+                "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a"
+              ],
+              [
+                "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+                "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a"
+              ]
+            ]
+          },
+          "on": {
+            "e2e": 6.54974264795445,
+            "decode": 35.81518768719535,
+            "ttft_mean": 31.96494433671857,
+            "ttft_max": 31.98525582300499,
+            "makespan": 117.25651545100845,
+            "total_output": 768,
+            "outputs": [
+              [
+                "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+                "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a"
+              ],
+              [
+                "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+                "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a"
+              ],
+              [
+                "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+                "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a"
+              ]
+            ]
+          },
+          "e2e_percent": 0.0004592018997495728,
+          "decode_percent": -0.09852429375187821,
+          "ttft_percent": -0.02248422620938495,
+          "output_same": true,
+          "parent_ttft": [
+            31.977825104957446,
+            31.978152183117345,
+            31.960421782219782
+          ],
+          "parent_latency": [
+            39.09191844007,
+            39.09305152716115,
+            39.070038182195276
+          ],
+          "candidate_ttft": [
+            31.98525582300499,
+            31.954628214007244,
+            31.954948973143473
+          ],
+          "candidate_latency": [
+            39.11443075397983,
+            39.06786059704609,
+            39.07219518604688
+          ],
+          "target_met": true
+        },
+        {
+          "mode": "single-full",
+          "case": "context-204800",
+          "off": {
+            "e2e": 1.4611278866454898,
+            "decode": 32.68574124246256,
+            "ttft_mean": 167.40332925358476,
+            "ttft_max": 167.81724857585505,
+            "makespan": 525.6213415809907,
+            "total_output": 768,
+            "outputs": [
+              [
+                "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+                "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe"
+              ],
+              [
+                "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+                "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe"
+              ],
+              [
+                "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+                "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe"
+              ]
+            ]
+          },
+          "on": {
+            "e2e": 1.4610098156121678,
+            "decode": 32.80959692565556,
+            "ttft_mean": 167.44693153126477,
+            "ttft_max": 167.46754018496722,
+            "makespan": 525.6638194988482,
+            "total_output": 768,
+            "outputs": [
+              [
+                "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+                "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe"
+              ],
+              [
+                "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+                "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe"
+              ],
+              [
+                "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+                "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe"
+              ]
+            ]
+          },
+          "e2e_percent": -0.008080814444866302,
+          "decode_percent": 0.37892878816556674,
+          "ttft_percent": 0.026046242852162393,
+          "output_same": true,
+          "parent_ttft": [
+            167.81724857585505,
+            166.88090131385252,
+            167.51183787104674
+          ],
+          "parent_latency": [
+            175.60063515091315,
+            174.72936561401002,
+            175.28468797309324
+          ],
+          "candidate_ttft": [
+            167.46073967893608,
+            167.41251472989097,
+            167.46754018496722
+          ],
+          "candidate_latency": [
+            175.23481963085942,
+            175.184860880021,
+            175.23746270290576
+          ],
+          "target_met": true
+        }
+      ],
+      "statistics": "DESCRIPTIVE_NOT_NONINFERIORITY",
+      "protection_review": "REQUIRED_NO_AUTOMATIC_TOLERANCE",
+      "negative_observations": [
+        "context-1024",
+        "context-4096",
+        "context-45056",
+        "context-204800"
+      ]
+    }
+  ],
+  "partial_comparisons": [
+    {
+      "off": {
+        "e2e": 17.598850546559238,
+        "decode": 18.554049470149018,
+        "ttft_mean": 0.8025319448982676,
+        "ttft_max": 0.8764313899446279,
+        "makespan": 43.63921370706521,
+        "total_output": 768,
+        "outputs": [
+          [
+            "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+            "2984ef17cfbb4565fc0e87811e0939a76832212c37158d69d19bc26862b5e76d"
+          ],
+          [
+            "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+            "2984ef17cfbb4565fc0e87811e0939a76832212c37158d69d19bc26862b5e76d"
+          ],
+          [
+            "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+            "2984ef17cfbb4565fc0e87811e0939a76832212c37158d69d19bc26862b5e76d"
+          ]
+        ]
+      },
+      "on": {
+        "e2e": 17.54579243140395,
+        "decode": 18.49411167901085,
+        "ttft_mean": 0.8019887013360858,
+        "ttft_max": 0.8711282820440829,
+        "makespan": 43.77117779105902,
+        "total_output": 768,
+        "outputs": [
+          [
+            "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+            "2984ef17cfbb4565fc0e87811e0939a76832212c37158d69d19bc26862b5e76d"
+          ],
+          [
+            "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+            "2984ef17cfbb4565fc0e87811e0939a76832212c37158d69d19bc26862b5e76d"
+          ],
+          [
+            "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+            "2984ef17cfbb4565fc0e87811e0939a76832212c37158d69d19bc26862b5e76d"
+          ]
+        ]
+      },
+      "e2e_percent": -0.3014862534056917,
+      "decode_percent": -0.32304425637432743,
+      "ttft_percent": -0.06769120726412003,
+      "output_same": true,
+      "mode": "single-plain",
+      "case": "context-1024",
+      "mode_complete": false,
+      "parent_ttft": [
+        0.8764313899446279,
+        0.7642738509457558,
+        0.766890593804419
+      ],
+      "candidate_ttft": [
+        0.8711282820440829,
+        0.7659528709482402,
+        0.7688849510159343
+      ]
+    },
+    {
+      "off": {
+        "e2e": 15.126492979250957,
+        "decode": 17.83624228241593,
+        "ttft_mean": 2.626946475744868,
+        "ttft_max": 2.6378774070180953,
+        "makespan": 50.77184784691781,
+        "total_output": 768,
+        "outputs": [
+          [
+            "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+            "d9bd07efbfb5755319acefbd0a6458b76194dc38d0d907998da4d10a01674111"
+          ],
+          [
+            "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+            "d9bd07efbfb5755319acefbd0a6458b76194dc38d0d907998da4d10a01674111"
+          ],
+          [
+            "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+            "d9bd07efbfb5755319acefbd0a6458b76194dc38d0d907998da4d10a01674111"
+          ]
+        ]
+      },
+      "on": {
+        "e2e": 15.131206660765306,
+        "decode": 17.832661786535134,
+        "ttft_mean": 2.618808026968812,
+        "ttft_max": 2.628461570944637,
+        "makespan": 50.756031373981386,
+        "total_output": 768,
+        "outputs": [
+          [
+            "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+            "d9bd07efbfb5755319acefbd0a6458b76194dc38d0d907998da4d10a01674111"
+          ],
+          [
+            "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+            "d9bd07efbfb5755319acefbd0a6458b76194dc38d0d907998da4d10a01674111"
+          ],
+          [
+            "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+            "d9bd07efbfb5755319acefbd0a6458b76194dc38d0d907998da4d10a01674111"
+          ]
+        ]
+      },
+      "e2e_percent": 0.031161760500708624,
+      "decode_percent": -0.02007427250708682,
+      "ttft_percent": -0.30980641787717866,
+      "output_same": true,
+      "mode": "single-plain",
+      "case": "context-4096",
+      "mode_complete": false,
+      "parent_ttft": [
+        2.6378774070180953,
+        2.6222349922172725,
+        2.620727027999237
+      ],
+      "candidate_ttft": [
+        2.628461570944637,
+        2.612700416939333,
+        2.6152620930224657
+      ]
+    },
+    {
+      "off": {
+        "e2e": 5.71340165940943,
+        "decode": 17.831798743955222,
+        "ttft_mean": 30.505977211054415,
+        "ttft_max": 30.53319429210387,
+        "makespan": 134.4207961880602,
+        "total_output": 768,
+        "outputs": [
+          [
+            "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+            "4b157e7a54a3f67194ec5197d2ceb3bb19c4697b6045c240461818bd3961d432"
+          ],
+          [
+            "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+            "4b157e7a54a3f67194ec5197d2ceb3bb19c4697b6045c240461818bd3961d432"
+          ],
+          [
+            "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+            "4b157e7a54a3f67194ec5197d2ceb3bb19c4697b6045c240461818bd3961d432"
+          ]
+        ]
+      },
+      "on": {
+        "e2e": 5.7166921956777825,
+        "decode": 17.820023421262952,
+        "ttft_mean": 30.470726350555196,
+        "ttft_max": 30.47976943687536,
+        "makespan": 134.34342338400893,
+        "total_output": 768,
+        "outputs": [
+          [
+            "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+            "4b157e7a54a3f67194ec5197d2ceb3bb19c4697b6045c240461818bd3961d432"
+          ],
+          [
+            "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+            "4b157e7a54a3f67194ec5197d2ceb3bb19c4697b6045c240461818bd3961d432"
+          ],
+          [
+            "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+            "4b157e7a54a3f67194ec5197d2ceb3bb19c4697b6045c240461818bd3961d432"
+          ]
+        ]
+      },
+      "e2e_percent": 0.05759329493197907,
+      "decode_percent": -0.06603552934479895,
+      "ttft_percent": -0.11555394621629578,
+      "output_same": true,
+      "mode": "single-plain",
+      "case": "context-45056",
+      "mode_complete": false,
+      "parent_ttft": [
+        30.52195297111757,
+        30.4627843699418,
+        30.53319429210387
+      ],
+      "candidate_ttft": [
+        30.46504705492407,
+        30.46736255986616,
+        30.47976943687536
+      ]
+    },
+    {
+      "off": {
+        "e2e": 13.265808572683962,
+        "decode": 17.987503170197474,
+        "ttft_mean": 5.120913464576006,
+        "ttft_max": 5.12468132795766,
+        "makespan": 57.89319179393351,
+        "total_output": 768,
+        "outputs": [
+          [
+            "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+            "55857a1e7bf564c11f7b165905f2d4c286d90931ed0be6a10050285d4a397246"
+          ],
+          [
+            "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+            "55857a1e7bf564c11f7b165905f2d4c286d90931ed0be6a10050285d4a397246"
+          ],
+          [
+            "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+            "55857a1e7bf564c11f7b165905f2d4c286d90931ed0be6a10050285d4a397246"
+          ]
+        ]
+      },
+      "on": {
+        "e2e": 13.264245339586173,
+        "decode": 17.96667502139288,
+        "ttft_mean": 5.106756170280278,
+        "ttft_max": 5.108853095211089,
+        "makespan": 57.900014688959345,
+        "total_output": 768,
+        "outputs": [
+          [
+            "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+            "55857a1e7bf564c11f7b165905f2d4c286d90931ed0be6a10050285d4a397246"
+          ],
+          [
+            "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+            "55857a1e7bf564c11f7b165905f2d4c286d90931ed0be6a10050285d4a397246"
+          ],
+          [
+            "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+            "55857a1e7bf564c11f7b165905f2d4c286d90931ed0be6a10050285d4a397246"
+          ]
+        ]
+      },
+      "e2e_percent": -0.011783926243347231,
+      "decode_percent": -0.11579232874912027,
+      "ttft_percent": -0.27646033063556397,
+      "output_same": true,
+      "mode": "single-plain",
+      "case": "context-8192",
+      "mode_complete": false,
+      "parent_ttft": [
+        5.121321295853704,
+        5.12468132795766,
+        5.116737769916654
+      ],
+      "candidate_ttft": [
+        5.103927821852267,
+        5.108853095211089,
+        5.107487593777478
+      ]
+    }
+  ],
+  "incomplete_case_responses": [],
+  "inherited_valid_completed_requests": 26,
+  "original_wrong_budget_attempts": 8,
+  "missing_steps": [
+    "10-single-plain-parent",
+    "11-single-plain-gate",
+    "12-full-state",
+    "13-subset-state",
+    "14-full-cache",
+    "15-subset-cache"
+  ],
+  "client_wip_files_preserved": 10,
+  "default_pair_preserved": true,
+  "research_tip": "4076810748024f610bcfc1780d47715f84becabe",
+  "audit_source_sha256": "45fab776d2bf89f19e6b309d8e7e6827182543c6a61fa22588d9cc77fb32b9f8"
+}

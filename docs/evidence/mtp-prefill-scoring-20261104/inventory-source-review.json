@@ -1,0 +1,33 @@
+{
+  "changed": {
+    "CMakeLists.txt": {
+      "before": "a8219a66aebb3f8958bf50bca62ac8713e4f964d1877fc61570c928f4d5c9b12",
+      "after": "97c05fe9edc002de79c47638de737d10ec08dc41fb106eed8e1fc93dd97ca7a8"
+    },
+    "src/mtp/mtp.cu": {
+      "before": "290a8a32eac18b138d0ec850126b1482a0ddeea554a90a0753ff77aece7530e4",
+      "after": "c2e6bb780cc42c80c649dc0e4fa18b6b7e714da17c6baaf46a97938099d07184"
+    }
+  },
+  "fields": 38,
+  "routes": 10,
+  "whitelists": 20,
+  "anchors": 112,
+  "review": {
+    "date": "2026-11-04",
+    "runtime_source_commit": "a40094600ecead9563383b20bfc143ec3826d5bf",
+    "status": "STATIC_REVIEW_PERFORMANCE_PENDING",
+    "changed_sources": [
+      "CMakeLists.txt",
+      "src/mtp/mtp.cu"
+    ],
+    "review": "CMake only adds an EXCLUDE_FROM_ALL independent GPU contract target, with no default runner linkage or compiler option change. MtpDraftExtend retains argument/slot/position validation and existing cleanup ownership; only host-known uniform T>4 multi-slot prefill passes a compressed-key scoring slice. Pooled KV/index writes, slot offsets, mixed-slot and T<=4 dispatch remain intact. No field, route, whitelist, template, output-parser, scheduling, quota or cancellation implementation changes. Existing min-slot capacity bounds remain in force. BF16 GEMM replaces SIMT scoring arithmetic in this path; numerical/performance acceptance is separately pending, not certified by this inventory. Protocol source hash changes because src/mtp/mtp.cu is included; old packages and durable tasks stay pinned.",
+    "evidence": [
+      "docs/MTP_PREFILL_ADOPTION_PLAN_2026-11-04.md",
+      "docs/MTP_PREFILL_ADOPTION_CONTINUATION_2026-11-04.md",
+      "docs/MTP_PREFILL_DELIVERY_PLAN_2026-11-04.md",
+      "tools/mtp_prefill_scoring/scoring_contract.h",
+      "tools/mtp_prefill_scoring/state_contract.cpp"
+    ]
+  }
+}

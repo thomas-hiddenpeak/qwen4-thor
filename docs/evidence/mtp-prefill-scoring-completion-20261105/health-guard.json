@@ -1,0 +1,25 @@
+{
+  "status": "COMPLETED",
+  "command": [
+    "python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-adoption-20261104/review/tools/mtp_prefill_scoring/deliver.py",
+    "deploy",
+    "--source-root",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-adoption-20261104/source",
+    "--acceptance-dir",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-adoption-20261104/source/.q4t-work/scoring-finish"
+  ],
+  "compute_backend": "nvml",
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 0,
+  "external_lease": false,
+  "finished": {
+    "utc": "2026-11-05T04:37:05.171747+00:00",
+    "monotonic": 2043507.688630404,
+    "pid": 3445618
+  }
+}

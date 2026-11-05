@@ -1455,12 +1455,15 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
                             uint16_t* idx_raw, uint16_t* idx_comp, int T,
                             void* workspace, size_t workspace_bytes,
                             cudaStream_t stream, const int* d_seq_id,
-                            int max_position, int layer_id) {
+                            int max_position, int layer_id,
+                            const uint16_t* single_sequence_scores) {
   if (T <= 0 || T > kMaxT)
     return Status::Fail("FullAttentionForward: T out of range [1, " +
                         std::to_string(kMaxT) + "]");
   if (max_position < -1 || max_position >= w.max_len)
     return Status::Fail("FullAttentionForward: max_position out of range");
+  if (single_sequence_scores && (!d_seq_id || T <= 4))
+    return Status::Fail("FullAttentionForward: invalid uniform prefill view");
   const int hs = w.hidden_size;
   const int nq = w.nq, nkv = w.nkv, hd = w.hd;
   const int qg_dim = nq * 2 * hd;
@@ -1648,13 +1651,16 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
     for (int i = 0; i < T; ++i) max_pos = std::max(max_pos, hp[i]);
   }
   const int n_groups_max = (max_pos + 1) / w.idx_compress;
+  const uint16_t* score_keys = single_sequence_scores
+                                   ? single_sequence_scores : idx_comp;
+  const bool gemm_scores = !d_seq_id || single_sequence_scores;
   if (n_groups_max <= max_blocks) {
     // Single-shot fast path (context <= kMaxBlocks * compress). Single-seq:
     // tensor-core GEMM S = iq @ ck^T + relu/sum/mask reduce. Multi-seq
-    // (d_seq_id): per-sequence idx_comp slices can't share one GEMM weight, so
-    // keep the SIMT kernel.
-    if (d_seq_id == nullptr) {
-      s = CheckGemm(Bf16Gemm(d_iq, idx_comp, d_S, T * n_iq, max_blocks, idx_hd,
+    // (d_seq_id): mixed slices keep SIMT; a host-proven uniform prefill can
+    // supply its scoring slice without changing pooled state addressing.
+    if (gemm_scores) {
+      s = CheckGemm(Bf16Gemm(d_iq, score_keys, d_S, T * n_iq, max_blocks, idx_hd,
                              1.f, 0.f, d_gemm_ws, gemm_ws, stream));
       if (!s.ok()) return s;
       const int total = T * max_blocks;
@@ -1763,9 +1769,9 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
             d_iq, idx_comp + static_cast<size_t>(block_off) * idx_hd, d_logits,
             d_positions, T, n_iq, idx_hd, w.idx_compress, max_blocks,
             block_off, d_seq_id, idx_seq_stride);
-      } else if (d_seq_id == nullptr) {
+      } else if (gemm_scores) {
         s = CheckGemm(Bf16Gemm(
-            d_iq, idx_comp + static_cast<size_t>(block_off) * idx_hd, d_S,
+            d_iq, score_keys + static_cast<size_t>(block_off) * idx_hd, d_S,
             T * n_iq, max_blocks, idx_hd, 1.f, 0.f, d_gemm_ws, gemm_ws,
             stream));
         if (!s.ok()) return s;

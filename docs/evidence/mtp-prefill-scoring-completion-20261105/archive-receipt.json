@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-adoption-20261104/source/.q4t-work/scoring-finish/completion-evidence.tar.gz",
+  "archive_sha256": "3e318899b641a1d27a2598493d62c8ae12253d6efb7299a9d3c52114e14f1c0d",
+  "archive_bytes": 363619810,
+  "index_sha256": "af30c6b64c914f70447201629db068ab71d4dd0f279b8ed11ee095f5b08e473f",
+  "paths": 3122,
+  "objects": 3005,
+  "scope": "Completion raw evidence, frozen dependencies, additive review and decision. Prior archive remains separately preserved; model weights are identified by metadata, not copied."
+}

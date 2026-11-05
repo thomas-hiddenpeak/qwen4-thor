@@ -1,0 +1,47 @@
+{
+  "passed_static_review": true,
+  "runtime_source_commit": "a40094600ecead9563383b20bfc143ec3826d5bf",
+  "test_snapshot_commit": "2a0a92c58310d56f2d6fe32a4f289baf5f6ffa4c",
+  "baseline": "f2f45526dbbe5acc69c997ad9af2c012b123636a",
+  "changed": {
+    "CMakeLists.txt": {
+      "parent": "a8219a66aebb3f8958bf50bca62ac8713e4f964d1877fc61570c928f4d5c9b12",
+      "candidate": "97c05fe9edc002de79c47638de737d10ec08dc41fb106eed8e1fc93dd97ca7a8"
+    },
+    "include/q4t/model/full_attention.h": {
+      "parent": "da55271efbce42087f0fb607a4ba15941ee18c15dc855abd6b300847225f1788",
+      "candidate": "e955c6a2409a9d3dc43ed2116c207ca0fe2e68bb24387f1336bd3fc8682fe8d5"
+    },
+    "include/q4t/mtp/mtp.h": {
+      "parent": "ae7efb08906e8884331bb6a2f83658f9fe65709e68fe925f2121a461f08f0dd5",
+      "candidate": "c3945be6886dc5297893b5da909ba3feb5e6988c5be8bb650f046d6305e71995"
+    },
+    "src/model/full_attention.cu": {
+      "parent": "9b2ce9b4d36449b5dfd684faea7fbe0667befdd1c61758409b9896334869f8cb",
+      "candidate": "5651bdca6ef5ab3e9c06a1c6f18c773c1ab8786685a334083fe3bf46fe9bccd7"
+    },
+    "src/mtp/mtp.cu": {
+      "parent": "290a8a32eac18b138d0ec850126b1482a0ddeea554a90a0753ff77aece7530e4",
+      "candidate": "c2e6bb780cc42c80c649dc0e4fa18b6b7e714da17c6baaf46a97938099d07184"
+    }
+  },
+  "unchanged_runtime_files": 218,
+  "client_wip_files_preserved": 10,
+  "research_selective_source": "c9d4475d1169fa653a092f22f970253fd4bcf043",
+  "invariants": [
+    "MtpDraftExtend retains slot/position/argument validation and mainline cleanup ownership; only a host-known uniform multi-slot batch with T>4 supplies the slot.",
+    "Score keys only feed existing single-shot/streaming BF16 GEMM; pooled KV/index writes, page tables and RoPE addressing still use original d_seq_id.",
+    "Existing ValidSequenceCapacities and min_slot_capacity constrain padded score reads; no new memory allocation or workspace-size change.",
+    "Default arguments preserve single-slot, mixed-slot and T<=4 dispatch. Full/subset heads share the same dispatch contract.",
+    "No tokenizer, template, output parser, tool control, grammar, cache algorithm, scheduler, quota or cancellation source changed.",
+    "No prefill timers, snapshot preallocation/write pipeline, shared-host offload or unaccepted client content extracted."
+  ],
+  "arithmetic": "BF16 GEMM intermediate rounding is not bitwise SIMT FP32; independent sliced reference and representative state tests plus full-model HTTP required.",
+  "protocol": {
+    "previous": "a56aed213bc1c96318a61168da907f882b96eb2511c870246552396d01e4dbe8",
+    "candidate": "cc321239ced843d6d618d07b72ed81ed65958b2fdc29261fc2b042d9118c40d5",
+    "reason": "Protocol source identity includes src/mtp/mtp.cu; no automatic durable task/managed package migration."
+  },
+  "acceptance": "PENDING_GPU_RESULTS_AND_PROTECTION_REVIEW",
+  "test_snapshot_retained": true
+}

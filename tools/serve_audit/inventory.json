@@ -629,7 +629,7 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "a8219a66aebb3f8958bf50bca62ac8713e4f964d1877fc61570c928f4d5c9b12",
+    "CMakeLists.txt": "97c05fe9edc002de79c47638de737d10ec08dc41fb106eed8e1fc93dd97ca7a8",
     "cmake/ChatProtocolIdentity.cmake": "d59b1b06abf9e0cb8867c03fd749398da5e118838d39ea87364d7b02a787e13e",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/StructuredOutput.cmake": "fd8c800791a39e03d6447716554eb67cc626a1d20855de512fdc5dc715dd8b30",
@@ -693,7 +693,7 @@
     "src/main.cpp": "a289b15b8876f4314fc8678075d51359bfdff7dd57df04998946fa985131df7d",
     "src/model/model.cu": "ddf5df2ef04770369785b4dd93d928bea7fa4ca4484e670ada9c7a944ed068fb",
     "src/model/model_owner.cpp": "cc3a998e52d4cca44bd695f40e1bf01f4ee2d75ce9f0c437d07757582d60e2bf",
-    "src/mtp/mtp.cu": "290a8a32eac18b138d0ec850126b1482a0ddeea554a90a0753ff77aece7530e4",
+    "src/mtp/mtp.cu": "c2e6bb780cc42c80c649dc0e4fa18b6b7e714da17c6baaf46a97938099d07184",
     "src/runtime/cuda_allocation_quota.cpp": "d19e53e7ec20b5924d01482760b638df74fbf5c7ef4aec7647dc2dffe8e760c5",
     "src/runtime/cuda_quota_backend.h": "ed5a378f24a18d4fbd91ee6a4473e5c14a93f10a9a221bf4a1e2c581ccf7e9ca",
     "src/runtime/startup_reservation.cpp": "3c979fd0e8eb5dec8185148c77677ddad246f401faa92641d2a5f1ec2c033e09",
@@ -955,6 +955,23 @@
       "docs/SERVE_PREPARE_LOCK_2026-11-04.md",
       "tests/server_request_diagnostics_test.cpp",
       "tools/serve_prepare_lock/probe.cpp"
+    ]
+  },
+  "prefill_scoring_review": {
+    "date": "2026-11-04",
+    "runtime_source_commit": "a40094600ecead9563383b20bfc143ec3826d5bf",
+    "status": "STATIC_REVIEW_PERFORMANCE_PENDING",
+    "changed_sources": [
+      "CMakeLists.txt",
+      "src/mtp/mtp.cu"
+    ],
+    "review": "CMake only adds an EXCLUDE_FROM_ALL independent GPU contract target, with no default runner linkage or compiler option change. MtpDraftExtend retains argument/slot/position validation and existing cleanup ownership; only host-known uniform T>4 multi-slot prefill passes a compressed-key scoring slice. Pooled KV/index writes, slot offsets, mixed-slot and T<=4 dispatch remain intact. No field, route, whitelist, template, output-parser, scheduling, quota or cancellation implementation changes. Existing min-slot capacity bounds remain in force. BF16 GEMM replaces SIMT scoring arithmetic in this path; numerical/performance acceptance is separately pending, not certified by this inventory. Protocol source hash changes because src/mtp/mtp.cu is included; old packages and durable tasks stay pinned.",
+    "evidence": [
+      "docs/MTP_PREFILL_ADOPTION_PLAN_2026-11-04.md",
+      "docs/MTP_PREFILL_ADOPTION_CONTINUATION_2026-11-04.md",
+      "docs/MTP_PREFILL_DELIVERY_PLAN_2026-11-04.md",
+      "tools/mtp_prefill_scoring/scoring_contract.h",
+      "tools/mtp_prefill_scoring/state_contract.cpp"
     ]
   }
 }

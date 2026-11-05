@@ -1,0 +1,91 @@
+{
+  "passed": true,
+  "time_unix": 1793853130.8396266,
+  "default_binary": "8e9b4ce7cb76b0731e9f087bd15ea84ffac31bec038b87f88df853275dc1a3a1",
+  "default_sidecar": "e61bed7cc67ae5b90e8cfb0148dc010d5d95dd73cad763d118fe3669b41222f7",
+  "protected_client_hashes": {
+    "tools/examples/chat_client.py": "75826241a93fe54cc6bdbd2e620cbb038d9ee026c599ef928761462ca4e12e3c",
+    "tools/examples/js/chat_client.mjs": "ae4115c09b91a3ae6d90b2e7f44f5f5864488e035a03b00f9375a10febc845bf",
+    "tools/examples/js/test_chat_client.mjs": "678aa471226ad69636eae983999cb03779aedc36ad617e1e587fab1a048954bd",
+    "tools/examples/test_chat_client.py": "e75ae22b113461296e46675777795276b83ff99732fdb4b6a9d00b318a634ddc",
+    "tools/serve_protocol/js_client.py": "f43ac68179ac4fd385e25caaf6fe9a138d0d7f6821268c4f2afdbf993871ddc3",
+    "tools/serve_protocol/run_sdk.mjs": "509aea1f47828ca4384cf06e9f5ef16a2e32a00ffee0224ac37718dd970793d3",
+    "tools/examples/deadline_http.py": "3697f9cda3c4bd9ac75b630c8cbdb8e8690fa54ad5b67f2d996922cf028af374",
+    "tools/examples/js/node_transport.mjs": "f95b3c1e4f8a89605171e97a56af8bf107b19dbd5f7a2c2977d7acdff0569f5e",
+    "tools/examples/test_deadline_http.py": "3aa130e9e52b9e11f8bfd2c8b6dac5d8696ced331c876bd31cac6c0d9f16d01d",
+    "tools/serve_client_transport/baseline.py": "fb2950c4a3bf89892d22c123569a28bb54ddfe83d8f820e03e8f5b6a08a83112"
+  },
+  "research_tip": "4076810748024f610bcfc1780d47715f84becabe",
+  "servers": [
+    {
+      "pid": 2809392,
+      "record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-adoption-20261104/source/.q4t-work/scoring-acceptance/run/00-agent-full-candidate/server.pid",
+      "pid_present": false
+    },
+    {
+      "pid": 2960683,
+      "record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-adoption-20261104/source/.q4t-work/scoring-continuation/run/10-single-plain-parent/server.pid",
+      "pid_present": false
+    },
+    {
+      "pid": 2848492,
+      "record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-adoption-20261104/source/.q4t-work/scoring-continuation/run/01-agent-full-parent/server.pid",
+      "pid_present": false
+    },
+    {
+      "pid": 2840632,
+      "record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-adoption-20261104/source/.q4t-work/scoring-continuation/run/00-agent-full-candidate/server.pid",
+      "pid_present": false
+    },
+    {
+      "pid": 2948630,
+      "record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-adoption-20261104/source/.q4t-work/scoring-continuation/run/09-single-plain-candidate/server.pid",
+      "pid_present": false
+    },
+    {
+      "pid": 2875773,
+      "record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-adoption-20261104/source/.q4t-work/scoring-continuation/run/03-agent-subset-parent/server.pid",
+      "pid_present": false
+    },
+    {
+      "pid": 2926278,
+      "record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-adoption-20261104/source/.q4t-work/scoring-continuation/run/06-single-full-parent/server.pid",
+      "pid_present": false
+    },
+    {
+      "pid": 2902234,
+      "record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-adoption-20261104/source/.q4t-work/scoring-continuation/run/04-agent-subset-candidate/server.pid",
+      "pid_present": false
+    },
+    {
+      "pid": 2937687,
+      "record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-adoption-20261104/source/.q4t-work/scoring-continuation/run/07-single-full-candidate/server.pid",
+      "pid_present": false
+    },
+    {
+      "pid": 3428537,
+      "record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-adoption-20261104/source/.q4t-work/scoring-finish/run/00-plain-parent-200k/server.pid",
+      "pid_present": false
+    },
+    {
+      "pid": 3438412,
+      "record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-adoption-20261104/source/.q4t-work/scoring-finish/run/04-full-cache/server.pid",
+      "pid_present": false
+    },
+    {
+      "pid": 3440317,
+      "record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-adoption-20261104/source/.q4t-work/scoring-finish/run/05-subset-cache/server.pid",
+      "pid_present": false
+    }
+  ],
+  "port": 8762,
+  "listeners": [],
+  "lock": {
+    "device": 66305,
+    "inode": 3294067,
+    "available": true
+  },
+  "recovery_marker_present": false,
+  "compute_contexts": [],
+  "checker_sha256": "1824502bcbcdbd89b8b3dddbc5740dec497a80a51a03cf3a9f180a42f525e298"
+}
