@@ -53,13 +53,11 @@ constexpr int kWarps = kThreads / kWarp;
 // y[m, n] = alpha * sum_k W[n, k] * x[m, k]. W [N, K] row-major bf16,
 // x [M, K] row-major bf16, y [M, N] row-major bf16. One warp per output
 // column n (scattered mapping); x staged in smem once per block.
-template <int MAXM, bool PreconvertInput = false>
+template <int MAXM>
 __global__ void Bf16SmallMScatteredKernel(
     const uint16_t* __restrict__ w, const uint16_t* __restrict__ x,
     uint16_t* __restrict__ y, int M, int N, int K, float alpha) {
-  // The GDN-only specialization stages exact BF16 -> FP32 conversions once
-  // per block. The default specialization retains BF16 staging.
-  extern __shared__ __align__(16) uint16_t s_x[];
+  extern __shared__ __align__(16) uint16_t s_x[];  // [MAXM, K]
 
   const int lane = threadIdx.x & (kWarp - 1);
   const int warp_id = threadIdx.x / kWarp;
@@ -69,23 +67,8 @@ __global__ void Bf16SmallMScatteredKernel(
   // Cooperative x load (8 bf16 per float4).
   const int total_v4 = M * K / 8;
   auto* sv = reinterpret_cast<float4*>(s_x);
-  auto* sf = reinterpret_cast<float2*>(s_x);
   const auto* xv = reinterpret_cast<const float4*>(x);
-  for (int i = threadIdx.x; i < total_v4; i += kThreads) {
-    if constexpr (PreconvertInput) {
-      const float4 xr = xv[i];
-      const auto* x2 = reinterpret_cast<const __nv_bfloat162*>(&xr);
-      const int row = i / (K / 8);
-      const int column = i % (K / 8);
-      // [row, pair-within-vector, K/8] keeps each warp's float2 loads
-      // contiguous instead of introducing an eight-float lane stride.
-#pragma unroll
-      for (int j = 0; j < 4; ++j)
-        sf[(row * 4 + j) * (K / 8) + column] = __bfloat1622float2(x2[j]);
-    } else {
-      sv[i] = xv[i];
-    }
-  }
+  for (int i = threadIdx.x; i < total_v4; i += kThreads) sv[i] = xv[i];
   __syncthreads();
 
   if (n >= N) return;
@@ -106,20 +89,12 @@ __global__ void Bf16SmallMScatteredKernel(
     for (int j = 0; j < 4; ++j) wf[j] = __bfloat1622float2(w2[j]);
 #pragma unroll
     for (int m = 0; m < MAXM; ++m) {
-      if constexpr (PreconvertInput) {
-        // Keep the original lane/K traversal, packed FMA sequence, warp
-        // reduction and output rounding. Only conversion placement changes.
+      const float4 xr = sv[m * xk8 + i];
+      const __nv_bfloat162* x2 = reinterpret_cast<const __nv_bfloat162*>(&xr);
 #pragma unroll
-        for (int j = 0; j < 4; ++j)
-          F32x2Fma(acc[m], wf[j], sf[(m * 4 + j) * k8 + i]);
-      } else {
-        const float4 xr = sv[m * xk8 + i];
-        const auto* x2 = reinterpret_cast<const __nv_bfloat162*>(&xr);
-#pragma unroll
-        for (int j = 0; j < 4; ++j) {
-          const float2 xf = __bfloat1622float2(x2[j]);
-          F32x2Fma(acc[m], wf[j], xf);
-        }
+      for (int j = 0; j < 4; ++j) {
+        const float2 xf = __bfloat1622float2(x2[j]);
+        F32x2Fma(acc[m], wf[j], xf);
       }
     }
   }
@@ -232,21 +207,6 @@ bool LaunchKSplit(const uint16_t* w, const uint16_t* x, uint16_t* y, int M,
 }
 
 }  // namespace
-
-bool Bf16GdnInput4Gemm(const uint16_t* x, const uint16_t* w, uint16_t* y,
-                      int N, cudaStream_t stream) {
-  if (!x || !w || !y || (N != 10240 && N != 6144)) return false;
-  constexpr int kRows = 4;
-  constexpr int kColumns = 2560;
-  constexpr size_t kSharedBytes = kRows * kColumns * sizeof(float);
-  auto kernel = Bf16SmallMScatteredKernel<kRows, true>;
-  if (cudaFuncSetAttribute(kernel, cudaFuncAttributeMaxDynamicSharedMemorySize,
-                          static_cast<int>(kSharedBytes)) != cudaSuccess)
-    return false;
-  kernel<<<(N + kWarps - 1) / kWarps, kThreads, kSharedBytes, stream>>>(
-      w, x, y, kRows, N, kColumns, 1.0f);
-  return cudaGetLastError() == cudaSuccess;
-}
 
 // Shape policy: route 2 <= M <= 8 dense GEMMs (K % 8 == 0, N >= 320) to the
 // hand-written small-M kernel; small-N (N < 320) falls back to cuBLASLt.

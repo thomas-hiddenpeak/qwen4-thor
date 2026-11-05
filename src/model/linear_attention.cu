@@ -1429,26 +1429,6 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
   }
 
   mt(6, 0);  // lin_inproj start
-  // Restrict conversion reuse to one sequence's checkpointed T=4 verify.
-  // In particular, a four-token prefill/decode batch and other projections
-  // with these same N/K shapes must keep the existing dispatcher.
-  const bool preconvert_input =
-      T == 4 && hs == 2560 && in_qkv == 10240 && v_dim == 6144 &&
-      ssm_ckpt != nullptr && conv_ckpt != nullptr && num_ckpt == 3 &&
-      ragged == nullptr && (d_seq_id == nullptr || tokens_per_seq == 4) &&
-      std::getenv("Q4T_ABLATE_GEMM_TILE") == nullptr &&
-      std::getenv("Q4T_ABLATE_GEMV_T1") == nullptr &&
-      std::getenv("Q4T_INPROJ_ROWWISE_GEMV") == nullptr;
-  auto project_input = [&](const uint16_t* weight, const Fp8Shadow& shadow,
-                           uint16_t* result, int columns) -> Status {
-    if (preconvert_input && shadow.w == nullptr) {
-      if (!Bf16GdnInput4Gemm(x, weight, result, columns, stream))
-        return Status::Fail("GDN BF16 input projection launch failed");
-      return Status();
-    }
-    return CheckGemm(ProjGemm(x, weight, &shadow, result, T, columns, hs,
-                              1.0f, 0.0f, workspace, workspace_bytes, stream));
-  };
   // 1. Projections (all BF16 GEMMs; large ones use the FP8 decode shadow).
   // CANDIDATE (revertible, off by default; O2 minimal fix, see
   // docs/STATUS.md 当前阶段): for small verify/prefill batches (2 <= T <= 8)
@@ -1471,7 +1451,9 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
                    1.0f, stream);
     if (!ok) return Status::Fail("in_proj_qkv rowwise GEMV failed");
   } else {
-    s = project_input(w.in_proj_qkv, w.in_proj_qkv_fp8, d_qkv_raw, in_qkv);
+    s = CheckGemm(ProjGemm(x, w.in_proj_qkv, &w.in_proj_qkv_fp8, d_qkv_raw, T,
+                           in_qkv, hs, 1.0f, 0.0f, workspace, workspace_bytes,
+                           stream));
     if (!s.ok()) {
       return s;
     }
@@ -1512,7 +1494,8 @@ Status LinearAttentionForward(const LinearAttentionWeights& w,
       return Status::Fail("qkv_raw_capture D2D");
     }
   }
-  s = project_input(w.in_proj_z, w.in_proj_z_fp8, d_z, v_dim);
+  s = CheckGemm(ProjGemm(x, w.in_proj_z, &w.in_proj_z_fp8, d_z, T, v_dim, hs,
+                         1.0f, 0.0f, workspace, workspace_bytes, stream));
   if (!s.ok()) {
     return s;
   }
