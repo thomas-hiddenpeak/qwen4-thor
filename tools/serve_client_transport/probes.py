@@ -52,6 +52,17 @@ class Peer:
             pkg.require(len(header) <= 65536, 'peer header bound')
         self.record['requests'] += 1
         fields = header.split(b'\r\n\r\n', 1)[0].decode('ascii').lower()
+        lengths = [line.split(':', 1)[1].strip() for line in fields.split('\r\n')
+                   if line.startswith('content-length:')]
+        pkg.require(len(lengths) <= 1, 'duplicate request length')
+        length = int(lengths[0]) if lengths else 0
+        pkg.require(0 <= length <= 65536, 'peer body bound')
+        body = header.split(b'\r\n\r\n', 1)[1]
+        while len(body) < length:
+            part = peer.recv(min(4096, length-len(body)))
+            pkg.require(bool(part), 'incomplete probe request')
+            body.extend(part)
+        self.record['request_body_bytes'] = len(body)
         self.record['key_received'] = '\r\nauthorization: bearer transport-probe-key' in fields
         self.record['host_received'] = '\r\nhost: ' in fields
         if self.case == 'interim':
@@ -135,7 +146,7 @@ def python_request(options):
     return row
 
 
-def execute(output, cert, key, wrong_ca, sdk_directory, budget):
+def execute(output, cert, key, wrong_ca, sdk_directory, budget, reused=None):
     output.mkdir()
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
     context.load_cert_chain(cert, key)
@@ -144,8 +155,16 @@ def execute(output, cert, key, wrong_ca, sdk_directory, budget):
     rows = []
     for language in ('python', 'node'):
         for case in CASES:
-            budget('network')
             name = language+'-'+case
+            if reused and name in reused:
+                row = pkg.read(reused[name])
+                pkg.require(case in SLOW and language == 'python' and not row['ok'] and
+                            .15 < row['seconds'] < 1.5 and row['thread_stopped'] and
+                            row['listener_released'], 'invalid reused deadline observation')
+                pkg.save(output/(name+'.json'), row)
+                rows.append(row)
+                continue
+            budget('network')
             with Peer(context, case) as peer:
                 options = dict(url=f'https://q4t.internal.test:{peer.port}/v1',
                                ca=str(wrong_ca if case == 'wrong-ca' else cert), connect='127.0.0.1')

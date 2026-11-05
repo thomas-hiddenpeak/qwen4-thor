@@ -14,11 +14,13 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(ROOT))
 from tools.serve_client_transport import stage as s
+from tools.serve_client_transport import finish
 from tools.examples import chat_client as chat
 from tools.serve_service import package as pkg
 
 DEST = ROOT/'docs/evidence/serve-client-transport-20261105'
 sha = lambda raw: hashlib.sha256(raw).hexdigest()
+finish.configure()
 
 
 def audit():
@@ -90,17 +92,21 @@ def audit():
         lock=dict(dev=st.st_dev,inode=st.st_ino,available=True),default_pair_unchanged=plan['default'],
         protocol=plan['protocol'],source_commit=plan['source_commit'],
         current_task_migration_accepted=False,managed_package_accepted=False,long_run=False,
+        attempts=2,network_attempts=result['counts']['network'],reused_network_observations=8,
+        original_failure='Local TLS fixture closed before consuming the complete POST request; no model started.',
         note='Native and fixed JS SDK client acceptance only; no new managed lifecycle or durable migration qualification.')
 
 
 def collect():
     plan = pkg.read(s.PLAN)
     files = {}
-    for directory in (s.BASE/s.CPU_LABEL,s.BASE/'pre-resume',s.OUT):
+    for directory in (s.BASE/s.CPU_LABEL,s.BASE/'pre-resume',s.OUT,
+                      s.BASE/'execution',s.BASE/'initial-source'):
         for path in sorted(directory.rglob('*')):
             if path.is_file() and 'private' not in path.relative_to(directory).parts:
                 files[str(path.relative_to(s.BASE))] = path.read_bytes()
-    for name in ('plan.json','sdk.json','pre-resume.json'):
+    for name in ('plan.json','finish-plan.json','sdk.json','pre-resume.json',
+                 'fixture-baseline.json','fixture-fixed.json'):
         files[name] = (s.BASE/name).read_bytes()
     old = ROOT/'.q4t-work/serve-client-transport-20261104/baseline'
     for path in sorted(old.rglob('*')):
