@@ -24,3 +24,19 @@ Its immutable evidence and original tools remain under `scoring-acceptance` and
 with 256 repeat outputs and the unchanged absolute deadline. `review.py`
 validates the completed stage and reused windows without accepting deployment.
 See [the amendment](../../docs/MTP_PREFILL_ADOPTION_CONTINUATION_2026-11-04.md).
+
+Both original phases ended without stage acceptance. After explicit additional
+authorization, `finish.py` freezes only the remaining 27 HTTP requests, three
+service starts and two GPU fixtures within 20 minutes. It imports the frozen
+source worktree via `--source-root`, validates 171 completed reusable requests,
+and records the separate cold start for the ordinary-decode parent 200K case.
+Use `prepare`, guarded `run`, then offline `review`; no original failed state or
+decision is rewritten. See [completion scope](../../docs/MTP_PREFILL_COMPLETION_PLAN_2026-11-05.md).
+
+`completion_evidence.py` records the remaining resource window and archives the
+additive evidence; run `create` and `verify` in separate processes. Only a
+subsequent explicit engineering decision can authorize conditional delivery.
+`deliver.py --source-root SOURCE --acceptance-dir COMPLETION_DIR` reads the new
+review, decision and verified archive, retaining the original rejected receipts.
+Its actions remain `prepare`, guarded `deploy`, `finalize`, and exact-pair
+`rollback`. It uses frozen SOURCE health tools, not client code in another tree.

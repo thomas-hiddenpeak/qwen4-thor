@@ -8,6 +8,7 @@ can recover any known partial pair without starting a model.
 import argparse
 import copy
 import fcntl
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -17,16 +18,23 @@ import subprocess
 import sys
 import time
 
-import driver
-import health
-
-ROOT = driver.ROOT
-BASE = ROOT.parent
-PACKAGE = BASE / 'delivery-package'
-OUT = ROOT / '.q4t-work/scoring-health'
-PRIOR = ROOT / '.q4t-work/scoring-continuation/plan.json'
-h = driver.module('scoring_deploy_helpers', 'tools/verify/startup_delivery/deploy.py')
-pkg = driver.module('scoring_release_package', 'tools/serve_service/package.py')
+def configure(source, acceptance):
+    """Use frozen inference tools with a separate, additive acceptance receipt."""
+    global driver, health, ROOT, BASE, PACKAGE, OUT, PRIOR, ACCEPTANCE, h, pkg
+    ROOT = source.resolve()
+    spec = importlib.util.spec_from_file_location(
+        'driver', ROOT / 'tools/mtp_prefill_scoring/driver.py')
+    driver = importlib.util.module_from_spec(spec)
+    sys.modules['driver'] = driver
+    spec.loader.exec_module(driver)
+    health = driver.module('scoring_delivery_health', 'tools/mtp_prefill_scoring/health.py')
+    BASE = ROOT.parent
+    PACKAGE = BASE / 'delivery-package'
+    OUT = ROOT / '.q4t-work/scoring-health'
+    PRIOR = ROOT / '.q4t-work/scoring-continuation/plan.json'
+    ACCEPTANCE = acceptance.resolve() if acceptance else BASE
+    h = driver.module('scoring_deploy_helpers', 'tools/verify/startup_delivery/deploy.py')
+    pkg = driver.module('scoring_release_package', 'tools/serve_service/package.py')
 
 
 def marker():
@@ -36,11 +44,18 @@ def marker():
 
 def prepare():
     prior = h.read(PRIOR)
-    decision = h.read(BASE / 'decision.json')
+    decision = h.read(ACCEPTANCE / 'decision.json')
     h.require(decision['status'] == 'PASS_SCORING_ENGINEERING_ACCEPTANCE' and
               decision['passed'] and decision['candidate_sha256'] == prior['candidate_sha256'],
               'explicit performance acceptance required')
-    h.require(h.read(BASE / 'archive-receipt.json')['passed'], 'evidence archive')
+    review = h.read(ACCEPTANCE / 'review.json')
+    archive = h.read(ACCEPTANCE / 'archive-receipt.json')
+    h.require(review['measurement_passed'] and
+              decision['review_sha256'] == h.sha(ACCEPTANCE / 'review.json') and
+              review['candidate_sha256'] == prior['candidate_sha256'],
+              'accepted review identity')
+    h.require(archive['passed'] and h.sha(Path(archive['archive'])) ==
+              archive['archive_sha256'], 'evidence archive identity')
     driver.legacy.verify_files(prior)
     driver.verify_reuse(prior)
     original = Path(prior['execution_tools_root'])
@@ -67,7 +82,7 @@ def prepare():
                          (BASE / 'build.log', 'build.log')]:
         h.copy_checked(h.identity(source), PACKAGE / 'candidate' / name)
     for name in ('decision.json', 'review.json', 'archive-receipt.json'):
-        h.copy_checked(h.identity(BASE / name), PACKAGE / name)
+        h.copy_checked(h.identity(ACCEPTANCE / name), PACKAGE / name)
     runtime = h.read(BASE / 'parent/runtime-source.json')
     current = {}
     for name in runtime:
@@ -95,12 +110,12 @@ def prepare():
         plan['steps'].append(dict(name=name, kind='lifecycle', head=head,
             layout='agent', suffix=True, binary=plan['candidate'], http_requests=3,
             http_loads=1, timeout=420, command=[sys.executable, '-B',
-                str(Path(__file__).with_name('health.py')), '--plan',
+                str(ROOT / 'tools/mtp_prefill_scoring/health.py'), '--plan',
                 str(OUT / 'plan.json'), '--custom-step', name]))
     for path in PACKAGE.rglob('*'):
         if path.is_file():
             plan['files'][str(path)] = h.sha(path)
-    for path in (Path(__file__), Path(__file__).with_name('health.py')):
+    for path in (Path(__file__), ROOT / 'tools/mtp_prefill_scoring/health.py'):
         plan['files'][str(path)] = h.sha(path)
     plan['files'][plan['candidate']] = prior['candidate_sha256']
     health.validate(plan)
@@ -141,6 +156,7 @@ def release(plan):
     metadata.update(version='mtp-prefill-scoring-20261104',
         binary_sha256=plan['candidate_sha256'], source_commit=plan['source_commit'],
         tool_source_commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
+        delivery_tool=h.identity(Path(__file__).resolve()),
         source_note='Four scoring runtime files selectively extracted on main. Runtime manifest is authoritative; no client WIP or whole research merge.',
         tested_source_manifest=str(PACKAGE / 'candidate/runtime-source.json'),
         tested_source_manifest_sha256=h.sha(PACKAGE / 'candidate/runtime-source.json'),
@@ -214,7 +230,7 @@ def deploy():
         h.replace_checked(PACKAGE / 'candidate/q4t', original / 'build/q4t', plan['parent_sha256'])
         with (OUT / 'driver.log').open('x') as log:
             child = subprocess.Popen([sys.executable, '-B',
-                str(Path(__file__).with_name('health.py')), '--plan', str(OUT / 'plan.json')],
+                str(ROOT / 'tools/mtp_prefill_scoring/health.py'), '--plan', str(OUT / 'plan.json')],
                 cwd=ROOT, env=driver.legacy.clean_env(), stdout=log,
                 stderr=subprocess.STDOUT, start_new_session=True)
             code = child.wait(timeout=max(.01, plan['task_deadline_unix'] - time.time()))
@@ -268,7 +284,12 @@ def finalize():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('action', choices=('prepare', 'deploy', 'finalize', 'rollback'))
-    action = parser.parse_args().action
+    parser.add_argument('--source-root', type=Path,
+                        default=Path(__file__).resolve().parents[2])
+    parser.add_argument('--acceptance-dir', type=Path)
+    args = parser.parse_args()
+    configure(args.source_root, args.acceptance_dir)
+    action = args.action
     if action == 'rollback':
         with driver.legacy.gpu_exclusive.common_lock().open('r+') as lock:
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
