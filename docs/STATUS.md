@@ -21,7 +21,11 @@ decode五档及22质量记录完整。默认MTP候选只完成1K/4K，NVML初始
 22.624GiB、CmaFree 3.078MiB，另52次成功init处于更低/相同CMA采样。
 不足以确定分配失败根因或制定阈值；未改容量/监控，新增GPU为0。
 研究草稿[PR #20](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/20)
-的567793a2两项host检查通过，未作为GPU验收替代。迁移任务仍持有原锁。
+的567793a2及离线分析0dc8a8e8两项host检查通过，未作为GPU验收替代。
+迁移任务已完成并退出。新[单次环境诊断](VISION_ROWMAX_ENV_DIAGNOSIS_2026-11-07.md)
+限定1启动9Chat/600秒，使用独立进程范围的失败页分配/栈追踪与buddy/
+vmstat区分原H2；5项trace所有权/失败/有界捕获CPU合同通过。仅准备，
+未将诊断请求当性能样本，不改容量、NVML规则、运行时或默认。
 
 ### 首轮已完成的投入门
 
