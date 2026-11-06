@@ -2,6 +2,14 @@
 
 更新：2026-11-07。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+## 视觉 attention 行最大值优化已冻结，待首项HTTP试验
+
+[判定卡](VISION_ROWMAX_PLAN_2026-11-07.md)：从main f7dcd8f9建立唯一
+工作分支，候选仅改行最大值为block归约，保留QK/exp/sum/V顺序和BF16。
+首项测试为evalscope HTTP，ABBA共4启动64Chat/1200秒；大图和多图在
+两个配对块均达到各自热HTTP降低3%才进入完整验收。统计分辨带未建立，
+子集不代替五档。默认ea1b474d/旧包保持，尚无收益或数值接受结论。
+
 ## 视觉塔内部诊断已通过，下一候选为attention行最大值归约
 
 [PR #19](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/19)的91efea44
