@@ -4,10 +4,13 @@
 `1d217e7d15a44d3fa5b9f4667d84a3043a138b136ed2fa7fa00a63ca96bb6162`，
 协议来源`99b7e4b6…`。按[冻结计划](VISION_TIMING_PLAN_2026-11-07.md)
 完成有限诊断；不接受性能优化，不替换默认程序。
+[PR #18](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/18)两项host
+检查通过，main合并12311a30的树等于7b9776e5。重复阶段分支已清理，
+[保留锚点](evidence/vision-timing-20261107/mainline.json)记录旧tip与主线。
 
 ## 结论与下一步
 
-当前固定输入的主耗时段是视觉forward，占视觉流水线墙钟的
+在视觉流水线内部，当前固定输入的主耗时段是forward，占该流水线墙钟的
 **98.33%～99.63%**。JPEG单图解码**2.754～2.782ms**，占其整次HTTP
 E2E的**0.0775%～0.0792%**；多图中的JPEG解码2.820ms，占该请求E2E
 0.0236%。在只消除JPEG解码、其他执行保持不变的理想假设下，当前

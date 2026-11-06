@@ -4,6 +4,10 @@
 
 ## 视觉计时已完成有界诊断，暂缓nvJPEG
 
+[PR #18](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/18)两项host检查
+通过后已合main 12311a30，合并树等于已审7b9776e5；阶段重复本地/远端
+分支按预期tip清理，main保留完整提交，诊断程序、证据与其他研究分支保留。
+
 [本轮结果](VISION_TIMING_RESULT_2026-11-07.md)：可选13段墙钟统计，
 默认关闭，无新增CUDA同步。固定输入forward占视觉处理98.33%～99.63%，
 JPEG单图解码2.754～2.782ms、约HTTP的0.08%；暂缓nvJPEG，后续若做

@@ -1,0 +1,21 @@
+{
+  "pull_request": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/18",
+  "tested_runtime_commit": "6fc6c6f28383376b2efdfb44d414cc960cb4776f",
+  "reviewed_head": "7b9776e5bd4b4370f03de829d4c72ec27de1b0f2",
+  "merge_commit": "12311a30ceeb5f408989b0efbea9bceb28b38437",
+  "merge_tree_equals_reviewed_head": true,
+  "checks": [
+    "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/42283029346",
+    "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/42283101202"
+  ],
+  "checks_conclusion": "success",
+  "removed_branch": "codex/vision-stage-timing",
+  "removed_local": true,
+  "removed_remote": true,
+  "remote_delete_expected_tip": "7b9776e5bd4b4370f03de829d4c72ec27de1b0f2",
+  "retained_anchor": "12311a30ceeb5f408989b0efbea9bceb28b38437",
+  "evidence_and_diagnostic_paths_retained": true,
+  "other_research_branches_unchanged": true,
+  "default_binary_unchanged": true,
+  "additional_gpu_after_diagnostic": false
+}
