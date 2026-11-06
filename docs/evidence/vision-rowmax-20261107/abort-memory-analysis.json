@@ -1,0 +1,687 @@
+{
+  "status": "EXISTING_SAMPLES_DESCRIBED_NOT_CAUSAL_PROOF",
+  "units": "Memory fields in KiB",
+  "files": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/execution/resources.jsonl": "29eec59e7dff33e8efbced7f56f0e4235834a37b63c45eaa23a91fb9afd8b4ad",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/lease/nvml-queries.jsonl": "0d4e75f7528d2897687f2962c6b300832276c3151eed557fe9b82995809be4df",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/lease/events.jsonl": "c940ec2bbe823a535796c7706e4a7f5ed2946ed7dc6913e116fef6be3e46006a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/lease/exit.json": "0c523cff5675b57846ef75d166dd57fe7c8a9f93b531a7eb448e29d9a2fc12de",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/plan.json": "c081d4d1815dbc1a80c07d8968f7a8e32ef984937d88fb1f4822fb6e5111a601",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/logs/abort-kernel-journal.log": "367312700ddca570f669764cbec2cc9c1392ea7241f8cd9c0fa8b4ea13e65e69",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/abort-postflight.json": "9523b2ff2fd5f705b5f3d9fd8126e9b762ceb745027ff04c79fa61c0c6199799",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/execution/model-plain-parent/identity.json": "59717ee7c9744c5459ba66deb750f85b8fa04803704eaf2495079f2cfa3bc96f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/execution/model-plain-parent/command.json": "1f248c725b95086c620a6da0889102f5231d4e8f0f59a6135638d15e771c7f3a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/execution/model-plain-parent/stderr.log": "5bf4104360c4dac486d3d264ea2169ba92d3527afec453dc602caa61f76b4678",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/execution/model-plain-parent/waitable.json": "3347f143525185d110d9da2f309b909c2829f67e1ffbb991a49e106e951a7c42",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/execution/model-plain-candidate/identity.json": "bbb6a4a1f7006f35f9cac37d88338d8dbe0917f693231f0c01f1cd10b8bda7e6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/execution/model-plain-candidate/command.json": "743940d2ceb92752bd0209d839fb933364e34a6e7a161c83f6713d5a158f5552",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/execution/model-plain-candidate/stderr.log": "157a58d6650192c1d3dd64f5fd5c6a76f2ed6a895c05bf37da94d4decb55d5bf",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/execution/model-plain-candidate/waitable.json": "f394e517b5bbb0975b248bb34e8e73b9944a2488b0c17da38160053114cd099d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/execution/model-mtp-candidate/identity.json": "e148edcffc654d689ca7de8af5eb35ed3fcd7a67eaa1c0d0633bb7c12d28709c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/execution/model-mtp-candidate/command.json": "d018e8dcd519b31d2acd8b8fc5c257a7a204a318f7b666af8595f59d21f2b811",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/execution/model-mtp-candidate/stderr.log": "d393570e4f35ec0375dac5f95d7ca05ddb73ff9a09fee70b2b44aeb3ab5fda75",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/execution/model-mtp-candidate/waitable.json": "ef093752f0c30c31db6fc68f2497549604abff7b5b1341b9a3413177f5d51902"
+  },
+  "script_sha256": "2f3909a30f459178fc6b0d272c416111f5bbc3b37ca7ded2d35043358bf5d945",
+  "samples": 2243,
+  "queries": 2084,
+  "models": {
+    "plain-parent": {
+      "pid": 4099724,
+      "memory_samples": 1054,
+      "successful_nvml_calls": 982,
+      "memory_kib": {
+        "MemFree": {
+          "minimum": 665432,
+          "maximum": 18174240,
+          "first": 18174240,
+          "last": 15701132
+        },
+        "MemAvailable": {
+          "minimum": 32656960,
+          "maximum": 121332632,
+          "first": 121332632,
+          "last": 37938144
+        },
+        "Cached": {
+          "minimum": 12648948,
+          "maximum": 28673884,
+          "first": 16943348,
+          "last": 12806892
+        },
+        "SwapFree": {
+          "minimum": 73896,
+          "maximum": 77780,
+          "first": 77780,
+          "last": 73896
+        },
+        "CmaTotal": {
+          "minimum": 524288,
+          "maximum": 524288,
+          "first": 524288,
+          "last": 524288
+        },
+        "CmaFree": {
+          "minimum": 13912,
+          "maximum": 34816,
+          "first": 13912,
+          "last": 34816
+        }
+      },
+      "init_seconds": {
+        "minimum": 0.003535320982336998,
+        "median": 0.004457378061488271,
+        "maximum": 0.008479064796119928
+      }
+    },
+    "plain-candidate": {
+      "pid": 4106623,
+      "memory_samples": 1056,
+      "successful_nvml_calls": 984,
+      "memory_kib": {
+        "MemFree": {
+          "minimum": 695924,
+          "maximum": 17748512,
+          "first": 17226988,
+          "last": 17748512
+        },
+        "MemAvailable": {
+          "minimum": 32650448,
+          "maximum": 121478980,
+          "first": 121478980,
+          "last": 120753008
+        },
+        "Cached": {
+          "minimum": 11754692,
+          "maximum": 27885624,
+          "first": 12759640,
+          "last": 11850124
+        },
+        "SwapFree": {
+          "minimum": 73796,
+          "maximum": 73896,
+          "first": 73896,
+          "last": 73796
+        },
+        "CmaTotal": {
+          "minimum": 524288,
+          "maximum": 524288,
+          "first": 524288,
+          "last": 524288
+        },
+        "CmaFree": {
+          "minimum": 3352,
+          "maximum": 38136,
+          "first": 34816,
+          "last": 30808
+        }
+      },
+      "init_seconds": {
+        "minimum": 0.0034915716387331486,
+        "median": 0.0044351196847856045,
+        "maximum": 0.016692185308784246
+      }
+    },
+    "mtp-candidate": {
+      "pid": 4115955,
+      "memory_samples": 122,
+      "successful_nvml_calls": 105,
+      "memory_kib": {
+        "MemFree": {
+          "minimum": 1042632,
+          "maximum": 17961484,
+          "first": 17961484,
+          "last": 12953100
+        },
+        "MemAvailable": {
+          "minimum": 20881708,
+          "maximum": 121466792,
+          "first": 121287912,
+          "last": 121466792
+        },
+        "Cached": {
+          "minimum": 4814884,
+          "maximum": 21413136,
+          "first": 11831124,
+          "last": 4814884
+        },
+        "SwapFree": {
+          "minimum": 0,
+          "maximum": 73796,
+          "first": 73796,
+          "last": 0
+        },
+        "CmaTotal": {
+          "minimum": 524288,
+          "maximum": 524288,
+          "first": 524288,
+          "last": 524288
+        },
+        "CmaFree": {
+          "minimum": 0,
+          "maximum": 55040,
+          "first": 32316,
+          "last": 11372
+        }
+      },
+      "init_seconds": {
+        "minimum": 0.0035794349387288094,
+        "median": 0.0047883158549666405,
+        "maximum": 0.09363459190353751
+      }
+    }
+  },
+  "failure": {
+    "status": "CLEANUP_FAILED",
+    "worker_pid": 4117333,
+    "monotonic": 2193630.033598599,
+    "init_seconds": null,
+    "query_seconds": 6.007631134241819,
+    "memory_kib": {
+      "monotonic": 2193629.497134469,
+      "unix_seconds": 1794003546.9802592,
+      "MemFree": 11795192,
+      "MemAvailable": 23722856,
+      "Cached": 6421764,
+      "SwapFree": 49848,
+      "CmaTotal": 524288,
+      "CmaFree": 3152,
+      "sample_age_seconds": 0.5364641300402582
+    },
+    "pids": null
+  },
+  "last_20_calls": [
+    {
+      "status": "OK",
+      "worker_pid": 4117192,
+      "monotonic": 2193609.160932915,
+      "init_seconds": 0.005640855059027672,
+      "query_seconds": 0.08765684301033616,
+      "memory_kib": {
+        "monotonic": 2193609.116762108,
+        "unix_seconds": 1794003526.5998867,
+        "MemFree": 11716656,
+        "MemAvailable": 24088096,
+        "Cached": 6443704,
+        "SwapFree": 51156,
+        "CmaTotal": 524288,
+        "CmaFree": 396,
+        "sample_age_seconds": 0.044170806650072336
+      },
+      "pids": [
+        4115955
+      ]
+    },
+    {
+      "status": "OK",
+      "worker_pid": 4117198,
+      "monotonic": 2193610.266856316,
+      "init_seconds": 0.004057573154568672,
+      "query_seconds": 0.07920564990490675,
+      "memory_kib": {
+        "monotonic": 2193610.134602201,
+        "unix_seconds": 1794003527.6177268,
+        "MemFree": 11703332,
+        "MemAvailable": 23992860,
+        "Cached": 6443716,
+        "SwapFree": 51156,
+        "CmaTotal": 524288,
+        "CmaFree": 396,
+        "sample_age_seconds": 0.13225411484017968
+      },
+      "pids": [
+        4115955
+      ]
+    },
+    {
+      "status": "OK",
+      "worker_pid": 4117213,
+      "monotonic": 2193611.362388082,
+      "init_seconds": 0.003645034972578287,
+      "query_seconds": 0.07262941030785441,
+      "memory_kib": {
+        "monotonic": 2193611.153056531,
+        "unix_seconds": 1794003528.6361814,
+        "MemFree": 11686648,
+        "MemAvailable": 23976200,
+        "Cached": 6443732,
+        "SwapFree": 51156,
+        "CmaTotal": 524288,
+        "CmaFree": 400,
+        "sample_age_seconds": 0.20933155063539743
+      },
+      "pids": [
+        4115955
+      ]
+    },
+    {
+      "status": "OK",
+      "worker_pid": 4117221,
+      "monotonic": 2193612.460471956,
+      "init_seconds": 0.0077981469221413136,
+      "query_seconds": 0.09456047788262367,
+      "memory_kib": {
+        "monotonic": 2193612.171779419,
+        "unix_seconds": 1794003529.6549041,
+        "MemFree": 11700144,
+        "MemAvailable": 23989720,
+        "Cached": 6443748,
+        "SwapFree": 51156,
+        "CmaTotal": 524288,
+        "CmaFree": 400,
+        "sample_age_seconds": 0.28869253722950816
+      },
+      "pids": [
+        4115955
+      ]
+    },
+    {
+      "status": "OK",
+      "worker_pid": 4117223,
+      "monotonic": 2193613.570063917,
+      "init_seconds": 0.00523900194093585,
+      "query_seconds": 0.08965683728456497,
+      "memory_kib": {
+        "monotonic": 2193613.191115997,
+        "unix_seconds": 1794003530.6742406,
+        "MemFree": 11917136,
+        "MemAvailable": 24056804,
+        "Cached": 6420832,
+        "SwapFree": 49848,
+        "CmaTotal": 524288,
+        "CmaFree": 440,
+        "sample_age_seconds": 0.378947920165956
+      },
+      "pids": [
+        4115955
+      ]
+    },
+    {
+      "status": "OK",
+      "worker_pid": 4117225,
+      "monotonic": 2193614.67922137,
+      "init_seconds": 0.005111019127070904,
+      "query_seconds": 0.08589917793869972,
+      "memory_kib": {
+        "monotonic": 2193614.210268063,
+        "unix_seconds": 1794003531.6933923,
+        "MemFree": 11915920,
+        "MemAvailable": 24055588,
+        "Cached": 6420832,
+        "SwapFree": 49848,
+        "CmaTotal": 524288,
+        "CmaFree": 440,
+        "sample_age_seconds": 0.468953306786716
+      },
+      "pids": [
+        4115955
+      ]
+    },
+    {
+      "status": "OK",
+      "worker_pid": 4117227,
+      "monotonic": 2193615.784039335,
+      "init_seconds": 0.00586098525673151,
+      "query_seconds": 0.08507166896015406,
+      "memory_kib": {
+        "monotonic": 2193615.229860036,
+        "unix_seconds": 1794003532.7129846,
+        "MemFree": 11924676,
+        "MemAvailable": 24064360,
+        "Cached": 6420852,
+        "SwapFree": 49848,
+        "CmaTotal": 524288,
+        "CmaFree": 440,
+        "sample_age_seconds": 0.5541792986914515
+      },
+      "pids": [
+        4115955
+      ]
+    },
+    {
+      "status": "OK",
+      "worker_pid": 4117229,
+      "monotonic": 2193616.889493615,
+      "init_seconds": 0.00515545392408967,
+      "query_seconds": 0.08862947812303901,
+      "memory_kib": {
+        "monotonic": 2193616.249014327,
+        "unix_seconds": 1794003533.7321386,
+        "MemFree": 11921256,
+        "MemAvailable": 24060972,
+        "Cached": 6420864,
+        "SwapFree": 49848,
+        "CmaTotal": 524288,
+        "CmaFree": 440,
+        "sample_age_seconds": 0.6404792880639434
+      },
+      "pids": [
+        4115955
+      ]
+    },
+    {
+      "status": "OK",
+      "worker_pid": 4117238,
+      "monotonic": 2193617.995864499,
+      "init_seconds": 0.004562961868941784,
+      "query_seconds": 0.08812481304630637,
+      "memory_kib": {
+        "monotonic": 2193617.268424585,
+        "unix_seconds": 1794003534.7515492,
+        "MemFree": 11919520,
+        "MemAvailable": 24059248,
+        "Cached": 6420876,
+        "SwapFree": 49848,
+        "CmaTotal": 524288,
+        "CmaFree": 440,
+        "sample_age_seconds": 0.7274399138987064
+      },
+      "pids": [
+        4115955
+      ]
+    },
+    {
+      "status": "OK",
+      "worker_pid": 4117240,
+      "monotonic": 2193619.100657573,
+      "init_seconds": 0.005241798236966133,
+      "query_seconds": 0.08715343987569213,
+      "memory_kib": {
+        "monotonic": 2193618.287439555,
+        "unix_seconds": 1794003535.7705646,
+        "MemFree": 11938924,
+        "MemAvailable": 24078660,
+        "Cached": 6420884,
+        "SwapFree": 49848,
+        "CmaTotal": 524288,
+        "CmaFree": 440,
+        "sample_age_seconds": 0.813218018040061
+      },
+      "pids": [
+        4115955
+      ]
+    },
+    {
+      "status": "OK",
+      "worker_pid": 4117243,
+      "monotonic": 2193620.203257262,
+      "init_seconds": 0.0037832949310541153,
+      "query_seconds": 0.07481421669945121,
+      "memory_kib": {
+        "monotonic": 2193619.306139082,
+        "unix_seconds": 1794003536.789264,
+        "MemFree": 11931428,
+        "MemAvailable": 24071172,
+        "Cached": 6420896,
+        "SwapFree": 49848,
+        "CmaTotal": 524288,
+        "CmaFree": 440,
+        "sample_age_seconds": 0.8971181795932353
+      },
+      "pids": [
+        4115955
+      ]
+    },
+    {
+      "status": "OK",
+      "worker_pid": 4117259,
+      "monotonic": 2193621.292988987,
+      "init_seconds": 0.0043909079395234585,
+      "query_seconds": 0.0703702480532229,
+      "memory_kib": {
+        "monotonic": 2193620.324079517,
+        "unix_seconds": 1794003537.8072042,
+        "MemFree": 11998912,
+        "MemAvailable": 24171796,
+        "Cached": 6421252,
+        "SwapFree": 49848,
+        "CmaTotal": 524288,
+        "CmaFree": 1072,
+        "sample_age_seconds": 0.9689094703644514
+      },
+      "pids": [
+        4115955
+      ]
+    },
+    {
+      "status": "OK",
+      "worker_pid": 4117280,
+      "monotonic": 2193622.3942884,
+      "init_seconds": 0.003873388282954693,
+      "query_seconds": 0.0856389319524169,
+      "memory_kib": {
+        "monotonic": 2193622.373569117,
+        "unix_seconds": 1794003539.8566937,
+        "MemFree": 12188100,
+        "MemAvailable": 24361428,
+        "Cached": 6421652,
+        "SwapFree": 49848,
+        "CmaTotal": 524288,
+        "CmaFree": 3108,
+        "sample_age_seconds": 0.020719283260405064
+      },
+      "pids": [
+        4115955
+      ]
+    },
+    {
+      "status": "OK",
+      "worker_pid": 4117284,
+      "monotonic": 2193623.480202467,
+      "init_seconds": 0.0036001652479171753,
+      "query_seconds": 0.06433323305100203,
+      "memory_kib": {
+        "monotonic": 2193623.391120969,
+        "unix_seconds": 1794003540.874246,
+        "MemFree": 12148368,
+        "MemAvailable": 24321708,
+        "Cached": 6421660,
+        "SwapFree": 49848,
+        "CmaTotal": 524288,
+        "CmaFree": 3108,
+        "sample_age_seconds": 0.08908149832859635
+      },
+      "pids": [
+        4115955
+      ]
+    },
+    {
+      "status": "OK",
+      "worker_pid": 4117286,
+      "monotonic": 2193624.568410028,
+      "init_seconds": 0.004828211851418018,
+      "query_seconds": 0.0742997070774436,
+      "memory_kib": {
+        "monotonic": 2193624.408552233,
+        "unix_seconds": 1794003541.8916767,
+        "MemFree": 11963496,
+        "MemAvailable": 24136856,
+        "Cached": 6421696,
+        "SwapFree": 49848,
+        "CmaTotal": 524288,
+        "CmaFree": 3108,
+        "sample_age_seconds": 0.15985779464244843
+      },
+      "pids": [
+        4115955
+      ]
+    },
+    {
+      "status": "OK",
+      "worker_pid": 4117307,
+      "monotonic": 2193625.656179376,
+      "init_seconds": 0.0056702070869505405,
+      "query_seconds": 0.0745317698456347,
+      "memory_kib": {
+        "monotonic": 2193625.426159649,
+        "unix_seconds": 1794003542.909284,
+        "MemFree": 11800540,
+        "MemAvailable": 23728184,
+        "Cached": 6421712,
+        "SwapFree": 49848,
+        "CmaTotal": 524288,
+        "CmaFree": 3108,
+        "sample_age_seconds": 0.23001972679048777
+      },
+      "pids": [
+        4115955
+      ]
+    },
+    {
+      "status": "OK",
+      "worker_pid": 4117309,
+      "monotonic": 2193626.753582433,
+      "init_seconds": 0.004212378989905119,
+      "query_seconds": 0.08544764574617147,
+      "memory_kib": {
+        "monotonic": 2193626.444134674,
+        "unix_seconds": 1794003543.9272594,
+        "MemFree": 11795604,
+        "MemAvailable": 23198972,
+        "Cached": 6421732,
+        "SwapFree": 49848,
+        "CmaTotal": 524288,
+        "CmaFree": 3152,
+        "sample_age_seconds": 0.3094477588310838
+      },
+      "pids": [
+        4115955
+      ]
+    },
+    {
+      "status": "OK",
+      "worker_pid": 4117323,
+      "monotonic": 2193627.853153606,
+      "init_seconds": 0.00412882212549448,
+      "query_seconds": 0.06406871974468231,
+      "memory_kib": {
+        "monotonic": 2193627.461882668,
+        "unix_seconds": 1794003544.9450073,
+        "MemFree": 11806004,
+        "MemAvailable": 23733668,
+        "Cached": 6421748,
+        "SwapFree": 49848,
+        "CmaTotal": 524288,
+        "CmaFree": 3152,
+        "sample_age_seconds": 0.39127093786373734
+      },
+      "pids": [
+        4115955
+      ]
+    },
+    {
+      "status": "OK",
+      "worker_pid": 4117325,
+      "monotonic": 2193628.947642571,
+      "init_seconds": 0.004323019180446863,
+      "query_seconds": 0.07929249433800578,
+      "memory_kib": {
+        "monotonic": 2193628.479576688,
+        "unix_seconds": 1794003545.9627013,
+        "MemFree": 11793760,
+        "MemAvailable": 23197136,
+        "Cached": 6421752,
+        "SwapFree": 49848,
+        "CmaTotal": 524288,
+        "CmaFree": 3152,
+        "sample_age_seconds": 0.4680658830329776
+      },
+      "pids": [
+        4115955
+      ]
+    },
+    {
+      "status": "CLEANUP_FAILED",
+      "worker_pid": 4117333,
+      "monotonic": 2193630.033598599,
+      "init_seconds": null,
+      "query_seconds": 6.007631134241819,
+      "memory_kib": {
+        "monotonic": 2193629.497134469,
+        "unix_seconds": 1794003546.9802592,
+        "MemFree": 11795192,
+        "MemAvailable": 23722856,
+        "Cached": 6421764,
+        "SwapFree": 49848,
+        "CmaTotal": 524288,
+        "CmaFree": 3152,
+        "sample_age_seconds": 0.5364641300402582
+      },
+      "pids": null
+    }
+  ],
+  "successful_init_with_cma_at_or_below_failure": 52,
+  "same_or_lower_last_examples": [
+    {
+      "status": "OK",
+      "worker_pid": 4117309,
+      "monotonic": 2193626.753582433,
+      "init_seconds": 0.004212378989905119,
+      "query_seconds": 0.08544764574617147,
+      "memory_kib": {
+        "monotonic": 2193626.444134674,
+        "unix_seconds": 1794003543.9272594,
+        "MemFree": 11795604,
+        "MemAvailable": 23198972,
+        "Cached": 6421732,
+        "SwapFree": 49848,
+        "CmaTotal": 524288,
+        "CmaFree": 3152,
+        "sample_age_seconds": 0.3094477588310838
+      },
+      "pids": [
+        4115955
+      ]
+    },
+    {
+      "status": "OK",
+      "worker_pid": 4117323,
+      "monotonic": 2193627.853153606,
+      "init_seconds": 0.00412882212549448,
+      "query_seconds": 0.06406871974468231,
+      "memory_kib": {
+        "monotonic": 2193627.461882668,
+        "unix_seconds": 1794003544.9450073,
+        "MemFree": 11806004,
+        "MemAvailable": 23733668,
+        "Cached": 6421748,
+        "SwapFree": 49848,
+        "CmaTotal": 524288,
+        "CmaFree": 3152,
+        "sample_age_seconds": 0.39127093786373734
+      },
+      "pids": [
+        4115955
+      ]
+    },
+    {
+      "status": "OK",
+      "worker_pid": 4117325,
+      "monotonic": 2193628.947642571,
+      "init_seconds": 0.004323019180446863,
+      "query_seconds": 0.07929249433800578,
+      "memory_kib": {
+        "monotonic": 2193628.479576688,
+        "unix_seconds": 1794003545.9627013,
+        "MemFree": 11793760,
+        "MemAvailable": 23197136,
+        "Cached": 6421752,
+        "SwapFree": 49848,
+        "CmaTotal": 524288,
+        "CmaFree": 3152,
+        "sample_age_seconds": 0.4680658830329776
+      },
+      "pids": [
+        4115955
+      ]
+    }
+  ],
+  "kernel_log": "Nov 07 06:19:13 localhost.localdomain kernel: NVRM: GPU0 nvCheckOkFailedNoLog: Check failed: Out of memory [NV_ERR_NO_MEMORY] (0x00000051) returned from _memdescAllocInternal(pMemDesc) @ mem_desc.c:1336\nNov 07 06:19:34 localhost.localdomain kernel: tegra-i2c 810c630000.i2c: I2C transfer timed out\n",
+  "constraints": [
+    "Historical 1-second samples cannot establish exact allocation headroom",
+    "MemAvailable is an estimate, not proof that any specific driver allocation will succeed",
+    "CmaFree does not describe fragmentation, requested allocation size, or allocator policy",
+    "NV_ERR_NO_MEMORY is concurrent evidence; no caller stack or allocation order recorded",
+    "No monitor bypass, timeout relaxation, capacity change, GPU probe, or retry"
+  ]
+}

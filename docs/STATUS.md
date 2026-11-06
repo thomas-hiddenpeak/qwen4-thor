@@ -17,6 +17,12 @@ decode五档及22质量记录完整。默认MTP候选只完成1K/4K，NVML初始
 默认ea1b474d/3eb46385、旧包保持。先处理具体环境原因并另冻结受影响
 补验，MTP矩阵及部署健康仍未完成，不能声称完整优化接受。
 
+续轮只读分析2243内存采样/2084查询：失败前0.536秒MemAvailable仍
+22.624GiB、CmaFree 3.078MiB，另52次成功init处于更低/相同CMA采样。
+不足以确定分配失败根因或制定阈值；未改容量/监控，新增GPU为0。
+研究草稿[PR #20](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/20)
+的567793a2两项host检查通过，未作为GPU验收替代。迁移任务仍持有原锁。
+
 ### 首轮已完成的投入门
 
 [判定卡](VISION_ROWMAX_PLAN_2026-11-07.md)的c6eef3c2候选34e7ceef完成

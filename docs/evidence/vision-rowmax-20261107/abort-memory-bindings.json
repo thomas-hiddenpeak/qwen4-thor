@@ -1,0 +1,8 @@
+{
+  "files": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/abort-diagnosis-01/analysis.log": "9c13331fe63a2b487788bf8ec8e7d3b0d45cbe65b45b66d49638ad46519c7e14",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/abort-diagnosis-01/analyze.py": "2f3909a30f459178fc6b0d272c416111f5bbc3b37ca7ded2d35043358bf5d945",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/abort-diagnosis-01/plan.json": "8f28cfbaaf1ae0895bb2ad4546b5bc70b2b8e0ef177ed8f0e7dff9eaffae946d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/abort-diagnosis-01/result.json": "b744edadb378370e0979f032488ead10010cbb8ef4f100aaa41447d8895dd68a"
+  }
+}

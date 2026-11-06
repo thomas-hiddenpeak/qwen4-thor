@@ -87,6 +87,28 @@ GPU租约仍可用。默认程序与sidecar SHA均保持原值。
 [保持默认的决定](evidence/vision-rowmax-20261107/decision.json)可追溯。
 正常接受审计明确拒绝此FAILED阶段；archive-abort仅保存事实，不放行。
 
+### 既有采样的有界离线分析
+
+[两假设计划](evidence/vision-rowmax-20261107/abort-memory-plan.json)限定读取
+现有2243份内存采样、2084次NVML查询和原内核日志，新增模型/HTTP/GPU
+采样均0。[结果](evidence/vision-rowmax-20261107/abort-memory-analysis.json)
+与[脚本/原件绑定](evidence/vision-rowmax-20261107/abort-memory-bindings.json)
+保留；分析脚本和副本位于原阶段abort-diagnosis-01目录。
+
+失败nvmlInit前0.536秒的采样：MemAvailable 22.624GiB、MemFree 11.249GiB，
+CmaFree 3152KiB（约3.078MiB），CmaTotal 512MiB。普通模式两个身份的
+MemAvailable最低约31.14GiB，MTP阶段最低约19.91GiB，CmaFree和SwapFree
+都曾降至0。但已有52次成功init的最近CmaFree采样小于或等于3152KiB。
+MTP成功init中位4.788ms、最大93.635ms，失败调用未返回，不能纳入成功
+调用耗时均值。
+
+这不支持“总可用DRAM已经耗尽”的简单解释；特定驱动分配/CMA压力仍是
+待查方向，现有记录不足以确定根因。MemAvailable估计、1秒采样和CmaFree
+总量不证明瞬时分配可行性，也没有失败分配大小/顺序或调用栈。不能据
+候选一次失败反推CMA准入阈值、延长超时、降低容量或跳过NVML；已到本次
+离线分析停止条件。后续须在可用窗口取得能区分机制的驱动层证据，再
+决定修复和受影响重验，不能把重试成功当作根因已经解决。
+
 ## 已准备的交付工具与恢复条件
 
 rowmax_delivery.py已实现精确pair回退、真实JSON/SSE/资料工具健康门和

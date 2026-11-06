@@ -1,0 +1,46 @@
+{
+  "scope": "Read-only bounded analysis of the existing ENV_ABORT; no model or GPU sampling",
+  "created": "2026-11-06T22:35:30.575213+00:00",
+  "limits": {
+    "model_starts": 0,
+    "http": 0,
+    "gpu_tests": 0,
+    "new_gpu_samples": 0,
+    "hypotheses": 2
+  },
+  "hypotheses": [
+    {
+      "id": "H1",
+      "claim": "System-wide available DRAM exhausted at failure",
+      "prediction": "MemAvailable collapses near failure compared with preceding successful NVML calls"
+    },
+    {
+      "id": "H2",
+      "claim": "Specific driver allocation/CMA pressure explains failure",
+      "prediction": "CMA or driver allocation evidence separates failed init from successful init; unchanged low CMA alone is insufficient to establish cause"
+    }
+  ],
+  "windows": "All phase extrema plus complete model lifetimes and last 20 queries; no new hardware probes",
+  "files": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/execution/resources.jsonl": "29eec59e7dff33e8efbced7f56f0e4235834a37b63c45eaa23a91fb9afd8b4ad",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/lease/nvml-queries.jsonl": "0d4e75f7528d2897687f2962c6b300832276c3151eed557fe9b82995809be4df",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/lease/events.jsonl": "c940ec2bbe823a535796c7706e4a7f5ed2946ed7dc6913e116fef6be3e46006a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/lease/exit.json": "0c523cff5675b57846ef75d166dd57fe7c8a9f93b531a7eb448e29d9a2fc12de",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/plan.json": "c081d4d1815dbc1a80c07d8968f7a8e32ef984937d88fb1f4822fb6e5111a601",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/logs/abort-kernel-journal.log": "367312700ddca570f669764cbec2cc9c1392ea7241f8cd9c0fa8b4ea13e65e69",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/abort-postflight.json": "9523b2ff2fd5f705b5f3d9fd8126e9b762ceb745027ff04c79fa61c0c6199799",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/execution/model-plain-parent/identity.json": "59717ee7c9744c5459ba66deb750f85b8fa04803704eaf2495079f2cfa3bc96f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/execution/model-plain-parent/command.json": "1f248c725b95086c620a6da0889102f5231d4e8f0f59a6135638d15e771c7f3a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/execution/model-plain-parent/stderr.log": "5bf4104360c4dac486d3d264ea2169ba92d3527afec453dc602caa61f76b4678",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/execution/model-plain-parent/waitable.json": "3347f143525185d110d9da2f309b909c2829f67e1ffbb991a49e106e951a7c42",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/execution/model-plain-candidate/identity.json": "bbb6a4a1f7006f35f9cac37d88338d8dbe0917f693231f0c01f1cd10b8bda7e6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/execution/model-plain-candidate/command.json": "743940d2ceb92752bd0209d839fb933364e34a6e7a161c83f6713d5a158f5552",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/execution/model-plain-candidate/stderr.log": "157a58d6650192c1d3dd64f5fd5c6a76f2ed6a895c05bf37da94d4decb55d5bf",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/execution/model-plain-candidate/waitable.json": "f394e517b5bbb0975b248bb34e8e73b9944a2488b0c17da38160053114cd099d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/execution/model-mtp-candidate/identity.json": "e148edcffc654d689ca7de8af5eb35ed3fcd7a67eaa1c0d0633bb7c12d28709c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/execution/model-mtp-candidate/command.json": "d018e8dcd519b31d2acd8b8fc5c257a7a204a318f7b666af8595f59d21f2b811",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/execution/model-mtp-candidate/stderr.log": "d393570e4f35ec0375dac5f95d7ca05ddb73ff9a09fee70b2b44aeb3ab5fda75",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/accept-01/execution/model-mtp-candidate/waitable.json": "ef093752f0c30c31db6fc68f2497549604abff7b5b1341b9a3413177f5d51902"
+  },
+  "stop": "If the recorded fields do not distinguish a cause, retain unresolved status; do not relax monitor, change capacity, or restart GPU"
+}
