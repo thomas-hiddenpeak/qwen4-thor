@@ -2,12 +2,31 @@
 import os
 from pathlib import Path
 import tempfile
+import subprocess
 import unittest
+from unittest.mock import patch
 
 from tools.evalscope import rowmax_wait_snapshot as w
 
 
 class WaitSnapshotTest(unittest.TestCase):
+    def test_discovery_on_actual_proc_without_children_interface(self):
+        directory = w.ROOT / ".q4t-work/vision-attention-rowmax-20261107/cpu/wait-tests"
+        directory.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=directory) as temporary:
+            source = Path(temporary) / "fake_query.py"
+            source.write_text("import time\ntime.sleep(5)\n")
+            child = subprocess.Popen(["/usr/bin/python3", "-B", str(source), "--worker", "c" * 32])
+            try:
+                with patch.object(w, "QUERY", str(source)):
+                    guard = w.identity(w.PROC, os.getpid())
+                    matches = w.matching_queries(w.PROC, guard)
+                self.assertEqual([row["pid"] for row in matches], [child.pid])
+                self.assertEqual(matches[0]["start_ticks"], w.identity(w.PROC, child.pid)["start_ticks"])
+            finally:
+                child.terminate()
+                child.wait(timeout=2)
+
     def test_only_owned_query_is_selected(self):
         guard = dict(pid=10, uid=os.getuid())
         query = dict(pid=11, ppid=10, start_ticks=100, uid=os.getuid(),

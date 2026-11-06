@@ -14,14 +14,20 @@ from tools.evalscope.diagnose_vision_rowmax_env import guard_pid
 
 s = a.s
 BASE = a.BASE
-FOLDER = BASE / "wait-01"
-LIMITS = dict(starts=1, generations=9, controls=16, native=0, seconds=360)
+FOLDER = BASE / "wait-02"
+LIMITS = dict(starts=1, generations=9, controls=16, native=0, seconds=356)
 
 
 def prepare():
     old = a.pilot.read(a.FOLDER / "plan.json")
     for name, digest in old["files"].items():
         s.require(s.sha(name) == digest, "original dependency changed: " + name)
+    previous = a.pilot.read(BASE / "wait-01/execution/result.json")
+    s.require(previous["status"] == "FAILED" and previous["counts"] ==
+              dict(starts=1, generations=0, controls=0, native=0), "prior attempt budget")
+    events = [json.loads(line) for line in (BASE / "wait-01/lease/events.jsonl").read_text().splitlines()]
+    previous_seconds = events[-1]["monotonic"] - events[0]["monotonic"]
+    s.require(previous_seconds + LIMITS["seconds"] <= 360, "aggregate diagnostic deadline")
     FOLDER.mkdir()
     inputs = FOLDER / "inputs"
     inputs.mkdir()
@@ -40,12 +46,17 @@ def prepare():
     paths += list(inputs.iterdir()) + [s.ROOT / "docs/VISION_ROWMAX_WAIT_PLAN_2026-11-07.md",
         BASE / "env-02/review/analysis.json", BASE / "env-02/originals.json",
         BASE / "logs/wait-stack-capability.json", BASE / "logs/wait-contracts.log",
+        BASE / "logs/wait-contracts-02.log", BASE / "wait-01/plan.json",
+        BASE / "wait-01/execution/result.json", BASE / "wait-01/lease/events.jsonl",
+        BASE / "wait-01/originals.json",
         s.ROOT / "build/q4t", s.ROOT / "build/q4t.release.json"]
     files = dict(old["files"])
     files.update({str(p): s.sha(p) for p in paths})
     lock = (s.ROOT / ".q4t-work/gpu-exclusive.lock").stat()
     s.save(FOLDER / "plan.json", dict(profile="vision-rowmax-wait-diagnosis-v1",
         limits=LIMITS, observer_processes=1, snapshot_thresholds_seconds=[2, 4],
+        prior_attempt_seconds=previous_seconds, aggregate_seconds_limit=360,
+        aggregate_starts_limit=2, aggregate_generations_limit=9,
         max_snapshots=2, max_threads_per_process=64, max_bytes_per_file=8192,
         port=s.PORT, model=old["model"], binaries=old["binaries"], cases=cases,
         files=files, lock_device=lock.st_dev, lock_inode=lock.st_ino,
@@ -95,7 +106,9 @@ class Run(a.Run):
                       "wait observer did not become ready")
             time.sleep(.05)
         rows = self.observer_rows()
-        s.require(rows[0]["event"] == "ready", "observer startup receipt")
+        s.require(rows[0]["event"] == "ready" and
+                  rows[0]["process_discovery"] == "proc_stat_parent_validated",
+                  "observer startup receipt")
 
     def stop_observer(self):
         if self.observer is None:

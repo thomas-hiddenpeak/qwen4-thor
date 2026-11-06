@@ -7,7 +7,7 @@ import re
 import time
 
 ROOT = Path(__file__).resolve().parents[2]
-PHASE = ROOT / ".q4t-work/vision-attention-rowmax-20261107/wait-01"
+PHASE = ROOT / ".q4t-work/vision-attention-rowmax-20261107/wait-02"
 PROC = Path("/proc")
 QUERY = str(ROOT / "tools/evalscope/nvml_process_query.py")
 GUARD = str(ROOT / "tools/evalscope/gpu_exclusive.py")
@@ -33,6 +33,25 @@ def is_query(value, guard):
     return (value["ppid"] == guard["pid"] and value["uid"] == guard["uid"] and
             len(argv) == 5 and argv[1:4] == ["-B", QUERY, "--worker"] and
             re.fullmatch(r"[0-9a-f]{32}", argv[4]) is not None)
+
+
+def matching_queries(proc, guard):
+    # The installed Tegra kernel omits /proc/PID/task/TID/children. Read
+    # stat ancestry first; read argv only for direct children of this guard.
+    result = []
+    for path in proc.iterdir():
+        if not path.name.isdigit():
+            continue
+        try:
+            stat = (path / "stat").read_text().rsplit(")", 1)[1].split()
+            if int(stat[1]) != guard["pid"]:
+                continue
+            value = identity(proc, int(path.name))
+            if is_query(value, guard):
+                result.append(value)
+        except (FileNotFoundError, ProcessLookupError):
+            continue
+    return result
 
 
 def snapshot(proc, expected):
@@ -121,7 +140,10 @@ def observe(guard_pid):
     started = time.monotonic()
     tracker = Tracker()
     count = 0
+    # Prove the real process-discovery operation before allowing model load.
+    matching_queries(PROC, guard)
     emit(event="ready", identity=identity(PROC, os.getpid()), guard=guard,
+         process_discovery="proc_stat_parent_validated",
          scope="owned slow NVML query and same-stage model threads only")
     reason = "deadline"
     while time.monotonic() - started < 330:
@@ -132,18 +154,10 @@ def observe(guard_pid):
             if not same_identity(identity(PROC, guard_pid), guard):
                 reason = "guard_identity_changed"
                 break
-            children = (PROC / str(guard_pid) / "task" / str(guard_pid) / "children").read_text()
         except OSError:
             reason = "guard_exited"
             break
-        values = []
-        for pid in map(int, children.split()):
-            try:
-                value = identity(PROC, pid)
-                if is_query(value, guard):
-                    values.append(value)
-            except OSError:
-                continue
+        values = matching_queries(PROC, guard)
         due = tracker.due(values, time.monotonic())
         if due:
             expected, age = due
