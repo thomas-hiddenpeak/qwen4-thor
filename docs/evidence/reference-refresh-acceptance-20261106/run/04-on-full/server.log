@@ -1,0 +1,284 @@
+[q4t][startup-memory] {"checkpoint":"before_metadata","admission":{"state":"admitted","estimate_bytes":null,"headroom_bytes":2147483648,"required_bytes":2147483648,"observed_total_bytes":131920637952,"observed_available_bytes":125136408576}}
+[q4t][capabilities] requested=experimental mtp=1 media=0 max_seq=1
+[q4t][startup] tokenizer 438 ms
+[q4t][budget] mem_total=131.92 GB fraction=0.90 budget=118.73 GB
+[q4t][budget]   allocation estimate only; excludes file cache, driver overlap and other processes; not a physical RAM limit
+[q4t][budget]   requested max_len=208896 max_seq=1 max_prefill=8192 feasible=1 reason=estimate_fits
+[q4t][budget]   weights=84.00 GB  fixed=97.81 GB (estimated allocations+margin)
+[q4t][budget]   main_workspace=2348023808 mtp_workspace=3402434560 forward_buffers=419594244 ple_working=76571648 mtp=1
+[q4t][budget]   per_request=8.57 GB (peak admitted MTP request allocations)  state_pool=7.08 GB
+[q4t][budget]   => max_len=208896 max_seq=1
+[q4t][budget]   MTP allocation scope: text pooled sequences, k in [1,16]; allocation estimate, not a physical RAM guarantee
+[q4t][budget]   mtp_weights=5214301696 mtp_buffers=522240 mtp_scratch=6476920 mtp_checkpoints=346927104 mtp_forward_temp=16814224
+[q4t][budget]   loading_host_peak=3355443200 startup_envelope=108249902152 runtime_peak=113469410520 estimated_total=113469410520
+[q4t][startup] budget 428 ms
+[q4t][capacity] requested_max_len=208896 requested_max_seq=1 requested_max_prefill=8192 effective_max_len=208896 effective_max_seq=1 effective_max_prefill=8192 budget_enabled=1 budget_feasible=true
+[q4t][admission] inflight=32 queued=31 policy=capacity_fifo_best_fit
+[q4t][startup-memory] {"checkpoint":"before_allocations","admission":{"state":"admitted","estimate_bytes":113469410520,"headroom_bytes":2147483648,"required_bytes":115616894168,"observed_total_bytes":131920637952,"observed_available_bytes":124805582848}}
+[q4t][cuda-quota] {"event":"configured","enabled":true,"limit_bytes":118728574156,"charged_bytes":0,"live_bytes":0,"pending_bytes":0,"unknown_bytes":0,"peak_bytes":0,"entries":0,"poisoned":false,"byte_rejections":0,"entry_rejections":0,"stream_rejections":0,"contract_failures":0,"backend_failures":0,"scope":"process_requested_cuda_bytes","physical_ram_limit":false}
+[q4t][startup-plan] mode=off active=0
+[q4t][startup] model_load 27794 ms
+[q4t] generation stop token ids: 248046 248044
+[q4t] MTP loaded (k=3 max_seq=1)
+[q4t][startup] mtp_load 3189 ms
+[q4t] media disabled; vision tower not loaded
+[q4t][capabilities] effective mtp=1 media_allowed=0 vision_loaded=0 max_seq=1
+[q4t] continuous-batching scheduler started (max_seq=1)
+[q4t][startup-memory] {"checkpoint":"before_ready","admission":{"state":"admitted","estimate_bytes":null,"headroom_bytes":2147483648,"required_bytes":2147483648,"observed_total_bytes":131920637952,"observed_available_bytes":25670631424}}
+[q4t][startup] startup_total 31850 ms
+[q4t] serving on port 8762 (host 127.0.0.1, model qwen3.8-flash-next)
+[q4t][request] instance=0 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=req-84a8dffea571310c81dd6148ba013a39
+[q4t][request] instance=0 id=chatcmpl-auto-1116582962707e0c6d8f8e73500e3dfc event=registered stage=validation seq=-1 elapsed_ms=0.763 trace_id=req-84a8dffea571310c81dd6148ba013a39
+[q4t][http] trace_id=req-84a8dffea571310c81dd6148ba013a39 completion_id=chatcmpl-auto-1116582962707e0c6d8f8e73500e3dfc
+[q4t][request] instance=0 id=chatcmpl-auto-1116582962707e0c6d8f8e73500e3dfc event=stage stage=encode seq=-1 elapsed_ms=0.848 trace_id=req-84a8dffea571310c81dd6148ba013a39
+[q4t][request] instance=0 id=chatcmpl-auto-1116582962707e0c6d8f8e73500e3dfc event=stage stage=slot_admission seq=-1 elapsed_ms=103.049 trace_id=req-84a8dffea571310c81dd6148ba013a39
+[q4t][request] instance=0 id=chatcmpl-auto-1116582962707e0c6d8f8e73500e3dfc event=admitted stage=slot_admission seq=0 elapsed_ms=103.078 trace_id=req-84a8dffea571310c81dd6148ba013a39
+[q4t][request] instance=0 id=chatcmpl-auto-1116582962707e0c6d8f8e73500e3dfc event=stage stage=encode seq=0 elapsed_ms=103.081 trace_id=req-84a8dffea571310c81dd6148ba013a39
+[q4t][request] instance=0 id=chatcmpl-auto-1116582962707e0c6d8f8e73500e3dfc event=stage stage=prefill seq=0 elapsed_ms=111.642 trace_id=req-84a8dffea571310c81dd6148ba013a39
+[sub-timing] T=8192 ple=22.76 grread=352.30 attn=3252.53 wrar=339.36 moe=1073.60 write=155.74 total=5196.29 ms [detail lin_inproj=203.88 lin_state=1585.89 lin_outproj=85.10 full_qkv=54.00 full_core=1285.40 full_oproj=28.44]
+[qsa-subtiming] T=8192 valid=1 layers=12 prepare=43.463 index_proj=6.062 index_prepare=3.779 score_select=49.146 sparse=1182.811 total=1285.262 ms
+[hc-mix-subtiming] T=8192 norm=65.25 down_gemm=200.50 silu=5.18 up_gemm=85.71 gate=148.49 inject=74.33 combine=267.00 total=846.45 ms
+[q4t][mem] phase=prefill_chunk id=seq0@pos8192 dev_used_gb=112.043 dev_total_gb=131.921 rss_mb=883.4 mem_free_gb=17.035 mem_avail_gb=23.828 cached_gb=4.558
+[sub-timing] T=8192 ple=22.69 grread=293.42 attn=3551.93 wrar=339.78 moe=1042.25 write=155.30 total=5405.37 ms [detail lin_inproj=201.44 lin_state=1585.14 lin_outproj=84.68 full_qkv=54.04 full_core=1596.63 full_oproj=28.12]
+[qsa-subtiming] T=8192 valid=1 layers=12 prepare=43.592 index_proj=5.935 index_prepare=3.700 score_select=160.569 sparse=1382.748 total=1596.544 ms
+[hc-mix-subtiming] T=8192 norm=65.18 down_gemm=142.47 silu=5.15 up_gemm=85.50 gate=148.30 inject=73.85 combine=267.12 total=787.56 ms
+[q4t][mem] phase=prefill_chunk id=seq0@pos16384 dev_used_gb=111.949 dev_total_gb=131.921 rss_mb=884.7 mem_free_gb=17.129 mem_avail_gb=23.921 cached_gb=4.558
+[sub-timing] T=8192 ple=22.71 grread=292.05 attn=3646.24 wrar=339.22 moe=1045.42 write=155.56 total=5501.19 ms [detail lin_inproj=200.82 lin_state=1586.14 lin_outproj=84.29 full_qkv=54.08 full_core=1690.80 full_oproj=28.44]
+[qsa-subtiming] T=8192 valid=1 layers=12 prepare=43.319 index_proj=5.909 index_prepare=3.676 score_select=241.633 sparse=1396.189 total=1690.727 ms
+[hc-mix-subtiming] T=8192 norm=65.06 down_gemm=142.17 silu=5.17 up_gemm=84.89 gate=148.10 inject=73.74 combine=266.80 total=785.92 ms
+[q4t][mem] phase=prefill_chunk id=seq0@pos24576 dev_used_gb=111.899 dev_total_gb=131.921 rss_mb=885.3 mem_free_gb=17.179 mem_avail_gb=23.972 cached_gb=4.558
+[sub-timing] T=8192 ple=22.73 grread=293.36 attn=3737.35 wrar=341.11 moe=1045.44 write=155.24 total=5595.24 ms [detail lin_inproj=201.00 lin_state=1583.97 lin_outproj=84.57 full_qkv=54.06 full_core=1783.99 full_oproj=28.02]
+[qsa-subtiming] T=8192 valid=1 layers=12 prepare=43.377 index_proj=5.943 index_prepare=3.686 score_select=322.500 sparse=1408.402 total=1783.908 ms
+[hc-mix-subtiming] T=8192 norm=65.00 down_gemm=144.77 silu=5.18 up_gemm=84.80 gate=148.25 inject=74.06 combine=266.80 total=788.86 ms
+[q4t][mem] phase=prefill_chunk id=seq0@pos32768 dev_used_gb=111.804 dev_total_gb=131.921 rss_mb=885.6 mem_free_gb=17.274 mem_avail_gb=24.068 cached_gb=4.559
+[sub-timing] T=8192 ple=22.76 grread=292.67 attn=3825.34 wrar=339.88 moe=1044.85 write=155.26 total=5680.76 ms [detail lin_inproj=200.67 lin_state=1584.16 lin_outproj=84.59 full_qkv=54.10 full_core=1871.58 full_oproj=28.50]
+[qsa-subtiming] T=8192 valid=1 layers=12 prepare=43.216 index_proj=5.933 index_prepare=3.678 score_select=403.310 sparse=1415.362 total=1871.500 ms
+[hc-mix-subtiming] T=8192 norm=65.13 down_gemm=141.81 silu=5.13 up_gemm=85.12 gate=148.45 inject=74.41 combine=266.89 total=786.94 ms
+[q4t][mem] phase=prefill_chunk id=seq0@pos40960 dev_used_gb=111.758 dev_total_gb=131.921 rss_mb=886.0 mem_free_gb=17.320 mem_avail_gb=24.113 cached_gb=4.559
+[sub-timing] T=4084 ple=11.94 grread=131.15 attn=1961.10 wrar=151.14 moe=675.50 write=79.76 total=3010.59 ms [detail lin_inproj=104.40 lin_state=789.80 lin_outproj=42.70 full_qkv=30.13 full_core=978.03 full_oproj=14.60]
+[qsa-subtiming] T=4084 valid=1 layers=12 prepare=21.740 index_proj=2.389 index_prepare=1.970 score_select=241.278 sparse=710.581 total=977.957 ms
+[hc-mix-subtiming] T=4084 norm=32.75 down_gemm=39.44 silu=2.66 up_gemm=42.25 gate=75.01 inject=34.91 combine=134.15 total=361.16 ms
+[q4t][request] instance=0 id=chatcmpl-auto-1116582962707e0c6d8f8e73500e3dfc event=stage stage=decode seq=0 elapsed_ms=30631.645 trace_id=req-84a8dffea571310c81dd6148ba013a39
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[sub-timing] T=4 ple=0.58 grread=6.71 attn=39.15 wrar=6.99 moe=36.16 write=0.39 total=89.98 ms [detail lin_inproj=16.10 lin_state=2.80 lin_outproj=5.64 full_qkv=3.53 full_core=9.06 full_oproj=1.67]
+[moe-subtiming] T=4 prep_gu=0.87 gemm_gu=17.31 prep_dn=0.61 gemm_dn=12.07 combine=0.28 total=31.15 ms
+[hc-mix-subtiming] T=4 norm=0.48 down_gemm=4.23 silu=0.47 up_gemm=4.81 gate=0.56 inject=1.65 combine=1.02 total=13.21 ms
+[sub-timing] T=4 ple=0.50 grread=6.60 attn=38.38 wrar=6.98 moe=19.43 write=0.37 total=72.26 ms [detail lin_inproj=15.44 lin_state=2.84 lin_outproj=5.53 full_qkv=3.54 full_core=9.04 full_oproj=1.71]
+[moe-subtiming] T=4 prep_gu=0.71 gemm_gu=8.40 prep_dn=0.61 gemm_dn=4.46 combine=0.26 total=14.45 ms
+[hc-mix-subtiming] T=4 norm=0.46 down_gemm=4.14 silu=0.48 up_gemm=4.80 gate=0.56 inject=1.67 combine=1.00 total=13.10 ms
+[sub-timing] T=4 ple=0.50 grread=6.67 attn=38.27 wrar=7.03 moe=21.06 write=0.37 total=73.89 ms [detail lin_inproj=15.43 lin_state=2.77 lin_outproj=5.57 full_qkv=3.50 full_core=9.05 full_oproj=1.67]
+[moe-subtiming] T=4 prep_gu=0.74 gemm_gu=9.44 prep_dn=0.61 gemm_dn=4.99 combine=0.27 total=16.05 ms
+[hc-mix-subtiming] T=4 norm=0.48 down_gemm=4.14 silu=0.48 up_gemm=4.80 gate=0.59 inject=1.67 combine=1.01 total=13.17 ms
+[sub-timing] T=4 ple=0.51 grread=6.70 attn=38.44 wrar=6.94 moe=22.46 write=0.38 total=75.44 ms [detail lin_inproj=15.43 lin_state=2.86 lin_outproj=5.58 full_qkv=3.52 full_core=9.08 full_oproj=1.68]
+[moe-subtiming] T=4 prep_gu=0.72 gemm_gu=10.45 prep_dn=0.59 gemm_dn=5.43 combine=0.28 total=17.47 ms
+[hc-mix-subtiming] T=4 norm=0.48 down_gemm=4.14 silu=0.48 up_gemm=4.78 gate=0.58 inject=1.69 combine=1.01 total=13.15 ms
+[sub-timing] T=4 ple=0.50 grread=6.69 attn=38.66 wrar=7.07 moe=22.64 write=0.38 total=75.94 ms [detail lin_inproj=15.42 lin_state=2.88 lin_outproj=5.67 full_qkv=3.57 full_core=9.11 full_oproj=1.69]
+[moe-subtiming] T=4 prep_gu=0.74 gemm_gu=10.53 prep_dn=0.63 gemm_dn=5.46 combine=0.28 total=17.63 ms
+[hc-mix-subtiming] T=4 norm=0.50 down_gemm=4.18 silu=0.45 up_gemm=4.83 gate=0.59 inject=1.67 combine=1.02 total=13.23 ms
+[sub-timing] T=4 ple=0.50 grread=6.63 attn=38.27 wrar=7.05 moe=22.88 write=0.39 total=75.73 ms [detail lin_inproj=15.45 lin_state=2.77 lin_outproj=5.57 full_qkv=3.50 full_core=9.05 full_oproj=1.69]
+[moe-subtiming] T=4 prep_gu=0.72 gemm_gu=10.72 prep_dn=0.61 gemm_dn=5.58 combine=0.26 total=17.90 ms
+[hc-mix-subtiming] T=4 norm=0.48 down_gemm=4.21 silu=0.48 up_gemm=4.81 gate=0.55 inject=1.67 combine=1.02 total=13.21 ms
+[sub-timing] T=4 ple=0.51 grread=6.78 attn=38.22 wrar=6.97 moe=24.22 write=0.40 total=77.10 ms [detail lin_inproj=15.42 lin_state=2.80 lin_outproj=5.53 full_qkv=3.50 full_core=9.06 full_oproj=1.66]
+[moe-subtiming] T=4 prep_gu=0.74 gemm_gu=11.57 prep_dn=0.61 gemm_dn=5.96 combine=0.29 total=19.17 ms
+[hc-mix-subtiming] T=4 norm=0.48 down_gemm=4.14 silu=0.47 up_gemm=4.82 gate=0.60 inject=1.67 combine=1.01 total=13.19 ms
+[sub-timing] T=4 ple=0.49 grread=6.66 attn=38.23 wrar=6.95 moe=21.55 write=0.45 total=74.34 ms [detail lin_inproj=15.46 lin_state=2.78 lin_outproj=5.55 full_qkv=3.47 full_core=9.04 full_oproj=1.67]
+[moe-subtiming] T=4 prep_gu=0.72 gemm_gu=9.83 prep_dn=0.62 gemm_dn=5.11 combine=0.26 total=16.55 ms
+[hc-mix-subtiming] T=4 norm=0.46 down_gemm=4.14 silu=0.46 up_gemm=4.81 gate=0.58 inject=1.69 combine=1.05 total=13.19 ms
+[sub-timing] T=4 ple=0.50 grread=6.68 attn=38.27 wrar=6.94 moe=23.07 write=0.41 total=75.87 ms [detail lin_inproj=15.41 lin_state=2.79 lin_outproj=5.56 full_qkv=3.50 full_core=9.07 full_oproj=1.67]
+[moe-subtiming] T=4 prep_gu=0.72 gemm_gu=10.88 prep_dn=0.59 gemm_dn=5.57 combine=0.27 total=18.03 ms
+[hc-mix-subtiming] T=4 norm=0.49 down_gemm=4.16 silu=0.46 up_gemm=4.80 gate=0.57 inject=1.65 combine=1.01 total=13.15 ms
+[sub-timing] T=4 ple=0.53 grread=6.60 attn=38.22 wrar=7.03 moe=20.73 write=0.39 total=73.50 ms [detail lin_inproj=15.36 lin_state=2.82 lin_outproj=5.59 full_qkv=3.46 full_core=9.06 full_oproj=1.66]
+[moe-subtiming] T=4 prep_gu=0.74 gemm_gu=9.31 prep_dn=0.61 gemm_dn=4.82 combine=0.27 total=15.75 ms
+[hc-mix-subtiming] T=4 norm=0.46 down_gemm=4.14 silu=0.47 up_gemm=4.80 gate=0.58 inject=1.64 combine=1.04 total=13.13 ms
+[sub-timing] T=4 ple=0.49 grread=6.65 attn=38.06 wrar=7.00 moe=21.17 write=0.40 total=73.77 ms [detail lin_inproj=15.31 lin_state=2.77 lin_outproj=5.51 full_qkv=3.47 full_core=9.06 full_oproj=1.67]
+[moe-subtiming] T=4 prep_gu=0.75 gemm_gu=9.52 prep_dn=0.60 gemm_dn=4.93 combine=0.28 total=16.08 ms
+[hc-mix-subtiming] T=4 norm=0.46 down_gemm=4.13 silu=0.47 up_gemm=4.87 gate=0.58 inject=1.67 combine=1.01 total=13.19 ms
+[sub-timing] T=4 ple=0.50 grread=6.62 attn=38.29 wrar=7.03 moe=23.17 write=0.41 total=76.01 ms [detail lin_inproj=15.42 lin_state=2.82 lin_outproj=5.53 full_qkv=3.52 full_core=9.06 full_oproj=1.70]
+[moe-subtiming] T=4 prep_gu=0.73 gemm_gu=10.96 prep_dn=0.61 gemm_dn=5.62 combine=0.28 total=18.20 ms
+[hc-mix-subtiming] T=4 norm=0.46 down_gemm=4.18 silu=0.47 up_gemm=4.78 gate=0.57 inject=1.66 combine=1.05 total=13.18 ms
+[sub-timing] T=4 ple=0.51 grread=6.67 attn=38.39 wrar=6.96 moe=23.01 write=0.39 total=75.93 ms [detail lin_inproj=15.46 lin_state=2.81 lin_outproj=5.56 full_qkv=3.51 full_core=9.09 full_oproj=1.69]
+[moe-subtiming] T=4 prep_gu=0.75 gemm_gu=10.77 prep_dn=0.59 gemm_dn=5.65 combine=0.27 total=18.03 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.15 silu=0.49 up_gemm=4.78 gate=0.56 inject=1.65 combine=1.01 total=13.12 ms
+[sub-timing] T=4 ple=0.50 grread=6.61 attn=38.42 wrar=7.02 moe=24.33 write=0.40 total=77.27 ms [detail lin_inproj=15.50 lin_state=2.83 lin_outproj=5.59 full_qkv=3.47 full_core=9.09 full_oproj=1.68]
+[moe-subtiming] T=4 prep_gu=0.72 gemm_gu=11.74 prep_dn=0.59 gemm_dn=6.06 combine=0.26 total=19.37 ms
+[hc-mix-subtiming] T=4 norm=0.48 down_gemm=4.14 silu=0.47 up_gemm=4.78 gate=0.56 inject=1.69 combine=1.01 total=13.13 ms
+[sub-timing] T=4 ple=0.52 grread=6.84 attn=38.59 wrar=7.18 moe=22.38 write=0.40 total=75.91 ms [detail lin_inproj=15.53 lin_state=2.83 lin_outproj=5.62 full_qkv=3.57 full_core=9.06 full_oproj=1.69]
+[moe-subtiming] T=4 prep_gu=0.75 gemm_gu=10.34 prep_dn=0.62 gemm_dn=5.29 combine=0.28 total=17.28 ms
+[hc-mix-subtiming] T=4 norm=0.49 down_gemm=4.24 silu=0.50 up_gemm=4.91 gate=0.64 inject=1.68 combine=1.02 total=13.46 ms
+[sub-timing] T=4 ple=0.52 grread=6.68 attn=38.24 wrar=7.04 moe=22.97 write=0.37 total=75.82 ms [detail lin_inproj=15.40 lin_state=2.82 lin_outproj=5.55 full_qkv=3.49 full_core=9.07 full_oproj=1.66]
+[moe-subtiming] T=4 prep_gu=0.73 gemm_gu=10.75 prep_dn=0.61 gemm_dn=5.56 combine=0.27 total=17.92 ms
+[hc-mix-subtiming] T=4 norm=0.49 down_gemm=4.18 silu=0.46 up_gemm=4.81 gate=0.61 inject=1.69 combine=1.00 total=13.24 ms
+[sub-timing] T=4 ple=0.50 grread=6.66 attn=38.28 wrar=6.96 moe=24.71 write=0.38 total=77.48 ms [detail lin_inproj=15.42 lin_state=2.83 lin_outproj=5.53 full_qkv=3.49 full_core=9.07 full_oproj=1.69]
+[moe-subtiming] T=4 prep_gu=0.73 gemm_gu=11.91 prep_dn=0.61 gemm_dn=6.14 combine=0.29 total=19.68 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.18 silu=0.47 up_gemm=4.81 gate=0.58 inject=1.66 combine=0.99 total=13.16 ms
+[sub-timing] T=4 ple=0.52 grread=6.69 attn=38.27 wrar=7.03 moe=21.90 write=0.41 total=74.82 ms [detail lin_inproj=15.42 lin_state=2.82 lin_outproj=5.56 full_qkv=3.49 full_core=9.07 full_oproj=1.66]
+[moe-subtiming] T=4 prep_gu=0.72 gemm_gu=10.05 prep_dn=0.59 gemm_dn=5.25 combine=0.27 total=16.88 ms
+[hc-mix-subtiming] T=4 norm=0.46 down_gemm=4.14 silu=0.47 up_gemm=4.82 gate=0.62 inject=1.69 combine=1.02 total=13.22 ms
+[sub-timing] T=4 ple=0.49 grread=6.68 attn=38.34 wrar=6.93 moe=21.73 write=0.39 total=74.57 ms [detail lin_inproj=15.44 lin_state=2.83 lin_outproj=5.56 full_qkv=3.54 full_core=9.04 full_oproj=1.67]
+[moe-subtiming] T=4 prep_gu=0.73 gemm_gu=9.93 prep_dn=0.62 gemm_dn=5.15 combine=0.26 total=16.70 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.17 silu=0.47 up_gemm=4.78 gate=0.58 inject=1.66 combine=1.01 total=13.13 ms
+[sub-timing] T=4 ple=0.50 grread=6.65 attn=38.23 wrar=7.02 moe=22.37 write=0.40 total=75.18 ms [detail lin_inproj=15.39 lin_state=2.82 lin_outproj=5.55 full_qkv=3.49 full_core=9.05 full_oproj=1.68]
+[moe-subtiming] T=4 prep_gu=0.75 gemm_gu=10.44 prep_dn=0.61 gemm_dn=5.26 combine=0.27 total=17.32 ms
+[hc-mix-subtiming] T=4 norm=0.46 down_gemm=4.16 silu=0.49 up_gemm=4.82 gate=0.58 inject=1.66 combine=1.03 total=13.21 ms
+[sub-timing] T=4 ple=0.50 grread=6.61 attn=38.23 wrar=7.07 moe=20.67 write=0.41 total=73.50 ms [detail lin_inproj=15.41 lin_state=2.82 lin_outproj=5.54 full_qkv=3.47 full_core=9.05 full_oproj=1.67]
+[moe-subtiming] T=4 prep_gu=0.72 gemm_gu=9.31 prep_dn=0.60 gemm_dn=4.81 combine=0.26 total=15.70 ms
+[hc-mix-subtiming] T=4 norm=0.46 down_gemm=4.18 silu=0.47 up_gemm=4.78 gate=0.59 inject=1.67 combine=1.04 total=13.19 ms
+[sub-timing] T=4 ple=0.50 grread=6.59 attn=38.13 wrar=7.09 moe=24.22 write=0.40 total=76.92 ms [detail lin_inproj=15.33 lin_state=2.79 lin_outproj=5.58 full_qkv=3.46 full_core=9.05 full_oproj=1.67]
+[moe-subtiming] T=4 prep_gu=0.73 gemm_gu=11.68 prep_dn=0.61 gemm_dn=5.89 combine=0.28 total=19.19 ms
+[hc-mix-subtiming] T=4 norm=0.46 down_gemm=4.18 silu=0.46 up_gemm=4.80 gate=0.58 inject=1.66 combine=1.04 total=13.19 ms
+[sub-timing] T=4 ple=0.50 grread=6.70 attn=38.31 wrar=7.03 moe=21.62 write=0.39 total=74.55 ms [detail lin_inproj=15.42 lin_state=2.81 lin_outproj=5.55 full_qkv=3.54 full_core=9.04 full_oproj=1.69]
+[moe-subtiming] T=4 prep_gu=0.75 gemm_gu=9.81 prep_dn=0.60 gemm_dn=5.17 combine=0.27 total=16.59 ms
+[hc-mix-subtiming] T=4 norm=0.46 down_gemm=4.18 silu=0.48 up_gemm=4.78 gate=0.59 inject=1.68 combine=1.01 total=13.20 ms
+[sub-timing] T=4 ple=0.49 grread=6.74 attn=38.43 wrar=6.92 moe=23.72 write=0.39 total=76.70 ms [detail lin_inproj=15.57 lin_state=2.82 lin_outproj=5.55 full_qkv=3.53 full_core=9.03 full_oproj=1.69]
+[moe-subtiming] T=4 prep_gu=0.72 gemm_gu=11.31 prep_dn=0.59 gemm_dn=5.86 combine=0.25 total=18.73 ms
+[hc-mix-subtiming] T=4 norm=0.46 down_gemm=4.22 silu=0.48 up_gemm=4.82 gate=0.55 inject=1.65 combine=1.01 total=13.18 ms
+[sub-timing] T=4 ple=0.50 grread=6.76 attn=38.55 wrar=7.12 moe=22.08 write=0.41 total=75.42 ms [detail lin_inproj=15.48 lin_state=2.90 lin_outproj=5.67 full_qkv=3.48 full_core=9.08 full_oproj=1.69]
+[moe-subtiming] T=4 prep_gu=0.75 gemm_gu=10.19 prep_dn=0.62 gemm_dn=5.17 combine=0.28 total=17.02 ms
+[hc-mix-subtiming] T=4 norm=0.48 down_gemm=4.23 silu=0.45 up_gemm=4.85 gate=0.61 inject=1.70 combine=1.05 total=13.36 ms
+[sub-timing] T=4 ple=0.49 grread=6.56 attn=38.33 wrar=7.04 moe=24.05 write=0.37 total=76.85 ms [detail lin_inproj=15.44 lin_state=2.87 lin_outproj=5.54 full_qkv=3.48 full_core=9.03 full_oproj=1.69]
+[moe-subtiming] T=4 prep_gu=0.74 gemm_gu=11.52 prep_dn=0.60 gemm_dn=5.87 combine=0.28 total=19.02 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.18 silu=0.48 up_gemm=4.74 gate=0.56 inject=1.66 combine=1.06 total=13.13 ms
+[sub-timing] T=4 ple=0.50 grread=6.61 attn=38.14 wrar=7.03 moe=24.00 write=0.40 total=76.67 ms [detail lin_inproj=15.38 lin_state=2.79 lin_outproj=5.52 full_qkv=3.47 full_core=9.02 full_oproj=1.67]
+[moe-subtiming] T=4 prep_gu=0.77 gemm_gu=11.35 prep_dn=0.63 gemm_dn=5.94 combine=0.26 total=18.95 ms
+[hc-mix-subtiming] T=4 norm=0.46 down_gemm=4.15 silu=0.49 up_gemm=4.78 gate=0.58 inject=1.66 combine=1.02 total=13.14 ms
+[sub-timing] T=4 ple=0.49 grread=6.57 attn=38.32 wrar=7.08 moe=21.44 write=0.38 total=74.29 ms [detail lin_inproj=15.34 lin_state=2.86 lin_outproj=5.60 full_qkv=3.51 full_core=9.05 full_oproj=1.70]
+[moe-subtiming] T=4 prep_gu=0.75 gemm_gu=9.77 prep_dn=0.60 gemm_dn=5.12 combine=0.26 total=16.50 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.14 silu=0.49 up_gemm=4.79 gate=0.58 inject=1.67 combine=1.02 total=13.14 ms
+[sub-timing] T=4 ple=0.51 grread=6.61 attn=38.13 wrar=7.05 moe=24.84 write=0.41 total=77.54 ms [detail lin_inproj=15.32 lin_state=2.81 lin_outproj=5.56 full_qkv=3.45 full_core=9.07 full_oproj=1.66]
+[moe-subtiming] T=4 prep_gu=0.73 gemm_gu=12.05 prep_dn=0.60 gemm_dn=6.14 combine=0.27 total=19.77 ms
+[hc-mix-subtiming] T=4 norm=0.48 down_gemm=4.15 silu=0.48 up_gemm=4.81 gate=0.58 inject=1.66 combine=1.04 total=13.20 ms
+[sub-timing] T=4 ple=0.50 grread=6.61 attn=38.22 wrar=7.05 moe=23.76 write=0.39 total=76.53 ms [detail lin_inproj=15.33 lin_state=2.85 lin_outproj=5.56 full_qkv=3.47 full_core=9.06 full_oproj=1.66]
+[moe-subtiming] T=4 prep_gu=0.74 gemm_gu=11.33 prep_dn=0.61 gemm_dn=5.75 combine=0.26 total=18.69 ms
+[hc-mix-subtiming] T=4 norm=0.46 down_gemm=4.17 silu=0.49 up_gemm=4.79 gate=0.59 inject=1.64 combine=1.03 total=13.18 ms
+[sub-timing] T=4 ple=0.51 grread=6.65 attn=38.17 wrar=7.02 moe=23.67 write=0.41 total=76.45 ms [detail lin_inproj=15.40 lin_state=2.80 lin_outproj=5.54 full_qkv=3.46 full_core=9.04 full_oproj=1.67]
+[moe-subtiming] T=4 prep_gu=0.72 gemm_gu=11.32 prep_dn=0.61 gemm_dn=5.70 combine=0.29 total=18.64 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.19 silu=0.50 up_gemm=4.81 gate=0.57 inject=1.66 combine=1.03 total=13.23 ms
+[sub-timing] T=4 ple=0.50 grread=6.66 attn=38.33 wrar=6.93 moe=22.68 write=0.37 total=75.47 ms [detail lin_inproj=15.46 lin_state=2.86 lin_outproj=5.55 full_qkv=3.47 full_core=9.04 full_oproj=1.68]
+[moe-subtiming] T=4 prep_gu=0.74 gemm_gu=10.59 prep_dn=0.60 gemm_dn=5.49 combine=0.26 total=17.68 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.13 silu=0.47 up_gemm=4.81 gate=0.57 inject=1.63 combine=0.99 total=13.07 ms
+[sub-timing] T=4 ple=0.52 grread=6.64 attn=38.29 wrar=6.99 moe=22.40 write=0.42 total=75.25 ms [detail lin_inproj=15.45 lin_state=2.82 lin_outproj=5.57 full_qkv=3.50 full_core=9.02 full_oproj=1.66]
+[moe-subtiming] T=4 prep_gu=0.72 gemm_gu=10.33 prep_dn=0.60 gemm_dn=5.41 combine=0.27 total=17.33 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.14 silu=0.46 up_gemm=4.80 gate=0.60 inject=1.66 combine=1.05 total=13.19 ms
+[sub-timing] T=4 ple=0.52 grread=6.63 attn=38.20 wrar=7.00 moe=23.05 write=0.41 total=75.80 ms [detail lin_inproj=15.38 lin_state=2.81 lin_outproj=5.56 full_qkv=3.48 full_core=9.05 full_oproj=1.66]
+[moe-subtiming] T=4 prep_gu=0.73 gemm_gu=10.85 prep_dn=0.59 gemm_dn=5.53 combine=0.28 total=17.99 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.18 silu=0.48 up_gemm=4.77 gate=0.55 inject=1.66 combine=1.03 total=13.14 ms
+[sub-timing] T=4 ple=0.50 grread=6.73 attn=38.61 wrar=7.03 moe=23.08 write=0.40 total=76.34 ms [detail lin_inproj=15.45 lin_state=2.84 lin_outproj=5.68 full_qkv=3.53 full_core=9.12 full_oproj=1.70]
+[moe-subtiming] T=4 prep_gu=0.74 gemm_gu=10.82 prep_dn=0.63 gemm_dn=5.54 combine=0.28 total=18.00 ms
+[hc-mix-subtiming] T=4 norm=0.46 down_gemm=4.18 silu=0.48 up_gemm=4.81 gate=0.60 inject=1.69 combine=1.04 total=13.26 ms
+[sub-timing] T=4 ple=0.50 grread=6.64 attn=38.12 wrar=7.04 moe=23.88 write=0.39 total=76.57 ms [detail lin_inproj=15.34 lin_state=2.83 lin_outproj=5.53 full_qkv=3.47 full_core=9.03 full_oproj=1.66]
+[moe-subtiming] T=4 prep_gu=0.74 gemm_gu=11.44 prep_dn=0.60 gemm_dn=5.79 combine=0.27 total=18.83 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.17 silu=0.48 up_gemm=4.79 gate=0.58 inject=1.65 combine=1.05 total=13.19 ms
+[sub-timing] T=4 ple=0.53 grread=6.68 attn=38.23 wrar=7.04 moe=24.36 write=0.39 total=77.23 ms [detail lin_inproj=15.40 lin_state=2.79 lin_outproj=5.57 full_qkv=3.50 full_core=9.05 full_oproj=1.66]
+[moe-subtiming] T=4 prep_gu=0.72 gemm_gu=11.61 prep_dn=0.65 gemm_dn=6.10 combine=0.28 total=19.35 ms
+[hc-mix-subtiming] T=4 norm=0.50 down_gemm=4.19 silu=0.47 up_gemm=4.78 gate=0.60 inject=1.68 combine=1.01 total=13.22 ms
+[sub-timing] T=4 ple=0.50 grread=6.63 attn=38.24 wrar=7.05 moe=23.24 write=0.39 total=76.05 ms [detail lin_inproj=15.38 lin_state=2.80 lin_outproj=5.57 full_qkv=3.51 full_core=9.05 full_oproj=1.66]
+[moe-subtiming] T=4 prep_gu=0.72 gemm_gu=11.02 prep_dn=0.61 gemm_dn=5.56 combine=0.27 total=18.18 ms
+[hc-mix-subtiming] T=4 norm=0.46 down_gemm=4.17 silu=0.49 up_gemm=4.80 gate=0.58 inject=1.67 combine=1.03 total=13.21 ms
+[sub-timing] T=4 ple=0.50 grread=6.65 attn=38.43 wrar=6.96 moe=23.36 write=0.40 total=76.29 ms [detail lin_inproj=15.54 lin_state=2.81 lin_outproj=5.58 full_qkv=3.50 full_core=9.06 full_oproj=1.68]
+[moe-subtiming] T=4 prep_gu=0.72 gemm_gu=11.12 prep_dn=0.60 gemm_dn=5.71 combine=0.27 total=18.41 ms
+[hc-mix-subtiming] T=4 norm=0.48 down_gemm=4.13 silu=0.46 up_gemm=4.80 gate=0.58 inject=1.67 combine=1.02 total=13.13 ms
+[sub-timing] T=4 ple=0.50 grread=6.63 attn=38.32 wrar=6.98 moe=22.90 write=0.38 total=75.70 ms [detail lin_inproj=15.38 lin_state=2.87 lin_outproj=5.58 full_qkv=3.51 full_core=9.03 full_oproj=1.67]
+[moe-subtiming] T=4 prep_gu=0.75 gemm_gu=10.78 prep_dn=0.60 gemm_dn=5.51 combine=0.26 total=17.91 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.15 silu=0.46 up_gemm=4.79 gate=0.56 inject=1.66 combine=1.01 total=13.12 ms
+[sub-timing] T=4 ple=0.49 grread=6.76 attn=38.30 wrar=6.92 moe=23.68 write=0.38 total=76.53 ms [detail lin_inproj=15.47 lin_state=2.81 lin_outproj=5.56 full_qkv=3.50 full_core=9.02 full_oproj=1.68]
+[moe-subtiming] T=4 prep_gu=0.73 gemm_gu=11.23 prep_dn=0.61 gemm_dn=5.84 combine=0.28 total=18.70 ms
+[hc-mix-subtiming] T=4 norm=0.46 down_gemm=4.21 silu=0.49 up_gemm=4.79 gate=0.56 inject=1.65 combine=1.00 total=13.17 ms
+[sub-timing] T=4 ple=0.50 grread=6.65 attn=38.32 wrar=6.95 moe=22.96 write=0.38 total=75.77 ms [detail lin_inproj=15.41 lin_state=2.83 lin_outproj=5.55 full_qkv=3.50 full_core=9.09 full_oproj=1.68]
+[moe-subtiming] T=4 prep_gu=0.73 gemm_gu=10.80 prep_dn=0.62 gemm_dn=5.53 combine=0.27 total=17.95 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.13 silu=0.47 up_gemm=4.78 gate=0.59 inject=1.66 combine=1.01 total=13.10 ms
+[sub-timing] T=4 ple=0.50 grread=6.64 attn=38.34 wrar=6.97 moe=25.49 write=0.42 total=78.35 ms [detail lin_inproj=15.51 lin_state=2.79 lin_outproj=5.55 full_qkv=3.50 full_core=9.09 full_oproj=1.67]
+[moe-subtiming] T=4 prep_gu=0.72 gemm_gu=12.48 prep_dn=0.61 gemm_dn=6.40 combine=0.26 total=20.48 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.15 silu=0.49 up_gemm=4.78 gate=0.57 inject=1.65 combine=1.06 total=13.15 ms
+[sub-timing] T=4 ple=0.51 grread=6.62 attn=38.40 wrar=7.05 moe=23.90 write=0.40 total=76.88 ms [detail lin_inproj=15.48 lin_state=2.83 lin_outproj=5.62 full_qkv=3.49 full_core=9.04 full_oproj=1.67]
+[moe-subtiming] T=4 prep_gu=0.73 gemm_gu=11.30 prep_dn=0.64 gemm_dn=5.82 combine=0.27 total=18.77 ms
+[hc-mix-subtiming] T=4 norm=0.46 down_gemm=4.20 silu=0.46 up_gemm=4.78 gate=0.58 inject=1.66 combine=1.02 total=13.15 ms
+[sub-timing] T=4 ple=0.50 grread=6.80 attn=39.02 wrar=7.17 moe=21.58 write=0.38 total=75.45 ms [detail lin_inproj=15.73 lin_state=2.98 lin_outproj=5.71 full_qkv=3.57 full_core=9.04 full_oproj=1.69]
+[moe-subtiming] T=4 prep_gu=0.75 gemm_gu=9.76 prep_dn=0.62 gemm_dn=5.09 combine=0.27 total=16.48 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.24 silu=0.48 up_gemm=4.87 gate=0.60 inject=1.74 combine=1.02 total=13.43 ms
+[sub-timing] T=4 ple=0.49 grread=6.67 attn=38.26 wrar=7.06 moe=22.43 write=0.38 total=75.29 ms [detail lin_inproj=15.47 lin_state=2.78 lin_outproj=5.55 full_qkv=3.50 full_core=9.03 full_oproj=1.66]
+[moe-subtiming] T=4 prep_gu=0.72 gemm_gu=10.47 prep_dn=0.61 gemm_dn=5.38 combine=0.27 total=17.45 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.17 silu=0.47 up_gemm=4.80 gate=0.58 inject=1.67 combine=1.02 total=13.18 ms
+[sub-timing] T=4 ple=0.50 grread=6.60 attn=38.26 wrar=7.04 moe=23.71 write=0.38 total=76.49 ms [detail lin_inproj=15.36 lin_state=2.83 lin_outproj=5.58 full_qkv=3.48 full_core=9.08 full_oproj=1.68]
+[moe-subtiming] T=4 prep_gu=0.73 gemm_gu=11.28 prep_dn=0.60 gemm_dn=5.75 combine=0.30 total=18.65 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.18 silu=0.45 up_gemm=4.79 gate=0.58 inject=1.66 combine=1.02 total=13.15 ms
+[sub-timing] T=4 ple=0.49 grread=6.65 attn=38.56 wrar=7.05 moe=23.88 write=0.38 total=77.02 ms [detail lin_inproj=15.53 lin_state=2.88 lin_outproj=5.64 full_qkv=3.47 full_core=9.08 full_oproj=1.68]
+[moe-subtiming] T=4 prep_gu=0.76 gemm_gu=11.36 prep_dn=0.60 gemm_dn=5.83 combine=0.26 total=18.81 ms
+[hc-mix-subtiming] T=4 norm=0.46 down_gemm=4.18 silu=0.49 up_gemm=4.80 gate=0.57 inject=1.65 combine=1.03 total=13.18 ms
+[sub-timing] T=4 ple=0.52 grread=6.68 attn=38.86 wrar=7.04 moe=25.17 write=0.37 total=78.63 ms [detail lin_inproj=15.64 lin_state=2.91 lin_outproj=5.69 full_qkv=3.52 full_core=9.11 full_oproj=1.72]
+[moe-subtiming] T=4 prep_gu=0.72 gemm_gu=12.27 prep_dn=0.62 gemm_dn=6.23 combine=0.27 total=20.11 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.23 silu=0.47 up_gemm=4.82 gate=0.58 inject=1.66 combine=1.01 total=13.24 ms
+[sub-timing] T=4 ple=0.53 grread=6.63 attn=38.94 wrar=7.10 moe=24.03 write=0.38 total=77.61 ms [detail lin_inproj=15.61 lin_state=2.98 lin_outproj=5.80 full_qkv=3.51 full_core=9.05 full_oproj=1.70]
+[moe-subtiming] T=4 prep_gu=0.74 gemm_gu=11.38 prep_dn=0.62 gemm_dn=5.93 combine=0.29 total=18.96 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.20 silu=0.47 up_gemm=4.83 gate=0.58 inject=1.67 combine=1.02 total=13.23 ms
+[sub-timing] T=4 ple=0.50 grread=6.64 attn=38.38 wrar=7.00 moe=22.74 write=0.40 total=75.66 ms [detail lin_inproj=15.51 lin_state=2.83 lin_outproj=5.56 full_qkv=3.49 full_core=9.04 full_oproj=1.69]
+[moe-subtiming] T=4 prep_gu=0.74 gemm_gu=10.60 prep_dn=0.62 gemm_dn=5.49 combine=0.27 total=17.72 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.14 silu=0.47 up_gemm=4.81 gate=0.57 inject=1.66 combine=1.03 total=13.17 ms
+[sub-timing] T=4 ple=0.51 grread=6.62 attn=38.27 wrar=7.07 moe=20.33 write=0.37 total=73.18 ms [detail lin_inproj=15.43 lin_state=2.80 lin_outproj=5.57 full_qkv=3.49 full_core=9.06 full_oproj=1.68]
+[moe-subtiming] T=4 prep_gu=0.75 gemm_gu=8.98 prep_dn=0.59 gemm_dn=4.69 combine=0.29 total=15.31 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.19 silu=0.48 up_gemm=4.83 gate=0.56 inject=1.64 combine=1.02 total=13.18 ms
+[sub-timing] T=4 ple=0.50 grread=6.62 attn=38.33 wrar=7.01 moe=23.77 write=0.39 total=76.63 ms [detail lin_inproj=15.46 lin_state=2.82 lin_outproj=5.61 full_qkv=3.48 full_core=9.03 full_oproj=1.67]
+[moe-subtiming] T=4 prep_gu=0.73 gemm_gu=11.31 prep_dn=0.64 gemm_dn=5.73 combine=0.26 total=18.68 ms
+[hc-mix-subtiming] T=4 norm=0.46 down_gemm=4.16 silu=0.46 up_gemm=4.80 gate=0.58 inject=1.65 combine=1.01 total=13.12 ms
+[sub-timing] T=4 ple=0.50 grread=6.65 attn=38.45 wrar=6.92 moe=24.18 write=0.38 total=77.09 ms [detail lin_inproj=15.53 lin_state=2.87 lin_outproj=5.59 full_qkv=3.49 full_core=9.02 full_oproj=1.67]
+[moe-subtiming] T=4 prep_gu=0.73 gemm_gu=11.63 prep_dn=0.58 gemm_dn=5.95 combine=0.28 total=19.17 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.19 silu=0.46 up_gemm=4.76 gate=0.57 inject=1.65 combine=1.00 total=13.09 ms
+[sub-timing] T=4 ple=0.50 grread=6.71 attn=38.67 wrar=7.02 moe=23.83 write=0.39 total=77.11 ms [detail lin_inproj=15.61 lin_state=2.88 lin_outproj=5.58 full_qkv=3.54 full_core=9.11 full_oproj=1.67]
+[moe-subtiming] T=4 prep_gu=0.72 gemm_gu=11.41 prep_dn=0.59 gemm_dn=5.81 combine=0.28 total=18.81 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.21 silu=0.46 up_gemm=4.83 gate=0.56 inject=1.67 combine=1.03 total=13.23 ms
+[sub-timing] T=4 ple=0.50 grread=6.63 attn=38.22 wrar=7.07 moe=23.07 write=0.38 total=75.88 ms [detail lin_inproj=15.37 lin_state=2.84 lin_outproj=5.53 full_qkv=3.51 full_core=9.04 full_oproj=1.68]
+[moe-subtiming] T=4 prep_gu=0.72 gemm_gu=10.87 prep_dn=0.59 gemm_dn=5.63 combine=0.27 total=18.08 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.19 silu=0.45 up_gemm=4.82 gate=0.59 inject=1.66 combine=1.03 total=13.21 ms
+[sub-timing] T=4 ple=0.50 grread=6.62 attn=38.22 wrar=7.09 moe=25.05 write=0.39 total=77.87 ms [detail lin_inproj=15.37 lin_state=2.78 lin_outproj=5.59 full_qkv=3.49 full_core=9.07 full_oproj=1.67]
+[moe-subtiming] T=4 prep_gu=0.78 gemm_gu=12.22 prep_dn=0.60 gemm_dn=6.14 combine=0.28 total=20.01 ms
+[hc-mix-subtiming] T=4 norm=0.46 down_gemm=4.18 silu=0.48 up_gemm=4.82 gate=0.58 inject=1.67 combine=1.02 total=13.22 ms
+[sub-timing] T=4 ple=0.50 grread=6.74 attn=38.66 wrar=7.00 moe=23.82 write=0.41 total=77.13 ms [detail lin_inproj=15.64 lin_state=2.90 lin_outproj=5.68 full_qkv=3.51 full_core=9.01 full_oproj=1.68]
+[moe-subtiming] T=4 prep_gu=0.72 gemm_gu=11.39 prep_dn=0.60 gemm_dn=5.85 combine=0.27 total=18.83 ms
+[hc-mix-subtiming] T=4 norm=0.48 down_gemm=4.21 silu=0.47 up_gemm=4.82 gate=0.57 inject=1.67 combine=1.04 total=13.27 ms
+[sub-timing] T=4 ple=0.52 grread=6.67 attn=38.69 wrar=7.00 moe=23.19 write=0.40 total=76.47 ms [detail lin_inproj=15.51 lin_state=2.85 lin_outproj=5.75 full_qkv=3.55 full_core=9.07 full_oproj=1.70]
+[moe-subtiming] T=4 prep_gu=0.72 gemm_gu=10.92 prep_dn=0.60 gemm_dn=5.72 combine=0.26 total=18.22 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.20 silu=0.46 up_gemm=4.82 gate=0.58 inject=1.65 combine=1.00 total=13.19 ms
+[sub-timing] T=4 ple=0.49 grread=6.65 attn=38.17 wrar=7.04 moe=22.64 write=0.41 total=75.40 ms [detail lin_inproj=15.34 lin_state=2.82 lin_outproj=5.55 full_qkv=3.48 full_core=9.05 full_oproj=1.67]
+[moe-subtiming] T=4 prep_gu=0.73 gemm_gu=10.58 prep_dn=0.60 gemm_dn=5.41 combine=0.26 total=17.60 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.18 silu=0.48 up_gemm=4.80 gate=0.59 inject=1.68 combine=1.01 total=13.21 ms
+[sub-timing] T=4 ple=0.49 grread=6.68 attn=38.32 wrar=6.91 moe=24.20 write=0.40 total=77.00 ms [detail lin_inproj=15.42 lin_state=2.82 lin_outproj=5.60 full_qkv=3.47 full_core=9.08 full_oproj=1.66]
+[moe-subtiming] T=4 prep_gu=0.74 gemm_gu=11.54 prep_dn=0.65 gemm_dn=5.95 combine=0.29 total=19.17 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.14 silu=0.46 up_gemm=4.79 gate=0.57 inject=1.69 combine=1.00 total=13.12 ms
+[sub-timing] T=4 ple=0.50 grread=6.64 attn=38.41 wrar=6.93 moe=25.00 write=0.37 total=77.84 ms [detail lin_inproj=15.36 lin_state=2.84 lin_outproj=5.61 full_qkv=3.52 full_core=9.11 full_oproj=1.66]
+[moe-subtiming] T=4 prep_gu=0.72 gemm_gu=12.09 prep_dn=0.61 gemm_dn=6.31 combine=0.27 total=20.00 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.14 silu=0.47 up_gemm=4.77 gate=0.58 inject=1.66 combine=0.99 total=13.07 ms
+[sub-timing] T=4 ple=0.49 grread=6.64 attn=38.28 wrar=6.96 moe=25.01 write=0.38 total=77.77 ms [detail lin_inproj=15.41 lin_state=2.82 lin_outproj=5.60 full_qkv=3.49 full_core=9.05 full_oproj=1.66]
+[moe-subtiming] T=4 prep_gu=0.74 gemm_gu=12.18 prep_dn=0.60 gemm_dn=6.20 combine=0.30 total=20.00 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.20 silu=0.47 up_gemm=4.79 gate=0.55 inject=1.64 combine=1.01 total=13.13 ms
+[sub-timing] T=4 ple=0.50 grread=6.64 attn=38.18 wrar=6.93 moe=24.03 write=0.40 total=76.68 ms [detail lin_inproj=15.33 lin_state=2.79 lin_outproj=5.55 full_qkv=3.50 full_core=9.07 full_oproj=1.66]
+[moe-subtiming] T=4 prep_gu=0.75 gemm_gu=11.48 prep_dn=0.61 gemm_dn=5.85 combine=0.26 total=18.95 ms
+[hc-mix-subtiming] T=4 norm=0.46 down_gemm=4.13 silu=0.45 up_gemm=4.80 gate=0.59 inject=1.65 combine=1.00 total=13.08 ms
+[sub-timing] T=4 ple=0.50 grread=6.68 attn=38.50 wrar=6.97 moe=22.39 write=0.43 total=75.47 ms [detail lin_inproj=15.49 lin_state=2.82 lin_outproj=5.66 full_qkv=3.50 full_core=9.09 full_oproj=1.69]
+[moe-subtiming] T=4 prep_gu=0.73 gemm_gu=10.42 prep_dn=0.62 gemm_dn=5.35 combine=0.27 total=17.39 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.14 silu=0.47 up_gemm=4.81 gate=0.56 inject=1.67 combine=1.01 total=13.14 ms
+[sub-timing] T=4 ple=0.52 grread=6.62 attn=38.38 wrar=7.04 moe=23.56 write=0.38 total=76.50 ms [detail lin_inproj=15.41 lin_state=2.86 lin_outproj=5.60 full_qkv=3.51 full_core=9.07 full_oproj=1.68]
+[moe-subtiming] T=4 prep_gu=0.73 gemm_gu=11.18 prep_dn=0.62 gemm_dn=5.75 combine=0.28 total=18.56 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.17 silu=0.48 up_gemm=4.79 gate=0.58 inject=1.68 combine=1.00 total=13.16 ms
+[sub-timing] T=4 ple=0.51 grread=6.65 attn=38.65 wrar=7.04 moe=23.02 write=0.37 total=76.23 ms [detail lin_inproj=15.59 lin_state=2.88 lin_outproj=5.68 full_qkv=3.51 full_core=9.03 full_oproj=1.70]
+[moe-subtiming] T=4 prep_gu=0.73 gemm_gu=10.77 prep_dn=0.63 gemm_dn=5.61 combine=0.27 total=18.01 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.20 silu=0.47 up_gemm=4.81 gate=0.58 inject=1.66 combine=1.00 total=13.18 ms
+[sub-timing] T=4 ple=0.55 grread=6.63 attn=38.77 wrar=7.08 moe=23.31 write=0.38 total=76.71 ms [detail lin_inproj=15.58 lin_state=2.96 lin_outproj=5.72 full_qkv=3.51 full_core=9.04 full_oproj=1.68]
+[moe-subtiming] T=4 prep_gu=0.72 gemm_gu=10.97 prep_dn=0.61 gemm_dn=5.67 combine=0.27 total=18.24 ms
+[hc-mix-subtiming] T=4 norm=0.47 down_gemm=4.25 silu=0.47 up_gemm=4.77 gate=0.58 inject=1.68 combine=1.01 total=13.22 ms
+[sub-timing] T=4 ple=0.50 grread=6.62 attn=38.49 wrar=6.94 moe=21.83 write=0.38 total=74.76 ms [detail lin_inproj=15.53 lin_state=2.87 lin_outproj=5.60 full_qkv=3.48 full_core=9.03 full_oproj=1.70]
+[moe-subtiming] T=4 prep_gu=0.74 gemm_gu=10.03 prep_dn=0.60 gemm_dn=5.19 combine=0.26 total=16.82 ms
+[hc-mix-subtiming] T=4 norm=0.46 down_gemm=4.15 silu=0.46 up_gemm=4.79 gate=0.57 inject=1.66 combine=1.00 total=13.09 ms
+[sub-timing] T=4 ple=0.50 grread=6.62 attn=38.33 wrar=6.97 moe=23.73 write=0.41 total=76.56 ms [detail lin_inproj=15.42 lin_state=2.83 lin_outproj=5.60 full_qkv=3.49 full_core=9.07 full_oproj=1.69]
+[moe-subtiming] T=4 prep_gu=0.75 gemm_gu=11.30 prep_dn=0.59 gemm_dn=5.83 combine=0.28 total=18.74 ms
+[hc-mix-subtiming] T=4 norm=0.46 down_gemm=4.19 silu=0.46 up_gemm=4.80 gate=0.56 inject=1.66 combine=1.02 total=13.16 ms
+[sub-timing] T=4 ple=0.50 grread=6.56 attn=38.47 wrar=7.06 moe=24.11 write=0.38 total=77.09 ms [detail lin_inproj=15.45 lin_state=2.89 lin_outproj=5.65 full_qkv=3.48 full_core=9.04 full_oproj=1.68]
+[moe-subtiming] T=4 prep_gu=0.75 gemm_gu=11.56 prep_dn=0.62 gemm_dn=5.93 combine=0.28 total=19.15 ms
+[hc-mix-subtiming] T=4 norm=0.46 down_gemm=4.14 silu=0.45 up_gemm=4.78 gate=0.59 inject=1.67 combine=1.03 total=13.13 ms
+[mtp-accept] request=chatcmpl-auto-1116582962707e0c6d8f8e73500e3dfc draft_counts=6,3,5,57
+[q4t][mem] phase=request_end id=chatcmpl-auto-1116582962707e0c6d8f8e73500e3dfc dev_used_gb=111.225 dev_total_gb=131.921 rss_mb=903.7 mem_free_gb=17.287 mem_avail_gb=24.647 cached_gb=4.560
+[q4t][request] instance=0 id=chatcmpl-auto-1116582962707e0c6d8f8e73500e3dfc event=stage stage=response seq=0 elapsed_ms=39918.740 trace_id=req-84a8dffea571310c81dd6148ba013a39
+[q4t][request] instance=0 id=chatcmpl-auto-1116582962707e0c6d8f8e73500e3dfc event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=39918.874 slot_wait_ms=0.018 model_lock_ms=0.000 tokenizer_lock_ms=0.024 scheduler_completion_ms=7805.865 stream_write_ms=3.095 scheduler_waits=71 trace_id=req-84a8dffea571310c81dd6148ba013a39
+[q4t] shutting down: draining in-flight requests...
+[mtp-batches] rows=1 suffix=0 steps=71
+[q4t] shutdown complete (0 in-flight remaining)
+[q4t][cuda-quota] {"event":"server_destroyed","enabled":true,"limit_bytes":118728574156,"charged_bytes":198967296,"live_bytes":198967296,"pending_bytes":0,"unknown_bytes":0,"peak_bytes":100078376224,"entries":6,"poisoned":false,"byte_rejections":0,"entry_rejections":0,"stream_rejections":0,"contract_failures":0,"backend_failures":0,"scope":"process_requested_cuda_bytes","physical_ram_limit":false}

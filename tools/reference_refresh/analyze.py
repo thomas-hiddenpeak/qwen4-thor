@@ -171,7 +171,8 @@ def analyze(plan_path, lease):
         verified_inputs=len(plan['files']), verified_raw_files=len(seal),
         limitations=['Two contexts and two accepted head modes; no five-tier performance claim.',
                     'CUDA event intervals include host/observer gaps; not kernel-only time.',
-                    'ON includes legacy sub-timing; change vs OFF is the combined observer cost.',
+                    'ON includes legacy sub-timing and runs 45K first; OFF runs it after 1K. '
+                    'Differences include request order/cold-start effects, not isolated QSA overhead.',
                     'Canonical real config HTTP plus CPU alias checks; no alternate checkpoint.',
                     'No long soak, managed protocol migration, or default replacement.'])
 

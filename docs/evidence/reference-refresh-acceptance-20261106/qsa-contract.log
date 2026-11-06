@@ -1,0 +1,25 @@
+[sub-timing] T=8192 ple=0.00 grread=0.00 attn=0.00 wrar=0.00 moe=0.00 write=0.00 total=0.00 ms [detail lin_inproj=0.00 lin_state=0.00 lin_outproj=0.00 full_qkv=0.00 full_core=1.00 full_oproj=0.00]
+[sub-timing] T=8192 ple=0.00 grread=0.00 attn=0.00 wrar=0.00 moe=0.00 write=0.00 total=0.00 ms [detail lin_inproj=0.00 lin_state=0.00 lin_outproj=0.00 full_qkv=0.00 full_core=0.00 full_oproj=0.00]
+[qsa-subtiming] T=8192 valid=1 layers=1 prepare=1.000 index_proj=1.000 index_prepare=1.000 score_select=1.000 sparse=1.000 total=5.000 ms
+[sub-timing] T=8192 ple=0.00 grread=0.00 attn=0.00 wrar=0.00 moe=0.00 write=0.00 total=0.00 ms [detail lin_inproj=0.00 lin_state=0.00 lin_outproj=0.00 full_qkv=0.00 full_core=0.00 full_oproj=0.00]
+[qsa-subtiming] T=8192 valid=0 layers=0 expected=1 error=incomplete_or_failed_events
+[sub-timing] T=8192 ple=0.00 grread=0.00 attn=0.00 wrar=0.00 moe=0.00 write=0.00 total=0.00 ms [detail lin_inproj=0.00 lin_state=0.00 lin_outproj=0.00 full_qkv=0.00 full_core=0.00 full_oproj=0.00]
+[qsa-subtiming] T=8192 valid=0 layers=1 expected=2 error=incomplete_or_failed_events
+[sub-timing] sync failed: injected error
+[qsa-subtiming] T=8192 valid=0 error=sync
+[sub-timing] sync failed: injected error
+[qsa-subtiming] T=8192 valid=0 error=sync
+[sub-timing] T=8192 ple=0.00 grread=0.00 attn=0.00 wrar=0.00 moe=0.00 write=0.00 total=0.00 ms [detail lin_inproj=0.00 lin_state=0.00 lin_outproj=0.00 full_qkv=0.00 full_core=0.00 full_oproj=0.00]
+[qsa-subtiming] T=8192 valid=0 layers=1 expected=1 error=incomplete_or_failed_events
+[qsa-subtiming] valid=0 error=create_event
+[qsa-subtiming] valid=0 error=forward_aborted
+[sub-timing] T=8192 ple=0.00 grread=0.00 attn=0.00 wrar=0.00 moe=0.00 write=0.00 total=0.00 ms [detail lin_inproj=0.00 lin_state=0.00 lin_outproj=0.00 full_qkv=0.00 full_core=0.00 full_oproj=0.00]
+[qsa-subtiming] T=8192 valid=1 layers=1 prepare=1.000 index_proj=1.000 index_prepare=1.000 score_select=1.000 sparse=1.000 total=5.000 ms
+[PASS] qsa_timing_requires_explicit_noncheckpoint_mode
+[PASS] qsa_timing_disabled_preserves_event_set
+[PASS] qsa_timing_complete_subset_of_layers
+[PASS] qsa_timing_rejects_missing_boundary_and_layer
+[PASS] qsa_timing_rejects_event_failures
+[PASS] qsa_timing_partial_allocation_is_not_valid
+[PASS] qsa_timing_abort_does_not_leak_into_next_forward
+7 tests, 7 passed, 0 failed, 0 skipped

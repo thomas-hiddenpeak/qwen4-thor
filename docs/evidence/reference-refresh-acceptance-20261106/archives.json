@@ -1,0 +1,24 @@
+{
+  "created_unix_seconds": 1793938353.791137,
+  "input_paths": 4559,
+  "archived_input_paths": 4558,
+  "input_objects_verified": 3001,
+  "external": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-adoption-20261104/delivery-package/artifact/head.bf16": {
+      "sha256": "21522eabb4ab4f816d9f76eefe317a17e7ba668ebe838809eb4be87d84ef75c1",
+      "bytes": 335544320,
+      "reason": "Existing accepted readonly subset artifact retained at original path"
+    }
+  },
+  "execution_files_verified": 239,
+  "archives": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/reference-refresh-acceptance-20261106/archives/execution.tar.gz": {
+      "bytes": 3231288,
+      "sha256": "621be5e55d2fa64ccfc4e671c940917db90e3a235b3076548d44a4d0762a8470"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/reference-refresh-acceptance-20261106/archives/inputs.tar.gz": {
+      "bytes": 28105974,
+      "sha256": "fdce312ea577ee81fe54813a9828d10ecc17c4368ba01870db3d6ca4a8dea347"
+    }
+  }
+}

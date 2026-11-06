@@ -1,0 +1,20 @@
+{
+  "status": "MEASURED_REQUIRES_REVIEW",
+  "started": 1793937582.8565826,
+  "completed": [
+    "00-baseline-full",
+    "01-baseline-subset",
+    "02-off-full",
+    "03-off-subset",
+    "04-on-full",
+    "05-on-subset"
+  ],
+  "requests_completed": 12,
+  "loads_started": 6,
+  "contract_seconds": 0,
+  "plan_sha256": "a237f5382e3d03c98aea56c5085aab58937c36721b53f3b30d23aae34ca94c06",
+  "current": "05-on-subset",
+  "finished": 1793938135.9666982,
+  "elapsed_seconds": 553.1101174149662,
+  "monitor_failures": []
+}

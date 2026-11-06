@@ -1,0 +1,8 @@
+[PASS] model_config_parse_real
+[PASS] model_config_missing_file
+[PASS] model_config_qsa_layer_aliases
+[PASS] model_config_rejects_unknown_layer_type
+[PASS] model_config_rejects_nonstring_layer_type
+[PASS] model_config_requires_layer_type_array
+[PASS] model_config_rejects_layer_count
+7 tests, 7 passed, 0 failed, 0 skipped

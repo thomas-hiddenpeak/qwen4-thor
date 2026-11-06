@@ -1,0 +1,35 @@
+{
+  "runtime_commit": "5d641ea4cb0d18c3f74ba3ea8515d4824e583640",
+  "sources": {
+    "tests/test_main.cpp": "448e89fe2cf2a7dc30a21473bfb01dde2b85e71da9a60558c3213624cc345507",
+    "tests/io_model_config_test.cpp": "8c27fc27b56c21eed1b332a3f85691d6510d98bb5f78021c33b08224c758c067",
+    "include/q4t/test.h": "95167428b6552604a9be39b112335358091a44e38eae8dfbab2fc88727f2f623",
+    "src/io/model_config.cpp": "1561e03ccc27e2cfcedaf1ebb3cbc1663435f2cc56347ccb70e301f7961b74cf",
+    "include/q4t/io/model_config.h": "f9382f28fa6d1d51b6353b53ed43070810698f539ac2872dcfe119cafbf5e469",
+    "src/io/json.cpp": "594c940466b10fbd0efa9c1bc05dd3092d7d1a4041d552716914fd84a740c0e0",
+    "include/q4t/io/json.h": "95efbb81c98760b4bbbaa2f2432b41be717a8251cfa51621d4a196d45a92fe6f",
+    "include/q4t/model/layer_subtiming.h": "ecf6e4d01087f0a146be57adc26b419e1180d5cb7e1b7c0ee67b449de716fdf8",
+    "src/model/model.cu": "ac13268a79890ef979841f1f332a06c87f1a6c91e92ec651ad69841252459d64",
+    "src/model/full_attention.cu": "3b29cff023b0e041e3eb1d40d20c646c43d431b180f6b7fbc9fe2fe5e20409e4",
+    "tools/verify/qsa_subtiming/contract_test.cpp": "67f92a44fcdaf3352a226a2798056adfa7ff565992ee7ceba7be724c1b7d13c6",
+    "tools/verify/qsa_subtiming/fake_cuda/cuda_runtime.h": "4e3b99ffee545a5c2ca6b5d1470951ea32e77926f5f7eb10b0b95464a8f4a9b9"
+  },
+  "candidate_sha256": "aae93a734be67d1695f4c6f3d06aae35de55ed9126994d65ad4bb79946b074b4",
+  "protocol_header_sha256": "c270f3563ca96bb73cf76886e565cb9e099dd12de3f1854e4ee08a444b793f4a",
+  "cpu_counts": {
+    "config": 7,
+    "qsa": 7,
+    "failed": 0,
+    "skipped": 0
+  },
+  "source_inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 38,
+    "routes": 10,
+    "reviewed_source_anchors": 112,
+    "mutation_checks": 3,
+    "errors": []
+  },
+  "driver_syntax_parsed": true
+}

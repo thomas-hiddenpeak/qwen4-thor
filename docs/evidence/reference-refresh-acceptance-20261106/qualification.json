@@ -1,0 +1,52 @@
+{
+  "analysis_sha256": "a11947a7147ea558db09f1f1415e0870ab0d28d2609433bf314571b71fdb5f65",
+  "decision": "ACCEPT_R1_COMPATIBILITY_AND_R2_OPT_IN_OBSERVER_WITHIN_SHORT_SCOPE",
+  "accepted_development_packages": [
+    "631cc3c5",
+    "5d641ea4"
+  ],
+  "default_replaced": false,
+  "managed_protocol_migration_accepted": false,
+  "performance_optimization_accepted": false,
+  "off_comparisons": [
+    {
+      "head": "full",
+      "context": "context-1024",
+      "off_vs_baseline_percent": {
+        "ttft": 0.26284675472443286,
+        "latency": 0.07159543304444682,
+        "decode_tps": -0.04282084385057727
+      }
+    },
+    {
+      "head": "full",
+      "context": "context-45056",
+      "off_vs_baseline_percent": {
+        "ttft": 0.15698418245204682,
+        "latency": 0.1521256416457506,
+        "decode_tps": -0.1300127325614242
+      }
+    },
+    {
+      "head": "subset",
+      "context": "context-1024",
+      "off_vs_baseline_percent": {
+        "ttft": -0.5525638084309836,
+        "latency": -0.3196678739081027,
+        "decode_tps": 0.2830853306249326
+      }
+    },
+    {
+      "head": "subset",
+      "context": "context-45056",
+      "off_vs_baseline_percent": {
+        "ttft": -0.01470166356524194,
+        "latency": -0.037744683565443804,
+        "decode_tps": 0.15157568402035526
+      }
+    }
+  ],
+  "observer_interpretation": "ON runs 45K as its first request, OFF after 1K. Descriptive differences include legacy observers, request order and cold-start effects; no isolated estimate of added QSA overhead.",
+  "next_direction": "Native large-T sparse attention; inspect serial per-head softmax for a contract-preserving lane-parallel implementation. No performance candidate implemented or tested in this stage.",
+  "numerical_limits": "HTTP exact output/acceptance equality and CPU parser/event contracts; not intermediate tensor equivalence or complete model quality."
+}

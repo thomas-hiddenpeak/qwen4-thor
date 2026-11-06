@@ -1,0 +1,15 @@
+{
+  "frozen_driver_commit": "63a53cc5bd3598de39b79cc5e292c1ad96536496",
+  "changed_inputs": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/tools/reference_refresh/analyze.py": {
+      "before": "ccf52fdbdf5762af3d4b569983101da91d302a5175c8e5ff0e5dcba52f44849f",
+      "after": "4f56214c42522258196f33ca4e1be33bf4d763e2330aabc1c7218733a105d72a"
+    }
+  },
+  "review": "Only one limitation string clarified; AST otherwise identical. Original input archive and execution/analysis remain immutable.",
+  "frozen_raw_files_verified": 221,
+  "model_metadata_verified": 197,
+  "runtime_sources_changed_after_execution": 0,
+  "additional_model_starts": 0,
+  "additional_http_requests": 0
+}

@@ -1,0 +1,110 @@
+[
+  {
+    "name": "build-config-contract",
+    "argv": [
+      "g++-14",
+      "-std=c++23",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I",
+      "include",
+      "tests/test_main.cpp",
+      "tests/io_model_config_test.cpp",
+      "src/io/model_config.cpp",
+      "src/io/json.cpp",
+      "-o",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/reference-refresh-acceptance-20261106/config-contract"
+    ],
+    "returncode": 0,
+    "seconds": 4.714847803115845,
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "config-contract",
+    "argv": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/reference-refresh-acceptance-20261106/config-contract"
+    ],
+    "returncode": 0,
+    "seconds": 0.002269268035888672,
+    "log_sha256": "96713fe8b37ad8f6047ca46b4eb9f041ecc76a9132b44744e085c3d630ffd8ef"
+  },
+  {
+    "name": "build-qsa-contract",
+    "argv": [
+      "g++-14",
+      "-std=c++23",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I",
+      "tools/verify/qsa_subtiming/fake_cuda",
+      "-I",
+      "include",
+      "tools/verify/qsa_subtiming/contract_test.cpp",
+      "-o",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/reference-refresh-acceptance-20261106/qsa-contract"
+    ],
+    "returncode": 0,
+    "seconds": 0.6220715045928955,
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "qsa-contract",
+    "argv": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/reference-refresh-acceptance-20261106/qsa-contract"
+    ],
+    "returncode": 0,
+    "seconds": 0.0015349388122558594,
+    "log_sha256": "4412e2bb1fc239d237aee5617ff461fa941448dab3b1739c321a496360a71298"
+  },
+  {
+    "name": "serve-inventory",
+    "argv": [
+      "python3",
+      "-B",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ],
+    "returncode": 0,
+    "seconds": 0.04604744911193848,
+    "log_sha256": "5e16636a6b5bf20943e45c1b2d62f05b2b77309d4c256adec0d055d7cf2ec30c"
+  },
+  {
+    "name": "configure",
+    "argv": [
+      "cmake",
+      "-S",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source",
+      "-B",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/reference-refresh-acceptance-20261106/engine",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_COMPILER=/usr/bin/g++-14",
+      "-DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-14",
+      "-DQ4T_CUDA_ARCHITECTURES=110a",
+      "-DQ4T_ENABLE_XGRAMMAR=ON",
+      "-DQ4T_BUILD_TESTS=OFF",
+      "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+      "-DFETCHCONTENT_SOURCE_DIR_Q4T_XGRAMMAR=/home/rm01/models/dev/qwen4-thor/.q4t-work/structured-control-20261102/xgrammar"
+    ],
+    "returncode": 0,
+    "seconds": 2.1162633895874023,
+    "log_sha256": "0e0fce2ff2dccff65a469ae1f0293c76bfc150d84562fa96ff7edb7c5c478315"
+  },
+  {
+    "name": "build",
+    "argv": [
+      "cmake",
+      "--build",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/reference-refresh-acceptance-20261106/engine",
+      "--target",
+      "q4t",
+      "--parallel",
+      "8"
+    ],
+    "returncode": 0,
+    "seconds": 50.29154968261719,
+    "log_sha256": "6042d3700335f5456be077da0e25093fa88d0463824c90c02e05d190743f6236"
+  }
+]
