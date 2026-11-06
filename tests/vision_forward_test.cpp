@@ -1,4 +1,4 @@
-// End-to-end vision tower test: CUDA forward vs numpy CPU reference.
+// End-to-end vision tower test: CUDA forward vs official HF CPU reference.
 //
 // Loads the synthetic test image (seed 1234, 4x4 patches) and the expected
 // output from tools/vision_ref.json, runs the CUDA vision tower on the same
@@ -186,7 +186,7 @@ bool ParseRefCase(const std::string& path, const std::string& case_name,
 }  // namespace
 
 // Run one case (image or video) through the CUDA tower and compare to the
-// numpy reference. Returns false on any failure.
+// independent FP32 HF reference. Returns false on any failure.
 bool RunCase(const std::string& case_name, VisionTower& tower,
              const VisionConfig& cfg) {
   std::vector<int> grid_thw;
@@ -286,7 +286,7 @@ bool RunCase(const std::string& case_name, VisionTower& tower,
   cudaFree(d_pixels);
   cudaFree(d_out);
 
-  // BF16 GEMM vs FP32 numpy: expect small relative error.
+  // BF16 CUDA vs FP32 official HF: retain the original numerical bounds.
   Q4T_CHECK(l2_rel < 0.05);
   Q4T_CHECK(max_abs_diff < 0.05);
   return true;

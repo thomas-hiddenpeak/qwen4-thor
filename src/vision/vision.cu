@@ -141,6 +141,14 @@ __global__ void GeluTanhKernel(uint16_t* __restrict__ x, int total) {
   x[i] = FloatToBf16(0.5f * v * (1.0f + tanhf(inner)));
 }
 
+// The merger uses nn.GELU() (erf), unlike the blocks' tanh activation.
+__global__ void GeluExactKernel(uint16_t* __restrict__ x, int total) {
+  const int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if (i >= total) return;
+  const float v = Bf16ToFloat(x[i]);
+  x[i] = FloatToBf16(0.5f * v * (1.0f + erff(v * 0.7071067811865475f)));
+}
+
 // out[r] = x[r] + y[r] (BF16 elementwise add), `total` elements.  x and
 // out may alias (in-place add), so x is not __restrict__.
 __global__ void AddBf16Kernel(const uint16_t* x,
@@ -165,9 +173,10 @@ __global__ void AddBiasBf16Kernel(const uint16_t* x,
 
 // 2D RoPE apply on one of q/k within a [L, 3H] qkv buffer (row stride
 // 3H).  The target (q or k) occupies [L, H] = [L, nh, 72] starting at
-// `dim_offset` within each row.  head_dim 72 = two 36-dim halves; each half
-// is a neox rotation over 18 pairs (i, i+18) for i in [0,18). First half
-// uses h_pos, second w_pos. One thread per pair (owns its two dims
+// `dim_offset` within each row. HF flattens [h_freq(18), w_freq(18)]
+// and duplicates that 36-vector before rotate_half over all 72 channels.
+// Thus h pairs (i,i+36), w pairs (i+18,i+54), for i in [0,18).
+// One thread per pair (owns its two dims
 // exclusively -> no read/write race).
 // pos_ids: [L, 2] = (h_pos, w_pos) per patch (block-major order).
 // cos_h/sin_h/cos_w/sin_w: [max_grid, 18] (indexed by pos).
@@ -192,9 +201,9 @@ __global__ void ApplyRope2DKernel(uint16_t* __restrict__ x, int L, int nh,
   const int pos = (half == 0) ? pos_ids[l * 2 + 0] : pos_ids[l * 2 + 1];
   const float c = (half == 0) ? cos_h[pos * 18 + i] : cos_w[pos * 18 + i];
   const float s = (half == 0) ? sin_h[pos * 18 + i] : sin_w[pos * 18 + i];
-  const int off = (half == 0) ? 0 : 36;
+  const int off = (half == 0) ? 0 : 18;
   const int d1 = off + i;
-  const int d2 = off + i + 18;
+  const int d2 = off + i + 36;
   const float x1 = Bf16ToFloat(x[base + d1]);
   const float x2 = Bf16ToFloat(x[base + d2]);
   x[base + d1] = FloatToBf16(x1 * c - x2 * s);
@@ -328,7 +337,7 @@ bool BuildRopeTables(int max_grid, float** d_cos_h, float** d_sin_h,
 // Host: build bilinear pos-embed tables for one image/video (h x w grid, t
 // time groups). Patches are time-major (token l = g*(h*w) + s) with spatial
 // patches in block-major (spatial-merge) order:
-//   s = (wb*(h/m)+hb)*(m*m) + mb*m + mj  ->  grid (i,j) = (hb*m+mb, wb*m+mj)
+//   s = (hb*(w/m)+wb)*(m*m) + mb*m + mj  -> grid (hb*m+mb, wb*m+mj)
 // The 2D position is identical across time groups (the reference repeats the
 // spatial pos-embed t times), so the spatial table is computed once for the
 // h*w spatial slots and replicated to all t groups.
@@ -939,7 +948,7 @@ bool VisionForward(const VisionTower& tower, const uint16_t* pixel_values,
     }
     add_bias(mlp1 + offset * I, w.d_merger_fc1_b, mlp1 + offset * I, merged_n,
              4 * H);
-    GeluTanhKernel<<<(merged_n * 4 * H + kBlock - 1) / kBlock, kBlock, 0,
+    GeluExactKernel<<<(merged_n * 4 * H + kBlock - 1) / kBlock, kBlock, 0,
                      stream>>>(mlp1 + offset * I, merged_n * 4 * H);
     if (!gemm(mlp1 + offset * I, w.d_merger_fc2_w,
               out + merged_offset * cfg.out_hidden_size, merged_n,

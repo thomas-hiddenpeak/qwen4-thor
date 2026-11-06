@@ -104,7 +104,7 @@ def cases():
     return result
 
 
-def prepare(phase="phase-01", reuse=None, cpu_video=False):
+def prepare(phase="phase-01", reuse=None, cpu_video=False, tower_repair=False):
     folder = BASE / phase
     folder.mkdir(exist_ok=False)
     rows = json.loads((BASE/reuse/"requests.json").read_text()) if reuse else cases()
@@ -129,8 +129,9 @@ def prepare(phase="phase-01", reuse=None, cpu_video=False):
         require(json.loads((prior/"execution/tower/waitable.json").read_text())["returncode"]==0,
                 "numerical prerequisite not passed")
         old=json.loads((prior/"plan.json").read_text())
-        for name in (str(BASE/"engine/q4t_vision_tower_contract"),str(ROOT/"tools/vision_ref.json")):
-            require(sha(name)==old["files"][name],"numerical identity changed")
+        if not tower_repair:
+            for name in (str(BASE/"engine/q4t_vision_tower_contract"),str(ROOT/"tools/vision_ref.json")):
+                require(sha(name)==old["files"][name],"numerical identity changed")
         reused=dict(prior= str(prior), video=str(prior/"execution/hardware/motion-h264.mp4"),
                     numerical_status="PASS_UNCHANGED_FULL_TOWER", prior_phase_status="FAILED_CODEC_METADATA")
         paths += [prior/"execution/tower/waitable.json",prior/"execution/tower/stdout.log",
@@ -145,8 +146,14 @@ def prepare(phase="phase-01", reuse=None, cpu_video=False):
             not result["cleanup_errors"] and not result["monitor_failures"],"second phase not closed")
         paths.append(prior_failed)
     limits=dict(LIMITS,native=0 if cpu_video else 1) if reuse else LIMITS
+    if tower_repair:
+        require(cpu_video and reuse=="phase-01","repair requires preserved CPU video")
+        limits=dict(LIMITS,native=2)
+        reused["numerical_status"]="INVALIDATED_SHARED_REFERENCE_DEFECT"
+        paths += list((BASE/"cpu/hf-tower-01").glob("*.json"))
     plan = dict(profile="q4t-vision-stage-v1", limits=limits, port=PORT,
         cpu_video=cpu_video,
+        tower_repair=tower_repair,
         reused=reused,
         binary=str(BASE/"engine/q4t"), model=str(MODEL), source_commit=subprocess.check_output(
             ["git","rev-parse","HEAD"], cwd=ROOT,text=True).strip(),
@@ -164,6 +171,7 @@ class Run:
         self.folder = folder
         self.plan = json.loads((folder/"plan.json").read_text())
         expected=dict(LIMITS,native=0 if self.plan.get("cpu_video") else 1) if self.plan.get("reused") else LIMITS
+        if self.plan.get("tower_repair"):expected=dict(LIMITS,native=2)
         require(self.plan["limits"]==expected and self.plan["port"]==PORT,
                 "frozen phase limits/port changed")
         self.output = folder/"execution"
@@ -226,11 +234,15 @@ class Run:
         self.children.wait(process,folder,timeout)
 
     def idle(self,label):
-        raw = self.http(label,"/metrics")
-        values = parse_metrics(raw.decode())
         names=("q4t_active_chats","q4t_queued_requests","q4t_structured_active",
                "q4t_structured_preparing","q4t_structured_workers_active")
-        require(all(values[n]==0 for n in names),"active request retained")
+        deadline=time.monotonic()+5
+        while True:
+            raw = self.http(label+"-"+str(self.counts["controls"]),"/metrics")
+            values = parse_metrics(raw.decode())
+            if all(values[n]==0 for n in names):break
+            require(time.monotonic()<deadline,"active request retained")
+            time.sleep(.1)
         require(values["q4t_gpu_healthy"]==1 and values["q4t_seq_slots_free"]==1,"GPU/slot unhealthy")
         require(values["q4t_structured_workers_started_total"] ==
                 values["q4t_structured_workers_reaped_total"],"grammar child retained")
@@ -322,9 +334,9 @@ class Run:
         if transport["status"]==200:
             cancelled=False
             try:client.read_sse(io.BytesIO(wire))
-            except client.RemoteError as exc:cancelled=exc.code=="request_cancelled" and b"[DONE]" in wire
+            except client.RemoteError as exc:cancelled=exc.code=="explicit_cancel" and b"[DONE]" in wire
         else:
-            cancelled=transport["status"]==409 and json.loads(wire)["error"]["code"]=="request_cancelled"
+            cancelled=transport["status"]==409 and json.loads(wire)["error"]["code"]=="explicit_cancel"
         self.observe("cancelled-visual",cancelled,request_error=error)
         self.idle("cancel-idle")
         result=self.complete("recovery",request("What color is the mug? One English word only.",
@@ -343,7 +355,12 @@ class Run:
         signal.setitimer(signal.ITIMER_REAL,self.plan["limits"]["seconds"]-45)
         try:
             reuse=self.plan.get("reused")
-            if not reuse:
+            if self.plan.get("tower_repair"):
+                for label in ("small","rectangular"):
+                    self.native("hf-"+label,[str(BASE/"engine/q4t_vision_tower_contract"),
+                        str(BASE/"cpu/hf-tower-01"/(label+".json")),
+                        str(self.output/("hf-"+label+"-output"))],90)
+            elif not reuse:
                 self.native("tower",[str(BASE/"engine/q4t_vision_tower_contract"),str(ROOT/"tools/vision_ref.json"),
                     str(self.output/"tower-output")],120)
             codec=[sys.executable,"-B",str(ROOT/"tools/vision_service/codec_acceptance.py"),
@@ -395,8 +412,9 @@ if __name__ == "__main__":
     os.umask(0o077)
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action",choices=("prepare","run"))
-    parser.add_argument("--phase",default="phase-01",choices=("phase-01","phase-02","phase-03"))
+    parser.add_argument("--phase",default="phase-01",choices=("phase-01","phase-02","phase-03","phase-04"))
     parser.add_argument("--reuse",choices=("phase-01",))
     parser.add_argument("--cpu-video",action="store_true")
+    parser.add_argument("--tower-repair",action="store_true")
     args=parser.parse_args()
-    print(json.dumps(prepare(args.phase,args.reuse,args.cpu_video) if args.action=="prepare" else Run(BASE/args.phase).run()))
+    print(json.dumps(prepare(args.phase,args.reuse,args.cpu_video,args.tower_repair) if args.action=="prepare" else Run(BASE/args.phase).run()))

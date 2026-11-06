@@ -1,0 +1,101 @@
+{
+  "implementation": "official HF Qwen4ExpVisionModel, eager FP32 CPU",
+  "transformers": "5.16.1",
+  "torch": "2.14.0+cpu",
+  "sources": {
+    "/home/rm01/models/dev/qwen4-thor/reference/.venv-tokenizers/lib/python3.13/site-packages/transformers/models/qwen4_exp/modeling_qwen4_exp.py": "77fec77d87f2a0eb23b95fa04276fb5779698a7c7f523cf5061e49c118bcc459",
+    "/home/rm01/models/dev/qwen4-thor/reference/.venv-tokenizers/lib/python3.13/site-packages/transformers/vision_utils.py": "bcecd5a92b3266b9926272a549d2b1a0f1fe7646c698c0fa19bd96f976085356",
+    "/home/rm01/models/dev/qwen4-thor/tools/vision_service/hf_tower_reference.py": "d2ec09af6303698c07e9c44b6646384ddafd2e05ec2cadf014b01c068bd4c2e5",
+    "tools/vision_ref.json": "b6e6450a9cf881436e7a1beccdb3881db80bc6f4ad6f6fdd7b9fc0d6df9d1421",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/model.safetensors.index.json": "aa702aa8cadb463b728cfd6829e172b1124114080231c75712155e2490f8c607",
+    ".q4t-work/vision-production-20261106/phase-01/execution/tower-output-image.bf16": "cd6c85ba2c78457032325998accd439b5e1bdc0381056853164b28e9fbb11869",
+    ".q4t-work/vision-production-20261106/phase-01/execution/tower-output-video.bf16": "dec2c70e2ba3cc75a456b647829e13ad5efba0d63078821a5262ac46d9278e5e"
+  },
+  "records": [
+    {
+      "group": "small",
+      "case": "image",
+      "grid": [
+        [
+          1,
+          4,
+          4
+        ]
+      ],
+      "shape": [
+        4,
+        2560
+      ]
+    },
+    {
+      "group": "small",
+      "case": "video",
+      "grid": [
+        [
+          2,
+          4,
+          4
+        ]
+      ],
+      "shape": [
+        8,
+        2560
+      ]
+    },
+    {
+      "group": "rectangular",
+      "case": "image",
+      "grid": [
+        [
+          1,
+          8,
+          12
+        ]
+      ],
+      "shape": [
+        24,
+        2560
+      ]
+    },
+    {
+      "group": "rectangular",
+      "case": "video",
+      "grid": [
+        [
+          2,
+          6,
+          10
+        ]
+      ],
+      "shape": [
+        30,
+        2560
+      ]
+    }
+  ],
+  "old_cuda_against_independent_reference": [
+    {
+      "case": "image",
+      "max_abs": 0.13944287598133087,
+      "rel_l2": 0.4014853537082672,
+      "passed": false
+    },
+    {
+      "case": "video",
+      "max_abs": 0.16863588988780975,
+      "rel_l2": 0.42024487257003784,
+      "passed": false
+    }
+  ],
+  "seconds": 1.8835593443363905,
+  "tolerance": {
+    "max_abs": 0.05,
+    "rel_l2": 0.05
+  },
+  "canonical_fixture_sha256": "05860bf199c3943454e7c88534d842f7c2164137dc6017e65fa1e1610b7d0d00",
+  "canonical_cases": [
+    "small/image",
+    "small/video"
+  ]
+}
