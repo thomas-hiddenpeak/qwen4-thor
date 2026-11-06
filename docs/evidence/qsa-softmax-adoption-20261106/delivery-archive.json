@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/docs/evidence/qsa-softmax-adoption-20261106/delivery-records.tar.gz",
+  "sha256": "56ac928a99eda5e402f3563ca209c67881210b730270e8ec42dce4fcea47a9a2",
+  "bytes": 1134655,
+  "paths": 61,
+  "objects": 54,
+  "index_sha256": "e616f77cb28ca0640b65c69b6e327ecce5a5b789bdb8a156d100f856f73677ea"
+}

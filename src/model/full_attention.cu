@@ -1007,6 +1007,7 @@ __device__ __forceinline__ void CpAsyncWait() {
   asm volatile("cp.async.wait_group %0;\n" ::"n"(N));
 }
 
+template <bool ParallelSoftmax = false>
 __global__ void SparseAttentionKernel(const u16* __restrict__ q,
                                       const u16* __restrict__ kv_cache,
                                       const int* __restrict__ page_table,
@@ -1166,8 +1167,43 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
       sS[(group + 8) * 16 + nb + col + 1] = c3;
     }
     __syncthreads();
-    // ---- Online softmax per q-head row (thread q handles qh=q). ----
-    if (threadIdx.x < kG) {
+    // Large-T: distribute independent exponentials over (head, position).
+    // Keep the original ordered max and FP32 denominator accumulation.
+    // The unrounded probabilities must survive separately from BF16 sP.
+    if constexpr (ParallelSoftmax) {
+      __shared__ float probabilities[kG * kChunk];
+      if (threadIdx.x < kG) {
+        const int qrow = threadIdx.x;
+        const float m_old = sMax[qrow];
+        float mx = m_old;
+        for (int p = 0; p < chunk; ++p)
+          mx = fmaxf(mx, sS[qrow * 16 + p] * scale);
+        sAlpha[qrow] = expf(m_old - mx);
+        sMax[qrow] = mx;
+      }
+      __syncthreads();
+      if (threadIdx.x < kG * kChunk) {
+        const int qrow = threadIdx.x / kChunk;
+        const int p = threadIdx.x % kChunk;
+        const float mx = sMax[qrow];
+        const float pr = (p < chunk) ? expf(sS[qrow * 16 + p] * scale - mx)
+                                     : 0.f;
+        probabilities[qrow * kChunk + p] = pr;
+        sP[p * 16 + qrow] = FloatToBf16(pr);
+      }
+      __syncthreads();
+      if (threadIdx.x < kG) {
+        const int qrow = threadIdx.x;
+        // Preserve the parent's separate FMUL rounding before the first add.
+        // Otherwise nvcc contracts this multiply and probabilities[0] to FMA.
+        float s = __fmul_rn(sSum[qrow], sAlpha[qrow]);
+        // Include the zero tail, in the original left-to-right order. A tree
+        // reduction or summing sP would change the numerical contract.
+        for (int p = 0; p < kChunk; ++p)
+          s += probabilities[qrow * kChunk + p];
+        sSum[qrow] = s;
+      }
+    } else if (threadIdx.x < kG) {
       const int qrow = threadIdx.x;
       const float m_old = sMax[qrow];
       float mx = m_old;
@@ -1575,6 +1611,7 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
 
   mt(9, 1);  // full_qkv end
   mt(10, 0);  // full_core start
+  mt(12, 0);  // optional QSA main prepare
   // 2. Fused q/k preprocessing: deinterleave qg -> q + gate + centered
   //    RMSNorm(q) AND centered RMSNorm(k) in one launch (disjoint heads).
   QKDeinterleaveNormKernel<<<T * (nq + nkv), hd, 0, stream>>>(
@@ -1592,7 +1629,9 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   WriteKVKernel<<<(T * nkv * hd + 255) / 256, 256, 0, stream>>>(
       d_k, d_v, kv_cache, nkv, hd, d_positions, page_table, T, d_seq_id,
       kv_seq_stride, pt_seq_stride);
+  mt(12, 1);
   // 6. indexer projections: iq = x @ W_iq^T [T,512], ik = x @ W_ik^T [T,128]
+  mt(13, 0);
   const int iq_dim = n_iq * idx_hd;
   const int ik_dim = n_ik * idx_hd;
   s = CheckGemm(Bf16Gemm(x, w.index_qk_proj, d_iq, T, iq_dim, hs, 1.f, 0.f,
@@ -1602,8 +1641,10 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
                          d_ik, T, ik_dim, hs, 1.f, 0.f, d_gemm_ws, gemm_ws,
                          stream));
   if (!s.ok()) return s;
+  mt(13, 1);
   // 7. Normalize and rotate queries only. Keys remain the raw projection
   //    until BuildCompressedKKernel pools and transforms each complete group.
+  mt(14, 0);
   IndexerQueryNormRopeKernel<<<T * n_iq, idx_hd, 0, stream>>>(
       d_iq, w.index_q_norm, d_positions, rope_pos, w.max_len, n_iq, idx_hd,
       w.rot_d, w.rope_theta, w.eps, d_seq_id, rope_seq_stride);
@@ -1617,7 +1658,9 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
       w.index_k_norm, idx_raw, idx_comp, d_positions, rope_pos, T,
       w.max_len, idx_hd, w.idx_compress, w.rope_theta, w.eps, d_seq_id,
       idx_seq_stride, rope_seq_stride);
+  mt(14, 1);
   // 9-10. Block scoring + top-k selection.
+  mt(15, 0);
   //
   // Short/medium context (max visible groups <= kMaxBlocks, i.e. <= 8192
   // tokens): score all blocks into one [T, max_blocks] buffer and bitonic-
@@ -1797,6 +1840,7 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
         d_run_idx, d_run_val, d_positions, T, w.idx_compress, block_topk,
         d_topk, d_topk_len, max_topk);
   }
+  mt(15, 1);
   // DEBUG (test-only, off by default): dump the one-pass block scores and the
   // selected top-block_topk token list for token 0 at a long-context small-T
   // (decode / MTP verify) step, for ground-truth verification of the top-k
@@ -1852,17 +1896,23 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   // T-dependence, to confirm whether QSA is the only T-dependence source in
   // the MTP vs plain-greedy divergence (see docs/log/2026-10-10.md). Default
   // runtime behavior is unchanged when the env var is unset.
+  mt(16, 0);
   const bool ablate_qsa_t1 = std::getenv("Q4T_ABLATE_QSA_T1") != nullptr;
   if (!ablate_qsa_t1 && T <= kSplitMaxT && nq == 24 && nkv == 2 && hd == 256) {
     s = QsaDecodeSplit(d_q, kv_cache, page_table, d_topk, d_topk_len, d_attn,
                        d_gate, max_topk, T, d_seq_id, kv_seq_stride,
                        pt_seq_stride, stream);
     if (!s) return s;
+  } else if (T > kSplitMaxT) {
+    SparseAttentionKernel<true><<<dim3(T, nkv), 256, 0, stream>>>(
+        d_q, kv_cache, page_table, d_topk, d_topk_len, d_attn, d_gate, nq, nkv,
+        hd, max_topk, d_seq_id, kv_seq_stride, pt_seq_stride);
   } else {
-    SparseAttentionKernel<<<dim3(T, nkv), 256, 0, stream>>>(
+    SparseAttentionKernel<false><<<dim3(T, nkv), 256, 0, stream>>>(
         d_q, kv_cache, page_table, d_topk, d_topk_len, d_attn, d_gate, nq, nkv,
         hd, max_topk, d_seq_id, kv_seq_stride, pt_seq_stride);
   }
+  mt(16, 1);
   mt(10, 1);  // full_core end
   // 12. out = attn @ W_o^T
   mt(11, 0);  // full_oproj start

@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "observed_owned_identities": 74,
+  "remaining_owned_identities": [],
+  "compute_query": {
+    "status": "OK",
+    "pids": [],
+    "request_id": "2316618aabb33bc274a476dc24ff4024",
+    "worker_pid": 3970199,
+    "stdout": "{\"request_id\": \"2316618aabb33bc274a476dc24ff4024\", \"monotonic\": 2161858.176147404, \"event\": \"begin\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"2316618aabb33bc274a476dc24ff4024\", \"monotonic\": 2161858.184931636, \"event\": \"end\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"2316618aabb33bc274a476dc24ff4024\", \"monotonic\": 2161858.184976171, \"event\": \"begin\", \"api\": \"init\"}\n{\"request_id\": \"2316618aabb33bc274a476dc24ff4024\", \"monotonic\": 2161858.189141283, \"event\": \"end\", \"api\": \"init\", \"seconds\": 0.00415282417088747}\n{\"request_id\": \"2316618aabb33bc274a476dc24ff4024\", \"monotonic\": 2161858.189186957, \"event\": \"begin\", \"api\": \"device_count\"}\n{\"request_id\": \"2316618aabb33bc274a476dc24ff4024\", \"monotonic\": 2161858.189227751, \"event\": \"end\", \"api\": \"device_count\", \"seconds\": 3.097113221883774e-05}\n{\"request_id\": \"2316618aabb33bc274a476dc24ff4024\", \"monotonic\": 2161858.18924189, \"event\": \"begin\", \"api\": \"handle[0]\"}\n{\"request_id\": \"2316618aabb33bc274a476dc24ff4024\", \"monotonic\": 2161858.195752371, \"event\": \"end\", \"api\": \"handle[0]\", \"seconds\": 0.0065026190131902695}\n{\"request_id\": \"2316618aabb33bc274a476dc24ff4024\", \"monotonic\": 2161858.195774231, \"event\": \"begin\", \"api\": \"compute_v3[0]\"}\n{\"request_id\": \"2316618aabb33bc274a476dc24ff4024\", \"monotonic\": 2161858.197726281, \"event\": \"end\", \"api\": \"compute_v3[0]\", \"seconds\": 0.0019451519474387169}\n{\"request_id\": \"2316618aabb33bc274a476dc24ff4024\", \"monotonic\": 2161858.197746568, \"event\": \"begin\", \"api\": \"shutdown\"}\n{\"request_id\": \"2316618aabb33bc274a476dc24ff4024\", \"monotonic\": 2161858.19904591, \"event\": \"end\", \"api\": \"shutdown\", \"seconds\": 0.0012922040186822414}\n{\"request_id\": \"2316618aabb33bc274a476dc24ff4024\", \"monotonic\": 2161858.199071983, \"event\": \"result\", \"status\": \"OK\", \"error\": null, \"device_count\": 1, \"pids\": [], \"process_memory\": []}\n",
+    "stderr": "",
+    "returncode": 0,
+    "seconds": 0.07004764815792441,
+    "process_memory": [],
+    "device_count": 1
+  },
+  "port_8762_listeners": "",
+  "lock": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "lock_available": true,
+  "recovery_marker_present": false,
+  "default_binary_sha256": "aa528a6839ed629fcea2aed036f4c8f0bdc14617ac00fdc31156e6e58c3e18d0",
+  "default_sidecar_sha256": "46aa73bd678ace6c79a8c4946c541e2e53ac7808c215374626c59c46ee90a11b",
+  "observation_scope": "Instantaneous read-only closure; not a guarantee against future workloads."
+}

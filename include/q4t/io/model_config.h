@@ -39,6 +39,8 @@ struct QuantConfig {
 struct ModelConfig {
   std::string model_type;
   int num_hidden_layers = 0;
+  // Parsed QSA aliases are canonicalized to full_attention. The only other
+  // accepted text layer type is linear_attention; order is preserved.
   std::vector<std::string> layer_types;  // size == num_hidden_layers
   int hidden_size = 0;
   int vocab_size = 0;
