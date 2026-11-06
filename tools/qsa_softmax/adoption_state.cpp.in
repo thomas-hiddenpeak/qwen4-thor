@@ -1,0 +1,164 @@
+// Appended to the independently enumerated session fixture, configured to all
+// 48 layers. Outputs contain effective bytes only, never pointer values or
+// uninitialized scratch. The two executable identities are compared offline.
+#include <fstream>
+
+namespace {
+void Write(std::ofstream& file, const void* value, size_t bytes) {
+  file.write(reinterpret_cast<const char*>(&bytes), sizeof(bytes));
+  file.write(reinterpret_cast<const char*>(value), bytes);
+  Require(file.good(), "state output write");
+}
+void Emit(Fixture& f, const std::filesystem::path& out,
+          const std::string& label, int slot, bool logits) {
+  std::ofstream file(out / (label + ".bin"), std::ios::binary);
+  Require(file.good(), "state output open");
+  const auto& seq = f.seq[slot];
+  Write(file, &seq.position, sizeof(seq.position));
+  Write(file, seq.history.data(), seq.history.size() * sizeof(int32_t));
+  Write(file, &f.bonus[slot], sizeof(int32_t));
+  Write(file, &f.d0[slot], sizeof(int32_t));
+  auto state = f.Capture(slot, seq.position);
+  for (const auto& field : state)
+    Write(file, field.bytes.data(), field.bytes.size());
+  if (logits) {
+    const auto bytes = Read(f.logits.p, size_t{248320} * 2);
+    Write(file, bytes.data(), bytes.size());
+  }
+  std::printf(
+      "CAPTURE label=%s slot=%d length=%d layers=%zu fields=%zu "
+      "logits=%d\n",
+      label.c_str(), slot, seq.position, f.main().layers.size(), state.size(),
+      logits);
+  std::fflush(stdout);
+}
+void Multi(Fixture& f, const std::filesystem::path& out, int round) {
+  // An intentionally nonmonotonic active-slot order; four k=3 sequences give
+  // T=16 target verification and exercise the newly dispatched sparse kernel.
+  const std::array<int, 4> slots{2, 0, 3, 1};
+  std::array<const model::ModelSequence*, 4> seqs;
+  std::array<const uint16_t*, 4> in;
+  std::array<uint16_t*, 4> next;
+  std::array<int32_t, 4> bonus, draft, next_bonus{}, next_draft{};
+  std::array<int32_t, 16> accepted{};
+  std::array<int, 4> counts{};
+  for (int i = 0; i < 4; ++i) {
+    const int slot = slots[i];
+    seqs[i] = &f.seq[slot];
+    in[i] = f.G(slot);
+    next[i] = f.G(slot);
+    bonus[i] = f.bonus[slot];
+    draft[i] = f.d0[slot];
+  }
+  Check(mtp::MtpSpeculativeStepMulti(
+      f.main(), f.draft, seqs.data(), bonus.data(), draft.data(), in.data(), 4,
+      3, accepted.data(), counts.data(), next_bonus.data(), next_draft.data(),
+      next.data(), nullptr));
+  Cuda(cudaStreamSynchronize(nullptr));
+  std::ofstream verification(out / ("verify-" + std::to_string(round) + ".bin"),
+                             std::ios::binary);
+  Write(verification, counts.data(), sizeof(counts));
+  // Unconsumed host accepted entries and device scratch rows are not state.
+  for (int i = 0; i < 4; ++i) {
+    const int slot = slots[i];
+    Require(counts[i] >= 1 && counts[i] <= 4, "accept count");
+    Write(verification, accepted.data() + i * 4, counts[i] * sizeof(int32_t));
+    auto& seq = f.seq[slot];
+    seq.history.insert(seq.history.end(), accepted.data() + i * 4,
+                       accepted.data() + i * 4 + counts[i]);
+    seq.position += counts[i];
+    f.bonus[slot] = next_bonus[i];
+    f.d0[slot] = next_draft[i];
+    // H is the last committed target trunk, not the unaccepted verify tail.
+    Cuda(cudaMemcpy(f.H(slot),
+                    f.draft.d_ms_vtrunk + size_t(i * 4 + counts[i] - 1) * 10240,
+                    10240 * 2, cudaMemcpyDeviceToDevice));
+    std::printf("ACCEPT round=%d slot=%d count=%d bonus=%d draft=%d\n", round,
+                slot, counts[i], next_bonus[i], next_draft[i]);
+    Emit(f, out,
+         "round-" + std::to_string(round) + "-slot-" + std::to_string(slot),
+         slot, false);
+  }
+  const auto logits = Read(f.draft.d_ms_vlogits, size_t{16} * 248320 * 2);
+  const auto trunk = Read(f.draft.d_ms_vtrunk, size_t{16} * 10240 * 2);
+  Write(verification, logits.data(), logits.size());
+  Write(verification, trunk.data(), trunk.size());
+}
+}  // namespace
+
+int main(int argc, char** argv) {
+  try {
+    Require(argc == 3 || argc == 4, "model output-directory [subset]");
+    const std::filesystem::path out(argv[2]);
+    Require(std::filesystem::create_directory(out), "fresh state directory");
+    Fixture f(argv[1], argc == 4 ? argv[3] : "");
+    Require(f.main().layers.size() == 48, "full 48-layer target");
+    const std::array<int, 4> lengths{8193, 17, 4105, 9};
+    for (int slot = 0; slot < 4; ++slot) {
+      std::vector<int32_t> ids(lengths[slot]);
+      for (size_t i = 0; i < ids.size(); ++i)
+        ids[i] = 100 + (i * 7 + slot * 13) % 101;
+      f.Begin(slot);
+      f.Prefill(slot, ids);
+      Emit(f, out, "prefill-slot-" + std::to_string(slot), slot, true);
+    }
+    for (int round = 0; round < 3; ++round) Multi(f, out, round);
+
+    // Persist all effective state at a committed MTP boundary. Destroy its
+    // source and destination slots, restore to a different slot, and compare
+    // against the independent byte enumeration before continuing both arms.
+    const auto expected = f.Capture(0, f.seq[0].position);
+    const auto host = f.seq[0];
+    const int32_t expected_bonus = f.bonus[0], expected_draft = f.d0[0];
+    const auto directory = out / "cache";
+    Require(std::filesystem::create_directory(directory), "cache directory");
+    chmod(directory.c_str(), 0700);
+    server::SessionCache cache;
+    Check(cache.Open(directory.string(), 1024, size_t{8} << 30));
+    const auto copy = [](void* cpu, void* gpu, size_t n, bool restore) {
+      const auto e = restore ? cudaMemcpy(gpu, cpu, n, cudaMemcpyHostToDevice)
+                             : cudaMemcpy(cpu, gpu, n, cudaMemcpyDeviceToHost);
+      return e == cudaSuccess ? Status() : Status::Fail(cudaGetErrorString(e));
+    };
+    std::vector<server::SessionRange> ranges;
+    Check(server::SessionStateRanges(f.main(), f.draft, 0, host.position,
+                                     f.G(0), f.H(0), &ranges));
+    auto prefix = host.history;
+    prefix.push_back(expected_bonus);
+    Require(cache.Acquire("qsa-state"), "cache writer");
+    Check(cache.Save(
+        "qsa-state", prefix, ranges, copy, [] { return false; },
+        expected_draft));
+    cache.Release("qsa-state", true);
+    f.Begin(0);
+    f.Prefill(0, std::vector<int32_t>(257, 444));
+    f.Begin(2);
+    f.Prefill(2, std::vector<int32_t>(259, 888));
+    f.Begin(2);
+    Require(cache.Acquire("qsa-state") &&
+                cache.Match("qsa-state", prefix) == host.position,
+            "cache match");
+    Check(server::SessionStateRanges(f.main(), f.draft, 2, host.position,
+                                     f.G(2), f.H(2), &ranges));
+    Check(cache.Restore(
+        "qsa-state", ranges, copy, [] { return false; }, &f.d0[2],
+        &f.bonus[2]));
+    f.seq[2] = host;
+    f.seq[2].seq_id = 2;
+    f.main().rope_delta[2] = 0;
+    Equal(f.Capture(2, host.position), expected);
+    Require(f.bonus[2] == expected_bonus && f.d0[2] == expected_draft,
+            "restored host seeds");
+    Emit(f, out, "restored-slot-2", 2, false);
+    f.Step(2, {}, false);
+    Emit(f, out, "continued-slot-2", 2, false);
+    cache.Release("qsa-state", true);
+    std::printf(
+        "PASS full_layers=48 heads=1 slots=4 verify_rows=16 rounds=3 "
+        "source_overwritten=1 restored_slot=2\n");
+    return 0;
+  } catch (const std::exception& error) {
+    std::fprintf(stderr, "FAIL full state: %s\n", error.what());
+    return 1;
+  }
+}
