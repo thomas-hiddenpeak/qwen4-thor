@@ -5,6 +5,12 @@
 没有证据要求改变视频时序、视觉数值或结构化解码算法。
 机器摘要见[审计结果](evidence/vision-closeout-20261107/result.json)。
 
+[PR #16](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/16)已合入main
+adfd87b4，合并树与已验7d991b01一致，两项host检查通过。首次PR检查
+在依赖下载阶段达到时限取消，尚未编译/测试；原日志保存，同一提交
+重跑通过。只清理本阶段重复本地/远端分支，预期旧tip与main保留锚点
+见[合入记录](evidence/vision-closeout-20261107/mainline.json)，原件路径保留。
+
 ## 视频方向：输入理解与枚举语义分开接受
 
 Phase A复制上一轮四个失败请求，仅换请求身份与response_format；媒体

@@ -1,0 +1,75 @@
+{
+  "pr": {
+    "headRefOid": "7d991b01d541ee562d7d8ccd641a1805773a210d",
+    "mergeCommit": {
+      "oid": "adfd87b4e028e96a779d66916ed7b034ab439a1d"
+    },
+    "mergedAt": "2026-11-06T18:09:25Z",
+    "state": "MERGED",
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-06T18:08:49Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/42266152745/job/128064023193",
+        "name": "host-contracts",
+        "startedAt": "2026-11-06T18:07:07Z",
+        "status": "COMPLETED",
+        "workflowName": "Public host contracts"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-11-06T17:57:57Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/42266071784/job/128058194133",
+        "name": "host-contracts",
+        "startedAt": "2026-11-06T17:55:44Z",
+        "status": "COMPLETED",
+        "workflowName": "Public host contracts"
+      }
+    ],
+    "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/16"
+  },
+  "merge_tree_equals_tested_head": true,
+  "main": "adfd87b4e028e96a779d66916ed7b034ab439a1d",
+  "retained_stage_tip": "7d991b01d541ee562d7d8ccd641a1805773a210d",
+  "branch_cleanup": {
+    "deleted_branch": "codex/vision-closeout-v1",
+    "old_tip": "7d991b01d541ee562d7d8ccd641a1805773a210d",
+    "retained_by": "adfd87b4e028e96a779d66916ed7b034ab439a1d",
+    "remote_expected_tip_verified": true,
+    "no_open_pr": true,
+    "unique_commits": 0,
+    "evidence_paths_preserved": true,
+    "other_branches_unchanged": true
+  },
+  "initial_pr_check": {
+    "status": "CANCELLED_DURING_COMPILER_DEPENDENCY_DOWNLOAD",
+    "code_tests_executed": false,
+    "same_commit_rerun_passed": true,
+    "run": 42266152745,
+    "log_sha256": "496fa5bf59ca202da02989feaeffca2ef1aa4783ac1035f514846fc4407a0290"
+  },
+  "runtime_identity": {
+    "status": "PASS_PACKAGE_IDENTITIES",
+    "installed": {
+      "q4t": "ea1b474d7d69808696e697346a60ee09bb9ecaca9bfb99925b78dcdbda7a4550",
+      "q4t.release.json": "3eb463850cf07338406b811197a68a5dcb9474ac9c2cf039470aa4f654924724"
+    },
+    "pair": {
+      "old": {
+        "q4t": "aa528a6839ed629fcea2aed036f4c8f0bdc14617ac00fdc31156e6e58c3e18d0",
+        "q4t.release.json": "46aa73bd678ace6c79a8c4946c541e2e53ac7808c215374626c59c46ee90a11b"
+      },
+      "new": {
+        "q4t": "ea1b474d7d69808696e697346a60ee09bb9ecaca9bfb99925b78dcdbda7a4550",
+        "q4t.release.json": "3eb463850cf07338406b811197a68a5dcb9474ac9c2cf039470aa4f654924724"
+      },
+      "audit_sha256": "8d4c8e9e99205955c87ddc6008a5823b676eb35695f8cef3b4c28b79bbd19681",
+      "original_files": 943,
+      "runtime_sources": 241,
+      "atomicity": "individual atomic replaces; not a cross-file power-loss transaction"
+    },
+    "mixed_pair": false
+  }
+}
