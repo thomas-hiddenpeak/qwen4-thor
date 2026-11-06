@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "base_commit": "def8cc96e7f94b50fbc917303c8570ec23e841ea",
+  "candidate_runtime_commit": "ada8cbac9da19ceab3e87706b0eec35f594b5159",
+  "runtime_files_verified": 223,
+  "runtime_delta": [
+    "include/q4t/io/model_config.h",
+    "include/q4t/model/layer_subtiming.h",
+    "src/io/model_config.cpp",
+    "src/model/full_attention.cu",
+    "src/model/model.cu"
+  ],
+  "runtime_manifest_sha256": "7115b9bcfaf8204c1d044458a89f2b7b7e223af1ceb465b6ea167eadf20639bb",
+  "inventory_check": {
+    "command": "python3 -B tools/serve_audit/check_inventory.py --self-check",
+    "returncode": 0,
+    "inventory_current": true,
+    "fields": 38,
+    "routes": 10,
+    "reviewed_source_anchors": 112,
+    "mutation_checks": 3,
+    "errors": [],
+    "inventory_sha256": "3d4f3862ff5f43d35522446a3121b61152c8f4872110699ab943b017014f92a9"
+  },
+  "gpu_tests_added_by_extraction": 0,
+  "source_policy": "Exact five-file extraction; acceptance drivers retained on research commit 1389a4c0, no whole research merge."
+}

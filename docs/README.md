@@ -1,5 +1,9 @@
 # docs/ — 开发记录文档体系
 
+[QSA已有正向收益的完整纳入与默认交付](QSA_SOFTMAX_ADOPTION_RESULT_2026-11-06.md)：
+三模式五档/完整状态/缓存与工具/安装健康通过；默认aa528a68，
+旧NO_GO及短档负点保留，不是统计非劣或旧包迁移。
+
 [RPM/TPM与客户端公平准入有界交付](SERVE_CLIENT_GOVERNANCE_DELIVERY_2026-11-05.md)：
 原生默认c1bdb0a7/0efc2c0d，协议9c8758c4，旧托管/任务/Key/day仍固定。
 

@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/acceptance/raw-records.tar.gz",
+  "sha256": "31a7086beb29c5c973c783be728bf32a0e2e918364f8623865c37339a9e02f41",
+  "bytes": 28100798,
+  "paths": 764,
+  "objects": 685,
+  "index_sha256": "bd8ea6f6b6e73e2d18de585d6505ab78992937e9eb422e6c715f57b7a7900d3c",
+  "input_archive": {
+    "passed": true,
+    "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/acceptance/inputs.tar.gz",
+    "sha256": "5ebb4e8cb41f7bccf2dfc7b093c4f50d2421227efa3792bc2b8b156f6db2771c",
+    "bytes": 346479867,
+    "paths": 4693,
+    "objects": 3126,
+    "index_sha256": "188375ee314aa33d675e48e930f9f10d14df5f15b1027a1dcdce7244b6d42cc6"
+  },
+  "retained_large_files": 84,
+  "retained_index_sha256": "6c20839bf038e603c0e916d1b006a8afaaf10f26a67dcba6e6e518322d0dc185"
+}

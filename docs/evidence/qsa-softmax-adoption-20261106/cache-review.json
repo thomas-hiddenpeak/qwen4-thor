@@ -1,0 +1,64 @@
+{
+  "passed": true,
+  "results": {
+    "full": {
+      "passed": true,
+      "requests": 12,
+      "rejected_http": 0,
+      "shared_tokens": 8192,
+      "session_tokens": 9261,
+      "readonly_zero_writes": true,
+      "seed_saves": [
+        {
+          "request": "chatcmpl-auto-3368748a2892207bce3339a475caa279",
+          "event": "save",
+          "prefix": "8192",
+          "bytes": "367964160",
+          "ms": "379.831",
+          "error": "none"
+        },
+        {
+          "request": "chatcmpl-auto-9b505dbf3b45572f153ab555308127cb",
+          "event": "save",
+          "prefix": "8192",
+          "bytes": "735928320",
+          "ms": "366.669",
+          "error": "none"
+        }
+      ],
+      "duplicate_no_write": true,
+      "cancel_unpublished": true
+    },
+    "subset": {
+      "passed": true,
+      "requests": 12,
+      "rejected_http": 0,
+      "shared_tokens": 8192,
+      "session_tokens": 9261,
+      "readonly_zero_writes": true,
+      "seed_saves": [
+        {
+          "request": "chatcmpl-auto-f4441f9c7fa06476efcb6b78c947ac01",
+          "event": "save",
+          "prefix": "8192",
+          "bytes": "367964160",
+          "ms": "376.203",
+          "error": "none"
+        },
+        {
+          "request": "chatcmpl-auto-7807fd2ff8d0312122f046ea1769b4e4",
+          "event": "save",
+          "prefix": "8192",
+          "bytes": "735928320",
+          "ms": "357.377",
+          "error": "none"
+        }
+      ],
+      "duplicate_no_write": true,
+      "cancel_unpublished": true
+    }
+  },
+  "http_requests": 24,
+  "services": 2,
+  "performance_claim": false
+}

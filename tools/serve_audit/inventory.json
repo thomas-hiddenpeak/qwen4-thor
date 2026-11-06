@@ -691,7 +691,7 @@
     "include/q4t/vision/vision.h": "bee9f105fe509936ca90368e5e59868d41f9f7a84a795e46d29edb678947a527",
     "src/io/json.cpp": "594c940466b10fbd0efa9c1bc05dd3092d7d1a4041d552716914fd84a740c0e0",
     "src/main.cpp": "a289b15b8876f4314fc8678075d51359bfdff7dd57df04998946fa985131df7d",
-    "src/model/model.cu": "ddf5df2ef04770369785b4dd93d928bea7fa4ca4484e670ada9c7a944ed068fb",
+    "src/model/model.cu": "ac13268a79890ef979841f1f332a06c87f1a6c91e92ec651ad69841252459d64",
     "src/model/model_owner.cpp": "cc3a998e52d4cca44bd695f40e1bf01f4ee2d75ce9f0c437d07757582d60e2bf",
     "src/mtp/mtp.cu": "c2e6bb780cc42c80c649dc0e4fa18b6b7e714da17c6baaf46a97938099d07184",
     "src/runtime/cuda_allocation_quota.cpp": "d19e53e7ec20b5924d01482760b638df74fbf5c7ef4aec7647dc2dffe8e760c5",
@@ -994,6 +994,19 @@
       "docs/SERVE_CLIENT_GOVERNANCE_2026-11-05.md",
       "tests/server_client_policy_test.cpp",
       "tests/server_sequence_admission_test.cpp"
+    ]
+  },
+  "reference_refresh_qsa_review": {
+    "date": "2026-11-06",
+    "status": "QUALIFIED_BOUNDED_QSA_ADOPTION",
+    "changed_sources": [
+      "src/model/model.cu"
+    ],
+    "review": "Optional QSA timing remains disabled by default. Layer-type aliases/rejection and ordered large-T softmax passed scoped CPU, complete three-mode five-context HTTP, independent arithmetic/full-layer four-slot state, tool/cache loops and installed health. Model source fingerprint and protocol declarations are renewed; no new wire fields/routes, client WIP, managed/task migration or statistical noninferiority claim. Timing may also cover non-checkpoint mixed batches; T alone does not prove prefill.",
+    "evidence": [
+      "docs/QSA_SOFTMAX_ADOPTION_RESULT_2026-11-06.md",
+      "tools/verify/qsa_subtiming/README.md",
+      "tools/verify/qsa_subtiming/contract_test.cpp"
     ]
   }
 }

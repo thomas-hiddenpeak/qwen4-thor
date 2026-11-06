@@ -607,7 +607,18 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
       }
   }
   const bool layer_subtiming = std::getenv("Q4T_LAYER_SUBTIMING") != nullptr;
-  if (layer_subtiming) LayerSubTiming::Instance().Begin(cfg.num_layers);
+  int qsa_layers = 0;
+  if (layer_subtiming && T > 8) {
+    const char* detail = std::getenv("Q4T_QSA_SUBTIMING");
+    const bool checkpointed = ssm_ckpt || conv_ckpt || ple_conv_ckpt || num_ckpt;
+    if (QsaSubTimingRequested(layer_subtiming, T, checkpointed, detail)) {
+      for (int l = 0; l < cfg.num_layers; ++l)
+        qsa_layers += m.layers[l].is_full_attention;
+    }
+  }
+  QsaSubTimingGuard qsa_timing_guard{qsa_layers > 0};
+  if (layer_subtiming)
+    LayerSubTiming::Instance().Begin(cfg.num_layers, qsa_layers);
   if (layer_subtiming) quant::MoESubTiming::Instance().Begin();
   if (layer_subtiming) HcMixSubTiming::Instance().Begin();
   if (layer_timing) cudaEventRecord(lt_ev[0], stream);

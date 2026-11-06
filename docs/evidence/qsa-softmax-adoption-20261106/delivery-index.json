@@ -1,0 +1,307 @@
+{
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/deployment.json": {
+    "sha256": "b739829a1f65cf8bc424c03b3f91800cb0f4f110596e4f476adbf4a9f0665224",
+    "bytes": 114,
+    "member": "objects/b739829a1f65cf8bc424c03b3f91800cb0f4f110596e4f476adbf4a9f0665224"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/finalized.json": {
+    "sha256": "1e3ecae1c4400ed6d9d4216c28f75572e802ac99a8762e26210633a237a5d41f",
+    "bytes": 438,
+    "member": "objects/1e3ecae1c4400ed6d9d4216c28f75572e802ac99a8762e26210633a237a5d41f"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/lease/events.jsonl": {
+    "sha256": "3da8178d3959648b0e596b19b75947caec55030d85e1d02834532a626d352721",
+    "bytes": 18763,
+    "member": "objects/3da8178d3959648b0e596b19b75947caec55030d85e1d02834532a626d352721"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/lease/exit.json": {
+    "sha256": "85f5df964b65d87b38c31bd94990f20b7771c23329f6cc87ebe7f789b8a34660",
+    "bytes": 639,
+    "member": "objects/85f5df964b65d87b38c31bd94990f20b7771c23329f6cc87ebe7f789b8a34660"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/lease/nvml-queries.jsonl": {
+    "sha256": "a833f46c63379d68adc27fc6b1a7d8b406f0c0dba8c0d645c8e2acaa644a5f27",
+    "bytes": 230590,
+    "member": "objects/a833f46c63379d68adc27fc6b1a7d8b406f0c0dba8c0d645c8e2acaa644a5f27"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/plan.json": {
+    "sha256": "ff218f58f963da6c5ffdc92801e61a2eb27c411968469d8bd32c6434f03e5a93",
+    "bytes": 967089,
+    "member": "objects/ff218f58f963da6c5ffdc92801e61a2eb27c411968469d8bd32c6434f03e5a93"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/postflight.json": {
+    "sha256": "bd1f2c48a6fa225dcccaab71fbbc3c519cd03011a290090ba4f7a4bd7c516257",
+    "bytes": 544,
+    "member": "objects/bd1f2c48a6fa225dcccaab71fbbc3c519cd03011a290090ba4f7a4bd7c516257"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/files.json": {
+    "sha256": "5db8d4bad34c69924a252da8148ff9aab03d2d999d162bab8fc64f6dc3a5c5c6",
+    "bytes": 4788,
+    "member": "objects/5db8d4bad34c69924a252da8148ff9aab03d2d999d162bab8fc64f6dc3a5c5c6"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-full/capabilities.json": {
+    "sha256": "072204829fe4f576a9801042f4ee321deff01b0ab6289cfc906a6a43ca6c8b44",
+    "bytes": 11837,
+    "member": "objects/072204829fe4f576a9801042f4ee321deff01b0ab6289cfc906a6a43ca6c8b44"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-full/capacity.json": {
+    "sha256": "ab0a94acfcee6ea3f70c95cc12234dad23b57d8aed2ff6cfb27b5aa29b9da2ec",
+    "bytes": 249,
+    "member": "objects/ab0a94acfcee6ea3f70c95cc12234dad23b57d8aed2ff6cfb27b5aa29b9da2ec"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-full/child-request.json": {
+    "sha256": "96b5a623cc20d0580325c0eac2d14487019ee1be6ef437274efd6a0db2e4b958",
+    "bytes": 37765,
+    "member": "objects/96b5a623cc20d0580325c0eac2d14487019ee1be6ef437274efd6a0db2e4b958"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-full/child-response.json": {
+    "sha256": "9c8d49f09f105225576b97e822e496061998c10e9bbbd6f12fb214941b4f17b1",
+    "bytes": 3886,
+    "member": "objects/9c8d49f09f105225576b97e822e496061998c10e9bbbd6f12fb214941b4f17b1"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-full/configuration.json": {
+    "sha256": "09dd8ad87a017ac009f007002e6610d140c24129994e370480c9399b80441d61",
+    "bytes": 5371,
+    "member": "objects/09dd8ad87a017ac009f007002e6610d140c24129994e370480c9399b80441d61"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-full/events.jsonl": {
+    "sha256": "e74b3e8ef3b933f24be8f1206e108b9e3450b17bb0d5b8adb5a3cf6357ec5ecf",
+    "bytes": 1369,
+    "member": "objects/e74b3e8ef3b933f24be8f1206e108b9e3450b17bb0d5b8adb5a3cf6357ec5ecf"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-full/exit.json": {
+    "sha256": "8f2474fcda3bf14dd6c2ee4e08c371ac86ecc689931a85e93de05e8a5cd25e0c",
+    "bytes": 74,
+    "member": "objects/8f2474fcda3bf14dd6c2ee4e08c371ac86ecc689931a85e93de05e8a5cd25e0c"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-full/health-result.json": {
+    "sha256": "ded2575d9456fead08401245af6b5875407f1e701efc7dd80af9170374dae07b",
+    "bytes": 11967,
+    "member": "objects/ded2575d9456fead08401245af6b5875407f1e701efc7dd80af9170374dae07b"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-full/prefix-audit.json": {
+    "sha256": "2489296f59b7f5623adf4900fe468822c4d6dd0891893f7e01ef2a4d093115fe",
+    "bytes": 238,
+    "member": "objects/2489296f59b7f5623adf4900fe468822c4d6dd0891893f7e01ef2a4d093115fe"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-full/resume-request.json": {
+    "sha256": "9e71757b43b364fa3ca48b9fc83ab2a0476024e2eb43f0b06a9385c9e85dc264",
+    "bytes": 37701,
+    "member": "objects/9e71757b43b364fa3ca48b9fc83ab2a0476024e2eb43f0b06a9385c9e85dc264"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-full/resume-response.json": {
+    "sha256": "747ae3ece3c67ab0bce7a37cfdfcbec5962861915fef205b88b1c92443fc1ce2",
+    "bytes": 2310,
+    "member": "objects/747ae3ece3c67ab0bce7a37cfdfcbec5962861915fef205b88b1c92443fc1ce2"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-full/server-audit.json": {
+    "sha256": "52bfc1ae2a6d0ba069cf382b1632d9888dbd05e6df99a736c481e7ad451d8615",
+    "bytes": 5663,
+    "member": "objects/52bfc1ae2a6d0ba069cf382b1632d9888dbd05e6df99a736c481e7ad451d8615"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-full/server-command.json": {
+    "sha256": "9189b5f5065c6eab30f85ad6f249486f707af03e333bd48fc2f78e5aeab8e995",
+    "bytes": 878,
+    "member": "objects/9189b5f5065c6eab30f85ad6f249486f707af03e333bd48fc2f78e5aeab8e995"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-full/server.log": {
+    "sha256": "8d9fe1fdde758a744a885f8aaf03617c79c380af99ed106424d9d4d38f04571c",
+    "bytes": 16016,
+    "member": "objects/8d9fe1fdde758a744a885f8aaf03617c79c380af99ed106424d9d4d38f04571c"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-full/server.pid": {
+    "sha256": "50ffa73334a2f42e8aa35fa3505621b73a3aa40bf46f36ef0fe6f7b0dabb4163",
+    "bytes": 8,
+    "member": "objects/50ffa73334a2f42e8aa35fa3505621b73a3aa40bf46f36ef0fe6f7b0dabb4163"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-full/session-audit.json": {
+    "sha256": "78233ebc486fd84a76a47deb059eaa9c566ddb4558cdf589d4eb2108fb16d255",
+    "bytes": 6068,
+    "member": "objects/78233ebc486fd84a76a47deb059eaa9c566ddb4558cdf589d4eb2108fb16d255"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-full/source-request.json": {
+    "sha256": "a113f94aca1c54776f32fa36abd337ac6ec6414b0dac2e66be5f968367d2aad9",
+    "bytes": 37584,
+    "member": "objects/a113f94aca1c54776f32fa36abd337ac6ec6414b0dac2e66be5f968367d2aad9"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-full/source-response.json": {
+    "sha256": "8e0f769dbf6d8229571dc0552e7ee78a89eb0c3cff36188a8bcab6fbbd937d6e",
+    "bytes": 4738,
+    "member": "objects/8e0f769dbf6d8229571dc0552e7ee78a89eb0c3cff36188a8bcab6fbbd937d6e"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-full/step.json": {
+    "sha256": "ca57fe4d19e1ac724f95e29855cfe40b622ae8f2431ef7c501fc1d76933f3d88",
+    "bytes": 605,
+    "member": "objects/ca57fe4d19e1ac724f95e29855cfe40b622ae8f2431ef7c501fc1d76933f3d88"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-full-command.json": {
+    "sha256": "ca57fe4d19e1ac724f95e29855cfe40b622ae8f2431ef7c501fc1d76933f3d88",
+    "bytes": 605,
+    "member": "objects/ca57fe4d19e1ac724f95e29855cfe40b622ae8f2431ef7c501fc1d76933f3d88"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-full-driver.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0,
+    "member": "objects/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-subset/capabilities.json": {
+    "sha256": "072204829fe4f576a9801042f4ee321deff01b0ab6289cfc906a6a43ca6c8b44",
+    "bytes": 11837,
+    "member": "objects/072204829fe4f576a9801042f4ee321deff01b0ab6289cfc906a6a43ca6c8b44"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-subset/capacity.json": {
+    "sha256": "ab0a94acfcee6ea3f70c95cc12234dad23b57d8aed2ff6cfb27b5aa29b9da2ec",
+    "bytes": 249,
+    "member": "objects/ab0a94acfcee6ea3f70c95cc12234dad23b57d8aed2ff6cfb27b5aa29b9da2ec"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-subset/child-request.json": {
+    "sha256": "d469dd17635de57e1099f8fc73f8cd0e3208e12348442fc4370cf6e92022789e",
+    "bytes": 37765,
+    "member": "objects/d469dd17635de57e1099f8fc73f8cd0e3208e12348442fc4370cf6e92022789e"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-subset/child-response.json": {
+    "sha256": "75b5e2e11c3051d5bcd7b15a90ebde78d6d7da79f2aa24c4af0e958a40cd4bcb",
+    "bytes": 3885,
+    "member": "objects/75b5e2e11c3051d5bcd7b15a90ebde78d6d7da79f2aa24c4af0e958a40cd4bcb"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-subset/configuration.json": {
+    "sha256": "b7031a42bce059e6a51c97ef03f1a68c703e71d8a60ec432ca1a3a0e7eb7c83a",
+    "bytes": 5371,
+    "member": "objects/b7031a42bce059e6a51c97ef03f1a68c703e71d8a60ec432ca1a3a0e7eb7c83a"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-subset/events.jsonl": {
+    "sha256": "1795ffd4bf2d439a0b1388f7fd547d8b1f03a2a84a5f2b07c7fb5ed4c39c151f",
+    "bytes": 1373,
+    "member": "objects/1795ffd4bf2d439a0b1388f7fd547d8b1f03a2a84a5f2b07c7fb5ed4c39c151f"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-subset/exit.json": {
+    "sha256": "8f2474fcda3bf14dd6c2ee4e08c371ac86ecc689931a85e93de05e8a5cd25e0c",
+    "bytes": 74,
+    "member": "objects/8f2474fcda3bf14dd6c2ee4e08c371ac86ecc689931a85e93de05e8a5cd25e0c"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-subset/health-result.json": {
+    "sha256": "dedc20e1a87b9a17ea27244a69c3b0040a59d0b0f1201c30fd9fab32eea87361",
+    "bytes": 11967,
+    "member": "objects/dedc20e1a87b9a17ea27244a69c3b0040a59d0b0f1201c30fd9fab32eea87361"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-subset/prefix-audit.json": {
+    "sha256": "353081a8e27bfde8b29a9a9d352b44365c04a5ba7efc6714c0152189c741b5df",
+    "bytes": 238,
+    "member": "objects/353081a8e27bfde8b29a9a9d352b44365c04a5ba7efc6714c0152189c741b5df"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-subset/resume-request.json": {
+    "sha256": "f0eae757bc32bd98197a7f7b51f41eef7656a00029263d875fcec7ff44b45147",
+    "bytes": 37701,
+    "member": "objects/f0eae757bc32bd98197a7f7b51f41eef7656a00029263d875fcec7ff44b45147"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-subset/resume-response.json": {
+    "sha256": "cb90b0140c1dca0531a8caa74cb31b7310d5eb50b23602ac66bee406565a6910",
+    "bytes": 2309,
+    "member": "objects/cb90b0140c1dca0531a8caa74cb31b7310d5eb50b23602ac66bee406565a6910"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-subset/server-audit.json": {
+    "sha256": "511c823b50f73ffbb0f89bc7784c9a6ce3f835dfb4562395c7ba962a35beef26",
+    "bytes": 5663,
+    "member": "objects/511c823b50f73ffbb0f89bc7784c9a6ce3f835dfb4562395c7ba962a35beef26"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-subset/server-command.json": {
+    "sha256": "a9c3c1a529f420cfdf02dbb27797ba230cfe56598493475d8ab79467539a8cce",
+    "bytes": 1053,
+    "member": "objects/a9c3c1a529f420cfdf02dbb27797ba230cfe56598493475d8ab79467539a8cce"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-subset/server.log": {
+    "sha256": "3410784ce5ea5d482723d32782308afa8cc40edc152b35464cb04cc6ad211054",
+    "bytes": 16068,
+    "member": "objects/3410784ce5ea5d482723d32782308afa8cc40edc152b35464cb04cc6ad211054"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-subset/server.pid": {
+    "sha256": "20a12f1eb73f1bf657dc02e80eefa4d031545c2dee82359dafba523059b5f232",
+    "bytes": 8,
+    "member": "objects/20a12f1eb73f1bf657dc02e80eefa4d031545c2dee82359dafba523059b5f232"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-subset/session-audit.json": {
+    "sha256": "55661cc5c3335b6f981623842bdb65c8692e27f66750b3d1bf1aac2ff1cce4b8",
+    "bytes": 6069,
+    "member": "objects/55661cc5c3335b6f981623842bdb65c8692e27f66750b3d1bf1aac2ff1cce4b8"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-subset/source-request.json": {
+    "sha256": "50392d6a322dc1a3aea91928449aa287b18271ba932a9401fadf1091f9aa3421",
+    "bytes": 37584,
+    "member": "objects/50392d6a322dc1a3aea91928449aa287b18271ba932a9401fadf1091f9aa3421"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-subset/source-response.json": {
+    "sha256": "abb4cd9ed1e5739efca21c8d0143ba70b903f27d0b1b1f341175b67820521db7",
+    "bytes": 4738,
+    "member": "objects/abb4cd9ed1e5739efca21c8d0143ba70b903f27d0b1b1f341175b67820521db7"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-subset/step.json": {
+    "sha256": "60c95f509861d8e8f20ea3ce11a240d217f6929425c0de3a24c0e4911aade269",
+    "bytes": 611,
+    "member": "objects/60c95f509861d8e8f20ea3ce11a240d217f6929425c0de3a24c0e4911aade269"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-subset-command.json": {
+    "sha256": "60c95f509861d8e8f20ea3ce11a240d217f6929425c0de3a24c0e4911aade269",
+    "bytes": 611,
+    "member": "objects/60c95f509861d8e8f20ea3ce11a240d217f6929425c0de3a24c0e4911aade269"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/installed-subset-driver.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0,
+    "member": "objects/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/plan.json": {
+    "sha256": "ff218f58f963da6c5ffdc92801e61a2eb27c411968469d8bd32c6434f03e5a93",
+    "bytes": 967089,
+    "member": "objects/ff218f58f963da6c5ffdc92801e61a2eb27c411968469d8bd32c6434f03e5a93"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/state.json": {
+    "sha256": "757fff1155657329578b2e550f69dc09707c0ddc11171328534eb0d4da4c3b10",
+    "bytes": 436,
+    "member": "objects/757fff1155657329578b2e550f69dc09707c0ddc11171328534eb0d4da4c3b10"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/telemetry-summary.json": {
+    "sha256": "7516f4ca5fc22b6c9b3020c3ad0e429d8bae713011dcc2c5584bb9d82fd5b087",
+    "bytes": 2497,
+    "member": "objects/7516f4ca5fc22b6c9b3020c3ad0e429d8bae713011dcc2c5584bb9d82fd5b087"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/delivery/run/unified-memory.jsonl": {
+    "sha256": "4fa8fc2645f14c1bb7f3878de7ecc86b1ab70a8e23437c45cadb578208ededb0",
+    "bytes": 4545422,
+    "member": "objects/4fa8fc2645f14c1bb7f3878de7ecc86b1ab70a8e23437c45cadb578208ededb0"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/release/candidate/CMakeCache.txt": {
+    "sha256": "48aca6a6a81f3aecc929223959b8dedef9622ddadc53132ce0e9099181e1e4aa",
+    "bytes": 39171,
+    "member": "objects/48aca6a6a81f3aecc929223959b8dedef9622ddadc53132ce0e9099181e1e4aa"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/release/candidate/q4t.release.json": {
+    "sha256": "46aa73bd678ace6c79a8c4946c541e2e53ac7808c215374626c59c46ee90a11b",
+    "bytes": 49371,
+    "member": "objects/46aa73bd678ace6c79a8c4946c541e2e53ac7808c215374626c59c46ee90a11b"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/release/candidate/runtime-source.json": {
+    "sha256": "7115b9bcfaf8204c1d044458a89f2b7b7e223af1ceb465b6ea167eadf20639bb",
+    "bytes": 23247,
+    "member": "objects/7115b9bcfaf8204c1d044458a89f2b7b7e223af1ceb465b6ea167eadf20639bb"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/release/previous/q4t.release.json": {
+    "sha256": "0efc2c0dc309e42a7b7761860edce7888aa8139f5ea305f54eae054a81fdbcf3",
+    "bytes": 47845,
+    "member": "objects/0efc2c0dc309e42a7b7761860edce7888aa8139f5ea305f54eae054a81fdbcf3"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/release/previous/sealed-files.json": {
+    "sha256": "c0e9703d47768962f517695c39a396746de11a5f753a4e17c806ab6e0f77db73",
+    "bytes": 1487,
+    "member": "objects/c0e9703d47768962f517695c39a396746de11a5f753a4e17c806ab6e0f77db73"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/release/sealed-files.json": {
+    "sha256": "901daad79f68817c221027baa79bfdb69a327650e538f82dae088a137886fa6e",
+    "bytes": 30178,
+    "member": "objects/901daad79f68817c221027baa79bfdb69a327650e538f82dae088a137886fa6e"
+  },
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/release-review.json": {
+    "sha256": "32facdec40c878130e8c6672e5b5683678e98c55b7fda7445ffd27c17ab7d46e",
+    "bytes": 2849,
+    "member": "objects/32facdec40c878130e8c6672e5b5683678e98c55b7fda7445ffd27c17ab7d46e"
+  }
+}

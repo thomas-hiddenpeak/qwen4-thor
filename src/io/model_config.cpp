@@ -37,6 +37,39 @@ Status ReadFile(const std::string& path, std::string* out) {
   return Status();
 }
 
+Status ParseLayerTypes(const Json* value, int num_layers,
+                       std::vector<std::string>* out) {
+  if (!value || !value->IsArray()) {
+    return Status::Fail("text_config.layer_types must be an array");
+  }
+  if (num_layers <= 0 ||
+      value->array.size() != static_cast<size_t>(num_layers)) {
+    return Status::Fail("text_config.layer_types size (" +
+                        std::to_string(value->array.size()) +
+                        ") != positive num_hidden_layers (" +
+                        std::to_string(num_layers) + ")");
+  }
+  for (size_t i = 0; i < value->array.size(); ++i) {
+    const Json& layer = value->array[i];
+    const std::string field =
+        "text_config.layer_types[" + std::to_string(i) + "]";
+    if (!layer.IsString()) return Status::Fail(field + " must be a string");
+    // Qwen4-Exp checkpoints and Transformers use these names for the same
+    // indexed attention layer. Keep the internal dispatch name unchanged.
+    if (layer.str == "full_attention" ||
+        layer.str == "qwen_sparse_attention" ||
+        layer.str == "indexed_attention") {
+      out->push_back("full_attention");
+    } else if (layer.str == "linear_attention") {
+      out->push_back(layer.str);
+    } else {
+      return Status::Fail(field + ": unsupported layer type '" + layer.str +
+                          "'");
+    }
+  }
+  return Status();
+}
+
 }  // namespace
 
 Status ParseModelConfig(const std::string& path, ModelConfig* out) {
@@ -67,19 +100,10 @@ Status ParseModelConfig(const std::string& path, ModelConfig* out) {
   cfg.max_position_embeddings = static_cast<int>(
       text_cfg->GetInt("max_position_embeddings"));
 
-  // layer_types.
-  const Json* lt = text_cfg->GetArray("layer_types");
-  if (lt) {
-    for (const Json& v : lt->array) {
-      if (v.IsString()) cfg.layer_types.push_back(v.str);
-    }
-  }
-  if (static_cast<int>(cfg.layer_types.size()) != cfg.num_hidden_layers) {
-    return Status::Fail("layer_types size (" +
-                        std::to_string(cfg.layer_types.size()) +
-                        ") != num_hidden_layers (" +
-                        std::to_string(cfg.num_hidden_layers) + ")");
-  }
+  // Reject unknown entries before any layer can fall through to GDN.
+  s = ParseLayerTypes(text_cfg->Find("layer_types"), cfg.num_hidden_layers,
+                      &cfg.layer_types);
+  if (!s.ok()) return s;
 
   // Full attention.
   cfg.num_attention_heads =
