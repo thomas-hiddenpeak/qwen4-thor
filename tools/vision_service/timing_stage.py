@@ -71,6 +71,17 @@ class Run(s.Run):
     limits = LIMITS
     success_status = "PASS_BOUNDED_VISION_TIMING"
 
+    def retire_model(self, mode):
+        self.children.signal(self.model, signal.SIGTERM)
+        self.children.wait(self.model, self.output / ("model-" + mode), 30)
+        custody = self.output / (mode + "-custody")
+        custody.mkdir()
+        self.children.reap(custody)
+        # Children retains its registration history after reaping. Each model
+        # lifetime needs a fresh ledger; the enclosing GPU lease stays held.
+        self.children = s.Children(self.folder / "lease")
+        self.model = None
+
     def launch_mode(self, mode):
         self.budget("starts")
         folder = self.output / ("model-" + mode)
@@ -133,11 +144,7 @@ class Run(s.Run):
                     if mode == "off":
                         off.append(same)
                 self.idle(mode + "-idle")
-                self.children.signal(self.model, signal.SIGTERM)
-                self.children.wait(self.model, self.output / ("model-" + mode), 30)
-                custody = self.output / (mode + "-custody")
-                custody.mkdir()
-                self.children.reap(custody)
+                self.retire_model(mode)
                 records = a.parse_records((self.output /
                     ("model-" + mode) / "stderr.log").read_text())
                 media = [r for r in selected if a.input_counts(r["request"])["items"]]

@@ -1,0 +1,30 @@
+{
+  "originals": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-timing-20261107/originals.json",
+    "sha256": "cead7adb3276b874cf2a3895249db7351bb06d997c7020aee8f5323be1e93d18"
+  },
+  "supplementary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-timing-20261107/supplementary.json",
+    "sha256": "c69df1bb49dcf70319f9c83246e3c82919eec5948160a867f222f930fcb671b8",
+    "files": {
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-timing-20261107/cleanup-after-stage.json": "619702610f9f74b5d928a4b39f16f651d9811ea381dea69acee91e5c81d98287",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-timing-20261107/cpu-cleanup-01.log": "7265ce3a3f9491ef8a1685f618431b7f0abdf8ac8327b088542d1564f01b2c37",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-timing-20261107/audit.json": "06ce8f44d6554a17e94023a61dedaada4870fe88fbc956317ffd3ea167589ac8",
+      "/home/rm01/models/dev/qwen4-thor/tools/vision_service/timing_stage.py": "98b3e246eada106b2592d1c4e532b838ef448db96cbe7ffe34f0da96ddaed7ef",
+      "/home/rm01/models/dev/qwen4-thor/tools/vision_service/timing_audit.py": "17624414757c070e19c61c27101527211aa963fc79bbf62d0ec2e99f833ae185",
+      "/home/rm01/models/dev/qwen4-thor/tools/vision_service/test_timing_custody.py": "1bf28c34d8df7f7538f28525c74677a8e28379e8c2adf769dd3d330f41f7a125"
+    }
+  },
+  "runtime_sources_unchanged": 242,
+  "default_binary_sha256": "ea1b474d7d69808696e697346a60ee09bb9ecaca9bfb99925b78dcdbda7a4550",
+  "default_sidecar_sha256": "3eb463850cf07338406b811197a68a5dcb9474ac9c2cf039470aa4f654924724",
+  "cpu": {
+    "host": 333,
+    "parser": 6,
+    "processor_groups": 8,
+    "same_pixel_pair": true,
+    "incomplete": 2,
+    "custody": 2
+  },
+  "diagnostic_only": true
+}

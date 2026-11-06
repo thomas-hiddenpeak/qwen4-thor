@@ -70,8 +70,15 @@ def audit():
             s.require(blob == blobs[relative], "Git/source mismatch: " + relative)
             git_sources += 1
     result = read("execution/result.json")
-    s.require(result["status"] == t.Run.success_status and not result["failure"] and
-              not result["cleanup_errors"] and not result["monitor_failures"], "phase failed")
+    # Preserve the failed original gate. The only recovery allowed here is
+    # offline use of already-finished HTTP/timing observations after the exact
+    # known driver ledger defect; this is not a repaired whole-stage PASS.
+    ledger_failure = (result["status"] == "FAILED" and
+        "retained process identity drift" in (result["failure"] or "") and
+        len(result["cleanup_errors"]) == 1 and
+        "retained process identity drift" in result["cleanup_errors"][0])
+    s.require(ledger_failure and not result["monitor_failures"],
+              "unexpected phase failure; cannot reuse observations")
     for kind, count in result["counts"].items():
         attempts = [p for p in files if p.startswith(str(t.FOLDER / ("execution/attempt-" + kind + "-")))]
         s.require(len(attempts) == count <= plan["limits"][kind], "attempt count mismatch")
@@ -80,7 +87,7 @@ def audit():
     events = [json.loads(line) for line in raw("lease/events.jsonl").splitlines()]
     s.require(events[0]["event"] == "lease_acquired" and events[-1]["event"] == "lease_released",
               "lease boundaries")
-    s.require(read("lease/exit.json")["status"] == "COMPLETED", "environment invalid")
+    s.require(read("lease/exit.json")["status"] == "COMMAND_FAILED", "environment invalid")
     samples = [e for e in events if e["event"] == "monitor"]
     s.require(samples and all(not e["conflicts"] and not e["unreadable_processes"] for e in samples),
               "guard conflict/monitor failure")
@@ -89,18 +96,33 @@ def audit():
     owned = []
     for mode in ("off", "on"):
         model = "execution/model-" + mode + "/"
-        identity, wait, reaped = (read(model + f + ".json") for f in ("identity", "waitable", "reaped"))
-        retained = read("execution/" + mode + "-custody/custody.json")["retained"]
-        s.require(len(retained) == 1 and wait["returncode"] == reaped["returncode"] == 0,
-                  "owned model did not exit cleanly")
+        identity, wait = (read(model + f + ".json") for f in ("identity", "waitable"))
+        s.require(wait["returncode"] == 0 and wait["identity"]["state"] == "Z",
+                  "owned model did not become waitable with exit zero")
         for key in ("pid", "start_ticks", "pgid", "ppid"):
-            s.require(identity[key] == wait["identity"][key] == retained[0][key], "process identity drift")
-        s.require(wait["identity"]["state"] == retained[0]["state"] == "Z" and
-                  reaped["pid"] == identity["pid"], "wait/reap barrier")
+            s.require(identity[key] == wait["identity"][key], "process identity drift")
+        if mode == "off":
+            retained = read("execution/off-custody/custody.json")["retained"]
+            reaped = read(model + "reaped.json")
+            s.require(retained == [wait["identity"]] and reaped["pid"] == identity["pid"] and
+                      reaped["returncode"] == 0, "first-mode custody differs")
+        else:
+            s.require(str(t.FOLDER / (model + "reaped.json")) not in files,
+                      "original missing second reap receipt was rewritten")
         s.require(any(e["monotonic"] > wait["monotonic"] for e in samples), "no post-exit guard sample")
         owned.append(identity["pid"])
-    gpu = read("execution/gpu-final.json")
-    s.require(gpu["status"] == "OK" and not gpu["pids"], "GPU retained")
+    queries = [json.loads(line) for line in raw("lease/nvml-queries.jsonl").splitlines()]
+    s.require(queries and all(q["status"] == "OK" and set(q["pids"]) <= set(owned)
+                             for q in queries), "NVML failure or foreign context")
+    last = [json.loads(line) for line in queries[-1]["stdout"].splitlines()][-1]
+    s.require(last["event"] == "result" and last["status"] == "OK" and not last["pids"] and
+              last["monotonic"] > read("execution/model-on/waitable.json")["monotonic"],
+              "no post-exit empty GPU observation")
+    cleanup = t.read(t.BASE / "cleanup-after-stage.json")
+    s.require([r["pid"] for r in cleanup["owned"]] == owned and
+              all(not r["exists"] for r in cleanup["owned"]) and
+              cleanup["gpu"]["status"] == "OK" and not cleanup["gpu"]["pids"] and
+              cleanup["port_free"] and cleanup["lock_available"], "resources not released")
     s.require(not a.parse_records(raw("execution/model-off/stderr.log").decode()), "disabled timing logged")
     timings = a.parse_records(raw("execution/model-on/stderr.log").decode())
     rows = read("requests.json")
@@ -146,10 +168,14 @@ def audit():
     protocol_sha = hashlib.sha256("".join(f"{name}:{protocol[name]}\n" for name in sorted(protocol)).encode()).hexdigest()
     for name, digest in protocol.items():
         s.require(plan["files"][str(s.ROOT / name)] == digest, "protocol source drift")
-    return dict(status="PASS_BOUNDED_VISION_TIMING", source_commit=plan["source_commit"],
+    return dict(status="SCOPED_TIMING_ACCEPTED_WITH_DRIVER_FAILURE", source_commit=plan["source_commit"],
         binary_sha256=plan["files"][plan["binary"]], protocol_sha256=protocol_sha,
         file_bindings=len(files), git_source_bindings=git_sources, counts=result["counts"],
         lease_seconds=lease_seconds, owned_pids=owned, final_gpu_empty=True,
+        original_stage_status=result["status"], original_guard_status="COMMAND_FAILED",
+        second_reap_receipt_missing=True, post_exit_nvml_empty=True,
+        cleanup_observation_sha256=s.sha(t.BASE / "cleanup-after-stage.json"),
+        verifier_sha256=s.sha(Path(__file__)),
         default_unchanged=True, performance_acceptance=False, observations=observations)
 
 

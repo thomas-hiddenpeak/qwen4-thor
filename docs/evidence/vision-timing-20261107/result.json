@@ -1,0 +1,651 @@
+{
+  "status": "SCOPED_TIMING_ACCEPTED_WITH_DRIVER_FAILURE",
+  "source_commit": "6fc6c6f28383376b2efdfb44d414cc960cb4776f",
+  "binary_sha256": "1d217e7d15a44d3fa5b9f4667d84a3043a138b136ed2fa7fa00a63ca96bb6162",
+  "protocol_sha256": "99b7e4b6f3102ecdfabc84cbf52f3550d0b3460e4df211f3df82d50a48b9b757",
+  "file_bindings": 2581,
+  "git_source_bindings": 2302,
+  "counts": {
+    "starts": 2,
+    "generations": 18,
+    "controls": 22,
+    "native": 0
+  },
+  "lease_seconds": 158.8940598880872,
+  "owned_pids": [
+    4059159,
+    4060239
+  ],
+  "final_gpu_empty": true,
+  "original_stage_status": "FAILED",
+  "original_guard_status": "COMMAND_FAILED",
+  "second_reap_receipt_missing": true,
+  "post_exit_nvml_empty": true,
+  "cleanup_observation_sha256": "619702610f9f74b5d928a4b39f16f651d9811ea381dea69acee91e5c81d98287",
+  "verifier_sha256": "17624414757c070e19c61c27101527211aa963fc79bbf62d0ec2e99f833ae185",
+  "default_unchanged": true,
+  "performance_acceptance": false,
+  "observations": [
+    {
+      "label": "off-00-earth-python",
+      "case": "earth-python",
+      "mode": "off",
+      "e2e_seconds": 3.595859725959599,
+      "usage": {
+        "prompt_tokens": 387,
+        "completion_tokens": 29,
+        "total_tokens": 416
+      },
+      "actual": {
+        "object": "earth",
+        "clouds_visible": true,
+        "street_sign_visible": false
+      },
+      "timing": null
+    },
+    {
+      "label": "off-01-cabin-python",
+      "case": "cabin-python",
+      "mode": "off",
+      "e2e_seconds": 11.415110797155648,
+      "usage": {
+        "prompt_tokens": 841,
+        "completion_tokens": 41,
+        "total_tokens": 882
+      },
+      "actual": {
+        "scene": "aircraft_cabin",
+        "visible_windows": 2,
+        "device_lights_on": true,
+        "people_visible": false
+      },
+      "timing": null
+    },
+    {
+      "label": "off-02-earth-same-pixels-png",
+      "case": "earth-same-pixels-png",
+      "mode": "off",
+      "e2e_seconds": 3.498085062019527,
+      "usage": {
+        "prompt_tokens": 387,
+        "completion_tokens": 29,
+        "total_tokens": 416
+      },
+      "actual": {
+        "object": "earth",
+        "clouds_visible": true,
+        "street_sign_visible": false
+      },
+      "timing": null
+    },
+    {
+      "label": "off-03-multiple-real-photos",
+      "case": "multiple-real-photos",
+      "mode": "off",
+      "e2e_seconds": 11.953739273361862,
+      "usage": {
+        "prompt_tokens": 1032,
+        "completion_tokens": 25,
+        "total_tokens": 1057
+      },
+      "actual": {
+        "first_scene": "aircraft_cabin",
+        "second_object": "earth"
+      },
+      "timing": null
+    },
+    {
+      "label": "off-04-real-record-chart",
+      "case": "real-record-chart",
+      "mode": "off",
+      "e2e_seconds": 3.383986211847514,
+      "usage": {
+        "prompt_tokens": 384,
+        "completion_tokens": 21,
+        "total_tokens": 405
+      },
+      "actual": {
+        "phase05b": 13,
+        "tallest": "phase-04"
+      },
+      "timing": null
+    },
+    {
+      "label": "off-05-motion-forward",
+      "case": "motion-forward",
+      "mode": "off",
+      "e2e_seconds": 2.001331547740847,
+      "usage": {
+        "prompt_tokens": 569,
+        "completion_tokens": 9,
+        "total_tokens": 578
+      },
+      "actual": {
+        "direction": "left_to_right"
+      },
+      "timing": null
+    },
+    {
+      "label": "off-06-text-python",
+      "case": "text-python",
+      "mode": "off",
+      "e2e_seconds": 0.8198356651701033,
+      "usage": {
+        "prompt_tokens": 78,
+        "completion_tokens": 8,
+        "total_tokens": 86
+      },
+      "actual": {
+        "result": 42
+      },
+      "timing": null
+    },
+    {
+      "label": "off-07-earth-python",
+      "case": "earth-python",
+      "mode": "off",
+      "e2e_seconds": 3.4894459838978946,
+      "usage": {
+        "prompt_tokens": 387,
+        "completion_tokens": 29,
+        "total_tokens": 416
+      },
+      "actual": {
+        "object": "earth",
+        "clouds_visible": true,
+        "street_sign_visible": false
+      },
+      "timing": null
+    },
+    {
+      "label": "on-00-earth-python",
+      "case": "earth-python",
+      "mode": "on",
+      "e2e_seconds": 3.589168098755181,
+      "usage": {
+        "prompt_tokens": 387,
+        "completion_tokens": 29,
+        "total_tokens": 416
+      },
+      "actual": {
+        "object": "earth",
+        "clouds_visible": true,
+        "street_sign_visible": false
+      },
+      "timing": {
+        "version": "1",
+        "id": "vt-c0a4c828b2f6aa6acab5e96a",
+        "clock": "host_wall",
+        "completed": 1,
+        "items": 1,
+        "frames": 1,
+        "patches": 1024,
+        "total_ms": 1363.659328,
+        "other_ms": 0.036997,
+        "prepare_ms": 0.010518,
+        "prepare_calls": 1,
+        "decode_png_ms": 0.0,
+        "decode_png_calls": 0,
+        "decode_jpeg_ms": 2.782047,
+        "decode_jpeg_calls": 1,
+        "resize_ms": 3.112202,
+        "resize_calls": 1,
+        "normalize_ms": 1.005377,
+        "normalize_calls": 1,
+        "patchify_ms": 1.119404,
+        "patchify_calls": 1,
+        "pack_ms": 1.193172,
+        "pack_calls": 1,
+        "pixels_allocate_ms": 0.37161,
+        "pixels_allocate_calls": 1,
+        "pixels_upload_ms": 0.106065,
+        "pixels_upload_calls": 1,
+        "workspace_ms": 0.949876,
+        "workspace_calls": 1,
+        "output_allocate_ms": 0.133286,
+        "output_allocate_calls": 1,
+        "forward_ms": 1352.58658,
+        "forward_calls": 1,
+        "cleanup_ms": 0.252194,
+        "cleanup_calls": 3
+      }
+    },
+    {
+      "label": "on-01-cabin-python",
+      "case": "cabin-python",
+      "mode": "on",
+      "e2e_seconds": 11.421585685107857,
+      "usage": {
+        "prompt_tokens": 841,
+        "completion_tokens": 41,
+        "total_tokens": 882
+      },
+      "actual": {
+        "scene": "aircraft_cabin",
+        "visible_windows": 2,
+        "device_lights_on": true,
+        "people_visible": false
+      },
+      "timing": {
+        "version": "1",
+        "id": "vt-a3febc2a85130709cff1be80",
+        "clock": "host_wall",
+        "completed": 1,
+        "items": 1,
+        "frames": 1,
+        "patches": 2640,
+        "total_ms": 8329.165869,
+        "other_ms": 0.033371,
+        "prepare_ms": 0.004232,
+        "prepare_calls": 1,
+        "decode_png_ms": 12.704678,
+        "decode_png_calls": 1,
+        "decode_jpeg_ms": 0.0,
+        "decode_jpeg_calls": 0,
+        "resize_ms": 7.922344,
+        "resize_calls": 1,
+        "normalize_ms": 2.603676,
+        "normalize_calls": 1,
+        "patchify_ms": 2.140048,
+        "patchify_calls": 1,
+        "pack_ms": 2.944545,
+        "pack_calls": 1,
+        "pixels_allocate_ms": 0.399675,
+        "pixels_allocate_calls": 1,
+        "pixels_upload_ms": 0.12301,
+        "pixels_upload_calls": 1,
+        "workspace_ms": 1.801687,
+        "workspace_calls": 1,
+        "output_allocate_ms": 0.196935,
+        "output_allocate_calls": 1,
+        "forward_ms": 8298.043346,
+        "forward_calls": 1,
+        "cleanup_ms": 0.248322,
+        "cleanup_calls": 3
+      }
+    },
+    {
+      "label": "on-02-earth-same-pixels-png",
+      "case": "earth-same-pixels-png",
+      "mode": "on",
+      "e2e_seconds": 3.4966757344082,
+      "usage": {
+        "prompt_tokens": 387,
+        "completion_tokens": 29,
+        "total_tokens": 416
+      },
+      "actual": {
+        "object": "earth",
+        "clouds_visible": true,
+        "street_sign_visible": false
+      },
+      "timing": {
+        "version": "1",
+        "id": "vt-40afa2b6a96d429f3e61eb6a",
+        "clock": "host_wall",
+        "completed": 1,
+        "items": 1,
+        "frames": 1,
+        "patches": 1024,
+        "total_ms": 1305.37088,
+        "other_ms": 0.024316,
+        "prepare_ms": 0.003713,
+        "prepare_calls": 1,
+        "decode_png_ms": 6.302969,
+        "decode_png_calls": 1,
+        "decode_jpeg_ms": 0.0,
+        "decode_jpeg_calls": 0,
+        "resize_ms": 3.032702,
+        "resize_calls": 1,
+        "normalize_ms": 1.02271,
+        "normalize_calls": 1,
+        "patchify_ms": 0.569155,
+        "patchify_calls": 1,
+        "pack_ms": 1.164199,
+        "pack_calls": 1,
+        "pixels_allocate_ms": 0.359488,
+        "pixels_allocate_calls": 1,
+        "pixels_upload_ms": 0.106241,
+        "pixels_upload_calls": 1,
+        "workspace_ms": 1.255478,
+        "workspace_calls": 1,
+        "output_allocate_ms": 0.02973,
+        "output_allocate_calls": 1,
+        "forward_ms": 1291.227968,
+        "forward_calls": 1,
+        "cleanup_ms": 0.272211,
+        "cleanup_calls": 3
+      }
+    },
+    {
+      "label": "on-03-multiple-real-photos",
+      "case": "multiple-real-photos",
+      "mode": "on",
+      "e2e_seconds": 11.951455120928586,
+      "usage": {
+        "prompt_tokens": 1032,
+        "completion_tokens": 25,
+        "total_tokens": 1057
+      },
+      "actual": {
+        "first_scene": "aircraft_cabin",
+        "second_object": "earth"
+      },
+      "timing": {
+        "version": "1",
+        "id": "vt-15dff86255382066012435ff",
+        "clock": "host_wall",
+        "completed": 1,
+        "items": 2,
+        "frames": 2,
+        "patches": 3664,
+        "total_ms": 9623.54497,
+        "other_ms": 0.043863,
+        "prepare_ms": 0.010101,
+        "prepare_calls": 2,
+        "decode_png_ms": 12.790279,
+        "decode_png_calls": 1,
+        "decode_jpeg_ms": 2.81974,
+        "decode_jpeg_calls": 1,
+        "resize_ms": 11.355516,
+        "resize_calls": 2,
+        "normalize_ms": 3.715662,
+        "normalize_calls": 2,
+        "patchify_ms": 2.341743,
+        "patchify_calls": 2,
+        "pack_ms": 4.178736,
+        "pack_calls": 1,
+        "pixels_allocate_ms": 0.435933,
+        "pixels_allocate_calls": 1,
+        "pixels_upload_ms": 0.134657,
+        "pixels_upload_calls": 1,
+        "workspace_ms": 1.913817,
+        "workspace_calls": 1,
+        "output_allocate_ms": 0.215239,
+        "output_allocate_calls": 1,
+        "forward_ms": 9583.277547,
+        "forward_calls": 1,
+        "cleanup_ms": 0.312137,
+        "cleanup_calls": 3
+      }
+    },
+    {
+      "label": "on-04-real-record-chart",
+      "case": "real-record-chart",
+      "mode": "on",
+      "e2e_seconds": 3.3967836247757077,
+      "usage": {
+        "prompt_tokens": 384,
+        "completion_tokens": 21,
+        "total_tokens": 405
+      },
+      "actual": {
+        "phase05b": 13,
+        "tallest": "phase-04"
+      },
+      "timing": {
+        "version": "1",
+        "id": "vt-20eee09719632822b667f322",
+        "clock": "host_wall",
+        "completed": 1,
+        "items": 1,
+        "frames": 1,
+        "patches": 1144,
+        "total_ms": 1600.188295,
+        "other_ms": 0.028584,
+        "prepare_ms": 0.004389,
+        "prepare_calls": 1,
+        "decode_png_ms": 0.384897,
+        "decode_png_calls": 1,
+        "decode_jpeg_ms": 0.0,
+        "decode_jpeg_calls": 0,
+        "resize_ms": 5.563166,
+        "resize_calls": 1,
+        "normalize_ms": 1.122422,
+        "normalize_calls": 1,
+        "patchify_ms": 0.687895,
+        "patchify_calls": 1,
+        "pack_ms": 1.269209,
+        "pack_calls": 1,
+        "pixels_allocate_ms": 0.363962,
+        "pixels_allocate_calls": 1,
+        "pixels_upload_ms": 0.111666,
+        "pixels_upload_calls": 1,
+        "workspace_ms": 1.401746,
+        "workspace_calls": 1,
+        "output_allocate_ms": 0.058194,
+        "output_allocate_calls": 1,
+        "forward_ms": 1588.937666,
+        "forward_calls": 1,
+        "cleanup_ms": 0.254499,
+        "cleanup_calls": 3
+      }
+    },
+    {
+      "label": "on-05-motion-forward",
+      "case": "motion-forward",
+      "mode": "on",
+      "e2e_seconds": 1.9970441129989922,
+      "usage": {
+        "prompt_tokens": 569,
+        "completion_tokens": 9,
+        "total_tokens": 578
+      },
+      "actual": {
+        "direction": "left_to_right"
+      },
+      "timing": {
+        "version": "1",
+        "id": "vt-1f227a8edcbdd1e1896d88a8",
+        "clock": "host_wall",
+        "completed": 1,
+        "items": 1,
+        "frames": 8,
+        "patches": 1536,
+        "total_ms": 759.61354,
+        "other_ms": 0.038944,
+        "prepare_ms": 0.005074,
+        "prepare_calls": 1,
+        "decode_png_ms": 2.777871,
+        "decode_png_calls": 8,
+        "decode_jpeg_ms": 0.0,
+        "decode_jpeg_calls": 0,
+        "resize_ms": 0.109371,
+        "resize_calls": 1,
+        "normalize_ms": 3.912328,
+        "normalize_calls": 1,
+        "patchify_ms": 1.84217,
+        "patchify_calls": 1,
+        "pack_ms": 1.73504,
+        "pack_calls": 1,
+        "pixels_allocate_ms": 0.380026,
+        "pixels_allocate_calls": 1,
+        "pixels_upload_ms": 0.11649,
+        "pixels_upload_calls": 1,
+        "workspace_ms": 1.325106,
+        "workspace_calls": 1,
+        "output_allocate_ms": 0.133658,
+        "output_allocate_calls": 1,
+        "forward_ms": 746.958713,
+        "forward_calls": 1,
+        "cleanup_ms": 0.278749,
+        "cleanup_calls": 3
+      }
+    },
+    {
+      "label": "on-06-text-python",
+      "case": "text-python",
+      "mode": "on",
+      "e2e_seconds": 0.8183039296418428,
+      "usage": {
+        "prompt_tokens": 78,
+        "completion_tokens": 8,
+        "total_tokens": 86
+      },
+      "actual": {
+        "result": 42
+      },
+      "timing": null
+    },
+    {
+      "label": "on-07-earth-python",
+      "case": "earth-python",
+      "mode": "on",
+      "e2e_seconds": 3.4834706457331777,
+      "usage": {
+        "prompt_tokens": 387,
+        "completion_tokens": 29,
+        "total_tokens": 416
+      },
+      "actual": {
+        "object": "earth",
+        "clouds_visible": true,
+        "street_sign_visible": false
+      },
+      "timing": {
+        "version": "1",
+        "id": "vt-1d72779fd50c72010a76da9b",
+        "clock": "host_wall",
+        "completed": 1,
+        "items": 1,
+        "frames": 1,
+        "patches": 1024,
+        "total_ms": 1302.812034,
+        "other_ms": 0.021377,
+        "prepare_ms": 0.003824,
+        "prepare_calls": 1,
+        "decode_png_ms": 0.0,
+        "decode_png_calls": 0,
+        "decode_jpeg_ms": 2.753527,
+        "decode_jpeg_calls": 1,
+        "resize_ms": 3.095832,
+        "resize_calls": 1,
+        "normalize_ms": 1.007692,
+        "normalize_calls": 1,
+        "patchify_ms": 1.098061,
+        "patchify_calls": 1,
+        "pack_ms": 1.158107,
+        "pack_calls": 1,
+        "pixels_allocate_ms": 0.37549,
+        "pixels_allocate_calls": 1,
+        "pixels_upload_ms": 0.111693,
+        "pixels_upload_calls": 1,
+        "workspace_ms": 1.102405,
+        "workspace_calls": 1,
+        "output_allocate_ms": 0.029537,
+        "output_allocate_calls": 1,
+        "forward_ms": 1291.815924,
+        "forward_calls": 1,
+        "cleanup_ms": 0.238565,
+        "cleanup_calls": 3
+      }
+    },
+    {
+      "label": "on-08-cabin-python",
+      "case": "cabin-python",
+      "mode": "on",
+      "e2e_seconds": 11.400444231927395,
+      "usage": {
+        "prompt_tokens": 841,
+        "completion_tokens": 41,
+        "total_tokens": 882
+      },
+      "actual": {
+        "scene": "aircraft_cabin",
+        "visible_windows": 2,
+        "device_lights_on": true,
+        "people_visible": false
+      },
+      "timing": {
+        "version": "1",
+        "id": "vt-6e8b597b868344aa54a2359c",
+        "clock": "host_wall",
+        "completed": 1,
+        "items": 1,
+        "frames": 1,
+        "patches": 2640,
+        "total_ms": 8323.923342,
+        "other_ms": 0.029407,
+        "prepare_ms": 0.003898,
+        "prepare_calls": 1,
+        "decode_png_ms": 12.634001,
+        "decode_png_calls": 1,
+        "decode_jpeg_ms": 0.0,
+        "decode_jpeg_calls": 0,
+        "resize_ms": 8.075324,
+        "resize_calls": 1,
+        "normalize_ms": 2.85974,
+        "normalize_calls": 1,
+        "patchify_ms": 2.175205,
+        "patchify_calls": 1,
+        "pack_ms": 2.953842,
+        "pack_calls": 1,
+        "pixels_allocate_ms": 0.409081,
+        "pixels_allocate_calls": 1,
+        "pixels_upload_ms": 0.128676,
+        "pixels_upload_calls": 1,
+        "workspace_ms": 1.6788,
+        "workspace_calls": 1,
+        "output_allocate_ms": 0.191204,
+        "output_allocate_calls": 1,
+        "forward_ms": 8292.491091,
+        "forward_calls": 1,
+        "cleanup_ms": 0.293073,
+        "cleanup_calls": 3
+      }
+    },
+    {
+      "label": "on-09-earth-python",
+      "case": "earth-python",
+      "mode": "on",
+      "e2e_seconds": 3.490570021327585,
+      "usage": {
+        "prompt_tokens": 387,
+        "completion_tokens": 29,
+        "total_tokens": 416
+      },
+      "actual": {
+        "object": "earth",
+        "clouds_visible": true,
+        "street_sign_visible": false
+      },
+      "timing": {
+        "version": "1",
+        "id": "vt-185e37dafdda8e48b4dd91a9",
+        "clock": "host_wall",
+        "completed": 1,
+        "items": 1,
+        "frames": 1,
+        "patches": 1024,
+        "total_ms": 1303.467054,
+        "other_ms": 0.024221,
+        "prepare_ms": 0.004537,
+        "prepare_calls": 1,
+        "decode_png_ms": 0.0,
+        "decode_png_calls": 0,
+        "decode_jpeg_ms": 2.763648,
+        "decode_jpeg_calls": 1,
+        "resize_ms": 3.280313,
+        "resize_calls": 1,
+        "normalize_ms": 1.024598,
+        "normalize_calls": 1,
+        "patchify_ms": 0.679943,
+        "patchify_calls": 1,
+        "pack_ms": 1.137182,
+        "pack_calls": 1,
+        "pixels_allocate_ms": 0.375009,
+        "pixels_allocate_calls": 1,
+        "pixels_upload_ms": 0.107221,
+        "pixels_upload_calls": 1,
+        "workspace_ms": 2.067122,
+        "workspace_calls": 1,
+        "output_allocate_ms": 0.031334,
+        "output_allocate_calls": 1,
+        "forward_ms": 1291.732964,
+        "forward_calls": 1,
+        "cleanup_ms": 0.238962,
+        "cleanup_calls": 3
+      }
+    }
+  ]
+}
