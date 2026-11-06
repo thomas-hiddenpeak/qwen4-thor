@@ -1,0 +1,42 @@
+{
+  "unix_seconds": 1794003661.4407089,
+  "gpu": {
+    "status": "OK",
+    "pids": [],
+    "request_id": "36d39303a929f22500b806e13e04f8a2",
+    "worker_pid": 4117649,
+    "stdout": "{\"request_id\": \"36d39303a929f22500b806e13e04f8a2\", \"monotonic\": 2193743.885221449, \"event\": \"begin\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"36d39303a929f22500b806e13e04f8a2\", \"monotonic\": 2193743.892986201, \"event\": \"end\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"36d39303a929f22500b806e13e04f8a2\", \"monotonic\": 2193743.893021877, \"event\": \"begin\", \"api\": \"init\"}\n{\"request_id\": \"36d39303a929f22500b806e13e04f8a2\", \"monotonic\": 2193743.897902208, \"event\": \"end\", \"api\": \"init\", \"seconds\": 0.00486760912463069}\n{\"request_id\": \"36d39303a929f22500b806e13e04f8a2\", \"monotonic\": 2193743.897952485, \"event\": \"begin\", \"api\": \"device_count\"}\n{\"request_id\": \"36d39303a929f22500b806e13e04f8a2\", \"monotonic\": 2193743.897999504, \"event\": \"end\", \"api\": \"device_count\", \"seconds\": 3.7398189306259155e-05}\n{\"request_id\": \"36d39303a929f22500b806e13e04f8a2\", \"monotonic\": 2193743.898013948, \"event\": \"begin\", \"api\": \"handle[0]\"}\n{\"request_id\": \"36d39303a929f22500b806e13e04f8a2\", \"monotonic\": 2193743.904806375, \"event\": \"end\", \"api\": \"handle[0]\", \"seconds\": 0.006785064935684204}\n{\"request_id\": \"36d39303a929f22500b806e13e04f8a2\", \"monotonic\": 2193743.904828949, \"event\": \"begin\", \"api\": \"compute_v3[0]\"}\n{\"request_id\": \"36d39303a929f22500b806e13e04f8a2\", \"monotonic\": 2193743.90584984, \"event\": \"end\", \"api\": \"compute_v3[0]\", \"seconds\": 0.0010139001533389091}\n{\"request_id\": \"36d39303a929f22500b806e13e04f8a2\", \"monotonic\": 2193743.905870081, \"event\": \"begin\", \"api\": \"shutdown\"}\n{\"request_id\": \"36d39303a929f22500b806e13e04f8a2\", \"monotonic\": 2193743.907111674, \"event\": \"end\", \"api\": \"shutdown\", \"seconds\": 0.0012332974001765251}\n{\"request_id\": \"36d39303a929f22500b806e13e04f8a2\", \"monotonic\": 2193743.907133082, \"event\": \"result\", \"status\": \"OK\", \"error\": null, \"device_count\": 1, \"pids\": [], \"process_memory\": []}\n",
+    "stderr": "",
+    "returncode": 0,
+    "seconds": 0.0633854609914124,
+    "process_memory": [],
+    "device_count": 1
+  },
+  "port_free": true,
+  "lock_available": false,
+  "lock_inode": 3294067,
+  "lock_device": 66305,
+  "lock_owners": [
+    {
+      "pid": 4103260,
+      "command": "python3",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock"
+    }
+  ],
+  "owned_processes": {
+    "4115955": false,
+    "4099655": false,
+    "4099724": false,
+    "4106623": false,
+    "4099702": false,
+    "4099710": false,
+    "4117333": false,
+    "4099640": false,
+    "4099644": false
+  },
+  "default": {
+    "q4t": "ea1b474d7d69808696e697346a60ee09bb9ecaca9bfb99925b78dcdbda7a4550",
+    "q4t.release.json": "3eb463850cf07338406b811197a68a5dcb9474ac9c2cf039470aa4f654924724"
+  },
+  "note": "Read-only post-abort observation; does not repair ENV_ABORT or missing custody"
+}
