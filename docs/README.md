@@ -1,7 +1,8 @@
 # docs/ — 开发记录文档体系
 
-[视觉服务 v1 开发与生产准备](VISION_PRODUCTION_PLAN_2026-11-06.md)：
-时间组/位置/展开配额等 CPU 合同已通过，实机业务与发布仍待验收。
+[视觉 v1 限定结果](VISION_PRODUCTION_RESULT_2026-11-07.md)、
+[能力矩阵与运维](VISION_SERVICE_V1.md)、[原冻结计划](VISION_PRODUCTION_PLAN_2026-11-06.md)：
+图片/独立数值/真实工具/治理通过；视频方向质量和硬解码仍未接受。
 
 [QSA已有正向收益的完整纳入与默认交付](QSA_SOFTMAX_ADOPTION_RESULT_2026-11-06.md)：
 三模式五档/完整状态/缓存与工具/安装健康通过；默认aa528a68，

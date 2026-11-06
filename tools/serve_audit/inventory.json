@@ -1015,8 +1015,8 @@
     ]
   },
   "vision_v1_review": {
-    "date": "2026-11-06",
-    "scope": "Official HF CPU independent full tower revealed and fixed shared rotary-reference defect and merger activation. Four CUDA full tower cases pass original bounds. Image/structured/tool business and scoped real TLS media governance verified; four structured temporal-direction quality cases remain failed, ordinary video diagnosis correct. Final default MTP protection and release pending; no long soak or hardware decode acceptance.",
+    "date": "2026-11-07",
+    "scope": "Official HF CPU independent full tower revealed and fixed shared rotary-reference defect and merger activation. Four CUDA full tower cases pass original bounds. Image/structured/tool business and scoped real TLS media governance verified; four structured temporal-direction quality cases remain failed, ordinary video diagnosis correct. Final default MTP protection passed; scoped release preparation and exact rollback, no long soak or hardware decode acceptance.",
     "changed_sources": [
       "CMakeLists.txt",
       "cmake/ChatProtocolIdentity.cmake",
@@ -1049,7 +1049,10 @@
       "tools/vision_service/reference_diff.py",
       "tools/vision_service/prompt_diff.py",
       "tools/vision_service/hf_tower_reference.py",
-      "tools/vision_service/reuse_governance.py"
+      "tools/vision_service/reuse_governance.py",
+      "docs/VISION_SERVICE_V1.md",
+      "docs/VISION_PRODUCTION_RESULT_2026-11-07.md",
+      "tools/vision_service/report.py"
     ]
   }
 }

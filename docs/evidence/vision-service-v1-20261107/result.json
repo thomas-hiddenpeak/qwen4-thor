@@ -1,0 +1,516 @@
+{
+  "status": "PASS_SCOPED_VISION_SERVICE_V1_WITH_TASK_LIMITS",
+  "candidate_sha256": "ea1b474d7d69808696e697346a60ee09bb9ecaca9bfb99925b78dcdbda7a4550",
+  "protocol_sha256": "91b619c90ce8f488436443e904973f37ffb25bc6b7e53803526df2f909bd063a",
+  "totals": {
+    "starts": 6,
+    "generations": 70,
+    "controls": 67,
+    "native": 5
+  },
+  "lease_seconds": 991.5342452591285,
+  "phases": [
+    {
+      "phase": "phase-01",
+      "status": "FAILED",
+      "guard": "COMMAND_FAILED",
+      "counts": {
+        "starts": 0,
+        "generations": 0,
+        "controls": 0,
+        "native": 2
+      },
+      "driver_seconds": 4.241244459990412,
+      "lease_seconds": 5.611037305090576,
+      "cleanup_errors": [],
+      "accepted_custody": true
+    },
+    {
+      "phase": "phase-02",
+      "status": "FAILED",
+      "guard": "COMMAND_FAILED",
+      "counts": {
+        "starts": 0,
+        "generations": 0,
+        "controls": 0,
+        "native": 1
+      },
+      "driver_seconds": 2.2131755868904293,
+      "lease_seconds": 3.445377148222178,
+      "cleanup_errors": [],
+      "accepted_custody": true
+    },
+    {
+      "phase": "phase-03",
+      "status": "FAILED",
+      "guard": "COMMAND_FAILED",
+      "counts": {
+        "starts": 1,
+        "generations": 24,
+        "controls": 19,
+        "native": 0
+      },
+      "driver_seconds": 414.76186451129615,
+      "lease_seconds": 416.2019215640612,
+      "cleanup_errors": [],
+      "accepted_custody": true
+    },
+    {
+      "phase": "phase-04",
+      "status": "FAILED",
+      "guard": "COMMAND_FAILED",
+      "counts": {
+        "starts": 1,
+        "generations": 24,
+        "controls": 20,
+        "native": 2
+      },
+      "driver_seconds": 413.6773794856854,
+      "lease_seconds": 414.334086028859,
+      "cleanup_errors": [],
+      "accepted_custody": true
+    },
+    {
+      "phase": "phase-05",
+      "status": "FAILED",
+      "guard": "COMMAND_FAILED",
+      "counts": {
+        "starts": 1,
+        "generations": 0,
+        "controls": 0,
+        "native": 0
+      },
+      "driver_seconds": 1.1119652860797942,
+      "lease_seconds": 2.3550517330877483,
+      "cleanup_errors": [
+        "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/vision_service/stage.py\", line 383, in run\n    self.children.wait(process,folder,30)\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_cuda_quota_integration/verify.py\", line 107, in wait\n    c.require(code == expected, 'child exit: ' + str(folder))\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_cuda_quota_integration/common.py\", line 30, in require\n    raise RuntimeError(message)\nRuntimeError: child exit: /home/rm01/models/dev/qwen4-thor/.q4t-work/vision-production-20261106/phase-05/execution/model\n"
+      ],
+      "accepted_custody": false
+    },
+    {
+      "phase": "phase-05b",
+      "status": "FAILED",
+      "guard": "COMMAND_FAILED",
+      "counts": {
+        "starts": 1,
+        "generations": 13,
+        "controls": 21,
+        "native": 0
+      },
+      "driver_seconds": 57.22913206554949,
+      "lease_seconds": 58.71632668469101,
+      "cleanup_errors": [],
+      "accepted_custody": true
+    },
+    {
+      "phase": "phase-06",
+      "status": "DIAGNOSTIC_RESPONSES_RECORDED_NOT_QUALITY_ACCEPTANCE",
+      "guard": "COMPLETED",
+      "counts": {
+        "starts": 1,
+        "generations": 4,
+        "controls": 3,
+        "native": 0
+      },
+      "driver_seconds": 42.005042291712016,
+      "lease_seconds": 42.85106167104095,
+      "cleanup_errors": [],
+      "accepted_custody": true
+    },
+    {
+      "phase": "phase-07",
+      "status": "PASS_DEFAULT_TEXT_MTP_PROTECTION",
+      "guard": "COMPLETED",
+      "counts": {
+        "starts": 1,
+        "generations": 5,
+        "controls": 4,
+        "native": 0
+      },
+      "driver_seconds": 47.09364567184821,
+      "lease_seconds": 48.01938312407583,
+      "cleanup_errors": [],
+      "accepted_custody": true
+    }
+  ],
+  "image_business_accepted": true,
+  "video_input_and_numerical_contract_accepted": true,
+  "structured_output_syntax_accepted": true,
+  "structured_temporal_direction_accepted": false,
+  "temporal_quality_failures": [
+    "motion-forward",
+    "motion-reverse",
+    "motion-odd",
+    "encoded-video"
+  ],
+  "video_diagnostics": {
+    "first-frame": " Left",
+    "last-frame": " Right",
+    "video-plain": " starts at left and ends at right, moving right.",
+    "endpoint-images": "Based on the two images provided, here is a description of the red circle's movement:\n\n- **Start:** The red circle starts on the left side of the frame, under the word \"LEFT\".\n- **End:** The red circle ends on the right side of the frame, under the word \"RIGHT\".\n- **Direction:** The red circle moves from left to right."
+  },
+  "independent_tower": [
+    {
+      "group": "small",
+      "case": "image",
+      "elements": 10240,
+      "max_abs": 0.007106229662895203,
+      "rel_l2": 0.022224767207013985
+    },
+    {
+      "group": "small",
+      "case": "video",
+      "elements": 20480,
+      "max_abs": 0.012458205223083496,
+      "rel_l2": 0.029819702982483053
+    },
+    {
+      "group": "rectangular",
+      "case": "image",
+      "elements": 61440,
+      "max_abs": 0.012090504169464111,
+      "rel_l2": 0.029298167811126704
+    },
+    {
+      "group": "rectangular",
+      "case": "video",
+      "elements": 76800,
+      "max_abs": 0.008411027491092682,
+      "rel_l2": 0.02416921640957967
+    }
+  ],
+  "old_same_input_negative": [
+    {
+      "case": "image",
+      "max_abs": 0.13944287598133087,
+      "rel_l2": 0.4014853537082672,
+      "passed": false
+    },
+    {
+      "case": "video",
+      "max_abs": 0.16863588988780975,
+      "rel_l2": 0.42024487257003784,
+      "passed": false
+    }
+  ],
+  "image_observations": [
+    {
+      "label": "natural-json",
+      "quality_passed": true,
+      "actual": "red",
+      "expected": "red",
+      "tokens": {
+        "prompt_tokens": 1535,
+        "completion_tokens": 2,
+        "total_tokens": 1537
+      },
+      "http_seconds": 47.91733042988926,
+      "oracle_note": null
+    },
+    {
+      "label": "natural-sse",
+      "quality_passed": true,
+      "actual": "red",
+      "expected": "red",
+      "tokens": {
+        "prompt_tokens": 1535,
+        "completion_tokens": 2,
+        "total_tokens": 1537
+      },
+      "http_seconds": 47.80386793985963,
+      "oracle_note": null
+    },
+    {
+      "label": "natural-spatial",
+      "quality_passed": true,
+      "actual": "banana",
+      "expected": "banana",
+      "tokens": {
+        "prompt_tokens": 1537,
+        "completion_tokens": 3,
+        "total_tokens": 1540
+      },
+      "http_seconds": 47.8724771393463,
+      "oracle_note": null
+    },
+    {
+      "label": "document-png",
+      "quality_passed": true,
+      "actual": {
+        "Vision": 12,
+        "Text": 24,
+        "Tools": 8
+      },
+      "expected": {
+        "Vision": 12,
+        "Text": 24,
+        "Tools": 8
+      },
+      "tokens": {
+        "prompt_tokens": 416,
+        "completion_tokens": 29,
+        "total_tokens": 445
+      },
+      "http_seconds": 5.028898115735501,
+      "oracle_note": null
+    },
+    {
+      "label": "document-jpeg",
+      "quality_passed": true,
+      "actual": {
+        "Vision": 12,
+        "Text": 24,
+        "Tools": 8
+      },
+      "expected": {
+        "Vision": 12,
+        "Text": 24,
+        "Tools": 8
+      },
+      "tokens": {
+        "prompt_tokens": 416,
+        "completion_tokens": 29,
+        "total_tokens": 445
+      },
+      "http_seconds": 5.03089782781899,
+      "oracle_note": null
+    },
+    {
+      "label": "chart",
+      "quality_passed": true,
+      "actual": "b",
+      "expected": "b",
+      "tokens": {
+        "prompt_tokens": 329,
+        "completion_tokens": 2,
+        "total_tokens": 331
+      },
+      "http_seconds": 2.239107192028314,
+      "oracle_note": null
+    },
+    {
+      "label": "multiple-images",
+      "quality_passed": true,
+      "actual": {
+        "vision": 12,
+        "b": 9
+      },
+      "expected": {
+        "vision": 12,
+        "b": 9
+      },
+      "tokens": {
+        "prompt_tokens": 735,
+        "completion_tokens": 20,
+        "total_tokens": 755
+      },
+      "http_seconds": 6.500400512944907,
+      "oracle_note": null
+    },
+    {
+      "label": "motion-forward",
+      "quality_passed": false,
+      "actual": {
+        "direction": "right_to_left"
+      },
+      "expected": {
+        "direction": "left_to_right"
+      },
+      "tokens": {
+        "prompt_tokens": 443,
+        "completion_tokens": 14,
+        "total_tokens": 457
+      },
+      "http_seconds": 2.15690901177004,
+      "oracle_note": null
+    },
+    {
+      "label": "motion-reverse",
+      "quality_passed": false,
+      "actual": {
+        "direction": "left_to_right"
+      },
+      "expected": {
+        "direction": "right_to_left"
+      },
+      "tokens": {
+        "prompt_tokens": 443,
+        "completion_tokens": 14,
+        "total_tokens": 457
+      },
+      "http_seconds": 2.159818780608475,
+      "oracle_note": null
+    },
+    {
+      "label": "motion-odd",
+      "quality_passed": false,
+      "actual": {
+        "direction": "right_to_left"
+      },
+      "expected": {
+        "direction": "left_to_right"
+      },
+      "tokens": {
+        "prompt_tokens": 235,
+        "completion_tokens": 14,
+        "total_tokens": 249
+      },
+      "http_seconds": 1.6511345617473125,
+      "oracle_note": null
+    },
+    {
+      "label": "image-json-object",
+      "quality_passed": true,
+      "actual": {
+        "color": "red",
+        "confidence": 0.98
+      },
+      "expected": {
+        "color": "red"
+      },
+      "tokens": {
+        "prompt_tokens": 1534,
+        "completion_tokens": 22,
+        "total_tokens": 1556
+      },
+      "http_seconds": 49.16292464919388,
+      "oracle_note": "Generic JSON object permits extra keys"
+    },
+    {
+      "label": "image-tool-none",
+      "quality_passed": true,
+      "actual": "red",
+      "expected": "red",
+      "tokens": {
+        "prompt_tokens": 1535,
+        "completion_tokens": 2,
+        "total_tokens": 1537
+      },
+      "http_seconds": 48.01009451923892,
+      "oracle_note": null
+    },
+    {
+      "label": "text-protection-0",
+      "quality_passed": true,
+      "actual": "42",
+      "expected": "42",
+      "tokens": {
+        "prompt_tokens": 27,
+        "completion_tokens": 3,
+        "total_tokens": 30
+      },
+      "http_seconds": 0.26489620096981525,
+      "oracle_note": null
+    },
+    {
+      "label": "text-protection-1",
+      "quality_passed": true,
+      "actual": "42",
+      "expected": "42",
+      "tokens": {
+        "prompt_tokens": 27,
+        "completion_tokens": 3,
+        "total_tokens": 30
+      },
+      "http_seconds": 0.2550132987089455,
+      "oracle_note": null
+    }
+  ],
+  "image_tool": {
+    "source_sha256": "2eb21e558dae5f89778167075fe85744ff1578b116b59ae95bc0af9844e30236",
+    "citation": "[docs/STATUS.md:L1-L16]",
+    "call_id": "call_agent-c91958610cd32d87db1e74a22fed0948_0"
+  },
+  "text_tool": {
+    "source_sha256": "944b314c0dcfd91e01d17519235c170278a0af6ed65109fc1adb511ecaf8edd6",
+    "citation": "[docs/STATUS.md:L1-L16]",
+    "call_id": "call_agent-8bf58c36d733d1a232fcf051de03bedc_0"
+  },
+  "media_governance": {
+    "status": "PASS_SCOPED_MEDIA_GOVERNANCE",
+    "prior_status": "FAILED",
+    "prior_failure": "driver equated admitted logical billing with generation-path metrics",
+    "completed": [
+      {
+        "label": "tls-json",
+        "usage": {
+          "prompt_tokens": 415,
+          "completion_tokens": 3,
+          "total_tokens": 418
+        }
+      },
+      {
+        "label": "tls-sse",
+        "usage": {
+          "prompt_tokens": 415,
+          "completion_tokens": 3,
+          "total_tokens": 418
+        }
+      },
+      {
+        "label": "a1",
+        "usage": {
+          "prompt_tokens": 415,
+          "completion_tokens": 3,
+          "total_tokens": 418
+        }
+      },
+      {
+        "label": "a2",
+        "usage": {
+          "prompt_tokens": 415,
+          "completion_tokens": 3,
+          "total_tokens": 418
+        }
+      },
+      {
+        "label": "b1",
+        "usage": {
+          "prompt_tokens": 415,
+          "completion_tokens": 3,
+          "total_tokens": 418
+        }
+      },
+      {
+        "label": "beta-recovery",
+        "usage": {
+          "prompt_tokens": 415,
+          "completion_tokens": 3,
+          "total_tokens": 418
+        }
+      }
+    ],
+    "queued_refund": 447,
+    "active_admitted_prompt_charge": 420,
+    "settled_tokens": 2928.0,
+    "generation_path_tokens": 2508,
+    "order": [
+      "agent-6cf030f190ed2538066b3500500d0df1",
+      "agent-6f3554cbe79ed858d955e2de1a736ff4",
+      "agent-9ad84ff6e254f78265d53d917669c89e",
+      "agent-795d0ac00fcdbe5b87cfa31b8056df8f",
+      "agent-b67cbd9bb17d0e0692bc22b00c712770",
+      "agent-dcfcd413ef9b0e05d4ef55b677dbfae1",
+      "agent-ebe35020e0bb4fe3325f55cb79b13f72"
+    ],
+    "unexecuted_temporal_diagnostics": 4,
+    "model_or_gpu_work": false,
+    "sources": {
+      "/home/rm01/models/dev/qwen4-thor/tools/vision_service/reuse_governance.py": "f4ce55e2ea3632aac8cb40d3c7cf259936d44676aee7b0faec8d023512064ab4",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-production-20261106/engine/q4t_preflight_probe": "4f318bc6d3052475de9478082d173a013300e76e96810d88985b3848fa06e462",
+      "/home/rm01/models/dev/qwen4-thor/src/server/chat_generation.cpp": "bf23474b7b4e824676a3e03747d54813b21bd2ba5f11e84e90dc4485d716ae46",
+      "/home/rm01/models/dev/qwen4-thor/src/server/client_policy.cpp": "3d28eb74a983b10fbb2fdf218307c0490349c051aee37945ae770a198f45b791",
+      "/home/rm01/models/dev/qwen4-thor/docs/SERVE_CLIENT_GOVERNANCE_2026-11-05.md": "c91148e86f4929ed84f10b71a193788bbf5908abebcd9f3246a1a157b55260c3"
+    }
+  },
+  "default_text_mtp_protection": true,
+  "hardware_encoding": "H264_NVENC_BOUNDED_FIXTURE_PASSED",
+  "hardware_decoding": "FAILED_BUFFER_POOL_NOT_ACCEPTED",
+  "jpeg": "stb/Pillow non-bit-equivalence retained; PNG-equivalent postdecode pipeline and actual document passed",
+  "previous_failed_stages_preserved": true,
+  "performance_acceptance": false,
+  "long_stability": false,
+  "real_lan_deployment": false,
+  "managed_task_package_migration": false,
+  "default_installation": false
+}

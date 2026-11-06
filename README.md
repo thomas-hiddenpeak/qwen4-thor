@@ -17,7 +17,7 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 `messages`默认解析；`parse_response: false`保留原始输出，`prompt`
 始终为raw。none / required / named、禁止多调用、strict工具参数和
 有限JSON Schema已验，受约束请求仍普通解码，完整校验后发布SSE内容，
-暂不组合缓存或媒体。范围见[应用兼容矩阵](docs/APPLICATION_SERVICE.md)。
+暂不组合缓存；显式单槽no-MTP媒体组合见[视觉v1](docs/VISION_SERVICE_V1.md)。范围见[应用兼容矩阵](docs/APPLICATION_SERVICE.md)。
 固定12KiB严格复制输出的真实TCP取消/写截止及后续恢复已验，见
 [限定结果](docs/SERVE_STRICT_TRANSPORT_RESULT_2026-11-03.md)；生成仍可能因
 token预算不足而失败，canonical分词长度不构成生成上限。
@@ -40,7 +40,7 @@ token预算不足而失败，canonical分词长度不构成生成上限。
 [实际工具闭环、安装与回退证据](docs/SERVE_TEXT_STOP_RESULT_2026-11-03.md)。
 `POST /v1/chat/preflight`只读返回实际token数量、输出预算和合格槽位，
 `GET /v1/config`提供有效配置与来源；预检不会预留资源或保证生成成功。
-包装格式、文本范围与[真实验证证据](docs/SERVE_PREFLIGHT_RESULT_2026-11-03.md)已公开。
+媒体展开预检见[视觉v1](docs/VISION_SERVICE_V1.md)；原文本包装格式与[真实验证证据](docs/SERVE_PREFLIGHT_RESULT_2026-11-03.md)已公开。
 `--max-inflight-requests`配置chat/preflight共同准入上限，
 `--max-queued-requests`配置slot等候上限。准备完成后按容量适配FIFO授予
 槽位，队列满时拒绝等待，空闲小槽仍可供不阻碍先来请求的小请求使用；
@@ -58,9 +58,10 @@ token预算不足而失败，canonical分词长度不构成生成上限。
 
 - **文本推理**: 48 层完整 forward (36 linear_attention + 12 full_attention),
   MoE 专家使用 NVFP4 W4A4，其他路径含 BF16/FP32；Paged KV cache、greedy 生成
-- **多模态**: 27 层 ViT, 图像 + 视频输入 (OpenAI `image_url` / `video_frames`
-  base64 接入), 3D MRoPE；当前版本默认拒绝媒体，须显式
-  `serve --allow-media`进入未验收实验路径（部署身份见STATUS）
+- **多模态**: 27 层 ViT、独立HF数值参考、3D MRoPE；`image_url`和私有
+  `video_frames`帧序列接入。须显式`--allow-media --no-mtp --max-seq 1`；
+  图片/工具/配额已有限接受，视频方向任务与硬解码未接受，仍标experimental。
+  [矩阵、示例与回退](docs/VISION_SERVICE_V1.md)，当前身份见STATUS
 - **MTP 推测解码**: 默认开启 T>1 batch verifier（k=3），`--no-mtp` 回退；
   默认使用完整草稿 head，`--mtp-subset-head DIR` 显式启用已验收的
   65536 行 BF16 独立草稿 head；当前合同、质量与性能边界见 STATUS

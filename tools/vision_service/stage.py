@@ -48,6 +48,18 @@ def require(value, message):
     if not value: raise RuntimeError(message)
 
 
+def wait_owned(children, errors):
+    """Record bad exits without skipping fresh guard/reap/GPU barriers."""
+    for process,folder in children.children:
+        if not (folder/"waitable.json").exists():
+            try:children.wait(process,folder,30)
+            except BaseException:
+                # A saved waitable receipt means it exited. A timeout or
+                # unknown state must still abort the normal reap path.
+                if not (folder/"waitable.json").exists():raise
+                errors.append(traceback.format_exc())
+
+
 def request(text, parts=(), stream=False, **extra):
     body = client.make_request([dict(role="user", content=[*parts,
         dict(type="text", text=text)])], [], stream=stream, max_tokens=256,
@@ -378,9 +390,7 @@ class Run:
             try:
                 if self.model and self.children.running(self.model):
                     self.children.signal(self.model,signal.SIGTERM)
-                for process,folder in self.children.children:
-                    if not (folder/"waitable.json").exists():
-                        self.children.wait(process,folder,30)
+                wait_owned(self.children,cleanup)
                 # Fresh guard sample after all owned processes are waitable.
                 self.children.reap(self.output)
                 # Two completed cycles ensure a full cycle began after shutdown.

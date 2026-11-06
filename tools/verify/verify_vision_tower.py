@@ -42,17 +42,8 @@ def main():
     # Only parameterize artifacts and add a direct, non-skipping entry point.
     original = ROOT / 'tests/vision_forward_test.cpp'
     source = original.read_text()
-    source = source.replace('bool RunCase(const std::string& case_name,',
-                            'std::string output_prefix;\n\nbool RunCase(const std::string& case_name,')
-    begin = source.index('  if (case_name == "video") {')
-    end = source.index('  std::printf("  [%s] output[0,:4]', begin)
-    source = source[:begin] + '''  const std::string raw_path = output_prefix + "-" + case_name + ".bf16";
-  FILE* raw = std::fopen(raw_path.c_str(), "wb");
-  Q4T_CHECK(raw != nullptr);
-  const size_t written = std::fwrite(out_bf16.data(), sizeof(uint16_t), out_n, raw);
-  const int close_result = std::fclose(raw);
-  Q4T_CHECK(written == out_n && close_result == 0);
-''' + source[end:]
+    # The current test already accepts output_prefix and preserves both raw
+    # tensors. Do not patch its old video-only /tmp dump or redeclare globals.
     source += '''
 int main(int argc, char** argv) {
   if (argc != 3 || !CudaAvailable() || !FileExists(kIndex) ||
@@ -100,7 +91,7 @@ int main(int argc, char** argv) {
         for repeat in [1, 2]:
             assert first == (out / f'large-{repeat}-{case}.bf16').read_bytes()
     (out / 'review.json').write_text(json.dumps({'passed':True,
-        'limits':'Existing NumPy FP32 full-tower reference and unchanged test criteria; synthetic pixels, not a new universal visual quality claim.'}))
+        'limits':'Canonical small fixture is official HF FP32 CPU; larger generated fixture is supplemental NumPy with unchanged criteria. Not universal visual quality acceptance.'}))
 
 
 if __name__ == '__main__':

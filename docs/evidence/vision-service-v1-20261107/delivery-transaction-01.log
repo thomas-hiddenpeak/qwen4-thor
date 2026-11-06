@@ -1,0 +1,9 @@
+test_foreign_recovery_is_not_removed (tools.vision_service.test_delivery.Delivery.test_foreign_recovery_is_not_removed) ... ok
+test_install_and_exact_pair_rollback (tools.vision_service.test_delivery.Delivery.test_install_and_exact_pair_rollback) ... ok
+test_second_replace_failure_restores_pair_and_keeps_recovery (tools.vision_service.test_delivery.Delivery.test_second_replace_failure_restores_pair_and_keeps_recovery) ... ok
+test_unknown_installed_pair_is_not_overwritten (tools.vision_service.test_delivery.Delivery.test_unknown_installed_pair_is_not_overwritten) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.046s
+
+OK

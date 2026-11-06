@@ -5,12 +5,33 @@ import tempfile
 import threading
 import time
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 
 from tools.vision_service import stage as s
 
 
 class Stage(unittest.TestCase):
+    def test_bad_waitable_exit_does_not_skip_other_children(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)
+            folders=[root/'first',root/'second']
+            for folder in folders:folder.mkdir()
+            called=[]
+            def wait(process,folder,timeout):
+                called.append(process)
+                (folder/'waitable.json').write_text('{}')
+                if process==1:raise RuntimeError('child exit')
+            children=SimpleNamespace(children=list(zip((1,2),folders)),wait=wait)
+            errors=[];s.wait_owned(children,errors)
+            self.assertEqual(called,[1,2]);self.assertEqual(len(errors),1)
+
+    def test_missing_waitable_stops_normal_reap(self):
+        with tempfile.TemporaryDirectory() as directory:
+            def wait(*_):raise TimeoutError('still running')
+            children=SimpleNamespace(children=[(1,Path(directory))],wait=wait)
+            with self.assertRaises(TimeoutError):s.wait_owned(children,[])
+
     def test_guard_required_before_gpu_work(self):
         with self.assertRaises(s.guard_tools.EnvironmentAbort):
             s.guard_tools.require_guard()

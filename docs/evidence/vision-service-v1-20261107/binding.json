@@ -1,0 +1,7 @@
+{
+  "report_sha256": "8d4c8e9e99205955c87ddc6008a5823b676eb35695f8cef3b4c28b79bbd19681",
+  "originals_sha256": "698863e0777c2420e4580eedda40da44fd88e7f00eb2820e9e8b30963d1db696",
+  "verifier_sha256": "5ca15538f93645a1b2fc59e234c3ab256c55760db0bced6b55e759a5a04057c8",
+  "source_cas": "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-production-20261106/frozen-inputs",
+  "raw_base": "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-production-20261106"
+}

@@ -1,7 +1,9 @@
 """Bounded local image/video adapter for Q4T's explicit media profile.
 
-No HTTP or GPU activity. Video decoding runs in a disposable CPU worker;
-requires opencv-python with FFmpeg. Times are decoded frame PTS, not invented
+No HTTP activity. Default decoding runs in a disposable CPU worker and
+requires opencv-python with FFmpeg. The explicit experimental Jetson backend
+uses device codecs and development runs require the shared GPU lease; it has
+not passed hardware decode acceptance. Times are decoded frame PTS, not invented
 frame indices. Unsupported/nonmonotonic timestamps fail closed. The server
 accepts sampled image frames, never arbitrary files or network URLs.
 """
