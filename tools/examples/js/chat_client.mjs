@@ -279,13 +279,50 @@ export function appendFinal(history, result) {
   return [...clone(history), message(result.message)];
 }
 
-export function makeRequest(messages, options = {}) {
+export const SCHEMA_INSTRUCTION = 'Return exactly one JSON object matching the following JSON Schema. ' +
+  'Use its descriptions to interpret the fields and enum values. Do not include markdown fences.\n';
+
+export function withJsonSchema(body, schema, { name = 'answer' } = {}) {
+  requireValue(object(body) && !Object.hasOwn(body, 'response_format'), 'response_format already set or invalid request');
+  requireValue(object(schema) && schema.type === 'object', 'an object JSON Schema is required');
+  requireValue(typeof name === 'string' && /^[A-Za-z0-9_-]{1,64}$/.test(name), 'invalid schema name');
+  let encoded, checked;
+  try {
+    encoded = JSON.stringify(schema);
+    requireValue(Buffer.byteLength(encoded) <= 65536, 'schema exceeds 64 KiB');
+    checked = parseJson(encoded);
+    requireValue(isDeepStrictEqual(checked, schema), 'schema must contain only interoperable JSON values');
+  } catch (error) { throw new ProtocolError('invalid JSON schema: ' + error.message); }
+  requireValue(!body.tools?.length || body.tool_choice === 'none', 'schema plus tools requires explicit tool_choice=none');
+  requireValue(body.parse_response !== false && !Object.hasOwn(body, 'session_id') &&
+    !Object.hasOwn(body, 'prefix_cache_scope'), 'schema requires parsed messages without session/prefix cache');
+  requireValue(Array.isArray(body.messages) && body.messages.length && body.messages.every(object) &&
+    ['user', 'tool'].includes(body.messages.at(-1).role), 'schema requires a user or completed tool history');
+  const result = clone(body), user = result.messages.findLast(m => m.role === 'user');
+  requireValue(user, 'schema requires a user message');
+  const instruction = SCHEMA_INSTRUCTION + encoded;
+  if (typeof user.content === 'string') user.content += '\n\n' + instruction;
+  else {
+    requireValue(Array.isArray(user.content), 'invalid user content');
+    user.content.push({ type: 'text', text: instruction });
+  }
+  result.response_format = { type: 'json_schema', json_schema: { name, strict: true, schema: checked } };
+  return result;
+}
+
+export function makeRequest(messages, options = {}, { jsonSchema, schemaName = 'answer' } = {}) {
+  requireValue(Array.isArray(messages) && messages.length, 'messages are required');
+  requireValue(!(Object.hasOwn(options, 'max_tokens') && Object.hasOwn(options, 'max_completion_tokens')),
+    'provide only one output token limit');
   const request = { model: 'qwen3.8-flash-next', messages: clone(messages), parse_response: true,
     stream: true, stream_options: { include_usage: true }, enable_thinking: false,
     max_completion_tokens: 256, request_timeout_ms: 120000,
     request_id: 'js-' + randomBytes(16).toString('hex'), cancel_token: randomBytes(32).toString('hex'), ...clone(options) };
+  if (Object.hasOwn(options, 'max_tokens')) delete request.max_completion_tokens;
+  const budget = request.max_tokens ?? request.max_completion_tokens;
+  requireValue(Number.isInteger(budget) && budget >= 1 && budget <= 2147483647, 'invalid output budget');
   if (!request.stream) delete request.stream_options;
-  return request;
+  return jsonSchema === undefined ? request : withJsonSchema(request, jsonSchema, { name: schemaName });
 }
 
 export function validateCapabilities(value, model, protocolSha256) {

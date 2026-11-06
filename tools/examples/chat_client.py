@@ -355,14 +355,93 @@ def read_json(response, *, sink=None, max_bytes=MAX_RESPONSE_BYTES):
                        choice.get("finish_reason"), event.get("usage"))
 
 
+SCHEMA_INSTRUCTION = (
+    "Return exactly one JSON object matching the following JSON Schema. "
+    "Use its descriptions to interpret the fields and enum values. "
+    "Do not include markdown fences.\n")
+
+
+def _schema_json_value(value, depth=0):
+    require(depth <= 64, "schema JSON nesting limit")
+    if isinstance(value, dict):
+        require(all(isinstance(k, str) for k in value), "schema keys must be text")
+        for key, item in value.items():
+            _text(key, "invalid schema key")
+            _schema_json_value(item, depth + 1)
+    elif isinstance(value, list):
+        for item in value:
+            _schema_json_value(item, depth + 1)
+    elif isinstance(value, str):
+        _text(value, "invalid schema string")
+    elif type(value) in (int, float):
+        require(math.isfinite(value) and
+                (value != int(value) or abs(value) <= 9007199254740991),
+                "schema number outside interoperable JSON range")
+    else:
+        require(value is None or type(value) is bool, "schema must be JSON")
+
+
+def with_json_schema(body, schema, *, name="answer"):
+    """Opt in to schema semantics AND decoding, for text/media/final tool turns.
+
+    Append to the last user message, preserving actual tool results. This is
+    application prompt construction, not a server guarantee of factual truth.
+    Tools must already be disabled for a constrained final answer. No retries.
+    """
+    require(isinstance(body, dict) and "response_format" not in body,
+            "response_format already set or invalid request")
+    require(isinstance(schema, dict) and schema.get("type") == "object",
+            "an object JSON Schema is required")
+    require(isinstance(name, str) and 1 <= len(name) <= 64 and
+            all(c in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                "0123456789_-" for c in name), "invalid schema name")
+    # Round-trip through the strict parser: no NaN, invalid Unicode, lossy keys
+    # or values outside the interoperable JSON number range.
+    try:
+        _schema_json_value(schema)
+        encoded = json.dumps(schema, ensure_ascii=False, allow_nan=False,
+                             separators=(",", ":"))
+        require(len(encoded.encode("utf-8")) <= 65536, "schema exceeds 64 KiB")
+        checked = load_json(encoded)
+        require(checked == schema, "schema must contain only JSON values")
+    except (TypeError, ValueError, UnicodeError, RecursionError, OverflowError) as error:
+        raise ProtocolError("invalid JSON schema: " + str(error)) from error
+    require(not body.get("tools") or body.get("tool_choice") == "none",
+            "schema plus tools requires explicit tool_choice=none")
+    require(body.get("parse_response") is not False and
+            "session_id" not in body and "prefix_cache_scope" not in body,
+            "schema requires parsed messages without session/prefix cache")
+    messages = body.get("messages")
+    require(isinstance(messages, list) and messages and
+            all(isinstance(m, dict) for m in messages) and
+            messages[-1].get("role") in ("user", "tool"),
+            "schema requires a user or completed tool history")
+    result = deepcopy(body)
+    user = next((m for m in reversed(result["messages"])
+                 if m.get("role") == "user"), None)
+    require(user is not None, "schema requires a user message")
+    content = user.get("content")
+    instruction = SCHEMA_INSTRUCTION + encoded
+    if isinstance(content, str):
+        user["content"] = content + "\n\n" + instruction
+    else:
+        require(isinstance(content, list), "invalid user content")
+        content.append(dict(type="text", text=instruction))
+    result["response_format"] = dict(type="json_schema", json_schema=dict(
+        name=name, strict=True, schema=checked))
+    return result
+
+
 def make_request(messages, tools, *, model="qwen3.8-flash-next", stream=True,
                  thinking=False, max_tokens=512, timeout_ms=120000,
                  session_id=None, reasoning_field=None, include_reasoning=None,
-                 thinking_token_budget=None, stop=None):
+                 thinking_token_budget=None, stop=None, json_schema=None,
+                 schema_name="answer"):
     require(isinstance(messages, list) and messages, "messages are required")
     require(isinstance(tools, list), "tools must be a list")
     require(type(stream) is bool and type(thinking) is bool, "invalid mode")
-    require(type(max_tokens) is int and max_tokens > 0, "invalid output budget")
+    require(type(max_tokens) is int and 1 <= max_tokens <= 2147483647,
+            "invalid output budget")
     require(type(timeout_ms) is int and 1 <= timeout_ms <= 1200000,
             "invalid request deadline")
     body = dict(model=model, messages=deepcopy(messages), tools=deepcopy(tools),
@@ -405,7 +484,8 @@ def make_request(messages, tools, *, model="qwen3.8-flash-next", stream=True,
                 all(c in "0123456789abcdef" for c in session_id),
                 "invalid session capability")
         body["session_id"] = session_id
-    return body
+    return (with_json_schema(body, json_schema, name=schema_name)
+            if json_schema is not None else body)
 
 
 class _NoRedirect(urllib.request.HTTPRedirectHandler):
