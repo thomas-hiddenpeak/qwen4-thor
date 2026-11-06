@@ -2,7 +2,9 @@
 
 2026-11-07，按[冻结计划](VISION_CLIENT_PLAN_2026-11-07.md)完成限定交付。
 验收实现`a4cd5b40fe18e60b2bc11f973980529e0e5f5232`，主线入口
-[PR #17](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/17)。
+[PR #17](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/17)已在两项检查
+通过后合main 5ba744da，合并树等于6999936f；本阶段重复分支清理及
+保留锚点见[合入记录](evidence/vision-client-20261107/mainline.json)。
 [机器结果](evidence/vision-client-20261107/result.json)、
 [固定问题/真值/来源](evidence/vision-client-20261107/corpus.json)及
 [原件绑定](evidence/vision-client-20261107/bindings.json)随仓库保留。

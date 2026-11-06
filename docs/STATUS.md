@@ -5,7 +5,9 @@
 ## 统一schema、输出预算与小型真实场景回归已完成限定交付
 
 [本轮结果](VISION_CLIENT_RESULT_2026-11-07.md)，主线入口
-[PR #17](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/17)。Python/JS
+[PR #17](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/17)已合main
+5ba744da，合并树等于已验6999936f，两项检查通过；本阶段重复本地/远端
+分支已按预期tip清理，原件和研究分支保留。Python/JS
 共享显式schema提示与约束，支持文本/媒体/真实工具最终回合；视觉和资料
 CLI输出预算可配，截断拒绝伪成功，不自动重试或重放工具。旧默认保持。
 

@@ -1,0 +1,35 @@
+{
+  "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/17",
+  "merged_commit": "5ba744dad213a2ac31edb7246eb42724889fc7e8",
+  "old_branch_tip": "6999936f751943e9a412e583d2bf1c24f86f0f68",
+  "retained_anchor": "5ba744dad213a2ac31edb7246eb42724889fc7e8",
+  "merge_tree_matches_tested_head": true,
+  "branch": "codex/vision-client-contracts",
+  "open_prs": [],
+  "evidence_root": "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-client-20261107",
+  "other_branches_or_worktrees_modified": false,
+  "checks_before_merge": [
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-11-06T19:13:59Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/42277386298/job/128097140553",
+      "name": "host-contracts",
+      "startedAt": "2026-11-06T19:11:13Z",
+      "status": "COMPLETED",
+      "workflowName": "Public host contracts"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-11-06T19:13:53Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/42277377946/job/128097110386",
+      "name": "host-contracts",
+      "startedAt": "2026-11-06T19:11:09Z",
+      "status": "COMPLETED",
+      "workflowName": "Public host contracts"
+    }
+  ],
+  "local_branch_deleted": true,
+  "remote_branch_deleted": true
+}
