@@ -1,0 +1,12 @@
+{
+  "status": "DELIVERED",
+  "binary_sha256": "aa528a6839ed629fcea2aed036f4c8f0bdc14617ac00fdc31156e6e58c3e18d0",
+  "release": {
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json",
+    "sha256": "46aa73bd678ace6c79a8c4946c541e2e53ac7808c215374626c59c46ee90a11b",
+    "bytes": 49371
+  },
+  "protocol": "55da359517f9f4a2109afc6e242bd6d74086eee44f239c5adf6aadb75188500d",
+  "generation_requests": 6,
+  "model_starts": 2
+}

@@ -1,0 +1,2378 @@
+{
+  "windows": [
+    {
+      "arm": "parent",
+      "head": "plain",
+      "case": "context-1024",
+      "pid": "3921811",
+      "begin": 2153899.200766248,
+      "end": 2153948.0986378114,
+      "samples": 49,
+      "process_samples": 49,
+      "minimum_available_bytes": 34152968192,
+      "maximum_total_minus_available_bytes": 97767669760,
+      "maximum_server_rss_bytes": 920793088,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 40718,
+          "maximum": 50000
+        },
+        "thermal_zone1.temp": {
+          "minimum": 38968,
+          "maximum": 50000
+        },
+        "thermal_zone2.temp": {
+          "minimum": 40156,
+          "maximum": 47281
+        },
+        "thermal_zone3.temp": {
+          "minimum": 38343,
+          "maximum": 44718
+        },
+        "thermal_zone4.temp": {
+          "minimum": 36656,
+          "maximum": 45718
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "parent",
+      "head": "plain",
+      "case": "context-4096",
+      "pid": "3921811",
+      "begin": 2153948.102813512,
+      "end": 2154004.2114760065,
+      "samples": 56,
+      "process_samples": 56,
+      "minimum_available_bytes": 34478456832,
+      "maximum_total_minus_available_bytes": 97442181120,
+      "maximum_server_rss_bytes": 925503488,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 44187,
+          "maximum": 56562
+        },
+        "thermal_zone1.temp": {
+          "minimum": 43562,
+          "maximum": 56562
+        },
+        "thermal_zone2.temp": {
+          "minimum": 44187,
+          "maximum": 49562
+        },
+        "thermal_zone3.temp": {
+          "minimum": 43156,
+          "maximum": 47468
+        },
+        "thermal_zone4.temp": {
+          "minimum": 41437,
+          "maximum": 51406
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "parent",
+      "head": "plain",
+      "case": "context-8192",
+      "pid": "3921811",
+      "begin": 2154004.2157485764,
+      "end": 2154067.201243971,
+      "samples": 63,
+      "process_samples": 63,
+      "minimum_available_bytes": 34362212352,
+      "maximum_total_minus_available_bytes": 97558425600,
+      "maximum_server_rss_bytes": 929689600,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 47093,
+          "maximum": 61062
+        },
+        "thermal_zone1.temp": {
+          "minimum": 45968,
+          "maximum": 61062
+        },
+        "thermal_zone2.temp": {
+          "minimum": 46906,
+          "maximum": 52187
+        },
+        "thermal_zone3.temp": {
+          "minimum": 45468,
+          "maximum": 49781
+        },
+        "thermal_zone4.temp": {
+          "minimum": 43750,
+          "maximum": 55406
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "parent",
+      "head": "plain",
+      "case": "context-45056",
+      "pid": "3921811",
+      "begin": 2154067.2070316956,
+      "end": 2154206.8214952275,
+      "samples": 140,
+      "process_samples": 140,
+      "minimum_available_bytes": 34350829568,
+      "maximum_total_minus_available_bytes": 97569808384,
+      "maximum_server_rss_bytes": 930897920,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 49500,
+          "maximum": 66531
+        },
+        "thermal_zone1.temp": {
+          "minimum": 48156,
+          "maximum": 66531
+        },
+        "thermal_zone2.temp": {
+          "minimum": 48531,
+          "maximum": 58031
+        },
+        "thermal_zone3.temp": {
+          "minimum": 47406,
+          "maximum": 56312
+        },
+        "thermal_zone4.temp": {
+          "minimum": 45843,
+          "maximum": 60593
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "parent",
+      "head": "plain",
+      "case": "context-204800",
+      "pid": "3921811",
+      "begin": 2154206.8270921335,
+      "end": 2154736.0282164156,
+      "samples": 529,
+      "process_samples": 529,
+      "minimum_available_bytes": 34073690112,
+      "maximum_total_minus_available_bytes": 97846947840,
+      "maximum_server_rss_bytes": 941408256,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 54031,
+          "maximum": 74593
+        },
+        "thermal_zone1.temp": {
+          "minimum": 52500,
+          "maximum": 74843
+        },
+        "thermal_zone2.temp": {
+          "minimum": 52500,
+          "maximum": 65781
+        },
+        "thermal_zone3.temp": {
+          "minimum": 51500,
+          "maximum": 64406
+        },
+        "thermal_zone4.temp": {
+          "minimum": 50250,
+          "maximum": 68312
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "candidate",
+      "head": "plain",
+      "case": "context-1024",
+      "pid": "3927619",
+      "begin": 2154989.6633349108,
+      "end": 2155038.5611988883,
+      "samples": 49,
+      "process_samples": 49,
+      "minimum_available_bytes": 33382793216,
+      "maximum_total_minus_available_bytes": 98537844736,
+      "maximum_server_rss_bytes": 920956928,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 57218,
+          "maximum": 65437
+        },
+        "thermal_zone1.temp": {
+          "minimum": 56843,
+          "maximum": 65437
+        },
+        "thermal_zone2.temp": {
+          "minimum": 57218,
+          "maximum": 62375
+        },
+        "thermal_zone3.temp": {
+          "minimum": 56500,
+          "maximum": 61093
+        },
+        "thermal_zone4.temp": {
+          "minimum": 54375,
+          "maximum": 61718
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "candidate",
+      "head": "plain",
+      "case": "context-4096",
+      "pid": "3927619",
+      "begin": 2155038.565322074,
+      "end": 2155094.4664175957,
+      "samples": 56,
+      "process_samples": 56,
+      "minimum_available_bytes": 34334781440,
+      "maximum_total_minus_available_bytes": 97585856512,
+      "maximum_server_rss_bytes": 925650944,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 58125,
+          "maximum": 70187
+        },
+        "thermal_zone1.temp": {
+          "minimum": 57812,
+          "maximum": 70187
+        },
+        "thermal_zone2.temp": {
+          "minimum": 57843,
+          "maximum": 61750
+        },
+        "thermal_zone3.temp": {
+          "minimum": 58093,
+          "maximum": 60031
+        },
+        "thermal_zone4.temp": {
+          "minimum": 55593,
+          "maximum": 64531
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "candidate",
+      "head": "plain",
+      "case": "context-8192",
+      "pid": "3927619",
+      "begin": 2155094.471007229,
+      "end": 2155156.92744154,
+      "samples": 63,
+      "process_samples": 63,
+      "minimum_available_bytes": 34169630720,
+      "maximum_total_minus_available_bytes": 97751007232,
+      "maximum_server_rss_bytes": 929824768,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 58562,
+          "maximum": 72781
+        },
+        "thermal_zone1.temp": {
+          "minimum": 57812,
+          "maximum": 72781
+        },
+        "thermal_zone2.temp": {
+          "minimum": 58656,
+          "maximum": 61906
+        },
+        "thermal_zone3.temp": {
+          "minimum": 57062,
+          "maximum": 62187
+        },
+        "thermal_zone4.temp": {
+          "minimum": 55687,
+          "maximum": 64625
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "candidate",
+      "head": "plain",
+      "case": "context-45056",
+      "pid": "3927619",
+      "begin": 2155156.9324057493,
+      "end": 2155294.1462222235,
+      "samples": 137,
+      "process_samples": 137,
+      "minimum_available_bytes": 34169475072,
+      "maximum_total_minus_available_bytes": 97751162880,
+      "maximum_server_rss_bytes": 931053568,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 60281,
+          "maximum": 75000
+        },
+        "thermal_zone1.temp": {
+          "minimum": 57875,
+          "maximum": 76156
+        },
+        "thermal_zone2.temp": {
+          "minimum": 58937,
+          "maximum": 65125
+        },
+        "thermal_zone3.temp": {
+          "minimum": 57781,
+          "maximum": 65468
+        },
+        "thermal_zone4.temp": {
+          "minimum": 55500,
+          "maximum": 67781
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "candidate",
+      "head": "plain",
+      "case": "context-204800",
+      "pid": "3927619",
+      "begin": 2155294.152181525,
+      "end": 2155812.993372782,
+      "samples": 519,
+      "process_samples": 519,
+      "minimum_available_bytes": 34028728320,
+      "maximum_total_minus_available_bytes": 97891909632,
+      "maximum_server_rss_bytes": 942821376,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 59906,
+          "maximum": 78937
+        },
+        "thermal_zone1.temp": {
+          "minimum": 58906,
+          "maximum": 78937
+        },
+        "thermal_zone2.temp": {
+          "minimum": 59906,
+          "maximum": 68156
+        },
+        "thermal_zone3.temp": {
+          "minimum": 58750,
+          "maximum": 67500
+        },
+        "thermal_zone4.temp": {
+          "minimum": 56750,
+          "maximum": 70718
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "candidate",
+      "head": "full",
+      "case": "context-1024",
+      "pid": "3932566",
+      "begin": 2156064.2693830435,
+      "end": 2156094.1179718142,
+      "samples": 30,
+      "process_samples": 30,
+      "minimum_available_bytes": 24254251008,
+      "maximum_total_minus_available_bytes": 107666386944,
+      "maximum_server_rss_bytes": 928514048,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 59125,
+          "maximum": 66375
+        },
+        "thermal_zone1.temp": {
+          "minimum": 57656,
+          "maximum": 66375
+        },
+        "thermal_zone2.temp": {
+          "minimum": 58531,
+          "maximum": 63437
+        },
+        "thermal_zone3.temp": {
+          "minimum": 57093,
+          "maximum": 61500
+        },
+        "thermal_zone4.temp": {
+          "minimum": 55375,
+          "maximum": 62906
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "candidate",
+      "head": "full",
+      "case": "context-4096",
+      "pid": "3932566",
+      "begin": 2156094.1220034235,
+      "end": 2156129.054664005,
+      "samples": 35,
+      "process_samples": 35,
+      "minimum_available_bytes": 22529708032,
+      "maximum_total_minus_available_bytes": 109390929920,
+      "maximum_server_rss_bytes": 938684416,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 59406,
+          "maximum": 71687
+        },
+        "thermal_zone1.temp": {
+          "minimum": 59250,
+          "maximum": 71687
+        },
+        "thermal_zone2.temp": {
+          "minimum": 59406,
+          "maximum": 64187
+        },
+        "thermal_zone3.temp": {
+          "minimum": 59312,
+          "maximum": 63656
+        },
+        "thermal_zone4.temp": {
+          "minimum": 57125,
+          "maximum": 65406
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "candidate",
+      "head": "full",
+      "case": "context-8192",
+      "pid": "3932566",
+      "begin": 2156129.058425753,
+      "end": 2156173.096052794,
+      "samples": 44,
+      "process_samples": 44,
+      "minimum_available_bytes": 24131739648,
+      "maximum_total_minus_available_bytes": 107788898304,
+      "maximum_server_rss_bytes": 940527616,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 61125,
+          "maximum": 73687
+        },
+        "thermal_zone1.temp": {
+          "minimum": 59687,
+          "maximum": 73687
+        },
+        "thermal_zone2.temp": {
+          "minimum": 60406,
+          "maximum": 64312
+        },
+        "thermal_zone3.temp": {
+          "minimum": 59062,
+          "maximum": 62625
+        },
+        "thermal_zone4.temp": {
+          "minimum": 57343,
+          "maximum": 67687
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "candidate",
+      "head": "full",
+      "case": "context-45056",
+      "pid": "3932566",
+      "begin": 2156173.1007472286,
+      "end": 2156293.200116479,
+      "samples": 120,
+      "process_samples": 120,
+      "minimum_available_bytes": 21763215360,
+      "maximum_total_minus_available_bytes": 110157422592,
+      "maximum_server_rss_bytes": 947376128,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 62906,
+          "maximum": 76656
+        },
+        "thermal_zone1.temp": {
+          "minimum": 59968,
+          "maximum": 76656
+        },
+        "thermal_zone2.temp": {
+          "minimum": 60468,
+          "maximum": 67656
+        },
+        "thermal_zone3.temp": {
+          "minimum": 59562,
+          "maximum": 64562
+        },
+        "thermal_zone4.temp": {
+          "minimum": 57687,
+          "maximum": 69218
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "candidate",
+      "head": "full",
+      "case": "context-204800",
+      "pid": "3932566",
+      "begin": 2156293.206565133,
+      "end": 2156812.8956259997,
+      "samples": 519,
+      "process_samples": 519,
+      "minimum_available_bytes": 16346398720,
+      "maximum_total_minus_available_bytes": 115574239232,
+      "maximum_server_rss_bytes": 971804672,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 62781,
+          "maximum": 79187
+        },
+        "thermal_zone1.temp": {
+          "minimum": 60906,
+          "maximum": 79187
+        },
+        "thermal_zone2.temp": {
+          "minimum": 61187,
+          "maximum": 68437
+        },
+        "thermal_zone3.temp": {
+          "minimum": 60625,
+          "maximum": 67906
+        },
+        "thermal_zone4.temp": {
+          "minimum": 58750,
+          "maximum": 71062
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "parent",
+      "head": "full",
+      "case": "context-1024",
+      "pid": "3940231",
+      "begin": 2157081.428456432,
+      "end": 2157111.381788123,
+      "samples": 30,
+      "process_samples": 30,
+      "minimum_available_bytes": 23065522176,
+      "maximum_total_minus_available_bytes": 108855115776,
+      "maximum_server_rss_bytes": 926851072,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 58468,
+          "maximum": 67500
+        },
+        "thermal_zone1.temp": {
+          "minimum": 57812,
+          "maximum": 67500
+        },
+        "thermal_zone2.temp": {
+          "minimum": 58406,
+          "maximum": 63531
+        },
+        "thermal_zone3.temp": {
+          "minimum": 57406,
+          "maximum": 63531
+        },
+        "thermal_zone4.temp": {
+          "minimum": 55437,
+          "maximum": 63593
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "parent",
+      "head": "full",
+      "case": "context-4096",
+      "pid": "3940231",
+      "begin": 2157111.38650233,
+      "end": 2157146.5159524977,
+      "samples": 35,
+      "process_samples": 35,
+      "minimum_available_bytes": 23022784512,
+      "maximum_total_minus_available_bytes": 108897853440,
+      "maximum_server_rss_bytes": 936853504,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 59906,
+          "maximum": 71281
+        },
+        "thermal_zone1.temp": {
+          "minimum": 59593,
+          "maximum": 71281
+        },
+        "thermal_zone2.temp": {
+          "minimum": 59593,
+          "maximum": 64562
+        },
+        "thermal_zone3.temp": {
+          "minimum": 59281,
+          "maximum": 63937
+        },
+        "thermal_zone4.temp": {
+          "minimum": 57281,
+          "maximum": 65875
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "parent",
+      "head": "full",
+      "case": "context-8192",
+      "pid": "3940231",
+      "begin": 2157146.520689954,
+      "end": 2157190.985875737,
+      "samples": 44,
+      "process_samples": 44,
+      "minimum_available_bytes": 19272916992,
+      "maximum_total_minus_available_bytes": 112647720960,
+      "maximum_server_rss_bytes": 938745856,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 62500,
+          "maximum": 73906
+        },
+        "thermal_zone1.temp": {
+          "minimum": 59812,
+          "maximum": 73906
+        },
+        "thermal_zone2.temp": {
+          "minimum": 60156,
+          "maximum": 64156
+        },
+        "thermal_zone3.temp": {
+          "minimum": 59281,
+          "maximum": 64000
+        },
+        "thermal_zone4.temp": {
+          "minimum": 57593,
+          "maximum": 66625
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "parent",
+      "head": "full",
+      "case": "context-45056",
+      "pid": "3940231",
+      "begin": 2157190.990937411,
+      "end": 2157313.672910779,
+      "samples": 122,
+      "process_samples": 122,
+      "minimum_available_bytes": 21481562112,
+      "maximum_total_minus_available_bytes": 110439075840,
+      "maximum_server_rss_bytes": 946302976,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 62375,
+          "maximum": 75687
+        },
+        "thermal_zone1.temp": {
+          "minimum": 59781,
+          "maximum": 75687
+        },
+        "thermal_zone2.temp": {
+          "minimum": 61000,
+          "maximum": 67093
+        },
+        "thermal_zone3.temp": {
+          "minimum": 59406,
+          "maximum": 64656
+        },
+        "thermal_zone4.temp": {
+          "minimum": 57750,
+          "maximum": 68625
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "parent",
+      "head": "full",
+      "case": "context-204800",
+      "pid": "3940231",
+      "begin": 2157313.6788117,
+      "end": 2157844.5287012383,
+      "samples": 531,
+      "process_samples": 531,
+      "minimum_available_bytes": 16401379328,
+      "maximum_total_minus_available_bytes": 115519258624,
+      "maximum_server_rss_bytes": 969789440,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 62000,
+          "maximum": 78593
+        },
+        "thermal_zone1.temp": {
+          "minimum": 60781,
+          "maximum": 78593
+        },
+        "thermal_zone2.temp": {
+          "minimum": 61406,
+          "maximum": 68031
+        },
+        "thermal_zone3.temp": {
+          "minimum": 60375,
+          "maximum": 66562
+        },
+        "thermal_zone4.temp": {
+          "minimum": 58687,
+          "maximum": 70687
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "parent",
+      "head": "subset",
+      "case": "context-1024",
+      "pid": "3944142",
+      "begin": 2158124.039264544,
+      "end": 2158152.266224781,
+      "samples": 29,
+      "process_samples": 29,
+      "minimum_available_bytes": 24275570688,
+      "maximum_total_minus_available_bytes": 107645067264,
+      "maximum_server_rss_bytes": 949092352,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 58968,
+          "maximum": 67468
+        },
+        "thermal_zone1.temp": {
+          "minimum": 56812,
+          "maximum": 67468
+        },
+        "thermal_zone2.temp": {
+          "minimum": 58687,
+          "maximum": 62687
+        },
+        "thermal_zone3.temp": {
+          "minimum": 56125,
+          "maximum": 60625
+        },
+        "thermal_zone4.temp": {
+          "minimum": 54500,
+          "maximum": 62843
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "parent",
+      "head": "subset",
+      "case": "context-4096",
+      "pid": "3944142",
+      "begin": 2158152.2702708133,
+      "end": 2158184.6996215237,
+      "samples": 32,
+      "process_samples": 32,
+      "minimum_available_bytes": 24149544960,
+      "maximum_total_minus_available_bytes": 107771092992,
+      "maximum_server_rss_bytes": 959602688,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 60687,
+          "maximum": 70937
+        },
+        "thermal_zone1.temp": {
+          "minimum": 58750,
+          "maximum": 70937
+        },
+        "thermal_zone2.temp": {
+          "minimum": 59843,
+          "maximum": 62406
+        },
+        "thermal_zone3.temp": {
+          "minimum": 58125,
+          "maximum": 61000
+        },
+        "thermal_zone4.temp": {
+          "minimum": 56406,
+          "maximum": 65468
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "parent",
+      "head": "subset",
+      "case": "context-8192",
+      "pid": "3944142",
+      "begin": 2158184.7033935306,
+      "end": 2158226.193378944,
+      "samples": 42,
+      "process_samples": 42,
+      "minimum_available_bytes": 23015198720,
+      "maximum_total_minus_available_bytes": 108905439232,
+      "maximum_server_rss_bytes": 961449984,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 62437,
+          "maximum": 72500
+        },
+        "thermal_zone1.temp": {
+          "minimum": 59187,
+          "maximum": 72500
+        },
+        "thermal_zone2.temp": {
+          "minimum": 59875,
+          "maximum": 63437
+        },
+        "thermal_zone3.temp": {
+          "minimum": 58906,
+          "maximum": 64062
+        },
+        "thermal_zone4.temp": {
+          "minimum": 56968,
+          "maximum": 65906
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "parent",
+      "head": "subset",
+      "case": "context-45056",
+      "pid": "3944142",
+      "begin": 2158226.198205429,
+      "end": 2158346.6572852507,
+      "samples": 120,
+      "process_samples": 120,
+      "minimum_available_bytes": 22865399808,
+      "maximum_total_minus_available_bytes": 109055238144,
+      "maximum_server_rss_bytes": 968540160,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 62375,
+          "maximum": 74656
+        },
+        "thermal_zone1.temp": {
+          "minimum": 59406,
+          "maximum": 74656
+        },
+        "thermal_zone2.temp": {
+          "minimum": 60187,
+          "maximum": 66437
+        },
+        "thermal_zone3.temp": {
+          "minimum": 59031,
+          "maximum": 64937
+        },
+        "thermal_zone4.temp": {
+          "minimum": 57156,
+          "maximum": 68312
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "parent",
+      "head": "subset",
+      "case": "context-204800",
+      "pid": "3944142",
+      "begin": 2158346.663887694,
+      "end": 2158876.0168990903,
+      "samples": 529,
+      "process_samples": 529,
+      "minimum_available_bytes": 19041390592,
+      "maximum_total_minus_available_bytes": 112879247360,
+      "maximum_server_rss_bytes": 992333824,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 60875,
+          "maximum": 78656
+        },
+        "thermal_zone1.temp": {
+          "minimum": 60562,
+          "maximum": 78656
+        },
+        "thermal_zone2.temp": {
+          "minimum": 60687,
+          "maximum": 68031
+        },
+        "thermal_zone3.temp": {
+          "minimum": 60312,
+          "maximum": 68000
+        },
+        "thermal_zone4.temp": {
+          "minimum": 58281,
+          "maximum": 70500
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "candidate",
+      "head": "subset",
+      "case": "context-1024",
+      "pid": "3948622",
+      "begin": 2159145.5089081572,
+      "end": 2159173.534974437,
+      "samples": 28,
+      "process_samples": 28,
+      "minimum_available_bytes": 24140742656,
+      "maximum_total_minus_available_bytes": 107779895296,
+      "maximum_server_rss_bytes": 952651776,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 57218,
+          "maximum": 67468
+        },
+        "thermal_zone1.temp": {
+          "minimum": 57218,
+          "maximum": 67468
+        },
+        "thermal_zone2.temp": {
+          "minimum": 57218,
+          "maximum": 64031
+        },
+        "thermal_zone3.temp": {
+          "minimum": 56593,
+          "maximum": 63375
+        },
+        "thermal_zone4.temp": {
+          "minimum": 54781,
+          "maximum": 62812
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "candidate",
+      "head": "subset",
+      "case": "context-4096",
+      "pid": "3948622",
+      "begin": 2159173.5394548494,
+      "end": 2159205.872626184,
+      "samples": 32,
+      "process_samples": 32,
+      "minimum_available_bytes": 24049082368,
+      "maximum_total_minus_available_bytes": 107871555584,
+      "maximum_server_rss_bytes": 963145728,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 59437,
+          "maximum": 72437
+        },
+        "thermal_zone1.temp": {
+          "minimum": 59156,
+          "maximum": 72437
+        },
+        "thermal_zone2.temp": {
+          "minimum": 59187,
+          "maximum": 63468
+        },
+        "thermal_zone3.temp": {
+          "minimum": 58750,
+          "maximum": 62843
+        },
+        "thermal_zone4.temp": {
+          "minimum": 56781,
+          "maximum": 65656
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "candidate",
+      "head": "subset",
+      "case": "context-8192",
+      "pid": "3948622",
+      "begin": 2159205.876887099,
+      "end": 2159246.9086872553,
+      "samples": 41,
+      "process_samples": 41,
+      "minimum_available_bytes": 23037898752,
+      "maximum_total_minus_available_bytes": 108882739200,
+      "maximum_server_rss_bytes": 965115904,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 59968,
+          "maximum": 75718
+        },
+        "thermal_zone1.temp": {
+          "minimum": 59437,
+          "maximum": 75718
+        },
+        "thermal_zone2.temp": {
+          "minimum": 59968,
+          "maximum": 64343
+        },
+        "thermal_zone3.temp": {
+          "minimum": 58843,
+          "maximum": 61812
+        },
+        "thermal_zone4.temp": {
+          "minimum": 57250,
+          "maximum": 66593
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "candidate",
+      "head": "subset",
+      "case": "context-45056",
+      "pid": "3948622",
+      "begin": 2159246.9145922363,
+      "end": 2159364.704193674,
+      "samples": 118,
+      "process_samples": 118,
+      "minimum_available_bytes": 22902734848,
+      "maximum_total_minus_available_bytes": 109017903104,
+      "maximum_server_rss_bytes": 973352960,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 60562,
+          "maximum": 77625
+        },
+        "thermal_zone1.temp": {
+          "minimum": 59625,
+          "maximum": 77625
+        },
+        "thermal_zone2.temp": {
+          "minimum": 60562,
+          "maximum": 66562
+        },
+        "thermal_zone3.temp": {
+          "minimum": 59250,
+          "maximum": 64218
+        },
+        "thermal_zone4.temp": {
+          "minimum": 57312,
+          "maximum": 69031
+        }
+      },
+      "unavailable": []
+    },
+    {
+      "arm": "candidate",
+      "head": "subset",
+      "case": "context-204800",
+      "pid": "3948622",
+      "begin": 2159364.7114076847,
+      "end": 2159883.609840314,
+      "samples": 519,
+      "process_samples": 519,
+      "minimum_available_bytes": 19033243648,
+      "maximum_total_minus_available_bytes": 112887394304,
+      "maximum_server_rss_bytes": 995799040,
+      "maximum_server_swap_bytes": 0,
+      "clocks": {
+        "gpu-gpc-0.cur_freq": {
+          "minimum": 1575000000,
+          "maximum": 1575000000
+        },
+        "gpu-nvd-0.cur_freq": {
+          "minimum": 1692000000,
+          "maximum": 1692000000
+        },
+        "bwmgr.cur_freq": {
+          "minimum": 4266000000,
+          "maximum": 4266000000
+        },
+        "cpu.policy0.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy10.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy12.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy2.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy4.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy6.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        },
+        "cpu.policy8.scaling_cur_freq": {
+          "minimum": 2601000,
+          "maximum": 2601000
+        }
+      },
+      "temperatures": {
+        "thermal_zone0.temp": {
+          "minimum": 61281,
+          "maximum": 78625
+        },
+        "thermal_zone1.temp": {
+          "minimum": 60718,
+          "maximum": 78625
+        },
+        "thermal_zone2.temp": {
+          "minimum": 61187,
+          "maximum": 68906
+        },
+        "thermal_zone3.temp": {
+          "minimum": 60687,
+          "maximum": 67343
+        },
+        "thermal_zone4.temp": {
+          "minimum": 58531,
+          "maximum": 71125
+        }
+      },
+      "unavailable": []
+    }
+  ],
+  "review_sha256": "65abc3eb2db6b4d99688bb0d4d080076f043a38091efcf501145b21c97cf7a5a",
+  "telemetry_sha256": "d73d1f8d4121c42730acabc1ebb1642373f216eb0f1633fa8e7189c988125480",
+  "source_sha256": "412f18d482b55ce2ff531e9ba498cbe3c20b9f491d9f25d237882e7f39214521",
+  "note": "Complete samples inside actual client windows. PID-bound server RSS; not added to physical pressure. Observations cannot prove causality or exclude interference below the sampling interval."
+}
