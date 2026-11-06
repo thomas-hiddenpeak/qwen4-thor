@@ -113,6 +113,16 @@ class TraceOwnership(unittest.TestCase):
         self.assertFalse(receipt["global_unchanged"])
         self.assertEqual((self.foreign / "tracing_on").read_text(), "foreign")
 
+    def test_enabled_trigger_readback_accepts_star_but_not_disabled(self):
+        def trigger_mode(instance, pids):
+            self.populate(instance, pids)
+            (instance / (t.EVENT + "/enable")).write_text("1*\n")
+        with patch.object(t, "configure", side_effect=trigger_mode):
+            self.assertEqual(t.setup(self.plan, self.output, self.pid), "CONFIGURED")
+        for value in ("0", "0*", "X", "", "10", "1**"):
+            self.assertFalse(t.event_enabled(value))
+        self.collect()
+
 
 if __name__ == "__main__":
     unittest.main()

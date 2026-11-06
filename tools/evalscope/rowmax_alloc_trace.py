@@ -12,7 +12,7 @@ from pathlib import Path
 import re
 
 ROOT = Path(__file__).resolve().parents[2]
-STAGE = ROOT / ".q4t-work/vision-attention-rowmax-20261107/env-01"
+STAGE = ROOT / ".q4t-work/vision-attention-rowmax-20261107/env-02"
 TRACE_ROOT = Path("/sys/kernel/tracing/instances")
 FAILED_PAGE = "pfn == 18446744073709551615"
 EVENT = "events/kmem/mm_page_alloc"
@@ -99,6 +99,12 @@ def global_controls():
             ("tracing_on", "current_tracer", "events/enable", "set_event_pid", "trace_clock")}
 
 
+def event_enabled(value):
+    # event_enable_read appends '*' in soft mode, including for triggers.
+    # '0*' is still disabled; unknown/mixed values must not pass.
+    return value.strip() in ("1", "1*")
+
+
 def setup(plan, output, guard_pid):
     guard = identity(guard_pid)
     require(guard["uid"] == int(os.environ["SUDO_UID"]) and
@@ -114,9 +120,10 @@ def setup(plan, output, guard_pid):
     try:
         configure(instance, descendants(guard_pid))
         observed = controls(instance)
+        save(output / "observed.json", observed)
         require(observed["tracing_on"].strip() == "1" and
                 observed["options/event-fork"].strip() == "1" and
-                observed[EVENT + "/enable"].strip() == "1" and
+                event_enabled(observed[EVENT + "/enable"]) and
                 "[mono]" in observed["trace_clock"], "trace controls not applied")
         save(output / "configured.json", dict(status="CONFIGURED", controls=observed))
     except BaseException:

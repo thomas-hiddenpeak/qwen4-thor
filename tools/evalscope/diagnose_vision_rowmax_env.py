@@ -15,14 +15,20 @@ from tools.evalscope import accept_vision_rowmax as a
 
 s = a.s
 BASE = a.BASE
-FOLDER = BASE / "env-01"
-LIMITS = dict(starts=1, generations=9, controls=16, native=0, seconds=600)
+FOLDER = BASE / "env-02"
+LIMITS = dict(starts=1, generations=9, controls=16, native=0, seconds=596)
 
 
 def prepare():
     old = a.pilot.read(a.FOLDER / "plan.json")
     candidate = old["binaries"]["candidate"]
     s.require(s.sha(candidate["path"]) == candidate["sha256"], "candidate changed")
+    previous = a.pilot.read(BASE / "env-01/execution/result.json")
+    s.require(previous["status"] == "FAILED" and previous["counts"] ==
+              dict(starts=0, generations=0, controls=0, native=0), "previous diagnostic budget")
+    events = [json.loads(r) for r in (BASE / "env-01/lease/events.jsonl").read_text().splitlines()]
+    previous_seconds = events[-1]["monotonic"] - events[0]["monotonic"]
+    s.require(previous_seconds + LIMITS["seconds"] <= 600, "aggregate diagnosis time budget")
     FOLDER.mkdir()
     inputs = FOLDER / "inputs"
     inputs.mkdir()
@@ -46,7 +52,10 @@ def prepare():
     paths += list(inputs.iterdir()) + [Path(candidate["path"]), a.FOLDER / "plan.json",
         s.ROOT / "build/q4t", s.ROOT / "build/q4t.release.json",
         s.ROOT / "docs/VISION_ROWMAX_ENV_DIAGNOSIS_2026-11-07.md",
-        BASE / "logs/trace-contracts.log", BASE / "logs/trace-contracts-02.log"]
+        BASE / "logs/trace-contracts.log", BASE / "logs/trace-contracts-02.log",
+        BASE / "logs/trace-contracts-03.log", BASE / "env-01/plan.json",
+        BASE / "env-01/lease/events.jsonl", BASE / "env-01/lease/exit.json",
+        BASE / "env-01/execution/result.json", BASE / "env-01/originals.json"]
     paths += [s.MODEL / n for n in ("config.json", "tokenizer.json",
         "model.safetensors.index.json", "preprocessor_config.json")]
     lock = (s.ROOT / ".q4t-work/gpu-exclusive.lock").stat()
@@ -56,6 +65,7 @@ def prepare():
     files.update({str(p): s.sha(p) for p in paths})
     s.save(FOLDER / "plan.json", dict(profile="vision-rowmax-allocator-diagnosis-v1",
         limits=LIMITS, trace_nonce=secrets.token_hex(8), trace_helper_calls=2,
+        prior_attempt_seconds=previous_seconds, aggregate_seconds_limit=600,
         trace_format_sha256=s.sha(trace_format),
         port=s.PORT, model=str(s.MODEL), binaries=old["binaries"], cases=cases,
         files=files, lock_device=lock.st_dev, lock_inode=lock.st_ino,
