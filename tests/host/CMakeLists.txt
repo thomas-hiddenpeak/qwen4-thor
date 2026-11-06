@@ -120,6 +120,8 @@ q4t_add_python_contract(q4t_schema_client_contracts
   tools/examples/test_schema_client.py)
 q4t_add_python_contract(q4t_vision_timing_parser_contracts
   tools/vision_service/test_timing.py)
+q4t_add_python_contract(q4t_vision_forward_timing_parser_contracts
+  tools/vision_service/test_forward_timing.py)
 q4t_add_python_contract(q4t_tool_recovery_contracts
   tools/examples/test_tool_recovery.py)
 q4t_add_python_contract(q4t_project_query_contracts

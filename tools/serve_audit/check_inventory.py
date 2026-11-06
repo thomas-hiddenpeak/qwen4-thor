@@ -45,6 +45,8 @@ def current_surface(root):
                        root / "include/q4t/vision/vision.h",
                        root / "include/q4t/vision/processor.h",
                        root / "include/q4t/vision/timing.h",
+                       root / "include/q4t/vision/forward_timing.h",
+                       root / "include/q4t/vision/forward_timing_core.h",
                        root / "include/q4t/vision/media_plan.h",
                        root / "include/q4t/vision/configuration.h",
                        root / "src/vision/media_plan.cpp",

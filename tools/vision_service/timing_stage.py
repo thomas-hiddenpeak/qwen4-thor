@@ -69,7 +69,23 @@ def prepare():
 
 class Run(s.Run):
     limits = LIMITS
+    planned_requests = 18
     success_status = "PASS_BOUNDED_VISION_TIMING"
+
+    def timing_env(self, mode):
+        return {"Q4T_VISION_TIMING": "1"} if mode == "on" else {}
+
+    def validate_timings(self, mode, selected):
+        records = a.parse_records((self.output /
+            ("model-" + mode) / "stderr.log").read_text())
+        media = [r for r in selected if a.input_counts(r["request"])["items"]]
+        if mode == "off":
+            s.require(not records, "timing default is not silent")
+        else:
+            s.require(set(records) == {r["request"]["request_id"] for r in media},
+                      "missing/unexpected timing records")
+            for row in media:
+                a.validate_request(records[row["request"]["request_id"]], row["request"])
 
     def retire_model(self, mode):
         self.children.signal(self.model, signal.SIGTERM)
@@ -92,8 +108,7 @@ class Run(s.Run):
                 "--max-inflight-requests", "8", "--max-queued-requests", "4"]
         env = {k: v for k, v in os.environ.items() if not k.startswith("Q4T_")
                and k not in ("LD_PRELOAD", "LD_LIBRARY_PATH")}
-        if mode == "on":
-            env["Q4T_VISION_TIMING"] = "1"
+        env.update(self.timing_env(mode))
         s.save(self.output / ("env-" + mode + ".json"), {k: v for k, v in env.items()
             if k.startswith(("Q4T_", "CUDA_", "OMP_")) or k in
             ("PATH", "LD_LIBRARY_PATH", "LD_PRELOAD")})
@@ -111,7 +126,7 @@ class Run(s.Run):
         s.guard_tools.require_guard()
         s.guard_tools.verify_files(dict(self.plan, model_file_metadata={}))
         rows = read(self.folder / "requests.json")
-        s.require(len(rows) == self.plan["planned_requests"] == 18,
+        s.require(len(rows) == self.plan["planned_requests"] == self.planned_requests,
                   "frozen request count")
         self.monitor.start()
         failure, cleanup = None, []
@@ -145,16 +160,7 @@ class Run(s.Run):
                         off.append(same)
                 self.idle(mode + "-idle")
                 self.retire_model(mode)
-                records = a.parse_records((self.output /
-                    ("model-" + mode) / "stderr.log").read_text())
-                media = [r for r in selected if a.input_counts(r["request"])["items"]]
-                if mode == "off":
-                    s.require(not records, "timing default is not silent")
-                else:
-                    s.require(set(records) == {r["request"]["request_id"] for r in media},
-                              "missing/unexpected timing records")
-                    for row in media:
-                        a.validate_request(records[row["request"]["request_id"]], row["request"])
+                self.validate_timings(mode, selected)
             s.require(all(r["passed"] for r in self.observations), "HTTP contract/quality failure")
             verdict = self.success_status
         except BaseException:

@@ -23,6 +23,7 @@
 #include "q4t/io/weight_loader.h"
 #include "q4t/model/linear.h"
 #include "q4t/runtime/cleanup_policy.h"
+#include "q4t/vision/forward_timing.h"
 
 namespace q4t {
 namespace vision {
@@ -787,7 +788,8 @@ bool LoadVision(const io::WeightLoader& loader, const VisionConfig& cfg,
 
 bool VisionForward(const VisionTower& tower, const uint16_t* pixel_values,
                    const std::vector<ImageShape>& shapes, uint16_t* out,
-                   std::string* err, cudaStream_t stream) {
+                   std::string* err, cudaStream_t stream,
+                   ForwardTiming* timing) {
   const VisionConfig& cfg = tower.cfg;
   const VisionWeights& w = tower.w;
   const int H = cfg.hidden_size;
@@ -847,12 +849,28 @@ bool VisionForward(const VisionTower& tower, const uint16_t* pixel_values,
     if (err) *err = s;
   };
 
+  // Markers only enqueue events on the same stream as the original work.
+  // The caller collects after its existing completion boundary.
+  auto timing_ok = [&](bool ok) {
+    if (!ok) set_err(std::string("vision timing: ") + timing->Error());
+    return ok;
+  };
+  if (timing && !timing_ok(timing->Start(stream))) return false;
+  auto begin = [&](ForwardStage stage) {
+    return !timing || timing_ok(timing->Begin(stage));
+  };
+  auto end = [&] {
+    if (timing) timing->End();  // A failure stays latched through Finish().
+  };
+
   // 1. patch_embed: x = pixel_values @ W_patch^T + b_patch.
+  if (!begin(ForwardStage::kPatch)) return false;
   if (!gemm(pixel_values, w.d_patch_w, x, total_L, H, in_dim)) {
     set_err("patch gemm");
     return false;
   }
   add_bias(x, w.d_patch_b, x, total_L, H);
+  end();
 
   // 2. Per-image: pos_embed + 27 blocks + merger.
   int offset = 0;      // patch offset into x/qkv/... buffers
@@ -863,6 +881,9 @@ bool VisionForward(const VisionTower& tower, const uint16_t* pixel_values,
     const int S = h * wd;  // spatial slots per time group
     const int merged_n = (h / m) * (wd / m) * t;
     // pos_embed (bilinear interpolate) + pos_ids (time-major + block-major).
+    if (!begin(ForwardStage::kPositionTables)) return false;
+    const auto position_start = timing ? ForwardTiming::Clock::now()
+                                       : ForwardTiming::Clock::time_point{};
     if (!BuildPosTables(h, wd, t, grid, tower.d_pos_rows, tower.d_pos_weights)) {
       set_err("build pos tables");
       return false;
@@ -871,19 +892,26 @@ bool VisionForward(const VisionTower& tower, const uint16_t* pixel_values,
       set_err("build pos ids");
       return false;
     }
+    if (timing) timing->AddPositionHost(position_start);
+    end();
+    if (!begin(ForwardStage::kPositionEmbed)) return false;
     PosEmbedKernel<<<(L * H + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
         w.d_pos_embed, tower.d_pos_rows, tower.d_pos_weights,
         pos + offset * H, L, H);
     AddBf16Kernel<<<(L * H + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
         x + offset * H, pos + offset * H, x + offset * H, L * H);
+    end();
     // 27 blocks.
     for (int i = 0; i < cfg.depth; ++i) {
       uint16_t* xi = x + offset * H;
       uint16_t* xi2 = x2 + offset * H;
       // attn branch.
+      if (!begin(ForwardStage::kNorm)) return false;
       LayerNormKernel<<<L, kBlock, 0, stream>>>(xi, w.d_ln1_w[i],
                                                 w.d_ln1_b[i], ln + offset * H,
                                                 L, H, cfg.eps);
+      end();
+      if (!begin(ForwardStage::kQkv)) return false;
       if (!gemm(ln + offset * H, w.d_qkv_w[i], qkv + offset * 3 * H, L, 3 * H,
                 H)) {
         set_err("qkv gemm block " + std::to_string(i));
@@ -891,7 +919,9 @@ bool VisionForward(const VisionTower& tower, const uint16_t* pixel_values,
       }
       add_bias(qkv + offset * 3 * H, w.d_qkv_b[i], qkv + offset * 3 * H, L,
                3 * H);
+      end();
       // 2D RoPE on q (offset 0) and k (offset H); v is left untouched.
+      if (!begin(ForwardStage::kRope)) return false;
       const int rope_total = 2 * L * nh * 18;
       const int rope_grid = (rope_total + kBlock - 1) / kBlock;
       ApplyRope2DKernel<<<rope_grid, kBlock, 0, stream>>>(
@@ -900,12 +930,16 @@ bool VisionForward(const VisionTower& tower, const uint16_t* pixel_values,
       ApplyRope2DKernel<<<rope_grid, kBlock, 0, stream>>>(
           qkv + offset * 3 * H, L, nh, 3 * H, H, tower.d_pos_ids, tower.d_cos,
           tower.d_sin, tower.d_cos_w, tower.d_sin_w);
+      end();
+      if (!begin(ForwardStage::kAttention)) return false;
       {
         const int smem = S * sizeof(float);
         dim3 grid_attn(L, nh);
         AttentionKernel<<<grid_attn, kBlock, smem, stream>>>(
             qkv + offset * 3 * H, ctx + offset * H, L, t, S, nh, hd, H, scale);
       }
+      end();
+      if (!begin(ForwardStage::kProjection)) return false;
       if (!gemm(ctx + offset * H, w.d_attn_proj_w[i], attn_out + offset * H,
                 L, H, H)) {
         set_err("attn proj gemm block " + std::to_string(i));
@@ -915,10 +949,14 @@ bool VisionForward(const VisionTower& tower, const uint16_t* pixel_values,
                L, H);
       AddBf16Kernel<<<(L * H + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
           xi, attn_out + offset * H, xi2, L * H);
+      end();
       // mlp branch.
+      if (!begin(ForwardStage::kNorm)) return false;
       LayerNormKernel<<<L, kBlock, 0, stream>>>(xi2, w.d_ln2_w[i],
                                                 w.d_ln2_b[i], ln + offset * H,
                                                 L, H, cfg.eps);
+      end();
+      if (!begin(ForwardStage::kMlp)) return false;
       if (!gemm(ln + offset * H, w.d_fc1_w[i], mlp1 + offset * I, L, I, H)) {
         set_err("fc1 gemm block " + std::to_string(i));
         return false;
@@ -933,9 +971,11 @@ bool VisionForward(const VisionTower& tower, const uint16_t* pixel_values,
       add_bias(mlp2 + offset * H, w.d_fc2_b[i], mlp2 + offset * H, L, H);
       AddBf16Kernel<<<(L * H + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
           xi2, mlp2 + offset * H, xi, L * H);
+      end();
     }
     // merger: LN(1152) -> view as [merged_n, 4*H] (block-major: 2x2 blocks
     // are already consecutive) -> fc1 -> GELU -> fc2.
+    if (!begin(ForwardStage::kMerger)) return false;
     LayerNormKernel<<<L, kBlock, 0, stream>>>(x + offset * H, w.d_merger_ln_w,
                                               w.d_merger_ln_b, ln + offset * H,
                                               L, H, cfg.eps);
@@ -959,10 +999,11 @@ bool VisionForward(const VisionTower& tower, const uint16_t* pixel_values,
     add_bias(out + merged_offset * cfg.out_hidden_size, w.d_merger_fc2_b,
              out + merged_offset * cfg.out_hidden_size, merged_n,
              cfg.out_hidden_size);
+    end();
     offset += L;
     merged_offset += merged_n;
   }
-  return true;
+  return !timing || timing_ok(timing->Finish());
 }
 
 }  // namespace vision

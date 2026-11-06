@@ -2,6 +2,15 @@
 
 更新：2026-11-07。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+## 视觉塔内部耗时诊断完成开发与CPU检查，HTTP待验
+
+[本阶段计划](VISION_FORWARD_TIMING_PLAN_2026-11-07.md)：从main 0f540480
+推进默认关闭的CUDA event细分，沿用原完成同步，保持算术/布局/单流。
+冻结2启动/12Chat/32控制/600秒；10段及残余已实现，341host（含8新事件
+合同）与14 Python（6新解析、6原解析、2真实CPU退出）全通过，构建零警告。
+kernel/原分配前缀逐字节未变，默认pair保持。下一步在同一租约比较内部
+计时开关的6组固定输入。只定位瓶颈，不实现新优化或扩大视觉范围。
+
 ## 视觉计时已完成有界诊断，暂缓nvJPEG
 
 [PR #18](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/18)两项host检查
