@@ -54,7 +54,8 @@ python3 -m tools.examples.vision_query --video /path/clip.mp4 --frames 8 \
 将不完整响应当最终答案。第二个示例是视频诊断入口，不能据此认为
 运动方向任务已通过。依赖 OpenCV/FFmpeg 的视频适配器默认 CPU 解码；
 本地视频上限 128 MiB、600 秒、7200 解码帧、4096 边长、8.8M 像素，
-默认解码截止 30 秒、最高 60 秒、媒体 payload 12 MiB。
+默认解码截止 30 秒、最高 60 秒、视频采样 payload 12 MiB。
+完整 Chat 请求仍受服务 16 MiB body 限制；多图必须计算合计体积。
 
 TLS/独立 API Key 按需启用，后端仍只监听 loopback；客户端支持
 `--base-url https://...`、`--ca-file` 和 `--api-key-file`。

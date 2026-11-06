@@ -1,0 +1,28 @@
+{
+  "pr": {
+    "baseRefOid": "f350cf0aa14f1a7ce9e1b82d569625c287f8919f",
+    "headRefOid": "e73c25dd8533eb4ce845763e4c9ff0358508af39",
+    "mergeCommit": {
+      "oid": "442f69a16513685e272e9c5de46d4f5439c4d6e6"
+    },
+    "mergedAt": "2026-11-06T16:25:52Z",
+    "number": 15,
+    "state": "MERGED",
+    "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/15"
+  },
+  "scope": "Only codex/vision-production-v1; research branches and evidence paths retained",
+  "branch_old_tip": "e73c25dd8533eb4ce845763e4c9ff0358508af39",
+  "retained_anchor": "442f69a16513685e272e9c5de46d4f5439c4d6e6",
+  "merge_tree_equals_reviewed_head": true,
+  "runtime_sources_verified": 241,
+  "installed_pair": {
+    "q4t": "ea1b474d7d69808696e697346a60ee09bb9ecaca9bfb99925b78dcdbda7a4550",
+    "q4t.release.json": "3eb463850cf07338406b811197a68a5dcb9474ac9c2cf039470aa4f654924724"
+  },
+  "open_prs": [],
+  "expected_remote_tip": "e73c25dd8533eb4ce845763e4c9ff0358508af39",
+  "worktree_path": "/home/rm01/models/dev/qwen4-thor",
+  "status": "PASS_MAINLINE_AND_SCOPED_BRANCH_CLEANUP",
+  "local_branch_deleted": true,
+  "remote_branch_deleted": true
+}

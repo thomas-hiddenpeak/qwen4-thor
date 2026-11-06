@@ -1,0 +1,16 @@
+host-contracts	Check serve surface inventory freshness	﻿2026-11-06T15:35:42.3251780Z ##[group]Run python3 -B tools/serve_audit/check_inventory.py --self-check
+host-contracts	Check serve surface inventory freshness	2026-11-06T15:35:42.3252326Z ^[[36;1mpython3 -B tools/serve_audit/check_inventory.py --self-check^[[0m
+host-contracts	Check serve surface inventory freshness	2026-11-06T15:35:42.3271330Z shell: /usr/bin/bash -e {0}
+host-contracts	Check serve surface inventory freshness	2026-11-06T15:35:42.3271589Z ##[endgroup]
+host-contracts	Check serve surface inventory freshness	2026-11-06T15:35:42.3828194Z {
+host-contracts	Check serve surface inventory freshness	2026-11-06T15:35:42.3828951Z   "inventory_current": false,
+host-contracts	Check serve surface inventory freshness	2026-11-06T15:35:42.3829667Z   "semantics_certified": false,
+host-contracts	Check serve surface inventory freshness	2026-11-06T15:35:42.3830329Z   "fields": 38,
+host-contracts	Check serve surface inventory freshness	2026-11-06T15:35:42.3830920Z   "routes": 10,
+host-contracts	Check serve surface inventory freshness	2026-11-06T15:35:42.3831516Z   "reviewed_source_anchors": 114,
+host-contracts	Check serve surface inventory freshness	2026-11-06T15:35:42.3832220Z   "mutation_checks": 3,
+host-contracts	Check serve surface inventory freshness	2026-11-06T15:35:42.3832792Z   "errors": [
+host-contracts	Check serve surface inventory freshness	2026-11-06T15:35:42.3833961Z     "sources_sha256 requires renewed review: ['src/vision/vision.cu']"
+host-contracts	Check serve surface inventory freshness	2026-11-06T15:35:42.3835174Z   ]
+host-contracts	Check serve surface inventory freshness	2026-11-06T15:35:42.3835813Z }
+host-contracts	Check serve surface inventory freshness	2026-11-06T15:35:42.3902020Z ##[error]Process completed with exit code 1.
