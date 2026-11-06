@@ -1,0 +1,23 @@
+{
+  "source_commit": "d83a905f73742a5676711943bb6129d25508f390",
+  "binary_sha256": "982bba071e68e807cda653fa32ab76bed692808aa2d9325876ac09ea9f9daa1d",
+  "protocol_sha256": "6728d13b3f5db76cbb5a15fa01d8d6112dd91f6537cef3257e29ff60f3362f4f",
+  "raw_root": "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-forward-timing-20261107",
+  "original_files": 2492,
+  "git_sources": 2310,
+  "files": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-forward-timing-20261107/audit.json": "50b3cd7941ee6182e0ae29b6cc96b7510050de04aad32b034cd0461bd0ecda90",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-forward-timing-20261107/originals.json": "adbf5d2055106e712db575e2e64e3d14ce09e6e02c4b8dbd3738766dc9dcb667",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-forward-timing-20261107/cleanup.json": "f00e813e357f6d48cb68df640989e22581214cb7f04409d2cdda2af882b3d8ca",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-forward-timing-20261107/logs/audit-summary.log": "034646a754ca947665f66d028d1e5526bc0b96b8d5a8d03148291bbd1877f821",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-forward-timing-20261107/logs/cpu-host.log": "b8cac0e24e340c64b46e3569e2b8e7892789973b9592e58746c3ee9c459b0fa5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-forward-timing-20261107/logs/cpu-inventory.log": "451dc796aedb4c14f9d881bd03072ba429427af2365d3a88ff5614fb722d4062",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-forward-timing-20261107/logs/cpu-python.log": "9e38a951e72eca73d6788b2dd23d22b57d2839278dcf01af76fcb80b56b2ff62",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-forward-timing-20261107/logs/cpu-source-review.log": "dae7bc28d0ac7665d3ae8a46ef0f490c217d71ba60bad58721742c308fd56ac6"
+  },
+  "default_pair_unchanged": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "ea1b474d7d69808696e697346a60ee09bb9ecaca9bfb99925b78dcdbda7a4550",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "3eb463850cf07338406b811197a68a5dcb9474ac9c2cf039470aa4f654924724"
+  },
+  "scope": "diagnostics only; no optimization or production deployment acceptance"
+}
