@@ -1,0 +1,23 @@
+{
+  "status": "SEALED_DIAGNOSTIC_NO_REPRODUCTION",
+  "source_commit": "31a9b38036277ca6a567754b8a0ed7f9826f4ee2",
+  "files": 3560,
+  "objects": 3284,
+  "manifest_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/wait-02/originals.json",
+  "manifest_sha256": "8fb3c9ba5e0f6455434df82cf074b380d44405035c6f4381870f7600bf2c310b",
+  "object_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/wait-02/originals",
+  "selected_files": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/wait-02/plan.json": "d9003f69189f968efaa4a2f1068bf3fb6bdbcf59ca38fd83da27ae3b0f9f495d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/wait-02/lease/exit.json": "694ba963675d029f5b80387a729db06cd3420440a0bd422bae8f805e71b43df8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/wait-02/execution/result.json": "3270171ead7fce671ea20f83ae2fb789fd48dfeaaa91f7e012dc9aa8ec3dfcd6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/wait-02/review/analyze.py": "88a2c5a8fdbbc7575ce1aa21002902e3627e416f236b2786a45a26c93874d2af",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/wait-02/review/analysis.json": "e823422eee7afe430607c6e90c3fc9b2cbd18d1e6fc92bba6a0d492a7f0d62df",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/wait-02/review/postflight.json": "7e2abbcdf527ea68329bc9b355f47fc6ef773ce294e7e7a39ee11ad5b84729c3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/wait-02/execution/wait-observer/stdout.log": "3854316af45fa5040e82c4080942e729a73e1162e935023a6d70b56e5f45f5be",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/wait-02/execution/wait-observer/exit.json": "79307ab9d89289a2f11596b4c9e33eac36c80060185c99d67cc5d53425741072",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/wait-01/originals.json": "f12f0191cf733035a770218d02ea048150f878171ab6be21c92edaf7103e501e"
+  },
+  "performance_accepted": false,
+  "root_cause_proven": false,
+  "default_unchanged": true
+}

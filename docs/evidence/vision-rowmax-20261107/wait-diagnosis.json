@@ -1,0 +1,126 @@
+{
+  "status": "DIAGNOSTIC_COMPLETE_NO_SLOW_QUERY_ROOT_CAUSE_UNRESOLVED",
+  "source_commit": "31a9b38036277ca6a567754b8a0ed7f9826f4ee2",
+  "frozen_files": 3456,
+  "git_sources": 2326,
+  "lease_seconds": 152.46691929735243,
+  "aggregate_wait_diagnosis_seconds": 155.92288676742464,
+  "counts": {
+    "starts": 1,
+    "generations": 9,
+    "controls": 2,
+    "native": 0
+  },
+  "aggregate_starts_attempted": 2,
+  "fully_loaded_models": 1,
+  "chat_received": 9,
+  "chat_completed": 9,
+  "output_contract_rows": {
+    "context-1024": [
+      {
+        "input_tokens": 998,
+        "output_tokens": 256,
+        "response_id": "chatcmpl-auto-24c02de4b934962475a04e4b40c918ec",
+        "finish": [
+          "length"
+        ],
+        "text_sha256": "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0"
+      },
+      {
+        "input_tokens": 998,
+        "output_tokens": 256,
+        "response_id": "chatcmpl-auto-7d0d77e3c274df851336f405e3cfba4c",
+        "finish": [
+          "length"
+        ],
+        "text_sha256": "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0"
+      },
+      {
+        "input_tokens": 998,
+        "output_tokens": 256,
+        "response_id": "chatcmpl-auto-3e370245eb8df16fa30e83a1915bb7d6",
+        "finish": [
+          "length"
+        ],
+        "text_sha256": "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0"
+      }
+    ],
+    "context-4096": [
+      {
+        "input_tokens": 4077,
+        "output_tokens": 256,
+        "response_id": "chatcmpl-auto-ae6b97451cc55ea049d096b111437f57",
+        "finish": [
+          "length"
+        ],
+        "text_sha256": "97df3b589201d5bafe110a21c1d1bbfa8126501d4df2c8fe20071d17212b37cb"
+      },
+      {
+        "input_tokens": 4077,
+        "output_tokens": 256,
+        "response_id": "chatcmpl-auto-c16b07064a03967758735c96af8936a9",
+        "finish": [
+          "length"
+        ],
+        "text_sha256": "97df3b589201d5bafe110a21c1d1bbfa8126501d4df2c8fe20071d17212b37cb"
+      },
+      {
+        "input_tokens": 4077,
+        "output_tokens": 256,
+        "response_id": "chatcmpl-auto-fdf291cbaca1a86059cdfedfe2a46bb1",
+        "finish": [
+          "length"
+        ],
+        "text_sha256": "97df3b589201d5bafe110a21c1d1bbfa8126501d4df2c8fe20071d17212b37cb"
+      }
+    ],
+    "context-8192": [
+      {
+        "input_tokens": 8170,
+        "output_tokens": 256,
+        "response_id": "chatcmpl-auto-5e2c8c791f96c34524c881c364fbd8c9",
+        "finish": [
+          "length"
+        ],
+        "text_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e"
+      },
+      {
+        "input_tokens": 8170,
+        "output_tokens": 256,
+        "response_id": "chatcmpl-auto-0373f03781e2091fbef19ab833e06db4",
+        "finish": [
+          "length"
+        ],
+        "text_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e"
+      },
+      {
+        "input_tokens": 8170,
+        "output_tokens": 256,
+        "response_id": "chatcmpl-auto-61ee5037d94973deee5f3261a798ddb5",
+        "finish": [
+          "length"
+        ],
+        "text_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e"
+      }
+    ]
+  },
+  "controls": 2,
+  "nvml_queries": 141,
+  "max_nvml_init_ms": 63.71373264119029,
+  "max_nvml_query_total_ms": 222.82041609287262,
+  "wait_snapshots": 0,
+  "model_custody_complete": true,
+  "observer_exit": "stop_requested",
+  "postflight_owned_pids": 150,
+  "default_unchanged": true,
+  "performance_accepted": false,
+  "root_cause_proven": false,
+  "full_goal_complete": false,
+  "prior_failure_preserved": true,
+  "conclusion": "No failure reproduced in this one bounded diagnostic. No stack was captured; no proof of allocator cause, resolved environment or complete MTP acceptance.",
+  "remaining_requirements": [
+    "Resolve or externally qualify the intermittent NVML environment blocker",
+    "Complete applicable full MTP parent/candidate five-tier and quality acceptance",
+    "Independent optimization decision; deployment health and rollback transaction if accepted"
+  ]
+}
