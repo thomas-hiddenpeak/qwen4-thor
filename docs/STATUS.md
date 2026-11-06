@@ -2,13 +2,20 @@
 
 更新：2026-11-07。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
-## 视觉 attention 行最大值优化已冻结，待首项HTTP试验
+## 视觉 attention 行最大值首轮达标，进入完整验收
 
-[判定卡](VISION_ROWMAX_PLAN_2026-11-07.md)：从main f7dcd8f9建立唯一
-工作分支，候选仅改行最大值为block归约，保留QK/exp/sum/V顺序和BF16。
-首项测试为evalscope HTTP，ABBA共4启动64Chat/1200秒；大图和多图在
-两个配对块均达到各自热HTTP降低3%才进入完整验收。统计分辨带未建立，
-子集不代替五档。默认ea1b474d/旧包保持，尚无收益或数值接受结论。
+[判定卡](VISION_ROWMAX_PLAN_2026-11-07.md)的c6eef3c2候选34e7ceef完成
+ABBA 4启动64Chat/8控制、515.889秒租约；大图HTTP降低3.10%/3.24%，
+多图降低3.51%/3.59%，两个配对块均满足各自3%投入门。全部同题输出/
+stop/usage一致，3606文件/2311Git独立核对，GPU/18146/原锁释放。
+结构化SSE缓冲到校验完成，原decode估计只反映发送尾部，不作生成性能
+接受。纯文本保护慢3.640/5.304ms，原值保留，不建噪声容差。
+
+[完整验收范围](VISION_ROWMAX_ACCEPTANCE_2026-11-07.md)已冻结：26组
+直接CUDA、4份HF输出、两模式五档加44质量题，4启动104Chat/7200秒。
+必要构建零警告，283项required host已通过；复用未变的其余host合同。
+目前只有先导通过，尚非完整优化接受。默认ea1b474d/旧包保持，不扩范围。
+[机器先导与限制](evidence/vision-rowmax-20261107/pilot.json)。
 
 ## 视觉塔内部诊断已通过，下一候选为attention行最大值归约
 

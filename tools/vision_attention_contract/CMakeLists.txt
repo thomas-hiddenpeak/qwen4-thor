@@ -1,0 +1,12 @@
+cmake_minimum_required(VERSION 4.0)
+project(vision_attention_contract LANGUAGES CXX CUDA)
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CUDA_STANDARD 23)
+set(CMAKE_CUDA_ARCHITECTURES 110a)
+if(NOT EXISTS "${Q4T_CONTRACT_INPUT}/kernels.inc")
+  message(FATAL_ERROR "Run prepare.py to freeze exact parent/candidate kernels")
+endif()
+add_executable(vision_attention_contract contract.cu)
+target_include_directories(vision_attention_contract PRIVATE "${Q4T_CONTRACT_INPUT}")
+target_compile_options(vision_attention_contract PRIVATE
+  --expt-relaxed-constexpr -O3 -Wall -Wextra)
