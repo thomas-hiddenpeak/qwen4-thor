@@ -1,0 +1,462 @@
+{
+  "status": "PASS_SCOPED_CLIENT_AND_REAL_SCENE",
+  "source_commit": "a4cd5b40fe18e60b2bc11f973980529e0e5f5232",
+  "phase": {
+    "status": "PASS_SCOPED_REAL_SCENE_CLIENT_REGRESSION",
+    "guard": "COMPLETED",
+    "counts": {
+      "starts": 1,
+      "generations": 14,
+      "controls": 17,
+      "native": 0
+    },
+    "lease_seconds": 107.81418731622398,
+    "monitor_samples": 100,
+    "owned_pid": 4037353,
+    "post_exit_monitor": true,
+    "final_gpu_empty": true,
+    "custody_ack_is_post_registration_not_post_exit": true
+  },
+  "cases": [
+    {
+      "label": "cabin-python",
+      "language": "python",
+      "actual": {
+        "scene": "aircraft_cabin",
+        "visible_windows": 2,
+        "device_lights_on": true,
+        "people_visible": false
+      },
+      "usage": {
+        "prompt_tokens": 841,
+        "completion_tokens": 41,
+        "total_tokens": 882
+      },
+      "seconds": 11.541510747279972
+    },
+    {
+      "label": "earth-python",
+      "language": "python",
+      "actual": {
+        "object": "earth",
+        "clouds_visible": true,
+        "street_sign_visible": false
+      },
+      "usage": {
+        "prompt_tokens": 387,
+        "completion_tokens": 29,
+        "total_tokens": 416
+      },
+      "seconds": 3.496339801233262
+    },
+    {
+      "label": "cabin-javascript",
+      "language": "javascript",
+      "actual": {
+        "scene": "aircraft_cabin",
+        "visible_windows": 2,
+        "device_lights_on": true,
+        "people_visible": false
+      },
+      "usage": {
+        "prompt_tokens": 841,
+        "completion_tokens": 41,
+        "total_tokens": 882
+      },
+      "seconds": 11.536689287982881
+    },
+    {
+      "label": "earth-javascript",
+      "language": "javascript",
+      "actual": {
+        "object": "earth",
+        "clouds_visible": true,
+        "street_sign_visible": false
+      },
+      "usage": {
+        "prompt_tokens": 387,
+        "completion_tokens": 29,
+        "total_tokens": 416
+      },
+      "seconds": 3.6048245788551867
+    },
+    {
+      "label": "multiple-real-photos",
+      "language": "python",
+      "actual": {
+        "first_scene": "aircraft_cabin",
+        "second_object": "earth"
+      },
+      "usage": {
+        "prompt_tokens": 1032,
+        "completion_tokens": 25,
+        "total_tokens": 1057
+      },
+      "seconds": 11.960768013261259
+    },
+    {
+      "label": "real-record-chart",
+      "language": "javascript",
+      "actual": {
+        "phase05b": 13,
+        "tallest": "phase-04"
+      },
+      "usage": {
+        "prompt_tokens": 384,
+        "completion_tokens": 21,
+        "total_tokens": 405
+      },
+      "seconds": 3.5330255101434886
+    },
+    {
+      "label": "motion-forward",
+      "language": "python",
+      "actual": {
+        "direction": "left_to_right"
+      },
+      "usage": {
+        "prompt_tokens": 569,
+        "completion_tokens": 9,
+        "total_tokens": 578
+      },
+      "seconds": 1.9903231249190867
+    },
+    {
+      "label": "motion-reverse",
+      "language": "javascript",
+      "actual": {
+        "direction": "right_to_left"
+      },
+      "usage": {
+        "prompt_tokens": 569,
+        "completion_tokens": 14,
+        "total_tokens": 583
+      },
+      "seconds": 2.374067544937134
+    },
+    {
+      "label": "text-python",
+      "language": "python",
+      "actual": {
+        "result": 42
+      },
+      "usage": {
+        "prompt_tokens": 78,
+        "completion_tokens": 8,
+        "total_tokens": 86
+      },
+      "seconds": 0.8277763058431447
+    },
+    {
+      "label": "text-javascript",
+      "language": "javascript",
+      "actual": {
+        "result": 42
+      },
+      "usage": {
+        "prompt_tokens": 78,
+        "completion_tokens": 8,
+        "total_tokens": 86
+      },
+      "seconds": 0.9522454012185335
+    }
+  ],
+  "finals": [
+    {
+      "language": "python",
+      "actual": {
+        "counts": {
+          "starts": 6,
+          "generations": 70,
+          "controls": 67,
+          "native": 5
+        },
+        "matches_image": true,
+        "citation": "[docs/evidence/vision-service-v1-20261107/result.json:L1-L12]"
+      },
+      "usage": {
+        "prompt_tokens": 985,
+        "completion_tokens": 57,
+        "total_tokens": 1042
+      }
+    },
+    {
+      "language": "javascript",
+      "actual": {
+        "counts": {
+          "starts": 6,
+          "generations": 70,
+          "controls": 67,
+          "native": 5
+        },
+        "matches_image": true,
+        "citation": "[docs/evidence/vision-service-v1-20261107/result.json:L1-L12]"
+      },
+      "usage": {
+        "prompt_tokens": 985,
+        "completion_tokens": 57,
+        "total_tokens": 1042
+      }
+    }
+  ],
+  "tool_executions": 1,
+  "low_budget_failed_closed": true,
+  "original_files": 6457,
+  "git_sources": 2193,
+  "runtime_sources_unchanged": 241,
+  "global_media_acceptance": false,
+  "hardware_decode_expanded": false,
+  "vision_concurrency_expanded": false,
+  "limits": "Two photographs and one actual record; no general visual accuracy or long-run claim.",
+  "cpu": {
+    "python_distinct": 92,
+    "node": 43,
+    "python_runs": [
+      89,
+      5
+    ],
+    "affected_repeat": 2
+  },
+  "cleanup": {
+    "owned_pid": 4037353,
+    "owned_pid_absent": true,
+    "port_18146_empty": true,
+    "lock": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+      "dev": 66305,
+      "inode": 3294067,
+      "acquired_and_released": true
+    },
+    "default_pair": {
+      "q4t": "ea1b474d7d69808696e697346a60ee09bb9ecaca9bfb99925b78dcdbda7a4550",
+      "q4t.release.json": "3eb463850cf07338406b811197a68a5dcb9474ac9c2cf039470aa4f654924724"
+    },
+    "permanent_services_created": false
+  },
+  "ci": {
+    "previous_document": {
+      "attempt": 2,
+      "conclusion": "success",
+      "headSha": "f9ff50b356c59cb51f00bd16705dae6b312b21c2",
+      "jobs": [
+        {
+          "completedAt": "2026-11-06T18:49:22Z",
+          "conclusion": "success",
+          "databaseId": 128084871583,
+          "name": "host-contracts",
+          "startedAt": "2026-11-06T18:47:08Z",
+          "status": "completed",
+          "steps": [
+            {
+              "completedAt": "2026-11-06T18:47:09Z",
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "startedAt": "2026-11-06T18:47:09Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-06T18:47:15Z",
+              "conclusion": "success",
+              "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+              "number": 2,
+              "startedAt": "2026-11-06T18:47:09Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-06T18:47:27Z",
+              "conclusion": "success",
+              "name": "Install host compiler",
+              "number": 3,
+              "startedAt": "2026-11-06T18:47:15Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-06T18:47:30Z",
+              "conclusion": "success",
+              "name": "Configure without CUDA or model fixtures",
+              "number": 4,
+              "startedAt": "2026-11-06T18:47:27Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-06T18:48:40Z",
+              "conclusion": "success",
+              "name": "Build with warnings as errors",
+              "number": 5,
+              "startedAt": "2026-11-06T18:47:30Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-06T18:49:16Z",
+              "conclusion": "success",
+              "name": "Run all public host contracts",
+              "number": 6,
+              "startedAt": "2026-11-06T18:48:40Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-06T18:49:19Z",
+              "conclusion": "success",
+              "name": "Verify strict test-runner failures",
+              "number": 7,
+              "startedAt": "2026-11-06T18:49:16Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-06T18:49:19Z",
+              "conclusion": "success",
+              "name": "Check frozen host evidence audit",
+              "number": 8,
+              "startedAt": "2026-11-06T18:49:19Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-06T18:49:19Z",
+              "conclusion": "success",
+              "name": "Check serve surface inventory freshness",
+              "number": 9,
+              "startedAt": "2026-11-06T18:49:19Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-06T18:49:20Z",
+              "conclusion": "success",
+              "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+              "number": 18,
+              "startedAt": "2026-11-06T18:49:19Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-06T18:49:20Z",
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 19,
+              "startedAt": "2026-11-06T18:49:20Z",
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/42268331239/job/128084871583"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/42268331239"
+    },
+    "implementation": {
+      "attempt": 1,
+      "conclusion": "success",
+      "headSha": "a4cd5b40fe18e60b2bc11f973980529e0e5f5232",
+      "jobs": [
+        {
+          "completedAt": "2026-11-06T19:02:12Z",
+          "conclusion": "success",
+          "databaseId": 128091396195,
+          "name": "host-contracts",
+          "startedAt": "2026-11-06T19:00:04Z",
+          "status": "completed",
+          "steps": [
+            {
+              "completedAt": "2026-11-06T19:00:06Z",
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "startedAt": "2026-11-06T19:00:05Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-06T19:00:11Z",
+              "conclusion": "success",
+              "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+              "number": 2,
+              "startedAt": "2026-11-06T19:00:06Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-06T19:00:23Z",
+              "conclusion": "success",
+              "name": "Ensure host dependencies",
+              "number": 3,
+              "startedAt": "2026-11-06T19:00:11Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-06T19:00:24Z",
+              "conclusion": "success",
+              "name": "Configure without CUDA or model fixtures",
+              "number": 4,
+              "startedAt": "2026-11-06T19:00:23Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-06T19:01:32Z",
+              "conclusion": "success",
+              "name": "Build with warnings as errors",
+              "number": 5,
+              "startedAt": "2026-11-06T19:00:24Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-06T19:02:05Z",
+              "conclusion": "success",
+              "name": "Run all public host contracts",
+              "number": 6,
+              "startedAt": "2026-11-06T19:01:32Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-06T19:02:08Z",
+              "conclusion": "success",
+              "name": "Verify strict test-runner failures",
+              "number": 7,
+              "startedAt": "2026-11-06T19:02:05Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-06T19:02:08Z",
+              "conclusion": "success",
+              "name": "Check frozen host evidence audit",
+              "number": 8,
+              "startedAt": "2026-11-06T19:02:08Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-06T19:02:08Z",
+              "conclusion": "success",
+              "name": "Check serve surface inventory freshness",
+              "number": 9,
+              "startedAt": "2026-11-06T19:02:08Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-06T19:02:09Z",
+              "conclusion": "success",
+              "name": "Check JavaScript schema input contracts",
+              "number": 10,
+              "startedAt": "2026-11-06T19:02:08Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-06T19:02:09Z",
+              "conclusion": "success",
+              "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+              "number": 20,
+              "startedAt": "2026-11-06T19:02:09Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-06T19:02:09Z",
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 21,
+              "startedAt": "2026-11-06T19:02:09Z",
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/42275708893/job/128091396195"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/42275708893"
+    }
+  }
+}

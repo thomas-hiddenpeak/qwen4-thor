@@ -1,0 +1,74 @@
+{
+  "profile": "q4t-vision-client-evidence-v1",
+  "originals_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-client-20261107/originals",
+  "files": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-client-20261107/originals.json": {
+      "sha256": "bcb9c7e68afba4e8b1e67027ec20278e4a89473a057e31c0bb0baa97eb9a0656",
+      "bytes": 1183281
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-client-20261107/audit.json": {
+      "sha256": "0d9e3e8aaaf667ec4797f62ce8e0f89e361c89c07b8fdecd07be79d37b215a9a",
+      "bytes": 5054
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-client-20261107/cleanup.json": {
+      "sha256": "37367f5cf9ccd563821667e29a2f57ba288593903f27e61d686f0a7c9cefeb4f",
+      "bytes": 2773
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-client-20261107/cpu-01/result.json": {
+      "sha256": "fc7301135f80a1c3ad531e3c9cbfd8749f683e84c26f671a97b353dfc04ce6a6",
+      "bytes": 30
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-client-20261107/cpu-01/sources.json": {
+      "sha256": "aa53a9d39c67107ffce1c4b9117ca126f5a85e684832a1cc0079681dff3cb06e",
+      "bytes": 5592
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-client-20261107/cpu-01/python.log": {
+      "sha256": "4f569285a6cefbf279acdb8eed4f1a7c81a8533238ae741be131556836f93ec8",
+      "bytes": 12201
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-client-20261107/cpu-01/node.log": {
+      "sha256": "2871697d04ce4166fb8284dc0605a921bce546073f4d6d13a1ad9a826962612f",
+      "bytes": 7801
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-client-20261107/cpu-02/result.json": {
+      "sha256": "c365161d39236fe0f1d32937fbc549796b8487d8faf65ed3879b96897c78ea5d",
+      "bytes": 17
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-client-20261107/cpu-02/sources.json": {
+      "sha256": "dcfa60e550e653b4884151fcff06dd696310ad7260069bcead44f0cabe877cbc",
+      "bytes": 462
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-client-20261107/cpu-02/python.log": {
+      "sha256": "976a895e752d3ebc502cdf482dc86ba6b37ff2a0394a99802aa2459325332e1e",
+      "bytes": 796
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-client-20261107/phase-01/plan.json": {
+      "sha256": "46b80cd8e638fe0d8cd821faa10660564a225b182db64b895167b8497477846e",
+      "bytes": 1149616
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-client-20261107/phase-01/requests.json": {
+      "sha256": "cf3b0611f89b229653eae420857d365fd81e343c88f78abf5b7aa340ecbe25f4",
+      "bytes": 3383145
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-client-20261107/phase-01/final-schema.json": {
+      "sha256": "fa9ba7020adc043a861c9713a7482d94564a1960a1e9a488de720f5c1e7789b4",
+      "bytes": 790
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-client-20261107/ci/previous-docs-rerun.json": {
+      "sha256": "7adaac317586e2af180071bdf821c5fd9a5966908e0ada01bf302692a6a863d6",
+      "bytes": 2381
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-client-20261107/ci/implementation-pr.json": {
+      "sha256": "075e414eb046dcb4b54c8934334a9594134f698af4db1646e906797460452e97",
+      "bytes": 2563
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-client-20261107/ci/implementation-pr.log": {
+      "sha256": "531ed7e823319486d210e06cc0f011f7d06ae95f4620fb3f54fb7c9b6a150080",
+      "bytes": 186543
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/vision_service/client_audit.py": {
+      "sha256": "850a71051b954c3a6e1e896041829df6a21a63b595c1411d687f059dc6787037",
+      "bytes": 8616
+    }
+  }
+}

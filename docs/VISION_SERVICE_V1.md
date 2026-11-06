@@ -65,7 +65,7 @@ python3 -m tools.examples.vision_query --video /path/clip.mp4 --frames 8 \
 限制合法token，不自动把schema含义注入原请求，也不保证观察正确。
 `--max-tokens`可配置输出预算，默认256，复杂引用回答应显式预留足够
 空间；截断报错，不自动加预算或重试502。通用Python/JS及工具最终回答
-共享入口见[客户端合同](VISION_CLIENT_PLAN_2026-11-07.md)。同一schema既
+共享入口见[共享客户端用法和新回归](VISION_CLIENT_RESULT_2026-11-07.md)。同一schema既
 进入用户提示也进入response_format；不带schema的默认行为保持。
 依赖 OpenCV/FFmpeg 的视频适配器默认 CPU 解码；
 本地视频上限 128 MiB、600 秒、7200 解码帧、4096 边长、8.8M 像素，

@@ -1,0 +1,600 @@
+{
+  "profile": "q4t-small-real-scenes-v1",
+  "prepared_before_inference": true,
+  "provenance": {
+    "cabin": {
+      "source": "/home/rm01/models/dev/qwen4-thor/reference/qwen35-thor/tests/assets/飞机上RM01运行照片.jpg",
+      "sha256": "a43bb0315614a9b2c702e926e6564769ae552706f2ebb906422349ebc7925862",
+      "transform": "Pillow RGB full-frame Lanczos resize 960x720; no crop",
+      "output": "5ccc1db297c483df8c0dfa1f8fe43b13f67a8598b4cdaebe4ee1fbbe7343d968"
+    },
+    "earth": {
+      "source": "/home/rm01/models/dev/qwen4-thor/reference/ds4/tests/vision-fixtures/glm53/earth.jpg",
+      "sha256": "a48278513a38768ff92247972e60bc873eb361a8527cb8686a3e19c3ae1bdf9d",
+      "transform": "byte copy",
+      "attribution": "reference/ds4 fixture README: NASA Apollo 17 AS17-148-22727"
+    },
+    "records": {
+      "source": "docs/evidence/vision-service-v1-20261107/result.json",
+      "sha256": "8d4c8e9e99205955c87ddc6008a5823b676eb35695f8cef3b4c28b79bbd19681",
+      "kind": "programmatic render of real committed record, not a scan",
+      "inputs": {
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-closeout-20261107/phase-a/fixtures/record-chart.png": "7721bc28bf03db18da89c024bd182ea9204ed1fdb71f8a4a1674980718700ef8",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-closeout-20261107/phase-a/fixtures/record-table.png": "42c8592b0d6bb1928370cda109d6293c2de49354fca7fa631919e815c416217a",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-closeout-20261107/phase-a/fixtures/truth.json": "5f8f372edc00900ddd1e6693865b5fdc9317b5e66ec3c07e06032013f2bc3050"
+      }
+    }
+  },
+  "cases": [
+    {
+      "label": "cabin-python",
+      "kind": "exact_json",
+      "language": "python",
+      "expected": {
+        "scene": "aircraft_cabin",
+        "visible_windows": 2,
+        "device_lights_on": true,
+        "people_visible": false
+      },
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "image_url",
+              "canonical_json_sha256": "1c28f41fdf9215e3e1b4a28d2b5e1981630ab658e884bc97405a4eface0d611c"
+            },
+            {
+              "type": "text",
+              "text": "Describe only the visible setting, windows, device lights and people."
+            },
+            {
+              "type": "text",
+              "text": "Return exactly one JSON object matching the following JSON Schema. Use its descriptions to interpret the fields and enum values. Do not include markdown fences.\n{\"type\":\"object\",\"properties\":{\"scene\":{\"type\":\"string\",\"enum\":[\"aircraft_cabin\",\"office\",\"outdoors\"],\"description\":\"Visible setting only; aircraft_cabin means inside an airplane passenger cabin.\"},\"visible_windows\":{\"type\":\"integer\",\"description\":\"Number of visible airplane windows, including partly occluded windows.\"},\"device_lights_on\":{\"type\":\"boolean\",\"description\":\"Whether the tall rectangular device has visible illuminated lights.\"},\"people_visible\":{\"type\":\"boolean\",\"description\":\"Whether any person is visible in the image.\"}},\"required\":[\"scene\",\"visible_windows\",\"device_lights_on\",\"people_visible\"],\"additionalProperties\":false}"
+            }
+          ]
+        }
+      ],
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "answer",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "scene": {
+                "type": "string",
+                "enum": [
+                  "aircraft_cabin",
+                  "office",
+                  "outdoors"
+                ],
+                "description": "Visible setting only; aircraft_cabin means inside an airplane passenger cabin."
+              },
+              "visible_windows": {
+                "type": "integer",
+                "description": "Number of visible airplane windows, including partly occluded windows."
+              },
+              "device_lights_on": {
+                "type": "boolean",
+                "description": "Whether the tall rectangular device has visible illuminated lights."
+              },
+              "people_visible": {
+                "type": "boolean",
+                "description": "Whether any person is visible in the image."
+              }
+            },
+            "required": [
+              "scene",
+              "visible_windows",
+              "device_lights_on",
+              "people_visible"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "stream": false,
+      "output_tokens": 256
+    },
+    {
+      "label": "earth-python",
+      "kind": "exact_json",
+      "language": "python",
+      "expected": {
+        "object": "earth",
+        "clouds_visible": true,
+        "street_sign_visible": false
+      },
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "image_url",
+              "canonical_json_sha256": "27b525f5bdbeca6d7936f0a227d7d29476ba8fcd8420c803e609e136d1cf8737"
+            },
+            {
+              "type": "text",
+              "text": "Identify the pictured object and whether clouds and a street sign are visible."
+            },
+            {
+              "type": "text",
+              "text": "Return exactly one JSON object matching the following JSON Schema. Use its descriptions to interpret the fields and enum values. Do not include markdown fences.\n{\"type\":\"object\",\"properties\":{\"object\":{\"type\":\"string\",\"enum\":[\"earth\",\"moon\",\"mars\"]},\"clouds_visible\":{\"type\":\"boolean\"},\"street_sign_visible\":{\"type\":\"boolean\",\"description\":\"True only if a street sign is actually visible; do not invent one.\"}},\"required\":[\"object\",\"clouds_visible\",\"street_sign_visible\"],\"additionalProperties\":false}"
+            }
+          ]
+        }
+      ],
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "answer",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "object": {
+                "type": "string",
+                "enum": [
+                  "earth",
+                  "moon",
+                  "mars"
+                ]
+              },
+              "clouds_visible": {
+                "type": "boolean"
+              },
+              "street_sign_visible": {
+                "type": "boolean",
+                "description": "True only if a street sign is actually visible; do not invent one."
+              }
+            },
+            "required": [
+              "object",
+              "clouds_visible",
+              "street_sign_visible"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "stream": true,
+      "output_tokens": 256
+    },
+    {
+      "label": "cabin-javascript",
+      "kind": "exact_json",
+      "language": "javascript",
+      "expected": {
+        "scene": "aircraft_cabin",
+        "visible_windows": 2,
+        "device_lights_on": true,
+        "people_visible": false
+      },
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "image_url",
+              "canonical_json_sha256": "1c28f41fdf9215e3e1b4a28d2b5e1981630ab658e884bc97405a4eface0d611c"
+            },
+            {
+              "type": "text",
+              "text": "Describe only the visible setting, windows, device lights and people."
+            },
+            {
+              "type": "text",
+              "text": "Return exactly one JSON object matching the following JSON Schema. Use its descriptions to interpret the fields and enum values. Do not include markdown fences.\n{\"type\":\"object\",\"properties\":{\"scene\":{\"type\":\"string\",\"enum\":[\"aircraft_cabin\",\"office\",\"outdoors\"],\"description\":\"Visible setting only; aircraft_cabin means inside an airplane passenger cabin.\"},\"visible_windows\":{\"type\":\"integer\",\"description\":\"Number of visible airplane windows, including partly occluded windows.\"},\"device_lights_on\":{\"type\":\"boolean\",\"description\":\"Whether the tall rectangular device has visible illuminated lights.\"},\"people_visible\":{\"type\":\"boolean\",\"description\":\"Whether any person is visible in the image.\"}},\"required\":[\"scene\",\"visible_windows\",\"device_lights_on\",\"people_visible\"],\"additionalProperties\":false}"
+            }
+          ]
+        }
+      ],
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "answer",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "scene": {
+                "type": "string",
+                "enum": [
+                  "aircraft_cabin",
+                  "office",
+                  "outdoors"
+                ],
+                "description": "Visible setting only; aircraft_cabin means inside an airplane passenger cabin."
+              },
+              "visible_windows": {
+                "type": "integer",
+                "description": "Number of visible airplane windows, including partly occluded windows."
+              },
+              "device_lights_on": {
+                "type": "boolean",
+                "description": "Whether the tall rectangular device has visible illuminated lights."
+              },
+              "people_visible": {
+                "type": "boolean",
+                "description": "Whether any person is visible in the image."
+              }
+            },
+            "required": [
+              "scene",
+              "visible_windows",
+              "device_lights_on",
+              "people_visible"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "stream": true,
+      "output_tokens": 256
+    },
+    {
+      "label": "earth-javascript",
+      "kind": "exact_json",
+      "language": "javascript",
+      "expected": {
+        "object": "earth",
+        "clouds_visible": true,
+        "street_sign_visible": false
+      },
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "image_url",
+              "canonical_json_sha256": "27b525f5bdbeca6d7936f0a227d7d29476ba8fcd8420c803e609e136d1cf8737"
+            },
+            {
+              "type": "text",
+              "text": "Identify the pictured object and whether clouds and a street sign are visible."
+            },
+            {
+              "type": "text",
+              "text": "Return exactly one JSON object matching the following JSON Schema. Use its descriptions to interpret the fields and enum values. Do not include markdown fences.\n{\"type\":\"object\",\"properties\":{\"object\":{\"type\":\"string\",\"enum\":[\"earth\",\"moon\",\"mars\"]},\"clouds_visible\":{\"type\":\"boolean\"},\"street_sign_visible\":{\"type\":\"boolean\",\"description\":\"True only if a street sign is actually visible; do not invent one.\"}},\"required\":[\"object\",\"clouds_visible\",\"street_sign_visible\"],\"additionalProperties\":false}"
+            }
+          ]
+        }
+      ],
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "answer",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "object": {
+                "type": "string",
+                "enum": [
+                  "earth",
+                  "moon",
+                  "mars"
+                ]
+              },
+              "clouds_visible": {
+                "type": "boolean"
+              },
+              "street_sign_visible": {
+                "type": "boolean",
+                "description": "True only if a street sign is actually visible; do not invent one."
+              }
+            },
+            "required": [
+              "object",
+              "clouds_visible",
+              "street_sign_visible"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "stream": false,
+      "output_tokens": 256
+    },
+    {
+      "label": "multiple-real-photos",
+      "kind": "exact_json",
+      "language": "python",
+      "expected": {
+        "first_scene": "aircraft_cabin",
+        "second_object": "earth"
+      },
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "image_url",
+              "canonical_json_sha256": "1c28f41fdf9215e3e1b4a28d2b5e1981630ab658e884bc97405a4eface0d611c"
+            },
+            {
+              "type": "image_url",
+              "canonical_json_sha256": "27b525f5bdbeca6d7936f0a227d7d29476ba8fcd8420c803e609e136d1cf8737"
+            },
+            {
+              "type": "text",
+              "text": "Classify the first image's setting and the object in the second image."
+            },
+            {
+              "type": "text",
+              "text": "Return exactly one JSON object matching the following JSON Schema. Use its descriptions to interpret the fields and enum values. Do not include markdown fences.\n{\"type\":\"object\",\"properties\":{\"first_scene\":{\"type\":\"string\",\"enum\":[\"aircraft_cabin\",\"office\",\"outdoors\"]},\"second_object\":{\"type\":\"string\",\"enum\":[\"earth\",\"moon\",\"mars\"]}},\"required\":[\"first_scene\",\"second_object\"],\"additionalProperties\":false}"
+            }
+          ]
+        }
+      ],
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "answer",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "first_scene": {
+                "type": "string",
+                "enum": [
+                  "aircraft_cabin",
+                  "office",
+                  "outdoors"
+                ]
+              },
+              "second_object": {
+                "type": "string",
+                "enum": [
+                  "earth",
+                  "moon",
+                  "mars"
+                ]
+              }
+            },
+            "required": [
+              "first_scene",
+              "second_object"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "stream": true,
+      "output_tokens": 256
+    },
+    {
+      "label": "real-record-chart",
+      "kind": "exact_json",
+      "language": "javascript",
+      "expected": {
+        "phase05b": 13,
+        "tallest": "phase-04"
+      },
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "image_url",
+              "canonical_json_sha256": "937f86327b2b54689ec954a782587a4c29119d792289a9b3c03f584bd4e8a21b"
+            },
+            {
+              "type": "text",
+              "text": "Read the phase-05b bar value and the label of the tallest bar."
+            },
+            {
+              "type": "text",
+              "text": "Return exactly one JSON object matching the following JSON Schema. Use its descriptions to interpret the fields and enum values. Do not include markdown fences.\n{\"type\":\"object\",\"properties\":{\"phase05b\":{\"type\":\"integer\"},\"tallest\":{\"type\":\"string\"}},\"required\":[\"phase05b\",\"tallest\"],\"additionalProperties\":false}"
+            }
+          ]
+        }
+      ],
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "answer",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "phase05b": {
+                "type": "integer"
+              },
+              "tallest": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "phase05b",
+              "tallest"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "stream": false,
+      "output_tokens": 256
+    },
+    {
+      "label": "motion-forward",
+      "kind": "synthetic_video_protection",
+      "language": "python",
+      "expected": {
+        "direction": "left_to_right"
+      },
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "video_frames",
+              "canonical_json_sha256": "c450bf502a8dde3009f48844b03019ced4e94a040276e65a20776ab33e7482df"
+            },
+            {
+              "type": "text",
+              "text": "Which direction does the red circle move over the video? Return JSON direction."
+            },
+            {
+              "type": "text",
+              "text": "Return exactly one JSON object matching the following JSON Schema. Use its descriptions to interpret the fields and enum values. Do not include markdown fences.\n{\"type\":\"object\",\"properties\":{\"direction\":{\"type\":\"string\",\"description\":\"The object's movement in image coordinates, from its starting position to its ending position. left_to_right means the object moves RIGHT, starting further left and ending further right. right_to_left means the object moves LEFT, starting further right and ending further left. stationary means its position does not change.\",\"enum\":[\"left_to_right\",\"right_to_left\",\"stationary\"]}},\"required\":[\"direction\"],\"additionalProperties\":false}"
+            }
+          ]
+        }
+      ],
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "answer",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "direction": {
+                "type": "string",
+                "description": "The object's movement in image coordinates, from its starting position to its ending position. left_to_right means the object moves RIGHT, starting further left and ending further right. right_to_left means the object moves LEFT, starting further right and ending further left. stationary means its position does not change.",
+                "enum": [
+                  "left_to_right",
+                  "right_to_left",
+                  "stationary"
+                ]
+              }
+            },
+            "required": [
+              "direction"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "stream": true,
+      "output_tokens": 256
+    },
+    {
+      "label": "motion-reverse",
+      "kind": "synthetic_video_protection",
+      "language": "javascript",
+      "expected": {
+        "direction": "right_to_left"
+      },
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "video_frames",
+              "canonical_json_sha256": "05e65f5ce372f1f98f27f1a05e7558890b416e479a24b40deb5875e2674c96ff"
+            },
+            {
+              "type": "text",
+              "text": "Which direction does the red circle move over the video? Return JSON direction."
+            },
+            {
+              "type": "text",
+              "text": "Return exactly one JSON object matching the following JSON Schema. Use its descriptions to interpret the fields and enum values. Do not include markdown fences.\n{\"type\":\"object\",\"properties\":{\"direction\":{\"type\":\"string\",\"description\":\"The object's movement in image coordinates, from its starting position to its ending position. left_to_right means the object moves RIGHT, starting further left and ending further right. right_to_left means the object moves LEFT, starting further right and ending further left. stationary means its position does not change.\",\"enum\":[\"left_to_right\",\"right_to_left\",\"stationary\"]}},\"required\":[\"direction\"],\"additionalProperties\":false}"
+            }
+          ]
+        }
+      ],
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "answer",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "direction": {
+                "type": "string",
+                "description": "The object's movement in image coordinates, from its starting position to its ending position. left_to_right means the object moves RIGHT, starting further left and ending further right. right_to_left means the object moves LEFT, starting further right and ending further left. stationary means its position does not change.",
+                "enum": [
+                  "left_to_right",
+                  "right_to_left",
+                  "stationary"
+                ]
+              }
+            },
+            "required": [
+              "direction"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "stream": true,
+      "output_tokens": 256
+    },
+    {
+      "label": "text-python",
+      "kind": "text_protection",
+      "language": "python",
+      "expected": {
+        "result": 42
+      },
+      "messages": [
+        {
+          "role": "user",
+          "content": "Compute 17 + 25. Return the result.\n\nReturn exactly one JSON object matching the following JSON Schema. Use its descriptions to interpret the fields and enum values. Do not include markdown fences.\n{\"type\":\"object\",\"properties\":{\"result\":{\"type\":\"integer\"}},\"required\":[\"result\"],\"additionalProperties\":false}"
+        }
+      ],
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "answer",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "result": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "result"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "stream": false,
+      "output_tokens": 64
+    },
+    {
+      "label": "text-javascript",
+      "kind": "text_protection",
+      "language": "javascript",
+      "expected": {
+        "result": 42
+      },
+      "messages": [
+        {
+          "role": "user",
+          "content": "Compute 17 + 25. Return the result.\n\nReturn exactly one JSON object matching the following JSON Schema. Use its descriptions to interpret the fields and enum values. Do not include markdown fences.\n{\"type\":\"object\",\"properties\":{\"result\":{\"type\":\"integer\"}},\"required\":[\"result\"],\"additionalProperties\":false}"
+        }
+      ],
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "answer",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "result": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "result"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "stream": true,
+      "output_tokens": 64
+    }
+  ]
+}
