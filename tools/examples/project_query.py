@@ -39,12 +39,14 @@ def validate_answer(answer, citations, calls):
 
 
 def run(directory, base_url, question, *, stream=True, max_rounds=4,
-        max_tool_calls=8, model="qwen3.8-flash-next", client=None):
+        max_tool_calls=8, max_tokens=512, model="qwen3.8-flash-next", client=None):
     require(isinstance(question, str) and 0 < len(question) <= 4096,
             "question must be 1..4096 characters")
     require(type(max_rounds) is int and 2 <= max_rounds <= 8 and
             type(max_tool_calls) is int and 1 <= max_tool_calls <= 32,
             "invalid project query budgets")
+    require(type(max_tokens) is int and 1 <= max_tokens <= 2147483647,
+            "invalid output budget")
     directory = Path(directory).resolve()
     require(directory.is_relative_to(ROOT / ".q4t-work"),
             "use a new journal inside .q4t-work")
@@ -52,23 +54,24 @@ def run(directory, base_url, question, *, stream=True, max_rounds=4,
     client = client or ChatClient(base_url)
     with journal_lock(directory, create=True):
         return _run(directory, client, base_url, question, stream,
-                    max_rounds, max_tool_calls, model)
+                    max_rounds, max_tool_calls, model, max_tokens)
 
 
-def _run(directory, client, base_url, question, stream, rounds, tool_limit, model):
+def _run(directory, client, base_url, question, stream, rounds, tool_limit, model,
+         max_tokens):
     records = ProjectRecords(ROOT)
     history = [{"role": "system", "content": SYSTEM},
                {"role": "user", "content": question}]
     save(directory / "run-started.json", dict(base_url=base_url, model=model,
         max_requests=rounds, max_tool_calls=tool_limit, journal_version=1,
-        initial_messages=history, stream=stream, thinking=False, max_tokens=512))
+        initial_messages=history, stream=stream, thinking=False, max_tokens=max_tokens))
     calls, citations = 0, set()
     try:
         save(directory / "capabilities.json", client.capabilities(model=model))
         for turn in range(rounds):
             label = f"round-{turn:02d}"
             request = make_request(history, TOOLS, model=model, stream=stream,
-                                   thinking=False, max_tokens=512)
+                                   thinking=False, max_tokens=max_tokens)
             save(directory / (label + "-request.json"), request)
             save(directory / (label + "-submitted.json"),
                  dict(request_id=request["request_id"]))
@@ -125,9 +128,11 @@ def main():
     parser.add_argument("--question", required=True)
     parser.add_argument("--no-stream", action="store_true")
     parser.add_argument("--max-rounds", type=int, default=4)
+    parser.add_argument("--max-tokens", type=int, default=512)
     args = parser.parse_args()
     print(run(args.directory, args.base_url, args.question,
-              stream=not args.no_stream, max_rounds=args.max_rounds))
+              stream=not args.no_stream, max_rounds=args.max_rounds,
+              max_tokens=args.max_tokens))
 
 
 if __name__ == "__main__":

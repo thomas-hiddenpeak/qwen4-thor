@@ -89,6 +89,18 @@ class ProjectContracts(unittest.TestCase):
                  final_response_required=False))
         self.assertEqual(fake.calls, 2)
 
+    def test_output_budget_is_preserved_in_requests_and_recovery(self):
+        source = self.call("docs/current.md")["source"]
+        fake = FakeClient("docs/current.md", "123 " + source["citation"])
+        directory = self.root / ".q4t-work/budget"
+        with patch.object(project_query, "ROOT", self.root):
+            project_query.run(directory, "http://localhost", "read current",
+                              stream=False, client=fake, max_tokens=768)
+        self.assertEqual(json.loads((directory/"run-started.json").read_text())["max_tokens"], 768)
+        for path in directory.glob("*-request.json"):
+            self.assertEqual(json.loads(path.read_text())["max_tokens"], 768)
+        self.assertEqual(inspect_recovery(directory)["state"], "COMPLETED")
+
     def test_missing_record_returned_to_model(self):
         fake = FakeClient("docs/missing.md", "无法核实：record_not_found")
         directory = self.root / ".q4t-work/missing"

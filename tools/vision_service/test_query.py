@@ -1,6 +1,7 @@
 """Client composition and advertised media request surface, CPU only."""
 import unittest
-from unittest.mock import Mock
+from dataclasses import replace
+from unittest.mock import Mock, patch
 
 from jsonschema import Draft202012Validator
 from tools.examples import chat_client as c, vision_query as q
@@ -38,6 +39,24 @@ class Query(unittest.TestCase):
     def test_inconsistent_usage_never_commits_success(self):
         self.client.preflight.return_value['prompt_tokens']=416
         with self.assertRaises(c.ProtocolError):q.query(self.client,self.body)
+
+    def test_configurable_output_and_truncation_fail_closed(self):
+        body=q.build_request('Read the table.',[s.BASE/'fixtures/document.png'],max_tokens=768)
+        self.assertEqual(body['max_tokens'],768)
+        self.client.complete.return_value=replace(self.client.complete.return_value,
+                                                 finish_reason='length')
+        with self.assertRaises(c.ProtocolError):q.query(self.client,self.body)
+        self.assertEqual(self.client.complete.call_count,1)
+
+    def test_cli_forwards_explicit_budget(self):
+        import io
+        argv=['vision_query','--image',str(s.BASE/'fixtures/document.png'),
+              '--question','Read the table.','--max-tokens','768']
+        with patch('sys.argv',argv),patch.object(q,'ChatClient'),\
+                patch.object(q,'query',return_value={}) as query,\
+                patch('sys.stdout',new_callable=io.StringIO):
+            q.main()
+        self.assertEqual(query.call_args.args[1]['max_tokens'],768)
 
     def test_schema_meaning_is_in_prompt_without_mutating_input(self):
         import copy
