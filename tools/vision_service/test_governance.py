@@ -14,6 +14,8 @@ class Governance(unittest.TestCase):
         a,b=value['clients']
         self.assertEqual(a['requests_per_minute'],6)
         self.assertGreater(a['max_inflight'],4)
+        self.assertLessEqual(sum(c['max_inflight'] for c in value['clients']),8)
+        self.assertLessEqual(len(value['clients']),6)
         self.assertEqual(b['tokens_per_minute'],1000)
         self.assertGreater(a['max_body_bytes'],2*1024**2)
 

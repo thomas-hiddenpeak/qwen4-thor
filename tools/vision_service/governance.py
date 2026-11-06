@@ -31,11 +31,11 @@ TLS_PORT=18466
 
 
 def policy():
-    common=dict(max_inflight=6,max_control_inflight=2,max_prompt_tokens=8192,
+    common=dict(max_control_inflight=2,max_prompt_tokens=8192,
                 max_body_bytes=16*1024**2)
     return dict(version=2,fair_queue=True,gateway_token=secrets.token_hex(32),clients=[
-        dict(id='alpha',**common,max_output_tokens=2048,requests_per_minute=6,tokens_per_minute=12000),
-        dict(id='beta',**common,max_output_tokens=64,requests_per_minute=20,tokens_per_minute=1000)])
+        dict(id='alpha',**common,max_inflight=5,max_output_tokens=2048,requests_per_minute=6,tokens_per_minute=12000),
+        dict(id='beta',**common,max_inflight=3,max_output_tokens=64,requests_per_minute=20,tokens_per_minute=1000)])
 
 
 def prepare():
@@ -58,6 +58,8 @@ def prepare():
     front=example(TLS_PORT,s.PORT)
     front.update(per_client_inflight=6,global_inflight=8,per_client_rps=100,burst=128)
     backend=policy();cp.validate(backend)
+    s.require(sum(c['max_inflight'] for c in backend['clients'])<=8 and
+              len(backend['clients'])<=6,'fairness startup capacity combination')
     s.save(private/'clients.json',backend);s.save(private/'frontend.json',front)
     cert,key=certificate(private)
     receipt=g.prepare(private/'frontend.json',json.loads(VENDOR.read_text())['binary'],
@@ -304,4 +306,7 @@ if __name__=='__main__':
     os.umask(0o077)
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('action',choices=('prepare','run'))
-    print(json.dumps(prepare() if p.parse_args().action=='prepare' else Run().run()))
+    p.add_argument('--phase',choices=('phase-05','phase-05b'),default='phase-05b')
+    args=p.parse_args()
+    FOLDER=s.BASE/args.phase
+    print(json.dumps(prepare() if args.action=='prepare' else Run().run()))
