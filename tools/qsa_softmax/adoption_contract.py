@@ -6,6 +6,7 @@ GPU guard; four model executions are counted separately from HTTP services.
 import argparse
 import importlib.util
 import json
+import os
 from pathlib import Path
 import re
 import signal
@@ -193,6 +194,26 @@ def step_run(plan, name):
         save(out / 'comparison.json', comparisons)
         require(all(c['identical'] for c in comparisons.values()),
                 'full-model parent/candidate state differs')
+        # Independent executions have already produced and compared all bytes.
+        # Keep both evidence paths while avoiding duplicate multi-GB buffers on
+        # this finite local filesystem. A failed comparison never reaches here.
+        storage = {}
+        for file in names:
+            pa, ca = directory / file, out / 'states' / file
+            ps, cs = pa.stat(), ca.stat()
+            require(ps.st_dev == cs.st_dev, 'evidence hardlink filesystem')
+            temporary = ca.with_name(ca.name + '.linked')
+            os.link(pa, temporary)
+            os.replace(temporary, ca)
+            require(pa.stat().st_ino == ca.stat().st_ino and
+                    sha(ca) == comparisons[file]['candidate_sha256'],
+                    'deduplicated evidence identity')
+            storage[file] = dict(canonical=str(pa), retained=str(ca),
+                bytes=cs.st_size, prior_candidate_inode=cs.st_ino,
+                canonical_inode=ps.st_ino, prior_candidate_mtime_ns=cs.st_mtime_ns,
+                sha256=comparisons[file]['candidate_sha256'])
+        save(out / 'storage-receipt.json', dict(mode='hardlink_after_byte_comparison',
+            independent_executions=True, files=storage))
 
 
 def validate(plan, executing=True):
