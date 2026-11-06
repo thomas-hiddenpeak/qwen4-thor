@@ -1,5 +1,6 @@
 # docs/ — 开发记录文档体系
 
+- [视觉分段计时与nvJPEG优先级](VISION_TIMING_RESULT_2026-11-07.md)
 - [统一schema、输出预算与小型真实场景回归](VISION_CLIENT_RESULT_2026-11-07.md)
 
 [视觉应用后续收口](VISION_CLOSEOUT_RESULT_2026-11-07.md)：同题视频方向

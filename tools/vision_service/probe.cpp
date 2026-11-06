@@ -9,6 +9,7 @@
 #include "q4t/io/json.h"
 #include "q4t/model/vision_positions.h"
 #include "q4t/vision/media_plan.h"
+#include "q4t/vision/timing.h"
 #include "stb/stb_image.h"
 
 int main() {
@@ -66,6 +67,23 @@ int main() {
       if (!output) return 2;
       std::cout << "{\"width\":" << width << ",\"height\":" << height << "}\n";
     } else if (input.GetString("kind") == "pixels") {
+      vision::StageTimings timings(input.GetBool("timing"));
+      bool completed = false;
+      size_t frame_count = 0;
+      struct Report {
+        vision::StageTimings& timings;
+        bool& completed;
+        size_t& frames;
+        ~Report() {
+          timings.Report(stderr, "processor", completed, 1, frames, 0);
+        }
+      } report{timings, completed, frame_count};
+      vision::ProcessorOptions options;
+      options.timings = timings.Active();
+      if (input.GetBool("cancelled"))
+        options.cancelled = [](void*) { return true; };
+      if (input.Has("decoder_owned_bytes"))
+        options.decoder_owned_bytes = input.GetInt("decoder_owned_bytes");
       std::vector<std::vector<uint8_t>> storage;
       for (const auto& file : input.GetArray("files")->array) {
         std::ifstream in(file.str, std::ios::binary);
@@ -73,6 +91,7 @@ int main() {
         storage.emplace_back(std::istreambuf_iterator<char>(in),
                              std::istreambuf_iterator<char>());
       }
+      frame_count = storage.size();
       vision::ProcessorConfig cfg;
       std::vector<float> pixels;
       std::string error;
@@ -80,7 +99,7 @@ int main() {
       if (storage.size() == 1) {
         vision::ProcessedImage result;
         if (!vision::ProcessImage(storage[0].data(), storage[0].size(), cfg,
-                                  &result, &error))
+                                  &result, &error, options))
           return 1;
         pixels = std::move(result.pixel_values);
         gt = result.grid_t;
@@ -96,7 +115,8 @@ int main() {
           sizes.push_back(frame.size());
         }
         vision::ProcessedVideo result;
-        if (!vision::ProcessVideo(data, sizes, cfg, &result, &error)) return 1;
+        if (!vision::ProcessVideo(data, sizes, cfg, &result, &error, options))
+          return 1;
         pixels = std::move(result.pixel_values);
         gt = result.grid_t;
         gh = result.grid_h;
@@ -106,6 +126,7 @@ int main() {
       out.write(reinterpret_cast<const char*>(pixels.data()),
                 pixels.size() * sizeof(float));
       if (!out) return 2;
+      completed = true;
       std::cout << "{\"ok\":true,\"grid\":[" << gt << "," << gh << "," << gw
                 << "]}\n";
     } else {

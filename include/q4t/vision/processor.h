@@ -40,6 +40,7 @@ struct ProcessorConfig {
 
 inline constexpr size_t kDecoderOwnedBytes = 256ull * 1024 * 1024;
 struct MediaItemPlan;
+class StageTimings;
 struct ProcessorResult {
   // Static code; normal invalid input, quota and cancellation are not OOM.
   const char* code = "ok";
@@ -52,6 +53,8 @@ struct ProcessorOptions {
   void* cancel_context = nullptr;
   const MediaItemPlan* admission = nullptr;
   ProcessorResult* result = nullptr;
+  // Optional request-local accumulator; never owns or resets prior stages.
+  StageTimings* timings = nullptr;
 };
 
 // Processed image (ready for the vision tower).

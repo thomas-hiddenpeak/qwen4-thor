@@ -36,6 +36,17 @@
 
 ## 本机启动与客户端
 
+可选视觉诊断：新构建程序设置`Q4T_VISION_TIMING=1`后，每个进入视觉
+流水线的请求在stderr输出一条`[q4t][vision-timing]`，以request_id关联。
+默认关闭，不改HTTP响应；原固定发布包不自动获得该能力。各字段是主机
+墙钟毫秒，`forward`包括CPU提交/位置表处理和原有GPU完成同步，
+`workspace`含旧workspace释放和表构造/分配，不是纯kernel或纯分配时间。
+没有新增CUDA同步。`total_ms`不含HTTP/base64、排队和LLM执行，
+`other_ms`保留未覆盖的本地开销；`completed=0`只能用于失败诊断。
+PNG/JPEG分别累计，`*_calls`为计时作用域次数（cleanup含空指针释放尝试）。
+使用`tools.vision_service.timing_analysis.parse_records`解析并检查分项
+和总数；部署前仍按[本轮计划](VISION_TIMING_PLAN_2026-11-07.md)的范围验收。
+
 所有开发 GPU 验证仍应包在 `tools/evalscope/gpu_exclusive.py` 的整阶段
 驱动中。以下是 profile 参数示例，不安装后台服务或自动恢复任务：
 
