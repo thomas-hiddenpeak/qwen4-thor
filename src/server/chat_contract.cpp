@@ -8,6 +8,7 @@
 #include "q4t/server/chat_tool_history.h"
 #include "q4t/server/chat_template.h"
 #include "q4t/server/input_contract.h"
+#include "q4t/server/media_admission.h"
 #include "q4t/server/output_constraints.h"
 #include "q4t/server/reasoning_options.h"
 #include "q4t/server/text_stop.h"
@@ -290,8 +291,6 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
       if (part.Has("image_url") || part.Has("video_frames") ||
           type == "image_url" || type == "video_frames" ||
           type == "video_url") {
-        if (constraints.active)
-          return Status::Fail("constrained output requires text-only messages");
         if (!allow_media)
           return Status::Fail(
               "media disabled; experimental --allow-media required");
@@ -302,7 +301,8 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
         if (image == video || type == "video_url")
           return Status::Fail("exactly one supported media part is required");
         status = image ? Fields(part, {"type", "image_url"})
-                       : Fields(part, {"type", "video_frames"});
+                       : Fields(part, {"type", "video_frames",
+                                        "video_timestamps"});
         if (!status) return status;
         if (const auto* kind = part.Find("type");
             kind && (!kind->IsString() ||
@@ -334,6 +334,13 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
           if (!frames->IsArray() || frames->array.size() < 2 ||
               frames->array.size() > vision::kMediaPlanFrames)
             return Status::Fail("video requires 2..32 frames");
+          std::string time_field;
+          status = VideoFrameTimes(part, frames->array.size(), nullptr,
+                                   &time_field);
+          if (!status) {
+            *error_param = part_param + "." + time_field;
+            return status;
+          }
           for (size_t frame = 0; frame < frames->array.size(); ++frame) {
             *error_param =
                 part_param + ".video_frames[" + std::to_string(frame) + "]";

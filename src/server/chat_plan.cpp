@@ -179,7 +179,8 @@ Status ChatPreflightJson(const io::Json& envelope, const ChatPlanConfig& config,
                          const ChatPromptBudget& budget,
                          const std::string& prompt,
                          const std::vector<uint32_t>& tokens,
-                         std::string* output, ChatPlanError* error) {
+                         std::string* output, ChatPlanError* error,
+                         const vision::MediaPlan* media) {
   output->clear();
   const bool explicit_slots = !config.capacities.empty();
   std::string out =
@@ -211,6 +212,14 @@ Status ChatPreflightJson(const io::Json& envelope, const ChatPlanConfig& config,
       R"("admission_and_deadline","request_id_and_session_leases",)"
       R"("grammar_compilation","thinking_boundary_tokens",)"
       R"("cache_hits","generation_and_output_validation"])";
+  if (media && media->item_count) {
+    out += R"(,"media":{"items":)" + std::to_string(media->item_count) +
+           R"(,"visual_tokens":)" + std::to_string(media->merged_tokens) +
+           R"(,"headers_and_geometry_checked":true,"pixels_decoded":false, )"
+           R"("prompt_preview":"one_placeholder_per_temporal_group",)"
+           R"("token_ids":"expanded_for_inference",)"
+           R"("execution_and_quality_validated":false})";
+  }
   if (config.client_limits) {
     out += R"(,"client_limits":{"max_prompt_tokens":)" +
            std::to_string(config.client_limits->max_prompt_tokens) +

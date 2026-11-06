@@ -3,14 +3,17 @@
 
 Implements the full vision-tower forward in NumPy (no torch), loads the real
 `model.visual.*` weights from the checkpoint, and runs it on a synthetic test
-image. The output is saved as JSON for the C++ test to compare against.
+image. This secondary NumPy implementation is not the acceptance oracle. Its old
+rotation shared a CUDA defect. Canonical tools/vision_ref.json is now produced
+by tools/vision_service/hf_tower_reference.py executing official HF on CPU.
+Old fixture and reports remain in history and frozen evidence.
 
 Vision tower (reference/vllm/vllm/model_executor/models/qwen3_vl.py):
   pixel_values [L, C*T*P*P]  (L = t*h*w patches, layout [C, T, P, P] per patch)
     -> patch_embed Conv3d [H, C, T, P, P] (t=1 image: 2D conv over P x P)
     -> + pos_embed (bilinear-interpolated from the 48x48 grid)
     -> 27 blocks: x += attn(LN1(x)); x += mlp(LN2(x))
-         attn: qkv [3H, H] -> 16 heads (head_dim 72) -> 2D RoPE (partial 0.5)
+         attn: qkv [3H, H] -> 16 heads (head_dim 72) -> 2D RoPE (full head, two spatial axes)
                -> bidirectional softmax attention (per image) -> proj [H, H]
          mlp: fc1 [I, H] -> GELU(tanh) -> fc2 [H, I]
     -> merger: 2x2 spatial merge -> LN -> fc1 [4H, 4H] -> GELU -> fc2 [out, 4H]
@@ -33,7 +36,8 @@ import numpy as np
 MODEL_DIR = (
     "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream"
 )
-OUT_DIR = os.path.dirname(os.path.abspath(__file__))
+OUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                       "build", "vision-reference")
 
 # Vision config (from config.json vision_config).
 DEPTH = 27
@@ -182,10 +186,8 @@ def rot_pos_ids(h, w):
 def rot_pos_emb(pos_ids):
     """2D RoPE cos/sin from position ids [L, 2] (h_pos, w_pos).
 
-    The head_dim (72) is split into two 36-dim halves. Each half gets a
-    neox-style rotation (rotary_dim=36, pairing (i, i+18) for i in [0,18)):
-      - first half (dims 0..35) uses h_pos
-      - second half (dims 36..71) uses w_pos
+    HF duplicates the flattened [height frequencies, width frequencies]
+    across the 72-channel head before rotate_half; pairs span 36 channels.
     Returns (cos_h, sin_h, cos_w, sin_w), each [L, 18].
     """
     rotary_dim = HEAD_DIM // 2  # 36
@@ -203,24 +205,11 @@ def rot_pos_emb(pos_ids):
 
 
 def apply_rope(x, cos_h, sin_h, cos_w, sin_w):
-    """x [L, NUM_HEADS, HEAD_DIM] -> 2D RoPE (h on first half, w on second)."""
-    nh = HEAD_DIM // 2  # 36
-    neox_half = nh // 2  # 18
-    # First half (h): neox rotation pairing (i, i+18).
-    x1 = x[..., :neox_half]  # [L, NH, 18]
-    x2 = x[..., neox_half:nh]  # [L, NH, 18]
-    ch = cos_h[:, None, :]  # [L, 1, 18]
-    sh = sin_h[:, None, :]
-    out1 = x1 * ch - x2 * sh
-    out2 = x2 * ch + x1 * sh
-    # Second half (w).
-    x3 = x[..., nh : nh + neox_half]  # [L, NH, 18]
-    x4 = x[..., nh + neox_half :]  # [L, NH, 18]
-    cw = cos_w[:, None, :]
-    sw = sin_w[:, None, :]
-    out3 = x3 * cw - x4 * sw
-    out4 = x4 * cw + x3 * sw
-    return np.concatenate([out1, out2, out3, out4], axis=-1)
+    """Full-head rotate_half with repeated [height(18), width(18)] angles."""
+    cos = np.concatenate([cos_h, cos_w], axis=-1)[:, None, :]
+    sin = np.concatenate([sin_h, sin_w], axis=-1)[:, None, :]
+    first, second = np.split(x, 2, axis=-1)
+    return np.concatenate([first*cos-second*sin, second*cos+first*sin], axis=-1)
 
 
 def vision_attention(x, qkv_w, qkv_b, proj_w, proj_b, rope, t=1):
@@ -275,7 +264,9 @@ def merger(x, m):
     """
     x = layer_norm(x, m["norm_w"], m["norm_b"])  # [L, 1152]
     x = x.reshape(-1, HIDDEN * MERGE * MERGE)  # [L/4, 4608]
-    x = gelu_tanh(matmul(x, m["fc1_w"], m["fc1_b"]))
+    x = matmul(x, m["fc1_w"], m["fc1_b"])
+    erf = np.vectorize(math.erf, otypes=[np.float32])
+    x = .5*x*(1+erf(x/math.sqrt(2)))
     return matmul(x, m["fc2_w"], m["fc2_b"])
 
 
@@ -365,6 +356,7 @@ def make_pixels(t, h, w, seed):
 
 def main():
     out = sys.argv[1] if len(sys.argv) > 1 else os.path.join(OUT_DIR, "vision_ref.json")
+    os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
     print("Loading vision weights from", MODEL_DIR, flush=True)
     load = make_loader()
     vis = load_vision_weights(load)

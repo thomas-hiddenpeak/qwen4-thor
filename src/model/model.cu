@@ -16,6 +16,7 @@
 // buffer and writes the other. The forward workspace d_ws is reused across
 // layers (they run sequentially); its size is the max over all layers.
 #include "q4t/model/model.h"
+#include "q4t/model/vision_positions.h"
 #include "q4t/model/layer_subtiming.h"
 #include "q4t/model/hc_mix_subtiming.h"
 #include "q4t/quant/moe_subtiming.h"
@@ -769,90 +770,6 @@ Status ResetAllLayers(const Model& m, cudaStream_t stream, int seq_id = 0) {
   return Status();
 }
 
-// Build the 3D MRoPE position table (host) for a prefill, mirroring
-// transformers qwen4_exp get_rope_index + get_vision_position_ids.
-//
-// The table has 3 rows (t, h, w) of length T, stored row-major into
-// `rope_pos` (device [3, max_len]). For pure text the three rows are all the
-// logical position 0..T-1 (delta = 0), so partial MRoPE reduces to standard
-// RoPE. For multimodal prompts, each image/video placeholder block (grid
-// (t, h, w) in PATCH units, in `vision->grids`, in prompt position order)
-// contributes t*(h/m)*(w/m) tokens whose merged index k maps to
-//   t_coord = k / ((h/m)*(w/m)),  h_coord = (k % ...) / (w/m),  w_coord = k % (w/m)
-// and the three rows take (t_coord + clock, h_coord + clock, w_coord + clock).
-// The text clock advances by `len` over a text run and by max(h, w) / m over a
-// vision block (NOT the token count) — this is what creates the rope delta.
-// Returns the mrope_position_delta (decode rope row = logical + delta).
-int BuildRopePositions(const int32_t* input_ids, int T, int m,
-                       int img_id, int vid_id, int max_len,
-                       const std::vector<std::array<int, 3>>& grids,
-                       std::vector<int>* rope_pos) {
-  // Layout [3, max_len]: row r at ABSOLUTE position p is rope_pos[r*max_len+p].
-  // The RoPE kernels index by positions[t] (== t in prefill, == absolute pos
-  // in decode), so the table must be addressable by absolute position.
-  rope_pos->assign(3 * max_len, 0);
-  int clock = 0;  // text clock (current_pos in the reference)
-  int gi = 0;  // grid index (in prompt position order)
-  int t = 0;
-  int maxv = 0;
-  while (t < T) {
-    const int32_t id = input_ids[t];
-    if (id != img_id && id != vid_id) {
-      // Text run: all three rows = clock + offset.
-      int run = 0;
-      while (t + run < T) {
-        const int32_t d = input_ids[t + run];
-        if (d == img_id || d == vid_id) break;
-        ++run;
-      }
-      for (int j = 0; j < run; ++j) {
-        const int v = clock + j;
-        (*rope_pos)[t + j] = v;
-        (*rope_pos)[max_len + (t + j)] = v;
-        (*rope_pos)[2 * max_len + (t + j)] = v;
-        if (v > maxv) maxv = v;
-      }
-      clock += run;
-      t += run;
-      continue;
-    }
-    // Vision block: consume the next grid.
-    if (gi >= static_cast<int>(grids.size())) {
-      // No grid for a placeholder: fall back to the logical position for this
-      // token (defensive; the caller should always supply matching grids).
-      const int v = t;
-      (*rope_pos)[t] = v;
-      (*rope_pos)[max_len + t] = v;
-      (*rope_pos)[2 * max_len + t] = v;
-      if (v > maxv) maxv = v;
-      ++t;
-      continue;
-    }
-    const int gt = grids[gi][0];  // temporal (patch groups)
-    const int gh = grids[gi][1];  // height (patches)
-    const int gw = grids[gi][2];  // width (patches)
-    const int mh = gh / m, mw = gw / m;  // merged grid
-    const int per_frame = mh * mw;
-    const int n = gt * per_frame;  // merged tokens in this block
-    for (int k = 0; k < n && t + k < T; ++k) {
-      const int tc = k / per_frame;
-      const int rem = k % per_frame;
-      const int hc = rem / mw;
-      const int wc = rem % mw;
-      const int idx = t + k;
-      (*rope_pos)[idx] = clock + tc;
-      (*rope_pos)[max_len + idx] = clock + hc;
-      (*rope_pos)[2 * max_len + idx] = clock + wc;
-      const int v = clock + tc;
-      if (v > maxv) maxv = v;
-    }
-    clock += (std::max(gh, gw) / m);
-    t += n;
-    ++gi;
-  }
-  return maxv + 1 - T;
-}
-
 // Prefill without reset: assumes per-layer state is already at the sequence
 // start (call ResetAllLayers / ModelBeginSequence first). positions = 0..T-1.
 // `trunk_out` (MTP scheme A hook) is forwarded to RunLayers. `vision` (optional)
@@ -895,10 +812,13 @@ Status RunPrefill(const Model& m, const int32_t* input_ids, int T,
     const std::vector<std::array<int, 3>>* grids =
         (vision && !vision->grids.empty()) ? &vision->grids : nullptr;
     std::vector<int> rope_pos;
-    m.rope_delta[seq_id] = BuildRopePositions(
-        input_ids, T, cfg.spatial_merge_size, cfg.image_token_id,
-        cfg.video_token_id, cfg.max_len,
-        grids ? *grids : std::vector<std::array<int, 3>>{}, &rope_pos);
+    const auto rope_status = BuildVisionRopePositions(
+        {input_ids, static_cast<size_t>(T)}, cfg.spatial_merge_size,
+        cfg.image_token_id, cfg.video_token_id, cfg.max_len,
+        grids ? std::span<const std::array<int, 3>>(*grids)
+              : std::span<const std::array<int, 3>>{},
+        &rope_pos, &m.rope_delta[seq_id]);
+    if (!rope_status) return rope_status;
     // Write into this sequence's [3, max_len] slice of the pooled table.
     if (!(upload_status = upload.Copy(
               m.d_rope_pos + static_cast<size_t>(seq_id) * 3 * cfg.max_len,

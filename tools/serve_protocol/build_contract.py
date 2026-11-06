@@ -188,6 +188,34 @@ def chat_schema():
     return result
 
 
+
+def vision_schema():
+    result = chat_schema()
+    uri = dict(type="string", minLength=1,
+        description="Canonical padded standard base64 or exact PNG/JPEG data URL; no network URLs.")
+    url = dict(oneOf=[uri, obj(dict(url=uri, detail=dict(const="auto")), ("url",))])
+    result["$defs"]["imagePart"] = obj(dict(type=dict(const="image_url"), image_url=url), ("image_url",))
+    result["$defs"]["videoPart"] = obj(dict(type=dict(const="video_frames"),
+        video_frames=dict(type="array", minItems=2, maxItems=32, items=url),
+        video_timestamps=dict(type="array", minItems=2, maxItems=32,
+            items=dict(type="number", minimum=0, maximum=86400),
+            description="One strictly increasing seconds value per source frame. Omission means 24fps from zero.")), ("video_frames",))
+    message = result["$defs"]["message"]
+    message["properties"]["content"]["anyOf"][1]["items"] = dict(oneOf=[
+        ref("textPart"), ref("imagePart"), ref("videoPart")])
+    message["allOf"].append(when(present("role", {"not":dict(const="user")}),
+        dict(properties=dict(content=dict(anyOf=[dict(type=["string", "null"]),
+            dict(type="array", items=ref("textPart"))])))))
+    result["x-q4t"].update(profile="q4t-vision-v1", scope="explicit media service profile",
+        server_flags=["--allow-media", "--no-mtp", "--max-seq", "1"],
+        required_semantic_validation=True, acceptance="separate release attestation",
+        temporal_patch_size=2, max_media_items=8,
+        unsupported=["remote_urls", "video_container_on_server", "audio", "MTP",
+                     "state_cache", "media_chunked_prefill", "multiple_execution_slots"])
+    result["allOf"].append(forbid(["session_id", "prefix_cache_scope"]))
+    return result
+
+
 def publish(path, value, check):
     text = json.dumps(value, ensure_ascii=False, indent=2) + "\n"
     if check:
@@ -251,13 +279,14 @@ def semantics():
              "src/model/model.cu", "src/model/model_owner.cpp", "src/mtp/mtp.cu",
              "src/server/chat_server.cpp"],
          "Production q4t links checked direct CUDA free/freeAsync/freeHost/eventDestroy/streamDestroy/streamSynchronize/deviceSynchronize/eventSynchronize calls. Unknown cleanup/completion fails closed with immediate exit1, no destructor retry and no guaranteed HTTP error. Only the explicit serving cudaFree owner may receive errors to stop/drain and publish its existing error protocol. External shared-library internals and other executables are outside this link boundary. Successful async free/destroy does not prove completion or physical reclaim. Requested MTP load failure stops either startup path; --no-mtp remains explicit opt-out. Model load completion is checked before source release; failed MTP load drains before loader destruction. No model arithmetic change or complete media allocation guarantee."),
-        ("experimental-media-admission", ["include/q4t/vision/media_plan.h",
+        ("media-admission-v2", ["include/q4t/vision/media_plan.h",
              "src/vision/media_plan.cpp", "include/q4t/vision/processor.h",
              "src/vision/processor.cpp", "src/vision/vision.cu",
              "include/q4t/server/media_admission.h", "src/server/media_admission.cpp",
              "src/server/chat_contract.cpp", "src/server/chat_prompt.cpp",
-             "src/server/chat_input.cpp", "src/server/chat_generation.cpp"],
-         "Explicit experimental media: user only, closed image_url/video_frames parts, auto detail only, canonical standard padded base64 or exact PNG/JPEG data URLs with matching headers. All item/frame source and geometry limits precede decoding. Shared host plan expands tokens before slot/output budgeting; processor reuses the geometry and verifies decoded size. Decoder owned C allocations including prefixes have a 256MiB quota, nonthrowing callbacks and cleanup before quota400 or actual bad_alloc503. Cancellation checks item/frame boundaries and before GPU, not preemption of a C decode/kernel. Attention limit is queried from current device default minus static shared and function dynamic maximum; unknown fails requested media startup. Policy values are exposed in configuration/discovery. These logical limits do not bound allocator internal realloc peaks or reserve whole-server physical RAM. GPU/HTTP acceptance is separate."),
+             "src/server/chat_input.cpp", "src/server/chat_generation.cpp",
+             "include/q4t/model/vision_positions.h", "include/q4t/vision/configuration.h"],
+         "Explicit media profile (acceptance separate): user only, closed image_url/video_frames/video_timestamps parts, auto detail only, canonical standard padded base64 or exact PNG/JPEG data URLs with matching headers. All item/frame source and geometry limits precede decoding. Video prompt has averaged pair timestamps and one t=1 block per temporal group. Nearest-even geometry matches the fixed reference; odd frames repeat the last frame. Shared host plan expands tokens before preflight/slot/output/client/TPM budgeting; processor reuses the geometry and verifies decoded size. Decoder owned C allocations including prefixes have a 256MiB quota, nonthrowing callbacks and cleanup before quota400 or actual bad_alloc503. Cancellation checks item/frame boundaries and before GPU, not preemption of a C decode/kernel. Attention limit is queried from current device default minus static shared and function dynamic maximum; unknown fails requested media startup. Policy values are exposed in configuration/discovery. These logical limits do not bound allocator internal realloc peaks or reserve whole-server physical RAM. GPU/HTTP acceptance is separate."),
         ("runtime-memory-admission", ["src/runtime/system_memory.cpp",
              "src/server/memory_admission.cpp", "src/server/chat_memory.cpp",
              "src/server/chat_http.cpp", "src/server/chat_admission.cpp"],
@@ -285,7 +314,9 @@ def openapi():
             pattern="^[A-Za-z0-9_.:-]{1,128}$"), description="Trace only; not cancellation credentials or an idempotency key")},
         content={"application/json": dict(schema=schema)})
     error = external("serve-transport-v1.schema.json", "#/$defs/error")
-    chat = external("serve-chat-request-v1.schema.json")
+    chat = dict(anyOf=[external("serve-chat-request-v1.schema.json"),
+                       external("serve-vision-request-v1.schema.json")],
+        **{"x-q4t-media-profile": "Explicit --allow-media --no-mtp --max-seq 1; check runtime capabilities. video_frames/video_timestamps are Q4T extensions. Structural validity does not establish model task accuracy."})
     cancel = obj(dict(request_id=chat_schema()["properties"]["request_id"],
         cancel_token=dict(type="string", pattern="^[0-9a-f]{64}$")), ("request_id", "cancel_token"))
     preflight = obj(dict(request=chat, include_prompt=dict(type="boolean", default=False),
@@ -327,7 +358,7 @@ def openapi():
         if path in ("/healthz", "/livez", "/readyz"):
             operation["responses"]["503"] = response(schema, "Unhealthy, not ready, or draining")
         paths[path] = {method: operation}
-    return dict(openapi="3.1.0", info=dict(title="Q4T text serving contract",
+    return dict(openapi="3.1.0", info=dict(title="Q4T serving contract",
         version="q4t-serve-v1", description="Static supported surface, not full OpenAI API compatibility. See required native semantics and version-bound acceptance matrix."),
         servers=[dict(url="http://127.0.0.1:8080", description="Example only; use effective configured address")],
         paths=paths, **{"x-q4t": dict(semantic_contract="serve-input-semantics-v1.json",
@@ -335,12 +366,12 @@ def openapi():
             wrong_method="405 with Allow", post_content_type="application/json; optional charset=utf-8",
             unsupported_media_type=415, builtin_authentication=False,
             gateway_client_policy=dict(profile="q4t-gateway-clients-v1",
-                enabled_by="--client-policy-file", transport="loopback text only",
+                enabled_by="--client-policy-file", transport="loopback text or explicit media profile",
                 external_authentication="TLS gateway independent API keys",
                 internal_headers=["X-Q4T-Client-Id", "X-Q4T-Gateway-Token"],
                 identity="gateway overwrites internal headers; runner validates configured client and independent shared credential before body admission",
                 scoped_resources=["request_id", "cancellation", "session_id", "prefix_cache_scope"],
-                limits=["data/control inflight", "body bytes", "encoded prompt tokens", "total output tokens",
+                limits=["data/control inflight", "body bytes", "expanded prompt tokens including vision", "total output tokens",
                         "optional v2 fixed-window requests/tokens per minute"],
                 refusals=dict(authentication=401, local_admin_with_identity=403,
                     body_limit=413, concurrency_limit=429, token_limit=400,
@@ -367,6 +398,7 @@ def main():
     inventory = json.loads((ROOT / "tools/serve_audit/inventory.json").read_text())
     assert set(schema["properties"]) == set(inventory["fields"]), "uncatalogued field"
     publish(ROOT / "docs/serve-chat-request-v1.schema.json", schema, args.check)
+    publish(ROOT / "docs/serve-vision-request-v1.schema.json", vision_schema(), args.check)
     publish(ROOT / "docs/serve-input-semantics-v1.json", semantics(), args.check)
     spec = openapi()
     assert {method.upper()+" "+path for path, operations in spec["paths"].items()

@@ -315,20 +315,34 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
 
   std::vector<std::uint32_t> prompt_u32;
   ChatPromptBudget prompt_budget;
+  vision::MediaPlan media_plan;
+  bool prompt_encoded = false;
   const auto encode_prompt = [&] {
     diagnostic.Stage("encode");
-    auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer, cancelled);
-    if (!lock.owns_lock())
-      return Status::Fail("request cancelled waiting for prompt tokenizer");
-    return EncodeChatPrompt(
-        req, planning_config, prompt,
-        [&](std::string_view text, std::vector<uint32_t>* out) {
-          return tok_->Encode(text, out, {.cancelled = cancelled});
-        }, &prompt_u32, &prompt_budget, &planning_error);
+    Status encoded;
+    {
+      auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer, cancelled);
+      if (!lock.owns_lock())
+        return Status::Fail("request cancelled waiting for prompt tokenizer");
+      encoded = EncodeChatPrompt(
+          req, planning_config, prompt,
+          [&](std::string_view text, std::vector<uint32_t>* out) {
+            return tok_->Encode(text, out, {.cancelled = cancelled});
+          }, &prompt_u32, &prompt_budget, &planning_error);
+    }
+    if (encoded && !items.empty()) {
+      const auto& config = model_.Get().cfg;
+      encoded = ExpandChatMedia(
+          req, items, config.image_token_id, config.video_token_id, proc_cfg_,
+          video_proc_cfg_, vision_device_budget_, planning_config, &prompt_u32,
+          &media_plan, &prompt_budget, &planning_error);
+    }
+    prompt_encoded = encoded.ok();
+    return encoded;
   };
-  // Scoped policies are text-only. Check actual template tokens before SSE
-  // or grammar work, and reuse the exact tokenization during admission.
-  if (planning_config.client_limits) {
+  // Count expanded visual tokens before rate reservation, SSE or grammar.
+  // Preflight uses the same expansion and budget, without reserving quota.
+  if (planning_config.client_limits || !items.empty()) {
     s = encode_prompt();
     if (!s) {
       if (cancelled()) {
@@ -340,6 +354,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       }
       return;
     }
+    if (cancelled()) {
+      count_abort();
+      send_cancel_error("request cancelled during media planning");
+      return;
+    }
+  }
+  if (planning_config.client_limits) {
     const auto result = rate_lease.Reserve(
         clients_, http->Client(), prompt_u32.size(),
         static_cast<uint64_t>(prompt_budget.available_output));
@@ -512,7 +533,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
 
   std::vector<int32_t> ids;
   const bool explicit_slots = !seq_capacities_.empty();
-  if (!planning_config.client_limits) s = encode_prompt();
+  if (!prompt_encoded) s = encode_prompt();
   if (!s) {
     if (cancelled()) {
       count_abort();
@@ -523,53 +544,6 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     return;
   }
   ids.assign(prompt_u32.begin(), prompt_u32.end());
-  const int img_id = model_.Get().cfg.image_token_id;
-  const int vid_id = model_.Get().cfg.video_token_id;
-  vision::MediaPlan media_plan;
-  if (!items.empty()) {
-    if (cancelled()) {
-      count_abort();
-      send_cancel_error("request cancelled before media planning");
-      return;
-    }
-    s = PlanChatMedia(items, ids, img_id, vid_id, proc_cfg_, video_proc_cfg_,
-                      vision_device_budget_, planning_config, &media_plan,
-                      &planning_error);
-    if (!s) {
-      SendError(fd, 400, s.message(), {}, planning_error.code,
-                planning_error.param);
-      return;
-    }
-    std::vector<int> image_counts, video_counts;
-    for (size_t i = 0; i < items.size(); ++i) {
-      auto& counts =
-          items[i].kind == VisionItem::kImage ? image_counts : video_counts;
-      counts.push_back(
-          static_cast<int>(media_plan.items[i].geometry.merged_tokens));
-    }
-    std::vector<int32_t> expanded;
-    if (!model::ExpandMultimodalTokens(ids.data(), static_cast<int>(ids.size()),
-                                       img_id, vid_id, image_counts,
-                                       video_counts, &expanded) ||
-        expanded.size() != media_plan.expanded_prompt_tokens) {
-      SendError(fd, 400, "multimodal count mismatch", {},
-                "media_placeholder_count", "messages");
-      return;
-    }
-    ids = std::move(expanded);
-    s = PlanChatBudget(req, planning_config, ids.size(), &prompt_budget,
-                       &planning_error);
-    if (!s) {
-      SendError(fd, 400, s.message(), {}, planning_error.code,
-                planning_error.param);
-      return;
-    }
-    if (cancelled()) {
-      count_abort();
-      send_cancel_error("request cancelled after media planning");
-      return;
-    }
-  }
   const size_t required_capacity = prompt_budget.required_capacity;
 
   // B1 multi-request scheduling: each request runs on its own thread. All
@@ -714,7 +688,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     // behind model_mu_ (the same lock that serializes the main model). The
     // pipeline runs on the default stream and self-synchronizes internally.
     {
-      auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
+      auto lock = diagnostic.Lock(model_mu_, Wait::kModel, cancelled);
+      if (!lock.owns_lock()) {
+        count_abort();
+        send_cancel_error("request cancelled waiting for vision execution");
+        return;
+      }
       OnException backend_failure([&] { AbortBackendExecution(); });
       if (!gpu_healthy_.load(std::memory_order_relaxed)) {
         SendError(fd, 503, "GPU unhealthy; restart server");

@@ -113,9 +113,11 @@ Q4T_TEST(serve_default_is_single_text_greedy) {
 Q4T_TEST(serve_capabilities_allow_explicit_combinations) {
   for (int mask = 0; mask < 8; ++mask) {
     auto options = Defaults();
-    if (mask & 1) Q4T_CHECK(Parse({"--no-mtp"}, &options));
-    if (mask & 2) Q4T_CHECK(Parse({"--allow-media"}, &options));
-    if (mask & 4) Q4T_CHECK(Parse({"--max-seq", "2"}, &options));
+    options.no_mtp = mask & 1;
+    options.allow_media = mask & 2;
+    options.max_seq = mask & 4 ? 2 : 1;
+    const bool supported = !(mask & 2) || ((mask & 1) && !(mask & 4));
+    Q4T_CHECK(q4t::server::ValidateServerOptions(options).ok() == supported);
     const auto c = CapabilitiesFor(options);
     Q4T_CHECK(c.mtp == !(mask & 1));
     Q4T_CHECK(c.media == bool(mask & 2));
@@ -274,12 +276,30 @@ Q4T_TEST(serve_startup_plan_modes_are_explicit_and_transactional) {
     Q4T_CHECK(options.startup_plan == StartupPlanMode::kRequired);
   }
   Q4T_CHECK(!Parse({"--startup-plan"}, &options));
-  Q4T_CHECK(Parse({"--startup-plan", "off", "--allow-media"}, &options));
+  Q4T_CHECK(Parse({"--startup-plan", "off", "--allow-media", "--no-mtp"},
+                  &options));
   Q4T_CHECK(options.startup_plan == StartupPlanMode::kOff);
   Q4T_CHECK(Parse({"--startup-plan", "auto"}, &options));
   Q4T_CHECK(options.startup_plan == StartupPlanMode::kAuto);
   options.startup_plan = static_cast<StartupPlanMode>(99);
   Q4T_CHECK(!q4t::server::ValidateServerOptions(options).ok());
+  return true;
+}
+
+Q4T_TEST(serve_media_supported_profile_and_client_policy) {
+  auto options = Defaults();
+  Q4T_CHECK(!Parse({"--allow-media"}, &options));
+  Q4T_CHECK(!options.allow_media && !options.no_mtp);
+  Q4T_CHECK(Parse({"--allow-media", "--no-mtp", "--max-seq", "1",
+                   "--client-policy-file", "/explicit-policy"}, &options));
+  Q4T_CHECK(options.allow_media && options.no_mtp);
+  for (const auto rejected : {
+           std::initializer_list<std::string_view>{"--mtp"},
+           {"--max-seq", "2"}, {"--no-budget"},
+           {"--host", "0.0.0.0"}, {"--moe-resident-slots", "1"}}) {
+    Q4T_CHECK(!Parse(rejected, &options));
+    Q4T_CHECK(options.allow_media && options.no_mtp && options.max_seq == 1);
+  }
   return true;
 }
 

@@ -1,6 +1,7 @@
 #include "chat_server_internal.h"
 
 #include "q4t/server/chat_response_parser.h"
+#include "q4t/server/media_admission.h"
 #include "q4t/server/request_admission.h"
 #include "q4t/server/reasoning_options.h"
 #include "q4t/server/request_json.h"
@@ -65,10 +66,7 @@ void ChatServer::HandlePreflight(int fd, const std::string& body) {
     return;
   }
   const auto& req = *envelope.Find("request");
-  auto config = PlanningConfig(fd);
-  // Exact text token counts cannot represent vision expansion without model
-  // execution. Reject media even on an experimental media-enabled server.
-  config.allow_media = false;
+  const auto config = PlanningConfig(fd);
   ChatRequestPlan plan;
   status = PlanChatRequest(req, config, &plan, &error);
   if (!status) {
@@ -90,7 +88,8 @@ void ChatServer::HandlePreflight(int fd, const std::string& body) {
   std::string prompt;
   std::vector<VisionItem> items;
   status =
-      PrepareChatPrompt(req, plan.constraints, &prompt, &items, &error.param);
+      PrepareChatPrompt(req, plan.constraints, &prompt, &items, &error.param,
+                         &error.code);
   if (status) {
     ChatResponseParser parser;
     status = parser.Init(req, prompt, "preflight", true);
@@ -116,6 +115,7 @@ void ChatServer::HandlePreflight(int fd, const std::string& body) {
   }
   std::vector<uint32_t> tokens;
   ChatPromptBudget budget;
+  vision::MediaPlan media;
   {
     auto lock = LockUnlessCancelled(tok_mu_, cancelled);
     if (!lock.owns_lock()) {
@@ -129,6 +129,13 @@ void ChatServer::HandlePreflight(int fd, const std::string& body) {
         },
         &tokens, &budget, &error);
   }
+  if (status && !items.empty()) {
+    const auto& model_config = model_.Get().cfg;
+    status = ExpandChatMedia(
+        req, items, model_config.image_token_id, model_config.video_token_id,
+        proc_cfg_, video_proc_cfg_, vision_device_budget_, config, &tokens,
+        &media, &budget, &error);
+  }
   if (cancelled()) {
     send_cancel();
     return;
@@ -136,7 +143,7 @@ void ChatServer::HandlePreflight(int fd, const std::string& body) {
   std::string response;
   if (status)
     status = ChatPreflightJson(envelope, config, plan, budget, prompt, tokens,
-                               &response, &error);
+                               &response, &error, &media);
   if (!status) {
     send_error();
     return;

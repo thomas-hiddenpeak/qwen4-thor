@@ -3,6 +3,8 @@ include_guard(GLOBAL)
 include(${CMAKE_CURRENT_LIST_DIR}/StructuredOutput.cmake)
 get_filename_component(Q4T_PROTOCOL_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
 set(protocol_inputs
+  include/q4t/model/vision_positions.h
+  include/q4t/vision/configuration.h
   include/q4t/server/client_identity.h
   include/q4t/server/client_policy.h
   include/q4t/server/client_request.h

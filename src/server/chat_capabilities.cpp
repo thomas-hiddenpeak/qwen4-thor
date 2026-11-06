@@ -75,7 +75,9 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("preflight":{"profile":)" +
          Quote(std::string(kPreflightProfile)) +
          R"(,"endpoint":"/v1/chat/preflight","config_endpoint":"/v1/config",)"
-         R"("text_only":true,"prompt_preview":"opt_in",)"
+         R"("text_only":false,"media_requires_enabled_server":true,)"
+         R"("media_plan":"headers_geometry_and_expanded_tokens",)"
+         R"("decodes_pixels":false,"prompt_preview":"opt_in",)"
          R"("token_ids":"opt_in","response_max_bytes":8388608,)"
          R"("shares_chat_planning":true,"reserves_slot":false,)"
          R"("executes_model":false,"compiles_grammar":false},)"
@@ -168,7 +170,7 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("stream_payload":"buffered_until_validated",)"
          R"("decode":"plain_host_masked_greedy","mtp":false,)"
          R"("packed_decode":false,"session_cache":false,)"
-         R"("prefix_cache":false,"media":false,"length_terminal":"error",)"
+         R"("prefix_cache":false,"media":true,"length_terminal":"error",)"
          R"("named_tool_max_calls":1,"max_tools":16,"max_response_bytes":1048576,)"
          R"("max_schema_bytes":16384,"max_schema_depth":8,)"
          R"("max_schema_nodes":128,"object_key_order":"schema",)"

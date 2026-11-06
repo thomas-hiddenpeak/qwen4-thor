@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Q4T text serving contract",
+    "title": "Q4T serving contract",
     "version": "q4t-serve-v1",
     "description": "Static supported surface, not full OpenAI API compatibility. See required native semantics and version-bound acceptance matrix."
   },
@@ -80,7 +80,15 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "serve-chat-request-v1.schema.json"
+                "anyOf": [
+                  {
+                    "$ref": "serve-chat-request-v1.schema.json"
+                  },
+                  {
+                    "$ref": "serve-vision-request-v1.schema.json"
+                  }
+                ],
+                "x-q4t-media-profile": "Explicit --allow-media --no-mtp --max-seq 1; check runtime capabilities. video_frames/video_timestamps are Q4T extensions. Structural validity does not establish model task accuracy."
               }
             }
           }
@@ -149,7 +157,15 @@
                 "type": "object",
                 "properties": {
                   "request": {
-                    "$ref": "serve-chat-request-v1.schema.json"
+                    "anyOf": [
+                      {
+                        "$ref": "serve-chat-request-v1.schema.json"
+                      },
+                      {
+                        "$ref": "serve-vision-request-v1.schema.json"
+                      }
+                    ],
+                    "x-q4t-media-profile": "Explicit --allow-media --no-mtp --max-seq 1; check runtime capabilities. video_frames/video_timestamps are Q4T extensions. Structural validity does not establish model task accuracy."
                   },
                   "include_prompt": {
                     "type": "boolean",
@@ -819,7 +835,7 @@
     "gateway_client_policy": {
       "profile": "q4t-gateway-clients-v1",
       "enabled_by": "--client-policy-file",
-      "transport": "loopback text only",
+      "transport": "loopback text or explicit media profile",
       "external_authentication": "TLS gateway independent API keys",
       "internal_headers": [
         "X-Q4T-Client-Id",
@@ -835,7 +851,7 @@
       "limits": [
         "data/control inflight",
         "body bytes",
-        "encoded prompt tokens",
+        "expanded prompt tokens including vision",
         "total output tokens",
         "optional v2 fixed-window requests/tokens per minute"
       ],

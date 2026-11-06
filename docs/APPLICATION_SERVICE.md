@@ -1,9 +1,13 @@
 # 应用服务层与 OpenAI 兼容矩阵
 
-更新：2026-11-05；客户端、当前托管与任务交接已完成独立短验。当前为单台Thor、单模型的
+更新：2026-11-07；客户端、当前托管与任务交接已完成独立短验。当前为单台Thor、单模型的
 文本Chat服务，以及只读项目资料查询应用。工具调用、有限结构化输出、
 错误/取消、运行保障和持久任务恢复已有分阶段短验；不宣称全部OpenAI
 接口、所有客户端、任意配置组合或长期生产负载已验。
+
+视觉v1新增显式单槽no-MTP图片/工具/JSON及媒体展开配额组合；
+视频方向任务、硬解码未接受，旧托管/持久任务不自动迁移。
+详见[视觉矩阵](VISION_SERVICE_V1.md)及[独立结果](VISION_PRODUCTION_RESULT_2026-11-07.md)。
 
 当前发布身份和下一项工作只在[STATUS](STATUS.md)维护；本页维护能力与
 边界。原逐阶段叙述移入[历史快照](APPLICATION_SERVICE_HISTORY_2026-11-04.md)，
@@ -20,7 +24,7 @@
 [11k当前协议任务交接](SERVE_TASK_STARTUP_PROTOCOL_RESULT_2026-11-04.md)
 分别证明。12l保留首轮监控归属错误的ENV_ABORT，采用通过业务段与定向
 停止补验，不能合成为一次连续全流程成功。
-当前默认协议cc321239的[托管组合](SERVE_CURRENT_MANAGED_RESULT_2026-11-05.md)
+固定协议cc321239的[托管组合](SERVE_CURRENT_MANAGED_RESULT_2026-11-05.md)
 与[持久任务交接](SERVE_CURRENT_TASK_RESULT_2026-11-05.md)已独立短验；
 旧15d7ccb1包保持，任务按已登记方向显式迁移，不会自动升级。
 [可选部署profile](SERVE_BOUNDED_DEPLOYMENT_RESULT_2026-11-05.md)已有离线

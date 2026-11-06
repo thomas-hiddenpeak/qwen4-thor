@@ -36,6 +36,12 @@ Status ResolveAdmissionLimits(const ServerOptions& options, int effective_slots,
 }
 
 Status ValidateServerOptions(const ServerOptions& options) {
+  if (options.allow_media &&
+      (!options.no_mtp || options.max_seq != 1 || options.no_budget ||
+       options.moe_resident_slots != 0 || !options.moe_trace_dir.empty()))
+    return Status::Fail(
+        "media v1 requires --no-mtp, --max-seq 1, enabled budget and "
+        "no expert offload/trace");
   if (options.cuda_allocation_limit_mib < -1 ||
       options.cuda_allocation_limit_mib > 1048576)
     return Status::Fail(
@@ -92,8 +98,8 @@ Status ValidateServerOptions(const ServerOptions& options) {
   if (inet_pton(AF_INET, options.host.c_str(), &address) != 1)
     return Status::Fail("host must be a numeric IPv4 address");
   if (!options.client_policy_file.empty() &&
-      (options.host != "127.0.0.1" || options.allow_media))
-    return Status::Fail("client-policy-file requires loopback text serving");
+      options.host != "127.0.0.1")
+    return Status::Fail("client-policy-file requires loopback serving");
   if (options.port < 1 || options.port > 65535)
     return Status::Fail("port must be in [1,65535]");
   if (options.operations_port < 0 || options.operations_port > 65535 ||

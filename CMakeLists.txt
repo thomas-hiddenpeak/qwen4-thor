@@ -529,6 +529,11 @@ if(Q4T_BUILD_TESTS)
   target_link_libraries(q4t_agent_capacity PRIVATE ${Q4T_TEST_LIBS})
 
   add_executable(q4t_tests ${Q4T_TEST_SOURCES})
+  add_executable(q4t_vision_tower_contract EXCLUDE_FROM_ALL
+    tools/vision_service/tower_probe.cpp)
+  target_include_directories(q4t_vision_tower_contract PRIVATE include)
+  target_link_libraries(q4t_vision_tower_contract PRIVATE ${Q4T_TEST_LIBS})
+  target_compile_options(q4t_vision_tower_contract PRIVATE -Wall -Wextra -Werror)
   q4t_link_structured_output(q4t_tests)
   if(Q4T_ENABLE_XGRAMMAR)
     target_sources(q4t_tests PRIVATE tests/server_structured_decoder_test.cpp)

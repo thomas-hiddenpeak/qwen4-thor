@@ -1,6 +1,7 @@
 // Image processor for the Qwen3-VL vision tower.
 //
-// Decodes PNG/JPEG, smart-resizes (factor = patch_size * merge_size),
+// Decodes PNG/JPEG with stb_image (JPEG may differ from Pillow IDCT),
+// smart-resizes (factor = patch_size * merge_size),
 // applies BICUBIC resize (exact Pillow 12.3.0 fixed-point replication),
 // normalizes to [-1, 1], and patchifies in block-major order to match
 // the vision tower's expected pixel_values layout.

@@ -8,7 +8,7 @@
       "properties": {
         "request": {
           "type": "object",
-          "description": "The existing Chat input contract; a complete Chat schema is tracked by SRV-08."
+          "description": "Chat input contract; optional visual inputs require the explicit media profile."
         },
         "include_prompt": {
           "type": "boolean"
@@ -230,6 +230,45 @@
           "required": [
             "max_prompt_tokens",
             "max_output_tokens"
+          ]
+        },
+        "media": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "items": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 8
+            },
+            "visual_tokens": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "headers_and_geometry_checked": {
+              "const": true
+            },
+            "pixels_decoded": {
+              "const": false
+            },
+            "prompt_preview": {
+              "const": "one_placeholder_per_temporal_group"
+            },
+            "token_ids": {
+              "const": "expanded_for_inference"
+            },
+            "execution_and_quality_validated": {
+              "const": false
+            }
+          },
+          "required": [
+            "items",
+            "visual_tokens",
+            "headers_and_geometry_checked",
+            "pixels_decoded",
+            "prompt_preview",
+            "token_ids",
+            "execution_and_quality_validated"
           ]
         }
       },
