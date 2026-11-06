@@ -30,7 +30,9 @@ def command(argv, directory, name):
     record = dict(argv=argv, cwd=str(directory), returncode=result.returncode)
     save(directory / (name + '.json'), record)
     result.check_returncode()
-    require(not re.search(r'\bwarning:', (directory / (name + '.log')).read_text(), re.I),
+    require(not re.search(r'\bwarning(?:\s*#[\w-]+)?\s*:|'
+                          r'\bCMake(?: Deprecation)? Warning\b',
+                          (directory / (name + '.log')).read_text(), re.I),
             'build warning: ' + name)
 
 
@@ -42,6 +44,7 @@ def build():
     build = BASE / 'build'
     build.mkdir(parents=True)
     hp = read(a.PLAN)
+    a.legacy.verify_files(hp)
     for name in ('parent', 'candidate'):
         require(sha(Path(hp[name])) == (a.DEFAULT if name == 'parent' else a.CANDIDATE),
                 'accepted H binary identity')
@@ -103,6 +106,7 @@ def prepare():
     require(not subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT),
             'commit contract tools before freeze')
     h = read(a.PLAN)
+    a.legacy.verify_files(h)
     require(read(a.PLAN.parent / 'review.json')['decision'] ==
             'POSITIVE_TARGET_REQUIRES_CONTRACTS_AND_PROTECTION_REVIEW', 'H decision')
     build = BASE / 'build'
@@ -124,13 +128,15 @@ def prepare():
         step['command'] = [sys.executable, '-B', str(Path(__file__).resolve()),
                            '--plan', str(BASE / 'plan.json'), '--step', step['name']]
     plan = dict(stage='QSA_SOFTMAX_ADOPTION_CONTRACTS', output=str(BASE / 'run'),
+        source_commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'],
+            cwd=ROOT, text=True).strip(), runtime_commit=h['runtime_commit'],
         model=h['model'], model_file_metadata=h['model_file_metadata'],
         artifact=h['artifact'], execution_tools_root=str(ORIGINAL),
         http_loads=0, http_requests=0, model_loads=4, steps=steps,
         stage_timeout_seconds=1740, direct_contract_timeout_seconds=1740,
         approved_total_wall_seconds=1800, resource_sample_max_age_seconds=10,
         telemetry_sources=a.telemetry.discover_sources(), files={})
-    files = {Path(p) for p in h['files'] if Path(p).is_file()}
+    files = {Path(p) for p in h['files']}
     tracked = subprocess.check_output(['git', 'ls-files'], cwd=ROOT, text=True).splitlines()
     files.update(ROOT / p for p in tracked if p.startswith(('src/', 'include/', 'tools/')))
     files.update(p for p in build.rglob('*') if p.is_file() and
