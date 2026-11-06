@@ -104,7 +104,7 @@ def cases():
     return result
 
 
-def prepare(phase="phase-01", reuse=None):
+def prepare(phase="phase-01", reuse=None, cpu_video=False):
     folder = BASE / phase
     folder.mkdir(exist_ok=False)
     rows = json.loads((BASE/reuse/"requests.json").read_text()) if reuse else cases()
@@ -135,7 +135,18 @@ def prepare(phase="phase-01", reuse=None):
                     numerical_status="PASS_UNCHANGED_FULL_TOWER", prior_phase_status="FAILED_CODEC_METADATA")
         paths += [prior/"execution/tower/waitable.json",prior/"execution/tower/stdout.log",
                   prior/"execution/result.json",prior/"lease/exit.json",Path(reused["video"])]
-    plan = dict(profile="q4t-vision-stage-v1", limits=dict(LIMITS,native=1) if reuse else LIMITS, port=PORT,
+    if cpu_video:
+        require(reused is not None,"CPU video continuation needs preserved encoding")
+        save(folder/"encoded-video-part.json",sample_video(reused["video"],frames=8,backend="cpu"))
+        paths.append(folder/"encoded-video-part.json")
+        prior_failed=BASE/"phase-02/execution/result.json"
+        result=json.loads(prior_failed.read_text())
+        require(result["counts"]==dict(starts=0,generations=0,controls=0,native=1) and
+            not result["cleanup_errors"] and not result["monitor_failures"],"second phase not closed")
+        paths.append(prior_failed)
+    limits=dict(LIMITS,native=0 if cpu_video else 1) if reuse else LIMITS
+    plan = dict(profile="q4t-vision-stage-v1", limits=limits, port=PORT,
+        cpu_video=cpu_video,
         reused=reused,
         binary=str(BASE/"engine/q4t"), model=str(MODEL), source_commit=subprocess.check_output(
             ["git","rev-parse","HEAD"], cwd=ROOT,text=True).strip(),
@@ -152,7 +163,7 @@ class Run:
     def __init__(self, folder):
         self.folder = folder
         self.plan = json.loads((folder/"plan.json").read_text())
-        expected=dict(LIMITS,native=1) if self.plan.get("reused") else LIMITS
+        expected=dict(LIMITS,native=0 if self.plan.get("cpu_video") else 1) if self.plan.get("reused") else LIMITS
         require(self.plan["limits"]==expected and self.plan["port"]==PORT,
                 "frozen phase limits/port changed")
         self.output = folder/"execution"
@@ -256,11 +267,13 @@ class Run:
         self.tools()
         self.negatives()
         self.cancel()
-        part=json.loads((self.output/"hardware/part.json").read_text())
+        part_path=self.folder/"encoded-video-part.json" if self.plan.get("cpu_video") else self.output/"hardware/part.json"
+        part=json.loads(part_path.read_text())
         body=request("Which direction does the red circle move? Return JSON direction.",[part],
             response_format=structured(dict(direction=dict(type="string",enum=["left_to_right","right_to_left","stationary"]))))
-        result=self.complete("hardware-video",body)
-        self.observe("hardware-video",json.loads(result.message["content"])==dict(direction="left_to_right"))
+        result=self.complete("encoded-video",body)
+        self.observe("encoded-video",json.loads(result.message["content"])==dict(direction="left_to_right"),
+            decode_backend="cpu" if self.plan.get("cpu_video") else "jetson")
         self.idle("final-idle")
 
     def tools(self):
@@ -336,7 +349,7 @@ class Run:
             codec=[sys.executable,"-B",str(ROOT/"tools/vision_service/codec_acceptance.py"),
                 "--fixtures",str(BASE/"fixtures"),"--output",str(self.output/"hardware")]
             if reuse:codec += ["--existing-video",reuse["video"]]
-            self.native("codec",codec,90)
+            if not self.plan.get("cpu_video"):self.native("codec",codec,90)
             self.launch();self.business()
             require(all(r["passed"] for r in self.observations),"business/quality failures; inspect observations")
             verdict="PASS_BOUNDED_VISUAL_BUSINESS"
@@ -382,7 +395,8 @@ if __name__ == "__main__":
     os.umask(0o077)
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action",choices=("prepare","run"))
-    parser.add_argument("--phase",default="phase-01",choices=("phase-01","phase-02"))
+    parser.add_argument("--phase",default="phase-01",choices=("phase-01","phase-02","phase-03"))
     parser.add_argument("--reuse",choices=("phase-01",))
+    parser.add_argument("--cpu-video",action="store_true")
     args=parser.parse_args()
-    print(json.dumps(prepare(args.phase,args.reuse) if args.action=="prepare" else Run(BASE/args.phase).run()))
+    print(json.dumps(prepare(args.phase,args.reuse,args.cpu_video) if args.action=="prepare" else Run(BASE/args.phase).run()))
