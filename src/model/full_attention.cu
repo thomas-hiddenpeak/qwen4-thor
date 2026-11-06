@@ -1007,6 +1007,7 @@ __device__ __forceinline__ void CpAsyncWait() {
   asm volatile("cp.async.wait_group %0;\n" ::"n"(N));
 }
 
+template <bool ParallelSoftmax = false>
 __global__ void SparseAttentionKernel(const u16* __restrict__ q,
                                       const u16* __restrict__ kv_cache,
                                       const int* __restrict__ page_table,
@@ -1166,8 +1167,41 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
       sS[(group + 8) * 16 + nb + col + 1] = c3;
     }
     __syncthreads();
-    // ---- Online softmax per q-head row (thread q handles qh=q). ----
-    if (threadIdx.x < kG) {
+    // Large-T: distribute independent exponentials over (head, position).
+    // Keep the original ordered max and FP32 denominator accumulation.
+    // The unrounded probabilities must survive separately from BF16 sP.
+    if constexpr (ParallelSoftmax) {
+      __shared__ float probabilities[kG * kChunk];
+      if (threadIdx.x < kG) {
+        const int qrow = threadIdx.x;
+        const float m_old = sMax[qrow];
+        float mx = m_old;
+        for (int p = 0; p < chunk; ++p)
+          mx = fmaxf(mx, sS[qrow * 16 + p] * scale);
+        sAlpha[qrow] = expf(m_old - mx);
+        sMax[qrow] = mx;
+      }
+      __syncthreads();
+      if (threadIdx.x < kG * kChunk) {
+        const int qrow = threadIdx.x / kChunk;
+        const int p = threadIdx.x % kChunk;
+        const float mx = sMax[qrow];
+        const float pr = (p < chunk) ? expf(sS[qrow * 16 + p] * scale - mx)
+                                     : 0.f;
+        probabilities[qrow * kChunk + p] = pr;
+        sP[p * 16 + qrow] = FloatToBf16(pr);
+      }
+      __syncthreads();
+      if (threadIdx.x < kG) {
+        const int qrow = threadIdx.x;
+        float s = sSum[qrow] * sAlpha[qrow];
+        // Include the zero tail, in the original left-to-right order. A tree
+        // reduction or summing sP would change the numerical contract.
+        for (int p = 0; p < kChunk; ++p)
+          s += probabilities[qrow * kChunk + p];
+        sSum[qrow] = s;
+      }
+    } else if (threadIdx.x < kG) {
       const int qrow = threadIdx.x;
       const float m_old = sMax[qrow];
       float mx = m_old;
@@ -1867,8 +1901,12 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
                        d_gate, max_topk, T, d_seq_id, kv_seq_stride,
                        pt_seq_stride, stream);
     if (!s) return s;
+  } else if (T > kSplitMaxT) {
+    SparseAttentionKernel<true><<<dim3(T, nkv), 256, 0, stream>>>(
+        d_q, kv_cache, page_table, d_topk, d_topk_len, d_attn, d_gate, nq, nkv,
+        hd, max_topk, d_seq_id, kv_seq_stride, pt_seq_stride);
   } else {
-    SparseAttentionKernel<<<dim3(T, nkv), 256, 0, stream>>>(
+    SparseAttentionKernel<false><<<dim3(T, nkv), 256, 0, stream>>>(
         d_q, kv_cache, page_table, d_topk, d_topk_len, d_attn, d_gate, nq, nkv,
         hd, max_topk, d_seq_id, kv_seq_stride, pt_seq_stride);
   }
