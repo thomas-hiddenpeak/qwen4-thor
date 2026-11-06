@@ -1,0 +1,765 @@
+{
+  "decision": "NO_GO_FEASIBILITY_TARGET",
+  "performance_accepted": false,
+  "outputs_identical": true,
+  "quality_passed": 22,
+  "newly_executed_http": 17,
+  "reused_parent_http": 17,
+  "first_failure_http": 20,
+  "total_http": 37,
+  "total_model_loads": 3,
+  "contexts": {
+    "context-1024": {
+      "parent": {
+        "mean_ttft": 0.7995158125025531,
+        "aggregate_decode": 18.526572197093078,
+        "aggregate_e2e": 43.69058958441019,
+        "ttft": [
+          0.8700677142478526,
+          0.7641904251649976,
+          0.764289298094809
+        ],
+        "latency": [
+          14.653356892988086,
+          14.523010645061731,
+          14.514222046360373
+        ],
+        "decode": [
+          18.50066386137496,
+          18.533565809025003,
+          18.545545252369767
+        ]
+      },
+      "candidate": {
+        "mean_ttft": 0.7926531240033606,
+        "aggregate_decode": 18.569792223553026,
+        "aggregate_e2e": 43.57389688119292,
+        "ttft": [
+          0.8632213990204036,
+          0.7573838280513883,
+          0.7573541449382901
+        ],
+        "latency": [
+          14.583628525026143,
+          14.478332065977156,
+          14.511936290189624
+        ],
+        "decode": [
+          18.585454327858212,
+          18.58472137480704,
+          18.5392763885624
+        ]
+      },
+      "ttft_gain": 0.008583555686924593,
+      "decode_gain": 0.0023328668682018883,
+      "e2e_change": -0.002670888727464238
+    },
+    "context-45056": {
+      "parent": {
+        "mean_ttft": 30.468034734018147,
+        "aggregate_decode": 17.836703504082283,
+        "aggregate_e2e": 134.29319521738216,
+        "ttft": [
+          30.48689072811976,
+          30.47132014716044,
+          30.44589332677424
+        ],
+        "latency": [
+          44.783113246783614,
+          44.77128637395799,
+          44.73879559664056
+        ],
+        "decode": [
+          17.836879613974606,
+          17.832209947610956,
+          17.841023130593687
+        ]
+      },
+      "candidate": {
+        "mean_ttft": 29.65967495335887,
+        "aggregate_decode": 17.852279182937014,
+        "aggregate_e2e": 131.83069618791342,
+        "ttft": [
+          29.67500164313242,
+          29.645640809088945,
+          29.658382407855242
+        ],
+        "latency": [
+          43.96393850306049,
+          43.926883548963815,
+          43.93987413588911
+        ],
+        "decode": [
+          17.845974301637696,
+          17.8555889459123,
+          17.85527764578314
+        ]
+      },
+      "ttft_gain": 0.026531405379971118,
+      "decode_gain": 0.0008732375268314385,
+      "e2e_change": -0.018336737207590215
+    }
+  },
+  "candidate_cases": [
+    {
+      "id": "context-1024",
+      "rows": [
+        {
+          "response_id": "chatcmpl-auto-606c2e285858cd13bf6071efb3f10d2c",
+          "input_tokens": 998,
+          "output_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the unique activities from the observations:\n\n1. Planetarium operator - darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle (Obs 1, 4, 5, 14, 22, 31)\n2. Tea workshop - heats identical cups, compares prepared infusions, participants describe aroma separately from bitterness and mouthfeel (Obs 2, 21, 26, 30)\n3. Public aquarium - dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior (Obs 3, 10, 23)\n4. Bicycle class - demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance (Obs 6, 15, 28, 29)\n5. Costume studio - pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth (Obs 7, ",
+          "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+          "output_sha256": "2984ef17cfbb4565fc0e87811e0939a76832212c37158d69d19bc26862b5e76d",
+          "finish": [
+            "length"
+          ],
+          "ttft": 0.8632213990204036,
+          "latency": 14.583628525026143,
+          "start": 2131556.243670294,
+          "end": 2131570.827298819
+        },
+        {
+          "response_id": "chatcmpl-auto-f62c93b13a7cf94ebf0ec007fa0b456c",
+          "input_tokens": 998,
+          "output_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the unique activities from the observations:\n\n1. Planetarium operator - darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle (Obs 1, 4, 5, 14, 22, 31)\n2. Tea workshop - heats identical cups, compares prepared infusions, participants describe aroma separately from bitterness and mouthfeel (Obs 2, 21, 26, 30)\n3. Public aquarium - dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior (Obs 3, 10, 23)\n4. Bicycle class - demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance (Obs 6, 15, 28, 29)\n5. Costume studio - pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth (Obs 7, ",
+          "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+          "output_sha256": "2984ef17cfbb4565fc0e87811e0939a76832212c37158d69d19bc26862b5e76d",
+          "finish": [
+            "length"
+          ],
+          "ttft": 0.7573838280513883,
+          "latency": 14.478332065977156,
+          "start": 2131570.827672476,
+          "end": 2131585.306004542
+        },
+        {
+          "response_id": "chatcmpl-auto-3a89811db202c61aaf938ece4b3d4ade",
+          "input_tokens": 998,
+          "output_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the unique activities from the observations:\n\n1. Planetarium operator - darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle (Obs 1, 4, 5, 14, 22, 31)\n2. Tea workshop - heats identical cups, compares prepared infusions, participants describe aroma separately from bitterness and mouthfeel (Obs 2, 21, 26, 30)\n3. Public aquarium - dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior (Obs 3, 10, 23)\n4. Bicycle class - demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance (Obs 6, 15, 28, 29)\n5. Costume studio - pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth (Obs 7, ",
+          "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+          "output_sha256": "2984ef17cfbb4565fc0e87811e0939a76832212c37158d69d19bc26862b5e76d",
+          "finish": [
+            "length"
+          ],
+          "ttft": 0.7573541449382901,
+          "latency": 14.511936290189624,
+          "start": 2131585.30635856,
+          "end": 2131599.81829485
+        }
+      ],
+      "database": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-1024/20261106_130431/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db"
+    },
+    {
+      "id": "context-45056",
+      "rows": [
+        {
+          "response_id": "chatcmpl-auto-6c8c7cd05ac03d3bff036bb5bc7c7f11",
+          "input_tokens": 45044,
+          "output_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activities:\n1. Planetarium - darkening dome, aligning star projector, comparing projected horizon with reference circle\n2. Tea workshop - heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n3. Public aquarium - dimming room, observing nocturnal animals, guide explains shelter placement effects\n4. Bicycle class - braking demonstration on quiet paved courtyard, riders explain wet surface effects on stopping distance\n5. Costume studio - pinning paper pattern onto inexpensive cotton, fitting reveals seam adjustments before cutting final cloth\n6. Pottery instructor - placing fired tiles beside unfired samples, students explain glaze thickness effects on reflected color\n7. Climbing center - closing route while wall anchors examined, next group practices knot inspection beside training mat\n8. Tidal station - measuring water height against fixed stone marker, shaded diagram separates wave motion from gradual rising tide\n\nNow I need to write a review of at least 600 words covering:\n",
+          "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+          "output_sha256": "4b157e7a54a3f67194ec5197d2ceb3bb19c4697b6045c240461818bd3961d432",
+          "finish": [
+            "length"
+          ],
+          "ttft": 29.67500164313242,
+          "latency": 43.96393850306049,
+          "start": 2131605.294775176,
+          "end": 2131649.258713679
+        },
+        {
+          "response_id": "chatcmpl-auto-a28bd12fddd823e725674f6429022147",
+          "input_tokens": 45044,
+          "output_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activities:\n1. Planetarium - darkening dome, aligning star projector, comparing projected horizon with reference circle\n2. Tea workshop - heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n3. Public aquarium - dimming room, observing nocturnal animals, guide explains shelter placement effects\n4. Bicycle class - braking demonstration on quiet paved courtyard, riders explain wet surface effects on stopping distance\n5. Costume studio - pinning paper pattern onto inexpensive cotton, fitting reveals seam adjustments before cutting final cloth\n6. Pottery instructor - placing fired tiles beside unfired samples, students explain glaze thickness effects on reflected color\n7. Climbing center - closing route while wall anchors examined, next group practices knot inspection beside training mat\n8. Tidal station - measuring water height against fixed stone marker, shaded diagram separates wave motion from gradual rising tide\n\nNow I need to write a review of at least 600 words covering:\n",
+          "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+          "output_sha256": "4b157e7a54a3f67194ec5197d2ceb3bb19c4697b6045c240461818bd3961d432",
+          "finish": [
+            "length"
+          ],
+          "ttft": 29.645640809088945,
+          "latency": 43.926883548963815,
+          "start": 2131649.259753049,
+          "end": 2131693.186636598
+        },
+        {
+          "response_id": "chatcmpl-auto-194a6688843ae9a2a258407ca21de701",
+          "input_tokens": 45044,
+          "output_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activities:\n1. Planetarium - darkening dome, aligning star projector, comparing projected horizon with reference circle\n2. Tea workshop - heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n3. Public aquarium - dimming room, observing nocturnal animals, guide explains shelter placement effects\n4. Bicycle class - braking demonstration on quiet paved courtyard, riders explain wet surface effects on stopping distance\n5. Costume studio - pinning paper pattern onto inexpensive cotton, fitting reveals seam adjustments before cutting final cloth\n6. Pottery instructor - placing fired tiles beside unfired samples, students explain glaze thickness effects on reflected color\n7. Climbing center - closing route while wall anchors examined, next group practices knot inspection beside training mat\n8. Tidal station - measuring water height against fixed stone marker, shaded diagram separates wave motion from gradual rising tide\n\nNow I need to write a review of at least 600 words covering:\n",
+          "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+          "output_sha256": "4b157e7a54a3f67194ec5197d2ceb3bb19c4697b6045c240461818bd3961d432",
+          "finish": [
+            "length"
+          ],
+          "ttft": 29.658382407855242,
+          "latency": 43.93987413588911,
+          "start": 2131693.187652626,
+          "end": 2131737.127526762
+        }
+      ],
+      "database": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-45056/20261106_130520/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db"
+    },
+    {
+      "id": "quality",
+      "rows": [
+        {
+          "response_id": "chatcmpl-auto-67e50b00bc2043967ba22e8c29a25e71",
+          "input_tokens": 1024,
+          "output_tokens": 7,
+          "text": "710003",
+          "prompt_sha256": "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392",
+          "output_sha256": "4236b5fda71f8600cb789858b7796a921cad5bffa7e9431bb6fbc760ae9527c4",
+          "finish": [
+            "stop"
+          ],
+          "ttft": 0.7755235126242042,
+          "latency": 1.0988617977127433,
+          "start": 2131742.576344637,
+          "end": 2131743.675206435
+        },
+        {
+          "response_id": "chatcmpl-auto-9e1e93bd6b3d81f2e3a47d9736fcb622",
+          "input_tokens": 1024,
+          "output_tokens": 7,
+          "text": "710130",
+          "prompt_sha256": "f17889bf3cec9aead6db4da85c4d517a4d795407932c30b9f273363dec239dd0",
+          "output_sha256": "a2d3058d185e332f041c82d19f9e69c72ee0083b5cd12d0aa139e5f0a3a82517",
+          "finish": [
+            "stop"
+          ],
+          "ttft": 0.7630899702198803,
+          "latency": 1.0853052139282227,
+          "start": 2131743.675555823,
+          "end": 2131744.760861037
+        },
+        {
+          "response_id": "chatcmpl-auto-1be14b83a2c51be27fee3409ba3f3f42",
+          "input_tokens": 1024,
+          "output_tokens": 7,
+          "text": "710257",
+          "prompt_sha256": "e647c72568b4bf9589fd5c63e8a214898769f0285839cf53987c0e47ec12e4ff",
+          "output_sha256": "6c77bcf6c38b5d7a4e7cffc80092afb9276df254c5b3ceca9ec683100cd9b15b",
+          "finish": [
+            "stop"
+          ],
+          "ttft": 0.7663781656883657,
+          "latency": 1.0906404666602612,
+          "start": 2131744.761199815,
+          "end": 2131745.851840282
+        },
+        {
+          "response_id": "chatcmpl-auto-db8a6518e727258b42fd9cccc64d92ec",
+          "input_tokens": 4096,
+          "output_tokens": 7,
+          "text": "710384",
+          "prompt_sha256": "4e4b462f767736bc27913543654afae84da78917924d4f2d60f8990a6b7a3a94",
+          "output_sha256": "cb357112f8e9ee220cb97e543bfe842800f5a805c9ab781ef48ef97eb0333c99",
+          "finish": [
+            "stop"
+          ],
+          "ttft": 2.5655944771133363,
+          "latency": 2.9021911420859396,
+          "start": 2131745.852165116,
+          "end": 2131748.754356258
+        },
+        {
+          "response_id": "chatcmpl-auto-86e473f9d865ec574ad88bdfc4c5963f",
+          "input_tokens": 4096,
+          "output_tokens": 7,
+          "text": "710511",
+          "prompt_sha256": "0e349879840c9c0cf3261f3263359482be3c1b4a9383c9bd68561014acefba6f",
+          "output_sha256": "7124ab808804eb53398068b38e68ca591057e6540584d3fc02f2c861fe27bbc0",
+          "finish": [
+            "stop"
+          ],
+          "ttft": 2.5601871670223773,
+          "latency": 2.8958840630948544,
+          "start": 2131748.754713619,
+          "end": 2131751.650597682
+        },
+        {
+          "response_id": "chatcmpl-auto-d1feccbf3cb82c75d69b11627e28c082",
+          "input_tokens": 4096,
+          "output_tokens": 7,
+          "text": "710638",
+          "prompt_sha256": "c40c8baf22c4a45590d30a327475c9f2163af28cee13baef0bf290cd74779074",
+          "output_sha256": "4cac386c0b8783d90abab0b55d91ed878017db3723bb7c24a548b59e9811cd8b",
+          "finish": [
+            "stop"
+          ],
+          "ttft": 2.5589173678308725,
+          "latency": 2.895979842171073,
+          "start": 2131751.650946727,
+          "end": 2131754.546926569
+        },
+        {
+          "response_id": "chatcmpl-auto-bf43c99dfe03412405c8d59465f45800",
+          "input_tokens": 8192,
+          "output_tokens": 7,
+          "text": "710765",
+          "prompt_sha256": "b8198a7998b20d7edd3ada87edecbce958843b6bcafcf9d4983a239c6324fa02",
+          "output_sha256": "e6319db514d30728158a3a306638d85f9c44eb72a08e3b6306867fda70359402",
+          "finish": [
+            "stop"
+          ],
+          "ttft": 5.014722576364875,
+          "latency": 5.347115234006196,
+          "start": 2131754.547306115,
+          "end": 2131759.894421349
+        },
+        {
+          "response_id": "chatcmpl-auto-27ff4f39b446e0a7b87ed9e697444e5b",
+          "input_tokens": 8192,
+          "output_tokens": 7,
+          "text": "710892",
+          "prompt_sha256": "d3f37a78f3f642d958c455757b859a222ab47784de1833847a5a5954aa37abb6",
+          "output_sha256": "9f2945cea215d6515a7b36b46b71cb0562a0629edc90aee47b435bb56f25d4a6",
+          "finish": [
+            "stop"
+          ],
+          "ttft": 5.0203181016258895,
+          "latency": 5.35421689460054,
+          "start": 2131759.89479371,
+          "end": 2131765.249010605
+        },
+        {
+          "response_id": "chatcmpl-auto-922b3b2689cfbb118eef9d4b3ff74e29",
+          "input_tokens": 8192,
+          "output_tokens": 7,
+          "text": "711019",
+          "prompt_sha256": "46616386557835b6e297f422fe33ed022202e321bde2729c7232a741939c9a47",
+          "output_sha256": "a12687ff57e7602233020a95916bd75746473bbd1c262f3cb071b11de48634b7",
+          "finish": [
+            "stop"
+          ],
+          "ttft": 5.015385475941002,
+          "latency": 5.352110160980374,
+          "start": 2131765.249368531,
+          "end": 2131770.601478692
+        },
+        {
+          "response_id": "chatcmpl-auto-382f0232ab5f04af32b9a863c13b1f79",
+          "input_tokens": 45056,
+          "output_tokens": 7,
+          "text": "711146",
+          "prompt_sha256": "8e7d6e535925c3552adaf57319be27d987365520fa852409366c05cf32b6c423",
+          "output_sha256": "c73f4e0e82deddf53f30ac110a0d599c2ba4b45b59b262ad3f4892b1b2373a4a",
+          "finish": [
+            "stop"
+          ],
+          "ttft": 29.57931104209274,
+          "latency": 29.916620291303843,
+          "start": 2131770.602315339,
+          "end": 2131800.51893563
+        },
+        {
+          "response_id": "chatcmpl-auto-0738afabb7ed08778adce531214732ab",
+          "input_tokens": 204800,
+          "output_tokens": 7,
+          "text": "711273",
+          "prompt_sha256": "12ba2ea94933c44aea775a49a5380161413c7d377208ae35c8ad20fab8c6f150",
+          "output_sha256": "7f9c8412ad575e46516d69c53b9e2e64a20b45f3c0a027524b3848dbd00aa21d",
+          "finish": [
+            "stop"
+          ],
+          "ttft": 155.6180979036726,
+          "latency": 155.97090472467244,
+          "start": 2131800.52165446,
+          "end": 2131956.492559185
+        }
+      ],
+      "database": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/quality/20261106_130738/qwen3.8-flash-next/parallel_1_number_11/benchmark_data.db"
+    }
+  ],
+  "audit": {
+    "admitted": 17,
+    "released": 17,
+    "quota": {
+      "event": "server_destroyed",
+      "enabled": true,
+      "limit_bytes": 118728574156,
+      "charged_bytes": 200953856,
+      "live_bytes": 200953856,
+      "pending_bytes": 0,
+      "unknown_bytes": 0,
+      "peak_bytes": 87974195488,
+      "entries": 8,
+      "poisoned": false,
+      "byte_rejections": 0,
+      "entry_rejections": 0,
+      "stream_rejections": 0,
+      "contract_failures": 0,
+      "backend_failures": 0,
+      "scope": "process_requested_cuda_bytes",
+      "physical_ram_limit": false
+    },
+    "request_ids": [
+      "chatcmpl-auto-606c2e285858cd13bf6071efb3f10d2c",
+      "chatcmpl-auto-f62c93b13a7cf94ebf0ec007fa0b456c",
+      "chatcmpl-auto-3a89811db202c61aaf938ece4b3d4ade",
+      "chatcmpl-auto-6c8c7cd05ac03d3bff036bb5bc7c7f11",
+      "chatcmpl-auto-a28bd12fddd823e725674f6429022147",
+      "chatcmpl-auto-194a6688843ae9a2a258407ca21de701",
+      "chatcmpl-auto-67e50b00bc2043967ba22e8c29a25e71",
+      "chatcmpl-auto-9e1e93bd6b3d81f2e3a47d9736fcb622",
+      "chatcmpl-auto-1be14b83a2c51be27fee3409ba3f3f42",
+      "chatcmpl-auto-db8a6518e727258b42fd9cccc64d92ec",
+      "chatcmpl-auto-86e473f9d865ec574ad88bdfc4c5963f",
+      "chatcmpl-auto-d1feccbf3cb82c75d69b11627e28c082",
+      "chatcmpl-auto-bf43c99dfe03412405c8d59465f45800",
+      "chatcmpl-auto-27ff4f39b446e0a7b87ed9e697444e5b",
+      "chatcmpl-auto-922b3b2689cfbb118eef9d4b3ff74e29",
+      "chatcmpl-auto-382f0232ab5f04af32b9a863c13b1f79",
+      "chatcmpl-auto-0738afabb7ed08778adce531214732ab"
+    ],
+    "plain": true,
+    "profiling": false
+  },
+  "parent_reuse": {
+    "reused_arm_only": true,
+    "whole_stage_status": "STOPPED",
+    "whole_lease_status": "COMMAND_FAILED",
+    "reason": "Candidate output failure after parent completed.",
+    "raw_seal_verified": 81,
+    "sampler_flushed": 533,
+    "parent_after_shutdown": {
+      "event": "server_after_shutdown",
+      "monotonic_seconds": 2130370.176256097,
+      "unix_seconds": 1793940287.6593823,
+      "utc": "2026-11-06T04:44:47.659382+00:00",
+      "clock_pair_uncertainty_seconds": 8.100178092718124e-07,
+      "pid": 3885974,
+      "server_returncode": 0
+    },
+    "audit": {
+      "admitted": 17,
+      "released": 17,
+      "quota": {
+        "event": "server_destroyed",
+        "enabled": true,
+        "limit_bytes": 118728574156,
+        "charged_bytes": 200953856,
+        "live_bytes": 200953856,
+        "pending_bytes": 0,
+        "unknown_bytes": 0,
+        "peak_bytes": 87974195488,
+        "entries": 8,
+        "poisoned": false,
+        "byte_rejections": 0,
+        "entry_rejections": 0,
+        "stream_rejections": 0,
+        "contract_failures": 0,
+        "backend_failures": 0,
+        "scope": "process_requested_cuda_bytes",
+        "physical_ram_limit": false
+      },
+      "request_ids": [
+        "chatcmpl-auto-f01935c89aa02b217aaed89cd51cd3cf",
+        "chatcmpl-auto-4f4d53ffe1871fb07ed4bc1147f9f88c",
+        "chatcmpl-auto-14a0febb6a4f903bed4410c4960cffca",
+        "chatcmpl-auto-c504568599185ba8f5a069e76593a4e3",
+        "chatcmpl-auto-d0f83550d24dd4532d9042877576a6af",
+        "chatcmpl-auto-9f970e9119b75ec065dc9c71ef3c3561",
+        "chatcmpl-auto-dadb5796a1ab973f06c2fc5ebe992a38",
+        "chatcmpl-auto-74ba78df4ed95bc355a4edabd9b8726e",
+        "chatcmpl-auto-8bab2fbb01ddc6b220e91fb369696cb9",
+        "chatcmpl-auto-de90bdf8f49a58513a786410fda7e204",
+        "chatcmpl-auto-41cd871665a7e39b8889032cc791ef72",
+        "chatcmpl-auto-8533ce8c3e7d90f16d5a3c215f14aa7c",
+        "chatcmpl-auto-b633a4fadb961c8c5941600a872f8292",
+        "chatcmpl-auto-da08397a607372b3815d9248ca2a1e22",
+        "chatcmpl-auto-97fecbe9aa565d7691c653a3b8bd5aab",
+        "chatcmpl-auto-3d0a50b9d235c1c39d9d84ea72b4a587",
+        "chatcmpl-auto-8dc729277753824b5e95b9d415196703"
+      ],
+      "plain": true,
+      "profiling": false
+    },
+    "cases": [
+      {
+        "id": "context-1024",
+        "rows": [
+          {
+            "response_id": "chatcmpl-auto-f01935c89aa02b217aaed89cd51cd3cf",
+            "input_tokens": 998,
+            "output_tokens": 256,
+            "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the unique activities from the observations:\n\n1. Planetarium operator - darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle (Obs 1, 4, 5, 14, 22, 31)\n2. Tea workshop - heats identical cups, compares prepared infusions, participants describe aroma separately from bitterness and mouthfeel (Obs 2, 21, 26, 30)\n3. Public aquarium - dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior (Obs 3, 10, 23)\n4. Bicycle class - demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance (Obs 6, 15, 28, 29)\n5. Costume studio - pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth (Obs 7, ",
+            "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+            "output_sha256": "2984ef17cfbb4565fc0e87811e0939a76832212c37158d69d19bc26862b5e76d",
+            "finish": [
+              "length"
+            ],
+            "ttft": 0.8700677142478526,
+            "latency": 14.653356892988086,
+            "start": 2129960.998221058,
+            "end": 2129975.651577951
+          },
+          {
+            "response_id": "chatcmpl-auto-4f4d53ffe1871fb07ed4bc1147f9f88c",
+            "input_tokens": 998,
+            "output_tokens": 256,
+            "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the unique activities from the observations:\n\n1. Planetarium operator - darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle (Obs 1, 4, 5, 14, 22, 31)\n2. Tea workshop - heats identical cups, compares prepared infusions, participants describe aroma separately from bitterness and mouthfeel (Obs 2, 21, 26, 30)\n3. Public aquarium - dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior (Obs 3, 10, 23)\n4. Bicycle class - demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance (Obs 6, 15, 28, 29)\n5. Costume studio - pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth (Obs 7, ",
+            "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+            "output_sha256": "2984ef17cfbb4565fc0e87811e0939a76832212c37158d69d19bc26862b5e76d",
+            "finish": [
+              "length"
+            ],
+            "ttft": 0.7641904251649976,
+            "latency": 14.523010645061731,
+            "start": 2129975.651952393,
+            "end": 2129990.174963038
+          },
+          {
+            "response_id": "chatcmpl-auto-14a0febb6a4f903bed4410c4960cffca",
+            "input_tokens": 998,
+            "output_tokens": 256,
+            "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the unique activities from the observations:\n\n1. Planetarium operator - darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle (Obs 1, 4, 5, 14, 22, 31)\n2. Tea workshop - heats identical cups, compares prepared infusions, participants describe aroma separately from bitterness and mouthfeel (Obs 2, 21, 26, 30)\n3. Public aquarium - dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior (Obs 3, 10, 23)\n4. Bicycle class - demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance (Obs 6, 15, 28, 29)\n5. Costume studio - pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth (Obs 7, ",
+            "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+            "output_sha256": "2984ef17cfbb4565fc0e87811e0939a76832212c37158d69d19bc26862b5e76d",
+            "finish": [
+              "length"
+            ],
+            "ttft": 0.764289298094809,
+            "latency": 14.514222046360373,
+            "start": 2129990.175309065,
+            "end": 2130004.689531111
+          }
+        ],
+        "database": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-1024/20261106_123756/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db"
+      },
+      {
+        "id": "context-45056",
+        "rows": [
+          {
+            "response_id": "chatcmpl-auto-c504568599185ba8f5a069e76593a4e3",
+            "input_tokens": 45044,
+            "output_tokens": 256,
+            "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activities:\n1. Planetarium - darkening dome, aligning star projector, comparing projected horizon with reference circle\n2. Tea workshop - heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n3. Public aquarium - dimming room, observing nocturnal animals, guide explains shelter placement effects\n4. Bicycle class - braking demonstration on quiet paved courtyard, riders explain wet surface effects on stopping distance\n5. Costume studio - pinning paper pattern onto inexpensive cotton, fitting reveals seam adjustments before cutting final cloth\n6. Pottery instructor - placing fired tiles beside unfired samples, students explain glaze thickness effects on reflected color\n7. Climbing center - closing route while wall anchors examined, next group practices knot inspection beside training mat\n8. Tidal station - measuring water height against fixed stone marker, shaded diagram separates wave motion from gradual rising tide\n\nNow I need to write a review of at least 600 words covering:\n",
+            "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+            "output_sha256": "4b157e7a54a3f67194ec5197d2ceb3bb19c4697b6045c240461818bd3961d432",
+            "finish": [
+              "length"
+            ],
+            "ttft": 30.48689072811976,
+            "latency": 44.783113246783614,
+            "start": 2130010.084242953,
+            "end": 2130054.8673562
+          },
+          {
+            "response_id": "chatcmpl-auto-d0f83550d24dd4532d9042877576a6af",
+            "input_tokens": 45044,
+            "output_tokens": 256,
+            "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activities:\n1. Planetarium - darkening dome, aligning star projector, comparing projected horizon with reference circle\n2. Tea workshop - heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n3. Public aquarium - dimming room, observing nocturnal animals, guide explains shelter placement effects\n4. Bicycle class - braking demonstration on quiet paved courtyard, riders explain wet surface effects on stopping distance\n5. Costume studio - pinning paper pattern onto inexpensive cotton, fitting reveals seam adjustments before cutting final cloth\n6. Pottery instructor - placing fired tiles beside unfired samples, students explain glaze thickness effects on reflected color\n7. Climbing center - closing route while wall anchors examined, next group practices knot inspection beside training mat\n8. Tidal station - measuring water height against fixed stone marker, shaded diagram separates wave motion from gradual rising tide\n\nNow I need to write a review of at least 600 words covering:\n",
+            "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+            "output_sha256": "4b157e7a54a3f67194ec5197d2ceb3bb19c4697b6045c240461818bd3961d432",
+            "finish": [
+              "length"
+            ],
+            "ttft": 30.47132014716044,
+            "latency": 44.77128637395799,
+            "start": 2130054.868414158,
+            "end": 2130099.639700532
+          },
+          {
+            "response_id": "chatcmpl-auto-9f970e9119b75ec065dc9c71ef3c3561",
+            "input_tokens": 45044,
+            "output_tokens": 256,
+            "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activities:\n1. Planetarium - darkening dome, aligning star projector, comparing projected horizon with reference circle\n2. Tea workshop - heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n3. Public aquarium - dimming room, observing nocturnal animals, guide explains shelter placement effects\n4. Bicycle class - braking demonstration on quiet paved courtyard, riders explain wet surface effects on stopping distance\n5. Costume studio - pinning paper pattern onto inexpensive cotton, fitting reveals seam adjustments before cutting final cloth\n6. Pottery instructor - placing fired tiles beside unfired samples, students explain glaze thickness effects on reflected color\n7. Climbing center - closing route while wall anchors examined, next group practices knot inspection beside training mat\n8. Tidal station - measuring water height against fixed stone marker, shaded diagram separates wave motion from gradual rising tide\n\nNow I need to write a review of at least 600 words covering:\n",
+            "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+            "output_sha256": "4b157e7a54a3f67194ec5197d2ceb3bb19c4697b6045c240461818bd3961d432",
+            "finish": [
+              "length"
+            ],
+            "ttft": 30.44589332677424,
+            "latency": 44.73879559664056,
+            "start": 2130099.640696945,
+            "end": 2130144.379492542
+          }
+        ],
+        "database": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-45056/20261106_123845/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db"
+      },
+      {
+        "id": "quality",
+        "rows": [
+          {
+            "response_id": "chatcmpl-auto-dadb5796a1ab973f06c2fc5ebe992a38",
+            "input_tokens": 1024,
+            "output_tokens": 7,
+            "text": "710003",
+            "prompt_sha256": "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392",
+            "output_sha256": "4236b5fda71f8600cb789858b7796a921cad5bffa7e9431bb6fbc760ae9527c4",
+            "finish": [
+              "stop"
+            ],
+            "ttft": 0.7845438150689006,
+            "latency": 1.1089938753284514,
+            "start": 2130149.821891314,
+            "end": 2130150.930885189
+          },
+          {
+            "response_id": "chatcmpl-auto-74ba78df4ed95bc355a4edabd9b8726e",
+            "input_tokens": 1024,
+            "output_tokens": 7,
+            "text": "710130",
+            "prompt_sha256": "f17889bf3cec9aead6db4da85c4d517a4d795407932c30b9f273363dec239dd0",
+            "output_sha256": "a2d3058d185e332f041c82d19f9e69c72ee0083b5cd12d0aa139e5f0a3a82517",
+            "finish": [
+              "stop"
+            ],
+            "ttft": 0.7759400568902493,
+            "latency": 1.0992583851329982,
+            "start": 2130150.931227808,
+            "end": 2130152.030486193
+          },
+          {
+            "response_id": "chatcmpl-auto-8bab2fbb01ddc6b220e91fb369696cb9",
+            "input_tokens": 1024,
+            "output_tokens": 7,
+            "text": "710257",
+            "prompt_sha256": "e647c72568b4bf9589fd5c63e8a214898769f0285839cf53987c0e47ec12e4ff",
+            "output_sha256": "6c77bcf6c38b5d7a4e7cffc80092afb9276df254c5b3ceca9ec683100cd9b15b",
+            "finish": [
+              "stop"
+            ],
+            "ttft": 0.778475736733526,
+            "latency": 1.102993540931493,
+            "start": 2130152.030789784,
+            "end": 2130153.133783325
+          },
+          {
+            "response_id": "chatcmpl-auto-de90bdf8f49a58513a786410fda7e204",
+            "input_tokens": 4096,
+            "output_tokens": 7,
+            "text": "710384",
+            "prompt_sha256": "4e4b462f767736bc27913543654afae84da78917924d4f2d60f8990a6b7a3a94",
+            "output_sha256": "cb357112f8e9ee220cb97e543bfe842800f5a805c9ab781ef48ef97eb0333c99",
+            "finish": [
+              "stop"
+            ],
+            "ttft": 2.628440469969064,
+            "latency": 2.9644611589610577,
+            "start": 2130153.134086546,
+            "end": 2130156.098547705
+          },
+          {
+            "response_id": "chatcmpl-auto-41cd871665a7e39b8889032cc791ef72",
+            "input_tokens": 4096,
+            "output_tokens": 7,
+            "text": "710511",
+            "prompt_sha256": "0e349879840c9c0cf3261f3263359482be3c1b4a9383c9bd68561014acefba6f",
+            "output_sha256": "7124ab808804eb53398068b38e68ca591057e6540584d3fc02f2c861fe27bbc0",
+            "finish": [
+              "stop"
+            ],
+            "ttft": 2.626246254891157,
+            "latency": 2.963690044824034,
+            "start": 2130156.098888065,
+            "end": 2130159.06257811
+          },
+          {
+            "response_id": "chatcmpl-auto-8533ce8c3e7d90f16d5a3c215f14aa7c",
+            "input_tokens": 4096,
+            "output_tokens": 7,
+            "text": "710638",
+            "prompt_sha256": "c40c8baf22c4a45590d30a327475c9f2163af28cee13baef0bf290cd74779074",
+            "output_sha256": "4cac386c0b8783d90abab0b55d91ed878017db3723bb7c24a548b59e9811cd8b",
+            "finish": [
+              "stop"
+            ],
+            "ttft": 2.627575368154794,
+            "latency": 2.963528163265437,
+            "start": 2130159.062869664,
+            "end": 2130162.026397827
+          },
+          {
+            "response_id": "chatcmpl-auto-b633a4fadb961c8c5941600a872f8292",
+            "input_tokens": 8192,
+            "output_tokens": 7,
+            "text": "710765",
+            "prompt_sha256": "b8198a7998b20d7edd3ada87edecbce958843b6bcafcf9d4983a239c6324fa02",
+            "output_sha256": "e6319db514d30728158a3a306638d85f9c44eb72a08e3b6306867fda70359402",
+            "finish": [
+              "stop"
+            ],
+            "ttft": 5.156033423729241,
+            "latency": 5.491578811779618,
+            "start": 2130162.026772418,
+            "end": 2130167.51835123
+          },
+          {
+            "response_id": "chatcmpl-auto-da08397a607372b3815d9248ca2a1e22",
+            "input_tokens": 8192,
+            "output_tokens": 7,
+            "text": "710892",
+            "prompt_sha256": "d3f37a78f3f642d958c455757b859a222ab47784de1833847a5a5954aa37abb6",
+            "output_sha256": "9f2945cea215d6515a7b36b46b71cb0562a0629edc90aee47b435bb56f25d4a6",
+            "finish": [
+              "stop"
+            ],
+            "ttft": 5.158933185972273,
+            "latency": 5.494027787819505,
+            "start": 2130167.518741006,
+            "end": 2130173.012768794
+          },
+          {
+            "response_id": "chatcmpl-auto-97fecbe9aa565d7691c653a3b8bd5aab",
+            "input_tokens": 8192,
+            "output_tokens": 7,
+            "text": "711019",
+            "prompt_sha256": "46616386557835b6e297f422fe33ed022202e321bde2729c7232a741939c9a47",
+            "output_sha256": "a12687ff57e7602233020a95916bd75746473bbd1c262f3cb071b11de48634b7",
+            "finish": [
+              "stop"
+            ],
+            "ttft": 5.160688458010554,
+            "latency": 5.494193335995078,
+            "start": 2130173.013149366,
+            "end": 2130178.507342702
+          },
+          {
+            "response_id": "chatcmpl-auto-3d0a50b9d235c1c39d9d84ea72b4a587",
+            "input_tokens": 45056,
+            "output_tokens": 7,
+            "text": "711146",
+            "prompt_sha256": "8e7d6e535925c3552adaf57319be27d987365520fa852409366c05cf32b6c423",
+            "output_sha256": "c73f4e0e82deddf53f30ac110a0d599c2ba4b45b59b262ad3f4892b1b2373a4a",
+            "finish": [
+              "stop"
+            ],
+            "ttft": 30.41113597434014,
+            "latency": 30.746775132138282,
+            "start": 2130178.508181133,
+            "end": 2130209.254956265
+          },
+          {
+            "response_id": "chatcmpl-auto-8dc729277753824b5e95b9d415196703",
+            "input_tokens": 204800,
+            "output_tokens": 7,
+            "text": "711273",
+            "prompt_sha256": "12ba2ea94933c44aea775a49a5380161413c7d377208ae35c8ad20fab8c6f150",
+            "output_sha256": "7f9c8412ad575e46516d69c53b9e2e64a20b45f3c0a027524b3848dbd00aa21d",
+            "finish": [
+              "stop"
+            ],
+            "ttft": 158.91765078576282,
+            "latency": 159.2694528941065,
+            "start": 2130209.257666483,
+            "end": 2130368.527119377
+          }
+        ],
+        "database": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/quality/20261106_124105/qwen3.8-flash-next/parallel_1_number_11/benchmark_data.db"
+      }
+    ]
+  },
+  "statistics": "DESCRIPTIVE_SINGLE_START_WITH_PARENT_REUSE",
+  "first_request_start_gap_seconds": 1595.2454492361285,
+  "limitations": [
+    "Original whole stage remains STOPPED/COMMAND_FAILED.",
+    "Parent was reused after a concrete numerical repair; time/cold/order effects remain.",
+    "No statistical noninferiority or full five-tier/mode acceptance."
+  ]
+}

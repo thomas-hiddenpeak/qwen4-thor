@@ -1,0 +1,2 @@
+PASS kernel_cases=36 finite_bf16=3575808 repaired_bit_exact=1 canaries=1 failed_bf16_differences=4
+PASS fp32_denominators=65536 repaired_bit_exact=1 fused_differences=15157

@@ -1,0 +1,13 @@
+{
+  "small_t_generic_instructions_identical": true,
+  "large_t_denominator": "FMUL at 0x3ee0 then FADD at 0x3ef0",
+  "parent_denominator": "FMUL at 0x4020 then FADD at 0x4120",
+  "failed_denominator": "FFMA at 0x3ee0",
+  "resources": {
+    "_ZN3q4t5model50_GLOBAL__N__e0227d68_17_full_attention_cu_534254c221SparseAttentionKernelILb0EEEvPKtS4_PKiS6_S6_PtS4_iiiiS6_mi": "REG:56 STACK:0 SHARED:44992 LOCAL:0 CONSTANT[0]:988 TEXTURE:0 SURFACE:0 SAMPLER:0",
+    "_ZN3q4t5model50_GLOBAL__N__e0227d68_17_full_attention_cu_534254c221SparseAttentionKernelILb1EEEvPKtS4_PKiS6_S6_PtS4_iiiiS6_mi": "REG:56 STACK:0 SHARED:45760 LOCAL:0 CONSTANT[0]:988 TEXTURE:0 SURFACE:0 SAMPLER:0"
+  },
+  "additional_shared_bytes": 768,
+  "additional_cta_sync_per_chunk": 2,
+  "not_profile": true
+}

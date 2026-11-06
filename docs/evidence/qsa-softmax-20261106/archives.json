@@ -1,0 +1,958 @@
+{
+  "created_unix": 1793942150.3788638,
+  "input_paths": 4681,
+  "input_objects_verified": 3112,
+  "execution_files_verified": 188,
+  "archives": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/archives/inputs.tar.gz": {
+      "sha256": "22747bbb329f6a35e854dc1424cd13aa5a107954d8c267aa740d1248d3f75ead",
+      "bytes": 60386415
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/archives/execution.tar.gz": {
+      "sha256": "0c1febaf2a1f43bc66a906a19d3a4612094a3e2f3ca45b03923f57e7e80f56de",
+      "bytes": 3019996
+    }
+  },
+  "execution_records": {
+    "first/arithmetic-review/candidate-resources.txt": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/arithmetic-review/candidate-resources.txt",
+      "sha256": "bb07db862512c5c302560e7bd5323a6760899ee1cee6d0b24d435da085120c23",
+      "bytes": 29577
+    },
+    "first/arithmetic-review/candidate-sass.txt": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/arithmetic-review/candidate-sass.txt",
+      "sha256": "2e445f9b541d554c34db4dba9d888159c3b8d9a71aac85aea70b0e5e7f317495",
+      "bytes": 1007664
+    },
+    "first/arithmetic-review/parallel-softmax.txt": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/arithmetic-review/parallel-softmax.txt",
+      "sha256": "2a278362c5545f9a6f8be61114a7b4a7334ed271676a55a1a687588a11df2951",
+      "bytes": 5964
+    },
+    "first/arithmetic-review/parallel.instructions.txt": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/arithmetic-review/parallel.instructions.txt",
+      "sha256": "85f23781cc8b1e68bffe4737950a88c6596067ed913a702dd607044a59b9db2e",
+      "bytes": 65736
+    },
+    "first/arithmetic-review/parent-resources.txt": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/arithmetic-review/parent-resources.txt",
+      "sha256": "40cc195a355221829d07ac46de3926f9cb47797b402c6f369aa5d7cc04f6dc73",
+      "bytes": 29349
+    },
+    "first/arithmetic-review/parent-sass.txt": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/arithmetic-review/parent-sass.txt",
+      "sha256": "56e89d64e0f35ab93aa72200686e7365715df1c07aaf73b4e59af817942bb273",
+      "bytes": 525793
+    },
+    "first/arithmetic-review/parent-softmax.txt": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/arithmetic-review/parent-softmax.txt",
+      "sha256": "f3e77d18c4c2704e6356ae27641f756c8049dd374de213b6ccaac61c99906bfd",
+      "bytes": 11985
+    },
+    "first/arithmetic-review/parent.instructions.txt": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/arithmetic-review/parent.instructions.txt",
+      "sha256": "afe346496d5457b504b42e3d32c081c46335d2759332d70f8a9dfd862bbd2e07",
+      "bytes": 71446
+    },
+    "first/arithmetic-review/serial.instructions.txt": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/arithmetic-review/serial.instructions.txt",
+      "sha256": "afe346496d5457b504b42e3d32c081c46335d2759332d70f8a9dfd862bbd2e07",
+      "bytes": 71446
+    },
+    "first/build-command.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/build-command.json",
+      "sha256": "1df2b54484b7c4ac78482ea9a5555887fd2613422ec59c8214abdbd69f2530d8",
+      "bytes": 843
+    },
+    "first/build-exit.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/build-exit.json",
+      "sha256": "96040a84f41323ca95e14a852590d057af621a4806f93006e1d115033414abce",
+      "bytes": 274
+    },
+    "first/build.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/build.log",
+      "sha256": "e3fc5d45791dd5f597cb18e61700c2625a14e02393644e26e6db16a879a9fa0a",
+      "bytes": 11069
+    },
+    "first/configure.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/configure.log",
+      "sha256": "aedd4b25354136e1e6ebd1335f4d46e195c0604a26b375faa549d6d53530db8a",
+      "bytes": 1406
+    },
+    "first/failure-review.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/failure-review.json",
+      "sha256": "fa7597e3e24ae00c72666264e9a517e3d9eb6fe09cce9bbcbcdcbd0b4a9933b2",
+      "bytes": 24640
+    },
+    "first/input-archive.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/input-archive.json",
+      "sha256": "3edb036d443623a9e1d60c3d36c800a1cec38ad4fb002c1ba9f37f7f5c70c56c",
+      "bytes": 306
+    },
+    "first/lease/events.jsonl": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/lease/events.jsonl",
+      "sha256": "8a534fd7cc77004563eb3838638d1843406b2328ea692d740bb7e998f9711213",
+      "bytes": 91632
+    },
+    "first/lease/exit.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/lease/exit.json",
+      "sha256": "05bd9a019f85ca44cec35b829544a97499b8f4eebddb1ee1104ea8f34f369977",
+      "bytes": 763
+    },
+    "first/lease/nvml-queries.jsonl": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/lease/nvml-queries.jsonl",
+      "sha256": "279be7563dc707abe687c2ac17c8aec024e94bdf24c06b8f7c4b7d344c8a3419",
+      "bytes": 1159073
+    },
+    "first/plan.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/plan.json",
+      "sha256": "ceacfaf6a876f03019ee62302f0ded231322ee3a7dbad9c141643371ac629a07",
+      "bytes": 903762
+    },
+    "first/postflight.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/postflight.json",
+      "sha256": "923aebc27d62e6cf70a42b67f4990ac7b71e63d5474f76d379b05fd68da30e0e",
+      "bytes": 385
+    },
+    "first/run/00-plain-parent/capacity.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/capacity.json",
+      "sha256": "6ffb90c902e94076ae5d748147d10daefd134166b198fe9a64b2d2bec3ac2746",
+      "bytes": 614
+    },
+    "first/run/00-plain-parent/context-1024/20261106_123756/qwen3.8-flash-next/benchmark.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-1024/20261106_123756/qwen3.8-flash-next/benchmark.log",
+      "sha256": "54b57d37497e6357648c7e9766e9bdb1ea5500a0848848e993a67a978037293d",
+      "bytes": 9072
+    },
+    "first/run/00-plain-parent/context-1024/20261106_123756/qwen3.8-flash-next/parallel_1_number_3/benchmark_args.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-1024/20261106_123756/qwen3.8-flash-next/parallel_1_number_3/benchmark_args.json",
+      "sha256": "589e3511ab1908895432ba760d8062b9e33afc6007dc57961467c01ea2911fd8",
+      "bytes": 2485
+    },
+    "first/run/00-plain-parent/context-1024/20261106_123756/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-1024/20261106_123756/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "sha256": "2d718b6521cbb6665abff209a64afdd444df1ef9a1c243f3ba4ad1233948e2e0",
+      "bytes": 278528
+    },
+    "first/run/00-plain-parent/context-1024/20261106_123756/qwen3.8-flash-next/parallel_1_number_3/benchmark_percentile.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-1024/20261106_123756/qwen3.8-flash-next/parallel_1_number_3/benchmark_percentile.json",
+      "sha256": "66691f8438e818d0a12fc73443d4d754f469ddc7bfb6ea771a4f98b026d57d8d",
+      "bytes": 3475
+    },
+    "first/run/00-plain-parent/context-1024/20261106_123756/qwen3.8-flash-next/parallel_1_number_3/benchmark_summary.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-1024/20261106_123756/qwen3.8-flash-next/parallel_1_number_3/benchmark_summary.json",
+      "sha256": "9db3a0d3718ab5cd6ce23479d7d0117c39b69b9e505f5792e4cbb4b1e9bbb3a2",
+      "bytes": 563
+    },
+    "first/run/00-plain-parent/context-1024/20261106_123756/qwen3.8-flash-next/parallel_1_number_3/workload_throughput.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-1024/20261106_123756/qwen3.8-flash-next/parallel_1_number_3/workload_throughput.json",
+      "sha256": "49902c9db253cd323fb92a646fff169313c437e47ede2be6fe8fa1ac7997491d",
+      "bytes": 873
+    },
+    "first/run/00-plain-parent/context-1024/20261106_123756/qwen3.8-flash-next/parallel_1_number_3/workload_timeline.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-1024/20261106_123756/qwen3.8-flash-next/parallel_1_number_3/workload_timeline.json",
+      "sha256": "159ae3ef8efc10f704b946a618336f0d7b94593c8e37d307ac0d4448cf51879e",
+      "bytes": 524
+    },
+    "first/run/00-plain-parent/context-1024/20261106_123756/qwen3.8-flash-next/perf_report.html": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-1024/20261106_123756/qwen3.8-flash-next/perf_report.html",
+      "sha256": "3fb782909f77df3dfa6de93ed3979a5d467e928a32127c1763eb8384361038a2",
+      "bytes": 166313
+    },
+    "first/run/00-plain-parent/context-1024/20261106_123756/qwen3.8-flash-next/performance_summary.txt": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-1024/20261106_123756/qwen3.8-flash-next/performance_summary.txt",
+      "sha256": "8564daa3cc561aaafc28cd2b096f3a533e18a9ea9bd08bcfe589eed9e9ed21ab",
+      "bytes": 4739
+    },
+    "first/run/00-plain-parent/context-1024/client-process.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-1024/client-process.json",
+      "sha256": "0e76238beb473e6790ef8597e8da3ba183394c8a75871fc3d63b3cf7aad15c20",
+      "bytes": 330
+    },
+    "first/run/00-plain-parent/context-1024/client.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-1024/client.log",
+      "sha256": "830476077a3f955f1e35e4cd701413cfe99a15aedde3f20db4021bcca08dbd16",
+      "bytes": 16572
+    },
+    "first/run/00-plain-parent/context-1024/command.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-1024/command.json",
+      "sha256": "c52a6a0cf5ceda323690bfc4fa5126ce45050b2b39b9a905123f12eb9acf358c",
+      "bytes": 1053
+    },
+    "first/run/00-plain-parent/context-1024/responses.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-1024/responses.json",
+      "sha256": "c10a020c8f8ac61c2e17c40375ac8f286d6a2b049a0afdc6de25b430bc955084",
+      "bytes": 6656
+    },
+    "first/run/00-plain-parent/context-1024/result.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-1024/result.json",
+      "sha256": "f8910e859f211c0f4bed1aac79f5855d9a5e925d993418d09ff0802b080d9c49",
+      "bytes": 6971
+    },
+    "first/run/00-plain-parent/context-45056/20261106_123845/qwen3.8-flash-next/benchmark.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-45056/20261106_123845/qwen3.8-flash-next/benchmark.log",
+      "sha256": "2d31a554e22d923d597d54530bf24bfbc692f8a97e05e621bc7c173446e6141a",
+      "bytes": 9628
+    },
+    "first/run/00-plain-parent/context-45056/20261106_123845/qwen3.8-flash-next/parallel_1_number_3/benchmark_args.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-45056/20261106_123845/qwen3.8-flash-next/parallel_1_number_3/benchmark_args.json",
+      "sha256": "3073aa941d8a10a08d69cd3eec382329f6ac244b65e4ae19faa5ebfccabd4fef",
+      "bytes": 2490
+    },
+    "first/run/00-plain-parent/context-45056/20261106_123845/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-45056/20261106_123845/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "sha256": "98c21b032504bfc1f2b7d2ddc0274026dc108bc7a19cf5a71320ec40ac150188",
+      "bytes": 942080
+    },
+    "first/run/00-plain-parent/context-45056/20261106_123845/qwen3.8-flash-next/parallel_1_number_3/benchmark_percentile.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-45056/20261106_123845/qwen3.8-flash-next/parallel_1_number_3/benchmark_percentile.json",
+      "sha256": "a76e897f356b89bf49ea8d3c6d06cc91052ab2895092850fc73ad2754d131bf9",
+      "bytes": 3540
+    },
+    "first/run/00-plain-parent/context-45056/20261106_123845/qwen3.8-flash-next/parallel_1_number_3/benchmark_summary.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-45056/20261106_123845/qwen3.8-flash-next/parallel_1_number_3/benchmark_summary.json",
+      "sha256": "52db8e473be6e8de0f620634eeb2331f13f2a47fa4cb11fb242698c7ca99c8cc",
+      "bytes": 569
+    },
+    "first/run/00-plain-parent/context-45056/20261106_123845/qwen3.8-flash-next/parallel_1_number_3/workload_throughput.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-45056/20261106_123845/qwen3.8-flash-next/parallel_1_number_3/workload_throughput.json",
+      "sha256": "9c4355bcfef9be3225c663a3e6384dfe1b16173b8ba51c1f91de5635de9383fa",
+      "bytes": 878
+    },
+    "first/run/00-plain-parent/context-45056/20261106_123845/qwen3.8-flash-next/parallel_1_number_3/workload_timeline.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-45056/20261106_123845/qwen3.8-flash-next/parallel_1_number_3/workload_timeline.json",
+      "sha256": "7e04b339f5a962d51b7c05a6928040cfd8daa8b7ffb3e9809ef8bb1f9df02228",
+      "bytes": 530
+    },
+    "first/run/00-plain-parent/context-45056/20261106_123845/qwen3.8-flash-next/perf_report.html": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-45056/20261106_123845/qwen3.8-flash-next/perf_report.html",
+      "sha256": "568dbe523cf58319c271e7a90a731789093e516bed87c6a5de2e9d1720965ae3",
+      "bytes": 166418
+    },
+    "first/run/00-plain-parent/context-45056/20261106_123845/qwen3.8-flash-next/performance_summary.txt": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-45056/20261106_123845/qwen3.8-flash-next/performance_summary.txt",
+      "sha256": "c9c58b1e05c13ce654d9822f3959bd3319a79f746ec59c94a1dacf1e55db877c",
+      "bytes": 4875
+    },
+    "first/run/00-plain-parent/context-45056/client-process.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-45056/client-process.json",
+      "sha256": "016014ff160f64016dd6b82ae5267ccc7582cd4844d8ca023cac61a667f738f8",
+      "bytes": 330
+    },
+    "first/run/00-plain-parent/context-45056/client.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-45056/client.log",
+      "sha256": "152354837e517e10ae3daf94c2c6d46234e9e43820ec82cabe3068e3bb31af1d",
+      "bytes": 17557
+    },
+    "first/run/00-plain-parent/context-45056/command.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-45056/command.json",
+      "sha256": "e9ee4f0eb3dfa8dfbd1aa9d99185ec99e6e7ee91942c93195efd2fab076e91c1",
+      "bytes": 1058
+    },
+    "first/run/00-plain-parent/context-45056/responses.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-45056/responses.json",
+      "sha256": "83d3eb1eb9c4c7752561e2e0ad4737f8f52ee066cf0e74457fa37b34af7feeaf",
+      "bytes": 7560
+    },
+    "first/run/00-plain-parent/context-45056/result.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/context-45056/result.json",
+      "sha256": "c31b0d9c7e438b49cbf115e867b9ebc32321f368da07a246cd8518bfd2651959",
+      "bytes": 7876
+    },
+    "first/run/00-plain-parent/events.jsonl": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/events.jsonl",
+      "sha256": "047c3cc82f647b197500b5f58745a55df04ec5323ade527b8f0c9e676e4a787d",
+      "bytes": 3122
+    },
+    "first/run/00-plain-parent/exit.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/exit.json",
+      "sha256": "8f2474fcda3bf14dd6c2ee4e08c371ac86ecc689931a85e93de05e8a5cd25e0c",
+      "bytes": 74
+    },
+    "first/run/00-plain-parent/quality/20261106_124105/qwen3.8-flash-next/benchmark.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/quality/20261106_124105/qwen3.8-flash-next/benchmark.log",
+      "sha256": "80653fcc0332e7a539df48be56cb6bfd20bafa6d610277ed5d38f605330a5a33",
+      "bytes": 9536
+    },
+    "first/run/00-plain-parent/quality/20261106_124105/qwen3.8-flash-next/parallel_1_number_11/benchmark_args.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/quality/20261106_124105/qwen3.8-flash-next/parallel_1_number_11/benchmark_args.json",
+      "sha256": "0a74fd08f571a98ccea169b2b8687b38d371b21a8003c4c41f48f739e87c6716",
+      "bytes": 2476
+    },
+    "first/run/00-plain-parent/quality/20261106_124105/qwen3.8-flash-next/parallel_1_number_11/benchmark_data.db": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/quality/20261106_124105/qwen3.8-flash-next/parallel_1_number_11/benchmark_data.db",
+      "sha256": "598d38028727161317e220d2fc8506c029e45705940afa8d0eeb73ebf5c5a93f",
+      "bytes": 1257472
+    },
+    "first/run/00-plain-parent/quality/20261106_124105/qwen3.8-flash-next/parallel_1_number_11/benchmark_percentile.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/quality/20261106_124105/qwen3.8-flash-next/parallel_1_number_11/benchmark_percentile.json",
+      "sha256": "9136e0f3ebe3cb7e101458ce0dcdd1d19699450db315bbacf6f6b567abd2f94c",
+      "bytes": 3491
+    },
+    "first/run/00-plain-parent/quality/20261106_124105/qwen3.8-flash-next/parallel_1_number_11/benchmark_summary.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/quality/20261106_124105/qwen3.8-flash-next/parallel_1_number_11/benchmark_summary.json",
+      "sha256": "9ad08900bd7af8a13ffaef84904cb48ec2d4120d601994d585c6d33a24159dbc",
+      "bytes": 639
+    },
+    "first/run/00-plain-parent/quality/20261106_124105/qwen3.8-flash-next/parallel_1_number_11/workload_throughput.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/quality/20261106_124105/qwen3.8-flash-next/parallel_1_number_11/workload_throughput.json",
+      "sha256": "c56f9df6c237d47cbe7ea520f3d31b6e3656bf2a4b8e64f39d51a67cc3b7e274",
+      "bytes": 886
+    },
+    "first/run/00-plain-parent/quality/20261106_124105/qwen3.8-flash-next/parallel_1_number_11/workload_timeline.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/quality/20261106_124105/qwen3.8-flash-next/parallel_1_number_11/workload_timeline.json",
+      "sha256": "6ee7ef61240ea5350e415bd48aa85b5fd26838938099af883546b37e01903ae9",
+      "bytes": 1757
+    },
+    "first/run/00-plain-parent/quality/20261106_124105/qwen3.8-flash-next/perf_report.html": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/quality/20261106_124105/qwen3.8-flash-next/perf_report.html",
+      "sha256": "135d2d3f6736ceeab3211cceb237258db82e4cc4cb74ead146eda15154186cca",
+      "bytes": 167347
+    },
+    "first/run/00-plain-parent/quality/20261106_124105/qwen3.8-flash-next/performance_summary.txt": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/quality/20261106_124105/qwen3.8-flash-next/performance_summary.txt",
+      "sha256": "a0084cf04c87aef1138d22b9f4cb02c8353e92132d99e66fa51560f9e27bc4e7",
+      "bytes": 5152
+    },
+    "first/run/00-plain-parent/quality/client-process.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/quality/client-process.json",
+      "sha256": "7903924effb680a2f6f087e356f7df5758fcefb1a9dd84cd815effabd0aeb195",
+      "bytes": 331
+    },
+    "first/run/00-plain-parent/quality/client.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/quality/client.log",
+      "sha256": "c931a9e98c2a179d01cb8b5303749bd40b86d53ef73f741ff61f444b4d850efa",
+      "bytes": 18247
+    },
+    "first/run/00-plain-parent/quality/command.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/quality/command.json",
+      "sha256": "49826decaa073d549d8205eedffe86f42c5b3fb0d6afb20c9053c4c5c1681de5",
+      "bytes": 1043
+    },
+    "first/run/00-plain-parent/quality/responses.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/quality/responses.json",
+      "sha256": "0eaa02b5b119b611cca2b93fd3619e514eee58db6bef6a399f23285bd723722f",
+      "bytes": 12296
+    },
+    "first/run/00-plain-parent/quality/result.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/quality/result.json",
+      "sha256": "8691fa499fce8694d752474a2b5c638a6deeae3d23bb114ca0057e6dbae15bd1",
+      "bytes": 13054
+    },
+    "first/run/00-plain-parent/results.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/results.json",
+      "sha256": "c1c71bf00b062ed10191471a5c33e31ba2986c949085ac1732db39174c08319d",
+      "bytes": 28907
+    },
+    "first/run/00-plain-parent/server-command.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/server-command.json",
+      "sha256": "37a3be43cac91303a38c32142e6bb37dc65b03a3879044a686c82f86c06a5230",
+      "bytes": 516
+    },
+    "first/run/00-plain-parent/server.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/server.log",
+      "sha256": "8d4e2111ac9da7d4e159f4e522b277387b91008663476c4d5c39eb1a335009aa",
+      "bytes": 40830
+    },
+    "first/run/00-plain-parent/server.pid": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/server.pid",
+      "sha256": "ae4afe7897a0151a32d1cef0c6ce781afe34e01cec962a68adb438e1248ee786",
+      "bytes": 8
+    },
+    "first/run/00-plain-parent/step.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent/step.json",
+      "sha256": "463680ec8027974d56d63544eecf2800d5bc20a2772029a5174c631563810b16",
+      "bytes": 1893
+    },
+    "first/run/00-plain-parent-command.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent-command.json",
+      "sha256": "463680ec8027974d56d63544eecf2800d5bc20a2772029a5174c631563810b16",
+      "bytes": 1893
+    },
+    "first/run/00-plain-parent-driver.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/00-plain-parent-driver.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "first/run/01-plain-candidate/capacity.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/01-plain-candidate/capacity.json",
+      "sha256": "6ffb90c902e94076ae5d748147d10daefd134166b198fe9a64b2d2bec3ac2746",
+      "bytes": 614
+    },
+    "first/run/01-plain-candidate/context-1024/20261106_124526/qwen3.8-flash-next/benchmark.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/01-plain-candidate/context-1024/20261106_124526/qwen3.8-flash-next/benchmark.log",
+      "sha256": "560a245477f3d86675aa5ffc9050bee0f9e08fccd389d94514429642e0455d80",
+      "bytes": 9087
+    },
+    "first/run/01-plain-candidate/context-1024/20261106_124526/qwen3.8-flash-next/parallel_1_number_3/benchmark_args.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/01-plain-candidate/context-1024/20261106_124526/qwen3.8-flash-next/parallel_1_number_3/benchmark_args.json",
+      "sha256": "372eaab152f3b5a467a7de3f2560db80366b134c69742f4429a92a9579ca2b38",
+      "bytes": 2488
+    },
+    "first/run/01-plain-candidate/context-1024/20261106_124526/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/01-plain-candidate/context-1024/20261106_124526/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "sha256": "a3a93618c0d85b97343bee80bc69450adcc30d748a6e03137ed1b92b62bbce8b",
+      "bytes": 278528
+    },
+    "first/run/01-plain-candidate/context-1024/20261106_124526/qwen3.8-flash-next/parallel_1_number_3/benchmark_percentile.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/01-plain-candidate/context-1024/20261106_124526/qwen3.8-flash-next/parallel_1_number_3/benchmark_percentile.json",
+      "sha256": "8464f05ed148d37091c0fd778a5dcbf9696476d25d5e570fa6a16f7aafa632af",
+      "bytes": 3470
+    },
+    "first/run/01-plain-candidate/context-1024/20261106_124526/qwen3.8-flash-next/parallel_1_number_3/benchmark_summary.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/01-plain-candidate/context-1024/20261106_124526/qwen3.8-flash-next/parallel_1_number_3/benchmark_summary.json",
+      "sha256": "542e8ea7457c6c32eb2ab5a2c8bcf967dcb3c0a3f3345a544419475b48efeff9",
+      "bytes": 561
+    },
+    "first/run/01-plain-candidate/context-1024/20261106_124526/qwen3.8-flash-next/parallel_1_number_3/workload_throughput.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/01-plain-candidate/context-1024/20261106_124526/qwen3.8-flash-next/parallel_1_number_3/workload_throughput.json",
+      "sha256": "e04d585f30180d4663a14a26aa8f68a6aabb65017c294e18f37ba88a9672f8b3",
+      "bytes": 869
+    },
+    "first/run/01-plain-candidate/context-1024/20261106_124526/qwen3.8-flash-next/parallel_1_number_3/workload_timeline.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/01-plain-candidate/context-1024/20261106_124526/qwen3.8-flash-next/parallel_1_number_3/workload_timeline.json",
+      "sha256": "983631064ffd074146ae43ffea365d8685584cd25bba0f561d57c4f64f7fda28",
+      "bytes": 525
+    },
+    "first/run/01-plain-candidate/context-1024/20261106_124526/qwen3.8-flash-next/perf_report.html": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/01-plain-candidate/context-1024/20261106_124526/qwen3.8-flash-next/perf_report.html",
+      "sha256": "a9c98b01f221d5c3f9fa61ab772c4dd3b98c5d250f0d06a0dc530f6fa2e2cb55",
+      "bytes": 166298
+    },
+    "first/run/01-plain-candidate/context-1024/20261106_124526/qwen3.8-flash-next/performance_summary.txt": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/01-plain-candidate/context-1024/20261106_124526/qwen3.8-flash-next/performance_summary.txt",
+      "sha256": "3d2021f1bed2e6abf5788a0ec9fd46f615763bea0f0d01f732a1b11799f66526",
+      "bytes": 4739
+    },
+    "first/run/01-plain-candidate/context-1024/client-process.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/01-plain-candidate/context-1024/client-process.json",
+      "sha256": "3a91c250423453a70e10e6369935adbdef3b6c70db66e960844895f026515a1c",
+      "bytes": 329
+    },
+    "first/run/01-plain-candidate/context-1024/client.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/01-plain-candidate/context-1024/client.log",
+      "sha256": "f0f6468d203c98afa47226109e2edeb16942d83e680f0afaecce7e2952746856",
+      "bytes": 16590
+    },
+    "first/run/01-plain-candidate/context-1024/command.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/01-plain-candidate/context-1024/command.json",
+      "sha256": "b8488ae536ad830d87b63b9d24fd44384a89cdfcf752f5b5bb2e6f7ab13d73e1",
+      "bytes": 1056
+    },
+    "first/run/01-plain-candidate/context-1024/responses.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/01-plain-candidate/context-1024/responses.json",
+      "sha256": "53c09721de78249b88a245fc5d5a9cb63bda03b860dad8e15e1b52ec1b39f274",
+      "bytes": 6535
+    },
+    "first/run/01-plain-candidate/context-1024/result.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/01-plain-candidate/context-1024/result.json",
+      "sha256": "a18678c344e1022e500d13f932b94dd5f21db304128e3a7ff0d5c50d4219aa74",
+      "bytes": 6850
+    },
+    "first/run/01-plain-candidate/context-1024-comparison.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/01-plain-candidate/context-1024-comparison.json",
+      "sha256": "800b09b45ba777fb0a62ea10dc5e8ec22d15d57538c019f9b2eac98f25471ad9",
+      "bytes": 50
+    },
+    "first/run/01-plain-candidate/events.jsonl": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/01-plain-candidate/events.jsonl",
+      "sha256": "bf688916171246a08d58d484a5261103383a87fe873195bb715adb1c4f7091c0",
+      "bytes": 2163
+    },
+    "first/run/01-plain-candidate/exit.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/01-plain-candidate/exit.json",
+      "sha256": "d71065ca0a0c85cad7752c08004a1997b72cdb3af18456626b4845eb50fb388b",
+      "bytes": 123
+    },
+    "first/run/01-plain-candidate/results.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/01-plain-candidate/results.json",
+      "sha256": "ebc278227bb2e1d6502ea80181506422f44f933f3a1dd6cb744a5cd78c530229",
+      "bytes": 7038
+    },
+    "first/run/01-plain-candidate/server-command.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/01-plain-candidate/server-command.json",
+      "sha256": "8a7ebb247c44977ed5cfedc55239dc319c059909b803be87ffdb1bd583117e08",
+      "bytes": 519
+    },
+    "first/run/01-plain-candidate/server.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/01-plain-candidate/server.log",
+      "sha256": "822a892a2b3773ac84e3a73f84645109ed1b3ca71ff8e7695cd5101495afa193",
+      "bytes": 9870
+    },
+    "first/run/01-plain-candidate/server.pid": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/01-plain-candidate/server.pid",
+      "sha256": "86871aa04cdba552a4e328e9220948d2135f56ca6982b9547ec04d03762cfac3",
+      "bytes": 8
+    },
+    "first/run/01-plain-candidate/step.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/01-plain-candidate/step.json",
+      "sha256": "63b4f63bf3370b7133f481624e2bc3b794426af007cdbe7ae94f0ecf9909391f",
+      "bytes": 1905
+    },
+    "first/run/01-plain-candidate-command.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/01-plain-candidate-command.json",
+      "sha256": "63b4f63bf3370b7133f481624e2bc3b794426af007cdbe7ae94f0ecf9909391f",
+      "bytes": 1905
+    },
+    "first/run/01-plain-candidate-driver.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/01-plain-candidate-driver.log",
+      "sha256": "3b5603507421e7c317dac09e613fde9b7b51155ef9b4d4a6b72a9835713ac279",
+      "bytes": 777
+    },
+    "first/run/files.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/files.json",
+      "sha256": "f55a826d5ff5731425fec19592ad78b29e6ed1c93a63f21bbb7d3c5a5ea0d8af",
+      "bytes": 11031
+    },
+    "first/run/plan.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/plan.json",
+      "sha256": "ceacfaf6a876f03019ee62302f0ded231322ee3a7dbad9c141643371ac629a07",
+      "bytes": 903762
+    },
+    "first/run/state.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/state.json",
+      "sha256": "5b2e432fe17b8fa5b890a6969037c07cc44f246a8bc3b2d0b32cf098880f8ccd",
+      "bytes": 460
+    },
+    "first/run/telemetry-summary.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/telemetry-summary.json",
+      "sha256": "eaa816dfc07febdc8bcda8ed25c366b813eff52d3b01a7cd32a0a018c787781a",
+      "bytes": 2481
+    },
+    "first/run/unified-memory.jsonl": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-20261106/run/unified-memory.jsonl",
+      "sha256": "ff2518e9b14e92b9041e555323688e69a8aa28d41afedec16ce27f73bf6e67d3",
+      "bytes": 15679285
+    },
+    "repair/build-command.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/build-command.json",
+      "sha256": "d5f6754629ba1ca2a70140d4930c7fd241fc7f9a90078e2565a15ea55f6ba91e",
+      "bytes": 857
+    },
+    "repair/build-exit.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/build-exit.json",
+      "sha256": "903fe0d26d74e0526efc77f8df05004beccb792123ae9589fdf2d5d7a19b43d8",
+      "bytes": 274
+    },
+    "repair/build.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/build.log",
+      "sha256": "48ff7ff6eaad5671b7fdedfd97a957b9a0207019d73d7ffd11a9c0c3cc408aa7",
+      "bytes": 11069
+    },
+    "repair/compiled-review.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/compiled-review.json",
+      "sha256": "0493465dfdab973eca8798586f85625b692fff0864cb2a369acaa5aa7cec897d",
+      "bytes": 772
+    },
+    "repair/configure.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/configure.log",
+      "sha256": "87a0eaf147f901969679f84ef9adf20aac4e99dd3de7e84a58501e7dbfc7b98b",
+      "bytes": 1420
+    },
+    "repair/contract/build.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/contract/build.json",
+      "sha256": "fdbe603a00b041682bc536d7261f227c048cfcba0c83c0b233d7addf99494f07",
+      "bytes": 859
+    },
+    "repair/contract/build.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/contract/build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "repair/contract/comparison.cu": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/contract/comparison.cu",
+      "sha256": "eff3af9ae4c4fcdb7a4f39af3354912fc9c62d0e94b0cb69cfc04d52d2d6621b",
+      "bytes": 55265
+    },
+    "repair/contract/failed.cu.txt": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/contract/failed.cu.txt",
+      "sha256": "d043d5867f605c52a5d20e334f9ea17e770f49497c2d9fdf16abc06d1365d395",
+      "bytes": 92538
+    },
+    "repair/contract/files.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/contract/files.json",
+      "sha256": "6c272eb8492b58179b5e0056a79594d848a8fdb26490eaa584d9a3a45070bdc7",
+      "bytes": 2461
+    },
+    "repair/contract/parent.cu.txt": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/contract/parent.cu.txt",
+      "sha256": "3b29cff023b0e041e3eb1d40d20c646c43d431b180f6b7fbc9fe2fe5e20409e4",
+      "bytes": 90888
+    },
+    "repair/contract/repaired.cu.txt": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/contract/repaired.cu.txt",
+      "sha256": "4c45769c92f86367f5c34628a7b9af20892383077938868ba2a9afad5dacf743",
+      "bytes": 92705
+    },
+    "repair/contract/result.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/contract/result.json",
+      "sha256": "c35de2580bcd99504c1e8ba945653702fd37e467774c6435a594031f8baf5b7c",
+      "bytes": 124
+    },
+    "repair/contract/result.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/contract/result.log",
+      "sha256": "833a3b84aa0706dbdfc688a7d0741a0b6eb10d32d4f90f5c1d01f64995b47b15",
+      "bytes": 173
+    },
+    "repair/contract-lease/events.jsonl": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/contract-lease/events.jsonl",
+      "sha256": "5027e9a32c988a5cbe23759f38079e6b839546a43ea6d3521a27e5426317d77d",
+      "bytes": 1100
+    },
+    "repair/contract-lease/exit.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/contract-lease/exit.json",
+      "sha256": "d163203bd8b7df784cce1dd534089f3ba640ac4945769e705c65443a57bb2b09",
+      "bytes": 618
+    },
+    "repair/contract-lease/nvml-queries.jsonl": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/contract-lease/nvml-queries.jsonl",
+      "sha256": "6f5728cd221969c49feb8312ff85511a952b454548b2484cf8d7fc982fa25bb8",
+      "bytes": 6708
+    },
+    "repair/decision.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/decision.json",
+      "sha256": "ff8a5eb8c5fcfdb39d597ff0dc7e77fd23203dd1349b6957e4de146ef2b68d7f",
+      "bytes": 44107
+    },
+    "repair/lease/events.jsonl": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/lease/events.jsonl",
+      "sha256": "9f87b45582a579c9211771f826fc3eec243ae05c6a06602189720dc810064f32",
+      "bytes": 76751
+    },
+    "repair/lease/exit.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/lease/exit.json",
+      "sha256": "acfc3034ca8258dccbc58f452d15e560085b677fd17d910220be330ef8d47d78",
+      "bytes": 765
+    },
+    "repair/lease/nvml-queries.jsonl": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/lease/nvml-queries.jsonl",
+      "sha256": "2b7c6b5ca0e01affff968bd8da3576c8495c512136d54e513ef12bb043a6463c",
+      "bytes": 969838
+    },
+    "repair/plan.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/plan.json",
+      "sha256": "2540780c61e3c901edf805894147ce6814dd79c4986d6426e12d544b08969b9b",
+      "bytes": 930968
+    },
+    "repair/postflight.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/postflight.json",
+      "sha256": "5f50c3aaaac8f042de333c6fb7706f05c586eaf31047a1e240f8ab0fc1c12696",
+      "bytes": 544
+    },
+    "repair/release-review.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/release-review.json",
+      "sha256": "f0096b9ea9a6021ba78ea3df8f05ce32acecd8b22d6cbf803c8b5491749c6610",
+      "bytes": 3765
+    },
+    "repair/repaired-resources.txt": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/repaired-resources.txt",
+      "sha256": "9bbffb115f418e1d32a81ef8f8f0d6aef14ec285edfd36328bd020581a730df8",
+      "bytes": 4467
+    },
+    "repair/repaired-sass.txt": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/repaired-sass.txt",
+      "sha256": "6a6f17fa13ac15711563c7cb1d675d503c76572578be0ee732dd63c0c76a8794",
+      "bytes": 4849314
+    },
+    "repair/run/00-plain-repaired/capacity.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/capacity.json",
+      "sha256": "6ffb90c902e94076ae5d748147d10daefd134166b198fe9a64b2d2bec3ac2746",
+      "bytes": 614
+    },
+    "repair/run/00-plain-repaired/context-1024/20261106_130431/qwen3.8-flash-next/benchmark.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-1024/20261106_130431/qwen3.8-flash-next/benchmark.log",
+      "sha256": "9ab8c9ecd14e022541c10b04e4886d4c58537772e475429dc548da0d1b17e7a6",
+      "bytes": 9124
+    },
+    "repair/run/00-plain-repaired/context-1024/20261106_130431/qwen3.8-flash-next/parallel_1_number_3/benchmark_args.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-1024/20261106_130431/qwen3.8-flash-next/parallel_1_number_3/benchmark_args.json",
+      "sha256": "3a9fc8f22d1168cc4244300b0de7a7d66c7764c44bb2083ce6b2b1ca1e7bd269",
+      "bytes": 2501
+    },
+    "repair/run/00-plain-repaired/context-1024/20261106_130431/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-1024/20261106_130431/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "sha256": "f8d1152d2a7896cb34215606d8d4f67ce1a9a7faf7618831d11b86b4dfde9ef4",
+      "bytes": 278528
+    },
+    "repair/run/00-plain-repaired/context-1024/20261106_130431/qwen3.8-flash-next/parallel_1_number_3/benchmark_percentile.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-1024/20261106_130431/qwen3.8-flash-next/parallel_1_number_3/benchmark_percentile.json",
+      "sha256": "32dad2836b616448fff20d88809b097f67132d4bd451016abd5ee41136e72183",
+      "bytes": 3486
+    },
+    "repair/run/00-plain-repaired/context-1024/20261106_130431/qwen3.8-flash-next/parallel_1_number_3/benchmark_summary.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-1024/20261106_130431/qwen3.8-flash-next/parallel_1_number_3/benchmark_summary.json",
+      "sha256": "815d5821458b7a49ba043b0373aa79234af267e65f25b1035384f49627c92c2d",
+      "bytes": 563
+    },
+    "repair/run/00-plain-repaired/context-1024/20261106_130431/qwen3.8-flash-next/parallel_1_number_3/workload_throughput.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-1024/20261106_130431/qwen3.8-flash-next/parallel_1_number_3/workload_throughput.json",
+      "sha256": "132d7810b4744343eb37ceb9066c3b84b05ba7784e5116cbb0e44b615c72b143",
+      "bytes": 875
+    },
+    "repair/run/00-plain-repaired/context-1024/20261106_130431/qwen3.8-flash-next/parallel_1_number_3/workload_timeline.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-1024/20261106_130431/qwen3.8-flash-next/parallel_1_number_3/workload_timeline.json",
+      "sha256": "c25431abad5962ad5359aa1e3239a40e9dae911048b95ee2c10a654113d18124",
+      "bytes": 525
+    },
+    "repair/run/00-plain-repaired/context-1024/20261106_130431/qwen3.8-flash-next/perf_report.html": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-1024/20261106_130431/qwen3.8-flash-next/perf_report.html",
+      "sha256": "309e9c800557525280ab348717b047618d352e390fb8618633cfe0e368f914a8",
+      "bytes": 166327
+    },
+    "repair/run/00-plain-repaired/context-1024/20261106_130431/qwen3.8-flash-next/performance_summary.txt": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-1024/20261106_130431/qwen3.8-flash-next/performance_summary.txt",
+      "sha256": "54be62cb8ed9ec703327531e544ce56f1979a1cdc442395c2fb2fd49a6f19832",
+      "bytes": 4739
+    },
+    "repair/run/00-plain-repaired/context-1024/client-process.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-1024/client-process.json",
+      "sha256": "f90f3059dbb0ddccc93f027bf56802248613b1fb6fec1657b45456ec9cff601f",
+      "bytes": 330
+    },
+    "repair/run/00-plain-repaired/context-1024/client.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-1024/client.log",
+      "sha256": "0a05386e68d970fc030fee860e1c77d3565b5ce80bccb226067a05af495d6411",
+      "bytes": 16633
+    },
+    "repair/run/00-plain-repaired/context-1024/command.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-1024/command.json",
+      "sha256": "c6aa038d6c1e61c82620fab881c89af748cb0df05240fefab73476b2f16d2995",
+      "bytes": 1069
+    },
+    "repair/run/00-plain-repaired/context-1024/responses.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-1024/responses.json",
+      "sha256": "28b6d5757650e83ebfb82a1a5bb786fa68a0fa203a4cb2e8f7c3353fda25a7b3",
+      "bytes": 6656
+    },
+    "repair/run/00-plain-repaired/context-1024/result.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-1024/result.json",
+      "sha256": "156bfd10b838d4c74a65182a18f93ce857caf58690e76790f66f4b3614aa06e2",
+      "bytes": 6971
+    },
+    "repair/run/00-plain-repaired/context-1024-comparison.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-1024-comparison.json",
+      "sha256": "b3ce563f6549c21d77e426e820d16de7456900a8534f988f0636967aaf1c6972",
+      "bytes": 49
+    },
+    "repair/run/00-plain-repaired/context-45056/20261106_130520/qwen3.8-flash-next/benchmark.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-45056/20261106_130520/qwen3.8-flash-next/benchmark.log",
+      "sha256": "cc246f68f1f88c6604016a351c777c703ba18d5bae68b181e1ed8213f3ad7f00",
+      "bytes": 9585
+    },
+    "repair/run/00-plain-repaired/context-45056/20261106_130520/qwen3.8-flash-next/parallel_1_number_3/benchmark_args.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-45056/20261106_130520/qwen3.8-flash-next/parallel_1_number_3/benchmark_args.json",
+      "sha256": "d8c5779a7a85080be170307dbd4233c5d295f755a1a7f7f764e726afbe5e46c4",
+      "bytes": 2506
+    },
+    "repair/run/00-plain-repaired/context-45056/20261106_130520/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-45056/20261106_130520/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "sha256": "ef1e962c288ba14e4b375a2d50a36b88555b4df99da5d6e2fd9b475f3057b392",
+      "bytes": 942080
+    },
+    "repair/run/00-plain-repaired/context-45056/20261106_130520/qwen3.8-flash-next/parallel_1_number_3/benchmark_percentile.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-45056/20261106_130520/qwen3.8-flash-next/parallel_1_number_3/benchmark_percentile.json",
+      "sha256": "a0a100ed171ae910029cc2b2f00080774aa5904d5fe645dd9c56b91096a64e14",
+      "bytes": 3531
+    },
+    "repair/run/00-plain-repaired/context-45056/20261106_130520/qwen3.8-flash-next/parallel_1_number_3/benchmark_summary.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-45056/20261106_130520/qwen3.8-flash-next/parallel_1_number_3/benchmark_summary.json",
+      "sha256": "d6902f581b6969822108418ddbd23ca566fdbbfa24105877ce3f08bfe0fc2716",
+      "bytes": 569
+    },
+    "repair/run/00-plain-repaired/context-45056/20261106_130520/qwen3.8-flash-next/parallel_1_number_3/workload_throughput.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-45056/20261106_130520/qwen3.8-flash-next/parallel_1_number_3/workload_throughput.json",
+      "sha256": "fc2526e17851a66cbe7df4fef30e4212d53789c549dec88b66ac107155b7b5da",
+      "bytes": 879
+    },
+    "repair/run/00-plain-repaired/context-45056/20261106_130520/qwen3.8-flash-next/parallel_1_number_3/workload_timeline.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-45056/20261106_130520/qwen3.8-flash-next/parallel_1_number_3/workload_timeline.json",
+      "sha256": "64b4c96da3684a238a03cfcfb5aedaeff4f45a18b7cca28d19014895831e613a",
+      "bytes": 531
+    },
+    "repair/run/00-plain-repaired/context-45056/20261106_130520/qwen3.8-flash-next/perf_report.html": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-45056/20261106_130520/qwen3.8-flash-next/perf_report.html",
+      "sha256": "6e9e5c19997eb2ddfc9abf2f18942e930bdf54899560c3c91ca5b7dc19a55d96",
+      "bytes": 166400
+    },
+    "repair/run/00-plain-repaired/context-45056/20261106_130520/qwen3.8-flash-next/performance_summary.txt": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-45056/20261106_130520/qwen3.8-flash-next/performance_summary.txt",
+      "sha256": "bd2fb2322d3b3a6ce9181586c2d6e04635f5ac8a3ca9a8a25412f260a1199772",
+      "bytes": 4773
+    },
+    "repair/run/00-plain-repaired/context-45056/client-process.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-45056/client-process.json",
+      "sha256": "f58d9fcc52e58aec61a054ce3a114ba291a2796e0628b2c4816fc91dd07f73a7",
+      "bytes": 331
+    },
+    "repair/run/00-plain-repaired/context-45056/client.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-45056/client.log",
+      "sha256": "c277fb5237eb9066c18e4202c9ad7ee1817fda0d4f1a16c9c80cb6fe22f5de07",
+      "bytes": 17421
+    },
+    "repair/run/00-plain-repaired/context-45056/command.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-45056/command.json",
+      "sha256": "a802a87f2b9101d63a46707897ecde247918daa0568ae10c50e5a6fd5e16d12e",
+      "bytes": 1074
+    },
+    "repair/run/00-plain-repaired/context-45056/responses.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-45056/responses.json",
+      "sha256": "6ad7407a6dcdc25c6701b76992191d6ece5af521debaf3295d582b5bfec67fbb",
+      "bytes": 7566
+    },
+    "repair/run/00-plain-repaired/context-45056/result.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-45056/result.json",
+      "sha256": "9412ee4c0ba06595b8f301673b128fe0aa110e11d9a8c73cc15b3ad3c0b5c3f3",
+      "bytes": 7882
+    },
+    "repair/run/00-plain-repaired/context-45056-comparison.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/context-45056-comparison.json",
+      "sha256": "b3ce563f6549c21d77e426e820d16de7456900a8534f988f0636967aaf1c6972",
+      "bytes": 49
+    },
+    "repair/run/00-plain-repaired/events.jsonl": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/events.jsonl",
+      "sha256": "7f68eb2095d7d79e6da8a4d9914f8f071c8e46831bf235b0209e72914ac21b10",
+      "bytes": 3120
+    },
+    "repair/run/00-plain-repaired/exit.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/exit.json",
+      "sha256": "8f2474fcda3bf14dd6c2ee4e08c371ac86ecc689931a85e93de05e8a5cd25e0c",
+      "bytes": 74
+    },
+    "repair/run/00-plain-repaired/quality/20261106_130738/qwen3.8-flash-next/benchmark.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/quality/20261106_130738/qwen3.8-flash-next/benchmark.log",
+      "sha256": "3f29c7b7368594ebddbe3b7c7381e4b1bdcc3e62f5292953802b4536253bc3c6",
+      "bytes": 9531
+    },
+    "repair/run/00-plain-repaired/quality/20261106_130738/qwen3.8-flash-next/parallel_1_number_11/benchmark_args.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/quality/20261106_130738/qwen3.8-flash-next/parallel_1_number_11/benchmark_args.json",
+      "sha256": "366411348454b1fa45780418d330cfbbd42476eb7c7d89d6a3ad9215ac730c56",
+      "bytes": 2492
+    },
+    "repair/run/00-plain-repaired/quality/20261106_130738/qwen3.8-flash-next/parallel_1_number_11/benchmark_data.db": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/quality/20261106_130738/qwen3.8-flash-next/parallel_1_number_11/benchmark_data.db",
+      "sha256": "79521a71f293bd51c7a1f48078074f9ce5ab61fd1c34fc0d927195ead3dd6f18",
+      "bytes": 1257472
+    },
+    "repair/run/00-plain-repaired/quality/20261106_130738/qwen3.8-flash-next/parallel_1_number_11/benchmark_percentile.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/quality/20261106_130738/qwen3.8-flash-next/parallel_1_number_11/benchmark_percentile.json",
+      "sha256": "03cf0d0af173195647b41bb37f82f24194f47e58eae22484b84b37ff033783d6",
+      "bytes": 3485
+    },
+    "repair/run/00-plain-repaired/quality/20261106_130738/qwen3.8-flash-next/parallel_1_number_11/benchmark_summary.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/quality/20261106_130738/qwen3.8-flash-next/parallel_1_number_11/benchmark_summary.json",
+      "sha256": "6991977ca5adba824988221f5e85fe23527650dad5506fa40a93feda774586bd",
+      "bytes": 636
+    },
+    "repair/run/00-plain-repaired/quality/20261106_130738/qwen3.8-flash-next/parallel_1_number_11/workload_throughput.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/quality/20261106_130738/qwen3.8-flash-next/parallel_1_number_11/workload_throughput.json",
+      "sha256": "7b3670782206c83404aaf5eb449eef085f89e0f66a3fb44f60397d6d68cf184b",
+      "bytes": 886
+    },
+    "repair/run/00-plain-repaired/quality/20261106_130738/qwen3.8-flash-next/parallel_1_number_11/workload_timeline.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/quality/20261106_130738/qwen3.8-flash-next/parallel_1_number_11/workload_timeline.json",
+      "sha256": "cc405491ab5be82de91914547b0e4a263b3806bb43f8a2a58052b6ea4cf04648",
+      "bytes": 1758
+    },
+    "repair/run/00-plain-repaired/quality/20261106_130738/qwen3.8-flash-next/perf_report.html": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/quality/20261106_130738/qwen3.8-flash-next/perf_report.html",
+      "sha256": "1b8d3cadb89b576795f669fa67fc71582fabad8c9952ab7c1035f1d1dd99f96c",
+      "bytes": 167331
+    },
+    "repair/run/00-plain-repaired/quality/20261106_130738/qwen3.8-flash-next/performance_summary.txt": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/quality/20261106_130738/qwen3.8-flash-next/performance_summary.txt",
+      "sha256": "c9beaefda1499ed924b62df88e0a099c7acf9a8ca8ee9acae1efc8ef9b0d460d",
+      "bytes": 5095
+    },
+    "repair/run/00-plain-repaired/quality/client-process.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/quality/client-process.json",
+      "sha256": "894ea6e4aa7ae403f2b00420c174bc858f9195ca5b83f58b5e9c3612a6696383",
+      "bytes": 331
+    },
+    "repair/run/00-plain-repaired/quality/client.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/quality/client.log",
+      "sha256": "ea227884bb1e6001c3d1973e310942707e3785f6aec3fa13b67fbe244b7efd93",
+      "bytes": 18194
+    },
+    "repair/run/00-plain-repaired/quality/command.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/quality/command.json",
+      "sha256": "c5e1f9be7b78e0476a0b3e0351d7940b246ec7aaa4f816fe4d1701e39e806f37",
+      "bytes": 1059
+    },
+    "repair/run/00-plain-repaired/quality/responses.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/quality/responses.json",
+      "sha256": "7159dc11631c1bdcfc2031c74a64a413df3dbf373461c1b17ff95a70bc33235e",
+      "bytes": 12322
+    },
+    "repair/run/00-plain-repaired/quality/result.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/quality/result.json",
+      "sha256": "ed2b84b0376c95f49bc420c4438775ef12dfde16da1534078cc68c1185ac0234",
+      "bytes": 13080
+    },
+    "repair/run/00-plain-repaired/quality-comparison.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/quality-comparison.json",
+      "sha256": "b3ce563f6549c21d77e426e820d16de7456900a8534f988f0636967aaf1c6972",
+      "bytes": 49
+    },
+    "repair/run/00-plain-repaired/results.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/results.json",
+      "sha256": "8d45f355196c0d56eaae0cc86790db617726a5920af500cb64481b74fd1e7ce9",
+      "bytes": 28939
+    },
+    "repair/run/00-plain-repaired/server-command.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/server-command.json",
+      "sha256": "8fdb88eb8d064bba9a142f5656b79ae39e3ff560fbafabe96b6f56c5f4dbd60e",
+      "bytes": 526
+    },
+    "repair/run/00-plain-repaired/server.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/server.log",
+      "sha256": "2e1446111ebab29a00da0937a101734d13b2f282a894fcdc656780078a9ecfbe",
+      "bytes": 40829
+    },
+    "repair/run/00-plain-repaired/server.pid": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/server.pid",
+      "sha256": "1204b490c1e9dcd3d008dce66f963d4a35cd0acfbad3392da2dce91da9d01823",
+      "bytes": 8
+    },
+    "repair/run/00-plain-repaired/step.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired/step.json",
+      "sha256": "d72d85b34e5c89692f0c65f90f35ff3527336a3d012010b62b177c63a4be72ce",
+      "bytes": 1938
+    },
+    "repair/run/00-plain-repaired-command.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired-command.json",
+      "sha256": "d72d85b34e5c89692f0c65f90f35ff3527336a3d012010b62b177c63a4be72ce",
+      "bytes": 1938
+    },
+    "repair/run/00-plain-repaired-driver.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/00-plain-repaired-driver.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "repair/run/files.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/files.json",
+      "sha256": "e1d2b2df2b793021495da785754c0fd032700241da32ccde42f60e820aef9537",
+      "bytes": 8158
+    },
+    "repair/run/plan.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/plan.json",
+      "sha256": "2540780c61e3c901edf805894147ce6814dd79c4986d6426e12d544b08969b9b",
+      "bytes": 930968
+    },
+    "repair/run/state.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/state.json",
+      "sha256": "df5f5ca1ee528386e9dae1b03855f5db6c52bd32a04c6a8aff8f975fc5145cb3",
+      "bytes": 416
+    },
+    "repair/run/telemetry-summary.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/telemetry-summary.json",
+      "sha256": "8be47840eca8ee023cf31dd0d6fbf7ef0462eb819a0d9925a1db855fc54cf61c",
+      "bytes": 2490
+    },
+    "repair/run/unified-memory.jsonl": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-repair-20261106/run/unified-memory.jsonl",
+      "sha256": "f2707f1c70e8faa34a6c6b5b1a1123001c3ed35432998870e623e64a42d67919",
+      "bytes": 13205990
+    }
+  }
+}

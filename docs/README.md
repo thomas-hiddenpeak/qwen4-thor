@@ -1,5 +1,9 @@
 # docs/ — 开发记录文档体系
 
+[大T sparse softmax首验与FMA舍入修复](QSA_SOFTMAX_RESULT_2026-11-06.md)：
+修复后45K TTFT下降2.653%，未达事前3%投入门；37HTTP与有限数值
+检查完成，首次失败保留，不进入完整B，默认保持。
+
 [全部参考项目最新增量审查与有界改进目标](REFERENCE_REFRESH_2026-11-06.md)：
 20仓及2项参考资料；层类型兼容与QSA细分归因准备，不追加测试。
 [两个工作包开发准备结果与待验清单](REFERENCE_REFRESH_DEVELOPMENT_2026-11-06.md)。

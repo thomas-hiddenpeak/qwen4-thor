@@ -1,0 +1,58 @@
+{
+  "unix_seconds": 1793942041.8416882,
+  "observed_owned_identities": 15,
+  "owned_identities": {
+    "3885966": 212992383,
+    "3885972": 212992410,
+    "3885974": 212992420,
+    "3887230": 212995672,
+    "3887605": 213000583,
+    "3888019": 213014554,
+    "3888587": 213037033,
+    "3888589": 213037044,
+    "3889350": 213040646,
+    "3894674": 213151397,
+    "3894680": 213151432,
+    "3894682": 213151442,
+    "3895588": 213155195,
+    "3895735": 213160100,
+    "3896068": 213173830
+  },
+  "live_owned": [],
+  "port_8762_listeners": "",
+  "nvml": {
+    "status": "OK",
+    "pids": [],
+    "request_id": "2303b1d5418f36f0b5f718b0c1cdf2ce",
+    "worker_pid": 3896765,
+    "stdout": "{\"request_id\": \"2303b1d5418f36f0b5f718b0c1cdf2ce\", \"monotonic\": 2132124.288157562, \"event\": \"begin\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"2303b1d5418f36f0b5f718b0c1cdf2ce\", \"monotonic\": 2132124.295899091, \"event\": \"end\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"2303b1d5418f36f0b5f718b0c1cdf2ce\", \"monotonic\": 2132124.295931378, \"event\": \"begin\", \"api\": \"init\"}\n{\"request_id\": \"2303b1d5418f36f0b5f718b0c1cdf2ce\", \"monotonic\": 2132124.299954713, \"event\": \"end\", \"api\": \"init\", \"seconds\": 0.004010417964309454}\n{\"request_id\": \"2303b1d5418f36f0b5f718b0c1cdf2ce\", \"monotonic\": 2132124.300011472, \"event\": \"begin\", \"api\": \"device_count\"}\n{\"request_id\": \"2303b1d5418f36f0b5f718b0c1cdf2ce\", \"monotonic\": 2132124.30006199, \"event\": \"end\", \"api\": \"device_count\", \"seconds\": 3.830390051007271e-05}\n{\"request_id\": \"2303b1d5418f36f0b5f718b0c1cdf2ce\", \"monotonic\": 2132124.300077804, \"event\": \"begin\", \"api\": \"handle[0]\"}\n{\"request_id\": \"2303b1d5418f36f0b5f718b0c1cdf2ce\", \"monotonic\": 2132124.307185661, \"event\": \"end\", \"api\": \"handle[0]\", \"seconds\": 0.007100199349224567}\n{\"request_id\": \"2303b1d5418f36f0b5f718b0c1cdf2ce\", \"monotonic\": 2132124.307207031, \"event\": \"begin\", \"api\": \"compute_v3[0]\"}\n{\"request_id\": \"2303b1d5418f36f0b5f718b0c1cdf2ce\", \"monotonic\": 2132124.308943518, \"event\": \"end\", \"api\": \"compute_v3[0]\", \"seconds\": 0.0017291358672082424}\n{\"request_id\": \"2303b1d5418f36f0b5f718b0c1cdf2ce\", \"monotonic\": 2132124.308963619, \"event\": \"begin\", \"api\": \"shutdown\"}\n{\"request_id\": \"2303b1d5418f36f0b5f718b0c1cdf2ce\", \"monotonic\": 2132124.310266366, \"event\": \"end\", \"api\": \"shutdown\", \"seconds\": 0.0012955153360962868}\n{\"request_id\": \"2303b1d5418f36f0b5f718b0c1cdf2ce\", \"monotonic\": 2132124.310287866, \"event\": \"result\", \"status\": \"OK\", \"error\": null, \"device_count\": 1, \"pids\": [], \"process_memory\": []}\n",
+    "stderr": "",
+    "returncode": 0,
+    "seconds": 0.06376948393881321,
+    "process_memory": [],
+    "device_count": 1
+  },
+  "lock": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "lock_inode": 3294067,
+  "lock_acquirable": true,
+  "leases": {
+    "first": {
+      "status": "COMMAND_FAILED",
+      "duration_seconds": 532.6460700137541
+    },
+    "diagnosis": {
+      "status": "COMPLETED",
+      "duration_seconds": 1.2688694088719785
+    },
+    "repair": {
+      "status": "COMPLETED",
+      "duration_seconds": 445.9777531437576
+    }
+  },
+  "total_lease_seconds": 979.8926925663836,
+  "default_sha256": "c1bdb0a7599ba3f61d9cb48597069a66f6e27e02f38cf32e495fc80059008636",
+  "sidecar_sha256": "0efc2c0dc309e42a7b7761860edce7888aa8139f5ea305f54eae054a81fdbcf3",
+  "main_runtime_paths_verified": 223,
+  "main_commit": "def8cc96e7f94b50fbc917303c8570ec23e841ea",
+  "note": "Read-only release observation plus nonblocking flock probe; no cache drop, restart or unrelated-process signal. Polling cannot exclude sub-poll interference."
+}
