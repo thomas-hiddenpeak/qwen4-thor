@@ -1,0 +1,13 @@
+{
+  "status": "PASS_INSTALLED_PAIR",
+  "pair": {
+    "q4t": "ea1b474d7d69808696e697346a60ee09bb9ecaca9bfb99925b78dcdbda7a4550",
+    "q4t.release.json": "3eb463850cf07338406b811197a68a5dcb9474ac9c2cf039470aa4f654924724"
+  },
+  "health": "CLI/identity only; same-ELF HTTP reused from phase-07",
+  "model_starts": 0,
+  "http_requests": 0,
+  "gpu_execution": false,
+  "persistent_service": false,
+  "atomicity": "individual atomic replaces; not a cross-file power-loss transaction"
+}

@@ -97,3 +97,16 @@ pool 分配/激活失败，未接受。最初 ffprobe 元数据失败也保留�
 机器声明全局 `media_acceptance: false` 保守保留，另列图片已验、视频
 数值已验/任务未验矩阵。实际交付身份和主线状态以本文件追加交付记录
 及 STATUS 为准。
+
+## 本机交付记录
+
+2026-11-07 已交付默认 ELF `ea1b474d` / sidecar `3eb46385` / 协议
+`91b619c9`。[安装记录](evidence/vision-service-v1-20261107/installation.json)
+为 PASS_INSTALLED_PAIR；241份运行来源与943原件复核，整包封印通过。
+本次仅版本CLI与身份/声明核对，新增模型/HTTP/GPU执行为0，HTTP保护
+仍引用同一ELF的phase-07。旧aa528a68/46aa73bd整对及原依赖不变。
+[收尾观察](evidence/vision-service-v1-20261107/closeout.json)确认12个自有
+waitable进程身份已退出、18146/18466无监听、GPU观察为空、共享锁可用，
+恢复标记清除；无常驻服务。观察不能证明采样间隙没有其他工作负载。
+包封印与资料快照在安装前形成，保留当时“准备交付”文字；本段和独立
+安装收据补充实际结果，不改写已封存的文件。

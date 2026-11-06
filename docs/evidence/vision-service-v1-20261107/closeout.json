@@ -1,0 +1,121 @@
+{
+  "status": "PASS_SCOPED_DELIVERY_CLOSEOUT",
+  "release": {
+    "status": "PASS_PACKAGE_IDENTITIES",
+    "installed": {
+      "q4t": "ea1b474d7d69808696e697346a60ee09bb9ecaca9bfb99925b78dcdbda7a4550",
+      "q4t.release.json": "3eb463850cf07338406b811197a68a5dcb9474ac9c2cf039470aa4f654924724"
+    },
+    "pair": {
+      "old": {
+        "q4t": "aa528a6839ed629fcea2aed036f4c8f0bdc14617ac00fdc31156e6e58c3e18d0",
+        "q4t.release.json": "46aa73bd678ace6c79a8c4946c541e2e53ac7808c215374626c59c46ee90a11b"
+      },
+      "new": {
+        "q4t": "ea1b474d7d69808696e697346a60ee09bb9ecaca9bfb99925b78dcdbda7a4550",
+        "q4t.release.json": "3eb463850cf07338406b811197a68a5dcb9474ac9c2cf039470aa4f654924724"
+      },
+      "audit_sha256": "8d4c8e9e99205955c87ddc6008a5823b676eb35695f8cef3b4c28b79bbd19681",
+      "original_files": 943,
+      "runtime_sources": 241,
+      "atomicity": "individual atomic replaces; not a cross-file power-loss transaction"
+    },
+    "mixed_pair": false
+  },
+  "owned_process_observations": [
+    {
+      "evidence": "phase-01/execution/tower/waitable.json",
+      "pid": 3983714,
+      "start_ticks": 216681218,
+      "current": "absent"
+    },
+    {
+      "evidence": "phase-01/execution/codec/waitable.json",
+      "pid": 3983721,
+      "start_ticks": 216681371,
+      "current": "absent"
+    },
+    {
+      "evidence": "phase-03/execution/model/waitable.json",
+      "pid": 3984676,
+      "start_ticks": 216727125,
+      "current": "absent"
+    },
+    {
+      "evidence": "phase-04/execution/model/waitable.json",
+      "pid": 3997200,
+      "start_ticks": 216804317,
+      "current": "absent"
+    },
+    {
+      "evidence": "phase-04/execution/hf-small/waitable.json",
+      "pid": 3997188,
+      "start_ticks": 216804048,
+      "current": "absent"
+    },
+    {
+      "evidence": "phase-04/execution/hf-rectangular/waitable.json",
+      "pid": 3997194,
+      "start_ticks": 216804163,
+      "current": "absent"
+    },
+    {
+      "evidence": "phase-05/execution/model/waitable.json",
+      "pid": 4000976,
+      "start_ticks": 216864857,
+      "current": "absent"
+    },
+    {
+      "evidence": "phase-02/execution/codec/waitable.json",
+      "pid": 3983978,
+      "start_ticks": 216709145,
+      "current": "absent"
+    },
+    {
+      "evidence": "phase-05b/execution/model/waitable.json",
+      "pid": 4002090,
+      "start_ticks": 216887111,
+      "current": "absent"
+    },
+    {
+      "evidence": "phase-05b/execution/nginx/waitable.json",
+      "pid": 4002834,
+      "start_ticks": 216890177,
+      "current": "absent"
+    },
+    {
+      "evidence": "phase-07/execution/model/waitable.json",
+      "pid": 4004377,
+      "start_ticks": 217007815,
+      "current": "absent"
+    },
+    {
+      "evidence": "phase-06/execution/model/waitable.json",
+      "pid": 4003150,
+      "start_ticks": 216929418,
+      "current": "absent"
+    }
+  ],
+  "ports": [
+    18146,
+    18466
+  ],
+  "listeners": [],
+  "shared_lock_available": true,
+  "recovery_markers": [],
+  "model_starts": 0,
+  "http_requests": 0,
+  "gpu_work": false,
+  "scope": "Fresh read-only cleanup observations; not continuous absence proof",
+  "source_commit": "50ecf06b8bc2ff42abf09190d190a1746aa8fa2c",
+  "package_seal": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-production-20261106/release-v1/sealed-files.json",
+    "sha256": "cf4e16e15bae6d327e50eb75dee0605f597c8993edea69540120d50a1c4b5d7e",
+    "bytes": 36241
+  },
+  "installation_receipt": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-production-20261106/delivery-v1/install/result.json",
+    "sha256": "68dc24557d71a7c2680b0e66635ccdb533ec114d51b03ff3a99620a12cce492e",
+    "bytes": 480
+  }
+}
