@@ -7,7 +7,6 @@ There is no network source, automatic fallback, audio processing or model.
 import json
 import math
 from pathlib import Path
-import subprocess
 import time
 
 
@@ -30,19 +29,26 @@ def element(Gst, name):
 def decode(path, count, output):
     from PIL import Image
     from vision_input import MAX_PAYLOAD_BYTES
-    result = subprocess.run(["ffprobe", "-v", "error", "-protocol_whitelist",
-        "file", "-select_streams", "v", "-show_entries",
-        "stream=codec_name,width,height,nb_frames,duration,avg_frame_rate",
-        "-of", "json", str(path)], capture_output=True, timeout=5, check=True)
-    if len(result.stdout) > 65536:
-        raise ValueError("video metadata too large")
-    streams = json.loads(result.stdout)["streams"]
-    if len(streams) != 1:
-        raise ValueError("one H.264 video stream required")
-    stream = streams[0]
-    width, height = stream["width"], stream["height"]
-    total, duration = int(stream["nb_frames"]), float(stream["duration"])
-    if (stream["codec_name"] != "h264" or not count <= total <= 7200 or
+    # Use the explicitly software-only reader also used by the CPU adapter.
+    # Jetson's minimal system ffprobe can reject valid locally encoded H.264.
+    # Actual sampling/PTS below still comes only from the hardware pipeline.
+    import cv2
+    cv2.setNumThreads(1)
+    metadata = cv2.VideoCapture(str(path), cv2.CAP_FFMPEG,
+        [cv2.CAP_PROP_HW_ACCELERATION, cv2.VIDEO_ACCELERATION_NONE])
+    try:
+        width, height, total, fps, code = [metadata.get(field) for field in
+            (cv2.CAP_PROP_FRAME_WIDTH, cv2.CAP_PROP_FRAME_HEIGHT,
+             cv2.CAP_PROP_FRAME_COUNT, cv2.CAP_PROP_FPS, cv2.CAP_PROP_FOURCC)]
+        if not metadata.isOpened() or not all(math.isfinite(x) for x in
+                (width,height,total,fps,code)) or fps <= 0:
+            raise ValueError("cannot read local H.264 metadata")
+        codec = int(code).to_bytes(4,"little").decode("ascii",errors="replace").lower()
+        width,height,total = int(width),int(height),int(total)
+        duration = total / fps
+    finally:
+        metadata.release()
+    if (codec not in ("h264","avc1","avc3") or not count <= total <= 7200 or
             not math.isfinite(duration) or not 0 < duration <= 600 or
             not 1 <= width <= 4096 or not 1 <= height <= 4096 or
             width * height > 4096 * 2160):
@@ -122,6 +128,7 @@ def decode(path, count, output):
         if frames != total or len(files) != count:
             raise ValueError("container/decoded frame count mismatch")
         (output / "frames.json").write_text(json.dumps(dict(files=files,
-            timestamps=timestamps, backend="jetson", elements=list(names))))
+            timestamps=timestamps, backend="jetson", elements=list(names),
+            metadata_backend="opencv_ffmpeg_software_only", nominal_duration=duration)))
     finally:
         pipeline.set_state(Gst.State.NULL)

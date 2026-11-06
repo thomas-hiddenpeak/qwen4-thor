@@ -25,15 +25,19 @@ def run(args):
     with raw.open("xb") as stream:
         for i in range(8):
             stream.write(Image.open(args.fixtures/f"motion-{i:02d}.png").convert("RGBA").tobytes())
-    video = args.output / "motion-h264.mp4"
+    video = args.existing_video or args.output / "motion-h264.mp4"
     command = ["ffmpeg", "-nostdin", "-v", "warning", "-n", "-f", "rawvideo",
         "-pixel_format", "rgba", "-video_size", "384x256", "-framerate", "2",
         "-i", str(raw), "-c:v", "h264_nvenc", "-preset", "p1",
         "-rc", "constqp", "-qp", "18", "-an", str(video)]
     (args.output / "command.json").write_text(json.dumps(command))
-    with (args.output / "encode.log").open("xb") as log:
-        subprocess.run(command, stdout=log, stderr=subprocess.STDOUT,
-                       check=True, timeout=30)
+    if args.existing_video:
+        (args.output / "reused-encoding.json").write_text(json.dumps(dict(
+            path=str(video),sha256=hashlib.sha256(video.read_bytes()).hexdigest())))
+    else:
+        with (args.output / "encode.log").open("xb") as log:
+            subprocess.run(command, stdout=log, stderr=subprocess.STDOUT,
+                           check=True, timeout=30)
     part = sample_video(video, frames=8, timeout=45, backend="jetson")
     observations = []
     for i, url in enumerate(part["video_frames"]):
@@ -64,4 +68,5 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--fixtures", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--existing-video", type=Path)
     raise SystemExit(run(parser.parse_args()))

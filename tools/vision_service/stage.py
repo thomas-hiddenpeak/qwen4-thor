@@ -104,10 +104,10 @@ def cases():
     return result
 
 
-def prepare():
-    folder = BASE / "phase-01"
+def prepare(phase="phase-01", reuse=None):
+    folder = BASE / phase
     folder.mkdir(exist_ok=False)
-    rows = cases()
+    rows = json.loads((BASE/reuse/"requests.json").read_text()) if reuse else cases()
     save(folder / "requests.json", rows)
     tracked = subprocess.check_output(["git", "ls-files"], cwd=ROOT, text=True).splitlines()
     paths = [ROOT/name for name in tracked if name.startswith(("src/", "include/", "cmake/",
@@ -117,7 +117,26 @@ def prepare():
               ROOT/"tools/vision_ref.json", MODEL/"config.json", MODEL/"preprocessor_config.json",
               MODEL/"video_preprocessor_config.json", MODEL/"tokenizer.json"]
     paths += list((BASE/"fixtures").iterdir())
-    plan = dict(profile="q4t-vision-stage-v1", limits=LIMITS, port=PORT,
+    paths += list((ROOT/"docs").glob("serve-*.json"))
+    reused=None
+    if reuse:
+        prior=BASE/reuse
+        result=json.loads((prior/"execution/result.json").read_text())
+        exit=json.loads((prior/"lease/exit.json").read_text())
+        require(result["counts"]==dict(starts=0,generations=0,controls=0,native=2) and
+            not result["cleanup_errors"] and not result["monitor_failures"] and
+            exit["status"]=="COMMAND_FAILED","unexpected prior phase")
+        require(json.loads((prior/"execution/tower/waitable.json").read_text())["returncode"]==0,
+                "numerical prerequisite not passed")
+        old=json.loads((prior/"plan.json").read_text())
+        for name in (str(BASE/"engine/q4t_vision_tower_contract"),str(ROOT/"tools/vision_ref.json")):
+            require(sha(name)==old["files"][name],"numerical identity changed")
+        reused=dict(prior= str(prior), video=str(prior/"execution/hardware/motion-h264.mp4"),
+                    numerical_status="PASS_UNCHANGED_FULL_TOWER", prior_phase_status="FAILED_CODEC_METADATA")
+        paths += [prior/"execution/tower/waitable.json",prior/"execution/tower/stdout.log",
+                  prior/"execution/result.json",prior/"lease/exit.json",Path(reused["video"])]
+    plan = dict(profile="q4t-vision-stage-v1", limits=dict(LIMITS,native=1) if reuse else LIMITS, port=PORT,
+        reused=reused,
         binary=str(BASE/"engine/q4t"), model=str(MODEL), source_commit=subprocess.check_output(
             ["git","rev-parse","HEAD"], cwd=ROOT,text=True).strip(),
         files={str(p):sha(p) for p in paths if p.is_file()},
@@ -133,7 +152,8 @@ class Run:
     def __init__(self, folder):
         self.folder = folder
         self.plan = json.loads((folder/"plan.json").read_text())
-        require(self.plan["limits"]==LIMITS and self.plan["port"]==PORT,
+        expected=dict(LIMITS,native=1) if self.plan.get("reused") else LIMITS
+        require(self.plan["limits"]==expected and self.plan["port"]==PORT,
                 "frozen phase limits/port changed")
         self.output = folder/"execution"
         self.output.mkdir()
@@ -309,10 +329,14 @@ class Run:
         signal.signal(signal.SIGALRM,expired)
         signal.setitimer(signal.ITIMER_REAL,self.plan["limits"]["seconds"]-45)
         try:
-            self.native("tower",[str(BASE/"engine/q4t_vision_tower_contract"),str(ROOT/"tools/vision_ref.json"),
-                str(self.output/"tower-output")],120)
-            self.native("codec",[sys.executable,"-B",str(ROOT/"tools/vision_service/codec_acceptance.py"),
-                "--fixtures",str(BASE/"fixtures"),"--output",str(self.output/"hardware")],90)
+            reuse=self.plan.get("reused")
+            if not reuse:
+                self.native("tower",[str(BASE/"engine/q4t_vision_tower_contract"),str(ROOT/"tools/vision_ref.json"),
+                    str(self.output/"tower-output")],120)
+            codec=[sys.executable,"-B",str(ROOT/"tools/vision_service/codec_acceptance.py"),
+                "--fixtures",str(BASE/"fixtures"),"--output",str(self.output/"hardware")]
+            if reuse:codec += ["--existing-video",reuse["video"]]
+            self.native("codec",codec,90)
             self.launch();self.business()
             require(all(r["passed"] for r in self.observations),"business/quality failures; inspect observations")
             verdict="PASS_BOUNDED_VISUAL_BUSINESS"
@@ -358,5 +382,7 @@ if __name__ == "__main__":
     os.umask(0o077)
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action",choices=("prepare","run"))
+    parser.add_argument("--phase",default="phase-01",choices=("phase-01","phase-02"))
+    parser.add_argument("--reuse",choices=("phase-01",))
     args=parser.parse_args()
-    print(json.dumps(prepare() if args.action=="prepare" else Run(BASE/"phase-01").run()))
+    print(json.dumps(prepare(args.phase,args.reuse) if args.action=="prepare" else Run(BASE/args.phase).run()))
