@@ -62,3 +62,54 @@ env-02只修这个具体控制缺陷，最大1启动9Chat保持；墙钟扣除�
 并取整，剩余596秒，两次合计仍小于600秒。CPU控制助手最多各2次，
 合计4次；不增模型或请求预算。本机请求256KiB/CPU会读回258KiB，
 14 CPU合计3612KiB，按实际记录，不宣称精确256KiB。
+
+## 实际结果与停止出口
+
+env-02来源b1a7e8b9，候选ELF仍为34e7ceef。独立重建3455项冻结输入及
+2323个Git来源，封存3547路径/3273对象；[分析](evidence/vision-rowmax-20261107/env-diagnosis.json)、
+[绑定](evidence/vision-rowmax-20261107/env-diagnosis-bindings.json)及
+[退出观察](evidence/vision-rowmax-20261107/env-diagnosis-postflight.json)保留。
+本阶段不是完整验收，**结论为复现NVML init阻塞，根因未决**。
+
+- 实际1模型启动、9预留Chat中7收到，6完成/1取消/2未发出，控制和额外
+  CUDA worker均0。1K/4K数据库各3条，8K数据库为空；完成请求的输入、
+  256输出token和length终态核对通过，不将诊断计时用作性能接受。
+- 租约145.314秒，连同env-01共148.762秒，小于原600秒上限。CPU控制
+  助手各2次，两轮合计4次；没有自动追加模型或请求。
+- NVML共121次查询，最后worker 4132550在07:09:20.429左右进入init，
+  5秒期限及1秒回收后仍未完成，guard记ENV_ABORT，驱动FAILED。模型
+  waitable rc=0、正常shutdown；custody/reaped仍缺失，不能补造成功回执。
+
+追踪有效读回为1*，独立实例成功移除，顶层配置不变。保存1,399,439字节，
+没有文件截断；CPU9环形缓冲覆盖449条，commit overrun/dropped均0。
+留存2491条失败页分配、2492条栈记录，不能据此计数全程失败分配。
+其中2489条order=9为透明大页匿名缺页路径；两条q4t线程order=11/12
+沿nv_alloc_pages、osAllocPagesInternal、memdescAlloc和kvmalloc_node，
+对应4KiB页下8/16MiB连续分配尝试，分别早于失败init约38.323/0.932秒。
+这些是页阶对应的分配尝试大小，不是已经确认的业务缓冲大小。
+
+不能将这两条记录判作根因：Linux
+[kvmalloc_node](https://github.com/torvalds/linux/blob/v6.8/mm/util.c#L580)
+可在连续分配失败后回退vmalloc；本次未捕获回退最终返回。失败NVML
+worker自身只留存6条匿名透明大页失败，没有其驱动阻塞调用栈。追踪
+还排除了无关异步内核线程，存在覆盖；这些限制均阻止因果结论。
+本机事件格式将原始pfn=-1打印为0，过滤基于原字段，并非误采pfn=0。
+
+失败init前0.306秒的内存采样为MemAvailable 19.589GiB、MemFree
+13.570GiB、CmaFree 65.668MiB、SwapFree 0；前0.609秒的buddyinfo中
+DMA/Normal的order>=11均为0。大块连续分配压力确实可见，但这些快照
+既不能证明最终分配失败，也不能建立CMA准入阈值。07:06:50～07:09:45
+内核窗口仅有12条I2C超时，没有NVRM/NV_ERR/OOM记录；不得把原accept-01
+的NV_ERR_NO_MEMORY移植为本轮实际报错。
+
+只读后验确认9个自有进程身份已不存在，GPU计算PID为空，18146与原
+锁inode3294067可用，自有trace实例不存在。默认ea1b474d/3eb46385
+保持；这不修复原ENV_ABORT和缺失custody，也不意味着环境故障已解决。
+
+已触发本计划“覆盖或不能对应调用链即未决”的停止条件，不自动扩大
+缓冲、追加同类请求、延长NVML期限、降低模型容量或重启设备。后续需要
+在独立冻结的诊断范围内取得**阻塞NVML worker的内核等待栈及驱动分配
+回退完成结果**，才能判断分配失败、回收等待或驱动锁等待；目前没有
+可据此实施并验收的最小修复。公开驱动源码不是已证明的本机精确身份。
+优化候选与回退身份保留，PR #20继续草稿；完整默认MTP五档/质量及部署
+健康尚未完成，整体优化交付仍未完成。

@@ -29,6 +29,16 @@ vmstat区分原H2。env-01的enable读回检查未兼容触发器星号，模型
 语义修正并通过6项CPU合同，env-02扣除已用时间后最多596秒、1启动9Chat。
 未将诊断请求当性能样本，不改容量、NVML规则、运行时或默认。
 
+env-02已结束：1启动、9预留/7实际Chat，6完成/1取消，145.314秒；连同
+env-01共148.762秒。8K期间再次NVML init超时，guard仍为ENV_ABORT。
+失败前MemAvailable 19.589GiB、CmaFree 65.668MiB；追踪捕获两次q4t
+高阶分配失败，但在可回退的kvmalloc路径，未取得最终返回或阻塞栈。
+CPU9覆盖449条，根因仍未决；该窗口未见上轮的NV_ERR_NO_MEMORY。
+2323 Git来源/3547文件独立核对封存，自有PID、GPU、18146、原锁与trace
+实例释放，顶层追踪不变；b1a7e8b9两项host CI通过。按固定诊断出口
+不追加模型采样，不调容量/超时来取得通过。下一缺口为NVML阻塞栈与
+分配回退结果，完整MTP矩阵和交付仍待完成；详见[诊断结果](VISION_ROWMAX_ENV_DIAGNOSIS_2026-11-07.md#实际结果与停止出口)。
+
 ### 首轮已完成的投入门
 
 [判定卡](VISION_ROWMAX_PLAN_2026-11-07.md)的c6eef3c2候选34e7ceef完成

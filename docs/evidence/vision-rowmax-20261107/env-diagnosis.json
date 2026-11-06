@@ -1,0 +1,390 @@
+{
+  "status": "REPRODUCED_NVML_INIT_ABORT_ROOT_CAUSE_UNRESOLVED",
+  "performance_accepted": false,
+  "root_cause_proven": false,
+  "default_unchanged": true,
+  "source_commit": "b1a7e8b9371b73907341265f8cd0279490237fcd",
+  "frozen_files": 3455,
+  "git_sources": 2323,
+  "lease_seconds": 145.31445234501734,
+  "aggregate_diagnostic_lease_seconds": 148.7616489091888,
+  "counts_reserved": {
+    "starts": 1,
+    "generations": 9,
+    "controls": 0,
+    "native": 0
+  },
+  "chat_received": 7,
+  "chat_completed": 6,
+  "chat_cancelled": 1,
+  "reserved_unissued": 2,
+  "trace_helper_calls": 2,
+  "output_contract_rows": {
+    "context-1024": [
+      {
+        "input_tokens": 998,
+        "output_tokens": 256,
+        "finish": [
+          "length"
+        ],
+        "text_sha256": "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0"
+      },
+      {
+        "input_tokens": 998,
+        "output_tokens": 256,
+        "finish": [
+          "length"
+        ],
+        "text_sha256": "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0"
+      },
+      {
+        "input_tokens": 998,
+        "output_tokens": 256,
+        "finish": [
+          "length"
+        ],
+        "text_sha256": "41b5c2fdde0282ec373f2fc04f63bab908ad88c71e0feb5c44b1c65a686812f0"
+      }
+    ],
+    "context-4096": [
+      {
+        "input_tokens": 4077,
+        "output_tokens": 256,
+        "finish": [
+          "length"
+        ],
+        "text_sha256": "97df3b589201d5bafe110a21c1d1bbfa8126501d4df2c8fe20071d17212b37cb"
+      },
+      {
+        "input_tokens": 4077,
+        "output_tokens": 256,
+        "finish": [
+          "length"
+        ],
+        "text_sha256": "97df3b589201d5bafe110a21c1d1bbfa8126501d4df2c8fe20071d17212b37cb"
+      },
+      {
+        "input_tokens": 4077,
+        "output_tokens": 256,
+        "finish": [
+          "length"
+        ],
+        "text_sha256": "97df3b589201d5bafe110a21c1d1bbfa8126501d4df2c8fe20071d17212b37cb"
+      }
+    ],
+    "context-8192": []
+  },
+  "model_waitable_returncode": 0,
+  "model_custody_complete": false,
+  "nvml_queries": 121,
+  "failed_nvml_query": {
+    "status": "CLEANUP_FAILED",
+    "pids": null,
+    "request_id": "a945adf564e97384294d4219c0aed2ee",
+    "worker_pid": 4132550,
+    "error": "worker not reaped",
+    "stdout": "{\"request_id\": \"a945adf564e97384294d4219c0aed2ee\", \"monotonic\": 2196642.937130742, \"event\": \"begin\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"a945adf564e97384294d4219c0aed2ee\", \"monotonic\": 2196642.946063955, \"event\": \"end\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"a945adf564e97384294d4219c0aed2ee\", \"monotonic\": 2196642.94610764, \"event\": \"begin\", \"api\": \"init\"}\n",
+    "stderr": "",
+    "seconds": 6.007356236688793,
+    "returncode": null
+  },
+  "failed_init_monotonic": 2196642.94610764,
+  "trace": {
+    "events": 2491,
+    "stack_events": 2492,
+    "orders": {
+      "9": 2489,
+      "11": 1,
+      "12": 1
+    },
+    "cpu_overruns": {
+      "cpu9": 449
+    },
+    "commit_overruns": 0.0,
+    "dropped_events": 0.0,
+    "driver_allocation_attempts": [
+      {
+        "comm": "q4t",
+        "pid": 4132298,
+        "cpu": 1,
+        "monotonic": 2196604.623541,
+        "page": "0000000000000000",
+        "printed_pfn": "0x0",
+        "order": 11,
+        "migratetype": 0,
+        "flags": "GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_ZERO",
+        "stack": [
+          "trace_event_raw_event_mm_page_alloc",
+          "__traceiter_mm_page_alloc",
+          "__alloc_pages",
+          "__kmalloc_large_node",
+          "__kmalloc_node",
+          "kvmalloc_node",
+          "nvidia_isr",
+          "nv_alloc_pages",
+          "osAllocPagesInternal",
+          "memdescAlloc",
+          "sysmemConstruct_IMPL",
+          "__nvoc_objCreate_SystemMemory",
+          "__nvoc_objCreateDynamic",
+          "resservResourceFactory",
+          "indexRemove",
+          "serverAllocResourceUnderLock",
+          "serverAllocResource",
+          "rmapiAllocWithSecInfo",
+          "rmapiAllocWithSecInfoTls",
+          "Nv04AllocWithAccessSecInfo",
+          "RmIoctl",
+          "rm_ioctl",
+          "nvidia_dev_put",
+          "__arm64_sys_ioctl",
+          "invoke_syscall",
+          "el0_svc_common.constprop.0",
+          "do_el0_svc",
+          "el0_svc",
+          "el0t_64_sync_handler",
+          "el0t_64_sync"
+        ],
+        "rounded_contiguous_attempt_bytes": 8388608,
+        "seconds_before_failed_nvml_init": 38.32256664009765
+      },
+      {
+        "comm": "q4t",
+        "pid": 4132530,
+        "cpu": 13,
+        "monotonic": 2196642.013723,
+        "page": "0000000000000000",
+        "printed_pfn": "0x0",
+        "order": 12,
+        "migratetype": 0,
+        "flags": "GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_ZERO",
+        "stack": [
+          "trace_event_raw_event_mm_page_alloc",
+          "__traceiter_mm_page_alloc",
+          "__alloc_pages",
+          "__kmalloc_large_node",
+          "__kmalloc_node",
+          "kvmalloc_node",
+          "nvidia_isr",
+          "nv_alloc_pages",
+          "osAllocPagesInternal",
+          "memdescAlloc",
+          "sysmemConstruct_IMPL",
+          "__nvoc_objCreate_SystemMemory",
+          "__nvoc_objCreateDynamic",
+          "resservResourceFactory",
+          "indexRemove",
+          "serverAllocResourceUnderLock",
+          "serverAllocResource",
+          "rmapiAllocWithSecInfo",
+          "rmapiAllocWithSecInfoTls",
+          "Nv04AllocWithAccessSecInfo",
+          "RmIoctl",
+          "rm_ioctl",
+          "nvidia_dev_put",
+          "__arm64_sys_ioctl",
+          "invoke_syscall",
+          "el0_svc_common.constprop.0",
+          "do_el0_svc",
+          "el0_svc",
+          "el0t_64_sync_handler",
+          "el0t_64_sync"
+        ],
+        "rounded_contiguous_attempt_bytes": 16777216,
+        "seconds_before_failed_nvml_init": 0.9323846399784088
+      }
+    ],
+    "failed_worker_allocations": [
+      {
+        "comm": "python3",
+        "pid": 4132550,
+        "cpu": 8,
+        "monotonic": 2196642.948558,
+        "page": "0000000000000000",
+        "printed_pfn": "0x0",
+        "order": 9,
+        "migratetype": 1,
+        "flags": "GFP_TRANSHUGE_LIGHT|__GFP_NORETRY|__GFP_THISNODE",
+        "stack": [
+          "trace_event_raw_event_mm_page_alloc",
+          "__traceiter_mm_page_alloc",
+          "__alloc_pages",
+          "alloc_pages_mpol",
+          "vma_alloc_folio",
+          "do_huge_pmd_anonymous_page",
+          "__handle_mm_fault",
+          "handle_mm_fault",
+          "do_page_fault",
+          "do_translation_fault",
+          "do_mem_abort",
+          "el0_da",
+          "el0t_64_sync_handler",
+          "el0t_64_sync"
+        ]
+      },
+      {
+        "comm": "python3",
+        "pid": 4132550,
+        "cpu": 8,
+        "monotonic": 2196642.949125,
+        "page": "0000000000000000",
+        "printed_pfn": "0x0",
+        "order": 9,
+        "migratetype": 1,
+        "flags": "GFP_TRANSHUGE_LIGHT|__GFP_NORETRY|__GFP_THISNODE",
+        "stack": [
+          "trace_event_raw_event_mm_page_alloc",
+          "__traceiter_mm_page_alloc",
+          "__alloc_pages",
+          "alloc_pages_mpol",
+          "vma_alloc_folio",
+          "do_huge_pmd_anonymous_page",
+          "__handle_mm_fault",
+          "handle_mm_fault",
+          "do_page_fault",
+          "do_translation_fault",
+          "do_mem_abort",
+          "el0_da",
+          "el0t_64_sync_handler",
+          "el0t_64_sync"
+        ]
+      },
+      {
+        "comm": "python3",
+        "pid": 4132550,
+        "cpu": 8,
+        "monotonic": 2196642.949749,
+        "page": "0000000000000000",
+        "printed_pfn": "0x0",
+        "order": 9,
+        "migratetype": 1,
+        "flags": "GFP_TRANSHUGE_LIGHT|__GFP_NORETRY|__GFP_THISNODE",
+        "stack": [
+          "trace_event_raw_event_mm_page_alloc",
+          "__traceiter_mm_page_alloc",
+          "__alloc_pages",
+          "alloc_pages_mpol",
+          "vma_alloc_folio",
+          "do_huge_pmd_anonymous_page",
+          "__handle_mm_fault",
+          "handle_mm_fault",
+          "do_page_fault",
+          "do_translation_fault",
+          "do_mem_abort",
+          "el0_da",
+          "el0t_64_sync_handler",
+          "el0t_64_sync"
+        ]
+      },
+      {
+        "comm": "python3",
+        "pid": 4132550,
+        "cpu": 8,
+        "monotonic": 2196642.950463,
+        "page": "0000000000000000",
+        "printed_pfn": "0x0",
+        "order": 9,
+        "migratetype": 1,
+        "flags": "GFP_TRANSHUGE_LIGHT|__GFP_NORETRY|__GFP_THISNODE",
+        "stack": [
+          "trace_event_raw_event_mm_page_alloc",
+          "__traceiter_mm_page_alloc",
+          "__alloc_pages",
+          "alloc_pages_mpol",
+          "vma_alloc_folio",
+          "do_huge_pmd_anonymous_page",
+          "__handle_mm_fault",
+          "handle_mm_fault",
+          "do_page_fault",
+          "do_translation_fault",
+          "do_mem_abort",
+          "el0_da",
+          "el0t_64_sync_handler",
+          "el0t_64_sync"
+        ]
+      },
+      {
+        "comm": "python3",
+        "pid": 4132550,
+        "cpu": 8,
+        "monotonic": 2196642.950991,
+        "page": "0000000000000000",
+        "printed_pfn": "0x0",
+        "order": 9,
+        "migratetype": 1,
+        "flags": "GFP_TRANSHUGE_LIGHT|__GFP_NORETRY|__GFP_THISNODE",
+        "stack": [
+          "trace_event_raw_event_mm_page_alloc",
+          "__traceiter_mm_page_alloc",
+          "__alloc_pages",
+          "alloc_pages_mpol",
+          "vma_alloc_folio",
+          "do_huge_pmd_anonymous_page",
+          "__handle_mm_fault",
+          "handle_mm_fault",
+          "do_page_fault",
+          "do_translation_fault",
+          "do_mem_abort",
+          "el0_da",
+          "el0t_64_sync_handler",
+          "el0t_64_sync"
+        ]
+      },
+      {
+        "comm": "python3",
+        "pid": 4132550,
+        "cpu": 8,
+        "monotonic": 2196642.951878,
+        "page": "0000000000000000",
+        "printed_pfn": "0x0",
+        "order": 9,
+        "migratetype": 1,
+        "flags": "GFP_TRANSHUGE_LIGHT|__GFP_NORETRY|__GFP_THISNODE",
+        "stack": [
+          "trace_event_raw_event_mm_page_alloc",
+          "__traceiter_mm_page_alloc",
+          "__alloc_pages",
+          "alloc_pages_mpol",
+          "vma_alloc_folio",
+          "do_huge_pmd_anonymous_page",
+          "__handle_mm_fault",
+          "handle_mm_fault",
+          "do_page_fault",
+          "do_translation_fault",
+          "do_mem_abort",
+          "el0_da",
+          "el0t_64_sync_handler",
+          "el0t_64_sync"
+        ]
+      }
+    ],
+    "bytes": 1399439,
+    "truncated": false,
+    "complete_history": false,
+    "limitations": [
+      "CPU9 overwritten entries; no count of all allocation failures",
+      "Process descendants only; asynchronous kernel workers excluded",
+      "No allocation return after fallback or blocked worker stack captured"
+    ]
+  },
+  "memory": {
+    "samples": 143,
+    "seconds_before_init": 0.30644063698127866,
+    "mem_available_gib": 19.589492797851562,
+    "mem_free_gib": 13.569816589355469,
+    "cma_free_mib": 65.66796875,
+    "swap_free_kib": 0
+  },
+  "allocator": {
+    "samples": 145,
+    "seconds_before_init": 0.6089716949500144,
+    "buddyinfo": "Node 0, zone      DMA    440    390    362    236    174    139    126    112     79     68     34      0      0      0 \nNode 0, zone   Normal  40237  27943  30609  29341  19189  13622   9096   5723   3551      0      0      0      0      0 \n"
+  },
+  "kernel_window": {
+    "messages": 12,
+    "nvrm_or_oom_messages": [],
+    "window": "2026-11-07 07:06:50 .. 07:09:45 Asia/Shanghai"
+  },
+  "conclusion": "No proven allocator cause or safe runtime/environment remedy. Do not resample automatically.",
+  "required_next_evidence": "Blocked NVML worker kernel wait stack and driver allocation fallback completion; exact installed driver identity remains unproven."
+}
