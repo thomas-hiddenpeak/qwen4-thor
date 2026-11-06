@@ -39,6 +39,26 @@ class Query(unittest.TestCase):
         self.client.preflight.return_value['prompt_tokens']=416
         with self.assertRaises(c.ProtocolError):q.query(self.client,self.body)
 
+    def test_schema_meaning_is_in_prompt_without_mutating_input(self):
+        import copy
+        import json
+        schema = json.loads((s.ROOT/'tools/examples/vision_direction.schema.json').read_text())
+        before = copy.deepcopy(self.body)
+        changed = q.with_json_schema(self.body, schema)
+        self.assertEqual(self.body, before)
+        self.assertIn('moves RIGHT', changed['messages'][-1]['content'][-1]['text'])
+        self.assertEqual(changed['messages'][-1]['content'][:-1], before['messages'][-1]['content'])
+        schema['properties'].clear()
+        self.assertIn('direction', changed['response_format']['json_schema']['schema']['properties'])
+        Draft202012Validator(contract.vision_schema()).validate(changed)
+
+    def test_schema_rejects_overwrite_and_excess_size(self):
+        with self.assertRaises(c.ProtocolError):
+            q.with_json_schema(dict(self.body,response_format={}),dict(type='object'))
+        with self.assertRaises(c.ProtocolError):
+            q.with_json_schema(self.body,dict(type='object',description='x'*65536))
+        with self.assertRaises(c.ProtocolError):q.with_json_schema(self.body,dict(type='array'))
+
     def test_openapi_includes_explicit_media_for_both_routes(self):
         paths=contract.openapi()['paths']
         chat=paths['/v1/chat/completions']['post']['requestBody']['content']['application/json']['schema']

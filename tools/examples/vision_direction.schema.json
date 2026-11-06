@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "properties": {
+    "direction": {
+      "type": "string",
+      "description": "The object's movement in image coordinates, from its starting position to its ending position. left_to_right means the object moves RIGHT, starting further left and ending further right. right_to_left means the object moves LEFT, starting further right and ending further left. stationary means its position does not change.",
+      "enum": ["left_to_right", "right_to_left", "stationary"]
+    }
+  },
+  "required": ["direction"],
+  "additionalProperties": false
+}

@@ -180,11 +180,12 @@ def prepare(phase="phase-01", reuse=None, cpu_video=False, tower_repair=False):
 
 class Run:
     success_status = "PASS_BOUNDED_VISUAL_BUSINESS"
+    limits = LIMITS
     def __init__(self, folder):
         self.folder = folder
         self.plan = json.loads((folder/"plan.json").read_text())
-        expected=dict(LIMITS,native=0 if self.plan.get("cpu_video") else 1) if self.plan.get("reused") else LIMITS
-        if self.plan.get("tower_repair"):expected=dict(LIMITS,native=2)
+        expected=dict(self.limits,native=0 if self.plan.get("cpu_video") else 1) if self.plan.get("reused") else self.limits
+        if self.plan.get("tower_repair"):expected=dict(self.limits,native=2)
         require(self.plan["limits"]==expected and self.plan["port"]==PORT,
                 "frozen phase limits/port changed")
         self.output = folder/"execution"

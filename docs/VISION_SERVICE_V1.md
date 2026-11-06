@@ -1,8 +1,9 @@
 # 视觉服务 v1 使用与运维边界
 
 2026-11-07。固定 Qwen3.8-Flash-Next checkpoint、Thor、greedy、单执行槽。
-图片业务已有限接受；视频输入/数值合同通过，但四个运动方向枚举任务
-失败，视频质量仍未接受。全局媒体声明保持 `experimental: true`，默认
+图片业务已有限接受；视频输入/数值合同通过，但原四个运动方向枚举任务
+失败。[后续收口](VISION_CLOSEOUT_RESULT_2026-11-07.md)中明确schema含义的
+应用请求四项通过，仅接受该请求方式和有限夹具。全局媒体声明保持 `experimental: true`，默认
 不开启媒体。完整原始失败和接受依据见[结果](VISION_PRODUCTION_RESULT_2026-11-07.md)。
 
 ## 支持矩阵
@@ -11,11 +12,13 @@
 |---|---|---|
 | PNG/JPEG 单图、多图 | 有限接受 | 自然物体颜色/位置、表格 OCR、图表、多图汇总通过；不是任意图像准确率保证 |
 | 视频帧序列/时间戳 | 输入与数值接受，任务质量未接受 | 2～32 帧/项；正向、反向、奇数和编码视频的 strict 方向枚举均失败 |
+| 明确语义的方向schema应用请求 | 四夹具有限接受 | schema同时写入提示，正/反/奇数/CPU采样H.264通过；原请求失败保留，不外推任意视频 |
 | CPU 本地视频采样 | 有限接受 | OpenCV/FFmpeg；真实 PTS、明确有界、无网络下载；视频任务仍有上述限制 |
 | Jetson 编码 | 单夹具通过 | NVENC H.264，8 帧 384×256；无吞吐、全格式结论 |
 | Jetson 解码 | 未接受 | `nvv4l2decoder` 缓冲池分配失败；显式实验后端不自动回退，不作为生产示例默认 |
 | JSON/SSE 输出 | 有限接受 | 完整终态和 usage；strict 输出校验后统一发布，不保证逐 token 流式 |
 | 视觉工具调用 | 有限接受 | forced strict 参数、真实只读项目资料查询、回填及最终引用；runner 不执行任意工具 |
+| 真实项目记录图片与工具核对 | 有限接受 | 实际验收记录渲染表/柱图/多图及真实文件比对；不是自然扫描。完整引用回答实测289token，256预算失败 |
 | JSON object/有限 JSON Schema | 语法合同接受 | `json_object` 允许附加键；schema 正确不等于视觉答案正确 |
 | preflight | 有限接受 | 共用展开计划、真实 prompt token/输出预算；仅 header/几何检查，不解码像素、不跑模型、不预留额度 |
 | TLS/独立 Key、RPM/TPM、公平排队 | 本机回环组合接受 | 展开 token 计费；准备完成后按客户端轮转；单执行槽，无 GPU 时间或延迟公平承诺 |
@@ -47,12 +50,21 @@ python3 -m tools.examples.vision_query --image /path/document.png \
 
 python3 -m tools.examples.vision_query --video /path/clip.mp4 --frames 8 \
   --question '描述画面中物体的起始和结束位置。'
+
+# 显式告诉模型枚举含义，并让约束后端保证语法
+python3 -m tools.examples.vision_query --video /path/clip.mp4 --frames 8 \
+  --question 'Which direction does the red circle move over the video? Return JSON direction.' \
+  --schema-file tools/examples/vision_direction.schema.json
 ```
 
 `--image` 可重复；默认 SSE，`--no-stream` 选择 JSON。客户端先发现能力，
 再 preflight，并核对完整回答的 prompt usage；不自动重试、执行工具或
 将不完整响应当最终答案。第二个示例是视频诊断入口，不能据此认为
-运动方向任务已通过。依赖 OpenCV/FFmpeg 的视频适配器默认 CPU 解码；
+运动方向任务已通过。第三个示例按新的明确语义请求方式有限接受；
+`--schema-file`最多64KiB object schema，字段含义应写清。结构化解码只
+限制合法token，不自动把schema含义注入原请求，也不保证观察正确。
+复杂引用回答应在应用请求中预留足够 `max_tokens`，不自动重试502截断。
+依赖 OpenCV/FFmpeg 的视频适配器默认 CPU 解码；
 本地视频上限 128 MiB、600 秒、7200 解码帧、4096 边长、8.8M 像素，
 默认解码截止 30 秒、最高 60 秒、视频采样 payload 12 MiB。
 完整 Chat 请求仍受服务 16 MiB body 限制；多图必须计算合计体积。

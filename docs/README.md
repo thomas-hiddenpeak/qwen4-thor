@@ -1,5 +1,8 @@
 # docs/ — 开发记录文档体系
 
+[视觉应用后续收口](VISION_CLOSEOUT_RESULT_2026-11-07.md)：同题视频方向
+对照、显式schema应用入口、真实记录图片/工具与有界验收。
+
 [视觉 v1 限定结果](VISION_PRODUCTION_RESULT_2026-11-07.md)、
 [能力矩阵与运维](VISION_SERVICE_V1.md)、[原冻结计划](VISION_PRODUCTION_PLAN_2026-11-06.md)：
 图片/独立数值/真实工具/治理通过；视频方向质量和硬解码仍未接受。

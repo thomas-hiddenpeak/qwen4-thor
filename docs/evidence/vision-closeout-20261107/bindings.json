@@ -1,0 +1,32 @@
+{
+  "profile": "q4t-visual-closeout-bindings-v1",
+  "phase_commits": {
+    "phase-a": "b8a05b34040450fa7f80979cc5880ac46a0c2cbb",
+    "phase-b": "5b5d0caf08a7696debd60b87ae02d3d35d5b4514"
+  },
+  "files": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-closeout-20261107/phase-a-originals.json": "68123bce2a3c2d8868fdab1d86bb6809915ca049a77630b7b9238b37b55c4290",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-closeout-20261107/phase-b-originals.json": "2eb3f548b435b3968234e55133fbdab3a7a59dd9c5d0114d402927a963e8d367",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-closeout-20261107/audit-01/result.json": "2fa27f5cbb082e7cfb24ee339e6c723f4cbb89f647d5cf6d0f964883f4250be5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-closeout-20261107/cpu/application-03.log": "f48ef22c09bcccb8a3f2b281ce8414bb158e7ba7b17c85fa803716a585ae0724",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-closeout-20261107/cpu/inventory.log": "9166416445fc5862fca37b77172750c908819012194056d289d09403b5d497c0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-closeout-20261107/cpu/before-phase-a.json": "a5ced383f9393a1af2dfd80c482bc2c1479abf1ca6e1596cd30565fe3e2ad442",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-closeout-20261107/cpu/audit-negative.log": "32d35b458e1acd2ae3f61c712e539829a77c88d95e14e9bd98092660b79007a8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-closeout-20261107/cpu/affected-02.log": "fd9e4dcdef19959169a58c0acc99f54e98df08d4b4645f88c840839784db90f2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-closeout-20261107/cpu/contracts.log": "78b37dc1d9a952166f5c8f689035a787bed885f6f08fd57eed544a4269457d6e",
+    "/home/rm01/models/dev/qwen4-thor/tools/vision_service/closeout_audit.py": "5c1d1ec909899db5ebd049c05d6dcb1c0f65a03aed9f9dd76feb2703220ee07e",
+    "/home/rm01/models/dev/qwen4-thor/tools/vision_service/test_closeout_audit.py": "6d93425106605ef69f4d90d6704b26ab14ff4b4235191e6284effca79ce9148d",
+    "/home/rm01/models/dev/qwen4-thor/tools/examples/vision_query.py": "69fad539607d5d196437c8856d3602434c1d2191b82ea54ece674a616ae46c0c",
+    "/home/rm01/models/dev/qwen4-thor/tools/examples/vision_direction.schema.json": "5fa420c32379c17843ad3a07737d031f8cb78774b9aa01ceeaeab9f24da8d1c1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-closeout-20261107/phase-a/plan.json": "bcd67c9d890f6f5e340f266d2a21e50cf08d575013bb40d9f3ea1441de6ecc2d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-closeout-20261107/phase-a/execution/result.json": "f29dafac4645ed3f130e3170cef25eaf51f9f6cc3dd52ea837f5a878f27b641e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-closeout-20261107/phase-a/lease/exit.json": "dc63822809885572024cd81fd4ee9dc849756c04e325e10b52e70a2361479909",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-closeout-20261107/phase-b/plan.json": "cff87109c933cf191a36b480daab454d8546880d36780abaf8ece183c98fe998",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-closeout-20261107/phase-b/execution/result.json": "a77ba8f06278384bb16270f92fbdd1013a6881defb881aea6d109ae80b04b0a1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-closeout-20261107/phase-b/lease/exit.json": "a0cbcc606856684334611044b26907f132609db26a6dc97443f38592e6b853d9"
+  },
+  "raw_cas": "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-closeout-20261107/originals",
+  "scope": "Scalars and source bindings public; immutable full raw originals retained locally.",
+  "core_runtime_unchanged": true,
+  "prior_failure_preserved": true
+}

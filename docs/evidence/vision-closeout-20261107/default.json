@@ -1,0 +1,22 @@
+{
+  "status": "PASS_PACKAGE_IDENTITIES",
+  "installed": {
+    "q4t": "ea1b474d7d69808696e697346a60ee09bb9ecaca9bfb99925b78dcdbda7a4550",
+    "q4t.release.json": "3eb463850cf07338406b811197a68a5dcb9474ac9c2cf039470aa4f654924724"
+  },
+  "pair": {
+    "old": {
+      "q4t": "aa528a6839ed629fcea2aed036f4c8f0bdc14617ac00fdc31156e6e58c3e18d0",
+      "q4t.release.json": "46aa73bd678ace6c79a8c4946c541e2e53ac7808c215374626c59c46ee90a11b"
+    },
+    "new": {
+      "q4t": "ea1b474d7d69808696e697346a60ee09bb9ecaca9bfb99925b78dcdbda7a4550",
+      "q4t.release.json": "3eb463850cf07338406b811197a68a5dcb9474ac9c2cf039470aa4f654924724"
+    },
+    "audit_sha256": "8d4c8e9e99205955c87ddc6008a5823b676eb35695f8cef3b4c28b79bbd19681",
+    "original_files": 943,
+    "runtime_sources": 241,
+    "atomicity": "individual atomic replaces; not a cross-file power-loss transaction"
+  },
+  "mixed_pair": false
+}
