@@ -14,6 +14,9 @@
   未写区域canary。60组逐位比较；T=8是generic fallback，不冒称
   原split核新测。旧FMA失败负控、FP32分母oracle和small-T实际SASS
   身份证据按不变来源复用。
+- 另65536组独立FP32分母边界：正负零、次正规/最小正规数、0.5/1
+  概率、旧和2048/2051。host用volatile逐次舍入，逐位对照GPU的
+  分离乘法与16项有序加法；此单独oracle不冒称实际kernel内部观测。
 - 完整模型程序复用独立状态枚举夹具，明确将4层提升为48层；父版
   从当前接受main源码另构建库，候选链接已实测aa528a68的原构建库。
   原/新include、源码与archives逐项绑定，不将夹具ELF冒称HTTP ELF。

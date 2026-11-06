@@ -16,6 +16,57 @@ uint16_t Bf(float value) {
   return bits;
 }
 
+// A separate host oracle rounds the product and each ordered addition. Include
+// subnormal products/probabilities that may disappear in the final BF16 output.
+__global__ void OrderedDenominator(const float* in, float* out, int count) {
+  const int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if (i >= count) return;
+  const float* row = in + i * 18;
+  float sum = __fmul_rn(row[0], row[1]);
+  for (int p = 0; p < 16; ++p) sum += row[p + 2];
+  out[i] = sum;
+}
+
+int DenominatorBoundaries() {
+  constexpr int count = 65536;
+  const std::array<uint32_t, 10> bits{
+      0,          0x80000000, 1,          127,        0x007fffff,
+      0x00800000, 0x3f000000, 0x3f800000, 0x45000000, 0x45003000};
+  std::vector<float> input(count * 18), expected(count), actual(count);
+  uint32_t rng = 20261106;
+  for (int i = 0; i < count; ++i) {
+    for (int j = 0; j < 18; ++j) {
+      rng = rng * 1664525u + 1013904223u;
+      const auto value = bits[j == 0 ? i % bits.size() : (rng >> 16) % 8];
+      std::memcpy(&input[i * 18 + j], &value, sizeof(value));
+    }
+    volatile float product = input[i * 18] * input[i * 18 + 1];
+    volatile float sum = product;
+    for (int p = 0; p < 16; ++p) sum = sum + input[i * 18 + p + 2];
+    expected[i] = sum;
+  }
+  float *di, *dout;
+  CUDA_OK(cudaMalloc(&di, input.size() * sizeof(float)));
+  CUDA_OK(cudaMalloc(&dout, actual.size() * sizeof(float)));
+  CUDA_OK(cudaMemcpy(di, input.data(), input.size() * sizeof(float),
+                     cudaMemcpyHostToDevice));
+  OrderedDenominator<<<count / 256, 256>>>(di, dout, count);
+  CUDA_OK(cudaGetLastError());
+  CUDA_OK(cudaMemcpy(actual.data(), dout, actual.size() * sizeof(float),
+                     cudaMemcpyDeviceToHost));
+  for (int i = 0; i < count; ++i) {
+    if (std::memcmp(&expected[i], &actual[i], sizeof(float)) != 0) {
+      std::fprintf(stderr, "FAIL denominator boundary case=%d\n", i);
+      return 1;
+    }
+  }
+  CUDA_OK(cudaFree(di));
+  CUDA_OK(cudaFree(dout));
+  std::printf("PASS denominator_boundaries=%d host_separate_rounding=1\n",
+              count);
+  return 0;
+}
+
 int main() {
   constexpr int kRows = 257, kNq = 24, kNkv = 2, kHd = 256;
   constexpr int kPositions = 4096, kSeq = 3, kSelected = 2052, kGuard = 32;
@@ -153,5 +204,5 @@ int main() {
   }
   std::printf("PASS finite_boundaries=1 cases=%d bf16_values=%zu canaries=1\n",
               cases, compared);
-  return 0;
+  return DenominatorBoundaries();
 }

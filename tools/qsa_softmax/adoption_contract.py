@@ -164,7 +164,8 @@ def step_run(plan, name):
     raw = (out / 'contract.log').read_text()
     passed = result.returncode == 0 and 'FAIL ' not in raw and (
         'PASS full_layers=48 heads=1 slots=4 verify_rows=16 rounds=3 ' in raw
-        if step['model_loads'] else 'PASS finite_boundaries=1 cases=60 ' in raw)
+        if step['model_loads'] else ('PASS finite_boundaries=1 cases=60 ' in raw and
+            'PASS denominator_boundaries=65536 host_separate_rounding=1' in raw))
     save(out / 'result.json', dict(passed=passed, returncode=result.returncode,
         model_loads=step['model_loads'], http_requests=0))
     require(passed, 'numerical/state contract failed')
