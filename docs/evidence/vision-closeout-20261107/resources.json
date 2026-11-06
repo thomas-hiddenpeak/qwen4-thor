@@ -1,0 +1,31 @@
+{
+  "status": "PASS_OWNED_RESOURCES_RELEASED",
+  "identities": [
+    {
+      "pid": 4014549,
+      "start_ticks": 217694102,
+      "absent": true
+    },
+    {
+      "pid": 4015774,
+      "start_ticks": 217729542,
+      "absent": true
+    }
+  ],
+  "gpu": {
+    "status": "OK",
+    "pids": [],
+    "request_id": "f96c17a21e95ca5034d07e071657a270",
+    "worker_pid": 4016795,
+    "stdout": "{\"request_id\": \"f96c17a21e95ca5034d07e071657a270\", \"monotonic\": 2177635.918780778, \"event\": \"begin\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"f96c17a21e95ca5034d07e071657a270\", \"monotonic\": 2177635.926637237, \"event\": \"end\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"f96c17a21e95ca5034d07e071657a270\", \"monotonic\": 2177635.926671256, \"event\": \"begin\", \"api\": \"init\"}\n{\"request_id\": \"f96c17a21e95ca5034d07e071657a270\", \"monotonic\": 2177635.930407241, \"event\": \"end\", \"api\": \"init\", \"seconds\": 0.003724208101630211}\n{\"request_id\": \"f96c17a21e95ca5034d07e071657a270\", \"monotonic\": 2177635.930457203, \"event\": \"begin\", \"api\": \"device_count\"}\n{\"request_id\": \"f96c17a21e95ca5034d07e071657a270\", \"monotonic\": 2177635.930507666, \"event\": \"end\", \"api\": \"device_count\", \"seconds\": 4.023080691695213e-05}\n{\"request_id\": \"f96c17a21e95ca5034d07e071657a270\", \"monotonic\": 2177635.930523601, \"event\": \"begin\", \"api\": \"handle[0]\"}\n{\"request_id\": \"f96c17a21e95ca5034d07e071657a270\", \"monotonic\": 2177635.936977609, \"event\": \"end\", \"api\": \"handle[0]\", \"seconds\": 0.006446368992328644}\n{\"request_id\": \"f96c17a21e95ca5034d07e071657a270\", \"monotonic\": 2177635.93699909, \"event\": \"begin\", \"api\": \"compute_v3[0]\"}\n{\"request_id\": \"f96c17a21e95ca5034d07e071657a270\", \"monotonic\": 2177635.938103765, \"event\": \"end\", \"api\": \"compute_v3[0]\", \"seconds\": 0.001097721979022026}\n{\"request_id\": \"f96c17a21e95ca5034d07e071657a270\", \"monotonic\": 2177635.938122006, \"event\": \"begin\", \"api\": \"shutdown\"}\n{\"request_id\": \"f96c17a21e95ca5034d07e071657a270\", \"monotonic\": 2177635.939390865, \"event\": \"end\", \"api\": \"shutdown\", \"seconds\": 0.0012608040124177933}\n{\"request_id\": \"f96c17a21e95ca5034d07e071657a270\", \"monotonic\": 2177635.939414449, \"event\": \"result\", \"status\": \"OK\", \"error\": null, \"device_count\": 1, \"pids\": [], \"process_memory\": []}\n",
+    "stderr": "",
+    "returncode": 0,
+    "seconds": 0.06262839399278164,
+    "process_memory": [],
+    "device_count": 1
+  },
+  "port": 18146,
+  "listeners": [],
+  "shared_lock_available": true,
+  "automatic_restart_installed": false
+}

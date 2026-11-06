@@ -1,0 +1,190 @@
+{
+  "status": "PASS_SCOPED_VISUAL_APPLICATION_CLOSEOUT",
+  "totals": {
+    "starts": 2,
+    "generations": 26,
+    "controls": 30,
+    "native": 0
+  },
+  "phases": {
+    "phase-a": {
+      "status": "FAILED",
+      "guard": "COMMAND_FAILED",
+      "counts": {
+        "starts": 1,
+        "generations": 17,
+        "controls": 17,
+        "native": 0
+      },
+      "lease_seconds": 93.9965772042051,
+      "monitor_samples": 87,
+      "owned_pid": 4014549,
+      "post_exit_monitor": true,
+      "final_gpu_empty": true,
+      "custody_ack_is_post_registration_not_post_exit": true
+    },
+    "phase-b": {
+      "status": "PASS_SCOPED_EXPLICIT_SCHEMA_AND_REAL_RECORD_LOOP",
+      "guard": "COMPLETED",
+      "counts": {
+        "starts": 1,
+        "generations": 9,
+        "controls": 13,
+        "native": 0
+      },
+      "lease_seconds": 67.82485210802406,
+      "monitor_samples": 63,
+      "owned_pid": 4015774,
+      "post_exit_monitor": true,
+      "final_gpu_empty": true,
+      "custody_ack_is_post_registration_not_post_exit": true
+    }
+  },
+  "lease_seconds": 161.82142931222916,
+  "original_file_bindings": 4720,
+  "git_source_bindings": 4366,
+  "runtime_sources_unchanged": 241,
+  "directions": [
+    {
+      "group": "motion-forward",
+      "centers_x": [
+        35.0,
+        79.0,
+        123.0,
+        167.0,
+        211.0,
+        255.0,
+        299.0,
+        343.0
+      ],
+      "expected": "left_to_right",
+      "outputs": {
+        "strict": "right_to_left",
+        "json": "right",
+        "free": "right",
+        "simple": "right",
+        "explicit": "left_to_right"
+      }
+    },
+    {
+      "group": "motion-reverse",
+      "centers_x": [
+        343.0,
+        299.0,
+        255.0,
+        211.0,
+        167.0,
+        123.0,
+        79.0,
+        35.0
+      ],
+      "expected": "right_to_left",
+      "outputs": {
+        "strict": "left_to_right",
+        "json": "left",
+        "free": "left",
+        "simple": "left",
+        "explicit": "right_to_left"
+      }
+    },
+    {
+      "group": "motion-odd",
+      "centers_x": [
+        35.0,
+        79.0,
+        123.0
+      ],
+      "expected": "left_to_right",
+      "outputs": {
+        "strict": "right_to_left",
+        "json": "right",
+        "free": "right",
+        "simple": "right",
+        "explicit": "left_to_right"
+      }
+    },
+    {
+      "group": "encoded-video",
+      "centers_x": [
+        35.16936251189343,
+        79.18934348239772,
+        123.2218009478673,
+        167.2104761904762,
+        211.2218009478673,
+        255.1893434823977,
+        299.2218009478673,
+        343.2104761904762
+      ],
+      "expected": "left_to_right",
+      "outputs": {
+        "strict": "right_to_left",
+        "json": "right",
+        "free": "right",
+        "simple": "right",
+        "explicit": "left_to_right"
+      }
+    }
+  ],
+  "images": [
+    {
+      "label": "record-table",
+      "actual": {
+        "starts": 6,
+        "generations": 70,
+        "controls": 67,
+        "native": 5
+      },
+      "usage": {
+        "prompt_tokens": 317,
+        "completion_tokens": 38,
+        "total_tokens": 355
+      }
+    },
+    {
+      "label": "record-chart",
+      "actual": {
+        "phase": "phase-04"
+      },
+      "usage": {
+        "prompt_tokens": 316,
+        "completion_tokens": 15,
+        "total_tokens": 331
+      }
+    },
+    {
+      "label": "record-multiple",
+      "actual": {
+        "total": 70,
+        "phase05b": 13
+      },
+      "usage": {
+        "prompt_tokens": 617,
+        "completion_tokens": 24,
+        "total_tokens": 641
+      }
+    }
+  ],
+  "tool": {
+    "source_sha256": "8d4c8e9e99205955c87ddc6008a5823b676eb35695f8cef3b4c28b79bbd19681",
+    "citation": "[docs/evidence/vision-service-v1-20261107/result.json:L1-L12]",
+    "call_id": "call_agent-6dcd98d316b2a707f2e53692c797e0c6_0",
+    "final_usage": {
+      "prompt_tokens": 869,
+      "completion_tokens": 289,
+      "total_tokens": 1158
+    },
+    "actual_tool_executions": 1,
+    "final_attempts": 2
+  },
+  "original_direction_requests_still_failed": true,
+  "explicit_schema_four_fixtures_passed": true,
+  "renderer_not_natural_scans": true,
+  "runtime_change": false,
+  "default_pair_changed": false,
+  "global_media_acceptance": false,
+  "hardware_decode_accepted": false,
+  "long_stability": false,
+  "performance_acceptance": false,
+  "automatic_retry": false,
+  "explanation": "Same-prompt natural direction succeeds; composite enum prefix trap is consistent with code and observed contrasts, not a full sequence-probability proof."
+}
