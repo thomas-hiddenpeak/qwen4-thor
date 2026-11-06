@@ -16,6 +16,7 @@ class Closeout(unittest.TestCase):
         self.assertEqual(original, snapshot)
         self.assertEqual(len({r["request"]["request_id"] for r in rows}), 3)
         for row in rows:
+            self.assertRegex(row["request"]["cancel_token"], r"^[0-9a-f]{64}$")
             self.assertEqual(c.input_contract(row["request"]), c.input_contract(original))
         self.assertNotIn("response_format", rows[-1]["request"])
         rows[-1]["request"]["messages"][0]["content"][0]["video_frames"].reverse()

@@ -8,6 +8,7 @@ import copy
 import json
 import os
 from pathlib import Path
+import secrets
 import subprocess
 import uuid
 
@@ -30,7 +31,7 @@ def read(path):
 def fresh(body):
     body = copy.deepcopy(body)
     body.update(request_id="closeout-" + uuid.uuid4().hex,
-                cancel_token=uuid.uuid4().hex)
+                cancel_token=secrets.token_hex(32))
     return body
 
 
@@ -154,6 +155,8 @@ def prepare():
     result.check_returncode()
     parsed = [json.loads(x) for x in result.stdout.splitlines()]
     s.require(len(parsed) == len(rows), "preflight output count")
+    for row, observed in zip(rows, parsed):
+        s.require("error" not in observed, row["label"] + ": " + str(observed.get("error")))
     for i in range(0, 12, 3):
         for field in ("token_ids", "prompt", "prompt_tokens"):
             s.require(all(p[field] == parsed[i][field] for p in parsed[i:i+3]),
