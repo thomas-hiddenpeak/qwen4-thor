@@ -167,6 +167,7 @@ def prepare(phase="phase-01", reuse=None, cpu_video=False, tower_repair=False):
 
 
 class Run:
+    success_status = "PASS_BOUNDED_VISUAL_BUSINESS"
     def __init__(self, folder):
         self.folder = folder
         self.plan = json.loads((folder/"plan.json").read_text())
@@ -369,7 +370,7 @@ class Run:
             if not self.plan.get("cpu_video"):self.native("codec",codec,90)
             self.launch();self.business()
             require(all(r["passed"] for r in self.observations),"business/quality failures; inspect observations")
-            verdict="PASS_BOUNDED_VISUAL_BUSINESS"
+            verdict=self.success_status
         except BaseException:
             failure=traceback.format_exc()
         finally:
@@ -404,7 +405,7 @@ class Run:
                 seconds=time.monotonic()-self.started,observations=self.observations,
                 monitor_failures=self.failures,default_unchanged=True,
                 failure=failure,cleanup_errors=cleanup))
-        require(verdict=="PASS_BOUNDED_VISUAL_BUSINESS",failure or str(cleanup))
+        require(verdict==self.success_status,failure or str(cleanup))
         return verdict
 
 
