@@ -4,6 +4,10 @@
 
 ## 视觉塔内部诊断已通过，下一候选为attention行最大值归约
 
+[PR #19](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/19)的91efea44
+两项检查通过后合main f73c4c66，合并树等于已审提交；本阶段重复本地/
+远端分支已按预期tip清理，main保留实现与证据，其他研究入口不改。
+
 [结果与下一步](VISION_FORWARD_TIMING_RESULT_2026-11-07.md)：d83a905f独立
 诊断程序982bba07，默认关闭10段event，沿用原完成同步。热小图attention
 占塔内98.46%，大图/多图99.31%/99.25%，占其HTTP72.17%/79.60%。

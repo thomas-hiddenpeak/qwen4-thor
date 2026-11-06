@@ -1,0 +1,42 @@
+{
+  "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/19",
+  "implementation_commit": "d83a905f73742a5676711943bb6129d25508f390",
+  "reviewed_head": "91efea4431688dd0d086915b39d0bf5d2733699a",
+  "merge_commit": "f73c4c663534783320cc4610ba049a038468bb71",
+  "merge_tree": "6fa0b6c204cb9b94b96eeed8ac289196ec5a75e7",
+  "tree_equals_reviewed_head": true,
+  "checks": [
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-11-06T21:05:59Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/42293535112/job/128152801004",
+      "name": "host-contracts",
+      "startedAt": "2026-11-06T21:03:35Z",
+      "status": "COMPLETED",
+      "workflowName": "Public host contracts"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-11-06T21:07:48Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/42293464125/job/128152561513",
+      "name": "host-contracts",
+      "startedAt": "2026-11-06T21:03:06Z",
+      "status": "COMPLETED",
+      "workflowName": "Public host contracts"
+    }
+  ],
+  "branch_cleanup": {
+    "branch": "codex/vision-forward-timing",
+    "old_tip": "91efea4431688dd0d086915b39d0bf5d2733699a",
+    "retained_by": "f73c4c663534783320cc4610ba049a038468bb71",
+    "local_deleted": true,
+    "remote_deleted_with_expected_tip": true,
+    "open_prs": [],
+    "evidence_and_other_branches_preserved": true
+  },
+  "default_binary_replaced": false,
+  "additional_model_starts": 0,
+  "additional_http_requests": 0
+}

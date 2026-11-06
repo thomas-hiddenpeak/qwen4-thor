@@ -4,6 +4,10 @@
 结果为`PASS_BOUNDED_FORWARD_DIAGNOSIS`。测试来源d83a905f，独立诊断
 程序SHA256 `982bba071e68e807cda653fa32ab76bed692808aa2d9325876ac09ea9f9daa1d`，
 协议`6728d13b…`。这是耗时定位，不是优化接受；默认程序与旧包未替换。
+[PR #19](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/19)的91efea44
+两项host检查通过，合main f73c4c66，合并树完全相同。阶段重复分支按
+预期tip清理；[主线保留锚点](evidence/vision-forward-timing-20261107/mainline.json)
+记录合并、检查和旧tip，原证据目录与其他研究分支不改。
 
 ## 已确认的瓶颈
 
