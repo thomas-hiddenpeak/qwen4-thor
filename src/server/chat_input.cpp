@@ -12,6 +12,7 @@
 #include <cuda_runtime.h>
 #include "q4t/server/chat_template.h"
 #include "q4t/server/media_admission.h"
+#include "q4t/vision/forward_timing.h"
 #include "q4t/vision/processor.h"
 #include "q4t/vision/timing.h"
 #include "q4t/vision/vision.h"
@@ -224,12 +225,25 @@ bool ChatServer::RunVisionPipeline(
                                          "vision.output_allocate", request_id)))
     return false;
   output_timing.Stop();
+  vision::ForwardTiming forward_events(vision::VisionForwardTimingEnabled());
+  ScopeExit report_forward([&] {
+    forward_events.Report(stderr, request_id, shapes.size(), plan.patches,
+                           cfg.depth);
+  });
+  const auto timing_failure = [&] {
+    const int code = forward_events.ErrorCode();
+    record({DeviceMemoryState::kFailure, code ? code : cudaErrorUnknown});
+  };
+  if (!forward_events.Prepare(shapes.size(), cfg.depth)) {
+    timing_failure();
+    return false;
+  }
   detail::ServeRequestFaultPoint("vision.before_forward", request_id);
   TimingScope forward_timing(timing, TimingStage::kForward);
   if (detail::DeviceMemoryFault("vision.forward", request_id) != cudaSuccess ||
       !vision::VisionForward(*vision_tower_, d_pixels, shapes, d_out, err,
-                             nullptr)) {
-    record({DeviceMemoryState::kFailure, cudaErrorUnknown});
+                             nullptr, forward_events.Active())) {
+    timing_failure();
     return false;
   }
   detail::ServeRequestFaultPoint("vision.after_forward", request_id);
@@ -237,6 +251,10 @@ bool ChatServer::RunVisionPipeline(
   runtime::RequireCleanupSuccess(cudaDeviceSynchronize(),
                                  "cudaDeviceSynchronize");
   forward_timing.Stop();
+  if (!forward_events.CollectAfterCompletion()) {
+    timing_failure();
+    return false;
+  }
   if (!release(d_pixels, "vision.pixels_free")) return false;
   if (cancelled()) return fail("request_cancelled", items.size());
   *out_feats = std::exchange(d_out, nullptr);

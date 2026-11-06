@@ -47,6 +47,18 @@ PNG/JPEG分别累计，`*_calls`为计时作用域次数（cleanup含空指针�
 使用`tools.vision_service.timing_analysis.parse_records`解析并检查分项
 和总数；部署前仍按[本轮计划](VISION_TIMING_PLAN_2026-11-07.md)的范围验收。
 
+视觉塔内部诊断另用`Q4T_VISION_FORWARD_TIMING=1`，默认关闭，可独立于
+上述墙钟启用。stderr的`[q4t][vision-forward-timing]`记录10段CUDA stream
+区间及残余，最大8192个event；只在原完成同步后读取，不逐层同步。
+`clock=cuda_stream`包含主机提交间隙，不是各kernel净执行时间；位置表
+`position_host_ms`含原有阻塞复制等待，与event时间重叠，不能相加。
+`setup_host_ms`/`read_host_ms`单列准备/读取，event销毁和日志开销仍在
+外层残余中。`valid=0`拒绝完整测量，CUDA错误不清除或当零时间处理。
+QKV含bias、projection含bias/residual、MLP和merger含其激活与相邻小算子。
+严格解析器为`tools.vision_service.forward_timing_analysis`；本阶段边界见
+[内部诊断计划](VISION_FORWARD_TIMING_PLAN_2026-11-07.md)。这是诊断选项，
+插桩数据不作为关闭计时的性能基线，旧默认和发布包仍保持固定身份。
+
 所有开发 GPU 验证仍应包在 `tools/evalscope/gpu_exclusive.py` 的整阶段
 驱动中。以下是 profile 参数示例，不安装后台服务或自动恢复任务：
 

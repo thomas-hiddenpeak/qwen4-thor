@@ -1,5 +1,6 @@
 # docs/ — 开发记录文档体系
 
+- [视觉塔内部诊断与attention优先级](VISION_FORWARD_TIMING_RESULT_2026-11-07.md)
 - [视觉分段计时与nvJPEG优先级](VISION_TIMING_RESULT_2026-11-07.md)
 - [统一schema、输出预算与小型真实场景回归](VISION_CLIENT_RESULT_2026-11-07.md)
 

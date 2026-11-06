@@ -2,6 +2,20 @@
 
 更新：2026-11-07。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+## 视觉塔内部诊断已通过，下一候选为attention行最大值归约
+
+[结果与下一步](VISION_FORWARD_TIMING_RESULT_2026-11-07.md)：d83a905f独立
+诊断程序982bba07，默认关闭10段event，沿用原完成同步。热小图attention
+占塔内98.46%，大图/多图99.31%/99.25%，占其HTTP72.17%/79.60%。
+多图位置表主机8.29秒是原阻塞上传等待，stream区间仅0.158ms，不能重复
+归因。建议下一候选只并行行最大值；尚未实现或证明其HTTP收益。
+
+实际2模型12Chat16控制、132.003秒租约，guard COMPLETED；6组成对
+输出/终态/usage完全一致，5条完整内部记录。341host、14 Python通过，
+零警告构建。2492文件/2310 Git独立重建，两轮custody/reaped完整，
+GPU/18146/自有PID/原锁释放；旧驱动失败不追改。默认ea1b474d/3eb46385
+及旧包保持，无优化/部署接受，不扩硬解码、并发或长稳，不再追加GPU。
+
 ## 视觉计时已完成有界诊断，暂缓nvJPEG
 
 [PR #18](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/18)两项host检查

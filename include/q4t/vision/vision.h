@@ -33,6 +33,8 @@ class WeightLoader;
 }  // namespace io
 namespace vision {
 
+class ForwardTiming;
+
 // Vision tower config (from config.json vision_config).
 struct VisionConfig {
   int depth = 27;             // number of transformer blocks
@@ -153,10 +155,13 @@ cudaError_t VisionAttentionSharedBytes(uint64_t* bytes);
 // out: device BF16 [total_L/merge^2, out_hidden] (merged features, in image
 //   order). Caller allocates (see VisionOutputBytes).
 //
-// Returns false (with err) on failure.
+// Returns false (with err) on failure. Optional timing must be prepared by the
+// caller and collected only after its normal completion boundary. It does not
+// add synchronization or own any compute buffers.
 bool VisionForward(const VisionTower& tower, const uint16_t* pixel_values,
                    const std::vector<ImageShape>& shapes, uint16_t* out,
-                   std::string* err, cudaStream_t stream = 0);
+                   std::string* err, cudaStream_t stream = 0,
+                   ForwardTiming* timing = nullptr);
 
 // Required output bytes for the given shapes.
 inline size_t VisionOutputBytes(const VisionConfig& cfg,
