@@ -745,7 +745,7 @@
     "src/text/tokenizer.cpp": "bfa059ee7dc64a37eb42d749710b4ad039f125675a93718902cab3b6ade2e7e8",
     "src/vision/media_plan.cpp": "30f1858fe11a14bb81f5ee2c80edef68e60cb7a03c7a0ec8132cc29936dff302",
     "src/vision/processor.cpp": "b1e4878ee3e9da39bc7a9511eeb3ab623b0fd4e5d16797fdbe1d2e28d41d59f7",
-    "src/vision/vision.cu": "6bb69371b244ff7a3c025a377a0be64d954f0f4b814c99ea3d997fad7c705832"
+    "src/vision/vision.cu": "7fc63e2c5e58e633a75579f595781eb90f098e3ab4cb2ecc1f6c280c853fc586"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -1016,7 +1016,7 @@
   },
   "vision_v1_review": {
     "date": "2026-11-06",
-    "scope": "Timestamped temporal groups, strict positions and config, nearest-even geometry, shared expanded preflight/client budgeting, media structured output and explicit unsupported profile gates. CPU evidence only; GPU/HTTP acceptance pending.",
+    "scope": "Official HF CPU independent full tower revealed and fixed shared rotary-reference defect and merger activation. Four CUDA full tower cases pass original bounds. Image/structured/tool business and scoped real TLS media governance verified; four structured temporal-direction quality cases remain failed, ordinary video diagnosis correct. Final default MTP protection and release pending; no long soak or hardware decode acceptance.",
     "changed_sources": [
       "CMakeLists.txt",
       "cmake/ChatProtocolIdentity.cmake",
@@ -1038,7 +1038,8 @@
       "src/server/media_admission.cpp",
       "src/server/server_options.cpp",
       "src/vision/media_plan.cpp",
-      "src/vision/processor.cpp"
+      "src/vision/processor.cpp",
+      "src/vision/vision.cu"
     ],
     "evidence": [
       "docs/VISION_PRODUCTION_PLAN_2026-11-06.md",
@@ -1046,7 +1047,9 @@
       "tests/vision_configuration_test.cpp",
       "tests/server_media_admission_test.cpp",
       "tools/vision_service/reference_diff.py",
-      "tools/vision_service/prompt_diff.py"
+      "tools/vision_service/prompt_diff.py",
+      "tools/vision_service/hf_tower_reference.py",
+      "tools/vision_service/reuse_governance.py"
     ]
   }
 }

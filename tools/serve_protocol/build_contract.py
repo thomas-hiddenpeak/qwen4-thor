@@ -314,7 +314,9 @@ def openapi():
             pattern="^[A-Za-z0-9_.:-]{1,128}$"), description="Trace only; not cancellation credentials or an idempotency key")},
         content={"application/json": dict(schema=schema)})
     error = external("serve-transport-v1.schema.json", "#/$defs/error")
-    chat = external("serve-chat-request-v1.schema.json")
+    chat = dict(anyOf=[external("serve-chat-request-v1.schema.json"),
+                       external("serve-vision-request-v1.schema.json")],
+        **{"x-q4t-media-profile": "Explicit --allow-media --no-mtp --max-seq 1; check runtime capabilities. video_frames/video_timestamps are Q4T extensions. Structural validity does not establish model task accuracy."})
     cancel = obj(dict(request_id=chat_schema()["properties"]["request_id"],
         cancel_token=dict(type="string", pattern="^[0-9a-f]{64}$")), ("request_id", "cancel_token"))
     preflight = obj(dict(request=chat, include_prompt=dict(type="boolean", default=False),
