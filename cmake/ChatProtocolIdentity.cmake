@@ -19,6 +19,7 @@ set(protocol_inputs
   include/q4t/server/cuda_quota_metrics.h
   include/q4t/vision/vision.h
   include/q4t/vision/processor.h
+  include/q4t/vision/timing.h
   include/q4t/vision/media_plan.h
   src/vision/media_plan.cpp
   include/q4t/server/media_admission.h

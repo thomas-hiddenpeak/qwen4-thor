@@ -13,6 +13,7 @@
 #include "q4t/server/chat_template.h"
 #include "q4t/server/media_admission.h"
 #include "q4t/vision/processor.h"
+#include "q4t/vision/timing.h"
 #include "q4t/vision/vision.h"
 
 namespace q4t::server {
@@ -22,6 +23,19 @@ bool ChatServer::RunVisionPipeline(
     std::vector<std::array<int, 3>>* out_grids, std::string* err,
     DeviceMemoryResult* device_result, const char* request_id,
     const std::function<bool()>& cancelled, ChatPlanError* media_error) {
+  using vision::TimingScope;
+  using vision::TimingStage;
+  vision::StageTimings timings(vision::VisionTimingEnabled());
+  auto* timing = timings.Active();
+  bool timing_completed = false;
+  // Declared before buffer owners, so terminal reporting includes cleanup.
+  ScopeExit report_timing([&] {
+    if (!timing) return;
+    size_t frames = 0;
+    for (const auto& item : items) frames += item.frames.size();
+    timings.Report(stderr, request_id, timing_completed, items.size(), frames,
+                   plan.patches);
+  });
   const runtime::CleanupPhase phase("vision.request");
   *device_result = {};
   *out_feats = nullptr;
@@ -67,7 +81,8 @@ bool ChatServer::RunVisionPipeline(
             },
         .cancel_context = const_cast<std::function<bool()>*>(&cancelled),
         .admission = &plan.items[index],
-        .result = &processed};
+        .result = &processed,
+        .timings = timing};
     std::vector<float> pix;
     vision::ImageShape sh;
     std::string perr;
@@ -124,6 +139,7 @@ bool ChatServer::RunVisionPipeline(
   // 2. Build the device pixel buffer (float32 -> BF16, concatenated).
   const int patch_dim = cfg.in_channels * cfg.temporal_patch_size *
                         cfg.patch_size * cfg.patch_size;  // 1536
+  TimingScope pack_timing(timing, TimingStage::kPack);
   std::vector<uint16_t> pixels_bf16(static_cast<size_t>(total_L) * patch_dim);
   {
     size_t off = 0;
@@ -136,6 +152,7 @@ bool ChatServer::RunVisionPipeline(
       off += n;
     }
   }
+  pack_timing.Stop();
   // Publish no output ownership until all computation and cleanup succeeded.
   // Counts are prepared before acquiring device buffers (may throw bad_alloc).
   int total_tokens = 0;
@@ -153,6 +170,7 @@ bool ChatServer::RunVisionPipeline(
   uint16_t* d_out = nullptr;
   const auto record = [&](DeviceMemoryResult result) {
     if (!result.ok()) {
+      timing_completed = false;
       *device_result = result;
       std::fprintf(stderr,
                    "[q4t][vision-device] id=%s code=%s error=%d pending=%d\n",
@@ -166,6 +184,7 @@ bool ChatServer::RunVisionPipeline(
     return result.ok();
   };
   const auto release = [&](uint16_t*& pointer, const char* site) {
+    TimingScope cleanup_timing(timing, TimingStage::kCleanup);
     return record(detail::ReleaseCudaMemory(pointer, site, request_id));
   };
   const int exceptions = std::uncaught_exceptions();
@@ -174,10 +193,13 @@ bool ChatServer::RunVisionPipeline(
     release(d_pixels, "vision.pixels_free");
     release(d_out, "vision.output_free");
   });
+  TimingScope allocate_timing(timing, TimingStage::kPixelsAllocate);
   if (!record(detail::AllocateCudaMemory(d_pixels,
                                          pixels_bf16.size() * sizeof(uint16_t),
                                          "vision.pixels_allocate", request_id)))
     return false;
+  allocate_timing.Stop();
+  TimingScope upload_timing(timing, TimingStage::kPixelsUpload);
   auto copy_error = static_cast<cudaError_t>(
       detail::DeviceMemoryFault("vision.pixels_copy", request_id));
   if (copy_error == cudaSuccess)
@@ -188,16 +210,22 @@ bool ChatServer::RunVisionPipeline(
     record({DeviceMemoryState::kFailure, copy_error});
     return false;
   }
+  upload_timing.Stop();
+  TimingScope workspace_timing(timing, TimingStage::kWorkspace);
   DeviceMemoryResult workspace;
   if (!vision_tower_->Allocate(shapes, nullptr, &workspace)) {
     record(workspace);
     return false;
   }
+  workspace_timing.Stop();
   const size_t out_bytes = vision::VisionOutputBytes(cfg, shapes);
+  TimingScope output_timing(timing, TimingStage::kOutputAllocate);
   if (!record(detail::AllocateCudaMemory(d_out, out_bytes,
                                          "vision.output_allocate", request_id)))
     return false;
+  output_timing.Stop();
   detail::ServeRequestFaultPoint("vision.before_forward", request_id);
+  TimingScope forward_timing(timing, TimingStage::kForward);
   if (detail::DeviceMemoryFault("vision.forward", request_id) != cudaSuccess ||
       !vision::VisionForward(*vision_tower_, d_pixels, shapes, d_out, err,
                              nullptr)) {
@@ -208,10 +236,12 @@ bool ChatServer::RunVisionPipeline(
   // A completion failure must not unwind or recycle possibly live buffers.
   runtime::RequireCleanupSuccess(cudaDeviceSynchronize(),
                                  "cudaDeviceSynchronize");
+  forward_timing.Stop();
   if (!release(d_pixels, "vision.pixels_free")) return false;
   if (cancelled()) return fail("request_cancelled", items.size());
   *out_feats = std::exchange(d_out, nullptr);
   *out_num_tokens = total_tokens;
+  timing_completed = true;
   return true;
 }
 

@@ -13,6 +13,7 @@
 //   6. patchify: block-major, per-patch [C=3, T=2, P=16, P=16]
 #include "q4t/vision/processor.h"
 #include "q4t/vision/media_plan.h"
+#include "q4t/vision/timing.h"
 
 #include <algorithm>
 #include <array>
@@ -355,6 +356,7 @@ struct ProcessorOutput {
 bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
                   const ProcessorConfig& cfg, ProcessedImage* out,
                   std::string* err, const ProcessorOptions& options) {
+  TimingScope prepare_timing(options.timings, TimingStage::kPrepare);
   if (options.result) *options.result = {};
   if (!out) return ProcessorFail(options, err, "media_config_invalid");
   *out = {};
@@ -365,15 +367,21 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
   const MediaPlanInput input{MediaKind::kImage, {&bytes, 1}};
   MediaItemPlan item;
   if (!PrepareItem(input, cfg, options, &item, err)) return false;
+  prepare_timing.Stop();
   DecodeScope decode(options);
 
   // 1. Decode PNG/JPEG -> RGB uint8.
   int w = 0, h = 0, comp = 0;
   decode_allocation_failed = false;
+  // PrepareItem has already restricted sources to PNG/JPEG.
+  TimingScope decode_timing(options.timings, image_bytes[0] == 0xff
+                                                ? TimingStage::kDecodeJpeg
+                                                : TimingStage::kDecodePng);
   std::unique_ptr<uint8_t, decltype(&stbi_image_free)> decoded(
       stbi_load_from_memory(image_bytes, static_cast<int>(num_bytes), &w, &h,
                             &comp, 3),
       stbi_image_free);
+  decode_timing.Stop();
   if (decode_allocation_failed) throw std::bad_alloc();
   if (decode.budget.denied)
     return ProcessorFail(options, err, "media_decode_limit");
@@ -386,6 +394,7 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
   const int rh = item.geometry.height, rw = item.geometry.width;
 
   // 3. BICUBIC resize (Pillow fixed-point).
+  TimingScope resize_timing(options.timings, TimingStage::kResize);
   std::vector<uint8_t> resized;
   if (rh != h || rw != w) {
     resized.resize(static_cast<size_t>(rh) * rw * 3);
@@ -394,6 +403,7 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
     resized.assign(pixels, pixels + static_cast<size_t>(h) * w * 3);
   }
   decoded.reset();
+  resize_timing.Stop();
   if (!ProcessorContinue(options, err)) return false;
 
   // 4-5. rescale + normalize (per pixel, per channel, exact float32).
@@ -401,6 +411,7 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
   // normalize: (f32 - mean[c]) / std[c]
   // Since 1/255.0 in double is the exact Python literal, this matches
   // transformers' `float64(px) * scale` then `astype(float32)`.
+  TimingScope normalize_timing(options.timings, TimingStage::kNormalize);
   const double kInv255 = 1.0 / 255.0;
   std::vector<float> norm(static_cast<size_t>(rh) * rw * 3);
   for (size_t i = 0; i < norm.size(); ++i) {
@@ -408,8 +419,10 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
     float f = static_cast<float>(static_cast<double>(resized[i]) * kInv255);
     norm[i] = (f - cfg.image_mean[c]) / cfg.image_std[c];
   }
+  normalize_timing.Stop();
 
   // 6. Patchify: block-major, per-patch [C=3, T=2, P=16, P=16].
+  TimingScope patchify_timing(options.timings, TimingStage::kPatchify);
   const int P = cfg.patch_size;
   const int T = cfg.temporal_patch_size;
   const int M = cfg.merge_size;
@@ -457,6 +470,7 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
     }
   }
 
+  patchify_timing.Stop();
   guard.success = ProcessorContinue(options, err);
   return guard.success;
 }
@@ -469,6 +483,7 @@ bool ProcessVideo(const std::vector<const uint8_t*>& frames,
                   const std::vector<size_t>& frame_bytes,
                   const ProcessorConfig& cfg, ProcessedVideo* out,
                   std::string* err, const ProcessorOptions& options) {
+  TimingScope prepare_timing(options.timings, TimingStage::kPrepare);
   if (options.result) *options.result = {};
   if (!out) return ProcessorFail(options, err, "media_config_invalid");
   *out = {};
@@ -487,6 +502,7 @@ bool ProcessVideo(const std::vector<const uint8_t*>& frames,
   const MediaPlanInput input{MediaKind::kVideo, {bytes.data(), frames.size()}};
   MediaItemPlan item;
   if (!PrepareItem(input, cfg, options, &item, err)) return false;
+  prepare_timing.Stop();
   const int F = static_cast<int>(frames.size());
 
   // 1. Decode every frame -> RGB uint8 [H, W, 3]. All frames share H, W.
@@ -497,6 +513,9 @@ bool ProcessVideo(const std::vector<const uint8_t*>& frames,
     if (options.result) options.result->frame = f;
     if (!ProcessorContinue(options, err)) return false;
     DecodeScope decode(options);
+    TimingScope decode_timing(options.timings, frames[f][0] == 0xff
+                                                  ? TimingStage::kDecodeJpeg
+                                                  : TimingStage::kDecodePng);
     int w = 0, h = 0, comp = 0;
     decode_allocation_failed = false;
     std::unique_ptr<uint8_t, decltype(&stbi_image_free)> source(
@@ -517,6 +536,7 @@ bool ProcessVideo(const std::vector<const uint8_t*>& frames,
   const int rh = item.geometry.height, rw = item.geometry.width;
 
   // 3. Per-frame BICUBIC resize (Pillow fixed-point).
+  TimingScope resize_timing(options.timings, TimingStage::kResize);
   std::vector<std::vector<uint8_t>> resized(F);
   for (int f = 0; f < F; ++f) {
     if (!ProcessorContinue(options, err)) return false;
@@ -532,8 +552,10 @@ bool ProcessVideo(const std::vector<const uint8_t*>& frames,
   int Fp = (F % 2 == 0) ? F : F + 1;
   if (Fp != F) resized.push_back(resized[F - 1]);
   const int grid_t = Fp / cfg.temporal_patch_size;
+  resize_timing.Stop();
 
   // 5. rescale + normalize (per frame, exact float32, same as ProcessImage).
+  TimingScope normalize_timing(options.timings, TimingStage::kNormalize);
   const double kInv255 = 1.0 / 255.0;
   std::vector<std::vector<float>> norm(Fp);
   for (int f = 0; f < Fp; ++f) {
@@ -548,6 +570,8 @@ bool ProcessVideo(const std::vector<const uint8_t*>& frames,
 
   // 6. Temporal patchify: per-patch [C, T, P, P] with T real frames,
   //    block-major spatial within each time group (same layout as image).
+  normalize_timing.Stop();
+  TimingScope patchify_timing(options.timings, TimingStage::kPatchify);
   const int P = cfg.patch_size;
   const int T = cfg.temporal_patch_size;
   const int M = cfg.merge_size;
@@ -594,6 +618,7 @@ bool ProcessVideo(const std::vector<const uint8_t*>& frames,
     }
   }
 
+  patchify_timing.Stop();
   guard.success = ProcessorContinue(options, err);
   return guard.success;
 }

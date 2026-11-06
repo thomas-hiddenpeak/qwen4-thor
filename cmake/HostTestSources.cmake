@@ -35,6 +35,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/model_sequence_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/model_vision_positions_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/vision_configuration_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/vision_timing_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_http_request_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_http_observation_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_http_response_test.cpp
