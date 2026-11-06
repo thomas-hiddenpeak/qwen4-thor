@@ -213,6 +213,7 @@ class Run(s.Run):
         self.idle('seeds-idle')
         active=self.visual();active['messages'][0]['content'][-1]['text']='List every visible detail, then count from 1 to 1000 without omitting any number.'
         active['max_tokens']=2048
+        active_prompt=self.preflight('active-preflight',active)['prompt_tokens']
         conn,resp=self.begin('active','/v1/chat/completions',active)
         # Registered SSE plus actual slot admission, not just socket presence.
         end=time.monotonic()+8
@@ -237,7 +238,9 @@ class Run(s.Run):
         denied=json.loads(self.http('rpm-denied','/v1/chat/completions',self.visual(),429))
         s.require(denied['error']['code']=='client_rpm_exhausted','RPM not enforced')
         self.cancel_request('cancel-active',active)
-        cancelled_wire(self.finish('active',conn,resp),active['request_id'])
+        active_wire=self.finish('active',conn,resp)
+        cancelled_wire(active_wire,active['request_id'])
+        s.require(b'cancelled during media processing' in active_wire,'active cancellation phase changed')
         for i in (3,0,1):
             label,body,c,r,_=waiting[i]
             value=s.client.read_sse(io.BytesIO(self.finish(label,c,r)))
@@ -253,8 +256,11 @@ class Run(s.Run):
         self.idle('final-idle')
         raw=self.metric('final-ledger');values=s.parse_metrics(raw)
         s.require(all(rate(raw,c,'reserved_tokens')==0 for c in ('alpha','beta')),'reservation retained')
+        # Admission bills the full logical prompt even if media preparation
+        # is cancelled. Generation-path metrics do not include that request.
         s.require(sum(rate(raw,c,'settled_tokens_total') for c in ('alpha','beta'))==
-            values['q4t_prompt_tokens_total']+values['q4t_generation_tokens_total'],'logical usage mismatch')
+            values['q4t_prompt_tokens_total']+values['q4t_generation_tokens_total']+active_prompt,
+            'admitted logical usage mismatch')
         self.observe('media-client-governance',True,expected_order=expected,observed_order=order,
                      queued_refund=cost,tls=True,long_stability=False)
 
