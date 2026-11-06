@@ -1194,7 +1194,9 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
       __syncthreads();
       if (threadIdx.x < kG) {
         const int qrow = threadIdx.x;
-        float s = sSum[qrow] * sAlpha[qrow];
+        // Preserve the parent's separate FMUL rounding before the first add.
+        // Otherwise nvcc contracts this multiply and probabilities[0] to FMA.
+        float s = __fmul_rn(sSum[qrow], sAlpha[qrow]);
         // Include the zero tail, in the original left-to-right order. A tree
         // reduction or summing sP would change the numerical contract.
         for (int p = 0; p < kChunk; ++p)

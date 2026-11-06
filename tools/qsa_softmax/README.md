@@ -23,3 +23,12 @@ lease、driver、plan均传绝对路径，避免guard切换cwd后选错来源。
 
 模型目录和reference只读；禁止脱离GPU租约运行服务。不要提前运行
 CPU或GPU测试，必要构建和静态审阅后第一项测试必须是真实HTTP。
+
+首验实际暴露分母FMA融合差异；对应具体失败修复边界已追加判定卡。
+`numerical.py --build-only`仅编译三版真实kernel与独立分母oracle；
+其无参数执行仍必须在GPU guard内，预算0模型/0HTTP/120秒。
+`repair.py --prepare`在修复提交、构建、数值差分后冻结单候选重验，
+guard内`repair.py --plan ABS`最多1启动17HTTP/600秒。租约完成后
+`repair.py --plan ABS --analyze-only --lease ABS`明确审查失败原阶段
+中的成功父arm，不把原STOPPED或COMMAND_FAILED改为成功。新来源、
+旧输入归档、原件、时间间隔与全部结果分别保留。

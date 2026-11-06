@@ -1,0 +1,202 @@
+// Appended to verbatim parent, failed, and repaired sparse kernel bodies.
+#define CUDA_OK(expression)                         \
+  do {                                              \
+    const cudaError_t error = (expression);         \
+    if (error != cudaSuccess) {                     \
+      std::fprintf(stderr, "%s: %s\n", #expression, \
+                   cudaGetErrorString(error));      \
+      return 1;                                     \
+    }                                               \
+  } while (0)
+
+// Isolate the denominator's compiled arithmetic. The independent host oracle
+// rounds the product to FP32 before the 16 ordered additions, as parent SASS.
+template <bool SeparateMultiply>
+__global__ void Denominator(const float* input, float* output, int count) {
+  const int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if (i >= count) return;
+  const float* values = input + i * 18;
+  float s;
+  if constexpr (SeparateMultiply)
+    s = __fmul_rn(values[0], values[1]);
+  else
+    s = values[0] * values[1];
+  for (int p = 0; p < 16; ++p) s += values[p + 2];
+  output[i] = s;
+}
+
+int main() {
+  constexpr int kRows = 64;
+  constexpr int kNq = 24;
+  constexpr int kNkv = 2;
+  constexpr int kHd = 256;
+  constexpr int kPositions = 4096;
+  constexpr int kSequences = 3;
+  constexpr int kSelected = 2052;
+  constexpr size_t kGuard = 32;
+  const std::array<int, 12> lengths = {0,  1,  3,  15,   16,   17,
+                                       31, 32, 33, 2048, 2049, 2051};
+  const size_t kv_stride = kPositions * kNkv * 2 * kHd;
+  const size_t output_count = kRows * kNq * kHd;
+  const size_t guarded_count = output_count + 2 * kGuard;
+  std::vector<uint16_t> q(output_count), gate(output_count);
+  std::vector<uint16_t> kv(kSequences * kv_stride);
+  std::vector<int> pages(kSequences * kPositions);
+  std::vector<int> selected(kRows * kSelected), sequence(kRows), lens(kRows);
+  std::vector<uint16_t> before(guarded_count), bad(guarded_count),
+      fixed(guarded_count);
+  uint32_t state = 20260921;
+  auto fill = [&](std::vector<uint16_t>* data) {
+    for (auto& bits : *data) {
+      state = state * 1664525u + 1013904223u;
+      const float value = (static_cast<int>(state >> 16) - 32768) / 32768.f;
+      const __nv_bfloat16 bf = __float2bfloat16_rn(value);
+      std::memcpy(&bits, &bf, sizeof(bits));
+    }
+  };
+  fill(&q);
+  fill(&gate);
+  fill(&kv);
+  for (int seq = 0; seq < kSequences; ++seq)
+    for (int p = 0; p < kPositions; ++p)
+      pages[seq * kPositions + p] = ((p / 16) * 73 + seq * 19) % 256;
+  for (int row = 0; row < kRows; ++row) {
+    sequence[row] = (row * 2 + 1) % kSequences;
+    for (int i = 0; i < kSelected; ++i)
+      selected[row * kSelected + i] = (i * 37 + row * 113 + 5) % kPositions;
+  }
+  uint16_t *dq, *dg, *dkv, *dbefore, *dbad, *dfixed;
+  int *dpages, *dselected, *dsequence, *dlens;
+  CUDA_OK(cudaMalloc(&dq, q.size() * 2));
+  CUDA_OK(cudaMalloc(&dg, gate.size() * 2));
+  CUDA_OK(cudaMalloc(&dkv, kv.size() * 2));
+  CUDA_OK(cudaMalloc(&dbefore, guarded_count * 2));
+  CUDA_OK(cudaMalloc(&dbad, guarded_count * 2));
+  CUDA_OK(cudaMalloc(&dfixed, guarded_count * 2));
+  CUDA_OK(cudaMalloc(&dpages, pages.size() * sizeof(int)));
+  CUDA_OK(cudaMalloc(&dselected, selected.size() * sizeof(int)));
+  CUDA_OK(cudaMalloc(&dsequence, sequence.size() * sizeof(int)));
+  CUDA_OK(cudaMalloc(&dlens, lens.size() * sizeof(int)));
+  CUDA_OK(cudaMemcpy(dq, q.data(), q.size() * 2, cudaMemcpyHostToDevice));
+  CUDA_OK(cudaMemcpy(dg, gate.data(), gate.size() * 2, cudaMemcpyHostToDevice));
+  CUDA_OK(cudaMemcpy(dkv, kv.data(), kv.size() * 2, cudaMemcpyHostToDevice));
+  CUDA_OK(cudaMemcpy(dpages, pages.data(), pages.size() * sizeof(int),
+                     cudaMemcpyHostToDevice));
+  CUDA_OK(cudaMemcpy(dselected, selected.data(), selected.size() * sizeof(int),
+                     cudaMemcpyHostToDevice));
+  CUDA_OK(cudaMemcpy(dsequence, sequence.data(), sequence.size() * sizeof(int),
+                     cudaMemcpyHostToDevice));
+  size_t checked = 0, bad_differences = 0;
+  int launches = 0;
+  for (bool pooled : {false, true}) {
+    for (int rows : {1, 3, 8, 9, 12, kRows}) {
+      for (int first : {0, 5, 9}) {
+        for (int row = 0; row < rows; ++row)
+          lens[row] = lengths[(first + row) % lengths.size()];
+        CUDA_OK(cudaMemcpy(dlens, lens.data(), rows * sizeof(int),
+                           cudaMemcpyHostToDevice));
+        CUDA_OK(cudaMemset(dbefore, 0xa5, guarded_count * 2));
+        CUDA_OK(cudaMemset(dbad, 0x5a, guarded_count * 2));
+        CUDA_OK(cudaMemset(dfixed, 0xc3, guarded_count * 2));
+        const int* seq_ids = pooled ? dsequence : nullptr;
+        parent::SparseAttentionKernel<<<dim3(rows, kNkv), 256>>>(
+            dq, dkv, dpages, dselected, dlens, dbefore + kGuard, dg, kNq, kNkv,
+            kHd, kSelected, seq_ids, kv_stride, kPositions);
+        CUDA_OK(cudaGetLastError());
+#define LAUNCH_VARIANTS(large)                                                \
+  failed::SparseAttentionKernel<large><<<dim3(rows, kNkv), 256>>>(            \
+      dq, dkv, dpages, dselected, dlens, dbad + kGuard, dg, kNq, kNkv, kHd,   \
+      kSelected, seq_ids, kv_stride, kPositions);                             \
+  CUDA_OK(cudaGetLastError());                                                \
+  repaired::SparseAttentionKernel<large><<<dim3(rows, kNkv), 256>>>(          \
+      dq, dkv, dpages, dselected, dlens, dfixed + kGuard, dg, kNq, kNkv, kHd, \
+      kSelected, seq_ids, kv_stride, kPositions);                             \
+  CUDA_OK(cudaGetLastError())
+        if (rows > 8) {
+          LAUNCH_VARIANTS(true);
+        } else {
+          LAUNCH_VARIANTS(false);
+        }
+#undef LAUNCH_VARIANTS
+        CUDA_OK(cudaMemcpy(before.data(), dbefore, guarded_count * 2,
+                           cudaMemcpyDeviceToHost));
+        CUDA_OK(cudaMemcpy(bad.data(), dbad, guarded_count * 2,
+                           cudaMemcpyDeviceToHost));
+        CUDA_OK(cudaMemcpy(fixed.data(), dfixed, guarded_count * 2,
+                           cudaMemcpyDeviceToHost));
+        const size_t count = rows * kNq * kHd;
+        for (size_t i = 0; i < guarded_count; ++i) {
+          if (i < kGuard || i >= kGuard + count) {
+            if (before[i] != 0xa5a5 || bad[i] != 0x5a5a || fixed[i] != 0xc3c3) {
+              std::fprintf(stderr, "FAIL output canary\n");
+              return 1;
+            }
+          } else {
+            bad_differences += before[i] != bad[i];
+            if (before[i] != fixed[i] || (fixed[i] & 0x7f80) == 0x7f80) {
+              std::fprintf(stderr,
+                           "FAIL fixed pooled=%d rows=%d first=%d i=%zu "
+                           "old=%04x new=%04x\n",
+                           pooled, rows, first, i, before[i], fixed[i]);
+              return 1;
+            }
+          }
+        }
+        checked += count;
+        ++launches;
+      }
+    }
+  }
+  constexpr int kCases = 65536;
+  std::vector<float> inputs(kCases * 18), oracle(kCases), fused(kCases),
+      exact(kCases);
+  for (int i = 0; i < kCases; ++i) {
+    float* values = inputs.data() + i * 18;
+    for (int j = 0; j < 18; ++j) {
+      state = state * 1664525u + 1013904223u;
+      values[j] = (state >> 8) / 16777216.f;
+    }
+    values[0] *= 2048.f;
+    volatile float product = values[0] * values[1];
+    volatile float sum = product;
+    for (int j = 0; j < 16; ++j) sum = sum + values[j + 2];
+    oracle[i] = sum;
+  }
+  float *din, *dfused, *dexact;
+  CUDA_OK(cudaMalloc(&din, inputs.size() * sizeof(float)));
+  CUDA_OK(cudaMalloc(&dfused, kCases * sizeof(float)));
+  CUDA_OK(cudaMalloc(&dexact, kCases * sizeof(float)));
+  CUDA_OK(cudaMemcpy(din, inputs.data(), inputs.size() * sizeof(float),
+                     cudaMemcpyHostToDevice));
+  Denominator<false><<<(kCases + 255) / 256, 256>>>(din, dfused, kCases);
+  CUDA_OK(cudaGetLastError());
+  Denominator<true><<<(kCases + 255) / 256, 256>>>(din, dexact, kCases);
+  CUDA_OK(cudaGetLastError());
+  CUDA_OK(cudaMemcpy(fused.data(), dfused, kCases * sizeof(float),
+                     cudaMemcpyDeviceToHost));
+  CUDA_OK(cudaMemcpy(exact.data(), dexact, kCases * sizeof(float),
+                     cudaMemcpyDeviceToHost));
+  size_t fused_differences = 0;
+  for (int i = 0; i < kCases; ++i) {
+    fused_differences += std::memcmp(&oracle[i], &fused[i], sizeof(float)) != 0;
+    if (std::memcmp(&oracle[i], &exact[i], sizeof(float))) {
+      std::fprintf(stderr, "FAIL independent denominator i=%d\n", i);
+      return 1;
+    }
+  }
+  for (uint16_t* p : {dq, dg, dkv, dbefore, dbad, dfixed}) CUDA_OK(cudaFree(p));
+  for (int* p : {dpages, dselected, dsequence, dlens}) CUDA_OK(cudaFree(p));
+  for (float* p : {din, dfused, dexact}) CUDA_OK(cudaFree(p));
+  if (!bad_differences || !fused_differences) {
+    std::fprintf(stderr, "FAIL failed candidate/rounding not reproduced\n");
+    return 1;
+  }
+  std::printf(
+      "PASS kernel_cases=%d finite_bf16=%zu repaired_bit_exact=1 canaries=1 "
+      "failed_bf16_differences=%zu\n",
+      launches, checked, bad_differences);
+  std::printf(
+      "PASS fp32_denominators=%d repaired_bit_exact=1 fused_differences=%zu\n",
+      kCases, fused_differences);
+  return 0;
+}
