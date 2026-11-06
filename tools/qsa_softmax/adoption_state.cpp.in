@@ -1,6 +1,7 @@
 // Appended to the independently enumerated session fixture, configured to all
 // 48 layers. Outputs contain effective bytes only, never pointer values or
 // uninitialized scratch. The two executable identities are compared offline.
+#include <array>
 #include <fstream>
 
 namespace {

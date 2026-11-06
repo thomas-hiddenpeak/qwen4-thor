@@ -5,6 +5,7 @@ GPU guard; four model executions are counted separately from HTTP services.
 """
 import argparse
 import importlib.util
+import json
 from pathlib import Path
 import re
 import signal
