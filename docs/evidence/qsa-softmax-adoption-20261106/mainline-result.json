@@ -1,0 +1,20 @@
+{
+  "status": "MERGED_QUALIFIED_DEFAULT",
+  "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/14",
+  "head_commit": "1c5556e231ef08aa5a40a5a49cd632a51c697749",
+  "main_commit": "f350cf0aa14f1a7ce9e1b82d569625c287f8919f",
+  "merged_at": "2026-11-06T13:40:43Z",
+  "runtime_sources_verified": 223,
+  "installed_binary_sha256": "aa528a6839ed629fcea2aed036f4c8f0bdc14617ac00fdc31156e6e58c3e18d0",
+  "installed_sidecar_sha256": "46aa73bd678ace6c79a8c4946c541e2e53ac7808c215374626c59c46ee90a11b",
+  "branch_cleanup": {
+    "deleted_local_and_remote": "codex/qsa-softmax-adoption",
+    "expected_old_tip": "1c5556e231ef08aa5a40a5a49cd632a51c697749",
+    "retained_ancestor": "f350cf0aa14f1a7ce9e1b82d569625c287f8919f",
+    "remote_deletion_used_explicit_lease": true,
+    "retained_detached_worktree": "/home/rm01/models/dev/qwen4-thor/.q4t-work/qsa-softmax-mainline-20261106",
+    "research_branch_kept": "codex/mtp-selected-head-rows",
+    "reason": "Unique research commits and original evidence/runtime paths are retained."
+  },
+  "new_gpu_tests_after_delivery": 0
+}

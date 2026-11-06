@@ -4,6 +4,10 @@
 
 ## QSA正向收益已完成有界纳入和本机交付
 
+[PR #14](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/14)两项host检查
+通过并已合入main f350cf0a；223运行来源与安装候选一致。仅清理本次
+已包含发布分支，原1c5556e2工作区detached保留，研究与证据路径不动。
+
 [完整结果、保护项及回退](QSA_SOFTMAX_ADOPTION_RESULT_2026-11-06.md)：
 45K三模式TTFT下降2.609%～2.884%、E2E下降1.763%～2.360%；200K
 TTFT减少3.431～3.705秒。15格原值/负点与统计限制全部保留，原3%
