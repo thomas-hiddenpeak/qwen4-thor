@@ -248,14 +248,24 @@ MediaPlanResult PlanMediaGeometry(MediaKind kind, uint32_t width,
     return Fail(MediaPlanError::kGeometry);
   }
   int rh = 0, rw = 0;
-  if (!Aligned(std::round(static_cast<double>(h) / factor), factor, &rh) ||
-      !Aligned(std::round(static_cast<double>(w) / factor), factor, &rw)) {
+  // Python round uses ties-to-even. Integer division avoids floating-point
+  // environment dependence and differs from std::round at half factors.
+  const auto round_even = [](uint64_t value, uint64_t divisor) {
+    const uint64_t quotient = value / divisor;
+    const uint64_t twice_remainder = 2 * (value % divisor);
+    return quotient + (twice_remainder > divisor ||
+                        (twice_remainder == divisor && (quotient & 1)));
+  };
+  if (!Aligned(round_even(h, factor), factor, &rh) ||
+      !Aligned(round_even(w, factor), factor, &rw)) {
     return Fail(MediaPlanError::kIntegerRange);
   }
-  const uint64_t rounded_frames = video ? ((frames + 1) / 2) * 2 : 1;
+  // The reference resizes before padding; its budget rounds to nearest even
+  // temporal groups, while patchification below always pads the last frame.
+  const uint64_t budget_frames = video ? round_even(frames, 2) * 2 : 1;
   uint64_t rounded_pixels = 0, source_pixels = 0;
   if (!Mul(rh, rw, &rounded_pixels) ||
-      !Mul(rounded_pixels, rounded_frames, &rounded_pixels) ||
+      !Mul(rounded_pixels, budget_frames, &rounded_pixels) ||
       !Mul(h, w, &source_pixels) ||
       !Mul(source_pixels, video ? frames : 1, &source_pixels)) {
     return Fail(MediaPlanError::kIntegerRange);
@@ -288,7 +298,7 @@ MediaPlanResult PlanMediaGeometry(MediaKind kind, uint32_t width,
   MediaGeometry result;
   result.width = rw;
   result.height = rh;
-  result.padded_frames = video ? static_cast<int>(rounded_frames) : 2;
+  result.padded_frames = video ? static_cast<int>(((frames + 1) / 2) * 2) : 2;
   result.grid_t = result.padded_frames / 2;
   result.grid_h = rh / config.patch_size;
   result.grid_w = rw / config.patch_size;
@@ -416,7 +426,10 @@ MediaPlanResult PlanMedia(std::span<const MediaPlanInput> inputs,
   const auto sources =
       PlanMediaSources(inputs, image_config, video_config, limits, &plan);
   if (!sources) return sources;
-  if (context.placeholders != inputs.size() ||
+  size_t placeholders = 0;
+  for (size_t i = 0; i < plan.item_count; ++i)
+    placeholders += static_cast<size_t>(plan.items[i].geometry.grid_t);
+  if (context.placeholders != placeholders ||
       context.prompt_tokens_with_placeholders < context.placeholders) {
     return Fail(MediaPlanError::kPlaceholderCount);
   }

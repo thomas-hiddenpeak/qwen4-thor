@@ -4,6 +4,7 @@
 
 #include "q4t/server/chat_plan.h"
 #include "q4t/server/chat_prompt.h"
+#include "q4t/server/media_admission.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/structured_decoder.h"
 #include "q4t/text/tokenizer.h"
@@ -27,6 +28,8 @@ int main(int argc, char** argv) {
     config.model = "qwen3.8-flash-next";
     config.structured = kStructuredDecodingAvailable;
     config.max_len = static_cast<int>(fixture.GetInt("max_len", 8192));
+    config.max_prefill = static_cast<int>(fixture.GetInt("max_prefill", 2048));
+    config.allow_media = fixture.GetBool("allow_media", false);
     if (const auto* caps = fixture.GetArray("capacities")) {
       for (const auto& cap : caps->array)
         config.capacities.push_back(static_cast<int>(cap.AsInt()));
@@ -35,6 +38,7 @@ int main(int argc, char** argv) {
     ChatPlanError error;
     ChatRequestPlan plan;
     ChatPromptBudget budget;
+    q4t::vision::MediaPlan media;
     std::string prompt, response;
     std::vector<VisionItem> items;
     std::vector<uint32_t> tokens;
@@ -52,9 +56,18 @@ int main(int argc, char** argv) {
               return tokenizer->Encode(text, out);
             },
             &tokens, &budget, &error);
+      if (status && !items.empty()) {
+        q4t::vision::ProcessorConfig image, video;
+        video.min_pixels = 4096;
+        video.max_pixels = 25165824;
+        // This CPU probe assumes the stated device budget, never queries CUDA.
+        status = ExpandChatMedia(req, items, 248056, 248057, image, video,
+            {static_cast<uint64_t>(fixture.GetInt("attention_shared_bytes", 48128))},
+            config, &tokens, &media, &budget, &error);
+      }
       if (status)
         status = ChatPreflightJson(*body, config, plan, budget, prompt, tokens,
-                                   &response, &error);
+                                   &response, &error, &media);
     }
     if (!status)
       response =

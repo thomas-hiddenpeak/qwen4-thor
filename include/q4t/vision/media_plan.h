@@ -102,7 +102,7 @@ struct MediaPlanLimits {
 
 struct MediaContextBudget {
   uint64_t prompt_tokens_with_placeholders = 0;
-  size_t placeholders = 0;  // Each item replaces exactly one placeholder.
+  size_t placeholders = 0;  // One per image or video temporal patch group.
   uint64_t max_prefill = 0;
   uint64_t max_sequence = 0;  // Prompt must leave at least one output slot.
 };

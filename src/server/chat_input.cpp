@@ -110,7 +110,12 @@ bool ChatServer::RunVisionPipeline(
     pixel_sets.push_back(std::move(pix));
     // Patch-unit grid (t, h, w) for the 3D MRoPE table (same order as the
     // feature rows / placeholders).
-    if (out_grids) out_grids->push_back({sh.t, sh.h, sh.w});
+    if (out_grids) {
+      // Feature rows remain in ViT time-major order. Each temporal group is
+      // a separate prompt block, including its own timestamp and text clock.
+      for (int group = 0; group < sh.t; ++group)
+        out_grids->push_back({1, sh.h, sh.w});
+    }
   }
   if (static_cast<uint64_t>(total_L) != plan.patches)
     return fail("media_plan_mismatch", items.size());

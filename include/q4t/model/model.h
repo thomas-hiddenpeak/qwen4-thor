@@ -196,12 +196,11 @@ Status LoadModel(const ModelConfig& cfg, Model* out, cudaStream_t stream);
 struct VisionFeatures {
   const uint16_t* device = nullptr;  // [num_tokens, hs] device BF16
   int num_tokens = 0;
-  // Per vision item (in prompt position order) the ViT grid (t, h, w) in
+  // Per visual prompt block (in prompt order) the ViT grid (t, h, w) in
   // PATCH units (grid_t, grid_h, grid_w). Used to compute the 3D MRoPE
-  // positions for the expanded image/video tokens. Empty = text-only (or the
-  // caller does not need 3D positions). One entry per image_token_id /
-  // video_token_id placeholder, in the same left-to-right order as the
-  // feature rows.
+  // positions for the expanded image/video tokens. Each video temporal group
+  // has a separate t=1 block and timestamp text. Empty means no visual grids;
+  // supplied grids must exactly cover the media tokens in feature-row order.
   std::vector<std::array<int, 3>> grids;
 };
 

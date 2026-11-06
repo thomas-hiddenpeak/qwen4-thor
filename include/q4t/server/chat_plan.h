@@ -12,6 +12,10 @@
 #include "q4t/server/server_options.h"
 #include "q4t/status.h"
 
+namespace q4t::vision {
+struct MediaPlan;
+}
+
 namespace q4t::server {
 
 inline constexpr std::string_view kPreflightProfile = "q4t-preflight-v1";
@@ -83,7 +87,8 @@ Status ChatPreflightJson(const io::Json& envelope, const ChatPlanConfig& config,
                          const ChatPromptBudget& budget,
                          const std::string& prompt,
                          const std::vector<uint32_t>& tokens,
-                         std::string* output, ChatPlanError* error);
+                         std::string* output, ChatPlanError* error,
+                         const vision::MediaPlan* media = nullptr);
 
 struct StartupMemoryChecks;
 std::string EffectiveServeConfigJson(const ServerOptions& requested,

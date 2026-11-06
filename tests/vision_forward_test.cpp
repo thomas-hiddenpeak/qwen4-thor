@@ -39,6 +39,7 @@ const char* kIndex =
     "model.safetensors.index.json";
 const char* kRefJson =
     "/home/rm01/models/dev/qwen4-thor/tools/vision_ref.json";
+std::string output_prefix;
 
 float Bf16ToFloat(uint16_t b) {
   uint32_t bits = static_cast<uint32_t>(b) << 16;
@@ -263,13 +264,14 @@ bool RunCase(const std::string& case_name, VisionTower& tower,
     l2_den += static_cast<double>(ref_v) * static_cast<double>(ref_v);
   }
   const double l2_rel = std::sqrt(l2_num) / (std::sqrt(l2_den) + 1e-6);
-  if (case_name == "video") {
-    FILE* f = std::fopen("/tmp/cpp_video_out.txt", "w");
-    if (f) {
-      for (size_t i = 0; i < out_n; ++i)
-        std::fprintf(f, "%.9g\n", Bf16ToFloat(out_bf16[i]));
-      std::fclose(f);
-    }
+  if (!output_prefix.empty()) {
+    const std::string path = output_prefix + "-" + case_name + ".bf16";
+    FILE* f = std::fopen(path.c_str(), "wb");
+    Q4T_CHECK(f != nullptr);
+    const size_t written = std::fwrite(out_bf16.data(), sizeof(uint16_t),
+                                     out_n, f);
+    const int closed = std::fclose(f);
+    Q4T_CHECK(written == out_n && closed == 0);
   }
   std::printf("  [%s] output[0,:4] cuda = [%.6f, %.6f, %.6f, %.6f]\n",
               case_name.c_str(), Bf16ToFloat(out_bf16[0]),

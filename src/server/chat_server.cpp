@@ -28,6 +28,7 @@
 #include "q4t/runtime/startup_plan.h"
 #endif
 #include "q4t/vision/vision.h"
+#include "q4t/vision/configuration.h"
 
 namespace q4t::server {
 
@@ -115,6 +116,10 @@ Status ChatServer::Start(const ServerOptions& opts) {
   // Validate before loading the tokenizer or allocating model resources.
   const Status validated = ValidateServerOptions(opts);
   if (!validated.ok()) return validated;
+  if (opts.allow_media) {
+    const auto status = vision::CheckVisionConfiguration(opts.model_dir);
+    if (!status) return status;
+  }
   if (!opts.client_policy_file.empty()) {
     GatewayClientPolicy policy;
     auto status = LoadGatewayClientPolicy(opts.client_policy_file, &policy);

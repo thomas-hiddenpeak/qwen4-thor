@@ -1,7 +1,8 @@
 // Image processor for the Qwen3-VL vision tower.
 //
-// Exact replication of transformers 5.16.1 Qwen2VLImageProcessorPil (PIL
-// backend) + Pillow 12.3.0 BICUBIC fixed-point resize.
+// Resize/normalize/patch layout follows transformers 5.16.1 PIL backend.
+// PNG RGB decode is exact; stb JPEG decoding is not bit-identical to Pillow.
+// BICUBIC uses Pillow 12.3.0 fixed-point coefficients.
 //
 // Pipeline:
 //   1. Decode PNG/JPEG (stb_image) -> RGB uint8 [H, W, 3]

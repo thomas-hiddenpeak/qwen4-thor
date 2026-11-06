@@ -125,6 +125,7 @@ struct Fixture {
   }
   void Video(size_t count) {
     items[0] = {MediaKind::kVideo, {frames.data(), count}};
+    context.placeholders = (count + 1) / 2;
   }
   bool Run(Error expected, size_t item = 0, size_t frame = 0) {
     plan.item_count = 7;
@@ -307,7 +308,7 @@ const Case kCases[] = {
     {"image_reference_140x100",
      [] { return Geometry(MediaKind::kImage, 140, 100, 1, 320, 224, 1); }},
     {"image_ties_away",
-     [] { return Geometry(MediaKind::kImage, 272, 272, 1, 288, 288, 1); }},
+     [] { return Geometry(MediaKind::kImage, 272, 272, 1, 256, 256, 1); }},
     {"image_one_pixel",
      [] { return Geometry(MediaKind::kImage, 1, 1, 1, 256, 256, 1); }},
     {"image_shrink",
