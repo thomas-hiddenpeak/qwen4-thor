@@ -170,6 +170,8 @@ block()
     tools/evalscope/test_gpu_exclusive.py)
   q4t_add_python_contract(q4t_managed_telemetry_contracts
     tools/serve_service/test_telemetry.py)
+  q4t_add_python_contract(q4t_managed_telemetry_exit_contracts
+    tools/serve_service/test_nvml_acceptance.py)
 endblock()
 q4t_add_python_contract(q4t_request_cancellation_contracts
   tools/evalscope/test_request_cancellation.py)

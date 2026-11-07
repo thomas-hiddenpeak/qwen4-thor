@@ -1,0 +1,65 @@
+{
+  "status": "ACCEPT_BOUNDED_MANAGED_NVML_DEGRADATION_WITH_POSTFLIGHT_CORRECTION",
+  "source_commit": "bb2a3fd09ed25ea3ffbc1778609a3141c5cf4668",
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-nvml-degradation-20261107/package",
+    "manifest_sha256": "f69cb406a80b64fc7c51a23e212c4d183dca86c0dbcebee3e4fe3b3593e3accd",
+    "binary_sha256": "ea1b474d7d69808696e697346a60ee09bb9ecaca9bfb99925b78dcdbda7a4550"
+  },
+  "source_files": 24,
+  "model_starts": 1,
+  "chats": 4,
+  "explicit_controls": 1,
+  "supervisor_control_upper_bound": 244,
+  "lease_seconds": 49.199343021027744,
+  "business_stage_seconds": 48.256510071922094,
+  "outer_status_preserved": "COMMAND_FAILED",
+  "driver_status_preserved": "FAILED",
+  "inner_status": "COMPLETED_WITH_MONITOR_GAPS",
+  "cpu_executions": 184,
+  "cpu_distinct": 130,
+  "cpu": {
+    "closeout-02.log": {
+      "sha256": "8347014169529c35eed11b98008e8885e434b68dfc7113f1a4f24c1e94ff72c3",
+      "executions": 5
+    },
+    "service-01.log": {
+      "sha256": "4e2a57d8745ad041f20d54fae6a9b1868b896663f5b6793875ce888f3fb61e1a",
+      "executions": 133
+    },
+    "composition-04.log": {
+      "sha256": "973233b9228c1e4b1a87385ec0da842224591d77345f77961d801c504c10ade6",
+      "executions": 1
+    },
+    "port-fix-05.log": {
+      "sha256": "968479b413ac71f07e1a515f6d4ffa81a39f72f975261018f9ee55fe6d5be953",
+      "executions": 2
+    },
+    "lease-cli-03.log": {
+      "sha256": "28da014eb88684eff9b9d9298b4b21de4466e7007cbe7e7ce708f6abe5fa5b32",
+      "executions": 1
+    },
+    "guard-01.log": {
+      "sha256": "f79c7c871fcd220eeda810ec3393fd9d85355659d4a7b0f4c2fa6163c5d579c3",
+      "executions": 42
+    }
+  },
+  "query_counts": {
+    "outer_real": 47,
+    "inner_real": 41,
+    "synthetic": 1
+  },
+  "gap_seconds": 5.1642045341432095,
+  "raw_responses_reparsed": true,
+  "real_tool_executions": 1,
+  "postflight_sha256": "1eb5beaeb74315f22d2b05d340aa8039a11e20918e70051261b2f36f94acf00a",
+  "qualification": "Four business requests and owned shutdown accepted. Original driver/outer failure is preserved; its only cleanup error was non-reusing bind with server TIME_WAIT. Two CPU TCP regressions and fresh bind+listen/proc/lock postflight correct that check only.",
+  "restrictions": [
+    "one synthetic TIMEOUT; no real driver failure induced",
+    "unreaped worker and retry exhaustion verified on CPU only",
+    "default and old packages unchanged; explicit opt-in, restart-limit zero",
+    "not a long-soak, performance, visual-rowmax or global package migration acceptance"
+  ],
+  "gpu_retests": 0,
+  "performance_acceptance": false
+}

@@ -1,0 +1,12 @@
+{
+  "originals": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-nvml-degradation-20261107/originals.json",
+  "originals_sha256": "413e7d24ca8abacfdddcc6382c2a39462809a304e08e6d82bfa2989af3231491",
+  "file_count": 108,
+  "bytes": 8750166,
+  "decision_sha256": "4ac788a6efca74406f03a4204cc11c9f79e29d457fd0e58f7db511ac7a8bb99c",
+  "phase_status_preserved": "FAILED",
+  "outer_status_preserved": "COMMAND_FAILED",
+  "source_commit": "bb2a3fd09ed25ea3ffbc1778609a3141c5cf4668",
+  "correction_source_manifest": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-nvml-degradation-20261107/correction-sources.json",
+  "correction_source_manifest_sha256": "28c745cc78257343431ccc64bd7d6b6bf1964cfe4427d9fb93ec9695911ecfb1"
+}

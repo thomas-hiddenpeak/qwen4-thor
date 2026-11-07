@@ -107,6 +107,16 @@ def wait_for(predicate, process, deadline):
     raise TimeoutError('scenario deadline')
 
 
+def require_port_available(port):
+    # Match the server's SO_REUSEADDR policy: TIME_WAIT is not a listener.
+    # listen() also rejects a competing listener rather than merely checking
+    # that a reusable local address can be bound. This owns no external socket.
+    with socket.socket() as listener:
+        listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        listener.bind(('127.0.0.1', port))
+        listener.listen(1)
+
+
 def run():
     plan = check()
     guard = service.guard
@@ -276,8 +286,7 @@ def run():
             final = guard.nvml_process_query.query(timeout=5)
             pkg.save(OUT/'gpu-final.json', final)
             pkg.require(final['status'] == 'OK' and not final['pids'], 'final GPU unknown or occupied')
-            with socket.socket() as listener:
-                listener.bind(('127.0.0.1', PORT))
+            require_port_available(PORT)
             check()
         except BaseException:
             cleanup.append(traceback.format_exc())
