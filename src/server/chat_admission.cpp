@@ -18,7 +18,7 @@ int ChatServer::AllocSeqId(RequestControl* control, int fd, size_t required) {
       control->Cancel(RequestControl::State::kShutdown);
       return -2;
     }
-    if (!gpu_healthy_.load(std::memory_order_relaxed)) return -3;
+    if (!ObserveHealth().Healthy()) return -3;
     if (detail::RequestCancelled(control, fd)) return -2;
     const int slot =
         seq_waiters_.Select(ticket, seq_capacities_, max_len_, seq_free_);

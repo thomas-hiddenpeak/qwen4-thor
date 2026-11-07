@@ -1,0 +1,208 @@
+{
+  "version": 1,
+  "local_root": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-health-p0-20261107",
+  "scope": "CPU fault contracts and production compilation only; raw failing attempts preserved. Runtime binary was not executed.",
+  "records": [
+    {
+      "member": "build-host.log",
+      "bytes": 8375,
+      "sha256": "d6d55dec54d062358d1c7bc4aaaf8e8b6ed485601728188eb44ecd5d2f03bf07"
+    },
+    {
+      "member": "build-ple.log",
+      "bytes": 658,
+      "sha256": "b0b8dc797a6f9b5c3405b57f329996ab16d0a3b4e3b73d611581bc44171e58b4"
+    },
+    {
+      "member": "build-results.json",
+      "bytes": 1263,
+      "sha256": "f2f897566399a6e1b408f369c53213d31956e3d169776382b0a0f15caaff7f04"
+    },
+    {
+      "member": "configure-host.log",
+      "bytes": 672,
+      "sha256": "04ff31f9eb379424f4e7793267314631b1cdd9b726a02c93dec0112d8a063324"
+    },
+    {
+      "member": "configure-ple.log",
+      "bytes": 543,
+      "sha256": "d48582d674d47f4db8a590638c212fd023488f0cf1bfe8356c21840f4b59826f"
+    },
+    {
+      "member": "configure-runtime.log",
+      "bytes": 1318,
+      "sha256": "f6c7f45e81fd18fc38965183d7fece7300853d208bfdbae41e421aa99fc3cf70"
+    },
+    {
+      "member": "cpu-results-01.json",
+      "bytes": 1372,
+      "sha256": "42227227941ad22bf51b24a7856b3d3f4283d0d493b54ad4128e8fd29a260a37"
+    },
+    {
+      "member": "cpu-results-02.json",
+      "bytes": 1316,
+      "sha256": "725617f16f1be737ce3c603ada8b0e7f2c9f695a9440a14b58129f7bcc53c799"
+    },
+    {
+      "member": "cpu-results-03.json",
+      "bytes": 514,
+      "sha256": "48f9727dcc569d8974bf880170bf62f230deb481f72c739f4a65066705d1aa80"
+    },
+    {
+      "member": "cpu-results-04.json",
+      "bytes": 740,
+      "sha256": "0864baffcfc98a4435bdd1e5b69998170e72f8c4f1c79cc96c566017854a87dd"
+    },
+    {
+      "member": "cpu-results-05.json",
+      "bytes": 471,
+      "sha256": "43c4c6fcb5be424c51246192fbf31871b9a46477804c71cc58d8c80168ac8e1f"
+    },
+    {
+      "member": "host/generated/q4t/server/chat_protocol_identity.h",
+      "bytes": 697,
+      "sha256": "6f4f525304b72a9ea3ca08a9b8956ebd2ac9677b9e174bb5246b4bb4784c0edc"
+    },
+    {
+      "member": "host/generated/q4t/server/chat_protocol_sources.json",
+      "bytes": 11430,
+      "sha256": "33eae14b2fb4bc8b88cd5e8ebe8c909168842c67b63e24e555217e104b59f5b4"
+    },
+    {
+      "member": "host-final-build.log",
+      "bytes": 652,
+      "sha256": "314ba471394d2924fe7eb06742546509560e1ae4845af140835c08d10844e854"
+    },
+    {
+      "member": "host-public.log",
+      "bytes": 22964,
+      "sha256": "3f5c1823fa64caab05231fbcd4b323f6fccef430ab83c58f4568d10c6b79df60"
+    },
+    {
+      "member": "host-required/check_host_contracts.py",
+      "bytes": 3139,
+      "sha256": "a09810c67df4ce76dfe1d26d436574706587a77a853b81466594050387121ddd"
+    },
+    {
+      "member": "host-required/list.log",
+      "bytes": 15779,
+      "sha256": "2c761ad662142afb12d9a40062f01587a1119b9342fb12de87226f7074b8b20c"
+    },
+    {
+      "member": "host-required/required_host_tests.txt",
+      "bytes": 14127,
+      "sha256": "580102c0a9e33d21e9ec40ec7d51f8476fa4bc426a4795d0f66c1a1d09ad2e0c"
+    },
+    {
+      "member": "host-required/result.json",
+      "bytes": 15888,
+      "sha256": "32a1dc097e756c7ac148d0b5642ccf34de7f1ba6eac61349d37f6310659ec7df"
+    },
+    {
+      "member": "host-required.log",
+      "bytes": 417,
+      "sha256": "277268fa94d2272f809467a246e97996694696b77546aecbd9e12307c0637bd1"
+    },
+    {
+      "member": "initial.patch",
+      "bytes": 37509,
+      "sha256": "c22a1eaa8f59f86256360cb1fb1c7c605d4f5aadd987c033cf7c6418e609fcd5"
+    },
+    {
+      "member": "inventory-final.log",
+      "bytes": 170,
+      "sha256": "520ac62c4994168b9905e625b642f8f28a4b7a91fb33ac9fb2fb1a0165ae9608"
+    },
+    {
+      "member": "parent.txt",
+      "bytes": 41,
+      "sha256": "c14492cc5747e5133ba289967451256a6a4742a51fa91c77c86d0a7cc5830e76"
+    },
+    {
+      "member": "ple-contracts.log",
+      "bytes": 1639,
+      "sha256": "68a28039ab1790af1dff300dde36446c075b3db515b41f576c2dffe8a5231a79"
+    },
+    {
+      "member": "ple-dynamic-dependencies.log",
+      "bytes": 453,
+      "sha256": "3f26b33a31b620cdd75534b3466b0413340e056b510b54ec0f7f5174a9da08a9"
+    },
+    {
+      "member": "protected-before.json",
+      "bytes": 86,
+      "sha256": "0adc24732d239e65bcc63b2d838d9d785533c9afd9b975b5f705c462f5d941e9"
+    },
+    {
+      "member": "protected-metadata-before.json",
+      "bytes": 99,
+      "sha256": "76235160403a7fc83ff719599b3947a3c8b0935cf7ca6ef2500ce5dae6a2f08e"
+    },
+    {
+      "member": "protocol-docs-corrected.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "member": "protocol-docs.log",
+      "bytes": 659,
+      "sha256": "4b2aebb82db2c274878feabb5b35aefe0f238abdee6bd071780403cf3f76cfcb"
+    },
+    {
+      "member": "rebuild-host.log",
+      "bytes": 652,
+      "sha256": "314ba471394d2924fe7eb06742546509560e1ae4845af140835c08d10844e854"
+    },
+    {
+      "member": "result.json",
+      "bytes": 2669,
+      "sha256": "471573d79066d317ae7178b96eab2adad255f71126f91d629302f732b7ec2edb"
+    },
+    {
+      "member": "runtime/compile_commands.json",
+      "bytes": 153285,
+      "sha256": "aabaa3cbb30388784ff9e02355e119a4fedd49086c791e9fd7258825b9cd398a"
+    },
+    {
+      "member": "runtime/generated/q4t/server/chat_protocol_identity.h",
+      "bytes": 697,
+      "sha256": "179ddf164c031dfb4166e85fa8f764ec914a931ac0c552ba0cc8c34c046a616e"
+    },
+    {
+      "member": "runtime/generated/q4t/server/chat_protocol_sources.json",
+      "bytes": 11430,
+      "sha256": "22f79b8d6e802db5f917ad298a9b278b7a98c60ffe33f8b6cbb939e6eb46a4bb"
+    },
+    {
+      "member": "runtime-build.log",
+      "bytes": 11623,
+      "sha256": "83a9ef0dd9b91e391dfaf3cde6bd3a09ae6d1accab18abb3bc62e5e12df9aef0"
+    },
+    {
+      "member": "runtime-final-build.log",
+      "bytes": 1136,
+      "sha256": "be2cfb87f0198df6669a458e51948141010595f54c0af60077b352d5217751ef"
+    },
+    {
+      "member": "source-bindings.json",
+      "bytes": 5140,
+      "sha256": "9c21423faaf175aebc594930d95c93b77c14c6bd8a808814031b06b4c8b29a56"
+    },
+    {
+      "member": "supervisor-contracts.log",
+      "bytes": 137,
+      "sha256": "7c99d7943dd887998b61c53cb27888f44580a9c90acd1f3b52da173d8fdf1571"
+    },
+    {
+      "member": "supervisor-deadlines-module.log",
+      "bytes": 5268,
+      "sha256": "5b495c57c83caf01a970e3cbe2bbbac1b22d4a5fbd74cc6231d5e30bfaf298c4"
+    },
+    {
+      "member": "supervisor-deadlines.log",
+      "bytes": 235,
+      "sha256": "885260d4f8a85cbc3fb450fc8bf1a137105276559f6eccf39e75ea3b745edf17"
+    }
+  ],
+  "archive_sha256": "f05032034d441a033f2a54a0fffba32a3515404a54bebfb883b5561236512c3f"
+}

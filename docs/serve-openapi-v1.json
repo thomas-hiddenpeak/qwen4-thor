@@ -623,7 +623,8 @@
               }
             }
           }
-        }
+        },
+        "description": "Local backend health. Permanent PLE dependency faults also return 503; gpu_healthy reports CUDA health independently. Liveness and memory admission use /livez and /readyz."
       }
     },
     "/livez": {

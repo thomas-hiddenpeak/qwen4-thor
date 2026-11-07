@@ -8,6 +8,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/runtime/system_memory.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/memory_admission.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_memory_admission_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_service_health_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_startup_memory_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_device_memory_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_cuda_quota_test.cpp

@@ -121,6 +121,8 @@ def classify(probe, protocol, binary, client_policy=None, operations_port=0):
     metrics = probe['metrics']
     if metrics['q4t_gpu_healthy'] == 0:
         return 'GPU_UNHEALTHY'
+    if probe.get('health_status') == 'unhealthy':
+        return 'BACKEND_UNHEALTHY'
     return 'READY' if probe['ready'] else 'DEGRADED'
 
 
@@ -172,7 +174,8 @@ def probe(pid, port, operations_port=0, *, deadline=None, stopped=None):
                      'credential_values_redacted')}
                     if type(raw_config.get('client_policy')) is dict else None),
                 configuration=configuration,
-                ready=value['ready'], metrics=metrics)
+                ready=value['ready'], health_status=value['status'],
+                metrics=metrics)
 
 
 def restart_allowed(returncode, was_ready, used, limit, stopping):
@@ -319,6 +322,8 @@ def run(package, digest, output, *, observe=None, read_memory=None):
                                               manifest['files']['q4t'],
                                               manifest.get('client_policy'), operations_port)
                             pkg.require(status != 'GPU_UNHEALTHY', 'GPU unhealthy')
+                            pkg.require(status != 'BACKEND_UNHEALTHY',
+                                        'Backend unhealthy')
                             if stopped():
                                 break
                             check_limit()

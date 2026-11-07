@@ -294,7 +294,14 @@ def semantics():
         ("runtime-admission", ["src/server/chat_generation.cpp", "src/server/chat_preflight.cpp",
              "src/server/chat_admission.cpp", "include/q4t/server/request_admission.h",
              "include/q4t/server/sequence_admission.h", "src/server/server_options.cpp"],
-         "Availability/registry/cache lease/GPU health/deadline/cancellation/grammar compilation are not established by schema or offline probe. Chat/preflight share a configured inflight bound through output cleanup; only generation enters the separately bounded capacity-FIFO slot queue after preparation. Queue fullness can reject independently of whole-server RAM and connection/body limits. Preflight does not reserve slots or guarantee execution or answer quality.")]
+         "Availability/registry/cache lease/GPU health/deadline/cancellation/grammar compilation are not established by schema or offline probe. Chat/preflight share a configured inflight bound through output cleanup; only generation enters the separately bounded capacity-FIFO slot queue after preparation. Queue fullness can reject independently of whole-server RAM and connection/body limits. Preflight does not reserve slots or guarantee execution or answer quality."),
+        ("permanent-model-health", ["include/q4t/runtime/model_health.h",
+             "include/q4t/server/service_health.h", "src/ple/page_reader.cpp",
+             "src/ple/ple_embedding.cpp", "src/server/chat_health.cpp",
+             "src/server/chat_http.cpp", "src/server/chat_metrics.cpp",
+             "src/server/chat_generation.cpp", "src/server/chat_preflight.cpp",
+             "src/server/chat_admission.cpp", "src/server/chat_scheduler.cpp"],
+         "Permanent PLE read and existing upload failures latch on the dependency instance. Healthy CUDA alone cannot keep readiness open. Ready/health endpoints return503 and q4t_ready=0 while liveness remains independent; pure reader faults do not change gpu_healthy. New Chat/preflight, slot handoff and execution check the same state. Model faults use model_unhealthy; an already-started stream uses the existing single error terminal when writable. Successful short-read retries, memory recovery and NVML observations cannot clear a permanent fault. No automatic dependency reload or request replay. Existing fatal CUDA completion/cleanup can exit1 before HTTP reporting; that boundary is unchanged.")]
     paths = sorted({p for _, sources, _ in rules for p in sources})
     return dict(profile="q4t-input-semantics-v1", required=True,
         structural_schema="serve-chat-request-v1.schema.json",
@@ -357,6 +364,11 @@ def openapi():
                    "x-q4t-stream-contract": "role/content/tool deltas; exactly one finish; optional usage; DONE then EOF. After HTTP200, error envelope plus DONE when writable, otherwise truncated. No tool dispatch before complete validated terminal."})
         if path in ("/healthz", "/livez", "/readyz"):
             operation["responses"]["503"] = response(schema, "Unhealthy, not ready, or draining")
+        if path == "/healthz":
+            operation["description"] = (
+                "Local backend health. Permanent PLE dependency faults also return 503; "
+                "gpu_healthy reports CUDA health independently. "
+                "Liveness and memory admission use /livez and /readyz.")
         paths[path] = {method: operation}
     return dict(openapi="3.1.0", info=dict(title="Q4T serving contract",
         version="q4t-serve-v1", description="Static supported surface, not full OpenAI API compatibility. See required native semantics and version-bound acceptance matrix."),

@@ -47,6 +47,7 @@
 #include "q4t/text/tokenizer.h"
 #include "q4t/server/abort_reason.h"
 #include "q4t/server/memory_admission.h"
+#include "q4t/server/service_health.h"
 #include "q4t/server/startup_admission.h"
 #include "q4t/server/structured_admission.h"
 #include "q4t/server/device_memory.h"
@@ -175,9 +176,9 @@ class ChatServer {
 
   // Shared scratch is protected by model_mu_ through default-stream GPU
   // completion and host readback. Only then can another request reuse it.
-  // Negative: -1 stopping, -2 cancelled, -3 GPU unhealthy, -4 queue full,
+  // Negative: -1 stopping, -2 cancelled, -3 backend unhealthy, -4 queue full,
   // -5 memory pressure, -6 memory observation unavailable.
-  // Admission is provisional: recheck GPU health under model_mu_ at submit.
+  // Admission is provisional: recheck backend health under model_mu_ at submit.
   int AllocSeqId(RequestControl* control, int fd, size_t required = 0);
   RequestRegistry requests_;
   ClientAdmission clients_;
@@ -346,6 +347,10 @@ class ChatServer {
   std::atomic<bool> gpu_healthy_{true};
   std::atomic<bool> serving_failed_{false};
   std::atomic<bool> model_ready_{false};
+  ServiceHealth ObserveHealth(MemoryState memory = MemoryState::kDisabled)
+      const noexcept;
+  Status ExecutionStatus() const;
+  bool RejectUnhealthy(int fd, const detail::WriteOptions& options = {});
   ServeMetrics metrics_;  // /metrics observability
 
   // Multimodal pipeline: run the image/video processor + vision tower over the

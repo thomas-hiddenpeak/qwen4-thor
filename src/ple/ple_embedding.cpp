@@ -24,7 +24,7 @@ struct PleEmbedding::Impl {
   size_t host_row_ids_cap = 0;
   cudaEvent_t upload_complete = nullptr;
   bool upload_pending = false;
-  bool upload_failed = false;
+  runtime::ModelHealth health;
 };
 
 PleEmbedding::PleEmbedding(Impl* impl) : impl_(impl) {}
@@ -102,6 +102,12 @@ Status PleEmbedding::Create(const Config& config, PleEmbedding** out) {
   return Status();
 }
 
+runtime::ModelFault PleEmbedding::HealthFault() const noexcept {
+  const auto upload = impl_->health.Fault();
+  return upload != runtime::ModelFault::kNone ? upload
+                                             : impl_->reader->HealthFault();
+}
+
 size_t PleEmbedding::working_memory_bytes() const {
   size_t total = 0;
   if (impl_->reader) {
@@ -158,7 +164,7 @@ Status PleEmbedding::GatherRows(const int64_t* row_ids, size_t n_rows,
   if (n_rows > impl_->host_row_ids_cap) {
     return Status::Fail("n_rows exceeds capacity");
   }
-  if (impl_->upload_failed) {
+  if (impl_->health.Fault() != runtime::ModelFault::kNone) {
     return Status::Fail("PLE upload completion failed; recreate embedding");
   }
   // A CUDA stream orders device work, not the CPU writes performed by the
@@ -167,7 +173,7 @@ Status PleEmbedding::GatherRows(const int64_t* row_ids, size_t n_rows,
   if (impl_->upload_pending) {
     diagnostic::Scope wait("ple.previous_upload_wait");
     if (cudaEventSynchronize(impl_->upload_complete) != cudaSuccess) {
-      impl_->upload_failed = true;
+      impl_->health.Fail(runtime::ModelFault::kPleUpload);
       return Status::Fail("PLE previous upload completion failed");
     }
     impl_->upload_pending = false;
@@ -186,7 +192,7 @@ Status PleEmbedding::GatherRows(const int64_t* row_ids, size_t n_rows,
   // Error exits also drain submitted work before releasing buffer ownership.
   auto fail_upload = [&](const char* message) {
     if (cudaStreamSynchronize(stream) != cudaSuccess) {
-      impl_->upload_failed = true;
+      impl_->health.Fail(runtime::ModelFault::kPleUpload);
       return Status::Fail(std::string(message) + "; stream completion failed");
     }
     return Status::Fail(message);

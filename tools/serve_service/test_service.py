@@ -143,6 +143,53 @@ class Case(unittest.TestCase):
         self.assertEqual(state['error'], 'GPU unhealthy')
         self.assertTrue(state['cleanup_confirmed'])
 
+    def test_permanent_model_failure_stops_without_poisoning_gpu_or_restart(self):
+        seen = []
+        def observe(pid, _port):
+            seen.append(pid)
+            value = self.observation(pid, ready=len(seen) == 1)
+            value['health_status'] = 'ready' if len(seen) == 1 else 'unhealthy'
+            self.assertEqual(value['metrics']['q4t_gpu_healthy'], 1)
+            return value
+        rc, state = self.run_supervisor(observe, restarts=3)
+        self.assertEqual((rc, state['attempts'], state['restarts']), (1, 1, 0))
+        self.assertEqual(state['error'], 'Backend unhealthy')
+        self.assertTrue(state['cleanup_confirmed'])
+        self.assertEqual(len(set(seen)), 1)
+        self.assertFalse(sup.processes.group_members(seen[0]))
+
+    def test_memory_unready_is_distinct_from_permanent_backend_failure(self):
+        value = self.observation(ready=False)
+        for status in ('memory_pressure', 'memory_observation_unavailable'):
+            value['health_status'] = status
+            self.assertEqual(sup.classify(value, 'protocol', 'binary'), 'DEGRADED')
+        value['health_status'] = 'unhealthy'
+        self.assertEqual(sup.classify(value, 'protocol', 'binary'),
+                         'BACKEND_UNHEALTHY')
+        value['metrics']['q4t_gpu_healthy'] = 0
+        self.assertEqual(sup.classify(value, 'protocol', 'binary'), 'GPU_UNHEALTHY')
+
+    def test_probe_preserves_unhealthy_readiness_when_cuda_is_healthy(self):
+        health = dict(status='unhealthy', live=True, ready=False)
+        def get(_port, path, **_options):
+            if path in ('/livez', '/readyz'):
+                return dict(http_status=200 if path == '/livez' else 503,
+                            body=json.dumps(health))
+            if path == '/v1/config':
+                return dict(http_status=200, body=json.dumps(
+                    dict(observability_version=4)))
+            return dict(http_status=200, body='metrics\n')
+        config = dict(sup.expected_configuration(), protocol_sha256='protocol')
+        with mock.patch.object(sup.identity, 'process', return_value={}), \
+             mock.patch.object(sup.transport, 'get', side_effect=get), \
+             mock.patch.object(sup.contracts, 'configuration', return_value=config), \
+             mock.patch.object(sup.contracts, 'parse_metrics',
+                               return_value=({'q4t_gpu_healthy': 1}, 0)):
+            result = sup.probe(42, 18999)
+        self.assertFalse(result['ready'])
+        self.assertEqual(result['health_status'], 'unhealthy')
+        self.assertEqual(result['metrics']['q4t_gpu_healthy'], 1)
+
     def test_protocol_mismatch_fails_closed(self):
         def observe(pid, _port):
             value = self.observation(pid)

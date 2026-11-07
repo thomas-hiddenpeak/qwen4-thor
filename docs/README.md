@@ -1,5 +1,7 @@
 # docs/ — 开发记录文档体系
 
+- [P0永久模型故障与服务健康闭合](SERVE_HEALTH_P0_2026-11-07.md)
+- [NVML独立只读调研与后续CPU范围](NVML_RESILIENCE_RESEARCH_2026-11-07.md)
 - [托管服务NVML降级合同与有界验证](SERVE_NVML_DEGRADATION_2026-11-07.md)
 - [视觉MTP补验收尾：保留候选、等待环境](VISION_ROWMAX_COMPLETION_RESULT_2026-11-07.md)
 - [视觉行最大值首轮收益、完整验收ENV_ABORT与恢复条件](VISION_ROWMAX_RESULT_2026-11-07.md)
