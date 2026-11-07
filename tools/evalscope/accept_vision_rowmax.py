@@ -78,10 +78,12 @@ def prepare():
 
 class Run(pilot.Run):
     limits = LIMITS
+    groups = GROUPS
+    modes = ("plain", "mtp")
 
     def check(self):
         s.guard_tools.require_monitor(self.monitor, self.failures, self.heartbeat, 10)
-        s.require(time.monotonic() - self.started < LIMITS["seconds"] - 45,
+        s.require(time.monotonic() - self.started < self.limits["seconds"] - 45,
                   "acceptance deadline")
         s.require(self.children.running(self.model), "model exited during HTTP")
 
@@ -177,7 +179,7 @@ class Run(pilot.Run):
     def run(self):
         s.guard_tools.require_guard()
         s.guard_tools.verify_files(dict(self.plan, model_file_metadata={}))
-        s.require(self.plan["groups"] == list(GROUPS) and
+        s.require(self.plan["groups"] == list(self.groups) and
                   sum(c["count"] for c in self.plan["cases"]) == 26, "frozen matrix")
         self.monitor.start()
         failure, cleanup, matrices = None, [], {}
@@ -187,15 +189,15 @@ class Run(pilot.Run):
             raise TimeoutError("frozen acceptance deadline; cleanup only")
 
         signal.signal(signal.SIGALRM, expired)
-        signal.setitimer(signal.ITIMER_REAL, LIMITS["seconds"] - 45)
+        signal.setitimer(signal.ITIMER_REAL, self.limits["seconds"] - 45)
         try:
             self.contracts()
-            for group in GROUPS:
+            for group in self.groups:
                 capacity = self.launch_group(group)
                 matrices[group] = self.matrix(group, capacity)
                 self.retire_model(group)
             keys = ("prompt_sha256", "actual_input", "actual_output", "text", "finish")
-            for mode in ("plain", "mtp"):
+            for mode in self.modes:
                 for case in self.plan["cases"]:
                     old = matrices[mode + "-parent"][case["id"]]
                     new = matrices[mode + "-candidate"][case["id"]]
