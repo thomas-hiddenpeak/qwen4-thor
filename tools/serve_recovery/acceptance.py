@@ -36,13 +36,17 @@ def save(path, value):
 
 
 class Budget:
-    def __init__(self, directory, *, initialize=False):
+    def __init__(self, directory, *, initialize=False, baseline=None):
         self.directory = Path(directory)
         if initialize:
+            baseline = baseline or {name: 0 for name in LIMITS if name != 'seconds'}
+            if (baseline.keys() != {name for name in LIMITS if name != 'seconds'} or
+                    any(type(value) is not int or not 0 <= value <= LIMITS[name]
+                        for name,value in baseline.items())):
+                raise ValueError('invalid prior acceptance consumption')
             with (self.directory/'budget.lock').open('x'):
                 pass
-            save(self.directory/'counts.json', dict(
-                counts={name: 0 for name in LIMITS if name != 'seconds'}, events=[]))
+            save(self.directory/'counts.json', dict(counts=baseline, events=[]))
 
     def reserve(self, kind, label):
         if kind not in LIMITS or kind == 'seconds':
@@ -75,6 +79,8 @@ def verify(plan):
         engine.require(engine.sha(ROOT/name) == digest, 'acceptance source changed: '+name)
     for row in plan['protected']:
         engine.require(engine.sha(row['path']) == row['sha256'], 'protected artifact changed')
+    for row in plan.get('prior_evidence',[]):
+        engine.require(engine.sha(row['path']) == row['sha256'],'prior failure evidence changed')
     return bundle.verify(plan['package']['package'], plan['package']['manifest_sha256'])
 
 
@@ -92,6 +98,23 @@ def prepare(args):
         'acceptance requires alpha ordinary limits and beta RPM=1')
     engine.require(policy['listen_host'] == '127.0.0.1' and not manifest['tls'],
                    'this bounded acceptance is loopback only')
+    prior, prior_evidence, baseline = None, [], None
+    if args.prior_plan is not None:
+        prior_plan=json.loads(args.prior_plan.read_text())
+        prior_dir=Path(prior_plan['output'])
+        prior=json.loads((prior_dir/'execution/result.json').read_text())
+        baseline=prior['budget']['counts']
+        engine.require(prior['status']=='FAILED' and prior['cleanup_failure'] is None and
+            baseline['starts']==1 and baseline['chats']==5 and baseline['probes']==0 and
+            prior['package']==receipt,'only the recorded fixture failure can be continued')
+        for name in ('plan.json','execution/result.json','execution/counts.json','lease/exit.json',
+            'execution/stop.json','execution/generation-1-json-response.json',
+            'execution/generation-1-sse-response.json','execution/beta-minute-quota-response.json',
+            'execution/generation-1-tool-call-response.json','execution/auxiliary-gap.json'):
+            path=prior_dir/name
+            prior_evidence.append(dict(path=str(path.resolve()),sha256=engine.sha(path)))
+        engine.require(json.loads((prior_dir/'lease/exit.json').read_text())['status']=='COMMAND_FAILED',
+                       'cannot continue an environmental abort as a fixture failure')
     args.output.mkdir(mode=0o700, exist_ok=False)
     paths = subprocess.check_output(['git', 'ls-files', 'tools/serve_recovery',
         'tools/serve_service', 'tools/serve_gateway', 'tools/serve_ops', 'tools/evalscope',
@@ -111,7 +134,10 @@ def prepare(args):
             'second self-check and JSON/SSE/tool', 'kill owned controller; 503; quota wait',
             'third self-check; JSON/SSE; gateway replacement; tool closure',
             'durable stop; no resurrection; owned tree/ports release'],
-        planned_model_starts=3, planned_chats=19, performance_acceptance=False,
+        planned_model_starts=3, planned_chats=15 if prior else 19, performance_acceptance=False,
+        prior_counts=baseline, prior_evidence=prior_evidence,
+        prior_seconds=prior['seconds'] if prior else 0,
+        reuse_initial_ordinary_and_quota=prior is not None,
         automatic_request_or_tool_replay=False, default_replacement=False)
     save(args.output/'plan.json', plan)
     print(json.dumps(dict(plan=str(args.output/'plan.json'), limits=LIMITS)))
@@ -208,7 +234,7 @@ class Stage:
         self.package = Path(plan['package']['package'])
         self.output = Path(plan['output'])/'execution'
         self.output.mkdir(mode=0o700, exist_ok=False)
-        self.budget = Budget(self.output, initialize=True)
+        self.budget = Budget(self.output, initialize=True,baseline=plan.get('prior_counts'))
         self.lease = int(os.environ['Q4T_MANAGED_LEASE_FD'])
         self.lock_path = manifest['lock_path']
         self.child.verify_lease(self.lease, self.lock_path)
@@ -251,7 +277,7 @@ class Stage:
         return value
 
     def wait(self, predicate, seconds=360):
-        end = min(time.monotonic()+seconds, self.started+1730)
+        end = min(time.monotonic()+seconds, self.started+1730-self.plan.get('prior_seconds',0))
         last = None
         while time.monotonic() < end:
             self.engine.require(self.process.poll() is None, 'launcher exited unexpectedly')
@@ -310,7 +336,8 @@ class Stage:
     def business(self, label, *, first=False, before_tools=lambda: None):
         from tools.examples import chat_client as client
         from project_records import ProjectRecords, TOOLS, VALIDATORS
-        for stream in (False, True):
+        streams=() if first and self.plan.get('reuse_initial_ordinary_and_quota') else (False,True)
+        for stream in streams:
             body = client.make_request([dict(role='user', content='Compute 17 + 25. Reply with the number only.')],
                 [], stream=stream, max_tokens=128, timeout_ms=60000)
             answer = self.request(label+('-sse' if stream else '-json'), body,
@@ -326,8 +353,6 @@ class Stage:
         tools[0]['function']['strict'] = True
         parameters = tools[0]['function']['parameters']['properties']
         parameters['path'] = dict(type='string',enum=['docs/MODEL.md'])
-        parameters['start_line'] = dict(type='integer',enum=[1])
-        parameters['line_count'] = dict(type='integer',enum=[16])
         body = client.make_request([dict(role='user',content='Read the first 16 lines of docs/MODEL.md with '
             'read_project_record. Then reply only with the exact citation returned by the tool.')],
             tools,stream=True,max_tokens=256,timeout_ms=60000)
@@ -403,12 +428,12 @@ class Stage:
             save(self.output/'interrupted-sse-result.json',dict(killed=killed,error=error,bytes=len(captured)))
         self.engine.require(killed and b'[DONE]' not in captured,'old SSE synthesized success or was not interrupted')
 
-    def unavailable(self,label):
+    def unavailable(self,label,*,post=True):
         from tools.examples import chat_client as client
         self.wait(lambda s:not s['business_ready'],seconds=15)
         body=client.make_request([dict(role='user',content='Do not execute during recovery.')],[],
                                 stream=False,max_tokens=16,timeout_ms=5000)
-        result=self.request(label,body,expected=503)
+        result=self.request(label,body if post else None,expected=503)
         self.engine.require(result['error']['code'] in ('service_recovering','service_quota_wait'),
                             'wrong recovery error contract')
         self.request(label+'-unauthorized',client='invalid',expected=401)
@@ -450,7 +475,7 @@ class Stage:
         def expired(*_args): raise TimeoutError('bounded execution deadline; cleanup only')
         previous = signal.signal(signal.SIGALRM,expired)
         previous_term = signal.signal(signal.SIGTERM,expired)
-        signal.setitimer(signal.ITIMER_REAL,1730)
+        signal.setitimer(signal.ITIMER_REAL,1730-self.plan.get('prior_seconds',0))
         try:
             receipt=self.plan['package']
             initialized=self.service.initialize(receipt['package'],receipt['manifest_sha256'],self.output/'state')
@@ -480,7 +505,7 @@ class Stage:
             self.metrics('generation-2',5)
             (self.output/'auxiliary-fault').unlink()
             self.kill(second,'controller','controller-exit')
-            self.unavailable('controller-recovery-503')
+            self.unavailable('controller-recovery-503',post=not self.plan.get('reuse_initial_ordinary_and_quota'))
             third=self.ready(3)
             self.engine.require(third['controller_generation']==2 and third['gateway_pid']==first['gateway_pid'],
                                 'controller recovery changed wrong role')
@@ -526,6 +551,7 @@ def main():
     parser.add_argument('--receipt',type=Path)
     parser.add_argument('--output',type=Path)
     parser.add_argument('--config',type=Path)
+    parser.add_argument('--prior-plan',type=Path)
     args=parser.parse_args()
     if args.mode=='prepare':
         prepare(args)

@@ -50,5 +50,16 @@ class BudgetTests(unittest.TestCase):
         with self.assertRaises(ValueError): self.budget.reserve('unlimited','invalid')
         with self.assertRaises(FileExistsError): Budget(self.directory,initialize=True)
 
+    def test_continuation_cannot_reset_consumed_gpu_or_chat_allowance(self):
+        path=self.directory/'continuation'
+        path.mkdir()
+        budget=Budget(path,initialize=True,baseline=dict(starts=1,chats=5,probes=0,controls=166))
+        for _ in range(3): budget.reserve('starts','remaining model')
+        for _ in range(15): budget.reserve('chats','remaining request')
+        with self.assertRaises(RuntimeError): budget.reserve('starts','over total')
+        with self.assertRaises(RuntimeError): budget.reserve('chats','over total')
+        with self.assertRaises(ValueError):
+            Budget(self.directory/'invalid',initialize=True,baseline=dict(starts=-1,chats=0,probes=0,controls=0))
+
 
 if __name__=='__main__': unittest.main()
