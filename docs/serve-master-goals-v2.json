@@ -2,13 +2,15 @@
   "version": 2,
   "updated": "2026-11-08",
   "plan": "SERVE_MASTER_PLAN_2026-11-08.md",
-  "goal_state": "active_work_old_app_goal_pending_replacement",
+  "goal_state": "active_master_goal",
   "app_migration": {
     "attempted": true,
-    "result": "rejected_unfinished_goal",
+    "result": "active_master_goal_created_after_R01_delivery",
     "error": "cannot create a new goal because this thread has an unfinished goal; complete the existing goal first",
     "old_goal": "R1",
-    "policy": "Never mark incomplete R1 complete to free goal slot; continue full master plan and migrate after actual R1 delivery."
+    "policy": "Master goal remains active across stages until all required tasks are implemented, validated and delivered.",
+    "initial_result": "rejected_unfinished_goal",
+    "receipt": "evidence/serve-goal-reaudit-20261108/goal-migration.json"
   },
   "completion_rules": [
     "All required tasks have actual implementation and affected-behavior validation, applicable real business evidence and usable delivery.",
@@ -316,7 +318,7 @@
     {
       "id": "R02",
       "required": true,
-      "state": "planned",
+      "state": "implementation_in_progress",
       "implementation": "grammar有界清理、请求外生命周期、未回收占槽；结构化能力降级但普通文本继续",
       "acceptance": "grammar有界清理、请求外生命周期、未回收占槽；结构化能力降级但普通文本继续",
       "depends_on": [],
