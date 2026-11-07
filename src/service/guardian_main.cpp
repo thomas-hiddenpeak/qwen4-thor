@@ -1,5 +1,6 @@
 // Standalone CPU Guardian. The controller is the only model-launch actor.
 #include "q4t/service/guardian_journal.h"
+#include "q4t/service/guardian_quota.h"
 #include "q4t/service/guardian_wire.h"
 
 #include <fcntl.h>
@@ -20,6 +21,7 @@
 #include <cstdio>
 #include <cstring>
 #include <map>
+#include <set>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -127,6 +129,8 @@ int Receive(int fd, Json* result) {
 struct Config {
   std::string directory, service_id, python, journal, lease_path, boot_id;
   std::vector<std::string> controller;
+  std::vector<std::string> gateway;
+  bool quota_enforced = false;
   int lease_fd = -1;
   int64_t term_ns = 30 * kSecond, kill_ns = 5 * kSecond;
   int64_t heartbeat_ns = 15 * kSecond;
@@ -144,7 +148,8 @@ Config ReadConfig(const std::string& path) {
                      {"version", "directory", "service_id", "python", "journal",
                       "controller", "lease_path", "lease_fd", "resource_mode",
                       "require_hard_memory_limit", "term_ms", "kill_ms",
-                      "heartbeat_ms", "critical_memory_mib", "launch"}),
+                      "heartbeat_ms", "critical_memory_mib", "launch",
+                      "gateway", "quota_enforced"}),
           "unknown Guardian configuration fields");
   Require(Integer(value, "version") == 1 &&
               Text(value, "resource_mode") == "process",
@@ -171,6 +176,20 @@ Config ReadConfig(const std::string& path) {
             "invalid controller argument");
     config.controller.push_back(arg.str);
   }
+  const auto* gateway = value.Find("gateway");
+  Require(gateway->IsArray() && gateway->array.size() <= 64,
+          "invalid gateway command");
+  for (const auto& arg : gateway->array) {
+    Require(arg.IsString() && arg.str.size() <= 4096 &&
+                arg.str.find('\0') == std::string::npos,
+            "invalid gateway argument");
+    config.gateway.push_back(arg.str);
+  }
+  Require(config.gateway.empty() ||
+              (!config.gateway[0].empty() && config.gateway[0][0] == '/'),
+          "absolute gateway required");
+  Require(value.Find("quota_enforced")->IsBool(), "invalid quota policy");
+  config.quota_enforced = value.Find("quota_enforced")->boolean;
   for (const auto* absolute :
        {&config.directory, &config.python, &config.journal, &config.lease_path,
         &config.controller[0]}) {
@@ -227,7 +246,11 @@ enum class Purpose {
   kStopIntent,
   kRetired,
   kModel,
-  kModelRetired
+  kModelRetired,
+  kGatewayGrant,
+  kGatewaySpawned,
+  kGatewayReady,
+  kGatewayRetired
 };
 struct ModelRequest {
   uint64_t sequence = 0;
@@ -238,12 +261,15 @@ struct Client {
   s::OwnedFd fd;
   int64_t accepted = 0;
   bool stopping = false;
+  pid_t peer = -1;
 };
 
 class Guardian {
  public:
   Guardian(Config config, bool activate)
-      : config_(std::move(config)), activate_(activate) {}
+      : config_(std::move(config)),
+        activate_(activate),
+        quota_(config_.quota_enforced) {}
 
   void Initialize() {
     umask(0077);
@@ -321,14 +347,16 @@ class Guardian {
 
   int Run() {
     for (;;) {
-      pollfd descriptors[2]{{listener_.Get(), POLLIN, 0},
-                            {controller_socket_.Get(), POLLIN, 0}};
-      poll(descriptors, 2, 25);
+      pollfd descriptors[3]{{listener_.Get(), POLLIN, 0},
+                            {controller_socket_.Get(), POLLIN, 0},
+                            {gateway_socket_.Get(), POLLIN, 0}};
+      poll(descriptors, 3, 25);
       const int64_t now = Now();
       if (stop_signal) RequestStop(now);
       Clients(now);  // Stop precedes consuming any new durable launch receipt.
       Bootstrap(now);
       ControllerEvents(now);
+      GatewayEvents(now);
       const auto journal_status = journal_.Tick(now);
       if (!journal_status.ok() &&
           journal_.State() == s::JournalState::kFrozen) {
@@ -358,10 +386,12 @@ class Guardian {
             !stopping_ && snapshot.GetString("desired") == "STOPPED";
       }
       CheckController(now);
+      CheckGateway(now);
       CheckModel();
       Drive(now);
       if (stopping_ && stop_durable_ && !cold_unreconciled_ &&
-          controller_ticket_.empty() && journal_.CleanupConfirmed()) {
+          controller_ticket_.empty() && gateway_ticket_.empty() &&
+          journal_.CleanupConfirmed()) {
         bool empty = false;
         Require(s::NoChildren(&empty).ok(),
                 "cannot confirm empty service tree");
@@ -382,13 +412,18 @@ class Guardian {
   }
 
  private:
+  bool BusinessReady() const {
+    return model_ready_ && quota_.Open(Now()) && !stopping_ &&
+           (config_.gateway.empty() ||
+            (gateway_ready_ && gateway_bound_model_ == model_generation_));
+  }
   Json Status() const {
     const char* state =
-        stopped_               ? "STOPPED"
-        : stopping_            ? "DRAINING"
-        : recovering_          ? "RECOVERING"
-        : quarantined_         ? "QUARANTINED"
-        : model_ready_         ? (gate_.Frozen() ? "READY_DEGRADED" : "READY")
+        stopped_                             ? "STOPPED"
+        : stopping_                          ? "DRAINING"
+        : recovering_ || gateway_recovering_ ? "RECOVERING"
+        : quarantined_                       ? "QUARANTINED"
+        : BusinessReady()      ? (gate_.Frozen() ? "READY_DEGRADED" : "READY")
         : !failure_.empty()    ? "WAIT_DEPENDENCY"
         : retry_after_ > Now() ? (circuit_open_ ? "CIRCUIT_OPEN" : "RECOVERING")
         : controller_ready_    ? "WAIT_DEPENDENCY"
@@ -418,7 +453,18 @@ class Guardian {
           model_.identity.pid > 0 ? w::Unsigned(model_.identity.pid) : Json{}},
          {"model_start_ticks", w::Unsigned(model_.identity.start_ticks)},
          {"model_generation", w::Unsigned(model_generation_)},
-         {"business_ready", w::Boolean(model_ready_)},
+         {"model_ready", w::Boolean(model_ready_)},
+         {"business_ready", w::Boolean(BusinessReady())},
+         {"gateway_pid", gateway_.identity.pid > 0 && !gateway_reaped_
+                             ? w::Unsigned(gateway_.identity.pid)
+                             : Json{}},
+         {"gateway_start_ticks", w::Unsigned(gateway_.identity.start_ticks)},
+         {"gateway_generation", w::Unsigned(gateway_generation_)},
+         {"gateway_ready", w::Boolean(gateway_ready_)},
+         {"gateway_bound_model", w::Unsigned(gateway_bound_model_)},
+         {"gateway_recovering", w::Boolean(gateway_recovering_)},
+         {"quota_wait_ms", w::Unsigned(static_cast<uint64_t>(std::max<int64_t>(
+                               0, (quota_.NotBefore() - Now()) / 1'000'000)))},
          {"daemon_detached", w::Boolean(detached_)},
          {"recovery_frozen", w::Boolean(gate_.Frozen())},
          {"stop_requested", w::Boolean(stopping_)},
@@ -429,6 +475,7 @@ class Guardian {
   void Freeze(const std::string& reason) {
     if (failure_.empty()) failure_ = reason;
     gate_.Freeze();
+    gateway_gate_.Freeze();
   }
   void Bootstrap(int64_t now) {
     if (bootstrap_.Get() < 0) return;
@@ -442,7 +489,7 @@ class Guardian {
     CheckModel();
     if (received == 1) {
       try {
-        Require(startup_ready_sent_ && model_ready_ && !gate_.Frozen() &&
+        Require(startup_ready_sent_ && BusinessReady() && !gate_.Frozen() &&
                     w::HasKeys(message, {"version", "service_id", "op"}) &&
                     Integer(message, "version") == 1 &&
                     Text(message, "service_id") == config_.service_id &&
@@ -457,7 +504,7 @@ class Guardian {
         bootstrap_.Reset();
         RequestStop(now);
       }
-    } else if (!startup_ready_sent_ && model_ready_ && !gate_.Frozen()) {
+    } else if (!startup_ready_sent_ && BusinessReady() && !gate_.Frozen()) {
       if (!Send(bootstrap_.Get(), Status())) {
         bootstrap_.Reset();
         RequestStop(now);
@@ -473,6 +520,7 @@ class Guardian {
     // activation transaction may still be committing in the journal.
     stop_durable_ = false;
     gate_.Stop();
+    gateway_gate_.Stop();
     controller_ready_ = false;
     model_ready_ = false;
     cleanup_started_ = now;
@@ -502,7 +550,7 @@ class Guardian {
       if (getsockopt(fd.Get(), SOL_SOCKET, SO_PEERCRED, &peer, &length) != 0 ||
           peer.uid != geteuid())
         continue;
-      clients_.push_back(Client{std::move(fd), now, false});
+      clients_.push_back(Client{std::move(fd), now, false, peer.pid});
     }
     for (auto it = clients_.begin(); it != clients_.end();) {
       if (it->stopping) {
@@ -522,9 +570,24 @@ class Guardian {
             Integer(message, "version") == 1 &&
             Text(message, "service_id") == config_.service_id) {
           const auto operation = Text(message, "op");
-          if (operation == "status")
+          if (operation == "status") {
+            CheckModel();
             Send(it->fd.Get(), Status());
-          else if (operation == "stop") {
+          } else if (operation == "binding" && !gateway_reaped_ &&
+                     it->peer == gateway_.identity.pid) {
+            CheckModel();
+            Json result = Status();
+            result.object.emplace_back("binding",
+                                       model_ready_ ? model_binding_ : Json{});
+            result.object.emplace_back(
+                "model_owner",
+                w::Object(
+                    {{"pid",
+                      w::Unsigned(std::max<pid_t>(0, model_.identity.pid))},
+                     {"start_ticks", w::Unsigned(model_.identity.start_ticks)},
+                     {"boot_id", w::String(config_.boot_id)}}));
+            Send(it->fd.Get(), result);
+          } else if (operation == "stop") {
             RequestStop(now);
             wait_stop = true;
           }
@@ -607,7 +670,24 @@ class Guardian {
       model_ready_ = false;
     } else if (exited) {
       model_ready_ = false;
+      gateway_bound_model_ = 0;
     }
+  }
+
+  std::set<pid_t> Subtree(const std::vector<s::ProcessRecord>& records,
+                          const s::ProcessIdentity& root) const {
+    std::set<pid_t> result;
+    for (const auto& record : records)
+      if (record.identity == root) result.insert(root.pid);
+    bool changed = true;
+    while (changed) {
+      changed = false;
+      for (const auto& record : records)
+        if (result.contains(record.parent) &&
+            result.insert(record.identity.pid).second)
+          changed = true;
+    }
+    return result;
   }
 
   // A replacement controller/model cannot rely only on the reported main
@@ -616,9 +696,11 @@ class Guardian {
   bool ModelTreeEmpty() {
     std::vector<s::ProcessRecord> records;
     if (!s::OwnDescendants(&records).ok()) return false;
+    const auto gateway = Subtree(records, gateway_.identity);
     return std::all_of(records.begin(), records.end(), [&](const auto& item) {
       return item.identity == journal_.Worker() ||
-             item.identity == controller_.identity;
+             item.identity == controller_.identity ||
+             gateway.contains(item.identity.pid);
     });
   }
 
@@ -653,6 +735,31 @@ class Guardian {
       for (const auto& [key, value] : proof->object) {
         (void)key;
         Require(value.IsBool(), "model proof must be boolean");
+      }
+    } else if (operation == "bind") {
+      Require(w::HasKeys(args, {"role", "ticket", "binding"}) &&
+                  Text(args, "role") == "model" &&
+                  Text(args, "ticket") == model_ticket_ && model_registered_ &&
+                  model_binding_.IsNull() && !model_ready_committed_,
+              "invalid binding transaction");
+      const auto& binding = *args.Find("binding");
+      Require(w::HasKeys(binding, {"port", "operations_port", "gateway_token",
+                                   "client_policy_sha256", "binary_sha256",
+                                   "protocol_sha256"}),
+              "invalid model binding");
+      for (const char* name : {"port", "operations_port"})
+        Require(
+            Integer(binding, name) >= 1024 && Integer(binding, name) <= 65535,
+            "invalid binding port");
+      Require(Integer(binding, "port") != Integer(binding, "operations_port"),
+              "duplicate binding port");
+      for (const char* name : {"gateway_token", "client_policy_sha256",
+                               "binary_sha256", "protocol_sha256"}) {
+        const auto value = Text(binding, name);
+        Require(
+            value.size() == 64 && value.find_first_not_of("0123456789abcdef") ==
+                                      std::string::npos,
+            "invalid binding fingerprint");
       }
     } else if (operation == "spawned" || operation == "ready" ||
                operation == "retired" || operation == "stable") {
@@ -693,6 +800,8 @@ class Guardian {
           bool exited = false;
           Require(s::ProcessExited(model_.pidfd.Get(), &exited).ok() && !exited,
                   "model exited before readiness");
+          Require(config_.gateway.empty() || !model_binding_.IsNull(),
+                  "missing immutable model binding");
         }
         if (operation == "stable")
           Require(model_ready_ && now - model_ready_at_ >= 600 * kSecond,
@@ -748,6 +857,20 @@ class Guardian {
         ReplyModel(false, "model_cleanup_unconfirmed");
         return;
       }
+      if (operation == "authorize" && !config_.gateway.empty() &&
+          !gateway_ready_) {
+        ReplyModel(false, "gateway_unavailable");
+        return;
+      }
+      if (operation == "ready" && !quota_.Open(now)) {
+        ReplyModel(false, "quota_window");
+        return;
+      }
+      if (operation == "bind") {
+        model_binding_ = *model_request_->args.Find("binding");
+        ReplyModel(true, w::Object({{"stored", w::Boolean(true)}}));
+        return;
+      }
       Submit(Purpose::kModel, operation, model_request_->args, now);
     } catch (const std::exception&) {
       ReplyModel(false, "invalid_model_transaction");
@@ -763,6 +886,7 @@ class Guardian {
       Require(grant && grant->IsObject(), "missing model grant");
       model_ticket_ = Text(*grant, "ticket");
       model_generation_ = Integer(*grant, "generation");
+      quota_.Granted(model_generation_, now);
     } else if (operation == "spawned") {
       model_registered_ = true;
     } else if (operation == "ready") {
@@ -780,11 +904,19 @@ class Guardian {
     }
     if (stopping_ || recovering_)
       model_request_.reset();
-    else
-      ReplyModel(true, reply.result);
+    else {
+      auto result = reply.result;
+      if (operation == "authorize" && reply.result.GetBool("allowed"))
+        result.object.emplace_back("quota_not_before_monotonic_ns",
+                                   w::Unsigned(quota_.NotBefore()));
+      ReplyModel(true, result);
+    }
   }
 
   void RetireModel() {
+    quota_.Retired(Now());
+    model_binding_ = Json{};
+    gateway_bound_model_ = 0;
     model_ticket_.clear();
     model_ = s::ChildProcess{};
     model_registered_ = false;
@@ -805,20 +937,24 @@ class Guardian {
             (controller_ready_ ? config_.heartbeat_ns : 300 * kSecond))
       Recover(now);
   }
-  bool CleanupController(int64_t now) {
+  bool CleanupScope(int64_t now, int64_t started,
+                    const s::ProcessIdentity& protected_root) {
     std::vector<s::ProcessRecord> descendants;
     const auto status = s::OwnDescendants(&descendants);
     if (!status.ok()) {
       Freeze(status.message());
       return false;
     }
+    const auto protected_tree = Subtree(descendants, protected_root);
     bool empty = true;
     for (const auto& record : descendants) {
-      if (record.identity == journal_.Worker()) continue;
+      if (record.identity == journal_.Worker() ||
+          protected_tree.contains(record.identity.pid))
+        continue;
       empty = false;
       s::OwnedFd pidfd;
       if (!s::OpenProcess(record.identity, &pidfd).ok()) continue;
-      const bool kill = now - cleanup_started_ >= config_.term_ns;
+      const bool kill = now - started >= config_.term_ns;
       auto& previous =
           signalled_[{record.identity.pid, record.identity.start_ticks}];
       const int requested = kill ? SIGKILL : SIGTERM;
@@ -827,17 +963,22 @@ class Guardian {
           Freeze("owned signal failed");
         previous = requested;
       }
-      if (record.identity != controller_.identity) {
+      if (record.identity != controller_.identity &&
+          record.identity != gateway_.identity) {
         bool reaped = false;
         int code = 0;
         s::ReapProcess(pidfd.Get(), &reaped, &code);
       }
     }
-    if (!empty && now - cleanup_started_ > config_.term_ns + config_.kill_ns) {
+    if (!empty && now - started > config_.term_ns + config_.kill_ns) {
       Freeze("owned process cleanup unconfirmed");
       if (stopping_) ReplyToStops();
     }
     return empty;
+  }
+  bool CleanupController(int64_t now) {
+    return CleanupScope(now, cleanup_started_,
+                        stopping_ ? s::ProcessIdentity{} : gateway_.identity);
   }
   void SpawnController(int64_t now) {
     if (stopping_ || stop_signal ||
@@ -867,13 +1008,197 @@ class Guardian {
         "Q4T_LEASE_PATH=" + config_.lease_path,
         "Q4T_GUARDIAN_PID=" + std::to_string(getpid()),
         "Q4T_GUARDIAN_START=" + std::to_string(self_.identity.start_ticks)};
-    const auto status = s::SpawnProcess(
-        config_.controller, env, {child.Get(), lease_.Get()}, &controller_);
+    const auto status =
+        s::SpawnProcess(config_.controller, env, {child.Get(), lease_.Get()},
+                        &controller_, true);
     if (!status.ok()) {
       Recover(now);
       return;
     }
     heartbeat_at_ = now;
+  }
+
+  void RecoverGateway(int64_t now) {
+    if (gateway_recovering_) return;
+    gateway_recovering_ = true;
+    gateway_ready_ = false;
+    gateway_bound_model_ = 0;
+    gateway_socket_.Reset();
+    gateway_cleanup_started_ = now;
+  }
+
+  void CheckGateway(int64_t now) {
+    if (!gateway_reaped_ && gateway_.pidfd.Get() >= 0) {
+      int code = 0;
+      const auto result =
+          s::ReapProcess(gateway_.pidfd.Get(), &gateway_reaped_, &code);
+      if (!result.ok()) Freeze(result.message());
+      if (gateway_reaped_ && !stopping_) RecoverGateway(now);
+    }
+    if (!stopping_ && !gateway_recovering_ && gateway_.identity.pid > 0 &&
+        !gateway_reaped_ &&
+        now - gateway_heartbeat_at_ >
+            (gateway_ready_ ? config_.heartbeat_ns : 300 * kSecond))
+      RecoverGateway(now);
+  }
+
+  void GatewayEvents(int64_t now) {
+    if (gateway_socket_.Get() < 0 || gateway_recovering_) return;
+    for (int count = 0; count < 4; ++count) {
+      Json message;
+      const int received = Receive(gateway_socket_.Get(), &message);
+      if (received == 0) return;
+      if (received < 0) {
+        RecoverGateway(now);
+        return;
+      }
+      try {
+        const auto event = Text(message, "event");
+        Require(
+            event == "bound"
+                ? w::HasKeys(message, {"version", "service_id", "generation",
+                                       "sequence", "event", "model_generation"})
+                : w::HasKeys(message, {"version", "service_id", "generation",
+                                       "sequence", "event"}),
+            "invalid gateway event");
+        Require(Integer(message, "version") == 1 &&
+                    Text(message, "service_id") == config_.service_id &&
+                    Integer(message, "generation") == gateway_generation_ &&
+                    Integer(message, "sequence") == gateway_event_ + 1,
+                "stale gateway identity");
+        Require(event == "ready" || event == "heartbeat" || event == "bound" ||
+                    event == "unbound",
+                "unknown gateway event");
+        ++gateway_event_;
+        gateway_heartbeat_at_ = now;
+        if (event == "ready") gateway_ready_seen_ = true;
+        if (event == "unbound") gateway_bound_model_ = 0;
+        if (event == "bound" && model_ready_ && !model_binding_.IsNull() &&
+            Integer(message, "model_generation") == model_generation_)
+          gateway_bound_model_ = model_generation_;
+      } catch (const std::exception&) {
+        RecoverGateway(now);
+        return;
+      }
+    }
+  }
+
+  void SpawnGateway(int64_t now) {
+    if (stopping_ || stop_signal ||
+        !gateway_gate_.Consume(journal_sequence_, gateway_generation_))
+      return;
+    int pair[2];
+    if (socketpair(AF_UNIX, SOCK_SEQPACKET | SOCK_CLOEXEC, 0, pair) != 0) {
+      RecoverGateway(now);
+      return;
+    }
+    gateway_socket_.Reset(pair[0]);
+    s::OwnedFd child(pair[1]);
+    if (fcntl(gateway_socket_.Get(), F_SETFL, O_NONBLOCK) != 0) {
+      RecoverGateway(now);
+      return;
+    }
+    gateway_ = s::ChildProcess{};
+    gateway_reaped_ = false;
+    gateway_registered_ = false;
+    gateway_ready_seen_ = false;
+    gateway_event_ = 0;
+    const std::vector<std::string> env{
+        "Q4T_SERVICE_ID=" + config_.service_id,
+        "Q4T_GATEWAY_GENERATION=" + std::to_string(gateway_generation_),
+        "Q4T_CONTROL_FD=" + std::to_string(child.Get()),
+        "Q4T_GUARDIAN_PID=" + std::to_string(getpid()),
+        "Q4T_GUARDIAN_START=" + std::to_string(self_.identity.start_ticks)};
+    if (!s::SpawnProcess(config_.gateway, env, {child.Get()}, &gateway_, true)
+             .ok()) {
+      RecoverGateway(now);
+      return;
+    }
+    gateway_heartbeat_at_ = now;
+  }
+
+  void CompleteGateway(Purpose purpose, const s::JournalReply& reply,
+                       int64_t now) {
+    if (purpose == Purpose::kGatewayGrant) {
+      if (!reply.result.GetBool("allowed")) {
+        const auto* delay = reply.result.Find("retry_after_ns");
+        if (!delay) {
+          Freeze("gateway authorization denied");
+          return;
+        }
+        const auto duration = Integer(reply.result, "retry_after_ns");
+        Require(duration <= 24 * 60 * 60 * static_cast<uint64_t>(kSecond),
+                "invalid gateway recovery wait");
+        gateway_retry_at_ = now + static_cast<int64_t>(duration);
+        return;
+      }
+      const auto* grant = reply.result.Find("grant");
+      Require(grant && grant->IsObject(), "missing gateway grant");
+      gateway_ticket_ = Text(*grant, "ticket");
+      gateway_generation_ = Integer(*grant, "generation");
+      if (gateway_gate_.Begin(reply.sequence, gateway_generation_))
+        SpawnGateway(now);
+    } else if (purpose == Purpose::kGatewaySpawned) {
+      gateway_registered_ = true;
+    } else if (purpose == Purpose::kGatewayReady) {
+      if (!stopping_ && !gateway_recovering_) gateway_ready_ = true;
+    } else if (purpose == Purpose::kGatewayRetired) {
+      gateway_ticket_.clear();
+      gateway_ = s::ChildProcess{};
+      gateway_reaped_ = true;
+      gateway_registered_ = false;
+      gateway_ready_seen_ = gateway_ready_ = false;
+      gateway_recovering_ = false;
+      gateway_bound_model_ = 0;
+      gateway_retry_at_ = now + 5 * kSecond;
+      if (!recovering_) signalled_.clear();
+    } else {
+      Require(false, "invalid gateway completion");
+    }
+  }
+
+  void DriveGateway(int64_t now) {
+    if (config_.gateway.empty()) return;
+    if (gateway_recovering_) {
+      if (CleanupScope(now, gateway_cleanup_started_, controller_.identity) &&
+          !gateway_ticket_.empty())
+        Submit(Purpose::kGatewayRetired, "retired",
+               w::Object({{"role", w::String("gateway")},
+                          {"ticket", w::String(gateway_ticket_)},
+                          {"verified", w::Boolean(true)}}),
+               now);
+      return;
+    }
+    if (!initialized_ || !desired_running_ || gate_.Frozen()) return;
+    if (gateway_.identity.pid > 0 && !gateway_reaped_) {
+      if (!gateway_registered_) {
+        Submit(
+            Purpose::kGatewaySpawned, "spawned",
+            w::Object({{"role", w::String("gateway")},
+                       {"ticket", w::String(gateway_ticket_)},
+                       {"owner",
+                        w::Object({{"pid", w::Unsigned(gateway_.identity.pid)},
+                                   {"start_ticks",
+                                    w::Unsigned(gateway_.identity.start_ticks)},
+                                   {"boot_id", w::String(config_.boot_id)}})}}),
+            now);
+      } else if (gateway_ready_seen_ && !gateway_ready_) {
+        Submit(Purpose::kGatewayReady, "ready",
+               w::Object({{"role", w::String("gateway")},
+                          {"ticket", w::String(gateway_ticket_)},
+                          {"verified", w::Boolean(true)}}),
+               now);
+      }
+      return;
+    }
+    if (!gateway_ticket_.empty() || now < gateway_retry_at_) return;
+    const auto proof = w::Object({{"cleanup_complete", w::Boolean(true)},
+                                  {"identity_valid", w::Boolean(true)},
+                                  {"resources_safe", w::Boolean(false)},
+                                  {"lease_continuous", w::Boolean(false)},
+                                  {"device_usable", w::Boolean(false)}});
+    Submit(Purpose::kGatewayGrant, "authorize",
+           w::Object({{"role", w::String("gateway")}, {"proof", proof}}), now);
   }
   void Complete(const s::JournalReply& reply, int64_t now) {
     const Purpose purpose = purpose_;
@@ -917,13 +1242,18 @@ class Guardian {
       controller_registered_ = false;
       controller_ready_seen_ = false;
       recovering_ = false;
-      signalled_.clear();
+      if (!gateway_recovering_) signalled_.clear();
       retry_after_ = now + 5 * kSecond;
       circuit_open_ = false;
     } else if (purpose == Purpose::kModel) {
       CompleteModel(reply, now);
     } else if (purpose == Purpose::kModelRetired) {
       RetireModel();
+    } else if (purpose == Purpose::kGatewayGrant ||
+               purpose == Purpose::kGatewaySpawned ||
+               purpose == Purpose::kGatewayReady ||
+               purpose == Purpose::kGatewayRetired) {
+      CompleteGateway(purpose, reply, now);
     } else
       Require(false, "unexpected journal purpose");
   }
@@ -970,12 +1300,19 @@ class Guardian {
                           {"ticket", w::String(controller_ticket_)},
                           {"verified", w::Boolean(true)}}),
                now);
+      } else if (stopping_ && !gateway_ticket_.empty()) {
+        Submit(Purpose::kGatewayRetired, "retired",
+               w::Object({{"role", w::String("gateway")},
+                          {"ticket", w::String(gateway_ticket_)},
+                          {"verified", w::Boolean(true)}}),
+               now);
       } else if (stopping_) {
         journal_.BeginStop(now, config_.term_ns);
         if (!stop_durable_ && journal_.CleanupConfirmed()) ReplyToStops();
       }
       return;
     }
+    DriveGateway(now);
     DriveModel(now);
     if (!initialized_ || gate_.Frozen()) return;
     if (activate_) {
@@ -1005,6 +1342,7 @@ class Guardian {
       return;
     }
     if (!controller_ticket_.empty() || now < retry_after_) return;
+    if (!config_.gateway.empty() && !gateway_ready_) return;
     if (!s::CheckInheritedLease(lease_.Get(), config_.lease_path).ok()) {
       Freeze("GPU lease continuity lost");
       return;
@@ -1037,6 +1375,19 @@ class Guardian {
   s::ProcessRecord self_;
   s::ChildProcess controller_;
   s::ChildProcess model_;
+  s::QuotaGate quota_;
+  Json model_binding_;
+  s::ChildProcess gateway_;
+  s::OwnedFd gateway_socket_;
+  s::LaunchGate gateway_gate_;
+  std::string gateway_ticket_;
+  bool gateway_reaped_ = true, gateway_recovering_ = false;
+  bool gateway_registered_ = false, gateway_ready_seen_ = false;
+  bool gateway_ready_ = false;
+  uint64_t gateway_generation_ = 0, gateway_event_ = 0,
+           gateway_bound_model_ = 0;
+  int64_t gateway_heartbeat_at_ = 0, gateway_cleanup_started_ = 0;
+  int64_t gateway_retry_at_ = 0;
   std::string model_ticket_;
   std::optional<ModelRequest> model_request_;
   uint64_t model_generation_ = 0;

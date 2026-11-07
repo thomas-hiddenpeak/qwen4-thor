@@ -50,7 +50,8 @@ def signal_identity(pid, ticks, signum):
 class Service:
     def __init__(self, output, *, escape=False, models=False, pause_at=None,
                  device_unknown=False, escape_model=False, bad_ledger=False,
-                 stale_grant=False, daemon=False, startup_ms=300000):
+                 stale_grant=False, daemon=False, startup_ms=300000,
+                 gateway=False, quota=False):
         self.directory = Path(tempfile.mkdtemp(prefix='service-', dir=output))
         self.service_id = str(uuid.uuid4())
         with store.Store(self.directory, self.service_id, initialize=True):
@@ -83,6 +84,8 @@ class Service:
             command.append('--device-unknown')
         if escape_model:
             command.append('--escape-model-child')
+        if gateway:
+            command.append('--bind-model')
         self.bootstrap = None
         bootstrap_child = None
         if daemon:
@@ -92,6 +95,9 @@ class Service:
             service_id=self.service_id, python=sys.executable,
             journal=str(ROOT/'tools/serve_recovery/journal.py'),
             controller=command, lease_path=str(self.lease_path), lease_fd=lease,
+            gateway=([sys.executable, '-I', '-B',
+                str(ROOT/'tools/serve_recovery/fixture_gateway.py')]
+                if gateway else []), quota_enforced=quota,
             resource_mode='process', require_hard_memory_limit=False,
             term_ms=100, kill_ms=200, heartbeat_ms=1000, critical_memory_mib=64,
             launch=dict(mode='daemon' if daemon else 'foreground', parent_pid=os.getpid(),
@@ -247,11 +253,77 @@ class RuntimeTests(unittest.TestCase):
                             service.persistent()['active'].values()))
         service.assert_lease_free()
 
+    def test_gateway_failure_preserves_controller_and_model(self):
+        service = self.launch(models=True, gateway=True)
+        first = service.wait(lambda s: s['business_ready'])
+        escaped = children(first['gateway_pid'])
+        self.assertTrue(escaped)
+        signal_identity(first['gateway_pid'], first['gateway_start_ticks'],
+                        signal.SIGKILL)
+        second = service.wait(lambda s: s['business_ready'] and
+                              s['gateway_generation'] == 2)
+        self.assertEqual(second['model_pid'], first['model_pid'])
+        self.assertEqual(second['controller_pid'], first['controller_pid'])
+        self.assertEqual(second['model_generation'], 1)
+        self.assertEqual(len(service.persistent()['attempts']['gateway']), 1)
+        for pid in escaped:
+            self.assertFalse(Path(f'/proc/{pid}').exists())
+        self.assertTrue(service.stop()['cleanup_confirmed'])
+        service.assert_lease_free()
+
+    def test_controller_failure_keeps_gateway_and_rebinds_new_model(self):
+        service = self.launch(models=True, gateway=True)
+        first = service.wait(lambda s: s['business_ready'])
+        escaped = children(first['gateway_pid'])
+        signal_identity(first['controller_pid'], first['controller_start_ticks'],
+                        signal.SIGKILL)
+        second = service.wait(lambda s: s['business_ready'] and
+                              s['model_generation'] == 2)
+        self.assertEqual(second['gateway_pid'], first['gateway_pid'])
+        self.assertEqual(second['gateway_bound_model'], 2)
+        self.assertNotEqual(second['model_pid'], first['model_pid'])
+        self.assertEqual(children(second['gateway_pid']), escaped)
+        self.assertTrue(service.stop()['cleanup_confirmed'])
+
+    def test_live_gateway_credentials_are_not_public_status(self):
+        service = self.launch(models=True, gateway=True)
+        status = service.wait(lambda s: s['business_ready'])
+        self.assertNotIn('binding', status)
+        with self.assertRaises(ValueError):
+            control.binding(service.service_id)
+        self.assertTrue(service.status()['business_ready'])
+
+    def test_model_quota_denial_keeps_loop_and_gateway_alive(self):
+        service = self.launch(models=True, gateway=True, quota=True)
+        first = service.wait(lambda s: s['business_ready'])
+        signal_identity(first['model_pid'], first['model_start_ticks'], signal.SIGKILL)
+        second = service.wait(lambda s: s['model_generation'] == 2 and
+            (service.directory/'quota-blocked.json').exists())
+        self.assertFalse(second['business_ready'] or second['model_ready'])
+        self.assertGreater(second['quota_wait_ms'], 40000)
+        self.assertEqual(second['gateway_pid'], first['gateway_pid'])
+        self.assertEqual(second['controller_pid'], first['controller_pid'])
+        self.assertTrue(service.stop()['cleanup_confirmed'])
+
+    def test_simultaneous_gateway_controller_failure_cleans_both_domains(self):
+        service = self.launch(models=True, gateway=True)
+        first = service.wait(lambda s: s['business_ready'])
+        escaped = children(first['gateway_pid'])
+        for role in ('controller', 'gateway'):
+            signal_identity(first[role+'_pid'], first[role+'_start_ticks'],
+                            signal.SIGKILL)
+        second = service.wait(lambda s: s['business_ready'] and
+                              s['model_generation'] == 2, timeout=15)
+        self.assertEqual(second['controller_generation'], 2)
+        self.assertEqual(second['gateway_generation'], 2)
+        for pid in escaped:
+            self.assertFalse(Path(f'/proc/{pid}').exists())
+        self.assertTrue(service.stop()['cleanup_confirmed'])
+
     def test_controller_crash_cleans_escaped_descendants_before_replacement(self):
         service = self.launch(escape=True)
         first = service.ready()
-        escaped = set(children(service.process.pid)) - {
-            first['controller_pid'], first['journal_pid']}
+        escaped = set(children(first['controller_pid']))
         self.assertTrue(escaped, 'escaping fixture did not create an orphan')
         signal_identity(first['controller_pid'], first['controller_start_ticks'],
                         signal.SIGKILL)

@@ -1,4 +1,5 @@
 #include "q4t/service/guardian_process.h"
+#include "q4t/service/guardian_quota.h"
 
 #include <fcntl.h>
 #include <poll.h>
@@ -81,6 +82,12 @@ int Fixture(int argc, char** argv) {
     for (;;) pause();
   }
   if (mode == "--exit") return std::atoi(argv[2]);
+  if (mode == "--subreaper") {
+    int enabled = 0;
+    return prctl(PR_GET_CHILD_SUBREAPER, &enabled, 0, 0, 0) == 0 && enabled == 1
+               ? 0
+               : 1;
+  }
   if (mode == "--fd-check" && argc == 4) {
     return fcntl(std::atoi(argv[2]), F_GETFD) >= 0 &&
                    fcntl(std::atoi(argv[3]), F_GETFD) < 0
@@ -153,6 +160,40 @@ Q4T_TEST(guardian_spawn_exit_reaps_pinned_child) {
   Q4T_CHECK(Wait(child, 17));
   bool empty = false;
   Q4T_CHECK(s::NoChildren(&empty).ok() && empty);
+  return true;
+}
+
+Q4T_TEST(guardian_role_subreaper_survives_exec) {
+  Cleanup cleanup;
+  s::ChildProcess child;
+  Q4T_CHECK(
+      s::SpawnProcess({executable, "--subreaper"}, {}, {}, &child, true).ok());
+  Q4T_CHECK(Wait(child, 0));
+  return true;
+}
+
+Q4T_TEST(guardian_quota_recovery_waits_full_window_after_exit) {
+  s::QuotaGate gate(true);
+  gate.Granted(1, 100);
+  Q4T_CHECK(gate.Open(100));
+  gate.Retired(1'000);
+  gate.Granted(2, 20'000'001'000);
+  Q4T_CHECK(!gate.Open(60'000'000'999));
+  Q4T_CHECK(gate.Open(60'000'001'000));
+  gate.Retired(70'000'000'000);
+  gate.Granted(3, 140'000'000'000);
+  Q4T_CHECK(gate.Open(140'000'000'000));
+  return true;
+}
+
+Q4T_TEST(guardian_quota_cold_restart_cannot_reset_window) {
+  s::QuotaGate gate(true);
+  gate.Granted(7, 12'000);
+  Q4T_CHECK(!gate.Open(60'000'011'999));
+  Q4T_CHECK(gate.Open(60'000'012'000));
+  s::QuotaGate disabled(false);
+  disabled.Granted(7, 12'000);
+  Q4T_CHECK(disabled.Open(12'000));
   return true;
 }
 

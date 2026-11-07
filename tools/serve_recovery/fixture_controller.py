@@ -18,6 +18,7 @@ def main():
     parser.add_argument('--pause-at', choices=('authorized', 'spawned'))
     parser.add_argument('--device-unknown', action='store_true')
     parser.add_argument('--escape-model-child', action='store_true')
+    parser.add_argument('--bind-model', action='store_true')
     args = parser.parse_args()
     channel = ControllerChannel()
     if args.escape_child:

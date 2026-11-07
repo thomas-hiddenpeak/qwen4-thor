@@ -156,3 +156,37 @@ CPU helper 收到唯一许可后才 exec 目标。模型/辅助子树未清空�
 不据此声称真实 JSON/SSE/工具恢复。生产包与统一 q4t service 命令、
 真实 Controller/CUDA 小探测、网关和配额窗口继续接续，最后按
 既定单租约预算验 B。92031102 上一阶段 CI 已通过，默认未替换。
+
+2026-11-08：B 的网关与配额连接已完成 CPU 阶段。Guardian 新增
+独立 gateway 授权、身份、心跳和清理；控制器及网关 exec 前都成为
+subreaper，保留另一健康角色的整个子树。只有模型 ready、配额窗口
+结束且网关完成当前代次绑定，才报告 business ready/提交后台启动。
+网关死亡不重启模型，控制器死亡不关闭存活网关；同时故障先完整
+清理，不能把 escaped 后代遗漏或错误归入健康角色。
+
+新 nginx 网关逐请求通过私有 admission 通道向 Guardian 取当前
+准入，只有 Guardian 所 pin 的 gateway PID 能读取内部凭据。
+每个模型代次使用新的 gateway token，配额/fairness 原配置保持；
+网关独立核验 ELF、两监听、协议和客户端配置，不把 metrics 缺失
+当核心故障。HTTP 认证/来源/路由/容量约束保留，明确返回 503 与
+Retry-After；POST 不重放、SSE 不拼接或补造 DONE，上游 429 原样返回。
+无 TLS 只允许回环，显式内网 TLS/CIDR 的部署验收仍另行确定。
+
+分钟配额采用 Guardian 单调时钟保护：旧模型清理核销后满 60 秒
+才能提交新 ready，可与加载重叠；新 Guardian 无旧退出时刻则从
+新授权起等待完整窗口。CPU 虚拟时钟验证完整边界，实际生命周期
+验证早到 ready 被拒绝且控制循环/网关继续活跃；不是 60 秒真实
+LLM 短验。原生模型计算与已接受的默认 ELF 没有改变。
+
+本组 75 项通过：18 原生进程/配额、7 原生 journal、30 Guardian
+生命周期、14 网关纯合同、6 实际 nginx 与生产 gateway worker。
+后 6 项使用 CPU HTTP 后端及 Guardian 协议替身；另 30 项由真实
+原生 Guardian 管 CPU 控制器/模型/网关替身。两个证据层分别记录，
+不能拼成真实模型组合接受。此前未变的政策/账本/worker 58 项、
+exec 屏障/回包 9 项复用，累计 142 项不同用例。
+
+原件在 `.q4t-work/serve-recovery-b1-20261108/gateway-attempt-01/`，
+源码、构建、ELF、调用及结果逐项记录；构建零警告，147 来源锚点/
+3 负控通过。e58f16c1 的 CI 已成功；仍为 0 真实模型/真实 GPU 查询。
+下一步接统一生产封装、真实 Controller/NVML 隔离与 CUDA 小探测，
+再执行既定 B 单租约验收。A/B 目标不缩小、不据本组宣称完成。

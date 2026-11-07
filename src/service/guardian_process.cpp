@@ -202,7 +202,8 @@ Status EnableSubreaper() {
 
 Status SpawnProcess(const std::vector<std::string>& argv,
                     const std::vector<std::string>& env,
-                    const std::vector<int>& pass_fds, ChildProcess* child) {
+                    const std::vector<int>& pass_fds, ChildProcess* child,
+                    bool subreaper) {
   if (!ValidExec(argv, env) || child == nullptr || pass_fds.size() > 16) {
     return Status::Fail("invalid bounded spawn specification");
   }
@@ -249,7 +250,9 @@ Status SpawnProcess(const std::vector<std::string>& argv,
   if (pid == 0) {
     const int error_fd = write_error.Get();
     if (prctl(PR_SET_PDEATHSIG, SIGTERM, 0, 0, 0) != 0 || getppid() != parent ||
-        prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0) != 0 || setsid() < 0) {
+        prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0) != 0 ||
+        (subreaper && prctl(PR_SET_CHILD_SUBREAPER, 1, 0, 0, 0) != 0) ||
+        setsid() < 0) {
       ChildError(error_fd);
     }
     for (int sig : {SIGTERM, SIGINT, SIGHUP, SIGPIPE, SIGCHLD}) {

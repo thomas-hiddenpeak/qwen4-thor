@@ -62,7 +62,8 @@ struct ChildProcess {
 // including across exec; credentials cannot be elevated by the executable.
 Status SpawnProcess(const std::vector<std::string>& argv,
                     const std::vector<std::string>& env,
-                    const std::vector<int>& pass_fds, ChildProcess* child);
+                    const std::vector<int>& pass_fds, ChildProcess* child,
+                    bool subreaper = false);
 
 // Reap only an actual direct/adopted child pinned by this pidfd. Never wait
 // without WNOHANG. A kill request is not proof that the process has exited.

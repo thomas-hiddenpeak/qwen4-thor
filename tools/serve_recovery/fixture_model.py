@@ -76,6 +76,7 @@ def controller(channel, args):
                 idle(channel, grant['retry_after_ns']/1e9)
                 continue
             idle(channel)
+        quota_deadline = grant.get('quota_not_before_monotonic_ns', 0)
         grant = grant['grant']
         if args.pause_at == 'authorized':
             idle(channel)
@@ -111,8 +112,21 @@ def controller(channel, args):
             if process.poll() is not None or time.monotonic() >= end:
                 raise RuntimeError('CPU model did not pass exec barrier')
             idle(channel, 0.05)
-        transaction(channel, 'ready', dict(role='model', ticket=grant['ticket'],
-                                          verified=True))
+        if args.bind_model:
+            transaction(channel, 'bind', dict(role='model', ticket=grant['ticket'],
+                binding=dict(port=18000, operations_port=18001,
+                    gateway_token=hashlib.sha256(grant['ticket'].encode()).hexdigest(),
+                    client_policy_sha256='b'*64, binary_sha256='c'*64,
+                    protocol_sha256='d'*64)))
+        ready = dict(role='model', ticket=grant['ticket'], verified=True)
+        if time.monotonic_ns() < quota_deadline:
+            early = channel.transact('ready', ready)
+            ledger.require(not early['ok'] and
+                           early['result']['reason'] == 'quota_window',
+                           'early quota admission incorrectly accepted')
+            (args.model_fixture/'quota-blocked.json').write_text(json.dumps(early))
+            idle(channel, (quota_deadline-time.monotonic_ns())/1e9)
+        transaction(channel, 'ready', ready)
         while process.poll() is None:
             idle(channel, 0.05)
         fault = dict(generation=grant['generation'],

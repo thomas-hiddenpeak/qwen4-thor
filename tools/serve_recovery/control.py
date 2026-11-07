@@ -14,6 +14,15 @@ def address(service_id):
 
 def request(service_id, operation, *, timeout=3):
     ledger.require(operation in ('status', 'stop'), 'invalid control operation')
+    return _request(service_id, operation, timeout=timeout)
+
+
+def binding(service_id, *, timeout=0.5):
+    """Credentials are returned only to the Guardian's pinned gateway PID."""
+    return _request(service_id, 'binding', timeout=timeout)
+
+
+def _request(service_id, operation, *, timeout):
     with socket.socket(socket.AF_UNIX, socket.SOCK_SEQPACKET) as sock:
         sock.settimeout(timeout)
         sock.connect(address(service_id))
@@ -30,9 +39,11 @@ def request(service_id, operation, *, timeout=3):
 
 
 class ControllerChannel:
+    role = 'CONTROLLER'
+
     def __init__(self):
         self.service_id = os.environ['Q4T_SERVICE_ID']
-        self.generation = int(os.environ['Q4T_CONTROLLER_GENERATION'])
+        self.generation = int(os.environ[f'Q4T_{self.role}_GENERATION'])
         ledger.require(ledger.identifier(self.service_id) and
                        ledger.integer(self.generation, minimum=1),
                        'invalid controller generation')
@@ -59,7 +70,8 @@ class ControllerChannel:
     def begin(self, operation, args):
         ledger.require(self.pending is None, 'controller transaction pending')
         ledger.require(operation in ('authorize', 'spawned', 'ready', 'retired',
-                       'fault', 'stable', 'quarantine'), 'invalid model operation')
+                       'fault', 'stable', 'quarantine', 'bind'),
+                       'invalid model operation')
         self.pending = self._send('transaction', transaction=dict(
             operation=operation, args=args))
 
@@ -103,3 +115,18 @@ class ControllerChannel:
 
     def close(self):
         self.sock.close()
+
+
+class GatewayChannel(ControllerChannel):
+    role = 'GATEWAY'
+
+    def bound(self, generation):
+        ledger.require(ledger.integer(generation, minimum=1),
+                       'invalid model generation')
+        self._send('bound', model_generation=generation)
+
+    def unbound(self):
+        self._send('unbound')
+
+    def begin(self, operation, args):
+        raise ledger.LedgerError('gateway has no recovery transaction authority')
