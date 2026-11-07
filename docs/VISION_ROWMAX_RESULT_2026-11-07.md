@@ -1,5 +1,8 @@
 # 视觉 attention 行最大值：首轮达标，完整验收因环境中止
 
+最新补验结果见[MTP补验收尾](VISION_ROWMAX_COMPLETION_RESULT_2026-11-07.md)：
+再次ENV_ABORT，用户选择保留候选、等待环境处理。本页保留原阶段证据。
+
 2026-11-07。[判定卡](VISION_ROWMAX_PLAN_2026-11-07.md)、
 [完整阶段范围](VISION_ROWMAX_ACCEPTANCE_2026-11-07.md)保持原样。
 **当前决定：HOLD_ENV_ABORT_INCOMPLETE_ACCEPTANCE。** 实现保留在
