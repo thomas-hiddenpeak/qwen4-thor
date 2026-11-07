@@ -22,6 +22,10 @@
 两种模式五档HTTP使用最终程序重新收集，4启动104Chat/7200秒。
 默认和旧原件不覆盖，不扩展硬解码、并发、驱动调查或长稳。
 
+prepare首尝试引用未生成的compile_commands.json，0模型/0请求；
+保留accept-01，修正为绑定两程序实际Makefile编译/链接记录，
+从accept-02执行原预算，不重构或覆盖原始构建证据。
+
 ## Serve已有成果已独立提取交接，视觉研究保持HOLD
 
 [收口入口](SERVE_RESILIENCE_CLOSEOUT_2026-11-07.md)：新草稿

@@ -12,7 +12,7 @@ from tools.evalscope import resume_vision_rowmax as retained
 prior = retained.prior
 s = retained.s
 BASE = s.ROOT/'.q4t-work/vision-rowmax-mainline-20261107'
-FOLDER = BASE/'accept-01'
+FOLDER = BASE/'accept-02'
 PARENT = s.ROOT/'.q4t-work/serve-closeout-20261107/runtime/q4t'
 PARENT_COMMIT = 'fad0e9292df79f95ecc7540e4e9a88281251e8e5'
 PARENT_SHA = '478a325e3b7baaee90f96381468be17fab2511f861b9f92353f84ed9564ceb54'
@@ -69,8 +69,19 @@ def prepare():
         if name.startswith(('src/', 'include/', 'cmake/', 'tools/', 'tests/'))
         or name == 'CMakeLists.txt']
     for engine in (BASE/'engine', PARENT.parent):
-        paths += [engine/name for name in ('q4t', 'CMakeCache.txt', 'compile_commands.json',
+        paths += [engine/name for name in ('q4t', 'CMakeCache.txt',
             'generated/q4t/server/chat_protocol_sources.json')]
+        # Both accepted builds used Makefiles without exporting a command DB.
+        # Bind the actual generated compile/link recipes; never reconstruct an
+        # absent database and present it as original build evidence.
+        targets = ['q4t', 'q4t_model', 'q4t_text', 'q4t_ple', 'q4t_quant',
+                   'q4t_server', 'q4t_startup_plan', 'q4t_trace', 'q4t_io',
+                   'q4t_runtime']
+        directories = [engine/'CMakeFiles'/(name+'.dir') for name in targets]
+        directories += [engine/'_deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir']
+        for directory in directories:
+            paths += [directory/name for name in ('flags.make', 'link.txt', 'build.make')]
+            paths += sorted(directory.glob('*.rsp'))
     paths += [FOLDER/'reuse.json', prior.FOLDER/'plan.json', BASE/'build.json',
         s.ROOT/'docs/VISION_ROWMAX_MAINLINE_2026-11-07.md',
         s.ROOT/'build/q4t', s.ROOT/'build/q4t.release.json', prior.pilot.EVALSCOPE]
