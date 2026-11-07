@@ -1,0 +1,156 @@
+{
+  "local_root": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261107",
+  "archive_sha256": "9463702cb43749203f27ce2bb8f26cdacb674f5f2ce673e6ee5a0d576310d611",
+  "records": [
+    {
+      "path": "before.json",
+      "bytes": 587,
+      "sha256": "f5819a7b71826804274123d4175fc2796610704c27e1b0b4623e099ab668a3fd"
+    },
+    {
+      "path": "checks-compile/commands.json",
+      "bytes": 1225,
+      "sha256": "cb3fa927508a6fffffd500fce4f03fe87f04b46ca9dc7b37f56e49e2c4671aee"
+    },
+    {
+      "path": "checks-compile/runtime-build.log",
+      "bytes": 11151,
+      "sha256": "cdf10aa713dc20abb628d583a39c11adca2df94ccc87e5d00955606fdc8ed7e7"
+    },
+    {
+      "path": "checks-compile/runtime-configure.log",
+      "bytes": 1316,
+      "sha256": "3d1bc423677b56be80c938519013665793cee65258c8ef302cbd1af6508b4cc7"
+    },
+    {
+      "path": "checks-cpu/commands.json",
+      "bytes": 4687,
+      "sha256": "38de6cef453f71916e1643dbc2a275afd1d03b6314749285539a172495be1b8f"
+    },
+    {
+      "path": "checks-cpu/generated-contract.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "checks-cpu/host-build.log",
+      "bytes": 11122,
+      "sha256": "9c802eaea62820c6ca9f01e962832a7b4a0f61ce0d0b6a1af87ecaf9121e230a"
+    },
+    {
+      "path": "checks-cpu/host-configure.log",
+      "bytes": 671,
+      "sha256": "59ae875c448e3d7513e22e3a65c44f3ffd2b8638b31d759403c5f27016af0365"
+    },
+    {
+      "path": "checks-cpu/host-contracts.log",
+      "bytes": 22960,
+      "sha256": "075ad31f1d00df420c3c5dbefd6d318efbf94330b0bf2f5127d87895fab147e1"
+    },
+    {
+      "path": "checks-cpu/managed-contracts.log",
+      "bytes": 13038,
+      "sha256": "4b0c0c99e19ff633816f5668d50c5c8755f2988e10b3acf7df1bfcdeaa12b54d"
+    },
+    {
+      "path": "checks-cpu/ple-build.log",
+      "bytes": 822,
+      "sha256": "fef0ca71b53fde548469737f5c5a03c9ce055b3458690f0fb4c69d5f555c9082"
+    },
+    {
+      "path": "checks-cpu/ple-configure.log",
+      "bytes": 542,
+      "sha256": "ed6aee4372cd438032e673a2bbc6ba6ad78400fd893e2bc2f16f3a203fe29b1a"
+    },
+    {
+      "path": "checks-cpu/ple-contracts.log",
+      "bytes": 1635,
+      "sha256": "90e02eda62e16b069cb3f5f04cd5f1a3a92cbf9cddd6b2643c0acf7f25d09d30"
+    },
+    {
+      "path": "checks-cpu/ple-dependencies.log",
+      "bytes": 453,
+      "sha256": "22d206319fe3ceeeb982b5a0282ac4f7309a52cc9b625ab21c19ef9a0b33a8a0"
+    },
+    {
+      "path": "checks-cpu/source-inventory.log",
+      "bytes": 170,
+      "sha256": "520ac62c4994168b9905e625b642f8f28a4b7a91fb33ac9fb2fb1a0165ae9608"
+    },
+    {
+      "path": "checks-cpu/supervisor-contracts.log",
+      "bytes": 6911,
+      "sha256": "52695f324a3813fddde31e5f1117cd0dc952748df35cf21301fc17f472203ed4"
+    },
+    {
+      "path": "extraction-initial.json",
+      "bytes": 18779,
+      "sha256": "eb0c2774e22487584aba01e4e7b73fb58b537078a8ecccd9da961b3e1c7b9d02"
+    },
+    {
+      "path": "generated-reconciliation.json",
+      "bytes": 367,
+      "sha256": "249f3b7fc2732985fcad8b70c1cc261c0230001abca2c1a88ce7f5470b8e7e54"
+    },
+    {
+      "path": "host/CMakeCache.txt",
+      "bytes": 14980,
+      "sha256": "2c7ff6ccabe694a1b33a852206f7b98e43da45d365c0623e4aa2622b27b7b832"
+    },
+    {
+      "path": "host/generated/q4t/server/chat_protocol_identity.h",
+      "bytes": 697,
+      "sha256": "598173dcfde5124cf8d15df94edc8615ee2d3a6179aac46055cfe9a0078d941a"
+    },
+    {
+      "path": "host/generated/q4t/server/chat_protocol_sources.json",
+      "bytes": 11430,
+      "sha256": "b97352b803ea368d3999c7b853dc5d6d59f4eac3e0e70b34059eecce577105d9"
+    },
+    {
+      "path": "run_checks.py",
+      "bytes": 3236,
+      "sha256": "5b346f744f915ca905416f0d0800cf33b5a4d93dea5c55ae3929af2649f81b5c"
+    },
+    {
+      "path": "runtime/CMakeCache.txt",
+      "bytes": 38859,
+      "sha256": "a3f358c5b01ca24e3caa99f57563fbdde2b586beecb56fcd6ef16a0a0e59a65d"
+    },
+    {
+      "path": "runtime/generated/q4t/server/chat_protocol_identity.h",
+      "bytes": 697,
+      "sha256": "598173dcfde5124cf8d15df94edc8615ee2d3a6179aac46055cfe9a0078d941a"
+    },
+    {
+      "path": "runtime/generated/q4t/server/chat_protocol_sources.json",
+      "bytes": 11430,
+      "sha256": "b97352b803ea368d3999c7b853dc5d6d59f4eac3e0e70b34059eecce577105d9"
+    },
+    {
+      "path": "seal.py",
+      "bytes": 4894,
+      "sha256": "1077885fc9255bc6c3ed9785b61f972ff74912c7d6e4a6c1d1931e0051178a3c"
+    },
+    {
+      "path": "source-integrity.json",
+      "bytes": 4187,
+      "sha256": "c68ebba2a016fe30da7b5db9732b52cc45bb6f79a0b63b1e7648533aa86c7bb6"
+    },
+    {
+      "path": "supervisor-inventory.json",
+      "bytes": 4540,
+      "sha256": "609c332083df45a99b273a6caa64b7685b0f9f6a5a90035139e62103b17a37e8"
+    },
+    {
+      "path": "supervisor_checks.py",
+      "bytes": 923,
+      "sha256": "54a52687c88f427ec40ad6bc8e663eedbff5969fc8e1a20bf2ad58c9dca72e22"
+    },
+    {
+      "path": "test-inventory.json",
+      "bytes": 41264,
+      "sha256": "20ad91b99b21696634377f72744c5ceab48f58953231a9fdc37711db4eb733d3"
+    }
+  ]
+}

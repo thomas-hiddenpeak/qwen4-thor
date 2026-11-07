@@ -475,22 +475,11 @@ void ChatServer::Dispatch(int fd, const std::string& method,
 }
 
 void ChatServer::HandleReadiness(int fd, bool liveness) {
-  const bool draining = stop_requested_.load();
-  const bool live = !serving_failed_.load();
   const auto memory = memory_admission_.Observe();
-  const bool ready = live && model_ready_.load() && gpu_healthy_.load() &&
-                     !draining && memory.Allowed();
-  const bool success = liveness ? live : ready;
-  const char* state = !live || !gpu_healthy_.load() ? "unhealthy"
-                      : draining                    ? "draining"
-                      : !model_ready_.load()        ? "starting"
-                      : !memory.Allowed()           ? memory.StateName()
-                                                    : "ready";
+  const auto health = ObserveHealth(memory.state);
+  const bool success = liveness ? health.live : health.Ready();
   SendSimple(fd, success ? 200 : 503, success ? "OK" : "Service Unavailable",
-             std::string("{\"status\":\"") + state +
-                 "\",\"live\":" + (live ? "true" : "false") +
-                 ",\"ready\":" + (ready ? "true" : "false") + "}",
-             "application/json");
+             health.ReadinessJson(), "application/json");
 }
 
 }  // namespace q4t::server

@@ -2,6 +2,18 @@
 
 更新：2026-11-07。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+## Serve可靠性独立提取与CPU集成完成，待业务验收
+
+[交接与冻结范围](SERVE_RESILIENCE_CLOSEOUT_2026-11-07.md)：从研究
+7e656213提取PLE健康、NVML恢复、辅助依赖和资源监督修复到最新
+主线f7dcd8f9；视觉内核、诊断和新客户端改动不纳入本分支。
+506项不同CPU通过、三目标构建零警告，124来源锚点/3负控及生成
+合同检查通过；原四组137记录无损保留，本轮30原件封存。新程序
+478a325e只编译未执行，协议7c91ab7d的107项来源无漂移，以独立草稿
+PR交接；默认/旧包保持，不合main、不部署，无GPU/模型/NVML测试。
+exporter兼容、语法worker回收、阻塞I/O及控制器接管后置；研究
+分支与视觉候选继续保留，已有CPU证据不转作新组合业务接受。
+
 ## 视觉塔内部诊断已通过，下一候选为attention行最大值归约
 
 [PR #19](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/19)的91efea44

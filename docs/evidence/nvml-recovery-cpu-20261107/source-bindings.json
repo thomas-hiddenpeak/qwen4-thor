@@ -1,0 +1,51 @@
+{
+  "protected_unchanged": {
+    "build/q4t": "ea1b474d7d69808696e697346a60ee09bb9ecaca9bfb99925b78dcdbda7a4550",
+    "build/q4t.release.json": "3eb463850cf07338406b811197a68a5dcb9474ac9c2cf039470aa4f654924724",
+    ".q4t-work/vision-forward-timing-20261107/engine/q4t": "982bba071e68e807cda653fa32ab76bed692808aa2d9325876ac09ea9f9daa1d",
+    ".q4t-work/vision-attention-rowmax-20261107/engine/q4t": "34e7ceefd60c23e451e9dba6d67cde99e9db25191f56a6aa489478d3afdea889"
+  },
+  "old_v7_package": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-nvml-degradation-20261107/package",
+    "manifest_sha256": "f69cb406a80b64fc7c51a23e212c4d183dca86c0dbcebee3e4fe3b3593e3accd",
+    "verified": true,
+    "version": 7
+  },
+  "sources_sha256": {
+    "tests/host/CMakeLists.txt": "9d41fa52bef03f23eddf856ff4836996cc60db157cbbe66050cc26ecf6f26277",
+    "tools/evalscope/gpu_exclusive.py": "1146bdc9752aa25451ee12b1e5ae0214298a61cb3914d7cff83e4c2377399cc8",
+    "tools/evalscope/nvml_process_query.py": "8c292f2b5e778c9c9033539e06659570075999cf6e74f20a7431ea1fd45c1ac3",
+    "tools/evalscope/test_nvml_process_query.py": "a57e85d228f51a833c6322e2aa3f30f6eea66fcfc0cbe98a74166bc585d02081",
+    "tools/serve_service/README.md": "12ae6874bea983b9ee5be8253006fbf6fa495fa9309736e94da7f983fbc31064",
+    "tools/serve_service/monitor_control.py": "03d7a24892187518125ebb6cfc0fc2dcb277cf8a590db9f310e8cf030594d907",
+    "tools/serve_service/nvml_acceptance.py": "b89b640b05b61546f33512407017ec34ef01399042a86a53d0ab2aef940af4d0",
+    "tools/serve_service/nvml_policy.py": "6000d5e4632405228c56b36d509b1906d08b6c593d0b8ef3e1690b4662ecfff3",
+    "tools/serve_service/package.py": "548642cbbe3c772bb45965fa795954e6bd95b542d4f0357b000312eb59a21add",
+    "tools/serve_service/service.py": "5864c23713d1666d5c83195e9f4fb2c16f5c6e59e20e90f905dfb80142cd04e9",
+    "tools/serve_service/telemetry.py": "79486adcef7e49f9ba643e1f5a1c5a2048fbf734329a699a46893a94797ee737",
+    "tools/serve_service/test_monitor_recovery.py": "c75b1e96b3ff312a8428af53e0100140fc14c5d4c115059c07828a95f7c3224f",
+    "tools/serve_service/test_nvml_policy.py": "854d3ee7e0109ab0bf07e00e875a88292f5cf167e40ca120f4c3ab3a45772fd3",
+    "tools/serve_service/test_telemetry.py": "fcaeaaa2f80ea3cce4a325e04ae2536a238be5db9173d7219ba75acfdd17286d"
+  },
+  "syntax_checked": {
+    "tools/evalscope/gpu_exclusive.py": "1146bdc9752aa25451ee12b1e5ae0214298a61cb3914d7cff83e4c2377399cc8",
+    "tools/evalscope/nvml_process_query.py": "8c292f2b5e778c9c9033539e06659570075999cf6e74f20a7431ea1fd45c1ac3",
+    "tools/evalscope/test_nvml_process_query.py": "a57e85d228f51a833c6322e2aa3f30f6eea66fcfc0cbe98a74166bc585d02081",
+    "tools/serve_service/monitor_control.py": "03d7a24892187518125ebb6cfc0fc2dcb277cf8a590db9f310e8cf030594d907",
+    "tools/serve_service/nvml_acceptance.py": "b89b640b05b61546f33512407017ec34ef01399042a86a53d0ab2aef940af4d0",
+    "tools/serve_service/nvml_policy.py": "6000d5e4632405228c56b36d509b1906d08b6c593d0b8ef3e1690b4662ecfff3",
+    "tools/serve_service/package.py": "548642cbbe3c772bb45965fa795954e6bd95b542d4f0357b000312eb59a21add",
+    "tools/serve_service/service.py": "5864c23713d1666d5c83195e9f4fb2c16f5c6e59e20e90f905dfb80142cd04e9",
+    "tools/serve_service/telemetry.py": "79486adcef7e49f9ba643e1f5a1c5a2048fbf734329a699a46893a94797ee737",
+    "tools/serve_service/test_monitor_recovery.py": "c75b1e96b3ff312a8428af53e0100140fc14c5d4c115059c07828a95f7c3224f",
+    "tools/serve_service/test_nvml_policy.py": "854d3ee7e0109ab0bf07e00e875a88292f5cf167e40ca120f4c3ab3a45772fd3",
+    "tools/serve_service/test_telemetry.py": "fcaeaaa2f80ea3cce4a325e04ae2536a238be5db9173d7219ba75acfdd17286d"
+  },
+  "syntax_warnings": 0,
+  "parent": "31e764875b695c89b7c8bb23cd92fe038fae2405",
+  "registration_only_revision": {
+    "file": "tests/host/CMakeLists.txt",
+    "prior_sha256": "6315984db7a42159a5b13ce69a63eb9dab5446d06e8a27d9075238ae4cfad537",
+    "reason": "Register the observed-error regression in public CPU CI; no test or runtime source change."
+  }
+}

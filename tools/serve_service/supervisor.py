@@ -54,8 +54,9 @@ def backend_command(package, manifest, output):
 
 class RotatingLog:
     """A bounded byte log, including oversized writes; errors are not hidden."""
-    def __init__(self, path, maximum):
+    def __init__(self, path, maximum, *, observations=None):
         self.path, self.maximum = Path(path), maximum
+        self.observations = observations
         self.error = None
         self.thread = None
 
@@ -75,7 +76,13 @@ class RotatingLog:
     def capture(self, pipe):
         try:
             while data := os.read(pipe.fileno(), 4096):
-                self.write(data)
+                if self.observations is None:
+                    self.write(data)
+                else:
+                    # Keep draining even when the sink is unavailable. Closing
+                    # this pipe would turn a log failure into backend SIGPIPE.
+                    self.observations.perform('backend_log',
+                        lambda: self.write(data), size=len(data))
         except Exception as error:
             self.error = repr(error)
         finally:
@@ -119,12 +126,18 @@ def classify(probe, protocol, binary, client_policy=None, operations_port=0):
                     probe['operations_process']['listener_scope'] == 'loopback',
                     'operations listener configuration differs')
     metrics = probe['metrics']
-    if metrics['q4t_gpu_healthy'] == 0:
+    if metrics is None:
+        pkg.require(isinstance(probe.get('health_status'), str),
+                    'health observation unavailable')
+    if metrics is not None and metrics['q4t_gpu_healthy'] == 0:
         return 'GPU_UNHEALTHY'
+    if probe.get('health_status') == 'unhealthy':
+        return 'BACKEND_UNHEALTHY'
     return 'READY' if probe['ready'] else 'DEGRADED'
 
 
-def probe(pid, port, operations_port=0, *, deadline=None, stopped=None):
+def probe(pid, port, operations_port=0, *, deadline=None, stopped=None,
+          include_metrics=True):
     started = time.monotonic()
     until = min(started+8, deadline if deadline is not None else float('inf'))
     def get(path):
@@ -156,10 +169,12 @@ def probe(pid, port, operations_port=0, *, deadline=None, stopped=None):
             (configuration['public_port'] != port or
              configuration['operations_port'] != operations_port)):
         raise contracts.InvalidObservation('operations_listener_configuration_mismatch')
-    response = get('/metrics')
-    if response['http_status'] != 200:
-        raise contracts.InvalidObservation('metrics_unavailable')
-    metrics, _ = contracts.parse_metrics(response['body'], version=version)
+    metrics = None
+    if include_metrics:
+        response = get('/metrics')
+        if response['http_status'] != 200:
+            raise contracts.InvalidObservation('metrics_unavailable')
+        metrics, _ = contracts.parse_metrics(response['body'], version=version)
     pkg.require(identity.process(pid, port) == owner, 'backend identity changed')
     if operations_port:
         pkg.require(identity.operations(owner, operations_port) == ops,
@@ -172,7 +187,9 @@ def probe(pid, port, operations_port=0, *, deadline=None, stopped=None):
                      'credential_values_redacted')}
                     if type(raw_config.get('client_policy')) is dict else None),
                 configuration=configuration,
-                ready=value['ready'], metrics=metrics)
+                ready=value['ready'], health_status=value['status'],
+                metrics=metrics, metrics_collection=(
+                    'COLLECTED' if include_metrics else 'INDEPENDENT'))
 
 
 def restart_allowed(returncode, was_ready, used, limit, stopping):
@@ -204,6 +221,13 @@ def run(package, digest, output, *, observe=None, read_memory=None):
     package, output = Path(package), Path(output)
     manifest = pkg.verify(package, digest)
     cfg = manifest['settings']
+    observations = None
+    if manifest.get('version') in (9, 10):
+        from tools.serve_service import auxiliary
+        pkg.require(cfg.get('nvml_policy') == 'degrade' and
+                    cfg['restart_limit'] == 0,
+                    'auxiliary isolation requires degradation without restart')
+        observations = auxiliary.Observations()
     stopping = threading.Event()
     previous = {}
     for sig in (signal.SIGTERM, signal.SIGINT):
@@ -212,6 +236,7 @@ def run(package, digest, output, *, observe=None, read_memory=None):
                  attempts=0, restarts=0, replayed_requests=0,
                  package_manifest_sha256=digest, backend=None)
     child, logger = None, None
+    status_written = False
     envelope = None
     events = RotatingLog(output/'events.log', 256*1024)
     watchdog = memory.Watchdog(cfg,
@@ -222,15 +247,34 @@ def run(package, digest, output, *, observe=None, read_memory=None):
         return stopping.is_set() or os.path.lexists(output/'stop.request.json')
 
     def publish(status, **changes):
+        nonlocal status_written
         changed = status != state['state']
         state.update(state=status, updated_unix=time.time(),
                      memory=watchdog.snapshot(), **changes)
         if envelope is not None:
             state['host_resources'] = dict(policy=envelope.selected, observation=envelope.latest,
                 violation=envelope.error, payload_removed=envelope.closed)
-        pkg.save(output/'status.json', state)
-        if changed:
-            events.write(f'{time.time()} {status}\n'.encode())
+            if manifest.get('version') == 10:
+                state['host_resources'].update(runtime_verification='CGROUPFS',
+                    runtime_manager_observation='NOT_QUERIED',
+                    statistics_gap_samples=envelope.statistics_gap_samples)
+        if changed and observations is not None:
+            data = f'{time.time()} {status}\n'.encode()
+            observations.perform('events', lambda: events.write(data),
+                                 size=len(data))
+        if observations is not None:
+            state['auxiliary_io'] = observations.snapshot()
+            state['had_auxiliary_gaps'] = observations.had_gaps
+        # The first snapshot contains the parent identity used by backend.py.
+        # It must exist before exec. Later snapshots are observations only.
+        if observations is None or not status_written:
+            pkg.save(output/'status.json', state)
+            status_written = True
+        else:
+            observations.save(output/'status.json', state, 'status')
+        if changed and observations is None:
+            data = f'{time.time()} {status}\n'.encode()
+            events.write(data)
 
     def clean():
         nonlocal child, logger
@@ -247,7 +291,10 @@ def run(package, digest, output, *, observe=None, read_memory=None):
             try:
                 if 'host_resources' in manifest:
                     from tools.serve_service import resources
-                    envelope = resources.Envelope(manifest['host_resources'], output)
+                    options = ({'isolate_manager': True}
+                               if manifest.get('version') == 10 else {})
+                    envelope = resources.Envelope(manifest['host_resources'], output,
+                                                  **options)
                 watchdog.start()
                 while not stopped():
                     watchdog.check()
@@ -273,7 +320,8 @@ def run(package, digest, output, *, observe=None, read_memory=None):
                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                         start_new_session=True, close_fds=True,
                         pass_fds=inherited)
-                    logger = RotatingLog(output/'backend.log', cfg['log_bytes'])
+                    logger = RotatingLog(output/'backend.log', cfg['log_bytes'],
+                                         observations=observations)
                     logger.start(child.stdout)
                     state['attempts'] += 1
                     owner = process_identity(child.pid)
@@ -305,8 +353,11 @@ def run(package, digest, output, *, observe=None, read_memory=None):
                         try:
                             operations_port = cfg.get('operations_port', 0)
                             if observe is None:
+                                options = ({'include_metrics': False}
+                                           if observations is not None else {})
                                 observation = probe(child.pid, cfg['port'], operations_port,
-                                                    deadline=deadline, stopped=stopped)
+                                                    deadline=deadline, stopped=stopped,
+                                                    **options)
                             else:
                                 # Injected CPU observers retain their historical
                                 # call shape, but cannot bypass post-call limits.
@@ -319,6 +370,8 @@ def run(package, digest, output, *, observe=None, read_memory=None):
                                               manifest['files']['q4t'],
                                               manifest.get('client_policy'), operations_port)
                             pkg.require(status != 'GPU_UNHEALTHY', 'GPU unhealthy')
+                            pkg.require(status != 'BACKEND_UNHEALTHY',
+                                        'Backend unhealthy')
                             if stopped():
                                 break
                             check_limit()

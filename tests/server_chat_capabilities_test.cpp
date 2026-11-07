@@ -187,6 +187,12 @@ Q4T_TEST(chat_capabilities_media_and_host_failure_boundaries) {
   Q4T_CHECK(q4t::io::ParseJson(
       q4t::server::ChatCapabilitiesJson("m", true, false), &caps));
   const auto* media = caps.Find("media_failures");
+  const auto* health = caps.Find("model_health");
+  Q4T_CHECK(health && health->GetString("profile") == "q4t-model-health-v1");
+  Q4T_CHECK(health->GetString("error_code") == "model_unhealthy" &&
+            health->GetBool("readiness_closed") &&
+            health->GetBool("liveness_independent") &&
+            !health->GetBool("automatic_recovery", true));
   Q4T_CHECK(media &&
             media->GetString("requested_load_failure") == "startup_rejected");
   Q4T_CHECK(media->GetInt("invalid_input_http_status") == 400 &&

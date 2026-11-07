@@ -145,11 +145,10 @@ void ChatServer::RunOnePrefillChunk() {
   {
     const std::lock_guard<std::mutex> lock(model_mu_);
     OnException backend_failure([&] { AbortBackendExecution(); });
-    if (!gpu_healthy_.load(std::memory_order_relaxed)) {
-      s = Status::Fail("chunk prefill: GPU unhealthy");
-    } else if (RequestCancelled(req->control, req->fd)) {
+    s = ExecutionStatus();
+    if (s.ok() && RequestCancelled(req->control, req->fd)) {
       req->cancelled = true;
-    } else {
+    } else if (s.ok()) {
       if (req->seq->stage == model::ModelSequence::Stage::kIdle) {
         s = model::ModelBeginSequence(model_.Get(), req->seq, nullptr, req->seq_id);
       }
@@ -337,8 +336,7 @@ void ChatServer::SchedulerLoop() {
         OnException backend_failure([&] { AbortBackendExecution(); });
         cudaError_t copy_error = cudaSuccess;
         // Health may change while this group waits for model_mu_.
-        if (!gpu_healthy_.load(std::memory_order_relaxed))
-          sp = Status::Fail("GPU unhealthy; restart server");
+        sp = ExecutionStatus();
         if (sp.ok() && Bp == 1) {
           sp = model::ModelBeginSequence(model_.Get(), pf[0]->seq, nullptr,
                                           pf[0]->seq_id);
@@ -460,9 +458,9 @@ void ChatServer::SchedulerLoop() {
       {
         const std::lock_guard<std::mutex> lock(model_mu_);
         OnException backend_failure([&] { AbortBackendExecution(); });
-        s = !gpu_healthy_.load(std::memory_order_relaxed)
-                ? Status::Fail("GPU unhealthy; restart server")
-                : mtp::MtpSpeculativeStepMulti(model_.Get(), mtp_, seqs.data(),
+        s = ExecutionStatus();
+        if (s.ok())
+          s = mtp::MtpSpeculativeStepMulti(model_.Get(), mtp_, seqs.data(),
                                          b_tok.data(), d0.data(), g_in.data(),
                                          B, mtp_k_, accepted.data(),
                                          acc_count.data(), next_b.data(),
@@ -552,8 +550,7 @@ void ChatServer::SchedulerLoop() {
     {
       const std::lock_guard<std::mutex> lock(model_mu_);
       OnException backend_failure([&] { AbortBackendExecution(); });
-      if (!gpu_healthy_.load(std::memory_order_relaxed))
-        s = Status::Fail("GPU unhealthy; restart server");
+      s = ExecutionStatus();
       for (int i = 0; i < B && s.ok(); ++i)
         s = sequences[i]->Submit({&tokens[i], 1},
                                   model::ModelSequence::Stage::kDecode,

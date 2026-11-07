@@ -1,0 +1,83 @@
+{
+  "status": "CPU_SCOPE_ACCEPTED_NOT_DEPLOYED",
+  "cpu_suites": [
+    {
+      "name": "public_host_contracts",
+      "passed": 331,
+      "failed": 0,
+      "skipped": 0,
+      "log": "host-public.log"
+    },
+    {
+      "name": "real_ple_io_and_embedding_cpu_doubles",
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0,
+      "log": "ple-contracts.log"
+    },
+    {
+      "name": "supervisor_contracts",
+      "passed": 38,
+      "failed": 0,
+      "skipped": 0,
+      "log": "supervisor-contracts.log"
+    },
+    {
+      "name": "supervisor_deadlines",
+      "passed": 37,
+      "failed": 0,
+      "skipped": 0,
+      "log": "supervisor-deadlines-module.log"
+    }
+  ],
+  "unique_cpu_tests": 413,
+  "compilation_warnings": 0,
+  "runtime_build": {
+    "result": "PASS",
+    "log": "runtime-final-build.log",
+    "executed": false
+  },
+  "inventory": {
+    "result": "PASS",
+    "anchors": 124,
+    "negative_checks": 3,
+    "log": "inventory-final.log"
+  },
+  "generated_contracts": {
+    "result": "PASS",
+    "log": "protocol-docs-corrected.log"
+  },
+  "preserved_failures": [
+    {
+      "log": "host-required.log",
+      "cause": "Release gate was invoked on the public host target, which intentionally lacks seven private real-tokenizer tests. Rejected before executing cases.",
+      "correction": "Used the complete public host registry; no claim of full native release-gate acceptance."
+    },
+    {
+      "log": "supervisor-deadlines.log",
+      "cause": "Direct script invocation lacked the repository package import path; failed before executing tests.",
+      "correction": "Reran that suite as python -m tools.serve_service.test_deadlines."
+    },
+    {
+      "log": "protocol-docs.log",
+      "cause": "Generated semantic source hashes had not yet been refreshed for this implementation.",
+      "correction": "Updated generator and generated contracts, reran only their freshness check."
+    }
+  ],
+  "scope": {
+    "model_starts": 0,
+    "gpu_tests": 0,
+    "real_model_http_requests": 0,
+    "nvml_runtime_queries": 0,
+    "default_replaced": false,
+    "production_accepted": false,
+    "visual_candidate": "HOLD",
+    "nvml": "read-only research only"
+  },
+  "limitations": [
+    "Production HTTP fault injection and CUDA failure paths not executed.",
+    "PLE embedding upload failure uses CPU doubles; production fatal cleanup can exit before HTTP health reporting.",
+    "Public host tests reused for the final preflight guard change, which is outside that target; exact protocol drift is recorded in source-bindings.json.",
+    "The configured native required-host gate was not passed; public CPU coverage is reported separately."
+  ]
+}

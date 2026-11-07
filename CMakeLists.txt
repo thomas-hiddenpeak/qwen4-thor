@@ -261,6 +261,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/client_policy.cpp
   src/server/client_request.cpp
   src/server/chat_device_memory.cpp
+  src/server/chat_health.cpp
   src/server/memory_admission.cpp
   src/server/chat_memory.cpp
   src/server/chat_capabilities.cpp

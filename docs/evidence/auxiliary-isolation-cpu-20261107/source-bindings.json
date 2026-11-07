@@ -1,0 +1,30 @@
+{
+  "parent": "893b5871b7ec24256c635ee68751e4d91f1e90a7",
+  "files": {
+    "tests/host/CMakeLists.txt": "024ff22b3ab5226837451c9e81ef3e75e1610e401b13afedc468917721912ddd",
+    "tools/evalscope/gpu_exclusive.py": "cbc8c0accbcc3194e9792549ff72bc708b35d46deb75b4066c62fdb16bdaa3ad",
+    "tools/serve_service/README.md": "74397116fc1c895078fdb234638d3d56b6bab63bc1494b239f7c342ba2af1e85",
+    "tools/serve_service/auxiliary.py": "9b818763694570b63efa394e01fc327300d8ee375bc8f7009023937b1061bbdf",
+    "tools/serve_service/monitor_control.py": "0318c4951c33591c43a671f98f61f9902ebfa37c76761b287c842923c8bb3399",
+    "tools/serve_service/nvml_acceptance.py": "8db02e4ed57a83f13c8b69d91d1176934fb686895f990ad91eabc75400338e5c",
+    "tools/serve_service/nvml_policy.py": "817b2500044cd2eeed4277ad95d2686bf11f4785282ea1149beb63d62b0ef9a6",
+    "tools/serve_service/package.py": "91d39567c55c5611da756434e45313bd5d492319b5fbedb0638adc39eee4da0a",
+    "tools/serve_service/service.py": "0fe0de2909216cd0c43046fb01747ca56849f43c92c16352b008e979533b1288",
+    "tools/serve_service/supervisor.py": "6a1c262beefa70ea1ae502b0ed4956d73ac441b4cd5a395188b5ee07782ae0c5",
+    "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
+    "tools/serve_service/test_auxiliary.py": "36a36ec2487dd7441df3445acb9f3e0676aa7494c2236faacf32d91934ed95c6",
+    "tools/serve_service/test_monitor_recovery.py": "591044ee8281c2f3faa03780787c06577fe6685375332d04e8d00ac10cdb4ef0",
+    "tools/serve_service/test_nvml_policy.py": "0db1434523c8a4ac27d619397e2af85024e0ecab2ae6a4a675116a0726302a14",
+    "tools/serve_service/test_service.py": "388cebf64631d4376df51d940a7f5d690212d9469e4bc888a95516f003a68343",
+    "tools/serve_service/test_telemetry.py": "7e64e00edcaa0ecf8e64cf19eb65fa1b7ff3d251023d2ef1faa2f7aab85c5d90"
+  },
+  "python_syntax_files": 14,
+  "syntax_warnings": 0,
+  "protected": {
+    "build/q4t": "ea1b474d7d69808696e697346a60ee09bb9ecaca9bfb99925b78dcdbda7a4550",
+    "build/q4t.release.json": "3eb463850cf07338406b811197a68a5dcb9474ac9c2cf039470aa4f654924724",
+    ".q4t-work/vision-attention-rowmax-20261107/engine/q4t": "34e7ceefd60c23e451e9dba6d67cde99e9db25191f56a6aa489478d3afdea889",
+    ".q4t-work/vision-forward-timing-20261107/engine/q4t": "982bba071e68e807cda653fa32ab76bed692808aa2d9325876ac09ea9f9daa1d"
+  },
+  "old_package_manifest_sha256": "f69cb406a80b64fc7c51a23e212c4d183dca86c0dbcebee3e4fe3b3593e3accd"
+}
