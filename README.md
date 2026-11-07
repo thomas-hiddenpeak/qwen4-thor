@@ -12,13 +12,13 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 
 ## 能力概览
 
-独立 Guardian 服务入口已完成[自动恢复 A/B 有界交付](docs/SERVE_SELF_RECOVERY_RESULT_2026-11-08.md)：
-无需 systemd 即可恢复模型、控制器与网关；辅助监控故障保留健康业务，
-恢复预算和停止意图持久化。本机 `build/service/bin/q4t service` 已准备，
-当前停止；原 `build/q4t serve` 保留原含义。长稳及剩余 C/D 范围见交付说明。
-原生入口解耦已完成开发与151项不同CPU检查：[新封装默认不需要nginx](docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md)，
-独立C++入口承担Bearer鉴权、恢复准入和JSON/SSE转发；真实模型短验
-待完成。本机当前安装的A/B旧包仍含nginx，尚未替换；原生`serve`不需要nginx。
+独立 Guardian 与原生服务入口已完成[有界验收交付](docs/SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)：
+默认包无需nginx/systemd即可提供Bearer鉴权、JSON/SSE及模型/控制器/
+入口恢复；辅助监控故障保留健康业务，恢复预算和停止意图持久化。
+151项不同CPU与3启动/18Chat真实短验通过，nginx仅可选前置。
+本机`build/service/bin/q4t service`已安装，状态`build/service-native-state`
+保持停止；原`build/q4t serve`保留原含义。Python控制面依赖仍保留，
+长稳及C/D范围见交付说明；旧A/B包与证据可回退。
 
 当前默认程序（身份见[STATUS](docs/STATUS.md)）已包含工具/推理输出解析、JSON/SSE、带ID工具
 历史、单条开头developer适配和`/v1/capabilities`能力/模板身份查询。
@@ -108,7 +108,8 @@ token预算不足而失败，canonical分词长度不构成生成上限。
 `--ingress-mode nginx --nginx PATH`仅保留显式旧网关模式。直接运行
 `build/q4t serve`保持原含义，服务封装由Guardian管理入口与模型生命周期。
 原生入口只监听loopback；当前控制器/journal仍使用Python，必要的
-CUDA、系统与模型依赖不变。新模式尚待真实业务验收，不提前替换已验入口。
+CUDA、系统与模型依赖不变。新模式已完成本机有界真实业务验收，
+当前入口与回退方法见[交付说明](docs/SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)。
 
 部署方可自行前置nginx或其他HTTP网关，传递普通Bearer Authorization，
 无需提供q4t内部凭据或准入子请求。nginx前置的最小转发配置如下；

@@ -1,5 +1,9 @@
 # 自动恢复 A/B 有界交付
 
+本页记录原v1/nginx封装的历史验收及原操作路径。后续已交付默认无
+nginx的v2入口，当前别名/state及回退以[原生入口结果](SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)
+为准；下面旧命令不可与新`build/service`别名混用。旧包、状态及原件保留。
+
 2026-11-08。结论：`ACCEPT_BOUNDED_SELF_RECOVERY_AB`。
 独立 Guardian、控制器和模型恢复、网关代次重绑、持久预算及停止清理
 已在本机 Thor 完成 CPU 与真实业务验证。新服务入口已安装并初始化

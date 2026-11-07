@@ -1,0 +1,111 @@
+{
+  "status": "DELIVERED_STOPPED",
+  "release": {
+    "version": 2,
+    "profile": "q4t-service-recovery-v2",
+    "ingress_mode": "native",
+    "acceptance": "ACCEPT_BOUNDED_NATIVE_INGRESS",
+    "recovery_accepted": true,
+    "acceptance_record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-ingress-20261108/closeout/result.json",
+    "acceptance_sha256": "fd4d02d484f62c9bea3cd01297a49f0fdecc781c9e8d39afd98b2b9d0c66cd7c",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-ingress-20261108/package-attempt-01/bundle",
+    "manifest_sha256": "41cb22eaf6166ed316b4999c13e4f355a3c357d19debccc54073a660dd030909",
+    "ingress_sha256": "4a499f1a62e2f165697582b8570c85dd9890c135548f966d0e800d744faed559",
+    "nginx_required": false,
+    "engine_binary_sha256": "60b1c4c121d066789ebc44746316161320448d98095f32a7ec24e3fa00343ff3",
+    "engine_release_sha256": "d2ae8db2f3e389f1cabd02c77a9322de4be8610f1135ba5b01b3b980cc760133",
+    "entry": "/home/rm01/models/dev/qwen4-thor/build/service/bin/q4t",
+    "state": "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+    "service_id": "dcb9dc2e-2824-49b2-a4f8-9b7b4f834b6d",
+    "initial_desired": "STOPPED",
+    "automatically_started": false,
+    "listen": "127.0.0.1:18161",
+    "upstream": "127.0.0.1:18162",
+    "operations": "127.0.0.1:18163",
+    "clients": [
+      {
+        "id": "alpha",
+        "rpm": 30,
+        "tpm": 6000
+      },
+      {
+        "id": "beta",
+        "rpm": 1,
+        "tpm": 6000
+      }
+    ],
+    "scope": "single-slot text/MTP, loopback, process resource mode; bounded native ingress and recovery only",
+    "rollback_receipt": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-ingress-20261108/delivery-attempt-01/rollback/receipt.json",
+    "rollback_sha256": "014497e91f6bb5ca364e9cf7552064c9d9219906357ad6190b734c0ff1bc3adc",
+    "engine_default_replaced": false,
+    "gpu_starts_for_install": 0,
+    "long_stability_accepted": false,
+    "tls_lan_accepted": false,
+    "dependencies": [
+      "q4t native entrypoint and Guardian",
+      "pinned Python control/journal/monitor runtime",
+      "CUDA/driver, model assets and system C/C++ libraries"
+    ],
+    "limitations": [
+      "No Guardian resurrection without an outer manager",
+      "Blocking log isolation, bounded grammar reap and execution progress watchdog remain C/D",
+      "No delegated cgroup/physical RAM hard limit or NVML-free cold start"
+    ]
+  },
+  "release_sha256": "f1b3ea15aff06b91d5649b06d6843efd912fb61f9a640be6ff23a17558cff85a",
+  "initialized": {
+    "state": "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+    "service_id": "dcb9dc2e-2824-49b2-a4f8-9b7b4f834b6d",
+    "initialized": true,
+    "desired": "STOPPED",
+    "automatic_start": false
+  },
+  "checks": [
+    {
+      "entry": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-recovery-b2-20261108/package-attempt-02/bundle/bin/q4t",
+      "argv": [
+        "status",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-state"
+      ],
+      "exit_code": 1,
+      "stdout": "{\"service_id\": \"6fc1411e-4cc0-4c61-8816-8e02fd0bda03\", \"state\": \"UNKNOWN\", \"business_ready\": false, \"live_control\": false}\n",
+      "stderr": ""
+    },
+    {
+      "entry": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-ingress-20261108/package-attempt-01/bundle/bin/q4t",
+      "argv": [
+        "--help"
+      ],
+      "exit_code": 0,
+      "stdout": "usage: q4t [-h] {prepare,init,run,start,status,stop} ...\n\nUnified recovery service entrypoint; no systemd, shell loop or auto install.\n\npositional arguments:\n  {prepare,init,run,start,status,stop}\n\noptions:\n  -h, --help            show this help message and exit\n",
+      "stderr": ""
+    },
+    {
+      "entry": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-ingress-20261108/package-attempt-01/bundle/bin/q4t",
+      "argv": [
+        "init",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"state\": \"/home/rm01/models/dev/qwen4-thor/build/service-native-state\", \"service_id\": \"dcb9dc2e-2824-49b2-a4f8-9b7b4f834b6d\", \"initialized\": true, \"desired\": \"STOPPED\", \"automatic_start\": false}\n",
+      "stderr": ""
+    },
+    {
+      "entry": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-ingress-20261108/package-attempt-01/bundle/bin/q4t",
+      "argv": [
+        "status",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state"
+      ],
+      "exit_code": 1,
+      "stdout": "{\"service_id\": \"dcb9dc2e-2824-49b2-a4f8-9b7b4f834b6d\", \"state\": \"UNKNOWN\", \"business_ready\": false, \"live_control\": false}\n",
+      "stderr": ""
+    }
+  ],
+  "old_state_untouched": true,
+  "engine_default_unchanged": true,
+  "model_starts": 0,
+  "chats": 0
+}
