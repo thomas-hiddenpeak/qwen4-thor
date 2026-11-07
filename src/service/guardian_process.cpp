@@ -206,6 +206,9 @@ Status SpawnProcess(const std::vector<std::string>& argv,
   if (!ValidExec(argv, env) || child == nullptr || pass_fds.size() > 16) {
     return Status::Fail("invalid bounded spawn specification");
   }
+  if (child->identity.pid > 0 || child->pidfd.Get() >= 0) {
+    return Status::Fail("spawn output already owns a process");
+  }
   struct sigaction disposition {};
   if (sigaction(SIGCHLD, nullptr, &disposition) != 0 ||
       disposition.sa_handler != SIG_DFL ||
@@ -267,10 +270,12 @@ Status SpawnProcess(const std::vector<std::string>& argv,
     ChildError(error_fd);
   }
   write_error.Reset();
+  child->identity.pid = pid;
   // No other thread/reaper is allowed in Guardian. The direct child cannot
   // have its PID recycled until we reap it, even if exec already failed.
   ProcessRecord record;
   status = ReadProcess(pid, &record);
+  if (status.ok()) child->identity = record.identity;
   OwnedFd pidfd;
   if (status.ok()) status = OpenProcess(record.identity, &pidfd);
   if (!status.ok()) {

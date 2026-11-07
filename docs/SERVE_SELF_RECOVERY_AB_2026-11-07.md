@@ -86,3 +86,23 @@ ELF 动态依赖没有 CUDA/NVML/Python/systemd。测试只用私有临时锁，
 
 A1/A2 基础共 71 项不同 CPU 用例；完整 Guardian 事件循环、journal
 异步接入、控制端点和生产 Controller 尚未接通，A2 整体与 B 未完成。
+
+A2 已进一步接通原生 `JournalClient` 与真实独立 journal 的私有
+seqpacket 通道：单个未完成事务、严格版本/序号/服务身份/修订号、
+64 位整数原文、超时冻结、迟到回包拒绝和有界停止。worker 卡住时
+主进程不做阻塞等待，也不创建新 writer；实际 reap 前不声明清理。
+修正 spawn 输出对象复用与 fork 后 pin 失败的身份保留，防止误报
+无子进程。该库不直接重启或停止模型。
+
+新增 7 项 CPU 用例通过，包含 SIGSTOP 真实 journal 后停止优先、
+迟到持久授权不执行、writer 死亡后丢弃未消费许可；受影响的 15 项
+进程合同重验通过。累计 78 项不同 CPU 用例。独立 host 构建仍为
+零警告，两个 ELF 无 CUDA/NVML/Python/systemd 动态链接；运行期
+持久事务由独立 Python 进程承担，并非完全没有 Python 依赖。
+
+原件在上述 A2 目录的 `journal-attempt-02/`；`journal-attempt-01`
+保留 Make 在自动重新配置前未识别新目标的构建失败（0 用例），显式
+配置后通过。A1 153aa795 的公共 CI 已通过，基础提交 b89cd5b4
+已推送；新的异步接入仍属 A2，尚无完整 `q4t service` 入口。
+下一步实现 Guardian 控制循环、run/start/status/stop 和生产
+Controller，再接 B 网关/配额与真实模型恢复。默认程序和旧包未操作。

@@ -34,6 +34,13 @@ add_executable(q4t_router_trace_check ../../tools/trace/router_trace_check.cpp
 target_include_directories(q4t_router_trace_check PRIVATE ../../include)
 target_compile_options(q4t_router_trace_check PRIVATE -Wall -Wextra -Werror)
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
+set(journal_output "${CMAKE_CURRENT_BINARY_DIR}/guardian-journal-tests")
+file(MAKE_DIRECTORY "${journal_output}")
+add_test(NAME q4t_guardian_journal_contracts
+  COMMAND q4t_guardian_journal_tests ${Python3_EXECUTABLE}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../tools/serve_recovery/journal.py)
+set_tests_properties(q4t_guardian_journal_contracts PROPERTIES
+  TIMEOUT 60 ENVIRONMENT "Q4T_TEST_OUTPUT_DIR=${journal_output}")
 add_test(NAME q4t_router_trace_wire_contracts
   COMMAND ${Python3_EXECUTABLE} -B
     ${CMAKE_CURRENT_SOURCE_DIR}/../../tools/trace/test_wire.py

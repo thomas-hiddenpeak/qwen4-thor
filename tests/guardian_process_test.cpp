@@ -205,6 +205,9 @@ Q4T_TEST(guardian_live_child_is_not_reaped_or_reported_as_empty) {
   Cleanup cleanup;
   s::ChildProcess child;
   Q4T_CHECK(s::SpawnProcess({executable, "--sleep"}, {}, {}, &child).ok());
+  const auto identity = child.identity;
+  Q4T_CHECK(!s::SpawnProcess({executable, "--exit", "0"}, {}, {}, &child).ok());
+  Q4T_CHECK(child.identity == identity);
   bool reaped = false, exited = false, empty = true;
   int code = 0;
   Q4T_CHECK(s::ReapProcess(child.pidfd.Get(), &reaped, &code).ok() && !reaped);
