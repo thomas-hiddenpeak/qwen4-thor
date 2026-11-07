@@ -2,6 +2,17 @@
 
 更新：2026-11-07。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+## 托管NVML降级CPU通过，准备有界业务短验
+
+[本阶段合同](SERVE_NVML_DEGRADATION_2026-11-07.md)：新v7包显式选择
+`--nvml-policy degrade`，首版禁自动重启；启动前严格、运行期最多5次
+退避重试，不可回收查询即停止新增。业务健康与GPU可见性分别记录，
+缺口终态COMPLETED_WITH_MONITOR_GAPS不会通过严格性能验收门。
+服务/包回归133次、严格guard/query42次及退出/CLI/组合补充7次均通过，
+含重复用例，最终独立数量按日志去重；新增CTest注册已核对。尚无真实
+业务接受或部署，默认ELF/旧包不变。准备最多1模型4Chat/300秒严格
+外层租约短验，内层合成超时，GPU当前空闲，不扩驱动根因定位。
+
 ## 视觉行最大值首轮达标，完整验收ENV_ABORT，默认保持
 
 [本轮结果](VISION_ROWMAX_RESULT_2026-11-07.md)：候选34e7ceef保留研究

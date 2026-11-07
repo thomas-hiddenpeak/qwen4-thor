@@ -1,5 +1,6 @@
 # docs/ — 开发记录文档体系
 
+- [托管服务NVML降级合同与有界验证](SERVE_NVML_DEGRADATION_2026-11-07.md)
 - [视觉行最大值首轮收益、完整验收ENV_ABORT与恢复条件](VISION_ROWMAX_RESULT_2026-11-07.md)
 - [视觉塔内部诊断与attention优先级](VISION_FORWARD_TIMING_RESULT_2026-11-07.md)
 - [视觉分段计时与nvJPEG优先级](VISION_TIMING_RESULT_2026-11-07.md)

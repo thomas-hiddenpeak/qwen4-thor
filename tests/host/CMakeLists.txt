@@ -168,6 +168,8 @@ block()
   set(Python3_EXECUTABLE "${guard_python}")
   q4t_add_python_contract(q4t_gpu_exclusive_contracts
     tools/evalscope/test_gpu_exclusive.py)
+  q4t_add_python_contract(q4t_managed_telemetry_contracts
+    tools/serve_service/test_telemetry.py)
 endblock()
 q4t_add_python_contract(q4t_request_cancellation_contracts
   tools/evalscope/test_request_cancellation.py)

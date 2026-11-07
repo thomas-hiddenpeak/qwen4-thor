@@ -67,8 +67,13 @@ def run(package, digest, output):
     for sig in (signal.SIGTERM, signal.SIGINT):
         previous[sig] = signal.signal(sig, interrupt)
     try:
+        options = {}
+        if manifest['settings'].get('nvml_policy') == 'degrade':
+            from tools.serve_service import telemetry
+            options['managed_monitor'] = telemetry.Monitor(output/'lease')
         rc = guard.run_guard(command, output/'lease', lock_path,
-                             log_max_bytes=4*1024**2, inherit_lease=True)
+                             log_max_bytes=4*1024**2, inherit_lease=True,
+                             **options)
         result = pkg.read(output/'lease/exit.json')
         worker = (pkg.read(output/'status.json')
                   if (output/'status.json').exists() else None)
@@ -76,7 +81,8 @@ def run(package, digest, output):
         # The generic guard calls an operator interruption ENV_ABORT. Preserve
         # that receipt; the service terminal additionally describes intent.
         clean = (worker is not None and worker.get('cleanup_confirmed') is True
-                 and 'cleanup_error' not in result)
+                 and 'cleanup_error' not in result and
+                 'monitor_cleanup_error' not in result)
         resource_cleanup = None
         if 'host_resources' in manifest:
             from tools.serve_service import resources
@@ -103,6 +109,9 @@ def normal_stop(manual, clean, guard_result):
     if not manual or not clean:
         return False
     return (guard_result['status'] == 'COMPLETED' or
+            (guard_result['status'] == 'COMPLETED_WITH_MONITOR_GAPS' and
+             guard_result.get('monitor_policy') == 'nvml-service-degraded-v1' and
+             guard_result.get('child_returncode') == 0) or
             (guard_result['status'] == 'ENV_ABORT' and
              guard_result.get('reason') ==
              "KeyboardInterrupt('managed service stopped')" and
@@ -146,9 +155,13 @@ def status(output):
         live = False
     worker = (pkg.read(output/'status.json')
               if (output/'status.json').exists() else None)
-    return dict(state=worker['state'] if live and worker else
+    result = dict(state=worker['state'] if live and worker else
                 'STARTING' if live else 'OWNER_ABSENT', controller_live=live,
                 worker=worker, cleanup_confirmed=False)
+    monitor = output/'lease/compute-monitor.json'
+    if monitor.exists():
+        result['gpu_monitor'] = pkg.read(monitor)
+    return result
 
 
 def unit_text(package, digest, output):
@@ -183,6 +196,8 @@ def main():
     p.add_argument('--port', type=int, default=8080)
     p.add_argument('--operations-port', type=int, default=0)
     p.add_argument('--restart-limit', type=int, default=0)
+    p.add_argument('--nvml-policy', choices=('strict', 'degrade'), default='strict',
+                   help='managed runtime only; preflight remains strict')
     p.add_argument('--critical-memory-mib', type=int, default=1024)
     p.add_argument('--client-policy', type=Path)
     p.add_argument('--host-memory-high-mib', type=int)
@@ -206,7 +221,7 @@ def main():
         result = pkg.prepare(args.binary, args.release, args.model_dir,
                              args.output, args.port, args.restart_limit,
                              args.critical_memory_mib, args.client_policy, selected,
-                             args.operations_port)
+                             args.operations_port, args.nvml_policy)
     elif args.action == 'run':
         manifest = pkg.verify(args.package, args.manifest_sha256)
         entry = args.package.resolve()/'source/tools/serve_service/service.py'

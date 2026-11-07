@@ -69,7 +69,7 @@ def worker(request_id):
     return 1 if failure else 0
 
 
-def supervise(command, request_id, timeout):
+def supervise(command, request_id, timeout, *, on_worker=None):
     if not math.isfinite(timeout) or timeout <= 0:
         raise ValueError('timeout must be finite and positive')
     start = time.monotonic()
@@ -78,6 +78,8 @@ def supervise(command, request_id, timeout):
                                stderr=subprocess.PIPE, text=True)
     result['worker_pid'] = process.pid
     try:
+        if on_worker is not None:
+            on_worker(process)
         stdout, stderr = process.communicate(timeout=timeout)
     except subprocess.TimeoutExpired:
         process.kill()  # Only the direct, owned query worker; no descendants.
@@ -148,10 +150,11 @@ def supervise(command, request_id, timeout):
     return result
 
 
-def query(timeout=5):
+def query(timeout=5, *, on_worker=None):
     request_id = secrets.token_hex(16)
     return supervise([sys.executable, '-B', str(Path(__file__).resolve()),
-                      '--worker', request_id], request_id, timeout)
+                      '--worker', request_id], request_id, timeout,
+                     on_worker=on_worker)
 
 
 def main():

@@ -49,12 +49,23 @@ SHA的伴随接受记录见上述结果页。prepare本身的未验声明不被�
 父子边界设置跨exec的parent-death信号。控制器死亡时后端退出前锁
 仍保持；这不保证内核不可中断任务能够退出，也不证明物理RAM硬上限。
 
-当前限制（2026-11-07）：托管控制器复用了严格的开发验收guard，运行中
-NVML查询失败也会触发ENV_ABORT并清理后端。监控失联不能单独证明
-推理失败；当前尚无“监控降级但业务继续”的托管策略。用户已反馈
-真实业务中的间歇性失联，该能力及清理/证据边界已登记在
-[当前交接](../../docs/VISION_ROWMAX_RESULT_2026-11-07.md#nvml运行经验与交付边界)。
-此为待实现能力，不改变下述既有退出规则或旧包行为。
+默认严格策略下，运行中NVML查询失败会触发ENV_ABORT并清理后端。
+新包可在prepare时显式增加`--nvml-policy degrade`选择v7业务降级策略；
+首版要求`--restart-limit 0`。启动前仍须完整观测无竞争，运行中查询
+错误/超时允许健康业务继续，共享锁、已知竞争及原业务保护保持。
+
+降级分别等待5/10/20/40/60秒后最多重试5次；成功恢复观测，重试耗尽
+或worker不能回收则本代次停止新增查询。此时业务可继续，但不能观察
+未被/proc规则覆盖的外部GPU负载；未知PID不会显示为空闲或沿用旧值。
+`status`的`gpu_monitor`与业务`state`分开，记录最近成功及缺口；
+原始查询保存在`lease/nvml-queries.jsonl`。正常停止若曾有监控缺口，
+guard记`COMPLETED_WITH_MONITOR_GAPS`，服务仍可STOPPED并确认自有进程
+清理；末次NVML观测不能证明停止后的GPU上下文已清空，单独标NOT_QUERIED。
+未回收查询worker仍导致退出清理失败。旧包/未选择策略保持下述严格行为。
+
+该策略不适用于性能验收；CLI guard无降级开关。CPU及真实短验的当前
+状态见[限定合同与验证](../../docs/SERVE_NVML_DEGRADATION_2026-11-07.md)。
+源码支持不自动扩大旧托管/网关/任务包的接受范围，应使用身份匹配的新包。
 
 独立前台controller SIGKILL已[实际限定验证](../../docs/SERVE_CONTROLLER_DEATH_RESULT_2026-11-03.md)：
 活跃输出与准备完成的grammar排队请求均完整server_shutdown，4个

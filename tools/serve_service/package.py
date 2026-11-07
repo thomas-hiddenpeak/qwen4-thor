@@ -21,6 +21,7 @@ V2_SOURCES = (*LEGACY_SOURCES, 'tools/serve_service/memory.py')
 SOURCES = (*V2_SOURCES, 'tools/serve_service/inspection.py')
 V4_SOURCES = (*SOURCES, 'tools/serve_gateway/client_policy.py')
 V5_SOURCES = (*V4_SOURCES, 'tools/serve_service/resources.py')
+V7_SOURCES = (*V5_SOURCES, 'tools/serve_service/telemetry.py')
 FILES = ('q4t', 'q4t.release.json', 'CMakeCache.txt', 'acceptance.json')
 DECLARATION_PROFILE = 'q4t-release-declarations-v1'
 DECLARATION_SCHEMAS = ('config', 'message', 'preflight', 'reasoning',
@@ -101,10 +102,15 @@ def private_directory(path, repository=ROOT):
     return path
 
 
-def settings(port, restart_limit, critical_memory_mib=1024, operations_port=0):
+def settings(port, restart_limit, critical_memory_mib=1024, operations_port=0,
+             nvml_policy='strict'):
+    require(type(nvml_policy) is str and nvml_policy in ('strict', 'degrade'),
+            'invalid NVML policy')
     require(type(port) is int and 1024 <= port <= 65535, 'invalid port')
     require(type(restart_limit) is int and 0 <= restart_limit <= 3,
             'restart limit must be between zero and three')
+    require(nvml_policy != 'degrade' or restart_limit == 0,
+            'NVML degradation requires restart-limit zero')
     require(type(critical_memory_mib) is int and
             1 <= critical_memory_mib <= 1024**2, 'invalid critical memory floor')
     require(type(operations_port) is int and (operations_port == 0 or
@@ -118,6 +124,8 @@ def settings(port, restart_limit, critical_memory_mib=1024, operations_port=0):
         memory_low_seconds=2, memory_unknown_seconds=5)
     if operations_port:
         result['operations_port'] = operations_port
+    if nvml_policy == 'degrade':
+        result['nvml_policy'] = nvml_policy
     return result
 
 
@@ -203,7 +211,9 @@ def verify_declarations(metadata, directory=None, *, required=False):
 
 def prepare(binary, release, model, output, port=8080, restart_limit=0,
             critical_memory_mib=1024, client_policy=None, host_resources=None,
-            operations_port=0):
+            operations_port=0, nvml_policy='strict'):
+    config = settings(port, restart_limit, critical_memory_mib, operations_port,
+                      nvml_policy)
     policy_raw = None
     if host_resources is not None:
         from tools.serve_service import resources
@@ -228,7 +238,6 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
     require(isinstance(protocol, str) and len(protocol) == 64 and
             all(c in '0123456789abcdef' for c in protocol), 'invalid protocol')
     declarations = verify_declarations(metadata, required=True)
-    config = settings(port, restart_limit, critical_memory_mib, operations_port)
     model_files = {p.name: sha(p) for p in sorted(model.glob('*.json'))
                    if p.is_file() and not p.is_symlink()}
     require({'config.json', 'tokenizer.json', 'tokenizer_config.json'} <=
@@ -238,6 +247,8 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
         shutil.copyfile(source, target/name)
         os.chmod(target/name, 0o500 if name == 'q4t' else 0o400)
     sources = V5_SOURCES if host_resources is not None or operations_port else (V4_SOURCES if policy_raw is not None else SOURCES)
+    if nvml_policy == 'degrade':
+        sources = V7_SOURCES
     for name in sources:
         source, dest = ROOT/name, target/'source'/name
         regular(source)
@@ -272,6 +283,8 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
         manifest['resource_dependencies'] = resources.dependencies()
     if operations_port:
         manifest['version'] = 6
+    if nvml_policy == 'degrade':
+        manifest['version'] = 7
     save(target/'manifest.json', manifest)
     verify(target, sha(target/'manifest.json'))
     return dict(package=str(target), manifest_sha256=sha(target/'manifest.json'),
@@ -282,12 +295,15 @@ def verify(package, digest):
     package = Path(package).resolve(strict=True)
     require(sha(package/'manifest.json') == digest, 'package manifest changed')
     manifest = read(package/'manifest.json')
-    require(type(manifest['version']) is int and manifest['version'] in (1, 2, 3, 4, 5, 6),
+    require(type(manifest['version']) is int and manifest['version'] in (1, 2, 3, 4, 5, 6, 7),
             'unsupported package version')
     config = manifest['settings']
     wanted = settings(config['port'], config['restart_limit'],
                       config.get('critical_memory_mib', 1024),
-                      config.get('operations_port', 0) if manifest['version'] == 6 else 0)
+                      config.get('operations_port', 0) if manifest['version'] in (6, 7) else 0,
+                      config.get('nvml_policy', 'strict') if manifest['version'] == 7 else 'strict')
+    require(manifest['version'] != 7 or config.get('nvml_policy') == 'degrade',
+            'monitor package requires explicit degradation policy')
     require(manifest['version'] != 6 or config.get('operations_port', 0) != 0,
             'operations package requires explicit port')
     if manifest['version'] == 1:
@@ -296,13 +312,14 @@ def verify(package, digest):
             del wanted[key]
     require(config == wanted, 'unknown managed configuration')
     sources = {1: LEGACY_SOURCES, 2: V2_SOURCES, 3: SOURCES,
-               4: V4_SOURCES, 5: V5_SOURCES, 6: V5_SOURCES}[manifest['version']]
+               4: V4_SOURCES, 5: V5_SOURCES, 6: V5_SOURCES,
+               7: V7_SOURCES}[manifest['version']]
     expected = {*FILES, *('source/'+name for name in sources)}
     if 'release_declarations' in manifest:
         require(manifest['release_declarations'] == DECLARATION_PROFILE,
                 'unknown package declaration profile')
         expected.update('declarations/'+n for n in DECLARATION_FILES)
-    if manifest['version'] == 4 or manifest['version'] in (5, 6) and 'client_policy' in manifest:
+    if manifest['version'] == 4 or manifest['version'] in (5, 6, 7) and 'client_policy' in manifest:
         from tools.serve_gateway import client_policy as cp
         expected.add('client-policy.json')
         raw, _ = cp.read(package/'client-policy.json')
@@ -310,7 +327,7 @@ def verify(package, digest):
                 'client policy binding differs')
     else:
         require('client_policy' not in manifest, 'legacy package cannot scope clients')
-    if manifest['version'] == 5 or manifest['version'] == 6 and 'host_resources' in manifest:
+    if manifest['version'] == 5 or manifest['version'] in (6, 7) and 'host_resources' in manifest:
         from tools.serve_service import resources
         resources.validate(manifest['host_resources'])
         resources.verify_dependencies(manifest['resource_dependencies'])
