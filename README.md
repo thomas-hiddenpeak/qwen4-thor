@@ -16,6 +16,9 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 无需 systemd 即可恢复模型、控制器与网关；辅助监控故障保留健康业务，
 恢复预算和停止意图持久化。本机 `build/service/bin/q4t service` 已准备，
 当前停止；原 `build/q4t serve` 保留原含义。长稳及剩余 C/D 范围见交付说明。
+当前A/B恢复包强制携带nginx，原生`serve`不需要。项目要求尽量减少
+外部依赖，前置网关应为可选集成；[原生入口与封装解耦](docs/ARCHITECTURE.md#外部依赖与可选前置接入)
+尚待实现，现有验收不代表无nginx恢复模式已可用。
 
 当前默认程序（身份见[STATUS](docs/STATUS.md)）已包含工具/推理输出解析、JSON/SSE、带ID工具
 历史、单条开头developer适配和`/v1/capabilities`能力/模板身份查询。
