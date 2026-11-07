@@ -2,6 +2,12 @@
 
 更新：2026-11-07。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+最终组合accept-02在最后一道MTP父质量题遇到NVML init故障，原
+ENV_ABORT保留；前三组78请求/完整退出已核对封存。全部自有PID、
+GPU、端口和原锁已释放。按[单组补验](VISION_ROWMAX_PARENT_COMPLETION_2026-11-07.md)
+仅补最后父生命周期（1启动26Chat/1200秒），不重跑已通过三组。
+程序和严格监控合同不变；PR #21已合main，PR #20尚待最终接受。
+
 ## Serve可靠性已合main，继续视觉最终组合验收
 
 [PR #21](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/21)已于
