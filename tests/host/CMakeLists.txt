@@ -138,6 +138,12 @@ q4t_add_python_contract(q4t_serve_role_stage_contracts
   tools/serve_stage_b1/test_stage.py)
 q4t_add_python_contract(q4t_chat_acceptance_contracts
   tools/response_protocol/test_acceptance.py)
+q4t_add_python_contract(q4t_recovery_fault_policy_contracts
+  tools/serve_recovery/test_policy.py)
+q4t_add_python_contract(q4t_recovery_ledger_contracts
+  tools/serve_recovery/test_ledger.py)
+q4t_add_python_contract(q4t_recovery_journal_contracts
+  tools/serve_recovery/test_journal.py)
 # A build of Python can omit pidfd APIs despite a new version number. Probe the
 # guard's actual contract before assigning its real descendant-cleanup tests.
 set(Q4T_GPU_GUARD_PYTHON "" CACHE FILEPATH
