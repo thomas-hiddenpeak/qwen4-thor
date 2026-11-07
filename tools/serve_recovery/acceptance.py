@@ -10,6 +10,7 @@ from dataclasses import asdict
 import errno
 import fcntl
 import http.client
+import importlib.machinery
 import json
 import os
 from pathlib import Path
@@ -20,18 +21,21 @@ import subprocess
 import sys
 import time
 import traceback
+import types
 
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[2]
 LIMITS = dict(starts=4, chats=20, probes=1, controls=10000, seconds=1800)
 COMPLETION_LIMITS = dict(LIMITS, starts=5, chats=21)
 OBSERVATION_LIMITS = dict(starts=1, chats=4, probes=0, controls=2000, seconds=600)
+OBSERVATION_COMPLETION_LIMITS = dict(OBSERVATION_LIMITS, starts=2)
 
 
 def limits_for(scenario):
     return {'full_recovery': LIMITS,
         'controller_gateway_completion': COMPLETION_LIMITS,
-        'observation_isolation': OBSERVATION_LIMITS}[scenario]
+        'observation_isolation': OBSERVATION_LIMITS,
+        'observation_isolation_completion': OBSERVATION_COMPLETION_LIMITS}[scenario]
 
 
 def save(path, value):
@@ -90,9 +94,36 @@ def await_drain(observe, expected, *, clock=time.monotonic, sleep=time.sleep, se
     raise TimeoutError('request/grammar ownership did not drain within 5 seconds')
 
 
+def pin_packaged_modules(source):
+    # The sealed inventory uses namespace packages, while the checkout has a
+    # regular serve_recovery package. A sys.path prepend alone lets that regular
+    # checkout package win. Pin production namespaces before any core import.
+    source = Path(source).resolve(strict=True)
+    prefixes = ('tools.serve_recovery', 'tools.serve_service',
+                'tools.serve_gateway', 'tools.serve_ops')
+    for name, module in list(sys.modules.items()):
+        if any(name == p or name.startswith(p+'.') for p in prefixes):
+            path = getattr(module, '__file__', None)
+            if path and not Path(path).resolve().is_relative_to(source):
+                raise RuntimeError('production module already loaded outside sealed source: '+name)
+    import tools
+    for name in prefixes:
+        if name in sys.modules:
+            continue
+        module = types.ModuleType(name)
+        module.__package__ = name
+        module.__path__ = [str(source/Path(*name.split('.')))]
+        module.__spec__ = importlib.machinery.ModuleSpec(name, None, is_package=True)
+        module.__spec__.submodule_search_locations = module.__path__
+        sys.modules[name] = module
+        setattr(tools, name.rsplit('.', 1)[1], module)
+
+
 def load_modules(plan=None):
     source = Path(plan['package']['package'])/'source' if plan else ROOT
     sys.path[:0] = [str(source), str(source/'tools/evalscope'), str(ROOT/'tools/examples')]
+    if plan:
+        pin_packaged_modules(source)
     from tools.serve_recovery import bundle, child, control, journal, service
     from tools.serve_service import package as engine
     return bundle, child, control, journal, service, engine
@@ -127,10 +158,13 @@ def prepare(args):
                    'this bounded acceptance is loopback only')
     prior, prior_evidence, baseline = None, [], None
     supplemental=args.controller_completion
-    observation=args.observation_isolation
-    engine.require(not observation or not supplemental and args.prior_plan is None,
-                   'observation isolation has its own fixed budget, no continuation')
-    scenario=('observation_isolation' if observation else
+    observation=args.observation_isolation or args.observation_completion
+    engine.require(not observation or not supplemental and
+        bool(args.prior_plan) == args.observation_completion and
+        not (args.observation_isolation and args.observation_completion),
+        'observation completion requires the recorded fixture failure')
+    scenario=('observation_isolation_completion' if args.observation_completion else
+        'observation_isolation' if observation else
         'controller_gateway_completion' if supplemental else 'full_recovery')
     engine.require(not supplemental or args.prior_plan is not None,
                    'completion requires the prior measured failure')
@@ -139,17 +173,23 @@ def prepare(args):
         prior_dir=Path(prior_plan['output'])
         prior=json.loads((prior_dir/'execution/result.json').read_text())
         baseline=prior['budget']['counts']
-        expected_counts=(3,15,1) if supplemental else (1,5,0)
+        expected_counts=(1,1,0) if observation else (3,15,1) if supplemental else (1,5,0)
         engine.require(prior['status']=='FAILED' and prior['cleanup_failure'] is None and
             (baseline['starts'],baseline['chats'],baseline['probes'])==expected_counts and
             prior['package']==receipt,'only the recorded fixture failure can be continued')
         names=['plan.json','execution/result.json','execution/counts.json','lease/exit.json',
             'execution/stop.json']
-        names += (['execution/generation-2-metrics.json','execution/ready-2.json',
+        names += (['execution/ready-1.json','execution/chat-01-self-check-response.json']
+            if observation else ['execution/generation-2-metrics.json','execution/ready-2.json',
             'execution/interrupted-sse-result.json','execution/generation-2-tool-final-response.json']
             if supplemental else ['execution/generation-1-json-response.json',
             'execution/generation-1-sse-response.json','execution/beta-minute-quota-response.json',
             'execution/generation-1-tool-call-response.json','execution/auxiliary-gap.json'])
+        if observation:
+            engine.require(prior_plan['scenario'] == 'observation_isolation' and
+                'observation fault target is not owned writer' in prior['failure'],
+                'only the source-loading fixture failure may use this completion')
+            names.append('lease/events.jsonl')
         prior_evidence.extend(prior_plan.get('prior_evidence',[]))
         for name in names:
             path=prior_dir/name
@@ -196,6 +236,11 @@ def prepare(args):
                 'same-PID SSE after sink disabled', 'durable stop and full cleanup'])
         plan['protected'].extend(dict(path=str((ROOT/name).resolve()), sha256=engine.sha(ROOT/name))
             for name in ('build/service.release.json', 'build/service/manifest.json'))
+        if prior is not None:
+            events = [json.loads(line) for line in (prior_dir/'lease/events.jsonl').read_text().splitlines()]
+            lease_started = next(e['monotonic'] for e in events if e['event'] == 'lease_acquired')
+            lease_finished = next(e['monotonic'] for e in events if e['event'] == 'lease_released')
+            plan['prior_seconds'] = max(plan['prior_seconds'], lease_finished-lease_started)
     save(args.output/'plan.json', plan)
     print(json.dumps(dict(plan=str(args.output/'plan.json'), limits=plan['limits'])))
 
@@ -277,7 +322,7 @@ def controller_actor(plan, config):
     monitor.Monitor = lambda fd: original_monitor(fd, factory=query)
     supervisor.RotatingLog.write, supervisor.transport.get = write, get
     core_http.request, subprocess.Popen = post, spawn
-    if plan.get('scenario') == 'observation_isolation':
+    if plan.get('scenario', '').startswith('observation_isolation'):
         original_tick = controller.Controller.tick
         def tick(actor, **kwargs):
             result = original_tick(actor, **kwargs)
@@ -479,7 +524,7 @@ class Stage:
 
     def exercise(self):
         first=self.ready(1)
-        if self.plan.get('scenario') == 'observation_isolation':
+        if self.plan.get('scenario', '').startswith('observation_isolation'):
             return self.observation_isolation(first)
         if self.plan.get('scenario')=='controller_gateway_completion':
             self.metrics('initial-self-check',1)
@@ -682,6 +727,8 @@ def main():
         help='Prepared supplemental scenario; run only after explicit budget extension')
     parser.add_argument('--observation-isolation', action='store_true',
         help='Only observation sink isolation, 1 model / 4 Chat / 600 seconds')
+    parser.add_argument('--observation-completion', action='store_true',
+        help='Complete the recorded source-loader failure; cumulative 2 models / 4 Chat / 600 seconds')
     args=parser.parse_args()
     if args.mode=='prepare':
         prepare(args)

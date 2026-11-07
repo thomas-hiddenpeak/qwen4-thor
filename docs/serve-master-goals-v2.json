@@ -289,14 +289,22 @@
     {
       "id": "R01",
       "required": true,
-      "state": "targeted_cpu_passed_business_pending",
+      "state": "targeted_cpu_passed_driver_repaired_business_pending",
       "implementation": "普通日志/观察阻塞隔离；有界队列/单worker、未回收不增殖、健康核心同PID继续；保留可诊断性",
       "acceptance": "普通日志/观察阻塞隔离；有界队列/单worker、未回收不增殖、健康核心同PID继续；保留可诊断性",
       "depends_on": [],
       "evidence": [
         "SERVE_OBSERVATION_IO_2026-11-08.md"
       ],
-      "release": null
+      "release": null,
+      "gpu_completion_budget": {
+        "total_starts": 2,
+        "total_chats": 4,
+        "total_seconds": 600,
+        "consumed_starts": 1,
+        "consumed_chats": 1,
+        "reason": "CPU reproduced namespace source-loading fixture error; unchanged production candidate, one targeted completion"
+      }
     },
     {
       "id": "R02",
