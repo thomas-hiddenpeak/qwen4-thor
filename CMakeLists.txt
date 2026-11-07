@@ -633,7 +633,9 @@ if(Q4T_BUILD_TESTS)
       src/runtime/system_memory.cpp src/server/memory_admission.cpp
       src/server/chat_memory.cpp
       src/server/chat_device_memory.cpp
+      src/server/chat_health.cpp
       src/server/chat_admission.cpp
+      src/server/grammar_process.cpp
       src/server/chat_http.cpp src/server/http_request.cpp
       src/server/client_policy.cpp src/server/client_request.cpp
       src/trace/sha256.cpp

@@ -16,11 +16,100 @@
 #include <charconv>
 #include <cstdio>
 #include <cstring>
+#include <mutex>
+#include <optional>
+#include <thread>
 #include <utility>
 
 namespace q4t::server::detail {
 namespace {
 constexpr int kSocket = 3;
+
+struct PendingWorker {
+  int pid = -1;
+  int pid_fd = -1;
+  uint64_t reported_rss_bytes = 0;
+  std::shared_ptr<GrammarWorkerCounters> counters;
+};
+
+struct WorkerOwner {
+  std::mutex mutex;
+  bool reserved = false;
+  std::optional<PendingWorker> pending;
+  ~WorkerOwner() {
+    // Process exit is not proof that a kernel-stalled child was reaped. The
+    // outer service owner still reconciles descendants and retains its lease.
+    if (pending && pending->pid_fd >= 0) close(pending->pid_fd);
+  }
+};
+
+WorkerOwner& Owner() {
+  static WorkerOwner owner;
+  return owner;
+}
+
+#ifdef Q4T_GRAMMAR_PROCESS_TESTS
+std::atomic<bool> defer_reaping{false};
+#endif
+
+int WaitWorker(int pid, int* status, rusage* usage) {
+#ifdef Q4T_GRAMMAR_PROCESS_TESTS
+  if (defer_reaping.load()) return 0;
+#endif
+  return wait4(pid, status, WNOHANG, usage);
+}
+
+void Maximum(std::atomic<uint64_t>& value, uint64_t observed) {
+  auto previous = value.load();
+  while (previous < observed &&
+         !value.compare_exchange_weak(previous, observed)) {
+  }
+}
+
+void CountReaped(const std::shared_ptr<GrammarWorkerCounters>& counters,
+                 const GrammarWorkerReport& report) {
+  if (!counters) return;
+  counters->active.fetch_sub(1);
+  counters->reaped.fetch_add(1);
+  Maximum(counters->max_rss_bytes, report.max_rss_bytes);
+  if (report.reported_rss_bytes) {
+    counters->rss_reports.fetch_add(1);
+    Maximum(counters->reported_rss_bytes, report.reported_rss_bytes);
+  }
+}
+
+void PollLocked(WorkerOwner& owner) {
+  if (!owner.pending) return;
+  auto& pending = *owner.pending;
+  rusage usage{};
+  GrammarWorkerReport report;
+  const int result = WaitWorker(pending.pid, &report.exit_status, &usage);
+  // ECHILD/other errors are unknown ownership, not permission for replacement.
+  if (result != pending.pid) return;
+  report.reaped = true;
+  report.max_rss_bytes = static_cast<uint64_t>(usage.ru_maxrss) * 1024;
+  report.reported_rss_bytes = pending.reported_rss_bytes;
+  CountReaped(pending.counters, report);
+  if (pending.pid_fd >= 0) close(pending.pid_fd);
+  owner.pending.reset();
+  owner.reserved = false;
+}
+
+bool ReserveWorker() {
+  auto& owner = Owner();
+  const std::lock_guard lock(owner.mutex);
+  PollLocked(owner);
+  if (owner.reserved) return false;
+  owner.reserved = true;
+  return true;
+}
+
+void ReleaseWorker() {
+  auto& owner = Owner();
+  const std::lock_guard lock(owner.mutex);
+  owner.reserved = false;
+}
+
 bool Number(const char* text, uint64_t* number) {
   const char* end = text + std::strlen(text);
   auto result = std::from_chars(text, end, *number);
@@ -32,13 +121,34 @@ bool Limit(int resource, uint64_t bytes) {
 }
 }  // namespace
 
+void PollGrammarWorkers() {
+  auto& owner = Owner();
+  const std::lock_guard lock(owner.mutex);
+  PollLocked(owner);
+}
+
+bool GrammarCleanupPending() {
+  auto& owner = Owner();
+  const std::lock_guard lock(owner.mutex);
+  PollLocked(owner);
+  return owner.pending.has_value();
+}
+
+#ifdef Q4T_GRAMMAR_PROCESS_TESTS
+void DeferGrammarReapingForTesting(bool enabled) {
+  defer_reaping.store(enabled);
+}
+#endif
+
 GrammarProcess::GrammarProcess(GrammarControl control)
     : control_(std::move(control)) {}
 GrammarProcess::~GrammarProcess() { Stop(); }
 
 Status GrammarProcess::Start(const char* entry, const GrammarControl& control,
-                             std::unique_ptr<GrammarProcess>* out) {
+                             std::unique_ptr<GrammarProcess>* out,
+                             GrammarFailure* failure) {
   out->reset();
+  if (failure) *failure = GrammarFailure::kNone;
   if (!control.address_space_bytes ||
       control.address_space_bytes > kGrammarAddressSpaceLimit)
     return Status::Fail("invalid grammar worker memory ceiling");
@@ -48,6 +158,12 @@ Status GrammarProcess::Start(const char* entry, const GrammarControl& control,
       (disposition.sa_flags & SA_NOCLDWAIT))
     return Status::Fail("grammar worker requires owned child reaping");
   auto process = std::unique_ptr<GrammarProcess>(new GrammarProcess(control));
+  if (!ReserveWorker()) {
+    if (failure) *failure = GrammarFailure::kUnavailable;
+    return Status::Fail(
+        "grammar worker capacity retained until confirmed reap");
+  }
+  process->slot_owned_ = true;
   int pair[2];
   if (socketpair(AF_UNIX, SOCK_STREAM | SOCK_CLOEXEC, 0, pair))
     return Status::Fail("grammar worker socket creation failed");
@@ -96,6 +212,10 @@ Status GrammarProcess::Start(const char* entry, const GrammarControl& control,
   posix_spawn_file_actions_destroy(&actions);
   close(child_socket);
   if (error) return Status::Fail("grammar worker exec failed");
+  if (control.counters) {
+    control.counters->started.fetch_add(1);
+    control.counters->active.fetch_add(1);
+  }
   if (control.worker_started) control.worker_started();
   process->pid_fd_ = syscall(SYS_pidfd_open, process->pid_, 0);
   if (process->pid_fd_ < 0)
@@ -105,6 +225,7 @@ Status GrammarProcess::Start(const char* entry, const GrammarControl& control,
 }
 
 void GrammarProcess::Stop() {
+  if (socket_ >= 0) close(std::exchange(socket_, -1));
   if (pid_ > 0) {
     if (pid_fd_ >= 0) {
       syscall(SYS_pidfd_send_signal, pid_fd_, SIGKILL, nullptr, 0);
@@ -115,18 +236,38 @@ void GrammarProcess::Stop() {
     }
     rusage usage{};
     GrammarWorkerReport report;
-    int result;
+    const auto deadline =
+        std::chrono::steady_clock::now() +
+        std::chrono::milliseconds(kGrammarCleanupMilliseconds);
+    int result = 0;
     do {
-      result = wait4(pid_, &report.exit_status, 0, &usage);
-    } while (result < 0 && errno == EINTR);
+      result = WaitWorker(pid_, &report.exit_status, &usage);
+      if (result == pid_ || (result < 0 && errno != EINTR)) break;
+      if (std::chrono::steady_clock::now() >= deadline) break;
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    } while (true);
     report.reaped = result == pid_;
     report.max_rss_bytes = static_cast<uint64_t>(usage.ru_maxrss) * 1024;
     report.reported_rss_bytes = reported_rss_bytes_;
+    if (report.reaped) {
+      CountReaped(control_.counters, report);
+      ReleaseWorker();
+    } else {
+      auto& owner = Owner();
+      const std::lock_guard lock(owner.mutex);
+      owner.pending.emplace(PendingWorker{pid_, std::exchange(pid_fd_, -1),
+                                          reported_rss_bytes_,
+                                          control_.counters});
+    }
+    slot_owned_ = false;
     pid_ = -1;
     if (control_.worker_finished) control_.worker_finished(report);
   }
   if (pid_fd_ >= 0) close(std::exchange(pid_fd_, -1));
-  if (socket_ >= 0) close(std::exchange(socket_, -1));
+  if (slot_owned_) {
+    ReleaseWorker();
+    slot_owned_ = false;
+  }
 }
 
 void GrammarProcess::ReportRss(uint64_t bytes) {

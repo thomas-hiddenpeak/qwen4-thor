@@ -175,6 +175,7 @@ Status ChatServer::Run() {
     bool draining = false;
     auto drain_until = std::chrono::steady_clock::time_point::max();
     for (;;) {
+      detail::PollGrammarWorkers();
       if (stop_requested_.load() && !draining) {
         draining = true;
         drain_until =

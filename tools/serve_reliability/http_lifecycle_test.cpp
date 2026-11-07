@@ -5,6 +5,7 @@
 #include "q4t/server/device_memory.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/serve_fault.h"
+#include "q4t/ple/ple_embedding.h"
 #include "q4t/test.h"
 #include "contract_access.h"
 
@@ -19,6 +20,7 @@
 #include <stdexcept>
 #include <cerrno>
 #include <cstring>
+#include <cstdlib>
 
 namespace {
 // Model-free equivalent of the successful Start listener handoff. Production
@@ -51,6 +53,13 @@ MetadataUploadBatch::~MetadataUploadBatch() = default;
 namespace q4t::vision {
 VisionTower::~VisionTower() = default;  // Always empty in this fake backend.
 }
+namespace q4t::ple {
+runtime::ModelFault PleEmbedding::HealthFault() const noexcept {
+  // The fixture never owns PLE. Fail loudly if a future fixture violates it;
+  // the production health projection itself is compiled and exercised below.
+  std::abort();
+}
+}  // namespace q4t::ple
 namespace q4t::trace {
 RouterCollector::~RouterCollector() = default;
 }  // namespace q4t::trace

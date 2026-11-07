@@ -2,6 +2,7 @@
 // space. The child owns no server descriptors or model allocations.
 #pragma once
 
+#include <atomic>
 #include <chrono>
 #include <cstdint>
 #include <functional>
@@ -16,8 +17,27 @@ namespace q4t::server {
 inline constexpr uint64_t kGrammarAddressSpaceLimit = 2ULL * 1024 * 1024 * 1024;
 inline constexpr int kGrammarCompileMilliseconds = 10000;
 inline constexpr int kGrammarStepMilliseconds = 2000;
+inline constexpr int kGrammarCleanupMilliseconds = 100;
 
-enum class GrammarFailure { kNone, kCancelled, kTimeout, kResource, kWorker };
+enum class GrammarFailure {
+  kNone,
+  kCancelled,
+  kTimeout,
+  kResource,
+  kWorker,
+  kUnavailable
+};
+
+// Independent lifetime: deferred cleanup never retains a server/request
+// callback.
+struct GrammarWorkerCounters {
+  std::atomic<int> active{0};
+  std::atomic<uint64_t> started{0};
+  std::atomic<uint64_t> reaped{0};
+  std::atomic<uint64_t> max_rss_bytes{0};
+  std::atomic<uint64_t> reported_rss_bytes{0};
+  std::atomic<uint64_t> rss_reports{0};
+};
 
 struct GrammarWorkerReport {
   // wait4 includes pre-exec inherited mm peaks; do not compare with RLIMIT_AS.
@@ -29,10 +49,13 @@ struct GrammarWorkerReport {
 };
 
 struct GrammarControl {
+  std::shared_ptr<GrammarWorkerCounters> counters;
   std::function<bool()> cancelled;
   std::function<void()> worker_started;
   std::function<void()> worker_ready;
   std::function<void()> compile_started;
+  // Called once before Stop returns; reaped=false means deferred ownership.
+  // This callback is never saved by the deferred process owner.
   std::function<void(const GrammarWorkerReport&)> worker_finished;
   std::chrono::steady_clock::time_point compile_deadline =
       std::chrono::steady_clock::now() +
@@ -43,14 +66,25 @@ struct GrammarControl {
 
 namespace detail {
 
-// Single owner. A signal always targets its pidfd; reap precedes lease release.
+// Called by the native event loop and before admission. No wait or callback.
+void PollGrammarWorkers();
+bool GrammarCleanupPending();
+
+#ifdef Q4T_GRAMMAR_PROCESS_TESTS
+// Host-only fixture: simulate unconfirmed exit without kernel D-state.
+void DeferGrammarReapingForTesting(bool enabled);
+#endif
+
+// Single process-wide slot. Unreaped cleanup keeps that slot after request
+// exit.
 class GrammarProcess {
  public:
   ~GrammarProcess();
   GrammarProcess(const GrammarProcess&) = delete;
   GrammarProcess& operator=(const GrammarProcess&) = delete;
   static Status Start(const char* entry, const GrammarControl& control,
-                      std::unique_ptr<GrammarProcess>* out);
+                      std::unique_ptr<GrammarProcess>* out,
+                      GrammarFailure* failure = nullptr);
   Status Transfer(void* data, size_t bytes, bool write,
                   std::chrono::steady_clock::time_point deadline);
   GrammarFailure Failure() const { return failure_; }
@@ -65,6 +99,7 @@ class GrammarProcess {
   int pid_fd_ = -1;
   GrammarFailure failure_ = GrammarFailure::kNone;
   uint64_t reported_rss_bytes_ = 0;
+  bool slot_owned_ = false;
 };
 
 // Shared child entry validation: exact inherited UNIX socket, parent death,

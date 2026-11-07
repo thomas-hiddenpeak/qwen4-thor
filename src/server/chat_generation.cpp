@@ -414,6 +414,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                 "structured_capacity_exhausted");
       return;
     }
+    if (detail::GrammarCleanupPending()) {
+      metrics_.structured_rejected.fetch_add(1, std::memory_order_relaxed);
+      SendError(fd, 503, "grammar worker cleanup still owns structured capacity",
+                {}, "structured_capacity_exhausted");
+      return;
+    }
     if (!start_stream()) return;
     const auto prepare_start = std::chrono::steady_clock::now();
     metrics_.structured_preparing.fetch_add(1, std::memory_order_relaxed);
@@ -461,35 +467,17 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         metrics_.structured_vocab_bytes.store(storage.Used());
     }
     GrammarControl grammar_control;
+    grammar_control.counters = metrics_.structured_workers;
     grammar_control.cancelled = cancelled;
     grammar_control.compile_deadline =
         prepare_start + std::chrono::milliseconds(kGrammarCompileMilliseconds);
-    grammar_control.worker_started = [&] {
-      metrics_.structured_workers_started.fetch_add(1);
-      metrics_.structured_workers_active.fetch_add(1);
-    };
     grammar_control.compile_started = [&] {
       metrics_.structured_compiles_started.fetch_add(1);
     };
     grammar_control.worker_ready = [&] {
       metrics_.structured_workers_ready.fetch_add(1);
     };
-    grammar_control.worker_finished = [&](const GrammarWorkerReport& report) {
-      if (report.reaped) {
-        metrics_.structured_workers_active.fetch_sub(1);
-        metrics_.structured_workers_reaped.fetch_add(1);
-      }
-      auto peak = metrics_.structured_worker_max_rss_bytes.load();
-      while (peak < report.max_rss_bytes &&
-             !metrics_.structured_worker_max_rss_bytes.compare_exchange_weak(
-                 peak, report.max_rss_bytes)) {}
-      if (report.reported_rss_bytes) {
-        metrics_.structured_worker_rss_reports.fetch_add(1);
-        auto reported = metrics_.structured_worker_reported_rss_bytes.load();
-        while (reported < report.reported_rss_bytes &&
-               !metrics_.structured_worker_reported_rss_bytes
-                    .compare_exchange_weak(reported, report.reported_rss_bytes)) {}
-      }
+    grammar_control.worker_finished = [](const GrammarWorkerReport& report) {
       std::fprintf(stderr,
                    "[q4t] grammar worker reaped=%d lifetime_max_rss_bytes=%lu "
                    "reported_post_exec_rss_bytes=%lu "
@@ -519,6 +507,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         SendError(fd, 503, s.message(), {}, "constraint_resource_exhausted");
       } else if (compile_failure == GrammarFailure::kWorker) {
         SendError(fd, 502, s.message(), {}, "constraint_worker_failed");
+      } else if (compile_failure == GrammarFailure::kUnavailable) {
+        metrics_.structured_rejected.fetch_add(1, std::memory_order_relaxed);
+        SendError(fd, 503, s.message(), {}, "structured_capacity_exhausted");
       } else {
         SendError(fd, 400, s.message(), {}, "constraint_compile_failed");
       }

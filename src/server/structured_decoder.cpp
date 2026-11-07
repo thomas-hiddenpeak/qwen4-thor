@@ -132,10 +132,14 @@ Status StructuredDecoder::Create(const OutputConstraints& plan,
     status = check();
     if (!status) return status;
     auto impl = std::make_unique<Impl>(model_vocab);
+    GrammarFailure start_failure = GrammarFailure::kNone;
     status = detail::GrammarProcess::Start("--q4t-grammar-worker", control,
-                                           &impl->process);
+                                           &impl->process, &start_failure);
     if (!status) {
-      if (failure) *failure = GrammarFailure::kWorker;
+      if (failure)
+        *failure = start_failure == GrammarFailure::kUnavailable
+                       ? start_failure
+                       : GrammarFailure::kWorker;
       return status;
     }
     const auto deadline =

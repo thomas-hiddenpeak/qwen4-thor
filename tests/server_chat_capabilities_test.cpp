@@ -128,6 +128,13 @@ Q4T_TEST(chat_capabilities_option_contract) {
   Q4T_CHECK(structured && structured->GetBool("available") == backend);
   const auto* resources = structured->Find("resources");
   Q4T_CHECK(resources && resources->GetInt("active_limit") == 1);
+  Q4T_CHECK(resources->GetInt("cleanup_timeout_ms") ==
+            q4t::server::kGrammarCleanupMilliseconds);
+  Q4T_CHECK(resources->GetBool("unreaped_counts_toward_capacity"));
+  Q4T_CHECK(resources->GetString("shutdown") == "bounded_kill_then_owned_reap");
+  Q4T_CHECK(resources->GetString("deferred_owner") == "process");
+  Q4T_CHECK(!resources->GetBool("deferred_request_callbacks", true));
+  Q4T_CHECK(!structured->GetBool("cleanup_pending", true));
   Q4T_CHECK(resources->GetString("terminal_handoff") ==
             "wait_for_cleanup_with_request_cancellation");
   Q4T_CHECK(resources->GetString("handoff_waiter_bound") ==

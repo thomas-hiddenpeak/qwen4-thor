@@ -22,6 +22,7 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
                                  bool mtp_enabled,
                                  uint64_t media_attention_shared_bytes) {
   const bool constrained = kStructuredDecodingAvailable;
+  const bool cleanup_pending = detail::GrammarCleanupPending();
   const std::string options =
       constrained ? R"("tool_choice":["auto","none","required","named"],)"
                     R"("parallel_tool_calls":[true,false],"strict":true,)"
@@ -165,7 +166,8 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("arguments":"required_object_or_json_object_text",)"
          R"("result_content":"required_string_or_array"}},)"
          R"("structured_output":{"available":)" +
-         (constrained ? "true" : "false") +
+         (constrained && !cleanup_pending ? "true" : "false") +
+         R"(,"cleanup_pending":)" + (cleanup_pending ? "true" : "false") +
          R"(,"backend":"xgrammar","backend_revision":)" +
          Quote(kXGrammarRevision) + R"(,"schema_profile":)" +
          Quote(kOutputSchemaProfile) + R"(,"response_format":)" +
@@ -194,7 +196,9 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("whole_server_ram_limit":false,"rss_measurement":"reported_exec_VmHWM",)"
          R"("lifetime_ru_maxrss_includes_pre_exec":true,)"
          R"("compile_timeout_ms":10000,"match_timeout_ms":2000,)"
-         R"("compile_interruptible":true,"shutdown":"kill_and_reap_owned_worker",)"
+         R"("cleanup_timeout_ms":100,"unreaped_counts_toward_capacity":true,)"
+         R"("deferred_owner":"process","deferred_request_callbacks":false,)"
+         R"("compile_interruptible":true,"shutdown":"bounded_kill_then_owned_reap",)"
          R"("compile_timeout_code":"constraint_compile_timeout",)"
          R"("memory_limit_code":"constraint_resource_exhausted",)"
          R"("worker_failure_code":"constraint_worker_failed"}},)"

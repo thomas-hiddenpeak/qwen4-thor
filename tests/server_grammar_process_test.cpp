@@ -13,6 +13,9 @@
 #include <filesystem>
 #include <thread>
 
+#include "q4t/io/json.h"
+#include "q4t/server/chat_capabilities.h"
+#include "q4t/server/structured_decoder.h"
 #include "q4t/test.h"
 
 using q4t::server::GrammarControl;
@@ -70,6 +73,22 @@ bool Ready(GrammarProcess& process) {
          report[0] == q4t::server::kGrammarAddressSpaceLimit &&
          report[1] == 1 && report[2] == 1;
 }
+
+class DeferredReapFixture {
+ public:
+  DeferredReapFixture() {
+    q4t::server::detail::DeferGrammarReapingForTesting(true);
+  }
+  ~DeferredReapFixture() { Drain(); }
+  bool Drain() {
+    q4t::server::detail::DeferGrammarReapingForTesting(false);
+    const auto end = std::chrono::steady_clock::now() + 1s;
+    while (q4t::server::detail::GrammarCleanupPending() &&
+           std::chrono::steady_clock::now() < end)
+      std::this_thread::sleep_for(1ms);
+    return !q4t::server::detail::GrammarCleanupPending();
+  }
+};
 }  // namespace
 
 Q4T_TEST(grammar_process_memory_limit_and_descriptor_isolation) {
@@ -173,5 +192,113 @@ Q4T_TEST(grammar_process_cannot_raise_memory_ceiling) {
   Q4T_CHECK(
       !GrammarProcess::Start("--grammar-fixture-limits", control, &process));
   Q4T_CHECK(!process);
+  return true;
+}
+
+Q4T_TEST(grammar_process_unconfirmed_reap_retains_capacity_without_callbacks) {
+  const auto descriptors = Descriptors();
+  auto counters = std::make_shared<q4t::server::GrammarWorkerCounters>();
+  auto request = std::make_shared<int>(7);
+  std::weak_ptr<int> request_lifetime = request;
+  int completed = 0;
+  GrammarWorkerReport report;
+  DeferredReapFixture deferred;
+  {
+    GrammarControl control;
+    control.counters = counters;
+    control.worker_finished = [request, &completed,
+                               &report](const auto& value) {
+      ++completed;
+      report = value;
+    };
+    request.reset();
+    std::unique_ptr<GrammarProcess> process;
+    Q4T_CHECK(
+        GrammarProcess::Start("--grammar-fixture-idle", control, &process));
+    Q4T_CHECK(Ready(*process));
+    process->ReportRss(12345);
+    const auto start = std::chrono::steady_clock::now();
+    process->Stop();
+    Q4T_CHECK(std::chrono::steady_clock::now() - start < 500ms);
+    process->Stop();
+    Q4T_CHECK(completed == 1 && !report.reaped);
+  }
+  Q4T_CHECK(request_lifetime.expired());
+  Q4T_CHECK(counters->started == 1 && counters->active == 1 &&
+            counters->reaped == 0);
+  Q4T_CHECK(q4t::server::detail::GrammarCleanupPending());
+  for (int i = 0; i < 32; ++i) {
+    std::unique_ptr<GrammarProcess> blocked;
+    GrammarFailure failure;
+    Q4T_CHECK(!GrammarProcess::Start("--grammar-fixture-idle", {}, &blocked,
+                                     &failure));
+    Q4T_CHECK(!blocked && failure == GrammarFailure::kUnavailable);
+  }
+#ifdef Q4T_ENABLE_XGRAMMAR
+  q4t::io::Json request_json;
+  Q4T_CHECK(q4t::io::ParseJson(
+      R"({"messages":[{"role":"user","content":"q"}],)"
+      R"("enable_thinking":false,"response_format":{"type":"json_object"}})",
+      &request_json));
+  q4t::server::OutputConstraints plan;
+  Q4T_CHECK(q4t::server::PlanOutputConstraints(request_json, &plan));
+  std::unique_ptr<q4t::server::StructuredDecoder> decoder;
+  GrammarFailure compile_failure;
+  Q4T_CHECK(!q4t::server::StructuredDecoder::Create(
+      plan, {"", "{}"}, 2, {0}, &decoder, {}, &compile_failure));
+  Q4T_CHECK(!decoder && compile_failure == GrammarFailure::kUnavailable);
+#endif
+  q4t::io::Json capabilities;
+  Q4T_CHECK(q4t::io::ParseJson(
+      q4t::server::ChatCapabilitiesJson("cpu", false, false), &capabilities));
+  const auto* structured = capabilities.Find("structured_output");
+  Q4T_CHECK(structured && !structured->GetBool("available", true) &&
+            structured->GetBool("cleanup_pending"));
+  Q4T_CHECK(deferred.Drain());
+  Q4T_CHECK(completed == 1 && counters->active == 0 && counters->reaped == 1 &&
+            counters->rss_reports == 1 &&
+            counters->reported_rss_bytes == 12345);
+  for (int i = 0; i < 32; ++i) q4t::server::detail::PollGrammarWorkers();
+  Q4T_CHECK(counters->reaped == 1 && counters->rss_reports == 1);
+  Q4T_CHECK(Descriptors() == descriptors);
+  return true;
+}
+
+Q4T_TEST(grammar_process_deferred_counters_survive_request_then_release) {
+  DeferredReapFixture deferred;
+  std::weak_ptr<q4t::server::GrammarWorkerCounters> lifetime;
+  {
+    GrammarControl control;
+    control.counters = std::make_shared<q4t::server::GrammarWorkerCounters>();
+    lifetime = control.counters;
+    std::unique_ptr<GrammarProcess> process;
+    Q4T_CHECK(
+        GrammarProcess::Start("--grammar-fixture-idle", control, &process));
+    Q4T_CHECK(Ready(*process));
+  }
+  Q4T_CHECK(!lifetime.expired());
+  Q4T_CHECK(deferred.Drain());
+  Q4T_CHECK(lifetime.expired());
+  return true;
+}
+
+Q4T_TEST(grammar_process_active_worker_and_pending_worker_share_one_slot) {
+  GrammarControl control;
+  auto counters = std::make_shared<q4t::server::GrammarWorkerCounters>();
+  control.counters = counters;
+  std::unique_ptr<GrammarProcess> first, second;
+  Q4T_CHECK(GrammarProcess::Start("--grammar-fixture-idle", control, &first));
+  Q4T_CHECK(Ready(*first));
+  GrammarFailure failure;
+  Q4T_CHECK(!GrammarProcess::Start("--grammar-fixture-idle", control, &second,
+                                   &failure));
+  Q4T_CHECK(failure == GrammarFailure::kUnavailable && counters->started == 1);
+  first.reset();
+  Q4T_CHECK(
+      GrammarProcess::Start("--grammar-fixture-limits", control, &second));
+  Q4T_CHECK(Ready(*second));
+  second.reset();
+  Q4T_CHECK(counters->started == 2 && counters->reaped == 2 &&
+            counters->active == 0);
   return true;
 }

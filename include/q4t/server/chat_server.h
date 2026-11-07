@@ -51,6 +51,7 @@
 #include "q4t/server/startup_admission.h"
 #include "q4t/server/structured_admission.h"
 #include "q4t/server/device_memory.h"
+#include "q4t/server/grammar_process.h"
 #include "q4t/vision/processor.h"
 #include "q4t/vision/media_plan.h"
 #include "q4t/vision/vision.h"
@@ -89,14 +90,10 @@ struct ServeMetrics {
   std::atomic<uint64_t> structured_rejected{0};
   std::atomic<uint64_t> structured_prepare_failed{0};
   std::atomic<uint64_t> structured_vocab_bytes{0};
-  std::atomic<int> structured_workers_active{0};
-  std::atomic<uint64_t> structured_workers_started{0};
+  std::shared_ptr<GrammarWorkerCounters> structured_workers =
+      std::make_shared<GrammarWorkerCounters>();
   std::atomic<uint64_t> structured_workers_ready{0};
   std::atomic<uint64_t> structured_compiles_started{0};
-  std::atomic<uint64_t> structured_workers_reaped{0};
-  std::atomic<uint64_t> structured_worker_max_rss_bytes{0};
-  std::atomic<uint64_t> structured_worker_reported_rss_bytes{0};
-  std::atomic<uint64_t> structured_worker_rss_reports{0};
   std::atomic<uint64_t> structured_compile_timeouts{0};
   std::atomic<uint64_t> structured_resource_exhausted{0};
   std::atomic<uint64_t> prompt_tokens_total{0};

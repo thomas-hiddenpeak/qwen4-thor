@@ -1,5 +1,6 @@
 # docs/ — 开发记录文档体系
 
+- [R02结构化工作进程有界回收：实施合同与针对性验证](SERVE_GRAMMAR_REAP_2026-11-08.md)
 - [R01普通观察写入阻塞隔离：实现与针对性验证](SERVE_OBSERVATION_IO_2026-11-08.md)
 
 - [Serve总目标重审：OpenAI兼容、原生接入、自恢复，全部任务完成后收口](SERVE_MASTER_PLAN_2026-11-08.md)

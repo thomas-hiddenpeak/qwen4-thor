@@ -187,31 +187,35 @@ void ChatServer::HandleMetrics(int fd) {
   counter("q4t_structured_prepare_failed_total",
           "Vocabulary or grammar preparation failures.",
           metrics_.structured_prepare_failed.load());
+  detail::PollGrammarWorkers();
+  gauge("q4t_structured_cleanup_pending",
+        "Unconfirmed cleanup retains the process-wide structured capacity.",
+        detail::GrammarCleanupPending() ? 1 : 0);
   counter("q4t_structured_workers_started_total", "Grammar worker execs.",
-          metrics_.structured_workers_started.load());
+          metrics_.structured_workers->started.load());
   counter("q4t_structured_workers_ready_total",
           "Workers with limits installed.",
           metrics_.structured_workers_ready.load());
   counter("q4t_structured_compiles_started_total", "Worker compiler entries.",
           metrics_.structured_compiles_started.load());
   counter("q4t_structured_workers_reaped_total", "Grammar workers reaped.",
-          metrics_.structured_workers_reaped.load());
+          metrics_.structured_workers->reaped.load());
   counter("q4t_structured_compile_timeouts_total", "Hard preparation timeouts.",
           metrics_.structured_compile_timeouts.load());
   counter("q4t_structured_resource_exhausted_total",
           "Preparation memory limits.",
           metrics_.structured_resource_exhausted.load());
   gauge("q4t_structured_workers_active", "Owned unreaped grammar processes.",
-        metrics_.structured_workers_active.load());
+        metrics_.structured_workers->active.load());
   gauge("q4t_structured_worker_lifetime_max_rss_bytes",
         "wait4 ru_maxrss includes pre-exec inherited mm; not AS-limited peak.",
-        metrics_.structured_worker_max_rss_bytes.load());
+        metrics_.structured_workers->max_rss_bytes.load());
   gauge("q4t_structured_worker_reported_rss_bytes",
         "Maximum reported post-exec VmHWM; may omit tail before abrupt kill.",
-        metrics_.structured_worker_reported_rss_bytes.load());
+        metrics_.structured_workers->reported_rss_bytes.load());
   counter("q4t_structured_worker_rss_reports_total",
           "Reaped workers with a valid post-exec VmHWM report.",
-          metrics_.structured_worker_rss_reports.load());
+          metrics_.structured_workers->rss_reports.load());
   counter("q4t_prompt_tokens_total", "Total prompt tokens processed.",
           metrics_.prompt_tokens_total.load());
   counter("q4t_generation_tokens_total", "Total tokens generated.",

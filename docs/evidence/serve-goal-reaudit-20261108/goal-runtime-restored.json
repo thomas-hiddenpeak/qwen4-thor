@@ -1,0 +1,19 @@
+{
+  "observed_before": {
+    "goal": null
+  },
+  "recreated": {
+    "goal": {
+      "threadId": "01a1982b-6158-7d12-83bf-8889d5a88892",
+      "objective": "完成 docs/SERVE_MASTER_PLAN_2026-11-08.md 与 docs/serve-master-goals-v2.json 的全部计划任务：A01—A12 OpenAI推理与应用服务兼容、N01—N07原生接入及可选外部集成、R01—R10故障隔离与自恢复、Q01—Q03真实业务与可用交付，并落实G00范围决定。当前限制必须转成实现任务，去掉nginx强依赖必须原生补回所需能力；unsupported、NO_GO、文档披露或一个阶段交付都不等于总目标完成。按依赖持续推进全部实现、针对性CPU/必要GPU业务短验、可回退发布和阶段提交推送；非性能改动不跑完整性能及全模型正确性矩阵，长稳实跑由用户负责、工具及交接由本任务完成。不在一个子阶段结束时停止，全部计划任务完成前不标记complete。",
+      "status": "active",
+      "tokensUsed": 0,
+      "timeUsedSeconds": 0,
+      "createdAt": 1794088280,
+      "updatedAt": 1794088280
+    },
+    "remainingTokens": null,
+    "completionBudgetReport": null
+  },
+  "note": "Runtime get_goal returned null after context continuation; same full objective restored without marking any stage or full plan complete."
+}
