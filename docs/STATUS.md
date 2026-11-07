@@ -2,6 +2,11 @@
 
 更新：2026-11-08。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+核心serve能力核对已同步到[应用兼容矩阵](APPLICATION_SERVICE.md)：
+纠正旧“无RPM/TPM及公平准入”、nginx强绑定和默认无恢复的描述，
+区分10条后端路由与8条原生公共路由。A/B及入口解耦已验，C的日志
+阻塞/grammar回收/执行无进度仍未闭合；本次仅文档，不追加运行验证。
+
 ## 默认原生服务入口已解耦并有界交付
 
 [最终结果与操作](SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)：默认v2包
