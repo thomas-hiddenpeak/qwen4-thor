@@ -88,16 +88,19 @@ class MonitorTests(unittest.TestCase):
         self.assertTrue(monitor.close()['query_worker_reaped'])
         self.assertTrue(monitor.snapshot()['suspended'])
 
-    def test_protocol_and_log_errors_are_fatal(self):
+    @mock.patch.object(guard, 'processes', return_value={})
+    def test_protocol_and_log_errors_do_not_stop_the_backend(self, _):
         monitor = self.make_monitor([self.failed('PROTOCOL_ERROR')])
-        with self.assertRaisesRegex(RuntimeError, 'worker protocol'):
-            monitor(42)
+        monitor(42)
         self.assertEqual(monitor.snapshot()['visibility'], 'UNKNOWN')
-        self.assertTrue(monitor.snapshot()['fatal'])
+        self.assertFalse(monitor.snapshot()['fatal'])
+        self.assertTrue(monitor.snapshot()['suspended'])
         monitor = telemetry.Monitor(self.root/'lease', query=lambda **_: self.failed())
-        with mock.patch.object(guard, 'open_log', side_effect=OSError('disk full')):
-            with self.assertRaisesRegex(OSError, 'disk full'):
-                monitor(42)
+        with mock.patch('tools.serve_service.auxiliary.BoundedLog.write',
+                        side_effect=OSError('disk full')):
+            monitor(42)
+        self.assertEqual(monitor.snapshot()['auxiliary_io']['nvml_log']['state'],
+                         'UNAVAILABLE')
 
     def test_known_foreign_process_remains_a_conflict_during_outage(self):
         monitor = self.make_monitor([self.failed()])
@@ -246,15 +249,22 @@ class PackageTests(unittest.TestCase):
     setUp = old.Case.setUp
     fixture = old.PackageTests.fixture
 
-    def test_v8_binds_recovery_sources_and_v7_inventory_remains_readable(self):
+    def test_v9_binds_isolation_sources_and_old_inventories_remain_readable(self):
         binary, release, model = self.fixture()
         receipt = pkg.prepare(binary, release, model, self.root/'package',
                               nvml_policy='degrade')
         target = Path(receipt['package'])
         value = pkg.read(target/'manifest.json')
         extra = {'source/tools/serve_service/nvml_policy.py',
-                 'source/tools/serve_service/monitor_control.py'}
+                 'source/tools/serve_service/monitor_control.py',
+                 'source/tools/serve_service/auxiliary.py'}
         self.assertTrue(extra <= value['files'].keys())
+        old_files = dict(value['files'])
+        value['version'] = 8
+        del value['files']['source/tools/serve_service/auxiliary.py']
+        pkg.save(target/'manifest.json', value)
+        self.assertEqual(pkg.verify(target, pkg.sha(target/'manifest.json'))['version'], 8)
+        value['files'] = old_files
         # An old sealed package keeps its v7 inventory and pinned source bytes.
         # This fixture checks validation compatibility, not old code execution.
         value['version'] = 7
@@ -279,7 +289,7 @@ class PackageTests(unittest.TestCase):
 
     def test_explicit_policy_and_source_are_bound_and_defaults_remain_strict(self):
         binary, release, model = self.fixture()
-        for mode, version in (('strict', 3), ('degrade', 8)):
+        for mode, version in (('strict', 3), ('degrade', 9)):
             receipt = pkg.prepare(binary, release, model, self.root/mode,
                                   nvml_policy=mode)
             value = pkg.verify(receipt['package'], receipt['manifest_sha256'])
@@ -305,7 +315,7 @@ class PackageTests(unittest.TestCase):
                 pkg.prepare(binary, release, model, self.root/'invalid', nvml_policy=invalid)
         self.assertFalse((self.root/'invalid').exists())
 
-    def test_existing_client_and_resource_options_compose_with_v8(self):
+    def test_existing_client_and_resource_options_compose_with_v9(self):
         from tools.serve_service import resources
         binary, release, model = self.fixture()
         clients = self.root/'clients.json'
@@ -320,12 +330,12 @@ class PackageTests(unittest.TestCase):
                 for has_resources in (False, True):
                     for operations in (0, 18998):
                         receipt = pkg.prepare(binary, release, model,
-                            self.root/f'v8-{has_clients}-{has_resources}-{operations}',
+                            self.root/f'v9-{has_clients}-{has_resources}-{operations}',
                             client_policy=clients if has_clients else None,
                             host_resources=resources.policy(32, 64, 8) if has_resources else None,
                             operations_port=operations, nvml_policy='degrade')
                         value = pkg.verify(receipt['package'], receipt['manifest_sha256'])
-                        self.assertEqual(value['version'], 8)
+                        self.assertEqual(value['version'], 9)
                         self.assertEqual('client_policy' in value, has_clients)
                         self.assertEqual('host_resources' in value, has_resources)
                         self.assertEqual(value['settings'].get('operations_port', 0), operations)

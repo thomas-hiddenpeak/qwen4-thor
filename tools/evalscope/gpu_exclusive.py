@@ -310,8 +310,11 @@ def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None,
     owned_history = {}
     acquired = False
     lock_path.parent.mkdir(parents=True, exist_ok=True)
-    with contextlib.ExitStack() as stack, open_log(
-            out / 'events.jsonl', 'w', log_max_bytes) as events:
+    event_log = (contextlib.nullcontext(managed_monitor.event_log(
+                    out / 'events.jsonl', log_max_bytes))
+                 if managed_monitor is not None else
+                 open_log(out / 'events.jsonl', 'w', log_max_bytes))
+    with contextlib.ExitStack() as stack, event_log as events:
         def record(event, **values):
             events.write(json.dumps(dict(stamp(), event=event, **values)) + '\n')
             events.flush()
@@ -403,7 +406,8 @@ def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None,
                     status['monitor_cleanup_error'] = repr(error)
                     cleanup_failed = True
             status['finished'] = stamp()
-            (out / 'exit.json').write_text(json.dumps(status, indent=2) + '\n')
+            if managed_monitor is None:
+                (out / 'exit.json').write_text(json.dumps(status, indent=2) + '\n')
             if acquired:
                 lock.seek(0)
                 lock.truncate()
@@ -413,6 +417,13 @@ def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None,
                 lock.flush()
                 record('lease_guard_finished' if lease_fd is not None else
                        'lease_released', status=status['status'])
+            if managed_monitor is not None:
+                # Close/last-event I/O can introduce the first history gap.
+                # Freeze the receipt after those attempts, still under flock.
+                status['compute_monitor'] = managed_monitor.snapshot()
+                if status['status'] == 'COMPLETED' and managed_monitor.had_gaps:
+                    status['status'] = 'COMPLETED_WITH_MONITOR_GAPS'
+                (out / 'exit.json').write_text(json.dumps(status, indent=2) + '\n')
             if cleanup_failed:
                 return 75
 

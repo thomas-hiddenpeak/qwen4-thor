@@ -41,7 +41,7 @@ def prepare():
                 pkg.sha(ROOT/'build/q4t.release.json') == SIDECAR, 'default pair changed')
     receipt = pkg.prepare(ROOT/'build/q4t', ROOT/'build/q4t.release.json',
                           MODEL, BASE/'package', port=PORT, nvml_policy='degrade')
-    paths = {*pkg.V8_SOURCES, 'tools/serve_service/nvml_acceptance.py',
+    paths = {*pkg.V9_SOURCES, 'tools/serve_service/nvml_acceptance.py',
         'tools/serve_service/test_telemetry.py', 'tools/examples/chat_client.py',
         'tools/examples/deadline_http.py', 'tools/examples/project_records.py',
         'tools/serve_backpressure/verify.py', 'docs/STATUS.md',

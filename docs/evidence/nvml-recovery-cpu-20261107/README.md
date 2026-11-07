@@ -1,6 +1,9 @@
 # NVML分类与有界恢复CPU证据
 
-`result.json`给出168项不同CPU用例及未运行范围。`source-bindings.json`
+`result.json`保留当时计数及未运行范围。后续核对发现其`unique_tests=168`
+包含29项重复；实际为所选组168次执行、139项不同用例。原始记录
+不改写，[更正依据](../auxiliary-isolation-cpu-20261107/prior-count-correction.json)
+记录重复用例ID及旧结果摘要。`source-bindings.json`
 绑定最终实现、旧v7包、默认程序与两份视觉ELF，保留纯测试登记变更。
 
 `raw-records.tar.gz`无损封存命令、首轮/定向复验日志、语法/来源记录、

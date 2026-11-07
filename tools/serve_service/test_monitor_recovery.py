@@ -192,7 +192,7 @@ class RecoveryTests(unittest.TestCase):
         pkg.save(self.root/'controller.json', dict(
             owner=service.supervisor.process_identity(os.getpid()),
             package=str(self.root), manifest_sha256='fixture'))
-        manifest = dict(version=8, settings=pkg.settings(18999, 0, nvml_policy='degrade'))
+        manifest = dict(version=9, settings=pkg.settings(18999, 0, nvml_policy='degrade'))
         with mock.patch.object(pkg, 'verify', return_value=manifest), \
              mock.patch.object(control.time, 'monotonic', return_value=self.now), \
              mock.patch.object(service, 'run') as launch, \
@@ -202,9 +202,9 @@ class RecoveryTests(unittest.TestCase):
             launch.assert_not_called()
             self.assertEqual(json.loads(output.getvalue())['state'], 'MONITOR_RESUME_REQUESTED')
             manifest['version'] = 7
-            with self.assertRaisesRegex(RuntimeError, 'v8 degrade'):
+            with self.assertRaisesRegex(RuntimeError, 'v8/v9 degrade'):
                 control.request(self.root)
-            manifest['version'] = 8
+            manifest['version'] = 9
             pkg.save(self.root/'stop.request.json', {})
             with self.assertRaisesRegex(RuntimeError, 'STOPPING'):
                 control.request(self.root)

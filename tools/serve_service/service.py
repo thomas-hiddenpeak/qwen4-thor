@@ -53,6 +53,7 @@ def run(package, digest, output):
     pkg.save(output/'controller.json', dict(version=2,
         owner=supervisor.process_identity(os.getpid()), lock_path=str(lock_path),
         observation_context=inspection.current_context(),
+        auxiliary_isolation=manifest.get('version') == 9,
         package=str(Path(package).resolve()), manifest_sha256=digest,
         created_unix=time.time()))
     command = [manifest['python']['path'], '-I', '-B',
@@ -113,7 +114,8 @@ def normal_stop(manual, clean, guard_result):
     return (guard_result['status'] == 'COMPLETED' or
             (guard_result['status'] == 'COMPLETED_WITH_MONITOR_GAPS' and
              guard_result.get('monitor_policy') in
-             ('nvml-service-degraded-v1', 'nvml-service-degraded-v2') and
+             ('nvml-service-degraded-v1', 'nvml-service-degraded-v2',
+              'nvml-service-degraded-v3') and
              guard_result.get('child_returncode') == 0) or
             (guard_result['status'] == 'ENV_ABORT' and
              guard_result.get('reason') ==
@@ -161,9 +163,22 @@ def status(output):
     result = dict(state=worker['state'] if live and worker else
                 'STARTING' if live else 'OWNER_ABSENT', controller_live=live,
                 worker=worker, cleanup_confirmed=False)
+    if control.get('auxiliary_isolation') and worker is not None:
+        observed = worker.get('updated_unix')
+        age = time.time()-observed if type(observed) in (int, float) else None
+        result['worker_snapshot_age_seconds'] = age
+        if live and (age is None or not 0 <= age <= 30):
+            result['state'] = 'OBSERVATION_UNAVAILABLE'
     monitor = output/'lease/compute-monitor.json'
     if monitor.exists():
         result['gpu_monitor'] = pkg.read(monitor)
+        if control.get('auxiliary_isolation'):
+            stamp = result['gpu_monitor'].get('snapshot_unix')
+            stale = (type(stamp) not in (int, float) or
+                     not 0 <= time.time()-stamp <= 30)
+            result['gpu_monitor']['snapshot_stale'] = stale
+            if stale:
+                result['gpu_monitor'].update(visibility='UNKNOWN', pids=None)
     return result
 
 

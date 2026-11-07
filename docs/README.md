@@ -1,5 +1,6 @@
 # docs/ — 开发记录文档体系
 
+- [辅助依赖故障隔离CPU阶段](SERVE_AUXILIARY_ISOLATION_2026-11-07.md)
 - [NVML错误分类与显式有界监控恢复](SERVE_NVML_RECOVERY_2026-11-07.md)
 - [P0永久模型故障与服务健康闭合](SERVE_HEALTH_P0_2026-11-07.md)
 - [NVML独立只读调研与后续CPU范围](NVML_RESILIENCE_RESEARCH_2026-11-07.md)

@@ -1,0 +1,191 @@
+{
+  "status": "CPU_SCOPE_ACCEPTED_NOT_DEPLOYED",
+  "unique_tests": 197,
+  "selected_suite_executions": 226,
+  "duplicate_executions": 29,
+  "suites": [
+    {
+      "name": "auxiliary",
+      "tests": 16,
+      "passed": 16,
+      "failed": 0,
+      "log": "auxiliary-04.log"
+    },
+    {
+      "name": "classification",
+      "tests": 13,
+      "passed": 13,
+      "failed": 0,
+      "log": "classification-04.log"
+    },
+    {
+      "name": "telemetry",
+      "tests": 20,
+      "passed": 20,
+      "failed": 0,
+      "log": "telemetry-04.log"
+    },
+    {
+      "name": "recovery",
+      "tests": 13,
+      "passed": 13,
+      "failed": 0,
+      "log": "recovery-04.log"
+    },
+    {
+      "name": "query",
+      "tests": 13,
+      "passed": 13,
+      "failed": 0,
+      "log": "query-01.log"
+    },
+    {
+      "name": "strict-guard",
+      "tests": 30,
+      "passed": 30,
+      "failed": 0,
+      "log": "strict-guard-02.log"
+    },
+    {
+      "name": "supervisor",
+      "tests": 38,
+      "passed": 38,
+      "failed": 0,
+      "log": "supervisor-03.log"
+    },
+    {
+      "name": "deadlines",
+      "tests": 37,
+      "passed": 37,
+      "failed": 0,
+      "log": "deadlines-03.log"
+    },
+    {
+      "name": "memory",
+      "tests": 7,
+      "passed": 7,
+      "failed": 0,
+      "log": "memory-01.log"
+    },
+    {
+      "name": "gateway",
+      "tests": 23,
+      "passed": 23,
+      "failed": 0,
+      "log": "gateway-01.log"
+    },
+    {
+      "name": "inspection",
+      "tests": 16,
+      "passed": 16,
+      "failed": 0,
+      "log": "inspection-01.log"
+    }
+  ],
+  "preserved_failures": [
+    {
+      "log": "terminal-gap-repro.log",
+      "note": "Final snapshot failure reproduced. Event fixture initially selected inherited-lease event only; corrected in second reproduction."
+    },
+    {
+      "log": "terminal-gap-repro-02.log",
+      "note": "Both final snapshot and final guard event failures reproduced before fix; fixture asserts injected failure occurred."
+    },
+    {
+      "log": "supervisor-terminal-gap-repro.log",
+      "note": "Final STOPPED event failure absent from snapshot before fix."
+    },
+    {
+      "log": "device-status-repro.log",
+      "note": "Complete explicit device error hidden by inconsistent final collector status before fix."
+    }
+  ],
+  "targeted_repairs": [
+    {
+      "groups": [
+        "auxiliary",
+        "telemetry",
+        "recovery",
+        "strict-guard"
+      ],
+      "record": "cpu-results-02.json",
+      "reason": "Guard terminal receipt now includes final observation I/O failures."
+    },
+    {
+      "groups": [
+        "auxiliary",
+        "supervisor",
+        "deadlines"
+      ],
+      "record": "cpu-results-03.json",
+      "reason": "v9 supervisor captures changed-state event failure before snapshot."
+    },
+    {
+      "groups": [
+        "classification",
+        "telemetry",
+        "recovery",
+        "auxiliary"
+      ],
+      "record": "cpu-results-04.json",
+      "reason": "Valid device error fields take precedence over inconsistent final status."
+    }
+  ],
+  "composite_cpu_fixture": {
+    "real_cpu_controller": true,
+    "real_cpu_backend": true,
+    "nvml_and_http_mocked": true,
+    "private_flock": true,
+    "progress_steps": 128,
+    "backend_bytes": 2097152,
+    "same_backend_pid": true,
+    "model_restarts": 0,
+    "attempts": 1,
+    "metrics_calls": 0,
+    "cleanup_confirmed": true
+  },
+  "policy": {
+    "package_version": 9,
+    "profile": "nvml-service-degraded-v3",
+    "model_restart": false,
+    "gpu_reset": false,
+    "io_retry_seconds": 60,
+    "snapshot_freshness_seconds": 30,
+    "automatic_transient_retries": [
+      5,
+      10,
+      20,
+      40,
+      60
+    ],
+    "resume_cooldown_seconds": 60,
+    "resume_limit_per_controller": 2,
+    "historical_gaps_cleared": false
+  },
+  "validation": {
+    "python_syntax_files": 14,
+    "syntax_warnings": 0,
+    "public_cpu_registration": true,
+    "serve_inventory": true,
+    "generated_contracts": true,
+    "old_v7_package_verified": true
+  },
+  "scope": {
+    "gpu_tests": 0,
+    "real_nvml_queries": 0,
+    "model_starts": 0,
+    "real_model_http_requests": 0,
+    "production_service_operations": 0,
+    "default_replaced": false,
+    "old_packages_rewritten": false,
+    "production_accepted": false,
+    "visual_candidate": "HOLD"
+  },
+  "limits": [
+    "Returned I/O failures only; uninterruptible kernel write/fsync is not bounded.",
+    "In-memory observation ledger can be lost if storage remains unavailable when controller dies.",
+    "v9 source and CPU fixtures do not inherit old v7 real-business acceptance.",
+    "System memory/cgroup loss, controller death and grammar worker cleanup are not expanded.",
+    "Strict performance acceptance guard is unchanged; monitoring gaps cannot pass full performance acceptance."
+  ]
+}

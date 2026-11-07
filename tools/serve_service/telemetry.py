@@ -8,12 +8,12 @@ import secrets
 import time
 
 from tools.serve_service import package as pkg
-from tools.serve_service import monitor_control, nvml_policy
+from tools.serve_service import auxiliary, monitor_control, nvml_policy
 from tools.serve_service.service import guard
 
 
 class Unavailable(RuntimeError):
-    """Only a known NVML availability failure may take the process-only path."""
+    """Missing/untrustworthy NVML observations take the process-only path."""
 
 
 class Monitor:
@@ -30,8 +30,9 @@ class Monitor:
         self.cleanup_unknown = False
         self.resume_path, self.stopping = resume_path, stopping
         self.resume_probe = False
+        self.observations = auxiliary.Observations(clock=clock)
         self.current_compute = set()
-        self.state = dict(version=2, policy=monitor_control.PROFILE,
+        self.state = dict(version=3, policy=monitor_control.PROFILE,
             generation=secrets.token_hex(16), closed=False, fatal=False,
             visibility='UNKNOWN', pids=None, last_success=None,
             failed_queries=0, consecutive_failures=0, recovered_gaps=0,
@@ -47,7 +48,7 @@ class Monitor:
 
     @property
     def had_gaps(self):
-        return self.state['failed_queries'] != 0
+        return self.state['failed_queries'] != 0 or self.observations.had_gaps
 
     def track_worker(self, worker):
         pkg.require(self.worker is None or self.worker.poll() is not None,
@@ -66,12 +67,18 @@ class Monitor:
             current_gap_seconds=0 if started is None else self.clock()-started,
             query_worker_pid=None if self.worker is None else self.worker.pid,
             query_worker_reaped=self.worker_reaped(),
+            auxiliary_io=self.observations.snapshot(),
             performance_acceptance=False)
 
     def publish(self):
         value = self.snapshot()
-        pkg.save(self.output/'compute-monitor.json', value)
-        return value
+        self.observations.save(self.output/'compute-monitor.json', value,
+                               'monitor_snapshot')
+        return self.snapshot()
+
+    def event_log(self, path, maximum):
+        return self.observations.log(path, maximum or self.log_bytes,
+                                     'guard_events')
 
     def suspend(self, reason):
         self.state.update(suspended=True, suspension_reason=reason,
@@ -86,7 +93,7 @@ class Monitor:
             pkg.require(self.resume_path.stat().st_size <= 4096,
                         'resume request size limit')
             value = pkg.read(self.resume_path)
-        except (ValueError, RuntimeError):
+        except (OSError, ValueError, RuntimeError):
             self.state['last_resume_request'] = dict(
                 status='REJECTED', reason='INVALID_REQUEST')
             return
@@ -110,11 +117,22 @@ class Monitor:
         state['resume_attempts'] += 1
         state['last_resume'] = dict(request_id=value['request_id'],
             attempt=state['resume_attempts'], status='QUERY_PENDING')
+        # A snapshot is best effort; authorization is not. Spend the in-memory
+        # budget even if durable authorization fails, without issuing a query.
+        try:
+            pkg.save(self.output/'monitor.resume.accepted.json', dict(value,
+                attempt=state['resume_attempts']))
+        except (OSError, ValueError, RuntimeError):
+            state['last_resume_request'].update(status='REJECTED',
+                                               reason='CONTROL_WRITE_FAILED')
+            state['last_resume']['status'] = 'CONTROL_WRITE_FAILED'
+            self.publish()
+            return
         state.update(suspended=False, suspension_reason=None,
                      next_query_monotonic=None)
         self.resume_probe = True
-        # Persist consumption before querying. A concurrent/stale CLI request
-        # cannot reset the budget or execute a second probe for this epoch.
+        # Owner state and the durable authorization govern the budget; a stale
+        # observation file never grants an additional query.
         self.publish()
 
     def failed(self, decision, query_started):
@@ -164,15 +182,21 @@ class Monitor:
             self.failed(nvml_policy.Decision('WORKER_UNREAPED', 'suspend'), now)
         query_started = now
         state.update(visibility='UNKNOWN', pids=None, last_query_status='IN_PROGRESS')
-        result = self.query(timeout=5, on_worker=self.track_worker)
-        with guard.open_log(self.output/'nvml-queries.jsonl', 'a',
-                            self.log_bytes) as stream:
-            stream.write(json.dumps(result)+'\n')
+        try:
+            result = self.query(timeout=5, on_worker=self.track_worker)
+        except Exception as error:
+            # Collectors can fail outside their serialized worker protocol.
+            # Keep their worker handle; never turn an exception into empty GPU.
+            result = dict(status='ERROR', error=dict(type=type(error).__name__,
+                message='collector exception', nvml_code=getattr(error, 'value', None)))
         now = self.clock()
         state['last_query_status'] = result.get('status') if type(result) is dict else None
         state['last_query_completed_monotonic'] = now
         state['last_query_completed_unix'] = self.wall_clock()
         decision = nvml_policy.classify(result)
+        self.observations.perform('nvml_log', lambda:
+            self.observations.log(self.output/'nvml-queries.jsonl',
+                self.log_bytes, 'nvml_log').writer.write(json.dumps(result)+'\n'))
         if (type(result) is dict and result.get('status') == 'CLEANUP_FAILED' and
                 self.worker is None):
             self.cleanup_unknown = True

@@ -176,6 +176,8 @@ block()
     tools/evalscope/test_nvml_process_query.py)
   q4t_add_python_contract(q4t_monitor_resume_contracts
     tools/serve_service/test_monitor_recovery.py)
+  q4t_add_python_contract(q4t_auxiliary_isolation_contracts
+    tools/serve_service/test_auxiliary.py)
   q4t_add_python_contract(q4t_managed_telemetry_exit_contracts
     tools/serve_service/test_nvml_acceptance.py)
 endblock()

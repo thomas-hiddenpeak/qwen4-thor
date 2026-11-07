@@ -5,7 +5,7 @@ import time
 
 from tools.serve_service import package as pkg, supervisor
 
-PROFILE = 'nvml-service-degraded-v2'
+PROFILE = 'nvml-service-degraded-v3'
 RESUME_LIMIT = 2
 COOLDOWN_SECONDS = 60
 REQUEST_NAME = 'monitor.resume.request.json'
@@ -45,12 +45,13 @@ def request(output):
     pkg.require(supervisor.process_identity(control['owner']['pid']) ==
                 control['owner'], 'monitor controller identity changed')
     manifest = pkg.verify(control['package'], control['manifest_sha256'])
-    pkg.require(manifest['version'] == 8 and
+    pkg.require(manifest['version'] in (8, 9) and
                 manifest['settings'].get('nvml_policy') == 'degrade' and
                 manifest['settings']['restart_limit'] == 0,
-                'monitor resume requires a v8 degrade package without restart')
+                'monitor resume requires a v8/v9 degrade package without restart')
     state = pkg.read(output/'lease/compute-monitor.json')
-    pkg.require(state.get('policy') == PROFILE, 'monitor profile mismatch')
+    expected = 'nvml-service-degraded-v2' if manifest['version'] == 8 else PROFILE
+    pkg.require(state.get('policy') == expected, 'monitor profile mismatch')
     reason = denial(state, time.monotonic(), stopping=
                     (output/'stop.request.json').exists() or
                     (output/'terminal.json').exists())

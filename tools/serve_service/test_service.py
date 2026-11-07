@@ -35,7 +35,7 @@ class Case(unittest.TestCase):
                     configuration=sup.expected_configuration())
 
     def run_supervisor(self, observer, *, restarts=0, script=None, patch=None,
-                       read_memory=None, config_overrides=None):
+                       read_memory=None, config_overrides=None, isolated=False):
         out = self.root/'runtime'
         out.mkdir()
         cfg = pkg.settings(18999, restarts)
@@ -49,6 +49,9 @@ class Case(unittest.TestCase):
             total_bytes=8*1024**3, available_bytes=4*1024**3))
         manifest = dict(settings=cfg, repository=str(ROOT),
                         protocol_sha256='protocol', files={'q4t': 'binary'})
+        if isolated:
+            cfg['nvml_policy'] = 'degrade'
+            manifest['version'] = 9
         command = [sys.executable, '-c', script or 'import time; time.sleep(30)']
         with mock.patch.object(pkg, 'verify', return_value=manifest), \
              mock.patch.object(pkg, 'command', return_value=command), \

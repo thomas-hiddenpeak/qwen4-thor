@@ -1,0 +1,224 @@
+{
+  "source_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/auxiliary-isolation-cpu-20261107",
+  "archive": {
+    "path": "raw-records.tar.gz",
+    "sha256": "e8c67c21106da5e258a2257d3a946b4a2b3c4bd80d0b863c2ff9d818071acec1"
+  },
+  "files": [
+    {
+      "path": "auxiliary-01.log",
+      "bytes": 2102,
+      "sha256": "6c48f4e1e9dda51baf2c47147082c141f570027da8db67a3ad70ff610fa2e383"
+    },
+    {
+      "path": "auxiliary-02.log",
+      "bytes": 2350,
+      "sha256": "ce25ca6904b64473367585f8d0b2fb6ff56aab4e562bdeea641249bde894e060"
+    },
+    {
+      "path": "auxiliary-03.log",
+      "bytes": 2501,
+      "sha256": "1357593f0fb7b51d18712d44980cc010f8c9043a85facb1de9455e84be7f6c5c"
+    },
+    {
+      "path": "auxiliary-04.log",
+      "bytes": 2501,
+      "sha256": "a9792d8b01aa93ca9e257b0c2be153a21988cbe8ecfcbbf084f1d2c4925f9bc0"
+    },
+    {
+      "path": "before.json",
+      "bytes": 519,
+      "sha256": "1944ef2b8efb70a0ef384c35cb0f9df617d152a70143e59ed81639a6da735b9a"
+    },
+    {
+      "path": "classification-01.log",
+      "bytes": 111,
+      "sha256": "3af354abd6afd2f4f662a367159a8b8107385935ded6c8a2b929734becedb43c"
+    },
+    {
+      "path": "classification-04.log",
+      "bytes": 112,
+      "sha256": "b986091cdd4d7aeb1185de9a51d74065913d71702d10fa5dada3e4c584a2ddd7"
+    },
+    {
+      "path": "cpu-results-01.json",
+      "bytes": 2480,
+      "sha256": "9b4ae90644ac03f49680352c1c26109b964c58222e15e5a6f05dd09336688049"
+    },
+    {
+      "path": "cpu-results-02.json",
+      "bytes": 897,
+      "sha256": "1db50277c2b61a090e712950648121fe6a5fd7c5b7cb28ac8ed36c8c902ee49c"
+    },
+    {
+      "path": "cpu-results-03.json",
+      "bytes": 674,
+      "sha256": "e9352dbc556db4107e715f1d25fdfb9e2483e8114a1fd4946efc770053f15d46"
+    },
+    {
+      "path": "cpu-results-04.json",
+      "bytes": 900,
+      "sha256": "7562af69c536d4bff0480e8b2ad989020731e6a4f8b9bd263aee0e02ba622fa1"
+    },
+    {
+      "path": "deadlines-01.log",
+      "bytes": 5268,
+      "sha256": "0e0e5b1ecd2605e9fef3712b706217116d55a7911785baf262ade539bb4cfeda"
+    },
+    {
+      "path": "deadlines-03.log",
+      "bytes": 5268,
+      "sha256": "939fc547f3927e9be8189381a04e926943d3d0812f1255500ff14eb52190ef73"
+    },
+    {
+      "path": "device-status-repro.log",
+      "bytes": 8350,
+      "sha256": "700df691a98d46e3be9e220d30f3d774e5bbe783fbd3e5c145c441d8fa67e73f"
+    },
+    {
+      "path": "gateway-01.log",
+      "bytes": 122,
+      "sha256": "2a71a55754c3472c3b6f9ed7557de52367800c1079ca74c182364cf93fbcc181"
+    },
+    {
+      "path": "host-configure.log",
+      "bytes": 680,
+      "sha256": "30fb9cd9698283b935fa9b2cbe3656015834ffd7fd6fd84129931f6c80fcab2f"
+    },
+    {
+      "path": "host-registration.log",
+      "bytes": 50209,
+      "sha256": "79c7e6635a0790b183c67d9a9d5a3d5810e154ffd9da8bed45556094f65fd446"
+    },
+    {
+      "path": "inspection-01.log",
+      "bytes": 115,
+      "sha256": "3e7d71fff2f1bf74e2b03a36387f489615f8dd49875d137157de37f84892fb82"
+    },
+    {
+      "path": "memory-01.log",
+      "bytes": 105,
+      "sha256": "83166b089fbcb82fac63f22522fa6ae99bb5e46368cd35d756277fd463dd6346"
+    },
+    {
+      "path": "prior-count-correction.json",
+      "bytes": 3296,
+      "sha256": "a23459ca818134ba8bb3d98fa69cb5ea77537a8e9f41b09dc2c99ce702485e2b"
+    },
+    {
+      "path": "protected-after.json",
+      "bytes": 703,
+      "sha256": "0088feed4846faf2da73e8a50158ab0279bd49aa3750629bbf7e6b0e853de05e"
+    },
+    {
+      "path": "query-01.log",
+      "bytes": 112,
+      "sha256": "b0906c137aaabea8c82b0734ce68aa6c0de4fe900dc5a892f751ffd05896f015"
+    },
+    {
+      "path": "recovery-01.log",
+      "bytes": 204,
+      "sha256": "5f114a18df701066b6c1aaa42f3bb4266e93bf0b5358449feed7d4f1ccb7533b"
+    },
+    {
+      "path": "recovery-02.log",
+      "bytes": 204,
+      "sha256": "e180f6e841fe8ffb7edc7402da9037368b2335c01a2a7bff4033c14e401308b8"
+    },
+    {
+      "path": "recovery-04.log",
+      "bytes": 204,
+      "sha256": "044694db20dabcd245fcb04d3675ba97648e7c1c810cecddeb32e758853eeb19"
+    },
+    {
+      "path": "result.json",
+      "bytes": 4823,
+      "sha256": "01f2e2f6eede174da26f232a7df3c8d06a3977360d0ab1ebb59c2d331dd7d139"
+    },
+    {
+      "path": "run_cpu.py",
+      "bytes": 1949,
+      "sha256": "2adb2fb831381183cea141f438542fcebde979494cce870b7ed62e7373ae4a43"
+    },
+    {
+      "path": "serve-contract.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "serve-inventory.log",
+      "bytes": 170,
+      "sha256": "520ac62c4994168b9905e625b642f8f28a4b7a91fb33ac9fb2fb1a0165ae9608"
+    },
+    {
+      "path": "source-bindings.json",
+      "bytes": 2451,
+      "sha256": "9849b26f0ab0bb1e0f58504a8b96dd18ee1a2618e33c24ddbde53e10cafc546c"
+    },
+    {
+      "path": "sources-01.json",
+      "bytes": 1732,
+      "sha256": "3a905a62905bf0a806369a6c52dfd80dbf723f627894ed834b8bfb210b76a4ac"
+    },
+    {
+      "path": "static-checks.json",
+      "bytes": 1030,
+      "sha256": "e6b52f697f665076ff94d6b4699638d524807b83cb571c5fccca8dc1084c160b"
+    },
+    {
+      "path": "strict-guard-01.log",
+      "bytes": 221,
+      "sha256": "ba80c40bf25a0d4c493c5b61729071d7749b3457727630799dbe1f7e3e5dd3ad"
+    },
+    {
+      "path": "strict-guard-02.log",
+      "bytes": 221,
+      "sha256": "98fc94a3bacddadca75bb950d502e2276ce03a569dd9a1177857b065326b1591"
+    },
+    {
+      "path": "supervisor-01.log",
+      "bytes": 137,
+      "sha256": "b50a6bb68614a8f8bcccb1fe0be99e1fbf83cbc36f500c01f228adf27d93e4d1"
+    },
+    {
+      "path": "supervisor-03.log",
+      "bytes": 137,
+      "sha256": "225d45fccf7b169be94b58ee0283446204bb334ae9740cc193783733d6c6269a"
+    },
+    {
+      "path": "supervisor-terminal-gap-repro.log",
+      "bytes": 883,
+      "sha256": "b4ae6cbb979a9aa4579991a88b7f5dc8f938d24bc02c94bc67104350821d24eb"
+    },
+    {
+      "path": "telemetry-01.log",
+      "bytes": 119,
+      "sha256": "9030376f56e147c5904d47d94e237a72ed1d99869c46cbfaa6220557dcba15de"
+    },
+    {
+      "path": "telemetry-02.log",
+      "bytes": 119,
+      "sha256": "2c7b80d1870dcaef8c768bd3f852e73557cf5a5a76bc99a35032d1593c58659d"
+    },
+    {
+      "path": "telemetry-04.log",
+      "bytes": 119,
+      "sha256": "f1326ae017dffc49d681e136d91f757bd3e399fad787faccadc74cb4e9474984"
+    },
+    {
+      "path": "terminal-gap-repro-02.log",
+      "bytes": 2009,
+      "sha256": "a851cf88f9c1c8d8f70c6176d32c4e836bd781034a26738b2c2209e77a93aba1"
+    },
+    {
+      "path": "terminal-gap-repro.log",
+      "bytes": 2009,
+      "sha256": "762285cf4b35d00c5897d3caede2a9d2d6a51d69c150101b8e352a0a3c992ee1"
+    },
+    {
+      "path": "test-inventory.json",
+      "bytes": 25530,
+      "sha256": "47e662583dbd622c27890aab67c6c1997aee0e38e7ac33cb619e6c8e61421483"
+    }
+  ]
+}

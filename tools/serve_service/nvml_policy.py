@@ -21,21 +21,20 @@ QUERY_ERROR = frozenset({1, 2, 5, 7, 29})
 def error_decision(error):
     if (type(error) is not dict or type(error.get('type')) is not str or
             type(error.get('message')) is not str):
-        return Decision('PROTOCOL_ERROR', 'fatal')
+        return Decision('PROTOCOL_ERROR', 'suspend')
     code = error.get('nvml_code')
     if code is None:
         return Decision('CONFIGURATION' if error['type'] in
                         ('ImportError', 'ModuleNotFoundError') else 'QUERY_ERROR',
-                        'suspend' if error['type'] in
-                        ('ImportError', 'ModuleNotFoundError') else 'fatal')
+                        'suspend')
     if type(code) is not int or code <= 0:
-        return Decision('PROTOCOL_ERROR', 'fatal')
+        return Decision('PROTOCOL_ERROR', 'suspend')
     if code in DEVICE_FAILURE:
         return Decision('DEVICE_FAILURE', 'fatal', code)
     if code in CONFIGURATION:
         return Decision('CONFIGURATION', 'suspend', code)
     if code in QUERY_ERROR:
-        return Decision('QUERY_ERROR', 'fatal', code)
+        return Decision('QUERY_ERROR', 'suspend', code)
     if code == 10:
         return Decision('NVML_TIMEOUT', 'retry', code)
     if code in (20, 23):
@@ -49,7 +48,7 @@ def error_decision(error):
 
 def primary_decision(result):
     if type(result) is not dict:
-        return Decision('PROTOCOL_ERROR', 'fatal')
+        return Decision('PROTOCOL_ERROR', 'suspend')
     status = result.get('status')
     if status == 'OK':
         pids = result.get('pids')
@@ -57,14 +56,14 @@ def primary_decision(result):
                                         for p in pids) or
                 result.get('error') is not None or
                 result.get('shutdown_error') is not None):
-            return Decision('PROTOCOL_ERROR', 'fatal')
+            return Decision('PROTOCOL_ERROR', 'suspend')
         return Decision('OK', 'observe')
     if status == 'TIMEOUT':
         return Decision('QUERY_TIMEOUT', 'retry')
     if status == 'CLEANUP_FAILED':
         return Decision('WORKER_UNREAPED', 'suspend')
     if status != 'ERROR':
-        return Decision('PROTOCOL_ERROR', 'fatal')
+        return Decision('PROTOCOL_ERROR', 'suspend')
     decisions = [error_decision(result.get('error'))]
     if result.get('shutdown_error') is not None:
         decisions.append(error_decision(result['shutdown_error']))
@@ -84,9 +83,17 @@ def classify(result):
     if type(result) is not dict:
         return primary
     observed = result.get('observed_errors', [])
+    decisions = [primary]
+    # A collector's final status can be inconsistent. Preserve a complete
+    # explicit device error even when its enclosing status is malformed.
+    decisions.extend(error_decision(result[field])
+                     for field in ('error', 'shutdown_error')
+                     if result.get(field) is not None)
     if (result.get('protocol_error') is not None or type(observed) is not list or
             len(observed) > 2 or (primary.category == 'OK' and observed)):
-        return Decision('PROTOCOL_ERROR', 'fatal')
+        decisions.append(Decision('PROTOCOL_ERROR', 'suspend'))
+    if type(observed) is list and len(observed) <= 2:
+        decisions.extend(error_decision(error) for error in observed)
     # External timeout/unreaped status must not hide an already reported device
     # error when shutdown stalls before the final worker record is emitted.
-    return strongest([primary, *(error_decision(error) for error in observed)])
+    return strongest(decisions)

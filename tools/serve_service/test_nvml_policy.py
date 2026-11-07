@@ -42,7 +42,7 @@ class ClassificationTests(unittest.TestCase):
     def test_programming_and_python_errors_are_not_vendor_outages(self):
         for code in (1, 2, 5, 7, 29):
             self.assertEqual(policy.classify(failure(code)).category, 'QUERY_ERROR')
-        self.assertEqual(policy.classify(failure(None, 'ValueError')).action, 'fatal')
+        self.assertEqual(policy.classify(failure(None, 'ValueError')).action, 'suspend')
 
     def test_shutdown_fault_cannot_be_hidden_by_primary_timeout(self):
         value = failure(10)
@@ -70,7 +70,7 @@ class ClassificationTests(unittest.TestCase):
         value['error']['message'] = 'timeout; safe to retry'
         self.assertEqual(policy.classify(value).category, 'DEVICE_FAILURE')
 
-    def test_malformed_observations_fail_closed(self):
+    def test_malformed_observations_suspend_without_fabricating_success(self):
         for value in (None, [], {}, dict(status='unexpected'),
                       dict(status='ERROR', error='timeout'), failure(True),
                       failure('10'), failure(0), failure(-1),
@@ -78,7 +78,25 @@ class ClassificationTests(unittest.TestCase):
                       dict(status='OK', pids=[], error=failure(10)['error'])):
             with self.subTest(value=value):
                 self.assertEqual(policy.classify(value),
-                                 policy.Decision('PROTOCOL_ERROR', 'fatal'))
+                                 policy.Decision('PROTOCOL_ERROR', 'suspend'))
+
+    def test_device_fault_survives_other_collector_corruption(self):
+        value = failure(15)
+        value['protocol_error'] = 'collector metadata corrupt'
+        value['observed_errors'] = 'invalid'
+        self.assertEqual(policy.classify(value).category, 'DEVICE_FAILURE')
+        value = dict(status='TIMEOUT', protocol_error='partial tail invalid',
+                     observed_errors=[failure(16)['error']])
+        self.assertEqual(policy.classify(value).action, 'fatal')
+
+    def test_device_fault_is_not_hidden_by_an_inconsistent_final_status(self):
+        for status in ('OK', 'TIMEOUT', 'CLEANUP_FAILED', 'invalid'):
+            for field in ('error', 'shutdown_error'):
+                with self.subTest(status=status, field=field):
+                    value = dict(status=status, pids=[])
+                    value[field] = failure(15)['error']
+                    self.assertEqual(policy.classify(value),
+                                     policy.Decision('DEVICE_FAILURE', 'fatal', 15))
 
     def test_success_and_unreaped_worker_are_separate_states(self):
         self.assertEqual(policy.classify(dict(status='OK', pids=[])).action, 'observe')
