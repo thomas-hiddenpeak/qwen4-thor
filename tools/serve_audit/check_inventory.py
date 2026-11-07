@@ -67,6 +67,8 @@ def current_surface(root):
                        root / "cmake/CudaCleanupBoundary.cmake",
                        root / "CMakeLists.txt",
                        root / "cmake/GuardianProcess.cmake",
+                       root / "cmake/RecoveryProbe.cmake",
+                       root / "src/service/cuda_probe.cu",
                        root / "include/q4t/runtime/system_memory.h",
                        root / "src/main.cpp", root / "cmake/StructuredOutput.cmake",
                        root / "cmake/ChatProtocolIdentity.cmake"})

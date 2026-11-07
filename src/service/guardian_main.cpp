@@ -413,17 +413,23 @@ class Guardian {
 
  private:
   bool BusinessReady() const {
-    return model_ready_ && quota_.Open(Now()) && !stopping_ &&
+    return model_ready_ && model_admission_open_ && quota_.Open(Now()) &&
+           !stopping_ &&
            (config_.gateway.empty() ||
             (gateway_ready_ && gateway_bound_model_ == model_generation_));
   }
   Json Status() const {
+    const bool observations_unknown =
+        !controller_health_.IsNull() &&
+        controller_health_.GetString("observation") != "AVAILABLE";
     const char* state =
         stopped_                             ? "STOPPED"
         : stopping_                          ? "DRAINING"
         : recovering_ || gateway_recovering_ ? "RECOVERING"
         : quarantined_                       ? "QUARANTINED"
-        : BusinessReady()      ? (gate_.Frozen() ? "READY_DEGRADED" : "READY")
+        : BusinessReady()
+            ? (gate_.Frozen() || observations_unknown ? "READY_DEGRADED"
+                                                      : "READY")
         : !failure_.empty()    ? "WAIT_DEPENDENCY"
         : retry_after_ > Now() ? (circuit_open_ ? "CIRCUIT_OPEN" : "RECOVERING")
         : controller_ready_    ? "WAIT_DEPENDENCY"
@@ -441,6 +447,13 @@ class Guardian {
          {"controller_start_ticks",
           w::Unsigned(controller_.identity.start_ticks)},
          {"controller_events", w::Unsigned(controller_event_)},
+         {"controller_health", controller_health_},
+         {"controller_health_age_ms",
+          controller_health_.IsNull()
+              ? Json{}
+              : w::Unsigned((Now() - controller_health_at_) / 1'000'000)},
+         {"continuous_model_recovery", w::Boolean(model_authority_seen_)},
+         {"probe_used_for_generation", w::Unsigned(probe_used_generation_)},
          {"retry_after_ms", w::Unsigned(static_cast<uint64_t>(std::max<int64_t>(
                                 0, (retry_after_ - Now()) / 1'000'000)))},
          {"journal_pid",
@@ -454,6 +467,7 @@ class Guardian {
          {"model_start_ticks", w::Unsigned(model_.identity.start_ticks)},
          {"model_generation", w::Unsigned(model_generation_)},
          {"model_ready", w::Boolean(model_ready_)},
+         {"model_admission_open", w::Boolean(model_admission_open_)},
          {"business_ready", w::Boolean(BusinessReady())},
          {"gateway_pid", gateway_.identity.pid > 0 && !gateway_reaped_
                              ? w::Unsigned(gateway_.identity.pid)
@@ -620,9 +634,9 @@ class Guardian {
       try {
         const auto event = Text(message, "event");
         Require(
-            event == "transaction"
+            event == "transaction" || event == "health" || event == "admission"
                 ? w::HasKeys(message, {"version", "service_id", "generation",
-                                       "sequence", "event", "transaction"})
+                                       "sequence", "event", event.c_str()})
                 : w::HasKeys(message, {"version", "service_id", "generation",
                                        "sequence", "event"}),
             "invalid controller message");
@@ -632,10 +646,44 @@ class Guardian {
                     Integer(message, "sequence") == controller_event_ + 1,
                 "stale controller message");
         ++controller_event_;
-        Require(
-            event == "ready" || event == "heartbeat" || event == "transaction",
-            "unknown controller event");
+        Require(event == "ready" || event == "heartbeat" ||
+                    event == "transaction" || event == "health" ||
+                    event == "admission",
+                "unknown controller event");
         if (event == "ready") controller_ready_seen_ = true;
+        if (event == "admission") {
+          const auto& value = *message.Find("admission");
+          Require(w::HasKeys(value, {"model_generation", "opened"}) &&
+                      value.Find("opened")->IsBool(),
+                  "invalid admission projection");
+          if (Integer(value, "model_generation") == model_generation_ &&
+              model_generation_ > 0) {
+            const bool opened = value.GetBool("opened");
+            CheckModel();
+            if (!opened || (model_ready_ && !stopping_ && !recovering_))
+              model_admission_open_ = opened;
+          }
+        }
+        if (event == "health") {
+          const auto& health = *message.Find("health");
+          Require(w::HasKeys(health, {"phase", "observation", "reason"}),
+                  "invalid controller health projection");
+          const auto phase = Text(health, "phase");
+          const auto observation = Text(health, "observation");
+          const auto reason = Text(health, "reason");
+          Require((phase == "STARTING" || phase == "READY" ||
+                   phase == "RECOVERING" || phase == "WAIT_DEPENDENCY" ||
+                   phase == "CIRCUIT_OPEN" || phase == "QUARANTINED") &&
+                      (observation == "AVAILABLE" || observation == "UNKNOWN" ||
+                       observation == "DEVICE_FAILURE") &&
+                      reason.size() <= 64 &&
+                      reason.find_first_not_of(
+                          "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                          "0123456789_") == std::string::npos,
+                  "invalid controller health fields");
+          controller_health_ = health;
+          controller_health_at_ = now;
+        }
         if (event == "transaction") {
           Require(!model_request_, "multiple controller transactions");
           const auto& request = *message.Find("transaction");
@@ -659,6 +707,7 @@ class Guardian {
     recovering_ = true;
     controller_ready_ = false;
     model_ready_ = false;
+    controller_health_ = Json{};
     controller_socket_.Reset();
     cleanup_started_ = now;
   }
@@ -723,7 +772,7 @@ class Guardian {
     const auto& request = *model_request_;
     const auto& args = request.args;
     const auto& operation = request.operation;
-    if (operation == "authorize") {
+    if (operation == "authorize" || operation == "probe") {
       Require(
           w::HasKeys(args, {"role", "proof"}) && Text(args, "role") == "model",
           "invalid model grant request");
@@ -842,7 +891,7 @@ class Guardian {
     try {
       ValidateModelRequest(now);
       const auto& operation = model_request_->operation;
-      if (operation == "authorize") {
+      if (operation == "authorize" || operation == "probe") {
         if (gate_.Frozen()) {
           ReplyModel(false, "recovery_frozen");
           return;
@@ -855,6 +904,26 @@ class Guardian {
         }
       } else if (operation == "retired" && !ModelTreeEmpty()) {
         ReplyModel(false, "model_cleanup_unconfirmed");
+        return;
+      }
+      if (operation == "probe") {
+        const auto& proof = *model_request_->args.Find("proof");
+        bool valid = !proof.GetBool("device_usable");
+        for (const auto& [key, value] : proof.object)
+          if (key != "device_usable") valid = valid && value.boolean;
+        if (!valid || !model_authority_seen_ || model_generation_ == 0 ||
+            probe_used_generation_ == model_generation_) {
+          ReplyModel(false, "probe_not_authorized");
+        } else {
+          // Root-local authorization survives controller death. A new Root is
+          // cold and cannot grant any NVML-free probe until a model was
+          // authorized under its own continuously retained lease.
+          probe_used_generation_ = model_generation_;
+          ReplyModel(
+              true,
+              w::Object({{"allowed", w::Boolean(true)},
+                         {"generation", w::Unsigned(model_generation_ + 1)}}));
+        }
         return;
       }
       if (operation == "authorize" && !config_.gateway.empty() &&
@@ -886,11 +955,13 @@ class Guardian {
       Require(grant && grant->IsObject(), "missing model grant");
       model_ticket_ = Text(*grant, "ticket");
       model_generation_ = Integer(*grant, "generation");
+      model_authority_seen_ = true;
       quota_.Granted(model_generation_, now);
     } else if (operation == "spawned") {
       model_registered_ = true;
     } else if (operation == "ready") {
       model_ready_ = !stopping_ && !recovering_;
+      model_admission_open_ = model_ready_;
       model_ready_committed_ = true;
       model_ready_at_ = now;
     } else if (operation == "retired") {
@@ -922,6 +993,7 @@ class Guardian {
     model_registered_ = false;
     model_ready_ = false;
     model_ready_committed_ = false;
+    model_admission_open_ = false;
   }
   void CheckController(int64_t now) {
     if (!controller_reaped_ && controller_.pidfd.Get() >= 0) {
@@ -1006,6 +1078,8 @@ class Guardian {
         "Q4T_CONTROL_FD=" + std::to_string(child.Get()),
         "Q4T_LEASE_FD=" + std::to_string(lease_.Get()),
         "Q4T_LEASE_PATH=" + config_.lease_path,
+        std::string("Q4T_CONTINUOUS_MODEL_RECOVERY=") +
+            (model_authority_seen_ ? "1" : "0"),
         "Q4T_GUARDIAN_PID=" + std::to_string(getpid()),
         "Q4T_GUARDIAN_START=" + std::to_string(self_.identity.start_ticks)};
     const auto status =
@@ -1366,6 +1440,7 @@ class Guardian {
   bool controller_ready_ = false;
   bool circuit_open_ = false;
   bool model_registered_ = false, model_ready_ = false, quarantined_ = false;
+  bool model_admission_open_ = false;
   bool model_ready_committed_ = false, cold_unreconciled_ = false;
   bool startup_ready_sent_ = false, detached_ = false;
   int64_t startup_deadline_ = 0;
@@ -1377,6 +1452,10 @@ class Guardian {
   s::ChildProcess model_;
   s::QuotaGate quota_;
   Json model_binding_;
+  Json controller_health_;
+  int64_t controller_health_at_ = 0;
+  bool model_authority_seen_ = false;
+  uint64_t probe_used_generation_ = 0;
   s::ChildProcess gateway_;
   s::OwnedFd gateway_socket_;
   s::LaunchGate gateway_gate_;

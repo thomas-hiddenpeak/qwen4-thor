@@ -58,6 +58,16 @@ class ControllerChannel:
         ledger.require(name in ('ready', 'heartbeat'), 'invalid control event')
         return self._send(name)
 
+    def health(self, phase, observation, reason):
+        return self._send('health', health=dict(phase=phase,
+            observation=observation, reason=reason))
+
+    def admission(self, generation, opened):
+        ledger.require(ledger.integer(generation, minimum=1) and
+                       type(opened) is bool, 'invalid model admission')
+        return self._send('admission', admission=dict(
+            model_generation=generation, opened=opened))
+
     def _send(self, name, **extra):
         ledger.require(self.sequence < ledger.MAX_INTEGER,
                        'controller sequence exhausted')
@@ -70,7 +80,7 @@ class ControllerChannel:
     def begin(self, operation, args):
         ledger.require(self.pending is None, 'controller transaction pending')
         ledger.require(operation in ('authorize', 'spawned', 'ready', 'retired',
-                       'fault', 'stable', 'quarantine', 'bind'),
+                       'fault', 'stable', 'quarantine', 'bind', 'probe'),
                        'invalid model operation')
         self.pending = self._send('transaction', transaction=dict(
             operation=operation, args=args))

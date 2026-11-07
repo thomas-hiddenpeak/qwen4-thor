@@ -68,6 +68,7 @@ include(cmake/GuardianProcess.cmake)
 
 # CUDA toolkit headers/libraries for C++ sources that include CUDA runtime.
 find_package(CUDAToolkit REQUIRED)
+include(cmake/RecoveryProbe.cmake)
 
 # ---------------------------------------------------------------------------
 # liburing (PLE SSD Stream io_uring reader dependency)

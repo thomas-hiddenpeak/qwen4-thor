@@ -24,15 +24,21 @@
 每代更换内部凭据，旧 POST/SSE 不重放或续接；指标缺失不参与绑定。
 有 RPM/TPM 时由 Guardian 在旧模型确认退场后保持完整 60 秒窗口。
 
-累计 142 项不同 CPU 通过：本组 75 项（原生 25、生命周期 30、
-网关合同 14、实际 nginx/worker 6），另复用未变的 67 项；e58f16c1
-远端 CI 已通过。原生 ELF 零警告，无 CUDA/NVML/Python/systemd
-动态链接（独立 worker 使用 Python）；147 来源锚点/3 负控通过。
-证据在 `.q4t-work/serve-recovery-b1-20261108/gateway-attempt-01/`。
-nginx 使用真实进程，Guardian 对端/HTTP 模型仍为 CPU 替身；0 真实
-模型/真实 GPU 查询，不是 LLM 恢复验收。统一生产命令与来源封装、
-真实控制器/CUDA 小探测仍待接入，网关/配额还须实际模型组合接受。
-A/B 未整体交付，默认程序、旧包及视觉证据保持，目标继续推进。
+生产控制器、来源封装和 `q4t service init/run/start/status/stop` 已接入。
+NVML 由单个有界子进程采集，辅助故障不换模型；连续租约下旧模型
+清空后，Guardian 每代最多授权一次独立 CUDA 小探测。新 Guardian
+仍须严格冷启动观测。模型生成自检和 60 秒配额窗口通过后才开放入口。
+
+累计 169 项不同 CPU 通过：本组生命周期 35、生产合同 22，复用
+未变的 112 项；两条生产恢复路径修复后重验，合计 59 次执行。
+来源封装另完成 3 项实际 CLI 检查；19c8b5aa 的远端 CI 已通过。
+Guardian 与 CUDA 小探测零警告构建，前者无 CUDA/NVML/Python/systemd
+动态链接，后者仅编译未执行；157 来源锚点/3 负控通过。
+原始导入失败及全部证据在 `.q4t-work/serve-recovery-b2-20261108/`，
+详情见[生产接入记录](SERVE_SELF_RECOVERY_B2_2026-11-08.md)。CPU 后端
+不是真实 LLM；仍为 0 真实模型/真实 GPU 查询。下一步是固定网关、
+JSON/SSE/工具与配额的单租约 B 验收。A/B 未整体交付，默认程序、
+旧包及视觉证据保持，目标继续推进。
 
 用户明确q4t面向持续LLM系统服务，要求按故障提供降级与自动恢复。
 [设计方案](SERVE_SELF_RECOVERY_DESIGN_2026-11-07.md)已核对主线：

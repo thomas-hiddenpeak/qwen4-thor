@@ -51,7 +51,8 @@ class Service:
     def __init__(self, output, *, escape=False, models=False, pause_at=None,
                  device_unknown=False, escape_model=False, bad_ledger=False,
                  stale_grant=False, daemon=False, startup_ms=300000,
-                 gateway=False, quota=False):
+                 gateway=False, quota=False, probe_lifecycle=False,
+                 probe_only=False, aux_health=False, production=False):
         self.directory = Path(tempfile.mkdtemp(prefix='service-', dir=output))
         self.service_id = str(uuid.uuid4())
         with store.Store(self.directory, self.service_id, initialize=True):
@@ -86,6 +87,16 @@ class Service:
             command.append('--escape-model-child')
         if gateway:
             command.append('--bind-model')
+        if probe_lifecycle:
+            command.append('--probe-lifecycle')
+        if probe_only:
+            command.append('--probe-only')
+        if aux_health:
+            command.append('--aux-health')
+        if production:
+            command = [sys.executable, '-I', '-B',
+                str(ROOT/'tools/serve_recovery/fixture_production.py'),
+                '--directory', str(self.directory)]
         self.bootstrap = None
         bootstrap_child = None
         if daemon:
@@ -293,6 +304,46 @@ class RuntimeTests(unittest.TestCase):
             control.binding(service.service_id)
         self.assertTrue(service.status()['business_ready'])
 
+    def test_cold_guardian_never_authorizes_nvml_free_probe(self):
+        service = self.launch(models=True, probe_only=True)
+        service.wait(lambda s: (service.directory/'probe-controller-1.json').exists())
+        reply = json.loads((service.directory/'probe-controller-1.json').read_text())
+        self.assertFalse(reply['ok'])
+        self.assertEqual(reply['result']['reason'], 'probe_not_authorized')
+        self.assertFalse(service.status()['continuous_model_recovery'])
+
+    def test_probe_permission_is_once_and_survives_controller_replacement(self):
+        service = self.launch(models=True, probe_lifecycle=True)
+        first = service.wait(lambda s: s['business_ready'])
+        signal_identity(first['model_pid'], first['model_start_ticks'], signal.SIGKILL)
+        service.wait(lambda s: (service.directory/'probes.json').exists())
+        replies = json.loads((service.directory/'probes.json').read_text())
+        self.assertTrue(replies[0]['ok'] and replies[0]['result']['allowed'])
+        self.assertFalse(replies[1]['ok'])
+        self.assertEqual(service.status()['probe_used_for_generation'], 1)
+        signal_identity(first['controller_pid'], first['controller_start_ticks'], signal.SIGKILL)
+        service.wait(lambda s: (service.directory/'probe-controller-2.json').exists())
+        repeated = json.loads((service.directory/'probe-controller-2.json').read_text())
+        self.assertEqual(repeated['result']['reason'], 'probe_not_authorized')
+        self.assertEqual(service.status()['model_generation'], 1)
+        self.assertTrue(service.stop()['cleanup_confirmed'])
+
+    def test_auxiliary_health_keeps_business_and_core_admission_survives_ledger_loss(self):
+        service = self.launch(models=True, aux_health=True)
+        first = service.wait(lambda s: s['state'] == 'READY_DEGRADED')
+        self.assertTrue(first['business_ready'])
+        self.assertEqual(first['controller_health']['reason'], 'query_timeout')
+        signal_identity(first['journal_pid'], first['journal_start_ticks'], signal.SIGKILL)
+        service.wait(lambda s: s['recovery_frozen'])
+        (service.directory/'admission.closed').touch()
+        closed = service.wait(lambda s: not s['business_ready'])
+        self.assertTrue(closed['model_ready'])
+        self.assertEqual(closed['model_pid'], first['model_pid'])
+        (service.directory/'admission.closed').unlink()
+        service.wait(lambda s: s['business_ready'])
+        result = service.stop()
+        self.assertFalse(result['stop_durable'])
+
     def test_model_quota_denial_keeps_loop_and_gateway_alive(self):
         service = self.launch(models=True, gateway=True, quota=True)
         first = service.wait(lambda s: s['business_ready'])
@@ -302,6 +353,32 @@ class RuntimeTests(unittest.TestCase):
         self.assertFalse(second['business_ready'] or second['model_ready'])
         self.assertGreater(second['quota_wait_ms'], 40000)
         self.assertEqual(second['gateway_pid'], first['gateway_pid'])
+        self.assertEqual(second['controller_pid'], first['controller_pid'])
+        self.assertTrue(service.stop()['cleanup_confirmed'])
+
+    def test_production_controller_cpu_backend_model_and_controller_recovery(self):
+        service = self.launch(production=True, gateway=True)
+        first = service.wait(lambda s: s['business_ready'], timeout=15)
+        signal_identity(first['model_pid'], first['model_start_ticks'], signal.SIGKILL)
+        second = service.wait(lambda s: s['business_ready'] and s['model_generation'] == 2, timeout=15)
+        self.assertEqual(first['controller_pid'], second['controller_pid'])
+        signal_identity(second['controller_pid'], second['controller_start_ticks'], signal.SIGKILL)
+        third = service.wait(lambda s: s['business_ready'] and s['model_generation'] == 3, timeout=20)
+        self.assertEqual(third['controller_generation'], 2)
+        self.assertEqual(third['gateway_pid'], first['gateway_pid'])
+        self.assertEqual(len(service.persistent()['attempts']['model']), 2)
+        self.assertTrue(service.stop()['cleanup_confirmed'])
+
+    def test_production_monitor_failure_keeps_model_then_uses_single_cpu_probe(self):
+        service = self.launch(production=True, gateway=True)
+        first = service.wait(lambda s: s['business_ready'], timeout=15)
+        (service.directory/'monitor.unavailable').touch()
+        degraded = service.wait(lambda s: s['state'] == 'READY_DEGRADED' and
+            s['controller_health']['reason'] == 'nvml_timeout', timeout=12)
+        self.assertEqual(degraded['model_pid'], first['model_pid'])
+        signal_identity(first['model_pid'], first['model_start_ticks'], signal.SIGKILL)
+        second = service.wait(lambda s: s['business_ready'] and s['model_generation'] == 2, timeout=15)
+        self.assertEqual(second['probe_used_for_generation'], 1)
         self.assertEqual(second['controller_pid'], first['controller_pid'])
         self.assertTrue(service.stop()['cleanup_confirmed'])
 

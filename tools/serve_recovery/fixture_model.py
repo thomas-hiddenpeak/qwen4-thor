@@ -21,6 +21,8 @@ def idle(channel, seconds=None):
     end = time.monotonic()+seconds if seconds is not None else float('inf')
     while time.monotonic() < end:
         channel.event('heartbeat')
+        if hasattr(channel, 'fixture_tick'):
+            channel.fixture_tick()
         time.sleep(0.05)
 
 
@@ -66,6 +68,12 @@ def controller(channel, args):
     if libc.prctl(36, 1, 0, 0, 0):
         raise RuntimeError('fixture subreaper unavailable')
     lease_fd = int(os.environ['Q4T_LEASE_FD'])
+    probe_proof = dict(cleanup_complete=True, resources_safe=True,
+        identity_valid=True, lease_continuous=True, device_usable=False)
+    if args.probe_only or args.probe_lifecycle and channel.generation > 1:
+        reply = channel.transact('probe', dict(role='model', proof=probe_proof))
+        (args.model_fixture/f'probe-controller-{channel.generation}.json').write_text(json.dumps(reply))
+        idle(channel)
     while True:
         proof = dict(cleanup_complete=True, identity_valid=True,
             resources_safe=True, lease_continuous=True,
@@ -127,6 +135,11 @@ def controller(channel, args):
             (args.model_fixture/'quota-blocked.json').write_text(json.dumps(early))
             idle(channel, (quota_deadline-time.monotonic_ns())/1e9)
         transaction(channel, 'ready', ready)
+        if args.aux_health:
+            def hook():
+                channel.health('READY', 'UNKNOWN', 'query_timeout')
+                channel.admission(grant['generation'], not (args.model_fixture/'admission.closed').exists())
+            channel.fixture_tick = hook
         while process.poll() is None:
             idle(channel, 0.05)
         fault = dict(generation=grant['generation'],
@@ -136,6 +149,10 @@ def controller(channel, args):
         cleanup_children()
         transaction(channel, 'retired', dict(role='model', ticket=grant['ticket'],
                                             verified=True))
+        if args.probe_lifecycle:
+            replies = [channel.transact('probe', dict(role='model', proof=probe_proof)) for _ in range(2)]
+            (args.model_fixture/'probes.json').write_text(json.dumps(replies))
+            idle(channel)
 
 
 def main():
