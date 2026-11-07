@@ -24,6 +24,7 @@ import traceback
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[2]
 LIMITS = dict(starts=4, chats=20, probes=1, controls=10000, seconds=1800)
+COMPLETION_LIMITS = dict(LIMITS, starts=5, chats=21)
 
 
 def save(path, value):
@@ -36,12 +37,13 @@ def save(path, value):
 
 
 class Budget:
-    def __init__(self, directory, *, initialize=False, baseline=None):
-        self.directory = Path(directory)
+    def __init__(self, directory, *, initialize=False, baseline=None, limits=None):
+        self.directory, self.limits = Path(directory), limits or LIMITS
         if initialize:
-            baseline = baseline or {name: 0 for name in LIMITS if name != 'seconds'}
-            if (baseline.keys() != {name for name in LIMITS if name != 'seconds'} or
-                    any(type(value) is not int or not 0 <= value <= LIMITS[name]
+            if baseline is None:
+                baseline = {name: 0 for name in self.limits if name != 'seconds'}
+            if (baseline.keys() != {name for name in self.limits if name != 'seconds'} or
+                    any(type(value) is not int or not 0 <= value <= self.limits[name]
                         for name,value in baseline.items())):
                 raise ValueError('invalid prior acceptance consumption')
             with (self.directory/'budget.lock').open('x'):
@@ -49,12 +51,12 @@ class Budget:
             save(self.directory/'counts.json', dict(counts=baseline, events=[]))
 
     def reserve(self, kind, label):
-        if kind not in LIMITS or kind == 'seconds':
+        if kind not in self.limits or kind == 'seconds':
             raise ValueError('unknown acceptance budget')
         with (self.directory/'budget.lock').open('r+') as lock:
             fcntl.flock(lock, fcntl.LOCK_EX)
             value = json.loads((self.directory/'counts.json').read_text())
-            if value['counts'][kind] >= LIMITS[kind]:
+            if value['counts'][kind] >= self.limits[kind]:
                 raise RuntimeError(kind+' acceptance budget exhausted')
             value['counts'][kind] += 1
             if kind != 'controls':
@@ -62,6 +64,23 @@ class Budget:
                     ordinal=value['counts'][kind], monotonic_ns=time.monotonic_ns()))
             save(self.directory/'counts.json', value)
             return value['counts'][kind]
+
+
+def await_drain(observe, expected, *, clock=time.monotonic, sleep=time.sleep, seconds=5):
+    """A response terminal precedes destruction/reap of request-local workers."""
+    end=clock()+seconds
+    while clock()<end:
+        values=observe(min(1,end-clock()))
+        if clock()>=end:
+            break
+        if values['q4t_requests_total']>expected:
+            raise RuntimeError('new generation replayed an unexpected request')
+        if (values['q4t_requests_total']==values['q4t_requests_success_total']==expected and
+            values['q4t_seq_slots_free']==values['q4t_seq_slots_total']==1 and
+            values['q4t_structured_workers_started_total']==values['q4t_structured_workers_reaped_total']):
+            return values
+        sleep(min(.05,max(0,end-clock())))
+    raise TimeoutError('request/grammar ownership did not drain within 5 seconds')
 
 
 def load_modules(plan=None):
@@ -74,7 +93,9 @@ def load_modules(plan=None):
 
 def verify(plan):
     bundle, _, _, _, _, engine = load_modules(plan)
-    engine.require(plan['limits'] == LIMITS, 'acceptance budget changed')
+    supplemental=plan.get('scenario')=='controller_gateway_completion'
+    engine.require(plan['limits'] == (COMPLETION_LIMITS if supplemental else LIMITS),
+                   'acceptance budget changed')
     for name, digest in plan['sources'].items():
         engine.require(engine.sha(ROOT/name) == digest, 'acceptance source changed: '+name)
     for row in plan['protected']:
@@ -99,18 +120,27 @@ def prepare(args):
     engine.require(policy['listen_host'] == '127.0.0.1' and not manifest['tls'],
                    'this bounded acceptance is loopback only')
     prior, prior_evidence, baseline = None, [], None
+    supplemental=args.controller_completion
+    engine.require(not supplemental or args.prior_plan is not None,
+                   'completion requires the prior measured failure')
     if args.prior_plan is not None:
         prior_plan=json.loads(args.prior_plan.read_text())
         prior_dir=Path(prior_plan['output'])
         prior=json.loads((prior_dir/'execution/result.json').read_text())
         baseline=prior['budget']['counts']
+        expected_counts=(3,15,1) if supplemental else (1,5,0)
         engine.require(prior['status']=='FAILED' and prior['cleanup_failure'] is None and
-            baseline['starts']==1 and baseline['chats']==5 and baseline['probes']==0 and
+            (baseline['starts'],baseline['chats'],baseline['probes'])==expected_counts and
             prior['package']==receipt,'only the recorded fixture failure can be continued')
-        for name in ('plan.json','execution/result.json','execution/counts.json','lease/exit.json',
-            'execution/stop.json','execution/generation-1-json-response.json',
+        names=['plan.json','execution/result.json','execution/counts.json','lease/exit.json',
+            'execution/stop.json']
+        names += (['execution/generation-2-metrics.json','execution/ready-2.json',
+            'execution/interrupted-sse-result.json','execution/generation-2-tool-final-response.json']
+            if supplemental else ['execution/generation-1-json-response.json',
             'execution/generation-1-sse-response.json','execution/beta-minute-quota-response.json',
-            'execution/generation-1-tool-call-response.json','execution/auxiliary-gap.json'):
+            'execution/generation-1-tool-call-response.json','execution/auxiliary-gap.json'])
+        prior_evidence.extend(prior_plan.get('prior_evidence',[]))
+        for name in names:
             path=prior_dir/name
             prior_evidence.append(dict(path=str(path.resolve()),sha256=engine.sha(path)))
         engine.require(json.loads((prior_dir/'lease/exit.json').read_text())['status']=='COMMAND_FAILED',
@@ -121,7 +151,9 @@ def prepare(args):
         'tools/examples', 'tools/release', 'src/service', 'include/q4t/service',
         'cmake/GuardianProcess.cmake', 'cmake/RecoveryProbe.cmake', 'docs/MODEL.md'],
         cwd=ROOT, text=True).splitlines()
-    plan = dict(version=1, limits=LIMITS, package=receipt, output=str(args.output.resolve()),
+    plan = dict(version=1, limits=COMPLETION_LIMITS if supplemental else LIMITS,
+        scenario='controller_gateway_completion' if supplemental else 'full_recovery',
+        package=receipt, output=str(args.output.resolve()),
         source_commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'],cwd=ROOT,text=True).strip(),
         sources={name: engine.sha(ROOT/name) for name in paths},
         protected=[dict(path=str((ROOT/name).resolve()), sha256=engine.sha(ROOT/name))
@@ -134,13 +166,14 @@ def prepare(args):
             'second self-check and JSON/SSE/tool', 'kill owned controller; 503; quota wait',
             'third self-check; JSON/SSE; gateway replacement; tool closure',
             'durable stop; no resurrection; owned tree/ports release'],
-        planned_model_starts=3, planned_chats=15 if prior else 19, performance_acceptance=False,
+        planned_model_starts=2 if supplemental else 3,
+        planned_chats=6 if supplemental else 15 if prior else 19, performance_acceptance=False,
         prior_counts=baseline, prior_evidence=prior_evidence,
-        prior_seconds=prior['seconds'] if prior else 0,
+        prior_seconds=prior['seconds']+prior_plan.get('prior_seconds',0) if prior else 0,
         reuse_initial_ordinary_and_quota=prior is not None,
         automatic_request_or_tool_replay=False, default_replacement=False)
     save(args.output/'plan.json', plan)
-    print(json.dumps(dict(plan=str(args.output/'plan.json'), limits=LIMITS)))
+    print(json.dumps(dict(plan=str(args.output/'plan.json'), limits=plan['limits'])))
 
 
 def launcher(plan, plan_path):
@@ -173,7 +206,7 @@ def controller_actor(plan, config):
     from tools.serve_recovery import controller, core_http, jobs, monitor
     from tools.serve_service import supervisor
     output = Path(plan['output'])/'execution'
-    budget = Budget(output)
+    budget = Budget(output,limits=plan['limits'])
     generation = int(os.environ['Q4T_CONTROLLER_GENERATION'])
     counts = dict(nvml_injected=0, log_errors=0, metrics_attempts=0)
     def record():
@@ -234,7 +267,7 @@ class Stage:
         self.package = Path(plan['package']['package'])
         self.output = Path(plan['output'])/'execution'
         self.output.mkdir(mode=0o700, exist_ok=False)
-        self.budget = Budget(self.output, initialize=True,baseline=plan.get('prior_counts'))
+        self.budget = Budget(self.output, initialize=True,baseline=plan.get('prior_counts'),limits=plan['limits'])
         self.lease = int(os.environ['Q4T_MANAGED_LEASE_FD'])
         self.lock_path = manifest['lock_path']
         self.child.verify_lease(self.lease, self.lock_path)
@@ -377,16 +410,63 @@ class Stage:
 
     def metrics(self,label,expected):
         from tools.serve_ops import contracts,transport
-        self.budget.reserve('controls',label+'-metrics')
-        response=transport.get(self.policy['upstream_operations_port'],'/metrics',timeout=5)
-        self.engine.require(response['http_status']==200,'acceptance metrics unavailable')
-        values,_=contracts.parse_metrics(response['body'],version=5)
-        save(self.output/(label+'-metrics.json'),dict(response=response,values=values))
-        self.engine.require(values['q4t_requests_total']==values['q4t_requests_success_total']==expected,
-                            'new generation replayed or lost a request')
-        self.engine.require(values['q4t_seq_slots_free']==values['q4t_seq_slots_total']==1 and
-            values['q4t_structured_workers_started_total']==values['q4t_structured_workers_reaped_total'],
-            'request/grammar ownership did not return')
+        observations=[]
+        def observe(timeout):
+            self.budget.reserve('controls',label+'-metrics')
+            response=transport.get(self.policy['upstream_operations_port'],'/metrics',timeout=timeout)
+            self.engine.require(response['http_status']==200,'acceptance metrics unavailable')
+            values,_=contracts.parse_metrics(response['body'],version=5)
+            observations.append(dict(monotonic=time.monotonic(),response=response,values=values))
+            save(self.output/(label+'-metrics.json'),dict(observations=observations))
+            return values
+        return await_drain(observe,expected)
+
+    def recover_controller(self,current,generation):
+        self.kill(current,'controller','controller-exit')
+        self.unavailable('controller-recovery-503',post=False)
+        replacement=self.ready(generation)
+        self.engine.require(replacement['controller_generation']==2 and
+            replacement['gateway_pid']==current['gateway_pid'],'controller recovery changed wrong role')
+        def gateway_recovery():
+            self.kill(replacement,'gateway','gateway-exit')
+            rebound=self.wait(lambda s:s['business_ready'] and s['gateway_generation']==2,seconds=25)
+            self.engine.require(rebound['model_pid']==replacement['model_pid'] and
+                rebound['controller_pid']==replacement['controller_pid'],'gateway recovery replaced model/controller')
+            save(self.output/'gateway-recovered.json',rebound)
+        self.business('generation-'+str(generation),before_tools=gateway_recovery)
+        self.metrics('generation-'+str(generation),5)
+        final=self.sample()
+        self.engine.require(final['model_generation']==generation and final['controller_generation']==2 and
+            final['guardian_pid']==current['guardian_pid'],'unexpected replacement count')
+        save(self.output/'business-final.json',final)
+
+    def exercise(self):
+        first=self.ready(1)
+        if self.plan.get('scenario')=='controller_gateway_completion':
+            self.metrics('initial-self-check',1)
+            self.recover_controller(first,2)
+            return
+        (self.output/'auxiliary-fault').touch(exist_ok=False)
+        gap=self.wait(lambda s:s['business_ready'] and s['controller_health'] and
+            s['controller_health']['observation']=='UNKNOWN' and
+            s['controller_health']['reason']=='nvml_timeout',seconds=15)
+        self.engine.require(gap['model_pid']==first['model_pid'],'auxiliary error replaced healthy model')
+        save(self.output/'auxiliary-gap.json',gap)
+        self.business('generation-1',first=True)
+        self.engine.require(self.sample()['model_pid']==first['model_pid'],'auxiliary business changed model PID')
+        self.interrupted_stream(first)
+        self.unavailable('model-recovery-503')
+        second=self.ready(2)
+        self.engine.require(second['controller_pid']==first['controller_pid'] and
+            second['gateway_pid']==first['gateway_pid'] and second['probe_used_for_generation']==1,
+            'model recovery ownership/probe mismatch')
+        self.business('generation-2')
+        self.metrics('generation-2',5)
+        (self.output/'auxiliary-fault').unlink()
+        self.recover_controller(second,3)
+        counts=self.engine.read(self.output/'fault-counts-1.json')
+        self.engine.require(counts['nvml_injected']>0 and counts['log_errors']>0 and
+            counts['metrics_attempts']==0,'auxiliary coverage incomplete')
 
     def kill(self, state, role, label):
         pid, ticks = state[role+'_pid'], state[role+'_start_ticks']
@@ -486,44 +566,7 @@ class Stage:
                     'launcher','--plan',str(self.plan_path)],stdin=subprocess.DEVNULL,stdout=log,stderr=log,
                     pass_fds=(self.lease,),start_new_session=True,
                     env={k:v for k,v in os.environ.items() if k not in ('DBUS_SESSION_BUS_ADDRESS','NOTIFY_SOCKET','WATCHDOG_USEC')})
-            first=self.ready(1)
-            (self.output/'auxiliary-fault').touch(exist_ok=False)
-            gap=self.wait(lambda s:s['business_ready'] and s['controller_health'] and
-                s['controller_health']['observation']=='UNKNOWN' and
-                s['controller_health']['reason']=='nvml_timeout',seconds=15)
-            self.engine.require(gap['model_pid']==first['model_pid'],'auxiliary error replaced healthy model')
-            save(self.output/'auxiliary-gap.json',gap)
-            self.business('generation-1',first=True)
-            self.engine.require(self.sample()['model_pid']==first['model_pid'],'auxiliary business changed model PID')
-            self.interrupted_stream(first)
-            self.unavailable('model-recovery-503')
-            second=self.ready(2)
-            self.engine.require(second['controller_pid']==first['controller_pid'] and
-                second['gateway_pid']==first['gateway_pid'] and second['probe_used_for_generation']==1,
-                'model recovery ownership/probe mismatch')
-            self.business('generation-2')
-            self.metrics('generation-2',5)
-            (self.output/'auxiliary-fault').unlink()
-            self.kill(second,'controller','controller-exit')
-            self.unavailable('controller-recovery-503',post=not self.plan.get('reuse_initial_ordinary_and_quota'))
-            third=self.ready(3)
-            self.engine.require(third['controller_generation']==2 and third['gateway_pid']==first['gateway_pid'],
-                                'controller recovery changed wrong role')
-            def gateway_recovery():
-                self.kill(third,'gateway','gateway-exit')
-                rebound=self.wait(lambda s:s['business_ready'] and s['gateway_generation']==2,seconds=25)
-                self.engine.require(rebound['model_pid']==third['model_pid'] and
-                    rebound['controller_pid']==third['controller_pid'],'gateway recovery replaced model/controller')
-                save(self.output/'gateway-recovered.json',rebound)
-            self.business('generation-3',before_tools=gateway_recovery)
-            self.metrics('generation-3',5)
-            final=self.sample()
-            self.engine.require(final['model_generation']==3 and final['controller_generation']==2 and
-                final['guardian_pid']==first['guardian_pid'],'unexpected replacement count')
-            counts=self.engine.read(self.output/'fault-counts-1.json')
-            self.engine.require(counts['nvml_injected']>0 and counts['log_errors']>0 and
-                counts['metrics_attempts']==0,'auxiliary coverage incomplete')
-            save(self.output/'business-final.json',final)
+            self.exercise()
             verify(self.plan)
         except BaseException:
             failure=traceback.format_exc()
@@ -552,6 +595,8 @@ def main():
     parser.add_argument('--output',type=Path)
     parser.add_argument('--config',type=Path)
     parser.add_argument('--prior-plan',type=Path)
+    parser.add_argument('--controller-completion',action='store_true',
+        help='Prepared supplemental scenario; run only after explicit budget extension')
     args=parser.parse_args()
     if args.mode=='prepare':
         prepare(args)

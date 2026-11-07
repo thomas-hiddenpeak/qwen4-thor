@@ -9,7 +9,7 @@ import unittest
 
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT))
-from tools.serve_recovery.acceptance import Budget,LIMITS
+from tools.serve_recovery.acceptance import Budget,LIMITS,COMPLETION_LIMITS,await_drain
 
 
 class BudgetTests(unittest.TestCase):
@@ -60,6 +60,51 @@ class BudgetTests(unittest.TestCase):
         with self.assertRaises(RuntimeError): budget.reserve('chats','over total')
         with self.assertRaises(ValueError):
             Budget(self.directory/'invalid',initialize=True,baseline=dict(starts=-1,chats=0,probes=0,controls=0))
+
+    def test_prepared_completion_keeps_prior_counts_and_exact_remaining_bound(self):
+        path=self.directory/'completion'
+        path.mkdir()
+        budget=Budget(path,initialize=True,limits=COMPLETION_LIMITS,
+                      baseline=dict(starts=3,chats=15,probes=1,controls=571))
+        for _ in range(2): budget.reserve('starts','completion model')
+        for _ in range(6): budget.reserve('chats','completion request')
+        for kind in ('starts','chats','probes'):
+            with self.assertRaises(RuntimeError): budget.reserve(kind,'exhausted')
+
+
+class DrainTests(unittest.TestCase):
+    def setUp(self):
+        self.now=0
+        self.good=dict(q4t_requests_total=5,q4t_requests_success_total=5,
+            q4t_seq_slots_free=1,q4t_seq_slots_total=1,
+            q4t_structured_workers_started_total=3,q4t_structured_workers_reaped_total=3)
+
+    def sleep(self,value): self.now+=value
+
+    def wait(self,observe):
+        return await_drain(observe,5,clock=lambda:self.now,sleep=self.sleep)
+
+    def test_response_then_worker_reap_is_allowed_within_deadline(self):
+        samples=[]
+        def observe(_timeout):
+            result=dict(self.good,q4t_structured_workers_reaped_total=2 if not samples else 3)
+            samples.append(result)
+            return result
+        self.assertEqual(self.wait(observe),self.good)
+        self.assertEqual(len(samples),2)
+
+    def test_unreaped_worker_is_not_hidden_by_polling(self):
+        pending=dict(self.good,q4t_structured_workers_reaped_total=2)
+        with self.assertRaises(TimeoutError): self.wait(lambda _:pending)
+        self.assertEqual(self.now,5)
+
+    def test_replay_or_late_success_cannot_pass(self):
+        with self.assertRaises(RuntimeError):
+            self.wait(lambda _:dict(self.good,q4t_requests_total=6))
+        def late(_timeout):
+            self.now=6
+            return self.good
+        with self.assertRaises(TimeoutError): self.wait(late)
 
 
 if __name__=='__main__': unittest.main()
