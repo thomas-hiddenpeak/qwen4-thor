@@ -17,7 +17,7 @@ import traceback
 ROOT = Path(__file__).resolve().parents[2]
 ORIGINAL = Path(subprocess.check_output(
     ['git', 'rev-parse', '--git-common-dir'], cwd=ROOT, text=True).strip()).parent
-BASE = ROOT/'.q4t-work/serve-closeout-business-20261107'
+BASE = ROOT/'.q4t-work/serve-closeout-business-20261107/attempt-02'
 PLAN, OUT = BASE/'plan.json', BASE/'execution'
 BINARY = ORIGINAL/'.q4t-work/serve-closeout-20261107/runtime/q4t'
 MODEL = Path('/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream')
@@ -44,6 +44,11 @@ def identity(path):
     return dict(path=str(path), sha256=pkg.sha(path), bytes=path.stat().st_size)
 
 
+def native_command():
+    return pkg.command(BINARY.parent, dict(settings=pkg.settings(PORT, 0),
+                                           model_dir=str(MODEL)))
+
+
 def prepare():
     pkg.require(not PLAN.exists() and not OUT.exists(), 'preserve prior attempt')
     pkg.require(not subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT),
@@ -57,6 +62,7 @@ def prepare():
         ORIGINAL/'.q4t-work/vision-attention-rowmax-20261107/engine/q4t',
         ORIGINAL/'.q4t-work/vision-forward-timing-20261107/engine/q4t']
     pkg.save(PLAN, dict(limits=LIMITS, candidate=identity(BINARY),
+        native_command=native_command(),
         cache=identity(BINARY.parent/'CMakeCache.txt'), model=str(MODEL),
         commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
         sources={p: pkg.sha(ROOT/p) for p in paths},
@@ -246,8 +252,7 @@ class Stage:
         folder = OUT/'native'
         folder.mkdir()
         port_free()
-        manifest = dict(settings=pkg.settings(PORT), model_dir=str(MODEL))
-        command = pkg.command(BINARY.parent, manifest)
+        command = self.plan['native_command']
         self.reserve('starts')
         with (folder/'backend.log').open('xb') as log:
             process = subprocess.Popen(command, cwd=ROOT, stdin=subprocess.DEVNULL,

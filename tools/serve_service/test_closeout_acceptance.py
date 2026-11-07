@@ -21,6 +21,13 @@ class CloseoutTests(unittest.TestCase):
         self.driver = object.__new__(stage.Stage)
         self.driver.counts = dict(starts=0, chats=0, controls=0)
 
+    def test_native_profile_constructs_before_model_reservation(self):
+        command = stage.native_command()
+        self.assertEqual(command[:2], [str(stage.BINARY), 'serve'])
+        self.assertIn('--mtp', command)
+        self.assertEqual(command[command.index('--port')+1], str(stage.PORT))
+        self.assertEqual(command[command.index('--model-dir')+1], str(stage.MODEL))
+
     def test_budgets_reject_before_an_extra_operation(self):
         for key in self.driver.counts:
             for _ in range(stage.LIMITS[key]):
