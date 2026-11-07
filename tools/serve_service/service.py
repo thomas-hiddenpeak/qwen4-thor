@@ -69,8 +69,10 @@ def run(package, digest, output):
     try:
         options = {}
         if manifest['settings'].get('nvml_policy') == 'degrade':
-            from tools.serve_service import telemetry
-            options['managed_monitor'] = telemetry.Monitor(output/'lease')
+            from tools.serve_service import telemetry, monitor_control
+            options['managed_monitor'] = telemetry.Monitor(output/'lease',
+                resume_path=output/monitor_control.REQUEST_NAME,
+                stopping=lambda: (output/'stop.request.json').exists())
         rc = guard.run_guard(command, output/'lease', lock_path,
                              log_max_bytes=4*1024**2, inherit_lease=True,
                              **options)
@@ -110,7 +112,8 @@ def normal_stop(manual, clean, guard_result):
         return False
     return (guard_result['status'] == 'COMPLETED' or
             (guard_result['status'] == 'COMPLETED_WITH_MONITOR_GAPS' and
-             guard_result.get('monitor_policy') == 'nvml-service-degraded-v1' and
+             guard_result.get('monitor_policy') in
+             ('nvml-service-degraded-v1', 'nvml-service-degraded-v2') and
              guard_result.get('child_returncode') == 0) or
             (guard_result['status'] == 'ENV_ABORT' and
              guard_result.get('reason') ==
@@ -208,7 +211,7 @@ def main():
         p.add_argument('--package', type=Path, required=True)
         p.add_argument('--manifest-sha256', required=True)
         p.add_argument('--output', type=Path, required=True)
-    for action in ('stop', 'status', 'inspect', '_worker'):
+    for action in ('stop', 'status', 'inspect', 'resume-monitor', '_worker'):
         p = sub.add_parser(action)
         p.add_argument('--run', type=Path, required=True)
     args = parser.parse_args()
@@ -246,6 +249,9 @@ def main():
         result = inspection.inspect(args.run)
         print(json.dumps(result))
         return 0 if result['complete'] else 2
+    elif args.action == 'resume-monitor':
+        from tools.serve_service import monitor_control
+        result = monitor_control.request(args.run)
     else:
         result = (stop if args.action == 'stop' else status)(args.run)
     print(json.dumps(result))

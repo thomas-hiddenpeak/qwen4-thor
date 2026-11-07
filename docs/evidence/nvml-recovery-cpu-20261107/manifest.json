@@ -1,0 +1,158 @@
+{
+  "version": 1,
+  "local_root": "/home/rm01/models/dev/qwen4-thor/.q4t-work/nvml-recovery-cpu-20261107",
+  "scope": "CPU-only contracts, syntax, registration and source checks. Includes targeted pre-fix failure. No real NVML, GPU or model execution.",
+  "records": [
+    {
+      "member": "before.json",
+      "bytes": 670,
+      "sha256": "32603559a0c84d781f233b9697763cb27c6c9d13c25cdc984af60e0096a3ffb9"
+    },
+    {
+      "member": "checks-final-registration.json",
+      "bytes": 656,
+      "sha256": "4ab21b6e1cfd90773caa27a252a36305cbfd6f1c0b576a3fdcf73b60d75c9fe8"
+    },
+    {
+      "member": "checks.json",
+      "bytes": 1089,
+      "sha256": "fd2ec9d9f5ec2e9c4c3ee9faed2520b82e9ef31059fff02abe2a08e32952d8c5"
+    },
+    {
+      "member": "classification-01.log",
+      "bytes": 107,
+      "sha256": "d9d734ee1c2de67b748aeef1c4126433aa438ad8375ca953916f12b1df11414d"
+    },
+    {
+      "member": "classification-02.log",
+      "bytes": 110,
+      "sha256": "34a82a30511a2175a5286cff0751874e9220ce5fb08cab87b09cc04e220f6b31"
+    },
+    {
+      "member": "cpu-configure-final.log",
+      "bytes": 203,
+      "sha256": "681e0a636fa0a2c94fcafff2b3d5300ddf180b92b2b27bd56beee3edf6fdfcf7"
+    },
+    {
+      "member": "cpu-configure.log",
+      "bytes": 674,
+      "sha256": "0850e0c681025458745517c33340415069cc384ea5f80233fa38a5b65dfebc7e"
+    },
+    {
+      "member": "cpu-registration-final.log",
+      "bytes": 48464,
+      "sha256": "d4882af460c0b61fd546e99c7251927f9cb0a14c9650f2ca13286ba019afb3ef"
+    },
+    {
+      "member": "cpu-registration.log",
+      "bytes": 47297,
+      "sha256": "de041f2ffedbd33dd6929a6f209a61223bc9b512876673e4af61d2bfe33d29ac"
+    },
+    {
+      "member": "cpu-results-01.json",
+      "bytes": 1778,
+      "sha256": "f74b7694daed43b320316174584ec8c8366abb8223934f178b0ef489c0ee0c14"
+    },
+    {
+      "member": "cpu-results-02.json",
+      "bytes": 794,
+      "sha256": "b4aadcf282a04f0eb99cbbd4c9b72158a739edba23a3a5f9f243aa0fd878a197"
+    },
+    {
+      "member": "deadlines-01.log",
+      "bytes": 5268,
+      "sha256": "dcc87d6326b5030b34d6cb89c977a2bd08b6a6c3059ecc688b375ac4b996d57b"
+    },
+    {
+      "member": "generated-contracts.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "member": "memory-01.log",
+      "bytes": 102,
+      "sha256": "feabb4add9e2ca3374e538560634d1ec97dc4f4ce89aab12f3d726e36ea9b2f6"
+    },
+    {
+      "member": "nvml-driver-01.log",
+      "bytes": 100,
+      "sha256": "24adda79e21044fef19cdc7f0606a9cd7770fc9a99c705a8622ee923c13bce5d"
+    },
+    {
+      "member": "query-01.log",
+      "bytes": 109,
+      "sha256": "f37a477415f0033550e3dae2bdaafd98156a06b0091ffa78189409ab93a46789"
+    },
+    {
+      "member": "query-02.log",
+      "bytes": 112,
+      "sha256": "ab8e76bb92f2b3f9ce6e420b291076e46f6846bc1e2fede56f5aa669bdce10f9"
+    },
+    {
+      "member": "recovery-01.log",
+      "bytes": 204,
+      "sha256": "f0cb4ad200fe5b25fa39e534177cef4380bae1d24e764d2d45ec09d2efbef157"
+    },
+    {
+      "member": "recovery-02.log",
+      "bytes": 204,
+      "sha256": "4b1e5ba2d131f3c889046f16fde4d64de3fbec3946a9f1cd2e31b2c4c08b6ca2"
+    },
+    {
+      "member": "result.json",
+      "bytes": 3384,
+      "sha256": "af1272fedb8c9b94f91856dfc1492a6116f562ee0640c5e506bcdc231d2a8c60"
+    },
+    {
+      "member": "serve-inventory.log",
+      "bytes": 170,
+      "sha256": "520ac62c4994168b9905e625b642f8f28a4b7a91fb33ac9fb2fb1a0165ae9608"
+    },
+    {
+      "member": "shutdown-timeout-repro.json",
+      "bytes": 325,
+      "sha256": "ec0923618d63f3010c2359431a5034e67a35bc9ff6b902f0dc5faae5d3046908"
+    },
+    {
+      "member": "shutdown-timeout-repro.log",
+      "bytes": 754,
+      "sha256": "efa51ea810f201ce21c7dfb9ab676e9ffba8a370652328ce5a73555297a544e4"
+    },
+    {
+      "member": "source-bindings.json",
+      "bytes": 4031,
+      "sha256": "62f80e2cb8dbe1405be90fe951163a590ce43f80dd3a034f2683dbfaae0b517d"
+    },
+    {
+      "member": "strict-guard-01.log",
+      "bytes": 221,
+      "sha256": "65712429126bb70a336b30b9c42b64e1db53d0d6b1840e9c208491252a451a09"
+    },
+    {
+      "member": "supervisor-01.log",
+      "bytes": 137,
+      "sha256": "d8cfbd9148f5bd48fb3b5e784a29accdc9b1b3deb12275d853349e99ef276bd8"
+    },
+    {
+      "member": "syntax-and-sources-01.json",
+      "bytes": 2146,
+      "sha256": "5df4ff4815ad2b78cfe53d0cd1bd9feba6fcb4000072a3e8bc7c5ebb8f944116"
+    },
+    {
+      "member": "syntax-and-sources-02.json",
+      "bytes": 2146,
+      "sha256": "c9ebff87107de5deb9ed615d0bd63b80be7120ed67e5294b30c85e67db033165"
+    },
+    {
+      "member": "telemetry-01.log",
+      "bytes": 119,
+      "sha256": "3ec6d08ade866680ee4accbd4d455bcde24ad85965932050eb8e48e9a187258d"
+    },
+    {
+      "member": "telemetry-02.log",
+      "bytes": 119,
+      "sha256": "eefc2bedd5675cd21fdf11690fddc93ca8562e456b540e229456e32cdfbbb0c4"
+    }
+  ],
+  "archive_sha256": "548f60c68fc8f0e6459c950132b53d301b3cae432c6bb0a01d801dff6188e096"
+}

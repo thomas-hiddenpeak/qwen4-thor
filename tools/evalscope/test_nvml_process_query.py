@@ -50,6 +50,34 @@ class QueryTests(unittest.TestCase):
         self.assertEqual(result['status'], 'ERROR')
         self.assertIsNone(result['pids'])
 
+    def test_error_result_requires_failure_exit_status(self):
+        result = self.fake_output([self.final(status='ERROR', pids=None,
+            error=dict(type='NVMLError', message='fixture', nvml_code=10))], 0)
+        self.assertEqual(result['status'], 'PROTOCOL_ERROR')
+
+    def test_shutdown_device_error_is_retained_alongside_initial_timeout(self):
+        class NvmlFailure(Exception):
+            def __init__(self, code):
+                self.value = code
+                super().__init__('synthetic NVML fault')
+        nvml = types.SimpleNamespace(
+            nvmlInit=lambda: None,
+            nvmlShutdown=MagicMock(side_effect=NvmlFailure(16)),
+            nvmlDeviceGetCount=lambda: 1,
+            nvmlDeviceGetHandleByIndex=lambda _: 0,
+            nvmlDeviceGetComputeRunningProcesses_v3=MagicMock(
+                side_effect=NvmlFailure(10)))
+        output = io.StringIO()
+        with patch.dict(sys.modules, pynvml=nvml), contextlib.redirect_stdout(output):
+            self.assertEqual(monitor.worker('fresh'), 1)
+        final = json.loads(output.getvalue().splitlines()[-1])
+        self.assertEqual(final['error']['nvml_code'], 10)
+        self.assertEqual(final['shutdown_error']['nvml_code'], 16)
+        result = self.fake_output([final], 1)
+        self.assertEqual(result['error']['nvml_code'], 10)
+        self.assertEqual(result['shutdown_error']['nvml_code'], 16)
+        self.assertIsNone(result['pids'])
+
     def test_memory_records_preserve_unknown_and_validate_identity(self):
         records = [dict(device=0, pid=7, used_bytes=None)]
         result = self.fake_output([self.final(pids=[7], process_memory=records)])
@@ -71,6 +99,35 @@ class QueryTests(unittest.TestCase):
         self.assertIsNone(result['pids'])
         with self.assertRaises(ProcessLookupError):
             os.kill(result['worker_pid'], 0)
+
+    def test_timeout_retains_device_error_reported_before_shutdown_hang(self):
+        event = dict(request_id='fresh', event='failure',
+            error=dict(type='NVMLError', message='fixture', nvml_code=15))
+        code = f'import time; print({json.dumps(event)!r}, flush=True); time.sleep(30)'
+        result = monitor.supervise([sys.executable, '-B', '-c', code], 'fresh', .1)
+        self.assertEqual(result['status'], 'TIMEOUT')
+        self.assertEqual(result['observed_errors'][0]['nvml_code'], 15)
+
+    def test_worker_reports_failure_before_attempting_shutdown(self):
+        output = io.StringIO()
+        seen = []
+        def shutdown():
+            seen.extend(json.loads(line) for line in output.getvalue().splitlines())
+        nvml = types.SimpleNamespace(nvmlInit=lambda: None,
+            nvmlDeviceGetCount=MagicMock(side_effect=RuntimeError('fixture')),
+            nvmlShutdown=shutdown)
+        with patch.dict(sys.modules, pynvml=nvml), contextlib.redirect_stdout(output):
+            self.assertEqual(monitor.worker('fresh'), 1)
+        self.assertEqual(seen[-2]['event'], 'failure')
+        self.assertEqual(seen[-1]['api'], 'shutdown')
+
+    def test_partial_worker_errors_validate_identity_and_complete_lines(self):
+        error = dict(type='NVMLError', message='fixture', nvml_code=15)
+        line = json.dumps(dict(request_id='fresh', event='failure', error=error))+'\n'
+        self.assertEqual(monitor.observed_errors(line+'{"partial":', 'fresh'), [error])
+        for bad in (line.replace('fresh', 'stale'), line*3, '[]\n'):
+            with self.assertRaises(ValueError):
+                monitor.observed_errors(bad, 'fresh')
 
     def test_unreaped_worker_is_not_success(self):
         process = MagicMock(pid=123, returncode=None)

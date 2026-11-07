@@ -27,6 +27,7 @@ def worker(request_id):
 
     initialized = False
     failure = None
+    shutdown_failure = None
     pids = set()
     memory = []
     count = None
@@ -56,17 +57,38 @@ def worker(request_id):
     except Exception as error:
         failure = dict(type=type(error).__name__, message=str(error),
                        nvml_code=getattr(error, 'value', None))
+        # Preserve an observed device failure even if shutdown later stalls.
+        emit(event='failure', error=failure)
     finally:
         if initialized:
             try:
                 call('shutdown', nvml.nvmlShutdown)
             except Exception as error:
-                failure = failure or dict(type=type(error).__name__,
-                                          message=str(error))
+                shutdown_failure = dict(type=type(error).__name__,
+                    message=str(error), nvml_code=getattr(error, 'value', None))
+                emit(event='failure', error=shutdown_failure)
+                failure = failure or shutdown_failure
     emit(event='result', status='ERROR' if failure else 'OK', error=failure,
+         shutdown_error=shutdown_failure,
          device_count=count, pids=None if failure else sorted(pids),
          process_memory=None if failure else memory)
     return 1 if failure else 0
+
+
+def observed_errors(stdout, request_id):
+    """Read complete records only; a killed worker may leave a partial line."""
+    failures = []
+    for line in stdout.splitlines(keepends=True):
+        if not line.endswith('\n'):
+            continue
+        row = json.loads(line)
+        if type(row) is not dict or row.get('request_id') != request_id:
+            raise ValueError('invalid partial worker identity')
+        if row.get('event') == 'failure':
+            failures.append(row['error'])
+    if len(failures) > 2:
+        raise ValueError('too many worker failures')
+    return failures
 
 
 def supervise(command, request_id, timeout, *, on_worker=None):
@@ -99,6 +121,11 @@ def supervise(command, request_id, timeout, *, on_worker=None):
                       if isinstance(stderr, bytes) else stderr,
                       seconds=time.monotonic() - start,
                       returncode=process.returncode)
+        try:
+            result['observed_errors'] = observed_errors(result['stdout'], request_id)
+        except (ValueError, KeyError, TypeError) as error:
+            # Keep TIMEOUT/CLEANUP_FAILED as well as protocol corruption.
+            result['protocol_error'] = str(error)
         return result
     except BaseException:
         process.kill()
@@ -111,6 +138,7 @@ def supervise(command, request_id, timeout, *, on_worker=None):
     result.update(stdout=stdout, stderr=stderr, returncode=process.returncode,
                   seconds=time.monotonic() - start)
     try:
+        result['observed_errors'] = observed_errors(stdout, request_id)
         events = [json.loads(line) for line in stdout.splitlines()]
         if not events or any(e.get('request_id') != request_id for e in events):
             raise ValueError('missing or mismatched request identity')
@@ -119,7 +147,10 @@ def supervise(command, request_id, timeout, *, on_worker=None):
             raise ValueError('missing, duplicate or nonterminal result')
         final = finals[0]
         if final['status'] == 'ERROR':
+            if process.returncode != 1:
+                raise ValueError('invalid failed result exit code')
             result['error'] = final.get('error')
+            result['shutdown_error'] = final.get('shutdown_error')
             return result
         pids = final['pids']
         if (process.returncode != 0 or final['status'] != 'OK' or

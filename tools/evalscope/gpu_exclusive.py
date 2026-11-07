@@ -300,7 +300,7 @@ def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None,
               'performance_acceptance': False, 'child_returncode': None,
               'external_lease': lease_fd is not None}
     if managed_monitor is not None:
-        status['monitor_policy'] = 'nvml-service-degraded-v1'
+        status['monitor_policy'] = managed_monitor.state['policy']
     if log_max_bytes is not None:
         if type(log_max_bytes) is not int or log_max_bytes < 65536:
             raise ValueError('monitor log limit must be at least 64KiB')

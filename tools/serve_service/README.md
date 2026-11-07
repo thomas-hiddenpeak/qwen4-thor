@@ -50,12 +50,14 @@ SHA的伴随接受记录见上述结果页。prepare本身的未验声明不被�
 仍保持；这不保证内核不可中断任务能够退出，也不证明物理RAM硬上限。
 
 默认严格策略下，运行中NVML查询失败会触发ENV_ABORT并清理后端。
-新包可在prepare时显式增加`--nvml-policy degrade`选择v7业务降级策略；
-首版要求`--restart-limit 0`。启动前仍须完整观测无竞争，运行中查询
-错误/超时允许健康业务继续，共享锁、已知竞争及原业务保护保持。
+新包可在prepare时显式增加`--nvml-policy degrade`选择v8监控策略，
+要求`--restart-limit 0`。启动前仍须完整观测无竞争，运行期临时查询
+故障允许健康业务继续，共享锁、已知竞争及原业务保护保持。
 
-降级分别等待5/10/20/40/60秒后最多重试5次；成功恢复观测，重试耗尽
-或worker不能回收则本代次停止新增查询。此时业务可继续，但不能观察
+外部超时、NVML超时/资源暂不可用分别等待5/10/20/40/60秒后最多重试
+5次；配置或未知NVML错误直接暂停。明确设备故障、Python/协议错误
+停止自有服务，不自动重启模型或重置设备。重试耗尽或worker未回收
+停止新增查询。此时业务可继续，但不能观察
 未被/proc规则覆盖的外部GPU负载；未知PID不会显示为空闲或沿用旧值。
 `status`的`gpu_monitor`与业务`state`分开，记录最近成功及缺口；
 原始查询保存在`lease/nvml-queries.jsonl`。正常停止若曾有监控缺口，
@@ -63,8 +65,24 @@ guard记`COMPLETED_WITH_MONITOR_GAPS`，服务仍可STOPPED并确认自有进程
 清理；末次NVML观测不能证明停止后的GPU上下文已清空，单独标NOT_QUERIED。
 未回收查询worker仍导致退出清理失败。旧包/未选择策略保持下述严格行为。
 
-该策略不适用于性能验收；CLI guard无降级开关。CPU及真实短验的当前
-状态见[限定合同与验证](../../docs/SERVE_NVML_DEGRADATION_2026-11-07.md)。
+v8暂停后可显式请求重新观测：
+
+```bash
+/usr/bin/python3 -I -B tools/serve_service/service.py resume-monitor \
+  --run .q4t-work/managed/run-001
+```
+
+至少冷却60秒、本controller代次最多2次，每次只补一次5秒查询及
+至多1秒回收；确认旧worker回收才执行，失败再次暂停，成功恢复常规
+观察。成功不返还恢复预算、不清除历史缺口。请求绑定监控代次/暂停
+序号，由controller再次检查；CLI提交成功不代表恢复成功。通过status
+检查`gpu_monitor.last_resume_request`及`last_resume`。过早或过期请求
+不延后自动执行，需要再次显式提交；停止后不执行恢复。此命令不调用
+模型启动、重启或请求重放。旧v7包没有该入口，不能就地启用。
+
+该策略不适用于性能验收；CLI guard无降级开关。v8本阶段范围及结果见
+[CPU验证与限制](../../docs/SERVE_NVML_RECOVERY_2026-11-07.md)；既有v7的
+[限定业务验收](../../docs/SERVE_NVML_DEGRADATION_2026-11-07.md)不能替代v8接受。
 源码支持不自动扩大旧托管/网关/任务包的接受范围，应使用身份匹配的新包。
 
 独立前台controller SIGKILL已[实际限定验证](../../docs/SERVE_CONTROLLER_DEATH_RESULT_2026-11-03.md)：

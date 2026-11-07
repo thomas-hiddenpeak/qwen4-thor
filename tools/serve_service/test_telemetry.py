@@ -29,7 +29,9 @@ class MonitorTests(unittest.TestCase):
         return dict(status='OK', pids=[] if pids is None else pids)
 
     def failed(self, status='TIMEOUT'):
-        return dict(status=status, pids=None)
+        return dict(status=status, pids=None, **(dict(error=dict(
+            type='NVMLError_Timeout', message='fixture', nvml_code=10))
+            if status == 'ERROR' else {}))
 
     def test_unknown_before_launch_is_rejected(self):
         monitor = self.make_monitor([self.failed()])
@@ -80,7 +82,7 @@ class MonitorTests(unittest.TestCase):
         self.assertFalse(value['query_worker_reaped'])
         self.now += 3600
         monitor(42)
-        self.assertEqual(self.query.call_count, 2)
+        self.assertEqual(self.query.call_count, 1)
         self.assertFalse(monitor.close()['query_worker_reaped'])
         worker.poll.return_value = -9
         self.assertTrue(monitor.close()['query_worker_reaped'])
@@ -91,7 +93,8 @@ class MonitorTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, 'worker protocol'):
             monitor(42)
         self.assertEqual(monitor.snapshot()['visibility'], 'UNKNOWN')
-        self.query.side_effect = [self.failed()]
+        self.assertTrue(monitor.snapshot()['fatal'])
+        monitor = telemetry.Monitor(self.root/'lease', query=lambda **_: self.failed())
         with mock.patch.object(guard, 'open_log', side_effect=OSError('disk full')):
             with self.assertRaisesRegex(OSError, 'disk full'):
                 monitor(42)
@@ -243,9 +246,40 @@ class PackageTests(unittest.TestCase):
     setUp = old.Case.setUp
     fixture = old.PackageTests.fixture
 
+    def test_v8_binds_recovery_sources_and_v7_inventory_remains_readable(self):
+        binary, release, model = self.fixture()
+        receipt = pkg.prepare(binary, release, model, self.root/'package',
+                              nvml_policy='degrade')
+        target = Path(receipt['package'])
+        value = pkg.read(target/'manifest.json')
+        extra = {'source/tools/serve_service/nvml_policy.py',
+                 'source/tools/serve_service/monitor_control.py'}
+        self.assertTrue(extra <= value['files'].keys())
+        # An old sealed package keeps its v7 inventory and pinned source bytes.
+        # This fixture checks validation compatibility, not old code execution.
+        value['version'] = 7
+        for path in extra:
+            del value['files'][path]
+        pkg.save(target/'manifest.json', value)
+        self.assertEqual(pkg.verify(target, pkg.sha(target/'manifest.json'))['version'], 7)
+        value['version'] = 8
+        pkg.save(target/'manifest.json', value)
+        with self.assertRaisesRegex(RuntimeError, 'inventory differs'):
+            pkg.verify(target, pkg.sha(target/'manifest.json'))
+
+    def test_recovery_source_tampering_is_rejected(self):
+        binary, release, model = self.fixture()
+        receipt = pkg.prepare(binary, release, model, self.root/'package',
+                              nvml_policy='degrade')
+        target = Path(receipt['package'])/'source/tools/serve_service/monitor_control.py'
+        target.chmod(0o600)
+        target.write_text('# altered\n')
+        with self.assertRaisesRegex(RuntimeError, 'package file changed'):
+            pkg.verify(receipt['package'], receipt['manifest_sha256'])
+
     def test_explicit_policy_and_source_are_bound_and_defaults_remain_strict(self):
         binary, release, model = self.fixture()
-        for mode, version in (('strict', 3), ('degrade', 7)):
+        for mode, version in (('strict', 3), ('degrade', 8)):
             receipt = pkg.prepare(binary, release, model, self.root/mode,
                                   nvml_policy=mode)
             value = pkg.verify(receipt['package'], receipt['manifest_sha256'])
@@ -271,7 +305,7 @@ class PackageTests(unittest.TestCase):
                 pkg.prepare(binary, release, model, self.root/'invalid', nvml_policy=invalid)
         self.assertFalse((self.root/'invalid').exists())
 
-    def test_existing_client_and_resource_options_compose_with_v7(self):
+    def test_existing_client_and_resource_options_compose_with_v8(self):
         from tools.serve_service import resources
         binary, release, model = self.fixture()
         clients = self.root/'clients.json'
@@ -286,12 +320,12 @@ class PackageTests(unittest.TestCase):
                 for has_resources in (False, True):
                     for operations in (0, 18998):
                         receipt = pkg.prepare(binary, release, model,
-                            self.root/f'v7-{has_clients}-{has_resources}-{operations}',
+                            self.root/f'v8-{has_clients}-{has_resources}-{operations}',
                             client_policy=clients if has_clients else None,
                             host_resources=resources.policy(32, 64, 8) if has_resources else None,
                             operations_port=operations, nvml_policy='degrade')
                         value = pkg.verify(receipt['package'], receipt['manifest_sha256'])
-                        self.assertEqual(value['version'], 7)
+                        self.assertEqual(value['version'], 8)
                         self.assertEqual('client_policy' in value, has_clients)
                         self.assertEqual('host_resources' in value, has_resources)
                         self.assertEqual(value['settings'].get('operations_port', 0), operations)

@@ -1,0 +1,127 @@
+{
+  "status": "CPU_SCOPE_ACCEPTED_NOT_DEPLOYED",
+  "unique_tests": 168,
+  "suites": [
+    {
+      "name": "classification",
+      "tests": 11,
+      "passed": 11,
+      "failed": 0,
+      "log": "classification-02.log"
+    },
+    {
+      "name": "query",
+      "tests": 13,
+      "passed": 13,
+      "failed": 0,
+      "log": "query-02.log"
+    },
+    {
+      "name": "recovery",
+      "tests": 13,
+      "passed": 13,
+      "failed": 0,
+      "log": "recovery-02.log"
+    },
+    {
+      "name": "telemetry",
+      "tests": 20,
+      "passed": 20,
+      "failed": 0,
+      "log": "telemetry-02.log"
+    },
+    {
+      "name": "memory",
+      "tests": 4,
+      "passed": 4,
+      "failed": 0,
+      "log": "memory-01.log"
+    },
+    {
+      "name": "strict_guard",
+      "tests": 30,
+      "passed": 30,
+      "failed": 0,
+      "log": "strict-guard-01.log"
+    },
+    {
+      "name": "supervisor",
+      "tests": 38,
+      "passed": 38,
+      "failed": 0,
+      "log": "supervisor-01.log"
+    },
+    {
+      "name": "deadlines",
+      "tests": 37,
+      "passed": 37,
+      "failed": 0,
+      "log": "deadlines-01.log"
+    },
+    {
+      "name": "legacy_driver_tcp",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "log": "nvml-driver-01.log"
+    }
+  ],
+  "preserved_failure": {
+    "log": "shutdown-timeout-repro.log",
+    "purpose": "Targeted pre-fix reproduction",
+    "fault": "A device error emitted before shutdown could be hidden by the outer TIMEOUT.",
+    "fixed_by": "Emit failure before shutdown; retain bounded complete failure records on timeout/cleanup failure; prioritize device failure. Query and classification contracts passed after repair."
+  },
+  "reused_after_targeted_repair": [
+    "memory",
+    "strict_guard",
+    "supervisor",
+    "deadlines",
+    "legacy_driver_tcp"
+  ],
+  "reuse_boundary": "Repair only adds partial query error records/classification; unchanged guard lifecycle and service deadlines reused. Their failures still abort strictly. Query, classification, recovery and telemetry suites rerun.",
+  "policy": {
+    "package_version": 8,
+    "profile": "nvml-service-degraded-v2",
+    "automatic_transient_retries": [
+      5,
+      10,
+      20,
+      40,
+      60
+    ],
+    "resume_cooldown_seconds": 60,
+    "resume_limit_per_controller": 2,
+    "queries_per_explicit_resume": 1,
+    "query_timeout_seconds": 5,
+    "cleanup_wait_seconds": 1,
+    "model_restart": false,
+    "gpu_reset": false,
+    "historical_gaps_cleared": false
+  },
+  "validation": {
+    "python_syntax_files": 12,
+    "syntax_warnings": 0,
+    "public_cpu_registration": true,
+    "serve_inventory": true,
+    "generated_contracts": true,
+    "old_v7_package_verified": true
+  },
+  "scope": {
+    "gpu_tests": 0,
+    "real_nvml_queries": 0,
+    "model_starts": 0,
+    "real_model_http_requests": 0,
+    "service_operations": 0,
+    "default_replaced": false,
+    "old_packages_rewritten": false,
+    "production_accepted": false,
+    "visual_candidate": "HOLD"
+  },
+  "limits": [
+    "CPU workers simulate NVML; no real driver outage/recovery acceptance.",
+    "Runtime remains coupled to its frozen package; old v7 has no resume command.",
+    "Successful explicit rearm restores ordinary monitoring; ordinary inspect may query again to confirm exited contexts.",
+    "Long stability and full visual candidate acceptance remain outside this stage."
+  ]
+}
