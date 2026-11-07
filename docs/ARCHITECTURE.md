@@ -162,7 +162,8 @@ prefill；GPU错误fail closed。仅最后完整MTP边界，最多4个尾部输�
 | 原生推理入口 | 直接`serve`保持；新`q4t-ingress`独立于模型，模型/控制器恢复期间返回503/Retry-After | 真实文本恢复通过；非通用Web代理 |
 | 客户端鉴权 | C++入口验证Bearer并拒绝伪造内部身份；后端`ClientAdmission`继续执行RPM/TPM、公平准入 | 前置只需标准HTTP；每个内部凭据只绑定一个模型代次 |
 | 恢复准入 | 读体前/转发前经PID限定的Unix IPC核对Guardian准入；两次绑定必须相同 | CPU覆盖读体中换代/配额等待、失联；仍等模型自检及完整分钟窗口 |
-| 恢复封装 | 新v2默认复制`q4t-ingress`，启动原生入口工作进程，不需要nginx；v1旧包保留 | 本机v2已交付STOPPED；显式nginx模式保留 |
+| 恢复封装 | v4默认复制`q4t-ingress`，启动原生入口工作进程，不需要nginx；旧包保留 | 本机v4已交付STOPPED；显式nginx模式保留 |
+| TLS/浏览器 | 系统OpenSSL按需加载，凭据独立有界读取/轮换；IPv4/IPv6、mTLS/本地CRL和CORS | 原生CPU/浏览器及真实TLS业务通过，坏证书保持有效旧上下文，模型不重启 |
 
 实现入口：[原生HTTP](../include/q4t/server/chat_server.h)、
 [鉴权与配额](../src/server/client_policy.cpp)、
@@ -175,9 +176,12 @@ prefill；GPU错误fail closed。仅最后完整MTP边界，最多4个尾部输�
 
 151项不同CPU检查已覆盖伪造身份、未ready请求、额度保护、SSE中断、停止、
 无nginx运行及可选前置；163来源锚点、8条原生路由和4个审计负控。
-新入口动态依赖仅标准C/C++运行库。真实JSON/SSE、工具和三类恢复
+原始入口动态依赖仅标准C/C++运行库。真实JSON/SSE、工具和三类恢复
 在同一严格租约3启动/18Chat/192.691秒内通过，179次NVML全OK；
 身份、验收与操作边界见[结果](SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)。
+后续v4仅在启用TLS时加载系统OpenSSL 3；71项针对性CPU及1启动/
+6Chat、53.720秒实际TLS短验和可回退交付见
+[原生接入](SERVE_NATIVE_ACCESS_2026-11-08.md)。未开启TLS时不加载密码库。
 
 ## 构建与验证工具
 
