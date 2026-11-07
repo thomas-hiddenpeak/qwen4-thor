@@ -201,8 +201,10 @@ class RecoveryTests(unittest.TestCase):
             self.assertEqual(service.main(), 0)
             launch.assert_not_called()
             self.assertEqual(json.loads(output.getvalue())['state'], 'MONITOR_RESUME_REQUESTED')
+            manifest['version'] = 10
+            self.assertEqual(control.request(self.root)['state'], 'MONITOR_RESUME_REQUESTED')
             manifest['version'] = 7
-            with self.assertRaisesRegex(RuntimeError, 'v8/v9 degrade'):
+            with self.assertRaisesRegex(RuntimeError, 'v8/v9/v10 degrade'):
                 control.request(self.root)
             manifest['version'] = 9
             pkg.save(self.root/'stop.request.json', {})

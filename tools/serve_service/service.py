@@ -53,7 +53,7 @@ def run(package, digest, output):
     pkg.save(output/'controller.json', dict(version=2,
         owner=supervisor.process_identity(os.getpid()), lock_path=str(lock_path),
         observation_context=inspection.current_context(),
-        auxiliary_isolation=manifest.get('version') == 9,
+        auxiliary_isolation=manifest.get('version') in (9, 10),
         package=str(Path(package).resolve()), manifest_sha256=digest,
         created_unix=time.time()))
     command = [manifest['python']['path'], '-I', '-B',

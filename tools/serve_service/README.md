@@ -53,6 +53,13 @@ SHA的伴随接受记录见上述结果页。prepare本身的未验声明不被�
 新包可在prepare时显式增加`--nvml-policy degrade`选择v9监控与辅助依赖隔离策略，
 要求`--restart-limit 0`。启动前仍须完整观测无竞争，运行期临时查询
 故障允许健康业务继续，共享锁、已知竞争及原业务保护保持。
+同时选择host资源隔离时，新包为v10；运行期资源监督直接核对原
+cgroup目录身份、监督器身份/成员关系、有效限额和关键事件，不再
+调用systemctl/D-Bus。初始化、后端加入和最终清理确认仍严格检查
+服务管理器；NOT_QUERIED不代表管理器健康或恢复。普通资源统计缺失
+以null和statistics_errors表示，statistics_gap_samples保留历史；
+OOM/任务超限、身份/限额漂移、关键事件缺失仍停止自有后端。
+v10同样不自动重启模型，详见[资源控制面隔离](../../docs/SERVE_RESOURCE_CONTROL_ISOLATION_2026-11-07.md)。
 
 外部超时、NVML超时/资源暂不可用分别等待5/10/20/40/60秒后最多重试
 5次；配置或未知NVML错误直接暂停。Python/协议错误暂停采集器；明确设备故障
@@ -65,7 +72,7 @@ guard记`COMPLETED_WITH_MONITOR_GAPS`，服务仍可STOPPED并确认自有进程
 清理；末次NVML观测不能证明停止后的GPU上下文已清空，单独标NOT_QUERIED。
 未回收查询worker仍导致退出清理失败。旧包/未选择策略保持下述严格行为。
 
-v8/v9暂停后可显式请求重新观测：
+v8/v9/v10暂停后可显式请求重新观测：
 
 ```bash
 /usr/bin/python3 -I -B tools/serve_service/service.py resume-monitor \

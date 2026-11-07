@@ -2,6 +2,19 @@
 
 更新：2026-11-07。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+## 资源控制面依赖隔离完成CPU验证，未部署
+
+[实现与证据](SERVE_RESOURCE_CONTROL_ISOLATION_2026-11-07.md)：新v10
+仅显式degrade+host资源组合启用；运行期直接核对cgroup身份、成员、
+限额及关键事件，移除systemd/D-Bus轮询依赖，普通统计缺失记未知
+并保留历史。启动/清理、真实OOM/任务超限及系统内存保护保持；
+不自动重启模型。167项去重CPU通过，9份Python语法零警告、CPU登记
+及来源/合同检查通过；旧观测工具1项入口权限失败保留，按原umask
+仅复验该项。组合故障下同一CPU PID完成64步，模拟OOM后不替换。
+旧v7包f69cb406只读有效，默认ea1b474d/3eb46385与视觉34e7ceef/
+982bba07未变。未创建真实cgroup，无GPU/模型/真实NVML或服务操作；
+未部署、未合main，host exporter新组合迁移与实际业务仍未接受。
+
 ## 辅助依赖故障隔离完成CPU验证，未部署
 
 [实现与证据](SERVE_AUXILIARY_ISOLATION_2026-11-07.md)：新v9显式degrade

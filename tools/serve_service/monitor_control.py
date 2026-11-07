@@ -45,10 +45,10 @@ def request(output):
     pkg.require(supervisor.process_identity(control['owner']['pid']) ==
                 control['owner'], 'monitor controller identity changed')
     manifest = pkg.verify(control['package'], control['manifest_sha256'])
-    pkg.require(manifest['version'] in (8, 9) and
+    pkg.require(manifest['version'] in (8, 9, 10) and
                 manifest['settings'].get('nvml_policy') == 'degrade' and
                 manifest['settings']['restart_limit'] == 0,
-                'monitor resume requires a v8/v9 degrade package without restart')
+                'monitor resume requires a v8/v9/v10 degrade package without restart')
     state = pkg.read(output/'lease/compute-monitor.json')
     expected = 'nvml-service-degraded-v2' if manifest['version'] == 8 else PROFILE
     pkg.require(state.get('policy') == expected, 'monitor profile mismatch')

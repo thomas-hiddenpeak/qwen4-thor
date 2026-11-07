@@ -315,7 +315,7 @@ class PackageTests(unittest.TestCase):
                 pkg.prepare(binary, release, model, self.root/'invalid', nvml_policy=invalid)
         self.assertFalse((self.root/'invalid').exists())
 
-    def test_existing_client_and_resource_options_compose_with_v9(self):
+    def test_existing_client_and_resource_options_compose_with_v9_v10(self):
         from tools.serve_service import resources
         binary, release, model = self.fixture()
         clients = self.root/'clients.json'
@@ -335,7 +335,7 @@ class PackageTests(unittest.TestCase):
                             host_resources=resources.policy(32, 64, 8) if has_resources else None,
                             operations_port=operations, nvml_policy='degrade')
                         value = pkg.verify(receipt['package'], receipt['manifest_sha256'])
-                        self.assertEqual(value['version'], 9)
+                        self.assertEqual(value['version'], 10 if has_resources else 9)
                         self.assertEqual('client_policy' in value, has_clients)
                         self.assertEqual('host_resources' in value, has_resources)
                         self.assertEqual(value['settings'].get('operations_port', 0), operations)

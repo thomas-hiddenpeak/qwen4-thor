@@ -1,0 +1,129 @@
+{
+  "source_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/resource-control-isolation-cpu-20261107",
+  "archive": {
+    "path": "raw-records.tar.gz",
+    "sha256": "9f84b76768ad8cca558feb26d77bc6252df9be6d6526c0584097c4cba2292159"
+  },
+  "files": [
+    {
+      "path": "auxiliary-01.log",
+      "bytes": 2917,
+      "sha256": "e2b1635871a155d08986400f92e79e4ecc1474884950603fcf755ebd11e1a73f"
+    },
+    {
+      "path": "before.json",
+      "bytes": 519,
+      "sha256": "26c7339c2fac66b989189240cfb56262350c6ee8390a2453933ed86e79c741f9"
+    },
+    {
+      "path": "cpu-results-01.json",
+      "bytes": 3130,
+      "sha256": "1184d73ebf6a0225681ad3f555c777568b2eae674bfd30e9044348987aacf919"
+    },
+    {
+      "path": "cpu-results-02.json",
+      "bytes": 600,
+      "sha256": "05d6b02b28e1507630b07f62fc1ae667c42914af5213f35277545440773298e2"
+    },
+    {
+      "path": "deadlines-01.log",
+      "bytes": 5476,
+      "sha256": "d56f4636e39661a25078208ae95407c2ca1e0fdc9a021ff861d23baa84a60087"
+    },
+    {
+      "path": "gateway-01.log",
+      "bytes": 3420,
+      "sha256": "2a3932c3ff6ef31932ee9cae3ba87b57115320d4fb5d4d13edec9689fa99a5b3"
+    },
+    {
+      "path": "host-configure.log",
+      "bytes": 687,
+      "sha256": "7160b7ec403dac204bc2255a4976502dc82af78f3e973d1bcd5e401cc0f8ad8b"
+    },
+    {
+      "path": "host-exporter-01.log",
+      "bytes": 4296,
+      "sha256": "91a47f873e4a8270c87967f86b79d86650fa589f5a59d9911fba11ecb6d187d5"
+    },
+    {
+      "path": "host-exporter-02.log",
+      "bytes": 280,
+      "sha256": "e4da672ebae3d2f025000fb43e177f321cec544480f0f389dac9d32253ba930d"
+    },
+    {
+      "path": "host-registration.log",
+      "bytes": 52100,
+      "sha256": "4aa9aff626fd6ef0dd7b6b97b38b19935773f46a2a820e3a262891bdbccae05c"
+    },
+    {
+      "path": "legacy-resources-01.log",
+      "bytes": 1999,
+      "sha256": "8fe59f2b1947e64cc99155753ba866dcd1caf1865570e9000a10b10fa52e4df9"
+    },
+    {
+      "path": "memory-01.log",
+      "bytes": 1265,
+      "sha256": "796030809371feccbea8c3716090cad4c4c1248ab9a502641c36ba28767ac777"
+    },
+    {
+      "path": "recovery-01.log",
+      "bytes": 2538,
+      "sha256": "fa2231cf121fbe6b913072fcee298bf3af52f0f1126d5d962101b6a42a3ec16a"
+    },
+    {
+      "path": "resource-control-01.log",
+      "bytes": 2797,
+      "sha256": "1b7311eb2db718c8b5f6d666951a5b9ac2ebde8d6e692436c8941bbd1b0a0346"
+    },
+    {
+      "path": "result.json",
+      "bytes": 4022,
+      "sha256": "aadc780ef4ecabde6eeaddb1af2cc15a64e70c4bcb1cb9d45c1763ac72d704e5"
+    },
+    {
+      "path": "seal-precheck-correction.json",
+      "bytes": 664,
+      "sha256": "4527e2cf350c2cd013d3acdee672c3443e423cfbe2fa3c74ad289ba2d7134633"
+    },
+    {
+      "path": "serve-contract.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "serve-inventory.log",
+      "bytes": 170,
+      "sha256": "520ac62c4994168b9905e625b642f8f28a4b7a91fb33ac9fb2fb1a0165ae9608"
+    },
+    {
+      "path": "source-bindings.json",
+      "bytes": 1955,
+      "sha256": "261d95162589ba60a50d642433af8ecab204c7f1ea35458d629ed51df45e02cc"
+    },
+    {
+      "path": "sources-01.json",
+      "bytes": 1194,
+      "sha256": "9bca9c9484dfe13b5886c684402157aacd8c9182e6bed5233a9d447b4c0d7894"
+    },
+    {
+      "path": "static-checks.json",
+      "bytes": 1045,
+      "sha256": "c654652501dc4af27f3b0eff486e9cd8d0adb24a2eb74292a9edfac142beaf2a"
+    },
+    {
+      "path": "supervisor-01.log",
+      "bytes": 5693,
+      "sha256": "f94e72ecd66acf5017e8c2698edfc6b97e31f75cf7e4b2ca9eac9f4fd77837cd"
+    },
+    {
+      "path": "telemetry-01.log",
+      "bytes": 3569,
+      "sha256": "316345206ec1c1f6690fafe360d9823c45e91a1dc79a6b88315a2773e5b02db3"
+    },
+    {
+      "path": "test-inventory.json",
+      "bytes": 23068,
+      "sha256": "50b40b5e63dbf73aeabf5569e3d6f7c6b5a1ff5ae9641de166d7f5e78e3b94fd"
+    }
+  ]
+}

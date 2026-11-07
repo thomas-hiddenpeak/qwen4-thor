@@ -222,7 +222,7 @@ def run(package, digest, output, *, observe=None, read_memory=None):
     manifest = pkg.verify(package, digest)
     cfg = manifest['settings']
     observations = None
-    if manifest.get('version') == 9:
+    if manifest.get('version') in (9, 10):
         from tools.serve_service import auxiliary
         pkg.require(cfg.get('nvml_policy') == 'degrade' and
                     cfg['restart_limit'] == 0,
@@ -254,6 +254,10 @@ def run(package, digest, output, *, observe=None, read_memory=None):
         if envelope is not None:
             state['host_resources'] = dict(policy=envelope.selected, observation=envelope.latest,
                 violation=envelope.error, payload_removed=envelope.closed)
+            if manifest.get('version') == 10:
+                state['host_resources'].update(runtime_verification='CGROUPFS',
+                    runtime_manager_observation='NOT_QUERIED',
+                    statistics_gap_samples=envelope.statistics_gap_samples)
         if changed and observations is not None:
             data = f'{time.time()} {status}\n'.encode()
             observations.perform('events', lambda: events.write(data),
@@ -287,7 +291,10 @@ def run(package, digest, output, *, observe=None, read_memory=None):
             try:
                 if 'host_resources' in manifest:
                     from tools.serve_service import resources
-                    envelope = resources.Envelope(manifest['host_resources'], output)
+                    options = ({'isolate_manager': True}
+                               if manifest.get('version') == 10 else {})
+                    envelope = resources.Envelope(manifest['host_resources'], output,
+                                                  **options)
                 watchdog.start()
                 while not stopped():
                     watchdog.check()
