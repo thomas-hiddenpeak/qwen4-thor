@@ -14,7 +14,8 @@ namespace q4t::service {
 
 class OwnedFd {
  public:
-  explicit OwnedFd(int fd = -1) : fd_(fd) {}
+  OwnedFd() = default;
+  explicit OwnedFd(int fd) : fd_(fd) {}
   ~OwnedFd();
   OwnedFd(const OwnedFd&) = delete;
   OwnedFd& operator=(const OwnedFd&) = delete;
@@ -25,7 +26,7 @@ class OwnedFd {
   void Reset(int fd = -1);
 
  private:
-  int fd_;
+  int fd_ = -1;
 };
 
 struct ProcessIdentity {

@@ -151,12 +151,15 @@ def decide(fault: Fault, context: Context) -> Decision:
             return Decision(Action.RESTART_GATEWAY, 'gateway_exited')
         return Decision(Action.WAIT_DEPENDENCY, 'gateway_cleanup_or_identity')
     if not (evidence.cleanup_complete and evidence.resources_safe and
-            evidence.identity_valid and evidence.lease_continuous and
-            evidence.device_usable):
+            evidence.identity_valid and evidence.lease_continuous):
         return Decision(Action.WAIT_DEPENDENCY, 'replacement_preflight')
     if kind == FaultKind.CONTROLLER_EXIT:
+        # The CPU controller must be able to inspect/probe an unavailable
+        # device. Its replacement does not authorize loading a model.
         return Decision(Action.RESTART_CONTROLLER, 'controller_exited')
     if kind in MODEL_RECOVERABLE:
+        if not evidence.device_usable:
+            return Decision(Action.WAIT_DEPENDENCY, 'device_not_proven_usable')
         if kind in (FaultKind.PLE_UNAVAILABLE, FaultKind.RESOURCE_EXHAUSTED):
             if not evidence.dependency_ready:
                 return Decision(Action.WAIT_DEPENDENCY, 'dependency_not_ready')

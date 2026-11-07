@@ -1,0 +1,740 @@
+// Standalone CPU Guardian. The controller is the only model-launch actor.
+#include "q4t/service/guardian_journal.h"
+#include "q4t/service/guardian_wire.h"
+
+#include <fcntl.h>
+#include <poll.h>
+#include <signal.h>
+#include <sys/file.h>
+#include <sys/socket.h>
+#include <sys/stat.h>
+#include <sys/un.h>
+#include <unistd.h>
+
+#include <algorithm>
+#include <array>
+#include <cerrno>
+#include <chrono>
+#include <cstddef>
+#include <cstdio>
+#include <cstring>
+#include <map>
+#include <sstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+
+namespace {
+namespace s = q4t::service;
+namespace w = q4t::service::wire;
+using q4t::io::Json;
+constexpr int64_t kSecond = 1'000'000'000;
+volatile sig_atomic_t stop_signal = 0;
+void SignalHandler(int) { stop_signal = 1; }
+
+int64_t Now() {
+  return std::chrono::duration_cast<std::chrono::nanoseconds>(
+             std::chrono::steady_clock::now().time_since_epoch())
+      .count();
+}
+void Require(bool value, const char* reason) {
+  if (!value) throw std::runtime_error(reason);
+}
+std::string Text(const Json& object, const char* key) {
+  const auto* value = object.Find(key);
+  Require(value && value->IsString() && value->str.size() <= 4096,
+          "missing bounded string");
+  return value->str;
+}
+uint64_t Integer(const Json& object, const char* key) {
+  uint64_t value = 0;
+  Require(w::GetUnsigned(object, key, &value).ok(), "missing exact integer");
+  return value;
+}
+std::string ReadFile(const std::string& path, bool private_file) {
+  s::OwnedFd fd(open(path.c_str(), O_RDONLY | O_CLOEXEC | O_NOFOLLOW));
+  Require(fd.Get() >= 0, "cannot open startup file");
+  struct stat info {};
+  Require(fstat(fd.Get(), &info) == 0 && S_ISREG(info.st_mode),
+          "startup input must be a regular file");
+  if (private_file) {
+    Require(info.st_uid == geteuid() && (info.st_mode & 0777) == 0600 &&
+                info.st_nlink == 1,
+            "startup file is not private");
+  }
+  std::array<char, 65537> bytes;
+  const ssize_t count = read(fd.Get(), bytes.data(), bytes.size());
+  Require(count > 0 && count < static_cast<ssize_t>(bytes.size()),
+          "startup file is empty, oversized or unavailable");
+  return std::string(bytes.data(), count);
+}
+bool HostMemorySafe(uint64_t floor) {
+  try {
+    std::istringstream lines(ReadFile("/proc/meminfo", false));
+    std::string line;
+    uint64_t available = 0, total = 0;
+    bool saw_available = false, saw_total = false;
+    while (std::getline(lines, line)) {
+      std::istringstream fields(line);
+      std::string key, unit, extra;
+      uint64_t value = 0;
+      fields >> key;
+      if (key != "MemTotal:" && key != "MemAvailable:") continue;
+      if (!(fields >> value >> unit) || unit != "kB" || fields >> extra) {
+        return false;
+      }
+      if (key == "MemAvailable:") {
+        if (saw_available) return false;
+        saw_available = true;
+        available = value;
+      } else {
+        if (saw_total) return false;
+        saw_total = true;
+        total = value;
+      }
+    }
+    return saw_available && saw_total && total && available <= total &&
+           available / 1024 >= floor;
+  } catch (const std::exception&) {
+    return false;
+  }
+}
+
+// Seqpacket preserves each bounded command. No caller can stall this loop by
+// withholding a body or by refusing to read a response.
+bool Send(int fd, const Json& message) {
+  std::string data;
+  if (!w::Encode(message, &data).ok()) return false;
+  return send(fd, data.data(), data.size(), MSG_DONTWAIT | MSG_NOSIGNAL) ==
+         static_cast<ssize_t>(data.size());
+}
+int Receive(int fd, Json* result) {
+  std::array<char, 8192> bytes;
+  iovec vector{bytes.data(), bytes.size()};
+  msghdr header{};
+  header.msg_iov = &vector;
+  header.msg_iovlen = 1;
+  const ssize_t count = recvmsg(fd, &header, MSG_DONTWAIT);
+  if (count < 0 &&
+      (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR)) {
+    return 0;
+  }
+  if (count <= 0 || (header.msg_flags & (MSG_TRUNC | MSG_CTRUNC))) return -1;
+  return w::Parse(std::string(bytes.data(), count), result).ok() ? 1 : -1;
+}
+
+struct Config {
+  std::string directory, service_id, python, journal, lease_path, boot_id;
+  std::vector<std::string> controller;
+  int lease_fd = -1;
+  int64_t term_ns = 30 * kSecond, kill_ns = 5 * kSecond;
+  int64_t heartbeat_ns = 15 * kSecond;
+  uint64_t memory_floor_mib = 1024;
+};
+Config ReadConfig(const std::string& path) {
+  Json value;
+  Require(w::Parse(ReadFile(path, true), &value).ok(),
+          "invalid Guardian config");
+  Require(w::HasKeys(value,
+                     {"version", "directory", "service_id", "python", "journal",
+                      "controller", "lease_path", "lease_fd", "resource_mode",
+                      "require_hard_memory_limit", "term_ms", "kill_ms",
+                      "heartbeat_ms", "critical_memory_mib"}),
+          "unknown Guardian configuration fields");
+  Require(Integer(value, "version") == 1 &&
+              Text(value, "resource_mode") == "process",
+          "unsupported service mode");
+  const auto* hard = value.Find("require_hard_memory_limit");
+  Require(hard->IsBool() && !hard->boolean,
+          "process mode cannot supply a hard physical RAM limit");
+  Config config;
+  config.directory = Text(value, "directory");
+  config.service_id = Text(value, "service_id");
+  config.python = Text(value, "python");
+  config.journal = Text(value, "journal");
+  config.lease_path = Text(value, "lease_path");
+  const uint64_t lease = Integer(value, "lease_fd");
+  Require(lease >= 3 && lease <= 1'000'000, "invalid inherited lease FD");
+  config.lease_fd = static_cast<int>(lease);
+  const auto* command = value.Find("controller");
+  Require(command->IsArray() && !command->array.empty() &&
+              command->array.size() <= 64,
+          "invalid controller command");
+  for (const auto& arg : command->array) {
+    Require(arg.IsString() && arg.str.size() <= 4096 &&
+                arg.str.find('\0') == std::string::npos,
+            "invalid controller argument");
+    config.controller.push_back(arg.str);
+  }
+  for (const auto* absolute :
+       {&config.directory, &config.python, &config.journal, &config.lease_path,
+        &config.controller[0]}) {
+    Require(!absolute->empty() && (*absolute)[0] == '/' &&
+                absolute->find('\0') == std::string::npos,
+            "absolute path required");
+  }
+  Require(config.service_id.size() == 36, "invalid service identity");
+  const uint64_t term = Integer(value, "term_ms");
+  const uint64_t kill = Integer(value, "kill_ms");
+  const uint64_t heartbeat = Integer(value, "heartbeat_ms");
+  Require(term <= 60'000 && kill >= 100 && kill <= 30'000 &&
+              heartbeat >= 1000 && heartbeat <= 60'000,
+          "invalid lifecycle deadlines");
+  config.term_ns = static_cast<int64_t>(term) * 1'000'000;
+  config.kill_ns = static_cast<int64_t>(kill) * 1'000'000;
+  config.heartbeat_ns = static_cast<int64_t>(heartbeat) * 1'000'000;
+  config.memory_floor_mib = Integer(value, "critical_memory_mib");
+  Require(config.memory_floor_mib >= 64 && config.memory_floor_mib <= 65536,
+          "invalid critical memory floor");
+  config.boot_id = ReadFile("/proc/sys/kernel/random/boot_id", false);
+  if (config.boot_id.ends_with('\n')) config.boot_id.pop_back();
+  Require(config.boot_id.size() == 36, "invalid boot identity");
+  return config;
+}
+
+enum class Purpose {
+  kNone,
+  kActivate,
+  kGrant,
+  kSpawned,
+  kReady,
+  kStopIntent,
+  kRetired
+};
+struct Client {
+  s::OwnedFd fd;
+  int64_t accepted = 0;
+  bool stopping = false;
+};
+
+class Guardian {
+ public:
+  Guardian(Config config, bool activate)
+      : config_(std::move(config)), activate_(activate) {}
+
+  void Initialize() {
+    umask(0077);
+    Require(s::EnableSubreaper().ok(), "subreaper required");
+    struct stat info {};
+    Require(lstat(config_.directory.c_str(), &info) == 0 &&
+                S_ISDIR(info.st_mode) && info.st_uid == geteuid() &&
+                (info.st_mode & 0777) == 0700,
+            "private service directory required");
+    const std::string lock = config_.directory + "/guardian.lock";
+    instance_.Reset(
+        open(lock.c_str(), O_RDWR | O_CREAT | O_CLOEXEC | O_NOFOLLOW, 0600));
+    Require(instance_.Get() >= 0 && fstat(instance_.Get(), &info) == 0 &&
+                S_ISREG(info.st_mode) && info.st_uid == geteuid() &&
+                info.st_nlink == 1 && (info.st_mode & 0777) == 0600 &&
+                flock(instance_.Get(), LOCK_EX | LOCK_NB) == 0,
+            "service instance already exists or lock invalid");
+    Require(s::CheckInheritedLease(config_.lease_fd, config_.lease_path).ok(),
+            "GPU lease is not continuously owned");
+    lease_.Reset(fcntl(config_.lease_fd, F_DUPFD_CLOEXEC, 3));
+    Require(lease_.Get() >= 0, "cannot retain lease FD");
+    close(config_.lease_fd);
+    // A stable abstract address avoids the Unix socket path-length limit for
+    // deep release directories. Every peer is authenticated by kernel UID.
+    socket_path_ =
+        "q4t-" + std::to_string(geteuid()) + "-" + config_.service_id;
+    sockaddr_un address{};
+    address.sun_family = AF_UNIX;
+    Require(socket_path_.size() + 1 < sizeof(address.sun_path),
+            "control path too long");
+    std::memcpy(address.sun_path + 1, socket_path_.data(), socket_path_.size());
+    listener_.Reset(
+        socket(AF_UNIX, SOCK_SEQPACKET | SOCK_NONBLOCK | SOCK_CLOEXEC, 0));
+    Require(listener_.Get() >= 0 &&
+                bind(listener_.Get(), reinterpret_cast<sockaddr*>(&address),
+                     static_cast<socklen_t>(offsetof(sockaddr_un, sun_path) +
+                                            1 + socket_path_.size())) == 0 &&
+                listen(listener_.Get(), 8) == 0,
+            "cannot bind private control socket");
+    Require(s::ReadProcess(getpid(), &self_).ok(),
+            "Guardian identity unavailable");
+    const auto status =
+        journal_.Start(config_.python, config_.journal, config_.directory,
+                       config_.service_id, Now(), 5 * kSecond);
+    if (!status.ok()) Freeze(status.message());
+  }
+
+  int Run() {
+    for (;;) {
+      pollfd descriptors[2]{{listener_.Get(), POLLIN, 0},
+                            {controller_socket_.Get(), POLLIN, 0}};
+      poll(descriptors, 2, 25);
+      const int64_t now = Now();
+      if (stop_signal) RequestStop(now);
+      Clients(now);  // Stop precedes consuming any new durable launch receipt.
+      ControllerEvents(now);
+      const auto journal_status = journal_.Tick(now);
+      if (!journal_status.ok() &&
+          journal_.State() == s::JournalState::kFrozen) {
+        Freeze(journal_status.message());
+      }
+      if (auto reply = journal_.TakeReply()) Complete(*reply, now);
+      if (!initialized_ && journal_.State() == s::JournalState::kReady) {
+        initialized_ = true;
+        const auto& snapshot = journal_.Snapshot();
+        const auto* active = snapshot.Find("active");
+        Require(active && active->IsObject(), "invalid active ledger slots");
+        for (const auto& [role, item] : active->object) {
+          (void)role;
+          if (!item.IsNull())
+            Freeze("cold startup requires slot reconciliation");
+        }
+        if (const auto* quarantine = snapshot.Find("quarantine");
+            quarantine && !quarantine->IsNull())
+          Freeze("persistent quarantine");
+        desired_running_ = snapshot.GetString("desired") == "RUNNING";
+        stop_durable_ =
+            !stopping_ && snapshot.GetString("desired") == "STOPPED";
+      }
+      CheckController(now);
+      Drive(now);
+      if (stopping_ && stop_durable_ && controller_ticket_.empty() &&
+          journal_.CleanupConfirmed()) {
+        bool empty = false;
+        Require(s::NoChildren(&empty).ok(),
+                "cannot confirm empty service tree");
+        if (empty) {
+          stopped_ = true;
+          ReplyToStops();
+          return 0;
+        }
+      }
+    }
+  }
+
+  // Used for internal contract failures after startup. Keep the Guardian alive
+  // to complete owned cleanup; never unlock underneath surviving children.
+  void Fail(const std::string& reason) {
+    Freeze(reason);
+    RequestStop(Now());
+  }
+
+ private:
+  Json Status() const {
+    const char* state = stopped_            ? "STOPPED"
+                        : stopping_         ? "DRAINING"
+                        : recovering_       ? "RECOVERING"
+                        : !failure_.empty() ? "WAIT_DEPENDENCY"
+                        : retry_after_ > Now()
+                            ? (circuit_open_ ? "CIRCUIT_OPEN" : "RECOVERING")
+                        : controller_ready_ ? "WAIT_DEPENDENCY"
+                                            : "STARTING";
+    return w::Object(
+        {{"version", w::Unsigned(1)},
+         {"service_id", w::String(config_.service_id)},
+         {"state", w::String(state)},
+         {"guardian_pid", w::Unsigned(getpid())},
+         {"guardian_start_ticks", w::Unsigned(self_.identity.start_ticks)},
+         {"controller_pid", controller_.identity.pid > 0 && !controller_reaped_
+                                ? w::Unsigned(controller_.identity.pid)
+                                : Json{}},
+         {"controller_generation", w::Unsigned(controller_generation_)},
+         {"controller_start_ticks",
+          w::Unsigned(controller_.identity.start_ticks)},
+         {"controller_events", w::Unsigned(controller_event_)},
+         {"retry_after_ms", w::Unsigned(static_cast<uint64_t>(std::max<int64_t>(
+                                0, (retry_after_ - Now()) / 1'000'000)))},
+         {"journal_pid",
+          !journal_.CleanupConfirmed() && journal_.Worker().pid > 0
+              ? w::Unsigned(journal_.Worker().pid)
+              : Json{}},
+         {"journal_start_ticks", w::Unsigned(journal_.Worker().start_ticks)},
+         {"controller_ready", w::Boolean(controller_ready_)},
+         {"business_ready", w::Boolean(false)},
+         {"recovery_frozen", w::Boolean(gate_.Frozen())},
+         {"stop_requested", w::Boolean(stopping_)},
+         {"stop_durable", w::Boolean(stop_durable_)},
+         {"cleanup_confirmed", w::Boolean(stopped_)},
+         {"reason", w::String(failure_)}});
+  }
+  void Freeze(const std::string& reason) {
+    if (failure_.empty()) failure_ = reason;
+    gate_.Freeze();
+  }
+  void RequestStop(int64_t now) {
+    if (stopping_) return;
+    stopping_ = true;
+    // A previously stopped snapshot is not proof of the current stop: an
+    // activation transaction may still be committing in the journal.
+    stop_durable_ = false;
+    gate_.Stop();
+    controller_ready_ = false;
+    cleanup_started_ = now;
+  }
+  bool Submit(Purpose purpose, const std::string& operation, const Json& args,
+              int64_t now) {
+    if (purpose_ != Purpose::kNone ||
+        journal_.State() != s::JournalState::kReady) {
+      return false;
+    }
+    const auto status =
+        journal_.Submit(operation, args, now, &journal_sequence_);
+    if (!status.ok()) {
+      Freeze(status.message());
+      return false;
+    }
+    purpose_ = purpose;
+    return true;
+  }
+  void Clients(int64_t now) {
+    for (int count = 0; count < 4 && clients_.size() < 8; ++count) {
+      s::OwnedFd fd(accept4(listener_.Get(), nullptr, nullptr,
+                            SOCK_CLOEXEC | SOCK_NONBLOCK));
+      if (fd.Get() < 0) break;
+      ucred peer{};
+      socklen_t length = sizeof(peer);
+      if (getsockopt(fd.Get(), SOL_SOCKET, SO_PEERCRED, &peer, &length) != 0 ||
+          peer.uid != geteuid())
+        continue;
+      clients_.push_back(Client{std::move(fd), now, false});
+    }
+    for (auto it = clients_.begin(); it != clients_.end();) {
+      if (it->stopping) {
+        ++it;
+        continue;
+      }
+      Json message;
+      const int received = Receive(it->fd.Get(), &message);
+      if (received == 0 && now - it->accepted < kSecond) {
+        ++it;
+        continue;
+      }
+      bool wait_stop = false;
+      try {
+        if (received == 1 &&
+            w::HasKeys(message, {"version", "service_id", "op"}) &&
+            Integer(message, "version") == 1 &&
+            Text(message, "service_id") == config_.service_id) {
+          const auto operation = Text(message, "op");
+          if (operation == "status")
+            Send(it->fd.Get(), Status());
+          else if (operation == "stop") {
+            RequestStop(now);
+            wait_stop = true;
+          }
+        }
+      } catch (const std::exception&) {
+        // A malformed local request does not alter lifecycle or model health.
+      }
+      if (wait_stop) {
+        it->stopping = true;
+        ++it;
+      } else
+        it = clients_.erase(it);
+    }
+  }
+  void ReplyToStops() {
+    for (auto& client : clients_)
+      if (client.stopping) Send(client.fd.Get(), Status());
+    clients_.clear();
+  }
+  void ControllerEvents(int64_t now) {
+    if (controller_socket_.Get() < 0 || recovering_) return;
+    for (int count = 0; count < 4; ++count) {
+      Json message;
+      const int received = Receive(controller_socket_.Get(), &message);
+      if (received == 0) return;
+      if (received < 0) {
+        Recover(now);
+        return;
+      }
+      try {
+        Require(w::HasKeys(message, {"version", "service_id", "generation",
+                                     "sequence", "event"}),
+                "invalid controller message");
+        Require(Integer(message, "version") == 1 &&
+                    Text(message, "service_id") == config_.service_id &&
+                    Integer(message, "generation") == controller_generation_ &&
+                    Integer(message, "sequence") == controller_event_ + 1,
+                "stale controller message");
+        ++controller_event_;
+        const auto event = Text(message, "event");
+        Require(event == "ready" || event == "heartbeat",
+                "unknown controller event");
+        if (event == "ready") controller_ready_seen_ = true;
+        heartbeat_at_ = now;
+      } catch (const std::exception&) {
+        Recover(now);
+        return;
+      }
+    }
+  }
+  void Recover(int64_t now) {
+    if (recovering_) return;
+    recovering_ = true;
+    controller_ready_ = false;
+    controller_socket_.Reset();
+    cleanup_started_ = now;
+  }
+  void CheckController(int64_t now) {
+    if (!controller_reaped_ && controller_.pidfd.Get() >= 0) {
+      int code = 0;
+      const auto status =
+          s::ReapProcess(controller_.pidfd.Get(), &controller_reaped_, &code);
+      if (!status.ok()) Freeze(status.message());
+      if (controller_reaped_ && !stopping_) Recover(now);
+    }
+    if (!stopping_ && !recovering_ && controller_.identity.pid > 0 &&
+        !controller_reaped_ &&
+        now - heartbeat_at_ >
+            (controller_ready_ ? config_.heartbeat_ns : 300 * kSecond))
+      Recover(now);
+  }
+  bool CleanupController(int64_t now) {
+    std::vector<s::ProcessRecord> descendants;
+    const auto status = s::OwnDescendants(&descendants);
+    if (!status.ok()) {
+      Freeze(status.message());
+      return false;
+    }
+    bool empty = true;
+    for (const auto& record : descendants) {
+      if (record.identity == journal_.Worker()) continue;
+      empty = false;
+      s::OwnedFd pidfd;
+      if (!s::OpenProcess(record.identity, &pidfd).ok()) continue;
+      const bool kill = now - cleanup_started_ >= config_.term_ns;
+      auto& previous =
+          signalled_[{record.identity.pid, record.identity.start_ticks}];
+      const int requested = kill ? SIGKILL : SIGTERM;
+      if (previous != requested) {
+        if (!s::SignalProcess(pidfd.Get(), requested).ok())
+          Freeze("owned signal failed");
+        previous = requested;
+      }
+      if (record.identity != controller_.identity) {
+        bool reaped = false;
+        int code = 0;
+        s::ReapProcess(pidfd.Get(), &reaped, &code);
+      }
+    }
+    if (!empty && now - cleanup_started_ > config_.term_ns + config_.kill_ns) {
+      Freeze("owned process cleanup unconfirmed");
+      if (stopping_) ReplyToStops();
+    }
+    return empty;
+  }
+  void SpawnController(int64_t now) {
+    if (stopping_ || stop_signal ||
+        !gate_.Consume(journal_sequence_, controller_generation_))
+      return;
+    int pair[2];
+    if (socketpair(AF_UNIX, SOCK_SEQPACKET | SOCK_CLOEXEC, 0, pair) != 0) {
+      Recover(now);
+      return;
+    }
+    controller_socket_.Reset(pair[0]);
+    s::OwnedFd child(pair[1]);
+    if (fcntl(controller_socket_.Get(), F_SETFL, O_NONBLOCK) != 0) {
+      Recover(now);
+      return;
+    }
+    controller_ = s::ChildProcess{};
+    controller_reaped_ = false;
+    controller_registered_ = false;
+    controller_ready_seen_ = false;
+    controller_event_ = 0;
+    const std::vector<std::string> env{
+        "Q4T_SERVICE_ID=" + config_.service_id,
+        "Q4T_CONTROLLER_GENERATION=" + std::to_string(controller_generation_),
+        "Q4T_CONTROL_FD=" + std::to_string(child.Get()),
+        "Q4T_LEASE_FD=" + std::to_string(lease_.Get()),
+        "Q4T_GUARDIAN_PID=" + std::to_string(getpid()),
+        "Q4T_GUARDIAN_START=" + std::to_string(self_.identity.start_ticks)};
+    const auto status = s::SpawnProcess(
+        config_.controller, env, {child.Get(), lease_.Get()}, &controller_);
+    if (!status.ok()) {
+      Recover(now);
+      return;
+    }
+    heartbeat_at_ = now;
+  }
+  void Complete(const s::JournalReply& reply, int64_t now) {
+    const Purpose purpose = purpose_;
+    purpose_ = Purpose::kNone;
+    Require(reply.sequence == journal_sequence_, "unbound journal completion");
+    if (purpose == Purpose::kActivate) {
+      desired_running_ = true;
+      stop_durable_ = false;
+      activate_ = false;
+    } else if (purpose == Purpose::kStopIntent) {
+      stop_durable_ = true;
+      desired_running_ = false;
+    } else if (purpose == Purpose::kGrant) {
+      if (!reply.result.GetBool("allowed")) {
+        const auto* delay = reply.result.Find("retry_after_ns");
+        if (delay) {
+          const uint64_t duration = Integer(reply.result, "retry_after_ns");
+          Require(duration <= 24 * 60 * 60 * static_cast<uint64_t>(kSecond),
+                  "invalid recovery wait");
+          retry_after_ = now + static_cast<int64_t>(duration);
+          circuit_open_ = true;
+        } else
+          Freeze("controller authorization denied");
+        return;
+      }
+      const auto* grant = reply.result.Find("grant");
+      Require(grant && grant->IsObject(), "missing durable controller grant");
+      controller_ticket_ = Text(*grant, "ticket");
+      controller_generation_ = Integer(*grant, "generation");
+      circuit_open_ = false;
+      if (gate_.Begin(reply.sequence, controller_generation_))
+        SpawnController(now);
+    } else if (purpose == Purpose::kSpawned) {
+      controller_registered_ = true;
+    } else if (purpose == Purpose::kReady) {
+      if (!stopping_ && !recovering_) controller_ready_ = true;
+    } else if (purpose == Purpose::kRetired) {
+      controller_ticket_.clear();
+      controller_ = s::ChildProcess{};
+      controller_reaped_ = true;
+      controller_registered_ = false;
+      controller_ready_seen_ = false;
+      recovering_ = false;
+      signalled_.clear();
+      retry_after_ = now + 5 * kSecond;
+      circuit_open_ = false;
+    } else
+      Require(false, "unexpected journal purpose");
+  }
+  void Drive(int64_t now) {
+    if (stopping_) {
+      if (!stop_durable_ && initialized_)
+        Submit(Purpose::kStopIntent, "desired",
+               w::Object({{"state", w::String("STOPPED")}}), now);
+      // Durable stop is preferred; journal failure cannot prevent owned
+      // cleanup.
+      const auto state = journal_.State();
+      if (!stop_durable_ && state != s::JournalState::kFrozen &&
+          state != s::JournalState::kStopping &&
+          state != s::JournalState::kStopped)
+        return;
+    }
+    if (stopping_ || recovering_) {
+      if (!CleanupController(now)) return;
+      if (journal_.State() == s::JournalState::kFrozen) {
+        // Keep the outer Guardian and instance lock alive. Exiting with an
+        // undurable stop could let an external supervisor resurrect the old
+        // RUNNING intent. No model/controller replacement is authorized here.
+        journal_.BeginStop(now, config_.term_ns);
+        return;
+      }
+      if (journal_.State() == s::JournalState::kStopping ||
+          journal_.State() == s::JournalState::kStopped) {
+        if (journal_.CleanupConfirmed() && stopping_ && !stop_durable_) {
+          ReplyToStops();
+        }
+        return;
+      }
+      if (!controller_ticket_.empty()) {
+        Submit(Purpose::kRetired, "retired",
+               w::Object({{"role", w::String("controller")},
+                          {"ticket", w::String(controller_ticket_)},
+                          {"verified", w::Boolean(true)}}),
+               now);
+      } else if (stopping_) {
+        journal_.BeginStop(now, config_.term_ns);
+        if (!stop_durable_ && journal_.CleanupConfirmed()) ReplyToStops();
+      }
+      return;
+    }
+    if (!initialized_ || gate_.Frozen()) return;
+    if (activate_) {
+      Submit(Purpose::kActivate, "desired",
+             w::Object({{"state", w::String("RUNNING")}}), now);
+      return;
+    }
+    if (!desired_running_) return;
+    if (controller_.identity.pid > 0 && !controller_reaped_) {
+      if (!controller_registered_) {
+        const auto owner = w::Object(
+            {{"pid", w::Unsigned(controller_.identity.pid)},
+             {"start_ticks", w::Unsigned(controller_.identity.start_ticks)},
+             {"boot_id", w::String(config_.boot_id)}});
+        Submit(Purpose::kSpawned, "spawned",
+               w::Object({{"role", w::String("controller")},
+                          {"ticket", w::String(controller_ticket_)},
+                          {"owner", owner}}),
+               now);
+      } else if (controller_ready_seen_ && !controller_ready_) {
+        Submit(Purpose::kReady, "ready",
+               w::Object({{"role", w::String("controller")},
+                          {"ticket", w::String(controller_ticket_)},
+                          {"verified", w::Boolean(true)}}),
+               now);
+      }
+      return;
+    }
+    if (!controller_ticket_.empty() || now < retry_after_) return;
+    if (!s::CheckInheritedLease(lease_.Get(), config_.lease_path).ok()) {
+      Freeze("GPU lease continuity lost");
+      return;
+    }
+    if (!HostMemorySafe(config_.memory_floor_mib)) return;
+    const auto proof = w::Object({{"cleanup_complete", w::Boolean(true)},
+                                  {"resources_safe", w::Boolean(true)},
+                                  {"identity_valid", w::Boolean(true)},
+                                  {"lease_continuous", w::Boolean(true)},
+                                  {"device_usable", w::Boolean(false)}});
+    Submit(Purpose::kGrant, "authorize",
+           w::Object({{"role", w::String("controller")}, {"proof", proof}}),
+           now);
+  }
+
+  Config config_;
+  bool activate_ = false, initialized_ = false, desired_running_ = false;
+  bool stopping_ = false, stopped_ = false, stop_durable_ = false;
+  bool recovering_ = false, controller_reaped_ = true;
+  bool controller_registered_ = false, controller_ready_seen_ = false;
+  bool controller_ready_ = false;
+  bool circuit_open_ = false;
+  s::OwnedFd instance_, lease_, listener_, controller_socket_;
+  std::string socket_path_, failure_, controller_ticket_;
+  s::ProcessRecord self_;
+  s::ChildProcess controller_;
+  s::JournalClient journal_;
+  s::LaunchGate gate_;
+  Purpose purpose_ = Purpose::kNone;
+  uint64_t journal_sequence_ = 0, controller_generation_ = 0,
+           controller_event_ = 0;
+  int64_t heartbeat_at_ = 0, cleanup_started_ = 0, retry_after_ = 0;
+  std::vector<Client> clients_;
+  std::map<std::pair<pid_t, uint64_t>, int> signalled_;
+};
+}  // namespace
+
+int main(int argc, char** argv) {
+  if (argc != 4 || std::string(argv[1]) != "--config" ||
+      (std::string(argv[3]) != "--activate" &&
+       std::string(argv[3]) != "--resume")) {
+    std::fprintf(stderr,
+                 "Usage: q4t-guardian --config FILE --activate|--resume\n");
+    return 2;
+  }
+  try {
+    struct sigaction action {};
+    action.sa_handler = SignalHandler;
+    sigemptyset(&action.sa_mask);
+    Require(sigaction(SIGTERM, &action, nullptr) == 0 &&
+                sigaction(SIGINT, &action, nullptr) == 0 &&
+                sigaction(SIGHUP, &action, nullptr) == 0,
+            "signal control unavailable");
+    Guardian guardian(ReadConfig(argv[2]),
+                      std::string(argv[3]) == "--activate");
+    guardian.Initialize();
+    for (;;) {
+      try {
+        return guardian.Run();
+      } catch (const std::exception& error) {
+        guardian.Fail(error.what());
+      }
+    }
+  } catch (const std::exception& error) {
+    std::fprintf(stderr, "Guardian startup failed: %s\n", error.what());
+    return 1;
+  }
+}

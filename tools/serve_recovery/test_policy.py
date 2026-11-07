@@ -49,6 +49,8 @@ class PolicyTests(unittest.TestCase):
         for field in ('cleanup_complete', 'resources_safe', 'identity_valid',
                       'lease_continuous', 'device_usable'):
             for kind in (*p.MODEL_RECOVERABLE, p.FaultKind.CONTROLLER_EXIT):
+                if field == 'device_usable' and kind == p.FaultKind.CONTROLLER_EXIT:
+                    continue
                 with self.subTest(field=field, kind=kind):
                     context = replace(self.context,
                         evidence=replace(ready, **{field: False}))
@@ -61,6 +63,14 @@ class PolicyTests(unittest.TestCase):
         # This proof may come from an allowed CUDA probe, not necessarily NVML.
         self.assertEqual(p.decide(self.fault(p.FaultKind.MODEL_EXIT),
                                  context).action, p.Action.RESTART_MODEL)
+
+    def test_cpu_controller_can_recover_to_probe_unknown_device(self):
+        context = replace(self.context,
+            evidence=p.Evidence(True, True, True, True, False))
+        self.assertEqual(p.decide(self.fault(p.FaultKind.CONTROLLER_EXIT),
+            context).action, p.Action.RESTART_CONTROLLER)
+        self.assertEqual(p.decide(self.fault(p.FaultKind.MODEL_EXIT),
+            context).action, p.Action.WAIT_DEPENDENCY)
 
     def test_ple_and_oom_wait_for_dependency_recovery(self):
         for kind in (p.FaultKind.PLE_UNAVAILABLE, p.FaultKind.RESOURCE_EXHAUSTED):

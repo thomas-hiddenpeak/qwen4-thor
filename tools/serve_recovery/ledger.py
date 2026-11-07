@@ -198,10 +198,12 @@ def tick(state, stamp):
     return now
 
 
-def denied(reason, retry_at=None):
+def denied(reason, retry_at=None, now=None):
     result = dict(allowed=False, reason=reason)
     if retry_at is not None:
         result['retry_at_logical_ns'] = retry_at
+        if now is not None:
+            result['retry_after_ns'] = max(0, retry_at-now)
     return result
 
 
@@ -235,13 +237,13 @@ def authorize(state, args, now, request_id):
             return denied('controller_not_spawned')
         if controller['owner']['boot_id'] != state['clock']['boot_id']:
             return denied('controller_not_current')
-    required = ('cleanup_complete', 'identity_valid') if role == 'gateway' \
-        else PROOFS
+    required = (('cleanup_complete', 'identity_valid') if role == 'gateway' else
+                PROOFS-{'device_usable'} if role == 'controller' else PROOFS)
     if not all(args['proof'][field] for field in required):
         return denied('preflight_incomplete')
     wait_until = max(state['not_before'][role], state['circuit_until'][role])
     if now < wait_until:
-        return denied('cooldown', wait_until)
+        return denied('cooldown', wait_until, now)
     attempts = state['attempts'][role]
     exhausted_until = 0
     if role == 'model':
@@ -255,7 +257,7 @@ def authorize(state, args, now, request_id):
     if exhausted_until:
         until = max(exhausted_until, now+15*MINUTE)
         state['circuit_until'][role] = until
-        return denied('budget_exhausted', until)
+        return denied('budget_exhausted', until, now)
     # Never make a stopped/failed attempt free. Only generation zero gets its
     # initial start; explicit stop/start, release changes and controller death
     # all preserve counters and the monotonic generation number.

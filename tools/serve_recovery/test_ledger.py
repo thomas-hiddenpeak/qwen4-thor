@@ -270,6 +270,17 @@ class LedgerTests(unittest.TestCase):
             self.assertEqual(result['reason'], 'preflight_incomplete')
         self.assertEqual(self.m.state['generations']['model'], 0)
 
+    def test_controller_grant_with_unknown_device_does_not_authorize_model(self):
+        self.m.retire('controller')
+        proof = dict(PROOF, device_usable=False)
+        controller = self.m.send('authorize', role='controller', proof=proof)
+        self.assertTrue(controller['allowed'])
+        self.m.send('spawned', role='controller',
+            ticket=controller['grant']['ticket'],
+            owner=dict(pid=123, start_ticks=456, boot_id=BOOT))
+        self.assertEqual(self.m.send('authorize', role='model', proof=proof)
+                         ['reason'], 'preflight_incomplete')
+
     def test_wrong_boot_or_twice_consumed_ticket_is_rejected(self):
         result = self.m.send('authorize', role='model', proof=PROOF)
         args = dict(role='model', ticket=result['grant']['ticket'],
