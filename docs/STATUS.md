@@ -2,6 +2,20 @@
 
 更新：2026-11-07。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+## Serve可靠性已合main，继续视觉最终组合验收
+
+[PR #21](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/21)已于
+2026-11-07合入main `fad0e929`；3631e703两项CI通过，主线包含完整
+实现与[真实业务证据](evidence/serve-closeout-business-20261107/README.md)。
+478a325e完成3模型12Chat/258.670秒，240次外层NVML全OK；v9/v10
+辅助故障隔离、显式恢复和真实cgroup清理通过，零模型重启，GPU/
+端口/锁释放。默认ea1b474d/3eb46385未替换。
+
+用户明确要求补齐证据并合入，PR #20已重新打开；本分支接回上述
+主线，保留新服务修复与视觉行最大值候选。旧34e7ceef的数值/HF
+与部分矩阵原件保留，原失败不改写。最终组合需要以新主线为父
+核对并验收，不能安装旧视觉ELF而丢掉刚合入的PLE健康修复。
+
 ## Serve已有成果已独立提取交接，视觉研究保持HOLD
 
 [收口入口](SERVE_RESILIENCE_CLOSEOUT_2026-11-07.md)：新草稿

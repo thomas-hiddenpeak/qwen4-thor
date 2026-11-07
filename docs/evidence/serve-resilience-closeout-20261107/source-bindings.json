@@ -1,0 +1,209 @@
+{
+  "base": "f7dcd8f95d17f7a8e7166f771064d1174d7ede6b",
+  "research_source": "7e6562136cf7581fdcfd6ff74a7a2b6e3d0ae7f9",
+  "extracted_sources": {
+    "CMakeLists.txt": "af0169a7c7c3f5221db94b7e56da2ed7cb5b286857e83592936e2107679882fc",
+    "cmake/ChatProtocolIdentity.cmake": "6561776bab97cc5e62f7ca619a2d9f53fde3f690b35cc5f934c69747226ca7e9",
+    "cmake/HostTestSources.cmake": "f0ec4ec42af4f3d25a0a68a51c438c01db177e88405549382b527789186e5755",
+    "docs/NVML_RESILIENCE_RESEARCH_2026-11-07.md": "10a88fb850f560fb1985f7e7701fcc6df6acbc04e05b60f322b72b2d638186d8",
+    "docs/SERVE_AUXILIARY_ISOLATION_2026-11-07.md": "71ffa1801aa81fc3b777dac814e005242f2958df6a600d6b0483a0e72806bf3e",
+    "docs/SERVE_HEALTH_P0_2026-11-07.md": "78efc0a3f2ca2e916d7f084196fd86d622ef89ca8da250d4d5299387f0eb7e0b",
+    "docs/SERVE_NVML_DEGRADATION_2026-11-07.md": "7e56e0cb6d7fcb13ea505e5b4b937d7681bbde80e15b463222a167b1e03c1a1e",
+    "docs/SERVE_NVML_RECOVERY_2026-11-07.md": "afa29e2bbaf7c1fcbc418991d8dc4d4fda145c0762f386fba8b2a364da2100ee",
+    "docs/SERVE_RESOURCE_CONTROL_ISOLATION_2026-11-07.md": "4357abaea03aa7ee1f4146afaa82f08437625f9922db13fbf686cda9d8c5e85a",
+    "docs/evidence/auxiliary-isolation-cpu-20261107/README.md": "d8bab74e34b5d02b6038c6949c0fe0de29fe1fd882db84b2bce80c9acbb0e5b3",
+    "docs/evidence/auxiliary-isolation-cpu-20261107/closeout-integrity.json": "eb15045434e8740973731049d35bb1a4b448ceed269b68a2464804fabcb379c5",
+    "docs/evidence/auxiliary-isolation-cpu-20261107/manifest.json": "0d6f0f0e3c296e0bc8aa13d4a9e94e9936d7c2614bd164487cf37cc46528fe14",
+    "docs/evidence/auxiliary-isolation-cpu-20261107/prior-count-correction.json": "a23459ca818134ba8bb3d98fa69cb5ea77537a8e9f41b09dc2c99ce702485e2b",
+    "docs/evidence/auxiliary-isolation-cpu-20261107/raw-records.tar.gz": "e8c67c21106da5e258a2257d3a946b4a2b3c4bd80d0b863c2ff9d818071acec1",
+    "docs/evidence/auxiliary-isolation-cpu-20261107/result.json": "01f2e2f6eede174da26f232a7df3c8d06a3977360d0ab1ebb59c2d331dd7d139",
+    "docs/evidence/auxiliary-isolation-cpu-20261107/source-bindings.json": "9849b26f0ab0bb1e0f58504a8b96dd18ee1a2618e33c24ddbde53e10cafc546c",
+    "docs/evidence/auxiliary-isolation-cpu-20261107/test-inventory.json": "47e662583dbd622c27890aab67c6c1997aee0e38e7ac33cb619e6c8e61421483",
+    "docs/evidence/nvml-recovery-cpu-20261107/README.md": "1e52560eee97a8d7af34c5a2ab1d01b99577fbe07dfeb1b7584504cb96538675",
+    "docs/evidence/nvml-recovery-cpu-20261107/closeout-integrity.json": "89e17ea1ee64a973623f40b1c952a802e9eecf768197f07a4643b9a8d4640307",
+    "docs/evidence/nvml-recovery-cpu-20261107/manifest.json": "bf49244a458316335cbbac368bfccd123a892ef074c588a84e276ed524ce9098",
+    "docs/evidence/nvml-recovery-cpu-20261107/raw-records.tar.gz": "548f60c68fc8f0e6459c950132b53d301b3cae432c6bb0a01d801dff6188e096",
+    "docs/evidence/nvml-recovery-cpu-20261107/result.json": "af1272fedb8c9b94f91856dfc1492a6116f562ee0640c5e506bcdc231d2a8c60",
+    "docs/evidence/nvml-recovery-cpu-20261107/source-bindings.json": "62f80e2cb8dbe1405be90fe951163a590ce43f80dd3a034f2683dbfaae0b517d",
+    "docs/evidence/resource-control-isolation-cpu-20261107/README.md": "a1b26cc209f8423befd7b25c09b215e742d9e94d1835b97fce04ed5be4735d0e",
+    "docs/evidence/resource-control-isolation-cpu-20261107/closeout-integrity.json": "c5f27e94592e4764127360eb4f20e7b75c6e2f8c6f254d0c5ae169f962f48388",
+    "docs/evidence/resource-control-isolation-cpu-20261107/manifest.json": "dfab45d6c3a3cce8273f810862b9079a497d9c446a547153f3e9022c478947ce",
+    "docs/evidence/resource-control-isolation-cpu-20261107/raw-records.tar.gz": "9f84b76768ad8cca558feb26d77bc6252df9be6d6526c0584097c4cba2292159",
+    "docs/evidence/resource-control-isolation-cpu-20261107/result.json": "aadc780ef4ecabde6eeaddb1af2cc15a64e70c4bcb1cb9d45c1763ac72d704e5",
+    "docs/evidence/resource-control-isolation-cpu-20261107/source-bindings.json": "261d95162589ba60a50d642433af8ecab204c7f1ea35458d629ed51df45e02cc",
+    "docs/evidence/resource-control-isolation-cpu-20261107/test-inventory.json": "50b40b5e63dbf73aeabf5569e3d6f7c6b5a1ff5ae9641de166d7f5e78e3b94fd",
+    "docs/evidence/serve-health-p0-20261107/README.md": "0286071def6cbd294ac83ac62d34b985905aa4de2ba7c079fb05f150e86fc864",
+    "docs/evidence/serve-health-p0-20261107/closeout-integrity.json": "6f08961b4979763cfc7b92fb89aeb2e87218d49e04836ae515bc84d23afb515b",
+    "docs/evidence/serve-health-p0-20261107/manifest.json": "b3ddb7876783aada91795ca94f476a2c21ec3891ef5f488a65627979fbabc751",
+    "docs/evidence/serve-health-p0-20261107/raw-records.tar.gz": "f05032034d441a033f2a54a0fffba32a3515404a54bebfb883b5561236512c3f",
+    "docs/evidence/serve-health-p0-20261107/result.json": "471573d79066d317ae7178b96eab2adad255f71126f91d629302f732b7ec2edb",
+    "docs/evidence/serve-health-p0-20261107/source-bindings.json": "9c21423faaf175aebc594930d95c93b77c14c6bd8a808814031b06b4c8b29a56",
+    "docs/evidence/serve-nvml-degradation-20261107/bindings.json": "600d91e81c706f9f29d8077c706cb5e167b9f3ae5f4b15f8c52714ca01f23f50",
+    "docs/evidence/serve-nvml-degradation-20261107/decision.json": "4ac788a6efca74406f03a4204cc11c9f79e29d457fd0e58f7db511ac7a8bb99c",
+    "docs/evidence/serve-nvml-degradation-20261107/postflight.json": "1eb5beaeb74315f22d2b05d340aa8039a11e20918e70051261b2f36f94acf00a",
+    "docs/serve-input-semantics-v1.json": "8fb2d3aba0b0253855acfad2867dea5a778a54a7b595213e9084841a5f1aff9f",
+    "docs/serve-openapi-v1.json": "d7d89af9580bbcad5892ffdea4ac58526c394c69fbd324adae5562e6bf9a5fec",
+    "include/q4t/ple/page_reader.h": "bbb35325c82421f6e9608a144672b051d3531b6652b6076d018fec0bff17e86e",
+    "include/q4t/ple/ple_embedding.h": "9d61a76df2f96ee7831177de6d9de0c85e2fce1023dd5ba2b40780f2e123db30",
+    "include/q4t/runtime/model_health.h": "19e05818f3a4462fe5c81e6098549205ce156f03c7aeaa89e593fb319670f26a",
+    "include/q4t/server/chat_server.h": "81b434d4402d2a934969b57407c0b2961b8ed86a69717e88861cd17442b1e53f",
+    "include/q4t/server/service_health.h": "6b95516f0c81386c469360e106b1abe544080c74f439a9525a0910c556f3490f",
+    "src/ple/page_reader.cpp": "c214bacacadc3c2df47a0d9cb6161ce30e83b00e7dbd6f1dda86b00228021094",
+    "src/ple/ple_embedding.cpp": "62ea382c9d5fe9d6c9e0ef789b497d3457f8fae1da149b45c21ca10db452c88b",
+    "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
+    "src/server/chat_capabilities.cpp": "2a24d9386d53df6c9790ed3cf82e3317ec54387722f8af6dd3cc7629423024eb",
+    "src/server/chat_generation.cpp": "cc91f8a4ef7c176fe9106db03599565a36475f3871b3c529655fe3ccfec388ac",
+    "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
+    "src/server/chat_http.cpp": "80f118f2c33271b67c72839eb3ddefe46ea820418769ccc945ed9d1a3a847992",
+    "src/server/chat_metrics.cpp": "98b0f7ebfb79868285f31e03c55d481e813cab1044c4a31e24356dc353260fab",
+    "src/server/chat_preflight.cpp": "ab8b3491b17baae0d9a3ec51e9c9cf066907e665efd21449235e70153f130767",
+    "src/server/chat_scheduler.cpp": "2b6d315bfd12609e343010852f7c15b8248fe5180359a3d7b49d3c1db5b8d1fc",
+    "tests/host/CMakeLists.txt": "a0872241d5315297da19db8c42bb498fcb6a82e23c189e7f7cf055da3b31ffac",
+    "tests/ple_health_host/CMakeLists.txt": "c18b63d16ad75e33808829e8934d9e5ab96fecb5d4e15fe629bc5059e0baac9f",
+    "tests/ple_health_host/ple_health_test.cpp": "f1f96b2e618c8c011110cd5e23a1cc1d35fd5b5dcd27c3c1395ccba33faa473d",
+    "tests/server_chat_capabilities_test.cpp": "47d52e194cfb9863f16af07cd6fdc660605126dfd0aede2312eb1bee4bd55f5b",
+    "tests/server_service_health_test.cpp": "4a368ee565728fabcd9da381f025f6123f1b40962e060559fc5eaf34ebc944e8",
+    "tools/evalscope/README.md": "2f64fad38b7ffedf6768a798906b93a2e5676c9c73727083fb85ec4e55199cb1",
+    "tools/evalscope/gpu_exclusive.py": "cbc8c0accbcc3194e9792549ff72bc708b35d46deb75b4066c62fdb16bdaa3ad",
+    "tools/evalscope/nvml_process_query.py": "8c292f2b5e778c9c9033539e06659570075999cf6e74f20a7431ea1fd45c1ac3",
+    "tools/evalscope/test_nvml_process_query.py": "a57e85d228f51a833c6322e2aa3f30f6eea66fcfc0cbe98a74166bc585d02081",
+    "tools/release/required_host_tests.txt": "580102c0a9e33d21e9ec40ec7d51f8476fa4bc426a4795d0f66c1a1d09ad2e0c",
+    "tools/serve_audit/check_inventory.py": "a0c08a50f0f9dd4e83e2789927b953a6bbd070c29220fa0b7a5f461e14851ff5",
+    "tools/serve_audit/inventory.json": "50099f3be5b253a6c7c789fb81de8eab9d55f32cb155468827844af11cd64eac",
+    "tools/serve_protocol/build_contract.py": "15bc3aa65ae3094c0b0ace0639a786a295d019a7014a08f53e3b251acd077966",
+    "tools/serve_service/README.md": "1f6384b960d7bfc313d7a96b6b164ce79d8addc94f97c4ef40c51babe006a4be",
+    "tools/serve_service/auxiliary.py": "9b818763694570b63efa394e01fc327300d8ee375bc8f7009023937b1061bbdf",
+    "tools/serve_service/monitor_control.py": "06fc8f1477f166e79e57f6d12d0e0554af949c92f3d26d2dd5b68ba84dcd392c",
+    "tools/serve_service/nvml_acceptance.py": "8db02e4ed57a83f13c8b69d91d1176934fb686895f990ad91eabc75400338e5c",
+    "tools/serve_service/nvml_policy.py": "817b2500044cd2eeed4277ad95d2686bf11f4785282ea1149beb63d62b0ef9a6",
+    "tools/serve_service/package.py": "ceb24c4bbe6e25c1ec83ab001acbe30deca9d75fdbd5eaa71eaf6831e3e43a3e",
+    "tools/serve_service/resources.py": "2b72ea6775ef6067eacb4ce6351a58e4a2bac1145e3869165a142a75f81245b2",
+    "tools/serve_service/service.py": "d101936e64786ce544c3f27a6be90a1d8384644d72bede7ac78fd091f6a47d0c",
+    "tools/serve_service/supervisor.py": "2c4509f590123602fd16079fe6d8dfad8b73c5488c736804d1fb57ebb7c978a7",
+    "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
+    "tools/serve_service/test_auxiliary.py": "36a36ec2487dd7441df3445acb9f3e0676aa7494c2236faacf32d91934ed95c6",
+    "tools/serve_service/test_monitor_recovery.py": "19bc9d884233b8108c901943c5c80b91b68807473894fc6da40c5913c7b75cac",
+    "tools/serve_service/test_nvml_acceptance.py": "9ffe6f14e7846e6d9b30c0fe097fe0b507f86045002f66d8014621e5f154e22a",
+    "tools/serve_service/test_nvml_policy.py": "0db1434523c8a4ac27d619397e2af85024e0ecab2ae6a4a675116a0726302a14",
+    "tools/serve_service/test_resource_control.py": "d1c5f0b5054f0da851cdbd9396754d08f4d8869f5545778bbf1709a561948cc3",
+    "tools/serve_service/test_service.py": "b5382e9ba9e0e800417b16bacf88787abcdc93d854ae364282316e4b42717113",
+    "tools/serve_service/test_telemetry.py": "b48a2e51dd6a42171af780842a2a81d44b18e877aea5b23ae30a85a1d45821fd"
+  },
+  "protocol": {
+    "host": {
+      "sha256": "7c91ab7dc60f00dc833ab84509bd273c14c7c183bc111c60582913b8fe6e8f12",
+      "source_count": 107,
+      "drift": {}
+    },
+    "runtime": {
+      "sha256": "7c91ab7dc60f00dc833ab84509bd273c14c7c183bc111c60582913b8fe6e8f12",
+      "source_count": 107,
+      "drift": {}
+    }
+  },
+  "binaries": {
+    "host/q4t_host_tests": {
+      "sha256": "ab4d739a067dc69aaf905db499b5fb3c2381f964a50d1676935be6b1080ddab8",
+      "bytes": 2368616
+    },
+    "ple/q4t_ple_health_tests": {
+      "sha256": "0abdea31f9e90473a88408d8d965d85135e7a9a1275a30395afdab0bf5b97439",
+      "bytes": 157808
+    },
+    "runtime/q4t": {
+      "sha256": "478a325e3b7baaee90f96381468be17fab2511f861b9f92353f84ed9564ceb54",
+      "bytes": 7449360
+    }
+  },
+  "protected": {
+    "protected": {
+      "build/q4t": "ea1b474d7d69808696e697346a60ee09bb9ecaca9bfb99925b78dcdbda7a4550",
+      "build/q4t.release.json": "3eb463850cf07338406b811197a68a5dcb9474ac9c2cf039470aa4f654924724",
+      ".q4t-work/vision-attention-rowmax-20261107/engine/q4t": "34e7ceefd60c23e451e9dba6d67cde99e9db25191f56a6aa489478d3afdea889",
+      ".q4t-work/vision-forward-timing-20261107/engine/q4t": "982bba071e68e807cda653fa32ab76bed692808aa2d9325876ac09ea9f9daa1d"
+    },
+    "old_package_verified": true,
+    "old_package_digest": "f69cb406a80b64fc7c51a23e212c4d183dca86c0dbcebee3e4fe3b3593e3accd"
+  },
+  "source_integrity": {
+    "extracted_files": 86,
+    "runtime_extraction_byte_identical": true,
+    "reviewed_non_runtime_rebindings": [
+      "docs/NVML_RESILIENCE_RESEARCH_2026-11-07.md",
+      "docs/serve-input-semantics-v1.json",
+      "tools/serve_audit/inventory.json"
+    ],
+    "managed_source_files": {
+      "tools/serve_service/package.py": "ceb24c4bbe6e25c1ec83ab001acbe30deca9d75fdbd5eaa71eaf6831e3e43a3e",
+      "tools/serve_service/supervisor.py": "2c4509f590123602fd16079fe6d8dfad8b73c5488c736804d1fb57ebb7c978a7",
+      "tools/serve_service/backend.py": "2845329d81c3a9ea4f7223432daa1e865a414a305fe0419d2ca934d137463112",
+      "tools/serve_service/service.py": "d101936e64786ce544c3f27a6be90a1d8384644d72bede7ac78fd091f6a47d0c",
+      "tools/evalscope/gpu_exclusive.py": "cbc8c0accbcc3194e9792549ff72bc708b35d46deb75b4066c62fdb16bdaa3ad",
+      "tools/evalscope/bounded_log.py": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+      "tools/evalscope/nvml_process_query.py": "8c292f2b5e778c9c9033539e06659570075999cf6e74f20a7431ea1fd45c1ac3",
+      "tools/release/release.py": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+      "tools/serve_ops/contracts.py": "0ceb9a926f7e6ddb573a8a7847ae1d2adc0d3cd862a4fcb76efe7746554244e7",
+      "tools/serve_ops/identity.py": "74001ea851d3a7b0d5aee843b3ccee4b669485ed93543bb04799ab42e16847b9",
+      "tools/serve_ops/transport.py": "98d3c326baaa7731078aa706911c743ae10b2278763d5de86f2bc7828650e2aa",
+      "tools/serve_service/memory.py": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+      "tools/serve_service/inspection.py": "2930af5fe6564b567a39bb6c9280dfe098be4e78227250660246a9722cfb90b9",
+      "tools/serve_gateway/client_policy.py": "fe0933bab4f288dab00f2e1871efdd312fa7c2a2eb496f7802cad7bad81e4ba7",
+      "tools/serve_service/resources.py": "2b72ea6775ef6067eacb4ce6351a58e4a2bac1145e3869165a142a75f81245b2",
+      "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
+      "tools/serve_service/nvml_policy.py": "817b2500044cd2eeed4277ad95d2686bf11f4785282ea1149beb63d62b0ef9a6",
+      "tools/serve_service/monitor_control.py": "06fc8f1477f166e79e57f6d12d0e0554af949c92f3d26d2dd5b68ba84dcd392c",
+      "tools/serve_service/auxiliary.py": "9b818763694570b63efa394e01fc327300d8ee375bc8f7009023937b1061bbdf"
+    },
+    "visual_kernel_matches_main": true,
+    "prior_archives": [
+      {
+        "path": "docs/evidence/serve-health-p0-20261107",
+        "archive_sha256": "f05032034d441a033f2a54a0fffba32a3515404a54bebfb883b5561236512c3f",
+        "records": 40
+      },
+      {
+        "path": "docs/evidence/nvml-recovery-cpu-20261107",
+        "archive_sha256": "548f60c68fc8f0e6459c950132b53d301b3cae432c6bb0a01d801dff6188e096",
+        "records": 30
+      },
+      {
+        "path": "docs/evidence/auxiliary-isolation-cpu-20261107",
+        "archive_sha256": "e8c67c21106da5e258a2257d3a946b4a2b3c4bd80d0b863c2ff9d818071acec1",
+        "records": 43
+      },
+      {
+        "path": "docs/evidence/resource-control-isolation-cpu-20261107",
+        "archive_sha256": "9f84b76768ad8cca558feb26d77bc6252df9be6d6526c0584097c4cba2292159",
+        "records": 24
+      }
+    ],
+    "reused_unchanged_entrypoints": [
+      {
+        "path": "tools/serve_host/core.py",
+        "sha256": "3eb964cb70aaff127407f7bfa493fbddee4a38c0443000eff8a136b9cc5988ef"
+      },
+      {
+        "path": "tools/serve_host/source.py",
+        "sha256": "81512f4a210621813507484484fafee4e18ef80235f2a893dc803f9407c7f08a"
+      },
+      {
+        "path": "tools/serve_host/observer.py",
+        "sha256": "79483609a4a86987b9c78f72ddb1eb7d7672752fde3c891bd33881811ec9f549"
+      },
+      {
+        "path": "tools/serve_host/test_host.py",
+        "sha256": "98a3eb167b11d71d7b4e99ab1f58559cd2584015f1193ccb1b4968e1c9972ddb"
+      },
+      {
+        "path": "tools/serve_service/test_resources.py",
+        "sha256": "7179f210ac8e18939c774f9fbca390b0b880815aa7b3f40e7b43e644dc51e7bc"
+      },
+      {
+        "path": "tools/serve_gateway/test_gateway.py",
+        "sha256": "6a2c07bda4fe7e68aae0ab730d20828a1e8df2234b534c3d8b35db331247bfca"
+      }
+    ],
+    "limits": "Reused historical test conclusions retain their original identities and limits; production binary/HTTP qualification does not transfer."
+  },
+  "new_runtime_executed": false
+}

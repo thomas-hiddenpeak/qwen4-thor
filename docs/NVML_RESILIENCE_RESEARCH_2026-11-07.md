@@ -19,7 +19,7 @@ HTTP。因此监控超时本身不能证明模型OOM或执行失败。尚未追�
 11月7日捕获的高阶分配失败仍存在kvmalloc回退，缺最终分配返回与
 同次NVML worker等待栈；不能断定全部故障与10月20日同根因，也
 不能从MemAvailable/CMA单点值推导新的准入阈值。参见
-[环境诊断限制](VISION_ROWMAX_ENV_DIAGNOSIS_2026-11-07.md)。
+[环境诊断限制（保留的研究来源）](https://github.com/thomas-hiddenpeak/qwen4-thor/blob/7e6562136cf7581fdcfd6ff74a7a2b6e3d0ae7f9/docs/VISION_ROWMAX_ENV_DIAGNOSIS_2026-11-07.md)。
 
 ## 官方线索与限制
 

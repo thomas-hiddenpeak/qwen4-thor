@@ -1,0 +1,6 @@
+{
+  "status": "AUDIT_ASSUMPTION_CORRECTED",
+  "reason": "The pre-recovery snapshot can predate the asynchronous log error publication; require the terminal ledger plus the observed fault counts, retaining all intermediate snapshots.",
+  "models": 0,
+  "requests": 0
+}
