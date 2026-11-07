@@ -1,6 +1,7 @@
 """CPU fault isolation contracts. No NVML, CUDA or model execution."""
 import errno
 import fcntl
+import itertools
 import json
 import os
 from pathlib import Path
@@ -218,11 +219,19 @@ class IsolationTests(unittest.TestCase):
         self.assertEqual(state['error'], 'observation deadline exceeded')
 
     def test_isolated_supervisor_stops_unhealthy_without_metrics_or_restart(self):
+        seen = []
         def observe(pid, _):
+            seen.append(pid)
             value = self.observation(pid, ready=False)
             value.update(metrics=None, health_status='unhealthy')
             return value
-        rc, state = self.run_supervisor(observe, isolated=True)
+        # This checks fault classification, independently of host scheduling and
+        # fsync latency. Real deadline expiry is covered by test_deadlines.py.
+        # Patch only the supervisor clock; child cleanup keeps its real clock.
+        with mock.patch.object(sup, 'time', wraps=time) as clock:
+            clock.monotonic.side_effect = itertools.count(100.0, .001)
+            rc, state = self.run_supervisor(observe, isolated=True)
+        self.assertEqual(seen, [state['backend']['pid']])
         self.assertEqual((rc, state['attempts'], state['restarts']), (1, 1, 0))
         self.assertEqual(state['error'], 'Backend unhealthy')
         self.assertTrue(state['cleanup_confirmed'])

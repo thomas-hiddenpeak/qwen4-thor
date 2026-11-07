@@ -1,0 +1,63 @@
+{
+  "records": [
+    {
+      "path": "pr20-ci-failure.log",
+      "bytes": 157871,
+      "sha256": "12f49d53326a7d1c964f5eda65c31a42a309be988a075f8d0f372c4858d84259"
+    },
+    {
+      "path": "check_startup_race.py",
+      "bytes": 1749,
+      "sha256": "828118205823fb4fac070edce728d4389d053de3f2052a0be2e50c8d4e05b2c4"
+    },
+    {
+      "path": "before-startup-race.log",
+      "bytes": 1060,
+      "sha256": "d7af205e2e7bf484080d0ca2e2b84c7822495e01753861d1c5ba0f48bd8a6c8a"
+    },
+    {
+      "path": "before-startup-race.json",
+      "bytes": 142,
+      "sha256": "632326abc0f3423cd7f008f10d6246428a7f8b7a2cdcdbe9ae8d13292207af6a"
+    },
+    {
+      "path": "after-startup-race.log",
+      "bytes": 292,
+      "sha256": "21ff87bc3becf15d402f221d69ab83431734baec9006b00ddbebbae844cc16b8"
+    },
+    {
+      "path": "after-startup-race.json",
+      "bytes": 140,
+      "sha256": "311096dbdd3a1409e2222cb75a48c0456d3ee478b7a589cbfa1ad802fd90e1ad"
+    },
+    {
+      "path": "run_cpu.py",
+      "bytes": 1289,
+      "sha256": "956f754aa99c960af0f83bb43ed0399f49596d80d278e8a5885584a42846c9c7"
+    },
+    {
+      "path": "targeted-cpu.log",
+      "bytes": 9729,
+      "sha256": "754fb26c65fbf12906326cae73e74434d5201e41671686574a3a282430cb7b0b"
+    },
+    {
+      "path": "targeted-cpu.json",
+      "bytes": 6407,
+      "sha256": "025f21bf3cbb90239b6c785fb778425c73fb1f810f6013830fc827d3ac2454b7"
+    },
+    {
+      "path": "pr20-closed.json",
+      "bytes": 190,
+      "sha256": "7148c3044320b8f830d2ce163420d54866ec4639d13d1b16d4110be30c323b10"
+    },
+    {
+      "path": "protected-before.json",
+      "bytes": 553,
+      "sha256": "aa3b18cddfb91e2bdc4b987a99d4f3c2d4b2df1dfe5cda234ae3504816935134"
+    }
+  ],
+  "archive": {
+    "path": "raw-records.tar.gz",
+    "sha256": "18f1cccbb283b8b9130f977b25bca9d10e95393237f20da1caddbeefe42dd53c"
+  }
+}
