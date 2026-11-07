@@ -1,0 +1,17 @@
+{
+  "negative_controls": [
+    {
+      "case": "cannot_rewrite_original_failure",
+      "rejected": true,
+      "error": "original failure must remain failed"
+    },
+    {
+      "case": "cannot_reuse_lifetime_across_gap",
+      "rejected": true,
+      "error": "reused lifetime overlaps failed observation"
+    }
+  ],
+  "syntax_files": 2,
+  "models": 0,
+  "gpu_queries": 0
+}

@@ -22,7 +22,7 @@ from tools.vision_service.timing_stage import Run as TimingRun
 h = previous.h
 declarations = previous.declarations
 ROOT = s.ROOT
-BASE = ROOT / ".q4t-work/vision-attention-rowmax-20261107"
+BASE = ROOT / ".q4t-work/vision-rowmax-mainline-20261107"
 PACKAGE = BASE / "release"
 OUTPUT = BASE / "installation"
 HEALTH = BASE / "health-01"
@@ -31,7 +31,7 @@ NAMES = ("q4t", "q4t.release.json")
 OLD = dict(zip(NAMES, (
     "ea1b474d7d69808696e697346a60ee09bb9ecaca9bfb99925b78dcdbda7a4550",
     "3eb463850cf07338406b811197a68a5dcb9474ac9c2cf039470aa4f654924724")))
-NEW = "34e7ceefd60c23e451e9dba6d67cde99e9db25191f56a6aa489478d3afdea889"
+NEW = "60b1c4c121d066789ebc44746316161320448d98095f32a7ec24e3fa00343ff3"
 LIMITS = dict(starts=1, generations=4, controls=16, native=0, seconds=300)
 BORROW_GUARD = False
 
@@ -52,7 +52,7 @@ def prepare():
               "explicit engineering decision required")
     for key, file in (("pilot_sha256", "audit.json"),
                       ("acceptance_audit_sha256", "acceptance-audit.json"),
-                      ("acceptance_originals_sha256", "accept-originals.json")):
+                      ("acceptance_originals_sha256", "originals.json")):
         h.require(h.sha(BASE / file) == decision[key], "acceptance evidence drift")
     h.require(hashes(ROOT / "build") == OLD and not list((ROOT / "build").glob("*recovery*.json")),
               "default drift or pending recovery")
@@ -79,10 +79,14 @@ def prepare():
         note="Old package/worktree paths retained; rollback sidecar byte-exact."))
     candidate = PACKAGE / "candidate"
     for source, target in (("q4t", "q4t"), ("CMakeCache.txt", "CMakeCache.txt"),
-                           ("compile_commands.json", "compile_commands.json"),
                            ("generated/q4t/server/chat_protocol_sources.json", "chat_protocol_sources.json")):
         copy_file(BASE / "engine" / source, candidate / target)
-    plan = h.read(BASE / "accept-01/plan.json")
+    plan = h.read(BASE / "accept-02/plan.json")
+    for path in plan["files"]:
+        path = Path(path)
+        if path.is_relative_to(BASE / "engine/CMakeFiles") or path.is_relative_to(
+                BASE / "engine/_deps/q4t_xgrammar-build/CMakeFiles"):
+            copy_file(path, candidate / "build-records" / path.relative_to(BASE / "engine"))
     runtime = {}
     for path, digest in plan["files"].items():
         path = Path(path)
@@ -93,11 +97,19 @@ def prepare():
                 runtime[name] = digest
                 copy_file(path, candidate / "source" / name)
     h.save(candidate / "runtime-source.json", runtime)
-    for name in ("decision.json", "audit.json", "acceptance-audit.json", "accept-originals.json"):
+    for name in ("decision.json", "audit.json", "acceptance-audit.json", "originals.json"):
         copy_file(BASE / name, PACKAGE / "evidence" / name)
     HEALTH.mkdir()
     files = {str(p): h.sha(p) for p in PACKAGE.rglob("*") if p.is_file()}
-    paths = [ROOT / "docs/STATUS.md", Path(__file__).resolve()]
+    fixture = ROOT / ".q4t-work/vision-attention-rowmax-20261107/pilot-01/requests.json"
+    pilot_seal = h.read(fixture.parent.parent / "originals.json")["files"]
+    h.require(h.sha(fixture) == pilot_seal[str(fixture)], "retained image fixture drift")
+    rows = [r for r in h.read(fixture) if r["group"] == "parent-0" and
+            r["case"] == "earth-python"]
+    row = copy.deepcopy(rows[0])
+    h.save(HEALTH / "image.json", row)
+    paths = [ROOT / "docs/STATUS.md", Path(__file__).resolve(), fixture,
+             HEALTH / "image.json"]
     paths += [ROOT / name for name in subprocess.check_output(
         ["git", "ls-files"], cwd=ROOT, text=True).splitlines()
         if name.startswith(("tools/", "docs/serve-"))]
@@ -130,10 +142,10 @@ def finalize_metadata():
               "observed protocol identity")
     for name, digest in sources.items():
         h.require(h.sha(ROOT / name) == digest, "protocol source drift")
-    metadata.update(version="vision-rowmax-20261107", binary_sha256=NEW,
-        source_commit="c6eef3c2669b1ac674be458cc50a98519740df81",
+    metadata.update(version="vision-rowmax-mainline-20261107", binary_sha256=NEW,
+        source_commit=h.read(BASE / "accept-02/plan.json")["source_commit"],
         tool_source_commit=h.read(HEALTH / "plan.json")["source_commit"],
-        source_note="Exact pilot/full-matrix ELF; runtime source manifest preserved.",
+        source_note="Final mainline/row-max ELF; fresh plain/MTP matrix and visual/tool health; old numerical and pilot evidence explicitly inherited.",
         build_cache=str(candidate / "CMakeCache.txt"),
         build_cache_sha256=h.sha(candidate / "CMakeCache.txt"),
         tested_source_manifest=str(candidate / "runtime-source.json"),
@@ -149,11 +161,11 @@ def finalize_metadata():
         observed_configuration=config, delivery_tool=h.identity(Path(__file__)),
         vision_rowmax=h.read(PACKAGE / "evidence/decision.json"))
     metadata["scope"]["performance"] = "Bounded visual HTTP gains; complete plain/default-MTP five-tier comparison; no statistical noninferiority claim"
-    metadata["scope"]["installation_health"] = "Same-ELF staging: JSON/SSE and one real read-only tool loop; installed pair/CLI checked, no persistent service"
+    metadata["scope"]["installation_health"] = "Same-ELF staging: image JSON/SSE and one real read-only tool loop; installed pair/CLI checked, no persistent service"
     for key in caps.keys() & metadata["chat_protocol"].keys():
         metadata["chat_protocol"][key] = caps[key]
     metadata["chat_protocol"].update(protocol_sha256=protocol, media_acceptance=False,
-        declaration_evidence="Actual health-01 default text/MTP observations; prior media boundaries retained")
+        declaration_evidence="Actual health-01 opt-in media/plain observations; default text/MTP verified by final five-tier matrix; prior media task boundaries retained")
     for name in declarations.DECLARATION_SCHEMAS:
         path = decl / "schemas" / (name + ".json")
         metadata["chat_protocol"][name + "_schema"] = str(path)
@@ -252,7 +264,8 @@ class Run(s.Run):
         folder = self.output / "model-health"
         argv = [self.plan["binary"], "serve", "--model-dir", self.plan["model"],
             "--host", "127.0.0.1", "--port", str(s.PORT), "--max-seq", "1",
-            "--max-prefill", "2048", "--max-len", "8192",
+            "--allow-media", "--no-mtp",
+            "--max-prefill", "8192", "--max-len", "16384",
             "--max-inflight-requests", "8", "--max-queued-requests", "4"]
         env = {k: v for k, v in os.environ.items() if not k.startswith("Q4T_")
                and k not in ("LD_PRELOAD", "LD_LIBRARY_PATH")}
@@ -263,15 +276,27 @@ class Run(s.Run):
             time.sleep(.1)
         for label, route in (("caps", "/v1/capabilities"), ("config", "/v1/config")):
             value = json.loads(self.http("health-" + label, route))
-            s.require(value["runtime"]["mtp_enabled"] and not value["runtime"]["media_enabled"],
-                      "default text/MTP profile")
+            s.require(not value["runtime"]["mtp_enabled"] and value["runtime"]["media_enabled"],
+                      "opt-in media/plain profile")
+        for route in ("/healthz", "/readyz"):
+            self.http("health" + route.replace("/", "-"), route)
 
     def business(self):
+        fixture = h.read(self.folder / "image.json")
         for stream in (False, True):
-            body = s.request("Compute 17 + 25. Reply with the number only.", stream=stream)
-            value = self.complete("health-text-" + str(stream).lower(), body)
-            s.require(value.message["content"].strip() == "42" and value.finish_reason == "stop",
-                      "JSON/SSE health answer")
+            body = copy.deepcopy(fixture["request"])
+            body.update(request_id="rowmax-health-" + str(stream).lower(),
+                        stream=stream)
+            if stream:
+                body["stream_options"] = dict(include_usage=True)
+            else:
+                body.pop("stream_options", None)
+            value = self.complete("health-image-" + str(stream).lower(), body)
+            actual = json.loads(value.message["content"])
+            s.Draft202012Validator(body["response_format"]["json_schema"]
+                                  ["schema"]).validate(actual)
+            s.require(actual == fixture["expected"] and value.finish_reason == "stop",
+                      "image JSON/SSE health answer")
         tools = copy.deepcopy(s.TOOLS[:1])
         tools[0]["function"]["strict"] = True
         body = s.request("Read the first 16 lines of docs/STATUS.md using read_project_record. "
