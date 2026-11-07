@@ -344,6 +344,21 @@ class RuntimeTests(unittest.TestCase):
         result = service.stop()
         self.assertFalse(result['stop_durable'])
 
+    def test_malformed_optional_observation_keeps_model_and_controller(self):
+        service = self.launch(models=True, aux_health=True)
+        first = service.wait(lambda s: s['business_ready'])
+        (service.directory/'auxiliary-invalid.json').write_text(json.dumps(
+            dict(queued_bytes=999999, worker_state='not a control command')))
+        degraded = service.wait(lambda s: s['auxiliary_projection_errors'] > 0 and
+            s['controller_health']['reason'] == 'auxiliary_io_invalid')
+        self.assertTrue(degraded['business_ready'])
+        self.assertEqual(degraded['controller_health']['observation'], 'UNKNOWN')
+        for key in ('model_pid', 'controller_pid', 'model_generation'):
+            self.assertEqual(degraded[key], first[key])
+        (service.directory/'auxiliary-invalid.json').unlink()
+        service.wait(lambda s: s['controller_health']['reason'] == 'query_timeout')
+        self.assertTrue(service.stop()['cleanup_confirmed'])
+
     def test_model_quota_denial_keeps_loop_and_gateway_alive(self):
         service = self.launch(models=True, gateway=True, quota=True)
         first = service.wait(lambda s: s['business_ready'])
@@ -368,6 +383,25 @@ class RuntimeTests(unittest.TestCase):
         self.assertEqual(third['gateway_pid'], first['gateway_pid'])
         self.assertEqual(len(service.persistent()['attempts']['model']), 2)
         self.assertTrue(service.stop()['cleanup_confirmed'])
+
+    def test_production_blocked_log_preserves_business_and_control_generation(self):
+        service = self.launch(production=True, gateway=True)
+        first = service.wait(lambda s: s['business_ready'], timeout=15)
+        model_directory = service.directory/'controller-1/model-1'
+        os.mkfifo(model_directory/'model.log', 0o600)
+        (service.directory/'log.flood').touch()
+        degraded = service.wait(lambda s: s['state'] == 'READY_DEGRADED' and
+            s['controller_health']['auxiliary_io']['worker_state'] == 'DISABLED', timeout=12)
+        self.assertTrue((service.directory/'log.drained').exists())
+        self.assertTrue(degraded['business_ready'])
+        for field in ('model_pid', 'model_generation', 'controller_pid', 'gateway_pid'):
+            self.assertEqual(degraded[field], first[field])
+        stats = degraded['controller_health']['auxiliary_io']
+        self.assertGreater(stats['dropped_bytes'], 0)
+        self.assertLessEqual(stats['queued_bytes'], 128*1024)
+        self.assertEqual(degraded['controller_health']['reason'], 'auxiliary_io_unavailable')
+        self.assertTrue(service.stop()['cleanup_confirmed'])
+        service.assert_lease_free()
 
     def test_production_monitor_failure_keeps_model_then_uses_single_cpu_probe(self):
         service = self.launch(production=True, gateway=True)

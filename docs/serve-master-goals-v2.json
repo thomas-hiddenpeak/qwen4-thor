@@ -277,16 +277,25 @@
         "N06"
       ],
       "evidence": [],
-      "release": null
+      "release": null,
+      "findings": [
+        {
+          "source": "tools/serve_recovery/service.py launch before try",
+          "issue": "daemon socketpair setup after lease acquisition can leak the duplicated lease FD on setup failure; make setup cleanup exception-safe",
+          "state": "open"
+        }
+      ]
     },
     {
       "id": "R01",
       "required": true,
-      "state": "implementation_unverified",
+      "state": "targeted_cpu_passed_business_pending",
       "implementation": "普通日志/观察阻塞隔离；有界队列/单worker、未回收不增殖、健康核心同PID继续；保留可诊断性",
       "acceptance": "普通日志/观察阻塞隔离；有界队列/单worker、未回收不增殖、健康核心同PID继续；保留可诊断性",
       "depends_on": [],
-      "evidence": [],
+      "evidence": [
+        "SERVE_OBSERVATION_IO_2026-11-08.md"
+      ],
       "release": null
     },
     {

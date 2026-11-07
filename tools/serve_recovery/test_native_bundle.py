@@ -1,5 +1,6 @@
 """CPU packaging contracts; synthetic engine/assets, never starts a service."""
 import contextlib
+import fcntl
 import io
 import json
 import os
@@ -69,6 +70,8 @@ class BundleTests(unittest.TestCase):
     def test_default_package_has_native_binary_and_no_nginx_dependency(self):
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
+        self.assertEqual(value['version'], 3)
+        self.assertIn('source/tools/serve_recovery/observation_io.py', value['files'])
         self.assertEqual(value['ingress_mode'], 'native')
         self.assertIn('bin/q4t-ingress', value['files'])
         self.assertNotIn('bin/nginx', value['files'])
@@ -85,6 +88,70 @@ class BundleTests(unittest.TestCase):
         with mock.patch.object(service, 'acquire_lease') as lease, self.assertRaises(ValueError):
             service.launch(receipt['package'], receipt['manifest_sha256'], self.directory/'state')
         lease.assert_not_called()
+
+    def test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io(self):
+        self.assertNotIn('tools/serve_recovery/observation_io.py', bundle.V2_SOURCES)
+        self.assertEqual(set(bundle.SOURCES)-set(bundle.V2_SOURCES),
+                         {'tools/serve_recovery/observation_io.py'})
+
+    def test_launcher_never_hands_guardian_a_regular_file_for_diagnostics(self):
+        receipt = self.prepare()
+        state = self.directory/'state'
+        service.initialize(receipt['package'], receipt['manifest_sha256'], state)
+        fd = os.open(self.directory/'cpu-lease', os.O_CREAT | os.O_RDWR, 0o600)
+        process = mock.Mock(returncode=0)
+        process.poll.return_value = 0
+        captured = {}
+        def spawn(_command, **kwargs):
+            diag = kwargs['stderr']
+            self.assertEqual(kwargs['stdout'], diag)
+            self.assertEqual(fcntl.fcntl(diag, fcntl.F_GET_SEALS), service.DIAGNOSTIC_SEALS)
+            self.assertEqual(os.fstat(diag).st_size, service.DIAGNOSTIC_BYTES)
+            os.write(diag, b'bounded startup reason')
+            captured['diagnostic'] = os.pread(diag, 22, 0)
+            return process
+        with mock.patch.object(service, 'acquire_lease', return_value=fd), \
+             mock.patch.object(service.subprocess, 'Popen', side_effect=spawn):
+            result = service.launch(receipt['package'], receipt['manifest_sha256'], state)
+        self.assertEqual(captured['diagnostic'], b'bounded startup reason')
+        self.assertFalse((Path(result['run'])/'guardian.log').exists())
+
+    def test_fatal_diagnostic_buffer_cannot_grow_and_is_readable_privately(self):
+        fd = service.diagnostic_buffer()
+        try:
+            os.write(fd, b'x'*service.DIAGNOSTIC_BYTES)
+            with self.assertRaises(OSError):
+                os.write(fd, b'over capacity')
+            self.assertEqual(os.fstat(fd).st_size, service.DIAGNOSTIC_BYTES)
+            # A separate CPU child makes the real /proc/fd read use the same
+            # identity checks as the private CLI, without changing test stderr.
+            child = service.subprocess.Popen([sys.executable, '-B', '-c',
+                'import time; time.sleep(20)'], stderr=fd)
+            try:
+                result = service.read_diagnostics(dict(guardian_pid=child.pid,
+                    guardian_start_ticks=service.journal.process_start(child.pid)))
+                self.assertTrue(result['possibly_truncated'])
+                self.assertEqual(result['text'], 'x'*service.DIAGNOSTIC_BYTES)
+                with self.assertRaisesRegex(ValueError, 'stale diagnostic owner'):
+                    service.read_diagnostics(dict(guardian_pid=child.pid, guardian_start_ticks=0))
+            finally:
+                child.kill()
+                child.wait(timeout=3)
+        finally:
+            os.close(fd)
+
+    def test_optional_diagnostic_allocation_failure_still_launches(self):
+        receipt = self.prepare()
+        state = self.directory/'state'
+        service.initialize(receipt['package'], receipt['manifest_sha256'], state)
+        fd = os.open(self.directory/'cpu-lease', os.O_CREAT | os.O_RDWR, 0o600)
+        process = mock.Mock(returncode=0)
+        process.poll.return_value = 0
+        with mock.patch.object(service, 'acquire_lease', return_value=fd), \
+             mock.patch.object(service, 'diagnostic_buffer', side_effect=OSError('ENOMEM')), \
+             mock.patch.object(service.subprocess, 'Popen', return_value=process) as spawn:
+            service.launch(receipt['package'], receipt['manifest_sha256'], state)
+        self.assertEqual(spawn.call_args.kwargs['stderr'], service.subprocess.DEVNULL)
 
     def test_native_build_receipt_must_bind_ingress_binary(self):
         value = json.loads(self.build.read_text())

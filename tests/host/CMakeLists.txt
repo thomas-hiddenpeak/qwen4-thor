@@ -173,6 +173,8 @@ q4t_add_python_contract(q4t_native_admission_contracts
   tools/serve_recovery/test_native_admission.py --ingress $<TARGET_FILE:q4t_ingress>)
 q4t_add_python_contract(q4t_recovery_production_contracts
   tools/serve_recovery/test_production.py)
+q4t_add_python_contract(q4t_recovery_observation_io_contracts
+  tools/serve_recovery/test_observation_io.py)
 q4t_add_python_contract(q4t_recovery_acceptance_contracts
   tools/serve_recovery/test_acceptance.py)
 # A build of Python can omit pidfd APIs despite a new version number. Probe the

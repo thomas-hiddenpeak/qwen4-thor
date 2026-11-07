@@ -137,7 +137,12 @@ def controller(channel, args):
         transaction(channel, 'ready', ready)
         if args.aux_health:
             def hook():
-                channel.health('READY', 'UNKNOWN', 'query_timeout')
+                invalid_auxiliary = args.model_fixture/'auxiliary-invalid.json'
+                if invalid_auxiliary.exists():
+                    channel.health('READY', 'AVAILABLE', 'serving',
+                        auxiliary_io=json.loads(invalid_auxiliary.read_text()))
+                else:
+                    channel.health('READY', 'UNKNOWN', 'query_timeout')
                 channel.admission(grant['generation'], not (args.model_fixture/'admission.closed').exists())
             channel.fixture_tick = hook
         while process.poll() is None:

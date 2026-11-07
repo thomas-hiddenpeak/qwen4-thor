@@ -57,7 +57,11 @@ def cpu_backend(args):
         threading.Thread(target=server.serve_forever, daemon=True).start()
     (args.client_policy_file.parent/'cpu-started.json').write_text(json.dumps(dict(pid=os.getpid())))
     while True:
-        time.sleep(1)
+        if (args.directory/'log.flood').exists() and not (args.directory/'log.drained').exists():
+            for _ in range(512):
+                os.write(1, b'CPU ordinary log\n'.ljust(4096, b'x'))
+            (args.directory/'log.drained').touch()
+        time.sleep(0.05)
 
 
 def free_port():

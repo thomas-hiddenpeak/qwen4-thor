@@ -58,9 +58,10 @@ class ControllerChannel:
         ledger.require(name in ('ready', 'heartbeat'), 'invalid control event')
         return self._send(name)
 
-    def health(self, phase, observation, reason):
+    def health(self, phase, observation, reason, *, auxiliary_io=None):
         return self._send('health', health=dict(phase=phase,
-            observation=observation, reason=reason))
+            observation=observation, reason=reason,
+            **({} if auxiliary_io is None else dict(auxiliary_io=auxiliary_io))))
 
     def admission(self, generation, opened):
         ledger.require(ledger.integer(generation, minimum=1) and

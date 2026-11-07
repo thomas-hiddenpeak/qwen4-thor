@@ -25,6 +25,13 @@ sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[2]
 LIMITS = dict(starts=4, chats=20, probes=1, controls=10000, seconds=1800)
 COMPLETION_LIMITS = dict(LIMITS, starts=5, chats=21)
+OBSERVATION_LIMITS = dict(starts=1, chats=4, probes=0, controls=2000, seconds=600)
+
+
+def limits_for(scenario):
+    return {'full_recovery': LIMITS,
+        'controller_gateway_completion': COMPLETION_LIMITS,
+        'observation_isolation': OBSERVATION_LIMITS}[scenario]
 
 
 def save(path, value):
@@ -93,8 +100,7 @@ def load_modules(plan=None):
 
 def verify(plan):
     bundle, _, _, _, _, engine = load_modules(plan)
-    supplemental=plan.get('scenario')=='controller_gateway_completion'
-    engine.require(plan['limits'] == (COMPLETION_LIMITS if supplemental else LIMITS),
+    engine.require(plan['limits'] == limits_for(plan.get('scenario', 'full_recovery')),
                    'acceptance budget changed')
     for name, digest in plan['sources'].items():
         engine.require(engine.sha(ROOT/name) == digest, 'acceptance source changed: '+name)
@@ -121,6 +127,11 @@ def prepare(args):
                    'this bounded acceptance is loopback only')
     prior, prior_evidence, baseline = None, [], None
     supplemental=args.controller_completion
+    observation=args.observation_isolation
+    engine.require(not observation or not supplemental and args.prior_plan is None,
+                   'observation isolation has its own fixed budget, no continuation')
+    scenario=('observation_isolation' if observation else
+        'controller_gateway_completion' if supplemental else 'full_recovery')
     engine.require(not supplemental or args.prior_plan is not None,
                    'completion requires the prior measured failure')
     if args.prior_plan is not None:
@@ -152,9 +163,9 @@ def prepare(args):
         'cmake/GuardianProcess.cmake', 'cmake/RecoveryProbe.cmake', 'docs/MODEL.md'],
         cwd=ROOT, text=True).splitlines()
     paths = sorted(set(paths) | bundle.NATIVE_SOURCES)
-    plan = dict(version=1, limits=COMPLETION_LIMITS if supplemental else LIMITS,
+    plan = dict(version=1, limits=limits_for(scenario),
         ingress_mode=manifest.get('ingress_mode', 'nginx'),
-        scenario='controller_gateway_completion' if supplemental else 'full_recovery',
+        scenario=scenario,
         package=receipt, output=str(args.output.resolve()),
         source_commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'],cwd=ROOT,text=True).strip(),
         sources={name: engine.sha(ROOT/name) for name in paths},
@@ -174,6 +185,17 @@ def prepare(args):
         prior_seconds=prior['seconds']+prior_plan.get('prior_seconds',0) if prior else 0,
         reuse_initial_ordinary_and_quota=prior is not None,
         automatic_request_or_tool_replay=False, default_replacement=False)
+    if observation:
+        plan.update(planned_model_starts=1, planned_chats=3,
+            validation_wrappers=['count model starts and self-check before dispatch',
+                'SIGSTOP only the identity-pinned observation writer',
+                'one ordinary log marker through the unchanged production Writer',
+                'strict outer and inner NVML unchanged'],
+            sequence=['self-check and ready', 'writer SIGSTOP and one log marker',
+                'same-PID JSON during sink stall', 'writer deadline and bounded loss',
+                'same-PID SSE after sink disabled', 'durable stop and full cleanup'])
+        plan['protected'].extend(dict(path=str((ROOT/name).resolve()), sha256=engine.sha(ROOT/name))
+            for name in ('build/service.release.json', 'build/service/manifest.json'))
     save(args.output/'plan.json', plan)
     print(json.dumps(dict(plan=str(args.output/'plan.json'), limits=plan['limits'])))
 
@@ -255,6 +277,18 @@ def controller_actor(plan, config):
     monitor.Monitor = lambda fd: original_monitor(fd, factory=query)
     supervisor.RotatingLog.write, supervisor.transport.get = write, get
     core_http.request, subprocess.Popen = post, spawn
+    if plan.get('scenario') == 'observation_isolation':
+        original_tick = controller.Controller.tick
+        def tick(actor, **kwargs):
+            result = original_tick(actor, **kwargs)
+            if (output/'writer-stalled').exists() and not counts.get('marker_submitted'):
+                if actor.logger is not None:
+                    from tools.serve_recovery.observation_io import LOG
+                    accepted = actor.logger.submit(LOG, b'bounded acceptance log marker\n')
+                    counts['marker_submitted'] = int(accepted)
+                    record()
+            return result
+        controller.Controller.tick = tick
     record()
     sys.argv = [sys.argv[0], '--config', str(config)]
     controller.main()
@@ -312,7 +346,8 @@ class Stage:
         return value
 
     def wait(self, predicate, seconds=360):
-        end = min(time.monotonic()+seconds, self.started+1730-self.plan.get('prior_seconds',0))
+        end = min(time.monotonic()+seconds,
+            self.started+self.plan['limits']['seconds']-70-self.plan.get('prior_seconds',0))
         last = None
         while time.monotonic() < end:
             self.engine.require(self.process.poll() is None, 'launcher exited unexpectedly')
@@ -444,6 +479,8 @@ class Stage:
 
     def exercise(self):
         first=self.ready(1)
+        if self.plan.get('scenario') == 'observation_isolation':
+            return self.observation_isolation(first)
         if self.plan.get('scenario')=='controller_gateway_completion':
             self.metrics('initial-self-check',1)
             self.recover_controller(first,2)
@@ -469,6 +506,49 @@ class Stage:
         counts=self.engine.read(self.output/'fault-counts-1.json')
         self.engine.require(counts['nvml_injected']>0 and counts['log_errors']>0 and
             counts['metrics_attempts']==0,'auxiliary coverage incomplete')
+
+    def observation_isolation(self, first):
+        from tools.examples import chat_client
+        first = self.wait(lambda s: s['business_ready'] and
+            s['controller_health']['auxiliary_io']['worker_state'] == 'AVAILABLE', seconds=10)
+        pid = first['controller_health']['auxiliary_io']['worker_pid']
+        fd = os.pidfd_open(pid)
+        try:
+            ticks = self.journal.process_start(pid)
+            fields = Path(f'/proc/{pid}/stat').read_text().rsplit(')', 1)[1].split()
+            argv = Path(f'/proc/{pid}/cmdline').read_bytes().split(b'\0')
+            self.engine.require(int(fields[1]) == first['controller_pid'] and
+                str(self.package/'source/tools/serve_recovery/observation_io.py').encode() in argv and
+                self.journal.process_start(pid) == ticks, 'observation fault target is not owned writer')
+            save(self.output/'writer-fault.json', dict(pid=pid, start_ticks=ticks,
+                signal='SIGSTOP', model_pid=first['model_pid']))
+            signal.pidfd_send_signal(fd, signal.SIGSTOP)
+            (self.output/'writer-stalled').touch(exist_ok=False)
+            for stream in (False, True):
+                if stream:
+                    gap = self.wait(lambda s: s['business_ready'] and
+                        s['controller_health']['auxiliary_io']['worker_state'] == 'DISABLED' and
+                        s['controller_health']['auxiliary_io']['worker_pid'] == 0, seconds=15)
+                    stats = gap['controller_health']['auxiliary_io']
+                    self.engine.require(gap['controller_health']['reason'] == 'auxiliary_io_unavailable' and
+                        stats['failed_operations'] > 0 and stats['dropped_bytes'] > 0 and
+                        stats['queued_bytes'] <= 128*1024 and stats['queued_records'] <= 32,
+                        'bounded observation loss missing')
+                    save(self.output/'observation-gap.json', gap)
+                body = chat_client.make_request([dict(role='user',
+                    content='Compute 17 + 25. Reply with the number only.')], [],
+                    stream=stream, max_tokens=128, timeout_ms=60000)
+                answer = self.request('isolated-sse' if stream else 'stalled-json', body)
+                self.engine.require(answer.finish_reason == 'stop' and
+                    answer.message['content'].strip() == '42', 'isolated I/O business quality')
+                current = self.sample()
+                for field in ('model_pid', 'model_generation', 'controller_pid', 'gateway_pid', 'guardian_pid'):
+                    self.engine.require(current[field] == first[field], 'observation failure changed '+field)
+            self.metrics('isolated-final', 3)
+            save(self.output/'business-final.json', self.sample())
+            self.engine.require(not Path(f'/proc/{pid}').exists(), 'writer was not actually reaped')
+        finally:
+            os.close(fd)
 
     def kill(self, state, role, label):
         pid, ticks = state[role+'_pid'], state[role+'_start_ticks']
@@ -557,7 +637,8 @@ class Stage:
         def expired(*_args): raise TimeoutError('bounded execution deadline; cleanup only')
         previous = signal.signal(signal.SIGALRM,expired)
         previous_term = signal.signal(signal.SIGTERM,expired)
-        signal.setitimer(signal.ITIMER_REAL,1730-self.plan.get('prior_seconds',0))
+        signal.setitimer(signal.ITIMER_REAL,
+            self.plan['limits']['seconds']-70-self.plan.get('prior_seconds',0))
         try:
             receipt=self.plan['package']
             initialized=self.service.initialize(receipt['package'],receipt['manifest_sha256'],self.output/'state')
@@ -599,6 +680,8 @@ def main():
     parser.add_argument('--prior-plan',type=Path)
     parser.add_argument('--controller-completion',action='store_true',
         help='Prepared supplemental scenario; run only after explicit budget extension')
+    parser.add_argument('--observation-isolation', action='store_true',
+        help='Only observation sink isolation, 1 model / 4 Chat / 600 seconds')
     args=parser.parse_args()
     if args.mode=='prepare':
         prepare(args)

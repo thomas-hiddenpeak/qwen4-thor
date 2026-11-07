@@ -9,7 +9,8 @@ import unittest
 
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT))
-from tools.serve_recovery.acceptance import Budget,LIMITS,COMPLETION_LIMITS,await_drain
+from tools.serve_recovery.acceptance import (Budget, LIMITS, COMPLETION_LIMITS,
+    OBSERVATION_LIMITS, await_drain, limits_for)
 
 
 class BudgetTests(unittest.TestCase):
@@ -70,6 +71,20 @@ class BudgetTests(unittest.TestCase):
         for _ in range(6): budget.reserve('chats','completion request')
         for kind in ('starts','chats','probes'):
             with self.assertRaises(RuntimeError): budget.reserve(kind,'exhausted')
+
+    def test_observation_scenario_cannot_restart_model_or_use_probe(self):
+        path = self.directory/'observation'
+        path.mkdir()
+        budget = Budget(path, initialize=True, limits=limits_for('observation_isolation'))
+        budget.reserve('starts', 'only model')
+        for _ in range(4):
+            budget.reserve('chats', 'self-check or client')
+        for kind in ('starts', 'chats', 'probes'):
+            with self.assertRaises(RuntimeError):
+                budget.reserve(kind, 'beyond affected-behavior scope')
+        self.assertEqual(OBSERVATION_LIMITS['seconds'], 600)
+        with self.assertRaises(KeyError):
+            limits_for('unreviewed_scenario')
 
 
 class DrainTests(unittest.TestCase):

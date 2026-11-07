@@ -448,6 +448,8 @@ class Guardian {
           w::Unsigned(controller_.identity.start_ticks)},
          {"controller_events", w::Unsigned(controller_event_)},
          {"controller_health", controller_health_},
+         {"auxiliary_projection_errors",
+          w::Unsigned(auxiliary_projection_errors_)},
          {"controller_health_age_ms",
           controller_health_.IsNull()
               ? Json{}
@@ -665,9 +667,45 @@ class Guardian {
           }
         }
         if (event == "health") {
-          const auto& health = *message.Find("health");
-          Require(w::HasKeys(health, {"phase", "observation", "reason"}),
+          auto health = *message.Find("health");
+          const bool has_auxiliary = health.Has("auxiliary_io");
+          Require(has_auxiliary
+                      ? w::HasKeys(health, {"phase", "observation", "reason",
+                                            "auxiliary_io"})
+                      : w::HasKeys(health, {"phase", "observation", "reason"}),
                   "invalid controller health projection");
+          bool auxiliary_valid = true;
+          try {
+            if (has_auxiliary) {
+              const auto& io = *health.Find("auxiliary_io");
+              Require(w::HasKeys(io, {"failed_operations", "dropped_bytes",
+                                      "acknowledged_operations", "queued_bytes",
+                                      "queued_records", "pending_records",
+                                      "worker_pid", "worker_unreaped",
+                                      "worker_state"}),
+                      "invalid observation summary");
+              for (const char* key : {"failed_operations", "dropped_bytes",
+                                      "acknowledged_operations"}) {
+                (void)Integer(io, key);
+              }
+              const auto state = Text(io, "worker_state");
+              Require(Integer(io, "queued_bytes") <= 128 * 1024 &&
+                          Integer(io, "queued_records") <= 32 &&
+                          Integer(io, "pending_records") <= 1 &&
+                          Integer(io, "worker_pid") < (uint64_t{1} << 31) &&
+                          io.Find("worker_unreaped")->IsBool() &&
+                          (state == "ABSENT" || state == "STARTING" ||
+                           state == "AVAILABLE" || state == "BACKOFF" ||
+                           state == "DISABLED"),
+                      "invalid bounded observation fields");
+            }
+          } catch (const std::exception&) {
+            // An optional observation projection is not lifecycle authority.
+            // Keep core health and the owned model; report lost diagnostics.
+            auxiliary_valid = false;
+            if (auxiliary_projection_errors_ < 9007199254740991ULL)
+              ++auxiliary_projection_errors_;
+          }
           const auto phase = Text(health, "phase");
           const auto observation = Text(health, "observation");
           const auto reason = Text(health, "reason");
@@ -681,6 +719,16 @@ class Guardian {
                           "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
                           "0123456789_") == std::string::npos,
                   "invalid controller health fields");
+          if (!auxiliary_valid) {
+            health = w::Object(
+                {{"phase", w::String(phase)},
+                 {"observation",
+                  w::String(observation == "DEVICE_FAILURE" ? observation
+                                                            : "UNKNOWN")},
+                 {"reason", w::String(observation == "DEVICE_FAILURE"
+                                          ? reason
+                                          : "auxiliary_io_invalid")}});
+          }
           controller_health_ = health;
           controller_health_at_ = now;
         }
@@ -1454,6 +1502,7 @@ class Guardian {
   Json model_binding_;
   Json controller_health_;
   int64_t controller_health_at_ = 0;
+  uint64_t auxiliary_projection_errors_ = 0;
   bool model_authority_seen_ = false;
   uint64_t probe_used_generation_ = 0;
   s::ChildProcess gateway_;

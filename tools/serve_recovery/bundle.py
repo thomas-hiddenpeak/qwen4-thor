@@ -18,7 +18,8 @@ LEGACY_SOURCES = tuple(sorted(set(engine.V9_SOURCES) | {
     'tools/serve_gateway/gateway.py', 'tools/serve_gateway/tls.py',
     *('tools/serve_recovery/'+name+'.py' for name in LEGACY_RECOVERY)}))
 RECOVERY = (*LEGACY_RECOVERY, 'native_ingress')
-SOURCES = tuple(sorted(set(LEGACY_SOURCES) | {'tools/serve_recovery/native_ingress.py'}))
+V2_SOURCES = tuple(sorted(set(LEGACY_SOURCES) | {'tools/serve_recovery/native_ingress.py'}))
+SOURCES = tuple(sorted(set(V2_SOURCES) | {'tools/serve_recovery/observation_io.py'}))
 LEGACY_EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'nginx')
 EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'q4t-ingress')
 NATIVE_SOURCES = frozenset(('CMakeLists.txt', 'tests/host/CMakeLists.txt',
@@ -174,7 +175,7 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
     import subprocess
     common = Path(subprocess.check_output(['git', 'rev-parse', '--path-format=absolute',
         '--git-common-dir'], cwd=ROOT, text=True).strip())
-    value = dict(version=2, profile='q4t-service-recovery-v2', repository=str(ROOT),
+    value = dict(version=3, profile='q4t-service-recovery-v3', repository=str(ROOT),
         ingress_mode=ingress_mode,
         engine_manifest_sha256=receipt['manifest_sha256'],
         files={name: engine.sha(target/name) for name in names}, python=base['python'],
@@ -200,8 +201,8 @@ def verify(package, digest):
     ledger.keys(value, ('version', 'profile', 'repository', 'engine_manifest_sha256',
         'files', 'python', 'model_assets', 'weight_shards_rehashed', 'resource_mode',
         'require_hard_memory_limit', 'lock_path', 'quota_enforced', 'tls',
-        *(('ingress_mode',) if version == 2 else ())))
-    ledger.require(type(version) is int and version in (1, 2) and
+        *(('ingress_mode',) if version in (2, 3) else ())))
+    ledger.require(type(version) is int and version in (1, 2, 3) and
         value['profile'] == 'q4t-service-recovery-v'+str(version) and
         value.get('ingress_mode', 'nginx') in ('native', 'nginx') and
         value['resource_mode'] == 'process' and
@@ -210,7 +211,7 @@ def verify(package, digest):
         'invalid recovery profile')
     native = value.get('ingress_mode', 'nginx') == 'native'
     executables = EXECUTABLES if native else LEGACY_EXECUTABLES
-    sources = SOURCES if version == 2 else LEGACY_SOURCES
+    sources = SOURCES if version == 3 else V2_SOURCES if version == 2 else LEGACY_SOURCES
     names = {*('bin/'+name for name in executables), *('source/'+name for name in sources),
              'gateway-policy.json', 'native-build.json'}
     if value['tls']:

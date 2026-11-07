@@ -768,7 +768,7 @@
     "src/server/thinking_budget.cpp": "4c91e8320115ee86096bf7287d4950599ca311f137c3a0051b9d64fb53abf259",
     "src/service/cuda_probe.cu": "f91663d4098aa6365db6cf3d3fc437b5b32ee20280b65cc1ee34cb796a48e7fb",
     "src/service/guardian_journal.cpp": "a0a60642d1546c302be84578b7ca6d4475ab9808c108dd82fa4df7133f3b5a12",
-    "src/service/guardian_main.cpp": "ef6b7772585836698b8f518dcba95858e96e41233db19f9c1284d00eb7af7bcd",
+    "src/service/guardian_main.cpp": "26f1e5b5be37038ee460ebfddda3bbcf2e03e7ad0c89f25596816719ba747342",
     "src/service/guardian_process.cpp": "2a7ed6213ccb91c450365fa25b7d9ba322b07cf7df653e80489c788e32a7925c",
     "src/service/guardian_wire.cpp": "95ca742cc01649fcf5b3245a4d0b48ad1d14ee4b142f376d5a095c7f686df12d",
     "src/service/ingress_main.cpp": "9d8466af0c3b349ac6a198816ce254def085174d2123ca1951a38740a325d89e",
@@ -778,18 +778,18 @@
     "src/vision/processor.cpp": "76d421281d76daa42796710ffa4ce6f0227f7788411775740d1ed5d5e11001dc",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
-    "tools/serve_recovery/acceptance.py": "320c145b32303dbf811e6fcc84679f23fa6d5551284fc16ba9a162629364ccd8",
+    "tools/serve_recovery/acceptance.py": "3781c05dbe4489a6d7d948ea84459ae485178430581a09b256a68095f3301544",
     "tools/serve_recovery/binding.py": "1f70edbce8cefd92700acf6df130101baa41f575cd24876f7e7d95772ba8cd18",
-    "tools/serve_recovery/bundle.py": "6ac22b1d69f9636eb9870facc5691a4aaee89dbd2715ec18c048dcab52a5f3b1",
+    "tools/serve_recovery/bundle.py": "60444ccd18986b2c5ab9ca9f02c508f2be37cb2a9bf2e70d9633b5a0e629ebdb",
     "tools/serve_recovery/child.py": "816c80517e5b13413ae5eb0a3d1f7a392b8848132a7d1965adec2bd49a335e73",
-    "tools/serve_recovery/control.py": "e72e42ef79abf0c77fc4019d84ae787834960f8cedb80e943a89c2951657e48d",
-    "tools/serve_recovery/controller.py": "8f55f664dd308589ab46074f92e56d90cf32340d188ee0eecc9083963fa26a23",
+    "tools/serve_recovery/control.py": "bd8307bb3950122111d1d14d2451b54672599179b34a7d9d9ff375ebc53710c1",
+    "tools/serve_recovery/controller.py": "5ba2cdf21ad46fe20d690f16a0c7e61f1270f793f922a0aaef5d8c5beecc025d",
     "tools/serve_recovery/core_http.py": "c682bfff760607ebc332a638a21eabdd658d03506c065287d336b170941db3b8",
     "tools/serve_recovery/cpu_exec.py": "6815ad563afb569fa7eb662d48b240066b69bc7da5ff44742a413f25045acfd1",
     "tools/serve_recovery/fixture_controller.py": "0a5edd7e7fa7be1931aa3388c9c1d0da55d2b444bbcb7fc2530225cfc8fde6b6",
     "tools/serve_recovery/fixture_gateway.py": "0e85e6d3f5db4780571d51b0127f67ca441cc0554d6be35fd61e839c99b2f490",
-    "tools/serve_recovery/fixture_model.py": "7d2ec746065f994afd18c17e71dc16806a95f3fd4f446e3a7de2b0a3a89e6932",
-    "tools/serve_recovery/fixture_production.py": "a13e8a94ce66688d7c5ff48e270606085543815ea8f813bec36b2a7ce199ccf7",
+    "tools/serve_recovery/fixture_model.py": "8c0d28f2ade53cbbbd043bbaf6f8cce6c8b3d3c3e54fa6a0d40ac077aa22cd4f",
+    "tools/serve_recovery/fixture_production.py": "8a7a225ecc9ad8514392a7121aad0e702e3259cb63336f2d3890236bdbcdf012",
     "tools/serve_recovery/gateway.py": "83cfe3aef4b737a4c03ef48f0cbdab2a8503569eba2c6f094cbc8bf0b0f70cf5",
     "tools/serve_recovery/gateway_config.py": "4b7ab85582c55ffc14387e6cde248362eeefb2f6406064baf57f886ce96c331e",
     "tools/serve_recovery/jobs.py": "31dc2bf5a1e6d91cbfa1ce04a7726c72e5b0cf70a8dec3b12d9e71de3ce96d25",
@@ -797,9 +797,10 @@
     "tools/serve_recovery/ledger.py": "4a2f1586dc4833de32c3caf3a6914babd1a994444355e69d0ede4556f5be1974",
     "tools/serve_recovery/monitor.py": "5fb9f01cee45b7d008cde26fea3d9986a030a8a8a06ac435bc86932a0706aed9",
     "tools/serve_recovery/native_ingress.py": "f29b5515cece0435f129b3f328290c5ccda397dc7b3cd843b9323382c38128d8",
+    "tools/serve_recovery/observation_io.py": "e49138b50462d1acf1a5ef6b648f8bc5d00655de04ec86f25648385fdab4d772",
     "tools/serve_recovery/ownership.py": "1cb0182ca06ee3c1ebbaab5d598895990ece2a7720aec741ea84ffde68792254",
     "tools/serve_recovery/policy.py": "55b3fe3b0ca81bfb024f70499a77ca91ebe20a004cde1efecabf9e37814f4ff6",
-    "tools/serve_recovery/service.py": "2585c548892ef5fc38c6133cdac9771e18bf026b2d88adef30bf4cdf6912a12c",
+    "tools/serve_recovery/service.py": "83fdb2eedf1f1585b3c312467e98448e72779c95b19338b4b9d560dcbfef2019",
     "tools/serve_recovery/store.py": "0eef06d1a10b4ef0911f671e0378ae3849caeabeaabbbe296981a2e4291e59ee"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
@@ -1191,5 +1192,22 @@
         "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md"
       ]
     }
+  },
+  "observation_io_review_20261108": {
+    "scope": "bounded ordinary writes, diagnostic RAM, optional malformed health projection isolation; no model/math/HTTP route changes",
+    "report": "docs/SERVE_OBSERVATION_IO_2026-11-08.md",
+    "changed_sources": [
+      "src/service/guardian_main.cpp",
+      "tools/serve_recovery/acceptance.py",
+      "tools/serve_recovery/bundle.py",
+      "tools/serve_recovery/control.py",
+      "tools/serve_recovery/controller.py",
+      "tools/serve_recovery/fixture_model.py",
+      "tools/serve_recovery/fixture_production.py",
+      "tools/serve_recovery/observation_io.py",
+      "tools/serve_recovery/service.py"
+    ],
+    "cpu": "targeted; see phase records",
+    "business": "pending strict 1-start/4-Chat/600-second acceptance"
   }
 }

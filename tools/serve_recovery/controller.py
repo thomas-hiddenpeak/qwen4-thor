@@ -17,8 +17,8 @@ sys.path.insert(0, str(ROOT))
 from tools.serve_gateway import client_policy as cp, gateway as ingress
 from tools.serve_ops import transport
 from tools.serve_recovery import binding, bundle, child, control, core_http, jobs
-from tools.serve_recovery import journal, ledger, monitor, ownership, policy
-from tools.serve_service import auxiliary, memory, package as engine, supervisor
+from tools.serve_recovery import journal, ledger, monitor, observation_io, ownership, policy
+from tools.serve_service import memory, package as engine, supervisor
 
 
 def health_fault(value, status):
@@ -50,13 +50,14 @@ class Controller:
         self.phase, self.reason = 'STARTING', 'initializing'
         self.heartbeat_at = 0
         self.monitor = monitor.Monitor(self.lease_fd)
-        self.observations = auxiliary.Observations()
+        self.observations = observation_io.Observations()
         self.model, self.grant, self.probe_job = None, None, None
         self.ready = False
         self.frozen = False
         self.quarantined = False
         self.watchdog = None
         self.logger = None
+        self.capture = None
         self.need_cuda_probe = False
         self.probe_passed = False
         self.last_fault = policy.FaultKind.MODEL_EXIT
@@ -79,7 +80,7 @@ class Controller:
         if self.monitor.fatal:
             return 'DEVICE_FAILURE'
         if (self.monitor.visibility != 'AVAILABLE' or
-                any(row['state'] == 'UNAVAILABLE' for row in self.observations.snapshot().values()) or
+                self.observations.unavailable or
                 self.ownership_unknown):
             return 'UNKNOWN'
         return 'AVAILABLE'
@@ -88,11 +89,17 @@ class Controller:
         # No detached heartbeat thread. Every receipt, HTTP wait and cleanup
         # progresses this same loop; jobs never block it on NVML or fsync.
         self.monitor.tick(allow_query=allow_query and not self.stopping and not self.frozen)
+        if self.logger is not None:
+            self.logger.tick()
         now = time.monotonic()
         if now >= self.heartbeat_at:
             reason = (self.monitor.category.lower() if self.phase == 'READY' and
                       self.monitor.visibility != 'AVAILABLE' else self.reason)
-            self.channel.health(self.phase, self.observation(), reason)
+            if (self.phase == 'READY' and self.observations.unavailable and
+                    not self.monitor.fatal):
+                reason = 'auxiliary_io_unavailable'
+            self.channel.health(self.phase, self.observation(), reason,
+                                auxiliary_io=self.observations.snapshot(self.logger))
             self.channel.event('heartbeat')
             self.heartbeat_at = now+0.25
         return self.stopping or self.monitor.fatal
@@ -263,9 +270,8 @@ class Controller:
                 stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                 pass_fds=(endpoint.fileno(), self.lease_fd), start_new_session=True)
             endpoint.close()
-            self.logger = supervisor.RotatingLog(target/'model.log', 4*1024**2,
-                                                 observations=self.observations)
-            self.logger.start(self.model.stdout)
+            self.logger = observation_io.Writer(target, self.lease_fd, self.observations)
+            self.capture = observation_io.Capture(self.logger, self.model.stdout)
             parent.settimeout(2)
             self.owner = journal.receive(parent)
             ledger.require(self.owner.pop('version') == 1, 'invalid child identity receipt')
@@ -310,7 +316,7 @@ class Controller:
         self.phase, self.reason = 'STARTING', 'generation_self_check'
         self.completed_self_checks += 1
         check = core_http.self_check(self.settings['port'], self.credentials, stopped=self.tick)
-        self.observations.save(target/'self-check.json', check, 'events')
+        self.logger.save_self_check(check)
         # Load can overlap the quota window; readiness cannot bypass it.
         deadline = result['quota_not_before_monotonic_ns']
         self.reason = 'quota_window'
@@ -338,6 +344,8 @@ class Controller:
         if self.watchdog is not None:
             self.watchdog.close()
             self.watchdog = None
+        if self.logger is not None:
+            self.logger.stop()
         excluded = (() if self.monitor.job is None else (self.monitor.job.process.pid,))
         if not ownership.cleanup(lambda: self.tick(allow_query=False), exclude=excluded):
             self.quarantine('cleanup_failed')
@@ -345,8 +353,11 @@ class Controller:
         if self.model is not None:
             self.model.poll()
             self.model = None
-        if self.logger is not None and self.logger.thread is not None:
-            self.logger.thread.join(timeout=0.2)
+        if ((self.capture is not None and not self.capture.stop()) or
+                (self.logger is not None and not self.logger.reaped)):
+            self.quarantine('cleanup_failed')
+            return False
+        self.capture = None
         self.logger = None
         end = time.monotonic()+7
         while self.monitor.job is not None and time.monotonic() < end:

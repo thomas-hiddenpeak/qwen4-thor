@@ -20,6 +20,47 @@ from tools.serve_recovery import bundle, child, control, journal, ledger, store
 from tools.serve_service import package as engine
 
 
+DIAGNOSTIC_BYTES = 64 * 1024
+DIAGNOSTIC_SEALS = fcntl.F_SEAL_GROW | fcntl.F_SEAL_SHRINK | fcntl.F_SEAL_SEAL
+
+
+def diagnostic_buffer():
+    """Private, fixed-capacity RAM for fatal control-tree diagnostics.
+
+    Healthy control loops emit structured IPC state, not stdio logging. Model
+    output uses observation_io separately. A full buffer rejects further fatal
+    traceback writes without growing RAM or touching a filesystem sink.
+    """
+    fd = os.memfd_create('q4t-service-diagnostics', os.MFD_CLOEXEC | os.MFD_ALLOW_SEALING)
+    try:
+        os.ftruncate(fd, DIAGNOSTIC_BYTES)
+        fcntl.fcntl(fd, fcntl.F_ADD_SEALS, DIAGNOSTIC_SEALS)
+        return fd
+    except BaseException:
+        os.close(fd)
+        raise
+
+
+def read_diagnostics(status):
+    """Explicit private CLI only; never expose tracebacks on public health."""
+    pid, start = status['guardian_pid'], status['guardian_start_ticks']
+    ledger.require(journal.process_start(pid) == start, 'stale diagnostic owner')
+    path = Path(f'/proc/{pid}/fd/2')
+    ledger.require(os.readlink(path) == '/memfd:q4t-service-diagnostics (deleted)',
+                   'diagnostic buffer unavailable for this service version')
+    fd = os.open(path, os.O_RDONLY | os.O_CLOEXEC | os.O_NONBLOCK)
+    try:
+        ledger.require(os.fstat(fd).st_size == DIAGNOSTIC_BYTES and
+            fcntl.fcntl(fd, fcntl.F_GET_SEALS) == DIAGNOSTIC_SEALS and
+            journal.process_start(pid) == start, 'invalid diagnostic buffer')
+        raw = os.pread(fd, DIAGNOSTIC_BYTES, 0).rstrip(b'\0')
+        return dict(retained_bytes=len(raw), capacity=DIAGNOSTIC_BYTES,
+            possibly_truncated=len(raw) == DIAGNOSTIC_BYTES,
+            text=raw.decode('utf-8', errors='replace'), persistence='guardian_lifetime')
+    finally:
+        os.close(fd)
+
+
 def private_directory(path, repository):
     path = Path(path).absolute()
     ledger.require(path.resolve() == path and any(path.is_relative_to(Path(repository)/name)
@@ -89,6 +130,7 @@ def launch(package, digest, state, *, daemon=False, timeout=360):
     parent, endpoint = (socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
                         if daemon else (None, None))
     process = None
+    diagnostics = None
     interrupted = False
     previous = {}
     def stop(_signal, _frame):
@@ -122,11 +164,19 @@ def launch(package, digest, state, *, daemon=False, timeout=360):
         engine.save(run/'guardian.json', config)
         for sig in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP):
             previous[sig] = signal.signal(sig, stop)
-        with (run/'guardian.log').open('xb') as log:
-            process = subprocess.Popen([str(package/'bin/q4t-guardian'), '--config',
-                str(run/'guardian.json'), '--activate'], stdin=subprocess.DEVNULL,
-                stdout=log, stderr=log, start_new_session=True,
-                pass_fds=(lease, endpoint.fileno()) if daemon else (lease,))
+        # Keep fatal diagnostics in fixed RAM; ordinary disk failures must not
+        # block Guardian or its inherited stderr. Runtime state uses private IPC.
+        try:
+            diagnostics = diagnostic_buffer()
+        except OSError:
+            # A failed optional memory sink cannot prevent core startup.
+            diagnostics = None
+        diagnostic_stdio = diagnostics if diagnostics is not None else subprocess.DEVNULL
+        process = subprocess.Popen([str(package/'bin/q4t-guardian'), '--config',
+            str(run/'guardian.json'), '--activate'], stdin=subprocess.DEVNULL,
+            stdout=diagnostic_stdio, stderr=diagnostic_stdio,
+            start_new_session=True,
+            pass_fds=(lease, endpoint.fileno()) if daemon else (lease,))
         if endpoint is not None:
             endpoint.close()
             endpoint = None
@@ -163,6 +213,8 @@ def launch(package, digest, state, *, daemon=False, timeout=360):
             parent.close()
         if endpoint is not None:
             endpoint.close()
+        if diagnostics is not None:
+            os.close(diagnostics)
         os.close(lease)  # No LOCK_UN on a shared open-file description.
 
 
@@ -184,7 +236,7 @@ def main(argv=None, *, package=None, digest=None):
     prepare.add_argument('--nginx', type=Path)
     prepare.add_argument('--certificate', type=Path)
     prepare.add_argument('--key', type=Path)
-    for name in ('init', 'run', 'start', 'status', 'stop'):
+    for name in ('init', 'run', 'start', 'status', 'diagnostics', 'stop'):
         command = commands.add_parser(name)
         command.add_argument('--state', type=Path, required=True)
         if package is None:
@@ -211,8 +263,12 @@ def main(argv=None, *, package=None, digest=None):
             else:
                 desc = descriptor(args.state, package, digest)
                 try:
-                    result = control.request(desc['service_id'], args.operation, timeout=45
+                    result = control.request(desc['service_id'],
+                        'status' if args.operation == 'diagnostics' else args.operation, timeout=45
                                              if args.operation == 'stop' else 3)
+                    if args.operation == 'diagnostics':
+                        result = dict(service_id=desc['service_id'],
+                            diagnostics=read_diagnostics(result))
                 except OSError:
                     result = dict(service_id=desc['service_id'], state='UNKNOWN',
                                   business_ready=False, live_control=False)
