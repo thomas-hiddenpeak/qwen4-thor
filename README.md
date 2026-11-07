@@ -114,6 +114,16 @@ CUDA、系统与模型依赖不变。新模式已完成本机有界真实业务�
 当前v3入口、日志阻塞隔离与回退见[R01交付](docs/SERVE_OBSERVATION_IO_2026-11-08.md)，
 原生入口既有能力见[交付说明](docs/SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)。
 
+开发中的v4包增加原生IPv4/IPv6 TLS、mTLS、证书轮换及CORS；当前
+已有针对性CPU与真实浏览器证据，实际模型短验尚待完成，不替换上述
+已接受默认。实施与凭据管理见[原生接入计划](docs/SERVE_NATIVE_ACCESS_2026-11-08.md)。
+TLS使用系统OpenSSL 3，不复制nginx代码，也不随包携带nginx。
+构建默认启用`Q4T_ENABLE_NATIVE_TLS=ON`，需要匹配的OpenSSL 3开发头
+文件及系统运行库；可用`-DQ4T_ENABLE_NATIVE_TLS=OFF`构建明文入口。
+运行时只有显式启用TLS才加载系统libssl/libcrypto；缺库或坏证书
+不会回退明文、停止或重启健康模型。OpenSSL按其Apache-2.0许可使用，
+项目依据其官方API实现传输，未移植其他服务器源码。
+
 部署方可自行前置nginx或其他HTTP网关，传递普通Bearer Authorization，
 无需提供q4t内部凭据或准入子请求。nginx前置的最小转发配置如下；
 Host须与原生入口策略的`server_name`一致，TLS/来源限制由部署方按需配置：

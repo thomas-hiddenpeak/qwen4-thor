@@ -2,6 +2,7 @@
 #pragma once
 
 #include <atomic>
+#include <chrono>
 #include <cstddef>
 #include <functional>
 #include <string>
@@ -32,6 +33,9 @@ struct HttpRequestHeaders {
   std::string content_type;
   std::string client_id;
   std::string gateway_token;
+  std::string origin;
+  std::string cors_method;
+  std::string cors_headers;
   std::string error_code;
   std::string error_param;
   size_t content_length = 0;
@@ -83,11 +87,16 @@ class HttpBodyLease {
 // Headers expose validated transport metadata. admit runs after headers and
 // before body reservation/reads; false rejects without consuming the body.
 // Failure status is 400, 408 (deadline), or 503 (budget); caller closes socket.
+// A transport adapter must honor the same absolute deadline; ETIMEDOUT denotes
+// a deadline, zero EOF, and other negative results a socket failure.
+using HttpReceive = std::function<ssize_t(
+    void*, size_t, std::chrono::steady_clock::time_point)>;
 bool ReadHttpRequest(int fd, std::string* method, std::string* path,
                      std::string* body, int timeout_ms = 30000,
                      HttpBodyLease* lease = nullptr,
                      int* failure_status = nullptr,
                      HttpRequestHeaders* headers = nullptr,
-                     const std::function<bool()>& admit = {});
+                     const std::function<bool()>& admit = {},
+                     const HttpReceive& receive = {});
 
 }  // namespace q4t::server

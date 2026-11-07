@@ -30,19 +30,31 @@ def validate(value):
                    'recovery requires a separate operations listener')
     tls = value['tls']
     if native:
-        ledger.require(tls is None and p['listen_host'] == '127.0.0.1' and
-                       p['version'] == 2,
-                       'native ingress requires loopback policy v2; TLS is external')
+        ledger.require(p['version'] in (2, 3), 'native ingress requires explicit CIDRs')
+    else:
+        ledger.require(p['version'] in (1, 2), 'nginx profile requires legacy policy')
     if tls is None:
-        ledger.require(p['listen_host'] == '127.0.0.1',
+        ledger.require(p['listen_host'] in ('127.0.0.1', '::1'),
                        'plaintext ingress is loopback only')
     else:
-        ledger.keys(tls, ('certificate', 'key'))
-        for path in tls.values():
+        ledger.keys(tls, ('certificate', 'key', 'ca', 'require_client_certificate',
+                         *(('crl',) if 'crl' in tls else ()))
+                    if native else ('certificate', 'key'))
+        if native:
+            ledger.require(type(tls['require_client_certificate']) is bool and
+                type(tls['ca']) is str and
+                tls['require_client_certificate'] == bool(tls['ca']),
+                'mTLS requires an explicit client CA')
+            ledger.require(type(tls.get('crl', '')) is str and
+                (not tls.get('crl') or tls['require_client_certificate']),
+                'client CRL requires mTLS and an explicit CA')
+        for name in ('certificate', 'key', *(('ca',) if native and tls['ca'] else ()),
+                     *(('crl',) if native and tls.get('crl') else ())):
+            path = tls[name]
             ledger.require(type(path) is str and Path(path).is_absolute(),
                            'absolute TLS file path required')
             g.quoted(path)
-        ledger.require(p['version'] == 2 or p['listen_host'] == '127.0.0.1',
+        ledger.require(p['version'] >= 2 or p['listen_host'] == '127.0.0.1',
                        'LAN requires explicit source CIDRs')
     return value
 

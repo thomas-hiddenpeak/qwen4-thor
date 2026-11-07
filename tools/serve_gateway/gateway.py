@@ -9,6 +9,7 @@ import re
 import stat
 import subprocess
 import sys
+from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.dont_write_bytecode = True
@@ -79,53 +80,116 @@ def validate_routes():
     return sha(API_CONTRACT)
 
 
-def client_sources(values):
-    """Explicit canonical IPv4 CIDRs, with no implicit local/trusted proxies."""
+def client_sources(values, *, dual_stack=False):
+    """Canonical CIDRs, with no implicit local/trusted proxies.
+
+    Legacy v1/v2 keep their controlled IPv4 contract. Native v3 also accepts
+    explicit IPv6 and globally routed CIDRs; non-loopback always requires TLS.
+    """
     require(isinstance(values, list) and 1 <= len(values) <= 32,
             'one to 32 allowed_client_cidrs required')
     networks = []
     for value in values:
         require(isinstance(value, str), 'canonical IPv4 source CIDR required')
         try:
-            network = ipaddress.IPv4Network(value, strict=True)
+            network = (ipaddress.ip_network(value, strict=True) if dual_stack else
+                       ipaddress.IPv4Network(value, strict=True))
         except (ValueError, TypeError):
             raise ValueError('canonical IPv4 source CIDR required') from None
         require(str(network) == value, 'canonical IPv4 source CIDR required')
-        require(any(network.subnet_of(parent) for parent in CLIENT_NETWORKS),
+        require(dual_stack or any(network.subnet_of(parent) for parent in CLIENT_NETWORKS),
                 'source CIDRs must be within RFC1918 or IPv4 loopback')
-        require(not any(network.overlaps(prior) for prior in networks),
+        require(not any(network.version == prior.version and network.overlaps(prior)
+                        for prior in networks),
                 'duplicate or overlapping source CIDRs')
         networks.append(network)
     return list(values)
 
 
+def cors_policy(value):
+    if value is None:
+        return None
+    require(type(value) is dict and value.keys() == {'allowed_origins',
+        'allowed_methods', 'allowed_headers', 'exposed_headers',
+        'allow_credentials', 'max_age'}, 'invalid CORS fields')
+    require(type(value['allow_credentials']) is bool and
+            type(value['max_age']) is int and 0 <= value['max_age'] <= 86400,
+            'invalid CORS credentials or cache age')
+    for name in ('allowed_origins', 'allowed_methods', 'allowed_headers', 'exposed_headers'):
+        items = value[name]
+        require(type(items) is list and (1 if name in ('allowed_origins',
+            'allowed_methods') else 0) <= len(items) <= 32 and
+            all(type(item) is str and 1 <= len(item) <= 2048 for item in items) and
+            len(set(items)) == len(items), 'invalid CORS list')
+    for origin in value['allowed_origins']:
+        if origin == '*':
+            require(len(value['allowed_origins']) == 1 and
+                    not value['allow_credentials'], 'wildcard credentialed CORS forbidden')
+        elif origin != 'null':
+            try:
+                uri = urlsplit(origin)
+                port = uri.port
+                valid = (uri.scheme in ('http', 'https') and uri.hostname and
+                    not uri.username and not uri.password and not uri.path and
+                    not uri.query and not uri.fragment and
+                    re.fullmatch(r'https?://[A-Za-z0-9.\-\[\]:]+', origin) and
+                    (port is None or 1 <= port <= 65535))
+            except ValueError:
+                valid = False
+            require(valid, 'exact HTTP(S) origin required')
+    require(set(value['allowed_methods']) <= {'GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'},
+            'invalid CORS methods')
+    for name in ('allowed_headers', 'exposed_headers'):
+        for header in value[name]:
+            require(re.fullmatch(r'[a-z0-9-]{1,128}', header) and
+                    not header.startswith('x-q4t-') and
+                    header not in ({'host', 'content-length', 'transfer-encoding',
+                        'connection', 'cookie'} if name == 'allowed_headers' else {'set-cookie'}),
+                    'invalid CORS header')
+    return value
+
+
 def policy(value):
     require(isinstance(value, dict) and type(value.get('version')) is int and
-            value['version'] in (1, 2), 'unsupported policy version')
+            value['version'] in (1, 2, 3), 'unsupported policy version')
     required = {'version', 'listen_host', 'listen_port', 'server_name',
                 'upstream_port', 'clients'}
-    if value['version'] == 2:
+    if value['version'] >= 2:
         required.add('allowed_client_cidrs')
     require(isinstance(value, dict) and required <= value.keys() and
             value.keys() <= required | DEFAULTS.keys() |
-            ({'upstream_operations_port'} if value['version'] == 2 else set()),
+            ({'upstream_operations_port'} if value['version'] >= 2 else set()) |
+            ({'cors'} if value['version'] == 3 else set()),
             'unknown/missing policy field')
     value = dict(DEFAULTS, **value)
-    if value['version'] == 2:
-        value['allowed_client_cidrs'] = client_sources(value['allowed_client_cidrs'])
+    if value['version'] >= 2:
+        value['allowed_client_cidrs'] = client_sources(value['allowed_client_cidrs'],
+                                                       dual_stack=value['version'] == 3)
+    if value['version'] == 3:
+        value['cors'] = cors_policy(value.get('cors'))
     require(isinstance(value['listen_host'], str), 'numeric IPv4 string required')
     try:
-        address = ipaddress.IPv4Address(value['listen_host'])
+        address = (ipaddress.ip_address(value['listen_host']) if value['version'] == 3 else
+                   ipaddress.IPv4Address(value['listen_host']))
     except (ValueError, TypeError):
         raise ValueError('numeric IPv4 listen_host required') from None
-    private = any(address in ipaddress.IPv4Network(net) for net in
+    private = address.version == 4 and any(address in ipaddress.IPv4Network(net) for net in
                   ('10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16'))
-    require(str(address) == '127.0.0.1' or private,
+    require((value['version'] == 3 and not address.is_unspecified and
+             not address.is_multicast and '%' not in value['listen_host'] and
+             str(address) == value['listen_host']) or str(address) == '127.0.0.1' or private,
             'only explicit loopback or RFC1918 interface is supported')
-    require(isinstance(value['server_name'], str) and re.fullmatch(
+    name = value['server_name']
+    literal_v6 = False
+    if value['version'] == 3 and isinstance(name, str):
+        try:
+            literal_v6 = str(ipaddress.IPv6Address(name)) == name and '%' not in name
+        except ValueError:
+            pass
+    require(literal_v6 or (isinstance(value['server_name'], str) and re.fullmatch(
         r'(?=.{1,253}$)[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?', value['server_name']) and
         all(re.fullmatch(r'[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?', part)
-            for part in value['server_name'].split('.')), 'invalid DNS server_name')
+            for part in value['server_name'].split('.'))), 'invalid DNS server_name')
     bounds = dict(listen_port=(1024,65535), upstream_port=(1024,65535),
         per_client_inflight=(1,8), global_inflight=(1,8), per_client_rps=(1,100),
         burst=(1,128), body_bytes=(1024,16*1024**2), upstream_idle_seconds=(10,3600))
@@ -163,6 +227,7 @@ def quoted(path):
 
 def render(value, directory, backend_policy=None):
     p = policy(value)
+    require(p['version'] in (1, 2), 'legacy nginx renderer requires policy v1/v2')
     require(p['version'] == 2 or p['listen_host'] == '127.0.0.1',
             'new LAN gateways require policy v2 with allowed_client_cidrs')
     source_map = source_check = source_log = ''

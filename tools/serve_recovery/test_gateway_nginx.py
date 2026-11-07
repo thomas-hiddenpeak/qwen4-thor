@@ -63,7 +63,8 @@ def native_config(value, token):
 
 
 class Stack:
-    def __init__(self, output, *, native_ingress=None, policy_overrides=None):
+    def __init__(self, output, *, native_ingress=None, policy_overrides=None,
+                 tls=None, ssl_context=None):
         self.directory = Path(tempfile.mkdtemp(
             prefix='native-' if native_ingress else 'nginx-', dir=output))
         self.service_id = str(uuid.uuid4())
@@ -80,6 +81,7 @@ class Stack:
         self.errors = []
         self.servers, self.threads = [], []
         self.value = None
+        self.ssl_context = ssl_context
         stack = self
         class Backend(BaseHTTPRequestHandler):
             protocol_version = 'HTTP/1.1'
@@ -155,6 +157,7 @@ class Stack:
         self.value['binary_sha256'] = hashlib.sha256(Path('/proc/self/exe').read_bytes()).hexdigest()
         self.value['policy'].update(per_client_rps=100, burst=100)
         self.value['policy'].update(policy_overrides or {})
+        self.value['tls'] = tls
         self.path = self.directory/'gateway.json'
         self.path.write_text(json.dumps(self.value))
         self.path.chmod(0o600)
@@ -238,7 +241,10 @@ class Stack:
     def request(self, body=None, *, key='A'*40, path=None, extra=None):
         method = 'POST' if body is not None else 'GET'
         path = path or ('/v1/chat/completions' if body is not None else '/v1/models')
-        connection = http.client.HTTPConnection('127.0.0.1', self.value['policy']['listen_port'], timeout=4)
+        host = self.value['policy']['listen_host']
+        connection = (http.client.HTTPSConnection(host, self.value['policy']['listen_port'],
+            timeout=4, context=self.ssl_context) if self.ssl_context else
+            http.client.HTTPConnection(host, self.value['policy']['listen_port'], timeout=4))
         try:
             headers = {'Authorization': 'Bearer '+key, 'Content-Type': 'application/json'}
             headers.update(extra or {})
@@ -249,6 +255,9 @@ class Stack:
             connection.close()
 
     def close(self):
+        if getattr(self, '_closed', False):
+            return
+        self._closed = True
         self.release_stream.set()
         if self.process.poll() is None:
             self.process.terminate()

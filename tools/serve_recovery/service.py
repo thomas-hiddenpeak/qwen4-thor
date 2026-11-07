@@ -16,7 +16,7 @@ sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from tools.serve_gateway import gateway as ingress
-from tools.serve_recovery import bundle, child, control, journal, ledger, store
+from tools.serve_recovery import bundle, child, control, journal, ledger, store, tls_control
 from tools.serve_service import package as engine
 
 
@@ -236,7 +236,10 @@ def main(argv=None, *, package=None, digest=None):
     prepare.add_argument('--nginx', type=Path)
     prepare.add_argument('--certificate', type=Path)
     prepare.add_argument('--key', type=Path)
-    for name in ('init', 'run', 'start', 'status', 'diagnostics', 'stop'):
+    prepare.add_argument('--client-ca', type=Path)
+    prepare.add_argument('--client-crl', type=Path)
+    for name in ('init', 'run', 'start', 'status', 'diagnostics', 'stop',
+                 'tls-status', 'tls-reload'):
         command = commands.add_parser(name)
         command.add_argument('--state', type=Path, required=True)
         if package is None:
@@ -251,7 +254,8 @@ def main(argv=None, *, package=None, digest=None):
             result = bundle.prepare(args.binary, args.release, args.model, args.guardian,
                 args.cuda_probe, args.nginx, args.policy, args.backend_policy, args.output,
                 native_receipt=args.native_receipt, certificate=args.certificate, key=args.key,
-                native_ingress=args.native_ingress, ingress_mode=args.ingress_mode)
+                native_ingress=args.native_ingress, ingress_mode=args.ingress_mode,
+                client_ca=args.client_ca, client_crl=args.client_crl)
         else:
             package = package or args.package
             digest = digest or args.manifest_sha256
@@ -264,16 +268,23 @@ def main(argv=None, *, package=None, digest=None):
                 desc = descriptor(args.state, package, digest)
                 try:
                     result = control.request(desc['service_id'],
-                        'status' if args.operation == 'diagnostics' else args.operation, timeout=45
+                        'status' if args.operation in ('diagnostics', 'tls-status',
+                            'tls-reload') else args.operation, timeout=45
                                              if args.operation == 'stop' else 3)
                     if args.operation == 'diagnostics':
                         result = dict(service_id=desc['service_id'],
                             diagnostics=read_diagnostics(result))
+                    elif args.operation in ('tls-status', 'tls-reload'):
+                        manifest = bundle.verify(package, digest)
+                        result = tls_control.execute(desc, result, manifest,
+                            reload=args.operation == 'tls-reload')
                 except OSError:
                     result = dict(service_id=desc['service_id'], state='UNKNOWN',
                                   business_ready=False, live_control=False)
         print(json.dumps(result, ensure_ascii=False))
         if args.operation == 'stop' and not result.get('cleanup_confirmed'):
+            return 1
+        if args.operation == 'tls-reload' and not result.get('reloaded'):
             return 1
         return int(result.get('guardian_exit_code', 0) != 0 or result.get('state') == 'UNKNOWN')
     except (OSError, ValueError, RuntimeError) as error:

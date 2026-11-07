@@ -1,5 +1,6 @@
 # docs/ — 开发记录文档体系
 
+- [N01/N02/N03原生TLS、内网、证书与CORS实施](SERVE_NATIVE_ACCESS_2026-11-08.md)
 - [R02结构化工作进程有界回收：实施合同与针对性验证](SERVE_GRAMMAR_REAP_2026-11-08.md)
 - [R01普通观察写入阻塞隔离：实现与针对性验证](SERVE_OBSERVATION_IO_2026-11-08.md)
 

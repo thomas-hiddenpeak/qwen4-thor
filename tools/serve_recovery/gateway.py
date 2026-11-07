@@ -25,7 +25,7 @@ from tools.serve_service import supervisor
 
 
 def listener(pid, host, port, binary):
-    """Verify an exact IPv4 listener, including an explicitly enabled LAN IP."""
+    """Verify an exact IPv4/IPv6 listener and its owning executable."""
     owner = supervisor.process_identity(pid)
     proc = Path('/proc')/str(pid)
     own, selected = Path('/proc/self/ns/net').stat(), (proc/'ns/net').stat()
@@ -39,9 +39,11 @@ def listener(pid, host, port, binary):
             owned.add(os.readlink(path))
         except FileNotFoundError:
             pass
-    address = socket.inet_aton(host)[::-1].hex().upper()
+    ipv6 = ':' in host
+    packed = socket.inet_pton(socket.AF_INET6 if ipv6 else socket.AF_INET, host)
+    address = b''.join(packed[i:i+4][::-1] for i in range(0, len(packed), 4)).hex().upper()
     matches = []
-    for row in identity.bounded_file('/proc/net/tcp').decode().splitlines()[1:]:
+    for row in identity.bounded_file('/proc/net/tcp6' if ipv6 else '/proc/net/tcp').decode().splitlines()[1:]:
         fields = row.split()
         ledger.require(len(fields) >= 10, 'invalid gateway listener observation')
         if fields[1].upper() == f'{address}:{port:04X}' and fields[3] == '0A':

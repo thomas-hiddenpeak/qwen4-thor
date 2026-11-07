@@ -22,6 +22,8 @@ jobs:
           packages=()
           command -v g++-14 >/dev/null || packages+=(g++-14)
           command -v cmake >/dev/null || packages+=(cmake)
+          test -f /usr/include/openssl/ssl.h || packages+=(libssl-dev)
+          command -v openssl >/dev/null || packages+=(openssl)
           /usr/bin/python3 -c 'import numpy' || packages+=(python3-numpy)
           if ((${#packages[@]})); then
             sudo apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=20 update

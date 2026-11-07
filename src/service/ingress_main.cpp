@@ -22,11 +22,16 @@
 #include "q4t/server/http_listener.h"
 #include "q4t/server/http_request.h"
 #include "q4t/service/guardian_wire.h"
+#include "q4t/service/ingress_address.h"
+#include "q4t/service/ingress_admin.h"
+#include "q4t/service/ingress_cors.h"
+#include "q4t/service/ingress_credentials.h"
 #include "q4t/service/ingress_transport.h"
 
 namespace q4t::service::ingress {
 namespace {
 using namespace std::chrono_literals;
+std::atomic<bool> reload_credentials{false};
 
 void Require(bool ok) {
   if (!ok) throw std::runtime_error("invalid ingress configuration");
@@ -52,15 +57,14 @@ struct Client {
   std::string key;
 };
 
-struct Network {
-  uint32_t address;
-  uint32_t mask;
-};
-
 struct Config {
   ProcessIdentity parent;
   std::string address;
   std::string host;
+  std::string listen;
+  bool tls = false;
+  TlsFiles credentials;
+  Cors cors;
   int port = 0;
   int backend = 0;
   int operations = 0;
@@ -92,10 +96,14 @@ Config Load(const char* path) {
     Require(raw.size() <= wire::kMaxFrame);
   }
   io::Json root;
-  Require(wire::Parse(raw, &root).ok() &&
-          wire::HasKeys(root, {"version", "parent_pid", "parent_start_ticks",
-                               "address", "policy"}));
-  Number(root, "version", 1, 1);
+  Require(wire::Parse(raw, &root).ok());
+  const auto root_version = Number(root, "version", 1, 2);
+  Require(
+      root_version == 1
+          ? wire::HasKeys(root, {"version", "parent_pid", "parent_start_ticks",
+                                 "address", "policy"})
+          : wire::HasKeys(root, {"version", "parent_pid", "parent_start_ticks",
+                                 "address", "policy", "tls", "tls_lease"}));
   Config config;
   config.parent.pid =
       static_cast<pid_t>(Number(root, "parent_pid", 2, INT32_MAX));
@@ -104,19 +112,65 @@ Config Load(const char* path) {
   for (unsigned char c : config.address)
     Require((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '-');
   const auto& policy = *root.Find("policy");
-  const auto version = Number(policy, "version", 1, 2);
-  Require(version == 2 &&
-          wire::HasKeys(policy,
-                        {"version", "listen_host", "listen_port", "server_name",
+  const auto version = Number(policy, "version", 2, 3);
+  Require(
+      version == 2
+          ? wire::HasKeys(
+                policy, {"version", "listen_host", "listen_port", "server_name",
                          "upstream_port", "upstream_operations_port", "clients",
                          "allowed_client_cidrs", "per_client_inflight",
                          "global_inflight", "per_client_rps", "burst",
-                         "body_bytes", "upstream_idle_seconds"}));
-  Require(Text(policy, "listen_host", 15) == "127.0.0.1");
+                         "body_bytes", "upstream_idle_seconds"})
+          : wire::HasKeys(
+                policy, {"version", "listen_host", "listen_port", "server_name",
+                         "upstream_port", "upstream_operations_port", "clients",
+                         "allowed_client_cidrs", "per_client_inflight",
+                         "global_inflight", "per_client_rps", "burst",
+                         "body_bytes", "upstream_idle_seconds", "cors"}));
+  config.listen = Text(policy, "listen_host", 45);
+  const auto listen = Address::Parse(config.listen);
+  Require(listen.family != AF_UNSPEC);
   config.host = Text(policy, "server_name", 253);
   for (unsigned char c : config.host)
     Require((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '-' ||
-            c == '.');
+            c == '.' || (version == 3 && c == ':'));
+  if (version == 3) {
+    const auto* cors = policy.Find("cors");
+    Require(cors && (cors->IsNull() || config.cors.Load(*cors)));
+  }
+  if (root_version == 2) {
+    const auto* tls = root.Find("tls");
+    Require(tls != nullptr);
+    config.tls = !tls->IsNull();
+    if (config.tls) {
+      Require(wire::HasKeys(*tls, {"certificate", "key", "ca",
+                                   "require_client_certificate"}) ||
+              wire::HasKeys(*tls, {"certificate", "key", "ca", "crl",
+                                   "require_client_certificate"}));
+      config.credentials.certificate = Text(*tls, "certificate", 4096);
+      config.credentials.key = Text(*tls, "key", 4096);
+      const auto* ca = tls->Find("ca");
+      const auto* mtls = tls->Find("require_client_certificate");
+      Require(ca && ca->IsString() && ca->str.size() <= 4096 && mtls &&
+              mtls->IsBool());
+      config.credentials.ca = ca->str;
+      config.credentials.client_certificate = mtls->boolean;
+      const auto* crl = tls->Find("crl");
+      if (crl) {
+        Require(crl->IsString() && crl->str.size() <= 4096);
+        config.credentials.crl = crl->str;
+        Require(crl->str.empty() || config.credentials.client_certificate);
+      }
+      Require(config.credentials.client_certificate == !ca->str.empty());
+      for (const auto* path :
+           {&config.credentials.certificate, &config.credentials.key,
+            &config.credentials.ca, &config.credentials.crl})
+        Require(path->empty() || path->front() == '/');
+      config.credentials.lease = Text(root, "tls_lease", 100);
+      config.credentials.name = config.host;
+    }
+  }
+  Require(config.tls || config.listen == "127.0.0.1" || config.listen == "::1");
   config.port = Number(policy, "listen_port", 1024, 65535);
   config.backend = Number(policy, "upstream_port", 1024, 65535);
   config.operations = Number(policy, "upstream_operations_port", 1024, 65535);
@@ -134,18 +188,9 @@ Config Load(const char* path) {
   Require(networks && !networks->array.empty() && networks->array.size() <= 32);
   for (const auto& network : networks->array) {
     Require(network.IsString());
-    const auto slash = network.str.find('/');
-    Require(slash != std::string::npos);
-    const auto prefix = network.str.substr(0, slash);
-    in_addr address{};
-    Require(::inet_pton(AF_INET, prefix.c_str(), &address) == 1);
-    unsigned bits = 0;
-    const auto start = network.str.data() + slash + 1;
-    const auto end = network.str.data() + network.str.size();
-    const auto result = std::from_chars(start, end, bits);
-    Require(result.ec == std::errc{} && result.ptr == end && bits <= 32);
-    const uint32_t mask = bits == 0 ? 0 : UINT32_MAX << (32 - bits);
-    config.networks.push_back({ntohl(address.s_addr) & mask, mask});
+    Network parsed;
+    Require(parsed.Parse(network.str));
+    config.networks.push_back(parsed);
   }
   const auto* clients = policy.GetArray("clients");
   Require(clients && !clients->array.empty() && clients->array.size() <= 64);
@@ -164,7 +209,16 @@ Config Load(const char* path) {
 }
 
 bool HostMatches(std::string_view host, const std::string& expected) {
-  const auto colon = host.find(':');
+  size_t colon = host.find(':');
+  if (host.starts_with("[")) {
+    const auto close = host.find(']');
+    if (close == host.npos || close < 2 ||
+        Address::Parse(std::string(host.substr(1, close - 1))).family !=
+            AF_INET6)
+      return false;
+    if (close + 1 != host.size() && host[close + 1] != ':') return false;
+    colon = close + 1 == host.size() ? host.npos : close + 1;
+  }
   if (colon != host.npos) {
     const auto port = host.substr(colon + 1);
     unsigned value = 0;
@@ -174,6 +228,12 @@ bool HostMatches(std::string_view host, const std::string& expected) {
         result.ptr != port.data() + port.size() || value == 0 || value > 65535)
       return false;
     host = host.substr(0, colon);
+  }
+  if (host.starts_with("[")) host = host.substr(1, host.size() - 2);
+  const auto literal = Address::Parse(expected);
+  if (literal.family != AF_UNSPEC) {
+    const auto parsed = Address::Parse(std::string(host));
+    return literal.family == parsed.family && literal.bytes == parsed.bytes;
   }
   if (host.size() != expected.size()) return false;
   for (size_t i = 0; i < host.size(); ++i) {
@@ -295,8 +355,8 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
   return false;
 }
 
-void Handle(int fd, const Config& config, Capacity& capacity,
-            server::HttpBodyBudget& budget, uint32_t source, bool* started) {
+void Handle(Connection& client, const Config& config, Capacity& capacity,
+            server::HttpBodyBudget& budget, Address source, bool* started) {
   std::string method, path, body;
   std::string request_id = RequestId();
   if (request_id.empty()) return;
@@ -308,7 +368,7 @@ void Handle(int fd, const Config& config, Capacity& capacity,
   bool rejected = false;
   const auto reject = [&](int code, const char* reason) {
     rejected = true;
-    Error(fd, code, reason, request_id, started);
+    Error(client, code, reason, request_id, started);
     return false;
   };
   const auto authorize = [&] {
@@ -319,12 +379,29 @@ void Handle(int fd, const Config& config, Capacity& capacity,
   const auto admit = [&] {
     if (!headers.request_id.empty()) request_id = headers.request_id;
     const bool source_allowed = std::any_of(
-        config.networks.begin(), config.networks.end(), [&](const auto& network) {
-          return (source & network.mask) == network.address;
-        });
+        config.networks.begin(), config.networks.end(),
+        [&](const auto& network) { return network.Contains(source); });
     if (!source_allowed) return reject(403, "gateway_source_denied");
     if (!HostMatches(headers.host, config.host))
       return reject(400, "gateway_bad_request");
+    if (!config.cors.Response(headers.origin, &client.extra_headers))
+      return reject(403, "cors_origin_denied");
+    if (method == "OPTIONS") {
+      bool control = false;
+      if (headers.origin.empty() || headers.cors_method.empty() ||
+          headers.content_length || !headers.client_id.empty() ||
+          !headers.gateway_token.empty())
+        return reject(400, "cors_invalid_preflight");
+      if (!Route(headers.cors_method, path, &control) ||
+          !config.cors.Preflight(headers.cors_method, headers.cors_headers,
+                                 &client.extra_headers))
+        return reject(403, "cors_preflight_denied");
+      Reply(client, 204, "", request_id, started);
+      rejected = true;  // Completed locally, with no body/admission/quota work.
+      return false;
+    }
+    if (!headers.cors_method.empty() || !headers.cors_headers.empty())
+      return reject(400, "cors_invalid_preflight");
     lease.client = Authenticate(headers.authorization, config.clients);
     if (lease.client == config.clients.size())
       return reject(401, "gateway_unauthorized");
@@ -342,12 +419,18 @@ void Handle(int fd, const Config& config, Capacity& capacity,
     binding = authorize();
     return binding.port != 0 || reject(503, binding.error.c_str());
   };
-  if (!server::ReadHttpRequest(fd, &method, &path, &body, 10000, &body_lease,
-                               &status, &headers, admit)) {
+  const auto receive = [&](void* data, size_t size,
+                           Clock::time_point deadline) {
+    return client.Read(data, size, deadline);
+  };
+  if (!server::ReadHttpRequest(client.Fd(), &method, &path, &body, 10000,
+                               &body_lease, &status, &headers, admit,
+                               receive)) {
     if (!rejected) {
+      config.cors.Response(headers.origin, &client.extra_headers);
       if (headers.failure == server::HttpReceiveFailure::kBodyTooLarge)
         status = 413;
-      Error(fd, status,
+      Error(client, status,
             headers.error_code.empty() ? "gateway_bad_request"
                                        : headers.error_code,
             request_id, started);
@@ -355,19 +438,19 @@ void Handle(int fd, const Config& config, Capacity& capacity,
     return;
   }
   if (path == "/livez") {
-    Reply(fd, 200, "{\"live\":true,\"scope\":\"service_entrypoint\"}",
+    Reply(client, 200, "{\"live\":true,\"scope\":\"service_entrypoint\"}",
           request_id, started);
     return;
   }
   const auto current = authorize();
   if (!current.port || current != binding) {
-    Error(fd, 503, current.port ? "service_recovering" : current.error,
+    Error(client, 503, current.port ? "service_recovering" : current.error,
           request_id, started);
     return;
   }
-  auto upstream = Connect(binding.port, fd);
+  auto upstream = Connect(binding.port, client);
   if (upstream.Get() < 0) {
-    Error(fd, 503, "service_binding_unavailable", request_id, started);
+    Error(client, 503, "service_binding_unavailable", request_id, started);
     return;
   }
   const std::string head =
@@ -382,12 +465,12 @@ void Handle(int fd, const Config& config, Capacity& capacity,
            : "Content-Type: " + headers.content_type + "\r\n") +
       "\r\n";
   const auto deadline = Clock::now() + 15s;
-  if (!Write(upstream.Get(), head, deadline, fd) ||
-      !Write(upstream.Get(), body, deadline, fd)) {
-    Error(fd, 503, "service_binding_unavailable", request_id, started);
+  if (!Write(upstream.Get(), head, deadline, &client) ||
+      !Write(upstream.Get(), body, deadline, &client)) {
+    Error(client, 503, "service_binding_unavailable", request_id, started);
     return;
   }
-  Relay(upstream.Get(), fd, config.idle_seconds, request_id, started);
+  Relay(upstream.Get(), client, config.idle_seconds, request_id, started);
 }
 
 struct Slot {
@@ -397,51 +480,86 @@ struct Slot {
   int fd = -1;
 };
 
+int CheckTls(const Config& config) {
+  Require(config.tls);
+  Credentials credentials(config.credentials);
+  const auto deadline = Clock::now() + 3s;
+  do {
+    credentials.Step(false);
+    if (credentials.FinishedInitial()) break;
+    ::poll(nullptr, 0, 10);
+  } while (Clock::now() < deadline && !stopped.load());
+  std::string status;
+  Require(wire::Encode(credentials.Status(), &status).ok());
+  std::puts(status.c_str());
+  return credentials.Context() ? 0 : 1;
+}
+
 int Run(const Config& config) {
   OwnedFd parent;
   Require(::prctl(PR_SET_PDEATHSIG, SIGTERM) == 0 &&
           config.parent.pid == ::getppid() &&
           OpenProcess(config.parent, &parent).ok());
   server::HttpListeners listeners;
-  Require(listeners.Open("127.0.0.1", config.port, 0).ok());
+  IngressAdmin admin;
+  Require(admin.Open(config.address + "-admin"));
+  std::unique_ptr<Credentials> credentials;
+  if (config.tls) {
+    credentials = std::make_unique<Credentials>(config.credentials);
+    do {
+      credentials->Step(false);
+      admin.Step(credentials.get());
+      if (credentials->FinishedInitial()) break;
+      pollfd parent_event{parent.Get(), POLLIN, 0};
+      if (::poll(&parent_event, 1, 10) > 0) return 1;
+    } while (!stopped.load());
+    Require(credentials->Context() != nullptr);
+  }
+  Require(listeners.Open(config.listen, config.port, 0).ok());
   Capacity capacity(config);
   server::HttpBodyBudget budget(server::kAggregateChatBodyBytes);
   std::array<Slot, 32> slots;
   while (!stopped.load(std::memory_order_relaxed)) {
+    if (credentials) credentials->Step(reload_credentials.exchange(false));
+    admin.Step(credentials.get());
     pollfd events[2] = {{listeners.Public(), POLLIN, 0},
                         {parent.Get(), POLLIN, 0}};
     const int ready = ::poll(events, 2, 100);
     if (ready < 0 && errno == EINTR) continue;
     if (ready < 0 || events[1].revents) break;
     if (!(events[0].revents & POLLIN)) continue;
-    sockaddr_in peer{};
+    sockaddr_storage peer{};
     socklen_t peer_size = sizeof(peer);
     OwnedFd accepted(::accept4(listeners.Public(),
                                reinterpret_cast<sockaddr*>(&peer), &peer_size,
                                SOCK_NONBLOCK | SOCK_CLOEXEC));
     if (accepted.Get() < 0) continue;
-    if (peer_size != sizeof(peer) || peer.sin_family != AF_INET) continue;
-    const uint32_t source = ntohl(peer.sin_addr.s_addr);
+    const auto source = Address::Peer(peer, peer_size);
+    if (source.family == AF_UNSPEC) continue;
     auto slot = std::find_if(slots.begin(), slots.end(),
                              [](const auto& item) { return item.done.load(); });
     if (slot == slots.end()) {
       constexpr std::string_view busy =
           "HTTP/1.1 503 Service Unavailable\r\nConnection: close\r\n"
           "Retry-After: 1\r\nContent-Length: 0\r\n\r\n";
-      ::send(accepted.Get(), busy.data(), busy.size(),
-             MSG_NOSIGNAL | MSG_DONTWAIT);
+      if (!config.tls)
+        ::send(accepted.Get(), busy.data(), busy.size(),
+               MSG_NOSIGNAL | MSG_DONTWAIT);
       continue;
     }
     if (slot->thread.joinable()) slot->thread.join();
     slot->fd = accepted.Release();
     slot->done.store(false);
+    const auto context = credentials ? credentials->Context() : nullptr;
     try {
-      slot->thread = std::thread([&, slot, source] {
+      slot->thread = std::thread([&, slot, source, context] {
         bool started = false;
         try {
-          Handle(slot->fd, config, capacity, budget, source, &started);
+          Connection client(slot->fd);
+          if (!config.tls || client.Handshake(context))
+            Handle(client, config, capacity, budget, source, &started);
         } catch (...) {
-          if (!started) {
+          if (!started && !config.tls) {
             constexpr std::string_view failure =
                 "HTTP/1.1 503 Service Unavailable\r\nConnection: close\r\n"
                 "Retry-After: 1\r\nContent-Length: 0\r\n\r\n";
@@ -477,8 +595,20 @@ int Run(const Config& config) {
 
 int main(int argc, char** argv) {
   using namespace q4t::service::ingress;
-  if (argc != 3 || std::string_view(argv[1]) != "--config") {
-    std::fputs("Usage: q4t-ingress --config FILE\n", stderr);
+  ::signal(SIGPIPE, SIG_IGN);
+  if (argc == 3 && std::string_view(argv[1]) == "--tls-reader") {
+    int parent = 0;
+    const std::string_view number(argv[2]);
+    const auto parsed =
+        std::from_chars(number.data(), number.data() + number.size(), parent);
+    if (parsed.ec != std::errc{} ||
+        parsed.ptr != number.data() + number.size() || parent < 2)
+      return 2;
+    return CredentialReader(3, parent);
+  }
+  if (argc != 3 || (std::string_view(argv[1]) != "--config" &&
+                    std::string_view(argv[1]) != "--check-tls")) {
+    std::fputs("Usage: q4t-ingress --config FILE | --check-tls FILE\n", stderr);
     return 2;
   }
   struct sigaction action {};
@@ -488,8 +618,12 @@ int main(int argc, char** argv) {
   ::sigemptyset(&action.sa_mask);
   ::sigaction(SIGTERM, &action, nullptr);
   ::sigaction(SIGINT, &action, nullptr);
+  action.sa_handler = [](int) { reload_credentials.store(true); };
+  ::sigaction(SIGHUP, &action, nullptr);
   try {
-    return Run(Load(argv[2]));
+    const auto config = Load(argv[2]);
+    return std::string_view(argv[1]) == "--check-tls" ? CheckTls(config)
+                                                      : Run(config);
   } catch (...) {
     // Config contains private credentials. Never print its contents/errors.
     std::fputs("q4t-ingress: configuration or startup failed\n", stderr);

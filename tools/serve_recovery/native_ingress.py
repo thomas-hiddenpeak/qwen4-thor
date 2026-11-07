@@ -20,7 +20,7 @@ sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from tools.serve_gateway import gateway as files
-from tools.serve_recovery import control, gateway_config, journal, ledger
+from tools.serve_recovery import control, gateway_config, journal, ledger, tls_control
 from tools.serve_recovery.gateway import Admission, listener
 
 
@@ -125,13 +125,16 @@ def run(config, channel):
         return False
     admission = Admission(config, channel, stopped=tick)
     address = f'q4t-ingress-{os.geteuid()}-{channel.service_id}-{channel.generation}'
+    tls_observation = tls_control.Observation(address) if config['tls'] else None
+    tls_ready = True
     server = AdmissionSocket(address, (c['id'] for c in config['policy']['clients']),
         admission.request, lambda: process.pid if process is not None and
                                   process.poll() is None else None)
     try:
-        settings = dict(version=1, parent_pid=os.getpid(),
+        settings = dict(version=2, parent_pid=os.getpid(),
             parent_start_ticks=journal.process_start(os.getpid()), address=address,
-            policy=files.policy(config['policy']))
+            policy=files.policy(config['policy']), tls=config['tls'],
+            tls_lease=f'q4t-tls-{os.geteuid()}-{channel.service_id}')
         files.save(runtime/'ingress.json', ledger.canonical(settings)+b'\n')
         process = subprocess.Popen([sys.executable, '-I', '-B',
             str(ROOT/'tools/serve_recovery/cpu_exec.py'), '--parent-pid', str(os.getpid()),
@@ -142,7 +145,8 @@ def run(config, channel):
         end = time.monotonic()+10
         while not tick():
             try:
-                listener(process.pid, '127.0.0.1', config['policy']['listen_port'], digest)
+                listener(process.pid, config['policy']['listen_host'],
+                         config['policy']['listen_port'], digest)
                 break
             except (OSError, ValueError, RuntimeError):
                 ledger.require(time.monotonic() < end, 'native listener startup deadline')
@@ -151,12 +155,22 @@ def run(config, channel):
         channel.event('ready')
         next_update = 0
         while not tick():
+            if tls_observation is not None:
+                observed = tls_observation.step(process.pid)
+                if observed is not None:
+                    if tls_ready and not observed:
+                        admission.close()
+                        channel.unbound()
+                    tls_ready = observed
             if time.monotonic() >= next_update:
-                admission.update()
+                if tls_ready:
+                    admission.update()
                 next_update = time.monotonic()+0.25
             server.step()
     finally:
         server.close()
+        if tls_observation is not None:
+            tls_observation.close()
         admission.close()
         if process is not None and process.poll() is None:
             process.terminate()

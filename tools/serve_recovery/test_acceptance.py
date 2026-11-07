@@ -99,6 +99,20 @@ class BudgetTests(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 budget.reserve(kind, 'no reset')
 
+    def test_native_access_bounds_include_self_check_and_forbid_cuda_probes(self):
+        path = self.directory/'native-access'
+        path.mkdir()
+        limits = limits_for('native_access')
+        self.assertEqual(limits, dict(starts=2, chats=8, probes=0, controls=2000, seconds=900))
+        budget = Budget(path, initialize=True, limits=limits)
+        for _ in range(2):
+            budget.reserve('starts', 'count before dispatch')
+        for _ in range(8):
+            budget.reserve('chats', 'self-check or TLS client')
+        for kind in ('starts', 'chats', 'probes'):
+            with self.assertRaises(RuntimeError):
+                Budget(path, limits=limits).reserve(kind, 'no new allowance')
+
 
 class PackagedImportTests(unittest.TestCase):
     def setUp(self):

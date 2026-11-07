@@ -167,6 +167,11 @@ q4t_add_python_contract(q4t_recovery_gateway_contracts
   tools/serve_recovery/test_gateway.py)
 q4t_add_python_contract(q4t_native_ingress_contracts
   tools/serve_recovery/test_native_ingress.py --ingress $<TARGET_FILE:q4t_ingress>)
+if(Q4T_ENABLE_NATIVE_TLS)
+  q4t_add_python_contract(q4t_native_access_contracts
+    tools/serve_recovery/test_native_access.py --ingress $<TARGET_FILE:q4t_ingress>
+    --no-tls-ingress $<TARGET_FILE:q4t_ingress_no_tls>)
+endif()
 q4t_add_python_contract(q4t_native_bundle_contracts
   tools/serve_recovery/test_native_bundle.py)
 q4t_add_python_contract(q4t_native_admission_contracts

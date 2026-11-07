@@ -17,6 +17,7 @@ from pathlib import Path
 import secrets
 import signal
 import socket
+import ssl
 import subprocess
 import sys
 import time
@@ -29,13 +30,15 @@ LIMITS = dict(starts=4, chats=20, probes=1, controls=10000, seconds=1800)
 COMPLETION_LIMITS = dict(LIMITS, starts=5, chats=21)
 OBSERVATION_LIMITS = dict(starts=1, chats=4, probes=0, controls=2000, seconds=600)
 OBSERVATION_COMPLETION_LIMITS = dict(OBSERVATION_LIMITS, starts=2)
+NATIVE_ACCESS_LIMITS = dict(starts=2, chats=8, probes=0, controls=2000, seconds=900)
 
 
 def limits_for(scenario):
     return {'full_recovery': LIMITS,
         'controller_gateway_completion': COMPLETION_LIMITS,
         'observation_isolation': OBSERVATION_LIMITS,
-        'observation_isolation_completion': OBSERVATION_COMPLETION_LIMITS}[scenario]
+        'observation_isolation_completion': OBSERVATION_COMPLETION_LIMITS,
+        'native_access': NATIVE_ACCESS_LIMITS}[scenario]
 
 
 def save(path, value):
@@ -139,6 +142,8 @@ def verify(plan):
         engine.require(engine.sha(row['path']) == row['sha256'], 'protected artifact changed')
     for row in plan.get('prior_evidence',[]):
         engine.require(engine.sha(row['path']) == row['sha256'],'prior failure evidence changed')
+    for row in plan.get('tls_inputs', {}).values():
+        engine.require(engine.sha(row['path']) == row['sha256'], 'TLS acceptance input changed')
     return bundle.verify(plan['package']['package'], plan['package']['manifest_sha256'])
 
 
@@ -154,16 +159,38 @@ def prepare(args):
         backend['clients'][0]['requests_per_minute'] >= 20 and
         backend['clients'][1]['requests_per_minute'] == 1 and manifest['quota_enforced'],
         'acceptance requires alpha ordinary limits and beta RPM=1')
-    engine.require(policy['listen_host'] == '127.0.0.1' and not manifest['tls'],
-                   'this bounded acceptance is loopback only')
+    native_access = args.native_access
+    if native_access:
+        engine.require(manifest['version'] == 4 and manifest['ingress_mode'] == 'native'
+            and manifest['tls'] and policy['version'] == 3 and policy['cors'] and
+            policy['server_name'] == policy['listen_host'] and
+            not manifest['tls_configuration']['require_client_certificate'] and
+            args.tls_ca is not None and args.next_certificate is not None and
+            args.credential_directory is not None, 'native TLS fixture configuration required')
+        credential_directory = args.credential_directory.resolve(strict=True)
+        certificate = Path(manifest['tls_configuration']['certificate']).resolve(strict=True)
+        engine.require(credential_directory.is_relative_to(ROOT/'.q4t-work') and
+            certificate.parent == credential_directory and
+            not args.next_certificate.resolve(strict=True).is_relative_to(credential_directory),
+            'certificate mutation must be confined to a dedicated fixture directory')
+        from tools.serve_recovery import tls_control
+        tls_control.check(Path(receipt['package'])/'bin/q4t-ingress', policy,
+            dict(manifest['tls_configuration'], certificate=str(args.next_certificate.resolve())),
+            credential_directory)
+    else:
+        engine.require(policy['listen_host'] == '127.0.0.1' and not manifest['tls'],
+                       'this bounded acceptance is loopback only')
     prior, prior_evidence, baseline = None, [], None
     supplemental=args.controller_completion
     observation=args.observation_isolation or args.observation_completion
+    engine.require(not native_access or not (observation or supplemental or args.prior_plan),
+                   'native TLS scenario cannot silently reset or mix acceptance phases')
     engine.require(not observation or not supplemental and
         bool(args.prior_plan) == args.observation_completion and
         not (args.observation_isolation and args.observation_completion),
         'observation completion requires the recorded fixture failure')
-    scenario=('observation_isolation_completion' if args.observation_completion else
+    scenario=('native_access' if native_access else
+        'observation_isolation_completion' if args.observation_completion else
         'observation_isolation' if observation else
         'controller_gateway_completion' if supplemental else 'full_recovery')
     engine.require(not supplemental or args.prior_plan is not None,
@@ -241,6 +268,21 @@ def prepare(args):
             lease_started = next(e['monotonic'] for e in events if e['event'] == 'lease_acquired')
             lease_finished = next(e['monotonic'] for e in events if e['event'] == 'lease_released')
             plan['prior_seconds'] = max(plan['prior_seconds'], lease_finished-lease_started)
+    if native_access:
+        plan.update(planned_model_starts=1, planned_chats=6,
+            credential_directory=str(credential_directory),
+            tls_inputs={name: dict(path=str(path.resolve(strict=True)), sha256=engine.sha(path))
+                for name, path in (('ca', args.tls_ca), ('next_certificate', args.next_certificate))},
+            origin=policy['cors']['allowed_origins'][0],
+            validation_wrappers=['count starts and self-check before dispatch',
+                'bounded mutation of dedicated fixture certificate only',
+                'normal TLS/Guardian/ingress/controller; strict NVML unchanged'],
+            sequence=['self-check and ready', 'TLS1.2 JSON', 'valid certificate update',
+                'TLS1.3 SSE', 'invalid update retains context; restore valid disk credential',
+                'real document tool and citation', 'structured SSE',
+                'same model and control identities', 'durable stop and full cleanup'])
+        plan['protected'].extend(dict(path=str((ROOT/name).resolve()), sha256=engine.sha(ROOT/name))
+            for name in ('build/service.release.json', 'build/service/manifest.json'))
     save(args.output/'plan.json', plan)
     print(json.dumps(dict(plan=str(args.output/'plan.json'), limits=plan['limits'])))
 
@@ -424,13 +466,26 @@ class Stage:
             path = '/v1/chat/completions'
         else:
             self.budget.reserve('controls', label)
-        connection = http.client.HTTPConnection('127.0.0.1', self.port, timeout=65)
+        headers = {'Content-Type': 'application/json',
+                   'Authorization': 'Bearer '+self.keys[client]}
+        if self.plan.get('scenario') == 'native_access':
+            context = ssl.create_default_context(cafile=self.plan['tls_inputs']['ca']['path'])
+            version = ssl.TLSVersion.TLSv1_2 if label.endswith('-json') else ssl.TLSVersion.TLSv1_3
+            context.minimum_version = context.maximum_version = version
+            connection = http.client.HTTPSConnection(self.policy['listen_host'], self.port,
+                                                      timeout=65, context=context)
+            headers['Origin'] = self.plan['origin']
+        else:
+            connection = http.client.HTTPConnection('127.0.0.1', self.port, timeout=65)
         start = time.monotonic()
         try:
             connection.request('POST' if body is not None else 'GET', path,
                 json.dumps(body).encode() if body is not None else None,
-                {'Content-Type': 'application/json', 'Authorization': 'Bearer '+self.keys[client]})
+                headers)
             response = connection.getresponse()
+            if self.plan.get('scenario') == 'native_access':
+                self.engine.require(response.getheader('Access-Control-Allow-Origin') ==
+                    self.plan['origin'], 'native CORS response missing')
             with (self.output/(label+'-wire.bin')).open('xb') as wire:
                 if body is not None and response.status == expected == 200:
                     result = (chat_client.read_sse if body['stream'] else chat_client.read_json)(response,sink=wire.write)
@@ -448,11 +503,14 @@ class Stage:
         finally:
             connection.close()
 
-    def business(self, label, *, first=False, before_tools=lambda: None):
+    def business(self, label, *, first=False, before_tools=lambda: None,
+                 before_stream=lambda: None):
         from tools.examples import chat_client as client
         from project_records import ProjectRecords, TOOLS, VALIDATORS
         streams=() if first and self.plan.get('reuse_initial_ordinary_and_quota') else (False,True)
         for stream in streams:
+            if stream:
+                before_stream()
             body = client.make_request([dict(role='user', content='Compute 17 + 25. Reply with the number only.')],
                 [], stream=stream, max_tokens=128, timeout_ms=60000)
             answer = self.request(label+('-sse' if stream else '-json'), body,
@@ -524,6 +582,8 @@ class Stage:
 
     def exercise(self):
         first=self.ready(1)
+        if self.plan.get('scenario') == 'native_access':
+            return self.native_access(first)
         if self.plan.get('scenario', '').startswith('observation_isolation'):
             return self.observation_isolation(first)
         if self.plan.get('scenario')=='controller_gateway_completion':
@@ -551,6 +611,77 @@ class Stage:
         counts=self.engine.read(self.output/'fault-counts-1.json')
         self.engine.require(counts['nvml_injected']>0 and counts['log_errors']>0 and
             counts['metrics_attempts']==0,'auxiliary coverage incomplete')
+
+    def native_access(self, first):
+        from tools.examples import chat_client
+        from tools.serve_recovery import tls_control
+        manifest = self.bundle.verify(self.package, self.plan['package']['manifest_sha256'])
+        descriptor = self.engine.read(self.output/'state/service.json')
+        certificate = Path(manifest['tls_configuration']['certificate'])
+        self.engine.require(certificate.resolve().parent ==
+            Path(self.plan['credential_directory']), 'unexpected mutable credential path')
+        original = certificate.read_bytes()
+        replacement = Path(self.plan['tls_inputs']['next_certificate']['path']).read_bytes()
+        def install(data):
+            pending = certificate.with_name('acceptance-certificate-'+secrets.token_hex(8))
+            with pending.open('xb') as stream:
+                os.fchmod(stream.fileno(), 0o644)
+                stream.write(data)
+                stream.flush()
+                os.fsync(stream.fileno())
+            pending.replace(certificate)
+        def update(label, *, reload=False):
+            self.budget.reserve('controls', label)
+            state = self.sample()
+            for field in ('model_pid', 'model_start_ticks', 'model_generation',
+                          'controller_pid', 'controller_start_ticks', 'gateway_pid',
+                          'gateway_start_ticks', 'guardian_pid'):
+                self.engine.require(state[field] == first[field], 'TLS update changed '+field)
+            value = tls_control.execute(descriptor, state, manifest, reload=reload)
+            save(self.output/(label+'.json'), value)
+            return value
+        initial = update('tls-initial')
+        self.engine.require(initial['ready'] and initial['generation'] == 1, 'TLS not initially ready')
+        current = initial
+        def valid_update():
+            nonlocal current
+            install(replacement)
+            current = update('tls-valid-update', reload=True)
+            self.engine.require(current.get('reloaded') and
+                current['fingerprint_sha256'] != initial['fingerprint_sha256'] and
+                current['entrypoint_pid'] == initial['entrypoint_pid'], 'valid update not applied')
+        def invalid_update():
+            install(b'bounded acceptance invalid certificate\n')
+            try:
+                rejected = update('tls-invalid-update', reload=True)
+                self.engine.require(not rejected.get('reloaded') and rejected['ready'] and
+                    rejected['error'] == 'tls_certificate_invalid' and
+                    rejected['generation'] == current['generation'] and
+                    rejected['fingerprint_sha256'] == current['fingerprint_sha256'],
+                    'bad certificate replaced healthy TLS context')
+            finally:
+                install(replacement)
+            restored = update('tls-restored', reload=True)
+            self.engine.require(restored.get('reloaded'), 'valid credential restoration failed')
+        try:
+            self.request('tls-unauthorized', client='invalid', expected=401)
+            self.business('tls', before_stream=valid_update, before_tools=invalid_update)
+            body = chat_client.make_request([dict(role='user', content='Return JSON with ok true.')],
+                [], stream=True, max_tokens=64, timeout_ms=60000)
+            body['response_format'] = dict(type='json_schema', json_schema=dict(
+                name='native_access', strict=True, schema=dict(type='object',
+                    properties=dict(ok=dict(type='boolean', enum=[True])),
+                    required=['ok'], additionalProperties=False)))
+            answer = self.request('tls-structured-sse', body)
+            self.engine.require(answer.finish_reason == 'stop' and
+                json.loads(answer.message['content']) == {'ok': True}, 'structured TLS quality')
+            self.metrics('tls-final', 6)
+            update('tls-final')
+            save(self.output/'business-final.json', self.sample())
+        finally:
+            install(original)
+            # Restoration is local and explicit; it never dispatches a model request.
+            update('tls-original-restored', reload=True)
 
     def observation_isolation(self, first):
         from tools.examples import chat_client
@@ -668,7 +799,7 @@ class Stage:
         for port in (self.port,self.policy['upstream_port'],self.policy['upstream_operations_port']):
             with socket.socket() as sock:
                 sock.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
-                sock.bind(('127.0.0.1',port))
+                sock.bind((self.policy['listen_host'] if port == self.port else '127.0.0.1',port))
         self.child.verify_lease(self.lease,self.lock_path)
         time.sleep(2)
         try:
@@ -723,6 +854,10 @@ def main():
     parser.add_argument('--output',type=Path)
     parser.add_argument('--config',type=Path)
     parser.add_argument('--prior-plan',type=Path)
+    parser.add_argument('--native-access', action='store_true')
+    parser.add_argument('--tls-ca', type=Path)
+    parser.add_argument('--next-certificate', type=Path)
+    parser.add_argument('--credential-directory', type=Path)
     parser.add_argument('--controller-completion',action='store_true',
         help='Prepared supplemental scenario; run only after explicit budget extension')
     parser.add_argument('--observation-isolation', action='store_true',

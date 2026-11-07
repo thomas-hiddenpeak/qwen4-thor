@@ -7,6 +7,7 @@
 #include <string_view>
 
 #include "q4t/service/guardian_process.h"
+#include "q4t/service/ingress_tls.h"
 
 namespace q4t::service::ingress {
 
@@ -20,16 +21,36 @@ struct Decision {
   bool operator==(const Decision&) const = default;
 };
 
+// Borrows the socket; the accept slot owns its lifetime. TLS state never leaks
+// into the upstream model connection. extra_headers are locally validated CORS.
+class Connection {
+ public:
+  explicit Connection(int fd) : fd_(fd) {}
+  ~Connection();
+  int Fd() const { return fd_; }
+  bool Handshake(const std::shared_ptr<TlsContext>& context);
+  ssize_t Read(void* data, size_t size, Clock::time_point deadline);
+  bool Send(std::string_view data, Clock::time_point deadline,
+            bool* started = nullptr);
+  bool Cancelled();
+  short PollEvents() const;
+  std::string extra_headers;
+
+ private:
+  int fd_;
+  std::unique_ptr<TlsStream> tls_;
+};
+
 Decision Authorize(const std::string& address, pid_t parent,
                    std::string_view client, bool control, int expected_port);
-OwnedFd Connect(int port, int client);
+OwnedFd Connect(int port, Connection& client);
 bool Write(int fd, std::string_view data, Clock::time_point deadline,
-           int client = -1, bool* started = nullptr);
-void Error(int fd, int status, std::string_view code,
+           Connection* client = nullptr, bool* started = nullptr);
+void Error(Connection& client, int status, std::string_view code,
            std::string_view request_id, bool* started);
-void Reply(int fd, int status, std::string_view body,
+void Reply(Connection& client, int status, std::string_view body,
            std::string_view request_id, bool* started);
-void Relay(int upstream, int client, int idle_seconds,
+void Relay(int upstream, Connection& client, int idle_seconds,
            std::string_view request_id, bool* started);
 std::string RequestId();
 

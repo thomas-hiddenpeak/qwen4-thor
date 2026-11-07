@@ -644,7 +644,7 @@
     "cmake/ChatProtocolIdentity.cmake": "6561776bab97cc5e62f7ca619a2d9f53fde3f690b35cc5f934c69747226ca7e9",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
-    "cmake/NativeIngress.cmake": "d2e2d918784f429ac412b3ee976a4f70e8db70449a797fa627f96b185e13a8eb",
+    "cmake/NativeIngress.cmake": "d10f996fdf01e28f29eaa40d9c92f2d78ff02126351188667329b235a22f2346",
     "cmake/RecoveryProbe.cmake": "b10bd71c92a8c9a9f6545da89ab06585f7c1398a978eb01aae9e18eb716c0271",
     "cmake/StructuredOutput.cmake": "fd8c800791a39e03d6447716554eb67cc626a1d20855de512fdc5dc715dd8b30",
     "include/q4t/model/vision_positions.h": "70c7d3d05715fc3916725e0e39cf32becc9ac3a5129fc63129706204ccd9fb22",
@@ -673,9 +673,9 @@
     "include/q4t/server/device_memory.h": "1099e20d3b205d3ae03daba0308be7221f5097c78a2fd58c8ca16298277dfc4c",
     "include/q4t/server/grammar_process.h": "299273b04e110d15f4b23d74c60ce669e126fb0d7428baf14b7c6c5565a33d22",
     "include/q4t/server/http_connection.h": "dcd12b3f713b9c0318b2f394ee55fb5666a2cfdb092e9a0cb4697cb2e61a4d54",
-    "include/q4t/server/http_listener.h": "bf5ec9d8e4567b3cb479803de66d52f9576c9a9df19f6a5e238ef69c266a2f11",
+    "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
     "include/q4t/server/http_observation.h": "4a5c07a112faa4d60f834b2d5e4067522a7fe565ca6ff8acd145ad603999dbdc",
-    "include/q4t/server/http_request.h": "d30013529279aa22928936ee4015263878dc32a358c566f2eadbbb38e11071db",
+    "include/q4t/server/http_request.h": "f6d52bf328cc33e56ae0ef06dc93051432ac0ddff55575e4e9204eecf35b6be6",
     "include/q4t/server/http_response.h": "b75293da777e66c304bc75a9e7248e6ee6d48827fbd576aff479342c56bed070",
     "include/q4t/server/input_contract.h": "03c1dfcc666986f5e06a91fb34cf95bf1818bd67df783794ae0ada63b7ae8881",
     "include/q4t/server/lifetime.h": "11c9b381a7f6c5e019dcb57fbc18e2ad76492fca5c5e42960c381e954e5068bc",
@@ -709,7 +709,12 @@
     "include/q4t/service/guardian_process.h": "31b967d4b558b1cdce10bf5acfb4731a9c9952930039285f6ed09af5b010c8f9",
     "include/q4t/service/guardian_quota.h": "a73897aa94fd1a58fb1cfc7c182d2d8bd0cb9cb10e848821e230ce903e2e39a0",
     "include/q4t/service/guardian_wire.h": "5559955899c87230f116ea794ce7f0c0a2a1c6f2d9a2013ad6ec42fa1ffb73c3",
-    "include/q4t/service/ingress_transport.h": "897969f17df1b264a3bc3c2f5e69b7c603f8d6c5df6937ebbca58ba3595326ba",
+    "include/q4t/service/ingress_address.h": "a931eda14ef69728f90401ff626ded167763d27a1da6e41f9184d4a976f191f9",
+    "include/q4t/service/ingress_admin.h": "119e08883d819bf6f5b6e721929013d1b2c428f99bf207992624363bac839265",
+    "include/q4t/service/ingress_cors.h": "0382a8147351fb09bc53e859edd4cee405b8327fb31460603744a171e70ddd7d",
+    "include/q4t/service/ingress_credentials.h": "eeaec124120e0de170faefea94bc987ed0fc32b19b01ad471b5c4758c647417b",
+    "include/q4t/service/ingress_tls.h": "90199152c3f08f5aa69fd9dc5057c10e4683b321241c3f6142a914dd656906e8",
+    "include/q4t/service/ingress_transport.h": "3cce6e9af213308a4c3b0f2c780b4b32d2c4ad7dc97a7512db70c312fa0ece2b",
     "include/q4t/vision/configuration.h": "50f4ab0cacc680c48d87450c168cb6d1a5ac57f51cfaff14963c97b2db1e72a9",
     "include/q4t/vision/forward_timing.h": "7c642dbda0b464d333f20390f2ef4426954c23c9f6a48d1ee43ae044ce27a138",
     "include/q4t/vision/forward_timing_core.h": "89bdb2f4db849d0b36122d654d0b6627f879f898a0c6142d549399837fb920de",
@@ -754,7 +759,7 @@
     "src/server/grammar_process.cpp": "af14efdbda28b205d7532780d8c6c5c4abc3078c2279257982d875fb3afb40df",
     "src/server/grammar_worker.cpp": "aca2920b675dce548ceb194690440f00763352ed2d482751100b6345580e560c",
     "src/server/grammar_worker_internal.h": "79d8963200990a0d6b8dacee12c0f886c5612c57bc86e8a3479d942d6bef091a",
-    "src/server/http_request.cpp": "5890e834268e3dee4b169597b4086be06806a9e18e8d9eab25e694cb1bdfd58c",
+    "src/server/http_request.cpp": "614dd52541c9311054be68a790d6b7429503de6edd747b2247eb689273c24d3c",
     "src/server/http_response.cpp": "0415e486060ee978080cef3a7874a5b594cfb1eea098ac4f577b14ca87bde88e",
     "src/server/input_contract.cpp": "ad9adbffc9638792ec15debeebee803fb43d2085f639281dabd6230146c5cf6a",
     "src/server/media_admission.cpp": "8b6fa7cdaad948522a4db542c2e313feb0ce816a80726850cfd19a777ef93be7",
@@ -773,16 +778,20 @@
     "src/service/guardian_main.cpp": "26f1e5b5be37038ee460ebfddda3bbcf2e03e7ad0c89f25596816719ba747342",
     "src/service/guardian_process.cpp": "2a7ed6213ccb91c450365fa25b7d9ba322b07cf7df653e80489c788e32a7925c",
     "src/service/guardian_wire.cpp": "95ca742cc01649fcf5b3245a4d0b48ad1d14ee4b142f376d5a095c7f686df12d",
-    "src/service/ingress_main.cpp": "9d8466af0c3b349ac6a198816ce254def085174d2123ca1951a38740a325d89e",
-    "src/service/ingress_transport.cpp": "944de6aa93e9d176295a25620871f1045352c79d8efa9dfd0c28634f576596f2",
+    "src/service/ingress_admin.cpp": "218c4a3c2ec469dcffbd25c8de1bfe7508bea9a9dd8954ce04661dbb1fa03de8",
+    "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
+    "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
+    "src/service/ingress_main.cpp": "4839d6823ac2702eeead2a983fd2c871d1bd30758f4f39ff0cb4d69a32c8e9a9",
+    "src/service/ingress_tls.cpp": "5574d1ca0a45a9237aa3dbcad94258e55c14d36cc944c095eb3003c4713aac9f",
+    "src/service/ingress_transport.cpp": "c086f437eef70cb953a0f300413fa28b4468701a8442c2fafd83af719c682454",
     "src/text/tokenizer.cpp": "bfa059ee7dc64a37eb42d749710b4ad039f125675a93718902cab3b6ade2e7e8",
     "src/vision/media_plan.cpp": "30f1858fe11a14bb81f5ee2c80edef68e60cb7a03c7a0ec8132cc29936dff302",
     "src/vision/processor.cpp": "76d421281d76daa42796710ffa4ce6f0227f7788411775740d1ed5d5e11001dc",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
-    "tools/serve_recovery/acceptance.py": "1d23dbe494546cbbfe943bb733eefef3491faec64cc00f942dcc81eb2238a879",
+    "tools/serve_recovery/acceptance.py": "1665ec33247632c7a9f5002048c56b3c788435f6d3281fe1f27269a30706d698",
     "tools/serve_recovery/binding.py": "1f70edbce8cefd92700acf6df130101baa41f575cd24876f7e7d95772ba8cd18",
-    "tools/serve_recovery/bundle.py": "60444ccd18986b2c5ab9ca9f02c508f2be37cb2a9bf2e70d9633b5a0e629ebdb",
+    "tools/serve_recovery/bundle.py": "f35d8eb336293577f9b32b60bf3f1e725468b59c1b0d1836d1273ae6400eec0c",
     "tools/serve_recovery/child.py": "816c80517e5b13413ae5eb0a3d1f7a392b8848132a7d1965adec2bd49a335e73",
     "tools/serve_recovery/control.py": "bd8307bb3950122111d1d14d2451b54672599179b34a7d9d9ff375ebc53710c1",
     "tools/serve_recovery/controller.py": "5ba2cdf21ad46fe20d690f16a0c7e61f1270f793f922a0aaef5d8c5beecc025d",
@@ -792,18 +801,19 @@
     "tools/serve_recovery/fixture_gateway.py": "0e85e6d3f5db4780571d51b0127f67ca441cc0554d6be35fd61e839c99b2f490",
     "tools/serve_recovery/fixture_model.py": "8c0d28f2ade53cbbbd043bbaf6f8cce6c8b3d3c3e54fa6a0d40ac077aa22cd4f",
     "tools/serve_recovery/fixture_production.py": "8a7a225ecc9ad8514392a7121aad0e702e3259cb63336f2d3890236bdbcdf012",
-    "tools/serve_recovery/gateway.py": "83cfe3aef4b737a4c03ef48f0cbdab2a8503569eba2c6f094cbc8bf0b0f70cf5",
-    "tools/serve_recovery/gateway_config.py": "4b7ab85582c55ffc14387e6cde248362eeefb2f6406064baf57f886ce96c331e",
+    "tools/serve_recovery/gateway.py": "6ad44e7e93cb5c76a4cd85a24b48dca6dea314cc5252bb70253694372524a78a",
+    "tools/serve_recovery/gateway_config.py": "7aa7cee50a9e3eda0ad79d7bf5e43bf80f11f96a8867f7a00403191ddff48ba8",
     "tools/serve_recovery/jobs.py": "31dc2bf5a1e6d91cbfa1ce04a7726c72e5b0cf70a8dec3b12d9e71de3ce96d25",
     "tools/serve_recovery/journal.py": "b965cb03f08932b508c9af083abd7020abe25a5f9d8f5d1ad0920494ed127cac",
     "tools/serve_recovery/ledger.py": "4a2f1586dc4833de32c3caf3a6914babd1a994444355e69d0ede4556f5be1974",
     "tools/serve_recovery/monitor.py": "5fb9f01cee45b7d008cde26fea3d9986a030a8a8a06ac435bc86932a0706aed9",
-    "tools/serve_recovery/native_ingress.py": "f29b5515cece0435f129b3f328290c5ccda397dc7b3cd843b9323382c38128d8",
+    "tools/serve_recovery/native_ingress.py": "99ffd489538c5f391aa17049c28a42b1124eabea33700e35c71c3fc3cda6c7a8",
     "tools/serve_recovery/observation_io.py": "e49138b50462d1acf1a5ef6b648f8bc5d00655de04ec86f25648385fdab4d772",
     "tools/serve_recovery/ownership.py": "1cb0182ca06ee3c1ebbaab5d598895990ece2a7720aec741ea84ffde68792254",
     "tools/serve_recovery/policy.py": "55b3fe3b0ca81bfb024f70499a77ca91ebe20a004cde1efecabf9e37814f4ff6",
-    "tools/serve_recovery/service.py": "83fdb2eedf1f1585b3c312467e98448e72779c95b19338b4b9d560dcbfef2019",
-    "tools/serve_recovery/store.py": "0eef06d1a10b4ef0911f671e0378ae3849caeabeaabbbe296981a2e4291e59ee"
+    "tools/serve_recovery/service.py": "d060fee9d7532a6b6ae3f79b14fd65aa792e0274d765705ed2d909c8a48b0711",
+    "tools/serve_recovery/store.py": "0eef06d1a10b4ef0911f671e0378ae3849caeabeaabbbe296981a2e4291e59ee",
+    "tools/serve_recovery/tls_control.py": "75399601eb9649189367915fcfb417dbb786adaf37c9f8089c3060234dd3daee"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -1121,17 +1131,21 @@
         "src/service/ingress_main.cpp",
         "tools/serve_recovery/test_native_ingress.py",
         "tools/serve_recovery/test_native_admission.py",
-        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md"
+        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md",
+        "tools/serve_recovery/test_native_access.py",
+        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
       ]
     },
     "GET /livez": {
       "semantics": "原生服务入口本身存活，需Bearer鉴权",
-      "boundary": "loopback、连接关闭、有界头/体/容量；无TLS；不自动重放或跨代续接。live不表示模型ready。",
+      "boundary": "Actual-peer IPv4/IPv6 CIDR, optional native TLS and CORS; bounded close-delimited HTTP. Live does not imply model ready; no replay. TLS/CORS final GPU evidence pending.",
       "evidence": [
         "src/service/ingress_main.cpp",
         "tools/serve_recovery/test_native_ingress.py",
         "tools/serve_recovery/test_native_admission.py",
-        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md"
+        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md",
+        "tools/serve_recovery/test_native_access.py",
+        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
       ]
     },
     "GET /readyz": {
@@ -1141,7 +1155,9 @@
         "src/service/ingress_main.cpp",
         "tools/serve_recovery/test_native_ingress.py",
         "tools/serve_recovery/test_native_admission.py",
-        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md"
+        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md",
+        "tools/serve_recovery/test_native_access.py",
+        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
       ]
     },
     "GET /v1/capabilities": {
@@ -1151,7 +1167,9 @@
         "src/service/ingress_main.cpp",
         "tools/serve_recovery/test_native_ingress.py",
         "tools/serve_recovery/test_native_admission.py",
-        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md"
+        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md",
+        "tools/serve_recovery/test_native_access.py",
+        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
       ]
     },
     "GET /v1/models": {
@@ -1161,7 +1179,9 @@
         "src/service/ingress_main.cpp",
         "tools/serve_recovery/test_native_ingress.py",
         "tools/serve_recovery/test_native_admission.py",
-        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md"
+        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md",
+        "tools/serve_recovery/test_native_access.py",
+        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
       ]
     },
     "POST /v1/chat/completions": {
@@ -1171,7 +1191,9 @@
         "src/service/ingress_main.cpp",
         "tools/serve_recovery/test_native_ingress.py",
         "tools/serve_recovery/test_native_admission.py",
-        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md"
+        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md",
+        "tools/serve_recovery/test_native_access.py",
+        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
       ]
     },
     "POST /v1/chat/preflight": {
@@ -1181,7 +1203,9 @@
         "src/service/ingress_main.cpp",
         "tools/serve_recovery/test_native_ingress.py",
         "tools/serve_recovery/test_native_admission.py",
-        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md"
+        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md",
+        "tools/serve_recovery/test_native_access.py",
+        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
       ]
     },
     "POST /v1/requests/cancel": {
@@ -1191,7 +1215,97 @@
         "src/service/ingress_main.cpp",
         "tools/serve_recovery/test_native_ingress.py",
         "tools/serve_recovery/test_native_admission.py",
-        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md"
+        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md",
+        "tools/serve_recovery/test_native_access.py",
+        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+      ]
+    },
+    "OPTIONS /healthz": {
+      "semantics": "CORS preflight for the configured actual method/route; Origin/method/header allowlist with credentials rules and Vary.",
+      "boundary": "Actual peer CIDR and Host remain required; no model/admission/minute-quota work. Actual subsequent call requires its own Key and model binding.",
+      "evidence": [
+        "src/service/ingress_cors.cpp",
+        "src/service/ingress_main.cpp",
+        "tools/serve_recovery/test_native_access.py",
+        "tools/serve_recovery/test_native_browser.py",
+        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+      ]
+    },
+    "OPTIONS /livez": {
+      "semantics": "CORS preflight for the configured actual method/route; Origin/method/header allowlist with credentials rules and Vary.",
+      "boundary": "Actual peer CIDR and Host remain required; no model/admission/minute-quota work. Actual subsequent call requires its own Key and model binding.",
+      "evidence": [
+        "src/service/ingress_cors.cpp",
+        "src/service/ingress_main.cpp",
+        "tools/serve_recovery/test_native_access.py",
+        "tools/serve_recovery/test_native_browser.py",
+        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+      ]
+    },
+    "OPTIONS /readyz": {
+      "semantics": "CORS preflight for the configured actual method/route; Origin/method/header allowlist with credentials rules and Vary.",
+      "boundary": "Actual peer CIDR and Host remain required; no model/admission/minute-quota work. Actual subsequent call requires its own Key and model binding.",
+      "evidence": [
+        "src/service/ingress_cors.cpp",
+        "src/service/ingress_main.cpp",
+        "tools/serve_recovery/test_native_access.py",
+        "tools/serve_recovery/test_native_browser.py",
+        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+      ]
+    },
+    "OPTIONS /v1/capabilities": {
+      "semantics": "CORS preflight for the configured actual method/route; Origin/method/header allowlist with credentials rules and Vary.",
+      "boundary": "Actual peer CIDR and Host remain required; no model/admission/minute-quota work. Actual subsequent call requires its own Key and model binding.",
+      "evidence": [
+        "src/service/ingress_cors.cpp",
+        "src/service/ingress_main.cpp",
+        "tools/serve_recovery/test_native_access.py",
+        "tools/serve_recovery/test_native_browser.py",
+        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+      ]
+    },
+    "OPTIONS /v1/chat/completions": {
+      "semantics": "CORS preflight for the configured actual method/route; Origin/method/header allowlist with credentials rules and Vary.",
+      "boundary": "Actual peer CIDR and Host remain required; no model/admission/minute-quota work. Actual subsequent call requires its own Key and model binding.",
+      "evidence": [
+        "src/service/ingress_cors.cpp",
+        "src/service/ingress_main.cpp",
+        "tools/serve_recovery/test_native_access.py",
+        "tools/serve_recovery/test_native_browser.py",
+        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+      ]
+    },
+    "OPTIONS /v1/chat/preflight": {
+      "semantics": "CORS preflight for the configured actual method/route; Origin/method/header allowlist with credentials rules and Vary.",
+      "boundary": "Actual peer CIDR and Host remain required; no model/admission/minute-quota work. Actual subsequent call requires its own Key and model binding.",
+      "evidence": [
+        "src/service/ingress_cors.cpp",
+        "src/service/ingress_main.cpp",
+        "tools/serve_recovery/test_native_access.py",
+        "tools/serve_recovery/test_native_browser.py",
+        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+      ]
+    },
+    "OPTIONS /v1/models": {
+      "semantics": "CORS preflight for the configured actual method/route; Origin/method/header allowlist with credentials rules and Vary.",
+      "boundary": "Actual peer CIDR and Host remain required; no model/admission/minute-quota work. Actual subsequent call requires its own Key and model binding.",
+      "evidence": [
+        "src/service/ingress_cors.cpp",
+        "src/service/ingress_main.cpp",
+        "tools/serve_recovery/test_native_access.py",
+        "tools/serve_recovery/test_native_browser.py",
+        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+      ]
+    },
+    "OPTIONS /v1/requests/cancel": {
+      "semantics": "CORS preflight for the configured actual method/route; Origin/method/header allowlist with credentials rules and Vary.",
+      "boundary": "Actual peer CIDR and Host remain required; no model/admission/minute-quota work. Actual subsequent call requires its own Key and model binding.",
+      "evidence": [
+        "src/service/ingress_cors.cpp",
+        "src/service/ingress_main.cpp",
+        "tools/serve_recovery/test_native_access.py",
+        "tools/serve_recovery/test_native_browser.py",
+        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
       ]
     }
   },
@@ -1234,5 +1348,41 @@
     ],
     "business": "one model, six requests, 4/4 workers reaped; same-PID plain JSON during stopped grammar compilation, SSE plus structured recovery",
     "limitations": "Unreapable kernel task is a CPU-only simulation; no SLA, full matrix or long stability claim."
+  },
+  "native_access_review_20261108": {
+    "scope": "Native IPv4/IPv6 actual-peer CIDR, lazy system OpenSSL TLS1.2/1.3, bounded credential helper and private reload, local mTLS/CRL, CORS/OPTIONS. TLS-OFF and plaintext do not load crypto. Explicit old nginx remains optional. Unchanged engine binary and numerical contract; changed shared HTTP receiver used by this new ingress only.",
+    "changed_sources": [
+      "cmake/NativeIngress.cmake",
+      "include/q4t/server/http_listener.h",
+      "include/q4t/server/http_request.h",
+      "include/q4t/service/ingress_address.h",
+      "include/q4t/service/ingress_admin.h",
+      "include/q4t/service/ingress_cors.h",
+      "include/q4t/service/ingress_credentials.h",
+      "include/q4t/service/ingress_tls.h",
+      "include/q4t/service/ingress_transport.h",
+      "src/server/http_request.cpp",
+      "src/service/ingress_admin.cpp",
+      "src/service/ingress_cors.cpp",
+      "src/service/ingress_credentials.cpp",
+      "src/service/ingress_main.cpp",
+      "src/service/ingress_tls.cpp",
+      "src/service/ingress_transport.cpp",
+      "tools/serve_recovery/acceptance.py",
+      "tools/serve_recovery/bundle.py",
+      "tools/serve_recovery/gateway.py",
+      "tools/serve_recovery/gateway_config.py",
+      "tools/serve_recovery/native_ingress.py",
+      "tools/serve_recovery/service.py",
+      "tools/serve_recovery/tls_control.py"
+    ],
+    "evidence": [
+      "docs/SERVE_NATIVE_ACCESS_2026-11-08.md",
+      "tools/serve_recovery/test_native_access.py",
+      "tools/serve_recovery/test_native_browser.py",
+      "tools/serve_recovery/test_native_bundle.py"
+    ],
+    "review": "Certificate files read only in exec helper with 2s deadline and 100ms cleanup; unreaped helper retains service-level kernel lease. Failed reload keeps unexpired context; expiry closes new TLS handshakes/admission without model restart. Old contexts finish existing SSE. v4 seals external credential paths; old package inventories preserved. OpenSSL uses explicit fixed library path, no implicit config loading. Early TLS auth rejection drains at most 64KiB/100ms after close_notify, preserving late-body response.",
+    "limitations": "Targeted CPU passed; final Release/native model short acceptance pending. No remote OCSP/CRL fetching, active-session retroactive revocation, full model/performance or long stability claim. Standard API completion remains required in A tasks; HTTP persistent/chunked/upload integration remains N05, not removed."
   }
 }

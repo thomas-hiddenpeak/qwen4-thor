@@ -34,15 +34,16 @@ std::string_view Trim(std::string_view s) {
 bool ReadHttpRequest(int fd, std::string* method, std::string* path,
                      std::string* body, int timeout_ms, HttpBodyLease* lease,
                      int* failure_status, HttpRequestHeaders* headers,
-                     const std::function<bool()>& admit) {
+                     const std::function<bool()>& admit,
+                     const HttpReceive& receive) {
   HttpRequestHeaders local;
   if (!headers) headers = &local;
   *headers = {};
   headers->failure = HttpReceiveFailure::kMalformed;
   if (failure_status) *failure_status = 400;
   if (timeout_ms <= 0) return false;
-  const auto deadline = std::chrono::steady_clock::now() +
-                        std::chrono::milliseconds(timeout_ms);
+  const auto deadline =
+      std::chrono::steady_clock::now() + std::chrono::milliseconds(timeout_ms);
   bool body_phase = false;
   const auto read_deadline = [&] {
     if (failure_status) *failure_status = 408;
@@ -50,10 +51,24 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
                                   : HttpReceiveFailure::kHeaderDeadline;
   };
   const auto read_some = [&](char* data, size_t size) -> ssize_t {
+    if (receive) {
+      const ssize_t n = receive(data, size, deadline);
+      if (n < 0 && errno == ETIMEDOUT) {
+        read_deadline();
+      } else if (n < 0) {
+        headers->failure = HttpReceiveFailure::kSocket;
+        headers->system_error = errno;
+      } else if (n == 0) {
+        headers->failure = body_phase ? HttpReceiveFailure::kBodyEof
+                                      : HttpReceiveFailure::kHeaderEof;
+      }
+      return n;
+    }
     for (;;) {
-      const auto remaining = std::chrono::duration_cast<
-          std::chrono::milliseconds>(deadline -
-                                    std::chrono::steady_clock::now()).count();
+      const auto remaining =
+          std::chrono::duration_cast<std::chrono::milliseconds>(
+              deadline - std::chrono::steady_clock::now())
+              .count();
       if (remaining <= 0) {
         read_deadline();
         return -1;
@@ -124,6 +139,7 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
   bool seen_id = false, seen_type = false;
   bool seen_authorization = false;
   bool seen_client = false, seen_gateway = false;
+  bool seen_origin = false, seen_cors_method = false, seen_cors_headers = false;
   size_t pos = line_end + 2;
   while (pos < head.size()) {
     const size_t end = head.find("\r\n", pos);
@@ -144,8 +160,8 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
       seen_length = true;
       for (char c : value)
         if (c < '0' || c > '9') return false;
-      const auto result = std::from_chars(value.data(),
-                                          value.data() + value.size(), length);
+      const auto result =
+          std::from_chars(value.data(), value.data() + value.size(), length);
       if (result.ec == std::errc::result_out_of_range ||
           (result.ec == std::errc{} && length > kChatBodyBytes)) {
         headers->failure = HttpReceiveFailure::kBodyTooLarge;
@@ -195,6 +211,19 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
       }
       seen_gateway = true;
       headers->gateway_token = value;
+    } else if (name == "origin" || name == "access-control-request-method" ||
+               name == "access-control-request-headers") {
+      bool& seen = name == "origin" ? seen_origin
+                   : name == "access-control-request-method"
+                       ? seen_cors_method
+                       : seen_cors_headers;
+      if (seen || value.empty() || value.size() > 2048) return false;
+      seen = true;
+      auto& destination = name == "origin" ? headers->origin
+                          : name == "access-control-request-method"
+                              ? headers->cors_method
+                              : headers->cors_headers;
+      destination = value;
     } else if (name == "content-type") {
       if (seen_type) {
         headers->error_code = "duplicate_content_type";

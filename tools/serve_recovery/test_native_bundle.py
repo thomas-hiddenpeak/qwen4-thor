@@ -70,7 +70,7 @@ class BundleTests(unittest.TestCase):
     def test_default_package_has_native_binary_and_no_nginx_dependency(self):
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 3)
+        self.assertEqual(value['version'], 4)
         self.assertIn('source/tools/serve_recovery/observation_io.py', value['files'])
         self.assertEqual(value['ingress_mode'], 'native')
         self.assertIn('bin/q4t-ingress', value['files'])
@@ -91,8 +91,10 @@ class BundleTests(unittest.TestCase):
 
     def test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io(self):
         self.assertNotIn('tools/serve_recovery/observation_io.py', bundle.V2_SOURCES)
-        self.assertEqual(set(bundle.SOURCES)-set(bundle.V2_SOURCES),
+        self.assertEqual(set(bundle.V3_SOURCES)-set(bundle.V2_SOURCES),
                          {'tools/serve_recovery/observation_io.py'})
+        self.assertEqual(set(bundle.SOURCES)-set(bundle.V3_SOURCES),
+                         {'tools/serve_recovery/tls_control.py'})
 
     def test_launcher_never_hands_guardian_a_regular_file_for_diagnostics(self):
         receipt = self.prepare()
@@ -168,14 +170,27 @@ class BundleTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'native build receipt'):
             self.prepare()
 
-    def test_native_mode_does_not_silently_enable_tls_or_lan(self):
-        with self.assertRaisesRegex(ValueError, 'TLS belongs'):
+    def test_native_mode_validates_tls_before_packaging_and_rejects_plaintext_lan(self):
+        with mock.patch.object(bundle.tls_control, 'check',
+                side_effect=ValueError('native TLS credential validation failed')), \
+             self.assertRaisesRegex(ValueError, 'TLS credential'):
             self.prepare(certificate=self.policy, key=self.backend)
         value = json.loads(self.policy.read_text())
         value['listen_host'] = '192.168.1.2'
         self.save(self.policy, value)
         with self.assertRaisesRegex(ValueError, 'loopback'):
             self.prepare()
+
+    def test_native_tls_paths_are_sealed_but_credentials_are_reloadable(self):
+        with mock.patch.object(bundle.tls_control, 'check', return_value={'ready': True}) as check:
+            receipt = self.prepare(certificate=self.policy, key=self.backend)
+        check.assert_called_once()
+        value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
+        self.assertEqual(value['tls_configuration']['certificate'], str(self.policy))
+        self.assertNotIn('private-key.pem', value['files'])
+        cfg = bundle.gateway_config_for(receipt['package'], value, self.directory)
+        self.assertTrue(value['tls'])
+        self.assertEqual(cfg['tls'], value['tls_configuration'])
 
     def test_native_config_cannot_be_rendered_as_nginx(self):
         receipt = self.prepare()

@@ -22,21 +22,25 @@ static_assert(std::atomic<bool>::is_always_lock_free);
 namespace {
 using namespace std::chrono_literals;
 
-bool Wait(int fd, short events, Clock::time_point deadline, int client = -1) {
+bool Wait(int fd, short events, Clock::time_point deadline,
+          Connection* client = nullptr) {
   while (!stopped.load(std::memory_order_relaxed)) {
     const auto left = std::chrono::duration_cast<std::chrono::milliseconds>(
                           deadline - Clock::now())
                           .count();
     if (left <= 0) return false;
     pollfd fds[2] = {{fd, static_cast<short>(events | POLLRDHUP), 0},
-                     {client, POLLIN | POLLRDHUP, 0}};
-    const int result = ::poll(fds, client >= 0 ? 2 : 1,
+                     {client ? client->Fd() : -1,
+                      static_cast<short>(
+                          (client ? client->PollEvents() : POLLIN) | POLLRDHUP),
+                      0}};
+    const int result = ::poll(fds, client ? 2 : 1,
                               static_cast<int>(std::min<int64_t>(left, 100)));
     if (result < 0 && errno == EINTR) continue;
     if (result < 0) return false;
     // One request per connection. Extra request bytes or a disconnected
     // downstream cancel this relay; never drain/replay them on another model.
-    if (client >= 0 && fds[1].revents) return false;
+    if (client && fds[1].revents && client->Cancelled()) return false;
     if (fds[0].revents & (POLLERR | POLLNVAL)) return false;
     if (fds[0].revents & (events | POLLHUP | POLLRDHUP)) return true;
   }
@@ -57,8 +61,8 @@ std::string_view Trim(std::string_view value) {
   return value;
 }
 
-bool ResponseHeaders(std::string_view raw, std::string* output,
-                     std::optional<size_t>* length) {
+bool ResponseHeaders(std::string_view raw, std::string_view extra,
+                     std::string* output, std::optional<size_t>* length) {
   size_t pos = raw.find("\r\n");
   if (pos == raw.npos || pos < 12) return false;
   const auto first = raw.substr(0, pos);
@@ -118,13 +122,15 @@ bool ResponseHeaders(std::string_view raw, std::string* output,
   if ((status == 204 || status == 304) && length->value_or(0) != 0)
     return false;
   if (status == 204 || status == 304) *length = 0;
-  output->append("Connection: close\r\nCache-Control: no-store\r\n\r\n");
+  output->append("Connection: close\r\nCache-Control: no-store\r\n");
+  output->append(extra);
+  output->append("\r\n");
   return true;
 }
 }  // namespace
 
 bool Write(int fd, std::string_view data, Clock::time_point deadline,
-           int client, bool* started) {
+           Connection* client, bool* started) {
   while (!data.empty() && Wait(fd, POLLOUT, deadline, client)) {
     const ssize_t size =
         ::send(fd, data.data(), data.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
@@ -134,6 +140,57 @@ bool Write(int fd, std::string_view data, Clock::time_point deadline,
     data.remove_prefix(static_cast<size_t>(size));
   }
   return data.empty();
+}
+
+bool Connection::Handshake(const std::shared_ptr<TlsContext>& context) {
+  tls_ = context ? context->Stream(fd_) : nullptr;
+  return tls_ && tls_->Accept(Clock::now() + 5s);
+}
+
+Connection::~Connection() {
+  if (!tls_) return;
+  // An early 401/413 may race the next encrypted request-body record. Closing
+  // with unread TCP bytes produces RST and can discard the response just sent.
+  // Send close_notify, half-close writes, then drain only a bounded transport
+  // tail; never parse or dispatch another application request.
+  tls_.reset();
+  ::shutdown(fd_, SHUT_WR);
+  const auto deadline = Clock::now() + 100ms;
+  std::array<char, 4096> tail{};
+  size_t discarded = 0;
+  while (discarded < 65536 && Wait(fd_, POLLIN, deadline)) {
+    const auto n = ::recv(fd_, tail.data(), tail.size(), MSG_DONTWAIT);
+    if (n < 0 && (errno == EINTR || errno == EAGAIN)) continue;
+    if (n <= 0) break;
+    discarded += n;
+  }
+}
+
+ssize_t Connection::Read(void* data, size_t size, Clock::time_point deadline) {
+  if (tls_) return tls_->Read(data, size, deadline);
+  while (Wait(fd_, POLLIN, deadline)) {
+    const auto n = ::recv(fd_, data, size, MSG_DONTWAIT);
+    if (n < 0 && (errno == EINTR || errno == EAGAIN)) continue;
+    return n;
+  }
+  errno = Clock::now() >= deadline ? ETIMEDOUT : ECANCELED;
+  return -1;
+}
+
+bool Connection::Send(std::string_view data, Clock::time_point deadline,
+                      bool* started) {
+  return tls_ ? tls_->Write(data, deadline, started)
+              : Write(fd_, data, deadline, nullptr, started);
+}
+
+bool Connection::Cancelled() {
+  if (tls_) return tls_->Cancelled();
+  char byte;
+  const auto n = ::recv(fd_, &byte, 1, MSG_PEEK | MSG_DONTWAIT);
+  return n >= 0 || (errno != EAGAIN && errno != EINTR);
+}
+short Connection::PollEvents() const {
+  return tls_ ? tls_->PollEvents() : POLLIN;
 }
 
 std::string RequestId() {
@@ -154,7 +211,7 @@ std::string RequestId() {
   return result;
 }
 
-void Reply(int fd, int status, std::string_view body,
+void Reply(Connection& client, int status, std::string_view body,
            std::string_view request_id, bool* started) {
   if (*started) return;
   const std::string extra =
@@ -166,11 +223,11 @@ void Reply(int fd, int status, std::string_view body,
       " Response\r\nContent-Type: application/json\r\nContent-Length: " +
       std::to_string(body.size()) + "\r\nConnection: close\r\n" +
       "Cache-Control: no-store\r\nX-Request-Id: " + std::string(request_id) +
-      "\r\n" + extra + "\r\n" + std::string(body);
-  Write(fd, response, Clock::now() + 1s, -1, started);
+      "\r\n" + extra + client.extra_headers + "\r\n" + std::string(body);
+  client.Send(response, Clock::now() + 1s, started);
 }
 
-void Error(int fd, int status, std::string_view code,
+void Error(Connection& client, int status, std::string_view code,
            std::string_view request_id, bool* started) {
   const auto value = wire::Object(
       {{"error",
@@ -181,7 +238,8 @@ void Error(int fd, int status, std::string_view code,
              {"param", io::Json{}},
              {"code", wire::String(std::string(code))}})}});
   std::string body;
-  if (wire::Encode(value, &body)) Reply(fd, status, body, request_id, started);
+  if (wire::Encode(value, &body))
+    Reply(client, status, body, request_id, started);
 }
 
 Decision Authorize(const std::string& address, pid_t parent,
@@ -244,7 +302,7 @@ Decision Authorize(const std::string& address, pid_t parent,
   return {expected_port, token, ""};
 }
 
-OwnedFd Connect(int port, int client) {
+OwnedFd Connect(int port, Connection& client) {
   OwnedFd fd(::socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, 0));
   if (fd.Get() < 0) return {};
   sockaddr_in address{};
@@ -254,7 +312,7 @@ OwnedFd Connect(int port, int client) {
   const int connected = ::connect(
       fd.Get(), reinterpret_cast<sockaddr*>(&address), sizeof(address));
   if (connected != 0 && (errno != EINPROGRESS ||
-                         !Wait(fd.Get(), POLLOUT, Clock::now() + 2s, client)))
+                         !Wait(fd.Get(), POLLOUT, Clock::now() + 2s, &client)))
     return {};
   int error = 0;
   socklen_t size = sizeof(error);
@@ -263,7 +321,7 @@ OwnedFd Connect(int port, int client) {
   return fd;
 }
 
-void Relay(int upstream, int client, int idle_seconds,
+void Relay(int upstream, Connection& client, int idle_seconds,
            std::string_view request_id, bool* started) {
   std::array<char, 16384> buffer{};
   std::string head;
@@ -272,7 +330,7 @@ void Relay(int upstream, int client, int idle_seconds,
       Clock::now() + std::chrono::seconds(idle_seconds);
   while ((end = head.find("\r\n\r\n")) == std::string::npos) {
     if (head.size() >= 65536 ||
-        !Wait(upstream, POLLIN, header_deadline, client))
+        !Wait(upstream, POLLIN, header_deadline, &client))
       break;
     const ssize_t n =
         ::recv(upstream, buffer.data(), buffer.size(), MSG_DONTWAIT);
@@ -283,24 +341,24 @@ void Relay(int upstream, int client, int idle_seconds,
   std::string headers;
   std::optional<size_t> length;
   if (end == std::string::npos || end + 4 > 65536 ||
-      !ResponseHeaders(std::string_view(head).substr(0, end + 2), &headers,
-                       &length)) {
+      !ResponseHeaders(std::string_view(head).substr(0, end + 2),
+                       client.extra_headers, &headers, &length)) {
     Error(client, 503, "service_binding_unavailable", request_id, started);
     return;
   }
-  if (!Write(client, headers, Clock::now() + 15s, -1, started)) return;
+  if (!client.Send(headers, Clock::now() + 15s, started)) return;
   size_t delivered = 0;
   const auto emit = [&](std::string_view part) {
     if (length && part.size() > *length - delivered)
       part = part.substr(0, *length - delivered);
-    if (!Write(client, part, Clock::now() + 15s)) return false;
+    if (!client.Send(part, Clock::now() + 15s)) return false;
     delivered += part.size();
     return true;
   };
   if (!emit(std::string_view(head).substr(end + 4))) return;
   while (!length || delivered < *length) {
     if (!Wait(upstream, POLLIN,
-              Clock::now() + std::chrono::seconds(idle_seconds), client))
+              Clock::now() + std::chrono::seconds(idle_seconds), &client))
       return;
     const ssize_t n =
         ::recv(upstream, buffer.data(), buffer.size(), MSG_DONTWAIT);

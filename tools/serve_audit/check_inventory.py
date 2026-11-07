@@ -23,6 +23,11 @@ def current_surface(root):
         r'\{\s*"(GET|POST)"\s*,\s*"([^"]+)"\s*,\s*(true|false)\s*\}', native)
     if len(native_routes) < 5:
         raise ValueError("cannot extract native ingress routes; review extractor")
+    if 'if (method == "OPTIONS")' in native:
+        if 'config.cors.Preflight(' not in native:
+            raise ValueError("review native OPTIONS handler before cataloguing")
+        native_routes.extend(("OPTIONS", path, "true")
+                             for path in sorted({row[1] for row in native_routes}))
     if not fields or not routes:
         raise ValueError("empty protocol inventory")
     nested = {}
