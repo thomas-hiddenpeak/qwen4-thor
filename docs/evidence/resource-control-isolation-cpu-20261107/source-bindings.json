@@ -1,0 +1,27 @@
+{
+  "parent": "4c8e79fe20cce0db59812a7129c92766600eb55a",
+  "files": {
+    "tests/host/CMakeLists.txt": "a0872241d5315297da19db8c42bb498fcb6a82e23c189e7f7cf055da3b31ffac",
+    "tools/serve_service/README.md": "1f6384b960d7bfc313d7a96b6b164ce79d8addc94f97c4ef40c51babe006a4be",
+    "tools/serve_service/monitor_control.py": "06fc8f1477f166e79e57f6d12d0e0554af949c92f3d26d2dd5b68ba84dcd392c",
+    "tools/serve_service/package.py": "ceb24c4bbe6e25c1ec83ab001acbe30deca9d75fdbd5eaa71eaf6831e3e43a3e",
+    "tools/serve_service/resources.py": "2b72ea6775ef6067eacb4ce6351a58e4a2bac1145e3869165a142a75f81245b2",
+    "tools/serve_service/service.py": "d101936e64786ce544c3f27a6be90a1d8384644d72bede7ac78fd091f6a47d0c",
+    "tools/serve_service/supervisor.py": "2c4509f590123602fd16079fe6d8dfad8b73c5488c736804d1fb57ebb7c978a7",
+    "tools/serve_service/test_monitor_recovery.py": "19bc9d884233b8108c901943c5c80b91b68807473894fc6da40c5913c7b75cac",
+    "tools/serve_service/test_resource_control.py": "d1c5f0b5054f0da851cdbd9396754d08f4d8869f5545778bbf1709a561948cc3",
+    "tools/serve_service/test_service.py": "b5382e9ba9e0e800417b16bacf88787abcdc93d854ae364282316e4b42717113",
+    "tools/serve_service/test_telemetry.py": "b48a2e51dd6a42171af780842a2a81d44b18e877aea5b23ae30a85a1d45821fd"
+  },
+  "python_syntax_files": 9,
+  "syntax_warnings": 0,
+  "protected": {
+    "build/q4t": "ea1b474d7d69808696e697346a60ee09bb9ecaca9bfb99925b78dcdbda7a4550",
+    "build/q4t.release.json": "3eb463850cf07338406b811197a68a5dcb9474ac9c2cf039470aa4f654924724",
+    ".q4t-work/vision-attention-rowmax-20261107/engine/q4t": "34e7ceefd60c23e451e9dba6d67cde99e9db25191f56a6aa489478d3afdea889",
+    ".q4t-work/vision-forward-timing-20261107/engine/q4t": "982bba071e68e807cda653fa32ab76bed692808aa2d9325876ac09ea9f9daa1d"
+  },
+  "protected_unchanged": true,
+  "old_v7_manifest_sha256": "f69cb406a80b64fc7c51a23e212c4d183dca86c0dbcebee3e4fe3b3593e3accd",
+  "old_v7_verified": true
+}

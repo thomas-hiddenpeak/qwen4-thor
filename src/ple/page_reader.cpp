@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <cerrno>
 #include <chrono>
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <string>
@@ -45,7 +46,7 @@ struct PlePageReader::Impl {
   uint8_t* pool = nullptr;
   size_t pool_len = 0;
   bool registered_buffers = false;
-  bool broken = false;
+  runtime::ModelHealth health;
   std::string broken_reason;
   mutable int fault_inject_reads = 0;  // test-only (Q4T_PLE_FAULT_INJECT)
 
@@ -56,6 +57,14 @@ struct PlePageReader::Impl {
 
   mutable std::vector<Piece> pieces;
   mutable std::vector<PageGroup> groups;
+
+  Status FailRead(std::string reason) {
+    health.Fail(runtime::ModelFault::kPleRead);
+    broken_reason = std::move(reason);
+    std::fprintf(stderr, "[q4t][model-fault] code=ple_read_failed reason=%s\n",
+                 broken_reason.c_str());
+    return Status::Fail(broken_reason);
+  }
 };
 
 PlePageReader::PlePageReader(Impl* impl) : impl_(impl) {}
@@ -163,10 +172,13 @@ size_t PlePageReader::scratch_bytes() const {
   return impl_->pieces.size() * sizeof(Piece) +
          impl_->groups.size() * sizeof(PageGroup);
 }
+runtime::ModelFault PlePageReader::HealthFault() const noexcept {
+  return impl_->health.Fault();
+}
 Status PlePageReader::Gather(const int64_t* row_ids, size_t row_count,
                               uint8_t* output, ReadStats* stats) const {
   Impl* const impl = impl_;
-  if (impl->broken) {
+  if (HealthFault() != runtime::ModelFault::kNone) {
     return Status::Fail("PLE page reader unusable after I/O failure: " +
                         impl->broken_reason);
   }
@@ -196,7 +208,7 @@ Status PlePageReader::Gather(const int64_t* row_ids, size_t row_count,
     const uint64_t row_start = file_row * impl->row_bytes;
     const uint64_t row_end = row_start + impl->row_bytes;
     if (row_end > impl->file_len) {
-      return Status::Fail("row extends past the PLE table");
+      return impl->FailRead("row extends past the PLE table");
     }
     const uint32_t output_row_start =
         static_cast<uint32_t>(row_index * impl->row_bytes);
@@ -279,7 +291,8 @@ Status PlePageReader::Gather(const int64_t* row_ids, size_t row_count,
           uint8_t* dst = impl->pool + (slot - batch_start) * kPageSize + have;
           const uint64_t offset = impl->groups[slot].page_id * kPageSize + have;
           io_uring_sqe* sqe = io_uring_get_sqe(&impl->ring);
-          if (!sqe) return Status::Fail("io_uring submission queue is full");
+          if (!sqe)
+            return impl->FailRead("io_uring submission queue is full");
           if (impl->registered_buffers) {
             io_uring_prep_read_fixed(sqe, impl->fd, dst, want - have, offset, 0);
           } else {
@@ -290,14 +303,10 @@ Status PlePageReader::Gather(const int64_t* row_ids, size_t row_count,
         }
         if (inflight == 0) break;  // every page has its full valid length
         if (attempt > kMaxReadRetries) {
-          impl->broken = true;
-          impl->broken_reason = "PLE page read unfinished after retries";
-          return Status::Fail(impl->broken_reason);
+          return impl->FailRead("PLE page read unfinished after retries");
         }
         if (io_uring_submit_and_wait(&impl->ring, inflight) < 0) {
-          impl->broken = true;
-          impl->broken_reason = "io_uring_submit_and_wait failed";
-          return Status::Fail(impl->broken_reason);
+          return impl->FailRead("io_uring_submit_and_wait failed");
         }
         for (unsigned reaped = 0; reaped < inflight; ++reaped) {
           io_uring_cqe* cqe = nullptr;
@@ -306,9 +315,7 @@ Status PlePageReader::Gather(const int64_t* row_ids, size_t row_count,
           const int res = cqe->res;
           io_uring_cqe_seen(&impl->ring, cqe);
           if (slot < wave_start || slot >= wave_end) {
-            impl->broken = true;
-            impl->broken_reason = "io_uring returned an unknown page slot";
-            return Status::Fail(impl->broken_reason);
+            return impl->FailRead("io_uring returned an unknown page slot");
           }
           if (res > 0 && impl->fault_inject_reads > 0) {
             // Fake a short read (advance 1 byte) so the next attempt re-reads
@@ -323,10 +330,8 @@ Status PlePageReader::Gather(const int64_t* row_ids, size_t row_count,
           } else {
             // res == 0 (unexpected EOF before the valid end) or a persistent
             // errno: fail closed rather than scatter stale page bytes.
-            impl->broken = true;
-            impl->broken_reason =
-                "io_uring read failed (res=" + std::to_string(res) + ")";
-            return Status::Fail(impl->broken_reason);
+            return impl->FailRead("io_uring read failed (res=" +
+                                  std::to_string(res) + ")");
           }
         }
       }

@@ -1,0 +1,139 @@
+{
+  "status": "CPU_SCOPE_ACCEPTED_NOT_DEPLOYED",
+  "unique_tests": 167,
+  "selected_passing_executions": 196,
+  "duplicate_executions": 29,
+  "total_test_executions": 197,
+  "retained_failed_executions": 1,
+  "new_tests": 15,
+  "suites": [
+    {
+      "name": "resource-control",
+      "tests": 15,
+      "log": "resource-control-01.log",
+      "correction_log": null
+    },
+    {
+      "name": "legacy-resources",
+      "tests": 10,
+      "log": "legacy-resources-01.log",
+      "correction_log": null
+    },
+    {
+      "name": "auxiliary",
+      "tests": 16,
+      "log": "auxiliary-01.log",
+      "correction_log": null
+    },
+    {
+      "name": "telemetry",
+      "tests": 20,
+      "log": "telemetry-01.log",
+      "correction_log": null
+    },
+    {
+      "name": "recovery",
+      "tests": 13,
+      "log": "recovery-01.log",
+      "correction_log": null
+    },
+    {
+      "name": "supervisor",
+      "tests": 38,
+      "log": "supervisor-01.log",
+      "correction_log": null
+    },
+    {
+      "name": "deadlines",
+      "tests": 37,
+      "log": "deadlines-01.log",
+      "correction_log": null
+    },
+    {
+      "name": "memory",
+      "tests": 7,
+      "log": "memory-01.log",
+      "correction_log": null
+    },
+    {
+      "name": "gateway",
+      "tests": 23,
+      "log": "gateway-01.log",
+      "correction_log": null
+    },
+    {
+      "name": "host-exporter",
+      "tests": 17,
+      "log": "host-exporter-01.log",
+      "correction_log": "host-exporter-02.log"
+    }
+  ],
+  "correction": {
+    "first_log": "host-exporter-01.log",
+    "fixed_invocation_log": "host-exporter-02.log",
+    "test": "tools.serve_host.test_host.Host.test_pinned_package_nginx_syntax_read_only_observe_and_exclusive_claim",
+    "reason": "Direct unittest invocation omitted os.umask(0o077) set by the original tools/serve_host/cpu.py driver. No product or permission-check changes; reran only this test.",
+    "unaffected_tests_reused": true
+  },
+  "seal_precheck_correction": "seal-precheck-correction.json",
+  "policy": {
+    "version": 10,
+    "requires_degrade": true,
+    "requires_host_resources": true,
+    "without_host_resources_version": 9,
+    "runtime_verification": "CGROUPFS",
+    "runtime_manager_observation": "NOT_QUERIED",
+    "runtime_optional_statistics": [
+      "memory.current",
+      "memory.peak",
+      "memory.swap.current",
+      "pids.current"
+    ],
+    "startup_and_cleanup_manager_required": true,
+    "critical_memory_and_cgroup_protection_unchanged": true,
+    "model_restarts": 0,
+    "manager_restarts": 0
+  },
+  "cpu_business": {
+    "real_backend_process": true,
+    "cgroup_files_are_fixtures": true,
+    "manager_calls_mocked": true,
+    "http_mocked": true,
+    "progress_steps": 64,
+    "same_pid": true,
+    "attempts": 1,
+    "restarts": 0,
+    "statistics_history_retained": true,
+    "simulated_oom_stops_without_replacement": true
+  },
+  "validation": {
+    "python_syntax_files": 9,
+    "syntax_warnings": 0,
+    "public_cpu_registration": true,
+    "serve_inventory_anchors": 124,
+    "mutation_checks": 3,
+    "generated_contracts": true,
+    "old_v7_package_verified": true,
+    "protected_artifacts_unchanged": true
+  },
+  "scope": {
+    "real_cgroups_created": 0,
+    "real_resource_pressure": 0,
+    "model_starts": 0,
+    "real_model_http": 0,
+    "gpu_tests": 0,
+    "real_nvml_queries": 0,
+    "production_service_operations": 0,
+    "default_replaced": false,
+    "old_packages_rewritten": false,
+    "production_accepted": false,
+    "visual_candidate": "HOLD"
+  },
+  "limits": [
+    "CPU cgroup files and manager failure injection do not establish real kernel/business acceptance.",
+    "Startup, backend attachment, final manager/scope cleanup confirmation remain strict.",
+    "Independent host exporter still accepts only v5/v6 packages; v10 integration not claimed.",
+    "System memory UNKNOWN, critical cgroup evidence failures, controller death and uninterruptible I/O behavior are unchanged.",
+    "Memcg is not a total Thor physical RAM limit."
+  ]
+}

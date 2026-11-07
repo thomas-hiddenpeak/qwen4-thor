@@ -168,6 +168,20 @@ block()
   set(Python3_EXECUTABLE "${guard_python}")
   q4t_add_python_contract(q4t_gpu_exclusive_contracts
     tools/evalscope/test_gpu_exclusive.py)
+  q4t_add_python_contract(q4t_managed_telemetry_contracts
+    tools/serve_service/test_telemetry.py)
+  q4t_add_python_contract(q4t_nvml_classification_contracts
+    tools/serve_service/test_nvml_policy.py)
+  q4t_add_python_contract(q4t_nvml_query_contracts
+    tools/evalscope/test_nvml_process_query.py)
+  q4t_add_python_contract(q4t_monitor_resume_contracts
+    tools/serve_service/test_monitor_recovery.py)
+  q4t_add_python_contract(q4t_auxiliary_isolation_contracts
+    tools/serve_service/test_auxiliary.py)
+  q4t_add_python_contract(q4t_resource_control_isolation_contracts
+    tools/serve_service/test_resource_control.py)
+  q4t_add_python_contract(q4t_managed_telemetry_exit_contracts
+    tools/serve_service/test_nvml_acceptance.py)
 endblock()
 q4t_add_python_contract(q4t_request_cancellation_contracts
   tools/evalscope/test_request_cancellation.py)

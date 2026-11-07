@@ -1,0 +1,35 @@
+{
+  "status": "CPU_CI_FIX_ACCEPTED_PENDING_BUSINESS",
+  "source_parent": "96afb42c671fbaa7e62a59f62e3c6c91a97305f2",
+  "changed_test": {
+    "path": "tools/serve_service/test_auxiliary.py",
+    "sha256": "92f2640bdd6981ef33e7eacd1fd4ebe84be9cb2b1efd4895f82565fa227c4719"
+  },
+  "production_source_unchanged": true,
+  "deterministic_reproduction": {
+    "before": "EXPECTED_FAILURE",
+    "after": "PASS",
+    "injected_startup_delay_seconds": 0.15,
+    "child_reaped": true
+  },
+  "targeted_cpu": {
+    "tests": 62,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "prior_506_evidence_preserved": true,
+  "research_pr": {
+    "closedAt": "2026-11-07T10:46:55Z",
+    "headRefOid": "ea9132142ae86e803d9337a514279680ab03d431",
+    "state": "CLOSED",
+    "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/20"
+  },
+  "gpu_tests": 0,
+  "real_model_http": 0,
+  "model_restarts": 0,
+  "production_accepted": false,
+  "merged_main": false,
+  "default_replaced": false,
+  "protected_unchanged": true
+}

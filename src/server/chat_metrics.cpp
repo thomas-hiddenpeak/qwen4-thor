@@ -290,10 +290,7 @@ void ChatServer::HandleMetrics(int fd) {
   gauge("q4t_control_connections", "Classified control connections (limit 4).",
         control_conns_.load());
   gauge("q4t_ready", "Ready for business; ordinary slot occupancy is separate.",
-        model_ready_.load() && gpu_healthy_.load() && !stop_requested_.load() &&
-                !serving_failed_.load() && memory.Allowed()
-            ? 1
-            : 0);
+        ObserveHealth(memory.state).Ready() ? 1 : 0);
   gauge("q4t_structured_active",
         "Structured leases held through response cleanup (limit 1).",
         metrics_.structured_active.load());
@@ -348,10 +345,11 @@ void ChatServer::HandleHealth(int fd) {
     for (bool f : seq_free_)
       if (f) ++free_slots;
   }
-  const bool healthy = gpu_healthy_.load(std::memory_order_relaxed);
+  const auto health = ObserveHealth();
+  const bool healthy = health.Healthy();
   const std::string body =
       std::string("{\"status\":\"") + (healthy ? "ok" : "unhealthy") +
-      "\",\"gpu_healthy\":" + (healthy ? "true" : "false") +
+      "\",\"gpu_healthy\":" + (health.gpu_healthy ? "true" : "false") +
       ",\"requests_running\":" + std::to_string(active_conns_.load()) +
       ",\"seq_slots_free\":" + std::to_string(free_slots) +
       ",\"seq_slots_total\":" + std::to_string(max_seq_) + "}";

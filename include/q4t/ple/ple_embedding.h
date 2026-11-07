@@ -17,6 +17,8 @@
 // layer forward (after the 16-head reduce), matching the SGLang reference.
 #pragma once
 
+#include "q4t/runtime/model_health.h"
+
 #include <cuda_runtime.h>
 
 #include <cstddef>
@@ -85,6 +87,9 @@ class PleEmbedding {
   // the peak. On Thor (unified memory) the GPU scratch is the same physical
   // pool as the host buffers, but it is counted here as its own allocation.
   size_t working_memory_bytes() const;
+
+  // Atomic observation of permanent reader/upload faults, without CUDA work.
+  runtime::ModelFault HealthFault() const noexcept;
 
  private:
   struct Impl;

@@ -48,6 +48,62 @@ SHA的伴随接受记录见上述结果页。prepare本身的未验声明不被�
 外部服务；锁文件永不删除。锁描述符贯穿控制器、worker及后端，两个
 父子边界设置跨exec的parent-death信号。控制器死亡时后端退出前锁
 仍保持；这不保证内核不可中断任务能够退出，也不证明物理RAM硬上限。
+
+默认严格策略下，运行中NVML查询失败会触发ENV_ABORT并清理后端。
+新包可在prepare时显式增加`--nvml-policy degrade`选择v9监控与辅助依赖隔离策略，
+要求`--restart-limit 0`。启动前仍须完整观测无竞争，运行期临时查询
+故障允许健康业务继续，共享锁、已知竞争及原业务保护保持。
+同时选择host资源隔离时，新包为v10；运行期资源监督直接核对原
+cgroup目录身份、监督器身份/成员关系、有效限额和关键事件，不再
+调用systemctl/D-Bus。初始化、后端加入和最终清理确认仍严格检查
+服务管理器；NOT_QUERIED不代表管理器健康或恢复。普通资源统计缺失
+以null和statistics_errors表示，statistics_gap_samples保留历史；
+OOM/任务超限、身份/限额漂移、关键事件缺失仍停止自有后端。
+v10同样不自动重启模型，详见[资源控制面隔离](../../docs/SERVE_RESOURCE_CONTROL_ISOLATION_2026-11-07.md)。
+
+外部超时、NVML超时/资源暂不可用分别等待5/10/20/40/60秒后最多重试
+5次；配置或未知NVML错误直接暂停。Python/协议错误暂停采集器；明确设备故障
+停止自有服务，不自动重启模型或重置设备。重试耗尽或worker未回收
+停止新增查询。此时业务可继续，但不能观察
+未被/proc规则覆盖的外部GPU负载；未知PID不会显示为空闲或沿用旧值。
+`status`的`gpu_monitor`与业务`state`分开，记录最近成功及缺口；
+原始查询保存在`lease/nvml-queries.jsonl`。正常停止若曾有监控缺口，
+guard记`COMPLETED_WITH_MONITOR_GAPS`，服务仍可STOPPED并确认自有进程
+清理；末次NVML观测不能证明停止后的GPU上下文已清空，单独标NOT_QUERIED。
+未回收查询worker仍导致退出清理失败。旧包/未选择策略保持下述严格行为。
+
+v8/v9/v10暂停后可显式请求重新观测：
+
+```bash
+/usr/bin/python3 -I -B tools/serve_service/service.py resume-monitor \
+  --run .q4t-work/managed/run-001
+```
+
+至少冷却60秒、本controller代次最多2次，每次只补一次5秒查询及
+至多1秒回收；确认旧worker回收才执行，失败再次暂停，成功恢复常规
+观察。成功不返还恢复预算、不清除历史缺口。请求绑定监控代次/暂停
+序号，由controller再次检查；CLI提交成功不代表恢复成功。通过status
+检查`gpu_monitor.last_resume_request`及`last_resume`。过早或过期请求
+不延后自动执行，需要再次显式提交；停止后不执行恢复。此命令不调用
+模型启动、重启或请求重放。旧v7包没有该入口，不能就地启用。
+
+v9运行期普通日志/观测快照写失败不停止后端；日志管道继续排空，
+固定通道每60秒最多重新尝试一次，`auxiliary_io`保留失败次数和未确认
+写入的输入字节（`dropped_bytes`包含部分写入的不确定范围）。快照恢复
+不会清除历史缺口；磁盘持续不可写时故障台账仅保存在本代次内存中，
+不能承诺控制器意外退出后的完整持久记录。`status`把超过30秒或时间
+异常的快照标记未知，不把旧READY/旧GPU PID当成当前观测。
+首次身份快照、GPU租约与恢复授权保持严格持久化；v9恢复授权写失败
+消耗本代次一次预算但不查询，不自动重试授权。v9健康监督独立读取
+livez/readyz和配置身份，不采集metrics；指标由独立运维入口读取。
+本项隔离已返回的I/O错误，不解决内核不可中断的文件I/O等待。
+
+该策略不适用于性能验收；CLI guard无降级开关。v9范围及结果见
+[辅助依赖隔离](../../docs/SERVE_AUXILIARY_ISOLATION_2026-11-07.md)；v8的
+[CPU结果](../../docs/SERVE_NVML_RECOVERY_2026-11-07.md)与既有v7的
+[限定业务验收](../../docs/SERVE_NVML_DEGRADATION_2026-11-07.md)不能替代v9接受。
+源码支持不自动扩大旧托管/网关/任务包的接受范围，应使用身份匹配的新包。
+
 独立前台controller SIGKILL已[实际限定验证](../../docs/SERVE_CONTROLLER_DEATH_RESULT_2026-11-03.md)：
 活跃输出与准备完成的grammar排队请求均完整server_shutdown，4个
 grammar回收，无辅助清理信号，10秒无重启。验收额外保留同一flock
@@ -111,7 +167,8 @@ Install段。运行目录同样只能使用一次。systemd直接发送SIGTERM�
 每代次原始backend日志2×4MiB、事件2×256KiB、guard事件与NVML各
 2×4MiB；轮转总上限24.5MiB（元数据另计）。轮转会丢弃旧日志，字节
 截断可切开一条记录，不能当作完整历史证据；私有状态快照另存为完整
-JSON。写日志失败会停服。不同运行目录/发布包不会自动清除，因此
+JSON。旧包/严格策略写日志失败会停服；v9显式degrade按上述边界隔离。
+不同运行目录/发布包不会自动清除，因此
 该上限不等于磁盘整体上限。验收证据另行封存，不放进在线轮转日志。
 
 开发检查（无模型、无HTTP）：

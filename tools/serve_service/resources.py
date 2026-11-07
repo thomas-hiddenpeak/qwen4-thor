@@ -148,11 +148,24 @@ def membership(pid):
     return lines[0][3:]
 
 
-def verify_record(record, *, verify_limits=True):
-    value = scope_matches(properties(record['unit']), record['unit'], record['token'])
-    root = cgroup_path(value['ControlGroup'], record['unit'])
-    pkg.require(str(root) == record['root'] and inode(root) == record['root_identity'] and
-        value['InvocationID'] == record['invocation_id'], 'cgroup instance changed')
+def verify_record(record, *, verify_limits=True, require_manager=True):
+    if require_manager:
+        value = scope_matches(properties(record['unit']), record['unit'], record['token'])
+        root = cgroup_path(value['ControlGroup'], record['unit'])
+        pkg.require(value['InvocationID'] == record['invocation_id'],
+                    'cgroup instance changed')
+    else:
+        # The scope was established with manager verification. Runtime safety
+        # follows its kernel identity, membership and limits, not D-Bus health.
+        from tools.serve_service import supervisor as sup
+        root = cgroup_path('/'+str(Path(record['root']).relative_to(CGROUP)),
+                           record['unit'])
+        owner = record['owner']
+        pkg.require(sup.process_identity(owner['pid']) == owner and
+            membership(owner['pid']) == '/'+str((root/'control').relative_to(CGROUP)),
+            'resource supervisor identity/membership changed')
+    pkg.require(str(root) == record['root'] and inode(root) == record['root_identity'],
+                'cgroup instance changed')
     for name in ('control', 'payload'):
         pkg.require(inode(root/name) == record[name+'_identity'], 'cgroup child replaced')
     if verify_limits:
@@ -164,11 +177,23 @@ def verify_record(record, *, verify_limits=True):
     return root
 
 
-def sample(record, *, verify_limits=True):
-    root = verify_record(record, verify_limits=verify_limits)
+def sample(record, *, verify_limits=True, require_manager=True,
+           tolerate_statistics=False):
+    root = verify_record(record, verify_limits=verify_limits,
+                         require_manager=require_manager)
     payload = root/'payload'
-    value = {name: (counters(read(payload/name)) if name.endswith('events') else
-             number(read(payload/name))) for name in FIELDS}
+    value, statistics_errors = {}, {}
+    for name in FIELDS:
+        if name.endswith('events'):
+            value[name] = counters(read(payload/name))
+            continue
+        try:
+            value[name] = number(read(payload/name))
+        except (OSError, ValueError, RuntimeError) as error:
+            if not tolerate_statistics:
+                raise
+            value[name] = None
+            statistics_errors[name] = type(error).__name__
     pkg.require({'high','max','oom','oom_kill'} <= value['memory.events'].keys() and
         'max' in value['pids.events'] and value['cgroup.events'].get('populated') in (0,1),
         'required resource counters missing')
@@ -178,6 +203,8 @@ def sample(record, *, verify_limits=True):
     value['members'] = sorted({number(v) for v in raw.splitlines()})
     value['effective_limits'] = {name:number(read(payload/name)) for name in limits(record['policy'])}
     value['sampled_monotonic'] = time.monotonic()
+    if tolerate_statistics:
+        value['statistics_errors'] = statistics_errors
     return value
 
 
@@ -190,12 +217,14 @@ def violation(value):
 
 
 class Envelope:
-    def __init__(self, selected, output):
+    def __init__(self, selected, output, *, isolate_manager=False):
         from tools.serve_service import supervisor as sup
         self.output = Path(output)
         self.selected = validate(selected)
         self.owner = sup.process_identity(os.getpid())
         self.error = None; self.latest = None; self.closed = False
+        self.isolate_manager = isolate_manager
+        self.statistics_gap_samples = 0
         token = secrets.token_hex(16); unit = 'q4t-host-'+token+'.scope'
         token = 'q4t-host-owner-'+token
         self.record = dict(unit=unit, token=token, owner=self.owner, policy=selected)
@@ -237,27 +266,34 @@ class Envelope:
             control_identity=inode(control), payload_identity=inode(payload),
             invocation_id=value['InvocationID'])
         pkg.save(self.output/'resources.json', self.record)
-        self.check()
+        self.check(startup=True)
 
-    def observe(self):
+    def observe(self, *, startup=False):
         try:
-            self.latest = sample(self.record)
+            runtime = self.isolate_manager and not startup
+            self.latest = sample(self.record, require_manager=not runtime,
+                                 tolerate_statistics=runtime)
+            if self.latest.get('statistics_errors'):
+                self.statistics_gap_samples += 1
             self.error = self.error or violation(self.latest)
         except Exception:
             self.error = self.error or 'host_resource_observation_unavailable'
             raise
         return self.latest
 
-    def check(self):
-        self.observe()
+    def check(self, *, startup=False):
+        self.observe(startup=startup)
         pkg.require(self.error is None, self.error)
 
     def close(self):
         if self.closed: return
         # Limits can drift while ownership remains valid. Preserve the failure
         # and remove only our empty leaf, without repairing the changed policy.
-        value = sample(self.record, verify_limits=False)
+        value = sample(self.record, verify_limits=False,
+                       tolerate_statistics=self.isolate_manager)
         self.latest = value
+        if value.get('statistics_errors'):
+            self.statistics_gap_samples += 1
         self.error = self.error or violation(value)
         pkg.require(value['cgroup.events']['populated'] == 0 and not value['members'],
                     'backend resource group still populated')
@@ -266,7 +302,9 @@ class Envelope:
         self.closed = True
         pkg.save(self.output/'resources-final.json', dict(record=self.record,
             final=value, violation=self.error, payload_removed=True,
-            scope_cleanup_pending=True))
+            scope_cleanup_pending=True,
+            **({'statistics_gap_samples': self.statistics_gap_samples}
+               if self.isolate_manager else {})))
 
 
 def attach(output, selected):

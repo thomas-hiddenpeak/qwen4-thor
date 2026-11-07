@@ -270,6 +270,12 @@ ENV_ABORT并返回75，只清理自有进程组及经父子链/start_ticks核实
 exit.json/events.jsonl保留结果；成功仅表示命令成功且未检测到冲突。
 轮询不能排除短于采样间隔、图形或驱动未列出的负载，不承诺绝对独占。
 
+`--inherit-lease`仅把已持有的同一flock描述符传给自有阶段，以便内层
+托管控制器借用；外层仍严格执行NVML检查，没有降级开关。托管v7可由
+包配置显式选择业务降级监控，有缺口时终态为
+COMPLETED_WITH_MONITOR_GAPS，不能用于严格性能接受。详见
+[业务策略](../serve_service/README.md)。
+
 2026-10-31起，取得lease后先检查解释器的`os.pidfd_open`和
 `signal.pidfd_send_signal`，再对自身执行pidfd＋signal 0能力探测；
 API缺失或内核不支持时记录ENV_ABORT/75，尚未启动监控或子进程。

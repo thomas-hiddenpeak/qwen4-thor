@@ -279,21 +279,28 @@ def borrowed_lock(fd, lock_path):
 
 def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None,
               compute_backend=DEFAULT_COMPUTE_BACKEND, log_max_bytes=None,
-              inherit_lease=False):
+              inherit_lease=False, managed_monitor=None):
     if compute_backend not in ('nvidia-smi', 'nvml'):
         raise ValueError('unknown compute backend')
+    if managed_monitor is not None and (
+            not inherit_lease or compute_backend != 'nvml'):
+        raise ValueError('managed monitoring requires inherited NVML lease')
     out.mkdir(parents=True, exist_ok=False)
     scan = inspect
     if compute_backend == 'nvml':
         def scan(*args):
             return inspect(*args, compute_query=lambda: nvml_pids(
                 out / 'nvml-queries.jsonl', log_max_bytes))
+    if managed_monitor is not None:
+        scan = managed_monitor
     status = {'status': 'INITIALIZING', 'command': command,
               'compute_backend': compute_backend,
               'lock_path': str(lock_path), 'poll_interval_seconds': interval,
               'poll_scope': 'cooperative flock plus /proc and NVIDIA compute polling',
               'performance_acceptance': False, 'child_returncode': None,
               'external_lease': lease_fd is not None}
+    if managed_monitor is not None:
+        status['monitor_policy'] = managed_monitor.state['policy']
     if log_max_bytes is not None:
         if type(log_max_bytes) is not int or log_max_bytes < 65536:
             raise ValueError('monitor log limit must be at least 64KiB')
@@ -303,8 +310,11 @@ def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None,
     owned_history = {}
     acquired = False
     lock_path.parent.mkdir(parents=True, exist_ok=True)
-    with contextlib.ExitStack() as stack, open_log(
-            out / 'events.jsonl', 'w', log_max_bytes) as events:
+    event_log = (contextlib.nullcontext(managed_monitor.event_log(
+                    out / 'events.jsonl', log_max_bytes))
+                 if managed_monitor is not None else
+                 open_log(out / 'events.jsonl', 'w', log_max_bytes))
+    with contextlib.ExitStack() as stack, event_log as events:
         def record(event, **values):
             events.write(json.dumps(dict(stamp(), event=event, **values)) + '\n')
             events.flush()
@@ -367,6 +377,9 @@ def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None,
                 if code is not None:
                     status['child_returncode'] = code
                     status['status'] = 'COMPLETED' if code == 0 else 'COMMAND_FAILED'
+                    if (code == 0 and managed_monitor is not None and
+                            managed_monitor.had_gaps):
+                        status['status'] = 'COMPLETED_WITH_MONITOR_GAPS'
                     return 0 if code == 0 else 1
                 time.sleep(interval)
         except (Exception, KeyboardInterrupt) as error:
@@ -383,8 +396,18 @@ def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None,
                     status['cleanup_error'] = repr(error)
                     cleanup_failed = True
                 status['child_returncode'] = child.returncode
+            if managed_monitor is not None:
+                try:
+                    status['compute_monitor'] = managed_monitor.close()
+                    if not status['compute_monitor']['query_worker_reaped']:
+                        raise RuntimeError('managed NVML query worker not reaped')
+                except Exception as error:
+                    status['status'] = 'ENV_ABORT'
+                    status['monitor_cleanup_error'] = repr(error)
+                    cleanup_failed = True
             status['finished'] = stamp()
-            (out / 'exit.json').write_text(json.dumps(status, indent=2) + '\n')
+            if managed_monitor is None:
+                (out / 'exit.json').write_text(json.dumps(status, indent=2) + '\n')
             if acquired:
                 lock.seek(0)
                 lock.truncate()
@@ -394,6 +417,13 @@ def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None,
                 lock.flush()
                 record('lease_guard_finished' if lease_fd is not None else
                        'lease_released', status=status['status'])
+            if managed_monitor is not None:
+                # Close/last-event I/O can introduce the first history gap.
+                # Freeze the receipt after those attempts, still under flock.
+                status['compute_monitor'] = managed_monitor.snapshot()
+                if status['status'] == 'COMPLETED' and managed_monitor.had_gaps:
+                    status['status'] = 'COMPLETED_WITH_MONITOR_GAPS'
+                (out / 'exit.json').write_text(json.dumps(status, indent=2) + '\n')
             if cleanup_failed:
                 return 75
 
@@ -410,6 +440,8 @@ def main():
                         help='explicit compute PID query backend; no fallback')
     parser.add_argument('--lease-fd', type=int,
                         help='inherited exclusive lease; external owner handles recovery')
+    parser.add_argument('--inherit-lease', action='store_true',
+                        help='pass the held lease to an owned managed phase')
     parser.add_argument('command', nargs=argparse.REMAINDER)
     args = parser.parse_args()
     command = args.command[1:] if args.command[:1] == ['--'] else args.command
@@ -419,7 +451,8 @@ def main():
     if not any(out.is_relative_to(ROOT / p) for p in ('build', '.q4t-work')):
         parser.error('output must be under build/ or .q4t-work/')
     result = run_guard(command, out, common_lock(), lease_fd=args.lease_fd,
-                       compute_backend=args.compute_backend)
+                       compute_backend=args.compute_backend,
+                       inherit_lease=args.inherit_lease)
     # A cleanup failure in finally must override an otherwise successful return.
     if json.loads((out / 'exit.json').read_text())['status'] == 'ENV_ABORT':
         result = 75

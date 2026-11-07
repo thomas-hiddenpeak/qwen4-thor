@@ -120,12 +120,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   detail::ServeFaultPoint("handler.before_diagnostics");
   RequestDiagnostics diagnostic(stderr, http ? http->TraceId() : "-");
   using Wait = RequestDiagnostics::Wait;
+  if (RejectUnhealthy(fd)) return;
   if (!CheckMemoryAdmission(fd, MemoryCheckpoint::kPrepare)) return;
-  if (!gpu_healthy_.load(std::memory_order_relaxed)) {
-    SendError(fd, 503, "GPU unhealthy after a device error; restart the server",
-              {}, "gpu_unhealthy");
-    return;
-  }
   RequestAdmissionLease chat_lease(active_chats_, admission_limits_.inflight);
   if (!chat_lease.TryAcquire()) {
     metrics_.text_admission_rejected.fetch_add(1, std::memory_order_relaxed);
@@ -575,7 +571,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     return;
   }
   if (seq_id == -3) {
-    SendError(fd, 503, "GPU unhealthy; restart server");
+    RejectUnhealthy(fd);
     return;
   }
   if (seq_id == -2) {
@@ -695,8 +691,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         return;
       }
       OnException backend_failure([&] { AbortBackendExecution(); });
-      if (!gpu_healthy_.load(std::memory_order_relaxed)) {
-        SendError(fd, 503, "GPU unhealthy; restart server");
+      if (RejectUnhealthy(fd)) {
         // Outer buffer cleanup runs after this model lock is released.
         return;
       }
@@ -896,9 +891,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                              T);
     auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
     OnException backend_failure([&] { AbortBackendExecution(); });
-    s = !gpu_healthy_.load(std::memory_order_relaxed)
-            ? Status::Fail("GPU unhealthy; restart server")
-            : model::ModelBeginSequence(model_.Get(), &seq, nullptr, seq_id);
+    s = ExecutionStatus();
+    if (s.ok())
+      s = model::ModelBeginSequence(model_.Get(), &seq, nullptr, seq_id);
     if (s.ok()) s = mtp::MtpResetState(mtp_, nullptr, seq_id);
     if (s.ok() && (session.cache || !prefix_scope.empty())) {
       const auto begin = std::chrono::steady_clock::now();
@@ -1118,12 +1113,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     OnException backend_failure([&] { AbortBackendExecution(); });
     {
       q4t::diagnostic::Scope execution_begin("target_begin_sequence", 0, T);
-      s = !gpu_healthy_.load(std::memory_order_relaxed)
-              ? Status::Fail("GPU unhealthy; restart server")
-              : cancelled()
-                    ? Status::Fail("request cancelled")
-                    : model::ModelBeginSequence(model_.Get(), &seq, nullptr,
-                                                seq_id);
+      s = ExecutionStatus();
+      if (s.ok())
+        s = cancelled() ? Status::Fail("request cancelled")
+                        : model::ModelBeginSequence(model_.Get(), &seq, nullptr,
+                                                    seq_id);
     }
     int prefill_base = 0;
     int prefill_tokens = std::min(chunk, T);
@@ -1230,6 +1224,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   if (!s.ok()) {
     model::ModelEndSequence(&seq);
     cleanup();
+    if (RejectUnhealthy(fd)) return;
     SendError(fd, 500, "prefill failed: " + s.message());
     return;
   }
@@ -1398,11 +1393,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       q4t::diagnostic::Scope execution_init("handler_mtp_init", 0, T);
       auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
       OnException backend_failure([&] { AbortBackendExecution(); });
+      // Another request may have failed PLE while this one waited. No draft
+      // work has begun here; do not reinterpret that fault as a CUDA failure.
+      if (RejectUnhealthy(fd)) return;
       {
         q4t::diagnostic::Scope execution_reset("prompt_draft_reset", 0, T);
-        s = !gpu_healthy_.load(std::memory_order_relaxed)
-                ? Status::Fail("GPU unhealthy; restart server")
-                : mtp::MtpResetState(mtp_, nullptr, seq_id);
+        s = mtp::MtpResetState(mtp_, nullptr, seq_id);
       }
       if (s.ok()) {
         mtp_b = next_token;
@@ -1845,11 +1841,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         OnException backend_failure([&] { AbortBackendExecution(); });
         if (router_trace_) router_trace_->BeginForward(
             trace::RouteStage::kDecode, seq.position, 1);
-        s = !gpu_healthy_.load(std::memory_order_relaxed)
-                ? Status::Fail("GPU unhealthy; restart server")
-                : model::ModelDecodeStepSeq(model_.Get(), &seq, tok_id, d_prefill_logits_,
-                                      nullptr, nullptr, seq_id,
-                                      model::SequenceCompletion::kDeferred);
+        s = ExecutionStatus();
+        if (s.ok())
+          s = model::ModelDecodeStepSeq(
+              model_.Get(), &seq, tok_id, d_prefill_logits_, nullptr, nullptr,
+              seq_id, model::SequenceCompletion::kDeferred);
         cudaError_t copy_error = cudaSuccess;
         if (s.ok())
           copy_error = cudaMemcpyAsync(
@@ -2062,6 +2058,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     // an error terminal, never a normal stop/usage or a successful request.
     const detail::WriteOptions terminal{
         std::chrono::steady_clock::now() + std::chrono::milliseconds(250)};
+    if (RejectUnhealthy(fd, terminal)) {
+      cleanup();
+      return;
+    }
     if (stream) {
       detail::SendStreamError(fd, response_state, 500, "generation failed",
                               terminal, "generation_failed");

@@ -17,6 +17,7 @@
 #include <vector>
 
 #include "q4t/status.h"
+#include "q4t/runtime/model_health.h"
 
 namespace q4t {
 namespace ple {
@@ -75,6 +76,9 @@ class PlePageReader {
   // pieces + groups vectors (populated after a Gather; 0 before the first).
   size_t pool_bytes() const;
   size_t scratch_bytes() const;
+
+  // Safe for concurrent health observation; no I/O or execution lock.
+  runtime::ModelFault HealthFault() const noexcept;
 
  private:
   struct Piece {

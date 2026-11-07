@@ -1,0 +1,49 @@
+{
+  "status": "CPU_INTEGRATION_ACCEPTED_NOT_RELEASED",
+  "unique_tests": 506,
+  "test_executions": 506,
+  "groups": {
+    "tools.evalscope.test_gpu_exclusive": 30,
+    "tools.serve_service.test_telemetry": 20,
+    "tools.serve_service.test_nvml_policy": 13,
+    "tools.evalscope.test_nvml_process_query": 13,
+    "tools.serve_service.test_monitor_recovery": 13,
+    "tools.serve_service.test_auxiliary": 16,
+    "tools.serve_service.test_resource_control": 15,
+    "tools.serve_service.test_nvml_acceptance": 2,
+    "supervisor-deadlines": 46,
+    "public-host": 331,
+    "ple-health": 7
+  },
+  "failures": 0,
+  "skips": 0,
+  "production_build_passed": true,
+  "build_warnings": 0,
+  "generated_contract_current": true,
+  "source_anchors": 124,
+  "source_mutation_controls": 3,
+  "prior_archive_records_verified": 137,
+  "old_v7_verified": true,
+  "source_rebindings": [
+    "docs/NVML_RESILIENCE_RESEARCH_2026-11-07.md",
+    "docs/serve-input-semantics-v1.json",
+    "tools/serve_audit/inventory.json"
+  ],
+  "models_started": 0,
+  "real_model_http": 0,
+  "gpu_tests": 0,
+  "real_nvml_queries": 0,
+  "real_cgroup_changes": 0,
+  "production_service_operations": 0,
+  "model_restarts": 0,
+  "default_replaced": false,
+  "merged_main": false,
+  "production_accepted": false,
+  "visual_candidate": "HOLD",
+  "limits": [
+    "No real model HTTP or deployment acceptance for the new binary/v9/v10 combination.",
+    "No new exporter/grammar cleanup/log blocking/controller takeover work.",
+    "Frozen historical v7 business acceptance remains bound to its original manifest.",
+    "CPU integrated worker lifetimes use synthetic monitoring/HTTP/cgroup inputs."
+  ]
+}

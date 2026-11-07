@@ -41,6 +41,7 @@ void ChatServer::HandleConfig(int fd) {
 
 void ChatServer::HandlePreflight(int fd, const std::string& body) {
   const auto arrived = std::chrono::steady_clock::now();
+  if (RejectUnhealthy(fd)) return;
   if (!CheckMemoryAdmission(fd, MemoryCheckpoint::kPrepare)) return;
   RequestAdmissionLease lease(active_chats_, admission_limits_.inflight);
   if (!lease.TryAcquire()) {
