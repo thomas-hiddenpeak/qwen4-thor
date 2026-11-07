@@ -1,0 +1,167 @@
+{
+  "status": "ACCEPT_BOUNDED_SERVE_RESILIENCE",
+  "source_commit": "e38c8d597c2d24c6acd80801a837f017133e8f72",
+  "candidate": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261107/runtime/q4t",
+    "sha256": "478a325e3b7baaee90f96381468be17fab2511f861b9f92353f84ed9564ceb54",
+    "bytes": 7449360
+  },
+  "counts": {
+    "starts": 3,
+    "chats": 12,
+    "controls": 10
+  },
+  "seconds": 258.6702954247594,
+  "outer_guard": "COMPLETED",
+  "real_nvml_queries": 240,
+  "nvml_errors": 0,
+  "source_files": 490,
+  "protocol_sources": 107,
+  "responses": [
+    {
+      "stage": "native",
+      "request": "json",
+      "request_id": "agent-6b100bb0b8930db5b416d3a8754405d6",
+      "seconds": 0.40851101092994213
+    },
+    {
+      "stage": "native",
+      "request": "sse",
+      "request_id": "agent-a265d71ffa58e7289ee46e9a592cd182",
+      "seconds": 0.27051221765577793
+    },
+    {
+      "stage": "native",
+      "request": "tool-call",
+      "request_id": "agent-c136bc0cff6e5aea24d64cdd81edba60",
+      "seconds": 3.664470098912716
+    },
+    {
+      "stage": "native",
+      "request": "tool-final",
+      "request_id": "agent-01aa01e564fbaeae9461bdb560dae643",
+      "seconds": 1.4223211579956114
+    },
+    {
+      "stage": "v9",
+      "request": "json",
+      "request_id": "agent-47bbb6e0ead17e959e3da2238bc49caa",
+      "seconds": 0.3947336464188993
+    },
+    {
+      "stage": "v9",
+      "request": "sse",
+      "request_id": "agent-88e62c9c6ea7cd3a27986426dea3aa19",
+      "seconds": 0.25755188427865505
+    },
+    {
+      "stage": "v9",
+      "request": "tool-call",
+      "request_id": "agent-ed1d06ce420e82346d23f1ed95eaef7c",
+      "seconds": 3.65007878979668
+    },
+    {
+      "stage": "v9",
+      "request": "tool-final",
+      "request_id": "agent-5a9d934c2a8c708fac7b172c139e2406",
+      "seconds": 1.4626902802847326
+    },
+    {
+      "stage": "v10",
+      "request": "json",
+      "request_id": "agent-ec3fa575db49b0a8c4dc17ec85da7355",
+      "seconds": 0.36227318784222007
+    },
+    {
+      "stage": "v10",
+      "request": "sse",
+      "request_id": "agent-ee6482abcc742f2e69e3b6d9d1a1108c",
+      "seconds": 0.2550895237363875
+    },
+    {
+      "stage": "v10",
+      "request": "tool-call",
+      "request_id": "agent-4bc9ee035bcb6c96563741dfddd63bab",
+      "seconds": 3.5995863010175526
+    },
+    {
+      "stage": "v10",
+      "request": "tool-final",
+      "request_id": "agent-cb936d0f418b03120ea2e16cd09c9722",
+      "seconds": 1.37166817067191
+    }
+  ],
+  "source_verified": true,
+  "raw_responses_reparsed": true,
+  "model_restarts": 0,
+  "owned_pids_reaped": 249,
+  "final_gpu_pids": [],
+  "port_available": true,
+  "lock_available": true,
+  "lock_identity": {
+    "device": 66305,
+    "inode": 3294067
+  },
+  "package_results": {
+    "native": {
+      "status": "PASS_NATIVE_SERVE_SMOKE",
+      "chats": 4,
+      "candidate": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261107/runtime/q4t",
+        "sha256": "478a325e3b7baaee90f96381468be17fab2511f861b9f92353f84ed9564ceb54",
+        "bytes": 7449360
+      },
+      "deployment_accepted": false,
+      "performance_acceptance": false
+    },
+    "v9": {
+      "status": "PASS_MANAGED_AUXILIARY_ISOLATION",
+      "chats": 4,
+      "package": {
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261107/source/.q4t-work/serve-closeout-business-20261107/attempt-02/v9-package",
+        "manifest_sha256": "84c16c9288fa374b53d4f741f2e2e3a5e1319ad11376e905bfed874880baff64",
+        "binary_sha256": "478a325e3b7baaee90f96381468be17fab2511f861b9f92353f84ed9564ceb54"
+      },
+      "backend": {
+        "pid": 111396,
+        "start_ticks": 223932420,
+        "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+      },
+      "synthetic_faults": {
+        "log_errors": 1,
+        "metrics_attempts": 0,
+        "manager_attempts": 0,
+        "statistics_errors": 0
+      },
+      "cleanup_confirmed": true,
+      "model_restarts": 0
+    },
+    "v10": {
+      "status": "PASS_MANAGED_AUXILIARY_ISOLATION",
+      "chats": 4,
+      "package": {
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261107/source/.q4t-work/serve-closeout-business-20261107/attempt-02/v10-package",
+        "manifest_sha256": "bbccd54f9256d849af262778e52965a289f47e723471903f9f28e0c50d6d5f8d",
+        "binary_sha256": "478a325e3b7baaee90f96381468be17fab2511f861b9f92353f84ed9564ceb54"
+      },
+      "backend": {
+        "pid": 115538,
+        "start_ticks": 223942975,
+        "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+      },
+      "synthetic_faults": {
+        "log_errors": 1,
+        "metrics_attempts": 0,
+        "manager_attempts": 0,
+        "statistics_errors": 48
+      },
+      "cleanup_confirmed": true,
+      "model_restarts": 0
+    }
+  },
+  "real_v10_scope_removed": true,
+  "default_replaced": false,
+  "performance_acceptance": false,
+  "retained_zero_model_failure": true,
+  "raw_records": 133
+}
