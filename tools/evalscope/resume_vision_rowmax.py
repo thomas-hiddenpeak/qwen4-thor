@@ -69,7 +69,7 @@ def verify_lifetime(out, name, events, queries):
                 nvml_queries=len(prefix), custody_complete=True)
 
 
-def verify_reuse():
+def verify_reuse(*, archive_only=False):
     seals = {}
     for manifest, cas in (("originals.json", "originals"),
                           ("accept-originals.json", "accept-originals")):
@@ -89,6 +89,7 @@ def verify_reuse():
     blobs = {item.split(b"\t", 1)[1].decode(): item.split(b"\t", 1)[0].split()[2].decode()
              for item in tree.split(b"\0") if item}
     git_sources = 0
+    runtime_drift = {}
     for name, digest in original["files"].items():
         s.require(archived[name] == digest, "original input/seal mismatch")
         path = Path(name)
@@ -100,7 +101,10 @@ def verify_reuse():
                 s.require(blob == blobs[relative], "old Git source mismatch")
                 git_sources += 1
             if relative == "CMakeLists.txt" or relative.startswith(("src/", "include/", "cmake/")):
-                s.require(s.sha(path) == digest, "tested runtime source changed")
+                current = s.sha(path)
+                if current != digest:
+                    s.require(archive_only, "tested runtime source changed")
+                    runtime_drift[relative] = dict(tested=digest, current=current)
     for identity in original["binaries"].values():
         s.require(s.sha(identity["path"]) == identity["sha256"], "tested binary changed")
     out = prior.FOLDER / "execution"
@@ -117,6 +121,7 @@ def verify_reuse():
               min(failure_times), "reused evidence overlaps monitor failure")
     return dict(status="VERIFIED_COMPLETED_PREFIX_ONLY", git_sources=git_sources,
                 lifetimes=lives, original_stage_status="ENV_ABORT",
+                archive_only=archive_only, runtime_drift=runtime_drift,
                 excluded=["original partial MTP", "diagnostic MTP samples"],
                 seals={name: s.sha(BASE / name) for name in seals})
 
