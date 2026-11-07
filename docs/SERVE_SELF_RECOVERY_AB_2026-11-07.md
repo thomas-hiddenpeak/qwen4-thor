@@ -84,8 +84,9 @@ ELF 动态依赖没有 CUDA/NVML/Python/systemd。测试只用私有临时锁，
 `.q4t-work/serve-recovery-a2-20261107/attempt-02/`；初次通过后补了
 旧控制器代次拒绝检查，最终程序重新验这一独立进程组。
 
-A1/A2 基础共 71 项不同 CPU 用例；完整 Guardian 事件循环、journal
-异步接入、控制端点和生产 Controller 尚未接通，A2 整体与 B 未完成。
+该进程基础提交 b89cd5b4 时累计 71 项不同 CPU 用例；后续异步接入
+进展见下。完整 Guardian 事件循环、控制端点和生产 Controller
+尚未接通，A2 整体与 B 未完成。
 
 A2 已进一步接通原生 `JournalClient` 与真实独立 journal 的私有
 seqpacket 通道：单个未完成事务、严格版本/序号/服务身份/修订号、
@@ -106,3 +107,9 @@ seqpacket 通道：单个未完成事务、严格版本/序号/服务身份/修�
 已推送；新的异步接入仍属 A2，尚无完整 `q4t service` 入口。
 下一步实现 Guardian 控制循环、run/start/status/stop 和生产
 Controller，再接 B 网关/配额与真实模型恢复。默认程序和旧包未操作。
+
+远端 b89cd5b4 的构建与全部 CPU 合同通过，最后来源审计因 root
+CMake 新增 include 尚未登记而失败。已逐项核对只增加独立 host
+目标、不更改 q4t 链接与既有 Chat 合同；新增 12 个 Guardian 来源
+与已审 CMake 一并纳入，当前 136 锚点/3 负控检查通过。该检查仍
+只证明来源清单新鲜，不把它作为生产自动恢复或语义接受结论。

@@ -32,7 +32,11 @@ def current_surface(root):
     # These anchors intentionally cover more than the wire protocol identity:
     # reader, cancellation, scheduling, configuration, and tokenizer matter too.
     paths = sorted(set(root.glob("src/server/**/*.*")) |
-                   set(root.glob("include/q4t/server/**/*.*")) | {
+                   set(root.glob("include/q4t/server/**/*.*")) |
+                   set(root.glob("src/service/**/*.cpp")) |
+                   set(root.glob("include/q4t/service/**/*.h")) |
+                   {p for p in root.glob("tools/serve_recovery/*.py")
+                    if not p.name.startswith("test_")} | {
                        root / "src/io/json.cpp", root / "src/text/tokenizer.cpp",
                        root / "src/runtime/system_memory.cpp",
                        root / "src/runtime/startup_reservation.cpp",
@@ -62,6 +66,7 @@ def current_surface(root):
                        root / "src/model/model.cu", root / "src/mtp/mtp.cu",
                        root / "cmake/CudaCleanupBoundary.cmake",
                        root / "CMakeLists.txt",
+                       root / "cmake/GuardianProcess.cmake",
                        root / "include/q4t/runtime/system_memory.h",
                        root / "src/main.cpp", root / "cmake/StructuredOutput.cmake",
                        root / "cmake/ChatProtocolIdentity.cmake"})
