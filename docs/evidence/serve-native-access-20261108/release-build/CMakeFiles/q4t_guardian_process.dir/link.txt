@@ -1,0 +1,2 @@
+/usr/bin/ar qc libq4t_guardian_process.a "CMakeFiles/q4t_guardian_process.dir/home/rm01/models/dev/qwen4-thor/src/service/guardian_process.cpp.o"
+/usr/bin/ranlib libq4t_guardian_process.a

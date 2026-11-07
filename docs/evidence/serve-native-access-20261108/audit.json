@@ -1,0 +1,51 @@
+{
+  "status": "PASS_NATIVE_ACCESS_ACCEPTANCE_AUDIT",
+  "source_commit": "fcb5a7d47a776eafab4e1b8a468e077f3a32f75a",
+  "runtime_sources": 325,
+  "source_snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-access-20261108/source",
+  "distinct_cpu": 71,
+  "native_binary_sha256": "ba6baf0e729d6fbc7a91ce92737d21c194fb6902b44aa713af960db9d37122a7",
+  "engine_sha256": "c6285915be1dda92601b268c869e6645eb967689a408f4a2619984acfbd9ca20",
+  "requests": 6,
+  "model_starts": 1,
+  "driver_seconds": 52.81019647885114,
+  "strict_lease_seconds": 53.72046175599098,
+  "nvml_queries": 51,
+  "nvml_all_ok": true,
+  "owned_identities": [
+    {
+      "pid": 401633,
+      "start_ticks": 228362574,
+      "role": "guardian"
+    },
+    {
+      "pid": 401634,
+      "start_ticks": 228362574,
+      "role": "journal"
+    },
+    {
+      "pid": 401635,
+      "start_ticks": 228362586,
+      "role": "gateway"
+    },
+    {
+      "pid": 401640,
+      "start_ticks": 228362612,
+      "role": "controller"
+    },
+    {
+      "pid": 401647,
+      "start_ticks": 228362712,
+      "role": "model"
+    },
+    {
+      "pid": 401637,
+      "start_ticks": 228362596,
+      "role": "native_entrypoint"
+    }
+  ],
+  "all_recorded_exited": true,
+  "ports_free": true,
+  "lock_acquirable": true,
+  "scope": "Native TLS/certificate/CORS targeted business, no full performance/model matrix or long stability; local NIC client, not remote host deployment."
+}

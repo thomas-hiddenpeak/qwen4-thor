@@ -1,0 +1,33 @@
+[  7%] Building CXX object CMakeFiles/q4t_guardian_process.dir/home/rm01/models/dev/qwen4-thor/src/service/guardian_process.cpp.o
+[ 14%] Linking CXX static library libq4t_guardian_process.a
+[ 14%] Built target q4t_guardian_process
+[ 21%] Building CXX object CMakeFiles/q4t_guardian_journal.dir/home/rm01/models/dev/qwen4-thor/src/service/guardian_journal.cpp.o
+[ 28%] Building CXX object CMakeFiles/q4t_guardian_journal.dir/home/rm01/models/dev/qwen4-thor/src/service/guardian_wire.cpp.o
+[ 35%] Building CXX object CMakeFiles/q4t_guardian_journal.dir/home/rm01/models/dev/qwen4-thor/src/io/json.cpp.o
+[ 42%] Linking CXX static library libq4t_guardian_journal.a
+[ 42%] Built target q4t_guardian_journal
+[ 50%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_main.cpp.o
+[ 57%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_transport.cpp.o
+[ 64%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_tls.cpp.o
+[ 71%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_credentials.cpp.o
+[ 78%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_cors.cpp.o
+[ 85%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_admin.cpp.o
+[ 92%] Building CXX object CMakeFiles/q4t_ingress.dir/home/rm01/models/dev/qwen4-thor/src/server/http_request.cpp.o
+[100%] Linking CXX executable q4t-ingress
+[100%] Built target q4t_ingress
+[ 14%] Built target q4t_guardian_process
+[ 42%] Built target q4t_guardian_journal
+[ 50%] Building CXX object CMakeFiles/q4t_ingress_no_tls.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_main.cpp.o
+[ 57%] Building CXX object CMakeFiles/q4t_ingress_no_tls.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_transport.cpp.o
+[ 64%] Building CXX object CMakeFiles/q4t_ingress_no_tls.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_tls.cpp.o
+[ 71%] Building CXX object CMakeFiles/q4t_ingress_no_tls.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_credentials.cpp.o
+[ 78%] Building CXX object CMakeFiles/q4t_ingress_no_tls.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_cors.cpp.o
+[ 85%] Building CXX object CMakeFiles/q4t_ingress_no_tls.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_admin.cpp.o
+[ 92%] Building CXX object CMakeFiles/q4t_ingress_no_tls.dir/home/rm01/models/dev/qwen4-thor/src/server/http_request.cpp.o
+[100%] Linking CXX executable q4t-ingress-no-tls
+[100%] Built target q4t_ingress_no_tls
+[ 25%] Built target q4t_guardian_process
+[ 75%] Built target q4t_guardian_journal
+[ 87%] Building CXX object CMakeFiles/q4t_guardian.dir/home/rm01/models/dev/qwen4-thor/src/service/guardian_main.cpp.o
+[100%] Linking CXX executable q4t-guardian
+[100%] Built target q4t_guardian

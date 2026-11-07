@@ -1,0 +1,7 @@
+{
+  "command_mode": "--check-tls",
+  "input": ".q4t-work/serve-native-access-20261108/cpu-01/access/artifacts/native-7mm8nrrn/gateway-1/ingress.json",
+  "exit_code": 1,
+  "stdout": "{\"enabled\":true,\"ready\":false,\"valid_until_unix\":0,\"expires_within_seven_days\":false,\"client_crl_enforced\":false,\"generation\":0,\"load_attempt\":1,\"fingerprint_sha256\":\"\",\"reload_pending\":false,\"reader_cleanup_pending\":false,\"error\":\"tls_material_unreadable\"}\n",
+  "stderr": ""
+}

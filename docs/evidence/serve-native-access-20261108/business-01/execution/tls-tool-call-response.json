@@ -1,0 +1,38 @@
+{
+  "status": 200,
+  "headers": {
+    "Content-Type": "text/event-stream",
+    "X-Request-Id": "req-a24c16cadc62cf0d56adb636cf8f6dfd",
+    "Connection": "close",
+    "Cache-Control": "no-store",
+    "Vary": "Origin",
+    "Access-Control-Allow-Origin": "https://client.example",
+    "Access-Control-Allow-Credentials": "true",
+    "Access-Control-Expose-Headers": "x-request-id, retry-after"
+  },
+  "seconds": 3.641220652963966,
+  "value": {
+    "id": "agent-1370817581d70e17e397f0dce4c969f8",
+    "model": "qwen3.8-flash-next",
+    "message": {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_agent-1370817581d70e17e397f0dce4c969f8_0",
+          "type": "function",
+          "function": {
+            "name": "read_project_record",
+            "arguments": "{\"path\":\"docs/MODEL.md\",\"start_line\":1,\"line_count\":16}"
+          }
+        }
+      ]
+    },
+    "finish_reason": "tool_calls",
+    "usage": {
+      "prompt_tokens": 390,
+      "completion_tokens": 55,
+      "total_tokens": 445
+    }
+  }
+}

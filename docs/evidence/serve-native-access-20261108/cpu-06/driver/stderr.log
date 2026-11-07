@@ -1,0 +1,9 @@
+test_native_access_bounds_include_self_check_and_forbid_cuda_probes (tools.serve_recovery.test_acceptance.BudgetTests.test_native_access_bounds_include_self_check_and_forbid_cuda_probes) ... ok
+test_missing_sealed_dependency_cannot_fall_back_to_checkout (tools.serve_recovery.test_acceptance.PackagedImportTests.test_missing_sealed_dependency_cannot_fall_back_to_checkout) ... ok
+test_preloaded_checkout_module_fails_before_any_service_start (tools.serve_recovery.test_acceptance.PackagedImportTests.test_preloaded_checkout_module_fails_before_any_service_start) ... ok
+test_workspace_regular_package_cannot_shadow_sealed_namespace (tools.serve_recovery.test_acceptance.PackagedImportTests.test_workspace_regular_package_cannot_shadow_sealed_namespace) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.451s
+
+OK

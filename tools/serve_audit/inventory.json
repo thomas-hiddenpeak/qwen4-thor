@@ -1138,7 +1138,7 @@
     },
     "GET /livez": {
       "semantics": "原生服务入口本身存活，需Bearer鉴权",
-      "boundary": "Actual-peer IPv4/IPv6 CIDR, optional native TLS and CORS; bounded close-delimited HTTP. Live does not imply model ready; no replay. TLS/CORS final GPU evidence pending.",
+      "boundary": "Actual-peer IPv4/IPv6 CIDR, optional native TLS and CORS; bounded close-delimited HTTP. Live does not imply model ready; no replay. Native TLS/CORS targeted business accepted; no full-model or long-stability claim.",
       "evidence": [
         "src/service/ingress_main.cpp",
         "tools/serve_recovery/test_native_ingress.py",
@@ -1380,9 +1380,10 @@
       "docs/SERVE_NATIVE_ACCESS_2026-11-08.md",
       "tools/serve_recovery/test_native_access.py",
       "tools/serve_recovery/test_native_browser.py",
-      "tools/serve_recovery/test_native_bundle.py"
+      "tools/serve_recovery/test_native_bundle.py",
+      "docs/evidence/serve-native-access-20261108/audit.json"
     ],
     "review": "Certificate files read only in exec helper with 2s deadline and 100ms cleanup; unreaped helper retains service-level kernel lease. Failed reload keeps unexpired context; expiry closes new TLS handshakes/admission without model restart. Old contexts finish existing SSE. v4 seals external credential paths; old package inventories preserved. OpenSSL uses explicit fixed library path, no implicit config loading. Early TLS auth rejection drains at most 64KiB/100ms after close_notify, preserving late-body response.",
-    "limitations": "Targeted CPU passed; final Release/native model short acceptance pending. No remote OCSP/CRL fetching, active-session retroactive revocation, full model/performance or long stability claim. Standard API completion remains required in A tasks; HTTP persistent/chunked/upload integration remains N05, not removed."
+    "limitations": "Accepted targeted CPU and one-model/six-Chat native TLS business; no remote OCSP/CRL fetching, active-session retroactive revocation, full model/performance or long stability claim. Standard API tasks A and remaining HTTP integration N05 remain active."
   }
 }

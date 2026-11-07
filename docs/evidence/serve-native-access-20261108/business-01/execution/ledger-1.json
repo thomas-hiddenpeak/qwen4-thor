@@ -1,0 +1,86 @@
+{
+  "previous_sha256": "ca05621b1a938d8ec3ee0e306b93b916bffa7c5d89496027f590db4a63252fd7",
+  "sha256": "bdcc850da9c78fac0ffad0b225a84679d84baf2c1d8cb5550c567b0f59abf931",
+  "state": {
+    "active": {
+      "controller": {
+        "controller_generation": 1,
+        "generation": 1,
+        "owner": {
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+          "pid": 401640,
+          "start_ticks": 228362612
+        },
+        "phase": "ready",
+        "ready_at": 1343622106,
+        "ticket": "6a68ecce-0103-451e-9638-bf5213cc612b"
+      },
+      "gateway": {
+        "controller_generation": 0,
+        "generation": 1,
+        "owner": {
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+          "pid": 401635,
+          "start_ticks": 228362586
+        },
+        "phase": "ready",
+        "ready_at": 791019217,
+        "ticket": "e95ae045-ef81-4460-96cd-b6d7f1f05176"
+      },
+      "model": {
+        "controller_generation": 1,
+        "generation": 1,
+        "owner": {
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+          "pid": 401647,
+          "start_ticks": 228362712
+        },
+        "phase": "ready",
+        "ready_at": 41560034684,
+        "ticket": "42256a3f-c40e-4acf-9a7e-c8834cd55e2d"
+      }
+    },
+    "attempts": {
+      "controller": [],
+      "gateway": [],
+      "model": []
+    },
+    "circuit_until": {
+      "controller": 0,
+      "gateway": 0,
+      "model": 0
+    },
+    "clock": {
+      "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+      "logical_ns": 41560034684,
+      "monotonic_ns": 2283666842053429
+    },
+    "desired": "RUNNING",
+    "failures": [],
+    "generations": {
+      "controller": 1,
+      "gateway": 1,
+      "model": 1
+    },
+    "last": {
+      "digest": "2e8c2f6203d6e2717d89c1085bf82bf255568696989d753e1d2f5b28b3880c2c",
+      "id": "acb75a38-d8de-4747-98ba-061f1c4a21b2",
+      "reply": {
+        "result": {
+          "recorded": true
+        },
+        "revision": 10
+      }
+    },
+    "not_before": {
+      "controller": 0,
+      "gateway": 0,
+      "model": 0
+    },
+    "policy": "q4t-recovery-v1",
+    "quarantine": null,
+    "revision": 10,
+    "service_id": "21c8a3f5-5711-40b7-b0d0-49c0db1110bd",
+    "version": 1
+  }
+}

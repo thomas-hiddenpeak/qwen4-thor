@@ -1,0 +1,6 @@
+test_browser_cors_json_sse_and_error_feedback (__main__.BrowserTests.test_browser_cors_json_sse_and_error_feedback) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 3.181s
+
+OK

@@ -1,0 +1,15 @@
+{
+  "exit_code": 0,
+  "seconds": 13.54216614132747,
+  "command": [
+    "cmake",
+    "--build",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-access-20261108/release-build",
+    "--target",
+    "q4t_ingress",
+    "q4t_ingress_no_tls",
+    "q4t_guardian",
+    "--parallel",
+    "6"
+  ]
+}

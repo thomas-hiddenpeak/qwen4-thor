@@ -15,10 +15,12 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 独立 Guardian 与原生服务入口已完成[有界验收交付](docs/SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)：
 默认包无需nginx/systemd即可提供Bearer鉴权、JSON/SSE及模型/控制器/
 入口恢复；辅助监控故障保留健康业务，恢复预算和停止意图持久化。
-151项不同CPU与3启动/18Chat真实短验通过，nginx仅可选前置。
+原生恢复151项不同CPU与3启动/18Chat真实短验通过，nginx仅可选前置。
+后续[原生TLS/浏览器交付](docs/SERVE_NATIVE_ACCESS_2026-11-08.md)新增
+71项不同CPU及1启动/6Chat；支持IPv4/IPv6、证书轮换、mTLS与CORS。
 本机`build/service/bin/q4t service`已安装，状态`build/service-native-state`
 保持停止；原`build/q4t serve`保留原含义。Python控制面依赖仍保留，
-长稳及C/D范围见交付说明；旧A/B包与证据可回退。
+长稳由用户实跑；其余兼容/恢复任务持续按总计划推进，旧包可回退。
 
 当前默认程序（身份见[STATUS](docs/STATUS.md)）已包含工具/推理输出解析、JSON/SSE、带ID工具
 历史、单条开头developer适配和`/v1/capabilities`能力/模板身份查询。
@@ -107,16 +109,15 @@ token预算不足而失败，canonical分词长度不构成生成上限。
 所指的`q4t-ingress`及构建来源回执；不探测、复制或启动nginx。
 `--ingress-mode nginx --nginx PATH`仅保留显式旧网关模式。直接运行
 `build/q4t serve`保持原含义，服务封装由Guardian管理入口与模型生命周期。
-原生入口目前只监听loopback；原生TLS/LAN、CORS和标准API缺口是
-[当前总计划](docs/SERVE_MASTER_PLAN_2026-11-08.md)中的必做实现，
-不因外部前置可选而取消。当前控制器/journal仍使用Python，必要的
-CUDA、系统与模型依赖不变。新模式已完成本机有界真实业务验收，
-当前v3入口、日志阻塞隔离与回退见[R01交付](docs/SERVE_OBSERVATION_IO_2026-11-08.md)，
+默认保持loopback策略；原生TLS/LAN、mTLS/本地CRL、换证和CORS已
+完成针对性验收，按部署配置选择启用。标准API与其他接入缺口继续按
+[当前总计划](docs/SERVE_MASTER_PLAN_2026-11-08.md)实现。当前控制器/
+journal仍使用Python，必要的CUDA、系统与模型依赖不变。
+日志阻塞隔离见[R01交付](docs/SERVE_OBSERVATION_IO_2026-11-08.md)，
 原生入口既有能力见[交付说明](docs/SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)。
 
-开发中的v4包增加原生IPv4/IPv6 TLS、mTLS、证书轮换及CORS；当前
-已有针对性CPU与真实浏览器证据，实际模型短验尚待完成，不替换上述
-已接受默认。实施与凭据管理见[原生接入计划](docs/SERVE_NATIVE_ACCESS_2026-11-08.md)。
+当前默认v4包、实际模型TLS短验、凭据管理与回退见
+[原生接入交付](docs/SERVE_NATIVE_ACCESS_2026-11-08.md)。
 TLS使用系统OpenSSL 3，不复制nginx代码，也不随包携带nginx。
 构建默认启用`Q4T_ENABLE_NATIVE_TLS=ON`，需要匹配的OpenSSL 3开发头
 文件及系统运行库；可用`-DQ4T_ENABLE_NATIVE_TLS=OFF`构建明文入口。
@@ -141,13 +142,14 @@ location / {
 }
 ```
 
-入口支持8条明确路由，认证后的`/livez`只表示入口存活；`/readyz`与
+入口支持8条业务/健康路由及相应CORS预检，认证后的`/livez`只表示入口存活；`/readyz`与
 业务请求受模型自检、配额隔离和代次绑定约束，恢复期返回503及
 Retry-After。请求头/体共享10秒绝对接收期限，头64KiB，业务体最多
 16MiB，聚合业务体预留48MiB；32个有界处理槽，数据与控制分别限额。
 HTTP/1.0/1.1、Content-Length与连接关闭；不接收chunked请求或Expect，
 每连接只处理一个请求；不重放POST/工具，不在新模型上续接被中断的SSE。
-可选前置的普通HTTP与SSE已用CPU后端验证，实际TLS/LAN仍需部署验收。
+可选前置普通HTTP与SSE、原生浏览器调用已验；实际TLS已在本机网卡
+地址和自身/32白名单完成模型业务短验，跨主机生产证书/域名按部署配置。
 
 ## 目标模型
 

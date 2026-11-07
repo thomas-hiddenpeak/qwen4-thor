@@ -1,0 +1,1 @@
+{"status": "AUDIT_READER_ERROR", "reason": "NVML records have top-level status, not result.status; no runtime failure, model test not repeated."}

@@ -1,0 +1,66 @@
+{
+  "model": "qwen3.8-flash-next",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Read the first 16 lines of docs/MODEL.md with read_project_record. Then reply only with the exact citation returned by the tool."
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "read_project_record",
+        "description": "Read real project documentation or acceptance JSON under docs/, or the installed release metadata build/q4t.release.json. Returns numbered lines, a source SHA256 and an exact citation. Use the returned citation verbatim in the answer.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "enum": [
+                "docs/MODEL.md"
+              ]
+            },
+            "start_line": {
+              "type": "integer"
+            },
+            "line_count": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "path",
+            "start_line",
+            "line_count"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    }
+  ],
+  "parse_response": true,
+  "temperature": 0,
+  "top_p": 1,
+  "n": 1,
+  "stream": true,
+  "max_tokens": 256,
+  "tool_choice": {
+    "type": "function",
+    "function": {
+      "name": "read_project_record"
+    }
+  },
+  "parallel_tool_calls": false,
+  "request_timeout_ms": 60000,
+  "request_id": "agent-1370817581d70e17e397f0dce4c969f8",
+  "cancel_token": "a6508694b06c0d6d7b3943accc0cb011c55947b96b624efece77c07cfaa5f353",
+  "chat_template_kwargs": {
+    "enable_thinking": false,
+    "preserve_thinking": true,
+    "reasoning_effort": "low"
+  },
+  "stream_options": {
+    "include_usage": true
+  }
+}

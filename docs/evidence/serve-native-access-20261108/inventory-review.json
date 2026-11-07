@@ -1,0 +1,36 @@
+{
+  "scope": "Native IPv4/IPv6 actual-peer CIDR, lazy system OpenSSL TLS1.2/1.3, bounded credential helper and private reload, local mTLS/CRL, CORS/OPTIONS. TLS-OFF and plaintext do not load crypto. Explicit old nginx remains optional. Unchanged engine binary and numerical contract; changed shared HTTP receiver used by this new ingress only.",
+  "changed_sources": [
+    "cmake/NativeIngress.cmake",
+    "include/q4t/server/http_listener.h",
+    "include/q4t/server/http_request.h",
+    "include/q4t/service/ingress_address.h",
+    "include/q4t/service/ingress_admin.h",
+    "include/q4t/service/ingress_cors.h",
+    "include/q4t/service/ingress_credentials.h",
+    "include/q4t/service/ingress_tls.h",
+    "include/q4t/service/ingress_transport.h",
+    "src/server/http_request.cpp",
+    "src/service/ingress_admin.cpp",
+    "src/service/ingress_cors.cpp",
+    "src/service/ingress_credentials.cpp",
+    "src/service/ingress_main.cpp",
+    "src/service/ingress_tls.cpp",
+    "src/service/ingress_transport.cpp",
+    "tools/serve_recovery/acceptance.py",
+    "tools/serve_recovery/bundle.py",
+    "tools/serve_recovery/gateway.py",
+    "tools/serve_recovery/gateway_config.py",
+    "tools/serve_recovery/native_ingress.py",
+    "tools/serve_recovery/service.py",
+    "tools/serve_recovery/tls_control.py"
+  ],
+  "evidence": [
+    "docs/SERVE_NATIVE_ACCESS_2026-11-08.md",
+    "tools/serve_recovery/test_native_access.py",
+    "tools/serve_recovery/test_native_browser.py",
+    "tools/serve_recovery/test_native_bundle.py"
+  ],
+  "review": "Certificate files read only in exec helper with 2s deadline and 100ms cleanup; unreaped helper retains service-level kernel lease. Failed reload keeps unexpired context; expiry closes new TLS handshakes/admission without model restart. Old contexts finish existing SSE. v4 seals external credential paths; old package inventories preserved. OpenSSL uses explicit fixed library path, no implicit config loading. Early TLS auth rejection drains at most 64KiB/100ms after close_notify, preserving late-body response.",
+  "limitations": "Targeted CPU passed; final Release/native model short acceptance pending. No remote OCSP/CRL fetching, active-session retroactive revocation, full model/performance or long stability claim. Standard API completion remains required in A tasks; HTTP persistent/chunked/upload integration remains N05, not removed."
+}

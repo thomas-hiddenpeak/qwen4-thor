@@ -1,0 +1,28 @@
+{
+  "status": 200,
+  "headers": {
+    "Content-Type": "text/event-stream",
+    "X-Request-Id": "req-e27817fbb5f41fc869d926441128d828",
+    "Connection": "close",
+    "Cache-Control": "no-store",
+    "Vary": "Origin",
+    "Access-Control-Allow-Origin": "https://client.example",
+    "Access-Control-Allow-Credentials": "true",
+    "Access-Control-Expose-Headers": "x-request-id, retry-after"
+  },
+  "seconds": 0.2751464741304517,
+  "value": {
+    "id": "agent-80470bc488e6b3e258fadc9e041ee2b6",
+    "model": "qwen3.8-flash-next",
+    "message": {
+      "role": "assistant",
+      "content": "42"
+    },
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 27,
+      "completion_tokens": 3,
+      "total_tokens": 30
+    }
+  }
+}

@@ -5,3 +5,4 @@ docs/evidence/serve-resources-20261102/**/*.bin binary
 docs/evidence/grammar-isolation-20261102/**/*.bin binary
 docs/evidence/serve-lifecycle-20261103/**/*-wire.bin binary
 docs/evidence/serve-grammar-reap-20261108/**/*.wire binary
+docs/evidence/serve-native-access-20261108/**/*.bin binary

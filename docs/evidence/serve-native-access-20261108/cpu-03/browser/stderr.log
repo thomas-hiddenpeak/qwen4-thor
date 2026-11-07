@@ -1,0 +1,14 @@
+test_browser_cors_json_sse_and_error_feedback (__main__.BrowserTests.test_browser_cors_json_sse_and_error_feedback) ... FAIL
+
+======================================================================
+FAIL: test_browser_cors_json_sse_and_error_feedback (__main__.BrowserTests.test_browser_cors_json_sse_and_error_feedback)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_native_browser.py", line 121, in test_browser_cors_json_sse_and_error_feedback
+    self.assertTrue(completed.wait(20), 'browser did not report result')
+AssertionError: False is not true : browser did not report result
+
+----------------------------------------------------------------------
+Ran 1 test in 22.753s
+
+FAILED (failures=1)

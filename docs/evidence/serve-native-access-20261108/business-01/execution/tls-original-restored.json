@@ -1,0 +1,17 @@
+{
+  "enabled": true,
+  "ready": true,
+  "valid_until_unix": 1794698197,
+  "expires_within_seven_days": true,
+  "client_crl_enforced": false,
+  "generation": 4,
+  "load_attempt": 5,
+  "fingerprint_sha256": "1f38c9fb29d9c4036b4241f9fb393f7af20a36f06137a24bb8ccf7b97ca82e07",
+  "reload_pending": false,
+  "reader_cleanup_pending": false,
+  "error": "",
+  "entrypoint_pid": 401637,
+  "entrypoint_start_ticks": 228362596,
+  "reload_accepted": true,
+  "reloaded": true
+}

@@ -32,7 +32,7 @@
     {
       "id": "A01",
       "required": true,
-      "state": "planned",
+      "state": "implementation_in_progress",
       "implementation": "逐字段/路由标准合同、默认/null/别名/metadata与错误语义；每个缺口链接实现任务",
       "acceptance": "官方参考→本地schema→解析→响应逐项可追踪；合法请求实际执行，拒绝不计功能通过",
       "depends_on": [],
@@ -42,7 +42,7 @@
     {
       "id": "A02",
       "required": true,
-      "state": "planned",
+      "state": "implementation_in_progress",
       "implementation": "system/developer/name、assistant/refusal、工具历史及多模态消息的模板语义",
       "acceptance": "逐字节模板/历史回填与模型token映射；不丢角色、参数或结果；一个真实多轮工具场景",
       "depends_on": [
@@ -195,36 +195,69 @@
     {
       "id": "N01",
       "required": true,
-      "state": "implementation_in_progress",
+      "state": "delivered",
       "implementation": "原生IPv4/IPv6监听、受控LAN、HTTPS终止、独立API Key/CIDR",
       "acceptance": "不安装/不启动nginx也能从客户端用TLS完整调用；绑定、证书名及来源限制真实生效",
       "depends_on": [],
-      "evidence": [],
-      "release": null
+      "evidence": [
+        "SERVE_NATIVE_ACCESS_2026-11-08.md",
+        "evidence/serve-native-access-20261108/audit.json",
+        "evidence/serve-native-access-20261108/delivery-01/result.json"
+      ],
+      "release": {
+        "manifest_sha256": "cc32f970a2e40566f7b3d68ed3c1fb7909bc3a4109d7832fe6bc9424411ea570",
+        "release_sha256": "352c368d14bd1d5d731fbd34f29619e20cec98780e44231130f3ea5beaa3edd5",
+        "ingress_sha256": "ba6baf0e729d6fbc7a91ce92737d21c194fb6902b44aa713af960db9d37122a7",
+        "engine_sha256": "c6285915be1dda92601b268c869e6645eb967689a408f4a2619984acfbd9ca20",
+        "state": "STOPPED",
+        "merged_main": false
+      }
     },
     {
       "id": "N02",
       "required": true,
-      "state": "implementation_in_progress",
+      "state": "delivered",
       "implementation": "证书/私钥/CA管理、可选mTLS、原生证书更新",
       "acceptance": "合法换证保持服务；坏证书保留上一有效配置并报告；到期/撤销策略明确；不要求模型重启",
       "depends_on": [
         "N01"
       ],
-      "evidence": [],
-      "release": null
+      "evidence": [
+        "SERVE_NATIVE_ACCESS_2026-11-08.md",
+        "evidence/serve-native-access-20261108/audit.json",
+        "evidence/serve-native-access-20261108/delivery-01/result.json"
+      ],
+      "release": {
+        "manifest_sha256": "cc32f970a2e40566f7b3d68ed3c1fb7909bc3a4109d7832fe6bc9424411ea570",
+        "release_sha256": "352c368d14bd1d5d731fbd34f29619e20cec98780e44231130f3ea5beaa3edd5",
+        "ingress_sha256": "ba6baf0e729d6fbc7a91ce92737d21c194fb6902b44aa713af960db9d37122a7",
+        "engine_sha256": "c6285915be1dda92601b268c869e6645eb967689a408f4a2619984acfbd9ca20",
+        "state": "STOPPED",
+        "merged_main": false
+      }
     },
     {
       "id": "N03",
       "required": true,
-      "state": "implementation_in_progress",
+      "state": "delivered",
       "implementation": "原生CORS/OPTIONS与浏览器JSON/SSE",
       "acceptance": "允许/拒绝来源、凭据、预检和错误响应一致；浏览器可用，未配置默认关闭不等于未实现",
       "depends_on": [
         "N01"
       ],
-      "evidence": [],
-      "release": null
+      "evidence": [
+        "SERVE_NATIVE_ACCESS_2026-11-08.md",
+        "evidence/serve-native-access-20261108/audit.json",
+        "evidence/serve-native-access-20261108/delivery-01/result.json"
+      ],
+      "release": {
+        "manifest_sha256": "cc32f970a2e40566f7b3d68ed3c1fb7909bc3a4109d7832fe6bc9424411ea570",
+        "release_sha256": "352c368d14bd1d5d731fbd34f29619e20cec98780e44231130f3ea5beaa3edd5",
+        "ingress_sha256": "ba6baf0e729d6fbc7a91ce92737d21c194fb6902b44aa713af960db9d37122a7",
+        "engine_sha256": "c6285915be1dda92601b268c869e6645eb967689a408f4a2619984acfbd9ca20",
+        "state": "STOPPED",
+        "merged_main": false
+      }
     },
     {
       "id": "N04",
@@ -486,5 +519,5 @@
       "release": null
     }
   ],
-  "next_task": "N01/N02/N03 then A01/A02"
+  "next_task": "A01/A02 then A03/A04/A05/A06/A07; continue all remaining master-plan tasks"
 }
