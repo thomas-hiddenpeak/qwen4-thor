@@ -143,6 +143,12 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
       out += text->str;
       continue;
     }
+    const auto* refusal = part.Find("refusal");
+    if (m.GetString("role") == "assistant" &&
+        part.GetString("type") == "refusal" && refusal && refusal->IsString()) {
+      out += refusal->str;
+      continue;
+    }
     *err = "Unexpected item type in content.";
     return {};
   }

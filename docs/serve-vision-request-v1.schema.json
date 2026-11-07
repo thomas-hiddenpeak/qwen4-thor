@@ -12,38 +12,8 @@
     "messages": {
       "type": "array",
       "minItems": 1,
-      "prefixItems": [
-        {
-          "$ref": "#/$defs/message"
-        }
-      ],
       "items": {
-        "allOf": [
-          {
-            "$ref": "#/$defs/message"
-          },
-          {
-            "properties": {
-              "role": {
-                "enum": [
-                  "user",
-                  "assistant",
-                  "tool"
-                ]
-              }
-            }
-          }
-        ]
-      },
-      "contains": {
-        "required": [
-          "role"
-        ],
-        "properties": {
-          "role": {
-            "const": "user"
-          }
-        }
+        "$ref": "#/$defs/message"
       }
     },
     "max_tokens": {
@@ -464,6 +434,22 @@
       ],
       "additionalProperties": false
     },
+    "refusalPart": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "refusal"
+        },
+        "refusal": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "refusal"
+      ],
+      "additionalProperties": false
+    },
     "message": {
       "type": "object",
       "properties": {
@@ -486,10 +472,14 @@
             },
             {
               "type": "array",
+              "minItems": 1,
               "items": {
                 "oneOf": [
                   {
                     "$ref": "#/$defs/textPart"
+                  },
+                  {
+                    "$ref": "#/$defs/refusalPart"
                   },
                   {
                     "$ref": "#/$defs/imagePart"
@@ -503,10 +493,17 @@
           ]
         },
         "name": {
-          "type": "null"
+          "type": [
+            "string",
+            "null"
+          ],
+          "x-q4t-max-utf8-bytes": 4096
         },
         "refusal": {
-          "type": "null"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "audio": {
           "type": "null"
@@ -594,6 +591,14 @@
                   "properties": {
                     "tool_calls": {}
                   }
+                },
+                {
+                  "required": [
+                    "refusal"
+                  ],
+                  "properties": {
+                    "refusal": {}
+                  }
                 }
               ]
             }
@@ -629,13 +634,44 @@
         },
         {
           "if": {
-            "required": [
-              "role"
-            ],
-            "properties": {
-              "role": {
-                "const": "tool"
-              }
+            "not": {
+              "allOf": [
+                {
+                  "required": [
+                    "role"
+                  ],
+                  "properties": {
+                    "role": {
+                      "const": "assistant"
+                    }
+                  }
+                },
+                {
+                  "anyOf": [
+                    {
+                      "required": [
+                        "tool_calls"
+                      ],
+                      "properties": {
+                        "tool_calls": {
+                          "type": "array",
+                          "minItems": 1
+                        }
+                      }
+                    },
+                    {
+                      "required": [
+                        "refusal"
+                      ],
+                      "properties": {
+                        "refusal": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
             }
           },
           "then": {
@@ -648,6 +684,74 @@
                   "string",
                   "array"
                 ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "role"
+            ],
+            "properties": {
+              "role": {
+                "not": {
+                  "const": "assistant"
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "anyOf": [
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "not": {
+                        "required": [
+                          "type"
+                        ],
+                        "properties": {
+                          "type": {
+                            "const": "refusal"
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "content"
+            ],
+            "properties": {
+              "content": {
+                "type": "array",
+                "contains": {
+                  "$ref": "#/$defs/refusalPart"
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "maxItems": 1,
+                "items": {
+                  "$ref": "#/$defs/refusalPart"
+                }
               }
             }
           }
@@ -678,7 +782,14 @@
                   {
                     "type": "array",
                     "items": {
-                      "$ref": "#/$defs/textPart"
+                      "oneOf": [
+                        {
+                          "$ref": "#/$defs/textPart"
+                        },
+                        {
+                          "$ref": "#/$defs/refusalPart"
+                        }
+                      ]
                     }
                   }
                 ]

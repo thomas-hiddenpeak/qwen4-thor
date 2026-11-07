@@ -77,8 +77,11 @@ def chat_schema():
     identifier = dict(type="string", minLength=1, maxLength=128,
         pattern="^[A-Za-z0-9_-]+$", **{"not": dict(pattern="^chatcmpl-auto-")})
     text_part = obj(dict(type=dict(const="text"), text=dict(type="string")), ("text",))
+    refusal_part = obj(dict(type=dict(const="refusal"),
+                            refusal=dict(type="string")), ("type", "refusal"))
     content = dict(anyOf=[dict(type=["string", "null"]),
-                          dict(type="array", items=ref("textPart"))])
+        dict(type="array", minItems=1,
+             items=dict(oneOf=[ref("textPart"), ref("refusalPart")]))])
     arguments = dict(anyOf=[dict(type="object", propertyNames=text_name()),
         dict(type="string", **{"x-q4t-json-object-text": True})])
     call = dict(oneOf=[obj(dict(id=dict(type="string", minLength=1, maxLength=256,
@@ -87,7 +90,9 @@ def chat_schema():
         ("function",)), obj(dict(type=dict(const="function"), name=text_name(),
                                 arguments=arguments), ("name", "arguments"))])
     message = obj(dict(role=dict(enum=["system", "developer", "user", "assistant", "tool"]),
-        content=content, name=dict(type="null"), refusal=dict(type="null"),
+        content=content, name=dict(type=["string", "null"],
+            **{"x-q4t-max-utf8-bytes": 4096}),
+        refusal=dict(type=["string", "null"]),
         audio=dict(type="null"), annotations=dict(type="null"), function_call=dict(type="null"),
         reasoning=dict(type=["string", "null"]), reasoning_content=dict(type=["string", "null"]),
         tool_calls=nullable(dict(type="array", maxItems=128, items=ref("historyCall"))),
@@ -95,10 +100,18 @@ def chat_schema():
                           **{"x-q4t-max-utf8-bytes": 256})), ("role",))
     message["allOf"] = [
         when(present("role", {"not": dict(const="assistant")}),
-             forbid(["reasoning", "reasoning_content", "tool_calls"])),
+             forbid(["reasoning", "reasoning_content", "tool_calls", "refusal"])),
         when(present("role", {"not": dict(const="tool")}), forbid(["tool_call_id"])),
-        when(present("role", dict(const="tool")), dict(required=["content"],
-            properties=dict(content=dict(type=["string", "array"]))))]
+        when({"not": dict(allOf=[present("role", dict(const="assistant")),
+            dict(anyOf=[present("tool_calls", dict(type="array", minItems=1)),
+                        present("refusal", dict(type="string"))])])},
+            dict(required=["content"],
+                 properties=dict(content=dict(type=["string", "array"])))),
+        when(present("role", {"not": dict(const="assistant")}),
+            dict(properties=dict(content=dict(anyOf=[dict(type=["string", "null"]),
+                dict(type="array", items={"not": present("type", dict(const="refusal"))})])))),
+        when(present("content", dict(type="array", contains=ref("refusalPart"))),
+            dict(properties=dict(content=dict(maxItems=1, items=ref("refusalPart")))))]
     fn = obj(dict(name=text_name(), description=dict(type="string"),
         strict=dict(type=["boolean", "null"]), parameters=dict(type="object",
             properties=dict(properties=dict(type="object")))), ("name",))
@@ -128,9 +141,7 @@ def chat_schema():
     properties = dict(
         model=dict(type="string", **{"x-q4t-equals-served-model": True}),
         prompt=dict(type="string", minLength=1),
-        messages=dict(type="array", minItems=1, prefixItems=[ref("message")],
-            items=dict(allOf=[ref("message"), dict(properties=dict(role=dict(enum=["user", "assistant", "tool"])))]),
-            contains=present("role", dict(const="user"))),
+        messages=dict(type="array", minItems=1, items=ref("message")),
         max_tokens=nullable(dict(type="integer", minimum=1, maximum=2147483647)),
         max_completion_tokens=nullable(dict(type="integer", minimum=1, maximum=2147483647)),
         stream=dict(type=["boolean", "null"], default=False),
@@ -159,7 +170,8 @@ def chat_schema():
     result.update({"$schema": DRAFT, "$id": "urn:q4t:serve-chat-request:v1",
         "title": "Q4T complete text Chat request structure v1",
         "description": "All supported text request fields. Required semantic and runtime checks are enumerated by x-q4t; schema validation alone is not admission or execution acceptance.",
-        "$defs": dict(textPart=text_part, message=message, historyCall=call,
+        "$defs": dict(textPart=text_part, refusalPart=refusal_part,
+                       message=message, historyCall=call,
                        tool=tool, schemaNode=node),
         "oneOf": [present("messages"), present("prompt")],
         "dependentRequired": dict(request_id=["cancel_token"], cancel_token=["request_id"]),
@@ -177,7 +189,7 @@ def chat_schema():
             when(dict(allOf=[json_output, present("tools", nonempty_tools)]), present("tool_choice", dict(const="none"))),
             when(any_present(["session_id", "prefix_cache_scope"]),
                  dict(properties=dict(stop=dict(enum=[None, []]))))],
-        "x-q4t": dict(profile="qwen3.8-native-v2", scope="text; experimental media excluded",
+        "x-q4t": dict(profile="qwen3.8-openai-v3", scope="text; experimental media excluded",
             semantic_contract="serve-input-semantics-v1.json", required_semantic_validation=True,
             runtime_preflight="POST /v1/chat/preflight", defaults_are_annotations=True,
             raw_prompt_always_unparsed=True, parsed_messages_default=True,
@@ -202,10 +214,10 @@ def vision_schema():
             description="One strictly increasing seconds value per source frame. Omission means 24fps from zero.")), ("video_frames",))
     message = result["$defs"]["message"]
     message["properties"]["content"]["anyOf"][1]["items"] = dict(oneOf=[
-        ref("textPart"), ref("imagePart"), ref("videoPart")])
+        ref("textPart"), ref("refusalPart"), ref("imagePart"), ref("videoPart")])
     message["allOf"].append(when(present("role", {"not":dict(const="user")}),
         dict(properties=dict(content=dict(anyOf=[dict(type=["string", "null"]),
-            dict(type="array", items=ref("textPart"))])))))
+            dict(type="array", items=dict(oneOf=[ref("textPart"), ref("refusalPart")]))])))))
     result["x-q4t"].update(profile="q4t-vision-v1", scope="explicit media service profile",
         server_flags=["--allow-media", "--no-mtp", "--max-seq", "1"],
         required_semantic_validation=True, acceptance="separate release attestation",
@@ -214,6 +226,22 @@ def vision_schema():
                      "state_cache", "media_chunked_prefill", "multiple_execution_slots"])
     result["allOf"].append(forbid(["session_id", "prefix_cache_scope"]))
     return result
+
+
+def message_schema():
+    full = chat_schema()
+    return {"$schema": DRAFT, "$id": "urn:q4t:serve:message-profile:v3",
+        "title": "qwen3.8-openai-v3 text message profile",
+        "description": "Text message shapes only. Tool association, full request options and runtime admission still require native validation; media uses the vision request schema.",
+        "type": "object", "required": ["messages"],
+        "properties": dict(messages=full["properties"]["messages"]),
+        "$defs": {k: full["$defs"][k] for k in
+                  ("message", "textPart", "refusalPart", "historyCall")},
+        "x-q4t": dict(profile="qwen3.8-openai-v3",
+            developer_mapping="ordered system ChatML messages",
+            name="JSON quoted participant; angle brackets escaped",
+            name_max_utf8_bytes=4096, user_message_required=False,
+            full_request_validation=False)}
 
 
 def publish(path, value, check):
@@ -237,8 +265,8 @@ def semantics():
          "If present model equals served identifier. request_id and fresh lowercase64hex cancel_token together; reserved auto prefix forbidden. Active ID registry/cancel authority are runtime checks, not idempotency. Optional immutable gateway policy scopes IDs, cancellation and cache keys by authenticated client. Wire IDs remain unchanged."),
         ("utf8-byte-length", ["src/server/input_contract.cpp", "src/server/text_stop.cpp"],
          "x-q4t-max-utf8-bytes counts encoded bytes, not codepoints/UTF-16. Historical names/parameter keys forbid C0, DEL and angle brackets; stop valid UTF-8 1..256 bytes, up to4."),
-        ("real-user-query", ["src/server/chat_template.cpp"],
-         "At least one user message remains after native Unicode trim and exclusion of whole <tool_response>...</tool_response> user wrappers. Instruction slot only first system OR developer."),
+        ("message-profile", ["src/server/chat_template.cpp", "src/server/chat_prompt.cpp"],
+         "System/developer instruction messages retain order as native system ChatML; no required user role. Participant names are JSON quoted with escaped angle brackets and limited to4096 UTF-8 bytes, never authorization identity. Assistant refusal strings/one refusal content part are rendered as text. Content is required unless assistant has nonempty tool_calls or a refusal string. Other media and content shapes remain role-checked."),
         ("reasoning-aliases", ["src/server/reasoning_options.cpp"],
          "Only assistant may carry reasoning aliases; two string values must agree byte-for-byte. Null alias may defer to the other. Hidden output preserves computation/usage."),
         ("historical-arguments", ["src/server/chat_tool_history.cpp"],
@@ -411,6 +439,7 @@ def main():
     assert set(schema["properties"]) == set(inventory["fields"]), "uncatalogued field"
     publish(ROOT / "docs/serve-chat-request-v1.schema.json", schema, args.check)
     publish(ROOT / "docs/serve-vision-request-v1.schema.json", vision_schema(), args.check)
+    publish(ROOT / "docs/serve-message-profile-v3.schema.json", message_schema(), args.check)
     publish(ROOT / "docs/serve-input-semantics-v1.json", semantics(), args.check)
     spec = openapi()
     assert {method.upper()+" "+path for path, operations in spec["paths"].items()

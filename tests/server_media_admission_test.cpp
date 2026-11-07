@@ -363,3 +363,28 @@ Q4T_TEST(media_constraints_preserve_input_and_force_output_contract) {
   }
   return true;
 }
+
+Q4T_TEST(media_prompt_instruction_names_and_refusal_positions) {
+  Json request;
+  const std::string wire =
+      R"({"enable_thinking":false,"messages":[)"
+      R"({"role":"system","content":"policy"},)"
+      R"({"role":"assistant","refusal":"earlier refusal"},)"
+      R"({"role":"developer","content":"inspect"},)"
+      R"({"role":"user","name":"viewer","content":[{"text":"look"},)"
+      R"({"image_url":")" +
+      std::string(kPng) + R"("}]}]})";
+  Q4T_CHECK(q4t::io::ParseJson(wire, &request, true));
+  Q4T_CHECK(ValidateChatContract(request, "m", true));
+  std::string prompt, param, code;
+  std::vector<VisionItem> items;
+  Q4T_CHECK(PrepareChatPrompt(request, {}, &prompt, &items, &param, &code));
+  Q4T_CHECK(items.size() == 1 && items[0].message_index == 3 &&
+            items[0].part_index == 1);
+  Q4T_CHECK(prompt.find("earlier refusal<|im_end|>\n"
+                        "<|im_start|>system\ninspect<|im_end|>\n"
+                        "<|im_start|>user name=\"viewer\"\nlook"
+                        "<|vision_start|><|image_pad|><|vision_end|>") !=
+            std::string::npos);
+  return true;
+}

@@ -119,8 +119,8 @@ Q4T_TEST(chat_contract_completion_token_budget) {
 
 Q4T_TEST(chat_contract_no_silent_message_semantics) {
   for (const auto* message : {
-      R"({"role":"user","content":"hello","name":"alice"})",
-      R"({"role":"assistant","content":"x","refusal":"refused"})",
+      R"({"role":"user","content":"hello","name":17})",
+      R"({"role":"assistant","content":"x","refusal":17})",
       R"({"role":"user","content":"x","reasoning_content":"lost"})",
       R"({"role":"user","content":"x","tool_calls":[]})",
       R"({"role":"user","content":"x","contnet":"lost"})",

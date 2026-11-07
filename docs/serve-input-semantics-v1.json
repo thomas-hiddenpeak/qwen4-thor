@@ -48,11 +48,12 @@
       "contract": "x-q4t-max-utf8-bytes counts encoded bytes, not codepoints/UTF-16. Historical names/parameter keys forbid C0, DEL and angle brackets; stop valid UTF-8 1..256 bytes, up to4."
     },
     {
-      "id": "real-user-query",
+      "id": "message-profile",
       "sources": [
-        "src/server/chat_template.cpp"
+        "src/server/chat_template.cpp",
+        "src/server/chat_prompt.cpp"
       ],
-      "contract": "At least one user message remains after native Unicode trim and exclusion of whole <tool_response>...</tool_response> user wrappers. Instruction slot only first system OR developer."
+      "contract": "System/developer instruction messages retain order as native system ChatML; no required user role. Participant names are JSON quoted with escaped angle brackets and limited to4096 UTF-8 bytes, never authorization identity. Assistant refusal strings/one refusal content part are rendered as text. Content is required unless assistant has nonempty tool_calls or a refusal string. Other media and content shapes remain role-checked."
     },
     {
       "id": "reasoning-aliases",
@@ -262,7 +263,7 @@
     "src/runtime/startup_reservation.cpp": "3c979fd0e8eb5dec8185148c77677ddad246f401faa92641d2a5f1ec2c033e09",
     "src/runtime/system_memory.cpp": "231e9a7ce5ed49e27e604a7bfa4066b35e83f286026c15986898d996a66acd2f",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_contract.cpp": "67649329b9c1f1006d6f27dfa96d41d39f4d5fa30a143da33a1248de8a9dcf40",
+    "src/server/chat_contract.cpp": "12bc39770aab7112bac5eb747009a80de5397af96a146a0296f0258814161ca2",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
     "src/server/chat_generation.cpp": "f014423f97c3c218f79fdd93c04b29ddb76828a9db96fc82708bea0f1612f05b",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
@@ -272,14 +273,14 @@
     "src/server/chat_metrics.cpp": "f12e27e7946dab08e882be25f8cb6fa2273e4d370716872aaf5a59fb30e5cf21",
     "src/server/chat_plan.cpp": "b7aa0e9d84cbe9097c1d95100e783b68a4a2b01c80a1e6aaf68c756c61e17f95",
     "src/server/chat_preflight.cpp": "ab8b3491b17baae0d9a3ec51e9c9cf066907e665efd21449235e70153f130767",
-    "src/server/chat_prompt.cpp": "913d5768c332f90935713dff717b71ff0280e86ebf1b48fab0af342d0326f43a",
+    "src/server/chat_prompt.cpp": "d79f99bff03d2d199e4e62b004fc187b6bb36055211921008d561c869577b4fd",
     "src/server/chat_response_parser.cpp": "ffa2ce62aeffbfac4c67c97c591854db8cec8eac389e7e2e0cdfe57e05f392f7",
     "src/server/chat_scheduler.cpp": "2b6d315bfd12609e343010852f7c15b8248fe5180359a3d7b49d3c1db5b8d1fc",
     "src/server/chat_server.cpp": "19c040b20e6f1f1cde9d37e23477b2bfa65c4b38ab09cfacdef9281522fda095",
-    "src/server/chat_template.cpp": "a030f020b91227e143827754a3b45e36804a8e2f72c727d5e36291c688193244",
+    "src/server/chat_template.cpp": "eaa57515f4b0cd4be6c8fd4a820e3ace84ceeb1d0cb6e9b09ff49d2fe6f3c4cf",
     "src/server/chat_tool_history.cpp": "3514a29df574c5b21c4dd8b6ecd9407aa3ff50a43a30b51d97fa93c6cd247bed",
     "src/server/cuda_memory_backend.h": "aabc6d78d2925ec5280e270964d79d3164ce706732a674b88215554a34d0e6a5",
-    "src/server/http_request.cpp": "5890e834268e3dee4b169597b4086be06806a9e18e8d9eab25e694cb1bdfd58c",
+    "src/server/http_request.cpp": "614dd52541c9311054be68a790d6b7429503de6edd747b2247eb689273c24d3c",
     "src/server/input_contract.cpp": "ad9adbffc9638792ec15debeebee803fb43d2085f639281dabd6230146c5cf6a",
     "src/server/media_admission.cpp": "8b6fa7cdaad948522a4db542c2e313feb0ce816a80726850cfd19a777ef93be7",
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",

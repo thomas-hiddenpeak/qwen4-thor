@@ -87,6 +87,11 @@ test('capability validation binds protocol and template identities', async () =>
   const file = new URL('../../../docs/evidence/serve-preflight-20261103/execution-final/business/candidate-mtp/capabilities.json', import.meta.url);
   const caps = JSON.parse(JSON.parse(readFileSync(fileURLToPath(file), 'utf8')).raw);
   assert.equal(validateCapabilities(caps, MODEL, caps.protocol_source_sha256).model, MODEL);
+  const current = structuredClone(caps);
+  current.template.message_profile = 'qwen3.8-openai-v3';
+  assert.equal(validateCapabilities(current, MODEL).template.message_profile, 'qwen3.8-openai-v3');
+  current.template.message_profile = 'unreviewed';
+  assert.throws(() => validateCapabilities(current, MODEL), ProtocolError);
   assert.throws(() => validateCapabilities(caps, MODEL, '0'.repeat(64)), ProtocolError);
   const run = client(Buffer.from(JSON.stringify(caps)));
   assert.equal((await run.api.capabilities()).model, MODEL);

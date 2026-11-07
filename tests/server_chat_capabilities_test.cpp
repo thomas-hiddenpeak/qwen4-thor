@@ -92,10 +92,12 @@ Q4T_TEST(chat_capabilities_identity) {
   Q4T_CHECK(Hash(caps.GetString("protocol_source_sha256")));
   const auto* templ = caps.Find("template");
   Q4T_CHECK(templ && templ->IsObject());
-  Q4T_CHECK(templ->GetString("id") == "qwen4_exp-native-v2");
-  Q4T_CHECK(templ->GetString("message_profile") == "qwen3.8-native-v2");
+  Q4T_CHECK(templ->GetString("id") == "qwen4_exp-openai-v3");
+  Q4T_CHECK(templ->GetString("message_profile") == "qwen3.8-openai-v3");
   Q4T_CHECK(templ->GetString("developer_mapping") == "system");
-  Q4T_CHECK(!templ->GetBool("mixed_instruction_roles", true));
+  Q4T_CHECK(templ->GetBool("mixed_instruction_roles"));
+  Q4T_CHECK(templ->GetBool("refusal_history"));
+  Q4T_CHECK(!templ->GetBool("user_message_required", true));
   const auto* reasoning = caps.Find("reasoning");
   Q4T_CHECK(reasoning && reasoning->GetString("profile") == "q4t-reasoning-v1");
   Q4T_CHECK(reasoning->GetString("default_field") == "reasoning_content");
@@ -104,7 +106,8 @@ Q4T_TEST(chat_capabilities_identity) {
   Q4T_CHECK(reasoning->GetBool("thinking_token_budget"));
   Q4T_CHECK(reasoning->GetString("budget_profile") == "q4t-thinking-v1");
   Q4T_CHECK(reasoning->GetInt("max_forced_closure_tokens") == 14);
-  Q4T_CHECK(templ->GetString("message_name") == "absent_or_null_only");
+  Q4T_CHECK(templ->GetString("message_name") == "json_quoted_participant");
+  Q4T_CHECK(templ->GetInt("name_max_bytes") == 4096);
   for (const auto* key : {"reference_sha256", "renderer_source_sha256",
                           "tool_history_source_sha256", "fixture_sha256"})
     Q4T_CHECK(Hash(templ->GetString(key)));

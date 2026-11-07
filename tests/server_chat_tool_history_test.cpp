@@ -336,3 +336,23 @@ Q4T_TEST(chat_tool_history_legacy_shapes_are_explicit) {
   }
   return true;
 }
+
+Q4T_TEST(chat_template_tool_result_names_follow_ids) {
+  Json request;
+  Q4T_CHECK(ParseRequest(
+      List(
+          {kUser, kPair,
+           R"({"role":"tool","tool_call_id":"b","name":"second","content":"B"})",
+           R"({"role":"tool","tool_call_id":"a","name":"first","content":"A"})"}),
+      &request));
+  Q4T_CHECK(
+      q4t::server::ValidateChatContract(request, "qwen3.8-flash-next", false));
+  std::string prompt;
+  Q4T_CHECK(
+      q4t::server::RenderChatPrompt(request, {"q", "", "B", "A"}, &prompt));
+  Q4T_CHECK(
+      prompt.find("<tool_response>\nname=\"first\"\nA\n</tool_response>\n"
+                  "<tool_response>\nname=\"second\"\nB\n</tool_response>") !=
+      std::string::npos);
+  return true;
+}

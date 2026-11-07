@@ -11,14 +11,14 @@
 
 namespace q4t::server {
 
-inline constexpr std::string_view kChatMessageProfile = "qwen3.8-native-v2";
+inline constexpr std::string_view kChatMessageProfile = "qwen3.8-openai-v3";
 
-// This model has one instruction slot. Developer is an alternative spelling
-// for that leading system slot, not a second instruction hierarchy.
+// Both API instruction roles use the model's system ChatML role. Preserve
+// message order; a lone unnamed leading instruction retains native bytes.
 bool IsChatInstructionRole(std::string_view role);
 
-// Shared by the HTTP contract and direct renderer. Reject roles, placement,
-// names and instruction content that the native template cannot represent.
+// Shared by HTTP and the renderer: validate role-specific content, metadata
+// and historical refusal without decoding media or changing the request.
 Status ValidateChatMessageProfile(const io::Json& messages,
                                   std::string* error_param = nullptr);
 

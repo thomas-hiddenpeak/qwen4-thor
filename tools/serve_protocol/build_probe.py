@@ -20,11 +20,13 @@ SOURCES = ["tools/serve_protocol/contract_probe.cpp", "src/io/json.cpp",
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--output", type=Path, required=True)
+    ap.add_argument("--generated", type=Path,
+                    default=ROOT / ".q4t-work/serve-preflight-20261103/engine/generated")
     args = ap.parse_args()
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
     binary = output / "contract_probe"
-    generated = ROOT / ".q4t-work/serve-preflight-20261103/engine/generated"
+    generated = args.generated.resolve()
     command = ["g++-14", "-std=c++23", "-O2", "-Wall", "-Wextra", "-Werror",
         "-pthread", "-Iinclude", "-I" + str(generated), *SOURCES, "-o", str(binary)]
     metadata = dict(argv=command, sources={p: hashlib.sha256((ROOT/p).read_bytes()).hexdigest()

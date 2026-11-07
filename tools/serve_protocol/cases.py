@@ -107,14 +107,32 @@ def cases():
     add("null-nested-template", dict(base(), chat_template_kwargs=dict(enable_thinking=None)), False)
     for role in ("system", "developer"):
         add(role+"-first", dict(messages=[dict(role=role, content="rules"), *base()["messages"]]))
-        add(role+"-late", dict(messages=[*base()["messages"], dict(role=role, content="rules")]), False)
-    add("mixed-instructions", dict(messages=[dict(role="system"), dict(role="developer"), *base()["messages"]]), False)
-    add("no-user", dict(messages=[dict(role="assistant", content="hi")]), False)
-    add("tool-wrapper-not-query", dict(messages=[dict(role="user", content=" <tool_response>x</tool_response> ")]), False, semantic=True)
-    for value, accepted in ((None, True), ("", False), ("name", False)):
+        add(role+"-late", dict(messages=[*base()["messages"], dict(role=role, content="rules")]))
+    add("mixed-instructions", dict(messages=[dict(role="system", content="a"), dict(role="developer", content="b"), *base()["messages"]]))
+    add("no-user", dict(messages=[dict(role="assistant", content="hi")]))
+    add("tool-wrapper-not-query", dict(messages=[dict(role="user", content=" <tool_response>x</tool_response> ")]))
+    for value, accepted in ((None, True), ("", True), ("name", True), (17, False)):
         add("message-name-"+str(value), dict(messages=[dict(role="user", content="q", name=value)]), accepted)
+    for label, value, accepted in (("4096", "a"*4096, True), ("4097", "a"*4097, False),
+            ("unicode", "名"*1365+"a", True), ("unicode-overflow", "名"*1366, False)):
+        add("message-name-"+label, dict(messages=[dict(role="user", content="q", name=value)]), accepted)
+    for label, message, accepted in (
+        ("text", dict(role="assistant", refusal="no"), True),
+        ("null-content", dict(role="assistant", content=None, refusal="no"), True),
+        ("part", dict(role="assistant", content=[dict(type="refusal", refusal="no")]), True),
+        ("missing", dict(role="assistant", refusal=None), False),
+        ("wrong-role", dict(role="user", content="q", refusal=None), False),
+        ("wrong-part-role", dict(role="user", content=[dict(type="refusal", refusal="no")]), False),
+        ("mixed-parts", dict(role="assistant", content=[dict(type="refusal", refusal="no"), dict(type="text", text="q")]), False),
+        ("bad-part-type", dict(role="assistant", content=[dict(type="refusal", refusal=7)]), False),
+        ("unknown-part-field", dict(role="assistant", content=[dict(type="refusal", refusal="no", ignored=True)]), False)):
+        add("message-refusal-"+label, dict(messages=[message]), accepted)
+    for role in ("system", "developer", "user", "assistant", "tool"):
+        for label, content in (("null", None), ("empty-parts", []), ("number", 4)):
+            add("message-content-"+role+"-"+label, dict(messages=[dict(role=role, content=content)]), False)
+        add("message-content-"+role+"-missing", dict(messages=[dict(role=role)]), False)
     add("text-parts", dict(messages=[dict(role="user", content=[dict(text="q"), dict(type="text", text="more")])]))
-    add("media-disabled", dict(messages=[dict(role="user", content=[dict(type="image_url", image_url=dict(url="AA=="))])]), False)
+    add("media-disabled", dict(messages=[dict(role="user", content=[dict(type="image_url", image_url=dict(url="AA=="))])]), False, semantic=True)
     for aliases, accepted in ((dict(reasoning="r", reasoning_content="r"), True),
                               (dict(reasoning=None, reasoning_content="r"), True),
                               (dict(reasoning="r", reasoning_content="different"), False)):

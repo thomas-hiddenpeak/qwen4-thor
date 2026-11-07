@@ -417,6 +417,13 @@ target_link_libraries(q4t_preflight_probe PRIVATE q4t_server)
 target_compile_options(q4t_preflight_probe PRIVATE -Wall -Wextra -Werror)
 q4t_link_structured_output(q4t_preflight_probe)
 
+# CPU-only request shape/semantic probe, using the current server identity.
+add_executable(q4t_contract_probe EXCLUDE_FROM_ALL
+  tools/serve_protocol/contract_probe.cpp)
+target_link_libraries(q4t_contract_probe PRIVATE q4t_server)
+target_compile_options(q4t_contract_probe PRIVATE -Wall -Wextra -Werror)
+q4t_link_structured_output(q4t_contract_probe)
+
 # Actual preparation/HTTP handlers; no model load. Run under gpu_exclusive.
 add_executable(q4t_prepare_lock_probe EXCLUDE_FROM_ALL
   tools/serve_prepare_lock/probe.cpp)

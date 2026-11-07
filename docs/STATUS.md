@@ -54,6 +54,15 @@ a48dcb67未改，原本机策略/Key/配额和ledger预算保持STOPPED，安装
 本机LAN地址+自身/32已验，不冒充异机生产部署或长稳；GPU/端口/锁
 释放。现在继续A01/A02标准输入与消息语义，不结束总目标。
 
+[A01/A02本组输入适配](SERVE_CHAT_INPUT_2026-11-08.md)正在实现：
+按序多条system/developer、JSON转义的参与者name、assistant refusal
+历史和无user会话；同步必填content校验、schema与客户端profile。
+新增格式不是原模型模板已有能力。33项C++、71个schema/生产校验、
+19个提示/tokenizer、1项SDK和3项短验驱动检查通过；首次夹具/构建
+准备/来源摘要失败保留，只重验失败项。真实GPU短验待执行，不改变
+默认包。legacy/custom工具历史仍由A04补齐，
+A01登记不能代替后续采样、响应及持久对象能力的实际实现。
+
 工作分支`codex/serve-resilience-cd`继续隔离PR #22已接受发布；
 PR #22此前34b06bc1两项CI成功、CLEAN。当前默认服务包以顶部N01—N03交付为准；
 实现、验证、安装和合main分别记录。

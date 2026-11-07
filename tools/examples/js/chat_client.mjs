@@ -330,7 +330,8 @@ export function validateCapabilities(value, model, protocolSha256) {
   for (const key of ['messages', 'reasoning_content', 'tool_calls', 'stream', 'stream_include_usage']) requireValue(value.chat?.[key] === true, 'missing chat capability ' + key);
   requireValue(value.tools?.type === 'function' && value.tools.execution === 'client' &&
     value.tools.tool_choice?.includes('auto') && value.tools.parallel_tool_calls?.includes(true), 'incompatible tools');
-  requireValue(value.template?.message_profile === 'qwen3.8-native-v2', 'incompatible message profile');
+  requireValue(['qwen3.8-native-v2', 'qwen3.8-openai-v3'].includes(value.template?.message_profile),
+    'incompatible message profile');
   for (const hash of [value.protocol_source_sha256, ...['reference_sha256', 'renderer_source_sha256',
     'tool_history_source_sha256', 'fixture_sha256'].map(k => value.template[k])]) requireValue(/^[0-9a-f]{64}$/.test(hash), 'invalid capability identity');
   requireValue(!protocolSha256 || value.protocol_source_sha256 === protocolSha256, 'protocol identity mismatch');
