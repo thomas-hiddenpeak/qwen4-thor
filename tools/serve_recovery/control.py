@@ -2,6 +2,7 @@
 import os
 import socket
 import struct
+import time
 
 from tools.serve_recovery import journal, ledger
 
@@ -40,14 +41,65 @@ class ControllerChannel:
                               int(os.environ['Q4T_GUARDIAN_START']))
         self.sock.setblocking(False)
         self.sequence = 0
+        self.pending = None
 
     def event(self, name):
         ledger.require(name in ('ready', 'heartbeat'), 'invalid control event')
+        return self._send(name)
+
+    def _send(self, name, **extra):
         ledger.require(self.sequence < ledger.MAX_INTEGER,
                        'controller sequence exhausted')
         self.sequence += 1
         journal.send(self.sock, dict(version=1, service_id=self.service_id,
-            generation=self.generation, sequence=self.sequence, event=name))
+            generation=self.generation, sequence=self.sequence, event=name,
+            **extra))
+        return self.sequence
+
+    def begin(self, operation, args):
+        ledger.require(self.pending is None, 'controller transaction pending')
+        ledger.require(operation in ('authorize', 'spawned', 'ready', 'retired',
+                       'fault', 'stable', 'quarantine'), 'invalid model operation')
+        self.pending = self._send('transaction', transaction=dict(
+            operation=operation, args=args))
+
+    def poll(self):
+        try:
+            message = journal.receive(self.sock)
+        except BlockingIOError:
+            return None
+        ledger.require(message is not None, 'Guardian channel closed')
+        ledger.keys(message, ('version', 'service_id', 'generation', 'reply_to',
+                              'ok', 'result'))
+        ledger.require(type(message['version']) is int and
+                       message['version'] == 1 and
+                       message['service_id'] == self.service_id and
+                       ledger.integer(message['generation'], minimum=1) and
+                       message['generation'] == self.generation and
+                       self.pending is not None and
+                       ledger.integer(message['reply_to'], minimum=1) and
+                       message['reply_to'] == self.pending and
+                       type(message['ok']) is bool and
+                       type(message['result']) is dict,
+                       'stale or unbound controller receipt')
+        self.pending = None
+        return message
+
+    def transact(self, operation, args, *, timeout=7):
+        """A bounded wait that advances the actual control loop's heartbeat."""
+        self.begin(operation, args)
+        end = time.monotonic()+timeout
+        heartbeat = 0
+        while time.monotonic() < end:
+            reply = self.poll()
+            if reply is not None:
+                return reply
+            now = time.monotonic()
+            if now >= heartbeat:
+                self.event('heartbeat')
+                heartbeat = now+0.25
+            time.sleep(0.01)
+        raise TimeoutError('Guardian transaction deadline expired')
 
     def close(self):
         self.sock.close()

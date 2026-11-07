@@ -14,6 +14,10 @@ from tools.serve_recovery.control import ControllerChannel
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--escape-child', action='store_true')
+    parser.add_argument('--model-fixture', type=Path)
+    parser.add_argument('--pause-at', choices=('authorized', 'spawned'))
+    parser.add_argument('--device-unknown', action='store_true')
+    parser.add_argument('--escape-model-child', action='store_true')
     args = parser.parse_args()
     channel = ControllerChannel()
     if args.escape_child:
@@ -29,6 +33,9 @@ def main():
             os._exit(0)
         os.waitpid(middle, 0)
     channel.event('ready')
+    if args.model_fixture:
+        from tools.serve_recovery.fixture_model import controller
+        return controller(channel, args)
     try:
         while True:
             time.sleep(0.1)
