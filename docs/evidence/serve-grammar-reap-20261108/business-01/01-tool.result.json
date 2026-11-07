@@ -1,0 +1,24 @@
+{
+  "id": "chatcmpl-auto-7a14cd37bbcf47e63598a21b4b7a109d",
+  "model": "qwen3.8-flash-next",
+  "message": {
+    "role": "assistant",
+    "content": null,
+    "tool_calls": [
+      {
+        "id": "call_chatcmpl-auto-7a14cd37bbcf47e63598a21b4b7a109d_0",
+        "type": "function",
+        "function": {
+          "name": "read_project_header",
+          "arguments": "{\"path\":\"docs/STATUS.md\"}"
+        }
+      }
+    ]
+  },
+  "finish_reason": "tool_calls",
+  "usage": {
+    "prompt_tokens": 304,
+    "completion_tokens": 29,
+    "total_tokens": 333
+  }
+}

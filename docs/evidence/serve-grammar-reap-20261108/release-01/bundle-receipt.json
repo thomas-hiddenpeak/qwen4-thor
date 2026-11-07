@@ -1,0 +1,6 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/bundle",
+  "manifest_sha256": "e7652b4cc1a0632c804fd67fbe269dc60ff393016a7c1061e25b3f2c1e428f36",
+  "engine_binary_sha256": "c6285915be1dda92601b268c869e6645eb967689a408f4a2619984acfbd9ca20",
+  "recovery_accepted": false
+}

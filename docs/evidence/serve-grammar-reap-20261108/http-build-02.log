@@ -1,0 +1,22 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/engine-build/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+-- Configuring done (0.1s)
+-- Generating done (0.1s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/engine-build
+[ 16%] Built target q4t_io
+[ 33%] Built target q4t_text
+[ 50%] Building CXX object CMakeFiles/q4t_http_lifecycle_tests.dir/src/server/chat_health.cpp.o
+[ 50%] Linking CXX executable q4t_http_lifecycle_tests
+/usr/bin/ld: CMakeFiles/q4t_http_lifecycle_tests.dir/src/server/chat_health.cpp.o: in function `q4t::server::ChatServer::ObserveHealth(q4t::server::MemoryState) const':
+chat_health.cpp:(.text+0x6c): undefined reference to `q4t::ple::PleEmbedding::HealthFault() const'
+collect2: error: ld returned 1 exit status
+gmake[3]: *** [CMakeFiles/q4t_http_lifecycle_tests.dir/build.make:397: q4t_http_lifecycle_tests] Error 1
+gmake[2]: *** [CMakeFiles/Makefile2:2032: CMakeFiles/q4t_http_lifecycle_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:2039: CMakeFiles/q4t_http_lifecycle_tests.dir/rule] Error 2
+gmake: *** [Makefile:805: q4t_http_lifecycle_tests] Error 2

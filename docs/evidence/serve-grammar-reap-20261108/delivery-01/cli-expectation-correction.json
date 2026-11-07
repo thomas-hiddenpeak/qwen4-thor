@@ -1,0 +1,8 @@
+{
+  "first_attempt": "AssertionError before mutation: expected --help exit 0; code dispatch returns 1 for unknown command. No defaults changed.",
+  "reproduction": {
+    "exit_code": 1,
+    "stdout": "Usage: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/engine/q4t <command>\nCommands:\n  version   Print version and build info\n  probe     Probe the target device\n  models    List catalogued model descriptors\n  generate  Single greedy generation\n            (q4t generate \"prompt\" [--max-tokens N])\n  serve     OpenAI-compatible HTTP API server\n            (q4t serve [--host IPv4] [--port N] [--operations-port N] [--model-dir DIR] [--max-tokens N] [--max-prefill N] [--max-len N] [--max-seq N] [--max-inflight-requests N] [--max-queued-requests N] [--min-available-memory-mib N] [--memory-recovery-margin-mib N] [--startup-memory-headroom-mib N] [--cuda-allocation-limit-mib auto|0|N] [--client-policy-file FILE] [--seq-capacities N,N,...] [--mtp | --no-mtp] [--mtp-suffix] [--session-cache-dir DIR] [--prefix-cache-dir DIR] [--prefix-cache-checkpoints 8192,32768,65536] [--mtp-subset-head DIR] [--allow-media] [--startup-plan auto|off|required]\n       [--moe-trace-dir DIR --moe-trace-workload FILE] [--moe-trace-max-mib N])\n            serve: MTP is enabled by default (k=3); --no-mtp disables it.\n  bench-decode  Batched-decode throughput vs batch size\n            (q4t bench-decode [--batch B] [--steps N] [--prompt P] [--max-len L])\n  bench-prefill Batched-prefill (ragged) vs sequential, tok/s + speedup\n            (q4t bench-prefill [--batch B] [--prompt P] [--sweep])\n",
+    "stderr": "Unknown command: --help\n"
+  }
+}

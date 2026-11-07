@@ -1,0 +1,24 @@
+[PASS] grammar_process_memory_limit_and_descriptor_isolation
+[PASS] grammar_process_deadline_reaps_blocked_worker
+[PASS] grammar_process_cancellation_interrupts_pending_io
+[PASS] grammar_process_short_read_and_cleanup_do_not_leak
+[PASS] grammar_process_closed_peer_write_has_no_sigpipe
+[PASS] grammar_process_cannot_raise_memory_ceiling
+[PASS] grammar_process_unconfirmed_reap_retains_capacity_without_callbacks
+[PASS] grammar_process_deferred_counters_survive_request_then_release
+[PASS] grammar_process_active_worker_and_pending_worker_share_one_slot
+[PASS] chat_capabilities_transport_observation_contract
+[PASS] chat_capabilities_text_stop_profile
+[PASS] chat_capabilities_preflight_contract
+[PASS] chat_capabilities_identity
+[PASS] chat_capabilities_option_contract
+[PASS] chat_capabilities_runtime_flags
+[PASS] chat_capabilities_model_escaping
+[PASS] chat_capabilities_media_and_host_failure_boundaries
+[PASS] structured_admission_is_independent_and_exclusive
+[PASS] structured_admission_retains_cancelled_or_throwing_owner
+[PASS] structured_handoff_retains_owner_and_releases_waiter
+[PASS] structured_handoff_cancellation_keeps_original_owner
+[PASS] structured_vocabulary_budget_no_overflow_or_partial_charge
+[PASS] observability_abort_labels_are_bounded
+23 tests, 23 passed, 0 failed, 0 skipped

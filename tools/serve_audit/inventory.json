@@ -403,7 +403,8 @@
         "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
         "docs/SERVE_OBSERVATION_CAPACITY_2026-11-03.md",
         "include/q4t/server/http_connection.h",
-        "docs/SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md"
+        "docs/SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md",
+        "docs/SERVE_GRAMMAR_REAP_2026-11-08.md"
       ]
     },
     "GET /metrics": {
@@ -419,7 +420,8 @@
         "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md",
         "docs/SERVE_OBSERVATION_CAPACITY_2026-11-03.md",
         "include/q4t/server/http_connection.h",
-        "docs/SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md"
+        "docs/SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md",
+        "docs/SERVE_GRAMMAR_REAP_2026-11-08.md"
       ]
     },
     "POST /v1/requests/cancel": {
@@ -638,7 +640,7 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "f33c7b6fcb6676ada9b73da738ec4efa9b3a931e86fe3f12e7bf4eb531358ef8",
+    "CMakeLists.txt": "9068bec5953220399997f32024e92ccf73b7104029bdbd80cf8b827eb22d06d7",
     "cmake/ChatProtocolIdentity.cmake": "6561776bab97cc5e62f7ca619a2d9f53fde3f690b35cc5f934c69747226ca7e9",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
@@ -660,7 +662,7 @@
     "include/q4t/server/chat_plan.h": "c2a13e861e59478374e4e02e2441a55f6f3f4f0faf12e9e398361c9d0533f3d0",
     "include/q4t/server/chat_prompt.h": "1a758fed12a2ef5b3eadc6109cbc99be29de63e088d0d60111ed171730daa54f",
     "include/q4t/server/chat_response_parser.h": "15b41a19e4eb3c3897e71c3b584b25ed0b669a7aa1119ade57b71d6ea9d57246",
-    "include/q4t/server/chat_server.h": "81b434d4402d2a934969b57407c0b2961b8ed86a69717e88861cd17442b1e53f",
+    "include/q4t/server/chat_server.h": "3055d056ab4e48674fe73979a4d31bb45d249d8175143ab95c226207c686c260",
     "include/q4t/server/chat_template.h": "f89fa01d5352cc6ec47ecff09c24bdb58f8bb0a3edfa5c89fe840791ac76bb51",
     "include/q4t/server/chat_tool_history.h": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
     "include/q4t/server/client_identity.h": "c05aad5dc655e91962eae55aab25c09fdcbc2a72ddc37a95585c7288dfac54be",
@@ -669,7 +671,7 @@
     "include/q4t/server/cuda_quota_metrics.h": "40ea24b9df80e446f13c89cf4e5d8ce09741fc67ce3d413096cc1ac10e59cbc2",
     "include/q4t/server/cuda_quota_policy.h": "e4143f1ec2f099edd81796bfca6db5cf916d547456af96c370d43991e176e297",
     "include/q4t/server/device_memory.h": "1099e20d3b205d3ae03daba0308be7221f5097c78a2fd58c8ca16298277dfc4c",
-    "include/q4t/server/grammar_process.h": "5a43df744adf5647177ee723d806c63e0e20c9d6555cfca45bb80863f995e760",
+    "include/q4t/server/grammar_process.h": "299273b04e110d15f4b23d74c60ce669e126fb0d7428baf14b7c6c5565a33d22",
     "include/q4t/server/http_connection.h": "dcd12b3f713b9c0318b2f394ee55fb5666a2cfdb092e9a0cb4697cb2e61a4d54",
     "include/q4t/server/http_listener.h": "bf5ec9d8e4567b3cb479803de66d52f9576c9a9df19f6a5e238ef69c266a2f11",
     "include/q4t/server/http_observation.h": "4a5c07a112faa4d60f834b2d5e4067522a7fe565ca6ff8acd145ad603999dbdc",
@@ -728,15 +730,15 @@
     "src/runtime/system_memory.cpp": "231e9a7ce5ed49e27e604a7bfa4066b35e83f286026c15986898d996a66acd2f",
     "src/server/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_capabilities.cpp": "2a24d9386d53df6c9790ed3cf82e3317ec54387722f8af6dd3cc7629423024eb",
+    "src/server/chat_capabilities.cpp": "5c59f8dd9560e935d4c9a82a459117c59cc6f8f8876159ca2193f89bbc1e433d",
     "src/server/chat_contract.cpp": "67649329b9c1f1006d6f27dfa96d41d39f4d5fa30a143da33a1248de8a9dcf40",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
-    "src/server/chat_generation.cpp": "cc91f8a4ef7c176fe9106db03599565a36475f3871b3c529655fe3ccfec388ac",
+    "src/server/chat_generation.cpp": "f014423f97c3c218f79fdd93c04b29ddb76828a9db96fc82708bea0f1612f05b",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "80f118f2c33271b67c72839eb3ddefe46ea820418769ccc945ed9d1a3a847992",
+    "src/server/chat_http.cpp": "5504ac68093b870e0f961a4d0faa1395ed8facf728f0046ec35e34e4843a5120",
     "src/server/chat_input.cpp": "d79be28242ed560ad7be0494284f72b53d1aaa7a272786d17f1b837e81a6d9bb",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
-    "src/server/chat_metrics.cpp": "98b0f7ebfb79868285f31e03c55d481e813cab1044c4a31e24356dc353260fab",
+    "src/server/chat_metrics.cpp": "f12e27e7946dab08e882be25f8cb6fa2273e4d370716872aaf5a59fb30e5cf21",
     "src/server/chat_plan.cpp": "b7aa0e9d84cbe9097c1d95100e783b68a4a2b01c80a1e6aaf68c756c61e17f95",
     "src/server/chat_preflight.cpp": "ab8b3491b17baae0d9a3ec51e9c9cf066907e665efd21449235e70153f130767",
     "src/server/chat_prompt.cpp": "913d5768c332f90935713dff717b71ff0280e86ebf1b48fab0af342d0326f43a",
@@ -749,7 +751,7 @@
     "src/server/client_policy.cpp": "3d28eb74a983b10fbb2fdf218307c0490349c051aee37945ae770a198f45b791",
     "src/server/client_request.cpp": "418f478a0d94cb270ea507cb6843f0a88a97de0ad2a22192e9f563c67f6fe83e",
     "src/server/cuda_memory_backend.h": "aabc6d78d2925ec5280e270964d79d3164ce706732a674b88215554a34d0e6a5",
-    "src/server/grammar_process.cpp": "14345c6e0470133fe9a1a57659503eabe0b477b2438f5b82f76ab07a57ae02bb",
+    "src/server/grammar_process.cpp": "af14efdbda28b205d7532780d8c6c5c4abc3078c2279257982d875fb3afb40df",
     "src/server/grammar_worker.cpp": "aca2920b675dce548ceb194690440f00763352ed2d482751100b6345580e560c",
     "src/server/grammar_worker_internal.h": "79d8963200990a0d6b8dacee12c0f886c5612c57bc86e8a3479d942d6bef091a",
     "src/server/http_request.cpp": "5890e834268e3dee4b169597b4086be06806a9e18e8d9eab25e694cb1bdfd58c",
@@ -763,7 +765,7 @@
     "src/server/server_options.cpp": "c47e2555d054a8ee27524ecf59936838b717d7292c864c24efeee1279e2dc622",
     "src/server/session_cache.cpp": "68fc36654c7f3a7c14ac41b26e3abd10697e87ffc94bf70fe2052edb9cf751f6",
     "src/server/session_state.cpp": "bc34bd240a68cfb7ba57f78604d898c51e61bc5705b5d9db64bd546f91d64f12",
-    "src/server/structured_decoder.cpp": "3d3c9d07a516e0cc10999183d1e2a3770daecac9257c8514a26f43873c877ddd",
+    "src/server/structured_decoder.cpp": "14b5ddf7a5ebb60f72528508330b8eedc0e27d0c0c987982d32419a7e119a429",
     "src/server/text_stop.cpp": "2397b27adc873b3ac0697af68352a73c8481830da6053fde0adeca536eaba4dc",
     "src/server/thinking_budget.cpp": "4c91e8320115ee86096bf7287d4950599ca311f137c3a0051b9d64fb53abf259",
     "src/service/cuda_probe.cu": "f91663d4098aa6365db6cf3d3fc437b5b32ee20280b65cc1ee34cb796a48e7fb",
@@ -1210,5 +1212,27 @@
     "cpu": "targeted; see phase records",
     "business": "accepted: 2 starts/4 Chat cumulative; writer stall isolates loss, same core PID JSON/SSE; source loader CPU negative preserved",
     "result": "docs/evidence/serve-observation-io-20261108/closeout/result.json"
+  },
+  "grammar_reap_review_20261108": {
+    "scope": "Bounded wait4(WNOHANG) cleanup and process-wide retained slot. Only confirmed wait4(child) frees capacity; deferred owner retains counters, never request callbacks. HTTP admission returns existing 503, capabilities and metrics expose pending cleanup; ordinary text continues. No math, schema relaxation or routes changed.",
+    "changed_sources": [
+      "CMakeLists.txt",
+      "include/q4t/server/chat_server.h",
+      "include/q4t/server/grammar_process.h",
+      "src/server/chat_capabilities.cpp",
+      "src/server/chat_generation.cpp",
+      "src/server/chat_http.cpp",
+      "src/server/chat_metrics.cpp",
+      "src/server/grammar_process.cpp",
+      "src/server/structured_decoder.cpp"
+    ],
+    "evidence": [
+      "docs/SERVE_GRAMMAR_REAP_2026-11-08.md",
+      "tests/server_grammar_process_test.cpp",
+      "tests/server_chat_capabilities_test.cpp",
+      "docs/evidence/serve-grammar-reap-20261108/business-01/result.json"
+    ],
+    "business": "one model, six requests, 4/4 workers reaped; same-PID plain JSON during stopped grammar compilation, SSE plus structured recovery",
+    "limitations": "Unreapable kernel task is a CPU-only simulation; no SLA, full matrix or long stability claim."
   }
 }

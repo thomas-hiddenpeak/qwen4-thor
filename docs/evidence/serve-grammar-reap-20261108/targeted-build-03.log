@@ -1,0 +1,11 @@
+[  4%] Built target q4t_io
+[  8%] Built target q4t_text
+[ 37%] Built target xgrammar
+[ 37%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_grammar_process_test.cpp.o
+[ 37%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests
+[ 16%] Built target q4t_io
+[ 33%] Built target q4t_text
+[ 33%] Building CXX object CMakeFiles/q4t_http_lifecycle_tests.dir/tools/serve_reliability/http_lifecycle_test.cpp.o
+[ 33%] Linking CXX executable q4t_http_lifecycle_tests
+[100%] Built target q4t_http_lifecycle_tests

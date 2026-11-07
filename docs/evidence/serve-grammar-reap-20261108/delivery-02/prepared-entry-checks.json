@@ -1,0 +1,21 @@
+[
+  {
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/engine/q4t",
+      "version"
+    ],
+    "exit_code": 0,
+    "stdout": "q4t (Qwen4-Thor) v0.1.0\n  target: Jetson AGX Thor, SM110a\n  model:  Qwen3.8-Flash-Next (qwen4_exp)\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/bundle/bin/q4t",
+      "service",
+      "--help"
+    ],
+    "exit_code": 0,
+    "stdout": "usage: q4t [-h] {prepare,init,run,start,status,diagnostics,stop} ...\n\nUnified recovery service entrypoint; no systemd, shell loop or auto install.\n\npositional arguments:\n  {prepare,init,run,start,status,diagnostics,stop}\n\noptions:\n  -h, --help            show this help message and exit\n",
+    "stderr": ""
+  }
+]

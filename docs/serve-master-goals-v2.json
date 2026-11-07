@@ -195,7 +195,7 @@
     {
       "id": "N01",
       "required": true,
-      "state": "planned",
+      "state": "implementation_in_progress",
       "implementation": "原生IPv4/IPv6监听、受控LAN、HTTPS终止、独立API Key/CIDR",
       "acceptance": "不安装/不启动nginx也能从客户端用TLS完整调用；绑定、证书名及来源限制真实生效",
       "depends_on": [],
@@ -205,7 +205,7 @@
     {
       "id": "N02",
       "required": true,
-      "state": "planned",
+      "state": "implementation_in_progress",
       "implementation": "证书/私钥/CA管理、可选mTLS、原生证书更新",
       "acceptance": "合法换证保持服务；坏证书保留上一有效配置并报告；到期/撤销策略明确；不要求模型重启",
       "depends_on": [
@@ -217,7 +217,7 @@
     {
       "id": "N03",
       "required": true,
-      "state": "planned",
+      "state": "implementation_in_progress",
       "implementation": "原生CORS/OPTIONS与浏览器JSON/SSE",
       "acceptance": "允许/拒绝来源、凭据、预检和错误响应一致；浏览器可用，未配置默认关闭不等于未实现",
       "depends_on": [
@@ -318,12 +318,24 @@
     {
       "id": "R02",
       "required": true,
-      "state": "implementation_in_progress",
+      "state": "delivered",
       "implementation": "grammar有界清理、请求外生命周期、未回收占槽；结构化能力降级但普通文本继续",
       "acceptance": "grammar有界清理、请求外生命周期、未回收占槽；结构化能力降级但普通文本继续",
       "depends_on": [],
-      "evidence": [],
-      "release": null
+      "evidence": [
+        "SERVE_GRAMMAR_REAP_2026-11-08.md",
+        "evidence/serve-grammar-reap-20261108/audit.json",
+        "evidence/serve-grammar-reap-20261108/business-01/result.json",
+        "evidence/serve-grammar-reap-20261108/delivery-02/result.json"
+      ],
+      "release": {
+        "engine_sha256": "c6285915be1dda92601b268c869e6645eb967689a408f4a2619984acfbd9ca20",
+        "engine_release_sha256": "a48dcb6754fdd173e93265200ab2ef23bd81e4f7967b418ec629a484073a25e7",
+        "manifest_sha256": "e7652b4cc1a0632c804fd67fbe269dc60ff393016a7c1061e25b3f2c1e428f36",
+        "release_sha256": "b08eea2559e7450b9f7098b2d169906218d875d042e178765a2d9c407c8d2119",
+        "state": "STOPPED",
+        "merged_main": false
+      }
     },
     {
       "id": "R03",
@@ -474,5 +486,5 @@
       "release": null
     }
   ],
-  "next_task": "R02"
+  "next_task": "N01/N02/N03 then A01/A02"
 }

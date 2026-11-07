@@ -1,0 +1,28 @@
+{
+  "status": "PASS_R02_TARGETED_DELIVERY_DECISION",
+  "runtime_sources": 276,
+  "nvml_queries": 50,
+  "nvml_all_ok": true,
+  "requests": 6,
+  "model_starts": 1,
+  "distinct_cpu_tests": 40,
+  "engine_sha256": "c6285915be1dda92601b268c869e6645eb967689a408f4a2619984acfbd9ca20",
+  "source_commit": "0be7b38eda198d247bbb6cb7c7942925a115959a",
+  "owned_recorded_identities": 2,
+  "all_recorded_exited": true,
+  "ports_free": true,
+  "lock_acquirable": true,
+  "source_snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/source",
+  "validation_scope": "targeted non-performance reliability; no full matrix",
+  "acceptance": "ACCEPT_TARGETED_GRAMMAR_REAP",
+  "business": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/result.json",
+  "business_sha256": "9db8f43adf7b9d1095210606580f05797a813c0d3afc61d80cd664ef6d9e592b",
+  "lease_sha256": "812f48625f308fb1a4f0b6cef5484e92fbcb4ed0c6c4acc4f01e6ebb996336fe",
+  "inherited_runtime": {
+    "binary_sha256": "60b1c4c121d066789ebc44746316161320448d98095f32a7ec24e3fa00343ff3",
+    "release_sha256": "d2ae8db2f3e389f1cabd02c77a9322de4be8610f1135ba5b01b3b980cc760133",
+    "unchanged_model_math": true
+  },
+  "full_performance_run": false,
+  "full_model_quality_run": false
+}

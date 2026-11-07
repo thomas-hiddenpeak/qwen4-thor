@@ -1,0 +1,34 @@
+[PASS] grammar_process_memory_limit_and_descriptor_isolation
+[PASS] grammar_process_deadline_reaps_blocked_worker
+[PASS] grammar_process_cancellation_interrupts_pending_io
+[PASS] grammar_process_short_read_and_cleanup_do_not_leak
+[PASS] grammar_process_closed_peer_write_has_no_sigpipe
+[PASS] grammar_process_cannot_raise_memory_ceiling
+  CHECK failed: q4t::server::PlanOutputConstraints(request_json, &plan) (line 243)
+[FAIL] grammar_process_unconfirmed_reap_retains_capacity_without_callbacks
+[PASS] grammar_process_deferred_counters_survive_request_then_release
+[PASS] grammar_process_active_worker_and_pending_worker_share_one_slot
+[PASS] chat_capabilities_transport_observation_contract
+[PASS] chat_capabilities_text_stop_profile
+[PASS] chat_capabilities_preflight_contract
+[PASS] chat_capabilities_identity
+[PASS] chat_capabilities_option_contract
+[PASS] chat_capabilities_runtime_flags
+[PASS] chat_capabilities_model_escaping
+[PASS] chat_capabilities_media_and_host_failure_boundaries
+[PASS] structured_admission_is_independent_and_exclusive
+[PASS] structured_admission_retains_cancelled_or_throwing_owner
+[PASS] structured_handoff_retains_owner_and_releases_waiter
+[PASS] structured_handoff_cancellation_keeps_original_owner
+[PASS] structured_vocabulary_budget_no_overflow_or_partial_charge
+[PASS] observability_abort_labels_are_bounded
+[PASS] structured_decoder_json_utf8_and_stop_mask
+[PASS] structured_decoder_required_named_and_parallel_masks
+[PASS] structured_decoder_none_and_auto_control
+[PASS] structured_decoder_json_object_and_thinking
+[PASS] structured_decoder_no_finite_candidate_or_bad_vocabulary
+[PASS] structured_decoder_cancel_after_compiler_entry_reaps
+[PASS] structured_decoder_expired_and_memory_failure_are_closed
+[PASS] structured_decoder_forced_token_intersection_is_transactional
+[PASS] structured_decoder_budget_closure_and_utf8_share_accepted_tokens
+32 tests, 31 passed, 1 failed, 0 skipped

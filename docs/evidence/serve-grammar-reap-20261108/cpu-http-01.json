@@ -1,0 +1,11 @@
+{
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/engine-build/q4t_http_lifecycle_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/required-http.txt"
+  ],
+  "exit_code": 0,
+  "seconds": 2.1664775582030416,
+  "binary_sha256": "44c9091b3b33747c7cdd05fcca7464ecbf76e9e1a55d7492cafa6c84f2054438",
+  "required_sha256": "b0e57f290164998bdb68293c1f7f63d74fb5a133d88e7c006e2ec48f272560e0"
+}

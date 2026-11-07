@@ -1,0 +1,28 @@
+[
+  {
+    "command": [
+      "python3",
+      "-B",
+      "tools/serve_protocol/build_contract.py",
+      "--check"
+    ],
+    "exit_code": 1
+  },
+  {
+    "command": [
+      "python3",
+      "-B",
+      "tools/serve_protocol/build_contract.py"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "python3",
+      "-B",
+      "tools/serve_protocol/build_contract.py",
+      "--check"
+    ],
+    "exit_code": 0
+  }
+]

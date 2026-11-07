@@ -1,0 +1,858 @@
+{
+  "defaults": {
+    "head": "full",
+    "max_seq": 1,
+    "mtp": true,
+    "mtp_k": 3,
+    "prefix_cache": false,
+    "session_cache": false,
+    "session_incremental": false,
+    "suffix": false
+  },
+  "agent_configuration": {
+    "admitted_requests": 32,
+    "max_len": 208896,
+    "max_prefill": 4096,
+    "max_seq": 4,
+    "seq_capacities": [
+      208896,
+      65536,
+      65536,
+      65536
+    ]
+  },
+  "incremental": {
+    "block_bytes": 8388608,
+    "checksums": "all valid bytes every save and restore",
+    "default": false,
+    "enabled_by": "Q4T_SESSION_INCREMENTAL=1",
+    "first_save": "full",
+    "max_blocks": 8192,
+    "max_entries": 8,
+    "max_ranges": 1024,
+    "private_only": true,
+    "restore_required_in_current_lease": true,
+    "same_process_only": true,
+    "statistical_noninferiority": false
+  },
+  "operations_rules": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/release/candidate/q4t.rules.yml",
+    "sha256": "2d2f14f832b9aa13c4d384c3b2a18bae6074a75c4e1c7ed59b0011da1ed1c015",
+    "bytes": 14279
+  },
+  "prefix_cache": {
+    "checkpoint_range": [
+      1024,
+      131072
+    ],
+    "checkpoints": [
+      8192,
+      32768,
+      65536
+    ],
+    "default_readonly": true,
+    "disk_budget_bytes": 8589934592,
+    "enabled_by": "--prefix-cache-dir DIR plus prefix_cache_scope",
+    "max_checkpoints": 4,
+    "max_entries": 8,
+    "max_writes_per_request": 1,
+    "ram_budget_bytes": 33554432,
+    "same_process_only": true,
+    "ttl_seconds": 1800,
+    "write_field": "prefix_cache_write_tokens"
+  },
+  "scoring": {
+    "fallback": "Q4T_MTP_PREFILL_LEGACY_SCORING=1",
+    "fallback_acceptance": "known scoring behavior; not a second measured release identity",
+    "minimum_rows": 5,
+    "uniform_slot_only": true
+  },
+  "serving": {
+    "batching": "existing all-active selection",
+    "fault_injection": false,
+    "header_state": "actual successful writes; partial headers close on exception",
+    "logical_write_deadline_seconds": 30,
+    "performance_acceptance": false,
+    "private_publication": "actual saved token prefix; matching positive and negative continuation",
+    "send_success": "complete local write and request completion wins cancellation",
+    "target_ready": "separate legacy first-target-ready metric",
+    "terminal_write_budget_ms": 250,
+    "ttft": "raw: first nonempty content local write; parsed: first content, reasoning, or complete tool delta local write",
+    "utf8": "complete scalars per event; invalid terminal bytes replaced"
+  },
+  "session_cache": {
+    "disk_budget_bytes": 25769803776,
+    "enabled_by": "--session-cache-dir DIR plus session_id",
+    "max_entries": 8,
+    "min_prefix": 8192,
+    "ram_budget_bytes": 33554432,
+    "same_process_only": true,
+    "ttl_seconds": 1800
+  },
+  "subset_artifact": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-selected-head-rows-20261106/source/.q4t-work/qsa-softmax-adoption-20261106/release/artifact",
+  "subset_manifest_sha256": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce",
+  "version": "serve-grammar-reap-20261108",
+  "binary_sha256": "c6285915be1dda92601b268c869e6645eb967689a408f4a2619984acfbd9ca20",
+  "source_commit": "0be7b38eda198d247bbb6cb7c7942925a115959a",
+  "source_note": "Bounded grammar cleanup and deferred process ownership only; unchanged model/vision math retains prior evidence.",
+  "build_cache": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/engine/CMakeCache.txt",
+  "build_cache_sha256": "be91f2956cae8ef3185f0b5ed2aa240d786aa97502ac48ab3023952c16dc44a4",
+  "tested_source_manifest": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/engine/runtime-source.json",
+  "tested_source_manifest_sha256": "8c96750929156ced160e3eda73af3c877bae83424f75d3006f2c56a5398b589e",
+  "acceptance": "ACCEPT_TARGETED_GRAMMAR_REAP",
+  "acceptance_decision": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/decision.json",
+  "acceptance_decision_sha256": "a7cdeda9e57c460a88ba0cdd75ae4e86955ff0c8f8868f23bbae98caedd0ad33",
+  "inherited_release": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/previous/q4t.release.json",
+    "sha256": "d2ae8db2f3e389f1cabd02c77a9322de4be8610f1135ba5b01b3b980cc760133"
+  },
+  "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/previous/q4t",
+  "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/previous/q4t.release.json",
+  "observed_configuration": {
+    "object": "q4t.serve.config",
+    "profile": "q4t-config-v1",
+    "observability_version": 5,
+    "protocol_source_sha256": "b995c0d9d5a70ee5e6e40150b845c3221079d209fd8857fd71d97284ae1e3ed6",
+    "model": "qwen3.8-flash-next",
+    "client_policy": {
+      "profile": "q4t-gateway-clients-v1",
+      "enabled": false,
+      "sha256": "",
+      "clients": 0,
+      "namespace": "client_id",
+      "credential_values_redacted": true,
+      "mutable": false,
+      "per_client_ram_limit": false
+    },
+    "client_governance": {
+      "profile": "q4t-client-governance-v1",
+      "policy_version": 1,
+      "fair_queue": false,
+      "window_seconds": 60,
+      "window": "fixed_monotonic",
+      "zero_disables": true,
+      "scope": "single_process",
+      "restart": "reset",
+      "preflight_charged": false,
+      "reservation": "prompt_plus_available_output",
+      "settlement": "logical_tokens_in_completion_window",
+      "pending_survives_window": true,
+      "fairness_scope": "prepared_slot_admission",
+      "preemption": false,
+      "latency_guarantee": false
+    },
+    "listeners": {
+      "public": {
+        "host": "127.0.0.1",
+        "port": 18164
+      },
+      "operations": {
+        "host": "127.0.0.1",
+        "port": 18165,
+        "enabled": true,
+        "source": "cli",
+        "unclassified_shares_operations_total": true
+      }
+    },
+    "max_context_tokens": {
+      "requested": 8192,
+      "effective": 8192,
+      "source": "cli",
+      "resolution": "startup_memory_budget"
+    },
+    "max_sequences": {
+      "requested": 1,
+      "effective": 1,
+      "source": "cli",
+      "resolution": "startup_memory_budget"
+    },
+    "prefill_chunk_tokens": {
+      "requested": 2048,
+      "effective": 2048,
+      "source": "cli",
+      "resolution": "requested"
+    },
+    "default_output_tokens": {
+      "requested": 256,
+      "effective": 256,
+      "source": "cli",
+      "resolution": "request_override_then_context_cap"
+    },
+    "request_deadline_ms": {
+      "requested": 1200000,
+      "effective": 1200000,
+      "source": "builtin_default",
+      "resolution": "request_override"
+    },
+    "max_inflight_requests": {
+      "requested": 8,
+      "effective": 8,
+      "source": "cli",
+      "resolution": "requested"
+    },
+    "max_queued_requests": {
+      "requested": 2,
+      "effective": 2,
+      "source": "cli",
+      "resolution": "requested"
+    },
+    "slots": {
+      "capacities": [
+        8192
+      ],
+      "policy": "uniform_context_clip",
+      "availability_endpoint": "/metrics",
+      "reservation": false
+    },
+    "runtime": {
+      "mtp_requested": true,
+      "mtp_enabled": true,
+      "mtp_k": 3,
+      "media_enabled": false,
+      "media_limits": {
+        "profile": "q4t-media-admission-v2",
+        "experimental": true,
+        "roles": [
+          "user"
+        ],
+        "formats": [
+          "png",
+          "jpeg"
+        ],
+        "data_url_mime": [
+          "image/png",
+          "image/jpeg"
+        ],
+        "raw_base64": true,
+        "base64": "canonical_standard_padded",
+        "image_detail": [
+          "auto"
+        ],
+        "remote_urls": false,
+        "video_time_field": "video_timestamps",
+        "video_time_unit": "seconds",
+        "video_time_default": "frame_index/24",
+        "max_timestamp_seconds": 86400,
+        "temporal_group_frames": 2,
+        "timestamp_rounding_decimal_places": 1,
+        "video_prompt": "timestamp_then_one_boundary_per_temporal_group",
+        "mtp": false,
+        "state_cache": false,
+        "chunked_prefill": false,
+        "max_execution_slots": 1,
+        "client_governance": true,
+        "max_items": 8,
+        "max_frames_per_item": 32,
+        "max_encoded_bytes": 16777216,
+        "max_source_edge": 16384,
+        "max_source_pixels": 16777216,
+        "max_decoded_rgb_bytes": 134217728,
+        "max_patches": 65536,
+        "max_workspace_bytes": 2147483648,
+        "decoder_owned_bytes": 268435456,
+        "attention_shared_bytes": null,
+        "unknown_device_limit": "reject",
+        "whole_server_ram_limit": false,
+        "cancellation": "item_frame_and_before_gpu_not_preemptive"
+      },
+      "structured_backend": true,
+      "session_cache": false,
+      "prefix_cache": false,
+      "prefix_checkpoints": [],
+      "memory_budget_enabled": true,
+      "whole_server_ram_limit": false
+    },
+    "startup_memory": {
+      "enabled": true,
+      "headroom_mib": {
+        "requested": 2048,
+        "effective": 2048,
+        "source": "builtin_default",
+        "resolution": "zero_disables"
+      },
+      "source": "linux_global_mem_available",
+      "estimate": "allocation_budget_peak",
+      "failure_policy": "stop_startup",
+      "snapshot_is_reservation": false,
+      "hard_limit": false,
+      "checks": {
+        "before_metadata": {
+          "state": "admitted",
+          "estimate_bytes": null,
+          "headroom_bytes": 2147483648,
+          "required_bytes": 2147483648,
+          "observed_total_bytes": 131920637952,
+          "observed_available_bytes": 124828315648
+        },
+        "before_allocations": {
+          "state": "admitted",
+          "estimate_bytes": 97103842376,
+          "headroom_bytes": 2147483648,
+          "required_bytes": 99251326024,
+          "observed_total_bytes": 131920637952,
+          "observed_available_bytes": 124522700800
+        },
+        "before_ready": {
+          "state": "admitted",
+          "estimate_bytes": null,
+          "headroom_bytes": 2147483648,
+          "required_bytes": 2147483648,
+          "observed_total_bytes": 131920637952,
+          "observed_available_bytes": 34503704576
+        }
+      }
+    },
+    "cuda_allocation_quota": {
+      "profile": "q4t-linked-cuda-quota-v1",
+      "enabled": true,
+      "requested_mib": "auto",
+      "effective_limit_bytes": 118728574156,
+      "source": "builtin_default",
+      "resolution": "mem_fraction_times_mem_total",
+      "scope": "process_requested_cuda_bytes",
+      "allocation_entries": 16384,
+      "stream_entries": 256,
+      "no_budget_bypasses_quota": false,
+      "external_library_calls_covered": false,
+      "physical_ram_limit": false,
+      "reconfiguration": "new_process",
+      "async_credit": "successful_sync",
+      "excluded": [
+        "host_heap",
+        "file_cache",
+        "driver",
+        "external_library_allocations",
+        "cuda_pool_retained"
+      ]
+    },
+    "memory_admission": {
+      "enabled": true,
+      "source": "linux_global_mem_available",
+      "min_available_mib": {
+        "requested": 2048,
+        "effective": 2048,
+        "source": "builtin_default",
+        "resolution": "zero_disables"
+      },
+      "recovery_margin_mib": {
+        "requested": 512,
+        "effective": 512,
+        "source": "builtin_default",
+        "resolution": "ignored_when_disabled"
+      },
+      "recovery_threshold_mib": 2560,
+      "sample_max_age_ms": 250,
+      "failure_policy": "reject_new_work",
+      "active_generation": "continue",
+      "hard_limit": false
+    },
+    "limits": {
+      "text_requests": 8,
+      "queued_requests": 2,
+      "queue_policy": "capacity_fifo_best_fit",
+      "queue_order": "slot_admission_arrival",
+      "queue_excludes_preparation": true,
+      "preflight_shares_text_admission": true,
+      "business_connections": 128,
+      "control_connections": 4,
+      "observation_connections": 4,
+      "public_connection_handlers": 136,
+      "operations_connection_handlers": 8,
+      "connection_handlers": 144,
+      "unclassified_shares_total": false,
+      "body_bytes": 16777216,
+      "aggregate_body_bytes": 50331648,
+      "tokenizer_input_bytes": 4000000,
+      "tokenizer_tokens": 4000000,
+      "preflight_response_bytes": 8388608
+    },
+    "configuration_mutable": false,
+    "paths_redacted": true
+  },
+  "chat_protocol": {
+    "admission": {
+      "config_endpoint": "/v1/config",
+      "inflight_error": "capacity_exhausted",
+      "queue_error": "queue_capacity_exhausted",
+      "queue_order": "slot_admission_arrival",
+      "queue_policy": "capacity_fifo_best_fit",
+      "whole_server_ram_limit": false
+    },
+    "cancellation": {
+      "endpoint": "/v1/requests/cancel",
+      "accepted_status": 202,
+      "acceptance_is_drained": false,
+      "unknown_fields": "reject",
+      "malformed_status": 400,
+      "unknown_credentials_status": 404,
+      "request_replay_idempotent": false
+    },
+    "capabilities": "/v1/capabilities",
+    "client_governance": {
+      "profile": "q4t-client-governance-v1",
+      "policy_versions": [
+        1,
+        2
+      ],
+      "default_enabled": false,
+      "window_seconds": 60,
+      "window": "fixed_monotonic",
+      "scope": "single_process",
+      "restart": "reset",
+      "rates": [
+        "requests_per_minute",
+        "tokens_per_minute"
+      ],
+      "error_status": 429,
+      "error_codes": [
+        "client_rpm_exhausted",
+        "client_tpm_exhausted"
+      ],
+      "preflight_reserves_quota": false,
+      "fair_queue": "client_round_robin_best_fit",
+      "fairness_scope": "prepared_slot_admission",
+      "preemption": false,
+      "latency_guarantee": false
+    },
+    "config_schema": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/engine/declarations/schemas/config.json",
+    "config_schema_sha256": "a38e3073974a2c179740ea2bbefad9f079208cb908d4b0eec5c20bd0a7661ae1",
+    "constrained_decoding": true,
+    "constrained_stream_payload": "buffered_until_validated",
+    "declaration_evidence": "Actual R02 six-request short acceptance; unchanged model/vision math uses inherited evidence; no new full performance or quality claim.",
+    "errors": {
+      "envelope": [
+        "message",
+        "type",
+        "code",
+        "param"
+      ],
+      "code_namespace": "q4t",
+      "automatic_retry_safe": false,
+      "sse_error_then_done": true,
+      "host_memory": {
+        "http_status": 503,
+        "code": "host_memory_exhausted",
+        "fixed_buffer_fallback": true,
+        "recovery_guaranteed": false
+      }
+    },
+    "http": {
+      "request_id_header": "X-Request-Id",
+      "trace_id_independent_of_completion": true,
+      "random_id_bits": 128,
+      "trace_id_max_bytes": 128,
+      "json_content_type_required": true,
+      "charset": "utf-8",
+      "wrong_method_status": 405,
+      "query_parameters": "reject",
+      "connection_reuse": false,
+      "liveness": "/livez",
+      "readiness": "/readyz",
+      "control_reserved_connections": 4,
+      "drain_control_window_ms": 2000,
+      "observation_reserved_connections": 4,
+      "connection_profile": "q4t-http-partitions-v2",
+      "operations_listener": {
+        "enabled_by": "--operations-port",
+        "default_port": 0,
+        "host": "127.0.0.1",
+        "handlers": 8,
+        "control_connections": 4,
+        "observation_connections": 4,
+        "public_capacity_independent": true,
+        "generation": false,
+        "preflight": false,
+        "client_authentication": "unchanged",
+        "unclassified_shares_operations_total": true
+      },
+      "observation_routes": [
+        "GET /metrics",
+        "GET /v1/config",
+        "GET /v1/capabilities",
+        "GET /v1/models"
+      ],
+      "observation_during_drain": true,
+      "reservation_excludes_unclassified_header_flood": true
+    },
+    "input_contract": "q4t-input-v2",
+    "json_and_sse": true,
+    "media_acceptance": false,
+    "memory_admission": {
+      "configuration_endpoint": "/v1/config",
+      "source": "linux_global_mem_available",
+      "hard_limit": false,
+      "failure_policy": "reject_new_work",
+      "active_generation": "continue",
+      "checkpoints": [
+        "headers",
+        "prepare",
+        "execute"
+      ],
+      "error_codes": [
+        "memory_pressure",
+        "memory_observation_unavailable"
+      ],
+      "readiness": true,
+      "liveness_unaffected": true
+    },
+    "message_profile": "qwen3.8-native-v2",
+    "message_schema": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/engine/declarations/schemas/message.json",
+    "message_schema_sha256": "0618a6b85fee0f37f2df9347b1f260eee6882b74854f5177cef4b5527bb3bd61",
+    "messages_parse_response_default": true,
+    "null_as_default": [
+      "temperature",
+      "top_p",
+      "n",
+      "frequency_penalty",
+      "presence_penalty",
+      "stream",
+      "stream_options",
+      "user"
+    ],
+    "observability": {
+      "version": 5,
+      "full_response": "q4t_response_seconds",
+      "listener_handlers": [
+        "q4t_public_connections",
+        "q4t_operations_connections"
+      ],
+      "operations_rejections": "q4t_operations_connection_rejections_total",
+      "operations_capacity_error": "operations_capacity_exhausted",
+      "connection_rejections": "q4t_connection_rejections_total",
+      "observation_capacity_error": "observation_capacity_exhausted",
+      "business_connections_exclude_observation": true,
+      "http_receive_failures": "q4t_http_receive_failures_total",
+      "http_write_failures": "q4t_http_write_failures_total",
+      "transport_counts": "first_receive_and_write_failure_per_connection",
+      "transport_publication": "after_heartbeat_join",
+      "receive_excludes_business_validation": true,
+      "body_capacity_error": "body_capacity_exhausted",
+      "slot_wait": "q4t_slot_wait_seconds",
+      "admission": "q4t_admission_seconds",
+      "generation_exit": "q4t_generation_complete_seconds",
+      "legacy_queue_e2e": "deprecated_aliases",
+      "cancellation": "fixed_reason_counters"
+    },
+    "parse_response_false": true,
+    "preflight": {
+      "profile": "q4t-preflight-v1",
+      "endpoint": "/v1/chat/preflight",
+      "config_endpoint": "/v1/config",
+      "text_only": false,
+      "media_requires_enabled_server": true,
+      "media_plan": "headers_geometry_and_expanded_tokens",
+      "decodes_pixels": false,
+      "prompt_preview": "opt_in",
+      "token_ids": "opt_in",
+      "response_max_bytes": 8388608,
+      "shares_chat_planning": true,
+      "reserves_slot": false,
+      "executes_model": false,
+      "compiles_grammar": false
+    },
+    "preflight_schema": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/engine/declarations/schemas/preflight.json",
+    "preflight_schema_sha256": "3fe4ff359532ab677d4c865d00db8979c6ca979c0e4ce8e8731ffa1035303d3d",
+    "protocol_sha256": "b995c0d9d5a70ee5e6e40150b845c3221079d209fd8857fd71d97284ae1e3ed6",
+    "raw_prompt_parsing": false,
+    "reasoning": {
+      "profile": "q4t-reasoning-v1",
+      "fields": [
+        "reasoning_content",
+        "reasoning"
+      ],
+      "default_field": "reasoning_content",
+      "field_option": "reasoning_field",
+      "include_option": "include_reasoning",
+      "include_default": true,
+      "options_require_parsed_messages": true,
+      "option_null": "reject",
+      "history_null": "absent",
+      "history_conflict": "reject_unequal",
+      "history_role": "assistant",
+      "hidden_usage": "unchanged",
+      "hidden_content_filter": false,
+      "thinking_token_budget": true,
+      "budget_profile": "q4t-thinking-v1",
+      "budget_range": [
+        0,
+        2147483647
+      ],
+      "budget_null": "disabled",
+      "budget_accounting": "natural_tokens_starting_or_entering_reasoning",
+      "natural_closing_token_charged": true,
+      "forced_tokens_extra": true,
+      "max_forced_closure_tokens": 14,
+      "total_output_limit_priority": true,
+      "forced_boundary": "native_newline_close_blank_line",
+      "budget_exhausted": "close_then_answer_and_mask_reentry",
+      "budget_mtp": "reserve_pending_then_host_tail",
+      "budget_usage_details": true
+    },
+    "reasoning_schema": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/engine/declarations/schemas/reasoning.json",
+    "reasoning_schema_sha256": "e0e24e50afc2146757deac6fd8028377613e1305ff4dad4a1756c74961b938a4",
+    "response_schema": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/engine/declarations/schemas/response.json",
+    "response_schema_sha256": "47c9f9068a88ec1977788c892c90fe89dae43ec02e1e6e381d67707eaea1ec62",
+    "sdk_interoperability_acceptance": {
+      "new_sdk_qualification": false,
+      "current": "Standard-library visual client only; old SDK/managed/task packages remain pinned"
+    },
+    "stop_schema": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/engine/declarations/schemas/stop.json",
+    "stop_schema_sha256": "25989a444b4dc6a8ad7a0b8f723dbe96a26f9b97feb1e75016452e30536d4067",
+    "stream": {
+      "choice_logprobs_null": true,
+      "choices": 1,
+      "content": true,
+      "exact_integer_spelling": true,
+      "heartbeat_write_timeout_ms": 1000,
+      "input_contract": "q4t-input-v2",
+      "messages": true,
+      "messages_parse_response_default": true,
+      "null_as_default": [
+        "temperature",
+        "top_p",
+        "n",
+        "frequency_penalty",
+        "presence_penalty",
+        "stream",
+        "stream_options",
+        "user"
+      ],
+      "parse_error": {
+        "http_status": 502,
+        "sse_error_then_done": true,
+        "successful_finish": false
+      },
+      "parse_response_false": true,
+      "post_header_failure": "sse_error_then_done",
+      "raw_prompt": true,
+      "raw_prompt_parsing": false,
+      "reasoning_content": true,
+      "reasoning_field": "reasoning_content",
+      "sampling": "greedy",
+      "stream": true,
+      "stream_heartbeat_ms": 5000,
+      "stream_include_usage": true,
+      "stream_start": "after_template_and_structured_admission",
+      "stream_terminal_order": [
+        "finish",
+        "usage_if_requested",
+        "DONE"
+      ],
+      "stream_tool_arguments": "complete_call",
+      "stream_usage_null": true,
+      "token_limit_conflict": "reject_both_nonnull",
+      "token_limit_fields": [
+        "max_tokens",
+        "max_completion_tokens"
+      ],
+      "tool_calls": true
+    },
+    "structured_output": {
+      "available": true,
+      "cleanup_pending": false,
+      "backend": "xgrammar",
+      "backend_revision": "ca1acf28bf35b9ba9092800b69aebc7d4ce1f7a7",
+      "schema_profile": "q4t-json-schema-v1",
+      "response_format": [
+        "text",
+        "json_object",
+        "json_schema"
+      ],
+      "validation": "complete_response_before_publication",
+      "stream_payload": "buffered_until_validated",
+      "decode": "plain_host_masked_greedy",
+      "mtp": false,
+      "packed_decode": false,
+      "session_cache": false,
+      "prefix_cache": false,
+      "media": true,
+      "length_terminal": "error",
+      "named_tool_max_calls": 1,
+      "max_tools": 16,
+      "max_response_bytes": 1048576,
+      "max_schema_bytes": 16384,
+      "max_schema_depth": 8,
+      "max_schema_nodes": 128,
+      "object_key_order": "schema",
+      "json_with_tools": "requires_tool_choice_none",
+      "resources": {
+        "active_limit": 1,
+        "overload_status": 503,
+        "overload_code": "structured_capacity_exhausted",
+        "lease": "preparation_through_response_cleanup",
+        "terminal_handoff": "wait_for_cleanup_with_request_cancellation",
+        "handoff_waiter_bound": "max_inflight_requests",
+        "compiler_threads": 1,
+        "compiler_cache": false,
+        "decoded_vocab_storage_bytes": 33554432,
+        "compiled_grammar_bytes": 67108864,
+        "compile_peak_rss_limit": false,
+        "isolation": "exec_worker_compile_and_match",
+        "worker_address_space_bytes": 2147483648,
+        "worker_memory_enforcement": "RLIMIT_AS",
+        "whole_server_ram_limit": false,
+        "rss_measurement": "reported_exec_VmHWM",
+        "lifetime_ru_maxrss_includes_pre_exec": true,
+        "compile_timeout_ms": 10000,
+        "match_timeout_ms": 2000,
+        "cleanup_timeout_ms": 100,
+        "unreaped_counts_toward_capacity": true,
+        "deferred_owner": "process",
+        "deferred_request_callbacks": false,
+        "compile_interruptible": true,
+        "shutdown": "bounded_kill_then_owned_reap",
+        "compile_timeout_code": "constraint_compile_timeout",
+        "memory_limit_code": "constraint_resource_exhausted",
+        "worker_failure_code": "constraint_worker_failed"
+      }
+    },
+    "template": {
+      "id": "qwen4_exp-native-v2",
+      "message_profile": "qwen3.8-native-v2",
+      "roles": [
+        "system",
+        "developer",
+        "user",
+        "assistant",
+        "tool"
+      ],
+      "instruction_slot": "single_leading_system_or_developer",
+      "developer_mapping": "system",
+      "mixed_instruction_roles": false,
+      "message_name": "absent_or_null_only",
+      "instruction_media": false,
+      "reference_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+      "renderer_source_sha256": "a030f020b91227e143827754a3b45e36804a8e2f72c727d5e36291c688193244",
+      "tool_history_source_sha256": "3514a29df574c5b21c4dd8b6ecd9407aa3ff50a43a30b51d97fa93c6cd247bed",
+      "fixture_sha256": "670afc63b321539c2f86aff7c15a1b351bd7bb35ca9e01373466c7ad2353f27c",
+      "options": [
+        "enable_thinking",
+        "preserve_thinking",
+        "reasoning_effort",
+        "add_vision_id"
+      ],
+      "reasoning_effort": [
+        "low",
+        "medium",
+        "xhigh"
+      ]
+    },
+    "text_stop": {
+      "profile": "q4t-text-stop-v1",
+      "available": true,
+      "max_strings": 4,
+      "max_utf8_bytes": 256,
+      "null_or_empty_array": "disabled",
+      "empty_string": "reject",
+      "matching": "normalized_decoded_text_before_parser",
+      "includes_reasoning_and_tool_markup": true,
+      "selection": "earliest_completion_then_list_order",
+      "includes_stop_string": false,
+      "finish_reason": "stop",
+      "completion_usage": "through_matching_token",
+      "mtp": "full_batch_kv_retired_after_logical_stop",
+      "speculative_tail_not_charged": true,
+      "incomplete_tool": "error",
+      "incomplete_reasoning": "allowed_on_text_stop",
+      "constrained_output": false,
+      "state_cache": false
+    },
+    "thinking_schema": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/engine/declarations/schemas/thinking.json",
+    "thinking_schema_sha256": "1353743d9290215253fab2d8d0952ff99d833444e24323a01efacc6b10cf1bd7",
+    "token_limit_fields": [
+      "max_tokens",
+      "max_completion_tokens"
+    ],
+    "tool_calls": "complete validated calls only",
+    "tool_choice": [
+      "auto",
+      "none",
+      "required",
+      "named"
+    ],
+    "tool_control": {
+      "constrained_decoding": true,
+      "definition_unknown_fields": "reject_all_modes",
+      "execution": "client",
+      "full_json_schema_validation": false,
+      "history": {
+        "arguments": "required_object_or_json_object_text",
+        "identified_results": "complete_unique_batch",
+        "legacy_shape_validation": true,
+        "legacy_without_ids": true,
+        "result_content": "required_string_or_array",
+        "unordered_media_results": false,
+        "unordered_text_results": true
+      },
+      "max_calls": 128,
+      "max_id_bytes": 256,
+      "options_require_parsed_messages": true,
+      "parallel_tool_calls": [
+        true,
+        false
+      ],
+      "strict": true,
+      "strict_null": "false",
+      "tool_choice": [
+        "auto",
+        "none",
+        "required",
+        "named"
+      ],
+      "type": "function"
+    },
+    "tool_history_ids": true
+  },
+  "scope": {
+    "production": "Existing text/MTP and opt-in image features retained; R02 specifically accepts grammar ownership and ordinary-text continuity.",
+    "correctness": "40 distinct targeted CPU checks and six real HTTP requests; no full model quality matrix.",
+    "performance": "Not a performance task; no new performance acceptance claim.",
+    "installation_health": "Same accepted ELF, immutable package verification and CLI checks, no additional model starts.",
+    "boundaries": "All remaining A/N/R/Q tasks stay open; long stability belongs to user."
+  },
+  "grammar_recovery": {
+    "status": "PASS_R02_TARGETED_DELIVERY_DECISION",
+    "runtime_sources": 276,
+    "nvml_queries": 50,
+    "nvml_all_ok": true,
+    "requests": 6,
+    "model_starts": 1,
+    "distinct_cpu_tests": 40,
+    "engine_sha256": "c6285915be1dda92601b268c869e6645eb967689a408f4a2619984acfbd9ca20",
+    "source_commit": "0be7b38eda198d247bbb6cb7c7942925a115959a",
+    "owned_recorded_identities": 2,
+    "all_recorded_exited": true,
+    "ports_free": true,
+    "lock_acquirable": true,
+    "source_snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/source",
+    "validation_scope": "targeted non-performance reliability; no full matrix",
+    "acceptance": "ACCEPT_TARGETED_GRAMMAR_REAP",
+    "business": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/business-01/result.json",
+    "business_sha256": "9db8f43adf7b9d1095210606580f05797a813c0d3afc61d80cd664ef6d9e592b",
+    "lease_sha256": "812f48625f308fb1a4f0b6cef5484e92fbcb4ed0c6c4acc4f01e6ebb996336fe",
+    "inherited_runtime": {
+      "binary_sha256": "60b1c4c121d066789ebc44746316161320448d98095f32a7ec24e3fa00343ff3",
+      "release_sha256": "d2ae8db2f3e389f1cabd02c77a9322de4be8610f1135ba5b01b3b980cc760133",
+      "unchanged_model_math": true
+    },
+    "full_performance_run": false,
+    "full_model_quality_run": false
+  },
+  "release_declarations": {
+    "profile": "q4t-release-declarations-v1",
+    "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/release-01/engine/declarations",
+    "binary_sha256": "c6285915be1dda92601b268c869e6645eb967689a408f4a2619984acfbd9ca20",
+    "protocol_sha256": "b995c0d9d5a70ee5e6e40150b845c3221079d209fd8857fd71d97284ae1e3ed6",
+    "files": {
+      "capabilities.json": "0ba41188b89ddc4a417ad702350f3dfe35798688c05299b34e79a3ff3aba2ddd",
+      "configuration.json": "759d359ecd5e11873013b30c03e3021475849b48cba0ac2cdfcee4e590798bcd",
+      "schemas/config.json": "a38e3073974a2c179740ea2bbefad9f079208cb908d4b0eec5c20bd0a7661ae1",
+      "schemas/message.json": "0618a6b85fee0f37f2df9347b1f260eee6882b74854f5177cef4b5527bb3bd61",
+      "schemas/preflight.json": "3fe4ff359532ab677d4c865d00db8979c6ca979c0e4ce8e8731ffa1035303d3d",
+      "schemas/reasoning.json": "e0e24e50afc2146757deac6fd8028377613e1305ff4dad4a1756c74961b938a4",
+      "schemas/response.json": "47c9f9068a88ec1977788c892c90fe89dae43ec02e1e6e381d67707eaea1ec62",
+      "schemas/stop.json": "25989a444b4dc6a8ad7a0b8f723dbe96a26f9b97feb1e75016452e30536d4067",
+      "schemas/thinking.json": "1353743d9290215253fab2d8d0952ff99d833444e24323a01efacc6b10cf1bd7"
+    }
+  }
+}

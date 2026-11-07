@@ -1,0 +1,40 @@
+{
+  "model": "qwen3.8-flash-next",
+  "enable_thinking": false,
+  "max_tokens": 256,
+  "temperature": 0,
+  "stream": false,
+  "messages": [
+    {
+      "role": "user",
+      "content": "\u8c03\u7528read_project_header\u8bfb\u53d6docs/STATUS.md\u3002"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "read_project_header",
+        "description": "Read the first three lines of a real project document.",
+        "strict": true,
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "enum": [
+                "docs/STATUS.md"
+              ]
+            }
+          },
+          "required": [
+            "path"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  ],
+  "tool_choice": "required",
+  "parallel_tool_calls": false
+}

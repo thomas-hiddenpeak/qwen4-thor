@@ -1,0 +1,14 @@
+{
+  "command": [
+    "cmake",
+    "--build",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/host-off",
+    "--target",
+    "q4t_guardian",
+    "q4t_ingress",
+    "--parallel",
+    "6"
+  ],
+  "exit_code": 0,
+  "seconds": 9.529166074004024
+}

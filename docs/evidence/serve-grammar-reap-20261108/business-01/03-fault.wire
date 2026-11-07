@@ -1,0 +1,10 @@
+data: {"id":"chatcmpl-auto-e6f3d03bf28915694bf7658b75fad685","object":"chat.completion.chunk","created":1794089027,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}],"usage":null}
+
+: keep-alive
+
+: keep-alive
+
+data: {"error":{"message":"grammar operation time limit exceeded","type":"service_unavailable_error","code":"constraint_compile_timeout","param":null}}
+
+data: [DONE]
+

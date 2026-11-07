@@ -1,0 +1,35 @@
+[
+  {
+    "command": [
+      "cmake",
+      "-S",
+      ".",
+      "-B",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/engine-build",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_COMPILER=g++-14",
+      "-DCMAKE_CUDA_HOST_COMPILER=g++-14",
+      "-DQ4T_CUDA_ARCHITECTURES=110a",
+      "-DQ4T_ENABLE_XGRAMMAR=ON",
+      "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+      "-DFETCHCONTENT_SOURCE_DIR_Q4T_XGRAMMAR=/home/rm01/models/dev/qwen4-thor/.q4t-work/structured-control-20261102/xgrammar"
+    ],
+    "exit_code": 0,
+    "seconds": 2.287503580097109
+  },
+  {
+    "command": [
+      "cmake",
+      "--build",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-grammar-reap-20261108/engine-build",
+      "--target",
+      "q4t",
+      "q4t_host_tests",
+      "q4t_http_lifecycle_tests",
+      "--parallel",
+      "6"
+    ],
+    "exit_code": 2,
+    "seconds": 99.4639922939241
+  }
+]
