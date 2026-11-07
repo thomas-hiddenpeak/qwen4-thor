@@ -1,0 +1,56 @@
+{
+  "status": "PASS_BOUNDED_RECOVERY_BUSINESS",
+  "failure": null,
+  "cleanup_failure": null,
+  "seconds": 45.828714626375586,
+  "budget": {
+    "counts": {
+      "starts": 2,
+      "chats": 4,
+      "probes": 0,
+      "controls": 320
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "controller-1",
+        "ordinal": 2,
+        "monotonic_ns": 2277330752346546
+      },
+      {
+        "kind": "chats",
+        "label": "generation-self-check-1",
+        "ordinal": 2,
+        "monotonic_ns": 2277367858755326
+      },
+      {
+        "kind": "chats",
+        "label": "stalled-json",
+        "ordinal": 3,
+        "monotonic_ns": 2277368822559418
+      },
+      {
+        "kind": "chats",
+        "label": "isolated-sse",
+        "ordinal": 4,
+        "monotonic_ns": 2277371270055021
+      }
+    ]
+  },
+  "models": {
+    "1": {
+      "pid": 356840,
+      "start_ticks": 227733075
+    }
+  },
+  "quota_deadlines": {},
+  "source_commit": "e839aeccade7c449ee8473137d3e58f44c0de29a",
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/package-01/bundle",
+    "manifest_sha256": "b7743d20b5af101dde29eed9dc6ac3bdd4b412d00ff6a55c4c0e2ec21847c6a1",
+    "engine_binary_sha256": "60b1c4c121d066789ebc44746316161320448d98095f32a7ec24e3fa00343ff3",
+    "recovery_accepted": false
+  },
+  "default_replaced": false,
+  "performance_acceptance": false
+}

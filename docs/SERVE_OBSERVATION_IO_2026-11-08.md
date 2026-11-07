@@ -1,7 +1,7 @@
 # R01：普通观察写入的阻塞隔离
 
 2026-11-08，[总计划](SERVE_MASTER_PLAN_2026-11-08.md)的首项实现；
-42项不同CPU检查通过，尚未实际GPU短验、部署或完成R01。
+最终46项不同CPU检查及对应GPU短验通过，R01已交付。
 R01完成后继续R02及后续全部任务，不能作为总目标停止点。
 
 ## 实现与故障边界
@@ -63,3 +63,24 @@ sys.path前置未隔离来源。核对的模块字节相同，但加载位置及
 这次修正针对明确驱动缺陷，补验冻结为**累计2启动/4Chat/0探测/
 600秒**，保留首轮消费，剩余只允许1启动/3Chat。首轮原件只读保留，
 没有放松故障目标身份检查，也不重复其他恢复/性能/模型质量矩阵。
+
+## 接受与默认交付
+
+补验同一严格租约通过，原生产候选b7743d20未改；同PID JSON/SSE均
+返回42，writer实际回收，观察为UNKNOWN而business_ready保持true。
+两轮累计2启动/4Chat/0探测、92.863秒完整租约、89次外层NVML全OK。
+313项Git来源核对、11个记录身份退出；端口、GPU和锁释放。
+[60份原件与索引](evidence/serve-observation-io-20261108/README.md)
+保留首轮失败及源路径负控，不宣称无失败通过或长期/性能接受。
+
+默认`build/service`已改为v3 b7743d20，发布元数据547a0462；
+Guardian7a57af71，入口4a499f1a、探测ef1af475、引擎60b1c4c1及
+引擎sidecar d2ae8db2保持。安装只有help/status与来源检查，0模型/
+0Chat；没有常驻服务。`build/service-native-state`原service_id、
+ledger字节/预算保留，仍STOPPED，未重新初始化或清零。
+
+旧41cb22ea包保持，回退描述符/元数据及操作在
+`.q4t-work/serve-observation-io-20261108/delivery-01/rollback/receipt.json`。
+持独占锁、确认STOPPED后恢复旧描述符/发布元数据并原子切回旧包；
+**不覆盖或重置ledger**。回退包及当前源/二进制摘要均已核验。
+此交付在工作分支，不能把安装当作已合main；R02及总计划其他任务继续。

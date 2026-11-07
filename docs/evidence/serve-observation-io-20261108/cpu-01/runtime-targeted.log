@@ -1,0 +1,9 @@
+test_production_blocked_log_preserves_business_and_control_generation (__main__.RuntimeTests.test_production_blocked_log_preserves_business_and_control_generation) ... ok
+test_production_controller_cpu_backend_model_and_controller_recovery (__main__.RuntimeTests.test_production_controller_cpu_backend_model_and_controller_recovery) ... ok
+test_production_monitor_failure_keeps_model_then_uses_single_cpu_probe (__main__.RuntimeTests.test_production_monitor_failure_keeps_model_then_uses_single_cpu_probe) ... ok
+test_auxiliary_health_keeps_business_and_core_admission_survives_ledger_loss (__main__.RuntimeTests.test_auxiliary_health_keeps_business_and_core_admission_survives_ledger_loss) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 28.850s
+
+OK

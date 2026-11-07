@@ -1,0 +1,9 @@
+test_missing_sealed_dependency_cannot_fall_back_to_checkout (__main__.PackagedImportTests.test_missing_sealed_dependency_cannot_fall_back_to_checkout) ... ok
+test_preloaded_checkout_module_fails_before_any_service_start (__main__.PackagedImportTests.test_preloaded_checkout_module_fails_before_any_service_start) ... ok
+test_workspace_regular_package_cannot_shadow_sealed_namespace (__main__.PackagedImportTests.test_workspace_regular_package_cannot_shadow_sealed_namespace) ... ok
+test_observation_completion_keeps_failed_start_and_self_check_charged (__main__.BudgetTests.test_observation_completion_keeps_failed_start_and_self_check_charged) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.426s
+
+OK

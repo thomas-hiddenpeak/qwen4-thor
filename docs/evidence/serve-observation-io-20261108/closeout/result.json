@@ -1,0 +1,36 @@
+{
+  "status": "ACCEPT_TARGETED_OBSERVATION_ISOLATION",
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/package-01/bundle",
+    "manifest_sha256": "b7743d20b5af101dde29eed9dc6ac3bdd4b412d00ff6a55c4c0e2ec21847c6a1",
+    "engine_binary_sha256": "60b1c4c121d066789ebc44746316161320448d98095f32a7ec24e3fa00343ff3",
+    "recovery_accepted": false
+  },
+  "implementation_commit": "9a3a186cdd4610728769af7aba9392bc94d0496f",
+  "driver_commit": "e839aeccade7c449ee8473137d3e58f44c0de29a",
+  "business_result_sha256": "9c98d27a241442774022c36e250789ac23f29d9b59437339aad1dda50a95996f",
+  "cpu_distinct_cases": 46,
+  "cpu_repeated_lifecycle_cases": 4,
+  "counts": {
+    "starts": 2,
+    "chats": 4,
+    "probes": 0,
+    "controls": 320
+  },
+  "total_lease_seconds": 92.86309039173648,
+  "nvml_samples": 89,
+  "all_nvml_samples_ok": true,
+  "recorded_owned_identities_exited": 11,
+  "ports_and_lock_released": true,
+  "prior_driver_failure_preserved": true,
+  "same_model_after_writer_failure": true,
+  "no_engine_rebuild": true,
+  "new_guardian_sha256": "7a57af7198cbde10831de8c0bf4e1ed30518f3a395d7c4bd0876158c1d7b4a11",
+  "unchanged_ingress_sha256": "4a499f1a62e2f165697582b8570c85dd9890c135548f966d0e800d744faed559",
+  "unchanged_probe_sha256": "ef1af4758829d36c9300b411dda05479b5d8640f78ef8e44277fee5ef970847a",
+  "source_anchors_checked": 313,
+  "rollback_ready": false,
+  "installed": false,
+  "full_performance_or_model_correctness_tests": false,
+  "long_stability_accepted": false
+}

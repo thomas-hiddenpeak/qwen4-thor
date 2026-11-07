@@ -1,0 +1,16 @@
+test_changed_native_binary_blocks_before_lease_acquisition (__main__.BundleTests.test_changed_native_binary_blocks_before_lease_acquisition) ... ok
+test_cli_defaults_native_and_nginx_is_not_a_required_argument (__main__.BundleTests.test_cli_defaults_native_and_nginx_is_not_a_required_argument) ... ok
+test_default_package_has_native_binary_and_no_nginx_dependency (__main__.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency) ... ok
+test_fatal_diagnostic_buffer_cannot_grow_and_is_readable_privately (__main__.BundleTests.test_fatal_diagnostic_buffer_cannot_grow_and_is_readable_privately) ... ok
+test_launcher_never_hands_guardian_a_regular_file_for_diagnostics (__main__.BundleTests.test_launcher_never_hands_guardian_a_regular_file_for_diagnostics) ... ok
+test_native_build_receipt_cannot_omit_http_transport_source (__main__.BundleTests.test_native_build_receipt_cannot_omit_http_transport_source) ... ok
+test_native_build_receipt_must_bind_ingress_binary (__main__.BundleTests.test_native_build_receipt_must_bind_ingress_binary) ... ok
+test_native_config_cannot_be_rendered_as_nginx (__main__.BundleTests.test_native_config_cannot_be_rendered_as_nginx) ... ok
+test_native_mode_does_not_silently_enable_tls_or_lan (__main__.BundleTests.test_native_mode_does_not_silently_enable_tls_or_lan) ... ok
+test_optional_diagnostic_allocation_failure_still_launches (__main__.BundleTests.test_optional_diagnostic_allocation_failure_still_launches) ... ok
+test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io (__main__.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.135s
+
+OK

@@ -1,0 +1,58 @@
+{
+  "version": 3,
+  "profile": "q4t-service-recovery-v3",
+  "ingress_mode": "native",
+  "acceptance": "ACCEPT_TARGETED_OBSERVATION_ISOLATION",
+  "recovery_accepted": true,
+  "acceptance_record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/closeout/result.json",
+  "acceptance_sha256": "9be3d98c0f4ec6af74d3e9f6bf2733c3abef71aaa0694674437f51cc9542768e",
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/package-01/bundle",
+  "manifest_sha256": "b7743d20b5af101dde29eed9dc6ac3bdd4b412d00ff6a55c4c0e2ec21847c6a1",
+  "ingress_sha256": "4a499f1a62e2f165697582b8570c85dd9890c135548f966d0e800d744faed559",
+  "nginx_required": false,
+  "engine_binary_sha256": "60b1c4c121d066789ebc44746316161320448d98095f32a7ec24e3fa00343ff3",
+  "engine_release_sha256": "d2ae8db2f3e389f1cabd02c77a9322de4be8610f1135ba5b01b3b980cc760133",
+  "entry": "/home/rm01/models/dev/qwen4-thor/build/service/bin/q4t",
+  "state": "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+  "service_id": "dcb9dc2e-2824-49b2-a4f8-9b7b4f834b6d",
+  "initial_desired": "STOPPED",
+  "automatically_started": false,
+  "listen": "127.0.0.1:18161",
+  "upstream": "127.0.0.1:18162",
+  "operations": "127.0.0.1:18163",
+  "clients": [
+    {
+      "id": "alpha",
+      "rpm": 30,
+      "tpm": 6000
+    },
+    {
+      "id": "beta",
+      "rpm": 1,
+      "tpm": 6000
+    }
+  ],
+  "scope": "single-slot text/MTP, loopback, process resource mode; bounded native ingress and recovery only",
+  "rollback_receipt": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/delivery-01/rollback/receipt.json",
+  "rollback_sha256": "c14cb70443d25db260637b9ea271bd2623369812fc27348ad94fbaddd62ef18f",
+  "engine_default_replaced": false,
+  "gpu_starts_for_install": 0,
+  "long_stability_accepted": false,
+  "tls_lan_accepted": false,
+  "dependencies": [
+    "q4t native entrypoint and Guardian",
+    "pinned Python control/journal/monitor runtime",
+    "CUDA/driver, model assets and system C/C++ libraries"
+  ],
+  "limitations": [
+    "OpenAI compatibility/native TLS/LAN/CORS and other master-plan tasks remain open",
+    "Bounded grammar reap, progress watchdog, automatic profile/version fallback remain open",
+    "Physical RAM hard protection and NVML-free cold start remain open",
+    "No Guardian resurrection without an outer startup mechanism"
+  ],
+  "guardian_sha256": "7a57af7198cbde10831de8c0bf4e1ed30518f3a395d7c4bd0876158c1d7b4a11",
+  "observation_isolation_accepted": true,
+  "previous_acceptance_record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-ingress-20261108/closeout/result.json",
+  "state_ledger_preserved": true,
+  "diagnostics": "private bounded 64KiB memfd, Guardian lifetime"
+}

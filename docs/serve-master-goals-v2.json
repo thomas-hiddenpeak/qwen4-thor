@@ -289,14 +289,21 @@
     {
       "id": "R01",
       "required": true,
-      "state": "targeted_cpu_passed_driver_repaired_business_pending",
+      "state": "delivered",
       "implementation": "普通日志/观察阻塞隔离；有界队列/单worker、未回收不增殖、健康核心同PID继续；保留可诊断性",
       "acceptance": "普通日志/观察阻塞隔离；有界队列/单worker、未回收不增殖、健康核心同PID继续；保留可诊断性",
       "depends_on": [],
       "evidence": [
-        "SERVE_OBSERVATION_IO_2026-11-08.md"
+        "SERVE_OBSERVATION_IO_2026-11-08.md",
+        "evidence/serve-observation-io-20261108/closeout/result.json",
+        "evidence/serve-observation-io-20261108/delivery-01/result.json"
       ],
-      "release": null,
+      "release": {
+        "manifest_sha256": "b7743d20b5af101dde29eed9dc6ac3bdd4b412d00ff6a55c4c0e2ec21847c6a1",
+        "release_sha256": "547a04628973fac90a9afc1935cf13a21ef752d7694f53181183491e717e0c0e",
+        "state": "STOPPED",
+        "merged_main": false
+      },
       "gpu_completion_budget": {
         "total_starts": 2,
         "total_chats": 4,
@@ -464,5 +471,6 @@
       "evidence": [],
       "release": null
     }
-  ]
+  ],
+  "next_task": "R02"
 }

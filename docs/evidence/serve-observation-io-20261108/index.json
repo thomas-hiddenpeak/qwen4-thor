@@ -1,0 +1,307 @@
+{
+  "version": 1,
+  "files": [
+    {
+      "path": "cpu-plan-01.json",
+      "sha256": "b1de617020d13e6e6ff2dde795d39121a9ce22c4a7d201f68ae76075f0d86254",
+      "bytes": 1912
+    },
+    {
+      "path": "configure-01.log",
+      "sha256": "b11a21da0c3ad0c071be75f9cedd36ac233b8a3da918eded658e49d70a08a528",
+      "bytes": 683
+    },
+    {
+      "path": "build-01.log",
+      "sha256": "03328e277b9969cf32dfdecf4e285388d2c997f18471c7123f12a14238dafea5",
+      "bytes": 19405
+    },
+    {
+      "path": "build-02.log",
+      "sha256": "1c15e2b7e24a6b9b1cf768343615472fe1e46c3ae9811e3379c5ea3bc4efc136",
+      "bytes": 7402
+    },
+    {
+      "path": "native-build.json",
+      "sha256": "504b93536ffe1c583ab467d157e97798852ef60be4b1882fffea89a9bcc445e8",
+      "bytes": 10525
+    },
+    {
+      "path": "cpu-01/test_observation_io.log",
+      "sha256": "e1b03e4ebe3cd46864a899403b88914fbd5a92fa7f8ccd786683e264c8cfeb13",
+      "bytes": 2759
+    },
+    {
+      "path": "cpu-01/test_native_bundle.log",
+      "sha256": "033b349ad4e5c5681f8f6d7968a45c6dc877473b0ee10ac7043cec0c27546a9f",
+      "bytes": 1731
+    },
+    {
+      "path": "cpu-01/runtime-targeted.log",
+      "sha256": "03cf92c4e3c8a6f640d04d4a9eb96d0923732723499f0a084c9325f63e6529ae",
+      "bytes": 797
+    },
+    {
+      "path": "cpu-01/runtime-command.json",
+      "sha256": "7af940fc0609f420a954d69b4716faaf89da4b87447cd15b6d33817f07ce6dad",
+      "bytes": 529
+    },
+    {
+      "path": "cpu-01/acceptance-driver-result.json",
+      "sha256": "40c238d7a770c57ab314ef817e8382ed4c4b8df852c684cdf0f10800999abf3a",
+      "bytes": 404
+    },
+    {
+      "path": "cpu-02/runtime-targeted.log",
+      "sha256": "2d3b4c038d38d9d8379e18190182edd19225be444bad115afa3c515a71ac99b2",
+      "bytes": 954
+    },
+    {
+      "path": "cpu-02/command.json",
+      "sha256": "eef30d8008e86425143eca27e52cc4769961bb652e4e287cebb0514f0ff71ba4",
+      "bytes": 608
+    },
+    {
+      "path": "import-fix-cpu/result.log",
+      "sha256": "257e766a78e0ac3ec91201abe3b9997c480b53d0017305609b19ea501715ca7c",
+      "bytes": 750
+    },
+    {
+      "path": "import-fix-cpu/old-loader-negative.json",
+      "sha256": "bef09f59b3e379e5622ae44c5b8351102eb45773de5cd85df53b63f1ca0307dd",
+      "bytes": 2777
+    },
+    {
+      "path": "closeout/result.json",
+      "sha256": "9be3d98c0f4ec6af74d3e9f6bf2733c3abef71aaa0694674437f51cc9542768e",
+      "bytes": 1536
+    },
+    {
+      "path": "delivery-01/result.json",
+      "sha256": "588d372a6bf62610c4d2d921a4361953de1833af6d0c817648f8516a985e7252",
+      "bytes": 1636
+    },
+    {
+      "path": "delivery-01/entry-checks.json",
+      "sha256": "d05f61ef05565467d82d125a404407a31af1138a1ed5e93cf322ce12563a8986",
+      "bytes": 723
+    },
+    {
+      "path": "delivery-01/rollback/receipt.json",
+      "sha256": "c14cb70443d25db260637b9ea271bd2623369812fc27348ad94fbaddd62ef18f",
+      "bytes": 733
+    },
+    {
+      "path": "package-01/receipt.json",
+      "sha256": "a3860708db28e8b1fb8282d2f31b681e2be1a70c42e4b434261545e4492fa8f5",
+      "bytes": 323
+    },
+    {
+      "path": "business-01/plan.json",
+      "sha256": "e1c044522f6b29bdded0342be83bc4a60d84e98b907aff6d885352c5f399bb40",
+      "bytes": 37631
+    },
+    {
+      "path": "business-01/lease/events.jsonl",
+      "sha256": "363ffbafded5c8c23f6b47369e53c2a8ee090ca21da574f29050b89dc2ec9bad",
+      "bytes": 8676
+    },
+    {
+      "path": "business-01/lease/exit.json",
+      "sha256": "7e223693b9452a057557ba963b7c79b59d64416916b4e1b3e6a3ab29e7346c30",
+      "bytes": 674
+    },
+    {
+      "path": "business-01/lease/nvml-queries.jsonl",
+      "sha256": "03bdbe3f79e32df84fd165d33726a15e7e77a34b435cd1f74af7dd3cb22e33b8",
+      "bytes": 104822
+    },
+    {
+      "path": "business-01/execution/chat-01-self-check-request.json",
+      "sha256": "4ff8e010c5fe0f4d74a570487a64d15079e728d5892aa744bc688c062bf4599e",
+      "bytes": 649
+    },
+    {
+      "path": "business-01/execution/chat-01-self-check-response.json",
+      "sha256": "11188a3d4fdfc42381f2edec75c7ee0eb078f309ab849f92e94d77683f97c77b",
+      "bytes": 445
+    },
+    {
+      "path": "business-01/execution/controller-wrapper.json",
+      "sha256": "0c03cada7c1ce44bd7b3be6a1ad6beb49efcb7b82d9bda48c004c5b5e877cf5c",
+      "bytes": 1190
+    },
+    {
+      "path": "business-01/execution/counts.json",
+      "sha256": "640167e0b3f2cd67dbf971a261d6b1844981ae010ebb8664c89d297fea9a2365",
+      "bytes": 374
+    },
+    {
+      "path": "business-01/execution/fault-counts-1.json",
+      "sha256": "ab2b22b40d57ed69fd963566b07cbd42046c418c661b71ed08b42f942e9ba595",
+      "bytes": 69
+    },
+    {
+      "path": "business-01/execution/initialized.json",
+      "sha256": "41e5b917733afa72951589bde771611b114adaa807fb99ecd9867ad07611274b",
+      "bytes": 249
+    },
+    {
+      "path": "business-01/execution/launcher-result.json",
+      "sha256": "e74fed60d2c2dd372603e39105e32d58dbc62c19a13c9a8451f19c61095c38c3",
+      "bytes": 209
+    },
+    {
+      "path": "business-01/execution/ready-1.json",
+      "sha256": "24ee3023ab7a2624876e8e33ea765fcc47267ed0ba6caaac52a794de22564e27",
+      "bytes": 1452
+    },
+    {
+      "path": "business-01/execution/result.json",
+      "sha256": "4966d860a5323f2e8e288ea8e23984da44525525344e0e5be7f7a672918b7356",
+      "bytes": 1909
+    },
+    {
+      "path": "business-01/execution/status.jsonl",
+      "sha256": "410624e5985f8e7462ed87fa5e9f19a1582bbc03de9222698ed41e62c8d6bf7c",
+      "bytes": 207619
+    },
+    {
+      "path": "business-01/execution/stop.json",
+      "sha256": "43cc262455965b41f34c6e10a4daf5c2adeda43c4b3b693759ffe213463096d0",
+      "bytes": 1053
+    },
+    {
+      "path": "business-02/plan.json",
+      "sha256": "b0533e8281e1c992f3fda1c6f7c1216e43e321729d871dce6241e03172f32463",
+      "bytes": 39490
+    },
+    {
+      "path": "business-02/lease/events.jsonl",
+      "sha256": "20ab9bb1fda59d669880e6a6f17da249621311789cfdacb36c4ab4ce701e68a7",
+      "bytes": 8858
+    },
+    {
+      "path": "business-02/lease/exit.json",
+      "sha256": "58bd12d25d77df807d564bc3e5d39236309444fb7b4aca6a458d68012d904df1",
+      "bytes": 669
+    },
+    {
+      "path": "business-02/lease/nvml-queries.jsonl",
+      "sha256": "f0072fc0c8a2e4fb6928354a1a9355c9aa5e7cac986ef710b550bb3099e3f9dd",
+      "bytes": 107354
+    },
+    {
+      "path": "business-02/execution/business-final.json",
+      "sha256": "b4a5ef1c2ebf3ff1da254b3f661ba66d97f6a8ada934d0b05738f6cca77749ca",
+      "bytes": 1473
+    },
+    {
+      "path": "business-02/execution/chat-02-self-check-request.json",
+      "sha256": "4ff8e010c5fe0f4d74a570487a64d15079e728d5892aa744bc688c062bf4599e",
+      "bytes": 649
+    },
+    {
+      "path": "business-02/execution/chat-02-self-check-response.json",
+      "sha256": "239dd44886f6dab5e849edb4ab5bed6c0c86168338602d0c6a94b3a8f07c1a8e",
+      "bytes": 445
+    },
+    {
+      "path": "business-02/execution/controller-wrapper.json",
+      "sha256": "14ab1ae108a215829dd2b0c17d51021ca5684ba26cd91f46bec7a46585b45e52",
+      "bytes": 1190
+    },
+    {
+      "path": "business-02/execution/counts.json",
+      "sha256": "bae6154b8b28f2c9f63261b8bf543e7c0d76416e18a1a8e15a9ba5c41ffecadd",
+      "bytes": 626
+    },
+    {
+      "path": "business-02/execution/fault-counts-1.json",
+      "sha256": "d7292d4fd0541de733ac9b6fce75c0a1e5b1c592b17e186be026769f1e38c527",
+      "bytes": 94
+    },
+    {
+      "path": "business-02/execution/initialized.json",
+      "sha256": "4df3e04f6d56a099e589ae509802b254520575bc7ca2e61c6d7a5fc67e8b4bd8",
+      "bytes": 249
+    },
+    {
+      "path": "business-02/execution/isolated-final-metrics.json",
+      "sha256": "750798c810608a8e54b89fc4d7508e1a7bd2930f74e022168e2fbd6131e194ed",
+      "bytes": 34887
+    },
+    {
+      "path": "business-02/execution/isolated-sse-request.json",
+      "sha256": "804417aea6b0a83806cb6d610a8f9a1b71727950a953eaf81ae46ccdc740242d",
+      "bytes": 687
+    },
+    {
+      "path": "business-02/execution/isolated-sse-response.json",
+      "sha256": "98cfe76afcc0d67068411d5bcebd99ea97e8f6b76211c55042fc2c17ad61a66a",
+      "bytes": 544
+    },
+    {
+      "path": "business-02/execution/isolated-sse-wire.bin",
+      "sha256": "60e3ccc72884b8d784a27dc09207dbcfb4dd17c9939d32cbc037028f6671cfb4",
+      "bytes": 1209
+    },
+    {
+      "path": "business-02/execution/launcher-result.json",
+      "sha256": "5a560311610c578797aeb1285433ebfbb1afd560b0cdf92c34c68343ec488932",
+      "bytes": 209
+    },
+    {
+      "path": "business-02/execution/observation-gap.json",
+      "sha256": "766583881e40554e10008fcefcbaa13f2c3361da0026c59001cd6dafa1f89e02",
+      "bytes": 1474
+    },
+    {
+      "path": "business-02/execution/ready-1.json",
+      "sha256": "13de78a85b0b65f2c46e2e861a09a95183d16a3b478ef454a6289cf1dfaf7845",
+      "bytes": 1451
+    },
+    {
+      "path": "business-02/execution/result.json",
+      "sha256": "9c98d27a241442774022c36e250789ac23f29d9b59437339aad1dda50a95996f",
+      "bytes": 1420
+    },
+    {
+      "path": "business-02/execution/stalled-json-request.json",
+      "sha256": "a1f8e3f757a6a2533a72af0dbeba9bce879a97f3c70dbe74371b174ee04079e8",
+      "bytes": 635
+    },
+    {
+      "path": "business-02/execution/stalled-json-response.json",
+      "sha256": "4cd34d33b30de57e19eb2c07f43019709ee6ee6198284712a1e8e88a72d3f50f",
+      "bytes": 571
+    },
+    {
+      "path": "business-02/execution/stalled-json-wire.bin",
+      "sha256": "fe852209b2785a8f3c83fab5dc5307e4c4f4020899c326c8c61d45194d0b7c88",
+      "bytes": 302
+    },
+    {
+      "path": "business-02/execution/status.jsonl",
+      "sha256": "6415ac8d5136e2cc0dd3513f57fe313b621ff8ce63471cd2dffe1121634202c4",
+      "bytes": 214545
+    },
+    {
+      "path": "business-02/execution/stop.json",
+      "sha256": "933a394d1ca9a054ffe5fec3cf746a4f5865126ef3469c69339776fa63d404c9",
+      "bytes": 1053
+    },
+    {
+      "path": "business-02/execution/writer-fault.json",
+      "sha256": "84bb1eb7007fc6dc91047cc02a75315e9ad915f9d7784523709cede2247f1465",
+      "bytes": 94
+    },
+    {
+      "path": "installed-service.release.json",
+      "sha256": "547a04628973fac90a9afc1935cf13a21ef752d7694f53181183491e717e0c0e",
+      "bytes": 2752
+    }
+  ],
+  "known_credential_values_checked": 5,
+  "raw_private_configs_and_ledgers_excluded": true
+}

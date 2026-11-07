@@ -111,7 +111,8 @@ token预算不足而失败，canonical分词长度不构成生成上限。
 [当前总计划](docs/SERVE_MASTER_PLAN_2026-11-08.md)中的必做实现，
 不因外部前置可选而取消。当前控制器/journal仍使用Python，必要的
 CUDA、系统与模型依赖不变。新模式已完成本机有界真实业务验收，
-当前入口与回退方法见[交付说明](docs/SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)。
+当前v3入口、日志阻塞隔离与回退见[R01交付](docs/SERVE_OBSERVATION_IO_2026-11-08.md)，
+原生入口既有能力见[交付说明](docs/SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)。
 
 部署方可自行前置nginx或其他HTTP网关，传递普通Bearer Authorization，
 无需提供q4t内部凭据或准入子请求。nginx前置的最小转发配置如下；

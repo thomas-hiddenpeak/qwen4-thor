@@ -1,0 +1,13 @@
+{
+  "result": "PASS",
+  "test_count": 9,
+  "command": [
+    "python3",
+    "-B",
+    "tools/serve_recovery/test_acceptance.py",
+    "-v"
+  ],
+  "seconds": 0.092,
+  "capture": "transcribed summary from exec chunk 08237d; raw stdout remains in task tool record, not a fabricated original log",
+  "scope": "persistent model/Chat/probe budgets, drain timeout, no replays, new observation scenario ceiling"
+}

@@ -1,0 +1,34 @@
+{
+  "counts": {
+    "starts": 2,
+    "chats": 4,
+    "probes": 0,
+    "controls": 320
+  },
+  "events": [
+    {
+      "kind": "starts",
+      "label": "controller-1",
+      "ordinal": 2,
+      "monotonic_ns": 2277330752346546
+    },
+    {
+      "kind": "chats",
+      "label": "generation-self-check-1",
+      "ordinal": 2,
+      "monotonic_ns": 2277367858755326
+    },
+    {
+      "kind": "chats",
+      "label": "stalled-json",
+      "ordinal": 3,
+      "monotonic_ns": 2277368822559418
+    },
+    {
+      "kind": "chats",
+      "label": "isolated-sse",
+      "ordinal": 4,
+      "monotonic_ns": 2277371270055021
+    }
+  ]
+}

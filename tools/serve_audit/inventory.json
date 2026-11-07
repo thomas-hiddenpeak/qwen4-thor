@@ -1208,6 +1208,7 @@
       "tools/serve_recovery/service.py"
     ],
     "cpu": "targeted; see phase records",
-    "business": "first driver refused mixed import origin after one self-check; CPU negative reproduced, sealed namespace pinning fixed; bounded completion pending"
+    "business": "accepted: 2 starts/4 Chat cumulative; writer stall isolates loss, same core PID JSON/SSE; source loader CPU negative preserved",
+    "result": "docs/evidence/serve-observation-io-20261108/closeout/result.json"
   }
 }

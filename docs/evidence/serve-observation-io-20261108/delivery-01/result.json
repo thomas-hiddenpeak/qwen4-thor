@@ -1,0 +1,26 @@
+{
+  "status": "DELIVERED_STOPPED",
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/package-01/bundle",
+    "manifest_sha256": "b7743d20b5af101dde29eed9dc6ac3bdd4b412d00ff6a55c4c0e2ec21847c6a1",
+    "engine_binary_sha256": "60b1c4c121d066789ebc44746316161320448d98095f32a7ec24e3fa00343ff3",
+    "recovery_accepted": false
+  },
+  "release_path": "/home/rm01/models/dev/qwen4-thor/build/service.release.json",
+  "release_sha256": "547a04628973fac90a9afc1935cf13a21ef752d7694f53181183491e717e0c0e",
+  "rollback": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-ingress-20261108/package-attempt-01/bundle",
+    "manifest_sha256": "41cb22eaf6166ed316b4999c13e4f355a3c357d19debccc54073a660dd030909",
+    "metadata_sha256": "f1b3ea15aff06b91d5649b06d6843efd912fb61f9a640be6ff23a17558cff85a",
+    "descriptor_sha256": "b4e57c74634fa32f6446583ba37bb068f2f043edaf8948479b66951f4de29eeb",
+    "state": "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+    "ledger_sha256": "2216b9dcd4d0e9753fb41b8698a15055001c2446ac52b5a52e3d2f757b0c884c",
+    "procedure": "Under exclusive lease and STOPPED ledger, restore descriptor/metadata from this directory and atomically repoint build/service to package; never replace/reset ledger."
+  },
+  "rollback_receipt_sha256": "c14cb70443d25db260637b9ea271bd2623369812fc27348ad94fbaddd62ef18f",
+  "ledger_preserved": true,
+  "ledger_sha256": "2216b9dcd4d0e9753fb41b8698a15055001c2446ac52b5a52e3d2f757b0c884c",
+  "no_model_started_for_install": true,
+  "old_package_retained": true,
+  "new_namespace_acceptance": true
+}

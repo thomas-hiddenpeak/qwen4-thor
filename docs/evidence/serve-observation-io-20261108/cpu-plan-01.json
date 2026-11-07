@@ -1,0 +1,30 @@
+{
+  "stage": "R01 targeted observation isolation",
+  "commit": "1f88546963532c03ec21ad0791780341f8a7d738",
+  "worktree_sources": {
+    "src/service/guardian_main.cpp": "3630a52ea38d411971d652fd2cee3c9b01632d8c812f2c717f2c2b922f44a917",
+    "tools/serve_recovery/observation_io.py": "e49138b50462d1acf1a5ef6b648f8bc5d00655de04ec86f25648385fdab4d772",
+    "tools/serve_recovery/controller.py": "5ba2cdf21ad46fe20d690f16a0c7e61f1270f793f922a0aaef5d8c5beecc025d",
+    "tools/serve_recovery/control.py": "bd8307bb3950122111d1d14d2451b54672599179b34a7d9d9ff375ebc53710c1",
+    "tools/serve_recovery/service.py": "83fdb2eedf1f1585b3c312467e98448e72779c95b19338b4b9d560dcbfef2019",
+    "tools/serve_recovery/bundle.py": "60444ccd18986b2c5ab9ca9f02c508f2be37cb2a9bf2e70d9633b5a0e629ebdb",
+    "tools/serve_recovery/test_observation_io.py": "d3e2e65cad2c2b33f82a5b47cc36fa555f695c71a19942f9ada47bcdbe4ac950",
+    "tools/serve_recovery/test_native_bundle.py": "4f6c624c2c6db7d3388349ba6fddcd9375a3b02034fe4c8fd6644a5e06d8afc3",
+    "tools/serve_recovery/test_runtime.py": "c1ae6d8dfe5a603dec7e383a75d54f953e5c70988b4e5e5eca6f4729593f26d7",
+    "tools/serve_recovery/fixture_production.py": "8a7a225ecc9ad8514392a7121aad0e702e3259cb63336f2d3890236bdbcdf012",
+    "tests/host/CMakeLists.txt": "3cd2833a55a8ef2bbcfe63126e79e32e07c5f039fd03edb2a70ae4ac1b325c0e"
+  },
+  "cpu": [
+    "test_observation_io.py (all affected cases)",
+    "test_native_bundle.py (bundle/diagnostic contracts)",
+    "test_runtime.py production model/controller recovery, blocked log, monitor failure/probe, auxiliary health projection"
+  ],
+  "build": "host-only q4t_guardian and q4t_ingress; no engine rebuild",
+  "gpu_bound": {
+    "model_starts": 1,
+    "chat_including_self_check": 4,
+    "lease_seconds": 600,
+    "driver": "not yet frozen or run"
+  },
+  "excluded": "full performance and model correctness matrices; user-owned long stability"
+}

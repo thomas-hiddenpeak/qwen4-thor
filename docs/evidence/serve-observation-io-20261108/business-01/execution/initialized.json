@@ -1,0 +1,7 @@
+{
+  "state": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-io-20261108/business-01/execution/state",
+  "service_id": "6d6e55ae-fe15-40a8-b5f4-87b947aed31e",
+  "initialized": true,
+  "desired": "STOPPED",
+  "automatic_start": false
+}
