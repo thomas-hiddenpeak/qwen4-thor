@@ -1,5 +1,6 @@
 # docs/ — 开发记录文档体系
 
+- [持续LLM服务、故障分类与自动恢复设计](SERVE_SELF_RECOVERY_DESIGN_2026-11-07.md)
 - [Serve阶段独立PR、统一交接与研究保留](SERVE_RESILIENCE_CLOSEOUT_2026-11-07.md)
 - [下一阶段目标：host exporter接入与语法worker有界回收](SERVE_RESILIENCE_NEXT_PLAN_2026-11-07.md)
 - [资源控制面依赖隔离CPU阶段](SERVE_RESOURCE_CONTROL_ISOLATION_2026-11-07.md)
