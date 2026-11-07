@@ -109,7 +109,9 @@ def launch(package, digest, state, *, daemon=False, timeout=360):
             python=python, journal=str(package/'source/tools/serve_recovery/journal.py'),
             controller=[python, '-I', '-B', str(package/'source/tools/serve_recovery/controller.py'),
                         '--config', str(run/'controller.json')],
-            gateway=[python, '-I', '-B', str(package/'source/tools/serve_recovery/gateway.py'),
+            gateway=[python, '-I', '-B', str(package/'source/tools/serve_recovery'/
+                     ('native_ingress.py' if manifest.get('ingress_mode') == 'native'
+                      else 'gateway.py')),
                      '--config', str(run/'gateway.json')], quota_enforced=manifest['quota_enforced'],
             lease_path=manifest['lock_path'], lease_fd=lease, resource_mode='process',
             require_hard_memory_limit=False, term_ms=30000, kill_ms=5000,
@@ -174,9 +176,12 @@ def main(argv=None, *, package=None, digest=None):
             raise argparse.ArgumentTypeError('timeout must be 1..600 seconds')
         return value
     prepare = commands.add_parser('prepare')
-    for name in ('binary', 'release', 'model', 'guardian', 'cuda-probe', 'nginx',
+    for name in ('binary', 'release', 'model', 'guardian', 'cuda-probe',
                  'policy', 'backend-policy', 'native-receipt', 'output'):
         prepare.add_argument('--'+name, type=Path, required=True)
+    prepare.add_argument('--ingress-mode', choices=('native', 'nginx'), default='native')
+    prepare.add_argument('--native-ingress', type=Path)
+    prepare.add_argument('--nginx', type=Path)
     prepare.add_argument('--certificate', type=Path)
     prepare.add_argument('--key', type=Path)
     for name in ('init', 'run', 'start', 'status', 'stop'):
@@ -193,7 +198,8 @@ def main(argv=None, *, package=None, digest=None):
         if args.operation == 'prepare':
             result = bundle.prepare(args.binary, args.release, args.model, args.guardian,
                 args.cuda_probe, args.nginx, args.policy, args.backend_policy, args.output,
-                native_receipt=args.native_receipt, certificate=args.certificate, key=args.key)
+                native_receipt=args.native_receipt, certificate=args.certificate, key=args.key,
+                native_ingress=args.native_ingress, ingress_mode=args.ingress_mode)
         else:
             package = package or args.package
             digest = digest or args.manifest_sha256

@@ -11,20 +11,28 @@ from tools.serve_recovery import binding, core_http, gateway_config, ledger
 from tools.serve_service import package as engine
 
 ROOT = Path(__file__).resolve().parents[2]
-RECOVERY = ('binding', 'bundle', 'child', 'control', 'controller', 'core_http', 'cpu_exec',
+LEGACY_RECOVERY = ('binding', 'bundle', 'child', 'control', 'controller', 'core_http', 'cpu_exec',
             'gateway', 'gateway_config', 'jobs', 'journal', 'ledger',
             'monitor', 'ownership', 'policy', 'service', 'store')
-SOURCES = tuple(sorted(set(engine.V9_SOURCES) | {
+LEGACY_SOURCES = tuple(sorted(set(engine.V9_SOURCES) | {
     'tools/serve_gateway/gateway.py', 'tools/serve_gateway/tls.py',
-    *('tools/serve_recovery/'+name+'.py' for name in RECOVERY)}))
-EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'nginx')
+    *('tools/serve_recovery/'+name+'.py' for name in LEGACY_RECOVERY)}))
+RECOVERY = (*LEGACY_RECOVERY, 'native_ingress')
+SOURCES = tuple(sorted(set(LEGACY_SOURCES) | {'tools/serve_recovery/native_ingress.py'}))
+LEGACY_EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'nginx')
+EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'q4t-ingress')
 NATIVE_SOURCES = frozenset(('CMakeLists.txt', 'tests/host/CMakeLists.txt',
     'cmake/GuardianProcess.cmake', 'cmake/RecoveryProbe.cmake',
     'include/q4t/status.h', 'include/q4t/io/json.h', 'src/io/json.cpp',
     'src/service/cuda_probe.cu', 'src/service/guardian_main.cpp',
     *('include/q4t/service/guardian_'+name+'.h' for name in
       ('process', 'journal', 'wire', 'quota')),
-    *('src/service/guardian_'+name+'.cpp' for name in ('process', 'journal', 'wire'))))
+    *('src/service/guardian_'+name+'.cpp' for name in ('process', 'journal', 'wire')),
+    'cmake/NativeIngress.cmake', 'src/service/ingress_main.cpp',
+    'src/service/ingress_transport.cpp', 'include/q4t/service/ingress_transport.h',
+    'src/server/http_request.cpp',
+    *('include/q4t/server/'+name+'.h' for name in ('http_request', 'http_listener',
+        'http_observation', 'http_connection', 'client_identity', 'serve_fault'))))
 
 
 def file_identity(path):
@@ -94,14 +102,23 @@ def gateway_config_for(package, manifest, directory):
     tls = None
     if manifest['tls']:
         tls = dict(certificate=str(package/'certificate.pem'), key=str(package/'private-key.pem'))
-    return gateway_config.validate(dict(version=1, directory=str(directory),
-        nginx=str(package/'bin/nginx'), nginx_sha256=manifest['files']['bin/nginx'],
+    native = manifest.get('ingress_mode', 'nginx') == 'native'
+    executable = 'q4t-ingress' if native else 'nginx'
+    name = 'native_ingress' if native else 'nginx'
+    return gateway_config.validate(dict(version=2 if native else 1, directory=str(directory),
+        **{name: str(package/'bin'/executable),
+           name+'_sha256': manifest['files']['bin/'+executable]},
         policy=policy, backend_policy=backend, binary_sha256=base['files']['q4t'],
         protocol_sha256=base['protocol_sha256'], tls=tls))
 
 
 def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
-            backend_policy_path, output, *, native_receipt, certificate=None, key=None):
+            backend_policy_path, output, *, native_receipt, certificate=None, key=None,
+            native_ingress=None, ingress_mode='native'):
+    ledger.require(ingress_mode in ('native', 'nginx'), 'invalid ingress mode')
+    native = ingress_mode == 'native'
+    executable = native_ingress if native else nginx
+    ledger.require(executable is not None, 'selected entrypoint binary is required')
     policy = ingress.policy(ingress.parse(ingress.read_file(policy_path, private=True)))
     ledger.require('upstream_operations_port' in policy,
                    'recovery bundle requires distinct operations port')
@@ -109,6 +126,10 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
     cp.match_clients(policy, backend)
     core_http.self_check_client(backend)
     ledger.require((certificate is None) == (key is None), 'incomplete TLS configuration')
+    if native:
+        ledger.require(certificate is None and key is None and
+                       policy['listen_host'] == '127.0.0.1' and policy['version'] == 2,
+                       'native ingress is loopback; TLS belongs to optional external proxy')
     ledger.require(certificate is not None or policy['listen_host'] == '127.0.0.1',
                    'plaintext bundle must remain loopback')
     if certificate is not None:
@@ -118,7 +139,8 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
         type(build.get('source_files')) is dict and
         build['source_files'].keys() == NATIVE_SOURCES and
         build.get('guardian_sha256') == engine.sha(guardian) and
-        build.get('cuda_probe_sha256') == engine.sha(cuda_probe),
+        build.get('cuda_probe_sha256') == engine.sha(cuda_probe) and
+        (not native or build.get('ingress_sha256') == engine.sha(native_ingress)),
         'native build receipt mismatch')
     for name, digest in build['source_files'].items():
         ledger.require(not Path(name).is_absolute() and '..' not in Path(name).parts and
@@ -128,7 +150,8 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
         port=policy['upstream_port'], operations_port=policy['upstream_operations_port'],
         client_policy=backend_policy_path, nvml_policy='degrade')
     (target/'bin').mkdir(mode=0o700)
-    for name, source in zip(EXECUTABLES, (guardian, cuda_probe, nginx)):
+    executables = EXECUTABLES if native else LEGACY_EXECUTABLES
+    for name, source in zip(executables, (guardian, cuda_probe, executable)):
         shutil.copyfile(source, target/'bin'/name)
         (target/'bin'/name).chmod(0o500)
     for name in SOURCES:
@@ -139,7 +162,7 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
     ingress.save(target/'gateway-policy.json', ledger.canonical(policy)+b'\n')
     shutil.copyfile(native_receipt, target/'native-build.json')
     (target/'native-build.json').chmod(0o400)
-    names = [*('bin/'+name for name in EXECUTABLES),
+    names = [*('bin/'+name for name in executables),
              *('source/'+name for name in SOURCES), 'gateway-policy.json', 'native-build.json']
     if certificate is not None:
         for name, path in (('certificate.pem', certificate), ('private-key.pem', key)):
@@ -151,7 +174,8 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
     import subprocess
     common = Path(subprocess.check_output(['git', 'rev-parse', '--path-format=absolute',
         '--git-common-dir'], cwd=ROOT, text=True).strip())
-    value = dict(version=1, profile='q4t-service-recovery-v1', repository=str(ROOT),
+    value = dict(version=2, profile='q4t-service-recovery-v2', repository=str(ROOT),
+        ingress_mode=ingress_mode,
         engine_manifest_sha256=receipt['manifest_sha256'],
         files={name: engine.sha(target/name) for name in names}, python=base['python'],
         model_assets=assets(Path(base['model_dir'])), weight_shards_rehashed=False,
@@ -172,15 +196,22 @@ def verify(package, digest):
     ledger.require(engine.sha(package/'manifest.json') == digest,
                    'recovery manifest identity changed')
     value = engine.read(package/'manifest.json')
+    version = value.get('version')
     ledger.keys(value, ('version', 'profile', 'repository', 'engine_manifest_sha256',
         'files', 'python', 'model_assets', 'weight_shards_rehashed', 'resource_mode',
-        'require_hard_memory_limit', 'lock_path', 'quota_enforced', 'tls'))
-    ledger.require(type(value['version']) is int and value['version'] == 1 and
-        value['profile'] == 'q4t-service-recovery-v1' and value['resource_mode'] == 'process' and
+        'require_hard_memory_limit', 'lock_path', 'quota_enforced', 'tls',
+        *(('ingress_mode',) if version == 2 else ())))
+    ledger.require(type(version) is int and version in (1, 2) and
+        value['profile'] == 'q4t-service-recovery-v'+str(version) and
+        value.get('ingress_mode', 'nginx') in ('native', 'nginx') and
+        value['resource_mode'] == 'process' and
         value['require_hard_memory_limit'] is False and value['weight_shards_rehashed'] is False and
         type(value['quota_enforced']) is bool and type(value['tls']) is bool,
         'invalid recovery profile')
-    names = {*('bin/'+name for name in EXECUTABLES), *('source/'+name for name in SOURCES),
+    native = value.get('ingress_mode', 'nginx') == 'native'
+    executables = EXECUTABLES if native else LEGACY_EXECUTABLES
+    sources = SOURCES if version == 2 else LEGACY_SOURCES
+    names = {*('bin/'+name for name in executables), *('source/'+name for name in sources),
              'gateway-policy.json', 'native-build.json'}
     if value['tls']:
         names |= {'certificate.pem', 'private-key.pem'}

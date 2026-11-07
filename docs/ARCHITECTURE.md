@@ -131,8 +131,8 @@ prefill；GPU错误fail closed。仅最后完整MTP边界，最多4个尾部输�
 ## 外部依赖与可选前置接入
 
 2026-11-08用户明确：项目设计应尽量减少外部依赖，兼容nginx前置，
-但不能强制绑定。以下是设计约束与待完成的解耦边界，不表示当前
-恢复封装已满足无nginx部署。
+但不能强制绑定。新v2封装与原生入口已完成开发及CPU验证，真实模型
+短验待完成；当前已安装v1包仍使用nginx，不能混淆源码与部署状态。
 
 - 默认发行应独立提供原生API、鉴权、准入、健康及有界自恢复，
   无需安装、携带或启动nginx；systemd继续作为可选外层管理器。
@@ -148,35 +148,38 @@ prefill；GPU错误fail closed。仅最后完整MTP边界，最多4个尾部输�
 - 复用现有原生HTTP实现，新增入口能力限定于q4t服务合同。可选TLS
   等集成保持明确的启用边界，不为去掉nginx重做通用Web服务器或密码库。
 
-当前事实与解耦缺口：
+当前实现与验收边界：
 
 | 环节 | 当前代码 | 解耦要求 |
 |---|---|---|
-| 原生推理入口 | `build/q4t serve`使用POSIX socket，不需要nginx；监听与模型在同一进程 | 保持直接接入；恢复入口应在模型重载时仍可明确返回503/Retry-After |
-| 客户端鉴权 | `ClientAdmission`识别网关注入的客户端ID及内部凭据；RPM/TPM、公平准入已原生实现 | 增加客户端Bearer API Key鉴权并复用原生配额，拒绝伪造内部身份 |
-| 恢复准入 | Controller自检及完整分钟配额等待完成后发布ready，由当前网关执行对外阻断 | 将准入条件落实到q4t原生入口；不能直接暴露已监听但尚未获准的模型端口 |
-| 恢复封装 | `tools/serve_recovery/bundle.py`强制复制并校验nginx，`service.py`始终启动网关角色 | 默认包与启动路径移除强制网关依赖，外部前置作为显式可选集成 |
+| 原生推理入口 | 直接`serve`保持；新`q4t-ingress`独立于模型进程，CPU故障期间可返回503/Retry-After | 真实模型恢复组合待验；非通用Web代理 |
+| 客户端鉴权 | C++入口验证Bearer并拒绝伪造内部身份；后端`ClientAdmission`继续执行RPM/TPM、公平准入 | 前置只需标准HTTP；每个内部凭据只绑定一个模型代次 |
+| 恢复准入 | 读体前/转发前经PID限定的Unix IPC核对Guardian准入；两次绑定必须相同 | CPU覆盖读体中换代/配额等待、失联；仍等模型自检及完整分钟窗口 |
+| 恢复封装 | 新v2默认复制`q4t-ingress`，启动原生入口工作进程，不需要nginx；v1旧包保留 | 本机安装尚为v1，GPU短验通过后才交付v2；显式nginx模式保留 |
 
 实现入口：[原生HTTP](../include/q4t/server/chat_server.h)、
 [鉴权与配额](../src/server/client_policy.cpp)、
 [恢复自检与开放入口](../tools/serve_recovery/controller.py)、
-[当前封装](../tools/serve_recovery/bundle.py)。仅关闭Guardian的网关角色
-不能补齐上述鉴权、准入及恢复期响应，不能据此宣称已经解耦。
+[当前封装](../tools/serve_recovery/bundle.py)、
+[独立入口](../src/service/ingress_main.cpp)、
+[私有准入](../tools/serve_recovery/native_ingress.py)。Guardian既有GATEWAY
+角色在新包管理原生入口；它不表示nginx依赖。外部前置不访问这条
+私有IPC，也不控制q4t模型或Guardian生命周期。
 
-后续顺序：先补原生鉴权与恢复准入，再形成独立于模型重载的轻量
-原生服务入口并解除包/启动绑定，最后分别验证无nginx运行和可选
-前置兼容。CPU覆盖伪造身份、未ready请求、额度保护、SSE中断及停止
-边界；受影响的真实JSON/SSE、工具和恢复闭环另作有界验收。已有
-Guardian、恢复预算与故障隔离证据按未变身份复用，不把旧封装验收
-扩展为新入口已通过。具体实现与验收预算另行冻结。
+82项CPU检查已覆盖伪造身份、未ready请求、额度保护、SSE中断、停止、
+无nginx运行及可选前置；163来源锚点、8条原生路由和4个审计负控。
+新入口动态依赖仅标准C/C++运行库。本阶段真实JSON/SSE、工具和恢复
+按[4启动/20Chat/1800秒范围](SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md)
+执行，已有Guardian、恢复预算与故障隔离证据按未变身份复用。
 
 ## 构建与验证工具
 
 CMake要求4.0+，host/device标准均为C++23，目标SM110a；本机工具链
 CUDA13.3/g++-14。liburing缺失时PLE读取器被禁用，ICU缺失时tokenizer
 不构建，因此完整推理需要相应开发依赖。原生`build/q4t serve`
-不依赖Python；当前A/B恢复封装的控制器与网关工作进程使用Python，
-并强制携带nginx，不能据原生入口推导整个恢复包没有这些依赖。
+不依赖Python；恢复封装的控制器/journal/入口工作进程使用Python。
+v1包强制携带nginx，新v2默认包改为自有C++入口；不能把入口的原生
+实现误写为整个服务封装已经不需要Python。
 评估工具也使用Python；共享GPU验证lease及其局限见
 [评估工具说明](../tools/evalscope/README.md)。
 

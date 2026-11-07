@@ -151,7 +151,9 @@ def prepare(args):
         'tools/examples', 'tools/release', 'src/service', 'include/q4t/service',
         'cmake/GuardianProcess.cmake', 'cmake/RecoveryProbe.cmake', 'docs/MODEL.md'],
         cwd=ROOT, text=True).splitlines()
+    paths = sorted(set(paths) | bundle.NATIVE_SOURCES)
     plan = dict(version=1, limits=COMPLETION_LIMITS if supplemental else LIMITS,
+        ingress_mode=manifest.get('ingress_mode', 'nginx'),
         scenario='controller_gateway_completion' if supplemental else 'full_recovery',
         package=receipt, output=str(args.output.resolve()),
         source_commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'],cwd=ROOT,text=True).strip(),

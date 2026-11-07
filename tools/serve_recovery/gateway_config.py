@@ -1,4 +1,4 @@
-"""Stable nginx ingress with private, generation-bound per-request admission."""
+"""Native/default or explicitly selected nginx entrypoint configuration."""
 from pathlib import Path
 import re
 
@@ -12,14 +12,16 @@ ERRORS = {'service_recovering', 'service_quarantined', 'service_stopping',
 
 
 def validate(value):
-    ledger.keys(value, ('version', 'directory', 'nginx', 'nginx_sha256',
+    native = value.get('version') == 2
+    executable = 'native_ingress' if native else 'nginx'
+    ledger.keys(value, ('version', 'directory', executable, executable+'_sha256',
         'policy', 'backend_policy', 'binary_sha256', 'protocol_sha256', 'tls'))
-    ledger.require(type(value['version']) is int and value['version'] == 1,
+    ledger.require(type(value['version']) is int and value['version'] in (1, 2),
                    'invalid gateway config version')
-    for key in ('directory', 'nginx'):
+    for key in ('directory', executable):
         ledger.require(type(value[key]) is str and Path(value[key]).is_absolute(),
                        'absolute gateway path required')
-    for key in ('nginx_sha256', 'binary_sha256', 'protocol_sha256'):
+    for key in (executable+'_sha256', 'binary_sha256', 'protocol_sha256'):
         ledger.require(type(value[key]) is str and ledger.HASH.fullmatch(value[key]),
                        'invalid gateway source identity')
     p = g.policy(value['policy'])
@@ -27,6 +29,10 @@ def validate(value):
     ledger.require('upstream_operations_port' in p,
                    'recovery requires a separate operations listener')
     tls = value['tls']
+    if native:
+        ledger.require(tls is None and p['listen_host'] == '127.0.0.1' and
+                       p['version'] == 2,
+                       'native ingress requires loopback policy v2; TLS is external')
     if tls is None:
         ledger.require(p['listen_host'] == '127.0.0.1',
                        'plaintext ingress is loopback only')
@@ -43,6 +49,7 @@ def validate(value):
 
 def render(value, runtime, auth_port, secret):
     validate(value)
+    ledger.require(value['version'] == 1, 'nginx rendering requires explicit nginx mode')
     p = g.policy(value['policy'])
     ledger.require(type(auth_port) is int and 1024 <= auth_port <= 65535 and
                    auth_port not in (p['listen_port'], p['upstream_port'],

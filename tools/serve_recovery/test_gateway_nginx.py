@@ -63,8 +63,9 @@ def native_config(value, token):
 
 
 class Stack:
-    def __init__(self, output):
-        self.directory = Path(tempfile.mkdtemp(prefix='nginx-', dir=output))
+    def __init__(self, output, *, native_ingress=None, policy_overrides=None):
+        self.directory = Path(tempfile.mkdtemp(
+            prefix='native-' if native_ingress else 'nginx-', dir=output))
         self.service_id = str(uuid.uuid4())
         self.generation, self.token = 1, 'e'*64
         self.ready, self.peer_available = True, True
@@ -72,6 +73,7 @@ class Stack:
         self.stopped = threading.Event()
         self.release_stream = threading.Event()
         self.stream_started = threading.Event()
+        self.stream_disconnected = threading.Event()
         self.requests = []
         self.forwarded = []
         self.events = []
@@ -118,6 +120,10 @@ class Stack:
                 if body.get('quota'):
                     self.response(429, dict(error=dict(code='client_rate_limited')))
                     return
+                if body.get('malformed_response'):
+                    self.connection.sendall(b'HTTP/1.1 200 OK\r\nContent-Length: 2\r\n'
+                        b'Content-Length: 3\r\nConnection: close\r\n\r\n{}')
+                    return
                 if body.get('stream'):
                     self.send_response(200)
                     self.send_header('Content-Type', 'text/event-stream')
@@ -126,7 +132,12 @@ class Stack:
                     self.wfile.write(f'data: {{"generation":{generation}}}\n\n'.encode())
                     self.wfile.flush()
                     stack.stream_started.set()
-                    stack.release_stream.wait(5)
+                    end = time.monotonic()+5
+                    while not stack.release_stream.is_set() and time.monotonic() < end:
+                        if select.select([self.connection], [], [], 0.02)[0]:
+                            if not self.connection.recv(1, socket.MSG_PEEK):
+                                stack.stream_disconnected.set()
+                                break
                     return  # Explicit truncated SSE, without fabricated [DONE].
                 self.response(200, dict(generation=generation, cpu_fixture=True))
         for _ in range(2):
@@ -135,10 +146,15 @@ class Stack:
             self.servers.append(server)
             self.thread(server.serve_forever)
         ports = (free_port(), *(s.server_port for s in self.servers))
-        self.value = config(self.directory, ports=ports, nginx=str(NGINX))
-        self.value['nginx_sha256'] = hashlib.sha256(NGINX.read_bytes()).hexdigest()
+        binary = Path(native_ingress) if native_ingress else NGINX
+        self.value = config(self.directory, ports=ports, nginx=str(binary))
+        self.value['nginx_sha256'] = hashlib.sha256(binary.read_bytes()).hexdigest()
+        if native_ingress:
+            self.value.update(version=2, native_ingress=self.value.pop('nginx'),
+                native_ingress_sha256=self.value.pop('nginx_sha256'))
         self.value['binary_sha256'] = hashlib.sha256(Path('/proc/self/exe').read_bytes()).hexdigest()
         self.value['policy'].update(per_client_rps=100, burst=100)
+        self.value['policy'].update(policy_overrides or {})
         self.path = self.directory/'gateway.json'
         self.path.write_text(json.dumps(self.value))
         self.path.chmod(0o600)
@@ -152,7 +168,8 @@ class Stack:
         self.thread(self.receive_events)
         self.log = (self.directory/'worker.log').open('wb')
         self.process = subprocess.Popen([sys.executable, '-I', '-B',
-            str(ROOT/'tools/serve_recovery/gateway.py'), '--config', str(self.path)],
+            str(ROOT/'tools/serve_recovery'/('native_ingress.py' if native_ingress
+                                           else 'gateway.py')), '--config', str(self.path)],
             env=dict(PATH='/no-systemd-or-dbus', LANG='C.UTF-8',
                 Q4T_SERVICE_ID=self.service_id, Q4T_GATEWAY_GENERATION='1',
                 Q4T_CONTROL_FD=str(endpoint.fileno()), Q4T_GUARDIAN_PID=str(os.getpid()),

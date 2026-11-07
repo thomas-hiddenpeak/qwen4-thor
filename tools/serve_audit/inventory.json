@@ -638,10 +638,11 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "b2c5c10ecb679de2cb2687bde14c6939a55887ea954c0b9075385acf4e050a66",
+    "CMakeLists.txt": "f33c7b6fcb6676ada9b73da738ec4efa9b3a931e86fe3f12e7bf4eb531358ef8",
     "cmake/ChatProtocolIdentity.cmake": "6561776bab97cc5e62f7ca619a2d9f53fde3f690b35cc5f934c69747226ca7e9",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
+    "cmake/NativeIngress.cmake": "d2e2d918784f429ac412b3ee976a4f70e8db70449a797fa627f96b185e13a8eb",
     "cmake/RecoveryProbe.cmake": "b10bd71c92a8c9a9f6545da89ab06585f7c1398a978eb01aae9e18eb716c0271",
     "cmake/StructuredOutput.cmake": "fd8c800791a39e03d6447716554eb67cc626a1d20855de512fdc5dc715dd8b30",
     "include/q4t/model/vision_positions.h": "70c7d3d05715fc3916725e0e39cf32becc9ac3a5129fc63129706204ccd9fb22",
@@ -672,7 +673,7 @@
     "include/q4t/server/http_connection.h": "dcd12b3f713b9c0318b2f394ee55fb5666a2cfdb092e9a0cb4697cb2e61a4d54",
     "include/q4t/server/http_listener.h": "bf5ec9d8e4567b3cb479803de66d52f9576c9a9df19f6a5e238ef69c266a2f11",
     "include/q4t/server/http_observation.h": "4a5c07a112faa4d60f834b2d5e4067522a7fe565ca6ff8acd145ad603999dbdc",
-    "include/q4t/server/http_request.h": "6746ddda5b84feff0330b524befb1344102c1d99921ef397f7a0f13248f34045",
+    "include/q4t/server/http_request.h": "d30013529279aa22928936ee4015263878dc32a358c566f2eadbbb38e11071db",
     "include/q4t/server/http_response.h": "b75293da777e66c304bc75a9e7248e6ee6d48827fbd576aff479342c56bed070",
     "include/q4t/server/input_contract.h": "03c1dfcc666986f5e06a91fb34cf95bf1818bd67df783794ae0ada63b7ae8881",
     "include/q4t/server/lifetime.h": "11c9b381a7f6c5e019dcb57fbc18e2ad76492fca5c5e42960c381e954e5068bc",
@@ -706,6 +707,7 @@
     "include/q4t/service/guardian_process.h": "31b967d4b558b1cdce10bf5acfb4731a9c9952930039285f6ed09af5b010c8f9",
     "include/q4t/service/guardian_quota.h": "a73897aa94fd1a58fb1cfc7c182d2d8bd0cb9cb10e848821e230ce903e2e39a0",
     "include/q4t/service/guardian_wire.h": "5559955899c87230f116ea794ce7f0c0a2a1c6f2d9a2013ad6ec42fa1ffb73c3",
+    "include/q4t/service/ingress_transport.h": "897969f17df1b264a3bc3c2f5e69b7c603f8d6c5df6937ebbca58ba3595326ba",
     "include/q4t/vision/configuration.h": "50f4ab0cacc680c48d87450c168cb6d1a5ac57f51cfaff14963c97b2db1e72a9",
     "include/q4t/vision/forward_timing.h": "7c642dbda0b464d333f20390f2ef4426954c23c9f6a48d1ee43ae044ce27a138",
     "include/q4t/vision/forward_timing_core.h": "89bdb2f4db849d0b36122d654d0b6627f879f898a0c6142d549399837fb920de",
@@ -750,7 +752,7 @@
     "src/server/grammar_process.cpp": "14345c6e0470133fe9a1a57659503eabe0b477b2438f5b82f76ab07a57ae02bb",
     "src/server/grammar_worker.cpp": "aca2920b675dce548ceb194690440f00763352ed2d482751100b6345580e560c",
     "src/server/grammar_worker_internal.h": "79d8963200990a0d6b8dacee12c0f886c5612c57bc86e8a3479d942d6bef091a",
-    "src/server/http_request.cpp": "b700d8b4a0e22bf4511a2f5729cb8d07b7ba4ca41bcf4b89cdcb5e156294ae29",
+    "src/server/http_request.cpp": "5890e834268e3dee4b169597b4086be06806a9e18e8d9eab25e694cb1bdfd58c",
     "src/server/http_response.cpp": "0415e486060ee978080cef3a7874a5b594cfb1eea098ac4f577b14ca87bde88e",
     "src/server/input_contract.cpp": "ad9adbffc9638792ec15debeebee803fb43d2085f639281dabd6230146c5cf6a",
     "src/server/media_admission.cpp": "8b6fa7cdaad948522a4db542c2e313feb0ce816a80726850cfd19a777ef93be7",
@@ -769,14 +771,16 @@
     "src/service/guardian_main.cpp": "ef6b7772585836698b8f518dcba95858e96e41233db19f9c1284d00eb7af7bcd",
     "src/service/guardian_process.cpp": "2a7ed6213ccb91c450365fa25b7d9ba322b07cf7df653e80489c788e32a7925c",
     "src/service/guardian_wire.cpp": "95ca742cc01649fcf5b3245a4d0b48ad1d14ee4b142f376d5a095c7f686df12d",
+    "src/service/ingress_main.cpp": "9d8466af0c3b349ac6a198816ce254def085174d2123ca1951a38740a325d89e",
+    "src/service/ingress_transport.cpp": "944de6aa93e9d176295a25620871f1045352c79d8efa9dfd0c28634f576596f2",
     "src/text/tokenizer.cpp": "bfa059ee7dc64a37eb42d749710b4ad039f125675a93718902cab3b6ade2e7e8",
     "src/vision/media_plan.cpp": "30f1858fe11a14bb81f5ee2c80edef68e60cb7a03c7a0ec8132cc29936dff302",
     "src/vision/processor.cpp": "76d421281d76daa42796710ffa4ce6f0227f7788411775740d1ed5d5e11001dc",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
-    "tools/serve_recovery/acceptance.py": "a57d78935d9759ab96188a4aa1c56c3c2ba2b3cfbef5bd9e4e8f26c4f8789854",
+    "tools/serve_recovery/acceptance.py": "320c145b32303dbf811e6fcc84679f23fa6d5551284fc16ba9a162629364ccd8",
     "tools/serve_recovery/binding.py": "1f70edbce8cefd92700acf6df130101baa41f575cd24876f7e7d95772ba8cd18",
-    "tools/serve_recovery/bundle.py": "3edfc8f8812783de9b8d174ea787f706bfc07edb69bffcfa07bed68ca14f45cd",
+    "tools/serve_recovery/bundle.py": "6ac22b1d69f9636eb9870facc5691a4aaee89dbd2715ec18c048dcab52a5f3b1",
     "tools/serve_recovery/child.py": "816c80517e5b13413ae5eb0a3d1f7a392b8848132a7d1965adec2bd49a335e73",
     "tools/serve_recovery/control.py": "e72e42ef79abf0c77fc4019d84ae787834960f8cedb80e943a89c2951657e48d",
     "tools/serve_recovery/controller.py": "8f55f664dd308589ab46074f92e56d90cf32340d188ee0eecc9083963fa26a23",
@@ -787,14 +791,15 @@
     "tools/serve_recovery/fixture_model.py": "7d2ec746065f994afd18c17e71dc16806a95f3fd4f446e3a7de2b0a3a89e6932",
     "tools/serve_recovery/fixture_production.py": "a13e8a94ce66688d7c5ff48e270606085543815ea8f813bec36b2a7ce199ccf7",
     "tools/serve_recovery/gateway.py": "83cfe3aef4b737a4c03ef48f0cbdab2a8503569eba2c6f094cbc8bf0b0f70cf5",
-    "tools/serve_recovery/gateway_config.py": "4d630cbc05934624f5e8ad8d75eaa75ec9bbc5f1b0bed00ab827779800655c42",
+    "tools/serve_recovery/gateway_config.py": "4b7ab85582c55ffc14387e6cde248362eeefb2f6406064baf57f886ce96c331e",
     "tools/serve_recovery/jobs.py": "31dc2bf5a1e6d91cbfa1ce04a7726c72e5b0cf70a8dec3b12d9e71de3ce96d25",
     "tools/serve_recovery/journal.py": "b965cb03f08932b508c9af083abd7020abe25a5f9d8f5d1ad0920494ed127cac",
     "tools/serve_recovery/ledger.py": "4a2f1586dc4833de32c3caf3a6914babd1a994444355e69d0ede4556f5be1974",
     "tools/serve_recovery/monitor.py": "5fb9f01cee45b7d008cde26fea3d9986a030a8a8a06ac435bc86932a0706aed9",
+    "tools/serve_recovery/native_ingress.py": "f29b5515cece0435f129b3f328290c5ccda397dc7b3cd843b9323382c38128d8",
     "tools/serve_recovery/ownership.py": "1cb0182ca06ee3c1ebbaab5d598895990ece2a7720aec741ea84ffde68792254",
     "tools/serve_recovery/policy.py": "55b3fe3b0ca81bfb024f70499a77ca91ebe20a004cde1efecabf9e37814f4ff6",
-    "tools/serve_recovery/service.py": "bcb79c62c68cce268120ebd9b0562f061bbcc114a0d1f2042cac0ba5ff6fc1c8",
+    "tools/serve_recovery/service.py": "2585c548892ef5fc38c6133cdac9771e18bf026b2d88adef30bf4cdf6912a12c",
     "tools/serve_recovery/store.py": "0eef06d1a10b4ef0911f671e0378ae3849caeabeaabbbe296981a2e4291e59ee"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
@@ -1104,5 +1109,87 @@
       "docs/VISION_PRODUCTION_RESULT_2026-11-07.md",
       "tools/vision_service/report.py"
     ]
+  },
+  "native_routes": {
+    "GET /healthz": {
+      "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
+      "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "tools/serve_recovery/test_native_ingress.py",
+        "tools/serve_recovery/test_native_admission.py",
+        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md"
+      ]
+    },
+    "GET /livez": {
+      "semantics": "原生服务入口本身存活，需Bearer鉴权",
+      "boundary": "loopback、连接关闭、有界头/体/容量；无TLS；不自动重放或跨代续接。live不表示模型ready。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "tools/serve_recovery/test_native_ingress.py",
+        "tools/serve_recovery/test_native_admission.py",
+        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md"
+      ]
+    },
+    "GET /readyz": {
+      "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
+      "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "tools/serve_recovery/test_native_ingress.py",
+        "tools/serve_recovery/test_native_admission.py",
+        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md"
+      ]
+    },
+    "GET /v1/capabilities": {
+      "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
+      "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "tools/serve_recovery/test_native_ingress.py",
+        "tools/serve_recovery/test_native_admission.py",
+        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md"
+      ]
+    },
+    "GET /v1/models": {
+      "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
+      "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "tools/serve_recovery/test_native_ingress.py",
+        "tools/serve_recovery/test_native_admission.py",
+        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md"
+      ]
+    },
+    "POST /v1/chat/completions": {
+      "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
+      "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "tools/serve_recovery/test_native_ingress.py",
+        "tools/serve_recovery/test_native_admission.py",
+        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md"
+      ]
+    },
+    "POST /v1/chat/preflight": {
+      "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
+      "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "tools/serve_recovery/test_native_ingress.py",
+        "tools/serve_recovery/test_native_admission.py",
+        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md"
+      ]
+    },
+    "POST /v1/requests/cancel": {
+      "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
+      "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "tools/serve_recovery/test_native_ingress.py",
+        "tools/serve_recovery/test_native_admission.py",
+        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md"
+      ]
+    }
   }
 }

@@ -95,6 +95,17 @@ Q4T_TEST(http_valid_length_and_header_names) {
   return true;
 }
 
+Q4T_TEST(http_rejects_duplicate_or_empty_authorization) {
+  std::string body;
+  for (const char* fields : {
+           "Authorization:\r\n",
+           "Authorization: Bearer first\r\naUtHoRiZaTiOn: Bearer second\r\n"}) {
+    Q4T_CHECK(!Read(std::string("GET /v1/models HTTP/1.1\r\nHost: local\r\n") +
+                     fields + "\r\n", &body));
+  }
+  return true;
+}
+
 Q4T_TEST(http_rejects_ambiguous_framing) {
   std::string body;
   for (const char* fields : {

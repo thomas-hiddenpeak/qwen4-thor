@@ -18,6 +18,7 @@ target_link_libraries(q4t_host_tests PRIVATE Threads::Threads)
 
 enable_testing()
 include(../../cmake/GuardianProcess.cmake)
+include(../../cmake/NativeIngress.cmake)
 set(guardian_output "${CMAKE_CURRENT_BINARY_DIR}/guardian-process-tests")
 file(MAKE_DIRECTORY "${guardian_output}")
 add_test(NAME q4t_guardian_process_contracts
@@ -164,6 +165,12 @@ q4t_add_python_contract(q4t_recovery_child_contracts
   tools/serve_recovery/test_child.py)
 q4t_add_python_contract(q4t_recovery_gateway_contracts
   tools/serve_recovery/test_gateway.py)
+q4t_add_python_contract(q4t_native_ingress_contracts
+  tools/serve_recovery/test_native_ingress.py --ingress $<TARGET_FILE:q4t_ingress>)
+q4t_add_python_contract(q4t_native_bundle_contracts
+  tools/serve_recovery/test_native_bundle.py)
+q4t_add_python_contract(q4t_native_admission_contracts
+  tools/serve_recovery/test_native_admission.py --ingress $<TARGET_FILE:q4t_ingress>)
 q4t_add_python_contract(q4t_recovery_production_contracts
   tools/serve_recovery/test_production.py)
 q4t_add_python_contract(q4t_recovery_acceptance_contracts
