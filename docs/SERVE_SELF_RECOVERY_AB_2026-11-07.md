@@ -69,3 +69,20 @@ CPU 验证 56 项不同用例通过：故障政策 12、时钟/预算/实际磁�
 模型/控制器子树清理和业务代次重绑属于下一步 A2/B。当前不宣称
 自动恢复已交付，默认和封存包未变。更新见 [STATUS](STATUS.md) 与
 当天[开发日志](log/2026-11-07.md)。
+
+A2 的原生进程基础已实现并通过 15 项 CPU 用例：pidfd 身份与非阻塞
+回收、父死退出、双重 fork/setsid 后代收养、显式 FD 继承、锁误解锁
+负控及停止优先。独立 host 构建 `-Wall -Wextra -Werror` 零警告；
+ELF 动态依赖没有 CUDA/NVML/Python/systemd。测试只用私有临时锁，
+没有获取真实 GPU 锁或操作模型。
+
+继承锁使用 `/proc/self/fdinfo` 核对当前文件描述的 FLOCK，再以独立
+描述符检查竞争；验证不对共享 FD 重做加锁或解锁。依据
+[Linux proc 文档](https://docs.kernel.org/filesystems/proc.html#proc-pid-fdinfo-fd-information-about-opened-file)
+并以本机临时文件验证；仍不把两次采样之间的未知活动说成已排除。
+源文件、最终 ELF、构建及 15 用例原件在
+`.q4t-work/serve-recovery-a2-20261107/attempt-02/`；初次通过后补了
+旧控制器代次拒绝检查，最终程序重新验这一独立进程组。
+
+A1/A2 基础共 71 项不同 CPU 用例；完整 Guardian 事件循环、journal
+异步接入、控制端点和生产 Controller 尚未接通，A2 整体与 B 未完成。

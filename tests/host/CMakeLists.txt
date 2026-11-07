@@ -17,6 +17,13 @@ target_compile_options(q4t_host_tests PRIVATE -Wall -Wextra -Werror)
 target_link_libraries(q4t_host_tests PRIVATE Threads::Threads)
 
 enable_testing()
+include(../../cmake/GuardianProcess.cmake)
+set(guardian_output "${CMAKE_CURRENT_BINARY_DIR}/guardian-process-tests")
+file(MAKE_DIRECTORY "${guardian_output}")
+add_test(NAME q4t_guardian_process_contracts
+  COMMAND q4t_guardian_process_tests)
+set_tests_properties(q4t_guardian_process_contracts PROPERTIES
+  TIMEOUT 60 ENVIRONMENT "Q4T_TEST_OUTPUT_DIR=${guardian_output}")
 # Run the complete public registry, strictly: no filters or allowed skips.
 add_test(NAME q4t_public_host_contracts COMMAND q4t_host_tests)
 set_tests_properties(q4t_public_host_contracts PROPERTIES TIMEOUT 180)

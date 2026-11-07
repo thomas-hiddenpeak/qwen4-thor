@@ -63,6 +63,9 @@ set(CMAKE_CUDA_FLAGS
 
 add_compile_options(-Wall -Wextra)
 
+# The service Guardian's process control remains independently CPU-buildable.
+include(cmake/GuardianProcess.cmake)
+
 # CUDA toolkit headers/libraries for C++ sources that include CUDA runtime.
 find_package(CUDAToolkit REQUIRED)
 
