@@ -1,5 +1,7 @@
 # docs/ — 开发记录文档体系
 
+- [Serve总目标重审：OpenAI兼容、原生接入、自恢复，全部任务完成后收口](SERVE_MASTER_PLAN_2026-11-08.md)
+- [全部任务状态与完成条件](serve-master-goals-v2.json)、[源码/官方协议/旧任务映射证据](evidence/serve-goal-reaudit-20261108/README.md)
 - [Serve剩余可靠性R1—R10：完成条件、依赖与针对性验证预算](SERVE_RESILIENCE_EXECUTION_PLAN_2026-11-08.md)
 
 - [原生入口解耦实际交付：无nginx默认包、151 CPU及3启动18Chat](SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)

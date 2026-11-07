@@ -107,7 +107,9 @@ token预算不足而失败，canonical分词长度不构成生成上限。
 所指的`q4t-ingress`及构建来源回执；不探测、复制或启动nginx。
 `--ingress-mode nginx --nginx PATH`仅保留显式旧网关模式。直接运行
 `build/q4t serve`保持原含义，服务封装由Guardian管理入口与模型生命周期。
-原生入口只监听loopback；当前控制器/journal仍使用Python，必要的
+原生入口目前只监听loopback；原生TLS/LAN、CORS和标准API缺口是
+[当前总计划](docs/SERVE_MASTER_PLAN_2026-11-08.md)中的必做实现，
+不因外部前置可选而取消。当前控制器/journal仍使用Python，必要的
 CUDA、系统与模型依赖不变。新模式已完成本机有界真实业务验收，
 当前入口与回退方法见[交付说明](docs/SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)。
 

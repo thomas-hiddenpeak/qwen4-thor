@@ -1,0 +1,451 @@
+{
+  "version": 2,
+  "updated": "2026-11-08",
+  "plan": "SERVE_MASTER_PLAN_2026-11-08.md",
+  "goal_state": "active_work_old_app_goal_pending_replacement",
+  "app_migration": {
+    "attempted": true,
+    "result": "rejected_unfinished_goal",
+    "error": "cannot create a new goal because this thread has an unfinished goal; complete the existing goal first",
+    "old_goal": "R1",
+    "policy": "Never mark incomplete R1 complete to free goal slot; continue full master plan and migrate after actual R1 delivery."
+  },
+  "completion_rules": [
+    "All required tasks have actual implementation and affected-behavior validation, applicable real business evidence and usable delivery.",
+    "No unsupported response, capability=false, documentation, NO_GO or intermediate milestone counts as implementation completion.",
+    "No stage completion ends the master task. Scope reductions require an explicit user decision.",
+    "Non-performance work uses targeted validation, not full performance/model correctness suites.",
+    "User runs long stability; this task supplies runnable handoff and does not claim long-run acceptance."
+  ],
+  "tasks": [
+    {
+      "id": "G00",
+      "required": true,
+      "state": "scope_clarification_pending",
+      "implementation": "确认推理与应用服务之外的组织/账单/训练管理等平台API范围",
+      "acceptance": "记录用户决定和端点分类；不阻塞已确定任务，不自行删项",
+      "depends_on": [],
+      "evidence": []
+    },
+    {
+      "id": "A01",
+      "required": true,
+      "state": "planned",
+      "implementation": "逐字段/路由标准合同、默认/null/别名/metadata与错误语义；每个缺口链接实现任务",
+      "acceptance": "官方参考→本地schema→解析→响应逐项可追踪；合法请求实际执行，拒绝不计功能通过",
+      "depends_on": [],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "A02",
+      "required": true,
+      "state": "planned",
+      "implementation": "system/developer/name、assistant/refusal、工具历史及多模态消息的模板语义",
+      "acceptance": "逐字节模板/历史回填与模型token映射；不丢角色、参数或结果；一个真实多轮工具场景",
+      "depends_on": [
+        "A01"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "A03",
+      "required": true,
+      "state": "planned",
+      "implementation": "temperature/top_p、seed、presence/frequency penalty、logit_bias、n、多choice JSON/SSE及logprobs/top_logprobs",
+      "acceptance": "固定logits的数值与采样边界、choice独立状态、usage/取消；对应真实短验；MTP不允许错误套用greedy算法",
+      "depends_on": [
+        "A01",
+        "A02"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "A04",
+      "required": true,
+      "state": "planned",
+      "implementation": "工具选择/allowed_tools、legacy functions迁移、自定义工具形状、逐片参数/多调用流及完成语义",
+      "acceptance": "标准客户端重组调用与参数；截断不执行工具、最终结果关联一致；不将只发终态冒充增量工具流",
+      "depends_on": [
+        "A01",
+        "A02"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "A05",
+      "required": true,
+      "state": "planned",
+      "implementation": "官方支持的JSON Schema能力与组合；$defs/$ref、anyOf、数值约束/enum、pattern/format等；工具/媒体/缓存组合",
+      "acceptance": "编译、逐token约束和最终校验一致；针对新增关键字/组合验证；资源拒绝与“不支持语法”分开，不能只删校验",
+      "depends_on": [
+        "R02",
+        "A01"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "A06",
+      "required": true,
+      "state": "planned",
+      "implementation": "Completions生成接口、Models详情/标识/别名与标准查询行为",
+      "acceptance": "标准SDK调用真实生成；不只转发而丢失prompt/echo/选择/usage语义；模型读写权限按操作合同",
+      "depends_on": [
+        "A01",
+        "A03"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "A07",
+      "required": true,
+      "state": "planned",
+      "implementation": "Responses无状态请求、文本/图片/工具items、reasoning和完整SSE事件生命周期",
+      "acceptance": "原生请求执行；function_call_output回填、sequence/终态/错误一致；SDK可直接消费",
+      "depends_on": [
+        "A01",
+        "A02",
+        "A04"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "A08",
+      "required": true,
+      "state": "planned",
+      "implementation": "Chat/Responses持久对象、store/metadata、previous_response_id、Conversations及background/cancel",
+      "acceptance": "客户端隔离、增删查/分页、重启恢复、过期治理；不重放已执行工具；后台状态与取消真实有效",
+      "depends_on": [
+        "A07",
+        "N04"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "A09",
+      "required": true,
+      "state": "planned",
+      "implementation": "Files/Uploads及Batch原生任务入口",
+      "acceptance": "文件类型/限额/归属、分块完成/取消、批任务逐项结果、取消与重启后续跑；不能仅提供离线脚本冒充API",
+      "depends_on": [
+        "A08",
+        "N05"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "A10",
+      "required": true,
+      "state": "planned",
+      "implementation": "标准多模态与模型能力接入；文本/图像现有后端补组合，embedding/audio/realtime等登记所需后端及实现",
+      "acceptance": "每个接口区分前端实现与实际模型支持，提供真实任务证据；缺后端继续记未解决，不能用空向量/假转录/固定拒绝结案",
+      "depends_on": [
+        "A01",
+        "A07"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "A11",
+      "required": true,
+      "state": "planned",
+      "implementation": "Responses内建工具/MCP及资料检索等工具执行适配",
+      "acceptance": "自有资料查询优先，权限/超时/取消/输出上限/事件完整；外部服务可选，执行边界明确；禁止假造工具结果",
+      "depends_on": [
+        "A07",
+        "A08",
+        "A09"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "A12",
+      "required": true,
+      "state": "planned",
+      "implementation": "官方Python/JS SDK、现有客户端与持久任务迁移",
+      "acceptance": "对新能力做真实调用及错误/流式短验；升级合同与回退路径明确，逐项解除需固定旧包的限制",
+      "depends_on": [
+        "A03",
+        "A04",
+        "A05",
+        "A06",
+        "A07",
+        "A08",
+        "A09",
+        "A10",
+        "A11",
+        "N01",
+        "N03"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "N01",
+      "required": true,
+      "state": "planned",
+      "implementation": "原生IPv4/IPv6监听、受控LAN、HTTPS终止、独立API Key/CIDR",
+      "acceptance": "不安装/不启动nginx也能从客户端用TLS完整调用；绑定、证书名及来源限制真实生效",
+      "depends_on": [],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "N02",
+      "required": true,
+      "state": "planned",
+      "implementation": "证书/私钥/CA管理、可选mTLS、原生证书更新",
+      "acceptance": "合法换证保持服务；坏证书保留上一有效配置并报告；到期/撤销策略明确；不要求模型重启",
+      "depends_on": [
+        "N01"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "N03",
+      "required": true,
+      "state": "planned",
+      "implementation": "原生CORS/OPTIONS与浏览器JSON/SSE",
+      "acceptance": "允许/拒绝来源、凭据、预检和错误响应一致；浏览器可用，未配置默认关闭不等于未实现",
+      "depends_on": [
+        "N01"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "N04",
+      "required": true,
+      "state": "planned",
+      "implementation": "原生密钥轮换/撤销、策略更新、客户端配额与隔离",
+      "acceptance": "新旧Key切换、取消/缓存/会话身份不串用，重启不绕过配额；不依赖外部网关私有头建立用户身份",
+      "depends_on": [
+        "A01"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "N05",
+      "required": true,
+      "state": "planned",
+      "implementation": "完整所需HTTP接入：复用连接、合法分块/上传、SSE、可信代理/路径前缀、慢客户端边界",
+      "acceptance": "实际协议夹具及相应SDK；防请求走私与流中换代；前置有/无都通过，兼容新增标准路由",
+      "depends_on": [
+        "A01",
+        "N01"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "N06",
+      "required": true,
+      "state": "planned",
+      "implementation": "原生运维/指标/诊断与R04 exporter互通",
+      "acceptance": "不安装Prometheus/exporter仍能看必要状态；观察失效不拖核心；真实健康与陈旧/未知分开",
+      "depends_on": [
+        "R01",
+        "R04"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "N07",
+      "required": true,
+      "state": "planned",
+      "implementation": "原生配置/发行/CLI生命周期整合",
+      "acceptance": "一个自有服务入口可配置上述能力；prepare/check/run/status/reload/stop及回退可用；外部代理只是可选适配",
+      "depends_on": [
+        "N01",
+        "N02",
+        "N03",
+        "N04",
+        "N05",
+        "N06"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "R01",
+      "required": true,
+      "state": "implementation_unverified",
+      "implementation": "普通日志/观察阻塞隔离；有界队列/单worker、未回收不增殖、健康核心同PID继续；保留可诊断性",
+      "acceptance": "普通日志/观察阻塞隔离；有界队列/单worker、未回收不增殖、健康核心同PID继续；保留可诊断性",
+      "depends_on": [],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "R02",
+      "required": true,
+      "state": "planned",
+      "implementation": "grammar有界清理、请求外生命周期、未回收占槽；结构化能力降级但普通文本继续",
+      "acceptance": "grammar有界清理、请求外生命周期、未回收占槽；结构化能力降级但普通文本继续",
+      "depends_on": [],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "R03",
+      "required": true,
+      "state": "planned",
+      "implementation": "实际完成进度、忙/等待/卡死分类及有证据的恢复",
+      "acceptance": "实际完成进度、忙/等待/卡死分类及有证据的恢复",
+      "depends_on": [
+        "R01",
+        "R02"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "R04",
+      "required": true,
+      "state": "planned",
+      "implementation": "当前包exporter接入、unknown/stale投影及受保护留存清理",
+      "acceptance": "当前包exporter接入、unknown/stale投影及受保护留存清理",
+      "depends_on": [
+        "R01"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "R05",
+      "required": true,
+      "state": "planned",
+      "implementation": "已验证轻量profile及自动降级/恢复；能力与准入一致",
+      "acceptance": "已验证轻量profile及自动降级/恢复；能力与准入一致",
+      "depends_on": [
+        "R02",
+        "R03"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "R06",
+      "required": true,
+      "state": "planned",
+      "implementation": "已验证旧版本有界自动回退、持久预算与防振荡",
+      "acceptance": "已验证旧版本有界自动回退、持久预算与防振荡",
+      "depends_on": [
+        "R03",
+        "R05"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "R07",
+      "required": true,
+      "state": "planned",
+      "implementation": "NVML失能时的冷启动独占条件、独立证据及有界探测",
+      "acceptance": "NVML失能时的冷启动独占条件、独立证据及有界探测",
+      "depends_on": [
+        "R03"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "R08",
+      "required": true,
+      "state": "planned",
+      "implementation": "可选资源域、统一DRAM计量/压力保护与实际资源恢复闭环",
+      "acceptance": "可选资源域、统一DRAM计量/压力保护与实际资源恢复闭环",
+      "depends_on": [
+        "R05",
+        "R07"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "R09",
+      "required": true,
+      "state": "planned",
+      "implementation": "自监护及可选外层启动：停止意图、整树/宿主故障后的启动与清理边界",
+      "acceptance": "自监护及可选外层启动：停止意图、整树/宿主故障后的启动与清理边界",
+      "depends_on": [
+        "R03",
+        "R06"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "R10",
+      "required": true,
+      "state": "planned",
+      "implementation": "已有视觉业务与恢复、降级、工具/结构化输出的组合",
+      "acceptance": "已有视觉业务与恢复、降级、工具/结构化输出的组合",
+      "depends_on": [
+        "R01",
+        "R02",
+        "R03",
+        "R04",
+        "R05",
+        "R06",
+        "A05",
+        "A10"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "Q01",
+      "required": true,
+      "state": "planned",
+      "implementation": "项目资料与运行记录查询通过Chat和Responses、JSON/SSE、标准客户端及原生TLS；覆盖实际涉及的新协议/故障链，复用未改证据，不跑无关全矩阵",
+      "acceptance": "项目资料与运行记录查询通过Chat和Responses、JSON/SSE、标准客户端及原生TLS；覆盖实际涉及的新协议/故障链，复用未改证据，不跑无关全矩阵",
+      "depends_on": [
+        "A07",
+        "A11",
+        "A12",
+        "N07",
+        "R10"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "Q02",
+      "required": true,
+      "state": "planned",
+      "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
+      "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
+      "depends_on": [
+        "Q01"
+      ],
+      "evidence": [],
+      "release": null
+    },
+    {
+      "id": "Q03",
+      "required": true,
+      "state": "planned",
+      "implementation": "全部任务逐项核对实现、针对性证据、发布与未解决项；长稳驱动/配置/检查点交给用户，用户实跑仍单列，不能把短验说成长稳通过",
+      "acceptance": "全部任务逐项核对实现、针对性证据、发布与未解决项；长稳驱动/配置/检查点交给用户，用户实跑仍单列，不能把短验说成长稳通过",
+      "depends_on": [
+        "Q02"
+      ],
+      "evidence": [],
+      "release": null
+    }
+  ]
+}
