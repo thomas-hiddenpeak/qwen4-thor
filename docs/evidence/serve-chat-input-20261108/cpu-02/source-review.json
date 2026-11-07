@@ -1,0 +1,58 @@
+{
+  "scope": "A01/A02 ordered instructions, participant names, assistant refusal and required content; shared preflight and unchanged native input order",
+  "changes": {
+    "whitelists": {
+      "chat_template.cpp:1:part": {
+        "before": null,
+        "after": [
+          "type",
+          "text"
+        ]
+      },
+      "chat_template.cpp:0:part": {
+        "before": [
+          "type",
+          "text"
+        ],
+        "after": [
+          "type",
+          "refusal"
+        ]
+      }
+    },
+    "sources_sha256": {
+      "src/server/chat_capabilities.cpp": {
+        "before": "5c59f8dd9560e935d4c9a82a459117c59cc6f8f8876159ca2193f89bbc1e433d",
+        "after": "e187ce74cb2de03c97285e9cdb22097cab02178b0d47f483d04666f01c67179c"
+      },
+      "include/q4t/server/chat_template.h": {
+        "before": "f89fa01d5352cc6ec47ecff09c24bdb58f8bb0a3edfa5c89fe840791ac76bb51",
+        "after": "5d2e9a8c90938fa972d27bd961ee9018ebcd7add541fd009316177af81b9afee"
+      },
+      "src/server/chat_contract.cpp": {
+        "before": "67649329b9c1f1006d6f27dfa96d41d39f4d5fa30a143da33a1248de8a9dcf40",
+        "after": "12bc39770aab7112bac5eb747009a80de5397af96a146a0296f0258814161ca2"
+      },
+      "src/server/chat_prompt.cpp": {
+        "before": "913d5768c332f90935713dff717b71ff0280e86ebf1b48fab0af342d0326f43a",
+        "after": "d79f99bff03d2d199e4e62b004fc187b6bb36055211921008d561c869577b4fd"
+      },
+      "src/server/chat_template.cpp": {
+        "before": "a030f020b91227e143827754a3b45e36804a8e2f72c727d5e36291c688193244",
+        "after": "eaa57515f4b0cd4be6c8fd4a820e3ace84ceeb1d0cb6e9b09ff49d2fe6f3c4cf"
+      },
+      "CMakeLists.txt": {
+        "before": "9068bec5953220399997f32024e92ccf73b7104029bdbd80cf8b827eb22d06d7",
+        "after": "d3404c16e8cb07de2b05dbd92e38e55e3d0697e42007f09cac49f74952217a76"
+      }
+    }
+  },
+  "verification": [
+    "33 targeted C++ checks",
+    "71 request schema/native checks (70 reused, one fixture classification repair)",
+    "19 prompt/tokenizer checks",
+    "one pinned JS SDK profile check",
+    "three acceptance driver checks"
+  ],
+  "remaining": "A01/A02 remain in progress; legacy/custom tools, other reasoning levels and multimodal backends remain required follow-on implementations"
+}

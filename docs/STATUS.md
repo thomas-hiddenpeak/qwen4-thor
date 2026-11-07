@@ -19,8 +19,8 @@ A01—A12补齐OpenAI推理与应用服务兼容；N01—N07补原生TLS/LAN、
 
 应用总目标为active，覆盖全部32项实施/交付任务；
 [回执](evidence/serve-goal-reaudit-20261108/goal-migration.json)保留首次迁移拒绝
-和R01实际交付后的切换。R01/R02已交付，接着推进N01/N02/N03与
-A01/A02，全部计划未完成前不结束目标。
+和R01实际交付后的切换。R01/R02与N01/N02/N03已交付，A01/A02
+消息子集已交付并继续其余协议任务，全部计划未完成前不结束目标。
 [R01已完成针对性验收和可回退交付](SERVE_OBSERVATION_IO_2026-11-08.md)：
 46项不同CPU，累计2启动/4Chat/92.863秒严格租约，89次NVML全OK。
 首轮导入路径拒绝及CPU负控保留；修复验收包装后实际封包同PID
@@ -54,13 +54,21 @@ a48dcb67未改，原本机策略/Key/配额和ledger预算保持STOPPED，安装
 本机LAN地址+自身/32已验，不冒充异机生产部署或长稳；GPU/端口/锁
 释放。现在继续A01/A02标准输入与消息语义，不结束总目标。
 
-[A01/A02本组输入适配](SERVE_CHAT_INPUT_2026-11-08.md)正在实现：
+[A01/A02本组输入适配](SERVE_CHAT_INPUT_2026-11-08.md)已交付：
 按序多条system/developer、JSON转义的参与者name、assistant refusal
 历史和无user会话；同步必填content校验、schema与客户端profile。
 新增格式不是原模型模板已有能力。33项C++、71个schema/生产校验、
 19个提示/tokenizer、1项SDK和3项短验驱动检查通过；首次夹具/构建
-准备/来源摘要失败保留，只重验失败项。真实GPU短验待执行，不改变
-默认包。legacy/custom工具历史仍由A04补齐，
+准备/来源摘要失败保留，只重验失败项。真实1模型/6Chat全部通过，
+48.191秒严格租约、46次NVML全OK；同PID名字区分、无user/refusal、
+实际资料工具标题/引用闭环通过，567来源核对，进程/端口/锁释放。
+
+当前默认引擎47d33690/元数据ef9183ed，v4服务4e4e1872/发布d05b470a。
+44个控制面运行文件相同；原策略/Key/配额及ledger保持STOPPED，
+安装0/0。旧c628/a48d及cc32/352c回退保留，新构建不同CUDA探针
+未采用，继续已验ef1a。原件见[交付证据](evidence/serve-chat-input-20261108/README.md)。
+此组是消息子集交付，A01/A02总项仍开放；接着推进标准生成参数。
+legacy/custom工具历史仍由A04补齐，
 A01登记不能代替后续采样、响应及持久对象能力的实际实现。
 
 工作分支`codex/serve-resilience-cd`继续隔离PR #22已接受发布；

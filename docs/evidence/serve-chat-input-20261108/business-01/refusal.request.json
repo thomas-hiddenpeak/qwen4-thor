@@ -1,0 +1,26 @@
+{
+  "model": "qwen3.8-flash-next",
+  "enable_thinking": false,
+  "max_completion_tokens": 128,
+  "temperature": 0,
+  "stream": false,
+  "messages": [
+    {
+      "role": "user",
+      "content": "Perform an unavailable operation."
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "refusal",
+          "refusal": "I cannot perform that operation."
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": "Compute 17 + 25. Return only the number."
+    }
+  ]
+}

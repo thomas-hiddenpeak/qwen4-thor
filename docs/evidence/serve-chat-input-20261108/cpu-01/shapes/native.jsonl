@@ -1,0 +1,71 @@
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"messages must be a nonempty array","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"messages must be a nonempty array","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"provide exactly one of prompt or messages","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"message name must be a string up to 4096 bytes or null","type":"invalid_request_error","code":"invalid_request","param":"messages[0].name"}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"message name must be a string up to 4096 bytes or null","type":"invalid_request_error","code":"invalid_request","param":"messages[0].name"}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"message name must be a string up to 4096 bytes or null","type":"invalid_request_error","code":"invalid_request","param":"messages[0].name"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"message content is required","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content"}}}
+{"accepted":false,"response":{"error":{"message":"refusal requires assistant and a string or null","type":"invalid_request_error","code":"invalid_request","param":"messages[0].refusal"}}}
+{"accepted":false,"response":{"error":{"message":"refusal must be one assistant refusal content part","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content[0]"}}}
+{"accepted":false,"response":{"error":{"message":"refusal must be one assistant refusal content part","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content[0]"}}}
+{"accepted":false,"response":{"error":{"message":"refusal must be one assistant refusal content part","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content[0]"}}}
+{"accepted":false,"response":{"error":{"message":"refusal must be one assistant refusal content part","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content[0]"}}}
+{"accepted":false,"response":{"error":{"message":"message content is required","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content"}}}
+{"accepted":false,"response":{"error":{"message":"content parts must not be empty","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content"}}}
+{"accepted":false,"response":{"error":{"message":"message content must be text or content parts","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content"}}}
+{"accepted":false,"response":{"error":{"message":"message content is required","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content"}}}
+{"accepted":false,"response":{"error":{"message":"message content is required","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content"}}}
+{"accepted":false,"response":{"error":{"message":"content parts must not be empty","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content"}}}
+{"accepted":false,"response":{"error":{"message":"message content must be text or content parts","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content"}}}
+{"accepted":false,"response":{"error":{"message":"message content is required","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content"}}}
+{"accepted":false,"response":{"error":{"message":"message content is required","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content"}}}
+{"accepted":false,"response":{"error":{"message":"content parts must not be empty","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content"}}}
+{"accepted":false,"response":{"error":{"message":"message content must be text or content parts","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content"}}}
+{"accepted":false,"response":{"error":{"message":"message content is required","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content"}}}
+{"accepted":false,"response":{"error":{"message":"message content is required","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content"}}}
+{"accepted":false,"response":{"error":{"message":"content parts must not be empty","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content"}}}
+{"accepted":false,"response":{"error":{"message":"message content must be text or content parts","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content"}}}
+{"accepted":false,"response":{"error":{"message":"message content is required","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content"}}}
+{"accepted":false,"response":{"error":{"message":"message content is required","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content"}}}
+{"accepted":false,"response":{"error":{"message":"content parts must not be empty","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content"}}}
+{"accepted":false,"response":{"error":{"message":"message content must be text or content parts","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content"}}}
+{"accepted":false,"response":{"error":{"message":"message content is required","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content"}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"media disabled; experimental --allow-media required","type":"invalid_request_error","code":"invalid_request","param":"messages[0].content[0]"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"conflicting reasoning history aliases","type":"invalid_request_error","code":"invalid_request","param":"messages[0].reasoning"}}}
+{"accepted":false,"response":{"error":{"message":"reasoning history requires an assistant message","type":"invalid_request_error","code":"invalid_request","param":"messages[0].reasoning"}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"all tool results are required before continuing","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"duplicate result for tool_call_id","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"tool_call_id does not match the preceding batch","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"duplicate tool call id within assistant batch","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"tool calls require function type and valid batch IDs","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"tool calls require function type and valid batch IDs","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"message content is required","type":"invalid_request_error","code":"invalid_request","param":"messages[2].content"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"tool arguments require an object or JSON object text","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"invalid historical arguments JSON","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"invalid historical parameter name","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"tool arguments require an object or JSON object text","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"orphan tool_call_id result","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}

@@ -1,0 +1,26 @@
+{
+  "ok": true,
+  "sdk_version": "7.47.0",
+  "result": {
+    "id": "chatcmpl-auto-6f4aa54c85190aaff05462b381161f38",
+    "model": "qwen3.8-flash-next",
+    "message": {
+      "role": "assistant",
+      "content": "Title: # MODEL.md \u2014 Qwen3.8-Flash-Next (qwen4_exp) \u67b6\u6784\u7b14\u8bb0\nCitation: [docs/MODEL.md:L1-L16]"
+    },
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 608,
+      "completion_tokens": 41,
+      "total_tokens": 649
+    },
+    "headers": {
+      "cache-control": "no-cache",
+      "connection": "close",
+      "content-type": "text/event-stream",
+      "x-accel-buffering": "no",
+      "x-request-id": "req-83f7f1914cd6a926ca6bda0efc975e01"
+    }
+  },
+  "wire_base64": "ZGF0YTogeyJpZCI6ImNoYXRjbXBsLWF1dG8tNmY0YWE1NGM4NTE5MGFhZmYwNTQ2MmIzODExNjFmMzgiLCJvYmplY3QiOiJjaGF0LmNvbXBsZXRpb24uY2h1bmsiLCJjcmVhdGVkIjoxNzk0MDk1MzM2LCJtb2RlbCI6InF3ZW4zLjgtZmxhc2gtbmV4dCIsImNob2ljZXMiOlt7ImluZGV4IjowLCJkZWx0YSI6eyJyb2xlIjoiYXNzaXN0YW50IiwiY29udGVudCI6IiJ9LCJmaW5pc2hfcmVhc29uIjpudWxsLCJsb2dwcm9icyI6bnVsbH1dLCJ1c2FnZSI6bnVsbH0NCg0KZGF0YTogeyJpZCI6ImNoYXRjbXBsLWF1dG8tNmY0YWE1NGM4NTE5MGFhZmYwNTQ2MmIzODExNjFmMzgiLCJvYmplY3QiOiJjaGF0LmNvbXBsZXRpb24uY2h1bmsiLCJjcmVhdGVkIjoxNzk0MDk1MzM2LCJtb2RlbCI6InF3ZW4zLjgtZmxhc2gtbmV4dCIsImNob2ljZXMiOlt7ImluZGV4IjowLCJkZWx0YSI6eyJjb250ZW50IjoiVGl0bGU6ICMgTU9ERUwubWQg4oCUIFF3ZW4zLjgtRmxhc2gtTmV4dCAocXdlbjRfZXhwKSDmnrbmnoTnrJTorrBcbkNpdGF0aW9uOiBbZG9jcy9NT0RFTC5tZDpMMS1MMTZdIn0sImZpbmlzaF9yZWFzb24iOm51bGwsImxvZ3Byb2JzIjpudWxsfV0sInVzYWdlIjpudWxsfQ0KDQpkYXRhOiB7ImlkIjoiY2hhdGNtcGwtYXV0by02ZjRhYTU0Yzg1MTkwYWFmZjA1NDYyYjM4MTE2MWYzOCIsIm9iamVjdCI6ImNoYXQuY29tcGxldGlvbi5jaHVuayIsImNyZWF0ZWQiOjE3OTQwOTUzMzYsIm1vZGVsIjoicXdlbjMuOC1mbGFzaC1uZXh0IiwiY2hvaWNlcyI6W3siaW5kZXgiOjAsImRlbHRhIjp7ImNvbnRlbnQiOiIifSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJsb2dwcm9icyI6bnVsbH1dLCJ1c2FnZSI6bnVsbH0NCg0KZGF0YTogeyJpZCI6ImNoYXRjbXBsLWF1dG8tNmY0YWE1NGM4NTE5MGFhZmYwNTQ2MmIzODExNjFmMzgiLCJvYmplY3QiOiJjaGF0LmNvbXBsZXRpb24uY2h1bmsiLCJjcmVhdGVkIjoxNzk0MDk1MzM2LCJtb2RlbCI6InF3ZW4zLjgtZmxhc2gtbmV4dCIsImNob2ljZXMiOltdLCJ1c2FnZSI6eyJwcm9tcHRfdG9rZW5zIjo2MDgsImNvbXBsZXRpb25fdG9rZW5zIjo0MSwidG90YWxfdG9rZW5zIjo2NDl9fQ0KDQpkYXRhOiBbRE9ORV0NCg0K"
+}

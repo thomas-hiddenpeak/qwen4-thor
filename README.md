@@ -23,7 +23,11 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 长稳由用户实跑；其余兼容/恢复任务持续按总计划推进，旧包可回退。
 
 当前默认程序（身份见[STATUS](docs/STATUS.md)）已包含工具/推理输出解析、JSON/SSE、带ID工具
-历史、单条开头developer适配和`/v1/capabilities`能力/模板身份查询。
+历史、按序system/developer、参与者name及refusal回填和
+`/v1/capabilities`能力/模板身份查询。消息profile为
+`qwen3.8-openai-v3`，无需人为补充user消息；实现与真实SDK验收见
+[消息输入交付](docs/SERVE_CHAT_INPUT_2026-11-08.md)。完整OpenAI协议
+的剩余任务继续按总计划实现。
 `messages`默认解析；`parse_response: false`保留原始输出，`prompt`
 始终为raw。none / required / named、禁止多调用、strict工具参数和
 有限JSON Schema已验，受约束请求仍普通解码，完整校验后发布SSE内容，

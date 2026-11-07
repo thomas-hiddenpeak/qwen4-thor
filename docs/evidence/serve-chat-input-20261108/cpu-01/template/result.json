@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "cases": 19,
+  "no_model_or_cuda_calls": true,
+  "probe_sha256": "81b63b702db925d2f50002c648077f91d98530acb1cb7b97bc340fa9bb75af55",
+  "schema_sha256": "265734832faf9f9e5200055cc72b5b859a6328498464f830687548ad2eff2244",
+  "tokenizer_sha256": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+  "template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+  "versions": {
+    "tokenizers": "0.23.2",
+    "transformers": "5.16.1",
+    "jsonschema": "4.26.0",
+    "jinja2": "3.1.2"
+  }
+}

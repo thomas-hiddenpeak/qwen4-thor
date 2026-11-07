@@ -1,0 +1,25 @@
+{
+  "model": "qwen3.8-flash-next",
+  "enable_thinking": false,
+  "max_completion_tokens": 128,
+  "temperature": 0,
+  "stream": false,
+  "messages": [
+    {
+      "role": "system",
+      "content": "Answer concisely."
+    },
+    {
+      "role": "developer",
+      "content": "Return only a number."
+    },
+    {
+      "role": "user",
+      "content": "What is 17 + 25?"
+    },
+    {
+      "role": "developer",
+      "content": "Return only the decimal answer, without explanation."
+    }
+  ]
+}

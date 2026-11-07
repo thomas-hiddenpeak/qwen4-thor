@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "cases": 1,
+  "fields": 0,
+  "accepted": 0,
+  "rejected": 1,
+  "failures": [],
+  "probe_sha256": "32b014bd182850892566fc0998fcb8187d8a461b55220152cf2ee759f5abcdf2",
+  "scope": "CPU request shapes/lexemes/native semantic initialization; no tokens/GPU/model/grammar compilation",
+  "prior_result": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/shapes/result.json",
+    "sha256": "a461013cccb874b76569e4c8cf9ddb0568aae612b13ee0f6cec02f70a89ff29d",
+    "unchanged_native_passes_reused": 70
+  }
+}

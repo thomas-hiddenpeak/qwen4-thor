@@ -1,0 +1,9 @@
+{
+  "host": 33,
+  "shapes": 71,
+  "templates": 19,
+  "js_tests": [
+    "capability validation binds protocol and template identities"
+  ],
+  "scope": "affected message semantics only; no full model or GPU tests"
+}

@@ -1,0 +1,10 @@
+{
+  "inventory_current": true,
+  "semantics_certified": false,
+  "fields": 38,
+  "routes": 10,
+  "native_routes": 16,
+  "reviewed_source_anchors": 174,
+  "mutation_checks": 4,
+  "errors": []
+}

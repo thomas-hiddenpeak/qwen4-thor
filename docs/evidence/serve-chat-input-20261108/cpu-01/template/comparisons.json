@@ -1,0 +1,110 @@
+[
+  {
+    "id": "legacy-system-user",
+    "passed": true,
+    "oracle": "frozen-native-template",
+    "prompt_tokens": 52
+  },
+  {
+    "id": "legacy-user-only",
+    "passed": true,
+    "oracle": "frozen-native-template",
+    "prompt_tokens": 34
+  },
+  {
+    "id": "legacy-multi-turn",
+    "passed": true,
+    "oracle": "frozen-native-template",
+    "prompt_tokens": 90
+  },
+  {
+    "id": "legacy-text-parts",
+    "passed": true,
+    "oracle": "frozen-native-template",
+    "prompt_tokens": 52
+  },
+  {
+    "id": "legacy-chinese",
+    "passed": true,
+    "oracle": "frozen-native-template",
+    "prompt_tokens": 46
+  },
+  {
+    "id": "legacy-whitespace",
+    "passed": true,
+    "oracle": "frozen-native-template",
+    "prompt_tokens": 51
+  },
+  {
+    "id": "legacy-thinking-default",
+    "passed": true,
+    "oracle": "frozen-native-template",
+    "prompt_tokens": 74
+  },
+  {
+    "id": "ordered-instructions",
+    "passed": true,
+    "oracle": "explicit-adaptation-bytes",
+    "prompt_tokens": 31
+  },
+  {
+    "id": "no-user",
+    "passed": true,
+    "oracle": "explicit-adaptation-bytes",
+    "prompt_tokens": 13
+  },
+  {
+    "id": "participant-escaping",
+    "passed": true,
+    "oracle": "explicit-adaptation-bytes",
+    "prompt_tokens": 33
+  },
+  {
+    "id": "unicode-participant",
+    "passed": true,
+    "oracle": "explicit-adaptation-bytes",
+    "prompt_tokens": 17
+  },
+  {
+    "id": "empty-named-instruction",
+    "passed": true,
+    "oracle": "explicit-adaptation-bytes",
+    "prompt_tokens": 14
+  },
+  {
+    "id": "refusal-string",
+    "passed": true,
+    "oracle": "explicit-adaptation-bytes",
+    "prompt_tokens": 18
+  },
+  {
+    "id": "refusal-part",
+    "passed": true,
+    "oracle": "explicit-adaptation-bytes",
+    "prompt_tokens": 18
+  },
+  {
+    "id": "refusal-no-duplicate",
+    "passed": true,
+    "oracle": "explicit-adaptation-bytes",
+    "prompt_tokens": 18
+  },
+  {
+    "id": "refusal-with-content",
+    "passed": true,
+    "oracle": "explicit-adaptation-bytes",
+    "prompt_tokens": 20
+  },
+  {
+    "id": "required-content",
+    "rejected": true
+  },
+  {
+    "id": "user-refusal",
+    "rejected": true
+  },
+  {
+    "id": "instruction-media",
+    "rejected": true
+  }
+]

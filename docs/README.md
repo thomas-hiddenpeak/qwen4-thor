@@ -1,5 +1,7 @@
 # docs/ — 开发记录文档体系
 
+- [A01/A02消息输入交付](SERVE_CHAT_INPUT_2026-11-08.md)：多指令、name、refusal、schema与实际SDK工具闭环；剩余总计划继续。
+
 - [N01/N02/N03原生TLS、内网、证书与CORS实施](SERVE_NATIVE_ACCESS_2026-11-08.md)
 - [R02结构化工作进程有界回收：实施合同与针对性验证](SERVE_GRAMMAR_REAP_2026-11-08.md)
 - [R01普通观察写入阻塞隔离：实现与针对性验证](SERVE_OBSERVATION_IO_2026-11-08.md)

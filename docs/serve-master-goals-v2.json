@@ -36,8 +36,20 @@
       "implementation": "逐字段/路由标准合同、默认/null/别名/metadata与错误语义；每个缺口链接实现任务",
       "acceptance": "官方参考→本地schema→解析→响应逐项可追踪；合法请求实际执行，拒绝不计功能通过",
       "depends_on": [],
-      "evidence": [],
-      "release": null
+      "evidence": [
+        "SERVE_CHAT_INPUT_2026-11-08.md",
+        "evidence/serve-chat-input-20261108/README.md"
+      ],
+      "release": null,
+      "accepted_subsets": [
+        {
+          "name": "ordered instructions, participant names, refusal history and required content",
+          "profile": "qwen3.8-openai-v3",
+          "engine_sha256": "47d33690bf79caf665efcd439a27831b6c5fc8f6e064b652a1081f2ae14bc978",
+          "service_manifest_sha256": "4e4e1872d85c72ce3bcea35e5e33c38b3a1e6b2388b8e51034446e30411eb874",
+          "full_task_complete": false
+        }
+      ]
     },
     {
       "id": "A02",
@@ -48,13 +60,25 @@
       "depends_on": [
         "A01"
       ],
-      "evidence": [],
-      "release": null
+      "evidence": [
+        "SERVE_CHAT_INPUT_2026-11-08.md",
+        "evidence/serve-chat-input-20261108/README.md"
+      ],
+      "release": null,
+      "accepted_subsets": [
+        {
+          "name": "ordered instructions, participant names, refusal history and required content",
+          "profile": "qwen3.8-openai-v3",
+          "engine_sha256": "47d33690bf79caf665efcd439a27831b6c5fc8f6e064b652a1081f2ae14bc978",
+          "service_manifest_sha256": "4e4e1872d85c72ce3bcea35e5e33c38b3a1e6b2388b8e51034446e30411eb874",
+          "full_task_complete": false
+        }
+      ]
     },
     {
       "id": "A03",
       "required": true,
-      "state": "planned",
+      "state": "implementation_in_progress",
       "implementation": "temperature/top_p、seed、presence/frequency penalty、logit_bias、n、多choice JSON/SSE及logprobs/top_logprobs",
       "acceptance": "固定logits的数值与采样边界、choice独立状态、usage/取消；对应真实短验；MTP不允许错误套用greedy算法",
       "depends_on": [
@@ -519,5 +543,6 @@
       "release": null
     }
   ],
-  "next_task": "A01/A02 then A03/A04/A05/A06/A07; continue all remaining master-plan tasks"
+  "next_task": "A01/A02 then A03/A04/A05/A06/A07; continue all remaining master-plan tasks",
+  "next": "A03 standard generation parameters, then remaining A01/A02/A04+ tasks; no stage-completion stop"
 }

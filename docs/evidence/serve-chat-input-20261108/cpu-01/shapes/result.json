@@ -1,0 +1,35 @@
+{
+  "passed": false,
+  "cases": 71,
+  "fields": 1,
+  "accepted": 24,
+  "rejected": 47,
+  "failures": [
+    {
+      "id": "media-disabled",
+      "field": null,
+      "expected": false,
+      "shape_accepted": true,
+      "shape_error": null,
+      "native": {
+        "accepted": false,
+        "response": {
+          "error": {
+            "message": "media disabled; experimental --allow-media required",
+            "type": "invalid_request_error",
+            "code": "invalid_request",
+            "param": "messages[0].content[0]"
+          }
+        }
+      },
+      "passed": false
+    }
+  ],
+  "probe_sha256": "32b014bd182850892566fc0998fcb8187d8a461b55220152cf2ee759f5abcdf2",
+  "scope": "CPU request shapes/lexemes/native semantic initialization; no tokens/GPU/model/grammar compilation",
+  "selection": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/contract-required.txt",
+    "sha256": "36f057a6db362e3cf3a1f28057473b301c72df69fca7f7265d698c6b2bb3b034",
+    "complete_request_contract": false
+  }
+}

@@ -1,0 +1,780 @@
+{
+  "raw_files": 129,
+  "scope": "Raw targeted CPU, actual SDK/HTTP and strict GPU lease receipts; credential files, executable binaries and model assets excluded",
+  "files": [
+    {
+      "path": "audit-01-native-build-difference.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/audit-01-native-build-difference.json",
+      "bytes": 891,
+      "sha256": "f78f3f8218a1490cdcd7bd8eb0c4cb355c507551d7e2b4b9458f74f6c5d0d881"
+    },
+    {
+      "path": "audit.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/audit.json",
+      "bytes": 1516,
+      "sha256": "8a011066ed053983c08f5546c88a0e73abd9da9985202ba149ccada14e61a9d0"
+    },
+    {
+      "path": "build-01/0.log",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/build-01/0.log",
+      "bytes": 1336,
+      "sha256": "acf5a92d56b6b3fa490de50925b15473c43eb500dba3d7bfecc17b162b4086fe"
+    },
+    {
+      "path": "build-01/1.log",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/build-01/1.log",
+      "bytes": 18077,
+      "sha256": "3e81a64713abc1eb4e180b0ecc2041691b86b8f07846e1fed03c5c3b635060d3"
+    },
+    {
+      "path": "build-01/2.log",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/build-01/2.log",
+      "bytes": 63,
+      "sha256": "49af69394ce9dbd0525f92aa2969e53eb8514aff27b989c10c0d2f365cd26022"
+    },
+    {
+      "path": "build-01/3-configure.log",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/build-01/3-configure.log",
+      "bytes": 490,
+      "sha256": "e33a5908c4b9c7d7a5ef4c5c763bd057a3a4ae616dc9e01e42a7be1ef383e414"
+    },
+    {
+      "path": "build-01/4.log",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/build-01/4.log",
+      "bytes": 853,
+      "sha256": "f6d783b9e1fd5aa645be99edd723561c355f366f11f13be8ddff8ad736c3ad16"
+    },
+    {
+      "path": "build-01/native.log",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/build-01/native.log",
+      "bytes": 1645,
+      "sha256": "935391047b66feeda938c0e5aa415314b1e43c8fdd159a17d814a66cc8b3c5bc"
+    },
+    {
+      "path": "build-01/result.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/build-01/result.json",
+      "bytes": 1178,
+      "sha256": "43109e1723d133822d250dd99106e85e6fdace0974869ee28a6323ea31583f82"
+    },
+    {
+      "path": "build-01/run.py",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/build-01/run.py",
+      "bytes": 1223,
+      "sha256": "329c927522803a53421febb1f446f95dc960d6f55496f2e0b3dac5355b0604f9"
+    },
+    {
+      "path": "business-01/capabilities.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/capabilities.json",
+      "bytes": 15903,
+      "sha256": "6aadb44e1a0727e46880b86fc3a2f32ea82debffab31c54a9acf75b5e59c7ea4"
+    },
+    {
+      "path": "business-01/cleanup.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/cleanup.json",
+      "bytes": 982,
+      "sha256": "2e0b4b71682a32d0992fbf6dd397694c7c10dcedc72f06c523352dca64aac46a"
+    },
+    {
+      "path": "business-01/config.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/config.json",
+      "bytes": 7305,
+      "sha256": "fd0b2938d53da1e2d7f1ac0f3f7735627022567887a94eb04b597df89befc070"
+    },
+    {
+      "path": "business-01/counts.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/counts.json",
+      "bytes": 50,
+      "sha256": "79591dbcc970d5f0572077414e9429aa55571e48826a1e28eeb8834669531c2f"
+    },
+    {
+      "path": "business-01/driver.log",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/driver.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "business-01/final.metrics.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/final.metrics.json",
+      "bytes": 16395,
+      "sha256": "1f4ff2be6431c1ae621d67f2202e363131baf0f08a8d38823f9e3b4009dbc763"
+    },
+    {
+      "path": "business-01/initial-capabilities.http.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/initial-capabilities.http.json",
+      "bytes": 234,
+      "sha256": "9ccaa952f0360000be2aba3724148b3f8c28e49d704efd4779bb8bec7a0c10d1"
+    },
+    {
+      "path": "business-01/initial-capabilities.wire",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/initial-capabilities.wire",
+      "bytes": 12796,
+      "sha256": "1b5b1dcf0df72cf7abfdffef2a2470dc99cc6d0a13a1bda0596c9bf05844f7f9"
+    },
+    {
+      "path": "business-01/initial-config.http.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/initial-config.http.json",
+      "bytes": 232,
+      "sha256": "ff7699c32352875e648f759be0f2b102efbcf0419a0b4be473c6e441a4264c33"
+    },
+    {
+      "path": "business-01/initial-config.wire",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/initial-config.wire",
+      "bytes": 5637,
+      "sha256": "854ca31789586015a04d76a0d4169df15ee0f3339250accfbcaa41400e9f5627"
+    },
+    {
+      "path": "business-01/lease/events.jsonl",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/lease/events.jsonl",
+      "bytes": 9042,
+      "sha256": "6c6ca1551b1d16c3b984dca05dc91bce46c5a7777cbed89cfa50ad57f3b4614d"
+    },
+    {
+      "path": "business-01/lease/exit.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/lease/exit.json",
+      "bytes": 670,
+      "sha256": "f0e83cba3f2c60fe18f9d6ea61b341d729211949299fbf6065bdd87c9d65e78e"
+    },
+    {
+      "path": "business-01/lease/nvml-queries.jsonl",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/lease/nvml-queries.jsonl",
+      "bytes": 110277,
+      "sha256": "9aa5b2bbcb56a7838d0d8608c3297e31161adaeace8bfcfb7ca489b26c8791d1"
+    },
+    {
+      "path": "business-01/model-command.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/model-command.json",
+      "bytes": 474,
+      "sha256": "3de83d3b624716662b753c21d341bcac3f8aba6a4893a76b109fd8eb203b49b2"
+    },
+    {
+      "path": "business-01/model-identity.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/model-identity.json",
+      "bytes": 741,
+      "sha256": "749c639a8bcf22135e2775ad9e59f2d801f771199693ce4af9c0502b016a71b0"
+    },
+    {
+      "path": "business-01/model.log",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/model.log",
+      "bytes": 19891,
+      "sha256": "570bf069f8ea65483dfaa92d022e4bbb6f2ecab4a9da3198ff2978248fec0b80"
+    },
+    {
+      "path": "business-01/named-drain.metrics.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/named-drain.metrics.json",
+      "bytes": 16368,
+      "sha256": "cbaa5540829dba5bc7ed35addb580e8d442b344563fcd5703018885b4b278286"
+    },
+    {
+      "path": "business-01/named-preflight.http.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/named-preflight.http.json",
+      "bytes": 232,
+      "sha256": "faca09b7f06b71afd26c7fcbe8c2da24f83543252440f26e1a0bf45216b08b7c"
+    },
+    {
+      "path": "business-01/named-preflight.wire",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/named-preflight.wire",
+      "bytes": 1787,
+      "sha256": "5cb8a46ac7506059dcbef67ecdafd3ec820bc3b63ec47a2f62710e20906f7aa0"
+    },
+    {
+      "path": "business-01/named.request.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/named.request.json",
+      "bytes": 656,
+      "sha256": "6271366fc4f0dc20ee48341cdd9c673cc46bdebedf83d11ff2ba64523be5b8a3"
+    },
+    {
+      "path": "business-01/named.result.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/named.result.json",
+      "bytes": 284,
+      "sha256": "f68fc371a01f802559b7901fd7e400cccd72b2ae181657e8027b23e9f054f145"
+    },
+    {
+      "path": "business-01/named.sdk.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/named.sdk.json",
+      "bytes": 3593,
+      "sha256": "5ab76e76bd87d278e8f23717a0cf869ac4fce3f0fd4a9f0699590fdc9a443e58"
+    },
+    {
+      "path": "business-01/named.wire",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/named.wire",
+      "bytes": 2233,
+      "sha256": "3150b29e824349d01e42976755420e67edbefc1b8087c783e4d2b786ce78edb5"
+    },
+    {
+      "path": "business-01/no_user-drain.metrics.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/no_user-drain.metrics.json",
+      "bytes": 16370,
+      "sha256": "a170fa5a3073a5433dbf6e83692d7d29b48755e3b966530a07f43a57ad66a9eb"
+    },
+    {
+      "path": "business-01/no_user-preflight.http.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/no_user-preflight.http.json",
+      "bytes": 232,
+      "sha256": "748440963568eca06837ba690de4bbaff104b594ed36d182b6543111c62d93ba"
+    },
+    {
+      "path": "business-01/no_user-preflight.wire",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/no_user-preflight.wire",
+      "bytes": 1309,
+      "sha256": "fc1fb86d3dfb8521b6dfd701fbdedbb0e7bbfbbee093f91a702abf201a32cb0a"
+    },
+    {
+      "path": "business-01/no_user.request.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/no_user.request.json",
+      "bytes": 290,
+      "sha256": "af979e537db667bad4f3d6735645f07f0cf4305503119d9be81d815ac3c0e88a"
+    },
+    {
+      "path": "business-01/no_user.result.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/no_user.result.json",
+      "bytes": 280,
+      "sha256": "378ccf9b5b2e7244b9ea0baf5c1a2e45a2cd3cc82d812635e9d24c7a7dbe57af"
+    },
+    {
+      "path": "business-01/no_user.sdk.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/no_user.sdk.json",
+      "bytes": 987,
+      "sha256": "c496e7f27e81fbaf9f9c260c98d26fdd958967784466c21daa1e4f254466af17"
+    },
+    {
+      "path": "business-01/no_user.wire",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/no_user.wire",
+      "bytes": 310,
+      "sha256": "d1192d63fb949c499b1e50a074ec4eba1e25d1897704daa68b4e350eccb856f7"
+    },
+    {
+      "path": "business-01/ordered-drain.metrics.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/ordered-drain.metrics.json",
+      "bytes": 16361,
+      "sha256": "7947b26fc3a174d63d0a98297cac51e5b730ab80db7bb38e2769972780fd921b"
+    },
+    {
+      "path": "business-01/ordered-preflight.http.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/ordered-preflight.http.json",
+      "bytes": 232,
+      "sha256": "2aa056cee42f4663c105064d1570c66938124980ec0705946e7fbe465430bab9"
+    },
+    {
+      "path": "business-01/ordered-preflight.wire",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/ordered-preflight.wire",
+      "bytes": 1568,
+      "sha256": "e96fd6aec8f899e340152e5d5f26746f652c0381870c0c9f18ebbeefb326d452"
+    },
+    {
+      "path": "business-01/ordered.request.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/ordered.request.json",
+      "bytes": 493,
+      "sha256": "ed51509a6cc5060f068c3c18c2e831337400e1a4a8f7c2e7aa134913d0eefab3"
+    },
+    {
+      "path": "business-01/ordered.result.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/ordered.result.json",
+      "bytes": 280,
+      "sha256": "9f514ae8d1eb3e785c8a989406ef94f7516a23d5bc2484b57acaf73e2cf10e76"
+    },
+    {
+      "path": "business-01/ordered.sdk.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/ordered.sdk.json",
+      "bytes": 987,
+      "sha256": "c2d51035371ef6b8f4e708f90d3ce1a32bd0ef7c88d627df36c83322431f6bc6"
+    },
+    {
+      "path": "business-01/ordered.wire",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/ordered.wire",
+      "bytes": 310,
+      "sha256": "ce121e01a5e0d2c902fa2fb25e0114ea11b0584f15a392830c1e4ac9bc4f4226"
+    },
+    {
+      "path": "business-01/plan.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/plan.json",
+      "bytes": 655758,
+      "sha256": "46b5fd437536ac13fa3979a7a77e6b25d73ed3dd4092a7310e8a1be254955756"
+    },
+    {
+      "path": "business-01/refusal-drain.metrics.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/refusal-drain.metrics.json",
+      "bytes": 16369,
+      "sha256": "a9d69a42de9faa6349f6e1a943341f8e2c7da0e581b1336b51d01365fe53fab9"
+    },
+    {
+      "path": "business-01/refusal-preflight.http.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/refusal-preflight.http.json",
+      "bytes": 232,
+      "sha256": "2a3beb29ab42aefd606b91f316cccda338b84d06ba07cb3f46e55f84ce4557e9"
+    },
+    {
+      "path": "business-01/refusal-preflight.wire",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/refusal-preflight.wire",
+      "bytes": 1536,
+      "sha256": "cb9d08cadbf65da006c620c471a473ea935d810869ac07f053de3b1527baad64"
+    },
+    {
+      "path": "business-01/refusal.request.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/refusal.request.json",
+      "bytes": 510,
+      "sha256": "6bb026136c6a52741c47d24998b924a8e132d83fe925cd533958f01ce1c62b6f"
+    },
+    {
+      "path": "business-01/refusal.result.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/refusal.result.json",
+      "bytes": 280,
+      "sha256": "d9352fcac3f9c958eeb5d53fab396854ac044d2aa119554ceea8e251d2ea459e"
+    },
+    {
+      "path": "business-01/refusal.sdk.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/refusal.sdk.json",
+      "bytes": 987,
+      "sha256": "50eaa2bfbb180d89dd6da54b266e3f791deccfa9579a35810fc2d7f3cbb8c321"
+    },
+    {
+      "path": "business-01/refusal.wire",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/refusal.wire",
+      "bytes": 310,
+      "sha256": "f4ffb056e3452120690dcd261326e20aaff26389ef8a57534b7006d34739f998"
+    },
+    {
+      "path": "business-01/result.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/result.json",
+      "bytes": 233,
+      "sha256": "a84b5edcbb4055ada2aa1cf2a1f2e4016bb0b5fa3382424ef7422939f3412ddd"
+    },
+    {
+      "path": "business-01/sdk-capabilities.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/sdk-capabilities.json",
+      "bytes": 15903,
+      "sha256": "6aadb44e1a0727e46880b86fc3a2f32ea82debffab31c54a9acf75b5e59c7ea4"
+    },
+    {
+      "path": "business-01/tool-drain.metrics.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/tool-drain.metrics.json",
+      "bytes": 16392,
+      "sha256": "3b388debfa22e8787154167960dbc267c094b63fce9b2915e96eed114f8b7188"
+    },
+    {
+      "path": "business-01/tool-execution.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/tool-execution.json",
+      "bytes": 1518,
+      "sha256": "e11590e181bc92a64a3eead4414d1b534d8c4a66c8819304d4bb3583c5ade502"
+    },
+    {
+      "path": "business-01/tool-final-drain.metrics.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/tool-final-drain.metrics.json",
+      "bytes": 16395,
+      "sha256": "1f4ff2be6431c1ae621d67f2202e363131baf0f08a8d38823f9e3b4009dbc763"
+    },
+    {
+      "path": "business-01/tool-final-preflight.http.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/tool-final-preflight.http.json",
+      "bytes": 232,
+      "sha256": "435e0fe741db388c410392196c89cd6797dec0d348b44b42899e7f344cb76a35"
+    },
+    {
+      "path": "business-01/tool-final-preflight.wire",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/tool-final-preflight.wire",
+      "bytes": 5681,
+      "sha256": "0f9f074211f5e1c6e099660a33bf55454d4ef6abbb66f3aeb7abd989bd468ba7"
+    },
+    {
+      "path": "business-01/tool-final.request.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/tool-final.request.json",
+      "bytes": 3799,
+      "sha256": "7c896bda162d644e527ad1f8487abf47b0b2af60ad72fac8f128eced824ecba1"
+    },
+    {
+      "path": "business-01/tool-final.result.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/tool-final.result.json",
+      "bytes": 395,
+      "sha256": "09c65b30108e80db095131d447f5767de594bd5815fc6aa67ecb0eafcebd070e"
+    },
+    {
+      "path": "business-01/tool-final.sdk.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/tool-final.sdk.json",
+      "bytes": 2196,
+      "sha256": "b0219a937d7813be354744b85b1e0013bbc003f177e717a7c5bca6c908d032b5"
+    },
+    {
+      "path": "business-01/tool-final.wire",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/tool-final.wire",
+      "bytes": 1104,
+      "sha256": "c434c9c2f8fe139e7d5c5b9f88e003dbbf1078674b7918d75d69d9f5ec026f57"
+    },
+    {
+      "path": "business-01/tool-preflight.http.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/tool-preflight.http.json",
+      "bytes": 232,
+      "sha256": "daed7702f42ba2cb47de35c1656279cc25dc3b9ff3f5ad9b2b6f96cfb2f63a11"
+    },
+    {
+      "path": "business-01/tool-preflight.wire",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/tool-preflight.wire",
+      "bytes": 4870,
+      "sha256": "c26ebe92e5f22041832f5fe18de583161d3125d7987f26c1825720b0e9e42818"
+    },
+    {
+      "path": "business-01/tool.request.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/tool.request.json",
+      "bytes": 1712,
+      "sha256": "e45acf7fe9a91417e03da91482b78db6355662132938821fce5169225ffedc68"
+    },
+    {
+      "path": "business-01/tool.result.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/tool.result.json",
+      "bytes": 593,
+      "sha256": "9c770b1c1e011f93fcd66fde4b6df6d601b7df4deeac0446ed36135c771aa149"
+    },
+    {
+      "path": "business-01/tool.sdk.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/tool.sdk.json",
+      "bytes": 2835,
+      "sha256": "352c5555786ae29f069c6eea504a425d7b695e5dc17ed656fc2c6297a36404d7"
+    },
+    {
+      "path": "business-01/tool.wire",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/business-01/tool.wire",
+      "bytes": 1224,
+      "sha256": "5513b8b998cc8cbcbf5a418bff81cb29fc86bdd90cfb81bb927ab697238d5a69"
+    },
+    {
+      "path": "cpu-01/contract-required.txt",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/contract-required.txt",
+      "bytes": 1633,
+      "sha256": "36f057a6db362e3cf3a1f28057473b301c72df69fca7f7265d698c6b2bb3b034"
+    },
+    {
+      "path": "cpu-01/host-required.txt",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/host-required.txt",
+      "bytes": 1345,
+      "sha256": "8d4eb7d738090625d010329963b61702f8a1b7d914e0d9b5b60eeb00edb7c996"
+    },
+    {
+      "path": "cpu-01/host.log",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/host.log",
+      "bytes": 1617,
+      "sha256": "d998fdcb39f6a86ecb11c9b59024f9a3c142778793938f39718a2242bf0df4f7"
+    },
+    {
+      "path": "cpu-01/js.log",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/js.log",
+      "bytes": 194,
+      "sha256": "40a1d0608846f1a833480ec4818e4d0deff337f536e4a6506cc056e2777850c0"
+    },
+    {
+      "path": "cpu-01/plan.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/plan.json",
+      "bytes": 214,
+      "sha256": "1b3f03f3fd2eb6d4ca25510d1028358af6daf68a9fac66d353737a2e1e5b3846"
+    },
+    {
+      "path": "cpu-01/result.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/result.json",
+      "bytes": 1805,
+      "sha256": "e4455c5d0f9b24f4e61273924e3e4aa21b7255939b66dd9ac5909fea92484d4b"
+    },
+    {
+      "path": "cpu-01/schema.log",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/schema.log",
+      "bytes": 659,
+      "sha256": "851df3fa6c70675fb22c79ee3eb86b976c1c78d585868c61c1ff658f66992773"
+    },
+    {
+      "path": "cpu-01/shapes/cases.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/shapes/cases.json",
+      "bytes": 38634,
+      "sha256": "64aaa6c870edbba626a1c56d838e1eabe6491cee93f77695300d077a12375b87"
+    },
+    {
+      "path": "cpu-01/shapes/comparisons.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/shapes/comparisons.json",
+      "bytes": 38201,
+      "sha256": "786c5433df092d648e6fcacaf5f994731acf161984885991041de11bf43715aa"
+    },
+    {
+      "path": "cpu-01/shapes/native-stderr.log",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/shapes/native-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "cpu-01/shapes/native.jsonl",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/shapes/native.jsonl",
+      "bytes": 8742,
+      "sha256": "f85a6437c452ec0a3d40ab233156c22261f7fe9da7417c12e8d82f9b00cfe041"
+    },
+    {
+      "path": "cpu-01/shapes/probe-input.jsonl",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/shapes/probe-input.jsonl",
+      "bytes": 28514,
+      "sha256": "22137d7a4a32bda3fcf353d24cb31f391ed42cbb069a0d1f7d7493e49f2539b6"
+    },
+    {
+      "path": "cpu-01/shapes/result.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/shapes/result.json",
+      "bytes": 1061,
+      "sha256": "a461013cccb874b76569e4c8cf9ddb0568aae612b13ee0f6cec02f70a89ff29d"
+    },
+    {
+      "path": "cpu-01/shapes.log",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/shapes.log",
+      "bytes": 850,
+      "sha256": "100d42bf2cf0b2a7849c382d81256e42981b4694c509c65056a6bd3441135b6a"
+    },
+    {
+      "path": "cpu-01/sources.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/sources.json",
+      "bytes": 44156,
+      "sha256": "cf4bad6f07de8874df750e71ee824321e6db401c05337347ccd8b34ddfe3417d"
+    },
+    {
+      "path": "cpu-01/template/cases.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/template/cases.json",
+      "bytes": 11178,
+      "sha256": "6eca94cde6ef386a396a4c82b8edfa47467339ff22d159c1d82562fc41e26c1e"
+    },
+    {
+      "path": "cpu-01/template/comparisons.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/template/comparisons.json",
+      "bytes": 2196,
+      "sha256": "e5ebd41a82579f699c56898d93584cab0c62a2e9b6ea83dda77ad5830b8ec9c2"
+    },
+    {
+      "path": "cpu-01/template/native.jsonl",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/template/native.jsonl",
+      "bytes": 22442,
+      "sha256": "1e15593eff2f0312502e1aa481ee566fc68cb96bac4fed96a89e545a469647f1"
+    },
+    {
+      "path": "cpu-01/template/native.stderr",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/template/native.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "cpu-01/template/probe-input.jsonl",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/template/probe-input.jsonl",
+      "bytes": 5171,
+      "sha256": "cd94285e884f75b4fc4bc787a26f4293d2db3b0a484b11f14c892bec3630156e"
+    },
+    {
+      "path": "cpu-01/template/result.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/template/result.json",
+      "bytes": 551,
+      "sha256": "a8a804bd35e4a3f5c79501cd0782b33e004f8bfd2d8524a6af53d9385fca88d9"
+    },
+    {
+      "path": "cpu-01/template.log",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-01/template.log",
+      "bytes": 649,
+      "sha256": "99be8dd7ca39175c8b19d41040ed1ffdb8bae7336b2d46033602b5750689610a"
+    },
+    {
+      "path": "cpu-02/driver.log",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-02/driver.log",
+      "bytes": 101,
+      "sha256": "518b767e4114b6721b6e97d782549ae484bf31dfa1eccab5d0a1bf9cb3afcf1d"
+    },
+    {
+      "path": "cpu-02/inventory.log",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-02/inventory.log",
+      "bytes": 193,
+      "sha256": "3c4712d2d0815d0ad3dbb45d119e5898dbfc9221f79a65688b4fe47489d742b7"
+    },
+    {
+      "path": "cpu-02/schema.log",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-02/schema.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "cpu-02/shapes/cases.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-02/shapes/cases.json",
+      "bytes": 257,
+      "sha256": "9ae23912e5e5f36c283bac9d38b5a42ca7fcab94456f2902c2fe1175dd621904"
+    },
+    {
+      "path": "cpu-02/shapes/comparisons.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-02/shapes/comparisons.json",
+      "bytes": 459,
+      "sha256": "8c1080461467b044a5fa7733aa2b8b921d01cad7a966ddb04552a01713f91701"
+    },
+    {
+      "path": "cpu-02/shapes/native-stderr.log",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-02/shapes/native-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "cpu-02/shapes/native.jsonl",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-02/shapes/native.jsonl",
+      "bytes": 195,
+      "sha256": "89baec06e649f9f5f97773d2d3e5b328fe72f5b880f1ba424aed2b483f33f9ad"
+    },
+    {
+      "path": "cpu-02/shapes/probe-input.jsonl",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-02/shapes/probe-input.jsonl",
+      "bytes": 120,
+      "sha256": "39f60d4f6acae887627bfa73eb414bbd376ac95f65e46e6c065b4decdae2a2aa"
+    },
+    {
+      "path": "cpu-02/shapes/result.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-02/shapes/result.json",
+      "bytes": 562,
+      "sha256": "81ba1ed0f0dcf7f2618e848e3441a3b34e58b548c012e15e72fb36a775d91a93"
+    },
+    {
+      "path": "cpu-02/source-review.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-02/source-review.json",
+      "bytes": 2257,
+      "sha256": "d142aeb532aafc5a3da5edef48fc942bbf763f2bec5890ab0484d4bd02540970"
+    },
+    {
+      "path": "cpu-02-shapes.log",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/cpu-02-shapes.log",
+      "bytes": 510,
+      "sha256": "eb746082192b913769dc381c6087a5d43f90e258fa196eb71889bd78aa80f16b"
+    },
+    {
+      "path": "delivery-01/help.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/delivery-01/help.json",
+      "bytes": 172,
+      "sha256": "56d2c38dead8c581dd342817ce3f3f6923db39c6a8b0847468cd4cce14683f8b"
+    },
+    {
+      "path": "delivery-01/help.stderr",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/delivery-01/help.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "delivery-01/help.stdout",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/delivery-01/help.stdout",
+      "bytes": 353,
+      "sha256": "30e469531e8add0604844914927a39c060bb6e0164af36d7c45a5741b2b5f44d"
+    },
+    {
+      "path": "delivery-01/result.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/delivery-01/result.json",
+      "bytes": 1027,
+      "sha256": "5a28f1f5a23c0dbc4f1b22d119cfe7aa1541a2578e7bad0e33c21375d4568f58"
+    },
+    {
+      "path": "delivery-01/rollback/receipt.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/delivery-01/rollback/receipt.json",
+      "bytes": 979,
+      "sha256": "1a445654efe520fc225566bc899af5d82b0e06fa506c4cac007bd0a068bd08dc"
+    },
+    {
+      "path": "delivery-01/service.release.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/delivery-01/service.release.json",
+      "bytes": 3570,
+      "sha256": "d05b470acc7d374b3d92ce70b1eeffe069a9a5427b74ae29db4f545a8a926257"
+    },
+    {
+      "path": "delivery-01/status.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/delivery-01/status.json",
+      "bytes": 254,
+      "sha256": "2d8416066a67c26abf0fad1a0370e569d728ca2da79f3a0243de76916a99696e"
+    },
+    {
+      "path": "delivery-01/status.stderr",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/delivery-01/status.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "delivery-01/status.stdout",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/delivery-01/status.stdout",
+      "bytes": 123,
+      "sha256": "7628c155208d2c6649d1dc7c4790ba54b18146a8cb4519b01d0dc4ffcc9269c5"
+    },
+    {
+      "path": "fixture-preparation-error.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/fixture-preparation-error.json",
+      "bytes": 146,
+      "sha256": "cf8586b7b981020c1422e7c8a8624a3a141e5b152cf942eec5d971436c1b9bdf"
+    },
+    {
+      "path": "release-01/decision.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/release-01/decision.json",
+      "bytes": 2114,
+      "sha256": "884786253c7ae853deb073adb53dc2346d9c1d25e5b399a4032e74271ddebc3c"
+    },
+    {
+      "path": "release-01/engine/declarations/capabilities.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/release-01/engine/declarations/capabilities.json",
+      "bytes": 15903,
+      "sha256": "6aadb44e1a0727e46880b86fc3a2f32ea82debffab31c54a9acf75b5e59c7ea4"
+    },
+    {
+      "path": "release-01/engine/declarations/configuration.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/release-01/engine/declarations/configuration.json",
+      "bytes": 7305,
+      "sha256": "fd0b2938d53da1e2d7f1ac0f3f7735627022567887a94eb04b597df89befc070"
+    },
+    {
+      "path": "release-01/engine/declarations/schemas/config.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/release-01/engine/declarations/schemas/config.json",
+      "bytes": 30435,
+      "sha256": "a38e3073974a2c179740ea2bbefad9f079208cb908d4b0eec5c20bd0a7661ae1"
+    },
+    {
+      "path": "release-01/engine/declarations/schemas/message.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/release-01/engine/declarations/schemas/message.json",
+      "bytes": 11004,
+      "sha256": "6d8bedfca839bb54f7919cef768292a864021fdd3c07ccc06c519937e1dbce49"
+    },
+    {
+      "path": "release-01/engine/declarations/schemas/preflight.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/release-01/engine/declarations/schemas/preflight.json",
+      "bytes": 7553,
+      "sha256": "3fe4ff359532ab677d4c865d00db8979c6ca979c0e4ce8e8731ffa1035303d3d"
+    },
+    {
+      "path": "release-01/engine/declarations/schemas/reasoning.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/release-01/engine/declarations/schemas/reasoning.json",
+      "bytes": 2702,
+      "sha256": "e0e24e50afc2146757deac6fd8028377613e1305ff4dad4a1756c74961b938a4"
+    },
+    {
+      "path": "release-01/engine/declarations/schemas/response.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/release-01/engine/declarations/schemas/response.json",
+      "bytes": 4493,
+      "sha256": "47c9f9068a88ec1977788c892c90fe89dae43ec02e1e6e381d67707eaea1ec62"
+    },
+    {
+      "path": "release-01/engine/declarations/schemas/stop.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/release-01/engine/declarations/schemas/stop.json",
+      "bytes": 1584,
+      "sha256": "25989a444b4dc6a8ad7a0b8f723dbe96a26f9b97feb1e75016452e30536d4067"
+    },
+    {
+      "path": "release-01/engine/declarations/schemas/thinking.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/release-01/engine/declarations/schemas/thinking.json",
+      "bytes": 2690,
+      "sha256": "1353743d9290215253fab2d8d0952ff99d833444e24323a01efacc6b10cf1bd7"
+    },
+    {
+      "path": "release-01/native-build.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/release-01/native-build.json",
+      "bytes": 4608,
+      "sha256": "0f3f4d448949093b1c88f4a28e0e4b66a3f56bfc0abba51b5f22bff6a986ca4b"
+    },
+    {
+      "path": "release-01/receipt.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/release-01/receipt.json",
+      "bytes": 322,
+      "sha256": "66405cf0fe01390588a2bcf71dc7ab06f5fd73922a8d5a267a02f04055de3ffc"
+    },
+    {
+      "path": "release-01/unchanged-control.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/release-01/unchanged-control.json",
+      "bytes": 367,
+      "sha256": "5047664bf1eb4c9ac90feb566a74e175193aebb52e4eb358fd0fbea2ac66dc19"
+    },
+    {
+      "path": "runtime-source.json",
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/runtime-source.json",
+      "bytes": 28171,
+      "sha256": "278e805ab32eb31477711b3d4496f13916bcc24b74c49f96f8a1034e8f4cba98"
+    }
+  ]
+}

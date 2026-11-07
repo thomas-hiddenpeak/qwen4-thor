@@ -76,8 +76,8 @@ schema代替动态预算、模板、语法编译或真实业务验收。
 | POST /v1/chat/completions | 已验，子集 | 单模型、单 choice；chat_generation.cpp |
 | GET /v1/models | 已验，SDK 3.42.1 | 单个配置模型；不支持模型详情 / 管理 |
 | GET /v1/capabilities | 已验，Q4T 扩展 | 实现身份，不是发布或质量证明 |
-| messages | profile限定已验 | 默认解析；system/developer/user/assistant/tool；system或developer仅第0条且不能混用 |
-| message.name | 明确拒绝非null | 模板不表达名称；省略/null允许，含空串的其他值400；tool_call_id负责工具关联 |
+| messages | v3消息子集已验 | 多条/中途system与developer按序映射system ChatML；user/assistant/tool与ID关联保持；无需user；refusal文本/内容块可回填。见[实际SDK交付](SERVE_CHAT_INPUT_2026-11-08.md)，剩余legacy/custom/多模态合同继续实现 |
+| message.name | 已实现并短验 | JSON转义的参与者信息，4096 UTF-8字节上限；按名称取回用户信息已通过真实SDK；不作鉴权身份，tool_call_id负责工具关联 |
 | prompt / parse_response=false | 已验，Q4T 扩展 | raw 文本；不解析工具或推理 |
 | JSON / stream=true | 限定已验 | 首帧提前；5秒注释心跳；finish → 可选 usage → DONE；中断不能当完整响应 |
 | content / reasoning_content / reasoning | 05a限定已验 | 默认reasoning_content，可用reasoning_field选择；JSON/SSE固定单字段；历史别名相等合并/冲突拒绝 |

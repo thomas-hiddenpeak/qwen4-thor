@@ -1,0 +1,6 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/release-01/bundle",
+  "manifest_sha256": "4e4e1872d85c72ce3bcea35e5e33c38b3a1e6b2388b8e51034446e30411eb874",
+  "engine_binary_sha256": "47d33690bf79caf665efcd439a27831b6c5fc8f6e064b652a1081f2ae14bc978",
+  "recovery_accepted": false
+}

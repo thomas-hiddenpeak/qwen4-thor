@@ -1,0 +1,42 @@
+{
+  "status": "PASS_CHAT_INPUT_TARGETED_AUDIT",
+  "binary_sha256": "47d33690bf79caf665efcd439a27831b6c5fc8f6e064b652a1081f2ae14bc978",
+  "source_commit": "54c544f76a62a5b2ef215367c498ebf949401cd3",
+  "source_files": 567,
+  "runtime_sources": 271,
+  "source_snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-chat-contract-20261108/source",
+  "model_starts": 1,
+  "chat_requests": 6,
+  "driver_seconds": 47.48301109485328,
+  "lease_seconds": 48.19074447499588,
+  "nvml_queries": 46,
+  "nvml_all_ok": true,
+  "recorded_processes_exited": true,
+  "ports_free": true,
+  "lock_acquirable": true,
+  "native_identical": {
+    "q4t-ingress": {
+      "previous": "ba6baf0e729d6fbc7a91ce92737d21c194fb6902b44aa713af960db9d37122a7",
+      "current": "ba6baf0e729d6fbc7a91ce92737d21c194fb6902b44aa713af960db9d37122a7"
+    },
+    "q4t-guardian": {
+      "previous": "7a57af7198cbde10831de8c0bf4e1ed30518f3a395d7c4bd0876158c1d7b4a11",
+      "current": "7a57af7198cbde10831de8c0bf4e1ed30518f3a395d7c4bd0876158c1d7b4a11"
+    }
+  },
+  "cuda_probe": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-access-20261108/release-01/bundle/bin/q4t-cuda-probe",
+    "sha256": "ef1af4758829d36c9300b411dda05479b5d8640f78ef8e44277fee5ef970847a",
+    "existing_acceptance_reused": true,
+    "rebuilt_binary_not_delivered": true
+  },
+  "cpu": {
+    "cpp": 33,
+    "schema_native": 71,
+    "template_tokenizer": 19,
+    "sdk": 1,
+    "driver": 3
+  },
+  "performance_run": false,
+  "full_model_quality_run": false
+}

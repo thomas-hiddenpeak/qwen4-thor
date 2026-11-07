@@ -1,0 +1,13 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-access-20261108/release-01/bundle",
+  "manifest_sha256": "cc32f970a2e40566f7b3d68ed3c1fb7909bc3a4109d7832fe6bc9424411ea570",
+  "service_id": "dcb9dc2e-2824-49b2-a4f8-9b7b4f834b6d",
+  "ledger_sha256": "2216b9dcd4d0e9753fb41b8698a15055001c2446ac52b5a52e3d2f757b0c884c",
+  "files": {
+    "service.json": "c13a20f8f5ccf7612158b577cd2c996559d0c201f146edeb2e4c818df70be171",
+    "service.release.json": "352c368d14bd1d5d731fbd34f29619e20cec98780e44231130f3ea5beaa3edd5",
+    "q4t": "c6285915be1dda92601b268c869e6645eb967689a408f4a2619984acfbd9ca20",
+    "q4t.release.json": "a48dcb6754fdd173e93265200ab2ef23bd81e4f7967b418ec629a484073a25e7"
+  },
+  "procedure": "Acquire the service/GPU lease and writer lock with a durable STOPPED ledger. Restore the four files to their original paths and repoint build/service to this package. Preserve the actual ledger/recovery budgets; never initialize or replace ledger."
+}
