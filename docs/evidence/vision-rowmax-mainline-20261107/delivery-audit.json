@@ -1,0 +1,25 @@
+{
+  "status": "PASS_FINAL_MAINLINE_IMAGE_TOOL_DELIVERY",
+  "counts": {
+    "starts": 1,
+    "generations": 4,
+    "controls": 6,
+    "native": 0
+  },
+  "seconds": 47.174642036203295,
+  "nvml_queries": 46,
+  "owned_pids_reaped": 49,
+  "image_json_sse": true,
+  "real_readonly_tool_citation": true,
+  "healthy_endpoints": true,
+  "installed": {
+    "q4t": "60b1c4c121d066789ebc44746316161320448d98095f32a7ec24e3fa00343ff3",
+    "q4t.release.json": "d2ae8db2f3e389f1cabd02c77a9322de4be8610f1135ba5b01b3b980cc760133"
+  },
+  "rollback": "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-rowmax-mainline-20261107/release/previous",
+  "gpu_empty": true,
+  "port_free": true,
+  "lock_available": true,
+  "persistent_service": false,
+  "inherited_limits": "video temporal quality, hardware decoding, concurrency, soak and sealed managed package identities unchanged"
+}

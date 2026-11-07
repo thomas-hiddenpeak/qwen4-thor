@@ -1,0 +1,9 @@
+{
+  "git_sources": 1995,
+  "source_commit": "a35b78dba7740110baf9b2c64fb0de557a8f1ebd",
+  "compiled_protocol_sources": 107,
+  "default_pair": {
+    "q4t": "60b1c4c121d066789ebc44746316161320448d98095f32a7ec24e3fa00343ff3",
+    "q4t.release.json": "d2ae8db2f3e389f1cabd02c77a9322de4be8610f1135ba5b01b3b980cc760133"
+  }
+}
