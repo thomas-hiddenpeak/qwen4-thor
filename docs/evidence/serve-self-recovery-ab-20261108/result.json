@@ -1,0 +1,231 @@
+{
+  "status": "ACCEPT_BOUNDED_SELF_RECOVERY_AB",
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-recovery-b2-20261108/package-attempt-02/bundle",
+    "manifest_sha256": "1d414218fbb108d1c1f1689fd3b42cfdab14f0ffaa12c1a81d86b3f8e760c472",
+    "engine_binary_sha256": "60b1c4c121d066789ebc44746316161320448d98095f32a7ec24e3fa00343ff3",
+    "recovery_accepted": false
+  },
+  "cpu_distinct": 177,
+  "cpu_groups": {
+    "native": 25,
+    "lifecycle": 35,
+    "policy_ledger_journal": 58,
+    "child": 9,
+    "gateway": 14,
+    "real_nginx": 6,
+    "production": 22,
+    "acceptance_driver": 8
+  },
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "FAILED",
+      "outer": "COMMAND_FAILED",
+      "actual": {
+        "starts": 1,
+        "chats": 5,
+        "probes": 0,
+        "controls": 166
+      },
+      "seconds": 46.99114967789501,
+      "lease_seconds": 48.15431316010654,
+      "nvml_queries": 46,
+      "final_compute_pids": [],
+      "source_commit": "7851630fb96dc3210ce3414f02b6f5ae284c898c"
+    },
+    {
+      "attempt": 2,
+      "status": "FAILED",
+      "outer": "COMMAND_FAILED",
+      "actual": {
+        "starts": 2,
+        "chats": 10,
+        "probes": 1,
+        "controls": 405
+      },
+      "seconds": 118.3548280610703,
+      "lease_seconds": 119.8254839447327,
+      "nvml_queries": 112,
+      "final_compute_pids": [],
+      "source_commit": "200be39376e39885958fd7b59174f8bba08ba764"
+    },
+    {
+      "attempt": 3,
+      "status": "PASS_BOUNDED_RECOVERY_BUSINESS",
+      "outer": "COMPLETED",
+      "actual": {
+        "starts": 2,
+        "chats": 6,
+        "probes": 0,
+        "controls": 415
+      },
+      "seconds": 115.99592191912234,
+      "lease_seconds": 116.73192694270983,
+      "nvml_queries": 109,
+      "final_compute_pids": [],
+      "source_commit": "6dee72dfbf1a6fe6bf1761f7336fd7edf17c6c40"
+    }
+  ],
+  "cumulative_counts": {
+    "starts": 5,
+    "chats": 21,
+    "probes": 1,
+    "controls": 986
+  },
+  "total_seconds": 281.34189965808764,
+  "total_lease_seconds": 284.71172404754907,
+  "nvml_queries": 267,
+  "all_nvml_ok": true,
+  "source_entries_verified": 870,
+  "packaged_python_sources": 38,
+  "native_build_sources": 16,
+  "responses": [
+    {
+      "attempt": 1,
+      "label": "beta-minute-quota",
+      "status": 429
+    },
+    {
+      "attempt": 1,
+      "label": "chat-01-self-check-response",
+      "quality": "self-check"
+    },
+    {
+      "attempt": 1,
+      "label": "generation-1-json",
+      "status": 200,
+      "seconds": 0.3095247196033597
+    },
+    {
+      "attempt": 1,
+      "label": "generation-1-sse",
+      "status": 200,
+      "seconds": 0.2570214760489762
+    },
+    {
+      "attempt": 1,
+      "label": "generation-1-tool-call",
+      "status": 400
+    },
+    {
+      "attempt": 2,
+      "label": "chat-06-self-check-response",
+      "quality": "self-check"
+    },
+    {
+      "attempt": 2,
+      "label": "chat-11-self-check-response",
+      "quality": "self-check"
+    },
+    {
+      "attempt": 2,
+      "label": "generation-1-tool-call",
+      "status": 200,
+      "seconds": 3.6790438471361995
+    },
+    {
+      "attempt": 2,
+      "label": "generation-1-tool-final",
+      "status": 200,
+      "seconds": 1.4854372940026224
+    },
+    {
+      "attempt": 2,
+      "label": "generation-2-json",
+      "status": 200,
+      "seconds": 0.30295665794983506
+    },
+    {
+      "attempt": 2,
+      "label": "generation-2-sse",
+      "status": 200,
+      "seconds": 0.2833431698381901
+    },
+    {
+      "attempt": 2,
+      "label": "generation-2-tool-call",
+      "status": 200,
+      "seconds": 3.6496244678273797
+    },
+    {
+      "attempt": 2,
+      "label": "generation-2-tool-final",
+      "status": 200,
+      "seconds": 1.468443725258112
+    },
+    {
+      "attempt": 2,
+      "label": "model-recovery-503",
+      "status": 503
+    },
+    {
+      "attempt": 2,
+      "label": "model-recovery-503-unauthorized",
+      "status": 401
+    },
+    {
+      "attempt": 3,
+      "label": "chat-16-self-check-response",
+      "quality": "self-check"
+    },
+    {
+      "attempt": 3,
+      "label": "chat-17-self-check-response",
+      "quality": "self-check"
+    },
+    {
+      "attempt": 3,
+      "label": "controller-recovery-503",
+      "status": 503
+    },
+    {
+      "attempt": 3,
+      "label": "controller-recovery-503-unauthorized",
+      "status": 401
+    },
+    {
+      "attempt": 3,
+      "label": "generation-2-json",
+      "status": 200,
+      "seconds": 0.30331601202487946
+    },
+    {
+      "attempt": 3,
+      "label": "generation-2-sse",
+      "status": 200,
+      "seconds": 0.2837083041667938
+    },
+    {
+      "attempt": 3,
+      "label": "generation-2-tool-call",
+      "status": 200,
+      "seconds": 3.6329072127118707
+    },
+    {
+      "attempt": 3,
+      "label": "generation-2-tool-final",
+      "status": 200,
+      "seconds": 1.463494611904025
+    }
+  ],
+  "known_role_identities_retired": 19,
+  "lock_free": true,
+  "ports_free": [
+    18161,
+    18162,
+    18163
+  ],
+  "recovery_seconds": {
+    "model": 60.8719389308244,
+    "controller": 60.95794145902619,
+    "gateway": 5.5663061006926
+  },
+  "grammar_drain_seconds": 0.05181968491524458,
+  "original_failures_preserved": true,
+  "one_successful_supplemental_lease": true,
+  "all_attempts_were_one_lease": false,
+  "engine_default_unchanged": true,
+  "performance_acceptance": false,
+  "long_stability_acceptance": false
+}

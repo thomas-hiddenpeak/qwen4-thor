@@ -12,6 +12,11 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 
 ## 能力概览
 
+独立 Guardian 服务入口已完成[自动恢复 A/B 有界交付](docs/SERVE_SELF_RECOVERY_RESULT_2026-11-08.md)：
+无需 systemd 即可恢复模型、控制器与网关；辅助监控故障保留健康业务，
+恢复预算和停止意图持久化。本机 `build/service/bin/q4t service` 已准备，
+当前停止；原 `build/q4t serve` 保留原含义。长稳及剩余 C/D 范围见交付说明。
+
 当前默认程序（身份见[STATUS](docs/STATUS.md)）已包含工具/推理输出解析、JSON/SSE、带ID工具
 历史、单条开头developer适配和`/v1/capabilities`能力/模板身份查询。
 `messages`默认解析；`parse_response: false`保留原始输出，`prompt`
