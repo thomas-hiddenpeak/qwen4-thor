@@ -774,6 +774,7 @@
     "src/vision/processor.cpp": "76d421281d76daa42796710ffa4ce6f0227f7788411775740d1ed5d5e11001dc",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
+    "tools/serve_recovery/acceptance.py": "c378eebb36de54268d0f1ef681279c104bccfa31f5ada23b62e81b9a006f1f0b",
     "tools/serve_recovery/binding.py": "1f70edbce8cefd92700acf6df130101baa41f575cd24876f7e7d95772ba8cd18",
     "tools/serve_recovery/bundle.py": "3edfc8f8812783de9b8d174ea787f706bfc07edb69bffcfa07bed68ca14f45cd",
     "tools/serve_recovery/child.py": "816c80517e5b13413ae5eb0a3d1f7a392b8848132a7d1965adec2bd49a335e73",
