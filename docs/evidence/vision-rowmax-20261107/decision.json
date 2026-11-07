@@ -1,0 +1,32 @@
+{
+  "status": "HOLD_ENV_ABORT_INCOMPLETE_ACCEPTANCE",
+  "performance_accepted": false,
+  "binary_sha256": "34e7ceefd60c23e451e9dba6d67cde99e9db25191f56a6aa489478d3afdea889",
+  "runtime_source_commit": "c6eef3c2669b1ac674be458cc50a98519740df81",
+  "pilot_sha256": "2ddf0d0d690dae0fbe712cb3664f8d353a31578aa291b7e6b858f4d9a02b490d",
+  "acceptance_audit_sha256": "26b66285bdc82d337b9bf3cd77cdc993a514ebaba71e74dc3046f28fac47d039",
+  "acceptance_originals_sha256": "1982db2543a78d576a4b653b716601fbded209295b5fd559896232f0f1e9db9b",
+  "evidence_validity": "Pilot valid; full acceptance lease ENV_ABORT and incomplete",
+  "measurement_completeness": "Plain five tiers and 22 quality records present; MTP candidate only 1K/4K, parent absent",
+  "statistics": "inconclusive; no loss margin or confidence interval established",
+  "engineering_decision": "Hold candidate on research branch. No runtime merge, deployment, or same-sample retry.",
+  "default_pair": {
+    "q4t": "ea1b474d7d69808696e697346a60ee09bb9ecaca9bfb99925b78dcdbda7a4550",
+    "q4t.release.json": "3eb463850cf07338406b811197a68a5dcb9474ac9c2cf039470aa4f654924724"
+  },
+  "deployment_performed": false,
+  "missing": [
+    "Healthy GPU monitoring under intended MTP memory profile",
+    "Complete comparable default-MTP five-tier and quality pair",
+    "Full acceptance decision",
+    "Conditional deployment health"
+  ],
+  "restart_condition": "Identify and address a concrete environment cause; freeze a new bounded affected-only stage under an available lease; preserve this ENV_ABORT.",
+  "scope_exclusions": [
+    "nvJPEG",
+    "video hardware decoding",
+    "vision concurrency",
+    "old package migration",
+    "long soak"
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "status": "PASS_VISION_ROWMAX_ENGINEERING_ACCEPTANCE",
+  "task_type": "performance_optimization",
+  "performance_accepted": true,
+  "binary_sha256": "60b1c4c121d066789ebc44746316161320448d98095f32a7ec24e3fa00343ff3",
+  "source_commit": "761cebffebe563171803501c9f8a46296f810de8",
+  "binaries": {
+    "parent": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261107/runtime/q4t",
+      "sha256": "478a325e3b7baaee90f96381468be17fab2511f861b9f92353f84ed9564ceb54"
+    },
+    "candidate": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-rowmax-mainline-20261107/engine/q4t",
+      "sha256": "60b1c4c121d066789ebc44746316161320448d98095f32a7ec24e3fa00343ff3"
+    }
+  },
+  "pilot_sha256": "2ddf0d0d690dae0fbe712cb3664f8d353a31578aa291b7e6b858f4d9a02b490d",
+  "acceptance_audit_sha256": "08949ca5b78a36669d77860c50d6551580ead682dff5746a7a0aa95ab389990e",
+  "acceptance_originals_sha256": "51d4bb2a03488fbcd400fdaaf69ca91b5290819be519dbdd7cb9ed0ec5ebddc2",
+  "accepted_requests": 104,
+  "quality_checks": 44,
+  "paired_responses": 52,
+  "original_failed_stage": "ENV_ABORT, unchanged; entire failed parent lifetime excluded",
+  "total_model_attempts": 5,
+  "total_chat_attempts": 130,
+  "statistics": "inconclusive; no statistical equivalence, noninferiority, zero loss or general tolerance claimed",
+  "negative_points": [
+    {
+      "mode": "plain",
+      "case": "context-1024",
+      "ttft_delta_ms": -3.9715954723457125,
+      "decode_change_pct": -0.1968846732671503,
+      "latency_delta_ms": 23.139648915579514
+    },
+    {
+      "mode": "plain",
+      "case": "context-8192",
+      "ttft_delta_ms": 0.598309716830947,
+      "decode_change_pct": 0.1792837677582204,
+      "latency_delta_ms": -24.771567278854434
+    },
+    {
+      "mode": "plain",
+      "case": "context-45056",
+      "ttft_delta_ms": 49.80888155599672,
+      "decode_change_pct": 0.09582650374264645,
+      "latency_delta_ms": 36.11107682809234
+    },
+    {
+      "mode": "plain",
+      "case": "context-204800",
+      "ttft_delta_ms": 62.127472988038335,
+      "decode_change_pct": 0.07693581040884023,
+      "latency_delta_ms": 50.590775751800265
+    },
+    {
+      "mode": "mtp",
+      "case": "context-204800",
+      "ttft_delta_ms": 573.6974868923426,
+      "decode_change_pct": 0.11019559694800396,
+      "latency_delta_ms": 565.1313015259802
+    }
+  ],
+  "rationale": [
+    "The only runtime delta from accepted mainline is vision.cu row maximum reduction, preserving the BF16 contract and existing scratch.",
+    "The sealed original 64-request visual pilot met all four frozen >=3% investment comparisons (3.098%-3.589%). These are inherited pilot measurements, not fresh measurements of the final ELF.",
+    "25 unchanged numerical dependencies support reuse of 26 bit-exact cases/19312128 BF16 values and four independent HF results; final build has zero warnings.",
+    "Fresh final-pair plain/default-MTP five-tier and quality evidence is complete across four uninterrupted model lifetimes; all 52 paired responses match.",
+    "All text protection groups observed media disabled, so the modified vision kernel was inactive. Observed negative points are retained; no attributable regression was established. Timing/layout effects cannot be excluded by one start per identity/mode.",
+    "Accept this bounded, reversible optimization under the frozen task-specific performance contract; do not use business-task tolerance or claim a general percentage loss budget."
+  ],
+  "deployment": "pending same-ELF image/tool health; old default pair remains until successful staged transaction",
+  "retained_limits": [
+    "NVIDIA NVML root cause remains undetermined",
+    "no hardware decode or visual concurrency expansion",
+    "video temporal task quality remains unaccepted",
+    "no automatic model restart; old sealed managed packages are not migrated"
+  ]
+}

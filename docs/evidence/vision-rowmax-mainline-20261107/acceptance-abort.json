@@ -1,0 +1,89 @@
+{
+  "status": "ENV_ABORT_FINAL_PARENT_QUALITY",
+  "original_guard": {
+    "status": "ENV_ABORT",
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      "-m",
+      "tools.evalscope.complete_vision_rowmax_mainline",
+      "run"
+    ],
+    "compute_backend": "nvml",
+    "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+    "poll_interval_seconds": 1.0,
+    "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+    "performance_acceptance": false,
+    "child_returncode": 1,
+    "external_lease": false,
+    "reason": "RuntimeError('NVML process query: CLEANUP_FAILED; details in /home/rm01/models/dev/qwen4-thor/.q4t-work/vision-rowmax-mainline-20261107/accept-02/lease/nvml-queries.jsonl')",
+    "finished": {
+      "utc": "2026-11-07T12:34:54.724866+00:00",
+      "monotonic": 2244977.241757331,
+      "pid": 124889
+    }
+  },
+  "original_result": {
+    "status": "FAILED",
+    "counts": {
+      "starts": 4,
+      "generations": 104,
+      "controls": 6,
+      "native": 0
+    },
+    "seconds": 4210.132815494668,
+    "failure": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/evalscope/accept_vision_rowmax.py\", line 197, in run\n    matrices[group] = self.matrix(group, capacity)\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/evalscope/accept_vision_rowmax.py\", line 158, in matrix\n    rows = http.run_case(folder, directory, inputs, case[\"count\"],\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py\", line 231, in run_case\n    code = run_checked_client(cmd, env, client, process_check,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py\", line 152, in run_checked_client\n    code = child.wait(timeout=.1)\n           ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/subprocess.py\", line 1264, in wait\n    return self._wait(timeout=timeout)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/subprocess.py\", line 2047, in _wait\n    time.sleep(delay)\nKeyboardInterrupt\n",
+    "cleanup_errors": [
+      "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/evalscope/accept_vision_rowmax.py\", line 217, in run\n    self.children.reap(self.output)\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_cuda_quota_integration/verify.py\", line 127, in reap\n    ack = custody.acknowledgement(\n          ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_cuda_quota/correction.py\", line 68, in acknowledgement\n    raise RuntimeError('guard query failure')\nRuntimeError: guard query failure\n"
+    ],
+    "monitor_failures": [],
+    "default_unchanged": true,
+    "performance_acceptance": false
+  },
+  "source_commit": "761cebffebe563171803501c9f8a46296f810de8",
+  "git_sources": 2348,
+  "reusable_completed_groups": [
+    "plain-parent",
+    "plain-candidate",
+    "mtp-candidate"
+  ],
+  "lifetimes": {
+    "plain-parent": {
+      "pid": 124898,
+      "through_monotonic": 2241847.172411613,
+      "nvml_queries": 990,
+      "custody_complete": true
+    },
+    "plain-candidate": {
+      "pid": 133987,
+      "through_monotonic": 2242921.26382134,
+      "nvml_queries": 1973,
+      "custody_complete": true
+    },
+    "mtp-candidate": {
+      "pid": 138235,
+      "through_monotonic": 2243936.912955544,
+      "nvml_queries": 2901,
+      "custody_complete": true
+    }
+  },
+  "verified_requests": 78,
+  "excluded_group": "mtp-parent",
+  "failed_queries": [
+    {
+      "status": "CLEANUP_FAILED",
+      "pids": null,
+      "request_id": "5bf759a053f29da03138588441ab1cd1",
+      "worker_pid": 154142,
+      "error": "worker not reaped",
+      "stdout": "{\"request_id\": \"5bf759a053f29da03138588441ab1cd1\", \"monotonic\": 2244946.056127439, \"event\": \"begin\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"5bf759a053f29da03138588441ab1cd1\", \"monotonic\": 2244946.063959026, \"event\": \"end\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"5bf759a053f29da03138588441ab1cd1\", \"monotonic\": 2244946.06399174, \"event\": \"begin\", \"api\": \"init\"}\n",
+      "stderr": "",
+      "seconds": 6.005929735023528,
+      "returncode": null,
+      "observed_errors": []
+    }
+  ],
+  "monitor_gaps_accepted": false,
+  "performance_accepted": false,
+  "default_unchanged": true
+}

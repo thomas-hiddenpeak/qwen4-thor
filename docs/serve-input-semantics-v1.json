@@ -291,6 +291,6 @@
     "src/server/thinking_budget.cpp": "4c91e8320115ee86096bf7287d4950599ca311f137c3a0051b9d64fb53abf259",
     "src/vision/media_plan.cpp": "30f1858fe11a14bb81f5ee2c80edef68e60cb7a03c7a0ec8132cc29936dff302",
     "src/vision/processor.cpp": "76d421281d76daa42796710ffa4ce6f0227f7788411775740d1ed5d5e11001dc",
-    "src/vision/vision.cu": "809bd1efdacda09071fba1eec2063ffb5c00b36edff6c78550cee2b71718bd27"
+    "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414"
   }
 }

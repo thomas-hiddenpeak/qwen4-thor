@@ -1,0 +1,1326 @@
+{
+  "status": "PILOT_TARGET_MET_PENDING_CONTRACTS",
+  "source_commit": "c6eef3c2669b1ac674be458cc50a98519740df81",
+  "binaries": {
+    "parent": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-forward-timing-20261107/engine/q4t",
+      "sha256": "982bba071e68e807cda653fa32ab76bed692808aa2d9325876ac09ea9f9daa1d"
+    },
+    "candidate": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/engine/q4t",
+      "sha256": "34e7ceefd60c23e451e9dba6d67cde99e9db25191f56a6aa489478d3afdea889"
+    }
+  },
+  "evidence_valid": true,
+  "measurement_complete": "bounded_visual_pilot_only",
+  "statistics": "inconclusive",
+  "performance_accepted": false,
+  "default_unchanged": true,
+  "counts": {
+    "starts": 4,
+    "generations": 64,
+    "controls": 8,
+    "native": 0
+  },
+  "lease_seconds": 515.8889305409975,
+  "git_sources": 2311,
+  "summaries": {
+    "parent-0": {
+      "earth-python": {
+        "latency_mean": 3.4753216655614474,
+        "latency_range": [
+          3.4633590299636126,
+          3.486835362855345
+        ],
+        "ttft_mean": 3.4752045208588243,
+        "decode_tps": 239020.62468878322
+      },
+      "cabin-python": {
+        "latency_mean": 11.403919632080942,
+        "latency_range": [
+          11.388829438015819,
+          11.427868985105306
+        ],
+        "ttft_mean": 11.403242650597045,
+        "decode_tps": 59085.810988164405
+      },
+      "multiple-real-photos": {
+        "latency_mean": 11.945520192850381,
+        "latency_range": [
+          11.943277837242931,
+          11.948541062884033
+        ],
+        "ttft_mean": 11.945317339152098,
+        "decode_tps": 118311.8681251076
+      },
+      "motion-forward": {
+        "latency_mean": 1.9864357942715287,
+        "latency_range": [
+          1.9817857132293284,
+          1.9901337013579905
+        ],
+        "ttft_mean": 1.9862539889290929,
+        "decode_tps": 44003.107349957994
+      },
+      "text-python": {
+        "latency_mean": 0.8152339439839125,
+        "latency_range": [
+          0.8128380528651178,
+          0.8195998757146299
+        ],
+        "ttft_mean": 0.8151444786538681,
+        "decode_tps": 78242.59963634849
+      }
+    },
+    "candidate-0": {
+      "earth-python": {
+        "latency_mean": 3.42903162445873,
+        "latency_range": [
+          3.4228479536250234,
+          3.435158590786159
+        ],
+        "ttft_mean": 3.4289280269294977,
+        "decode_tps": 270276.71612862626
+      },
+      "cabin-python": {
+        "latency_mean": 11.050577480190745,
+        "latency_range": [
+          11.026019515004009,
+          11.094785237684846
+        ],
+        "ttft_mean": 11.050394638596723,
+        "decode_tps": 218768.60248499934
+      },
+      "multiple-real-photos": {
+        "latency_mean": 11.526209784050783,
+        "latency_range": [
+          11.518555644899607,
+          11.532621203921735
+        ],
+        "ttft_mean": 11.525792619679123,
+        "decode_tps": 57531.27934807805
+      },
+      "motion-forward": {
+        "latency_mean": 1.9641144090952973,
+        "latency_range": [
+          1.9574940567836165,
+          1.972734042443335
+        ],
+        "ttft_mean": 1.9639355333832402,
+        "decode_tps": 44723.79121796463
+      },
+      "text-python": {
+        "latency_mean": 0.8188743058902522,
+        "latency_range": [
+          0.8119604419916868,
+          0.8267777133733034
+        ],
+        "ttft_mean": 0.8188037138121823,
+        "decode_tps": 99161.2683943657
+      }
+    },
+    "candidate-1": {
+      "earth-python": {
+        "latency_mean": 3.4346587182953954,
+        "latency_range": [
+          3.4286734741181135,
+          3.4426547307521105
+        ],
+        "ttft_mean": 3.434503312998762,
+        "decode_tps": 180174.03915137073
+      },
+      "cabin-python": {
+        "latency_mean": 11.047470218501985,
+        "latency_range": [
+          11.033840446267277,
+          11.070481077302247
+        ],
+        "ttft_mean": 11.047195047295341,
+        "decode_tps": 145364.04621675485
+      },
+      "multiple-real-photos": {
+        "latency_mean": 11.52366855336974,
+        "latency_range": [
+          11.517558949999511,
+          11.531862861011177
+        ],
+        "ttft_mean": 11.523454321393123,
+        "decode_tps": 112028.0939327435
+      },
+      "motion-forward": {
+        "latency_mean": 1.970366129341225,
+        "latency_range": [
+          1.9572906037792563,
+          1.9819812872447073
+        ],
+        "ttft_mean": 1.9701654707702498,
+        "decode_tps": 39868.7180972405
+      },
+      "text-python": {
+        "latency_mean": 0.8229352021589875,
+        "latency_range": [
+          0.8185301548801363,
+          0.8296462502330542
+        ],
+        "ttft_mean": 0.8228687732480466,
+        "decode_tps": 105375.80551680629
+      }
+    },
+    "parent-1": {
+      "earth-python": {
+        "latency_mean": 3.4751665955409408,
+        "latency_range": [
+          3.470845343079418,
+          3.478589797858149
+        ],
+        "ttft_mean": 3.47505709156394,
+        "decode_tps": 255698.47568018097
+      },
+      "cabin-python": {
+        "latency_mean": 11.416841292132935,
+        "latency_range": [
+          11.40066206920892,
+          11.443544948007911
+        ],
+        "ttft_mean": 11.416615850447366,
+        "decode_tps": 177429.4753844851
+      },
+      "multiple-real-photos": {
+        "latency_mean": 11.952626389761766,
+        "latency_range": [
+          11.938356393948197,
+          11.971903103403747
+        ],
+        "ttft_mean": 11.952118082748106,
+        "decode_tps": 47215.559406035834
+      },
+      "motion-forward": {
+        "latency_mean": 1.9888284319701295,
+        "latency_range": [
+          1.982679408043623,
+          1.9929838757961988
+        ],
+        "ttft_mean": 1.9886471540667117,
+        "decode_tps": 44131.13705074349
+      },
+      "text-python": {
+        "latency_mean": 0.8176308642141521,
+        "latency_range": [
+          0.8126212311908603,
+          0.8234231122769415
+        ],
+        "ttft_mean": 0.8175519071519375,
+        "decode_tps": 88655.78079606508
+      }
+    }
+  },
+  "pairs": [
+    {
+      "parent": "parent-0",
+      "candidate": "candidate-0",
+      "case": "earth-python",
+      "latency_reduction": 0.013319642196412018,
+      "ttft_reduction": 0.01331619294679387,
+      "decode_tps_gain": 0.1307673406030967,
+      "target_case": false,
+      "meets_investment_target": false
+    },
+    {
+      "parent": "parent-0",
+      "candidate": "candidate-0",
+      "case": "cabin-python",
+      "latency_reduction": 0.030984272363354215,
+      "ttft_reduction": 0.03094277854219374,
+      "decode_tps_gain": 2.7025573285068614,
+      "target_case": true,
+      "meets_investment_target": true
+    },
+    {
+      "parent": "parent-0",
+      "candidate": "candidate-0",
+      "case": "multiple-real-photos",
+      "latency_reduction": 0.03510189611085868,
+      "ttft_reduction": 0.03512043318413449,
+      "decode_tps_gain": -0.5137319673860425,
+      "target_case": true,
+      "meets_investment_target": true
+    },
+    {
+      "parent": "parent-0",
+      "candidate": "candidate-0",
+      "case": "motion-forward",
+      "latency_reduction": 0.011236902416177585,
+      "ttft_reduction": 0.011236455997193917,
+      "decode_tps_gain": 0.016378022176366303,
+      "target_case": false,
+      "meets_investment_target": false
+    },
+    {
+      "parent": "parent-0",
+      "candidate": "candidate-0",
+      "case": "text-python",
+      "latency_reduction": -0.004465419936453996,
+      "ttft_reduction": -0.004489063293855677,
+      "decode_tps_gain": 0.26735651493229784,
+      "target_case": false,
+      "meets_investment_target": false
+    },
+    {
+      "parent": "parent-1",
+      "candidate": "candidate-1",
+      "case": "earth-python",
+      "latency_reduction": 0.011656384271626519,
+      "ttft_reduction": 0.011669960376658794,
+      "decode_tps_gain": -0.2953652200229526,
+      "target_case": false,
+      "meets_investment_target": false
+    },
+    {
+      "parent": "parent-1",
+      "candidate": "candidate-1",
+      "case": "cabin-python",
+      "latency_reduction": 0.03235317581978425,
+      "ttft_reduction": 0.03235817058148183,
+      "decode_tps_gain": -0.18072211000029892,
+      "target_case": true,
+      "meets_investment_target": true
+    },
+    {
+      "parent": "parent-1",
+      "candidate": "candidate-1",
+      "case": "multiple-real-photos",
+      "latency_reduction": 0.03588816569716069,
+      "ttft_reduction": 0.035865087542410024,
+      "decode_tps_gain": 1.3726944113770747,
+      "target_case": true,
+      "meets_investment_target": true
+    },
+    {
+      "parent": "parent-1",
+      "candidate": "candidate-1",
+      "case": "motion-forward",
+      "latency_reduction": 0.00928300417075989,
+      "ttft_reduction": 0.009293596030179319,
+      "decode_tps_gain": -0.09658529642238589,
+      "target_case": false,
+      "meets_investment_target": false
+    },
+    {
+      "parent": "parent-1",
+      "candidate": "candidate-1",
+      "case": "text-python",
+      "latency_reduction": -0.006487448281363051,
+      "ttft_reduction": -0.006503398805136618,
+      "decode_tps_gain": 0.18859486172934714,
+      "target_case": false,
+      "meets_investment_target": false
+    }
+  ],
+  "rows": [
+    {
+      "group": "parent-0",
+      "case": "earth-python",
+      "first_request": true,
+      "latency": 3.5884230248630047,
+      "ttft": 3.588238701224327,
+      "decode_seconds": 0.00018432363867759705,
+      "decode_tokens": 28,
+      "prompt_tokens": 387,
+      "completion_tokens": 29,
+      "answer": {
+        "object": "earth",
+        "clouds_visible": true,
+        "street_sign_visible": false
+      }
+    },
+    {
+      "group": "parent-0",
+      "case": "earth-python",
+      "first_request": false,
+      "latency": 3.4633590299636126,
+      "ttft": 3.463158698286861,
+      "decode_seconds": 0.0002003316767513752,
+      "decode_tokens": 28,
+      "prompt_tokens": 387,
+      "completion_tokens": 29,
+      "answer": {
+        "object": "earth",
+        "clouds_visible": true,
+        "street_sign_visible": false
+      }
+    },
+    {
+      "group": "parent-0",
+      "case": "cabin-python",
+      "first_request": false,
+      "latency": 11.427868985105306,
+      "ttft": 11.426415676716715,
+      "decode_seconds": 0.0014533083885908127,
+      "decode_tokens": 40,
+      "prompt_tokens": 841,
+      "completion_tokens": 41,
+      "answer": {
+        "scene": "aircraft_cabin",
+        "visible_windows": 2,
+        "device_lights_on": true,
+        "people_visible": false
+      }
+    },
+    {
+      "group": "parent-0",
+      "case": "multiple-real-photos",
+      "first_request": false,
+      "latency": 11.943277837242931,
+      "ttft": 11.943075320217758,
+      "decode_seconds": 0.00020251702517271042,
+      "decode_tokens": 24,
+      "prompt_tokens": 1032,
+      "completion_tokens": 25,
+      "answer": {
+        "first_scene": "aircraft_cabin",
+        "second_object": "earth"
+      }
+    },
+    {
+      "group": "parent-0",
+      "case": "motion-forward",
+      "first_request": false,
+      "latency": 1.9901337013579905,
+      "ttft": 1.989977294113487,
+      "decode_seconds": 0.00015640724450349808,
+      "decode_tokens": 8,
+      "prompt_tokens": 569,
+      "completion_tokens": 9,
+      "answer": {
+        "direction": "left_to_right"
+      }
+    },
+    {
+      "group": "parent-0",
+      "case": "text-python",
+      "first_request": false,
+      "latency": 0.8195998757146299,
+      "ttft": 0.8194872848689556,
+      "decode_seconds": 0.00011259084567427635,
+      "decode_tokens": 7,
+      "prompt_tokens": 78,
+      "completion_tokens": 8,
+      "answer": {
+        "result": 42
+      }
+    },
+    {
+      "group": "parent-0",
+      "case": "earth-python",
+      "first_request": false,
+      "latency": 3.486835362855345,
+      "ttft": 3.4867682051844895,
+      "decode_seconds": 6.715767085552216e-05,
+      "decode_tokens": 28,
+      "prompt_tokens": 387,
+      "completion_tokens": 29,
+      "answer": {
+        "object": "earth",
+        "clouds_visible": true,
+        "street_sign_visible": false
+      }
+    },
+    {
+      "group": "parent-0",
+      "case": "cabin-python",
+      "first_request": false,
+      "latency": 11.395060473121703,
+      "ttft": 11.394661466125399,
+      "decode_seconds": 0.00039900699630379677,
+      "decode_tokens": 40,
+      "prompt_tokens": 841,
+      "completion_tokens": 41,
+      "answer": {
+        "scene": "aircraft_cabin",
+        "visible_windows": 2,
+        "device_lights_on": true,
+        "people_visible": false
+      }
+    },
+    {
+      "group": "parent-0",
+      "case": "multiple-real-photos",
+      "first_request": false,
+      "latency": 11.94474167842418,
+      "ttft": 11.9445456052199,
+      "decode_seconds": 0.00019607320427894592,
+      "decode_tokens": 24,
+      "prompt_tokens": 1032,
+      "completion_tokens": 25,
+      "answer": {
+        "first_scene": "aircraft_cabin",
+        "second_object": "earth"
+      }
+    },
+    {
+      "group": "parent-0",
+      "case": "motion-forward",
+      "first_request": false,
+      "latency": 1.9817857132293284,
+      "ttft": 1.9816138152964413,
+      "decode_seconds": 0.00017189793288707733,
+      "decode_tokens": 8,
+      "prompt_tokens": 569,
+      "completion_tokens": 9,
+      "answer": {
+        "direction": "left_to_right"
+      }
+    },
+    {
+      "group": "parent-0",
+      "case": "text-python",
+      "first_request": false,
+      "latency": 0.8128380528651178,
+      "ttft": 0.8127691647969186,
+      "decode_seconds": 6.888806819915771e-05,
+      "decode_tokens": 7,
+      "prompt_tokens": 78,
+      "completion_tokens": 8,
+      "answer": {
+        "result": 42
+      }
+    },
+    {
+      "group": "parent-0",
+      "case": "earth-python",
+      "first_request": false,
+      "latency": 3.475770603865385,
+      "ttft": 3.475686659105122,
+      "decode_seconds": 8.394476026296616e-05,
+      "decode_tokens": 28,
+      "prompt_tokens": 387,
+      "completion_tokens": 29,
+      "answer": {
+        "object": "earth",
+        "clouds_visible": true,
+        "street_sign_visible": false
+      }
+    },
+    {
+      "group": "parent-0",
+      "case": "cabin-python",
+      "first_request": false,
+      "latency": 11.388829438015819,
+      "ttft": 11.388650808949023,
+      "decode_seconds": 0.0001786290667951107,
+      "decode_tokens": 40,
+      "prompt_tokens": 841,
+      "completion_tokens": 41,
+      "answer": {
+        "scene": "aircraft_cabin",
+        "visible_windows": 2,
+        "device_lights_on": true,
+        "people_visible": false
+      }
+    },
+    {
+      "group": "parent-0",
+      "case": "multiple-real-photos",
+      "first_request": false,
+      "latency": 11.948541062884033,
+      "ttft": 11.948331092018634,
+      "decode_seconds": 0.0002099708653986454,
+      "decode_tokens": 24,
+      "prompt_tokens": 1032,
+      "completion_tokens": 25,
+      "answer": {
+        "first_scene": "aircraft_cabin",
+        "second_object": "earth"
+      }
+    },
+    {
+      "group": "parent-0",
+      "case": "motion-forward",
+      "first_request": false,
+      "latency": 1.9873879682272673,
+      "ttft": 1.9871708573773503,
+      "decode_seconds": 0.00021711084991693497,
+      "decode_tokens": 8,
+      "prompt_tokens": 569,
+      "completion_tokens": 9,
+      "answer": {
+        "direction": "left_to_right"
+      }
+    },
+    {
+      "group": "parent-0",
+      "case": "text-python",
+      "first_request": false,
+      "latency": 0.8132639033719897,
+      "ttft": 0.8131769862957299,
+      "decode_seconds": 8.691707625985146e-05,
+      "decode_tokens": 7,
+      "prompt_tokens": 78,
+      "completion_tokens": 8,
+      "answer": {
+        "result": 42
+      }
+    },
+    {
+      "group": "candidate-0",
+      "case": "earth-python",
+      "first_request": true,
+      "latency": 3.5382500728592277,
+      "ttft": 3.538045675959438,
+      "decode_seconds": 0.00020439689978957176,
+      "decode_tokens": 28,
+      "prompt_tokens": 387,
+      "completion_tokens": 29,
+      "answer": {
+        "object": "earth",
+        "clouds_visible": true,
+        "street_sign_visible": false
+      }
+    },
+    {
+      "group": "candidate-0",
+      "case": "earth-python",
+      "first_request": false,
+      "latency": 3.4290883289650083,
+      "ttft": 3.428926478140056,
+      "decode_seconds": 0.00016185082495212555,
+      "decode_tokens": 28,
+      "prompt_tokens": 387,
+      "completion_tokens": 29,
+      "answer": {
+        "object": "earth",
+        "clouds_visible": true,
+        "street_sign_visible": false
+      }
+    },
+    {
+      "group": "candidate-0",
+      "case": "cabin-python",
+      "first_request": false,
+      "latency": 11.094785237684846,
+      "ttft": 11.094625386875123,
+      "decode_seconds": 0.0001598508097231388,
+      "decode_tokens": 40,
+      "prompt_tokens": 841,
+      "completion_tokens": 41,
+      "answer": {
+        "scene": "aircraft_cabin",
+        "visible_windows": 2,
+        "device_lights_on": true,
+        "people_visible": false
+      }
+    },
+    {
+      "group": "candidate-0",
+      "case": "multiple-real-photos",
+      "first_request": false,
+      "latency": 11.532621203921735,
+      "ttft": 11.532408113125712,
+      "decode_seconds": 0.00021309079602360725,
+      "decode_tokens": 24,
+      "prompt_tokens": 1032,
+      "completion_tokens": 25,
+      "answer": {
+        "first_scene": "aircraft_cabin",
+        "second_object": "earth"
+      }
+    },
+    {
+      "group": "candidate-0",
+      "case": "motion-forward",
+      "first_request": false,
+      "latency": 1.972734042443335,
+      "ttft": 1.9725367012433708,
+      "decode_seconds": 0.0001973411999642849,
+      "decode_tokens": 8,
+      "prompt_tokens": 569,
+      "completion_tokens": 9,
+      "answer": {
+        "direction": "left_to_right"
+      }
+    },
+    {
+      "group": "candidate-0",
+      "case": "text-python",
+      "first_request": false,
+      "latency": 0.8267777133733034,
+      "ttft": 0.8267061021178961,
+      "decode_seconds": 7.161125540733337e-05,
+      "decode_tokens": 7,
+      "prompt_tokens": 78,
+      "completion_tokens": 8,
+      "answer": {
+        "result": 42
+      }
+    },
+    {
+      "group": "candidate-0",
+      "case": "earth-python",
+      "first_request": false,
+      "latency": 3.4228479536250234,
+      "ttft": 3.4227720480412245,
+      "decode_seconds": 7.590558379888535e-05,
+      "decode_tokens": 28,
+      "prompt_tokens": 387,
+      "completion_tokens": 29,
+      "answer": {
+        "object": "earth",
+        "clouds_visible": true,
+        "street_sign_visible": false
+      }
+    },
+    {
+      "group": "candidate-0",
+      "case": "cabin-python",
+      "first_request": false,
+      "latency": 11.026019515004009,
+      "ttft": 11.025835015811026,
+      "decode_seconds": 0.00018449919298291206,
+      "decode_tokens": 40,
+      "prompt_tokens": 841,
+      "completion_tokens": 41,
+      "answer": {
+        "scene": "aircraft_cabin",
+        "visible_windows": 2,
+        "device_lights_on": true,
+        "people_visible": false
+      }
+    },
+    {
+      "group": "candidate-0",
+      "case": "multiple-real-photos",
+      "first_request": false,
+      "latency": 11.527452503331006,
+      "ttft": 11.526661563199013,
+      "decode_seconds": 0.0007909401319921017,
+      "decode_tokens": 24,
+      "prompt_tokens": 1032,
+      "completion_tokens": 25,
+      "answer": {
+        "first_scene": "aircraft_cabin",
+        "second_object": "earth"
+      }
+    },
+    {
+      "group": "candidate-0",
+      "case": "motion-forward",
+      "first_request": false,
+      "latency": 1.9574940567836165,
+      "ttft": 1.9573176680132747,
+      "decode_seconds": 0.00017638877034187317,
+      "decode_tokens": 8,
+      "prompt_tokens": 569,
+      "completion_tokens": 9,
+      "answer": {
+        "direction": "left_to_right"
+      }
+    },
+    {
+      "group": "candidate-0",
+      "case": "text-python",
+      "first_request": false,
+      "latency": 0.8119604419916868,
+      "ttft": 0.8119012210518122,
+      "decode_seconds": 5.922093987464905e-05,
+      "decode_tokens": 7,
+      "prompt_tokens": 78,
+      "completion_tokens": 8,
+      "answer": {
+        "result": 42
+      }
+    },
+    {
+      "group": "candidate-0",
+      "case": "earth-python",
+      "first_request": false,
+      "latency": 3.435158590786159,
+      "ttft": 3.4350855546072125,
+      "decode_seconds": 7.303617894649506e-05,
+      "decode_tokens": 28,
+      "prompt_tokens": 387,
+      "completion_tokens": 29,
+      "answer": {
+        "object": "earth",
+        "clouds_visible": true,
+        "street_sign_visible": false
+      }
+    },
+    {
+      "group": "candidate-0",
+      "case": "cabin-python",
+      "first_request": false,
+      "latency": 11.030927687883377,
+      "ttft": 11.030723513104022,
+      "decode_seconds": 0.00020417477935552597,
+      "decode_tokens": 40,
+      "prompt_tokens": 841,
+      "completion_tokens": 41,
+      "answer": {
+        "scene": "aircraft_cabin",
+        "visible_windows": 2,
+        "device_lights_on": true,
+        "people_visible": false
+      }
+    },
+    {
+      "group": "candidate-0",
+      "case": "multiple-real-photos",
+      "first_request": false,
+      "latency": 11.518555644899607,
+      "ttft": 11.518308182712644,
+      "decode_seconds": 0.0002474621869623661,
+      "decode_tokens": 24,
+      "prompt_tokens": 1032,
+      "completion_tokens": 25,
+      "answer": {
+        "first_scene": "aircraft_cabin",
+        "second_object": "earth"
+      }
+    },
+    {
+      "group": "candidate-0",
+      "case": "motion-forward",
+      "first_request": false,
+      "latency": 1.9621151280589402,
+      "ttft": 1.9619522308930755,
+      "decode_seconds": 0.00016289716586470604,
+      "decode_tokens": 8,
+      "prompt_tokens": 569,
+      "completion_tokens": 9,
+      "answer": {
+        "direction": "left_to_right"
+      }
+    },
+    {
+      "group": "candidate-0",
+      "case": "text-python",
+      "first_request": false,
+      "latency": 0.8178847623057663,
+      "ttft": 0.8178038182668388,
+      "decode_seconds": 8.094403892755508e-05,
+      "decode_tokens": 7,
+      "prompt_tokens": 78,
+      "completion_tokens": 8,
+      "answer": {
+        "result": 42
+      }
+    },
+    {
+      "group": "candidate-1",
+      "case": "earth-python",
+      "first_request": true,
+      "latency": 3.542914719786495,
+      "ttft": 3.5427463678643107,
+      "decode_seconds": 0.0001683519221842289,
+      "decode_tokens": 28,
+      "prompt_tokens": 387,
+      "completion_tokens": 29,
+      "answer": {
+        "object": "earth",
+        "clouds_visible": true,
+        "street_sign_visible": false
+      }
+    },
+    {
+      "group": "candidate-1",
+      "case": "earth-python",
+      "first_request": false,
+      "latency": 3.432647950015962,
+      "ttft": 3.4324566069990396,
+      "decode_seconds": 0.0001913430169224739,
+      "decode_tokens": 28,
+      "prompt_tokens": 387,
+      "completion_tokens": 29,
+      "answer": {
+        "object": "earth",
+        "clouds_visible": true,
+        "street_sign_visible": false
+      }
+    },
+    {
+      "group": "candidate-1",
+      "case": "cabin-python",
+      "first_request": false,
+      "latency": 11.070481077302247,
+      "ttft": 11.070049946196377,
+      "decode_seconds": 0.00043113110587000847,
+      "decode_tokens": 40,
+      "prompt_tokens": 841,
+      "completion_tokens": 41,
+      "answer": {
+        "scene": "aircraft_cabin",
+        "visible_windows": 2,
+        "device_lights_on": true,
+        "people_visible": false
+      }
+    },
+    {
+      "group": "candidate-1",
+      "case": "multiple-real-photos",
+      "first_request": false,
+      "latency": 11.531862861011177,
+      "ttft": 11.531643519178033,
+      "decode_seconds": 0.00021934183314442635,
+      "decode_tokens": 24,
+      "prompt_tokens": 1032,
+      "completion_tokens": 25,
+      "answer": {
+        "first_scene": "aircraft_cabin",
+        "second_object": "earth"
+      }
+    },
+    {
+      "group": "candidate-1",
+      "case": "motion-forward",
+      "first_request": false,
+      "latency": 1.9819812872447073,
+      "ttft": 1.9817636013031006,
+      "decode_seconds": 0.00021768594160676003,
+      "decode_tokens": 8,
+      "prompt_tokens": 569,
+      "completion_tokens": 9,
+      "answer": {
+        "direction": "left_to_right"
+      }
+    },
+    {
+      "group": "candidate-1",
+      "case": "text-python",
+      "first_request": false,
+      "latency": 0.8296462502330542,
+      "ttft": 0.8295710468664765,
+      "decode_seconds": 7.520336657762527e-05,
+      "decode_tokens": 7,
+      "prompt_tokens": 78,
+      "completion_tokens": 8,
+      "answer": {
+        "result": 42
+      }
+    },
+    {
+      "group": "candidate-1",
+      "case": "earth-python",
+      "first_request": false,
+      "latency": 3.4286734741181135,
+      "ttft": 3.428591065108776,
+      "decode_seconds": 8.240900933742523e-05,
+      "decode_tokens": 28,
+      "prompt_tokens": 387,
+      "completion_tokens": 29,
+      "answer": {
+        "object": "earth",
+        "clouds_visible": true,
+        "street_sign_visible": false
+      }
+    },
+    {
+      "group": "candidate-1",
+      "case": "cabin-python",
+      "first_request": false,
+      "latency": 11.033840446267277,
+      "ttft": 11.033652925863862,
+      "decode_seconds": 0.00018752040341496468,
+      "decode_tokens": 40,
+      "prompt_tokens": 841,
+      "completion_tokens": 41,
+      "answer": {
+        "scene": "aircraft_cabin",
+        "visible_windows": 2,
+        "device_lights_on": true,
+        "people_visible": false
+      }
+    },
+    {
+      "group": "candidate-1",
+      "case": "multiple-real-photos",
+      "first_request": false,
+      "latency": 11.517558949999511,
+      "ttft": 11.517334901727736,
+      "decode_seconds": 0.00022404827177524567,
+      "decode_tokens": 24,
+      "prompt_tokens": 1032,
+      "completion_tokens": 25,
+      "answer": {
+        "first_scene": "aircraft_cabin",
+        "second_object": "earth"
+      }
+    },
+    {
+      "group": "candidate-1",
+      "case": "motion-forward",
+      "first_request": false,
+      "latency": 1.9718264969997108,
+      "ttft": 1.9716242463327944,
+      "decode_seconds": 0.0002022506669163704,
+      "decode_tokens": 8,
+      "prompt_tokens": 569,
+      "completion_tokens": 9,
+      "answer": {
+        "direction": "left_to_right"
+      }
+    },
+    {
+      "group": "candidate-1",
+      "case": "text-python",
+      "first_request": false,
+      "latency": 0.8206292013637722,
+      "ttft": 0.8205671370960772,
+      "decode_seconds": 6.20642676949501e-05,
+      "decode_tokens": 7,
+      "prompt_tokens": 78,
+      "completion_tokens": 8,
+      "answer": {
+        "result": 42
+      }
+    },
+    {
+      "group": "candidate-1",
+      "case": "earth-python",
+      "first_request": false,
+      "latency": 3.4426547307521105,
+      "ttft": 3.4424622668884695,
+      "decode_seconds": 0.00019246386364102364,
+      "decode_tokens": 28,
+      "prompt_tokens": 387,
+      "completion_tokens": 29,
+      "answer": {
+        "object": "earth",
+        "clouds_visible": true,
+        "street_sign_visible": false
+      }
+    },
+    {
+      "group": "candidate-1",
+      "case": "cabin-python",
+      "first_request": false,
+      "latency": 11.038089131936431,
+      "ttft": 11.037882269825786,
+      "decode_seconds": 0.00020686211064457893,
+      "decode_tokens": 40,
+      "prompt_tokens": 841,
+      "completion_tokens": 41,
+      "answer": {
+        "scene": "aircraft_cabin",
+        "visible_windows": 2,
+        "device_lights_on": true,
+        "people_visible": false
+      }
+    },
+    {
+      "group": "candidate-1",
+      "case": "multiple-real-photos",
+      "first_request": false,
+      "latency": 11.521583849098533,
+      "ttft": 11.521384543273598,
+      "decode_seconds": 0.00019930582493543625,
+      "decode_tokens": 24,
+      "prompt_tokens": 1032,
+      "completion_tokens": 25,
+      "answer": {
+        "first_scene": "aircraft_cabin",
+        "second_object": "earth"
+      }
+    },
+    {
+      "group": "candidate-1",
+      "case": "motion-forward",
+      "first_request": false,
+      "latency": 1.9572906037792563,
+      "ttft": 1.9571085646748543,
+      "decode_seconds": 0.00018203910440206528,
+      "decode_tokens": 8,
+      "prompt_tokens": 569,
+      "completion_tokens": 9,
+      "answer": {
+        "direction": "left_to_right"
+      }
+    },
+    {
+      "group": "candidate-1",
+      "case": "text-python",
+      "first_request": false,
+      "latency": 0.8185301548801363,
+      "ttft": 0.8184681357815862,
+      "decode_seconds": 6.201909855008125e-05,
+      "decode_tokens": 7,
+      "prompt_tokens": 78,
+      "completion_tokens": 8,
+      "answer": {
+        "result": 42
+      }
+    },
+    {
+      "group": "parent-1",
+      "case": "earth-python",
+      "first_request": true,
+      "latency": 3.60289494600147,
+      "ttft": 3.602552843745798,
+      "decode_seconds": 0.0003421022556722164,
+      "decode_tokens": 28,
+      "prompt_tokens": 387,
+      "completion_tokens": 29,
+      "answer": {
+        "object": "earth",
+        "clouds_visible": true,
+        "street_sign_visible": false
+      }
+    },
+    {
+      "group": "parent-1",
+      "case": "earth-python",
+      "first_request": false,
+      "latency": 3.4760646456852555,
+      "ttft": 3.475923523772508,
+      "decode_seconds": 0.00014112191274762154,
+      "decode_tokens": 28,
+      "prompt_tokens": 387,
+      "completion_tokens": 29,
+      "answer": {
+        "object": "earth",
+        "clouds_visible": true,
+        "street_sign_visible": false
+      }
+    },
+    {
+      "group": "parent-1",
+      "case": "cabin-python",
+      "first_request": false,
+      "latency": 11.443544948007911,
+      "ttft": 11.44333539204672,
+      "decode_seconds": 0.0002095559611916542,
+      "decode_tokens": 40,
+      "prompt_tokens": 841,
+      "completion_tokens": 41,
+      "answer": {
+        "scene": "aircraft_cabin",
+        "visible_windows": 2,
+        "device_lights_on": true,
+        "people_visible": false
+      }
+    },
+    {
+      "group": "parent-1",
+      "case": "multiple-real-photos",
+      "first_request": false,
+      "latency": 11.971903103403747,
+      "ttft": 11.97077908134088,
+      "decode_seconds": 0.0011240220628678799,
+      "decode_tokens": 24,
+      "prompt_tokens": 1032,
+      "completion_tokens": 25,
+      "answer": {
+        "first_scene": "aircraft_cabin",
+        "second_object": "earth"
+      }
+    },
+    {
+      "group": "parent-1",
+      "case": "motion-forward",
+      "first_request": false,
+      "latency": 1.9908220120705664,
+      "ttft": 1.9906084649264812,
+      "decode_seconds": 0.00021354714408516884,
+      "decode_tokens": 8,
+      "prompt_tokens": 569,
+      "completion_tokens": 9,
+      "answer": {
+        "direction": "left_to_right"
+      }
+    },
+    {
+      "group": "parent-1",
+      "case": "text-python",
+      "first_request": false,
+      "latency": 0.8234231122769415,
+      "ttft": 0.8233392043039203,
+      "decode_seconds": 8.390797302126884e-05,
+      "decode_tokens": 7,
+      "prompt_tokens": 78,
+      "completion_tokens": 8,
+      "answer": {
+        "result": 42
+      }
+    },
+    {
+      "group": "parent-1",
+      "case": "earth-python",
+      "first_request": false,
+      "latency": 3.470845343079418,
+      "ttft": 3.4707447229884565,
+      "decode_seconds": 0.0001006200909614563,
+      "decode_tokens": 28,
+      "prompt_tokens": 387,
+      "completion_tokens": 29,
+      "answer": {
+        "object": "earth",
+        "clouds_visible": true,
+        "street_sign_visible": false
+      }
+    },
+    {
+      "group": "parent-1",
+      "case": "cabin-python",
+      "first_request": false,
+      "latency": 11.40631685918197,
+      "ttft": 11.406071905046701,
+      "decode_seconds": 0.0002449541352689266,
+      "decode_tokens": 40,
+      "prompt_tokens": 841,
+      "completion_tokens": 41,
+      "answer": {
+        "scene": "aircraft_cabin",
+        "visible_windows": 2,
+        "device_lights_on": true,
+        "people_visible": false
+      }
+    },
+    {
+      "group": "parent-1",
+      "case": "multiple-real-photos",
+      "first_request": false,
+      "latency": 11.947619671933353,
+      "ttft": 11.947422735858709,
+      "decode_seconds": 0.00019693607464432716,
+      "decode_tokens": 24,
+      "prompt_tokens": 1032,
+      "completion_tokens": 25,
+      "answer": {
+        "first_scene": "aircraft_cabin",
+        "second_object": "earth"
+      }
+    },
+    {
+      "group": "parent-1",
+      "case": "motion-forward",
+      "first_request": false,
+      "latency": 1.982679408043623,
+      "ttft": 1.9825019552372396,
+      "decode_seconds": 0.00017745280638337135,
+      "decode_tokens": 8,
+      "prompt_tokens": 569,
+      "completion_tokens": 9,
+      "answer": {
+        "direction": "left_to_right"
+      }
+    },
+    {
+      "group": "parent-1",
+      "case": "text-python",
+      "first_request": false,
+      "latency": 0.8168482491746545,
+      "ttft": 0.8167682308703661,
+      "decode_seconds": 8.00183042883873e-05,
+      "decode_tokens": 7,
+      "prompt_tokens": 78,
+      "completion_tokens": 8,
+      "answer": {
+        "result": 42
+      }
+    },
+    {
+      "group": "parent-1",
+      "case": "earth-python",
+      "first_request": false,
+      "latency": 3.478589797858149,
+      "ttft": 3.4785030279308558,
+      "decode_seconds": 8.676992729306221e-05,
+      "decode_tokens": 28,
+      "prompt_tokens": 387,
+      "completion_tokens": 29,
+      "answer": {
+        "object": "earth",
+        "clouds_visible": true,
+        "street_sign_visible": false
+      }
+    },
+    {
+      "group": "parent-1",
+      "case": "cabin-python",
+      "first_request": false,
+      "latency": 11.40066206920892,
+      "ttft": 11.400440254248679,
+      "decode_seconds": 0.00022181496024131775,
+      "decode_tokens": 40,
+      "prompt_tokens": 841,
+      "completion_tokens": 41,
+      "answer": {
+        "scene": "aircraft_cabin",
+        "visible_windows": 2,
+        "device_lights_on": true,
+        "people_visible": false
+      }
+    },
+    {
+      "group": "parent-1",
+      "case": "multiple-real-photos",
+      "first_request": false,
+      "latency": 11.938356393948197,
+      "ttft": 11.938152431044728,
+      "decode_seconds": 0.00020396290346980095,
+      "decode_tokens": 24,
+      "prompt_tokens": 1032,
+      "completion_tokens": 25,
+      "answer": {
+        "first_scene": "aircraft_cabin",
+        "second_object": "earth"
+      }
+    },
+    {
+      "group": "parent-1",
+      "case": "motion-forward",
+      "first_request": false,
+      "latency": 1.9929838757961988,
+      "ttft": 1.9928310420364141,
+      "decode_seconds": 0.00015283375978469849,
+      "decode_tokens": 8,
+      "prompt_tokens": 569,
+      "completion_tokens": 9,
+      "answer": {
+        "direction": "left_to_right"
+      }
+    },
+    {
+      "group": "parent-1",
+      "case": "text-python",
+      "first_request": false,
+      "latency": 0.8126212311908603,
+      "ttft": 0.8125482862815261,
+      "decode_seconds": 7.294490933418274e-05,
+      "decode_tokens": 7,
+      "prompt_tokens": 78,
+      "completion_tokens": 8,
+      "answer": {
+        "result": 42
+      }
+    }
+  ],
+  "cleanup": {
+    "owned_pids": [
+      4090558,
+      4092109,
+      4093653,
+      4095133
+    ],
+    "all_gone": true,
+    "gpu": {
+      "status": "OK",
+      "pids": [],
+      "request_id": "616a3315d1c908ff6d4728d7f48cc201",
+      "worker_pid": 4096538,
+      "stdout": "{\"request_id\": \"616a3315d1c908ff6d4728d7f48cc201\", \"monotonic\": 2190839.004711036, \"event\": \"begin\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"616a3315d1c908ff6d4728d7f48cc201\", \"monotonic\": 2190839.012693242, \"event\": \"end\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"616a3315d1c908ff6d4728d7f48cc201\", \"monotonic\": 2190839.012729455, \"event\": \"begin\", \"api\": \"init\"}\n{\"request_id\": \"616a3315d1c908ff6d4728d7f48cc201\", \"monotonic\": 2190839.016936229, \"event\": \"end\", \"api\": \"init\", \"seconds\": 0.004194654058665037}\n{\"request_id\": \"616a3315d1c908ff6d4728d7f48cc201\", \"monotonic\": 2190839.016984702, \"event\": \"begin\", \"api\": \"device_count\"}\n{\"request_id\": \"616a3315d1c908ff6d4728d7f48cc201\", \"monotonic\": 2190839.017029045, \"event\": \"end\", \"api\": \"device_count\", \"seconds\": 3.437977284193039e-05}\n{\"request_id\": \"616a3315d1c908ff6d4728d7f48cc201\", \"monotonic\": 2190839.017044711, \"event\": \"begin\", \"api\": \"handle[0]\"}\n{\"request_id\": \"616a3315d1c908ff6d4728d7f48cc201\", \"monotonic\": 2190839.023558091, \"event\": \"end\", \"api\": \"handle[0]\", \"seconds\": 0.006505778059363365}\n{\"request_id\": \"616a3315d1c908ff6d4728d7f48cc201\", \"monotonic\": 2190839.023580109, \"event\": \"begin\", \"api\": \"compute_v3[0]\"}\n{\"request_id\": \"616a3315d1c908ff6d4728d7f48cc201\", \"monotonic\": 2190839.02526113, \"event\": \"end\", \"api\": \"compute_v3[0]\", \"seconds\": 0.001673826016485691}\n{\"request_id\": \"616a3315d1c908ff6d4728d7f48cc201\", \"monotonic\": 2190839.025283222, \"event\": \"begin\", \"api\": \"shutdown\"}\n{\"request_id\": \"616a3315d1c908ff6d4728d7f48cc201\", \"monotonic\": 2190839.026562724, \"event\": \"end\", \"api\": \"shutdown\", \"seconds\": 0.0012719649821519852}\n{\"request_id\": \"616a3315d1c908ff6d4728d7f48cc201\", \"monotonic\": 2190839.026585141, \"event\": \"result\", \"status\": \"OK\", \"error\": null, \"device_count\": 1, \"pids\": [], \"process_memory\": []}\n",
+      "stderr": "",
+      "returncode": 0,
+      "seconds": 0.0641426988877356,
+      "process_memory": [],
+      "device_count": 1
+    },
+    "port_free": true,
+    "lock_available": true,
+    "lock_inode": 3294067
+  },
+  "limits": [
+    "Only two startups per identity; no confidence or noninferiority claim.",
+    "No literal SSE DONE bytes in evalscope DB; stop/usage only.",
+    "Polling cannot exclude interference shorter than its interval."
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "status": "ENV_ABORT_MTP_COMPLETION_INCOMPLETE",
+  "performance_accepted": false,
+  "default_unchanged": true,
+  "source_commit": "84bbf01215fa164d72e2afa1b1e0627033a39737",
+  "binaries": {
+    "parent": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-forward-timing-20261107/engine/q4t",
+      "sha256": "982bba071e68e807cda653fa32ab76bed692808aa2d9325876ac09ea9f9daa1d"
+    },
+    "candidate": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/engine/q4t",
+      "sha256": "34e7ceefd60c23e451e9dba6d67cde99e9db25191f56a6aa489478d3afdea889"
+    }
+  },
+  "audit_tool": {
+    "path": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/audit_vision_rowmax_completion.py",
+    "sha256": "fb76e244a337572d1003138ada4323b6e957fbf149a2b6aa533f2e4821f47b5c"
+  },
+  "git_sources": 2330,
+  "new_counts": {
+    "starts": 1,
+    "generations": 15,
+    "controls": 0,
+    "native": 0
+  },
+  "actual_chat_received": 15,
+  "server_completed": 14,
+  "server_cancelled": 1,
+  "raw_client_records": 12,
+  "completed_without_persisted_client_records": 2,
+  "quality_records": 0,
+  "parent_starts": 0,
+  "lease_seconds": 787.8214856479317,
+  "nvml_queries": 710,
+  "process": {
+    "pid": 4183132,
+    "waitable_returncode": 0,
+    "custody_complete": false
+  },
+  "reused": {
+    "status": "VERIFIED_COMPLETED_PREFIX_ONLY",
+    "git_sources": 2316,
+    "lifetimes": {
+      "kernel": {
+        "pid": 4099655,
+        "through_monotonic": 2191362.642988672,
+        "nvml_queries": 10,
+        "custody_complete": true
+      },
+      "hf-small": {
+        "pid": 4099702,
+        "through_monotonic": 2191363.724388528,
+        "nvml_queries": 11,
+        "custody_complete": true
+      },
+      "hf-rectangular": {
+        "pid": 4099710,
+        "through_monotonic": 2191365.899432471,
+        "nvml_queries": 13,
+        "custody_complete": true
+      },
+      "model-plain-parent": {
+        "pid": 4099724,
+        "through_monotonic": 2192439.035149856,
+        "nvml_queries": 995,
+        "custody_complete": true
+      },
+      "model-plain-candidate": {
+        "pid": 4106623,
+        "through_monotonic": 2193513.691884406,
+        "nvml_queries": 1979,
+        "custody_complete": true
+      }
+    },
+    "original_stage_status": "ENV_ABORT",
+    "excluded": [
+      "original partial MTP",
+      "diagnostic MTP samples"
+    ],
+    "seals": {
+      "originals.json": "1d381d59870c1622ed66f4b08a8ea61f96d2ca66634d4e28daf3b65be8b43452",
+      "accept-originals.json": "1982db2543a78d576a4b653b716601fbded209295b5fd559896232f0f1e9db9b"
+    }
+  },
+  "summaries": {
+    "mtp-candidate": {
+      "context-1024": {
+        "latency_mean": 8.153194327838719,
+        "ttft_mean": 0.9670407936597863,
+        "decode_tps": 35.48490841270837
+      },
+      "context-4096": {
+        "latency_mean": 9.852841299648086,
+        "ttft_mean": 2.8806870356202126,
+        "decode_tps": 36.57406166637
+      },
+      "context-8192": {
+        "latency_mean": 12.873976492943862,
+        "ttft_mean": 5.4839225695468485,
+        "decode_tps": 34.50583752747276
+      },
+      "context-45056": {
+        "latency_mean": 38.213647935384266,
+        "ttft_mean": 31.09820776494841,
+        "decode_tps": 35.83755802761251
+      }
+    }
+  },
+  "lock_available_after_postflight": true,
+  "statistics": "not comparable; missing parent",
+  "decision": "HOLD_USER_REQUESTED_WAIT_FOR_ENVIRONMENT",
+  "limitations": [
+    "Original and new ENV_ABORT retained; neither is performance acceptance",
+    "1K/4K/8K/44K each three persisted candidate records; no complete MTP lifecycle",
+    "200K two server completions have no persisted client records; third cancelled",
+    "No quality questions or parent startup; no deployment health",
+    "Postflight first command had invalid Python -m path; original COMMAND_FAILED retained",
+    "Corrected cleanup-only lease has no model/HTTP tests; does not repair custody",
+    "User selected retaining candidate and waiting for environment; no automatic retry"
+  ],
+  "failed_query_summary": {
+    "status": "TIMEOUT",
+    "pids": null,
+    "worker_pid": 4188311,
+    "seconds": 5.65212924964726,
+    "returncode": -9
+  }
+}

@@ -239,8 +239,9 @@ __global__ void PosEmbedKernel(const uint16_t* __restrict__ pos,
 // other. For t=1 this is identical to a single bidirectional attention over
 // all L tokens.
 //
-// One block per (l, head).  Shared memory holds the S softmax scores (S <=
-// 1024 -> 4KB), well within the 48KB limit.  Three phases:
+// One block per (l, head). Shared memory holds S softmax scores plus the
+// fixed block reduction scratch; the media plan bounds the spatial size.
+// Three phases:
 //   1. cooperatively compute score[j] = q[l] . k[j] * scale  (j in group)
 //   2. softmax over the row (max, exp, sum)
 //   3. cooperatively compute ctx[l, head, d] = sum_j score[j] * v[j, d]
@@ -268,9 +269,23 @@ __global__ void AttentionKernel(const uint16_t* __restrict__ qkv,
   }
   __syncthreads();
   // Phase 2: row max, then exp + sum.
+  __shared__ float s_part[kBlock];
   float row_max = -1e30f;
-  for (int j = 0; j < S; ++j) row_max = fmaxf(row_max, s_score[j]);
-  // Finish every warp's reads before any warp overwrites shared scores.
+  for (int j = threadIdx.x; j < S; j += blockDim.x) {
+    row_max = fmaxf(row_max, s_score[j]);
+  }
+  s_part[threadIdx.x] = row_max;
+  __syncthreads();
+  for (int off = blockDim.x / 2; off > 0; off >>= 1) {
+    if (threadIdx.x < off) {
+      s_part[threadIdx.x] =
+          fmaxf(s_part[threadIdx.x], s_part[threadIdx.x + off]);
+    }
+    __syncthreads();
+  }
+  row_max = s_part[0];
+  // Every warp must read the maximum before sum reuses the same scratch.
+  // This also completes all score reads before exp overwrites the scores.
   __syncthreads();
   float sum = 0.0f;
   for (int j = threadIdx.x; j < S; j += blockDim.x) {
@@ -278,7 +293,6 @@ __global__ void AttentionKernel(const uint16_t* __restrict__ qkv,
     sum += s_score[j];
   }
   // Block-reduce the sum.
-  __shared__ float s_part[kBlock];
   s_part[threadIdx.x] = sum;
   __syncthreads();
   for (int off = blockDim.x / 2; off > 0; off >>= 1) {

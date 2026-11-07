@@ -1,0 +1,2403 @@
+{
+  "status": "PASS_FINAL_MAINLINE_MATRIX_PENDING_ENGINEERING_DECISION",
+  "source_commit": "761cebffebe563171803501c9f8a46296f810de8",
+  "completion_tool_commit": "9ce178768761749d286192f4a90f80866fa42568",
+  "binaries": {
+    "parent": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261107/runtime/q4t",
+      "sha256": "478a325e3b7baaee90f96381468be17fab2511f861b9f92353f84ed9564ceb54"
+    },
+    "candidate": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-rowmax-mainline-20261107/engine/q4t",
+      "sha256": "60b1c4c121d066789ebc44746316161320448d98095f32a7ec24e3fa00343ff3"
+    }
+  },
+  "git_sources": 2351,
+  "completed_prefix": {
+    "groups": [
+      "plain-parent",
+      "plain-candidate",
+      "mtp-candidate"
+    ],
+    "lifetimes": {
+      "plain-parent": {
+        "pid": 124898,
+        "through_monotonic": 2241847.172411613,
+        "nvml_queries": 990,
+        "custody_complete": true
+      },
+      "plain-candidate": {
+        "pid": 133987,
+        "through_monotonic": 2242921.26382134,
+        "nvml_queries": 1973,
+        "custody_complete": true
+      },
+      "mtp-candidate": {
+        "pid": 138235,
+        "through_monotonic": 2243936.912955544,
+        "nvml_queries": 2901,
+        "custody_complete": true
+      }
+    },
+    "git_sources": 2348,
+    "requests": 78,
+    "excluded": [
+      "original mtp-parent, including its performance rows"
+    ],
+    "original_stage_status": "ENV_ABORT",
+    "original_query_failure": {
+      "status": "CLEANUP_FAILED",
+      "pids": null,
+      "request_id": "5bf759a053f29da03138588441ab1cd1",
+      "worker_pid": 154142,
+      "error": "worker not reaped",
+      "stdout": "{\"request_id\": \"5bf759a053f29da03138588441ab1cd1\", \"monotonic\": 2244946.056127439, \"event\": \"begin\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"5bf759a053f29da03138588441ab1cd1\", \"monotonic\": 2244946.063959026, \"event\": \"end\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"5bf759a053f29da03138588441ab1cd1\", \"monotonic\": 2244946.06399174, \"event\": \"begin\", \"api\": \"init\"}\n",
+      "stderr": "",
+      "seconds": 6.005929735023528,
+      "returncode": null,
+      "observed_errors": []
+    },
+    "originals_sha256": "2c9fc1082824783a4c9ea78a37e28436b9e017e567cf8bc3d863ad4d78639db2"
+  },
+  "completion_lifetime": {
+    "pid": 155662,
+    "through_monotonic": 2246386.448647509,
+    "nvml_queries": 931,
+    "custody_complete": true
+  },
+  "completion_counts": {
+    "starts": 1,
+    "generations": 26,
+    "controls": 2,
+    "native": 0
+  },
+  "completion_seconds": 1015.6514404648915,
+  "completion_nvml_queries": 932,
+  "accepted_requests": 104,
+  "quality_checks": 44,
+  "paired_responses": 52,
+  "total_attempts": {
+    "starts": 5,
+    "generations": 130
+  },
+  "original_stage_status": "ENV_ABORT",
+  "original_failed_lifetime_reused": false,
+  "numerical_reuse": {
+    "archive": {
+      "status": "VERIFIED_COMPLETED_PREFIX_ONLY",
+      "git_sources": 2316,
+      "lifetimes": {
+        "kernel": {
+          "pid": 4099655,
+          "through_monotonic": 2191362.642988672,
+          "nvml_queries": 10,
+          "custody_complete": true
+        },
+        "hf-small": {
+          "pid": 4099702,
+          "through_monotonic": 2191363.724388528,
+          "nvml_queries": 11,
+          "custody_complete": true
+        },
+        "hf-rectangular": {
+          "pid": 4099710,
+          "through_monotonic": 2191365.899432471,
+          "nvml_queries": 13,
+          "custody_complete": true
+        },
+        "model-plain-parent": {
+          "pid": 4099724,
+          "through_monotonic": 2192439.035149856,
+          "nvml_queries": 995,
+          "custody_complete": true
+        },
+        "model-plain-candidate": {
+          "pid": 4106623,
+          "through_monotonic": 2193513.691884406,
+          "nvml_queries": 1979,
+          "custody_complete": true
+        }
+      },
+      "original_stage_status": "ENV_ABORT",
+      "archive_only": true,
+      "runtime_drift": {
+        "CMakeLists.txt": {
+          "tested": "9e9b48daa04c470f0db8ee5b23a5fc67d1387e01ec2d950f7e467fba0beb773e",
+          "current": "af0169a7c7c3f5221db94b7e56da2ed7cb5b286857e83592936e2107679882fc"
+        },
+        "cmake/ChatProtocolIdentity.cmake": {
+          "tested": "5e029f0b30c7de179dcb7e30d5d3e9ac52b68fae5ce03776f477fdce734fe14f",
+          "current": "6561776bab97cc5e62f7ca619a2d9f53fde3f690b35cc5f934c69747226ca7e9"
+        },
+        "cmake/HostTestSources.cmake": {
+          "tested": "701765e8fb77ddb0c56eeea9b7f1020d98cf9554b3f36be5b8710d02842573da",
+          "current": "f0ec4ec42af4f3d25a0a68a51c438c01db177e88405549382b527789186e5755"
+        },
+        "include/q4t/ple/page_reader.h": {
+          "tested": "d01fc2871d3e7a1057753fa0c9ee28d88beb8001988b2a402ae97819f2baa6f7",
+          "current": "bbb35325c82421f6e9608a144672b051d3531b6652b6076d018fec0bff17e86e"
+        },
+        "include/q4t/ple/ple_embedding.h": {
+          "tested": "8ab9f25fc869f405cfbea3406be7e26a744dc9ed39273f06a4f0e59593b14edb",
+          "current": "9d61a76df2f96ee7831177de6d9de0c85e2fce1023dd5ba2b40780f2e123db30"
+        },
+        "include/q4t/server/chat_server.h": {
+          "tested": "3df4a1fafaf056ae360fa0004b16b53f779d869d78741d625ac4e646bd2cf9b0",
+          "current": "81b434d4402d2a934969b57407c0b2961b8ed86a69717e88861cd17442b1e53f"
+        },
+        "src/ple/page_reader.cpp": {
+          "tested": "4b80624706c76f5609ac92b6dcdb7891111baeae21298aaeeb1950b8e72ce4b6",
+          "current": "c214bacacadc3c2df47a0d9cb6161ce30e83b00e7dbd6f1dda86b00228021094"
+        },
+        "src/ple/ple_embedding.cpp": {
+          "tested": "e4dfe84278f8cc17e787e5690584a9bcac6f1ab086167fef4bbc999e1190d070",
+          "current": "62ea382c9d5fe9d6c9e0ef789b497d3457f8fae1da149b45c21ca10db452c88b"
+        },
+        "src/server/chat_admission.cpp": {
+          "tested": "31b3fc74ab3c1e5a728de860181135705c51480c2dd58e6d33e6979d7a2a7a08",
+          "current": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187"
+        },
+        "src/server/chat_capabilities.cpp": {
+          "tested": "587a0abec93e64e324ad5df27c61c501f46d50816b3289f29873e8c2f9fd53e0",
+          "current": "2a24d9386d53df6c9790ed3cf82e3317ec54387722f8af6dd3cc7629423024eb"
+        },
+        "src/server/chat_generation.cpp": {
+          "tested": "bf23474b7b4e824676a3e03747d54813b21bd2ba5f11e84e90dc4485d716ae46",
+          "current": "cc91f8a4ef7c176fe9106db03599565a36475f3871b3c529655fe3ccfec388ac"
+        },
+        "src/server/chat_http.cpp": {
+          "tested": "699098a50ee52ce3eb35e2837db797e6231b5aaa5860d6dc181270cb87a98ba5",
+          "current": "80f118f2c33271b67c72839eb3ddefe46ea820418769ccc945ed9d1a3a847992"
+        },
+        "src/server/chat_metrics.cpp": {
+          "tested": "3c2738770c331f3bc8e66e7917b12123478c46d70a7f5b6fef53d4e5544f8b26",
+          "current": "98b0f7ebfb79868285f31e03c55d481e813cab1044c4a31e24356dc353260fab"
+        },
+        "src/server/chat_preflight.cpp": {
+          "tested": "9d33c412143d776b7c39c4858cd0971787ac6acc794c005d4a912224c0bf034a",
+          "current": "ab8b3491b17baae0d9a3ec51e9c9cf066907e665efd21449235e70153f130767"
+        },
+        "src/server/chat_scheduler.cpp": {
+          "tested": "3bbbc18b7d836b0ec1fb9e1bef4fb4c85b6dc60b4fc1a26a23916196326832cf",
+          "current": "2b6d315bfd12609e343010852f7c15b8248fe5180359a3d7b49d3c1db5b8d1fc"
+        }
+      },
+      "excluded": [
+        "original partial MTP",
+        "diagnostic MTP samples"
+      ],
+      "seals": {
+        "originals.json": "1d381d59870c1622ed66f4b08a8ea61f96d2ca66634d4e28daf3b65be8b43452",
+        "accept-originals.json": "1982db2543a78d576a4b653b716601fbded209295b5fd559896232f0f1e9db9b"
+      }
+    },
+    "numerical_sources": {
+      "include/q4t/model/vision_positions.h": "70c7d3d05715fc3916725e0e39cf32becc9ac3a5129fc63129706204ccd9fb22",
+      "include/q4t/quant/act_quant.h": "a7e917b04bcd8550f5b6b3871c6c0c0ba130e2845d6afebe1dcc3d7ca0111da3",
+      "include/q4t/quant/dequant.h": "5ea55ea1dd723e44f204d86f3cb709af099a084a5d526bc617b0c07750c2bdb9",
+      "include/q4t/quant/format.h": "4f8e654989a53ca32e31b5a37a502444dcee67936fa5159b3b28b836fc84f11d",
+      "include/q4t/quant/fp4_gemm.h": "237b8b93ea555da4d786b1be9c2328d7b76e79e69540a2b6ec24f54440dfeebe",
+      "include/q4t/quant/lt_cache.h": "170448767e135617098b3a0378d5e0d8775d5f880a35aff0812e03d69db38dfe",
+      "include/q4t/quant/moe_decode.h": "915173e2efdb8617b22f6052d0798a5d10576455a0254273762db5306d58b27a",
+      "include/q4t/quant/moe_gemm.h": "12f5743e6e6c6f9e044f182b2ebb89d80bcb28ba9909d64a3a4610ea2801153e",
+      "include/q4t/quant/moe_residency.h": "d97be8e1693b1ec580470eaf474a7b9787a029b3713f37cbb0844acf090f3ff3",
+      "include/q4t/quant/moe_subtiming.h": "2b5c169cfaf886d81ef81e07572806147304858335f31699eaed53abcbaece5c",
+      "include/q4t/quant/moe_tensor_contract.h": "9f46b63a58f5894b4c61e18d71638c64ae6e4a2efb5529a48a419674908c0ae5",
+      "include/q4t/quant/moe_weights.h": "9ba5f77b0a73af0b50776ad3085e8bf6f5fc0ac9b7b956e7e75e4f183aae8087",
+      "include/q4t/quant/swizzle.h": "f0c2c88a22f45092de70542dfd3e8046f56e52f3703defbcae2d84e240678ccf",
+      "src/quant/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/quant/act_quant.cu": "9b665b09759dfe67cc9d5fcf3a157968895e8d9a3c825123a9730a4b08108746",
+      "src/quant/dequant.cu": "cdd106b6f1915bfd475459f875672a67a02be14230733920c9c108c05c923220",
+      "src/quant/lt_cache.cpp": "7b792cb6cee20bcbf87ea745d4a5f997f93ce47de0dfc77bb90fb2bfc7397a1a",
+      "src/quant/moe_decode.cu": "eca5bda705b838e70a5035828b2611174f81c6fc8b3bc590701e8bd56999467f",
+      "src/quant/moe_gemm.cu": "89fc66033ea6550def218146022f1543fc0f2ef66d06bbe65497b1010189da98",
+      "src/quant/moe_residency.cpp": "4b2f2409a7f19d014fb959fc289528d1359f2a6c5b4301a02f83456feffd8c48",
+      "src/quant/moe_weights.cpp": "a05f11fd123e6d59ac4c4362eb8dbc04cc30409efe76ed401742f09729e86916",
+      "src/vision/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/vision/media_plan.cpp": "30f1858fe11a14bb81f5ee2c80edef68e60cb7a03c7a0ec8132cc29936dff302",
+      "src/vision/processor.cpp": "76d421281d76daa42796710ffa4ce6f0227f7788411775740d1ed5d5e11001dc",
+      "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414"
+    },
+    "reused_lifetimes": [
+      "kernel",
+      "hf-small",
+      "hf-rectangular"
+    ],
+    "reused_http": false,
+    "reason": "serve sources changed; run both modes/five tiers on the final pair"
+  },
+  "numerical": {
+    "kernel": [
+      {
+        "parent_registers": 48,
+        "candidate_registers": 48,
+        "parent_shared": 1024,
+        "candidate_shared": 1024,
+        "parent_local": 0,
+        "candidate_local": 0
+      },
+      {
+        "spatial": 1,
+        "temporal": 1,
+        "pattern": 0,
+        "elements": 1152,
+        "mismatches": 0,
+        "nonfinite": 0
+      },
+      {
+        "spatial": 2,
+        "temporal": 1,
+        "pattern": 0,
+        "elements": 2304,
+        "mismatches": 0,
+        "nonfinite": 0
+      },
+      {
+        "spatial": 3,
+        "temporal": 1,
+        "pattern": 0,
+        "elements": 3456,
+        "mismatches": 0,
+        "nonfinite": 0
+      },
+      {
+        "spatial": 31,
+        "temporal": 1,
+        "pattern": 0,
+        "elements": 35712,
+        "mismatches": 0,
+        "nonfinite": 0
+      },
+      {
+        "spatial": 32,
+        "temporal": 1,
+        "pattern": 0,
+        "elements": 36864,
+        "mismatches": 0,
+        "nonfinite": 0
+      },
+      {
+        "spatial": 33,
+        "temporal": 1,
+        "pattern": 0,
+        "elements": 38016,
+        "mismatches": 0,
+        "nonfinite": 0
+      },
+      {
+        "spatial": 63,
+        "temporal": 1,
+        "pattern": 0,
+        "elements": 72576,
+        "mismatches": 0,
+        "nonfinite": 0
+      },
+      {
+        "spatial": 64,
+        "temporal": 1,
+        "pattern": 0,
+        "elements": 73728,
+        "mismatches": 0,
+        "nonfinite": 0
+      },
+      {
+        "spatial": 65,
+        "temporal": 1,
+        "pattern": 0,
+        "elements": 74880,
+        "mismatches": 0,
+        "nonfinite": 0
+      },
+      {
+        "spatial": 127,
+        "temporal": 1,
+        "pattern": 0,
+        "elements": 146304,
+        "mismatches": 0,
+        "nonfinite": 0
+      },
+      {
+        "spatial": 128,
+        "temporal": 1,
+        "pattern": 0,
+        "elements": 147456,
+        "mismatches": 0,
+        "nonfinite": 0
+      },
+      {
+        "spatial": 129,
+        "temporal": 1,
+        "pattern": 0,
+        "elements": 148608,
+        "mismatches": 0,
+        "nonfinite": 0
+      },
+      {
+        "spatial": 255,
+        "temporal": 1,
+        "pattern": 0,
+        "elements": 293760,
+        "mismatches": 0,
+        "nonfinite": 0
+      },
+      {
+        "spatial": 256,
+        "temporal": 1,
+        "pattern": 0,
+        "elements": 294912,
+        "mismatches": 0,
+        "nonfinite": 0
+      },
+      {
+        "spatial": 257,
+        "temporal": 1,
+        "pattern": 0,
+        "elements": 296064,
+        "mismatches": 0,
+        "nonfinite": 0
+      },
+      {
+        "spatial": 384,
+        "temporal": 1,
+        "pattern": 0,
+        "elements": 442368,
+        "mismatches": 0,
+        "nonfinite": 0
+      },
+      {
+        "spatial": 1024,
+        "temporal": 1,
+        "pattern": 0,
+        "elements": 1179648,
+        "mismatches": 0,
+        "nonfinite": 0
+      },
+      {
+        "spatial": 2640,
+        "temporal": 1,
+        "pattern": 0,
+        "elements": 3041280,
+        "mismatches": 0,
+        "nonfinite": 0
+      },
+      {
+        "spatial": 8192,
+        "temporal": 1,
+        "pattern": 0,
+        "elements": 9437184,
+        "mismatches": 0,
+        "nonfinite": 0
+      },
+      {
+        "spatial": 384,
+        "temporal": 4,
+        "pattern": 0,
+        "elements": 1769472,
+        "mismatches": 0,
+        "nonfinite": 0
+      },
+      {
+        "spatial": 257,
+        "temporal": 1,
+        "pattern": 1,
+        "elements": 296064,
+        "mismatches": 0,
+        "nonfinite": 0
+      },
+      {
+        "spatial": 257,
+        "temporal": 1,
+        "pattern": 2,
+        "elements": 296064,
+        "mismatches": 0,
+        "nonfinite": 296064
+      },
+      {
+        "spatial": 257,
+        "temporal": 1,
+        "pattern": 3,
+        "elements": 296064,
+        "mismatches": 0,
+        "nonfinite": 0
+      },
+      {
+        "spatial": 257,
+        "temporal": 1,
+        "pattern": 4,
+        "elements": 296064,
+        "mismatches": 0,
+        "nonfinite": 0
+      },
+      {
+        "spatial": 257,
+        "temporal": 1,
+        "pattern": 5,
+        "elements": 296064,
+        "mismatches": 0,
+        "nonfinite": 0
+      },
+      {
+        "spatial": 257,
+        "temporal": 1,
+        "pattern": 6,
+        "elements": 296064,
+        "mismatches": 0,
+        "nonfinite": 296064
+      },
+      {
+        "passed": true,
+        "cases": 26,
+        "bf16_elements": 19312128
+      }
+    ],
+    "hf": [
+      {
+        "shape": "small",
+        "case": "image",
+        "max_abs": 0.007106,
+        "rel_l2": 0.022225,
+        "bytes": 20480,
+        "bf16_sha256": "b30a096a90add884dcad583d39fed0d1fa7559d6587fb23c598e5a33afe0df75",
+        "parent_equal": true
+      },
+      {
+        "shape": "small",
+        "case": "video",
+        "max_abs": 0.012458,
+        "rel_l2": 0.02982,
+        "bytes": 40960,
+        "bf16_sha256": "c7ad6940383babc9eb068d5eb428bfc6eefbbdacca82ec7b0052f030a56443d7",
+        "parent_equal": true
+      },
+      {
+        "shape": "rectangular",
+        "case": "image",
+        "max_abs": 0.012091,
+        "rel_l2": 0.029298,
+        "bytes": 122880,
+        "bf16_sha256": "64165de0a64d1d02abaf5fff2edf4da8d9af83128d1ac9ffcbc5d15e513a46e2",
+        "parent_equal": true
+      },
+      {
+        "shape": "rectangular",
+        "case": "video",
+        "max_abs": 0.008411,
+        "rel_l2": 0.024169,
+        "bytes": 153600,
+        "bf16_sha256": "11780e9688dfc7e9422d398910681396596eacf6704aadfd1556d210a42b3100",
+        "parent_equal": true
+      }
+    ]
+  },
+  "rows": {
+    "plain-parent": {
+      "context-1024": [
+        {
+          "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+          "prompt_tokens": 998,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the unique activities from the observations:\n\n1. Planetarium operator - darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle (Obs 1, 4, 5, 14, 22, 31)\n2. Tea workshop - heats identical cups, compares prepared infusions, participants describe aroma separately from bitterness and mouthfeel (Obs 2, 21, 26, 30)\n3. Public aquarium - dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior (Obs 3, 10, 23)\n4. Bicycle class - demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance (Obs 6, 15, 28, 29)\n5. Costume studio - pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth (Obs 7, ",
+          "finish": [
+            "length"
+          ],
+          "latency": 14.642569714225829,
+          "ttft": 0.8815234070643783,
+          "start_time": 2240806.945491207,
+          "completed_time": 2240821.588060921,
+          "first_request": true
+        },
+        {
+          "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+          "prompt_tokens": 998,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the unique activities from the observations:\n\n1. Planetarium operator - darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle (Obs 1, 4, 5, 14, 22, 31)\n2. Tea workshop - heats identical cups, compares prepared infusions, participants describe aroma separately from bitterness and mouthfeel (Obs 2, 21, 26, 30)\n3. Public aquarium - dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior (Obs 3, 10, 23)\n4. Bicycle class - demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance (Obs 6, 15, 28, 29)\n5. Costume studio - pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth (Obs 7, ",
+          "finish": [
+            "length"
+          ],
+          "latency": 14.489027712028474,
+          "ttft": 0.7544195293448865,
+          "start_time": 2240821.588441271,
+          "completed_time": 2240836.077468983,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+          "prompt_tokens": 998,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the unique activities from the observations:\n\n1. Planetarium operator - darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle (Obs 1, 4, 5, 14, 22, 31)\n2. Tea workshop - heats identical cups, compares prepared infusions, participants describe aroma separately from bitterness and mouthfeel (Obs 2, 21, 26, 30)\n3. Public aquarium - dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior (Obs 3, 10, 23)\n4. Bicycle class - demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance (Obs 6, 15, 28, 29)\n5. Costume studio - pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth (Obs 7, ",
+          "finish": [
+            "length"
+          ],
+          "latency": 14.49183877138421,
+          "ttft": 0.7584843384101987,
+          "start_time": 2240836.077790769,
+          "completed_time": 2240850.56962954,
+          "first_request": false
+        }
+      ],
+      "context-4096": [
+        {
+          "prompt_sha256": "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+          "prompt_tokens": 4077,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to cover:\n1. Demonstrations\n2. Comparisons\n3. Participant safety\n4. Ways to distinguish observations from explanations\n\nThe observations describe several recurring activity types:\n- Planetarium: darkening dome, aligning star projector, comparing projected horizon with reference circle\n- Tea workshop: heating identical cups, comparing infusions, describing aroma separately from bitterness and mouthfeel\n- Public aquarium: dimming room, observing nocturnal animals, guide explaining shelter placement effects\n- Bicycle class: braking demonstration on quiet paved courtyard, riders explaining wet surface effects on stopping distance\n- Costume studio: pinning paper pattern onto cotton, fitting reveals seam adjustments before cutting final cloth\n- Pottery instructor: placing fired tiles beside unfired samples, students explaining glaze thickness effects on color\n- Climbing center: closing route while anchors examined, next group practices knot inspection\n- Tidal station: measuring water height against fixed stone marker, shaded diagram separating wave motion from rising tide\n\nLet me write a detailed review of at least 600 words covering all the required aspects.\n</think>\n\n# Review of Public Learning Program Field Notes",
+          "finish": [
+            "length"
+          ],
+          "latency": 16.871499043889344,
+          "ttft": 2.5682837460190058,
+          "start_time": 2240856.06302214,
+          "completed_time": 2240872.934521184,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+          "prompt_tokens": 4077,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to cover:\n1. Demonstrations\n2. Comparisons\n3. Participant safety\n4. Ways to distinguish observations from explanations\n\nThe observations describe several recurring activity types:\n- Planetarium: darkening dome, aligning star projector, comparing projected horizon with reference circle\n- Tea workshop: heating identical cups, comparing infusions, describing aroma separately from bitterness and mouthfeel\n- Public aquarium: dimming room, observing nocturnal animals, guide explaining shelter placement effects\n- Bicycle class: braking demonstration on quiet paved courtyard, riders explaining wet surface effects on stopping distance\n- Costume studio: pinning paper pattern onto cotton, fitting reveals seam adjustments before cutting final cloth\n- Pottery instructor: placing fired tiles beside unfired samples, students explaining glaze thickness effects on color\n- Climbing center: closing route while anchors examined, next group practices knot inspection\n- Tidal station: measuring water height against fixed stone marker, shaded diagram separating wave motion from rising tide\n\nLet me write a detailed review of at least 600 words covering all the required aspects.\n</think>\n\n# Review of Public Learning Program Field Notes",
+          "finish": [
+            "length"
+          ],
+          "latency": 16.84382177470252,
+          "ttft": 2.554839374963194,
+          "start_time": 2240872.934955154,
+          "completed_time": 2240889.778776929,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+          "prompt_tokens": 4077,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to cover:\n1. Demonstrations\n2. Comparisons\n3. Participant safety\n4. Ways to distinguish observations from explanations\n\nThe observations describe several recurring activity types:\n- Planetarium: darkening dome, aligning star projector, comparing projected horizon with reference circle\n- Tea workshop: heating identical cups, comparing infusions, describing aroma separately from bitterness and mouthfeel\n- Public aquarium: dimming room, observing nocturnal animals, guide explaining shelter placement effects\n- Bicycle class: braking demonstration on quiet paved courtyard, riders explaining wet surface effects on stopping distance\n- Costume studio: pinning paper pattern onto cotton, fitting reveals seam adjustments before cutting final cloth\n- Pottery instructor: placing fired tiles beside unfired samples, students explaining glaze thickness effects on color\n- Climbing center: closing route while anchors examined, next group practices knot inspection\n- Tidal station: measuring water height against fixed stone marker, shaded diagram separating wave motion from rising tide\n\nLet me write a detailed review of at least 600 words covering all the required aspects.\n</think>\n\n# Review of Public Learning Program Field Notes",
+          "finish": [
+            "length"
+          ],
+          "latency": 16.91592704085633,
+          "ttft": 2.551263801753521,
+          "start_time": 2240889.779166372,
+          "completed_time": 2240906.695093413,
+          "first_request": false
+        }
+      ],
+      "context-8192": [
+        {
+          "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+          "prompt_tokens": 8170,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the field notes observations. I need to cover:\n1. Demonstrations\n2. Comparisons\n3. Participant safety\n4. Ways to distinguish observations from explanations\n\nThe observations describe several recurring learning activities:\n- Planetarium: darkening dome, aligning star projector, comparing projected horizon with reference circle\n- Tea workshop: heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n- Public aquarium: dimming room, observing nocturnal animals, guide explaining shelter placement effects\n- Bicycle class: braking demonstration on quiet courtyard, riders explaining wet surface effects on stopping distance\n- Costume studio: pinning paper pattern on cotton, fitting reveals seam adjustments before cutting final cloth\n- Pottery: placing fired tiles beside unfired samples, students explaining glaze thickness effects on color\n- Climbing center: closing route while anchors examined, next group practices knot inspection\n- Tidal station: measuring water height against fixed stone marker, shaded diagram separating wave motion from rising tide\n\nLet me write a detailed review of at least 600 words covering all four required topics.\n</think>\n\n# Review of Public Learning Program Field Notes: A Detailed",
+          "finish": [
+            "length"
+          ],
+          "latency": 19.14619406312704,
+          "ttft": 4.975105416961014,
+          "start_time": 2240912.142996404,
+          "completed_time": 2240931.289190467,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+          "prompt_tokens": 8170,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the field notes observations. I need to cover:\n1. Demonstrations\n2. Comparisons\n3. Participant safety\n4. Ways to distinguish observations from explanations\n\nThe observations describe several recurring learning activities:\n- Planetarium: darkening dome, aligning star projector, comparing projected horizon with reference circle\n- Tea workshop: heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n- Public aquarium: dimming room, observing nocturnal animals, guide explaining shelter placement effects\n- Bicycle class: braking demonstration on quiet courtyard, riders explaining wet surface effects on stopping distance\n- Costume studio: pinning paper pattern on cotton, fitting reveals seam adjustments before cutting final cloth\n- Pottery: placing fired tiles beside unfired samples, students explaining glaze thickness effects on color\n- Climbing center: closing route while anchors examined, next group practices knot inspection\n- Tidal station: measuring water height against fixed stone marker, shaded diagram separating wave motion from rising tide\n\nLet me write a detailed review of at least 600 words covering all four required topics.\n</think>\n\n# Review of Public Learning Program Field Notes: A Detailed",
+          "finish": [
+            "length"
+          ],
+          "latency": 19.159544572699815,
+          "ttft": 4.951603466644883,
+          "start_time": 2240931.28967026,
+          "completed_time": 2240950.449214833,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+          "prompt_tokens": 8170,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the field notes observations. I need to cover:\n1. Demonstrations\n2. Comparisons\n3. Participant safety\n4. Ways to distinguish observations from explanations\n\nThe observations describe several recurring learning activities:\n- Planetarium: darkening dome, aligning star projector, comparing projected horizon with reference circle\n- Tea workshop: heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n- Public aquarium: dimming room, observing nocturnal animals, guide explaining shelter placement effects\n- Bicycle class: braking demonstration on quiet courtyard, riders explaining wet surface effects on stopping distance\n- Costume studio: pinning paper pattern on cotton, fitting reveals seam adjustments before cutting final cloth\n- Pottery: placing fired tiles beside unfired samples, students explaining glaze thickness effects on color\n- Climbing center: closing route while anchors examined, next group practices knot inspection\n- Tidal station: measuring water height against fixed stone marker, shaded diagram separating wave motion from rising tide\n\nLet me write a detailed review of at least 600 words covering all four required topics.\n</think>\n\n# Review of Public Learning Program Field Notes: A Detailed",
+          "finish": [
+            "length"
+          ],
+          "latency": 19.100851473864168,
+          "ttft": 4.951723683159798,
+          "start_time": 2240950.449691285,
+          "completed_time": 2240969.550542759,
+          "first_request": false
+        }
+      ],
+      "context-45056": [
+        {
+          "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+          "prompt_tokens": 45044,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activities:\n1. Planetarium - darkening dome, aligning star projector, comparing projected horizon with reference circle\n2. Tea workshop - heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n3. Public aquarium - dimming room, observing nocturnal animals, guide explains shelter placement effects\n4. Bicycle class - braking demonstration on quiet paved courtyard, riders explain wet surface effects on stopping distance\n5. Costume studio - pinning paper pattern onto inexpensive cotton, fitting reveals seam adjustments before cutting final cloth\n6. Pottery instructor - placing fired tiles beside unfired samples, students explain glaze thickness effects on reflected color\n7. Climbing center - closing route while wall anchors examined, next group practices knot inspection beside training mat\n8. Tidal station - measuring water height against fixed stone marker, shaded diagram separates wave motion from gradual rising tide\n\nNow I need to write a review of at least 600 words covering:\n",
+          "finish": [
+            "length"
+          ],
+          "latency": 43.9405403258279,
+          "ttft": 29.646882571745664,
+          "start_time": 2240974.994250853,
+          "completed_time": 2241018.934791179,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+          "prompt_tokens": 45044,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activities:\n1. Planetarium - darkening dome, aligning star projector, comparing projected horizon with reference circle\n2. Tea workshop - heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n3. Public aquarium - dimming room, observing nocturnal animals, guide explains shelter placement effects\n4. Bicycle class - braking demonstration on quiet paved courtyard, riders explain wet surface effects on stopping distance\n5. Costume studio - pinning paper pattern onto inexpensive cotton, fitting reveals seam adjustments before cutting final cloth\n6. Pottery instructor - placing fired tiles beside unfired samples, students explain glaze thickness effects on reflected color\n7. Climbing center - closing route while wall anchors examined, next group practices knot inspection beside training mat\n8. Tidal station - measuring water height against fixed stone marker, shaded diagram separates wave motion from gradual rising tide\n\nNow I need to write a review of at least 600 words covering:\n",
+          "finish": [
+            "length"
+          ],
+          "latency": 43.97500840714201,
+          "ttft": 29.64552116720006,
+          "start_time": 2241018.935816193,
+          "completed_time": 2241062.9108246,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+          "prompt_tokens": 45044,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activities:\n1. Planetarium - darkening dome, aligning star projector, comparing projected horizon with reference circle\n2. Tea workshop - heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n3. Public aquarium - dimming room, observing nocturnal animals, guide explains shelter placement effects\n4. Bicycle class - braking demonstration on quiet paved courtyard, riders explain wet surface effects on stopping distance\n5. Costume studio - pinning paper pattern onto inexpensive cotton, fitting reveals seam adjustments before cutting final cloth\n6. Pottery instructor - placing fired tiles beside unfired samples, students explain glaze thickness effects on reflected color\n7. Climbing center - closing route while wall anchors examined, next group practices knot inspection beside training mat\n8. Tidal station - measuring water height against fixed stone marker, shaded diagram separates wave motion from gradual rising tide\n\nNow I need to write a review of at least 600 words covering:\n",
+          "finish": [
+            "length"
+          ],
+          "latency": 43.95516441902146,
+          "ttft": 29.654075553640723,
+          "start_time": 2241062.911813577,
+          "completed_time": 2241106.866977996,
+          "first_request": false
+        }
+      ],
+      "context-204800": [
+        {
+          "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+          "prompt_tokens": 204781,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activity types from the observations:\n\n1. **Planetarium** - Operator darkens dome before aligning star projector. Visitors compare projected horizon with marked reference circle.\n2. **Tea workshop** - Heats identical cups before comparing prepared infusions. Participants describe aroma separately from bitterness and mouthfeel.\n3. **Public aquarium** - Dims room before observing nocturnal animals. Guide explains how shelter placement changes visible behavior.\n4. **Bicycle class** - Demonstrates braking on quiet paved courtyard. Riders explain how wet surfaces alter stopping distance.\n5. **Costume studio** - Pins paper pattern onto inexpensive cotton first. Fitting reveals which seams need more room before cutting final cloth.\n6. **Pottery instructor** - Places fired tiles beside unfired samples. Students explain how glaze thickness changes reflected color.\n7. **Climbing center** - Closes route while wall anchors examined. Next group practices knot inspection beside training mat.",
+          "finish": [
+            "length"
+          ],
+          "latency": 171.13744611199945,
+          "ttft": 156.14497764315456,
+          "start_time": 2241112.310709174,
+          "completed_time": 2241283.448155286,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+          "prompt_tokens": 204781,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activity types from the observations:\n\n1. **Planetarium** - Operator darkens dome before aligning star projector. Visitors compare projected horizon with marked reference circle.\n2. **Tea workshop** - Heats identical cups before comparing prepared infusions. Participants describe aroma separately from bitterness and mouthfeel.\n3. **Public aquarium** - Dims room before observing nocturnal animals. Guide explains how shelter placement changes visible behavior.\n4. **Bicycle class** - Demonstrates braking on quiet paved courtyard. Riders explain how wet surfaces alter stopping distance.\n5. **Costume studio** - Pins paper pattern onto inexpensive cotton first. Fitting reveals which seams need more room before cutting final cloth.\n6. **Pottery instructor** - Places fired tiles beside unfired samples. Students explain how glaze thickness changes reflected color.\n7. **Climbing center** - Closes route while wall anchors examined. Next group practices knot inspection beside training mat.",
+          "finish": [
+            "length"
+          ],
+          "latency": 171.19872628478333,
+          "ttft": 156.19381263200194,
+          "start_time": 2241283.451457233,
+          "completed_time": 2241454.650183518,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+          "prompt_tokens": 204781,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activity types from the observations:\n\n1. **Planetarium** - Operator darkens dome before aligning star projector. Visitors compare projected horizon with marked reference circle.\n2. **Tea workshop** - Heats identical cups before comparing prepared infusions. Participants describe aroma separately from bitterness and mouthfeel.\n3. **Public aquarium** - Dims room before observing nocturnal animals. Guide explains how shelter placement changes visible behavior.\n4. **Bicycle class** - Demonstrates braking on quiet paved courtyard. Riders explain how wet surfaces alter stopping distance.\n5. **Costume studio** - Pins paper pattern onto inexpensive cotton first. Fitting reveals which seams need more room before cutting final cloth.\n6. **Pottery instructor** - Places fired tiles beside unfired samples. Students explain how glaze thickness changes reflected color.\n7. **Climbing center** - Closes route while wall anchors examined. Next group practices knot inspection beside training mat.",
+          "finish": [
+            "length"
+          ],
+          "latency": 171.20405893679708,
+          "ttft": 156.18115846300498,
+          "start_time": 2241454.653447076,
+          "completed_time": 2241625.857506013,
+          "first_request": false
+        }
+      ],
+      "quality": [
+        {
+          "prompt_sha256": "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392",
+          "prompt_tokens": 1024,
+          "completion_tokens": 7,
+          "text": "710003",
+          "finish": [
+            "stop"
+          ],
+          "latency": 1.1100521022453904,
+          "ttft": 0.7872044681571424,
+          "start_time": 2241631.336535549,
+          "completed_time": 2241632.446587651,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "f17889bf3cec9aead6db4da85c4d517a4d795407932c30b9f273363dec239dd0",
+          "prompt_tokens": 1024,
+          "completion_tokens": 7,
+          "text": "710130",
+          "finish": [
+            "stop"
+          ],
+          "latency": 1.0901697459630668,
+          "ttft": 0.7677667578682303,
+          "start_time": 2241632.446912345,
+          "completed_time": 2241633.537082091,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "e647c72568b4bf9589fd5c63e8a214898769f0285839cf53987c0e47ec12e4ff",
+          "prompt_tokens": 1024,
+          "completion_tokens": 7,
+          "text": "710257",
+          "finish": [
+            "stop"
+          ],
+          "latency": 1.0921906060539186,
+          "ttft": 0.7697488991543651,
+          "start_time": 2241633.537391145,
+          "completed_time": 2241634.629581751,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "4e4b462f767736bc27913543654afae84da78917924d4f2d60f8990a6b7a3a94",
+          "prompt_tokens": 4096,
+          "completion_tokens": 7,
+          "text": "710384",
+          "finish": [
+            "stop"
+          ],
+          "latency": 2.904469125904143,
+          "ttft": 2.5675814570859075,
+          "start_time": 2241634.629905194,
+          "completed_time": 2241637.53437432,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "0e349879840c9c0cf3261f3263359482be3c1b4a9383c9bd68561014acefba6f",
+          "prompt_tokens": 4096,
+          "completion_tokens": 7,
+          "text": "710511",
+          "finish": [
+            "stop"
+          ],
+          "latency": 2.8998780311085284,
+          "ttft": 2.563032133039087,
+          "start_time": 2241637.534698012,
+          "completed_time": 2241640.434576043,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "c40c8baf22c4a45590d30a327475c9f2163af28cee13baef0bf290cd74779074",
+          "prompt_tokens": 4096,
+          "completion_tokens": 7,
+          "text": "710638",
+          "finish": [
+            "stop"
+          ],
+          "latency": 2.8992293127812445,
+          "ttft": 2.561454915907234,
+          "start_time": 2241640.434894903,
+          "completed_time": 2241643.334124216,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "b8198a7998b20d7edd3ada87edecbce958843b6bcafcf9d4983a239c6324fa02",
+          "prompt_tokens": 8192,
+          "completion_tokens": 7,
+          "text": "710765",
+          "finish": [
+            "stop"
+          ],
+          "latency": 5.362903296016157,
+          "ttft": 5.025699779391289,
+          "start_time": 2241643.334484908,
+          "completed_time": 2241648.697388204,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "d3f37a78f3f642d958c455757b859a222ab47784de1833847a5a5954aa37abb6",
+          "prompt_tokens": 8192,
+          "completion_tokens": 7,
+          "text": "710892",
+          "finish": [
+            "stop"
+          ],
+          "latency": 5.3481068052351475,
+          "ttft": 5.012970697134733,
+          "start_time": 2241648.697770822,
+          "completed_time": 2241654.045877627,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "46616386557835b6e297f422fe33ed022202e321bde2729c7232a741939c9a47",
+          "prompt_tokens": 8192,
+          "completion_tokens": 7,
+          "text": "711019",
+          "finish": [
+            "stop"
+          ],
+          "latency": 5.363825173582882,
+          "ttft": 5.027084348723292,
+          "start_time": 2241654.046265255,
+          "completed_time": 2241659.410090429,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "8e7d6e535925c3552adaf57319be27d987365520fa852409366c05cf32b6c423",
+          "prompt_tokens": 45056,
+          "completion_tokens": 7,
+          "text": "711146",
+          "finish": [
+            "stop"
+          ],
+          "latency": 29.92514318227768,
+          "ttft": 29.587632877286524,
+          "start_time": 2241659.410939897,
+          "completed_time": 2241689.336083079,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "12ba2ea94933c44aea775a49a5380161413c7d377208ae35c8ad20fab8c6f150",
+          "prompt_tokens": 204800,
+          "completion_tokens": 7,
+          "text": "711273",
+          "finish": [
+            "stop"
+          ],
+          "latency": 155.96834693429992,
+          "ttft": 155.6151926741004,
+          "start_time": 2241689.338814324,
+          "completed_time": 2241845.307161258,
+          "first_request": false
+        }
+      ]
+    },
+    "plain-candidate": {
+      "context-1024": [
+        {
+          "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+          "prompt_tokens": 998,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the unique activities from the observations:\n\n1. Planetarium operator - darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle (Obs 1, 4, 5, 14, 22, 31)\n2. Tea workshop - heats identical cups, compares prepared infusions, participants describe aroma separately from bitterness and mouthfeel (Obs 2, 21, 26, 30)\n3. Public aquarium - dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior (Obs 3, 10, 23)\n4. Bicycle class - demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance (Obs 6, 15, 28, 29)\n5. Costume studio - pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth (Obs 7, ",
+          "finish": [
+            "length"
+          ],
+          "latency": 14.652144020888954,
+          "ttft": 0.8648882978595793,
+          "start_time": 2241881.104448215,
+          "completed_time": 2241895.756592236,
+          "first_request": true
+        },
+        {
+          "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+          "prompt_tokens": 998,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the unique activities from the observations:\n\n1. Planetarium operator - darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle (Obs 1, 4, 5, 14, 22, 31)\n2. Tea workshop - heats identical cups, compares prepared infusions, participants describe aroma separately from bitterness and mouthfeel (Obs 2, 21, 26, 30)\n3. Public aquarium - dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior (Obs 3, 10, 23)\n4. Bicycle class - demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance (Obs 6, 15, 28, 29)\n5. Costume studio - pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth (Obs 7, ",
+          "finish": [
+            "length"
+          ],
+          "latency": 14.513978435657918,
+          "ttft": 0.7572234477847815,
+          "start_time": 2241895.756966248,
+          "completed_time": 2241910.270944684,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+          "prompt_tokens": 998,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the unique activities from the observations:\n\n1. Planetarium operator - darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle (Obs 1, 4, 5, 14, 22, 31)\n2. Tea workshop - heats identical cups, compares prepared infusions, participants describe aroma separately from bitterness and mouthfeel (Obs 2, 21, 26, 30)\n3. Public aquarium - dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior (Obs 3, 10, 23)\n4. Bicycle class - demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance (Obs 6, 15, 28, 29)\n5. Costume studio - pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth (Obs 7, ",
+          "finish": [
+            "length"
+          ],
+          "latency": 14.526732687838376,
+          "ttft": 0.7604007427580655,
+          "start_time": 2241910.271303789,
+          "completed_time": 2241924.798036477,
+          "first_request": false
+        }
+      ],
+      "context-4096": [
+        {
+          "prompt_sha256": "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+          "prompt_tokens": 4077,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to cover:\n1. Demonstrations\n2. Comparisons\n3. Participant safety\n4. Ways to distinguish observations from explanations\n\nThe observations describe several recurring activity types:\n- Planetarium: darkening dome, aligning star projector, comparing projected horizon with reference circle\n- Tea workshop: heating identical cups, comparing infusions, describing aroma separately from bitterness and mouthfeel\n- Public aquarium: dimming room, observing nocturnal animals, guide explaining shelter placement effects\n- Bicycle class: braking demonstration on quiet paved courtyard, riders explaining wet surface effects on stopping distance\n- Costume studio: pinning paper pattern onto cotton, fitting reveals seam adjustments before cutting final cloth\n- Pottery instructor: placing fired tiles beside unfired samples, students explaining glaze thickness effects on color\n- Climbing center: closing route while anchors examined, next group practices knot inspection\n- Tidal station: measuring water height against fixed stone marker, shaded diagram separating wave motion from rising tide\n\nLet me write a detailed review of at least 600 words covering all the required aspects.\n</think>\n\n# Review of Public Learning Program Field Notes",
+          "finish": [
+            "length"
+          ],
+          "latency": 16.862365449778736,
+          "ttft": 2.5698097497224808,
+          "start_time": 2241930.208515235,
+          "completed_time": 2241947.070880685,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+          "prompt_tokens": 4077,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to cover:\n1. Demonstrations\n2. Comparisons\n3. Participant safety\n4. Ways to distinguish observations from explanations\n\nThe observations describe several recurring activity types:\n- Planetarium: darkening dome, aligning star projector, comparing projected horizon with reference circle\n- Tea workshop: heating identical cups, comparing infusions, describing aroma separately from bitterness and mouthfeel\n- Public aquarium: dimming room, observing nocturnal animals, guide explaining shelter placement effects\n- Bicycle class: braking demonstration on quiet paved courtyard, riders explaining wet surface effects on stopping distance\n- Costume studio: pinning paper pattern onto cotton, fitting reveals seam adjustments before cutting final cloth\n- Pottery instructor: placing fired tiles beside unfired samples, students explaining glaze thickness effects on color\n- Climbing center: closing route while anchors examined, next group practices knot inspection\n- Tidal station: measuring water height against fixed stone marker, shaded diagram separating wave motion from rising tide\n\nLet me write a detailed review of at least 600 words covering all the required aspects.\n</think>\n\n# Review of Public Learning Program Field Notes",
+          "finish": [
+            "length"
+          ],
+          "latency": 16.84334565186873,
+          "ttft": 2.547034507151693,
+          "start_time": 2241947.071325392,
+          "completed_time": 2241963.914671044,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+          "prompt_tokens": 4077,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to cover:\n1. Demonstrations\n2. Comparisons\n3. Participant safety\n4. Ways to distinguish observations from explanations\n\nThe observations describe several recurring activity types:\n- Planetarium: darkening dome, aligning star projector, comparing projected horizon with reference circle\n- Tea workshop: heating identical cups, comparing infusions, describing aroma separately from bitterness and mouthfeel\n- Public aquarium: dimming room, observing nocturnal animals, guide explaining shelter placement effects\n- Bicycle class: braking demonstration on quiet paved courtyard, riders explaining wet surface effects on stopping distance\n- Costume studio: pinning paper pattern onto cotton, fitting reveals seam adjustments before cutting final cloth\n- Pottery instructor: placing fired tiles beside unfired samples, students explaining glaze thickness effects on color\n- Climbing center: closing route while anchors examined, next group practices knot inspection\n- Tidal station: measuring water height against fixed stone marker, shaded diagram separating wave motion from rising tide\n\nLet me write a detailed review of at least 600 words covering all the required aspects.\n</think>\n\n# Review of Public Learning Program Field Notes",
+          "finish": [
+            "length"
+          ],
+          "latency": 16.851667510345578,
+          "ttft": 2.555475033354014,
+          "start_time": 2241963.915061231,
+          "completed_time": 2241980.766728741,
+          "first_request": false
+        }
+      ],
+      "context-8192": [
+        {
+          "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+          "prompt_tokens": 8170,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the field notes observations. I need to cover:\n1. Demonstrations\n2. Comparisons\n3. Participant safety\n4. Ways to distinguish observations from explanations\n\nThe observations describe several recurring learning activities:\n- Planetarium: darkening dome, aligning star projector, comparing projected horizon with reference circle\n- Tea workshop: heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n- Public aquarium: dimming room, observing nocturnal animals, guide explaining shelter placement effects\n- Bicycle class: braking demonstration on quiet courtyard, riders explaining wet surface effects on stopping distance\n- Costume studio: pinning paper pattern on cotton, fitting reveals seam adjustments before cutting final cloth\n- Pottery: placing fired tiles beside unfired samples, students explaining glaze thickness effects on color\n- Climbing center: closing route while anchors examined, next group practices knot inspection\n- Tidal station: measuring water height against fixed stone marker, shaded diagram separating wave motion from rising tide\n\nLet me write a detailed review of at least 600 words covering all four required topics.\n</think>\n\n# Review of Public Learning Program Field Notes: A Detailed",
+          "finish": [
+            "length"
+          ],
+          "latency": 19.123533382080495,
+          "ttft": 4.973877443000674,
+          "start_time": 2241986.180104671,
+          "completed_time": 2242005.303638053,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+          "prompt_tokens": 8170,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the field notes observations. I need to cover:\n1. Demonstrations\n2. Comparisons\n3. Participant safety\n4. Ways to distinguish observations from explanations\n\nThe observations describe several recurring learning activities:\n- Planetarium: darkening dome, aligning star projector, comparing projected horizon with reference circle\n- Tea workshop: heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n- Public aquarium: dimming room, observing nocturnal animals, guide explaining shelter placement effects\n- Bicycle class: braking demonstration on quiet courtyard, riders explaining wet surface effects on stopping distance\n- Costume studio: pinning paper pattern on cotton, fitting reveals seam adjustments before cutting final cloth\n- Pottery: placing fired tiles beside unfired samples, students explaining glaze thickness effects on color\n- Climbing center: closing route while anchors examined, next group practices knot inspection\n- Tidal station: measuring water height against fixed stone marker, shaded diagram separating wave motion from rising tide\n\nLet me write a detailed review of at least 600 words covering all four required topics.\n</think>\n\n# Review of Public Learning Program Field Notes: A Detailed",
+          "finish": [
+            "length"
+          ],
+          "latency": 19.10179519187659,
+          "ttft": 4.9531642915681005,
+          "start_time": 2242005.30411601,
+          "completed_time": 2242024.405911202,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+          "prompt_tokens": 8170,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the field notes observations. I need to cover:\n1. Demonstrations\n2. Comparisons\n3. Participant safety\n4. Ways to distinguish observations from explanations\n\nThe observations describe several recurring learning activities:\n- Planetarium: darkening dome, aligning star projector, comparing projected horizon with reference circle\n- Tea workshop: heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n- Public aquarium: dimming room, observing nocturnal animals, guide explaining shelter placement effects\n- Bicycle class: braking demonstration on quiet courtyard, riders explaining wet surface effects on stopping distance\n- Costume studio: pinning paper pattern on cotton, fitting reveals seam adjustments before cutting final cloth\n- Pottery: placing fired tiles beside unfired samples, students explaining glaze thickness effects on color\n- Climbing center: closing route while anchors examined, next group practices knot inspection\n- Tidal station: measuring water height against fixed stone marker, shaded diagram separating wave motion from rising tide\n\nLet me write a detailed review of at least 600 words covering all four required topics.\n</think>\n\n# Review of Public Learning Program Field Notes: A Detailed",
+          "finish": [
+            "length"
+          ],
+          "latency": 19.106946833897382,
+          "ttft": 4.953185761347413,
+          "start_time": 2242024.40634488,
+          "completed_time": 2242043.513291714,
+          "first_request": false
+        }
+      ],
+      "context-45056": [
+        {
+          "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+          "prompt_tokens": 45044,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activities:\n1. Planetarium - darkening dome, aligning star projector, comparing projected horizon with reference circle\n2. Tea workshop - heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n3. Public aquarium - dimming room, observing nocturnal animals, guide explains shelter placement effects\n4. Bicycle class - braking demonstration on quiet paved courtyard, riders explain wet surface effects on stopping distance\n5. Costume studio - pinning paper pattern onto inexpensive cotton, fitting reveals seam adjustments before cutting final cloth\n6. Pottery instructor - placing fired tiles beside unfired samples, students explain glaze thickness effects on reflected color\n7. Climbing center - closing route while wall anchors examined, next group practices knot inspection beside training mat\n8. Tidal station - measuring water height against fixed stone marker, shaded diagram separates wave motion from gradual rising tide\n\nNow I need to write a review of at least 600 words covering:\n",
+          "finish": [
+            "length"
+          ],
+          "latency": 43.99591346597299,
+          "ttft": 29.70795604912564,
+          "start_time": 2242048.946046229,
+          "completed_time": 2242092.941959695,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+          "prompt_tokens": 45044,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activities:\n1. Planetarium - darkening dome, aligning star projector, comparing projected horizon with reference circle\n2. Tea workshop - heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n3. Public aquarium - dimming room, observing nocturnal animals, guide explains shelter placement effects\n4. Bicycle class - braking demonstration on quiet paved courtyard, riders explain wet surface effects on stopping distance\n5. Costume studio - pinning paper pattern onto inexpensive cotton, fitting reveals seam adjustments before cutting final cloth\n6. Pottery instructor - placing fired tiles beside unfired samples, students explain glaze thickness effects on reflected color\n7. Climbing center - closing route while wall anchors examined, next group practices knot inspection beside training mat\n8. Tidal station - measuring water height against fixed stone marker, shaded diagram separates wave motion from gradual rising tide\n\nNow I need to write a review of at least 600 words covering:\n",
+          "finish": [
+            "length"
+          ],
+          "latency": 43.98765222821385,
+          "ttft": 29.698450942058116,
+          "start_time": 2242092.942985145,
+          "completed_time": 2242136.930637373,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+          "prompt_tokens": 45044,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activities:\n1. Planetarium - darkening dome, aligning star projector, comparing projected horizon with reference circle\n2. Tea workshop - heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n3. Public aquarium - dimming room, observing nocturnal animals, guide explains shelter placement effects\n4. Bicycle class - braking demonstration on quiet paved courtyard, riders explain wet surface effects on stopping distance\n5. Costume studio - pinning paper pattern onto inexpensive cotton, fitting reveals seam adjustments before cutting final cloth\n6. Pottery instructor - placing fired tiles beside unfired samples, students explain glaze thickness effects on reflected color\n7. Climbing center - closing route while wall anchors examined, next group practices knot inspection beside training mat\n8. Tidal station - measuring water height against fixed stone marker, shaded diagram separates wave motion from gradual rising tide\n\nNow I need to write a review of at least 600 words covering:\n",
+          "finish": [
+            "length"
+          ],
+          "latency": 43.99548068828881,
+          "ttft": 29.68949894607067,
+          "start_time": 2242136.931660264,
+          "completed_time": 2242180.927140952,
+          "first_request": false
+        }
+      ],
+      "context-204800": [
+        {
+          "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+          "prompt_tokens": 204781,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activity types from the observations:\n\n1. **Planetarium** - Operator darkens dome before aligning star projector. Visitors compare projected horizon with marked reference circle.\n2. **Tea workshop** - Heats identical cups before comparing prepared infusions. Participants describe aroma separately from bitterness and mouthfeel.\n3. **Public aquarium** - Dims room before observing nocturnal animals. Guide explains how shelter placement changes visible behavior.\n4. **Bicycle class** - Demonstrates braking on quiet paved courtyard. Riders explain how wet surfaces alter stopping distance.\n5. **Costume studio** - Pins paper pattern onto inexpensive cotton first. Fitting reveals which seams need more room before cutting final cloth.\n6. **Pottery instructor** - Places fired tiles beside unfired samples. Students explain how glaze thickness changes reflected color.\n7. **Climbing center** - Closes route while wall anchors examined. Next group practices knot inspection beside training mat.",
+          "finish": [
+            "length"
+          ],
+          "latency": 171.17283925693482,
+          "ttft": 156.19392715813592,
+          "start_time": 2242186.350571199,
+          "completed_time": 2242357.523410456,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+          "prompt_tokens": 204781,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activity types from the observations:\n\n1. **Planetarium** - Operator darkens dome before aligning star projector. Visitors compare projected horizon with marked reference circle.\n2. **Tea workshop** - Heats identical cups before comparing prepared infusions. Participants describe aroma separately from bitterness and mouthfeel.\n3. **Public aquarium** - Dims room before observing nocturnal animals. Guide explains how shelter placement changes visible behavior.\n4. **Bicycle class** - Demonstrates braking on quiet paved courtyard. Riders explain how wet surfaces alter stopping distance.\n5. **Costume studio** - Pins paper pattern onto inexpensive cotton first. Fitting reveals which seams need more room before cutting final cloth.\n6. **Pottery instructor** - Places fired tiles beside unfired samples. Students explain how glaze thickness changes reflected color.\n7. **Climbing center** - Closes route while wall anchors examined. Next group practices knot inspection beside training mat.",
+          "finish": [
+            "length"
+          ],
+          "latency": 171.26716722594574,
+          "ttft": 156.2655961648561,
+          "start_time": 2242357.526744068,
+          "completed_time": 2242528.793911294,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+          "prompt_tokens": 204781,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activity types from the observations:\n\n1. **Planetarium** - Operator darkens dome before aligning star projector. Visitors compare projected horizon with marked reference circle.\n2. **Tea workshop** - Heats identical cups before comparing prepared infusions. Participants describe aroma separately from bitterness and mouthfeel.\n3. **Public aquarium** - Dims room before observing nocturnal animals. Guide explains how shelter placement changes visible behavior.\n4. **Bicycle class** - Demonstrates braking on quiet paved courtyard. Riders explain how wet surfaces alter stopping distance.\n5. **Costume studio** - Pins paper pattern onto inexpensive cotton first. Fitting reveals which seams need more room before cutting final cloth.\n6. **Pottery instructor** - Places fired tiles beside unfired samples. Students explain how glaze thickness changes reflected color.\n7. **Climbing center** - Closes route while wall anchors examined. Next group practices knot inspection beside training mat.",
+          "finish": [
+            "length"
+          ],
+          "latency": 171.25199717795476,
+          "ttft": 156.2468078341335,
+          "start_time": 2242528.797188893,
+          "completed_time": 2242700.049186071,
+          "first_request": false
+        }
+      ],
+      "quality": [
+        {
+          "prompt_sha256": "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392",
+          "prompt_tokens": 1024,
+          "completion_tokens": 7,
+          "text": "710003",
+          "finish": [
+            "stop"
+          ],
+          "latency": 1.1018103412352502,
+          "ttft": 0.7773157963529229,
+          "start_time": 2242705.508856326,
+          "completed_time": 2242706.610666667,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "f17889bf3cec9aead6db4da85c4d517a4d795407932c30b9f273363dec239dd0",
+          "prompt_tokens": 1024,
+          "completion_tokens": 7,
+          "text": "710130",
+          "finish": [
+            "stop"
+          ],
+          "latency": 1.0910069420933723,
+          "ttft": 0.7668057451955974,
+          "start_time": 2242706.611014966,
+          "completed_time": 2242707.702021908,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "e647c72568b4bf9589fd5c63e8a214898769f0285839cf53987c0e47ec12e4ff",
+          "prompt_tokens": 1024,
+          "completion_tokens": 7,
+          "text": "710257",
+          "finish": [
+            "stop"
+          ],
+          "latency": 1.096412437967956,
+          "ttft": 0.7725117718800902,
+          "start_time": 2242707.702348132,
+          "completed_time": 2242708.79876057,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "4e4b462f767736bc27913543654afae84da78917924d4f2d60f8990a6b7a3a94",
+          "prompt_tokens": 4096,
+          "completion_tokens": 7,
+          "text": "710384",
+          "finish": [
+            "stop"
+          ],
+          "latency": 2.9075387031771243,
+          "ttft": 2.57007431704551,
+          "start_time": 2242708.799085138,
+          "completed_time": 2242711.706623841,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "0e349879840c9c0cf3261f3263359482be3c1b4a9383c9bd68561014acefba6f",
+          "prompt_tokens": 4096,
+          "completion_tokens": 7,
+          "text": "710511",
+          "finish": [
+            "stop"
+          ],
+          "latency": 2.9082450149580836,
+          "ttft": 2.5713080461136997,
+          "start_time": 2242711.706927972,
+          "completed_time": 2242714.615172987,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "c40c8baf22c4a45590d30a327475c9f2163af28cee13baef0bf290cd74779074",
+          "prompt_tokens": 4096,
+          "completion_tokens": 7,
+          "text": "710638",
+          "finish": [
+            "stop"
+          ],
+          "latency": 2.9035563240759075,
+          "ttft": 2.5658497028052807,
+          "start_time": 2242714.615469389,
+          "completed_time": 2242717.519025713,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "b8198a7998b20d7edd3ada87edecbce958843b6bcafcf9d4983a239c6324fa02",
+          "prompt_tokens": 8192,
+          "completion_tokens": 7,
+          "text": "710765",
+          "finish": [
+            "stop"
+          ],
+          "latency": 5.366013477090746,
+          "ttft": 5.03090947214514,
+          "start_time": 2242717.519419938,
+          "completed_time": 2242722.885433415,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "d3f37a78f3f642d958c455757b859a222ab47784de1833847a5a5954aa37abb6",
+          "prompt_tokens": 8192,
+          "completion_tokens": 7,
+          "text": "710892",
+          "finish": [
+            "stop"
+          ],
+          "latency": 5.361090742051601,
+          "ttft": 5.023453203961253,
+          "start_time": 2242722.885830881,
+          "completed_time": 2242728.246921623,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "46616386557835b6e297f422fe33ed022202e321bde2729c7232a741939c9a47",
+          "prompt_tokens": 8192,
+          "completion_tokens": 7,
+          "text": "711019",
+          "finish": [
+            "stop"
+          ],
+          "latency": 5.371523343957961,
+          "ttft": 5.0360198291018605,
+          "start_time": 2242728.247319376,
+          "completed_time": 2242733.61884272,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "8e7d6e535925c3552adaf57319be27d987365520fa852409366c05cf32b6c423",
+          "prompt_tokens": 45056,
+          "completion_tokens": 7,
+          "text": "711146",
+          "finish": [
+            "stop"
+          ],
+          "latency": 29.95943413581699,
+          "ttft": 29.623122864868492,
+          "start_time": 2242733.619682791,
+          "completed_time": 2242763.579116927,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "12ba2ea94933c44aea775a49a5380161413c7d377208ae35c8ad20fab8c6f150",
+          "prompt_tokens": 204800,
+          "completion_tokens": 7,
+          "text": "711273",
+          "finish": [
+            "stop"
+          ],
+          "latency": 156.01910743536428,
+          "ttft": 155.66495519131422,
+          "start_time": 2242763.581824891,
+          "completed_time": 2242919.600932326,
+          "first_request": false
+        }
+      ]
+    },
+    "mtp-candidate": {
+      "context-1024": [
+        {
+          "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+          "prompt_tokens": 998,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the distinct activities from the observations:\n\n1. Planetarium (Observations 1, 4, 5, 14, 22, 31) - Darkening dome, aligning star projector, comparing projected horizon with marked reference circle\n2. Tea workshop (Observations 2, 21, 26, 30) - Heating identical cups, comparing infusions, describing aroma separately from bitterness and mouthfeel\n3. Public aquarium (Observations 3, 10, 23) - Dimming room, observing nocturnal animals, guide explains shelter placement changes behavior\n4. Bicycle class (Observations 6, 15, 28, 29) - Braking demonstration on quiet paved courtyard, riders explain wet surfaces alter stopping distance\n5. Costume studio (Observations 7, 12, 16) - Pinning paper pattern onto inexpensive cotton, fitting reveals",
+          "finish": [
+            "length"
+          ],
+          "latency": 8.26874946989119,
+          "ttft": 1.0917489198036492,
+          "start_time": 2242959.266251562,
+          "completed_time": 2242967.535001032,
+          "first_request": true
+        },
+        {
+          "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+          "prompt_tokens": 998,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the distinct activities from the observations:\n\n1. Planetarium (Observations 1, 4, 5, 14, 22, 31) - Darkening dome, aligning star projector, comparing projected horizon with marked reference circle\n2. Tea workshop (Observations 2, 21, 26, 30) - Heating identical cups, comparing infusions, describing aroma separately from bitterness and mouthfeel\n3. Public aquarium (Observations 3, 10, 23) - Dimming room, observing nocturnal animals, guide explains shelter placement changes behavior\n4. Bicycle class (Observations 6, 15, 28, 29) - Braking demonstration on quiet paved courtyard, riders explain wet surfaces alter stopping distance\n5. Costume studio (Observations 7, 12, 16) - Pinning paper pattern onto inexpensive cotton, fitting reveals",
+          "finish": [
+            "length"
+          ],
+          "latency": 8.06579909613356,
+          "ttft": 0.9158505839295685,
+          "start_time": 2242967.53540333,
+          "completed_time": 2242975.601202426,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+          "prompt_tokens": 998,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the distinct activities from the observations:\n\n1. Planetarium (Observations 1, 4, 5, 14, 22, 31) - Darkening dome, aligning star projector, comparing projected horizon with marked reference circle\n2. Tea workshop (Observations 2, 21, 26, 30) - Heating identical cups, comparing infusions, describing aroma separately from bitterness and mouthfeel\n3. Public aquarium (Observations 3, 10, 23) - Dimming room, observing nocturnal animals, guide explains shelter placement changes behavior\n4. Bicycle class (Observations 6, 15, 28, 29) - Braking demonstration on quiet paved courtyard, riders explain wet surfaces alter stopping distance\n5. Costume studio (Observations 7, 12, 16) - Pinning paper pattern onto inexpensive cotton, fitting reveals",
+          "finish": [
+            "length"
+          ],
+          "latency": 8.072339320089668,
+          "ttft": 0.9163582590408623,
+          "start_time": 2242975.60156254,
+          "completed_time": 2242983.67390186,
+          "first_request": false
+        }
+      ],
+      "context-4096": [
+        {
+          "prompt_sha256": "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+          "prompt_tokens": 4077,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on 130 numbered observations from a public learning program. I need to cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations. The review must be at least 600 words.\n\nLet me first categorize the observations:\n- Planetarium: observations 1, 4, 5, 14, 22, 31, 60, 69, 71, 91, 92, 97, 103, 109, 116, 117, 125, 127, 130\n- Tea workshop: observations 2, 21, 26, 30, 34, 40, 44, 46, 63, 67, 77, 86, 89, 99, 123\n- Public aquarium: observations 3, 10, 23, 32, 43, 49, 52, 54",
+          "finish": [
+            "length"
+          ],
+          "latency": 9.965662137139589,
+          "ttft": 2.9541388200595975,
+          "start_time": 2242989.172339759,
+          "completed_time": 2242999.138001896,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+          "prompt_tokens": 4077,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on 130 numbered observations from a public learning program. I need to cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations. The review must be at least 600 words.\n\nLet me first categorize the observations:\n- Planetarium: observations 1, 4, 5, 14, 22, 31, 60, 69, 71, 91, 92, 97, 103, 109, 116, 117, 125, 127, 130\n- Tea workshop: observations 2, 21, 26, 30, 34, 40, 44, 46, 63, 67, 77, 86, 89, 99, 123\n- Public aquarium: observations 3, 10, 23, 32, 43, 49, 52, 54",
+          "finish": [
+            "length"
+          ],
+          "latency": 9.798995934892446,
+          "ttft": 2.8590417127124965,
+          "start_time": 2242999.138403694,
+          "completed_time": 2243008.937399629,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+          "prompt_tokens": 4077,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on 130 numbered observations from a public learning program. I need to cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations. The review must be at least 600 words.\n\nLet me first categorize the observations:\n- Planetarium: observations 1, 4, 5, 14, 22, 31, 60, 69, 71, 91, 92, 97, 103, 109, 116, 117, 125, 127, 130\n- Tea workshop: observations 2, 21, 26, 30, 34, 40, 44, 46, 63, 67, 77, 86, 89, 99, 123\n- Public aquarium: observations 3, 10, 23, 32, 43, 49, 52, 54",
+          "finish": [
+            "length"
+          ],
+          "latency": 9.789660685230047,
+          "ttft": 2.86019404232502,
+          "start_time": 2243008.937780677,
+          "completed_time": 2243018.727441362,
+          "first_request": false
+        }
+      ],
+      "context-8192": [
+        {
+          "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+          "prompt_tokens": 8170,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the field notes observations. I need to cover:\n1. Demonstrations\n2. Comparisons\n3. Participant safety\n4. Ways to distinguish observations from explanations\n\nThe observations describe several recurring learning activities:\n- Planetarium: darkening dome, aligning star projector, comparing projected horizon with reference circle\n- Tea workshop: heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n- Public aquarium: dimming room, observing nocturnal animals, guide explaining shelter placement effects\n- Bicycle class: braking demonstration on quiet courtyard, explaining wet surface effects on stopping distance\n- Costume studio: pinning paper pattern on cotton, fitting to reveal seam adjustments before cutting final cloth\n- Pottery: placing fired tiles beside unfired samples, explaining glaze thickness effects on color\n- Climbing center: closing route while anchors examined, knot inspection practice\n- Tidal station: measuring water height against fixed marker, diagram separating wave motion from tide\n\nLet me write a comprehensive review of at least 600 words covering all the requested aspects.\n</think>\n\n# Review of Public Learning Program Field Notes: A Detailed Analysis of Demonstrations, Compar",
+          "finish": [
+            "length"
+          ],
+          "latency": 12.944025615230203,
+          "ttft": 5.534690663218498,
+          "start_time": 2243024.16685673,
+          "completed_time": 2243037.110882345,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+          "prompt_tokens": 8170,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the field notes observations. I need to cover:\n1. Demonstrations\n2. Comparisons\n3. Participant safety\n4. Ways to distinguish observations from explanations\n\nThe observations describe several recurring learning activities:\n- Planetarium: darkening dome, aligning star projector, comparing projected horizon with reference circle\n- Tea workshop: heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n- Public aquarium: dimming room, observing nocturnal animals, guide explaining shelter placement effects\n- Bicycle class: braking demonstration on quiet courtyard, explaining wet surface effects on stopping distance\n- Costume studio: pinning paper pattern on cotton, fitting to reveal seam adjustments before cutting final cloth\n- Pottery: placing fired tiles beside unfired samples, explaining glaze thickness effects on color\n- Climbing center: closing route while anchors examined, knot inspection practice\n- Tidal station: measuring water height against fixed marker, diagram separating wave motion from tide\n\nLet me write a comprehensive review of at least 600 words covering all the requested aspects.\n</think>\n\n# Review of Public Learning Program Field Notes: A Detailed Analysis of Demonstrations, Compar",
+          "finish": [
+            "length"
+          ],
+          "latency": 12.860508610028774,
+          "ttft": 5.485856496263295,
+          "start_time": 2243037.111391476,
+          "completed_time": 2243049.971900086,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+          "prompt_tokens": 8170,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the field notes observations. I need to cover:\n1. Demonstrations\n2. Comparisons\n3. Participant safety\n4. Ways to distinguish observations from explanations\n\nThe observations describe several recurring learning activities:\n- Planetarium: darkening dome, aligning star projector, comparing projected horizon with reference circle\n- Tea workshop: heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n- Public aquarium: dimming room, observing nocturnal animals, guide explaining shelter placement effects\n- Bicycle class: braking demonstration on quiet courtyard, explaining wet surface effects on stopping distance\n- Costume studio: pinning paper pattern on cotton, fitting to reveal seam adjustments before cutting final cloth\n- Pottery: placing fired tiles beside unfired samples, explaining glaze thickness effects on color\n- Climbing center: closing route while anchors examined, knot inspection practice\n- Tidal station: measuring water height against fixed marker, diagram separating wave motion from tide\n\nLet me write a comprehensive review of at least 600 words covering all the requested aspects.\n</think>\n\n# Review of Public Learning Program Field Notes: A Detailed Analysis of Demonstrations, Compar",
+          "finish": [
+            "length"
+          ],
+          "latency": 12.865091271232814,
+          "ttft": 5.496302543208003,
+          "start_time": 2243049.972382478,
+          "completed_time": 2243062.837473749,
+          "first_request": false
+        }
+      ],
+      "context-45056": [
+        {
+          "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+          "prompt_tokens": 45044,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the numbered observations. I need to cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations. The review must be at least 600 words.\n\nLet me analyze the observations to identify the distinct learning activities:\n\n1. **Planetarium** - Operator darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle\n2. **Tea workshop** - Heats identical cups, compares infusions, participants describe aroma separately from bitterness and mouthfeel\n3. **Public aquarium** - Dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior\n4. **Bicycle class** - Demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance\n5. **Costume studio** - Pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth\n6. **Pottery instructor** - Places fired tiles beside unfired samples, students explain how glaze thickness changes reflected color\n7. **Climbing center** - Closes route while wall anchors examined, next group practices knot inspection beside training mat\n8. **Tidal station**",
+          "finish": [
+            "length"
+          ],
+          "latency": 38.17839318001643,
+          "ttft": 31.08531218394637,
+          "start_time": 2243068.37176609,
+          "completed_time": 2243106.55015927,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+          "prompt_tokens": 45044,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the numbered observations. I need to cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations. The review must be at least 600 words.\n\nLet me analyze the observations to identify the distinct learning activities:\n\n1. **Planetarium** - Operator darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle\n2. **Tea workshop** - Heats identical cups, compares infusions, participants describe aroma separately from bitterness and mouthfeel\n3. **Public aquarium** - Dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior\n4. **Bicycle class** - Demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance\n5. **Costume studio** - Pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth\n6. **Pottery instructor** - Places fired tiles beside unfired samples, students explain how glaze thickness changes reflected color\n7. **Climbing center** - Closes route while wall anchors examined, next group practices knot inspection beside training mat\n8. **Tidal station**",
+          "finish": [
+            "length"
+          ],
+          "latency": 38.159717838745564,
+          "ttft": 31.055240483023226,
+          "start_time": 2243106.551183728,
+          "completed_time": 2243144.710901567,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+          "prompt_tokens": 45044,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the numbered observations. I need to cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations. The review must be at least 600 words.\n\nLet me analyze the observations to identify the distinct learning activities:\n\n1. **Planetarium** - Operator darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle\n2. **Tea workshop** - Heats identical cups, compares infusions, participants describe aroma separately from bitterness and mouthfeel\n3. **Public aquarium** - Dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior\n4. **Bicycle class** - Demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance\n5. **Costume studio** - Pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth\n6. **Pottery instructor** - Places fired tiles beside unfired samples, students explain how glaze thickness changes reflected color\n7. **Climbing center** - Closes route while wall anchors examined, next group practices knot inspection beside training mat\n8. **Tidal station**",
+          "finish": [
+            "length"
+          ],
+          "latency": 38.16230252571404,
+          "ttft": 31.073038714006543,
+          "start_time": 2243144.711880451,
+          "completed_time": 2243182.874182977,
+          "first_request": false
+        }
+      ],
+      "context-204800": [
+        {
+          "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+          "prompt_tokens": 204781,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activities:\n1. Planetarium - operator darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle\n2. Tea workshop - heats identical cups, compares prepared infusions, participants describe aroma separately from bitterness and mouthfeel\n3. Public aquarium - dims room, observes nocturnal animals, guide explains how shelter placement changes visible behavior\n4. Bicycle class - demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance\n5. Costume studio - pins paper pattern onto inexpensive cotton first, fitting reveals which seams need more room before cutting final cloth\n6. Pottery instructor - places fired tiles beside unfired samples, students explain how glaze thickness changes reflected color\n7. Climbing center - closes route while wall anchors examined, next group practices knot inspection beside training mat\n8. Tidal station - measures water height against fixed stone marker, shaded diagram separates wave motion from gradual rising tide\n\nNow I need to write a review of at",
+          "finish": [
+            "length"
+          ],
+          "latency": 171.7619572598487,
+          "ttft": 163.93093367107213,
+          "start_time": 2243188.309194223,
+          "completed_time": 2243360.071151483,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+          "prompt_tokens": 204781,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activities:\n1. Planetarium - operator darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle\n2. Tea workshop - heats identical cups, compares prepared infusions, participants describe aroma separately from bitterness and mouthfeel\n3. Public aquarium - dims room, observes nocturnal animals, guide explains how shelter placement changes visible behavior\n4. Bicycle class - demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance\n5. Costume studio - pins paper pattern onto inexpensive cotton first, fitting reveals which seams need more room before cutting final cloth\n6. Pottery instructor - places fired tiles beside unfired samples, students explain how glaze thickness changes reflected color\n7. Climbing center - closes route while wall anchors examined, next group practices knot inspection beside training mat\n8. Tidal station - measures water height against fixed stone marker, shaded diagram separates wave motion from gradual rising tide\n\nNow I need to write a review of at",
+          "finish": [
+            "length"
+          ],
+          "latency": 171.7837016992271,
+          "ttft": 164.04722254816443,
+          "start_time": 2243360.074485596,
+          "completed_time": 2243531.858187295,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+          "prompt_tokens": 204781,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activities:\n1. Planetarium - operator darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle\n2. Tea workshop - heats identical cups, compares prepared infusions, participants describe aroma separately from bitterness and mouthfeel\n3. Public aquarium - dims room, observes nocturnal animals, guide explains how shelter placement changes visible behavior\n4. Bicycle class - demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance\n5. Costume studio - pins paper pattern onto inexpensive cotton first, fitting reveals which seams need more room before cutting final cloth\n6. Pottery instructor - places fired tiles beside unfired samples, students explain how glaze thickness changes reflected color\n7. Climbing center - closes route while wall anchors examined, next group practices knot inspection beside training mat\n8. Tidal station - measures water height against fixed stone marker, shaded diagram separates wave motion from gradual rising tide\n\nNow I need to write a review of at",
+          "finish": [
+            "length"
+          ],
+          "latency": 172.89562582131475,
+          "ttft": 165.14227290917188,
+          "start_time": 2243531.861532795,
+          "completed_time": 2243704.757158616,
+          "first_request": false
+        }
+      ],
+      "quality": [
+        {
+          "prompt_sha256": "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392",
+          "prompt_tokens": 1024,
+          "completion_tokens": 7,
+          "text": "710003",
+          "finish": [
+            "stop"
+          ],
+          "latency": 1.0208508451469243,
+          "ttft": 0.9317494952119887,
+          "start_time": 2243710.377718364,
+          "completed_time": 2243711.398569209,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "f17889bf3cec9aead6db4da85c4d517a4d795407932c30b9f273363dec239dd0",
+          "prompt_tokens": 1024,
+          "completion_tokens": 7,
+          "text": "710130",
+          "finish": [
+            "stop"
+          ],
+          "latency": 1.0056056221947074,
+          "ttft": 0.9143478679470718,
+          "start_time": 2243711.398925507,
+          "completed_time": 2243712.404531129,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "e647c72568b4bf9589fd5c63e8a214898769f0285839cf53987c0e47ec12e4ff",
+          "prompt_tokens": 1024,
+          "completion_tokens": 7,
+          "text": "710257",
+          "finish": [
+            "stop"
+          ],
+          "latency": 1.0122407949529588,
+          "ttft": 0.9229902527295053,
+          "start_time": 2243712.404860713,
+          "completed_time": 2243713.417101508,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "4e4b462f767736bc27913543654afae84da78917924d4f2d60f8990a6b7a3a94",
+          "prompt_tokens": 4096,
+          "completion_tokens": 7,
+          "text": "710384",
+          "finish": [
+            "stop"
+          ],
+          "latency": 2.9607384940609336,
+          "ttft": 2.866950160358101,
+          "start_time": 2243713.417409369,
+          "completed_time": 2243716.378147863,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "0e349879840c9c0cf3261f3263359482be3c1b4a9383c9bd68561014acefba6f",
+          "prompt_tokens": 4096,
+          "completion_tokens": 7,
+          "text": "710511",
+          "finish": [
+            "stop"
+          ],
+          "latency": 2.9610211197286844,
+          "ttft": 2.8671520641073585,
+          "start_time": 2243716.378502855,
+          "completed_time": 2243719.339523975,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "c40c8baf22c4a45590d30a327475c9f2163af28cee13baef0bf290cd74779074",
+          "prompt_tokens": 4096,
+          "completion_tokens": 7,
+          "text": "710638",
+          "finish": [
+            "stop"
+          ],
+          "latency": 2.9698174269869924,
+          "ttft": 2.871666339226067,
+          "start_time": 2243719.339841309,
+          "completed_time": 2243722.309658736,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "b8198a7998b20d7edd3ada87edecbce958843b6bcafcf9d4983a239c6324fa02",
+          "prompt_tokens": 8192,
+          "completion_tokens": 7,
+          "text": "710765",
+          "finish": [
+            "stop"
+          ],
+          "latency": 5.652346118353307,
+          "ttft": 5.559348829090595,
+          "start_time": 2243722.310021802,
+          "completed_time": 2243727.96236792,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "d3f37a78f3f642d958c455757b859a222ab47784de1833847a5a5954aa37abb6",
+          "prompt_tokens": 8192,
+          "completion_tokens": 7,
+          "text": "710892",
+          "finish": [
+            "stop"
+          ],
+          "latency": 5.637060923036188,
+          "ttft": 5.547014539130032,
+          "start_time": 2243727.962746181,
+          "completed_time": 2243733.599807104,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "46616386557835b6e297f422fe33ed022202e321bde2729c7232a741939c9a47",
+          "prompt_tokens": 8192,
+          "completion_tokens": 7,
+          "text": "711019",
+          "finish": [
+            "stop"
+          ],
+          "latency": 5.6472196308895946,
+          "ttft": 5.554771177005023,
+          "start_time": 2243733.600184205,
+          "completed_time": 2243739.247403836,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "8e7d6e535925c3552adaf57319be27d987365520fa852409366c05cf32b6c423",
+          "prompt_tokens": 45056,
+          "completion_tokens": 7,
+          "text": "711146",
+          "finish": [
+            "stop"
+          ],
+          "latency": 31.202335006091744,
+          "ttft": 31.10968559095636,
+          "start_time": 2243739.248242829,
+          "completed_time": 2243770.450577835,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "12ba2ea94933c44aea775a49a5380161413c7d377208ae35c8ad20fab8c6f150",
+          "prompt_tokens": 204800,
+          "completion_tokens": 7,
+          "text": "711273",
+          "finish": [
+            "stop"
+          ],
+          "latency": 164.34603550238535,
+          "ttft": 164.2410390540026,
+          "start_time": 2243770.453264313,
+          "completed_time": 2243934.799299815,
+          "first_request": false
+        }
+      ]
+    },
+    "mtp-parent": {
+      "context-1024": [
+        {
+          "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+          "prompt_tokens": 998,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the distinct activities from the observations:\n\n1. Planetarium (Observations 1, 4, 5, 14, 22, 31) - Darkening dome, aligning star projector, comparing projected horizon with marked reference circle\n2. Tea workshop (Observations 2, 21, 26, 30) - Heating identical cups, comparing infusions, describing aroma separately from bitterness and mouthfeel\n3. Public aquarium (Observations 3, 10, 23) - Dimming room, observing nocturnal animals, guide explains shelter placement changes behavior\n4. Bicycle class (Observations 6, 15, 28, 29) - Braking demonstration on quiet paved courtyard, riders explain wet surfaces alter stopping distance\n5. Costume studio (Observations 7, 12, 16) - Pinning paper pattern onto inexpensive cotton, fitting reveals",
+          "finish": [
+            "length"
+          ],
+          "latency": 8.344419542700052,
+          "ttft": 1.1272180690430105,
+          "start_time": 2245411.265190319,
+          "completed_time": 2245419.609609862,
+          "first_request": true
+        },
+        {
+          "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+          "prompt_tokens": 998,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the distinct activities from the observations:\n\n1. Planetarium (Observations 1, 4, 5, 14, 22, 31) - Darkening dome, aligning star projector, comparing projected horizon with marked reference circle\n2. Tea workshop (Observations 2, 21, 26, 30) - Heating identical cups, comparing infusions, describing aroma separately from bitterness and mouthfeel\n3. Public aquarium (Observations 3, 10, 23) - Dimming room, observing nocturnal animals, guide explains shelter placement changes behavior\n4. Bicycle class (Observations 6, 15, 28, 29) - Braking demonstration on quiet paved courtyard, riders explain wet surfaces alter stopping distance\n5. Costume studio (Observations 7, 12, 16) - Pinning paper pattern onto inexpensive cotton, fitting reveals",
+          "finish": [
+            "length"
+          ],
+          "latency": 8.09274783032015,
+          "ttft": 0.9127224162220955,
+          "start_time": 2245419.609947995,
+          "completed_time": 2245427.702695825,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+          "prompt_tokens": 998,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the distinct activities from the observations:\n\n1. Planetarium (Observations 1, 4, 5, 14, 22, 31) - Darkening dome, aligning star projector, comparing projected horizon with marked reference circle\n2. Tea workshop (Observations 2, 21, 26, 30) - Heating identical cups, comparing infusions, describing aroma separately from bitterness and mouthfeel\n3. Public aquarium (Observations 3, 10, 23) - Dimming room, observing nocturnal animals, guide explains shelter placement changes behavior\n4. Bicycle class (Observations 6, 15, 28, 29) - Braking demonstration on quiet paved courtyard, riders explain wet surfaces alter stopping distance\n5. Costume studio (Observations 7, 12, 16) - Pinning paper pattern onto inexpensive cotton, fitting reveals",
+          "finish": [
+            "length"
+          ],
+          "latency": 8.083029213827103,
+          "ttft": 0.9040789678692818,
+          "start_time": 2245427.703016282,
+          "completed_time": 2245435.786045496,
+          "first_request": false
+        }
+      ],
+      "context-4096": [
+        {
+          "prompt_sha256": "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+          "prompt_tokens": 4077,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on 130 numbered observations from a public learning program. I need to cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations. The review must be at least 600 words.\n\nLet me first categorize the observations:\n- Planetarium: observations 1, 4, 5, 14, 22, 31, 60, 69, 71, 91, 92, 97, 103, 109, 116, 117, 125, 127, 130\n- Tea workshop: observations 2, 21, 26, 30, 34, 40, 44, 46, 63, 67, 77, 86, 89, 99, 123\n- Public aquarium: observations 3, 10, 23, 32, 43, 49, 52, 54",
+          "finish": [
+            "length"
+          ],
+          "latency": 9.906293848063797,
+          "ttft": 2.9495111480355263,
+          "start_time": 2245441.240477788,
+          "completed_time": 2245451.146771636,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+          "prompt_tokens": 4077,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on 130 numbered observations from a public learning program. I need to cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations. The review must be at least 600 words.\n\nLet me first categorize the observations:\n- Planetarium: observations 1, 4, 5, 14, 22, 31, 60, 69, 71, 91, 92, 97, 103, 109, 116, 117, 125, 127, 130\n- Tea workshop: observations 2, 21, 26, 30, 34, 40, 44, 46, 63, 67, 77, 86, 89, 99, 123\n- Public aquarium: observations 3, 10, 23, 32, 43, 49, 52, 54",
+          "finish": [
+            "length"
+          ],
+          "latency": 9.825613594148308,
+          "ttft": 2.865116326138377,
+          "start_time": 2245451.147197918,
+          "completed_time": 2245460.972811512,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+          "prompt_tokens": 4077,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on 130 numbered observations from a public learning program. I need to cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations. The review must be at least 600 words.\n\nLet me first categorize the observations:\n- Planetarium: observations 1, 4, 5, 14, 22, 31, 60, 69, 71, 91, 92, 97, 103, 109, 116, 117, 125, 127, 130\n- Tea workshop: observations 2, 21, 26, 30, 34, 40, 44, 46, 63, 67, 77, 86, 89, 99, 123\n- Public aquarium: observations 3, 10, 23, 32, 43, 49, 52, 54",
+          "finish": [
+            "length"
+          ],
+          "latency": 9.83259795513004,
+          "ttft": 2.8616982181556523,
+          "start_time": 2245460.973204293,
+          "completed_time": 2245470.805802248,
+          "first_request": false
+        }
+      ],
+      "context-8192": [
+        {
+          "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+          "prompt_tokens": 8170,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the field notes observations. I need to cover:\n1. Demonstrations\n2. Comparisons\n3. Participant safety\n4. Ways to distinguish observations from explanations\n\nThe observations describe several recurring learning activities:\n- Planetarium: darkening dome, aligning star projector, comparing projected horizon with reference circle\n- Tea workshop: heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n- Public aquarium: dimming room, observing nocturnal animals, guide explaining shelter placement effects\n- Bicycle class: braking demonstration on quiet courtyard, explaining wet surface effects on stopping distance\n- Costume studio: pinning paper pattern on cotton, fitting to reveal seam adjustments before cutting final cloth\n- Pottery: placing fired tiles beside unfired samples, explaining glaze thickness effects on color\n- Climbing center: closing route while anchors examined, knot inspection practice\n- Tidal station: measuring water height against fixed marker, diagram separating wave motion from tide\n\nLet me write a comprehensive review of at least 600 words covering all the requested aspects.\n</think>\n\n# Review of Public Learning Program Field Notes: A Detailed Analysis of Demonstrations, Compar",
+          "finish": [
+            "length"
+          ],
+          "latency": 12.916720170062035,
+          "ttft": 5.541333991102874,
+          "start_time": 2245476.190656621,
+          "completed_time": 2245489.107376791,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+          "prompt_tokens": 8170,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the field notes observations. I need to cover:\n1. Demonstrations\n2. Comparisons\n3. Participant safety\n4. Ways to distinguish observations from explanations\n\nThe observations describe several recurring learning activities:\n- Planetarium: darkening dome, aligning star projector, comparing projected horizon with reference circle\n- Tea workshop: heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n- Public aquarium: dimming room, observing nocturnal animals, guide explaining shelter placement effects\n- Bicycle class: braking demonstration on quiet courtyard, explaining wet surface effects on stopping distance\n- Costume studio: pinning paper pattern on cotton, fitting to reveal seam adjustments before cutting final cloth\n- Pottery: placing fired tiles beside unfired samples, explaining glaze thickness effects on color\n- Climbing center: closing route while anchors examined, knot inspection practice\n- Tidal station: measuring water height against fixed marker, diagram separating wave motion from tide\n\nLet me write a comprehensive review of at least 600 words covering all the requested aspects.\n</think>\n\n# Review of Public Learning Program Field Notes: A Detailed Analysis of Demonstrations, Compar",
+          "finish": [
+            "length"
+          ],
+          "latency": 12.863230360206217,
+          "ttft": 5.478494273032993,
+          "start_time": 2245489.107859776,
+          "completed_time": 2245501.971090136,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+          "prompt_tokens": 8170,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the field notes observations. I need to cover:\n1. Demonstrations\n2. Comparisons\n3. Participant safety\n4. Ways to distinguish observations from explanations\n\nThe observations describe several recurring learning activities:\n- Planetarium: darkening dome, aligning star projector, comparing projected horizon with reference circle\n- Tea workshop: heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n- Public aquarium: dimming room, observing nocturnal animals, guide explaining shelter placement effects\n- Bicycle class: braking demonstration on quiet courtyard, explaining wet surface effects on stopping distance\n- Costume studio: pinning paper pattern on cotton, fitting to reveal seam adjustments before cutting final cloth\n- Pottery: placing fired tiles beside unfired samples, explaining glaze thickness effects on color\n- Climbing center: closing route while anchors examined, knot inspection practice\n- Tidal station: measuring water height against fixed marker, diagram separating wave motion from tide\n\nLet me write a comprehensive review of at least 600 words covering all the requested aspects.\n</think>\n\n# Review of Public Learning Program Field Notes: A Detailed Analysis of Demonstrations, Compar",
+          "finish": [
+            "length"
+          ],
+          "latency": 12.941815682686865,
+          "ttft": 5.52321445196867,
+          "start_time": 2245501.97153139,
+          "completed_time": 2245514.913347073,
+          "first_request": false
+        }
+      ],
+      "context-45056": [
+        {
+          "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+          "prompt_tokens": 45044,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the numbered observations. I need to cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations. The review must be at least 600 words.\n\nLet me analyze the observations to identify the distinct learning activities:\n\n1. **Planetarium** - Operator darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle\n2. **Tea workshop** - Heats identical cups, compares infusions, participants describe aroma separately from bitterness and mouthfeel\n3. **Public aquarium** - Dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior\n4. **Bicycle class** - Demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance\n5. **Costume studio** - Pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth\n6. **Pottery instructor** - Places fired tiles beside unfired samples, students explain how glaze thickness changes reflected color\n7. **Climbing center** - Closes route while wall anchors examined, next group practices knot inspection beside training mat\n8. **Tidal station**",
+          "finish": [
+            "length"
+          ],
+          "latency": 38.214535277336836,
+          "ttft": 31.09655544301495,
+          "start_time": 2245520.407848878,
+          "completed_time": 2245558.622384155,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+          "prompt_tokens": 45044,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the numbered observations. I need to cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations. The review must be at least 600 words.\n\nLet me analyze the observations to identify the distinct learning activities:\n\n1. **Planetarium** - Operator darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle\n2. **Tea workshop** - Heats identical cups, compares infusions, participants describe aroma separately from bitterness and mouthfeel\n3. **Public aquarium** - Dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior\n4. **Bicycle class** - Demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance\n5. **Costume studio** - Pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth\n6. **Pottery instructor** - Places fired tiles beside unfired samples, students explain how glaze thickness changes reflected color\n7. **Climbing center** - Closes route while wall anchors examined, next group practices knot inspection beside training mat\n8. **Tidal station**",
+          "finish": [
+            "length"
+          ],
+          "latency": 38.16325476858765,
+          "ttft": 31.06102472078055,
+          "start_time": 2245558.62340222,
+          "completed_time": 2245596.786656989,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+          "prompt_tokens": 45044,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the numbered observations. I need to cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations. The review must be at least 600 words.\n\nLet me analyze the observations to identify the distinct learning activities:\n\n1. **Planetarium** - Operator darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle\n2. **Tea workshop** - Heats identical cups, compares infusions, participants describe aroma separately from bitterness and mouthfeel\n3. **Public aquarium** - Dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior\n4. **Bicycle class** - Demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance\n5. **Costume studio** - Pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth\n6. **Pottery instructor** - Places fired tiles beside unfired samples, students explain how glaze thickness changes reflected color\n7. **Climbing center** - Closes route while wall anchors examined, next group practices knot inspection beside training mat\n8. **Tidal station**",
+          "finish": [
+            "length"
+          ],
+          "latency": 38.16721532912925,
+          "ttft": 31.05996486498043,
+          "start_time": 2245596.787655221,
+          "completed_time": 2245634.95487055,
+          "first_request": false
+        }
+      ],
+      "context-204800": [
+        {
+          "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+          "prompt_tokens": 204781,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activities:\n1. Planetarium - operator darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle\n2. Tea workshop - heats identical cups, compares prepared infusions, participants describe aroma separately from bitterness and mouthfeel\n3. Public aquarium - dims room, observes nocturnal animals, guide explains how shelter placement changes visible behavior\n4. Bicycle class - demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance\n5. Costume studio - pins paper pattern onto inexpensive cotton first, fitting reveals which seams need more room before cutting final cloth\n6. Pottery instructor - places fired tiles beside unfired samples, students explain how glaze thickness changes reflected color\n7. Climbing center - closes route while wall anchors examined, next group practices knot inspection beside training mat\n8. Tidal station - measures water height against fixed stone marker, shaded diagram separates wave motion from gradual rising tide\n\nNow I need to write a review of at",
+          "finish": [
+            "length"
+          ],
+          "latency": 171.696615468245,
+          "ttft": 163.892337274272,
+          "start_time": 2245640.38276512,
+          "completed_time": 2245812.079380588,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+          "prompt_tokens": 204781,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activities:\n1. Planetarium - operator darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle\n2. Tea workshop - heats identical cups, compares prepared infusions, participants describe aroma separately from bitterness and mouthfeel\n3. Public aquarium - dims room, observes nocturnal animals, guide explains how shelter placement changes visible behavior\n4. Bicycle class - demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance\n5. Costume studio - pins paper pattern onto inexpensive cotton first, fitting reveals which seams need more room before cutting final cloth\n6. Pottery instructor - places fired tiles beside unfired samples, students explain how glaze thickness changes reflected color\n7. Climbing center - closes route while wall anchors examined, next group practices knot inspection beside training mat\n8. Tidal station - measures water height against fixed stone marker, shaded diagram separates wave motion from gradual rising tide\n\nNow I need to write a review of at",
+          "finish": [
+            "length"
+          ],
+          "latency": 171.5390819068998,
+          "ttft": 163.7670994978398,
+          "start_time": 2245812.08269669,
+          "completed_time": 2245983.621778597,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+          "prompt_tokens": 204781,
+          "completion_tokens": 256,
+          "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activities:\n1. Planetarium - operator darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle\n2. Tea workshop - heats identical cups, compares prepared infusions, participants describe aroma separately from bitterness and mouthfeel\n3. Public aquarium - dims room, observes nocturnal animals, guide explains how shelter placement changes visible behavior\n4. Bicycle class - demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance\n5. Costume studio - pins paper pattern onto inexpensive cotton first, fitting reveals which seams need more room before cutting final cloth\n6. Pottery instructor - places fired tiles beside unfired samples, students explain how glaze thickness changes reflected color\n7. Climbing center - closes route while wall anchors examined, next group practices knot inspection beside training mat\n8. Tidal station - measures water height against fixed stone marker, shaded diagram separates wave motion from gradual rising tide\n\nNow I need to write a review of at",
+          "finish": [
+            "length"
+          ],
+          "latency": 171.5101935006678,
+          "ttft": 163.7398998956196,
+          "start_time": 2245983.626103693,
+          "completed_time": 2246155.136297194,
+          "first_request": false
+        }
+      ],
+      "quality": [
+        {
+          "prompt_sha256": "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392",
+          "prompt_tokens": 1024,
+          "completion_tokens": 7,
+          "text": "710003",
+          "finish": [
+            "stop"
+          ],
+          "latency": 1.029326786287129,
+          "ttft": 0.9406785480678082,
+          "start_time": 2246160.650470052,
+          "completed_time": 2246161.679796838,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "f17889bf3cec9aead6db4da85c4d517a4d795407932c30b9f273363dec239dd0",
+          "prompt_tokens": 1024,
+          "completion_tokens": 7,
+          "text": "710130",
+          "finish": [
+            "stop"
+          ],
+          "latency": 1.0169894299469888,
+          "ttft": 0.9269753438420594,
+          "start_time": 2246161.680147935,
+          "completed_time": 2246162.697137365,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "e647c72568b4bf9589fd5c63e8a214898769f0285839cf53987c0e47ec12e4ff",
+          "prompt_tokens": 1024,
+          "completion_tokens": 7,
+          "text": "710257",
+          "finish": [
+            "stop"
+          ],
+          "latency": 1.0211327248252928,
+          "ttft": 0.9318190482445061,
+          "start_time": 2246162.697476842,
+          "completed_time": 2246163.718609567,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "4e4b462f767736bc27913543654afae84da78917924d4f2d60f8990a6b7a3a94",
+          "prompt_tokens": 4096,
+          "completion_tokens": 7,
+          "text": "710384",
+          "finish": [
+            "stop"
+          ],
+          "latency": 2.9851431287825108,
+          "ttft": 2.887388634029776,
+          "start_time": 2246163.718928322,
+          "completed_time": 2246166.704071451,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "0e349879840c9c0cf3261f3263359482be3c1b4a9383c9bd68561014acefba6f",
+          "prompt_tokens": 4096,
+          "completion_tokens": 7,
+          "text": "710511",
+          "finish": [
+            "stop"
+          ],
+          "latency": 2.9855700409971178,
+          "ttft": 2.8896222417242825,
+          "start_time": 2246166.704404095,
+          "completed_time": 2246169.689974136,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "c40c8baf22c4a45590d30a327475c9f2163af28cee13baef0bf290cd74779074",
+          "prompt_tokens": 4096,
+          "completion_tokens": 7,
+          "text": "710638",
+          "finish": [
+            "stop"
+          ],
+          "latency": 2.9747140910476446,
+          "ttft": 2.8797786864452064,
+          "start_time": 2246169.690300429,
+          "completed_time": 2246172.66501452,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "b8198a7998b20d7edd3ada87edecbce958843b6bcafcf9d4983a239c6324fa02",
+          "prompt_tokens": 8192,
+          "completion_tokens": 7,
+          "text": "710765",
+          "finish": [
+            "stop"
+          ],
+          "latency": 5.645944450981915,
+          "ttft": 5.555886402726173,
+          "start_time": 2246172.665375858,
+          "completed_time": 2246178.311320309,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "d3f37a78f3f642d958c455757b859a222ab47784de1833847a5a5954aa37abb6",
+          "prompt_tokens": 8192,
+          "completion_tokens": 7,
+          "text": "710892",
+          "finish": [
+            "stop"
+          ],
+          "latency": 5.622916227206588,
+          "ttft": 5.532385541126132,
+          "start_time": 2246178.311679814,
+          "completed_time": 2246183.934596041,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "46616386557835b6e297f422fe33ed022202e321bde2729c7232a741939c9a47",
+          "prompt_tokens": 8192,
+          "completion_tokens": 7,
+          "text": "711019",
+          "finish": [
+            "stop"
+          ],
+          "latency": 5.6326360502280295,
+          "ttft": 5.542086494155228,
+          "start_time": 2246183.934964195,
+          "completed_time": 2246189.567600245,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "8e7d6e535925c3552adaf57319be27d987365520fa852409366c05cf32b6c423",
+          "prompt_tokens": 45056,
+          "completion_tokens": 7,
+          "text": "711146",
+          "finish": [
+            "stop"
+          ],
+          "latency": 31.09008476883173,
+          "ttft": 30.99740772182122,
+          "start_time": 2246189.568431004,
+          "completed_time": 2246220.658515773,
+          "first_request": false
+        },
+        {
+          "prompt_sha256": "12ba2ea94933c44aea775a49a5380161413c7d377208ae35c8ad20fab8c6f150",
+          "prompt_tokens": 204800,
+          "completion_tokens": 7,
+          "text": "711273",
+          "finish": [
+            "stop"
+          ],
+          "latency": 163.29606191907078,
+          "ttft": 163.19306933600456,
+          "start_time": 2246220.661297726,
+          "completed_time": 2246383.957359645,
+          "first_request": false
+        }
+      ]
+    }
+  },
+  "summaries": {
+    "plain-parent": {
+      "context-1024": {
+        "latency_mean": 14.541145399212837,
+        "ttft_mean": 0.7981424249398211,
+        "decode_tps": 18.554896661039916
+      },
+      "context-4096": {
+        "latency_mean": 16.877082619816065,
+        "ttft_mean": 2.5581289742452404,
+        "decode_tps": 17.80856383167895
+      },
+      "context-8192": {
+        "latency_mean": 19.135530036563676,
+        "ttft_mean": 4.959477522255232,
+        "decode_tps": 17.98808234821496
+      },
+      "context-45056": {
+        "latency_mean": 43.95690438399712,
+        "ttft_mean": 29.648826430862147,
+        "decode_tps": 17.82210027337237
+      },
+      "context-204800": {
+        "latency_mean": 171.1800771111933,
+        "ttft_mean": 156.17331624605382,
+        "decode_tps": 16.99234113821072
+      }
+    },
+    "plain-candidate": {
+      "context-1024": {
+        "latency_mean": 14.564285048128417,
+        "ttft_mean": 0.7941708294674754,
+        "decode_tps": 18.51836491337377
+      },
+      "context-4096": {
+        "latency_mean": 16.852459537331015,
+        "ttft_mean": 2.557439763409396,
+        "decode_tps": 17.838380361333677
+      },
+      "context-8192": {
+        "latency_mean": 19.11075846928482,
+        "ttft_mean": 4.960075831972063,
+        "decode_tps": 18.020332059996292
+      },
+      "context-45056": {
+        "latency_mean": 43.99301546082521,
+        "ttft_mean": 29.698635312418144,
+        "decode_tps": 17.839178568957852
+      },
+      "context-204800": {
+        "latency_mean": 171.2306678869451,
+        "ttft_mean": 156.23544371904185,
+        "decode_tps": 17.005414333572837
+      }
+    },
+    "mtp-candidate": {
+      "context-1024": {
+        "latency_mean": 8.135629295371473,
+        "ttft_mean": 0.97465258759136,
+        "decode_tps": 35.60966756433557
+      },
+      "context-4096": {
+        "latency_mean": 9.851439585754028,
+        "ttft_mean": 2.8911248583657048,
+        "decode_tps": 36.636274362220135
+      },
+      "context-8192": {
+        "latency_mean": 12.889875165497264,
+        "ttft_mean": 5.505616567563266,
+        "decode_tps": 34.532918453227666
+      },
+      "context-45056": {
+        "latency_mean": 38.166804514825344,
+        "ttft_mean": 31.071197126992047,
+        "decode_tps": 35.9377268304393
+      },
+      "context-204800": {
+        "latency_mean": 172.14709492679685,
+        "ttft_mean": 164.37347637613615,
+        "decode_tps": 32.80325608185734
+      }
+    },
+    "mtp-parent": {
+      "context-1024": {
+        "latency_mean": 8.173398862282435,
+        "ttft_mean": 0.9813398177114626,
+        "decode_tps": 35.455771208175825
+      },
+      "context-4096": {
+        "latency_mean": 9.854835132447382,
+        "ttft_mean": 2.892108564109852,
+        "decode_tps": 36.62358380689443
+      },
+      "context-8192": {
+        "latency_mean": 12.907255404318372,
+        "ttft_mean": 5.514347572034846,
+        "decode_tps": 34.492517123838596
+      },
+      "context-45056": {
+        "latency_mean": 38.18166845835125,
+        "ttft_mean": 31.072515009591978,
+        "decode_tps": 35.86924967057845
+      },
+      "context-204800": {
+        "latency_mean": 171.58196362527087,
+        "ttft_mean": 163.7997788892438,
+        "decode_tps": 32.76714812737554
+      }
+    }
+  },
+  "comparisons": [
+    {
+      "mode": "plain",
+      "case": "context-1024",
+      "parent": {
+        "latency_mean": 14.541145399212837,
+        "ttft_mean": 0.7981424249398211,
+        "decode_tps": 18.554896661039916
+      },
+      "candidate": {
+        "latency_mean": 14.564285048128417,
+        "ttft_mean": 0.7941708294674754,
+        "decode_tps": 18.51836491337377
+      },
+      "ttft_gain": 0.004976048570084712,
+      "decode_gain": -0.001968846732671503,
+      "latency_gain": -0.0015913222982304465
+    },
+    {
+      "mode": "plain",
+      "case": "context-4096",
+      "parent": {
+        "latency_mean": 16.877082619816065,
+        "ttft_mean": 2.5581289742452404,
+        "decode_tps": 17.80856383167895
+      },
+      "candidate": {
+        "latency_mean": 16.852459537331015,
+        "ttft_mean": 2.557439763409396,
+        "decode_tps": 17.838380361333677
+      },
+      "ttft_gain": 0.00026941989351714213,
+      "decode_gain": 0.0016742804156777424,
+      "latency_gain": 0.0014589655712260452
+    },
+    {
+      "mode": "plain",
+      "case": "context-8192",
+      "parent": {
+        "latency_mean": 19.135530036563676,
+        "ttft_mean": 4.959477522255232,
+        "decode_tps": 17.98808234821496
+      },
+      "candidate": {
+        "latency_mean": 19.11075846928482,
+        "ttft_mean": 4.960075831972063,
+        "decode_tps": 18.020332059996292
+      },
+      "ttft_gain": -0.00012063966701059137,
+      "decode_gain": 0.0017928376775822041,
+      "latency_gain": 0.001294532591024189
+    },
+    {
+      "mode": "plain",
+      "case": "context-45056",
+      "parent": {
+        "latency_mean": 43.95690438399712,
+        "ttft_mean": 29.648826430862147,
+        "decode_tps": 17.82210027337237
+      },
+      "candidate": {
+        "latency_mean": 43.99301546082521,
+        "ttft_mean": 29.698635312418144,
+        "decode_tps": 17.839178568957852
+      },
+      "ttft_gain": -0.0016799613189462104,
+      "decode_gain": 0.0009582650374264645,
+      "latency_gain": -0.0008215109169797952
+    },
+    {
+      "mode": "plain",
+      "case": "context-204800",
+      "parent": {
+        "latency_mean": 171.1800771111933,
+        "ttft_mean": 156.17331624605382,
+        "decode_tps": 16.99234113821072
+      },
+      "candidate": {
+        "latency_mean": 171.2306678869451,
+        "ttft_mean": 156.23544371904185,
+        "decode_tps": 17.005414333572837
+      },
+      "ttft_gain": -0.0003978110632558707,
+      "decode_gain": 0.0007693581040884023,
+      "latency_gain": -0.00029554126044084583
+    },
+    {
+      "mode": "mtp",
+      "case": "context-1024",
+      "parent": {
+        "latency_mean": 8.173398862282435,
+        "ttft_mean": 0.9813398177114626,
+        "decode_tps": 35.455771208175825
+      },
+      "candidate": {
+        "latency_mean": 8.135629295371473,
+        "ttft_mean": 0.97465258759136,
+        "decode_tps": 35.60966756433557
+      },
+      "ttft_gain": 0.006814387839370051,
+      "decode_gain": 0.004340516393118277,
+      "latency_gain": 0.0046210355749620735
+    },
+    {
+      "mode": "mtp",
+      "case": "context-4096",
+      "parent": {
+        "latency_mean": 9.854835132447382,
+        "ttft_mean": 2.892108564109852,
+        "decode_tps": 36.62358380689443
+      },
+      "candidate": {
+        "latency_mean": 9.851439585754028,
+        "ttft_mean": 2.8911248583657048,
+        "decode_tps": 36.636274362220135
+      },
+      "ttft_gain": 0.0003401344459730282,
+      "decode_gain": 0.0003465132028754869,
+      "latency_gain": 0.00034455641801400816
+    },
+    {
+      "mode": "mtp",
+      "case": "context-8192",
+      "parent": {
+        "latency_mean": 12.907255404318372,
+        "ttft_mean": 5.514347572034846,
+        "decode_tps": 34.492517123838596
+      },
+      "candidate": {
+        "latency_mean": 12.889875165497264,
+        "ttft_mean": 5.505616567563266,
+        "decode_tps": 34.532918453227666
+      },
+      "ttft_gain": 0.0015833250185132153,
+      "decode_gain": 0.0011713070763730293,
+      "latency_gain": 0.0013465479900004462
+    },
+    {
+      "mode": "mtp",
+      "case": "context-45056",
+      "parent": {
+        "latency_mean": 38.18166845835125,
+        "ttft_mean": 31.072515009591978,
+        "decode_tps": 35.86924967057845
+      },
+      "candidate": {
+        "latency_mean": 38.166804514825344,
+        "ttft_mean": 31.071197126992047,
+        "decode_tps": 35.9377268304393
+      },
+      "ttft_gain": 4.241312940145292e-05,
+      "decode_gain": 0.0019090770085727904,
+      "latency_gain": 0.0003892952855666376
+    },
+    {
+      "mode": "mtp",
+      "case": "context-204800",
+      "parent": {
+        "latency_mean": 171.58196362527087,
+        "ttft_mean": 163.7997788892438,
+        "decode_tps": 32.76714812737554
+      },
+      "candidate": {
+        "latency_mean": 172.14709492679685,
+        "ttft_mean": 164.37347637613615,
+        "decode_tps": 32.80325608185734
+      },
+      "ttft_gain": -0.0035024313877753954,
+      "decode_gain": 0.0011019559694800396,
+      "latency_gain": -0.0032936521391035978
+    }
+  ],
+  "pilot_pairs": [
+    {
+      "parent": "parent-0",
+      "candidate": "candidate-0",
+      "case": "earth-python",
+      "latency_reduction": 0.013319642196412018,
+      "ttft_reduction": 0.01331619294679387,
+      "decode_tps_gain": 0.1307673406030967,
+      "target_case": false,
+      "meets_investment_target": false
+    },
+    {
+      "parent": "parent-0",
+      "candidate": "candidate-0",
+      "case": "cabin-python",
+      "latency_reduction": 0.030984272363354215,
+      "ttft_reduction": 0.03094277854219374,
+      "decode_tps_gain": 2.7025573285068614,
+      "target_case": true,
+      "meets_investment_target": true
+    },
+    {
+      "parent": "parent-0",
+      "candidate": "candidate-0",
+      "case": "multiple-real-photos",
+      "latency_reduction": 0.03510189611085868,
+      "ttft_reduction": 0.03512043318413449,
+      "decode_tps_gain": -0.5137319673860425,
+      "target_case": true,
+      "meets_investment_target": true
+    },
+    {
+      "parent": "parent-0",
+      "candidate": "candidate-0",
+      "case": "motion-forward",
+      "latency_reduction": 0.011236902416177585,
+      "ttft_reduction": 0.011236455997193917,
+      "decode_tps_gain": 0.016378022176366303,
+      "target_case": false,
+      "meets_investment_target": false
+    },
+    {
+      "parent": "parent-0",
+      "candidate": "candidate-0",
+      "case": "text-python",
+      "latency_reduction": -0.004465419936453996,
+      "ttft_reduction": -0.004489063293855677,
+      "decode_tps_gain": 0.26735651493229784,
+      "target_case": false,
+      "meets_investment_target": false
+    },
+    {
+      "parent": "parent-1",
+      "candidate": "candidate-1",
+      "case": "earth-python",
+      "latency_reduction": 0.011656384271626519,
+      "ttft_reduction": 0.011669960376658794,
+      "decode_tps_gain": -0.2953652200229526,
+      "target_case": false,
+      "meets_investment_target": false
+    },
+    {
+      "parent": "parent-1",
+      "candidate": "candidate-1",
+      "case": "cabin-python",
+      "latency_reduction": 0.03235317581978425,
+      "ttft_reduction": 0.03235817058148183,
+      "decode_tps_gain": -0.18072211000029892,
+      "target_case": true,
+      "meets_investment_target": true
+    },
+    {
+      "parent": "parent-1",
+      "candidate": "candidate-1",
+      "case": "multiple-real-photos",
+      "latency_reduction": 0.03588816569716069,
+      "ttft_reduction": 0.035865087542410024,
+      "decode_tps_gain": 1.3726944113770747,
+      "target_case": true,
+      "meets_investment_target": true
+    },
+    {
+      "parent": "parent-1",
+      "candidate": "candidate-1",
+      "case": "motion-forward",
+      "latency_reduction": 0.00928300417075989,
+      "ttft_reduction": 0.009293596030179319,
+      "decode_tps_gain": -0.09658529642238589,
+      "target_case": false,
+      "meets_investment_target": false
+    },
+    {
+      "parent": "parent-1",
+      "candidate": "candidate-1",
+      "case": "text-python",
+      "latency_reduction": -0.006487448281363051,
+      "ttft_reduction": -0.006503398805136618,
+      "decode_tps_gain": 0.18859486172934714,
+      "target_case": false,
+      "meets_investment_target": false
+    }
+  ],
+  "statistics": "inconclusive; one complete start per identity/mode; no statistical noninferiority",
+  "performance_accepted": false,
+  "default_unchanged": true,
+  "cleanup": {
+    "owned_pids_reaped": 4795,
+    "gpu_empty": true,
+    "port_free": true,
+    "lock_available": true
+  },
+  "audit_tool": {
+    "path": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/audit_vision_rowmax_final.py",
+    "sha256": "766efd677f96f5d43d8c8453f15fcde04d05c559e2c0639aa80b6d8ce4f8a0ca"
+  }
+}

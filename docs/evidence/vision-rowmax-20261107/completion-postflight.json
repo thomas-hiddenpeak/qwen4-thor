@@ -1,0 +1,20 @@
+{
+  "status": "POST_ABORT_RESOURCES_RELEASED",
+  "own_pids_absent": true,
+  "port_free": true,
+  "lock_device": 66305,
+  "lock_inode": 3294067,
+  "original_status": "ENV_ABORT",
+  "original_custody_complete": false,
+  "default_pair": {
+    "q4t": "ea1b474d7d69808696e697346a60ee09bb9ecaca9bfb99925b78dcdbda7a4550",
+    "q4t.release.json": "3eb463850cf07338406b811197a68a5dcb9474ac9c2cf039470aa4f654924724"
+  },
+  "note": "New cleanup-only strict lease, zero model/HTTP tests; original failed custody is not reconstructed.",
+  "own_pid_count": 718,
+  "gpu_status": "OK",
+  "gpu_pids": [],
+  "cleanup_guard_status": "COMPLETED",
+  "original_stage_status": "ENV_ABORT",
+  "lock_available_after_cleanup": true
+}

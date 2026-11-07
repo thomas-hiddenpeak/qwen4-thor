@@ -1,0 +1,24 @@
+{
+  "profile": "vision-rowmax-mtp-completion-abort-v1",
+  "source_commit": "84bbf01215fa164d72e2afa1b1e0627033a39737",
+  "audit_tool": {
+    "path": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/audit_vision_rowmax_completion.py",
+    "sha256": "fb76e244a337572d1003138ada4323b6e957fbf149a2b6aa533f2e4821f47b5c"
+  },
+  "files": {
+    "completion-acceptance-audit.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/completion-acceptance-audit.json",
+      "sha256": "7185e5620805e07b93381fd1aaacb2eaf2f8d1d779602dedce959682228f387e"
+    },
+    "completion-originals.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/completion-originals.json",
+      "sha256": "a905303de977b87c325907a584be050a40fa5d484ceeb147c3ac1159cf21a5f1"
+    },
+    "completion-decision.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/completion-decision.json",
+      "sha256": "40163f01441ce526f290cd0fd1543144bf299079047f5aaa6c0ff454de80d16f"
+    }
+  },
+  "original_stages_preserved": true,
+  "archive_file_count": 3558
+}

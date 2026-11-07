@@ -1,0 +1,24 @@
+{
+  "status": "SEALED_UNRESOLVED_ENV_ABORT",
+  "source_commit": "b1a7e8b9371b73907341265f8cd0279490237fcd",
+  "files": 3547,
+  "objects": 3273,
+  "manifest_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/env-02/originals.json",
+  "manifest_sha256": "301564101f9dd825fa1309a6734fa4bb28f419186cf3989a49ebd788166097c4",
+  "object_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/env-02/originals",
+  "selected_files": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/env-02/plan.json": "4090563642658e8781ad083d3dae84be7bcecf33cbcc22457f8b33b33694b739",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/env-02/lease/exit.json": "6ec8cc054b63cf0a4b15ed8cd69f6df42de279603a865bd1134174136e1b5c5b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/env-02/execution/result.json": "836dac2815229abde13c82ae15305376793b3590c3d3562629d4db0309e740a1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/env-02/review/analyze.py": "81a9f94a6ad1598e93d29acab488b6e37f0e78affa1a3cd126db0e647b9004a5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/env-02/review/analysis.json": "895c03914436b26ed3561408cb86c1e9ba8532e4a178daa5fc61448ba966f660",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/env-02/review/postflight.json": "f2a522558d47f7a90ee4a820b0b1989f258e7590722941ce9f3cdafb81035fc6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/env-02/review/kernel.jsonl": "3e5de243ba370f29d29ff9bf0317950649b56fa713773c77847e2e00fb5a64c3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/env-02/execution/allocator-trace/trace.txt": "7a6f8c08907d13c765622a3ccb8b9de128cca5396024aff0fb0d9e0850989ad8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/env-02/execution/allocator-trace/collected.json": "880f6d042ddbafe89509e41c80e531c54ac022a9efe4a8d0bcde63de2626186d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/env-02/inputs/mm_page_alloc.format": "14c1b4218867098eb3792379f8377b6dbe3f64643684e142debfe062f4f4a110",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/vision-attention-rowmax-20261107/driver-source-review/util-v6.8.c": "64033b8fbb3d0c161e3910d31db55129f8b45f19de77a2a3d63c73cabe6c7b01"
+  },
+  "performance_accepted": false,
+  "default_unchanged": true
+}

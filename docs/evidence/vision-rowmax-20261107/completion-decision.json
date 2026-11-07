@@ -1,0 +1,53 @@
+{
+  "status": "HOLD_USER_REQUESTED_WAIT_FOR_ENVIRONMENT",
+  "performance_accepted": false,
+  "binary_sha256": "34e7ceefd60c23e451e9dba6d67cde99e9db25191f56a6aa489478d3afdea889",
+  "runtime_source_commit": "c6eef3c2669b1ac674be458cc50a98519740df81",
+  "tool_source_commit": "84bbf01215fa164d72e2afa1b1e0627033a39737",
+  "pilot_sha256": "2ddf0d0d690dae0fbe712cb3664f8d353a31578aa291b7e6b858f4d9a02b490d",
+  "acceptance_audit_sha256": "7185e5620805e07b93381fd1aaacb2eaf2f8d1d779602dedce959682228f387e",
+  "acceptance_originals_sha256": "a905303de977b87c325907a584be050a40fa5d484ceeb147c3ac1159cf21a5f1",
+  "original_abort_decision_sha256": "5b13149b70dbd9728eda2797b25568b6f0c084ff87be3b64ef537611f76443b1",
+  "evidence_validity": "New MTP lease ENV_ABORT after NVML init TIMEOUT; original abort and missing custody retained",
+  "measurement_completeness": "Candidate 1K/4K/8K/44K: 12 raw records. 200K: two server completions without client records and one cancelled. Parent and quality absent.",
+  "statistics": "No comparable completed MTP pair; no full optimization acceptance",
+  "engineering_decision": "Retain candidate and draft PR; wait for environment handling as explicitly selected by user; no automatic retries or extra driver diagnosis",
+  "current_attempt": {
+    "model_starts": 1,
+    "chat_received": 15,
+    "server_completed": 14,
+    "client_records": 12,
+    "server_cancelled": 1,
+    "controls": 0,
+    "native": 0,
+    "lease_seconds": 787.8214856479317
+  },
+  "cleanup": {
+    "own_pids_absent": 718,
+    "gpu_empty_at_cleanup": true,
+    "port_free": true,
+    "original_lock_available": true,
+    "original_custody_complete": false,
+    "cleanup_only_attempts": 2,
+    "corrected_command_only": true
+  },
+  "default_pair": {
+    "q4t": "ea1b474d7d69808696e697346a60ee09bb9ecaca9bfb99925b78dcdbda7a4550",
+    "q4t.release.json": "3eb463850cf07338406b811197a68a5dcb9474ac9c2cf039470aa4f654924724"
+  },
+  "deployment_performed": false,
+  "mainline_merged": false,
+  "missing": [
+    "Complete comparable MTP five tiers and fixed quality",
+    "Full acceptance decision",
+    "Conditional deployment health"
+  ],
+  "next_action": "Wait for user/environment readiness; any continuation requires a new bounded affected-only plan",
+  "exclusions": [
+    "nvJPEG",
+    "video hardware decoding",
+    "vision concurrency",
+    "old package migration",
+    "long soak"
+  ]
+}

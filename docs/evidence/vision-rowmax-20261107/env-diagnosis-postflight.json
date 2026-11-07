@@ -1,0 +1,63 @@
+{
+  "unix_seconds": 1794006801.1269283,
+  "gpu": {
+    "status": "OK",
+    "pids": [],
+    "request_id": "4a348554b370f0cdefebfe4a8f6559fb",
+    "worker_pid": 4132995,
+    "stdout": "{\"request_id\": \"4a348554b370f0cdefebfe4a8f6559fb\", \"monotonic\": 2196883.674478137, \"event\": \"begin\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"4a348554b370f0cdefebfe4a8f6559fb\", \"monotonic\": 2196883.682265191, \"event\": \"end\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"4a348554b370f0cdefebfe4a8f6559fb\", \"monotonic\": 2196883.682301358, \"event\": \"begin\", \"api\": \"init\"}\n{\"request_id\": \"4a348554b370f0cdefebfe4a8f6559fb\", \"monotonic\": 2196883.685973402, \"event\": \"end\", \"api\": \"init\", \"seconds\": 0.003658238798379898}\n{\"request_id\": \"4a348554b370f0cdefebfe4a8f6559fb\", \"monotonic\": 2196883.686027365, \"event\": \"begin\", \"api\": \"device_count\"}\n{\"request_id\": \"4a348554b370f0cdefebfe4a8f6559fb\", \"monotonic\": 2196883.686078643, \"event\": \"end\", \"api\": \"device_count\", \"seconds\": 4.086131229996681e-05}\n{\"request_id\": \"4a348554b370f0cdefebfe4a8f6559fb\", \"monotonic\": 2196883.686094282, \"event\": \"begin\", \"api\": \"handle[0]\"}\n{\"request_id\": \"4a348554b370f0cdefebfe4a8f6559fb\", \"monotonic\": 2196883.692612555, \"event\": \"end\", \"api\": \"handle[0]\", \"seconds\": 0.006510597653687}\n{\"request_id\": \"4a348554b370f0cdefebfe4a8f6559fb\", \"monotonic\": 2196883.69263362, \"event\": \"begin\", \"api\": \"compute_v3[0]\"}\n{\"request_id\": \"4a348554b370f0cdefebfe4a8f6559fb\", \"monotonic\": 2196883.693723205, \"event\": \"end\", \"api\": \"compute_v3[0]\", \"seconds\": 0.001082669012248516}\n{\"request_id\": \"4a348554b370f0cdefebfe4a8f6559fb\", \"monotonic\": 2196883.693742594, \"event\": \"begin\", \"api\": \"shutdown\"}\n{\"request_id\": \"4a348554b370f0cdefebfe4a8f6559fb\", \"monotonic\": 2196883.695011921, \"event\": \"end\", \"api\": \"shutdown\", \"seconds\": 0.001261706929653883}\n{\"request_id\": \"4a348554b370f0cdefebfe4a8f6559fb\", \"monotonic\": 2196883.69503556, \"event\": \"result\", \"status\": \"OK\", \"error\": null, \"device_count\": 1, \"pids\": [], \"process_memory\": []}\n",
+    "stderr": "",
+    "returncode": 0,
+    "seconds": 0.06249241670593619,
+    "process_memory": [],
+    "device_count": 1
+  },
+  "owned_processes": {
+    "4131165": {
+      "exists": false,
+      "original_ticks": 219650776
+    },
+    "4131169": {
+      "exists": false,
+      "original_ticks": null
+    },
+    "4131182": {
+      "exists": false,
+      "original_ticks": 219650850
+    },
+    "4131179": {
+      "exists": false,
+      "original_ticks": 219650830
+    },
+    "4132592": {
+      "exists": false,
+      "original_ticks": 219665257
+    },
+    "4132550": {
+      "exists": false,
+      "original_ticks": null
+    },
+    "4132254": {
+      "exists": false,
+      "original_ticks": null
+    },
+    "4132077": {
+      "exists": false,
+      "original_ticks": null
+    },
+    "4132481": {
+      "exists": false,
+      "original_ticks": null
+    }
+  },
+  "port_free": true,
+  "lock_available": true,
+  "lock_inode": 3294067,
+  "lock_device": 66305,
+  "trace_instance_absent": true,
+  "default": {
+    "q4t": "ea1b474d7d69808696e697346a60ee09bb9ecaca9bfb99925b78dcdbda7a4550",
+    "q4t.release.json": "3eb463850cf07338406b811197a68a5dcb9474ac9c2cf039470aa4f654924724"
+  },
+  "note": "Read-only post-abort snapshot; does not repair the original ENV_ABORT or missing custody."
+}
