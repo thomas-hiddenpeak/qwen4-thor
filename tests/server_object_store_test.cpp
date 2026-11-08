@@ -6,6 +6,7 @@
 #include <unistd.h>
 
 #include <atomic>
+#include <array>
 #include <chrono>
 #include <cstdlib>
 #include <filesystem>
@@ -450,5 +451,131 @@ Q4T_TEST(object_store_reduced_limit_preserves_read_delete_access) {
             "object_quota_exceeded");
   Q4T_CHECK(Ok(Run(restarted, Request(ObjectOperation::kErase))));
   Q4T_CHECK(Ok(Run(restarted, Request(ObjectOperation::kPut, "resp_2"))));
+  return true;
+}
+
+Q4T_TEST(object_store_transaction_commits_related_objects_together) {
+  Fixture f;
+  {
+    ObjectStore store(f.options);
+    Q4T_CHECK(Ok(Run(store, Request())));
+    auto response = Request(ObjectOperation::kPut, "resp_2");
+    auto conversation = Request(ObjectOperation::kPut, "conv_1");
+    conversation.kind = ObjectKind::kConversation;
+    conversation.ttl_seconds = 0;
+    auto erase = Request(ObjectOperation::kErase);
+    std::array mutations{response, conversation, erase};
+    const auto result = store.ExecuteBatch(mutations, Clock::now() + 5s);
+    Q4T_CHECK(Ok(result) && result.value.GetArray("data")->array.size() == 3 &&
+              !result.value.GetString("commit_id").empty());
+    Q4T_CHECK(!fs::exists(fs::path(f.options.directory) / ".q4t-transaction"));
+  }
+  ObjectStore restarted(f.options);
+  Q4T_CHECK(Run(restarted, Request(ObjectOperation::kGet)).http_status == 404);
+  Q4T_CHECK(Ok(Run(restarted, Request(ObjectOperation::kGet, "resp_2"))));
+  auto conversation = Request(ObjectOperation::kGet, "conv_1");
+  conversation.kind = ObjectKind::kConversation;
+  auto stored = Run(restarted, conversation);
+  Q4T_CHECK(Ok(stored) && stored.value.GetInt("expires_at", -1) == 0);
+  return true;
+}
+
+Q4T_TEST(object_store_transaction_conflict_or_quota_changes_nothing) {
+  Fixture f;
+  f.options.max_client_objects = 2;
+  ObjectStore store(f.options);
+  Q4T_CHECK(Ok(Run(store, Request())));
+  auto new_record = Request(ObjectOperation::kPut, "resp_2");
+  auto conflict = Request();
+  conflict.expected_revision = 3;
+  std::array mutations{new_record, conflict};
+  Q4T_CHECK(store.ExecuteBatch(mutations, Clock::now() + 5s).http_status ==
+            409);
+  Q4T_CHECK(Run(store, Request(ObjectOperation::kGet, "resp_2")).http_status ==
+            404);
+  mutations[1] = Request(ObjectOperation::kPut, "resp_3");
+  Q4T_CHECK(store.ExecuteBatch(mutations, Clock::now() + 5s).code ==
+            "object_quota_exceeded");
+  Q4T_CHECK(Run(store, Request(ObjectOperation::kGet, "resp_2")).http_status ==
+            404);
+  Q4T_CHECK(
+      Run(store, Request(ObjectOperation::kGet)).value.GetInt("revision") == 1);
+  return true;
+}
+
+Q4T_TEST(object_store_transaction_rejects_duplicate_and_mixed_ownership) {
+  Fixture f;
+  ObjectStore store(f.options);
+  std::array mutations{Request(), Request()};
+  Q4T_CHECK(store.ExecuteBatch(mutations, Clock::now() + 5s).http_status ==
+            400);
+  mutations[1] = Request(ObjectOperation::kPut, "resp_2", "client:b");
+  Q4T_CHECK(store.ExecuteBatch(mutations, Clock::now() + 5s).http_status ==
+            400);
+  Q4T_CHECK(Run(store, Request(ObjectOperation::kGet)).http_status == 404);
+  return true;
+}
+
+namespace {
+bool InterruptedTransaction(std::string entry, size_t applied) {
+  Injection inject(std::move(entry));
+  Fixture f;
+  f.options.io_timeout_ms = 250;
+  ObjectStore store(f.options);
+  std::array mutations{Request(), Request(ObjectOperation::kPut, "resp_2")};
+  const auto result = store.ExecuteBatch(mutations, Clock::now() + 5s);
+  Q4T_CHECK(!result.ok() && result.commit_unknown);
+  const auto end = Clock::now() + 500ms;
+  while (store.Health().pending && Clock::now() < end)
+    std::this_thread::sleep_for(1ms);
+  size_t count = 0;
+  for (const auto& file : fs::directory_iterator(f.options.directory))
+    if (file.path().extension() == ".json") ++count;
+  Q4T_CHECK(count == applied);
+  Q4T_CHECK(fs::exists(fs::path(f.options.directory) / ".q4t-transaction"));
+  Q4T_CHECK(Ok(Run(store, Request(ObjectOperation::kGet))));
+  Q4T_CHECK(Ok(Run(store, Request(ObjectOperation::kGet, "resp_2"))));
+  Q4T_CHECK(!fs::exists(fs::path(f.options.directory) / ".q4t-transaction"));
+  Q4T_CHECK(store.Health().workers_started == 2 && GrammarContinues());
+  Q4T_CHECK(
+      Run(store, Request(ObjectOperation::kGet)).value.GetInt("revision") == 1);
+  return true;
+}
+}  // namespace
+
+Q4T_TEST(object_store_transaction_recovers_durable_decision_before_apply) {
+  return InterruptedTransaction("--q4t-object-worker-commit-pause", 0);
+}
+Q4T_TEST(object_store_transaction_recovers_partial_file_installation) {
+  return InterruptedTransaction("--q4t-object-worker-apply-pause", 1);
+}
+
+Q4T_TEST(object_store_invalid_journal_is_preserved_and_isolated) {
+  Fixture f;
+  {
+    ObjectStore store(f.options);
+    Q4T_CHECK(Ok(Run(store, Request())));
+  }
+  const auto journal = fs::path(f.options.directory) / ".q4t-transaction";
+  std::ofstream(journal) << R"({"transaction":{},"sha256":"wrong"})";
+  chmod(journal.c_str(), 0600);
+  ObjectStore restarted(f.options);
+  Q4T_CHECK(Run(restarted, Request(ObjectOperation::kGet)).http_status == 503);
+  Q4T_CHECK(fs::exists(journal) && GrammarContinues());
+  return true;
+}
+
+Q4T_TEST(object_store_nonexpiring_single_object_survives_restart) {
+  Fixture f;
+  auto permanent = Request();
+  permanent.ttl_seconds = 0;
+  {
+    ObjectStore store(f.options);
+    auto result = Run(store, permanent);
+    Q4T_CHECK(Ok(result) && result.value.GetInt("expires_at", -1) == 0);
+  }
+  ObjectStore restarted(f.options);
+  auto result = Run(restarted, Request(ObjectOperation::kGet));
+  Q4T_CHECK(Ok(result) && result.value.GetInt("expires_at", -1) == 0);
   return true;
 }

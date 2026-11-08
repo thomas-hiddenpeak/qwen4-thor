@@ -219,8 +219,9 @@
       ],
       "evidence": [],
       "release": null,
-      "development_status": "独立objects域、有界控制线程/队列、same-ELF原子CRUD/revision/分页/TTL/配额已实现；18存储+11隔离/语法CPU通过、2次相关构建零警告。保留配额夹具失败后仅重验受影响项；历史、路由、background继续实施，无GPU或发布。",
-      "development_evidence": "evidence/serve-object-store-20261108/README.md"
+      "development_status": "原生隔离存储与多对象事务/无TTL已实现；事务25项CPU一次通过（含18项存储回归），语法11项复用，构建零警告。继续历史/会话、路由、background接入，无GPU或发布。",
+      "development_evidence": "evidence/serve-object-store-20261108/README.md",
+      "transaction_evidence": "evidence/serve-object-transactions-20261108/README.md"
     },
     {
       "id": "A09",

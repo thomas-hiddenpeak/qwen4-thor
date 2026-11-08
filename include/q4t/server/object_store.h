@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <functional>
 #include <memory>
+#include <span>
 #include <string>
 
 #include "q4t/io/json.h"
@@ -49,6 +50,8 @@ struct ObjectRequest {
   // Put: zero creates; a positive value updates exactly that revision.
   // Erase: zero accepts the current revision; positive values are conditional.
   int64_t expected_revision = 0;
+  // Zero preserves conversation-associated state until explicit deletion.
+  // All persistent state still counts against object and byte quotas.
   int64_t ttl_seconds = 30 * 24 * 3600;
   int limit = 20;
   std::string after;
@@ -83,9 +86,17 @@ class ObjectStore {
   ObjectReply Execute(const ObjectRequest& request,
                       std::chrono::steady_clock::time_point deadline,
                       const std::function<bool()>& cancelled = {});
+  // All mutations share one authenticated scope and commit atomically. A
+  // revision/quota error changes none; a lost receipt requires retrieval.
+  ObjectReply ExecuteBatch(std::span<const ObjectRequest> requests,
+                           std::chrono::steady_clock::time_point deadline,
+                           const std::function<bool()>& cancelled = {});
   ObjectStoreHealth Health() const;
 
  private:
+  ObjectReply Dispatch(std::string wire, bool mutation,
+                       std::chrono::steady_clock::time_point deadline,
+                       const std::function<bool()>& cancelled);
   struct State;
   std::shared_ptr<State> state_;
 };

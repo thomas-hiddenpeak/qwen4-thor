@@ -75,3 +75,21 @@ GPU，不将中间模块当A07/A08完成。总目标继续 active。
 零占用。读取和删除仍允许处理此前更高限额下合法保存的对象。
 恢复最多每60秒3次启动，100毫秒退避；超时/缺少回执不得自动重放。
 大目录首次校验也受操作期限约束，部署时须按实际容量选择期限。
+
+## 继续实施：会话关联对象事务
+
+官方[会话状态](https://developers.openai.com/api/docs/guides/conversation-state)
+规定会话关联items不受Responses默认30天TTL限制；[删除会话](https://developers.openai.com/api/reference/resources/conversations/methods/delete)
+也不删除items。因此新增内部TTL=0的持久对象，仍计入数量/字节配额，
+并继续实现同客户端多对象原子提交，以一次保存响应、会话及item
+引用，不能用分次写入后静默补偿冒充一致完成。
+
+事务先校验全部revision/归属/额度，再同步带摘要的提交日志，随后
+安装文件并同步目录、删除日志。日志落盘是提交决定；中断后的
+worker先完成该日志再服务读取。恢复只安装已提交的状态文件，不
+重跑模型或工具。每事务最多1024对象、32 MiB请求/64 MiB提交日志，
+临时磁盘峰值另包含日志与单对象替换空间。单对象既有原子路径保留。
+新事务与TTL调整25项针对性CPU一次通过、构建零警告，其中7项
+新增、18项直接受影响存储回归；[原件](evidence/serve-object-transactions-20261108/README.md)
+保留。原语法隔离未改，复用前组11项。路由/历史/background继续
+接入，无GPU/默认变更、总目标active。前组30553eef已提交推送。

@@ -11,6 +11,7 @@
 #include <chrono>
 #include <cstring>
 #include <map>
+#include <set>
 #include <utility>
 #include <vector>
 
@@ -86,6 +87,14 @@ bool Hex(std::string_view text, size_t size) {
            return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f');
          });
 }
+bool ValidFilename(std::string_view name) {
+  if (name.size() < 72 || !name.ends_with(".json") || name[64] != '.')
+    return false;
+  const auto split = name.find('.', 65);
+  return split != name.npos && Hex(name.substr(0, 64), 64) &&
+         ValidKind(name.substr(65, split - 65)) &&
+         ValidId(name.substr(split + 1, name.size() - split - 6));
+}
 std::string Filename(const Json& record) {
   return record.GetString("owner") + "." + record.GetString("kind") + "." +
          record.GetString("id") + ".json";
@@ -108,6 +117,7 @@ struct Usage {
 
 class DiskStore {
  public:
+  explicit DiskStore(int pause_after = 0) : pause_after_(pause_after) {}
   ObjectReply Init(const Json& config) {
     options_.directory = config.GetString("directory");
     options_.max_object_bytes = config.GetInt("max_object_bytes");
@@ -149,6 +159,7 @@ class DiskStore {
     std::string format;
     if (!version || !ReadAll(version.Get(), 128, &format) || format != marker)
       return IoError();
+    if (!Recover()) return IoError();
     Fd scan(openat(root_.Get(), ".", O_RDONLY | O_DIRECTORY | O_CLOEXEC));
     if (!scan) return IoError();
     // fdopendir owns its descriptor; root's independent directory offset stays
@@ -204,6 +215,10 @@ class DiskStore {
   ObjectReply Run(const Json& request) {
     if (!initialized_) return IoError();
     const auto operation = request.GetString("operation");
+    if (operation == "batch") {
+      auto pruned = Prune();
+      return pruned.ok() ? Batch(request) : pruned;
+    }
     const auto owner = request.GetString("owner");
     const auto kind = request.GetString("kind");
     const auto id = request.GetString("id");
@@ -248,6 +263,247 @@ class DiskStore {
   }
 
  private:
+  // The durable journal is the commit decision. No reader is admitted until
+  // all its already-committed file replacements finish. Recovery applies only
+  // storage bytes, never model generation or tool side effects.
+  bool Publish(const std::string& name, std::string_view text,
+               bool* published) {
+    *published = false;
+    const auto random = NewObjectId(ObjectKind::kResponse);
+    if (random.empty()) return false;
+    const auto temporary = ".q4t-tmp-" + random.substr(random.size() - 32);
+    Fd file(openat(root_.Get(), temporary.c_str(),
+                   O_WRONLY | O_CREAT | O_EXCL | O_CLOEXEC | O_NOFOLLOW, 0600));
+    if (!file) return false;
+    if (!WriteAll(file.Get(), text) || fsync(file.Get()) ||
+        renameat(root_.Get(), temporary.c_str(), root_.Get(), name.c_str())) {
+      unlinkat(root_.Get(), temporary.c_str(), 0);
+      return false;
+    }
+    *published = true;
+    return true;
+  }
+  bool Apply(const Json& transaction, bool recovery) {
+    const auto* changes = transaction.GetArray("changes");
+    const auto owner = transaction.GetString("owner");
+    if (transaction.GetInt("format") != 1 || !Hex(owner, 64) ||
+        !ValidId(transaction.GetString("id")) || !changes ||
+        changes->array.empty() || changes->array.size() > 1024)
+      return false;
+    std::set<std::string> targets;
+    std::vector<std::string> encoded;
+    for (const auto& change : changes->array) {
+      const auto name = change.GetString("name");
+      const auto old = change.GetString("old_sha256");
+      const auto* record = change.Find("record");
+      if (!ValidFilename(name) || name.substr(0, 64) != owner ||
+          !targets.insert(name).second || (!old.empty() && !Hex(old, 64)) ||
+          !record || (!record->IsObject() && !record->IsNull()))
+        return false;
+      if (record->IsNull()) {
+        if (old.empty()) return false;
+        encoded.emplace_back();
+      } else {
+        auto text = OutputJson(
+            Object({{"record", *record},
+                    {"sha256", String(Digest(OutputJson(*record)))}}));
+        Json verified;
+        Metadata ignored;
+        if (!DecodeRecord(name, text, &verified, &ignored)) return false;
+        encoded.push_back(std::move(text));
+      }
+    }
+    for (size_t i = 0; i < changes->array.size(); ++i) {
+      const auto& change = changes->array[i];
+      const auto name = change.GetString("name");
+      const auto old = change.GetString("old_sha256");
+      const auto* record = change.Find("record");
+      struct stat info {};
+      const bool exists =
+          !fstatat(root_.Get(), name.c_str(), &info, AT_SYMLINK_NOFOLLOW);
+      if (!exists && errno != ENOENT) return false;
+      Json current;
+      Metadata metadata;
+      if (exists && !Load(name, &current, &metadata)) return false;
+      if (record->IsNull()) {
+        if (exists &&
+            (metadata.digest != old || unlinkat(root_.Get(), name.c_str(), 0)))
+          return false;
+      } else {
+        const auto digest = Digest(OutputJson(*record));
+        if (!exists || metadata.digest != digest) {
+          if ((exists && (old.empty() || metadata.digest != old)) ||
+              (!exists && !old.empty()))
+            return false;
+          bool published;
+          if (!Publish(name, encoded[i], &published)) return false;
+        }
+      }
+#ifdef Q4T_GRAMMAR_PROCESS_TESTS
+      if (!recovery && pause_after_ == static_cast<int>(i + 1)) {
+        for (;;) pause();
+      }
+#else
+      (void)recovery;
+#endif
+    }
+    return !fsync(root_.Get()) &&
+           !unlinkat(root_.Get(), ".q4t-transaction", 0) && !fsync(root_.Get());
+  }
+  bool Recover() {
+    Fd file(openat(root_.Get(), ".q4t-transaction",
+                   O_RDONLY | O_CLOEXEC | O_NOFOLLOW | O_NONBLOCK));
+    if (!file) return errno == ENOENT;
+    std::string text;
+    Json wrapper;
+    if (!ReadAll(file.Get(), kMaxFrame, &text) || !Parse(text, &wrapper))
+      return false;
+    const auto* transaction = wrapper.Find("transaction");
+    return transaction &&
+           wrapper.GetString("sha256") == Digest(OutputJson(*transaction)) &&
+           Apply(*transaction, true);
+  }
+  ObjectReply Batch(const Json& request) {
+    const auto* mutations = request.GetArray("mutations");
+    if (!mutations || mutations->array.empty() ||
+        mutations->array.size() > 1024)
+      return Error(400, "invalid_object_request", "Invalid transaction size");
+    const auto owner = mutations->array.front().GetString("owner");
+    if (!Hex(owner, 64))
+      return Error(400, "invalid_object_request", "Invalid transaction owner");
+    auto projected = total_;
+    const auto client = clients_.find(owner);
+    auto client_projected = client == clients_.end() ? Usage{} : client->second;
+    const auto client_original = client_projected;
+    std::set<std::string> targets;
+    Json changes = Array(), results = Array();
+    const auto now = Now();
+    for (const auto& mutation : mutations->array) {
+      const auto operation = mutation.GetString("operation");
+      const auto kind = mutation.GetString("kind"),
+                 id = mutation.GetString("id");
+      const auto revision = mutation.GetInt("revision", -1);
+      if (mutation.GetString("owner") != owner || !ValidKind(kind) ||
+          !ValidId(id) || revision < 0 || revision >= (1LL << 53) - 1 ||
+          (operation != "put" && operation != "erase"))
+        return Error(400, "invalid_object_request",
+                     "Invalid transaction mutation");
+      const auto name = owner + "." + kind + "." + id + ".json";
+      if (!targets.insert(name).second)
+        return Error(400, "invalid_object_request",
+                     "Duplicate transaction target");
+      const auto found = records_.find(name);
+      const bool exists = found != records_.end();
+      if (operation == "erase" && !exists)
+        return Error(404, "object_not_found", "Object not found");
+      if ((operation == "put" && revision == 0 && exists) ||
+          (revision > 0 && (!exists || found->second.revision != revision)))
+        return Error(409, "object_revision_conflict",
+                     "Object revision changed");
+      Json previous;
+      if (exists && !ReadKnown(name, found->second, &previous))
+        return IoError();
+      struct stat info {};
+      if (!exists &&
+          (!fstatat(root_.Get(), name.c_str(), &info, AT_SYMLINK_NOFOLLOW) ||
+           errno != ENOENT))
+        return IoError();
+      if (exists) {
+        projected.bytes -= found->second.bytes;
+        client_projected.bytes -= found->second.bytes;
+        --projected.count;
+        --client_projected.count;
+      }
+      Json record;
+      if (operation == "put") {
+        const auto ttl = mutation.GetInt("ttl", -1);
+        const auto* data = mutation.Find("data");
+        if (!data || ttl < 0 || ttl > options_.max_ttl_seconds)
+          return Error(400, "invalid_object_request", "Invalid object write");
+        const auto created = exists ? found->second.created : now;
+        record = Object({{"format", Number(1)},
+                         {"owner", String(owner)},
+                         {"kind", String(kind)},
+                         {"id", String(id)},
+                         {"revision", Number(revision + 1)},
+                         {"created_at", Number(created)},
+                         {"expires_at",
+                          Number(ttl == 0 ? 0 : std::max(now, created) + ttl)},
+                         {"data", *data}});
+        const auto bytes =
+            OutputJson(Object({{"record", record},
+                               {"sha256", String(Digest(OutputJson(record)))}}))
+                .size();
+        if (bytes > options_.max_object_bytes)
+          return Error(413, "object_too_large",
+                       "Stored object exceeds byte limit");
+        projected.bytes += bytes;
+        client_projected.bytes += bytes;
+        ++projected.count;
+        ++client_projected.count;
+        results.array.push_back(Public(record));
+      } else {
+        results.array.push_back(
+            Object({{"id", String(id)}, {"deleted", Boolean(true)}}));
+      }
+      changes.array.push_back(
+          Object({{"name", String(name)},
+                  {"old_sha256", String(exists ? found->second.digest : "")},
+                  {"record", std::move(record)}}));
+    }
+    if ((projected.bytes > options_.max_total_bytes &&
+         projected.bytes > total_.bytes) ||
+        (projected.count > options_.max_total_objects &&
+         projected.count > total_.count) ||
+        (client_projected.bytes > options_.max_client_bytes &&
+         client_projected.bytes > client_original.bytes) ||
+        (client_projected.count > options_.max_client_objects &&
+         client_projected.count > client_original.count))
+      return Error(429, "object_quota_exceeded",
+                   "Transaction exceeds storage quota");
+    const auto id = NewObjectId(ObjectKind::kToolRun);
+    if (id.empty()) return IoError();
+    auto transaction = Object({{"format", Number(1)},
+                               {"id", String(id)},
+                               {"owner", String(owner)},
+                               {"changes", std::move(changes)}});
+    const auto journal = OutputJson(
+        Object({{"transaction", transaction},
+                {"sha256", String(Digest(OutputJson(transaction)))}}));
+    if (journal.size() > kMaxFrame)
+      return Error(413, "object_too_large",
+                   "Transaction journal exceeds byte limit");
+    struct stat pending {};
+    if (!fstatat(root_.Get(), ".q4t-transaction", &pending,
+                 AT_SYMLINK_NOFOLLOW) ||
+        errno != ENOENT)
+      return IoError();
+    bool published;
+    if (!Publish(".q4t-transaction", journal, &published))
+      return IoError(published);
+    if (fsync(root_.Get())) return IoError(true);
+#ifdef Q4T_GRAMMAR_PROCESS_TESTS
+    if (pause_after_ == -1) {
+      for (;;) pause();
+    }
+#endif
+    if (!Apply(transaction, false)) return IoError(true);
+    for (const auto& change : transaction.GetArray("changes")->array) {
+      const auto name = change.GetString("name");
+      const auto old = records_.find(name);
+      if (old != records_.end()) Remove(old);
+      if (!change.Find("record")->IsNull()) {
+        Json record;
+        Metadata metadata;
+        if (!Load(name, &record, &metadata)) return IoError(true);
+        Add(name, std::move(metadata));
+      }
+    }
+    ObjectReply result;
+    result.value =
+        Object({{"commit_id", String(id)}, {"data", std::move(results)}});
+    return result;
+  }
   bool OpenRoot() {
     const auto& path = options_.directory;
     if (path.empty() || path.front() != '/' || path.size() > 4096 ||
@@ -293,6 +549,11 @@ class DiskStore {
     std::string text;
     // Existing objects remain retrievable after a configured limit decreases.
     if (!file || !ReadAll(file.Get(), kMaxFrame / 2, &text)) return false;
+    return DecodeRecord(name, text, record, metadata);
+  }
+  bool DecodeRecord(const std::string& name, const std::string& text,
+                    Json* record, Metadata* metadata) {
+    if (text.size() > kMaxFrame / 2) return false;
     Json wrapper;
     if (!Parse(text, &wrapper)) return false;
     const auto* content = wrapper.Find("record");
@@ -303,7 +564,8 @@ class DiskStore {
         !ValidId(content->GetString("id")) || !content->Find("data") ||
         content->GetInt("revision") <= 0 ||
         content->GetInt("created_at") <= 0 ||
-        content->GetInt("expires_at") <= content->GetInt("created_at") ||
+        (content->GetInt("expires_at", -1) != 0 &&
+         content->GetInt("expires_at") <= content->GetInt("created_at")) ||
         Filename(*content) != name)
       return false;
     const auto digest = Digest(OutputJson(*content));
@@ -342,7 +604,7 @@ class DiskStore {
     const auto now = Now();
     bool removed = false;
     for (auto it = records_.begin(); it != records_.end();) {
-      if (it->second.expires > now) {
+      if (it->second.expires == 0 || it->second.expires > now) {
         ++it;
         continue;
       }
@@ -361,7 +623,7 @@ class DiskStore {
     const auto revision = request.GetInt("revision", -1);
     const auto ttl = request.GetInt("ttl");
     const auto* data = request.Find("data");
-    if (revision < 0 || revision >= (1LL << 53) - 1 || !data || ttl <= 0 ||
+    if (revision < 0 || revision >= (1LL << 53) - 1 || !data || ttl < 0 ||
         ttl > options_.max_ttl_seconds)
       return Error(400, "invalid_object_request", "Invalid object write");
     const auto found = records_.find(name);
@@ -380,7 +642,7 @@ class DiskStore {
       return IoError();
     const auto now = Now();
     const auto created = exists ? found->second.created : now;
-    const auto expires = std::max(now, created) + ttl;
+    const auto expires = ttl == 0 ? 0 : std::max(now, created) + ttl;
     const auto owner = request.GetString("owner");
     auto record = Object({{"format", Number(1)},
                           {"owner", String(owner)},
@@ -494,21 +756,31 @@ class DiskStore {
   std::map<std::string, Metadata> records_;
   std::map<std::string, Usage> clients_;
   Usage total_;
+  int pause_after_ = 0;
 };
 }  // namespace
 
 int MaybeRunObjectWorker(int argc, char** argv) {
   if (argc < 2) return -1;
   bool matched = std::strcmp(argv[1], "--q4t-object-worker") == 0;
+  int pause_after = 0;
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
   const bool lose_ack =
       std::strcmp(argv[1], "--q4t-object-worker-lost-ack") == 0;
   matched = matched || lose_ack;
+  if (std::strcmp(argv[1], "--q4t-object-worker-commit-pause") == 0) {
+    matched = true;
+    pause_after = -1;
+  }
+  if (std::strcmp(argv[1], "--q4t-object-worker-apply-pause") == 0) {
+    matched = true;
+    pause_after = 1;
+  }
 #endif
   if (!matched) return -1;
   if (!detail::EnterGrammarWorker(argc, argv)) return 2;
   try {
-    DiskStore store;
+    DiskStore store(pause_after);
     uint64_t expected = 1;
     bool initialized = false;
     for (;;) {

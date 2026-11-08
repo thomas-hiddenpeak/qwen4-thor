@@ -56,6 +56,19 @@ Json Config(const ObjectStoreOptions& o) {
                  {"max_total_objects", Number(o.max_total_objects)},
                  {"max_ttl_seconds", Number(o.max_ttl_seconds)}});
 }
+Json RequestWire(const ObjectRequest& request) {
+  return Object({{"operation", String(Operation(request.operation))},
+                 {"kind", String(Kind(request.kind))},
+                 {"owner", String(Digest(request.scope))},
+                 {"id", String(request.id)},
+                 {"data", request.data},
+                 {"revision", Number(request.expected_revision)},
+                 {"ttl", Number(request.ttl_seconds)},
+                 {"limit", Number(request.limit)},
+                 {"after", String(request.after)},
+                 {"before", String(request.before)},
+                 {"descending", Boolean(request.descending)}});
+}
 }  // namespace
 
 struct ObjectStore::State {
@@ -279,7 +292,7 @@ ObjectReply ObjectStore::Execute(const ObjectRequest& request,
   if (request.scope.empty() || request.scope.size() > 256 || kind.empty() ||
       operation.empty() || request.expected_revision < 0 ||
       (operation != "list" && operation != "health" && !ValidId(request.id)) ||
-      (operation == "put" && (request.ttl_seconds <= 0 ||
+      (operation == "put" && (request.ttl_seconds < 0 ||
                               request.ttl_seconds > options.max_ttl_seconds)) ||
       (operation == "list" &&
        (request.limit < 1 || request.limit > 100 ||
@@ -287,24 +300,53 @@ ObjectReply ObjectStore::Execute(const ObjectRequest& request,
         (!request.before.empty() && !ValidId(request.before)) ||
         (!request.after.empty() && !request.before.empty()))))
     return Error(400, "invalid_object_request", "Invalid object request");
+  auto wire = OutputJson(RequestWire(request));
+  if (wire.size() > options.max_object_bytes)
+    return Error(413, "object_too_large", "Object request exceeds byte limit");
+  return Dispatch(std::move(wire), operation == "put" || operation == "erase",
+                  deadline, cancelled);
+}
+
+ObjectReply ObjectStore::ExecuteBatch(std::span<const ObjectRequest> requests,
+                                      Clock::time_point deadline,
+                                      const std::function<bool()>& cancelled) {
+  if (requests.empty() || requests.size() > 1024)
+    return Error(400, "invalid_object_request", "Invalid transaction size");
+  Json mutations = Array();
+  size_t bytes = 0;
+  for (const auto& request : requests) {
+    if ((request.operation != ObjectOperation::kPut &&
+         request.operation != ObjectOperation::kErase) ||
+        request.scope.empty() || request.scope.size() > 256 ||
+        request.scope != requests.front().scope || !ValidId(request.id) ||
+        Kind(request.kind).empty() || request.expected_revision < 0 ||
+        request.ttl_seconds < 0 ||
+        request.ttl_seconds > state_->options.max_ttl_seconds)
+      return Error(400, "invalid_object_request",
+                   "Invalid transaction mutation");
+    auto value = RequestWire(request);
+    const auto size = OutputJson(value).size();
+    if (size > state_->options.max_object_bytes ||
+        (bytes += size) > kMaxFrame / 2)
+      return Error(413, "object_too_large", "Transaction exceeds byte limit");
+    mutations.array.push_back(std::move(value));
+  }
+  return Dispatch(OutputJson(Object({{"operation", String("batch")},
+                                     {"mutations", std::move(mutations)}})),
+                  true, deadline, cancelled);
+}
+
+ObjectReply ObjectStore::Dispatch(std::string wire, bool mutation,
+                                  Clock::time_point deadline,
+                                  const std::function<bool()>& cancelled) {
+  const auto& options = state_->options;
   auto job = std::make_shared<State::Job>();
   job->deadline =
       std::min(deadline,
                Clock::now() + std::chrono::milliseconds(options.io_timeout_ms));
-  job->mutation = operation == "put" || operation == "erase";
-  job->wire =
-      OutputJson(Object({{"operation", String(operation)},
-                         {"kind", String(kind)},
-                         {"owner", String(Digest(request.scope))},
-                         {"id", String(request.id)},
-                         {"data", request.data},
-                         {"revision", Number(request.expected_revision)},
-                         {"ttl", Number(request.ttl_seconds)},
-                         {"limit", Number(request.limit)},
-                         {"after", String(request.after)},
-                         {"before", String(request.before)},
-                         {"descending", Boolean(request.descending)}}));
-  if (job->wire.size() > options.max_object_bytes ||
+  job->mutation = mutation;
+  job->wire = std::move(wire);
+  if (job->wire.size() > kMaxFrame / 2 ||
       job->wire.size() > options.max_queue_bytes)
     return Error(413, "object_too_large", "Object request exceeds byte limit");
   if (Clock::now() >= job->deadline)

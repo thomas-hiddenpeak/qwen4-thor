@@ -23,6 +23,10 @@ objects worker域及独立有界调度线程处理启动/IPC，防止文件系�
 [规划/存储41项原件](evidence/serve-object-store-20261108/README.md)
 已归档；路由/background/历史接入继续实现。默认A06不变、无GPU，
 不以中间模块关闭A07/A08，继续全部总计划。
+检查点`30553eef`已提交推送。按官方会话保留/删除合同继续新增无
+TTL对象与跨响应/会话/item的原子事务、提交日志重启恢复，25项
+针对性CPU一次通过、构建零警告；[原件](evidence/serve-object-transactions-20261108/README.md)
+保留。继续实际历史/会话/生成接入，不变更默认或追加GPU。
 
 [A06原生Completions/Models已交付](SERVE_COMPLETIONS_2026-11-08.md)：
 50不同C++、51输入/schema、6SDK、4实际原生/TLS、11驱动/托管/发行
