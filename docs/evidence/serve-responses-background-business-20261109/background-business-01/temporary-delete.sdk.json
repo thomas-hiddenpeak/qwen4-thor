@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "result": {
+    "id": "resp_3fe6aa1b7aff2b486153d9a26ef3eab3",
+    "object": "response.deleted",
+    "deleted": true
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:18164/v1/responses/resp_3fe6aa1b7aff2b486153d9a26ef3eab3",
+      "method": "DELETE"
+    }
+  ]
+}

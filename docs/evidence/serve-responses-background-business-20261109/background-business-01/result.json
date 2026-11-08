@@ -1,0 +1,11 @@
+{
+  "status": "FAILED",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 294, in run\n    try:self.start();self.business();result['status']=self.success_status\n                     ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/background_acceptance.py\", line 213, in business\n    require(again == cancelled, 'cancel changed already-terminal resource')\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 57, in require\n    raise RuntimeError(message)\nRuntimeError: cancel changed already-terminal resource\n",
+  "counts": {
+    "starts": 1,
+    "chats": 5,
+    "controls": 146
+  },
+  "seconds": 53.59733628062531,
+  "binary_sha256": "0ca69a41d5fe74366842c1626505eaa3850481f214bd9551e8f1d021bf3c3aa7"
+}

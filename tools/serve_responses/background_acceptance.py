@@ -40,8 +40,9 @@ def requests():
         chat=old['chat'])
 
 
-def prepare(args):
-    base.prepare(args, rows=requests(), limits=LIMITS, scope=__doc__)
+def prepare(args, *, rows=None, limits=LIMITS, scope=__doc__):
+    base.prepare(args, rows=requests() if rows is None else rows,
+                 limits=limits, scope=scope)
     path = args.output.resolve()/'plan.json'
     plan = read(path)
     names = subprocess.check_output(['git', 'ls-files', 'tools/serve_responses',
@@ -49,7 +50,7 @@ def prepare(args):
         cwd=ROOT, text=True).splitlines()
     for name in names:
         plan['sources'][name] = sha(ROOT/name)
-    plan['planned'] = dict(starts=2, chats=8)
+    plan['planned'] = dict(starts=limits['starts'], chats=limits['chats'])
     plan['mutations'] = ['abort only own SSE subscriber',
         'API cancel own queued and running response',
         'SIGKILL exact own first model process then bounded cleanup and explicit second start']
@@ -67,6 +68,18 @@ def check_response(value, status=None):
         require(value['status'] == status, 'unexpected response status')
     if value['status'] in ('completed', 'incomplete'):
         foreground.check_usage(value)
+
+
+def check_cancel(first, repeated, projected):
+    """Compare like-for-like cancel replies, then check the GET projection."""
+    for value in (first, repeated, projected):
+        check_response(value, 'cancelled')
+    require(first == repeated, 'cancel changed already-terminal resource')
+    expected = copy.deepcopy(first)
+    for item in expected['output']:
+        for part in item.get('content', []):
+            part.pop('logprobs', None)
+    require(expected == projected, 'cancel and GET differ beyond logprobs projection')
 
 
 class Stage(base.Stage):
@@ -206,15 +219,19 @@ class Stage(base.Stage):
         self.wait_response('queued-before-cancel', queued['id'], lambda v: v['status'] == 'queued')
         cancelled = self.sdk('queued-cancel', 'cancel', response_id=queued['id'], operations=True)
         check_response(cancelled, 'cancelled')
-        self.sdk('running-cancel', 'cancel', response_id=stream['id'], operations=True)
+        first = self.sdk('running-cancel', 'cancel', response_id=stream['id'], operations=True)
         cancelled = self.wait_response('running-cancelled', stream['id'], lambda v: v['status'] == 'cancelled')
         require(cancelled['output'], 'cancel discarded partial output')
         again = self.sdk('running-cancel-idempotent', 'cancel', response_id=stream['id'], operations=True)
-        require(again == cancelled, 'cancel changed already-terminal resource')
+        check_cancel(first, again, cancelled)
         self.sdk('cancelled-replay', 'retrieve', response_id=stream['id'],
             query=dict(stream=True, include_obfuscation=False), stream_mode='cancelled_replay', operations=True)
         self.drained('cancelled')
 
+        self.crash_recovery()
+
+    def crash_recovery(self):
+        rows = self.plan['requests']
         crashed = self.sdk('crash-running', 'create', rows['crash_running'])
         partial = self.wait_response('crash-partial', crashed['id'],
             lambda v: v['status'] == 'in_progress' and bool(foreground.text(v)))

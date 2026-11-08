@@ -8,9 +8,41 @@ import unittest
 from unittest.mock import Mock, patch, call
 
 from tools.serve_responses import background_acceptance as stage
+from tools.serve_responses import background_resume as resume
 
 
 class Driver(unittest.TestCase):
+    def test_cancel_idempotence_compares_same_projection_and_rejects_real_changes(self):
+        root = stage.ROOT/'docs/evidence/serve-responses-background-business-20261109/background-business-01'
+        first = json.loads((root/'running-cancel.sdk.json').read_text())['result']
+        again = json.loads((root/'running-cancel-idempotent.sdk.json').read_text())['result']
+        projected = json.loads((root/'running-cancelled.poll.json').read_text())[-1]
+        self.assertNotEqual(first, projected)
+        stage.check_cancel(first, again, projected)
+        for field, value in (('id', first['id']+'changed'), ('output', [])):
+            bad = copy.deepcopy(again)
+            bad[field] = value
+            with self.assertRaisesRegex(RuntimeError, 'changed already-terminal'):
+                stage.check_cancel(first, bad, projected)
+        bad = copy.deepcopy(projected)
+        bad['output'] = []
+        with self.assertRaisesRegex(RuntimeError, 'beyond logprobs projection'):
+            stage.check_cancel(first, again, bad)
+
+    def test_remainder_creates_only_unexecuted_work_and_copies_regular_snapshot(self):
+        self.assertEqual(set(resume.requests()), {'crash_running', 'crash_queued', 'chat'})
+        self.assertEqual(resume.LIMITS, dict(starts=2, chats=3, controls=2000, seconds=600))
+        root = stage.ROOT/'.q4t-work/serve-responses-20261108/driver-cpu-work'
+        root.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=root) as folder:
+            store = Path(folder)
+            (store/'.q4t-format').write_text('q4t-native-object-store-v1\n')
+            (store/'.q4t-lock').touch()
+            self.assertEqual(set(resume.inventory(store)), {'.q4t-lock', '.q4t-format'})
+            (store/'linked').symlink_to(store/'.q4t-lock')
+            with self.assertRaisesRegex(RuntimeError, 'regular files'):
+                resume.inventory(store)
+
     def test_phase_alarm_reserves_cleanup_and_disarms_on_failure(self):
         runner = Mock()
         runner.run.side_effect = RuntimeError('owned failure')

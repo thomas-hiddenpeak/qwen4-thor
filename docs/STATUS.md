@@ -2,6 +2,12 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+后台首轮1启动/5生成/53.597秒在取消对比误判处停止：两次取消一致，
+GET仅裁剪可选logprobs；52次NVML全OK、模型退出0且清理完毕。
+原FAILED保留，2个针对性CPU负控及来源复核通过。[原件/续验边界](evidence/serve-responses-background-business-20261109/README.md)。
+继续仅未执行项：新阶段2启动/3生成/600秒，累计3启动/8生成，
+私有复制原状态，不重做已通过生成；默认A06不改，总计划继续。
+
 后台真实业务驱动4 Python/2 SDK CPU通过，真实断开不会留下第二订阅。
 冻结2启动/8生成/900秒，覆盖后台工具闭环、取消和自有进程崩溃恢复；
 860秒告警保留40秒清理。[驱动证据](evidence/serve-responses-background-driver-20261109/README.md)。
