@@ -101,3 +101,16 @@ Models稳定目录/详情、不存在404及只读403通过，进程退出0、端
 原commit源码和清理，形成独立`PASS_COMPLETIONS_MODELS_REVIEW`回执，
 未覆盖原始失败记录、未追加GPU运行。初次遗漏租约继承参数的0启动/
 0生成拒绝也保留。接下来可回退发行，随后继续A07；总目标不结束。
+
+
+## 可回退交付
+
+默认已替换为已验ELF `073b273d` / 元数据 `0dc4ad2e`，v4服务包
+`8d1f6b50` / 服务元数据 `1575d877`；原生入口更新、Guardian字节不变，
+继续复用已验CUDA探针。原A05 `46d7bf70/fe70b669` 和
+`51d90f4c/b1734181` 完整回退保留，receipt `1f4a670b`。
+原service_id、ledger字节/预算、策略/Key/配额保留，仍STOPPED；安装
+只做封包核验和help/status，0模型/0Chat。原件见
+[evidence/serve-completions-20261108](evidence/serve-completions-20261108/README.md)。
+A06已交付，继续A07 Responses及其余总计划；未合main，非全OpenAI兼容
+结论，不追加无关全矩阵或长稳。

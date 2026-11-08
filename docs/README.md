@@ -1,5 +1,7 @@
 # docs/ — 开发记录文档体系
 
+[原生Completions/Models及可回退交付](SERVE_COMPLETIONS_2026-11-08.md)。
+
 - [A04 custom工具交付](SERVE_CUSTOM_TOOLS_2026-11-08.md)：text/regex/Lark、原生模型适配、真实混合调用与可回退默认。
 
 - [A04工具选择与增量流](SERVE_TOOL_STREAM_2026-11-08.md)：allowed_tools与逐片参数已验交付。

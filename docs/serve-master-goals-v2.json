@@ -169,7 +169,7 @@
     {
       "id": "A06",
       "required": true,
-      "state": "implementation_in_progress",
+      "state": "delivered",
       "implementation": "Completions生成接口、Models详情/标识/别名与标准查询行为",
       "acceptance": "标准SDK调用真实生成；不只转发而丢失prompt/echo/选择/usage语义；模型读写权限按操作合同",
       "depends_on": [
@@ -177,9 +177,17 @@
         "A03"
       ],
       "evidence": [
-        "docs/SERVE_COMPLETIONS_2026-11-08.md"
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "docs/evidence/serve-completions-20261108/README.md"
       ],
-      "release": null
+      "release": {
+        "engine_sha256": "073b273de1e2126523a9186a962f73c501dfe2c61a4e127dbb53329cb59aea55",
+        "engine_release_sha256": "0dc4ad2ece468d191f55761f17f1cdbc9bd826fcb3fb4612921337323b8f2197",
+        "service_manifest_sha256": "8d1f6b5083319e9f73702f8ee41b3d5beb9c9831b9962f9dbac61f3812bd4a27",
+        "service_release_sha256": "1575d87732f6100b7dc7376492052c913334298cd81c07adf00c1dfbeb77a194",
+        "protocol_sha256": "a1089f3d5c714bbb115d9fca32d755cf66804c96d16bdc88d0f39b9d82ed8484"
+      },
+      "development_status": "Native Completions/Models, full prompt/echo/logprobs/best_of/usage and raw SDK JSON/SSE targeted acceptance delivered with rollback. Original final driver counter failure retained and reconciled from unchanged runtime evidence."
     },
     {
       "id": "A07",
@@ -605,5 +613,5 @@
     }
   ],
   "next_task": "A05",
-  "next": "完成A06 Completions/Models已开发能力的有界真实验收及可回退发行，然后立即继续A07 Responses等全部总计划。"
+  "next": "继续A07 Responses原生请求、工具items与完整SSE生命周期，联动A08持久对象；全部总任务未完成前不结束目标。"
 }

@@ -1,0 +1,6 @@
+test_cancel_is_an_independent_outcome_and_must_not_double_count (tools.serve_completions.test_acceptance.Driver.test_cancel_is_an_independent_outcome_and_must_not_double_count) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK

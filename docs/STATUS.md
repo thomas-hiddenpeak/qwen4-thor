@@ -2,13 +2,20 @@
 
 更新：2026-11-08。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
-A06原生Completions/Models开发、针对性CPU及真实业务证据已完成：
-1模型/7生成、51.954秒驱动/52.503秒严格租约、50次NVML全OK；
-实际echo概率、6候选JSON/SSE、best_of真实选优和24token计费、
-FIM `a + b`、取消后同PID Chat通过。原驱动误把取消计为错误，最后
-断言失败原件保留；只修驱动并以1项负控CPU及原始线包复核闭合，
-运行时源码/ELF未变，不追加GPU。清理退出0，默认暂仍A05，正在准备
-可回退发行。详见[SERVE_COMPLETIONS](SERVE_COMPLETIONS_2026-11-08.md)。
+[A06原生Completions/Models已交付](SERVE_COMPLETIONS_2026-11-08.md)：
+50不同C++、51输入/schema、6SDK、4实际原生/TLS、11驱动/托管/发行
+CPU通过；1启动/7生成、51.954秒驱动/52.503秒严格租约、50次NVML
+全OK。真实echo概率、6候选JSON/SSE、best_of选优及24token计费、
+FIM `a + b`、取消后同PID Chat/MTP通过。原驱动最后误把取消计入
+错误，FAILED原件保留；只改断言，1CPU负控及原始线包复核闭合，
+运行时/ELF未变，不追加GPU。进程退出0、端口/锁释放。
+
+当前默认引擎`073b273d`/元数据`0dc4ad2e`；v4服务`8d1f6b50`/发布
+`1575d877`，旧A05 `46d7bf70/fe70b669`、`51d90f4c/b1734181`完整
+回退保留。新增随包补全schema与可选托管别名，6控制源更改有针对性
+CPU，恢复策略及Guardian不变。原策略/Key/配额/ledger保持STOPPED，
+安装0模型/0Chat。[原件](evidence/serve-completions-20261108/README.md)。
+A06已交付，立即继续A07 Responses及全部总计划；未合main，总目标active。
 
 ## Serve总目标重审：能力缺口全部进入实施清单
 

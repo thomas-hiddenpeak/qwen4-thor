@@ -1,0 +1,14 @@
+✔ official SDK preserves batch token IDs and actual legacy probability shape (99.731641ms)
+✔ official SDK consumes split SSE, per-choice finish and aggregate usage (15.023122ms)
+✔ official model SDK encodes one identifier segment and does not follow URLs (6.089469ms)
+✔ official Models list exposes objects without invented pagination (5.813328ms)
+✔ official DELETE preserves typed denial; request failures never retry (8.488331ms)
+✔ stream validator rejects missing terminal, duplicate finish and early usage (0.612806ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 227.91327

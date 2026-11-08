@@ -29,3 +29,7 @@ docs/evidence/serve-schema-v2-20261108/**/*.wire binary
 # Keep pinned upstream schema format vectors and their MIT notice byte-exact.
 tests/fixtures/schema_formats/*.json -text -whitespace
 tests/fixtures/schema_formats/LICENSE -text -whitespace
+
+# Preserve A06 captured protocol bytes and their recorded SHA256 values.
+docs/evidence/serve-completions-20261108/** -text -whitespace
+docs/evidence/serve-completions-20261108/**/*.wire binary

@@ -1,0 +1,6 @@
+test_completions_and_model_details_use_tls_cors_and_api_keys (__main__.AccessTests.test_completions_and_model_details_use_tls_cors_and_api_keys) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 2.543s
+
+OK

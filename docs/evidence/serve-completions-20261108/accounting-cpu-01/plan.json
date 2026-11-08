@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_completions.test_acceptance.Driver.test_cancel_is_an_independent_outcome_and_must_not_double_count"
+  ],
+  "scope": "fix wrong final assertion only; no runtime changes or GPU rerun"
+}

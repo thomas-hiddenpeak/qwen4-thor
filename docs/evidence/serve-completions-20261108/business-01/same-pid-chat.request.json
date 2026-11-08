@@ -1,0 +1,12 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": 0,
+  "messages": [
+    {
+      "role": "user",
+      "content": "Compute 17 + 25. Reply only with the decimal number."
+    }
+  ],
+  "enable_thinking": false,
+  "max_completion_tokens": 64
+}

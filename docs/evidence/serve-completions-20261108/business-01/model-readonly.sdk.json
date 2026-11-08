@@ -1,0 +1,17 @@
+{
+  "ok": false,
+  "error": {
+    "class": "PermissionDeniedError",
+    "message": "403 loaded base models cannot be deleted",
+    "status": 403,
+    "code": "model_not_deletable",
+    "param": "model"
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:18164/v1/models/qwen3.8-flash-next",
+      "method": "DELETE"
+    }
+  ]
+}

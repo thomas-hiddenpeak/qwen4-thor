@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "cases": 51,
+  "fields": 0,
+  "accepted": 12,
+  "rejected": 39,
+  "failures": [],
+  "probe_sha256": "2ea83c4b6bf167cb890eeef6a95df40e1891d291c1ede52f8a0f1169ccb115f2",
+  "scope": "CPU request shapes/lexemes/native semantic initialization; no tokens/GPU/model/grammar compilation",
+  "selection": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-completions-20261108/completion-cases.txt",
+    "sha256": "8e6a274527d123acbf5ec0e83d476b9b9b8f05c1b3d4ea4f76a3d6066de106fa",
+    "complete_request_contract": false
+  }
+}

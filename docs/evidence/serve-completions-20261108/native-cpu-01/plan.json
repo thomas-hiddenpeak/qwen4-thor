@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "tools/serve_recovery/test_native_ingress.py",
+    "--ingress",
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t-ingress",
+    "-v",
+    "NativeTests.test_completions_preserve_body_and_enforce_native_auth",
+    "NativeTests.test_model_detail_routes_preserve_encoding_and_permissions",
+    "NativeTests.test_completions_data_limit_preserves_model_control_route"
+  ]
+}

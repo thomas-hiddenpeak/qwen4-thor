@@ -1,0 +1,21 @@
+{
+  "commands": [
+    [
+      "python3",
+      "-B",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ],
+    [
+      "python3",
+      "-B",
+      "tools/serve_protocol/build_contract.py",
+      "--check"
+    ],
+    [
+      "git",
+      "diff",
+      "--check"
+    ]
+  ]
+}

@@ -1,0 +1,12 @@
+test_invalid_or_ambiguous_registry_is_rejected (tools.serve_completions.test_managed.Managed.test_invalid_or_ambiguous_registry_is_rejected) ... ok
+test_old_default_profile_does_not_acquire_a_new_model_identity (tools.serve_completions.test_managed.Managed.test_old_default_profile_does_not_acquire_a_new_model_identity) ... ok
+test_optional_registry_survives_command_and_settings_revalidation (tools.serve_completions.test_managed.Managed.test_optional_registry_survives_command_and_settings_revalidation) ... ok
+test_best_of_oracle_uses_each_prompt_group_and_actual_mean (tools.serve_completions.test_acceptance.Driver.test_best_of_oracle_uses_each_prompt_group_and_actual_mean) ... ok
+test_frozen_inputs_pass_production_semantics_before_gpu (tools.serve_completions.test_acceptance.Driver.test_frozen_inputs_pass_production_semantics_before_gpu) ... ok
+test_real_nginx_parse_and_private_package_verification (tools.serve_gateway.test_gateway.GatewayTests.test_real_nginx_parse_and_private_package_verification) ... ok
+test_control_and_data_have_separate_complete_bounds (tools.serve_gateway.test_gateway.GatewayTests.test_control_and_data_have_separate_complete_bounds) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.273s
+
+OK

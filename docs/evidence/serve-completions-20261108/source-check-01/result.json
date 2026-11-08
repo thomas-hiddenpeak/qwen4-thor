@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "argv": [
+        "python3",
+        "-B",
+        "tools/serve_audit/check_inventory.py",
+        "--self-check"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "python3",
+        "-B",
+        "tools/serve_protocol/build_contract.py",
+        "--check"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit": 0
+    }
+  ]
+}

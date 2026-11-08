@@ -1,0 +1,51 @@
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\"}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"prompt\": null}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"prompt\": \"\"}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"prompt\": \"<think>原文\"}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"prompt\": [10, 11]}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"prompt\": []}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"prompt\": [\"甲\", \"乙\"]}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"prompt\": [[1, 2], [], [3]]}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"prompt\": \"é\", \"best_of\": 3, \"n\": 2, \"echo\": true, \"suffix\": \"尾\", \"max_tokens\": 0, \"logprobs\": 5, \"temperature\": 0.75, \"top_p\": 0.9, \"seed\": -9223372036854775808, \"frequency_penalty\": 0.2, \"presence_penalty\": -1, \"logit_bias\": {\"12\": 100}, \"stop\": [\"end\"], \"user\": \"u\", \"request_id\": \"completion-case\", \"cancel_token\": \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\", \"request_timeout_ms\": 500}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"prompt\": null, \"best_of\": null, \"n\": null, \"echo\": null, \"suffix\": null, \"max_tokens\": null, \"logprobs\": null, \"stream\": null, \"stream_options\": null, \"temperature\": null, \"top_p\": null, \"seed\": null, \"frequency_penalty\": null, \"presence_penalty\": null, \"logit_bias\": null, \"stop\": null, \"user\": null}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"stream\": true, \"n\": 2, \"best_of\": 2, \"stream_options\": {\"include_usage\": true, \"include_obfuscation\": false}}"}
+{"kind": "completion", "raw": "{\"model\": \"org/alias\"}", "model_aliases": ["org/alias"]}
+{"kind": "completion", "raw": "{\"model\": \"missing\"}"}
+{"kind": "completion", "raw": "{}"}
+{"kind": "completion", "raw": "{\"model\": null}"}
+{"kind": "completion", "raw": "{\"model\": \"\"}"}
+{"kind": "completion", "raw": "{\"model\": \"has space\"}"}
+{"kind": "completion", "raw": "{\"model\": \"中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中\"}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"max_tokens\": -1}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"max_tokens\": 1.5}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"logprobs\": 6}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"logprobs\": true}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"n\": 0}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"best_of\": 129}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"echo\": 1}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"stream\": \"yes\"}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"suffix\": []}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"seed\": 9223372036854775808}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"temperature\": 2.1}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"top_p\": -0.1}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"frequency_penalty\": 3}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"presence_penalty\": -3}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"logit_bias\": {\"1\": 101}}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"stop\": [\"\"]}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"user\": {}}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"stream_options\": {\"wrong\": true}}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"request_timeout_ms\": 0}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"unknown\": true}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"prompt\": [-1]}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"prompt\": [1.2]}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"prompt\": [true]}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"prompt\": [\"x\", [1]]}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"prompt\": {}}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"prompt\": [10]}", "token_vocab": 10}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"prompt\": [\"a\", \"b\"], \"best_of\": 128}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"n\": 2, \"best_of\": 1}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"best_of\": 2, \"stream\": true}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"stream_options\": {}}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"request_id\": \"x\"}"}
+{"kind": "completion", "raw": "{\"model\": \"qwen3.8-flash-next\", \"request_id\": \"cmpl-auto-x\", \"cancel_token\": \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}"}
+{"kind": "completion", "raw": "{\"model\":\"qwen3.8-flash-next\",\"n\":1,\"n\":2}"}

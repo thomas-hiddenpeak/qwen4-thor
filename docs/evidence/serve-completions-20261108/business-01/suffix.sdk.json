@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "result": {
+    "id": "cmpl-auto-31a87080ddd7a07bbdd123b9a9484df7",
+    "object": "text_completion",
+    "created": 1794147097,
+    "model": "qwen3.8-flash-next",
+    "choices": [
+      {
+        "index": 0,
+        "text": "a + b",
+        "finish_reason": "stop",
+        "logprobs": null
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 26,
+      "completion_tokens": 4,
+      "total_tokens": 30
+    }
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:18164/v1/completions",
+      "method": "POST",
+      "body": "{\"model\":\"qwen3.8-flash-next\",\"temperature\":0,\"prompt\":\"def add(a, b):\\n    return \",\"suffix\":\"\\n\\nassert add(2, 3) == 5\\n\",\"max_tokens\":16,\"stop\":[\"\\n\"]}"
+    }
+  ]
+}

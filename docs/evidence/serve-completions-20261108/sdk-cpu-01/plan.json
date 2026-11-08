@@ -1,0 +1,8 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "tools/serve_completions/test_sdk.mjs"
+  ],
+  "scope": "official SDK 7.47.0 HTTP fixture; no model"
+}

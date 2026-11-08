@@ -1,0 +1,11 @@
+{
+  "status": "FAILED",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 294, in run\n    try:self.start();self.business();result['status']=self.success_status\n                     ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_completions/acceptance.py\", line 215, in business\n    require(final_metrics['q4t_requests_total'] == 7 and\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 52, in require\n    raise RuntimeError(message)\nRuntimeError: business accounting\n",
+  "counts": {
+    "starts": 1,
+    "chats": 7,
+    "controls": 59
+  },
+  "seconds": 51.954248203895986,
+  "binary_sha256": "073b273de1e2126523a9186a962f73c501dfe2c61a4e127dbb53329cb59aea55"
+}

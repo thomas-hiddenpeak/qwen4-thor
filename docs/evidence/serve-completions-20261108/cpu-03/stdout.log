@@ -1,0 +1,3 @@
+[PASS] client_rate_completion_batch_charges_only_admitted_prompts_once
+[PASS] sampling_response_constrained_deferred_content_keeps_provenance
+2 tests, 2 passed, 0 failed, 0 skipped
