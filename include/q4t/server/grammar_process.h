@@ -24,6 +24,7 @@ enum class GrammarFailure {
   kCancelled,
   kTimeout,
   kResource,
+  kDependency,
   kWorker,
   kUnavailable
 };

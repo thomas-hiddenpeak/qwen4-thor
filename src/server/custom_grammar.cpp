@@ -9,6 +9,10 @@
 #include "q4t/server/custom_tools.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/output_schema.h"
+#include "schema_grammar.h"
+#include "schema_idna.h"
+#include "schema_string.h"
+#include "schema_string_grammar.h"
 
 #ifdef Q4T_ENABLE_XGRAMMAR
 #include <xgrammar/grammar.h>
@@ -75,7 +79,7 @@ std::vector<Range> Without(const std::vector<Range>& ranges,
   }
   return result;
 }
-std::string CharacterClass(const std::vector<int>& data) {
+std::string CharacterClass(const std::vector<int>& data, bool repeat = false) {
   Require(!data.empty() && data.size() % 2 == 1);
   std::vector<Range> ranges;
   for (size_t i = 1; i < data.size(); i += 2)
@@ -85,13 +89,15 @@ std::string CharacterClass(const std::vector<int>& data) {
   const auto normal = Without(
       ranges, {{0, 31}, {34, 34}, {60, 60}, {92, 92}, {0xd800, 0xdfff}});
   std::vector<std::string> branches;
+  std::string normal_class;
   if (!normal.empty()) {
     std::string text = "[";
     for (const auto& [low, high] : normal) {
       text += Codepoint(low);
       if (low != high) text += '-' + Codepoint(high);
     }
-    branches.push_back(text + ']');
+    normal_class = text + ']';
+    if (!repeat) branches.push_back(normal_class);
   }
   for (int c = 0; c <= 92; ++c) {
     if (c > 31 && c != 34 && c != 60 && c != 92) continue;
@@ -102,13 +108,22 @@ std::string CharacterClass(const std::vector<int>& data) {
     auto encoded = EncodeCustomInput(std::string(1, static_cast<char>(c)));
     branches.push_back(Literal(encoded.substr(1, encoded.size() - 2)));
   }
-  if (branches.empty()) return "[^\\u0000-\\U0010ffff]";
+  if (branches.empty())
+    return repeat ? (normal_class.empty() ? "\"\"" : normal_class + '*')
+                  : "[^\\u0000-\\U0010ffff]";
   std::string output = "(";
   for (const auto& branch : branches) {
     if (output.size() > 1) output += " | ";
     output += branch;
   }
-  return output + ')';
+  output += ')';
+  if (!repeat) return output;
+  // Keep runs of ordinary Unicode as a native character-class star. Repeating
+  // the whole (normal | JSON-escape) choice creates a matcher stack frame per
+  // ordinary character; real-vocabulary masks then exceed the step deadline.
+  // Factoring normal* (escape normal*)* preserves the encoded language.
+  if (normal_class.empty()) return output + '*';
+  return normal_class + "* (" + output + ' ' + normal_class + "*)*";
 }
 
 // Public SerializeJSON exposes the pinned grammar expression representation.
@@ -194,7 +209,7 @@ class Encoder {
         }
         case 1:
         case 2:  // Unicode character class, optionally repeated.
-          body = CharacterClass(values) + (kind == 2 ? "*" : "");
+          body = CharacterClass(values, kind == 2);
           break;
         case 3:
           body = "\"\"";
@@ -262,6 +277,23 @@ io::Json String(std::string value) {
 }
 void Expand(io::Json* node, int depth) {
   Require(depth < 32);
+  if (node->GetString("type") == "json_schema") return;
+  if (node->GetString("type") == "q4t_schema") {
+    OutputSchemaGraph graph;
+    const auto status = graph.Init(*Field(*node, "schema"),
+                                   node->GetBool("strict"), nullptr);
+    if (!status) {
+      if (status.message().starts_with("schema_resource_exhausted:"))
+        throw std::length_error("schema graph resource limit");
+      throw std::runtime_error("invalid schema graph");
+    }
+    const auto grammar = CompileOutputSchemaEbnf(
+        graph, CompileSchemaStringSyntax, CheckSchemaString);
+    node->object = {{"type", String("grammar")},
+                    {"syntax", String("ebnf")},
+                    {"grammar", String(grammar)}};
+    return;
+  }
   if (node->GetString("type") == "q4t_custom") {
     const auto syntax = node->GetString("syntax");
     const auto definition = node->GetString("definition");
@@ -290,13 +322,18 @@ void Expand(io::Json* node, int depth) {
 #endif
 
 std::string ExpandCustomGrammarFormats(std::string_view structural_tag) {
-  if (structural_tag.find("\"q4t_custom\"") == structural_tag.npos)
+  if (structural_tag.find("\"q4t_custom\"") == structural_tag.npos &&
+      structural_tag.find("\"q4t_schema\"") == structural_tag.npos &&
+      structural_tag.find("\"q4t_guard\"") == structural_tag.npos)
     return std::string(structural_tag);
 #ifdef Q4T_ENABLE_XGRAMMAR
   io::Json value;
   Require(io::ParseJson(std::string(structural_tag), &value, true,
-                        {32, 32768, 65536, true})
+                        {64, 262144, 1024 * 1024, true, true})
               .ok());
+  std::erase_if(value.object, [](const auto& member) {
+    return member.first == "q4t_guard";
+  });
   Expand(&value, 0);
   auto result = OutputJson(value);
   Bound(result.size());

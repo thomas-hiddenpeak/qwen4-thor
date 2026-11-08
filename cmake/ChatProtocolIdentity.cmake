@@ -129,6 +129,28 @@ set(protocol_inputs
   src/server/chat_scheduler.cpp
   src/server/chat_admission.cpp
   src/server/output_schema.cpp
+  include/q4t/io/json.h
+  src/io/json.cpp
+  include/q4t/server/schema_decimal.h
+  include/q4t/server/schema_graph.h
+  include/q4t/server/schema_prefix.h
+  include/q4t/server/schema_receipt.h
+  src/server/schema_decimal.cpp
+  src/server/schema_graph.cpp
+  src/server/schema_prefix.cpp
+  src/server/schema_receipt.cpp
+  src/server/schema_token_guard.h
+  src/server/schema_token_guard.cpp
+  src/server/schema_number_grammar.h
+  src/server/schema_number_grammar.cpp
+  src/server/schema_grammar.h
+  src/server/schema_grammar.cpp
+  src/server/schema_string.h
+  src/server/schema_string.cpp
+  src/server/schema_string_grammar.h
+  src/server/schema_string_grammar.cpp
+  src/server/schema_idna.h
+  src/server/schema_idna.cpp
   src/server/output_constraints.cpp
   src/server/structured_decoder.cpp)
 list(SORT protocol_inputs)

@@ -122,7 +122,8 @@ class Parser {
         state != State::kFraction && state != State::kExponentDigits)
       return Invalid("incomplete number before delimiter");
     const auto spelling = out->value.str;
-    const auto status = io::ParseJson(spelling, &out->value, true);
+    const auto status = io::ParseJson(spelling, &out->value, true,
+                                      {64, 65536, 1024 * 1024, true, true});
     if (!status) return Invalid(status.message());
     out->complete = true;
     return {};

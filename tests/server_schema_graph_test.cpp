@@ -220,3 +220,24 @@ Q4T_TEST(schema_graph_official_size_limits_and_reference_depth) {
   Q4T_CHECK(graph.Check(Parse("{}")));
   return true;
 }
+
+Q4T_TEST(schema_graph_long_reference_chains_are_bounded_before_worker) {
+  std::string definitions;
+  for (int i = 0; i < 80; ++i) {
+    if (i) definitions += ',';
+    definitions += "\"n" + std::to_string(i) + "\":{\"$ref\":\"#/$defs/n" +
+                   std::to_string(i + 1) + "\"}";
+  }
+  definitions += R"(,"n80":{"type":"object","properties":{},"required":[],"additionalProperties":false})";
+  const auto root = Parse("{\"$ref\":\"#/$defs/n0\",\"$defs\":{" + definitions + "}}");
+  const auto nested = Parse(R"({"type":"object","properties":{"v":{"$ref":"#/$defs/n0"}},
+    "required":["v"],"additionalProperties":false,"$defs":{)" + definitions + "}}");
+  for (const auto* schema : {&root, &nested}) {
+    OutputSchemaGraph graph;
+    std::string path;
+    const auto status = graph.Init(*schema, true, &path);
+    Q4T_CHECK(!status && status.message().starts_with("schema_resource_exhausted:"));
+    Q4T_CHECK(!path.empty());
+  }
+  return true;
+}

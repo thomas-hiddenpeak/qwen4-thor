@@ -40,7 +40,8 @@ bool Has(const std::vector<std::string>& types, std::string_view value) {
   return std::find(types.begin(), types.end(), value) != types.end();
 }
 Status Number(const Json& value, SchemaDecimal* out) {
-  if (!value.IsNumber() || !std::isfinite(value.number))
+  if (!value.IsNumber() ||
+      (value.str.empty() && !std::isfinite(value.number)))
     return Status::Fail("expected finite JSON number");
   return SchemaDecimal::Parse(OutputJson(value), out);
 }
@@ -58,7 +59,7 @@ bool Matches(const Json& value, std::string_view type) {
   return false;
 }
 
-// Canonical equality follows JSON values, including object member order and
+// Canonical equality follows JSON values, independent of object member order,
 // exact mathematical number equality (1 == 1.0, without 2^53 rounding).
 Status Key(const Json& value, std::string* out, size_t* work,
            size_t depth = 0) {
@@ -240,6 +241,12 @@ std::vector<const Json*> Children(const Json& schema) {
   return result;
 }
 }  // namespace
+
+Status CanonicalSchemaValue(const io::Json& value, std::string* out) {
+  out->clear();
+  size_t work = kWork;
+  return Key(value, out, &work);
+}
 
 Status OutputSchemaGraph::Error(const std::string& path,
                                 const std::string& message) {
@@ -457,6 +464,9 @@ Status OutputSchemaGraph::Depth(const Json& schema, size_t depth,
                                 std::unordered_set<const Json*>* active,
                                 std::unordered_map<const Json*, size_t>* seen) {
   if (active->contains(&schema)) return Status();  // Productive recursion.
+  if (active->size() >= 64)
+    return Error(nodes_.at(&schema),
+                 "schema_resource_exhausted: reference traversal depth");
   if (depth > 10) return Error(nodes_.at(&schema), "schema exceeds 10 levels");
   if (const auto prior = seen->find(&schema);
       prior != seen->end() && prior->second >= depth)
@@ -498,6 +508,9 @@ Status OutputSchemaGraph::Init(const Json& root, bool strict,
   const Json* effective = &root;
   std::unordered_set<const Json*> chain;
   while (effective->Has("$ref")) {
+    if (chain.size() >= 64)
+      return Error(InputParamPath(path, "$ref"),
+                   "schema_resource_exhausted: root reference traversal");
     if (!chain.insert(effective).second)
       return Error(InputParamPath(path, "$ref"),
                    "nonproductive root reference");
@@ -523,6 +536,8 @@ Status OutputSchemaGraph::Value(const Json& schema, const Json& value,
   if (!status) return status;
   if (depth > 64)
     return Status::Fail("schema_resource_exhausted: output depth");
+  if (active->size() >= 64)
+    return Status::Fail("schema_resource_exhausted: value reference traversal");
   if (!active->insert(&schema).second)
     return Status::Fail("schema recursion without value progress");
   struct Pop {
@@ -673,6 +688,8 @@ Status OutputSchemaGraph::Prefix(
   if (depth > 64)
     return Status::Fail("schema_resource_exhausted: prefix depth");
   if (!prefix.started) return {};
+  if (active->size() >= 64)
+    return Status::Fail("schema_resource_exhausted: prefix reference traversal");
   if (!active->insert(&schema).second)
     return Status::Fail("schema recursion without prefix progress");
   struct Pop {

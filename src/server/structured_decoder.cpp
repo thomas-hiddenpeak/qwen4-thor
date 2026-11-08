@@ -20,6 +20,7 @@ struct StructuredDecoder::Impl {
   std::vector<int32_t> mask;
   bool masked = false;
   bool terminated = false;
+  std::vector<SchemaReceipt> receipts;
   GrammarFailure failure = GrammarFailure::kNone;
 
   Status Transfer(void* data, size_t bytes, bool write,
@@ -34,7 +35,8 @@ struct StructuredDecoder::Impl {
     detail::GrammarReply reply;
     auto status = Transfer(&reply, sizeof(reply), false, deadline);
     if (!status) return status;
-    if (reply.magic != detail::kGrammarWireMagic || reply.flags > 3) {
+    if (reply.magic != detail::kGrammarWireMagic || reply.flags > 3 ||
+        reply.reserved || reply.receipts > 128) {
       failure = GrammarFailure::kWorker;
       process->Stop();
       return Status::Fail("invalid grammar worker response");
@@ -42,24 +44,42 @@ struct StructuredDecoder::Impl {
     if (reply.code != detail::WorkerCode::kOk) {
       failure = reply.code == detail::WorkerCode::kResource
                     ? GrammarFailure::kResource
+                : reply.code == detail::WorkerCode::kDependency
+                    ? GrammarFailure::kDependency
                     : GrammarFailure::kWorker;
       process->Stop();
       return Status::Fail(
           failure == GrammarFailure::kResource
               ? "grammar worker memory limit exceeded"
+          : failure == GrammarFailure::kDependency
+              ? "structured output validation dependency unavailable"
               : "grammar worker compilation or matching failed");
     }
     process->ReportRss(reply.reported_rss_bytes);
     terminated = (reply.flags & 1) != 0;
     masked = (reply.flags & 2) != 0;
     const size_t expected = (ready || terminated) ? 0 : mask.size();
-    if (reply.words != expected || (ready && reply.flags) ||
+    if (reply.words != expected || (ready && (reply.flags || reply.receipts)) ||
         (terminated && masked)) {
       failure = GrammarFailure::kWorker;
       process->Stop();
       return Status::Fail("invalid grammar worker mask shape");
     }
-    return Transfer(mask.data(), expected * sizeof(int32_t), false, deadline);
+    status = Transfer(mask.data(), expected * sizeof(int32_t), false, deadline);
+    if (!status) return status;
+    std::vector<SchemaReceipt> next(reply.receipts);
+    if (!next.empty())
+      status = Transfer(next.data(), next.size() * sizeof(SchemaReceipt), false,
+                        deadline);
+    if (!status) return status;
+    if (next.size() < receipts.size() ||
+        !std::equal(receipts.begin(), receipts.end(), next.begin())) {
+      failure = GrammarFailure::kWorker;
+      process->Stop();
+      return Status::Fail("grammar worker changed completed value receipts");
+    }
+    receipts = std::move(next);
+    return {};
   }
 };
 #else
@@ -81,7 +101,8 @@ Status StructuredDecoder::Create(const OutputConstraints& plan,
   if (failure) *failure = GrammarFailure::kNone;
 #ifdef Q4T_ENABLE_XGRAMMAR
   if (!plan.active || plan.structural_tag.empty() ||
-      plan.structural_tag.size() > 65536 || model_vocab <= 0 ||
+      plan.structural_tag.size() > detail::kGrammarDescriptionLimit ||
+      model_vocab <= 0 ||
       model_vocab > 300000 || decoded_vocab.empty() ||
       decoded_vocab.size() > static_cast<size_t>(model_vocab) ||
       stop_ids.empty() || stop_ids.size() > 32)
@@ -253,6 +274,15 @@ bool StructuredDecoder::Terminated() const {
   return impl_->terminated;
 #else
   return false;
+#endif
+}
+
+const std::vector<SchemaReceipt>& StructuredDecoder::Receipts() const {
+#ifdef Q4T_ENABLE_XGRAMMAR
+  return impl_->receipts;
+#else
+  static const std::vector<SchemaReceipt> empty;
+  return empty;
 #endif
 }
 

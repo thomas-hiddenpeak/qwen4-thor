@@ -58,9 +58,12 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/schema_decimal.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/schema_graph.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/schema_prefix.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/schema_receipt.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/schema_token_guard.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/schema_number_grammar.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/schema_grammar.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/schema_string.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/schema_string_grammar.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/schema_idna.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_schema_graph_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_schema_prefix_test.cpp
@@ -95,5 +98,7 @@ if(Q4T_ENABLE_XGRAMMAR)
   list(APPEND Q4T_HOST_TEST_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_schema_language_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_schema_grammar_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_schema_string_grammar_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_schema_token_guard_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_structured_decoder_test.cpp)
 endif()

@@ -168,6 +168,7 @@ impl Graph {
             charge(work,1)?;
             if !seen.insert((state,prev)) { continue; }
             let mut branches=BTreeSet::new();
+            let mut loops: Ranges=vec![];
             if self.closure([state],prev,0,work)?.contains(&self.end) {
                 branches.insert("\"\"".to_string());
             }
@@ -175,13 +176,29 @@ impl Graph {
                 for (r,to) in self.transitions(state,prev,next,work)? {
                     charge(work,r.len()+cat.len())?;
                     let ranges=intersect(r,cat); if ranges.is_empty() { continue; }
+                    if to==state && next==prev {
+                        loops.extend(ranges); continue;
+                    }
                     let class=out.class(ranges)?;
                     branches.insert(format!("{class} {}",name(to,next)));
                     pending.push_back((to,next));
                 }
             }
-            let body=if branches.is_empty() { charset(&vec![]) }
+            let mut body=if branches.is_empty() { charset(&vec![]) }
                      else { branches.into_iter().collect::<Vec<_>>().join(" | ") };
+            if !loops.is_empty() {
+                loops.sort_unstable(); let mut merged: Ranges=vec![];
+                for (low,high) in loops {
+                    if let Some(last)=merged.last_mut() {
+                        if low<=last.1+1 { last.1=last.1.max(high); }
+                        else { merged.push((low,high)); }
+                    } else { merged.push((low,high)); }
+                }
+                // Expose a direct character-class star, not recursion hidden
+                // behind a rule alias. The JSON encoder then preserves its
+                // native fast path instead of one matcher frame per character.
+                body=format!("{}* ({body})",charset(&merged));
+            }
             writeln!(&mut out.rules,"{} ::= ({body})",name(state,prev)).map_err(|_|3u32)?;
             bound(out.rules.len(),LIMIT)?;
         }
@@ -281,7 +298,8 @@ pub unsafe extern "C" fn q4t_schema_regex_ebnf(
     multiple: u32,scale: i32
 ) -> Buffer {
     buffer(std::panic::catch_unwind(|| {
-        if patterns.is_null() || sizes.is_null() || count==0 || count>8 { return Err(1); }
+        if patterns.is_null() || sizes.is_null() || count==0 { return Err(1); }
+        bound(count,64)?;
         let patterns=std::slice::from_raw_parts(patterns,count);
         let sizes=std::slice::from_raw_parts(sizes,count);
         let mut graph=Graph::parse(input(patterns[0],sizes[0],16384)?)?;

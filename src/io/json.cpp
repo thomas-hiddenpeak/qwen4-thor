@@ -4,6 +4,7 @@
 #include <cctype>
 #include <charconv>
 #include <cmath>
+#include <limits>
 #include <unordered_set>
 #include <cstdlib>
 #include <cstring>
@@ -301,9 +302,15 @@ struct Parser {
       while (digit()) ++p;
     }
     double number = 0;
+    if (limits.allow_exact_number_text && p - start > 16384)
+      return Fail("exact number spelling exceeds 16384 bytes");
     const auto result = std::from_chars(start, p, number);
-    if (result.ec != std::errc{} || result.ptr != p || !std::isfinite(number))
-      return Fail("number outside supported finite range");
+    if (result.ec != std::errc{} || result.ptr != p || !std::isfinite(number)) {
+      if (!limits.allow_exact_number_text || !preserve_number_text ||
+          result.ec != std::errc::result_out_of_range || result.ptr != p)
+        return Fail("number outside supported finite range");
+      number = std::numeric_limits<double>::quiet_NaN();
+    }
     out->type = Json::Type::kNumber;
     out->number = number;
     out->str = preserve_number_text ? std::string(start, p) : std::string();

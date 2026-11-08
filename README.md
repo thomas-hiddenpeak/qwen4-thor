@@ -523,7 +523,8 @@ nginx源码。nginx仅用于可选前置互操作测试及显式旧网关模式�
 
 schema v2开发的格式回归使用
 [JSON-Schema-Test-Suite固定测试数据](tests/fixtures/schema_formats/README.md)，
-保留原始MIT许可。国际化hostname校验帮助模块按需调用系统
+保留原始MIT许可。开发版隔离worker按需调用系统
 [libidn2](https://www.gnu.org/software/libidn/#libidn2)的IDNA2008接口
 （LGPL-3.0-or-later库接口），不复制库或启动外部程序。此模块目前
-仍在开发，生成约束与隔离worker接入尚未交付；当前可用能力以STATUS为准。
+已接入开发版候选过滤与最终值回执，HTTP planner/解析器集成及业务
+验收仍在进行；尚未替换默认发行，当前可用能力以STATUS为准。

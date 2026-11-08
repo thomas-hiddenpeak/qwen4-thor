@@ -14,6 +14,10 @@ namespace q4t::server {
 
 struct SchemaPrefixValue;
 
+// Deterministic value identity for a bounded worker receipt. Exact decimal
+// equality and object-key order independence match schema const/enum checks.
+Status CanonicalSchemaValue(const io::Json& value, std::string* out);
+
 // A checked, local-only schema graph. root must outlive this object. References
 // retain identity instead of recursive textual expansion. The string checker
 // must enforce both pattern and format; absence never silently drops a rule.

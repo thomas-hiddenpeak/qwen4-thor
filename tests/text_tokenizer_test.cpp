@@ -11,7 +11,17 @@
 #include "q4t/io/json.h"
 #include "q4t/test.h"
 
+#ifdef Q4T_ENABLE_XGRAMMAR
+#include "q4t/server/structured_decoder.h"
+#include "q4t/server/custom_grammar.h"
+#include "../src/server/schema_token_guard.h"
+#include <xgrammar/compiler.h>
+#include <xgrammar/matcher.h>
+#include <chrono>
+#endif
+
 #include <cstdio>
+#include <cstring>
 #include <fcntl.h>
 #include <string>
 #include <unistd.h>
@@ -74,6 +84,119 @@ const GoldenCase kGoldenCases[] = {
 };
 
 }  // namespace
+
+#ifdef Q4T_ENABLE_XGRAMMAR
+Q4T_TEST(tokenizer_schema_worker_mask_phase_diagnostic) {
+  using namespace q4t::server;
+  std::unique_ptr<Tokenizer> tokenizer;
+  Q4T_CHECK(Tokenizer::Load(kRealTokenizer, {}, &tokenizer));
+  std::vector<std::string> vocabulary(tokenizer->VocabSize());
+  for (uint32_t i = 0; i < vocabulary.size(); ++i)
+    Q4T_CHECK(tokenizer->Decode({i}, true, &vocabulary[i]));
+  const std::string schema =
+      R"({"type":"object","properties":{"padding":{"type":"string"},)"
+      R"("time":{"type":"string","format":"time"}},)"
+      R"("required":["padding","time"],"additionalProperties":false})";
+  const auto tag =
+      R"({"type":"structural_tag","format":{"type":"q4t_schema","schema":)" +
+      schema + "}}";
+  q4t::io::Json config;
+  Q4T_CHECK(q4t::io::ParseJson("{\"content\":{\"schema\":" + schema + "}}",
+                              &config, true));
+  SchemaTokenGuard guard;
+  Q4T_CHECK(guard.Init(config));
+  const std::vector<int32_t> stops{248046};
+  xgrammar::TokenizerInfo info(vocabulary, xgrammar::VocabType::RAW,
+                               vocabulary.size(), stops, false);
+  xgrammar::GrammarCompiler compiler(info, 1, false, 0);
+  const auto compiled = compiler.CompileStructuralTag(ExpandCustomGrammarFormats(tag));
+  xgrammar::GrammarMatcher matcher(compiled);
+  std::vector<int32_t> mask((vocabulary.size() + 31) / 32);
+  std::vector<uint32_t> tokens;
+  Q4T_CHECK(tokenizer->Encode("{\"padding\":\"" + std::string(64, 'x'), &tokens));
+  size_t step = 0;
+  for (const auto token : tokens) {
+    Q4T_CHECK(matcher.AcceptToken(token));
+    Q4T_CHECK(guard.Accept(vocabulary[token], false));
+    DLTensor tensor{};
+    tensor.data = mask.data();
+    tensor.device = {kDLCPU, 0};
+    tensor.ndim = 1;
+    tensor.dtype = {kDLInt, 32, 1};
+    int64_t shape = mask.size();
+    tensor.shape = &shape;
+    std::fill(mask.begin(), mask.end(), -1);
+    auto start = std::chrono::steady_clock::now();
+    std::printf("mask diagnostic step=%zu id=%u lexical start\n", step, token);
+    std::fflush(stdout);
+    matcher.FillNextTokenBitmask(&tensor);
+    auto elapsed = [&] {
+      return std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
+    };
+    std::printf("mask diagnostic lexical seconds=%.6f semantic start\n", elapsed());
+    std::fflush(stdout);
+    start = std::chrono::steady_clock::now();
+    const auto status = guard.Filter(vocabulary, stops, mask);
+    std::printf("mask diagnostic semantic seconds=%.6f ok=%d\n", elapsed(), status.ok());
+    std::fflush(stdout);
+    Q4T_CHECK(status);
+    ++step;
+  }
+  return true;
+}
+
+Q4T_TEST(tokenizer_schema_worker_real_vocabulary_completion_boundaries) {
+  using namespace q4t::server;
+  std::unique_ptr<Tokenizer> tokenizer;
+  Q4T_CHECK(Tokenizer::Load(kRealTokenizer, {}, &tokenizer));
+  std::vector<std::string> vocabulary(tokenizer->VocabSize());
+  for (uint32_t i = 0; i < vocabulary.size(); ++i)
+    Q4T_CHECK(tokenizer->Decode({i}, true, &vocabulary[i]));
+  std::vector<uint32_t> end;
+  Q4T_CHECK(tokenizer->Encode("<|im_end|>", &end) && end.size() == 1);
+  const std::string schema =
+      R"({"type":"object","properties":{"padding":{"type":"string"},)"
+      R"("time":{"type":"string","format":"time"}},)"
+      R"("required":["padding","time"],"additionalProperties":false})";
+  OutputConstraints plan;
+  plan.active = plan.json_output = true;
+  plan.structural_tag =
+      R"({"type":"structural_tag","format":{"type":"q4t_schema","schema":)" +
+      schema + R"(},"q4t_guard":{"content":{"schema":)" + schema + "}}}";
+  std::unique_ptr<StructuredDecoder> decoder;
+  auto status = StructuredDecoder::Create(plan, vocabulary, vocabulary.size(),
+                                          {static_cast<int32_t>(end[0])},
+                                          &decoder);
+  if (!status) std::fprintf(stderr, "%s\n", status.message().c_str());
+  Q4T_CHECK(status);
+  const std::string text = "{\"padding\":\"" + std::string(1024, 'x') +
+                           "\",\"time\":\"00:59:60+01:00\"}";
+  std::vector<uint32_t> tokens;
+  Q4T_CHECK(tokenizer->Encode(text, &tokens));
+  tokens.push_back(end[0]);
+  std::vector<uint16_t> logits(vocabulary.size(), 0);
+  size_t at = 0;
+  for (const auto expected : tokens) {
+    int32_t selected = -1;
+    status = decoder->Select(logits, &selected, expected);
+    if (!status)
+      std::fprintf(stderr, "token %zu id=%u: %s\n", at, expected,
+                   status.message().c_str());
+    Q4T_CHECK(status && selected == static_cast<int32_t>(expected));
+    ++at;
+  }
+  Q4T_CHECK(decoder->Terminated() && decoder->Receipts().size() == 1);
+  q4t::io::Json schema_value, value;
+  Q4T_CHECK(q4t::io::ParseJson(schema, &schema_value, true));
+  Q4T_CHECK(q4t::io::ParseJson(text, &value, true));
+  SchemaReceipt expected;
+  Q4T_CHECK(MakeSchemaReceipt("", schema_value, value, &expected));
+  Q4T_CHECK(decoder->Receipts()[0] == expected);
+  std::printf("real schema vocabulary=%zu accepted_tokens=%zu\n",
+              vocabulary.size(), tokens.size());
+  return true;
+}
+#endif
 
 Q4T_TEST(tokenizer_streaming_utf8_response) {
   std::unique_ptr<Tokenizer> tok;

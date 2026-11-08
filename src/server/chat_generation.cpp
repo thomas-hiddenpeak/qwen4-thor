@@ -602,6 +602,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         } else if (compile_failure == GrammarFailure::kResource) {
           metrics_.structured_resource_exhausted.fetch_add(1);
           SendError(fd, 503, s.message(), {}, "constraint_resource_exhausted");
+        } else if (compile_failure == GrammarFailure::kDependency) {
+          SendError(fd, 503, s.message(), {},
+                    "constraint_dependency_unavailable");
         } else if (compile_failure == GrammarFailure::kWorker) {
           SendError(fd, 502, s.message(), {}, "constraint_worker_failed");
         } else if (compile_failure == GrammarFailure::kUnavailable) {

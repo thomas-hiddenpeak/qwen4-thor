@@ -278,6 +278,16 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/text_stop.cpp
   src/server/reasoning_options.cpp
   src/server/output_schema.cpp
+  src/server/schema_decimal.cpp
+  src/server/schema_graph.cpp
+  src/server/schema_prefix.cpp
+  src/server/schema_receipt.cpp
+  src/server/schema_token_guard.cpp
+  src/server/schema_number_grammar.cpp
+  src/server/schema_grammar.cpp
+  src/server/schema_string.cpp
+  src/server/schema_string_grammar.cpp
+  src/server/schema_idna.cpp
   src/server/output_constraints.cpp
   src/server/grammar_process.cpp
   src/server/grammar_worker.cpp
@@ -479,9 +489,12 @@ if(Q4T_BUILD_TESTS)
     src/server/schema_decimal.cpp
     src/server/schema_graph.cpp
     src/server/schema_prefix.cpp
+    src/server/schema_receipt.cpp
+    src/server/schema_token_guard.cpp
     src/server/schema_number_grammar.cpp
     src/server/schema_grammar.cpp
     src/server/schema_string.cpp
+    src/server/schema_string_grammar.cpp
     src/server/schema_idna.cpp
     tests/server_schema_graph_test.cpp
     tests/server_schema_prefix_test.cpp
@@ -581,7 +594,9 @@ if(Q4T_BUILD_TESTS)
   q4t_link_structured_output(q4t_tests)
   if(Q4T_ENABLE_XGRAMMAR)
     target_sources(q4t_tests PRIVATE tests/server_structured_decoder_test.cpp
-      tests/server_schema_language_test.cpp tests/server_schema_grammar_test.cpp)
+      tests/server_schema_language_test.cpp tests/server_schema_grammar_test.cpp
+      tests/server_schema_string_grammar_test.cpp)
+    list(APPEND Q4T_TEST_SOURCES tests/server_schema_token_guard_test.cpp)
   endif()
   target_include_directories(q4t_tests PRIVATE include)
   target_include_directories(q4t_tests PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
