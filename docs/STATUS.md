@@ -2,6 +2,12 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+Chat持久与未知提交语义已默认交付：引擎92e600fb/元数据dfffcbad，
+原生包ffbd9d4b/发布e4d8b321。717来源/原件核验，针对性CPU与真实
+组合短验通过；[发行及回退](evidence/serve-chat-delivery-20261109/README.md)完整保留上版，安装0模型/0Chat。
+密钥/配额/ledger不变且STOPPED；继续R03实际完成进度与全部余项，
+A07/A08治理及高级执行器仍未整体完成，总目标active。
+
 Chat持久真实组合验收通过：累计3启动/8Chat/141.076秒，138次NVML
 全OK。最终故障返回object_commit_unknown和原ID，同PID MTP继续；
 原对象跨进程/worker恢复保留、删除有效，1606分配释放/端口/锁清理。

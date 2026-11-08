@@ -205,10 +205,10 @@
         "evidence/serve-responses-core-20261108/README.md"
       ],
       "release": {
-        "engine_sha256": "c704eebf3d7f8f03fb566c5ab340277427a9304a09416bed0387676ed028f28f",
-        "engine_release_sha256": "3216d5afdcea78b1f33e37a055c1acfea89eef88b22da2a2c4c75ef19c49c000",
-        "manifest_sha256": "d0e5f43ff23435aa8e95688953687480da5ab16f33525304110db3979f5fc9d8",
-        "release_sha256": "824573f60d62aa8bc12a117bd492e2975b7524b90091c1809f0cb7a8a19b91af",
+        "engine_binary_sha256": "92e600fbcdcadf37271a77405daf498f1fe4fbf2d327ad79a0bf3646bd02ce31",
+        "engine_release_sha256": "dfffcbadb6ba73c2184c06444f28d85979d2d0881d34aca7087bf1ff5fd31e75",
+        "manifest_sha256": "ffbd9d4b52175dc07356933fbfca54ad5143522d3ec9d6ca7bcedcacf0e8887e",
+        "service_release_sha256": "e4d8b32171335bc535021b77712d6eb8c7f3e0e45b4498533afb4d5404eda05e",
         "state": "STOPPED",
         "merged_main": false,
         "whole_task_complete": false
@@ -226,7 +226,7 @@
       "background_business_evidence": "evidence/serve-responses-background-business-20261109/README.md",
       "foreground_reconciliation_evidence": "evidence/serve-foreground-reconciliation-20261109/README.md",
       "foreground_recovery_business_evidence": "evidence/serve-reconciliation-business-20261109/README.md",
-      "delivery_evidence": "evidence/serve-application-delivery-20261109/README.md"
+      "delivery_evidence": "evidence/serve-chat-delivery-20261109/README.md"
     },
     {
       "id": "A08",
@@ -240,15 +240,15 @@
       ],
       "evidence": [],
       "release": {
-        "engine_sha256": "c704eebf3d7f8f03fb566c5ab340277427a9304a09416bed0387676ed028f28f",
-        "engine_release_sha256": "3216d5afdcea78b1f33e37a055c1acfea89eef88b22da2a2c4c75ef19c49c000",
-        "manifest_sha256": "d0e5f43ff23435aa8e95688953687480da5ab16f33525304110db3979f5fc9d8",
-        "release_sha256": "824573f60d62aa8bc12a117bd492e2975b7524b90091c1809f0cb7a8a19b91af",
+        "engine_binary_sha256": "92e600fbcdcadf37271a77405daf498f1fe4fbf2d327ad79a0bf3646bd02ce31",
+        "engine_release_sha256": "dfffcbadb6ba73c2184c06444f28d85979d2d0881d34aca7087bf1ff5fd31e75",
+        "manifest_sha256": "ffbd9d4b52175dc07356933fbfca54ad5143522d3ec9d6ca7bcedcacf0e8887e",
+        "service_release_sha256": "e4d8b32171335bc535021b77712d6eb8c7f3e0e45b4498533afb4d5404eda05e",
         "state": "STOPPED",
         "merged_main": false,
         "whole_task_complete": false
       },
-      "development_status": "Chat持久真实组合验收通过，累计3启动8Chat141.076秒；正常多choice/概率、实际工具/历史、未知提交和同PID恢复通过，原FAILED保留。候选92e600fb待可回退发行；保留治理、身份/配额连续及全部余项继续。",
+      "development_status": "Chat/Responses/Conversations持久与后台/取消、公开未知提交语义已真实短验并可回退默认交付。保留治理、N04身份/配额连续仍需完成；随后全部计划继续。",
       "development_evidence": "evidence/serve-object-store-20261108/README.md",
       "transaction_evidence": "evidence/serve-object-transactions-20261108/README.md",
       "state_evidence": "evidence/serve-responses-state-20261109/README.md",
@@ -266,7 +266,7 @@
       "controller_recovery_evidence": "evidence/serve-object-controller-recovery-20261109/README.md",
       "foreground_reconciliation_evidence": "evidence/serve-foreground-reconciliation-20261109/README.md",
       "foreground_recovery_business_evidence": "evidence/serve-reconciliation-business-20261109/README.md",
-      "delivery_evidence": "evidence/serve-application-delivery-20261109/README.md",
+      "delivery_evidence": "evidence/serve-chat-delivery-20261109/README.md",
       "chat_storage_evidence": "evidence/serve-chat-storage-20261109/README.md",
       "chat_business_evidence": "evidence/serve-chat-business-20261109/README.md"
     },
@@ -469,8 +469,9 @@
         {
           "source": "tools/serve_recovery/service.py launch before try",
           "issue": "daemon socketpair setup after lease acquisition can leak the duplicated lease FD on setup failure; make setup cleanup exception-safe",
-          "state": "fixed_cpu_verified_pending_release",
-          "evidence": "evidence/serve-conversation-service-20261109/cpu-startup-lease-01/result.json"
+          "state": "fixed_validated_delivered",
+          "evidence": "evidence/serve-conversation-service-20261109/cpu-startup-lease-01/result.json",
+          "delivery_evidence": "evidence/serve-application-delivery-20261109/README.md"
         }
       ]
     },
@@ -672,6 +673,6 @@
       "release": null
     }
   ],
-  "next_task": "A08",
-  "next": "继续Chat持久对象的原生存储、查询、分页、metadata更新/删除及官方客户端短验；随后高级Responses执行器、治理和其余全部计划。"
+  "next_task": "R03",
+  "next": "实现实际完成进度、忙/等待/卡死分类和有证据恢复，随后R04/N04—N07/A08—A09及全部余项持续推进。"
 }
