@@ -160,9 +160,11 @@ class Media(base.Stage):
                 "expanded visual token accounting differs")
         return value
 
+    visual_labels = ("cabin", "motion")
+
     def business(self):
         rows = self.plan["requests"]
-        for label in ("cabin", "motion"):
+        for label in self.visual_labels:
             value = self.sdk_request(label, rows[label])
             require(value.finish_reason == "stop" and not value.message.get("tool_calls")
                     and json.loads(value.message["content"]) ==
@@ -190,8 +192,8 @@ class Media(base.Stage):
         require(answer["observed"] == self.plan["expected"]["observed"],
                 "visual/tool/schema closure differs")
         metrics = self.drained("final")
-        require(metrics["q4t_requests_total"] == 4 and
-                metrics["q4t_requests_success_total"] == 4 and
+        require(metrics["q4t_requests_total"] == len(self.visual_labels) + 2 and
+                metrics["q4t_requests_success_total"] == len(self.visual_labels) + 2 and
                 metrics["q4t_requests_error_total"] == 0, "media accounting")
 
 

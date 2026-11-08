@@ -392,6 +392,14 @@ pub unsafe extern "C" fn q4t_schema_regex_ebnf(
             graph=graph.intersection(&next,&mut work)?;
         }
         if multiple>0 { graph=graph.intersection(&Graph::multiple(multiple,scale)?,&mut work)?; }
+        // Resolve assertion context before reachability pruning even when a
+        // schema supplies only one pattern. Otherwise a search wrapper can
+        // consume arbitrary text before ^, retaining an impossible prefix
+        // until a later anchor rejects the completed value. The universal
+        // product consumes no additional language and preserves all bounds.
+        if graph.nfa.edges.iter().flatten().any(|e| matches!(e,Edge::Look(..))) {
+            graph=graph.intersection(&Graph::parse("(?s:.*)")?,&mut work)?;
+        }
         graph.trim_dead_ends(&mut work)?;
         graph.ebnf(&mut work)
     }).unwrap_or(Err(3)))

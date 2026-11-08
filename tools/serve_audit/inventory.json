@@ -886,7 +886,7 @@
     "src/server/prediction.cpp": "7e8ccdf7c44dd5c8245230577d42eb7d4cd17c6e2efcf5534a02e6744815733f",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
     "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
-    "src/server/regex_syntax/schema_regex.rs": "5760dd4f407dd7e1af134837ada78978ec076b4d3f74c5d781d1b91d9dd8ed8d",
+    "src/server/regex_syntax/schema_regex.rs": "ad5ecc2fc961a9426068c50452e830da2229c40273088b56f8c6218c26f27fbf",
     "src/server/sampling.cpp": "8e6a8c446656d8430005b061b10535b391b002362725511d216f9b4229e3d3cb",
     "src/server/schema_decimal.cpp": "3931972b1ecfd38b0574c6794f447f6b05d1ef78d65e0f73a61eabcb1c2dee2f",
     "src/server/schema_grammar.cpp": "075d6a282f2fc1cda861e3a0de4de132455af3efa9ed30b67b0ad9a5caf56cf2",
@@ -1533,7 +1533,7 @@
     "model_adapter": "Native function/input tags and encoded string, declared name determines standard wire custom type. Two failed business attempts retained; original mixed task passed after adapter repair."
   },
   "schema_v2_development_20261108": {
-    "state": "text_business_passed_media_pending",
+    "state": "text_business_passed_media_pattern_repair_cpu_passed",
     "record": "docs/SERVE_SCHEMA_V2_2026-11-08.md",
     "source": [
       "src/server/schema_decimal.cpp",
@@ -1568,7 +1568,8 @@
       "tools/serve_protocol/run_sdk.mjs",
       "tools/serve_schema_v2/acceptance.py",
       "tools/serve_schema_v2/repair.py",
-      "tools/serve_schema_v2/media.py"
+      "tools/serve_schema_v2/media.py",
+      "tools/serve_schema_v2/media_repair.py"
     ],
     "acceptance": "82 distinct A05 C++ CPU checks. Original final and remaining three text requests pass on aedaac59; total including two retained failures 3 starts/10 Chat/234.851s, 223 NVML samples OK and resources released. Media production CPU preflight four inputs passes; bounded media GPU and delivery remain, default unchanged.",
     "optional_native_dependency": {
@@ -1577,6 +1578,13 @@
       "scope": "development bounded worker: hostname/email compile preflight and Punycode final-value checks only",
       "release_state": "Development HTTP planner/worker/parser integrated and CPU-validated; not shipped in default",
       "failure_contract": "dependency-unavailable/resource/invalid label distinct; no model health/restart signal"
+    },
+    "media_pattern_repair": {
+      "failed": "media-business-01",
+      "cpu": "cpu-media-pattern-02",
+      "passed_affected": 26,
+      "distinct_a05_cpp": 84,
+      "next": "original video plus two unexecuted image/tool turns; 1 start/3 Chat/600 seconds"
     }
   }
 }

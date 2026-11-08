@@ -229,6 +229,47 @@ Q4T_TEST(tokenizer_schema_bounded_maximum_unicode_real_vocabulary) {
   return BoundedTitleRealVocabulary(true, true);
 }
 
+Q4T_TEST(tokenizer_schema_pattern_ref_rejects_dead_prefix_real_vocabulary) {
+  using namespace q4t::server;
+  std::unique_ptr<Tokenizer> tokenizer;
+  Q4T_CHECK(Tokenizer::Load(kRealTokenizer, {}, &tokenizer));
+  std::vector<std::string> vocabulary(tokenizer->VocabSize());
+  for (uint32_t i = 0; i < vocabulary.size(); ++i)
+    Q4T_CHECK(tokenizer->Decode({i}, true, &vocabulary[i]));
+  // Exact pattern and reference shape from the failed video HTTP request.
+  q4t::io::Json input;
+  Q4T_CHECK(q4t::io::ParseJson(R"({"enable_thinking":false,"messages":[],
+    "response_format":{"type":"json_schema","json_schema":{"name":"scene",
+    "strict":true,"schema":{"$ref":"#/$defs/result","$defs":{
+      "direction":{"type":"string",
+        "pattern":"^(left_to_right|right_to_left|up|down|stationary)$"},
+      "result":{"type":"object","properties":{
+        "direction":{"$ref":"#/$defs/direction"}},"required":["direction"],
+        "additionalProperties":false}}}}}})", &input, true));
+  OutputConstraints plan;
+  Q4T_CHECK(PlanOutputConstraints(input, &plan));
+  std::vector<uint32_t> stops, prefix, invalid, suffix;
+  Q4T_CHECK(tokenizer->Encode("<|im_end|>", &stops) && stops.size() == 1);
+  Q4T_CHECK(tokenizer->Encode("{\"direction\":\"right", &prefix));
+  Q4T_CHECK(tokenizer->Encode("ward", &invalid) && invalid.size() == 1);
+  Q4T_CHECK(tokenizer->Encode("_to_left\"}", &suffix));
+  std::unique_ptr<StructuredDecoder> decoder;
+  Q4T_CHECK(StructuredDecoder::Create(
+      plan, vocabulary, vocabulary.size(), {static_cast<int32_t>(stops[0])},
+      &decoder));
+  const std::vector<uint16_t> logits(vocabulary.size(), 0);
+  int32_t selected = -1;
+  for (const auto token : prefix)
+    Q4T_CHECK(decoder->Select(logits, &selected, token));
+  // A rejected token must not advance the grammar transaction.
+  Q4T_CHECK(!decoder->Select(logits, &selected, invalid[0]));
+  for (const auto token : suffix)
+    Q4T_CHECK(decoder->Select(logits, &selected, token));
+  Q4T_CHECK(decoder->Select(logits, &selected, stops[0]));
+  Q4T_CHECK(decoder->Terminated() && decoder->Receipts().size() == 1);
+  return true;
+}
+
 Q4T_TEST(tokenizer_schema_worker_mask_phase_diagnostic) {
   using namespace q4t::server;
   std::unique_ptr<Tokenizer> tokenizer;

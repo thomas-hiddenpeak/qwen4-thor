@@ -108,6 +108,30 @@ Q4T_TEST(schema_language_counted_chains_preserve_holes_and_dead_prefixes) {
   return true;
 }
 
+Q4T_TEST(schema_language_single_pattern_rejects_impossible_prefixes) {
+  // A schema with only pattern has no length/format intersection. Search
+  // wrapping must not leave a prefix that can never satisfy its anchors.
+  const auto grammar = Compile(SchemaRegexEbnf(
+      {R"((?s:.*)(?:^(left_to_right|right_to_left|up|down|stationary)$)(?s:.*))"}));
+  const std::vector<std::string> words{
+      "left_to_right", "right_to_left", "up", "down", "stationary"};
+  for (const auto& prefix : std::vector<std::string>{
+           "", "l", "left_", "right", "rightward", "right_to_left", "up",
+           "upward", "down", "stationary", "stationary\n", " x", "\n"}) {
+    bool expected = false;
+    for (const auto& word : words) expected |= word.starts_with(prefix);
+    xgrammar::GrammarMatcher matcher(grammar);
+    Q4T_CHECK(matcher.AcceptString(prefix) == expected);
+  }
+  const auto bounded = Compile(SchemaRegexEbnf(
+      {R"((?s:.*)(?:^[^\n]*$)(?s:.*))"}));
+  xgrammar::GrammarMatcher matcher(bounded);
+  Q4T_CHECK(matcher.AcceptString("title"));
+  Q4T_CHECK(!matcher.AcceptString("\n"));
+  Q4T_CHECK(matcher.AcceptToken(0));
+  return true;
+}
+
 Q4T_TEST(schema_language_number_exact_range_and_multiple) {
   std::fprintf(stderr, "numeric case: positive tenths\n");
   Q4T_CHECK(Language(
