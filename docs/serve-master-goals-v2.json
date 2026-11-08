@@ -156,7 +156,7 @@
         "docs/SERVE_SCHEMA_V2_2026-11-08.md"
       ],
       "release": null,
-      "development_status": "累计82不同C++ CPU通过。文本前4项真实schema/cache/tool通过，final两次词法超时均保留；现修复JSON编码后被再次递归展开，真实词表完整标题及256标量/转义边界21项CPU通过。待原final+3未运行请求、媒体短验与发布，默认未改。"
+      "development_status": "82不同C++ CPU通过；文本实际组合闭合，含两次失败累计3启动/10Chat/234.851秒，223次NVML全OK、631来源核对及清理。媒体4项CPU preflight通过，待1启动/4Chat短验与可回退发布，默认未改。"
     },
     {
       "id": "A06",

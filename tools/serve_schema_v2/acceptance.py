@@ -129,7 +129,7 @@ def restore_record(log, request_id):
     return dict(prefix=int(prefix),source=source,layout=layout)
 
 
-def prepare(args):
+def prepare(args, *, rows=None, limits=LIMITS, scope=None):
     out=args.output.resolve()
     require(out.is_relative_to(ROOT/'.q4t-work'),"artifacts must be inside workspace")
     require(not subprocess.check_output(['git','status','--porcelain'],cwd=ROOT),
@@ -144,19 +144,24 @@ def prepare(args):
         'third_party/licenses/structured_output'],cwd=ROOT,text=True).splitlines()
     protected=[ROOT/p for p in ('build/q4t','build/q4t.release.json',
         'build/service.release.json','build/service/manifest.json')]
-    plan=dict(version=1,limits=LIMITS,output=str(out),binary=str(binary),
+    plan=dict(version=1,limits=limits,output=str(out),binary=str(binary),
         binary_sha256=sha(binary),model=str(model),model_assets=assets(model),
-        port=args.port,operations_port=args.port+1,requests=requests(),
+        port=args.port,operations_port=args.port+1,
+        requests=requests() if rows is None else rows,
         sources={name:sha(ROOT/name) for name in names},
         source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
         protected={str(p):sha(p) for p in protected},sdk=sdk_identity(),
-        planned=dict(starts=1,chats=8),automatic_retries=False,
-        scope="Rich schema JSON/SSE, exact data, shared/private target cache, real document tool/JSON closure, failure nonpublication and same-PID MTP. No full correctness/performance matrix.")
+        planned=dict(starts=limits['starts'],chats=limits['chats']),automatic_retries=False,
+        scope=scope or "Rich schema JSON/SSE, exact data, shared/private target cache, real document tool/JSON closure, failure nonpublication and same-PID MTP. No full correctness/performance matrix.")
     save(out/'plan.json',plan)
     print(json.dumps(dict(plan=str(out/'plan.json'),sources=len(names))))
 
 
 class Stage(lifecycle.Stage):
+    limits = LIMITS
+    request_templates = staticmethod(requests)
+    success_status = 'PASS_SCHEMA_V2_TEXT_BUSINESS'
+
     def __init__(self,plan):
         self.plan,self.out=plan,Path(plan['output']);self.started=time.monotonic()
         self.counts=dict(starts=0,chats=0,controls=0)
@@ -164,7 +169,8 @@ class Stage(lifecycle.Stage):
         self.history={};self.fault_result={}
         self.lease=int(os.environ['Q4T_MANAGED_LEASE_FD'])
         lifecycle.verify_lease(self.lease,lifecycle.guard.common_lock())
-        require(plan['limits']==LIMITS and plan['requests']==requests(),'frozen plan drift')
+        require(plan['limits']==self.limits and
+                plan['requests']==self.request_templates(),'frozen plan drift')
         for name,digest in plan['sources'].items():require(sha(ROOT/name)==digest,'source drift: '+name)
         for name,digest in plan['protected'].items():require(sha(name)==digest,'default drift: '+name)
         require(sha(plan['binary'])==plan['binary_sha256'],'binary drift')
@@ -174,8 +180,8 @@ class Stage(lifecycle.Stage):
             plan['sdk']['sdk_directory'],timeout=180)
 
     def budget(self,kind):
-        require(time.monotonic()-self.started<LIMITS['seconds']-40,'stage deadline')
-        require(self.counts[kind]<LIMITS[kind],'attempt limit: '+kind)
+        require(time.monotonic()-self.started<self.limits['seconds']-40,'stage deadline')
+        require(self.counts[kind]<self.limits[kind],'attempt limit: '+kind)
         self.counts[kind]+=1;save(self.out/'counts.json',self.counts)
 
     def start(self):
@@ -285,7 +291,7 @@ class Stage(lifecycle.Stage):
 
     def run(self):
         result=dict(status='FAILED')
-        try:self.start();self.business();result['status']='PASS_SCHEMA_V2_TEXT_BUSINESS'
+        try:self.start();self.business();result['status']=self.success_status
         except BaseException:result['error']=traceback.format_exc();raise
         finally:
             try:self.cleanup()

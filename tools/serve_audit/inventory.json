@@ -1533,7 +1533,7 @@
     "model_adapter": "Native function/input tags and encoded string, declared name determines standard wire custom type. Two failed business attempts retained; original mixed task passed after adapter repair."
   },
   "schema_v2_development_20261108": {
-    "state": "full_title_fsm_repair_cpu",
+    "state": "text_business_passed_media_pending",
     "record": "docs/SERVE_SCHEMA_V2_2026-11-08.md",
     "source": [
       "src/server/schema_decimal.cpp",
@@ -1567,9 +1567,10 @@
       "tools/serve_protocol/js_client.py",
       "tools/serve_protocol/run_sdk.mjs",
       "tools/serve_schema_v2/acceptance.py",
-      "tools/serve_schema_v2/repair.py"
+      "tools/serve_schema_v2/repair.py",
+      "tools/serve_schema_v2/media.py"
     ],
-    "acceptance": "82 distinct A05 C++ CPU checks. Two real final-response timeouts retained (2 starts/6 Chat); four initial schema/cache/tool requests passed. Complete-title diagnosis found JSON repetition re-expansion; preserve it as public Regex FSM, including Unicode/escapes. 21 affected cases passed, including actual 256-scalar vocabulary boundary. Final and three unexecuted requests, media and delivery remain. Default unchanged.",
+    "acceptance": "82 distinct A05 C++ CPU checks. Original final and remaining three text requests pass on aedaac59; total including two retained failures 3 starts/10 Chat/234.851s, 223 NVML samples OK and resources released. Media production CPU preflight four inputs passes; bounded media GPU and delivery remain, default unchanged.",
     "optional_native_dependency": {
       "name": "system libidn2 >= 2.3",
       "observed": "2.3.7-2build1.1 on this Thor",
