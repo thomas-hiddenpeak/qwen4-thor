@@ -1,0 +1,11 @@
+[PASS] request_diagnostics_terminal_and_reuse
+[PASS] request_diagnostics_wait_accounting
+[PASS] progress_context_nested_scope_does_not_fake_completion
+[PASS] progress_context_batch_counts_only_selected_owners
+[PASS] progress_diagnostic_nested_wait_restores_real_phase
+[PASS] progress_scheduler_handoff_keeps_one_writer
+[PASS] progress_packet_identity_and_exact_wire
+[PASS] progress_packet_bounds_and_unknown_rows
+[PASS] progress_publisher_backpressure_is_nonblocking
+[PASS] progress_publisher_stop_and_invalid_fd_are_isolated
+10 tests, 10 passed, 0 failed, 0 skipped

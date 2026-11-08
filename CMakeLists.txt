@@ -269,6 +269,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/responses_execution.cpp
   src/server/responses_jobs.cpp
   src/server/responses_owner.cpp
+  src/server/progress_transport.cpp
   src/server/responses_api.cpp
   src/server/application_query.cpp
   src/server/conversation_state.cpp

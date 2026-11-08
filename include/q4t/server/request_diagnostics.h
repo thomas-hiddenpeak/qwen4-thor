@@ -7,26 +7,50 @@
 #include <cstdio>
 #include <mutex>
 #include <string>
+#include <string_view>
 
 #include "q4t/server/request_control.h"
+#include "q4t/server/request_progress.h"
 
 namespace q4t::server {
 
 class RequestDiagnostics {
  public:
   using Clock = std::chrono::steady_clock;
-  enum class Wait { kSlot, kModel, kTokenizer, kScheduler, kWrite, kCount };
+  enum class Wait {
+    kSlot,
+    kModel,
+    kTokenizer,
+    kScheduler,
+    kWrite,
+    kGrammar,
+    kMedia,
+    kStorage,
+    kCache,
+    kCount
+  };
   class Scope {
    public:
     Scope(RequestDiagnostics& owner, Wait kind)
-        : owner_(owner), kind_(kind), start_(Clock::now()) {}
-    ~Scope() { owner_.Observe(kind_, Clock::now() - start_); }
+        : owner_(owner),
+          kind_(kind),
+          start_(Clock::now()),
+          previous_(owner.wait_) {
+      owner_.wait_ = kind;
+      owner_.progress_.Wait(ToProgressWait(kind));
+    }
+    ~Scope() {
+      owner_.progress_.Wait(ToProgressWait(previous_));
+      owner_.wait_ = previous_;
+      owner_.Observe(kind_, Clock::now() - start_);
+    }
     Scope(const Scope&) = delete;
     Scope& operator=(const Scope&) = delete;
    private:
     RequestDiagnostics& owner_;
     Wait kind_;
     Clock::time_point start_;
+    Wait previous_;
   };
 
   explicit RequestDiagnostics(FILE* sink = stderr, std::string trace_id = "-")
@@ -48,7 +72,31 @@ class RequestDiagnostics {
                  trace_id_.c_str());
   }
   void Bind(const std::string& id) { id_ = id; Event("registered"); }
-  void Stage(const char* value) { stage_ = value; Event("stage"); }
+  void Stage(const char* value) {
+    stage_ = value;
+    const std::string_view name(value);
+    progress_stage_ =
+        name == "prefill"           ? ProgressStage::kPrefill
+        : name == "decode"          ? ProgressStage::kDecode
+        : name == "response"        ? ProgressStage::kOutput
+        : name == "media"           ? ProgressStage::kMedia
+        : name == "grammar_compile" ? ProgressStage::kGrammar
+        : name == "storage"         ? ProgressStage::kStorage
+        : name == "cleanup"         ? ProgressStage::kCleanup
+        : name == "slot_admission" || name == "structured_admission"
+            ? ProgressStage::kAdmission
+            : ProgressStage::kInput;
+    progress_.Stage(progress_stage_);
+    Event("stage");
+  }
+  void BindProgress(ProgressHandle progress) { progress_ = progress; }
+  ProgressWork Work() const {
+    if (progress_stage_ == ProgressStage::kPrefill)
+      return ProgressWork::kPrefill;
+    if (progress_stage_ == ProgressStage::kDecode) return ProgressWork::kDecode;
+    if (progress_stage_ == ProgressStage::kMedia) return ProgressWork::kMedia;
+    return ProgressWork::kCache;
+  }
   void Admitted(int seq) { seq_ = seq; Event("admitted"); }
   void Released() { released_ = true; }
   void Outcome(const char* value, const char* reason) {
@@ -73,6 +121,34 @@ class RequestDiagnostics {
   double Total(Wait kind) const { return totals_[static_cast<size_t>(kind)]; }
 
  private:
+  static ProgressWait ToProgressWait(Wait wait) {
+    switch (wait) {
+      case Wait::kSlot:
+        return ProgressWait::kSlot;
+      case Wait::kModel:
+        return ProgressWait::kModel;
+      case Wait::kTokenizer:
+        return ProgressWait::kTokenizer;
+      case Wait::kScheduler:
+        return ProgressWait::kScheduler;
+      case Wait::kWrite:
+        return ProgressWait::kWrite;
+      case Wait::kGrammar:
+        return ProgressWait::kGrammar;
+      case Wait::kMedia:
+        return ProgressWait::kMedia;
+      case Wait::kStorage:
+        return ProgressWait::kStorage;
+      case Wait::kCache:
+        return ProgressWait::kCache;
+      case Wait::kCount:
+        return ProgressWait::kNone;
+    }
+    return ProgressWait::kNone;
+  }
+  ProgressHandle progress_;
+  ProgressStage progress_stage_ = ProgressStage::kInput;
+  Wait wait_ = Wait::kCount;
   static double Milliseconds(Clock::duration elapsed) {
     return std::chrono::duration<double, std::milli>(elapsed).count();
   }

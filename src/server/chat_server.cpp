@@ -115,6 +115,10 @@ Status ChatServer::Start(const ServerOptions& opts) {
   // Validate before loading the tokenizer or allocating model resources.
   const Status validated = ValidateServerOptions(opts);
   if (!validated.ok()) return validated;
+  progress_publisher_ = StartProgressPublisher(
+      progress_, metrics_.requests_success, metrics_.execution_steps_total);
+  auto loading = progress_.Acquire(ProgressNowNs() + 300000000000ULL);
+  loading.Handle().Begin(ProgressWork::kLoad);
   const char* state_directory = std::getenv("XDG_STATE_HOME");
   const char* home_directory = std::getenv("HOME");
   objects_ = std::make_unique<ObjectStore>(
@@ -721,6 +725,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
     std::fprintf(stderr, "[responses] background executor unavailable\n");
   }
   startup_listeners_ = std::move(pending_listeners);
+  loading.Handle().Completed();
+  loading.Handle().End();
   model_ready_.store(true);
   if (background_ && !stop_requested_.load()) {
     try {

@@ -334,6 +334,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   } registration{background ? nullptr : &requests_, control, diagnostic};
   OnException request_failure(
       [&] { control->Cancel(RequestControl::State::kFailure); });
+  auto progress =
+      progress_.Acquire(std::chrono::duration_cast<std::chrono::nanoseconds>(
+                            deadline.time_since_epoch())
+                            .count());
+  control->BindProgress(progress.Handle());
+  diagnostic.BindProgress(progress.Handle());
+  ProgressContext progress_context(progress.Handle());
   diagnostic.Bind(request_id);
   if (http)
     std::fprintf(stderr, "[q4t][http] trace_id=%s completion_id=%s\n",
@@ -996,6 +1003,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     // place of those token embeddings (in prompt position order).
     model::VisionFeatures vfeats;
     if (!items.empty()) {
+      diagnostic.Stage("media");
       if (ids.size() >= static_cast<size_t>(request_capacity)) {
         SendError(fd, 400, "expanded media exceeds assigned context", {},
                   "context_length_exceeded", "messages");
@@ -1015,6 +1023,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           send_cancel_error("request cancelled waiting for vision execution");
           return;
         }
+        ProgressExecution progress_execution(ProgressWork::kMedia);
         OnException backend_failure([&] { AbortBackendExecution(); });
         if (RejectUnhealthy(fd)) {
           // Outer buffer cleanup runs after this model lock is released.
@@ -1249,6 +1258,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     // Call only after BeginSequence, under the model lock. Exact token prefixes
     // and execution layouts are checked before any state bytes are copied.
     const auto restore_cache = [&] {
+      RequestDiagnostics::Scope waiting(diagnostic, Wait::kCache);
       const auto begin = std::chrono::steady_clock::now();
       int prefix = session.cache
                        ? session_cache_.Match(session.key, ids, cache_layout)
@@ -1319,6 +1329,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     };
     const auto save_target = [&](SessionCache* cache, const std::string& key,
                                  const char* kind) {
+      RequestDiagnostics::Scope waiting(diagnostic, Wait::kCache);
       const auto begin = std::chrono::steady_clock::now();
       SessionSaveTiming timing(request_id.c_str(), kind);
       std::vector<SessionRange> ranges;
@@ -1383,6 +1394,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         const int count = std::min(prompt_score_rows, T - base);
         {
           auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
+          ProgressExecution progress_execution(diagnostic.Work());
           OnException backend_failure([&] { AbortBackendExecution(); });
           s = ExecutionStatus();
           if (router_trace_)
@@ -1435,6 +1447,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       q4t::diagnostic::Scope execution_prefill("handler_stream_mtp_prefill", 0,
                                                T);
       auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
+      ProgressExecution progress_execution(diagnostic.Work());
       OnException backend_failure([&] { AbortBackendExecution(); });
       s = ExecutionStatus();
       if (s.ok())
@@ -1558,6 +1571,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       // Cache state belongs to this request's slot. The packed prefill queue
       // cannot start at a restored prefix; use the existing chunk API instead.
       auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
+      ProgressExecution progress_execution(diagnostic.Work());
       OnException backend_failure([&] { AbortBackendExecution(); });
       s = ExecutionStatus();
       if (s.ok())
@@ -1649,6 +1663,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       q4t::diagnostic::Batch execution_batch(request_id.c_str(), seq_id, 0, T);
       q4t::diagnostic::Scope execution_prefill("handler_prefill", 0, T);
       auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
+      ProgressExecution progress_execution(diagnostic.Work());
       OnException backend_failure([&] { AbortBackendExecution(); });
       {
         q4t::diagnostic::Scope execution_begin("target_begin_sequence", 0, T);
@@ -2008,6 +2023,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                                T);
         q4t::diagnostic::Scope execution_init("handler_mtp_init", 0, T);
         auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
+        ProgressExecution progress_execution(ProgressWork::kDraft);
         OnException backend_failure([&] { AbortBackendExecution(); });
         // Another request may have failed PLE while this one waited. No draft
         // work has begun here; do not reinterpret that fault as a CUDA failure.
@@ -2032,9 +2048,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
             s = mtp::MtpDraftExtend(mtp_, shifted.data(), d_trunk_full,
                                     pos.data(), T, &mtp_d0, d_mtp_g, nullptr,
                                     seq_id);
-            if (s.ok())
+            if (s.ok()) {
               metrics_.execution_steps_total.fetch_add(
                   1, std::memory_order_relaxed);
+              ProgressExecution::Completed();
+            }
           }
           if (s.ok()) {
             q4t::diagnostic::Scope execution_reserve("prompt_verify_reserve", 0,
@@ -2182,20 +2200,22 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           mtp_ar.mtp_suffix_tokens = proposal.tokens;
         }
         {
-          const std::lock_guard<std::mutex> lock(sched_mu_);
-          mtp_ar.mtp_accepted_count = 0;
-          mtp_ar.mtp_next_b = -1;
-          mtp_ar.mtp_next_d0 = -1;
-          mtp_ar.pending = !scheduler_stop_ && !mtp_ar.retired;
-          mtp_ar.done = !mtp_ar.pending;
-          if (mtp_ar.done) seq.Fail();
-        }
-        sched_cv_.notify_one();
-        // Block until the scheduler's batched step yields this step's output.
-        {
           RequestDiagnostics::Scope wait(diagnostic, Wait::kScheduler);
-          std::unique_lock<std::mutex> lock(sched_mu_);
-          mtp_ar.cv.wait(lock, [&mtp_ar] { return mtp_ar.done; });
+          {
+            const std::lock_guard<std::mutex> lock(sched_mu_);
+            mtp_ar.mtp_accepted_count = 0;
+            mtp_ar.mtp_next_b = -1;
+            mtp_ar.mtp_next_d0 = -1;
+            mtp_ar.pending = !scheduler_stop_ && !mtp_ar.retired;
+            mtp_ar.done = !mtp_ar.pending;
+            if (mtp_ar.done) seq.Fail();
+          }
+          sched_cv_.notify_one();
+          // Block until the scheduler's batched step yields this step's output.
+          {
+            std::unique_lock<std::mutex> lock(sched_mu_);
+            mtp_ar.cv.wait(lock, [&mtp_ar] { return mtp_ar.done; });
+          }
         }
         if (mtp_ar.mtp_accepted_count <= 0 ||
             mtp_ar.mtp_accepted_count > mtp_k_ + 1) {
@@ -2467,6 +2487,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         } else if (use_sched) {
           // Register this step's token with the scheduler (position + PLE
           // context are read from the per-sequence state BEFORE advancing).
+          RequestDiagnostics::Scope wait(diagnostic, Wait::kScheduler);
           ar.token = tok_id;
           {
             const std::lock_guard<std::mutex> lock(sched_mu_);
@@ -2479,7 +2500,6 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           // Block until the scheduler's packed forward yields this step's
           // token.
           {
-            RequestDiagnostics::Scope wait(diagnostic, Wait::kScheduler);
             std::unique_lock<std::mutex> lock(sched_mu_);
             ar.cv.wait(lock, [&ar] { return ar.done; });
           }
@@ -2492,6 +2512,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         } else {
           // Fallback: single-sequence decode (B1 path).
           auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
+          ProgressExecution progress_execution(diagnostic.Work());
           OnException backend_failure([&] { AbortBackendExecution(); });
           const int32_t proposal = prediction.Next();
           const bool verify_prediction =
@@ -2587,6 +2608,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         !seq.HasPending() && seq.position >= SessionCache::kMinPrefix &&
         seq.position < request_capacity) {
       auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
+      ProgressExecution progress_execution(ProgressWork::kCache);
       OnException backend_failure([&] { AbortBackendExecution(); });
       save_target(&session_cache_, session.key, "private");
       if (session_gpu_error) generation_failed = true;
@@ -2913,6 +2935,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     // cancellation and quota ownership until all choices finish.
     std::string response_terminal;
     if (responses) {
+      diagnostic.Stage("storage");
+      RequestDiagnostics::Scope waiting(diagnostic, Wait::kStorage);
       const auto finished = responses->Finish(
           finish_reason == "length", response_parser.CompletedToolCalls(),
           {T, restored_prefix, static_cast<int64_t>(generated.size()),
@@ -2962,6 +2986,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         SendError(fd, 503, s.message(), {}, "response_storage_exhausted");
         return;
       }
+      diagnostic.Stage("storage");
+      RequestDiagnostics::Scope waiting(diagnostic, Wait::kStorage);
       auto stored = FinalizeStoredChat(objects_.get(), original_request,
                                        stored_chat_response, chat_state_access);
       if (!stored.ok()) {

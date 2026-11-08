@@ -45,8 +45,10 @@ Status FinishHostReadback(cudaError_t copy_error,
                         cudaGetErrorString(error));
   });
   if (trace) trace->Complete(submitted.ok(), gpu_complete, result.ok());
-  if (result.ok() && execution_steps)
+  if (result.ok() && execution_steps) {
     execution_steps->fetch_add(1, std::memory_order_relaxed);
+    ProgressExecution::Completed();
+  }
   return result;
 }
 }
@@ -144,6 +146,8 @@ void ChatServer::RunOnePrefillChunk() {
   bool last = false;
   {
     const std::lock_guard<std::mutex> lock(model_mu_);
+    ProgressContext progress_context(req->control->Progress());
+    ProgressExecution progress_execution(ProgressWork::kPrefill);
     OnException backend_failure([&] { AbortBackendExecution(); });
     s = ExecutionStatus();
     if (s.ok() && RequestCancelled(req->control, req->fd)) {
@@ -327,12 +331,16 @@ void ChatServer::SchedulerLoop() {
     // single-seq tensor-core GEMM, which can flip a near-tie token — harmless
     // but a visible change; only actual batching (Bp > 1) accepts it.
     if (!pf.empty()) {
+      ProgressBatch progress_batch(
+          pf, [](auto* request) { return request->control->Progress(); });
+      ProgressContext progress_context(progress_batch.Handles());
       const int Bp = static_cast<int>(pf.size());
       Status sp;
       std::vector<model::ModelSequence*> sequences;
       for (auto* request : pf) sequences.push_back(request->seq);
       {
         const std::lock_guard<std::mutex> lock(model_mu_);
+        ProgressExecution progress_execution(ProgressWork::kPrefill);
         OnException backend_failure([&] { AbortBackendExecution(); });
         cudaError_t copy_error = cudaSuccess;
         // Health may change while this group waits for model_mu_.
@@ -451,12 +459,16 @@ void ChatServer::SchedulerLoop() {
           suffix_rows += suffix[i].ready;
         }
       }
+      ProgressBatch progress_batch(
+          mtp_reqs, [](auto* request) { return request->control->Progress(); });
+      ProgressContext progress_context(progress_batch.Handles());
       std::vector<int32_t> accepted(static_cast<size_t>(B) * (mtp_k_ + 1));
       std::vector<int> acc_count(B, 0);
       std::vector<int32_t> next_b(B, 0), next_d0(B, 0);
       Status s;
       {
         const std::lock_guard<std::mutex> lock(model_mu_);
+        ProgressExecution progress_execution(ProgressWork::kDecode);
         OnException backend_failure([&] { AbortBackendExecution(); });
         s = ExecutionStatus();
         if (s.ok())
@@ -485,9 +497,11 @@ void ChatServer::SchedulerLoop() {
             }
           }
         }
-        if (s.ok())
+        if (s.ok()) {
           metrics_.execution_steps_total.fetch_add(1,
                                                    std::memory_order_relaxed);
+          ProgressExecution::Completed();
+        }
         if (!s.ok())
           for (auto* sequence : seqs) sequence->Fail();
         if (!s.ok() && cudaPeekAtLastError() != cudaSuccess)
@@ -538,6 +552,9 @@ void ChatServer::SchedulerLoop() {
       }
     }
 
+    ProgressBatch progress_batch(
+        plain_reqs, [](auto* request) { return request->control->Progress(); });
+    ProgressContext progress_context(progress_batch.Handles());
     // Q4T_PROFILE_DECODE=1: bracket each decode step with the CUDA profiler
     // API so `nsys --capture-range=cudaProfilerApi` captures ONLY decode
     // (isolating the O(context) QSA indexer cost from prefill).
@@ -549,6 +566,7 @@ void ChatServer::SchedulerLoop() {
     for (auto* request : plain_reqs) sequences.push_back(request->seq);
     {
       const std::lock_guard<std::mutex> lock(model_mu_);
+      ProgressExecution progress_execution(ProgressWork::kDecode);
       OnException backend_failure([&] { AbortBackendExecution(); });
       s = ExecutionStatus();
       for (int i = 0; i < B && s.ok(); ++i)

@@ -39,6 +39,7 @@
 #include "q4t/model/model_owner.h"
 #include "q4t/mtp/mtp.h"
 #include "q4t/server/request_control.h"
+#include "q4t/server/progress_transport.h"
 #include "q4t/status.h"
 #include "q4t/runtime/memory_budget.h"
 #ifdef Q4T_STARTUP_RESERVATION
@@ -361,6 +362,8 @@ class ChatServer {
   Status ExecutionStatus() const;
   bool RejectUnhealthy(int fd, const detail::WriteOptions& options = {});
   ServeMetrics metrics_;  // /metrics observability
+  RequestProgress progress_;
+  std::unique_ptr<ProgressPublisher> progress_publisher_;
 
   // Multimodal pipeline: run the image/video processor + vision tower over the
   // vision items (in content-part order) and return the merged visual features

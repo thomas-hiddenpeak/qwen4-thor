@@ -11,6 +11,7 @@
 #include <utility>
 
 #include "q4t/server/client_identity.h"
+#include "q4t/server/request_progress.h"
 
 namespace q4t::server {
 
@@ -43,6 +44,9 @@ class RequestControl {
       : id_(std::move(id)), key_(std::move(key)),
         registry_key_(ClientScopedKey(client, id_)), deadline_(deadline) {}
   const std::string& id() const { return id_; }
+  // Bind before publishing to the scheduler; read only during borrowed work.
+  void BindProgress(ProgressHandle progress) { progress_ = progress; }
+  ProgressHandle Progress() const { return progress_; }
   bool Failed() const { return state_.load() == State::kFailure; }
   std::chrono::steady_clock::time_point deadline() const { return deadline_; }
   bool MatchesKey(const std::string& key) const {
@@ -88,6 +92,7 @@ class RequestControl {
   const std::string registry_key_;
   const std::chrono::steady_clock::time_point deadline_;
   std::atomic<State> state_{State::kActive};
+  ProgressHandle progress_;
 };
 
 // Entries exist only while a handler owns the request. Retaining a shared_ptr
