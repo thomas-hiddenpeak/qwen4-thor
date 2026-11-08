@@ -1,0 +1,16 @@
+[
+  "python3",
+  "-B",
+  "-m",
+  "unittest",
+  "-v",
+  "tools.serve_recovery.test_progress.ProgressTests.test_actual_cpp_v2_and_old_v1_frames_are_distinct_and_valid",
+  "tools.serve_recovery.test_progress.ProgressTests.test_actual_cpp_wire_not_a_python_roundtrip",
+  "tools.serve_recovery.test_progress.ProgressTests.test_wire_bounds_enums_clocks_duplicates_and_completeness",
+  "tools.serve_recovery.test_progress.ProgressTests.test_native_service_loop_requires_its_own_actual_completion",
+  "tools.serve_recovery.test_progress.ProgressTests.test_actual_media_work_respects_deadline_and_completed_substages",
+  "tools.serve_recovery.test_progress.ProgressTests.test_deadline_stage_cleanup_and_two_fresh_samples_all_required",
+  "tools.serve_recovery.test_progress.ProgressTests.test_idle_waiting_and_non_execution_are_not_stalls",
+  "tools.serve_recovery.test_progress.ProgressTests.test_another_requests_completed_work_cannot_hide_old_stall",
+  "tools.serve_recovery.test_progress.ProgressTests.test_completion_wait_change_and_unknown_break_confirmation"
+]

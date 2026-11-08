@@ -1,0 +1,7 @@
+[
+  "cmake",
+  "--build",
+  ".q4t-work/serve-progress-20261109/ple-build",
+  "--parallel",
+  "4"
+]

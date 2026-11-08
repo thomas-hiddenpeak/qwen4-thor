@@ -20,14 +20,17 @@ inline uint64_t ProgressNowNs() noexcept {
 
 enum class ProgressStage : uint64_t {
   kInput, kMedia, kGrammar, kAdmission, kCache, kPrefill, kDecode, kOutput,
-  kStorage, kCleanup, kCount
+  kStorage, kCleanup, kControl, kPleRead, kPleUploadWait, kMediaDecode,
+  kMediaResize, kMediaNormalize, kMediaPatchify, kMediaPack, kMediaUpload,
+  kMediaWorkspace, kMediaForward, kCount
 };
 enum class ProgressWait : uint64_t {
   kNone, kSlot, kModel, kTokenizer, kScheduler, kWrite, kGrammar, kMedia,
   kStorage, kCache, kCount
 };
 enum class ProgressWork : uint64_t {
-  kNone, kLoad, kPleRead, kMedia, kCache, kPrefill, kDecode, kDraft, kCount
+  kNone, kLoad, kPleRead, kMedia, kCache, kPrefill, kDecode, kDraft,
+  kServiceLoop, kCount
 };
 
 struct ProgressRow {
@@ -134,6 +137,12 @@ class ProgressHandle {
     return cell_ && cell_->ticket_.load() == ticket_;
   }
   uint64_t ticket() const noexcept { return ticket_; }
+  // Called only by the owning execution thread while saving a nested phase.
+  ProgressStage StageValue() const noexcept {
+    return valid() ? static_cast<ProgressStage>(
+                        cell_->fields_[ProgressCell::kStage].load())
+                   : ProgressStage::kInput;
+  }
   bool Stage(ProgressStage stage, uint64_t now = ProgressNowNs()) const noexcept {
     return Update(now, [&] {
       if (stage >= ProgressStage::kCount) return false;

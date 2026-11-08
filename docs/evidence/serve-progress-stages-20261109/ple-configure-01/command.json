@@ -1,0 +1,9 @@
+[
+  "cmake",
+  "-S",
+  "tests/ple_health_host",
+  "-B",
+  ".q4t-work/serve-progress-20261109/ple-build",
+  "-DCMAKE_CXX_COMPILER=g++-14",
+  "-DCMAKE_BUILD_TYPE=Release"
+]

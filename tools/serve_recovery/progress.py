@@ -80,6 +80,7 @@ class Snapshot:
     successes: int
     steps: int
     rows: tuple[Work, ...]
+    wire_version: int = 1
 
 
 def decode(packet):
@@ -88,8 +89,9 @@ def decode(packet):
     (magic, sequence, observed, complete, pid, start, namespace, controller,
      model, active, untracked, count, successes, steps, boot, service) = \
         HEADER.unpack_from(packet)
-    require(magic == b'Q4TPR001' and sequence > 0 and observed > 0 and
+    require(magic in (b'Q4TPR001', b'Q4TPR002') and sequence > 0 and observed > 0 and
             complete in (0, 1), 'invalid progress header')
+    version = 1 if magic == b'Q4TPR001' else 2
     require(count <= CAPACITY and len(packet) == HEADER.size + count * ROW.size,
             'progress rows bound or trailing bytes')
     identity = Identity(pid, start, namespace, controller, model,
@@ -101,7 +103,8 @@ def decode(packet):
         row = Work(*ROW.unpack_from(packet, offset))
         require(0 < row.ticket < (1 << 64)-1 and row.ticket not in tickets,
                 'invalid or duplicate request ticket')
-        require(row.stage < 10 and row.wait < 10 and row.work < 8,
+        require(row.stage < (10 if version == 1 else 21) and row.wait < 10 and
+                row.work < (8 if version == 1 else 9),
                 'unknown progress phase')
         require(0 < row.stage_since_ns <= row.updated_ns and
                 0 < row.wait_since_ns <= row.updated_ns <= observed,
@@ -117,7 +120,7 @@ def decode(packet):
         rows.append(row)
         tickets.add(row.ticket)
     return Snapshot(sequence, observed, bool(complete), identity, active,
-                    untracked, successes, steps, tuple(rows))
+                    untracked, successes, steps, tuple(rows), version)
 
 
 class Reader:
@@ -267,11 +270,17 @@ class Detector:
         for row in value.rows:
             # Scheduler wait describes the parked request handler while its
             # selected worker executes. Other waits are not GPU failure facts.
-            budget = {5: 300 * NS, 6: 120 * NS, 7: 120 * NS}.get(row.work)
-            if budget is None or row.wait not in (0, 4) or not row.deadline_ns:
+            budget = {3: 300 * NS, 5: 300 * NS, 6: 120 * NS,
+                      7: 120 * NS, 8: 30 * NS}.get(row.work)
+            loop = (value.wire_version == 2 and row.work == 8 and
+                    row.stage == 10 and row.deadline_ns == 0 and row.wait == 0)
+            if (budget is None or row.wait not in (0, 4) or
+                    (not row.deadline_ns and not loop) or
+                    (row.work == 8 and not loop)):
                 continue
             last = max(row.work_since_ns, row.last_completed_ns)
-            if value.observed_ns < max(row.deadline_ns + 30 * NS, last + budget):
+            deadline = last + budget if loop else row.deadline_ns
+            if value.observed_ns < max(deadline + 30 * NS, last + budget):
                 continue
             key = (row.work_id, row.work, row.completed, row.last_completed_ns,
                    row.deadline_ns, row.wait, row.wait_since_ns)

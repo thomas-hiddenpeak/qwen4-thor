@@ -177,11 +177,15 @@ Status ChatServer::Run() {
     std::fprintf(stderr, "[q4t] operations on port %d (host 127.0.0.1)\n",
                  operations_port_);
   try {
+    auto loop = progress_.Acquire(0);
+    loop.Handle().Stage(ProgressStage::kControl);
+    ProgressContext progress_context(loop.Handle());
     bool draining = false;
     auto recovery_retry =
         std::chrono::steady_clock::now() + std::chrono::seconds(60);
     auto drain_until = std::chrono::steady_clock::time_point::max();
     for (;;) {
+      ProgressExecution loop_work(ProgressWork::kServiceLoop);
       detail::PollGrammarWorkers();
       if (std::chrono::steady_clock::now() >= recovery_retry) {
         recovery_retry =
@@ -215,7 +219,10 @@ Status ChatServer::Run() {
       std::array<pollfd, 2> listeners{
           {{operations_fd, POLLIN, 0}, {listen_fd, POLLIN, 0}}};
       const int ready = ::poll(listeners.data(), listeners.size(), 25);
-      if (ready == 0 || (ready < 0 && errno == EINTR)) continue;
+      if (ready == 0 || (ready < 0 && errno == EINTR)) {
+        ProgressExecution::Completed();
+        continue;
+      }
       if (ready < 0) {
         serving_failed_.store(true);
         break;
@@ -239,6 +246,7 @@ Status ChatServer::Run() {
         StartConnection(fd, index == 0);
       }
       if (serving_failed_.load()) break;
+      ProgressExecution::Completed();
     }
   } catch (const std::exception& error) {
     std::fprintf(stderr, "[q4t] accept/thread exception: %s\n", error.what());

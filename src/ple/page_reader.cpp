@@ -1,5 +1,6 @@
 // PLE SSD page reader implementation (io_uring).
 #include "q4t/ple/page_reader.h"
+#include "q4t/runtime/execution_progress.h"
 
 #include <fcntl.h>
 #include <sys/mman.h>
@@ -253,6 +254,7 @@ Status PlePageReader::Gather(const int64_t* row_ids, size_t row_count,
 
   uint64_t io_ns = 0;
   uint64_t scatter_ns = 0;
+  runtime::ExecutionActivity progress(runtime::ExecutionActivityKind::kPleRead);
 
   for (size_t batch_start = 0; batch_start < impl->groups.size();
        batch_start += kDefaultMaxBatchPages) {
@@ -336,6 +338,9 @@ Status PlePageReader::Gather(const int64_t* row_ids, size_t row_count,
         }
       }
       io_ns += NowNs() - io_started;
+      // Full valid bytes have been reaped, including any short-read retries.
+      // Submission, a failed wave or merely leaving scope is not completion.
+      progress.Completed();
 #else
       return Status::Fail("built without liburing");
 #endif

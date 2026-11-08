@@ -25,6 +25,7 @@ struct ProgressIdentity {
 };
 
 // Little-endian u64 fields; no ABI struct layout or pointers cross processes.
+// Q4TPR002 adds subphase/service-loop enum values with the same frame layout.
 // Header: magic[8], sequence/time/complete, pid/start/namespace,
 // controller/model, active/untracked/count, successes/steps, boot[36],
 // service[36]. Rows:

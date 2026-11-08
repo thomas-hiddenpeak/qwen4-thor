@@ -140,6 +140,8 @@ bool ChatServer::RunVisionPipeline(
   // 2. Build the device pixel buffer (float32 -> BF16, concatenated).
   const int patch_dim = cfg.in_channels * cfg.temporal_patch_size *
                         cfg.patch_size * cfg.patch_size;  // 1536
+  runtime::ExecutionActivity pack_progress(
+      runtime::ExecutionActivityKind::kMediaPack);
   TimingScope pack_timing(timing, TimingStage::kPack);
   std::vector<uint16_t> pixels_bf16(static_cast<size_t>(total_L) * patch_dim);
   {
@@ -154,6 +156,7 @@ bool ChatServer::RunVisionPipeline(
     }
   }
   pack_timing.Stop();
+  pack_progress.Finish();
   // Publish no output ownership until all computation and cleanup succeeded.
   // Counts are prepared before acquiring device buffers (may throw bad_alloc).
   int total_tokens = 0;
@@ -185,8 +188,13 @@ bool ChatServer::RunVisionPipeline(
     return result.ok();
   };
   const auto release = [&](uint16_t*& pointer, const char* site) {
+    runtime::ExecutionActivity progress(
+        runtime::ExecutionActivityKind::kCleanup);
+    const bool owned = pointer != nullptr;
     TimingScope cleanup_timing(timing, TimingStage::kCleanup);
-    return record(detail::ReleaseCudaMemory(pointer, site, request_id));
+    const bool ok = record(detail::ReleaseCudaMemory(pointer, site, request_id));
+    if (ok && owned) progress.Finish();
+    return ok;
   };
   const int exceptions = std::uncaught_exceptions();
   ScopeExit cleanup([&] {
@@ -200,6 +208,8 @@ bool ChatServer::RunVisionPipeline(
                                          "vision.pixels_allocate", request_id)))
     return false;
   allocate_timing.Stop();
+  runtime::ExecutionActivity upload_progress(
+      runtime::ExecutionActivityKind::kMediaUpload);
   TimingScope upload_timing(timing, TimingStage::kPixelsUpload);
   auto copy_error = static_cast<cudaError_t>(
       detail::DeviceMemoryFault("vision.pixels_copy", request_id));
@@ -212,6 +222,10 @@ bool ChatServer::RunVisionPipeline(
     return false;
   }
   upload_timing.Stop();
+  // Submission/host staging is not the forward's device completion boundary.
+  upload_progress.End();
+  runtime::ExecutionActivity workspace_progress(
+      runtime::ExecutionActivityKind::kMediaWorkspace);
   TimingScope workspace_timing(timing, TimingStage::kWorkspace);
   DeviceMemoryResult workspace;
   if (!vision_tower_->Allocate(shapes, nullptr, &workspace)) {
@@ -219,6 +233,7 @@ bool ChatServer::RunVisionPipeline(
     return false;
   }
   workspace_timing.Stop();
+  workspace_progress.Finish();
   const size_t out_bytes = vision::VisionOutputBytes(cfg, shapes);
   TimingScope output_timing(timing, TimingStage::kOutputAllocate);
   if (!record(detail::AllocateCudaMemory(d_out, out_bytes,
@@ -239,6 +254,8 @@ bool ChatServer::RunVisionPipeline(
     return false;
   }
   detail::ServeRequestFaultPoint("vision.before_forward", request_id);
+  runtime::ExecutionActivity forward_progress(
+      runtime::ExecutionActivityKind::kMediaForward);
   TimingScope forward_timing(timing, TimingStage::kForward);
   if (detail::DeviceMemoryFault("vision.forward", request_id) != cudaSuccess ||
       !vision::VisionForward(*vision_tower_, d_pixels, shapes, d_out, err,
@@ -255,6 +272,7 @@ bool ChatServer::RunVisionPipeline(
     timing_failure();
     return false;
   }
+  forward_progress.Finish();
   if (!release(d_pixels, "vision.pixels_free")) return false;
   if (cancelled()) return fail("request_cancelled", items.size());
   *out_feats = std::exchange(d_out, nullptr);

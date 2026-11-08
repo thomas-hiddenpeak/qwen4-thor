@@ -12,6 +12,7 @@
 //   5. normalize: (f32 - 0.5f) / 0.5f  (mean=std=0.5)
 //   6. patchify: block-major, per-patch [C=3, T=2, P=16, P=16]
 #include "q4t/vision/processor.h"
+#include "q4t/runtime/execution_progress.h"
 #include "q4t/vision/media_plan.h"
 #include "q4t/vision/timing.h"
 
@@ -374,6 +375,8 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
   int w = 0, h = 0, comp = 0;
   decode_allocation_failed = false;
   // PrepareItem has already restricted sources to PNG/JPEG.
+  runtime::ExecutionActivity decode_progress(
+      runtime::ExecutionActivityKind::kMediaDecode);
   TimingScope decode_timing(options.timings, image_bytes[0] == 0xff
                                                 ? TimingStage::kDecodeJpeg
                                                 : TimingStage::kDecodePng);
@@ -390,10 +393,13 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
   if (w != static_cast<int>(item.source_width) ||
       h != static_cast<int>(item.source_height))
     return ProcessorFail(options, err, "media_decoded_dimensions");
+  decode_progress.Finish();
   if (!ProcessorContinue(options, err)) return false;
   const int rh = item.geometry.height, rw = item.geometry.width;
 
   // 3. BICUBIC resize (Pillow fixed-point).
+  runtime::ExecutionActivity resize_progress(
+      runtime::ExecutionActivityKind::kMediaResize);
   TimingScope resize_timing(options.timings, TimingStage::kResize);
   std::vector<uint8_t> resized;
   if (rh != h || rw != w) {
@@ -404,6 +410,7 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
   }
   decoded.reset();
   resize_timing.Stop();
+  resize_progress.Finish();
   if (!ProcessorContinue(options, err)) return false;
 
   // 4-5. rescale + normalize (per pixel, per channel, exact float32).
@@ -411,6 +418,8 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
   // normalize: (f32 - mean[c]) / std[c]
   // Since 1/255.0 in double is the exact Python literal, this matches
   // transformers' `float64(px) * scale` then `astype(float32)`.
+  runtime::ExecutionActivity normalize_progress(
+      runtime::ExecutionActivityKind::kMediaNormalize);
   TimingScope normalize_timing(options.timings, TimingStage::kNormalize);
   const double kInv255 = 1.0 / 255.0;
   std::vector<float> norm(static_cast<size_t>(rh) * rw * 3);
@@ -420,8 +429,11 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
     norm[i] = (f - cfg.image_mean[c]) / cfg.image_std[c];
   }
   normalize_timing.Stop();
+  normalize_progress.Finish();
 
   // 6. Patchify: block-major, per-patch [C=3, T=2, P=16, P=16].
+  runtime::ExecutionActivity patchify_progress(
+      runtime::ExecutionActivityKind::kMediaPatchify);
   TimingScope patchify_timing(options.timings, TimingStage::kPatchify);
   const int P = cfg.patch_size;
   const int T = cfg.temporal_patch_size;
@@ -471,6 +483,7 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
   }
 
   patchify_timing.Stop();
+  patchify_progress.Finish();
   guard.success = ProcessorContinue(options, err);
   return guard.success;
 }
@@ -513,6 +526,8 @@ bool ProcessVideo(const std::vector<const uint8_t*>& frames,
     if (options.result) options.result->frame = f;
     if (!ProcessorContinue(options, err)) return false;
     DecodeScope decode(options);
+    runtime::ExecutionActivity decode_progress(
+        runtime::ExecutionActivityKind::kMediaDecode);
     TimingScope decode_timing(options.timings, frames[f][0] == 0xff
                                                   ? TimingStage::kDecodeJpeg
                                                   : TimingStage::kDecodePng);
@@ -531,11 +546,14 @@ bool ProcessVideo(const std::vector<const uint8_t*>& frames,
       return ProcessorFail(options, err, "media_decoded_dimensions");
     if (!ProcessorContinue(options, err)) return false;
     decoded[f].assign(px, px + static_cast<size_t>(h) * w * 3);
+    decode_progress.Finish();
   }
 
   const int rh = item.geometry.height, rw = item.geometry.width;
 
   // 3. Per-frame BICUBIC resize (Pillow fixed-point).
+  runtime::ExecutionActivity resize_progress(
+      runtime::ExecutionActivityKind::kMediaResize);
   TimingScope resize_timing(options.timings, TimingStage::kResize);
   std::vector<std::vector<uint8_t>> resized(F);
   for (int f = 0; f < F; ++f) {
@@ -546,6 +564,7 @@ bool ProcessVideo(const std::vector<const uint8_t*>& frames,
     } else {
       resized[f] = decoded[f];
     }
+    resize_progress.Completed();
   }
 
   // 4. Odd-frame pad: repeat the LAST frame until F is even.
@@ -553,8 +572,11 @@ bool ProcessVideo(const std::vector<const uint8_t*>& frames,
   if (Fp != F) resized.push_back(resized[F - 1]);
   const int grid_t = Fp / cfg.temporal_patch_size;
   resize_timing.Stop();
+  resize_progress.End();
 
   // 5. rescale + normalize (per frame, exact float32, same as ProcessImage).
+  runtime::ExecutionActivity normalize_progress(
+      runtime::ExecutionActivityKind::kMediaNormalize);
   TimingScope normalize_timing(options.timings, TimingStage::kNormalize);
   const double kInv255 = 1.0 / 255.0;
   std::vector<std::vector<float>> norm(Fp);
@@ -566,11 +588,15 @@ bool ProcessVideo(const std::vector<const uint8_t*>& frames,
       float fl = static_cast<float>(static_cast<double>(resized[f][i]) * kInv255);
       norm[f][i] = (fl - cfg.image_mean[c]) / cfg.image_std[c];
     }
+    normalize_progress.Completed();
   }
 
   // 6. Temporal patchify: per-patch [C, T, P, P] with T real frames,
   //    block-major spatial within each time group (same layout as image).
   normalize_timing.Stop();
+  normalize_progress.End();
+  runtime::ExecutionActivity patchify_progress(
+      runtime::ExecutionActivityKind::kMediaPatchify);
   TimingScope patchify_timing(options.timings, TimingStage::kPatchify);
   const int P = cfg.patch_size;
   const int T = cfg.temporal_patch_size;
@@ -619,6 +645,7 @@ bool ProcessVideo(const std::vector<const uint8_t*>& frames,
   }
 
   patchify_timing.Stop();
+  patchify_progress.Finish();
   guard.success = ProcessorContinue(options, err);
   return guard.success;
 }

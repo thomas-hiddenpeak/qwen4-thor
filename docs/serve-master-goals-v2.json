@@ -538,7 +538,8 @@
         "SERVE_PROGRESS_2026-11-09.md",
         "evidence/serve-progress-core-20261109/decision.json",
         "evidence/serve-progress-native-20261109/decision.json",
-        "evidence/serve-progress-controller-20261109/decision.json"
+        "evidence/serve-progress-controller-20261109/decision.json",
+        "evidence/serve-progress-stages-20261109/decision.json"
       ],
       "release": null,
       "plan": "SERVE_PROGRESS_2026-11-09.md",
@@ -550,7 +551,6 @@
         }
       ],
       "remaining": [
-        "PLE/media and service-loop real progress binding",
         "bounded actual execution stall recovery and normal/auxiliary-loss business",
         "rollback-capable accepted delivery"
       ]

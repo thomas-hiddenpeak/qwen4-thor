@@ -48,7 +48,7 @@ ProgressPacket EncodeProgress(const RequestProgress::Snapshot& snapshot,
                               uint64_t sequence, uint64_t successes,
                               uint64_t steps) noexcept {
   ProgressPacket packet;
-  std::memcpy(packet.data.data(), "Q4TPR001", 8);
+  std::memcpy(packet.data.data(), "Q4TPR002", 8);
   packet.size = 8;
   const auto number = [&](uint64_t value) {
     for (int byte = 0; byte < 8; ++byte) {

@@ -134,6 +134,7 @@ set(protocol_inputs
   include/q4t/server/request_diagnostics.h
   include/q4t/server/request_progress.h
   include/q4t/server/progress_context.h
+  include/q4t/runtime/execution_progress.h
   include/q4t/server/progress_transport.h
   src/server/progress_transport.cpp
   include/q4t/server/chat_server.h

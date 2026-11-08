@@ -689,6 +689,13 @@ if(Q4T_BUILD_TESTS)
   target_link_options(q4t_host_memory_contract PRIVATE LINKER:--wrap=malloc
     LINKER:--wrap=realloc LINKER:--wrap=free LINKER:--wrap=send)
 
+  add_executable(q4t_progress_media_tests EXCLUDE_FROM_ALL
+    tests/test_main.cpp tests/vision_progress_test.cpp
+    src/vision/media_plan.cpp src/vision/processor.cpp)
+  target_include_directories(q4t_progress_media_tests PRIVATE include third_party)
+  target_compile_options(q4t_progress_media_tests PRIVATE -Wall -Wextra -Werror)
+  target_link_libraries(q4t_progress_media_tests PRIVATE Threads::Threads)
+
   # Repeatable real-CUDA copy contract; no checkpoint or private input.
   add_executable(q4t_mtp_position_copy
     tests/mtp_position_copy_test.cpp)

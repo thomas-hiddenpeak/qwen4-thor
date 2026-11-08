@@ -353,6 +353,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           : "local:anonymous",
       deadline, cancelled};
   if (chat_storage.store) {
+    RequestDiagnostics::Scope waiting(diagnostic, Wait::kStorage);
     const auto existing =
         StoredChats(*objects_).Retrieve(request_id, chat_state_access);
     if (existing.ok() || existing.http_status != 404) {
@@ -721,7 +722,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         return;
       }
       diagnostic.Stage("structured_admission");
-      const auto admission = structured_lease.Acquire(cancelled);
+      const auto admission = [&] {
+        RequestDiagnostics::Scope waiting(diagnostic, Wait::kGrammar);
+        return structured_lease.Acquire(cancelled);
+      }();
       if (admission == StructuredRequestLease::Result::kCancelled) {
         count_abort();
         send_cancel_error("request cancelled during structured handoff");
@@ -808,10 +812,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
             report.exit_status);
       };
       GrammarFailure compile_failure = GrammarFailure::kNone;
-      if (s)
+      if (s) {
+        RequestDiagnostics::Scope waiting(diagnostic, Wait::kGrammar);
         s = StructuredDecoder::Create(
             constraints, vocabulary, model_.Get().cfg.vocab, stop_token_ids_,
             &structured, grammar_control, &compile_failure);
+      }
       if (cancelled()) {
         count_abort();
         send_cancel_error("request cancelled during grammar compilation");
@@ -1917,6 +1923,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         const std::span<const uint16_t> row(logits, vocab);
         int32_t token = -1;
         if (structured) {
+          RequestDiagnostics::Scope waiting(diagnostic, Wait::kGrammar);
           response_status = structured->Select(row, &token, forced, &sampler,
                                                &selected_sample, allowed);
         } else {
@@ -1960,6 +1967,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         return best_token;
       }
       int32_t token = -1;
+      RequestDiagnostics::Scope waiting(diagnostic, Wait::kGrammar);
       response_status = structured->Select({logits, static_cast<size_t>(vocab)},
                                            &token, forced);
       return token;

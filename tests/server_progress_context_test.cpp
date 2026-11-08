@@ -12,6 +12,7 @@
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
+#include <optional>
 #include <stdexcept>
 #include <thread>
 
@@ -105,6 +106,117 @@ Q4T_TEST(progress_context_batch_counts_only_selected_owners) {
   return true;
 }
 
+Q4T_TEST(progress_activity_nested_completion_preserves_outer_work) {
+  using Kind = q4t::runtime::ExecutionActivityKind;
+  using Activity = q4t::runtime::ExecutionActivity;
+  RequestProgress progress;
+  auto lease = progress.Acquire(ProgressNowNs() + 1000000000);
+  lease.Handle().Stage(ProgressStage::kMedia);
+  ProgressContext context(lease.Handle());
+  ProgressExecution execution(ProgressWork::kMedia);
+  {
+    Activity decode(Kind::kMediaDecode);
+    Q4T_CHECK(progress.Read().rows[0].stage == ProgressStage::kMediaDecode);
+    {
+      Activity read(Kind::kPleRead);
+      Q4T_CHECK(progress.Read().rows[0].stage == ProgressStage::kPleRead);
+      read.Completed();
+    }
+    Q4T_CHECK(progress.Read().rows[0].stage == ProgressStage::kMediaDecode);
+    decode.Finish();
+    decode.Finish();  // Ended scopes cannot count twice.
+  }
+  const auto value = progress.Read();
+  Q4T_CHECK(value.complete && value.rows[0].completed == 2 &&
+            value.rows[0].stage == ProgressStage::kMedia &&
+            value.rows[0].work == ProgressWork::kMedia &&
+            value.rows[0].work_id == 1);
+  return true;
+}
+
+Q4T_TEST(progress_activity_failure_and_unrelated_thread_do_not_complete) {
+  using Kind = q4t::runtime::ExecutionActivityKind;
+  using Activity = q4t::runtime::ExecutionActivity;
+  RequestProgress progress;
+  auto lease = progress.Acquire(ProgressNowNs() + 1000000000);
+  lease.Handle().Stage(ProgressStage::kPrefill);
+  ProgressContext context(lease.Handle());
+  ProgressExecution execution(ProgressWork::kPrefill);
+  try {
+    Activity read(Kind::kPleRead);
+    throw std::runtime_error("CPU read failure");
+  } catch (const std::runtime_error&) {
+  }
+  std::thread unrelated([] {
+    Activity work(Kind::kPleRead);
+    work.Finish();
+  });
+  unrelated.join();
+  const auto value = progress.Read();
+  Q4T_CHECK(value.complete && value.rows[0].completed == 0 &&
+            value.rows[0].stage == ProgressStage::kPrefill);
+  return true;
+}
+
+Q4T_TEST(progress_activity_depth_exhaustion_is_unknown_without_waiting) {
+  using Kind = q4t::runtime::ExecutionActivityKind;
+  using Activity = q4t::runtime::ExecutionActivity;
+  RequestProgress progress;
+  auto lease = progress.Acquire(ProgressNowNs() + 1000000000);
+  ProgressContext context(lease.Handle());
+  ProgressExecution execution(ProgressWork::kPrefill);
+  std::array<std::optional<Activity>, 9> scopes;
+  for (auto& scope : scopes) scope.emplace(Kind::kPleRead);
+  Q4T_CHECK(!progress.Read().complete);
+  for (size_t i = scopes.size(); i-- > 0;) scopes[i].reset();
+  Q4T_CHECK(!progress.Read().complete);
+  return true;
+}
+
+Q4T_TEST(progress_activity_captured_owner_cannot_complete_another_context) {
+  using Kind = q4t::runtime::ExecutionActivityKind;
+  using Activity = q4t::runtime::ExecutionActivity;
+  RequestProgress progress;
+  auto a = progress.Acquire(ProgressNowNs() + 1000000000);
+  auto b = progress.Acquire(ProgressNowNs() + 1000000000);
+  ProgressContext context(a.Handle());
+  ProgressExecution execution(ProgressWork::kPrefill);
+  Activity read(Kind::kPleRead);
+  {
+    ProgressContext other(b.Handle());
+    read.Completed();
+  }
+  const auto value = progress.Read();
+  Q4T_CHECK(!value.complete && value.count == 1 &&
+            value.rows[0].ticket == b.Handle().ticket() &&
+            value.rows[0].completed == 0);
+  return true;
+}
+
+Q4T_TEST(progress_service_loop_counts_own_cycle_not_publisher_heartbeats) {
+  RequestProgress progress;
+  auto loop = progress.Acquire(0);
+  loop.Handle().Stage(ProgressStage::kControl);
+  ProgressContext context(loop.Handle());
+  {
+    ProgressExecution cycle(ProgressWork::kServiceLoop);
+    for (uint64_t sequence = 1; sequence <= 3; ++sequence)
+      Q4T_CHECK(EncodeProgress(progress.Read(), Identity(), sequence, 0, 0)
+                    .size == 280);
+    Q4T_CHECK(progress.Read().rows[0].completed == 0);
+    ProgressExecution::Completed();
+  }
+  {
+    ProgressExecution next(ProgressWork::kServiceLoop);
+    const auto value = progress.Read();
+    Q4T_CHECK(value.complete && value.rows[0].completed == 1 &&
+              value.rows[0].work_id == 2 && value.rows[0].deadline_ns == 0 &&
+              value.rows[0].stage == ProgressStage::kControl &&
+              value.rows[0].work == ProgressWork::kServiceLoop);
+  }
+  return true;
+}
+
 Q4T_TEST(progress_diagnostic_nested_wait_restores_real_phase) {
   RequestProgress progress;
   auto lease = progress.Acquire(10000000000000000);
@@ -194,7 +306,7 @@ Q4T_TEST(progress_packet_identity_and_exact_wire) {
   const auto packet = EncodeProgress(progress.Read(5), identity, 9, 2, 7);
   Q4T_CHECK(identity.Valid() && packet.size == 280);
   Q4T_CHECK(std::string(reinterpret_cast<const char*>(packet.data.data()), 8) ==
-            "Q4TPR001");
+            "Q4TPR002");
   Q4T_CHECK(Number(packet, 0) == 9 && Number(packet, 1) == 5 &&
             Number(packet, 2) == 1 && Number(packet, 3) == uint64_t(getpid()) &&
             Number(packet, 4) == identity.start_ticks &&

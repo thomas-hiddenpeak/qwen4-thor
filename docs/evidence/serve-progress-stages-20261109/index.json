@@ -1,0 +1,186 @@
+{
+  "README.md": {
+    "bytes": 1543,
+    "sha256": "610da214cdffb6d4402a666f24fdc614be3f30e133449b4b9b87e25a9199d379"
+  },
+  "archive_stages.py": {
+    "bytes": 4584,
+    "sha256": "db202a3905ee70029b85a945f9027f074718fa24440feb845e56d577048f0a6b"
+  },
+  "build-05/command.json": {
+    "bytes": 179,
+    "sha256": "202d9a8a01c81a3505099f0802530e657a8003ff365bc085798c50a3d69a81bf"
+  },
+  "build-05/result.json": {
+    "bytes": 61,
+    "sha256": "ec575f30c7792f048f230bb71c8d23ff6a8a9ab8e219d6b659980248c62ce3d4"
+  },
+  "build-05/stderr.log": {
+    "bytes": 69,
+    "sha256": "008510caf66b0f5b6bb87b65883397a9e4d76d70f8396982834e10992ecc0bfa"
+  },
+  "build-05/stdout.log": {
+    "bytes": 9571,
+    "sha256": "07e8b914203808ce21587729663c2bbfbb0ba27ae33f4f24646a80eb8fd975c3"
+  },
+  "build-06/command.json": {
+    "bytes": 179,
+    "sha256": "202d9a8a01c81a3505099f0802530e657a8003ff365bc085798c50a3d69a81bf"
+  },
+  "build-06/result.json": {
+    "bytes": 61,
+    "sha256": "8bd06d289bb566c4e4531ae6f1e06a552a3a6b0fe4db1d0dfb2c896036e6e6dc"
+  },
+  "build-06/stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "build-06/stdout.log": {
+    "bytes": 1038,
+    "sha256": "3490286c1fe6a244056192a2907e6fb40fb7fcfcb0a918f6b902a67e5ba6e659"
+  },
+  "cpu-linkage.json": {
+    "bytes": 1018,
+    "sha256": "577ac37b49730205463df23cc5b5ca8c68c7246079b658c3d530fa3f23e5f4ad"
+  },
+  "decision.json": {
+    "bytes": 24928,
+    "sha256": "1cdb21f7552d2095cfd65bbce2d938b401b795a86c3ccaa14f7c392aeaffbdd1"
+  },
+  "format-only.json": {
+    "bytes": 283,
+    "sha256": "349d2fa59c39d1743501201919898e19b2c97846bc461a47bbd772982206a511"
+  },
+  "host-cpu-01/command.json": {
+    "bytes": 154,
+    "sha256": "72ffebbed83ad3d89c33d821ec8dfd64b855529180c3208f243e525d23fa1589"
+  },
+  "host-cpu-01/result.json": {
+    "bytes": 155,
+    "sha256": "79862cea3d11c6ba6a62f5bd0a87016d306e8b2f34ae078ad4e1f493b700ceff"
+  },
+  "host-cpu-01/stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "host-cpu-01/stdout.log": {
+    "bytes": 711,
+    "sha256": "fcd7a820fdd6680941c0a47cd99ea52b0c58fdd093db381e5fbf6efef4041df9"
+  },
+  "host-cpu-01/work/native-progress.bin": {
+    "bytes": 280,
+    "sha256": "48c66cc963bd45403261ae232ee178179c894b20a128ccc14a4510e0a027c775"
+  },
+  "inventory-03/command.json": {
+    "bytes": 89,
+    "sha256": "20d8d2b873145e73577f10a6c69432127db4d807a9f99b0e6fce8f0678029ac7"
+  },
+  "inventory-03/result.json": {
+    "bytes": 63,
+    "sha256": "7b9ff6939e7cf1087545f8fafc4ff063b8d7ac1f6caf89e8b2fe5272671b034d"
+  },
+  "inventory-03/stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "inventory-03/stdout.log": {
+    "bytes": 220,
+    "sha256": "89458ddc7072d5aaaf39923e9363860dc313adb9fe1e543b4c24be2f5f5f1519"
+  },
+  "media-cpu-01/command.json": {
+    "bytes": 84,
+    "sha256": "b5a534b8c0ca0cf90e39091f1fe927d8784e99610762adc496320073aa640ba8"
+  },
+  "media-cpu-01/result.json": {
+    "bytes": 156,
+    "sha256": "3a54a53d6b9fdd5cf04251e6f093d53a5a6484c765ba1d0c7df2a7787ad51ac0"
+  },
+  "media-cpu-01/stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "media-cpu-01/stdout.log": {
+    "bytes": 224,
+    "sha256": "405b5b2fdeb956eefc2fa4a6d896c14fba572abbfc1d9bd0b7e95535075fe3a5"
+  },
+  "media-test-compiled-source.cpp": {
+    "bytes": 5424,
+    "sha256": "59dcf666be8736de67cf81f07f4ac8f3e2b4afee65f15c9275f783e9757a8ae7"
+  },
+  "phase-python-01/command.json": {
+    "bytes": 1059,
+    "sha256": "c8a9726e7a19de7ddf6658eb2ff01c2e01f0c9dc7d78ca9fdeb6c50556d7fec8"
+  },
+  "phase-python-01/result.json": {
+    "bytes": 63,
+    "sha256": "32967f374b802905ada258113393aa840ddd1c3bc7ba28c32b42f7d77d8b4072"
+  },
+  "phase-python-01/stderr.log": {
+    "bytes": 1658,
+    "sha256": "14e60c3f42cd0765eb5ac0a5a2e0b2b10aea099ef55abc932ec735a28cd0d707"
+  },
+  "phase-python-01/stdout.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "ple-build-01/command.json": {
+    "bytes": 99,
+    "sha256": "026c0d6bdec2b63541320f1dbfe2c26e2a826c3bbd54bd208032a7df6f0ae4cc"
+  },
+  "ple-build-01/result.json": {
+    "bytes": 61,
+    "sha256": "86a4ddb29b738183a8872c40e364902ab8aed752d5e5ad34b8d39aeaedda05df"
+  },
+  "ple-build-01/stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "ple-build-01/stdout.log": {
+    "bytes": 658,
+    "sha256": "b0b8dc797a6f9b5c3405b57f329996ab16d0a3b4e3b73d611581bc44171e58b4"
+  },
+  "ple-configure-01/command.json": {
+    "bytes": 171,
+    "sha256": "226f5c5dbd89a97d773c1a352f8344166a8ac286ef9017c390102243bad05e3e"
+  },
+  "ple-configure-01/result.json": {
+    "bytes": 61,
+    "sha256": "98aa492f510d0f6ca45e53555c1351ee809ec185f7b45d8c38606a7273e08e23"
+  },
+  "ple-configure-01/stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "ple-configure-01/stdout.log": {
+    "bytes": 548,
+    "sha256": "437dad88f438891310c79bdc2b55bfd484832a8526d649c0b8fef08136e95f99"
+  },
+  "ple-cpu-01/command.json": {
+    "bytes": 150,
+    "sha256": "fc1186845cf690cb84f32ad55b875c83c7c8e7c83baf662c96ec46acffa99b52"
+  },
+  "ple-cpu-01/result.json": {
+    "bytes": 155,
+    "sha256": "280032ecc959fd3fdedfc0ebf2799daa46c495348f2be37c17c68e129a36e745"
+  },
+  "ple-cpu-01/stderr.log": {
+    "bytes": 152,
+    "sha256": "f47991ebf344ab4f8063f2370cf1fd9529b4d9e87d93e4cff1eee2aad3a63114"
+  },
+  "ple-cpu-01/stdout.log": {
+    "bytes": 298,
+    "sha256": "863c703c4cc7775551a2e149bb53f1fc419e059bf13b3550440e14626dd239c0"
+  },
+  "ple-required.txt": {
+    "bytes": 231,
+    "sha256": "bad67fd5f1aad2ce157c374e20463ba326c3aa14e763f6d9b97b19bcdcabf699"
+  },
+  "stages-plan.json": {
+    "bytes": 1154,
+    "sha256": "cfb80ac5a369ec8835c8fa481f6e642ba4900f340835bbc69dd14f8f0dc6308e"
+  },
+  "stages-required.txt": {
+    "bytes": 593,
+    "sha256": "e8219298b26e082f89af4868ce3e1cf8c9475cbe51fa9ea4409143ed187d0153"
+  }
+}

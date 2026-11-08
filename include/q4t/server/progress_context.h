@@ -3,6 +3,7 @@
 
 #include <span>
 
+#include "q4t/runtime/execution_progress.h"
 #include "q4t/server/request_progress.h"
 
 namespace q4t::server {
@@ -12,19 +13,37 @@ class ProgressContext {
   explicit ProgressContext(ProgressHandle handle)
       : single_(handle), previous_(current_) {
     current_ = {&single_, 1};
+    InstallObserver();
   }
   explicit ProgressContext(std::span<const ProgressHandle> handles)
       : previous_(current_) {
     current_ = handles;
+    InstallObserver();
   }
-  ~ProgressContext() { current_ = previous_; }
+  ~ProgressContext() {
+    runtime::execution_progress_observer = previous_observer_;
+    current_ = previous_;
+  }
   ProgressContext(const ProgressContext&) = delete;
   ProgressContext& operator=(const ProgressContext&) = delete;
   static std::span<const ProgressHandle> Current() { return current_; }
 
  private:
+  void InstallObserver() noexcept {
+    previous_observer_ = runtime::execution_progress_observer;
+    runtime::execution_progress_observer = {this, Activity};
+    handles_ = current_;
+  }
+  static void Activity(void* context, runtime::ExecutionActivityKind kind,
+                       runtime::ExecutionProgressEvent event) noexcept;
   ProgressHandle single_;
   std::span<const ProgressHandle> previous_;
+  std::span<const ProgressHandle> handles_;
+  runtime::ExecutionProgressObserver previous_observer_;
+  std::array<ProgressStage, RequestProgress::kCapacity> saved_stages_{};
+  std::array<runtime::ExecutionActivityKind, 8> activities_{};
+  size_t depth_ = 0;
+  bool invalid_ = false;
   static inline thread_local std::span<const ProgressHandle> current_;
 };
 
@@ -86,5 +105,67 @@ class ProgressExecution {
   std::span<const ProgressHandle> handles_;
   static inline thread_local ProgressExecution* active_ = nullptr;
 };
+
+inline void ProgressContext::Activity(
+    void* context, runtime::ExecutionActivityKind kind,
+    runtime::ExecutionProgressEvent event) noexcept {
+  auto& owner = *static_cast<ProgressContext*>(context);
+  using Kind = runtime::ExecutionActivityKind;
+  using Event = runtime::ExecutionProgressEvent;
+  const auto unknown = [&] {
+    owner.invalid_ = true;
+    for (const auto& handle : owner.handles_) handle.Begin(ProgressWork::kNone);
+  };
+  if (owner.invalid_) return;
+  if (owner.handles_.size() > owner.saved_stages_.size()) {
+    unknown();
+    return;
+  }
+  const auto stage = [](Kind activity) {
+    switch (activity) {
+      case Kind::kPleRead: return ProgressStage::kPleRead;
+      case Kind::kPleUploadWait: return ProgressStage::kPleUploadWait;
+      case Kind::kMediaDecode: return ProgressStage::kMediaDecode;
+      case Kind::kMediaResize: return ProgressStage::kMediaResize;
+      case Kind::kMediaNormalize: return ProgressStage::kMediaNormalize;
+      case Kind::kMediaPatchify: return ProgressStage::kMediaPatchify;
+      case Kind::kMediaPack: return ProgressStage::kMediaPack;
+      case Kind::kMediaUpload: return ProgressStage::kMediaUpload;
+      case Kind::kMediaWorkspace: return ProgressStage::kMediaWorkspace;
+      case Kind::kMediaForward: return ProgressStage::kMediaForward;
+      case Kind::kCleanup: return ProgressStage::kCleanup;
+    }
+    return ProgressStage::kInput;
+  };
+  if (event == Event::kBegin) {
+    if (owner.depth_ == owner.activities_.size()) {
+      unknown();
+      return;
+    }
+    if (owner.depth_ == 0)
+      for (size_t i = 0; i < owner.handles_.size(); ++i)
+        owner.saved_stages_[i] = owner.handles_[i].StageValue();
+    owner.activities_[owner.depth_++] = kind;
+    for (const auto& handle : owner.handles_) handle.Stage(stage(kind));
+    return;
+  }
+  if (!owner.depth_ || owner.activities_[owner.depth_ - 1] != kind) {
+    unknown();
+    return;
+  }
+  if (event == Event::kCompleted) {
+    // A callback captured in another context cannot count the current work.
+    if (ProgressContext::Current().data() != owner.handles_.data()) {
+      unknown();
+      return;
+    }
+    ProgressExecution::Completed();
+    return;
+  }
+  --owner.depth_;
+  for (size_t i = 0; i < owner.handles_.size(); ++i)
+    owner.handles_[i].Stage(owner.depth_
+        ? stage(owner.activities_[owner.depth_ - 1]) : owner.saved_stages_[i]);
+}
 
 }  // namespace q4t::server

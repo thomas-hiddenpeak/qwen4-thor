@@ -3,6 +3,7 @@
 #include "q4t/ple/ple_embedding.h"
 #include "q4t/ple/fp8_convert.h"
 #include "q4t/server/service_health.h"
+#include "q4t/server/progress_context.h"
 #include "q4t/test.h"
 
 #include <fcntl.h>
@@ -239,5 +240,55 @@ Q4T_TEST(ple_health_upload_completion_failure_remains_unusable) {
   const int before = uploads;
   Q4T_CHECK(!embedding->GatherRows(&row, 1, out.data(), nullptr).ok());
   Q4T_CHECK(uploads == before);
+  return true;
+}
+
+Q4T_TEST(ple_progress_reaped_wave_counts_but_failure_does_not) {
+  using namespace q4t::server;
+  File file;
+  Q4T_CHECK(file.Fill());
+  auto reader = Reader(file);
+  Q4T_CHECK(reader);
+  RequestProgress progress;
+  auto lease = progress.Acquire(ProgressNowNs() + 1000000000);
+  lease.Handle().Stage(ProgressStage::kPrefill);
+  ProgressContext context(lease.Handle());
+  ProgressExecution execution(ProgressWork::kPrefill);
+  const int64_t row = 0;
+  std::vector<uint8_t> out(kRowBytes);
+  {
+    ShortReads short_reads("3");
+    Q4T_CHECK(reader->Gather(&row, 1, out.data(), nullptr).ok());
+  }
+  auto value = progress.Read();
+  Q4T_CHECK(value.complete && value.rows[0].completed == 1 &&
+            value.rows[0].stage == ProgressStage::kPrefill &&
+            value.rows[0].work_id == 1);
+  Q4T_CHECK(ftruncate(file.fd, 0) == 0);
+  Q4T_CHECK(!reader->Gather(&row, 1, out.data(), nullptr).ok());
+  value = progress.Read();
+  Q4T_CHECK(value.complete && value.rows[0].completed == 1 &&
+            value.rows[0].stage == ProgressStage::kPrefill);
+  return true;
+}
+
+Q4T_TEST(ple_progress_prior_request_upload_does_not_count_for_new_owner) {
+  using namespace q4t::server;
+  File file;
+  Q4T_CHECK(file.Fill());
+  auto embedding = Embedding(file);
+  Q4T_CHECK(embedding);
+  const int64_t row = 0;
+  std::vector<uint16_t> out(kRowBytes);
+  Q4T_CHECK(embedding->GatherRows(&row, 1, out.data(), nullptr).ok());
+  RequestProgress progress;
+  auto lease = progress.Acquire(ProgressNowNs() + 1000000000);
+  ProgressContext context(lease.Handle());
+  ProgressExecution execution(ProgressWork::kDecode);
+  Q4T_CHECK(embedding->GatherRows(&row, 1, out.data(), nullptr).ok());
+  // Only the new request's one completed read wave, not the old upload or
+  // this request's newly submitted (uncompleted) upload.
+  const auto value = progress.Read();
+  Q4T_CHECK(value.complete && value.rows[0].completed == 1);
   return true;
 }

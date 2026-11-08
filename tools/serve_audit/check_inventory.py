@@ -118,6 +118,7 @@ def current_surface(root):
                        root / "include/q4t/runtime/cleanup_policy.h",
                        root / "include/q4t/runtime/device_memory.h",
                        root / "include/q4t/runtime/model_health.h",
+                       root / "include/q4t/runtime/execution_progress.h",
                        root / "include/q4t/ple/page_reader.h",
                        root / "include/q4t/ple/ple_embedding.h",
                        root / "src/ple/page_reader.cpp",
