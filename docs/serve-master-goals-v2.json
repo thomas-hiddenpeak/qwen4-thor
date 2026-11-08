@@ -539,7 +539,8 @@
         "evidence/serve-progress-core-20261109/decision.json",
         "evidence/serve-progress-native-20261109/decision.json",
         "evidence/serve-progress-controller-20261109/decision.json",
-        "evidence/serve-progress-stages-20261109/decision.json"
+        "evidence/serve-progress-stages-20261109/decision.json",
+        "evidence/serve-progress-driver-20261109/decision.json"
       ],
       "release": null,
       "plan": "SERVE_PROGRESS_2026-11-09.md",
