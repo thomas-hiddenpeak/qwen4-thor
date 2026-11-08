@@ -1,0 +1,39 @@
+{
+  "status": "ACCEPT_TARGETED_FOREGROUND_RECOVERY",
+  "source_commit": "78d00e50afb2dfd6eab3f6c6a90f4fea54513823",
+  "binary_sha256": "c704eebf3d7f8f03fb566c5ab340277427a9304a09416bed0387676ed028f28f",
+  "counts": {
+    "starts": 1,
+    "chats": 4,
+    "controls": 52
+  },
+  "seconds": 54.609030675143,
+  "nvml_queries": 53,
+  "all_nvml_ok": true,
+  "lease_status": "COMPLETED",
+  "original_results_unchanged": true,
+  "config_schema_samples": 8,
+  "foreground": {
+    "state": "ready",
+    "readiness_dependency": false,
+    "owned": 0,
+    "active": 0,
+    "pending": 0,
+    "reconciled": 1,
+    "errors": 1
+  },
+  "objects": {
+    "state": "ready",
+    "pending": 0,
+    "workers_started": 2,
+    "workers_reaped": 1,
+    "controller_starts": 1,
+    "controller_failures": 0,
+    "controller_recoveries": 0
+  },
+  "model_restarted": false,
+  "owned_worker_fault": "SIGSTOP -> native timeout kill/reap/replacement",
+  "default_changed": false,
+  "full_performance_or_model_quality": false,
+  "remaining_master_tasks_open": true
+}

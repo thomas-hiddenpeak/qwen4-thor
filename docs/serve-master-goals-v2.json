@@ -205,7 +205,7 @@
         "evidence/serve-responses-core-20261108/README.md"
       ],
       "release": null,
-      "development_status": "后台实际业务组合验收通过：3启动8生成133.291秒、130次NVML全OK；queued原ID恢复、started保存部分输出失败不重放、Chat正常。两次驱动误判FAILED原件保留。候选0ca69a41保存、默认A06不改；继续对象控制器自身恢复、前台未知提交、保留治理及全部高级执行器/Chat持久化等余项。 前台未知提交协调14 CPU通过；继续修检查点错误流序号后做适用HTTP短验，所有高级执行器等仍必做。",
+      "development_status": "后台实际业务组合验收通过：3启动8生成133.291秒、130次NVML全OK；queued原ID恢复、started保存部分输出失败不重放、Chat正常。两次驱动误判FAILED原件保留。候选0ca69a41保存、默认A06不改；继续对象控制器自身恢复、前台未知提交、保留治理及全部高级执行器/Chat持久化等余项。 前台未知提交协调14 CPU通过；继续修检查点错误流序号后做适用HTTP短验，所有高级执行器等仍必做。 错误流4 CPU修复通过；1启动4生成54.609秒真实worker故障恢复/资料工具/连续流/同PID Chat通过，候选c704eebf保留。准备可回退发行，继续所有剩余项。",
       "item_shape_evidence": "evidence/serve-item-shape-20261109/README.md",
       "execution_evidence": "evidence/serve-responses-execution-20261109/README.md",
       "foreground_business_evidence": "evidence/serve-responses-business-20261109/README.md",
@@ -216,7 +216,8 @@
       "background_recovery_evidence": "evidence/serve-responses-recovery-20261109/README.md",
       "declaration_evidence": "evidence/serve-responses-declarations-20261109/README.md",
       "background_business_evidence": "evidence/serve-responses-background-business-20261109/README.md",
-      "foreground_reconciliation_evidence": "evidence/serve-foreground-reconciliation-20261109/README.md"
+      "foreground_reconciliation_evidence": "evidence/serve-foreground-reconciliation-20261109/README.md",
+      "foreground_recovery_business_evidence": "evidence/serve-reconciliation-business-20261109/README.md"
     },
     {
       "id": "A08",
@@ -230,7 +231,7 @@
       ],
       "evidence": [],
       "release": null,
-      "development_status": "后台实际业务组合验收通过：3启动8生成133.291秒、130次NVML全OK；queued原ID恢复、started保存部分输出失败不重放、Chat正常。两次驱动误判FAILED原件保留。候选0ca69a41保存、默认A06不改；继续对象控制器自身恢复、前台未知提交、保留治理及全部高级执行器/Chat持久化等余项。 对象控制器有界恢复13不同CPU通过，继续前台未知提交和其余项，尚未发布。 前台未知提交协调14 CPU通过；继续修检查点错误流序号后做适用HTTP短验，所有高级执行器等仍必做。",
+      "development_status": "后台实际业务组合验收通过：3启动8生成133.291秒、130次NVML全OK；queued原ID恢复、started保存部分输出失败不重放、Chat正常。两次驱动误判FAILED原件保留。候选0ca69a41保存、默认A06不改；继续对象控制器自身恢复、前台未知提交、保留治理及全部高级执行器/Chat持久化等余项。 对象控制器有界恢复13不同CPU通过，继续前台未知提交和其余项，尚未发布。 前台未知提交协调14 CPU通过；继续修检查点错误流序号后做适用HTTP短验，所有高级执行器等仍必做。 错误流4 CPU修复通过；1启动4生成54.609秒真实worker故障恢复/资料工具/连续流/同PID Chat通过，候选c704eebf保留。准备可回退发行，继续所有剩余项。",
       "development_evidence": "evidence/serve-object-store-20261108/README.md",
       "transaction_evidence": "evidence/serve-object-transactions-20261108/README.md",
       "state_evidence": "evidence/serve-responses-state-20261109/README.md",
@@ -246,7 +247,8 @@
       "declaration_evidence": "evidence/serve-responses-declarations-20261109/README.md",
       "background_business_evidence": "evidence/serve-responses-background-business-20261109/README.md",
       "controller_recovery_evidence": "evidence/serve-object-controller-recovery-20261109/README.md",
-      "foreground_reconciliation_evidence": "evidence/serve-foreground-reconciliation-20261109/README.md"
+      "foreground_reconciliation_evidence": "evidence/serve-foreground-reconciliation-20261109/README.md",
+      "foreground_recovery_business_evidence": "evidence/serve-reconciliation-business-20261109/README.md"
     },
     {
       "id": "A09",
@@ -651,5 +653,5 @@
     }
   ],
   "next_task": "A07",
-  "next": "继续对象控制器有界自恢复及前台未知提交闭合，后台真实业务证据已过复用；完成A07/A08余项、发行和全部总计划。"
+  "next": "已完成后台与前台故障真实短验，准备v3应用声明的可回退发行；随后继续A07/A08高级执行器/Chat持久化/保留治理和全部未完成计划。"
 }

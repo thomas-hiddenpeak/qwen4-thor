@@ -2,6 +2,12 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+前台恢复真实短验通过：1启动/4生成/54.609秒，53次NVML全OK；真实
+资料工具/回填JSON、暂停自有存储worker后的原生回收、连续错误流、
+部分输出协调和同PID Chat通过。8个config样本严格通过，协调槽归零，
+退出/端口/锁清理。[证据](evidence/serve-reconciliation-business-20261109/README.md)。候选c704eebf独立保存，
+默认A06未改；接着可回退发行和全部剩余能力，总目标仍active。
+
 检查点错误流4 CPU通过：保存原始增量前缀，错误前完整发送，序号
 连续且不伪造终态/重复前缀；引擎零警告。2驱动负控通过，[证据](evidence/serve-checkpoint-stream-20261109/README.md)。
 冻结1启动/4生成/600秒真实短验：资料工具/回填JSON、自有存储worker
