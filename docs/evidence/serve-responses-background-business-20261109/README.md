@@ -40,3 +40,18 @@ FAILED、租约保持COMMAND_FAILED/child1，不覆盖为PASS。
 连接后允许TIME_WAIT复用。仅继续已保存崩溃现场，最多1启动/1新
 Chat/300秒；此前两段累计2启动7生成，因此总计仍不超3启动8生成。
 状态14个普通文件只复制，不重写旧原件/任务deadline，不再注入故障。
+
+## 实际恢复完成与组合接受
+
+最后阶段源码49f37eee，1启动/1新Chat/39.006秒，严格租约
+COMPLETED/child0。queued原ID真实完成42；started保留实际部分文本且
+background_execution_interrupted，恢复后只有排队生成+Chat共2次执行。
+recovered=1/interrupted=1/recovery_errors=0/owned=0/pending=0；退出0、
+拥有进程与端口清理。三段累计3启动/8生成/133.291秒，
+共130次NVML全OK，各阶段末无GPU进程。
+
+全部捕获的128个资源/采样与59个SSE事件严格schema通过。
+已接受候选单独复制保存，SHA见decision.json；默认A06保持不变。
+组合接受复用已执行前缀并完成其余实际请求；两次驱动FAILED原件
+永不改写。继续对象控制器自恢复、前台未知提交以及全部总计划，
+不把后台业务通过当A07/A08或总目标完成。

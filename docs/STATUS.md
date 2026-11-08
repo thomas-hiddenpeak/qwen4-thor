@@ -2,6 +2,12 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+后台实际业务已组合验收：累计3启动/8生成/133.291秒，130次NVML全OK，
+128资源/59事件schema通过。queued原ID恢复42、started保留部分输出
+明确失败不重放、同PID Chat通过；退出/端口/锁清理。[完整原件](evidence/serve-responses-background-business-20261109/README.md)
+保留两次驱动误判FAILED，候选0ca69a41单独保存，默认A06未动。
+继续对象控制器自身恢复、前台未知提交与全部计划，不以子组收尾停止。
+
 后台续验已完成取消事件续读和实际自有模型崩溃，1启动/2生成；
 第二次启动前的驱动端口探测误拒绝TIME_WAIT，修复为与真实监听
 相同的SO_REUSEADDR，CPU活监听拒绝/关闭复用通过。FAILED与现场

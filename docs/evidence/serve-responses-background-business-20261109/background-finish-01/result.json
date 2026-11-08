@@ -1,0 +1,10 @@
+{
+  "status": "PASS_RESPONSES_BACKGROUND_CRASH_COMPLETION",
+  "counts": {
+    "starts": 1,
+    "chats": 1,
+    "controls": 47
+  },
+  "seconds": 39.00626861676574,
+  "binary_sha256": "0ca69a41d5fe74366842c1626505eaa3850481f214bd9551e8f1d021bf3c3aa7"
+}
