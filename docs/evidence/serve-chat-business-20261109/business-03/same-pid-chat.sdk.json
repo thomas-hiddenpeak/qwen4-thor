@@ -1,0 +1,33 @@
+{
+  "ok": true,
+  "result": {
+    "id": "chatcmpl-auto-67d798d32827f947f8cfe3e0f7e457be",
+    "object": "chat.completion",
+    "created": 1794176329,
+    "model": "qwen3.8-flash-next",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "42"
+        },
+        "finish_reason": "stop",
+        "logprobs": null
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 28,
+      "completion_tokens": 3,
+      "total_tokens": 31
+    }
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:18164/v1/chat/completions",
+      "method": "POST",
+      "body": "{\"model\":\"qwen3.8-flash-next\",\"temperature\":0,\"enable_thinking\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Compute 17 + 25. Reply only with the decimal number.\"}],\"max_completion_tokens\":64}"
+    }
+  ]
+}

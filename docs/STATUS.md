@@ -2,6 +2,12 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+Chat持久真实组合验收通过：累计3启动/8Chat/141.076秒，138次NVML
+全OK。最终故障返回object_commit_unknown和原ID，同PID MTP继续；
+原对象跨进程/worker恢复保留、删除有效，1606分配释放/端口/锁清理。
+[原件及复核](evidence/serve-chat-business-20261109/README.md)保留两次FAILED，正常/工具前缀按未变依赖复用。
+候选92e600fb待可回退封装；随后R03/R04及全部计划继续，默认暂未改。
+
 未知提交公开语义5/5直接CPU通过，实际引擎两次零警告构建，来源检查
 通过；真实工具前缀与原故障FAILED同时保留，[原件及复核](evidence/serve-chat-unknown-20261109/README.md)。
 只补故障/同PID恢复1启动2Chat300秒，累计3启动8Chat600秒；之前通过

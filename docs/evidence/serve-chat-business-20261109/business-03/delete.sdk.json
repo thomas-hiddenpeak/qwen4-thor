@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "result": {
+    "id": "chatcmpl-auto-6164280bed244e29956440773e66ac8a",
+    "deleted": true,
+    "object": "chat.completion.deleted"
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:18164/v1/chat/completions/chatcmpl-auto-6164280bed244e29956440773e66ac8a",
+      "method": "DELETE"
+    }
+  ]
+}
