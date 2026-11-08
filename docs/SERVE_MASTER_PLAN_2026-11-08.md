@@ -76,7 +76,7 @@ OpenAI自身结构化输出也有支持范围；本项目应实现该范围，�
 |---|---|---|
 | A01 | 逐字段/路由标准合同、默认/null/别名/metadata与错误语义；每个缺口链接实现任务 | 官方参考→本地schema→解析→响应逐项可追踪；合法请求实际执行，拒绝不计功能通过 |
 | A02 | system/developer/name、assistant/refusal、工具历史及多模态消息的模板语义 | 逐字节模板/历史回填与模型token映射；不丢角色、参数或结果；一个真实多轮工具场景 |
-| A03 | temperature/top_p、seed、presence/frequency penalty、logit_bias、n、多choice JSON/SSE及logprobs/top_logprobs | 固定logits的数值与采样边界、choice独立状态、usage/取消；对应真实短验；MTP不允许错误套用greedy算法 |
+| A03 | temperature/top_p、seed、presence/frequency penalty、logit_bias、n、多choice JSON/SSE及logprobs/top_logprobs；prediction目标验证/消费与usage | 固定logits的数值与采样边界、choice独立状态、usage/取消；对应真实短验；MTP不允许错误套用greedy算法 |
 | A04 | 工具选择/allowed_tools、legacy functions迁移、自定义工具形状、逐片参数/多调用流及完成语义 | 标准客户端重组调用与参数；截断不执行工具、最终结果关联一致；不将只发终态冒充增量工具流 |
 | A05 | 官方支持的JSON Schema能力与组合；$defs/$ref、anyOf、数值约束/enum、pattern/format等；工具/媒体/缓存组合 | 编译、逐token约束和最终校验一致；针对新增关键字/组合验证；资源拒绝与“不支持语法”分开，不能只删校验 |
 | A06 | Completions生成接口、Models详情/标识/别名与标准查询行为 | 标准SDK调用真实生成；不只转发而丢失prompt/echo/选择/usage语义；模型读写权限按操作合同 |

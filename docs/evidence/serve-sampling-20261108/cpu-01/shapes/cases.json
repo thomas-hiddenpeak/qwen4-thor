@@ -1,0 +1,597 @@
+[
+  {
+    "id": "temperature-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "temperature",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"temperature\":0}"
+    }
+  },
+  {
+    "id": "temperature-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "temperature",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"temperature\":null}"
+    }
+  },
+  {
+    "id": "temperature-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "temperature",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"temperature\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "temperature-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "temperature",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "top_p-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "top_p",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"top_p\":1}"
+    }
+  },
+  {
+    "id": "top_p-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "top_p",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"top_p\":null}"
+    }
+  },
+  {
+    "id": "top_p-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "top_p",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"top_p\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "top_p-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "top_p",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "n-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "n",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"n\":1}"
+    }
+  },
+  {
+    "id": "n-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "n",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"n\":null}"
+    }
+  },
+  {
+    "id": "n-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "n",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"n\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "n-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "n",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "frequency_penalty-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "frequency_penalty",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"frequency_penalty\":0}"
+    }
+  },
+  {
+    "id": "frequency_penalty-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "frequency_penalty",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"frequency_penalty\":null}"
+    }
+  },
+  {
+    "id": "frequency_penalty-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "frequency_penalty",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"frequency_penalty\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "frequency_penalty-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "frequency_penalty",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "presence_penalty-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "presence_penalty",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"presence_penalty\":0}"
+    }
+  },
+  {
+    "id": "presence_penalty-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "presence_penalty",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"presence_penalty\":null}"
+    }
+  },
+  {
+    "id": "presence_penalty-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "presence_penalty",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"presence_penalty\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "presence_penalty-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "presence_penalty",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "seed-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "seed",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"seed\":42}"
+    }
+  },
+  {
+    "id": "seed-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "seed",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"seed\":null}"
+    }
+  },
+  {
+    "id": "seed-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "seed",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"seed\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "seed-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "seed",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "logprobs-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "logprobs",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"logprobs\":false}"
+    }
+  },
+  {
+    "id": "logprobs-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "logprobs",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"logprobs\":null}"
+    }
+  },
+  {
+    "id": "logprobs-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "logprobs",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"logprobs\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "logprobs-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "logprobs",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "top_logprobs-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "top_logprobs",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"logprobs\":true,\"top_logprobs\":0}"
+    }
+  },
+  {
+    "id": "top_logprobs-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "top_logprobs",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"logprobs\":true,\"top_logprobs\":null}"
+    }
+  },
+  {
+    "id": "top_logprobs-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "top_logprobs",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"logprobs\":true,\"top_logprobs\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "top_logprobs-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "top_logprobs",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"logprobs\":true}"
+    }
+  },
+  {
+    "id": "logit_bias-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "logit_bias",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"logit_bias\":{}}"
+    }
+  },
+  {
+    "id": "logit_bias-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "logit_bias",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"logit_bias\":null}"
+    }
+  },
+  {
+    "id": "logit_bias-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "logit_bias",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"logit_bias\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "logit_bias-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "logit_bias",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "sampling-temperature-0",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"temperature\":-0.1}"
+    }
+  },
+  {
+    "id": "sampling-temperature-1",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"temperature\":0.5}"
+    }
+  },
+  {
+    "id": "sampling-temperature-2",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"temperature\":2}"
+    }
+  },
+  {
+    "id": "sampling-temperature-3",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"temperature\":2.1}"
+    }
+  },
+  {
+    "id": "sampling-top_p-0",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"top_p\":0}"
+    }
+  },
+  {
+    "id": "sampling-top_p-1",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"top_p\":0.5}"
+    }
+  },
+  {
+    "id": "sampling-top_p-2",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"top_p\":1}"
+    }
+  },
+  {
+    "id": "sampling-top_p-3",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"top_p\":1.1}"
+    }
+  },
+  {
+    "id": "sampling-n-0",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"n\":2}"
+    }
+  },
+  {
+    "id": "sampling-n-1",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"n\":128}"
+    }
+  },
+  {
+    "id": "sampling-n-2",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"n\":129}"
+    }
+  },
+  {
+    "id": "sampling-n-3",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"n\":1.1}"
+    }
+  },
+  {
+    "id": "sampling-presence_penalty-0",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"presence_penalty\":-2}"
+    }
+  },
+  {
+    "id": "sampling-presence_penalty-1",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"presence_penalty\":2}"
+    }
+  },
+  {
+    "id": "sampling-presence_penalty-2",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"presence_penalty\":2.1}"
+    }
+  },
+  {
+    "id": "sampling-frequency_penalty-0",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"frequency_penalty\":-2}"
+    }
+  },
+  {
+    "id": "sampling-frequency_penalty-1",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"frequency_penalty\":2}"
+    }
+  },
+  {
+    "id": "sampling-frequency_penalty-2",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"frequency_penalty\":-2.1}"
+    }
+  },
+  {
+    "id": "sampling-logprobs-top20",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"logprobs\":true,\"top_logprobs\":20}"
+    }
+  },
+  {
+    "id": "sampling-top-without-logprobs",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"top_logprobs\":0}"
+    }
+  },
+  {
+    "id": "sampling-top21",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"logprobs\":true,\"top_logprobs\":21}"
+    }
+  },
+  {
+    "id": "sampling-bias",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"logit_bias\":{\"22\":100,\"0\":-100}}"
+    }
+  },
+  {
+    "id": "sampling-bias-alias",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"logit_bias\":{\"1\":1,\"01\":2}}"
+    }
+  },
+  {
+    "id": "sampling-bias-oov",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"logit_bias\":{\"100\":0}}",
+      "token_vocab": 100
+    }
+  },
+  {
+    "id": "sampling-seed-int64-exponent",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\": [{\"role\": \"user\", \"content\": \"q\"}], \"enable_thinking\": false,\"seed\":9.223372036854775807e18}"
+    }
+  },
+  {
+    "id": "sampling-underflow",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\": [{\"role\": \"user\", \"content\": \"q\"}], \"enable_thinking\": false,\"temperature\":1e-400}"
+    }
+  },
+  {
+    "id": "seed-edge-0",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"seed\":-9223372036854775809}"
+    }
+  },
+  {
+    "id": "seed-edge-1",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"seed\":-9223372036854775808}"
+    }
+  },
+  {
+    "id": "seed-edge-2",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"seed\":9223372036854775807}"
+    }
+  },
+  {
+    "id": "seed-edge-3",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"seed\":9223372036854775808}"
+    }
+  }
+]

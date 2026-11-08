@@ -85,11 +85,17 @@
         "A01",
         "A02"
       ],
-      "evidence": [],
-      "release": null,
+      "evidence": [
+        "docs/SERVE_SAMPLING_2026-11-08.md",
+        "docs/evidence/serve-sampling-20261108/index.json"
+      ],
+      "release": {
+        "subset": "sampling/choices/logprobs",
+        "binary_sha256": "7d15716827ca8a49342e75e5ad1da803fd6a11f6a3e857f2515e30730c1e4215",
+        "record": "docs/evidence/serve-sampling-20261108/delivery-01/result.json"
+      },
       "remaining_required_after_sampling_subset": [
-        "prediction target verification and usage",
-        "bounded actual SDK/JSON/SSE and tool acceptance for delivered behavior"
+        "prediction target verification/consumption and accepted/rejected usage with targeted acceptance"
       ]
     },
     {
@@ -547,6 +553,6 @@
       "release": null
     }
   ],
-  "next_task": "A01/A02 then A03/A04/A05/A06/A07; continue all remaining master-plan tasks",
-  "next": "A03 standard generation parameters, then remaining A01/A02/A04+ tasks; no stage-completion stop"
+  "next_task": "A03",
+  "next": "继续prediction实际验证与usage，再推进A04/A05及全部总计划；阶段交付不是停止点。"
 }

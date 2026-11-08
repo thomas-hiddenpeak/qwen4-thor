@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-sampling-20261108/engine-build/q4t_preflight_probe",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/tokenizer.json"
+  ],
+  "exit_code": 0,
+  "seconds": 0.35131967905908823,
+  "probe_sha256": "3b0934c94c294bb96fa1710446efa0fb9606f12307969792c071a1dc3cb0f965",
+  "passed": true,
+  "token": 22
+}

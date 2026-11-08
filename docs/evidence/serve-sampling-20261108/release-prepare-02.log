@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-sampling-20261108/prepare_release.py", line 30, in <module>
+    require((base/folder/'result.json').is_file(),'missing CPU receipt '+folder)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 51, in require
+    raise RuntimeError(message)
+RuntimeError: missing CPU receipt cpu-04

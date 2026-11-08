@@ -164,7 +164,7 @@
       ]
     },
     "temperature": {
-      "semantics": "源码接入，验收中：0—2，默认/null=1；0使用greedy，正温度真实采样",
+      "semantics": "A03采样子组针对性验收通过：0—2，默认/null=1；0使用greedy，正温度真实采样",
       "boundary": "非greedy不进入MTP/packed argmax；浮点端点原文和underflow校验",
       "evidence": [
         "docs/SERVE_SAMPLING_2026-11-08.md",
@@ -173,7 +173,7 @@
       ]
     },
     "top_p": {
-      "semantics": "源码接入，验收中：0—1 nucleus，默认/null=1；0至少保留最高项",
+      "semantics": "A03采样子组针对性验收通过：0—1 nucleus，默认/null=1；0至少保留最高项",
       "boundary": "在temperature缩放后截断并重新归一；temperature0仍argmax",
       "evidence": [
         "docs/SERVE_SAMPLING_2026-11-08.md",
@@ -182,7 +182,7 @@
       ]
     },
     "n": {
-      "semantics": "源码接入，验收中：1—128独立choice，默认/null=1；串行执行、单一请求准入/取消",
+      "semantics": "A03采样子组针对性验收通过：1—128独立choice，默认/null=1；串行执行、单一请求准入/取消",
       "boundary": "输入计一次，所有输出汇总；总输出配额与响应存储预算有界",
       "evidence": [
         "docs/SERVE_SAMPLING_2026-11-08.md",
@@ -191,7 +191,7 @@
       ]
     },
     "frequency_penalty": {
-      "semantics": "源码接入，验收中：-2—2，默认/null=0；按本choice已生成token次数调整",
+      "semantics": "A03采样子组针对性验收通过：-2—2，默认/null=0；按本choice已生成token次数调整",
       "boundary": "不混用prompt或其他choice历史；在温度前应用",
       "evidence": [
         "docs/SERVE_SAMPLING_2026-11-08.md",
@@ -200,7 +200,7 @@
       ]
     },
     "presence_penalty": {
-      "semantics": "源码接入，验收中：-2—2，默认/null=0；本choice已出现token仅扣一次",
+      "semantics": "A03采样子组针对性验收通过：-2—2，默认/null=0；本choice已出现token仅扣一次",
       "boundary": "在温度前应用；grammar/mask不能被penalty绕过",
       "evidence": [
         "docs/SERVE_SAMPLING_2026-11-08.md",
@@ -218,7 +218,7 @@
       ]
     },
     "seed": {
-      "semantics": "源码接入，验收中：原文精确signed int64或null；每choice独立派生RNG",
+      "semantics": "A03采样子组针对性验收通过：原文精确signed int64或null；每choice独立派生RNG",
       "boundary": "同实现/输入条件best effort；JS普通number仅精确表示safe integer",
       "evidence": [
         "docs/SERVE_SAMPLING_2026-11-08.md",
@@ -237,7 +237,7 @@
       ]
     },
     "logprobs": {
-      "semantics": "源码接入，验收中：boolean/null，真实原始模型分布的content token概率",
+      "semantics": "A03采样子组针对性验收通过：boolean/null，真实原始模型分布的content token概率",
       "boundary": "raw top20之外的所选token=-9999；隐藏-only token排除，跨界token原bytes保留一次",
       "evidence": [
         "docs/SERVE_SAMPLING_2026-11-08.md",
@@ -246,7 +246,7 @@
       ]
     },
     "top_logprobs": {
-      "semantics": "源码接入，验收中：0—20整数/null；非null必须logprobs=true",
+      "semantics": "A03采样子组针对性验收通过：0—20整数/null；非null必须logprobs=true",
       "boundary": "每个所选content token的原分布候选，不是mask/nucleus后的条件概率",
       "evidence": [
         "docs/SERVE_SAMPLING_2026-11-08.md",
@@ -255,7 +255,7 @@
       ]
     },
     "logit_bias": {
-      "semantics": "源码接入，验收中：词表内token ID映射-100—100；null为空",
+      "semantics": "A03采样子组针对性验收通过：词表内token ID映射-100—100；null为空",
       "boundary": "数值别名ID不能重复，真实调整选择分布；仍服从grammar/停止边界",
       "evidence": [
         "docs/SERVE_SAMPLING_2026-11-08.md",

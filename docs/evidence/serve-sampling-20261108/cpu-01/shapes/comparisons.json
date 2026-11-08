@@ -1,0 +1,912 @@
+[
+  {
+    "id": "temperature-valid",
+    "field": "temperature",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "temperature-null",
+    "field": "temperature",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "temperature-wrong-shape",
+    "field": "temperature",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'temperature': {'unexpected': True}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "temperature must be in [0,2] or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "temperature"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "temperature-omitted",
+    "field": "temperature",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "top_p-valid",
+    "field": "top_p",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "top_p-null",
+    "field": "top_p",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "top_p-wrong-shape",
+    "field": "top_p",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'top_p': {'unexpected': True}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "top_p must be in [0,1] or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "top_p"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "top_p-omitted",
+    "field": "top_p",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "n-valid",
+    "field": "n",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "n-null",
+    "field": "n",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "n-wrong-shape",
+    "field": "n",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'n': {'unexpected': True}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid integer selection option",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "n"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "n-omitted",
+    "field": "n",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "frequency_penalty-valid",
+    "field": "frequency_penalty",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "frequency_penalty-null",
+    "field": "frequency_penalty",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "frequency_penalty-wrong-shape",
+    "field": "frequency_penalty",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'frequency_penalty': {'unexpected': True}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "frequency_penalty must be in [-2,2]",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "frequency_penalty"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "frequency_penalty-omitted",
+    "field": "frequency_penalty",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "presence_penalty-valid",
+    "field": "presence_penalty",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "presence_penalty-null",
+    "field": "presence_penalty",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "presence_penalty-wrong-shape",
+    "field": "presence_penalty",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'presence_penalty': {'unexpected': True}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "presence_penalty must be in [-2,2]",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "presence_penalty"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "presence_penalty-omitted",
+    "field": "presence_penalty",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "seed-valid",
+    "field": "seed",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "seed-null",
+    "field": "seed",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "seed-wrong-shape",
+    "field": "seed",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'seed': {'unexpected': True}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "seed must be an exact signed 64-bit integer",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "seed"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "seed-omitted",
+    "field": "seed",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "logprobs-valid",
+    "field": "logprobs",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "logprobs-null",
+    "field": "logprobs",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "logprobs-wrong-shape",
+    "field": "logprobs",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'logprobs': {'unexpected': True}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "logprobs must be boolean",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "logprobs"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "logprobs-omitted",
+    "field": "logprobs",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "top_logprobs-valid",
+    "field": "top_logprobs",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "top_logprobs-null",
+    "field": "top_logprobs",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "top_logprobs-wrong-shape",
+    "field": "top_logprobs",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'logprobs': True, 'top_logprobs': {'unexpected': True}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid integer selection option",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "top_logprobs"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "top_logprobs-omitted",
+    "field": "top_logprobs",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "logit_bias-valid",
+    "field": "logit_bias",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "logit_bias-null",
+    "field": "logit_bias",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "logit_bias-wrong-shape",
+    "field": "logit_bias",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'logit_bias': {'unexpected': True}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid token bias",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "logit_bias.unexpected"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "logit_bias-omitted",
+    "field": "logit_bias",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "sampling-temperature-0",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'temperature': Decimal('-0.1')} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "temperature must be in [0,2] or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "temperature"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "sampling-temperature-1",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "sampling-temperature-2",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "sampling-temperature-3",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'temperature': Decimal('2.1')} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "temperature must be in [0,2] or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "temperature"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "sampling-top_p-0",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "sampling-top_p-1",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "sampling-top_p-2",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "sampling-top_p-3",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'top_p': Decimal('1.1')} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "top_p must be in [0,1] or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "top_p"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "sampling-n-0",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "sampling-n-1",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "sampling-n-2",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'n': 129} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid integer selection option",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "n"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "sampling-n-3",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'n': Decimal('1.1')} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid integer selection option",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "n"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "sampling-presence_penalty-0",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "sampling-presence_penalty-1",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "sampling-presence_penalty-2",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'presence_penalty': Decimal('2.1')} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "presence_penalty must be in [-2,2]",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "presence_penalty"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "sampling-frequency_penalty-0",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "sampling-frequency_penalty-1",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "sampling-frequency_penalty-2",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'frequency_penalty': Decimal('-2.1')} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "frequency_penalty must be in [-2,2]",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "frequency_penalty"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "sampling-logprobs-top20",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "sampling-top-without-logprobs",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'top_logprobs': 0} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "top_logprobs requires logprobs=true",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "top_logprobs"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "sampling-top21",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'logprobs': True, 'top_logprobs': 21} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid integer selection option",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "top_logprobs"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "sampling-bias",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "sampling-bias-alias",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid token bias",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "logit_bias[\"01\"]"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "sampling-bias-oov",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "logit_bias token outside served vocabulary",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "logit_bias[\"100\"]"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "sampling-seed-int64-exponent",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "sampling-underflow",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "JSON parse error: number outside supported finite range at offset 94",
+          "type": "invalid_request_error",
+          "code": "invalid_json",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "seed-edge-0",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'seed': -9223372036854775809} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "seed must be an exact signed 64-bit integer",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "seed"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "seed-edge-1",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "seed-edge-2",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "seed-edge-3",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'seed': 9223372036854775808} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "seed must be an exact signed 64-bit integer",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "seed"
+        }
+      }
+    },
+    "passed": true
+  }
+]

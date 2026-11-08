@@ -73,7 +73,7 @@ schema代替动态预算、模板、语法编译或真实业务验收。
 
 | API / 能力 | 当前状态 | 限制与证据 / 行动 |
 |---|---|---|
-| POST /v1/chat/completions | 已验，子集 | 单模型、单 choice；chat_generation.cpp |
+| POST /v1/chat/completions | 已验，子集 | 单模型；n=1..128独立choice，串行执行、同一请求生命周期 |
 | GET /v1/models | 已验，SDK 3.42.1 | 单个配置模型；不支持模型详情 / 管理 |
 | GET /v1/capabilities | 已验，Q4T 扩展 | 实现身份，不是发布或质量证明 |
 | messages | v3消息子集已验 | 多条/中途system与developer按序映射system ChatML；user/assistant/tool与ID关联保持；无需user；refusal文本/内容块可回填。见[实际SDK交付](SERVE_CHAT_INPUT_2026-11-08.md)，剩余legacy/custom/多模态合同继续实现 |
@@ -89,12 +89,13 @@ schema代替动态预算、模板、语法编译或真实业务验收。
 | strict / JSON Schema 输出约束 | 有限 profile 已验 | q4t-json-schema-v1，逐 token 掩码＋最终验证；未知关键字拒绝，应用仍须验证业务 |
 | max_tokens | 已验 | 正整数；包含推理 / 模板生成 token；受上下文容量约束 |
 | max_completion_tokens | 已验 | 与 max_tokens 共用生成预算；两个字段同时非空时拒绝歧义 |
-| temperature / top_p / n | 部分 | 仅 0 / 1 / 1；不可声称支持采样 |
-| penalties / seed | 部分 | 仅中性 penalty；seed 在 greedy 下不改变结果 |
+| temperature / top_p / n | A03子组已验 | 0..2 / 0..1 / 1..128；默认1/1/1，实际采样；显式温度0且无额外约束保留greedy MTP |
+| penalties / seed | A03子组已验 | presence/frequency -2..2，按本choice生成历史；精确signed int64 seed，逐choice独立RNG |
 | stop | 已验，有限profile | 字符串或最多4串，每串256 UTF-8字节；null/[]禁用；匹配包含推理/工具标记，截断工具错误；严格输出/cache组合拒绝 |
-| logprobs / logit_bias | 明确拒绝有效设置 | 仅接受现有中性空值，未实现 |
+| logprobs / logit_bias | A03子组已验 | 原始模型分布，top_logprobs 0..20；词表内ID的-100..100 bias实际执行；边界token保留真实bytes |
+| prediction | A03继续实施 | 目标验证/消费和accepted/rejected usage尚未实现，不因采样子组交付关闭 |
 | response_format | 已验，有限 schema | text / null / json_object / json_schema；与非空 tools 同用须 none |
-| stream_options.include_usage | 已验 | choices块usage:null，最后独立usage；choices的logprobs:null；中断不保证收到尾帧 |
+| stream_options.include_usage | 已验 | 各choice块usage:null，全部finish后一次汇总usage；请求logprobs时携带真实概率；中断不保证收到尾帧 |
 | chat_template_kwargs | 已验，Q4T 扩展 | thinking/preserve/effort/vision ID；能力端点给出范围 |
 | unknown fields | 明确拒绝 | 不静默丢弃；Responses/store/metadata 等不可直接透传 |
 | 错误 JSON | 已验，Q4T 错误码 | 显式输入位置param、统一封套与追踪头；01c补齐工具/控制/递归schema路径，转义键不混淆层级；无法归属输入字段的运行错误仍可null |

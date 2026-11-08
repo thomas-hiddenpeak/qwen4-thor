@@ -72,14 +72,21 @@ legacy/custom工具历史仍由A04补齐，
 A01登记不能代替后续采样、响应及持久对象能力的实际实现。
 
 [A03标准生成参数](SERVE_SAMPLING_2026-11-08.md)采样/choice/logprobs子组
-已接入实际生成、grammar、逐choice状态与汇总配额、JSON/SSE及JS/
-Python客户端。56项C++、66个输入/schema、53项Python、41项JS、
-3项驱动与1项生产tokenizer检查通过；原构建/夹具/导入/探针路径
-失败保留，仅重验受影响项。默认仍47d33690，尚未业务验收/交付。
-准备同租约1启动/9Chat（累计上限2/12/900秒）：真实采样、n=2、
-seed JSON/SSE一致、bias、严格结构化、实际文档工具、取消与MTP
-继续服务。非性能工作不跑完整矩阵；prediction实际执行仍须继续，
-A03与总目标均保持开放，不因这一子组结束停止其他计划任务。
+已交付：真实目标logits采样、独立choice、汇总配额及JSON/SSE概率。
+56项C++、66个输入/schema、53项Python、41项JS、3项驱动和1项
+实际tokenizer通过。1模型/9Chat真实短验通过，驱动55.480秒、严格
+租约55.777秒，53次NVML全OK；同seed多choice JSON/SSE完全一致、
+bias生效、strict、真实资料工具、显式取消及随后greedy MTP通过。
+576来源与180份[原件](evidence/serve-sampling-20261108/README.md)核对；
+保留首次构建/CPU夹具/发布准备失败，均未增加GPU业务尝试。
+
+当前默认引擎7d157168/元数据b3dde202，协议e446567f；v4服务78b76a7b/
+发布456fb5bb。Chat默认temperature=1，显式0且无额外采样约束保留
+原greedy MTP；功能fallback不宣称性能收益。原生入口/Guardian
+字节与44个控制面运行文件相同，原策略/Key/配额及ledger保持
+STOPPED，安装0启动/0Chat；旧47d33690/ef9183ed及4e4e/d05b回退
+保留，GPU/端口/锁释放。prediction实际验证/消费与usage继续实施，
+A03与总目标均保持开放；不因这一子组交付停止其余计划。
 
 工作分支`codex/serve-resilience-cd`继续隔离PR #22已接受发布；
 PR #22此前34b06bc1两项CI成功、CLEAN。当前默认服务包以顶部N01—N03交付为准；

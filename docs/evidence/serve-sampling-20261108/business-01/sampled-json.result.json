@@ -1,0 +1,175 @@
+{
+  "id": "chatcmpl-auto-90fa01db57baaed438e0c24decc6a705",
+  "model": "qwen3.8-flash-next",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "42"
+      },
+      "finish_reason": "stop",
+      "logprobs": {
+        "content": [
+          {
+            "token": "4",
+            "logprob": -0.001464988933479422,
+            "bytes": [
+              52
+            ],
+            "top_logprobs": [
+              {
+                "token": "4",
+                "logprob": -0.001464988933479422,
+                "bytes": [
+                  52
+                ]
+              },
+              {
+                "token": "1",
+                "logprob": -7.7514649889334795,
+                "bytes": [
+                  49
+                ]
+              },
+              {
+                "token": "3",
+                "logprob": -8.50146498893348,
+                "bytes": [
+                  51
+                ]
+              }
+            ]
+          },
+          {
+            "token": "2",
+            "logprob": -0.0004645061469971787,
+            "bytes": [
+              50
+            ],
+            "top_logprobs": [
+              {
+                "token": "2",
+                "logprob": -0.0004645061469971787,
+                "bytes": [
+                  50
+                ]
+              },
+              {
+                "token": "1",
+                "logprob": -8.625464506146997,
+                "bytes": [
+                  49
+                ]
+              },
+              {
+                "token": "<|im_end|>",
+                "logprob": -9.562964506146997,
+                "bytes": [
+                  60,
+                  124,
+                  105,
+                  109,
+                  95,
+                  101,
+                  110,
+                  100,
+                  124,
+                  62
+                ]
+              }
+            ]
+          }
+        ],
+        "refusal": null
+      }
+    },
+    {
+      "index": 1,
+      "message": {
+        "role": "assistant",
+        "content": "42"
+      },
+      "finish_reason": "stop",
+      "logprobs": {
+        "content": [
+          {
+            "token": "4",
+            "logprob": -0.001464988933479422,
+            "bytes": [
+              52
+            ],
+            "top_logprobs": [
+              {
+                "token": "4",
+                "logprob": -0.001464988933479422,
+                "bytes": [
+                  52
+                ]
+              },
+              {
+                "token": "1",
+                "logprob": -7.7514649889334795,
+                "bytes": [
+                  49
+                ]
+              },
+              {
+                "token": "3",
+                "logprob": -8.50146498893348,
+                "bytes": [
+                  51
+                ]
+              }
+            ]
+          },
+          {
+            "token": "2",
+            "logprob": -0.0004645061469971787,
+            "bytes": [
+              50
+            ],
+            "top_logprobs": [
+              {
+                "token": "2",
+                "logprob": -0.0004645061469971787,
+                "bytes": [
+                  50
+                ]
+              },
+              {
+                "token": "1",
+                "logprob": -8.625464506146997,
+                "bytes": [
+                  49
+                ]
+              },
+              {
+                "token": "<|im_end|>",
+                "logprob": -9.562964506146997,
+                "bytes": [
+                  60,
+                  124,
+                  105,
+                  109,
+                  95,
+                  101,
+                  110,
+                  100,
+                  124,
+                  62
+                ]
+              }
+            ]
+          }
+        ],
+        "refusal": null
+      }
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 28,
+    "completion_tokens": 6,
+    "total_tokens": 34
+  }
+}

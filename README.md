@@ -28,6 +28,13 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 `qwen3.8-openai-v3`，无需人为补充user消息；实现与真实SDK验收见
 [消息输入交付](docs/SERVE_CHAT_INPUT_2026-11-08.md)。完整OpenAI协议
 的剩余任务继续按总计划实现。
+
+[标准生成参数](docs/SERVE_SAMPLING_2026-11-08.md)已交付：temperature/
+top_p、seed、presence/frequency penalty、logit_bias、n=1..128及真实
+logprobs/top_logprobs；多choice共用请求/配额并逐项执行，JSON/SSE
+可重组。Chat默认temperature=1，显式temperature=0且无附加采样约束
+时保留greedy/MTP。采样使用目标logits的CPU实现，未作性能优化主张；
+prediction及其余接口仍继续实现。
 `messages`默认解析；`parse_response: false`保留原始输出，`prompt`
 始终为raw。none / required / named、禁止多调用、strict工具参数和
 有限JSON Schema已验，受约束请求仍普通解码，完整校验后发布SSE内容，
@@ -71,7 +78,7 @@ token预算不足而失败，canonical分词长度不构成生成上限。
 多人运行边界和长期稳定仍按[工业化验收账](docs/SERVE_INDUSTRIAL_PLAN_2026-11-03.md)推进。
 
 - **文本推理**: 48 层完整 forward (36 linear_attention + 12 full_attention),
-  MoE 专家使用 NVFP4 W4A4，其他路径含 BF16/FP32；Paged KV cache、greedy 生成
+  MoE 专家使用 NVFP4 W4A4，其他路径含 BF16/FP32；Paged KV cache、greedy 与实际采样生成
 - **多模态**: 27 层 ViT、独立HF数值参考、3D MRoPE；`image_url`和私有
   `video_frames`帧序列接入。须显式`--allow-media --no-mtp --max-seq 1`；
   图片/工具/配额已有限接受，视频方向任务与硬解码未接受，仍标experimental。
@@ -101,7 +108,8 @@ token预算不足而失败，canonical分词长度不构成生成上限。
   [有界可靠性交付](docs/STARTUP_DELIVERY_2026-10-21.md)。不保证任意
   配置或异常输入不 OOM，媒体解压等预算仍待完善
 - **HTTP API**: OpenAI 风格 chat/completions 流式/非流式接口，以及模型、
-  健康、指标和取消接口；仅 greedy，不代表支持全部 OpenAI 参数语义
+  健康、指标和取消接口；支持采样、多choice和token概率，剩余OpenAI
+  参数/接口按总计划继续实现
 - **验证边界**: 已有数值缺陷修复、状态/故障测试和五档 HTTP 性能参考。
   [首版私有文本部署](docs/RELEASE_TEXT_V1_2026-09-28.md)已验收；
   公网多租户与业务SLA另行验收。当前结论见 [STATUS](docs/STATUS.md)，

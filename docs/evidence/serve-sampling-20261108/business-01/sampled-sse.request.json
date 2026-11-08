@@ -1,0 +1,23 @@
+{
+  "model": "qwen3.8-flash-next",
+  "enable_thinking": false,
+  "max_completion_tokens": 32,
+  "stream": true,
+  "messages": [
+    {
+      "role": "user",
+      "content": "Compute 17 + 25. Reply only with the decimal number."
+    }
+  ],
+  "temperature": 0.8,
+  "top_p": 0.95,
+  "n": 2,
+  "seed": 54321,
+  "presence_penalty": 0.2,
+  "frequency_penalty": 0.3,
+  "logprobs": true,
+  "top_logprobs": 3,
+  "stream_options": {
+    "include_usage": true
+  }
+}

@@ -1,0 +1,33 @@
+[
+  {
+    "name": "tool-choice",
+    "argv": [
+      "python3",
+      "-m",
+      "unittest",
+      "tools.serve_sampling.test_clients.Choices.test_multi_choice_requires_explicit_selection_before_tools"
+    ],
+    "exit_code": 0,
+    "seconds": 0.0875166836194694
+  },
+  {
+    "name": "source",
+    "argv": [
+      "python3",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.05817352840676904
+  },
+  {
+    "name": "schema",
+    "argv": [
+      "python3",
+      "tools/serve_protocol/build_contract.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.043037771712988615
+  }
+]

@@ -1,0 +1,187 @@
+{
+  "ok": true,
+  "sdk_version": "7.47.0",
+  "result": {
+    "id": "chatcmpl-auto-b2fbf61f60793c5d53f7dec9029cccbd",
+    "model": "qwen3.8-flash-next",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "42"
+        },
+        "finish_reason": "stop",
+        "logprobs": {
+          "content": [
+            {
+              "token": "4",
+              "logprob": -0.001464988933479422,
+              "bytes": [
+                52
+              ],
+              "top_logprobs": [
+                {
+                  "token": "4",
+                  "logprob": -0.001464988933479422,
+                  "bytes": [
+                    52
+                  ]
+                },
+                {
+                  "token": "1",
+                  "logprob": -7.7514649889334795,
+                  "bytes": [
+                    49
+                  ]
+                },
+                {
+                  "token": "3",
+                  "logprob": -8.50146498893348,
+                  "bytes": [
+                    51
+                  ]
+                }
+              ]
+            },
+            {
+              "token": "2",
+              "logprob": -0.0004645061469971787,
+              "bytes": [
+                50
+              ],
+              "top_logprobs": [
+                {
+                  "token": "2",
+                  "logprob": -0.0004645061469971787,
+                  "bytes": [
+                    50
+                  ]
+                },
+                {
+                  "token": "1",
+                  "logprob": -8.625464506146997,
+                  "bytes": [
+                    49
+                  ]
+                },
+                {
+                  "token": "<|im_end|>",
+                  "logprob": -9.562964506146997,
+                  "bytes": [
+                    60,
+                    124,
+                    105,
+                    109,
+                    95,
+                    101,
+                    110,
+                    100,
+                    124,
+                    62
+                  ]
+                }
+              ]
+            }
+          ],
+          "refusal": null
+        }
+      },
+      {
+        "index": 1,
+        "message": {
+          "role": "assistant",
+          "content": "42"
+        },
+        "finish_reason": "stop",
+        "logprobs": {
+          "content": [
+            {
+              "token": "4",
+              "logprob": -0.001464988933479422,
+              "bytes": [
+                52
+              ],
+              "top_logprobs": [
+                {
+                  "token": "4",
+                  "logprob": -0.001464988933479422,
+                  "bytes": [
+                    52
+                  ]
+                },
+                {
+                  "token": "1",
+                  "logprob": -7.7514649889334795,
+                  "bytes": [
+                    49
+                  ]
+                },
+                {
+                  "token": "3",
+                  "logprob": -8.50146498893348,
+                  "bytes": [
+                    51
+                  ]
+                }
+              ]
+            },
+            {
+              "token": "2",
+              "logprob": -0.0004645061469971787,
+              "bytes": [
+                50
+              ],
+              "top_logprobs": [
+                {
+                  "token": "2",
+                  "logprob": -0.0004645061469971787,
+                  "bytes": [
+                    50
+                  ]
+                },
+                {
+                  "token": "1",
+                  "logprob": -8.625464506146997,
+                  "bytes": [
+                    49
+                  ]
+                },
+                {
+                  "token": "<|im_end|>",
+                  "logprob": -9.562964506146997,
+                  "bytes": [
+                    60,
+                    124,
+                    105,
+                    109,
+                    95,
+                    101,
+                    110,
+                    100,
+                    124,
+                    62
+                  ]
+                }
+              ]
+            }
+          ],
+          "refusal": null
+        }
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 28,
+      "completion_tokens": 6,
+      "total_tokens": 34
+    },
+    "headers": {
+      "cache-control": "no-cache",
+      "connection": "close",
+      "content-type": "text/event-stream",
+      "x-accel-buffering": "no",
+      "x-request-id": "req-8d914cbf7df5433f51f6da3b52b9cb76"
+    }
+  },
+  "wire_base64": "ZGF0YTogeyJpZCI6ImNoYXRjbXBsLWF1dG8tYjJmYmY2MWY2MDc5M2M1ZDUzZjdkZWM5MDI5Y2NjYmQiLCJvYmplY3QiOiJjaGF0LmNvbXBsZXRpb24uY2h1bmsiLCJjcmVhdGVkIjoxNzk0MDk4NzMxLCJtb2RlbCI6InF3ZW4zLjgtZmxhc2gtbmV4dCIsImNob2ljZXMiOlt7ImluZGV4IjowLCJkZWx0YSI6eyJyb2xlIjoiYXNzaXN0YW50IiwiY29udGVudCI6IiJ9LCJmaW5pc2hfcmVhc29uIjpudWxsLCJsb2dwcm9icyI6bnVsbH1dLCJ1c2FnZSI6bnVsbH0NCg0KZGF0YTogeyJpZCI6ImNoYXRjbXBsLWF1dG8tYjJmYmY2MWY2MDc5M2M1ZDUzZjdkZWM5MDI5Y2NjYmQiLCJvYmplY3QiOiJjaGF0LmNvbXBsZXRpb24uY2h1bmsiLCJjcmVhdGVkIjoxNzk0MDk4NzMxLCJtb2RlbCI6InF3ZW4zLjgtZmxhc2gtbmV4dCIsImNob2ljZXMiOlt7ImluZGV4IjowLCJkZWx0YSI6eyJjb250ZW50IjoiNCJ9LCJmaW5pc2hfcmVhc29uIjpudWxsLCJsb2dwcm9icyI6eyJjb250ZW50IjpbeyJ0b2tlbiI6IjQiLCJsb2dwcm9iIjotMC4wMDE0NjQ5ODg5MzM0Nzk0MjIsImJ5dGVzIjpbNTJdLCJ0b3BfbG9ncHJvYnMiOlt7InRva2VuIjoiNCIsImxvZ3Byb2IiOi0wLjAwMTQ2NDk4ODkzMzQ3OTQyMiwiYnl0ZXMiOls1Ml19LHsidG9rZW4iOiIxIiwibG9ncHJvYiI6LTcuNzUxNDY0OTg4OTMzNDc5NSwiYnl0ZXMiOls0OV19LHsidG9rZW4iOiIzIiwibG9ncHJvYiI6LTguNTAxNDY0OTg4OTMzNDc5NSwiYnl0ZXMiOls1MV19XX1dLCJyZWZ1c2FsIjpudWxsfX1dLCJ1c2FnZSI6bnVsbH0NCg0KZGF0YTogeyJpZCI6ImNoYXRjbXBsLWF1dG8tYjJmYmY2MWY2MDc5M2M1ZDUzZjdkZWM5MDI5Y2NjYmQiLCJvYmplY3QiOiJjaGF0LmNvbXBsZXRpb24uY2h1bmsiLCJjcmVhdGVkIjoxNzk0MDk4NzMxLCJtb2RlbCI6InF3ZW4zLjgtZmxhc2gtbmV4dCIsImNob2ljZXMiOlt7ImluZGV4IjowLCJkZWx0YSI6eyJjb250ZW50IjoiMiJ9LCJmaW5pc2hfcmVhc29uIjpudWxsLCJsb2dwcm9icyI6eyJjb250ZW50IjpbeyJ0b2tlbiI6IjIiLCJsb2dwcm9iIjotMC4wMDA0NjQ1MDYxNDY5OTcxNzg3LCJieXRlcyI6WzUwXSwidG9wX2xvZ3Byb2JzIjpbeyJ0b2tlbiI6IjIiLCJsb2dwcm9iIjotMC4wMDA0NjQ1MDYxNDY5OTcxNzg3LCJieXRlcyI6WzUwXX0seyJ0b2tlbiI6IjEiLCJsb2dwcm9iIjotOC42MjU0NjQ1MDYxNDY5OTcyLCJieXRlcyI6WzQ5XX0seyJ0b2tlbiI6Ijx8aW1fZW5kfD4iLCJsb2dwcm9iIjotOS41NjI5NjQ1MDYxNDY5OTcyLCJieXRlcyI6WzYwLDEyNCwxMDUsMTA5LDk1LDEwMSwxMTAsMTAwLDEyNCw2Ml19XX1dLCJyZWZ1c2FsIjpudWxsfX1dLCJ1c2FnZSI6bnVsbH0NCg0KZGF0YTogeyJpZCI6ImNoYXRjbXBsLWF1dG8tYjJmYmY2MWY2MDc5M2M1ZDUzZjdkZWM5MDI5Y2NjYmQiLCJvYmplY3QiOiJjaGF0LmNvbXBsZXRpb24uY2h1bmsiLCJjcmVhdGVkIjoxNzk0MDk4NzMxLCJtb2RlbCI6InF3ZW4zLjgtZmxhc2gtbmV4dCIsImNob2ljZXMiOlt7ImluZGV4IjowLCJkZWx0YSI6e30sImZpbmlzaF9yZWFzb24iOiJzdG9wIiwibG9ncHJvYnMiOnsiY29udGVudCI6W10sInJlZnVzYWwiOm51bGx9fV0sInVzYWdlIjpudWxsfQ0KDQpkYXRhOiB7ImlkIjoiY2hhdGNtcGwtYXV0by1iMmZiZjYxZjYwNzkzYzVkNTNmN2RlYzkwMjljY2NiZCIsIm9iamVjdCI6ImNoYXQuY29tcGxldGlvbi5jaHVuayIsImNyZWF0ZWQiOjE3OTQwOTg3MzEsIm1vZGVsIjoicXdlbjMuOC1mbGFzaC1uZXh0IiwiY2hvaWNlcyI6W3siaW5kZXgiOjEsImRlbHRhIjp7InJvbGUiOiJhc3Npc3RhbnQiLCJjb250ZW50IjoiIn0sImZpbmlzaF9yZWFzb24iOm51bGwsImxvZ3Byb2JzIjpudWxsfV0sInVzYWdlIjpudWxsfQ0KDQpkYXRhOiB7ImlkIjoiY2hhdGNtcGwtYXV0by1iMmZiZjYxZjYwNzkzYzVkNTNmN2RlYzkwMjljY2NiZCIsIm9iamVjdCI6ImNoYXQuY29tcGxldGlvbi5jaHVuayIsImNyZWF0ZWQiOjE3OTQwOTg3MzEsIm1vZGVsIjoicXdlbjMuOC1mbGFzaC1uZXh0IiwiY2hvaWNlcyI6W3siaW5kZXgiOjEsImRlbHRhIjp7ImNvbnRlbnQiOiI0In0sImZpbmlzaF9yZWFzb24iOm51bGwsImxvZ3Byb2JzIjp7ImNvbnRlbnQiOlt7InRva2VuIjoiNCIsImxvZ3Byb2IiOi0wLjAwMTQ2NDk4ODkzMzQ3OTQyMiwiYnl0ZXMiOls1Ml0sInRvcF9sb2dwcm9icyI6W3sidG9rZW4iOiI0IiwibG9ncHJvYiI6LTAuMDAxNDY0OTg4OTMzNDc5NDIyLCJieXRlcyI6WzUyXX0seyJ0b2tlbiI6IjEiLCJsb2dwcm9iIjotNy43NTE0NjQ5ODg5MzM0Nzk1LCJieXRlcyI6WzQ5XX0seyJ0b2tlbiI6IjMiLCJsb2dwcm9iIjotOC41MDE0NjQ5ODg5MzM0Nzk1LCJieXRlcyI6WzUxXX1dfV0sInJlZnVzYWwiOm51bGx9fV0sInVzYWdlIjpudWxsfQ0KDQpkYXRhOiB7ImlkIjoiY2hhdGNtcGwtYXV0by1iMmZiZjYxZjYwNzkzYzVkNTNmN2RlYzkwMjljY2NiZCIsIm9iamVjdCI6ImNoYXQuY29tcGxldGlvbi5jaHVuayIsImNyZWF0ZWQiOjE3OTQwOTg3MzEsIm1vZGVsIjoicXdlbjMuOC1mbGFzaC1uZXh0IiwiY2hvaWNlcyI6W3siaW5kZXgiOjEsImRlbHRhIjp7ImNvbnRlbnQiOiIyIn0sImZpbmlzaF9yZWFzb24iOm51bGwsImxvZ3Byb2JzIjp7ImNvbnRlbnQiOlt7InRva2VuIjoiMiIsImxvZ3Byb2IiOi0wLjAwMDQ2NDUwNjE0Njk5NzE3ODcsImJ5dGVzIjpbNTBdLCJ0b3BfbG9ncHJvYnMiOlt7InRva2VuIjoiMiIsImxvZ3Byb2IiOi0wLjAwMDQ2NDUwNjE0Njk5NzE3ODcsImJ5dGVzIjpbNTBdfSx7InRva2VuIjoiMSIsImxvZ3Byb2IiOi04LjYyNTQ2NDUwNjE0Njk5NzIsImJ5dGVzIjpbNDldfSx7InRva2VuIjoiPHxpbV9lbmR8PiIsImxvZ3Byb2IiOi05LjU2Mjk2NDUwNjE0Njk5NzIsImJ5dGVzIjpbNjAsMTI0LDEwNSwxMDksOTUsMTAxLDExMCwxMDAsMTI0LDYyXX1dfV0sInJlZnVzYWwiOm51bGx9fV0sInVzYWdlIjpudWxsfQ0KDQpkYXRhOiB7ImlkIjoiY2hhdGNtcGwtYXV0by1iMmZiZjYxZjYwNzkzYzVkNTNmN2RlYzkwMjljY2NiZCIsIm9iamVjdCI6ImNoYXQuY29tcGxldGlvbi5jaHVuayIsImNyZWF0ZWQiOjE3OTQwOTg3MzEsIm1vZGVsIjoicXdlbjMuOC1mbGFzaC1uZXh0IiwiY2hvaWNlcyI6W3siaW5kZXgiOjEsImRlbHRhIjp7fSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJsb2dwcm9icyI6eyJjb250ZW50IjpbXSwicmVmdXNhbCI6bnVsbH19XSwidXNhZ2UiOm51bGx9DQoNCmRhdGE6IHsiaWQiOiJjaGF0Y21wbC1hdXRvLWIyZmJmNjFmNjA3OTNjNWQ1M2Y3ZGVjOTAyOWNjY2JkIiwib2JqZWN0IjoiY2hhdC5jb21wbGV0aW9uLmNodW5rIiwiY3JlYXRlZCI6MTc5NDA5ODczMSwibW9kZWwiOiJxd2VuMy44LWZsYXNoLW5leHQiLCJjaG9pY2VzIjpbXSwidXNhZ2UiOnsicHJvbXB0X3Rva2VucyI6MjgsImNvbXBsZXRpb25fdG9rZW5zIjo2LCJ0b3RhbF90b2tlbnMiOjM0fX0NCg0KZGF0YTogW0RPTkVdDQoNCg=="
+}

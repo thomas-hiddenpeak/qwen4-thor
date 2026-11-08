@@ -35,8 +35,7 @@
 性能矩阵，不因一个子组件或阶段完成停止总目标。
 
 采样/choice/logprobs子组已接入生成、grammar、配额、JSON/SSE、
-源码schema和JS/Python客户端。CPU针对性验证已通过，真实HTTP尚未验收；默认仍为
-已接受47d33690。子组完成必要验证和交付后继续prediction目标
+源码schema和JS/Python客户端。CPU及真实HTTP针对性验收已通过，默认更新为7d157168。继续prediction目标
 验证/消费及usage，A03整项保持开放，不能因子组交付停止总任务。
 
 logprob只关联至少有一个可见content字节的原始token。若一个token
@@ -66,3 +65,23 @@ CPU已通过56项C++、66个输入/schema、53项Python、41项JS、3项
 上限2启动/12Chat/900秒、同一严格GPU租约。覆盖默认采样、同seed
 n=2的JSON/SSE、bias、strict n=2、真实资料工具与引用、显式取消
 和随后greedy MTP请求。无性能接受主张或完整模型质量矩阵。
+
+## 真实验收与可回退交付
+
+实际1启动/9Chat：默认采样、seed固定的n=2 JSON/SSE完整choice与
+usage一致、bias改变目标偏好、strict n=2、真实资料工具标题/引用、
+显式取消及随后greedy MTP同PID服务通过。请求计数9/成功8/取消1，
+slot_wait与target_ready均按9请求统计。驱动55.480秒，完整严格租约
+55.777秒、53次NVML全OK。清理模型exit0、grammar回收、端口/锁释放。
+
+576源码逐项核对Git提交94c0fc65；最终零警告构建7d157168、协议
+e446567f。原生入口ba6baf0e、Guardian7a57af71及44控制面文件不变；
+继续已验CUDA探针ef1af475。首轮发布准备导入路径和CPU记录文件名
+错误保留，修复后封包通过，未追加GPU。180份原件见
+[证据索引](evidence/serve-sampling-20261108/README.md)。
+
+默认引擎7d157168/元数据b3dde202，服务78b76a7b/发布456fb5bb；
+旧47d33690/ef9183ed及4e4e1872/d05b470a、原service.json与symlink
+目标均有可核验回退记录。GPU/Guardian/writer三锁下安装，ledger
+字节/STOPPED/预算保持；策略、Key、分钟配额不变，help/status检查
+0启动/0Chat。此为采样子组交付，prediction和A03整项仍开放。

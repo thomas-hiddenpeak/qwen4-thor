@@ -1,0 +1,60 @@
+{
+  "ok": true,
+  "sdk_version": "7.47.0",
+  "result": {
+    "id": "chatcmpl-auto-8177acc17bb945bbb63a6a5b9a605f86",
+    "model": "qwen3.8-flash-next",
+    "message": {
+      "role": "assistant",
+      "content": "7"
+    },
+    "finish_reason": "length",
+    "usage": {
+      "prompt_tokens": 28,
+      "completion_tokens": 1,
+      "total_tokens": 29
+    },
+    "logprobs": {
+      "content": [
+        {
+          "token": "7",
+          "logprob": -10.87646498893348,
+          "bytes": [
+            55
+          ],
+          "top_logprobs": [
+            {
+              "token": "4",
+              "logprob": -0.001464988933479422,
+              "bytes": [
+                52
+              ]
+            },
+            {
+              "token": "1",
+              "logprob": -7.7514649889334795,
+              "bytes": [
+                49
+              ]
+            },
+            {
+              "token": "3",
+              "logprob": -8.50146498893348,
+              "bytes": [
+                51
+              ]
+            }
+          ]
+        }
+      ],
+      "refusal": null
+    },
+    "headers": {
+      "connection": "close",
+      "content-length": "582",
+      "content-type": "application/json",
+      "x-request-id": "req-496b2a4d55e7970613b1be830f140448"
+    }
+  },
+  "wire_base64": "eyJpZCI6ImNoYXRjbXBsLWF1dG8tODE3N2FjYzE3YmI5NDViYmI2M2E2YTViOWE2MDVmODYiLCJvYmplY3QiOiJjaGF0LmNvbXBsZXRpb24iLCJjcmVhdGVkIjoxNzk0MDk4NzMyLCJtb2RlbCI6InF3ZW4zLjgtZmxhc2gtbmV4dCIsImNob2ljZXMiOlt7ImluZGV4IjowLCJtZXNzYWdlIjp7InJvbGUiOiJhc3Npc3RhbnQiLCJjb250ZW50IjoiNyJ9LCJmaW5pc2hfcmVhc29uIjoibGVuZ3RoIiwibG9ncHJvYnMiOnsiY29udGVudCI6W3sidG9rZW4iOiI3IiwibG9ncHJvYiI6LTEwLjg3NjQ2NDk4ODkzMzQ3OSwiYnl0ZXMiOls1NV0sInRvcF9sb2dwcm9icyI6W3sidG9rZW4iOiI0IiwibG9ncHJvYiI6LTAuMDAxNDY0OTg4OTMzNDc5NDIyLCJieXRlcyI6WzUyXX0seyJ0b2tlbiI6IjEiLCJsb2dwcm9iIjotNy43NTE0NjQ5ODg5MzM0Nzk1LCJieXRlcyI6WzQ5XX0seyJ0b2tlbiI6IjMiLCJsb2dwcm9iIjotOC41MDE0NjQ5ODg5MzM0Nzk1LCJieXRlcyI6WzUxXX1dfV0sInJlZnVzYWwiOm51bGx9fV0sInVzYWdlIjp7InByb21wdF90b2tlbnMiOjI4LCJjb21wbGV0aW9uX3Rva2VucyI6MSwidG90YWxfdG9rZW5zIjoyOX19"
+}

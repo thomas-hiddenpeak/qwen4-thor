@@ -1,0 +1,22 @@
+{
+  "status": "PASS_TARGETED_SAMPLING_SOURCE_RELEASE_AUDIT",
+  "source_commit": "94c0fc65675c7135cc787f41adab4260494fd54c",
+  "source_files": 576,
+  "protocol": "e446567fc55bdd11f6d2ca07f604ec61c02bc3f9bb1ce089b8a467df61efbe28",
+  "binary_sha256": "7d15716827ca8a49342e75e5ad1da803fd6a11f6a3e857f2515e30730c1e4215",
+  "ports_free": [
+    18161,
+    18162,
+    18163,
+    18164,
+    18165
+  ],
+  "gpu_lock_acquirable": true,
+  "owned_pids_exited": true,
+  "ledger_unchanged": true,
+  "remaining_master_tasks_open": true,
+  "prediction_still_required": true,
+  "receipt_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-sampling-20261108/delivery-01/result.json",
+  "receipt_sha256": "291fadfe57534185a853175181b7b7cb5fb8c619298920c97b5c8aa437c9416b",
+  "cpu_dependency_reuse": "Host/shape/JS/Python passed as recorded; final handler metric-only changes covered by real business, no repeated full tests. CPU probe path/import/fixture failures preserved."
+}
