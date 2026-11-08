@@ -1,0 +1,12 @@
+{
+  "exit": 1,
+  "error": "unreviewed source drift during evidence reuse",
+  "actual_changed": [
+    "src/server/regex_syntax/schema_regex.rs",
+    "tools/serve_schema_v2/acceptance.py",
+    "tools/serve_schema_v2/test_acceptance.py"
+  ],
+  "starts": 0,
+  "chats": 0,
+  "before_output_directory": true
+}

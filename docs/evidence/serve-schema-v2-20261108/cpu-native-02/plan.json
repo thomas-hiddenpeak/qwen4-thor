@@ -1,0 +1,36 @@
+{
+  "commands": [
+    [
+      "cmake",
+      "--build",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build",
+      "--parallel",
+      "4",
+      "--target",
+      "q4t_ingress_no_tls"
+    ],
+    [
+      "/usr/bin/python3",
+      "-B",
+      "tools/serve_recovery/test_native_access.py",
+      "--ingress",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t-ingress",
+      "--no-tls-ingress",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t-ingress-no-tls",
+      "AccessTests.test_tls_12_and_13_preserve_json_authentication_and_private_binding",
+      "AccessTests.test_certificate_rotation_keeps_same_process_and_existing_sse",
+      "-v"
+    ],
+    [
+      "/usr/bin/python3",
+      "-B",
+      "-m",
+      "unittest",
+      "tools.serve_recovery.test_runtime.RuntimeTests.test_foreground_control_stop_and_lease_release",
+      "tools.serve_recovery.test_runtime.RuntimeTests.test_malformed_local_request_does_not_change_lifecycle",
+      "-v"
+    ]
+  ],
+  "timeout_each": 120,
+  "reused": "cpu-native-01 seven journal and two native ingress checks; missing unused TLS-off fixture binary prevented TLS tests from starting"
+}

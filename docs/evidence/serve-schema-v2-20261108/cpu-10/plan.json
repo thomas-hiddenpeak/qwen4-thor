@@ -1,0 +1,11 @@
+{
+  "scope": "reference traversal depth and directly affected recursion/prefix behavior",
+  "tests": [
+    "schema_graph_long_reference_chains_are_bounded_before_worker",
+    "schema_graph_official_size_limits_and_reference_depth",
+    "schema_prefix_recursive_ref_const_and_unicode_length",
+    "schema_prefix_dependency_and_budget_keep_failure_category"
+  ],
+  "binary_sha256": "a8aa084ba385616363e4bf28ea56f04e5e072ac9663eda76178ba611a76d07c8",
+  "timeout_seconds": 90
+}

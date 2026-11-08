@@ -1,0 +1,8 @@
+test_cache_log_requires_unique_request_layout_and_no_error (tools.serve_schema_v2.test_acceptance.Driver.test_cache_log_requires_unique_request_layout_and_no_error) ... ok
+test_frozen_requests_use_actual_production_planner (tools.serve_schema_v2.test_acceptance.Driver.test_frozen_requests_use_actual_production_planner) ... ok
+test_generated_values_require_exact_integer_and_real_terminal (tools.serve_schema_v2.test_acceptance.Driver.test_generated_values_require_exact_integer_and_real_terminal) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.008s
+
+OK

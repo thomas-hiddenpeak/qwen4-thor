@@ -1,0 +1,27 @@
+{
+  "scope": "target cache combinations and legacy JSON/tool shape; no generation",
+  "cases": [
+    "session_id-valid",
+    "session_id-null",
+    "session_id-wrong-shape",
+    "session_id-omitted",
+    "prefix_cache_scope-valid",
+    "prefix_cache_scope-null",
+    "prefix_cache_scope-wrong-shape",
+    "prefix_cache_scope-omitted",
+    "prefix_cache_write_tokens-valid",
+    "prefix_cache_write_tokens-null",
+    "prefix_cache_write_tokens-wrong-shape",
+    "prefix_cache_write_tokens-omitted",
+    "stop-cache",
+    "stop-inactive-cache-seed",
+    "session_id-disabled",
+    "prefix_cache_scope-disabled",
+    "schema-v2-cache-session_id",
+    "schema-v2-cache-disabled-session_id",
+    "schema-v2-cache-prefix_cache_scope",
+    "schema-v2-cache-disabled-prefix_cache_scope",
+    "schema-v2-json-legacy-tool"
+  ],
+  "probe_sha256": "1d04c1ea1ebccdeca840ef7fbc82ce7aa8f686fa026a2a4d022c3a3845d4b7a1"
+}

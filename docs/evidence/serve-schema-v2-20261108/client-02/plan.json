@@ -1,0 +1,17 @@
+{
+  "scope": "Exact JSON decoder typed resource error; affected exact encoding",
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_schema_client.SchemaClient.test_unrepresentable_decimal_exponent_is_protocol_error",
+    "test_schema_client.SchemaClient.test_exact_numbers_survive_schema_prompt_and_actual_request_encoding"
+  ],
+  "sources": {
+    "tools/examples/chat_client.py": "95ef93ac8beda0657f6a4fc6bf266cfd7df64b0c94fa8cb9a93079613631b5de",
+    "tools/examples/test_schema_client.py": "b3e7f7dee94914e7c5a7365f6b2a1db8b5a90dae1f9712104aad34104faadb2f"
+  },
+  "timeout_seconds": 30
+}

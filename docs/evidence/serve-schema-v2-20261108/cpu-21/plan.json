@@ -1,0 +1,12 @@
+{
+  "scope": "128-tool actual worker path, resource status/path distinction, real socket failure terminal and updated discovery only; CPU no GPU/model",
+  "tests": [
+    "chat_plan_schema_resource_errors_keep_status_and_parameter",
+    "schema_request_accepts_128_declared_tools_and_bounds_the_next",
+    "server_http_parse_error_terminal",
+    "chat_capabilities_option_contract",
+    "chat_capabilities_identity"
+  ],
+  "binary_sha256": "0c40dfbf1f2d0ae2e251bb538d2d1236021120fd15ed080b0f62088d0219a01e",
+  "timeout_seconds": 90
+}

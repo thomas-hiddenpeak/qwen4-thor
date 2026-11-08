@@ -1,0 +1,12 @@
+node:internal/encoding:494
+        if (!chunk) return decodeUTF8(input, ignoreBom, this[kFatal]);
+                           ^
+
+TypeError: The encoded data was not valid for encoding utf-8
+    at TextDecoder.decode (node:internal/encoding:494:28)
+    at file:///home/rm01/models/dev/qwen4-thor/tools/vision_service/schema_request.mjs:10:67
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+  code: 'ERR_ENCODING_INVALID_ENCODED_DATA'
+}
+
+Node.js v24.18.0

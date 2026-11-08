@@ -1,0 +1,9 @@
+usage: repair.py [-h] {prepare,run} ...
+
+Complete the failed final JSON and three unexecuted A05 text requests.
+
+positional arguments:
+  {prepare,run}
+
+options:
+  -h, --help     show this help message and exit

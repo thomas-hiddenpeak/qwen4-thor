@@ -1,0 +1,15 @@
+{
+  "id": "schema-v2-media-final",
+  "model": "qwen3.8-flash-next",
+  "message": {
+    "role": "assistant",
+    "content": "{\"title\": \"MODEL.md \u2014 Qwen3.8-Flash-Next (qwen4_exp) \u67b6\u6784\u7b14\u8bb0\", \"citation\": \"[docs/MODEL.md:L1-L16]\", \"requested_line_count\": 16, \"note\": null, \"observed\": {\"object\": \"earth\", \"clouds_visible\": true, \"street_sign_visible\": false}}"
+  },
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 1555,
+    "completion_tokens": 80,
+    "total_tokens": 1635
+  },
+  "logprobs": null
+}

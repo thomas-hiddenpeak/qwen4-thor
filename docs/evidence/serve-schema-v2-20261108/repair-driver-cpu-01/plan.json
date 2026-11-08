@@ -1,0 +1,30 @@
+{
+  "groups": [
+    [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "-v",
+      "tools.serve_schema_v2.test_acceptance.Driver.test_final_answer_uses_actual_title_and_matching_tool_citation"
+    ],
+    [
+      "python3",
+      "-B",
+      "tools/serve_schema_v2/repair.py",
+      "--help"
+    ],
+    [
+      "python3",
+      "-B",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ],
+    [
+      "git",
+      "diff",
+      "--check"
+    ]
+  ],
+  "timeout_seconds_each": 30
+}

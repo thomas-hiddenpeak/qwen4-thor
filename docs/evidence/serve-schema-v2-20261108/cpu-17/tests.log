@@ -1,0 +1,8 @@
+[PASS] chat_tool_history_json_adapter_preserves_refs_null_and_exact_values
+[PASS] chat_tool_history_arbitrary_json_keys_are_data_without_definitions
+[PASS] chat_template_tool_result_order
+[PASS] chat_tool_history_no_silent_argument_loss
+[PASS] chat_tool_history_legacy_shapes_are_explicit
+[PASS] chat_template_tool_result_names_follow_ids
+[PASS] custom_tools_plan_choice_filter_and_history
+7 tests, 7 passed, 0 failed, 0 skipped

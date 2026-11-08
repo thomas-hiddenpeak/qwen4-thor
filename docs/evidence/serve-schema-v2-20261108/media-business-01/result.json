@@ -1,0 +1,11 @@
+{
+  "status": "FAILED",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 294, in run\n    try:self.start();self.business();result['status']=self.success_status\n                     ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/media.py\", line 166, in business\n    value = self.sdk_request(label, rows[label])\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/media.py\", line 157, in sdk_request\n    value = super().sdk_request(label, body)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 227, in sdk_request\n    answer=self.client.complete(body,sink=wire.write)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/js_client.py\", line 121, in complete\n    payload = self.call(\"chat\", request, model=request[\"model\"], sink=sink)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/js_client.py\", line 106, in call\n    raise JsSdkError(payload[\"error\"])\ntools.serve_protocol.js_client.JsSdkError: constrained response did not reach a grammar-accepted stop token\n",
+  "counts": {
+    "starts": 1,
+    "chats": 2,
+    "controls": 34
+  },
+  "seconds": 70.02223688969389,
+  "binary_sha256": "aedaac590765ea8bf157c501c8e97b818319197df61b6a9b3237b2d6ad2928e3"
+}

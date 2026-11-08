@@ -1,0 +1,12 @@
+{
+  "reason": "repair redundant NFA path product with bounded subset product; affected intersection checks only",
+  "tests": [
+    "schema_language_intersection_search_length_and_assertions",
+    "schema_language_number_exact_range_and_multiple",
+    "schema_language_number_fractional_bounds_are_not_rounded",
+    "schema_language_number_scaled_modulo_integer_oracle",
+    "schema_language_number_integer_bounds_and_empty_range"
+  ],
+  "binary_sha256": "177fd76d3839ad45a9d9872f0d16eaff9576038fe3fa18f3bb477342fecd9562",
+  "timeout_seconds": 180
+}

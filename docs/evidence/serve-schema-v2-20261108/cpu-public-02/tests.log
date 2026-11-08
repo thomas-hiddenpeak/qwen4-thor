@@ -1,0 +1,5 @@
+[PASS] json_strict_numbers_and_safe_integer_conversion
+[PASS] json_exact_decimal_opt_in_does_not_relax_control_numbers
+[PASS] schema_graph_long_reference_chains_are_bounded_before_worker
+[PASS] schema_prefix_exact_number_and_array_limits_at_completion
+4 tests, 4 passed, 0 failed, 0 skipped

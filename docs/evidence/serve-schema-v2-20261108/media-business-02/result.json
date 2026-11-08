@@ -1,0 +1,11 @@
+{
+  "status": "FAILED",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 294, in run\n    try:self.start();self.business();result['status']=self.success_status\n                     ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/media.py\", line 169, in business\n    require(value.finish_reason == \"stop\" and not value.message.get(\"tool_calls\")\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 51, in require\n    raise RuntimeError(message)\nRuntimeError: visual truth differs: motion\n",
+  "counts": {
+    "starts": 1,
+    "chats": 1,
+    "controls": 33
+  },
+  "seconds": 36.916726109106094,
+  "binary_sha256": "6a679288dc8fb1c70c4e0b7fe25fbf0cdafe58483da60b5733175851b3c50bea"
+}

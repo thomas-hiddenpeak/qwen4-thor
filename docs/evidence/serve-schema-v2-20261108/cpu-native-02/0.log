@@ -1,0 +1,11 @@
+[  0%] Built target q4t_guardian_process
+[ 50%] Built target q4t_guardian_journal
+[ 50%] Building CXX object CMakeFiles/q4t_ingress_no_tls.dir/src/service/ingress_main.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_ingress_no_tls.dir/src/service/ingress_transport.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_ingress_no_tls.dir/src/service/ingress_tls.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_ingress_no_tls.dir/src/service/ingress_credentials.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_ingress_no_tls.dir/src/service/ingress_cors.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_ingress_no_tls.dir/src/service/ingress_admin.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_ingress_no_tls.dir/src/server/http_request.cpp.o
+[100%] Linking CXX executable q4t-ingress-no-tls
+[100%] Built target q4t_ingress_no_tls

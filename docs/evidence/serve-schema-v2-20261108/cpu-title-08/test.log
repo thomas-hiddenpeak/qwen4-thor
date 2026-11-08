@@ -1,0 +1,10 @@
+[20:12:03] /home/rm01/models/dev/qwen4-thor/.q4t-work/structured-control-20261102/xgrammar/cpp/fsm_builder.cc:554: Warning: Escape sequence \U is not recognized in regex; matching the character literally
+grammar worker compilation or matching failed
+grammar worker compilation or matching failed
+[FAIL] schema_string_syntax_counted_length_unicode_and_escape_boundaries: [20:12:03] /home/rm01/models/dev/qwen4-thor/.q4t-work/structured-control-20261102/xgrammar/cpp/grammar_functor.cc:1856: Failed to build the automaton for rule q4t_g0_e3_1_repeat with regex ([\u0020-\u0021\u0023-\u003b\u003d-\u005b\u005d-\ud7ff\ue000-\U0010ffff]|\\u0000|\\u0001|\\u0002|\\u0003|\\u0004|\\u0005|\\u0006|\\u0007|\\b|\\t|\\n|\\u000b|\\f|\\r|\\u000e|\\u000f|\\u0010|\\u0011|\\u0012|\\u0013|\\u0014|\\u0015|\\u0016|\\u0017|\\u0018|\\u0019|\\u001a|\\u001b|\\u001c|\\u001d|\\u001e|\\u001f|\\"|\\u003c|\\\\): Invalid character range (lower bound exceeds upper bound) in regex character class [\u0020-\u0021\u0023-\u003b\u003d-\u005b\u005d-\ud7ff\ue000-\U0010ffff]
+
+  CHECK failed: status (line 187)
+[FAIL] tokenizer_schema_bounded_title_with_tools_real_vocabulary
+  CHECK failed: status (line 187)
+[FAIL] tokenizer_schema_bounded_pattern_with_tools_real_vocabulary
+3 tests, 0 passed, 3 failed, 0 skipped

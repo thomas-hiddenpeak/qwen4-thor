@@ -1,0 +1,3 @@
+  CHECK failed: matcher.AcceptString(prefix) == expected (line 124)
+[FAIL] schema_language_single_pattern_rejects_impossible_prefixes
+1 tests, 0 passed, 1 failed, 0 skipped

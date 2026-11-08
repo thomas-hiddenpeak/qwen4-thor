@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "id": "exact-number",
+      "passed": true,
+      "exit": 0
+    },
+    {
+      "id": "invalid-utf8",
+      "passed": true,
+      "exit": 1
+    }
+  ]
+}

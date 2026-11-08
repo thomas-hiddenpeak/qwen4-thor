@@ -1,0 +1,21 @@
+{
+  "build": [
+    "cmake",
+    "--build",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build",
+    "--parallel",
+    "4",
+    "--target",
+    "q4t_preflight_probe"
+  ],
+  "argv": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_schema_v2.test_media"
+  ],
+  "timeout_seconds": 90,
+  "scope": "actual CPU tokenizer/image/video expansion and rich-schema/tool follow-up, four inputs, no model/GPU"
+}

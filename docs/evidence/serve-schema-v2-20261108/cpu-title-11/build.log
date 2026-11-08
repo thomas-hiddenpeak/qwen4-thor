@@ -1,0 +1,25 @@
+[  3%] Built target q4t_regex_build
+[  7%] Built target q4t_io
+[ 30%] Built target xgrammar
+[ 30%] Built target q4t_text
+[ 30%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/text_tokenizer_test.cpp.o
+[ 30%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests
+[  3%] Built target q4t_io
+[  7%] Built target q4t_trace
+[ 10%] Built target q4t_ple
+[ 14%] Built target q4t_regex_build
+[ 35%] Built target xgrammar
+[ 39%] Built target q4t_runtime
+[ 39%] Built target q4t_text
+[ 42%] Built target q4t_quant
+[ 60%] Built target q4t_model
+[ 64%] Built target q4t_startup_plan
+[ 64%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_capabilities.cpp.o
+[ 64%] Building CXX object CMakeFiles/q4t_server.dir/src/server/schema_grammar.cpp.o
+[ 64%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_plan.cpp.o
+[ 67%] Building CXX object CMakeFiles/q4t_server.dir/src/server/custom_grammar.cpp.o
+[ 67%] Linking CXX static library libq4t_server.a
+[100%] Built target q4t_server
+[100%] Linking CXX executable q4t
+[100%] Built target q4t

@@ -1,0 +1,3 @@
+  CHECK failed: param == expected (line 137)
+[FAIL] chat_message_profile_rejects_invalid_shapes
+1 tests, 0 passed, 1 failed, 0 skipped

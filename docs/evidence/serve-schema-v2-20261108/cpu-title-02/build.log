@@ -1,0 +1,7 @@
+[  3%] Built target q4t_regex_build
+[  7%] Built target q4t_io
+[  7%] Built target q4t_text
+[ 30%] Built target xgrammar
+[ 30%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/text_tokenizer_test.cpp.o
+[ 30%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests

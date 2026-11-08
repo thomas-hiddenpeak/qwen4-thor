@@ -1,0 +1,12 @@
+[PASS] chat_response_json_arguments_stream_exact_object_without_wrapper
+[PASS] chat_response_json_arguments_rejects_bad_payload_and_framing
+[PASS] chat_response_tools_typed_and_multiple
+[PASS] chat_response_tool_fragments_wait_for_validated_terminal
+[PASS] chat_response_exact_integer_spellings
+[PASS] chat_response_truncation_and_length
+  CHECK failed: !parser.HasToolCalls() && deltas.size() == 2 (line 479)
+[FAIL] chat_response_string_arguments_stream_before_parameter_close
+[PASS] chat_response_partial_error_has_no_successful_terminal
+[PASS] custom_tools_response_every_split_and_incremental_payload
+[PASS] custom_tools_native_mixed_incremental_types_follow_definitions
+10 tests, 9 passed, 1 failed, 0 skipped

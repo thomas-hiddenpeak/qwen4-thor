@@ -1,0 +1,13 @@
+{
+  "scope": "failed hostname native-IDNA repair and direct email/dependency propagation impact only; reuse unchanged formats",
+  "tests": [
+    "schema_string_format_hostname_corpus",
+    "schema_string_format_email_corpus",
+    "schema_string_idna_missing_and_resource_are_not_invalid_data",
+    "schema_string_format_nullable_graph_and_local_checks",
+    "schema_string_pattern_and_format_both_apply",
+    "schema_grammar_dependency_error_is_not_unsatisfiable_schema"
+  ],
+  "binary_sha256": "a40dd1c7eee0ded517dfb3ab4ad27cd3b8e9e45c53d53d4af4d3061be2b1c4ac",
+  "timeout_seconds": 90
+}

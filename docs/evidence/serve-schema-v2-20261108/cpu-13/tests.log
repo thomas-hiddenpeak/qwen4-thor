@@ -1,0 +1,4 @@
+token 4 id=42638: grammar operation time limit exceeded
+  CHECK failed: status && selected == static_cast<int32_t>(expected) (line 121)
+[FAIL] tokenizer_schema_worker_real_vocabulary_completion_boundaries
+1 tests, 0 passed, 1 failed, 0 skipped

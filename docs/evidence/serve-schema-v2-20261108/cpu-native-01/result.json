@@ -1,0 +1,29 @@
+{
+  "results": [
+    {
+      "index": 0,
+      "exit": 0,
+      "seconds": 2.7678751600906253
+    },
+    {
+      "index": 1,
+      "exit": 0,
+      "seconds": 0.5643781088292599
+    },
+    {
+      "index": 2,
+      "exit": 0,
+      "seconds": 3.168618180323392
+    },
+    {
+      "index": 3,
+      "exit": 1,
+      "seconds": 0.2140693380497396
+    }
+  ],
+  "binaries": {
+    "q4t": "37f776a0a275bc30deaba34197566292eea28f03babff8568a5a77c2afc01c5b",
+    "q4t-guardian": "b18a9a9e5d5468cf8be11e2186f013db09757038c517b492eaf55e9b35cbdfcc",
+    "q4t-ingress": "b4e2ec2c6a1f0342b1dbed94cb85a9c6768eaaa905c34248857ec2453ec656fb"
+  }
+}

@@ -1,0 +1,11 @@
+numeric case: positive tenths
+numeric case: signed quarters
+numeric case: exact large integer
+[PASS] schema_language_intersection_search_length_and_assertions
+[PASS] schema_language_matcher_unicode_fullmatch_and_work_bound
+[PASS] schema_language_number_exact_range_and_multiple
+[PASS] schema_language_number_fractional_bounds_are_not_rounded
+[PASS] schema_language_number_scaled_modulo_integer_oracle
+[PASS] schema_language_number_integer_bounds_and_empty_range
+[PASS] schema_language_invalid_and_capacity_errors_are_distinct
+7 tests, 7 passed, 0 failed, 0 skipped

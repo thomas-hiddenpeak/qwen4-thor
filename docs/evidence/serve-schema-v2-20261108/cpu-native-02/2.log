@@ -1,0 +1,7 @@
+test_foreground_control_stop_and_lease_release (tools.serve_recovery.test_runtime.RuntimeTests.test_foreground_control_stop_and_lease_release) ... ok
+test_malformed_local_request_does_not_change_lifecycle (tools.serve_recovery.test_runtime.RuntimeTests.test_malformed_local_request_does_not_change_lifecycle) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.668s
+
+OK

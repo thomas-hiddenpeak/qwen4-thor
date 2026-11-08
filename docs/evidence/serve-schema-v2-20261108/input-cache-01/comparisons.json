@@ -1,0 +1,321 @@
+[
+  {
+    "id": "session_id-valid",
+    "field": "session_id",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "session_id-null",
+    "field": "session_id",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'session_id': None} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "session_id must be a 64-hex capability",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "session_id"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "session_id-wrong-shape",
+    "field": "session_id",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'session_id': {'unexpected': True}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "session_id must be a 64-hex capability",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "session_id"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "session_id-omitted",
+    "field": "session_id",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "prefix_cache_scope-valid",
+    "field": "prefix_cache_scope",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "prefix_cache_scope-null",
+    "field": "prefix_cache_scope",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'prefix_cache_scope': None} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "prefix_cache_scope must be a 64-hex capability",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "prefix_cache_scope"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "prefix_cache_scope-wrong-shape",
+    "field": "prefix_cache_scope",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'prefix_cache_scope': {'unexpected': True}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "prefix_cache_scope must be a 64-hex capability",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "prefix_cache_scope"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "prefix_cache_scope-omitted",
+    "field": "prefix_cache_scope",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "prefix_cache_write_tokens-valid",
+    "field": "prefix_cache_write_tokens",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "prefix_cache_write_tokens-null",
+    "field": "prefix_cache_write_tokens",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'prefix_cache_scope': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'prefix_cache_write_tokens': None} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "prefix_cache_write_tokens must be 0 or an integer in [1024,131072]",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "prefix_cache_write_tokens"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "prefix_cache_write_tokens-wrong-shape",
+    "field": "prefix_cache_write_tokens",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'prefix_cache_scope': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'prefix_cache_write_tokens': {'unexpected': True}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "prefix_cache_write_tokens must be 0 or an integer in [1024,131072]",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "prefix_cache_write_tokens"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "prefix_cache_write_tokens-omitted",
+    "field": "prefix_cache_write_tokens",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "stop-cache",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'stop': 'end', 'session_id': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "stop is not supported with state caches",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "stop"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "stop-inactive-cache-seed",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "session_id-disabled",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "session cache is not enabled",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "session_id"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "prefix_cache_scope-disabled",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "prefix cache is not enabled",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "prefix_cache_scope"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "schema-v2-cache-session_id",
+    "field": "response_format",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "schema-v2-cache-disabled-session_id",
+    "field": "response_format",
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "session cache is not enabled",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "session_id"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "schema-v2-cache-prefix_cache_scope",
+    "field": "response_format",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "schema-v2-cache-disabled-prefix_cache_scope",
+    "field": "response_format",
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "prefix cache is not enabled",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "prefix_cache_scope"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "schema-v2-json-legacy-tool",
+    "field": "response_format",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  }
+]

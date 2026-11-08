@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_schema_v2.test_acceptance"
+  ],
+  "scope": "Frozen actual HTTP request preparation and failure-sensitive value/cache evidence checks; CPU",
+  "probe_sha256": "1d04c1ea1ebccdeca840ef7fbc82ce7aa8f686fa026a2a4d022c3a3845d4b7a1",
+  "sources": {
+    "tools/serve_schema_v2/test_acceptance.py": "0cf045f1237011504c898243735286f165a0efbe72d72382ce49e74d5cc6337a",
+    "tools/serve_schema_v2/acceptance.py": "d864b0a24c2c9acffb41d5988ad21859f569847033c1a3741d15ae1ce46a8a98"
+  }
+}

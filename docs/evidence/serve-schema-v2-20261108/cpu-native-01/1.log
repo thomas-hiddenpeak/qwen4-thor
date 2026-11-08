@@ -1,0 +1,8 @@
+[PASS] guardian_wire_preserves_64_bit_ledger_integer_without_rounding
+[PASS] guardian_wire_rejects_duplicates_and_nonintegral_revisions
+[PASS] guardian_journal_real_worker_handshake_transaction_and_cleanup
+[PASS] guardian_journal_allows_one_pending_transaction_and_receipt
+[PASS] guardian_journal_timeout_freezes_without_blocking_or_spawning_worker
+[PASS] guardian_stop_rejects_late_real_durable_authorization
+[PASS] guardian_dead_journal_discards_unconsumed_launch_permission
+7 tests, 7 passed, 0 failed, 0 skipped

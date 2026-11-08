@@ -1,0 +1,7 @@
+test_active_tools_root_ref_and_no_user_are_valid_inputs (test_schema_client.SchemaClient.test_active_tools_root_ref_and_no_user_are_valid_inputs) ... ok
+test_invalid_combinations_and_history_fail_before_network (test_schema_client.SchemaClient.test_invalid_combinations_and_history_fail_before_network) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.001s
+
+OK

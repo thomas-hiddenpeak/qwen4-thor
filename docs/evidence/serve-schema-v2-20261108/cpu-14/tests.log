@@ -1,0 +1,19 @@
+token 4 id=42638: grammar operation time limit exceeded
+[PASS] custom_grammar_native_mixed_accepts_both_orders
+[PASS] custom_grammar_text_preserves_control_unicode_and_delimiters
+[PASS] custom_grammar_regex_rust_unicode_flags_groups_and_encoding
+[PASS] custom_grammar_regex_anchors_and_unicode_word_boundaries
+[PASS] custom_grammar_lark_regex_imports_recursion_and_lexeme_boundaries
+[PASS] custom_grammar_lark_literal_cannot_alias_internal_placeholder
+[PASS] custom_grammar_worker_enforces_actual_encoded_token_mask
+[PASS] custom_grammar_invalid_and_resource_errors_do_not_weaken
+[PASS] schema_string_syntax_date_and_datetime_external_corpus
+[PASS] schema_string_syntax_time_and_duration_external_corpus
+[PASS] schema_string_syntax_ip_external_corpus
+[PASS] schema_string_syntax_hostname_email_uuid_external_corpus
+[PASS] schema_string_syntax_intersects_formats_patterns_and_lengths
+[PASS] schema_worker_masks_native_semantics_and_returns_value_receipt
+[PASS] schema_worker_idna_and_exact_number_constraints_use_same_path
+  CHECK failed: status && selected == static_cast<int32_t>(expected) (line 185)
+[FAIL] tokenizer_schema_worker_real_vocabulary_completion_boundaries
+16 tests, 15 passed, 1 failed, 0 skipped

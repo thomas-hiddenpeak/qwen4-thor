@@ -1,0 +1,6 @@
+{
+  "tests": [
+    "schema_graph_local_pointer_escaping_and_exact_enum"
+  ],
+  "reason": "Fixture must use existing escaped error path for $ref; root cycle error path made consistent. Reuse eight passing helper checks, no HTTP/GPU."
+}

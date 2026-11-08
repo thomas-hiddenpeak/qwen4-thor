@@ -1,0 +1,15 @@
+{
+  "id": "schema-v2-media-motion",
+  "model": "qwen3.8-flash-next",
+  "message": {
+    "role": "assistant",
+    "content": "{\n    \"direction\": \"right_to_left\"\n}"
+  },
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 443,
+    "completion_tokens": 14,
+    "total_tokens": 457
+  },
+  "logprobs": null
+}

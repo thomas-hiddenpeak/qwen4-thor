@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "sdk_version": "7.47.0",
+  "result": {
+    "id": "schema-v2-final",
+    "model": "qwen3.8-flash-next",
+    "message": {
+      "role": "assistant",
+      "content": "{\n  \"title\": \"# MODEL.md \u2014 Qwen3.8-Flash-Next (qwen4_exp) \u67b6\u6784\u7b14\u8bb0\",\n  \"citation\": \"[docs/MODEL.md:L1-L16]\",\n  \"requested_line_count\": 16,\n  \"note\": null\n}"
+    },
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 982,
+      "completion_tokens": 66,
+      "total_tokens": 1048
+    },
+    "headers": {
+      "connection": "close",
+      "content-length": "459",
+      "content-type": "application/json",
+      "x-request-id": "req-747313c4ef9045f0382108153cd61ca4"
+    }
+  },
+  "wire_base64": "eyJpZCI6InNjaGVtYS12Mi1maW5hbCIsIm9iamVjdCI6ImNoYXQuY29tcGxldGlvbiIsImNyZWF0ZWQiOjE3OTQxNDAzMDAsIm1vZGVsIjoicXdlbjMuOC1mbGFzaC1uZXh0IiwiY2hvaWNlcyI6W3siaW5kZXgiOjAsIm1lc3NhZ2UiOnsicm9sZSI6ImFzc2lzdGFudCIsImNvbnRlbnQiOiJ7XG4gIFwidGl0bGVcIjogXCIjIE1PREVMLm1kIOKAlCBRd2VuMy44LUZsYXNoLU5leHQgKHF3ZW40X2V4cCkg5p625p6E56yU6K6wXCIsXG4gIFwiY2l0YXRpb25cIjogXCJbZG9jcy9NT0RFTC5tZDpMMS1MMTZdXCIsXG4gIFwicmVxdWVzdGVkX2xpbmVfY291bnRcIjogMTYsXG4gIFwibm90ZVwiOiBudWxsXG59In0sImZpbmlzaF9yZWFzb24iOiJzdG9wIiwibG9ncHJvYnMiOm51bGx9XSwidXNhZ2UiOnsicHJvbXB0X3Rva2VucyI6OTgyLCJjb21wbGV0aW9uX3Rva2VucyI6NjYsInRvdGFsX3Rva2VucyI6MTA0OH19"
+}

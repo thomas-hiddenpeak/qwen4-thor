@@ -1,0 +1,15 @@
+{
+  "groups": [
+    {
+      "label": "test",
+      "exit": 1,
+      "seconds": 13.9941939371638
+    },
+    {
+      "label": "diagnostic",
+      "exit": 124,
+      "seconds": 20.007776640355587
+    }
+  ],
+  "sha256": "98cd1be649d256a2cb256fcbb035e7f68c06dd09386fa66af78ec4a945a05f3d"
+}

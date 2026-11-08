@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "groups": [
+    {
+      "id": "python",
+      "exit": 0,
+      "seconds": 0.21468843007460237
+    },
+    {
+      "id": "js-schema",
+      "exit": 0,
+      "seconds": 0.16442078491672873
+    },
+    {
+      "id": "js-wire",
+      "exit": 0,
+      "seconds": 1.3692197450436652
+    }
+  ]
+}

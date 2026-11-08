@@ -1,0 +1,14 @@
+{
+  "scope": "bounded schema intersection and exact numeric language helpers only; not HTTP wired",
+  "tests": [
+    "schema_language_intersection_search_length_and_assertions",
+    "schema_language_matcher_unicode_fullmatch_and_work_bound",
+    "schema_language_number_exact_range_and_multiple",
+    "schema_language_number_fractional_bounds_are_not_rounded",
+    "schema_language_number_scaled_modulo_integer_oracle",
+    "schema_language_number_integer_bounds_and_empty_range",
+    "schema_language_invalid_and_capacity_errors_are_distinct"
+  ],
+  "binary_sha256": "3c2bd84d35d06015be50ba980ef120a3b31b8d6d35484bc91d100fcc68105a04",
+  "timeout_seconds": 180
+}

@@ -1,0 +1,46 @@
+date: 75 external string cases, 0 failures
+date-time: 41 external string cases, 0 failures
+time: 50 external string cases, 0 failures
+duration: 45 external string cases, 0 failures
+email: 65 external string cases, 0 failures
+hostname corpus mismatch: trailing dot
+hostname corpus mismatch: invalid Punycode
+hostname corpus mismatch: contains illegal char U+302E Hangul single dot tone mark
+hostname corpus mismatch: Begins with a Spacing Combining Mark
+hostname corpus mismatch: Begins with a Nonspacing Mark
+hostname corpus mismatch: Begins with an Enclosing Mark
+hostname corpus mismatch: Exceptions that are DISALLOWED, right-to-left chars
+hostname corpus mismatch: Exceptions that are DISALLOWED, left-to-right chars
+hostname corpus mismatch: MIDDLE DOT with no preceding 'l'
+hostname corpus mismatch: MIDDLE DOT with nothing preceding
+hostname corpus mismatch: MIDDLE DOT with no following 'l'
+hostname corpus mismatch: MIDDLE DOT with nothing following
+hostname corpus mismatch: Greek KERAIA not followed by Greek
+hostname corpus mismatch: Greek KERAIA not followed by anything
+hostname corpus mismatch: Hebrew GERESH not preceded by Hebrew
+hostname corpus mismatch: Hebrew GERESH not preceded by anything
+hostname corpus mismatch: Hebrew GERSHAYIM not preceded by Hebrew
+hostname corpus mismatch: Hebrew GERSHAYIM not preceded by anything
+hostname corpus mismatch: KATAKANA MIDDLE DOT with no Hiragana, Katakana, or Han
+hostname corpus mismatch: KATAKANA MIDDLE DOT with no other characters
+hostname corpus mismatch: Arabic-Indic digits mixed with Extended Arabic-Indic digits
+hostname corpus mismatch: ZERO WIDTH JOINER not preceded by Virama
+hostname corpus mismatch: ZERO WIDTH JOINER not preceded by anything
+hostname corpus mismatch: contains "--" in the 3rd and 4th position
+hostname: 60 external string cases, 24 failures
+ipv4: 35 external string cases, 0 failures
+ipv6: 45 external string cases, 0 failures
+uuid: 23 external string cases, 0 failures
+[PASS] schema_string_format_date_corpus
+[PASS] schema_string_format_datetime_corpus
+[PASS] schema_string_format_time_corpus
+[PASS] schema_string_format_duration_corpus
+[PASS] schema_string_format_email_corpus
+  CHECK failed: count > 0 && failures == 0 (line 49)
+[FAIL] schema_string_format_hostname_corpus
+[PASS] schema_string_format_ipv4_corpus
+[PASS] schema_string_format_ipv6_corpus
+[PASS] schema_string_format_uuid_corpus
+[PASS] schema_string_format_nullable_graph_and_local_checks
+[PASS] schema_string_pattern_and_format_both_apply
+11 tests, 10 passed, 1 failed, 0 skipped

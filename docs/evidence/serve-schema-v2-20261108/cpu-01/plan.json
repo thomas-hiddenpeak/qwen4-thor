@@ -1,0 +1,21 @@
+{
+  "tests": [
+    "schema_decimal_exact_equality_order_and_integer",
+    "schema_decimal_multiples_have_no_float_tolerance",
+    "schema_decimal_invalid_and_capacity_are_distinct",
+    "schema_graph_recursive_ref_anyof_and_required",
+    "schema_graph_local_pointer_escaping_and_exact_enum",
+    "schema_graph_numeric_intersections_are_exact",
+    "schema_graph_const_equality_and_annotations_do_not_fill_values",
+    "schema_graph_lengths_count_unicode_and_require_string_checker",
+    "schema_graph_official_size_limits_and_reference_depth"
+  ],
+  "sources": {
+    "include/q4t/server/schema_decimal.h": "f6efd4f652918da2964a65813b6f8d9a972942ec5b02a5fb90b1ad8ad8bd8da0",
+    "include/q4t/server/schema_graph.h": "e600c22cc670c702f63bef768191382807b1defe423d97c6e2334576a812e80c",
+    "src/server/schema_decimal.cpp": "3931972b1ecfd38b0574c6794f447f6b05d1ef78d65e0f73a61eabcb1c2dee2f",
+    "src/server/schema_graph.cpp": "a697186c56b9f793b89134a72d91c16b957d1b5e605bec074edf2467b81c6d7c",
+    "tests/server_schema_graph_test.cpp": "10079596b262b35cddf463768bedad77eee135b8ce73f0bf5588a302227d6f2a"
+  },
+  "scope": "Development-only schema graph/decimal helpers; not wired to HTTP/generation, no GPU/performance/full model testing, default custom release unchanged"
+}

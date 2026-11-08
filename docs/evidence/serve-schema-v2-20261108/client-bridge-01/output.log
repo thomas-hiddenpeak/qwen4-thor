@@ -1,0 +1,10 @@
+test_exact_schema_crosses_python_node_and_sdk_without_rounding (test_bridge.Bridge.test_exact_schema_crosses_python_node_and_sdk_without_rounding) ... ok
+test_real_read_journal_roundtrip_json (test_bridge.Bridge.test_real_read_journal_roundtrip_json) ... ok
+test_real_read_journal_roundtrip_sse_and_two_results (test_bridge.Bridge.test_real_read_journal_roundtrip_sse_and_two_results) ... ok
+test_http_error_preserves_status_code_and_raw_with_zero_retries (test_bridge.Bridge.test_http_error_preserves_status_code_and_raw_with_zero_retries) ... ok
+test_missing_done_does_not_commit_or_dispatch (test_bridge.Bridge.test_missing_done_does_not_commit_or_dispatch) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 1.645s
+
+OK

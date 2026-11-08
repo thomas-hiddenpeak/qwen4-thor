@@ -1,0 +1,53 @@
+{
+  "scope": "Exact schema/data encoding and actual pinned JS SDK serialization; affected JSON/SSE/terminal contracts; CPU no model or GPU",
+  "groups": [
+    {
+      "id": "python",
+      "argv": [
+        "/usr/bin/python3",
+        "-m",
+        "unittest",
+        "-v",
+        "test_schema_client.SchemaClient",
+        "test_chat_client.ClientContracts.test_exact_tool_data_remains_bound_to_completed_response",
+        "test_chat_client.ClientContracts.test_tool_and_usage_validation",
+        "test_chat_client.ClientContracts.test_stream_and_json_preserve_message_and_usage",
+        "test_chat_client.ClientContracts.test_fragmented_interleaved_tools_and_unicode",
+        "test_chat_client.ClientContracts.test_terminal_failures_never_return_a_completion",
+        "test_chat_client.ClientContracts.test_error_after_complete_call_is_failure",
+        "test_chat_client.ClientContracts.test_unknown_tools_and_arguments_rejected_before_dispatch"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor/tools/examples"
+    },
+    {
+      "id": "js-schema",
+      "argv": [
+        "node",
+        "--test",
+        "tools/examples/js/test_schema_client.mjs"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor"
+    },
+    {
+      "id": "js-wire",
+      "argv": [
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "schema-v2|strict JSON|split tool deltas|JSON and SSE SDK|tool stream|custom raw input",
+        "tools/examples/js/test_chat_client.mjs"
+      ],
+      "cwd": "/home/rm01/models/dev/qwen4-thor"
+    }
+  ],
+  "sources": {
+    "tools/examples/chat_client.py": "0a302edaa7dadf0aad4d616ff2fee2781e410dd590fbcf479424369d230a7cd8",
+    "tools/examples/js/chat_client.mjs": "857ecab85e3d99b1b4f89804a55520862bb252474d7cd1ca7bce825474a62a2f",
+    "tools/examples/test_schema_client.py": "b67c9b4ab4809b40f8628e6881fcba965ee28dc72f2f939f04d7c7400838c70d",
+    "tools/examples/test_chat_client.py": "1eeddf5692c857856da8a0b5e337341273ce1ec08be473f3181d465684fd4786",
+    "tools/examples/js/test_schema_client.mjs": "e3a7cbc74b89e1fa1c46aa863af7a599a6ecfa348834dc9b380f7eccdeb97f45",
+    "tools/examples/js/test_chat_client.mjs": "ea110189dda2161342e6b56aed18de2f71231a1d519e39217f5e8902ef2daebb",
+    "tools/examples/vision_query.py": "8b2101c455943dba7beef5af830abca79de41beaf1960ac871d748349fb75e70"
+  },
+  "timeout_seconds_each": 90
+}

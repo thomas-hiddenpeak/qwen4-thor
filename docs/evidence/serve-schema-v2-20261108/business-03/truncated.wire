@@ -1,0 +1,24 @@
+data: {"id":"schema-v2-truncated","object":"chat.completion.chunk","created":1794140310,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}],"usage":null}
+
+: keep-alive
+
+data: {"id":"schema-v2-truncated","object":"chat.completion.chunk","created":1794140310,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"{\""},"finish_reason":null,"logprobs":{"content":[{"token":"{\"","logprob":-0.16065558368464442,"bytes":[123,34],"top_logprobs":[{"token":"{\"","logprob":-0.16065558368464442,"bytes":[123,34]},{"token":"{","logprob":-2.0356555836846444,"bytes":[123]}]}],"refusal":null}}],"usage":null}
+
+data: {"id":"schema-v2-truncated","object":"chat.completion.chunk","created":1794140310,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"answer"},"finish_reason":null,"logprobs":{"content":[{"token":"answer","logprob":-0.006277963080671801,"bytes":[97,110,115,119,101,114],"top_logprobs":[{"token":"answer","logprob":-0.006277963080671801,"bytes":[97,110,115,119,101,114]},{"token":"exact","logprob":-5.881277963080672,"bytes":[101,120,97,99,116]}]}],"refusal":null}}],"usage":null}
+
+data: {"id":"schema-v2-truncated","object":"chat.completion.chunk","created":1794140310,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"\":"},"finish_reason":null,"logprobs":{"content":[{"token":"\":","logprob":-0.0049565695387772859,"bytes":[34,58],"top_logprobs":[{"token":"\":","logprob":-0.0049565695387772859,"bytes":[34,58]},{"token":"\":\"","logprob":-5.379956569538777,"bytes":[34,58,34]}]}],"refusal":null}}],"usage":null}
+
+data: {"id":"schema-v2-truncated","object":"chat.completion.chunk","created":1794140310,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":" "},"finish_reason":null,"logprobs":{"content":[{"token":" ","logprob":-0.52648219367881099,"bytes":[32],"top_logprobs":[{"token":" ","logprob":-0.52648219367881099,"bytes":[32]},{"token":"4","logprob":-0.90148219367881099,"bytes":[52]}]}],"refusal":null}}],"usage":null}
+
+data: {"id":"schema-v2-truncated","object":"chat.completion.chunk","created":1794140310,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"4"},"finish_reason":null,"logprobs":{"content":[{"token":"4","logprob":-0.0023963361875890144,"bytes":[52],"top_logprobs":[{"token":"4","logprob":-0.0023963361875890144,"bytes":[52]},{"token":"1","logprob":-6.7523963361875889,"bytes":[49]}]}],"refusal":null}}],"usage":null}
+
+data: {"id":"schema-v2-truncated","object":"chat.completion.chunk","created":1794140310,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"2"},"finish_reason":null,"logprobs":{"content":[{"token":"2","logprob":-0.00037349728864334418,"bytes":[50],"top_logprobs":[{"token":"2","logprob":-0.00037349728864334418,"bytes":[50]},{"token":"1","logprob":-9.1253734972886438,"bytes":[49]}]}],"refusal":null}}],"usage":null}
+
+data: {"id":"schema-v2-truncated","object":"chat.completion.chunk","created":1794140310,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":","},"finish_reason":null,"logprobs":{"content":[{"token":",","logprob":-0.0032090966660249763,"bytes":[44],"top_logprobs":[{"token":",","logprob":-0.0032090966660249763,"bytes":[44]},{"token":",\"","logprob":-6.2532090966660245,"bytes":[44,34]}]}],"refusal":null}}],"usage":null}
+
+data: {"id":"schema-v2-truncated","object":"chat.completion.chunk","created":1794140310,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":" \""},"finish_reason":null,"logprobs":{"content":[{"token":" \"","logprob":-0.00017767759934599755,"bytes":[32,34],"top_logprobs":[{"token":" \"","logprob":-0.00017767759934599755,"bytes":[32,34]},{"token":" exact","logprob":-9.2501776775993463,"bytes":[32,101,120,97,99,116]}]}],"refusal":null}}],"usage":null}
+
+data: {"error":{"message":"constrained response did not reach a grammar-accepted stop token","type":"server_error","code":"structured_output_incomplete","param":null}}
+
+data: [DONE]
+

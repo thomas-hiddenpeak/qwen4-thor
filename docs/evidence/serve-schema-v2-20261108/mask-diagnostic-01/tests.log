@@ -1,0 +1,25 @@
+mask diagnostic step=0 id=4754 lexical start
+mask diagnostic lexical seconds=0.000060 semantic start
+mask diagnostic semantic seconds=0.000200 ok=1
+mask diagnostic step=1 id=9286 lexical start
+mask diagnostic lexical seconds=0.000003 semantic start
+mask diagnostic semantic seconds=0.000204 ok=1
+mask diagnostic step=2 id=3147 lexical start
+mask diagnostic lexical seconds=0.654396 semantic start
+mask diagnostic semantic seconds=0.001235 ok=1
+mask diagnostic step=3 id=42638 lexical start
+mask diagnostic lexical seconds=1.842123 semantic start
+mask diagnostic semantic seconds=0.001213 ok=1
+mask diagnostic step=4 id=42638 lexical start
+mask diagnostic lexical seconds=2.591855 semantic start
+mask diagnostic semantic seconds=0.001224 ok=1
+mask diagnostic step=5 id=42638 lexical start
+mask diagnostic lexical seconds=3.345742 semantic start
+mask diagnostic semantic seconds=0.001233 ok=1
+mask diagnostic step=6 id=42638 lexical start
+mask diagnostic lexical seconds=4.130771 semantic start
+mask diagnostic semantic seconds=0.001267 ok=1
+mask diagnostic step=7 id=42638 lexical start
+mask diagnostic lexical seconds=4.912390 semantic start
+mask diagnostic semantic seconds=0.001269 ok=1
+mask diagnostic step=8 id=42638 lexical start

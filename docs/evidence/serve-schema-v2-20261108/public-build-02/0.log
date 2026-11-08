@@ -1,0 +1,5 @@
+-- Found Python3: /home/rm01/.local/bin/python3.13 (found version "3.13.14") found components: Interpreter
+-- GPU guard Python: /usr/bin/python3
+-- Configuring done (0.2s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-schema-v2-20261108/public-host

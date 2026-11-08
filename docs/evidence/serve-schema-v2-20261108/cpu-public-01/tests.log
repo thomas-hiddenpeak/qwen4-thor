@@ -1,0 +1,5 @@
+hostname: 60 external string cases, 0 failures
+[PASS] schema_string_format_hostname_corpus
+[PASS] schema_string_idna_missing_and_resource_are_not_invalid_data
+[PASS] schema_string_format_nullable_graph_and_local_checks
+3 tests, 3 passed, 0 failed, 0 skipped

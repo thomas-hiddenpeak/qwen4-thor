@@ -1,0 +1,14 @@
+{
+  "reason": "coalesce Unicode destination edges and omit context distinctions in assertion-free automata; validate affected helper language semantics",
+  "tests": [
+    "schema_language_intersection_search_length_and_assertions",
+    "schema_language_matcher_unicode_fullmatch_and_work_bound",
+    "schema_language_number_exact_range_and_multiple",
+    "schema_language_number_fractional_bounds_are_not_rounded",
+    "schema_language_number_scaled_modulo_integer_oracle",
+    "schema_language_number_integer_bounds_and_empty_range",
+    "schema_language_invalid_and_capacity_errors_are_distinct"
+  ],
+  "binary_sha256": "3c0750c6191dad6517d5034f6ad3dbc87828526c0d882df2fb22c8625e8fe10e",
+  "timeout_seconds": 180
+}

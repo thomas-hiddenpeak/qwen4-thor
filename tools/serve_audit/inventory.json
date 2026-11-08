@@ -1533,7 +1533,7 @@
     "model_adapter": "Native function/input tags and encoded string, declared name determines standard wire custom type. Two failed business attempts retained; original mixed task passed after adapter repair."
   },
   "schema_v2_development_20261108": {
-    "state": "text_passed_media_schema_prompt_repair_pending",
+    "state": "schema_tools_media_text_cache_delivered_media_state_cache_pending",
     "record": "docs/SERVE_SCHEMA_V2_2026-11-08.md",
     "source": [
       "src/server/schema_decimal.cpp",
@@ -1572,12 +1572,12 @@
       "tools/serve_schema_v2/media_repair.py",
       "tools/serve_schema_v2/prompt_cache.py"
     ],
-    "acceptance": "82 distinct A05 C++ CPU checks. Original final and remaining three text requests pass on aedaac59; total including two retained failures 3 starts/10 Chat/234.851s, 223 NVML samples OK and resources released. Media production CPU preflight four inputs passes; bounded media GPU and delivery remain, default unchanged.",
+    "acceptance": "86 distinct A05 C++ plus 7 journal and 6 native integration CPU checks pass. Seven model starts/19 Chat including four retained business failures; 462.437 driver seconds/468.496 lease seconds, 443 NVML samples OK. Final media and affected text caches pass; 635 source files and 615 originals verified; default 46d7bf70/fe70b669 with service 51d90f4c/b1734181 delivered STOPPED, rollback retained.",
     "optional_native_dependency": {
       "name": "system libidn2 >= 2.3",
       "observed": "2.3.7-2build1.1 on this Thor",
-      "scope": "development bounded worker: hostname/email compile preflight and Punycode final-value checks only",
-      "release_state": "Development HTTP planner/worker/parser integrated and CPU-validated; not shipped in default",
+      "scope": "bounded worker hostname/email compile preflight and Punycode final-value checks only",
+      "release_state": "Targeted actual business accepted and installed in local default; not yet merged to main. System library optional and not redistributed.",
       "failure_contract": "dependency-unavailable/resource/invalid label distinct; no model health/restart signal"
     },
     "media_pattern_repair": {
@@ -1585,14 +1585,20 @@
       "cpu": "cpu-media-pattern-02",
       "passed_affected": 26,
       "distinct_a05_cpp": 84,
-      "next": "original video plus two unexecuted image/tool turns; 1 start/3 Chat/600 seconds"
+      "next": "original video passed after subsequent model-visible schema fix; failure retained"
     },
     "schema_prompt_repair": {
       "failed": "media-business-02",
       "issue": "schema absent from model prompt; wrong motion label despite valid JSON",
       "implementation": "generic exact and delimiter-safe response schema in existing system instruction, counted in preflight and cache identity",
       "planned_media": "1 start/3 Chat/600 seconds, cumulative 3/6/800",
-      "planned_text_cache": "1 start/3 Chat/600 seconds"
-    }
+      "planned_text_cache": "1 start/3 Chat/600 seconds",
+      "accepted_media": "media-business-03: 1 start/3 Chat/53.538s PASS",
+      "accepted_text_cache": "prompt-cache-02: 1 start/3 Chat/67.109s PASS"
+    },
+    "evidence": "docs/evidence/serve-schema-v2-20261108/index.json",
+    "remaining_required": [
+      "A05/A10 media state caching and corresponding schema/tool/identity combinations"
+    ]
   }
 }

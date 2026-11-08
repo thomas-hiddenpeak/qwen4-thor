@@ -1,0 +1,49 @@
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"tool arguments require an object or JSON object text","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":false,"response":{"error":{"message":"invalid historical arguments JSON","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"tool arguments require an object or JSON object text","type":"invalid_request_error","code":"invalid_request","param":"messages"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"keyword outside the supported schema dialect","type":"invalid_request_error","code":"invalid_request","param":"tools[0].function.parameters.unsupported"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"numeric keyword on non-numeric type","type":"invalid_request_error","code":"invalid_request","param":"response_format.json_schema.schema.maximum"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"additionalProperties must be false","type":"invalid_request_error","code":"invalid_request","param":"response_format.json_schema.schema.additionalProperties"}}}
+{"accepted":false,"response":{"error":{"message":"strict objects require every property","type":"invalid_request_error","code":"invalid_request","param":"response_format.json_schema.schema.required"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"reference must resolve to a local schema","type":"invalid_request_error","code":"invalid_request","param":"response_format.json_schema.schema.properties.v[\"$ref\"]"}}}
+{"accepted":false,"response":{"error":{"message":"schema requires type, reference or union","type":"invalid_request_error","code":"invalid_request","param":"response_format.json_schema.schema.properties.v.type"}}}
+{"accepted":false,"response":{"error":{"message":"multipleOf must be positive","type":"invalid_request_error","code":"invalid_request","param":"response_format.json_schema.schema.properties.v.multipleOf"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"tools must contain at most 128 declarations","type":"invalid_request_error","code":"invalid_request","param":"tools"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}

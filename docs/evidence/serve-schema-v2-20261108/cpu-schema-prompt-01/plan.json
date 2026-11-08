@@ -1,0 +1,52 @@
+{
+  "build": [
+    "cmake",
+    "--build",
+    ".q4t-work/serve-custom-tools-20261108/engine-build",
+    "--parallel",
+    "4",
+    "--target",
+    "q4t_host_tests",
+    "q4t",
+    "q4t_preflight_probe",
+    "q4t_guardian",
+    "q4t_ingress"
+  ],
+  "argv": [
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t_host_tests",
+    "--required-list",
+    ".q4t-work/serve-schema-v2-20261108/cpu-schema-prompt-01/required.txt"
+  ],
+  "timeout_seconds": 90,
+  "tests": [
+    "chat_schema_prompt_preserves_contract_and_message_boundaries",
+    "chat_schema_prompt_preserves_tools_and_unconstrained_template",
+    "chat_message_profile_developer_system_equivalence",
+    "chat_message_profile_rejects_invalid_shapes",
+    "chat_message_profile_instruction_content_before_media",
+    "chat_message_profile_ordered_instructions_and_names",
+    "chat_message_profile_refusal_round_trip",
+    "chat_message_profile_name_byte_limit",
+    "chat_message_profile_preserves_history_rules",
+    "chat_reasoning_history_alias_contract",
+    "chat_reasoning_history_conflicts_rejected_before_render",
+    "chat_reasoning_controls_require_parsed_messages",
+    "chat_plan_schema_resource_errors_keep_status_and_parameter",
+    "chat_plan_uniform_output_and_null_defaults",
+    "chat_plan_explicit_slot_boundaries",
+    "chat_plan_output_spelling_and_capacity_cap",
+    "chat_plan_cache_configuration_and_seed_boundary",
+    "chat_plan_native_template_and_constraint_adapter",
+    "chat_plan_encoder_failure_and_raw_identity",
+    "chat_preflight_envelope_and_opt_in_preview",
+    "chat_config_effective_sources_and_redaction",
+    "chat_config_admission_snapshot_and_queue_policy",
+    "chat_config_operations_listener_reports_independent_capacity",
+    "chat_plan_structured_cache_checks_actual_configuration",
+    "media_constraints_preserve_input_and_force_output_contract",
+    "media_prompt_instruction_names_and_refusal_positions",
+    "output_constraints_template_filters_preserve_request",
+    "output_constraints_allowed_tools_filter_template_grammar_and_output"
+  ],
+  "scope": "Output schema model visibility, exact metadata and control-token isolation, media indices, shared preparation/token budgets; existing native binaries rebuild due JSON reader source changes"
+}

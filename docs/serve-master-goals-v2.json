@@ -145,7 +145,7 @@
     {
       "id": "A05",
       "required": true,
-      "state": "implementation_in_progress",
+      "state": "subset_delivered_integration_pending",
       "implementation": "官方支持的JSON Schema能力与组合；$defs/$ref、anyOf、数值约束/enum、pattern/format等；工具/媒体/缓存组合",
       "acceptance": "编译、逐token约束和最终校验一致；针对新增关键字/组合验证；资源拒绝与“不支持语法”分开，不能只删校验",
       "depends_on": [
@@ -153,15 +153,23 @@
         "A01"
       ],
       "evidence": [
-        "docs/SERVE_SCHEMA_V2_2026-11-08.md"
+        "docs/SERVE_SCHEMA_V2_2026-11-08.md",
+        "docs/evidence/serve-schema-v2-20261108/index.json"
       ],
-      "release": null,
-      "development_status": "82不同C++ CPU通过；文本实际组合闭合，含两次失败累计3启动/10Chat/234.851秒，223次NVML全OK、631来源核对及清理。媒体4项CPU preflight通过，待1启动/4Chat短验与可回退发布，默认未改。"
+      "release": {
+        "binary_sha256": "46d7bf70b59c811466d1e34e3d51acf5fa9eaee0d6dcae57e67f399afeba699e",
+        "manifest_sha256": "51d90f4cf27001d97c3fbaab9a54fd508be2bea71ba98ee6c36367f6f13ab699",
+        "record": "docs/evidence/serve-schema-v2-20261108/delivery-01/result.json"
+      },
+      "development_status": "丰富schema、工具/媒体与文本缓存实际交付；86不同A05 C++及新原生7+6通过。累计7启动/19Chat含四次失败全部保留；635来源和615原件核对、默认安装及回退完成。媒体状态缓存仍须A10联合补齐。",
+      "remaining_required": [
+        "A10媒体状态缓存及schema/工具组合：实际图像/视频身份、MRoPE与状态恢复、终态发布和客户端隔离"
+      ]
     },
     {
       "id": "A06",
       "required": true,
-      "state": "planned",
+      "state": "implementation_in_progress",
       "implementation": "Completions生成接口、Models详情/标识/别名与标准查询行为",
       "acceptance": "标准SDK调用真实生成；不只转发而丢失prompt/echo/选择/usage语义；模型读写权限按操作合同",
       "depends_on": [

@@ -1,0 +1,22 @@
+test_real_fixture_and_followup_use_production_media_preflight (tools.serve_schema_v2.test_media.MediaPreparation.test_real_fixture_and_followup_use_production_media_preflight) ... ERROR
+
+======================================================================
+ERROR: test_real_fixture_and_followup_use_production_media_preflight (tools.serve_schema_v2.test_media.MediaPreparation.test_real_fixture_and_followup_use_production_media_preflight)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/test_media.py", line 16, in test_real_fixture_and_followup_use_production_media_preflight
+    rows = media.requests()
+           ^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/media.py", line 37, in requests
+    archive = {row["label"]: row for row in read(FIXTURES / "requests.json")}
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 66, in read
+    require(Path(path).stat().st_size <= 2*1024**2, 'metadata size limit')
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 51, in require
+    raise RuntimeError(message)
+RuntimeError: metadata size limit
+
+----------------------------------------------------------------------
+Ran 1 test in 0.012s
+
+FAILED (errors=1)

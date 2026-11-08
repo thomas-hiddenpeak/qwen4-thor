@@ -1,0 +1,31 @@
+[
+  {
+    "argv": [
+      "cmake",
+      "-S",
+      "tests/host",
+      "-B",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-schema-v2-20261108/public-host",
+      "-DCMAKE_CXX_COMPILER=g++-14",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DQ4T_ENABLE_XGRAMMAR=OFF",
+      "-DQ4T_OPENSSL_INCLUDE_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-access-20261108/deps/extracted/usr/include",
+      "-DQ4T_OPENSSL_ARCH_INCLUDE_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-access-20261108/deps/extracted/usr/include/aarch64-linux-gnu"
+    ],
+    "exit_code": 0,
+    "seconds": 0.38621314987540245
+  },
+  {
+    "argv": [
+      "cmake",
+      "--build",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-schema-v2-20261108/public-host",
+      "--parallel",
+      "4",
+      "--target",
+      "q4t_host_tests"
+    ],
+    "exit_code": 0,
+    "seconds": 40.294568486046046
+  }
+]

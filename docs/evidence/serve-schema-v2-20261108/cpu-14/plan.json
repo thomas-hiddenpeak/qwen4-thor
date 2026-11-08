@@ -1,0 +1,23 @@
+{
+  "scope": "repair lexical JSON character-star stack growth and directly affected schema/custom encoding and worker bindings; no whole-model or performance test",
+  "tests": [
+    "tokenizer_schema_worker_real_vocabulary_completion_boundaries",
+    "schema_worker_masks_native_semantics_and_returns_value_receipt",
+    "schema_worker_idna_and_exact_number_constraints_use_same_path",
+    "schema_string_syntax_date_and_datetime_external_corpus",
+    "schema_string_syntax_time_and_duration_external_corpus",
+    "schema_string_syntax_ip_external_corpus",
+    "schema_string_syntax_hostname_email_uuid_external_corpus",
+    "schema_string_syntax_intersects_formats_patterns_and_lengths",
+    "custom_grammar_native_mixed_accepts_both_orders",
+    "custom_grammar_text_preserves_control_unicode_and_delimiters",
+    "custom_grammar_regex_rust_unicode_flags_groups_and_encoding",
+    "custom_grammar_regex_anchors_and_unicode_word_boundaries",
+    "custom_grammar_lark_regex_imports_recursion_and_lexeme_boundaries",
+    "custom_grammar_lark_literal_cannot_alias_internal_placeholder",
+    "custom_grammar_worker_enforces_actual_encoded_token_mask",
+    "custom_grammar_invalid_and_resource_errors_do_not_weaken"
+  ],
+  "binary_sha256": "dc205f7e2b3820a819212467c14eae88eaa5a3e8031e7bcc68d234b491d14759",
+  "timeout_seconds": 180
+}

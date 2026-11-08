@@ -1,0 +1,24 @@
+{
+  "build": [
+    "cmake",
+    "--build",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build",
+    "--parallel",
+    "4",
+    "--target",
+    "q4t_host_tests"
+  ],
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t_host_tests",
+    "--required-list",
+    ".q4t-work/serve-schema-v2-20261108/cpu-title-09/required.txt"
+  ],
+  "timeout_seconds": 90,
+  "tests": [
+    "tokenizer_schema_bounded_title_with_tools_real_vocabulary",
+    "tokenizer_schema_bounded_pattern_with_tools_real_vocabulary",
+    "schema_string_syntax_counted_length_unicode_and_escape_boundaries"
+  ],
+  "scope": "preserve JSON-encoded finite repetitions as public Regex FSM macro before recursive normalization; exact full document title and escape boundaries",
+  "correction": "FSM Regex uses \\u{...} for astral scalars, not EBNF \\U; failure retained"
+}

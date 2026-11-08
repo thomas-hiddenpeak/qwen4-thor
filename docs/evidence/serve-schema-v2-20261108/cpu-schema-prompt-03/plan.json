@@ -1,0 +1,20 @@
+{
+  "build": [
+    "cmake",
+    "--build",
+    ".q4t-work/serve-custom-tools-20261108/engine-build",
+    "--parallel",
+    "4",
+    "--target",
+    "q4t_host_tests",
+    "q4t",
+    "q4t_preflight_probe"
+  ],
+  "argv": [
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t_host_tests",
+    "--required-list",
+    ".q4t-work/serve-schema-v2-20261108/cpu-schema-prompt-03/required.txt"
+  ],
+  "timeout_seconds": 30,
+  "scope": "Legacy normalization error path and stale prompt clearing; 27 unchanged prompt/media cases reused"
+}

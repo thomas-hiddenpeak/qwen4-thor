@@ -1,0 +1,7 @@
+{
+  "scope": "diagnose only failing Punycode hostname cases via local native IDNA2008 register API",
+  "library": "/usr/lib/aarch64-linux-gnu/libidn2.so.0.4.0",
+  "sha256": "34a2427db57d47458b460ab15a24e7de73b56fbc7b458af837556445f60ffb4e",
+  "max_register_calls": 60,
+  "network_calls": 0
+}

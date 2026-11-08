@@ -1,0 +1,9 @@
+{
+  "scope": "locate actual vocabulary timeout: lexical FillNextTokenBitmask vs semantic Filter, CPU only first short string",
+  "tests": [
+    "tokenizer_schema_worker_mask_phase_diagnostic"
+  ],
+  "binary_sha256": "c4e345608909b15b4d7cded770c290ceb6cc2f1c9c4a2bd48f9afaf08e4dc36c",
+  "timeout_seconds": 20,
+  "address_space_bytes": 2147483648
+}

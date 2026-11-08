@@ -1,0 +1,11 @@
+{
+  "status": "FAILED",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 288, in run\n    try:self.start();self.business();result['status']='PASS_SCHEMA_V2_TEXT_BUSINESS'\n                     ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/repair.py\", line 90, in business\n    final = self.sdk_request(\"final\", self.plan[\"final_request\"])\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 221, in sdk_request\n    answer=self.client.complete(body,sink=wire.write)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/js_client.py\", line 121, in complete\n    payload = self.call(\"chat\", request, model=request[\"model\"], sink=sink)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/js_client.py\", line 106, in call\n    raise JsSdkError(payload[\"error\"])\ntools.serve_protocol.js_client.JsSdkError: 503 grammar operation time limit exceeded\n",
+  "counts": {
+    "starts": 1,
+    "chats": 1,
+    "controls": 41
+  },
+  "seconds": 60.55912864301354,
+  "binary_sha256": "447f1e58003630efdab74f7af42b6c14159f3332f57c6ac3ca5f8713e555aefd"
+}
