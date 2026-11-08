@@ -2,6 +2,13 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+Responses状态保障继续实施：活动事件按500毫秒/64KiB检查点持久化；
+每个活动对象预留4KiB用于已知配额/大小拒绝后的诚实失败终态，未知
+提交仍不重试。共享item改用有界精确JSON语义比较，避免键顺序误报。
+7新增CPU与4直接回归已通过，实际引擎构建零警告；配额夹具提前
+触发对象大小的初次失败保留，修正只重验该项。[证据](evidence/serve-responses-checkpoints-20261109/README.md)。
+无新增GPU或默认替换；随后继续后台/取消及重启恢复，不结束总目标。
+
 [Responses首组真实短验通过](evidence/serve-responses-business-20261109/README.md)：
 1启动/7生成/54.739秒，53次NVML全OK，严格租约child 0。原生JSON/SSE、
 概率原字节/落盘/续读、34推理token、真实资料工具与历史回填约束JSON、

@@ -1,0 +1,2 @@
+terminal quota=0 status=413 code=object_too_large message=Transaction exceeds byte limit
+terminal quota=1 status=413 code=object_too_large message=Transaction exceeds byte limit

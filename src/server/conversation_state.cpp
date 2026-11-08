@@ -257,9 +257,8 @@ ObjectReply ConversationState::Publish(const std::string& id, int64_t revision,
       const auto* old_data = previous.value.Find("data");
       const auto* old_item = old_data ? old_data->Find("item") : nullptr;
       if (!old_item) return StateError();
-      if (OutputJson(*old_item) != OutputJson(item))
-        return Error(409, "item_identity_conflict",
-                     "Existing item has different content");
+      auto identical = CompareStoredItem(*old_item, item);
+      if (!identical.ok()) return identical;
       item_revision = previous.value.GetInt("revision");
     } else if (previous.http_status != 404) {
       return previous;

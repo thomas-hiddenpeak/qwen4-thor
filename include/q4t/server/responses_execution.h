@@ -16,6 +16,7 @@ class ResponsesExecution {
   ObjectReply Prepare(const io::Json& request, const ChatPlanConfig& config,
                       StateAccess access, int64_t created);
   ObjectReply Begin(std::string* wire);
+  ObjectReply Checkpoint();
   void BindCancellation(std::chrono::steady_clock::time_point deadline,
                         std::function<bool()> cancelled) {
     access_.deadline = deadline;
@@ -60,6 +61,8 @@ class ResponsesExecution {
   bool prepared_ = false;
   bool begun_ = false;
   bool commit_unknown_ = false;
+  std::chrono::steady_clock::time_point checkpoint_time_;
+  size_t checkpoint_bytes_ = 0;
   int failure_status_ = 0;
   std::array<char, 128> failure_code_{};
   std::array<char, 1024> failure_message_{};

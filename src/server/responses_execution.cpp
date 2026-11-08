@@ -123,13 +123,35 @@ ObjectReply ResponsesExecution::Begin(std::string* wire) {
   wire->clear();
   if (!prepared_ || begun_ || commit_unknown_)
     return Error(500, "response_state_invalid", "Invalid response begin");
-  auto reply =
-      BindMutationResult(state_.Begin(output_.Snapshot(), access_, &plan_));
+  auto candidate = output_;
+  auto events = events_;
+  size_t bytes = event_bytes_;
+  std::string start;
+  auto status = candidate.Start(&start);
+  if (status) status = Capture(start, &events, &bytes);
+  if (!status) return OutputError(status);
+  auto reply = BindMutationResult(
+      state_.Begin(candidate.Snapshot(), events, access_, &plan_));
   if (!reply.ok()) return reply;
+  output_ = std::move(candidate);
+  events_ = std::move(events);
+  event_bytes_ = checkpoint_bytes_ = bytes;
+  checkpoint_time_ = std::chrono::steady_clock::now();
   begun_ = true;
-  auto status = output_.Start(wire);
-  if (status) status = Capture(*wire, &events_, &event_bytes_);
-  return status ? ObjectReply() : OutputError(status);
+  *wire = std::move(start);
+  return {};
+}
+
+ObjectReply ResponsesExecution::Checkpoint() {
+  if (!begun_ || plan_.finished || commit_unknown_)
+    return Error(500, "response_state_invalid", "Invalid response checkpoint");
+  auto reply = BindMutationResult(
+      state_.Checkpoint(output_.Snapshot(), events_, access_, &plan_));
+  if (reply.ok()) {
+    checkpoint_time_ = std::chrono::steady_clock::now();
+    checkpoint_bytes_ = event_bytes_;
+  }
+  return reply;
 }
 
 Status ResponsesExecution::Append(const ResponseDelta& delta,
@@ -137,6 +159,16 @@ Status ResponsesExecution::Append(const ResponseDelta& delta,
                                   std::string* wire) {
   auto status = output_.Append(delta, probabilities, wire);
   if (status) status = Capture(*wire, &events_, &event_bytes_);
+  if (status && plan_.store &&
+      (event_bytes_ - checkpoint_bytes_ >= 64 * 1024 ||
+       std::chrono::steady_clock::now() - checkpoint_time_ >=
+           std::chrono::milliseconds(500))) {
+    auto saved = Checkpoint();
+    if (!saved.ok()) {
+      ObserveError(this, saved.http_status, saved.message, saved.code);
+      return Status::Fail(saved.message);
+    }
+  }
   return status;
 }
 
@@ -224,8 +256,13 @@ ObjectReply ResponsesExecution::CloseUnfinished() {
       access_.scope,
       std::chrono::steady_clock::now() + std::chrono::milliseconds(2000),
       {}};
-  return BindMutationResult(
+  auto saved = BindMutationResult(
       state_.Finish(output_.Snapshot(), events_, cleanup, &plan_));
+  if (!saved.commit_unknown && (saved.code == "object_too_large" ||
+                                saved.code == "object_quota_exceeded"))
+    return BindMutationResult(
+        state_.FailWithinReservation(output_.Snapshot(), cleanup, &plan_));
+  return saved;
 }
 
 }  // namespace q4t::server

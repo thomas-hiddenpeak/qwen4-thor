@@ -10,6 +10,7 @@
 #include "q4t/server/conversation_state.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/output_schema.h"
+#include "q4t/server/responses_api.h"
 #include "q4t/test.h"
 
 namespace {
@@ -236,5 +237,127 @@ Q4T_TEST(responses_execution_lost_commit_receipt_never_overwrites_or_replays) {
     std::this_thread::sleep_for(1ms);
   auto actual = ResponsesState(store).Retrieve(run.Id(), Access());
   Q4T_CHECK(Ok(actual) && actual.value.GetString("status") == "completed");
+  return true;
+}
+
+Q4T_TEST(responses_execution_active_checkpoint_preserves_replay_prefix) {
+  Fixture f;
+  ObjectStore store(f.options);
+  ResponsesExecution run(store);
+  Q4T_CHECK(Prepare(&run));
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)));
+  ResponsesState state(store);
+  auto initial = state.ReadRecord(run.Id(), Access());
+  Q4T_CHECK(Ok(initial));
+  const auto* first = initial.value.GetArray("events");
+  Q4T_CHECK(first && first->array.size() == 2);
+  Q4T_CHECK(first->array[0].GetString("type") == "response.created");
+  Q4T_CHECK(first->array[1].GetString("type") == "response.in_progress");
+  Q4T_CHECK(initial.value.GetString("terminal_reserve").size() == 4096);
+  Q4T_CHECK(run.Append(Text("partial answer"), "null", &wire));
+  Q4T_CHECK(Ok(run.Checkpoint()));
+  ResponsesReadPlan plan;
+  plan.id = run.Id();
+  plan.stream = true;
+  plan.obfuscation = false;
+  plan.starting_after = 1;
+  ResponsesReplay partial;
+  auto result = ReadResponsesState(store, plan, Access(), &partial);
+  Q4T_CHECK(Ok(result) && !partial.terminal && partial.last_sequence > 1);
+  Q4T_CHECK(partial.wire.find("partial answer") != partial.wire.npos);
+  Q4T_CHECK(partial.wire.find("response.completed") == partial.wire.npos);
+  auto checkpoint = state.ReadRecord(run.Id(), Access());
+  Q4T_CHECK(Ok(checkpoint));
+  const auto prefix = *checkpoint.value.GetArray("events");
+  Q4T_CHECK(run.Append(Text(" finished"), "null", &wire));
+  Q4T_CHECK(Ok(run.Finish(false, 0, {7, 0, 2, 0}, 43, &wire)));
+  auto terminal = state.ReadRecord(run.Id(), Access());
+  Q4T_CHECK(Ok(terminal) && !terminal.value.Has("terminal_reserve"));
+  const auto& events = terminal.value.GetArray("events")->array;
+  for (size_t i = 0; i < prefix.array.size(); ++i)
+    Q4T_CHECK(OutputJson(events[i]) == OutputJson(prefix.array[i]));
+  plan.starting_after = partial.last_sequence;
+  ResponsesReplay tail;
+  Q4T_CHECK(Ok(ReadResponsesState(store, plan, Access(), &tail)));
+  Q4T_CHECK(tail.terminal && tail.wire.find("response.completed") != wire.npos);
+  Q4T_CHECK(tail.wire.find("partial answer\"") == tail.wire.npos);
+  return true;
+}
+
+Q4T_TEST(responses_execution_size_checkpoint_is_visible_before_terminal) {
+  Fixture f;
+  ObjectStore store(f.options);
+  ResponsesExecution run(store);
+  Q4T_CHECK(Prepare(&run));
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)));
+  Q4T_CHECK(run.Append(Text(std::string(70000, 'x')), "null", &wire));
+  const auto saved = ResponsesState(store).ReadRecord(run.Id(), Access());
+  Q4T_CHECK(Ok(saved));
+  Q4T_CHECK(saved.value.Find("response")->GetString("status") == "in_progress");
+  Q4T_CHECK(saved.value.GetArray("events")->array.size() > 2);
+  const auto& item = saved.value.Find("response")->GetArray("output")->array[0];
+  Q4T_CHECK(item.GetArray("content")->array[0].GetString("text").size() ==
+            70000);
+  Q4T_CHECK(Ok(run.CloseUnfinished()));
+  return true;
+}
+
+Q4T_TEST(responses_execution_size_and_quota_rejection_retain_failure) {
+  for (const bool quota : {false, true}) {
+    Fixture f;
+    f.options.max_object_bytes = quota ? 512 * 1024 : 16 * 1024;
+    f.options.max_client_bytes = f.options.max_object_bytes;
+    f.options.max_total_bytes = 2 * f.options.max_object_bytes;
+    ObjectStore store(f.options);
+    ResponsesExecution run(store);
+    Q4T_CHECK(Prepare(&run));
+    std::string wire;
+    Q4T_CHECK(Ok(run.Begin(&wire)));
+    if (quota) {
+      ObjectRequest filler;
+      filler.operation = ObjectOperation::kPut;
+      filler.kind = ObjectKind::kFile;
+      filler.scope = Access().scope;
+      filler.id = "file_retained";
+      filler.data = Parse('"' + std::string(480 * 1024, 'x') + '"');
+      Q4T_CHECK(Ok(store.Execute(filler, Clock::now() + 5s)));
+    }
+    Q4T_CHECK(run.Append(Text(std::string(24000, 'x')), "null", &wire));
+    const auto rejected = run.Finish(false, 0, {7, 0, 2, 0}, 43, &wire);
+    std::fprintf(stderr, "terminal quota=%d status=%d code=%s message=%s\n",
+                 quota, rejected.http_status, rejected.code.c_str(),
+                 rejected.message.c_str());
+    Q4T_CHECK(rejected.code ==
+              (quota ? "object_quota_exceeded" : "object_too_large"));
+    Q4T_CHECK(wire.empty() && !run.Finished() && !run.CommitUnknown());
+    ResponsesExecution::ObserveError(&run, rejected.http_status,
+                                     rejected.message, rejected.code);
+    Q4T_CHECK(Ok(run.CloseUnfinished()) && run.Finished());
+    const auto record = ResponsesState(store).ReadRecord(run.Id(), Access());
+    Q4T_CHECK(Ok(record));
+    const auto* response = record.value.Find("response");
+    Q4T_CHECK(response->GetString("status") == "failed");
+    Q4T_CHECK(response->GetArray("output")->array.empty());
+    Q4T_CHECK(response->Find("error")->GetString("code") == rejected.code);
+    Q4T_CHECK(record.value.GetArray("events")->array.empty());
+    Q4T_CHECK(!record.value.GetBool("events_retained", true));
+    Q4T_CHECK(!record.value.Has("terminal_reserve"));
+    Q4T_CHECK(record.value.GetArray("history")->array.size() == 1);
+    ResponsesReadPlan plan;
+    plan.id = run.Id();
+    plan.stream = true;
+    ResponsesReplay replay;
+    Q4T_CHECK(ReadResponsesState(store, plan, Access(), &replay).code ==
+              "response_events_unavailable");
+    ObjectRequest items;
+    items.operation = ObjectOperation::kList;
+    items.kind = ObjectKind::kConversationItem;
+    items.scope = Access().scope;
+    const auto listed = store.Execute(items, Clock::now() + 5s);
+    Q4T_CHECK(Ok(listed) && listed.value.GetArray("data")->array.empty());
+    Q4T_CHECK(Ok(run.CloseUnfinished()));
+  }
   return true;
 }

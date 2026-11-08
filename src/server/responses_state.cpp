@@ -4,7 +4,9 @@
 #include <unordered_set>
 
 #include "object_protocol.h"
+#include "q4t/server/http_response.h"
 #include "q4t/server/responses_item_shape.h"
+#include "q4t/server/schema_graph.h"
 
 namespace q4t::server {
 namespace {
@@ -32,11 +34,15 @@ ObjectRequest Write(ObjectKind kind, const std::string& id,
 }
 Json SavedResponse(const ResponseStatePlan& plan, const Json& response,
                    const Json& events) {
-  return Object({{"response", response},
-                 {"history", plan.history},
-                 {"own_input", plan.own_input},
-                 {"request", plan.request},
-                 {"events", events}});
+  auto result = Object({{"response", response},
+                        {"history", plan.history},
+                        {"own_input", plan.own_input},
+                        {"request", plan.request},
+                        {"events", events}});
+  if (!Terminal(response))
+    Set(&result, "terminal_reserve", String(std::string(4096, ' ')));
+  Set(&result, "events_retained", Boolean(!events.array.empty()));
+  return result;
 }
 ObjectReply Data(const ObjectReply& stored, std::string_view field) {
   if (!stored.ok()) return stored;
@@ -95,6 +101,17 @@ void CanonicalItem(Json* item) {
   }
 }
 }  // namespace
+
+ObjectReply CompareStoredItem(const Json& stored, const Json& incoming) {
+  std::string left, right;
+  auto status = CanonicalSchemaValue(stored, &left);
+  if (status) status = CanonicalSchemaValue(incoming, &right);
+  if (!status) return Error(503, "object_identity_capacity", status.message());
+  if (left != right)
+    return Error(409, "item_identity_conflict",
+                 "Existing item has different content");
+  return {};
+}
 
 ObjectReply ResponsesState::Get(ObjectKind kind, const std::string& id,
                                 const StateAccess& access) {
@@ -221,19 +238,47 @@ ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
 ObjectReply ResponsesState::Begin(const Json& snapshot,
                                   const StateAccess& access,
                                   ResponseStatePlan* plan) {
+  return Begin(snapshot, Array(), access, plan);
+}
+ObjectReply ResponsesState::Begin(const Json& snapshot, const Json& events,
+                                  const StateAccess& access,
+                                  ResponseStatePlan* plan) {
   if (plan->scope != access.scope)
     return Error(403, "object_scope_mismatch",
                  "Response state belongs to another client");
   if (snapshot.GetString("id") != plan->id || plan->response_revision != 0 ||
+      !events.IsArray() ||
       (snapshot.GetString("status") != "queued" &&
        snapshot.GetString("status") != "in_progress"))
     return StateError("Invalid initial response state");
   if (!plan->store) return {};
   auto written =
       objects_.Execute(Write(ObjectKind::kResponse, plan->id, access, 0,
-                             SavedResponse(*plan, snapshot, Array()),
+                             SavedResponse(*plan, snapshot, events),
                              !plan->conversation_id.empty()),
                        access.deadline, access.cancelled);
+  if (written.ok()) plan->response_revision = written.value.GetInt("revision");
+  return written;
+}
+
+ObjectReply ResponsesState::Checkpoint(const Json& snapshot, const Json& events,
+                                       const StateAccess& access,
+                                       ResponseStatePlan* plan) {
+  if (plan->scope != access.scope)
+    return Error(403, "object_scope_mismatch",
+                 "Response belongs to another client");
+  if (plan->finished || snapshot.GetString("id") != plan->id ||
+      !events.IsArray() || !snapshot.GetArray("output") ||
+      (snapshot.GetString("status") != "queued" &&
+       snapshot.GetString("status") != "in_progress") ||
+      (plan->store && plan->response_revision <= 0))
+    return StateError("Invalid response checkpoint");
+  if (!plan->store) return {};
+  auto written = objects_.Execute(
+      Write(ObjectKind::kResponse, plan->id, access, plan->response_revision,
+            SavedResponse(*plan, snapshot, events),
+            !plan->conversation_id.empty()),
+      access.deadline, access.cancelled);
   if (written.ok()) plan->response_revision = written.value.GetInt("revision");
   return written;
 }
@@ -302,9 +347,8 @@ ObjectReply ResponsesState::Finish(const Json& snapshot, const Json& events,
     if (existing.ok()) {
       auto original = Data(existing, "item");
       if (!original.ok()) return original;
-      if (OutputJson(original.value) != OutputJson(item))
-        return Error(409, "item_identity_conflict",
-                     "Existing item has different content");
+      auto identical = CompareStoredItem(original.value, item);
+      if (!identical.ok()) return identical;
       revision = existing.value.GetInt("revision");
       keep = keep || existing.value.GetInt("expires_at", -1) == 0;
     } else if (existing.http_status != 404) {
@@ -321,6 +365,34 @@ ObjectReply ResponsesState::Finish(const Json& snapshot, const Json& events,
     plan->finished = true;
   }
   return written;
+}
+
+ObjectReply ResponsesState::FailWithinReservation(const Json& snapshot,
+                                                  const StateAccess& access,
+                                                  ResponseStatePlan* plan) {
+  if (snapshot.GetString("status") != "failed" &&
+      snapshot.GetString("status") != "cancelled")
+    return StateError("Reserved terminal space cannot publish success");
+  auto minimal = Object();
+  for (const auto& [key, value] : snapshot.object)
+    if (key != "output" && key != "error") Set(&minimal, key, value);
+  Set(&minimal, "output", Array());
+  if (snapshot.GetString("status") == "cancelled") {
+    Set(&minimal, "error", Json());
+  } else {
+    const auto* error = snapshot.Find("error");
+    const auto code =
+        error ? error->GetString("code") : "response_storage_exhausted";
+    const auto message =
+        error ? error->GetString("message") : "Response state full";
+    Set(&minimal, "error",
+        Object(
+            {{"code", String(detail::NormalizeUtf8(code.substr(0, 128)))},
+             {"message", String(detail::NormalizeUtf8(message.substr(0, 256)) +
+                                "; partial output and events could not be "
+                                "retained")}}));
+  }
+  return Finish(minimal, Array(), access, plan);
 }
 
 ObjectReply ResponsesState::Retrieve(std::string id,

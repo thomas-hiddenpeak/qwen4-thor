@@ -30,6 +30,9 @@ struct ResponseStatePlan {
   bool finished = false;
 };
 
+// JSON object order is not identity; exact numbers and array order remain so.
+ObjectReply CompareStoredItem(const io::Json& stored, const io::Json& incoming);
+
 // State operations do no model work and retain no request callbacks. Generation
 // still must run the full Responses planner after resolving history/media.
 class ResponsesState {
@@ -43,10 +46,20 @@ class ResponsesState {
                       const StateAccess& access, ResponseStatePlan* plan);
   ObjectReply Begin(const io::Json& snapshot, const StateAccess& access,
                     ResponseStatePlan* plan);
+  ObjectReply Begin(const io::Json& snapshot, const io::Json& events,
+                    const StateAccess& access, ResponseStatePlan* plan);
+  ObjectReply Checkpoint(const io::Json& snapshot, const io::Json& events,
+                         const StateAccess& access, ResponseStatePlan* plan);
   // The caller supplies actual generated items and original ordered events.
   // A completed stored response is acknowledged only after the atomic receipt.
   ObjectReply Finish(const io::Json& snapshot, const io::Json& events,
                      const StateAccess& access, ResponseStatePlan* plan);
+  // Only after a known quota/size rejection, use the active record's reserved
+  // space to retain an honest failure without partial output/events. No retry
+  // after an unknown commit, no completed response, no conversation append.
+  ObjectReply FailWithinReservation(const io::Json& snapshot,
+                                    const StateAccess& access,
+                                    ResponseStatePlan* plan);
   ObjectReply Retrieve(std::string id, const StateAccess& access);
   // Internal authorized state, including history/events; never send this
   // record directly over HTTP. The API must project the public resource.

@@ -1,6 +1,7 @@
 # A07 Responses 原生实现与 A08 状态衔接
 
-2026-11-08；功能开发，不作性能优化结论。当前是实施记录，尚未验收。
+2026-11-08建立、2026-11-09更新；功能开发，不作性能优化结论。
+同步首组已通过真实业务短验，完整A07/A08仍在实施。
 默认继续使用已接受 A06 包；本组不把 store、background、历史或媒体
 缺口从总计划删除。实现/测试子组结束后继续下一项，总目标保持 active。
 
@@ -81,14 +82,36 @@ Conversations使用同一隔离对象worker及原子提交，存储故障不改�
 [本组证据](evidence/serve-responses-execution-20261109/README.md)：23不同C++、
 6官方SDK CPU、3实际原生入口CPU通过，3次构建零警告。原始失败保留；
 发现并修复最终item概率原字节与delta/done事件形状混用，包含部分UTF-8
-字节保真。仍没有本组GPU业务或默认替换，不能认定A07/A08交付。
+字节保真。这一CPU检查点未运行GPU或替换默认，不能认定A07/A08交付。
 
 后台排队/执行/取消、进行中的持久事件、重启终态恢复、超额失败记录
 闭合、语义item相等与独立item保留治理仍须实现。摘要、压缩/自动截断、
 加密推理、prompt及工具/媒体执行依赖继续纳入A07—A11，临时依赖不可用
-不能作为兼容通过。下一步冻结真实SDK/资料工具业务短验，继续剩余实现。
+不能作为兼容通过。首组同步业务短验结果见下文，继续剩余实现。
 
 读取遵循官方[输入items](https://developers.openai.com/api/reference/resources/responses/subresources/input_items/methods/list)、
 [删除](https://developers.openai.com/api/reference/resources/responses/methods/delete)和
 [后台续读](https://developers.openai.com/api/docs/guides/background)合同。
 当前续读使用已保留原事件，终态缺事件返回503，不从文本假造事件。
+
+
+## 2026-11-09 同步真实业务首组
+
+[原件](evidence/serve-responses-business-20261109/README.md)：1启动/7生成，
+54.739秒，严格租约完成0；53次NVML全部OK。官方SDK实际消费JSON/SSE，
+验证概率原字节/持久查询/事件续读、34个推理token、真实项目资料工具、
+previous_response_id工具回填与约束JSON、截断incomplete及同PID Chat/MTP。
+模型退出0、自有端口与锁释放，默认未替换；已验8a53f39d候选单独保留。
+后台、取消、恢复等必做项继续推进，同步验收不等于完整A07/A08完成。
+
+## 活动状态保障子组
+
+初始created/in_progress事件与初始记录一并确认后发布；运行中累计新增
+64KiB或距检查点500毫秒，在收到下一片增量时提交实际snapshot及原事件。
+成功终态仍以原子事务回执为准，客户端可按原sequence续读；无增量时
+不制造进度或事件。已知配额/对象大小失败可以消费活动记录的4KiB预留，
+保存无部分输出/无事件的failed终态，保留输入及原因；流式续读明确报告
+原事件不可用。未知提交不套用此回退，需按既有ID核实，不覆盖可能的成功。
+item身份比较忽略JSON对象键顺序，保留精确数值、类型和数组顺序。
+7新增CPU、4直接回归通过，[原件](evidence/serve-responses-checkpoints-20261109/README.md)
+保留配额夹具失败及修复定向重验。本子组不追加GPU，继续后台与恢复。

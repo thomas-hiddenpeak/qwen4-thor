@@ -114,6 +114,82 @@ Q4T_TEST(responses_state_stateless_path_does_not_touch_storage) {
   return true;
 }
 
+Q4T_TEST(responses_state_checkpoints_require_scope_and_current_revision) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesState state(objects);
+  ResponseStatePlan plan;
+  Q4T_CHECK(
+      Ok(state.Resolve(Envelope(R"({"input":"hello"})"), Access(), &plan)));
+  const auto snapshot = Snapshot(plan, "in_progress");
+  Q4T_CHECK(Ok(state.Begin(snapshot, Access(), &plan)));
+  auto stale = plan;
+  Q4T_CHECK(Ok(state.Checkpoint(snapshot, Parse("[]"), Access(), &plan)));
+  Q4T_CHECK(plan.response_revision == stale.response_revision + 1);
+  Q4T_CHECK(
+      state.Checkpoint(snapshot, Parse("[]"), Access(), &stale).http_status ==
+      409);
+  Q4T_CHECK(
+      state.Checkpoint(snapshot, Parse("[]"), Access("client:b"), &plan).code ==
+      "object_scope_mismatch");
+  Q4T_CHECK(
+      state
+          .Checkpoint(Snapshot(plan, "completed"), Parse("[]"), Access(), &plan)
+          .code == "response_state_invalid");
+  Q4T_CHECK(
+      Ok(state.Finish(Snapshot(plan, "failed"), Parse("[]"), Access(), &plan)));
+  Q4T_CHECK(!state.Checkpoint(snapshot, Parse("[]"), Access(), &plan).ok());
+  Q4T_CHECK(state.Retrieve(plan.id, Access()).value.GetString("status") ==
+            "failed");
+  return true;
+}
+
+Q4T_TEST(
+    responses_state_terminal_reserve_cannot_publish_success_or_cross_scope) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesState state(objects);
+  ResponseStatePlan plan;
+  Q4T_CHECK(
+      Ok(state.Resolve(Envelope(R"({"input":"hello"})"), Access(), &plan)));
+  Q4T_CHECK(Ok(state.Begin(Snapshot(plan, "in_progress"), Access(), &plan)));
+  Q4T_CHECK(
+      !state.FailWithinReservation(Snapshot(plan, "completed"), Access(), &plan)
+           .ok());
+  Q4T_CHECK(
+      !state
+           .FailWithinReservation(Snapshot(plan, "incomplete"), Access(), &plan)
+           .ok());
+  Q4T_CHECK(state
+                .FailWithinReservation(Snapshot(plan, "failed"),
+                                       Access("client:b"), &plan)
+                .code == "object_scope_mismatch");
+  Q4T_CHECK(Ok(state.FailWithinReservation(Snapshot(plan, "cancelled"),
+                                           Access(), &plan)));
+  const auto saved = state.ReadRecord(plan.id, Access());
+  Q4T_CHECK(Ok(saved) && plan.finished);
+  Q4T_CHECK(saved.value.Find("response")->GetString("status") == "cancelled");
+  Q4T_CHECK(saved.value.Find("response")->Find("error")->IsNull());
+  Q4T_CHECK(!saved.value.Has("terminal_reserve"));
+  Q4T_CHECK(saved.value.GetArray("events")->array.empty());
+  return true;
+}
+
+Q4T_TEST(
+    responses_state_item_identity_preserves_exact_numbers_and_array_order) {
+  Q4T_CHECK(Ok(CompareStoredItem(
+      Parse(R"({"n":1,"nested":{"x":[true,null,"a"],"y":2}})"),
+      Parse(R"({"nested":{"y":2.0,"x":[true,null,"a"]},"n":1e0})"))));
+  Q4T_CHECK(CompareStoredItem(Parse("[1,2]"), Parse("[2,1]")).code ==
+            "item_identity_conflict");
+  Q4T_CHECK(
+      CompareStoredItem(Parse("9007199254740992"), Parse("9007199254740993"))
+          .code == "item_identity_conflict");
+  Q4T_CHECK(CompareStoredItem(Parse("1"), Parse("\"1\"")).code ==
+            "item_identity_conflict");
+  return true;
+}
+
 Q4T_TEST(responses_state_previous_history_does_not_inherit_instructions) {
   Fixture f;
   ObjectStore objects(f.options);

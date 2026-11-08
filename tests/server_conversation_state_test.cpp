@@ -112,6 +112,27 @@ Q4T_TEST(conversation_state_crud_restart_and_item_retention) {
   return true;
 }
 
+Q4T_TEST(conversation_state_item_identity_ignores_json_object_field_order) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ConversationState state(objects);
+  auto items = Items({"msg_shared"});
+  const auto original = state.Create(Json(), items, Access());
+  Q4T_CHECK(Ok(original));
+  auto reordered = Parse(R"([{"content":[{"text":"hello","type":"input_text"}],
+    "status":"completed","id":"msg_shared","role":"user","type":"message"}])");
+  const auto shared = state.Create(Json(), reordered, Access());
+  Q4T_CHECK(Ok(shared));
+  Q4T_CHECK(shared.value.GetString("id") != original.value.GetString("id"));
+  const auto saved = ItemRecord(objects, "msg_shared");
+  Q4T_CHECK(Ok(saved) && saved.value.GetInt("revision") == 2);
+  Set(&reordered.array[0], "role", String("assistant"));
+  Q4T_CHECK(state.Create(Json(), reordered, Access()).code ==
+            "item_identity_conflict");
+  Q4T_CHECK(ItemRecord(objects, "msg_shared").value.GetInt("revision") == 2);
+  return true;
+}
+
 Q4T_TEST(conversation_state_pending_tool_and_later_result) {
   Fixture f;
   ObjectStore objects(f.options);
