@@ -38,6 +38,7 @@ class FaultKind(StrEnum):
     GATEWAY_EXIT = 'GATEWAY_EXIT'
     LEDGER_UNAVAILABLE = 'LEDGER_UNAVAILABLE'
     UNCONFIRMED_STALL = 'UNCONFIRMED_STALL'
+    EXECUTION_DEADLINE = 'EXECUTION_DEADLINE'
 
 
 class Action(StrEnum):
@@ -108,7 +109,8 @@ FATAL = frozenset((FaultKind.DEVICE_FAILURE, FaultKind.IDENTITY_INVALID,
                    FaultKind.CLEANUP_FAILED))
 MODEL_RECOVERABLE = frozenset((FaultKind.MODEL_EXIT,
     FaultKind.UNKNOWN_MODEL_EXIT, FaultKind.CUDA_CONTEXT,
-    FaultKind.PLE_UNAVAILABLE, FaultKind.RESOURCE_EXHAUSTED))
+    FaultKind.PLE_UNAVAILABLE, FaultKind.RESOURCE_EXHAUSTED,
+    FaultKind.EXECUTION_DEADLINE))
 
 
 def validate_generations(*values):

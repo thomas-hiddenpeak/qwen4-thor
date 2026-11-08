@@ -70,8 +70,9 @@ class BundleTests(unittest.TestCase):
     def test_default_package_has_native_binary_and_no_nginx_dependency(self):
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 4)
+        self.assertEqual(value['version'], 5)
         self.assertIn('source/tools/serve_recovery/observation_io.py', value['files'])
+        self.assertIn('source/tools/serve_recovery/progress.py', value['files'])
         self.assertEqual(value['ingress_mode'], 'native')
         self.assertIn('bin/q4t-ingress', value['files'])
         self.assertNotIn('bin/nginx', value['files'])
@@ -93,8 +94,38 @@ class BundleTests(unittest.TestCase):
         self.assertNotIn('tools/serve_recovery/observation_io.py', bundle.V2_SOURCES)
         self.assertEqual(set(bundle.V3_SOURCES)-set(bundle.V2_SOURCES),
                          {'tools/serve_recovery/observation_io.py'})
-        self.assertEqual(set(bundle.SOURCES)-set(bundle.V3_SOURCES),
+        self.assertEqual(set(bundle.V4_SOURCES)-set(bundle.V3_SOURCES),
                          {'tools/serve_recovery/tls_control.py'})
+        self.assertEqual(set(bundle.SOURCES)-set(bundle.V4_SOURCES),
+                         {'tools/serve_recovery/progress.py'})
+
+    def test_historical_source_inventory_versions_remain_verifiable(self):
+        receipt = self.prepare()
+        package = Path(receipt['package'])
+        current = bundle.engine.read(package/'manifest.json')
+        for version, sources in ((1, bundle.LEGACY_SOURCES),
+                (2, bundle.V2_SOURCES), (3, bundle.V3_SOURCES),
+                (4, bundle.V4_SOURCES)):
+            with self.subTest(version=version):
+                value = dict(current, version=version,
+                    profile='q4t-service-recovery-v'+str(version))
+                names = {*('source/'+name for name in sources),
+                    'gateway-policy.json', 'native-build.json',
+                    *('bin/'+name for name in bundle.EXECUTABLES)}
+                if version < 4:
+                    value.pop('tls_configuration')
+                if version == 1:
+                    value.pop('ingress_mode')
+                    shutil.copyfile(package/'bin/q4t-ingress', package/'bin/nginx')
+                    names.remove('bin/q4t-ingress')
+                    names.add('bin/nginx')
+                value['files'] = {name: bundle.engine.sha(package/name) for name in names}
+                bundle.engine.save(package/'manifest.json', value)
+                digest = bundle.engine.sha(package/'manifest.json')
+                (package/'bin/q4t').chmod(0o700)
+                (package/'bin/q4t').write_bytes(bundle.launcher(digest,
+                    value['python']['path']))
+                self.assertEqual(bundle.verify(package, digest)['version'], version)
 
     def test_launcher_never_hands_guardian_a_regular_file_for_diagnostics(self):
         receipt = self.prepare()

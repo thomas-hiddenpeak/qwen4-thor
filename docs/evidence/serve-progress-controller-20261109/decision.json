@@ -1,0 +1,26 @@
+{
+  "status": "PASS_PROGRESS_CONTROLLER_TARGETED_CPU",
+  "tests_passed": 31,
+  "source_sha256": {
+    "tools/serve_audit/inventory.json": "f2d665d7bb91a3d67e1a76acc8939942351efea8fb75061fe2077d0d137ecdab",
+    "tools/serve_recovery/acceptance.py": "dbb4e8e64c8ef830076cce97f86e2288c2be7722dcd0992389469e7b7900907d",
+    "tools/serve_recovery/bundle.py": "807b98ca96868e5cacce8c929350b1c4d0f934e1bc4ebd42196ff5a89456fe6c",
+    "tools/serve_recovery/child.py": "4707421055f57119c5de561440ca12b7f8967229eabb2191ba5298d6fd39329f",
+    "tools/serve_recovery/controller.py": "bdfaf3794b709d56457e1973bc2397521c36fbf7dfcda712b002fedfa24b81c4",
+    "tools/serve_recovery/policy.py": "db6e82bff6894c22bfe26a73e787c24362d1102a374bd18659eae81df4457bd2",
+    "tools/serve_recovery/progress.py": "bafda953b1ab9d8535fcf69b31d4305bf1e87ca6b316d0a9f4b5845f11ab82ff",
+    "tools/serve_recovery/test_child.py": "24e36c7554cb10a3b25115613832b8d695034fae55fd97e2a35a34a40b5bbd64",
+    "tools/serve_recovery/test_native_bundle.py": "6488f53afd70f16ed0729dbcb2a445c9f7be9974d423ef3b93f197ec196ade1e",
+    "tools/serve_recovery/test_observation_io.py": "52ebc4658f536592b12bf5b50dc940fbc886973553911be48309174bff7e4cb8",
+    "tools/serve_recovery/test_progress.py": "06c77198b3f1db08e510a1125916b87879fbbb03d023fdb03bdff219cfe06cd0"
+  },
+  "native_packet_sha256": "95a20953a44214658288bf10bda59a8f93d995001b628d5300917dac27ad4fc1",
+  "gpu_starts": 0,
+  "default_changed": false,
+  "whole_R03_complete": false,
+  "pending": [
+    "PLE/media/service-loop progress",
+    "actual bounded recovery business",
+    "accepted rollback-capable delivery"
+  ]
+}

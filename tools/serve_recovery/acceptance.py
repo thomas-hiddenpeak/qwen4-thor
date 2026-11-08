@@ -161,7 +161,7 @@ def prepare(args):
         'acceptance requires alpha ordinary limits and beta RPM=1')
     native_access = args.native_access
     if native_access:
-        engine.require(manifest['version'] == 4 and manifest['ingress_mode'] == 'native'
+        engine.require(manifest['version'] in (4, 5) and manifest['ingress_mode'] == 'native'
             and manifest['tls'] and policy['version'] == 3 and policy['cors'] and
             policy['server_name'] == policy['listen_host'] and
             not manifest['tls_configuration']['require_client_certificate'] and

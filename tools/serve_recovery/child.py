@@ -13,7 +13,40 @@ import sys
 
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from tools.serve_recovery import journal, ledger
+from tools.serve_recovery import journal, ledger, progress
+
+
+def progress_environment(args, permit):
+    """Only the named observation socket survives; its failure is auxiliary."""
+    env = {key: value for key, value in os.environ.items()
+           if not key.startswith('Q4T_PROGRESS_')}
+    env['Q4T_CONTROLLER_GENERATION'] = str(args.controller_generation)
+    env['Q4T_MODEL_GENERATION'] = str(permit['model_generation'])
+    fd = args.progress_fd
+    if fd is None or fd < 3 or fd in (args.fd, args.lease_fd):
+        return env
+    sock = None
+    try:
+        sock = socket.socket(fileno=fd)
+        journal.verify_parent(sock, args.parent_pid, args.parent_start)
+        ledger.require(type(args.service_id) is str and
+            progress.UUID.fullmatch(args.service_id) is not None,
+            'invalid progress service identity')
+        sock.setblocking(False)
+        sock.set_inheritable(True)
+        env.update(Q4T_PROGRESS_FD=str(fd),
+            Q4T_PROGRESS_PARENT_START=str(args.parent_start),
+            Q4T_SERVICE_ID=args.service_id)
+        sock.detach()
+    except (OSError, ValueError):
+        if sock is not None:
+            sock.close()
+        else:
+            try:
+                os.close(fd)
+            except OSError:
+                pass
+    return env
 
 
 def verify_lease(fd, path):
@@ -68,11 +101,11 @@ def run(args):
                        journal.process_start(args.parent_pid) == args.parent_start,
                        'controller died before model exec')
         verify_lease(args.lease_fd, args.lease_path)
-        # Only the lease survives exec. The control barrier must close even if
-        # the target is the Python interpreter or an unexpected executable.
+        # Only the lease and validated optional observation endpoint survive.
+        # The permit barrier must close, including for an interpreter target.
         os.set_inheritable(args.fd, False)
         os.set_inheritable(args.lease_fd, True)
-        os.execve(command[0], command, os.environ)
+        os.execve(command[0], command, progress_environment(args, permit))
 
 
 def main():
@@ -83,6 +116,8 @@ def main():
     parser.add_argument('--lease-fd', type=int, required=True)
     parser.add_argument('--lease-path', required=True)
     parser.add_argument('--controller-generation', type=int, required=True)
+    parser.add_argument('--progress-fd', type=int)
+    parser.add_argument('--service-id')
     parser.add_argument('command', nargs=argparse.REMAINDER)
     run(parser.parse_args())
 

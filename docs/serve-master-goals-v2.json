@@ -534,15 +534,25 @@
         "R01",
         "R02"
       ],
-      "evidence": [],
+      "evidence": [
+        "SERVE_PROGRESS_2026-11-09.md",
+        "evidence/serve-progress-core-20261109/decision.json",
+        "evidence/serve-progress-native-20261109/decision.json",
+        "evidence/serve-progress-controller-20261109/decision.json"
+      ],
       "release": null,
       "plan": "SERVE_PROGRESS_2026-11-09.md",
       "findings": [
         {
           "source": "tools/serve_recovery/controller.py supervise stable transaction",
           "issue": "600 seconds alone marks successful_request without observing actual successful completion; require fresh same-generation completed business evidence",
-          "state": "open"
+          "state": "implemented_cpu_verified_pending_business_delivery"
         }
+      ],
+      "remaining": [
+        "PLE/media and service-loop real progress binding",
+        "bounded actual execution stall recovery and normal/auxiliary-loss business",
+        "rollback-capable accepted delivery"
       ]
     },
     {

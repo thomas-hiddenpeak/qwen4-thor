@@ -260,6 +260,9 @@ class ControllerIsolationTests(unittest.TestCase):
         actor.observations.unavailable = True
         actor.ownership_unknown = actor.stopping = actor.frozen = False
         actor.logger = None
+        actor.ready, actor.progress = True, None
+        actor.progress_detector = controller.progress.Detector()
+        actor.progress_fault = None
         actor.phase, actor.reason, actor.heartbeat_at = 'READY', 'serving', 0
         actor.channel = mock.Mock()
         return actor

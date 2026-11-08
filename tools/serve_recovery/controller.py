@@ -18,6 +18,7 @@ from tools.serve_gateway import client_policy as cp, gateway as ingress
 from tools.serve_ops import transport
 from tools.serve_recovery import binding, bundle, child, control, core_http, jobs
 from tools.serve_recovery import journal, ledger, monitor, observation_io, ownership, policy
+from tools.serve_recovery import progress
 from tools.serve_service import memory, package as engine, supervisor
 
 
@@ -76,6 +77,9 @@ class Controller:
         self.ownership_unknown = False
         self.stable_at = None
         self.stable_reported = False
+        self.progress = None
+        self.progress_detector = progress.Detector()
+        self.progress_fault = None
         self.directory = Path(config['directory'])/f'controller-{channel.generation}'
         self.directory.mkdir(mode=0o700)
         self.manifest = bundle.verify(self.package, config['manifest_sha256'])
@@ -94,7 +98,9 @@ class Controller:
             return 'DEVICE_FAILURE'
         if (self.monitor.visibility != 'AVAILABLE' or
                 self.observations.unavailable or
-                self.ownership_unknown):
+                self.ownership_unknown or
+                (self.ready and (self.progress is None or
+                                 self.progress.snapshot() is None))):
             return 'UNKNOWN'
         return 'AVAILABLE'
 
@@ -104,6 +110,17 @@ class Controller:
         self.monitor.tick(allow_query=allow_query and not self.stopping and not self.frozen)
         if self.logger is not None:
             self.logger.tick()
+        try:
+            value = self.progress.poll() if self.progress is not None else None
+            self.progress_fault = self.progress_detector.assess(value)
+        except Exception:
+            # Collector/decoder failures are auxiliary, including unexpected
+            # Python errors. Never let an observer restart a healthy model.
+            value, self.progress_fault = None, None
+            self.progress_detector.pending.clear()
+            self.progress_detector.confirmed = None
+            if self.progress is not None:
+                self.progress.unknown('progress_collector_failed')
         now = time.monotonic()
         if now >= self.heartbeat_at:
             reason = (self.monitor.category.lower() if self.phase == 'READY' and
@@ -111,6 +128,8 @@ class Controller:
             if (self.phase == 'READY' and self.observations.unavailable and
                     not self.monitor.fatal):
                 reason = 'auxiliary_io_unavailable'
+            elif self.phase == 'READY' and value is None and not self.monitor.fatal:
+                reason = 'progress_observation_unavailable'
             self.channel.health(self.phase, self.observation(), reason,
                                 auxiliary_io=self.observations.snapshot(self.logger))
             self.channel.event('heartbeat')
@@ -273,20 +292,45 @@ class Controller:
             client_policy_sha256=hashlib.sha256(raw).hexdigest(),
             binary_sha256=self.base['files']['q4t'], protocol_sha256=self.base['protocol_sha256'])
         parent, endpoint = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
+        observed, publisher = None, None
         try:
+            try:
+                observed, publisher = socket.socketpair(socket.AF_UNIX,
+                                                       socket.SOCK_SEQPACKET)
+            except OSError:
+                # Auxiliary allocation failure cannot prevent a model launch.
+                pass
+            progress_args = ([] if publisher is None else
+                ['--progress-fd', str(publisher.fileno()),
+                 '--service-id', self.channel.service_id])
+            progress_fds = () if publisher is None else (publisher.fileno(),)
             self.model = subprocess.Popen([sys.executable, '-I', '-B',
                 str(ROOT/'tools/serve_recovery/child.py'), '--fd', str(endpoint.fileno()),
                 '--parent-pid', str(os.getpid()), '--parent-start', str(journal.process_start(os.getpid())),
                 '--lease-fd', str(self.lease_fd), '--lease-path', self.lease_path,
-                '--controller-generation', str(self.channel.generation), '--', *command],
+                '--controller-generation', str(self.channel.generation),
+                *progress_args, '--', *command],
                 stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                pass_fds=(endpoint.fileno(), self.lease_fd), start_new_session=True)
+                pass_fds=(endpoint.fileno(), self.lease_fd, *progress_fds),
+                start_new_session=True)
             endpoint.close()
+            if publisher is not None:
+                publisher.close()
             self.logger = observation_io.Writer(target, self.lease_fd, self.observations)
             self.capture = observation_io.Capture(self.logger, self.model.stdout)
             parent.settimeout(2)
             self.owner = journal.receive(parent)
             ledger.require(self.owner.pop('version') == 1, 'invalid child identity receipt')
+            if observed is not None:
+                try:
+                    identity = progress.Identity.owned(self.owner,
+                        self.channel.service_id, self.channel.generation,
+                        self.grant['generation'])
+                    self.progress = progress.Reader(observed, identity)
+                    observed = None  # Reader now owns this generation's FD.
+                except (OSError, ValueError, KeyError):
+                    # Missing namespace/observer state is not a core fault.
+                    pass
             reply = self.transaction('spawned', dict(role='model', ticket=self.grant['ticket'], owner=self.owner))
             if not reply['ok']:
                 self.frozen = True
@@ -296,6 +340,10 @@ class Controller:
         finally:
             endpoint.close()
             parent.close()
+            if observed is not None:
+                observed.close()
+            if publisher is not None:
+                publisher.close()
         self.watchdog = memory.Watchdog(self.settings,
             lambda owner: supervisor.signal_owner(owner, signal.SIGTERM))
         self.watchdog.attach(self.owner)
@@ -347,12 +395,19 @@ class Controller:
         self.ready = True
         self.phase, self.reason = 'READY', 'serving'
         self.stable_at, self.stable_reported = time.monotonic(), False
+        if self.progress is not None:
+            self.progress.mark_ready(time.monotonic_ns())
         return True
 
     def close_model(self):
         if self.grant is not None:
             self.channel.admission(self.grant['generation'], False)
         self.ready = False
+        if self.progress is not None:
+            self.progress.close()
+            self.progress = None
+        self.progress_detector = progress.Detector()
+        self.progress_fault = None
         if self.watchdog is not None:
             self.watchdog.close()
             self.watchdog = None
@@ -389,7 +444,8 @@ class Controller:
 
     def record_fault(self, kind):
         self.last_fault = kind
-        self.need_cuda_probe = kind == policy.FaultKind.CUDA_CONTEXT
+        self.need_cuda_probe = kind in (policy.FaultKind.CUDA_CONTEXT,
+                                        policy.FaultKind.EXECUTION_DEADLINE)
         self.phase, self.reason = 'RECOVERING', kind.value.lower()
         if self.grant is None:
             return
@@ -411,6 +467,10 @@ class Controller:
             return policy.FaultKind.RESOURCE_EXHAUSTED
         if self.model.poll() is not None:
             return policy.FaultKind.UNKNOWN_MODEL_EXIT
+        if self.progress_fault is not None:
+            # Only per-request, fresh native facts can reach this branch.
+            # Retirement, cleanup and a device probe still precede a new grant.
+            return policy.FaultKind.EXECUTION_DEADLINE
         now = time.monotonic()
         if now-self.last_core_check < 2:
             return None
@@ -427,7 +487,8 @@ class Controller:
         except (OSError, ValueError, RuntimeError, KeyError):
             self.channel.admission(self.grant['generation'], False)
             self.phase, self.reason = 'WAIT_DEPENDENCY', 'core_observation_unavailable'
-        if not self.stable_reported and now-self.stable_at >= 600:
+        if (not self.stable_reported and self.phase == 'READY' and
+                self.progress is not None and self.progress.stable()):
             reply = self.transaction('stable', dict(role='model', ticket=self.grant['ticket'], successful_request=True))
             self.stable_reported = reply['ok']
         return None

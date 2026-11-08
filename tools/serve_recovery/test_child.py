@@ -1,5 +1,6 @@
 """CPU negative controls for the model exec barrier and its borrowed lease."""
 import fcntl
+import json
 import os
 from pathlib import Path
 import socket
@@ -87,6 +88,83 @@ class ChildTests(unittest.TestCase):
     def test_stale_controller_permit_never_executes_target(self):
         self.barrier(dict(version=1, ticket=str(uuid.uuid4()),
                           controller_generation=2, model_generation=1))
+
+    def observed_exec(self, progress_fd):
+        parent, endpoint = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
+        service_id = str(uuid.uuid4())
+        code = '''import json,os,socket,sys
+try:
+    os.fstat(int(sys.argv[1]))
+    barrier_open=True
+except OSError:
+    barrier_open=False
+value=dict(barrier_open=barrier_open, lease_open=os.fstat(int(sys.argv[2])).st_nlink==1,
+    controller=os.environ['Q4T_CONTROLLER_GENERATION'],
+    model=os.environ['Q4T_MODEL_GENERATION'],
+    service=os.environ.get('Q4T_SERVICE_ID'),
+    progress_fd=os.environ.get('Q4T_PROGRESS_FD'),
+    parent_start=os.environ.get('Q4T_PROGRESS_PARENT_START'))
+if value['progress_fd'] is not None:
+    sock=socket.socket(fileno=int(value['progress_fd']))
+    sock.send(b'actual-exec-private-progress')
+print(json.dumps(value))
+'''
+        process = subprocess.Popen([sys.executable, '-I', '-B',
+            str(ROOT/'tools/serve_recovery/child.py'), '--fd', str(endpoint.fileno()),
+            '--parent-pid', str(os.getpid()), '--parent-start',
+            str(journal.process_start(os.getpid())), '--lease-fd', str(self.fd),
+            '--lease-path', str(self.path), '--controller-generation', '3',
+            '--progress-fd', str(progress_fd), '--service-id', service_id, '--',
+            sys.executable, '-I', '-B', '-c', code, str(endpoint.fileno()), str(self.fd)],
+            env=dict(os.environ, Q4T_PROGRESS_FD='999', Q4T_PROGRESS_PARENT_START='999',
+                     Q4T_CONTROLLER_GENERATION='999', Q4T_MODEL_GENERATION='999'),
+            pass_fds=tuple({endpoint.fileno(), self.fd, progress_fd}),
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        endpoint.close()
+        try:
+            parent.settimeout(3)
+            hello = journal.receive(parent)
+            self.assertEqual(hello['pid'], process.pid)
+            journal.send(parent, dict(version=1, ticket=str(uuid.uuid4()),
+                                      controller_generation=3, model_generation=7))
+            stdout, stderr = process.communicate(timeout=3)
+            self.assertEqual(process.returncode, 0, stderr.decode())
+            value = json.loads(stdout)
+            self.assertFalse(value['barrier_open'])
+            self.assertTrue(value['lease_open'])
+            self.assertEqual((value['controller'], value['model']), ('3', '7'))
+            child.verify_lease(self.fd, self.path)
+            return value, service_id
+        finally:
+            parent.close()
+            if process.poll() is None:
+                process.kill()
+                process.communicate(timeout=3)
+
+    def test_actual_exec_carries_only_bound_progress_and_lease(self):
+        observer, publisher = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
+        with observer, publisher:
+            value, service_id = self.observed_exec(publisher.fileno())
+            self.assertEqual(value['service'], service_id)
+            self.assertEqual(value['progress_fd'], str(publisher.fileno()))
+            self.assertEqual(value['parent_start'], str(journal.process_start(os.getpid())))
+            observer.settimeout(1)
+            self.assertEqual(observer.recv(128), b'actual-exec-private-progress')
+
+    def test_optional_non_socket_does_not_prevent_exec(self):
+        reader, writer = os.pipe()
+        try:
+            value, _ = self.observed_exec(reader)
+            self.assertIsNone(value['progress_fd'])
+            self.assertIsNone(value['parent_start'])
+        finally:
+            os.close(reader)
+            os.close(writer)
+
+    def test_invalid_progress_alias_cannot_close_the_borrowed_lease(self):
+        value, _ = self.observed_exec(self.fd)
+        self.assertIsNone(value['progress_fd'])
+        child.verify_lease(self.fd, self.path)
 
 
 class ReceiptTests(unittest.TestCase):
