@@ -278,6 +278,10 @@ Q4T_TEST(chat_capabilities_native_responses_state_and_recovery) {
   const auto* objects = caps.Find("application_state");
   Q4T_CHECK(objects && objects->GetBool("isolated_io") &&
             !objects->GetBool("core_readiness_dependency", true));
+  Q4T_CHECK(objects->GetString("controller_recovery") ==
+                "single_owned_thread_bounded_backoff" &&
+            objects->GetString("foreground_reconciliation") ==
+                "reserved_metadata_after_executor_cleanup");
   const auto* http = caps.Find("http");
   Q4T_CHECK(http &&
             http->GetString("query_parameters") ==

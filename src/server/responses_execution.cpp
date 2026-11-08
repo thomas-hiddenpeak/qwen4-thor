@@ -6,6 +6,7 @@
 
 #include "object_protocol.h"
 #include "q4t/server/http_response.h"
+#include "q4t/server/lifetime.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/responses_owner.h"
 
@@ -227,9 +228,23 @@ ObjectReply ResponsesExecution::Begin(std::string* wire) {
   auto status = candidate.Start(&start);
   if (status) status = Capture(start, &events, &bytes);
   if (!status) return OutputError(status);
+  if (plan_.store && require_cleanup_ && !cleanup_)
+    return Error(503, "response_reconciliation_unavailable",
+                 "Response lifecycle owner unavailable");
+  if (plan_.store && cleanup_ && !cleanup_ticket_) {
+    const auto reserved =
+        cleanup_->Reserve(plan_.scope, plan_.id, &cleanup_ticket_);
+    if (!reserved.ok()) return reserved;
+  }
+  // An exception after submitting the mutation is also uncertain. A missing
+  // begun_ flag alone cannot prove that no durable record was written.
+  durable_begin_attempted_ = plan_.store;
   auto reply = BindMutationResult(
       state_.Begin(candidate.Snapshot(), events, access_, &plan_));
-  if (!reply.ok()) return reply;
+  if (!reply.ok()) {
+    if (!reply.commit_unknown) durable_begin_attempted_ = false;
+    return reply;
+  }
   output_ = std::move(candidate);
   events_ = std::move(events);
   event_bytes_ = checkpoint_bytes_ = bytes;
@@ -389,6 +404,13 @@ std::string ResponsesExecution::RenderStreamError(void* owner, int status,
 }
 
 ObjectReply ResponsesExecution::CloseUnfinished() {
+  ScopeExit release_cleanup([&] {
+    if (cleanup_ticket_) {
+      cleanup_->Close(cleanup_ticket_,
+                      plan_.finished || !durable_begin_attempted_);
+      cleanup_ticket_ = 0;
+    }
+  });
   if (!begun_ || plan_.finished || commit_unknown_) return {};
   if (!output_.Terminal()) {
     const auto code = failure_status_ ? failure_code_.data()

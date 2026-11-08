@@ -1550,6 +1550,52 @@
       ],
       "additionalProperties": false,
       "description": "Present when native background Responses is implemented; current runtime recovery state, independent of model readiness."
+    },
+    "responses_reconciliation": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "enum": [
+            "unavailable",
+            "failed",
+            "stopping",
+            "ready"
+          ]
+        },
+        "readiness_dependency": {
+          "const": false
+        },
+        "owned": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "active": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pending": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reconciled": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "errors": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "state",
+        "readiness_dependency",
+        "owned",
+        "active",
+        "pending",
+        "reconciled",
+        "errors"
+      ],
+      "additionalProperties": false
     }
   },
   "required": [

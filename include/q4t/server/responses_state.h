@@ -23,8 +23,8 @@ struct ResponseStatePlan {
   bool ephemeral = false;  // Background store=false is retained for polling.
   int64_t execution_deadline_at = 0;  // Unix seconds; restart cannot reset it.
   io::Json execution_owner;
-  io::Json history;        // Full authorized input for this generation.
-  io::Json own_input;      // New input, without inherited context/instructions.
+  io::Json history;    // Full authorized input for this generation.
+  io::Json own_input;  // New input, without inherited context/instructions.
   io::Json request;
   std::string conversation_id;
   int64_t conversation_revision = 0;
@@ -53,8 +53,9 @@ class ResponsesState {
   ObjectReply LoadPlan(const std::string& id, const StateAccess& access,
                        ResponseStatePlan* plan,
                        bool restore_conversation = false);
-  // Only after the owner process is known gone: reconcile with a checked
-  // revision and a real failure. Never use this to race a live execution.
+  // Only after the owner process is known gone or its execution owner has
+  // explicitly confirmed model/grammar cleanup: reconcile a checked revision.
+  // Never use this to race a live execution.
   // No executed work is replayed and no conversation items are appended.
   ObjectReply Interrupt(const std::string& id, const StateAccess& access,
                         std::string_view code, std::string_view message);

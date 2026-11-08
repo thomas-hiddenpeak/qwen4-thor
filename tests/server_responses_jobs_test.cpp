@@ -932,3 +932,206 @@ Q4T_TEST(responses_jobs_shutdown_cancels_owned_work_and_rejects_submission) {
   Q4T_CHECK(f.Submit(jobs, objects).code == "background_unavailable");
   return true;
 }
+
+namespace {
+bool PrepareForeground(ResponsesExecution& run, std::string client = "alpha",
+                       bool store = true) {
+  auto request = Parse(R"({"input":"question","reasoning":{"effort":"none"}})");
+  if (!store) Set(&request, "store", Parse("false"));
+  return Ok(run.Prepare(request, Config(), Access(client), std::time(nullptr)));
+}
+ResponseDelta ForegroundText() {
+  ResponseDelta result;
+  result.kind = ResponseDelta::Kind::kContent;
+  result.text = "actual foreground text";
+  return result;
+}
+struct ResetForegroundWorker {
+  ~ResetForegroundWorker() { ObjectWorkerEntryForTesting({}); }
+};
+}  // namespace
+
+Q4T_TEST(
+    responses_foreground_reserves_before_write_and_never_closes_live_work) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesJobsOptions limits;
+  limits.max_jobs = 2;
+  limits.max_client_jobs = 1;
+  ResponsesJobs jobs(objects, limits, [](auto&) {
+    throw std::runtime_error("unexpected execution");
+  });
+  ResponsesExecution a(objects, &jobs, true), duplicate(objects, &jobs, true),
+      b(objects, &jobs, true), full(objects, &jobs, true),
+      stateless(objects, &jobs, true);
+  Q4T_CHECK(PrepareForeground(a) && PrepareForeground(duplicate) &&
+            PrepareForeground(b, "beta") && PrepareForeground(full, "gamma") &&
+            PrepareForeground(stateless, "alpha", false));
+  std::string wire;
+  Q4T_CHECK(Ok(a.Begin(&wire)));
+  Q4T_CHECK(duplicate.Begin(&wire).http_status == 429);
+  Q4T_CHECK(
+      ResponsesState(objects).Retrieve(duplicate.Id(), Access()).http_status ==
+      404);
+  Q4T_CHECK(Ok(b.Begin(&wire)) && full.Begin(&wire).http_status == 429);
+  Q4T_CHECK(Ok(stateless.Begin(&wire)) && Ok(stateless.CloseUnfinished()));
+  std::this_thread::sleep_for(300ms);
+  Q4T_CHECK(jobs.Health().foreground_owned == 2 &&
+            jobs.Health().foreground_active == 2 &&
+            jobs.Health().foreground_pending == 0 &&
+            jobs.Health().foreground_reconciled == 0);
+  Q4T_CHECK(ResponsesState(objects)
+                .Retrieve(a.Id(), Access())
+                .value.GetString("status") == "in_progress");
+  Q4T_CHECK(Ok(a.CloseUnfinished()) && Ok(b.CloseUnfinished()));
+  Q4T_CHECK(jobs.Health().foreground_owned == 0);
+  uint64_t old = 0, current = 0;
+  Q4T_CHECK(Ok(jobs.Reserve("client:alpha", "resp_old", &old)));
+  jobs.Close(old, true);
+  Q4T_CHECK(Ok(jobs.Reserve("client:alpha", "resp_new", &current)) &&
+            old != current);
+  jobs.Close(old, false);
+  Q4T_CHECK(jobs.Health().foreground_active == 1);
+  jobs.Close(current, true);
+  return true;
+}
+
+Q4T_TEST(responses_foreground_unknown_begin_is_closed_without_model_execution) {
+  ResetForegroundWorker reset;
+  ObjectWorkerEntryForTesting("--q4t-object-worker-lost-ack");
+  Fixture f;
+  f.options.io_timeout_ms = 100;
+  ObjectStore objects(f.options);
+  std::atomic<int> calls{0};
+  ResponsesJobs jobs(objects, {}, [&](auto&) { ++calls; });
+  ResponsesExecution run(objects, &jobs, true);
+  Q4T_CHECK(PrepareForeground(run));
+  std::string wire;
+  const auto result = run.Begin(&wire);
+  Q4T_CHECK(!result.ok() && result.commit_unknown && !run.Begun());
+  Q4T_CHECK(jobs.Health().foreground_active == 1);
+  Q4T_CHECK(Ok(run.CloseUnfinished()));
+  Q4T_CHECK(Wait([&] { return jobs.Health().foreground_owned == 0; }));
+  const auto saved = ResponsesState(objects).Retrieve(run.Id(), Access());
+  Q4T_CHECK(Ok(saved) && saved.value.GetString("status") == "failed");
+  Q4T_CHECK(saved.value.Find("error")->GetString("code") ==
+            "response_execution_interrupted");
+  Q4T_CHECK(calls == 0 && jobs.Health().foreground_reconciled == 1);
+  return true;
+}
+
+Q4T_TEST(responses_foreground_unknown_success_preserves_committed_result) {
+  ResetForegroundWorker reset;
+  ObjectWorkerEntryForTesting("--q4t-object-worker-commit-pause");
+  Fixture f;
+  f.options.io_timeout_ms = 100;
+  ObjectStore objects(f.options);
+  ResponsesJobs jobs(objects, {}, [](auto&) {
+    throw std::runtime_error("unexpected execution");
+  });
+  ResponsesExecution run(objects, &jobs, true);
+  Q4T_CHECK(PrepareForeground(run));
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)) &&
+            run.Append(ForegroundText(), "null", &wire));
+  const auto result =
+      run.Finish(false, 0, {7, 0, 2, 0}, std::time(nullptr), &wire);
+  Q4T_CHECK(!result.ok() && result.commit_unknown && wire.empty());
+  const auto before = Raw(objects, run.Id());
+  Q4T_CHECK(Ok(before));
+  Q4T_CHECK(Ok(run.CloseUnfinished()));
+  Q4T_CHECK(Wait([&] { return jobs.Health().foreground_owned == 0; }));
+  const auto after = Raw(objects, run.Id());
+  Q4T_CHECK(Ok(after) && OutputJson(before.value) == OutputJson(after.value));
+  Q4T_CHECK(after.value.Find("data")->Find("response")->GetString("status") ==
+            "completed");
+  Q4T_CHECK(jobs.Health().foreground_reconciled == 1 && !jobs.Health().failed);
+  return true;
+}
+
+Q4T_TEST(responses_foreground_unknown_checkpoint_preserves_partial_output) {
+  ResetForegroundWorker reset;
+  ObjectWorkerEntryForTesting("--q4t-object-worker-second-put-lost-ack");
+  Fixture f;
+  f.options.io_timeout_ms = 100;
+  ObjectStore objects(f.options);
+  ResponsesJobs jobs(objects, {}, [](auto&) {
+    throw std::runtime_error("unexpected execution");
+  });
+  ResponsesExecution run(objects, &jobs, true);
+  Q4T_CHECK(PrepareForeground(run));
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)) &&
+            run.Append(ForegroundText(), "null", &wire));
+  const auto checkpoint = run.Checkpoint();
+  Q4T_CHECK(!checkpoint.ok() && checkpoint.commit_unknown);
+  Q4T_CHECK(Ok(run.CloseUnfinished()));
+  Q4T_CHECK(Wait([&] { return jobs.Health().foreground_owned == 0; }));
+  const auto actual = ResponsesState(objects).Retrieve(run.Id(), Access());
+  Q4T_CHECK(Ok(actual) && actual.value.GetString("status") == "failed" &&
+            OutputJson(actual.value).find("actual foreground text") !=
+                std::string::npos);
+  return true;
+}
+
+Q4T_TEST(responses_foreground_close_failure_transfers_only_after_cleanup) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesJobs jobs(objects, {}, [](auto&) {
+    throw std::runtime_error("unexpected execution");
+  });
+  ResponsesExecution run(objects, &jobs, true);
+  Q4T_CHECK(PrepareForeground(run));
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)) &&
+            run.Append(ForegroundText(), "null", &wire));
+  Q4T_CHECK(Ok(run.Checkpoint()));
+  FailObjectControllerForTesting();
+  Q4T_CHECK(!run.CloseUnfinished().ok());
+  Q4T_CHECK(Wait([&] { return jobs.Health().foreground_owned == 0; }));
+  const auto actual = ResponsesState(objects).Retrieve(run.Id(), Access());
+  Q4T_CHECK(Ok(actual) && actual.value.GetString("status") == "failed" &&
+            OutputJson(actual.value).find("actual foreground text") !=
+                std::string::npos);
+  Q4T_CHECK(objects.Health().controller_starts == 1);
+  return true;
+}
+
+Q4T_TEST(
+    responses_foreground_unavailable_store_retains_bounded_owner_and_backoff) {
+  ObjectStoreOptions invalid;
+  invalid.directory = "invalid";
+  ObjectStore objects(invalid);
+  ResponsesJobs jobs(objects, {}, [](auto&) {
+    throw std::runtime_error("unexpected execution");
+  });
+  uint64_t ticket = 0;
+  Q4T_CHECK(Ok(jobs.Reserve("client:alpha", "resp_pending", &ticket)));
+  jobs.Close(ticket, false);
+  Q4T_CHECK(Wait([&] { return jobs.Health().foreground_errors >= 3; }));
+  std::this_thread::sleep_for(300ms);
+  Q4T_CHECK(jobs.Health().foreground_errors == 3 &&
+            jobs.Health().foreground_pending == 1 && !jobs.Health().failed);
+  ResponsesExecution stateless(objects, &jobs, true);
+  Q4T_CHECK(PrepareForeground(stateless, "alpha", false));
+  std::string wire;
+  Q4T_CHECK(Ok(stateless.Begin(&wire)) && Ok(stateless.CloseUnfinished()));
+  jobs.RequestStop();
+  jobs.Join();
+  Q4T_CHECK(jobs.Health().foreground_pending == 1);
+  return true;
+}
+
+Q4T_TEST(responses_foreground_missing_coordinator_preserves_stateless_service) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesExecution stored(objects, nullptr, true),
+      stateless(objects, nullptr, true);
+  Q4T_CHECK(PrepareForeground(stored) &&
+            PrepareForeground(stateless, "alpha", false));
+  std::string wire;
+  Q4T_CHECK(stored.Begin(&wire).code == "response_reconciliation_unavailable");
+  Q4T_CHECK(Ok(stateless.Begin(&wire)) && Ok(stateless.CloseUnfinished()));
+  Q4T_CHECK(objects.Health().workers_started == 0);
+  return true;
+}

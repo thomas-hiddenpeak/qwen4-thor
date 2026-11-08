@@ -8,12 +8,27 @@
 
 namespace q4t::server {
 
+// Internal ownership proof, never an HTTP action. Reserve before the first
+// durable mutation; Close only after model/grammar execution has drained.
+class IResponsesCleanup {
+ public:
+  virtual ~IResponsesCleanup() = default;
+  virtual ObjectReply Reserve(const std::string& scope, const std::string& id,
+                              uint64_t* ticket) = 0;
+  virtual void Close(uint64_t ticket, bool known_terminal) noexcept = 0;
+};
+
 // Request-owned protocol/state lifecycle. The model executor feeds actual
 // deltas and usage; a success terminal is published only after durable commit.
 // This owner must outlive the HTTP exception renderer and generation cleanup.
 class ResponsesExecution {
  public:
-  explicit ResponsesExecution(ObjectStore& objects) : state_(objects) {}
+  explicit ResponsesExecution(ObjectStore& objects,
+                              IResponsesCleanup* cleanup = nullptr,
+                              bool require_cleanup = false)
+      : state_(objects), cleanup_(cleanup), require_cleanup_(require_cleanup) {}
+  ResponsesExecution(const ResponsesExecution&) = delete;
+  ResponsesExecution& operator=(const ResponsesExecution&) = delete;
   ObjectReply Prepare(const io::Json& request, const ChatPlanConfig& config,
                       StateAccess access, int64_t created,
                       bool background_executor = false);
@@ -64,6 +79,10 @@ class ResponsesExecution {
   ObjectReply RequiredExecutors(bool background_executor) const;
   ObjectReply PlanGeneration(const ChatPlanConfig& config, int64_t created);
   ResponsesState state_;
+  IResponsesCleanup* cleanup_ = nullptr;
+  bool require_cleanup_ = false;
+  uint64_t cleanup_ticket_ = 0;
+  bool durable_begin_attempted_ = false;
   StateAccess access_;
   ResponsesEnvelope envelope_;
   ResponsesGenerationPlan generation_;

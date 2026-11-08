@@ -69,7 +69,14 @@ void ChatServer::HandleConfig(int fd) {
       R"(,"recovery_pending":)" + std::to_string(jobs.recovery_pending) +
       R"(,"recovered":)" + std::to_string(jobs.recovered) +
       R"(,"interrupted":)" + std::to_string(jobs.interrupted) +
-      R"(,"recovery_errors":)" + std::to_string(jobs.recovery_errors) + "}}";
+      R"(,"recovery_errors":)" + std::to_string(jobs.recovery_errors) + "}," +
+      R"("responses_reconciliation":{"state":")" + jobs_state +
+      R"(","readiness_dependency":false,"owned":)" +
+      std::to_string(jobs.foreground_owned) + R"(,"active":)" +
+      std::to_string(jobs.foreground_active) + R"(,"pending":)" +
+      std::to_string(jobs.foreground_pending) + R"(,"reconciled":)" +
+      std::to_string(jobs.foreground_reconciled) + R"(,"errors":)" +
+      std::to_string(jobs.foreground_errors) + "}}";
   detail::SendSimple(fd, 200, "OK", value, "application/json");
 }
 

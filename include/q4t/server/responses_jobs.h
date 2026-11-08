@@ -5,6 +5,7 @@
 
 #include <functional>
 #include <memory>
+#include <string_view>
 
 #include "q4t/server/client_policy.h"
 #include "q4t/server/responses_execution.h"
@@ -33,9 +34,14 @@ struct ResponsesJobsHealth {
   uint64_t interrupted = 0;
   uint64_t recovery_errors = 0;
   size_t recovery_pending = 0;
+  size_t foreground_owned = 0;
+  size_t foreground_active = 0;
+  size_t foreground_pending = 0;
+  uint64_t foreground_reconciled = 0;
+  uint64_t foreground_errors = 0;
 };
 
-class ResponsesJobs {
+class ResponsesJobs : public IResponsesCleanup {
  public:
   struct Job {
     std::unique_ptr<ResponsesExecution> run;
@@ -73,6 +79,11 @@ class ResponsesJobs {
   void RequestStop() noexcept;
   void Join();
   ResponsesJobsHealth Health() const;
+  // Fixed metadata slots, separately bounded by max_jobs/max_client_jobs.
+  // No prompt, executor callback, request fd or client permit is retained.
+  ObjectReply Reserve(const std::string& scope, const std::string& id,
+                      uint64_t* ticket) override;
+  void Close(uint64_t ticket, bool known_terminal) noexcept override;
 
  private:
   struct State;
@@ -84,6 +95,8 @@ class ResponsesJobs {
   void Worker() noexcept;
   void Execute(const std::shared_ptr<Job>& job) noexcept;
   void Reconcile(const std::shared_ptr<Job>& job) noexcept;
+  void ReconcileForeground(uint64_t ticket, std::string_view scope,
+                           std::string_view id) noexcept;
   void Release(const std::shared_ptr<Job>& job, bool known_terminal);
 };
 }  // namespace q4t::server

@@ -2,10 +2,13 @@
 
 #include <algorithm>
 #include <atomic>
+#include <array>
 #include <condition_variable>
 #include <ctime>
+#include <cstring>
 #include <deque>
 #include <mutex>
+#include <optional>
 #include <thread>
 #include <unordered_map>
 
@@ -28,6 +31,15 @@ std::string Key(const std::string& scope, const std::string& id) {
 }  // namespace
 
 struct ResponsesJobs::State {
+  struct Foreground {
+    uint64_t ticket = 0;
+    std::array<char, 257> scope{};
+    std::array<char, 129> id{};
+    bool active = true;
+    bool closing = false;
+    size_t attempts = 0;
+    Clock::time_point next;
+  };
   ObjectStore& objects;
   ResponsesJobsOptions options;
   Executor executor;
@@ -45,8 +57,25 @@ struct ResponsesJobs::State {
   size_t bytes = 0;
   std::atomic<bool> stopping{false};
   std::atomic<bool> failed{false};
+  std::vector<Foreground> foreground;
+  uint64_t next_ticket = 0;
+  uint64_t foreground_reconciled = 0;
+  uint64_t foreground_errors = 0;
+  bool last_foreground = false;
   State(ObjectStore& store, ResponsesJobsOptions limits, Executor run)
-      : objects(store), options(limits), executor(std::move(run)) {}
+      : objects(store),
+        options(limits),
+        executor(std::move(run)),
+        foreground(std::min<size_t>(256, limits.max_jobs)) {}
+  size_t ReadyForeground() const {
+    const auto now = Clock::now();
+    for (size_t i = 0; i < foreground.size(); ++i) {
+      const auto& item = foreground[i];
+      if (item.ticket && !item.active && !item.closing && now >= item.next)
+        return i;
+    }
+    return foreground.size();
+  }
 };
 
 ResponsesJobs::ResponsesJobs(ObjectStore& objects, ResponsesJobsOptions options,
@@ -72,6 +101,89 @@ ResponsesJobs::ResponsesJobs(ObjectStore& objects, ResponsesJobsOptions options,
 ResponsesJobs::~ResponsesJobs() {
   RequestStop();
   Join();
+}
+
+ObjectReply ResponsesJobs::Reserve(const std::string& scope,
+                                   const std::string& id, uint64_t* ticket) {
+  if (!ticket || *ticket || scope.empty() || scope.size() > 256 || id.empty() ||
+      id.size() > 128)
+    return Error(500, "response_reconciliation_invalid",
+                 "Invalid lifecycle owner");
+  const std::lock_guard lock(state_->mutex);
+  if (state_->stopping || state_->failed)
+    return Error(503, "response_reconciliation_unavailable",
+                 "Lifecycle owner stopping");
+  size_t client_count = 0;
+  State::Foreground* available = nullptr;
+  for (auto& item : state_->foreground) {
+    if (!item.ticket) {
+      if (!available) available = &item;
+    } else if (scope == item.scope.data()) {
+      ++client_count;
+      if (id == item.id.data())
+        return Error(409, "response_already_owned",
+                     "Response already has a lifecycle owner");
+    }
+  }
+  if (!available || client_count >= state_->options.max_client_jobs)
+    return Error(429, "response_reconciliation_capacity",
+                 "Lifecycle metadata capacity exhausted");
+  *available = {};
+  std::memcpy(available->scope.data(), scope.data(), scope.size());
+  std::memcpy(available->id.data(), id.data(), id.size());
+  if (++state_->next_ticket == 0) ++state_->next_ticket;
+  available->ticket = *ticket = state_->next_ticket;
+  return {};
+}
+
+void ResponsesJobs::Close(uint64_t ticket, bool known_terminal) noexcept {
+  {
+    const std::lock_guard lock(state_->mutex);
+    for (auto& item : state_->foreground) {
+      if (item.ticket != ticket || !ticket || !item.active) continue;
+      if (known_terminal)
+        item = {};
+      else {
+        item.active = false;
+        item.next = Clock::now();
+      }
+      break;
+    }
+  }
+  state_->changed.notify_all();
+}
+
+void ResponsesJobs::ReconcileForeground(uint64_t ticket, std::string_view scope,
+                                        std::string_view id) noexcept {
+  bool terminal = false;
+  try {
+    StateAccess access{
+        std::string(scope), Clock::now() + std::chrono::seconds(2), {}};
+    const auto reply = ResponsesState(state_->objects)
+                           .Interrupt(std::string(id), access,
+                                      "response_execution_interrupted",
+                                      "Execution owner completed cleanup "
+                                      "without a confirmed terminal result");
+    terminal = reply.ok() || reply.http_status == 404;
+  } catch (...) {
+    // Preserve the slot and retry budget even when constructing a read fails.
+  }
+  const std::lock_guard lock(state_->mutex);
+  for (auto& item : state_->foreground) {
+    if (item.ticket != ticket || !item.closing) continue;
+    if (terminal) {
+      item = {};
+      ++state_->foreground_reconciled;
+    } else {
+      ++state_->foreground_errors;
+      ++item.attempts;
+      item.closing = false;
+      item.next = Clock::now() + (item.attempts % 3 == 0
+                                      ? std::chrono::milliseconds(60000)
+                                      : std::chrono::milliseconds(250));
+    }
+    break;
+  }
 }
 
 ObjectReply ResponsesJobs::Submit(std::unique_ptr<ResponsesExecution> run,
@@ -424,14 +536,26 @@ void ResponsesJobs::Worker() noexcept {
   try {
     for (;;) {
       std::shared_ptr<Job> job;
+      std::optional<State::Foreground> foreground;
       bool reconcile = false;
       {
         std::unique_lock lock(state_->mutex);
         state_->changed.wait_for(lock, std::chrono::milliseconds(250), [&] {
-          return state_->stopping || !state_->queue.empty();
+          return state_->stopping || !state_->queue.empty() ||
+                 state_->ReadyForeground() < state_->foreground.size();
         });
         if (state_->queue.empty() && state_->stopping) return;
+        const auto next_foreground = state_->ReadyForeground();
+        const auto take_foreground = [&] {
+          auto& item = state_->foreground[next_foreground];
+          item.closing = true;
+          foreground = item;
+        };
+        if (next_foreground < state_->foreground.size() &&
+            !state_->last_foreground)
+          take_foreground();
         for (const auto& [_, candidate] : state_->jobs) {
+          if (foreground) break;
           if (candidate->stage == Job::Stage::kUncertain &&
               Clock::now() >= candidate->next_recovery) {
             job = candidate;
@@ -440,8 +564,11 @@ void ResponsesJobs::Worker() noexcept {
             break;
           }
         }
-        if (!job && state_->queue.empty()) continue;
-        if (!job) {
+        if (!job && !foreground && state_->queue.empty() &&
+            next_foreground < state_->foreground.size())
+          take_foreground();
+        if (!job && !foreground && state_->queue.empty()) continue;
+        if (!job && !foreground) {
           const auto rank = [&](const auto& candidate) {
             return (candidate->client.Index() + kMaxClients -
                     state_->last_client) %
@@ -457,8 +584,12 @@ void ResponsesJobs::Worker() noexcept {
           if (state_->stopping)
             job->control->Cancel(RequestControl::State::kShutdown);
         }
+        state_->last_foreground = foreground.has_value();
       }
-      if (reconcile)
+      if (foreground)
+        ReconcileForeground(foreground->ticket, foreground->scope.data(),
+                            foreground->id.data());
+      else if (reconcile)
         Reconcile(job);
       else
         Execute(job);
@@ -539,6 +670,14 @@ ResponsesJobsHealth ResponsesJobs::Health() const {
   health.interrupted = state_->interrupted;
   health.recovery_errors = state_->recovery_errors;
   health.recovery_pending = state_->recovery_pending;
+  health.foreground_reconciled = state_->foreground_reconciled;
+  health.foreground_errors = state_->foreground_errors;
+  for (const auto& item : state_->foreground) {
+    if (!item.ticket) continue;
+    ++health.foreground_owned;
+    health.foreground_active += item.active;
+    health.foreground_pending += !item.active;
+  }
   for (const auto& [_, job] : state_->jobs) {
     health.queued += job->stage == Job::Stage::kQueued;
     health.running += job->stage == Job::Stage::kRunning;

@@ -98,6 +98,21 @@ void ChatServer::HandleChat(int fd, const std::string& body,
   auto* context = detail::HttpResponseContext::Current(fd);
   auto* state = context ? context->State() : &response;
   std::optional<ResponsesExecution> responses;
+  ScopeExit close_responses([&] {
+    if (!responses) return;
+    try {
+      const auto closed = responses->CloseUnfinished();
+      if (!closed.ok())
+        std::fprintf(stderr,
+                     "[responses] state close id=%s code=%s unknown=%d\n",
+                     responses->Id().c_str(), closed.code.c_str(),
+                     closed.commit_unknown);
+    } catch (...) {
+      // Cleanup ownership has already transferred through its nonallocating
+      // exit guard. Auxiliary state failure never restarts the model.
+      std::fprintf(stderr, "[responses] state close unavailable\n");
+    }
+  });
   ScopeExit clear_response_hooks([&] {
     if (context) {
       context->SetResponsesStream(nullptr, nullptr, nullptr);
@@ -112,7 +127,7 @@ void ChatServer::HandleChat(int fd, const std::string& body,
                   "object_scope_unavailable");
         return;
       }
-      responses.emplace(*objects_);
+      responses.emplace(*objects_, background_.get(), true);
       context->SetResponsesStream(&ResponsesExecution::RenderStreamError,
                                   &*responses, responses->Sequence());
       context->SetErrorObserver(&ResponsesExecution::ObserveError, &*responses);
@@ -128,19 +143,6 @@ void ChatServer::HandleChat(int fd, const std::string& body,
   } catch (...) {
     std::fprintf(stderr, "[q4t] unknown request exception\n");
     detail::SendExceptionResponse(fd, *state);
-  }
-  if (responses) {
-    try {
-      const auto closed = responses->CloseUnfinished();
-      if (!closed.ok())
-        std::fprintf(stderr,
-                     "[responses] state close id=%s code=%s unknown=%d\n",
-                     responses->Id().c_str(), closed.code.c_str(),
-                     closed.commit_unknown);
-    } catch (...) {
-      // An auxiliary state failure never terminates/restarts the model.
-      std::fprintf(stderr, "[responses] state close unavailable\n");
-    }
   }
 }
 

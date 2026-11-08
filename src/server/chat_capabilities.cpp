@@ -84,6 +84,8 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"(,"application_state":{"profile":"q4t-objects-v1",)"
          R"("scope":"authenticated_client","isolated_io":true,)"
          R"("core_readiness_dependency":false,"runtime_limits":"/v1/config",)"
+         R"("controller_recovery":"single_owned_thread_bounded_backoff",)"
+         R"("foreground_reconciliation":"reserved_metadata_after_executor_cleanup",)"
          R"("unknown_commit":"retrieve_by_existing_identity_without_replay"})"
          R"(,"chat":{"messages":true,"raw_prompt":true,)"
          R"("messages_parse_response_default":true,)"
