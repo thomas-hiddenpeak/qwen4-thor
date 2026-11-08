@@ -102,14 +102,16 @@
     {
       "id": "A04",
       "required": true,
-      "state": "planned",
+      "state": "implementation_in_progress",
       "implementation": "工具选择/allowed_tools、legacy functions迁移、自定义工具形状、逐片参数/多调用流及完成语义",
       "acceptance": "标准客户端重组调用与参数；截断不执行工具、最终结果关联一致；不将只发终态冒充增量工具流",
       "depends_on": [
         "A01",
         "A02"
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/SERVE_TOOL_STREAM_2026-11-08.md"
+      ],
       "release": null
     },
     {

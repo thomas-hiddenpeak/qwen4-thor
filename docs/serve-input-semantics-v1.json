@@ -91,7 +91,7 @@
         "src/server/input_contract.cpp",
         "src/server/output_constraints.cpp"
       ],
-      "contract": "Function names unique. Auto/raw parameter schemas advisory, but parameters/properties must be objects. A named choice must exist when compiling tool arguments; none mode removes tools and intentionally does not compile their argument schemas."
+      "contract": "Function names unique. allowed_tools references declared unique names, filters template and grammar, and is checked again on actual output; required needs a nonempty subset, auto may be empty. Incremental tool fragments are provisional until successful whole-response terminal and EOF. Auto/raw parameter schemas advisory, but parameters/properties must be objects. A named choice must exist when compiling tool arguments; none mode removes tools and intentionally does not compile their argument schemas."
     },
     {
       "id": "constraint-combinations",
@@ -294,7 +294,7 @@
     "src/server/chat_plan.cpp": "2f8fcde8f721dd1f661e0607172a3dbd82e194d7d999971f2244f514bf3deab4",
     "src/server/chat_preflight.cpp": "9c16f641fb71793ed5d41bb36b7137a6b537b3a1100c220663aba5cfb1b6e9fc",
     "src/server/chat_prompt.cpp": "d79f99bff03d2d199e4e62b004fc187b6bb36055211921008d561c869577b4fd",
-    "src/server/chat_response_parser.cpp": "a48c77300bdc1310004173820a3c1d9566f9ccdd37e43368c48484bf832ca4e3",
+    "src/server/chat_response_parser.cpp": "d89f111443a6d114fef779cf610b3b80a891645105bb79c4596c16b540c2f4a2",
     "src/server/chat_scheduler.cpp": "2b6d315bfd12609e343010852f7c15b8248fe5180359a3d7b49d3c1db5b8d1fc",
     "src/server/chat_server.cpp": "19c040b20e6f1f1cde9d37e23477b2bfa65c4b38ab09cfacdef9281522fda095",
     "src/server/chat_template.cpp": "eaa57515f4b0cd4be6c8fd4a820e3ace84ceeb1d0cb6e9b09ff49d2fe6f3c4cf",
@@ -304,7 +304,7 @@
     "src/server/input_contract.cpp": "ad9adbffc9638792ec15debeebee803fb43d2085f639281dabd6230146c5cf6a",
     "src/server/media_admission.cpp": "11461c31fed0db43fe68e16680812641c0e51371585c216673e4fe2e54500393",
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
-    "src/server/output_constraints.cpp": "19529eb9ae9fa51c08f96c20ae0d4c48a5468a7ee6ba31f360fbd27ecef913c8",
+    "src/server/output_constraints.cpp": "f0d34bf11876d142e28adb02fe5c9d881595a052607aba986d717e563d287843",
     "src/server/output_schema.cpp": "d1ac1506c823dc128d8f2c95e5489c90d360813b35b37b2bfd52a9bbc512315d",
     "src/server/prediction.cpp": "7e8ccdf7c44dd5c8245230577d42eb7d4cd17c6e2efcf5534a02e6744815733f",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",

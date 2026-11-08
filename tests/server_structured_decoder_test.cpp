@@ -311,3 +311,18 @@ Q4T_TEST(structured_decoder_budget_closure_and_utf8_share_accepted_tokens) {
   }
   return true;
 }
+
+Q4T_TEST(structured_decoder_allowed_subset_masks_disallowed_function) {
+  for (const auto* mode : {"auto", "required"}) {
+    const auto plan = Plan(Tools(
+        std::string(R"({"type":"allowed_tools","allowed_tools":{"mode":")") +
+            mode +
+            R"(","tools":[{"type":"function","function":{"name":"noop"}}]}})",
+        true));
+    Q4T_CHECK(Exact(
+        plan, "<tool_call>\n<function=noop>\n\n</function>\n</tool_call>"));
+    Q4T_CHECK(!Exact(plan, kCall));
+    Q4T_CHECK(Exact(plan, "plain text") == (std::string(mode) == "auto"));
+  }
+  return true;
+}

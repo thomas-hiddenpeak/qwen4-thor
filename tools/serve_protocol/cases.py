@@ -35,6 +35,29 @@ def cases():
             fixture=dict(raw=json.dumps(request, ensure_ascii=False, separators=(",", ":"))
                          if raw is None else raw, **config)))
 
+    references = [dict(type="function", function=dict(name="read"))]
+    def allowed(mode="auto", refs=None):
+        return dict(type="allowed_tools", allowed_tools=dict(mode=mode,
+            tools=deepcopy(references if refs is None else refs)))
+    for mode in ("auto", "required"):
+        add("allowed-tools-"+mode, dict(base(), tools=[tool(),tool("noop")],
+            tool_choice=allowed(mode)), field="tool_choice")
+    add("allowed-tools-empty-auto", dict(base(), tool_choice=allowed(refs=[])), field="tool_choice")
+    add("allowed-tools-empty-required", dict(base(), tools=[tool()],
+        tool_choice=allowed("required",[])), False, field="tool_choice")
+    for name,choice in (("mode",allowed("none")),
+        ("missing",dict(type="allowed_tools")),
+        ("scalar",dict(type="allowed_tools",allowed_tools=1)),
+        ("missing-list",dict(type="allowed_tools",allowed_tools=dict(mode="auto"))),
+        ("ref-type",allowed(refs=[dict(type="other",function=dict(name="read"))])),
+        ("ref-fields",allowed(refs=[dict(type="function",function=dict(name="read",extra=1))]))):
+        add("allowed-tools-bad-"+name, dict(base(),tools=[tool()],tool_choice=choice),
+            False,field="tool_choice")
+    for name,refs in (("unknown",[dict(type="function",function=dict(name="absent"))]),
+                       ("duplicate",references*2)):
+        add("allowed-tools-"+name,dict(base(),tools=[tool()],tool_choice=allowed(refs=refs)),
+            False,semantic=True,field="tool_choice")
+
     prediction = dict(type="content", content="ok")
     for label, value in (("string", prediction), ("empty", dict(type="content", content="")),
             ("parts", dict(type="content", content=[dict(type="text", text="a"), dict(type="text", text="b")]))):

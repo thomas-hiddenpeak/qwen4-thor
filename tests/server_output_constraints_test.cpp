@@ -187,11 +187,12 @@ Q4T_TEST(output_constraints_schema_profile_rejects_silent_downgrade) {
 Q4T_TEST(output_schema_array_bounds_exact_spelling) {
   for (const auto* key : {"minItems", "maxItems"}) {
     for (const auto* value : {"1.0000000000000001", "63.9999999999999999",
-                             "1.5", "-1", "65", "true"}) {
-      auto schema = Parse(R"({"type":"object","properties":{"xs":{)"
-          R"("type":"array","items":{"type":"string"},")" +
-          std::string(key) + "\":" + value +
-          R"(}},"required":["xs"],"additionalProperties":false})");
+                              "1.5", "-1", "65", "true"}) {
+      auto schema =
+          Parse(R"({"type":"object","properties":{"xs":{)"
+                R"("type":"array","items":{"type":"string"},")" +
+                std::string(key) + "\":" + value +
+                R"(}},"required":["xs"],"additionalProperties":false})");
       Q4T_CHECK(!q4t::server::ValidateOutputSchema(schema, true).ok());
     }
   }
@@ -228,7 +229,9 @@ Q4T_TEST(output_constraints_batch_barrier_and_named_choice) {
     std::vector<ResponseDelta> deltas;
     Q4T_CHECK(parser.Init(request, kClosed, "id", false).ok());
     Q4T_CHECK(!parser.Append(text, &deltas).ok());
-    Q4T_CHECK(deltas.empty());
+    // A preceding valid call may have emitted provisional fragments; a later
+    // invalid call must still prevent the whole batch's successful terminal.
+    Q4T_CHECK(!parser.Finish(false, &deltas));
   }
   const auto named = Request(
       R"("tool_choice":{"type":"function","function":{"name":"read"}})");
@@ -249,17 +252,21 @@ Q4T_TEST(output_constraints_all_chunk_splits_and_tool_errors) {
     Q4T_CHECK(parser.Init(request, kClosed, "id", false).ok());
     Q4T_CHECK(parser.Append(text.substr(0, split), &deltas).ok());
     Q4T_CHECK(parser.Append(text.substr(split), &deltas).ok());
-    Q4T_CHECK(deltas.empty());
+    Q4T_CHECK(!deltas.empty());
     Q4T_CHECK(parser.Finish(false, &deltas).ok());
     size_t calls = 0;
+    std::string arguments;
     for (const auto& delta : deltas) {
       if (delta.kind != ResponseDelta::Kind::kTool) continue;
-      ++calls;
-      Q4T_CHECK(delta.call.id == "call_id_0" && delta.call.name == "read");
-      Q4T_CHECK(Parse(delta.call.arguments).GetString("path") ==
-                "docs/STATUS.md");
+      if (delta.tool_start) {
+        ++calls;
+        Q4T_CHECK(delta.call.id == "call_id_0" && delta.call.name == "read");
+      }
+      Q4T_CHECK(delta.call.index == 0);
+      arguments += delta.call.arguments;
     }
     Q4T_CHECK(calls == 1);
+    Q4T_CHECK(Parse(arguments).GetString("path") == "docs/STATUS.md");
   }
   for (const auto* args :
        {"<parameter=path>other</parameter><parameter=line>1</parameter>",
@@ -294,9 +301,10 @@ Q4T_TEST(output_constraints_none_required_and_length_terminals) {
   std::vector<ResponseDelta> deltas;
   Q4T_CHECK(parser.Init(request, kClosed, "id", false).ok());
   Q4T_CHECK(parser.Append(Call(), &deltas).ok());
-  Q4T_CHECK(!parser.Finish(true, &deltas).ok() && deltas.empty());
+  Q4T_CHECK(!deltas.empty() && !parser.Finish(true, &deltas));
   const auto none = Request(R"("tool_choice":"none")");
   ChatResponseParser forbidden;
+  deltas.clear();
   Q4T_CHECK(forbidden.Init(none, kClosed, "id", false).ok());
   Q4T_CHECK(!forbidden.Append(Call(), &deltas).ok() && deltas.empty());
   return true;
@@ -375,5 +383,68 @@ Q4T_TEST(output_constraints_template_filters_preserve_request) {
   Q4T_CHECK(
       single.GetArray("tools")->array[0].Find("function")->GetString("name") ==
       "noop");
+  return true;
+}
+
+Q4T_TEST(output_constraints_allowed_tools_filter_template_grammar_and_output) {
+  for (const auto* mode : {"auto", "required"}) {
+    const auto request = Request(
+        std::string(
+            R"("tool_choice":{"type":"allowed_tools","allowed_tools":{"mode":")") +
+        mode +
+        R"(","tools":[{"type":"function","function":{"name":"noop"}}]}})");
+    OutputConstraints plan;
+    Q4T_CHECK(q4t::server::PlanOutputConstraints(request, &plan));
+    Q4T_CHECK(plan.active && plan.restrict_tools && plan.AllowsTool("noop"));
+    Q4T_CHECK(!plan.AllowsTool("read"));
+    Q4T_CHECK(plan.structural_tag.find("<function=noop>") != std::string::npos);
+    Q4T_CHECK(plan.structural_tag.find("<function=read>") == std::string::npos);
+    const auto filtered = q4t::server::ConstraintTemplateRequest(request, plan);
+    Q4T_CHECK(filtered.GetArray("tools")->array.size() == 1);
+    std::string prompt;
+    Q4T_CHECK(q4t::server::RenderChatPrompt(filtered, {"q"}, &prompt));
+    Q4T_CHECK(prompt.find("\"name\": \"noop\"") != prompt.npos);
+    Q4T_CHECK(prompt.find("\"name\": \"read\"") == prompt.npos);
+    for (const auto* name : {"noop", "read"}) {
+      ChatResponseParser parser;
+      std::vector<ResponseDelta> deltas;
+      Q4T_CHECK(parser.Init(request, kClosed, "id", false));
+      Q4T_CHECK(parser.Append(Call(name, ""), &deltas).ok() ==
+                (std::string(name) == "noop"));
+      Q4T_CHECK(parser.Finish(false, &deltas).ok() ==
+                (std::string(name) == "noop"));
+    }
+  }
+  const auto empty = Request(
+      R"("tool_choice":{"type":"allowed_tools","allowed_tools":{"mode":"auto","tools":[]}})");
+  OutputConstraints plan;
+  Q4T_CHECK(q4t::server::PlanOutputConstraints(empty, &plan));
+  Q4T_CHECK(!plan.AllowsTool("read") && !plan.AllowsTool("noop"));
+  Q4T_CHECK(q4t::server::ConstraintTemplateRequest(empty, plan)
+                .GetArray("tools")
+                ->array.empty());
+  return true;
+}
+
+Q4T_TEST(output_constraints_allowed_tools_errors_are_precise) {
+  for (
+      const auto& [choice, path] :
+      std::vector<std::pair<std::string, std::string>>{
+          {R"({"mode":"none","tools":[]})", "mode"},
+          {R"({"mode":"required","tools":[]})", "tools"},
+          {R"({"mode":"auto","tools":[{"type":"function","function":{"name":"absent"}}]})",
+           "tools[0].function.name"},
+          {R"({"mode":"auto","tools":[{"type":"function","function":{"name":"read"}},{"type":"function","function":{"name":"read"}}]})",
+           "tools[1].function.name"},
+          {R"({"mode":"auto","tools":[{"type":"function","function":{"name":"read","extra":1}}]})",
+           "tools[0].function.extra"}}) {
+    const auto request =
+        Request(R"("tool_choice":{"type":"allowed_tools","allowed_tools":)" +
+                choice + '}');
+    OutputConstraints plan;
+    std::string param;
+    Q4T_CHECK(!q4t::server::PlanOutputConstraints(request, &plan, &param));
+    Q4T_CHECK(param == "tool_choice.allowed_tools." + path);
+  }
   return true;
 }

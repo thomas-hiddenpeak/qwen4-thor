@@ -4,6 +4,7 @@
 #include <string>
 #include <string_view>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 #include "q4t/io/json.h"
@@ -30,6 +31,9 @@ struct ResponseDelta {
   // They are internal metadata, never serialized into the OpenAI response.
   size_t source_begin = 0;
   size_t source_end = 0;
+  // Only the first fragment carries the call ID/type/name. Later fragments
+  // append arguments for the same index; none authorizes tool execution.
+  bool tool_start = true;
   std::string ToJson() const;
 };
 
@@ -59,6 +63,10 @@ class ChatResponseParser {
   enum class Region { kContent, kReasoning, kTool };
   Status Fail(const std::string& message);
   Status ParseTool(std::string_view block, ResponseToolCall* call) const;
+  Status StreamTool(size_t available, bool complete,
+                    std::vector<ResponseDelta>* deltas);
+  void ToolFragment(std::string text, bool start,
+                    std::vector<ResponseDelta>* deltas);
   void Emit(Region region, std::string_view text,
             std::vector<ResponseDelta>* deltas);
 
@@ -73,6 +81,18 @@ class ChatResponseParser {
   size_t pending_offset_ = 0;
   size_t tool_scan_ = 0;
   size_t tool_count_ = 0;
+  ResponseToolCall partial_call_;
+  size_t tool_parse_offset_ = 0;
+  size_t tool_value_begin_ = 0;
+  size_t tool_value_sent_ = 0;
+  size_t tool_value_scan_ = 0;
+  bool tool_header_ = false;
+  bool tool_parameter_ = false;
+  bool tool_string_ = false;
+  bool tool_string_started_ = false;
+  bool tool_function_closed_ = false;
+  std::string tool_parameter_name_;
+  std::unordered_set<std::string> tool_parameters_;
   std::unordered_map<std::string, const io::Json*> tools_;
   std::string content_;
   std::string reasoning_;

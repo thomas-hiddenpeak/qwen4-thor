@@ -24,7 +24,7 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
   const bool constrained = kStructuredDecodingAvailable;
   const bool cleanup_pending = detail::GrammarCleanupPending();
   const std::string options =
-      constrained ? R"("tool_choice":["auto","none","required","named"],)"
+      constrained ? R"("tool_choice":["auto","none","required","named","allowed_tools"],)"
                     R"("parallel_tool_calls":[true,false],"strict":true,)"
                     R"("constrained_decoding":true,)"
                   : R"("tool_choice":["auto"],"parallel_tool_calls":[true],)"
@@ -50,7 +50,8 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("frequency_penalty","presence_penalty","stream",)"
          R"("stream_options","user"],)"
          R"("reasoning_field":"reasoning_content",)"
-         R"("stream_tool_arguments":"complete_call",)"
+         R"("stream_tool_arguments":"incremental",)"
+         R"("tool_execution_barrier":"successful_terminal_and_eof",)"
          R"("stream_terminal_order":["finish","usage_if_requested","DONE"],)"
          R"("parse_error":{"http_status":502,"sse_error_then_done":true,)"
          R"("successful_finish":false},"sampling":"target_logits",)"
@@ -286,7 +287,7 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("unsupported":)" +
          (constrained
               ? R"(["full_json_schema"])"
-              : R"(["tool_choice_none","tool_choice_required","tool_choice_named",)"
+              : R"(["tool_choice_none","tool_choice_required","tool_choice_named","tool_choice_allowed_tools",)"
                 R"("parallel_tool_calls_false","strict_tools",)"
                 R"("json_schema_response"])") +
          '}';

@@ -156,8 +156,11 @@ size_t Lookahead(std::string_view text, std::string_view marker) {
 }  // namespace
 
 std::string ResponseDelta::ToJson() const {
-  if (kind == Kind::kTool)
-    return "{\"tool_calls\":[" + ToolJson(call, true) + "]}";
+  if (kind == Kind::kTool) {
+    if (tool_start) return "{\"tool_calls\":[" + ToolJson(call, true) + "]}";
+    return "{\"tool_calls\":[{\"index\":" + std::to_string(call.index) +
+           ",\"function\":{\"arguments\":" + Quote(call.arguments) + "}}]}";
+  }
   const auto field = kind == Kind::kReasoning
                          ? ReasoningFieldName(reasoning_field)
                          : "content";
@@ -240,11 +243,8 @@ Status ChatResponseParser::ParseTool(std::string_view block,
   const auto end = block.find('>');
   if (end == block.npos) return Status::Fail("incomplete function name");
   call->name = std::string(block.substr(10, end - 10));
-  if (constraints_.choice == OutputConstraints::ToolChoice::kNone)
-    return Status::Fail("tool call forbidden by tool_choice=none");
-  if (constraints_.choice == OutputConstraints::ToolChoice::kNamed &&
-      call->name != constraints_.named_tool)
-    return Status::Fail("generated tool does not match named choice");
+  if (!constraints_.AllowsTool(call->name))
+    return Status::Fail("generated tool forbidden by tool_choice");
   if ((!constraints_.parallel ||
        constraints_.choice == OutputConstraints::ToolChoice::kNamed) &&
       tool_count_ != 0)
@@ -291,6 +291,177 @@ Status ChatResponseParser::ParseTool(std::string_view block,
   return Status();
 }
 
+void ChatResponseParser::ToolFragment(std::string text, bool start,
+                                      std::vector<ResponseDelta>* deltas) {
+  partial_call_.arguments += text;
+  ResponseDelta delta;
+  delta.kind = ResponseDelta::Kind::kTool;
+  delta.call.index = partial_call_.index;
+  if (start) {
+    delta.call.id = partial_call_.id;
+    delta.call.name = partial_call_.name;
+  }
+  delta.call.arguments = std::move(text);
+  delta.tool_start = start;
+  deltas->push_back(std::move(delta));
+}
+
+Status ChatResponseParser::StreamTool(size_t available, bool complete,
+                                      std::vector<ResponseDelta>* deltas) {
+  // The original block remains bounded and is independently validated at its
+  // closing tag. Incremental fragments are provisional until the successful
+  // response terminal. No parser, SDK or tool runner dispatches them here.
+  const std::string_view block(pending_.data(), available);
+  const auto whitespace = [&](size_t* offset) {
+    while (*offset < block.size() &&
+           std::string_view(" \t\r\n").find(block[*offset]) != block.npos)
+      ++*offset;
+  };
+  if (!tool_header_) {
+    whitespace(&tool_parse_offset_);
+    const auto rest = block.substr(tool_parse_offset_);
+    constexpr std::string_view prefix = "<function=";
+    if (prefix.starts_with(rest) && !complete) return Status();
+    if (!rest.starts_with(prefix)) return Status::Fail("invalid function tag");
+    const auto end = rest.find('>');
+    if (end == rest.npos) {
+      if (rest.size() > 266 || complete)
+        return Status::Fail("incomplete function name");
+      return Status();
+    }
+    partial_call_.name =
+        std::string(rest.substr(prefix.size(), end - prefix.size()));
+    if (!tools_.contains(partial_call_.name) ||
+        !constraints_.AllowsTool(partial_call_.name))
+      return Status::Fail("unknown or forbidden generated tool");
+    if (tool_count_ == kMaxCalls ||
+        ((!constraints_.parallel ||
+          constraints_.choice == OutputConstraints::ToolChoice::kNamed) &&
+         tool_count_))
+      return Status::Fail("too many generated tool calls");
+    partial_call_.index = tool_count_;
+    partial_call_.id = id_prefix_ + std::to_string(tool_count_);
+    tool_parse_offset_ += end + 1;
+    tool_header_ = true;
+    ToolFragment("{", true, deltas);
+  }
+  while (!tool_function_closed_) {
+    if (!tool_parameter_) {
+      whitespace(&tool_parse_offset_);
+      const auto rest = block.substr(tool_parse_offset_);
+      constexpr std::string_view closing = "</function>";
+      constexpr std::string_view prefix = "<parameter=";
+      if (rest.starts_with(closing)) {
+        tool_parse_offset_ += closing.size();
+        tool_function_closed_ = true;
+        break;
+      }
+      if (!complete && (closing.starts_with(rest) || prefix.starts_with(rest)))
+        return Status();
+      if (!rest.starts_with(prefix))
+        return Status::Fail("invalid parameter or function closing tag");
+      const auto end = rest.find('>');
+      if (end == rest.npos) {
+        if (rest.size() > 267 || complete)
+          return Status::Fail("incomplete parameter name");
+        return Status();
+      }
+      tool_parameter_name_ =
+          std::string(rest.substr(prefix.size(), end - prefix.size()));
+      const auto& name = tool_parameter_name_;
+      if (name.empty() || name.size() > 256 ||
+          name.find_first_of("<>\r\n") != name.npos ||
+          !tool_parameters_.insert(name).second)
+        return Status::Fail("invalid or duplicate tool parameter");
+      const auto* parameters =
+          tools_.at(partial_call_.name)->Find("parameters");
+      const auto* properties =
+          parameters ? parameters->Find("properties") : nullptr;
+      const auto* schema = properties ? properties->Find(name) : nullptr;
+      const auto* type = schema ? schema->Find("type") : nullptr;
+      tool_string_ = type && ((type->IsString() && type->str == "string") ||
+                              (type->IsArray() && type->array.size() == 1 &&
+                               type->array[0].IsString() &&
+                               type->array[0].str == "string"));
+      tool_value_begin_ = tool_parse_offset_ + end + 1;
+      tool_value_scan_ = tool_value_begin_;
+      tool_value_sent_ = tool_value_begin_;
+      tool_string_started_ = false;
+      tool_parameter_ = true;
+      ToolFragment((tool_parameters_.size() == 1 ? "" : ",") + Quote(name) +
+                       ':' + (tool_string_ ? "\"" : ""),
+                   false, deltas);
+    }
+    constexpr std::string_view closing = "</parameter>";
+    const auto close = block.find(closing, tool_value_scan_);
+    const bool ended = close != block.npos;
+    const size_t safe =
+        ended ? close
+              : block.size() -
+                    Lookahead(block.substr(tool_value_begin_), closing);
+    tool_value_scan_ =
+        block.size() > closing.size()
+            ? std::max(tool_value_begin_, block.size() - closing.size())
+            : tool_value_begin_;
+    if (tool_string_) {
+      if (!tool_string_started_) {
+        const auto raw =
+            block.substr(tool_value_begin_, safe - tool_value_begin_);
+        if (!ended && (raw.empty() || raw == "\r")) return Status();
+        if (raw.starts_with("\r\n"))
+          tool_value_sent_ += 2;
+        else if (raw.starts_with('\n'))
+          ++tool_value_sent_;
+        tool_string_started_ = true;
+      }
+      size_t end = safe;
+      if (ended) {
+        const auto raw =
+            block.substr(tool_value_sent_, safe - tool_value_sent_);
+        if (raw.ends_with("\r\n"))
+          end -= 2;
+        else if (raw.ends_with('\n'))
+          --end;
+      } else {
+        // Hold a possible framing CRLF and never split a UTF-8 codepoint.
+        end = safe - tool_value_sent_ > 2 ? safe - 2 : tool_value_sent_;
+        while (end > tool_value_sent_ &&
+               (static_cast<unsigned char>(block[end]) & 0xc0) == 0x80)
+          --end;
+      }
+      if (end > tool_value_sent_) {
+        auto escaped =
+            Quote(block.substr(tool_value_sent_, end - tool_value_sent_));
+        ToolFragment(escaped.substr(1, escaped.size() - 2), false, deltas);
+        tool_value_sent_ = end;
+      }
+      if (ended) ToolFragment("\"", false, deltas);
+    } else if (ended) {
+      const auto* parameters =
+          tools_.at(partial_call_.name)->Find("parameters");
+      const auto* properties =
+          parameters ? parameters->Find("properties") : nullptr;
+      std::string value;
+      auto status = Argument(
+          block.substr(tool_value_begin_, close - tool_value_begin_),
+          properties ? properties->Find(tool_parameter_name_) : nullptr,
+          &value);
+      if (!status) return status;
+      ToolFragment(std::move(value), false, deltas);
+    }
+    if (!ended)
+      return complete ? Status::Fail("incomplete tool parameter") : Status();
+    tool_parse_offset_ = close + closing.size();
+    tool_parameter_ = false;
+  }
+  whitespace(&tool_parse_offset_);
+  if (tool_parse_offset_ != block.size())
+    return Status::Fail("data after function closing tag");
+  if (complete && !tool_function_closed_)
+    return Status::Fail("incomplete function closing tag");
+  return Status();
+}
+
 Status ChatResponseParser::Append(std::string_view text,
                                   std::vector<ResponseDelta>* deltas) {
   if (!status_) return status_;
@@ -324,6 +495,8 @@ Status ChatResponseParser::Append(std::string_view text,
               : end;
       if (body_size > kMaxToolBytes) return Fail("tool block exceeds 1 MiB");
       if (end == pending_.npos) {
+        const auto status = StreamTool(body_size, false, deltas);
+        if (!status) return Fail(status.message());
         tool_scan_ = pending_.size() > kToolClose.size()
                          ? pending_.size() - kToolClose.size()
                          : 0;
@@ -334,10 +507,14 @@ Status ChatResponseParser::Append(std::string_view text,
       ResponseToolCall call;
       auto status = ParseTool(std::string_view(pending_).substr(0, end), &call);
       if (!status) return Fail(status.message());
+      status = StreamTool(end, true, deltas);
+      if (!status) return Fail(status.message());
+      if (partial_call_.arguments + '}' != call.arguments ||
+          partial_call_.name != call.name)
+        return Fail("incremental tool arguments differ from validated call");
+      ToolFragment("}", false, deltas);
       ++tool_count_;
       if (collect_) calls_.push_back(call);
-      auto* target = constraints_.active ? &deferred_ : deltas;
-      target->push_back({ResponseDelta::Kind::kTool, {}, std::move(call)});
       pending_offset_ += end + kToolClose.size();
       pending_.erase(0, end + kToolClose.size());
       region_ = Region::kContent;
@@ -347,7 +524,7 @@ Status ChatResponseParser::Append(std::string_view text,
     auto found = pending_.find(marker);
     size_t keep = Lookahead(pending_, marker);
     if (region_ == Region::kContent &&
-        (!tools_.empty() ||
+        (!tools_.empty() || constraints_.restrict_tools ||
          constraints_.choice == OutputConstraints::ToolChoice::kNone)) {
       const auto tool = pending_.find(kToolOpen);
       if (tool != pending_.npos && (found == pending_.npos || tool < found)) {
@@ -371,6 +548,12 @@ Status ChatResponseParser::Append(std::string_view text,
               : marker == kThinkOpen ? Region::kReasoning
                                      : Region::kContent;
     tool_scan_ = 0;
+    if (region_ == Region::kTool) {
+      partial_call_ = {};
+      tool_parse_offset_ = 0;
+      tool_header_ = tool_parameter_ = tool_function_closed_ = false;
+      tool_parameters_.clear();
+    }
   }
   return Status();
 }
@@ -400,8 +583,8 @@ Status ChatResponseParser::Finish(bool length_limited,
       const auto status = ValidateConstrainedContent(*request_, content_);
       if (!status) return Fail(status.message());
     }
-    // No usable content/reasoning/tool frames escape before the entire
-    // constrained response passes. A later invalid call invalidates the batch.
+    // Structured JSON content remains deferred; tool fragments are provisional
+    // and become executable only after this whole-response terminal succeeds.
     for (auto& delta : deferred_) deltas->push_back(std::move(delta));
     deferred_.clear();
   }

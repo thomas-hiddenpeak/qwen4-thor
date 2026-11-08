@@ -102,6 +102,12 @@ A03实现范围已交付，A01/A02剩余合同、A04工具与A05组合等继续�
 总目标仍active；不把子组完成当停止点。下一步工具选择/legacy/
 custom与真实增量参数流，不继续扩大本组测试。
 
+[A04工具选择与增量流](SERVE_TOOL_STREAM_2026-11-08.md)进入开发：
+allowed_tools选择/grammar/模板/输出校验与工具参数增量流已实现；
+31 C++、28 schema、9 Python、4 JS及3驱动检查通过，最终构建
+零警告。保留准备/旧夹具/导入路径失败；下一步1启动/7Chat短验。
+legacy/custom继续排在本组后，不因分组消失。默认d61c98b7保持。
+
 工作分支`codex/serve-resilience-cd`继续隔离PR #22已接受发布；
 PR #22此前34b06bc1两项CI成功、CLEAN。当前默认服务包以顶部N01—N03交付为准；
 实现、验证、安装和合main分别记录。

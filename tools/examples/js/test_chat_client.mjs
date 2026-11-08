@@ -294,3 +294,48 @@ test('prediction inconsistent counts fail closed', () => {
     assert.throws(() => parseJsonWire(Buffer.from(JSON.stringify(data))), ProtocolError);
   }
 });
+
+test('tool stream provisional fragments cannot complete before terminal and EOF', async () => {
+  let controller, completed = false;
+  const api = new ChatClient(OpenAI, { timeoutMs: 2000, fetchImpl: async () =>
+    new Response(new ReadableStream({ start(c) { controller = c; } }),
+      { headers: { 'content-type': 'text/event-stream' } }) });
+  const msg = toolMessage();
+  const first = event({ tool_calls: [{ index: 0, id: 'a', type: 'function',
+    function: { name: 'read', arguments: '{"path":"docs/' } }] });
+  const result = api.chat(request(true)).then(value => { completed = true; return value; });
+  while (!controller) await new Promise(resolve => setTimeout(resolve, 1));
+  controller.enqueue(encode([event({ role: 'assistant', content: '' }), first], false));
+  await new Promise(resolve => setTimeout(resolve, 10));
+  assert.equal(completed, false);
+  controller.enqueue(encode([event({ tool_calls: [{ index: 0, function: {
+    arguments: 'MODEL.md","start_line":1,"line_count":8}' } }] })], false));
+  await new Promise(resolve => setTimeout(resolve, 10));
+  assert.equal(completed, false);
+  controller.enqueue(encode([event({}, 'tool_calls'), streamEvents().at(-1)]));
+  await new Promise(resolve => setTimeout(resolve, 10));
+  assert.equal(completed, false);
+  controller.close();
+  const actual = await result;
+  assert.equal(completed, true);
+  assert.deepEqual(actual.message.tool_calls, [msg.tool_calls[0]]);
+});
+
+test('tool stream later error invalidates all earlier complete fragments', async () => {
+  const msg = toolMessage(), events = [event({ role: 'assistant', content: '' })];
+  for (const [index, call] of msg.tool_calls.entries()) {
+    events.push(event({ tool_calls: [{ index, id: call.id, type: 'function',
+      function: { name: call.function.name, arguments: '' } }] }));
+    for (const argumentsPart of call.function.arguments)
+      events.push(event({ tool_calls: [{ index, function: { arguments: argumentsPart } }] }));
+  }
+  events.push({ error: { code: 'structured_output_incomplete', message: 'output budget exhausted' } });
+  const run = client(encode(events), { stream: true });
+  let executions = 0;
+  await assert.rejects(async () => {
+    const value = await run.api.chat(request(true));
+    for (const _ of prepareToolCalls(value, { read: () => {} })) executions++;
+  });
+  assert.equal(executions, 0);
+  assert.equal(run.requests.length, 1);
+});

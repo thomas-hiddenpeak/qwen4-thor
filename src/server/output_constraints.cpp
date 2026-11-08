@@ -97,6 +97,55 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
         out->choice = OutputConstraints::ToolChoice::kRequired;
       else if (choice->str != "auto")
         return invalid("tool_choice", "invalid tool_choice");
+    } else if (choice->GetString("type") == "allowed_tools") {
+      auto status = Fields(*choice, {"type", "allowed_tools"}, error_param,
+                           "tool_choice");
+      if (!status) return status;
+      const auto* allowed = choice->Find("allowed_tools");
+      if (!allowed)
+        return invalid("tool_choice.allowed_tools", "missing allowed tools");
+      status = Fields(*allowed, {"mode", "tools"}, error_param,
+                      "tool_choice.allowed_tools");
+      if (!status) return status;
+      const auto mode = allowed->GetString("mode");
+      if (mode != "auto" && mode != "required")
+        return invalid("tool_choice.allowed_tools.mode", "invalid mode");
+      out->choice = mode == "required"
+                        ? OutputConstraints::ToolChoice::kRequired
+                        : OutputConstraints::ToolChoice::kAuto;
+      const auto* list = allowed->GetArray("tools");
+      if (!list)
+        return invalid("tool_choice.allowed_tools.tools", "expected array");
+      out->restrict_tools = true;
+      std::unordered_set<std::string> seen;
+      for (size_t i = 0; i < list->array.size(); ++i) {
+        const auto& tool = list->array[i];
+        const auto path =
+            "tool_choice.allowed_tools.tools[" + std::to_string(i) + ']';
+        status = Fields(tool, {"type", "function"}, error_param, path);
+        if (!status) return status;
+        if (tool.GetString("type") != "function")
+          return invalid(path + ".type", "expected function reference");
+        const auto* function = tool.Find("function");
+        if (!function) return invalid(path + ".function", "missing reference");
+        status = Fields(*function, {"name"}, error_param, path + ".function");
+        if (!status) return status;
+        const auto name = function->GetString("name");
+        if (!SafeName(name) || !seen.insert(name).second)
+          return invalid(path + ".function.name", "invalid or duplicate name");
+        const auto* definitions = request.GetArray("tools");
+        if (!definitions ||
+            std::none_of(definitions->array.begin(), definitions->array.end(),
+                         [&](const io::Json& item) {
+                           const auto* fn = item.Find("function");
+                           return fn && fn->GetString("name") == name;
+                         }))
+          return invalid(path + ".function.name", "tool is not declared");
+        out->allowed_tools.push_back(name);
+      }
+      if (mode == "required" && out->allowed_tools.empty())
+        return invalid("tool_choice.allowed_tools.tools",
+                       "required mode needs an allowed tool");
     } else {
       auto status =
           Fields(*choice, {"type", "function"}, error_param, "tool_choice");
@@ -183,6 +232,7 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
     }
   }
   out->active = out->json_output || forced || strict_tools ||
+                out->restrict_tools ||
                 out->choice == OutputConstraints::ToolChoice::kNone ||
                 (!out->parallel && has_tools);
   if (!out->active) return Status();
@@ -207,6 +257,7 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
                     R"("additionalProperties":true},)"
                     R"("any_order":false,"max_whitespace_cnt":16})";
   } else if (out->choice == OutputConstraints::ToolChoice::kNone ||
+             (out->restrict_tools && out->allowed_tools.empty()) ||
              !has_tools) {
     payload = TextFormat();
   } else {
@@ -242,9 +293,7 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
       status = ValidateOutputSchema(parameters, fn->GetBool("strict"), true,
                                     error_param, fn_path + ".parameters");
       if (!status) return status;
-      if (out->choice == OutputConstraints::ToolChoice::kNamed &&
-          name != out->named_tool)
-        continue;
+      if (!out->AllowsTool(name)) continue;
       if (!tags.empty()) tags += ',';
       tags += R"({"type":"tag","begin":)" +
               Quote("<tool_call>\n<function=" + name + ">\n") +
@@ -294,10 +343,11 @@ io::Json ConstraintTemplateRequest(const io::Json& request,
     if (key != "tools" || !value.IsArray()) continue;
     if (plan.choice == OutputConstraints::ToolChoice::kNone)
       value.array.clear();
-    else if (plan.choice == OutputConstraints::ToolChoice::kNamed)
+    else if (plan.choice == OutputConstraints::ToolChoice::kNamed ||
+             plan.restrict_tools)
       std::erase_if(value.array, [&](const io::Json& tool) {
         const auto* fn = tool.Find("function");
-        return !fn || fn->GetString("name") != plan.named_tool;
+        return !fn || !plan.AllowsTool(fn->GetString("name"));
       });
   }
   return result;

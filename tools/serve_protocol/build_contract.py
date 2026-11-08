@@ -129,9 +129,13 @@ def chat_schema():
     nonempty_tools = dict(type="array", minItems=1)
     parsed = dict(required=["messages"], properties=dict(parse_response=dict(const=True)))
     json_output = present("response_format", present("type", dict(enum=["json_object", "json_schema"])))
-    forced = present("tool_choice", dict(anyOf=[dict(const="required"), dict(type="object")]))
+    forced = present("tool_choice", dict(anyOf=[dict(const="required"),
+        dict(type="object", **present("type", dict(const="function"))),
+        dict(type="object", allOf=[present("type", dict(const="allowed_tools")),
+                    present("allowed_tools", present("mode", dict(const="required")))])]))
     strict_tools = present("tools", dict(type="array", contains=present("function", present("strict", dict(const=True)))))
     constrained = dict(anyOf=[json_output, forced, strict_tools,
+        present("tool_choice", dict(type="object", **present("type", dict(const="allowed_tools")))),
         present("tool_choice", dict(const="none")), dict(allOf=[present("parallel_tool_calls", dict(const=False)),
             present("tools", nonempty_tools)])])
     stops = nullable(dict(anyOf=[dict(type="string", minLength=1, maxLength=256,
@@ -172,7 +176,11 @@ def chat_schema():
         prefix_cache_write_tokens=dict(anyOf=[dict(const=0), dict(type="integer", minimum=1024, maximum=131072)]),
         parse_response=dict(type="boolean"),
         tool_choice=dict(oneOf=[dict(enum=["auto", "none", "required"]),
-            obj(dict(type=dict(const="function"), function=obj(dict(name=safe), ("name",))), ("type", "function"))]),
+            obj(dict(type=dict(const="function"), function=obj(dict(name=safe), ("name",))), ("type", "function")),
+            obj(dict(type=dict(const="allowed_tools"), allowed_tools=obj(dict(
+                mode=dict(enum=["auto", "required"]), tools=dict(type="array", items=obj(
+                    dict(type=dict(const="function"), function=obj(dict(name=safe), ("name",))),
+                    ("type", "function")))), ("mode", "tools"))), ("type", "allowed_tools"))]),
         parallel_tool_calls=dict(type="boolean", default=True))
     result = obj(properties)
     result.update({"$schema": DRAFT, "$id": "urn:q4t:serve-chat-request:v1",
@@ -198,6 +206,10 @@ def chat_schema():
             when(present("thinking_token_budget", {"not": dict(type="null")}), parsed),
             when(present("prefix_cache_write_tokens", dict(type="integer", minimum=1)), dict(required=["prefix_cache_scope"])),
             when(forced, present("tools", nonempty_tools)),
+            when(present("tool_choice", dict(type="object", allOf=[
+                present("type", dict(const="allowed_tools")),
+                present("allowed_tools", present("mode", dict(const="required")))])),
+                present("tool_choice", present("allowed_tools", present("tools", dict(minItems=1))))),
             when(constrained, dict(allOf=[parsed, forbid(["session_id", "prefix_cache_scope"]),
                 dict(properties=dict(stop=dict(enum=[None, []])))])),
             when(dict(allOf=[json_output, present("tools", nonempty_tools)]), present("tool_choice", dict(const="none"))),
@@ -290,7 +302,7 @@ def semantics():
         ("historical-batches", ["src/server/chat_tool_history.cpp"],
          "Any ID in a batch requires all nested calls to have valid unique IDs and type=function. Exactly one contiguous result for every ID; no orphan/duplicate/missing/mixed IDs. Text results may reorder. Unlabelled native legacy has distinct preserved rules; IDs are unique per batch, not globally."),
         ("tool-definitions", ["src/server/input_contract.cpp", "src/server/output_constraints.cpp"],
-         "Function names unique. Auto/raw parameter schemas advisory, but parameters/properties must be objects. A named choice must exist when compiling tool arguments; none mode removes tools and intentionally does not compile their argument schemas."),
+         "Function names unique. allowed_tools references declared unique names, filters template and grammar, and is checked again on actual output; required needs a nonempty subset, auto may be empty. Incremental tool fragments are provisional until successful whole-response terminal and EOF. Auto/raw parameter schemas advisory, but parameters/properties must be objects. A named choice must exist when compiling tool arguments; none mode removes tools and intentionally does not compile their argument schemas."),
         ("constraint-combinations", ["src/server/output_constraints.cpp", "src/server/text_stop.cpp"],
          "JSON output/none/required/named/strict tools/nonparallel nonempty tools activate constraints. Parsed text required, state caches and effective stop forbidden; JSON plus tools requires none. Compiled tool branches max16 tools and ASCII safe names. Compiled structural tag <=65536 bytes."),
         ("finite-schema", ["src/server/output_schema.cpp"],

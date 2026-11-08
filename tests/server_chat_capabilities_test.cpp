@@ -126,9 +126,13 @@ Q4T_TEST(chat_capabilities_option_contract) {
   Q4T_CHECK(chat->GetInt("temperature_default") == 1 &&
             chat->GetInt("choices") == 128 && chat->GetBool("logprobs") &&
             chat->GetInt("top_logprobs_max") == 20);
+  Q4T_CHECK(caps.Find("chat")->GetString("stream_tool_arguments") ==
+            "incremental");
+  Q4T_CHECK(caps.Find("chat")->GetString("tool_execution_barrier") ==
+            "successful_terminal_and_eof");
   const auto* choices = tools->GetArray("tool_choice");
   const bool backend = q4t::server::kStructuredDecodingAvailable;
-  Q4T_CHECK(choices && choices->array.size() == (backend ? 4 : 1));
+  Q4T_CHECK(choices && choices->array.size() == (backend ? 5 : 1));
   Q4T_CHECK(choices->array[0].IsString() && choices->array[0].str == "auto");
   Q4T_CHECK(tools->GetBool("strict") == backend);
   Q4T_CHECK(tools->GetBool("constrained_decoding") == backend);

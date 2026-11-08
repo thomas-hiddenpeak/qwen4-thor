@@ -40,11 +40,11 @@ bool CheckWire(const Json& message, const std::vector<ResponseDelta>& deltas,
                const std::string& reasoning_field = "reasoning_content",
                bool hidden = false) {
   std::string content, reasoning;
-  const auto other = reasoning_field == "reasoning" ? "reasoning_content"
-                                                   : "reasoning";
+  const auto other =
+      reasoning_field == "reasoning" ? "reasoning_content" : "reasoning";
   Q4T_CHECK(!message.Has(other));
   Q4T_CHECK(!hidden || !message.Has(reasoning_field));
-  std::vector<Json> calls;
+  std::vector<q4t::server::ResponseToolCall> calls;
   for (const auto& delta : deltas) {
     const auto frame = q4t::server::detail::SseDeltaChunk(
         "request", "model", delta.ToJson(), "", 0);
@@ -61,12 +61,22 @@ bool CheckWire(const Json& message, const std::vector<ResponseDelta>& deltas,
     reasoning += field->GetString(reasoning_field);
     if (const auto* tools = field->GetArray("tool_calls")) {
       for (const auto& call : tools->array) {
-        Q4T_CHECK(call.GetInt("index", -1) ==
-                  static_cast<int64_t>(calls.size()));
-        Q4T_CHECK(call.GetString("type") == "function");
-        Q4T_CHECK(call.GetString("id") ==
-                  "call_request_" + std::to_string(calls.size()));
-        calls.push_back(call);
+        const auto index = call.GetInt("index", -1);
+        Q4T_CHECK(index >= 0 && index <= static_cast<int64_t>(calls.size()));
+        const auto* fn = call.Find("function");
+        Q4T_CHECK(fn);
+        if (index == static_cast<int64_t>(calls.size())) {
+          Q4T_CHECK(call.GetString("type") == "function");
+          Q4T_CHECK(call.GetString("id") ==
+                    "call_request_" + std::to_string(calls.size()));
+          calls.push_back({static_cast<size_t>(index),
+                           call.GetString("id"),
+                           fn->GetString("name"),
+                           {}});
+        } else {
+          Q4T_CHECK(!call.Has("id") && !call.Has("type") && !fn->Has("name"));
+        }
+        calls[index].arguments += fn->GetString("arguments");
       }
     }
   }
@@ -76,15 +86,12 @@ bool CheckWire(const Json& message, const std::vector<ResponseDelta>& deltas,
   Q4T_CHECK(calls.size() == (expected ? expected->array.size() : 0));
   for (size_t i = 0; i < calls.size(); ++i) {
     const auto& want = expected->array[i];
-    Q4T_CHECK(calls[i].GetString("id") == want.GetString("id"));
-    const auto* actual_fn = calls[i].Find("function");
+    Q4T_CHECK(calls[i].id == want.GetString("id"));
     const auto* wanted_fn = want.Find("function");
-    Q4T_CHECK(actual_fn->GetString("name") == wanted_fn->GetString("name"));
-    Q4T_CHECK(actual_fn->GetString("arguments") ==
-              wanted_fn->GetString("arguments"));
+    Q4T_CHECK(calls[i].name == wanted_fn->GetString("name"));
+    Q4T_CHECK(calls[i].arguments == wanted_fn->GetString("arguments"));
     Json arguments;
-    Q4T_CHECK(q4t::io::ParseJson(actual_fn->GetString("arguments"), &arguments)
-                  .ok() &&
+    Q4T_CHECK(q4t::io::ParseJson(calls[i].arguments, &arguments).ok() &&
               arguments.IsObject());
   }
   return true;
@@ -172,16 +179,18 @@ Q4T_TEST(chat_response_tools_typed_and_multiple) {
   return true;
 }
 
-Q4T_TEST(chat_response_tool_publication_is_atomic) {
+Q4T_TEST(chat_response_tool_fragments_wait_for_validated_terminal) {
   const auto request = Request();
   ChatResponseParser parser;
   std::vector<ResponseDelta> deltas;
   Q4T_CHECK(parser.Init(request, kClosed, "request", true).ok());
   Q4T_CHECK(
       parser.Append("<tool_call><function=noop></function>", &deltas).ok());
-  Q4T_CHECK(deltas.empty() && !parser.HasToolCalls());
+  Q4T_CHECK(deltas.size() == 1 && !parser.HasToolCalls());
+  Q4T_CHECK(deltas[0].tool_start && deltas[0].call.arguments == "{");
   Q4T_CHECK(parser.Append("</tool_call>", &deltas).ok());
-  Q4T_CHECK(deltas.size() == 1 && parser.HasToolCalls());
+  Q4T_CHECK(deltas.size() == 2 && parser.HasToolCalls());
+  Q4T_CHECK(!deltas[1].tool_start && deltas[1].call.arguments == "}");
   Q4T_CHECK(parser.Finish(false, &deltas).ok());
   Json message;
   Q4T_CHECK(q4t::io::ParseJson(parser.MessageJson(), &message).ok());
@@ -244,7 +253,7 @@ Q4T_TEST(chat_response_truncation_and_length) {
       Q4T_CHECK(parser.Init(request, kClosed, "request", true).ok());
       Q4T_CHECK(parser.Append(text, &deltas).ok());
       Q4T_CHECK(!parser.Finish(length, &deltas).ok());
-      Q4T_CHECK(deltas.empty());
+      Q4T_CHECK(!parser.HasToolCalls());
     }
     ChatResponseParser parser;
     std::vector<ResponseDelta> deltas;
@@ -290,7 +299,7 @@ Q4T_TEST(chat_response_bounds) {
     std::vector<ResponseDelta> output;
     Q4T_CHECK(boundary.Init(request, kClosed, "request", false).ok());
     Q4T_CHECK(boundary.Append("<tool_call>" + block + partial, &output).ok());
-    Q4T_CHECK(output.empty());
+    Q4T_CHECK(!output.empty() && !boundary.HasToolCalls());
     Q4T_CHECK(
         boundary
             .Append(
@@ -298,7 +307,7 @@ Q4T_TEST(chat_response_bounds) {
                 &output)
             .ok());
     Q4T_CHECK(boundary.Finish(false, &output).ok());
-    Q4T_CHECK(output.size() == 1);
+    Q4T_CHECK(output.size() > 1 && boundary.HasToolCalls());
   }
   ChatResponseParser parser;
   std::vector<ResponseDelta> deltas;
@@ -314,7 +323,8 @@ Q4T_TEST(chat_response_bounds) {
   for (size_t i = 0; i < ChatResponseParser::kMaxCalls; ++i) {
     deltas.clear();
     Q4T_CHECK(many.Append(Call(), &deltas).ok());
-    Q4T_CHECK(deltas.size() == 1 && deltas[0].call.index == i);
+    Q4T_CHECK(deltas.size() == 2 && deltas[0].call.index == i &&
+              deltas[1].call.index == i);
   }
   deltas.clear();
   Q4T_CHECK(!many.Append(Call(), &deltas).ok());
@@ -359,9 +369,10 @@ Q4T_TEST(chat_response_reasoning_selection_and_hidden_splits) {
       Q4T_CHECK(EverySplit(request, "<think>" + reason + "</think>" + answer,
                            kClosed, answer, expected, 0));
       // A second reasoning region must follow the same hiding/field contract.
-      Q4T_CHECK(EverySplit(request, reason + "</think>" + answer +
-                           "<think>" + reason + "</think>", kThinking,
-                           answer, expected + expected, 0));
+      Q4T_CHECK(EverySplit(
+          request,
+          reason + "</think>" + answer + "<think>" + reason + "</think>",
+          kThinking, answer, expected + expected, 0));
     }
   }
   return true;
@@ -369,8 +380,8 @@ Q4T_TEST(chat_response_reasoning_selection_and_hidden_splits) {
 
 Q4T_TEST(chat_response_hidden_reasoning_preserves_failure_and_limits) {
   Json request;
-  Q4T_CHECK(q4t::io::ParseJson(
-      R"({"messages":[],"include_reasoning":false})", &request));
+  Q4T_CHECK(q4t::io::ParseJson(R"({"messages":[],"include_reasoning":false})",
+                               &request));
   for (bool collect : {false, true}) {
     for (bool limited : {false, true}) {
       ChatResponseParser parser;
@@ -384,9 +395,10 @@ Q4T_TEST(chat_response_hidden_reasoning_preserves_failure_and_limits) {
     }
   }
   Q4T_CHECK(q4t::io::ParseJson(R"({"messages":[],"include_reasoning":false,
-      "response_format":{"type":"json_object"}})", &request));
-  for (const auto* payload : {R"({"text":"<think>literal</think>✅"})",
-                              R"({"text":)", "[]"}) {
+      "response_format":{"type":"json_object"}})",
+                               &request));
+  for (const auto* payload :
+       {R"({"text":"<think>literal</think>✅"})", R"({"text":)", "[]"}) {
     ChatResponseParser parser;
     std::vector<ResponseDelta> deltas;
     Q4T_CHECK(parser.Init(request, kThinking, "r", true));
@@ -409,5 +421,46 @@ Q4T_TEST(chat_response_hidden_reasoning_preserves_failure_and_limits) {
   Q4T_CHECK(!bounded.Append(
       std::string(ChatResponseParser::kMaxToolBytes + 1, 'x'), &deltas));
   Q4T_CHECK(deltas.empty());
+  return true;
+}
+
+Q4T_TEST(chat_response_string_arguments_stream_before_parameter_close) {
+  auto request = Request();
+  ChatResponseParser parser;
+  std::vector<ResponseDelta> deltas;
+  Q4T_CHECK(parser.Init(request, kClosed, "request", true));
+  Q4T_CHECK(
+      parser.Append("<tool_call><function=lookup><parameter=text>\r", &deltas));
+  Q4T_CHECK(!parser.HasToolCalls() && deltas.size() == 2);
+  Q4T_CHECK(parser.Append("\n中国✅\\\"abc", &deltas));
+  std::string partial;
+  for (const auto& delta : deltas) partial += delta.call.arguments;
+  Q4T_CHECK(partial.find("中国✅\\\\\\\"") != partial.npos);
+  Q4T_CHECK(partial.starts_with("{\"text\":\"") && !partial.ends_with('}'));
+  Q4T_CHECK(!parser.HasToolCalls());
+  Q4T_CHECK(parser.Append("def\r\n</parameter></function>", &deltas));
+  Q4T_CHECK(!parser.HasToolCalls());
+  Q4T_CHECK(parser.Append("</tool_call>", &deltas));
+  Q4T_CHECK(parser.Finish(false, &deltas));
+  Json message;
+  Q4T_CHECK(q4t::io::ParseJson(parser.MessageJson(), &message));
+  Q4T_CHECK(CheckWire(message, deltas));
+  return true;
+}
+
+Q4T_TEST(chat_response_partial_error_has_no_successful_terminal) {
+  const auto request = Request();
+  for (const auto* suffix : {"", "</parameter><parameter=text>duplicate",
+                             "</parameter></function>oops</tool_call>"}) {
+    ChatResponseParser parser;
+    std::vector<ResponseDelta> deltas;
+    Q4T_CHECK(parser.Init(request, kClosed, "request", false));
+    Q4T_CHECK(parser.Append(
+        "<tool_call><function=lookup><parameter=text>partial", &deltas));
+    Q4T_CHECK(!deltas.empty() && !parser.HasToolCalls());
+    parser.Append(suffix, &deltas);
+    Q4T_CHECK(!parser.Finish(false, &deltas));
+    Q4T_CHECK(!parser.HasToolCalls());
+  }
   return true;
 }
