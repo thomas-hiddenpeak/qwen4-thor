@@ -73,13 +73,15 @@ class ClientIdentity {
   size_t index_ = kMaxClients;
 };
 
-enum class ClientLane { kData, kControl };
+enum class ClientLane { kData, kControl, kCancel };
 
 struct ClientUsage {
   uint32_t data_active = 0;
   uint32_t control_active = 0;
   uint64_t data_rejected = 0;
   uint64_t control_rejected = 0;
+  uint32_t cancel_active = 0;
+  uint64_t cancel_rejected = 0;
 };
 
 using ClientClock = std::chrono::steady_clock;
@@ -120,10 +122,13 @@ class ClientAdmission {
     std::condition_variable changed;
     uint32_t data_finishing = 0;  // Protected by mutex; still charged.
     uint32_t control_finishing = 0;
+    uint32_t cancel_finishing = 0;
     std::atomic<uint32_t> data{0};
     std::atomic<uint32_t> control{0};
+    std::atomic<uint32_t> cancel{0};
     std::atomic<uint64_t> data_rejected{0};
     std::atomic<uint64_t> control_rejected{0};
+    std::atomic<uint64_t> cancel_rejected{0};
     bool window_started = false;
     ClientClock::time_point window;
     ClientRateUsage rate;

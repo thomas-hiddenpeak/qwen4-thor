@@ -411,6 +411,46 @@
     }
   },
   "routes": {
+    "DELETE /v1/conversations/{conversation_id}": {
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；DELETE /v1/conversations/{conversation_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+      "evidence": [
+        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+        "include/q4t/server/application_routes.h",
+        "tests/server_conversation_api_test.cpp",
+        "tools/serve_recovery/test_native_access.py"
+      ]
+    },
+    "DELETE /v1/conversations/{conversation_id}/items/{item_id}": {
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；DELETE /v1/conversations/{conversation_id}/items/{item_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+      "evidence": [
+        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+        "include/q4t/server/application_routes.h",
+        "tests/server_conversation_api_test.cpp",
+        "tools/serve_recovery/test_native_access.py"
+      ]
+    },
+    "DELETE /v1/models/{model}": {
+      "semantics": "A06 native completions/model registry: DELETE /v1/models/{model}",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "DELETE /v1/responses/{response_id}": {
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_2026-11-08.md",
+        "docs/evidence/serve-responses-background-http-20261109/README.md",
+        "tests/server_responses_jobs_test.cpp",
+        "tests/server_responses_api_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
     "GET /healthz": {
       "semantics": "服务/GPU及PLE永久依赖健康；纯PLE读取故障返回503但gpu_healthy保持真实值",
       "boundary": "P0源码与CPU合同；旧封存包保持旧语义；不以模型故障冒充GPU失效",
@@ -421,28 +461,18 @@
         "tests/server_service_health_test.cpp"
       ]
     },
-    "GET /v1/models": {
-      "semantics": "固定单模型列表",
-      "boundary": "created 为查询时刻；无详情/别名；普通模型名固定；SRV-12b独立观测额度4已限定受载验收，完整头后分类，未分类慢头仍共享总额",
+    "GET /livez": {
+      "semantics": "服务循环存活；GPU/PLE永久故障与内存准入关闭不自动等于进程死亡",
+      "boundary": "加载后才监听；控制入口4连接预留、排空窗口至多2秒；不保证header洪泛下可用",
       "evidence": [
-        "docs/APPLICATION_SERVICE_RESULT_2026-11-02.md",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
-        "docs/SERVE_OBSERVATION_CAPACITY_2026-11-03.md",
-        "include/q4t/server/http_connection.h",
-        "docs/SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md"
-      ]
-    },
-    "GET /v1/capabilities": {
-      "semantics": "实现/模板源码身份与能力边界",
-      "boundary": "implementation_only；不是发布/实际配置完整证明；明示单constrained租约、编译不可抢占及非RSS硬上限；SRV-12b独立观测额度4已限定受载验收，完整头后分类，未分类慢头仍共享总额",
-      "evidence": [
-        "tests/server_chat_capabilities_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
-        "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
-        "docs/SERVE_OBSERVATION_CAPACITY_2026-11-03.md",
-        "include/q4t/server/http_connection.h",
-        "docs/SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md",
-        "docs/SERVE_GRAMMAR_REAP_2026-11-08.md"
+        "tools/serve_reliability/http_lifecycle_test.cpp",
+        "tools/serve_stage_a/verify.py",
+        "docs/PHASES.md",
+        "docs/SERVE_MEMORY_ADMISSION_2026-11-03.md",
+        "tests/server_memory_admission_test.cpp",
+        "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md",
+        "docs/SERVE_HEALTH_P0_2026-11-07.md",
+        "tests/server_service_health_test.cpp"
       ]
     },
     "GET /metrics": {
@@ -462,40 +492,6 @@
         "docs/SERVE_GRAMMAR_REAP_2026-11-08.md"
       ]
     },
-    "POST /v1/requests/cancel": {
-      "semantics": "仅 request_id/cancel_token；未知/形状错误400，无匹配404，匹配202",
-      "boundary": "400不触发取消；202不等于drained；重启无持久状态",
-      "evidence": [
-        "tools/serve_reliability/http_lifecycle_test.cpp",
-        "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
-      ]
-    },
-    "POST /v1/chat/completions": {
-      "semantics": "messages/prompt，JSON/SSE，单模型文本生成；新增body前/准备/slot交接的全局MemAvailable准入，失效读数也拒绝；CPU/原生未加载HTTP及真实高floor/默认业务已验；同模型动态压力恢复未验",
-      "boundary": "application/json UTF-8；方法405、query400；普通连接与active chat仍有界；首帧后错误走SSE",
-      "evidence": [
-        "docs/STRUCTURED_OUTPUT_RESULT_2026-11-02.md",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
-        "docs/SERVE_MEMORY_ADMISSION_2026-11-03.md",
-        "tests/server_memory_admission_test.cpp",
-        "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md"
-      ]
-    },
-    "GET /livez": {
-      "semantics": "服务循环存活；GPU/PLE永久故障与内存准入关闭不自动等于进程死亡",
-      "boundary": "加载后才监听；控制入口4连接预留、排空窗口至多2秒；不保证header洪泛下可用",
-      "evidence": [
-        "tools/serve_reliability/http_lifecycle_test.cpp",
-        "tools/serve_stage_a/verify.py",
-        "docs/PHASES.md",
-        "docs/SERVE_MEMORY_ADMISSION_2026-11-03.md",
-        "tests/server_memory_admission_test.cpp",
-        "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md",
-        "docs/SERVE_HEALTH_P0_2026-11-07.md",
-        "tests/server_service_health_test.cpp"
-      ]
-    },
     "GET /readyz": {
       "semantics": "模型加载且服务/GPU/PLE依赖健康、未排空、内存准入开放；普通忙不改变ready",
       "boundary": "加载后才监听；控制入口4连接预留、排空窗口至多2秒；不保证header洪泛下可用",
@@ -510,18 +506,17 @@
         "tests/server_service_health_test.cpp"
       ]
     },
-    "POST /v1/chat/preflight": {
-      "semantics": "私有q4t-preflight-v1：共用真实校验、模板、分词和预算；包装请求/可选文本与ID；同一内存准入门，body前及准备前检查，不能用预检绕过",
-      "boundary": "Read-only planning; optional media header/geometry and expanded tokens share generation planner. No pixel decode, GPU, grammar compilation, slot/rate reservation or execution guarantee. Preview retains one placeholder per temporal group; token_ids expanded.",
+    "GET /v1/capabilities": {
+      "semantics": "实现/模板源码身份与能力边界",
+      "boundary": "implementation_only；不是发布/实际配置完整证明；明示单constrained租约、编译不可抢占及非RSS硬上限；SRV-12b独立观测额度4已限定受载验收，完整头后分类，未分类慢头仍共享总额",
       "evidence": [
-        "docs/SERVE_PREFLIGHT_2026-11-03.md",
-        "docs/serve-preflight-v1.schema.json",
-        "tests/server_chat_plan_test.cpp",
-        "tools/serve_preflight/template_diff.py",
-        "docs/SERVE_PREFLIGHT_RESULT_2026-11-03.md",
-        "docs/SERVE_MEMORY_ADMISSION_2026-11-03.md",
-        "tests/server_memory_admission_test.cpp",
-        "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md"
+        "tests/server_chat_capabilities_test.cpp",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
+        "docs/SERVE_OBSERVATION_CAPACITY_2026-11-03.md",
+        "include/q4t/server/http_connection.h",
+        "docs/SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md",
+        "docs/SERVE_GRAMMAR_REAP_2026-11-08.md"
       ]
     },
     "GET /v1/config": {
@@ -538,53 +533,6 @@
         "docs/SERVE_OBSERVATION_CAPACITY_2026-11-03.md",
         "include/q4t/server/http_connection.h",
         "docs/SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md"
-      ]
-    },
-    "DELETE /v1/models/{model}": {
-      "semantics": "A06 native completions/model registry: DELETE /v1/models/{model}",
-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
-      "evidence": [
-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
-        "tests/server_completion_test.cpp",
-        "tools/serve_recovery/test_native_ingress.py"
-      ]
-    },
-    "GET /v1/models/{model}": {
-      "semantics": "A06 native completions/model registry: GET /v1/models/{model}",
-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
-      "evidence": [
-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
-        "tests/server_completion_test.cpp",
-        "tools/serve_recovery/test_native_ingress.py"
-      ]
-    },
-    "POST /v1/completions": {
-      "semantics": "A06 native completions/model registry: POST /v1/completions",
-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
-      "evidence": [
-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
-        "tests/server_completion_test.cpp",
-        "tools/serve_recovery/test_native_ingress.py"
-      ]
-    },
-    "DELETE /v1/conversations/{conversation_id}": {
-      "semantics": "原生Conversations会话/成员CRUD、分页与投影；DELETE /v1/conversations/{conversation_id}",
-      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
-      "evidence": [
-        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
-        "include/q4t/server/application_routes.h",
-        "tests/server_conversation_api_test.cpp",
-        "tools/serve_recovery/test_native_access.py"
-      ]
-    },
-    "DELETE /v1/conversations/{conversation_id}/items/{item_id}": {
-      "semantics": "原生Conversations会话/成员CRUD、分页与投影；DELETE /v1/conversations/{conversation_id}/items/{item_id}",
-      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
-      "evidence": [
-        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
-        "include/q4t/server/application_routes.h",
-        "tests/server_conversation_api_test.cpp",
-        "tools/serve_recovery/test_native_access.py"
       ]
     },
     "GET /v1/conversations/{conversation_id}": {
@@ -617,6 +565,82 @@
         "tools/serve_recovery/test_native_access.py"
       ]
     },
+    "GET /v1/models": {
+      "semantics": "固定单模型列表",
+      "boundary": "created 为查询时刻；无详情/别名；普通模型名固定；SRV-12b独立观测额度4已限定受载验收，完整头后分类，未分类慢头仍共享总额",
+      "evidence": [
+        "docs/APPLICATION_SERVICE_RESULT_2026-11-02.md",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_OBSERVATION_CAPACITY_2026-11-03.md",
+        "include/q4t/server/http_connection.h",
+        "docs/SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md"
+      ]
+    },
+    "GET /v1/models/{model}": {
+      "semantics": "A06 native completions/model registry: GET /v1/models/{model}",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "GET /v1/responses/{response_id}": {
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_2026-11-08.md",
+        "docs/evidence/serve-responses-background-http-20261109/README.md",
+        "tests/server_responses_jobs_test.cpp",
+        "tests/server_responses_api_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "GET /v1/responses/{response_id}/input_items": {
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_2026-11-08.md",
+        "docs/evidence/serve-responses-background-http-20261109/README.md",
+        "tests/server_responses_jobs_test.cpp",
+        "tests/server_responses_api_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "POST /v1/chat/completions": {
+      "semantics": "messages/prompt，JSON/SSE，单模型文本生成；新增body前/准备/slot交接的全局MemAvailable准入，失效读数也拒绝；CPU/原生未加载HTTP及真实高floor/默认业务已验；同模型动态压力恢复未验",
+      "boundary": "application/json UTF-8；方法405、query400；普通连接与active chat仍有界；首帧后错误走SSE",
+      "evidence": [
+        "docs/STRUCTURED_OUTPUT_RESULT_2026-11-02.md",
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_MEMORY_ADMISSION_2026-11-03.md",
+        "tests/server_memory_admission_test.cpp",
+        "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md"
+      ]
+    },
+    "POST /v1/chat/preflight": {
+      "semantics": "私有q4t-preflight-v1：共用真实校验、模板、分词和预算；包装请求/可选文本与ID；同一内存准入门，body前及准备前检查，不能用预检绕过",
+      "boundary": "Read-only planning; optional media header/geometry and expanded tokens share generation planner. No pixel decode, GPU, grammar compilation, slot/rate reservation or execution guarantee. Preview retains one placeholder per temporal group; token_ids expanded.",
+      "evidence": [
+        "docs/SERVE_PREFLIGHT_2026-11-03.md",
+        "docs/serve-preflight-v1.schema.json",
+        "tests/server_chat_plan_test.cpp",
+        "tools/serve_preflight/template_diff.py",
+        "docs/SERVE_PREFLIGHT_RESULT_2026-11-03.md",
+        "docs/SERVE_MEMORY_ADMISSION_2026-11-03.md",
+        "tests/server_memory_admission_test.cpp",
+        "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md"
+      ]
+    },
+    "POST /v1/completions": {
+      "semantics": "A06 native completions/model registry: POST /v1/completions",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
     "POST /v1/conversations": {
       "semantics": "原生Conversations会话/成员CRUD、分页与投影；POST /v1/conversations",
       "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
@@ -647,44 +671,35 @@
         "tools/serve_recovery/test_native_access.py"
       ]
     },
-    "DELETE /v1/responses/{response_id}": {
-      "semantics": "原生Responses生成/持久终态，按ID查询/删除、input_items分页/视图与实际事件序号续读；标准错误、独立client身份。OPTIONS复用原生CORS。",
-      "boundary": "源码/针对性CPU已过，未做本组模型验收或默认替换。后台/实时事件与恢复、其余执行依赖仍为必做任务；当前不可用不等于兼容完成。",
+    "POST /v1/requests/cancel": {
+      "semantics": "仅 request_id/cancel_token；未知/形状错误400，无匹配404，匹配202",
+      "boundary": "400不触发取消；202不等于drained；重启无持久状态",
       "evidence": [
-        "docs/SERVE_RESPONSES_2026-11-08.md",
-        "docs/evidence/serve-responses-execution-20261109/README.md",
-        "tests/server_responses_execution_test.cpp",
-        "tests/server_responses_api_test.cpp"
-      ]
-    },
-    "GET /v1/responses/{response_id}": {
-      "semantics": "原生Responses生成/持久终态，按ID查询/删除、input_items分页/视图与实际事件序号续读；标准错误、独立client身份。OPTIONS复用原生CORS。",
-      "boundary": "源码/针对性CPU已过，未做本组模型验收或默认替换。后台/实时事件与恢复、其余执行依赖仍为必做任务；当前不可用不等于兼容完成。",
-      "evidence": [
-        "docs/SERVE_RESPONSES_2026-11-08.md",
-        "docs/evidence/serve-responses-execution-20261109/README.md",
-        "tests/server_responses_execution_test.cpp",
-        "tests/server_responses_api_test.cpp"
-      ]
-    },
-    "GET /v1/responses/{response_id}/input_items": {
-      "semantics": "原生Responses生成/持久终态，按ID查询/删除、input_items分页/视图与实际事件序号续读；标准错误、独立client身份。OPTIONS复用原生CORS。",
-      "boundary": "源码/针对性CPU已过，未做本组模型验收或默认替换。后台/实时事件与恢复、其余执行依赖仍为必做任务；当前不可用不等于兼容完成。",
-      "evidence": [
-        "docs/SERVE_RESPONSES_2026-11-08.md",
-        "docs/evidence/serve-responses-execution-20261109/README.md",
-        "tests/server_responses_execution_test.cpp",
-        "tests/server_responses_api_test.cpp"
+        "tools/serve_reliability/http_lifecycle_test.cpp",
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
       ]
     },
     "POST /v1/responses": {
-      "semantics": "原生Responses生成/持久终态，按ID查询/删除、input_items分页/视图与实际事件序号续读；标准错误、独立client身份。OPTIONS复用原生CORS。",
-      "boundary": "源码/针对性CPU已过，未做本组模型验收或默认替换。后台/实时事件与恢复、其余执行依赖仍为必做任务；当前不可用不等于兼容完成。",
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
-        "docs/evidence/serve-responses-execution-20261109/README.md",
-        "tests/server_responses_execution_test.cpp",
-        "tests/server_responses_api_test.cpp"
+        "docs/evidence/serve-responses-background-http-20261109/README.md",
+        "tests/server_responses_jobs_test.cpp",
+        "tests/server_responses_api_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "POST /v1/responses/{response_id}/cancel": {
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_2026-11-08.md",
+        "docs/evidence/serve-responses-background-http-20261109/README.md",
+        "tests/server_responses_jobs_test.cpp",
+        "tests/server_responses_api_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
       ]
     }
   },
@@ -1002,8 +1017,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "b5db4be59caf6f8ae1600ebcca69eea34f596bcbd45076ae0b34f8dbdf0a6a75",
-    "cmake/ChatProtocolIdentity.cmake": "3f83b91337138b1d07a945d15587c89a8501a02045dca58b1c65853f4f82868e",
+    "CMakeLists.txt": "8256d2c8a51858aeb976ae80f7e4618c6d11eab59538deda13f99fb7ad1c6acc",
+    "cmake/ChatProtocolIdentity.cmake": "4c75276f0f4078d76b13c0c1b2b6b0ac6160e93a97b0919974f4b7ad01773290",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
     "cmake/NativeIngress.cmake": "d10f996fdf01e28f29eaa40d9c92f2d78ff02126351188667329b235a22f2346",
@@ -1022,18 +1037,18 @@
     "include/q4t/runtime/system_memory.h": "52febc4f0b9f067748507224d9924a955470371de88a796e1ea78d379b637d49",
     "include/q4t/server/abort_reason.h": "2bad04553ca1e40595e10d6549d2a3a798bed05fcadd92527f722c48aecb70b5",
     "include/q4t/server/application_query.h": "8331a32ad43b1e4eb059a25f1e2d318c351fdda0fbf4555f7bfafd310a9d2c36",
-    "include/q4t/server/application_routes.h": "de37a8a7a8c11c1a1d8a255cc505de0d76242fd8ef74e29fdfeb8ead86b0b9e0",
+    "include/q4t/server/application_routes.h": "67649433f46723d3176b25258fdc98e3de3b85a59540a906908388944edbd54b",
     "include/q4t/server/chat_capabilities.h": "058093147c83d2bf541cb17b19fa67e92ec3168e5d250dd3a20567696748cc49",
     "include/q4t/server/chat_choices.h": "a76cc4a1a1d8b16b1925ec1a5fb9f0951c03fe48494c6623027596624e5b79c2",
     "include/q4t/server/chat_contract.h": "c1aaef06a1ae22f96ce143211a3c6a5a462bb8223d0f86c474f896ab3bb906e0",
     "include/q4t/server/chat_plan.h": "8582f55f54b19b4da9f940acb71e60831b33cd04d3eea3a206eed8991ce6e083",
     "include/q4t/server/chat_prompt.h": "1a758fed12a2ef5b3eadc6109cbc99be29de63e088d0d60111ed171730daa54f",
     "include/q4t/server/chat_response_parser.h": "43c0d61499e9303cd8bacf92b685f5994d81d8e4b0aaed86edbc38943e941a88",
-    "include/q4t/server/chat_server.h": "f0bc00f8dc240699f4050f870f1967252b697194c0b7dcefa2414021d4be505f",
+    "include/q4t/server/chat_server.h": "f4e8ffeafff8e833f27b86dd8af62e56713c15cff05d2232d2ff20edfe149851",
     "include/q4t/server/chat_template.h": "5d2e9a8c90938fa972d27bd961ee9018ebcd7add541fd009316177af81b9afee",
     "include/q4t/server/chat_tool_history.h": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
     "include/q4t/server/client_identity.h": "c05aad5dc655e91962eae55aab25c09fdcbc2a72ddc37a95585c7288dfac54be",
-    "include/q4t/server/client_policy.h": "49188a5129376c92832bfa46ba97f13c033e6561dfa08978d508af309ceb4274",
+    "include/q4t/server/client_policy.h": "6cfd1f52fe34dc44e9efb1004d492be54198935af04f2fcf1fc9bd9c63db7ce6",
     "include/q4t/server/client_request.h": "d08159942c0f0f95c5040546b3aab647eac435546767e96a1c922f3d88957998",
     "include/q4t/server/completion_plan.h": "3974785c56eb107ef29c4904f7d04476080c1d11315f8d621b7ea49a8856d896",
     "include/q4t/server/completion_response.h": "4728686120ce9577aa66f60460982212d0450c429eb27d0e2ecdfa9e2b355f98",
@@ -1045,7 +1060,7 @@
     "include/q4t/server/custom_tools.h": "1f351b6ed81ad868caa4dfa9c54a6f697fcac5a6a8dadef65bd05f2053ef18b9",
     "include/q4t/server/device_memory.h": "1099e20d3b205d3ae03daba0308be7221f5097c78a2fd58c8ca16298277dfc4c",
     "include/q4t/server/grammar_process.h": "4d25f8a9a652fd8fa67a100ee78e330bd6504038f871657d39dbe8e4898e50fe",
-    "include/q4t/server/http_connection.h": "0c76534d5f29a13ec83b38fb34b55087a43bdd411d3cd26dcc5e3a2f43a2bbca",
+    "include/q4t/server/http_connection.h": "7db62821ed0bb9a0c9555b4c300b64099d47361e4afa210331b97bee58085fe5",
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
     "include/q4t/server/http_observation.h": "4a5c07a112faa4d60f834b2d5e4067522a7fe565ca6ff8acd145ad603999dbdc",
     "include/q4t/server/http_request.h": "f6d52bf328cc33e56ae0ef06dc93051432ac0ddff55575e4e9204eecf35b6be6",
@@ -1068,14 +1083,14 @@
     "include/q4t/server/request_control.h": "fc0c1ab81056c5ab3ddb4b0da8783338312ecedc5f2c4f149df678019c199814",
     "include/q4t/server/request_diagnostics.h": "6a260ff44d95c7d828503c24351fc9d0b659c72033b75577b7d37209cd39c6de",
     "include/q4t/server/request_json.h": "f3fded2db644464f3e187215cfe14ae0280a0099bfbbeca670c7ac4e4492bb72",
-    "include/q4t/server/responses_api.h": "0bcf7786486147054e15e292f894026ff10b7a6d458cf99967b458eb6dee89b0",
-    "include/q4t/server/responses_execution.h": "5bb02c4759210494864c4ef90fe3a6fb33f0f77f179cad27ef996428588f65a9",
+    "include/q4t/server/responses_api.h": "2a636939c4c2fbb1806fb7146c0a82aad2ecec1a149609647fde9fd295b6195b",
+    "include/q4t/server/responses_execution.h": "add254cdb98dd2be89159dfe524b1426afe92365635fc169837d15597cc762c5",
     "include/q4t/server/responses_input.h": "fe63278d2c398b5fe770572cb141561f5a9dec36811fc151b53a33a684cce56a",
     "include/q4t/server/responses_item_shape.h": "0c341d6d0e9f0693daacc35ba97e0929703d9f2de108aa77056fa8f88777ee37",
     "include/q4t/server/responses_jobs.h": "2835bdc57d72a1e979b2918c55337c3fbb6d62815a7065fb166c0746d2df687b",
     "include/q4t/server/responses_output.h": "d3ce4f2fd42db480184503c3437386cf0666474a81ba34e045da424cae9b50ee",
     "include/q4t/server/responses_plan.h": "3c89b0e3d7fd6363e74f22e76cebafc4678fa81ddbad0197234bf6fd0b284c03",
-    "include/q4t/server/responses_state.h": "a643f66dd1bd91695ee910d44ee53e9555cb60cf5c99c3b624af40f5ac4b7cd0",
+    "include/q4t/server/responses_state.h": "e1abbc77853057cde5018e46bf1107b7b8c0c1afff5eb816f250243e4ca829e3",
     "include/q4t/server/sampling.h": "202bff18193dddc46f92e3b7d69fef36218faf00e913b292d1e9a9abe7b65141",
     "include/q4t/server/scheduler_submission.h": "2a960c668c25a0c694b811a2c5640c6e6605db7d386b1ba0075e64061aa1c416",
     "include/q4t/server/schema_decimal.h": "f6efd4f652918da2964a65813b6f8d9a972942ec5b02a5fb90b1ad8ad8bd8da0",
@@ -1132,23 +1147,24 @@
     "src/server/chat_choices.cpp": "ee99c4aca3c1ea07d5929da38325aa2b28a411245c7d794c9cc5f1f8eb23f16a",
     "src/server/chat_contract.cpp": "379dc3c2b40e56808394911f752782ad5e4a7715763b1e47f491fe0246226611",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
-    "src/server/chat_generation.cpp": "fa60f186d386a194e0bdbbc79dd0fc36858e79966781b3efd4c724c9aa785c40",
+    "src/server/chat_generation.cpp": "6cd7d7d534b3d57c9dd3e96dd204c1679825b7451249427c82e82f4fae1b7a10",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "16be529421435e776c12c67492620448d79324494c582dc37ce7d3b3764f72d7",
+    "src/server/chat_http.cpp": "9ebfc25e4926b7acc8fee2a35e9a1354059dd2023198b1839aa2ab98cf8a6eba",
     "src/server/chat_input.cpp": "d79be28242ed560ad7be0494284f72b53d1aaa7a272786d17f1b837e81a6d9bb",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
     "src/server/chat_metrics.cpp": "9a50b19777ed6e32b9902716dd97cde678bb1cd3c3147030975032cffe41fcc6",
     "src/server/chat_plan.cpp": "519833b53ef02f32278399e187c90fc41e6550d401cab0358cf970a9eb8ac1bc",
-    "src/server/chat_preflight.cpp": "191cb62631555cc88038e5b8a42030898dd92cb71690e72eab0865bb54c9c474",
+    "src/server/chat_preflight.cpp": "550b016797a0e411b3ba85cf5dbc4e1dc31820d8a048f143555dcb7fd472c42f",
     "src/server/chat_prompt.cpp": "fd6684419aff480782e12a409af13665eb1b529008b93ea7f67607afd837efcf",
     "src/server/chat_response_parser.cpp": "69e260c428d83a6383d5d36e0870c7d2be697e953251fddfd081a058445a808b",
+    "src/server/chat_responses.cpp": "13fe1f43c32e93d4a4b34184a1da6ae67b1c6d3fe97adb00334e7342fcf8ed41",
     "src/server/chat_scheduler.cpp": "2b6d315bfd12609e343010852f7c15b8248fe5180359a3d7b49d3c1db5b8d1fc",
-    "src/server/chat_server.cpp": "8b04ab321d8572f473f112c5fccf3b645036f69d22a114ca87b32d39869f84b3",
+    "src/server/chat_server.cpp": "a22be771c687b42203fd94880d2fcbbcf1dfd4411acb0b8074e5748d1664a5e6",
     "src/server/chat_server_internal.h": "980664023b410e97d5d560241d17967a76c719e9e0d27f83dd4c27f296b85018",
     "src/server/chat_template.cpp": "f6e031add54280ff196bda9ef7a817a0ffdf30e83b95bce9575be3912168dd66",
     "src/server/chat_tool_history.cpp": "902f6c0982fd072d4dba4c3f6a34629eec9eaaf604fd5d920822b96ed51f82db",
-    "src/server/client_policy.cpp": "ddc151290facaf3c8db42498dd37482cb157a498ec39fa5786d3e849dd7c504c",
-    "src/server/client_request.cpp": "810918c2710d8438842fd41dcc64d5a396941c652390a10cde708fb2c3a62ece",
+    "src/server/client_policy.cpp": "9394551a3c96c5ba943fda94d2d3d6aa4d28f3c2a37803ccdde3692eb477d67f",
+    "src/server/client_request.cpp": "58a2c6a18353ef9b01fea36ccb98f5d57c299dd98d0c297299ea8a2ed2eda575",
     "src/server/completion_plan.cpp": "714facdef55f982082f687220d2227f6195c517a41f835fe78161fc4a1b1656d",
     "src/server/completion_response.cpp": "75be95aa5a9da31112932cbddaa1e81c0b6cfa31664b03139e1d97f7d7563722",
     "src/server/contracts/openai_item_types_v1.json": "d22c6bb9a38868061556ed9dd76d8d51589a965101d4593684ea049f2945de81",
@@ -1179,15 +1195,15 @@
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
     "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
     "src/server/regex_syntax/schema_regex.rs": "ad5ecc2fc961a9426068c50452e830da2229c40273088b56f8c6218c26f27fbf",
-    "src/server/responses_api.cpp": "11ab9c260537cadd0cbdf763380e5c295d4efb7f7917f65b8d6a89013707fd76",
-    "src/server/responses_execution.cpp": "fabd4046b8907e1ac0acda487ba1e784011f7542831e1b760e13b9789726f2d7",
+    "src/server/responses_api.cpp": "6ae36fd8babdb78d1ae3fb7fcb6ed54aa56d4e3b06fef831a1e778220153297e",
+    "src/server/responses_execution.cpp": "d47a6af600ef02b84e2ac5b72184fb6cee8c2e0d1eb468c9fcccb3ebe11aebd2",
     "src/server/responses_input.cpp": "8fbffc8a3241cb3c34050c454e9181ecac49221898f54d5d3f4cf3fb63e6479b",
     "src/server/responses_item_shape.cpp": "b09c14dfed993b0782d592efa387fd9669e691f907fdd664d6fcd429769235b9",
     "src/server/responses_jobs.cpp": "9f2e2e69e1b09f2277a9e1eec668fed100336e81acf14a5152ad8c8960dea991",
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
     "src/server/responses_output.cpp": "dc7611ce8ec57a885acf821ae7958c06e11cc7c49dc2b8d6a82024c9475c19f2",
     "src/server/responses_plan.cpp": "d520ded85e49bb51dfaa38d92ad3f082789616dc475fdd750008ac483b3ac3e6",
-    "src/server/responses_state.cpp": "03163d4a7c31bf8ca53fc393dd843e6140c557af27db5acba916e6989080a766",
+    "src/server/responses_state.cpp": "82c7f915be04eefd62c15f12d017b793790ffaa3d21adae8467337dabc2bb664",
     "src/server/sampling.cpp": "88e247ca6b7c65abbf0977c66fd604e7156cbdefe5d0293e509282678555d31d",
     "src/server/schema_decimal.cpp": "3931972b1ecfd38b0574c6794f447f6b05d1ef78d65e0f73a61eabcb1c2dee2f",
     "src/server/schema_grammar.cpp": "075d6a282f2fc1cda861e3a0de4de132455af3efa9ed30b67b0ad9a5caf56cf2",
@@ -1220,7 +1236,7 @@
     "src/service/ingress_admin.cpp": "218c4a3c2ec469dcffbd25c8de1bfe7508bea9a9dd8954ce04661dbb1fa03de8",
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
-    "src/service/ingress_main.cpp": "0a5bfbf4574ac2515c789bcabe68d6464ea300b7d1e0e1dcc16006f349379416",
+    "src/service/ingress_main.cpp": "509cfc1d01f68793694f978d601b44d45d38a05373211fb0bde907bc48e53d03",
     "src/service/ingress_tls.cpp": "5574d1ca0a45a9237aa3dbcad94258e55c14d36cc944c095eb3003c4713aac9f",
     "src/service/ingress_transport.cpp": "c086f437eef70cb953a0f300413fa28b4468701a8442c2fafd83af719c682454",
     "src/text/tokenizer.cpp": "839f9333817ca010af2dc4bf90a8c24eab4359a5d8eb04192e1789397e0c2faf",
@@ -1595,6 +1611,46 @@
     ]
   },
   "native_routes": {
+    "DELETE /v1/conversations/{conversation_id}": {
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；DELETE /v1/conversations/{conversation_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+      "evidence": [
+        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+        "include/q4t/server/application_routes.h",
+        "tests/server_conversation_api_test.cpp",
+        "tools/serve_recovery/test_native_access.py"
+      ]
+    },
+    "DELETE /v1/conversations/{conversation_id}/items/{item_id}": {
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；DELETE /v1/conversations/{conversation_id}/items/{item_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+      "evidence": [
+        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+        "include/q4t/server/application_routes.h",
+        "tests/server_conversation_api_test.cpp",
+        "tools/serve_recovery/test_native_access.py"
+      ]
+    },
+    "DELETE /v1/models/{model}": {
+      "semantics": "A06 native completions/model registry: DELETE /v1/models/{model}",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "DELETE /v1/responses/{response_id}": {
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_2026-11-08.md",
+        "docs/evidence/serve-responses-background-http-20261109/README.md",
+        "tests/server_responses_jobs_test.cpp",
+        "tests/server_responses_api_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
     "GET /healthz": {
       "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
       "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
@@ -1643,6 +1699,36 @@
         "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
       ]
     },
+    "GET /v1/conversations/{conversation_id}": {
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；GET /v1/conversations/{conversation_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+      "evidence": [
+        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+        "include/q4t/server/application_routes.h",
+        "tests/server_conversation_api_test.cpp",
+        "tools/serve_recovery/test_native_access.py"
+      ]
+    },
+    "GET /v1/conversations/{conversation_id}/items": {
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；GET /v1/conversations/{conversation_id}/items",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+      "evidence": [
+        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+        "include/q4t/server/application_routes.h",
+        "tests/server_conversation_api_test.cpp",
+        "tools/serve_recovery/test_native_access.py"
+      ]
+    },
+    "GET /v1/conversations/{conversation_id}/items/{item_id}": {
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；GET /v1/conversations/{conversation_id}/items/{item_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+      "evidence": [
+        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+        "include/q4t/server/application_routes.h",
+        "tests/server_conversation_api_test.cpp",
+        "tools/serve_recovery/test_native_access.py"
+      ]
+    },
     "GET /v1/models": {
       "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
       "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
@@ -1655,40 +1741,35 @@
         "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
       ]
     },
-    "POST /v1/chat/completions": {
-      "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
-      "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
+    "GET /v1/models/{model}": {
+      "semantics": "A06 native completions/model registry: GET /v1/models/{model}",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
       "evidence": [
-        "src/service/ingress_main.cpp",
-        "tools/serve_recovery/test_native_ingress.py",
-        "tools/serve_recovery/test_native_admission.py",
-        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md",
-        "tools/serve_recovery/test_native_access.py",
-        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
       ]
     },
-    "POST /v1/chat/preflight": {
-      "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
-      "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
+    "GET /v1/responses/{response_id}": {
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
       "evidence": [
-        "src/service/ingress_main.cpp",
-        "tools/serve_recovery/test_native_ingress.py",
-        "tools/serve_recovery/test_native_admission.py",
-        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md",
-        "tools/serve_recovery/test_native_access.py",
-        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+        "docs/SERVE_RESPONSES_2026-11-08.md",
+        "docs/evidence/serve-responses-background-http-20261109/README.md",
+        "tests/server_responses_jobs_test.cpp",
+        "tests/server_responses_api_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
       ]
     },
-    "POST /v1/requests/cancel": {
-      "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
-      "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
+    "GET /v1/responses/{response_id}/input_items": {
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
       "evidence": [
-        "src/service/ingress_main.cpp",
-        "tools/serve_recovery/test_native_ingress.py",
-        "tools/serve_recovery/test_native_admission.py",
-        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md",
-        "tools/serve_recovery/test_native_access.py",
-        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+        "docs/SERVE_RESPONSES_2026-11-08.md",
+        "docs/evidence/serve-responses-background-http-20261109/README.md",
+        "tests/server_responses_jobs_test.cpp",
+        "tests/server_responses_api_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
       ]
     },
     "OPTIONS /healthz": {
@@ -1757,46 +1838,6 @@
         "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
       ]
     },
-    "OPTIONS /v1/models": {
-      "semantics": "CORS preflight for the configured actual method/route; Origin/method/header allowlist with credentials rules and Vary.",
-      "boundary": "Actual peer CIDR and Host remain required; no model/admission/minute-quota work. Actual subsequent call requires its own Key and model binding.",
-      "evidence": [
-        "src/service/ingress_cors.cpp",
-        "src/service/ingress_main.cpp",
-        "tools/serve_recovery/test_native_access.py",
-        "tools/serve_recovery/test_native_browser.py",
-        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
-      ]
-    },
-    "OPTIONS /v1/requests/cancel": {
-      "semantics": "CORS preflight for the configured actual method/route; Origin/method/header allowlist with credentials rules and Vary.",
-      "boundary": "Actual peer CIDR and Host remain required; no model/admission/minute-quota work. Actual subsequent call requires its own Key and model binding.",
-      "evidence": [
-        "src/service/ingress_cors.cpp",
-        "src/service/ingress_main.cpp",
-        "tools/serve_recovery/test_native_access.py",
-        "tools/serve_recovery/test_native_browser.py",
-        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
-      ]
-    },
-    "DELETE /v1/models/{model}": {
-      "semantics": "A06 native completions/model registry: DELETE /v1/models/{model}",
-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
-      "evidence": [
-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
-        "tests/server_completion_test.cpp",
-        "tools/serve_recovery/test_native_ingress.py"
-      ]
-    },
-    "GET /v1/models/{model}": {
-      "semantics": "A06 native completions/model registry: GET /v1/models/{model}",
-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
-      "evidence": [
-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
-        "tests/server_completion_test.cpp",
-        "tools/serve_recovery/test_native_ingress.py"
-      ]
-    },
     "OPTIONS /v1/completions": {
       "semantics": "A06 native completions/model registry: OPTIONS /v1/completions",
       "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
@@ -1804,74 +1845,6 @@
         "docs/SERVE_COMPLETIONS_2026-11-08.md",
         "tests/server_completion_test.cpp",
         "tools/serve_recovery/test_native_ingress.py"
-      ]
-    },
-    "OPTIONS /v1/models/{model}": {
-      "semantics": "A06 native completions/model registry: OPTIONS /v1/models/{model}",
-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
-      "evidence": [
-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
-        "tests/server_completion_test.cpp",
-        "tools/serve_recovery/test_native_ingress.py"
-      ]
-    },
-    "POST /v1/completions": {
-      "semantics": "A06 native completions/model registry: POST /v1/completions",
-      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
-      "evidence": [
-        "docs/SERVE_COMPLETIONS_2026-11-08.md",
-        "tests/server_completion_test.cpp",
-        "tools/serve_recovery/test_native_ingress.py"
-      ]
-    },
-    "DELETE /v1/conversations/{conversation_id}": {
-      "semantics": "原生Conversations会话/成员CRUD、分页与投影；DELETE /v1/conversations/{conversation_id}",
-      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
-      "evidence": [
-        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
-        "include/q4t/server/application_routes.h",
-        "tests/server_conversation_api_test.cpp",
-        "tools/serve_recovery/test_native_access.py"
-      ]
-    },
-    "DELETE /v1/conversations/{conversation_id}/items/{item_id}": {
-      "semantics": "原生Conversations会话/成员CRUD、分页与投影；DELETE /v1/conversations/{conversation_id}/items/{item_id}",
-      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
-      "evidence": [
-        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
-        "include/q4t/server/application_routes.h",
-        "tests/server_conversation_api_test.cpp",
-        "tools/serve_recovery/test_native_access.py"
-      ]
-    },
-    "GET /v1/conversations/{conversation_id}": {
-      "semantics": "原生Conversations会话/成员CRUD、分页与投影；GET /v1/conversations/{conversation_id}",
-      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
-      "evidence": [
-        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
-        "include/q4t/server/application_routes.h",
-        "tests/server_conversation_api_test.cpp",
-        "tools/serve_recovery/test_native_access.py"
-      ]
-    },
-    "GET /v1/conversations/{conversation_id}/items": {
-      "semantics": "原生Conversations会话/成员CRUD、分页与投影；GET /v1/conversations/{conversation_id}/items",
-      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
-      "evidence": [
-        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
-        "include/q4t/server/application_routes.h",
-        "tests/server_conversation_api_test.cpp",
-        "tools/serve_recovery/test_native_access.py"
-      ]
-    },
-    "GET /v1/conversations/{conversation_id}/items/{item_id}": {
-      "semantics": "原生Conversations会话/成员CRUD、分页与投影；GET /v1/conversations/{conversation_id}/items/{item_id}",
-      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
-      "evidence": [
-        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
-        "include/q4t/server/application_routes.h",
-        "tests/server_conversation_api_test.cpp",
-        "tools/serve_recovery/test_native_access.py"
       ]
     },
     "OPTIONS /v1/conversations": {
@@ -1914,6 +1887,114 @@
         "tools/serve_recovery/test_native_access.py"
       ]
     },
+    "OPTIONS /v1/models": {
+      "semantics": "CORS preflight for the configured actual method/route; Origin/method/header allowlist with credentials rules and Vary.",
+      "boundary": "Actual peer CIDR and Host remain required; no model/admission/minute-quota work. Actual subsequent call requires its own Key and model binding.",
+      "evidence": [
+        "src/service/ingress_cors.cpp",
+        "src/service/ingress_main.cpp",
+        "tools/serve_recovery/test_native_access.py",
+        "tools/serve_recovery/test_native_browser.py",
+        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+      ]
+    },
+    "OPTIONS /v1/models/{model}": {
+      "semantics": "A06 native completions/model registry: OPTIONS /v1/models/{model}",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "OPTIONS /v1/requests/cancel": {
+      "semantics": "CORS preflight for the configured actual method/route; Origin/method/header allowlist with credentials rules and Vary.",
+      "boundary": "Actual peer CIDR and Host remain required; no model/admission/minute-quota work. Actual subsequent call requires its own Key and model binding.",
+      "evidence": [
+        "src/service/ingress_cors.cpp",
+        "src/service/ingress_main.cpp",
+        "tools/serve_recovery/test_native_access.py",
+        "tools/serve_recovery/test_native_browser.py",
+        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+      ]
+    },
+    "OPTIONS /v1/responses": {
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_2026-11-08.md",
+        "docs/evidence/serve-responses-background-http-20261109/README.md",
+        "tests/server_responses_jobs_test.cpp",
+        "tests/server_responses_api_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "OPTIONS /v1/responses/{response_id}": {
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_2026-11-08.md",
+        "docs/evidence/serve-responses-background-http-20261109/README.md",
+        "tests/server_responses_jobs_test.cpp",
+        "tests/server_responses_api_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "OPTIONS /v1/responses/{response_id}/cancel": {
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_2026-11-08.md",
+        "docs/evidence/serve-responses-background-http-20261109/README.md",
+        "tests/server_responses_jobs_test.cpp",
+        "tests/server_responses_api_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "OPTIONS /v1/responses/{response_id}/input_items": {
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_2026-11-08.md",
+        "docs/evidence/serve-responses-background-http-20261109/README.md",
+        "tests/server_responses_jobs_test.cpp",
+        "tests/server_responses_api_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "POST /v1/chat/completions": {
+      "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
+      "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "tools/serve_recovery/test_native_ingress.py",
+        "tools/serve_recovery/test_native_admission.py",
+        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md",
+        "tools/serve_recovery/test_native_access.py",
+        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+      ]
+    },
+    "POST /v1/chat/preflight": {
+      "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
+      "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "tools/serve_recovery/test_native_ingress.py",
+        "tools/serve_recovery/test_native_admission.py",
+        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md",
+        "tools/serve_recovery/test_native_access.py",
+        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+      ]
+    },
+    "POST /v1/completions": {
+      "semantics": "A06 native completions/model registry: POST /v1/completions",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
     "POST /v1/conversations": {
       "semantics": "原生Conversations会话/成员CRUD、分页与投影；POST /v1/conversations",
       "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
@@ -1944,74 +2025,38 @@
         "tools/serve_recovery/test_native_access.py"
       ]
     },
-    "DELETE /v1/responses/{response_id}": {
-      "semantics": "原生Responses生成/持久终态，按ID查询/删除、input_items分页/视图与实际事件序号续读；标准错误、独立client身份。OPTIONS复用原生CORS。",
-      "boundary": "源码/针对性CPU已过，未做本组模型验收或默认替换。后台/实时事件与恢复、其余执行依赖仍为必做任务；当前不可用不等于兼容完成。",
+    "POST /v1/requests/cancel": {
+      "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
+      "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
       "evidence": [
-        "docs/SERVE_RESPONSES_2026-11-08.md",
-        "docs/evidence/serve-responses-execution-20261109/README.md",
-        "tests/server_responses_execution_test.cpp",
-        "tests/server_responses_api_test.cpp"
-      ]
-    },
-    "GET /v1/responses/{response_id}": {
-      "semantics": "原生Responses生成/持久终态，按ID查询/删除、input_items分页/视图与实际事件序号续读；标准错误、独立client身份。OPTIONS复用原生CORS。",
-      "boundary": "源码/针对性CPU已过，未做本组模型验收或默认替换。后台/实时事件与恢复、其余执行依赖仍为必做任务；当前不可用不等于兼容完成。",
-      "evidence": [
-        "docs/SERVE_RESPONSES_2026-11-08.md",
-        "docs/evidence/serve-responses-execution-20261109/README.md",
-        "tests/server_responses_execution_test.cpp",
-        "tests/server_responses_api_test.cpp"
-      ]
-    },
-    "GET /v1/responses/{response_id}/input_items": {
-      "semantics": "原生Responses生成/持久终态，按ID查询/删除、input_items分页/视图与实际事件序号续读；标准错误、独立client身份。OPTIONS复用原生CORS。",
-      "boundary": "源码/针对性CPU已过，未做本组模型验收或默认替换。后台/实时事件与恢复、其余执行依赖仍为必做任务；当前不可用不等于兼容完成。",
-      "evidence": [
-        "docs/SERVE_RESPONSES_2026-11-08.md",
-        "docs/evidence/serve-responses-execution-20261109/README.md",
-        "tests/server_responses_execution_test.cpp",
-        "tests/server_responses_api_test.cpp"
-      ]
-    },
-    "OPTIONS /v1/responses": {
-      "semantics": "原生Responses生成/持久终态，按ID查询/删除、input_items分页/视图与实际事件序号续读；标准错误、独立client身份。OPTIONS复用原生CORS。",
-      "boundary": "源码/针对性CPU已过，未做本组模型验收或默认替换。后台/实时事件与恢复、其余执行依赖仍为必做任务；当前不可用不等于兼容完成。",
-      "evidence": [
-        "docs/SERVE_RESPONSES_2026-11-08.md",
-        "docs/evidence/serve-responses-execution-20261109/README.md",
-        "tests/server_responses_execution_test.cpp",
-        "tests/server_responses_api_test.cpp"
-      ]
-    },
-    "OPTIONS /v1/responses/{response_id}": {
-      "semantics": "原生Responses生成/持久终态，按ID查询/删除、input_items分页/视图与实际事件序号续读；标准错误、独立client身份。OPTIONS复用原生CORS。",
-      "boundary": "源码/针对性CPU已过，未做本组模型验收或默认替换。后台/实时事件与恢复、其余执行依赖仍为必做任务；当前不可用不等于兼容完成。",
-      "evidence": [
-        "docs/SERVE_RESPONSES_2026-11-08.md",
-        "docs/evidence/serve-responses-execution-20261109/README.md",
-        "tests/server_responses_execution_test.cpp",
-        "tests/server_responses_api_test.cpp"
-      ]
-    },
-    "OPTIONS /v1/responses/{response_id}/input_items": {
-      "semantics": "原生Responses生成/持久终态，按ID查询/删除、input_items分页/视图与实际事件序号续读；标准错误、独立client身份。OPTIONS复用原生CORS。",
-      "boundary": "源码/针对性CPU已过，未做本组模型验收或默认替换。后台/实时事件与恢复、其余执行依赖仍为必做任务；当前不可用不等于兼容完成。",
-      "evidence": [
-        "docs/SERVE_RESPONSES_2026-11-08.md",
-        "docs/evidence/serve-responses-execution-20261109/README.md",
-        "tests/server_responses_execution_test.cpp",
-        "tests/server_responses_api_test.cpp"
+        "src/service/ingress_main.cpp",
+        "tools/serve_recovery/test_native_ingress.py",
+        "tools/serve_recovery/test_native_admission.py",
+        "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md",
+        "tools/serve_recovery/test_native_access.py",
+        "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
       ]
     },
     "POST /v1/responses": {
-      "semantics": "原生Responses生成/持久终态，按ID查询/删除、input_items分页/视图与实际事件序号续读；标准错误、独立client身份。OPTIONS复用原生CORS。",
-      "boundary": "源码/针对性CPU已过，未做本组模型验收或默认替换。后台/实时事件与恢复、其余执行依赖仍为必做任务；当前不可用不等于兼容完成。",
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
-        "docs/evidence/serve-responses-execution-20261109/README.md",
-        "tests/server_responses_execution_test.cpp",
-        "tests/server_responses_api_test.cpp"
+        "docs/evidence/serve-responses-background-http-20261109/README.md",
+        "tests/server_responses_jobs_test.cpp",
+        "tests/server_responses_api_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "POST /v1/responses/{response_id}/cancel": {
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_2026-11-08.md",
+        "docs/evidence/serve-responses-background-http-20261109/README.md",
+        "tests/server_responses_jobs_test.cpp",
+        "tests/server_responses_api_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
       ]
     }
   },

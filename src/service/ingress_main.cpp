@@ -274,9 +274,9 @@ size_t Authenticate(std::string_view authorization,
 }
 
 struct Usage {
-  int active[2] = {0, 0};
-  double tokens[2] = {0, 0};
-  Clock::time_point updated[2] = {Clock::now(), Clock::now()};
+  int active[3] = {0, 0, 0};
+  double tokens[3] = {0, 0, 0};
+  Clock::time_point updated[3] = {Clock::now(), Clock::now(), Clock::now()};
 };
 
 class Capacity {
@@ -286,11 +286,12 @@ class Capacity {
     for (auto& used : usage_) {
       used.tokens[0] = config.burst + 1;
       used.tokens[1] = 21;
+      used.tokens[2] = 21;
     }
   }
-  bool Acquire(size_t client, bool control) {
+  bool Acquire(size_t client, bool control, bool cancel) {
     std::lock_guard guard(mutex_);
-    const size_t lane = control ? 1 : 0;
+    const size_t lane = cancel ? 2 : control ? 1 : 0;
     auto& used = usage_[client];
     const auto now = Clock::now();
     const double elapsed =
@@ -299,8 +300,12 @@ class Capacity {
     used.tokens[lane] = std::min<double>(
         control ? 21 : config_.burst + 1,
         used.tokens[lane] + elapsed * (control ? 10 : config_.rps));
-    if (used.active[lane] >= (control ? 4 : config_.client_inflight) ||
-        active_[lane] >= (control ? 8 : config_.global_inflight) ||
+    if (used.active[lane] >= (cancel    ? 1
+                              : control ? 4
+                                        : config_.client_inflight) ||
+        active_[lane] >= (cancel    ? 4
+                          : control ? 8
+                                    : config_.global_inflight) ||
         used.tokens[lane] < 1)
       return false;
     ++used.active[lane];
@@ -308,26 +313,28 @@ class Capacity {
     used.tokens[lane] -= 1;
     return true;
   }
-  void Release(size_t client, bool control) {
+  void Release(size_t client, bool control, bool cancel) {
     std::lock_guard guard(mutex_);
-    --usage_[client].active[control ? 1 : 0];
-    --active_[control ? 1 : 0];
+    const auto lane = cancel ? 2 : control ? 1 : 0;
+    --usage_[client].active[lane];
+    --active_[lane];
   }
 
  private:
   const Config& config_;
   std::mutex mutex_;
   std::vector<Usage> usage_;
-  int active_[2] = {0, 0};
+  int active_[3] = {0, 0, 0};
 };
 
 struct Lease {
   Capacity& capacity;
   size_t client = 0;
   bool control = false;
+  bool cancel = false;
   bool acquired = false;
   ~Lease() {
-    if (acquired) capacity.Release(client, control);
+    if (acquired) capacity.Release(client, control, cancel);
   }
 };
 
@@ -351,7 +358,8 @@ constexpr RouteSpec kRoutes[] = {
 bool Route(const std::string& method, const std::string& path, bool* control) {
   if (server::ConversationMethodAllowed(method, path) ||
       server::ResponsesMethodAllowed(method, path)) {
-    *control = false;
+    *control = server::IsResponsesObservation(method, path) ||
+               server::IsResponseCancellation(method, path);
     return true;
   }
   if ((method == "GET" || method == "DELETE") &&
@@ -426,7 +434,9 @@ void Handle(Connection& client, const Config& config, Capacity& capacity,
       return reject(413, "gateway_body_too_large");
     if (method == "GET" && headers.content_length)
       return reject(400, "gateway_bad_request");
-    lease.acquired = capacity.Acquire(lease.client, lease.control);
+    lease.cancel = server::IsCancellationRequest(method, path);
+    lease.acquired =
+        capacity.Acquire(lease.client, lease.control, lease.cancel);
     if (!lease.acquired) return reject(429, "gateway_rate_limit");
     if (path == "/livez") return true;
     binding = authorize();

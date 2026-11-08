@@ -6,7 +6,7 @@
 namespace q4t::server {
 
 struct ResponsesReadPlan {
-  enum class Operation { kRetrieve, kInputItems, kDelete };
+  enum class Operation { kRetrieve, kInputItems, kDelete, kCancel };
   Operation operation = Operation::kRetrieve;
   std::string id;
   ItemViewOptions view;
@@ -32,6 +32,14 @@ ObjectReply ReadResponsesState(ObjectStore& objects,
 // Disconnect never cancels or rewrites the underlying generation.
 void ServeResponsesState(int fd, ObjectStore& objects, std::string_view method,
                          std::string_view target, std::string_view body,
-                         const StateAccess& access);
+                         const StateAccess& access,
+                         class ResponsesJobs* jobs = nullptr);
+
+// Native background creation owns the admitted job independently of the
+// subscriber. Uses the same handler in the real server and CPU HTTP fixture.
+void ServeBackgroundResponse(int fd, ObjectStore& objects, ResponsesJobs& jobs,
+                             const io::Json& request,
+                             const ChatPlanConfig& config,
+                             const StateAccess& access);
 
 }  // namespace q4t::server

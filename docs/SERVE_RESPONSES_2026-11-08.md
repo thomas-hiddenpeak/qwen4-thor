@@ -167,3 +167,18 @@ response.cancelled，取消只保存资源和已有原事件，不伪造complete
 管理器冻结10新增/3直接CPU，已有全部通过；构建中optional类型处理
 错误与首次政策夹具遗漏摘要均留存，修复只重验受影响项。新增序列化
 预算补入规范化items/messages与约束模板，另做额度项定向复核。
+
+## 实际后台HTTP与独立取消通道检查点
+
+已接入共享HandleChatImpl和无socket执行上下文；任务持有准入、取消
+控制与持久终态，创建请求只持有订阅。原生cancel支持SDK空POST；
+查询/SSE续读走control、取消走独立单客户端1名额，生成不占用这两类
+额度。入口对应保留独立取消速率与并发，业务停机时模型仍遵循原保护。
+
+store=false活动临时保留至持久执行期限加10分钟，完成/取消后10分钟；
+后台stream要求创建时stream=true。取消不伪造response.cancelled事件。
+新增健康字段明确后台任务状态不是核心readiness依赖。
+
+[14不同C++及4原生入口/TLS](evidence/serve-responses-background-http-20261109/README.md)
+已通过，TLS首次夹具参数缺失与修正保留。完整引擎构建零警告；还需
+SDK/跨进程扫描与真实模型后台验收，正在继续。当前默认A06不改。

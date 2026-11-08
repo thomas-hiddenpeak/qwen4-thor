@@ -6,6 +6,7 @@
 #include <string_view>
 
 #include "q4t/server/model_catalog.h"
+#include "q4t/server/application_routes.h"
 
 namespace q4t::server {
 
@@ -27,7 +28,7 @@ inline HttpConnectionClass ClassifyHttpConnection(std::string_view method,
                                                   std::string_view path) {
   if ((method == "GET" &&
        (path == "/healthz" || path == "/livez" || path == "/readyz")) ||
-      (method == "POST" && path == "/v1/requests/cancel"))
+      IsCancellationRequest(method, path))
     return HttpConnectionClass::kControl;
   if (method == "GET" && (path == "/metrics" || path == "/v1/config" ||
                           path == "/v1/capabilities" || path == "/v1/models" ||
@@ -35,6 +36,8 @@ inline HttpConnectionClass ClassifyHttpConnection(std::string_view method,
     return HttpConnectionClass::kObservation;
   if (method == "DELETE" && IsModelDetailPath(path))
     return HttpConnectionClass::kControl;
+  if (IsResponsesObservation(method, path))
+    return HttpConnectionClass::kObservation;
   return HttpConnectionClass::kBusiness;
 }
 

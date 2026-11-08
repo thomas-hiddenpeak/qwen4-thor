@@ -38,6 +38,7 @@ ChatServer::~ChatServer() {
   // Start may have succeeded without a subsequent Run. Stop accepting TCP
   // connections before releasing the model, including partial startup state.
   startup_listeners_.Close();
+  if (background_) background_->RequestStop();
   // Release any requests queued in AllocSeqId so their threads can exit.
   {
     const std::lock_guard<std::mutex> lock(seq_mu_);
@@ -48,6 +49,7 @@ ChatServer::~ChatServer() {
   // d_sched_logits_ under model_mu_, so it must be joined before those are
   // freed).
   StopScheduler();
+  if (background_) background_->Join();
   model_.Get().router_trace = nullptr;
   router_trace_.reset();
   const auto release = [&](auto*& pointer, const char* site) {
@@ -705,6 +707,19 @@ Status ChatServer::Start(const ServerOptions& opts) {
   effective_config_ =
       EffectiveServeConfigJson(opts, PlanningConfig(), budget_valid_,
                                mtp_loaded_, conn_cap_, &startup_memory_);
+  try {
+    ResponsesJobsOptions jobs;
+    jobs.max_jobs = std::clamp<size_t>(admission_limits_.inflight, 1, 256);
+    jobs.max_client_jobs = jobs.max_jobs;
+    jobs.workers =
+        std::min<size_t>({jobs.max_jobs, static_cast<size_t>(max_seq_), 8});
+    jobs.timeout = std::chrono::milliseconds(request_deadline_ms_);
+    background_ = std::make_unique<ResponsesJobs>(
+        *objects_, jobs, [this](auto& job) { RunBackgroundResponse(job); });
+  } catch (...) {
+    // Application workers are an auxiliary domain, not core model health.
+    std::fprintf(stderr, "[responses] background executor unavailable\n");
+  }
   startup_listeners_ = std::move(pending_listeners);
   model_ready_.store(true);
   return Status();

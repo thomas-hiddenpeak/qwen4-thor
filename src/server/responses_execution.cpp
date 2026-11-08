@@ -2,12 +2,27 @@
 
 #include <algorithm>
 #include <cstring>
+#include <ctime>
 
 #include "object_protocol.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/request_json.h"
 
 namespace q4t::server {
+void ResponsesExecution::BindBackgroundControl(
+    std::shared_ptr<RequestControl> control) {
+  background_control_ = std::move(control);
+  BindCancellation(
+      background_control_->deadline(),
+      [control = background_control_] { return control->Cancelled(); });
+  if (!plan_.execution_deadline_at) {
+    const auto remaining = std::chrono::ceil<std::chrono::seconds>(
+        access_.deadline - std::chrono::steady_clock::now());
+    plan_.execution_deadline_at =
+        std::time(nullptr) + std::max<int64_t>(0, remaining.count());
+  }
+}
+
 namespace {
 using namespace object_detail;
 ObjectReply OutputError(const Status& status) {

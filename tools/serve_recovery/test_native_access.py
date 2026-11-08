@@ -268,6 +268,7 @@ class AccessTests(unittest.TestCase):
             ('GET', '/v1/responses/resp_1?stream=true&starting_after=2'),
             ('GET', '/v1/responses/resp_1/input_items?limit=1&include%5B%5D='
                     'message.output_text.logprobs'),
+            ('POST', '/v1/responses/resp_1/cancel'),
             ('DELETE', '/v1/responses/resp_1')]:
             with self.subTest(method=method, path=path):
                 status, headers, body = self.request('OPTIONS', path, auth=False,
@@ -277,7 +278,7 @@ class AccessTests(unittest.TestCase):
                 self.assertEqual(headers['Access-Control-Allow-Origin'], origin)
                 self.assertEqual(self.request(method, path, auth=False,
                     headers={'Origin': origin})[0], 401)
-                raw = b'{"input":"query"}' if method == 'POST' else b''
+                raw = b'{"input":"query"}' if path == '/v1/responses' else b''
                 status, headers, body = self.request(method, path, body=raw,
                     headers={'Origin': origin, 'Content-Type': 'application/json'})
                 self.assertEqual(status, 200)

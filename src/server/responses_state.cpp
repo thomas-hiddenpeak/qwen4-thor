@@ -1,6 +1,7 @@
 #include "q4t/server/responses_state.h"
 
 #include <algorithm>
+#include <ctime>
 #include <unordered_set>
 
 #include "object_protocol.h"
@@ -30,7 +31,23 @@ ObjectRequest Write(ObjectKind kind, const std::string& id,
   request.expected_revision = revision;
   request.data = std::move(data);
   if (permanent) request.ttl_seconds = 0;
-  if (ephemeral) request.ttl_seconds = 600;
+  if (ephemeral) {
+    request.ttl_seconds = 600;
+    const auto* response = request.data.Find("response");
+    if (response && !Terminal(*response)) {
+      const auto* continuation = request.data.Find("continuation");
+      const auto until =
+          continuation ? continuation->GetInt("execution_deadline_at") : 0;
+      // Retain active work through its execution budget plus the terminal
+      // polling window. A queued task must not disappear after ten minutes.
+      const auto remaining =
+          until ? until - std::time(nullptr)
+                : std::chrono::ceil<std::chrono::seconds>(
+                      access.deadline - std::chrono::steady_clock::now())
+                      .count();
+      request.ttl_seconds += std::clamp<int64_t>(remaining, 0, 86400);
+    }
+  }
   return request;
 }
 Json SavedResponse(const ResponseStatePlan& plan, const Json& response,
@@ -45,6 +62,7 @@ Json SavedResponse(const ResponseStatePlan& plan, const Json& response,
   Set(&result, "events_retained", Boolean(!events.array.empty()));
   Set(&result, "continuation",
       Object({{"ephemeral", Boolean(plan.ephemeral)},
+              {"execution_deadline_at", Number(plan.execution_deadline_at)},
               {"conversation_id", String(plan.conversation_id)},
               {"conversation_revision", Number(plan.conversation_revision)}}));
   return result;
@@ -266,6 +284,7 @@ ObjectReply ResponsesState::LoadPlan(const std::string& id,
   plan->finished = Terminal(*response);
   if (const auto* continuation = data->Find("continuation")) {
     plan->ephemeral = continuation->GetBool("ephemeral");
+    plan->execution_deadline_at = continuation->GetInt("execution_deadline_at");
     plan->conversation_id = continuation->GetString("conversation_id");
     plan->conversation_revision = continuation->GetInt("conversation_revision");
   }

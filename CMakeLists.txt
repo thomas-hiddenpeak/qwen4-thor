@@ -313,6 +313,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_admission.cpp
   src/server/chat_scheduler.cpp
   src/server/chat_generation.cpp
+  src/server/chat_responses.cpp
   src/server/session_cache.cpp
   src/server/session_state.cpp
   src/server/http_request.cpp

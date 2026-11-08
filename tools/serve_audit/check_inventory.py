@@ -60,10 +60,15 @@ def current_surface(root):
         raise ValueError("review dynamic Responses transport extractor")
     responses = [("GET", "/v1/responses/{response_id}"),
                  ("DELETE", "/v1/responses/{response_id}"),
+                 ("POST", "/v1/responses/{response_id}/cancel"),
                  ("GET", "/v1/responses/{response_id}/input_items")]
     routes.extend((path, method) for method, path in responses)
-    native_routes.extend((method, path, "false") for method, path in
-                         [("POST", "/v1/responses"), *responses])
+    if 'server::IsResponsesObservation(method, path)' not in native or \
+            'server::IsResponseCancellation(method, path)' not in native or \
+            'path.substr(end) == "/cancel"' not in application_routes:
+        raise ValueError("review Responses cancellation/control route extractor")
+    native_routes.append(("POST", "/v1/responses", "false"))
+    native_routes.extend((method, path, "true") for method, path in responses)
     if 'if (method == "OPTIONS")' in native:
         if 'config.cors.Preflight(' not in native:
             raise ValueError("review native OPTIONS handler before cataloguing")

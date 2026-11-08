@@ -37,6 +37,7 @@ namespace detail {
 // endpoint deliberately does not support half-close-and-wait clients.
 // Do not consume bytes: request parsing remains the sole socket reader.
 bool ClientConnectionFailed(int fd) {
+  if (fd < 0) return false;  // Explicit native background execution.
   pollfd peer{fd, POLLRDHUP, 0};
   return poll(&peer, 1, 0) > 0 &&
          (peer.revents & (POLLRDHUP | POLLERR | POLLHUP)) != 0;
@@ -184,6 +185,7 @@ Status ChatServer::Run() {
         drain_until =
             std::chrono::steady_clock::now() + std::chrono::seconds(2);
         requests_.CancelAll();
+        if (background_) background_->RequestStop();
         {
           const std::lock_guard<std::mutex> lock(seq_mu_);
           seq_stopping_ = true;
@@ -234,6 +236,7 @@ Status ChatServer::Run() {
   RequestStop();
   std::fprintf(stderr, "[q4t] shutting down: draining in-flight requests...\n");
   requests_.CancelAll();
+  if (background_) background_->RequestStop();
   {
     const std::lock_guard<std::mutex> lock(connections_mu_);
     for (int fd : connections_) ::shutdown(fd, SHUT_RDWR);
@@ -244,6 +247,7 @@ Status ChatServer::Run() {
     seq_stopping_ = true;
   }
   seq_cv_.notify_all();
+  if (background_) background_->Join();
   while (active_conns_.load(std::memory_order_acquire) > 0)
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
   close_listener.Run();
@@ -307,7 +311,7 @@ void ChatServer::HandleClient(int fd, bool operations) {
         return false;
       }
       admission = &counter;
-      if (method == "POST" &&
+      if (method == "POST" && !IsResponseCancellation(method, path) &&
           (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
            path == "/v1/completions" || IsResponsesTarget(path) ||
            IsConversationTarget(path))) {
@@ -342,7 +346,8 @@ void ChatServer::HandleClient(int fd, bool operations) {
     if (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
         path == "/v1/completions" || IsResponsesTarget(path) ||
         path == "/v1/requests/cancel" || IsConversationTarget(path)) {
-      if (method == "POST") {
+      if (method == "POST" && !(IsResponseCancellation(method, path) &&
+                                body.empty() && headers.content_type.empty())) {
         std::string type = headers.content_type;
         for (char& c : type)
           if (c >= 'A' && c <= 'Z') c += 'a' - 'A';
@@ -413,7 +418,8 @@ void ChatServer::Dispatch(int fd, const std::string& method,
                                 detail::ClientConnectionFailed(fd);
                        }};
     if (IsResponsesTarget(path)) {
-      ServeResponsesState(fd, *objects_, method, path, body, access);
+      ServeResponsesState(fd, *objects_, method, path, body, access,
+                          background_.get());
       return;
     }
     auto reply =

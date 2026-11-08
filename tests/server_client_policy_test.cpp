@@ -663,6 +663,41 @@ Q4T_TEST(client_http_local_admin_exact_routes_and_reserved_control) {
   return true;
 }
 
+Q4T_TEST(client_response_cancel_reserved_when_data_and_observation_full) {
+  ClientAdmission admission;
+  Q4T_CHECK(Configure(&admission));
+  const auto alpha = admission.Authenticate("alpha", kSecret);
+  ClientLease data1, data2, observation;
+  Q4T_CHECK(data1.Acquire(admission, alpha, ClientLane::kData));
+  Q4T_CHECK(data2.Acquire(admission, alpha, ClientLane::kData));
+  Q4T_CHECK(Read(admission, Wire(Headers(), "/v1/responses/resp_1", "GET")).ok);
+  Q4T_CHECK(observation.Acquire(admission, alpha, ClientLane::kControl));
+  Q4T_CHECK(
+      Read(admission, Wire(Headers(), "/v1/responses/resp_1", "GET")).status ==
+      429);
+  Q4T_CHECK(Read(admission, Wire(Headers(), "/v1/responses/resp_1/cancel")).ok);
+  Q4T_CHECK(Read(admission, Wire(Headers(), "/v1/requests/cancel")).ok);
+  {
+    ClientLease cancel;
+    Q4T_CHECK(cancel.Acquire(admission, alpha, ClientLane::kCancel));
+    Q4T_CHECK(Read(admission, Wire(Headers(), "/v1/responses/resp_1/cancel"))
+                  .status == 429);
+    Q4T_CHECK(
+        Read(admission, Wire(Headers("beta"), "/v1/responses/resp_1/cancel"))
+            .ok);
+    const auto metrics = ClientPolicyMetrics(admission);
+    Q4T_CHECK(
+        metrics.find(
+            "q4t_client_requests_active{client=\"alpha\",lane=\"cancel\"} 1") !=
+        metrics.npos);
+    Q4T_CHECK(metrics.find("q4t_client_capacity_rejected_total{client="
+                           "\"alpha\",lane=\"cancel\"} 1") != metrics.npos);
+  }
+  Q4T_CHECK(admission.Usage(0).cancel_active == 0);
+  Q4T_CHECK(Read(admission, Wire(Headers(), "/v1/responses/resp_1/cancel")).ok);
+  return true;
+}
+
 Q4T_TEST(client_token_budget_defaults_aliases_and_encoded_boundaries) {
   ClientAdmission admission;
   Q4T_CHECK(Configure(&admission));

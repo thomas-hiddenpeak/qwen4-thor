@@ -8,8 +8,52 @@
 #include "q4t/server/http_response.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/lifetime.h"
+#include "q4t/server/responses_jobs.h"
+#include <ctime>
 
 namespace q4t::server {
+void ServeBackgroundResponse(int fd, ObjectStore& objects, ResponsesJobs& jobs,
+                             const io::Json& request,
+                             const ChatPlanConfig& config,
+                             const StateAccess& access) {
+  auto* http = detail::HttpResponseContext::Current(fd);
+  if (!http || !http->Client().Allowed()) {
+    detail::SendError(fd, 503, "Background identity unavailable", {},
+                      "object_scope_unavailable");
+    return;
+  }
+  auto run = std::make_unique<ResponsesExecution>(objects);
+  auto result = run->Prepare(request, config, access, std::time(nullptr), true);
+  if (!result.ok()) {
+    detail::SendError(fd, result.http_status, result.message, {}, result.code,
+                      result.value.GetString("param"));
+    return;
+  }
+  const auto id = run->Id();
+  const bool stream = run->Envelope().stream;
+  result = jobs.Submit(std::move(run), http->Client(), [&](ClientLease& lease) {
+    return http->TransferClientLease(lease);
+  });
+  if (!result.ok()) {
+    detail::SendError(fd, result.http_status, result.message, {}, result.code,
+                      result.value.GetString("param"));
+    return;
+  }
+  if (stream) {
+    std::string target = "/v1/responses/" + id + "?stream=true";
+    if (const auto* options = request.Find("stream_options");
+        options && !options->GetBool("include_obfuscation", true))
+      target += "&include_obfuscation=false";
+    if (const auto* include = request.GetArray("include"))
+      for (const auto& item : include->array)
+        target += "&include[]=" + item.str;  // Validated fixed enum spellings.
+    ServeResponsesState(fd, objects, "GET", target, "", access, &jobs);
+  } else {
+    detail::SendSimple(fd, 200, "OK", OutputJson(result.value),
+                       "application/json", {access.deadline});
+  }
+}
+
 namespace {
 using namespace object_detail;
 ObjectReply Invalid(std::string message, std::string param) {
@@ -90,15 +134,23 @@ ObjectReply PlanResponsesRead(std::string_view method, std::string_view target,
   if (!ValidId(plan->id))
     return Invalid("Invalid response identity", "response_id");
   const bool items = end != path.npos && path.substr(end) == "/input_items";
-  if (end != path.npos && !items)
+  const bool cancel = end != path.npos && path.substr(end) == "/cancel";
+  if (end != path.npos && !items && !cancel)
     return Error(404, "route_not_found", "Response route not found");
   if (items && method != "GET") return Method("GET");
-  if (!items && method != "GET" && method != "DELETE")
+  if (cancel && method != "POST") return Method("POST");
+  if (!items && !cancel && method != "GET" && method != "DELETE")
     return Method("GET, DELETE");
   if (!body.empty()) return Invalid("Request body is not allowed", "body");
   auto query = ParseApplicationQuery(
       separator == target.npos ? "" : target.substr(separator + 1));
   if (!query.ok()) return query;
+  if (cancel) {
+    if (!query.value.object.empty())
+      return Invalid("Query is not allowed on cancellation", "query");
+    plan->operation = ResponsesReadPlan::Operation::kCancel;
+    return {};
+  }
   if (method == "DELETE") {
     if (!query.value.object.empty())
       return Invalid("Query is not allowed on deletion", "query");
@@ -138,6 +190,9 @@ ObjectReply ReadResponsesState(ObjectStore& objects,
                                ResponsesReplay* replay) {
   *replay = {};
   replay->last_sequence = plan.starting_after;
+  if (plan.operation == ResponsesReadPlan::Operation::kCancel)
+    return Error(500, "response_executor_required",
+                 "Cancellation requires the execution owner");
   ResponsesState state(objects);
   if (plan.operation == ResponsesReadPlan::Operation::kDelete) {
     auto result = state.Erase(plan.id, access);
@@ -153,6 +208,10 @@ ObjectReply ReadResponsesState(ObjectStore& objects,
     return PageStoredItems(Field(stored.value, "history"), plan.view);
   auto response = ViewResponse(Field(stored.value, "response"), plan.view);
   if (plan.stream) {
+    if (response.GetBool("background") &&
+        !Field(stored.value, "request").GetBool("stream"))
+      return Invalid("Background response was not created with stream=true",
+                     "stream");
     const auto& events = Field(stored.value, "events").array;
     replay->terminal = Terminal(response.GetString("status"));
     if (replay->terminal && events.empty())
@@ -197,7 +256,7 @@ ObjectReply ReadResponsesState(ObjectStore& objects,
 
 void ServeResponsesState(int fd, ObjectStore& objects, std::string_view method,
                          std::string_view target, std::string_view body,
-                         const StateAccess& access) {
+                         const StateAccess& access, ResponsesJobs* jobs) {
   auto* http = detail::HttpResponseContext::Current(fd);
   StreamState stream;
   ScopeExit clear_hooks([&] {
@@ -213,6 +272,17 @@ void ServeResponsesState(int fd, ObjectStore& objects, std::string_view method,
     auto result = PlanResponsesRead(method, target, body, &plan);
     if (!result.ok()) {
       send_error(result);
+      return;
+    }
+    if (plan.operation == ResponsesReadPlan::Operation::kCancel) {
+      result = jobs ? jobs->Cancel(plan.id, access)
+                    : Error(503, "background_unavailable",
+                            "Background executor unavailable");
+      if (result.ok())
+        detail::SendSimple(fd, 200, "OK", OutputJson(result.value),
+                           "application/json", {access.deadline});
+      else
+        send_error(result);
       return;
     }
     if (plan.stream && http)

@@ -1,6 +1,8 @@
 #include "q4t/server/responses_jobs.h"
 
 #include <unistd.h>
+#include <poll.h>
+#include <sys/socket.h>
 
 #include <atomic>
 #include <cstdlib>
@@ -11,6 +13,7 @@
 #include "q4t/server/http_response.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/output_schema.h"
+#include "q4t/server/responses_api.h"
 #include "q4t/test.h"
 
 namespace {
@@ -60,9 +63,9 @@ struct Fixture {
     for (const auto* id : {"alpha", "beta", "gamma"}) {
       if (!entries.empty()) entries += ',';
       entries += std::string("{\"id\":\"") + id +
-          R"(","max_inflight":8,"max_control_inflight":2,)"
-          R"("max_body_bytes":16384,"max_prompt_tokens":512,)"
-          R"("max_output_tokens":64})";
+                 R"(","max_inflight":8,"max_control_inflight":2,)"
+                 R"("max_body_bytes":16384,"max_prompt_tokens":512,)"
+                 R"("max_output_tokens":64})";
     }
     const auto raw = R"({"version":1,"gateway_token":")" + token +
                      R"(","clients":[)" + entries + "]}";
@@ -99,7 +102,154 @@ void Complete(ResponsesJobs::Job& job) {
       !job.run->Finish(false, 0, {5, 0, 2, 0}, std::time(nullptr), &wire).ok())
     throw std::runtime_error("job generation fixture");
 }
+
+std::string Exchange(
+    const std::function<void(int)>& handler,
+    const std::function<bool(std::string_view)>& received = {}) {
+  int sockets[2];
+  if (socketpair(AF_UNIX, SOCK_STREAM, 0, sockets))
+    throw std::runtime_error("HTTP fixture socketpair");
+  ScopeExit close([&] {
+    ::close(sockets[0]);
+    ::close(sockets[1]);
+  });
+  std::exception_ptr error;
+  std::thread serving([&] {
+    try {
+      detail::HttpResponseContext http(sockets[1]);
+      handler(sockets[1]);
+    } catch (...) {
+      error = std::current_exception();
+    }
+    shutdown(sockets[1], SHUT_WR);
+  });
+  ScopeExit join([&] {
+    shutdown(sockets[0], SHUT_RDWR);
+    serving.join();
+  });
+  std::string wire;
+  char buffer[4096];
+  const timeval timeout{6, 0};
+  setsockopt(sockets[0], SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
+  for (ssize_t n; (n = read(sockets[0], buffer, sizeof(buffer))) > 0;) {
+    wire.append(buffer, n);
+    if (received && received(wire)) break;
+  }
+  join.Run();
+  if (error) std::rethrow_exception(error);
+  return wire;
+}
 }  // namespace
+
+Q4T_TEST(
+    responses_jobs_http_creation_transfers_owner_and_cancel_is_idempotent) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  std::atomic<bool> entered{false};
+  ResponsesJobs jobs(objects, {}, [&](auto& job) {
+    entered = true;
+    while (!job.control->Cancelled()) std::this_thread::sleep_for(1ms);
+  });
+  const auto created = Exchange([&](int fd) {
+    ClientLease permit;
+    const auto client = f.Identity();
+    if (!permit.Acquire(f.clients, client, ClientLane::kData))
+      throw std::runtime_error("HTTP create admission");
+    detail::HttpResponseContext::Current(fd)->SetClient(client, &permit);
+    ServeBackgroundResponse(
+        fd, objects, jobs,
+        Parse(
+            R"({"input":"actual CPU fixture","background":true,"store":false,"reasoning":{"effort":"none"}})"),
+        Config(), Access());
+  });
+  Q4T_CHECK(created.starts_with("HTTP/1.1 200"));
+  const auto response = Parse(created.substr(created.find("\r\n\r\n") + 4));
+  const auto id = response.GetString("id");
+  Q4T_CHECK(response.GetString("status") == "queued" && !id.empty());
+  Q4T_CHECK(!response.GetBool("store", true));
+  Q4T_CHECK(Wait([&] { return entered.load(); }));
+  Q4T_CHECK(f.clients.Usage(0).data_active == 1);
+  const auto other = Exchange([&](int fd) {
+    ServeResponsesState(fd, objects, "POST", "/v1/responses/" + id + "/cancel",
+                        "", Access("beta"), &jobs);
+  });
+  Q4T_CHECK(other.starts_with("HTTP/1.1 404"));
+  for (int i = 0; i < 2; ++i) {
+    const auto cancelled = Exchange([&](int fd) {
+      ServeResponsesState(fd, objects, "POST",
+                          "/v1/responses/" + id + "/cancel", "", Access(),
+                          &jobs);
+    });
+    Q4T_CHECK(cancelled.starts_with("HTTP/1.1 200"));
+    const auto value = Parse(cancelled.substr(cancelled.find("\r\n\r\n") + 4));
+    Q4T_CHECK(value.GetString("status") == "cancelled");
+    Q4T_CHECK(value.Find("error")->IsNull());
+  }
+  Q4T_CHECK(Wait([&] { return f.clients.Usage(0).data_active == 0; }));
+  return true;
+}
+
+Q4T_TEST(
+    responses_jobs_http_stream_disconnect_retains_job_and_original_replay) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  std::atomic<bool> entered{false};
+  std::string id;
+  ResponsesJobs jobs(objects, {}, [&](auto& job) {
+    ResponseDelta delta;
+    delta.kind = ResponseDelta::Kind::kContent;
+    delta.text = "actual partial generation";
+    std::string wire;
+    if (!job.run->Append(delta, "null", &wire) || !job.run->Checkpoint().ok())
+      throw std::runtime_error("partial generation fixture");
+    id = job.run->Id();
+    entered.store(true, std::memory_order_release);
+    while (!job.control->Cancelled()) std::this_thread::sleep_for(1ms);
+  });
+  const auto stream = Exchange(
+      [&](int fd) {
+        ClientLease permit;
+        const auto client = f.Identity();
+        if (!permit.Acquire(f.clients, client, ClientLane::kData))
+          throw std::runtime_error("stream admission");
+        detail::HttpResponseContext::Current(fd)->SetClient(client, &permit);
+        auto access = Access();
+        access.cancelled = [fd] {
+          pollfd peer{fd, POLLRDHUP, 0};
+          return poll(&peer, 1, 0) > 0 &&
+                 (peer.revents & (POLLRDHUP | POLLERR | POLLHUP));
+        };
+        ServeBackgroundResponse(
+            fd, objects, jobs,
+            Parse(
+                R"({"input":"question","background":true,"stream":true,"stream_options":{"include_obfuscation":false},"reasoning":{"effort":"none"}})"),
+            Config(), access);
+      },
+      [](std::string_view wire) {
+        return wire.find("actual partial generation") != wire.npos;
+      });
+  // The subscriber closes its socket; generation still owns its permit.
+  Q4T_CHECK(entered.load(std::memory_order_acquire));
+  Q4T_CHECK(stream.starts_with("HTTP/1.1 200"));
+  Q4T_CHECK(stream.find("event: response.created") != stream.npos);
+  Q4T_CHECK(stream.find("actual partial generation") != stream.npos);
+  Q4T_CHECK(jobs.Health().owned == 1 && f.clients.Usage(0).data_active == 1);
+  Q4T_CHECK(Ok(jobs.Cancel(id, Access())));
+  const auto resumed = Exchange([&](int fd) {
+    ServeResponsesState(
+        fd, objects, "GET",
+        "/v1/responses/" + id +
+            "?stream=true&starting_after=1&include_obfuscation=false",
+        "", Access(), &jobs);
+  });
+  Q4T_CHECK(resumed.starts_with("HTTP/1.1 200"));
+  Q4T_CHECK(resumed.find("response.created") == resumed.npos);
+  Q4T_CHECK(resumed.find("actual partial generation") != resumed.npos);
+  Q4T_CHECK(resumed.find("response.completed") == resumed.npos);
+  Q4T_CHECK(resumed.find("response.cancelled") == resumed.npos);
+  Q4T_CHECK(resumed.find("[DONE]") == resumed.npos);
+  return true;
+}
 
 Q4T_TEST(responses_jobs_permit_transfer_keeps_charge_and_rejects_failed_lease) {
   Fixture f;

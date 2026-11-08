@@ -164,9 +164,10 @@ class NativeTests(fixture.NginxTests):
                   ('GET', '/v1/responses/resp_1/input_items?limit=2&order=asc&'
                           'include%5B%5D=message.output_text.logprobs'),
                   ('DELETE', '/v1/responses/resp_1')]
+        routes.append(('POST', '/v1/responses/resp_1/cancel'))
         for method, path in routes:
             with self.subTest(method=method, path=path):
-                body = b'{"input":"query"}' if method == 'POST' else b''
+                body = b'{"input":"query"}' if path == '/v1/responses' else b''
                 before = len(self.stack.application_requests)
                 self.assertEqual(self.raw('Authorization: Bearer wrong\r\n',
                     method=method, path=path, length=len(body), body=body)[0], 401)
@@ -180,7 +181,7 @@ class NativeTests(fixture.NginxTests):
                     self.assertEqual((row['client'], row['token']), (client, 'e'*64))
                     self.assertIsNone(row['authorization'])
 
-    def test_responses_share_data_capacity_and_actual_peer_cidr(self):
+    def test_responses_keep_control_capacity_and_actual_peer_cidr(self):
         self.replace_stack(per_client_inflight=1, global_inflight=1,
                            allowed_client_cidrs=['127.0.0.1/32'])
         auth = 'Authorization: Bearer '+'A'*40+'\r\n'
@@ -189,12 +190,46 @@ class NativeTests(fixture.NginxTests):
                                   source='127.0.0.2')[0], 403)
         connection, response = self.stream()
         try:
-            self.assertEqual(self.raw(auth, method='GET', path=path)[0], 429)
-            self.assertEqual(self.stack.application_requests, [])
+            self.assertEqual(self.raw(auth, method='GET', path=path)[0], 200)
+            self.assertEqual(self.raw(auth, method='POST',
+                path='/v1/responses/resp_1/cancel')[0], 200)
+            self.assertEqual(len(self.stack.application_requests), 2)
+            self.assertEqual(self.raw(auth, method='POST', path='/v1/responses',
+                length=2, body=b'{}')[0], 429)
             self.assertEqual(self.stack.request(path='/livez')[0], 200)
         finally:
             response.close()
             connection.close()
+
+    def test_response_cancel_has_reserved_capacity_beside_full_stream_controls(self):
+        self.replace_stack(per_client_inflight=1, global_inflight=1)
+        auth = 'Authorization: Bearer '+'A'*40+'\r\n'
+        paths = [f'/v1/responses/resp_{i}?stream=true' for i in range(5)]
+        held_cancel = '/v1/responses/resp_hold/cancel'
+        self.stack.held_application_paths.update(paths + [held_cancel])
+        connections = []
+        def open_stream(method, path):
+            c = http.client.HTTPConnection('127.0.0.1',
+                self.stack.value['policy']['listen_port'], timeout=3)
+            connections.append(c)
+            c.request(method, path, headers={'Authorization':'Bearer '+'A'*40})
+            r = c.getresponse()
+            self.assertEqual(r.status, 200)
+            self.assertIn(b'cpu-held-application', r.readline())
+            return r
+        try:
+            streams = [open_stream('GET', path) for path in paths[:4]]
+            self.assertEqual(self.raw(auth, method='GET', path=paths[4])[0], 429)
+            self.assertEqual(self.raw(auth, method='POST',
+                path='/v1/responses/resp_free/cancel')[0], 200)
+            streams.append(open_stream('POST', held_cancel))
+            self.assertEqual(self.raw(auth, method='POST',
+                path='/v1/responses/resp_free/cancel')[0], 429)
+            self.assertEqual(self.raw('Authorization: Bearer '+'B'*40+'\r\n',
+                method='POST', path='/v1/responses/resp_free/cancel')[0], 200)
+        finally:
+            self.stack.release_applications.set()
+            for c in connections: c.close()
 
     def test_duplicate_bearer_and_ambiguous_framing_never_reach_backend(self):
         self.ready()

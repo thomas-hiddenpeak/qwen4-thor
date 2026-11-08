@@ -34,7 +34,27 @@ inline bool ResponsesMethodAllowed(std::string_view method,
   const auto end = path.find('/');
   if (!ValidApplicationId(path.substr(0, end))) return false;
   if (end == path.npos) return method == "GET" || method == "DELETE";
+  if (path.substr(end) == "/cancel") return method == "POST";
   return path.substr(end) == "/input_items" && method == "GET";
+}
+
+inline bool IsResponseCancellation(std::string_view method,
+                                   std::string_view target) {
+  const auto path = target.substr(0, target.find('?'));
+  return method == "POST" && path.ends_with("/cancel") &&
+         ResponsesMethodAllowed(method, target);
+}
+
+inline bool IsCancellationRequest(std::string_view method,
+                                  std::string_view target) {
+  return (method == "POST" && target == "/v1/requests/cancel") ||
+         IsResponseCancellation(method, target);
+}
+
+inline bool IsResponsesObservation(std::string_view method,
+                                   std::string_view target) {
+  return (method == "GET" || method == "DELETE") &&
+         ResponsesMethodAllowed(method, target);
 }
 
 // Shared ingress/backend route recognition. Query semantics remain the native

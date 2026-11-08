@@ -1,0 +1,118 @@
+{
+  "README.md": {
+    "bytes": 1075,
+    "sha256": "dec47389f4df1073143d7599081ee51589c3486bf3cb100fc35036ac9634570a"
+  },
+  "background-http-cpu-01/command.json": {
+    "bytes": 164,
+    "sha256": "2deffbcb71309b53cc063690dcc86c4253a01f740bd1e90126fcd91d70b1cd33"
+  },
+  "background-http-cpu-01/result.json": {
+    "bytes": 152,
+    "sha256": "42c51057801892728346081173ccdfa29419a5181f5ec87d05a81e9e4f961f70"
+  },
+  "background-http-cpu-01/stderr.log": {
+    "bytes": 92,
+    "sha256": "4faea264d9c53a849b5c614421d9dde8d4286925e8e935ca55aae933f97a7c38"
+  },
+  "background-http-cpu-01/stdout.log": {
+    "bytes": 1008,
+    "sha256": "70c6b0c2149552fa8ebe2133befc24f008e5c82c98b5cc94c8dd372f94c971b5"
+  },
+  "background-http-plan.json": {
+    "bytes": 1553,
+    "sha256": "acbcd6f3d02dd51b5c05a2b77f326293568b725c09cd4d6fd9f244474ea39d68"
+  },
+  "background-http-required.txt": {
+    "bytes": 869,
+    "sha256": "77d21dc60fc3c36be930fb42b9878bd566122da52f9d58a1e333972e8773ea36"
+  },
+  "background-http-source-01/command.json": {
+    "bytes": 84,
+    "sha256": "383738463e032740d9a0013df66dceed1e88826ff060ac73cd3f7addb2c6d6f0"
+  },
+  "background-http-source-01/result.json": {
+    "bytes": 63,
+    "sha256": "fb05847237f08b7f9a963ae74a689f4a01d392b4ad41fe6c1272b4b97eca97e8"
+  },
+  "background-http-source-01/stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "background-http-source-01/stdout.log": {
+    "bytes": 220,
+    "sha256": "a215cc1b3b2abd8f712aba33214bf736e983d388d708e7159674dc5531254e16"
+  },
+  "background-native-01/command.json": {
+    "bytes": 400,
+    "sha256": "711d4511cdc320b29ddb77dd05abb4e600551227ae9245d58cfa54b4d3b5b4e3"
+  },
+  "background-native-01/result.json": {
+    "bytes": 61,
+    "sha256": "9528af73050f6ebd4ca17e5da24799143c1df83462f4505d7c3cce36fbddb709"
+  },
+  "background-native-01/stderr.log": {
+    "bytes": 101,
+    "sha256": "c01f83dbec03598a376ad766785903988862a6dcaead88fcf0cdbd0c821acd7c"
+  },
+  "background-native-01/stdout.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "background-tls-01/command.json": {
+    "bytes": 220,
+    "sha256": "4315c729a8b96dedbe26574eeb3dcabd24429ad642e829819f62002898c225ca"
+  },
+  "background-tls-01/result.json": {
+    "bytes": 63,
+    "sha256": "7a4786d2ee83cb3688f7a18f00e6d5d1f8995c4559ee53b04a287c34a376dd89"
+  },
+  "background-tls-01/stderr.log": {
+    "bytes": 164,
+    "sha256": "de945489868aeac386d7cf452c9237083ca518c1e01227f2de3cdc73c80615fe"
+  },
+  "background-tls-01/stdout.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "background-tls-02/command.json": {
+    "bytes": 307,
+    "sha256": "bc76eeb93132e529138c084a0bccb0c0186675e06d56dbaa19b63727e607003f"
+  },
+  "background-tls-02/result.json": {
+    "bytes": 62,
+    "sha256": "1df427626854a194917e10e109fd7f46add2a7ad54a1895dea44cb0b23e31b77"
+  },
+  "background-tls-02/stderr.log": {
+    "bytes": 98,
+    "sha256": "0dbc482d5b7504970ff63f6f265b132e702bd323d7ccb1000196380f393c62d0"
+  },
+  "background-tls-02/stdout.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "build-38/command.json": {
+    "bytes": 166,
+    "sha256": "69dd5928e7579168097c27fb45fcc83bfb7f893fc5318fc34fc14d30dc21d41b"
+  },
+  "build-38/result.json": {
+    "bytes": 61,
+    "sha256": "bcd873603fdfa60dbc1934d865efc6aecd77cf3c3d5bfbe33cd1a8713e262ec7"
+  },
+  "build-38/stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "build-38/stdout.log": {
+    "bytes": 11807,
+    "sha256": "d4e00c6fb91e6290ad3138f79b68f6f31cb7690ce9bb1ebd0dd85c0ddf51f7ff"
+  },
+  "executable-identities.json": {
+    "bytes": 489,
+    "sha256": "95338d3487d05bc67d0971ad5b55144865d9ba1b5d1d9d6e90095cef3e23018c"
+  },
+  "source-files.json": {
+    "bytes": 3501,
+    "sha256": "f81f4ea3cee0ae410609c27c3211456b51e69431c09e1e48513abf13aab18edb"
+  }
+}

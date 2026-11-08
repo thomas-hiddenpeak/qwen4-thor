@@ -79,6 +79,8 @@ class Stack:
         self.forwarded = []
         self.model_requests = []
         self.application_requests = []
+        self.held_application_paths = set()
+        self.release_applications = threading.Event()
         self.events = []
         self.errors = []
         self.servers, self.threads = [], []
@@ -136,6 +138,15 @@ class Stack:
                     return
                 # Transport oracle only. Native endpoint/SDK semantics are
                 # exercised separately by the Conversations/Responses SDK fixtures.
+                if self.path in stack.held_application_paths:
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'text/event-stream')
+                    self.send_header('Connection', 'close')
+                    self.end_headers()
+                    self.wfile.write(b'data: cpu-held-application\n\n')
+                    self.wfile.flush()
+                    stack.release_applications.wait(5)
+                    return
                 self.response(200, dict(cpu_fixture=True, method=method,
                                         path=self.path, client=row['client']))
             def do_DELETE(self):
@@ -301,6 +312,7 @@ class Stack:
             return
         self._closed = True
         self.release_stream.set()
+        self.release_applications.set()
         if self.process.poll() is None:
             self.process.terminate()
         self.process.wait(timeout=5)

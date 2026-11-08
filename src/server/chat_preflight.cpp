@@ -41,13 +41,25 @@ ChatPlanConfig ChatServer::PlanningConfig(int fd) const {
 void ChatServer::HandleConfig(int fd) {
   const auto health =
       objects_ ? objects_->Health() : ObjectStoreHealth{"unconfigured"};
+  const auto jobs = background_ ? background_->Health() : ResponsesJobsHealth{};
+  const auto jobs_state = !background_    ? "unavailable"
+                          : jobs.failed   ? "failed"
+                          : jobs.stopping ? "stopping"
+                                          : "ready";
   const auto value = effective_config_.substr(0, effective_config_.size() - 1) +
                      R"(,"application_state_health":{"state":")" +
                      detail::JsonEscape(health.state) + '"' + R"(,"pending":)" +
                      std::to_string(health.pending) + R"(,"workers_started":)" +
                      std::to_string(health.workers_started) +
                      R"(,"workers_reaped":)" +
-                     std::to_string(health.workers_reaped) + "}}";
+                     std::to_string(health.workers_reaped) + "}," +
+                     R"("responses_background":{"state":")" + jobs_state +
+                     R"(","readiness_dependency":false,"owned":)" +
+                     std::to_string(jobs.owned) + R"(,"queued":)" +
+                     std::to_string(jobs.queued) + R"(,"running":)" +
+                     std::to_string(jobs.running) + R"(,"uncertain":)" +
+                     std::to_string(jobs.uncertain) + R"(,"input_bytes":)" +
+                     std::to_string(jobs.input_bytes) + "}}";
   detail::SendSimple(fd, 200, "OK", value, "application/json");
 }
 

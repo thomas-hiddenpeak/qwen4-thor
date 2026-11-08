@@ -1,0 +1,2 @@
+usage: test_native_access.py --ingress INGRESS --no-tls-ingress NO_TLS_INGRESS
+test_native_access.py: error: the following arguments are required: --no-tls-ingress

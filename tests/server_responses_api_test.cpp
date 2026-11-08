@@ -70,6 +70,35 @@ bool Finish(ResponsesExecution* run, std::string* wire) {
   *wire += part;
   return true;
 }
+
+Q4T_TEST(responses_api_cancel_route_and_owner_boundary) {
+  ResponsesReadPlan plan;
+  const auto path = "/v1/responses/resp_1/cancel";
+  Q4T_CHECK(Ok(PlanResponsesRead("POST", path, "", &plan)));
+  Q4T_CHECK(plan.operation == ResponsesReadPlan::Operation::kCancel);
+  Q4T_CHECK(ResponsesMethodAllowed("POST", path));
+  Q4T_CHECK(!ResponsesMethodAllowed("GET", path));
+  Q4T_CHECK(PlanResponsesRead("GET", path, "", &plan).http_status == 405);
+  Q4T_CHECK(PlanResponsesRead("POST", path, "{}", &plan).http_status == 400);
+  Q4T_CHECK(PlanResponsesRead("POST", std::string(path) + "?x=1", "", &plan)
+                .http_status == 400);
+  Q4T_CHECK(ClassifyHttpConnection("POST", path) ==
+            HttpConnectionClass::kControl);
+  Q4T_CHECK(ClassifyHttpConnection("GET", "/v1/responses/resp_1?stream=true") ==
+            HttpConnectionClass::kObservation);
+  Q4T_CHECK(ClassifyHttpConnection("DELETE", "/v1/responses/resp_1") ==
+            HttpConnectionClass::kObservation);
+  Q4T_CHECK(ClassifyHttpConnection("GET", path) ==
+            HttpConnectionClass::kBusiness);
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesReplay replay;
+  Q4T_CHECK(Ok(PlanResponsesRead("POST", path, "", &plan)));
+  Q4T_CHECK(ReadResponsesState(objects, plan, Access(), &replay).code ==
+            "response_executor_required");
+  Q4T_CHECK(!std::filesystem::exists(f.options.directory));
+  return true;
+}
 ObjectReply Read(ObjectStore& objects, std::string method, std::string target,
                  ResponsesReplay* replay = nullptr,
                  StateAccess access = Access()) {

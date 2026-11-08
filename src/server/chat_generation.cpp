@@ -106,6 +106,7 @@ void ChatServer::HandleChat(int fd, const std::string& body,
   });
   try {
     if (api == GenerationApi::kResponse) {
+      if (TryHandleBackgroundResponse(fd, body)) return;
       if (!objects_ || !context || !context->Client().Allowed()) {
         SendError(fd, 503, "Authenticated application state unavailable", {},
                   "object_scope_unavailable");
@@ -145,8 +146,8 @@ void ChatServer::HandleChat(int fd, const std::string& body,
 
 void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                 detail::ResponseState* response_state,
-                                bool completion,
-                                ResponsesExecution* responses) {
+                                bool completion, ResponsesExecution* responses,
+                                std::shared_ptr<RequestControl> background) {
   auto* http = detail::HttpResponseContext::Current(fd);
   metrics_.requests_total.fetch_add(1, std::memory_order_relaxed);
   const auto t_arrive = std::chrono::steady_clock::now();
@@ -201,9 +202,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     if (http) http->SetBeforeTerminal(nullptr, nullptr);
   });
   io::Json original_request;
-  Status s = io::ParseJson(body, &original_request, true,
-                           completion ? kCompletionJsonLimits
-                                      : kSchemaJsonLimits);
+  Status s;
+  if (!responses || !responses->Prepared())
+    s = io::ParseJson(body, &original_request, true,
+                      completion ? kCompletionJsonLimits : kSchemaJsonLimits);
   if (!s.ok()) {
     SendError(fd, 400, "invalid JSON: " + s.message(), {}, "invalid_json");
     return;
@@ -217,21 +219,22 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   uint64_t completion_prompt_tokens = 0, completion_output_tokens = 0;
   ChatPlanError planning_error;
   if (responses) {
-    const auto& identity = http->Client();
-    StateAccess access{
-        identity.Scoped() ? "client:" + std::string(identity.Id())
-                          : "local:anonymous",
-        t_arrive + std::chrono::milliseconds(original_request.GetInt(
-                       "request_timeout_ms", request_deadline_ms_)),
-        [this, fd] {
-          return stop_requested_.load() || detail::ClientConnectionFailed(fd);
-        }};
-    auto reply = responses->Prepare(original_request, planning_config,
-                                    std::move(access), std::time(nullptr));
-    if (!reply.ok()) {
-      SendError(fd, reply.http_status, reply.message, {}, reply.code,
-                reply.value.GetString("param"));
-      return;
+    if (!responses->Prepared()) {
+      const auto& identity = http->Client();
+      StateAccess access{
+          identity.Scoped() ? "client:" + std::string(identity.Id())
+                            : "local:anonymous",
+          t_arrive + std::chrono::milliseconds(request_deadline_ms_),
+          [this, fd] {
+            return stop_requested_.load() || detail::ClientConnectionFailed(fd);
+          }};
+      auto reply = responses->Prepare(original_request, planning_config,
+                                      std::move(access), std::time(nullptr));
+      if (!reply.ok()) {
+        SendError(fd, reply.http_status, reply.message, {}, reply.code,
+                  reply.value.GetString("param"));
+        return;
+      }
     }
     original_request = responses->Generation().generation_request;
     request_plan = responses->Generation().chat;
@@ -289,23 +292,26 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         t_arrive + std::chrono::milliseconds(req.GetInt("request_timeout_ms"));
   }
   detail::ServeFaultPoint("handler.before_register");
-  auto control = requests_.Register(request_id, key, deadline, client);
+  if (background) deadline = background->deadline();
+  auto control = background
+                     ? background
+                     : requests_.Register(request_id, key, deadline, client);
   if (!control) {
     SendError(fd, 409, "request_id already active", {}, "request_id_conflict",
               "request_id");
     return;
   }
   struct Registration {
-    RequestRegistry& registry;
+    RequestRegistry* registry;
     std::shared_ptr<RequestControl> control;
     RequestDiagnostics& diagnostic;
     ~Registration() {
       if (control->Cancelled())
         diagnostic.Outcome(control->Failed() ? "error" : "cancelled",
                            control->Reason());
-      registry.Remove(control);
+      if (registry) registry->Remove(control);
     }
-  } registration{requests_, control, diagnostic};
+  } registration{background ? nullptr : &requests_, control, diagnostic};
   OnException request_failure(
       [&] { control->Cancel(RequestControl::State::kFailure); });
   diagnostic.Bind(request_id);

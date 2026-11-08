@@ -1,5 +1,6 @@
 #include "q4t/server/client_request.h"
 #include "q4t/server/model_catalog.h"
+#include "q4t/server/application_routes.h"
 
 namespace q4t::server {
 
@@ -31,12 +32,13 @@ bool AdmitClientRequest(std::string_view method, std::string_view path,
       headers->content_length > identity->Limits()->max_body_bytes)
     return fail(413, "client_body_limit_exceeded");
   const auto lane =
-      ((method == "GET" &&
-        (path == "/v1/models" || path == "/v1/capabilities")) ||
-       ((method == "GET" || method == "DELETE") && IsModelDetailPath(path)))
+      IsCancellationRequest(method, path) ? ClientLane::kCancel
+      : ((method == "GET" &&
+          (path == "/v1/models" || path == "/v1/capabilities")) ||
+         ((method == "GET" || method == "DELETE") && IsModelDetailPath(path)) ||
+         IsResponsesObservation(method, path))
           ? ClientLane::kControl
-      : method == "POST" && path == "/v1/requests/cancel" ? ClientLane::kControl
-                                                          : ClientLane::kData;
+          : ClientLane::kData;
   if (!lease->Acquire(admission, *identity, lane))
     return fail(429, "client_capacity_exhausted");
   return true;

@@ -103,7 +103,7 @@ Q4T_TEST(responses_background_cancel_preserves_partial_without_tool_done) {
     Fixture f;
     ObjectStore objects(f.options);
     ResponsesExecution run(objects);
-    Q4T_CHECK(Ok(Prepare(run)));
+    Q4T_CHECK(Ok(Prepare(run, R"(,"stream":true)")));
     std::string wire;
     Q4T_CHECK(Ok(run.Begin(&wire)));
     if (started) {
@@ -174,6 +174,53 @@ Q4T_TEST(responses_background_store_false_has_temporary_polling_state) {
   return true;
 }
 
+Q4T_TEST(responses_background_active_retention_covers_execution_deadline) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesExecution run(objects);
+  Q4T_CHECK(Ok(Prepare(run, R"(,"store":false)")));
+  auto control =
+      std::make_shared<RequestControl>(run.Id(), "", Clock::now() + 20min);
+  run.BindBackgroundControl(control);
+  const auto deadline = run.ExecutionDeadlineAt();
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)));
+  auto saved = Stored(objects, run.Id());
+  Q4T_CHECK(Ok(saved));
+  Q4T_CHECK(saved.value.GetInt("expires_at") >= deadline + 600);
+  ResponsesExecution restored(objects);
+  Q4T_CHECK(Ok(restored.RestoreQueued(run.Id(), Config(), Access())));
+  Q4T_CHECK(restored.ExecutionDeadlineAt() == deadline);
+  restored.BindBackgroundControl(
+      std::make_shared<RequestControl>(run.Id(), "", Clock::now() + 24h));
+  Q4T_CHECK(restored.ExecutionDeadlineAt() == deadline);
+  Q4T_CHECK(Ok(restored.Cancel()));
+  saved = Stored(objects, run.Id());
+  Q4T_CHECK(Ok(saved));
+  Q4T_CHECK(saved.value.GetInt("expires_at") <= std::time(nullptr) + 601);
+  return true;
+}
+
+Q4T_TEST(responses_background_restream_requires_original_stream_opt_in) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesExecution run(objects);
+  Q4T_CHECK(Ok(Prepare(run)));
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)) && Ok(run.Cancel()));
+  ResponsesReadPlan plan;
+  plan.id = run.Id();
+  plan.stream = true;
+  ResponsesReplay replay;
+  const auto result = ReadResponsesState(objects, plan, Access(), &replay);
+  Q4T_CHECK(result.http_status == 400 &&
+            result.value.GetString("param") == "stream");
+  Q4T_CHECK(replay.wire.empty());
+  plan.stream = false;
+  Q4T_CHECK(Ok(ReadResponsesState(objects, plan, Access(), &replay)));
+  return true;
+}
+
 Q4T_TEST(
     responses_background_restore_queued_keeps_identity_and_resolved_history) {
   Fixture f;
@@ -214,7 +261,7 @@ Q4T_TEST(responses_background_interrupted_execution_fails_without_replay) {
   {
     ObjectStore objects(f.options);
     ResponsesExecution run(objects);
-    Q4T_CHECK(Ok(Prepare(run)));
+    Q4T_CHECK(Ok(Prepare(run, R"(,"stream":true)")));
     std::string wire;
     Q4T_CHECK(Ok(run.Begin(&wire)) && Ok(run.StartRunning(&wire)));
     Q4T_CHECK(run.Append(Text("actual partial"), "null", &wire));

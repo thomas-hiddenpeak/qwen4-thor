@@ -152,6 +152,7 @@ set(protocol_inputs
   src/server/chat_preflight.cpp
   src/server/server_options.cpp
   src/server/chat_generation.cpp
+  src/server/chat_responses.cpp
   src/server/chat_http.cpp
   src/server/chat_input.cpp
   src/server/chat_metrics.cpp

@@ -28,12 +28,8 @@ class ResponsesExecution {
     access_.deadline = deadline;
     access_.cancelled = std::move(cancelled);
   }
-  void BindBackgroundControl(std::shared_ptr<RequestControl> control) {
-    background_control_ = std::move(control);
-    BindCancellation(
-        background_control_->deadline(),
-        [control = background_control_] { return control->Cancelled(); });
-  }
+  void BindBackgroundControl(std::shared_ptr<RequestControl> control);
+  int64_t ExecutionDeadlineAt() const { return plan_.execution_deadline_at; }
   Status Append(const ResponseDelta& delta, std::string_view probabilities,
                 std::string* wire);
   ObjectReply Finish(bool incomplete, size_t completed_calls,

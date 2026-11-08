@@ -54,6 +54,7 @@
 #include "q4t/server/device_memory.h"
 #include "q4t/server/grammar_process.h"
 #include "q4t/server/object_store.h"
+#include "q4t/server/responses_jobs.h"
 #include "q4t/vision/processor.h"
 #include "q4t/vision/media_plan.h"
 #include "q4t/vision/vision.h"
@@ -175,7 +176,10 @@ class ChatServer {
                   GenerationApi api = GenerationApi::kChat);
   void HandleChatImpl(int fd, const std::string& body,
                       detail::ResponseState* response_state, bool completion,
-                      class ResponsesExecution* responses);
+                      class ResponsesExecution* responses,
+                      std::shared_ptr<RequestControl> background = {});
+  bool TryHandleBackgroundResponse(int fd, const std::string& body);
+  void RunBackgroundResponse(ResponsesJobs::Job& job);
 
   // Shared scratch is protected by model_mu_ through default-stream GPU
   // completion and host readback. Only then can another request reuse it.
@@ -186,6 +190,7 @@ class ChatServer {
   RequestRegistry requests_;
   ClientAdmission clients_;
   std::unique_ptr<ObjectStore> objects_;
+  std::unique_ptr<ResponsesJobs> background_;
   std::mutex connections_mu_;
   std::unordered_set<int> connections_;
   void FreeSeqId(int seq_id);

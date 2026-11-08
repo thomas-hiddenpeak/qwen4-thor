@@ -314,8 +314,9 @@ const ClientLimits& ClientAdmission::Limits(size_t index) const {
 ClientUsage ClientAdmission::Usage(size_t index) const {
   if (index >= Size()) throw std::out_of_range("client counter index");
   const auto& counters = counters_[index];
-  return {counters.data.load(), counters.control.load(),
-          counters.data_rejected.load(), counters.control_rejected.load()};
+  return {counters.data.load(),          counters.control.load(),
+          counters.data_rejected.load(), counters.control_rejected.load(),
+          counters.cancel.load(),        counters.cancel_rejected.load()};
 }
 
 ClientLease::~ClientLease() {
@@ -357,7 +358,8 @@ bool ClientLease::Acquire(ClientAdmission& admission,
   if (attempted_) return false;
   attempted_ = true;
   if (identity.owner_ != &admission ||
-      (lane != ClientLane::kData && lane != ClientLane::kControl))
+      (lane != ClientLane::kData && lane != ClientLane::kControl &&
+       lane != ClientLane::kCancel))
     return false;
   if (!identity.Scoped()) {
     admitted_ = !admission.Enabled();
@@ -368,12 +370,19 @@ bool ClientLease::Acquire(ClientAdmission& admission,
     return false;
   auto& counters = admission.counters_[identity.index_];
   const bool control = lane == ClientLane::kControl;
-  auto& active = control ? counters.control : counters.data;
-  auto& rejected = control ? counters.control_rejected : counters.data_rejected;
-  const uint32_t limit = control ? identity.limits_->max_control_inflight
-                                 : identity.limits_->max_inflight;
-  auto& finishing =
-      control ? counters.control_finishing : counters.data_finishing;
+  const bool cancel = lane == ClientLane::kCancel;
+  auto& active = cancel    ? counters.cancel
+                 : control ? counters.control
+                           : counters.data;
+  auto& rejected = cancel    ? counters.cancel_rejected
+                   : control ? counters.control_rejected
+                             : counters.data_rejected;
+  const uint32_t limit = cancel    ? 1
+                         : control ? identity.limits_->max_control_inflight
+                                   : identity.limits_->max_inflight;
+  auto& finishing = cancel    ? counters.cancel_finishing
+                    : control ? counters.control_finishing
+                              : counters.data_finishing;
   std::unique_lock lock(counters.mutex);
   if (active.load(std::memory_order_relaxed) >= limit && finishing) {
     counters.changed.wait_for(lock, kClientHandoffWait, [&] {
@@ -449,20 +458,29 @@ std::string ClientPolicyMetrics(const ClientAdmission& admission) {
                                 : limits.requests_per_minute) +
              '\n';
     }
-    for (const bool control : {false, true}) {
+    for (const auto lane :
+         {ClientLane::kData, ClientLane::kControl, ClientLane::kCancel}) {
+      const bool control = lane == ClientLane::kControl;
+      const bool cancel = lane == ClientLane::kCancel;
       const auto labels = "{client=\"" + limits.id + "\",lane=\"" +
-                          (control ? "control" : "data") + "\"} ";
-      out +=
-          "q4t_client_requests_active" + labels +
-          std::to_string(control ? usage.control_active : usage.data_active) +
-          '\n';
+                          (cancel    ? "cancel"
+                           : control ? "control"
+                                     : "data") +
+                          "\"} ";
+      out += "q4t_client_requests_active" + labels +
+             std::to_string(cancel    ? usage.cancel_active
+                            : control ? usage.control_active
+                                      : usage.data_active) +
+             '\n';
       out += "q4t_client_requests_limit" + labels +
-             std::to_string(control ? limits.max_control_inflight
-                                    : limits.max_inflight) +
+             std::to_string(cancel    ? 1
+                            : control ? limits.max_control_inflight
+                                      : limits.max_inflight) +
              '\n';
       out += "q4t_client_capacity_rejected_total" + labels +
-             std::to_string(control ? usage.control_rejected
-                                    : usage.data_rejected) +
+             std::to_string(cancel    ? usage.cancel_rejected
+                            : control ? usage.control_rejected
+                                      : usage.data_rejected) +
              '\n';
     }
   }
