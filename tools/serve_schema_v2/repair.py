@@ -12,7 +12,7 @@ from tools.serve_schema_v2 import acceptance as base
 from tools.serve_service.package import read, save, sha, require
 
 LIMITS = dict(starts=1, chats=4, controls=2000, seconds=700)
-CUMULATIVE = dict(starts=2, chats=9, seconds=900)
+CUMULATIVE = dict(starts=3, chats=10, seconds=900)
 REUSED = ("features", "warm", "private", "tool")
 
 
@@ -36,14 +36,36 @@ def previous_evidence(previous):
     return {name: sha(previous / name) for name in files}
 
 
+def failed_retry_evidence(previous, original):
+    result = read(previous / "result.json")
+    cleanup = read(previous / "cleanup.json")
+    require(result["status"] == "FAILED" and result["counts"]["starts"] == 1
+            and result["counts"]["chats"] == 1 and
+            "grammar operation time limit exceeded" in result["error"],
+            "unexpected retry failure")
+    require(cleanup["model_exit"] == 0 and not cleanup["remaining"] and
+            cleanup["ports_released"] and cleanup["lease_continuously_held"],
+            "failed retry resources remain")
+    require(read(previous / "final.request.json") ==
+            read(original / "final.request.json"), "retry changed failed task")
+    require(result["seconds"] + read(original / "result.json")["seconds"] +
+            LIMITS["seconds"] <= CUMULATIVE["seconds"], "cumulative deadline")
+    files = ["plan.json", "result.json", "cleanup.json", "final.request.json",
+             "final.wire", "model.log"]
+    return {name: sha(previous / name) for name in files}
+
+
 def prepare(args):
     previous = args.previous.resolve(strict=True)
     evidence = previous_evidence(previous)
+    retry = args.failed_retry.resolve(strict=True)
+    retry_evidence = failed_retry_evidence(retry, previous)
     old = read(previous / "plan.json")
     # Cache, parser, sampler and decoder control path are unchanged. Only the
     # regular-language representation changes, covered by the targeted CPU
     # real-vocabulary and language-boundary cases before this repair run.
     allowed = {"src/server/regex_syntax/schema_regex.rs",
+               "src/server/custom_grammar.cpp", "src/server/schema_grammar.cpp",
                "tools/serve_schema_v2/acceptance.py",
                "tools/serve_schema_v2/test_acceptance.py"}
     changed = [name for name, digest in old["sources"].items()
@@ -57,12 +79,14 @@ def prepare(args):
     plan.update(planned=dict(starts=1, chats=4), repair_limits=LIMITS,
                 cumulative_limits=CUMULATIVE, previous=str(previous),
                 previous_evidence=evidence, reused_requests=list(REUSED),
+                failed_retry=str(retry), failed_retry_evidence=retry_evidence,
                 changed_previous_sources=changed,
                 final_request=read(previous / "final.request.json"),
                 execution=read(previous / "tool-execution.json"),
-                repair="Counted regular-language chains; same request and "
-                       "worker limits. One failed request is the ninth "
-                       "cumulative Chat; no replay of four passed requests.")
+                repair="Counted regular-language chains and encoded Regex "
+                       "FSM preservation; same request and worker limits. "
+                       "Two failed finals account for cumulative Chat 9/10; "
+                       "no replay of four passed requests.")
     require(plan["execution"]["result"]["source"]["sha256"] ==
             plan["sources"][base.DOCUMENT], "read document changed")
     save(args.output / "plan.json", plan)
@@ -75,6 +99,8 @@ class Repair(base.Stage):
         previous = Path(plan["previous"])
         require(previous_evidence(previous) == plan["previous_evidence"],
                 "previous evidence changed")
+        require(failed_retry_evidence(Path(plan["failed_retry"]), previous) ==
+                plan["failed_retry_evidence"], "failed retry evidence changed")
         require(read(previous / "final.request.json") == plan["final_request"]
                 and read(previous / "tool-execution.json") == plan["execution"],
                 "original tool follow-up changed")
@@ -99,6 +125,7 @@ def main():
     prep.add_argument("--binary", type=Path, required=True)
     prep.add_argument("--output", type=Path, required=True)
     prep.add_argument("--previous", type=Path, required=True)
+    prep.add_argument("--failed-retry", type=Path, required=True)
     prep.add_argument("--port", type=int, default=18164)
     run = sub.add_parser("run")
     run.add_argument("--plan", type=Path, required=True)

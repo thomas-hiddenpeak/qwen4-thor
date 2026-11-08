@@ -1,6 +1,7 @@
 #include "q4t/server/custom_grammar.h"
 
 #include <algorithm>
+#include <charconv>
 #include <cstdio>
 #include <stdexcept>
 #include <vector>
@@ -44,10 +45,12 @@ int Integer(const io::Json& value) {
   Require(number > -2147483648 && number <= 2147483647);
   return static_cast<int>(number);
 }
-std::string Codepoint(int value) {
+std::string Codepoint(int value, bool regex = false) {
   char text[16];
   if (value <= 0xffff)
     std::snprintf(text, sizeof(text), "\\u%04x", value);
+  else if (regex)
+    std::snprintf(text, sizeof(text), "\\u{%x}", value);
   else
     std::snprintf(text, sizeof(text), "\\U%08x", value);
   return text;
@@ -79,7 +82,17 @@ std::vector<Range> Without(const std::vector<Range>& ranges,
   }
   return result;
 }
-std::string CharacterClass(const std::vector<int>& data, bool repeat = false) {
+std::string RegexLiteral(std::string_view text) {
+  std::string result;
+  for (char c : text) {
+    if (std::string_view("\\.^$|()[]{}*+?").find(c) != text.npos)
+      result += '\\';
+    result += c;
+  }
+  return result;
+}
+std::string CharacterClass(const std::vector<int>& data, bool repeat = false,
+                           bool regex = false) {
   Require(!data.empty() && data.size() % 2 == 1);
   std::vector<Range> ranges;
   for (size_t i = 1; i < data.size(); i += 2)
@@ -93,8 +106,8 @@ std::string CharacterClass(const std::vector<int>& data, bool repeat = false) {
   if (!normal.empty()) {
     std::string text = "[";
     for (const auto& [low, high] : normal) {
-      text += Codepoint(low);
-      if (low != high) text += '-' + Codepoint(high);
+      text += Codepoint(low, regex);
+      if (low != high) text += '-' + Codepoint(high, regex);
     }
     normal_class = text + ']';
     if (!repeat) branches.push_back(normal_class);
@@ -106,14 +119,15 @@ std::string CharacterClass(const std::vector<int>& data, bool repeat = false) {
         }))
       continue;
     auto encoded = EncodeCustomInput(std::string(1, static_cast<char>(c)));
-    branches.push_back(Literal(encoded.substr(1, encoded.size() - 2)));
+    const auto text = encoded.substr(1, encoded.size() - 2);
+    branches.push_back(regex ? RegexLiteral(text) : Literal(text));
   }
   if (branches.empty())
     return repeat ? (normal_class.empty() ? "\"\"" : normal_class + '*')
                   : "[^\\u0000-\\U0010ffff]";
   std::string output = "(";
   for (const auto& branch : branches) {
-    if (output.size() > 1) output += " | ";
+    if (output.size() > 1) output += regex ? "|" : " | ";
     output += branch;
   }
   output += ')';
@@ -126,6 +140,88 @@ std::string CharacterClass(const std::vector<int>& data, bool repeat = false) {
   return normal_class + "* (" + output + ' ' + normal_class + "*)*";
 }
 
+// The schema regular-language emitter writes terminal counted chains in this
+// canonical form. Preserve them before FromEBNF normalizes a repeated encoded
+// (ordinary scalar | JSON escape) into recursive rules. A Regex macro compiles
+// the same encoded language as one finite-state machine, including escapes.
+bool CountedPattern(std::string_view body, std::string* encoded) {
+  if (!body.starts_with('[') || !body.ends_with('}')) return false;
+  size_t at = 1;
+  const auto codepoint = [&](int* result) {
+    if (at + 2 > body.size() || body[at] != '\\') return false;
+    const auto kind = body[at + 1];
+    const size_t digits = kind == 'u' ? 4 : kind == 'U' ? 8 : 0;
+    if (!digits || at + 2 + digits > body.size()) return false;
+    const auto parsed = std::from_chars(body.data() + at + 2,
+                                        body.data() + at + 2 + digits,
+                                        *result, 16);
+    if (parsed.ec != std::errc() ||
+        parsed.ptr != body.data() + at + 2 + digits || *result > 0x10ffff)
+      return false;
+    at += 2 + digits;
+    return true;
+  };
+  std::vector<int> ranges{0};
+  while (at < body.size() && body[at] != ']') {
+    int low, high;
+    if (!codepoint(&low)) return false;
+    high = low;
+    if (at < body.size() && body[at] == '-') {
+      ++at;
+      if (!codepoint(&high) || high < low) return false;
+    }
+    ranges.push_back(low);
+    ranges.push_back(high);
+  }
+  if (ranges.size() == 1 || body.substr(at, 2) != "]{") return false;
+  at += 2;
+  int lower = 0, upper = 0;
+  const auto first = std::from_chars(body.data() + at,
+                                    body.data() + body.size(), lower);
+  if (first.ec != std::errc() || first.ptr == body.data() + body.size() ||
+      *first.ptr != ',' || lower < 0)
+    return false;
+  const auto last = std::from_chars(first.ptr + 1,
+                                   body.data() + body.size() - 1, upper);
+  if (last.ec != std::errc() || last.ptr != body.data() + body.size() - 1 ||
+      upper < lower)
+    return false;
+  *encoded = "Regex(" + Literal(CharacterClass(ranges, false, true) + '{' +
+                                std::to_string(lower) + ',' +
+                                std::to_string(upper) + '}') + ')';
+  return true;
+}
+
+std::string PreserveCountedRules(
+    std::string_view source,
+    std::vector<std::pair<std::string, std::string>>* encoded) {
+  Bound(source.size());
+  std::string result;
+  for (size_t begin = 0; begin < source.size();) {
+    const auto end = source.find('\n', begin);
+    const auto line = source.substr(begin, end == source.npos
+                                              ? source.size() - begin
+                                              : end - begin);
+    const auto separator = line.find(" ::= ");
+    std::string pattern;
+    if (separator != line.npos &&
+        CountedPattern(line.substr(separator + 5), &pattern)) {
+      std::string marker = "__q4t_counted_json_" +
+                           std::to_string(encoded->size()) + "__";
+      while (source.find(marker) != source.npos) marker += '_';
+      encoded->emplace_back(marker, std::move(pattern));
+      result += std::string(line.substr(0, separator + 5)) + Literal(marker);
+    } else {
+      result += line;
+    }
+    result += '\n';
+    Bound(result.size());
+    if (end == source.npos) break;
+    begin = end + 1;
+  }
+  return result;
+}
+
 // Public SerializeJSON exposes the pinned grammar expression representation.
 // Read it defensively and generate independent EBNF rules; no private library
 // headers or in-place AST mutation. A dependency upgrade must requalify this
@@ -133,8 +229,9 @@ std::string CharacterClass(const std::vector<int>& data, bool repeat = false) {
 class Encoder {
  public:
   explicit Encoder(
-      std::vector<std::pair<std::string, std::string>> regexes = {})
-      : regexes_(std::move(regexes)) {}
+      std::vector<std::pair<std::string, std::string>> regexes = {},
+      std::vector<std::pair<std::string, std::string>> encoded = {})
+      : regexes_(std::move(regexes)), encoded_(std::move(encoded)) {}
   std::string Encode(const xgrammar::Grammar& grammar) {
     const auto root = Add(grammar, 0);
     return "root ::= " + Literal("\"") + ' ' + root + ' ' + Literal("\"") +
@@ -188,6 +285,7 @@ class Encoder {
           do {
             size_t next = raw.size();
             const std::pair<std::string, std::string>* match = nullptr;
+            bool already_encoded = false;
             for (const auto& replacement : regexes_) {
               if (depth != 0) break;
               const auto at = raw.find(replacement.first, offset);
@@ -196,13 +294,24 @@ class Encoder {
                 match = &replacement;
               }
             }
+            for (const auto& replacement : encoded_) {
+              if (depth != 0) break;
+              const auto at = raw.find(replacement.first, offset);
+              if (at < next) {
+                next = at;
+                match = &replacement;
+                already_encoded = true;
+              }
+            }
             const auto encoded = EncodeCustomInput(
                 std::string_view(raw).substr(offset, next - offset));
             if (!body.empty()) body += ' ';
             body += Literal(encoded.substr(1, encoded.size() - 2));
             if (!match) break;
-            body += ' ' +
-                    Add(xgrammar::Grammar::FromEBNF(match->second), depth + 1);
+            body += ' ' + (already_encoded
+                               ? match->second
+                               : Add(xgrammar::Grammar::FromEBNF(match->second),
+                                     depth + 1));
             offset = next + match->first.size();
           } while (offset < raw.size());
           break;
@@ -265,6 +374,7 @@ class Encoder {
     return rule(Integer(*Field(object, "root_rule_id")));
   }
   std::vector<std::pair<std::string, std::string>> regexes_;
+  std::vector<std::pair<std::string, std::string>> encoded_;
   int next_ = 0;
   std::string rules_;
 };
@@ -345,7 +455,10 @@ std::string ExpandCustomGrammarFormats(std::string_view structural_tag) {
 
 std::string EncodeJsonStringGrammar(std::string_view ebnf) {
 #ifdef Q4T_ENABLE_XGRAMMAR
-  return Encoder().Encode(xgrammar::Grammar::FromEBNF(std::string(ebnf)));
+  std::vector<std::pair<std::string, std::string>> encoded;
+  const auto preserved = PreserveCountedRules(ebnf, &encoded);
+  return Encoder({}, std::move(encoded)).Encode(
+      xgrammar::Grammar::FromEBNF(preserved));
 #else
   (void)ebnf;
   throw std::runtime_error("schema grammar backend is not built");

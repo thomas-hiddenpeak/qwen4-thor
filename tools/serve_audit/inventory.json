@@ -868,7 +868,7 @@
     "src/server/client_policy.cpp": "3d28eb74a983b10fbb2fdf218307c0490349c051aee37945ae770a198f45b791",
     "src/server/client_request.cpp": "418f478a0d94cb270ea507cb6843f0a88a97de0ad2a22192e9f563c67f6fe83e",
     "src/server/cuda_memory_backend.h": "aabc6d78d2925ec5280e270964d79d3164ce706732a674b88215554a34d0e6a5",
-    "src/server/custom_grammar.cpp": "23fb0c8421ed4cb86af9ca1bb894d3f2fe8cef6f0109ef68907493a716ae75f3",
+    "src/server/custom_grammar.cpp": "9fae326d558056d3c189100b9748f9402ec52c30ba8f894b1f73893bfd4da198",
     "src/server/custom_regex.cpp": "eb8ab53b44dbb9ec2011676a854a18e38244975e76955b74a441829bdd67031a",
     "src/server/custom_regex.h": "4916fea56e31101ba2352675c918b82fe76b785b8559c87683d8cc531c3624d5",
     "src/server/custom_tools.cpp": "3e45f9a496439ec1e0d86739acb9c5d01eb6e2c321a96d924cf755b99bc12abd",
@@ -889,7 +889,7 @@
     "src/server/regex_syntax/schema_regex.rs": "5760dd4f407dd7e1af134837ada78978ec076b4d3f74c5d781d1b91d9dd8ed8d",
     "src/server/sampling.cpp": "8e6a8c446656d8430005b061b10535b391b002362725511d216f9b4229e3d3cb",
     "src/server/schema_decimal.cpp": "3931972b1ecfd38b0574c6794f447f6b05d1ef78d65e0f73a61eabcb1c2dee2f",
-    "src/server/schema_grammar.cpp": "1411f2df41fe33a60578801a22fa1baf0f1776a664eed74df67936fd636098aa",
+    "src/server/schema_grammar.cpp": "075d6a282f2fc1cda861e3a0de4de132455af3efa9ed30b67b0ad9a5caf56cf2",
     "src/server/schema_grammar.h": "b91cea4dc591de156c078d5c3e8ea74028668484091688a03e62b6c51e6a45cd",
     "src/server/schema_graph.cpp": "b4a369e5b6882642e350b140afd2ff4002d9ae60e0f42ec8e34aa02de54972a5",
     "src/server/schema_idna.cpp": "214915c2433c13b21828aba703be2ec5e4d44ee7a2a805078f3a307daa2f54fc",
@@ -1533,7 +1533,7 @@
     "model_adapter": "Native function/input tags and encoded string, declared name determines standard wire custom type. Two failed business attempts retained; original mixed task passed after adapter repair."
   },
   "schema_v2_development_20261108": {
-    "state": "text_business_timeout_repaired_cpu",
+    "state": "full_title_fsm_repair_cpu",
     "record": "docs/SERVE_SCHEMA_V2_2026-11-08.md",
     "source": [
       "src/server/schema_decimal.cpp",
@@ -1569,7 +1569,7 @@
       "tools/serve_schema_v2/acceptance.py",
       "tools/serve_schema_v2/repair.py"
     ],
-    "acceptance": "81 distinct A05 C++ CPU checks. First text run: four schema/cache/actual-tool requests passed, fifth final JSON timed out; cleanup complete. Finite character-chain lowering and dead-state trimming repaired the real-vocabulary failure, including pattern+length. 18 affected CPU cases pass; failed final, three unexecuted requests and media acceptance plus delivery remain. Default unchanged.",
+    "acceptance": "82 distinct A05 C++ CPU checks. Two real final-response timeouts retained (2 starts/6 Chat); four initial schema/cache/tool requests passed. Complete-title diagnosis found JSON repetition re-expansion; preserve it as public Regex FSM, including Unicode/escapes. 21 affected cases passed, including actual 256-scalar vocabulary boundary. Final and three unexecuted requests, media and delivery remain. Default unchanged.",
     "optional_native_dependency": {
       "name": "system libidn2 >= 2.3",
       "observed": "2.3.7-2build1.1 on this Thor",

@@ -279,7 +279,12 @@ class Compiler {
             break;
           ++i;
         }
-        result += prefix + ebnf.substr(start, i - start);
+        const auto identifier = ebnf.substr(start, i - start);
+        // Public EBNF macros are operators, not imported rule identifiers.
+        // Only the generated Regex(string) form is emitted by our encoder.
+        result += identifier == "Regex" && i < ebnf.size() && ebnf[i] == '('
+                      ? identifier
+                      : prefix + identifier;
       } else {
         result += c;
         ++i;

@@ -14,6 +14,7 @@
 #ifdef Q4T_ENABLE_XGRAMMAR
 #include "q4t/server/structured_decoder.h"
 #include "q4t/server/custom_grammar.h"
+#include "q4t/server/custom_tools.h"
 #include "../src/server/schema_token_guard.h"
 #include "../src/server/schema_string.h"
 #include <xgrammar/compiler.h>
@@ -89,7 +90,7 @@ const GoldenCase kGoldenCases[] = {
 
 #ifdef Q4T_ENABLE_XGRAMMAR
 namespace {
-bool BoundedTitleRealVocabulary(bool pattern) {
+bool BoundedTitleRealVocabulary(bool pattern, bool upper = false) {
   using namespace q4t::server;
   std::unique_ptr<Tokenizer> tokenizer;
   Q4T_CHECK(Tokenizer::Load(kRealTokenizer, {}, &tokenizer));
@@ -133,9 +134,14 @@ bool BoundedTitleRealVocabulary(bool pattern) {
   OutputConstraints plan;
   Q4T_CHECK(PlanOutputConstraints(input, &plan));
   Q4T_CHECK(q4t::io::ParseJson(plan.structural_tag, &configuration, true));
-  const std::string text =
-      R"({"title":"Qwen3.8-Flash-Next 模型架构",
-         "citation":"[docs/MODEL.md:L1-L16]",
+  std::string title = "MODEL.md — Qwen3.8-Flash-Next (qwen4_exp) 架构笔记";
+  if (upper) {
+    title.clear();
+    for (int i = 0; i < 36; ++i) title += "a中🚀\"\\<\t";
+    title += "aaaa";  // Exactly 256 Unicode scalars, including JSON escapes.
+  }
+  const std::string text = "{\"title\":" + EncodeCustomInput(title) +
+      R"(,"citation":"[docs/MODEL.md:L1-L16]",
          "requested_line_count":16,"note":null})";
   std::vector<uint32_t> tokens, end;
   Q4T_CHECK(tokenizer->Encode(text, &tokens));
@@ -217,6 +223,10 @@ Q4T_TEST(tokenizer_schema_bounded_title_with_tools_real_vocabulary) {
 
 Q4T_TEST(tokenizer_schema_bounded_pattern_with_tools_real_vocabulary) {
   return BoundedTitleRealVocabulary(true);
+}
+
+Q4T_TEST(tokenizer_schema_bounded_maximum_unicode_real_vocabulary) {
+  return BoundedTitleRealVocabulary(true, true);
 }
 
 Q4T_TEST(tokenizer_schema_worker_mask_phase_diagnostic) {
