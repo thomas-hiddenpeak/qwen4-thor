@@ -1,0 +1,23 @@
+{
+  "model": "qwen3.8-flash-next",
+  "enable_thinking": false,
+  "temperature": 0.8,
+  "max_tokens": 1024,
+  "stream": true,
+  "messages": [
+    {
+      "role": "user",
+      "content": "Write a long essay of at least 1000 words about the history of mathematics."
+    }
+  ],
+  "seed": 23,
+  "prediction": {
+    "type": "content",
+    "content": "The history of mathematics is a long and interesting story."
+  },
+  "request_id": "prediction-cancel",
+  "cancel_token": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "stream_options": {
+    "include_usage": true
+  }
+}

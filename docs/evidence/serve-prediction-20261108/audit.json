@@ -1,0 +1,22 @@
+{
+  "status": "PASS_TARGETED_PREDICTION_SOURCE_RELEASE_AUDIT",
+  "source_commit": "73dbe96eb66b2604f3d45ffd6a9811f3b65df271",
+  "source_files": 581,
+  "protocol": "b800ac70d16797b1c2b5bf17a5f879802919f1712772e21289fc63ba9100958c",
+  "binary_sha256": "d61c98b7abd972c9ac901c14dfb70e40a5dad9d64bc2106f85d62aa199381959",
+  "ports_free": [
+    18161,
+    18162,
+    18163,
+    18164,
+    18165
+  ],
+  "gpu_lock_acquirable": true,
+  "owned_pids_exited": true,
+  "ledger_unchanged": true,
+  "remaining_master_tasks_open": true,
+  "prediction_targeted_accepted": true,
+  "receipt_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-prediction-20261108/delivery-01/result.json",
+  "receipt_sha256": "8ca0225017e6f8ed7f4e68fc0768b662b2bf372460a1fd6611c9cddec1fa5f8d",
+  "cpu_dependency_reuse": "27 C++,22 schema/native,5 Python,2 JS passed; unchanged sampling/native/recovery evidence reused. First build warnings and JS fixture failure preserved."
+}

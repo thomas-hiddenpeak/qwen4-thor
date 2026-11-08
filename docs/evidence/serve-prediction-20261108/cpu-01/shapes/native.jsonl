@@ -1,0 +1,22 @@
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"prediction must be an object or null","type":"invalid_request_error","code":"invalid_request","param":"prediction"}}}
+{"accepted":false,"response":{"error":{"message":"prediction type must be content","type":"invalid_request_error","code":"invalid_request","param":"prediction.type"}}}
+{"accepted":false,"response":{"error":{"message":"prediction type must be content","type":"invalid_request_error","code":"invalid_request","param":"prediction.type"}}}
+{"accepted":false,"response":{"error":{"message":"prediction content is required","type":"invalid_request_error","code":"invalid_request","param":"prediction.content"}}}
+{"accepted":false,"response":{"error":{"message":"prediction needs string or text parts","type":"invalid_request_error","code":"invalid_request","param":"prediction.content"}}}
+{"accepted":false,"response":{"error":{"message":"prediction text must be a string","type":"invalid_request_error","code":"invalid_request","param":"prediction.content[0].text"}}}
+{"accepted":false,"response":{"error":{"message":"unknown prediction field","type":"invalid_request_error","code":"invalid_request","param":"prediction.extra"}}}
+{"accepted":false,"response":{"error":{"message":"prediction requires n=1","type":"invalid_request_error","code":"invalid_request","param":"n"}}}
+{"accepted":false,"response":{"error":{"message":"prediction does not support logprobs","type":"invalid_request_error","code":"invalid_request","param":"logprobs"}}}
+{"accepted":false,"response":{"error":{"message":"prediction cannot use positive penalty","type":"invalid_request_error","code":"invalid_request","param":"presence_penalty"}}}
+{"accepted":false,"response":{"error":{"message":"prediction cannot use positive penalty","type":"invalid_request_error","code":"invalid_request","param":"frequency_penalty"}}}
+{"accepted":false,"response":{"error":{"message":"prediction does not support tools","type":"invalid_request_error","code":"invalid_request","param":"tools"}}}
+{"accepted":false,"response":{"error":{"message":"prediction uses max_tokens","type":"invalid_request_error","code":"invalid_request","param":"max_completion_tokens"}}}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"unknown prediction field","type":"invalid_request_error","code":"invalid_request","param":"prediction.unexpected"}}}
+{"accepted":true}

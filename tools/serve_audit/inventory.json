@@ -376,7 +376,7 @@
       ]
     },
     "prediction": {
-      "semantics": "源码实现中：静态文本预测参与目标验证，部分匹配回滚，accepted/rejected计入usage；不能强制输出预测文字",
+      "semantics": "A03针对性验收交付：字符串/text parts目标验证/部分回滚，accepted/rejected usage；拒绝token计入预算/配额，实际JSON/SSE/strict/bias/取消后MTP通过",
       "boundary": "官方组合条件；实际token预算和目标状态仍须针对性验收",
       "evidence": [
         "docs/SERVE_PREDICTION_2026-11-08.md",

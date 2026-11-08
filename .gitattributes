@@ -11,3 +11,5 @@ docs/evidence/serve-chat-input-20261108/**/*.wire binary
 docs/evidence/serve-chat-input-20261108/build-01/** -text -whitespace
 docs/evidence/serve-sampling-20261108/** -text -whitespace
 docs/evidence/serve-sampling-20261108/**/*.wire binary
+docs/evidence/serve-prediction-20261108/** -text -whitespace
+docs/evidence/serve-prediction-20261108/**/*.wire binary

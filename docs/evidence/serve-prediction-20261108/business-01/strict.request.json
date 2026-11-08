@@ -1,0 +1,51 @@
+{
+  "model": "qwen3.8-flash-next",
+  "enable_thinking": false,
+  "temperature": 0,
+  "max_tokens": 64,
+  "stream": true,
+  "messages": [
+    {
+      "role": "user",
+      "content": "Compute 17 + 25. Reply only with the decimal number."
+    }
+  ],
+  "prediction": {
+    "type": "content",
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"answer\":"
+      },
+      {
+        "type": "text",
+        "text": "\"42\"}"
+      }
+    ]
+  },
+  "response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "sum",
+      "strict": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "answer": {
+            "type": "string",
+            "enum": [
+              "42"
+            ]
+          }
+        },
+        "required": [
+          "answer"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "stream_options": {
+    "include_usage": true
+  }
+}

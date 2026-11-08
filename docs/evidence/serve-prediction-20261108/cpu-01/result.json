@@ -1,0 +1,64 @@
+{
+  "host": {
+    "argv": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-prediction-20261108/engine-build/q4t_host_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-prediction-20261108/cpu-01/host-required.txt"
+    ],
+    "exit_code": 0,
+    "seconds": 0.032396551221609116
+  },
+  "shapes": {
+    "argv": [
+      "python3",
+      "tools/serve_protocol/check_contract.py",
+      "--probe",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-prediction-20261108/engine-build/q4t_contract_probe",
+      "--output",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-prediction-20261108/cpu-01/shapes",
+      "--case-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-prediction-20261108/cpu-01/contract-required.txt"
+    ],
+    "exit_code": 0,
+    "seconds": 0.46531162736937404
+  },
+  "python": {
+    "argv": [
+      "python3",
+      "-m",
+      "unittest",
+      "tools.serve_prediction.test_clients",
+      "tools.serve_prediction.test_acceptance"
+    ],
+    "exit_code": 0,
+    "seconds": 0.16456479206681252
+  },
+  "js": {
+    "argv": [
+      "node",
+      "--test",
+      "--test-name-pattern=prediction",
+      "tools/examples/js/test_chat_client.mjs"
+    ],
+    "exit_code": 1,
+    "seconds": 0.21406705398112535
+  },
+  "schema": {
+    "argv": [
+      "python3",
+      "tools/serve_protocol/build_contract.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.06463922234252095
+  },
+  "sources": {
+    "argv": [
+      "python3",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.06399121508002281
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "sdk_version": "7.47.0",
+  "result": {
+    "id": "chatcmpl-auto-69588aaf008c401846a20461f7fd1723",
+    "model": "qwen3.8-flash-next",
+    "message": {
+      "role": "assistant",
+      "content": "Alpha beta gamma delta."
+    },
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 28,
+      "completion_tokens": 6,
+      "total_tokens": 34,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "accepted_prediction_tokens": 5,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "headers": {
+      "connection": "close",
+      "content-length": "444",
+      "content-type": "application/json",
+      "x-request-id": "req-39658315fcebb147ca42457b9f3ad0ad"
+    }
+  },
+  "wire_base64": "eyJpZCI6ImNoYXRjbXBsLWF1dG8tNjk1ODhhYWYwMDhjNDAxODQ2YTIwNDYxZjdmZDE3MjMiLCJvYmplY3QiOiJjaGF0LmNvbXBsZXRpb24iLCJjcmVhdGVkIjoxNzk0MTAwODQ2LCJtb2RlbCI6InF3ZW4zLjgtZmxhc2gtbmV4dCIsImNob2ljZXMiOlt7ImluZGV4IjowLCJtZXNzYWdlIjp7InJvbGUiOiJhc3Npc3RhbnQiLCJjb250ZW50IjoiQWxwaGEgYmV0YSBnYW1tYSBkZWx0YS4ifSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJsb2dwcm9icyI6bnVsbH1dLCJ1c2FnZSI6eyJwcm9tcHRfdG9rZW5zIjoyOCwiY29tcGxldGlvbl90b2tlbnMiOjYsInRvdGFsX3Rva2VucyI6MzQsImNvbXBsZXRpb25fdG9rZW5zX2RldGFpbHMiOnsicmVhc29uaW5nX3Rva2VucyI6MCwiYWNjZXB0ZWRfcHJlZGljdGlvbl90b2tlbnMiOjUsInJlamVjdGVkX3ByZWRpY3Rpb25fdG9rZW5zIjowfX19"
+}

@@ -1,0 +1,10 @@
+{
+  "status": "PASS_PREDICTION_BUSINESS",
+  "counts": {
+    "starts": 1,
+    "chats": 7,
+    "controls": 51
+  },
+  "seconds": 42.51249045692384,
+  "binary_sha256": "d61c98b7abd972c9ac901c14dfb70e40a5dad9d64bc2106f85d62aa199381959"
+}

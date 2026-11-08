@@ -1,0 +1,6 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-prediction-20261108/release-01/bundle",
+  "manifest_sha256": "ee95045b59d0f69d36092ce25666365cb7041d933636927cefb1989d087b7f85",
+  "engine_binary_sha256": "d61c98b7abd972c9ac901c14dfb70e40a5dad9d64bc2106f85d62aa199381959",
+  "recovery_accepted": false
+}

@@ -1,0 +1,8 @@
+data: {"id":"prediction-cancel","object":"chat.completion.chunk","created":1794100849,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"prediction-cancel","object":"chat.completion.chunk","created":1794100849,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"The"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"error":{"message":"request cancelled","type":"conflict_error","code":"explicit_cancel","param":null}}
+
+data: [DONE]
+

@@ -34,7 +34,8 @@ top_p、seed、presence/frequency penalty、logit_bias、n=1..128及真实
 logprobs/top_logprobs；多choice共用请求/配额并逐项执行，JSON/SSE
 可重组。Chat默认temperature=1，显式temperature=0且无附加采样约束
 时保留greedy/MTP。采样使用目标logits的CPU实现，未作性能优化主张；
-prediction及其余接口仍继续实现。
+[prediction](docs/SERVE_PREDICTION_2026-11-08.md)目标验证、回滚与
+accepted/rejected usage已交付；其余接口与组合按总计划继续实现。
 `messages`默认解析；`parse_response: false`保留原始输出，`prompt`
 始终为raw。none / required / named、禁止多调用、strict工具参数和
 有限JSON Schema已验，受约束请求仍普通解码，完整校验后发布SSE内容，

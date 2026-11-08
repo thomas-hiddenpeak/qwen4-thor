@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:q4t:serve-reasoning-v1",
+  "title": "Q4T reasoning v1 projection (not the full Chat API)",
+  "$defs": {
+    "request": {
+      "type": "object",
+      "properties": {
+        "reasoning_field": {
+          "enum": [
+            "reasoning_content",
+            "reasoning"
+          ]
+        },
+        "include_reasoning": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "anyOf": [
+              {
+                "required": [
+                  "reasoning_field"
+                ]
+              },
+              {
+                "required": [
+                  "include_reasoning"
+                ]
+              }
+            ]
+          },
+          "then": {
+            "required": [
+              "messages"
+            ],
+            "properties": {
+              "messages": {
+                "type": "array",
+                "minItems": 1
+              },
+              "parse_response": {
+                "const": true
+              }
+            },
+            "not": {
+              "required": [
+                "prompt"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "history": {
+      "type": "object",
+      "properties": {
+        "reasoning": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reasoning_content": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "anyOf": [
+              {
+                "required": [
+                  "reasoning"
+                ]
+              },
+              {
+                "required": [
+                  "reasoning_content"
+                ]
+              }
+            ]
+          },
+          "then": {
+            "required": [
+              "role"
+            ],
+            "properties": {
+              "role": {
+                "const": "assistant"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "reasoning": {
+          "type": "string"
+        },
+        "reasoning_content": {
+          "type": "string"
+        }
+      },
+      "not": {
+        "required": [
+          "reasoning",
+          "reasoning_content"
+        ]
+      }
+    },
+    "hidden": {
+      "type": "object",
+      "not": {
+        "anyOf": [
+          {
+            "required": [
+              "reasoning"
+            ]
+          },
+          {
+            "required": [
+              "reasoning_content"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

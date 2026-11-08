@@ -1,6 +1,6 @@
 # docs/ — 开发记录文档体系
 
-- [A03 prediction](SERVE_PREDICTION_2026-11-08.md)：目标验证、状态回滚、预算与usage；CPU已验，真实业务待验。
+- [A03 prediction](SERVE_PREDICTION_2026-11-08.md)：目标验证、状态回滚、预算与usage；已完成针对性业务和可回退交付。
 - [A03生成参数](SERVE_SAMPLING_2026-11-08.md)：实际采样、多choice、logprobs及验收进展；prediction与剩余总计划继续。
 - [A01/A02消息输入交付](SERVE_CHAT_INPUT_2026-11-08.md)：多指令、name、refusal、schema与实际SDK工具闭环；剩余总计划继续。
 

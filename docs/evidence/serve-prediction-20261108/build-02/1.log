@@ -1,0 +1,71 @@
+[  7%] Built target q4t_io
+[  3%] Built target q4t_trace
+[ 11%] Built target q4t_ple
+[ 11%] Built target q4t_text
+[ 11%] Built target q4t_runtime
+[ 14%] Built target q4t_quant
+[ 40%] Built target xgrammar
+[ 40%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/model.cu.o
+[ 40%] Building CXX object CMakeFiles/q4t_model.dir/src/model/model_owner.cpp.o
+[ 44%] Building CUDA object CMakeFiles/q4t_model.dir/src/mtp/mtp.cu.o
+[ 44%] Linking CXX static library libq4t_model.a
+[ 62%] Built target q4t_model
+[ 62%] Building CXX object CMakeFiles/q4t_startup_plan.dir/src/runtime/startup_plan.cpp.o
+[ 62%] Building CXX object CMakeFiles/q4t_startup_plan.dir/src/runtime/startup_model_plan.cpp.o
+[ 62%] Building CXX object CMakeFiles/q4t_startup_plan.dir/src/runtime/startup_mtp_plan.cpp.o
+[ 66%] Linking CXX static library libq4t_startup_plan.a
+[ 66%] Built target q4t_startup_plan
+[ 70%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_server.cpp.o
+[ 70%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_device_memory.cpp.o
+[ 70%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_health.cpp.o
+[ 70%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_memory.cpp.o
+[ 70%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_capabilities.cpp.o
+[ 70%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_http.cpp.o
+[ 70%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_input.cpp.o
+[ 70%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_plan.cpp.o
+[ 74%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_preflight.cpp.o
+[ 74%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_metrics.cpp.o
+[ 74%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_admission.cpp.o
+[ 74%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_scheduler.cpp.o
+[ 74%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_generation.cpp.o
+[ 74%] Building CXX object CMakeFiles/q4t_server.dir/src/server/session_state.cpp.o
+[ 74%] Linking CXX static library libq4t_server.a
+[100%] Built target q4t_server
+[100%] Building CXX object CMakeFiles/q4t.dir/src/main.cpp.o
+[100%] Linking CXX executable q4t
+[100%] Built target q4t
+[  3%] Built target q4t_trace
+[  7%] Built target q4t_io
+[ 10%] Built target q4t_ple
+[ 35%] Built target xgrammar
+[ 35%] Built target q4t_runtime
+[ 35%] Built target q4t_text
+[ 39%] Built target q4t_quant
+[ 60%] Built target q4t_model
+[ 64%] Built target q4t_startup_plan
+[ 96%] Built target q4t_server
+[ 96%] Linking CXX executable q4t_preflight_probe
+[100%] Built target q4t_preflight_probe
+[  4%] Built target q4t_io
+[ 30%] Built target q4t_text
+[ 34%] Built target xgrammar
+[ 34%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/chat_capabilities.cpp.o
+[ 34%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/chat_plan.cpp.o
+[ 34%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/model_sequence_test.cpp.o
+[ 34%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_chat_capabilities_test.cpp.o
+[ 34%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_prediction_test.cpp.o
+[ 34%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_state_contract_test.cpp.o
+[ 34%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests
+[  3%] Built target q4t_trace
+[  7%] Built target q4t_io
+[ 10%] Built target q4t_ple
+[ 35%] Built target xgrammar
+[ 35%] Built target q4t_runtime
+[ 35%] Built target q4t_text
+[ 39%] Built target q4t_quant
+[ 60%] Built target q4t_model
+[ 64%] Built target q4t_startup_plan
+[ 96%] Built target q4t_server
+[ 96%] Linking CXX executable q4t_contract_probe
+[100%] Built target q4t_contract_probe

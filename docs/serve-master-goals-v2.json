@@ -78,7 +78,7 @@
     {
       "id": "A03",
       "required": true,
-      "state": "implementation_in_progress",
+      "state": "implemented_validated_delivered",
       "implementation": "temperature/top_p、seed、presence/frequency penalty、logit_bias、n、多choice JSON/SSE及logprobs/top_logprobs；prediction预测内容实际验证/消费与usage",
       "acceptance": "固定logits的数值与采样边界、choice独立状态、usage/取消；对应真实短验；MTP不允许错误套用greedy算法",
       "depends_on": [
@@ -88,17 +88,16 @@
       "evidence": [
         "docs/SERVE_SAMPLING_2026-11-08.md",
         "docs/evidence/serve-sampling-20261108/index.json",
-        "docs/SERVE_PREDICTION_2026-11-08.md"
+        "docs/SERVE_PREDICTION_2026-11-08.md",
+        "docs/evidence/serve-prediction-20261108/index.json"
       ],
       "release": {
-        "subset": "sampling/choices/logprobs",
-        "binary_sha256": "7d15716827ca8a49342e75e5ad1da803fd6a11f6a3e857f2515e30730c1e4215",
-        "record": "docs/evidence/serve-sampling-20261108/delivery-01/result.json"
+        "binary_sha256": "d61c98b7abd972c9ac901c14dfb70e40a5dad9d64bc2106f85d62aa199381959",
+        "manifest_sha256": "ee95045b59d0f69d36092ce25666365cb7041d933636927cefb1989d087b7f85",
+        "record": "docs/evidence/serve-prediction-20261108/delivery-01/result.json"
       },
-      "remaining_required_after_sampling_subset": [
-        "prediction target verification/consumption and accepted/rejected usage with targeted acceptance"
-      ],
-      "prediction_progress": "CPU verified candidate: target 2-row verify/partial rollback, string/text-parts cursor, accepted/rejected usage and budget; 27 C++,22 shape,5 Python,2 JS; bounded 1/7 business and delivery pending"
+      "remaining_required_after_sampling_subset": [],
+      "prediction_progress": "Targeted CPU and actual 1-start/7-Chat business accepted and delivered; initial warnings/JS fixture failures preserved; remaining broader A01/A04/A05 tasks stay open"
     },
     {
       "id": "A04",
@@ -555,6 +554,6 @@
       "release": null
     }
   ],
-  "next_task": "A03",
-  "next": "继续prediction实际验证与usage，再推进A04/A05及全部总计划；阶段交付不是停止点。"
+  "next_task": "A04",
+  "next": "继续工具选择/allowed_tools、legacy/custom及真正增量参数流，随后A05等全部计划；总目标不因A03交付结束。"
 }

@@ -88,11 +88,19 @@ STOPPED，安装0启动/0Chat；旧47d33690/ef9183ed及4e4e/d05b回退
 保留，GPU/端口/锁释放。prediction实际验证/消费与usage继续实施，
 A03与总目标均保持开放；不因这一子组交付停止其余计划。
 
-[prediction实现](SERVE_PREDICTION_2026-11-08.md)已开始：复用现有
-目标验证/检查点，接入预测内容消费和accepted/rejected usage。
-27项C++、22个输入/schema、5项Python和2项JS已通过，最终构建
-零警告；保留首次构建警告/JS夹具失败。下一步冻结1启动/7Chat
-实际业务，上限2/8/900秒；默认仍7d157168，不提前宣称已交付。
+[prediction已交付](SERVE_PREDICTION_2026-11-08.md)：27 C++、22输入/schema、
+5 Python、2 JS通过，最终构建零警告；保留首轮警告与JS夹具失败。
+1启动/7Chat通过，42.512秒驱动、43.832秒严格租约，42次NVML全OK；
+真实目标验证与回滚、JSON/SSE、usage/预算、strict/bias、取消后MTP
+完成。581来源及[128原件](evidence/serve-prediction-20261108/README.md)核对，
+模型退出0、GPU/端口/锁释放。
+
+当前默认d61c98b7/元数据b96c0f35，协议b800ac70；v4服务ee95045b/
+发布9e17f6c0。原生/44控制面字节不变，旧7d157168/b3dde202及
+78b7/456f回退保留。原ledger/Key/配额保持STOPPED；安装0/0。
+A03实现范围已交付，A01/A02剩余合同、A04工具与A05组合等继续，
+总目标仍active；不把子组完成当停止点。下一步工具选择/legacy/
+custom与真实增量参数流，不继续扩大本组测试。
 
 工作分支`codex/serve-resilience-cd`继续隔离PR #22已接受发布；
 PR #22此前34b06bc1两项CI成功、CLEAN。当前默认服务包以顶部N01—N03交付为准；

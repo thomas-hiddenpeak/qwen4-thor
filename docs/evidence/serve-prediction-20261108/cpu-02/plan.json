@@ -1,0 +1,8 @@
+{
+  "reason": "cpu-01 compared transport events rather than assembled results; fix fixture result access and verify actual SDK SSE usage",
+  "source": "tools/examples/js/test_chat_client.mjs",
+  "sha256": "5082c0248652398bec1d40c153ad8e800551c9e447ec6c7259611fe26ecfd849",
+  "reuse": [
+    "cpu-01 host 27, shape 22, Python 5, schema and sources"
+  ]
+}

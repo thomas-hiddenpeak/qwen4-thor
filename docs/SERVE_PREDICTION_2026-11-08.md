@@ -1,7 +1,7 @@
 # A03 prediction：目标验证和真实usage
 
-采样子组已交付7d157168。prediction候选已完成开发和针对性CPU验证，
-未验收前不替换默认。此项按兼容功能验证，不宣称性能优化。
+采样子组已交付7d157168。prediction已完成针对性验收与可回退交付，
+当前默认d61c98b7。此项按兼容功能验证，不宣称性能优化。
 
 计划复用现有ModelVerifyMulti和SSM/conv/PLE检查点：一次验证当前
 已选token与一个预测token，匹配时提交两个位置并复用第二行logits，
@@ -38,3 +38,26 @@ A03和总目标保持开放，全部计划完成前不停在这个阶段。
 改用erase，JSON/SSE比较重组结果而非两种传输的原始事件列表。
 只重验受影响JS，其他相同源码证据复用。当前默认仍7d157168，
 真实短验按前述1启动/7Chat执行；本条不是业务通过或阶段交付。
+
+## 真实业务与可回退交付
+
+源码73dbe96e，1启动/7Chat一次通过；驱动42.512秒，严格租约
+43.832秒，42次NVML全OK。实际两行验证日志证明：完全匹配5/5
+消费且JSON/SSE相同；错误预测0/3被消费，答案仍42；strict组合
+5接受/1拒绝并产出合法对象；bias目标采样输出7个7加1拒绝token，
+恰好占8个completion预算。显式取消返回错误/DONE，无成功usage，
+同PID随后普通greedy MTP完成。进程退出0，GPU/端口/锁释放。
+
+[128份原件](evidence/serve-prediction-20261108/index.json)与581源码
+Git/副本核对；保留首次构建警告和JS夹具失败。原生入口/Guardian
+构建零警告且与已验字节一致，44控制面运行文件不变，CUDA探针
+沿用已验ef1a，复用TLS/恢复及采样证据。
+
+默认引擎d61c98b7/元数据b96c0f35，协议b800ac70，v4服务ee95045b/
+发布9e17f6c0。安装持GPU/Guardian/journal三锁，原ledger、Key、
+策略与配额保持STOPPED，仅help/status，0模型/0Chat。旧7d157168/
+b3dde202及78b76a7b/456fb5bb保留为[可核验回退](evidence/serve-prediction-20261108/delivery-01/rollback/receipt.json)。
+
+A03定义的生成参数/choice/logprobs/prediction已完成针对性交付；
+A01缓存提示等剩余字段、A04工具、A05跨能力组合和其余全部总计划
+继续实施。此结果不等于完整OpenAI兼容、性能改善或长稳通过。
