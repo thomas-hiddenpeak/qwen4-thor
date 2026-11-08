@@ -159,7 +159,8 @@ std::string ResponseDelta::ToJson() const {
   if (kind == Kind::kTool)
     return "{\"tool_calls\":[" + ToolJson(call, true) + "]}";
   const auto field = kind == Kind::kReasoning
-                         ? ReasoningFieldName(reasoning_field) : "content";
+                         ? ReasoningFieldName(reasoning_field)
+                         : "content";
   return '{' + Quote(field) + ':' + Quote(text) + '}';
 }
 
@@ -217,10 +218,18 @@ void ChatResponseParser::Emit(Region region, std::string_view text,
   const auto kind = reasoning ? ResponseDelta::Kind::kReasoning
                               : ResponseDelta::Kind::kContent;
   auto* target = constraints_.active ? &deferred_ : deltas;
-  if (constraints_.active && !target->empty() && target->back().kind == kind)
+  if (constraints_.active && !target->empty() && target->back().kind == kind &&
+      target->back().source_end == pending_offset_) {
     target->back().text.append(text);
-  else
-    target->push_back({kind, std::string(text), {}, reasoning_options_.field});
+    target->back().source_end += text.size();
+  } else {
+    target->push_back({kind,
+                       std::string(text),
+                       {},
+                       reasoning_options_.field,
+                       pending_offset_,
+                       pending_offset_ + text.size()});
+  }
 }
 
 Status ChatResponseParser::ParseTool(std::string_view block,
@@ -293,6 +302,7 @@ Status ChatResponseParser::Append(std::string_view text,
   }
   if (!parsed_) {
     Emit(Region::kContent, text, deltas);
+    pending_offset_ += text.size();
     return Status();
   }
   pending_.append(text);
@@ -302,6 +312,7 @@ Status ChatResponseParser::Append(std::string_view text,
       // reasoning delimiters. The initial thinking prefix is handled above
       // this region by the same native parser as ordinary requests.
       Emit(region_, pending_, deltas);
+      pending_offset_ += pending_.size();
       pending_.clear();
       return Status();
     }
@@ -327,6 +338,7 @@ Status ChatResponseParser::Append(std::string_view text,
       if (collect_) calls_.push_back(call);
       auto* target = constraints_.active ? &deferred_ : deltas;
       target->push_back({ResponseDelta::Kind::kTool, {}, std::move(call)});
+      pending_offset_ += end + kToolClose.size();
       pending_.erase(0, end + kToolClose.size());
       region_ = Region::kContent;
       continue;
@@ -348,10 +360,12 @@ Status ChatResponseParser::Append(std::string_view text,
       Emit(region_,
            std::string_view(pending_).substr(0, pending_.size() - keep),
            deltas);
+      pending_offset_ += pending_.size() - keep;
       pending_.erase(0, pending_.size() - keep);
       return Status();
     }
     Emit(region_, std::string_view(pending_).substr(0, found), deltas);
+    pending_offset_ += found + marker.size();
     pending_.erase(0, found + marker.size());
     region_ = marker == kToolOpen    ? Region::kTool
               : marker == kThinkOpen ? Region::kReasoning
@@ -375,6 +389,7 @@ Status ChatResponseParser::Finish(bool length_limited,
   if (region_ == Region::kReasoning && !length_limited && !text_stopped)
     return Fail("reasoning block did not close before stop");
   Emit(region_, pending_, deltas);
+  pending_offset_ += pending_.size();
   pending_.clear();
   if (constraints_.active) {
     if ((constraints_.choice == OutputConstraints::ToolChoice::kRequired ||

@@ -12,6 +12,9 @@
 
 namespace q4t::server {
 
+class TokenSampler;
+struct SampledToken;
+
 #ifdef Q4T_ENABLE_XGRAMMAR
 inline constexpr bool kStructuredDecodingAvailable = true;
 #else
@@ -34,12 +37,15 @@ class StructuredDecoder {
                        std::unique_ptr<StructuredDecoder>* out,
                        const GrammarControl& control = {},
                        GrammarFailure* failure = nullptr);
-  // Masks *before* greedy selection and accepts the selected token exactly
-  // once. No fallback to an unmasked token on failure.
+  // Masks before greedy or explicit sampler selection, then accepts the
+  // selected token exactly once. No unmasked fallback on failure. A sampler
+  // requires sample; caller commits its history after successful acceptance.
   // forced_token >= 0 must itself be grammar-allowed and finite. A rejected
   // forced token leaves the matcher unchanged; it is never substituted later.
   Status Select(std::span<const uint16_t> logits, int32_t* token,
-                int32_t forced_token = -1);
+                int32_t forced_token = -1, TokenSampler* sampler = nullptr,
+                SampledToken* sample = nullptr,
+                std::span<const uint8_t> additional_mask = {});
   bool Terminated() const;
 
  private:

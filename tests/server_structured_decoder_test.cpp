@@ -1,6 +1,7 @@
 // Opt-in real XGrammar CPU contracts. Defined/compiled, not executed during
 // the development-only stage. No synthetic test substitutes for Thor E2E.
 #include "q4t/server/structured_decoder.h"
+#include "q4t/server/sampling.h"
 #include "q4t/server/thinking_budget.h"
 
 #include <cstring>
@@ -111,6 +112,40 @@ Q4T_TEST(structured_decoder_required_named_and_parallel_masks) {
   Q4T_CHECK(!Exact(named,
                    "<tool_call>\n<function=noop>\n"
                    "\n</function>\n</tool_call>"));
+  return true;
+}
+
+Q4T_TEST(structured_decoder_sampling_obeys_mask_before_accept) {
+  const auto plan = Plan(
+      R"("enable_thinking":false,"response_format":{"type":"json_object"})");
+  std::unique_ptr<StructuredDecoder> decoder;
+  Q4T_CHECK(StructuredDecoder::Create(plan, Vocabulary(), 260, {0}, &decoder));
+  q4t::server::SamplingOptions options;
+  options.seed = 123;
+  options.temperature = 0.8;
+  options.logprobs = true;
+  options.top_logprobs = 2;
+  options.logit_bias = {{0, 100}, {259, 100}};
+  q4t::server::TokenSampler sampler;
+  Q4T_CHECK(sampler.Init(options, 260, 0));
+  q4t::server::SampledToken sample;
+  int32_t token = -1;
+  std::vector<uint16_t> logits(260, Bf16(-20));
+  logits[259] = Bf16(40);  // Invalid padding cannot win, even with bias.
+  logits[0] = Bf16(50);    // EOS cannot truncate a required JSON root.
+  logits['{' + 1] = Bf16(20);
+  Q4T_CHECK(!decoder->Select(logits, &token, 0, &sampler, &sample));
+  Q4T_CHECK(token == -1 && sample.token == -1 && !decoder->Terminated());
+  Q4T_CHECK(decoder->Select(logits, &token, -1, &sampler, &sample));
+  Q4T_CHECK(token == '{' + 1 && sample.token == token);
+  Q4T_CHECK(sample.top.size() == 2 && sample.top[0].token == 0);
+  Q4T_CHECK(sampler.Observe(token));
+  logits['{' + 1] = Bf16(-20);
+  logits['}' + 1] = Bf16(20);
+  Q4T_CHECK(decoder->Select(logits, &token, -1, &sampler, &sample));
+  Q4T_CHECK(token == '}' + 1 && sampler.Observe(token));
+  Q4T_CHECK(decoder->Select(logits, &token, -1, &sampler, &sample));
+  Q4T_CHECK(token == 0 && sample.token == 0 && decoder->Terminated());
   return true;
 }
 

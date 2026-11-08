@@ -10,6 +10,7 @@
 #include <string>
 #include <string_view>
 #include <thread>
+#include <vector>
 
 #include "q4t/server/request_control.h"
 #include "q4t/server/client_policy.h"
@@ -18,7 +19,11 @@
 namespace q4t::server::detail {
 
 enum class ResponseState {
-  kUnsent, kHeadersStarted, kStreaming, kTerminal, kComplete
+  kUnsent,
+  kHeadersStarted,
+  kStreaming,
+  kTerminal,
+  kComplete
 };
 // Allocation-free best effort after an exception; never adds a second terminal.
 enum class ExceptionKind { kInternal, kHostMemory };
@@ -29,13 +34,23 @@ void SendExceptionResponse(
 // Emits complete UTF-8 scalars, replacing each malformed maximal subpart with
 // U+FFFD. At most three bytes survive Append; Finish resolves an incomplete
 // final scalar. One instance belongs to one response, across token boundaries.
+struct Utf8Span {
+  size_t input_begin;
+  size_t input_end;
+  size_t output_begin;
+  size_t output_end;
+};
+
 class Utf8Stream {
  public:
-  std::string Append(std::string_view bytes);
-  std::string Finish();
+  std::string Append(std::string_view bytes,
+                     std::vector<Utf8Span>* spans = nullptr);
+  std::string Finish(std::vector<Utf8Span>* spans = nullptr);
 
  private:
   std::string pending_;
+  size_t input_bytes_ = 0;
+  size_t output_bytes_ = 0;
 };
 
 std::string NormalizeUtf8(std::string_view bytes);
@@ -137,8 +152,8 @@ std::string ErrorJson(int status, const std::string& message,
                       std::string_view error_code = {},
                       std::string_view param = {});
 void SendStreamError(int fd, ResponseState* state, int status,
-                      const std::string& message, const WriteOptions& options,
-                      std::string_view error_code);
+                     const std::string& message, const WriteOptions& options,
+                     std::string_view error_code);
 // A malformed model response is an error terminal, never stop/tool_calls.
 void SendResponseParseError(int fd, bool stream, ResponseState* state,
                             const std::string& message,
@@ -148,7 +163,8 @@ void SendResponseParseError(int fd, bool stream, ResponseState* state,
 std::string SseDeltaChunk(const std::string& id, const std::string& model,
                           const std::string& delta_json,
                           const std::string& finish_reason, int index,
-                          int64_t created = 0, bool include_usage = false);
+                          int64_t created = 0, bool include_usage = false,
+                          std::string_view logprobs_json = "null");
 std::string SseChunk(const std::string& id, const std::string& model,
                      const std::string& delta_role, const std::string& content,
                      const std::string& finish_reason, int index,

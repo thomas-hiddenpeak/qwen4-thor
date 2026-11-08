@@ -46,6 +46,7 @@ int main() {
       // These are declared configuration inputs, not backend availability
       // observations. No grammar compilation or cache access occurs here.
       config.structured = fixture.GetBool("structured", true);
+      config.token_vocab = static_cast<int>(fixture.GetInt("token_vocab", 0));
       config.session_cache = fixture.GetBool("session_cache", false);
       config.prefix_cache = fixture.GetBool("prefix_cache", false);
       ChatRequestPlan plan;

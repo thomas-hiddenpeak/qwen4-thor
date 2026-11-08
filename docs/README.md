@@ -1,5 +1,6 @@
 # docs/ — 开发记录文档体系
 
+- [A03生成参数](SERVE_SAMPLING_2026-11-08.md)：实际采样、多choice、logprobs及验收进展；prediction与剩余总计划继续。
 - [A01/A02消息输入交付](SERVE_CHAT_INPUT_2026-11-08.md)：多指令、name、refusal、schema与实际SDK工具闭环；剩余总计划继续。
 
 - [N01/N02/N03原生TLS、内网、证书与CORS实施](SERVE_NATIVE_ACCESS_2026-11-08.md)

@@ -60,6 +60,9 @@ set(protocol_inputs
   include/q4t/server/chat_capabilities.h
   include/q4t/server/input_contract.h
   include/q4t/server/chat_contract.h
+  include/q4t/server/sampling.h
+  include/q4t/server/token_logprobs.h
+  include/q4t/server/chat_choices.h
   include/q4t/server/chat_plan.h
   include/q4t/server/chat_prompt.h
   include/q4t/server/server_options.h
@@ -88,6 +91,9 @@ set(protocol_inputs
   src/server/chat_capabilities.cpp
   src/server/input_contract.cpp
   src/server/chat_contract.cpp
+  src/server/sampling.cpp
+  src/server/token_logprobs.cpp
+  src/server/chat_choices.cpp
   src/server/chat_plan.cpp
   src/server/chat_prompt.cpp
   src/server/chat_preflight.cpp

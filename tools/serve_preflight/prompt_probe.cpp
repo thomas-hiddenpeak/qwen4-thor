@@ -26,6 +26,7 @@ int main(int argc, char** argv) {
     if (!body) return 2;
     ChatPlanConfig config;
     config.model = "qwen3.8-flash-next";
+    config.token_vocab = static_cast<int>(tokenizer->VocabSize());
     config.structured = kStructuredDecodingAvailable;
     config.max_len = static_cast<int>(fixture.GetInt("max_len", 8192));
     config.max_prefill = static_cast<int>(fixture.GetInt("max_prefill", 2048));

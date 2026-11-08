@@ -71,6 +71,16 @@ a48dcb67未改，原本机策略/Key/配额和ledger预算保持STOPPED，安装
 legacy/custom工具历史仍由A04补齐，
 A01登记不能代替后续采样、响应及持久对象能力的实际实现。
 
+[A03标准生成参数](SERVE_SAMPLING_2026-11-08.md)采样/choice/logprobs子组
+已接入实际生成、grammar、逐choice状态与汇总配额、JSON/SSE及JS/
+Python客户端。56项C++、66个输入/schema、53项Python、41项JS、
+3项驱动与1项生产tokenizer检查通过；原构建/夹具/导入/探针路径
+失败保留，仅重验受影响项。默认仍47d33690，尚未业务验收/交付。
+准备同租约1启动/9Chat（累计上限2/12/900秒）：真实采样、n=2、
+seed JSON/SSE一致、bias、严格结构化、实际文档工具、取消与MTP
+继续服务。非性能工作不跑完整矩阵；prediction实际执行仍须继续，
+A03与总目标均保持开放，不因这一子组结束停止其他计划任务。
+
 工作分支`codex/serve-resilience-cd`继续隔离PR #22已接受发布；
 PR #22此前34b06bc1两项CI成功、CLEAN。当前默认服务包以顶部N01—N03交付为准；
 实现、验证、安装和合main分别记录。

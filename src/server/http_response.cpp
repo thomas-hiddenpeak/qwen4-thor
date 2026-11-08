@@ -21,7 +21,7 @@ std::string RequestIdHeader(int fd) {
   const auto* context = HttpResponseContext::Current(fd);
   return context ? "X-Request-Id: " + context->TraceId() + "\r\n" : "";
 }
-}
+}  // namespace
 
 void SendExceptionResponse(int fd, ResponseState state,
                            ExceptionKind kind) noexcept {
@@ -76,24 +76,37 @@ void SendExceptionResponse(int fd, ResponseState state,
   }
 }
 
-std::string Utf8Stream::Append(std::string_view bytes) {
+std::string Utf8Stream::Append(std::string_view bytes,
+                               std::vector<Utf8Span>* spans) {
+  const size_t base = input_bytes_ - pending_.size();
+  input_bytes_ += bytes.size();
   std::string input = std::move(pending_);
   pending_.clear();
   input.append(bytes);
   std::string out;
   out.reserve(input.size());
+  const auto record = [&](size_t begin, size_t end, size_t output_begin) {
+    if (spans)
+      spans->push_back({base + begin, base + end, output_bytes_ + output_begin,
+                        output_bytes_ + out.size()});
+  };
   size_t i = 0;
   while (i < input.size()) {
+    const auto output_begin = out.size();
     const auto lead = static_cast<unsigned char>(input[i]);
     if (lead < 0x80) {
-      out += input[i++];
+      out += input[i];
+      record(i, i + 1, output_begin);
+      ++i;
       continue;
     }
-    const size_t width = lead >= 0xc2 && lead <= 0xdf ? 2 :
-                         lead >= 0xe0 && lead <= 0xef ? 3 :
-                         lead >= 0xf0 && lead <= 0xf4 ? 4 : 0;
+    const size_t width = lead >= 0xc2 && lead <= 0xdf   ? 2
+                         : lead >= 0xe0 && lead <= 0xef ? 3
+                         : lead >= 0xf0 && lead <= 0xf4 ? 4
+                                                        : 0;
     if (!width) {
       out += kReplacement;
+      record(i, i + 1, output_begin);
       ++i;
       continue;
     }
@@ -101,10 +114,10 @@ std::string Utf8Stream::Append(std::string_view bytes) {
     for (; n < width && i + n < input.size(); ++n) {
       const auto c = static_cast<unsigned char>(input[i + n]);
       if (c < 0x80 || c > 0xbf ||
-          (n == 1 && ((lead == 0xe0 && c < 0xa0) ||
-                      (lead == 0xed && c > 0x9f) ||
-                      (lead == 0xf0 && c < 0x90) ||
-                      (lead == 0xf4 && c > 0x8f)))) break;
+          (n == 1 &&
+           ((lead == 0xe0 && c < 0xa0) || (lead == 0xed && c > 0x9f) ||
+            (lead == 0xf0 && c < 0x90) || (lead == 0xf4 && c > 0x8f))))
+        break;
     }
     if (n == width) {
       out.append(input, i, width);
@@ -114,14 +127,20 @@ std::string Utf8Stream::Append(std::string_view bytes) {
     } else {
       out += kReplacement;
     }
+    record(i, i + n, output_begin);
     i += n;
   }
+  output_bytes_ += out.size();
   return out;
 }
 
-std::string Utf8Stream::Finish() {
+std::string Utf8Stream::Finish(std::vector<Utf8Span>* spans) {
   if (pending_.empty()) return {};
+  if (spans)
+    spans->push_back({input_bytes_ - pending_.size(), input_bytes_,
+                      output_bytes_, output_bytes_ + kReplacement.size()});
   pending_.clear();
+  output_bytes_ += kReplacement.size();
   return std::string(kReplacement);
 }
 
@@ -138,13 +157,27 @@ std::string JsonEscape(const std::string& s) {
   out.reserve(s.size() + 8);
   for (unsigned char c : s) {
     switch (c) {
-      case '"': out += "\\\""; break;
-      case '\\': out += "\\\\"; break;
-      case '\n': out += "\\n"; break;
-      case '\r': out += "\\r"; break;
-      case '\t': out += "\\t"; break;
-      case '\b': out += "\\b"; break;
-      case '\f': out += "\\f"; break;
+      case '"':
+        out += "\\\"";
+        break;
+      case '\\':
+        out += "\\\\";
+        break;
+      case '\n':
+        out += "\\n";
+        break;
+      case '\r':
+        out += "\\r";
+        break;
+      case '\t':
+        out += "\\t";
+        break;
+      case '\b':
+        out += "\\b";
+        break;
+      case '\f':
+        out += "\\f";
+        break;
       default:
         if (c < 0x20) {
           char buf[8];
@@ -182,9 +215,9 @@ bool WriteAllImpl(int fd, const char* data, size_t len,
     return false;
   };
   using Clock = std::chrono::steady_clock;
-  const auto deadline = options.control
-      ? std::min(options.deadline, options.control->deadline())
-      : options.deadline;
+  const auto deadline =
+      options.control ? std::min(options.deadline, options.control->deadline())
+                      : options.deadline;
   const auto timeout_reason =
       options.control && options.control->deadline() <= options.deadline
           ? HttpWriteFailure::kRequestDeadline
@@ -203,14 +236,16 @@ bool WriteAllImpl(int fd, const char* data, size_t len,
         std::strcmp(fault, "handler.partial_header") == 0)
       remaining_bytes = std::min(remaining_bytes, size_t{8});
 #endif
-    const ssize_t n = ::send(fd, data + off, remaining_bytes,
-                             MSG_NOSIGNAL | MSG_DONTWAIT);
+    const ssize_t n =
+        ::send(fd, data + off, remaining_bytes, MSG_NOSIGNAL | MSG_DONTWAIT);
     if (n <= 0) {
       if (n < 0 && errno == EINTR) continue;
       if (n < 0 && (errno == EAGAIN || errno == EWOULDBLOCK)) {
         ServeFaultPoint("write.backpressure");
-        const auto remaining = std::chrono::duration_cast<
-            std::chrono::milliseconds>(deadline - Clock::now()).count();
+        const auto remaining =
+            std::chrono::duration_cast<std::chrono::milliseconds>(deadline -
+                                                                  Clock::now())
+                .count();
         if (remaining < 0) return fail(timeout_reason);
         pollfd peer{fd, POLLOUT, 0};
         const int ready = ::poll(
@@ -469,26 +504,35 @@ struct ErrorInfo {
 
 ErrorInfo ErrorForStatus(int status) {
   switch (status) {
-    case 400: return {"Bad Request", "invalid_request_error", "invalid_request"};
-    case 401: return {"Unauthorized", "authentication_error", "unauthorized"};
-    case 403: return {"Forbidden", "permission_error", "forbidden"};
-    case 404: return {"Not Found", "invalid_request_error", "not_found"};
+    case 400:
+      return {"Bad Request", "invalid_request_error", "invalid_request"};
+    case 401:
+      return {"Unauthorized", "authentication_error", "unauthorized"};
+    case 403:
+      return {"Forbidden", "permission_error", "forbidden"};
+    case 404:
+      return {"Not Found", "invalid_request_error", "not_found"};
     case 405:
       return {"Method Not Allowed", "invalid_request_error",
               "method_not_allowed"};
     case 415:
       return {"Unsupported Media Type", "invalid_request_error",
               "unsupported_media_type"};
-    case 408: return {"Request Timeout", "timeout_error", "request_timeout"};
-    case 409: return {"Conflict", "conflict_error", "request_conflict"};
+    case 408:
+      return {"Request Timeout", "timeout_error", "request_timeout"};
+    case 409:
+      return {"Conflict", "conflict_error", "request_conflict"};
     case 413:
       return {"Content Too Large", "invalid_request_error", "body_too_large"};
     case 429:
       return {"Too Many Requests", "rate_limit_error", "capacity_exhausted"};
-    case 502: return {"Bad Gateway", "server_error", "upstream_error"};
-    case 503: return {"Service Unavailable", "service_unavailable_error",
-                      "service_unavailable"};
-    default: return {"Internal Server Error", "server_error", "internal_error"};
+    case 502:
+      return {"Bad Gateway", "server_error", "upstream_error"};
+    case 503:
+      return {"Service Unavailable", "service_unavailable_error",
+              "service_unavailable"};
+    default:
+      return {"Internal Server Error", "server_error", "internal_error"};
   }
 }
 }  // namespace
@@ -496,12 +540,13 @@ ErrorInfo ErrorForStatus(int status) {
 std::string ErrorJson(int status, const std::string& message,
                       std::string_view error_code, std::string_view param) {
   const auto info = ErrorForStatus(status);
-  return
-      "{\"error\":{\"message\":\"" + JsonEscape(message) +
-      "\",\"type\":\"" + info.type + "\",\"code\":\"" +
-      JsonEscape(std::string(error_code.empty() ? info.code : error_code)) +
-      "\",\"param\":" + (param.empty() ? "null" :
-          "\"" + JsonEscape(std::string(param)) + "\"") + "}}";
+  return "{\"error\":{\"message\":\"" + JsonEscape(message) + "\",\"type\":\"" +
+         info.type + "\",\"code\":\"" +
+         JsonEscape(std::string(error_code.empty() ? info.code : error_code)) +
+         "\",\"param\":" +
+         (param.empty() ? "null"
+                        : "\"" + JsonEscape(std::string(param)) + "\"") +
+         "}}";
 }
 
 void SendError(int fd, int code, const std::string& message,
@@ -530,8 +575,8 @@ void SendError(int fd, int code, const std::string& message,
 }
 
 void SendStreamError(int fd, ResponseState* state, int status,
-                      const std::string& message, const WriteOptions& options,
-                      std::string_view error_code) {
+                     const std::string& message, const WriteOptions& options,
+                     std::string_view error_code) {
   if (auto* context = HttpResponseContext::Current(fd))
     context->StopHeartbeats();
   if (*state != ResponseState::kStreaming) return;
@@ -574,15 +619,16 @@ std::string SseChunk(const std::string& id, const std::string& model,
 std::string SseDeltaChunk(const std::string& id, const std::string& model,
                           const std::string& delta_json,
                           const std::string& finish_reason, int index,
-                          int64_t created, bool include_usage) {
-  std::string choice = "{\"index\":" + std::to_string(index) +
-                       ",\"delta\":" + delta_json;
+                          int64_t created, bool include_usage,
+                          std::string_view logprobs_json) {
+  std::string choice =
+      "{\"index\":" + std::to_string(index) + ",\"delta\":" + delta_json;
   if (!finish_reason.empty()) {
     choice += ",\"finish_reason\":\"" + finish_reason + "\"";
   } else {
     choice += ",\"finish_reason\":null";
   }
-  choice += ",\"logprobs\":null}";
+  choice += ",\"logprobs\":" + std::string(logprobs_json) + '}';
   std::string obj = "{\"id\":\"" + JsonEscape(id) +
                     "\",\"object\":\"chat.completion.chunk\","
                     "\"created\":" +

@@ -167,33 +167,68 @@
       ]
     },
     "temperature": {
-      "enum": [
-        0,
-        null
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 2,
+          "default": 1
+        },
+        {
+          "type": "null"
+        }
       ]
     },
     "top_p": {
-      "enum": [
-        1,
-        null
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 1
+        },
+        {
+          "type": "null"
+        }
       ]
     },
     "n": {
-      "enum": [
-        1,
-        null
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 128,
+          "default": 1
+        },
+        {
+          "type": "null"
+        }
       ]
     },
     "frequency_penalty": {
-      "enum": [
-        0,
-        null
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": -2,
+          "maximum": 2,
+          "default": 0
+        },
+        {
+          "type": "null"
+        }
       ]
     },
     "presence_penalty": {
-      "enum": [
-        0,
-        null
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": -2,
+          "maximum": 2,
+          "default": 0
+        },
+        {
+          "type": "null"
+        }
       ]
     },
     "repetition_penalty": {
@@ -203,8 +238,8 @@
       "anyOf": [
         {
           "type": "integer",
-          "minimum": -9007199254740991,
-          "maximum": 9007199254740991
+          "minimum": -9223372036854775808,
+          "maximum": 9223372036854775807
         },
         {
           "type": "null"
@@ -239,22 +274,40 @@
       ]
     },
     "logprobs": {
-      "enum": [
-        false,
-        null
+      "anyOf": [
+        {
+          "type": "boolean",
+          "default": false
+        },
+        {
+          "type": "null"
+        }
       ]
     },
     "top_logprobs": {
-      "enum": [
-        0,
-        null
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 20
+        },
+        {
+          "type": "null"
+        }
       ]
     },
     "logit_bias": {
       "anyOf": [
         {
           "type": "object",
-          "maxProperties": 0
+          "propertyNames": {
+            "pattern": "^[0-9]+$"
+          },
+          "additionalProperties": {
+            "type": "number",
+            "minimum": -100,
+            "maximum": 100
+          }
         },
         {
           "type": "null"
@@ -1333,6 +1386,30 @@
     ]
   },
   "allOf": [
+    {
+      "if": {
+        "required": [
+          "top_logprobs"
+        ],
+        "properties": {
+          "top_logprobs": {
+            "not": {
+              "type": "null"
+            }
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "logprobs"
+        ],
+        "properties": {
+          "logprobs": {
+            "const": true
+          }
+        }
+      }
+    },
     {
       "not": {
         "required": [

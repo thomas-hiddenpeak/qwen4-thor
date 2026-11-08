@@ -121,6 +121,11 @@ Q4T_TEST(chat_capabilities_option_contract) {
                 .ok());
   const auto* tools = caps.Find("tools");
   Q4T_CHECK(tools && tools->IsObject());
+  const auto* chat = caps.Find("chat");
+  Q4T_CHECK(chat && chat->GetString("sampling_profile") == "q4t-sampling-v1");
+  Q4T_CHECK(chat->GetInt("temperature_default") == 1 &&
+            chat->GetInt("choices") == 128 && chat->GetBool("logprobs") &&
+            chat->GetInt("top_logprobs_max") == 20);
   const auto* choices = tools->GetArray("tool_choice");
   const bool backend = q4t::server::kStructuredDecodingAvailable;
   Q4T_CHECK(choices && choices->array.size() == (backend ? 4 : 1));

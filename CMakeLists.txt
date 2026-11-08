@@ -296,6 +296,9 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/http_request.cpp
   src/server/input_contract.cpp
   src/server/chat_contract.cpp
+  src/server/sampling.cpp
+  src/server/token_logprobs.cpp
+  src/server/chat_choices.cpp
   src/server/chat_tool_history.cpp
                              src/server/chat_template.cpp)
 target_include_directories(q4t_server PUBLIC include)
@@ -475,6 +478,11 @@ if(Q4T_BUILD_TESTS)
     tests/server_output_constraints_test.cpp
     src/server/input_contract.cpp
     src/server/chat_contract.cpp
+    src/server/sampling.cpp
+    src/server/token_logprobs.cpp
+    src/server/chat_choices.cpp
+    tests/server_sampling_test.cpp
+    tests/server_chat_sampling_response_test.cpp
     src/server/chat_prompt.cpp
     src/server/media_admission.cpp
     src/server/chat_plan.cpp

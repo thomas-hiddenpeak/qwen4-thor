@@ -103,7 +103,7 @@ export function parseJson(source) {
   return JSON.parse(JSON.stringify(result));
 }
 
-function usage(value) {
+function usage(value, choiceCount = 1) {
   requireValue(object(value), 'missing usage');
   for (const key of ['prompt_tokens', 'completion_tokens', 'total_tokens']) {
     requireValue(integer(value[key]), 'invalid usage ' + key);
@@ -114,8 +114,8 @@ function usage(value) {
     details.reasoning_tokens <= value.completion_tokens, 'reasoning usage mismatch');
   if (budget != null) {
     requireValue(object(budget) && details && ['limit', 'consumed', 'forced_closure_tokens'].every(k => integer(budget[k])), 'invalid thinking budget usage');
-    requireValue(budget.consumed <= budget.limit && budget.limit <= 2147483647 &&
-      budget.forced_closure_tokens <= 14 && budget.consumed + budget.forced_closure_tokens === details.reasoning_tokens,
+    requireValue(budget.consumed <= budget.limit * choiceCount && budget.limit <= 2147483647 &&
+      budget.forced_closure_tokens <= 14 * choiceCount && budget.consumed + budget.forced_closure_tokens === details.reasoning_tokens,
     'thinking budget usage mismatch');
   }
   if (value.prompt_tokens_details != null) requireValue(object(value.prompt_tokens_details) &&
@@ -151,12 +151,52 @@ function message(value) {
   return clone(value);
 }
 
-function completion(id, model, msg, finish, counts) {
+function logprobs(value) {
+  if (value === null) return null;
+  fields(value, ['content', 'refusal']);
+  function token(item, top) {
+    fields(item, top ? ['token', 'logprob', 'bytes'] : ['token', 'logprob', 'bytes', 'top_logprobs']);
+    text(item.token, 'invalid probability token');
+    requireValue(typeof item.logprob === 'number' && Number.isFinite(item.logprob) && item.logprob <= 0,
+      'invalid token logprob');
+    requireValue(item.bytes === null || (Array.isArray(item.bytes) &&
+      item.bytes.every(byte => integer(byte) && byte <= 255)), 'invalid token bytes');
+    if (!top) {
+      requireValue(Array.isArray(item.top_logprobs) && item.top_logprobs.length <= 20, 'invalid top_logprobs');
+      for (const alternative of item.top_logprobs) token(alternative, true);
+    }
+  }
+  for (const key of ['content', 'refusal']) {
+    requireValue(value[key] === null || Array.isArray(value[key]), 'invalid logprobs list');
+    for (const item of value[key] ?? []) token(item, false);
+  }
+  return clone(value);
+}
+
+function choiceResults(id, model, values, counts) {
+  requireValue(values.length >= 1 && values.length <= 128, 'invalid choice count');
+  values.sort((a, b) => a.index - b.index);
+  for (const [index, value] of values.entries()) requireValue(value.index === index, 'missing or duplicate choice index');
+  const checked = usage(counts, values.length);
+  const choices = values.map(value => {
+    const result = completion(id, model, value.message, value.finish_reason, checked, values.length);
+    return { index: value.index, message: result.message, finish_reason: result.finish_reason,
+      logprobs: logprobs(value.logprobs) };
+  });
+  if (choices.length === 1) {
+    const result = completion(id, model, choices[0].message, choices[0].finish_reason, checked);
+    if (choices[0].logprobs !== null) result.logprobs = choices[0].logprobs;
+    return result;
+  }
+  return { id, model, choices, usage: checked };
+}
+
+function completion(id, model, msg, finish, counts, choiceCount = 1) {
   text(id, 'missing completion ID', true); text(model, 'missing model', true);
   const result = message(msg), calls = result.tool_calls ?? [];
   requireValue(['stop', 'length', 'tool_calls'].includes(finish), 'unsupported finish reason');
   requireValue((finish === 'tool_calls') === (calls.length > 0), 'finish/tool batch mismatch');
-  return { id, model, message: result, finish_reason: finish, usage: usage(counts) };
+  return { id, model, message: result, finish_reason: finish, usage: usage(counts, choiceCount) };
 }
 
 function envelope(value, kind) {
@@ -177,18 +217,16 @@ export function parseJsonWire(raw) {
   requireValue(raw.length <= MAX_RESPONSE_BYTES, 'response byte limit');
   const event = parseJson(new TextDecoder('utf-8', { fatal: true }).decode(raw));
   envelope(event, 'chat.completion');
-  requireValue(event.choices.length === 1 && event.choices[0].index === 0 && event.choices[0].logprobs === null, 'expected one choice');
-  const choice = event.choices[0];
-  return { result: completion(event.id, event.model, choice.message, choice.finish_reason, event.usage), events: [event] };
+  return { result: choiceResults(event.id, event.model, clone(event.choices), event.usage), events: [event] };
 }
 
 export function parseSseWire(raw) {
   requireValue(raw.length <= MAX_RESPONSE_BYTES, 'response byte limit');
   const source = new TextDecoder('utf-8', { fatal: true }).decode(raw);
   requireValue(source.endsWith('\n'), 'incomplete SSE line');
-  let data = [], eventBytes = 0, done = false, role = false, identity;
-  let finish = null, counts = null, reasoningField, content = '', reasoning = '';
-  const calls = [], events = [];
+  let data = [], eventBytes = 0, done = false, identity, counts = null;
+  const states = new Map(), events = [];
+  const finished = () => states.size > 0 && [...states.values()].every(state => state.finish !== null);
   function feed(event) {
     envelope(event, 'chat.completion.chunk');
     const current = [event.id, event.model, event.created];
@@ -196,12 +234,30 @@ export function parseSseWire(raw) {
     requireValue(isDeepStrictEqual(current, identity), 'response identity changed');
     events.push(event);
     if (event.choices.length === 0) {
-      requireValue(finish !== null && counts === null, 'unexpected usage terminal');
-      counts = usage(event.usage); return;
+      requireValue(finished() && counts === null, 'unexpected usage terminal');
+      counts = usage(event.usage, states.size); return;
     }
-    requireValue(event.choices.length === 1 && finish === null && event.usage == null, 'choice after terminal or mixed usage');
-    const choice = event.choices[0], delta = choice.delta;
-    requireValue(choice.index === 0 && choice.logprobs === null, 'unexpected choice');
+    requireValue(event.choices.length >= 1 && event.choices.length <= 128 && counts === null && event.usage == null,
+      'choice after usage or mixed usage');
+    const indices = new Set();
+    for (const choice of event.choices) {
+    requireValue(integer(choice.index) && choice.index < 128 && !indices.has(choice.index), 'invalid choice index');
+    indices.add(choice.index);
+    if (!states.has(choice.index)) states.set(choice.index,
+      { role: false, finish: null, content: '', reasoning: '', reasoningField: undefined, calls: [], logprobs: null });
+    const state = states.get(choice.index);
+    requireValue(state.finish === null, 'choice after terminal');
+    let { role, finish, content, reasoning, reasoningField, calls } = state;
+    const delta = choice.delta;
+    const probabilities = logprobs(choice.logprobs);
+    if (probabilities !== null) {
+      state.logprobs ??= { content: [], refusal: null };
+      state.logprobs.content.push(...(probabilities.content ?? []));
+      if (probabilities.refusal !== null) {
+        state.logprobs.refusal ??= [];
+        state.logprobs.refusal.push(...probabilities.refusal);
+      }
+    }
     fields(delta, ['role', 'content', 'reasoning', 'reasoning_content', 'tool_calls']);
     if (Object.hasOwn(delta, 'role')) { requireValue(!role && delta.role === 'assistant', 'invalid role delta'); role = true; }
     requireValue(role, 'delta before role');
@@ -230,6 +286,8 @@ export function parseSseWire(raw) {
       requireValue(['stop', 'length', 'tool_calls'].includes(choice.finish_reason), 'unsupported finish reason');
       finish = choice.finish_reason;
     }
+    Object.assign(state, { role, finish, content, reasoning, reasoningField });
+    }
   }
   for (let line of source.slice(0, -1).split('\n')) {
     eventBytes += Buffer.byteLength(line) + 1;
@@ -240,7 +298,7 @@ export function parseSseWire(raw) {
         requireValue(!done, 'SSE data after DONE');
         const payload = data.join('\n');
         if (payload === '[DONE]') {
-          requireValue(finish !== null && counts !== null, 'DONE without finish/usage'); done = true;
+          requireValue(finished() && counts !== null, 'DONE without finish/usage'); done = true;
         } else feed(parseJson(payload));
       }
       data = []; eventBytes = 0;
@@ -249,11 +307,16 @@ export function parseSseWire(raw) {
       const value = line.slice(5); data.push(value.startsWith(' ') ? value.slice(1) : value);
     } else throw new ProtocolError('unsupported SSE field');
   }
-  requireValue(done && !data.length && role && identity, 'incomplete SSE terminal');
-  const msg = { role: 'assistant', content: calls.length && !content ? null : content };
-  if (reasoning) msg[reasoningField] = reasoning;
-  if (calls.length) msg.tool_calls = calls;
-  return { result: completion(identity[0], identity[1], msg, finish, counts), events };
+  requireValue(done && !data.length && identity && finished(), 'incomplete SSE terminal');
+  const choices = [...states.entries()].map(([index, state]) => {
+    const { calls, content, reasoning, reasoningField } = state;
+    requireValue(state.role, 'choice missing role');
+    const msg = { role: 'assistant', content: calls.length && !content ? null : content };
+    if (reasoning) msg[reasoningField] = reasoning;
+    if (calls.length) msg.tool_calls = calls;
+    return { index, message: msg, finish_reason: state.finish, logprobs: state.logprobs };
+  });
+  return { result: choiceResults(identity[0], identity[1], choices, counts), events };
 }
 
 export function prepareToolCalls(result, validators) {
@@ -439,6 +502,7 @@ export class ChatClient {
       const interpreted = request.stream ? response.value : { ...response.value };
       if (!request.stream) delete interpreted._request_id;
       requireValue(isDeepStrictEqual(request.stream ? interpreted : [interpreted], parsed.events), 'SDK/wire interpretation differs');
+      requireValue((parsed.result.choices?.length ?? 1) === (request.n ?? 1), 'response choice count mismatch');
       requireValue(parsed.result.model === request.model && (!request.request_id || parsed.result.id === request.request_id), 'request/response identity mismatch');
       return { ...parsed.result, raw: response.raw, headers: response.headers };
     } catch (error) {

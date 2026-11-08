@@ -108,6 +108,16 @@
       "contract": "Production parser and thinking budget initialization must accept native generation prefix. Real thinking closure token preparation remains execution-time validation."
     },
     {
+      "id": "sampling-and-choices",
+      "sources": [
+        "src/server/sampling.cpp",
+        "src/server/chat_generation.cpp",
+        "src/server/token_logprobs.cpp",
+        "src/server/chat_choices.cpp"
+      ],
+      "contract": "Default/null temperature=1; temperature0 is explicit greedy. Per-choice RNG from exact signed64 seed, top_p nucleus, generated-history penalties and token bias are applied to actual target logits after candidate masks. Non-greedy/logprob requests bypass greedy MTP/packed argmax. Token bias IDs must be distinct numerically and in the served vocabulary. Logprobs describe raw finite vocabulary distribution before masks/penalties; selected outside raw top20 is -9999. Hidden-only tokens excluded, boundary-crossing tokens retain actual bytes/probability once. Choices share one request/cancel/admission and prompt charge; output quota/usage sum across choices. JSON response<=32MiB; pending/collected probability storage each<=16MiB."
+    },
+    {
       "id": "configured-capabilities",
       "sources": [
         "src/server/chat_plan.cpp"
@@ -263,18 +273,19 @@
     "src/runtime/startup_reservation.cpp": "3c979fd0e8eb5dec8185148c77677ddad246f401faa92641d2a5f1ec2c033e09",
     "src/runtime/system_memory.cpp": "231e9a7ce5ed49e27e604a7bfa4066b35e83f286026c15986898d996a66acd2f",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_contract.cpp": "12bc39770aab7112bac5eb747009a80de5397af96a146a0296f0258814161ca2",
+    "src/server/chat_choices.cpp": "99c36b1136a321ea773eda2c8f4b0663c0e821760a337354a0c250242090bfd7",
+    "src/server/chat_contract.cpp": "e09db23d815d0dfe035e69d4d740bb3ce3621dc423758a8fca9447e422e32d3e",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
-    "src/server/chat_generation.cpp": "f014423f97c3c218f79fdd93c04b29ddb76828a9db96fc82708bea0f1612f05b",
+    "src/server/chat_generation.cpp": "a2da2617e04be8200d24ce60d19de0efbd4f7e312cbd1420f679156098e607e5",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
     "src/server/chat_http.cpp": "5504ac68093b870e0f961a4d0faa1395ed8facf728f0046ec35e34e4843a5120",
     "src/server/chat_input.cpp": "d79be28242ed560ad7be0494284f72b53d1aaa7a272786d17f1b837e81a6d9bb",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
     "src/server/chat_metrics.cpp": "f12e27e7946dab08e882be25f8cb6fa2273e4d370716872aaf5a59fb30e5cf21",
-    "src/server/chat_plan.cpp": "b7aa0e9d84cbe9097c1d95100e783b68a4a2b01c80a1e6aaf68c756c61e17f95",
-    "src/server/chat_preflight.cpp": "ab8b3491b17baae0d9a3ec51e9c9cf066907e665efd21449235e70153f130767",
+    "src/server/chat_plan.cpp": "59596fb233f479c72a0fedd123ea4dc9c1065b7f7ccd7c6bc6e7c66e2d0222f9",
+    "src/server/chat_preflight.cpp": "9c16f641fb71793ed5d41bb36b7137a6b537b3a1100c220663aba5cfb1b6e9fc",
     "src/server/chat_prompt.cpp": "d79f99bff03d2d199e4e62b004fc187b6bb36055211921008d561c869577b4fd",
-    "src/server/chat_response_parser.cpp": "ffa2ce62aeffbfac4c67c97c591854db8cec8eac389e7e2e0cdfe57e05f392f7",
+    "src/server/chat_response_parser.cpp": "a48c77300bdc1310004173820a3c1d9566f9ccdd37e43368c48484bf832ca4e3",
     "src/server/chat_scheduler.cpp": "2b6d315bfd12609e343010852f7c15b8248fe5180359a3d7b49d3c1db5b8d1fc",
     "src/server/chat_server.cpp": "19c040b20e6f1f1cde9d37e23477b2bfa65c4b38ab09cfacdef9281522fda095",
     "src/server/chat_template.cpp": "eaa57515f4b0cd4be6c8fd4a820e3ace84ceeb1d0cb6e9b09ff49d2fe6f3c4cf",
@@ -287,9 +298,11 @@
     "src/server/output_constraints.cpp": "19529eb9ae9fa51c08f96c20ae0d4c48a5468a7ee6ba31f360fbd27ecef913c8",
     "src/server/output_schema.cpp": "d1ac1506c823dc128d8f2c95e5489c90d360813b35b37b2bfd52a9bbc512315d",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
+    "src/server/sampling.cpp": "8e6a8c446656d8430005b061b10535b391b002362725511d216f9b4229e3d3cb",
     "src/server/server_options.cpp": "c47e2555d054a8ee27524ecf59936838b717d7292c864c24efeee1279e2dc622",
     "src/server/text_stop.cpp": "2397b27adc873b3ac0697af68352a73c8481830da6053fde0adeca536eaba4dc",
     "src/server/thinking_budget.cpp": "4c91e8320115ee86096bf7287d4950599ca311f137c3a0051b9d64fb53abf259",
+    "src/server/token_logprobs.cpp": "d351efe6b7b560e80776e3555bca8de2fa98216633543ab7e0dfcf74cad42d6a",
     "src/vision/media_plan.cpp": "30f1858fe11a14bb81f5ee2c80edef68e60cb7a03c7a0ec8132cc29936dff302",
     "src/vision/processor.cpp": "76d421281d76daa42796710ffa4ce6f0227f7788411775740d1ed5d5e11001dc",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414"

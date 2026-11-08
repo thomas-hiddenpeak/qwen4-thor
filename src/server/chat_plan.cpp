@@ -1,11 +1,13 @@
 #include "q4t/server/chat_plan.h"
 
 #include <algorithm>
+#include <charconv>
 
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/media_admission.h"
 #include "q4t/server/chat_protocol_identity.h"
 #include "q4t/server/http_request.h"
+#include "q4t/server/input_contract.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/prefix_cache_policy.h"
 #include "q4t/server/startup_admission.h"
@@ -61,8 +63,22 @@ Status PlanChatRequest(const io::Json& req, const ChatPlanConfig& config,
   auto status = ValidateChatContract(req, config.model, config.allow_media,
                                      &error->param);
   if (!status) return status;
+  status = ParseSamplingOptions(req, &plan->sampling, &error->param);
+  if (!status) return status;
+  if (const auto* biases = req.Find("logit_bias");
+      biases && biases->IsObject() && config.token_vocab > 0) {
+    for (const auto& [key, bias] : biases->object) {
+      (void)bias;
+      int32_t token = -1;
+      std::from_chars(key.data(), key.data() + key.size(), token);
+      if (token >= config.token_vocab)
+        return Fail(error, "invalid_request", InputParamPath("logit_bias", key),
+                    "logit_bias token outside served vocabulary");
+    }
+  }
   if (config.client_limits &&
-      RequestedOutput(req, config) >
+      static_cast<int64_t>(RequestedOutput(req, config)) *
+              plan->sampling.choices >
           static_cast<int>(config.client_limits->max_output_tokens))
     return Fail(error, "client_output_limit_exceeded", OutputSource(req),
                 "requested output exceeds client token limit");
@@ -98,8 +114,11 @@ Status PlanChatBudget(const io::Json& req, const ChatPlanConfig& config,
   if (config.client_limits && tokens > config.client_limits->max_prompt_tokens)
     return Fail(error, "client_prompt_limit_exceeded", input,
                 "encoded prompt exceeds client token limit");
+  SamplingOptions sampling;
+  auto sampling_status = ParseSamplingOptions(req, &sampling, &error->param);
+  if (!sampling_status) return sampling_status;
   if (config.client_limits &&
-      RequestedOutput(req, config) >
+      static_cast<int64_t>(RequestedOutput(req, config)) * sampling.choices >
           static_cast<int>(config.client_limits->max_output_tokens))
     return Fail(error, "client_output_limit_exceeded", OutputSource(req),
                 "requested output exceeds client token limit");
@@ -128,6 +147,8 @@ Status PlanChatBudget(const io::Json& req, const ChatPlanConfig& config,
     for (int slot = 0; slot < config.max_seq; ++slot)
       planned.eligible_slots.push_back(slot);
   }
+  planned.total_output =
+      static_cast<uint64_t>(planned.available_output) * sampling.choices;
   const auto prefix = ValidatePrefixSeedBoundary(
       static_cast<int>(req.GetInt("prefix_cache_write_tokens", 0)),
       config.checkpoints, tokens);
@@ -198,7 +219,17 @@ Status ChatPreflightJson(const io::Json& envelope, const ChatPlanConfig& config,
       R"(,"requested_tokens":)" + std::to_string(budget.requested_output) +
       R"(,"capped_tokens":)" + std::to_string(budget.capped_output) +
       R"(,"available_tokens":)" + std::to_string(budget.available_output) +
-      R"(,"counts_reasoning_and_forced_tokens":true},"admission":{"policy":)" +
+      R"(,"choices":)" + std::to_string(plan.sampling.choices) +
+      R"(,"total_available_tokens":)" + std::to_string(budget.total_output) +
+      R"(,"counts_reasoning_and_forced_tokens":true},"sampling":{"temperature":)" +
+      std::to_string(plan.sampling.temperature) + R"(,"top_p":)" +
+      std::to_string(plan.sampling.top_p) + R"(,"path":)" +
+      Quote(plan.sampling.PlainGreedy() ? "greedy_mtp_or_scheduler"
+                                        : "target_logits_host_sampler") +
+      R"(,"seed":)" +
+      (plan.sampling.seed ? std::to_string(*plan.sampling.seed) : "null") +
+      R"(,"logprobs":)" + Bool(plan.sampling.logprobs) +
+      R"(},"admission":{"policy":)" +
       Quote(explicit_slots ? "explicit_full_budget" : "uniform_context_clip") +
       R"(,"required_capacity":)" + std::to_string(budget.required_capacity) +
       R"(,"eligible_slots":)" + Array(budget.eligible_slots) +

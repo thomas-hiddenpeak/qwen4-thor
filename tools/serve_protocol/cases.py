@@ -52,6 +52,8 @@ def cases():
         "response_format", "user"}
     for field, valid in values.items():
         request, config = base(), {}
+        if field == "top_logprobs":
+            request["logprobs"] = True
         if field == "prompt":
             request = {}
         if field in ("request_id", "cancel_token"):
@@ -67,6 +69,25 @@ def cases():
         request.pop(field, None)
         add(field+"-omitted", request, field not in ("messages", "prompt", "request_id", "cancel_token"),
             field=field, **config)
+    for key, candidates in {
+        "temperature": [(-0.1, False), (0.5, True), (2, True), (2.1, False)],
+        "top_p": [(0, True), (0.5, True), (1, True), (1.1, False)],
+        "n": [(2, True), (128, True), (129, False), (1.1, False)],
+        "presence_penalty": [(-2, True), (2, True), (2.1, False)],
+        "frequency_penalty": [(-2, True), (2, True), (-2.1, False)],
+    }.items():
+        for index, (value, accepted) in enumerate(candidates):
+            add(f"sampling-{key}-{index}", dict(base(), **{key: value}), accepted)
+    add("sampling-logprobs-top20", dict(base(), logprobs=True, top_logprobs=20))
+    add("sampling-top-without-logprobs", dict(base(), top_logprobs=0), False)
+    add("sampling-top21", dict(base(), logprobs=True, top_logprobs=21), False)
+    add("sampling-bias", dict(base(), logit_bias={"22": 100, "0": -100}))
+    add("sampling-bias-alias", dict(base(), logit_bias={"1": 1, "01": 2}), False, semantic=True)
+    add("sampling-bias-oov", dict(base(), logit_bias={"100": 0}), False, semantic=True, token_vocab=100)
+    add("sampling-seed-int64-exponent", None, True,
+        raw=json.dumps(base())[:-1]+',"seed":9.223372036854775807e18}')
+    add("sampling-underflow", None, False, semantic=True,
+        raw=json.dumps(base())[:-1]+',"temperature":1e-400}')
     add("root-array", [], False)
     add("unknown-field", dict(base(), unknown=True), False)
     add("both-inputs", dict(base(), prompt="q"), False)
@@ -81,7 +102,7 @@ def cases():
     for key, numbers in (("max_completion_tokens", (0, 1, 2147483647, 2147483648)),
                          ("thinking_token_budget", (-1, 0, 2147483647, 2147483648)),
                          ("request_timeout_ms", (0, 1, 10800000, 10800001)),
-                         ("seed", (-9007199254740992, -9007199254740991, 9007199254740991, 9007199254740992))):
+                         ("seed", (-9223372036854775809, -9223372036854775808, 9223372036854775807, 9223372036854775808))):
         for index, number in enumerate(numbers):
             add(f"{key}-edge-{index}", dict(base(), **{key: number}), index in (1, 2))
     for spelling, accepted in (("2.0", True), ("2e0", True), ("20e-1", True),

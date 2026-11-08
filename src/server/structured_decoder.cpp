@@ -1,5 +1,6 @@
 #include "q4t/server/structured_decoder.h"
 #include "q4t/server/structured_admission.h"
+#include "q4t/server/sampling.h"
 
 #include <algorithm>
 #include <cmath>
@@ -180,25 +181,45 @@ Status StructuredDecoder::Create(const OutputConstraints& plan,
 }
 
 Status StructuredDecoder::Select(std::span<const uint16_t> logits,
-                                 int32_t* token, int32_t forced_token) {
+                                 int32_t* token, int32_t forced_token,
+                                 TokenSampler* sampler, SampledToken* sample,
+                                 std::span<const uint8_t> additional_mask) {
   *token = -1;
+  if (sample) *sample = {};
 #ifdef Q4T_ENABLE_XGRAMMAR
   if (logits.size() != static_cast<size_t>(impl_->vocab) || impl_->terminated ||
-      forced_token < -1 || forced_token >= impl_->vocab)
+      forced_token < -1 || forced_token >= impl_->vocab ||
+      (sampler && !sample) ||
+      (!additional_mask.empty() && additional_mask.size() != logits.size()))
     return Status::Fail("invalid constrained decoding state/logit shape");
   try {
-    float best = -std::numeric_limits<float>::infinity();
-    for (int32_t i = 0; i < impl_->vocab; ++i) {
-      if (forced_token >= 0 && i != forced_token) continue;
-      if (impl_->masked && !(static_cast<uint32_t>(impl_->mask[i / 32]) &
-                             (uint32_t{1} << (i % 32))))
-        continue;
-      const uint32_t bits = static_cast<uint32_t>(logits[i]) << 16;
-      float value;
-      std::memcpy(&value, &bits, sizeof(value));
-      if (std::isfinite(value) && (*token < 0 || value > best)) {
-        best = value;
-        *token = i;
+    if (sampler) {
+      std::vector<uint8_t> allowed(impl_->vocab, 1);
+      if (impl_->masked)
+        for (int32_t i = 0; i < impl_->vocab; ++i)
+          allowed[i] =
+              (static_cast<uint32_t>(impl_->mask[i / 32]) >> (i % 32)) & 1;
+      if (!additional_mask.empty())
+        for (int32_t i = 0; i < impl_->vocab; ++i)
+          allowed[i] = allowed[i] && additional_mask[i];
+      auto selected = sampler->Select(logits, sample, allowed, forced_token);
+      if (!selected) return selected;
+      *token = sample->token;
+    } else {
+      float best = -std::numeric_limits<float>::infinity();
+      for (int32_t i = 0; i < impl_->vocab; ++i) {
+        if (forced_token >= 0 && i != forced_token) continue;
+        if (!additional_mask.empty() && !additional_mask[i]) continue;
+        if (impl_->masked && !(static_cast<uint32_t>(impl_->mask[i / 32]) &
+                               (uint32_t{1} << (i % 32))))
+          continue;
+        const uint32_t bits = static_cast<uint32_t>(logits[i]) << 16;
+        float value;
+        std::memcpy(&value, &bits, sizeof(value));
+        if (std::isfinite(value) && (*token < 0 || value > best)) {
+          best = value;
+          *token = i;
+        }
       }
     }
     if (*token < 0) return Status::Fail("no finite grammar-allowed token");
@@ -208,17 +229,21 @@ Status StructuredDecoder::Select(std::span<const uint16_t> logits,
     if (status) status = impl_->Receive(deadline);
     if (!status) {
       *token = -1;
+      if (sample) *sample = {};
       return status;
     }
     return Status();
   } catch (const std::exception& error) {
     *token = -1;
+    if (sample) *sample = {};
     return Status::Fail(std::string("grammar selection failed: ") +
                         error.what());
   }
 #else
   (void)logits;
   (void)forced_token;
+  (void)sampler;
+  (void)additional_mask;
   return Status::Fail("structured decoding backend is not built");
 #endif
 }

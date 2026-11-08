@@ -39,7 +39,7 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("content":true,"reasoning_content":true,"reasoning":true,)"
          R"("tool_calls":true,)"
          R"("stream":true,"stream_include_usage":true,)"
-         R"("stream_usage_null":true,"choice_logprobs_null":true,)"
+         R"("stream_usage_null":true,"choice_logprobs_null":false,)"
          R"("stream_heartbeat_ms":5000,"heartbeat_write_timeout_ms":1000,)"
          R"("stream_start":"after_template_and_structured_admission",)"
          R"("post_header_failure":"sse_error_then_done",)"
@@ -53,7 +53,17 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("stream_tool_arguments":"complete_call",)"
          R"("stream_terminal_order":["finish","usage_if_requested","DONE"],)"
          R"("parse_error":{"http_status":502,"sse_error_then_done":true,)"
-         R"("successful_finish":false},"sampling":"greedy","choices":1},)"
+         R"("successful_finish":false},"sampling":"target_logits",)"
+         R"("sampling_profile":"q4t-sampling-v1","temperature_default":1, )"
+         R"("temperature_range":[0,2],"top_p_range":[0,1],)"
+         R"("penalties":["presence_penalty","frequency_penalty"],)"
+         R"("penalty_history":"generated_per_choice","logit_bias":true,)"
+         R"("seed":"signed_int64","choices":128,"choice_execution":"serial",)"
+         R"("choice_prompt_usage":"once","choice_completion_usage":"sum",)"
+         R"("logprobs":true,"top_logprobs_max":20,"logprob_distribution":"raw",)"
+         R"("selected_outside_raw_top20":-9999,"hidden_only_logprobs":false,)"
+         R"("boundary_token_logprobs":"original_bytes_once",)"
+         R"("mtp_sampling":"plain_greedy_only","response_max_bytes":33554432},)"
          R"("reasoning":{"profile":)" +
          Quote(std::string(kReasoningProfile)) +
          R"(,"fields":["reasoning_content","reasoning"],)"
@@ -271,10 +281,10 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("fixed_buffer_fallback":true,"recovery_guaranteed":false}},)"
          R"("unsupported":)" +
          (constrained
-              ? R"(["sampling","full_json_schema"])"
+              ? R"(["full_json_schema"])"
               : R"(["tool_choice_none","tool_choice_required","tool_choice_named",)"
                 R"("parallel_tool_calls_false","strict_tools",)"
-                R"("json_schema_response","sampling"])") +
+                R"("json_schema_response"])") +
          '}';
 }
 

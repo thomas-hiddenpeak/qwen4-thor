@@ -26,6 +26,10 @@ struct ResponseDelta {
   std::string text;
   ResponseToolCall call;
   ReasoningField reasoning_field = ReasoningField::kReasoningContent;
+  // Offsets in the normalized generated text, before role/tool extraction.
+  // They are internal metadata, never serialized into the OpenAI response.
+  size_t source_begin = 0;
+  size_t source_end = 0;
   std::string ToJson() const;
 };
 
@@ -45,6 +49,11 @@ class ChatResponseParser {
   std::string MessageJson() const;
   bool HasToolCalls() const { return tool_count_ != 0; }
   bool Thinking() const { return region_ == Region::kReasoning; }
+  // Earlier bytes cannot produce another delta. Deferred constrained output
+  // remains live until Finish validates it and publishes all deltas.
+  size_t ConsumedBytes() const {
+    return constraints_.active && !finished_ ? 0 : pending_offset_;
+  }
 
  private:
   enum class Region { kContent, kReasoning, kTool };
@@ -61,6 +70,7 @@ class ChatResponseParser {
   Status status_;
   std::string id_prefix_;
   std::string pending_;
+  size_t pending_offset_ = 0;
   size_t tool_scan_ = 0;
   size_t tool_count_ = 0;
   std::unordered_map<std::string, const io::Json*> tools_;

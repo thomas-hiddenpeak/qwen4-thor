@@ -14,7 +14,8 @@ import threading
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools/examples"))
-from chat_client import _completion, prepare_tool_calls, require, validate_capabilities
+from chat_client import (_completion, _choices_completion, prepare_tool_calls,
+                         require, validate_capabilities)
 from project_records import VALIDATORS
 
 
@@ -118,8 +119,10 @@ class JsSdkClient:
     def complete(self, request, *, sink=None):
         payload = self.call("chat", request, model=request["model"], sink=sink)
         value = payload["result"]
+        if "choices" in value:
+            return _choices_completion(value["id"], value["model"], value["choices"], value["usage"])
         completion = _completion(value["id"], value["model"], value["message"],
-                                 value["finish_reason"], value["usage"])
+                                 value["finish_reason"], value["usage"], value.get("logprobs"))
         if completion.finish_reason == "tool_calls":
             expected = [asdict(p) for p in prepare_tool_calls(completion, VALIDATORS)]
             require(payload["planned_tools"] == expected, "JS/Python tool plan disagreement")

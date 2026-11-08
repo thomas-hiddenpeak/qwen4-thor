@@ -8,6 +8,7 @@
 
 #include "q4t/io/json.h"
 #include "q4t/server/output_constraints.h"
+#include "q4t/server/sampling.h"
 #include "q4t/server/client_policy.h"
 #include "q4t/server/server_options.h"
 #include "q4t/status.h"
@@ -28,6 +29,7 @@ struct ChatPlanConfig {
   int max_seq = 1;
   int max_prefill = 2048;
   int default_max_tokens = 256;
+  int token_vocab = 0;
   int request_deadline_ms = 1200000;
   AdmissionLimits admission;
   bool allow_media = false;
@@ -52,6 +54,7 @@ struct ChatPlanError {
 
 struct ChatRequestPlan {
   OutputConstraints constraints;
+  SamplingOptions sampling;
   std::vector<std::string> stops;
 };
 
@@ -62,6 +65,7 @@ struct ChatPromptBudget {
   int requested_output = 0;
   int capped_output = 0;
   int available_output = 0;
+  uint64_t total_output = 0;
   size_t required_capacity = 0;
   std::string output_source;
   std::vector<int> eligible_slots;
@@ -91,10 +95,9 @@ Status ChatPreflightJson(const io::Json& envelope, const ChatPlanConfig& config,
                          const vision::MediaPlan* media = nullptr);
 
 struct StartupMemoryChecks;
-std::string EffectiveServeConfigJson(const ServerOptions& requested,
-                                     const ChatPlanConfig& effective,
-                                     bool budget_enabled, bool mtp_enabled,
-                                     int business_connections,
-                                     const StartupMemoryChecks* startup = nullptr);
+std::string EffectiveServeConfigJson(
+    const ServerOptions& requested, const ChatPlanConfig& effective,
+    bool budget_enabled, bool mtp_enabled, int business_connections,
+    const StartupMemoryChecks* startup = nullptr);
 
 }  // namespace q4t::server

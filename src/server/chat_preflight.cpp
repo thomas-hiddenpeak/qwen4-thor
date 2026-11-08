@@ -17,6 +17,8 @@ ChatPlanConfig ChatServer::PlanningConfig(int fd) const {
           .max_seq = max_seq_,
           .max_prefill = max_prefill_,
           .default_max_tokens = max_tokens_default_,
+          .token_vocab = std::min(static_cast<int>(tok_->VocabSize()),
+                                  model_.Get().cfg.vocab),
           .request_deadline_ms = request_deadline_ms_,
           .admission = admission_limits_,
           .allow_media = allow_media_,
@@ -88,9 +90,8 @@ void ChatServer::HandlePreflight(int fd, const std::string& body) {
   };
   std::string prompt;
   std::vector<VisionItem> items;
-  status =
-      PrepareChatPrompt(req, plan.constraints, &prompt, &items, &error.param,
-                         &error.code);
+  status = PrepareChatPrompt(req, plan.constraints, &prompt, &items,
+                             &error.param, &error.code);
   if (status) {
     ChatResponseParser parser;
     status = parser.Init(req, prompt, "preflight", true);
@@ -132,10 +133,10 @@ void ChatServer::HandlePreflight(int fd, const std::string& body) {
   }
   if (status && !items.empty()) {
     const auto& model_config = model_.Get().cfg;
-    status = ExpandChatMedia(
-        req, items, model_config.image_token_id, model_config.video_token_id,
-        proc_cfg_, video_proc_cfg_, vision_device_budget_, config, &tokens,
-        &media, &budget, &error);
+    status = ExpandChatMedia(req, items, model_config.image_token_id,
+                             model_config.video_token_id, proc_cfg_,
+                             video_proc_cfg_, vision_device_budget_, config,
+                             &tokens, &media, &budget, &error);
   }
   if (cancelled()) {
     send_cancel();

@@ -1,4 +1,5 @@
 #include "q4t/server/chat_contract.h"
+#include "q4t/server/sampling.h"
 #include "q4t/vision/media_plan.h"
 
 #include <cmath>
@@ -191,33 +192,13 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
   if (const auto* user = req.Find("user");
       user && !user->IsNull() && !user->IsString())
     return invalid("user", "user must be a string or null (metadata only)");
-  for (const auto& [key, neutral] : {std::pair{"temperature", 0.0},
-                                     {"top_p", 1.0},
-                                     {"n", 1.0},
-                                     {"frequency_penalty", 0.0},
-                                     {"presence_penalty", 0.0},
-                                     {"repetition_penalty", 1.0}}) {
-    if (const auto* value = req.Find(key);
-        value &&
-        !(value->IsNull() && std::string_view(key) != "repetition_penalty") &&
-        !Number(*value, neutral))
-      return invalid(key,
-                     std::string(key) + " unsupported value in greedy mode");
-  }
-  if (const auto* seed = req.Find("seed"); seed && !seed->IsNull()) {
-    if (!IsInputInteger(*seed) || std::abs(seed->number) > 9007199254740991.0)
-      return invalid("seed", "seed must be an exact binary64 integer or null");
-  }
-  for (const char* key : {"logprobs", "top_logprobs", "logit_bias"}) {
-    const auto* value = req.Find(key);
-    if (!value || value->IsNull()) continue;
-    const std::string_view name(key);
-    const bool neutral =
-        (name == "logprobs" && value->IsBool() && !value->boolean) ||
-        (name == "top_logprobs" && Number(*value, 0)) ||
-        (name == "logit_bias" && value->IsObject() && value->object.empty());
-    if (!neutral) return invalid(key, std::string(key) + " is not supported");
-  }
+  SamplingOptions sampling;
+  status = ParseSamplingOptions(req, &sampling, error_param);
+  if (!status) return status;
+  if (const auto* penalty = req.Find("repetition_penalty");
+      penalty && !Number(*penalty, 1))
+    return invalid("repetition_penalty",
+                   "use standard presence_penalty/frequency_penalty");
   if (const auto* options = req.Find("stream_options");
       options && !options->IsNull()) {
     status = Fields(*options, {"include_usage"});

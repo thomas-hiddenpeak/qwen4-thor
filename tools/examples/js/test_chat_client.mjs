@@ -211,3 +211,61 @@ test('request creation uses fresh independent cancellation credentials', () => {
   assert.notEqual(a.request_id, b.request_id); assert.notEqual(a.cancel_token, b.cancel_token);
   assert.match(a.cancel_token, /^[0-9a-f]{64}$/); assert.equal(a.stream_options.include_usage, true);
 });
+
+test('sampling logprobs survive JSON and interleaved choices SSE', async () => {
+  const probability = { token: '中', logprob: -0.5, bytes: [228, 184, 173],
+    top_logprobs: [{ token: '中', logprob: -0.5, bytes: [228, 184, 173] }] };
+  const probabilities = { content: [probability], refusal: null };
+  const value = jsonResponse();
+  value.choices = [0, 1].map(index => ({ index, message: { role: 'assistant', content: '中' },
+    finish_reason: 'stop', logprobs: probabilities }));
+  const events = [];
+  for (const index of [1, 0]) {
+    const frame = event({ role: 'assistant', content: '' });
+    frame.choices[0].index = index; events.push(frame);
+  }
+  for (const index of [0, 1]) {
+    const frame = event({ content: '中' });
+    frame.choices[0].index = index; frame.choices[0].logprobs = probabilities; events.push(frame);
+    const terminal = event({}, 'stop'); terminal.choices[0].index = index; events.push(terminal);
+  }
+  events.push({ ...events[0], choices: [], usage: COUNTS });
+  const a = client(Buffer.from(JSON.stringify(value)));
+  const b = client(encode(events), { stream: true });
+  const json = await a.api.chat({ ...request(false), n: 2, logprobs: true });
+  const sse = await b.api.chat({ ...request(true), n: 2, logprobs: true });
+  assert.deepEqual(json.choices, sse.choices);
+  assert.deepEqual(json.choices[0].logprobs.content[0].bytes, [228, 184, 173]);
+  assert.equal(a.requests.length, 1); assert.equal(b.requests.length, 1);
+  assert.throws(() => prepareToolCalls(sse, {})); // Explicit choice selection required.
+});
+
+test('sampling rejects duplicate/missing choices and incomplete choice terminals', () => {
+  for (const indices of [[0, 0], [1], [0, 2]]) {
+    const value = jsonResponse();
+    value.choices = indices.map(index => ({ ...value.choices[0], index }));
+    assert.throws(() => parseJsonWire(Buffer.from(JSON.stringify(value))));
+  }
+  const events = streamEvents();
+  const extra = event({ role: 'assistant', content: 'unfinished' }); extra.choices[0].index = 1;
+  events.splice(2, 0, extra);
+  assert.throws(() => parseSseWire(encode(events)));
+});
+
+test('sampling validates probability values, UTF8 fragments and alternatives', () => {
+  const value = jsonResponse();
+  const valid = { content: [{ token: '�', logprob: -9999, bytes: [228], top_logprobs: [] }], refusal: null };
+  value.choices[0].logprobs = valid;
+  assert.deepEqual(parseJsonWire(Buffer.from(JSON.stringify(value))).result.logprobs, valid);
+  for (const corrupt of [p => p.content[0].logprob = 1, p => p.content[0].bytes = [256],
+    p => p.content[0].top_logprobs = Array(21).fill({ token: 'x', logprob: -1, bytes: [120] })]) {
+    value.choices[0].logprobs = structuredClone(valid); corrupt(value.choices[0].logprobs);
+    assert.throws(() => parseJsonWire(Buffer.from(JSON.stringify(value))));
+  }
+});
+
+test('sampling client rejects fewer choices than requested', async () => {
+  const run = client(Buffer.from(JSON.stringify(jsonResponse())));
+  await assert.rejects(run.api.chat({ ...request(false), n: 2 }), /choice count/);
+  assert.equal(run.requests.length, 1);
+});

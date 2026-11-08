@@ -1,4 +1,4 @@
-"""Small standard-library client for Q4T's parsed, single-choice chat API.
+"""Small standard-library client for Q4T's parsed Chat API.
 
 Development candidate; see docs/AGENT_TOOL_CLIENT_2026-11-02.md. No requests,
 tool execution, retries, or model imports happen when this module is imported.
@@ -101,7 +101,7 @@ def _arguments(value):
     return args
 
 
-def _usage(value):
+def _usage(value, choice_count=1):
     require(isinstance(value, dict), "missing usage")
     for key in ("prompt_tokens", "completion_tokens", "total_tokens"):
         require(type(value.get(key)) is int and value[key] >= 0,
@@ -123,8 +123,9 @@ def _usage(value):
         for key in ("limit", "consumed", "forced_closure_tokens"):
             require(type(budget.get(key)) is int and budget[key] >= 0,
                     "invalid thinking budget field: " + key)
-        require(budget["consumed"] <= budget["limit"] <= 2147483647 and
-                budget["forced_closure_tokens"] <= 14 and
+        require(budget["consumed"] <= budget["limit"] * choice_count and
+                budget["limit"] <= 2147483647 and
+                budget["forced_closure_tokens"] <= 14 * choice_count and
                 budget["consumed"] + budget["forced_closure_tokens"] ==
                 details["reasoning_tokens"], "inconsistent thinking budget usage")
     if "prompt_tokens_details" in value:
@@ -166,6 +167,35 @@ def _message(value):
     return deepcopy(value)
 
 
+def _logprobs(value):
+    if value is None:
+        return None
+    require(isinstance(value, dict) and set(value) == {"content", "refusal"},
+            "invalid logprobs container")
+
+    def token(item, top=False):
+        required = {"token", "logprob", "bytes"} | (set() if top else {"top_logprobs"})
+        require(isinstance(item, dict) and set(item) == required,
+                "invalid token logprobs")
+        _text(item["token"], "invalid token string")
+        probability = item["logprob"]
+        require(type(probability) in (int, float) and math.isfinite(probability)
+                and probability <= 0, "invalid token probability")
+        require(item["bytes"] is None or (isinstance(item["bytes"], list) and
+            all(type(byte) is int and 0 <= byte <= 255 for byte in item["bytes"])),
+            "invalid token bytes")
+        if not top:
+            require(isinstance(item["top_logprobs"], list) and
+                    len(item["top_logprobs"]) <= 20, "invalid alternatives")
+            for alternative in item["top_logprobs"]:
+                token(alternative, True)
+    for entries in value.values():
+        require(entries is None or isinstance(entries, list), "invalid logprobs list")
+        for item in entries or []:
+            token(item)
+    return deepcopy(value)
+
+
 @dataclass(frozen=True)
 class Completion:
     id: str
@@ -173,9 +203,11 @@ class Completion:
     message: dict
     finish_reason: str
     usage: dict
+    logprobs: dict | None = None
 
 
-def _completion(identifier, model, message, finish, usage):
+def _completion(identifier, model, message, finish, usage, logprobs=None,
+                choice_count=1):
     _text(identifier, "missing response id", True)
     _text(model, "missing response model", True)
     message = _message(message)
@@ -184,7 +216,44 @@ def _completion(identifier, model, message, finish, usage):
     has_tools = bool(message.get("tool_calls"))
     require(finish != "tool_calls" or has_tools, "tool finish without calls")
     require(finish != "stop" or not has_tools, "tool calls with stop finish")
-    return Completion(identifier, model, message, finish, _usage(usage))
+    return Completion(identifier, model, message, finish, _usage(usage, choice_count),
+                      _logprobs(logprobs))
+
+
+@dataclass(frozen=True)
+class MultiCompletion:
+    id: str
+    model: str
+    choices: list
+    usage: dict
+
+    def select(self, index):
+        require(type(index) is int and 0 <= index < len(self.choices),
+                "invalid choice selection")
+        choice = self.choices[index]
+        return _completion(self.id, self.model, choice["message"],
+                           choice["finish_reason"], self.usage,
+                           choice["logprobs"], len(self.choices))
+
+
+def _choices_completion(identifier, model, choices, usage):
+    require(isinstance(choices, list) and 1 <= len(choices) <= 128,
+            "invalid choice count")
+    require(all(isinstance(choice, dict) and type(choice.get("index")) is int
+                for choice in choices), "invalid choice index")
+    choices = sorted(choices, key=lambda choice: choice["index"])
+    require([choice["index"] for choice in choices] == list(range(len(choices))),
+            "missing or duplicate choice index")
+    result = []
+    for choice in choices:
+        item = _completion(identifier, model, choice.get("message"),
+                           choice.get("finish_reason"), usage,
+                           choice.get("logprobs"), len(choices))
+        result.append(dict(index=choice["index"], message=item.message,
+                           finish_reason=item.finish_reason, logprobs=item.logprobs))
+    if len(choices) == 1:
+        return item
+    return MultiCompletion(identifier, model, result, _usage(usage, len(choices)))
 
 
 def _envelope(value, kind):
@@ -206,10 +275,12 @@ def _choice(choices):
     return choice
 
 
-class _Stream:
+class _ChoiceStream:
     def __init__(self):
         self.identifier = self.model = self.finish = self.usage = None
         self.role = False
+        self.logprobs = None
+        self.choice_count = 1
         self.reasoning_field = None
         self.content, self.reasoning, self.calls = [], [], []
 
@@ -229,6 +300,15 @@ class _Stream:
         require(self.finish is None and event.get("usage") is None,
                 "choice after terminal or usage on a choice")
         choice = _choice(choices)
+        probabilities = _logprobs(choice.get("logprobs"))
+        if probabilities is not None:
+            if self.logprobs is None:
+                self.logprobs = dict(content=[], refusal=None)
+            for key in ("content", "refusal"):
+                if probabilities[key] is not None:
+                    if self.logprobs[key] is None:
+                        self.logprobs[key] = []
+                    self.logprobs[key].extend(probabilities[key])
         delta = choice.get("delta")
         require(isinstance(delta, dict), "missing delta")
         require(not (set(delta) - {"role", "content", "reasoning_content", "reasoning",
@@ -296,7 +376,55 @@ class _Stream:
             if not content:
                 message["content"] = None
         return _completion(self.identifier, self.model, message,
-                           self.finish, self.usage)
+                           self.finish, self.usage, self.logprobs, self.choice_count)
+
+
+class _Stream:
+    def __init__(self):
+        self.identity = None
+        self.choices = {}
+        self.usage = None
+
+    @property
+    def finish(self):
+        return True if self.choices and all(state.finish is not None
+                        for state in self.choices.values()) else None
+
+    def feed(self, event):
+        _envelope(event, "chat.completion.chunk")
+        identity = (event["id"], event["model"], event.get("created"))
+        if self.identity is None:
+            self.identity = identity
+        require(self.identity == identity, "response identity changed mid-stream")
+        choices = event["choices"]
+        if not choices:
+            require(self.finish is not None and self.usage is None,
+                    "unexpected or duplicate usage terminal")
+            self.usage = _usage(event.get("usage"), len(self.choices))
+            return
+        require(self.usage is None and event.get("usage") is None and
+                len(choices) <= 128, "choice after usage or mixed usage")
+        seen = set()
+        for choice in choices:
+            require(isinstance(choice, dict), "invalid choice")
+            index = choice.get("index")
+            require(type(index) is int and 0 <= index < 128 and index not in seen,
+                    "invalid or duplicate choice index")
+            seen.add(index)
+            state = self.choices.setdefault(index, _ChoiceStream())
+            state.feed(dict(event, choices=[dict(choice, index=0)]))
+
+    def result(self):
+        require(self.finish is not None and self.usage is not None,
+                "incomplete SSE terminal")
+        values = []
+        for index, state in self.choices.items():
+            state.usage = self.usage
+            state.choice_count = len(self.choices)
+            item = state.result()
+            values.append(dict(index=index, message=item.message,
+                               finish_reason=item.finish_reason, logprobs=item.logprobs))
+        return _choices_completion(*self.identity[:2], values, self.usage)
 
 
 def read_sse(response, *, sink=None, max_bytes=MAX_RESPONSE_BYTES,
@@ -350,9 +478,8 @@ def read_json(response, *, sink=None, max_bytes=MAX_RESPONSE_BYTES):
         sink(raw)
     event = load_json(raw)
     _envelope(event, "chat.completion")
-    choice = _choice(event["choices"])
-    return _completion(event["id"], event["model"], choice.get("message"),
-                       choice.get("finish_reason"), event.get("usage"))
+    return _choices_completion(event["id"], event["model"], event["choices"],
+                               event.get("usage"))
 
 
 SCHEMA_INSTRUCTION = (
@@ -682,6 +809,8 @@ class ChatClient:
             require(response.headers.get_content_type() == expected,
                     "unexpected response content type")
             result = (read_sse if stream else read_json)(response, sink=sink)
+        require((len(result.choices) if isinstance(result, MultiCompletion) else 1) ==
+                (body.get("n") or 1), "response choice count mismatch")
         require(result.id == body.get("request_id") and
                 result.model == body.get("model"), "response identity mismatch")
         return result
@@ -704,6 +833,8 @@ class ToolInvocation:
 
 
 def prepare_tool_calls(completion, validators):
+    require(hasattr(completion, "message") and hasattr(completion, "finish_reason"),
+            "select an explicit choice before preparing tools")
     """Validate the entire batch without executing any tool or changing history.
 
     validators maps allowed names to pure checks: return None or raise.

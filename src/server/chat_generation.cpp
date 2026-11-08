@@ -7,18 +7,22 @@
 #include <algorithm>
 #include <cctype>
 #include <chrono>
+#include <charconv>
 #include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <ctime>
 #include <limits>
 #include <span>
+#include <stdexcept>
 #include <string>
 #include <vector>
 #include <cuda_runtime.h>
 #include "q4t/diagnostic/execution_observer.h"
 #include "q4t/mtp/suffix_drafter.h"
 #include "q4t/server/chat_contract.h"
+#include "q4t/server/chat_choices.h"
+#include "q4t/server/token_logprobs.h"
 #include "q4t/server/media_admission.h"
 #include "q4t/server/chat_response_parser.h"
 #include "q4t/server/structured_decoder.h"
@@ -56,31 +60,33 @@ void LogMemorySnapshot(const char* phase, const std::string& id) {
   if (FILE* mi = std::fopen("/proc/meminfo", "r")) {
     char line[256];
     while (std::fgets(line, sizeof line, mi)) {
-      if (std::strncmp(line, "MemFree:", 8) == 0) mem_free_kb = std::atol(line + 8);
-      if (std::strncmp(line, "Cached:", 7) == 0) cached_kb = std::atol(line + 7);
+      if (std::strncmp(line, "MemFree:", 8) == 0)
+        mem_free_kb = std::atol(line + 8);
+      if (std::strncmp(line, "Cached:", 7) == 0)
+        cached_kb = std::atol(line + 7);
       if (std::strncmp(line, "MemAvailable:", 13) == 0)
         mem_avail_kb = std::atol(line + 13);
       if (mem_free_kb != 0 && cached_kb != 0 && mem_avail_kb != 0) break;
     }
     std::fclose(mi);
   }
-  std::fprintf(stderr,
-               "[q4t][mem] phase=%s id=%s dev_used_gb=%.3f dev_total_gb=%.3f "
-               "rss_mb=%.1f mem_free_gb=%.3f mem_avail_gb=%.3f cached_gb=%.3f\n",
-               phase, id.c_str(), (total_bytes - free_bytes) / 1e9,
-               total_bytes / 1e9, rss_kb / 1024.0,
-               mem_free_kb * 1024.0 / 1e9, mem_avail_kb * 1024.0 / 1e9,
-               cached_kb * 1024.0 / 1e9);
+  std::fprintf(
+      stderr,
+      "[q4t][mem] phase=%s id=%s dev_used_gb=%.3f dev_total_gb=%.3f "
+      "rss_mb=%.1f mem_free_gb=%.3f mem_avail_gb=%.3f cached_gb=%.3f\n",
+      phase, id.c_str(), (total_bytes - free_bytes) / 1e9, total_bytes / 1e9,
+      rss_kb / 1024.0, mem_free_kb * 1024.0 / 1e9, mem_avail_kb * 1024.0 / 1e9,
+      cached_kb * 1024.0 / 1e9);
 }
 
 }  // namespace
-using detail::RequestCancelled;
 using detail::FinishHostReadback;
 using detail::JsonEscape;
-using detail::WriteAll;
-using detail::SendSimple;
+using detail::RequestCancelled;
 using detail::SendError;
+using detail::SendSimple;
 using detail::SseChunk;
+using detail::WriteAll;
 
 void ChatServer::HandleChat(int fd, const std::string& body) {
   detail::ResponseState response = detail::ResponseState::kUnsent;
@@ -101,12 +107,13 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
 }
 
 void ChatServer::HandleChatImpl(int fd, const std::string& body,
-                               detail::ResponseState* response_state) {
+                                detail::ResponseState* response_state) {
   auto* http = detail::HttpResponseContext::Current(fd);
   metrics_.requests_total.fetch_add(1, std::memory_order_relaxed);
   const auto t_arrive = std::chrono::steady_clock::now();
   // Any return before generation starts (validation / alloc / encode / prefill
-  // failure) counts as a pre-generation error; cleared once a token is produced.
+  // failure) counts as a pre-generation error; cleared once a token is
+  // produced.
   struct ErrGuard {
     std::atomic<uint64_t>& err;
     bool ok = false;
@@ -129,9 +136,15 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
               "capacity_exhausted");
     return;
   }
+  bool attempted_slot = false;
+  ScopeExit slot_wait_observation([&] {
+    if (attempted_slot)
+      metrics_.slot_wait_seconds.Observe(diagnostic.Total(Wait::kSlot) /
+                                         1000.0);
+  });
   // Outlives request/grammar/response buffers; release only after cleanup.
   StructuredRequestLease structured_lease(structured_admission_,
-                                           metrics_.structured_active);
+                                          metrics_.structured_active);
   ClientRateLease rate_lease;
   struct TerminalLeases {
     StructuredRequestLease& structured;
@@ -161,11 +174,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   ChatPlanError planning_error;
   s = PlanChatRequest(req, planning_config, &request_plan, &planning_error);
   if (!s) {
-    SendError(fd, 400, s.message(), {}, planning_error.code, planning_error.param);
+    SendError(fd, 400, s.message(), {}, planning_error.code,
+              planning_error.param);
     return;
   }
   const auto& constraints = request_plan.constraints;
-  TextStopStream text_stop(std::move(request_plan.stops));
+  const auto& sampling = request_plan.sampling;
+  const bool plain_greedy = sampling.PlainGreedy();
   const std::string prefix_scope =
       ClientScopedKey(client, req.GetString("prefix_cache_scope"));
   const int prefix_write_tokens =
@@ -187,17 +202,16 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   std::string request_id = req.GetString("request_id");
   // Shape, credentials and exact integer spelling were checked before leases.
   if (!external_id) request_id = detail::NewRequestId("chatcmpl-auto-");
-  auto deadline = t_arrive +
-                  std::chrono::milliseconds(request_deadline_ms_);
+  auto deadline = t_arrive + std::chrono::milliseconds(request_deadline_ms_);
   if (req.Has("request_timeout_ms")) {
-    deadline = t_arrive +
-               std::chrono::milliseconds(req.GetInt("request_timeout_ms"));
+    deadline =
+        t_arrive + std::chrono::milliseconds(req.GetInt("request_timeout_ms"));
   }
   detail::ServeFaultPoint("handler.before_register");
   auto control = requests_.Register(request_id, key, deadline, client);
   if (!control) {
-    SendError(fd, 409, "request_id already active", {},
-              "request_id_conflict", "request_id");
+    SendError(fd, 409, "request_id already active", {}, "request_id_conflict",
+              "request_id");
     return;
   }
   struct Registration {
@@ -207,13 +221,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     ~Registration() {
       if (control->Cancelled())
         diagnostic.Outcome(control->Failed() ? "error" : "cancelled",
-                            control->Reason());
+                           control->Reason());
       registry.Remove(control);
     }
   } registration{requests_, control, diagnostic};
-  OnException request_failure([&] {
-    control->Cancel(RequestControl::State::kFailure);
-  });
+  OnException request_failure(
+      [&] { control->Cancel(RequestControl::State::kFailure); });
   diagnostic.Bind(request_id);
   if (http)
     std::fprintf(stderr, "[q4t][http] trace_id=%s completion_id=%s\n",
@@ -221,9 +234,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   detail::ServeFaultPoint("handler.after_register");
   const auto cancelled = [&] { return RequestCancelled(control.get(), fd); };
   const auto send_cancel_error = [&](const char* message) {
-    SendError(fd, 409, message,
-              {std::chrono::steady_clock::now() +
-               std::chrono::milliseconds(250)}, control->Reason());
+    SendError(
+        fd, 409, message,
+        {std::chrono::steady_clock::now() + std::chrono::milliseconds(250)},
+        control->Reason());
   };
   bool abort_counted = false;
   const auto count_abort = [&] {
@@ -263,52 +277,6 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
               planning_error.param);
     return;
   }
-  ChatResponseParser response_parser;
-  s = response_parser.Init(req, prompt, request_id, !stream);
-  if (!s.ok()) {
-    SendError(fd, 400, s.message());
-    return;
-  }
-  ReasoningOptions reasoning_options;
-  s = ParseReasoningOptions(req, &reasoning_options);
-  ThinkingBudget thinking_budget;
-  const auto* request_tools = req.GetArray("tools");
-  if (s)
-    s = thinking_budget.Init(
-        reasoning_options.token_budget, prompt, constraints.json_output,
-        (request_tools && !request_tools->array.empty()) ||
-            constraints.choice == OutputConstraints::ToolChoice::kNone);
-  if (s && thinking_budget.Enabled()) {
-    auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer, cancelled);
-    if (!lock.owns_lock()) {
-      count_abort();
-      send_cancel_error("request cancelled waiting for thinking tokenizer");
-      return;
-    }
-    const auto encode = [&](std::string_view text, std::vector<int32_t>* out) {
-      std::vector<uint32_t> ids;
-      auto status = tok_->Encode(text, &ids, {.cancelled = cancelled});
-      out->assign(ids.begin(), ids.end());
-      return status;
-    };
-    const auto decode = [&](int32_t token, std::string* out) {
-      if (cancelled())
-        return Status::Fail("thinking budget preparation cancelled");
-      return tok_->Decode({static_cast<uint32_t>(token)}, true, out);
-    };
-    s = thinking_budget.PrepareTokens(encode, decode, tok_->VocabSize(),
-                                      stop_token_ids_);
-  }
-  if (!s) {
-    if (cancelled()) {
-      count_abort();
-      send_cancel_error("request cancelled during thinking preparation");
-    } else {
-      SendError(fd, 500, s.message(), {}, "thinking_budget_unavailable");
-    }
-    return;
-  }
-
   std::vector<std::uint32_t> prompt_u32;
   ChatPromptBudget prompt_budget;
   vision::MediaPlan media_plan;
@@ -324,7 +292,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           req, planning_config, prompt,
           [&](std::string_view text, std::vector<uint32_t>* out) {
             return tok_->Encode(text, out, {.cancelled = cancelled});
-          }, &prompt_u32, &prompt_budget, &planning_error);
+          },
+          &prompt_u32, &prompt_budget, &planning_error);
     }
     if (encoded && !items.empty()) {
       const auto& config = model_.Get().cfg;
@@ -338,7 +307,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   };
   // Count expanded visual tokens before rate reservation, SSE or grammar.
   // Preflight uses the same expansion and budget, without reserving quota.
-  if (planning_config.client_limits || !items.empty()) {
+  {
     s = encode_prompt();
     if (!s) {
       if (cancelled()) {
@@ -357,9 +326,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     }
   }
   if (planning_config.client_limits) {
-    const auto result = rate_lease.Reserve(
-        clients_, http->Client(), prompt_u32.size(),
-        static_cast<uint64_t>(prompt_budget.available_output));
+    const auto result =
+        rate_lease.Reserve(clients_, http->Client(), prompt_u32.size(),
+                           prompt_budget.total_output);
     if (result != ClientRateResult::kAllowed) {
       const char* code =
           result == ClientRateResult::kRpm   ? "client_rpm_exhausted"
@@ -371,857 +340,17 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     }
   }
 
-  const auto start_stream = [&] {
-    if (!stream) return true;
-    if (cancelled()) {
-      count_abort();
-      send_cancel_error("request cancelled before stream");
-      return false;
-    }
-    const detail::WriteOptions options{.control = control.get()};
-    if (!detail::BeginStreamingResponse(fd, response_state, options) ||
-        !WriteAll(fd,
-                  SseChunk(id, model_field, "assistant", "", "", 0, created,
-                           include_usage),
-                  options)) {
-      control->Cancel(RequestControl::State::kDisconnect);
-      count_abort();
-      return false;
-    }
-    if (http) http->StartHeartbeats(control);
-    return true;
-  };
-
-  // The outer lease outlives this grammar, including exception unwinding.
-  std::unique_ptr<StructuredDecoder> structured;
-  if (constraints.active) {
-    if (!CheckMemoryAdmission(fd, MemoryCheckpoint::kPrepare)) return;
-    if (cancelled()) {
-      count_abort();
-      send_cancel_error("request cancelled before structured admission");
-      return;
-    }
-    diagnostic.Stage("structured_admission");
-    const auto admission = structured_lease.Acquire(cancelled);
-    if (admission == StructuredRequestLease::Result::kCancelled) {
-      count_abort();
-      send_cancel_error("request cancelled during structured handoff");
-      return;
-    }
-    if (admission == StructuredRequestLease::Result::kBusy) {
-      metrics_.structured_rejected.fetch_add(1, std::memory_order_relaxed);
-      SendError(fd, 503, "structured request capacity exhausted", {},
-                "structured_capacity_exhausted");
-      return;
-    }
-    if (detail::GrammarCleanupPending()) {
-      metrics_.structured_rejected.fetch_add(1, std::memory_order_relaxed);
-      SendError(fd, 503, "grammar worker cleanup still owns structured capacity",
-                {}, "structured_capacity_exhausted");
-      return;
-    }
-    if (!start_stream()) return;
-    const auto prepare_start = std::chrono::steady_clock::now();
-    metrics_.structured_preparing.fetch_add(1, std::memory_order_relaxed);
-    ScopeExit prepared([&] {
-      metrics_.structured_vocab_bytes.store(0, std::memory_order_relaxed);
-      metrics_.structured_preparing.fetch_sub(1, std::memory_order_relaxed);
-      metrics_.structured_prepare_seconds.Observe(
-          std::chrono::duration<double>(std::chrono::steady_clock::now() -
-                                        prepare_start)
-              .count());
-    });
-    diagnostic.Stage("grammar_compile");
-    // Decode is immutable. Use its exact raw bytes, including partial UTF-8
-    // token pieces; never normalize or re-encode a token for the mask.
-    const auto vocab_size = tok_->VocabSize();
-    if (vocab_size <= 0 || vocab_size > 300000) {
-      metrics_.structured_prepare_failed.fetch_add(1);
-      SendError(fd, 400, "invalid structured vocabulary size", {},
-                "constraint_compile_failed");
-      return;
-    }
-    std::vector<std::string> vocabulary(vocab_size);
-    VocabularyStorageBudget storage;
-    if (!storage.Charge(vocabulary.capacity() * sizeof(std::string))) {
-      metrics_.structured_prepare_failed.fetch_add(1);
-      SendError(fd, 400, "structured vocabulary storage budget exceeded", {},
-                "constraint_compile_failed");
-      return;
-    }
-    std::vector<uint32_t> one(1);
-    for (uint32_t token = 0; token < vocabulary.size(); ++token) {
-      if (token % 256 == 0 && cancelled()) {
-        count_abort();
-        send_cancel_error("request cancelled before grammar compilation");
-        return;
-      }
-      one[0] = token;
-      s = tok_->Decode(one, true, &vocabulary[token]);
-      if (!s) break;
-      if (!storage.Charge(vocabulary[token].capacity() + 1)) {
-        s = Status::Fail("structured vocabulary storage exceeds 32 MiB");
-        break;
-      }
-      if (token % 256 == 0)
-        metrics_.structured_vocab_bytes.store(storage.Used());
-    }
-    GrammarControl grammar_control;
-    grammar_control.counters = metrics_.structured_workers;
-    grammar_control.cancelled = cancelled;
-    grammar_control.compile_deadline =
-        prepare_start + std::chrono::milliseconds(kGrammarCompileMilliseconds);
-    grammar_control.compile_started = [&] {
-      metrics_.structured_compiles_started.fetch_add(1);
-    };
-    grammar_control.worker_ready = [&] {
-      metrics_.structured_workers_ready.fetch_add(1);
-    };
-    grammar_control.worker_finished = [](const GrammarWorkerReport& report) {
-      std::fprintf(stderr,
-                   "[q4t] grammar worker reaped=%d lifetime_max_rss_bytes=%lu "
-                   "reported_post_exec_rss_bytes=%lu "
-                   "wait_status=%d\n",
-                   report.reaped, report.max_rss_bytes,
-                   report.reported_rss_bytes, report.exit_status);
-    };
-    GrammarFailure compile_failure = GrammarFailure::kNone;
-    if (s)
-      s = StructuredDecoder::Create(constraints, vocabulary,
-                                    model_.Get().cfg.vocab, stop_token_ids_,
-                                    &structured, grammar_control,
-                                    &compile_failure);
-    if (cancelled()) {
-      count_abort();
-      send_cancel_error("request cancelled during grammar compilation");
-      return;
-    }
-    if (!s) {
-      metrics_.structured_prepare_failed.fetch_add(1,
-                                                   std::memory_order_relaxed);
-      if (compile_failure == GrammarFailure::kTimeout) {
-        metrics_.structured_compile_timeouts.fetch_add(1);
-        SendError(fd, 503, s.message(), {}, "constraint_compile_timeout");
-      } else if (compile_failure == GrammarFailure::kResource) {
-        metrics_.structured_resource_exhausted.fetch_add(1);
-        SendError(fd, 503, s.message(), {}, "constraint_resource_exhausted");
-      } else if (compile_failure == GrammarFailure::kWorker) {
-        SendError(fd, 502, s.message(), {}, "constraint_worker_failed");
-      } else if (compile_failure == GrammarFailure::kUnavailable) {
-        metrics_.structured_rejected.fetch_add(1, std::memory_order_relaxed);
-        SendError(fd, 503, s.message(), {}, "structured_capacity_exhausted");
-      } else {
-        SendError(fd, 400, s.message(), {}, "constraint_compile_failed");
-      }
-      return;
-    }
+  ChatChoices choices(sampling.choices, stream);
+  bool headers_started = false;
+  bool first_delta_sent = false;
+  uint64_t entropy = 0;
+  if (!sampling.seed && !plain_greedy) {
+    const auto random = detail::NewRequestId("");
+    const auto parsed =
+        std::from_chars(random.data(), random.data() + 16, entropy, 16);
+    if (parsed.ec != std::errc())
+      throw std::runtime_error("invalid OS random seed");
   }
-  if (!constraints.active && !start_stream()) return;
-
-  std::vector<int32_t> ids;
-  const bool explicit_slots = !seq_capacities_.empty();
-  if (!prompt_encoded) s = encode_prompt();
-  if (!s) {
-    if (cancelled()) {
-      count_abort();
-      send_cancel_error("request cancelled during encoding");
-    } else {
-      SendError(fd, 400, s.message(), {}, planning_error.code, planning_error.param);
-    }
-    return;
-  }
-  ids.assign(prompt_u32.begin(), prompt_u32.end());
-  const size_t required_capacity = prompt_budget.required_capacity;
-
-  // B1 multi-request scheduling: each request runs on its own thread. All
-  // GPU work uses the DEFAULT stream (the model's per-forward scratch is a
-  // single shared allocation, and per-sequence state is pooled + isolated by
-  // seq_id), so model forwards are serialized behind model_mu_ for both
-  // scratch safety and GPU-stream ordering. GPU readback completes under
-  // the lock; tokenization and SSE output use the completed host result.
-  diagnostic.Stage("slot_admission");
-  int seq_id;
-  {
-    RequestDiagnostics::Scope wait(diagnostic, Wait::kSlot);
-    seq_id = AllocSeqId(control.get(), fd, required_capacity);
-  }
-  metrics_.slot_wait_seconds.Observe(diagnostic.Total(Wait::kSlot) / 1000.0);
-  if (seq_id == -5 || seq_id == -6) {
-    const auto state = seq_id == -5 ? MemoryState::kLow
-                                    : MemoryState::kUnavailable;
-    diagnostic.Outcome("error", kMemoryStates[static_cast<size_t>(state)]);
-    RejectMemoryAdmission(fd, state, MemoryCheckpoint::kExecute);
-    return;
-  }
-  if (seq_id == -4) {
-    diagnostic.Outcome("error", "queue_capacity_exhausted");
-    // SendError uses the existing response context: JSON 503 before headers,
-    // one SSE error terminal after headers, never a second HTTP response.
-    SendError(fd, 503, "slot waiting capacity exhausted", {},
-              "queue_capacity_exhausted");
-    return;
-  }
-  if (seq_id == -3) {
-    RejectUnhealthy(fd);
-    return;
-  }
-  if (seq_id == -2) {
-    count_abort();
-    send_cancel_error("request cancelled before admission");
-    return;
-  }
-  if (seq_id < 0) {
-    SendError(fd, 503, "server shutting down");
-    return;
-  }
-  diagnostic.Admitted(seq_id);
-  rate_lease.Start();
-  const int request_capacity = model_.Get().cfg.Capacity(seq_id);
-  if (explicit_slots)
-    std::fprintf(stderr,
-                 "[q4t][slot-admission] request=%s slot=%d capacity=%d "
-                 "required=%zu\n",
-                 request_id.c_str(), seq_id, request_capacity,
-                 required_capacity);
-  diagnostic.Stage("encode");
-  metrics_.queue_seconds.Observe(
-      std::chrono::duration<double>(std::chrono::steady_clock::now() - t_arrive)
-          .count());
-  // Per-request device buffers (freed by `cleanup` on any exit path). Prefill
-  // logits use the shared d_prefill_logits_ (under model_mu_), not a per-
-  // request buffer.
-  uint16_t* d_trunk_full = nullptr;
-  uint16_t* d_vfeats = nullptr;
-  uint16_t* d_session_trunk = nullptr;
-  uint16_t* d_mtp_g = nullptr;  // MTP rolling draft trunk [hc*hs] (Stage 2c:
-                                // per-request, so concurrent MTP requests don't
-                                // share the legacy d_g_/d_g_next_ double buffer)
-  trace::RequestOutcome trace_outcome = trace::RequestOutcome::kFailed;
-  uint64_t trace_output_tokens = 0;
-  bool buffers_ok = true;
-  const auto release_buffer = [&](auto*& pointer, const char* site) {
-    const auto result = detail::ReleaseCudaMemory(pointer, site,
-                                                 request_id.c_str());
-    RecordDeviceMemoryFailure(result, site);
-    buffers_ok = buffers_ok && result.ok();
-    if (!result.ok()) {
-      const std::lock_guard<std::mutex> lock(model_mu_);
-      AbortBackendExecution();
-    }
-  };
-  const auto release_buffers = [&] {
-    release_buffer(d_session_trunk, "request.session_trunk_free");
-    release_buffer(d_trunk_full, "request.prompt_trunk_free");
-    release_buffer(d_vfeats, "request.vision_features_free");
-    release_buffer(d_mtp_g, "request.draft_trunk_free");
-  };
-  const auto allocate_buffer = [&](auto*& pointer, size_t bytes,
-                                    const char* site) {
-    const auto result = detail::AllocateCudaMemory(pointer, bytes, site,
-                                                  request_id.c_str());
-    RecordDeviceMemoryFailure(result, site);
-    if (result.state == DeviceMemoryState::kFailure) {
-      const std::lock_guard<std::mutex> lock(model_mu_);
-      AbortBackendExecution();
-    }
-    return result;
-  };
-  const auto allocation_error = [&](const DeviceMemoryResult& result) {
-    err_guard.ok = false;
-    diagnostic.Outcome("error", result.Reason());
-    SendError(fd, 503,
-              result.quota_exhausted ? "CUDA allocation quota exhausted"
-              : result.exhausted()   ? "device memory exhausted"
-                                     : "device memory failure; restart server",
-              {}, result.exhausted() ? result.Reason() : "gpu_unhealthy");
-  };
-  bool cleaned = false;
-  auto cleanup = [&]() {
-    if (cleaned) return;
-    cleaned = true;
-    release_buffers();
-    if (router_trace_) router_trace_->EndRequest(
-        control->Cancelled() ? trace::RequestOutcome::kCancelled : trace_outcome,
-        trace_output_tokens);
-    FreeSeqId(seq_id);
-    diagnostic.Released();
-  };
-  ScopeExit buffer_cleanup(cleanup);
-  detail::ServeFaultPoint("handler.after_slot");
-
-  if (cancelled()) {
-    count_abort();
-    cleanup();
-    send_cancel_error("request cancelled before encoding");
-    return;
-  }
-
-  // 1b. Multimodal: each <|image_pad|> (image_token_id) / <|video_pad|>
-  // (video_token_id) placeholder expands to the number of merged visual tokens
-  // for its item, and the vision tower's features are injected in place of
-  // those token embeddings (in prompt position order).
-  model::VisionFeatures vfeats;
-  if (!items.empty()) {
-    if (ids.size() >= static_cast<size_t>(request_capacity)) {
-      SendError(fd, 400, "expanded media exceeds assigned context", {},
-                "context_length_exceeded", "messages");
-      return;
-    }
-    std::vector<int> counts;
-    std::vector<std::array<int, 3>> grids;
-    std::string verr;
-    DeviceMemoryResult vision_memory;
-    // The vision tower uses a shared workspace, so its forward is serialized
-    // behind model_mu_ (the same lock that serializes the main model). The
-    // pipeline runs on the default stream and self-synchronizes internally.
-    {
-      auto lock = diagnostic.Lock(model_mu_, Wait::kModel, cancelled);
-      if (!lock.owns_lock()) {
-        count_abort();
-        send_cancel_error("request cancelled waiting for vision execution");
-        return;
-      }
-      OnException backend_failure([&] { AbortBackendExecution(); });
-      if (RejectUnhealthy(fd)) {
-        // Outer buffer cleanup runs after this model lock is released.
-        return;
-      }
-      if (!RunVisionPipeline(items, media_plan, &d_vfeats, &vfeats.num_tokens,
-                             &counts, &grids, &verr, &vision_memory,
-                             request_id.c_str(), cancelled, &planning_error)) {
-        if (!vision_memory.ok()) {
-          SendError(fd, 503, "vision device resource failure", {},
-                    vision_memory.Reason());
-        } else if (cancelled()) {
-          count_abort();
-          send_cancel_error("request cancelled during media processing");
-        } else {
-          const bool mismatch = planning_error.code == "media_plan_mismatch";
-          SendError(fd, mismatch ? 500 : 400, verr, {}, planning_error.code,
-                    planning_error.param);
-        }
-        // A failed buffer release may need to reacquire model_mu_ to drain.
-        return;
-      }
-    }
-    vfeats.grids = std::move(grids);
-    vfeats.device = d_vfeats;
-  }
-  const int T = static_cast<int>(ids.size());
-  if (T >= request_capacity) {
-    SendError(fd, 400,
-              "prompt too long for context: " + std::to_string(T) +
-                  " tokens >= " + std::to_string(request_capacity) +
-                  " max_len");
-    cleanup();
-    return;
-  }
-
-  const int vocab = model_.Get().cfg.vocab;
-  const auto is_stop_token = [this](int32_t token) {
-    return std::find(stop_token_ids_.begin(), stop_token_ids_.end(), token) !=
-           stop_token_ids_.end();
-  };
-  // Chunked prefill (262K context, see PHASES.md 262K memory budget): the
-  // forward workspace (d_ws, d_trunk, ...) is sized for max_prefill tokens,
-  // so a prompt longer than max_prefill is run in chunks of max_prefill.
-  // max_prefill is now the CHUNK size, not a prompt cap (the prompt cap is
-  // max_len). Text-only: a vision prompt's special (t,h,w) rope is not
-  // reproducible by the continuation chunks' text rope, so vision + chunked
-  // is rejected (vision prompts are far shorter than 262K in practice).
-  const int chunk = max_prefill_;
-  const bool chunked = T > chunk;
-  if (chunked && vfeats.num_tokens > 0) {
-    SendError(fd, 400,
-              "chunked prefill (prompt > max_prefill) does not support "
-              "vision input");
-    cleanup();
-    return;
-  }
-  if (router_trace_) router_trace_->BeginRequest(ids, request_id);
-  // Chunk 0 is a true prefill (state reset + rope table + PLE history);
-  // chunks 1.. are ModelDecodeBatch calls that CONTINUE from the existing
-  // per-layer state (linear SSM/conv recurrence, full-attention KV/indexer
-  // written at absolute positions) — bit-identical to one big prefill. Only
-  // the LAST chunk's final logits row is needed (first decode token), so
-  // all serve paths explicitly select that row before the output head.
-  // Shared d_prefill_logits_ holds [max_seq, vocab], including inline
-  // fallback, vision and MTP main-model prefill (one row per request).
-  // MTP: prefill trunk_out buffer (pre-final-mixer multi stream [T, hc*hs])
-  // for the draft-extend. Allocated when MTP is loaded, for BOTH one-shot and
-  // chunked prefill. The chunked path accumulates the trunk across chunks
-  // (each chunk's trunk_out writes its [base, base+c) rows); the draft-extend
-  // then runs over the full prompt in chunks (MtpDraftExtend's chunked path).
-  // The draft KV/indexer is allocated at MTP load time (pooled over max_seq,
-  // max_len), so it is NOT a per-request cost -- the only per-request extra is
-  // this trunk buffer (T * hc_dim * 2, ~0.9 GB at 44K, ~5.4 GB at 262K). If
-  // the allocation fails (not enough headroom), fall back to plain decode.
-  const size_t trunk_hc_dim =
-      mtp_loaded_
-          ? static_cast<size_t>(mtp_.cfg.hc) * static_cast<size_t>(mtp_.cfg.hs)
-          : 0;
-  const bool stream_mtp = mtp_loaded_ && !structured && explicit_slots;
-  int32_t stream_d0 = -1;
-  bool stream_draft_ready = false;
-  if (mtp_loaded_ && !structured) {
-    // Advisory preflight for optional MTP buffers. Unknown or insufficient
-    // global MemAvailable declines the allocation. This is not a reservation:
-    // concurrent allocations and driver accounting can still exhaust RAM.
-    const size_t trunk_bytes =
-        static_cast<size_t>(stream_mtp ? std::min(T, chunk) : T) *
-        trunk_hc_dim * 2;
-    const size_t draft_logits_bytes =
-        static_cast<size_t>(max_prefill_) *
-        static_cast<size_t>(model_.Get().cfg.vocab) * 2;
-    const size_t kPreflightMargin = 2u * 1024u * 1024u * 1024u;  // 2 GB
-    const size_t need = trunk_bytes + draft_logits_bytes + kPreflightMargin;
-    const auto memory = runtime::ReadSystemMemory();
-    if (!memory.CanAllocate(need)) {
-      std::fprintf(
-          stderr,
-          "[q4t] MTP memory preflight: valid=%d MemAvailable=%.2f GB "
-          "need=%.2f GB (trunk T=%d); declining optional allocation\n",
-          memory.valid, memory.available_bytes / 1e9, need / 1e9, T);
-      d_trunk_full = nullptr;
-    } else {
-      const auto allocated = allocate_buffer(d_trunk_full, trunk_bytes,
-                                              "request.prompt_trunk");
-      if (!allocated.ok() && !allocated.exhausted()) {
-        allocation_error(allocated);
-        return;
-      }
-      if (allocated.exhausted())
-        std::fprintf(stderr,
-                     "[q4t] trunk allocation exhausted for T=%d; plain decode\n",
-                     T);
-    }
-  }
-  if (stream_mtp) {
-    const auto allocated = d_trunk_full
-        ? allocate_buffer(d_mtp_g, trunk_hc_dim * 2, "request.stream_draft_trunk")
-        : DeviceMemoryResult{DeviceMemoryState::kExhausted};
-    if (!allocated.ok()) {
-      allocation_error(allocated);
-      return;
-    }
-  }
-  std::vector<uint16_t> h_logits(static_cast<size_t>(vocab));
-
-  auto argmax = [&](const uint16_t* h) {
-    int best = 0;
-    float best_v = -1e30f;
-    for (int v = 0; v < vocab; ++v) {
-      const uint32_t bits = static_cast<uint32_t>(h[v]) << 16;
-      float f;
-      std::memcpy(&f, &bits, sizeof(f));
-      if (f > best_v) {
-        best_v = f;
-        best = v;
-      }
-    }
-    return best;
-  };
-
-  // Capture only the selected request's execution, after tokenization and
-  // allocation. The observer is disabled unless explicitly requested.
-  q4t::diagnostic::ProfileCapture execution_capture(T);
-  diagnostic.Stage("prefill");
-  // 2. Prefill (PD-ready 阶段边界 API: Begin -> Prefill). The forward uses the
-  // shared per-forward scratch, so it is serialized behind model_mu_; the
-  // per-sequence recurrent state is isolated by seq_id. All GPU work uses the
-  // default stream, so the forward is ordered with the D2H below.
-  model::ModelSequence seq;
-  ScopeExit sequence_cleanup([&] {
-    if (std::uncaught_exceptions()) {
-      if (seq.HasPending()) {
-        const std::lock_guard<std::mutex> lock(model_mu_);
-        AbortBackendExecution();
-        seq.FailAfterDrain();
-      }
-      seq.Fail();
-    }
-    model::ModelEndSequence(&seq);
-  });
-  const model::VisionFeatures* vptr =
-      (vfeats.num_tokens > 0) ? &vfeats : nullptr;
-  // Batched prefill (plain path): non-vision, non-chunked, non-MTP requests
-  // pack their prefill with other concurrent requests into ONE
-  // ModelPrefillBatch (the dense weights read once for the whole batch instead
-  // of per request). MTP needs the prefill trunk_out (draft-extend) and
-  // vision/chunked need the per-request path, so those still prefill inline.
-  const bool batched_prefill =
-      scheduler_active_ && !mtp_loaded_ && !chunked && vptr == nullptr &&
-      getenv("Q4T_NO_BATCH_PREFILL") == nullptr;
-  const bool scheduled_chunk_prefill =
-      scheduler_active_ && !mtp_loaded_ && chunked && vptr == nullptr;
-  bool prefill_cancelled = false;
-  if (session.cache || !prefix_scope.empty()) {
-    const auto allocated = allocate_buffer(d_session_trunk, trunk_hc_dim * 2,
-                                            "request.session_trunk");
-    if (!allocated.ok()) {
-      allocation_error(allocated);
-      return;
-    }
-  }
-  int restored_prefix = 0;
-  bool session_gpu_error = false;
-  const auto session_copy = [&](void* host, void* state, size_t bytes,
-                                 bool restore) -> Status {
-    const auto error = restore
-        ? cudaMemcpy(state, host, bytes, cudaMemcpyHostToDevice)
-        : cudaMemcpy(host, state, bytes, cudaMemcpyDeviceToHost);
-    if (error == cudaSuccess) return Status();
-    session_gpu_error = true;
-    gpu_healthy_.store(false, std::memory_order_relaxed);
-    return Status::Fail(std::string("session CUDA copy: ") +
-                        cudaGetErrorString(error));
-  };
-  if (stream_mtp) {
-    q4t::diagnostic::Batch execution_batch(request_id.c_str(), seq_id, 0, T);
-    q4t::diagnostic::Scope execution_prefill("handler_stream_mtp_prefill", 0,
-                                             T);
-    auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
-    OnException backend_failure([&] { AbortBackendExecution(); });
-    s = ExecutionStatus();
-    if (s.ok())
-      s = model::ModelBeginSequence(model_.Get(), &seq, nullptr, seq_id);
-    if (s.ok()) s = mtp::MtpResetState(mtp_, nullptr, seq_id);
-    if (s.ok() && (session.cache || !prefix_scope.empty())) {
-      const auto begin = std::chrono::steady_clock::now();
-      int prefix = session.cache ? session_cache_.Match(session.key, ids) : 0;
-      SessionCache* selected_cache = &session_cache_;
-      std::string selected_key = session.key;
-      SessionLease shared_read;
-      if (!prefix_scope.empty()) {
-        const int shared = prefix_cache_.MatchShared(prefix_scope, ids,
-                                                       &shared_read.key);
-        if (shared > 0) shared_read.cache = &prefix_cache_;
-        if (shared > prefix) {
-          prefix = shared;
-          selected_cache = &prefix_cache_;
-          selected_key = shared_read.key;
-        }
-      }
-      Status restored;
-      if (prefix > 0) {
-        std::vector<SessionRange> ranges;
-        restored = SessionStateRanges(model_.Get(), mtp_, seq_id, prefix,
-                                        d_mtp_g, d_session_trunk, &ranges);
-        int32_t cached_pending = -1;
-        if (restored.ok())
-          restored = selected_cache->Restore(selected_key, ranges, session_copy,
-                                               cancelled, &stream_d0,
-                                               &cached_pending);
-        if (restored.ok() && cached_pending != ids[prefix]) {
-          // The draft is shifted by one token. A tool/message boundary may
-          // replace its final predicted token; target state remains valid.
-          const int position = prefix - 1;
-          restored = mtp::MtpDraftExtend(mtp_, &ids[prefix], d_session_trunk,
-                                          &position, 1, nullptr, nullptr,
-                                          nullptr, seq_id, false);
-          restored =
-              FinishHostReadback(cudaSuccess, &gpu_healthy_, {}, restored,
-                                 nullptr, &metrics_.execution_steps_total);
-          if (!restored.ok()) session_gpu_error = true;
-        }
-        if (restored.ok()) {
-          seq.history.assign(ids.begin(), ids.begin() + prefix);
-          seq.position = prefix;
-          model_.Get().rope_delta[seq_id] = 0;
-          restored_prefix = prefix;
-        } else if (session_gpu_error) {
-          s = restored;
-        } else {
-          // An incomplete read may have written part of the destination.
-          // Reset both models before a miss is allowed to fall back.
-          s = model::ModelBeginSequence(model_.Get(), &seq, nullptr, seq_id);
-          if (s.ok()) s = mtp::MtpResetState(mtp_, nullptr, seq_id);
-        }
-      }
-      std::fprintf(stderr,
-                   "[session-cache] request=%s event=restore prefix=%d "
-                   "ms=%.3f error=%s source=%s\n", request_id.c_str(), restored_prefix,
-                   std::chrono::duration<double, std::milli>(
-                       std::chrono::steady_clock::now() - begin).count(),
-                   restored.ok() ? "none" : restored.message().c_str(),
-                   selected_cache == &prefix_cache_ ? "shared" : "session");
-    }
-    std::vector<int32_t> shifted;
-    std::vector<int> positions;
-    int chunks = 0;
-    while (s.ok() && seq.position < T) {
-      if (cancelled()) {
-        prefill_cancelled = true;
-        break;
-      }
-      const int base = seq.position;
-      int count = std::min(chunk, T - base);
-      if (prefix_write_tokens > base)
-        count = std::min(count, prefix_write_tokens - base);
-      const int boundary = base + count;
-      const bool last = boundary == T;
-      SessionLease* shared_write = nullptr;
-      if (!last && prefix_write_tokens > 0 &&
-          boundary == prefix_write_tokens) {
-        const auto digest = trace::Sha256({
-            reinterpret_cast<const uint8_t*>(ids.data()),
-            static_cast<size_t>(boundary) * sizeof(int32_t)});
-        const std::string snapshot_key = prefix_scope + ':' +
-                                        trace::HexDigest(digest);
-        if (prefix_cache_.AcquireNew(snapshot_key)) {
-          auto lease = std::make_unique<SessionLease>();
-          lease->cache = &prefix_cache_;
-          lease->key = snapshot_key;
-          shared_write = lease.get();
-          shared_writes.push_back(std::move(lease));
-        }
-      }
-      if (router_trace_)
-        router_trace_->BeginForward(trace::RouteStage::kPrefill, base, count);
-      s = model::ModelPrefillTextChunk(
-          model_.Get(), &seq, ids.data(), T, count,
-          last ? d_prefill_logits_ : nullptr, nullptr, d_trunk_full,
-          model::LogitsRows::kLastRow, model::SequenceCompletion::kDeferred);
-      cudaError_t copy_error = cudaSuccess;
-      if (s.ok() && last)
-        copy_error = cudaMemcpyAsync(h_logits.data(), d_prefill_logits_,
-                                     static_cast<size_t>(vocab) * 2,
-                                     cudaMemcpyDeviceToHost, nullptr);
-      model::ModelSequence* sequence = &seq;
-      s = FinishHostReadback(copy_error, &gpu_healthy_, {&sequence, 1}, s,
-                             router_trace_.get(),
-                             &metrics_.execution_steps_total);
-      if (!s.ok()) break;
-      shifted.resize(count);
-      positions.resize(count);
-      for (int i = 0; i < count; ++i) {
-        positions[i] = base + i;
-        shifted[i] =
-            base + i + 1 < T ? ids[base + i + 1] : argmax(h_logits.data());
-      }
-      s = mtp::MtpDraftExtend(mtp_, shifted.data(), d_trunk_full,
-                              positions.data(), count, &stream_d0, d_mtp_g,
-                              nullptr, seq_id, last, shared_write != nullptr);
-      // The target chunk was committed above. Drain a failed draft submission
-      // before releasing this request's storage or giving scratch to a peer.
-      s = FinishHostReadback(cudaSuccess, &gpu_healthy_, {}, s, nullptr,
-                             &metrics_.execution_steps_total);
-      if (s.ok() && (last || shared_write) && d_session_trunk) {
-        const auto error = cudaMemcpy(
-            d_session_trunk,
-            d_trunk_full + static_cast<size_t>(count - 1) * trunk_hc_dim,
-            static_cast<size_t>(trunk_hc_dim) * 2, cudaMemcpyDeviceToDevice);
-        if (error != cudaSuccess) {
-          gpu_healthy_.store(false, std::memory_order_relaxed);
-          s = Status::Fail("session prefill final trunk copy failed");
-        }
-      }
-      if (s.ok() && shared_write) {
-        const auto save_begin = std::chrono::steady_clock::now();
-        SessionSaveTiming timing(request_id.c_str(), "shared");
-        std::vector<SessionRange> ranges;
-        Status saved;
-        {
-          SessionSaveTiming::Scope span(&timing, SessionSaveTiming::kRanges);
-          saved = SessionStateRanges(model_.Get(), mtp_, seq_id, boundary,
-                                      d_mtp_g, d_session_trunk, &ranges);
-        }
-        if (saved.ok())
-          saved = prefix_cache_.Save(shared_write->key,
-              {ids.data(), static_cast<size_t>(boundary + 1)}, ranges,
-              session_copy, cancelled, -1, &timing);
-        timing.Report(saved.ok());
-        if (session_gpu_error) s = saved;
-        std::fprintf(stderr,
-                     "[prefix-cache] request=%s event=save prefix=%d "
-                     "bytes=%zu ms=%.3f error=%s\n", request_id.c_str(),
-                     boundary, prefix_cache_.Bytes(),
-                     std::chrono::duration<double, std::milli>(
-                         std::chrono::steady_clock::now() - save_begin).count(),
-                     saved.ok() ? "none" : saved.message().c_str());
-      }
-      ++chunks;
-    }
-    if (s.ok() && !prefill_cancelled) {
-      s = model::ModelReserveVerifyCheckpoints(model_.Get(), mtp_k_);
-      if (s.ok()) s = mtp::MtpReserveScratch(mtp_, mtp_k_ + 1);
-      stream_draft_ready = s.ok();
-    }
-    if (!s.ok()) {
-      s = FinishHostReadback(cudaSuccess, &gpu_healthy_, {}, s, nullptr);
-      seq.Fail();
-    }
-    std::fprintf(stderr,
-                 "[mtp-prefill] request=%s streamed=1 chunks=%d "
-                 "trunk_bytes=%zu ready=%d\n",
-                 request_id.c_str(), chunks,
-                 static_cast<size_t>(std::min(T, chunk)) * trunk_hc_dim * 2,
-                 stream_draft_ready);
-  } else if (scheduled_chunk_prefill) {
-    ChunkPrefillReq pr;
-    pr.fd = fd;
-    pr.control = control.get();
-    pr.seq = &seq;
-    pr.seq_id = seq_id;
-    pr.ids = ids.data();
-    pr.len = T;
-    pr.h_logits = h_logits.data();
-    RequestDiagnostics::Scope wait(diagnostic, Wait::kScheduler);
-    SubmitSchedulerRequestAndWait(
-        sched_mu_, scheduler_stop_, sched_cv_, pr.cv,
-        [&] { chunk_prefill_pending_.push_back(&pr); },
-        [&] { return pr.done; });
-    prefill_cancelled = pr.cancelled;
-    s = pr.ok ? Status()
-              : Status::Fail("scheduled chunk prefill failed" +
-                             (pr.err.empty()
-                                  ? std::string()
-                                  : std::string(": ") + pr.err));
-  } else if (batched_prefill) {
-    PrefillReq pr;
-    pr.control = control.get();
-    pr.fd = fd;
-    pr.seq = &seq;
-    pr.seq_id = seq_id;
-    pr.ids = ids.data();
-    pr.len = T;
-    pr.h_logits = h_logits.data();
-    RequestDiagnostics::Scope wait(diagnostic, Wait::kScheduler);
-    SubmitSchedulerRequestAndWait(
-        sched_mu_, scheduler_stop_, sched_cv_, pr.cv,
-        [&] {
-          pr.pending = true;
-          prefill_pending_.push_back(&pr);
-        },
-        [&] { return pr.done; });
-    s = pr.ok ? Status() : Status::Fail("batched prefill failed");
-  } else {
-    // The request ID outlives this batch. Flush only after the existing final
-    // readback boundary; do not log between asynchronous chunk submissions.
-    q4t::diagnostic::Batch execution_batch(request_id.c_str(), seq_id, 0, T);
-    q4t::diagnostic::Scope execution_prefill("handler_prefill", 0, T);
-    auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
-    OnException backend_failure([&] { AbortBackendExecution(); });
-    {
-      q4t::diagnostic::Scope execution_begin("target_begin_sequence", 0, T);
-      s = ExecutionStatus();
-      if (s.ok())
-        s = cancelled() ? Status::Fail("request cancelled")
-                        : model::ModelBeginSequence(model_.Get(), &seq, nullptr,
-                                                    seq_id);
-    }
-    int prefill_base = 0;
-    int prefill_tokens = std::min(chunk, T);
-    if (s.ok()) {
-      if (!chunked) {
-        if (router_trace_) router_trace_->BeginForward(
-            trace::RouteStage::kPrefill, 0, T);
-        // Keep full trunk output for MTP, but only the final logits row.
-        // Deferred completion does not make this a pure CPU submission span:
-        // model internals may still wait for metadata, PLE or MoE readbacks.
-        q4t::diagnostic::Scope execution_submit("target_prefill_call", 0, T);
-        s = model::ModelPrefill(model_.Get(), &seq, ids.data(), T, d_prefill_logits_,
-                                nullptr, mtp_loaded_ ? d_trunk_full : nullptr,
-                                vptr, seq_id, model::LogitsRows::kLastRow,
-                                model::SequenceCompletion::kDeferred);
-      } else {
-        // Text chunks share the sequence's slot, position and PLE history.
-        // Intermediate chunks only produce trunk/state; the final chunk
-        // writes one logits row at the start of the shared buffer.
-        while (s.ok() && seq.position < T) {
-          if (cancelled()) {
-            prefill_cancelled = true;
-            s = Status::Fail("client disconnected during prefill");
-            break;
-          }
-          const int base = seq.position;
-          const int c = std::min(chunk, T - base);
-          const bool last = (base + c == T);
-          prefill_base = base;
-          prefill_tokens = c;
-          q4t::diagnostic::Scope execution_chunk("target_prefill_chunk", base,
-                                                c);
-          if (router_trace_) router_trace_->BeginForward(
-              trace::RouteStage::kPrefill, base, c);
-          {
-            q4t::diagnostic::Scope execution_submit("target_prefill_call", base,
-                                                   c);
-            s = model::ModelPrefillTextChunk(
-                model_.Get(), &seq, ids.data(), T, c,
-                last ? d_prefill_logits_ : nullptr, nullptr,
-                d_trunk_full
-                    ? d_trunk_full + static_cast<size_t>(base) * trunk_hc_dim
-                    : nullptr, model::LogitsRows::kLastRow,
-                model::SequenceCompletion::kDeferred);
-          }
-          if (!last) {
-            model::ModelSequence* sequence = &seq;
-            {
-              // This includes the existing stream wait and sequence commit.
-              q4t::diagnostic::Scope execution_wait(
-                  "prefill_chunk_readback_wait_commit", base, c);
-              s = FinishHostReadback(cudaSuccess, &gpu_healthy_, {&sequence, 1},
-                                     s, router_trace_.get(),
-                                     &metrics_.execution_steps_total);
-            }
-            // Diagnostic: memory trajectory across chunked prefill (the
-            // 204800-tier OOM investigation). Never touches compute.
-            {
-              q4t::diagnostic::Scope execution_memory(
-                  "prefill_chunk_memory_snapshot", base, c);
-              LogMemorySnapshot("prefill_chunk",
-                                "seq" + std::to_string(seq_id) +
-                                    "@pos" + std::to_string(seq.position));
-            }
-          }
-          if (last || !s.ok()) break;
-        }
-      }
-    }
-    cudaError_t copy_error = cudaSuccess;
-    if (s.ok()) {
-      q4t::diagnostic::Scope execution_copy(
-          "prefill_final_d2h_submit", prefill_base, prefill_tokens);
-      copy_error = cudaMemcpyAsync(
-          h_logits.data(), d_prefill_logits_, static_cast<size_t>(vocab) * 2,
-          cudaMemcpyDeviceToHost, nullptr);
-    }
-    model::ModelSequence* sequence = &seq;
-    // Drain and commit while holding model_mu_, also on failed submission.
-    const auto pending = seq.HasPending()
-        ? std::span<model::ModelSequence* const>(&sequence, 1)
-        : std::span<model::ModelSequence* const>();
-    {
-      q4t::diagnostic::Scope execution_wait(
-          "prefill_final_readback_wait_commit", prefill_base, prefill_tokens);
-      s = FinishHostReadback(
-          copy_error, &gpu_healthy_, pending, s, router_trace_.get(),
-          pending.empty() ? nullptr : &metrics_.execution_steps_total);
-    }
-    if (!s.ok()) seq.Fail();
-  }
-  if ((prefill_cancelled || cancelled()) &&
-      gpu_healthy_.load(std::memory_order_relaxed)) {
-    // Scheduler chunks have drained before notification; the inline path
-    // drains above. The request thread still owns fd and all request buffers.
-    std::fprintf(stderr, "[q4t] prefill cancelled seq=%d position=%d total=%d\n",
-                 seq_id, seq.position, T);
-    count_abort();
-    model::ModelEndSequence(&seq);
-    cleanup();
-    send_cancel_error("request cancelled during prefill");
-    return;
-  }
-  if (!s.ok()) {
-    model::ModelEndSequence(&seq);
-    cleanup();
-    if (RejectUnhealthy(fd)) return;
-    SendError(fd, 500, "prefill failed: " + s.message());
-    return;
-  }
-
-  diagnostic.Stage("decode");
-  // 3. Decode loop (greedy).
   bool client_disconnected = false;
   const auto write_stream = [&](const std::string& data) {
     if (client_disconnected) return false;
@@ -1233,219 +362,1929 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     count_abort();
     return false;
   };
-  detail::Utf8Stream utf8;
-  Status response_status;
-  bool first_delta_sent = false;
-  const auto write_deltas = [&](const std::vector<ResponseDelta>& deltas) {
-    for (const auto& delta : deltas) {
-      detail::ServeFaultPoint("handler.before_content");
-      if (!write_stream(detail::SseDeltaChunk(id, model_field, delta.ToJson(),
-                                              "", 0, created, include_usage)))
-        return false;
-      if (!first_delta_sent) {
-        first_delta_sent = true;
-        metrics_.ttft_seconds.Observe(std::chrono::duration<double>(
-            std::chrono::steady_clock::now() - t_arrive).count());
-      }
-    }
-    return true;
-  };
-  const auto write_content = [&](const std::string& piece) {
-    if (!response_status) return false;
-    std::vector<ResponseDelta> deltas;
-    response_status = response_parser.Append(piece, &deltas);
-    return response_status.ok() && (!stream || write_deltas(deltas));
-  };
-  // Budget state always consumes raw token bytes, independently of transport
-  // and UTF-8 buffering. Output parsing retains its existing terminal checks.
-  const auto consume_token = [&](int32_t token) {
-    if (!stream && !thinking_budget.Enabled() && !text_stop.Enabled())
-      return true;
-    std::string piece;
-    {
-      auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
-      response_status =
-          tok_->Decode({static_cast<uint32_t>(token)}, true, &piece);
-    }
-    if (response_status && thinking_budget.Enabled())
-      response_status =
-          thinking_budget.Observe(token, piece, is_stop_token(token));
-    if (!response_status) return false;
-    if (stream || text_stop.Enabled()) {
-      if (!write_content(text_stop.Append(utf8.Append(piece)))) return false;
-    }
-    return !text_stop.Matched();
-  };
 
-  std::vector<int32_t> generated;
-  int next_token = -1;
-  std::string finish_reason = "stop";
-  bool generation_failed = false;
-  int stop_mtp_steps = 0;
-  int stop_mtp_tokens = 0;
-  int stop_mtp_discarded = 0;
-  int budget_mtp_steps = 0;
-  int budget_mtp_tokens = 0;
-  bool budget_mtp_fallback = false;
-
-  const auto select_token = [&](const uint16_t* logits) {
-    const auto forced = thinking_budget.ForcedToken();
-    if (!structured) {
-      if (!thinking_budget.Enabled() ||
-          thinking_budget.Consumed() < reasoning_options.token_budget)
-        return argmax(logits);
-      // The remaining plain tail has per-request selection constraints. Its
-      // logits belong to the state *before* this next token is consumed.
-      int32_t best_token = -1;
-      float best = -std::numeric_limits<float>::infinity();
-      for (int32_t token = 0; token < vocab; ++token) {
-        if (forced >= 0 && token != forced) continue;
-        const uint32_t bits = static_cast<uint32_t>(logits[token]) << 16;
-        float value;
-        std::memcpy(&value, &bits, sizeof(value));
-        if (!std::isfinite(value) || value <= best) continue;
-        if (forced < 0 && !is_stop_token(token)) {
-          if (static_cast<uint32_t>(token) >= tok_->VocabSize()) continue;
-          std::string piece;
-          {
-            auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
-            response_status =
-                tok_->Decode({static_cast<uint32_t>(token)}, true, &piece);
-          }
-          if (!response_status) return -1;
-          if (!thinking_budget.Allows(piece)) continue;
-        }
-        best_token = token;
-        best = value;
-      }
-      if (best_token < 0)
-        response_status =
-            Status::Fail("no finite thinking-budget-allowed token");
-      return best_token;
-    }
-    int32_t token = -1;
-    response_status = structured->Select({logits, static_cast<size_t>(vocab)},
-                                         &token, forced);
-    return token;
-  };
-
-  // Every prefill path reads its selected final row under model_mu_ and
-  // checks stream completion before publishing h_logits to this thread.
-  next_token = select_token(h_logits.data());
-  metrics_.target_ready_seconds.Observe(
-      std::chrono::duration<double>(std::chrono::steady_clock::now() - t_arrive)
-          .count());
-  err_guard.ok = true;  // generation has started; not a pre-generation error
-
-  // MTP init (mirrors the CLI --mtp path): fresh draft KV, bonus token b =
-  // t_P (the first decode token), draft-extend over the prompt to build the
-  // draft KV[0..P-1] and seed the first speculative step (d0 + g). On any
-  // failure fall back to plain decode (the main seq is still usable).
-  //
-  // Stage 2c (4b): the MTP path is per-sequence safe AND batched. The draft
-  // KV is pooled per seq_id (mcfg.max_seq, Stage 1) and each request owns a
-  // per-request rolling trunk (d_mtp_g). MTP init (per-seq reset + draft
-  // extend) runs on this thread under model_mu_; the speculative STEPS are
-  // registered with the central scheduler, which batches all concurrent MTP
-  // requests into ONE MtpSpeculativeStepMulti (batched draft loop +
-  // ModelVerifyMulti + batched extend, weights read once) — the same code path
-  // a single MTP request takes (B=1). This thread advances the main seq over
-  // the accepted prefix (the multi step does not touch seqs[b]).
-  // MTP is enabled for BOTH one-shot and chunked prefill, as long as the
-  // full-prompt trunk buffer was allocated (d_trunk_full != nullptr). The
-  // chunked path accumulates the trunk across prefill chunks and runs the
-  // draft-extend in chunks (MtpDraftExtend's chunked path). The draft
-  // KV/indexer is allocated at MTP load time (not per-request), so the only
-  // per-request cost is the trunk buffer; if its allocation failed, d_trunk_full
-  // is null and we fall back to plain decode. MTP is precision-safe: the main
-  // model verifies every draft token under the documented T>1 near-tie
-  // contract; it need not be bit-identical to the T=1 arithmetic path.
-  bool use_mtp = mtp_loaded_ && d_trunk_full != nullptr &&
-                 thinking_budget.CanSpeculate(mtp_k_ + 1);
-  int32_t mtp_b = stream_draft_ready ? next_token : -1;
-  int32_t mtp_d0 = stream_draft_ready ? stream_d0 : -1;
-  if (use_mtp && !stream_mtp) {
-    const auto allocated = allocate_buffer(d_mtp_g,
-        static_cast<size_t>(mtp_.cfg.hc) * mtp_.cfg.hs * 2,
-        "request.draft_trunk");
-    if (!allocated.ok() && !allocated.exhausted()) {
-      allocation_error(allocated);
+  for (int choice_index = 0; choice_index < sampling.choices; ++choice_index) {
+    err_guard.ok = false;
+    if (RejectUnhealthy(fd)) return;
+    if (!CheckMemoryAdmission(fd, MemoryCheckpoint::kPrepare)) return;
+    std::fprintf(
+        stderr,
+        "[sampling] request=%s choice=%d/%d temperature=%.17g top_p=%.17g "
+        "logprobs=%d path=%s\n",
+        request_id.c_str(), choice_index, sampling.choices,
+        sampling.temperature, sampling.top_p, sampling.logprobs,
+        plain_greedy ? "greedy" : "target_logits");
+    TextStopStream text_stop(request_plan.stops);
+    ChatResponseParser response_parser;
+    s = response_parser.Init(
+        req, prompt,
+        sampling.choices == 1
+            ? request_id
+            : request_id + "_choice_" + std::to_string(choice_index),
+        !stream);
+    if (!s.ok()) {
+      SendError(fd, 400, s.message());
       return;
     }
-    if (allocated.exhausted()) {
-      std::fprintf(stderr, "[q4t] MTP trunk allocation exhausted; plain decode\n");
-      use_mtp = false;
+    ReasoningOptions reasoning_options;
+    s = ParseReasoningOptions(req, &reasoning_options);
+    ThinkingBudget thinking_budget;
+    const auto* request_tools = req.GetArray("tools");
+    if (s)
+      s = thinking_budget.Init(
+          reasoning_options.token_budget, prompt, constraints.json_output,
+          (request_tools && !request_tools->array.empty()) ||
+              constraints.choice == OutputConstraints::ToolChoice::kNone);
+    if (s && thinking_budget.Enabled()) {
+      auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer, cancelled);
+      if (!lock.owns_lock()) {
+        count_abort();
+        send_cancel_error("request cancelled waiting for thinking tokenizer");
+        return;
+      }
+      const auto encode = [&](std::string_view text,
+                              std::vector<int32_t>* out) {
+        std::vector<uint32_t> ids;
+        auto status = tok_->Encode(text, &ids, {.cancelled = cancelled});
+        out->assign(ids.begin(), ids.end());
+        return status;
+      };
+      const auto decode = [&](int32_t token, std::string* out) {
+        if (cancelled())
+          return Status::Fail("thinking budget preparation cancelled");
+        return tok_->Decode({static_cast<uint32_t>(token)}, true, out);
+      };
+      s = thinking_budget.PrepareTokens(encode, decode, tok_->VocabSize(),
+                                        stop_token_ids_);
     }
-  }
-  bool mtp_prepare_failed = false;
-  if (use_mtp && !stream_mtp) {
+    if (!s) {
+      if (cancelled()) {
+        count_abort();
+        send_cancel_error("request cancelled during thinking preparation");
+      } else {
+        SendError(fd, 500, s.message(), {}, "thinking_budget_unavailable");
+      }
+      return;
+    }
+
+    TokenSampler sampler;
+    if (!plain_greedy) {
+      s = sampler.Init(sampling, model_.Get().cfg.vocab, entropy, choice_index,
+                       planning_config.token_vocab);
+      if (!s) {
+        SendError(fd, 400, s.message(), {}, "invalid_sampling_parameters");
+        return;
+      }
+    }
+    std::vector<uint8_t> sampling_allowed;
+    if (!plain_greedy) {
+      sampling_allowed.assign(model_.Get().cfg.vocab, 0);
+      std::fill_n(sampling_allowed.begin(), planning_config.token_vocab, 1);
+      // Added non-emitting control tokens cannot become invisible text. EOS
+      // remains a real selectable stop token; grammar may further restrict it.
+      for (int token = static_cast<int>(tok_->BaseVocabSize());
+           token < planning_config.token_vocab; ++token) {
+        std::string piece;
+        s = tok_->Decode({static_cast<uint32_t>(token)}, true, &piece);
+        if (!s) {
+          SendError(fd, 500, s.message(), {}, "sampling_vocabulary_failed");
+          return;
+        }
+        if (piece.empty() &&
+            std::find(stop_token_ids_.begin(), stop_token_ids_.end(), token) ==
+                stop_token_ids_.end())
+          sampling_allowed[token] = 0;
+      }
+    }
+    SampledToken selected_sample;
+    TokenLogprobs token_logprobs(!stream);
+    const auto start_stream = [&] {
+      if (!stream) return true;
+      if (cancelled()) {
+        count_abort();
+        send_cancel_error("request cancelled before stream");
+        return false;
+      }
+      const detail::WriteOptions options{.control = control.get()};
+      if ((!headers_started &&
+           !detail::BeginStreamingResponse(fd, response_state, options)) ||
+          !WriteAll(fd,
+                    SseChunk(id, model_field, "assistant", "", "", choice_index,
+                             created, include_usage),
+                    options)) {
+        control->Cancel(RequestControl::State::kDisconnect);
+        count_abort();
+        return false;
+      }
+      if (!headers_started && http) http->StartHeartbeats(control);
+      headers_started = true;
+      return true;
+    };
+
+    // The outer lease outlives this grammar, including exception unwinding.
+    std::unique_ptr<StructuredDecoder> structured;
+    if (constraints.active) {
+      if (!CheckMemoryAdmission(fd, MemoryCheckpoint::kPrepare)) return;
+      if (cancelled()) {
+        count_abort();
+        send_cancel_error("request cancelled before structured admission");
+        return;
+      }
+      diagnostic.Stage("structured_admission");
+      const auto admission = structured_lease.Acquire(cancelled);
+      if (admission == StructuredRequestLease::Result::kCancelled) {
+        count_abort();
+        send_cancel_error("request cancelled during structured handoff");
+        return;
+      }
+      if (admission == StructuredRequestLease::Result::kBusy) {
+        metrics_.structured_rejected.fetch_add(1, std::memory_order_relaxed);
+        SendError(fd, 503, "structured request capacity exhausted", {},
+                  "structured_capacity_exhausted");
+        return;
+      }
+      if (detail::GrammarCleanupPending()) {
+        metrics_.structured_rejected.fetch_add(1, std::memory_order_relaxed);
+        SendError(fd, 503,
+                  "grammar worker cleanup still owns structured capacity", {},
+                  "structured_capacity_exhausted");
+        return;
+      }
+      if (!start_stream()) return;
+      const auto prepare_start = std::chrono::steady_clock::now();
+      metrics_.structured_preparing.fetch_add(1, std::memory_order_relaxed);
+      ScopeExit prepared([&] {
+        metrics_.structured_vocab_bytes.store(0, std::memory_order_relaxed);
+        metrics_.structured_preparing.fetch_sub(1, std::memory_order_relaxed);
+        metrics_.structured_prepare_seconds.Observe(
+            std::chrono::duration<double>(std::chrono::steady_clock::now() -
+                                          prepare_start)
+                .count());
+      });
+      diagnostic.Stage("grammar_compile");
+      // Decode is immutable. Use its exact raw bytes, including partial UTF-8
+      // token pieces; never normalize or re-encode a token for the mask.
+      const auto vocab_size = tok_->VocabSize();
+      if (vocab_size <= 0 || vocab_size > 300000) {
+        metrics_.structured_prepare_failed.fetch_add(1);
+        SendError(fd, 400, "invalid structured vocabulary size", {},
+                  "constraint_compile_failed");
+        return;
+      }
+      std::vector<std::string> vocabulary(vocab_size);
+      VocabularyStorageBudget storage;
+      if (!storage.Charge(vocabulary.capacity() * sizeof(std::string))) {
+        metrics_.structured_prepare_failed.fetch_add(1);
+        SendError(fd, 400, "structured vocabulary storage budget exceeded", {},
+                  "constraint_compile_failed");
+        return;
+      }
+      std::vector<uint32_t> one(1);
+      for (uint32_t token = 0; token < vocabulary.size(); ++token) {
+        if (token % 256 == 0 && cancelled()) {
+          count_abort();
+          send_cancel_error("request cancelled before grammar compilation");
+          return;
+        }
+        one[0] = token;
+        s = tok_->Decode(one, true, &vocabulary[token]);
+        if (!s) break;
+        if (!storage.Charge(vocabulary[token].capacity() + 1)) {
+          s = Status::Fail("structured vocabulary storage exceeds 32 MiB");
+          break;
+        }
+        if (token % 256 == 0)
+          metrics_.structured_vocab_bytes.store(storage.Used());
+      }
+      GrammarControl grammar_control;
+      grammar_control.counters = metrics_.structured_workers;
+      grammar_control.cancelled = cancelled;
+      grammar_control.compile_deadline =
+          prepare_start +
+          std::chrono::milliseconds(kGrammarCompileMilliseconds);
+      grammar_control.compile_started = [&] {
+        metrics_.structured_compiles_started.fetch_add(1);
+      };
+      grammar_control.worker_ready = [&] {
+        metrics_.structured_workers_ready.fetch_add(1);
+      };
+      grammar_control.worker_finished = [](const GrammarWorkerReport& report) {
+        std::fprintf(
+            stderr,
+            "[q4t] grammar worker reaped=%d lifetime_max_rss_bytes=%lu "
+            "reported_post_exec_rss_bytes=%lu "
+            "wait_status=%d\n",
+            report.reaped, report.max_rss_bytes, report.reported_rss_bytes,
+            report.exit_status);
+      };
+      GrammarFailure compile_failure = GrammarFailure::kNone;
+      if (s)
+        s = StructuredDecoder::Create(
+            constraints, vocabulary, model_.Get().cfg.vocab, stop_token_ids_,
+            &structured, grammar_control, &compile_failure);
+      if (cancelled()) {
+        count_abort();
+        send_cancel_error("request cancelled during grammar compilation");
+        return;
+      }
+      if (!s) {
+        metrics_.structured_prepare_failed.fetch_add(1,
+                                                     std::memory_order_relaxed);
+        if (compile_failure == GrammarFailure::kTimeout) {
+          metrics_.structured_compile_timeouts.fetch_add(1);
+          SendError(fd, 503, s.message(), {}, "constraint_compile_timeout");
+        } else if (compile_failure == GrammarFailure::kResource) {
+          metrics_.structured_resource_exhausted.fetch_add(1);
+          SendError(fd, 503, s.message(), {}, "constraint_resource_exhausted");
+        } else if (compile_failure == GrammarFailure::kWorker) {
+          SendError(fd, 502, s.message(), {}, "constraint_worker_failed");
+        } else if (compile_failure == GrammarFailure::kUnavailable) {
+          metrics_.structured_rejected.fetch_add(1, std::memory_order_relaxed);
+          SendError(fd, 503, s.message(), {}, "structured_capacity_exhausted");
+        } else {
+          SendError(fd, 400, s.message(), {}, "constraint_compile_failed");
+        }
+        return;
+      }
+    }
+    if (!constraints.active && !start_stream()) return;
+
+    std::vector<int32_t> ids;
+    const bool explicit_slots = !seq_capacities_.empty();
+    if (!prompt_encoded) s = encode_prompt();
+    if (!s) {
+      if (cancelled()) {
+        count_abort();
+        send_cancel_error("request cancelled during encoding");
+      } else {
+        SendError(fd, 400, s.message(), {}, planning_error.code,
+                  planning_error.param);
+      }
+      return;
+    }
+    ids.assign(prompt_u32.begin(), prompt_u32.end());
+    const size_t required_capacity = prompt_budget.required_capacity;
+
+    // B1 multi-request scheduling: each request runs on its own thread. All
+    // GPU work uses the DEFAULT stream (the model's per-forward scratch is a
+    // single shared allocation, and per-sequence state is pooled + isolated by
+    // seq_id), so model forwards are serialized behind model_mu_ for both
+    // scratch safety and GPU-stream ordering. GPU readback completes under
+    // the lock; tokenization and SSE output use the completed host result.
+    diagnostic.Stage("slot_admission");
+    attempted_slot = true;
+    int seq_id;
     {
+      RequestDiagnostics::Scope wait(diagnostic, Wait::kSlot);
+      seq_id = AllocSeqId(control.get(), fd, required_capacity);
+    }
+    if (seq_id == -5 || seq_id == -6) {
+      const auto state =
+          seq_id == -5 ? MemoryState::kLow : MemoryState::kUnavailable;
+      diagnostic.Outcome("error", kMemoryStates[static_cast<size_t>(state)]);
+      RejectMemoryAdmission(fd, state, MemoryCheckpoint::kExecute);
+      return;
+    }
+    if (seq_id == -4) {
+      diagnostic.Outcome("error", "queue_capacity_exhausted");
+      // SendError uses the existing response context: JSON 503 before headers,
+      // one SSE error terminal after headers, never a second HTTP response.
+      SendError(fd, 503, "slot waiting capacity exhausted", {},
+                "queue_capacity_exhausted");
+      return;
+    }
+    if (seq_id == -3) {
+      RejectUnhealthy(fd);
+      return;
+    }
+    if (seq_id == -2) {
+      count_abort();
+      send_cancel_error("request cancelled before admission");
+      return;
+    }
+    if (seq_id < 0) {
+      SendError(fd, 503, "server shutting down");
+      return;
+    }
+    diagnostic.Admitted(seq_id);
+    rate_lease.Start();
+    const int request_capacity = model_.Get().cfg.Capacity(seq_id);
+    if (explicit_slots)
+      std::fprintf(stderr,
+                   "[q4t][slot-admission] request=%s slot=%d capacity=%d "
+                   "required=%zu\n",
+                   request_id.c_str(), seq_id, request_capacity,
+                   required_capacity);
+    diagnostic.Stage("encode");
+    if (choice_index == 0)
+      metrics_.queue_seconds.Observe(
+          std::chrono::duration<double>(std::chrono::steady_clock::now() -
+                                        t_arrive)
+              .count());
+    // Per-request device buffers (freed by `cleanup` on any exit path). Prefill
+    // logits use the shared d_prefill_logits_ (under model_mu_), not a per-
+    // request buffer.
+    uint16_t* d_trunk_full = nullptr;
+    uint16_t* d_vfeats = nullptr;
+    uint16_t* d_session_trunk = nullptr;
+    uint16_t* d_mtp_g =
+        nullptr;  // MTP rolling draft trunk [hc*hs] (Stage 2c:
+                  // per-request, so concurrent MTP requests don't
+                  // share the legacy d_g_/d_g_next_ double buffer)
+    trace::RequestOutcome trace_outcome = trace::RequestOutcome::kFailed;
+    uint64_t trace_output_tokens = 0;
+    bool buffers_ok = true;
+    const auto release_buffer = [&](auto*& pointer, const char* site) {
+      const auto result =
+          detail::ReleaseCudaMemory(pointer, site, request_id.c_str());
+      RecordDeviceMemoryFailure(result, site);
+      buffers_ok = buffers_ok && result.ok();
+      if (!result.ok()) {
+        const std::lock_guard<std::mutex> lock(model_mu_);
+        AbortBackendExecution();
+      }
+    };
+    const auto release_buffers = [&] {
+      release_buffer(d_session_trunk, "request.session_trunk_free");
+      release_buffer(d_trunk_full, "request.prompt_trunk_free");
+      release_buffer(d_vfeats, "request.vision_features_free");
+      release_buffer(d_mtp_g, "request.draft_trunk_free");
+    };
+    const auto allocate_buffer = [&](auto*& pointer, size_t bytes,
+                                     const char* site) {
+      const auto result =
+          detail::AllocateCudaMemory(pointer, bytes, site, request_id.c_str());
+      RecordDeviceMemoryFailure(result, site);
+      if (result.state == DeviceMemoryState::kFailure) {
+        const std::lock_guard<std::mutex> lock(model_mu_);
+        AbortBackendExecution();
+      }
+      return result;
+    };
+    const auto allocation_error = [&](const DeviceMemoryResult& result) {
+      err_guard.ok = false;
+      diagnostic.Outcome("error", result.Reason());
+      SendError(fd, 503,
+                result.quota_exhausted ? "CUDA allocation quota exhausted"
+                : result.exhausted()   ? "device memory exhausted"
+                                     : "device memory failure; restart server",
+                {}, result.exhausted() ? result.Reason() : "gpu_unhealthy");
+    };
+    bool cleaned = false;
+    auto cleanup = [&]() {
+      if (cleaned) return;
+      cleaned = true;
+      release_buffers();
+      if (router_trace_)
+        router_trace_->EndRequest(control->Cancelled()
+                                      ? trace::RequestOutcome::kCancelled
+                                      : trace_outcome,
+                                  trace_output_tokens);
+      FreeSeqId(seq_id);
+      diagnostic.Released();
+    };
+    ScopeExit buffer_cleanup(cleanup);
+    detail::ServeFaultPoint("handler.after_slot");
+
+    if (cancelled()) {
+      count_abort();
+      cleanup();
+      send_cancel_error("request cancelled before encoding");
+      return;
+    }
+
+    // 1b. Multimodal: each <|image_pad|> (image_token_id) / <|video_pad|>
+    // (video_token_id) placeholder expands to the number of merged visual
+    // tokens for its item, and the vision tower's features are injected in
+    // place of those token embeddings (in prompt position order).
+    model::VisionFeatures vfeats;
+    if (!items.empty()) {
+      if (ids.size() >= static_cast<size_t>(request_capacity)) {
+        SendError(fd, 400, "expanded media exceeds assigned context", {},
+                  "context_length_exceeded", "messages");
+        return;
+      }
+      std::vector<int> counts;
+      std::vector<std::array<int, 3>> grids;
+      std::string verr;
+      DeviceMemoryResult vision_memory;
+      // The vision tower uses a shared workspace, so its forward is serialized
+      // behind model_mu_ (the same lock that serializes the main model). The
+      // pipeline runs on the default stream and self-synchronizes internally.
+      {
+        auto lock = diagnostic.Lock(model_mu_, Wait::kModel, cancelled);
+        if (!lock.owns_lock()) {
+          count_abort();
+          send_cancel_error("request cancelled waiting for vision execution");
+          return;
+        }
+        OnException backend_failure([&] { AbortBackendExecution(); });
+        if (RejectUnhealthy(fd)) {
+          // Outer buffer cleanup runs after this model lock is released.
+          return;
+        }
+        if (!RunVisionPipeline(items, media_plan, &d_vfeats, &vfeats.num_tokens,
+                               &counts, &grids, &verr, &vision_memory,
+                               request_id.c_str(), cancelled,
+                               &planning_error)) {
+          if (!vision_memory.ok()) {
+            SendError(fd, 503, "vision device resource failure", {},
+                      vision_memory.Reason());
+          } else if (cancelled()) {
+            count_abort();
+            send_cancel_error("request cancelled during media processing");
+          } else {
+            const bool mismatch = planning_error.code == "media_plan_mismatch";
+            SendError(fd, mismatch ? 500 : 400, verr, {}, planning_error.code,
+                      planning_error.param);
+          }
+          // A failed buffer release may need to reacquire model_mu_ to drain.
+          return;
+        }
+      }
+      vfeats.grids = std::move(grids);
+      vfeats.device = d_vfeats;
+    }
+    const int T = static_cast<int>(ids.size());
+    if (T >= request_capacity) {
+      SendError(fd, 400,
+                "prompt too long for context: " + std::to_string(T) +
+                    " tokens >= " + std::to_string(request_capacity) +
+                    " max_len");
+      cleanup();
+      return;
+    }
+
+    const int vocab = model_.Get().cfg.vocab;
+    const auto is_stop_token = [this](int32_t token) {
+      return std::find(stop_token_ids_.begin(), stop_token_ids_.end(), token) !=
+             stop_token_ids_.end();
+    };
+    // Chunked prefill (262K context, see PHASES.md 262K memory budget): the
+    // forward workspace (d_ws, d_trunk, ...) is sized for max_prefill tokens,
+    // so a prompt longer than max_prefill is run in chunks of max_prefill.
+    // max_prefill is now the CHUNK size, not a prompt cap (the prompt cap is
+    // max_len). Text-only: a vision prompt's special (t,h,w) rope is not
+    // reproducible by the continuation chunks' text rope, so vision + chunked
+    // is rejected (vision prompts are far shorter than 262K in practice).
+    const int chunk = max_prefill_;
+    const bool chunked = T > chunk;
+    if (chunked && vfeats.num_tokens > 0) {
+      SendError(fd, 400,
+                "chunked prefill (prompt > max_prefill) does not support "
+                "vision input");
+      cleanup();
+      return;
+    }
+    if (router_trace_) router_trace_->BeginRequest(ids, request_id);
+    // Chunk 0 is a true prefill (state reset + rope table + PLE history);
+    // chunks 1.. are ModelDecodeBatch calls that CONTINUE from the existing
+    // per-layer state (linear SSM/conv recurrence, full-attention KV/indexer
+    // written at absolute positions) — bit-identical to one big prefill. Only
+    // the LAST chunk's final logits row is needed (first decode token), so
+    // all serve paths explicitly select that row before the output head.
+    // Shared d_prefill_logits_ holds [max_seq, vocab], including inline
+    // fallback, vision and MTP main-model prefill (one row per request).
+    // MTP: prefill trunk_out buffer (pre-final-mixer multi stream [T, hc*hs])
+    // for the draft-extend. Allocated when MTP is loaded, for BOTH one-shot and
+    // chunked prefill. The chunked path accumulates the trunk across chunks
+    // (each chunk's trunk_out writes its [base, base+c) rows); the draft-extend
+    // then runs over the full prompt in chunks (MtpDraftExtend's chunked path).
+    // The draft KV/indexer is allocated at MTP load time (pooled over max_seq,
+    // max_len), so it is NOT a per-request cost -- the only per-request extra
+    // is this trunk buffer (T * hc_dim * 2, ~0.9 GB at 44K, ~5.4 GB at 262K).
+    // If the allocation fails (not enough headroom), fall back to plain decode.
+    const size_t trunk_hc_dim = mtp_loaded_
+                                    ? static_cast<size_t>(mtp_.cfg.hc) *
+                                          static_cast<size_t>(mtp_.cfg.hs)
+                                    : 0;
+    const bool request_mtp = mtp_loaded_ && plain_greedy && !structured;
+    const bool stream_mtp = request_mtp && explicit_slots;
+    int32_t stream_d0 = -1;
+    bool stream_draft_ready = false;
+    if (request_mtp) {
+      // Advisory preflight for optional MTP buffers. Unknown or insufficient
+      // global MemAvailable declines the allocation. This is not a reservation:
+      // concurrent allocations and driver accounting can still exhaust RAM.
+      const size_t trunk_bytes =
+          static_cast<size_t>(stream_mtp ? std::min(T, chunk) : T) *
+          trunk_hc_dim * 2;
+      const size_t draft_logits_bytes =
+          static_cast<size_t>(max_prefill_) *
+          static_cast<size_t>(model_.Get().cfg.vocab) * 2;
+      const size_t kPreflightMargin = 2u * 1024u * 1024u * 1024u;  // 2 GB
+      const size_t need = trunk_bytes + draft_logits_bytes + kPreflightMargin;
+      const auto memory = runtime::ReadSystemMemory();
+      if (!memory.CanAllocate(need)) {
+        std::fprintf(
+            stderr,
+            "[q4t] MTP memory preflight: valid=%d MemAvailable=%.2f GB "
+            "need=%.2f GB (trunk T=%d); declining optional allocation\n",
+            memory.valid, memory.available_bytes / 1e9, need / 1e9, T);
+        d_trunk_full = nullptr;
+      } else {
+        const auto allocated =
+            allocate_buffer(d_trunk_full, trunk_bytes, "request.prompt_trunk");
+        if (!allocated.ok() && !allocated.exhausted()) {
+          allocation_error(allocated);
+          return;
+        }
+        if (allocated.exhausted())
+          std::fprintf(
+              stderr,
+              "[q4t] trunk allocation exhausted for T=%d; plain decode\n", T);
+      }
+    }
+    if (stream_mtp) {
+      const auto allocated =
+          d_trunk_full ? allocate_buffer(d_mtp_g, trunk_hc_dim * 2,
+                                         "request.stream_draft_trunk")
+                       : DeviceMemoryResult{DeviceMemoryState::kExhausted};
+      if (!allocated.ok()) {
+        allocation_error(allocated);
+        return;
+      }
+    }
+    std::vector<uint16_t> h_logits(static_cast<size_t>(vocab));
+
+    auto argmax = [&](const uint16_t* h) {
+      int best = 0;
+      float best_v = -1e30f;
+      for (int v = 0; v < vocab; ++v) {
+        const uint32_t bits = static_cast<uint32_t>(h[v]) << 16;
+        float f;
+        std::memcpy(&f, &bits, sizeof(f));
+        if (f > best_v) {
+          best_v = f;
+          best = v;
+        }
+      }
+      return best;
+    };
+
+    // Capture only the selected request's execution, after tokenization and
+    // allocation. The observer is disabled unless explicitly requested.
+    q4t::diagnostic::ProfileCapture execution_capture(T);
+    diagnostic.Stage("prefill");
+    // 2. Prefill (PD-ready 阶段边界 API: Begin -> Prefill). The forward uses
+    // the shared per-forward scratch, so it is serialized behind model_mu_; the
+    // per-sequence recurrent state is isolated by seq_id. All GPU work uses the
+    // default stream, so the forward is ordered with the D2H below.
+    model::ModelSequence seq;
+    ScopeExit sequence_cleanup([&] {
+      if (std::uncaught_exceptions()) {
+        if (seq.HasPending()) {
+          const std::lock_guard<std::mutex> lock(model_mu_);
+          AbortBackendExecution();
+          seq.FailAfterDrain();
+        }
+        seq.Fail();
+      }
+      model::ModelEndSequence(&seq);
+    });
+    const model::VisionFeatures* vptr =
+        (vfeats.num_tokens > 0) ? &vfeats : nullptr;
+    // Batched prefill (plain path): non-vision, non-chunked, non-MTP requests
+    // pack their prefill with other concurrent requests into ONE
+    // ModelPrefillBatch (the dense weights read once for the whole batch
+    // instead of per request). MTP needs the prefill trunk_out (draft-extend)
+    // and vision/chunked need the per-request path, so those still prefill
+    // inline.
+    const bool batched_prefill = scheduler_active_ && !request_mtp &&
+                                 !chunked && vptr == nullptr &&
+                                 getenv("Q4T_NO_BATCH_PREFILL") == nullptr;
+    const bool scheduled_chunk_prefill =
+        scheduler_active_ && !request_mtp && chunked && vptr == nullptr;
+    bool prefill_cancelled = false;
+    if (session.cache || !prefix_scope.empty()) {
+      const auto allocated = allocate_buffer(d_session_trunk, trunk_hc_dim * 2,
+                                             "request.session_trunk");
+      if (!allocated.ok()) {
+        allocation_error(allocated);
+        return;
+      }
+    }
+    int restored_prefix = 0;
+    bool session_gpu_error = false;
+    const auto session_copy = [&](void* host, void* state, size_t bytes,
+                                  bool restore) -> Status {
+      const auto error =
+          restore ? cudaMemcpy(state, host, bytes, cudaMemcpyHostToDevice)
+                  : cudaMemcpy(host, state, bytes, cudaMemcpyDeviceToHost);
+      if (error == cudaSuccess) return Status();
+      session_gpu_error = true;
+      gpu_healthy_.store(false, std::memory_order_relaxed);
+      return Status::Fail(std::string("session CUDA copy: ") +
+                          cudaGetErrorString(error));
+    };
+    if (stream_mtp) {
       q4t::diagnostic::Batch execution_batch(request_id.c_str(), seq_id, 0, T);
-      q4t::diagnostic::Scope execution_init("handler_mtp_init", 0, T);
+      q4t::diagnostic::Scope execution_prefill("handler_stream_mtp_prefill", 0,
+                                               T);
       auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
       OnException backend_failure([&] { AbortBackendExecution(); });
-      // Another request may have failed PLE while this one waited. No draft
-      // work has begun here; do not reinterpret that fault as a CUDA failure.
-      if (RejectUnhealthy(fd)) return;
-      {
-        q4t::diagnostic::Scope execution_reset("prompt_draft_reset", 0, T);
-        s = mtp::MtpResetState(mtp_, nullptr, seq_id);
+      s = ExecutionStatus();
+      if (s.ok())
+        s = model::ModelBeginSequence(model_.Get(), &seq, nullptr, seq_id);
+      if (s.ok()) s = mtp::MtpResetState(mtp_, nullptr, seq_id);
+      if (s.ok() && (session.cache || !prefix_scope.empty())) {
+        const auto begin = std::chrono::steady_clock::now();
+        int prefix = session.cache ? session_cache_.Match(session.key, ids) : 0;
+        SessionCache* selected_cache = &session_cache_;
+        std::string selected_key = session.key;
+        SessionLease shared_read;
+        if (!prefix_scope.empty()) {
+          const int shared =
+              prefix_cache_.MatchShared(prefix_scope, ids, &shared_read.key);
+          if (shared > 0) shared_read.cache = &prefix_cache_;
+          if (shared > prefix) {
+            prefix = shared;
+            selected_cache = &prefix_cache_;
+            selected_key = shared_read.key;
+          }
+        }
+        Status restored;
+        if (prefix > 0) {
+          std::vector<SessionRange> ranges;
+          restored = SessionStateRanges(model_.Get(), mtp_, seq_id, prefix,
+                                        d_mtp_g, d_session_trunk, &ranges);
+          int32_t cached_pending = -1;
+          if (restored.ok())
+            restored =
+                selected_cache->Restore(selected_key, ranges, session_copy,
+                                        cancelled, &stream_d0, &cached_pending);
+          if (restored.ok() && cached_pending != ids[prefix]) {
+            // The draft is shifted by one token. A tool/message boundary may
+            // replace its final predicted token; target state remains valid.
+            const int position = prefix - 1;
+            restored = mtp::MtpDraftExtend(mtp_, &ids[prefix], d_session_trunk,
+                                           &position, 1, nullptr, nullptr,
+                                           nullptr, seq_id, false);
+            restored =
+                FinishHostReadback(cudaSuccess, &gpu_healthy_, {}, restored,
+                                   nullptr, &metrics_.execution_steps_total);
+            if (!restored.ok()) session_gpu_error = true;
+          }
+          if (restored.ok()) {
+            seq.history.assign(ids.begin(), ids.begin() + prefix);
+            seq.position = prefix;
+            model_.Get().rope_delta[seq_id] = 0;
+            restored_prefix = prefix;
+          } else if (session_gpu_error) {
+            s = restored;
+          } else {
+            // An incomplete read may have written part of the destination.
+            // Reset both models before a miss is allowed to fall back.
+            s = model::ModelBeginSequence(model_.Get(), &seq, nullptr, seq_id);
+            if (s.ok()) s = mtp::MtpResetState(mtp_, nullptr, seq_id);
+          }
+        }
+        std::fprintf(stderr,
+                     "[session-cache] request=%s event=restore prefix=%d "
+                     "ms=%.3f error=%s source=%s\n",
+                     request_id.c_str(), restored_prefix,
+                     std::chrono::duration<double, std::milli>(
+                         std::chrono::steady_clock::now() - begin)
+                         .count(),
+                     restored.ok() ? "none" : restored.message().c_str(),
+                     selected_cache == &prefix_cache_ ? "shared" : "session");
       }
+      std::vector<int32_t> shifted;
+      std::vector<int> positions;
+      int chunks = 0;
+      while (s.ok() && seq.position < T) {
+        if (cancelled()) {
+          prefill_cancelled = true;
+          break;
+        }
+        const int base = seq.position;
+        int count = std::min(chunk, T - base);
+        if (prefix_write_tokens > base)
+          count = std::min(count, prefix_write_tokens - base);
+        const int boundary = base + count;
+        const bool last = boundary == T;
+        SessionLease* shared_write = nullptr;
+        if (!last && prefix_write_tokens > 0 &&
+            boundary == prefix_write_tokens) {
+          const auto digest =
+              trace::Sha256({reinterpret_cast<const uint8_t*>(ids.data()),
+                             static_cast<size_t>(boundary) * sizeof(int32_t)});
+          const std::string snapshot_key =
+              prefix_scope + ':' + trace::HexDigest(digest);
+          if (prefix_cache_.AcquireNew(snapshot_key)) {
+            auto lease = std::make_unique<SessionLease>();
+            lease->cache = &prefix_cache_;
+            lease->key = snapshot_key;
+            shared_write = lease.get();
+            shared_writes.push_back(std::move(lease));
+          }
+        }
+        if (router_trace_)
+          router_trace_->BeginForward(trace::RouteStage::kPrefill, base, count);
+        s = model::ModelPrefillTextChunk(
+            model_.Get(), &seq, ids.data(), T, count,
+            last ? d_prefill_logits_ : nullptr, nullptr, d_trunk_full,
+            model::LogitsRows::kLastRow, model::SequenceCompletion::kDeferred);
+        cudaError_t copy_error = cudaSuccess;
+        if (s.ok() && last)
+          copy_error = cudaMemcpyAsync(h_logits.data(), d_prefill_logits_,
+                                       static_cast<size_t>(vocab) * 2,
+                                       cudaMemcpyDeviceToHost, nullptr);
+        model::ModelSequence* sequence = &seq;
+        s = FinishHostReadback(copy_error, &gpu_healthy_, {&sequence, 1}, s,
+                               router_trace_.get(),
+                               &metrics_.execution_steps_total);
+        if (!s.ok()) break;
+        shifted.resize(count);
+        positions.resize(count);
+        for (int i = 0; i < count; ++i) {
+          positions[i] = base + i;
+          shifted[i] =
+              base + i + 1 < T ? ids[base + i + 1] : argmax(h_logits.data());
+        }
+        s = mtp::MtpDraftExtend(mtp_, shifted.data(), d_trunk_full,
+                                positions.data(), count, &stream_d0, d_mtp_g,
+                                nullptr, seq_id, last, shared_write != nullptr);
+        // The target chunk was committed above. Drain a failed draft submission
+        // before releasing this request's storage or giving scratch to a peer.
+        s = FinishHostReadback(cudaSuccess, &gpu_healthy_, {}, s, nullptr,
+                               &metrics_.execution_steps_total);
+        if (s.ok() && (last || shared_write) && d_session_trunk) {
+          const auto error = cudaMemcpy(
+              d_session_trunk,
+              d_trunk_full + static_cast<size_t>(count - 1) * trunk_hc_dim,
+              static_cast<size_t>(trunk_hc_dim) * 2, cudaMemcpyDeviceToDevice);
+          if (error != cudaSuccess) {
+            gpu_healthy_.store(false, std::memory_order_relaxed);
+            s = Status::Fail("session prefill final trunk copy failed");
+          }
+        }
+        if (s.ok() && shared_write) {
+          const auto save_begin = std::chrono::steady_clock::now();
+          SessionSaveTiming timing(request_id.c_str(), "shared");
+          std::vector<SessionRange> ranges;
+          Status saved;
+          {
+            SessionSaveTiming::Scope span(&timing, SessionSaveTiming::kRanges);
+            saved = SessionStateRanges(model_.Get(), mtp_, seq_id, boundary,
+                                       d_mtp_g, d_session_trunk, &ranges);
+          }
+          if (saved.ok())
+            saved = prefix_cache_.Save(
+                shared_write->key,
+                {ids.data(), static_cast<size_t>(boundary + 1)}, ranges,
+                session_copy, cancelled, -1, &timing);
+          timing.Report(saved.ok());
+          if (session_gpu_error) s = saved;
+          std::fprintf(stderr,
+                       "[prefix-cache] request=%s event=save prefix=%d "
+                       "bytes=%zu ms=%.3f error=%s\n",
+                       request_id.c_str(), boundary, prefix_cache_.Bytes(),
+                       std::chrono::duration<double, std::milli>(
+                           std::chrono::steady_clock::now() - save_begin)
+                           .count(),
+                       saved.ok() ? "none" : saved.message().c_str());
+        }
+        ++chunks;
+      }
+      if (s.ok() && !prefill_cancelled) {
+        s = model::ModelReserveVerifyCheckpoints(model_.Get(), mtp_k_);
+        if (s.ok()) s = mtp::MtpReserveScratch(mtp_, mtp_k_ + 1);
+        stream_draft_ready = s.ok();
+      }
+      if (!s.ok()) {
+        s = FinishHostReadback(cudaSuccess, &gpu_healthy_, {}, s, nullptr);
+        seq.Fail();
+      }
+      std::fprintf(stderr,
+                   "[mtp-prefill] request=%s streamed=1 chunks=%d "
+                   "trunk_bytes=%zu ready=%d\n",
+                   request_id.c_str(), chunks,
+                   static_cast<size_t>(std::min(T, chunk)) * trunk_hc_dim * 2,
+                   stream_draft_ready);
+    } else if (scheduled_chunk_prefill) {
+      ChunkPrefillReq pr;
+      pr.fd = fd;
+      pr.control = control.get();
+      pr.seq = &seq;
+      pr.seq_id = seq_id;
+      pr.ids = ids.data();
+      pr.len = T;
+      pr.h_logits = h_logits.data();
+      RequestDiagnostics::Scope wait(diagnostic, Wait::kScheduler);
+      SubmitSchedulerRequestAndWait(
+          sched_mu_, scheduler_stop_, sched_cv_, pr.cv,
+          [&] { chunk_prefill_pending_.push_back(&pr); },
+          [&] { return pr.done; });
+      prefill_cancelled = pr.cancelled;
+      s = pr.ok ? Status()
+                : Status::Fail("scheduled chunk prefill failed" +
+                               (pr.err.empty() ? std::string()
+                                               : std::string(": ") + pr.err));
+    } else if (batched_prefill) {
+      PrefillReq pr;
+      pr.control = control.get();
+      pr.fd = fd;
+      pr.seq = &seq;
+      pr.seq_id = seq_id;
+      pr.ids = ids.data();
+      pr.len = T;
+      pr.h_logits = h_logits.data();
+      RequestDiagnostics::Scope wait(diagnostic, Wait::kScheduler);
+      SubmitSchedulerRequestAndWait(
+          sched_mu_, scheduler_stop_, sched_cv_, pr.cv,
+          [&] {
+            pr.pending = true;
+            prefill_pending_.push_back(&pr);
+          },
+          [&] { return pr.done; });
+      s = pr.ok ? Status() : Status::Fail("batched prefill failed");
+    } else {
+      // The request ID outlives this batch. Flush only after the existing final
+      // readback boundary; do not log between asynchronous chunk submissions.
+      q4t::diagnostic::Batch execution_batch(request_id.c_str(), seq_id, 0, T);
+      q4t::diagnostic::Scope execution_prefill("handler_prefill", 0, T);
+      auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
+      OnException backend_failure([&] { AbortBackendExecution(); });
+      {
+        q4t::diagnostic::Scope execution_begin("target_begin_sequence", 0, T);
+        s = ExecutionStatus();
+        if (s.ok())
+          s = cancelled() ? Status::Fail("request cancelled")
+                          : model::ModelBeginSequence(model_.Get(), &seq,
+                                                      nullptr, seq_id);
+      }
+      int prefill_base = 0;
+      int prefill_tokens = std::min(chunk, T);
       if (s.ok()) {
-        mtp_b = next_token;
-        // EAGLE shift: shifted_ids[p] = t_{p+1}, with t_P := b at the tail.
-        std::vector<int32_t> shifted(T);
-        for (int i = 0; i < T - 1; ++i) shifted[i] = ids[i + 1];
-        shifted[T - 1] = mtp_b;
-        std::vector<int> pos(T);
-        for (int i = 0; i < T; ++i) pos[i] = i;
+        if (!chunked) {
+          if (router_trace_)
+            router_trace_->BeginForward(trace::RouteStage::kPrefill, 0, T);
+          // Keep full trunk output for MTP, but only the final logits row.
+          // Deferred completion does not make this a pure CPU submission span:
+          // model internals may still wait for metadata, PLE or MoE readbacks.
+          q4t::diagnostic::Scope execution_submit("target_prefill_call", 0, T);
+          s = model::ModelPrefill(model_.Get(), &seq, ids.data(), T,
+                                  d_prefill_logits_, nullptr,
+                                  mtp_loaded_ ? d_trunk_full : nullptr, vptr,
+                                  seq_id, model::LogitsRows::kLastRow,
+                                  model::SequenceCompletion::kDeferred);
+        } else {
+          // Text chunks share the sequence's slot, position and PLE history.
+          // Intermediate chunks only produce trunk/state; the final chunk
+          // writes one logits row at the start of the shared buffer.
+          while (s.ok() && seq.position < T) {
+            if (cancelled()) {
+              prefill_cancelled = true;
+              s = Status::Fail("client disconnected during prefill");
+              break;
+            }
+            const int base = seq.position;
+            const int c = std::min(chunk, T - base);
+            const bool last = (base + c == T);
+            prefill_base = base;
+            prefill_tokens = c;
+            q4t::diagnostic::Scope execution_chunk("target_prefill_chunk", base,
+                                                   c);
+            if (router_trace_)
+              router_trace_->BeginForward(trace::RouteStage::kPrefill, base, c);
+            {
+              q4t::diagnostic::Scope execution_submit("target_prefill_call",
+                                                      base, c);
+              s = model::ModelPrefillTextChunk(
+                  model_.Get(), &seq, ids.data(), T, c,
+                  last ? d_prefill_logits_ : nullptr, nullptr,
+                  d_trunk_full
+                      ? d_trunk_full + static_cast<size_t>(base) * trunk_hc_dim
+                      : nullptr,
+                  model::LogitsRows::kLastRow,
+                  model::SequenceCompletion::kDeferred);
+            }
+            if (!last) {
+              model::ModelSequence* sequence = &seq;
+              {
+                // This includes the existing stream wait and sequence commit.
+                q4t::diagnostic::Scope execution_wait(
+                    "prefill_chunk_readback_wait_commit", base, c);
+                s = FinishHostReadback(cudaSuccess, &gpu_healthy_,
+                                       {&sequence, 1}, s, router_trace_.get(),
+                                       &metrics_.execution_steps_total);
+              }
+              // Diagnostic: memory trajectory across chunked prefill (the
+              // 204800-tier OOM investigation). Never touches compute.
+              {
+                q4t::diagnostic::Scope execution_memory(
+                    "prefill_chunk_memory_snapshot", base, c);
+                LogMemorySnapshot("prefill_chunk",
+                                  "seq" + std::to_string(seq_id) + "@pos" +
+                                      std::to_string(seq.position));
+              }
+            }
+            if (last || !s.ok()) break;
+          }
+        }
+      }
+      cudaError_t copy_error = cudaSuccess;
+      if (s.ok()) {
+        q4t::diagnostic::Scope execution_copy("prefill_final_d2h_submit",
+                                              prefill_base, prefill_tokens);
+        copy_error = cudaMemcpyAsync(h_logits.data(), d_prefill_logits_,
+                                     static_cast<size_t>(vocab) * 2,
+                                     cudaMemcpyDeviceToHost, nullptr);
+      }
+      model::ModelSequence* sequence = &seq;
+      // Drain and commit while holding model_mu_, also on failed submission.
+      const auto pending =
+          seq.HasPending()
+              ? std::span<model::ModelSequence* const>(&sequence, 1)
+              : std::span<model::ModelSequence* const>();
+      {
+        q4t::diagnostic::Scope execution_wait(
+            "prefill_final_readback_wait_commit", prefill_base, prefill_tokens);
+        s = FinishHostReadback(
+            copy_error, &gpu_healthy_, pending, s, router_trace_.get(),
+            pending.empty() ? nullptr : &metrics_.execution_steps_total);
+      }
+      if (!s.ok()) seq.Fail();
+    }
+    if ((prefill_cancelled || cancelled()) &&
+        gpu_healthy_.load(std::memory_order_relaxed)) {
+      // Scheduler chunks have drained before notification; the inline path
+      // drains above. The request thread still owns fd and all request buffers.
+      std::fprintf(stderr,
+                   "[q4t] prefill cancelled seq=%d position=%d total=%d\n",
+                   seq_id, seq.position, T);
+      count_abort();
+      model::ModelEndSequence(&seq);
+      cleanup();
+      send_cancel_error("request cancelled during prefill");
+      return;
+    }
+    if (!s.ok()) {
+      model::ModelEndSequence(&seq);
+      cleanup();
+      if (RejectUnhealthy(fd)) return;
+      SendError(fd, 500, "prefill failed: " + s.message());
+      return;
+    }
+
+    diagnostic.Stage("decode");
+    // 3. Decode loop under the per-choice selection contract.
+    detail::Utf8Stream utf8;
+    Status response_status;
+
+    const auto write_deltas = [&](const std::vector<ResponseDelta>& deltas) {
+      for (const auto& delta : deltas) {
+        std::string logprobs = "null";
+        if (sampling.logprobs) {
+          response_status = token_logprobs.Emit(delta, &logprobs);
+          if (!response_status) return false;
+        }
+        if (!stream) continue;
+        detail::ServeFaultPoint("handler.before_content");
+        if (!write_stream(detail::SseDeltaChunk(id, model_field, delta.ToJson(),
+                                                "", choice_index, created,
+                                                include_usage, logprobs)))
+          return false;
+        if (!first_delta_sent) {
+          first_delta_sent = true;
+          metrics_.ttft_seconds.Observe(
+              std::chrono::duration<double>(std::chrono::steady_clock::now() -
+                                            t_arrive)
+                  .count());
+        }
+      }
+      if (sampling.logprobs)
+        token_logprobs.DiscardBefore(response_parser.ConsumedBytes());
+      return true;
+    };
+    const auto write_content = [&](const std::string& piece) {
+      if (!response_status) return false;
+      std::vector<ResponseDelta> deltas;
+      response_status = response_parser.Append(piece, &deltas);
+      return response_status.ok() && write_deltas(deltas);
+    };
+    // Budget, probability and byte provenance all follow actual accepted
+    // tokens. Model history is never reconstructed from parsed response text.
+    const auto consume_token = [&](int32_t token) {
+      if (!stream && !thinking_budget.Enabled() && !text_stop.Enabled() &&
+          !sampling.logprobs)
+        return true;
+      std::string piece;
+      {
+        auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
+        response_status =
+            tok_->Decode({static_cast<uint32_t>(token)}, true, &piece);
+        if (response_status && sampling.logprobs)
+          response_status = token_logprobs.Push(
+              selected_sample, piece, [&](int32_t id, std::string* bytes) {
+                return tok_->Decode({static_cast<uint32_t>(id)}, false, bytes);
+              });
+      }
+      if (response_status && thinking_budget.Enabled())
+        response_status =
+            thinking_budget.Observe(token, piece, is_stop_token(token));
+      if (!response_status) return false;
+      if (stream || text_stop.Enabled() || sampling.logprobs) {
+        std::vector<detail::Utf8Span> spans;
+        const auto normalized =
+            utf8.Append(piece, sampling.logprobs ? &spans : nullptr);
+        if (sampling.logprobs) token_logprobs.Map(spans);
+        if (!write_content(text_stop.Append(normalized))) return false;
+      }
+      return !text_stop.Matched();
+    };
+
+    std::vector<int32_t> generated;
+    int next_token = -1;
+    std::string finish_reason = "stop";
+    bool generation_failed = false;
+    int stop_mtp_steps = 0;
+    int stop_mtp_tokens = 0;
+    int stop_mtp_discarded = 0;
+    int budget_mtp_steps = 0;
+    int budget_mtp_tokens = 0;
+    bool budget_mtp_fallback = false;
+
+    const auto select_token = [&](const uint16_t* logits) {
+      const auto forced = thinking_budget.ForcedToken();
+      if (!plain_greedy) {
+        auto allowed = sampling_allowed;
+        if (forced < 0 && thinking_budget.Enabled() &&
+            thinking_budget.Consumed() >= reasoning_options.token_budget) {
+          auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer, cancelled);
+          if (!lock.owns_lock()) {
+            response_status = Status::Fail("sampling cancelled");
+            return -1;
+          }
+          for (int32_t token = 0; token < planning_config.token_vocab;
+               ++token) {
+            if (!allowed[token] || is_stop_token(token)) continue;
+            if (token % 256 == 0 && cancelled()) {
+              response_status = Status::Fail("sampling cancelled");
+              return -1;
+            }
+            std::string piece;
+            response_status =
+                tok_->Decode({static_cast<uint32_t>(token)}, true, &piece);
+            if (!response_status) return -1;
+            allowed[token] = thinking_budget.Allows(piece);
+          }
+        }
+        const std::span<const uint16_t> row(logits, vocab);
+        int32_t token = -1;
+        if (structured) {
+          response_status = structured->Select(row, &token, forced, &sampler,
+                                               &selected_sample, allowed);
+        } else {
+          response_status =
+              sampler.Select(row, &selected_sample, allowed, forced);
+          token = selected_sample.token;
+        }
+        return response_status ? token : -1;
+      }
+      if (!structured) {
+        if (!thinking_budget.Enabled() ||
+            thinking_budget.Consumed() < reasoning_options.token_budget)
+          return argmax(logits);
+        // The remaining plain tail has per-request selection constraints. Its
+        // logits belong to the state *before* this next token is consumed.
+        int32_t best_token = -1;
+        float best = -std::numeric_limits<float>::infinity();
+        for (int32_t token = 0; token < vocab; ++token) {
+          if (forced >= 0 && token != forced) continue;
+          const uint32_t bits = static_cast<uint32_t>(logits[token]) << 16;
+          float value;
+          std::memcpy(&value, &bits, sizeof(value));
+          if (!std::isfinite(value) || value <= best) continue;
+          if (forced < 0 && !is_stop_token(token)) {
+            if (static_cast<uint32_t>(token) >= tok_->VocabSize()) continue;
+            std::string piece;
+            {
+              auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
+              response_status =
+                  tok_->Decode({static_cast<uint32_t>(token)}, true, &piece);
+            }
+            if (!response_status) return -1;
+            if (!thinking_budget.Allows(piece)) continue;
+          }
+          best_token = token;
+          best = value;
+        }
+        if (best_token < 0)
+          response_status =
+              Status::Fail("no finite thinking-budget-allowed token");
+        return best_token;
+      }
+      int32_t token = -1;
+      response_status = structured->Select({logits, static_cast<size_t>(vocab)},
+                                           &token, forced);
+      return token;
+    };
+
+    // Every prefill path reads its selected final row under model_mu_ and
+    // checks stream completion before publishing h_logits to this thread.
+    next_token = select_token(h_logits.data());
+    if (choice_index == 0)
+      metrics_.target_ready_seconds.Observe(
+          std::chrono::duration<double>(std::chrono::steady_clock::now() -
+                                        t_arrive)
+              .count());
+    err_guard.ok = true;  // generation has started; not a pre-generation error
+
+    // MTP init (mirrors the CLI --mtp path): fresh draft KV, bonus token b =
+    // t_P (the first decode token), draft-extend over the prompt to build the
+    // draft KV[0..P-1] and seed the first speculative step (d0 + g). On any
+    // failure fall back to plain decode (the main seq is still usable).
+    //
+    // Stage 2c (4b): the MTP path is per-sequence safe AND batched. The draft
+    // KV is pooled per seq_id (mcfg.max_seq, Stage 1) and each request owns a
+    // per-request rolling trunk (d_mtp_g). MTP init (per-seq reset + draft
+    // extend) runs on this thread under model_mu_; the speculative STEPS are
+    // registered with the central scheduler, which batches all concurrent MTP
+    // requests into ONE MtpSpeculativeStepMulti (batched draft loop +
+    // ModelVerifyMulti + batched extend, weights read once) — the same code
+    // path a single MTP request takes (B=1). This thread advances the main seq
+    // over the accepted prefix (the multi step does not touch seqs[b]). MTP is
+    // enabled for BOTH one-shot and chunked prefill, as long as the full-prompt
+    // trunk buffer was allocated (d_trunk_full != nullptr). The chunked path
+    // accumulates the trunk across prefill chunks and runs the draft-extend in
+    // chunks (MtpDraftExtend's chunked path). The draft KV/indexer is allocated
+    // at MTP load time (not per-request), so the only per-request cost is the
+    // trunk buffer; if its allocation failed, d_trunk_full is null and we fall
+    // back to plain decode. MTP is precision-safe: the main model verifies
+    // every draft token under the documented T>1 near-tie contract; it need not
+    // be bit-identical to the T=1 arithmetic path.
+    bool use_mtp = request_mtp && d_trunk_full != nullptr &&
+                   thinking_budget.CanSpeculate(mtp_k_ + 1);
+    int32_t mtp_b = stream_draft_ready ? next_token : -1;
+    int32_t mtp_d0 = stream_draft_ready ? stream_d0 : -1;
+    if (use_mtp && !stream_mtp) {
+      const auto allocated = allocate_buffer(
+          d_mtp_g, static_cast<size_t>(mtp_.cfg.hc) * mtp_.cfg.hs * 2,
+          "request.draft_trunk");
+      if (!allocated.ok() && !allocated.exhausted()) {
+        allocation_error(allocated);
+        return;
+      }
+      if (allocated.exhausted()) {
+        std::fprintf(stderr,
+                     "[q4t] MTP trunk allocation exhausted; plain decode\n");
+        use_mtp = false;
+      }
+    }
+    bool mtp_prepare_failed = false;
+    if (use_mtp && !stream_mtp) {
+      {
+        q4t::diagnostic::Batch execution_batch(request_id.c_str(), seq_id, 0,
+                                               T);
+        q4t::diagnostic::Scope execution_init("handler_mtp_init", 0, T);
+        auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
+        OnException backend_failure([&] { AbortBackendExecution(); });
+        // Another request may have failed PLE while this one waited. No draft
+        // work has begun here; do not reinterpret that fault as a CUDA failure.
+        if (RejectUnhealthy(fd)) return;
         {
-          // Aggregate call: includes internal submission, existing waits and
-          // cleanup. Its child spans must not be added to this parent span.
-          q4t::diagnostic::Scope execution_extend("prompt_draft_extend_call", 0,
-                                                 T);
-          s = mtp::MtpDraftExtend(mtp_, shifted.data(), d_trunk_full, pos.data(),
-                                  T, &mtp_d0, d_mtp_g, nullptr, seq_id);
-          if (s.ok())
-            metrics_.execution_steps_total.fetch_add(1,
-                                                     std::memory_order_relaxed);
+          q4t::diagnostic::Scope execution_reset("prompt_draft_reset", 0, T);
+          s = mtp::MtpResetState(mtp_, nullptr, seq_id);
         }
         if (s.ok()) {
-          q4t::diagnostic::Scope execution_reserve("prompt_verify_reserve", 0,
-                                                  T);
-          s = model::ModelReserveVerifyCheckpoints(model_.Get(), mtp_k_);
-          if (s.ok())
-            s = mtp::MtpReserveScratch(mtp_, mtp_k_ + 1);
+          mtp_b = next_token;
+          // EAGLE shift: shifted_ids[p] = t_{p+1}, with t_P := b at the tail.
+          std::vector<int32_t> shifted(T);
+          for (int i = 0; i < T - 1; ++i) shifted[i] = ids[i + 1];
+          shifted[T - 1] = mtp_b;
+          std::vector<int> pos(T);
+          for (int i = 0; i < T; ++i) pos[i] = i;
+          {
+            // Aggregate call: includes internal submission, existing waits and
+            // cleanup. Its child spans must not be added to this parent span.
+            q4t::diagnostic::Scope execution_extend("prompt_draft_extend_call",
+                                                    0, T);
+            s = mtp::MtpDraftExtend(mtp_, shifted.data(), d_trunk_full,
+                                    pos.data(), T, &mtp_d0, d_mtp_g, nullptr,
+                                    seq_id);
+            if (s.ok())
+              metrics_.execution_steps_total.fetch_add(
+                  1, std::memory_order_relaxed);
+          }
+          if (s.ok()) {
+            q4t::diagnostic::Scope execution_reserve("prompt_verify_reserve", 0,
+                                                     T);
+            s = model::ModelReserveVerifyCheckpoints(model_.Get(), mtp_k_);
+            if (s.ok()) s = mtp::MtpReserveScratch(mtp_, mtp_k_ + 1);
+          }
+        }
+        if (s.ok() &&
+            detail::DeviceMemoryFault("request.mtp_prepare",
+                                      request_id.c_str()) != cudaSuccess)
+          s = Status::Fail("validation MTP preparation failure");
+        if (!s.ok()) {
+          std::fprintf(stderr,
+                       "[q4t] MTP preparation failed (%s); stopping serve\n",
+                       s.message().c_str());
+          // Nested preparation exposes only an untyped Status. It does not
+          // prove a recoverable allocation failure or safe reuse of submitted
+          // state.
+          AbortBackendExecution();  // model_mu_ is held; drain before
+                                    // unwinding.
+          mtp_prepare_failed = true;
         }
       }
-      if (s.ok() && detail::DeviceMemoryFault("request.mtp_prepare",
-                                             request_id.c_str()) != cudaSuccess)
-        s = Status::Fail("validation MTP preparation failure");
-      if (!s.ok()) {
-        std::fprintf(stderr,
-                     "[q4t] MTP preparation failed (%s); stopping serve\n",
-                     s.message().c_str());
-        // Nested preparation exposes only an untyped Status. It does not prove
-        // a recoverable allocation failure or safe reuse of submitted state.
-        AbortBackendExecution();  // model_mu_ is held; drain before unwinding.
-        mtp_prepare_failed = true;
-      }
-
     }
-  }
-  if (mtp_prepare_failed) {
-    err_guard.ok = false;
-    diagnostic.Outcome("error", "mtp_prepare_failed");
-    SendError(fd, 503, "MTP preparation failed; restart server", {},
-              "gpu_unhealthy");
-    return;
-  }
-  // The prompt trunk is only needed for the draft-extend above; free it now so
-  // decoding requests do not hold it (bounds concurrent memory).
-  if (d_trunk_full) {
-    q4t::diagnostic::Batch execution_batch(request_id.c_str(), seq_id, 0, T);
-    q4t::diagnostic::Scope execution_free("prompt_trunk_free", 0, T);
-    release_buffer(d_trunk_full, "request.prompt_trunk_free");
+    if (mtp_prepare_failed) {
+      err_guard.ok = false;
+      diagnostic.Outcome("error", "mtp_prepare_failed");
+      SendError(fd, 503, "MTP preparation failed; restart server", {},
+                "gpu_unhealthy");
+      return;
+    }
+    // The prompt trunk is only needed for the draft-extend above; free it now
+    // so decoding requests do not hold it (bounds concurrent memory).
+    if (d_trunk_full) {
+      q4t::diagnostic::Batch execution_batch(request_id.c_str(), seq_id, 0, T);
+      q4t::diagnostic::Scope execution_free("prompt_trunk_free", 0, T);
+      release_buffer(d_trunk_full, "request.prompt_trunk_free");
+      if (!buffers_ok) {
+        err_guard.ok = false;
+        diagnostic.Outcome("error", "device_memory_failure");
+        SendError(fd, 503, "device buffer release failed; restart server", {},
+                  "gpu_unhealthy");
+        return;
+      }
+    }
+    // Stage 2c (4b): the speculative steps are driven by the central scheduler,
+    // which batches all concurrent MTP requests into ONE
+    // MtpSpeculativeStepMulti (weights read once). This thread registers each
+    // step's input (mtp_b/d0/g), blocks on the request's cv, and is woken with
+    // the step's output. It owns the state-machine advance (position/history)
+    // over the accepted prefix. Fallback: if the scheduler is unavailable or
+    // the pool is full, decode plainly (the main seq is still usable).
+    ActiveRequest mtp_ar;
+    mtp::SuffixDrafter suffix;
+    struct RequestClasses {
+      ChatServer* server;
+      uint64_t decodes = 0, lookups = 0, allocations = 0;
+      size_t bytes = 0;
+    } request_classes{this};
+    std::array<uint64_t, 4> suffix_accepted{};
+    std::array<uint64_t, 4> neural_accepted{};
+    bool mtp_sched = false;
+    ScopeExit mtp_registration([&] {
+      if (mtp_sched) ReleaseActiveRequest(&mtp_ar);
+    });
+    if (use_mtp) {
+      const std::lock_guard<std::mutex> lock(sched_mu_);
+      mtp_sched = scheduler_active_ && !scheduler_stop_ && d_sched_logits_ &&
+                  static_cast<int>(active_.size()) < max_seq_;
+      if (mtp_sched) {
+        mtp_ar.is_mtp = true;
+        mtp_ar.complete_terminal_draft = session.cache != nullptr;
+        mtp_ar.session_last_trunk = d_session_trunk;
+        mtp_ar.seq = &seq;
+        mtp_ar.control = control.get();
+        mtp_ar.fd = fd;
+        mtp_ar.mtp_g = d_mtp_g;
+
+        active_.push_back(&mtp_ar);
+        detail::ServeFaultPoint("handler.after_active");
+      } else {
+        use_mtp = false;
+      }
+    }
+    if (use_mtp && mtp_suffix_) {
+      const Status suffix_status = suffix.Init(
+          seq.history, model_.Get().cfg.vocab, request_capacity, {},
+          {&request_classes,
+           [](void* context, std::span<const int32_t> ids, bool* numeric) {
+             auto& local = *static_cast<RequestClasses*>(context);
+             auto* server = local.server;
+             const std::lock_guard<std::mutex> lock(server->tok_mu_);
+             auto& cache = server->suffix_token_cache_;
+             const auto before = cache.Counters();
+             const Status status = cache.Check(ids, numeric);
+             const auto& after = cache.Counters();
+             local.decodes += after.decodes - before.decodes;
+             local.lookups += after.lookups - before.lookups;
+             local.allocations += after.allocations - before.allocations;
+             local.bytes = cache.MemoryBytes();
+             return status;
+           }});
+      if (!suffix_status.ok())
+        std::fprintf(stderr, "[suffix] request=%s disabled=%s\n",
+                     request_id.c_str(), suffix_status.message().c_str());
+    }
+    if (use_mtp) {
+      int accepted_histogram[17] = {};
+      bool done = false;
+      while (!done && static_cast<int>(generated.size()) < max_tokens) {
+        if (cancelled()) break;
+        if (!mtp_sched) break;
+        if (is_stop_token(mtp_b)) {
+          generated.push_back(mtp_b);
+          rate_lease.Completion(choices.CompletionTokens() + generated.size());
+          finish_reason = "stop";
+          break;
+        }
+        const int remaining = max_tokens - static_cast<int>(generated.size());
+        if (!thinking_budget.CanSpeculate(mtp_k_ + 1)) {
+          // Reserve one admitted pending token before switching to host logits.
+          // No speculative work or KV for this next step has been submitted.
+          next_token = mtp_b;
+          use_mtp = false;
+          budget_mtp_fallback = true;
+          break;
+        }
+        if (!MtpGenerationStepFits(seq.position, request_capacity,
+                                   model_.Get().cfg.max_prefill, mtp_k_,
+                                   remaining)) {
+          // No speculative work has started. Finish with ordinary decode,
+          // preserving the pending token and the already emitted prefix.
+          next_token = mtp_b;
+          use_mtp = false;
+          break;
+        }
+        // Register this step's input with the scheduler.
+        mtp_ar.mtp_b = mtp_b;
+        mtp_ar.mtp_d0 = mtp_d0;
+        mtp_ar.mtp_suffix_ready = false;
+        if (suffix.Active()) {
+          const auto proposal = suffix.ProposeAfter(mtp_b, mtp_d0);
+          mtp_ar.mtp_suffix_ready = proposal.ready;
+          mtp_ar.mtp_suffix_tokens = proposal.tokens;
+        }
+        {
+          const std::lock_guard<std::mutex> lock(sched_mu_);
+          mtp_ar.mtp_accepted_count = 0;
+          mtp_ar.mtp_next_b = -1;
+          mtp_ar.mtp_next_d0 = -1;
+          mtp_ar.pending = !scheduler_stop_ && !mtp_ar.retired;
+          mtp_ar.done = !mtp_ar.pending;
+          if (mtp_ar.done) seq.Fail();
+        }
+        sched_cv_.notify_one();
+        // Block until the scheduler's batched step yields this step's output.
+        {
+          RequestDiagnostics::Scope wait(diagnostic, Wait::kScheduler);
+          std::unique_lock<std::mutex> lock(sched_mu_);
+          mtp_ar.cv.wait(lock, [&mtp_ar] { return mtp_ar.done; });
+        }
+        if (mtp_ar.mtp_accepted_count <= 0 ||
+            mtp_ar.mtp_accepted_count > mtp_k_ + 1) {
+          // Scheduler failed the step or is shutting down.
+          generation_failed = true;
+          break;
+        }
+        ++accepted_histogram[mtp_ar.mtp_accepted_count - 1];
+        if (text_stop.Enabled()) {
+          ++stop_mtp_steps;
+          stop_mtp_tokens += mtp_ar.mtp_accepted_count;
+        }
+        if (thinking_budget.Enabled()) {
+          ++budget_mtp_steps;
+          budget_mtp_tokens += mtp_ar.mtp_accepted_count;
+        }
+        if (mtp_suffix_) {
+          auto& histogram =
+              mtp_ar.mtp_suffix_ready ? suffix_accepted : neural_accepted;
+          ++histogram[mtp_ar.mtp_accepted_count - 1];
+        }
+        for (int i = 0; i < mtp_ar.mtp_accepted_count &&
+                        static_cast<int>(generated.size()) < max_tokens;
+             ++i) {
+          const int32_t tok_id = mtp_ar.mtp_accepted[i];
+          generated.push_back(tok_id);
+          rate_lease.Completion(choices.CompletionTokens() + generated.size());
+          if (!consume_token(tok_id)) {
+            if (text_stop.Matched())
+              stop_mtp_discarded = mtp_ar.mtp_accepted_count - i - 1;
+            done = true;
+            finish_reason = "stop";
+            break;
+          }
+          if (is_stop_token(tok_id)) {
+            done = true;
+            break;
+          }
+        }
+        // Advance the main seq over the accepted prefix [b, d_0..d_{a-1}] (the
+        // multi step does not touch seqs[b]).
+        seq.position += mtp_ar.mtp_accepted_count;
+        for (int i = 0; i < mtp_ar.mtp_accepted_count; ++i)
+          seq.history.push_back(mtp_ar.mtp_accepted[i]);
+        if (suffix.Active()) {
+          const Status suffix_status =
+              suffix.Append({mtp_ar.mtp_accepted,
+                             static_cast<size_t>(mtp_ar.mtp_accepted_count)});
+          if (!suffix_status.ok())
+            std::fprintf(stderr, "[suffix] request=%s disabled=%s\n",
+                         request_id.c_str(), suffix_status.message().c_str());
+        }
+        // Stop/EOS/parser failure wins over a coincident length bound. KV was
+        // committed for the entire accepted batch; keep that state intact and
+        // retire it. Stop+cache is rejected before model work, so the invisible
+        // speculative suffix cannot become a reusable response snapshot.
+        if (done) break;
+        if (static_cast<int>(generated.size()) >= max_tokens) {
+          finish_reason = "length";
+          break;
+        }
+        if (seq.position >= request_capacity) {
+          finish_reason = "length";
+          break;  // cannot decode further without exceeding the KV cache
+        }
+        mtp_b = mtp_ar.mtp_next_b;
+        mtp_d0 = mtp_ar.mtp_next_d0;
+        // d_mtp_g was overwritten in place with the next step's trunk.
+      }
+      flockfile(stderr);
+      std::fprintf(stderr,
+                   "[mtp-accept] request=%s draft_counts=", request_id.c_str());
+      for (int i = 0; i <= mtp_k_; ++i)
+        std::fprintf(stderr, "%s%d", i ? "," : "", accepted_histogram[i]);
+      std::fprintf(stderr, "\n");
+      funlockfile(stderr);
+    }
+    mtp_registration.Run();
+    // No scheduler owns this row now. Capture the complete target/shifted-draft
+    // boundary before any ordinary-decode tail; publication waits for
+    // successful HTTP completion. A thinking-budget tail can be longer than the
+    // ordinary capacity tail; only this complete earlier MTP boundary is
+    // reusable.
+    if (session.cache && mtp_sched && !generation_failed &&
+        response_status.ok() && !cancelled() &&
+        seq.stage == model::ModelSequence::Stage::kDecode &&
+        !seq.HasPending() && seq.position >= SessionCache::kMinPrefix &&
+        seq.position < request_capacity) {
+      const auto begin = std::chrono::steady_clock::now();
+      SessionSaveTiming timing(request_id.c_str(), "private");
+      std::unique_lock<std::mutex> lock;
+      {
+        SessionSaveTiming::Scope span(&timing, SessionSaveTiming::kModelLock);
+        lock = diagnostic.Lock(model_mu_, Wait::kModel);
+      }
+      OnException backend_failure([&] { AbortBackendExecution(); });
+      std::vector<SessionRange> ranges;
+      Status saved;
+      {
+        SessionSaveTiming::Scope span(&timing, SessionSaveTiming::kRanges);
+        saved = SessionStateRanges(model_.Get(), mtp_, seq_id, seq.position,
+                                   d_mtp_g, d_session_trunk, &ranges);
+      }
+      const bool has_step = mtp_ar.mtp_accepted_count > 0;
+      const int32_t pending = has_step ? mtp_ar.mtp_next_b : mtp_b;
+      const int32_t last_d0 = has_step ? mtp_ar.mtp_next_d0 : mtp_d0;
+      if (saved.ok() && pending >= 0 && last_d0 >= 0 &&
+          model_.Get().rope_delta[seq_id] == 0) {
+        std::vector<int32_t> prefix(seq.history);
+        prefix.push_back(pending);
+        saved = session_cache_.Save(session.key, prefix, ranges, session_copy,
+                                    cancelled, last_d0, &timing);
+        if (saved.ok()) detail::ServeSnapshotTokens(request_id.c_str(), prefix);
+      } else if (saved.ok()) {
+        saved = Status::Fail("incomplete session boundary");
+      }
+      timing.Report(saved.ok());
+      if (session_gpu_error) {
+        generation_failed = true;
+        use_mtp = true;  // Do not enter a plain tail after a device failure.
+        seq.Fail();
+      }
+      std::fprintf(stderr,
+                   "[session-cache] request=%s event=save prefix=%d "
+                   "ms=%.3f disk_bytes=%zu error=%s\n",
+                   request_id.c_str(), seq.position,
+                   std::chrono::duration<double, std::milli>(
+                       std::chrono::steady_clock::now() - begin)
+                       .count(),
+                   session_cache_.Bytes(),
+                   saved.ok() ? "none" : saved.message().c_str());
+    }
+    if (mtp_suffix_) {
+      const size_t indexed = suffix.Size();
+      suffix.Reset();
+      const auto& stats = suffix.Counters();
+      flockfile(stderr);
+      std::fprintf(
+          stderr,
+          "[suffix] request=%s queries=%llu hits=%llu "
+          "candidates=%llu compared=%llu matched=%llu "
+          "no_match=%llu incomplete=%llu d0_mismatch=%llu "
+          "invalid=%llu exhausted=%llu indexed=%zu peak_bytes=%zu "
+          "object_bytes=%zu init_ns=%llu append_ns=%llu "
+          "query_ns=%llu release_ns=%llu numeric_checks=%llu "
+          "classified_tokens=%llu numeric_rejected=%llu "
+          "numeric_ns=%llu short_rejected=%llu classify_failed=%llu "
+          "cache_decodes=%llu cache_lookups=%llu "
+          "cache_allocations=%llu cache_bytes=%zu accepted=",
+          request_id.c_str(), static_cast<unsigned long long>(stats.queries),
+          static_cast<unsigned long long>(stats.hits),
+          static_cast<unsigned long long>(stats.candidates_examined),
+          static_cast<unsigned long long>(stats.compared_tokens),
+          static_cast<unsigned long long>(stats.matched_tokens),
+          static_cast<unsigned long long>(stats.no_match),
+          static_cast<unsigned long long>(stats.incomplete),
+          static_cast<unsigned long long>(stats.first_token_mismatch),
+          static_cast<unsigned long long>(stats.invalid_tokens),
+          static_cast<unsigned long long>(stats.capacity_exhaustions), indexed,
+          stats.peak_memory_bytes, sizeof(suffix),
+          static_cast<unsigned long long>(stats.init_ns),
+          static_cast<unsigned long long>(stats.append_ns),
+          static_cast<unsigned long long>(stats.query_ns),
+          static_cast<unsigned long long>(stats.release_ns),
+          static_cast<unsigned long long>(stats.numeric_checks),
+          static_cast<unsigned long long>(stats.classified_tokens),
+          static_cast<unsigned long long>(stats.numeric_rejected),
+          // numeric_ns is already included in query_ns.
+          static_cast<unsigned long long>(stats.numeric_ns),
+          static_cast<unsigned long long>(stats.short_rejected),
+          static_cast<unsigned long long>(stats.classification_failures),
+          static_cast<unsigned long long>(request_classes.decodes),
+          static_cast<unsigned long long>(request_classes.lookups),
+          static_cast<unsigned long long>(request_classes.allocations),
+          request_classes.bytes);
+      for (size_t i = 0; i < suffix_accepted.size(); ++i)
+        std::fprintf(stderr, "%s%llu", i ? "," : "",
+                     static_cast<unsigned long long>(suffix_accepted[i]));
+      std::fprintf(stderr, " neural_accepted=");
+      for (size_t i = 0; i < neural_accepted.size(); ++i)
+        std::fprintf(stderr, "%s%llu", i ? "," : "",
+                     static_cast<unsigned long long>(neural_accepted[i]));
+      std::fprintf(stderr, "\n");
+      funlockfile(stderr);
+    }
+    if (!use_mtp) {
+      // B2b continuous batching: this request's decode steps are driven by the
+      // central scheduler, which packs the current token of EVERY active
+      // plain-decode request into ONE ModelDecodeBatchMulti (weights read once
+      // for all B tokens). This thread only emits tokens and advances the
+      // per-sequence state machine; the GPU forward is the scheduler's job.
+      //
+      // Fallback: if the scheduler is unavailable (buffer alloc failed) or the
+      // active pool is full, this request decodes on its own via
+      // ModelDecodeStepSeq (the B1 single-sequence path).
+      bool use_sched = false;
+      ActiveRequest ar;
+      ScopeExit active_registration([&] {
+        if (use_sched) ReleaseActiveRequest(&ar);
+      });
+      {
+        const std::lock_guard<std::mutex> lock(sched_mu_);
+        // The current packed scheduler argmax has no request-specific mask.
+        // Constrained requests must stay on the host-logit fallback until a
+        // separately accepted scheduler/MTP mask implementation exists.
+        use_sched = plain_greedy && !structured && !thinking_budget.Enabled() &&
+                    scheduler_active_ && !scheduler_stop_ && d_sched_logits_ &&
+                    static_cast<int>(active_.size()) < max_seq_;
+        if (use_sched) {
+          ar.seq = &seq;
+          ar.control = control.get();
+          ar.fd = fd;
+          active_.push_back(&ar);
+          detail::ServeFaultPoint("handler.after_active");
+        }
+      }
+      for (int step = static_cast<int>(generated.size()); step < max_tokens;
+           ++step) {
+        if (cancelled() || !response_status) break;
+        if (!plain_greedy) response_status = sampler.Observe(next_token);
+        if (!response_status) break;
+        generated.push_back(next_token);
+        rate_lease.Completion(choices.CompletionTokens() + generated.size());
+        if (is_stop_token(next_token)) {
+          finish_reason = "stop";
+          break;
+        }
+        const int32_t tok_id = next_token;
+        if (!consume_token(tok_id)) {
+          finish_reason = "stop";
+          break;
+        }
+        // The current token is already emitted (or buffered for non-streaming).
+        // Do not prepare another token when this request cannot consume it.
+        if (step == max_tokens - 1 || seq.position + 1 >= request_capacity) {
+          finish_reason = "length";
+          break;
+        }
+        if (use_sched) {
+          // Register this step's token with the scheduler (position + PLE
+          // context are read from the per-sequence state BEFORE advancing).
+          ar.token = tok_id;
+          {
+            const std::lock_guard<std::mutex> lock(sched_mu_);
+            ar.next_token = -1;
+            ar.pending = !scheduler_stop_ && !ar.retired;
+            ar.done = !ar.pending;
+            if (ar.done) seq.Fail();
+          }
+          sched_cv_.notify_one();
+          // Block until the scheduler's packed forward yields this step's
+          // token.
+          {
+            RequestDiagnostics::Scope wait(diagnostic, Wait::kScheduler);
+            std::unique_lock<std::mutex> lock(sched_mu_);
+            ar.cv.wait(lock, [&ar] { return ar.done; });
+          }
+          if (ar.next_token < 0) {
+            // Scheduler failed the forward or is shutting down.
+            generation_failed = true;
+            break;
+          }
+          next_token = ar.next_token;
+        } else {
+          // Fallback: single-sequence decode (B1 path).
+          auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
+          OnException backend_failure([&] { AbortBackendExecution(); });
+          if (router_trace_)
+            router_trace_->BeginForward(trace::RouteStage::kDecode,
+                                        seq.position, 1);
+          s = ExecutionStatus();
+          if (s.ok())
+            s = model::ModelDecodeStepSeq(
+                model_.Get(), &seq, tok_id, d_prefill_logits_, nullptr, nullptr,
+                seq_id, model::SequenceCompletion::kDeferred);
+          cudaError_t copy_error = cudaSuccess;
+          if (s.ok())
+            copy_error = cudaMemcpyAsync(h_logits.data(), d_prefill_logits_,
+                                         static_cast<size_t>(vocab) * 2,
+                                         cudaMemcpyDeviceToHost, nullptr);
+          model::ModelSequence* sequence = &seq;
+          s = FinishHostReadback(copy_error, &gpu_healthy_, {&sequence, 1}, s,
+                                 router_trace_.get(),
+                                 &metrics_.execution_steps_total);
+          if (!s.ok()) {
+            generation_failed = true;
+            break;
+          }
+          next_token = select_token(h_logits.data());
+        }
+      }
+      active_registration.Run();
+    }
+    trace_output_tokens = generated.size();
+    if (thinking_budget.Enabled()) {
+      std::fprintf(
+          stderr,
+          "[thinking-budget] request=%s limit=%lld consumed=%lld forced=%lld "
+          "reasoning_tokens=%lld mtp_steps=%d mtp_tokens=%d fallback=%d\n",
+          request_id.c_str(),
+          static_cast<long long>(reasoning_options.token_budget),
+          static_cast<long long>(thinking_budget.Consumed()),
+          static_cast<long long>(thinking_budget.ForcedTokens()),
+          static_cast<long long>(thinking_budget.ReasoningTokens()),
+          budget_mtp_steps, budget_mtp_tokens, budget_mtp_fallback);
+      metrics_.reasoning_budget_tokens_total.fetch_add(
+          thinking_budget.Consumed());
+      metrics_.reasoning_forced_tokens_total.fetch_add(
+          thinking_budget.ForcedTokens());
+      if (thinking_budget.ForcedTokens())
+        metrics_.reasoning_forced_requests.fetch_add(1);
+      if (budget_mtp_fallback) metrics_.reasoning_mtp_fallbacks.fetch_add(1);
+    }
+    if (generation_failed) seq.Fail();
+    model::ModelEndSequence(&seq);
+    LogMemorySnapshot("request_end", id);
+    if (residency_enabled_) {
+      quant::MoEResidency::Stats now, prev;
+      model::ResidencyTimingSnapshot tim_now, tp;
+      uint64_t interval;
+      {
+        auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
+        now = model::SumResidencyStats(model_.Get());
+        tim_now = model::SumResidencyTiming(model_.Get());
+        prev = residency_stats_prev_;
+        tp = residency_timing_prev_;
+        residency_stats_prev_ = now;
+        residency_timing_prev_ = tim_now;
+        interval = ++residency_interval_;
+      }
+      // Formatting and IO do not hold model_mu_. Interval IDs retain snapshot
+      // order even if concurrent handlers print in a different order.
+      std::fprintf(
+          stderr,
+          "[q4t][residency] id=%s scope=global_interval interval=%llu "
+          "finish=%s in=%d out=%zu "
+          "loads=%llu load_mb=%.1f misses=%llu hits=%llu "
+          "evictions=%llu dmiss=%llu dlook=%llu pmiss=%llu "
+          "plook=%llu l2h=%llu l2m=%llu l2ev=%llu nvme_mb=%.1f "
+          "mh=%llu mw=%llu msk=%llu ld2h=%llu ld2m=%llu "
+          "ld2ev=%llu lp2h=%llu lp2m=%llu lp2ev=%llu "
+          "pmr=%llu pme=%llu\n",
+          id.c_str(), static_cast<unsigned long long>(interval),
+          finish_reason.c_str(), T, generated.size(),
+          static_cast<unsigned long long>(now.loads - prev.loads),
+          (now.load_bytes - prev.load_bytes) / 1e6,
+          static_cast<unsigned long long>(now.misses - prev.misses),
+          static_cast<unsigned long long>(now.hits - prev.hits),
+          static_cast<unsigned long long>(now.evictions - prev.evictions),
+          static_cast<unsigned long long>(now.decode_misses -
+                                          prev.decode_misses),
+          static_cast<unsigned long long>(now.decode_lookups -
+                                          prev.decode_lookups),
+          static_cast<unsigned long long>(now.prefill_misses -
+                                          prev.prefill_misses),
+          static_cast<unsigned long long>(now.prefill_lookups -
+                                          prev.prefill_lookups),
+          static_cast<unsigned long long>(now.l2_hits - prev.l2_hits),
+          static_cast<unsigned long long>(now.l2_misses - prev.l2_misses),
+          static_cast<unsigned long long>(now.l2_evictions - prev.l2_evictions),
+          (now.nvme_read_bytes - prev.nvme_read_bytes) / 1e6,
+          static_cast<unsigned long long>(now.mirror_hits - prev.mirror_hits),
+          static_cast<unsigned long long>(now.mirror_writebacks -
+                                          prev.mirror_writebacks),
+          static_cast<unsigned long long>(now.mirror_skips - prev.mirror_skips),
+          static_cast<unsigned long long>(now.l2_decode_hits -
+                                          prev.l2_decode_hits),
+          static_cast<unsigned long long>(now.l2_decode_misses -
+                                          prev.l2_decode_misses),
+          static_cast<unsigned long long>(now.l2_decode_evictions -
+                                          prev.l2_decode_evictions),
+          static_cast<unsigned long long>(now.l2_prefill_hits -
+                                          prev.l2_prefill_hits),
+          static_cast<unsigned long long>(now.l2_prefill_misses -
+                                          prev.l2_prefill_misses),
+          static_cast<unsigned long long>(now.l2_prefill_evictions -
+                                          prev.l2_prefill_evictions),
+          static_cast<unsigned long long>(now.pread_merge_runs -
+                                          prev.pread_merge_runs),
+          static_cast<unsigned long long>(now.pread_merge_experts -
+                                          prev.pread_merge_experts));
+      // Optional global interval timing; max remains cumulative (upper bound).
+      if (tim_now.enabled) {
+        auto avg_us = [](uint64_t ns, uint64_t cnt) {
+          return cnt ? (static_cast<double>(ns) / cnt) / 1e3 : 0.0;
+        };
+        std::fprintf(
+            stderr,
+            "[q4t][residency][timing] id=%s scope=global_interval "
+            "interval=%llu "
+            "stage_n=%llu stage_avg_us=%.1f stage_max_us=%.1f "
+            "pread_n=%llu pread_avg_us=%.1f pread_max_us=%.1f "
+            "swz_n=%llu swz_avg_us=%.1f swz_max_us=%.1f "
+            "phase1_n=%llu phase1_avg_us=%.1f phase1_max_us=%.1f "
+            "dstage_n=%llu dstage_avg_us=%.1f dstage_max_us=%.1f "
+            "dpread_n=%llu dpread_avg_us=%.1f dpread_max_us=%.1f "
+            "dphase1_n=%llu dphase1_avg_us=%.1f dphase1_max_us=%.1f "
+            "d2h_n=%llu d2h_avg_us=%.1f d2h_max_us=%.1f "
+            "pmrun_n=%llu pmrun_avg_us=%.1f pmrun_max_us=%.1f\n",
+            id.c_str(), static_cast<unsigned long long>(interval),
+            static_cast<unsigned long long>(tim_now.stage_count -
+                                            tp.stage_count),
+            avg_us(tim_now.stage_ns - tp.stage_ns,
+                   tim_now.stage_count - tp.stage_count),
+            tim_now.stage_max_ns / 1e3,
+            static_cast<unsigned long long>(tim_now.pread_count -
+                                            tp.pread_count),
+            avg_us(tim_now.pread_ns - tp.pread_ns,
+                   tim_now.pread_count - tp.pread_count),
+            tim_now.pread_max_ns / 1e3,
+            static_cast<unsigned long long>(tim_now.swz_count - tp.swz_count),
+            avg_us(tim_now.swz_ns - tp.swz_ns,
+                   tim_now.swz_count - tp.swz_count),
+            tim_now.swz_max_ns / 1e3,
+            static_cast<unsigned long long>(tim_now.phase1_count -
+                                            tp.phase1_count),
+            avg_us(tim_now.phase1_ns - tp.phase1_ns,
+                   tim_now.phase1_count - tp.phase1_count),
+            tim_now.phase1_max_ns / 1e3,
+            static_cast<unsigned long long>(tim_now.dstage_count -
+                                            tp.dstage_count),
+            avg_us(tim_now.dstage_ns - tp.dstage_ns,
+                   tim_now.dstage_count - tp.dstage_count),
+            tim_now.dstage_max_ns / 1e3,
+            static_cast<unsigned long long>(tim_now.dpread_count -
+                                            tp.dpread_count),
+            avg_us(tim_now.dpread_ns - tp.dpread_ns,
+                   tim_now.dpread_count - tp.dpread_count),
+            tim_now.dpread_max_ns / 1e3,
+            static_cast<unsigned long long>(tim_now.dphase1_count -
+                                            tp.dphase1_count),
+            avg_us(tim_now.dphase1_ns - tp.dphase1_ns,
+                   tim_now.dphase1_count - tp.dphase1_count),
+            tim_now.dphase1_max_ns / 1e3,
+            static_cast<unsigned long long>(tim_now.d2h_count - tp.d2h_count),
+            avg_us(tim_now.d2h_ns - tp.d2h_ns,
+                   tim_now.d2h_count - tp.d2h_count),
+            tim_now.d2h_max_ns / 1e3,
+            static_cast<unsigned long long>(tim_now.pread_merge_count -
+                                            tp.pread_merge_count),
+            avg_us(tim_now.pread_merge_ns - tp.pread_merge_ns,
+                   tim_now.pread_merge_count - tp.pread_merge_count),
+            tim_now.pread_merge_max_ns / 1e3);
+      }
+    }
+
+    if (choice_index == 0)
+      metrics_.prompt_tokens_total.fetch_add(static_cast<uint64_t>(T),
+                                             std::memory_order_relaxed);
+    metrics_.generation_tokens_total.fetch_add(generated.size(),
+                                               std::memory_order_relaxed);
+
+#ifdef Q4T_SERVE_FAULT_INJECTION
+    // Preserve the actual constrained path before validation or a blocked
+    // write. The explicit per-request opt-in and bounded dump never exist in
+    // production.
+    if (structured) detail::ServeGeneratedTokens(request_id.c_str(), generated);
+#endif
+
+    // The handler has left every scheduler list and all submitted work is
+    // complete. Cancellation remains possible until the response is sent.
+    if (cancelled()) {
+      count_abort();
+      const detail::WriteOptions terminal{std::chrono::steady_clock::now() +
+                                          std::chrono::milliseconds(250)};
+      if (stream) {
+        detail::SendStreamError(fd, response_state, 409, "request cancelled",
+                                terminal, control->Reason());
+      } else {
+        SendError(fd, 409, "request cancelled", terminal, control->Reason());
+      }
+      cleanup();
+      return;
+    }
+    if (generation_failed) {
+      err_guard.ok = false;
+      std::fprintf(stderr, "[q4t] generation failed id=%s\n", id.c_str());
+      // The HTTP status is already committed for streaming requests. Publish
+      // an error terminal, never a normal stop/usage or a successful request.
+      const detail::WriteOptions terminal{std::chrono::steady_clock::now() +
+                                          std::chrono::milliseconds(250)};
+      if (RejectUnhealthy(fd, terminal)) {
+        cleanup();
+        return;
+      }
+      if (stream) {
+        detail::SendStreamError(fd, response_state, 500, "generation failed",
+                                terminal, "generation_failed");
+      } else {
+        SendError(fd, 500, "generation failed", terminal, "generation_failed");
+      }
+      cleanup();
+      return;
+    }
+    diagnostic.Stage("response");
+    if (response_status && structured && !structured->Terminated())
+      response_status = Status::Fail(
+          "constrained response did not reach a grammar-accepted stop token");
+    // Both transports use the same parser. Never publish a successful terminal
+    // (or a session snapshot) for malformed/truncated model tool output.
+    if (response_status.ok()) {
+      if (stream || text_stop.Enabled() || sampling.logprobs) {
+        std::vector<detail::Utf8Span> spans;
+        const auto tail = utf8.Finish(sampling.logprobs ? &spans : nullptr);
+        if (sampling.logprobs) token_logprobs.Map(spans);
+        write_content(text_stop.Append(tail));
+        if (response_status) write_content(text_stop.Finish());
+        if (text_stop.Matched()) finish_reason = "stop";
+      } else {
+        std::vector<std::uint32_t> gen_u32(generated.begin(), generated.end());
+        std::string text;
+        {
+          auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
+          response_status = tok_->Decode(gen_u32, true, &text);
+        }
+        if (response_status.ok()) {
+          std::vector<ResponseDelta> ignored;
+          response_status =
+              response_parser.Append(detail::NormalizeUtf8(text), &ignored);
+        }
+      }
+    }
+    if (response_status.ok()) {
+      std::vector<ResponseDelta> deltas;
+      response_status = response_parser.Finish(finish_reason == "length",
+                                               &deltas, text_stop.Matched());
+      if (response_status.ok()) write_deltas(deltas);
+    }
+    if (text_stop.Enabled()) {
+      std::fprintf(stderr,
+                   "[text-stop] request=%s matched_index=%d tokens=%zu "
+                   "mtp_steps=%d mtp_tokens=%d mtp_discarded=%d\n",
+                   request_id.c_str(), text_stop.MatchedIndex(),
+                   generated.size(), stop_mtp_steps, stop_mtp_tokens,
+                   stop_mtp_discarded);
+    }
+    if (!response_status.ok()) {
+      err_guard.ok = false;
+      const char* code = !structured ? "response_parse_failed"
+                         : finish_reason == "length"
+                             ? "structured_output_incomplete"
+                             : "structured_output_invalid";
+      diagnostic.Outcome("error", code);
+      const detail::WriteOptions terminal{std::chrono::steady_clock::now() +
+                                          std::chrono::milliseconds(250)};
+      detail::SendResponseParseError(fd, stream, response_state,
+                                     response_status.message(), terminal, code);
+      cleanup();
+      return;
+    }
+    if (finish_reason == "stop" && response_parser.HasToolCalls())
+      finish_reason = "tool_calls";
+    detail::ServeRequestFaultPoint("handler.before_response",
+                                   request_id.c_str());
+    // Resolve device ownership before a success terminal or cache commit. The
+    // slot/request leases remain held through output and the remaining cleanup.
+    release_buffers();
     if (!buffers_ok) {
       err_guard.ok = false;
       diagnostic.Outcome("error", "device_memory_failure");
@@ -1453,751 +2292,86 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                 "gpu_unhealthy");
       return;
     }
-  }
-  // Stage 2c (4b): the speculative steps are driven by the central scheduler,
-  // which batches all concurrent MTP requests into ONE MtpSpeculativeStepMulti
-  // (weights read once). This thread registers each step's input (mtp_b/d0/g),
-  // blocks on the request's cv, and is woken with the step's output. It owns
-  // the state-machine advance (position/history) over the accepted prefix.
-  // Fallback: if the scheduler is unavailable or the pool is full, decode
-  // plainly (the main seq is still usable).
-  ActiveRequest mtp_ar;
-  mtp::SuffixDrafter suffix;
-  struct RequestClasses {
-    ChatServer* server;
-    uint64_t decodes = 0, lookups = 0, allocations = 0;
-    size_t bytes = 0;
-  } request_classes{this};
-  std::array<uint64_t, 4> suffix_accepted{};
-  std::array<uint64_t, 4> neural_accepted{};
-  bool mtp_sched = false;
-  ScopeExit mtp_registration([&] {
-    if (mtp_sched) ReleaseActiveRequest(&mtp_ar);
-  });
-  if (use_mtp) {
-    const std::lock_guard<std::mutex> lock(sched_mu_);
-    mtp_sched = scheduler_active_ && !scheduler_stop_ && d_sched_logits_ &&
-                static_cast<int>(active_.size()) < max_seq_;
-    if (mtp_sched) {
-      mtp_ar.is_mtp = true;
-      mtp_ar.complete_terminal_draft = session.cache != nullptr;
-      mtp_ar.session_last_trunk = d_session_trunk;
-      mtp_ar.seq = &seq;
-      mtp_ar.control = control.get();
-      mtp_ar.fd = fd;
-      mtp_ar.mtp_g = d_mtp_g;
-
-      active_.push_back(&mtp_ar);
-      detail::ServeFaultPoint("handler.after_active");
-    } else {
-      use_mtp = false;
-    }
-  }
-  if (use_mtp && mtp_suffix_) {
-    const Status suffix_status = suffix.Init(
-        seq.history, model_.Get().cfg.vocab, request_capacity, {},
-        {&request_classes,
-         [](void* context, std::span<const int32_t> ids, bool* numeric) {
-           auto& local = *static_cast<RequestClasses*>(context);
-           auto* server = local.server;
-           const std::lock_guard<std::mutex> lock(server->tok_mu_);
-           auto& cache = server->suffix_token_cache_;
-           const auto before = cache.Counters();
-           const Status status = cache.Check(ids, numeric);
-           const auto& after = cache.Counters();
-           local.decodes += after.decodes - before.decodes;
-           local.lookups += after.lookups - before.lookups;
-           local.allocations += after.allocations - before.allocations;
-           local.bytes = cache.MemoryBytes();
-           return status;
-         }});
-    if (!suffix_status.ok())
-      std::fprintf(stderr, "[suffix] request=%s disabled=%s\n",
-                   request_id.c_str(), suffix_status.message().c_str());
-  }
-  if (use_mtp) {
-    int accepted_histogram[17] = {};
-    bool done = false;
-    while (!done && static_cast<int>(generated.size()) < max_tokens) {
-      if (cancelled()) break;
-      if (!mtp_sched) break;
-      if (is_stop_token(mtp_b)) {
-        generated.push_back(mtp_b);
-        rate_lease.Completion(generated.size());
-        finish_reason = "stop";
-        break;
-      }
-      const int remaining = max_tokens - static_cast<int>(generated.size());
-      if (!thinking_budget.CanSpeculate(mtp_k_ + 1)) {
-        // Reserve one admitted pending token before switching to host logits.
-        // No speculative work or KV for this next step has been submitted.
-        next_token = mtp_b;
-        use_mtp = false;
-        budget_mtp_fallback = true;
-        break;
-      }
-      if (!MtpGenerationStepFits(seq.position, request_capacity,
-                                 model_.Get().cfg.max_prefill, mtp_k_,
-                                 remaining)) {
-        // No speculative work has started. Finish with ordinary decode,
-        // preserving the pending token and the already emitted prefix.
-        next_token = mtp_b;
-        use_mtp = false;
-        break;
-      }
-      // Register this step's input with the scheduler.
-      mtp_ar.mtp_b = mtp_b;
-      mtp_ar.mtp_d0 = mtp_d0;
-      mtp_ar.mtp_suffix_ready = false;
-      if (suffix.Active()) {
-        const auto proposal = suffix.ProposeAfter(mtp_b, mtp_d0);
-        mtp_ar.mtp_suffix_ready = proposal.ready;
-        mtp_ar.mtp_suffix_tokens = proposal.tokens;
-      }
-      {
-        const std::lock_guard<std::mutex> lock(sched_mu_);
-        mtp_ar.mtp_accepted_count = 0;
-        mtp_ar.mtp_next_b = -1;
-        mtp_ar.mtp_next_d0 = -1;
-        mtp_ar.pending = !scheduler_stop_ && !mtp_ar.retired;
-        mtp_ar.done = !mtp_ar.pending;
-        if (mtp_ar.done) seq.Fail();
-      }
-      sched_cv_.notify_one();
-      // Block until the scheduler's batched step yields this step's output.
-      {
-        RequestDiagnostics::Scope wait(diagnostic, Wait::kScheduler);
-        std::unique_lock<std::mutex> lock(sched_mu_);
-        mtp_ar.cv.wait(lock, [&mtp_ar] { return mtp_ar.done; });
-      }
-      if (mtp_ar.mtp_accepted_count <= 0 ||
-          mtp_ar.mtp_accepted_count > mtp_k_ + 1) {
-        // Scheduler failed the step or is shutting down.
-        generation_failed = true;
-        break;
-      }
-      ++accepted_histogram[mtp_ar.mtp_accepted_count - 1];
-      if (text_stop.Enabled()) {
-        ++stop_mtp_steps;
-        stop_mtp_tokens += mtp_ar.mtp_accepted_count;
-      }
-      if (thinking_budget.Enabled()) {
-        ++budget_mtp_steps;
-        budget_mtp_tokens += mtp_ar.mtp_accepted_count;
-      }
-      if (mtp_suffix_) {
-        auto& histogram = mtp_ar.mtp_suffix_ready ? suffix_accepted
-                                                : neural_accepted;
-        ++histogram[mtp_ar.mtp_accepted_count - 1];
-      }
-      for (int i = 0; i < mtp_ar.mtp_accepted_count &&
-                          static_cast<int>(generated.size()) < max_tokens;
-           ++i) {
-        const int32_t tok_id = mtp_ar.mtp_accepted[i];
-        generated.push_back(tok_id);
-        rate_lease.Completion(generated.size());
-        if (!consume_token(tok_id)) {
-          if (text_stop.Matched())
-            stop_mtp_discarded = mtp_ar.mtp_accepted_count - i - 1;
-          done = true;
-          finish_reason = "stop";
-          break;
-        }
-        if (is_stop_token(tok_id)) {
-          done = true;
-          break;
-        }
-      }
-      // Advance the main seq over the accepted prefix [b, d_0..d_{a-1}] (the
-      // multi step does not touch seqs[b]).
-      seq.position += mtp_ar.mtp_accepted_count;
-      for (int i = 0; i < mtp_ar.mtp_accepted_count; ++i)
-        seq.history.push_back(mtp_ar.mtp_accepted[i]);
-      if (suffix.Active()) {
-        const Status suffix_status = suffix.Append(
-            {mtp_ar.mtp_accepted,
-             static_cast<size_t>(mtp_ar.mtp_accepted_count)});
-        if (!suffix_status.ok())
-          std::fprintf(stderr, "[suffix] request=%s disabled=%s\n",
-                       request_id.c_str(), suffix_status.message().c_str());
-      }
-      // Stop/EOS/parser failure wins over a coincident length bound. KV was
-      // committed for the entire accepted batch; keep that state intact and
-      // retire it. Stop+cache is rejected before model work, so the invisible
-      // speculative suffix cannot become a reusable response snapshot.
-      if (done) break;
-      if (static_cast<int>(generated.size()) >= max_tokens) {
-        finish_reason = "length";
-        break;
-      }
-      if (seq.position >= request_capacity) {
-        finish_reason = "length";
-        break;  // cannot decode further without exceeding the KV cache
-      }
-      mtp_b = mtp_ar.mtp_next_b;
-      mtp_d0 = mtp_ar.mtp_next_d0;
-      // d_mtp_g was overwritten in place with the next step's trunk.
-    }
-    flockfile(stderr);
-    std::fprintf(stderr, "[mtp-accept] request=%s draft_counts=",
-                 request_id.c_str());
-    for (int i = 0; i <= mtp_k_; ++i)
-      std::fprintf(stderr, "%s%d", i ? "," : "", accepted_histogram[i]);
-    std::fprintf(stderr, "\n");
-    funlockfile(stderr);
-  }
-  mtp_registration.Run();
-  // No scheduler owns this row now. Capture the complete target/shifted-draft
-  // boundary before any ordinary-decode tail; publication waits for successful
-  // HTTP completion. A thinking-budget tail can be longer than the ordinary
-  // capacity tail; only this complete earlier MTP boundary is reusable.
-  if (session.cache && mtp_sched && !generation_failed && response_status.ok() &&
-      !cancelled() &&
-      seq.stage == model::ModelSequence::Stage::kDecode && !seq.HasPending() &&
-      seq.position >= SessionCache::kMinPrefix &&
-      seq.position < request_capacity) {
-    const auto begin = std::chrono::steady_clock::now();
-    SessionSaveTiming timing(request_id.c_str(), "private");
-    std::unique_lock<std::mutex> lock;
-    {
-      SessionSaveTiming::Scope span(&timing, SessionSaveTiming::kModelLock);
-      lock = diagnostic.Lock(model_mu_, Wait::kModel);
-    }
-    OnException backend_failure([&] { AbortBackendExecution(); });
-    std::vector<SessionRange> ranges;
-    Status saved;
-    {
-      SessionSaveTiming::Scope span(&timing, SessionSaveTiming::kRanges);
-      saved = SessionStateRanges(model_.Get(), mtp_, seq_id, seq.position,
-                                  d_mtp_g, d_session_trunk, &ranges);
-    }
-    const bool has_step = mtp_ar.mtp_accepted_count > 0;
-    const int32_t pending = has_step ? mtp_ar.mtp_next_b : mtp_b;
-    const int32_t last_d0 = has_step ? mtp_ar.mtp_next_d0 : mtp_d0;
-    if (saved.ok() && pending >= 0 && last_d0 >= 0 &&
-        model_.Get().rope_delta[seq_id] == 0) {
-      std::vector<int32_t> prefix(seq.history);
-      prefix.push_back(pending);
-      saved = session_cache_.Save(session.key, prefix, ranges, session_copy,
-                                    cancelled, last_d0, &timing);
-      if (saved.ok()) detail::ServeSnapshotTokens(request_id.c_str(), prefix);
-    } else if (saved.ok()) {
-      saved = Status::Fail("incomplete session boundary");
-    }
-    timing.Report(saved.ok());
-    if (session_gpu_error) {
-      generation_failed = true;
-      use_mtp = true;  // Do not enter a plain tail after a device failure.
-      seq.Fail();
-    }
-    std::fprintf(stderr,
-                 "[session-cache] request=%s event=save prefix=%d "
-                 "ms=%.3f disk_bytes=%zu error=%s\n", request_id.c_str(),
-                 seq.position, std::chrono::duration<double, std::milli>(
-                     std::chrono::steady_clock::now() - begin).count(),
-                 session_cache_.Bytes(),
-                 saved.ok() ? "none" : saved.message().c_str());
-  }
-  if (mtp_suffix_) {
-    const size_t indexed = suffix.Size();
-    suffix.Reset();
-    const auto& stats = suffix.Counters();
-    flockfile(stderr);
-    std::fprintf(
-        stderr,
-        "[suffix] request=%s queries=%llu hits=%llu "
-        "candidates=%llu compared=%llu matched=%llu "
-        "no_match=%llu incomplete=%llu d0_mismatch=%llu "
-        "invalid=%llu exhausted=%llu indexed=%zu peak_bytes=%zu "
-        "object_bytes=%zu init_ns=%llu append_ns=%llu "
-        "query_ns=%llu release_ns=%llu numeric_checks=%llu "
-        "classified_tokens=%llu numeric_rejected=%llu "
-        "numeric_ns=%llu short_rejected=%llu classify_failed=%llu "
-        "cache_decodes=%llu cache_lookups=%llu "
-        "cache_allocations=%llu cache_bytes=%zu accepted=",
-        request_id.c_str(), static_cast<unsigned long long>(stats.queries),
-        static_cast<unsigned long long>(stats.hits),
-        static_cast<unsigned long long>(stats.candidates_examined),
-        static_cast<unsigned long long>(stats.compared_tokens),
-        static_cast<unsigned long long>(stats.matched_tokens),
-        static_cast<unsigned long long>(stats.no_match),
-        static_cast<unsigned long long>(stats.incomplete),
-        static_cast<unsigned long long>(stats.first_token_mismatch),
-        static_cast<unsigned long long>(stats.invalid_tokens),
-        static_cast<unsigned long long>(stats.capacity_exhaustions), indexed,
-        stats.peak_memory_bytes, sizeof(suffix),
-        static_cast<unsigned long long>(stats.init_ns),
-        static_cast<unsigned long long>(stats.append_ns),
-        static_cast<unsigned long long>(stats.query_ns),
-        static_cast<unsigned long long>(stats.release_ns),
-        static_cast<unsigned long long>(stats.numeric_checks),
-        static_cast<unsigned long long>(stats.classified_tokens),
-        static_cast<unsigned long long>(stats.numeric_rejected),
-        // numeric_ns is already included in query_ns.
-        static_cast<unsigned long long>(stats.numeric_ns),
-        static_cast<unsigned long long>(stats.short_rejected),
-        static_cast<unsigned long long>(stats.classification_failures),
-        static_cast<unsigned long long>(request_classes.decodes),
-        static_cast<unsigned long long>(request_classes.lookups),
-        static_cast<unsigned long long>(request_classes.allocations),
-        request_classes.bytes);
-    for (size_t i = 0; i < suffix_accepted.size(); ++i)
-      std::fprintf(stderr, "%s%llu", i ? "," : "",
-                   static_cast<unsigned long long>(suffix_accepted[i]));
-    std::fprintf(stderr, " neural_accepted=");
-    for (size_t i = 0; i < neural_accepted.size(); ++i)
-      std::fprintf(stderr, "%s%llu", i ? "," : "",
-                   static_cast<unsigned long long>(neural_accepted[i]));
-    std::fprintf(stderr, "\n");
-    funlockfile(stderr);
-  }
-  if (!use_mtp) {
-    // B2b continuous batching: this request's decode steps are driven by the
-    // central scheduler, which packs the current token of EVERY active
-    // plain-decode request into ONE ModelDecodeBatchMulti (weights read once
-    // for all B tokens). This thread only emits tokens and advances the
-    // per-sequence state machine; the GPU forward is the scheduler's job.
-    //
-    // Fallback: if the scheduler is unavailable (buffer alloc failed) or the
-    // active pool is full, this request decodes on its own via
-    // ModelDecodeStepSeq (the B1 single-sequence path).
-    bool use_sched = false;
-    ActiveRequest ar;
-    ScopeExit active_registration([&] {
-      if (use_sched) ReleaseActiveRequest(&ar);
-    });
-    {
-      const std::lock_guard<std::mutex> lock(sched_mu_);
-      // The current packed scheduler argmax has no request-specific mask.
-      // Constrained requests must stay on the host-logit fallback until a
-      // separately accepted scheduler/MTP mask implementation exists.
-      use_sched = !structured && !thinking_budget.Enabled() &&
-                  scheduler_active_ && !scheduler_stop_ && d_sched_logits_ &&
-                  static_cast<int>(active_.size()) < max_seq_;
-      if (use_sched) {
-        ar.seq = &seq;
-        ar.control = control.get();
-        ar.fd = fd;
-        active_.push_back(&ar);
-        detail::ServeFaultPoint("handler.after_active");
-      }
-    }
-    for (int step = static_cast<int>(generated.size());
-         step < max_tokens; ++step) {
-      if (cancelled() || !response_status) break;
-      generated.push_back(next_token);
-      rate_lease.Completion(generated.size());
-      if (is_stop_token(next_token)) {
-        finish_reason = "stop";
-        break;
-      }
-      const int32_t tok_id = next_token;
-      if (!consume_token(tok_id)) {
-        finish_reason = "stop";
-        break;
-      }
-      // The current token is already emitted (or buffered for non-streaming).
-      // Do not prepare another token when this request cannot consume it.
-      if (step == max_tokens - 1 || seq.position + 1 >= request_capacity) {
-        finish_reason = "length";
-        break;
-      }
-      if (use_sched) {
-        // Register this step's token with the scheduler (position + PLE
-        // context are read from the per-sequence state BEFORE advancing).
-        ar.token = tok_id;
-        {
-          const std::lock_guard<std::mutex> lock(sched_mu_);
-          ar.next_token = -1;
-          ar.pending = !scheduler_stop_ && !ar.retired;
-          ar.done = !ar.pending;
-          if (ar.done) seq.Fail();
-        }
-        sched_cv_.notify_one();
-        // Block until the scheduler's packed forward yields this step's token.
-        {
-          RequestDiagnostics::Scope wait(diagnostic, Wait::kScheduler);
-          std::unique_lock<std::mutex> lock(sched_mu_);
-          ar.cv.wait(lock, [&ar] { return ar.done; });
-        }
-        if (ar.next_token < 0) {
-          // Scheduler failed the forward or is shutting down.
-          generation_failed = true;
-          break;
-        }
-        next_token = ar.next_token;
-      } else {
-        // Fallback: single-sequence decode (B1 path).
-        auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
-        OnException backend_failure([&] { AbortBackendExecution(); });
-        if (router_trace_) router_trace_->BeginForward(
-            trace::RouteStage::kDecode, seq.position, 1);
-        s = ExecutionStatus();
-        if (s.ok())
-          s = model::ModelDecodeStepSeq(
-              model_.Get(), &seq, tok_id, d_prefill_logits_, nullptr, nullptr,
-              seq_id, model::SequenceCompletion::kDeferred);
-        cudaError_t copy_error = cudaSuccess;
-        if (s.ok())
-          copy_error = cudaMemcpyAsync(
-              h_logits.data(), d_prefill_logits_,
-              static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost, nullptr);
-        model::ModelSequence* sequence = &seq;
-        s = FinishHostReadback(copy_error, &gpu_healthy_, {&sequence, 1}, s,
-                               router_trace_.get(),
-                               &metrics_.execution_steps_total);
-        if (!s.ok()) {
-          generation_failed = true;
-          break;
-        }
-        next_token = select_token(h_logits.data());
-      }
-    }
-    active_registration.Run();
-  }
-  trace_output_tokens = generated.size();
-  if (thinking_budget.Enabled()) {
-    std::fprintf(
-        stderr,
-        "[thinking-budget] request=%s limit=%lld consumed=%lld forced=%lld "
-        "reasoning_tokens=%lld mtp_steps=%d mtp_tokens=%d fallback=%d\n",
-        request_id.c_str(),
-        static_cast<long long>(reasoning_options.token_budget),
-        static_cast<long long>(thinking_budget.Consumed()),
-        static_cast<long long>(thinking_budget.ForcedTokens()),
-        static_cast<long long>(thinking_budget.ReasoningTokens()),
-        budget_mtp_steps, budget_mtp_tokens, budget_mtp_fallback);
-    metrics_.reasoning_budget_tokens_total.fetch_add(
-        thinking_budget.Consumed());
-    metrics_.reasoning_forced_tokens_total.fetch_add(
-        thinking_budget.ForcedTokens());
-    if (thinking_budget.ForcedTokens())
-      metrics_.reasoning_forced_requests.fetch_add(1);
-    if (budget_mtp_fallback) metrics_.reasoning_mtp_fallbacks.fetch_add(1);
-  }
-  if (generation_failed) seq.Fail();
-  model::ModelEndSequence(&seq);
-  LogMemorySnapshot("request_end", id);
-  if (residency_enabled_) {
-    quant::MoEResidency::Stats now, prev;
-    model::ResidencyTimingSnapshot tim_now, tp;
-    uint64_t interval;
-    {
-      auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
-      now = model::SumResidencyStats(model_.Get());
-      tim_now = model::SumResidencyTiming(model_.Get());
-      prev = residency_stats_prev_;
-      tp = residency_timing_prev_;
-      residency_stats_prev_ = now;
-      residency_timing_prev_ = tim_now;
-      interval = ++residency_interval_;
-    }
-    // Formatting and IO do not hold model_mu_. Interval IDs retain snapshot
-    // order even if concurrent handlers print in a different order.
-    std::fprintf(stderr,
-                 "[q4t][residency] id=%s scope=global_interval interval=%llu "
-                 "finish=%s in=%d out=%zu "
-                 "loads=%llu load_mb=%.1f misses=%llu hits=%llu "
-                 "evictions=%llu dmiss=%llu dlook=%llu pmiss=%llu "
-                 "plook=%llu l2h=%llu l2m=%llu l2ev=%llu nvme_mb=%.1f "
-                 "mh=%llu mw=%llu msk=%llu ld2h=%llu ld2m=%llu "
-                 "ld2ev=%llu lp2h=%llu lp2m=%llu lp2ev=%llu "
-                 "pmr=%llu pme=%llu\n",
-                 id.c_str(), static_cast<unsigned long long>(interval),
-                 finish_reason.c_str(), T, generated.size(),
-                 static_cast<unsigned long long>(now.loads - prev.loads),
-                 (now.load_bytes - prev.load_bytes) / 1e6,
-                 static_cast<unsigned long long>(now.misses - prev.misses),
-                 static_cast<unsigned long long>(now.hits - prev.hits),
-                 static_cast<unsigned long long>(
-                     now.evictions - prev.evictions),
-                 static_cast<unsigned long long>(
-                     now.decode_misses - prev.decode_misses),
-                 static_cast<unsigned long long>(
-                     now.decode_lookups - prev.decode_lookups),
-                 static_cast<unsigned long long>(
-                     now.prefill_misses - prev.prefill_misses),
-                 static_cast<unsigned long long>(
-                     now.prefill_lookups - prev.prefill_lookups),
-                 static_cast<unsigned long long>(now.l2_hits - prev.l2_hits),
-                 static_cast<unsigned long long>(
-                     now.l2_misses - prev.l2_misses),
-                 static_cast<unsigned long long>(
-                     now.l2_evictions - prev.l2_evictions),
-                 (now.nvme_read_bytes - prev.nvme_read_bytes) / 1e6,
-                 static_cast<unsigned long long>(
-                     now.mirror_hits - prev.mirror_hits),
-                 static_cast<unsigned long long>(
-                     now.mirror_writebacks - prev.mirror_writebacks),
-                 static_cast<unsigned long long>(
-                     now.mirror_skips - prev.mirror_skips),
-                 static_cast<unsigned long long>(
-                     now.l2_decode_hits - prev.l2_decode_hits),
-                 static_cast<unsigned long long>(
-                     now.l2_decode_misses - prev.l2_decode_misses),
-                 static_cast<unsigned long long>(
-                     now.l2_decode_evictions - prev.l2_decode_evictions),
-                 static_cast<unsigned long long>(
-                     now.l2_prefill_hits - prev.l2_prefill_hits),
-                 static_cast<unsigned long long>(
-                     now.l2_prefill_misses - prev.l2_prefill_misses),
-                 static_cast<unsigned long long>(
-                     now.l2_prefill_evictions - prev.l2_prefill_evictions),
-                 static_cast<unsigned long long>(
-                     now.pread_merge_runs - prev.pread_merge_runs),
-                 static_cast<unsigned long long>(
-                     now.pread_merge_experts - prev.pread_merge_experts));
-    // Optional global interval timing; max remains cumulative (upper bound).
-    if (tim_now.enabled) {
-      auto avg_us = [](uint64_t ns, uint64_t cnt) {
-        return cnt ? (static_cast<double>(ns) / cnt) / 1e3 : 0.0;
-      };
-      std::fprintf(stderr,
-                   "[q4t][residency][timing] id=%s scope=global_interval "
-                   "interval=%llu "
-                   "stage_n=%llu stage_avg_us=%.1f stage_max_us=%.1f "
-                   "pread_n=%llu pread_avg_us=%.1f pread_max_us=%.1f "
-                   "swz_n=%llu swz_avg_us=%.1f swz_max_us=%.1f "
-                   "phase1_n=%llu phase1_avg_us=%.1f phase1_max_us=%.1f "
-                   "dstage_n=%llu dstage_avg_us=%.1f dstage_max_us=%.1f "
-                   "dpread_n=%llu dpread_avg_us=%.1f dpread_max_us=%.1f "
-                   "dphase1_n=%llu dphase1_avg_us=%.1f dphase1_max_us=%.1f "
-                   "d2h_n=%llu d2h_avg_us=%.1f d2h_max_us=%.1f "
-                   "pmrun_n=%llu pmrun_avg_us=%.1f pmrun_max_us=%.1f\n",
-                   id.c_str(), static_cast<unsigned long long>(interval),
-                   static_cast<unsigned long long>(
-                       tim_now.stage_count - tp.stage_count),
-                   avg_us(tim_now.stage_ns - tp.stage_ns,
-                          tim_now.stage_count - tp.stage_count),
-                   tim_now.stage_max_ns / 1e3,
-                   static_cast<unsigned long long>(
-                       tim_now.pread_count - tp.pread_count),
-                   avg_us(tim_now.pread_ns - tp.pread_ns,
-                          tim_now.pread_count - tp.pread_count),
-                   tim_now.pread_max_ns / 1e3,
-                   static_cast<unsigned long long>(
-                       tim_now.swz_count - tp.swz_count),
-                   avg_us(tim_now.swz_ns - tp.swz_ns,
-                          tim_now.swz_count - tp.swz_count),
-                   tim_now.swz_max_ns / 1e3,
-                   static_cast<unsigned long long>(
-                       tim_now.phase1_count - tp.phase1_count),
-                   avg_us(tim_now.phase1_ns - tp.phase1_ns,
-                          tim_now.phase1_count - tp.phase1_count),
-                   tim_now.phase1_max_ns / 1e3,
-                   static_cast<unsigned long long>(
-                       tim_now.dstage_count - tp.dstage_count),
-                   avg_us(tim_now.dstage_ns - tp.dstage_ns,
-                          tim_now.dstage_count - tp.dstage_count),
-                   tim_now.dstage_max_ns / 1e3,
-                   static_cast<unsigned long long>(
-                       tim_now.dpread_count - tp.dpread_count),
-                   avg_us(tim_now.dpread_ns - tp.dpread_ns,
-                          tim_now.dpread_count - tp.dpread_count),
-                   tim_now.dpread_max_ns / 1e3,
-                   static_cast<unsigned long long>(
-                       tim_now.dphase1_count - tp.dphase1_count),
-                   avg_us(tim_now.dphase1_ns - tp.dphase1_ns,
-                          tim_now.dphase1_count - tp.dphase1_count),
-                   tim_now.dphase1_max_ns / 1e3,
-                   static_cast<unsigned long long>(
-                       tim_now.d2h_count - tp.d2h_count),
-                   avg_us(tim_now.d2h_ns - tp.d2h_ns,
-                          tim_now.d2h_count - tp.d2h_count),
-                   tim_now.d2h_max_ns / 1e3,
-                   static_cast<unsigned long long>(
-                       tim_now.pread_merge_count - tp.pread_merge_count),
-                   avg_us(tim_now.pread_merge_ns - tp.pread_merge_ns,
-                          tim_now.pread_merge_count - tp.pread_merge_count),
-                   tim_now.pread_merge_max_ns / 1e3);
-    }
-  }
-
-  metrics_.prompt_tokens_total.fetch_add(static_cast<uint64_t>(T),
-                                         std::memory_order_relaxed);
-  metrics_.generation_tokens_total.fetch_add(generated.size(),
-                                             std::memory_order_relaxed);
-  metrics_.e2e_seconds.Observe(
-      std::chrono::duration<double>(std::chrono::steady_clock::now() - t_arrive)
-          .count());
-
-#ifdef Q4T_SERVE_FAULT_INJECTION
-  // Preserve the actual constrained path before validation or a blocked write.
-  // The explicit per-request opt-in and bounded dump never exist in production.
-  if (structured) detail::ServeGeneratedTokens(request_id.c_str(), generated);
-#endif
-
-  // The handler has left every scheduler list and all submitted work is
-  // complete. Cancellation remains possible until the response is sent.
-  if (cancelled()) {
-    count_abort();
-    const detail::WriteOptions terminal{
-        std::chrono::steady_clock::now() + std::chrono::milliseconds(250)};
-    if (stream) {
-      detail::SendStreamError(fd, response_state, 409, "request cancelled",
-                              terminal, control->Reason());
-    } else {
-      SendError(fd, 409, "request cancelled", terminal, control->Reason());
-    }
-    cleanup();
-    return;
-  }
-  if (generation_failed) {
-    err_guard.ok = false;
-    std::fprintf(stderr, "[q4t] generation failed id=%s\n", id.c_str());
-    // The HTTP status is already committed for streaming requests. Publish
-    // an error terminal, never a normal stop/usage or a successful request.
-    const detail::WriteOptions terminal{
-        std::chrono::steady_clock::now() + std::chrono::milliseconds(250)};
-    if (RejectUnhealthy(fd, terminal)) {
-      cleanup();
+    // A choice is complete, but the external request retains admission,
+    // cancellation and quota ownership until all choices finish.
+    s = choices.Add(
+        choice_index, stream ? "" : response_parser.MessageJson(),
+        finish_reason, sampling.logprobs ? token_logprobs.Json() : "null", T,
+        generated.size(), restored_prefix,
+        session.cache || !prefix_scope.empty(), reasoning_options.token_budget,
+        thinking_budget.Consumed(), thinking_budget.ForcedTokens());
+    if (!s) {
+      err_guard.ok = false;
+      SendError(fd, 503, s.message(), {}, "response_storage_exhausted");
       return;
     }
+    const bool final_choice = choice_index + 1 == sampling.choices;
+    if (final_choice) stop_heartbeat.Run();
     if (stream) {
-      detail::SendStreamError(fd, response_state, 500, "generation failed",
-                              terminal, "generation_failed");
-    } else {
-      SendError(fd, 500, "generation failed", terminal, "generation_failed");
-    }
-    cleanup();
-    return;
-  }
-  diagnostic.Stage("response");
-  if (response_status && structured && !structured->Terminated())
-    response_status = Status::Fail(
-        "constrained response did not reach a grammar-accepted stop token");
-  // Both transports use the same parser. Never publish a successful terminal
-  // (or a session snapshot) for malformed/truncated model tool output.
-  if (response_status.ok()) {
-    if (stream || text_stop.Enabled()) {
-      write_content(text_stop.Append(utf8.Finish()));
-      if (response_status) write_content(text_stop.Finish());
-      if (text_stop.Matched()) finish_reason = "stop";
-    } else {
-      std::vector<std::uint32_t> gen_u32(generated.begin(), generated.end());
-      std::string text;
-      {
-        auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
-        response_status = tok_->Decode(gen_u32, true, &text);
+      const auto finish_chunk = detail::SseDeltaChunk(
+          id, model_field, "{}", finish_reason, choice_index, created,
+          include_usage,
+          sampling.logprobs ? R"({"content":[],"refusal":null})" : "null");
+      std::string tail;
+      if (final_choice) {
+        if (include_usage) {
+          tail = "data: {\"id\":\"" + id +
+                 "\",\"object\":\"chat.completion.chunk\",\"created\":" +
+                 std::to_string(created) + ",\"model\":\"" +
+                 JsonEscape(model_field) +
+                 "\",\"choices\":[],\"usage\":" + choices.UsageJson() +
+                 "}\r\n\r\n";
+        }
+        tail += "data: [DONE]\r\n\r\n";
+        if (http) http->BeforeTerminal();
+        *response_state = detail::ResponseState::kTerminal;
       }
-      if (response_status.ok()) {
-        std::vector<ResponseDelta> ignored;
-        response_status = response_parser.Append(
-            detail::NormalizeUtf8(text), &ignored);
+      write_stream(finish_chunk);
+      detail::ServeFaultPoint("handler.after_finish");
+      if (final_choice) write_stream(tail);
+    } else if (final_choice) {
+      std::string resp;
+      s = choices.Json(id, model_field, created, &resp);
+      if (!s) {
+        err_guard.ok = false;
+        SendError(fd, 503, s.message(), {}, "response_storage_exhausted");
+        return;
+      }
+      if (!SendSimple(fd, 200, "OK", resp, "application/json",
+                      {.control = control.get()})) {
+        client_disconnected = true;
+        control->Cancel(RequestControl::State::kDisconnect);
+        count_abort();
       }
     }
-  }
-  if (response_status.ok()) {
-    std::vector<ResponseDelta> deltas;
-    response_status = response_parser.Finish(finish_reason == "length", &deltas,
-                                             text_stop.Matched());
-    if (response_status.ok() && stream) write_deltas(deltas);
-  }
-  if (text_stop.Enabled()) {
-    std::fprintf(stderr,
-                 "[text-stop] request=%s matched_index=%d tokens=%zu "
-                 "mtp_steps=%d mtp_tokens=%d mtp_discarded=%d\n",
-                 request_id.c_str(), text_stop.MatchedIndex(), generated.size(),
-                 stop_mtp_steps, stop_mtp_tokens, stop_mtp_discarded);
-  }
-  if (!response_status.ok()) {
-    err_guard.ok = false;
-    const char* code = !structured ? "response_parse_failed"
-                       : finish_reason == "length"
-                           ? "structured_output_incomplete"
-                           : "structured_output_invalid";
-    diagnostic.Outcome("error", code);
-    const detail::WriteOptions terminal{
-        std::chrono::steady_clock::now() + std::chrono::milliseconds(250)};
-    detail::SendResponseParseError(fd, stream, response_state,
-                                   response_status.message(), terminal, code);
+    if (final_choice && !client_disconnected)
+      *response_state = detail::ResponseState::kComplete;
+    const bool response_success = !client_disconnected &&
+                                  !control->Cancelled() &&
+                                  (!final_choice || control->Finish());
+    trace_outcome = response_success ? trace::RequestOutcome::kSuccess
+                                     : trace::RequestOutcome::kCancelled;
     cleanup();
-    return;
-  }
-  if (finish_reason == "stop" && response_parser.HasToolCalls())
-    finish_reason = "tool_calls";
-  const std::string cached_usage = (session.cache || !prefix_scope.empty())
-      ? ",\"prompt_tokens_details\":{\"cached_tokens\":" +
-            std::to_string(restored_prefix) + "}"
-      : "";
-  const std::string reasoning_usage = thinking_budget.UsageFields();
-  detail::ServeRequestFaultPoint("handler.before_response", request_id.c_str());
-  // Resolve device ownership before a success terminal or cache commit. The
-  // slot/request leases remain held through output and the remaining cleanup.
-  release_buffers();
-  if (!buffers_ok) {
-    err_guard.ok = false;
-    diagnostic.Outcome("error", "device_memory_failure");
-    SendError(fd, 503, "device buffer release failed; restart server", {},
-              "gpu_unhealthy");
-    return;
-  }
-  // 4. Finalize.
-  stop_heartbeat.Run();
-  if (stream) {
-    // Allocate all terminal frames before publishing the first terminal.
-    // Once publication starts, an exception can only close the connection;
-    // appending a second terminal would turn a truncated stream into a lie.
-    const auto finish_chunk = SseChunk(id, model_field, "", "", finish_reason,
-                                       0, created, include_usage);
-    std::string tail;
-    if (include_usage && !client_disconnected) {
-      tail = "data: {\"id\":\"" + id +
-             "\",\"object\":\"chat.completion.chunk\",\"created\":" +
-             std::to_string(created) + ",\"model\":\"" +
-             JsonEscape(model_field) + "\",\"choices\":[],\"usage\":{" +
-             "\"prompt_tokens\":" + std::to_string(T) +
-             ",\"completion_tokens\":" + std::to_string(generated.size()) +
-             ",\"total_tokens\":" + std::to_string(T + generated.size()) +
-             cached_usage + reasoning_usage + "}}\r\n\r\n";
-    }
-    tail += "data: [DONE]\r\n\r\n";
-    if (http) http->BeforeTerminal();
-    *response_state = detail::ResponseState::kTerminal;
-    write_stream(finish_chunk);
-    detail::ServeFaultPoint("handler.after_finish");
-    write_stream(tail);
-  } else {
-    std::string resp =
-        "{\"id\":\"" + id +
-        "\",\"object\":\"chat.completion\","
-        "\"created\":" +
-        std::to_string(created) + ",\"model\":\"" + JsonEscape(model_field) +
-        "\",\"choices\":[{\"index\":0,\"message\":" +
-        response_parser.MessageJson() + ",\"finish_reason\":\"" +
-        finish_reason +
-        "\",\"logprobs\":null}],"
-        "\"usage\":{\"prompt_tokens\":" +
-        std::to_string(T) +
-        ",\"completion_tokens\":" + std::to_string(generated.size()) +
-        ",\"total_tokens\":" + std::to_string(T + generated.size()) +
-        cached_usage + reasoning_usage + "}";
-    resp += "}";
-    if (!SendSimple(fd, 200, "OK", resp, "application/json",
-                    {.control = control.get()})) {
-      client_disconnected = true;
-      control->Cancel(RequestControl::State::kDisconnect);
+    if (!response_success) {
       count_abort();
+      diagnostic.Outcome("cancelled", control->Reason());
+      return;
     }
-  }
-
-  if (!client_disconnected) *response_state = detail::ResponseState::kComplete;
-  const bool response_success = !client_disconnected &&
-                                !control->Cancelled() && control->Finish();
-  trace_outcome = response_success ? trace::RequestOutcome::kSuccess
-                                  : trace::RequestOutcome::kCancelled;
-  if (response_success) {
-    metrics_.response_seconds.Observe(std::chrono::duration<double>(
-        std::chrono::steady_clock::now() - t_arrive).count());
-    session.success = true;
-    for (auto& lease : shared_writes) lease->success = true;
-    diagnostic.Outcome("success", "completed");
-    metrics_.requests_success.fetch_add(1, std::memory_order_relaxed);
-  } else {
-    count_abort();
-    diagnostic.Outcome("cancelled", control->Reason());
-  }
-  cleanup();
+    if (final_choice) {
+      metrics_.response_seconds.Observe(
+          std::chrono::duration<double>(std::chrono::steady_clock::now() -
+                                        t_arrive)
+              .count());
+      metrics_.e2e_seconds.Observe(
+          std::chrono::duration<double>(std::chrono::steady_clock::now() -
+                                        t_arrive)
+              .count());
+      session.success = true;
+      for (auto& lease : shared_writes) lease->success = true;
+      diagnostic.Outcome("success", "completed");
+      metrics_.requests_success.fetch_add(1, std::memory_order_relaxed);
+    }
+  }  // Each choice releases its model/grammar buffers before the next one.
 }
 
 }  // namespace q4t::server

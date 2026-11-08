@@ -164,48 +164,48 @@
       ]
     },
     "temperature": {
-      "semantics": "中性值或 null；null 使用 greedy 默认值",
-      "boundary": "非中性采样值拒绝；中性值比较先检查数字原文为精确整数",
+      "semantics": "源码接入，验收中：0—2，默认/null=1；0使用greedy，正温度真实采样",
+      "boundary": "非greedy不进入MTP/packed argmax；浮点端点原文和underflow校验",
       "evidence": [
-        "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
-        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+        "docs/SERVE_SAMPLING_2026-11-08.md",
+        "tests/server_sampling_test.cpp",
+        "tests/server_chat_sampling_response_test.cpp"
       ]
     },
     "top_p": {
-      "semantics": "中性值或 null；null 使用 greedy 默认值",
-      "boundary": "非中性采样值拒绝；中性值比较先检查数字原文为精确整数",
+      "semantics": "源码接入，验收中：0—1 nucleus，默认/null=1；0至少保留最高项",
+      "boundary": "在temperature缩放后截断并重新归一；temperature0仍argmax",
       "evidence": [
-        "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
-        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+        "docs/SERVE_SAMPLING_2026-11-08.md",
+        "tests/server_sampling_test.cpp",
+        "tests/server_chat_sampling_response_test.cpp"
       ]
     },
     "n": {
-      "semantics": "中性值或 null；null 使用 greedy 默认值",
-      "boundary": "非中性采样值拒绝；中性值比较先检查数字原文为精确整数",
+      "semantics": "源码接入，验收中：1—128独立choice，默认/null=1；串行执行、单一请求准入/取消",
+      "boundary": "输入计一次，所有输出汇总；总输出配额与响应存储预算有界",
       "evidence": [
-        "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
-        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+        "docs/SERVE_SAMPLING_2026-11-08.md",
+        "tests/server_sampling_test.cpp",
+        "tests/server_chat_sampling_response_test.cpp"
       ]
     },
     "frequency_penalty": {
-      "semantics": "中性值或 null；null 使用 greedy 默认值",
-      "boundary": "非中性采样值拒绝；中性值比较先检查数字原文为精确整数",
+      "semantics": "源码接入，验收中：-2—2，默认/null=0；按本choice已生成token次数调整",
+      "boundary": "不混用prompt或其他choice历史；在温度前应用",
       "evidence": [
-        "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
-        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+        "docs/SERVE_SAMPLING_2026-11-08.md",
+        "tests/server_sampling_test.cpp",
+        "tests/server_chat_sampling_response_test.cpp"
       ]
     },
     "presence_penalty": {
-      "semantics": "中性值或 null；null 使用 greedy 默认值",
-      "boundary": "非中性采样值拒绝；中性值比较先检查数字原文为精确整数",
+      "semantics": "源码接入，验收中：-2—2，默认/null=0；本choice已出现token仅扣一次",
+      "boundary": "在温度前应用；grammar/mask不能被penalty绕过",
       "evidence": [
-        "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
-        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+        "docs/SERVE_SAMPLING_2026-11-08.md",
+        "tests/server_sampling_test.cpp",
+        "tests/server_chat_sampling_response_test.cpp"
       ]
     },
     "repetition_penalty": {
@@ -218,12 +218,12 @@
       ]
     },
     "seed": {
-      "semantics": "原文精确整数且绝对值不超过 2^53-1，或 null",
-      "boundary": "greedy 无随机效果；不保证跨版本/配置重现",
+      "semantics": "源码接入，验收中：原文精确signed int64或null；每choice独立派生RNG",
+      "boundary": "同实现/输入条件best effort；JS普通number仅精确表示safe integer",
       "evidence": [
-        "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
-        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+        "docs/SERVE_SAMPLING_2026-11-08.md",
+        "tests/server_sampling_test.cpp",
+        "tests/server_chat_sampling_response_test.cpp"
       ]
     },
     "stop": {
@@ -237,28 +237,30 @@
       ]
     },
     "logprobs": {
-      "semantics": "只接受 null 或 false",
-      "boundary": "未实现 token 概率 G8",
+      "semantics": "源码接入，验收中：boolean/null，真实原始模型分布的content token概率",
+      "boundary": "raw top20之外的所选token=-9999；隐藏-only token排除，跨界token原bytes保留一次",
       "evidence": [
-        "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "docs/SERVE_SAMPLING_2026-11-08.md",
+        "tests/server_sampling_test.cpp",
+        "tests/server_chat_sampling_response_test.cpp"
       ]
     },
     "top_logprobs": {
-      "semantics": "仅 null 或精确数学零的数值",
-      "boundary": "不返回 logprobs；浮点舍入后的零不视为合法控制值",
+      "semantics": "源码接入，验收中：0—20整数/null；非null必须logprobs=true",
+      "boundary": "每个所选content token的原分布候选，不是mask/nucleus后的条件概率",
       "evidence": [
-        "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
-        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+        "docs/SERVE_SAMPLING_2026-11-08.md",
+        "tests/server_sampling_test.cpp",
+        "tests/server_chat_sampling_response_test.cpp"
       ]
     },
     "logit_bias": {
-      "semantics": "只接受 null 或空对象",
-      "boundary": "未实现 logit 调整 G8",
+      "semantics": "源码接入，验收中：词表内token ID映射-100—100；null为空",
+      "boundary": "数值别名ID不能重复，真实调整选择分布；仍服从grammar/停止边界",
       "evidence": [
-        "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "docs/SERVE_SAMPLING_2026-11-08.md",
+        "tests/server_sampling_test.cpp",
+        "tests/server_chat_sampling_response_test.cpp"
       ]
     },
     "response_format": {
@@ -646,8 +648,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "d3404c16e8cb07de2b05dbd92e38e55e3d0697e42007f09cac49f74952217a76",
-    "cmake/ChatProtocolIdentity.cmake": "6561776bab97cc5e62f7ca619a2d9f53fde3f690b35cc5f934c69747226ca7e9",
+    "CMakeLists.txt": "a0104b1833912c7b3fb6f95cadf53103b0cd2c273ed3cb040af2acffbb0c2033",
+    "cmake/ChatProtocolIdentity.cmake": "3f0bce368803fae5ce2f0e05b4dcf6fdf49ab66f831fed25a909510959b07889",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
     "cmake/NativeIngress.cmake": "d10f996fdf01e28f29eaa40d9c92f2d78ff02126351188667329b235a22f2346",
@@ -664,10 +666,11 @@
     "include/q4t/runtime/system_memory.h": "52febc4f0b9f067748507224d9924a955470371de88a796e1ea78d379b637d49",
     "include/q4t/server/abort_reason.h": "2bad04553ca1e40595e10d6549d2a3a798bed05fcadd92527f722c48aecb70b5",
     "include/q4t/server/chat_capabilities.h": "058093147c83d2bf541cb17b19fa67e92ec3168e5d250dd3a20567696748cc49",
+    "include/q4t/server/chat_choices.h": "608cd6b099971da385f3ade6133009cb33f65b214d3fa768184d1eb936167693",
     "include/q4t/server/chat_contract.h": "c1aaef06a1ae22f96ce143211a3c6a5a462bb8223d0f86c474f896ab3bb906e0",
-    "include/q4t/server/chat_plan.h": "c2a13e861e59478374e4e02e2441a55f6f3f4f0faf12e9e398361c9d0533f3d0",
+    "include/q4t/server/chat_plan.h": "74e14c4a6f377da39bf05c86e58d42a64731c9e4bf1a17d4c0e396eebe6c6fa0",
     "include/q4t/server/chat_prompt.h": "1a758fed12a2ef5b3eadc6109cbc99be29de63e088d0d60111ed171730daa54f",
-    "include/q4t/server/chat_response_parser.h": "15b41a19e4eb3c3897e71c3b584b25ed0b669a7aa1119ade57b71d6ea9d57246",
+    "include/q4t/server/chat_response_parser.h": "85a41ffc9c5f22dcdec1e9d2cf37e92df14ff6167e21af9af069e9064db50c9c",
     "include/q4t/server/chat_server.h": "3055d056ab4e48674fe73979a4d31bb45d249d8175143ab95c226207c686c260",
     "include/q4t/server/chat_template.h": "5d2e9a8c90938fa972d27bd961ee9018ebcd7add541fd009316177af81b9afee",
     "include/q4t/server/chat_tool_history.h": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
@@ -682,7 +685,7 @@
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
     "include/q4t/server/http_observation.h": "4a5c07a112faa4d60f834b2d5e4067522a7fe565ca6ff8acd145ad603999dbdc",
     "include/q4t/server/http_request.h": "f6d52bf328cc33e56ae0ef06dc93051432ac0ddff55575e4e9204eecf35b6be6",
-    "include/q4t/server/http_response.h": "b75293da777e66c304bc75a9e7248e6ee6d48827fbd576aff479342c56bed070",
+    "include/q4t/server/http_response.h": "019322245de6d738a8d3b094df10610641f9c3c053db50951edea1c0f3d7460b",
     "include/q4t/server/input_contract.h": "03c1dfcc666986f5e06a91fb34cf95bf1818bd67df783794ae0ada63b7ae8881",
     "include/q4t/server/lifetime.h": "11c9b381a7f6c5e019dcb57fbc18e2ad76492fca5c5e42960c381e954e5068bc",
     "include/q4t/server/media_admission.h": "5d50347a9c9349d4a7d381792eb5536c2516f7e66ff7d1a1e7b787cd599c8c27",
@@ -696,6 +699,7 @@
     "include/q4t/server/request_control.h": "fc0c1ab81056c5ab3ddb4b0da8783338312ecedc5f2c4f149df678019c199814",
     "include/q4t/server/request_diagnostics.h": "6a260ff44d95c7d828503c24351fc9d0b659c72033b75577b7d37209cd39c6de",
     "include/q4t/server/request_json.h": "3c9b06ae9945a775b2aae2d7a85a831d12ddc6cfb9850f4f27454202056d5a22",
+    "include/q4t/server/sampling.h": "fc7d056d4fdc5b14db3028330acbb3f144fc8ab4c2b0d6dd55e6475bdb11dc1f",
     "include/q4t/server/scheduler_submission.h": "2a960c668c25a0c694b811a2c5640c6e6605db7d386b1ba0075e64061aa1c416",
     "include/q4t/server/sequence_admission.h": "0c03df6bd8c16d137562de22357c85e367208a6208be12d217adaf6135836b3f",
     "include/q4t/server/serve_fault.h": "47db4bd8dc12f5713ef42c6c89aeee1151867991d17d9b8529d31b4a11123b3f",
@@ -706,11 +710,12 @@
     "include/q4t/server/session_state.h": "dfab02068951eed30bfd1b5dc4d6926afdea7ce9094533f6bb1f7fc168c61d4a",
     "include/q4t/server/startup_admission.h": "2da630f79ddebd82e5dc7e410a279a971772b854171c88006929f4c28975d79b",
     "include/q4t/server/structured_admission.h": "d092c28d78e214396c26d2f7eb96e56e94f5148f9355a6d0cb84926b20fca007",
-    "include/q4t/server/structured_decoder.h": "1638718dda90f146037e8adc30705687e0a9aa8347930dc524a344f32c86b5f7",
+    "include/q4t/server/structured_decoder.h": "0bc3edbd3cacf8e70998b2d7fb0625e5bb1179349c5383ebb46eb2bb9748f252",
     "include/q4t/server/suffix_causal.h": "a0bad73c2a8293367a4e907e06a40d21baec389ba81e9131a248f99432165f2b",
     "include/q4t/server/suffix_token_cache.h": "5cf8881109604764d9deb7869901c0f8f8141b181b47865e7d81018eadd21a9b",
     "include/q4t/server/text_stop.h": "560dde9da5f9ea673a22eb2b6ad9ef59e227d55122d041a51ae2c45ef4114f66",
     "include/q4t/server/thinking_budget.h": "902d062939a5f8cc43ac2dd761d4267624645d1a401c47f9ed748f28b2ee36ff",
+    "include/q4t/server/token_logprobs.h": "6c5d8c4d51232fbfa9a119cdcafab4ff75f8b72aaafa591ff6c3a5a3c10118e8",
     "include/q4t/service/guardian_journal.h": "700c8d24b7b8288c1f923cc532f591747a6adfbef42b1013a1d8e178288186a9",
     "include/q4t/service/guardian_process.h": "31b967d4b558b1cdce10bf5acfb4731a9c9952930039285f6ed09af5b010c8f9",
     "include/q4t/service/guardian_quota.h": "a73897aa94fd1a58fb1cfc7c182d2d8bd0cb9cb10e848821e230ce903e2e39a0",
@@ -741,19 +746,20 @@
     "src/runtime/system_memory.cpp": "231e9a7ce5ed49e27e604a7bfa4066b35e83f286026c15986898d996a66acd2f",
     "src/server/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_capabilities.cpp": "e187ce74cb2de03c97285e9cdb22097cab02178b0d47f483d04666f01c67179c",
-    "src/server/chat_contract.cpp": "12bc39770aab7112bac5eb747009a80de5397af96a146a0296f0258814161ca2",
+    "src/server/chat_capabilities.cpp": "22b6f249abd5addf48d687e9f221e436fcda99f1550990ec4034931b2cd9dc9e",
+    "src/server/chat_choices.cpp": "99c36b1136a321ea773eda2c8f4b0663c0e821760a337354a0c250242090bfd7",
+    "src/server/chat_contract.cpp": "e09db23d815d0dfe035e69d4d740bb3ce3621dc423758a8fca9447e422e32d3e",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
-    "src/server/chat_generation.cpp": "f014423f97c3c218f79fdd93c04b29ddb76828a9db96fc82708bea0f1612f05b",
+    "src/server/chat_generation.cpp": "a2da2617e04be8200d24ce60d19de0efbd4f7e312cbd1420f679156098e607e5",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
     "src/server/chat_http.cpp": "5504ac68093b870e0f961a4d0faa1395ed8facf728f0046ec35e34e4843a5120",
     "src/server/chat_input.cpp": "d79be28242ed560ad7be0494284f72b53d1aaa7a272786d17f1b837e81a6d9bb",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
     "src/server/chat_metrics.cpp": "f12e27e7946dab08e882be25f8cb6fa2273e4d370716872aaf5a59fb30e5cf21",
-    "src/server/chat_plan.cpp": "b7aa0e9d84cbe9097c1d95100e783b68a4a2b01c80a1e6aaf68c756c61e17f95",
-    "src/server/chat_preflight.cpp": "ab8b3491b17baae0d9a3ec51e9c9cf066907e665efd21449235e70153f130767",
+    "src/server/chat_plan.cpp": "59596fb233f479c72a0fedd123ea4dc9c1065b7f7ccd7c6bc6e7c66e2d0222f9",
+    "src/server/chat_preflight.cpp": "9c16f641fb71793ed5d41bb36b7137a6b537b3a1100c220663aba5cfb1b6e9fc",
     "src/server/chat_prompt.cpp": "d79f99bff03d2d199e4e62b004fc187b6bb36055211921008d561c869577b4fd",
-    "src/server/chat_response_parser.cpp": "ffa2ce62aeffbfac4c67c97c591854db8cec8eac389e7e2e0cdfe57e05f392f7",
+    "src/server/chat_response_parser.cpp": "a48c77300bdc1310004173820a3c1d9566f9ccdd37e43368c48484bf832ca4e3",
     "src/server/chat_scheduler.cpp": "2b6d315bfd12609e343010852f7c15b8248fe5180359a3d7b49d3c1db5b8d1fc",
     "src/server/chat_server.cpp": "19c040b20e6f1f1cde9d37e23477b2bfa65c4b38ab09cfacdef9281522fda095",
     "src/server/chat_server_internal.h": "f648da039df39e84f9f867c55210afeff3eceac0c3578c61edfaa210957d4286",
@@ -766,19 +772,21 @@
     "src/server/grammar_worker.cpp": "aca2920b675dce548ceb194690440f00763352ed2d482751100b6345580e560c",
     "src/server/grammar_worker_internal.h": "79d8963200990a0d6b8dacee12c0f886c5612c57bc86e8a3479d942d6bef091a",
     "src/server/http_request.cpp": "614dd52541c9311054be68a790d6b7429503de6edd747b2247eb689273c24d3c",
-    "src/server/http_response.cpp": "0415e486060ee978080cef3a7874a5b594cfb1eea098ac4f577b14ca87bde88e",
+    "src/server/http_response.cpp": "cadc8360a181dfd6505d1470b64c31bc6bbb5c2195051419b1f52233ab227573",
     "src/server/input_contract.cpp": "ad9adbffc9638792ec15debeebee803fb43d2085f639281dabd6230146c5cf6a",
     "src/server/media_admission.cpp": "8b6fa7cdaad948522a4db542c2e313feb0ce816a80726850cfd19a777ef93be7",
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
     "src/server/output_constraints.cpp": "19529eb9ae9fa51c08f96c20ae0d4c48a5468a7ee6ba31f360fbd27ecef913c8",
     "src/server/output_schema.cpp": "d1ac1506c823dc128d8f2c95e5489c90d360813b35b37b2bfd52a9bbc512315d",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
+    "src/server/sampling.cpp": "8e6a8c446656d8430005b061b10535b391b002362725511d216f9b4229e3d3cb",
     "src/server/server_options.cpp": "c47e2555d054a8ee27524ecf59936838b717d7292c864c24efeee1279e2dc622",
     "src/server/session_cache.cpp": "68fc36654c7f3a7c14ac41b26e3abd10697e87ffc94bf70fe2052edb9cf751f6",
     "src/server/session_state.cpp": "bc34bd240a68cfb7ba57f78604d898c51e61bc5705b5d9db64bd546f91d64f12",
-    "src/server/structured_decoder.cpp": "14b5ddf7a5ebb60f72528508330b8eedc0e27d0c0c987982d32419a7e119a429",
+    "src/server/structured_decoder.cpp": "2522f5de1a63da90f5d1a348c0a35fe873981e6c4457b0535f4f35e2eb618c58",
     "src/server/text_stop.cpp": "2397b27adc873b3ac0697af68352a73c8481830da6053fde0adeca536eaba4dc",
     "src/server/thinking_budget.cpp": "4c91e8320115ee86096bf7287d4950599ca311f137c3a0051b9d64fb53abf259",
+    "src/server/token_logprobs.cpp": "d351efe6b7b560e80776e3555bca8de2fa98216633543ab7e0dfcf74cad42d6a",
     "src/service/cuda_probe.cu": "f91663d4098aa6365db6cf3d3fc437b5b32ee20280b65cc1ee34cb796a48e7fb",
     "src/service/guardian_journal.cpp": "a0a60642d1546c302be84578b7ca6d4475ab9808c108dd82fa4df7133f3b5a12",
     "src/service/guardian_main.cpp": "26f1e5b5be37038ee460ebfddda3bbcf2e03e7ad0c89f25596816719ba747342",

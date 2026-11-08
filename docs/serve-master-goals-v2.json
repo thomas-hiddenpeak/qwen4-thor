@@ -79,14 +79,18 @@
       "id": "A03",
       "required": true,
       "state": "implementation_in_progress",
-      "implementation": "temperature/top_p、seed、presence/frequency penalty、logit_bias、n、多choice JSON/SSE及logprobs/top_logprobs",
+      "implementation": "temperature/top_p、seed、presence/frequency penalty、logit_bias、n、多choice JSON/SSE及logprobs/top_logprobs；prediction预测内容实际验证/消费与usage",
       "acceptance": "固定logits的数值与采样边界、choice独立状态、usage/取消；对应真实短验；MTP不允许错误套用greedy算法",
       "depends_on": [
         "A01",
         "A02"
       ],
       "evidence": [],
-      "release": null
+      "release": null,
+      "remaining_required_after_sampling_subset": [
+        "prediction target verification and usage",
+        "bounded actual SDK/JSON/SSE and tool acceptance for delivered behavior"
+      ]
     },
     {
       "id": "A04",
