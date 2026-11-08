@@ -77,9 +77,9 @@ def main():
     schema = None
     if args.schema_file:
         with args.schema_file.open('rb') as source:
-            raw = source.read(65537)
-        require(len(raw) <= 65536, 'schema file exceeds 64 KiB')
-        schema = load_json(raw.decode('utf-8'))
+            raw = source.read(2 * 1024 * 1024 + 1)
+        require(len(raw) <= 2 * 1024 * 1024, 'schema file exceeds 2 MiB')
+        schema = load_json(raw.decode('utf-8'), exact_numbers=True)
     body=build_request(args.question,args.image,args.video,args.frames,
                        not args.no_stream,schema,max_tokens=args.max_tokens)
     print(json.dumps(query(client,body),ensure_ascii=False,indent=2))

@@ -316,7 +316,7 @@ class ClientContracts(unittest.TestCase):
 
     def test_tool_and_usage_validation(self):
         for args in ('[]', '{"key":1,"key":2}', '{"x":NaN}',
-                     '{"x":Infinity}', '{"x":1e999}', '{"key":'):
+                     '{"x":Infinity}', '{"key":'):
             value = deepcopy(MESSAGE)
             value["tool_calls"][0]["function"]["arguments"] = args
             with self.subTest(args=args), self.assertRaises(client.ProtocolError):
@@ -387,6 +387,17 @@ class ClientContracts(unittest.TestCase):
         message["tool_calls"][0]["function"]["arguments"] = '{"n":9007199254740993}'
         plans = client.prepare_tool_calls(completion(message), {"lookup": lambda a: None})
         self.assertEqual(plans[0].arguments["n"], 9007199254740993)
+
+    def test_exact_tool_data_remains_bound_to_completed_response(self):
+        from decimal import Decimal
+        message = deepcopy(MESSAGE)
+        arguments = '{"n":1e999,"tiny":1e-400,"fraction":0.30000000000000001}'
+        message["tool_calls"][0]["function"]["arguments"] = arguments
+        result = completion(message)
+        plans = client.prepare_tool_calls(result, {"lookup": lambda a: None})
+        self.assertEqual(result.message["tool_calls"][0]["function"]["arguments"], arguments)
+        self.assertEqual(plans[0].arguments, dict(n=Decimal('1e999'),
+            tiny=Decimal('1e-400'), fraction=Decimal('0.30000000000000001')))
 
     def test_fresh_request_credentials_and_stable_session(self):
         history = [{"role": "user", "content": "你好"}]

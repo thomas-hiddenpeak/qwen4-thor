@@ -1533,7 +1533,7 @@
     "model_adapter": "Native function/input tags and encoded string, declared name determines standard wire custom type. Two failed business attempts retained; original mixed task passed after adapter repair."
   },
   "schema_v2_development_20261108": {
-    "state": "public_contract_integrated_cpu_only",
+    "state": "client_contract_integrated_cpu_only",
     "record": "docs/SERVE_SCHEMA_V2_2026-11-08.md",
     "source": [
       "src/server/schema_decimal.cpp",
@@ -1555,9 +1555,13 @@
       "src/server/chat_capabilities.cpp",
       "src/server/chat_plan.cpp",
       "tools/serve_protocol/build_contract.py",
-      "tools/serve_protocol/check_contract.py"
+      "tools/serve_protocol/check_contract.py",
+      "tools/examples/chat_client.py",
+      "tools/examples/js/chat_client.mjs",
+      "tools/examples/vision_query.py",
+      "tools/vision_service/schema_request.mjs"
     ],
-    "acceptance": "Production planner/worker/parser and published request schemas/discovery integrated. 72 distinct targeted A05 C++ CPU checks and 49 input-shape/native-plan comparisons passed, including 128 tools and exact data. Example clients, cache/media combinations and real GPU business delivery remain required. Default unchanged; not delivered.",
+    "acceptance": "Production planner/worker/parser, published contracts and example clients integrated. 72 distinct A05 C++, 49 input comparisons, 17 Python, 22 JS and 2 CLI checks passed. Actual pinned JS SDK preserves exact numeric tokens. Target cache/media combinations and real GPU delivery remain required; default unchanged.",
     "optional_native_dependency": {
       "name": "system libidn2 >= 2.3",
       "observed": "2.3.7-2build1.1 on this Thor",

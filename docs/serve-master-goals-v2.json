@@ -156,7 +156,7 @@
         "docs/SERVE_SCHEMA_V2_2026-11-08.md"
       ],
       "release": null,
-      "development_status": "Production planner/worker/parser and published request schemas/discovery integrated. 72 distinct targeted A05 C++ CPU checks and 49 input-shape/native-plan comparisons passed, including 128 tools and exact data. Example clients, cache/media combinations and real GPU business delivery remain required. Default unchanged; not delivered."
+      "development_status": "生产schema v2/worker回执/解析器/公开合同已开发接通，72不同C++与49输入对照通过；客户端17不同Python、22 JS和2 CLI通过。缓存/媒体组合、真实GPU业务及发布仍待完成，默认未改。"
     },
     {
       "id": "A06",

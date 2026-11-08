@@ -19,7 +19,70 @@ export function requireValue(value, message) {
 }
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const integer = value => Number.isSafeInteger(value) && value >= 0;
-const clone = value => structuredClone(value);
+// Explicit exact JSON data uses the JS engine's raw-JSON serialization;
+// SDK JSON.stringify therefore sends numeric tokens, never quoted strings.
+export class ExactJsonNumber {
+  constructor(lexeme) {
+    requireValue(typeof lexeme === 'string' && lexeme.length <= 16384 &&
+      /^-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?$/.test(lexeme),
+    'invalid exact JSON number');
+    this.lexeme = lexeme;
+    Object.freeze(this);
+  }
+  toJSON() {
+    requireValue(typeof JSON.rawJSON === 'function', 'exact numbers require JSON.rawJSON');
+    return JSON.rawJSON(this.lexeme);
+  }
+  toString() { return this.lexeme; }
+}
+
+function decimalIdentity(token) {
+  let negative = token.startsWith('-');
+  const [mantissa, exponent = '0'] = token.replace(/^-/, '').toLowerCase().split('e');
+  const fraction = (mantissa.split('.')[1] ?? '').length;
+  let digits = mantissa.replace('.', '').replace(/^0+/, '');
+  if (!digits) return '0';
+  const zeros = /0*$/.exec(digits)[0].length;
+  digits = digits.slice(0, digits.length - zeros);
+  return (negative ? '-' : '') + digits + 'e' +
+    (BigInt(exponent) - BigInt(fraction) + BigInt(zeros));
+}
+
+function clone(value) {
+  let nodes = 0;
+  function copy(item, depth) {
+    requireValue(depth <= 64 && ++nodes <= 65536, 'JSON complexity limit');
+    if (item instanceof ExactJsonNumber) return new ExactJsonNumber(item.lexeme);
+    if (typeof item === 'bigint') return new ExactJsonNumber(item.toString());
+    if (item === null || typeof item === 'boolean') return item;
+    if (typeof item === 'string') return text(item, 'invalid JSON string');
+    if (typeof item === 'number') {
+      requireValue(Number.isFinite(item) && (!Number.isInteger(item) || Number.isSafeInteger(item)),
+        'use BigInt or ExactJsonNumber for integers beyond the safe range');
+      return item;
+    }
+    if (Array.isArray(item)) {
+      requireValue(Object.keys(item).length === item.length, 'invalid JSON array');
+      return Array.from(item, v => copy(v, depth + 1));
+    }
+    requireValue(object(item) && [Object.prototype, null].includes(Object.getPrototypeOf(item)) &&
+      Object.getOwnPropertySymbols(item).length === 0, 'value must be JSON');
+    const result = {};
+    for (const [key, child] of Object.entries(item)) {
+      text(key, 'invalid JSON key');
+      Object.defineProperty(result, key, { value: copy(child, depth + 1),
+        enumerable: true, writable: true, configurable: true });
+    }
+    return result;
+  }
+  return copy(value, 0);
+}
+
+export function stringifyJson(value) {
+  const encoded = JSON.stringify(clone(value));
+  requireValue(Buffer.byteLength(encoded) <= 16 * 1024 * 1024, 'JSON exceeds 16 MiB');
+  return encoded;
+}
 function text(value, message, nonempty = false) {
   requireValue(typeof value === 'string' && value.isWellFormed() && (!nonempty || value.length), message);
   return value;
@@ -37,7 +100,7 @@ function exactInteger(token) {
   return shift >= 0 || (digits.length + shift > 0 && /^0+$/.test(digits.slice(digits.length + shift)));
 }
 
-export function parseJson(source) {
+export function parseJson(source, { exactNumbers = false } = {}) {
   // JSON.parse alone discards duplicate keys and rounds near-integer lexemes.
   text(source, 'JSON must be Unicode text');
   let offset = 0, nodes = 0, stringBytes = 0;
@@ -88,9 +151,13 @@ export function parseJson(source) {
       if (source.startsWith(word, offset)) { offset += word.length; return result; }
     }
     const token = /^-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?/.exec(source.slice(offset))?.[0];
-    requireValue(token, 'invalid JSON value');
+    requireValue(token && token.length <= 16384, 'invalid or over-budget JSON number');
     offset += token.length;
     const result = Number(token);
+    if (exactNumbers && (!Number.isFinite(result) ||
+        (Number.isInteger(result) && !Number.isSafeInteger(result)) ||
+        decimalIdentity(token) !== decimalIdentity(String(result))))
+      return new ExactJsonNumber(token);
     requireValue(Number.isFinite(result), 'nonfinite JSON number');
     if (Number.isInteger(result)) {
       requireValue(Number.isSafeInteger(result) && exactInteger(token), 'unsafe or rounded integer');
@@ -100,7 +167,7 @@ export function parseJson(source) {
   const result = value(0); whitespace();
   requireValue(offset === source.length, 'trailing JSON data');
   // Return ordinary dictionaries without interpreting __proto__ as setters.
-  return JSON.parse(JSON.stringify(result));
+  return clone(result);
 }
 
 function usage(value, choiceCount = 1) {
@@ -130,7 +197,7 @@ function usage(value, choiceCount = 1) {
 }
 
 function argumentsObject(raw) {
-  const result = parseJson(text(raw, 'arguments must be JSON text'));
+  const result = parseJson(text(raw, 'arguments must be JSON text'), { exactNumbers: true });
   requireValue(object(result), 'arguments must encode an object');
   return result;
 }
@@ -385,24 +452,29 @@ export const SCHEMA_INSTRUCTION = 'Return exactly one JSON object matching the f
 
 export function withJsonSchema(body, schema, { name = 'answer' } = {}) {
   requireValue(object(body) && !Object.hasOwn(body, 'response_format'), 'response_format already set or invalid request');
-  requireValue(object(schema) && schema.type === 'object', 'an object JSON Schema is required');
+  requireValue(object(schema) && (schema.type === 'object' || typeof schema.$ref === 'string'), 'an object JSON Schema is required');
   requireValue(typeof name === 'string' && /^[A-Za-z0-9_-]{1,64}$/.test(name), 'invalid schema name');
   let encoded, checked;
   try {
-    encoded = JSON.stringify(schema);
-    requireValue(Buffer.byteLength(encoded) <= 65536, 'schema exceeds 64 KiB');
-    checked = parseJson(encoded);
-    requireValue(isDeepStrictEqual(checked, schema), 'schema must contain only interoperable JSON values');
+    encoded = stringifyJson(schema);
+    requireValue(Buffer.byteLength(encoded) <= 2 * 1024 * 1024, 'schema exceeds 2 MiB');
+    checked = parseJson(encoded, { exactNumbers: true });
   } catch (error) { throw new ProtocolError('invalid JSON schema: ' + error.message); }
-  requireValue(!body.tools?.length || body.tool_choice === 'none', 'schema plus tools requires explicit tool_choice=none');
+  requireValue(body.tools == null || (Array.isArray(body.tools) && body.tools.length <= 128),
+    'tools must be an array with at most 128 declarations');
+  for (const tool of body.tools ?? [])
+    requireValue(object(tool) && ['function', 'custom'].includes(tool.type) &&
+      object(tool[tool.type]) && typeof tool[tool.type].name === 'string' && tool[tool.type].name.length,
+    'invalid tool definition');
   requireValue(body.parse_response !== false && !Object.hasOwn(body, 'session_id') &&
     !Object.hasOwn(body, 'prefix_cache_scope'), 'schema requires parsed messages without session/prefix cache');
   requireValue(Array.isArray(body.messages) && body.messages.length && body.messages.every(object) &&
-    ['user', 'tool'].includes(body.messages.at(-1).role), 'schema requires a user or completed tool history');
+    body.messages.some(m => ['system', 'developer', 'user', 'assistant'].includes(m.role)),
+  'schema requires a valid message history');
   const result = clone(body), user = result.messages.findLast(m => m.role === 'user');
-  requireValue(user, 'schema requires a user message');
   const instruction = SCHEMA_INSTRUCTION + encoded;
-  if (typeof user.content === 'string') user.content += '\n\n' + instruction;
+  if (!user) result.messages.unshift({ role: 'system', content: instruction });
+  else if (typeof user.content === 'string') user.content += '\n\n' + instruction;
   else {
     requireValue(Array.isArray(user.content), 'invalid user content');
     user.content.push({ type: 'text', text: instruction });

@@ -5,7 +5,8 @@ import { fileURLToPath } from 'node:url';
 import { test } from 'node:test';
 import { loadSdk } from '../../serve_protocol/sdk.mjs';
 import { ChatClient, ProtocolError, parseJson, parseJsonWire, parseSseWire,
-  prepareToolCalls, appendToolResults, appendFinal, makeRequest, validateCapabilities } from './chat_client.mjs';
+  prepareToolCalls, appendToolResults, appendFinal, makeRequest, validateCapabilities,
+  ExactJsonNumber, stringifyJson, withJsonSchema } from './chat_client.mjs';
 
 const { OpenAI } = loadSdk(process.env.Q4T_NODE_SDK_DIR);
 const MODEL = 'qwen3.8-flash-next', ID = 'js-unit', HEX = 'a'.repeat(64);
@@ -415,4 +416,43 @@ test('custom project DSL validates without executing arbitrary input', async () 
   assert.deepEqual(parseCustomRead('READ docs/MODEL.md 1 16'), { path: 'docs/MODEL.md', start_line: 1, line_count: 16 });
   for (const value of ['READ docs/MODEL.md 1 81', 'READ /etc/passwd 1 8',
     'READ docs/MODEL.md 1 8\n', 'READ docs/MODEL.md 1 8; ls']) assert.throws(() => parseCustomRead(value));
+});
+
+
+test('schema-v2 exact numeric data survives actual SDK serialization and tool response', async () => {
+  const argumentsText = '{"n":1e400,"tiny":1e-400,"x":0.30000000000000001,"i":9007199254740993}';
+  const msg = { role: 'assistant', content: null, tool_calls: [{ id: 'x', type: 'function',
+    function: { name: 'read', arguments: argumentsText } }] };
+  const run = client(Buffer.from(JSON.stringify(jsonResponse(msg, 'tool_calls'))));
+  const schema = { type: 'object', properties: { n: { type: 'number', enum: [
+    new ExactJsonNumber('1e400'), new ExactJsonNumber('1e-400'),
+    new ExactJsonNumber('0.30000000000000001'), 9007199254740993n] } },
+    required: ['n'], additionalProperties: false };
+  const body = withJsonSchema({ ...request(false), tools: [{ type: 'function', function: { name: 'read' } }],
+    tool_choice: 'required' }, schema);
+  const result = await run.api.chat(body);
+  assert.equal(run.requests.length, 1);
+  const encoded = run.requests[0].body;
+  assert.match(encoded, /"enum":\[1e400,1e-400,0\.30000000000000001,9007199254740993\]/);
+  const captured = parseJson(encoded, { exactNumbers: true });
+  assert.equal(captured.response_format.json_schema.schema.properties.n.enum[0].lexeme, '1e400');
+  assert.equal(result.message.tool_calls[0].function.arguments, argumentsText);
+  const [call] = prepareToolCalls(result, { read: args => {
+    assert.ok(args.n instanceof ExactJsonNumber);
+    assert.equal(args.x.lexeme, '0.30000000000000001');
+  } });
+  assert.equal(stringifyJson(call.arguments), argumentsText);
+  assert.throws(() => new ExactJsonNumber('NaN'), ProtocolError);
+  assert.throws(() => new ExactJsonNumber('1]'), ProtocolError);
+  assert.throws(() => parseJson('{"x":1,"x":2}', { exactNumbers: true }), ProtocolError);
+});
+
+test('schema-v2 root references and no-user instructions preserve caller history', () => {
+  const schema = { $ref: '#/$defs/root', $defs: { root: { type: 'object', additionalProperties: false } } };
+  const original = { ...request(false), messages: [{ role: 'system', content: 'Brief answer' }] };
+  const before = structuredClone(original);
+  const result = withJsonSchema(original, schema);
+  assert.deepEqual(original, before);
+  assert.deepEqual(result.messages.slice(1), before.messages);
+  assert.deepEqual(result.response_format.json_schema.schema, schema);
 });

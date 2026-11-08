@@ -5,6 +5,7 @@ tool execution, retries, or model imports happen when this module is imported.
 """
 from copy import deepcopy
 from dataclasses import dataclass
+from decimal import Decimal, InvalidOperation
 import json
 import math
 import secrets
@@ -84,19 +85,72 @@ def _constant(value):
     raise ProtocolError("non-JSON number: " + value)
 
 
-def load_json(value):
+def _exact_number(token):
+    require(len(token) <= 16384, "JSON number spelling limit")
+    exact = Decimal(token)
+    require(exact.is_finite(), "non-JSON number")
+    if not any(c in token for c in ".eE") and len(token) <= 4096:
+        return int(token)
+    rounded = float(exact)
+    if math.isfinite(rounded) and Decimal(str(rounded)) == exact:
+        return rounded
+    return exact
+
+
+def dump_json(value):
+    """Bounded JSON encoder retaining Decimal and arbitrary integer data."""
+    nodes = 0
+    def encode(item, depth=0):
+        nonlocal nodes
+        nodes += 1
+        require(depth <= 64 and nodes <= 65536, "JSON complexity limit")
+        if item is None: return "null"
+        if type(item) is bool: return "true" if item else "false"
+        if isinstance(item, str):
+            return json.dumps(_text(item, "invalid JSON text"), ensure_ascii=False)
+        if isinstance(item, Decimal) or type(item) is int:
+            if type(item) is int:
+                require(item.bit_length() <= 54430, "JSON number spelling limit")
+                encoded = str(Decimal(item))
+            else:
+                require(item.is_finite(), "non-JSON number")
+                encoded = str(item)
+            require(len(encoded) <= 16384, "JSON number spelling limit")
+            return encoded
+        if type(item) is float:
+            require(math.isfinite(item), "non-JSON number")
+            return json.dumps(item, allow_nan=False)
+        if isinstance(item, list):
+            return "[" + ",".join(encode(v, depth + 1) for v in item) + "]"
+        require(isinstance(item, dict), "value must be JSON")
+        require(all(isinstance(k, str) for k in item), "JSON keys must be text")
+        return "{" + ",".join(encode(k, depth + 1) + ":" + encode(v, depth + 1)
+                              for k, v in item.items()) + "}"
+    try:
+        encoded = encode(value)
+        require(len(encoded.encode("utf-8")) <= 16 * 1024 * 1024,
+                "JSON exceeds 16 MiB")
+        return encoded
+    except (ValueError, RecursionError, OverflowError) as error:
+        raise ProtocolError("invalid JSON: " + str(error)) from error
+
+
+def load_json(value, *, exact_numbers=False):
     try:
         if isinstance(value, (bytes, bytearray)):
             value = value.decode("utf-8")
-        return json.loads(value, object_pairs_hook=_object, parse_float=_float,
+        return json.loads(value, object_pairs_hook=_object,
+                          parse_float=_exact_number if exact_numbers else _float,
+                          parse_int=_exact_number if exact_numbers else int,
                           parse_constant=_constant)
-    except (ValueError, UnicodeError, RecursionError) as error:
+    except (ValueError, UnicodeError, RecursionError, InvalidOperation,
+            OverflowError) as error:
         raise ProtocolError("invalid JSON: " + str(error)) from error
 
 
 def _arguments(value):
     _text(value, "tool arguments must be a JSON string")
-    args = load_json(value)
+    args = load_json(value, exact_numbers=True)
     require(isinstance(args, dict), "tool arguments must contain an object")
     return args
 
@@ -527,72 +581,58 @@ SCHEMA_INSTRUCTION = (
     "Do not include markdown fences.\n")
 
 
-def _schema_json_value(value, depth=0):
-    require(depth <= 64, "schema JSON nesting limit")
-    if isinstance(value, dict):
-        require(all(isinstance(k, str) for k in value), "schema keys must be text")
-        for key, item in value.items():
-            _text(key, "invalid schema key")
-            _schema_json_value(item, depth + 1)
-    elif isinstance(value, list):
-        for item in value:
-            _schema_json_value(item, depth + 1)
-    elif isinstance(value, str):
-        _text(value, "invalid schema string")
-    elif type(value) in (int, float):
-        require(math.isfinite(value) and
-                (value != int(value) or abs(value) <= 9007199254740991),
-                "schema number outside interoperable JSON range")
-    else:
-        require(value is None or type(value) is bool, "schema must be JSON")
-
-
 def with_json_schema(body, schema, *, name="answer"):
     """Opt in to schema semantics AND decoding, for text/media/final tool turns.
 
     Append to the last user message, preserving actual tool results. This is
     application prompt construction, not a server guarantee of factual truth.
-    Tools must already be disabled for a constrained final answer. No retries.
+    Tools may remain active; their successful terminal still gates execution.
+    Decimal and integer schema values retain exact JSON spelling. No retries.
     """
     require(isinstance(body, dict) and "response_format" not in body,
             "response_format already set or invalid request")
-    require(isinstance(schema, dict) and schema.get("type") == "object",
+    require(isinstance(schema, dict) and
+            (schema.get("type") == "object" or isinstance(schema.get("$ref"), str)),
             "an object JSON Schema is required")
     require(isinstance(name, str) and 1 <= len(name) <= 64 and
             all(c in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
                 "0123456789_-" for c in name), "invalid schema name")
-    # Round-trip through the strict parser: no NaN, invalid Unicode, lossy keys
-    # or values outside the interoperable JSON number range.
     try:
-        _schema_json_value(schema)
-        encoded = json.dumps(schema, ensure_ascii=False, allow_nan=False,
-                             separators=(",", ":"))
-        require(len(encoded.encode("utf-8")) <= 65536, "schema exceeds 64 KiB")
-        checked = load_json(encoded)
-        require(checked == schema, "schema must contain only JSON values")
+        encoded = dump_json(schema)
+        require(len(encoded.encode("utf-8")) <= 2 * 1024 * 1024,
+                "schema exceeds 2 MiB")
+        checked = load_json(encoded, exact_numbers=True)
     except (TypeError, ValueError, UnicodeError, RecursionError, OverflowError) as error:
         raise ProtocolError("invalid JSON schema: " + str(error)) from error
-    require(not body.get("tools") or body.get("tool_choice") == "none",
-            "schema plus tools requires explicit tool_choice=none")
+    tools = body.get("tools")
+    require(tools is None or (isinstance(tools, list) and len(tools) <= 128),
+            "tools must be an array with at most 128 declarations")
+    for tool in tools or []:
+        require(isinstance(tool, dict) and tool.get("type") in ("function", "custom"),
+                "invalid tool definition")
+        definition = tool.get(tool["type"])
+        require(isinstance(definition, dict) and
+                isinstance(definition.get("name"), str) and definition["name"],
+                "tool definition requires name")
     require(body.get("parse_response") is not False and
             "session_id" not in body and "prefix_cache_scope" not in body,
             "schema requires parsed messages without session/prefix cache")
     messages = body.get("messages")
     require(isinstance(messages, list) and messages and
             all(isinstance(m, dict) for m in messages) and
-            messages[-1].get("role") in ("user", "tool"),
-            "schema requires a user or completed tool history")
+            any(m.get("role") in ("system", "developer", "user", "assistant")
+                for m in messages), "schema requires a valid message history")
     result = deepcopy(body)
     user = next((m for m in reversed(result["messages"])
                  if m.get("role") == "user"), None)
-    require(user is not None, "schema requires a user message")
-    content = user.get("content")
     instruction = SCHEMA_INSTRUCTION + encoded
-    if isinstance(content, str):
-        user["content"] = content + "\n\n" + instruction
+    if user is None:
+        result["messages"].insert(0, dict(role="system", content=instruction))
+    elif isinstance(user.get("content"), str):
+        user["content"] += "\n\n" + instruction
     else:
-        require(isinstance(content, list), "invalid user content")
-        content.append(dict(type="text", text=instruction))
+        require(isinstance(user.get("content"), list), "invalid user content")
+        user["content"].append(dict(type="text", text=instruction))
     result["response_format"] = dict(type="json_schema", json_schema=dict(
         name=name, strict=True, schema=checked))
     return result
@@ -729,7 +769,7 @@ class ChatClient:
             deadline_http.HTTPSHandler(context, connect_host))
 
     def _post(self, path, body, timeout):
-        data = json.dumps(body, ensure_ascii=False, allow_nan=False).encode()
+        data = dump_json(body).encode()
         require(len(data) <= 16 * 1024 * 1024, "request exceeds 16 MiB")
         headers = {"Content-Type": "application/json"}
         if self.api_key:

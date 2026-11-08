@@ -31,7 +31,7 @@ test('parts and actual final tool history are copied without rewriting results',
   assert.deepEqual(result.response_format.json_schema.schema, schema);
 });
 
-test('ambiguous formats, active tools, cache and missing user reject locally', () => {
+test('ambiguous formats, malformed tools, cache and orphan history reject locally', () => {
   for (const extra of [{ response_format: {} }, { tools: [{}] }, { session_id: 'a'.repeat(64) },
     { prefix_cache_scope: 'x' }, { parse_response: false }, { messages: [] },
     { messages: [{ role: 'tool', content: 'x' }] }]) {
@@ -48,8 +48,8 @@ test('lossy or unsafe JSON cannot silently change a schema', () => {
 });
 
 test('UTF8 byte limit and names fail before a request', () => {
-  withJsonSchema(body(), { type: 'object', description: '中文'.repeat(10900) });
-  assert.throws(() => withJsonSchema(body(), { type: 'object', description: '中文'.repeat(11000) }), ProtocolError);
+  withJsonSchema(body(), { type: 'object', description: '中'.repeat(699000) });
+  assert.throws(() => withJsonSchema(body(), { type: 'object', description: '中'.repeat(699051) }), ProtocolError);
   for (const name of ['', 'space name', 'x'.repeat(65), '答案']) {
     assert.throws(() => withJsonSchema(body(), schema, { name }), ProtocolError);
   }
