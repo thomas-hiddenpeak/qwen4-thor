@@ -1,0 +1,5 @@
+[
+  "node",
+  "--test",
+  "tools/serve_chat_storage/test_bridge.mjs"
+]

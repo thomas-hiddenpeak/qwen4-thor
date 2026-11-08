@@ -1,0 +1,46 @@
+{
+  "README.md": {
+    "bytes": 701,
+    "sha256": "58a9a0cffb4c5fcfe533154808c3c3960a27f6869e3c7a9ef9bc204cb5fb77f1"
+  },
+  "bridge-cpu-01/command.json": {
+    "bytes": 71,
+    "sha256": "ae7d2c1742f3ab988c513fef44726c5a057a247af42562d062563771e4cb795d"
+  },
+  "bridge-cpu-01/result.json": {
+    "bytes": 63,
+    "sha256": "624d355fb05e2e9f915299da084ce7bd6d963916d481e38a9a9ab0bdef1fe87e"
+  },
+  "bridge-cpu-01/stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "bridge-cpu-01/stdout.log": {
+    "bytes": 331,
+    "sha256": "bce790d51e6d5f76a70e182cff68483b1dc06aa34d1db491817fb09869cf3fe9"
+  },
+  "driver-cpu-01/command.json": {
+    "bytes": 100,
+    "sha256": "39452c58cb1e6d66354b8e782c0770f9a711ec294579d51370389e328460d246"
+  },
+  "driver-cpu-01/result.json": {
+    "bytes": 62,
+    "sha256": "05f7108f070a583d1c9d225f25f1770a0364966f21b727f5b7a4d490b05f610e"
+  },
+  "driver-cpu-01/stderr.log": {
+    "bytes": 454,
+    "sha256": "4d4a42d319e4487620ea10fdabf2b18f1dbf233b8b6a780b84d385b5e487683c"
+  },
+  "driver-cpu-01/stdout.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "plan.json": {
+    "bytes": 5833,
+    "sha256": "1b240d4e91d95ab93e2958f0ec8c35d95687867da039d52199a36766eab4bb30"
+  },
+  "sources.json": {
+    "bytes": 904,
+    "sha256": "d6f1af1826bb4411bc8d919985f3c8b2e31a9ba0b300e3ff5ddc376658d5e571"
+  }
+}

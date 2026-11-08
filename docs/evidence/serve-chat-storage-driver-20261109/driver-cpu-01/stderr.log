@@ -1,0 +1,7 @@
+test_final_storage_failure_never_claims_success (tools.serve_chat_storage.test_acceptance.Driver.test_final_storage_failure_never_claims_success) ... ok
+test_stream_oracle_rejects_lost_choices_probabilities_identity_and_usage (tools.serve_chat_storage.test_acceptance.Driver.test_stream_oracle_rejects_lost_choices_probabilities_identity_and_usage) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.005s
+
+OK

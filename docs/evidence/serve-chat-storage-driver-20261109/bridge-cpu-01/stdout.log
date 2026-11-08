@@ -1,0 +1,10 @@
+✔ official management bridge sends one request with exact method/body/query and retains failures (125.477927ms)
+✔ official stream bridge retains every choice and wire bytes and rejects missing DONE (13.960091ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 226.205012

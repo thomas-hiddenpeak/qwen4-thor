@@ -1,0 +1,10 @@
+{
+  "tools/serve_chat_storage/acceptance.py": "caa1ebc021b426cd93153e04d30294ecbe464b7a04a42fa76ad4e37779c460e2",
+  "tools/serve_chat_storage/build_contract.py": "394f77455353f7e5349151a6d1769c29b7db3f506874605997125c43b467d604",
+  "tools/serve_chat_storage/run_sdk.mjs": "02b1263ba3e2f9dde17acbff081fc8ba3d8e8686b64e25bb9b74fd118e6dd855",
+  "tools/serve_chat_storage/sdk.mjs": "34cfaaf49539e6e74257469628fa77bcfd463415faddf25329e3837adca3a5c3",
+  "tools/serve_chat_storage/test_acceptance.py": "38c20b74d2497981cb83baf902b61f6a137d3ddd5941069af304545aa59e0f2b",
+  "tools/serve_chat_storage/test_bridge.mjs": "07c4b3cbd8dd14f15bd3f2bf69f950d96fe86bbcc5c070f339f927220ff7ecf9",
+  "tools/serve_chat_storage/test_contract.py": "c50331f512d3dbb157dad9f9baa3c21effbc88a93d7d3e9ef37123eeb332fe98",
+  "tools/serve_chat_storage/test_sdk.mjs": "02d5e06e9b55ea978147712e92203528da28b008cc22b5d36a7e3a6de40ce27c"
+}

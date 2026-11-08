@@ -1,0 +1,228 @@
+{
+  "cpu_python": 2,
+  "cpu_sdk_bridge": 2,
+  "gpu_planned": {
+    "starts": 1,
+    "chats": 7,
+    "controls": 1000,
+    "seconds": 600
+  },
+  "maximum_generated_choices": 9,
+  "requests": {
+    "unretained": {
+      "model": "qwen3.8-flash-next",
+      "temperature": 0,
+      "enable_thinking": false,
+      "messages": [
+        {
+          "role": "user",
+          "content": "Compute 17 + 25. Reply only with the decimal number."
+        }
+      ],
+      "max_completion_tokens": 64,
+      "store": null,
+      "metadata": {
+        "stage": "response-only"
+      }
+    },
+    "json": {
+      "model": "qwen3.8-flash-next",
+      "temperature": 0,
+      "enable_thinking": false,
+      "messages": [
+        {
+          "role": "user",
+          "content": "Compute 17 + 25. Reply only with the decimal number."
+        }
+      ],
+      "max_completion_tokens": 64,
+      "store": true,
+      "n": 2,
+      "metadata": {
+        "stage": "json"
+      }
+    },
+    "stream": {
+      "model": "qwen3.8-flash-next",
+      "temperature": 0,
+      "enable_thinking": false,
+      "messages": [
+        {
+          "role": "user",
+          "content": "Compute 17 + 25. Reply only with the decimal number."
+        }
+      ],
+      "max_completion_tokens": 64,
+      "store": true,
+      "stream": true,
+      "n": 2,
+      "logprobs": true,
+      "top_logprobs": 2,
+      "stream_options": {
+        "include_usage": true
+      },
+      "metadata": {
+        "stage": "stream"
+      }
+    },
+    "tool": {
+      "model": "qwen3.8-flash-next",
+      "temperature": 0,
+      "enable_thinking": false,
+      "messages": [
+        {
+          "role": "user",
+          "content": "Read the first 3 lines of docs/MODEL.md with read_project_record. Use the actual tool result to return the title and exact citation."
+        }
+      ],
+      "max_completion_tokens": 192,
+      "store": true,
+      "stream": true,
+      "stream_options": {
+        "include_usage": true
+      },
+      "metadata": {
+        "stage": "tool"
+      },
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "read_project_record",
+            "description": "Read bounded real project document lines and citation.",
+            "strict": true,
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "const": "docs/MODEL.md"
+                },
+                "start_line": {
+                  "type": "integer",
+                  "const": 1
+                },
+                "line_count": {
+                  "type": "integer",
+                  "const": 3
+                }
+              },
+              "required": [
+                "path",
+                "start_line",
+                "line_count"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      ],
+      "tool_choice": "required",
+      "parallel_tool_calls": false
+    },
+    "follow": {
+      "model": "qwen3.8-flash-next",
+      "temperature": 0,
+      "enable_thinking": false,
+      "messages": [],
+      "max_completion_tokens": 384,
+      "store": true,
+      "metadata": {
+        "stage": "follow"
+      },
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "read_project_record",
+            "description": "Read bounded real project document lines and citation.",
+            "strict": true,
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "const": "docs/MODEL.md"
+                },
+                "start_line": {
+                  "type": "integer",
+                  "const": 1
+                },
+                "line_count": {
+                  "type": "integer",
+                  "const": 3
+                }
+              },
+              "required": [
+                "path",
+                "start_line",
+                "line_count"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      ],
+      "tool_choice": "none",
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "document",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "citation": {
+                "type": "string",
+                "pattern": "^\\[docs/MODEL\\.md:L1-L3\\]$"
+              }
+            },
+            "required": [
+              "title",
+              "citation"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    "fault": {
+      "model": "qwen3.8-flash-next",
+      "temperature": 0,
+      "enable_thinking": false,
+      "messages": [
+        {
+          "role": "user",
+          "content": "Write a long comma-separated list of integers starting at 1 and ending at 1000. Continue until all are written."
+        }
+      ],
+      "max_completion_tokens": 64,
+      "store": true,
+      "stream": true,
+      "stream_options": {
+        "include_usage": true
+      },
+      "metadata": {
+        "stage": "fault"
+      }
+    },
+    "chat": {
+      "model": "qwen3.8-flash-next",
+      "temperature": 0,
+      "enable_thinking": false,
+      "messages": [
+        {
+          "role": "user",
+          "content": "Compute 17 + 25. Reply only with the decimal number."
+        }
+      ],
+      "max_completion_tokens": 64
+    }
+  },
+  "scope": "storage/options/real tool history/one own object worker fault; no performance matrix or model restart"
+}

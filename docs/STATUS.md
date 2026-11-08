@@ -2,6 +2,14 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+Chat真实业务驱动2 Python/2官方SDK桥接CPU通过，[原件](evidence/serve-chat-storage-driver-20261109/README.md)。
+接着提交驱动、冻结来源后执行1启动/7 Chat/600秒严格租约短验；
+本组核心代码未再改，继续复用已通过的针对性证据。
+
+Chat持久源码检查点`af28bdb4`已推送。继续真实业务驱动：冻结
+1启动/7条Chat/600秒，同一严格租约，2 Python/2 SDK桥接CPU先验；
+覆盖实际保存/工具历史与自有存储worker故障，默认与全部余项保留。
+
 Chat持久协议CPU接入通过：核心15、接入9、查询补验4；4官方SDK
 场景、3实际入口/TLS/可选nginx和4声明检查通过，25个线对象严格匹配。
 修复SDK nullable metadata与损坏UTF-8查询，失败原件保留；[证据](evidence/serve-chat-storage-20261109/README.md)。
