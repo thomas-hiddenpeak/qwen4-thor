@@ -372,6 +372,15 @@ def cases():
     add("schema-v2-tools-129", dict(calls, tools=calls["tools"]+[tool("f128")]), False, field="tools")
     add("schema-v2-json-required-tool", structured(EMPTY, tools=[tool()], tool_choice="required"), field="response_format")
     add("schema-v2-json-custom-auto", structured(EMPTY, tools=[custom_tool]), field="response_format")
+    for field in ("session_id", "prefix_cache_scope"):
+        request = structured(EMPTY, **{field: HEX})
+        add("schema-v2-cache-"+field, request, field="response_format",
+            session_cache=True, prefix_cache=True)
+        add("schema-v2-cache-disabled-"+field, request, False, semantic=True,
+            field="response_format")
+    add("schema-v2-json-legacy-tool", structured(EMPTY,
+        functions=[dict(name="read", parameters=EMPTY)], function_call="auto"),
+        field="response_format")
     data_history = history()
     data_history["messages"][1]["tool_calls"][0]["function"]["arguments"] = {"":None, "bad<name": "</tool_call>"}
     add("schema-v2-arbitrary-history-keys", data_history, field="messages")

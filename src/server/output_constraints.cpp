@@ -269,11 +269,6 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
   if (!parsed)
     return invalid(request.Has("messages") ? "parse_response" : "messages",
                    "output constraints require parsed messages");
-  if (request.Has("session_id") || request.Has("prefix_cache_scope"))
-    return invalid(
-        request.Has("session_id") ? "session_id" : "prefix_cache_scope",
-        "output constraints with session/prefix cache are not "
-        "supported in this stage");
   std::string payload, json_payload, guard_tools, guard_content;
   if (out->json_output) {
     const bool guard = schema && NeedsSchemaGuard(*schema);

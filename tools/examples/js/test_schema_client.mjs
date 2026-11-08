@@ -31,9 +31,8 @@ test('parts and actual final tool history are copied without rewriting results',
   assert.deepEqual(result.response_format.json_schema.schema, schema);
 });
 
-test('ambiguous formats, malformed tools, cache and orphan history reject locally', () => {
-  for (const extra of [{ response_format: {} }, { tools: [{}] }, { session_id: 'a'.repeat(64) },
-    { prefix_cache_scope: 'x' }, { parse_response: false }, { messages: [] },
+test('ambiguous formats, malformed tools and orphan history reject locally', () => {
+  for (const extra of [{ response_format: {} }, { tools: [{}] }, { parse_response: false }, { messages: [] },
     { messages: [{ role: 'tool', content: 'x' }] }]) {
     assert.throws(() => withJsonSchema({ ...body(), ...extra }, schema), ProtocolError);
   }
@@ -62,4 +61,13 @@ test('budgets are bounded, defaults stable, conflicting aliases rejected', () =>
     assert.throws(() => makeRequest(body().messages, { max_tokens }), ProtocolError);
   }
   assert.throws(() => makeRequest(body().messages, { max_tokens: 1, max_completion_tokens: 1 }), ProtocolError);
+});
+
+test('schema and active tools preserve explicit cache identity', () => {
+  const request = { ...body(), session_id: 'a'.repeat(64),
+    prefix_cache_scope: 'b'.repeat(64), prefix_cache_write_tokens: 1024,
+    tools: [{ type: 'function', function: { name: 'read' } }], tool_choice: 'required' };
+  const result = withJsonSchema(request, schema);
+  for (const key of ['session_id', 'prefix_cache_scope', 'prefix_cache_write_tokens', 'tools', 'tool_choice'])
+    assert.deepEqual(result[key], request[key]);
 });

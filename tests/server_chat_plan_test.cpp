@@ -357,3 +357,24 @@ Q4T_TEST(chat_config_operations_listener_reports_independent_capacity) {
   Q4T_CHECK(!limits->GetBool("unclassified_shares_total"));
   return true;
 }
+
+Q4T_TEST(chat_plan_structured_cache_checks_actual_configuration) {
+  for (const auto* field : {"session_id", "prefix_cache_scope"}) {
+    Json request;
+    Q4T_CHECK(Parse(R"({"messages":[{"role":"user","content":"q"}],)"
+                    R"("response_format":{"type":"json_object"},")" +
+                        std::string(field) + R"(":")" + std::string(64, 'a') +
+                        R"("})",
+                    &request));
+    auto config = Config();
+    config.structured = true;
+    ChatRequestPlan plan;
+    ChatPlanError error;
+    Q4T_CHECK(!PlanChatRequest(request, config, &plan, &error));
+    Q4T_CHECK(error.param == field && error.code == "invalid_request");
+    config.session_cache = config.prefix_cache = true;
+    Q4T_CHECK(PlanChatRequest(request, config, &plan, &error));
+    Q4T_CHECK(plan.constraints.active && plan.constraints.json_output);
+  }
+  return true;
+}

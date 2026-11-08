@@ -147,6 +147,9 @@ Q4T_TEST(chat_capabilities_option_contract) {
   Q4T_CHECK(structured->GetInt("max_schema_properties") == 5000);
   Q4T_CHECK(structured->GetInt("max_tools") == 128);
   Q4T_CHECK(structured->GetBool("exact_decimal_data"));
+  Q4T_CHECK(structured->GetBool("session_cache") &&
+            structured->GetBool("prefix_cache"));
+  Q4T_CHECK(structured->GetString("cache_layout") == "target_only");
   const auto* resources = structured->Find("resources");
   Q4T_CHECK(resources && resources->GetInt("active_limit") == 1);
   Q4T_CHECK(resources->GetInt("cleanup_timeout_ms") ==

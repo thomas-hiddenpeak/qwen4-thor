@@ -466,8 +466,7 @@ export function withJsonSchema(body, schema, { name = 'answer' } = {}) {
     requireValue(object(tool) && ['function', 'custom'].includes(tool.type) &&
       object(tool[tool.type]) && typeof tool[tool.type].name === 'string' && tool[tool.type].name.length,
     'invalid tool definition');
-  requireValue(body.parse_response !== false && !Object.hasOwn(body, 'session_id') &&
-    !Object.hasOwn(body, 'prefix_cache_scope'), 'schema requires parsed messages without session/prefix cache');
+  requireValue(body.parse_response !== false, 'schema requires parsed messages');
   requireValue(Array.isArray(body.messages) && body.messages.length && body.messages.every(object) &&
     body.messages.some(m => ['system', 'developer', 'user', 'assistant'].includes(m.role)),
   'schema requires a valid message history');

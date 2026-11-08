@@ -60,10 +60,7 @@ Q4T_TEST(output_constraints_error_paths_survive_chat_validation) {
       {R"("tool_choice":{"type":"function","function":{"name":"read","x":1}})",
        "tool_choice.function.x"},
       {R"("response_format":{"type":"json_schema","json_schema":{"name":"x"}})",
-       "response_format.json_schema.schema"},
-      {R"("tool_choice":"required","session_id":")"
-       "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef\"",
-       "session_id"}};
+       "response_format.json_schema.schema"}};
   for (const auto& [options, expected] : cases) {
     const auto request = Request(options);
     std::string param = "stale";
@@ -153,8 +150,7 @@ Q4T_TEST(output_constraints_tool_choice_plan) {
        {R"("tool_choice":"force")", R"("parallel_tool_calls":0)",
         R"("tool_choice":{"type":"function","function":{"name":"absent"}})",
         R"("tool_choice":{"type":"function","function":{"name":"read","x":1}})",
-        R"("tool_choice":"required","parse_response":false)",
-        R"("tool_choice":"required","session_id":"x")"})
+        R"("tool_choice":"required","parse_response":false)"})
     Q4T_CHECK(
         !q4t::server::PlanOutputConstraints(Request(options), &plan).ok());
   return true;

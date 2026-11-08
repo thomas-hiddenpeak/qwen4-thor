@@ -614,9 +614,8 @@ def with_json_schema(body, schema, *, name="answer"):
         require(isinstance(definition, dict) and
                 isinstance(definition.get("name"), str) and definition["name"],
                 "tool definition requires name")
-    require(body.get("parse_response") is not False and
-            "session_id" not in body and "prefix_cache_scope" not in body,
-            "schema requires parsed messages without session/prefix cache")
+    require(body.get("parse_response") is not False,
+            "schema requires parsed messages")
     messages = body.get("messages")
     require(isinstance(messages, list) and messages and
             all(isinstance(m, dict) for m in messages) and

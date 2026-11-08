@@ -48,7 +48,6 @@ class SchemaClient(unittest.TestCase):
     def test_invalid_combinations_and_history_fail_before_network(self):
         body = self.body()
         for changed in (dict(body, response_format={}), dict(body, parse_response=False),
-                        dict(body, session_id="a"*64), dict(body, prefix_cache_scope="x"),
                         dict(body, tools=[{}]), dict(body, messages=[]),
                         dict(body, messages=[dict(role="tool", content="x")]),
                         dict(body, messages=[dict(role="user", content=None)])):
@@ -94,10 +93,13 @@ class SchemaClient(unittest.TestCase):
         root = {"$ref": "#/$defs/root", "$defs": {"root": SCHEMA}}
         body = self.body()
         body.update(tools=[dict(type="function", function=dict(name="read"))],
-                    tool_choice="required")
+                    tool_choice="required", session_id="a" * 64,
+                    prefix_cache_scope="b" * 64)
         result = c.with_json_schema(body, root)
         self.assertEqual(result["tool_choice"], "required")
         self.assertEqual(result["tools"], body["tools"])
+        self.assertEqual(result["session_id"], body["session_id"])
+        self.assertEqual(result["prefix_cache_scope"], body["prefix_cache_scope"])
         self.assertEqual(result["response_format"]["json_schema"]["schema"], root)
         no_user = dict(body, messages=[dict(role="system", content="Answer briefly")])
         result = c.with_json_schema(no_user, SCHEMA)

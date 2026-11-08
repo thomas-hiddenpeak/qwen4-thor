@@ -24,11 +24,12 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
   const bool constrained = kStructuredDecodingAvailable;
   const bool cleanup_pending = detail::GrammarCleanupPending();
   const std::string options =
-      constrained ? R"("tool_choice":["auto","none","required","named","allowed_tools"],)"
-                    R"("parallel_tool_calls":[true,false],"strict":true,)"
-                    R"("constrained_decoding":true,)"
-                  : R"("tool_choice":["auto"],"parallel_tool_calls":[true],)"
-                    R"("strict":false,"constrained_decoding":false,)";
+      constrained
+          ? R"("tool_choice":["auto","none","required","named","allowed_tools"],)"
+            R"("parallel_tool_calls":[true,false],"strict":true,)"
+            R"("constrained_decoding":true,)"
+          : R"("tool_choice":["auto"],"parallel_tool_calls":[true],)"
+            R"("strict":false,"constrained_decoding":false,)";
   return R"({"object":"q4t.capabilities","schema_version":1,)"
          R"("implementation_only":true,"release_attestation":false,"model":)" +
          Quote(model) + R"(,"protocol_source_sha256":)" +
@@ -199,8 +200,10 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"(,"validation":"worker_semantics_and_parent_receipt_before_success_terminal",)"
          R"("stream_payload":"incremental_provisional_until_success_terminal_and_eof",)"
          R"("decode":"plain_host_masked_sampling","mtp":false,)"
-         R"("packed_decode":false,"session_cache":false,)"
-         R"("prefix_cache":false,"media":true,"length_terminal":"error",)"
+         R"("packed_decode":false,"session_cache":true,)"
+         R"("prefix_cache":true,"cache_layout":"target_only",)"
+         R"("cache_requires_enabled_configuration":true,)"
+         R"("media":true,"length_terminal":"error",)"
          R"("named_tool_max_calls":1,"max_tools":128,"max_response_bytes":1048576,)"
          R"("max_request_description_bytes":2097152,"max_schema_depth":10,)"
          R"("max_schema_nodes":20000,"max_schema_properties":5000,)"

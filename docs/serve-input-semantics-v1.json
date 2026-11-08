@@ -119,7 +119,7 @@
         "src/server/output_constraints.cpp",
         "src/server/text_stop.cpp"
       ],
-      "contract": "JSON output/none/required/named/strict tools/nonparallel nonempty tools activate constraints. Parsed messages required; state-cache implementation is still pending and effective stop remains forbidden. JSON response_format and tools choose a JSON-content or tool-only branch; required/named force tools. Tool declarations max128 with safe names in constrained mode. Compiled description <=2MiB; resource rejection is distinct from invalid syntax. Incremental content/tool/reasoning deltas remain provisional until successful terminal and EOF."
+      "contract": "JSON output/none/required/named/strict tools/nonparallel nonempty tools activate constraints. Parsed messages required; text state caches use completed target-only snapshots with layout checking, request-local grammar/sampler and successful-response publication. Cache startup configuration must be enabled; effective stop remains forbidden. JSON response_format and modern/legacy tools choose a JSON-content or tool-only branch; required/named force tools. Tool declarations max128 with safe names in constrained mode. Compiled description <=2MiB; resource rejection is distinct from invalid syntax. Incremental content/tool/reasoning deltas remain provisional until successful terminal and EOF."
     },
     {
       "id": "schema-v2",
@@ -310,7 +310,7 @@
     "src/server/chat_choices.cpp": "ee99c4aca3c1ea07d5929da38325aa2b28a411245c7d794c9cc5f1f8eb23f16a",
     "src/server/chat_contract.cpp": "379dc3c2b40e56808394911f752782ad5e4a7715763b1e47f491fe0246226611",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
-    "src/server/chat_generation.cpp": "deb78728b29e0c07c19c3823ec550d711c8ba8a64e6570f8f34209654f0338c7",
+    "src/server/chat_generation.cpp": "d4269c9d324afaa9d72d1f75fbcd79211a19da93939ce5f780b821b9a22e244f",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
     "src/server/chat_http.cpp": "5504ac68093b870e0f961a4d0faa1395ed8facf728f0046ec35e34e4843a5120",
     "src/server/chat_input.cpp": "d79be28242ed560ad7be0494284f72b53d1aaa7a272786d17f1b837e81a6d9bb",
@@ -333,7 +333,7 @@
     "src/server/legacy_tools.cpp": "b0bffcd3c780f35f336b40a152e9837077b9a4c6ea3ede737fcbb14b8514587c",
     "src/server/media_admission.cpp": "11461c31fed0db43fe68e16680812641c0e51371585c216673e4fe2e54500393",
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
-    "src/server/output_constraints.cpp": "4458cb04b69fca186f79334c069cc9830fcf5c0ed61d3db1dd056438257c6fe5",
+    "src/server/output_constraints.cpp": "1273d5d1643a8cb7ccd2804990d2bcac656cbe5b198096c0a66b6803751e3753",
     "src/server/output_schema.cpp": "6d42d154ce3ac43c2cb2569298af221148813f9233e37c9d9c75eb0f331ee65d",
     "src/server/prediction.cpp": "7e8ccdf7c44dd5c8245230577d42eb7d4cd17c6e2efcf5534a02e6744815733f",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
@@ -344,7 +344,7 @@
     "src/server/schema_receipt.cpp": "44e3decd13f5d79f7ae687b55d63f7d3d8da9fba0ca1d75316b838959f687498",
     "src/server/schema_string.cpp": "8c8e04f94307af5b6f2b7c4993cb88d5eaac18124f2e07e002e5495663e2d791",
     "src/server/schema_token_guard.cpp": "3004a864f26a35f2eade7cf27e31520df348424edde1d6ed985ed5d194755a44",
-    "src/server/server_options.cpp": "c47e2555d054a8ee27524ecf59936838b717d7292c864c24efeee1279e2dc622",
+    "src/server/server_options.cpp": "a53c04725cd5b5b32a6014484b0b0d40dc13ce825cb8e313a23eeb17d7d3a1f8",
     "src/server/text_stop.cpp": "2397b27adc873b3ac0697af68352a73c8481830da6053fde0adeca536eaba4dc",
     "src/server/thinking_budget.cpp": "4c91e8320115ee86096bf7287d4950599ca311f137c3a0051b9d64fb53abf259",
     "src/server/token_logprobs.cpp": "d351efe6b7b560e80776e3555bca8de2fa98216633543ab7e0dfcf74cad42d6a",

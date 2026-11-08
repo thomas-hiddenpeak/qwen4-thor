@@ -65,11 +65,13 @@ Status ValidateServerOptions(const ServerOptions& options) {
     return Status::Fail("max-queued-requests exceeds max-inflight-requests");
   if ((!options.session_cache_dir.empty() ||
        !options.prefix_cache_dir.empty()) &&
-      (options.no_mtp || options.mtp_k != 3 || options.allow_media ||
-       options.seq_capacities.empty() || options.moe_resident_slots != 0 ||
-       !options.moe_trace_dir.empty()))
+      (options.allow_media ||
+       (!options.no_mtp &&
+        (options.mtp_k != 3 || options.seq_capacities.empty())) ||
+       options.moe_resident_slots != 0 || !options.moe_trace_dir.empty()))
     return Status::Fail(
-        "state caches require text k=3, explicit slots, no trace/offload");
+        "state caches require text, no trace/offload; MTP also requires "
+        "k=3 and explicit slots");
   if (options.prefix_cache_checkpoints.empty() ||
       options.prefix_cache_checkpoints.size() > 4)
     return Status::Fail("prefix-cache requires 1 to 4 checkpoints");
@@ -97,8 +99,7 @@ Status ValidateServerOptions(const ServerOptions& options) {
   in_addr address{};
   if (inet_pton(AF_INET, options.host.c_str(), &address) != 1)
     return Status::Fail("host must be a numeric IPv4 address");
-  if (!options.client_policy_file.empty() &&
-      options.host != "127.0.0.1")
+  if (!options.client_policy_file.empty() && options.host != "127.0.0.1")
     return Status::Fail("client-policy-file requires loopback serving");
   if (options.port < 1 || options.port > 65535)
     return Status::Fail("port must be in [1,65535]");

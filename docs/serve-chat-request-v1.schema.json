@@ -2232,53 +2232,6 @@
     },
     {
       "if": {
-        "allOf": [
-          {
-            "required": [
-              "response_format"
-            ],
-            "properties": {
-              "response_format": {
-                "required": [
-                  "type"
-                ],
-                "properties": {
-                  "type": {
-                    "enum": [
-                      "json_object",
-                      "json_schema"
-                    ]
-                  }
-                }
-              }
-            }
-          },
-          {
-            "required": [
-              "functions"
-            ],
-            "properties": {
-              "functions": {
-                "type": "array",
-                "minItems": 1
-              }
-            }
-          }
-        ]
-      },
-      "then": {
-        "required": [
-          "function_call"
-        ],
-        "properties": {
-          "function_call": {
-            "const": "none"
-          }
-        }
-      }
-    },
-    {
-      "if": {
         "required": [
           "prediction"
         ],
@@ -2907,28 +2860,6 @@
               "parse_response": {
                 "const": true
               }
-            }
-          },
-          {
-            "not": {
-              "anyOf": [
-                {
-                  "required": [
-                    "session_id"
-                  ],
-                  "properties": {
-                    "session_id": {}
-                  }
-                },
-                {
-                  "required": [
-                    "prefix_cache_scope"
-                  ],
-                  "properties": {
-                    "prefix_cache_scope": {}
-                  }
-                }
-              ]
             }
           },
           {

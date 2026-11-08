@@ -173,7 +173,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   ChatRequestPlan request_plan;
   ChatPlanError planning_error;
   s = PlanChatRequest(original_request, planning_config, &request_plan,
-                       &planning_error);
+                      &planning_error);
   if (!s) {
     SendError(fd, planning_error.http_status, s.message(), {},
               planning_error.code, planning_error.param);
@@ -870,9 +870,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                     ? static_cast<size_t>(mtp_.cfg.hc) *
                                           static_cast<size_t>(mtp_.cfg.hs)
                                     : 0;
-    const bool request_mtp = mtp_loaded_ && plain_greedy && !structured &&
-                             !prediction_enabled;
+    const bool request_mtp =
+        mtp_loaded_ && plain_greedy && !structured && !prediction_enabled;
     const bool stream_mtp = request_mtp && explicit_slots;
+    const bool target_cache =
+        !request_mtp && (session.cache || !prefix_scope.empty());
+    const SessionLayout cache_layout =
+        request_mtp ? SessionLayout::kMtp : SessionLayout::kTarget;
     int32_t stream_d0 = -1;
     bool stream_draft_ready = false;
     if (request_mtp) {
@@ -922,9 +926,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     std::vector<uint16_t> h_prediction_logits;
     bool prediction_logits_ready = false;
     if (prediction_enabled && !prompt_budget.prediction_tokens.empty()) {
-      const auto allocated = allocate_buffer(
-          d_prediction_logits, static_cast<size_t>(vocab) * 4,
-          "request.prediction_logits");
+      const auto allocated =
+          allocate_buffer(d_prediction_logits, static_cast<size_t>(vocab) * 4,
+                          "request.prediction_logits");
       if (!allocated.ok()) {
         allocation_error(allocated);
         return;
@@ -981,7 +985,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     const bool scheduled_chunk_prefill =
         scheduler_active_ && !request_mtp && chunked && vptr == nullptr;
     bool prefill_cancelled = false;
-    if (session.cache || !prefix_scope.empty()) {
+    if (stream_mtp && (session.cache || !prefix_scope.empty())) {
       const auto allocated = allocate_buffer(d_session_trunk, trunk_hc_dim * 2,
                                              "request.session_trunk");
       if (!allocated.ok()) {
@@ -1002,6 +1006,111 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       return Status::Fail(std::string("session CUDA copy: ") +
                           cudaGetErrorString(error));
     };
+    // Call only after BeginSequence, under the model lock. Exact token prefixes
+    // and execution layouts are checked before any state bytes are copied.
+    const auto restore_cache = [&] {
+      const auto begin = std::chrono::steady_clock::now();
+      int prefix = session.cache
+                       ? session_cache_.Match(session.key, ids, cache_layout)
+                       : 0;
+      SessionCache* selected_cache = &session_cache_;
+      std::string selected_key = session.key;
+      SessionLease shared_read;
+      if (!prefix_scope.empty()) {
+        const int shared = prefix_cache_.MatchShared(
+            prefix_scope, ids, &shared_read.key, cache_layout);
+        if (shared > 0) shared_read.cache = &prefix_cache_;
+        if (shared > prefix) {
+          prefix = shared;
+          selected_cache = &prefix_cache_;
+          selected_key = shared_read.key;
+        }
+      }
+      Status restored;
+      if (prefix > 0) {
+        std::vector<SessionRange> ranges;
+        restored = target_cache
+                       ? TargetSessionStateRanges(model_.Get(), seq_id, prefix,
+                                                  &ranges)
+                       : SessionStateRanges(model_.Get(), mtp_, seq_id, prefix,
+                                            d_mtp_g, d_session_trunk, &ranges);
+        int32_t cached_pending = -1;
+        if (restored.ok())
+          restored = selected_cache->Restore(selected_key, ranges, session_copy,
+                                             cancelled, &stream_d0,
+                                             &cached_pending, cache_layout);
+        if (restored.ok() && !target_cache && cached_pending != ids[prefix]) {
+          // The draft is shifted by one token. A tool/message boundary may
+          // replace its final predicted token; target state remains valid.
+          const int position = prefix - 1;
+          restored = mtp::MtpDraftExtend(mtp_, &ids[prefix], d_session_trunk,
+                                         &position, 1, nullptr, nullptr,
+                                         nullptr, seq_id, false);
+          restored =
+              FinishHostReadback(cudaSuccess, &gpu_healthy_, {}, restored,
+                                 nullptr, &metrics_.execution_steps_total);
+          if (!restored.ok()) session_gpu_error = true;
+        }
+        if (restored.ok()) {
+          seq.history.assign(ids.begin(), ids.begin() + prefix);
+          seq.position = prefix;
+          model_.Get().rope_delta[seq_id] = 0;
+          restored_prefix = prefix;
+        } else if (session_gpu_error) {
+          s = restored;
+        } else {
+          // An incomplete read may have written part of the destination.
+          // Reset every partially restored model before falling back.
+          s = model::ModelBeginSequence(model_.Get(), &seq, nullptr, seq_id);
+          if (s.ok() && !target_cache)
+            s = mtp::MtpResetState(mtp_, nullptr, seq_id);
+        }
+      }
+      std::fprintf(stderr,
+                   "[session-cache] request=%s event=restore prefix=%d "
+                   "ms=%.3f error=%s source=%s layout=%s\n",
+                   request_id.c_str(), restored_prefix,
+                   std::chrono::duration<double, std::milli>(
+                       std::chrono::steady_clock::now() - begin)
+                       .count(),
+                   restored.ok() ? "none" : restored.message().c_str(),
+                   selected_cache == &prefix_cache_ ? "shared" : "session",
+                   target_cache ? "target" : "mtp");
+    };
+    const auto save_target = [&](SessionCache* cache, const std::string& key,
+                                 const char* kind) {
+      const auto begin = std::chrono::steady_clock::now();
+      SessionSaveTiming timing(request_id.c_str(), kind);
+      std::vector<SessionRange> ranges;
+      Status saved;
+      {
+        SessionSaveTiming::Scope span(&timing, SessionSaveTiming::kRanges);
+        saved = TargetSessionStateRanges(model_.Get(), seq_id, seq.position,
+                                         &ranges);
+      }
+      if (saved.ok() && !seq.HasPending() &&
+          seq.history.size() == static_cast<size_t>(seq.position) &&
+          model_.Get().rope_delta[seq_id] == 0) {
+        std::vector<int32_t> prefix(seq.history);
+        prefix.push_back(-1);  // No draft token is part of a target snapshot.
+        saved = cache->Save(key, prefix, ranges, session_copy, cancelled, -1,
+                            &timing, SessionLayout::kTarget);
+        if (saved.ok()) detail::ServeSnapshotTokens(request_id.c_str(), prefix);
+      } else if (saved.ok()) {
+        saved = Status::Fail("incomplete target session boundary");
+      }
+      timing.Report(saved.ok());
+      std::fprintf(stderr,
+                   "[session-cache] request=%s event=save prefix=%d "
+                   "ms=%.3f disk_bytes=%zu error=%s layout=target source=%s\n",
+                   request_id.c_str(), seq.position,
+                   std::chrono::duration<double, std::milli>(
+                       std::chrono::steady_clock::now() - begin)
+                       .count(),
+                   cache->Bytes(),
+                   saved.ok() ? "none" : saved.message().c_str(), kind);
+      return saved;
+    };
     if (stream_mtp) {
       q4t::diagnostic::Batch execution_batch(request_id.c_str(), seq_id, 0, T);
       q4t::diagnostic::Scope execution_prefill("handler_stream_mtp_prefill", 0,
@@ -1012,68 +1121,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       if (s.ok())
         s = model::ModelBeginSequence(model_.Get(), &seq, nullptr, seq_id);
       if (s.ok()) s = mtp::MtpResetState(mtp_, nullptr, seq_id);
-      if (s.ok() && (session.cache || !prefix_scope.empty())) {
-        const auto begin = std::chrono::steady_clock::now();
-        int prefix = session.cache ? session_cache_.Match(session.key, ids) : 0;
-        SessionCache* selected_cache = &session_cache_;
-        std::string selected_key = session.key;
-        SessionLease shared_read;
-        if (!prefix_scope.empty()) {
-          const int shared =
-              prefix_cache_.MatchShared(prefix_scope, ids, &shared_read.key);
-          if (shared > 0) shared_read.cache = &prefix_cache_;
-          if (shared > prefix) {
-            prefix = shared;
-            selected_cache = &prefix_cache_;
-            selected_key = shared_read.key;
-          }
-        }
-        Status restored;
-        if (prefix > 0) {
-          std::vector<SessionRange> ranges;
-          restored = SessionStateRanges(model_.Get(), mtp_, seq_id, prefix,
-                                        d_mtp_g, d_session_trunk, &ranges);
-          int32_t cached_pending = -1;
-          if (restored.ok())
-            restored =
-                selected_cache->Restore(selected_key, ranges, session_copy,
-                                        cancelled, &stream_d0, &cached_pending);
-          if (restored.ok() && cached_pending != ids[prefix]) {
-            // The draft is shifted by one token. A tool/message boundary may
-            // replace its final predicted token; target state remains valid.
-            const int position = prefix - 1;
-            restored = mtp::MtpDraftExtend(mtp_, &ids[prefix], d_session_trunk,
-                                           &position, 1, nullptr, nullptr,
-                                           nullptr, seq_id, false);
-            restored =
-                FinishHostReadback(cudaSuccess, &gpu_healthy_, {}, restored,
-                                   nullptr, &metrics_.execution_steps_total);
-            if (!restored.ok()) session_gpu_error = true;
-          }
-          if (restored.ok()) {
-            seq.history.assign(ids.begin(), ids.begin() + prefix);
-            seq.position = prefix;
-            model_.Get().rope_delta[seq_id] = 0;
-            restored_prefix = prefix;
-          } else if (session_gpu_error) {
-            s = restored;
-          } else {
-            // An incomplete read may have written part of the destination.
-            // Reset both models before a miss is allowed to fall back.
-            s = model::ModelBeginSequence(model_.Get(), &seq, nullptr, seq_id);
-            if (s.ok()) s = mtp::MtpResetState(mtp_, nullptr, seq_id);
-          }
-        }
-        std::fprintf(stderr,
-                     "[session-cache] request=%s event=restore prefix=%d "
-                     "ms=%.3f error=%s source=%s\n",
-                     request_id.c_str(), restored_prefix,
-                     std::chrono::duration<double, std::milli>(
-                         std::chrono::steady_clock::now() - begin)
-                         .count(),
-                     restored.ok() ? "none" : restored.message().c_str(),
-                     selected_cache == &prefix_cache_ ? "shared" : "session");
-      }
+      if (s.ok() && (session.cache || !prefix_scope.empty())) restore_cache();
       std::vector<int32_t> shifted;
       std::vector<int> positions;
       int chunks = 0;
@@ -1187,6 +1235,58 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                    request_id.c_str(), chunks,
                    static_cast<size_t>(std::min(T, chunk)) * trunk_hc_dim * 2,
                    stream_draft_ready);
+    } else if (target_cache) {
+      // Cache state belongs to this request's slot. The packed prefill queue
+      // cannot start at a restored prefix; use the existing chunk API instead.
+      auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
+      OnException backend_failure([&] { AbortBackendExecution(); });
+      s = ExecutionStatus();
+      if (s.ok())
+        s = model::ModelBeginSequence(model_.Get(), &seq, nullptr, seq_id);
+      if (s.ok()) restore_cache();
+      while (s.ok() && seq.position < T) {
+        if (cancelled()) {
+          prefill_cancelled = true;
+          break;
+        }
+        const int base = seq.position;
+        int count = std::min(chunk, T - base);
+        if (prefix_write_tokens > base)
+          count = std::min(count, prefix_write_tokens - base);
+        const int boundary = base + count;
+        const bool last = boundary == T;
+        if (router_trace_)
+          router_trace_->BeginForward(trace::RouteStage::kPrefill, base, count);
+        s = model::ModelPrefillTextChunk(
+            model_.Get(), &seq, ids.data(), T, count,
+            last ? d_prefill_logits_ : nullptr, nullptr, nullptr,
+            model::LogitsRows::kLastRow, model::SequenceCompletion::kDeferred);
+        cudaError_t copy_error = cudaSuccess;
+        if (s.ok() && last)
+          copy_error = cudaMemcpyAsync(h_logits.data(), d_prefill_logits_,
+                                       static_cast<size_t>(vocab) * 2,
+                                       cudaMemcpyDeviceToHost, nullptr);
+        model::ModelSequence* sequence = &seq;
+        s = FinishHostReadback(copy_error, &gpu_healthy_, {&sequence, 1}, s,
+                               router_trace_.get(),
+                               &metrics_.execution_steps_total);
+        if (s.ok() && !last && boundary == prefix_write_tokens) {
+          const auto digest =
+              trace::Sha256({reinterpret_cast<const uint8_t*>(ids.data()),
+                             static_cast<size_t>(boundary) * sizeof(int32_t)});
+          const std::string key =
+              prefix_scope + ":target-v1:" + trace::HexDigest(digest);
+          if (prefix_cache_.AcquireNew(key)) {
+            auto lease = std::make_unique<SessionLease>();
+            lease->cache = &prefix_cache_;
+            lease->key = key;
+            shared_writes.push_back(std::move(lease));
+            const auto saved = save_target(&prefix_cache_, key, "shared");
+            if (session_gpu_error) s = saved;
+          }
+        }
+      }
+      if (!s.ok()) seq.Fail();
     } else if (scheduled_chunk_prefill) {
       ChunkPrefillReq pr;
       pr.fd = fd;
@@ -1960,8 +2060,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         // Constrained requests must stay on the host-logit fallback until a
         // separately accepted scheduler/MTP mask implementation exists.
         use_sched = plain_greedy && !prediction_enabled && !structured &&
-                    !thinking_budget.Enabled() &&
-                    scheduler_active_ && !scheduler_stop_ && d_sched_logits_ &&
+                    !thinking_budget.Enabled() && scheduler_active_ &&
+                    !scheduler_stop_ && d_sched_logits_ &&
                     static_cast<int>(active_.size()) < max_seq_;
         if (use_sched) {
           ar.seq = &seq;
@@ -1978,8 +2078,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         // rejected output, including an unused suffix at EOS or truncation.
         // Matching one next token adds no net charge: it replaces a reserved
         // prediction token. This permits a fully predicted max_tokens reply.
-        const bool prediction_content = !response_parser.Thinking() &&
-            next_token >= 0 &&
+        const bool prediction_content =
+            !response_parser.Thinking() && next_token >= 0 &&
             next_token < static_cast<int32_t>(tok_->BaseVocabSize());
         const uint64_t prediction_credit =
             prediction_content && prediction.Matches(next_token) ? 1 : 0;
@@ -2048,9 +2148,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
           OnException backend_failure([&] { AbortBackendExecution(); });
           const int32_t proposal = prediction.Next();
-          const bool verify_prediction = prediction_enabled &&
-              d_prediction_logits && !response_parser.Thinking() &&
-              proposal >= 0 &&
+          const bool verify_prediction =
+              prediction_enabled && d_prediction_logits &&
+              !response_parser.Thinking() && proposal >= 0 &&
               proposal < static_cast<int32_t>(tok_->BaseVocabSize()) &&
               seq.position + 2 <= request_capacity &&
               model_.Get().cfg.max_prefill >= 2;
@@ -2064,19 +2164,19 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
               s = seq.Submit(inputs, model::ModelSequence::Stage::kDecode,
                              request_capacity);
             if (router_trace_)
-              router_trace_->BeginForward(trace::RouteStage::kDecode,
-                                          position, 2);
+              router_trace_->BeginForward(trace::RouteStage::kDecode, position,
+                                          2);
             if (s)
-              s = model::ModelVerifyMulti(
-                  model_.Get(), inputs, &position, &slot, seq.history.data(),
-                  static_cast<int>(seq.history.size()), 1, 2,
-                  d_prediction_logits, nullptr);
+              s = model::ModelVerifyMulti(model_.Get(), inputs, &position,
+                                          &slot, seq.history.data(),
+                                          static_cast<int>(seq.history.size()),
+                                          1, 2, d_prediction_logits, nullptr);
             cudaError_t copy_error = cudaSuccess;
             if (s)
-              copy_error = cudaMemcpyAsync(
-                  h_prediction_logits.data(), d_prediction_logits,
-                  static_cast<size_t>(vocab) * 4, cudaMemcpyDeviceToHost,
-                  nullptr);
+              copy_error = cudaMemcpyAsync(h_prediction_logits.data(),
+                                           d_prediction_logits,
+                                           static_cast<size_t>(vocab) * 4,
+                                           cudaMemcpyDeviceToHost, nullptr);
             // First wait makes logits readable without committing either
             // pending row. The second boundary checks any rollback before
             // committing only the retained target-verified prefix.
@@ -2090,13 +2190,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
               matched = response_status && next_token == proposal;
               if (!matched)
                 s = model::ModelRestoreCheckpoint(model_.Get(), 0, nullptr,
-                                                   seq_id);
+                                                  seq_id);
               if (s) s = seq.RetainSubmittedPrefix(matched ? 2 : 1);
             }
             if (seq.HasPending()) {
               model::ModelSequence* sequence = &seq;
-              s = FinishHostReadback(cudaSuccess, &gpu_healthy_,
-                                     {&sequence, 1}, s);
+              s = FinishHostReadback(cudaSuccess, &gpu_healthy_, {&sequence, 1},
+                                     s);
             }
             if (!s) {
               generation_failed = true;
@@ -2132,16 +2232,30 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       }
       active_registration.Run();
     }
+    // Ordinary decode has left the scheduler, and all target writes are
+    // committed. A later parse, cleanup, cancellation or transport failure
+    // keeps this snapshot unpublished through the existing SessionLease.
+    if (target_cache && session.cache && !generation_failed &&
+        response_status.ok() && !cancelled() &&
+        seq.stage == model::ModelSequence::Stage::kDecode &&
+        !seq.HasPending() && seq.position >= SessionCache::kMinPrefix &&
+        seq.position < request_capacity) {
+      auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
+      OnException backend_failure([&] { AbortBackendExecution(); });
+      save_target(&session_cache_, session.key, "private");
+      if (session_gpu_error) generation_failed = true;
+    }
     trace_output_tokens = generated.size();
     if (prediction_enabled) {
       // Also settles an admitted zero-output length completion, where all
       // provided tokens remain rejected. Queued cancellations never start it.
       rate_lease.Completion(choices.CompletionTokens() +
                             prediction.Completion(generated.size()));
-      std::fprintf(stderr,
+      std::fprintf(
+          stderr,
           "[prediction] request=%s provided=%zu accepted=%llu rejected=%llu "
-          "verify_pairs=%llu pair_matches=%llu\n", request_id.c_str(),
-          prompt_budget.prediction_tokens.size(),
+          "verify_pairs=%llu pair_matches=%llu\n",
+          request_id.c_str(), prompt_budget.prediction_tokens.size(),
           static_cast<unsigned long long>(prediction.Accepted()),
           static_cast<unsigned long long>(prediction.Rejected()),
           static_cast<unsigned long long>(prediction_pairs),

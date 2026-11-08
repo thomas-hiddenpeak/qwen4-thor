@@ -21,6 +21,9 @@ struct SessionRange {
   size_t bytes;
 };
 
+// One private lease covers both layouts; switching layouts is a cache miss.
+enum class SessionLayout { kMtp, kTarget };
+
 // Same-process, capability-keyed prefix snapshots. Device copies are supplied
 // by the caller, which must own the model scratch/slot until Transfer returns.
 // CPU contracts use the same storage path with a checked host-copy callback.
@@ -48,16 +51,19 @@ class SessionCache {
   // entry is leased until Release, including the interval before Restore.
   bool AcquireNew(const std::string& key);
   int MatchShared(const std::string& scope, std::span<const int32_t> prompt,
-                  std::string* key);
+                  std::string* key, SessionLayout layout = SessionLayout::kMtp);
   void Release(const std::string& key, bool success);
-  int Match(const std::string& key, std::span<const int32_t> prompt);
+  int Match(const std::string& key, std::span<const int32_t> prompt,
+            SessionLayout layout = SessionLayout::kMtp);
   Status Restore(const std::string& key, std::span<const SessionRange> ranges,
-                  const Copy& copy, const Cancel& cancel, int32_t* d0,
-                  int32_t* pending = nullptr);
+                 const Copy& copy, const Cancel& cancel, int32_t* d0,
+                 int32_t* pending = nullptr,
+                 SessionLayout layout = SessionLayout::kMtp);
   Status Save(const std::string& key, std::span<const int32_t> prefix,
-               std::span<const SessionRange> ranges, const Copy& copy,
-               const Cancel& cancel, int32_t d0,
-               SessionSaveTiming* timing = nullptr);
+              std::span<const SessionRange> ranges, const Copy& copy,
+              const Cancel& cancel, int32_t d0,
+              SessionSaveTiming* timing = nullptr,
+              SessionLayout layout = SessionLayout::kMtp);
   size_t Bytes() const;
 
  private:
@@ -73,7 +79,11 @@ class SessionCache {
     size_t next_offset = 0;
     std::vector<size_t> offsets;
     int32_t d0 = -1;
-    std::vector<int32_t> prefix;  // Includes shifted draft's pending token.
+    SessionLayout layout = SessionLayout::kMtp;
+    // Last element is not in target state. MTP stores its shifted pending
+    // token; target-only snapshots store -1. Match leaves one input row to
+    // recompute logits under the new request's sampler and constraints.
+    std::vector<int32_t> prefix;
     std::vector<size_t> sizes;
     std::vector<trace::Digest> digests;
     std::chrono::steady_clock::time_point used;
@@ -85,8 +95,8 @@ class SessionCache {
                          const Copy& copy, const Cancel& cancel,
                          SessionSaveTiming* timing);
   Status Transfer(Entry* entry, std::span<const SessionRange> ranges,
-                   const Copy& copy, const Cancel& cancel, bool restore,
-                   SessionSaveTiming* timing = nullptr);
+                  const Copy& copy, const Cancel& cancel, bool restore,
+                  SessionSaveTiming* timing = nullptr);
   mutable std::mutex mutex_;
   int directory_fd_ = -1;
   void* staging_ = nullptr;
@@ -104,7 +114,9 @@ struct SessionLease {
   SessionCache* cache = nullptr;
   std::string key;
   bool success = false;
-  ~SessionLease() { if (cache) cache->Release(key, success); }
+  ~SessionLease() {
+    if (cache) cache->Release(key, success);
+  }
 };
 
 }  // namespace q4t::server

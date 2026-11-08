@@ -156,7 +156,7 @@
         "docs/SERVE_SCHEMA_V2_2026-11-08.md"
       ],
       "release": null,
-      "development_status": "生产schema v2/worker回执/解析器/公开合同已开发接通，72不同C++与49输入对照通过；客户端17不同Python、22 JS和2 CLI通过。缓存/媒体组合、真实GPU业务及发布仍待完成，默认未改。"
+      "development_status": "schema v2/worker回执/解析器/公开合同/客户端与文本目标状态缓存已开发接入；累计77不同C++ CPU，49+21输入对照通过。结构化/工具/文本缓存及媒体真实GPU业务、发布仍待完成，默认未改。"
     },
     {
       "id": "A06",
@@ -222,7 +222,14 @@
         "A07"
       ],
       "evidence": [],
-      "release": null
+      "release": null,
+      "findings": [
+        {
+          "source": "src/server/server_options.cpp / session_state.cpp",
+          "issue": "Media state caching still needs actual image/video identity and multimodal RoPE state/resume; target-only text snapshots do not implement this. Keep as required multimodal combination work, never close by rejection or documentation.",
+          "state": "open"
+        }
+      ]
     },
     {
       "id": "A11",
