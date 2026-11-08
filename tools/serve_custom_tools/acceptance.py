@@ -22,8 +22,34 @@ from tools.serve_service.package import require, save, sha
 from tools.examples.project_records import ProjectRecords, TOOLS, VALIDATORS, CUSTOM_VALIDATORS
 from tools.examples.chat_client import prepare_tool_calls, append_tool_results
 
-LIMITS = dict(starts=2, chats=8, controls=2000, seconds=900)
+LIMITS = dict(starts=1, chats=8, controls=2000, seconds=700)
+CUMULATIVE_LIMITS = dict(starts=3, chats=14, seconds=900)
 DOCUMENT = "docs/MODEL.md"
+
+
+def previous_attempts(paths):
+    records=[]
+    for path in paths:
+        path=path.resolve(strict=True)
+        files={name:sha(path/name) for name in
+               ('plan.json','result.json','cleanup.json','lease/exit.json')}
+        result=json.loads((path/'result.json').read_text())
+        cleanup=json.loads((path/'cleanup.json').read_text())
+        outer=json.loads((path/'lease/exit.json').read_text())
+        require(result['status']=='FAILED' and
+                result['error'].endswith('RuntimeError: mixed calls missing\n'),
+                'unexpected previous business failure')
+        require(outer['status']=='COMMAND_FAILED' and cleanup['model_exit']==0
+                and not cleanup['remaining'] and cleanup['ports_released'],
+                'previous environment or cleanup failed')
+        records.append(dict(path=str(path),files=files,counts=result['counts'],
+                            seconds=result['seconds'],binary_sha256=result['binary_sha256']))
+    for key in ('starts','chats','seconds'):
+        used=sum(row['seconds'] if key=='seconds' else row['counts'][key]
+                 for row in records)
+        require(used+LIMITS[key]<=CUMULATIVE_LIMITS[key],
+                'cumulative budget exceeded: '+key)
+    return records
 
 
 def requests():
@@ -49,13 +75,6 @@ def requests():
     fn["function"]["parameters"]["properties"]["path"]=dict(type="string",enum=["docs/ARCHITECTURE.md"])
     rows["mixed"]=dict(base,max_completion_tokens=512,tools=[custom("regex"),fn],tool_choice="required",parallel_tool_calls=True,
         messages=[dict(role="user",content="Make exactly two tool calls in this assistant turn. First call the custom tool read_project_record_regex with raw input READ docs/MODEL.md 1 16. Also call the function read_project_record with path docs/ARCHITECTURE.md, start_line 1 and line_count 8. Both are required before answering.")])
-    rows["mixed"]["messages"].insert(0,dict(role="developer",content=(
-        "For this request emit BOTH sibling tool_call blocks in ONE assistant turn, then stop. "
-        "The custom input is a JSON-escaped string in the model format. The function arguments use parameter tags. "
-        "Use these exact two calls, without stopping between them:\n"
-        '<tool_call>\n<custom=read_project_record_regex>\n"READ docs/MODEL.md 1 16"\n</custom>\n</tool_call>\n'
-        '<tool_call>\n<function=read_project_record>\n<parameter=path>docs/ARCHITECTURE.md</parameter>\n'
-        '<parameter=start_line>1</parameter>\n<parameter=line_count>8</parameter>\n</function>\n</tool_call>')))
     note=dict(base,tools=[dict(type="custom",custom=dict(name="write_note",format=dict(type="text"),
         description="Propose a complete essay as raw input text."))],tool_choice=dict(type="custom",custom=dict(name="write_note")),
         messages=[dict(role="user",content="Call write_note with a detailed essay of at least 1500 words about the history of mathematics. Put the complete essay in raw input, not a summary.")])
@@ -102,6 +121,9 @@ def prepare(args):
     require(out.is_relative_to(ROOT / ".q4t-work"), "output must be in workspace artifacts")
     require(not subprocess.check_output(["git", "status", "--porcelain"], cwd=ROOT),
             "commit reviewed source before freezing")
+    previous=getattr(args,'previous',[])
+    if isinstance(previous,Path):previous=[previous]
+    prior=previous_attempts(previous)
     out.mkdir(mode=0o700, parents=True, exist_ok=False)
     binary = args.binary.resolve(strict=True)
     model = Path.home() / "models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream"
@@ -120,6 +142,7 @@ def prepare(args):
         source_commit=subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
         protected={str(p): sha(p) for p in protected}, sdk=sdk_identity(),
         planned=dict(starts=1, chats=8), automatic_retries=False,
+        previous_attempts=prior,cumulative_limits=CUMULATIVE_LIMITS,
         acceptance="Custom text/regex/Lark JSON/SSE, actual result closure, mixed function calls, truncation/cancellation and cleanup; not performance or full model quality")
     save(out / "plan.json", plan)
     print(json.dumps(dict(plan=str(out/"plan.json"), sources=len(names))))
@@ -137,6 +160,10 @@ class Stage(lifecycle.Stage):
         self.lease = int(os.environ["Q4T_MANAGED_LEASE_FD"])
         lifecycle.verify_lease(self.lease, lifecycle.guard.common_lock())
         require(plan["limits"] == LIMITS and plan["requests"] == requests(), "plan drift")
+        require(plan['cumulative_limits']==CUMULATIVE_LIMITS and
+                plan['previous_attempts']==previous_attempts(
+                    [Path(row['path']) for row in plan['previous_attempts']]),
+                'previous evidence or cumulative budget changed')
         for name, digest in plan["sources"].items():
             require(sha(ROOT/name) == digest, "source drift: "+name)
         for name, digest in plan["protected"].items():
@@ -312,6 +339,7 @@ def main():
     stage.add_argument("--binary", type=Path, required=True)
     stage.add_argument("--output", type=Path, required=True)
     stage.add_argument("--port", type=int, default=18164)
+    stage.add_argument("--previous", type=Path, action="append", default=[])
     run = sub.add_parser("run")
     run.add_argument("--plan", type=Path, required=True)
     args = parser.parse_args()

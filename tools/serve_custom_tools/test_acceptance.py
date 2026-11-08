@@ -2,6 +2,8 @@ import json
 import os
 import subprocess
 import unittest
+import tempfile
+from pathlib import Path
 from tools.serve_custom_tools.acceptance import LIMITS, requests, require_fragments
 
 
@@ -9,7 +11,7 @@ class Driver(unittest.TestCase):
     def test_budget_and_actual_custom_formats(self):
         rows=requests()
         self.assertEqual(len(rows)+1,8)
-        self.assertEqual(LIMITS,dict(starts=2,chats=8,controls=2000,seconds=900))
+        self.assertEqual(LIMITS,dict(starts=1,chats=8,controls=2000,seconds=700))
         for syntax in ('text','regex','lark'):
             tool=rows[syntax]['tools'][0]
             self.assertEqual(tool['type'],'custom')
@@ -24,10 +26,34 @@ class Driver(unittest.TestCase):
         self.assertEqual(REPAIR_LIMITS['starts']+1,CUMULATIVE_LIMITS['starts'])
         self.assertEqual(REPAIR_LIMITS['chats']+5,CUMULATIVE_LIMITS['chats'])
         self.assertLessEqual(REPAIR_LIMITS['seconds']+61,CUMULATIVE_LIMITS['seconds'])
-        prompt=requests()['mixed']['messages'][0]
-        self.assertEqual(prompt['role'],'developer')
-        self.assertIn('<custom=read_project_record_regex>',prompt['content'])
-        self.assertIn('<function=read_project_record>',prompt['content'])
+        # Failed prompt-only repair stays in prior evidence; the new adapter
+        # must work with the original user task, without supplied model tags.
+        messages=requests()['mixed']['messages']
+        self.assertEqual(len(messages),1)
+        self.assertEqual(messages[0]['role'],'user')
+        self.assertNotIn('<tool_call>',messages[0]['content'])
+
+    def test_new_framing_budget_preserves_failed_attempts(self):
+        from tools.serve_custom_tools.acceptance import previous_attempts,CUMULATIVE_LIMITS
+        self.assertEqual(CUMULATIVE_LIMITS,dict(starts=3,chats=14,seconds=900))
+        with tempfile.TemporaryDirectory() as tmp:
+            folder=Path(tmp);(folder/'lease').mkdir()
+            records={
+                'plan.json':{},
+                'result.json':dict(status='FAILED',error='RuntimeError: mixed calls missing\n',
+                    counts=dict(starts=2,chats=6),seconds=105,binary_sha256='old'),
+                'cleanup.json':dict(model_exit=0,remaining=[],ports_released=True),
+                'lease/exit.json':dict(status='COMMAND_FAILED')}
+            for name,value in records.items():(folder/name).write_text(json.dumps(value))
+            old=previous_attempts([folder])
+            self.assertEqual(old[0]['counts']['chats'],6)
+            self.assertIn('cleanup.json',old[0]['files'])
+            records['result.json']['counts']['chats']=7
+            (folder/'result.json').write_text(json.dumps(records['result.json']))
+            with self.assertRaisesRegex(RuntimeError,'cumulative budget'):previous_attempts([folder])
+            records['cleanup.json']['remaining']=[123]
+            (folder/'cleanup.json').write_text(json.dumps(records['cleanup.json']))
+            with self.assertRaisesRegex(RuntimeError,'cleanup'):previous_attempts([folder])
 
     def test_frozen_requests_pass_production_preparation(self):
         lines=[json.dumps(dict(raw=json.dumps(row))) for row in requests().values()]

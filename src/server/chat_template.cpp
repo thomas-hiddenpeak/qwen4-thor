@@ -173,6 +173,34 @@ Status ToJson(const io::Json& value, std::string* out) {
   return Status();
 }
 
+// Adapt custom input to the model's trained function/parameter syntax. The
+// request and response retain the standard custom type and raw input string;
+// only the model sees a function with one JSON-encoded text parameter.
+Status ModelToolJson(const io::Json& tool, std::string* out) {
+  if (tool.GetString("type") != "custom") return ToJson(tool, out);
+  const auto* custom = tool.Find("custom");
+  if (!custom) return Status::Fail("missing custom tool definition");
+  *out += R"({"type": "function", "function": {"name": )";
+  Quote(custom->GetString("name"), out);
+  *out += R"(, "description": )";
+  Quote(custom->GetString("description"), out);
+  *out += R"(, "parameters": {"type": "object", "properties": {"input": )"
+          R"({"type": "string", "description": )";
+  std::string description =
+      "Custom input: the complete raw text. In the input parameter, encode "
+      "it as one JSON string literal including its surrounding quotes. "
+      "Escape each less-than sign as \\u003c. Decoded input format: ";
+  if (const auto* format = custom->Find("format")) {
+    auto status = ToJson(*format, &description);
+    if (!status) return status;
+  } else {
+    description += "unrestricted text";
+  }
+  Quote(description, out);
+  *out += R"(}}, "required": ["input"], "additionalProperties": false}}})";
+  return Status();
+}
+
 const io::Json* Option(const io::Json& request, const char* name) {
   const io::Json* options = request.Find("chat_template_kwargs");
   if (options && options->Has(name)) return options->Find(name);
@@ -219,9 +247,10 @@ Status AppendToolCalls(const io::Json& message, bool has_content,
       const auto* custom = call.Find("custom");
       if (!custom) return Status::Fail("missing custom tool history");
       *prompt += i ? "\n" : (has_content ? "\n\n" : "");
-      *prompt += "<tool_call>\n<custom=" + custom->GetString("name") + ">\n" +
+      *prompt += "<tool_call>\n<function=" + custom->GetString("name") +
+                 ">\n<parameter=input>\n" +
                  EncodeCustomInput(custom->GetString("input")) +
-                 "\n</custom>\n</tool_call>";
+                 "\n</parameter>\n</function>\n</tool_call>";
       continue;
     }
     const io::Json* fn = call.Find("function");
@@ -288,7 +317,7 @@ Status ValidateChatMessageProfile(const io::Json& messages,
     auto status = NormalizeLegacyTools(request, &normalized, error_param);
     if (status)
       status = ValidateChatMessageProfile(*normalized.request.Find("messages"),
-                                         error_param);
+                                          error_param);
     if (!status) LegacyToolErrorParam(request, error_param);
     return status;
   }
@@ -457,7 +486,7 @@ Status RenderChatPrompt(const io::Json& request,
     for (const auto& tool : tools->array) {
       if (!tool.IsObject()) return Status::Fail("tool must be an object");
       *prompt += '\n';
-      s = ToJson(tool, prompt);
+      s = ModelToolJson(tool, prompt);
       if (!s) return s;
     }
     *prompt += "\n</tools>";
@@ -467,9 +496,11 @@ Status RenderChatPrompt(const io::Json& request,
                       return tool.GetString("type") == "custom";
                     })) {
       *prompt +=
-          "\nFor tools whose type is custom, use this distinct format:\n"
-          "<tool_call>\n<custom=tool_name>\n\"JSON-escaped input text\"\n"
-          "</custom>\n</tool_call>\n"
+          "\nFunctions described as custom input use the same function "
+          "tags and one input parameter:\n"
+          "<tool_call>\n<function=custom_tool_name>\n<parameter=input>\n"
+          "\"JSON-escaped input text\"\n</parameter>\n</function>\n"
+          "</tool_call>\n"
           "The payload is one JSON string, not a parameter object. Preserve "
           "the complete input, escaping quotes, backslashes and control "
           "characters; encode each less-than sign as \\u003c. The declared "

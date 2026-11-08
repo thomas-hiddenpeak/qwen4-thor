@@ -21,7 +21,7 @@ struct ResponseToolCall {
   std::string id;
   std::string name;
   std::string arguments;  // A JSON object, transported as a JSON string.
-  bool custom = false;  // arguments instead holds the decoded custom input.
+  bool custom = false;    // arguments instead holds the decoded custom input.
 };
 
 struct ResponseDelta {
@@ -98,6 +98,7 @@ class ChatResponseParser {
   size_t tool_value_scan_ = 0;
   bool tool_header_ = false;
   CustomInputStream custom_input_;
+  bool custom_parameter_closed_ = false;
   bool tool_parameter_ = false;
   bool tool_string_ = false;
   bool tool_string_started_ = false;

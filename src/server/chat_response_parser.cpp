@@ -144,11 +144,11 @@ std::string ToolJson(const ResponseToolCall& call, bool indexed) {
   return "{" +
          (indexed ? "\"index\":" + std::to_string(call.index) + ','
                   : std::string()) +
-         "\"id\":" + Quote(call.id) + ",\"type\":" +
-         Quote(call.custom ? "custom" : "function") + ',' +
+         "\"id\":" + Quote(call.id) +
+         ",\"type\":" + Quote(call.custom ? "custom" : "function") + ',' +
          Quote(call.custom ? "custom" : "function") + ":{" +
-         "\"name\":" + Quote(call.name) +
-         ',' + Quote(call.custom ? "input" : "arguments") + ':' +
+         "\"name\":" + Quote(call.name) + ',' +
+         Quote(call.custom ? "input" : "arguments") + ':' +
          Quote(call.arguments) + "}}";
 }
 
@@ -166,8 +166,8 @@ std::string ResponseDelta::ToJson() const {
              (tool_start ? "\"name\":" + Quote(call.name) + ',' : "") +
              "\"arguments\":" + Quote(call.arguments) + "}}";
     if (tool_start) return "{\"tool_calls\":[" + ToolJson(call, true) + "]}";
-    return "{\"tool_calls\":[{\"index\":" + std::to_string(call.index) +
-           ',' + Quote(call.custom ? "custom" : "function") + ":{" +
+    return "{\"tool_calls\":[{\"index\":" + std::to_string(call.index) + ',' +
+           Quote(call.custom ? "custom" : "function") + ":{" +
            Quote(call.custom ? "input" : "arguments") + ':' +
            Quote(call.arguments) + "}}]}";
   }
@@ -218,7 +218,8 @@ Status ChatResponseParser::Init(const io::Json& request,
       const auto status = ParseCustomToolFormat(*custom, &format);
       if (!status) return Fail(status.message());
       const auto name = custom->GetString("name");
-      if (!tools_.emplace(name, custom).second) return Fail("duplicate tool name");
+      if (!tools_.emplace(name, custom).second)
+        return Fail("duplicate tool name");
       custom_tools_.insert(name);
       continue;
     }
@@ -272,13 +273,11 @@ void ChatResponseParser::Emit(Region region, std::string_view text,
 Status ChatResponseParser::ParseTool(std::string_view block,
                                      ResponseToolCall* call) const {
   block = Trim(block);
-  call->custom = block.starts_with("<custom=");
-  if (!call->custom && !block.starts_with("<function="))
-    return Status::Fail("tool call must start with function or custom");
+  if (!block.starts_with("<function="))
+    return Status::Fail("tool call must start with function");
   const auto end = block.find('>');
   if (end == block.npos) return Status::Fail("incomplete function name");
-  const size_t prefix = call->custom ? 8 : 10;
-  call->name = std::string(block.substr(prefix, end - prefix));
+  call->name = std::string(block.substr(10, end - 10));
   if (!constraints_.AllowsTool(call->name))
     return Status::Fail("generated tool forbidden by tool_choice");
   if ((!constraints_.parallel ||
@@ -287,15 +286,21 @@ Status ChatResponseParser::ParseTool(std::string_view block,
     return Status::Fail("multiple tool calls forbidden by request");
   const auto fn = tools_.find(call->name);
   if (fn == tools_.end()) return Status::Fail("unknown generated tool name");
-  if (call->custom != custom_tools_.contains(call->name))
-    return Status::Fail("generated tool type differs from its definition");
+  call->custom = custom_tools_.contains(call->name);
   if (call->custom) {
     block.remove_prefix(end + 1);
     block = Trim(block);
-    constexpr std::string_view closing = "</custom>";
+    constexpr std::string_view opening = "<parameter=input>";
+    constexpr std::string_view closing = "</function>";
+    constexpr std::string_view parameter_close = "</parameter>";
     if (!block.ends_with(closing))
       return Status::Fail("incomplete custom closing tag");
     block.remove_suffix(closing.size());
+    block = Trim(block);
+    if (!block.starts_with(opening) || !block.ends_with(parameter_close))
+      return Status::Fail("custom tool requires one input parameter");
+    block.remove_prefix(opening.size());
+    block.remove_suffix(parameter_close.size());
     io::Json value;
     auto status = io::ParseJson(std::string(Trim(block)), &value, true,
                                 {8, 16, kMaxToolBytes, true});
@@ -377,13 +382,8 @@ Status ChatResponseParser::StreamTool(size_t available, bool complete,
   if (!tool_header_) {
     whitespace(&tool_parse_offset_);
     const auto rest = block.substr(tool_parse_offset_);
-    constexpr std::string_view function_prefix = "<function=";
-    constexpr std::string_view custom_prefix = "<custom=";
-    if ((function_prefix.starts_with(rest) || custom_prefix.starts_with(rest)) &&
-        !complete)
-      return Status();
-    partial_call_.custom = rest.starts_with(custom_prefix);
-    const auto prefix = partial_call_.custom ? custom_prefix : function_prefix;
+    constexpr std::string_view prefix = "<function=";
+    if (prefix.starts_with(rest) && !complete) return Status();
     if (!rest.starts_with(prefix)) return Status::Fail("invalid tool tag");
     const auto end = rest.find('>');
     if (end == rest.npos) {
@@ -396,8 +396,7 @@ Status ChatResponseParser::StreamTool(size_t available, bool complete,
     if (!tools_.contains(partial_call_.name) ||
         !constraints_.AllowsTool(partial_call_.name))
       return Status::Fail("unknown or forbidden generated tool");
-    if (partial_call_.custom != custom_tools_.contains(partial_call_.name))
-      return Status::Fail("generated tool type differs from definition");
+    partial_call_.custom = custom_tools_.contains(partial_call_.name);
     if (tool_count_ == kMaxCalls ||
         ((!constraints_.parallel ||
           constraints_.choice == OutputConstraints::ToolChoice::kNamed) &&
@@ -410,6 +409,16 @@ Status ChatResponseParser::StreamTool(size_t available, bool complete,
     ToolFragment(partial_call_.custom ? "" : "{", true, deltas);
   }
   if (partial_call_.custom) {
+    if (!tool_parameter_) {
+      whitespace(&tool_parse_offset_);
+      const auto rest = block.substr(tool_parse_offset_);
+      constexpr std::string_view opening = "<parameter=input>";
+      if (!complete && opening.starts_with(rest)) return Status();
+      if (!rest.starts_with(opening))
+        return Status::Fail("custom tool requires one input parameter");
+      tool_parse_offset_ += opening.size();
+      tool_parameter_ = true;
+    }
     if (!custom_input_.Started()) whitespace(&tool_parse_offset_);
     if (!custom_input_.Done()) {
       size_t consumed = 0;
@@ -423,9 +432,19 @@ Status ChatResponseParser::StreamTool(size_t available, bool complete,
         return complete ? Status::Fail("incomplete custom input") : Status();
     }
     whitespace(&tool_parse_offset_);
+    if (!custom_parameter_closed_) {
+      const auto rest = block.substr(tool_parse_offset_);
+      constexpr std::string_view closing = "</parameter>";
+      if (!complete && closing.starts_with(rest)) return Status();
+      if (!rest.starts_with(closing))
+        return Status::Fail("invalid custom input closing tag");
+      tool_parse_offset_ += closing.size();
+      custom_parameter_closed_ = true;
+    }
+    whitespace(&tool_parse_offset_);
     if (!tool_function_closed_) {
       const auto rest = block.substr(tool_parse_offset_);
-      constexpr std::string_view closing = "</custom>";
+      constexpr std::string_view closing = "</function>";
       if (!complete && closing.starts_with(rest)) return Status();
       if (!rest.starts_with(closing))
         return Status::Fail("invalid custom closing tag");
@@ -603,7 +622,8 @@ Status ChatResponseParser::Append(std::string_view text,
       if (!status) return Fail(status.message());
       if ((call.custom ? partial_call_.arguments
                        : partial_call_.arguments + '}') != call.arguments ||
-          partial_call_.name != call.name || partial_call_.custom != call.custom)
+          partial_call_.name != call.name ||
+          partial_call_.custom != call.custom)
         return Fail("incremental tool arguments differ from validated call");
       if (!call.custom) ToolFragment("}", false, deltas);
       ++tool_count_;
@@ -644,6 +664,7 @@ Status ChatResponseParser::Append(std::string_view text,
     if (region_ == Region::kTool) {
       partial_call_ = {};
       custom_input_ = {};
+      custom_parameter_closed_ = false;
       tool_parse_offset_ = 0;
       tool_header_ = tool_parameter_ = tool_function_closed_ = false;
       tool_parameters_.clear();

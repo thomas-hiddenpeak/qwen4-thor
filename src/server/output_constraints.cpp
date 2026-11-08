@@ -145,13 +145,15 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
         if (!status) return status;
         const auto name = function->GetString("name");
         if (!SafeName(name) || !seen.insert(name).second)
-          return invalid(path + '.' + field + ".name", "invalid or duplicate name");
+          return invalid(path + '.' + field + ".name",
+                         "invalid or duplicate name");
         const auto* definitions = request.GetArray("tools");
         if (!definitions ||
             std::none_of(definitions->array.begin(), definitions->array.end(),
                          [&](const io::Json& item) {
                            const auto* fn = ToolDefinition(item);
-                           return item.GetString("type") == tool.GetString("type") &&
+                           return item.GetString("type") ==
+                                      tool.GetString("type") &&
                                   fn && fn->GetString("name") == name;
                          }))
           return invalid(path + '.' + field + ".name", "tool is not declared");
@@ -163,9 +165,10 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
     } else {
       const bool custom = choice->GetString("type") == "custom";
       const std::string field = custom ? "custom" : "function";
-      auto status = custom
-          ? Fields(*choice, {"type", "custom"}, error_param, "tool_choice")
-          : Fields(*choice, {"type", "function"}, error_param, "tool_choice");
+      auto status = custom ? Fields(*choice, {"type", "custom"}, error_param,
+                                    "tool_choice")
+                           : Fields(*choice, {"type", "function"}, error_param,
+                                    "tool_choice");
       if (!status) return status;
       const auto* fn = choice->Find(field);
       if ((!custom && choice->GetString("type") != "function") || !fn)
@@ -292,7 +295,7 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
         const auto* custom = tool.Find("custom");
         CustomToolFormat format;
         auto status = ParseCustomToolFormat(*custom, &format, error_param,
-                                           path + ".custom");
+                                            path + ".custom");
         if (!status) return status;
         const auto name = custom->GetString("name");
         if (!names.insert(name).second)
@@ -301,15 +304,17 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
             (out->choice == OutputConstraints::ToolChoice::kNamed &&
              out->named_type != "custom"))
           continue;
-        const auto syntax = format.kind == CustomToolFormat::Kind::kText ? "text"
-                          : format.kind == CustomToolFormat::Kind::kRegex ? "regex"
-                                                                         : "lark";
+        const auto syntax =
+            format.kind == CustomToolFormat::Kind::kText    ? "text"
+            : format.kind == CustomToolFormat::Kind::kRegex ? "regex"
+                                                            : "lark";
         if (!tags.empty()) tags += ',';
-        tags += R"({"type":"tag","begin":)" +
-                Quote("<tool_call>\n<custom=" + name + ">\n") +
-                R"(,"content":{"type":"q4t_custom","syntax":)" + Quote(syntax) +
-                R"(,"definition":)" + Quote(format.definition) +
-                R"(},"end":"\n</custom>\n</tool_call>"})";
+        tags +=
+            R"({"type":"tag","begin":)" +
+            Quote("<tool_call>\n<function=" + name + ">\n<parameter=input>\n") +
+            R"(,"content":{"type":"q4t_custom","syntax":)" + Quote(syntax) +
+            R"(,"definition":)" + Quote(format.definition) +
+            R"(},"end":"\n</parameter>\n</function>\n</tool_call>"})";
         continue;
       }
       const auto fn_path = path + ".function";

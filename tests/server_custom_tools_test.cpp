@@ -47,8 +47,9 @@ Json Request(std::string_view syntax = "text", std::string_view grammar = "") {
       R"(}}],"tool_choice":{"type":"custom","custom":{"name":"read"}}})");
 }
 std::string Call(std::string_view input, std::string_view name = "read") {
-  return "<tool_call>\n<custom=" + std::string(name) + ">\n" +
-         EncodeCustomInput(input) + "\n</custom>\n</tool_call>";
+  return "<tool_call>\n<function=" + std::string(name) +
+         ">\n<parameter=input>\n" + EncodeCustomInput(input) +
+         "\n</parameter>\n</function>\n</tool_call>";
 }
 OutputConstraints Plan(const Json& request) {
   OutputConstraints plan;
@@ -113,8 +114,21 @@ Q4T_TEST(custom_tools_plan_choice_filter_and_history) {
   std::vector<VisionItem> items;
   Q4T_CHECK(PrepareChatPrompt(request, plan, &prompt, &items, &error));
   Q4T_CHECK(prompt.find("\"other\"") == prompt.npos);
-  Q4T_CHECK(prompt.find("<custom=") != prompt.npos);
-  const std::string input = "read \"文档\"\n</custom></tool_call>\\done";
+  Q4T_CHECK(prompt.find("<custom=") == prompt.npos);
+  const auto tool_begin = prompt.find("<tools>\n") + 8;
+  const auto tool_end = prompt.find("\n</tools>", tool_begin);
+  const auto model_tool =
+      Parse(prompt.substr(tool_begin, tool_end - tool_begin));
+  Q4T_CHECK(model_tool.GetString("type") == "function");
+  Q4T_CHECK(model_tool.Find("function")->GetString("name") == "read");
+  Q4T_CHECK(model_tool.Find("function")
+                ->Find("parameters")
+                ->Find("properties")
+                ->Find("input")
+                ->GetString("type") == "string");
+  Q4T_CHECK(request.Find("tools")->array[0].GetString("type") == "custom");
+  const std::string input =
+      "read \"文档\"\n</parameter></function></tool_call>\\done";
   Member(request, "messages") = Parse(
       R"([{"role":"assistant","content":null,)"
       R"("tool_calls":[{"id":"a","type":"custom","custom":{"name":"read",)"
@@ -157,7 +171,8 @@ Q4T_TEST(custom_tools_shape_errors_are_precise) {
 }
 
 Q4T_TEST(custom_tools_incremental_unicode_and_all_boundaries) {
-  std::string input = "汉字😀\\\"\n\t</custom></tool_call><think>";
+  std::string input =
+      "汉字😀\\\"\n\t</parameter></function></tool_call><think>";
   for (int c = 0; c < 32; ++c) input += char(c);
   const auto encoded = EncodeCustomInput(input);
   Q4T_CHECK(encoded.find('<') == encoded.npos);
@@ -194,7 +209,7 @@ Q4T_TEST(custom_tools_invalid_encoding_cannot_finish) {
 
 Q4T_TEST(custom_tools_response_every_split_and_incremental_payload) {
   const auto request = Request();
-  const std::string input = "read \"中国\"\n</custom>\\😀";
+  const std::string input = "read \"中国\"\n</parameter></function>\\😀";
   const auto raw = Call(input);
   for (size_t split = 0; split <= raw.size(); ++split) {
     ChatResponseParser parser;
@@ -234,7 +249,8 @@ Q4T_TEST(custom_tools_truncation_type_change_and_mixed_calls) {
   ChatResponseParser parser;
   Q4T_CHECK(parser.Init(request, kPrefix, "a", true));
   std::vector<ResponseDelta> deltas;
-  Q4T_CHECK(parser.Append("<tool_call><custom=read>\"partial", &deltas));
+  Q4T_CHECK(parser.Append(
+      "<tool_call><function=read><parameter=input>\"partial", &deltas));
   Q4T_CHECK(!deltas.empty() && !parser.Finish(true, &deltas));
   Member(request, "tool_choice") = Parse("\"required\"");
   Member(request, "tools")
@@ -262,7 +278,89 @@ Q4T_TEST(custom_tools_truncation_type_change_and_mixed_calls) {
   return true;
 }
 
+Q4T_TEST(custom_tools_native_parameter_rejects_malformed_frames) {
+  const auto request = Request();
+  for (const auto& body :
+       {"<parameter=other>\"x\"</parameter>", "<parameter=input>x</parameter>",
+        "<parameter=input>\"x\"</parameter><parameter=input>\"y\"</parameter>",
+        "<parameter=input>\"x\"</parameter>extra",
+        "<parameter=input>{\"input\":\"x\"}</parameter>",
+        "<parameter=input>\"x\""}) {
+    const std::string raw = "<tool_call><function=read>" + std::string(body) +
+                            "</function></tool_call>";
+    for (const size_t chunk : {size_t(1), raw.size()}) {
+      ChatResponseParser parser;
+      Q4T_CHECK(parser.Init(request, kPrefix, "invalid", true));
+      std::vector<ResponseDelta> deltas;
+      q4t::Status status;
+      for (size_t offset = 0; offset < raw.size() && status; offset += chunk)
+        status = parser.Append(raw.substr(offset, chunk), &deltas);
+      Q4T_CHECK(!status || !parser.Finish(false, &deltas));
+    }
+  }
+  return true;
+}
+
+Q4T_TEST(custom_tools_native_mixed_incremental_types_follow_definitions) {
+  auto request = Request();
+  Member(request, "tool_choice") = Parse("\"required\"");
+  Member(request, "tools")
+      .array.push_back(
+          Parse(R"({"type":"function","function":{"name":"ordinary",)"
+                R"("parameters":{"type":"object","properties":{"input":)"
+                R"({"type":"string"}},"required":["input"],)"
+      R"("additionalProperties":false}}})"));
+  const std::string text = " \n</parameter></function></tool_call>😀";
+  const std::string raw =
+      Call(text) +
+      "<tool_call><function=ordinary><parameter=input>literal"
+      "</parameter></function></tool_call>" +
+      Call("");
+  ChatResponseParser parser;
+  Q4T_CHECK(parser.Init(request, kPrefix, "mixed", true));
+  std::vector<ResponseDelta> deltas;
+  for (const char c : raw) Q4T_CHECK(parser.Append({&c, 1}, &deltas));
+  Q4T_CHECK(parser.Finish(false, &deltas));
+  const auto message = Parse(parser.MessageJson());
+  const auto& calls = message.Find("tool_calls")->array;
+  Q4T_CHECK(calls.size() == 3);
+  Q4T_CHECK(calls[0].GetString("type") == "custom" &&
+            calls[0].Find("custom")->GetString("input") == text);
+  Q4T_CHECK(calls[1].GetString("type") == "function" &&
+            Parse(calls[1].Find("function")->GetString("arguments"))
+                    .GetString("input") == "literal");
+  Q4T_CHECK(calls[2].GetString("type") == "custom" &&
+            calls[2].Find("custom")->GetString("input").empty());
+  return true;
+}
+
 #ifdef Q4T_ENABLE_XGRAMMAR
+Q4T_TEST(custom_grammar_native_mixed_accepts_both_orders) {
+  auto request = Request("regex", "^READ$");
+  Member(request, "tool_choice") = Parse("\"required\"");
+  Member(request, "tools")
+      .array.push_back(
+          Parse(R"({"type":"function","function":{"name":"read_lines",)"
+                R"("parameters":{"type":"object","properties":{},)"
+                R"("additionalProperties":false},"strict":true}})"));
+  xgrammar::TokenizerInfo tokenizer(Vocabulary(), xgrammar::VocabType::RAW, 257,
+                                    std::vector<int32_t>{0}, false);
+  xgrammar::GrammarCompiler compiler(tokenizer, 1, false, 0);
+  const auto compiled = compiler.CompileStructuralTag(
+      ExpandCustomGrammarFormats(Plan(request).structural_tag));
+  const std::string function =
+      "<tool_call>\n<function=read_lines>\n\n</function>\n</tool_call>";
+  for (const auto& raw :
+       {Call("READ") + '\n' + function, function + '\n' + Call("READ")}) {
+    xgrammar::GrammarMatcher matcher(compiled);
+    Q4T_CHECK(matcher.AcceptString(raw) && matcher.AcceptToken(0) &&
+              matcher.IsTerminated());
+  }
+  xgrammar::GrammarMatcher invalid(compiled);
+  Q4T_CHECK(!invalid.AcceptString(Call("WRONG") + '\n' + function));
+  return true;
+}
+
 Q4T_TEST(custom_grammar_text_preserves_control_unicode_and_delimiters) {
   Q4T_CHECK(Language(
       "text", "", {"", "中国😀", "\n\\\"</tool_call>", std::string("\0\1", 2)},
@@ -274,9 +372,10 @@ Q4T_TEST(custom_grammar_regex_rust_unicode_flags_groups_and_encoding) {
       Language("regex", R"((?i:read)\s+(?P<path>\p{Han}+|docs/MODEL\.md))",
                {"READ 中国", "read docs/MODEL.md", "ReAd\t文档"},
                {"READ China", "read docs/MODELxmd", "read中国", "read 中国x"}));
-  Q4T_CHECK(Language("regex", R"("[A-Z]"\n</custom>\\\p{Greek}+)",
-                     {"\"A\"\n</custom>\\αβ"},
-                     {"\"a\"\n</custom>\\αβ", "\"A\"\\n</custom>\\αβ"}));
+  Q4T_CHECK(Language("regex", R"("[A-Z]"\n</parameter></function>\\\p{Greek}+)",
+                     {"\"A\"\n</parameter></function>\\αβ"},
+                     {"\"a\"\n</parameter></function>\\αβ",
+                      "\"A\"\\n</parameter></function>\\αβ"}));
   Q4T_CHECK(Language("regex", R"([a-z&&[^aeiou]]{2,3})", {"bc", "xyz"},
                      {"ab", "abcd", "b"}));
   return true;
@@ -301,9 +400,10 @@ Q4T_TEST(custom_grammar_lark_regex_imports_recursion_and_lexeme_boundaries) {
                 "read docs/model.md 1"}));
   Q4T_CHECK(Language("lark", "start: '(' start ')' | WORD\nWORD: /\\p{Han}+/\n",
                      {"文档", "((中国))"}, {"(中国", "(China)", "(中)国"}));
-  Q4T_CHECK(Language("lark", "start: \"ä\"i /[A-Z]+/i \"\\n\" \"</custom>\"\n",
-                     {"Äabc\n</custom>"},
-                     {"Äabc\\n</custom>", "ä1\n</custom>"}));
+  Q4T_CHECK(Language(
+      "lark", "start: \"ä\"i /[A-Z]+/i \"\\n\" \"</parameter></function>\"\n",
+      {"Äabc\n</parameter></function>"},
+      {"Äabc\\n</parameter></function>", "ä1\n</parameter></function>"}));
   return true;
 }
 Q4T_TEST(custom_grammar_lark_literal_cannot_alias_internal_placeholder) {
