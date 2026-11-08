@@ -339,6 +339,9 @@ Q4T_TEST(media_expansion_and_client_budget_are_identical) {
 Q4T_TEST(media_constraints_preserve_input_and_force_output_contract) {
   for (const std::string controls : {
            R"("response_format":{"type":"json_object"})",
+           R"("response_format":{"type":"json_schema","json_schema":)"
+           R"({"name":"scene","strict":true,"schema":{"type":"object",)"
+           R"("properties":{},"required":[],"additionalProperties":false}}})",
            R"("tool_choice":"none")",
            R"("tool_choice":"required","tools":[{"type":"function",)"
            R"("function":{"name":"inspect","strict":true,"parameters":)"
@@ -359,6 +362,7 @@ Q4T_TEST(media_constraints_preserve_input_and_force_output_contract) {
     Q4T_CHECK(PrepareChatPrompt(request, constraints, &prompt, &items, &param,
                                 &code));
     Q4T_CHECK(items.size() == 1 && items[0].kind == VisionItem::kImage);
+    Q4T_CHECK(items[0].message_index == 0 && items[0].part_index == 0);
     Q4T_CHECK(prompt.find("<|image_pad|>") != std::string::npos);
   }
   return true;

@@ -198,6 +198,7 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          (constrained ? R"(["text","json_object","json_schema"])"
                       : R"(["text"])") +
          R"(,"validation":"worker_semantics_and_parent_receipt_before_success_terminal",)"
+         R"("schema_prompt":"system_instruction_for_messages",)"
          R"("stream_payload":"incremental_provisional_until_success_terminal_and_eof",)"
          R"("decode":"plain_host_masked_sampling","mtp":false,)"
          R"("packed_decode":false,"session_cache":true,)"

@@ -846,7 +846,7 @@
     "src/runtime/system_memory.cpp": "231e9a7ce5ed49e27e604a7bfa4066b35e83f286026c15986898d996a66acd2f",
     "src/server/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_capabilities.cpp": "ad54f0f7ced0f2cc640f5b239509ecee8ce3dbc3d1cf6a603168ba6639450708",
+    "src/server/chat_capabilities.cpp": "05f295e9d571bc91dd967da131f38daeb8363e0058c1d4639f615ed40e0f7cdd",
     "src/server/chat_choices.cpp": "ee99c4aca3c1ea07d5929da38325aa2b28a411245c7d794c9cc5f1f8eb23f16a",
     "src/server/chat_contract.cpp": "379dc3c2b40e56808394911f752782ad5e4a7715763b1e47f491fe0246226611",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
@@ -863,7 +863,7 @@
     "src/server/chat_scheduler.cpp": "2b6d315bfd12609e343010852f7c15b8248fe5180359a3d7b49d3c1db5b8d1fc",
     "src/server/chat_server.cpp": "19c040b20e6f1f1cde9d37e23477b2bfa65c4b38ab09cfacdef9281522fda095",
     "src/server/chat_server_internal.h": "f648da039df39e84f9f867c55210afeff3eceac0c3578c61edfaa210957d4286",
-    "src/server/chat_template.cpp": "be470e482f7bdda18c07f7d7c378aafeb9cd648283cc4c762e0031f17794d569",
+    "src/server/chat_template.cpp": "f6e031add54280ff196bda9ef7a817a0ffdf30e83b95bce9575be3912168dd66",
     "src/server/chat_tool_history.cpp": "902f6c0982fd072d4dba4c3f6a34629eec9eaaf604fd5d920822b96ed51f82db",
     "src/server/client_policy.cpp": "3d28eb74a983b10fbb2fdf218307c0490349c051aee37945ae770a198f45b791",
     "src/server/client_request.cpp": "418f478a0d94cb270ea507cb6843f0a88a97de0ad2a22192e9f563c67f6fe83e",
@@ -1533,7 +1533,7 @@
     "model_adapter": "Native function/input tags and encoded string, declared name determines standard wire custom type. Two failed business attempts retained; original mixed task passed after adapter repair."
   },
   "schema_v2_development_20261108": {
-    "state": "text_business_passed_media_pattern_repair_cpu_passed",
+    "state": "text_passed_media_schema_prompt_repair_pending",
     "record": "docs/SERVE_SCHEMA_V2_2026-11-08.md",
     "source": [
       "src/server/schema_decimal.cpp",
@@ -1569,7 +1569,8 @@
       "tools/serve_schema_v2/acceptance.py",
       "tools/serve_schema_v2/repair.py",
       "tools/serve_schema_v2/media.py",
-      "tools/serve_schema_v2/media_repair.py"
+      "tools/serve_schema_v2/media_repair.py",
+      "tools/serve_schema_v2/prompt_cache.py"
     ],
     "acceptance": "82 distinct A05 C++ CPU checks. Original final and remaining three text requests pass on aedaac59; total including two retained failures 3 starts/10 Chat/234.851s, 223 NVML samples OK and resources released. Media production CPU preflight four inputs passes; bounded media GPU and delivery remain, default unchanged.",
     "optional_native_dependency": {
@@ -1585,6 +1586,13 @@
       "passed_affected": 26,
       "distinct_a05_cpp": 84,
       "next": "original video plus two unexecuted image/tool turns; 1 start/3 Chat/600 seconds"
+    },
+    "schema_prompt_repair": {
+      "failed": "media-business-02",
+      "issue": "schema absent from model prompt; wrong motion label despite valid JSON",
+      "implementation": "generic exact and delimiter-safe response schema in existing system instruction, counted in preflight and cache identity",
+      "planned_media": "1 start/3 Chat/600 seconds, cumulative 3/6/800",
+      "planned_text_cache": "1 start/3 Chat/600 seconds"
     }
   }
 }

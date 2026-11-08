@@ -379,3 +379,26 @@ worker限额不改，编译零警告。补验只运行原视频与尚未执行�
 原失败，再检查实际视频pattern的可行前缀和真实248077词表的拒绝/
 继续事务；26项语言、格式、Unicode/长度、原标题与worker用例通过。
 原件在`cpu-media-pattern-01/02`，不增加GPU来做中间定位。
+
+## schema模型可见性与受影响组合
+
+2026-11-08：媒体business-02实际1启动/1Chat，生成约束已正确，但方向值与视频事实
+相反，36.917秒后正常清理，失败保留。模型此前看不到response schema，
+先按rightward语义选right后被语法导向right_to_left。现将通用schema/
+描述/精确数字安全加入messages系统提示，不改用户任务或视频；媒体
+位置不变，preflight/token与缓存prefix包含新增内容，raw prompt仍
+保持原字节。28项提示/预算/媒体CPU通过（首次旧legacy路径断言及
+错误时未清空提示已修复，失败保留），累计86不同A05 C++；4个实际
+CPU媒体preflight重验通过。补验冻结媒体原3Chat，累计3启动/6Chat/
+800秒；另文本cache原三条1启动/3Chat/600秒，覆盖受影响的新提示。
+原生入口/Guardian因JSON reader来源变化实际重建，单列协议CPU，
+不把旧ELF证据直接冒充新二进制。默认未改，全部任务继续。
+
+锚点约束已通过和方向语义失败分别记录，不以合法JSON替代视觉任务
+正确性。新增系统说明只解释响应schema，工具仍用原工具协议；未修改
+外部参考模板。`<`转义避免schema内容构造模型控制token，所有原始
+请求消息/图片索引保持不变，公开能力字段为`schema_prompt`。
+
+原生补查已通过：新Guardian b18a9a9e、入口b4e2ec2c，7项C++ journal
+及6项实际原生HTTP/TLS/Guardian CPU通过，编译零警告；首次未构建
+TLS-off夹具入口在测试前拒绝，补构建后只重验未运行的4项。

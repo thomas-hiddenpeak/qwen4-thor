@@ -10,7 +10,7 @@ from tools.serve_schema_v2 import acceptance as base, media
 from tools.serve_service.package import read, save, sha, require
 
 LIMITS = dict(starts=1, chats=3, controls=2000, seconds=600)
-CUMULATIVE = dict(starts=2, chats=5, seconds=700)
+CUMULATIVE = dict(starts=3, chats=6, seconds=800)
 
 
 def preceding(previous):
@@ -29,7 +29,9 @@ def preceding(previous):
     require(old["requests"] == media.requests() and
             old["fixtures"] == media.fixtures(), "original task/fixtures changed")
     allowed = {"src/server/regex_syntax/schema_regex.rs",
-               "tools/serve_schema_v2/media.py"}
+               "tools/serve_schema_v2/media.py",
+               "src/server/chat_template.cpp", "src/server/chat_capabilities.cpp",
+               "tools/serve_protocol/build_contract.py"}
     changed = {name for name, digest in old["sources"].items()
                if sha(ROOT / name) != digest}
     require(changed <= allowed and
@@ -41,17 +43,38 @@ def preceding(previous):
     return {name: sha(previous / name) for name in names}
 
 
+def failed_retry(previous):
+    result = read(previous / "result.json")
+    cleanup = read(previous / "cleanup.json")
+    require(result["status"] == "FAILED" and result["counts"]["starts"] == 1
+            and result["counts"]["chats"] == 1 and
+            "visual truth differs: motion" in result["error"],
+            "unexpected preceding semantic failure")
+    require(cleanup["model_exit"] == 0 and not cleanup["remaining"] and
+            cleanup["ports_released"] and cleanup["lease_continuously_held"],
+            "preceding semantic retry resources remain")
+    return {name: sha(previous / name) for name in
+            ("plan.json", "result.json", "cleanup.json", "motion.request.json",
+             "motion.result.json", "motion.wire", "model.log", "lease/exit.json")}
+
+
 def prepare(args):
     previous = args.previous.resolve(strict=True)
     evidence = preceding(previous)
+    retry = args.failed_retry.resolve(strict=True)
+    retry_evidence = failed_retry(retry)
+    require(read(previous / "result.json")["seconds"] +
+            read(retry / "result.json")["seconds"] + LIMITS["seconds"] <=
+            CUMULATIVE["seconds"], "cumulative media retry deadline")
     old = read(previous / "plan.json")
     base.prepare(args, rows=media.requests(), limits=LIMITS,
-        scope="Single-pattern assertion context/dead-prefix repair. Original "
+        scope="Assertion context and schema model-visibility repair. Original "
               "video request plus unexecuted image/tool/result requests; "
               "reuse passed cabin and unchanged text/cache evidence. "
               "No schema weakening, limit increase or automatic retries.")
     plan = read(args.output / "plan.json")
     plan.update(previous=str(previous), previous_evidence=evidence,
+                failed_retry=str(retry), failed_retry_evidence=retry_evidence,
                 cumulative_limits=CUMULATIVE, reused_requests=["cabin"],
                 fixtures=old["fixtures"], expected=old["expected"],
                 fixture_provenance=old["fixture_provenance"])
@@ -66,6 +89,8 @@ class Repair(media.Media):
         require(plan["cumulative_limits"] == CUMULATIVE and
                 preceding(Path(plan["previous"])) == plan["previous_evidence"],
                 "preceding media evidence changed")
+        require(failed_retry(Path(plan["failed_retry"])) ==
+                plan["failed_retry_evidence"], "preceding retry changed")
         super().__init__(plan)
 
 
@@ -76,6 +101,7 @@ def main():
     prep.add_argument("--binary", type=Path, required=True)
     prep.add_argument("--output", type=Path, required=True)
     prep.add_argument("--previous", type=Path, required=True)
+    prep.add_argument("--failed-retry", type=Path, required=True)
     prep.add_argument("--port", type=int, default=18164)
     run = sub.add_parser("run")
     run.add_argument("--plan", type=Path, required=True)

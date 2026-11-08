@@ -214,6 +214,22 @@ worker限额不改，编译零警告。补验只运行原视频与尚未执行�
 工具闭环3Chat；冻结本轮1启动/3Chat/600秒，媒体累计2/5/700秒。
 已过图片/文本/缓存证据按未改依赖复用，A05未交付、总目标继续。
 
+媒体business-02实际1启动/1Chat，生成约束已正确，但方向值与视频事实
+相反，36.917秒后正常清理，失败保留。模型此前看不到response schema，
+先按rightward语义选right后被语法导向right_to_left。现将通用schema/
+描述/精确数字安全加入messages系统提示，不改用户任务或视频；媒体
+位置不变，preflight/token与缓存prefix包含新增内容，raw prompt仍
+保持原字节。28项提示/预算/媒体CPU通过（首次旧legacy路径断言及
+错误时未清空提示已修复，失败保留），累计86不同A05 C++；4个实际
+CPU媒体preflight重验通过。补验冻结媒体原3Chat，累计3启动/6Chat/
+800秒；另文本cache原三条1启动/3Chat/600秒，覆盖受影响的新提示。
+原生入口/Guardian因JSON reader来源变化实际重建，单列协议CPU，
+不把旧ELF证据直接冒充新二进制。默认未改，全部任务继续。
+
+原生补查已通过：新Guardian b18a9a9e、入口b4e2ec2c，7项C++ journal
+及6项实际原生HTTP/TLS/Guardian CPU通过，编译零警告；首次未构建
+TLS-off夹具入口在测试前拒绝，补构建后只重验未运行的4项。
+
 
 
 

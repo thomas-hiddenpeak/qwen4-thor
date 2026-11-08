@@ -131,7 +131,7 @@
         "src/server/schema_receipt.cpp",
         "src/server/schema_string.cpp"
       ],
-      "contract": "Official structured-output graph: local refs/defs/recursion/anyOf; root resolves to object and excludes root anyOf; closed objects and all properties required when strict. 5000 total properties/10 nesting levels/1000 enum values/120000 constrained characters, with15000 for string enums over250 members. Exact decimal enum/const, numeric bounds and multipleOf; Unicode lengths, arrays, patterns and9 formats. Additional bounded graph/grammar/worker resources fail explicitly. Native-format checks run only in the isolated worker; parent binds schema/tool/value receipts before successful terminal. Simple unambiguous trained XML is retained; rich tool arguments are one JSON object parameter with refs relocated only in model definitions. Published structural schema requires native semantic validation for refs, aggregate limits, exact relationships and strict requirements."
+      "contract": "Messages expose the response schema and annotations as exact delimiter-safe system format data; shared preflight and cache prefix include those tokens. Raw prompt stays caller-owned. Official structured-output graph: local refs/defs/recursion/anyOf; root resolves to object and excludes root anyOf; closed objects and all properties required when strict. 5000 total properties/10 nesting levels/1000 enum values/120000 constrained characters, with15000 for string enums over250 members. Exact decimal enum/const, numeric bounds and multipleOf; Unicode lengths, arrays, patterns and9 formats. Additional bounded graph/grammar/worker resources fail explicitly. Native-format checks run only in the isolated worker; parent binds schema/tool/value receipts before successful terminal. Simple unambiguous trained XML is retained; rich tool arguments are one JSON object parameter with refs relocated only in model definitions. Published structural schema requires native semantic validation for refs, aggregate limits, exact relationships and strict requirements."
     },
     {
       "id": "response-parser-prefix",
@@ -322,10 +322,10 @@
     "src/server/chat_response_parser.cpp": "c59c883a1c5ffea6e888d4692be5cf55c4cadd13c1a70f0284f3639db7e22b19",
     "src/server/chat_scheduler.cpp": "2b6d315bfd12609e343010852f7c15b8248fe5180359a3d7b49d3c1db5b8d1fc",
     "src/server/chat_server.cpp": "19c040b20e6f1f1cde9d37e23477b2bfa65c4b38ab09cfacdef9281522fda095",
-    "src/server/chat_template.cpp": "be470e482f7bdda18c07f7d7c378aafeb9cd648283cc4c762e0031f17794d569",
+    "src/server/chat_template.cpp": "f6e031add54280ff196bda9ef7a817a0ffdf30e83b95bce9575be3912168dd66",
     "src/server/chat_tool_history.cpp": "902f6c0982fd072d4dba4c3f6a34629eec9eaaf604fd5d920822b96ed51f82db",
     "src/server/cuda_memory_backend.h": "aabc6d78d2925ec5280e270964d79d3164ce706732a674b88215554a34d0e6a5",
-    "src/server/custom_grammar.cpp": "23fb0c8421ed4cb86af9ca1bb894d3f2fe8cef6f0109ef68907493a716ae75f3",
+    "src/server/custom_grammar.cpp": "9fae326d558056d3c189100b9748f9402ec52c30ba8f894b1f73893bfd4da198",
     "src/server/custom_regex.cpp": "eb8ab53b44dbb9ec2011676a854a18e38244975e76955b74a441829bdd67031a",
     "src/server/custom_tools.cpp": "3e45f9a496439ec1e0d86739acb9c5d01eb6e2c321a96d924cf755b99bc12abd",
     "src/server/http_request.cpp": "614dd52541c9311054be68a790d6b7429503de6edd747b2247eb689273c24d3c",
@@ -339,7 +339,7 @@
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
     "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
     "src/server/sampling.cpp": "8e6a8c446656d8430005b061b10535b391b002362725511d216f9b4229e3d3cb",
-    "src/server/schema_grammar.cpp": "1411f2df41fe33a60578801a22fa1baf0f1776a664eed74df67936fd636098aa",
+    "src/server/schema_grammar.cpp": "075d6a282f2fc1cda861e3a0de4de132455af3efa9ed30b67b0ad9a5caf56cf2",
     "src/server/schema_graph.cpp": "b4a369e5b6882642e350b140afd2ff4002d9ae60e0f42ec8e34aa02de54972a5",
     "src/server/schema_receipt.cpp": "44e3decd13f5d79f7ae687b55d63f7d3d8da9fba0ca1d75316b838959f687498",
     "src/server/schema_string.cpp": "8c8e04f94307af5b6f2b7c4993cb88d5eaac18124f2e07e002e5495663e2d791",
