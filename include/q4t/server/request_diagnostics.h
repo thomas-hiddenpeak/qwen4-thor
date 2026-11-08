@@ -10,6 +10,7 @@
 #include <string_view>
 
 #include "q4t/server/request_control.h"
+#include "q4t/server/progress_context.h"
 #include "q4t/server/request_progress.h"
 
 namespace q4t::server {
@@ -51,6 +52,36 @@ class RequestDiagnostics {
     Wait kind_;
     Clock::time_point start_;
     Wait previous_;
+  };
+
+  // A real device operation inside an auxiliary wait is executing work. Keep
+  // the outer operation identity, but expose its actual wait/stage until the
+  // call returns. Scope exit (including failure) never claims completion.
+  class ExecutionScope {
+   public:
+    ExecutionScope(RequestDiagnostics& owner, ProgressStage stage)
+        : owner_(owner),
+          previous_wait_(owner.wait_),
+          previous_stage_(owner.progress_.StageValue()),
+          execution_(ProgressWork::kCache) {
+      owner_.wait_ = Wait::kCount;
+      owner_.progress_.Wait(ProgressWait::kNone);
+      owner_.progress_.Stage(stage);
+    }
+    ~ExecutionScope() {
+      owner_.progress_.Stage(previous_stage_);
+      owner_.wait_ = previous_wait_;
+      owner_.progress_.Wait(ToProgressWait(previous_wait_));
+    }
+    ExecutionScope(const ExecutionScope&) = delete;
+    ExecutionScope& operator=(const ExecutionScope&) = delete;
+    void Completed() { ProgressExecution::Completed(); }
+
+   private:
+    RequestDiagnostics& owner_;
+    Wait previous_wait_;
+    ProgressStage previous_stage_;
+    ProgressExecution execution_;
   };
 
   explicit RequestDiagnostics(FILE* sink = stderr, std::string trace_id = "-")

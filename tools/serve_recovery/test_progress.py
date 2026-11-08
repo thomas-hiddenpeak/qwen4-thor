@@ -185,11 +185,36 @@ class ProgressTests(unittest.TestCase):
         detector = p.Detector()
         self.assertIsNone(detector.assess(sample(rows=()), 131*p.NS))
         variants = [row(wait=wait) for wait in (1, 2, 3, 5, 6, 7, 8, 9)]
-        variants += [row(work=work) for work in (0, 1, 2, 4)]
+        variants += [row(work=work) for work in (0, 1, 2)]
         for sequence, work in enumerate(variants, 2):
             value = sample(sequence, seconds=1000, rows=(work,))
             self.assertIsNone(detector.assess(value, value.observed_ns))
         self.assertFalse(detector.pending)
+
+    def test_cache_device_and_cleanup_overrun_uses_actual_execution_budget(self):
+        for stage in (4, 9):
+            with self.subTest(stage=stage):
+                detector = p.Detector()
+                work = row(work=4, stage=stage, wait=0)
+                for sequence, seconds in ((1, 129), (2, 130), (3, 131)):
+                    value = sample(sequence, seconds, (work,))
+                    self.assertIsNone(detector.assess(value, value.observed_ns))
+                value = sample(4, 132, (work,))
+                self.assertEqual(detector.assess(value, value.observed_ns).work, 4)
+                changed = replace(work, completed=1, last_completed_ns=133*p.NS,
+                                  updated_ns=133*p.NS)
+                value = sample(5, 133, (changed,))
+                self.assertIsNone(detector.assess(value, value.observed_ns))
+
+    def test_cache_filesystem_wait_and_return_to_wait_cancel_device_candidate(self):
+        detector = p.Detector()
+        working = row(work=4, stage=4, wait=0)
+        value = sample(1, 130, (working,))
+        self.assertIsNone(detector.assess(value, value.observed_ns))
+        for sequence, seconds in ((2, 132), (3, 900)):
+            value = sample(sequence, seconds, (replace(working, wait=9),))
+            self.assertIsNone(detector.assess(value, value.observed_ns))
+            self.assertFalse(detector.pending)
 
     def test_deadline_stage_cleanup_and_two_fresh_samples_all_required(self):
         for work, starts in ((5, 301), (6, 130), (7, 130)):

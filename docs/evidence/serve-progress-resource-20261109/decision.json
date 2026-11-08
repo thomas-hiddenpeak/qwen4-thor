@@ -1,0 +1,21 @@
+{
+  "status": "PASS_TARGETED_CACHE_RESOURCE_PROGRESS_CPU",
+  "different_tests": 7,
+  "source_sha256": {
+    "include/q4t/server/request_diagnostics.h": "ec9379bf1a3258464a072de95684626519af529052873d858ea21e94a7c14c8e",
+    "src/server/chat_generation.cpp": "a3e191a9515cdc4c24ccbb61174b0ce7fb6c65561397604c2e33d2ab9615c91a",
+    "tests/server_progress_context_test.cpp": "6afab2d74220622df0e70607a9221bc4f3607e930e180778ffea26851ddcfa87",
+    "tools/serve_recovery/progress.py": "f008b5f27a88cccff92232c3cc385722f67869445f9d75f49c7d8c216c1ab761",
+    "tools/serve_recovery/test_progress.py": "3a54e9179ad318d38a1dcd5d3edebe80b32a13b9cd4368db790ff46515588c40"
+  },
+  "candidate_sha256": "ab5e66c3d8e75715e608d1211d81589c1563655337fc9071a27b53245d670cbd",
+  "host_tests_sha256": "f2a8495d9a9df17d2169c0077e629e0819019c3fff6a9072d3e576ca2131f8c7",
+  "gpu_starts": 0,
+  "default_changed": false,
+  "reused_real_recovery": "serve-progress-business-20261109",
+  "pending": [
+    "bounded optional cache filesystem isolation",
+    "combined actual cache/resource business",
+    "rollback-capable delivery"
+  ]
+}

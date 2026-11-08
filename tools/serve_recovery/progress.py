@@ -270,7 +270,9 @@ class Detector:
         for row in value.rows:
             # Scheduler wait describes the parked request handler while its
             # selected worker executes. Other waits are not GPU failure facts.
-            budget = {3: 300 * NS, 5: 300 * NS, 6: 120 * NS,
+            # Work 4 covers bounded device cache/resource calls; actual file
+            # I/O remains wait 9 and cannot be labelled a device execution stall.
+            budget = {3: 300 * NS, 4: 120 * NS, 5: 300 * NS, 6: 120 * NS,
                       7: 120 * NS, 8: 30 * NS}.get(row.work)
             loop = (value.wire_version == 2 and row.work == 8 and
                     row.stage == 10 and row.deadline_ns == 0 and row.wait == 0)

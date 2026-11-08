@@ -550,7 +550,8 @@
         "evidence/serve-progress-stages-20261109/decision.json",
         "evidence/serve-progress-driver-20261109/decision.json",
         "evidence/serve-progress-discovery-20261109/decision.json",
-        "evidence/serve-progress-business-20261109/decision.json"
+        "evidence/serve-progress-business-20261109/decision.json",
+        "evidence/serve-progress-resource-20261109/decision.json"
       ],
       "release": null,
       "plan": "SERVE_PROGRESS_2026-11-09.md",
@@ -562,7 +563,7 @@
         }
       ],
       "remaining": [
-        "cache GPU copies and request allocation/reset/cleanup progress coverage",
+        "combined actual cache/resource business after auxiliary filesystem isolation",
         "rollback-capable accepted delivery"
       ]
     },

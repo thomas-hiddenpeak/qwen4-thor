@@ -244,6 +244,76 @@ Q4T_TEST(progress_diagnostic_nested_wait_restores_real_phase) {
   return true;
 }
 
+Q4T_TEST(progress_device_copy_exposes_execution_inside_cache_wait) {
+  RequestProgress progress;
+  auto lease = progress.Acquire(10000000000000000);
+  ProgressContext context(lease.Handle());
+  FILE* sink = std::tmpfile();
+  Q4T_CHECK(sink);
+  ScopeExit close([&] { std::fclose(sink); });
+  RequestDiagnostics diagnostic(sink);
+  diagnostic.BindProgress(lease.Handle());
+  diagnostic.Stage("prefill");
+  ProgressExecution prefill(ProgressWork::kPrefill);
+  {
+    RequestDiagnostics::Scope waiting(diagnostic,
+                                      RequestDiagnostics::Wait::kCache);
+    {
+      RequestDiagnostics::ExecutionScope copying(diagnostic,
+                                                  ProgressStage::kCache);
+      auto row = progress.Read().rows[0];
+      Q4T_CHECK(row.work == ProgressWork::kPrefill && row.work_id == 1 &&
+                row.stage == ProgressStage::kCache &&
+                row.wait == ProgressWait::kNone && row.completed == 0);
+      {
+        RequestDiagnostics::Scope nested(diagnostic,
+                                         RequestDiagnostics::Wait::kModel);
+      }
+      Q4T_CHECK(progress.Read().rows[0].wait == ProgressWait::kNone);
+      copying.Completed();
+    }
+    const auto row = progress.Read().rows[0];
+    Q4T_CHECK(row.stage == ProgressStage::kPrefill &&
+              row.wait == ProgressWait::kCache && row.completed == 1);
+  }
+  Q4T_CHECK(progress.Read().rows[0].wait == ProgressWait::kNone);
+  return true;
+}
+
+Q4T_TEST(progress_resource_exception_never_reports_success_and_restores_state) {
+  RequestProgress progress;
+  auto lease = progress.Acquire(10000000000000000);
+  ProgressContext context(lease.Handle());
+  FILE* sink = std::tmpfile();
+  Q4T_CHECK(sink);
+  ScopeExit close([&] { std::fclose(sink); });
+  RequestDiagnostics diagnostic(sink);
+  diagnostic.BindProgress(lease.Handle());
+  diagnostic.Stage("response");
+  try {
+    RequestDiagnostics::ExecutionScope freeing(diagnostic,
+                                                ProgressStage::kCleanup);
+    const auto row = progress.Read().rows[0];
+    Q4T_CHECK(row.work == ProgressWork::kCache &&
+              row.stage == ProgressStage::kCleanup && row.completed == 0);
+    throw std::runtime_error("CPU device failure");
+  } catch (const std::runtime_error&) {
+  }
+  auto row = progress.Read().rows[0];
+  Q4T_CHECK(row.work == ProgressWork::kNone && row.completed == 0 &&
+            row.wait == ProgressWait::kNone &&
+            row.stage == ProgressStage::kOutput);
+  {
+    RequestDiagnostics::ExecutionScope allocating(diagnostic,
+                                                 ProgressStage::kCache);
+    allocating.Completed();
+  }
+  row = progress.Read().rows[0];
+  Q4T_CHECK(row.work == ProgressWork::kNone && row.completed == 1 &&
+            row.work_id == 2 && row.stage == ProgressStage::kOutput);
+  return true;
+}
+
 Q4T_TEST(progress_scheduler_handoff_keeps_one_writer) {
   RequestProgress progress;
   auto lease = progress.Acquire(10000000000000000);

@@ -943,8 +943,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     uint64_t trace_output_tokens = 0;
     bool buffers_ok = true;
     const auto release_buffer = [&](auto*& pointer, const char* site) {
+      const bool allocated = pointer != nullptr;
+      RequestDiagnostics::ExecutionScope running(diagnostic,
+                                                 ProgressStage::kCleanup);
       const auto result =
           detail::ReleaseCudaMemory(pointer, site, request_id.c_str());
+      if (allocated && result.ok()) running.Completed();
       RecordDeviceMemoryFailure(result, site);
       buffers_ok = buffers_ok && result.ok();
       if (!result.ok()) {
@@ -962,8 +966,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     };
     const auto allocate_buffer = [&](auto*& pointer, size_t bytes,
                                      const char* site) {
+      RequestDiagnostics::ExecutionScope running(diagnostic,
+                                                 ProgressStage::kCache);
       const auto result =
           detail::AllocateCudaMemory(pointer, bytes, site, request_id.c_str());
+      if (result.ok()) running.Completed();
       RecordDeviceMemoryFailure(result, site);
       if (result.state == DeviceMemoryState::kFailure) {
         const std::lock_guard<std::mutex> lock(model_mu_);
@@ -1216,7 +1223,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     ScopeExit sequence_cleanup([&] {
       if (std::uncaught_exceptions()) {
         if (seq.HasPending()) {
-          const std::lock_guard<std::mutex> lock(model_mu_);
+          auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
+          RequestDiagnostics::ExecutionScope running(
+              diagnostic, ProgressStage::kCleanup);
           AbortBackendExecution();
           seq.FailAfterDrain();
         }
@@ -1252,10 +1261,17 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     bool session_gpu_error = false;
     const auto session_copy = [&](void* host, void* state, size_t bytes,
                                   bool restore) -> Status {
+      RequestDiagnostics::ExecutionScope running(diagnostic,
+                                                 ProgressStage::kCache);
       const auto error =
           restore ? cudaMemcpy(state, host, bytes, cudaMemcpyHostToDevice)
                   : cudaMemcpy(host, state, bytes, cudaMemcpyDeviceToHost);
-      if (error == cudaSuccess) return Status();
+      if (error == cudaSuccess) {
+        // Pageable H2D may return before DMA completes. Only D2H is an
+        // existing completion boundary; restore completes at later readback.
+        if (!restore) running.Completed();
+        return Status();
+      }
       session_gpu_error = true;
       gpu_healthy_.store(false, std::memory_order_relaxed);
       return Status::Fail(std::string("session CUDA copy: ") +
@@ -1296,6 +1312,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                              cancelled, &stream_d0,
                                              &cached_pending, cache_layout);
         if (restored.ok() && !target_cache && cached_pending != ids[prefix]) {
+          RequestDiagnostics::ExecutionScope running(diagnostic,
+                                                     ProgressStage::kCache);
           // The draft is shifted by one token. A tool/message boundary may
           // replace its final predicted token; target state remains valid.
           const int position = prefix - 1;
@@ -1317,6 +1335,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         } else {
           // An incomplete read may have written part of the destination.
           // Reset every partially restored model before falling back.
+          RequestDiagnostics::ExecutionScope running(diagnostic,
+                                                     ProgressStage::kCache);
           s = model::ModelBeginSequence(model_.Get(), &seq, nullptr, seq_id);
           if (s.ok() && !target_cache)
             s = mtp::MtpResetState(mtp_, nullptr, seq_id);
@@ -1387,6 +1407,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       }
       if (s) {
         auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
+        RequestDiagnostics::ExecutionScope running(diagnostic,
+                                                   ProgressStage::kPrefill);
         OnException backend_failure([&] { AbortBackendExecution(); });
         s = ExecutionStatus();
         if (s) s = model::ModelBeginSequence(model_.Get(), &seq, nullptr, seq_id);
@@ -1531,6 +1553,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           }
         }
         if (s.ok() && shared_write) {
+          RequestDiagnostics::Scope waiting(diagnostic, Wait::kCache);
           const auto save_begin = std::chrono::steady_clock::now();
           SessionSaveTiming timing(request_id.c_str(), "shared");
           std::vector<SessionRange> ranges;
@@ -2319,6 +2342,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         SessionSaveTiming::Scope span(&timing, SessionSaveTiming::kModelLock);
         lock = diagnostic.Lock(model_mu_, Wait::kModel);
       }
+      RequestDiagnostics::Scope waiting(diagnostic, Wait::kCache);
       OnException backend_failure([&] { AbortBackendExecution(); });
       std::vector<SessionRange> ranges;
       Status saved;

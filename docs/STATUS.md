@@ -2,6 +2,11 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+R03缓存/请求资源进度7项CPU通过，候选ab5e66c3零警告构建、296来源
+核验通过。[原件](evidence/serve-progress-resource-20261109/README.md)。GPU复制与设备资源操作显式执行，D2H才记复制完成，
+H2D提交/错误/析构不伪计数；真实主循环恢复证据保持。接着隔离
+缓存文件I/O，再统一缓存/资源业务短验和交付，默认不变，总目标继续。
+
 R03主循环真实恢复/观察失联业务通过：累计3启动/9生成/1探针/
 220.941秒，209次NVML全OK；旧树清理后同控制器新模型，真实文档
 工具一次闭环，私有观察丢失后同PID JSON/SSE仍42，[原件](evidence/serve-progress-business-20261109/README.md)。
