@@ -28,6 +28,7 @@
 #include "q4t/server/chat_server.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/structured_decoder.h"
+#include "q4t/server/object_store.h"
 #include "q4t/text/tokenizer.h"
 
 namespace {
@@ -878,6 +879,8 @@ int RunServe(int argc, char** argv) {
 }  // namespace
 
 int main(int argc, char** argv) {
+  const int object_worker = q4t::server::MaybeRunObjectWorker(argc, argv);
+  if (object_worker >= 0) return object_worker;
   const int worker = q4t::server::MaybeRunGrammarWorker(argc, argv);
   if (worker >= 0) return worker;
   if (argc < 2) {

@@ -1,0 +1,29 @@
+[PASS] object_store_durable_crud_and_exact_data
+[PASS] object_store_revision_conflicts_prevent_lost_updates
+[PASS] object_store_namespace_and_kind_isolation
+[PASS] object_store_list_order_and_bidirectional_cursors
+[PASS] object_store_quotas_and_delete_reclaim
+  CHECK failed: Run(store, medium).code == "object_quota_exceeded" (line 217)
+[FAIL] object_store_byte_limit_does_not_replace_old_revision
+[PASS] object_store_expiration_reclaims_persistent_quota
+[PASS] object_store_private_paths_and_opaque_ids
+[PASS] object_store_refuses_symlink_and_shared_directory
+[PASS] object_store_corruption_is_not_missing_or_success
+[PASS] object_store_fifo_tampering_is_bounded
+[PASS] object_store_directory_lock_is_not_stolen
+[PASS] object_store_io_failure_recovers_without_replaying_write
+[PASS] object_store_timeout_queue_cancellation_and_recovery_budget
+[PASS] object_store_stuck_spawn_retains_one_controller
+[PASS] object_store_lost_receipt_preserves_commit_uncertainty
+[PASS] grammar_process_memory_limit_and_descriptor_isolation
+[PASS] grammar_process_deadline_reaps_blocked_worker
+[PASS] grammar_process_cancellation_interrupts_pending_io
+[PASS] grammar_process_short_read_and_cleanup_do_not_leak
+[PASS] grammar_process_closed_peer_write_has_no_sigpipe
+[PASS] grammar_process_cannot_raise_memory_ceiling
+[PASS] grammar_process_unconfirmed_reap_retains_capacity_without_callbacks
+[PASS] grammar_process_deferred_counters_survive_request_then_release
+[PASS] grammar_process_active_worker_and_pending_worker_share_one_slot
+[PASS] grammar_process_object_domain_keeps_grammar_capacity
+[PASS] grammar_process_transfer_cancellation_does_not_retain_request
+27 tests, 26 passed, 1 failed, 0 skipped

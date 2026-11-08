@@ -23,8 +23,10 @@ class TokenLogprobs {
   static constexpr size_t kStorageLimit = 16 * 1024 * 1024;
 
   explicit TokenLogprobs(bool collect, bool completion = false,
-                          size_t initial_characters = 0)
+                          size_t initial_characters = 0,
+                          bool exact_selected = false)
       : collect_(collect), completion_(completion),
+        exact_selected_(exact_selected),
         emitted_characters_(initial_characters) {}
   Status Push(const SampledToken& sample, std::string_view decoded_bytes,
               const Decode& decode);
@@ -50,6 +52,7 @@ class TokenLogprobs {
   };
   bool collect_;
   bool completion_;
+  bool exact_selected_;
   size_t emitted_bytes_ = 0;
   size_t emitted_characters_ = 0;
   CompletionProbabilityRows completion_rows_;

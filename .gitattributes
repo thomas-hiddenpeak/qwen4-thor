@@ -37,3 +37,6 @@ docs/evidence/serve-completions-20261108/**/*.wire binary
 # Preserve native Responses CPU wire and failed originals byte for byte.
 docs/evidence/serve-responses-core-20261108/** -text -whitespace
 docs/evidence/serve-responses-core-20261108/**/*.wire binary
+
+# Preserve durable-store CPU results, failed originals and record digests.
+docs/evidence/serve-object-store-20261108/** -text -whitespace

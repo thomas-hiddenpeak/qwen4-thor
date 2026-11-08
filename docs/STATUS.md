@@ -11,6 +11,18 @@ SDK的32个顶层字段及跨A08—A11责任，原生items/SSE、工具回填与
 新增incomplete保留未完成参数、完整调用仍核对schema回执；普通错误
 与无分配异常均有Responses终态。路由/完整请求规划/持久对象尚未
 接通，不计A07交付，继续开发；[CPU证据](evidence/serve-responses-core-20261108/README.md)。
+该源码检查点`87a85eeb`已提交推送。正在继续完整请求规划：有效默认值、
+metadata、store/background/历史、text.format与reasoning参数分离，
+所有服务字段保留在执行要求中；该规划子组尚未发布。
+请求规划新增10项及2项直接概率回归CPU一次通过，仍无模型验收。
+[A08本地对象](SERVE_OBJECT_STORE_2026-11-08.md)进入实施：新增独立
+objects worker域及独立有界调度线程处理启动/IPC，防止文件系统
+阻塞拖停请求或语法槽。持久CRUD/revision/分页/TTL/配额已实现，
+18存储及11隔离/语法CPU通过，相关两次构建零警告；配额夹具一次
+1199/1200字节误判保留，修正并只重验该项与新增2项。
+[规划/存储41项原件](evidence/serve-object-store-20261108/README.md)
+已归档；路由/background/历史接入继续实现。默认A06不变、无GPU，
+不以中间模块关闭A07/A08，继续全部总计划。
 
 [A06原生Completions/Models已交付](SERVE_COMPLETIONS_2026-11-08.md)：
 50不同C++、51输入/schema、6SDK、4实际原生/TLS、11驱动/托管/发行

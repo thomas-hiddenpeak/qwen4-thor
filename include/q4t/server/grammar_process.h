@@ -29,6 +29,10 @@ enum class GrammarFailure {
   kUnavailable
 };
 
+// Independent fixed-capacity domains: a blocked object-store worker must not
+// consume the grammar slot or degrade ordinary structured generation.
+enum class IsolatedWorkerDomain { kGrammar, kObjects };
+
 // Independent lifetime: deferred cleanup never retains a server/request
 // callback.
 struct GrammarWorkerCounters {
@@ -63,6 +67,7 @@ struct GrammarControl {
       std::chrono::milliseconds(kGrammarCompileMilliseconds);
   // Internal callers may tighten, never raise, the production ceiling.
   uint64_t address_space_bytes = kGrammarAddressSpaceLimit;
+  IsolatedWorkerDomain domain = IsolatedWorkerDomain::kGrammar;
 };
 
 namespace detail {
@@ -70,14 +75,16 @@ namespace detail {
 // Called by the native event loop and before admission. No wait or callback.
 void PollGrammarWorkers();
 bool GrammarCleanupPending();
+void PollIsolatedWorkers(IsolatedWorkerDomain domain);
+bool IsolatedCleanupPending(IsolatedWorkerDomain domain);
 
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
 // Host-only fixture: simulate unconfirmed exit without kernel D-state.
 void DeferGrammarReapingForTesting(bool enabled);
 #endif
 
-// Single process-wide slot. Unreaped cleanup keeps that slot after request
-// exit.
+// One process-wide slot per fixed domain. Unreaped cleanup keeps the same
+// domain's slot after request exit. Existing grammar users stay in kGrammar.
 class GrammarProcess {
  public:
   ~GrammarProcess();
@@ -87,7 +94,8 @@ class GrammarProcess {
                       std::unique_ptr<GrammarProcess>* out,
                       GrammarFailure* failure = nullptr);
   Status Transfer(void* data, size_t bytes, bool write,
-                  std::chrono::steady_clock::time_point deadline);
+                  std::chrono::steady_clock::time_point deadline,
+                  const std::function<bool()>& cancelled = {});
   GrammarFailure Failure() const { return failure_; }
   void ReportRss(uint64_t bytes);
   void Stop();

@@ -1,0 +1,33 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+-- Configuring done (0.1s)
+-- Generating done (0.2s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build
+[  0%] Built target q4t_regex_build
+[  0%] Built target q4t_io
+[  3%] Built target q4t_text
+[ 26%] Built target xgrammar
+[ 26%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/chat_capabilities.cpp.o
+[ 26%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/chat_plan.cpp.o
+[ 26%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/grammar_process.cpp.o
+[ 26%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/grammar_worker.cpp.o
+[ 26%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/structured_decoder.cpp.o
+[ 26%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_chat_capabilities_test.cpp.o
+[ 26%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_chat_plan_test.cpp.o
+[ 26%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_custom_tools_test.cpp.o
+[ 30%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_grammar_process_test.cpp.o
+[ 30%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_schema_token_guard_test.cpp.o
+[ 30%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_structured_decoder_test.cpp.o
+[ 30%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/test_main.cpp.o
+[ 34%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/text_tokenizer_test.cpp.o
+[ 34%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/object_store.cpp.o
+[ 34%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/object_worker.cpp.o
+[ 34%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_object_store_test.cpp.o
+[ 34%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests

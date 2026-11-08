@@ -50,7 +50,8 @@ Status TokenLogprobs::Push(const SampledToken& sample,
   std::string token;
   auto status = completion_ ? Status() : decode(sample.token, &token);
   if (status && !completion_)
-    status = Record(sample.logprob, token, &entry.json);
+    status = Record(exact_selected_ ? sample.raw_logprob : sample.logprob,
+                      token, &entry.json);
   if (!status) return status;
   if (!completion_) entry.json += ",\"top_logprobs\":[";
   for (size_t i = 0; !completion_ && i < sample.top.size(); ++i) {

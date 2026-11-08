@@ -14,6 +14,9 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_device_memory_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_cuda_quota_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/grammar_process.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/object_store.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/object_worker.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_object_store_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/grammar_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_grammar_process_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_capabilities.cpp
@@ -86,11 +89,13 @@ set(Q4T_HOST_TEST_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/completion_response.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_output.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_input.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_plan.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_choices.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_sampling_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_completion_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_output_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_input_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_plan_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_prediction_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_legacy_tools_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_custom_tools_test.cpp

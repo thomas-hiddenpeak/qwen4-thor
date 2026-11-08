@@ -9,6 +9,7 @@
 #endif
 
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
+#include "q4t/server/object_store.h"
 int GrammarProcessFixture(int argc, char** argv);
 #endif
 
@@ -18,6 +19,8 @@ int main(int argc, char** argv) {
   if (worker >= 0) return worker;
 #endif
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
+  const int object_worker = q4t::server::MaybeRunObjectWorker(argc, argv);
+  if (object_worker >= 0) return object_worker;
   const int fixture = GrammarProcessFixture(argc, argv);
   if (fixture >= 0) return fixture;
 #endif

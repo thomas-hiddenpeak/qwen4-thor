@@ -43,9 +43,13 @@ struct WorkerOwner {
   }
 };
 
-WorkerOwner& Owner() {
-  static WorkerOwner owner;
-  return owner;
+WorkerOwner& Owner(IsolatedWorkerDomain domain) {
+  // Process-lifetime domains may still be referenced by a bounded-shutdown
+  // object controller blocked in exec. No static destruction races with it;
+  // the OS closes the descriptors at process exit.
+  static auto* grammar = new WorkerOwner;
+  static auto* objects = new WorkerOwner;
+  return domain == IsolatedWorkerDomain::kObjects ? *objects : *grammar;
 }
 
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
@@ -95,8 +99,8 @@ void PollLocked(WorkerOwner& owner) {
   owner.reserved = false;
 }
 
-bool ReserveWorker() {
-  auto& owner = Owner();
+bool ReserveWorker(IsolatedWorkerDomain domain) {
+  auto& owner = Owner(domain);
   const std::lock_guard lock(owner.mutex);
   PollLocked(owner);
   if (owner.reserved) return false;
@@ -104,8 +108,8 @@ bool ReserveWorker() {
   return true;
 }
 
-void ReleaseWorker() {
-  auto& owner = Owner();
+void ReleaseWorker(IsolatedWorkerDomain domain) {
+  auto& owner = Owner(domain);
   const std::lock_guard lock(owner.mutex);
   owner.reserved = false;
 }
@@ -122,13 +126,21 @@ bool Limit(int resource, uint64_t bytes) {
 }  // namespace
 
 void PollGrammarWorkers() {
-  auto& owner = Owner();
+  PollIsolatedWorkers(IsolatedWorkerDomain::kGrammar);
+}
+
+void PollIsolatedWorkers(IsolatedWorkerDomain domain) {
+  auto& owner = Owner(domain);
   const std::lock_guard lock(owner.mutex);
   PollLocked(owner);
 }
 
 bool GrammarCleanupPending() {
-  auto& owner = Owner();
+  return IsolatedCleanupPending(IsolatedWorkerDomain::kGrammar);
+}
+
+bool IsolatedCleanupPending(IsolatedWorkerDomain domain) {
+  auto& owner = Owner(domain);
   const std::lock_guard lock(owner.mutex);
   PollLocked(owner);
   return owner.pending.has_value();
@@ -152,13 +164,16 @@ Status GrammarProcess::Start(const char* entry, const GrammarControl& control,
   if (!control.address_space_bytes ||
       control.address_space_bytes > kGrammarAddressSpaceLimit)
     return Status::Fail("invalid grammar worker memory ceiling");
+  if (control.domain != IsolatedWorkerDomain::kGrammar &&
+      control.domain != IsolatedWorkerDomain::kObjects)
+    return Status::Fail("invalid isolated worker domain");
   struct sigaction disposition {};
   if (sigaction(SIGCHLD, nullptr, &disposition) ||
       disposition.sa_handler != SIG_DFL ||
       (disposition.sa_flags & SA_NOCLDWAIT))
     return Status::Fail("grammar worker requires owned child reaping");
   auto process = std::unique_ptr<GrammarProcess>(new GrammarProcess(control));
-  if (!ReserveWorker()) {
+  if (!ReserveWorker(control.domain)) {
     if (failure) *failure = GrammarFailure::kUnavailable;
     return Status::Fail(
         "grammar worker capacity retained until confirmed reap");
@@ -196,7 +211,10 @@ Status GrammarProcess::Start(const char* entry, const GrammarControl& control,
           &actions, fd, "/dev/null", fd == 0 ? O_RDONLY : O_WRONLY, 0);
     auto parent = std::to_string(getpid());
     auto limit = std::to_string(control.address_space_bytes);
-    char name[] = "q4t-grammar-worker";
+    char grammar_name[] = "q4t-grammar-worker";
+    char objects_name[] = "q4t-object-worker";
+    char* name = control.domain == IsolatedWorkerDomain::kObjects
+                     ? objects_name : grammar_name;
     char* argv[] = {name, const_cast<char*>(entry), parent.data(), limit.data(),
                     nullptr};
     char locale[] = "LC_ALL=C";
@@ -251,9 +269,9 @@ void GrammarProcess::Stop() {
     report.reported_rss_bytes = reported_rss_bytes_;
     if (report.reaped) {
       CountReaped(control_.counters, report);
-      ReleaseWorker();
+      ReleaseWorker(control_.domain);
     } else {
-      auto& owner = Owner();
+      auto& owner = Owner(control_.domain);
       const std::lock_guard lock(owner.mutex);
       owner.pending.emplace(PendingWorker{pid_, std::exchange(pid_fd_, -1),
                                           reported_rss_bytes_,
@@ -265,7 +283,7 @@ void GrammarProcess::Stop() {
   }
   if (pid_fd_ >= 0) close(std::exchange(pid_fd_, -1));
   if (slot_owned_) {
-    ReleaseWorker();
+    ReleaseWorker(control_.domain);
     slot_owned_ = false;
   }
 }
@@ -276,10 +294,12 @@ void GrammarProcess::ReportRss(uint64_t bytes) {
 
 Status GrammarProcess::Transfer(
     void* data, size_t bytes, bool write,
-    std::chrono::steady_clock::time_point deadline) {
+    std::chrono::steady_clock::time_point deadline,
+    const std::function<bool()>& cancelled) {
   auto* cursor = static_cast<char*>(data);
   while (bytes) {
-    if (control_.cancelled && control_.cancelled()) {
+    if ((cancelled && cancelled()) ||
+        (control_.cancelled && control_.cancelled())) {
       failure_ = GrammarFailure::kCancelled;
       Stop();
       return Status::Fail("grammar operation cancelled");

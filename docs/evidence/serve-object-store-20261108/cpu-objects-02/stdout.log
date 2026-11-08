@@ -1,0 +1,4 @@
+[PASS] object_store_byte_limit_does_not_replace_old_revision
+[PASS] object_store_global_bytes_account_across_clients_after_restart
+[PASS] object_store_reduced_limit_preserves_read_delete_access
+3 tests, 3 passed, 0 failed, 0 skipped

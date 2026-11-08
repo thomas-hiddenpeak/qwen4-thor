@@ -15,6 +15,8 @@ set(protocol_inputs
   src/server/responses_output.cpp
   include/q4t/server/responses_input.h
   src/server/responses_input.cpp
+  include/q4t/server/responses_plan.h
+  src/server/responses_plan.cpp
   src/server/responses_json.h
   include/q4t/model/sequence.h
   include/q4t/runtime/model_health.h
@@ -67,6 +69,10 @@ set(protocol_inputs
   src/main.cpp
   include/q4t/server/grammar_process.h
   src/server/grammar_process.cpp
+  include/q4t/server/object_store.h
+  src/server/object_store.cpp
+  src/server/object_worker.cpp
+  src/server/object_protocol.h
   src/server/grammar_worker.cpp
   src/server/grammar_worker_internal.h
   include/q4t/server/abort_reason.h

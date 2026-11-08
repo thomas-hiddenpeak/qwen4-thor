@@ -3,6 +3,9 @@
 [A07 Responses原生实现与A08状态衔接](SERVE_RESPONSES_2026-11-08.md)
 （开发中，默认仍为已验A06）。
 
+[A08原生对象存储及后台任务](SERVE_OBJECT_STORE_2026-11-08.md)
+（开发中，存储故障与核心生成隔离）。
+
 [原生Completions/Models及可回退交付](SERVE_COMPLETIONS_2026-11-08.md)。
 
 - [A04 custom工具交付](SERVE_CUSTOM_TOOLS_2026-11-08.md)：text/regex/Lark、原生模型适配、真实混合调用与可回退默认。

@@ -32,6 +32,9 @@ int GrammarProcessFixture(int argc, char** argv) {
   alarm(5);
   if (!q4t::server::detail::EnterGrammarWorker(argc, argv)) return 2;
   const std::string mode(argv[1]);
+  if (mode == "--grammar-fixture-silent") {
+    for (;;) pause();
+  }
   if (mode == "--grammar-fixture-short") {
     char byte = 'x';
     WorkerTransfer(&byte, 1, true);
@@ -83,10 +86,14 @@ class DeferredReapFixture {
   bool Drain() {
     q4t::server::detail::DeferGrammarReapingForTesting(false);
     const auto end = std::chrono::steady_clock::now() + 1s;
-    while (q4t::server::detail::GrammarCleanupPending() &&
+    while ((q4t::server::detail::GrammarCleanupPending() ||
+            q4t::server::detail::IsolatedCleanupPending(
+                q4t::server::IsolatedWorkerDomain::kObjects)) &&
            std::chrono::steady_clock::now() < end)
       std::this_thread::sleep_for(1ms);
-    return !q4t::server::detail::GrammarCleanupPending();
+    return !q4t::server::detail::GrammarCleanupPending() &&
+           !q4t::server::detail::IsolatedCleanupPending(
+               q4t::server::IsolatedWorkerDomain::kObjects);
   }
 };
 }  // namespace
@@ -300,5 +307,48 @@ Q4T_TEST(grammar_process_active_worker_and_pending_worker_share_one_slot) {
   second.reset();
   Q4T_CHECK(counters->started == 2 && counters->reaped == 2 &&
             counters->active == 0);
+  return true;
+}
+
+Q4T_TEST(grammar_process_object_domain_keeps_grammar_capacity) {
+  GrammarControl objects;
+  objects.domain = q4t::server::IsolatedWorkerDomain::kObjects;
+  objects.counters = std::make_shared<q4t::server::GrammarWorkerCounters>();
+  std::unique_ptr<GrammarProcess> object, grammar;
+  Q4T_CHECK(GrammarProcess::Start("--grammar-fixture-idle", objects, &object));
+  Q4T_CHECK(Ready(*object));
+  Q4T_CHECK(GrammarProcess::Start("--grammar-fixture-idle", {}, &grammar));
+  Q4T_CHECK(Ready(*grammar));
+  DeferredReapFixture deferred;
+  object.reset();
+  Q4T_CHECK(q4t::server::detail::IsolatedCleanupPending(objects.domain));
+  Q4T_CHECK(!q4t::server::detail::GrammarCleanupPending());
+  GrammarFailure failure;
+  Q4T_CHECK(!GrammarProcess::Start("--grammar-fixture-idle", objects, &object, &failure));
+  Q4T_CHECK(failure == GrammarFailure::kUnavailable);
+  Q4T_CHECK(deferred.Drain());
+  grammar.reset();
+  Q4T_CHECK(objects.counters->started == 1 && objects.counters->reaped == 1);
+  return true;
+}
+
+Q4T_TEST(grammar_process_transfer_cancellation_does_not_retain_request) {
+  GrammarControl control;
+  control.domain = q4t::server::IsolatedWorkerDomain::kObjects;
+  std::unique_ptr<GrammarProcess> process;
+  Q4T_CHECK(GrammarProcess::Start("--grammar-fixture-idle", control, &process));
+  auto request = std::make_shared<int>(42);
+  std::weak_ptr<int> lifetime = request;
+  uint64_t report[3]{};
+  Q4T_CHECK(process->Transfer(report, sizeof(report), false,
+                              std::chrono::steady_clock::now() + 2s,
+                              [request] { return false; }));
+  request.reset();
+  Q4T_CHECK(lifetime.expired());
+  char byte;
+  Q4T_CHECK(!process->Transfer(&byte, 1, false,
+                               std::chrono::steady_clock::now() + 2s,
+                               [] { return true; }));
+  Q4T_CHECK(process->Failure() == GrammarFailure::kCancelled);
   return true;
 }
