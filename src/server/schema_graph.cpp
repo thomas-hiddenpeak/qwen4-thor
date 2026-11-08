@@ -9,6 +9,7 @@
 #include "q4t/server/input_contract.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/schema_decimal.h"
+#include "q4t/server/schema_prefix.h"
 
 namespace q4t::server {
 namespace {
@@ -103,6 +104,75 @@ Status Key(const Json& value, std::string* out, size_t* work,
   }
   *out += value.IsArray() ? ']' : '}';
   return Status();
+}
+
+Status PartialEqual(const Json& expected, const SchemaPrefixValue& prefix,
+                    size_t* work, bool* matches, size_t depth = 0) {
+  *matches = true;
+  auto status = Charge(1, work);
+  if (!status) return status;
+  if (depth > 64)
+    return Status::Fail("schema_resource_exhausted: prefix enum depth");
+  if (!prefix.started) return {};
+  const auto equal = [&](const Json& a, const Json& b, bool* result) {
+    std::string left, right;
+    auto status = Key(a, &left, work);
+    if (status) status = Key(b, &right, work);
+    if (status) *result = left == right;
+    return status;
+  };
+  const auto& value = prefix.value;
+  if (prefix.complete) return equal(expected, value, matches);
+  if (expected.type != value.type) {
+    *matches = false;
+    return {};
+  }
+  if (value.IsString()) {
+    status = Charge(value.str.size(), work);
+    *matches = expected.str.starts_with(value.str);
+    return status;
+  }
+  if (value.IsBool()) {
+    *matches = expected.boolean == value.boolean;
+    return {};
+  }
+  if (value.IsArray()) {
+    if (expected.array.size() < value.array.size() + (prefix.pending ? 1 : 0)) {
+      *matches = false;
+      return {};
+    }
+    for (size_t i = 0; i < value.array.size(); ++i) {
+      status = equal(expected.array[i], value.array[i], matches);
+      if (!status || !*matches) return status;
+    }
+    if (prefix.pending)
+      return PartialEqual(expected.array[value.array.size()], *prefix.pending,
+                          work, matches, depth + 1);
+  }
+  if (value.IsObject()) {
+    for (const auto& [key, child] : value.object) {
+      const auto* candidate = expected.Find(key);
+      if (!candidate) {
+        *matches = false;
+        return {};
+      }
+      status = equal(*candidate, child, matches);
+      if (!status || !*matches) return status;
+    }
+    if (prefix.has_pending_key) {
+      const auto* candidate = expected.Find(prefix.pending_key);
+      if (!candidate) {
+        *matches = false;
+        return {};
+      }
+      if (prefix.pending)
+        return PartialEqual(*candidate, *prefix.pending, work, matches,
+                            depth + 1);
+    }
+  }
+  // An incomplete number may still gain an exponent. Exact equality is
+  // checked at its delimiter; no provisional binary64 value is accepted.
+  return {};
 }
 
 int Hex(char c) {
@@ -590,6 +660,130 @@ Status OutputSchemaGraph::Check(const Json& value,
                                 const StringCheck& strings) const {
   if (!valid_) return Status::Fail("schema graph is not initialized");
   return CheckNode(*root_, value, strings);
+}
+
+Status OutputSchemaGraph::Prefix(
+    const Json& schema, const SchemaPrefixValue& prefix, size_t depth,
+    size_t* work, const StringCheck& strings,
+    std::unordered_set<const Json*>* active) const {
+  if (prefix.complete)
+    return Value(schema, prefix.value, depth, work, strings, active);
+  auto status = Charge(1, work);
+  if (!status) return status;
+  if (depth > 64)
+    return Status::Fail("schema_resource_exhausted: prefix depth");
+  if (!prefix.started) return {};
+  if (!active->insert(&schema).second)
+    return Status::Fail("schema recursion without prefix progress");
+  struct Pop {
+    std::unordered_set<const Json*>* set;
+    const Json* key;
+    ~Pop() { set->erase(key); }
+  } pop{active, &schema};
+  const auto& value = prefix.value;
+  const auto types = Types(schema);
+  if (!types.empty() &&
+      !std::any_of(types.begin(), types.end(), [&](const auto& type) {
+        return (value.IsNumber() && (type == "number" || type == "integer")) ||
+               Matches(value, type);
+      }))
+    return Status::Fail("prefix type does not match schema");
+  if (const auto* target = RefTarget(schema)) {
+    status = Prefix(*target, prefix, depth, work, strings, active);
+    if (!status) return status;
+  }
+  if (const auto* choices = schema.GetArray("anyOf")) {
+    bool found = false;
+    for (const auto& child : choices->array) {
+      status = Prefix(child, prefix, depth, work, strings, active);
+      if (status) {
+        found = true;
+        break;
+      }
+      if (status.message().starts_with("schema_resource_exhausted:") ||
+          status.message().starts_with("schema_dependency_unavailable:"))
+        return status;
+    }
+    if (!found) return Status::Fail("prefix does not match anyOf");
+  }
+  if (const auto* expected = schema.Find("const")) {
+    bool matches;
+    status = PartialEqual(*expected, prefix, work, &matches);
+    if (!status) return status;
+    if (!matches) return Status::Fail("prefix does not match const");
+  }
+  if (const auto* choices = schema.GetArray("enum")) {
+    bool found = false;
+    for (const auto& candidate : choices->array) {
+      bool matches;
+      status = PartialEqual(candidate, prefix, work, &matches);
+      if (!status) return status;
+      if (matches) {
+        found = true;
+        break;
+      }
+    }
+    if (!found) return Status::Fail("prefix does not match enum");
+  }
+  if (value.IsString() && schema.Has("maxLength") &&
+      Characters(value.str) > static_cast<size_t>(schema.GetInt("maxLength")))
+    return Status::Fail("prefix exceeds string length");
+  if (value.IsArray()) {
+    const auto count = value.array.size() + (prefix.pending ? 1 : 0);
+    if (schema.Has("maxItems") &&
+        count > static_cast<size_t>(schema.GetInt("maxItems")))
+      return Status::Fail("prefix exceeds array length");
+    if (const auto* items = schema.Find("items")) {
+      for (const auto& child : value.array) {
+        std::unordered_set<const Json*> child_active;
+        status = Value(*items, child, depth + 1, work, strings, &child_active);
+        if (!status) return status;
+      }
+      if (prefix.pending) {
+        std::unordered_set<const Json*> child_active;
+        status = Prefix(*items, *prefix.pending, depth + 1, work, strings,
+                        &child_active);
+        if (!status) return status;
+      }
+    }
+  }
+  if (value.IsObject()) {
+    const auto* properties = schema.Find("properties");
+    const bool closed = schema.Has("additionalProperties") &&
+                        !schema.GetBool("additionalProperties");
+    for (const auto& [key, child] : value.object) {
+      const auto* node = properties ? properties->Find(key) : nullptr;
+      if (!node && closed) return Status::Fail("unknown prefix property");
+      if (node) {
+        std::unordered_set<const Json*> child_active;
+        status = Value(*node, child, depth + 1, work, strings, &child_active);
+        if (!status) return status;
+      }
+    }
+    if (prefix.has_pending_key) {
+      const auto* node =
+          properties ? properties->Find(prefix.pending_key) : nullptr;
+      if (!node && closed) return Status::Fail("unknown pending property");
+      if (node && prefix.pending) {
+        std::unordered_set<const Json*> child_active;
+        status = Prefix(*node, *prefix.pending, depth + 1, work, strings,
+                        &child_active);
+        if (!status) return status;
+      }
+    }
+  }
+  return {};
+}
+
+Status OutputSchemaGraph::CheckPrefix(const SchemaPrefixValue& value,
+                                      size_t* work_remaining,
+                                      const StringCheck& strings) const {
+  if (!valid_) return Status::Fail("schema graph is not initialized");
+  if (!work_remaining)
+    return Status::Fail(
+        "schema_resource_exhausted: prefix work budget missing");
+  std::unordered_set<const Json*> active;
+  return Prefix(*root_, value, 0, work_remaining, strings, &active);
 }
 
 Status OutputSchemaGraph::CheckNode(const Json& schema, const Json& value,

@@ -478,11 +478,13 @@ if(Q4T_BUILD_TESTS)
     src/server/output_schema.cpp
     src/server/schema_decimal.cpp
     src/server/schema_graph.cpp
+    src/server/schema_prefix.cpp
     src/server/schema_number_grammar.cpp
     src/server/schema_grammar.cpp
     src/server/schema_string.cpp
     src/server/schema_idna.cpp
     tests/server_schema_graph_test.cpp
+    tests/server_schema_prefix_test.cpp
     tests/server_schema_string_test.cpp
     src/server/output_constraints.cpp
     src/server/grammar_process.cpp

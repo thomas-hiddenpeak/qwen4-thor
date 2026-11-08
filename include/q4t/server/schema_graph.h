@@ -12,6 +12,8 @@
 
 namespace q4t::server {
 
+struct SchemaPrefixValue;
+
 // A checked, local-only schema graph. root must outlive this object. References
 // retain identity instead of recursive textual expansion. The string checker
 // must enforce both pattern and format; absence never silently drops a rule.
@@ -24,6 +26,8 @@ class OutputSchemaGraph {
   Status Check(const io::Json& value, const StringCheck& strings = {}) const;
   Status CheckNode(const io::Json& schema, const io::Json& value,
                    const StringCheck& strings = {}) const;
+  Status CheckPrefix(const SchemaPrefixValue& value, size_t* work_remaining,
+                     const StringCheck& strings = {}) const;
   const io::Json* RefTarget(const io::Json& schema) const;
   const io::Json& Root() const { return *root_; }
   const std::vector<const io::Json*>& Nodes() const { return order_; }
@@ -37,6 +41,9 @@ class OutputSchemaGraph {
   Status Value(const io::Json& schema, const io::Json& value, size_t depth,
                size_t* work, const StringCheck& strings,
                std::unordered_set<const io::Json*>* active) const;
+  Status Prefix(const io::Json& schema, const SchemaPrefixValue& value,
+                size_t depth, size_t* work, const StringCheck& strings,
+                std::unordered_set<const io::Json*>* active) const;
   Status Error(const std::string& path, const std::string& message);
   const io::Json* root_ = nullptr;
   std::string* error_param_ = nullptr;
