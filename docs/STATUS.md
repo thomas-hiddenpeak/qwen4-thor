@@ -2,6 +2,14 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+后台任务管理器继续实施：固定worker、全局/客户端任务数及输入内存
+预算，三客户端轮转，准入permit持续交接，取消与完成单点竞争；未知
+提交先按ID核实并有界收尾，不重启模型。原生无socket执行上下文承接
+共享错误处理。10新增CPU/3直接回归已通过；预算补计后仅重验额度项，
+实际引擎构建零警告。[原件](evidence/serve-responses-background-jobs-20261109/README.md)
+保留optional构建及政策夹具失败；继续实际HTTP/重启扫描。
+本子组尚未发布，已验同步候选与当前默认保留，总目标继续active。
+
 后台生命周期核心继续实施：queued→in_progress在持久回执后才能执行，
 取消保留真实部分输出且不伪造completed或不存在的SSE类型；store=false
 后台改为10分钟临时保留。恢复仅续排未执行queued，已in_progress的中断

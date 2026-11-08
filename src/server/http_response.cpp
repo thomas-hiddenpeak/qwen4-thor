@@ -60,22 +60,22 @@ void SendExceptionResponse(int fd, ResponseState state,
           response, sizeof(response),
           "event: error\r\ndata: {\"type\":\"error\",\"code\":\"%s\","
           "\"message\":\"request failed\",\"param\":null,"
-          "\"sequence_number\":%lld}\r\n\r\n", code,
-          static_cast<long long>(sequence));
+          "\"sequence_number\":%lld}\r\n\r\n",
+          code, static_cast<long long>(sequence));
       if (sequence < INT64_MAX) ++sequence;
     } else {
       size = state == ResponseState::kStreaming
-            ? std::snprintf(response, sizeof(response),
-                            "data: %s\r\n\r\ndata: [DONE]\r\n\r\n", body)
-            : std::snprintf(response, sizeof(response),
-                            "HTTP/1.1 %s\r\n%s%s%s"
-                            "Content-Type: application/json\r\n"
-                            "Connection: close\r\n\r\n%s",
-                            memory ? "503 Service Unavailable"
-                                   : "500 Internal Server Error",
-                            context ? "X-Request-Id: " : "",
-                            context ? context->TraceId().c_str() : "",
-                            context ? "\r\n" : "", body);
+                 ? std::snprintf(response, sizeof(response),
+                                 "data: %s\r\n\r\ndata: [DONE]\r\n\r\n", body)
+                 : std::snprintf(response, sizeof(response),
+                                 "HTTP/1.1 %s\r\n%s%s%s"
+                                 "Content-Type: application/json\r\n"
+                                 "Connection: close\r\n\r\n%s",
+                                 memory ? "503 Service Unavailable"
+                                        : "500 Internal Server Error",
+                                 context ? "X-Request-Id: " : "",
+                                 context ? context->TraceId().c_str() : "",
+                                 context ? "\r\n" : "", body);
     }
     if (size <= 0 || static_cast<size_t>(size) >= sizeof(response)) return;
     const WriteOptions terminal{std::chrono::steady_clock::now() +
@@ -345,6 +345,10 @@ HttpResponseContext::~HttpResponseContext() {
   current_response = previous_;
 }
 
+HttpResponseContext::HttpResponseContext(Detached) : HttpResponseContext(-1) {
+  detached_ = true;
+}
+
 void HttpResponseContext::RecordReceiveFailure(HttpReceiveFailure reason,
                                                int status, int system_error) {
   const auto index = static_cast<size_t>(reason);
@@ -383,6 +387,10 @@ bool HttpResponseContext::Write(const char* data, size_t size,
                                 const WriteOptions& options,
                                 ResponseState* header_state) {
   const std::lock_guard<std::mutex> lock(write_mu_);
+  if (detached_) {
+    if (header_state) *header_state = ResponseState::kHeadersStarted;
+    return !options.control || !options.control->Cancelled();
+  }
   if (write_failure_.reason != HttpWriteFailure::kNone) return false;
   HttpWriteObservation observation;
   try {
@@ -403,6 +411,7 @@ bool HttpResponseContext::Write(const char* data, size_t size,
 void HttpResponseContext::StartHeartbeats(
     std::shared_ptr<RequestControl> control,
     std::chrono::milliseconds interval) {
+  if (detached_) return;
   if (state_ != ResponseState::kStreaming || heartbeat_.joinable() ||
       interval.count() <= 0)
     throw std::logic_error("invalid heartbeat state");
@@ -563,9 +572,10 @@ std::string ErrorJson(int status, const std::string& message,
          "}}";
 }
 
-std::string HttpResponseContext::StreamError(
-    int status, const std::string& message, std::string_view code,
-    std::string_view param) {
+std::string HttpResponseContext::StreamError(int status,
+                                             const std::string& message,
+                                             std::string_view code,
+                                             std::string_view param) {
   if (stream_error_renderer_)
     return stream_error_renderer_(stream_error_owner_, status, message, code,
                                   param);
@@ -607,10 +617,10 @@ void SendStreamError(int fd, ResponseState* state, int status,
   }
   if (*state != ResponseState::kStreaming) return;
   auto* context = HttpResponseContext::Current(fd);
-  const std::string tail = context
-      ? context->StreamError(status, message, error_code)
-      : "data: " + ErrorJson(status, message, error_code) +
-          "\r\n\r\ndata: [DONE]\r\n\r\n";
+  const std::string tail =
+      context ? context->StreamError(status, message, error_code)
+              : "data: " + ErrorJson(status, message, error_code) +
+                    "\r\n\r\ndata: [DONE]\r\n\r\n";
   if (auto* context = HttpResponseContext::Current(fd))
     context->BeforeTerminal();
   *state = ResponseState::kTerminal;

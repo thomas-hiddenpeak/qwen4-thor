@@ -71,6 +71,10 @@ class HttpResponseContext {
  public:
   // Metrics must outlive the context. Publishing occurs after heartbeat join.
   explicit HttpResponseContext(int fd, HttpTransportMetrics* metrics = nullptr);
+  struct Detached {};
+  // Native background execution observes errors/admission without a socket,
+  // transport worker, heartbeat or loopback request.
+  explicit HttpResponseContext(Detached);
   ~HttpResponseContext();
   HttpResponseContext(const HttpResponseContext&) = delete;
   HttpResponseContext& operator=(const HttpResponseContext&) = delete;
@@ -82,6 +86,9 @@ class HttpResponseContext {
   void SetClient(ClientIdentity client, ClientLease* lease) {
     client_ = client;
     client_lease_ = lease;
+  }
+  bool TransferClientLease(ClientLease& destination) noexcept {
+    return client_lease_ && client_lease_->TransferTo(destination);
   }
   ResponseState* State() { return &state_; }
   using ErrorObserver = void (*)(void*, int, std::string_view,
@@ -110,8 +117,9 @@ class HttpResponseContext {
   // Owned by the outer handler, including exception unwinding. The renderer
   // emits native Responses failure events; sequence also supports a fixed-
   // storage error event when allocation fails. Clear before the owner dies.
-  using StreamErrorRenderer = std::string (*)(
-      void*, int, const std::string&, std::string_view, std::string_view);
+  using StreamErrorRenderer = std::string (*)(void*, int, const std::string&,
+                                              std::string_view,
+                                              std::string_view);
   void SetResponsesStream(StreamErrorRenderer renderer, void* owner,
                           int64_t* sequence) noexcept {
     const bool enabled = renderer && sequence;
@@ -137,6 +145,7 @@ class HttpResponseContext {
   // Caller holds write_mu_. Only the first failed write is retained.
   void RecordWriteFailure(HttpWriteObservation value, HttpWriteOrigin origin);
   const int fd_;
+  bool detached_ = false;
   HttpResponseContext* const previous_;
   std::string trace_id_;
   ClientIdentity client_;

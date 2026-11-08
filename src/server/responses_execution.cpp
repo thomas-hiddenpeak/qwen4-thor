@@ -25,6 +25,21 @@ ObjectReply ResponsesExecution::BindMutationResult(ObjectReply reply) {
   return reply;
 }
 
+size_t ResponsesExecution::RetainedInputBytes() const {
+  size_t bytes = 0;
+  for (const auto* value :
+       {&plan_.request, &plan_.history, &plan_.own_input, &plan_.conversation,
+        &envelope_.request, &envelope_.options, &generation_.generation_request,
+        &generation_.effective_tools, &generation_.input.items,
+        &generation_.input.messages, &output_.Snapshot()})
+    bytes += OutputJson(*value).size();
+  if (generation_.chat.normalized_request)
+    bytes += OutputJson(*generation_.chat.normalized_request).size();
+  for (const auto& path : generation_.input.message_paths) bytes += path.size();
+  bytes += generation_.chat.constraints.structural_tag.size();
+  return bytes;
+}
+
 ObjectReply ResponsesExecution::Prepare(const Json& request,
                                         const ChatPlanConfig& config,
                                         StateAccess access, int64_t created,
@@ -296,6 +311,11 @@ ObjectReply ResponsesExecution::Finish(bool incomplete, size_t completed_calls,
                                  completed_at, &terminal);
   if (status) status = Capture(terminal, &events, &bytes);
   if (!status) return OutputError(status);
+  // Cancellation and success have one monotonic decision point. A cancel that
+  // wins may not be overwritten by a later durable completed response.
+  if (background_control_ && !background_control_->Finish())
+    return Error(409, "response_cancelled",
+                 "Background response was cancelled");
   auto result = BindMutationResult(
       state_.Finish(candidate.Snapshot(), events, access_, &plan_));
   if (!result.ok()) return result;

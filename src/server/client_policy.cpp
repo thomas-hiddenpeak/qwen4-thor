@@ -328,6 +328,23 @@ ClientLease::~ClientLease() {
   counters_->changed.notify_all();
 }
 
+bool ClientLease::TransferTo(ClientLease& destination) noexcept {
+  if (&destination == this || !admitted_ || destination.attempted_)
+    return false;
+  destination.active_ = active_;
+  destination.counters_ = counters_;
+  destination.finishing_ = finishing_;
+  destination.handing_off_ = handing_off_;
+  destination.attempted_ = true;
+  destination.admitted_ = true;
+  active_ = nullptr;
+  counters_ = nullptr;
+  finishing_ = nullptr;
+  handing_off_ = false;
+  admitted_ = false;
+  return true;
+}
+
 void ClientLease::BeginHandoff() noexcept {
   if (!active_ || handing_off_) return;
   const std::lock_guard lock(counters_->mutex);
@@ -342,7 +359,10 @@ bool ClientLease::Acquire(ClientAdmission& admission,
   if (identity.owner_ != &admission ||
       (lane != ClientLane::kData && lane != ClientLane::kControl))
     return false;
-  if (!identity.Scoped()) return !admission.Enabled();
+  if (!identity.Scoped()) {
+    admitted_ = !admission.Enabled();
+    return admitted_;
+  }
   if (identity.index_ >= admission.Size() ||
       identity.limits_ != &admission.policy_.clients[identity.index_])
     return false;
@@ -365,6 +385,7 @@ bool ClientLease::Acquire(ClientAdmission& admission,
     counters_ = &counters;
     active_ = &active;
     finishing_ = &finishing;
+    admitted_ = true;
     return true;
   }
   rejected.fetch_add(1, std::memory_order_relaxed);

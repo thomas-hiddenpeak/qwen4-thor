@@ -4,6 +4,7 @@
 
 #include "q4t/server/responses_output.h"
 #include "q4t/server/responses_state.h"
+#include "q4t/server/request_control.h"
 
 namespace q4t::server {
 
@@ -27,6 +28,12 @@ class ResponsesExecution {
     access_.deadline = deadline;
     access_.cancelled = std::move(cancelled);
   }
+  void BindBackgroundControl(std::shared_ptr<RequestControl> control) {
+    background_control_ = std::move(control);
+    BindCancellation(
+        background_control_->deadline(),
+        [control = background_control_] { return control->Cancelled(); });
+  }
   Status Append(const ResponseDelta& delta, std::string_view probabilities,
                 std::string* wire);
   ObjectReply Finish(bool incomplete, size_t completed_calls,
@@ -42,6 +49,8 @@ class ResponsesExecution {
   const ResponsesOutput& Output() const { return output_; }
   int64_t* Sequence() { return output_.Sequence(); }
   const std::string& Id() const { return plan_.id; }
+  const std::string& Scope() const { return plan_.scope; }
+  size_t RetainedInputBytes() const;
   bool Begun() const { return begun_; }
   bool Prepared() const { return prepared_; }
   bool Finished() const { return plan_.finished; }
@@ -71,6 +80,7 @@ class ResponsesExecution {
   bool commit_unknown_ = false;
   std::chrono::steady_clock::time_point checkpoint_time_;
   size_t checkpoint_bytes_ = 0;
+  std::shared_ptr<RequestControl> background_control_;
   int failure_status_ = 0;
   std::array<char, 128> failure_code_{};
   std::array<char, 1024> failure_message_{};

@@ -180,6 +180,9 @@ class ClientLease {
   ClientLease& operator=(ClientLease&&) = delete;
   bool Acquire(ClientAdmission& admission, const ClientIdentity& identity,
                ClientLane lane);
+  // Transfer an admitted request into owned background work. The permit stays
+  // charged continuously; the source cannot acquire another permit.
+  bool TransferTo(ClientLease& destination) noexcept;
   // Publish before terminal bytes; retain the permit until destruction. A
   // successor may wait at most 100 ms for finishing work, never active work.
   void BeginHandoff() noexcept;
@@ -190,6 +193,7 @@ class ClientLease {
   uint32_t* finishing_ = nullptr;
   bool handing_off_ = false;
   bool attempted_ = false;
+  bool admitted_ = false;
 };
 
 // Bounded labels come exclusively from the private, validated policy.
