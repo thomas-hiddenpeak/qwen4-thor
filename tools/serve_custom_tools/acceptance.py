@@ -49,6 +49,13 @@ def requests():
     fn["function"]["parameters"]["properties"]["path"]=dict(type="string",enum=["docs/ARCHITECTURE.md"])
     rows["mixed"]=dict(base,max_completion_tokens=512,tools=[custom("regex"),fn],tool_choice="required",parallel_tool_calls=True,
         messages=[dict(role="user",content="Make exactly two tool calls in this assistant turn. First call the custom tool read_project_record_regex with raw input READ docs/MODEL.md 1 16. Also call the function read_project_record with path docs/ARCHITECTURE.md, start_line 1 and line_count 8. Both are required before answering.")])
+    rows["mixed"]["messages"].insert(0,dict(role="developer",content=(
+        "For this request emit BOTH sibling tool_call blocks in ONE assistant turn, then stop. "
+        "The custom input is a JSON-escaped string in the model format. The function arguments use parameter tags. "
+        "Use these exact two calls, without stopping between them:\n"
+        '<tool_call>\n<custom=read_project_record_regex>\n"READ docs/MODEL.md 1 16"\n</custom>\n</tool_call>\n'
+        '<tool_call>\n<function=read_project_record>\n<parameter=path>docs/ARCHITECTURE.md</parameter>\n'
+        '<parameter=start_line>1</parameter>\n<parameter=line_count>8</parameter>\n</function>\n</tool_call>')))
     note=dict(base,tools=[dict(type="custom",custom=dict(name="write_note",format=dict(type="text"),
         description="Propose a complete essay as raw input text."))],tool_choice=dict(type="custom",custom=dict(name="write_note")),
         messages=[dict(role="user",content="Call write_note with a detailed essay of at least 1500 words about the history of mathematics. Put the complete essay in raw input, not a summary.")])

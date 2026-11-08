@@ -19,6 +19,16 @@ class Driver(unittest.TestCase):
         self.assertEqual(rows['truncated']['max_completion_tokens'],64)
         self.assertEqual(len(rows['mixed']['tools']),2)
 
+    def test_repair_reuses_unchanged_cases_with_exact_cumulative_bound(self):
+        from tools.serve_custom_tools.repair import REPAIR_LIMITS,CUMULATIVE_LIMITS
+        self.assertEqual(REPAIR_LIMITS['starts']+1,CUMULATIVE_LIMITS['starts'])
+        self.assertEqual(REPAIR_LIMITS['chats']+5,CUMULATIVE_LIMITS['chats'])
+        self.assertLessEqual(REPAIR_LIMITS['seconds']+61,CUMULATIVE_LIMITS['seconds'])
+        prompt=requests()['mixed']['messages'][0]
+        self.assertEqual(prompt['role'],'developer')
+        self.assertIn('<custom=read_project_record_regex>',prompt['content'])
+        self.assertIn('<function=read_project_record>',prompt['content'])
+
     def test_frozen_requests_pass_production_preparation(self):
         lines=[json.dumps(dict(raw=json.dumps(row))) for row in requests().values()]
         run=subprocess.run([os.environ['Q4T_CUSTOM_TOOLS_PROBE']],input='\n'.join(lines)+'\n',
