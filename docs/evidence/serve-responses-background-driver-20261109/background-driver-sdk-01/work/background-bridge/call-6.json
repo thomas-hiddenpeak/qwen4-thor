@@ -1,0 +1,68 @@
+{
+  "ok": true,
+  "result": {
+    "id": "resp_349582b7b7489bf3094dc1e58db48079",
+    "object": "response",
+    "created_at": 1794169072,
+    "completed_at": null,
+    "status": "cancelled",
+    "error": null,
+    "incomplete_details": null,
+    "output": [
+      {
+        "id": "msg_928f1d836c1e23e174a7bb9bbf789d07",
+        "type": "message",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "CPU background answer",
+            "annotations": [],
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "in_progress"
+      }
+    ],
+    "usage": null,
+    "model": "cpu",
+    "instructions": null,
+    "metadata": {
+      "fixture": "hold"
+    },
+    "temperature": 1,
+    "top_p": 1,
+    "parallel_tool_calls": true,
+    "tools": [],
+    "tool_choice": "auto",
+    "text": {
+      "format": {
+        "type": "text"
+      },
+      "verbosity": "medium"
+    },
+    "reasoning": {
+      "effort": "none",
+      "context": "all_turns",
+      "mode": "standard",
+      "summary": null
+    },
+    "store": true,
+    "background": true,
+    "max_output_tokens": 256,
+    "max_tool_calls": null,
+    "previous_response_id": null,
+    "service_tier": "default",
+    "truncation": "disabled",
+    "top_logprobs": 0,
+    "access_programs": null
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:38617/v1/responses/resp_349582b7b7489bf3094dc1e58db48079/cancel",
+      "method": "POST"
+    }
+  ],
+  "wire_base64": "eyJpZCI6InJlc3BfMzQ5NTgyYjdiNzQ4OWJmMzA5NGRjMWU1OGRiNDgwNzkiLCJvYmplY3QiOiJyZXNwb25zZSIsImNyZWF0ZWRfYXQiOjE3OTQxNjkwNzIsImNvbXBsZXRlZF9hdCI6bnVsbCwic3RhdHVzIjoiY2FuY2VsbGVkIiwiZXJyb3IiOm51bGwsImluY29tcGxldGVfZGV0YWlscyI6bnVsbCwib3V0cHV0IjpbeyJpZCI6Im1zZ185MjhmMWQ4MzZjMWUyM2UxNzRhN2JiOWJiZjc4OWQwNyIsInR5cGUiOiJtZXNzYWdlIiwiY29udGVudCI6W3sidHlwZSI6Im91dHB1dF90ZXh0IiwidGV4dCI6IkNQVSBiYWNrZ3JvdW5kIGFuc3dlciIsImFubm90YXRpb25zIjpbXSwibG9ncHJvYnMiOltdfV0sInJvbGUiOiJhc3Npc3RhbnQiLCJzdGF0dXMiOiJpbl9wcm9ncmVzcyJ9XSwidXNhZ2UiOm51bGwsIm1vZGVsIjoiY3B1IiwiaW5zdHJ1Y3Rpb25zIjpudWxsLCJtZXRhZGF0YSI6eyJmaXh0dXJlIjoiaG9sZCJ9LCJ0ZW1wZXJhdHVyZSI6MSwidG9wX3AiOjEsInBhcmFsbGVsX3Rvb2xfY2FsbHMiOnRydWUsInRvb2xzIjpbXSwidG9vbF9jaG9pY2UiOiJhdXRvIiwidGV4dCI6eyJmb3JtYXQiOnsidHlwZSI6InRleHQifSwidmVyYm9zaXR5IjoibWVkaXVtIn0sInJlYXNvbmluZyI6eyJlZmZvcnQiOiJub25lIiwiY29udGV4dCI6ImFsbF90dXJucyIsIm1vZGUiOiJzdGFuZGFyZCIsInN1bW1hcnkiOm51bGx9LCJzdG9yZSI6dHJ1ZSwiYmFja2dyb3VuZCI6dHJ1ZSwibWF4X291dHB1dF90b2tlbnMiOjI1NiwibWF4X3Rvb2xfY2FsbHMiOm51bGwsInByZXZpb3VzX3Jlc3BvbnNlX2lkIjpudWxsLCJzZXJ2aWNlX3RpZXIiOiJkZWZhdWx0IiwidHJ1bmNhdGlvbiI6ImRpc2FibGVkIiwidG9wX2xvZ3Byb2JzIjowLCJhY2Nlc3NfcHJvZ3JhbXMiOm51bGx9"
+}

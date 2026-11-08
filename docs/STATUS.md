@@ -2,6 +2,11 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+后台真实业务驱动4 Python/2 SDK CPU通过，真实断开不会留下第二订阅。
+冻结2启动/8生成/900秒，覆盖后台工具闭环、取消和自有进程崩溃恢复；
+860秒告警保留40秒清理。[驱动证据](evidence/serve-responses-background-driver-20261109/README.md)。
+源码提交后立即执行同一严格GPU租约；默认保持A06，随后继续余项。
+
 Responses声明对照修复三个真实遗漏：tool_choice回显、cache_write_tokens、
 概率投影事件必需的logprobs空数组。10不同C++/10不同Python/4官方SDK
 场景通过，新51线对象严格通过；旧缺陷线包及首次失败原件保留。

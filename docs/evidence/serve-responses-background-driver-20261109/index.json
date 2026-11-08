@@ -1,0 +1,152 @@
+{
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 1094,
+      "sha256": "22a12971693b4f21c4d7c07d02c2d507fd362babc6942d5bd63ee93c9a947314"
+    },
+    {
+      "path": "background-driver-cpu-01/command.json",
+      "bytes": 115,
+      "sha256": "0cdbf5b36b4b5c3f3b3852e1704a04bf4a5387e8575ec8fd81ec9f85bd30c01b"
+    },
+    {
+      "path": "background-driver-cpu-01/result.json",
+      "bytes": 63,
+      "sha256": "34c57bd0c3cc578541359a9f9b5d2c71f06d011ac3565d346bc2f4109ca28fce"
+    },
+    {
+      "path": "background-driver-cpu-01/stderr.log",
+      "bytes": 671,
+      "sha256": "c98f4f01c16d3531d126dcc02b65e79c68a2722a50ddbea5457155b84f1f73db"
+    },
+    {
+      "path": "background-driver-cpu-01/stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "background-driver-cpu-02/command.json",
+      "bytes": 172,
+      "sha256": "a6938b62f3684a2fcc54e832524f0b8d058210f43a916635e9a05c065db212c2"
+    },
+    {
+      "path": "background-driver-cpu-02/result.json",
+      "bytes": 63,
+      "sha256": "02725b8d6e7dafaf13fb82fe89d0ddb233b85c566e3d217c07351e8f75f31d3f"
+    },
+    {
+      "path": "background-driver-cpu-02/stderr.log",
+      "bytes": 276,
+      "sha256": "70a9a00eec1add37a3c2086510b5bfd251adb268dfb19a7faf522d0697163952"
+    },
+    {
+      "path": "background-driver-cpu-02/stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "background-driver-plan.json",
+      "bytes": 776,
+      "sha256": "dabd7d2127fe01074ca24d8d7a391b801763e191212a0c605004281a9addcbf6"
+    },
+    {
+      "path": "background-driver-sdk-01/command.json",
+      "bytes": 300,
+      "sha256": "cc03dd6442013bf3e8ef93949eed7e63df3fab06eb030f232e371b831c6edddd"
+    },
+    {
+      "path": "background-driver-sdk-01/result.json",
+      "bytes": 60,
+      "sha256": "35cf363dd2448efe29fbb9dc4242549bf7b1eb57e87bb062343658be1cd341b8"
+    },
+    {
+      "path": "background-driver-sdk-01/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "background-driver-sdk-01/stdout.log",
+      "bytes": 313,
+      "sha256": "7454f2e196babcf8d68da9efc641f2c417d317dbd4500ca845ee25dfb93e7586"
+    },
+    {
+      "path": "background-driver-sdk-01/work/background-bridge/call-1.json",
+      "bytes": 9020,
+      "sha256": "fbff11b3c1814b997bde27740b3ae193c0e667a800e7fd42cfe5cae7f35598a5"
+    },
+    {
+      "path": "background-driver-sdk-01/work/background-bridge/call-2.json",
+      "bytes": 2693,
+      "sha256": "c74a6e7823163714de08d1e17cf63b4330aa53450f98ecaa4aa25cce1e2810c7"
+    },
+    {
+      "path": "background-driver-sdk-01/work/background-bridge/call-3.json",
+      "bytes": 2112,
+      "sha256": "79b0fb49b5c43041e31d38f6c0b827e6222987d43bbad3b16132f1a63c1e1626"
+    },
+    {
+      "path": "background-driver-sdk-01/work/background-bridge/call-4.json",
+      "bytes": 2033,
+      "sha256": "df02594e5b432edf9bdecf24006974e26062bfa7f630aea7866b4bf91e6ca9f9"
+    },
+    {
+      "path": "background-driver-sdk-01/work/background-bridge/call-5.json",
+      "bytes": 2025,
+      "sha256": "6ca8087dea90c039b607f0c74b7805a9492f9defedb6e788784d20037ea84baf"
+    },
+    {
+      "path": "background-driver-sdk-01/work/background-bridge/call-6.json",
+      "bytes": 2699,
+      "sha256": "1030ca003e7184b656b1c824e2a09514a8cd542943daddb5ce5590c791af1802"
+    },
+    {
+      "path": "background-driver-sdk-01/work/background-bridge/call-7.json",
+      "bytes": 8873,
+      "sha256": "fe0a7d9b429f80b6c273de18f70c1ce463256d72da69fd16c4c708b9e0c2ac28"
+    },
+    {
+      "path": "background-driver-sdk-01/work/background-bridge/executed.jsonl",
+      "bytes": 47,
+      "sha256": "a3e12c02ac6bc387e1d17de595e4462a2ce6b4f93ae89bc27d519c480bd6abbf"
+    },
+    {
+      "path": "background-driver-sdk-01/work/background-bridge/fixture.log",
+      "bytes": 91,
+      "sha256": "a325a7768330c969729a2cdfe3ff8100d439319ca137a8405838311b4347d130"
+    },
+    {
+      "path": "background-driver-sdk-01/work/background-bridge/objects/.q4t-format",
+      "bytes": 27,
+      "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b"
+    },
+    {
+      "path": "background-driver-sdk-01/work/background-bridge/objects/.q4t-lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "background-driver-sdk-01/work/background-bridge/objects/f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.response.resp_349582b7b7489bf3094dc1e58db48079.json",
+      "bytes": 4822,
+      "sha256": "9135daf014b64758766db3872752f4a7626d1e8a978cfed6a867bf18164f94a1"
+    },
+    {
+      "path": "background-driver-sdk-01/work/background-bridge/objects/f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.response.resp_ab72bc24a7b2f319c7abe635d7f4d46a.json",
+      "bytes": 3363,
+      "sha256": "aadb558005b473e93dbc384a866ea240ec69809524af259762c35be40cee29d5"
+    },
+    {
+      "path": "background-driver-sdk-01/work/background-bridge/ready.json",
+      "bytes": 28,
+      "sha256": "04fede20c3a19749e0f7fffd0645b565cdbc450a289e56dc7449a07701d02244"
+    }
+  ],
+  "sources_sha256": {
+    "tools/serve_responses/background_acceptance.py": "a531413ad27d9d5f0f870e5dabcb31fd7420db3144c69a0fce5ee61293ef216d",
+    "tools/serve_responses/background_sdk.mjs": "51ad59bf9e5f9da6221f1260327eea1fdb274fbd5ea5303a5cefa94cfaee12d1",
+    "tools/serve_responses/run_background_sdk.mjs": "e8950f5df805855b4612ace34783d34c5a5a1334447538d0820029413919c34c",
+    "tools/serve_responses/test_background_acceptance.py": "33e9e87fab7035dffb059144259b7bd195b0285287a17808622dc2c52c79b512",
+    "tools/serve_responses/test_background_bridge.mjs": "f8562ce68cbf00c4ae7faeaf907b4e4ae5f9579b928ca53763bbdaac397585bb"
+  },
+  "host_binary_sha256": "7f5d5123993ff094106656d8fc7ddeb9922e2d37adde5ef6795084c949c56e5c"
+}
