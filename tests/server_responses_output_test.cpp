@@ -95,7 +95,7 @@ Q4T_TEST(responses_output_text_reasoning_full_lifecycle) {
     "logprob":-2,"bytes":[52,51]}]}],"refusal":null})",
                           &part));
   wire += part;
-  Q4T_CHECK(output.Finish(false, 0, {10, 4, 6, 2}, 43, &part));
+  Q4T_CHECK(output.Finish(false, 0, {10, 4, 6, 2, 3}, 43, &part));
   wire += part;
   std::vector<Json> events;
   Q4T_CHECK(Events(wire, &events));
@@ -106,6 +106,9 @@ Q4T_TEST(responses_output_text_reasoning_full_lifecycle) {
   const auto& snapshot = output.Snapshot();
   Q4T_CHECK(snapshot.GetString("status") == "completed");
   Q4T_CHECK(snapshot.Find("usage")->GetInt("total_tokens") == 16);
+  Q4T_CHECK(snapshot.Find("usage")
+                ->Find("input_tokens_details")
+                ->GetInt("cache_write_tokens") == 3);
   const auto& items = snapshot.GetArray("output")->array;
   Q4T_CHECK(items.size() == 2 && items[0].GetString("id") == reason_id);
   Q4T_CHECK(items[0].GetArray("summary")->array.empty());
@@ -240,6 +243,8 @@ Q4T_TEST(responses_output_usage_limits_and_no_double_terminal) {
        {ResponsesUsage{-1, 0, 1, 0},
         {1, 2, 1, 0},
         {1, 0, 1, 2},
+        {1, 0, 1, 0, -1},
+        {1, 0, 1, 0, 2},
         {std::numeric_limits<int64_t>::max(), 0, 1, 0}})
     Q4T_CHECK(!output.Finish(false, 0, usage, 43, &part) && part.empty());
   Q4T_CHECK(!output.Append(Text(std::string(1000, 'x')), "null", &part));

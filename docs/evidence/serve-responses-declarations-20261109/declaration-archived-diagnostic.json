@@ -1,0 +1,145 @@
+[
+  {
+    "file": "follow.wire",
+    "type": "response",
+    "path": [
+      "usage"
+    ],
+    "validator": "anyOf",
+    "message": "'cache_write_tokens' is a required property"
+  },
+  {
+    "file": "follow.wire",
+    "type": "response",
+    "path": [],
+    "validator": "required",
+    "message": "'tool_choice' is a required property"
+  },
+  {
+    "file": "plain.wire",
+    "type": "response",
+    "path": [
+      "usage"
+    ],
+    "validator": "anyOf",
+    "message": "'cache_write_tokens' is a required property"
+  },
+  {
+    "file": "plain.wire",
+    "type": "response",
+    "path": [],
+    "validator": "required",
+    "message": "'tool_choice' is a required property"
+  },
+  {
+    "file": "probabilities-get.wire",
+    "type": "response",
+    "path": [
+      "usage"
+    ],
+    "validator": "anyOf",
+    "message": "'cache_write_tokens' is a required property"
+  },
+  {
+    "file": "probabilities-get.wire",
+    "type": "response",
+    "path": [],
+    "validator": "required",
+    "message": "'tool_choice' is a required property"
+  },
+  {
+    "file": "probabilities-replay.wire",
+    "type": "response.created",
+    "path": [],
+    "validator": "anyOf",
+    "message": "'delta' is a required property"
+  },
+  {
+    "file": "probabilities-replay.wire",
+    "type": "response.in_progress",
+    "path": [],
+    "validator": "anyOf",
+    "message": "'delta' is a required property"
+  },
+  {
+    "file": "probabilities-replay.wire",
+    "type": "response.completed",
+    "path": [],
+    "validator": "anyOf",
+    "message": "'delta' is a required property"
+  },
+  {
+    "file": "probabilities.wire",
+    "type": "response",
+    "path": [
+      "usage"
+    ],
+    "validator": "anyOf",
+    "message": "'cache_write_tokens' is a required property"
+  },
+  {
+    "file": "probabilities.wire",
+    "type": "response",
+    "path": [],
+    "validator": "required",
+    "message": "'tool_choice' is a required property"
+  },
+  {
+    "file": "reasoning.wire",
+    "type": "response",
+    "path": [
+      "usage"
+    ],
+    "validator": "anyOf",
+    "message": "'cache_write_tokens' is a required property"
+  },
+  {
+    "file": "reasoning.wire",
+    "type": "response",
+    "path": [],
+    "validator": "required",
+    "message": "'tool_choice' is a required property"
+  },
+  {
+    "file": "tool.wire",
+    "type": "response.created",
+    "path": [],
+    "validator": "anyOf",
+    "message": "'delta' is a required property"
+  },
+  {
+    "file": "tool.wire",
+    "type": "response.in_progress",
+    "path": [],
+    "validator": "anyOf",
+    "message": "'delta' is a required property"
+  },
+  {
+    "file": "tool.wire",
+    "type": "response.completed",
+    "path": [],
+    "validator": "anyOf",
+    "message": "'delta' is a required property"
+  },
+  {
+    "file": "truncated.wire",
+    "type": "response.created",
+    "path": [],
+    "validator": "anyOf",
+    "message": "'delta' is a required property"
+  },
+  {
+    "file": "truncated.wire",
+    "type": "response.in_progress",
+    "path": [],
+    "validator": "anyOf",
+    "message": "'delta' is a required property"
+  },
+  {
+    "file": "truncated.wire",
+    "type": "response.incomplete",
+    "path": [],
+    "validator": "anyOf",
+    "message": "'delta' is a required property"
+  }
+]

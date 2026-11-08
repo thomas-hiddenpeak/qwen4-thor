@@ -33,6 +33,7 @@ NOTICE_FILES = tuple(sorted(str(p.relative_to(ROOT/'third_party/licenses'))
     for p in (ROOT/'third_party/licenses').rglob('*') if p.is_file()))
 DECLARATION_PROFILE = 'q4t-release-declarations-v1'
 COMPLETION_DECLARATION_PROFILE = 'q4t-release-declarations-v2'
+APPLICATION_DECLARATION_PROFILE = 'q4t-release-declarations-v3'
 DECLARATION_SCHEMAS = ('config', 'message', 'preflight', 'reasoning',
                        'response', 'stop', 'thinking')
 DECLARATION_FILES = ('capabilities.json', 'configuration.json',
@@ -190,10 +191,12 @@ def same_json(left, right):
 
 
 def declaration_schemas(profile):
-    require(profile in (DECLARATION_PROFILE, COMPLETION_DECLARATION_PROFILE),
+    require(profile in (DECLARATION_PROFILE, COMPLETION_DECLARATION_PROFILE,
+                        APPLICATION_DECLARATION_PROFILE),
             'unknown release declaration profile')
     return DECLARATION_SCHEMAS + (('completion_request', 'completion_response')
-        if profile == COMPLETION_DECLARATION_PROFILE else ())
+        if profile != DECLARATION_PROFILE else ()) + (('application', 'openapi')
+        if profile == APPLICATION_DECLARATION_PROFILE else ())
 
 
 def declaration_files(profile):
@@ -238,8 +241,16 @@ def verify_declarations(metadata, directory=None, *, required=False):
             'declaration release identity differs')
     caps, config = (read(root/name) for name in DECLARATION_FILES[:2])
     if caps.get('completions', {}).get('profile') == 'q4t-completions-v1':
-        require(declaration['profile'] == COMPLETION_DECLARATION_PROFILE,
+        require(declaration['profile'] in (COMPLETION_DECLARATION_PROFILE,
+                                          APPLICATION_DECLARATION_PROFILE),
                 'completion declarations required')
+    if caps.get('responses', {}).get('profile') == 'q4t-responses-v1' or \
+            caps.get('conversations', {}).get('profile') == 'q4t-conversations-v1':
+        require(declaration['profile'] == APPLICATION_DECLARATION_PROFILE,
+                'application declarations required')
+        require(all(section in protocol and section in caps for section in
+                    ('responses', 'conversations', 'application_state')),
+                'application capability sections incomplete')
     require(type(caps) is dict and type(config) is dict and
             caps.get('protocol_source_sha256') ==
             config.get('protocol_source_sha256') == protocol['protocol_sha256']

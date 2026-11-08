@@ -120,6 +120,10 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
     return reply;
   }
   Set(&envelope_.options, "tools", generation_.effective_tools);
+  // Keep the public Responses shape, not Chat's nested function/custom shape.
+  // NormalizeResponsesTools has already validated the selection and defaults.
+  const auto* choice = envelope_.request.Find("tool_choice");
+  Set(&envelope_.options, "tool_choice", choice ? *choice : String("auto"));
   // The local scheduler reports the tier actually used.
   Set(&envelope_.options, "service_tier", String("default"));
   status =

@@ -5,9 +5,10 @@ import { createRequire } from 'node:module';
 import { readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { resolve, relative } from 'node:path';
 
-const [sdkDirectory, compilerDirectory, output] = process.argv.slice(2);
-if (!sdkDirectory || !compilerDirectory || !output || process.argv.length !== 5)
-  throw new Error('usage: node generate_item_types.mjs SDK_DIR TYPESCRIPT_DIR OUTPUT');
+const [sdkDirectory, compilerDirectory, output, mode] = process.argv.slice(2);
+if (!sdkDirectory || !compilerDirectory || !output ||
+    (mode !== undefined && mode !== '--api') || process.argv.length > 6)
+  throw new Error('usage: node generate_item_types.mjs SDK_DIR TYPESCRIPT_DIR OUTPUT [--api]');
 const sdk = realpathSync(resolve(sdkDirectory, 'node_modules/openai'));
 const compiler = realpathSync(resolve(compilerDirectory, 'node_modules/typescript'));
 const read = file => readFileSync(file, 'utf8');
@@ -20,7 +21,10 @@ const require = createRequire(resolve(compiler, 'package.json'));
 const ts = require(resolve(compiler, 'lib/typescript.js'));
 const source = resolve(sdk, 'src/resources/responses/responses.ts');
 const conversation = resolve(sdk, 'src/resources/conversations/items.ts');
-const program = ts.createProgram([source, conversation], {
+const conversations = resolve(sdk, 'src/resources/conversations/conversations.ts');
+const inputItems = resolve(sdk, 'src/resources/responses/input-items.ts');
+const program = ts.createProgram([source, conversation,
+  ...(mode ? [conversations, inputItems] : [])], {
   target: ts.ScriptTarget.ES2022,
   module: ts.ModuleKind.NodeNext,
   moduleResolution: ts.ModuleResolutionKind.NodeNext,
@@ -123,8 +127,24 @@ const roots = {
   output_item: exported(source, 'ResponseOutputItem'),
   conversation_item: exported(conversation, 'ConversationItem'),
 };
+if (mode) Object.assign(roots, {
+  response_create: exported(source, 'ResponseCreateParamsBase'),
+  response: exported(source, 'Response'),
+  response_event: exported(source, 'ResponseStreamEvent'),
+  response_retrieve: exported(source, 'ResponseRetrieveParamsBase'),
+  input_items_list: exported(inputItems, 'ResponseItemList'),
+  input_items_query: exported(inputItems, 'InputItemListParams'),
+  conversation: exported(conversations, 'Conversation'),
+  conversation_create: exported(conversations, 'ConversationCreateParams'),
+  conversation_update: exported(conversations, 'ConversationUpdateParams'),
+  conversation_deleted: exported(conversations, 'ConversationDeletedResource'),
+  conversation_items: exported(conversation, 'ConversationItemList'),
+  conversation_items_create: exported(conversation, 'ItemCreateParams'),
+  conversation_items_query: exported(conversation, 'ItemListParams'),
+});
 const result = {
-  profile: 'q4t-openai-item-types-v1', sdk_version: '7.47.0',
+  profile: mode ? 'q4t-openai-application-types-v1' : 'q4t-openai-item-types-v1',
+  sdk_version: '7.47.0',
   compiler_version: '5.9.3', roots, nodes,
   sources_sha256: Object.fromEntries([...sources].sort().map(path => [relative(sdk, path), hash(path)])),
   license_sha256: hash(resolve(sdk, 'LICENSE')),

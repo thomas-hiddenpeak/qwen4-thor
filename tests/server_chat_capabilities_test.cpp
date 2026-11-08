@@ -34,7 +34,7 @@ Q4T_TEST(chat_capabilities_transport_observation_contract) {
   Q4T_CHECK(http->GetBool("observation_during_drain") &&
             http->GetBool("reservation_excludes_unclassified_header_flood"));
   const auto* routes = http->GetArray("observation_routes");
-  Q4T_CHECK(routes && routes->array.size() == 5);
+  Q4T_CHECK(routes && routes->array.size() == 8);
   Q4T_CHECK(observation->GetString("http_receive_failures") ==
             "q4t_http_receive_failures_total");
   Q4T_CHECK(observation->GetString("http_write_failures") ==
@@ -252,5 +252,36 @@ Q4T_TEST(chat_capabilities_native_completions_and_models) {
   const auto* models = caps.Find("models");
   Q4T_CHECK(models && models->GetInt("loaded_base_delete") == 403);
   Q4T_CHECK(models->GetInt("max_aliases") == 32);
+  return true;
+}
+
+Q4T_TEST(chat_capabilities_native_responses_state_and_recovery) {
+  q4t::io::Json caps;
+  Q4T_CHECK(q4t::io::ParseJson(
+      q4t::server::ChatCapabilitiesJson("m", false, true), &caps));
+  const auto* responses = caps.Find("responses");
+  Q4T_CHECK(responses && responses->GetBool("shared_native_generation") &&
+            responses->GetBool("store_default") &&
+            !responses->GetBool("chat_done_sentinel", true));
+  Q4T_CHECK(responses->GetBool("previous_response_id") &&
+            responses->GetBool("conversation"));
+  const auto* jobs = responses->Find("background");
+  Q4T_CHECK(jobs && jobs->GetInt("cancel_status") == 200 &&
+            jobs->GetBool("cancel_idempotent") &&
+            !jobs->GetBool("replays_started_generation", true) &&
+            !jobs->GetBool("recovery_resets_deadline", true));
+  Q4T_CHECK(jobs->GetString("recovery") ==
+            "verified_dead_owner_queued_only");
+  const auto* conversations = caps.Find("conversations");
+  Q4T_CHECK(conversations && conversations->GetBool("items_append") &&
+            conversations->GetString("retention") == "until_explicit_delete");
+  const auto* objects = caps.Find("application_state");
+  Q4T_CHECK(objects && objects->GetBool("isolated_io") &&
+            !objects->GetBool("core_readiness_dependency", true));
+  const auto* http = caps.Find("http");
+  Q4T_CHECK(http &&
+            http->GetString("query_parameters") ==
+                "route_specific_closed_contract" &&
+            http->GetInt("client_cancel_inflight") == 1);
   return true;
 }

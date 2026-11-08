@@ -1,0 +1,7 @@
+[  3%] Built target q4t_regex_build
+[  6%] Built target q4t_io
+[ 10%] Built target q4t_text
+[ 24%] Built target xgrammar
+[ 24%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_responses_execution_test.cpp.o
+[ 27%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests

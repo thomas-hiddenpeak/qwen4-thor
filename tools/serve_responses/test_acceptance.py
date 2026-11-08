@@ -19,7 +19,7 @@ class Driver(unittest.TestCase):
 
     def test_usage_must_conserve_tokens_and_include_real_integer_details(self):
         value = dict(usage=dict(input_tokens=5, output_tokens=3, total_tokens=8,
-            input_tokens_details=dict(cached_tokens=2),
+            input_tokens_details=dict(cached_tokens=2, cache_write_tokens=0),
             output_tokens_details=dict(reasoning_tokens=1)))
         check_usage(value)
         for field in ('input_tokens', 'output_tokens', 'total_tokens'):
@@ -27,6 +27,8 @@ class Driver(unittest.TestCase):
             bad['usage'][field] += 1
             with self.assertRaises(RuntimeError): check_usage(bad)
         for field, name, invalid in [('input_tokens_details', 'cached_tokens', 6),
+                                    ('input_tokens_details', 'cache_write_tokens', 6),
+                                    ('input_tokens_details', 'cache_write_tokens', None),
                                     ('output_tokens_details', 'reasoning_tokens', 4),
                                     ('output_tokens_details', 'reasoning_tokens', True)]:
             bad = copy.deepcopy(value); bad['usage'][field][name] = invalid

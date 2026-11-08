@@ -1463,6 +1463,81 @@
         "workers_started",
         "workers_reaped"
       ]
+    },
+    "responses_background": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "enum": [
+            "unavailable",
+            "failed",
+            "stopping",
+            "ready"
+          ]
+        },
+        "readiness_dependency": {
+          "const": false
+        },
+        "owned": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "queued": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "running": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "uncertain": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "input_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recovery_pending": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recovered": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "interrupted": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recovery_errors": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recovery_configured": {
+          "type": "boolean"
+        },
+        "recovery_scanned": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "state",
+        "readiness_dependency",
+        "owned",
+        "queued",
+        "running",
+        "uncertain",
+        "input_bytes",
+        "recovery_pending",
+        "recovered",
+        "interrupted",
+        "recovery_errors",
+        "recovery_configured",
+        "recovery_scanned"
+      ],
+      "additionalProperties": false,
+      "description": "Present when native background Responses is implemented; current runtime recovery state, independent of model readiness."
     }
   },
   "required": [

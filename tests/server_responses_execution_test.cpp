@@ -83,6 +83,40 @@ Q4T_TEST(responses_execution_stateless_does_not_depend_on_storage) {
   return true;
 }
 
+Q4T_TEST(responses_execution_echoes_public_tool_choice) {
+  ObjectStoreOptions options;
+  options.directory = "invalid";
+  ObjectStore store(options);
+  const std::string tools = R"(,"tools":[{"type":"function","name":"read",
+    "parameters":{"type":"object","properties":{},
+      "additionalProperties":false},"strict":false}])";
+  for (const auto& selection :
+       {std::string(), std::string(R"("auto")"), std::string(R"("none")"),
+        std::string(R"("required")"),
+        std::string(R"({"type":"function","name":"read"})"),
+        std::string(R"({"type":"allowed_tools","mode":"required",
+             "tools":[{"type":"function","name":"read"}]})")}) {
+    ResponsesExecution run(store);
+    auto config = Config();
+    config.structured = true;
+    const auto suffix =
+        selection.empty() ? "" : ",\"tool_choice\":" + selection;
+    Q4T_CHECK(Ok(run.Prepare(
+        Parse(R"({"input":"question","store":false)" + tools + suffix + "}"),
+        config, Access(), 42)));
+    const auto* actual = run.Output().Snapshot().Find("tool_choice");
+    Q4T_CHECK(actual);
+    const auto public_choice = OutputJson(*actual);
+    Q4T_CHECK(public_choice ==
+              OutputJson(Parse(selection.empty() ? R"("auto")" : selection)));
+    std::string wire;
+    Q4T_CHECK(Ok(run.Begin(&wire)));
+    Q4T_CHECK(wire.find("\"tool_choice\":" + public_choice) != wire.npos);
+    Q4T_CHECK(Ok(run.CloseUnfinished()));
+  }
+  return true;
+}
+
 Q4T_TEST(responses_execution_commits_actual_ordered_events_and_usage) {
   Fixture f;
   ObjectStore store(f.options);

@@ -1,0 +1,249 @@
+{
+  "checked": 50,
+  "rejected": [
+    {
+      "file": "docs/evidence/serve-responses-business-20261109/business-01/follow.wire",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [
+            "usage"
+          ],
+          "validator": "anyOf",
+          "message": "{'input_tokens': 459, 'input_tokens_details': {'cached_tokens': 0}, 'output_tokens': 42, 'output_tokens_details': {'reasoning_tokens': 0}, 'total_tokens': 501} is not valid under any of the given schemas"
+        },
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-business-20261109/business-01/plain.wire",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [
+            "usage"
+          ],
+          "validator": "anyOf",
+          "message": "{'input_tokens': 28, 'input_tokens_details': {'cached_tokens': 0}, 'output_tokens': 3, 'output_tokens_details': {'reasoning_tokens': 0}, 'total_tokens': 31} is not valid under any of the given schemas"
+        },
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-business-20261109/business-01/probabilities-get.wire",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [
+            "usage"
+          ],
+          "validator": "anyOf",
+          "message": "{'input_tokens': 28, 'input_tokens_details': {'cached_tokens': 0}, 'output_tokens': 3, 'output_tokens_details': {'reasoning_tokens': 0}, 'total_tokens': 31} is not valid under any of the given schemas"
+        },
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-business-20261109/business-01/probabilities-replay.wire",
+      "kind": "response_event",
+      "errors": [
+        {
+          "path": [
+            "response"
+          ],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-business-20261109/business-01/probabilities-replay.wire",
+      "kind": "response_event",
+      "errors": [
+        {
+          "path": [
+            "response"
+          ],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-business-20261109/business-01/probabilities-replay.wire",
+      "kind": "response_event",
+      "errors": [
+        {
+          "path": [
+            "response",
+            "usage"
+          ],
+          "validator": "anyOf",
+          "message": "{'input_tokens': 28, 'input_tokens_details': {'cached_tokens': 0}, 'output_tokens': 3, 'output_tokens_details': {'reasoning_tokens': 0}, 'total_tokens': 31} is not valid under any of the given schemas"
+        },
+        {
+          "path": [
+            "response"
+          ],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-business-20261109/business-01/probabilities.wire",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [
+            "usage"
+          ],
+          "validator": "anyOf",
+          "message": "{'input_tokens': 28, 'input_tokens_details': {'cached_tokens': 0}, 'output_tokens': 3, 'output_tokens_details': {'reasoning_tokens': 0}, 'total_tokens': 31} is not valid under any of the given schemas"
+        },
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-business-20261109/business-01/reasoning.wire",
+      "kind": "response",
+      "errors": [
+        {
+          "path": [
+            "usage"
+          ],
+          "validator": "anyOf",
+          "message": "{'input_tokens': 56, 'input_tokens_details': {'cached_tokens': 0}, 'output_tokens': 38, 'output_tokens_details': {'reasoning_tokens': 34}, 'total_tokens': 94} is not valid under any of the given schemas"
+        },
+        {
+          "path": [],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-business-20261109/business-01/tool.wire",
+      "kind": "response_event",
+      "errors": [
+        {
+          "path": [
+            "response"
+          ],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-business-20261109/business-01/tool.wire",
+      "kind": "response_event",
+      "errors": [
+        {
+          "path": [
+            "response"
+          ],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-business-20261109/business-01/tool.wire",
+      "kind": "response_event",
+      "errors": [
+        {
+          "path": [
+            "response",
+            "usage"
+          ],
+          "validator": "anyOf",
+          "message": "{'input_tokens': 379, 'input_tokens_details': {'cached_tokens': 0}, 'output_tokens': 50, 'output_tokens_details': {'reasoning_tokens': 0}, 'total_tokens': 429} is not valid under any of the given schemas"
+        },
+        {
+          "path": [
+            "response"
+          ],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-business-20261109/business-01/truncated.wire",
+      "kind": "response_event",
+      "errors": [
+        {
+          "path": [
+            "response"
+          ],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-business-20261109/business-01/truncated.wire",
+      "kind": "response_event",
+      "errors": [
+        {
+          "path": [
+            "response"
+          ],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    },
+    {
+      "file": "docs/evidence/serve-responses-business-20261109/business-01/truncated.wire",
+      "kind": "response_event",
+      "errors": [
+        {
+          "path": [
+            "response",
+            "usage"
+          ],
+          "validator": "anyOf",
+          "message": "{'input_tokens': 379, 'input_tokens_details': {'cached_tokens': 0}, 'output_tokens': 1, 'output_tokens_details': {'reasoning_tokens': 0}, 'total_tokens': 380} is not valid under any of the given schemas"
+        },
+        {
+          "path": [
+            "response"
+          ],
+          "validator": "required",
+          "message": "'tool_choice' is a required property"
+        }
+      ]
+    }
+  ],
+  "sources_sha256": {
+    "docs/evidence/serve-responses-business-20261109/business-01/delete.wire": "d7a2fded852e0ba961f63fc9b0cfceb0f4cf8d929d4747bf7d5442ff87118845",
+    "docs/evidence/serve-responses-business-20261109/business-01/follow-inputs.wire": "8ba5e5768f4f26546283dc1d2102a748eb97224da1620609efd992e5aa4f5fd3",
+    "docs/evidence/serve-responses-business-20261109/business-01/follow.wire": "64230cad7bc856ecb5f6ab496f2dec48de58c801921984504007158f8e5e5416",
+    "docs/evidence/serve-responses-business-20261109/business-01/plain.wire": "7062526c29a5c6f51250b530cb92c56e6f936387fea87205167500d6d836fd56",
+    "docs/evidence/serve-responses-business-20261109/business-01/probabilities-get.wire": "a45ab534355879ab12f42f2babbcdd439898687ac798d116590acd4a8b395f32",
+    "docs/evidence/serve-responses-business-20261109/business-01/probabilities-replay.wire": "291846098ed92315f7643d6409ae2508deea47e2fa82934ea17e781019cd1598",
+    "docs/evidence/serve-responses-business-20261109/business-01/probabilities.wire": "a45ab534355879ab12f42f2babbcdd439898687ac798d116590acd4a8b395f32",
+    "docs/evidence/serve-responses-business-20261109/business-01/reasoning.wire": "222645726e300ad06eb58017bc5754bd1a65078f32bf2d6b447dc48601b9d336",
+    "docs/evidence/serve-responses-business-20261109/business-01/tool.wire": "f2426b5cd1c4360d7b8003af8f339b4f6ac1bb9923e2a8f6fe6f1c78f2c25848",
+    "docs/evidence/serve-responses-business-20261109/business-01/truncated.wire": "551dbec4b9c37674d808e66bbc074575b31226bad26c7c705a665b6bb81bdd7c"
+  },
+  "legacy_nonconforming_not_reaccepted": true
+}

@@ -2,6 +2,14 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+Responses声明对照修复三个真实遗漏：tool_choice回显、cache_write_tokens、
+概率投影事件必需的logprobs空数组。10不同C++/10不同Python/4官方SDK
+场景通过，新51线对象严格通过；旧缺陷线包及首次失败原件保留。
+[证据](evidence/serve-responses-declarations-20261109/README.md)。补能力/config/
+26路由OpenAPI及离线完整v3发布合同，旧运行时类型图不变；实际引擎
+零警告，无GPU/默认替换。继续后台模型短验和所有剩余计划，不以
+子组通过当全部兼容/工业化完成。
+
 后台HTTP/恢复检查点`a9a6227e`、`626cc7f9`已推送。归档核对发现
 通用build-*忽略规则遗漏了12个构建命令/结果/日志文件，已显式纳入，
 两组索引逐项摘要一致。无运行时改动/重测，继续有界真实后台验收。

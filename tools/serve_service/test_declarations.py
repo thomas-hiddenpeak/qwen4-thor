@@ -16,6 +16,68 @@ class Declarations(unittest.TestCase):
     setUp = old.Case.setUp
     fixture = old.PackageTests.fixture
 
+    def application_declaration_fixture(self):
+        binary, release, model = self.fixture()
+        metadata = pkg.read(release)
+        declaration = metadata['release_declarations']
+        root = Path(declaration['directory'])
+        caps = pkg.read(root/'capabilities.json')
+        for key, profile in [('completions', 'q4t-completions-v1'),
+                             ('responses', 'q4t-responses-v1'),
+                             ('conversations', 'q4t-conversations-v1'),
+                             ('application_state', 'q4t-objects-v1')]:
+            caps[key] = dict(profile=profile)
+            metadata['chat_protocol'][key] = caps[key]
+        pkg.save(root/'capabilities.json', caps)
+        declaration['files']['capabilities.json'] = pkg.sha(root/'capabilities.json')
+        declaration['profile'] = pkg.APPLICATION_DECLARATION_PROFILE
+        for name, source in [('completion_request', 'serve-completion-request-v1.schema.json'),
+                             ('completion_response', 'serve-completion-transport-v1.schema.json'),
+                             ('application', 'serve-application-v1.schema.json'),
+                             ('openapi', 'serve-openapi-bundle-v1.json')]:
+            path = root/'schemas'/(name+'.json')
+            shutil.copyfile(pkg.ROOT/'docs'/source, path)
+            declaration['files']['schemas/'+name+'.json'] = pkg.sha(path)
+            metadata['chat_protocol'][name+'_schema'] = str(path)
+            metadata['chat_protocol'][name+'_schema_sha256'] = pkg.sha(path)
+        pkg.save(release, metadata)
+        return binary, release, model
+
+    def test_application_schemas_required_and_portable(self):
+        binary, release, model = self.application_declaration_fixture()
+        metadata = pkg.read(release)
+        root = Path(metadata['release_declarations']['directory'])
+        receipt = pkg.prepare(binary, release, model, self.root/'package')
+        shutil.rmtree(root)
+        release.unlink()
+        with mock.patch.object(pkg, 'ROOT', self.root/'absent-source-tree'):
+            pkg.verify(receipt['package'], receipt['manifest_sha256'])
+        package = Path(receipt['package'])/'declarations/schemas'
+        self.assertEqual(pkg.read(package/'application.json')['x-q4t']['sdk_version'], '7.47.0')
+        self.assertIn('/v1/responses/{response_id}/cancel', pkg.read(package/'openapi.json')['paths'])
+
+    def test_application_schema_tampering_and_old_completion_profile(self):
+        binary, release, model = self.application_declaration_fixture()
+        metadata = pkg.read(release)
+        declaration = metadata['release_declarations']
+        root = Path(declaration['directory'])
+        old_profile = copy.deepcopy(metadata)
+        old_profile['release_declarations']['profile'] = pkg.COMPLETION_DECLARATION_PROFILE
+        for name in ('application', 'openapi'):
+            del old_profile['release_declarations']['files']['schemas/'+name+'.json']
+        with self.assertRaisesRegex(RuntimeError, 'application declarations required'):
+            pkg.verify_declarations(old_profile)
+        missing = copy.deepcopy(metadata)
+        del missing['chat_protocol']['responses']
+        with self.assertRaisesRegex(RuntimeError, 'application capability sections incomplete'):
+            pkg.verify_declarations(missing)
+        receipt = pkg.prepare(binary, release, model, self.root/'package')
+        path = Path(receipt['package'])/'declarations/schemas/application.json'
+        path.chmod(0o600)
+        path.write_text('{}')
+        with self.assertRaisesRegex(RuntimeError, 'package file changed'):
+            pkg.verify(receipt['package'], receipt['manifest_sha256'])
+
     def application_fixture(self):
         binary, release, model = self.fixture()
         metadata = pkg.read(release)

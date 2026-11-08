@@ -1,0 +1,47 @@
+{
+  "scope": "Responses/Conversations declaration, structural wire schemas and portable package contract; no model generation or performance claim",
+  "cpp": [
+    "chat_capabilities_native_responses_state_and_recovery",
+    "chat_capabilities_transport_observation_contract",
+    "chat_capabilities_identity",
+    "chat_capabilities_native_completions_and_models",
+    "responses_execution_echoes_public_tool_choice",
+    "responses_output_usage_limits_and_no_double_terminal",
+    "responses_output_text_reasoning_full_lifecycle",
+    "responses_execution_commits_actual_ordered_events_and_usage",
+    "responses_api_include_projects_without_changing_retained_probabilities",
+    "responses_api_replay_uses_original_sequence_and_obfuscation_choice"
+  ],
+  "python": [
+    "ApplicationContract.test_sdk_graph_and_closed_native_requests",
+    "ApplicationContract.test_archived_real_business_wire",
+    "ApplicationContract.test_archived_background_and_conversations",
+    "ApplicationContract.test_openapi_routes_queries_and_no_external_reference_bundle",
+    "ApplicationContract.test_current_background_config_and_negative_bounds",
+    "Declarations.test_application_schemas_required_and_portable",
+    "Declarations.test_application_schema_tampering_and_old_completion_profile",
+    "Declarations.test_completion_schemas_travel_with_optional_registry_and_verify_offline",
+    "ApplicationContract.test_current_native_wire_is_strict",
+    "Driver.test_usage_must_conserve_tokens_and_include_real_integer_details"
+  ],
+  "gpu": false,
+  "reuse": "Previously accepted unchanged runtime/SDK evidence; fixtures and shapes are checked from archived originals without regeneration.",
+  "discovered_defects": [
+    "Public tool_choice absent from actual Responses resources/events",
+    "Official SDK input_tokens_details.cache_write_tokens absent",
+    "Projected text delta/done replay removed required logprobs array; hide data with [] instead"
+  ],
+  "affected_sdk": "4 actual CPU background SDK cases after output repair, plus strict archived/new wire validation; not GPU",
+  "wire_reference_correction": "Official create/cancel HTTP examples permit usage:null despite pinned TypeScript usage?:ResponseUsage; successful terminal requires actual usage.",
+  "source_review": {
+    "files": [
+      "include/q4t/server/responses_output.h",
+      "src/server/chat_capabilities.cpp",
+      "src/server/responses_api.cpp",
+      "src/server/responses_execution.cpp",
+      "src/server/responses_output.cpp",
+      "tools/serve_service/package.py"
+    ],
+    "reason": "Public effective tool_choice, actual cache write counter/bounds, required empty projected SSE logprobs, implementation/config discovery and self-contained v3 declarations; no scheduling or arithmetic changes."
+  }
+}

@@ -65,10 +65,13 @@ def check_usage(response):
                 ('input_tokens', 'output_tokens', 'total_tokens')), 'usage integers')
     require(usage['total_tokens'] == usage['input_tokens'] + usage['output_tokens'],
             'usage sum')
-    cached = usage['input_tokens_details']['cached_tokens']
+    cached = usage['input_tokens_details'].get('cached_tokens')
+    written = usage['input_tokens_details'].get('cache_write_tokens')
     reasoning = usage['output_tokens_details']['reasoning_tokens']
     require(type(cached) is int and 0 <= cached <= usage['input_tokens'],
             'cache accounting')
+    require(type(written) is int and 0 <= written <= usage['input_tokens'],
+            'cache write accounting')
     require(type(reasoning) is int and 0 <= reasoning <= usage['output_tokens'],
             'reasoning accounting')
 

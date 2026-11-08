@@ -2,6 +2,9 @@
 
 2026-11-08建立、2026-11-09更新；功能开发，不作性能优化结论。
 同步首组已通过真实业务短验，完整A07/A08仍在实施。
+2026-11-09声明对照发现并修复三个原线包遗漏：tool_choice、
+cache_write_tokens、投影SSE的必需logprobs空数组。原同步/后台记录
+保留为这些缺陷的负控，不追认完整线协议通过；详见文末新检查点。
 默认继续使用已接受 A06 包；本组不把 store、background、历史或媒体
 缺口从总计划删除。实现/测试子组结束后继续下一项，总目标保持 active。
 
@@ -204,3 +207,29 @@ SIGKILL验证queued完成、started明确failed且执行次数各1。
 下一组继续有界后台模型业务与发行/能力合同；前台未知提交同进程
 收尾、对象控制器异常恢复、持久保留治理及Chat存储/其余Responses
 执行选项仍需完成，不以本子组通过关闭A07/A08或总目标。
+
+## 2026-11-09 声明对照与实际协议修复
+
+能力发现、严格配置schema和26条后端方法/路由已对齐原生Responses/
+Conversations。发布声明v3包含应用schema及所有引用内置的OpenAPI；
+冻结SDK7.47.0的1,150节点，原运行时656节点图字节保持不变，无新增
+运行时Node/SDK/网络服务依赖。结构形状包含尚待真实执行器的标准
+能力；这些能力继续必做，不能以schema存在或临时503认定实现。
+
+对照真实历史线包发现并修复：有效tool_choice没有写入响应，成功
+usage遗漏cache_write_tokens，续读投影删除了text delta/done必需的
+logprobs字段。现在保留Responses形状的实际工具选择、缓存写入计数
+及边界；当前未启用Responses缓存写入时为0。概率未include时事件
+保留空数组，原存储概率不变。后续缓存接入仍需提供实际计数。
+
+固定TypeScript把usage声明为可选对象，但官方[创建事件](https://developers.openai.com/api/reference/resources/responses/methods/create)
+和[取消响应](https://developers.openai.com/api/reference/resources/responses/methods/cancel)
+示例允许usage:null；schema按实际HTTP合同保留活动/取消的空计量，
+completed/incomplete仍要求真实usage，不能伪造0。
+
+[本组证据](evidence/serve-responses-declarations-20261109/README.md)：10不同
+C++、10不同Python及4官方SDK场景通过；流式修复后只重验受影响SDK
+场景。新51对象/事件严格通过，23旧会话对象通过；旧同步50条中的
+14条及旧后台51条中的44条保留为上述遗漏的失败证据，不改历史。
+夹具悬空引用和schema/SDK空值差异的首次失败也保留；3次构建零警告。
+无GPU、默认不变，接着完成后台真实业务与剩余总计划。

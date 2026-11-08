@@ -87,7 +87,10 @@ Json ViewEvent(Json event, const ResponsesReadPlan& plan) {
     Set(&event, "item", ProjectStoredItem(Field(event, "item"), plan.view));
   if (std::find(plan.view.include.begin(), plan.view.include.end(),
                 "message.output_text.logprobs") == plan.view.include.end()) {
-    Remove(&event, "logprobs");
+    // The text delta/done event shape requires this array even when the
+    // caller did not request probability contents. Other event types must
+    // not acquire an unrelated field.
+    if (event.Has("logprobs")) Set(&event, "logprobs", Array());
     if (event.Has("part")) Remove(&Field(event, "part"), "logprobs");
   }
   Remove(&event, "obfuscation");

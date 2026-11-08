@@ -1,0 +1,26 @@
+{
+  ".q4t-work/serve-custom-tools-20261108/engine-build/q4t": {
+    "bytes": 15947112,
+    "sha256": "0ca69a41d5fe74366842c1626505eaa3850481f214bd9551e8f1d021bf3c3aa7"
+  },
+  ".q4t-work/serve-custom-tools-20261108/engine-build/q4t_host_tests": {
+    "bytes": 14554792,
+    "sha256": "7f5d5123993ff094106656d8fc7ddeb9922e2d37adde5ef6795084c949c56e5c"
+  },
+  "build/q4t": {
+    "bytes": 14889416,
+    "sha256": "073b273de1e2126523a9186a962f73c501dfe2c61a4e127dbb53329cb59aea55"
+  },
+  "build/q4t.release.json": {
+    "bytes": 1121995,
+    "sha256": "0dc4ad2ece468d191f55761f17f1cdbc9bd826fcb3fb4612921337323b8f2197"
+  },
+  "build/service/manifest.json": {
+    "bytes": 50235,
+    "sha256": "8d1f6b5083319e9f73702f8ee41b3d5beb9c9831b9962f9dbac61f3812bd4a27"
+  },
+  "build/service.release.json": {
+    "bytes": 4473,
+    "sha256": "1575d87732f6100b7dc7376492052c913334298cd81c07adf00c1dfbeb77a194"
+  }
+}

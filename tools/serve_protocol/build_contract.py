@@ -3,8 +3,11 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import sys
 
 ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 DRAFT = "https://json-schema.org/draft/2020-12/schema"
 
 
@@ -512,6 +515,15 @@ def semantics():
         "src/server/chat_http.cpp", "src/server/chat_metrics.cpp",
         "src/server/client_request.cpp", "src/service/ingress_main.cpp"],
         "Raw Completions execute strings, homogeneous prompt batches, exact token IDs and token batches. Empty/null document uses one actual endoftext seed. Default/null max_tokens16, zero allowed. n/best_of independent candidates share one request/cancel/quota; at most128 batch candidates. best_of>=n and selection cannot stream; rank by full actual mean generated-token logprob including EOS, stable candidate-order ties; all work charged. No Chat template or reasoning/tool stripping. Echo preserves original string with NFC source offsets or repaired decoded IDs; prompt probabilities are teacher-forced from real target logits in bounded16-row readbacks, first unconditional token null. Sampled probability is full raw distribution, independent of Chat's top20 sentinel. Suffix uses actual model FIM tokens, preserving raw prefix IDs. JSON/SSE text_completion carries parallel probability arrays and Unicode character offsets; successful final usage/DONE only after all choices and cleanup. Optional stream obfuscation defaults on. Models register stable process-lifetime created and explicit aliases; no per-query timestamp. GET detail percent-decodes once; unknown404; loaded base model DELETE403 and never modifies read-only assets. Alias lookup shared by Chat/preflight/Completions; served name/aliases configurable, no external gateway required."))
+    rules.append(("native-responses-conversations", [
+        "src/server/responses_plan.cpp", "src/server/responses_execution.cpp",
+        "src/server/responses_api.cpp", "src/server/responses_state.cpp",
+        "src/server/responses_jobs.cpp", "src/server/responses_owner.cpp",
+        "src/server/responses_output.cpp", "src/server/conversation_api.cpp",
+        "src/server/conversation_state.cpp", "src/server/object_store.cpp",
+        "src/server/application_query.cpp", "include/q4t/server/application_routes.h",
+        "src/server/chat_responses.cpp"],
+        "Responses share native model execution and preserve item identities, actual token usage/probabilities and original sequenced events; no Chat DONE. Store defaults true, previous instructions do not carry forward, client-scoped history and conversation commits use isolated bounded object I/O and atomic revision-checked transactions. Background owns its admission permit and original deadline independently of subscribers; cancel is idempotent empty POST returning200, with independent bounded cancellation capacity. Temporary background records cover execution then600 seconds. Recovery proves old execution owner death using boot/PID birth/namespace identity: queued may resume original ID, started fails with saved partial output and is never replayed. Storage/monitor failure cannot restart the model or close healthy core readiness. Conversations support CRUD, item append/list/retrieve/delete and include projection. Application queries use closed per-route fields with exact integers, true/false booleans and include arrays; other routes keep prior query rejection. State APIs, shape validation and capability declarations do not complete pending compaction/summary/encryption/file/tool executors."))
     paths = sorted({p for _, sources, _ in rules for p in sources})
     return dict(profile="q4t-input-semantics-v1", required=True,
         structural_schema="serve-chat-request-v1.schema.json",
@@ -597,19 +609,26 @@ def openapi():
                 "gpu_healthy reports CUDA health independently. "
                 "Liveness and memory admission use /livez and /readyz.")
         paths.setdefault(path, {})[method] = operation
+    from tools.serve_responses.build_contract import add_openapi
+    add_openapi(paths, response, error)
     return dict(openapi="3.1.0", info=dict(title="Q4T serving contract",
         version="q4t-serve-v1", description="Static supported surface, not full OpenAI API compatibility. See required native semantics and version-bound acceptance matrix."),
         servers=[dict(url="http://127.0.0.1:8080", description="Example only; use effective configured address")],
         paths=paths, **{"x-q4t": dict(semantic_contract="serve-input-semantics-v1.json",
-            query_parameters="unsupported;400", get_request_body="unsupported;400",
+            query_parameters="route-specific closed fields; unlisted fields return400",
+            get_request_body="unsupported;400",
             wrong_method="405 with Allow", post_content_type="application/json; optional charset=utf-8",
             unsupported_media_type=415, builtin_authentication=False,
+            native_ingress=dict(optional_external_gateway=True,
+                bearer_api_keys=True, tls=True, mtls=True, cors=True,
+                backend_identity='native ingress authenticates and replaces internal identity headers'),
             gateway_client_policy=dict(profile="q4t-gateway-clients-v1",
                 enabled_by="--client-policy-file", transport="loopback text or explicit media profile",
                 external_authentication="TLS gateway independent API keys",
                 internal_headers=["X-Q4T-Client-Id", "X-Q4T-Gateway-Token"],
                 identity="gateway overwrites internal headers; runner validates configured client and independent shared credential before body admission",
-                scoped_resources=["request_id", "cancellation", "session_id", "prefix_cache_scope"],
+                scoped_resources=["request_id", "cancellation", "session_id", "prefix_cache_scope",
+                                  "responses", "conversations", "application_items"],
                 limits=["data/control inflight", "body bytes", "expanded prompt tokens including vision", "total output tokens",
                         "optional v2 fixed-window requests/tokens per minute"],
                 refusals=dict(authentication=401, local_admin_with_identity=403,
@@ -646,6 +665,8 @@ def main():
     assert {method.upper()+" "+path for path, operations in spec["paths"].items()
             for method in operations} == set(inventory["routes"])
     publish(ROOT / "docs/serve-openapi-v1.json", spec, args.check)
+    from tools.serve_responses.build_contract import standalone_openapi
+    publish(ROOT / "docs/serve-openapi-bundle-v1.json", standalone_openapi(spec), args.check)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,268 @@
+"""Publish native application wire shapes from the pinned SDK type graph."""
+import argparse
+import copy
+import hashlib
+import json
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+DRAFT = 'https://json-schema.org/draft/2020-12/schema'
+
+
+def ref(name):
+    return {'$ref': '#/$defs/'+str(name)}
+
+
+def obj(properties, required=()):
+    return dict(type='object', properties=properties, required=list(required),
+                additionalProperties=False)
+
+
+def nullable(value):
+    return dict(anyOf=[value, dict(type='null')])
+
+
+def schema(graph):
+    assert graph['profile'] == 'q4t-openai-application-types-v1'
+    definitions = {}
+    for index, node in enumerate(graph['nodes']):
+        kind = node['kind']
+        if kind in ('string', 'number', 'boolean', 'null'):
+            value = dict(type=kind)
+        elif kind == 'any':
+            value = {}
+        elif kind == 'never':
+            value = False
+        elif kind == 'literal':
+            value = dict(const=node['value'])
+        elif kind == 'union':
+            value = dict(anyOf=[ref(i) for i in node['variants']])
+        elif kind == 'array':
+            value = dict(type='array', items=ref(node['element']))
+        elif kind == 'tuple':
+            value = dict(type='array', prefixItems=[ref(i) for i in node['elements']],
+                         minItems=node['required'], maxItems=len(node['elements']))
+        elif kind == 'object':
+            value = obj({f['name']: ref(f['type']) for f in node['fields']},
+                        [f['name'] for f in node['fields'] if not f['optional']])
+            if node['additional'] is not None:
+                value['additionalProperties'] = ref(node['additional'])
+        else:
+            raise ValueError('unhandled SDK type: '+kind)
+        definitions[str(index)] = value
+    for name, index in graph['roots'].items():
+        definitions[name] = ref(index)
+
+    def root(name):
+        return definitions[str(graph['roots'][name])]
+
+    # output_text is added by the SDK after parsing; it is not a wire field.
+    response = root('response')
+    response['required'].remove('output_text')
+    response['properties']['store'] = dict(type='boolean')
+    # The pinned TypeScript interface omits null, but official HTTP examples
+    # explicitly return usage:null before completion and after cancellation.
+    response['properties']['usage'] = nullable(response['properties']['usage'])
+    response['allOf'] = [{'if': dict(required=['status'], properties=dict(
+        status=dict(enum=['completed', 'incomplete']))), 'then': dict(
+        required=['usage'], properties=dict(usage=dict(type='object')))}]
+    # Q4T codes identify the actual native failure instead of replacing it
+    # with an unrelated hosted-provider error. Keep the remaining shape.
+    error_union = graph['nodes'][next(f['type'] for f in
+        graph['nodes'][graph['roots']['response']]['fields'] if f['name'] == 'error')]
+    for index in error_union['variants']:
+        node = definitions[str(index)]
+        if isinstance(node, dict) and node.get('type') == 'object':
+            node['properties']['code'] = dict(type='string', minLength=1)
+
+    request = root('response_create')
+    request['properties'].update(
+        seed=nullable(dict(type='integer', minimum=-(2**63), maximum=2**63-1)),
+        request_id=dict(type='string', minLength=1, maxLength=128,
+                        pattern='^[A-Za-z0-9_-]+$'),
+        cancel_token=dict(type='string', pattern='^[0-9a-f]{64}$'),
+        request_timeout_ms=nullable(dict(type='integer', minimum=1, maximum=10800000)))
+    request['dependentRequired'] = dict(request_id=['cancel_token'],
+                                        cancel_token=['request_id'])
+    for name, low, high in [('max_output_tokens', 1, 2147483647),
+                          ('max_tool_calls', 1, 2147483647), ('top_logprobs', 0, 20)]:
+        request['properties'][name] = nullable(dict(type='integer', minimum=low,
+                                                   maximum=high))
+    for name, high in [('temperature', 2), ('top_p', 1)]:
+        request['properties'][name] = nullable(dict(type='number', minimum=0,
+                                                   maximum=high))
+    request['properties']['metadata'] = nullable(dict(type='object', maxProperties=16,
+        propertyNames=dict(maxLength=64), additionalProperties=dict(type='string', maxLength=512)))
+    request['allOf'] = [
+        {'not': dict(required=['previous_response_id', 'conversation'],
+            properties={name: {'not': dict(type='null')}
+                        for name in ('previous_response_id', 'conversation')})},
+        {'if': dict(required=['stream_options'],
+            properties=dict(stream_options={'not': dict(type='null')})),
+         'then': dict(required=['stream'], properties=dict(stream=dict(const=True)))}]
+    for name in ('response_retrieve', 'input_items_query', 'conversation_items_query'):
+        value = root(name)
+        if 'limit' in value['properties']:
+            value['properties']['limit'] = dict(type='integer', minimum=1, maximum=100)
+        if 'starting_after' in value['properties']:
+            value['properties']['starting_after'] = dict(type='integer', minimum=0)
+            value['allOf'] = [{'if': dict(required=['starting_after']),
+                'then': dict(required=['stream'], properties=dict(stream=dict(const=True)))}]
+    # The SDK combines body and query in this parameter interface. The wire
+    # body is closed; include belongs exclusively to the URL query.
+    create = root('conversation_items_create')
+    include = create['properties'].pop('include')
+    definitions['item_include_query'] = obj(dict(include=include))
+    create['properties']['items'] = dict(type='array', maxItems=20, items=ref('input_item'))
+    root('conversation_create')['properties']['items'] = nullable(
+        dict(type='array', maxItems=20, items=ref('input_item')))
+    for name in ('conversation_create', 'conversation_update'):
+        root(name)['properties']['metadata'] = copy.deepcopy(request['properties']['metadata'])
+    definitions['response_deleted'] = obj(dict(id=dict(type='string'),
+        object=dict(const='response.deleted'), deleted=dict(const=True)),
+        ('id', 'object', 'deleted'))
+    return {'$schema': DRAFT, 'title': 'Q4T Responses and Conversations wire contract',
+        '$defs': definitions, 'x-q4t': dict(profile='q4t-application-wire-v1',
+            sdk_version=graph['sdk_version'], compiler_version=graph['compiler_version'],
+            sources_sha256=graph['sources_sha256'], license_sha256=graph['license_sha256'],
+            compiler_sha256=graph['compiler_sha256'],
+            semantics='Structural shapes include required planned capabilities. Shape validity does not promise that a model, tool or state executor is available. Check native planning and runtime capabilities; pending capabilities remain required implementation tasks.',
+            adaptations=['SDK-added output_text is optional on wire',
+                'official HTTP examples use usage:null for active/cancelled responses; completed/incomplete require actual usage',
+                'native store echo and native response error codes',
+                'exact integer and bounded native options',
+                'native cancellation credentials and timeout/seed extensions',
+                'SDK combined body/query split on actual HTTP boundary'],
+            wire_references=[dict(date='2026-11-09',
+                url='https://developers.openai.com/api/reference/resources/responses/methods/cancel',
+                contract='Cancelled resource can have usage:null; no fabricated zero usage'),
+                dict(date='2026-11-09',
+                url='https://developers.openai.com/api/reference/resources/responses/methods/create',
+                contract='response.created example has usage:null; successful final usage includes cache_write_tokens')],
+            response_terminals=['completed', 'incomplete', 'failed', 'cancelled'],
+            cancelled_stream='Resource is cancelled; original events end without fabricated response.cancelled/completed or Chat DONE.',
+            query='Closed route-specific fields; repeated include[] is an array; exact decimal integers and true/false booleans.')}
+
+
+def add_openapi(paths, response, error):
+    """Add actual application routes, preserving each HTTP method/body/query."""
+    document = json.loads((ROOT/'docs/serve-application-v1.schema.json').read_text())
+    external = lambda name: {'$ref': 'serve-application-v1.schema.json#/$defs/'+name}
+
+    def shape(name):
+        value = document['$defs'][name]
+        while '$ref' in value:
+            value = document['$defs'][value['$ref'].split('/')[-1]]
+        return value
+
+    def query_fields(name):
+        def rewrite(value):
+            if isinstance(value, dict):
+                return {k: ('serve-application-v1.schema.json'+v if k == '$ref'
+                            else rewrite(v)) for k, v in value.items()}
+            if isinstance(value, list):
+                return [rewrite(v) for v in value]
+            return value
+        result = []
+        for key, value in shape(name)['properties'].items():
+            result.append(dict(name='include[]' if key == 'include' else key,
+                **{'in': 'query'}, required=False, schema=rewrite(value),
+                style='form', explode=True))
+        return result
+
+    endpoints = [
+        ('/v1/responses', 'post', 'response_create', 'response', None),
+        ('/v1/responses/{response_id}', 'get', None, 'response', 'response_retrieve'),
+        ('/v1/responses/{response_id}', 'delete', None, 'response_deleted', None),
+        ('/v1/responses/{response_id}/cancel', 'post', None, 'response', None),
+        ('/v1/responses/{response_id}/input_items', 'get', None, 'input_items_list', 'input_items_query'),
+        ('/v1/conversations', 'post', 'conversation_create', 'conversation', None),
+        ('/v1/conversations/{conversation_id}', 'get', None, 'conversation', None),
+        ('/v1/conversations/{conversation_id}', 'post', 'conversation_update', 'conversation', None),
+        ('/v1/conversations/{conversation_id}', 'delete', None, 'conversation_deleted', None),
+        ('/v1/conversations/{conversation_id}/items', 'post', 'conversation_items_create', 'conversation_items', 'item_include_query'),
+        ('/v1/conversations/{conversation_id}/items', 'get', None, 'conversation_items', 'conversation_items_query'),
+        ('/v1/conversations/{conversation_id}/items/{item_id}', 'get', None, 'conversation_item', 'item_include_query'),
+        ('/v1/conversations/{conversation_id}/items/{item_id}', 'delete', None, 'conversation', None)]
+    for path, method, body, result, query in endpoints:
+        parameters = [dict(name=part[1:-1], **{'in': 'path'}, required=True,
+                           schema=dict(type='string', minLength=1))
+                      for part in path.split('/') if part.startswith('{')]
+        if query:
+            parameters += query_fields(query)
+        success = response(external(result))
+        operation = dict(operationId=method+'_'+path.strip('/').replace('/', '_').replace('{', '').replace('}', ''),
+            parameters=parameters, responses={'200': success,
+                'default': response(error, 'Native error; unknown/other-client identities return 404')},
+            **{'x-q4t-query-contract': query or 'no query',
+               'x-q4t-body-contract': body or 'empty body only'})
+        if body:
+            optional = path == '/v1/conversations'
+            operation['requestBody'] = dict(required=not optional,
+                content={'application/json': dict(schema=nullable(external(body))
+                    if optional else external(body))})
+        if result == 'response' and not path.endswith('/cancel'):
+            success['content']['text/event-stream'] = dict(schema=dict(type='string'),
+                **{'x-q4t-event-schema': external('response_event'),
+                   'x-q4t-stream-contract': 'Native sequenced Responses events. No Chat DONE. Persisted original replay with starting_after; background requires original stream=true. Disconnect does not cancel a background job. Cancelled resource retains partial items and ends original events without a fabricated completed/cancelled event.'})
+        if path.endswith('/cancel'):
+            operation['description'] = 'Idempotent native background cancellation, empty body, 200 real resource. Independent bounded cancellation admission.'
+        paths.setdefault(path, {})[method] = operation
+
+
+def standalone_openapi(spec):
+    """Make the shipped OpenAPI self-contained, without fetching schemas."""
+    components = {}
+
+    def rewrite(value, owner=None):
+        if isinstance(value, dict):
+            result = {}
+            for key, child in value.items():
+                if key in ('$schema', '$id') and isinstance(child, str):
+                    continue
+                if key == '$ref' and isinstance(child, str):
+                    file, sep, fragment = child.partition('#')
+                    if file:
+                        if '/' in file or not file.endswith('.json'):
+                            raise ValueError('unreviewed external schema '+file)
+                        if file not in components:
+                            components[file] = {}  # Reserve before recursive references.
+                            components[file] = rewrite(json.loads((ROOT/'docs'/file).read_text()), file)
+                        target = file
+                    else:
+                        target = owner
+                    if not target or (sep and fragment and not fragment.startswith('/')):
+                        raise ValueError('unresolved reference '+child)
+                    result[key] = '#/components/schemas/'+target+fragment
+                else:
+                    result[key] = rewrite(child, owner)
+            return result
+        if isinstance(value, list):
+            return [rewrite(child, owner) for child in value]
+        return value
+
+    bundled = rewrite(spec)
+    bundled['components'] = dict(schemas=components)
+    return bundled
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--types', type=Path, required=True)
+    parser.add_argument('--check', action='store_true')
+    args = parser.parse_args()
+    graph = json.loads(args.types.read_text())
+    result = schema(graph)
+    result['x-q4t']['type_graph_sha256'] = hashlib.sha256(args.types.read_bytes()).hexdigest()
+    destination = ROOT/'docs/serve-application-v1.schema.json'
+    data = json.dumps(result, ensure_ascii=False, indent=2)+'\n'
+    if args.check:
+        assert destination.read_text() == data, 'application schema drift'
+    else:
+        destination.write_text(data)
+    print(json.dumps(dict(path=str(destination), definitions=len(result['$defs']),
+                         bytes=len(data.encode()))))
+
+
+if __name__ == '__main__':
+    main()

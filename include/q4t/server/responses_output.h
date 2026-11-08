@@ -18,6 +18,7 @@ struct ResponsesUsage {
   int64_t cached_tokens = 0;
   int64_t output_tokens = 0;
   int64_t reasoning_tokens = 0;
+  int64_t cache_write_tokens = 0;
 };
 
 class ResponsesOutput {

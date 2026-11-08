@@ -302,6 +302,24 @@ Q4T_TEST(
       Read(store, "GET", root + "?include%5B%5D=message.output_text.logprobs");
   Q4T_CHECK(Ok(visible) && OutputJson(visible.value).find("\"logprob\":-0.5") !=
                                std::string::npos);
+  ResponsesReplay replay;
+  Q4T_CHECK(Ok(Read(store, "GET", root + "?stream=true", &replay)));
+  Q4T_CHECK(replay.wire.find("\"logprob\":") == replay.wire.npos);
+  size_t offset = 0, text_events = 0;
+  while ((offset = replay.wire.find("\r\ndata: ", offset)) != replay.wire.npos) {
+    offset += 8;
+    const auto end = replay.wire.find("\r\n\r\n", offset);
+    Q4T_CHECK(end != replay.wire.npos);
+    const auto event = Parse(replay.wire.substr(offset, end - offset));
+    if (event.GetString("type") == "response.output_text.delta" ||
+        event.GetString("type") == "response.output_text.done") {
+      Q4T_CHECK(event.GetArray("logprobs") &&
+                event.GetArray("logprobs")->array.empty());
+      ++text_events;
+    }
+    offset = end;
+  }
+  Q4T_CHECK(text_events == 2);
   Q4T_CHECK(
       OutputJson(ResponsesState(store).Retrieve(run.Id(), Access()).value) ==
       run.Output().Json());

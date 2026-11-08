@@ -373,6 +373,8 @@ Status ResponsesOutput::Finish(bool incomplete, size_t completed_calls,
       response_.GetString("status") != "in_progress" ||
       usage.input_tokens < 0 || usage.output_tokens < 0 ||
       usage.cached_tokens < 0 || usage.cached_tokens > usage.input_tokens ||
+      usage.cache_write_tokens < 0 ||
+      usage.cache_write_tokens > usage.input_tokens ||
       usage.reasoning_tokens < 0 ||
       usage.reasoning_tokens > usage.output_tokens ||
       usage.input_tokens > INT64_MAX - usage.output_tokens || completed_at < 0)
@@ -397,14 +399,16 @@ Status ResponsesOutput::Finish(bool incomplete, size_t completed_calls,
   else
     Set(&response_, "completed_at", Number(completed_at));
   Set(&response_, "usage",
-      Object({{"input_tokens", Number(usage.input_tokens)},
-              {"input_tokens_details",
-               Object({{"cached_tokens", Number(usage.cached_tokens)}})},
-              {"output_tokens", Number(usage.output_tokens)},
-              {"output_tokens_details",
-               Object({{"reasoning_tokens", Number(usage.reasoning_tokens)}})},
-              {"total_tokens",
-               Number(usage.input_tokens + usage.output_tokens)}}));
+      Object(
+          {{"input_tokens", Number(usage.input_tokens)},
+           {"input_tokens_details",
+            Object({{"cached_tokens", Number(usage.cached_tokens)},
+                    {"cache_write_tokens", Number(usage.cache_write_tokens)}})},
+           {"output_tokens", Number(usage.output_tokens)},
+           {"output_tokens_details",
+            Object({{"reasoning_tokens", Number(usage.reasoning_tokens)}})},
+           {"total_tokens",
+            Number(usage.input_tokens + usage.output_tokens)}}));
   Event(incomplete ? "response.incomplete" : "response.completed",
         Object({{"response", response_}}), wire);
   terminal_ = true;

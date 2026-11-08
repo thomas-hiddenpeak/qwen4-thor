@@ -1,0 +1,8 @@
+test_archived_background_and_conversations (tools.serve_responses.test_contract.ApplicationContract.test_archived_background_and_conversations) ... ok
+test_archived_real_business_wire (tools.serve_responses.test_contract.ApplicationContract.test_archived_real_business_wire) ... ok
+test_current_native_wire_is_strict (tools.serve_responses.test_contract.ApplicationContract.test_current_native_wire_is_strict) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.175s
+
+OK
