@@ -329,7 +329,7 @@ std::string ExpandCustomGrammarFormats(std::string_view structural_tag) {
 #ifdef Q4T_ENABLE_XGRAMMAR
   io::Json value;
   Require(io::ParseJson(std::string(structural_tag), &value, true,
-                        {64, 262144, 1024 * 1024, true, true})
+                        {64, 262144, 2 * 1024 * 1024, true, true})
               .ok());
   std::erase_if(value.object, [](const auto& member) {
     return member.first == "q4t_guard";

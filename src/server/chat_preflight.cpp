@@ -53,7 +53,7 @@ void ChatServer::HandlePreflight(int fd, const std::string& body) {
     return;
   }
   io::Json envelope;
-  auto status = io::ParseJson(body, &envelope, true, kRequestJsonLimits);
+  auto status = io::ParseJson(body, &envelope, true, kSchemaJsonLimits);
   if (!status) {
     detail::SendError(fd, 400, "invalid JSON: " + status.message(), {},
                       "invalid_json");

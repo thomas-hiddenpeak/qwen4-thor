@@ -8,6 +8,7 @@
 #include "q4t/server/input_contract.h"
 #include "q4t/server/legacy_tools.h"
 #include "q4t/server/output_schema.h"
+#include "q4t/server/request_json.h"
 
 namespace q4t::server {
 namespace {
@@ -60,6 +61,13 @@ std::string SchemaFormat(const io::Json& schema, bool xml) {
          '}';
 }
 
+std::string GuardedFormat(const io::Json& schema, bool strict,
+                          std::string_view scope = {}) {
+  return R"({"type":"q4t_schema","schema":)" + OutputJson(schema) +
+         R"(,"strict":)" + (strict ? "true" : "false") + R"(,"scope":)" +
+         Quote(scope) + '}';
+}
+
 std::string TextFormat() {
   return R"({"type":"any_text","excludes":["<tool_call>",)"
          R"("</tool_call>","<think>","</think>"]})";
@@ -71,8 +79,7 @@ constexpr auto kWhitespace =
 Status ParseDocument(std::string_view input, io::Json* out) {
   if (input.size() > 1024 * 1024)
     return Status::Fail("constrained output exceeds 1 MiB");
-  return io::ParseJson(std::string(input), out, true,
-                       {32, 65536, 1024 * 1024, true});
+  return io::ParseJson(std::string(input), out, true, kSchemaJsonLimits);
 }
 }  // namespace
 
@@ -267,22 +274,22 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
         request.Has("session_id") ? "session_id" : "prefix_cache_scope",
         "output constraints with session/prefix cache are not "
         "supported in this stage");
-  if (out->json_output && has_tools &&
-      out->choice != OutputConstraints::ToolChoice::kNone)
-    return invalid("tool_choice",
-                   "response_format plus tools requires tool_choice=none");
-
-  std::string payload;
+  std::string payload, json_payload, guard_tools, guard_content;
   if (out->json_output) {
-    payload = schema
-                  ? SchemaFormat(*schema, false)
-                  : R"({"type":"json_schema","json_schema":{"type":"object",)"
-                    R"("additionalProperties":true},)"
-                    R"("any_order":false,"max_whitespace_cnt":16})";
-  } else if (out->choice == OutputConstraints::ToolChoice::kNone ||
-             (out->restrict_tools && out->allowed_tools.empty()) ||
-             !has_tools) {
-    payload = TextFormat();
+    const bool guard = schema && NeedsSchemaGuard(*schema);
+    if (guard)
+      guard_content = R"("content":{"schema":)" + OutputJson(*schema) +
+                      R"(,"strict":)" + (strict_schema ? "true}" : "false}");
+    json_payload =
+        schema ? (guard ? GuardedFormat(*schema, strict_schema)
+                        : SchemaFormat(*schema, false))
+               : R"({"type":"json_schema","json_schema":{"type":"object",)"
+                 R"("additionalProperties":true},)"
+                 R"("any_order":false,"max_whitespace_cnt":16})";
+  }
+  if (out->choice == OutputConstraints::ToolChoice::kNone ||
+      (out->restrict_tools && out->allowed_tools.empty()) || !has_tools) {
+    payload = out->json_output ? json_payload : TextFormat();
   } else {
     if (tools->array.size() > 16)
       return invalid("tools", "constrained requests allow at most 16 tools");
@@ -347,17 +354,30 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
            out->named_type != "function"))
         continue;
       if (!tags.empty()) tags += ',';
-      tags += R"({"type":"tag","begin":)" +
-              Quote("<tool_call>\n<function=" + name + ">\n") +
-              R"(,"content":)" + SchemaFormat(parameters, true) +
-              R"(,"end":"\n</function>\n</tool_call>"})";
+      const bool guard = NeedsJsonToolArguments(*fn);
+      const std::string begin = "<tool_call>\n<function=" + name + ">\n" +
+                                (guard ? "<parameter=arguments>\n" : "");
+      const std::string end = std::string(guard ? "\n</parameter>" : "") +
+                              "\n</function>\n</tool_call>";
+      tags += R"({"type":"tag","begin":)" + Quote(begin) + R"(,"content":)" +
+              (guard ? GuardedFormat(parameters, fn->GetBool("strict"), name)
+                     : SchemaFormat(parameters, true)) +
+              R"(,"end":)" + Quote(end) + '}';
+      if (guard) {
+        if (!guard_tools.empty()) guard_tools += ',';
+        guard_tools += R"({"name":)" + Quote(name) + R"(,"schema":)" +
+                       OutputJson(parameters) + R"(,"strict":)" +
+                       (fn->GetBool("strict") ? "true" : "false") +
+                       R"(,"begin":)" + Quote(begin) + R"(,"end":)" +
+                       Quote(end) + '}';
+      }
     }
     if (tags.empty())
       return invalid("tool_choice." + out->named_type + ".name",
                      "named tool is not declared");
     const bool single =
         !out->parallel || out->choice == OutputConstraints::ToolChoice::kNamed;
-    if (forced) {
+    if (forced || out->json_output) {
       payload = R"({"type":"tags_with_separator","tags":[)" + tags +
                 R"(],"separator":"\n","at_least_one":true,)"
                 R"("stop_after_first":)" +
@@ -371,6 +391,9 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
                 R"("stop_after_first":)" +
                 (single ? "true}" : "false}");
     }
+    if (out->json_output && !forced)
+      payload =
+          R"({"type":"or","elements":[)" + json_payload + ',' + payload + "]}";
   }
   bool thinking = request.GetBool("enable_thinking", true);
   if (const auto* options = request.Find("chat_template_kwargs"))
@@ -382,10 +405,24 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
   }
   out->structural_tag = R"({"type":"structural_tag","format":)"
                         R"({"type":"sequence","elements":[)" +
-                        prefix + kWhitespace + ',' + payload + "]}}";
-  if (out->structural_tag.size() > 65536)
-    return invalid(out->json_output ? "response_format" : "tools",
-                   "compiled request description exceeds 64 KiB");
+                        prefix + kWhitespace + ',' + payload + "]}";
+  if (!guard_tools.empty() || (!guard_content.empty() && !forced)) {
+    out->schema_receipts = true;
+    out->structural_tag += R"(,"q4t_guard":{"thinking":)" +
+                           std::string(thinking ? "true" : "false");
+    if (out->json_output && !forced)
+      out->structural_tag += R"(,"json_content":true)";
+    if (!guard_content.empty() && !forced)
+      out->structural_tag += ',' + guard_content;
+    if (!guard_tools.empty())
+      out->structural_tag += R"(,"tools":[)" + guard_tools + ']';
+    out->structural_tag += '}';
+  }
+  out->structural_tag += '}';
+  if (out->structural_tag.size() > 2 * 1024 * 1024)
+    return invalid(
+        out->json_output ? "response_format" : "tools",
+        "schema_resource_exhausted: request description exceeds 2 MiB");
   return Status();
 }
 

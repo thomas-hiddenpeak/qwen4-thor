@@ -20,6 +20,7 @@ struct OutputConstraints {
   bool parallel = true;
   bool active = false;
   bool json_output = false;
+  bool schema_receipts = false;
   // Empty for an unconstrained request. Includes the prefilling convention
   // for the native template's initial reasoning block.
   std::string structural_tag;

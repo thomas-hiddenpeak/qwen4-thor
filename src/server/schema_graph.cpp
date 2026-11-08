@@ -348,9 +348,12 @@ Status OutputSchemaGraph::Definition(const Json& schema,
       if (key == "required") {
         if (!value.IsArray()) return Error(location, "required must be array");
         std::unordered_set<std::string> names;
-        for (const auto& name : value.array)
+        for (size_t i = 0; i < value.array.size(); ++i) {
+          const auto& name = value.array[i];
           if (!name.IsString() || !names.insert(name.str).second)
-            return Error(location, "required must contain unique strings");
+            return Error(location + '[' + std::to_string(i) + ']',
+                         "required must contain unique strings");
+        }
       }
     } else if (key == "items" || key == "minItems" || key == "maxItems") {
       if (!types.empty() && !Has(types, "array"))
@@ -389,19 +392,21 @@ Status OutputSchemaGraph::Definition(const Json& schema,
       }
       std::unordered_set<std::string> seen;
       size_t characters = 0, work = kWork;
-      for (const auto* item : values) {
+      for (size_t i = 0; i < values.size(); ++i) {
+        const auto* item = values[i];
+        const auto item_path =
+            key == "enum" ? location + '[' + std::to_string(i) + ']' : location;
         if (!types.empty() &&
             !std::any_of(types.begin(), types.end(), [&](const auto& type) {
               return Matches(*item, type);
             }))
-          return Error(location, "enum/const value does not match its type");
+          return Error(item_path, "enum/const value does not match its type");
         std::string canonical;
         auto status = Key(*item, &canonical, &work);
-        if (!status) return Error(location, status.message());
+        if (!status) return Error(item_path, status.message());
         if (!seen.insert(canonical).second)
-          return Error(location, "duplicate mathematical enum value");
-        characters +=
-            Characters(item->IsString() ? item->str : OutputJson(*item));
+          return Error(item_path, "duplicate mathematical enum value");
+        if (item->IsString()) characters += Characters(item->str);
       }
       string_count_ += characters;
       if (key == "enum" && values.size() > 250 && characters > 15000)
@@ -415,7 +420,8 @@ Status OutputSchemaGraph::Definition(const Json& schema,
       auto status = Number(value, &number);
       if (!status || !number.IsInteger() || number.Negative())
         return Error(location, "length bound must be a nonnegative integer");
-      if (value.number > std::numeric_limits<int32_t>::max())
+      if (!std::isfinite(value.number) ||
+          value.number > std::numeric_limits<int32_t>::max())
         return Error(location,
                      "schema_resource_exhausted: length counter range");
     }
@@ -425,8 +431,8 @@ Status OutputSchemaGraph::Definition(const Json& schema,
   if (schema.Has("properties") ||
       (Has(types, "object") && !schema.Has("$ref") && !schema.Has("anyOf"))) {
     const auto* properties = schema.Find("properties");
-    if (!properties || !properties->IsObject())
-      return Error(path + ".properties", "object requires properties map");
+    if (properties && !properties->IsObject())
+      return Error(path + ".properties", "properties must be a schema map");
     const auto* additional = schema.Find("additionalProperties");
     if (!additional || !additional->IsBool() || additional->boolean)
       return Error(path + ".additionalProperties", "object must be closed");
@@ -435,16 +441,17 @@ Status OutputSchemaGraph::Definition(const Json& schema,
       if (!list->IsArray()) return Error(path + ".required", "expected array");
       for (size_t i = 0; i < list->array.size(); ++i) {
         const auto& item = list->array[i];
-        if (!item.IsString() || !properties->Has(item.str) ||
+        if (!item.IsString() || !properties || !properties->Has(item.str) ||
             !required.insert(item.str).second)
           return Error(path + ".required[" + std::to_string(i) + ']',
                        "required must name unique declared properties");
       }
     }
-    if (strict_ && required.size() != properties->object.size())
+    if (strict_ && properties && required.size() != properties->object.size())
       return Error(path + ".required", "strict objects require every property");
   }
-  if (Has(types, "array") && !schema.Has("items"))
+  if (Has(types, "array") && !schema.Has("items") && !schema.Has("$ref") &&
+      !schema.Has("anyOf"))
     return Error(path + ".items", "array requires item schema");
   for (const auto* suffix : {"Items", "Length"}) {
     const auto* minimum = schema.Find(std::string("min") + suffix);

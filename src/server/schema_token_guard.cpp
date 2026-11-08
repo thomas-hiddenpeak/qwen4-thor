@@ -31,6 +31,7 @@ struct SchemaTokenGuard::Impl {
   std::vector<std::unique_ptr<Binding>> tools;
   OutputSchemaGraph::StringCheck strings;
   bool thinking = false;
+  bool json_content = false;
   std::string accepted;
   std::vector<SchemaReceipt> receipts;
 
@@ -57,6 +58,7 @@ struct SchemaTokenGuard::Impl {
     *valid = false;
     if (completed) completed->clear();
     size_t completed_count = 0;
+    bool saw_tool = false;
     if (text.size() > kOutputLimit) return Resource();
     if (text.size() > *work) return Resource();
     *work -= text.size();
@@ -71,7 +73,7 @@ struct SchemaTokenGuard::Impl {
     while (true) {
       while (!text.empty() && Space(text.front())) text.remove_prefix(1);
       if (text.empty()) {
-        *valid = !stop || !content || completed_count != 0;
+        *valid = !stop || !content || completed_count != 0 || saw_tool;
         return {};
       }
       const Binding* binding = nullptr;
@@ -97,9 +99,25 @@ struct SchemaTokenGuard::Impl {
           return {};
         }
         text.remove_prefix(end + 12);
+        saw_tool = true;
         continue;
       }
       if (!binding && content) binding = content.get();
+      if (!binding && json_content && text.front() == '{') {
+        // A simple JSON schema/json_object branch is already checked by the
+        // lexical matcher and parent's native checker. Still parse its JSON
+        // boundaries here: marker-shaped strings are never tool frames.
+        SchemaPrefixValue prefix;
+        size_t consumed = 0;
+        auto status = ParseSchemaPrefix(text, &prefix, &consumed, work);
+        if (!status) return ExternalFailure(status) ? status : Status();
+        if (!prefix.complete) {
+          *valid = !stop;
+          return {};
+        }
+        text.remove_prefix(consumed);
+        continue;
+      }
       if (!binding) {
         // Free content before an auto tool. Partial marker suffixes remain
         // under the lexical grammar until the complete next frame arrives.
@@ -141,6 +159,7 @@ struct SchemaTokenGuard::Impl {
         return {};
       }
       text.remove_prefix(end.size());
+      saw_tool |= binding != content.get();
     }
   }
 };
@@ -154,6 +173,7 @@ Status SchemaTokenGuard::Init(const io::Json& configuration,
   if (configuration.IsNull()) return {};
   if (!configuration.IsObject()) return Status::Fail("invalid semantic guard");
   impl_->thinking = configuration.GetBool("thinking");
+  impl_->json_content = configuration.GetBool("json_content");
   if (const auto* content = configuration.Find("content")) {
     auto status = impl_->Add(*content, &impl_->content, "");
     if (!status) return status;

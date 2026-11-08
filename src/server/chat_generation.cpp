@@ -162,7 +162,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     if (http) http->SetBeforeTerminal(nullptr, nullptr);
   });
   io::Json original_request;
-  Status s = io::ParseJson(body, &original_request, true, kRequestJsonLimits);
+  Status s = io::ParseJson(body, &original_request, true, kSchemaJsonLimits);
   if (!s.ok()) {
     SendError(fd, 400, "invalid JSON: " + s.message(), {}, "invalid_json");
     return;
@@ -616,6 +616,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         return;
       }
     }
+    if (structured) response_parser.SetSchemaReceipts(&structured->Receipts());
     if (!constraints.active && !start_stream()) return;
 
     std::vector<int32_t> ids;
@@ -2395,6 +2396,24 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                          : finish_reason == "length"
                              ? "structured_output_incomplete"
                              : "structured_output_invalid";
+      if (structured) {
+        switch (structured->Failure()) {
+          case GrammarFailure::kDependency:
+            code = "constraint_dependency_unavailable";
+            break;
+          case GrammarFailure::kResource:
+            code = "constraint_resource_exhausted";
+            break;
+          case GrammarFailure::kTimeout:
+            code = "constraint_step_timeout";
+            break;
+          case GrammarFailure::kWorker:
+            code = "constraint_worker_failed";
+            break;
+          default:
+            break;
+        }
+      }
       diagnostic.Outcome("error", code);
       const detail::WriteOptions terminal{std::chrono::steady_clock::now() +
                                           std::chrono::milliseconds(250)};

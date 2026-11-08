@@ -156,7 +156,7 @@
         "docs/SERVE_SCHEMA_V2_2026-11-08.md"
       ],
       "release": null,
-      "development_status": "Schema v2 grammar, native semantic token guard and bounded worker receipts implemented; 60 distinct targeted A05 CPU checks passed, including actual 248077-token vocabulary/150 tokens after fixing lexical recursion timeout. HTTP planner, parent parser receipt consumption, tool/history/cache/media combinations and real business delivery remain required. Default unchanged; not delivered."
+      "development_status": "Schema v2 production planner, exact JSON tool/history adapter, provisional streaming, worker semantic receipts and parent terminal verification implemented; 70 distinct targeted A05 CPU checks passed. Published schema/capabilities/client synchronization, cache/media combinations and real GPU business delivery remain required. Default unchanged; not delivered."
     },
     {
       "id": "A06",

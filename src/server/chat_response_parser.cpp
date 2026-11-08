@@ -1,4 +1,6 @@
 #include "q4t/server/chat_response_parser.h"
+#include "q4t/server/request_json.h"
+#include "q4t/server/schema_prefix.h"
 
 #include <algorithm>
 #include <charconv>
@@ -6,6 +8,7 @@
 
 #include "q4t/server/http_response.h"
 #include "q4t/server/legacy_tools.h"
+#include "q4t/server/output_schema.h"
 
 namespace q4t::server {
 namespace {
@@ -119,7 +122,7 @@ Status Argument(std::string_view raw, const io::Json* schema,
     return Status();
   }
   io::Json value;
-  const io::JsonParseLimits limits{32, 65536, 1024 * 1024, true};
+  const io::JsonParseLimits limits{64, 65536, 1024 * 1024, true, true};
   const auto status =
       io::ParseJson(std::string(Trim(raw)), &value, true, limits);
   if (status && (types.empty() ||
@@ -232,6 +235,7 @@ Status ChatResponseParser::Init(const io::Json& request,
         !tools_.emplace(name, fn).second)
       return Fail("invalid or duplicate tool name");
     const auto* parameters = fn->Find("parameters");
+    if (NeedsJsonToolArguments(*fn)) json_argument_tools_.insert(name);
     if (parameters && !parameters->IsObject())
       return Fail("tool parameters must be a schema object");
     const auto* properties =
@@ -255,13 +259,12 @@ void ChatResponseParser::Emit(Region region, std::string_view text,
   if (collect_) (reasoning ? reasoning_ : content_).append(text);
   const auto kind = reasoning ? ResponseDelta::Kind::kReasoning
                               : ResponseDelta::Kind::kContent;
-  auto* target = constraints_.active ? &deferred_ : deltas;
-  if (constraints_.active && !target->empty() && target->back().kind == kind &&
-      target->back().source_end == pending_offset_) {
-    target->back().text.append(text);
-    target->back().source_end += text.size();
+  if (!deltas->empty() && deltas->back().kind == kind &&
+      deltas->back().source_end == pending_offset_) {
+    deltas->back().text.append(text);
+    deltas->back().source_end += text.size();
   } else {
-    target->push_back({kind,
+    deltas->push_back({kind,
                        std::string(text),
                        {},
                        reasoning_options_.field,
@@ -312,6 +315,33 @@ Status ChatResponseParser::ParseTool(std::string_view block,
     return Status();
   }
   const auto* parameters = fn->second->Find("parameters");
+  if (json_argument_tools_.contains(call->name) &&
+      (constraints_.active ||
+       Trim(block.substr(end + 1)).starts_with("<parameter=arguments>"))) {
+    block = Trim(block.substr(end + 1));
+    constexpr std::string_view opening = "<parameter=arguments>";
+    constexpr std::string_view function_close = "</function>";
+    constexpr std::string_view parameter_close = "</parameter>";
+    if (!block.starts_with(opening) || !block.ends_with(function_close))
+      return Status::Fail("JSON arguments require one arguments parameter");
+    block.remove_prefix(opening.size());
+    block.remove_suffix(function_close.size());
+    block = Trim(block);
+    if (!block.ends_with(parameter_close))
+      return Status::Fail("incomplete JSON arguments closing tag");
+    block.remove_suffix(parameter_close.size());
+    call->arguments = std::string(Trim(block));
+    io::Json value;
+    auto status =
+        io::ParseJson(call->arguments, &value, true, kSchemaJsonLimits);
+    if (!status || !value.IsObject())
+      return Status::Fail("arguments payload must be one JSON object");
+    // Schema/format validation belongs to the isolated worker. Finish binds
+    // its completed-value receipt to these independently parsed arguments.
+    call->index = tool_count_;
+    call->id = id_prefix_ + std::to_string(tool_count_);
+    return {};
+  }
   const auto* properties =
       parameters ? parameters->Find("properties") : nullptr;
   block.remove_prefix(end + 1);
@@ -406,7 +436,103 @@ Status ChatResponseParser::StreamTool(size_t available, bool complete,
     partial_call_.id = id_prefix_ + std::to_string(tool_count_);
     tool_parse_offset_ += end + 1;
     tool_header_ = true;
-    ToolFragment(partial_call_.custom ? "" : "{", true, deltas);
+    ToolFragment(partial_call_.custom ||
+                         json_argument_tools_.contains(partial_call_.name)
+                     ? ""
+                     : "{",
+                 true, deltas);
+  }
+  if (json_argument_tools_.contains(partial_call_.name) &&
+      !tool_mode_selected_) {
+    whitespace(&tool_parse_offset_);
+    const auto rest = block.substr(tool_parse_offset_);
+    constexpr std::string_view opening = "<parameter=arguments>";
+    if (!complete && opening.starts_with(rest)) return {};
+    tool_json_mode_ = rest.starts_with(opening);
+    if (!tool_json_mode_ && constraints_.active)
+      return Status::Fail("constrained JSON tool requires arguments parameter");
+    // Unconstrained advisory tools also accept the prior native parameter
+    // form. A constrained rich schema must use its verified JSON encoding.
+    if (!tool_json_mode_) ToolFragment("{", false, deltas);
+    tool_mode_selected_ = true;
+  }
+  if (tool_json_mode_) {
+    if (!tool_parameter_) {
+      whitespace(&tool_parse_offset_);
+      const auto rest = block.substr(tool_parse_offset_);
+      constexpr std::string_view opening = "<parameter=arguments>";
+      if (!complete && opening.starts_with(rest)) return {};
+      if (!rest.starts_with(opening))
+        return Status::Fail("JSON tool requires one arguments parameter");
+      tool_parse_offset_ += opening.size();
+      tool_parameter_ = true;
+    }
+    if (!tool_json_complete_) {
+      if (!tool_value_begin_) {
+        whitespace(&tool_parse_offset_);
+        if (tool_parse_offset_ == block.size())
+          return complete ? Status::Fail("missing JSON arguments") : Status();
+        tool_value_begin_ = tool_value_sent_ = tool_parse_offset_;
+      }
+      SchemaPrefixValue prefix;
+      size_t consumed = 0, work = 8 * 1024 * 1024;
+      auto status = ParseSchemaPrefix(block.substr(tool_value_begin_), &prefix,
+                                      &consumed, &work);
+      if (!status) return status;
+      if (prefix.started && !prefix.value.IsObject())
+        return Status::Fail("arguments payload must be a JSON object");
+      size_t end = tool_value_begin_ + consumed;
+      if (prefix.complete)
+        while (end > tool_value_begin_ &&
+               std::string_view(" \t\r\n").find(block[end - 1]) != block.npos)
+          --end;
+      if (end > tool_value_sent_) {
+        size_t lead = end - 1;
+        while (lead > tool_value_sent_ &&
+               (static_cast<unsigned char>(block[lead]) & 0xc0) == 0x80)
+          --lead;
+        const auto first = static_cast<unsigned char>(block[lead]);
+        const size_t width = first < 0x80   ? 1
+                             : first < 0xe0 ? 2
+                             : first < 0xf0 ? 3
+                                            : 4;
+        if (end - lead < width) end = lead;
+      }
+      if (end > tool_value_sent_) {
+        ToolFragment(
+            std::string(block.substr(tool_value_sent_, end - tool_value_sent_)),
+            false, deltas);
+        tool_value_sent_ = end;
+      }
+      if (!prefix.complete)
+        return complete ? Status::Fail("incomplete JSON arguments") : Status();
+      tool_parse_offset_ = tool_value_begin_ + consumed;
+      tool_json_complete_ = true;
+    }
+    whitespace(&tool_parse_offset_);
+    if (!custom_parameter_closed_) {
+      const auto rest = block.substr(tool_parse_offset_);
+      constexpr std::string_view closing = "</parameter>";
+      if (!complete && closing.starts_with(rest)) return {};
+      if (!rest.starts_with(closing))
+        return Status::Fail("invalid arguments closing tag");
+      tool_parse_offset_ += closing.size();
+      custom_parameter_closed_ = true;
+    }
+    whitespace(&tool_parse_offset_);
+    if (!tool_function_closed_) {
+      const auto rest = block.substr(tool_parse_offset_);
+      constexpr std::string_view closing = "</function>";
+      if (!complete && closing.starts_with(rest)) return {};
+      if (!rest.starts_with(closing))
+        return Status::Fail("invalid JSON function closing tag");
+      tool_parse_offset_ += closing.size();
+      tool_function_closed_ = true;
+    }
+    whitespace(&tool_parse_offset_);
+    return tool_parse_offset_ == block.size()
+               ? Status()
+               : Status::Fail("data after JSON function closing tag");
   }
   if (partial_call_.custom) {
     if (!tool_parameter_) {
@@ -593,10 +719,21 @@ Status ChatResponseParser::Append(std::string_view text,
       // Marker-shaped substrings inside JSON strings are data, not tool or
       // reasoning delimiters. The initial thinking prefix is handled above
       // this region by the same native parser as ordinary requests.
-      Emit(region_, pending_, deltas);
-      pending_offset_ += pending_.size();
-      pending_.clear();
-      return Status();
+      if (!json_content_started_) {
+        const auto trimmed = Trim(pending_);
+        if (trimmed.empty() || kToolOpen.starts_with(trimmed)) return {};
+        if (!trimmed.starts_with(kToolOpen)) {
+          if (tool_count_ != 0)
+            return Fail("JSON content cannot follow tool-only output");
+          json_content_started_ = true;
+        }
+      }
+      if (json_content_started_) {
+        Emit(region_, pending_, deltas);
+        pending_offset_ += pending_.size();
+        pending_.clear();
+        return {};
+      }
     }
     if (region_ == Region::kTool) {
       const auto end = pending_.find(kToolClose, tool_scan_);
@@ -620,12 +757,14 @@ Status ChatResponseParser::Append(std::string_view text,
       if (!status) return Fail(status.message());
       status = StreamTool(end, true, deltas);
       if (!status) return Fail(status.message());
-      if ((call.custom ? partial_call_.arguments
-                       : partial_call_.arguments + '}') != call.arguments ||
+      const bool json_arguments = tool_json_mode_;
+      if ((call.custom || json_arguments
+               ? partial_call_.arguments
+               : partial_call_.arguments + '}') != call.arguments ||
           partial_call_.name != call.name ||
           partial_call_.custom != call.custom)
         return Fail("incremental tool arguments differ from validated call");
-      if (!call.custom) ToolFragment("}", false, deltas);
+      if (!call.custom && !json_arguments) ToolFragment("}", false, deltas);
       ++tool_count_;
       if (collect_) calls_.push_back(call);
       pending_offset_ += end + kToolClose.size();
@@ -654,7 +793,8 @@ Status ChatResponseParser::Append(std::string_view text,
       pending_.erase(0, pending_.size() - keep);
       return Status();
     }
-    Emit(region_, std::string_view(pending_).substr(0, found), deltas);
+    if (!(constraints_.json_output && marker == kToolOpen))
+      Emit(region_, std::string_view(pending_).substr(0, found), deltas);
     pending_offset_ += found + marker.size();
     pending_.erase(0, found + marker.size());
     region_ = marker == kToolOpen    ? Region::kTool
@@ -665,6 +805,9 @@ Status ChatResponseParser::Append(std::string_view text,
       partial_call_ = {};
       custom_input_ = {};
       custom_parameter_closed_ = false;
+      tool_json_complete_ = false;
+      tool_json_mode_ = tool_mode_selected_ = false;
+      tool_value_begin_ = tool_value_sent_ = 0;
       tool_parse_offset_ = 0;
       tool_header_ = tool_parameter_ = tool_function_closed_ = false;
       tool_parameters_.clear();
@@ -686,7 +829,8 @@ Status ChatResponseParser::Finish(bool length_limited,
     return Fail("incomplete tool call");
   if (region_ == Region::kReasoning && !length_limited && !text_stopped)
     return Fail("reasoning block did not close before stop");
-  Emit(region_, pending_, deltas);
+  if (!(constraints_.json_output && tool_count_ != 0 && Trim(pending_).empty()))
+    Emit(region_, pending_, deltas);
   pending_offset_ += pending_.size();
   pending_.clear();
   if (constraints_.active) {
@@ -694,16 +838,59 @@ Status ChatResponseParser::Finish(bool length_limited,
          constraints_.choice == OutputConstraints::ToolChoice::kNamed) &&
         tool_count_ == 0)
       return Fail("required tool call missing");
-    if (constraints_.json_output) {
-      const auto status = ValidateConstrainedContent(*request_, content_);
+    if (constraints_.json_output && tool_count_ == 0) {
+      const auto* format = request_->Find("response_format");
+      const auto* spec = format ? format->Find("json_schema") : nullptr;
+      const auto* schema = spec ? spec->Find("schema") : nullptr;
+      // Rich schemas are checked by a receipt, never an optional native
+      // library inside the parent model process.
+      const auto status = schema && NeedsSchemaGuard(*schema)
+                              ? Status()
+                              : ValidateConstrainedContent(*request_, content_);
       if (!status) return Fail(status.message());
     }
-    // Structured JSON content remains deferred; tool fragments are provisional
-    // and become executable only after this whole-response terminal succeeds.
-    for (auto& delta : deferred_) deltas->push_back(std::move(delta));
-    deferred_.clear();
+    const auto status = VerifySchemaReceipts();
+    if (!status) return Fail(status.message());
   }
   return Status();
+}
+
+Status ChatResponseParser::VerifySchemaReceipts() const {
+  if (!constraints_.schema_receipts) return {};
+  if (!schema_receipts_)
+    return Status::Fail("structured semantic receipt source missing");
+  std::vector<SchemaReceipt> expected;
+  const auto add = [&](std::string_view scope, const io::Json& schema,
+                       std::string_view json) -> Status {
+    io::Json value;
+    auto status =
+        io::ParseJson(std::string(json), &value, true, kSchemaJsonLimits);
+    if (!status || !value.IsObject())
+      return Status::Fail("semantic receipt requires one JSON object");
+    SchemaReceipt receipt;
+    status = MakeSchemaReceipt(scope, schema, value, &receipt);
+    if (status) expected.push_back(receipt);
+    return status;
+  };
+  for (const auto& call : calls_) {
+    if (call.custom || !json_argument_tools_.contains(call.name)) continue;
+    const auto* schema = tools_.at(call.name)->Find("parameters");
+    if (!schema) return Status::Fail("semantic tool schema missing");
+    const auto status = add(call.name, *schema, call.arguments);
+    if (!status) return status;
+  }
+  if (constraints_.json_output && tool_count_ == 0) {
+    const auto* format = request_->Find("response_format");
+    const auto* spec = format ? format->Find("json_schema") : nullptr;
+    const auto* schema = spec ? spec->Find("schema") : nullptr;
+    if (schema && NeedsSchemaGuard(*schema)) {
+      const auto status = add("", *schema, content_);
+      if (!status) return status;
+    }
+  }
+  if (expected != *schema_receipts_)
+    return Status::Fail("structured semantic receipt mismatch");
+  return {};
 }
 
 std::string ChatResponseParser::MessageJson() const {

@@ -90,6 +90,14 @@ StructuredDecoder::StructuredDecoder(std::unique_ptr<Impl> impl)
     : impl_(std::move(impl)) {}
 StructuredDecoder::~StructuredDecoder() = default;
 
+GrammarFailure StructuredDecoder::Failure() const {
+#ifdef Q4T_ENABLE_XGRAMMAR
+  return impl_->failure;
+#else
+  return GrammarFailure::kUnavailable;
+#endif
+}
+
 Status StructuredDecoder::Create(const OutputConstraints& plan,
                                  const std::vector<std::string>& decoded_vocab,
                                  int model_vocab,

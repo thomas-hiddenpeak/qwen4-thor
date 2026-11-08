@@ -694,6 +694,7 @@ if(Q4T_BUILD_TESTS)
       src/server/client_policy.cpp src/server/client_request.cpp
       src/trace/sha256.cpp
       src/server/input_contract.cpp src/server/output_schema.cpp
+      src/server/schema_graph.cpp src/server/schema_decimal.cpp
       src/server/http_response.cpp src/trace/router_trace.cpp)
     target_include_directories(q4t_http_lifecycle_tests PRIVATE
       include ${CUDAToolkit_INCLUDE_DIRS})
@@ -799,14 +800,7 @@ target_compile_options(q4t_prefill_scoring_contract PRIVATE -Wall -Wextra -Werro
 
 add_executable(q4t_prefix_seed_contract EXCLUDE_FROM_ALL
   tests/test_main.cpp tests/server_chat_contract_test.cpp
-  src/server/input_contract.cpp
-  tools/prefix_seed/policy_contract.cpp src/server/chat_contract.cpp
-  src/server/custom_tools.cpp src/server/legacy_tools.cpp
-  src/server/chat_tool_history.cpp src/server/output_constraints.cpp
-  src/server/chat_template.cpp src/server/chat_response_parser.cpp
-  src/server/thinking_budget.cpp
-  src/server/text_stop.cpp
-  src/server/reasoning_options.cpp
-  src/server/output_schema.cpp src/server/http_response.cpp src/io/json.cpp)
+  tools/prefix_seed/policy_contract.cpp)
+target_link_libraries(q4t_prefix_seed_contract PRIVATE q4t_server)
 target_include_directories(q4t_prefix_seed_contract PRIVATE include)
 target_compile_options(q4t_prefix_seed_contract PRIVATE -Wall -Wextra)

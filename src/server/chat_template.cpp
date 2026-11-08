@@ -4,6 +4,7 @@
 #include "q4t/server/custom_tools.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/legacy_tools.h"
+#include "q4t/server/output_schema.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/reasoning_options.h"
 
@@ -115,7 +116,8 @@ std::string Header(const io::Json& message, std::string_view role) {
 }
 
 // Transformers' tojson preserves member order, Unicode and default separators.
-Status ToJson(const io::Json& value, std::string* out) {
+Status ToJson(const io::Json& value, std::string* out,
+              bool exact_numbers = false) {
   using Type = io::Json::Type;
   switch (value.type) {
     case Type::kNull:
@@ -128,6 +130,10 @@ Status ToJson(const io::Json& value, std::string* out) {
       Quote(value.str, out);
       break;
     case Type::kNumber: {
+      if (exact_numbers && !value.str.empty()) {
+        *out += value.str;
+        break;
+      }
       if (!value.str.empty() &&
           value.str.find_first_of(".eE") == std::string::npos) {
         *out += value.str == "-0" ? "0" : value.str;
@@ -153,7 +159,7 @@ Status ToJson(const io::Json& value, std::string* out) {
       *out += '[';
       for (size_t i = 0; i < value.array.size(); ++i) {
         if (i) *out += ", ";
-        Status s = ToJson(value.array[i], out);
+        Status s = ToJson(value.array[i], out, exact_numbers);
         if (!s) return s;
       }
       *out += ']';
@@ -164,7 +170,7 @@ Status ToJson(const io::Json& value, std::string* out) {
         if (i) *out += ", ";
         Quote(value.object[i].first, out);
         *out += ": ";
-        Status s = ToJson(value.object[i].second, out);
+        Status s = ToJson(value.object[i].second, out, exact_numbers);
         if (!s) return s;
       }
       *out += '}';
@@ -176,8 +182,44 @@ Status ToJson(const io::Json& value, std::string* out) {
 // Adapt custom input to the model's trained function/parameter syntax. The
 // request and response retain the standard custom type and raw input string;
 // only the model sees a function with one JSON-encoded text parameter.
+void RelocateSchemaReferences(io::Json* schema) {
+  // Only schema locations, not arbitrary const/enum/default objects.
+  for (auto& [key, value] : schema->object) {
+    if (key == "$ref" && value.IsString() && value.str.starts_with('#'))
+      value.str = "#/properties/arguments" + value.str.substr(1);
+    else if (key == "properties" || key == "$defs") {
+      for (auto& [name, child] : value.object) {
+        (void)name;
+        RelocateSchemaReferences(&child);
+      }
+    } else if (key == "items") {
+      RelocateSchemaReferences(&value);
+    } else if (key == "anyOf") {
+      for (auto& child : value.array) RelocateSchemaReferences(&child);
+    }
+  }
+}
+
 Status ModelToolJson(const io::Json& tool, std::string* out) {
-  if (tool.GetString("type") != "custom") return ToJson(tool, out);
+  if (tool.GetString("type") != "custom") {
+    const auto* function = tool.Find("function");
+    if (!function || !NeedsJsonToolArguments(*function))
+      return ToJson(tool, out);
+    auto parameters = *function->Find("parameters");
+    RelocateSchemaReferences(&parameters);
+    *out += "{\"type\":\"function\",\"function\":{\"name\":";
+    Quote(function->GetString("name"), out);
+    *out += ",\"description\":";
+    Quote(function->GetString("description") +
+              " Supply the complete JSON argument object in the single "
+              "arguments parameter. Preserve null, numbers and property "
+              "names; encode each less-than sign as \\u003c.",
+          out);
+    *out += R"(,"parameters":{"type":"object","properties":{"arguments":)";
+    *out += EncodeSchemaJson(parameters);
+    *out += R"(},"required":["arguments"],"additionalProperties":false}}})";
+    return {};
+  }
   const auto* custom = tool.Find("custom");
   if (!custom) return Status::Fail("missing custom tool definition");
   *out += R"({"type": "function", "function": {"name": )";
@@ -236,8 +278,21 @@ constexpr std::string_view kToolInstructions =
     "calls\n"
     "</IMPORTANT>";
 
-Status AppendToolCalls(const io::Json& message, bool has_content,
-                       std::string* prompt) {
+bool NeedsJsonHistoryValue(const io::Json& value) {
+  if (value.IsNumber() && !std::isfinite(value.number)) return true;
+  if (value.IsString())
+    for (const auto* marker :
+         {"<tool_call>", "</tool_call>", "</parameter>", "</function>"})
+      if (value.str.find(marker) != value.str.npos) return true;
+  for (const auto& child : value.array)
+    if (NeedsJsonHistoryValue(child)) return true;
+  for (const auto& [key, child] : value.object)
+    if (key.find('<') != key.npos || NeedsJsonHistoryValue(child)) return true;
+  return false;
+}
+
+Status AppendToolCalls(const io::Json& request, const io::Json& message,
+                       bool has_content, std::string* prompt) {
   const io::Json* calls = message.Find("tool_calls");
   if (!calls || calls->IsNull()) return Status();
   if (!calls->IsArray()) return Status::Fail("tool_calls must be an array");
@@ -270,7 +325,7 @@ Status AppendToolCalls(const io::Json& message, bool has_content,
         arguments = nullptr;
       else {
         Status s =
-            io::ParseJson(arguments->str, &parsed, true, kRequestJsonLimits);
+            io::ParseJson(arguments->str, &parsed, true, kSchemaJsonLimits);
         if (!s) return Status::Fail("invalid tool arguments JSON");
         arguments = &parsed;
       }
@@ -279,15 +334,31 @@ Status AppendToolCalls(const io::Json& message, bool has_content,
       if (!arguments->IsObject()) {
         return Status::Fail("tool arguments must be an object");
       }
-      for (const auto& [key, value] : arguments->object) {
-        *prompt += "<parameter=" + key + ">\n";
-        if (value.IsString())
-          *prompt += value.str;
-        else {
-          Status s = ToJson(value, prompt);
-          if (!s) return s;
+      bool json_arguments = false;
+      if (const auto* tools = request.GetArray("tools")) {
+        for (const auto& tool : tools->array) {
+          const auto* definition = tool.Find("function");
+          if (definition && definition->GetString("name") == name->str)
+            json_arguments = NeedsJsonToolArguments(*definition);
         }
-        *prompt += "\n</parameter>\n";
+      }
+      for (const auto& [key, value] : arguments->object) {
+        json_arguments |= !ValidInputName(key) || NeedsJsonHistoryValue(value);
+      }
+      if (json_arguments) {
+        *prompt += "<parameter=arguments>\n" + EncodeSchemaJson(*arguments) +
+                   "\n</parameter>\n";
+      } else {
+        for (const auto& [key, value] : arguments->object) {
+          *prompt += "<parameter=" + key + ">\n";
+          if (value.IsString())
+            *prompt += value.str;
+          else {
+            Status s = ToJson(value, prompt, true);
+            if (!s) return s;
+          }
+          *prompt += "\n</parameter>\n";
+        }
       }
     }
     *prompt += "</function>\n</tool_call>";
@@ -534,7 +605,7 @@ Status RenderChatPrompt(const io::Json& request,
             "<think>\n" + Trim(std::string(reasoning)) + "\n</think>\n\n";
       }
       *prompt += text[i];
-      s = AppendToolCalls(ms[i], !text[i].empty(), prompt);
+      s = AppendToolCalls(request, ms[i], !text[i].empty(), prompt);
       if (!s) return s;
       *prompt += "<|im_end|>\n";
     } else if (role == "tool") {

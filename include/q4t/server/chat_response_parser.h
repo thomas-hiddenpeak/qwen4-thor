@@ -12,6 +12,7 @@
 #include "q4t/server/custom_tools.h"
 #include "q4t/server/output_constraints.h"
 #include "q4t/server/reasoning_options.h"
+#include "q4t/server/schema_receipt.h"
 #include "q4t/status.h"
 
 namespace q4t::server {
@@ -55,21 +56,25 @@ class ChatResponseParser {
   // Intentional text stopping may end reasoning, but never a partial tool.
   Status Finish(bool length_limited, std::vector<ResponseDelta>* deltas,
                 bool text_stopped = false);
+  // The owning request calls this after creating its isolated decoder. The
+  // vector remains live through Finish and is updated before each Append.
+  void SetSchemaReceipts(const std::vector<SchemaReceipt>* receipts) {
+    schema_receipts_ = receipts;
+  }
   std::string MessageJson() const;
   bool HasToolCalls() const { return tool_count_ != 0; }
   const char* ToolFinishReason() const {
     return legacy_function_ ? "function_call" : "tool_calls";
   }
   bool Thinking() const { return region_ == Region::kReasoning; }
-  // Earlier bytes cannot produce another delta. Deferred constrained output
-  // remains live until Finish validates it and publishes all deltas.
-  size_t ConsumedBytes() const {
-    return constraints_.active && !finished_ ? 0 : pending_offset_;
-  }
+  // Earlier bytes cannot produce another delta. Provisional JSON/tool deltas
+  // never authorize execution before a successful whole-response terminal.
+  size_t ConsumedBytes() const { return pending_offset_; }
 
  private:
   enum class Region { kContent, kReasoning, kTool };
   Status Fail(const std::string& message);
+  Status VerifySchemaReceipts() const;
   Status ParseTool(std::string_view block, ResponseToolCall* call) const;
   Status StreamTool(size_t available, bool complete,
                     std::vector<ResponseDelta>* deltas);
@@ -99,6 +104,9 @@ class ChatResponseParser {
   bool tool_header_ = false;
   CustomInputStream custom_input_;
   bool custom_parameter_closed_ = false;
+  bool tool_json_complete_ = false;
+  bool tool_json_mode_ = false;
+  bool tool_mode_selected_ = false;
   bool tool_parameter_ = false;
   bool tool_string_ = false;
   bool tool_string_started_ = false;
@@ -107,6 +115,7 @@ class ChatResponseParser {
   std::unordered_set<std::string> tool_parameters_;
   std::unordered_map<std::string, const io::Json*> tools_;
   std::unordered_set<std::string> custom_tools_;
+  std::unordered_set<std::string> json_argument_tools_;
   std::string content_;
   std::string reasoning_;
   std::vector<ResponseToolCall> calls_;
@@ -114,7 +123,8 @@ class ChatResponseParser {
   OutputConstraints constraints_;
   ReasoningOptions reasoning_options_;
   size_t constrained_bytes_ = 0;
-  std::vector<ResponseDelta> deferred_;
+  bool json_content_started_ = false;
+  const std::vector<SchemaReceipt>* schema_receipts_ = nullptr;
 };
 
 }  // namespace q4t::server

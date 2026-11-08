@@ -6,6 +6,9 @@
 
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/chat_template.h"
+#include "q4t/server/output_schema.h"
+#include "q4t/server/schema_graph.h"
+#include "q4t/server/request_json.h"
 #include "q4t/test.h"
 
 namespace {
@@ -56,6 +59,99 @@ bool Reject(const std::string& messages) {
          !PlanToolResultOrder(parsed).ok();
 }
 }  // namespace
+
+Q4T_TEST(chat_tool_history_json_adapter_preserves_refs_null_and_exact_values) {
+  using namespace q4t::server;
+  Json request;
+  Q4T_CHECK(ParseRequest(
+      List({kUser,
+            R"({"role":"assistant","content":null,"tool_calls":[{"id":"a",
+      "type":"function","function":{"name":"lookup","arguments":
+      "{\"text\":\"null</parameter>中\",\"empty\":null,\"amount\":1e400}"}}]})",
+            Result("a"), kUser}),
+      &request));
+  Json tools;
+  Q4T_CHECK(
+      q4t::io::ParseJson(R"([{"type":"function","function":{"name":"lookup",
+    "parameters":{"type":"object","properties":{
+      "text":{"$ref":"#/$defs/value"},"empty":{"$ref":"#/$defs/value"},
+      "amount":{"type":"number"}},"required":["text","empty","amount"],
+      "additionalProperties":false,"$defs":{"value":{"type":["string","null"]}}}}}])",
+                         &tools, true));
+  request.object.emplace_back("tools", tools);
+  const auto original = OutputJson(request);
+  Q4T_CHECK(PlanToolResultOrder(*request.GetArray("messages")));
+  std::string prompt;
+  Q4T_CHECK(RenderChatPrompt(request, {"q", "", "value", "q"}, &prompt));
+  Q4T_CHECK(OutputJson(request) == original);
+  const auto begin = prompt.find("<tools>\n") + 8;
+  const auto end = prompt.find("\n</tools>", begin);
+  Q4T_CHECK(begin != 7 && end != prompt.npos);
+  Json model_tool;
+  Q4T_CHECK(q4t::io::ParseJson(prompt.substr(begin, end - begin), &model_tool,
+                               true, kSchemaJsonLimits));
+  const auto* outer = model_tool.Find("function")->Find("parameters");
+  const auto* nested = outer->Find("properties")->Find("arguments");
+  Q4T_CHECK(nested->Find("properties")->Find("text")->GetString("$ref") ==
+            "#/properties/arguments/$defs/value");
+  OutputSchemaGraph graph;
+  Q4T_CHECK(graph.Init(*outer, true, nullptr));
+  Json expected;
+  Q4T_CHECK(q4t::io::ParseJson(
+      R"({"arguments":{"text":"null</parameter>中","empty":null,"amount":1e400}})",
+      &expected, true, kSchemaJsonLimits));
+  Q4T_CHECK(graph.Check(expected));
+  Q4T_CHECK(prompt.find("<parameter=arguments>\n" +
+                        EncodeSchemaJson(*expected.Find("arguments")) +
+                        "\n</parameter>\n</function>") != prompt.npos);
+  Q4T_CHECK(prompt.find("null</parameter>中") == prompt.npos);
+  return true;
+}
+
+Q4T_TEST(chat_tool_history_native_values_keep_exact_decimal_spelling) {
+  using q4t::server::RenderChatPrompt;
+  Json request;
+  Q4T_CHECK(ParseRequest(
+      List({kUser,
+            R"({"role":"assistant","tool_calls":[{"id":"a","type":"function",
+      "function":{"name":"lookup","arguments":
+      "{\"n\":1.0000000000000001,\"xs\":[0.30000000000000001]}"}}]})",
+            Result("a"), kUser}),
+      &request));
+  std::string prompt;
+  Q4T_CHECK(RenderChatPrompt(request, {"q", "", "value", "q"}, &prompt));
+  Q4T_CHECK(prompt.find("<parameter=n>\n1.0000000000000001\n</parameter>") !=
+            prompt.npos);
+  Q4T_CHECK(
+      prompt.find("<parameter=xs>\n[0.30000000000000001]\n</parameter>") !=
+      prompt.npos);
+  return true;
+}
+
+Q4T_TEST(chat_tool_history_arbitrary_json_keys_are_data_without_definitions) {
+  using namespace q4t::server;
+  Json request;
+  Q4T_CHECK(ParseRequest(
+      List({kUser,
+            R"({"role":"assistant","content":null,"tool_calls":[{"id":"a",
+      "type":"function","function":{"name":"lookup","arguments":{
+      "":"empty","a</parameter>":"value","quote\"\n":[1,2],"bad>key":1}}}]})",
+            Result("a")}),
+      &request));
+  Q4T_CHECK(PlanToolResultOrder(*request.GetArray("messages")));
+  std::string prompt;
+  Q4T_CHECK(RenderChatPrompt(request, {"q", "", "value"}, &prompt));
+  Q4T_CHECK(prompt.find("<parameter=arguments>\n") != prompt.npos);
+  Q4T_CHECK(prompt.find("<parameter=a</parameter>") == prompt.npos);
+  const auto* arguments = request.GetArray("messages")
+                              ->array[1]
+                              .GetArray("tool_calls")
+                              ->array[0]
+                              .Find("function")
+                              ->Find("arguments");
+  Q4T_CHECK(prompt.find(EncodeSchemaJson(*arguments)) != prompt.npos);
+  return true;
+}
 
 Q4T_TEST(chat_tool_history_identified_order) {
   Json messages;
@@ -280,14 +376,13 @@ Q4T_TEST(chat_tool_history_media_order_guard) {
 }
 
 Q4T_TEST(chat_tool_history_no_silent_argument_loss) {
-  for (const auto* fields : {
-      R"("name":"lookup")", R"("name":"lookup","argumnts":{})",
-      R"("name":"lookup","arguments":null)",
-      R"("name":"lookup","arguments":"")",
-      R"("name":"lookup","arguments":"[]")",
-      R"("name":"lookup","arguments":"{\"x\":1,\"x\":2}")",
-      R"("name":"lookup","arguments":{},"extra":1)",
-      R"("name":"lookup","arguments":{"bad>key":1})"}) {
+  for (const auto* fields :
+       {R"("name":"lookup")", R"("name":"lookup","argumnts":{})",
+        R"("name":"lookup","arguments":null)",
+        R"("name":"lookup","arguments":"")",
+        R"("name":"lookup","arguments":"[]")",
+        R"("name":"lookup","arguments":"{\"x\":1,\"x\":2}")",
+        R"("name":"lookup","arguments":{},"extra":1)"}) {
     for (const bool ids : {false, true}) {
       const auto call = std::string(R"({"role":"assistant","tool_calls":[{)") +
           (ids ? R"("id":"a",)" : "") +

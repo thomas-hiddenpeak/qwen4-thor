@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "q4t/server/http_response.h"
+#include "q4t/server/request_json.h"
 #include "q4t/test.h"
 
 namespace {
@@ -91,7 +92,9 @@ bool CheckWire(const Json& message, const std::vector<ResponseDelta>& deltas,
     Q4T_CHECK(calls[i].name == wanted_fn->GetString("name"));
     Q4T_CHECK(calls[i].arguments == wanted_fn->GetString("arguments"));
     Json arguments;
-    Q4T_CHECK(q4t::io::ParseJson(calls[i].arguments, &arguments).ok() &&
+    Q4T_CHECK(q4t::io::ParseJson(calls[i].arguments, &arguments, true,
+                                 q4t::server::kSchemaJsonLimits)
+                  .ok() &&
               arguments.IsObject());
   }
   return true;
@@ -141,6 +144,52 @@ bool EverySplit(const Json& request, const std::string& text,
   return true;
 }
 }  // namespace
+
+Q4T_TEST(chat_response_json_arguments_stream_exact_object_without_wrapper) {
+  const auto request = Request();
+  const std::string arguments =
+      R"({"text":"null\u003c/tool_call>中😀","optional":null,"count":9007199254740993,"ratio":1e400,"a\"\n":[true,{}]})";
+  const auto call =
+      Call("<parameter=arguments>\n  " + arguments + " \n</parameter>\n");
+  Json message;
+  Q4T_CHECK(EverySplit(request, call + Call("", "noop") + call, kClosed, "", "",
+                       3, &message));
+  const auto& calls = message.GetArray("tool_calls")->array;
+  Q4T_CHECK(calls[0].Find("function")->GetString("arguments") == arguments);
+  Q4T_CHECK(calls[1].Find("function")->GetString("arguments") == "{}");
+  ChatResponseParser parser;
+  std::vector<ResponseDelta> deltas;
+  Q4T_CHECK(parser.Init(request, kClosed, "request", false));
+  Q4T_CHECK(
+      parser.Append("<tool_call>\n<function=lookup>\n<parameter=arguments>\n"
+                    "{\"text\":\"partial",
+                    &deltas));
+  std::string partial;
+  for (const auto& delta : deltas)
+    if (delta.kind == ResponseDelta::Kind::kTool)
+      partial += delta.call.arguments;
+  Q4T_CHECK(partial == "{\"text\":\"partial");
+  Q4T_CHECK(!parser.Finish(true, &deltas));
+  return true;
+}
+
+Q4T_TEST(chat_response_json_arguments_rejects_bad_payload_and_framing) {
+  const auto request = Request();
+  for (const std::string body :
+       {"<parameter=arguments>[]</parameter>\n",
+        "<parameter=arguments>{\"a\":1,\"a\":2}</parameter>\n",
+        "<parameter=arguments>{\"a\":01}</parameter>\n",
+        "<parameter=arguments>{}</parameter><parameter=x>1</parameter>\n",
+        "<parameter=arguments>{\"a\":\"x\"</parameter>\n",
+        "<parameter=arguments>{}\n"}) {
+    ChatResponseParser parser;
+    std::vector<ResponseDelta> deltas;
+    Q4T_CHECK(parser.Init(request, kClosed, "request", false));
+    const auto appended = parser.Append(Call(body), &deltas);
+    Q4T_CHECK(!appended || !parser.Finish(false, &deltas));
+  }
+  return true;
+}
 
 Q4T_TEST(chat_response_reasoning_and_prefilled_prefix) {
   const auto request = Request();
@@ -403,7 +452,7 @@ Q4T_TEST(chat_response_hidden_reasoning_preserves_failure_and_limits) {
     std::vector<ResponseDelta> deltas;
     Q4T_CHECK(parser.Init(request, kThinking, "r", true));
     Q4T_CHECK(parser.Append(std::string("private</think>") + payload, &deltas));
-    Q4T_CHECK(deltas.empty());  // Strict payload stays deferred until valid.
+    Q4T_CHECK(!deltas.empty());  // JSON deltas are provisional until Finish.
     const bool valid = std::string(payload).ends_with("}");
     Q4T_CHECK(parser.Finish(false, &deltas).ok() == valid);
     if (valid) {
@@ -412,7 +461,7 @@ Q4T_TEST(chat_response_hidden_reasoning_preserves_failure_and_limits) {
       Q4T_CHECK(message.GetString("content") == payload);
       Q4T_CHECK(CheckWire(message, deltas, "reasoning_content", true));
     } else {
-      Q4T_CHECK(deltas.empty());
+      Q4T_CHECK(!deltas.empty());
     }
   }
   ChatResponseParser bounded;
@@ -431,7 +480,11 @@ Q4T_TEST(chat_response_string_arguments_stream_before_parameter_close) {
   Q4T_CHECK(parser.Init(request, kClosed, "request", true));
   Q4T_CHECK(
       parser.Append("<tool_call><function=lookup><parameter=text>\r", &deltas));
-  Q4T_CHECK(!parser.HasToolCalls() && deltas.size() == 2);
+  Q4T_CHECK(!parser.HasToolCalls() && !deltas.empty());
+  Q4T_CHECK(deltas.front().tool_start && deltas.front().call.name == "lookup");
+  std::string opening;
+  for (const auto& delta : deltas) opening += delta.call.arguments;
+  Q4T_CHECK(opening == "{\"text\":\"");
   Q4T_CHECK(parser.Append("\n中国✅\\\"abc", &deltas));
   std::string partial;
   for (const auto& delta : deltas) partial += delta.call.arguments;

@@ -54,17 +54,14 @@ Status ValidateCall(const io::Json& call, bool identified) {
   const auto* args = fn->Find("arguments");
   io::Json decoded;
   if (args && args->IsString()) {
-    status = io::ParseJson(args->str, &decoded, true, kRequestJsonLimits);
+    status = io::ParseJson(args->str, &decoded, true, kSchemaJsonLimits);
     if (!status) return Status::Fail("invalid historical arguments JSON");
     args = &decoded;
   }
   if (!args || !args->IsObject())
     return Status::Fail("tool arguments require an object or JSON object text");
-  for (const auto& [key, value] : args->object) {
-    (void)value;
-    if (!ValidInputName(key))
-      return Status::Fail("invalid historical parameter name");
-  }
+  // JSON property names are data. The model renderer encodes unsafe native
+  // XML keys in one JSON object instead of rejecting valid API arguments.
   return Status();
 }
 

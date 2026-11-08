@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "q4t/server/http_response.h"
+#include "q4t/server/schema_graph.h"
 
 namespace q4t::server {
 namespace {
@@ -180,51 +181,6 @@ Status Schema(const io::Json& schema, bool strict, bool xml, size_t depth,
   return Status();
 }
 
-Status Value(const io::Json& schema, const io::Json& value, size_t depth) {
-  if (depth > 32) return Status::Fail("output exceeds schema validation depth");
-  const auto types = Types(schema);
-  if (!std::any_of(types.begin(), types.end(),
-                   [&](const auto& type) { return Matches(value, type); }))
-    return Status::Fail("output type does not match schema");
-  if (const auto* values = schema.GetArray("enum")) {
-    if (!std::any_of(values->array.begin(), values->array.end(),
-                     [&](const auto& item) {
-                       return OutputJson(item) == OutputJson(value);
-                     }))
-      return Status::Fail("output is not a declared enum value");
-  }
-  if (value.IsObject()) {
-    const auto* properties = schema.Find("properties");
-    if (!properties) return Status::Fail("missing object properties");
-    if (const auto* required = schema.GetArray("required")) {
-      for (const auto& key : required->array)
-        if (!value.Has(key.str))
-          return Status::Fail("missing required property");
-    }
-    std::unordered_set<std::string> seen;
-    for (const auto& [key, item] : value.object) {
-      const auto* child = properties->Find(key);
-      if (!child || !seen.insert(key).second)
-        return Status::Fail("unknown or duplicate output property");
-      auto status = Value(*child, item, depth + 1);
-      if (!status) return status;
-    }
-  }
-  if (value.IsArray()) {
-    const auto* items = schema.Find("items");
-    if (!items) return Status::Fail("missing array item schema");
-    if (value.array.size() <
-            static_cast<size_t>(schema.GetInt("minItems", 0)) ||
-        (schema.Has("maxItems") &&
-         value.array.size() > static_cast<size_t>(schema.GetInt("maxItems"))))
-      return Status::Fail("output array length violates schema");
-    for (const auto& item : value.array) {
-      auto status = Value(*items, item, depth + 1);
-      if (!status) return status;
-    }
-  }
-  return Status();
-}
 }  // namespace
 
 std::string OutputJson(const io::Json& value) {
@@ -283,24 +239,45 @@ bool IsExactJsonInteger(std::string_view number) {
 Status ValidateOutputSchema(const io::Json& schema, bool strict,
                             bool xml_parameters, std::string* error_param,
                             std::string_view path) {
-  if (error_param) error_param->clear();
-  if (OutputJson(schema).size() > 16384) {
-    if (error_param) *error_param = path;
-    return Status::Fail("schema exceeds 16 KiB");
-  }
-  if (schema.GetString("type") != "object") {
-    if (error_param)
-      *error_param =
-          schema.IsObject() ? InputParamPath(path, "type") : std::string(path);
-    return Status::Fail("output/parameters schema root must be an object");
-  }
-  size_t nodes = 0;
-  return Schema(schema, strict, xml_parameters, 0, &nodes, std::string(path),
-                error_param);
+  (void)xml_parameters;  // Representation is selected after graph validation.
+  OutputSchemaGraph graph;
+  return graph.Init(schema, strict, error_param, path);
 }
 
 Status ValidateOutputValue(const io::Json& schema, const io::Json& value) {
-  return Value(schema, value, 0);
+  OutputSchemaGraph graph;
+  auto status = graph.Init(schema, false, nullptr);
+  return status ? graph.Check(value) : status;
+}
+
+bool NeedsSchemaGuard(const io::Json& schema) {
+  size_t nodes = 0;
+  return OutputJson(schema).size() > 16384 ||
+         !Schema(schema, false, false, 0, &nodes, "schema", nullptr);
+}
+
+bool NeedsJsonToolArguments(const io::Json& function) {
+  const auto* parameters = function.Find("parameters");
+  if (!parameters) return false;
+  if (parameters->GetString("type") != "object" ||
+      OutputJson(*parameters).size() > 16384)
+    return true;
+  size_t nodes = 0;
+  return !Schema(*parameters, function.GetBool("strict"), true, 0, &nodes,
+                 "schema", nullptr);
+}
+
+std::string EncodeSchemaJson(const io::Json& value) {
+  const auto encoded = OutputJson(value);
+  std::string result;
+  result.reserve(encoded.size());
+  for (char c : encoded) {
+    if (c == '<')
+      result += "\\u003c";
+    else
+      result += c;
+  }
+  return result;
 }
 
 }  // namespace q4t::server

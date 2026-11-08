@@ -48,6 +48,7 @@ class StructuredDecoder {
                 SampledToken* sample = nullptr,
                 std::span<const uint8_t> additional_mask = {});
   bool Terminated() const;
+  GrammarFailure Failure() const;
   // Read after Select/termination on the request's owning thread. Receipt
   // production never loads optional validation libraries in the parent.
   const std::vector<SchemaReceipt>& Receipts() const;
