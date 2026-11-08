@@ -156,7 +156,7 @@
         "docs/SERVE_SCHEMA_V2_2026-11-08.md"
       ],
       "release": null,
-      "development_status": "schema v2/worker回执/解析器/公开合同/客户端与文本目标状态缓存已开发接入；累计77不同C++ CPU，49+21输入对照通过。结构化/工具/文本缓存及媒体真实GPU业务、发布仍待完成，默认未改。"
+      "development_status": "累计81不同C++ CPU通过；文本1启动/5Chat前四项真实schema/cache/tool通过，final有限长度词法超时已CPU复现并修复。原final及3未运行请求、媒体短验与可回退发布仍待完成，默认未改。"
     },
     {
       "id": "A06",

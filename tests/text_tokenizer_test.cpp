@@ -15,12 +15,14 @@
 #include "q4t/server/structured_decoder.h"
 #include "q4t/server/custom_grammar.h"
 #include "../src/server/schema_token_guard.h"
+#include "../src/server/schema_string.h"
 #include <xgrammar/compiler.h>
 #include <xgrammar/matcher.h>
 #include <chrono>
 #endif
 
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <fcntl.h>
 #include <string>
@@ -86,6 +88,137 @@ const GoldenCase kGoldenCases[] = {
 }  // namespace
 
 #ifdef Q4T_ENABLE_XGRAMMAR
+namespace {
+bool BoundedTitleRealVocabulary(bool pattern) {
+  using namespace q4t::server;
+  std::unique_ptr<Tokenizer> tokenizer;
+  Q4T_CHECK(Tokenizer::Load(kRealTokenizer, {}, &tokenizer));
+  std::vector<std::string> vocabulary(tokenizer->VocabSize());
+  for (uint32_t i = 0; i < vocabulary.size(); ++i)
+    Q4T_CHECK(tokenizer->Decode({i}, true, &vocabulary[i]));
+  // The actual failed document-query completion's schema and tool contract.
+  // Message text is immaterial to the grammar and is deliberately not replayed.
+  std::string request = R"({"enable_thinking":false,"messages":[],
+    "tools":[{"type":"function","function":{"name":"read_project_record",
+      "strict":true,"parameters":{"$ref":"#/$defs/read","$defs":{
+        "path":{"type":"string","pattern":"^docs/MODEL\\.md$",
+                "minLength":13,"maxLength":13},
+        "read":{"type":"object","properties":{
+          "path":{"$ref":"#/$defs/path"},
+          "start_line":{"type":"integer","const":1},
+          "line_count":{"type":"integer","minimum":16,"maximum":16,
+                        "multipleOf":8}},
+          "required":["path","start_line","line_count"],
+          "additionalProperties":false}}}}}],
+    "tool_choice":"auto","parallel_tool_calls":false,
+    "response_format":{"type":"json_schema","json_schema":{
+      "name":"record","strict":true,"schema":{"type":"object",
+        "properties":{
+          "title":{"type":"string","minLength":1,"maxLength":256},
+          "citation":{"type":"string",
+                       "pattern":"^\\[docs/MODEL\\.md:L1-L16\\]$"},
+          "requested_line_count":{"type":"integer","minimum":16,
+                                  "maximum":16,"multipleOf":8},
+          "note":{"anyOf":[{"type":"null"},
+                            {"type":"string","const":"read"}]}},
+        "required":["title","citation","requested_line_count","note"],
+        "additionalProperties":false}}}})";
+  if (pattern) {
+    const std::string length = "\"maxLength\":256";
+    request.replace(request.find(length), length.size(),
+                    R"("maxLength":256,"pattern":"^[^\\n]*$")");
+  }
+  q4t::io::Json input, configuration;
+  Q4T_CHECK(q4t::io::ParseJson(request, &input, true));
+  OutputConstraints plan;
+  Q4T_CHECK(PlanOutputConstraints(input, &plan));
+  Q4T_CHECK(q4t::io::ParseJson(plan.structural_tag, &configuration, true));
+  const std::string text =
+      R"({"title":"Qwen3.8-Flash-Next 模型架构",
+         "citation":"[docs/MODEL.md:L1-L16]",
+         "requested_line_count":16,"note":null})";
+  std::vector<uint32_t> tokens, end;
+  Q4T_CHECK(tokenizer->Encode(text, &tokens));
+  Q4T_CHECK(tokenizer->Encode("<|im_end|>", &end) && end.size() == 1);
+  const std::vector<int32_t> stops{static_cast<int32_t>(end[0])};
+  if (std::getenv("Q4T_TITLE_MASK_DIAGNOSTIC")) {
+    // Bounded externally when locating a failed step; no model or CUDA call.
+    SchemaTokenGuard guard;
+    Q4T_CHECK(guard.Init(*configuration.Find("q4t_guard")));
+    xgrammar::TokenizerInfo info(vocabulary, xgrammar::VocabType::RAW,
+                                 vocabulary.size(), stops, false);
+    xgrammar::GrammarCompiler compiler(info, 1, false, 0);
+    const auto compiled = compiler.CompileStructuralTag(
+        ExpandCustomGrammarFormats(plan.structural_tag));
+    xgrammar::GrammarMatcher matcher(compiled);
+    std::vector<int32_t> mask((vocabulary.size() + 31) / 32);
+    for (size_t i = 0; i < tokens.size(); ++i) {
+      DLTensor tensor{};
+      tensor.data = mask.data();
+      tensor.device = {kDLCPU, 0};
+      tensor.ndim = 1;
+      tensor.dtype = {kDLInt, 32, 1};
+      int64_t shape = mask.size();
+      tensor.shape = &shape;
+      std::fill(mask.begin(), mask.end(), -1);
+      auto start = std::chrono::steady_clock::now();
+      std::printf("title step=%zu lexical start\n", i);
+      std::fflush(stdout);
+      matcher.FillNextTokenBitmask(&tensor);
+      const auto seconds = [&] {
+        return std::chrono::duration<double>(
+            std::chrono::steady_clock::now() - start).count();
+      };
+      std::printf("title lexical=%.6f semantic start\n", seconds());
+      std::fflush(stdout);
+      start = std::chrono::steady_clock::now();
+      const auto status = guard.Filter(vocabulary, stops, mask);
+      std::printf("title semantic=%.6f ok=%d\n", seconds(), status.ok());
+      std::fflush(stdout);
+      Q4T_CHECK(status && matcher.AcceptToken(tokens[i]));
+      Q4T_CHECK(guard.Accept(vocabulary[tokens[i]], false));
+    }
+    return true;
+  }
+  std::unique_ptr<StructuredDecoder> decoder;
+  auto status = StructuredDecoder::Create(plan, vocabulary, vocabulary.size(),
+                                          stops, &decoder);
+  if (!status) std::fprintf(stderr, "%s\n", status.message().c_str());
+  Q4T_CHECK(status);
+  tokens.push_back(end[0]);
+  const std::vector<uint16_t> logits(vocabulary.size(), 0);
+  for (size_t i = 0; i < tokens.size(); ++i) {
+    int32_t selected = -1;
+    status = decoder->Select(logits, &selected, tokens[i]);
+    if (!status)
+      std::fprintf(stderr, "title token=%zu id=%u: %s\n", i, tokens[i],
+                   status.message().c_str());
+    Q4T_CHECK(status && selected == static_cast<int32_t>(tokens[i]));
+  }
+  Q4T_CHECK(decoder->Terminated() && decoder->Receipts().size() == 1);
+  const auto& schema = *input.Find("response_format")
+                            ->Find("json_schema")
+                            ->Find("schema");
+  q4t::io::Json value;
+  Q4T_CHECK(q4t::io::ParseJson(text, &value, true));
+  OutputSchemaGraph graph;
+  Q4T_CHECK(graph.Init(schema, true, nullptr));
+  Q4T_CHECK(graph.Check(value, CheckSchemaString));
+  SchemaReceipt expected;
+  Q4T_CHECK(MakeSchemaReceipt("", schema, value, &expected));
+  Q4T_CHECK(decoder->Receipts()[0] == expected);
+  return true;
+}
+}  // namespace
+
+Q4T_TEST(tokenizer_schema_bounded_title_with_tools_real_vocabulary) {
+  return BoundedTitleRealVocabulary(false);
+}
+
+Q4T_TEST(tokenizer_schema_bounded_pattern_with_tools_real_vocabulary) {
+  return BoundedTitleRealVocabulary(true);
+}
+
 Q4T_TEST(tokenizer_schema_worker_mask_phase_diagnostic) {
   using namespace q4t::server;
   std::unique_ptr<Tokenizer> tokenizer;

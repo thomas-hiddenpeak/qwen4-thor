@@ -100,3 +100,41 @@ Q4T_TEST(schema_string_syntax_intersects_formats_patterns_and_lengths) {
   }
   return true;
 }
+
+Q4T_TEST(schema_string_syntax_counted_length_unicode_and_escape_boundaries) {
+  const auto one = Parse(
+      R"({"type":"string","minLength":1,"maxLength":300})");
+  const auto two = Parse(R"({"type":"string","maxLength":256})");
+  const auto language = CompileSchemaStringSyntax({&one, &two});
+  xgrammar::TokenizerInfo tokenizer(Vocabulary(), xgrammar::VocabType::RAW, 257,
+                                    std::vector<int32_t>{0}, false);
+  xgrammar::GrammarCompiler compiler(tokenizer, 1, false, 0);
+  const auto grammar =
+      compiler.CompileGrammar(xgrammar::Grammar::FromEBNF(language));
+  const std::string scalar_cases[] = {"x", "中", "🚀", "\n", "\"", "\\", "<"};
+  for (const auto& scalar : scalar_cases) {
+    for (const auto count : {0, 1, 255, 256, 257, 300}) {
+      std::string text;
+      for (int i = 0; i < count; ++i) text += scalar;
+      xgrammar::GrammarMatcher matcher(grammar);
+      const auto encoded = EncodeCustomInput(text);
+      // Feed individual bytes: partial UTF-8 and multi-byte JSON escapes must
+      // count as one decoded scalar, never as several length-counter units.
+      bool accepted = true;
+      for (const unsigned char c : encoded) {
+        if (!matcher.AcceptToken(c + 1)) {
+          accepted = false;
+          break;
+        }
+      }
+      accepted = accepted && matcher.AcceptToken(0) && matcher.IsTerminated();
+      Q4T_CHECK(accepted == (count >= 1 && count <= 256));
+    }
+  }
+  const auto empty = Parse(R"({"type":"string","maxLength":0})");
+  const auto empty_grammar = compiler.CompileGrammar(
+      xgrammar::Grammar::FromEBNF(CompileSchemaStringSyntax({&empty})));
+  xgrammar::GrammarMatcher matcher(empty_grammar);
+  Q4T_CHECK(matcher.AcceptString("\"\"") && matcher.AcceptToken(0));
+  return true;
+}

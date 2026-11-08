@@ -16,11 +16,13 @@ fn contains(ranges: &Ranges, cp: u32) -> bool {
 }
 struct Graph { nfa: Nfa, start: usize, end: usize }
 impl Graph {
-    fn has_assertions(&self) -> bool {
-        self.nfa.edges.iter().flatten().any(|edge| matches!(edge,Edge::Look(..)))
+    fn has_character_assertions(&self) -> bool {
+        self.nfa.edges.iter().flatten().any(|edge| matches!(edge,
+            Edge::Look(look,_) if !matches!(look,
+                regex_syntax::hir::Look::Start | regex_syntax::hir::Look::End)))
     }
     fn categories(&self,other: Option<&Self>) -> Vec<Ranges> {
-        if self.has_assertions() || other.is_some_and(Self::has_assertions) {
+        if self.has_character_assertions() || other.is_some_and(Self::has_character_assertions) {
             categories()
         } else {
             vec![vec![],vec![(0,0xd7ff),(0xe000,0x10ffff)]]
@@ -160,6 +162,79 @@ impl Graph {
         }
         Ok(self.closure(states,prev,0,work)?.contains(&self.end))
     }
+    fn counted_chain(&self,state: usize,prev: usize,work: &mut usize)
+                     -> Result<Option<(Ranges,usize,usize)>> {
+        // A terminal chain of identical character edges is a counted repeat,
+        // including the deterministic product of a pattern and a length bound.
+        // Keep it as a counter, not one recursive matcher frame per scalar.
+        // Word/line assertions retain their context-sensitive path below.
+        // Start/end assertions only need the boundary-versus-scalar category.
+        let mut at=state; let mut previous=prev; let mut count=0;
+        let mut minimum=None; let mut class=None; let mut seen=BTreeSet::new();
+        loop {
+            charge(work,1)?;
+            if !seen.insert(at) { return Ok(None); }
+            let complete=self.closure([at],previous,0,work)?.contains(&self.end);
+            if complete { minimum.get_or_insert(count); }
+            else if minimum.is_some() { return Ok(None); }
+            let edges=self.transitions(at,previous,1,work)?;
+            let mut destinations=BTreeMap::<usize,Ranges>::new();
+            for (ranges,to) in edges {
+                charge(work,ranges.len())?;
+                destinations.entry(to).or_default().extend(ranges);
+            }
+            if destinations.is_empty() {
+                return Ok(match (class,minimum) {
+                    (Some(ranges),Some(lower))=>Some((ranges,lower,count)),
+                    _=>None,
+                });
+            }
+            if destinations.len()!=1 { return Ok(None); }
+            let (to,mut ranges)=destinations.into_iter().next().ok_or(3u32)?;
+            ranges.sort_unstable(); let mut merged: Ranges=vec![];
+            for (low,high) in ranges {
+                if let Some(last)=merged.last_mut() {
+                    if low<=last.1+1 { last.1=last.1.max(high); }
+                    else { merged.push((low,high)); }
+                } else { merged.push((low,high)); }
+            }
+            if let Some(old)=&class {
+                if old!=&merged { return Ok(None); }
+            } else { class=Some(merged); }
+            at=to; previous=1; count+=1;
+        }
+    }
+    fn trim_dead_ends(&mut self,work: &mut usize) -> Result<()> {
+        // Search-pattern wrapping and products retain branches that can never
+        // reach a final state. They must not become viable generation prefixes
+        // or hide a counted chain behind an otherwise impossible alternative.
+        let mut reverse=vec![vec![];self.nfa.edges.len()];
+        for (from,edges) in self.nfa.edges.iter().enumerate() {
+            for edge in edges {
+                charge(work,1)?;
+                let to=match edge {
+                    Edge::Empty(to) | Edge::Look(_,to)=>*to,
+                    Edge::Char(ranges,to) if !ranges.is_empty()=>*to,
+                    _=>continue,
+                };
+                reverse[to].push(from);
+            }
+        }
+        let mut live=vec![false;self.nfa.edges.len()]; let mut pending=vec![self.end];
+        while let Some(at)=pending.pop() {
+            charge(work,1)?;
+            if live[at] { continue; }
+            live[at]=true; pending.extend(&reverse[at]);
+        }
+        for edges in &mut self.nfa.edges {
+            charge(work,edges.len())?;
+            edges.retain(|edge| match edge {
+                Edge::Empty(to) | Edge::Look(_,to)=>live[*to],
+                Edge::Char(ranges,to)=>!ranges.is_empty() && live[*to],
+            });
+        }
+        Ok(())
+    }
     fn ebnf(&self,work: &mut usize) -> Result<String> {
         let cats=self.categories(None); let mut pending=VecDeque::from([(self.start,0)]);
         let mut seen=BTreeSet::new(); let mut out=Ebnf::default();
@@ -167,6 +242,14 @@ impl Graph {
         while let Some((state,prev))=pending.pop_front() {
             charge(work,1)?;
             if !seen.insert((state,prev)) { continue; }
+            let counted=if cats.len()==2 { self.counted_chain(state,prev,work)? }
+                        else { None };
+            if let Some((ranges,minimum,maximum))=counted {
+                writeln!(&mut out.rules,"{} ::= {}{{{minimum},{maximum}}}",
+                         name(state,prev),charset(&ranges)).map_err(|_|3u32)?;
+                bound(out.rules.len(),LIMIT)?;
+                continue;
+            }
             let mut branches=BTreeSet::new();
             let mut loops: Ranges=vec![];
             if self.closure([state],prev,0,work)?.contains(&self.end) {
@@ -309,6 +392,7 @@ pub unsafe extern "C" fn q4t_schema_regex_ebnf(
             graph=graph.intersection(&next,&mut work)?;
         }
         if multiple>0 { graph=graph.intersection(&Graph::multiple(multiple,scale)?,&mut work)?; }
+        graph.trim_dead_ends(&mut work)?;
         graph.ebnf(&mut work)
     }).unwrap_or(Err(3)))
 }

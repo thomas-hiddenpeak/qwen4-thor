@@ -108,6 +108,18 @@ def check_features(value):
     return actual
 
 
+def check_final(value, result):
+    require(value.finish_reason == "stop" and not value.message.get("tool_calls"),
+            "final JSON missing")
+    answer = load_json(value.message["content"], exact_numbers=True)
+    title = result["source"]["text"].splitlines()[0].split(": ", 1)[1]
+    require(answer["title"] in (title, title.lstrip("# ")) and
+            answer["citation"] == result["source"]["citation"] and
+            answer["requested_line_count"] == 16 and answer["note"] is None,
+            "real tool/JSON closure differs")
+    return answer
+
+
 def restore_record(log, request_id):
     rows=re.findall(r"\[session-cache\] request="+re.escape(request_id)+
         r" event=restore prefix=(\d+) ms=[^ ]+ error=(\S+) source=(\w+) layout=(\w+)",log)
@@ -242,10 +254,11 @@ class Stage(lifecycle.Stage):
             {plans[0].call_id:json.dumps(result,ensure_ascii=False)})
         follow['messages'].append(dict(role='developer',content='Return the actual document title, exact citation, requested_line_count 16 and note null as one JSON object. The tool result is already available.'))
         final=self.sdk_request('final',follow)
-        require(final.finish_reason=='stop' and not final.message.get('tool_calls'),'final JSON missing')
-        answer=load_json(final.message['content'],exact_numbers=True)
-        require('Qwen3.8-Flash-Next' in answer['title'] and answer['citation']==result['source']['citation'] and
-            answer['requested_line_count']==16 and answer['note'] is None,'real tool/JSON closure differs')
+        check_final(final,result)
+        self.remainder()
+
+    def remainder(self, total_requests=8):
+        rows=self.plan['requests']
         body=rows['truncated'];self.budget('chats');save(self.out/'truncated.request.json',body)
         with (self.out/'truncated.wire').open('xb') as wire:
             try:self.client.complete(body,sink=wire.write)
@@ -266,7 +279,8 @@ class Stage(lifecycle.Stage):
         require('[mtp-accept] request='+rows['greedy']['request_id'] in (self.out/'model.log').read_text(),
                 'normal greedy request did not exercise MTP')
         metrics=self.drained('final')
-        require(metrics['q4t_requests_total']==8 and metrics['q4t_requests_success_total']==7 and
+        require(metrics['q4t_requests_total']==total_requests and
+            metrics['q4t_requests_success_total']==total_requests-1 and
             metrics['q4t_requests_error_total']==1,'terminal accounting differs')
 
     def run(self):

@@ -90,6 +90,24 @@ Q4T_TEST(schema_language_matcher_unicode_fullmatch_and_work_bound) {
   return true;
 }
 
+Q4T_TEST(schema_language_counted_chains_preserve_holes_and_dead_prefixes) {
+  Q4T_CHECK(Language(
+      SchemaRegexEbnf({R"((?s:.*)(?:^[a-z]+$)(?s:.*))", R"((?s:.{1,256}))"}),
+      {"a", "hello", std::string(256, 'z')},
+      {"", "A", "a\n", std::string(257, 'z')}));
+  Q4T_CHECK(Language(SchemaRegexEbnf(
+      {R"((?s:.*)(?:^(?:a{1,3}|a{7,8})$)(?s:.*))", R"((?s:.{1,256}))"}),
+      {"a", "aaa", "aaaaaaa", "aaaaaaaa"},
+      {"", "aaaa", "aaaaa", "aaaaaa", "aaaaaaaaa"}));
+  const auto grammar = Compile(SchemaRegexEbnf(
+      {R"((?s:.*)(?:^[^\n]*$)(?s:.*))", R"((?s:.{1,256}))"}));
+  xgrammar::GrammarMatcher matcher(grammar);
+  Q4T_CHECK(matcher.AcceptString("title"));
+  Q4T_CHECK(!matcher.AcceptString("\n"));
+  Q4T_CHECK(matcher.AcceptToken(0));
+  return true;
+}
+
 Q4T_TEST(schema_language_number_exact_range_and_multiple) {
   std::fprintf(stderr, "numeric case: positive tenths\n");
   Q4T_CHECK(Language(

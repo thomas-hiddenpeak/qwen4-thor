@@ -886,7 +886,7 @@
     "src/server/prediction.cpp": "7e8ccdf7c44dd5c8245230577d42eb7d4cd17c6e2efcf5534a02e6744815733f",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
     "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
-    "src/server/regex_syntax/schema_regex.rs": "d7afdca0940cfe619fba88b657d82e23148373cea1d1aef80d003a74ff5017ca",
+    "src/server/regex_syntax/schema_regex.rs": "5760dd4f407dd7e1af134837ada78978ec076b4d3f74c5d781d1b91d9dd8ed8d",
     "src/server/sampling.cpp": "8e6a8c446656d8430005b061b10535b391b002362725511d216f9b4229e3d3cb",
     "src/server/schema_decimal.cpp": "3931972b1ecfd38b0574c6794f447f6b05d1ef78d65e0f73a61eabcb1c2dee2f",
     "src/server/schema_grammar.cpp": "1411f2df41fe33a60578801a22fa1baf0f1776a664eed74df67936fd636098aa",
@@ -1533,7 +1533,7 @@
     "model_adapter": "Native function/input tags and encoded string, declared name determines standard wire custom type. Two failed business attempts retained; original mixed task passed after adapter repair."
   },
   "schema_v2_development_20261108": {
-    "state": "text_cache_integrated_cpu_only",
+    "state": "text_business_timeout_repaired_cpu",
     "record": "docs/SERVE_SCHEMA_V2_2026-11-08.md",
     "source": [
       "src/server/schema_decimal.cpp",
@@ -1566,9 +1566,10 @@
       "src/server/server_options.cpp",
       "tools/serve_protocol/js_client.py",
       "tools/serve_protocol/run_sdk.mjs",
-      "tools/serve_schema_v2/acceptance.py"
+      "tools/serve_schema_v2/acceptance.py",
+      "tools/serve_schema_v2/repair.py"
     ],
-    "acceptance": "Target-only text cache now runs in actual generation path, layout-tagged and terminal-published. 77 distinct A05 C++ checks, 49+21 input comparisons and affected client/public-host checks passed. Real schema/tool/cache and media business plus delivery remain required; default unchanged. Media state cache remains required A10 work.",
+    "acceptance": "81 distinct A05 C++ CPU checks. First text run: four schema/cache/actual-tool requests passed, fifth final JSON timed out; cleanup complete. Finite character-chain lowering and dead-state trimming repaired the real-vocabulary failure, including pattern+length. 18 affected CPU cases pass; failed final, three unexecuted requests and media acceptance plus delivery remain. Default unchanged.",
     "optional_native_dependency": {
       "name": "system libidn2 >= 2.3",
       "observed": "2.3.7-2build1.1 on this Thor",

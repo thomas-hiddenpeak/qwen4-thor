@@ -7,7 +7,7 @@ from types import SimpleNamespace
 import unittest
 
 from tools.serve_schema_v2.acceptance import (
-    check_features, requests, restore_record)
+    check_features, check_final, requests, restore_record)
 
 
 class Driver(unittest.TestCase):
@@ -45,6 +45,23 @@ class Driver(unittest.TestCase):
                     log.replace('request=schema-v2-warm', 'request=other')):
             with self.assertRaises(RuntimeError):
                 restore_record(bad, 'schema-v2-warm')
+
+    def test_final_answer_uses_actual_title_and_matching_tool_citation(self):
+        source = dict(text="1: # MODEL.md — actual title\n2: body",
+                      citation="[docs/MODEL.md:L1-L16]")
+        actual = dict(title="MODEL.md — actual title", citation=source['citation'],
+                      requested_line_count=16, note=None)
+        def value(row=actual, finish='stop'):
+            return SimpleNamespace(finish_reason=finish,
+                message=dict(content=json.dumps(row)))
+        self.assertEqual(check_final(value(), dict(source=source)), actual)
+        for bad in (dict(actual, title="Qwen3.8-Flash-Next invented title"),
+                    dict(actual, citation="[docs/MODEL.md:L2-L16]"),
+                    dict(actual, requested_line_count=8), dict(actual, note="read")):
+            with self.assertRaises(RuntimeError):
+                check_final(value(bad), dict(source=source))
+        with self.assertRaises(RuntimeError):
+            check_final(value(finish='length'), dict(source=source))
 
 
 if __name__ == '__main__': unittest.main()
