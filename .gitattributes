@@ -9,3 +9,5 @@ docs/evidence/serve-native-access-20261108/**/*.bin binary
 docs/evidence/serve-native-access-20261108/release-build/** -text -whitespace
 docs/evidence/serve-chat-input-20261108/**/*.wire binary
 docs/evidence/serve-chat-input-20261108/build-01/** -text -whitespace
+docs/evidence/serve-sampling-20261108/** -text -whitespace
+docs/evidence/serve-sampling-20261108/**/*.wire binary

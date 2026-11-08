@@ -1,0 +1,41 @@
+[  3%] Built target q4t_trace
+[  7%] Built target q4t_io
+[ 11%] Built target q4t_ple
+[ 14%] Built target q4t_runtime
+[ 14%] Built target q4t_text
+[ 18%] Built target q4t_quant
+[ 44%] Built target xgrammar
+[ 66%] Built target q4t_model
+[ 70%] Built target q4t_startup_plan
+[100%] Built target q4t_server
+[100%] Built target q4t
+[  3%] Built target q4t_trace
+[  7%] Built target q4t_io
+[ 11%] Built target q4t_ple
+[ 14%] Built target q4t_runtime
+[ 14%] Built target q4t_text
+[ 40%] Built target xgrammar
+[ 44%] Built target q4t_quant
+[ 66%] Built target q4t_model
+[ 70%] Built target q4t_startup_plan
+[100%] Built target q4t_server
+[100%] Built target q4t_preflight_probe
+[  4%] Built target q4t_io
+[  4%] Built target q4t_text
+[ 34%] Built target xgrammar
+[ 34%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_chat_capabilities_test.cpp.o
+[ 34%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests
+[  3%] Built target q4t_trace
+[  7%] Built target q4t_io
+[ 10%] Built target q4t_ple
+[ 35%] Built target xgrammar
+[ 39%] Built target q4t_runtime
+[ 39%] Built target q4t_text
+[ 42%] Built target q4t_quant
+[ 64%] Built target q4t_model
+[ 67%] Built target q4t_startup_plan
+[ 96%] Built target q4t_server
+[100%] Building CXX object CMakeFiles/q4t_contract_probe.dir/tools/serve_protocol/contract_probe.cpp.o
+[100%] Linking CXX executable q4t_contract_probe
+[100%] Built target q4t_contract_probe

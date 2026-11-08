@@ -1,0 +1,583 @@
+[  0%] Building CXX object CMakeFiles/q4t_ple.dir/src/ple/ngram_hash.cpp.o
+[  0%] Building CXX object CMakeFiles/q4t_io.dir/src/io/json.cpp.o
+[  0%] Building CXX object CMakeFiles/q4t_trace.dir/src/trace/router_trace.cpp.o
+[  3%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/compiled_grammar.cc.o
+[  7%] Building CXX object CMakeFiles/q4t_ple.dir/src/ple/ngram_hash_derive.cpp.o
+[  7%] Building CXX object CMakeFiles/q4t_ple.dir/src/ple/page_reader.cpp.o
+[ 11%] Building CXX object CMakeFiles/q4t_io.dir/src/io/safetensors.cpp.o
+[ 11%] Building CXX object CMakeFiles/q4t_trace.dir/src/trace/router_collector.cpp.o
+[ 11%] Building CUDA object CMakeFiles/q4t_ple.dir/src/ple/fp8_convert.cu.o
+[ 11%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/config.cc.o
+[ 11%] Building CXX object CMakeFiles/q4t_io.dir/src/io/model_config.cpp.o
+[ 11%] Building CXX object CMakeFiles/q4t_ple.dir/src/ple/ple_embedding.cpp.o
+[ 11%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/converter_ext/cohere.cc.o
+[ 14%] Building CXX object CMakeFiles/q4t_trace.dir/src/trace/sha256.cpp.o
+[ 14%] Building CXX object CMakeFiles/q4t_io.dir/src/io/weight_loader.cpp.o
+[ 14%] Linking CXX static library libq4t_ple.a
+[ 14%] Built target q4t_ple
+[ 14%] Building CXX object CMakeFiles/q4t_runtime.dir/src/runtime/memory_budget.cpp.o
+[ 14%] Linking CXX static library libq4t_trace.a
+[ 14%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/converter_ext/deepseek.cc.o
+[ 14%] Built target q4t_trace
+[ 14%] Building CXX object CMakeFiles/q4t_runtime.dir/src/runtime/system_memory.cpp.o
+[ 14%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/converter_ext/gemma.cc.o
+[ 18%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/converter_ext/glm.cc.o
+[ 22%] Linking CXX static library libq4t_runtime.a
+[ 22%] Built target q4t_runtime
+[ 22%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/converter_ext/kimi_k3.cc.o
+[ 22%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/converter_ext/minimax.cc.o
+[ 22%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/converter_ext/minimax_m3.cc.o
+[ 22%] Linking CXX static library libq4t_io.a
+[ 22%] Built target q4t_io
+[ 22%] Building CXX object CMakeFiles/q4t_text.dir/src/text/tokenizer.cpp.o
+[ 22%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/converter_ext/qwen.cc.o
+[ 25%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/earley_parser.cc.o
+[ 25%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/fsm.cc.o
+[ 25%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/fsm_builder.cc.o
+[ 25%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/grammar.cc.o
+[ 25%] Linking CXX static library libq4t_text.a
+[ 25%] Built target q4t_text
+[ 25%] Building CUDA object CMakeFiles/q4t_quant.dir/src/quant/dequant.cu.o
+[ 25%] Building CUDA object CMakeFiles/q4t_quant.dir/src/quant/act_quant.cu.o
+[ 25%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/grammar_builder.cc.o
+[ 25%] Building CXX object CMakeFiles/q4t_quant.dir/src/quant/moe_weights.cpp.o
+[ 29%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/grammar_compiler.cc.o
+[ 33%] Building CUDA object CMakeFiles/q4t_quant.dir/src/quant/moe_gemm.cu.o
+[ 33%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/grammar_functor.cc.o
+[ 33%] Building CUDA object CMakeFiles/q4t_quant.dir/src/quant/moe_decode.cu.o
+[ 33%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/grammar_matcher.cc.o
+[ 33%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/grammar_parser.cc.o
+[ 33%] Building CXX object CMakeFiles/q4t_quant.dir/src/quant/moe_residency.cpp.o
+[ 33%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/grammar_printer.cc.o
+[ 37%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/json_schema_converter.cc.o
+[ 37%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/lark_converter.cc.o
+[ 37%] Building CXX object CMakeFiles/q4t_quant.dir/src/quant/lt_cache.cpp.o
+[ 37%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/regex_converter.cc.o
+[ 37%] Linking CXX static library libq4t_quant.a
+[ 37%] Built target q4t_quant
+[ 40%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/hyperconnection.cu.o
+[ 40%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/linear_attention.cu.o
+[ 40%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/structural_tag.cc.o
+[ 40%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/suffix_automata.cc.o
+[ 44%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/support/logging.cc.o
+[ 44%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/support/recursion_guard.cc.o
+[ 44%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/testing.cc.o
+[ 44%] Building CXX object _deps/q4t_xgrammar-build/CMakeFiles/xgrammar.dir/cpp/tokenizer_info.cc.o
+[ 44%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/full_attention.cu.o
+[ 44%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/qsa_decode.cu.o
+[ 48%] Linking CXX static library libxgrammar.a
+[ 48%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/streaming_topk.cu.o
+[ 48%] Built target xgrammar
+[ 51%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/decode_topk.cu.o
+[ 51%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/short_topk.cu.o
+[ 51%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/indexer_decode.cu.o
+[ 51%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/moe.cu.o
+[ 51%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/ple_layer.cu.o
+[ 55%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/decoder_layer.cu.o
+[ 55%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/model_head.cu.o
+[ 55%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/model.cu.o
+[ 55%] Building CXX object CMakeFiles/q4t_model.dir/src/model/model_owner.cpp.o
+[ 55%] Building CXX object CMakeFiles/q4t_model.dir/src/model/decode_metadata_upload.cpp.o
+[ 59%] Building CXX object CMakeFiles/q4t_model.dir/src/model/metadata_upload_batch.cpp.o
+[ 59%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/gemv.cu.o
+[ 59%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/gemv_hc_inject.cu.o
+[ 59%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/small_m_gemm.cu.o
+[ 59%] Building CUDA object CMakeFiles/q4t_model.dir/src/mtp/moe_bf16.cu.o
+[ 62%] Building CUDA object CMakeFiles/q4t_model.dir/src/mtp/mtp.cu.o
+[ 62%] Building CXX object CMakeFiles/q4t_model.dir/src/mtp/subset_head.cpp.o
+[ 62%] Building CXX object CMakeFiles/q4t_model.dir/src/mtp/suffix_drafter.cpp.o
+[ 62%] Building CUDA object CMakeFiles/q4t_model.dir/src/vision/vision.cu.o
+[ 62%] Building CXX object CMakeFiles/q4t_model.dir/src/vision/media_plan.cpp.o
+[ 66%] Building CXX object CMakeFiles/q4t_model.dir/src/vision/processor.cpp.o
+[ 66%] Linking CXX static library libq4t_model.a
+[ 66%] Built target q4t_model
+[ 66%] Building CXX object CMakeFiles/q4t_startup_plan.dir/src/runtime/startup_plan.cpp.o
+[ 66%] Building CXX object CMakeFiles/q4t_startup_plan.dir/src/runtime/startup_model_plan.cpp.o
+[ 70%] Building CXX object CMakeFiles/q4t_startup_plan.dir/src/runtime/startup_mtp_plan.cpp.o
+[ 70%] Linking CXX static library libq4t_startup_plan.a
+[ 70%] Built target q4t_startup_plan
+[ 70%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_server.cpp.o
+[ 70%] Building CXX object CMakeFiles/q4t_server.dir/src/server/client_policy.cpp.o
+[ 70%] Building CXX object CMakeFiles/q4t_server.dir/src/server/client_request.cpp.o
+[ 70%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_device_memory.cpp.o
+[ 74%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_health.cpp.o
+[ 74%] Building CXX object CMakeFiles/q4t_server.dir/src/server/memory_admission.cpp.o
+[ 74%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_memory.cpp.o
+[ 74%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_capabilities.cpp.o
+[ 74%] Building CXX object CMakeFiles/q4t_server.dir/src/server/server_options.cpp.o
+[ 77%] Building CXX object CMakeFiles/q4t_server.dir/src/server/http_response.cpp.o
+[ 77%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_http.cpp.o
+[ 77%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_response_parser.cpp.o
+[ 77%] Building CXX object CMakeFiles/q4t_server.dir/src/server/thinking_budget.cpp.o
+[ 81%] Building CXX object CMakeFiles/q4t_server.dir/src/server/text_stop.cpp.o
+[ 81%] Building CXX object CMakeFiles/q4t_server.dir/src/server/reasoning_options.cpp.o
+[ 81%] Building CXX object CMakeFiles/q4t_server.dir/src/server/output_schema.cpp.o
+[ 81%] Building CXX object CMakeFiles/q4t_server.dir/src/server/output_constraints.cpp.o
+[ 81%] Building CXX object CMakeFiles/q4t_server.dir/src/server/grammar_process.cpp.o
+[ 85%] Building CXX object CMakeFiles/q4t_server.dir/src/server/grammar_worker.cpp.o
+[ 85%] Building CXX object CMakeFiles/q4t_server.dir/src/server/structured_decoder.cpp.o
+[ 85%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_input.cpp.o
+[ 85%] Building CXX object CMakeFiles/q4t_server.dir/src/server/media_admission.cpp.o
+[ 85%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_prompt.cpp.o
+[ 88%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_plan.cpp.o
+[ 88%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_preflight.cpp.o
+[ 88%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_metrics.cpp.o
+[ 88%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_admission.cpp.o
+[ 88%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_scheduler.cpp.o
+[ 92%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_generation.cpp.o
+[ 92%] Building CXX object CMakeFiles/q4t_server.dir/src/server/session_cache.cpp.o
+[ 92%] Building CXX object CMakeFiles/q4t_server.dir/src/server/session_state.cpp.o
+[ 92%] Building CXX object CMakeFiles/q4t_server.dir/src/server/http_request.cpp.o
+[ 92%] Building CXX object CMakeFiles/q4t_server.dir/src/server/input_contract.cpp.o
+[ 96%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_contract.cpp.o
+[ 96%] Building CXX object CMakeFiles/q4t_server.dir/src/server/sampling.cpp.o
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp: In function ‘bool q4t::server::{anonymous}::SignedSeed(const q4t::io::Json&, int64_t*)’:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:46: error: no match for ‘operator!=’ (operand types are ‘const char* const’ and ‘std::__cxx11::basic_string<char>::iterator’)
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                   ~~~~~~~~~~ ^~ ~~~~~~~~~~~~
+      |                                          |                |
+      |                                          |                std::__cxx11::basic_string<char>::iterator
+      |                                          const char* const
+In file included from /usr/include/aarch64-linux-gnu/c++/14/bits/c++allocator.h:33,
+                 from /usr/include/c++/14/bits/allocator.h:46,
+                 from /usr/include/c++/14/string:43,
+                 from /usr/include/c++/14/random:43,
+                 from /home/rm01/models/dev/qwen4-thor/include/q4t/server/sampling.h:5,
+                 from /home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:1:
+/usr/include/c++/14/bits/new_allocator.h:215:9: note: candidate: ‘template<class _Up> constexpr bool std::operator==(const __new_allocator<char>&, const __new_allocator<_Tp>&)’ (reversed)
+  215 |         operator==(const __new_allocator&, const __new_allocator<_Up>&)
+      |         ^~~~~~~~
+/usr/include/c++/14/bits/new_allocator.h:215:9: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   mismatched types ‘const std::__new_allocator<_Tp>’ and ‘const char* const’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+In file included from /home/rm01/models/dev/qwen4-thor/include/q4t/server/sampling.h:4:
+/usr/include/c++/14/optional:1232:5: note: candidate: ‘template<class _Tp, class _Up> constexpr std::__optional_eq_t<_Tp, _Up> std::operator==(const optional<_Tp>&, const optional<_Up>&)’ (reversed)
+ 1232 |     operator==(const optional<_Tp>& __lhs, const optional<_Up>& __rhs)
+      |     ^~~~~~~~
+/usr/include/c++/14/optional:1232:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   ‘std::__cxx11::basic_string<char>::iterator’ is not derived from ‘const std::optional<_Tp>’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+/usr/include/c++/14/optional:1292:5: note: candidate: ‘template<class _Tp> constexpr bool std::operator==(const optional<_Tp>&, nullopt_t)’ (reversed)
+ 1292 |     operator==(const optional<_Tp>& __lhs, nullopt_t) noexcept
+      |     ^~~~~~~~
+/usr/include/c++/14/optional:1292:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   ‘std::__cxx11::basic_string<char>::iterator’ is not derived from ‘const std::optional<_Tp>’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+/usr/include/c++/14/optional:1360:5: note: candidate: ‘template<class _Tp, class _Up> constexpr std::__optional_eq_t<_Tp, _Up> std::operator==(const optional<_Tp>&, const _Up&)’ (reversed)
+ 1360 |     operator==(const optional<_Tp>& __lhs, const _Up& __rhs)
+      |     ^~~~~~~~
+/usr/include/c++/14/optional:1360:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   ‘std::__cxx11::basic_string<char>::iterator’ is not derived from ‘const std::optional<_Tp>’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+/usr/include/c++/14/optional:1366:5: note: candidate: ‘template<class _Tp, class _Up> constexpr std::__optional_eq_t<_Up, _Tp> std::operator==(const _Up&, const optional<_Tp>&)’ (reversed)
+ 1366 |     operator==(const _Up& __lhs, const optional<_Tp>& __rhs)
+      |     ^~~~~~~~
+/usr/include/c++/14/optional:1366:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   mismatched types ‘const std::optional<_Tp>’ and ‘const char* const’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+In file included from /usr/include/c++/14/bits/stl_algobase.h:64,
+                 from /usr/include/c++/14/bits/specfun.h:43,
+                 from /usr/include/c++/14/cmath:3898,
+                 from /usr/include/c++/14/random:40:
+/usr/include/c++/14/bits/stl_pair.h:1010:5: note: candidate: ‘template<class _T1, class _T2, class _U1, class _U2> constexpr bool std::operator==(const pair<_T1, _T2>&, const pair<_U1, _U2>&)’ (reversed)
+ 1010 |     operator==(const pair<_T1, _T2>& __x, const pair<_U1, _U2>& __y)
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/stl_pair.h:1010:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   ‘std::__cxx11::basic_string<char>::iterator’ is not derived from ‘const std::pair<_T1, _T2>’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+In file included from /usr/include/c++/14/bits/stl_algobase.h:67:
+/usr/include/c++/14/bits/stl_iterator.h:527:5: note: candidate: ‘template<class _IteratorL, class _IteratorR> constexpr bool std::operator==(const reverse_iterator<_IteratorL>&, const reverse_iterator<_IteratorR>&) requires requires{{std::operator==::__x->base() == std::operator==::__y->base()} -> decltype(auto) [requires std::convertible_to<<placeholder>, bool>];}’ (reversed)
+  527 |     operator==(const reverse_iterator<_IteratorL>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/stl_iterator.h:527:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   ‘std::__cxx11::basic_string<char>::iterator’ is not derived from ‘const std::reverse_iterator<_IteratorL>’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+/usr/include/c++/14/bits/stl_iterator.h:1667:5: note: candidate: ‘template<class _IteratorL, class _IteratorR> constexpr bool std::operator==(const move_iterator<_IteratorL>&, const move_iterator<_IteratorR>&) requires requires{{std::operator==::__x->base() == std::operator==::__y->base()} -> decltype(auto) [requires std::convertible_to<<placeholder>, bool>];}’ (reversed)
+ 1667 |     operator==(const move_iterator<_IteratorL>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/stl_iterator.h:1667:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   ‘std::__cxx11::basic_string<char>::iterator’ is not derived from ‘const std::move_iterator<_IteratorL>’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+/usr/include/c++/14/bits/allocator.h:235:5: note: candidate: ‘template<class _T1, class _T2> constexpr bool std::operator==(const allocator<_CharT>&, const allocator<_T2>&)’ (reversed)
+  235 |     operator==(const allocator<_T1>&, const allocator<_T2>&)
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/allocator.h:235:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   ‘std::__cxx11::basic_string<char>::iterator’ is not derived from ‘const std::allocator<_CharT>’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+In file included from /usr/include/c++/14/bits/basic_string.h:47,
+                 from /usr/include/c++/14/string:54:
+/usr/include/c++/14/string_view:609:5: note: candidate: ‘template<class _CharT, class _Traits> constexpr bool std::operator==(basic_string_view<_CharT, _Traits>, type_identity_t<basic_string_view<_CharT, _Traits> >)’ (reversed)
+  609 |     operator==(basic_string_view<_CharT, _Traits> __x,
+      |     ^~~~~~~~
+/usr/include/c++/14/string_view:609:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   ‘__gnu_cxx::__normal_iterator<char*, std::__cxx11::basic_string<char> >’ is not derived from ‘std::basic_string_view<_CharT, _Traits>’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+/usr/include/c++/14/bits/basic_string.h:3772:5: note: candidate: ‘template<class _CharT, class _Traits, class _Alloc> constexpr bool std::operator==(const __cxx11::basic_string<_CharT, _Traits, _Allocator>&, const _CharT*)’ (reversed)
+ 3772 |     operator==(const basic_string<_CharT, _Traits, _Alloc>& __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/basic_string.h:3772:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   ‘std::__cxx11::basic_string<char>::iterator’ is not derived from ‘const std::__cxx11::basic_string<_CharT, _Traits, _Allocator>’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+In file included from /usr/include/c++/14/bits/uses_allocator_args.h:39,
+                 from /usr/include/c++/14/bits/memory_resource.h:41,
+                 from /usr/include/c++/14/string:68:
+/usr/include/c++/14/tuple:2556:5: note: candidate: ‘template<class ... _TElements, class ... _UElements> constexpr bool std::operator==(const tuple<_Ts ...>&, const tuple<_Elements ...>&)’ (reversed)
+ 2556 |     operator==(const tuple<_TElements...>& __t,
+      |     ^~~~~~~~
+/usr/include/c++/14/tuple:2556:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   ‘std::__cxx11::basic_string<char>::iterator’ is not derived from ‘const std::tuple<_Ts ...>’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+/usr/include/c++/14/bits/stl_iterator.h:1169:5: note: candidate: ‘template<class _IteratorL, class _IteratorR, class _Container> constexpr bool __gnu_cxx::operator==(const __normal_iterator<_IteratorL, _Container>&, const __normal_iterator<_IteratorR, _Container>&) requires requires{{__gnu_cxx::operator==::__lhs->base() == __gnu_cxx::operator==::__rhs->base()} -> decltype(auto) [requires std::convertible_to<<placeholder>, bool>];}’ (reversed)
+ 1169 |     operator==(const __normal_iterator<_IteratorL, _Container>& __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/stl_iterator.h:1169:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   mismatched types ‘const __gnu_cxx::__normal_iterator<_IteratorR, _Container>’ and ‘const char* const’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+/usr/include/c++/14/bits/stl_iterator.h:586:5: note: candidate: ‘template<class _Iterator> constexpr bool std::operator==(const reverse_iterator<_IteratorL>&, const reverse_iterator<_IteratorL>&) requires requires{{std::operator==::__x->base() == std::operator==::__y->base()} -> decltype(auto) [requires std::convertible_to<<placeholder>, bool>];}’ (rewritten)
+  586 |     operator==(const reverse_iterator<_Iterator>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/stl_iterator.h:586:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   mismatched types ‘const std::reverse_iterator<_IteratorL>’ and ‘const char* const’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+/usr/include/c++/14/bits/stl_iterator.h:1737:5: note: candidate: ‘template<class _Iterator> constexpr bool std::operator==(const move_iterator<_IteratorL>&, const move_iterator<_IteratorL>&)’ (rewritten)
+ 1737 |     operator==(const move_iterator<_Iterator>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/stl_iterator.h:1737:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   mismatched types ‘const std::move_iterator<_IteratorL>’ and ‘const char* const’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+In file included from /usr/include/c++/14/bits/char_traits.h:42,
+                 from /usr/include/c++/14/string:42:
+/usr/include/c++/14/bits/postypes.h:192:5: note: candidate: ‘template<class _StateT> bool std::operator==(const fpos<_StateT>&, const fpos<_StateT>&)’ (rewritten)
+  192 |     operator==(const fpos<_StateT>& __lhs, const fpos<_StateT>& __rhs)
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/postypes.h:192:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   mismatched types ‘const std::fpos<_StateT>’ and ‘const char* const’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+/usr/include/c++/14/bits/basic_string.h:3755:5: note: candidate: ‘template<class _CharT, class _Traits, class _Alloc> constexpr bool std::operator==(const __cxx11::basic_string<_CharT, _Traits, _Allocator>&, const __cxx11::basic_string<_CharT, _Traits, _Allocator>&)’ (rewritten)
+ 3755 |     operator==(const basic_string<_CharT, _Traits, _Alloc>& __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/basic_string.h:3755:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   mismatched types ‘const std::__cxx11::basic_string<_CharT, _Traits, _Allocator>’ and ‘const char* const’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+In file included from /usr/include/c++/14/vector:66,
+                 from /usr/include/c++/14/bits/random.h:34,
+                 from /usr/include/c++/14/random:48:
+/usr/include/c++/14/bits/stl_vector.h:2050:5: note: candidate: ‘template<class _Tp, class _Alloc> constexpr bool std::operator==(const vector<_Tp, _Alloc>&, const vector<_Tp, _Alloc>&)’ (rewritten)
+ 2050 |     operator==(const vector<_Tp, _Alloc>& __x, const vector<_Tp, _Alloc>& __y)
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/stl_vector.h:2050:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   mismatched types ‘const std::vector<_Tp, _Alloc>’ and ‘const char* const’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+In file included from /usr/include/c++/14/random:50:
+/usr/include/c++/14/bits/random.tcc:1908:5: note: candidate: ‘template<class _RealType1> bool std::operator==(const normal_distribution<_RealType>&, const normal_distribution<_RealType>&)’ (rewritten)
+ 1908 |     operator==(const std::normal_distribution<_RealType>& __d1,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/random.tcc:1908:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   mismatched types ‘const std::normal_distribution<_RealType>’ and ‘const char* const’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+In file included from /usr/include/c++/14/span:43,
+                 from /home/rm01/models/dev/qwen4-thor/include/q4t/server/sampling.h:6:
+/usr/include/c++/14/array:303:5: note: candidate: ‘template<class _Tp, long unsigned int _Nm> constexpr bool std::operator==(const array<_Tp, _Nm>&, const array<_Tp, _Nm>&)’ (rewritten)
+  303 |     operator==(const array<_Tp, _Nm>& __one, const array<_Tp, _Nm>& __two)
+      |     ^~~~~~~~
+/usr/include/c++/14/array:303:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   mismatched types ‘const std::array<_Tp, _Nm>’ and ‘const char* const’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+In file included from /usr/include/c++/14/unordered_set:41,
+                 from /home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:9:
+/usr/include/c++/14/bits/unordered_set.h:1813:5: note: candidate: ‘template<class _Value1, class _Hash1, class _Pred1, class _Alloc1> bool std::operator==(const unordered_set<_Value1, _Hash1, _Pred1, _Alloc1>&, const unordered_set<_Value1, _Hash1, _Pred1, _Alloc1>&)’ (rewritten)
+ 1813 |     operator==(const unordered_set<_Value, _Hash, _Pred, _Alloc>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/unordered_set.h:1813:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   mismatched types ‘const std::unordered_set<_Value1, _Hash1, _Pred1, _Alloc1>’ and ‘const char* const’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+/usr/include/c++/14/bits/unordered_set.h:1827:5: note: candidate: ‘template<class _Value1, class _Hash1, class _Pred1, class _Alloc1> bool std::operator==(const unordered_multiset<_Value1, _Hash1, _Pred1, _Alloc1>&, const unordered_multiset<_Value1, _Hash1, _Pred1, _Alloc1>&)’ (rewritten)
+ 1827 |     operator==(const unordered_multiset<_Value, _Hash, _Pred, _Alloc>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/unordered_set.h:1827:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   mismatched types ‘const std::unordered_multiset<_Value1, _Hash1, _Pred1, _Alloc1>’ and ‘const char* const’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+/usr/include/c++/14/bits/stl_iterator.h:1188:5: note: candidate: ‘template<class _Iterator, class _Container> constexpr bool __gnu_cxx::operator==(const __normal_iterator<_Iterator, _Container>&, const __normal_iterator<_Iterator, _Container>&) requires requires{{__gnu_cxx::operator==::__lhs->base() == __gnu_cxx::operator==::__rhs->base()} -> decltype(auto) [requires std::convertible_to<<placeholder>, bool>];}’ (rewritten)
+ 1188 |     operator==(const __normal_iterator<_Iterator, _Container>& __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/stl_iterator.h:1188:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   mismatched types ‘const __gnu_cxx::__normal_iterator<_Iterator, _Container>’ and ‘const char* const’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+/usr/include/c++/14/bits/allocator.h:214:7: note: candidate: ‘constexpr bool std::operator==(const allocator<char>&, const allocator<char>&)’ (rewritten)
+  214 |       operator==(const allocator&, const allocator&) _GLIBCXX_NOTHROW
+      |       ^~~~~~~~
+/usr/include/c++/14/bits/allocator.h:214:18: note:   no known conversion for argument 1 from ‘const char* const’ to ‘const std::allocator<char>&’
+  214 |       operator==(const allocator&, const allocator&) _GLIBCXX_NOTHROW
+      |                  ^~~~~~~~~~~~~~~~
+/usr/include/c++/14/optional:1241:5: note: candidate: ‘template<class _Tp, class _Up> constexpr std::__optional_ne_t<_Tp, _Up> std::operator!=(const optional<_Tp>&, const optional<_Up>&)’
+ 1241 |     operator!=(const optional<_Tp>& __lhs, const optional<_Up>& __rhs)
+      |     ^~~~~~~~
+/usr/include/c++/14/optional:1241:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   mismatched types ‘const std::optional<_Tp>’ and ‘const char* const’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+/usr/include/c++/14/optional:1372:5: note: candidate: ‘template<class _Tp, class _Up> constexpr std::__optional_ne_t<_Tp, _Up> std::operator!=(const optional<_Tp>&, const _Up&)’
+ 1372 |     operator!=(const optional<_Tp>& __lhs, const _Up& __rhs)
+      |     ^~~~~~~~
+/usr/include/c++/14/optional:1372:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   mismatched types ‘const std::optional<_Tp>’ and ‘const char* const’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+/usr/include/c++/14/optional:1378:5: note: candidate: ‘template<class _Tp, class _Up> constexpr std::__optional_ne_t<_Up, _Tp> std::operator!=(const _Up&, const optional<_Tp>&)’
+ 1378 |     operator!=(const _Up& __lhs, const optional<_Tp>& __rhs)
+      |     ^~~~~~~~
+/usr/include/c++/14/optional:1378:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   ‘std::__cxx11::basic_string<char>::iterator’ is not derived from ‘const std::optional<_Tp>’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+/usr/include/c++/14/bits/stl_iterator.h:535:5: note: candidate: ‘template<class _IteratorL, class _IteratorR> constexpr bool std::operator!=(const reverse_iterator<_IteratorL>&, const reverse_iterator<_IteratorR>&) requires requires{{std::operator!=::__x->base() != std::operator!=::__y->base()} -> decltype(auto) [requires std::convertible_to<<placeholder>, bool>];}’
+  535 |     operator!=(const reverse_iterator<_IteratorL>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/stl_iterator.h:535:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   mismatched types ‘const std::reverse_iterator<_IteratorL>’ and ‘const char* const’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+/usr/include/c++/14/bits/postypes.h:197:5: note: candidate: ‘template<class _StateT> bool std::operator!=(const fpos<_StateT>&, const fpos<_StateT>&)’
+  197 |     operator!=(const fpos<_StateT>& __lhs, const fpos<_StateT>& __rhs)
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/postypes.h:197:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:66:60: note:   mismatched types ‘const std::fpos<_StateT>’ and ‘const char* const’
+   66 |   if (parsed.ec != std::errc() || parsed.ptr != digits.end() ||
+      |                                                            ^
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp: In function ‘q4t::Status q4t::server::ParseSamplingOptions(const q4t::io::Json&, SamplingOptions*, std::string*)’:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:22: error: no match for ‘operator!=’ (operand types are ‘const char* const’ and ‘std::__cxx11::basic_string<char>::const_iterator’)
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |           ~~~~~~~~~~ ^~ ~~~~~~~~~
+      |                  |             |
+      |                  |             std::__cxx11::basic_string<char>::const_iterator
+      |                  const char* const
+/usr/include/c++/14/bits/new_allocator.h:215:9: note: candidate: ‘template<class _Up> constexpr bool std::operator==(const __new_allocator<char>&, const __new_allocator<_Tp>&)’ (reversed)
+  215 |         operator==(const __new_allocator&, const __new_allocator<_Up>&)
+      |         ^~~~~~~~
+/usr/include/c++/14/bits/new_allocator.h:215:9: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   mismatched types ‘const std::__new_allocator<_Tp>’ and ‘const char* const’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+/usr/include/c++/14/optional:1232:5: note: candidate: ‘template<class _Tp, class _Up> constexpr std::__optional_eq_t<_Tp, _Up> std::operator==(const optional<_Tp>&, const optional<_Up>&)’ (reversed)
+ 1232 |     operator==(const optional<_Tp>& __lhs, const optional<_Up>& __rhs)
+      |     ^~~~~~~~
+/usr/include/c++/14/optional:1232:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   ‘std::__cxx11::basic_string<char>::const_iterator’ is not derived from ‘const std::optional<_Tp>’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+/usr/include/c++/14/optional:1292:5: note: candidate: ‘template<class _Tp> constexpr bool std::operator==(const optional<_Tp>&, nullopt_t)’ (reversed)
+ 1292 |     operator==(const optional<_Tp>& __lhs, nullopt_t) noexcept
+      |     ^~~~~~~~
+/usr/include/c++/14/optional:1292:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   ‘std::__cxx11::basic_string<char>::const_iterator’ is not derived from ‘const std::optional<_Tp>’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+/usr/include/c++/14/optional:1360:5: note: candidate: ‘template<class _Tp, class _Up> constexpr std::__optional_eq_t<_Tp, _Up> std::operator==(const optional<_Tp>&, const _Up&)’ (reversed)
+ 1360 |     operator==(const optional<_Tp>& __lhs, const _Up& __rhs)
+      |     ^~~~~~~~
+/usr/include/c++/14/optional:1360:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   ‘std::__cxx11::basic_string<char>::const_iterator’ is not derived from ‘const std::optional<_Tp>’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+/usr/include/c++/14/optional:1366:5: note: candidate: ‘template<class _Tp, class _Up> constexpr std::__optional_eq_t<_Up, _Tp> std::operator==(const _Up&, const optional<_Tp>&)’ (reversed)
+ 1366 |     operator==(const _Up& __lhs, const optional<_Tp>& __rhs)
+      |     ^~~~~~~~
+/usr/include/c++/14/optional:1366:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   mismatched types ‘const std::optional<_Tp>’ and ‘const char* const’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+/usr/include/c++/14/bits/stl_pair.h:1010:5: note: candidate: ‘template<class _T1, class _T2, class _U1, class _U2> constexpr bool std::operator==(const pair<_T1, _T2>&, const pair<_U1, _U2>&)’ (reversed)
+ 1010 |     operator==(const pair<_T1, _T2>& __x, const pair<_U1, _U2>& __y)
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/stl_pair.h:1010:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   ‘std::__cxx11::basic_string<char>::const_iterator’ is not derived from ‘const std::pair<_T1, _T2>’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+/usr/include/c++/14/bits/stl_iterator.h:527:5: note: candidate: ‘template<class _IteratorL, class _IteratorR> constexpr bool std::operator==(const reverse_iterator<_IteratorL>&, const reverse_iterator<_IteratorR>&) requires requires{{std::operator==::__x->base() == std::operator==::__y->base()} -> decltype(auto) [requires std::convertible_to<<placeholder>, bool>];}’ (reversed)
+  527 |     operator==(const reverse_iterator<_IteratorL>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/stl_iterator.h:527:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   ‘std::__cxx11::basic_string<char>::const_iterator’ is not derived from ‘const std::reverse_iterator<_IteratorL>’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+/usr/include/c++/14/bits/stl_iterator.h:1667:5: note: candidate: ‘template<class _IteratorL, class _IteratorR> constexpr bool std::operator==(const move_iterator<_IteratorL>&, const move_iterator<_IteratorR>&) requires requires{{std::operator==::__x->base() == std::operator==::__y->base()} -> decltype(auto) [requires std::convertible_to<<placeholder>, bool>];}’ (reversed)
+ 1667 |     operator==(const move_iterator<_IteratorL>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/stl_iterator.h:1667:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   ‘std::__cxx11::basic_string<char>::const_iterator’ is not derived from ‘const std::move_iterator<_IteratorL>’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+/usr/include/c++/14/bits/allocator.h:235:5: note: candidate: ‘template<class _T1, class _T2> constexpr bool std::operator==(const allocator<_CharT>&, const allocator<_T2>&)’ (reversed)
+  235 |     operator==(const allocator<_T1>&, const allocator<_T2>&)
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/allocator.h:235:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   ‘std::__cxx11::basic_string<char>::const_iterator’ is not derived from ‘const std::allocator<_CharT>’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+/usr/include/c++/14/string_view:609:5: note: candidate: ‘template<class _CharT, class _Traits> constexpr bool std::operator==(basic_string_view<_CharT, _Traits>, type_identity_t<basic_string_view<_CharT, _Traits> >)’ (reversed)
+  609 |     operator==(basic_string_view<_CharT, _Traits> __x,
+      |     ^~~~~~~~
+/usr/include/c++/14/string_view:609:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   ‘__gnu_cxx::__normal_iterator<const char*, std::__cxx11::basic_string<char> >’ is not derived from ‘std::basic_string_view<_CharT, _Traits>’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+/usr/include/c++/14/bits/basic_string.h:3772:5: note: candidate: ‘template<class _CharT, class _Traits, class _Alloc> constexpr bool std::operator==(const __cxx11::basic_string<_CharT, _Traits, _Allocator>&, const _CharT*)’ (reversed)
+ 3772 |     operator==(const basic_string<_CharT, _Traits, _Alloc>& __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/basic_string.h:3772:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   ‘std::__cxx11::basic_string<char>::const_iterator’ is not derived from ‘const std::__cxx11::basic_string<_CharT, _Traits, _Allocator>’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+/usr/include/c++/14/tuple:2556:5: note: candidate: ‘template<class ... _TElements, class ... _UElements> constexpr bool std::operator==(const tuple<_Ts ...>&, const tuple<_Elements ...>&)’ (reversed)
+ 2556 |     operator==(const tuple<_TElements...>& __t,
+      |     ^~~~~~~~
+/usr/include/c++/14/tuple:2556:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   ‘std::__cxx11::basic_string<char>::const_iterator’ is not derived from ‘const std::tuple<_Ts ...>’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+/usr/include/c++/14/bits/stl_iterator.h:1169:5: note: candidate: ‘template<class _IteratorL, class _IteratorR, class _Container> constexpr bool __gnu_cxx::operator==(const __normal_iterator<_IteratorL, _Container>&, const __normal_iterator<_IteratorR, _Container>&) requires requires{{__gnu_cxx::operator==::__lhs->base() == __gnu_cxx::operator==::__rhs->base()} -> decltype(auto) [requires std::convertible_to<<placeholder>, bool>];}’ (reversed)
+ 1169 |     operator==(const __normal_iterator<_IteratorL, _Container>& __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/stl_iterator.h:1169:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   mismatched types ‘const __gnu_cxx::__normal_iterator<_IteratorR, _Container>’ and ‘const char* const’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+/usr/include/c++/14/bits/stl_iterator.h:586:5: note: candidate: ‘template<class _Iterator> constexpr bool std::operator==(const reverse_iterator<_IteratorL>&, const reverse_iterator<_IteratorL>&) requires requires{{std::operator==::__x->base() == std::operator==::__y->base()} -> decltype(auto) [requires std::convertible_to<<placeholder>, bool>];}’ (rewritten)
+  586 |     operator==(const reverse_iterator<_Iterator>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/stl_iterator.h:586:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   mismatched types ‘const std::reverse_iterator<_IteratorL>’ and ‘const char* const’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+/usr/include/c++/14/bits/stl_iterator.h:1737:5: note: candidate: ‘template<class _Iterator> constexpr bool std::operator==(const move_iterator<_IteratorL>&, const move_iterator<_IteratorL>&)’ (rewritten)
+ 1737 |     operator==(const move_iterator<_Iterator>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/stl_iterator.h:1737:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   mismatched types ‘const std::move_iterator<_IteratorL>’ and ‘const char* const’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+/usr/include/c++/14/bits/postypes.h:192:5: note: candidate: ‘template<class _StateT> bool std::operator==(const fpos<_StateT>&, const fpos<_StateT>&)’ (rewritten)
+  192 |     operator==(const fpos<_StateT>& __lhs, const fpos<_StateT>& __rhs)
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/postypes.h:192:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   mismatched types ‘const std::fpos<_StateT>’ and ‘const char* const’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+/usr/include/c++/14/bits/basic_string.h:3755:5: note: candidate: ‘template<class _CharT, class _Traits, class _Alloc> constexpr bool std::operator==(const __cxx11::basic_string<_CharT, _Traits, _Allocator>&, const __cxx11::basic_string<_CharT, _Traits, _Allocator>&)’ (rewritten)
+ 3755 |     operator==(const basic_string<_CharT, _Traits, _Alloc>& __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/basic_string.h:3755:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   mismatched types ‘const std::__cxx11::basic_string<_CharT, _Traits, _Allocator>’ and ‘const char* const’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+/usr/include/c++/14/bits/stl_vector.h:2050:5: note: candidate: ‘template<class _Tp, class _Alloc> constexpr bool std::operator==(const vector<_Tp, _Alloc>&, const vector<_Tp, _Alloc>&)’ (rewritten)
+ 2050 |     operator==(const vector<_Tp, _Alloc>& __x, const vector<_Tp, _Alloc>& __y)
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/stl_vector.h:2050:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   mismatched types ‘const std::vector<_Tp, _Alloc>’ and ‘const char* const’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+/usr/include/c++/14/bits/random.tcc:1908:5: note: candidate: ‘template<class _RealType1> bool std::operator==(const normal_distribution<_RealType>&, const normal_distribution<_RealType>&)’ (rewritten)
+ 1908 |     operator==(const std::normal_distribution<_RealType>& __d1,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/random.tcc:1908:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   mismatched types ‘const std::normal_distribution<_RealType>’ and ‘const char* const’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+/usr/include/c++/14/array:303:5: note: candidate: ‘template<class _Tp, long unsigned int _Nm> constexpr bool std::operator==(const array<_Tp, _Nm>&, const array<_Tp, _Nm>&)’ (rewritten)
+  303 |     operator==(const array<_Tp, _Nm>& __one, const array<_Tp, _Nm>& __two)
+      |     ^~~~~~~~
+/usr/include/c++/14/array:303:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   mismatched types ‘const std::array<_Tp, _Nm>’ and ‘const char* const’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+/usr/include/c++/14/bits/unordered_set.h:1813:5: note: candidate: ‘template<class _Value1, class _Hash1, class _Pred1, class _Alloc1> bool std::operator==(const unordered_set<_Value1, _Hash1, _Pred1, _Alloc1>&, const unordered_set<_Value1, _Hash1, _Pred1, _Alloc1>&)’ (rewritten)
+ 1813 |     operator==(const unordered_set<_Value, _Hash, _Pred, _Alloc>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/unordered_set.h:1813:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   mismatched types ‘const std::unordered_set<_Value1, _Hash1, _Pred1, _Alloc1>’ and ‘const char* const’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+/usr/include/c++/14/bits/unordered_set.h:1827:5: note: candidate: ‘template<class _Value1, class _Hash1, class _Pred1, class _Alloc1> bool std::operator==(const unordered_multiset<_Value1, _Hash1, _Pred1, _Alloc1>&, const unordered_multiset<_Value1, _Hash1, _Pred1, _Alloc1>&)’ (rewritten)
+ 1827 |     operator==(const unordered_multiset<_Value, _Hash, _Pred, _Alloc>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/unordered_set.h:1827:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   mismatched types ‘const std::unordered_multiset<_Value1, _Hash1, _Pred1, _Alloc1>’ and ‘const char* const’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+/usr/include/c++/14/bits/stl_iterator.h:1188:5: note: candidate: ‘template<class _Iterator, class _Container> constexpr bool __gnu_cxx::operator==(const __normal_iterator<_Iterator, _Container>&, const __normal_iterator<_Iterator, _Container>&) requires requires{{__gnu_cxx::operator==::__lhs->base() == __gnu_cxx::operator==::__rhs->base()} -> decltype(auto) [requires std::convertible_to<<placeholder>, bool>];}’ (rewritten)
+ 1188 |     operator==(const __normal_iterator<_Iterator, _Container>& __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/stl_iterator.h:1188:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   mismatched types ‘const __gnu_cxx::__normal_iterator<_Iterator, _Container>’ and ‘const char* const’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+/usr/include/c++/14/bits/allocator.h:214:7: note: candidate: ‘constexpr bool std::operator==(const allocator<char>&, const allocator<char>&)’ (rewritten)
+  214 |       operator==(const allocator&, const allocator&) _GLIBCXX_NOTHROW
+      |       ^~~~~~~~
+/usr/include/c++/14/bits/allocator.h:214:18: note:   no known conversion for argument 1 from ‘const char* const’ to ‘const std::allocator<char>&’
+  214 |       operator==(const allocator&, const allocator&) _GLIBCXX_NOTHROW
+      |                  ^~~~~~~~~~~~~~~~
+/usr/include/c++/14/optional:1241:5: note: candidate: ‘template<class _Tp, class _Up> constexpr std::__optional_ne_t<_Tp, _Up> std::operator!=(const optional<_Tp>&, const optional<_Up>&)’
+ 1241 |     operator!=(const optional<_Tp>& __lhs, const optional<_Up>& __rhs)
+      |     ^~~~~~~~
+/usr/include/c++/14/optional:1241:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   mismatched types ‘const std::optional<_Tp>’ and ‘const char* const’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+/usr/include/c++/14/optional:1372:5: note: candidate: ‘template<class _Tp, class _Up> constexpr std::__optional_ne_t<_Tp, _Up> std::operator!=(const optional<_Tp>&, const _Up&)’
+ 1372 |     operator!=(const optional<_Tp>& __lhs, const _Up& __rhs)
+      |     ^~~~~~~~
+/usr/include/c++/14/optional:1372:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   mismatched types ‘const std::optional<_Tp>’ and ‘const char* const’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+/usr/include/c++/14/optional:1378:5: note: candidate: ‘template<class _Tp, class _Up> constexpr std::__optional_ne_t<_Up, _Tp> std::operator!=(const _Up&, const optional<_Tp>&)’
+ 1378 |     operator!=(const _Up& __lhs, const optional<_Tp>& __rhs)
+      |     ^~~~~~~~
+/usr/include/c++/14/optional:1378:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   ‘std::__cxx11::basic_string<char>::const_iterator’ is not derived from ‘const std::optional<_Tp>’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+/usr/include/c++/14/bits/stl_iterator.h:535:5: note: candidate: ‘template<class _IteratorL, class _IteratorR> constexpr bool std::operator!=(const reverse_iterator<_IteratorL>&, const reverse_iterator<_IteratorR>&) requires requires{{std::operator!=::__x->base() != std::operator!=::__y->base()} -> decltype(auto) [requires std::convertible_to<<placeholder>, bool>];}’
+  535 |     operator!=(const reverse_iterator<_IteratorL>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/stl_iterator.h:535:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   mismatched types ‘const std::reverse_iterator<_IteratorL>’ and ‘const char* const’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+/usr/include/c++/14/bits/postypes.h:197:5: note: candidate: ‘template<class _StateT> bool std::operator!=(const fpos<_StateT>&, const fpos<_StateT>&)’
+  197 |     operator!=(const fpos<_StateT>& __lhs, const fpos<_StateT>& __rhs)
+      |     ^~~~~~~~
+/usr/include/c++/14/bits/postypes.h:197:5: note:   template argument deduction/substitution failed:
+/home/rm01/models/dev/qwen4-thor/src/server/sampling.cpp:146:33: note:   mismatched types ‘const std::fpos<_StateT>’ and ‘const char* const’
+  146 |           parsed.ptr != key.end() || token < 0 || !ids.insert(token).second ||
+      |                                 ^
+gmake[3]: *** [CMakeFiles/q4t_server.dir/build.make:555: CMakeFiles/q4t_server.dir/src/server/sampling.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:1067: CMakeFiles/q4t_server.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:1115: CMakeFiles/q4t.dir/rule] Error 2
+gmake: *** [Makefile:467: q4t] Error 2
