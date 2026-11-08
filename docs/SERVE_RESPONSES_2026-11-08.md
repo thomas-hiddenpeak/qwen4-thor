@@ -115,3 +115,22 @@ previous_response_id工具回填与约束JSON、截断incomplete及同PID Chat/M
 item身份比较忽略JSON对象键顺序，保留精确数值、类型和数组顺序。
 7新增CPU、4直接回归通过，[原件](evidence/serve-responses-checkpoints-20261109/README.md)
 保留配额夹具失败及修复定向重验。本子组不追加GPU，继续后台与恢复。
+
+
+## 后台生命周期与恢复核心
+
+2026-11-09复核[官方后台模式](https://developers.openai.com/api/docs/guides/background)：
+后台store=false仍需临时保存供查询，取消幂等，断开订阅不取消生成。
+修正原来的直接拒绝，临时响应与未关联会话的新item保留600秒；
+会话items保持原保留合同，不缩短已存在item的生命周期。
+queued初始记录/原事件和转in_progress分别持久确认，未知转移不执行。
+恢复queued保留原ID、输入items和序号；已in_progress的中断记录真实
+failed恢复事件，不能盲重放可能执行过的工具。会话revision变化时
+恢复执行被拒绝，仍可以将该响应关闭为失败。模型重启恢复策略由R组
+负责，此处只闭合持久业务状态，不自行重启模型。
+官方cancel响应status=cancelled/error=null；固定SDK的SSE联合没有
+response.cancelled，取消只保存资源和已有原事件，不伪造completed或
+新的事件类型。实际后台任务管理器和HTTP取消仍待接入，继续推进。
+核心子组8新增/3直接CPU通过、实际引擎构建零警告，
+[证据](evidence/serve-responses-background-core-20261109/README.md)保留。
+无GPU或默认变更，继续实际后台管理器/路由。

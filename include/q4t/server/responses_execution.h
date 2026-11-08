@@ -14,8 +14,13 @@ class ResponsesExecution {
  public:
   explicit ResponsesExecution(ObjectStore& objects) : state_(objects) {}
   ObjectReply Prepare(const io::Json& request, const ChatPlanConfig& config,
-                      StateAccess access, int64_t created);
+                      StateAccess access, int64_t created,
+                      bool background_executor = false);
+  ObjectReply RestoreQueued(const std::string& id, const ChatPlanConfig& config,
+                            StateAccess access);
   ObjectReply Begin(std::string* wire);
+  ObjectReply StartRunning(std::string* wire);
+  ObjectReply Cancel();
   ObjectReply Checkpoint();
   void BindCancellation(std::chrono::steady_clock::time_point deadline,
                         std::function<bool()> cancelled) {
@@ -38,6 +43,7 @@ class ResponsesExecution {
   int64_t* Sequence() { return output_.Sequence(); }
   const std::string& Id() const { return plan_.id; }
   bool Begun() const { return begun_; }
+  bool Prepared() const { return prepared_; }
   bool Finished() const { return plan_.finished; }
   bool CommitUnknown() const { return commit_unknown_; }
   static std::string RenderStreamError(void* owner, int status,
@@ -50,6 +56,8 @@ class ResponsesExecution {
  private:
   Status Capture(std::string_view wire, io::Json* events, size_t* bytes) const;
   ObjectReply BindMutationResult(ObjectReply reply);
+  ObjectReply RequiredExecutors(bool background_executor) const;
+  ObjectReply PlanGeneration(const ChatPlanConfig& config, int64_t created);
   ResponsesState state_;
   StateAccess access_;
   ResponsesEnvelope envelope_;

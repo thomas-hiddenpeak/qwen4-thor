@@ -20,8 +20,9 @@ struct ResponseStatePlan {
   std::string id;
   std::string scope;  // Bound at resolution; never retarget a prepared plan.
   bool store = true;
-  io::Json history;    // Full authorized input for this generation.
-  io::Json own_input;  // New input, without inherited context/instructions.
+  bool ephemeral = false;  // Background store=false is retained for polling.
+  io::Json history;        // Full authorized input for this generation.
+  io::Json own_input;      // New input, without inherited context/instructions.
   io::Json request;
   std::string conversation_id;
   int64_t conversation_revision = 0;
@@ -44,6 +45,17 @@ class ResponsesState {
                            size_t maximum = 4096);
   ObjectReply Resolve(const ResponsesEnvelope& envelope,
                       const StateAccess& access, ResponseStatePlan* plan);
+  // Loads authoritative inputs and revision, without rerunning resolution or
+  // any tool/model. The result is the internal stored record, never an API
+  // body.
+  ObjectReply LoadPlan(const std::string& id, const StateAccess& access,
+                       ResponseStatePlan* plan,
+                       bool restore_conversation = false);
+  // Only after the owner process is known gone: reconcile with a checked
+  // revision and a real failure. Never use this to race a live execution.
+  // No executed work is replayed and no conversation items are appended.
+  ObjectReply Interrupt(const std::string& id, const StateAccess& access,
+                        std::string_view code, std::string_view message);
   ObjectReply Begin(const io::Json& snapshot, const StateAccess& access,
                     ResponseStatePlan* plan);
   ObjectReply Begin(const io::Json& snapshot, const io::Json& events,

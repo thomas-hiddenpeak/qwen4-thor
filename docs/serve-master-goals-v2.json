@@ -205,11 +205,12 @@
         "evidence/serve-responses-core-20261108/README.md"
       ],
       "release": null,
-      "development_status": "同步真实业务1启动/7生成/54.739秒通过，53NVML全OK；候选保留、默认未改。运行中事件检查点、配额失败预留终态、语义item相等新增7及4回归CPU通过；后台队列/取消/恢复、保留治理及其余执行依赖继续实施，不能作为全部交付。",
+      "development_status": "同步真实业务1启动/7生成/54.739秒通过，53NVML全OK；候选保留、默认未改。运行中事件检查点、配额失败预留终态、语义item相等新增7及4回归CPU通过；后台队列/取消/恢复、保留治理及其余执行依赖继续实施，不能作为全部交付。 后台queued/取消/临时保留及安全恢复核心8新增+3回归CPU通过；继续实际后台管理器/HTTP接入。",
       "item_shape_evidence": "evidence/serve-item-shape-20261109/README.md",
       "execution_evidence": "evidence/serve-responses-execution-20261109/README.md",
       "foreground_business_evidence": "evidence/serve-responses-business-20261109/README.md",
-      "checkpoint_evidence": "evidence/serve-responses-checkpoints-20261109/README.md"
+      "checkpoint_evidence": "evidence/serve-responses-checkpoints-20261109/README.md",
+      "background_core_evidence": "evidence/serve-responses-background-core-20261109/README.md"
     },
     {
       "id": "A08",
@@ -223,7 +224,7 @@
       ],
       "evidence": [],
       "release": null,
-      "development_status": "同步真实业务1启动/7生成/54.739秒通过，53NVML全OK；候选保留、默认未改。运行中事件检查点、配额失败预留终态、语义item相等新增7及4回归CPU通过；后台队列/取消/恢复、保留治理及其余执行依赖继续实施，不能作为全部交付。",
+      "development_status": "同步真实业务1启动/7生成/54.739秒通过，53NVML全OK；候选保留、默认未改。运行中事件检查点、配额失败预留终态、语义item相等新增7及4回归CPU通过；后台队列/取消/恢复、保留治理及其余执行依赖继续实施，不能作为全部交付。 后台queued/取消/临时保留及安全恢复核心8新增+3回归CPU通过；继续实际后台管理器/HTTP接入。",
       "development_evidence": "evidence/serve-object-store-20261108/README.md",
       "transaction_evidence": "evidence/serve-object-transactions-20261108/README.md",
       "state_evidence": "evidence/serve-responses-state-20261109/README.md",
@@ -231,7 +232,8 @@
       "service_binding_evidence": "evidence/serve-conversation-service-20261109/README.md",
       "execution_evidence": "evidence/serve-responses-execution-20261109/README.md",
       "foreground_business_evidence": "evidence/serve-responses-business-20261109/README.md",
-      "checkpoint_evidence": "evidence/serve-responses-checkpoints-20261109/README.md"
+      "checkpoint_evidence": "evidence/serve-responses-checkpoints-20261109/README.md",
+      "background_core_evidence": "evidence/serve-responses-background-core-20261109/README.md"
     },
     {
       "id": "A09",

@@ -28,6 +28,12 @@ class ResponsesOutput {
   Status Init(const io::Json& options, std::string id, int64_t created,
               bool obfuscation = true, size_t limit = kStorageLimit);
   Status Start(std::string* wire);
+  Status StartRunning(std::string* wire);
+  // Only queued work can resume. Already executed output is never replayed.
+  Status RestoreQueued(const io::Json& snapshot, int64_t next_sequence);
+  // The official SSE union has no response.cancelled event. Cancellation
+  // persists its resource and ends subscribers without inventing such an event.
+  Status Cancel();
   Status Append(const ResponseDelta& delta, std::string_view chat_logprobs,
                 std::string* wire);
   // Only calls with a validated closing delimiter may receive arguments.done.

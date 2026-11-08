@@ -170,8 +170,8 @@ Q4T_TEST(responses_plan_lifecycle_fields_survive_and_conflicts_fail) {
   // Parsing retains execution requirements; this is not a moderation/cache/
   // background acceptance. Their owners must execute before any success.
   Q4T_CHECK(
-      !Envelope(R"({"background":true,"store":false})", &envelope, &error));
-  Q4T_CHECK(error.param == "background");
+      Envelope(R"({"background":true,"store":false})", &envelope, &error));
+  Q4T_CHECK(envelope.background && !envelope.store);
   Q4T_CHECK(
       !Envelope(R"({"conversation":"conv_a","previous_response_id":"resp_a"})",
                 &envelope, &error));

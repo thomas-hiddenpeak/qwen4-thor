@@ -2,6 +2,13 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+后台生命周期核心继续实施：queued→in_progress在持久回执后才能执行，
+取消保留真实部分输出且不伪造completed或不存在的SSE类型；store=false
+后台改为10分钟临时保留。恢复仅续排未执行queued，已in_progress的中断
+保存明确失败，不盲重放工具；conversation变化也能关闭失败。8新增
+CPU/3直接回归通过、实际引擎构建零警告。[原件](evidence/serve-responses-background-core-20261109/README.md)。
+继续实际后台管理器/API与短验，默认仍保持A06。
+
 Responses状态保障继续实施：活动事件按500毫秒/64KiB检查点持久化；
 每个活动对象预留4KiB用于已知配额/大小拒绝后的诚实失败终态，未知
 提交仍不重试。共享item改用有界精确JSON语义比较，避免键顺序误报。

@@ -1,0 +1,19 @@
+{
+  "new": [
+    "responses_background_queued_transition_is_durable_before_generation",
+    "responses_background_cancel_preserves_partial_without_tool_done",
+    "responses_background_store_false_has_temporary_polling_state",
+    "responses_background_restore_queued_keeps_identity_and_resolved_history",
+    "responses_background_interrupted_execution_fails_without_replay",
+    "responses_background_changed_conversation_does_not_block_failure_closure",
+    "responses_background_restoration_cannot_cross_authenticated_scope",
+    "responses_background_lost_start_receipt_never_starts_or_overwrites"
+  ],
+  "regressions": [
+    "responses_plan_lifecycle_fields_survive_and_conflicts_fail",
+    "responses_execution_commits_actual_ordered_events_and_usage",
+    "responses_execution_size_and_quota_rejection_retain_failure"
+  ],
+  "gpu_starts": 0,
+  "purpose": "Queued execution, temporary background retention, cancellation and safe process recovery primitives"
+}

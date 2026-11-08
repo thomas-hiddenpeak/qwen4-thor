@@ -768,7 +768,10 @@ int MaybeRunObjectWorker(int argc, char** argv) {
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
   const bool lose_ack =
       std::strcmp(argv[1], "--q4t-object-worker-lost-ack") == 0;
-  matched = matched || lose_ack;
+  const bool lose_second_ack =
+      std::strcmp(argv[1], "--q4t-object-worker-second-put-lost-ack") == 0;
+  int successful_puts = 0;
+  matched = matched || lose_ack || lose_second_ack;
   if (std::strcmp(argv[1], "--q4t-object-worker-commit-pause") == 0) {
     matched = true;
     pause_after = -1;
@@ -803,8 +806,10 @@ int MaybeRunObjectWorker(int argc, char** argv) {
         reply = store.Run(request);
       }
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
-      if (lose_ack && reply.ok() && request.GetString("operation") == "put") {
-        for (;;) pause();  // Durable commit succeeded; receipt is lost.
+      if (reply.ok() && request.GetString("operation") == "put") {
+        ++successful_puts;
+        if (lose_ack || (lose_second_ack && successful_puts == 2))
+          for (;;) pause();  // Durable commit succeeded; receipt is lost.
       }
 #endif
       auto response = OutputJson(WireReply(reply));

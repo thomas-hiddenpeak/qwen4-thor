@@ -21,7 +21,7 @@ bool Terminal(const Json& response) {
 }
 ObjectRequest Write(ObjectKind kind, const std::string& id,
                     const StateAccess& access, int64_t revision, Json data,
-                    bool permanent) {
+                    bool permanent, bool ephemeral = false) {
   ObjectRequest request;
   request.operation = ObjectOperation::kPut;
   request.kind = kind;
@@ -30,6 +30,7 @@ ObjectRequest Write(ObjectKind kind, const std::string& id,
   request.expected_revision = revision;
   request.data = std::move(data);
   if (permanent) request.ttl_seconds = 0;
+  if (ephemeral) request.ttl_seconds = 600;
   return request;
 }
 Json SavedResponse(const ResponseStatePlan& plan, const Json& response,
@@ -42,6 +43,10 @@ Json SavedResponse(const ResponseStatePlan& plan, const Json& response,
   if (!Terminal(response))
     Set(&result, "terminal_reserve", String(std::string(4096, ' ')));
   Set(&result, "events_retained", Boolean(!events.array.empty()));
+  Set(&result, "continuation",
+      Object({{"ephemeral", Boolean(plan.ephemeral)},
+              {"conversation_id", String(plan.conversation_id)},
+              {"conversation_revision", Number(plan.conversation_revision)}}));
   return result;
 }
 ObjectReply Data(const ObjectReply& stored, std::string_view field) {
@@ -186,7 +191,8 @@ ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
   plan->scope = access.scope;
   plan->id = NewObjectId(ObjectKind::kResponse);
   if (plan->id.empty()) return StateError("Response identity unavailable");
-  plan->store = envelope.store;
+  plan->store = envelope.store || envelope.background;
+  plan->ephemeral = envelope.background && !envelope.store;
   plan->request = envelope.request;
   plan->history = Array();
   const auto* input = envelope.request.Find("input");
@@ -235,6 +241,86 @@ ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
   return result;
 }
 
+ObjectReply ResponsesState::LoadPlan(const std::string& id,
+                                     const StateAccess& access,
+                                     ResponseStatePlan* plan,
+                                     bool restore_conversation) {
+  *plan = {};
+  auto stored = Get(ObjectKind::kResponse, id, access);
+  if (!stored.ok()) return stored;
+  const auto* data = stored.value.Find("data");
+  const auto* response = data ? data->Find("response") : nullptr;
+  if (!response || response->GetString("id") != id ||
+      !response->GetArray("output") || !data->GetArray("history") ||
+      !data->GetArray("own_input") || !data->GetArray("events") ||
+      !data->Find("request") || !data->Find("request")->IsObject() ||
+      stored.value.GetInt("revision") < 1)
+    return StateError("Stored response cannot restore execution state");
+  plan->id = id;
+  plan->scope = access.scope;
+  plan->store = true;
+  plan->history = *data->Find("history");
+  plan->own_input = *data->Find("own_input");
+  plan->request = *data->Find("request");
+  plan->response_revision = stored.value.GetInt("revision");
+  plan->finished = Terminal(*response);
+  if (const auto* continuation = data->Find("continuation")) {
+    plan->ephemeral = continuation->GetBool("ephemeral");
+    plan->conversation_id = continuation->GetString("conversation_id");
+    plan->conversation_revision = continuation->GetInt("conversation_revision");
+  }
+  // The immutable history above remains the generation input. Refresh only
+  // the container at its original revision; new input must not leak in.
+  if (restore_conversation && !plan->conversation_id.empty() &&
+      response->GetString("status") == "queued") {
+    auto conversation =
+        Get(ObjectKind::kConversation, plan->conversation_id, access);
+    if (!conversation.ok()) return conversation;
+    if (conversation.value.GetInt("revision") != plan->conversation_revision)
+      return Error(409, "conversation_revision_conflict",
+                   "Queued response conversation changed");
+    const auto* current = conversation.value.Find("data");
+    if (!current || !current->GetArray("items"))
+      return StateError("Invalid restored conversation");
+    plan->conversation = *current;
+  }
+  ObjectReply result;
+  result.value = *data;
+  return result;
+}
+
+ObjectReply ResponsesState::Interrupt(const std::string& id,
+                                      const StateAccess& access,
+                                      std::string_view code,
+                                      std::string_view message) {
+  ResponseStatePlan plan;
+  auto loaded = LoadPlan(id, access, &plan);
+  if (!loaded.ok()) return loaded;
+  auto snapshot = Field(loaded.value, "response");
+  if (plan.finished) {
+    ObjectReply result;
+    result.value = std::move(snapshot);
+    return result;
+  }
+  for (auto& item : Field(snapshot, "output").array)
+    Set(&item, "status", String("incomplete"));
+  Set(&snapshot, "status", String("failed"));
+  Set(&snapshot, "error",
+      Object({{"code", String(std::string(code))},
+              {"message", String(std::string(message))}}));
+  auto events = Field(loaded.value, "events");
+  events.array.push_back(
+      Object({{"type", String("response.failed")},
+              {"sequence_number", Number(events.array.size())},
+              {"response", snapshot}}));
+  auto result = Finish(snapshot, events, access, &plan);
+  if (!result.commit_unknown && (result.code == "object_too_large" ||
+                                 result.code == "object_quota_exceeded"))
+    result = FailWithinReservation(snapshot, access, &plan);
+  if (result.ok()) return Retrieve(id, access);
+  return result;
+}
+
 ObjectReply ResponsesState::Begin(const Json& snapshot,
                                   const StateAccess& access,
                                   ResponseStatePlan* plan) {
@@ -255,7 +341,7 @@ ObjectReply ResponsesState::Begin(const Json& snapshot, const Json& events,
   auto written =
       objects_.Execute(Write(ObjectKind::kResponse, plan->id, access, 0,
                              SavedResponse(*plan, snapshot, events),
-                             !plan->conversation_id.empty()),
+                             !plan->conversation_id.empty(), plan->ephemeral),
                        access.deadline, access.cancelled);
   if (written.ok()) plan->response_revision = written.value.GetInt("revision");
   return written;
@@ -277,7 +363,7 @@ ObjectReply ResponsesState::Checkpoint(const Json& snapshot, const Json& events,
   auto written = objects_.Execute(
       Write(ObjectKind::kResponse, plan->id, access, plan->response_revision,
             SavedResponse(*plan, snapshot, events),
-            !plan->conversation_id.empty()),
+            !plan->conversation_id.empty(), plan->ephemeral),
       access.deadline, access.cancelled);
   if (written.ok()) plan->response_revision = written.value.GetInt("revision");
   return written;
@@ -303,9 +389,9 @@ ObjectReply ResponsesState::Finish(const Json& snapshot, const Json& events,
   std::vector<ObjectRequest> mutations;
   const bool permanent = !plan->conversation_id.empty();
   if (plan->store)
-    mutations.push_back(
-        Write(ObjectKind::kResponse, plan->id, access, plan->response_revision,
-              SavedResponse(*plan, snapshot, events), permanent));
+    mutations.push_back(Write(
+        ObjectKind::kResponse, plan->id, access, plan->response_revision,
+        SavedResponse(*plan, snapshot, events), permanent, plan->ephemeral));
   auto items = plan->own_input;
   const auto& output = snapshot.GetArray("output")->array;
   items.array.insert(items.array.end(), output.begin(), output.end());
@@ -344,6 +430,7 @@ ObjectReply ResponsesState::Finish(const Json& snapshot, const Json& events,
     auto existing = Get(ObjectKind::kConversationItem, id, access);
     int64_t revision = 0;
     bool keep = permanent;
+    bool temporary = plan->ephemeral && !keep;
     if (existing.ok()) {
       auto original = Data(existing, "item");
       if (!original.ok()) return original;
@@ -351,11 +438,13 @@ ObjectReply ResponsesState::Finish(const Json& snapshot, const Json& events,
       if (!identical.ok()) return identical;
       revision = existing.value.GetInt("revision");
       keep = keep || existing.value.GetInt("expires_at", -1) == 0;
+      temporary = false;  // Never shorten another retained item's lifetime.
     } else if (existing.http_status != 404) {
       return existing;
     }
     mutations.push_back(Write(ObjectKind::kConversationItem, id, access,
-                              revision, Object({{"item", item}}), keep));
+                              revision, Object({{"item", item}}), keep,
+                              temporary));
   }
   auto written =
       objects_.ExecuteBatch(mutations, access.deadline, access.cancelled);

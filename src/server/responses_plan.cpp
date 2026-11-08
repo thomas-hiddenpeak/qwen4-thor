@@ -197,9 +197,6 @@ Status StateOptions(const Json& request, ResponsesEnvelope* result,
   if (!result->previous_response_id.empty() && !result->conversation_id.empty())
     return Invalid(error, "previous_response_id",
                    "conversation and previous_response_id are exclusive");
-  if (result->background && !result->store)
-    return Invalid(error, "background",
-                   "background execution requires stored state");
   if (const auto* prompt = request.Find("prompt");
       prompt && !prompt->IsNull()) {
     auto status = InputFields(*prompt, {"id", "version", "variables"},

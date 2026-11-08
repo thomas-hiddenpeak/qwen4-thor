@@ -27,7 +27,8 @@ ObjectReply ResponsesExecution::BindMutationResult(ObjectReply reply) {
 
 ObjectReply ResponsesExecution::Prepare(const Json& request,
                                         const ChatPlanConfig& config,
-                                        StateAccess access, int64_t created) {
+                                        StateAccess access, int64_t created,
+                                        bool background_executor) {
   if (prepared_ || begun_)
     return Error(500, "response_state_invalid", "Response already prepared");
   access_ = std::move(access);
@@ -38,10 +39,19 @@ ObjectReply ResponsesExecution::Prepare(const Json& request,
     reply.value = Object({{"param", String(error.param)}});
     return reply;
   }
+  auto required = RequiredExecutors(background_executor);
+  if (!required.ok()) return required;
+  auto resolved = state_.Resolve(envelope_, access_, &plan_);
+  if (!resolved.ok()) return resolved;
+  return PlanGeneration(config, created);
+}
+
+ObjectReply ResponsesExecution::RequiredExecutors(
+    bool background_executor) const {
   // Required application executors remain explicit work in A07--A11. Until
   // attached, do not silently run a different foreground/uncompressed task.
   std::string required;
-  if (envelope_.background)
+  if (envelope_.background && !background_executor)
     required = "background";
   else if (envelope_.truncate)
     required = "truncation";
@@ -64,10 +74,14 @@ ObjectReply ResponsesExecution::Prepare(const Json& request,
     reply.value = Object({{"param", String(required)}});
     return reply;
   }
-  auto resolved = state_.Resolve(envelope_, access_, &plan_);
-  if (!resolved.ok()) return resolved;
-  status = PrepareResponsesGeneration(envelope_, plan_.history, config,
-                                      &generation_, &error);
+  return {};
+}
+
+ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
+                                               int64_t created) {
+  ChatPlanError error;
+  auto status = PrepareResponsesGeneration(envelope_, plan_.history, config,
+                                           &generation_, &error);
   if (!status) {
     auto reply = Error(error.http_status, error.code, status.message());
     reply.value = Object({{"param", String(error.param)}});
@@ -81,6 +95,52 @@ ObjectReply ResponsesExecution::Prepare(const Json& request,
   if (!status) return OutputError(status);
   events_ = Array();
   prepared_ = true;
+  return {};
+}
+
+ObjectReply ResponsesExecution::RestoreQueued(const std::string& id,
+                                              const ChatPlanConfig& config,
+                                              StateAccess access) {
+  if (prepared_ || begun_)
+    return Error(500, "response_state_invalid", "Response already prepared");
+  access_ = std::move(access);
+  auto restored = state_.LoadPlan(id, access_, &plan_, true);
+  if (!restored.ok()) return restored;
+  const auto& snapshot = Field(restored.value, "response");
+  if (snapshot.GetString("status") != "queued" ||
+      !snapshot.GetBool("background"))
+    return Error(409, "response_not_queued",
+                 "Only unexecuted queued work can resume");
+  ChatPlanError error;
+  auto status =
+      ParseResponsesEnvelope(plan_.request, config, &envelope_, &error);
+  if (!status) return Error(error.http_status, error.code, status.message());
+  auto result = RequiredExecutors(true);
+  if (result.ok())
+    result = PlanGeneration(config, snapshot.GetInt("created_at"));
+  if (!result.ok()) return result;
+  const auto& saved_events = Field(restored.value, "events").array;
+  if (saved_events.size() != 2 ||
+      saved_events[0].GetString("type") != "response.created" ||
+      saved_events[1].GetString("type") != "response.queued")
+    return Error(503, "response_state_invalid",
+                 "Queued events are inconsistent");
+  for (const auto& event : saved_events) {
+    const auto* resource = event.Find("response");
+    if (!resource || resource->GetString("id") != id ||
+        resource->GetString("status") != "queued")
+      return Error(503, "response_state_invalid",
+                   "Queued event identity changed");
+    status = Capture("event: " + event.GetString("type") +
+                         "\r\ndata: " + OutputJson(event) + "\r\n\r\n",
+                     &events_, &event_bytes_);
+    if (!status) return OutputError(status);
+  }
+  status = output_.RestoreQueued(snapshot, events_.array.size());
+  if (!status) return OutputError(status);
+  checkpoint_bytes_ = event_bytes_;
+  checkpoint_time_ = std::chrono::steady_clock::now();
+  begun_ = true;
   return {};
 }
 
@@ -154,9 +214,56 @@ ObjectReply ResponsesExecution::Checkpoint() {
   return reply;
 }
 
+ObjectReply ResponsesExecution::StartRunning(std::string* wire) {
+  wire->clear();
+  if (!begun_ || plan_.finished || commit_unknown_)
+    return Error(500, "response_state_invalid", "Invalid response start");
+  auto candidate = output_;
+  auto events = events_;
+  size_t bytes = event_bytes_;
+  std::string start;
+  auto status = candidate.StartRunning(&start);
+  if (status) status = Capture(start, &events, &bytes);
+  if (!status) return OutputError(status);
+  auto result = BindMutationResult(
+      state_.Checkpoint(candidate.Snapshot(), events, access_, &plan_));
+  if (!result.ok()) return result;
+  output_ = std::move(candidate);
+  events_ = std::move(events);
+  event_bytes_ = checkpoint_bytes_ = bytes;
+  checkpoint_time_ = std::chrono::steady_clock::now();
+  *wire = std::move(start);
+  return {};
+}
+
+ObjectReply ResponsesExecution::Cancel() {
+  if (plan_.finished) return {};
+  if (!begun_ || commit_unknown_)
+    return Error(409, "response_state_invalid", "Response cannot be cancelled");
+  auto candidate = output_;
+  auto status = candidate.Cancel();
+  if (!status) return OutputError(status);
+  StateAccess cleanup{
+      access_.scope,
+      std::chrono::steady_clock::now() + std::chrono::milliseconds(2000),
+      {}};
+  auto result = BindMutationResult(
+      state_.Finish(candidate.Snapshot(), events_, cleanup, &plan_));
+  if (!result.commit_unknown && (result.code == "object_too_large" ||
+                                 result.code == "object_quota_exceeded"))
+    result = BindMutationResult(
+        state_.FailWithinReservation(candidate.Snapshot(), cleanup, &plan_));
+  if (result.ok()) output_ = std::move(candidate);
+  return result;
+}
+
 Status ResponsesExecution::Append(const ResponseDelta& delta,
                                   std::string_view probabilities,
                                   std::string* wire) {
+  if (!begun_ || plan_.finished || commit_unknown_) {
+    wire->clear();
+    return Status::Fail("Response cannot accept execution output");
+  }
   auto status = output_.Append(delta, probabilities, wire);
   if (status) status = Capture(*wire, &events_, &event_bytes_);
   if (status && plan_.store &&

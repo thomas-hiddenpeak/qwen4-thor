@@ -79,15 +79,17 @@ Status ResponsesOutput::Init(const io::Json& options, std::string id,
     return Status::Fail("invalid Responses output initialization");
   limit_ = limit;
   obfuscation_ = obfuscation;
-  response_ = Object({{"id", String(std::move(id))},
-                      {"object", String("response")},
-                      {"created_at", Number(created)},
-                      {"completed_at", {}},
-                      {"status", String("in_progress")},
-                      {"error", {}},
-                      {"incomplete_details", {}},
-                      {"output", Array()},
-                      {"usage", {}}});
+  response_ =
+      Object({{"id", String(std::move(id))},
+              {"object", String("response")},
+              {"created_at", Number(created)},
+              {"completed_at", {}},
+              {"status", String(options.GetBool("background") ? "queued"
+                                                              : "in_progress")},
+              {"error", {}},
+              {"incomplete_details", {}},
+              {"output", Array()},
+              {"usage", {}}});
   for (const char* key : {"model",
                           "instructions",
                           "metadata",
@@ -156,7 +158,45 @@ Status ResponsesOutput::Start(std::string* wire) {
     return Status::Fail("Responses stream already started or uninitialized");
   started_ = true;
   Event("response.created", Object({{"response", response_}}), wire);
+  Event(response_.GetString("status") == "queued" ? "response.queued"
+                                                  : "response.in_progress",
+        Object({{"response", response_}}), wire);
+  return {};
+}
+
+Status ResponsesOutput::StartRunning(std::string* wire) {
+  wire->clear();
+  if (!started_ || terminal_ || response_.GetString("status") != "queued")
+    return Status::Fail("Response is not queued");
+  Set(&response_, "status", String("in_progress"));
   Event("response.in_progress", Object({{"response", response_}}), wire);
+  return {};
+}
+
+Status ResponsesOutput::RestoreQueued(const io::Json& snapshot,
+                                      int64_t next_sequence) {
+  if (!initialized_ || started_ || terminal_ || next_sequence != 2 ||
+      snapshot.GetString("status") != "queued" ||
+      !snapshot.GetBool("background") ||
+      snapshot.GetString("id") != response_.GetString("id") ||
+      !snapshot.GetArray("output") ||
+      !snapshot.GetArray("output")->array.empty())
+    return Status::Fail("Invalid queued response snapshot");
+  bytes_ = 0;
+  auto status = Charge(OutputJson(snapshot).size());
+  if (!status) return status;
+  response_ = snapshot;
+  sequence_ = next_sequence;
+  started_ = true;
+  return {};
+}
+
+Status ResponsesOutput::Cancel() {
+  if (!started_ || terminal_ || !response_.GetBool("background"))
+    return Status::Fail("Cancellation requires an active background response");
+  Set(&response_, "status", String("cancelled"));
+  Set(&response_, "error", io::Json());
+  terminal_ = true;
   return {};
 }
 
@@ -216,7 +256,7 @@ Status ResponsesOutput::Append(const ResponseDelta& delta,
                                std::string_view chat_logprobs,
                                std::string* wire) {
   wire->clear();
-  if (!started_ || terminal_)
+  if (!started_ || terminal_ || response_.GetString("status") != "in_progress")
     return Status::Fail("Responses output is not in progress");
   const bool tool = delta.kind == ResponseDelta::Kind::kTool;
   if (!tool && delta.text.empty()) return {};
@@ -329,9 +369,11 @@ Status ResponsesOutput::Finish(bool incomplete, size_t completed_calls,
                                const ResponsesUsage& usage,
                                int64_t completed_at, std::string* wire) {
   wire->clear();
-  if (!started_ || terminal_ || usage.input_tokens < 0 ||
-      usage.output_tokens < 0 || usage.cached_tokens < 0 ||
-      usage.cached_tokens > usage.input_tokens || usage.reasoning_tokens < 0 ||
+  if (!started_ || terminal_ ||
+      response_.GetString("status") != "in_progress" ||
+      usage.input_tokens < 0 || usage.output_tokens < 0 ||
+      usage.cached_tokens < 0 || usage.cached_tokens > usage.input_tokens ||
+      usage.reasoning_tokens < 0 ||
       usage.reasoning_tokens > usage.output_tokens ||
       usage.input_tokens > INT64_MAX - usage.output_tokens || completed_at < 0)
     return Status::Fail("invalid Responses terminal or usage");
