@@ -317,13 +317,21 @@ Status ResponsesExecution::Append(const ResponseDelta& delta,
     return Status::Fail("Response cannot accept execution output");
   }
   auto status = output_.Append(delta, probabilities, wire);
-  if (status) status = Capture(*wire, &events_, &event_bytes_);
+  if (!status) return status;
+  status = Capture(*wire, &events_, &event_bytes_);
+  if (!status) {
+    failure_prefix_ = std::move(*wire);
+    wire->clear();
+    return status;
+  }
   if (status && plan_.store &&
       (event_bytes_ - checkpoint_bytes_ >= 64 * 1024 ||
        std::chrono::steady_clock::now() - checkpoint_time_ >=
            std::chrono::milliseconds(500))) {
     auto saved = Checkpoint();
     if (!saved.ok()) {
+      failure_prefix_ = std::move(*wire);
+      wire->clear();
       ObserveError(this, saved.http_status, saved.message, saved.code);
       return Status::Fail(saved.message);
     }
@@ -384,6 +392,8 @@ std::string ResponsesExecution::RenderStreamError(void* owner, int status,
                                                   std::string_view param) {
   auto& run = *static_cast<ResponsesExecution*>(owner);
   ObserveError(owner, status, message, code);
+  std::string prefix = std::move(run.failure_prefix_);
+  run.failure_prefix_.clear();
   if (run.commit_unknown_) {
     // The durable decision is unknown; do not falsely advertise failed when
     // retrieval might find a completed transaction.
@@ -392,7 +402,8 @@ std::string ResponsesExecution::RenderStreamError(void* owner, int status,
                                {"code", String("object_commit_unknown")},
                                {"message", String(message)},
                                {"param", Json()}});
-    return "event: error\r\ndata: " + OutputJson(event) + "\r\n\r\n";
+    prefix += "event: error\r\ndata: " + OutputJson(event) + "\r\n\r\n";
+    return prefix;
   }
   auto wire = ResponsesOutput::RenderStreamError(&run.output_, status, message,
                                                  code, param);
@@ -400,7 +411,8 @@ std::string ResponsesExecution::RenderStreamError(void* owner, int status,
   // its resource budget; no invented events are substituted for the originals.
   if (!run.Capture(wire, &run.events_, &run.event_bytes_))
     run.events_ = Array();
-  return wire;
+  prefix += wire;
+  return prefix;
 }
 
 ObjectReply ResponsesExecution::CloseUnfinished() {

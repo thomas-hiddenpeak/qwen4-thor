@@ -1,0 +1,7 @@
+test_fault_stream_requires_contiguous_partial_and_one_unknown_terminal (tools.serve_responses.test_reconciliation_acceptance.Driver.test_fault_stream_requires_contiguous_partial_and_one_unknown_terminal) ... ok
+test_worker_selection_requires_exact_child_and_known_identity (tools.serve_responses.test_reconciliation_acceptance.Driver.test_worker_selection_requires_exact_child_and_known_identity) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.000s
+
+OK

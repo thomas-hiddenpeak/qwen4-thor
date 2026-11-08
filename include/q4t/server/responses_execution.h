@@ -95,6 +95,9 @@ class ResponsesExecution {
   bool commit_unknown_ = false;
   std::chrono::steady_clock::time_point checkpoint_time_;
   size_t checkpoint_bytes_ = 0;
+  // Valid generated events withheld by a failed checkpoint. Error rendering
+  // sends this original prefix before its terminal; no sequence is invented.
+  std::string failure_prefix_;
   std::shared_ptr<RequestControl> background_control_;
   int failure_status_ = 0;
   std::array<char, 128> failure_code_{};

@@ -274,6 +274,49 @@ Q4T_TEST(responses_execution_lost_commit_receipt_never_overwrites_or_replays) {
   return true;
 }
 
+Q4T_TEST(responses_checkpoint_failure_delivers_original_prefix_before_error) {
+  struct Reset {
+    ~Reset() { ObjectWorkerEntryForTesting({}); }
+  } reset;
+  ObjectWorkerEntryForTesting("--q4t-object-worker-second-put-lost-ack");
+  Fixture f;
+  f.options.io_timeout_ms = 100;
+  ObjectStore store(f.options);
+  ResponsesExecution run(store);
+  Q4T_CHECK(Prepare(&run));
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)));
+  const auto next = *run.Sequence();
+  const std::string generated(65536, 'x');
+  Q4T_CHECK(!run.Append(Text(generated), "null", &wire));
+  Q4T_CHECK(run.CommitUnknown());
+  const auto error = ResponsesExecution::RenderStreamError(
+      &run, 503, "missing checkpoint receipt", "object_transport_error", "");
+  size_t offset = 0, events = 0;
+  bool text = false, terminal = false;
+  while ((offset = error.find("data: ", offset)) != std::string::npos) {
+    const auto end = error.find("\r\n", offset);
+    const auto event = Parse(error.substr(offset + 6, end - offset - 6));
+    Q4T_CHECK(!terminal && event.GetInt("sequence_number") ==
+                               next + static_cast<int64_t>(events++));
+    if (event.GetString("type") == "response.output_text.delta")
+      text = event.GetString("delta") == generated;
+    if (event.GetString("type") == "error") {
+      terminal = true;
+      Q4T_CHECK(event.GetString("code") == "object_commit_unknown");
+    }
+    offset = end;
+  }
+  Q4T_CHECK(text && terminal && events == 4);
+  Q4T_CHECK(error.find("response.completed") == error.npos &&
+            error.find("response.failed") == error.npos);
+  const auto repeated = ResponsesExecution::RenderStreamError(
+      &run, 503, "missing checkpoint receipt", "object_transport_error", "");
+  Q4T_CHECK(repeated.find("response.output_text.delta") == repeated.npos);
+  Q4T_CHECK(Ok(run.CloseUnfinished()));
+  return true;
+}
+
 Q4T_TEST(responses_execution_active_checkpoint_preserves_replay_prefix) {
   Fixture f;
   ObjectStore store(f.options);

@@ -2,6 +2,17 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+检查点错误流4 CPU通过：保存原始增量前缀，错误前完整发送，序号
+连续且不伪造终态/重复前缀；引擎零警告。2驱动负控通过，[证据](evidence/serve-checkpoint-stream-20261109/README.md)。
+冻结1启动/4生成/600秒真实短验：资料工具/回填JSON、自有存储worker
+SIGSTOP、原生恢复与前台未知提交协调、同PID Chat；默认保持A06，
+通过后继续发行和全部剩余项。
+
+检查点错误流继续修复：保留已经生成、因存储失败尚未发出的原事件，
+错误渲染先发送该前缀再发错误，避免序号跳跃；不把未知提交伪称
+failed/completed。冻结1新增/3直接CPU，无GPU/默认更改，随后实际
+HTTP故障短验并继续全部计划。
+
 前台未知提交协调14项CPU通过、实际引擎零警告；持久写入前预留槽，
 只在生成清理后核对终态，成功不覆盖、中断不重放、stateless继续。
 [证据](evidence/serve-foreground-reconciliation-20261109/README.md)。准备HTTP故障短验又发现检查点失败
