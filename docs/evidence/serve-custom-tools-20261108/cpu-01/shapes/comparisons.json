@@ -1,0 +1,1114 @@
+[
+  {
+    "id": "custom-format-omitted",
+    "field": "tools",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "custom-format-text",
+    "field": "tools",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "custom-format-regex",
+    "field": "tools",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "custom-format-lark",
+    "field": "tools",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "custom-named",
+    "field": "tool_choice",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "custom-allowed",
+    "field": "tool_choice",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "custom-choice-wrong-type",
+    "field": "tool_choice",
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "named tool is not declared",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tool_choice.function.name"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "custom-duplicate-name",
+    "field": "tools",
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid or duplicate function name",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tools[1].function.name"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "custom-format-bad-null",
+    "field": "tools",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'tools': [{'type': 'custom', 'custom': {'name': 'read', 'format': None}}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "expected JSON object",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tools[0].custom.format"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "custom-format-bad-unknown",
+    "field": "tools",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'tools': [{'type': 'custom', 'custom': {'name': 'read', 'format': {'type': 'json'}}}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "expected text or grammar format",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tools[0].custom.format.type"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "custom-format-bad-extra",
+    "field": "tools",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'tools': [{'type': 'custom', 'custom': {'name': 'read', 'format': {'type': 'text', 'extra': True}}}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "unsupported field: extra",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tools[0].custom.format.extra"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "custom-format-bad-missing",
+    "field": "tools",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'tools': [{'type': 'custom', 'custom': {'name': 'read', 'format': {'type': 'grammar'}}}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "missing grammar",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tools[0].custom.format.grammar"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "custom-format-bad-syntax",
+    "field": "tools",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'tools': [{'type': 'custom', 'custom': {'name': 'read', 'format': {'type': 'grammar', 'grammar': {'syntax': 'ebnf', 'definition': 'x'}}}}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "expected regex or lark",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tools[0].custom.format.grammar.syntax"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "custom-format-bad-empty",
+    "field": "tools",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'tools': [{'type': 'custom', 'custom': {'name': 'read', 'format': {'type': 'grammar', 'grammar': {'syntax': 'regex', 'definition': ''}}}}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "grammar definition must contain 1 to 16384 UTF-8 bytes",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tools[0].custom.format.grammar.definition"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "custom-format-bad-overbound",
+    "field": "tools",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'tools': [{'type': 'custom', 'custom': {'name': 'read', 'format': {'type': 'grammar', 'grammar': {'syntax': 'regex', 'definition': 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}}}}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "grammar definition must contain 1 to 16384 UTF-8 bytes",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tools[0].custom.format.grammar.definition"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "custom-history",
+    "field": "messages",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "custom-history-missing",
+    "field": "messages",
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "all tool results are required before continuing",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "custom-history-wrong-id",
+    "field": "messages",
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "tool_call_id does not match the preceding batch",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "custom-history-bad-input",
+    "field": "messages",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'assistant', 'content': None, 'tool_calls': [{'id': 'c', 'type': 'custom', 'custom': {'name': 'read', 'input': {}}}]}, {'role': 'tool', 'tool_call_id': 'c', 'content': 'actual'}], 'enable_thinking': False} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "custom history requires a name and input string",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-auto",
+    "field": "functions",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-none",
+    "field": "functions",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-named",
+    "field": "functions",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-default",
+    "field": "functions",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-null-choice",
+    "field": "functions",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-modern-nulls",
+    "field": "functions",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-both-nulls",
+    "field": "functions",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-none-no-functions",
+    "field": "function_call",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-json-none",
+    "field": "functions",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-functions-empty",
+    "field": "functions",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'functions': []} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "functions requires 1 to 128 definitions",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "functions"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-functions-too-many",
+    "field": "functions",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'functions': [{'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}, {'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "functions requires 1 to 128 definitions",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "functions"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-functions-scalar",
+    "field": "functions",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'functions': 3} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "expected array",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "functions"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-functions-bad-name",
+    "field": "functions",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'functions': [{'name': 'bad name'}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid function name",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "functions[0].name"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-functions-bad-parameters",
+    "field": "functions",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'functions': [{'name': 'read', 'parameters': 3}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "function.parameters must be an object",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "functions[0].parameters"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-functions-unknown-field",
+    "field": "functions",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'functions': [{'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}, 'extra': 1}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "unsupported field: extra",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "functions[0].extra"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-conflict-parallel",
+    "field": "functions",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'functions': [{'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}], 'parallel_tool_calls': True} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "legacy functions allow one call",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "parallel_tool_calls"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-conflict-tools",
+    "field": "functions",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'functions': [{'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}], 'tools': []} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "legacy and current tool controls cannot be mixed",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tools"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-conflict-choice",
+    "field": "functions",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'functions': [{'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}], 'tool_choice': 'auto'} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "legacy and current tool controls cannot be mixed",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tool_choice"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-conflict-required",
+    "field": "functions",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'functions': [{'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}], 'function_call': 'required'} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "expected none, auto or a named function",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "function_call"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-conflict-bad-choice",
+    "field": "functions",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'functions': [{'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}], 'function_call': {'name': 'read', 'extra': 1}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "unsupported field: extra",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "function_call.extra"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-conflict-unparsed",
+    "field": "functions",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'functions': [{'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}], 'parse_response': False} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "parallel_tool_calls requires parsed messages / bool",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "parallel_tool_calls"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-conflict-stop",
+    "field": "functions",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'functions': [{'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}], 'stop': 'END'} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "stop is not supported with constrained output",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "stop"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-conflict-json",
+    "field": "functions",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'functions': [{'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}], 'response_format': {'type': 'json_object'}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "response_format plus tools requires tool_choice=none",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tool_choice"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-conflict-prediction",
+    "field": "functions",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'functions': [{'name': 'read', 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}], 'prediction': {'type': 'content', 'content': 'x'}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "prediction does not support tools",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tools"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-unknown-choice",
+    "field": "function_call",
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "named tool is not declared",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "function_call.name"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-history",
+    "field": "messages",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-history-null-result",
+    "field": "messages",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-history-modern-controls",
+    "field": "messages",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-history-wrong-name",
+    "field": "messages",
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "function result does not match call",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[1].name"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-history-orphan",
+    "field": "messages",
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "orphan function result",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0]"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-history-missing",
+    "field": "messages",
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "function result missing",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-history-bad-json",
+    "field": "messages",
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "tool arguments require an object or JSON object text",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-history-mixed-message",
+    "field": "messages",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'assistant', 'function_call': {'name': 'read', 'arguments': '{}'}, 'tool_calls': []}, {'role': 'function', 'name': 'read', 'content': 'record'}], 'enable_thinking': False} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "two call dialects in one message",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages[0].tool_calls"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "tools-valid",
+    "field": "tools",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "tools-null",
+    "field": "tools",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "tools-wrong-shape",
+    "field": "tools",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'tools': {'unexpected': True}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "tools must be an array or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tools"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "tools-omitted",
+    "field": "tools",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "functions-valid",
+    "field": "functions",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "functions-null",
+    "field": "functions",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "functions-wrong-shape",
+    "field": "functions",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'functions': {'unexpected': True}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "expected array",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "functions"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "functions-omitted",
+    "field": "functions",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "function_call-valid",
+    "field": "function_call",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "function_call-null",
+    "field": "function_call",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "function_call-wrong-shape",
+    "field": "function_call",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'function_call': {'unexpected': True}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "unsupported field: unexpected",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "function_call.unexpected"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "function_call-omitted",
+    "field": "function_call",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "tool_choice-valid",
+    "field": "tool_choice",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "tool_choice-null",
+    "field": "tool_choice",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'tool_choice': None} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "expected constraint object",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tool_choice"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "tool_choice-wrong-shape",
+    "field": "tool_choice",
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'tool_choice': {'unexpected': True}} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "unsupported constraint field: unexpected",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tool_choice.unexpected"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "tool_choice-omitted",
+    "field": "tool_choice",
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "legacy-flat-history",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "tools-duplicate-names",
+    "field": null,
+    "expected": false,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid or duplicate function name",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tools[1].function.name"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "tools-unicode-name",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "tools-name-byte-overflow",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "{'messages': [{'role': 'user', 'content': 'q'}], 'enable_thinking': False, 'tools': [{'type': 'function', 'function': {'name': '函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函', 'strict': False, 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}}]} is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid or duplicate function name",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "tools[0].function.name"
+        }
+      }
+    },
+    "passed": true
+  }
+]

@@ -1,0 +1,33 @@
+{
+  "id": "chatcmpl-auto-47c2e321a2a6b7456f987d53c319adb4",
+  "model": "qwen3.8-flash-next",
+  "message": {
+    "role": "assistant",
+    "content": "\n",
+    "tool_calls": [
+      {
+        "id": "call_chatcmpl-auto-47c2e321a2a6b7456f987d53c319adb4_0",
+        "type": "custom",
+        "custom": {
+          "name": "read_project_record_regex",
+          "input": "READ docs/MODEL.md 1 16"
+        }
+      },
+      {
+        "id": "call_chatcmpl-auto-47c2e321a2a6b7456f987d53c319adb4_1",
+        "type": "function",
+        "function": {
+          "name": "read_project_record",
+          "arguments": "{\"path\":\"docs/ARCHITECTURE.md\",\"start_line\":1,\"line_count\":8}"
+        }
+      }
+    ]
+  },
+  "finish_reason": "tool_calls",
+  "usage": {
+    "prompt_tokens": 715,
+    "completion_tokens": 95,
+    "total_tokens": 810
+  },
+  "logprobs": null
+}

@@ -1,0 +1,10 @@
+data: {"id":"custom-tools-cancel","object":"chat.completion.chunk","created":1794124584,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"custom-tools-cancel","object":"chat.completion.chunk","created":1794124584,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_custom-tools-cancel_0","type":"custom","custom":{"name":"write_note","input":""}}]},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"custom-tools-cancel","object":"chat.completion.chunk","created":1794124584,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"custom":{"input":"The"}}]},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"error":{"message":"request cancelled","type":"conflict_error","code":"explicit_cancel","param":null}}
+
+data: [DONE]
+

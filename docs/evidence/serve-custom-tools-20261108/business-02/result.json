@@ -1,0 +1,11 @@
+{
+  "status": "FAILED",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_custom_tools/acceptance.py\", line 290, in run\n    self.business()\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_custom_tools/repair.py\", line 69, in business\n    require(len(plans)==2 and {p.name for p in plans}=={'read_project_record_regex','read_project_record'},'mixed calls missing')\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 51, in require\n    raise RuntimeError(message)\nRuntimeError: mixed calls missing\n",
+  "counts": {
+    "starts": 1,
+    "chats": 1,
+    "controls": 37
+  },
+  "seconds": 44.830930166877806,
+  "binary_sha256": "ef1aeb974fc78c8eadd034157768b6e30b9c2d893f5ab3b7a3130df43c66ce2a"
+}

@@ -1,0 +1,15 @@
+{
+  "host": [
+    "custom_grammar_text_preserves_control_unicode_and_delimiters",
+    "custom_grammar_regex_rust_unicode_flags_groups_and_encoding",
+    "custom_grammar_regex_anchors_and_unicode_word_boundaries",
+    "custom_grammar_lark_regex_imports_recursion_and_lexeme_boundaries",
+    "custom_grammar_lark_literal_cannot_alias_internal_placeholder",
+    "custom_grammar_worker_enforces_actual_encoded_token_mask",
+    "custom_grammar_invalid_and_resource_errors_do_not_weaken"
+  ],
+  "python": [
+    "tools.serve_custom_tools.test_clients.CustomClients.test_bridge_compares_custom_plan_and_preserves_input_type"
+  ],
+  "reason": "Review found decoded Lark literals could alias placeholder; substitute only original AST and select after literal decoding. New bridge guard covers custom plan identity. Reuse all unaffected cpu-01/02 evidence."
+}

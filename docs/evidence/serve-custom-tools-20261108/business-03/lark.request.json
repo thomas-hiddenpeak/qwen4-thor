@@ -1,0 +1,38 @@
+{
+  "model": "qwen3.8-flash-next",
+  "enable_thinking": false,
+  "temperature": 0,
+  "max_completion_tokens": 256,
+  "stream": true,
+  "stream_options": {
+    "include_usage": true
+  },
+  "tools": [
+    {
+      "type": "custom",
+      "custom": {
+        "name": "read_project_record_lark",
+        "description": "Read actual project lines. Input must be exactly READ docs/MODEL.md 1 16, raw text (not JSON). Use returned citation verbatim.",
+        "format": {
+          "type": "grammar",
+          "grammar": {
+            "syntax": "lark",
+            "definition": "start: \"READ\" \" \" PATH \" \" INT \" \" INT\nPATH: \"docs/MODEL.md\"\n%import common.INT\n"
+          }
+        }
+      }
+    }
+  ],
+  "tool_choice": {
+    "type": "custom",
+    "custom": {
+      "name": "read_project_record_lark"
+    }
+  },
+  "messages": [
+    {
+      "role": "user",
+      "content": "Use read_project_record_lark to read the first 16 lines of docs/MODEL.md. Set raw input to exactly: READ docs/MODEL.md 1 16"
+    }
+  ]
+}

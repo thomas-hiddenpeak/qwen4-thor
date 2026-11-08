@@ -1,0 +1,5 @@
+{
+  "error": "KeyError: host; previous plan used cpp key",
+  "stage": "CPU plan preparation",
+  "tests_executed": 0
+}

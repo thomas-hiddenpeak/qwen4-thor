@@ -128,24 +128,22 @@ A04仍有legacy/custom工具待补，随后A05等总计划；总目标保持acti
 Key/配额保持STOPPED，安装0/0。继续custom text/regex/lark及其
 历史、流式响应和实际执行，A04与全部总目标保持开放。
 
-[custom工具CPU通过](SERVE_CUSTOM_TOOLS_2026-11-08.md)：标准定义/选择、
-历史、custom.input增量解析和客户端专用注册已接入。固定Rust
-regex-syntax静态组件弥补原XGrammar的flags/Unicode/断言缺口，
-复用隔离grammar工作器，无新增运行服务。44项不同C++、72输入/schema、
-20 Python（含3驱动）、9 JS通过；build-05零警告。审查补齐
-Lark转义字面量/占位符冲突边界，仅重验7项语法及新增桥接校验。初次构建
-告警/夹具类型错误与计划准备错误保留，未执行额外GPU尝试。
-首轮1启动/5Chat/60.073秒：text、regex、Lark真实读取与标题引用
-通过；混合任务模型仅生成函数调用，未满足两调用要求，整轮失败。
-第二轮1启动/1Chat/44.831秒仍生成两条普通函数，缺custom；整轮
-失败，正常清理并释放GPU/端口/锁。默认33c52e4a保持，旧候选ELF
-另存SHA核对。停止提示词试探，改custom模型定义/生成/历史为原生
-function/input参数格式；对外custom.input不改。接着针对性CPU，
-再以原用户混合任务执行1启动/8Chat/700秒，累计上限3/14/900秒；
-47项不同C++和5驱动通过，build-06零警告；仅夹具缺字段/来源
-摘要准备错误已定向修正，原件保留。未改72输入/schema、17客户端
-Python与9 JS复用。不做完整性能/模型测试，尚未交付。
-A04及全部总目标继续开放。
+[A04 custom工具已交付](SERVE_CUSTOM_TOOLS_2026-11-08.md)：标准text/regex/Lark、
+named/allowed、历史和原始custom.input增量流。47不同C++、72输入/
+schema、17客户端Python、5驱动和9 JS通过，最终构建零警告。
+静态Rust regex解析组件复用隔离worker，无新增运行服务；许可随包。
+
+保留两次混合业务失败（旧ef1aeb97、累计2启动/6Chat）；修复模型
+适配为原生function/input后，以原用户任务1启动/8Chat全部通过。
+真实两种工具读取、标题引用、text/regex/Lark、截断/取消和同PID
+MTP通过。累计3启动/14Chat/168.634秒，严格租约172.004秒、163次
+NVML全OK；619来源与[264原件](evidence/serve-custom-tools-20261108/README.md)核对。
+
+当前默认f8677aaf/09ffec04、协议33b3d128，服务包6be35d37/24d1b0dd。
+旧33c52e4a/e33fa4f0及13f077b6/4996f016回退保留，原生和44控制面
+字节不变，原ledger/Key/策略/配额保持STOPPED；安装0模型/0Chat，
+GPU/端口/锁释放。A04实现与交付完成；立即推进A05官方结构化schema
+及工具/媒体/缓存组合，总目标保持active，未合main。
 
 工作分支`codex/serve-resilience-cd`继续隔离PR #22已接受发布；
 PR #22此前34b06bc1两项CI成功、CLEAN。当前默认服务包以顶部N01—N03交付为准；

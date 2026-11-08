@@ -1,0 +1,52 @@
+[  0%] Built target q4t_trace
+[  3%] Built target q4t_io
+[  7%] Built target q4t_ple
+[  7%] Built target q4t_regex_build
+[  7%] Built target q4t_runtime
+[ 11%] Built target q4t_text
+[ 33%] Built target xgrammar
+[ 40%] Built target q4t_quant
+[ 62%] Built target q4t_model
+[ 66%] Built target q4t_startup_plan
+[ 66%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_capabilities.cpp.o
+[ 66%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_plan.cpp.o
+[ 70%] Building CXX object CMakeFiles/q4t_server.dir/src/server/custom_grammar.cpp.o
+[ 70%] Linking CXX static library libq4t_server.a
+[100%] Built target q4t_server
+[100%] Linking CXX executable q4t
+[100%] Built target q4t
+[  0%] Built target q4t_trace
+[  3%] Built target q4t_io
+[  7%] Built target q4t_ple
+[  7%] Built target q4t_regex_build
+[  7%] Built target q4t_runtime
+[ 29%] Built target xgrammar
+[ 33%] Built target q4t_text
+[ 40%] Built target q4t_quant
+[ 62%] Built target q4t_model
+[ 66%] Built target q4t_startup_plan
+[100%] Built target q4t_server
+[100%] Linking CXX executable q4t_preflight_probe
+[100%] Built target q4t_preflight_probe
+[  0%] Built target q4t_regex_build
+[  4%] Built target q4t_io
+[ 33%] Built target q4t_text
+[ 33%] Built target xgrammar
+[ 33%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/chat_capabilities.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_chat_capabilities_test.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/custom_grammar.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_custom_tools_test.cpp.o
+/home/rm01/models/dev/qwen4-thor/tests/server_custom_tools_test.cpp: In function ‘bool {anonymous}::Language(std::string_view, std::string_view, const std::vector<std::__cxx11::basic_string<char> >&, const std::vector<std::__cxx11::basic_string<char> >&)’:
+/home/rm01/models/dev/qwen4-thor/tests/server_custom_tools_test.cpp:70:47: error: converting to ‘std::optional<std::vector<int> >’ from initializer list would use explicit constructor ‘constexpr std::optional<_Tp>::optional(_Up&&) [with _Up = int; typename std::enable_if<__and_v<std::__not_<std::is_same<std::optional<_Tp>, typename std::remove_cv<typename std::remove_reference<_Iter>::type>::type> >, std::__not_<std::is_same<std::in_place_t, typename std::remove_cv<typename std::remove_reference<_Iter>::type>::type> >, std::is_constructible<_Tp, _Up>, std::__not_<std::is_convertible<_Iter, _Iterator> > >, bool>::type <anonymous> = false; _Tp = std::vector<int>]’
+   70 |                                     {0}, false);
+      |                                               ^
+In file included from /home/rm01/models/dev/qwen4-thor/include/q4t/server/chat_plan.h:5,
+                 from /home/rm01/models/dev/qwen4-thor/tests/server_custom_tools_test.cpp:5:
+/usr/include/c++/14/optional:754:9: note: ‘constexpr std::optional<_Tp>::optional(_Up&&) [with _Up = int; typename std::enable_if<__and_v<std::__not_<std::is_same<std::optional<_Tp>, typename std::remove_cv<typename std::remove_reference<_Iter>::type>::type> >, std::__not_<std::is_same<std::in_place_t, typename std::remove_cv<typename std::remove_reference<_Iter>::type>::type> >, std::is_constructible<_Tp, _Up>, std::__not_<std::is_convertible<_Iter, _Iterator> > >, bool>::type <anonymous> = false; _Tp = std::vector<int>]’ declared here
+  754 |         optional(_Up&& __t)
+      |         ^~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:1073: CMakeFiles/q4t_host_tests.dir/tests/server_custom_tools_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:2117: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:2124: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:831: q4t_host_tests] Error 2

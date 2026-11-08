@@ -1,0 +1,25 @@
+{
+  "id": "chatcmpl-auto-6b461c8631deafeb404917d0dde1efe2",
+  "model": "qwen3.8-flash-next",
+  "message": {
+    "role": "assistant",
+    "content": null,
+    "tool_calls": [
+      {
+        "id": "call_chatcmpl-auto-6b461c8631deafeb404917d0dde1efe2_0",
+        "type": "custom",
+        "custom": {
+          "name": "read_project_record_lark",
+          "input": "READ docs/MODEL.md 1 16"
+        }
+      }
+    ]
+  },
+  "finish_reason": "tool_calls",
+  "usage": {
+    "prompt_tokens": 567,
+    "completion_tokens": 40,
+    "total_tokens": 607
+  },
+  "logprobs": null
+}

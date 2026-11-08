@@ -1,0 +1,39 @@
+{
+  "host": {
+    "argv": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t_host_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/cpu-03/host-required.txt"
+    ],
+    "exit_code": 0,
+    "seconds": 0.031717747915536165
+  },
+  "bridge": {
+    "argv": [
+      "python3",
+      "-m",
+      "unittest",
+      "tools.serve_custom_tools.test_clients.CustomClients.test_bridge_compares_custom_plan_and_preserves_input_type"
+    ],
+    "exit_code": 0,
+    "seconds": 0.1638042228296399
+  },
+  "sources": {
+    "argv": [
+      "python3",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.06369537394493818
+  },
+  "schema": {
+    "argv": [
+      "python3",
+      "tools/serve_protocol/build_contract.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.06370218098163605
+  }
+}

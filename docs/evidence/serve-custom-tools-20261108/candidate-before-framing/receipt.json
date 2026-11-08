@@ -1,0 +1,10 @@
+{
+  "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t",
+  "preserved": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/candidate-before-framing/q4t",
+  "sha256": "ef1aeb974fc78c8eadd034157768b6e30b9c2d893f5ab3b7a3130df43c66ce2a",
+  "business": [
+    "business-01",
+    "business-02"
+  ],
+  "reason": "Preserve failed candidate before model framing repair; frozen old plans remain unmodified"
+}

@@ -22,7 +22,7 @@
     },
     "messages": {
       "semantics": "qwen3.8-openai-v3：按序多条system/developer映射system ChatML；JSON转义name；assistant refusal历史；无需user；必填content与非空内容数组；工具ID/结果次序及推理别名合同保持。",
-      "boundary": "Explicit media profile: user-only PNG/JPEG, video_frames with optional increasing video_timestamps; pair timestamps/boundaries and strict positions. Media requires no-MTP/single slot; expanded tokens govern preflight/quota. JPEG stb decode not Pillow bit-equivalent. Physical RAM and universal quality not guaranteed; current visual acceptance separate. New instruction/name/refusal serialization is an explicit model-template adapter, not original Jinja equivalence. Standard legacy/custom tool and audio/file content remain required A04/A10 work; not accepted as complete compatibility.",
+      "boundary": "Explicit media profile: user-only PNG/JPEG, video_frames with optional increasing video_timestamps; pair timestamps/boundaries and strict positions. Media requires no-MTP/single slot; expanded tokens govern preflight/quota. JPEG stb decode not Pillow bit-equivalent. Physical RAM and universal quality not guaranteed; current visual acceptance separate. New instruction/name/refusal serialization is an explicit model-template adapter, not original Jinja equivalence. Standard legacy/custom histories delivered under A04; audio/file content remains A10 work. This is not complete OpenAI compatibility.",
       "evidence": [
         "tests/server_chat_tool_history_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -112,7 +112,7 @@
       ]
     },
     "tools": {
-      "semantics": "函数与custom定义共用生产合同；custom text/regex/Lark约束、标准input及专用客户端校验开发完成待验；strict:null=false",
+      "semantics": "函数与custom定义共用生产合同；custom text/regex/Lark约束、标准input及专用客户端校验已针对性CPU与真实业务验收；strict:null=false",
       "boundary": "普通 schema 仍为提示，不保证完整 JSON Schema；强约束有限 profile 不变; constrained compiler/matcher isolated in one exec worker with 2GiB RLIMIT_AS and interruptible 10s/2s budgets; no whole-server memory guarantee",
       "evidence": [
         "tests/server_chat_response_parser_test.cpp",
@@ -324,7 +324,7 @@
       ]
     },
     "tool_choice": {
-      "semantics": "auto/none/required/named和allowed_tools子集均已针对性验收；后者定义关联、模板/grammar和实际输出校验一致；strict/多工具参数真实增量、成功终态及EOF后才可执行；custom named/allowed引用按类型及名称匹配（新增待验）",
+      "semantics": "auto/none/required/named和allowed_tools子集均已针对性验收；后者定义关联、模板/grammar和实际输出校验一致；strict/多工具参数真实增量、成功终态及EOF后才可执行；custom named/allowed引用按类型及名称匹配（已验收）",
       "boundary": "非 auto 需约束后端；named 恰好一次；只 parsed messages；constrained独立租约限1，忙时503；编译仍协作取消; constrained compiler/matcher isolated in one exec worker with 2GiB RLIMIT_AS and interruptible 10s/2s budgets; no whole-server memory guarantee",
       "evidence": [
         "tests/server_output_constraints_test.cpp",
@@ -332,7 +332,8 @@
         "tests/server_structured_admission_test.cpp",
         "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
         "docs/SERVE_GRAMMAR_ISOLATION_2026-11-02.md",
-        "docs/SERVE_TOOL_STREAM_2026-11-08.md"
+        "docs/SERVE_TOOL_STREAM_2026-11-08.md",
+        "docs/SERVE_CUSTOM_TOOLS_2026-11-08.md"
       ]
     },
     "parallel_tool_calls": {
@@ -388,7 +389,7 @@
     },
     "functions": {
       "semantics": "Standard legacy function definitions/selection normalize into the shared tool plan; legacy JSON/SSE retain function_call and role=function results.",
-      "boundary": "Single call, no ambiguous non-null current controls; same grammar resource bounds. Custom tools and wider schema combinations remain A04/A05 implementation work.",
+      "boundary": "Single call, no ambiguous non-null current controls; same grammar resource bounds. Custom tools delivered under modern dialect; wider schema combinations remain A05 implementation work.",
       "evidence": [
         "tests/server_legacy_tools_test.cpp",
         "docs/SERVE_LEGACY_TOOLS_2026-11-08.md"
@@ -396,7 +397,7 @@
     },
     "function_call": {
       "semantics": "Standard legacy function definitions/selection normalize into the shared tool plan; legacy JSON/SSE retain function_call and role=function results.",
-      "boundary": "Single call, no ambiguous non-null current controls; same grammar resource bounds. Custom tools and wider schema combinations remain A04/A05 implementation work.",
+      "boundary": "Single call, no ambiguous non-null current controls; same grammar resource bounds. Custom tools delivered under modern dialect; wider schema combinations remain A05 implementation work.",
       "evidence": [
         "tests/server_legacy_tools_test.cpp",
         "docs/SERVE_LEGACY_TOOLS_2026-11-08.md"
@@ -1497,8 +1498,11 @@
     "limitations": "Accepted targeted CPU and one-model/six-Chat native TLS business; no remote OCSP/CRL fetching, active-session retroactive revocation, full model/performance or long stability claim. Standard API tasks A and remaining HTTP integration N05 remain active."
   },
   "custom_tools_review_20261108": {
-    "state": "implementation_pending_targeted_acceptance",
+    "state": "implemented_validated_delivered",
     "source": "docs/SERVE_CUSTOM_TOOLS_2026-11-08.md",
-    "regex_dependency": "regex-syntax 0.8.8 statically linked; no runtime service; worker bounds retained"
+    "regex_dependency": "regex-syntax 0.8.8 statically linked; no runtime service; worker bounds retained",
+    "binary_sha256": "f8677aaff4795529dfb8a2fd516887cb44c265d1f5ff22514765c970941c13b7",
+    "evidence": "docs/evidence/serve-custom-tools-20261108/audit.json",
+    "model_adapter": "Native function/input tags and encoded string, declared name determines standard wire custom type. Two failed business attempts retained; original mixed task passed after adapter repair."
   }
 }
