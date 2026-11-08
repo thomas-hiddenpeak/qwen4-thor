@@ -2,6 +2,17 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+未知提交公开语义5/5直接CPU通过，实际引擎两次零警告构建，来源检查
+通过；真实工具前缀与原故障FAILED同时保留，[原件及复核](evidence/serve-chat-unknown-20261109/README.md)。
+只补故障/同PID恢复1启动2Chat300秒，累计3启动8Chat600秒；之前通过
+的生成不重做，默认未改。通过后继续发行与全部总计划，非阶段终止。
+
+Chat续验完成真实工具/回填/原历史后，发现未知提交标志没有传播
+为公开错误码：最终存储超时对外仍object_timeout。原FAILED保留，
+模型退出0；正在统一Chat/Responses/Conversations错误出口，保留
+内部原因并公开unknown及可查询ID。冻结5直接CPU；仅故障/恢复补验
+需1启动/2Chat/300秒，累计3启动/8Chat/600秒，已通过正常路径复用。
+
 Chat首轮1启动/3生成/42.497秒在SDK分页驱动误读处停止：真实
 不保存、双choice JSON/SSE及概率保存均通过；原始列表游标完整。
 驱动修复与CPU补验通过，[原FAILED/续验边界](evidence/serve-chat-storage-prefix-20261109/README.md)。

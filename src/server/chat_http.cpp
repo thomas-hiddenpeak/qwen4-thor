@@ -448,8 +448,9 @@ void ChatServer::Dispatch(int fd, const std::string& method,
       SendSimple(fd, 200, "OK", OutputJson(reply.value), "application/json",
                  {access.deadline});
     else
-      SendError(fd, reply.http_status, reply.message, {access.deadline},
-                reply.code, reply.value.GetString("param"),
+      SendError(fd, reply.http_status, reply.ClientMessage(),
+                {access.deadline}, reply.ClientCode(),
+                reply.value.GetString("param"),
                 reply.value.GetString("allow"));
     return;
   }

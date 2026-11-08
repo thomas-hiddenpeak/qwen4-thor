@@ -259,6 +259,8 @@ Q4T_TEST(responses_execution_lost_commit_receipt_never_overwrites_or_replays) {
   Q4T_CHECK(run.Append(Text("committed answer"), "null", &wire));
   auto result = run.Finish(false, 0, {7, 0, 2, 0}, 43, &wire);
   Q4T_CHECK(!result.ok() && result.commit_unknown && run.CommitUnknown());
+  Q4T_CHECK(result.ClientCode() == "object_commit_unknown" &&
+            result.ClientMessage().find(run.Id()) != std::string::npos);
   Q4T_CHECK(wire.empty() &&
             result.message.find(run.Id()) != result.message.npos);
   Q4T_CHECK(Ok(run.CloseUnfinished()));

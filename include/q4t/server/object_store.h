@@ -5,9 +5,11 @@
 #include <chrono>
 #include <cstdint>
 #include <functional>
+#include <initializer_list>
 #include <memory>
 #include <span>
 #include <string>
+#include <string_view>
 
 #include "q4t/io/json.h"
 
@@ -74,6 +76,23 @@ struct ObjectReply {
   // Never blindly replay it: retrieve the known ID and revision first.
   bool commit_unknown = false;
   bool ok() const { return code.empty(); }
+  // Keep the actual internal cause for diagnostics. Public clients must not
+  // mistake an unconfirmed mutation for a known failed, retryable operation.
+  std::string_view ClientCode() const {
+    return commit_unknown ? std::string_view("object_commit_unknown") : code;
+  }
+  std::string ClientMessage() const {
+    if (!commit_unknown) return message;
+    std::string text = message +
+                       "; commit outcome unknown; retrieve the original "
+                       "resource before retrying";
+    for (const auto* key : {"id", "response_id"}) {
+      const auto* identity = value.Find(key);
+      if (identity && identity->IsString())
+        text += "; " + std::string(key) + "=" + identity->str;
+    }
+    return text;
+  }
 };
 
 struct ObjectStoreHealth {

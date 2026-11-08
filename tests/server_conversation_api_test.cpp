@@ -184,8 +184,9 @@ int ConversationApiFixture(int argc, char** argv) {
       const auto output =
           result.ok()
               ? OutputJson(result.value)
-              : detail::ErrorJson(result.http_status, result.message,
-                                  result.code, result.value.GetString("param"));
+              : detail::ErrorJson(result.http_status, result.ClientMessage(),
+                                  result.ClientCode(),
+                                  result.value.GetString("param"));
       q4t::io::Json record;
       record.type = q4t::io::Json::Type::kObject;
       const auto string = [](std::string text) {

@@ -25,7 +25,8 @@ void ServeBackgroundResponse(int fd, ObjectStore& objects, ResponsesJobs& jobs,
   auto run = std::make_unique<ResponsesExecution>(objects);
   auto result = run->Prepare(request, config, access, std::time(nullptr), true);
   if (!result.ok()) {
-    detail::SendError(fd, result.http_status, result.message, {}, result.code,
+    detail::SendError(fd, result.http_status, result.ClientMessage(), {},
+                      result.ClientCode(),
                       result.value.GetString("param"));
     return;
   }
@@ -35,7 +36,8 @@ void ServeBackgroundResponse(int fd, ObjectStore& objects, ResponsesJobs& jobs,
     return http->TransferClientLease(lease);
   });
   if (!result.ok()) {
-    detail::SendError(fd, result.http_status, result.message, {}, result.code,
+    detail::SendError(fd, result.http_status, result.ClientMessage(), {},
+                      result.ClientCode(),
                       result.value.GetString("param"));
     return;
   }
@@ -266,7 +268,8 @@ void ServeResponsesState(int fd, ObjectStore& objects, std::string_view method,
     if (http) http->SetResponsesStream(nullptr, nullptr, nullptr);
   });
   const auto send_error = [&](const ObjectReply& reply) {
-    detail::SendError(fd, reply.http_status, reply.message, {}, reply.code,
+    detail::SendError(fd, reply.http_status, reply.ClientMessage(), {},
+                      reply.ClientCode(),
                       reply.value.GetString("param"),
                       reply.value.GetString("allow"));
   };

@@ -1,0 +1,54 @@
+{
+  "original_failed": {
+    "status": "FAILED",
+    "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 294, in run\n    try:self.start();self.business();result['status']=self.success_status\n                     ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_chat_storage/remainder_acceptance.py\", line 105, in business\n    self.remainder(self.stored, self.stream, 4)\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_chat_storage/acceptance.py\", line 279, in remainder\n    self.fault()\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_chat_storage/acceptance.py\", line 218, in fault\n    check_fault(events, b''.join(chunks))\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_chat_storage/acceptance.py\", line 109, in check_fault\n    require(len(failures) == 1 and failures[0]['code'] == 'object_commit_unknown',\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 57, in require\n    raise RuntimeError(message)\nRuntimeError: missing honest storage receipt error\n",
+    "counts": {
+      "starts": 1,
+      "chats": 3,
+      "controls": 40
+    },
+    "seconds": 53.830317293293774,
+    "binary_sha256": "8fbb50e9a85d1c0797954b3f24dbb7cfd0db835b2777dfe66ab0d2c6aae26e84"
+  },
+  "lease": {
+    "status": "COMMAND_FAILED",
+    "command": [
+      "python3",
+      "-B",
+      "-m",
+      "tools.serve_chat_storage.remainder_acceptance",
+      "run",
+      "--plan",
+      ".q4t-work/serve-chat-storage-20261109/business-02/plan.json"
+    ],
+    "compute_backend": "nvml",
+    "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+    "poll_interval_seconds": 1.0,
+    "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+    "performance_acceptance": false,
+    "child_returncode": 1,
+    "external_lease": false,
+    "lease_inherited_by_child": true,
+    "finished": {
+      "utc": "2026-11-08T22:05:58.448668+00:00",
+      "monotonic": 2365640.965559261,
+      "pid": 907782
+    }
+  },
+  "accepted_prefix_only": true,
+  "source_delta": [
+    "include/q4t/server/object_store.h",
+    "src/server/chat_generation.cpp",
+    "src/server/chat_http.cpp",
+    "src/server/responses_api.cpp"
+  ],
+  "cpu": {
+    "exit_code": 0,
+    "elapsed_seconds": 0.7146451729349792,
+    "executable_sha256": "850787523ccf1a0028432ce572250089e3979d9b346fb374c6c94be098f8e5c7"
+  },
+  "nvml_query_count": 52,
+  "final_driver_sha256": "c3fee4ca621e15c099abb47cb447fc9c22ef94c9627c298ca863361d44f1e0d6",
+  "candidate_sha256": "92e600fbcdcadf37271a77405daf498f1fe4fbf2d327ad79a0bf3646bd02ce31",
+  "default_changed": false
+}

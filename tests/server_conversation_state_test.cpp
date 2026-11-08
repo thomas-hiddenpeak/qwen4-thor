@@ -6,6 +6,8 @@
 #include <iterator>
 
 #include "q4t/server/output_schema.h"
+#include "q4t/server/http_response.h"
+#include "q4t/server/lifetime.h"
 #include "q4t/server/responses_item_shape.h"
 #include "q4t/test.h"
 
@@ -77,6 +79,27 @@ ObjectReply ItemRecord(ObjectStore& store, std::string id) {
   return store.Execute(request, Clock::now() + 5s);
 }
 }  // namespace
+
+Q4T_TEST(conversation_state_unknown_create_exposes_retrievable_identity) {
+  ObjectWorkerEntryForTesting("--q4t-object-worker-commit-pause");
+  ScopeExit reset([] { ObjectWorkerEntryForTesting({}); });
+  Fixture f;
+  f.options.io_timeout_ms = 200;
+  ObjectStore objects(f.options);
+  ConversationState states(objects);
+  const auto created = states.Create(Json(), Parse("[]"), Access());
+  Q4T_CHECK(!created.ok() && created.commit_unknown);
+  const auto id = created.value.GetString("id");
+  Q4T_CHECK(!id.empty());
+  const auto error = Parse(detail::ErrorJson(
+      created.http_status, created.ClientMessage(), created.ClientCode()));
+  Q4T_CHECK(error.Find("error")->GetString("code") == "object_commit_unknown");
+  Q4T_CHECK(error.Find("error")->GetString("message").find(id) !=
+            std::string::npos);
+  const auto confirmed = states.Retrieve(id, Access());
+  Q4T_CHECK(Ok(confirmed) && confirmed.value.GetString("id") == id);
+  return true;
+}
 
 Q4T_TEST(conversation_state_crud_restart_and_item_retention) {
   Fixture f;

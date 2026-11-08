@@ -3,6 +3,8 @@
 #include <cstdlib>
 #include <ctime>
 #include <filesystem>
+#include <sys/socket.h>
+#include <unistd.h>
 
 #include "q4t/server/application_routes.h"
 #include "q4t/server/application_query.h"
@@ -11,6 +13,7 @@
 #include "q4t/server/chat_response_parser.h"
 #include "q4t/server/token_logprobs.h"
 #include "q4t/server/lifetime.h"
+#include "q4t/server/http_response.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/test.h"
 
@@ -80,6 +83,32 @@ ObjectReply ReadRecord(ObjectStore& objects, std::string id) {
   request.scope = "client:a";
   request.id = std::move(id);
   return objects.Execute(request, Clock::now() + 5s);
+}
+std::string ErrorWire(const ObjectReply& reply, bool stream) {
+  int sockets[2];
+  if (socketpair(AF_UNIX, SOCK_STREAM, 0, sockets))
+    throw std::runtime_error("error fixture socket");
+  ScopeExit close([&] {
+    ::close(sockets[0]);
+    ::close(sockets[1]);
+  });
+  {
+    detail::HttpResponseContext context(sockets[1]);
+    if (stream && !detail::BeginStreamingResponse(sockets[1], context.State()))
+      throw std::runtime_error("error fixture SSE");
+    detail::SendError(sockets[1], reply.http_status, reply.ClientMessage(), {},
+                      reply.ClientCode(), "store");
+  }
+  shutdown(sockets[1], SHUT_WR);
+  std::string wire;
+  char buffer[4096];
+  for (;;) {
+    const auto count = recv(sockets[0], buffer, sizeof(buffer), 0);
+    if (count == 0) return wire;
+    if (count < 0 || wire.size() + count > 8192)
+      throw std::runtime_error("error fixture wire");
+    wire.append(buffer, count);
+  }
 }
 }  // namespace
 
@@ -312,6 +341,15 @@ Q4T_TEST(chat_storage_lost_final_receipt_is_retrievable_without_replay) {
   StoredChats chats(objects);
   const auto result = chats.Save(Input(), Output(), Access());
   Q4T_CHECK(!result.ok() && result.commit_unknown);
+  Q4T_CHECK(result.ClientCode() == "object_commit_unknown");
+  const auto json = ErrorWire(result, false);
+  Q4T_CHECK(json.find(R"("code":"object_commit_unknown")") != json.npos);
+  Q4T_CHECK(json.find("retrieve the original resource") != json.npos);
+  const auto stream = ErrorWire(result, true);
+  Q4T_CHECK(stream.find(R"("code":"object_commit_unknown")") != stream.npos);
+  Q4T_CHECK(stream.find("data: [DONE]") != stream.npos);
+  Q4T_CHECK(stream.find("finish_reason") == stream.npos &&
+            stream.find("usage") == stream.npos);
   auto restored = chats.Retrieve("chatcmpl_test", Access());
   Q4T_CHECK(Ok(restored) && restored.value.GetString("id") == "chatcmpl_test");
   Q4T_CHECK(ReadRecord(objects, "chatcmpl_test").value.GetInt("revision") == 1);
@@ -532,6 +570,8 @@ Q4T_TEST(chat_storage_cancel_before_commit_never_creates_success) {
   const auto final =
       FinalizeStoredChat(&objects, Input(), OutputJson(Output()), access);
   Q4T_CHECK(final.http_status == 499 && !final.commit_unknown);
+  Q4T_CHECK(final.ClientCode() == "object_cancelled" &&
+            final.ClientMessage() == final.message);
   Q4T_CHECK(
       StoredChats(objects).Retrieve("chatcmpl_test", Access()).http_status ==
       404);

@@ -1,0 +1,19 @@
+{
+  "pid": 909041,
+  "identity": {
+    "state": "S",
+    "ppid": 907803,
+    "pgid": 907788,
+    "start_ticks": 236562476,
+    "argv": [
+      "q4t-object-worker",
+      "--q4t-object-worker",
+      "907803",
+      "2147483648"
+    ],
+    "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t"
+  },
+  "model_pid": 907803,
+  "completion_id": "chatcmpl-auto-9c706848c380b272661b91a6b0af3c33",
+  "mutation": "SIGSTOP"
+}

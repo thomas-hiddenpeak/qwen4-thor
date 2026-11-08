@@ -1,0 +1,22 @@
+{
+  "status": "ACCEPT_UNCHANGED_TOOL_PREFIX_ONLY",
+  "source_delta": [
+    "include/q4t/server/object_store.h",
+    "src/server/chat_generation.cpp",
+    "src/server/chat_http.cpp",
+    "src/server/responses_api.cpp"
+  ],
+  "accepted": [
+    "tool",
+    "follow",
+    "stored-history",
+    "metadata-update"
+  ],
+  "fault_error_still_failed": true,
+  "counts": {
+    "starts": 1,
+    "chats": 3,
+    "controls": 40
+  },
+  "seconds": 53.830317293293774
+}

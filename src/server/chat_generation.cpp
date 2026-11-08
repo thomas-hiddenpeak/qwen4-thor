@@ -235,7 +235,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       auto reply = responses->Prepare(original_request, planning_config,
                                       std::move(access), std::time(nullptr));
       if (!reply.ok()) {
-        SendError(fd, reply.http_status, reply.message, {}, reply.code,
+        SendError(fd, reply.http_status, reply.ClientMessage(), {},
+                  reply.ClientCode(),
                   reply.value.GetString("param"));
         return;
       }
@@ -670,7 +671,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       if (responses && !responses->Begun()) {
         const auto started = responses->Begin(&response_start);
         if (!started.ok()) {
-          SendError(fd, started.http_status, started.message, {}, started.code);
+          SendError(fd, started.http_status, started.ClientMessage(), {},
+                    started.ClientCode());
           return false;
         }
       }
@@ -2918,8 +2920,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           std::time(nullptr), &response_terminal);
       if (!finished.ok()) {
         err_guard.ok = false;
-        SendError(fd, finished.http_status, finished.message, {},
-                  finished.code);
+        SendError(fd, finished.http_status, finished.ClientMessage(), {},
+                  finished.ClientCode());
         return;
       }
     } else if (completion) {
@@ -2965,7 +2967,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       if (!stored.ok()) {
         err_guard.ok = false;
         SendError(fd, stored.http_status,
-                  stored.message + "; completion_id=" + id, {}, stored.code,
+                  stored.ClientMessage() + "; completion_id=" + id, {},
+                  stored.ClientCode(),
                   "store");
         return;
       }
