@@ -64,6 +64,16 @@ def best_of_expected(value, n=3):
     return result
 
 
+def check_accounting(metrics):
+    # Cancellation is its own outcome in the existing metrics contract.
+    require(metrics['q4t_requests_total'] == 7 and
+            metrics['q4t_requests_success_total'] == 6 and
+            metrics['q4t_requests_error_total'] == 0 and
+            metrics['q4t_requests_aborted_total'] == 1 and
+            metrics['q4t_requests_aborted_by_reason_total{reason="explicit_cancel"}'] == 1,
+            'business accounting')
+
+
 def prepare(args):
     base.prepare(args, rows=requests(), limits=LIMITS, scope=__doc__)
     path = args.output.resolve()/'plan.json'
@@ -212,9 +222,7 @@ class Stage(base.Stage):
         require(final.finish_reason == 'stop' and final.message['content'].strip() == '42',
                 'Chat did not continue after completion cancellation')
         final_metrics = self.drained('final')
-        require(final_metrics['q4t_requests_total'] == 7 and
-                final_metrics['q4t_requests_success_total'] == 6 and
-                final_metrics['q4t_requests_error_total'] == 1, 'business accounting')
+        check_accounting(final_metrics)
 
 
 def main():

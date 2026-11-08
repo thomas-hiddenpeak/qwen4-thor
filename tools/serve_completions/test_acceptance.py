@@ -5,10 +5,22 @@ import os
 import subprocess
 import unittest
 
-from tools.serve_completions.acceptance import LIMITS, requests, best_of_expected
+from tools.serve_completions.acceptance import (
+    LIMITS, requests, best_of_expected, check_accounting)
 
 
 class Driver(unittest.TestCase):
+    def test_cancel_is_an_independent_outcome_and_must_not_double_count(self):
+        metrics = dict(q4t_requests_total=7, q4t_requests_success_total=6,
+            q4t_requests_error_total=0, q4t_requests_aborted_total=1)
+        metrics['q4t_requests_aborted_by_reason_total{reason="explicit_cancel"}'] = 1
+        check_accounting(metrics)
+        for key in metrics:
+            changed = dict(metrics)
+            changed[key] += 1
+            with self.subTest(key=key), self.assertRaises(RuntimeError):
+                check_accounting(changed)
+
     def test_frozen_inputs_pass_production_semantics_before_gpu(self):
         rows = requests()
         cases = [dict(kind='chat' if name == 'chat' else 'completion',

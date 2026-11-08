@@ -2,12 +2,13 @@
 
 更新：2026-11-08。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
-A06原生Completions/Models成组开发与针对性CPU已完成：50不同C++、
-51输入差分、6官方SDK、4原生/TLS接入、10驱动/托管/发行检查通过。
-新增批量取消按实际准入输入结算，发行随包携带补全schema和可选
-别名配置；旧包仍可验证。失败夹具与修复原件保留，详见
-[SERVE_COMPLETIONS](SERVE_COMPLETIONS_2026-11-08.md)。下一步冻结真实
-1计划启动/7生成，上限2/8/900秒；尚无A06 GPU结论，默认仍A05。
+A06原生Completions/Models开发、针对性CPU及真实业务证据已完成：
+1模型/7生成、51.954秒驱动/52.503秒严格租约、50次NVML全OK；
+实际echo概率、6候选JSON/SSE、best_of真实选优和24token计费、
+FIM `a + b`、取消后同PID Chat通过。原驱动误把取消计为错误，最后
+断言失败原件保留；只修驱动并以1项负控CPU及原始线包复核闭合，
+运行时源码/ELF未变，不追加GPU。清理退出0，默认暂仍A05，正在准备
+可回退发行。详见[SERVE_COMPLETIONS](SERVE_COMPLETIONS_2026-11-08.md)。
 
 ## Serve总目标重审：能力缺口全部进入实施清单
 

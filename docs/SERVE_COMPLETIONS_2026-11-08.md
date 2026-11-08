@@ -83,3 +83,21 @@ schema，旧v1及历史回退包仍可独立验证。
 输出token计费；真实FIM加法代码填充；显式取消后同PID Chat。
 Models目录/详情/只读删除及预分词只读控制请求另记。当前尚无
 A06 GPU证据，默认继续A05；全部总目标仍active。
+
+
+## 真实短验与原始证据复核
+
+1启动/7生成已完成，驱动51.954秒、连续严格租约52.503秒，50次NVML
+全OK。37个真实提示token的原始Unicode echo和真实teacher-forced概率
+通过；两prompt、n=3共6候选的JSON/SSE文本与概率完全相同。best_of
+按6个实际不同候选的平均概率选出两条结果，usage仍包含全部24输出
+token。FIM真实填充为`a + b`；显式取消后同PID Chat返回42并走MTP。
+Models稳定目录/详情、不存在404及只读403通过，进程退出0、端口/锁释放。
+
+原驱动最后错误地要求取消计入requests_error，因而原result仍保留FAILED；
+真实计数是7总请求=6成功+1明确取消、0错误，符合早已实现的合同。
+修复仅改驱动断言，新增1项含五种反例的CPU验证；原ELF和所有运行时
+源码未变。`review.py`重新核对原始JSON/SSE、SDK、候选计分、计数、
+原commit源码和清理，形成独立`PASS_COMPLETIONS_MODELS_REVIEW`回执，
+未覆盖原始失败记录、未追加GPU运行。初次遗漏租约继承参数的0启动/
+0生成拒绝也保留。接下来可回退发行，随后继续A07；总目标不结束。
