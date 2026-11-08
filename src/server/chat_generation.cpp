@@ -181,6 +181,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   const auto& constraints = request_plan.constraints;
   const auto& sampling = request_plan.sampling;
   const bool plain_greedy = sampling.PlainGreedy();
+  const bool prediction_enabled = request_plan.prediction.enabled;
   const std::string prefix_scope =
       ClientScopedKey(client, req.GetString("prefix_cache_scope"));
   const int prefix_write_tokens =
@@ -458,6 +459,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     }
     SampledToken selected_sample;
     TokenLogprobs token_logprobs(!stream);
+    PredictionCursor prediction(prompt_budget.prediction_tokens);
+    uint64_t prediction_pairs = 0;
+    uint64_t prediction_pair_matches = 0;
     const auto start_stream = [&] {
       if (!stream) return true;
       if (cancelled()) {
@@ -687,6 +691,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     uint16_t* d_trunk_full = nullptr;
     uint16_t* d_vfeats = nullptr;
     uint16_t* d_session_trunk = nullptr;
+    uint16_t* d_prediction_logits = nullptr;
     uint16_t* d_mtp_g =
         nullptr;  // MTP rolling draft trunk [hc*hs] (Stage 2c:
                   // per-request, so concurrent MTP requests don't
@@ -705,6 +710,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       }
     };
     const auto release_buffers = [&] {
+      release_buffer(d_prediction_logits, "request.prediction_logits_free");
       release_buffer(d_session_trunk, "request.session_trunk_free");
       release_buffer(d_trunk_full, "request.prompt_trunk_free");
       release_buffer(d_vfeats, "request.vision_features_free");
@@ -858,7 +864,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                     ? static_cast<size_t>(mtp_.cfg.hc) *
                                           static_cast<size_t>(mtp_.cfg.hs)
                                     : 0;
-    const bool request_mtp = mtp_loaded_ && plain_greedy && !structured;
+    const bool request_mtp = mtp_loaded_ && plain_greedy && !structured &&
+                             !prediction_enabled;
     const bool stream_mtp = request_mtp && explicit_slots;
     int32_t stream_d0 = -1;
     bool stream_draft_ready = false;
@@ -906,6 +913,18 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       }
     }
     std::vector<uint16_t> h_logits(static_cast<size_t>(vocab));
+    std::vector<uint16_t> h_prediction_logits;
+    bool prediction_logits_ready = false;
+    if (prediction_enabled && !prompt_budget.prediction_tokens.empty()) {
+      const auto allocated = allocate_buffer(
+          d_prediction_logits, static_cast<size_t>(vocab) * 4,
+          "request.prediction_logits");
+      if (!allocated.ok()) {
+        allocation_error(allocated);
+        return;
+      }
+      h_prediction_logits.resize(static_cast<size_t>(vocab) * 2);
+    }
 
     auto argmax = [&](const uint16_t* h) {
       int best = 0;
@@ -1368,7 +1387,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     // tokens. Model history is never reconstructed from parsed response text.
     const auto consume_token = [&](int32_t token) {
       if (!stream && !thinking_budget.Enabled() && !text_stop.Enabled() &&
-          !sampling.logprobs)
+          !sampling.logprobs && !prediction_enabled)
         return true;
       std::string piece;
       {
@@ -1385,7 +1404,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         response_status =
             thinking_budget.Observe(token, piece, is_stop_token(token));
       if (!response_status) return false;
-      if (stream || text_stop.Enabled() || sampling.logprobs) {
+      if (stream || text_stop.Enabled() || sampling.logprobs ||
+          prediction_enabled) {
         std::vector<detail::Utf8Span> spans;
         const auto normalized =
             utf8.Append(piece, sampling.logprobs ? &spans : nullptr);
@@ -1933,7 +1953,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         // The current packed scheduler argmax has no request-specific mask.
         // Constrained requests must stay on the host-logit fallback until a
         // separately accepted scheduler/MTP mask implementation exists.
-        use_sched = plain_greedy && !structured && !thinking_budget.Enabled() &&
+        use_sched = plain_greedy && !prediction_enabled && !structured &&
+                    !thinking_budget.Enabled() &&
                     scheduler_active_ && !scheduler_stop_ && d_sched_logits_ &&
                     static_cast<int>(active_.size()) < max_seq_;
         if (use_sched) {
@@ -1947,10 +1968,27 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       for (int step = static_cast<int>(generated.size()); step < max_tokens;
            ++step) {
         if (cancelled() || !response_status) break;
+        // Prediction tokens not consumed in the completion are charged as
+        // rejected output, including an unused suffix at EOS or truncation.
+        // Matching one next token adds no net charge: it replaces a reserved
+        // prediction token. This permits a fully predicted max_tokens reply.
+        const bool prediction_content = !response_parser.Thinking() &&
+            next_token >= 0 &&
+            next_token < static_cast<int32_t>(tok_->BaseVocabSize());
+        const uint64_t prediction_credit =
+            prediction_content && prediction.Matches(next_token) ? 1 : 0;
+        if (prediction_enabled &&
+            prediction.Completion(generated.size() + 1) - prediction_credit >
+                static_cast<uint64_t>(prompt_budget.available_output)) {
+          finish_reason = "length";
+          break;
+        }
         if (!plain_greedy) response_status = sampler.Observe(next_token);
         if (!response_status) break;
         generated.push_back(next_token);
-        rate_lease.Completion(choices.CompletionTokens() + generated.size());
+        prediction.Consume(next_token, prediction_content);
+        rate_lease.Completion(choices.CompletionTokens() +
+                              prediction.Completion(generated.size()));
         if (is_stop_token(next_token)) {
           finish_reason = "stop";
           break;
@@ -1962,11 +2000,19 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         }
         // The current token is already emitted (or buffered for non-streaming).
         // Do not prepare another token when this request cannot consume it.
-        if (step == max_tokens - 1 || seq.position + 1 >= request_capacity) {
+        if (step == max_tokens - 1 ||
+            seq.position + (prediction_logits_ready ? 0 : 1) >=
+                request_capacity) {
           finish_reason = "length";
           break;
         }
-        if (use_sched) {
+        if (prediction_logits_ready) {
+          // The previous verify already consumed this token. Its second
+          // logits row belongs to this exact sequence prefix, copied to host
+          // before another request could reuse the shared model scratch.
+          prediction_logits_ready = false;
+          next_token = select_token(h_prediction_logits.data() + vocab);
+        } else if (use_sched) {
           // Register this step's token with the scheduler (position + PLE
           // context are read from the per-sequence state BEFORE advancing).
           ar.token = tok_id;
@@ -1995,6 +2041,65 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           // Fallback: single-sequence decode (B1 path).
           auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
           OnException backend_failure([&] { AbortBackendExecution(); });
+          const int32_t proposal = prediction.Next();
+          const bool verify_prediction = prediction_enabled &&
+              d_prediction_logits && !response_parser.Thinking() &&
+              proposal >= 0 &&
+              proposal < static_cast<int32_t>(tok_->BaseVocabSize()) &&
+              seq.position + 2 <= request_capacity &&
+              model_.Get().cfg.max_prefill >= 2;
+          if (verify_prediction) {
+            const int32_t inputs[2] = {tok_id, proposal};
+            const int position = seq.position;
+            const int slot = seq_id;
+            s = ExecutionStatus();
+            if (s) s = model::ModelReserveVerifyCheckpoints(model_.Get(), 1);
+            if (s)
+              s = seq.Submit(inputs, model::ModelSequence::Stage::kDecode,
+                             request_capacity);
+            if (router_trace_)
+              router_trace_->BeginForward(trace::RouteStage::kDecode,
+                                          position, 2);
+            if (s)
+              s = model::ModelVerifyMulti(
+                  model_.Get(), inputs, &position, &slot, seq.history.data(),
+                  static_cast<int>(seq.history.size()), 1, 2,
+                  d_prediction_logits, nullptr);
+            cudaError_t copy_error = cudaSuccess;
+            if (s)
+              copy_error = cudaMemcpyAsync(
+                  h_prediction_logits.data(), d_prediction_logits,
+                  static_cast<size_t>(vocab) * 4, cudaMemcpyDeviceToHost,
+                  nullptr);
+            // First wait makes logits readable without committing either
+            // pending row. The second boundary checks any rollback before
+            // committing only the retained target-verified prefix.
+            s = FinishHostReadback(copy_error, &gpu_healthy_, {}, s,
+                                   router_trace_.get(),
+                                   &metrics_.execution_steps_total);
+            bool matched = false;
+            if (s) {
+              ++prediction_pairs;
+              next_token = select_token(h_prediction_logits.data());
+              matched = response_status && next_token == proposal;
+              if (!matched)
+                s = model::ModelRestoreCheckpoint(model_.Get(), 0, nullptr,
+                                                   seq_id);
+              if (s) s = seq.RetainSubmittedPrefix(matched ? 2 : 1);
+            }
+            if (seq.HasPending()) {
+              model::ModelSequence* sequence = &seq;
+              s = FinishHostReadback(cudaSuccess, &gpu_healthy_,
+                                     {&sequence, 1}, s);
+            }
+            if (!s) {
+              generation_failed = true;
+              break;
+            }
+            prediction_logits_ready = matched;
+            prediction_pair_matches += matched;
+            continue;
+          }
           if (router_trace_)
             router_trace_->BeginForward(trace::RouteStage::kDecode,
                                         seq.position, 1);
@@ -2022,6 +2127,20 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       active_registration.Run();
     }
     trace_output_tokens = generated.size();
+    if (prediction_enabled) {
+      // Also settles an admitted zero-output length completion, where all
+      // provided tokens remain rejected. Queued cancellations never start it.
+      rate_lease.Completion(choices.CompletionTokens() +
+                            prediction.Completion(generated.size()));
+      std::fprintf(stderr,
+          "[prediction] request=%s provided=%zu accepted=%llu rejected=%llu "
+          "verify_pairs=%llu pair_matches=%llu\n", request_id.c_str(),
+          prompt_budget.prediction_tokens.size(),
+          static_cast<unsigned long long>(prediction.Accepted()),
+          static_cast<unsigned long long>(prediction.Rejected()),
+          static_cast<unsigned long long>(prediction_pairs),
+          static_cast<unsigned long long>(prediction_pair_matches));
+    }
     if (thinking_budget.Enabled()) {
       std::fprintf(
           stderr,
@@ -2229,7 +2348,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     // Both transports use the same parser. Never publish a successful terminal
     // (or a session snapshot) for malformed/truncated model tool output.
     if (response_status.ok()) {
-      if (stream || text_stop.Enabled() || sampling.logprobs) {
+      if (stream || text_stop.Enabled() || sampling.logprobs ||
+          prediction_enabled) {
         std::vector<detail::Utf8Span> spans;
         const auto tail = utf8.Finish(sampling.logprobs ? &spans : nullptr);
         if (sampling.logprobs) token_logprobs.Map(spans);
@@ -2297,9 +2417,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     s = choices.Add(
         choice_index, stream ? "" : response_parser.MessageJson(),
         finish_reason, sampling.logprobs ? token_logprobs.Json() : "null", T,
-        generated.size(), restored_prefix,
+        prediction.Completion(generated.size()), restored_prefix,
         session.cache || !prefix_scope.empty(), reasoning_options.token_budget,
-        thinking_budget.Consumed(), thinking_budget.ForcedTokens());
+        thinking_budget.Consumed(), thinking_budget.ForcedTokens(),
+        prediction_enabled, prediction.Accepted(), prediction.Rejected());
     if (!s) {
       err_guard.ok = false;
       SendError(fd, 503, s.message(), {}, "response_storage_exhausted");

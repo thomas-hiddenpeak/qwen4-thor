@@ -269,3 +269,28 @@ test('sampling client rejects fewer choices than requested', async () => {
   await assert.rejects(run.api.chat({ ...request(false), n: 2 }), /choice count/);
   assert.equal(run.requests.length, 1);
 });
+
+test('prediction usage survives real SDK JSON/SSE assembly', async () => {
+  const counts = { prompt_tokens: 10, completion_tokens: 7, total_tokens: 17,
+    completion_tokens_details: { reasoning_tokens: 1, accepted_prediction_tokens: 4,
+      rejected_prediction_tokens: 2 } };
+  const data = jsonResponse(); data.usage = counts;
+  const events = streamEvents(); events.at(-1).usage = counts;
+  const json = parseJsonWire(Buffer.from(JSON.stringify(data)));
+  const sse = parseSseWire(encode(events));
+  assert.deepEqual(json.result, sse.result);
+  assert.equal(json.result.usage.completion_tokens, 7);
+  const actual = await client(Buffer.from(JSON.stringify(data))).api.chat(request(false));
+  const actualStream = await client(encode(events), { stream: true }).api.chat(request(true));
+  assert.deepEqual(actual.usage, counts);
+  assert.deepEqual(actualStream.usage, counts);
+});
+
+test('prediction inconsistent counts fail closed', () => {
+  for (const pair of [[-1, 0], [0, true], [2, 2], [undefined, 0]]) {
+    const data = jsonResponse();
+    data.usage = { ...COUNTS, completion_tokens_details: { reasoning_tokens: 0,
+      accepted_prediction_tokens: pair[0], rejected_prediction_tokens: pair[1] } };
+    assert.throws(() => parseJsonWire(Buffer.from(JSON.stringify(data))), ProtocolError);
+  }
+});

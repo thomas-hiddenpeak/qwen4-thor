@@ -53,6 +53,23 @@
         "total_tokens": {
           "type": "integer",
           "minimum": 0
+        },
+        "completion_tokens_details": {
+          "type": "object",
+          "properties": {
+            "reasoning_tokens": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "accepted_prediction_tokens": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "rejected_prediction_tokens": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
         }
       }
     },

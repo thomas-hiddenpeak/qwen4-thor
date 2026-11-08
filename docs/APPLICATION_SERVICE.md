@@ -93,7 +93,7 @@ schema代替动态预算、模板、语法编译或真实业务验收。
 | penalties / seed | A03子组已验 | presence/frequency -2..2，按本choice生成历史；精确signed int64 seed，逐choice独立RNG |
 | stop | 已验，有限profile | 字符串或最多4串，每串256 UTF-8字节；null/[]禁用；匹配包含推理/工具标记，截断工具错误；严格输出/cache组合拒绝 |
 | logprobs / logit_bias | A03子组已验 | 原始模型分布，top_logprobs 0..20；词表内ID的-100..100 bias实际执行；边界token保留真实bytes |
-| prediction | A03继续实施 | 目标验证/消费和accepted/rejected usage尚未实现，不因采样子组交付关闭 |
+| prediction | A03候选CPU已验 | 字符串/text parts目标验证、部分回滚与accepted/rejected usage已实现；实际业务和发布待验，见[prediction进展](SERVE_PREDICTION_2026-11-08.md) |
 | response_format | 已验，有限 schema | text / null / json_object / json_schema；与非空 tools 同用须 none |
 | stream_options.include_usage | 已验 | 各choice块usage:null，全部finish后一次汇总usage；请求logprobs时携带真实概率；中断不保证收到尾帧 |
 | chat_template_kwargs | 已验，Q4T 扩展 | thinking/preserve/effort/vision ID；能力端点给出范围 |

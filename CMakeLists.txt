@@ -297,6 +297,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/input_contract.cpp
   src/server/chat_contract.cpp
   src/server/sampling.cpp
+  src/server/prediction.cpp
   src/server/token_logprobs.cpp
   src/server/chat_choices.cpp
   src/server/chat_tool_history.cpp
@@ -479,9 +480,11 @@ if(Q4T_BUILD_TESTS)
     src/server/input_contract.cpp
     src/server/chat_contract.cpp
     src/server/sampling.cpp
+    src/server/prediction.cpp
     src/server/token_logprobs.cpp
     src/server/chat_choices.cpp
     tests/server_sampling_test.cpp
+    tests/server_prediction_test.cpp
     tests/server_chat_sampling_response_test.cpp
     src/server/chat_prompt.cpp
     src/server/media_admission.cpp

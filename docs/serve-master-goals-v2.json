@@ -87,7 +87,8 @@
       ],
       "evidence": [
         "docs/SERVE_SAMPLING_2026-11-08.md",
-        "docs/evidence/serve-sampling-20261108/index.json"
+        "docs/evidence/serve-sampling-20261108/index.json",
+        "docs/SERVE_PREDICTION_2026-11-08.md"
       ],
       "release": {
         "subset": "sampling/choices/logprobs",
@@ -96,7 +97,8 @@
       },
       "remaining_required_after_sampling_subset": [
         "prediction target verification/consumption and accepted/rejected usage with targeted acceptance"
-      ]
+      ],
+      "prediction_progress": "CPU verified candidate: target 2-row verify/partial rollback, string/text-parts cursor, accepted/rejected usage and budget; 27 C++,22 shape,5 Python,2 JS; bounded 1/7 business and delivery pending"
     },
     {
       "id": "A04",

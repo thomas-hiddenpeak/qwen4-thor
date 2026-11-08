@@ -190,8 +190,17 @@ Status ExpandChatMedia(const io::Json& request,
                        std::vector<uint32_t>* tokens, vision::MediaPlan* media,
                        ChatPromptBudget* budget, ChatPlanError* error) {
   *media = {};
-  if (items.empty())
-    return PlanChatBudget(request, config, tokens->size(), budget, error);
+  if (items.empty()) {
+    auto prediction = std::move(budget->prediction_tokens);
+    auto status = PlanChatBudget(request, config, tokens->size(), budget, error);
+    if (!status) return status;
+    if (prediction.size() > static_cast<size_t>(budget->available_output)) {
+      *error = {"context_length_exceeded", "prediction.content"};
+      return Status::Fail("prediction exceeds completion budget");
+    }
+    budget->prediction_tokens = std::move(prediction);
+    return Status();
+  }
   for (const auto token : *tokens) {
     if (token > static_cast<uint32_t>(std::numeric_limits<int32_t>::max())) {
       *error = {"media_placeholder_count", "messages"};
@@ -230,6 +239,12 @@ Status ExpandChatMedia(const io::Json& request,
   status = PlanChatBudget(request, config, expanded.size(), &planned_budget,
                           error);
   if (!status) return status;
+  if (budget->prediction_tokens.size() >
+      static_cast<size_t>(planned_budget.available_output)) {
+    *error = {"context_length_exceeded", "prediction.content"};
+    return Status::Fail("prediction exceeds expanded media completion budget");
+  }
+  planned_budget.prediction_tokens = std::move(budget->prediction_tokens);
   *tokens = std::move(expanded);
   *budget = std::move(planned_budget);
   *media = planned;

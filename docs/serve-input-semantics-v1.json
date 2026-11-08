@@ -14,6 +14,15 @@
   "runtime_preflight": "POST /v1/chat/preflight",
   "rules": [
     {
+      "id": "prediction",
+      "sources": [
+        "src/server/prediction.cpp",
+        "src/server/chat_plan.cpp",
+        "src/server/chat_generation.cpp"
+      ],
+      "contract": "Static string/text parts become target-verified tokens. Prediction never forces the target distribution. Accepted tokens are consumed once; remaining provided tokens count as rejected completion tokens. Effective output/context and client quota include them. n>1/logprobs/positive penalties/tools/max_completion_tokens are incompatible only with a non-null prediction."
+    },
+    {
       "id": "json-lexical",
       "sources": [
         "src/io/json.cpp",
@@ -273,16 +282,16 @@
     "src/runtime/startup_reservation.cpp": "3c979fd0e8eb5dec8185148c77677ddad246f401faa92641d2a5f1ec2c033e09",
     "src/runtime/system_memory.cpp": "231e9a7ce5ed49e27e604a7bfa4066b35e83f286026c15986898d996a66acd2f",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_choices.cpp": "99c36b1136a321ea773eda2c8f4b0663c0e821760a337354a0c250242090bfd7",
-    "src/server/chat_contract.cpp": "e09db23d815d0dfe035e69d4d740bb3ce3621dc423758a8fca9447e422e32d3e",
+    "src/server/chat_choices.cpp": "b60cf9cb3fcf1f17ab268ca2637b0a7acc7acd2e455ea222ffb0b6c5dea10424",
+    "src/server/chat_contract.cpp": "eb90af0e2fdd0dcafcec8f84ba7a7407f7805ad1cd68dfa9fc9c41ddb535bda4",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
-    "src/server/chat_generation.cpp": "a2da2617e04be8200d24ce60d19de0efbd4f7e312cbd1420f679156098e607e5",
+    "src/server/chat_generation.cpp": "59b22be8cd22e9a1ab0ab5cfe73329d8fd0ab0d06040cd1feb0ff42acfcc21fa",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
     "src/server/chat_http.cpp": "5504ac68093b870e0f961a4d0faa1395ed8facf728f0046ec35e34e4843a5120",
     "src/server/chat_input.cpp": "d79be28242ed560ad7be0494284f72b53d1aaa7a272786d17f1b837e81a6d9bb",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
     "src/server/chat_metrics.cpp": "f12e27e7946dab08e882be25f8cb6fa2273e4d370716872aaf5a59fb30e5cf21",
-    "src/server/chat_plan.cpp": "59596fb233f479c72a0fedd123ea4dc9c1065b7f7ccd7c6bc6e7c66e2d0222f9",
+    "src/server/chat_plan.cpp": "2f8fcde8f721dd1f661e0607172a3dbd82e194d7d999971f2244f514bf3deab4",
     "src/server/chat_preflight.cpp": "9c16f641fb71793ed5d41bb36b7137a6b537b3a1100c220663aba5cfb1b6e9fc",
     "src/server/chat_prompt.cpp": "d79f99bff03d2d199e4e62b004fc187b6bb36055211921008d561c869577b4fd",
     "src/server/chat_response_parser.cpp": "a48c77300bdc1310004173820a3c1d9566f9ccdd37e43368c48484bf832ca4e3",
@@ -293,10 +302,11 @@
     "src/server/cuda_memory_backend.h": "aabc6d78d2925ec5280e270964d79d3164ce706732a674b88215554a34d0e6a5",
     "src/server/http_request.cpp": "614dd52541c9311054be68a790d6b7429503de6edd747b2247eb689273c24d3c",
     "src/server/input_contract.cpp": "ad9adbffc9638792ec15debeebee803fb43d2085f639281dabd6230146c5cf6a",
-    "src/server/media_admission.cpp": "8b6fa7cdaad948522a4db542c2e313feb0ce816a80726850cfd19a777ef93be7",
+    "src/server/media_admission.cpp": "11461c31fed0db43fe68e16680812641c0e51371585c216673e4fe2e54500393",
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
     "src/server/output_constraints.cpp": "19529eb9ae9fa51c08f96c20ae0d4c48a5468a7ee6ba31f360fbd27ecef913c8",
     "src/server/output_schema.cpp": "d1ac1506c823dc128d8f2c95e5489c90d360813b35b37b2bfd52a9bbc512315d",
+    "src/server/prediction.cpp": "7e8ccdf7c44dd5c8245230577d42eb7d4cd17c6e2efcf5534a02e6744815733f",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
     "src/server/sampling.cpp": "8e6a8c446656d8430005b061b10535b391b002362725511d216f9b4229e3d3cb",
     "src/server/server_options.cpp": "c47e2555d054a8ee27524ecf59936838b717d7292c864c24efeee1279e2dc622",

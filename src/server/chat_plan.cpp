@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <charconv>
+#include <limits>
 
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/media_admission.h"
@@ -64,6 +65,9 @@ Status PlanChatRequest(const io::Json& req, const ChatPlanConfig& config,
                                      &error->param);
   if (!status) return status;
   status = ParseSamplingOptions(req, &plan->sampling, &error->param);
+  if (!status) return status;
+  status = ParsePredictionOptions(req, plan->sampling, &plan->prediction,
+                                  &error->param);
   if (!status) return status;
   if (const auto* biases = req.Find("logit_bias");
       biases && biases->IsObject() && config.token_vocab > 0) {
@@ -173,7 +177,29 @@ Status EncodeChatPrompt(const io::Json& req, const ChatPlanConfig& config,
                 req.Has("messages") ? "messages" : "prompt",
                 "encode failed: " + encoded.message());
   }
-  return PlanChatBudget(req, config, tokens->size(), budget, error);
+  auto status = PlanChatBudget(req, config, tokens->size(), budget, error);
+  SamplingOptions sampling;
+  PredictionOptions prediction;
+  if (status) status = ParseSamplingOptions(req, &sampling, &error->param);
+  if (status)
+    status = ParsePredictionOptions(req, sampling, &prediction, &error->param);
+  if (!status || !prediction.enabled) return status;
+  std::vector<uint32_t> predicted;
+  status = encode(prediction.content, &predicted);
+  if (!status)
+    return Fail(error, "invalid_request", "prediction.content",
+                "prediction encode failed: " + status.message());
+  if (predicted.size() > static_cast<size_t>(budget->available_output))
+    return Fail(error, "context_length_exceeded", "prediction.content",
+                "prediction tokens exceed available completion budget");
+  for (const auto id : predicted) {
+    if (id > static_cast<uint32_t>(std::numeric_limits<int32_t>::max()) ||
+        (config.token_vocab && id >= static_cast<uint32_t>(config.token_vocab)))
+      return Fail(error, "invalid_request", "prediction.content",
+                  "prediction token outside served vocabulary");
+    budget->prediction_tokens.push_back(static_cast<int32_t>(id));
+  }
+  return Status();
 }
 
 Status ValidatePreflightEnvelope(const io::Json& body, ChatPlanError* error) {
@@ -221,10 +247,13 @@ Status ChatPreflightJson(const io::Json& envelope, const ChatPlanConfig& config,
       R"(,"available_tokens":)" + std::to_string(budget.available_output) +
       R"(,"choices":)" + std::to_string(plan.sampling.choices) +
       R"(,"total_available_tokens":)" + std::to_string(budget.total_output) +
+      R"(,"prediction_tokens":)" +
+      std::to_string(budget.prediction_tokens.size()) +
       R"(,"counts_reasoning_and_forced_tokens":true},"sampling":{"temperature":)" +
       std::to_string(plan.sampling.temperature) + R"(,"top_p":)" +
       std::to_string(plan.sampling.top_p) + R"(,"path":)" +
-      Quote(plan.sampling.PlainGreedy() ? "greedy_mtp_or_scheduler"
+      Quote(plan.prediction.enabled ? "target_prediction_verify"
+            : plan.sampling.PlainGreedy() ? "greedy_mtp_or_scheduler"
                                         : "target_logits_host_sampler") +
       R"(,"seed":)" +
       (plan.sampling.seed ? std::to_string(*plan.sampling.seed) : "null") +

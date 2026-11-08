@@ -112,6 +112,11 @@ function usage(value, choiceCount = 1) {
   const details = value.completion_tokens_details, budget = value.q4t_thinking_budget;
   if (details != null) requireValue(object(details) && integer(details.reasoning_tokens) &&
     details.reasoning_tokens <= value.completion_tokens, 'reasoning usage mismatch');
+  if (details && ('accepted_prediction_tokens' in details || 'rejected_prediction_tokens' in details)) {
+    requireValue(integer(details.accepted_prediction_tokens) && integer(details.rejected_prediction_tokens) &&
+      details.accepted_prediction_tokens + details.rejected_prediction_tokens <= value.completion_tokens,
+    'prediction usage mismatch');
+  }
   if (budget != null) {
     requireValue(object(budget) && details && ['limit', 'consumed', 'forced_closure_tokens'].every(k => integer(budget[k])), 'invalid thinking budget usage');
     requireValue(budget.consumed <= budget.limit * choiceCount && budget.limit <= 2147483647 &&

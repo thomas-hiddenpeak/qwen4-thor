@@ -63,7 +63,11 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("logprobs":true,"top_logprobs_max":20,"logprob_distribution":"raw",)"
          R"("selected_outside_raw_top20":-9999,"hidden_only_logprobs":false,)"
          R"("boundary_token_logprobs":"original_bytes_once",)"
-         R"("mtp_sampling":"plain_greedy_only","response_max_bytes":33554432},)"
+         R"("mtp_sampling":"plain_greedy_only","response_max_bytes":33554432,)"
+         R"("prediction":{"profile":"q4t-prediction-v1","content":["string","text_parts"],)"
+         R"("verification":"target_two_rows","requires_mtp":false,)"
+         R"("usage":"generated_plus_rejected_prediction",)"
+         R"("incompatible":["n>1","logprobs","positive_penalties","tools","max_completion_tokens"]}},)"
          R"("reasoning":{"profile":)" +
          Quote(std::string(kReasoningProfile)) +
          R"(,"fields":["reasoning_content","reasoning"],)"

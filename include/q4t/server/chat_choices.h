@@ -18,7 +18,9 @@ class ChatChoices {
   Status Add(int index, std::string_view message, std::string_view finish,
              std::string_view logprobs, uint64_t prompt, uint64_t completion,
              uint64_t cached, bool report_cached, int64_t reasoning_limit,
-             uint64_t reasoning, uint64_t forced);
+             uint64_t reasoning, uint64_t forced, bool prediction = false,
+             uint64_t prediction_accepted = 0,
+             uint64_t prediction_rejected = 0);
   uint64_t CompletionTokens() const { return completion_; }
   std::string UsageJson() const;
   Status Json(std::string_view id, std::string_view model, int64_t created,
@@ -36,6 +38,9 @@ class ChatChoices {
   int64_t reasoning_limit_ = -1;
   uint64_t reasoning_ = 0;
   uint64_t forced_ = 0;
+  bool prediction_ = false;
+  uint64_t prediction_accepted_ = 0;
+  uint64_t prediction_rejected_ = 0;
   std::string choices_;
 };
 

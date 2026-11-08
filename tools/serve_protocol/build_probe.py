@@ -8,7 +8,7 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[2]
 SOURCES = ["tools/serve_protocol/contract_probe.cpp", "src/io/json.cpp",
     "src/server/chat_contract.cpp", "src/server/chat_plan.cpp",
-    "src/server/sampling.cpp",
+    "src/server/sampling.cpp", "src/server/prediction.cpp",
     "src/server/chat_prompt.cpp", "src/server/chat_template.cpp",
     "src/server/chat_tool_history.cpp", "src/server/chat_response_parser.cpp",
     "src/server/reasoning_options.cpp", "src/server/thinking_budget.cpp",

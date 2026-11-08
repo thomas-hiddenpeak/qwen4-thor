@@ -35,6 +35,23 @@ def cases():
             fixture=dict(raw=json.dumps(request, ensure_ascii=False, separators=(",", ":"))
                          if raw is None else raw, **config)))
 
+    prediction = dict(type="content", content="ok")
+    for label, value in (("string", prediction), ("empty", dict(type="content", content="")),
+            ("parts", dict(type="content", content=[dict(type="text", text="a"), dict(type="text", text="b")]))):
+        add("prediction-"+label, dict(base(), prediction=value), field="prediction")
+    for label, value in (("scalar", 1), ("missing-type", dict(content="a")),
+            ("wrong-type", dict(type="other", content="a")), ("missing-content", dict(type="content")),
+            ("empty-parts", dict(type="content", content=[])),
+            ("bad-part", dict(type="content", content=[dict(type="text", text=4)])),
+            ("unknown", dict(type="content", content="a", extra=True))):
+        add("prediction-"+label, dict(base(), prediction=value), False, field="prediction")
+    for key,value in (("n", 2), ("logprobs", True), ("presence_penalty", 0.5),
+            ("frequency_penalty", 1), ("tools", [tool()]), ("max_completion_tokens", 4)):
+        add("prediction-conflict-"+key, dict(base(), prediction=prediction, **{key:value}), False, field="prediction")
+    add("prediction-negative-penalties", dict(base(), prediction=prediction,
+        frequency_penalty=-1, presence_penalty=-2, max_tokens=8), field="prediction")
+    add("prediction-null-with-sampling", dict(base(), prediction=None, n=2, logprobs=True), field="prediction")
+
     values = dict(model="qwen3.8-flash-next", prompt="q", messages=base()["messages"],
         max_tokens=2, max_completion_tokens=2, stream=True,
         stream_options=dict(include_usage=True), request_id="client-1", cancel_token=HEX,
@@ -43,13 +60,14 @@ def cases():
         add_vision_id=True, reasoning_field="reasoning", include_reasoning=False,
         thinking_token_budget=1, temperature=0, top_p=1, n=1, frequency_penalty=0,
         presence_penalty=0, repetition_penalty=1, seed=42, stop="END", logprobs=False,
+        prediction=dict(type="content", content="ok"),
         top_logprobs=0, logit_bias={}, response_format=dict(type="json_object"), user="audit",
         session_id=HEX, prefix_cache_scope=HEX, prefix_cache_write_tokens=1024,
         parse_response=False, tool_choice="auto", parallel_tool_calls=False)
     nulls = {"max_tokens", "max_completion_tokens", "stream", "stream_options", "tools",
         "thinking_token_budget", "temperature", "top_p", "n", "frequency_penalty",
         "presence_penalty", "seed", "stop", "logprobs", "top_logprobs", "logit_bias",
-        "response_format", "user"}
+        "response_format", "user", "prediction"}
     for field, valid in values.items():
         request, config = base(), {}
         if field == "top_logprobs":

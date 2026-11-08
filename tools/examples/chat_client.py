@@ -116,6 +116,12 @@ def _usage(value, choice_count=1):
         require(type(reasoning) is int and
                 0 <= reasoning <= value["completion_tokens"],
                 "invalid reasoning token count")
+        prediction_keys = ("accepted_prediction_tokens", "rejected_prediction_tokens")
+        if any(key in details for key in prediction_keys):
+            require(all(type(details.get(key)) is int and details[key] >= 0
+                        for key in prediction_keys) and
+                    sum(details[key] for key in prediction_keys) <= value["completion_tokens"],
+                    "invalid prediction token count")
     budget = value.get("q4t_thinking_budget")
     if budget is not None:
         require(isinstance(budget, dict) and details is not None,

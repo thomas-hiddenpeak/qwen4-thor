@@ -88,6 +88,12 @@ STOPPED，安装0启动/0Chat；旧47d33690/ef9183ed及4e4e/d05b回退
 保留，GPU/端口/锁释放。prediction实际验证/消费与usage继续实施，
 A03与总目标均保持开放；不因这一子组交付停止其余计划。
 
+[prediction实现](SERVE_PREDICTION_2026-11-08.md)已开始：复用现有
+目标验证/检查点，接入预测内容消费和accepted/rejected usage。
+27项C++、22个输入/schema、5项Python和2项JS已通过，最终构建
+零警告；保留首次构建警告/JS夹具失败。下一步冻结1启动/7Chat
+实际业务，上限2/8/900秒；默认仍7d157168，不提前宣称已交付。
+
 工作分支`codex/serve-resilience-cd`继续隔离PR #22已接受发布；
 PR #22此前34b06bc1两项CI成功、CLEAN。当前默认服务包以顶部N01—N03交付为准；
 实现、验证、安装和合main分别记录。

@@ -18,13 +18,21 @@ Status ChatChoices::Add(int index, std::string_view message,
                         std::string_view finish, std::string_view logprobs,
                         uint64_t prompt, uint64_t completion, uint64_t cached,
                         bool report_cached, int64_t reasoning_limit,
-                        uint64_t reasoning, uint64_t forced) {
+                        uint64_t reasoning, uint64_t forced, bool prediction,
+                        uint64_t prediction_accepted,
+                        uint64_t prediction_rejected) {
   if (count_ < 1 || count_ > 128 || index != accepted_ || index >= count_ ||
       (index && prompt != prompt_) || cached > prompt ||
       !Adds(reasoning, forced) || reasoning + forced > completion ||
       !Adds(completion_, completion) ||
       !Adds(prompt, completion_ + completion) || !Adds(reasoning_, reasoning) ||
-      !Adds(forced_, forced))
+      !Adds(forced_, forced) ||
+      (!prediction && (prediction_accepted || prediction_rejected)) ||
+      (index && prediction != prediction_) ||
+      !Adds(prediction_accepted, prediction_rejected) ||
+      prediction_accepted + prediction_rejected > completion ||
+      !Adds(prediction_accepted_, prediction_accepted) ||
+      !Adds(prediction_rejected_, prediction_rejected))
     return Status::Fail("invalid completion choice accounting");
   if (finish != "stop" && finish != "length" && finish != "tool_calls" &&
       finish != "content_filter")
@@ -45,10 +53,13 @@ Status ChatChoices::Add(int index, std::string_view message,
     cached_ = cached;
     report_cached_ = report_cached;
     reasoning_limit_ = reasoning_limit;
+    prediction_ = prediction;
   }
   completion_ += completion;
   reasoning_ += reasoning;
   forced_ += forced;
+  prediction_accepted_ += prediction_accepted;
+  prediction_rejected_ += prediction_rejected;
   ++accepted_;
   return Status();
 }
@@ -61,10 +72,18 @@ std::string ChatChoices::UsageJson() const {
   if (report_cached_)
     json += ",\"prompt_tokens_details\":{\"cached_tokens\":" +
             std::to_string(cached_) + '}';
-  if (reasoning_limit_ >= 0) {
+  if (reasoning_limit_ >= 0 || prediction_) {
     json += ",\"completion_tokens_details\":{\"reasoning_tokens\":" +
-            std::to_string(reasoning_ + forced_) +
-            "},\"q4t_thinking_budget\":{\"limit\":" +
+            std::to_string(reasoning_ + forced_);
+    if (prediction_)
+      json += ",\"accepted_prediction_tokens\":" +
+              std::to_string(prediction_accepted_) +
+              ",\"rejected_prediction_tokens\":" +
+              std::to_string(prediction_rejected_);
+    json += '}';
+  }
+  if (reasoning_limit_ >= 0) {
+    json += ",\"q4t_thinking_budget\":{\"limit\":" +
             std::to_string(reasoning_limit_) +
             ",\"consumed\":" + std::to_string(reasoning_) +
             ",\"forced_closure_tokens\":" + std::to_string(forced_) + '}';

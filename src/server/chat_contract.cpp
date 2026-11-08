@@ -1,5 +1,6 @@
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/sampling.h"
+#include "q4t/server/prediction.h"
 #include "q4t/vision/media_plan.h"
 
 #include <cmath>
@@ -108,6 +109,7 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
                         "logprobs",
                         "top_logprobs",
                         "logit_bias",
+                        "prediction",
                         "response_format",
                         "user",
                         "session_id",
@@ -194,6 +196,9 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
     return invalid("user", "user must be a string or null (metadata only)");
   SamplingOptions sampling;
   status = ParseSamplingOptions(req, &sampling, error_param);
+  if (!status) return status;
+  PredictionOptions prediction;
+  status = ParsePredictionOptions(req, sampling, &prediction, error_param);
   if (!status) return status;
   if (const auto* penalty = req.Find("repetition_penalty");
       penalty && !Number(*penalty, 1))

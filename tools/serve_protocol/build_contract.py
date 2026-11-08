@@ -164,6 +164,9 @@ def chat_schema():
         top_logprobs=nullable(dict(type="integer", minimum=0, maximum=20)),
         logit_bias=nullable(dict(type="object", propertyNames=dict(pattern="^[0-9]+$"),
             additionalProperties=dict(type="number", minimum=-100, maximum=100))),
+        prediction=nullable(obj(dict(type=dict(const="content"), content=dict(anyOf=[
+            dict(type="string"), dict(type="array", minItems=1, items=ref("textPart"))])),
+            ("type", "content"))),
         response_format=response_format, user=dict(type=["string", "null"]),
         session_id=hex64, prefix_cache_scope=hex64,
         prefix_cache_write_tokens=dict(anyOf=[dict(const=0), dict(type="integer", minimum=1024, maximum=131072)]),
@@ -181,6 +184,11 @@ def chat_schema():
         "oneOf": [present("messages"), present("prompt")],
         "dependentRequired": dict(request_id=["cancel_token"], cancel_token=["request_id"]),
         "allOf": [
+            when(present("prediction", dict(type="object")), dict(properties=dict(
+                n=dict(enum=[None, 1]), logprobs=dict(enum=[None, False]),
+                presence_penalty=dict(type=["number", "null"], maximum=0),
+                frequency_penalty=dict(type=["number", "null"], maximum=0),
+                tools=dict(enum=[None, []]), max_completion_tokens=dict(type="null")))),
             when(present("top_logprobs", {"not": dict(type="null")}), present("logprobs", dict(const=True))),
             {"not": dict(required=["max_tokens", "max_completion_tokens"],
                 properties={key: {"not": dict(type="null")} for key in ("max_tokens", "max_completion_tokens")})},
@@ -262,6 +270,8 @@ def semantics():
     # Standard JSON Schema validators ignore x-q4t annotations. These rules
     # are mandatory and evaluated by production C++, never inferred as passed.
     rules = [
+        ("prediction", ["src/server/prediction.cpp", "src/server/chat_plan.cpp", "src/server/chat_generation.cpp"],
+         "Static string/text parts become target-verified tokens. Prediction never forces the target distribution. Accepted tokens are consumed once; remaining provided tokens count as rejected completion tokens. Effective output/context and client quota include them. n>1/logprobs/positive penalties/tools/max_completion_tokens are incompatible only with a non-null prediction."),
         ("json-lexical", ["src/io/json.cpp", "include/q4t/server/request_json.h"],
          "UTF-8 JSON; no duplicate keys, nonfinite numbers or trailing data; depth64/65536 values/16MiB decoded string bytes. Integer fields use exact source lexemes, not rounded binary64 values."),
         ("transport-body", ["src/server/http_request.cpp", "src/server/chat_http.cpp",

@@ -92,6 +92,10 @@
             "total_available_tokens": {
               "type": "integer",
               "minimum": 1
+            },
+            "prediction_tokens": {
+              "type": "integer",
+              "minimum": 0
             }
           },
           "required": [
@@ -304,7 +308,8 @@
             "path": {
               "enum": [
                 "greedy_mtp_or_scheduler",
-                "target_logits_host_sampler"
+                "target_logits_host_sampler",
+                "target_prediction_verify"
               ]
             },
             "seed": {
