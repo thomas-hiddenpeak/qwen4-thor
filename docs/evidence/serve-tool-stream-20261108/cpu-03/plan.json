@@ -1,0 +1,7 @@
+{
+  "scope": "Three targeted driver/budget/native shape checks before freeze",
+  "sources": {
+    "tools/serve_tool_stream/acceptance.py": "c18c444eb6760dadd7fea1539b27b23b926c8c2c8a639b9cfc6ec04810ec9b2a",
+    "tools/serve_tool_stream/test_acceptance.py": "f918091976a080710a79ee057fa2548fbe4be6c6937553f8de0a00f5699255f4"
+  }
+}

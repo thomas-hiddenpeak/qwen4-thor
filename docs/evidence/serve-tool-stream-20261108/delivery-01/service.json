@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "service_id": "dcb9dc2e-2824-49b2-a4f8-9b7b4f834b6d",
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-stream-20261108/release-01/bundle",
+  "manifest_sha256": "d2cc6b9bfda13a49dd1c9d0c9fbf31c83240a623886e7d740509a0e9fc9fd312"
+}

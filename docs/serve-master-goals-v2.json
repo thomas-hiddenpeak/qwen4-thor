@@ -110,9 +110,26 @@
         "A02"
       ],
       "evidence": [
-        "docs/SERVE_TOOL_STREAM_2026-11-08.md"
+        "docs/SERVE_TOOL_STREAM_2026-11-08.md",
+        "docs/evidence/serve-tool-stream-20261108/index.json"
       ],
-      "release": null
+      "release": {
+        "subset": "allowed_tools/incremental function streams",
+        "binary_sha256": "945a05ea29dde7726f8d2e244ee710a7297a0dd705b888056e8b7b29a99998b7",
+        "manifest_sha256": "d2cc6b9bfda13a49dd1c9d0c9fbf31c83240a623886e7d740509a0e9fc9fd312",
+        "record": "docs/evidence/serve-tool-stream-20261108/delivery-01/result.json"
+      },
+      "accepted_subsets": [
+        {
+          "name": "allowed_tools and real incremental function argument streaming",
+          "profile": "q4t-tool-stream-v1",
+          "full_task_complete": false
+        }
+      ],
+      "remaining_required": [
+        "legacy functions/function_call and function role history",
+        "custom tools text/grammar, history and actual execution evidence"
+      ]
     },
     {
       "id": "A05",
@@ -557,5 +574,5 @@
     }
   ],
   "next_task": "A04",
-  "next": "继续工具选择/allowed_tools、legacy/custom及真正增量参数流，随后A05等全部计划；总目标不因A03交付结束。"
+  "next": "继续A04 legacy functions/function_call和custom text/grammar，随后A05等总计划；子组不是停止点。"
 }

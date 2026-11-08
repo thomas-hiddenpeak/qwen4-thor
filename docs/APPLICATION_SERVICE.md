@@ -86,6 +86,7 @@ schema代替动态预算、模板、语法编译或真实业务验收。
 | function tools / tool_call_id | 已验 | ID 唯一完整批次；文本结果可乱序归一；客户端执行 |
 | tool_choice | 已验，子集组合 | auto / none / required / named；named 恰好一个调用，显式约束模式仅 parsed messages |
 | parallel_tool_calls | 已验 | false 最多一个；true 允许多调用，不代表应用并发执行 |
+| allowed_tools / 工具参数SSE | A04子组已验 | auto/required允许子集贯穿模板、grammar与最终校验；严格/多调用逐片参数，成功终态＋EOF前不得执行。见[实际资料短验](SERVE_TOOL_STREAM_2026-11-08.md)；legacy/custom继续实施 |
 | strict / JSON Schema 输出约束 | 有限 profile 已验 | q4t-json-schema-v1，逐 token 掩码＋最终验证；未知关键字拒绝，应用仍须验证业务 |
 | max_tokens | 已验 | 正整数；包含推理 / 模板生成 token；受上下文容量约束 |
 | max_completion_tokens | 已验 | 与 max_tokens 共用生成预算；两个字段同时非空时拒绝歧义 |

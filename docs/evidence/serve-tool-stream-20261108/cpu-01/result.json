@@ -1,0 +1,71 @@
+{
+  "host": {
+    "argv": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-stream-20261108/engine-build/q4t_host_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-stream-20261108/cpu-01/host-required.txt"
+    ],
+    "exit_code": 1,
+    "seconds": 0.21457694983109832
+  },
+  "shapes": {
+    "argv": [
+      "python3",
+      "tools/serve_protocol/check_contract.py",
+      "--probe",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-stream-20261108/engine-build/q4t_contract_probe",
+      "--output",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-stream-20261108/cpu-01/shapes",
+      "--case-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-tool-stream-20261108/cpu-01/contract-required.txt"
+    ],
+    "exit_code": 0,
+    "seconds": 0.5151262730360031
+  },
+  "python": {
+    "argv": [
+      "python3",
+      "-m",
+      "unittest",
+      "tools.examples.test_chat_client.ClientContracts.test_fragmented_interleaved_tools_and_unicode",
+      "tools.examples.test_chat_client.ClientContracts.test_terminal_failures_never_return_a_completion",
+      "tools.examples.test_chat_client.ClientContracts.test_error_after_complete_call_is_failure",
+      "tools.examples.test_chat_client.ClientContracts.test_must_read_through_eof",
+      "tools.examples.test_chat_client.ClientContracts.test_stream_identity_order_and_types",
+      "tools.examples.test_chat_client.ClientContracts.test_tool_and_usage_validation",
+      "tools.examples.test_chat_client.ClientContracts.test_length_is_observable_but_never_executable_or_final",
+      "tools.examples.test_chat_client.ClientContracts.test_unknown_tools_and_arguments_rejected_before_dispatch",
+      "tools.examples.test_chat_client.DemoContracts.test_partial_stream_never_reaches_tool_plan"
+    ],
+    "exit_code": 1,
+    "seconds": 0.2645496199838817
+  },
+  "js": {
+    "argv": [
+      "node",
+      "--test",
+      "--test-name-pattern=tool stream|split tool|whole batch",
+      "tools/examples/js/test_chat_client.mjs"
+    ],
+    "exit_code": 0,
+    "seconds": 1.2177801714278758
+  },
+  "schema": {
+    "argv": [
+      "python3",
+      "tools/serve_protocol/build_contract.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.06394680496305227
+  },
+  "sources": {
+    "argv": [
+      "python3",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.06392813706770539
+  }
+}

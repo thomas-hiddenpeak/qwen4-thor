@@ -1,0 +1,10 @@
+data: {"id":"chatcmpl-auto-ca503dcfadf7f78748de3a0bc8a6bc25","object":"chat.completion.chunk","created":1794101914,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"chatcmpl-auto-ca503dcfadf7f78748de3a0bc8a6bc25","object":"chat.completion.chunk","created":1794101914,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"**Title:** `# MODEL.md — Qwen3.8-Flash-Next (qwen4_exp) 架构笔记`\n\n**Citation:** `[docs/MODEL.md:L1-L16]`"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"chatcmpl-auto-ca503dcfadf7f78748de3a0bc8a6bc25","object":"chat.completion.chunk","created":1794101914,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+data: {"id":"chatcmpl-auto-ca503dcfadf7f78748de3a0bc8a6bc25","object":"chat.completion.chunk","created":1794101914,"model":"qwen3.8-flash-next","choices":[],"usage":{"prompt_tokens":568,"completion_tokens":46,"total_tokens":614}}
+
+data: [DONE]
+

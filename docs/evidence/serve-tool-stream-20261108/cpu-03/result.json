@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "python3",
+    "-m",
+    "unittest",
+    "tools.serve_tool_stream.test_acceptance"
+  ],
+  "exit_code": 0,
+  "seconds": 0.21403369680047035
+}

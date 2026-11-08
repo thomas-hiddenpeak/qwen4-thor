@@ -36,6 +36,8 @@ logprobs/top_logprobs；多choice共用请求/配额并逐项执行，JSON/SSE
 时保留greedy/MTP。采样使用目标logits的CPU实现，未作性能优化主张；
 [prediction](docs/SERVE_PREDICTION_2026-11-08.md)目标验证、回滚与
 accepted/rejected usage已交付；其余接口与组合按总计划继续实现。
+[工具选择与增量流](docs/SERVE_TOOL_STREAM_2026-11-08.md)支持
+allowed_tools和严格/多调用的逐片参数；仅成功终态及EOF后执行工具。
 `messages`默认解析；`parse_response: false`保留原始输出，`prompt`
 始终为raw。none / required / named、禁止多调用、strict工具参数和
 有限JSON Schema已验，受约束请求仍普通解码，完整校验后发布SSE内容，

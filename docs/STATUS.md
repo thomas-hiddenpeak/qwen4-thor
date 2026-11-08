@@ -102,11 +102,18 @@ A03实现范围已交付，A01/A02剩余合同、A04工具与A05组合等继续�
 总目标仍active；不把子组完成当停止点。下一步工具选择/legacy/
 custom与真实增量参数流，不继续扩大本组测试。
 
-[A04工具选择与增量流](SERVE_TOOL_STREAM_2026-11-08.md)进入开发：
-allowed_tools选择/grammar/模板/输出校验与工具参数增量流已实现；
-31 C++、28 schema、9 Python、4 JS及3驱动检查通过，最终构建
-零警告。保留准备/旧夹具/导入路径失败；下一步1启动/7Chat短验。
-legacy/custom继续排在本组后，不因分组消失。默认d61c98b7保持。
+[A04工具选择/增量子组已交付](SERVE_TOOL_STREAM_2026-11-08.md)：31 C++、
+28 schema、9 Python、4 JS与3驱动检查通过，构建零警告，初次准备/
+旧夹具/导入失败保留。1启动/7Chat通过，61.929秒驱动、62.504秒
+严格租约、59次NVML全OK。allowed required/auto、strict增量、两条
+实际资料调用与引用闭环、截断/取消后不执行及同PID MTP继续通过。
+581来源与[133原件](evidence/serve-tool-stream-20261108/README.md)核对。
+
+当前默认945a05ea/6c167898，协议35a9d29d，v4服务d2cc6b9b/dda2ef99；
+原生/44控制面字节不变，原ledger/Key/配额保持STOPPED，安装0/0。
+旧d61c98b7/b96c0f35及ee95045b/9e17回退保留；GPU/端口/锁释放。
+A04仍有legacy/custom工具待补，随后A05等总计划；总目标保持active，
+不在本子组停止。
 
 工作分支`codex/serve-resilience-cd`继续隔离PR #22已接受发布；
 PR #22此前34b06bc1两项CI成功、CLEAN。当前默认服务包以顶部N01—N03交付为准；

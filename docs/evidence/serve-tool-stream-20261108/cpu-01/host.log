@@ -1,0 +1,33 @@
+  CHECK failed: choices && choices->array.size() == (backend ? 4 : 1) (line 131)
+[FAIL] chat_capabilities_option_contract
+[PASS] chat_tool_history_identified_order
+[PASS] chat_template_tool_result_order
+[PASS] chat_response_reasoning_and_prefilled_prefix
+[PASS] chat_response_tools_typed_and_multiple
+[PASS] chat_response_tool_fragments_wait_for_validated_terminal
+[PASS] chat_response_rejects_malformed_and_unknown_tools
+[PASS] chat_response_exact_integer_spellings
+[PASS] chat_response_truncation_and_length
+[PASS] chat_response_raw_compatibility_and_no_tools
+[PASS] chat_response_bounds
+[PASS] chat_response_request_definitions_are_checked
+[PASS] chat_response_reasoning_selection_and_hidden_splits
+[PASS] chat_response_hidden_reasoning_preserves_failure_and_limits
+[PASS] chat_response_string_arguments_stream_before_parameter_close
+[PASS] chat_response_partial_error_has_no_successful_terminal
+[PASS] output_constraints_error_paths_survive_chat_validation
+[PASS] output_constraints_tool_choice_plan
+[PASS] output_constraints_schema_profile_rejects_silent_downgrade
+[PASS] output_constraints_nested_values_and_exact_integers
+[PASS] output_constraints_batch_barrier_and_named_choice
+[PASS] output_constraints_all_chunk_splits_and_tool_errors
+[PASS] output_constraints_none_required_and_length_terminals
+[PASS] output_constraints_json_markers_are_data
+[PASS] output_constraints_json_schema_and_combinations
+[PASS] output_constraints_template_filters_preserve_request
+[PASS] output_constraints_allowed_tools_filter_template_grammar_and_output
+[PASS] output_constraints_allowed_tools_errors_are_precise
+[PASS] structured_decoder_required_named_and_parallel_masks
+[PASS] structured_decoder_none_and_auto_control
+[PASS] structured_decoder_allowed_subset_masks_disallowed_function
+31 tests, 30 passed, 1 failed, 0 skipped

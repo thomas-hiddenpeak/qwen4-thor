@@ -1,0 +1,47 @@
+{
+  "model": "qwen3.8-flash-next",
+  "enable_thinking": false,
+  "temperature": 0,
+  "max_completion_tokens": 1024,
+  "stream": true,
+  "stream_options": {
+    "include_usage": true
+  },
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "write_note",
+        "strict": true,
+        "description": "Propose the complete note in the text argument.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "text"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  ],
+  "tool_choice": {
+    "type": "function",
+    "function": {
+      "name": "write_note"
+    }
+  },
+  "parallel_tool_calls": false,
+  "messages": [
+    {
+      "role": "user",
+      "content": "Call write_note with a detailed essay of at least 1500 words about the history of mathematics. Put the complete essay in text, not a summary."
+    }
+  ],
+  "request_id": "tool-stream-cancel",
+  "cancel_token": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+}

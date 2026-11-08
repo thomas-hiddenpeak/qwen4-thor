@@ -1,0 +1,10 @@
+{
+  "error": {
+    "class": "APIError",
+    "message": "constrained response did not reach a grammar-accepted stop token",
+    "code": "structured_output_incomplete",
+    "automatic_retry": false,
+    "tools_executed": 0
+  },
+  "tool_executions": 0
+}

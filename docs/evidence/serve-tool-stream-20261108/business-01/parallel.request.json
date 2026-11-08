@@ -1,0 +1,78 @@
+{
+  "model": "qwen3.8-flash-next",
+  "enable_thinking": false,
+  "temperature": 0,
+  "max_completion_tokens": 512,
+  "stream": true,
+  "stream_options": {
+    "include_usage": true
+  },
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "read_project_record",
+        "description": "Read real project documentation or acceptance JSON under docs/, or the installed release metadata build/q4t.release.json. Returns numbered lines, a source SHA256 and an exact citation. Use the returned citation verbatim in the answer.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "enum": [
+                "docs/MODEL.md",
+                "docs/ARCHITECTURE.md"
+              ]
+            },
+            "start_line": {
+              "type": "integer"
+            },
+            "line_count": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "path",
+            "start_line",
+            "line_count"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "forbidden_tool",
+        "description": "This tool is not allowed in this request.",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        }
+      }
+    }
+  ],
+  "tool_choice": {
+    "type": "allowed_tools",
+    "allowed_tools": {
+      "mode": "required",
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "read_project_record"
+          }
+        }
+      ]
+    }
+  },
+  "parallel_tool_calls": true,
+  "messages": [
+    {
+      "role": "user",
+      "content": "Call read_project_record exactly twice in this turn: first read docs/MODEL.md from start_line 1, line_count 8; second read docs/ARCHITECTURE.md from start_line 1, line_count 8. Do not answer yet; produce both tool calls now."
+    }
+  ]
+}

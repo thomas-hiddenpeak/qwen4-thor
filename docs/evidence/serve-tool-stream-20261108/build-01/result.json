@@ -1,0 +1,4 @@
+{
+  "status": "PREPARE_FAILED",
+  "error": "Driver output path still referred to build-02 but only build-01 directory existed; no configure/build/test executed"
+}

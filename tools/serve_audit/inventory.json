@@ -322,7 +322,7 @@
       ]
     },
     "tool_choice": {
-      "semantics": "auto/none/required/named现有已验；allowed_tools子集约束与真实增量工具参数候选开发，待针对性验收；定义关联、模板/grammar和输出校验一致",
+      "semantics": "auto/none/required/named和allowed_tools子集均已针对性验收；后者定义关联、模板/grammar和实际输出校验一致；strict/多工具参数真实增量、成功终态及EOF后才可执行",
       "boundary": "非 auto 需约束后端；named 恰好一次；只 parsed messages；constrained独立租约限1，忙时503；编译仍协作取消; constrained compiler/matcher isolated in one exec worker with 2GiB RLIMIT_AS and interruptible 10s/2s budgets; no whole-server memory guarantee",
       "evidence": [
         "tests/server_output_constraints_test.cpp",
