@@ -36,7 +36,8 @@ bool AdmitClientRequest(std::string_view method, std::string_view path,
       : ((method == "GET" &&
           (path == "/v1/models" || path == "/v1/capabilities")) ||
          ((method == "GET" || method == "DELETE") && IsModelDetailPath(path)) ||
-         IsResponsesObservation(method, path))
+         IsResponsesObservation(method, path) ||
+         IsStoredChatManagement(method, path))
           ? ClientLane::kControl
           : ClientLane::kData;
   if (!lease->Acquire(admission, *identity, lane))

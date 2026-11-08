@@ -69,6 +69,17 @@ def current_surface(root):
         raise ValueError("review Responses cancellation/control route extractor")
     native_routes.append(("POST", "/v1/responses", "false"))
     native_routes.extend((method, path, "true") for method, path in responses)
+    if 'HandleStoredChatRequest(*objects_' not in dispatch or \
+            'server::StoredChatMethodAllowed(method, path)' not in native or \
+            'server::IsStoredChatManagement(method, path)' not in native or \
+            'inline bool StoredChatMethodAllowed' not in application_routes:
+        raise ValueError("review dynamic stored Chat transport extractor")
+    chats = [("GET", "/v1/chat/completions"),
+             *((method, "/v1/chat/completions/{completion_id}")
+               for method in ("GET", "POST", "DELETE")),
+             ("GET", "/v1/chat/completions/{completion_id}/messages")]
+    routes.extend((path, method) for method, path in chats)
+    native_routes.extend((method, path, "true") for method, path in chats)
     if 'if (method == "OPTIONS")' in native:
         if 'config.cors.Preflight(' not in native:
             raise ValueError("review native OPTIONS handler before cataloguing")
@@ -80,7 +91,8 @@ def current_surface(root):
     for file in ("chat_contract.cpp", "output_constraints.cpp",
                  "input_contract.cpp", "chat_tool_history.cpp",
                  "chat_template.cpp", "legacy_tools.cpp", "completion_plan.cpp",
-                 "conversation_api.cpp", "responses_plan.cpp", "responses_api.cpp"):
+                 "conversation_api.cpp", "responses_plan.cpp", "responses_api.cpp",
+                 "chat_storage.cpp"):
         source = (root / "src/server" / file).read_text()
         for index, item in enumerate(re.finditer(
                 r'(?:Input)?Fields\(\s*([^,]+),\s*\{([^}]+)\}', source)):
@@ -125,6 +137,7 @@ def current_surface(root):
                        root / "src/model/model.cu", root / "src/mtp/mtp.cu",
                        root / "cmake/CudaCleanupBoundary.cmake",
                        root / "CMakeLists.txt",
+                       root / "tools/serve_gateway/gateway.py",
                        root / "cmake/GuardianProcess.cmake",
                        root / "cmake/NativeIngress.cmake",
                        root / "cmake/RecoveryProbe.cmake",

@@ -2,6 +2,21 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+Chat持久协议CPU接入通过：核心15、接入9、查询补验4；4官方SDK
+场景、3实际入口/TLS/可选nginx和4声明检查通过，25个线对象严格匹配。
+修复SDK nullable metadata与损坏UTF-8查询，失败原件保留；[证据](evidence/serve-chat-storage-20261109/README.md)。
+接着准备一次模型启动的保存/工具/故障短验；默认c704eebf保留，
+A08及全部总目标继续，未把CPU夹具当真实模型验收。
+
+Chat持久核心15/15 CPU通过、引擎零警告；继续实际生成/流式聚合、
+官方SDK和声明接入。冻结9 CPU、4 SDK场景与3入口验证；同时修复
+可选nginx遗漏应用路由，无本组GPU/默认变更，全部总计划继续。
+
+继续A08 Chat持久对象：已实现核心store/metadata、CRUD及筛选/消息
+分页，按实际生成时间排序、metadata不延长保留期、未知提交不重放。
+[实施计划](SERVE_CHAT_STORAGE_2026-11-09.md)冻结11新增/4直接CPU；
+实际共享生成/SDK/声明仍继续接入，本组无GPU或默认更换。
+
 原生应用接口已可回退默认交付：引擎`c704eebf`/元数据`3216d5af`，
 服务包`d0e5f43f`/发布`824573f6`，v3应用schema/OpenAPI随包。
 后台与前台故障短验、703项来源及针对性CPU复核复用，原生入口

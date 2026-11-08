@@ -273,6 +273,8 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/application_query.cpp
   src/server/conversation_state.cpp
   src/server/conversation_api.cpp
+  src/server/chat_storage.cpp
+  src/server/chat_storage_options.cpp
   src/server/responses_item_shape.cpp
   src/server/model_catalog.cpp
   src/server/client_policy.cpp
@@ -525,6 +527,7 @@ if(Q4T_BUILD_TESTS)
     tests/server_output_constraints_test.cpp
     src/server/input_contract.cpp
     src/server/chat_contract.cpp
+    src/server/chat_storage_options.cpp
     src/server/sampling.cpp
     src/server/prediction.cpp
     src/server/custom_tools.cpp

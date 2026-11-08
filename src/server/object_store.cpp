@@ -68,6 +68,8 @@ Json RequestWire(const ObjectRequest& request) {
                  {"data", request.data},
                  {"revision", Number(request.expected_revision)},
                  {"ttl", Number(request.ttl_seconds)},
+                 {"created_at", Number(request.created_at)},
+                 {"expires_at", Number(request.expires_at)},
                  {"limit", Number(request.limit)},
                  {"after", String(request.after)},
                  {"before", String(request.before)},
@@ -356,6 +358,8 @@ ObjectReply ObjectStore::Execute(const ObjectRequest& request,
              operation = Operation(request.operation);
   if (request.scope.empty() || request.scope.size() > 256 || kind.empty() ||
       operation.empty() || request.expected_revision < 0 ||
+      request.created_at < 0 || request.created_at > (1LL << 53) - 1 ||
+      request.expires_at < -1 || request.expires_at > (1LL << 53) - 1 ||
       (operation != "list" && operation != "health" && !ValidId(request.id)) ||
       (operation == "put" && (request.ttl_seconds < 0 ||
                               request.ttl_seconds > options.max_ttl_seconds)) ||

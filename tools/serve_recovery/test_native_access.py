@@ -289,6 +289,34 @@ class AccessTests(unittest.TestCase):
                 self.assertEqual((row['client'], row['token']), ('alpha', 'e'*64))
                 self.assertIsNone(row['authorization'])
 
+    def test_stored_chat_uses_native_tls_cors_and_identity(self):
+        self.replace(cors=dict(CORS, allowed_methods=['GET', 'POST', 'DELETE']))
+        origin = 'https://client.example'
+        for method, path in [
+            ('GET', '/v1/chat/completions?metadata%5Btopic%5D=records'),
+            ('GET', '/v1/chat/completions/chat_1'),
+            ('POST', '/v1/chat/completions/chat_1'),
+            ('DELETE', '/v1/chat/completions/chat_1'),
+            ('GET', '/v1/chat/completions/chat_1/messages?limit=1')]:
+            with self.subTest(method=method, path=path):
+                status, headers, body = self.request('OPTIONS', path, auth=False,
+                    headers={'Origin': origin, 'Access-Control-Request-Method': method,
+                             'Access-Control-Request-Headers': 'Authorization, Content-Type'})
+                self.assertEqual((status, body), (204, b''))
+                self.assertEqual(headers['Access-Control-Allow-Origin'], origin)
+                self.assertEqual(self.request(method, path, auth=False,
+                    headers={'Origin': origin})[0], 401)
+                raw = b'{"metadata":null}' if method == 'POST' else b''
+                status, headers, body = self.request(method, path, body=raw,
+                    headers={'Origin': origin, 'Content-Type': 'application/json'})
+                self.assertEqual(status, 200)
+                self.assertEqual(headers['Access-Control-Allow-Origin'], origin)
+                row = self.stack.application_requests[-1]
+                self.assertEqual((row['method'], row['path'], row['body']),
+                                 (method, path, raw.decode()))
+                self.assertEqual((row['client'], row['token']), ('alpha', 'e'*64))
+                self.assertIsNone(row['authorization'])
+
     def test_cors_errors_preserve_origin_and_never_bypass_authentication(self):
         status, headers, _ = self.request(headers={'Origin': 'https://client.example'}, auth=False)
         self.assertEqual(status, 401)

@@ -1,0 +1,9 @@
+test_actual_sdk_http_resources_match_declared_shapes (tools.serve_chat_storage.test_contract.StoredChatContract.test_actual_sdk_http_resources_match_declared_shapes) ... ok
+test_creation_and_metadata_bounds_match_native_contract (tools.serve_chat_storage.test_contract.StoredChatContract.test_creation_and_metadata_bounds_match_native_contract) ... ok
+test_optional_nginx_and_formal_application_routes_are_complete (tools.serve_chat_storage.test_contract.StoredChatContract.test_optional_nginx_and_formal_application_routes_are_complete) ... ok
+test_openapi_routes_queries_and_no_external_reference_bundle (tools.serve_responses.test_contract.ApplicationContract.test_openapi_routes_queries_and_no_external_reference_bundle) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 1.775s
+
+OK

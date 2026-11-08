@@ -22,6 +22,25 @@ ROUTES = {'/v1/models': ('GET', 'control'),
           '/v1/chat/preflight': ('POST', 'data'),
           '/v1/requests/cancel': ('POST', 'control')}
 DYNAMIC_ROUTES = {'/v1/models/{model}': ('GET', 'DELETE')}
+# Application identities are bounded ASCII tokens; backend owns query parsing.
+# These route declarations are shared by standalone and supervised nginx modes.
+APPLICATION_ROUTES = [
+    ('POST', '/v1/responses', 'data'),
+    *((method, '/v1/responses/{response_id}', 'control')
+      for method in ('GET', 'DELETE')),
+    ('POST', '/v1/responses/{response_id}/cancel', 'control'),
+    ('GET', '/v1/responses/{response_id}/input_items', 'control'),
+    ('POST', '/v1/conversations', 'data'),
+    *((method, '/v1/conversations/{conversation_id}', 'data')
+      for method in ('GET', 'POST', 'DELETE')),
+    *((method, '/v1/conversations/{conversation_id}/items', 'data')
+      for method in ('GET', 'POST')),
+    *((method, '/v1/conversations/{conversation_id}/items/{item_id}', 'data')
+      for method in ('GET', 'DELETE')),
+    ('GET', '/v1/chat/completions', 'control'),
+    *((method, '/v1/chat/completions/{completion_id}', 'control')
+      for method in ('GET', 'POST', 'DELETE')),
+    ('GET', '/v1/chat/completions/{completion_id}/messages', 'control')]
 API_CONTRACT = ROOT/'docs/serve-openapi-v1.json'
 DEFAULTS = dict(per_client_inflight=2, global_inflight=8,
                 per_client_rps=5, burst=10, body_bytes=16*1024**2,
@@ -84,15 +103,22 @@ def validate_routes():
             require(paths.get(path, {}).get(method.lower(), {}).get('operationId')
                     == 'v1_models_' + method.lower(),
                     'model detail route differs from formal API contract')
+    for method, path, _ in APPLICATION_ROUTES:
+        require(method.lower() in paths.get(path, {}),
+                'application route differs from formal API contract')
     return sha(API_CONTRACT)
 
 
 def route_map():
-    """Exact raw URI routes; model path decoding belongs to the backend."""
+    """Raw URI routes, without decoding or rewriting IDs and query values."""
     rows = ['    "~^'+re.escape(method+':'+path)+'$" '+lane+';'
             for path, (method, lane) in ROUTES.items()]
     rows.extend('    "~^'+method+':/v1/models/[^?#]+$" control;'
                 for method in DYNAMIC_ROUTES['/v1/models/{model}'])
+    for method, path, lane in APPLICATION_ROUTES:
+        pattern = '/'.join('[A-Za-z0-9_-]{1,128}' if part.startswith('{')
+                           else re.escape(part) for part in path.split('/'))
+        rows.append('    "~^'+method+':'+pattern+'(?:[?][^#]*)?$" '+lane+';')
     return '\n'.join(rows)
 
 

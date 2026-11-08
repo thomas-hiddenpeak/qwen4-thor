@@ -98,6 +98,33 @@ Q4T_TEST(http_conversation_body_uses_shared_budget_before_reading) {
   return true;
 }
 
+Q4T_TEST(http_stored_chat_routes_and_body_budget) {
+  using namespace q4t::server;
+  for (const auto path : {"/v1/chat/completions?metadata%5Btag%5D=x",
+                          "/v1/chat/completions/chat_1",
+                          "/v1/chat/completions/chat_1/messages?limit=1"}) {
+    Q4T_CHECK(StoredChatMethodAllowed("GET", path));
+    Q4T_CHECK(ClassifyHttpConnection("GET", path) == HttpConnectionClass::kObservation);
+  }
+  Q4T_CHECK(ClassifyHttpConnection("POST", "/v1/chat/completions") == HttpConnectionClass::kBusiness);
+  Q4T_CHECK(ClassifyHttpConnection("POST", "/v1/chat/completions/chat_1") == HttpConnectionClass::kObservation);
+  for (const auto path : {"/v1/chat/completions/", "/v1/chat/completions/../messages",
+                          "/v1/chat/completions/a#b", "/v1/chat/completions/a/messages/b"})
+    Q4T_CHECK(!StoredChatMethodAllowed("GET", path));
+  const std::string prefix = "POST /v1/chat/completions/chat_1 HTTP/1.1\r\nHost: local\r\nContent-Length: 8192\r\n\r\n";
+  std::string body;
+  Q4T_CHECK(Read(prefix + std::string(8192, 'x'), &body));
+  int fd[2]; Q4T_CHECK(!socketpair(AF_UNIX, SOCK_STREAM, 0, fd));
+  Q4T_CHECK(send(fd[0], prefix.data(), prefix.size(), MSG_NOSIGNAL) > 0);
+  HttpBodyBudget budget(8192); HttpBodyLease held(budget), incoming(budget);
+  Q4T_CHECK(held.Acquire(1));
+  HttpRequestHeaders headers; std::string method, path; int status = 0;
+  const bool ok = ReadHttpRequest(fd[1], &method, &path, &body, 500, &incoming, &status, &headers);
+  close(fd[0]); close(fd[1]);
+  Q4T_CHECK(!ok && status == 503 && budget.Used() == 1 && headers.failure == HttpReceiveFailure::kBodyCapacity);
+  return true;
+}
+
 Q4T_TEST(http_connection_classification_exact_route_and_method) {
   using namespace q4t::server;
   for (const auto path : {"/metrics", "/v1/config", "/v1/capabilities",

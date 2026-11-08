@@ -1,0 +1,27 @@
+{
+  "stage": "A08 stored Chat actual integration",
+  "cpu_required": [
+    "chat_storage_generation_contract_accepts_only_real_options",
+    "chat_storage_stream_collection_keeps_choices_and_token_probabilities",
+    "chat_storage_cancel_before_commit_never_creates_success",
+    "http_stored_chat_routes_and_body_budget",
+    "client_stored_chat_control_scope_is_independent_of_generation",
+    "chat_storage_options_nullable_metadata_and_unicode_limits",
+    "chat_storage_api_contract_rejects_before_io",
+    "sampling_choices_share_prompt_and_aggregate_real_usage",
+    "sampling_choices_accounting_and_storage_fail_closed"
+  ],
+  "sdk_scenarios": 4,
+  "sdk_processes": 5,
+  "native_ingress_tests": 2,
+  "optional_nginx_tests": 1,
+  "gpu_starts": 0,
+  "default_changed": false,
+  "reuse": "core-cpu-01 15/15; unchanged CRUD, timestamps, lost receipt and quota; rerun changed options and route invalid cases",
+  "declaration_checks": [
+    "stored creation/metadata limits",
+    "actual SDK wire schemas",
+    "optional proxy complete route mapping",
+    "standalone OpenAPI resolves without external files"
+  ]
+}

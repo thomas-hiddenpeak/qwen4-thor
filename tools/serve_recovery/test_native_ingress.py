@@ -181,6 +181,37 @@ class NativeTests(fixture.NginxTests):
                     self.assertEqual((row['client'], row['token']), (client, 'e'*64))
                     self.assertIsNone(row['authorization'])
 
+    def test_stored_chat_routes_keep_methods_query_identity_and_control_lane(self):
+        self.replace_stack(per_client_inflight=1, global_inflight=1,
+                           allowed_client_cidrs=['127.0.0.1/32'])
+        routes = [('GET', '/v1/chat/completions?limit=1&metadata%5Btopic%5D=%E8%B5%84%E6%96%99'),
+                  ('GET', '/v1/chat/completions/chat_1'),
+                  ('POST', '/v1/chat/completions/chat_1'),
+                  ('DELETE', '/v1/chat/completions/chat_1'),
+                  ('GET', '/v1/chat/completions/chat_1/messages?after=chatmsg_1')]
+        auth = 'Authorization: Bearer '+'A'*40+'\r\n'
+        self.assertEqual(self.raw(auth, method='GET', path=routes[0][1],
+                                  source='127.0.0.2')[0], 403)
+        connection, response = self.stream()
+        try:
+            for method, path in routes:
+                body = b'{"metadata":{"topic":"records"}}' if method == 'POST' else b''
+                before = len(self.stack.application_requests)
+                self.assertEqual(self.raw('Authorization: Bearer wrong\r\n',
+                    method=method, path=path, length=len(body), body=body)[0], 401)
+                self.assertEqual(len(self.stack.application_requests), before)
+                self.assertEqual(self.raw(auth, method=method, path=path,
+                    length=len(body), body=body)[0], 200)
+                row = self.stack.application_requests[-1]
+                self.assertEqual((row['method'], row['path'], row['body']),
+                                 (method, path, body.decode()))
+                self.assertEqual((row['client'], row['token']), ('alpha', 'e'*64))
+                self.assertIsNone(row['authorization'])
+            self.assertEqual(self.stack.request(dict(prompt='full'))[0], 429)
+        finally:
+            response.close()
+            connection.close()
+
     def test_responses_keep_control_capacity_and_actual_peer_cidr(self):
         self.replace_stack(per_client_inflight=1, global_inflight=1,
                            allowed_client_cidrs=['127.0.0.1/32'])

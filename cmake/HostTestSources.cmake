@@ -29,6 +29,9 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_jobs_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/conversation_state.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/conversation_api.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_storage.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_storage_options.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_storage_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_conversation_api_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_conversation_state_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_item_shape.cpp

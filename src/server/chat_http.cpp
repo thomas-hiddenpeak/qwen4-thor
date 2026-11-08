@@ -1,5 +1,6 @@
 // Existing ChatServer responsibilities; shared state stays in ChatServer.
 #include "chat_server_internal.h"
+#include "q4t/server/chat_storage.h"
 
 #include <new>
 
@@ -356,7 +357,7 @@ void ChatServer::HandleClient(int fd, bool operations) {
                 headers.error_param);
       return;
     }
-    if (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
+    if (IsStoredChatTarget(path) || path == "/v1/chat/preflight" ||
         path == "/v1/completions" || IsResponsesTarget(path) ||
         path == "/v1/requests/cancel" || IsConversationTarget(path)) {
       if (method == "POST" && !(IsResponseCancellation(method, path) &&
@@ -411,7 +412,10 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     if (auto* context = detail::HttpResponseContext::Current(fd))
       context->RecordReceiveFailure(reason, status);
   };
-  if (IsConversationTarget(path) ||
+  if ((IsStoredChatTarget(path) &&
+       !(method == "POST" && path.substr(0, path.find('?')) ==
+                                "/v1/chat/completions")) ||
+      IsConversationTarget(path) ||
       (IsResponsesTarget(path) &&
        path.substr(0, path.find('?')) != "/v1/responses")) {
     const auto* context = detail::HttpResponseContext::Current(fd);
@@ -435,8 +439,11 @@ void ChatServer::Dispatch(int fd, const std::string& method,
                           background_.get());
       return;
     }
-    auto reply =
-        HandleConversationRequest(*objects_, method, path, body, access);
+    auto reply = IsStoredChatTarget(path)
+                     ? HandleStoredChatRequest(*objects_, method, path, body,
+                                                access)
+                     : HandleConversationRequest(*objects_, method, path, body,
+                                                  access);
     if (reply.ok())
       SendSimple(fd, 200, "OK", OutputJson(reply.value), "application/json",
                  {access.deadline});

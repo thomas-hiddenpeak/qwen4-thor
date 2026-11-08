@@ -212,6 +212,24 @@
         },
         "usage": {
           "$ref": "#/$defs/usage"
+        },
+        "metadata": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "maxProperties": 16,
+              "propertyNames": {
+                "maxLength": 64
+              },
+              "additionalProperties": {
+                "type": "string",
+                "maxLength": 512
+              }
+            }
+          ]
         }
       }
     },

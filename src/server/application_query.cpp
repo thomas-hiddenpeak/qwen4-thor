@@ -4,6 +4,7 @@
 #include <unordered_set>
 
 #include "object_protocol.h"
+#include "q4t/server/http_response.h"
 
 namespace q4t::server {
 namespace {
@@ -36,7 +37,9 @@ bool Decode(std::string_view encoded, std::string* result) {
     if (byte < 0x20 || byte == 0x7f) return false;
     result->push_back(byte);
   }
-  return true;
+  // URL decoding must not turn malformed byte sequences into a different key
+  // or value during subsequent JSON serialization. Preserve valid UTF-8 bytes.
+  return detail::NormalizeUtf8(*result) == *result;
 }
 }  // namespace
 

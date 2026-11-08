@@ -698,6 +698,32 @@ Q4T_TEST(client_response_cancel_reserved_when_data_and_observation_full) {
   return true;
 }
 
+Q4T_TEST(client_stored_chat_control_scope_is_independent_of_generation) {
+  ClientAdmission admission;
+  Q4T_CHECK(Configure(&admission));
+  const auto alpha = admission.Authenticate("alpha", kSecret);
+  ClientLease data1, data2, observation;
+  Q4T_CHECK(data1.Acquire(admission, alpha, ClientLane::kData));
+  Q4T_CHECK(data2.Acquire(admission, alpha, ClientLane::kData));
+  Q4T_CHECK(Read(admission, Wire(Headers(), "/v1/chat/completions")).status ==
+            429);
+  for (const auto* target : {"/v1/chat/completions?limit=1",
+                            "/v1/chat/completions/chat_1",
+                            "/v1/chat/completions/chat_1/messages?order=asc"})
+    Q4T_CHECK(Read(admission, Wire(Headers(), target, "GET")).ok);
+  Q4T_CHECK(Read(admission, Wire(Headers(), "/v1/chat/completions/chat_1"))
+                .ok);
+  Q4T_CHECK(observation.Acquire(admission, alpha, ClientLane::kControl));
+  Q4T_CHECK(Read(admission, Wire(Headers(), "/v1/chat/completions", "GET"))
+                .status == 429);
+  Q4T_CHECK(Read(admission, Wire(Headers("beta"), "/v1/chat/completions",
+                                  "GET")).ok);
+  Q4T_CHECK(Read(admission, Wire(Headers(), "/v1/requests/cancel")).ok);
+  Q4T_CHECK(Read(admission, Wire(Headers("foreign"), "/v1/chat/completions",
+                                  "GET")).status == 401);
+  return true;
+}
+
 Q4T_TEST(client_token_budget_defaults_aliases_and_encoded_boundaries) {
   ClientAdmission admission;
   Q4T_CHECK(Configure(&admission));

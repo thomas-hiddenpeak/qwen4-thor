@@ -248,7 +248,7 @@
         "merged_main": false,
         "whole_task_complete": false
       },
-      "development_status": "已验Responses/Conversations/background/前台未知提交协调随v3原生应用包可回退默认交付。后台3启动8生成与前台1启动4生成真实短验通过，703来源及直接CPU证据复用。高级执行器、Chat持久化、保留治理等仍需完成，继续全部计划。",
+      "development_status": "已验Responses/Conversations/background/前台未知提交协调已默认交付。Chat持久对象与真实共享生成已接入，核心15/接入9/查询4 CPU、4官方SDK/3入口/4声明通过，25 CPU HTTP资源严格匹配。继续真实模型短验/发行、保留治理及全部剩余计划。",
       "development_evidence": "evidence/serve-object-store-20261108/README.md",
       "transaction_evidence": "evidence/serve-object-transactions-20261108/README.md",
       "state_evidence": "evidence/serve-responses-state-20261109/README.md",
@@ -266,7 +266,8 @@
       "controller_recovery_evidence": "evidence/serve-object-controller-recovery-20261109/README.md",
       "foreground_reconciliation_evidence": "evidence/serve-foreground-reconciliation-20261109/README.md",
       "foreground_recovery_business_evidence": "evidence/serve-reconciliation-business-20261109/README.md",
-      "delivery_evidence": "evidence/serve-application-delivery-20261109/README.md"
+      "delivery_evidence": "evidence/serve-application-delivery-20261109/README.md",
+      "chat_storage_evidence": "evidence/serve-chat-storage-20261109/README.md"
     },
     {
       "id": "A09",

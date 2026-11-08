@@ -47,6 +47,31 @@
       ],
       "default": false
     },
+    "store": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "default": false
+    },
+    "metadata": {
+      "anyOf": [
+        {
+          "type": "object",
+          "maxProperties": 16,
+          "propertyNames": {
+            "maxLength": 64
+          },
+          "additionalProperties": {
+            "type": "string",
+            "maxLength": 512
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
     "stream_options": {
       "anyOf": [
         {
@@ -2249,6 +2274,25 @@
     ]
   },
   "allOf": [
+    {
+      "if": {
+        "required": [
+          "store"
+        ],
+        "properties": {
+          "store": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "messages": {
+            "maxItems": 4096
+          }
+        }
+      }
+    },
     {
       "if": {
         "required": [

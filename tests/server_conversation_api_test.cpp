@@ -6,11 +6,16 @@
 #include <unistd.h>
 
 #include <cstdlib>
+#include <ctime>
 #include <filesystem>
 #include <fstream>
 
 #include "q4t/server/http_request.h"
 #include "q4t/server/http_response.h"
+#include "q4t/server/chat_choices.h"
+#include "q4t/server/chat_contract.h"
+#include "q4t/server/chat_storage.h"
+#include "q4t/server/request_json.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/test.h"
@@ -27,6 +32,42 @@ struct Invalid {
   const char* body;
   int status;
 };
+
+// Only this CPU fixture synthesizes an output. The actual shared generation
+// path is verified separately with the local model under the GPU lease.
+ObjectReply FixtureChat(ObjectStore& objects, const std::string& body,
+                        const StateAccess& access, bool* stream) {
+  q4t::io::Json request;
+  std::string param;
+  auto status = q4t::io::ParseJson(body, &request, true, kSchemaJsonLimits);
+  if (status) status = ValidateChatContract(request, "q4t", true, &param);
+  if (!status) {
+    ObjectReply reply;
+    reply.http_status = 400;
+    reply.code = "invalid_request";
+    reply.message = status.message();
+    reply.value.type = q4t::io::Json::Type::kObject;
+    q4t::io::Json field;
+    field.type = q4t::io::Json::Type::kString;
+    field.str = param;
+    reply.value.object.emplace_back("param", std::move(field));
+    return reply;
+  }
+  *stream = request.GetBool("stream", false);
+  const auto n = static_cast<int>(request.GetInt("n", 1));
+  ChatChoices choices(n, false);
+  for (int i = 0; i < n; ++i) {
+    status =
+        choices.Add(i, R"({"role":"assistant","content":"CPU fixture 42"})",
+                    "stop", "null", 10, 3, 0, false, -1, 0, 0);
+    if (!status) throw std::runtime_error(status.message());
+  }
+  std::string output;
+  status = choices.Json(detail::NewRequestId("chatcmpl_"), "q4t",
+                        std::time(nullptr), &output);
+  if (!status) throw std::runtime_error(status.message());
+  return FinalizeStoredChat(&objects, request, output, access);
+}
 }  // namespace
 
 Q4T_TEST(conversation_api_rejects_invalid_wire_contract_before_storage) {
@@ -73,7 +114,10 @@ Q4T_TEST(conversation_api_rejects_invalid_wire_contract_before_storage) {
 // Test-only real HTTP transport around the production handler and storage.
 // The fixed synthetic bearer->scope mapping is not production authentication.
 int ConversationApiFixture(int argc, char** argv) {
-  if (argc != 3 || std::string_view(argv[1]) != "--conversation-api-fixture")
+  const bool chat =
+      argc == 3 && std::string_view(argv[1]) == "--chat-storage-api-fixture";
+  if (argc != 3 ||
+      (!chat && std::string_view(argv[1]) != "--conversation-api-fixture"))
     return -1;
   try {
     const auto directory = fs::absolute(argv[2]);
@@ -129,8 +173,14 @@ int ConversationApiFixture(int argc, char** argv) {
         detail::SendSimple(fd, 200, "OK", "{}", "application/json");
         return 0;
       }
-      auto result = HandleConversationRequest(objects, method, target, body,
-                                              {scope, Clock::now() + 5s, {}});
+      const StateAccess access{scope, Clock::now() + 5s, {}};
+      bool stream = false;
+      auto result = chat ? (method == "POST" && target == "/v1/chat/completions"
+                                ? FixtureChat(objects, body, access, &stream)
+                                : HandleStoredChatRequest(objects, method,
+                                                          target, body, access))
+                         : HandleConversationRequest(objects, method, target,
+                                                     body, access);
       const auto output =
           result.ok()
               ? OutputJson(result.value)
@@ -151,6 +201,23 @@ int ConversationApiFixture(int argc, char** argv) {
                        {"response", string(output)}};
       trace << OutputJson(record) << '\n';
       trace.flush();
+      if (stream && result.ok()) {
+        const auto& value = result.value;
+        if (!detail::BeginStreamingResponse(fd, context.State())) return 3;
+        for (const auto& choice : value.GetArray("choices")->array) {
+          const auto index = static_cast<int>(choice.GetInt("index"));
+          const auto id = value.GetString("id");
+          const auto created = value.GetInt("created");
+          if (!detail::WriteAll(
+                  fd, detail::SseChunk(id, "q4t", "assistant", "CPU fixture 42",
+                                       "", index, created)) ||
+              !detail::WriteAll(fd, detail::SseChunk(id, "q4t", "", "", "stop",
+                                                     index, created)))
+            return 3;
+        }
+        if (!detail::WriteAll(fd, "data: [DONE]\n\n")) return 3;
+        continue;
+      }
       detail::SendSimple(fd, result.http_status, result.ok() ? "OK" : "Error",
                          output, "application/json", {},
                          result.value.GetString("allow"));

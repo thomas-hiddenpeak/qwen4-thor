@@ -36,7 +36,8 @@ inline HttpConnectionClass ClassifyHttpConnection(std::string_view method,
     return HttpConnectionClass::kObservation;
   if (method == "DELETE" && IsModelDetailPath(path))
     return HttpConnectionClass::kControl;
-  if (IsResponsesObservation(method, path))
+  if (IsResponsesObservation(method, path) ||
+      IsStoredChatManagement(method, path))
     return HttpConnectionClass::kObservation;
   return HttpConnectionClass::kBusiness;
 }

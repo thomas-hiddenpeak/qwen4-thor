@@ -51,6 +51,24 @@ ObjectReply IoError(bool uncertain = false) {
                "Durable object storage is unavailable or inconsistent",
                uncertain);
 }
+ObjectReply Times(const Json& request, int64_t now, int64_t existing_created,
+                   int64_t max_ttl, int64_t* created, int64_t* expires) {
+  const auto requested = request.GetInt("created_at", 0);
+  const auto absolute = request.GetInt("expires_at", -1);
+  const auto ttl = request.GetInt("ttl", -1);
+  if (requested < 0 || requested > now || absolute < -1 || ttl < 0 ||
+      ttl > max_ttl || (existing_created && requested &&
+                        existing_created != requested))
+    return Error(400, "invalid_object_request", "Invalid object timestamps");
+  *created = existing_created ? existing_created : requested ? requested : now;
+  const auto base = std::max(now, *created);
+  *expires = absolute >= 0 ? absolute : ttl == 0 ? 0 : base + ttl;
+  if (*expires && (*expires <= *created || *expires > base + max_ttl))
+    return Error(400, "invalid_object_request", "Invalid object expiration");
+  if (*expires && *expires <= now)
+    return Error(404, "object_not_found", "Object retention has expired");
+  return {};
+}
 bool PrivateFile(int fd, struct stat* info) {
   return !fstat(fd, info) && S_ISREG(info->st_mode) &&
          info->st_uid == getuid() && info->st_nlink == 1 &&
@@ -425,15 +443,17 @@ class DiskStore {
         const auto* data = mutation.Find("data");
         if (!data || ttl < 0 || ttl > options_.max_ttl_seconds)
           return Error(400, "invalid_object_request", "Invalid object write");
-        const auto created = exists ? found->second.created : now;
+        int64_t created = 0, expires = 0;
+        auto timing = Times(mutation, now, exists ? found->second.created : 0,
+                             options_.max_ttl_seconds, &created, &expires);
+        if (!timing.ok()) return timing;
         record = Object({{"format", Number(1)},
                          {"owner", String(owner)},
                          {"kind", String(kind)},
                          {"id", String(id)},
                          {"revision", Number(revision + 1)},
                          {"created_at", Number(created)},
-                         {"expires_at",
-                          Number(ttl == 0 ? 0 : std::max(now, created) + ttl)},
+                         {"expires_at", Number(expires)},
                          {"data", *data}});
         const auto bytes =
             OutputJson(Object({{"record", record},
@@ -646,8 +666,10 @@ class DiskStore {
          errno != ENOENT))
       return IoError();
     const auto now = Now();
-    const auto created = exists ? found->second.created : now;
-    const auto expires = ttl == 0 ? 0 : std::max(now, created) + ttl;
+    int64_t created = 0, expires = 0;
+    auto timing = Times(request, now, exists ? found->second.created : 0,
+                         options_.max_ttl_seconds, &created, &expires);
+    if (!timing.ok()) return timing;
     const auto owner = request.GetString("owner");
     auto record = Object({{"format", Number(1)},
                           {"owner", String(owner)},

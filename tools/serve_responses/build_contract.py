@@ -121,7 +121,9 @@ def schema(graph):
     definitions['response_deleted'] = obj(dict(id=dict(type='string'),
         object=dict(const='response.deleted'), deleted=dict(const=True)),
         ('id', 'object', 'deleted'))
-    return {'$schema': DRAFT, 'title': 'Q4T Responses and Conversations wire contract',
+    from tools.serve_chat_storage.build_contract import definitions as chat_definitions
+    definitions.update(chat_definitions())
+    return {'$schema': DRAFT, 'title': 'Q4T Chat, Responses and Conversations wire contract',
         '$defs': definitions, 'x-q4t': dict(profile='q4t-application-wire-v1',
             sdk_version=graph['sdk_version'], compiler_version=graph['compiler_version'],
             sources_sha256=graph['sources_sha256'], license_sha256=graph['license_sha256'],
@@ -167,7 +169,7 @@ def add_openapi(paths, response, error):
         for key, value in shape(name)['properties'].items():
             result.append(dict(name='include[]' if key == 'include' else key,
                 **{'in': 'query'}, required=False, schema=rewrite(value),
-                style='form', explode=True))
+                style='deepObject' if key == 'metadata' else 'form', explode=True))
         return result
 
     endpoints = [
@@ -183,7 +185,12 @@ def add_openapi(paths, response, error):
         ('/v1/conversations/{conversation_id}/items', 'post', 'conversation_items_create', 'conversation_items', 'item_include_query'),
         ('/v1/conversations/{conversation_id}/items', 'get', None, 'conversation_items', 'conversation_items_query'),
         ('/v1/conversations/{conversation_id}/items/{item_id}', 'get', None, 'conversation_item', 'item_include_query'),
-        ('/v1/conversations/{conversation_id}/items/{item_id}', 'delete', None, 'conversation', None)]
+        ('/v1/conversations/{conversation_id}/items/{item_id}', 'delete', None, 'conversation', None),
+        ('/v1/chat/completions', 'get', None, 'stored_chat_list', 'stored_chat_query'),
+        ('/v1/chat/completions/{completion_id}', 'get', None, 'stored_chat', None),
+        ('/v1/chat/completions/{completion_id}', 'post', 'stored_chat_update', 'stored_chat', None),
+        ('/v1/chat/completions/{completion_id}', 'delete', None, 'stored_chat_deleted', None),
+        ('/v1/chat/completions/{completion_id}/messages', 'get', None, 'stored_chat_messages', 'stored_chat_messages_query')]
     for path, method, body, result, query in endpoints:
         parameters = [dict(name=part[1:-1], **{'in': 'path'}, required=True,
                            schema=dict(type='string', minLength=1))

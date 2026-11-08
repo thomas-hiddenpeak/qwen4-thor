@@ -92,6 +92,9 @@ set(protocol_inputs
   include/q4t/server/object_store_options.h
   src/server/object_store_options.cpp
   src/server/conversation_api.cpp
+  include/q4t/server/chat_storage.h
+  src/server/chat_storage.cpp
+  src/server/chat_storage_options.cpp
   include/q4t/server/responses_item_shape.h
   src/server/responses_item_shape.cpp
   src/server/contracts/openai_item_types_v1.json

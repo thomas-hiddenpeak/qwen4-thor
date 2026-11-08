@@ -1,0 +1,8 @@
+/home/rm01/models/dev/qwen4-thor/src/server/chat_generation.cpp: In member function ‘void q4t::server::ChatServer::HandleChatImpl(int, const std::string&, q4t::server::detail::ResponseState*, bool, q4t::server::ResponsesExecution*, std::shared_ptr<q4t::server::RequestControl>)’:
+/home/rm01/models/dev/qwen4-thor/src/server/chat_generation.cpp:2971:30: error: ‘OutputJson’ was not declared in this scope
+ 2971 |       stored_chat_response = OutputJson(stored.value);
+      |                              ^~~~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_server.dir/build.make:821: CMakeFiles/q4t_server.dir/src/server/chat_generation.cpp.o] Error 1
+gmake[2]: *** [CMakeFiles/Makefile2:1103: CMakeFiles/q4t_server.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:1153: CMakeFiles/q4t.dir/rule] Error 2
+gmake: *** [Makefile:480: q4t] Error 2

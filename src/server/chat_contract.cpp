@@ -9,6 +9,7 @@
 #include <string_view>
 
 #include "q4t/server/chat_tool_history.h"
+#include "q4t/server/chat_storage.h"
 #include "q4t/server/chat_template.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/media_admission.h"
@@ -122,6 +123,8 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
                         "top_logprobs",
                         "logit_bias",
                         "prediction",
+                        "store",
+                        "metadata",
                         "response_format",
                         "user",
                         "session_id",
@@ -131,6 +134,9 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
                         "tool_choice",
                         "parallel_tool_calls"},
                        error_param);
+  if (!status) return status;
+  ChatStorageOptions storage;
+  status = ParseChatStorageOptions(req, &storage, error_param);
   if (!status) return status;
   status = ValidateRequestCredentials(req);
   if (!status) {

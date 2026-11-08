@@ -1,5 +1,7 @@
 # docs/ — 开发记录文档体系
 
+[Chat持久对象、官方SDK及原生/可选入口](SERVE_CHAT_STORAGE_2026-11-09.md)
+
 [Conversations原生状态、请求处理与官方SDK HTTP验证](SERVE_CONVERSATIONS_2026-11-09.md)
 （已验子集随原生应用包交付，A07/A08继续开发）。
 

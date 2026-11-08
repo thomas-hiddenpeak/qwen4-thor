@@ -109,7 +109,9 @@ class Stack:
                     self.response(200, dict(object='list', data=[dict(id='cpu-fixture')]))
                 elif self.path.startswith('/v1/models/'):
                     self.model_detail('GET')
-                elif self.path.startswith(('/v1/conversations/', '/v1/responses/')):
+                elif (self.path.split('?', 1)[0] == '/v1/chat/completions' or
+                      self.path.startswith(('/v1/conversations/', '/v1/responses/',
+                                            '/v1/chat/completions/'))):
                     self.application('GET')
                 else:
                     self.response(404, dict(error='absent'))
@@ -150,13 +152,14 @@ class Stack:
                 self.response(200, dict(cpu_fixture=True, method=method,
                                         path=self.path, client=row['client']))
             def do_DELETE(self):
-                if self.path.startswith(('/v1/conversations/', '/v1/responses/')):
+                if self.path.startswith(('/v1/conversations/', '/v1/responses/',
+                                         '/v1/chat/completions/')):
                     self.application('DELETE')
                 else:
                     self.model_detail('DELETE')
             def do_POST(self):
                 self.close_connection = True
-                if self.path.split('?', 1)[0] in ('/v1/conversations', '/v1/responses') or self.path.startswith(('/v1/conversations/', '/v1/responses/')):
+                if self.path.split('?', 1)[0] in ('/v1/conversations', '/v1/responses') or self.path.startswith(('/v1/conversations/', '/v1/responses/', '/v1/chat/completions/')):
                     self.application('POST')
                     return
                 raw = self.rfile.read(int(self.headers.get('Content-Length', '0')))
@@ -331,6 +334,34 @@ class Stack:
 
 
 class NginxTests(unittest.TestCase):
+    def test_application_routes_preserve_methods_queries_and_identity(self):
+        from tools.serve_gateway.gateway import APPLICATION_ROUTES
+        self.ready()
+        for method, template, _ in APPLICATION_ROUTES:
+            path = template.replace('{response_id}', 'resp_1').replace(
+                '{conversation_id}', 'conv_1').replace('{item_id}', 'item_1').replace(
+                '{completion_id}', 'chat_1')
+            if method == 'GET':
+                path += '?limit=1&metadata%5Btopic%5D=%E8%B5%84%E6%96%99'
+            body = '{"cpu_fixture":true}' if method == 'POST' else ''
+            with self.subTest(method=method, path=path):
+                connection = http.client.HTTPConnection('127.0.0.1',
+                    self.stack.value['policy']['listen_port'], timeout=4)
+                try:
+                    connection.request(method, path, body, {
+                        'Authorization': 'Bearer '+'A'*40,
+                        'Content-Type': 'application/json'})
+                    response = connection.getresponse()
+                    self.assertEqual(response.status, 200, response.read())
+                    row = self.stack.application_requests[-1]
+                    self.assertEqual((row['method'], row['path'], row['body']),
+                                     (method, path, body))
+                    self.assertEqual((row['client'], row['token']),
+                                     ('alpha', 'e'*64))
+                    self.assertIsNone(row['authorization'])
+                finally:
+                    connection.close()
+
     @classmethod
     def setUpClass(cls):
         cls.libc = ctypes.CDLL(None, use_errno=True)

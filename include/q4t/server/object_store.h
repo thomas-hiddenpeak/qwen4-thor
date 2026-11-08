@@ -53,6 +53,12 @@ struct ObjectRequest {
   // Zero preserves conversation-associated state until explicit deletion.
   // All persistent state still counts against object and byte quotas.
   int64_t ttl_seconds = 30 * 24 * 3600;
+  // Trusted application timestamp; zero uses the worker's clock. Updates
+  // cannot change an existing creation time. Never sourced from a user ID.
+  int64_t created_at = 0;
+  // -1 applies ttl_seconds. Otherwise preserve an absolute retention deadline
+  // (zero means no expiry); metadata updates must not extend retention.
+  int64_t expires_at = -1;
   int limit = 20;
   std::string after;
   std::string before;

@@ -199,6 +199,10 @@ def chat_schema():
         max_tokens=nullable(dict(type="integer", minimum=1, maximum=2147483647)),
         max_completion_tokens=nullable(dict(type="integer", minimum=1, maximum=2147483647)),
         stream=dict(type=["boolean", "null"], default=False),
+        store=dict(type=["boolean", "null"], default=False),
+        metadata=nullable(dict(type="object", maxProperties=16,
+            propertyNames=dict(maxLength=64),
+            additionalProperties=dict(type="string", maxLength=512))),
         stream_options=nullable(obj(dict(include_usage=dict(type="boolean", default=False)))),
         request_id=identifier, cancel_token=hex64,
         request_timeout_ms=dict(type="integer", minimum=1, maximum=10800000),
@@ -243,6 +247,8 @@ def chat_schema():
         "oneOf": [present("messages"), present("prompt")],
         "dependentRequired": dict(request_id=["cancel_token"], cancel_token=["request_id"]),
         "allOf": [
+            when(present("store", dict(const=True)),
+                 dict(properties=dict(messages=dict(maxItems=4096)))),
             when(present("tool_choice", dict(type="null")), legacy_active),
             when(legacy_active, dict(allOf=[parsed, dict(properties=dict(
                 tools=dict(type="null"), tool_choice=dict(type="null"),
@@ -418,6 +424,10 @@ def semantics():
     # Standard JSON Schema validators ignore x-q4t annotations. These rules
     # are mandatory and evaluated by production C++, never inferred as passed.
     rules = [
+        ("stored-chat", ["src/server/chat_storage.cpp", "src/server/chat_storage_options.cpp",
+            "src/server/chat_generation.cpp", "src/server/object_worker.cpp",
+            "include/q4t/server/application_routes.h"],
+         "store defaults false; null omits it. Metadata is nullable or16 string pairs with64/512 Unicode scalar limits, never an auth identity. store=true retains actual completed JSON or SSE choices/logprobs/usage and original input messages after a durable receipt, before final success; receipt loss is queried by original completion ID without replay. Model/filter metadata/list/messaging CRUD are client scoped; asc default, after cursor, limit1..100. Updates preserve original absolute retention, normally30days. No store means no object I/O. At most4096 stored input messages and32MiB complete response; object size, namespace/global quota and deadline may reject independently. Management has bounded observation admission, separate from generation. Original media/tool fields are preserved; query is closed and metadata uses nested URL keys."),
         ("custom-tools", ["src/server/custom_tools.cpp", "src/server/custom_grammar.cpp",
              "src/server/custom_regex.cpp", "src/server/regex_syntax/lib.rs",
              "src/server/chat_response_parser.cpp"],
@@ -628,7 +638,7 @@ def openapi():
                 internal_headers=["X-Q4T-Client-Id", "X-Q4T-Gateway-Token"],
                 identity="gateway overwrites internal headers; runner validates configured client and independent shared credential before body admission",
                 scoped_resources=["request_id", "cancellation", "session_id", "prefix_cache_scope",
-                                  "responses", "conversations", "application_items"],
+                                  "responses", "conversations", "application_items", "stored_chat"],
                 limits=["data/control inflight", "body bytes", "expanded prompt tokens including vision", "total output tokens",
                         "optional v2 fixed-window requests/tokens per minute"],
                 refusals=dict(authentication=401, local_admin_with_identity=403,

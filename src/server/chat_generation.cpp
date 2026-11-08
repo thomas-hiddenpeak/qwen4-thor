@@ -23,6 +23,8 @@
 #include "q4t/mtp/suffix_drafter.h"
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/chat_choices.h"
+#include "q4t/server/chat_storage.h"
+#include "q4t/server/output_schema.h"
 #include "q4t/server/completion_plan.h"
 #include "q4t/server/completion_response.h"
 #include "q4t/server/responses_execution.h"
@@ -258,6 +260,21 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     return;
   }
   const auto& req = request_plan.Request(original_request);
+  ChatStorageOptions chat_storage;
+  if (!completion && !responses) {
+    s = ParseChatStorageOptions(req, &chat_storage, &planning_error.param);
+    if (!s) {
+      SendError(fd, 400, s.message(), {}, "invalid_request",
+                planning_error.param);
+      return;
+    }
+    if (chat_storage.store &&
+        (!objects_ || !http || !http->Client().Allowed())) {
+      SendError(fd, 503, "Authenticated application state unavailable", {},
+                "object_scope_unavailable", "store");
+      return;
+    }
+  }
   const auto& constraints = request_plan.constraints;
   const auto& sampling = request_plan.sampling;
   const bool visible_logprobs =
@@ -322,6 +339,23 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                  http->TraceId().c_str(), request_id.c_str());
   detail::ServeFaultPoint("handler.after_register");
   const auto cancelled = [&] { return RequestCancelled(control.get(), fd); };
+  StateAccess chat_state_access{
+      http && http->Client().Scoped()
+          ? "client:" + std::string(http->Client().Id())
+          : "local:anonymous",
+      deadline, cancelled};
+  if (chat_storage.store) {
+    const auto existing =
+        StoredChats(*objects_).Retrieve(request_id, chat_state_access);
+    if (existing.ok() || existing.http_status != 404) {
+      SendError(fd, existing.ok() ? 409 : existing.http_status,
+                existing.ok() ? "Stored completion ID already exists"
+                              : existing.message,
+                {}, existing.ok() ? "object_revision_conflict" : existing.code,
+                "store");
+      return;
+    }
+  }
   if (responses)
     responses->BindCancellation(deadline, [control, fd] {
       return RequestCancelled(control.get(), fd);
@@ -481,7 +515,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     }
   }
 
-  ChatChoices choices(sampling.choices, stream);
+  const bool collect_chat = !stream || chat_storage.store;
+  ChatChoices choices(sampling.choices, !collect_chat);
   CompletionChoices completion_choices(
       static_cast<int>(completion_plan.prompts.size()), completion_plan.n,
       completion_plan.best_of, stream);
@@ -544,7 +579,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         sampling.choices == 1
             ? request_id
             : request_id + "_choice_" + std::to_string(choice_index),
-        !stream && !responses, request_plan.legacy_output);
+        collect_chat && !responses, request_plan.legacy_output);
     if (!s.ok()) {
       SendError(fd, 400, s.message());
       return;
@@ -622,7 +657,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     }
     SampledToken selected_sample;
     TokenLogprobs token_logprobs(
-        !stream && !responses, completion,
+        collect_chat && !responses, completion,
         completion && completion_plan.echo
             ? Utf8Characters(completion_prompt->echo_text)
             : 0,
@@ -2902,7 +2937,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       if (s) s = completion_choices.Add(choice_index, T, std::move(candidate));
     } else {
       s = choices.Add(
-          choice_index, stream ? "" : response_parser.MessageJson(),
+          choice_index, collect_chat ? response_parser.MessageJson() : "",
           finish_reason, sampling.logprobs ? token_logprobs.Json() : "null", T,
           prediction.Completion(generated.size()), restored_prefix,
           session.cache || !prefix_scope.empty(), reasoning_options.token_budget,
@@ -2916,6 +2951,26 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     }
     const bool final_choice = choice_index + 1 == sampling.choices;
     if (final_choice) stop_heartbeat.Run();
+    std::string stored_chat_response;
+    if (!responses && !completion && final_choice &&
+        (chat_storage.store || (!stream && chat_storage.has_metadata))) {
+      s = choices.Json(id, model_field, created, &stored_chat_response);
+      if (!s) {
+        err_guard.ok = false;
+        SendError(fd, 503, s.message(), {}, "response_storage_exhausted");
+        return;
+      }
+      auto stored = FinalizeStoredChat(objects_.get(), original_request,
+                                       stored_chat_response, chat_state_access);
+      if (!stored.ok()) {
+        err_guard.ok = false;
+        SendError(fd, stored.http_status,
+                  stored.message + "; completion_id=" + id, {}, stored.code,
+                  "store");
+        return;
+      }
+      stored_chat_response = OutputJson(stored.value);
+    }
     if (responses) {
       if (stream) {
         if (http) http->BeforeTerminal();
@@ -2961,9 +3016,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       if (final_choice) write_stream(tail);
     } else if (final_choice) {
       std::string resp;
-      s = completion
+      if (!stored_chat_response.empty()) {
+        resp = std::move(stored_chat_response);
+      } else {
+        s = completion
               ? completion_choices.Json(id, model_field, created, &resp)
               : choices.Json(id, model_field, created, &resp);
+      }
       if (!s) {
         err_guard.ok = false;
         SendError(fd, 503, s.message(), {}, "response_storage_exhausted");

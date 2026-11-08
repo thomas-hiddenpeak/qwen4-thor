@@ -1,0 +1,6 @@
+test_application_routes_preserve_methods_queries_and_identity (__main__.NginxTests.test_application_routes_preserve_methods_queries_and_identity) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.818s
+
+OK
