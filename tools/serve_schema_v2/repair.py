@@ -44,7 +44,8 @@ def prepare(args):
     # regular-language representation changes, covered by the targeted CPU
     # real-vocabulary and language-boundary cases before this repair run.
     allowed = {"src/server/regex_syntax/schema_regex.rs",
-               "tools/serve_schema_v2/acceptance.py"}
+               "tools/serve_schema_v2/acceptance.py",
+               "tools/serve_schema_v2/test_acceptance.py"}
     changed = [name for name, digest in old["sources"].items()
                if sha(ROOT / name) != digest]
     require(set(changed) <= allowed and
