@@ -208,5 +208,8 @@ Q4T_TEST(sampling_logprobs_are_raw_and_top20_bounded) {
   Q4T_CHECK(sampler.Select(logits, &sample, {}, 0));
   Q4T_CHECK(sample.token == 0 && sample.logprob == -9999 &&
             sample.top.size() == 20 && sample.top.back().token == 1);
+  double mass = 0;
+  for (int i = 0; i < 21; ++i) mass += std::exp(double(i));
+  Q4T_CHECK(std::abs(sample.raw_logprob + std::log(mass)) < 1e-12);
   return true;
 }

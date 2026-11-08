@@ -48,7 +48,10 @@ Q4T_TEST(http_connection_classification_exact_route_and_method) {
                 HttpConnectionClass::kBusiness);
     for (const auto suffix : {"?x=1", "/", "/anything"})
       Q4T_CHECK(ClassifyHttpConnection("GET", std::string(path) + suffix) ==
-                HttpConnectionClass::kBusiness);
+                (std::string_view(path) == "/v1/models" &&
+                         std::string_view(suffix) != "?x=1"
+                     ? HttpConnectionClass::kObservation
+                     : HttpConnectionClass::kBusiness));
   }
   for (const auto path : {"/healthz", "/livez", "/readyz"})
     Q4T_CHECK(ClassifyHttpConnection("GET", path) ==
@@ -57,6 +60,10 @@ Q4T_TEST(http_connection_classification_exact_route_and_method) {
             HttpConnectionClass::kControl);
   Q4T_CHECK(ClassifyHttpConnection("GET", "/v1/requests/cancel") ==
             HttpConnectionClass::kBusiness);
+  Q4T_CHECK(ClassifyHttpConnection("POST", "/v1/completions") ==
+            HttpConnectionClass::kBusiness);
+  Q4T_CHECK(ClassifyHttpConnection("DELETE", "/v1/models/org%2Falias") ==
+            HttpConnectionClass::kControl);
   return true;
 }
 

@@ -35,6 +35,8 @@ struct ServerOptions {
   // 127.0.0.1, with its own bounded handlers; never serves generation.
   int operations_port = 0;
   std::string model_dir;
+  std::string served_model_name = "qwen3.8-flash-next";
+  std::vector<std::string> model_aliases;
   int max_tokens = 256;  // default cap when the request omits max_tokens
   int max_prefill = 0;   // 0 = use ModelConfig default (2048); >0 overrides
   // Max sequence length (sizes the full-attention KV/indexer/rope caches).

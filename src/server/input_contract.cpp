@@ -26,6 +26,7 @@ bool ValidInputName(std::string_view name) {
 
 bool ValidRequestId(std::string_view id) {
   return !id.empty() && id.size() <= 128 && !id.starts_with("chatcmpl-auto-") &&
+         !id.starts_with("cmpl-auto-") &&
          std::all_of(id.begin(), id.end(), [](unsigned char c) {
            return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
                   (c >= '0' && c <= '9') || c == '-' || c == '_';

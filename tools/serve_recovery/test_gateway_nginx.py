@@ -77,6 +77,7 @@ class Stack:
         self.stream_disconnected = threading.Event()
         self.requests = []
         self.forwarded = []
+        self.model_requests = []
         self.events = []
         self.errors = []
         self.servers, self.threads = [], []
@@ -103,14 +104,32 @@ class Stack:
                     self.response(200, native_config(stack.value, stack.token))
                 elif self.path == '/v1/models':
                     self.response(200, dict(object='list', data=[dict(id='cpu-fixture')]))
+                elif self.path.startswith('/v1/models/'):
+                    self.model_detail('GET')
                 else:
                     self.response(404, dict(error='absent'))
+            def model_detail(self, method):
+                stack.model_requests.append(dict(method=method, path=self.path,
+                    token=self.headers.get('X-Q4T-Gateway-Token'),
+                    client=self.headers.get('X-Q4T-Client-Id'),
+                    authorization=self.headers.get('Authorization')))
+                if self.path not in ('/v1/models/cpu-fixture',
+                                     '/v1/models/org%2Falias'):
+                    self.response(404, dict(error=dict(code='model_not_found')))
+                elif method == 'DELETE':
+                    self.response(403, dict(error=dict(code='model_not_deletable')))
+                else:
+                    self.response(200, dict(id='cpu-fixture', object='model',
+                                            created=42, owned_by='q4t'))
+            def do_DELETE(self):
+                self.model_detail('DELETE')
             def do_POST(self):
                 self.close_connection = True
                 raw = self.rfile.read(int(self.headers.get('Content-Length', '0')))
                 stack.forwarded.append(dict(token=self.headers.get('X-Q4T-Gateway-Token'),
                     client=self.headers.get('X-Q4T-Client-Id'),
-                    authorization=self.headers.get('Authorization'), body=raw.decode()))
+                    authorization=self.headers.get('Authorization'), body=raw.decode(),
+                    path=self.path))
                 if self.headers.get('X-Q4T-Gateway-Token') != stack.token:
                     self.response(403, dict(error=dict(code='invalid_gateway_credentials')))
                     return

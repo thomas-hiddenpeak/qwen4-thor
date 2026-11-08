@@ -58,6 +58,7 @@ void PrintUsage(const char* prog) {
       "  serve     OpenAI-compatible HTTP API server\n"
       "            (q4t serve [--host IPv4] [--port N] "
       "[--operations-port N] [--model-dir DIR] "
+      "[--served-model-name ID] [--model-alias ID] "
       "[--max-tokens N] [--max-prefill N] [--max-len N] [--max-seq N] "
       "[--max-inflight-requests N] [--max-queued-requests N] "
       "[--min-available-memory-mib N] [--memory-recovery-margin-mib N] "

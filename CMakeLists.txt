@@ -263,6 +263,7 @@ target_include_directories(q4t_runtime PUBLIC include)
 # ---------------------------------------------------------------------------
 include(cmake/ChatProtocolIdentity.cmake)
 add_library(q4t_server STATIC src/server/chat_server.cpp
+  src/server/model_catalog.cpp
   src/server/client_policy.cpp
   src/server/client_request.cpp
   src/server/chat_device_memory.cpp
@@ -313,6 +314,8 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/custom_regex.cpp
   src/server/legacy_tools.cpp
   src/server/token_logprobs.cpp
+    src/server/completion_plan.cpp
+    src/server/completion_response.cpp
   src/server/chat_choices.cpp
   src/server/chat_tool_history.cpp
                              src/server/chat_template.cpp)
@@ -513,8 +516,12 @@ if(Q4T_BUILD_TESTS)
     src/server/custom_regex.cpp
     src/server/legacy_tools.cpp
     src/server/token_logprobs.cpp
+    src/server/completion_plan.cpp
+    src/server/completion_response.cpp
     src/server/chat_choices.cpp
+    src/server/model_catalog.cpp
     tests/server_sampling_test.cpp
+    tests/server_completion_test.cpp
     tests/server_prediction_test.cpp
     tests/server_legacy_tools_test.cpp
     tests/server_custom_tools_test.cpp

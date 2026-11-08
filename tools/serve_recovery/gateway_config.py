@@ -71,8 +71,7 @@ def render(value, runtime, auth_port, secret):
     q = lambda name: g.quoted(Path(runtime)/name)
     clients = '\n'.join('    "~^[Bb][Ee][Aa][Rr][Ee][Rr] '+c['api_key']+'$" '+
                         c['id']+';' for c in p['clients'])
-    routes = '\n'.join('    "~^'+re.escape(method+':'+path)+'$" '+lane+';'
-                       for path, (method, lane) in g.ROUTES.items())
+    routes = g.route_map()
     source_map, source_check = '', ''
     if p['version'] == 2:
         entries = '\n'.join('    '+net+' 1;' for net in p['allowed_client_cidrs'])

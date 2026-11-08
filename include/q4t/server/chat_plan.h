@@ -47,6 +47,7 @@ struct ChatPlanConfig {
   uint32_t client_policy_version = 1;
   bool client_fair_queue = false;
   const ClientLimits* client_limits = nullptr;
+  std::vector<std::string> model_aliases;
 };
 
 struct ChatPlanError {

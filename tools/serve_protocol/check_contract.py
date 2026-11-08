@@ -76,7 +76,8 @@ def load_validators():
     spec = build_contract.openapi()
     request = lambda route: spec["paths"][route]["post"]["requestBody"]["content"]["application/json"]["schema"]
     return {key: Validator(request(route), registry=registry) for key, route in
-        (("chat", "/v1/chat/completions"), ("cancel", "/v1/requests/cancel"),
+        (("chat", "/v1/chat/completions"), ("completion", "/v1/completions"),
+         ("cancel", "/v1/requests/cancel"),
          ("preflight", "/v1/chat/preflight"))}
 
 
@@ -130,7 +131,8 @@ def main():
             shape_accepted=shape, shape_error=error, native=actual, passed=okay)
         records.append(record)
         if not okay: failures.append(record)
-    fields = {row["field"] for row in rows if row["field"]}
+    fields = {row["field"] for row in rows if row["field"] and
+              row["fixture"].get("kind", "chat") != "completion"}
     if not prior and not args.case_list:
         assert fields == set(build_contract.chat_schema()["properties"])
     result = dict(passed=not failures, cases=len(rows), fields=len(fields),

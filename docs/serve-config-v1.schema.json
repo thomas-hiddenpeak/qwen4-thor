@@ -1165,6 +1165,36 @@
         "preemption",
         "latency_guarantee"
       ]
+    },
+    "model_aliases": {
+      "type": "array",
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      }
+    },
+    "completions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "profile": {
+          "const": "q4t-completions-v1"
+        },
+        "default_output_tokens": {
+          "const": 16
+        },
+        "max_batch_candidates": {
+          "const": 128
+        }
+      },
+      "required": [
+        "profile",
+        "default_output_tokens",
+        "max_batch_candidates"
+      ]
     }
   },
   "required": [
@@ -1186,7 +1216,9 @@
     "max_queued_requests",
     "memory_admission",
     "startup_memory",
-    "cuda_allocation_quota"
+    "cuda_allocation_quota",
+    "model_aliases",
+    "completions"
   ],
   "allOf": [
     {

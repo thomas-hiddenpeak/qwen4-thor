@@ -205,6 +205,33 @@ class AccessTests(unittest.TestCase):
         self.assertEqual(self.stack.requests, [])
         self.assertEqual(self.request(headers={'Origin': fields['Origin']})[0], 503)
 
+    def test_completions_and_model_details_use_tls_cors_and_api_keys(self):
+        self.replace(cors=dict(CORS, allowed_methods=['GET', 'POST', 'DELETE']))
+        origin = 'https://client.example'
+        for method, path in [('POST', '/v1/completions'),
+                             ('GET', '/v1/models/org%2Falias'),
+                             ('DELETE', '/v1/models/cpu-fixture')]:
+            status, headers, body = self.request('OPTIONS', path, auth=False,
+                headers={'Origin': origin, 'Access-Control-Request-Method': method,
+                         'Access-Control-Request-Headers': 'Authorization, Content-Type'})
+            self.assertEqual((status, body), (204, b''))
+            self.assertEqual(headers['Access-Control-Allow-Origin'], origin)
+            self.assertEqual(self.request(method, path, auth=False,
+                headers={'Origin': origin})[0], 401)
+        raw = json.dumps(dict(model='cpu-fixture', prompt=[4, 5])).encode()
+        status, headers, body = self.request('POST', '/v1/completions', body=raw,
+            headers={'Origin': origin, 'Content-Type': 'application/json'})
+        self.assertEqual(status, 200)
+        self.assertEqual(headers['Access-Control-Allow-Origin'], origin)
+        self.assertEqual(json.loads(self.stack.forwarded[-1]['body']), json.loads(raw))
+        self.assertEqual(self.request('GET', '/v1/models/org%2Falias',
+            headers={'Origin': origin})[0], 200)
+        status, headers, body = self.request('DELETE', '/v1/models/cpu-fixture',
+            headers={'Origin': origin})
+        self.assertEqual(status, 403)
+        self.assertEqual(json.loads(body)['error']['code'], 'model_not_deletable')
+        self.assertEqual(headers['Access-Control-Allow-Origin'], origin)
+
     def test_cors_errors_preserve_origin_and_never_bypass_authentication(self):
         status, headers, _ = self.request(headers={'Origin': 'https://client.example'}, auth=False)
         self.assertEqual(status, 401)

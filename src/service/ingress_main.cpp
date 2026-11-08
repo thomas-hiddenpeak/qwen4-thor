@@ -21,6 +21,7 @@
 #include "q4t/server/client_identity.h"
 #include "q4t/server/http_listener.h"
 #include "q4t/server/http_request.h"
+#include "q4t/server/model_catalog.h"
 #include "q4t/service/guardian_wire.h"
 #include "q4t/service/ingress_address.h"
 #include "q4t/service/ingress_admin.h"
@@ -335,6 +336,7 @@ struct RouteSpec {
   bool control;
 };
 constexpr RouteSpec kRoutes[] = {
+    {"POST", "/v1/completions", false},
     {"POST", "/v1/chat/completions", false},
     {"POST", "/v1/chat/preflight", false},
     {"POST", "/v1/requests/cancel", true},
@@ -346,6 +348,11 @@ constexpr RouteSpec kRoutes[] = {
 };
 
 bool Route(const std::string& method, const std::string& path, bool* control) {
+  if ((method == "GET" || method == "DELETE") &&
+      server::IsModelDetailPath(path) && path.find_first_of("?#") == path.npos) {
+    *control = true;
+    return true;
+  }
   for (const auto& route : kRoutes) {
     if (method == route.method && path == route.path) {
       *control = route.control;

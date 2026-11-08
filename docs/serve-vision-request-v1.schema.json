@@ -3,7 +3,7 @@
   "properties": {
     "model": {
       "type": "string",
-      "x-q4t-equals-served-model": true
+      "x-q4t-registered-model-or-alias": true
     },
     "prompt": {
       "type": "string",
@@ -71,7 +71,7 @@
       "maxLength": 128,
       "pattern": "^[A-Za-z0-9_-]+$",
       "not": {
-        "pattern": "^chatcmpl-auto-"
+        "pattern": "^(chatcmpl|cmpl)-auto-"
       }
     },
     "cancel_token": {

@@ -736,3 +736,25 @@ Q4T_TEST(client_policy_config_redaction_and_cli_boundary) {
     Q4T_CHECK(encoded.find(secret) == encoded.npos);
   return true;
 }
+
+Q4T_TEST(client_rate_completion_batch_charges_only_admitted_prompts_once) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(RatePolicy(10, 200)));
+  const auto alpha = admission.Authenticate("alpha", kSecret);
+  const auto now = ClientClock::now();
+  ClientRateLease batch;
+  Q4T_CHECK(batch.Reserve(admission, alpha, 50, 16, now) ==
+            ClientRateResult::kAllowed);
+  batch.StartPrompt(10);
+  batch.Completion(7);
+  batch.StartPrompt(10);  // Another candidate for the same prompt.
+  batch.Completion(12);
+  batch.StartPrompt(25);  // Second prompt admitted; third never starts.
+  batch.Completion(14);
+  batch.Settle(now);
+  batch.Settle(now);
+  const auto value = admission.RateUsage(0, now);
+  Q4T_CHECK(value.tokens == 39 && value.settled_tokens == 39 &&
+            value.reserved == 0 && value.requests == 1);
+  return true;
+}

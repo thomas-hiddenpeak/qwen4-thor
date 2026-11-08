@@ -18,8 +18,10 @@ VERSION = '1.30.6'
 ROUTES = {'/v1/models': ('GET', 'control'),
           '/v1/capabilities': ('GET', 'control'),
           '/v1/chat/completions': ('POST', 'data'),
+          '/v1/completions': ('POST', 'data'),
           '/v1/chat/preflight': ('POST', 'data'),
           '/v1/requests/cancel': ('POST', 'control')}
+DYNAMIC_ROUTES = {'/v1/models/{model}': ('GET', 'DELETE')}
 API_CONTRACT = ROOT/'docs/serve-openapi-v1.json'
 DEFAULTS = dict(per_client_inflight=2, global_inflight=8,
                 per_client_rps=5, burst=10, body_bytes=16*1024**2,
@@ -69,7 +71,7 @@ def validate_routes():
     paths = parse(read_file(API_CONTRACT))['paths']
     expected = {'v1_models': 'control', 'v1_capabilities': 'control',
                 'v1_chat_completions': 'data', 'v1_chat_preflight': 'data',
-                'v1_requests_cancel': 'control'}
+                'v1_requests_cancel': 'control', 'v1_completions': 'data'}
     seen = {}
     for path, (method, lane) in ROUTES.items():
         operation = paths.get(path, {}).get(method.lower(), {}).get('operationId')
@@ -77,7 +79,21 @@ def validate_routes():
                 operation not in seen, 'route differs from formal API contract')
         seen[operation] = path
     require(seen.keys() == expected.keys(), 'missing public API route')
+    for path, methods in DYNAMIC_ROUTES.items():
+        for method in methods:
+            require(paths.get(path, {}).get(method.lower(), {}).get('operationId')
+                    == 'v1_models_' + method.lower(),
+                    'model detail route differs from formal API contract')
     return sha(API_CONTRACT)
+
+
+def route_map():
+    """Exact raw URI routes; model path decoding belongs to the backend."""
+    rows = ['    "~^'+re.escape(method+':'+path)+'$" '+lane+';'
+            for path, (method, lane) in ROUTES.items()]
+    rows.extend('    "~^'+method+':/v1/models/[^?#]+$" control;'
+                for method in DYNAMIC_ROUTES['/v1/models/{model}'])
+    return '\n'.join(rows)
 
 
 def client_sources(values, *, dual_stack=False):
@@ -258,8 +274,7 @@ def render(value, directory, backend_policy=None):
     # anchored case-sensitive regexes. Tokens are restricted to regex literals.
     clients = '\n'.join('    "~^[Bb][Ee][Aa][Rr][Ee][Rr] '+c['api_key']+'$" '+c['id']+';'
                         for c in p['clients'])
-    routes = '\n'.join('    "~^'+re.escape(method+':'+path)+'$" '+lane+';'
-                       for path,(method,lane) in ROUTES.items())
+    routes = route_map()
     # URI/method comparisons use regexes to reject normalization aliases and
     # queries before proxying. Never send Authorization, cookies or forwarded
     # identity headers to the unauthenticated local model listener.

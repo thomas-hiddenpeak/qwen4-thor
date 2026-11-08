@@ -44,6 +44,9 @@ struct SampledToken {
   // vLLM's default raw_logprobs convention. Not the truncated nucleus mass.
   double logprob = -9999;
   std::vector<TokenLogprob> top;
+  // Full selected-token probability for Completions scoring/best_of. Chat's
+  // public top-20 sentinel contract remains in logprob above.
+  double raw_logprob = -9999;
 };
 
 // Per-choice state; no shared RNG/history, model mutation, or CUDA ownership.

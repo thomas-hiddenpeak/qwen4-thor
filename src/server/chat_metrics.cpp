@@ -362,11 +362,28 @@ void ChatServer::HandleHealth(int fd) {
 }
 
 void ChatServer::HandleModels(int fd) {
-  const std::string body =
-      "{\"object\":\"list\",\"data\":[{\"id\":\"" +
-      detail::JsonEscape(model_name_) + "\",\"object\":\"model\",\"created\":" +
-      std::to_string(std::time(nullptr)) + ",\"owned_by\":\"q4t\"}]}";
-  SendSimple(fd, 200, "OK", body, "application/json");
+  SendSimple(fd, 200, "OK", model_catalog_.ListJson(), "application/json");
+}
+
+void ChatServer::HandleModel(int fd, const std::string& method,
+                             const std::string& path) {
+  std::string model;
+  const auto decoded = DecodeModelPath(path, &model);
+  if (!decoded) {
+    detail::SendError(fd, 400, decoded.message(), {}, "invalid_model_path",
+                      "model");
+  } else if (!model_catalog_.Contains(model)) {
+    detail::SendError(fd, 404, "model is not registered by this server", {},
+                      "model_not_found", "model");
+  } else if (method == "DELETE") {
+    // The standard delete operation is for user-owned fine-tuned models.
+    // This registry owns no such assets; loaded base weights remain read-only.
+    detail::SendError(fd, 403, "loaded base models cannot be deleted", {},
+                      "model_not_deletable", "model");
+  } else {
+    SendSimple(fd, 200, "OK", model_catalog_.RetrieveJson(model),
+               "application/json");
+  }
 }
 
 void ChatServer::HandleCapabilities(int fd) {

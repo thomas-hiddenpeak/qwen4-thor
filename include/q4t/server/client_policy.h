@@ -148,13 +148,20 @@ class ClientRateLease {
                            const ClientIdentity& identity, uint64_t prompt,
                            uint64_t output,
                            ClientClock::time_point now = ClientClock::now());
-  void Start() noexcept { started_ = true; }
+  void Start() noexcept { StartPrompt(prompt_); }
+  // Cumulative distinct prompt tokens admitted from a pre-reserved batch.
+  // Repeated candidates do not charge the same input again.
+  void StartPrompt(uint64_t count) noexcept {
+    started_ = true;
+    if (count >= admitted_prompt_ && count <= prompt_) admitted_prompt_ = count;
+  }
   void Completion(uint64_t count) noexcept { completion_ = count; }
   void Settle(ClientClock::time_point now = ClientClock::now()) noexcept;
 
  private:
   ClientAdmission::Counters* counters_ = nullptr;
   uint64_t prompt_ = 0;
+  uint64_t admitted_prompt_ = 0;
   uint64_t reserved_ = 0;
   uint64_t completion_ = 0;
   bool started_ = false;

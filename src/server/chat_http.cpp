@@ -305,7 +305,8 @@ void ChatServer::HandleClient(int fd, bool operations) {
       }
       admission = &counter;
       if (method == "POST" &&
-          (path == "/v1/chat/completions" || path == "/v1/chat/preflight")) {
+          (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
+           path == "/v1/completions")) {
         const auto memory = memory_admission_.Observe();
         if (!memory.Allowed()) {
           RecordMemoryRejection(fd, memory.state, MemoryCheckpoint::kHeaders);
@@ -335,6 +336,7 @@ void ChatServer::HandleClient(int fd, bool operations) {
       return;
     }
     if (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
+        path == "/v1/completions" ||
         path == "/v1/requests/cancel") {
       if (method == "POST") {
         std::string type = headers.content_type;
@@ -394,11 +396,26 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     return;
   }
   std::string_view expected;
+  if (IsModelDetailPath(path)) {
+    if (method != "GET" && method != "DELETE") {
+      rejected(HttpReceiveFailure::kMethod, 405);
+      SendError(fd, 405, "method not allowed", {}, "method_not_allowed",
+                "method", "GET, DELETE");
+    } else if (!body.empty()) {
+      rejected(HttpReceiveFailure::kUnexpectedBody, 400);
+      SendError(fd, 400, "model query/delete body is not supported", {},
+                "unexpected_body", "body");
+    } else {
+      HandleModel(fd, method, path);
+    }
+    return;
+  }
   if (path == "/healthz" || path == "/livez" || path == "/readyz" ||
       path == "/v1/models" || path == "/v1/capabilities" ||
       path == "/v1/config" || path == "/metrics")
     expected = "GET";
   else if (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
+           path == "/v1/completions" ||
            path == "/v1/requests/cancel")
     expected = "POST";
   if (!expected.empty() && method != expected) {
@@ -469,6 +486,10 @@ void ChatServer::Dispatch(int fd, const std::string& method,
   }
   if (path == "/v1/chat/completions" && method == "POST") {
     HandleChat(fd, body);
+    return;
+  }
+  if (path == "/v1/completions" && method == "POST") {
+    HandleChat(fd, body, true);
     return;
   }
   rejected(HttpReceiveFailure::kRoute, 404);

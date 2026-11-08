@@ -8,6 +8,7 @@
 //   2. Load + round-trip against the real model's tokenizer.json.
 #include "q4t/text/tokenizer.h"
 #include "q4t/server/http_response.h"
+#include "q4t/server/completion_response.h"
 #include "q4t/io/json.h"
 #include "q4t/test.h"
 
@@ -87,6 +88,29 @@ const GoldenCase kGoldenCases[] = {
 };
 
 }  // namespace
+
+Q4T_TEST(tokenizer_completion_echo_maps_nfc_to_original_characters) {
+  using namespace q4t::server;
+  std::unique_ptr<Tokenizer> tokenizer;
+  Q4T_CHECK(Tokenizer::Load(kRealTokenizer, {}, &tokenizer));
+  const std::string original = "e\xcc\x81\nX";
+  std::vector<uint32_t> ids;
+  Q4T_CHECK(tokenizer->Encode(original, &ids));
+  std::vector<size_t> bytes, characters;
+  std::string echo;
+  Q4T_CHECK(tokenizer->EchoByteOffsets(original, ids, true, &bytes));
+  Q4T_CHECK(bytes.front() == 0 && bytes.back() == 4);
+  Q4T_CHECK(CompletionEchoOffsets(original, bytes, &echo, &characters));
+  Q4T_CHECK(echo == original && characters.front() == 0 && characters.back() == 3);
+  Q4T_CHECK(!tokenizer->EchoByteOffsets("different", ids, true, &bytes));
+  Q4T_CHECK(bytes.empty());
+  const std::vector<uint32_t> raw_ids = {64,65};  // Separate a,b, not merged ab.
+  Q4T_CHECK(tokenizer->EchoByteOffsets("ab", raw_ids, false, &bytes));
+  Q4T_CHECK(bytes == std::vector<size_t>({0,1}));
+  Q4T_CHECK(!tokenizer->EchoByteOffsets(original, ids, true, &bytes,
+                                        {.cancelled = [] { return true; }}));
+  return true;
+}
 
 #ifdef Q4T_ENABLE_XGRAMMAR
 namespace {

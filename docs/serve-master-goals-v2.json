@@ -176,7 +176,9 @@
         "A01",
         "A03"
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md"
+      ],
       "release": null
     },
     {
@@ -603,5 +605,5 @@
     }
   ],
   "next_task": "A05",
-  "next": "继续完整schema生成与格式校验，接入工具/媒体/缓存组合并针对性验收，随后A06等全部总计划。"
+  "next": "完成A06 Completions/Models已开发能力的有界真实验收及可回退发行，然后立即继续A07 Responses等全部总计划。"
 }

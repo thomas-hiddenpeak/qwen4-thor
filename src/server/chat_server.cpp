@@ -10,6 +10,7 @@
 #include <chrono>
 #include <cstdio>
 #include <cstdlib>
+#include <ctime>
 #include <fstream>
 #include <iterator>
 #include <limits>
@@ -31,11 +32,6 @@
 #include "q4t/vision/configuration.h"
 
 namespace q4t::server {
-
-namespace {
-constexpr const char* kDefaultModelName = "qwen3.8-flash-next";
-
-}
 
 ChatServer::~ChatServer() {
   // Start may have succeeded without a subsequent Run. Stop accepting TCP
@@ -596,7 +592,10 @@ Status ChatServer::Start(const ServerOptions& opts) {
   max_tokens_default_ = opts.max_tokens;
   max_prefill_ = cfg.max_prefill;
   max_len_ = cfg.max_len;
-  model_name_ = kDefaultModelName;
+  model_name_ = opts.served_model_name;
+  s = model_catalog_.Configure(model_name_, opts.model_aliases,
+                                static_cast<int64_t>(std::time(nullptr)));
+  if (!s) return s;
   // Video processor budget comes from video_preprocessor_config.json
   // (4096 / 25165824), NOT the image budget. Same patch/merge/temporal dims.
   video_proc_cfg_ = proc_cfg_;

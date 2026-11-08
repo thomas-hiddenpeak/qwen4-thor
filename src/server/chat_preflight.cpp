@@ -34,7 +34,8 @@ ChatPlanConfig ChatServer::PlanningConfig(int fd) const {
           .client_count = clients_.Size(),
           .client_policy_version = clients_.Version(),
           .client_fair_queue = clients_.FairQueue(),
-          .client_limits = http ? http->Client().Limits() : nullptr};
+          .client_limits = http ? http->Client().Limits() : nullptr,
+          .model_aliases = model_catalog_.Aliases()};
 }
 
 void ChatServer::HandleConfig(int fd) {

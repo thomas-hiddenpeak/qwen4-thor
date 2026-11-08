@@ -11,6 +11,7 @@
 #include "q4t/server/http_request.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/http_response.h"
+#include "q4t/server/model_catalog.h"
 #include "q4t/server/prefix_cache_policy.h"
 #include "q4t/server/startup_admission.h"
 #include "q4t/server/text_stop.h"
@@ -72,7 +73,18 @@ Status PlanChatRequest(const io::Json& req, const ChatPlanConfig& config,
     plan->normalized_request = std::move(normalized.request);
     return status;
   }
-  auto status = ValidateChatContract(req, config.model, config.allow_media,
+  const auto* model = req.Find("model");
+  if (model && model->IsString() &&
+      !IsServedModel(model->str, config.model, config.model_aliases)) {
+    error->http_status = 404;
+    error->code = "model_not_found";
+    error->param = "model";
+    return Status::Fail("model is not registered by this server");
+  }
+  auto status = ValidateChatContract(req, model && model->IsString()
+                                            ? model->str
+                                            : config.model,
+                                     config.allow_media,
                                      &error->param);
   if (!status) {
     if (status.message().starts_with("schema_resource_exhausted:")) {
@@ -359,10 +371,19 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
   const int public_handlers = business_connections + kOperationsConnections;
   const int operations_handlers =
       requested.operations_port ? kOperationsConnections : 0;
+  std::string aliases = "[";
+  for (const auto& alias : config.model_aliases) {
+    if (aliases.size() > 1) aliases += ',';
+    aliases += Quote(alias);
+  }
+  aliases += ']';
   return R"({"object":"q4t.serve.config","profile":"q4t-config-v1",)"
          R"("observability_version":5,)"
          R"("protocol_source_sha256":)" +
          Quote(identity::kProtocol) + R"(,"model":)" + Quote(config.model) +
+         R"(,"model_aliases":)" + aliases +
+         R"(,"completions":{"profile":"q4t-completions-v1",)"
+         R"("default_output_tokens":16,"max_batch_candidates":128})"
          R"(,"client_policy":{"profile":"q4t-gateway-clients-v1","enabled":)" +
          Bool(config.client_count != 0) + R"(,"sha256":)" +
          Quote(config.client_policy_sha256) + R"(,"clients":)" +

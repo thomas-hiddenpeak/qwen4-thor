@@ -2,6 +2,13 @@
 
 更新：2026-11-08。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+A06原生Completions/Models成组开发与针对性CPU已完成：50不同C++、
+51输入差分、6官方SDK、4原生/TLS接入、10驱动/托管/发行检查通过。
+新增批量取消按实际准入输入结算，发行随包携带补全schema和可选
+别名配置；旧包仍可验证。失败夹具与修复原件保留，详见
+[SERVE_COMPLETIONS](SERVE_COMPLETIONS_2026-11-08.md)。下一步冻结真实
+1计划启动/7生成，上限2/8/900秒；尚无A06 GPU结论，默认仍A05。
+
 ## Serve总目标重审：能力缺口全部进入实施清单
 
 [总计划](SERVE_MASTER_PLAN_2026-11-08.md)替代上一版仅R1—R10队列：
@@ -161,6 +168,11 @@ GPU/端口/锁释放。A04实现与交付完成；立即推进A05官方结构化
 策略/配额保持STOPPED，安装0模型/0Chat；旧f867/09ff及6be3/24d1
 回退保留。媒体状态缓存仍属A05/A10未解决必做项，不以本组交付
 替代；总目标active，继续A06 Completions及Models完整语义。
+
+[A06合同已冻结](SERVE_COMPLETIONS_2026-11-08.md)：Models稳定目录/别名与
+原始Completions批量/echo/概率/best_of/suffix/usage、原生入口一并
+实施。固定SDK7.47.0作为协议依据，新增完整选中项概率用于best_of，
+保留Chat前20名之外-9999的既有公开合同；尚无新增GPU、默认A05不改，继续开发。
 
 工作分支`codex/serve-resilience-cd`继续独立于PR #22已接受发布；
 PR #22头为另一分支`codex/serve-self-recovery`的34b06bc1，两项CI

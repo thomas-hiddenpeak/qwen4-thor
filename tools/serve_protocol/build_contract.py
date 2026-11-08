@@ -90,7 +90,7 @@ def chat_schema():
     safe = dict(type="string", minLength=1, maxLength=64, pattern="^[A-Za-z0-9_-]+$")
     hex64 = dict(type="string", pattern="^[0-9a-f]{64}$")
     identifier = dict(type="string", minLength=1, maxLength=128,
-        pattern="^[A-Za-z0-9_-]+$", **{"not": dict(pattern="^chatcmpl-auto-")})
+        pattern="^[A-Za-z0-9_-]+$", **{"not": dict(pattern="^(chatcmpl|cmpl)-auto-")})
     text_part = obj(dict(type=dict(const="text"), text=dict(type="string")), ("text",))
     refusal_part = obj(dict(type=dict(const="refusal"),
                             refusal=dict(type="string")), ("type", "refusal"))
@@ -190,7 +190,7 @@ def chat_schema():
             items=dict(type="string", minLength=1, maxLength=256,
                        **{"x-q4t-max-utf8-bytes": 256}))]))
     properties = dict(
-        model=dict(type="string", **{"x-q4t-equals-served-model": True}),
+        model=dict(type="string", **{"x-q4t-registered-model-or-alias": True}),
         prompt=dict(type="string", minLength=1),
         messages=dict(type="array", minItems=1, items=ref("message")),
         max_tokens=nullable(dict(type="integer", minimum=1, maximum=2147483647)),
@@ -280,6 +280,84 @@ def chat_schema():
             duplicate_keys="reject at every JSON object, including historical argument text")})
     return result
 
+
+
+def completion_schema():
+    chat = chat_schema()["properties"]
+    token_ids = dict(type="array", items=dict(type="integer", minimum=0,
+        maximum=2147483647), **{"x-q4t-vocabulary-check": True})
+    prompt = dict(anyOf=[dict(type=["string", "null"]), token_ids,
+        dict(type="array", minItems=1, maxItems=128, items=dict(type="string")),
+        dict(type="array", minItems=1, maxItems=128, items=token_ids)])
+    fields = {k: chat[k] for k in ("temperature", "top_p", "seed", "logit_bias",
+        "presence_penalty", "frequency_penalty", "stop", "user",
+        "request_id", "cancel_token", "request_timeout_ms")}
+    fields.update(model=dict(type="string", minLength=1, maxLength=256,
+        pattern="^[^\\x00-\\x20\\x7f]+$", **{"x-q4t-max-utf8-bytes": 256},
+        **{"x-q4t-registered-model-or-alias": True}), prompt=prompt,
+        n=nullable(dict(type="integer", minimum=1, maximum=128, default=1)),
+        best_of=nullable(dict(type="integer", minimum=1, maximum=128)),
+        echo=nullable(dict(type="boolean", default=False)),
+        stream=nullable(dict(type="boolean", default=False)),
+        logprobs=nullable(dict(type="integer", minimum=0, maximum=5)),
+        max_tokens=nullable(dict(type="integer", minimum=0, maximum=2147483647,
+                                 default=16)), suffix=nullable(dict(type="string")),
+        stream_options=nullable(obj(dict(include_usage=dict(type="boolean"),
+            include_obfuscation=dict(type="boolean", default=True)))))
+    result = obj(fields, ("model",))
+    result.update({"$schema": DRAFT, "$id": "urn:q4t:serve:completion-request:v1",
+        "title": "Native OpenAI Completions request",
+        "dependentRequired": dict(request_id=["cancel_token"], cancel_token=["request_id"]),
+        "allOf": [when(present("stream_options", dict(type="object")),
+                       present("stream", dict(const=True)))],
+        "x-q4t": dict(profile="q4t-completions-v1", endpoint="/v1/completions",
+            required_semantic_validation=True, max_batch_candidates=128,
+            best_of_default="n", best_of_selection_streaming=False,
+            max_tokens_default=16, prompt_omitted_or_null="empty document",
+            empty_document_seed="<|endoftext|>; counted as one actual input token",
+            prompt_array_empty="one empty token prompt",
+            model_lookup="registry including explicit aliases; unknown is 404",
+            token_input="execute exact IDs without decode/re-encode",
+            echo="original string or UTF-8 repaired decoded IDs",
+            suffix="native FIM prefix/suffix/middle tokens; no Chat template",
+            limits="all prompts checked before execution; total candidate output and input quota",
+            semantic_contract="serve-input-semantics-v1.json")})
+    return result
+
+
+def completion_transport():
+    number = dict(type="number", maximum=0)
+    probabilities = obj(dict(tokens=dict(type="array", items=dict(type="string")),
+        token_logprobs=dict(type="array", items=nullable(number)),
+        top_logprobs=dict(type="array", items=nullable(dict(type="object",
+            additionalProperties=number))),
+        text_offset=dict(type="array", items=dict(type="integer", minimum=0))),
+        ("tokens", "token_logprobs", "top_logprobs", "text_offset"))
+    usage = obj({key: dict(type="integer", minimum=0)
+                 for key in ("prompt_tokens", "completion_tokens", "total_tokens")},
+                ("prompt_tokens", "completion_tokens", "total_tokens"))
+    choice = obj(dict(text=dict(type="string"), index=dict(type="integer", minimum=0),
+        logprobs=nullable(ref("logprobs")),
+        finish_reason=dict(enum=["stop", "length", "content_filter"])),
+        ("text", "index", "logprobs", "finish_reason"))
+    envelope = dict(id=dict(type="string"), object=dict(const="text_completion"),
+        created=dict(type="integer", minimum=0), model=dict(type="string"),
+        choices=dict(type="array", items=choice), usage=ref("usage"))
+    completion = obj(envelope, ("id", "object", "created", "model", "choices", "usage"))
+    chunk_choice = obj(dict(choice["properties"],
+        finish_reason=dict(enum=[None, "stop", "length", "content_filter"])),
+        choice["required"])
+    chunk = obj(dict(envelope, choices=dict(type="array", items=chunk_choice),
+        usage=nullable(ref("usage")), obfuscation=dict(type="string")),
+        ("id", "object", "created", "model", "choices"))
+    return {"$schema": DRAFT, "$id": "urn:q4t:serve:completion-transport:v1",
+        "$defs": dict(completion=completion, chunk=chunk, logprobs=probabilities, usage=usage),
+        "x-q4t": dict(equal_probability_array_lengths=True,
+            offsets="Unicode scalar positions in returned text, original NFC source alignment",
+            selected_logprobs="full raw target distribution; no Chat top20 sentinel",
+            best_of="mean generated token probability, includes actual EOS; ties keep candidate order",
+            usage="prompt once per input; all generated candidates including discarded ones",
+            stream="indexed text deltas, per-choice finish, optional aggregate usage, DONE and EOF")}
 
 
 def vision_schema():
@@ -425,6 +503,15 @@ def semantics():
              "src/server/chat_generation.cpp", "src/server/chat_preflight.cpp",
              "src/server/chat_admission.cpp", "src/server/chat_scheduler.cpp"],
          "Permanent PLE read and existing upload failures latch on the dependency instance. Healthy CUDA alone cannot keep readiness open. Ready/health endpoints return503 and q4t_ready=0 while liveness remains independent; pure reader faults do not change gpu_healthy. New Chat/preflight, slot handoff and execution check the same state. Model faults use model_unhealthy; an already-started stream uses the existing single error terminal when writable. Successful short-read retries, memory recovery and NVML observations cannot clear a permanent fault. No automatic dependency reload or request replay. Existing fatal CUDA completion/cleanup can exit1 before HTTP reporting; that boundary is unchanged.")]
+    rules.append(("native-completions-and-models", [
+        "include/q4t/server/model_catalog.h", "src/server/model_catalog.cpp",
+        "include/q4t/server/completion_plan.h", "src/server/completion_plan.cpp",
+        "include/q4t/server/completion_response.h", "src/server/completion_response.cpp",
+        "src/server/chat_generation.cpp", "src/server/token_logprobs.cpp",
+        "src/server/sampling.cpp", "include/q4t/text/tokenizer.h", "src/text/tokenizer.cpp",
+        "src/server/chat_http.cpp", "src/server/chat_metrics.cpp",
+        "src/server/client_request.cpp", "src/service/ingress_main.cpp"],
+        "Raw Completions execute strings, homogeneous prompt batches, exact token IDs and token batches. Empty/null document uses one actual endoftext seed. Default/null max_tokens16, zero allowed. n/best_of independent candidates share one request/cancel/quota; at most128 batch candidates. best_of>=n and selection cannot stream; rank by full actual mean generated-token logprob including EOS, stable candidate-order ties; all work charged. No Chat template or reasoning/tool stripping. Echo preserves original string with NFC source offsets or repaired decoded IDs; prompt probabilities are teacher-forced from real target logits in bounded16-row readbacks, first unconditional token null. Sampled probability is full raw distribution, independent of Chat's top20 sentinel. Suffix uses actual model FIM tokens, preserving raw prefix IDs. JSON/SSE text_completion carries parallel probability arrays and Unicode character offsets; successful final usage/DONE only after all choices and cleanup. Optional stream obfuscation defaults on. Models register stable process-lifetime created and explicit aliases; no per-query timestamp. GET detail percent-decodes once; unknown404; loaded base model DELETE403 and never modifies read-only assets. Alias lookup shared by Chat/preflight/Completions; served name/aliases configurable, no external gateway required."))
     paths = sorted({p for _, sources, _ in rules for p in sources})
     return dict(profile="q4t-input-semantics-v1", required=True,
         structural_schema="serve-chat-request-v1.schema.json",
@@ -452,19 +539,24 @@ def openapi():
     preflight = obj(dict(request=chat, include_prompt=dict(type="boolean", default=False),
                          include_token_ids=dict(type="boolean", default=False)), ("request",))
     paths = {}
-    models = obj(dict(object=dict(const="list"), data=dict(type="array", minItems=1, maxItems=1,
-        items=obj(dict(id=dict(type="string"), object=dict(const="model"), created=dict(type="integer"),
-                       owned_by=dict(const="q4t")), ("id", "object", "created", "owned_by")))), ("object", "data"))
+    model = obj(dict(id=dict(type="string"), object=dict(const="model"), created=dict(type="integer"),
+                    owned_by=dict(const="q4t")), ("id", "object", "created", "owned_by"))
+    models = obj(dict(object=dict(const="list"), data=dict(type="array", minItems=1,
+        maxItems=33, items=model)), ("object", "data"))
     health = obj(dict(status=dict(enum=["ok", "unhealthy"]), gpu_healthy=dict(type="boolean"),
         requests_running=dict(type="integer", minimum=0), seq_slots_free=dict(type="integer", minimum=0),
         seq_slots_total=dict(type="integer", minimum=1)),
         ("status", "gpu_healthy", "requests_running", "seq_slots_free", "seq_slots_total"))
     endpoints = [
+        ("/v1/completions", "post", external("serve-completion-request-v1.schema.json"),
+         external("serve-completion-transport-v1.schema.json", "#/$defs/completion")),
         ("/v1/chat/completions", "post", chat, external("serve-transport-v1.schema.json", "#/$defs/completion")),
         ("/v1/chat/preflight", "post", preflight, external("serve-preflight-v1.schema.json")),
         ("/v1/requests/cancel", "post", cancel,
          obj(dict(cancel_requested=dict(const=True)), ("cancel_requested",))),
         ("/v1/models", "get", None, models),
+        ("/v1/models/{model}", "get", None, model),
+        ("/v1/models/{model}", "delete", None, None),
         ("/v1/capabilities", "get", None, dict(type="object", description="Additive implementation/profile discovery; validate profile and protocol_source_sha256. Not acceptance or model quality evidence.")),
         ("/v1/config", "get", None, external("serve-config-v1.schema.json")),
         ("/healthz", "get", None, health),
@@ -485,6 +577,18 @@ def openapi():
             success["content"]["text/event-stream"] = dict(schema=dict(type="string"),
                 **{"x-q4t-event-schema": external("serve-transport-v1.schema.json", "#/$defs/chunk"),
                    "x-q4t-stream-contract": "role/content/tool deltas; exactly one finish; optional usage; DONE then EOF. After HTTP200, error envelope plus DONE when writable, otherwise truncated. No tool dispatch before complete validated terminal."})
+            if path == "/v1/completions":
+                success["content"]["text/event-stream"].update({
+                    "x-q4t-event-schema": external("serve-completion-transport-v1.schema.json", "#/$defs/chunk"),
+                    "x-q4t-stream-contract": "Indexed text/probability deltas; per-choice finish; optional aggregate usage; DONE then EOF. Error terminal never publishes successful aggregate usage."})
+        if path == "/v1/models/{model}":
+            operation["operationId"] = "v1_models_" + method
+            operation["parameters"].append(dict(name="model", **{"in": "path"}, required=True,
+                schema=dict(type="string"), description="Exact registered identifier or alias; percent-encoded once"))
+            operation["responses"]["404"] = response(error, "Model not registered")
+            if method == "delete":
+                operation["responses"].pop("200")
+                operation["responses"]["403"] = response(error, "Loaded base models are read-only; this registry contains no user-owned fine-tuned models")
         if path in ("/healthz", "/livez", "/readyz"):
             operation["responses"]["503"] = response(schema, "Unhealthy, not ready, or draining")
         if path == "/healthz":
@@ -492,7 +596,7 @@ def openapi():
                 "Local backend health. Permanent PLE dependency faults also return 503; "
                 "gpu_healthy reports CUDA health independently. "
                 "Liveness and memory admission use /livez and /readyz.")
-        paths[path] = {method: operation}
+        paths.setdefault(path, {})[method] = operation
     return dict(openapi="3.1.0", info=dict(title="Q4T serving contract",
         version="q4t-serve-v1", description="Static supported surface, not full OpenAI API compatibility. See required native semantics and version-bound acceptance matrix."),
         servers=[dict(url="http://127.0.0.1:8080", description="Example only; use effective configured address")],
@@ -533,6 +637,8 @@ def main():
     inventory = json.loads((ROOT / "tools/serve_audit/inventory.json").read_text())
     assert set(schema["properties"]) == set(inventory["fields"]), "uncatalogued field"
     publish(ROOT / "docs/serve-chat-request-v1.schema.json", schema, args.check)
+    publish(ROOT / "docs/serve-completion-request-v1.schema.json", completion_schema(), args.check)
+    publish(ROOT / "docs/serve-completion-transport-v1.schema.json", completion_transport(), args.check)
     publish(ROOT / "docs/serve-vision-request-v1.schema.json", vision_schema(), args.check)
     publish(ROOT / "docs/serve-message-profile-v3.schema.json", message_schema(), args.check)
     publish(ROOT / "docs/serve-input-semantics-v1.json", semantics(), args.check)

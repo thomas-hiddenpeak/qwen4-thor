@@ -139,6 +139,9 @@ class GatewayTests(unittest.TestCase):
         self.assertNotIn('proxy_set_header Authorization',text)
         self.assertNotIn('$request_body',text)
         self.assertNotIn('location /metrics',text)
+        self.assertIn('"~^POST:/v1/completions$" data;', text)
+        self.assertIn('"~^GET:/v1/models/[^?#]+$" control;', text)
+        self.assertIn('"~^DELETE:/v1/models/[^?#]+$" control;', text)
         with self.assertRaises(ValueError):g.policy(dict(self.p,global_inflight=1))
 
     def test_backend_identity_requires_ready_pinned_loopback(self):

@@ -16,13 +16,28 @@ def current_surface(root):
     if not match:
         raise ValueError("cannot extract Chat allowlist; review extractor")
     fields = re.findall(r'"([a-z_]+)"', match[1])
+    completion = (root / "src/server/completion_plan.cpp").read_text()
+    match = re.search(r'InputFields\(\s*req,\s*\{([^}]+)\}', completion)
+    if not match:
+        raise ValueError("cannot extract Completions allowlist; review extractor")
+    completion_fields = re.findall(r'"([a-z_]+)"', match[1])
     dispatch = (root / "src/server/chat_http.cpp").read_text()
     routes = re.findall(r'path == "([^"]+)" && method == "([A-Z]+)"', dispatch)
+    if 'if (IsModelDetailPath(path))' not in dispatch or \
+            'method != "GET" && method != "DELETE"' not in dispatch or \
+            'HandleModel(fd, method, path)' not in dispatch:
+        raise ValueError("review dynamic model backend route extractor")
+    routes.extend(("/v1/models/{model}", method) for method in ("GET", "DELETE"))
     native = (root / "src/service/ingress_main.cpp").read_text()
     native_routes = re.findall(
         r'\{\s*"(GET|POST)"\s*,\s*"([^"]+)"\s*,\s*(true|false)\s*\}', native)
     if len(native_routes) < 5:
         raise ValueError("cannot extract native ingress routes; review extractor")
+    if 'server::IsModelDetailPath(path)' not in native or \
+            'method == "GET" || method == "DELETE"' not in native:
+        raise ValueError("review dynamic model native route extractor")
+    native_routes.extend((method, "/v1/models/{model}", "true")
+                         for method in ("GET", "DELETE"))
     if 'if (method == "OPTIONS")' in native:
         if 'config.cors.Preflight(' not in native:
             raise ValueError("review native OPTIONS handler before cataloguing")
@@ -33,10 +48,10 @@ def current_surface(root):
     nested = {}
     for file in ("chat_contract.cpp", "output_constraints.cpp",
                  "input_contract.cpp", "chat_tool_history.cpp",
-                 "chat_template.cpp", "legacy_tools.cpp"):
+                 "chat_template.cpp", "legacy_tools.cpp", "completion_plan.cpp"):
         source = (root / "src/server" / file).read_text()
         for index, item in enumerate(re.finditer(
-                r'Fields\(([^,]+),\s*\{([^}]+)\}', source)):
+                r'(?:Input)?Fields\(\s*([^,]+),\s*\{([^}]+)\}', source)):
             nested[f"{file}:{index}:{item[1]}"] = re.findall(
                 r'"([a-z_]+)"', item[2])
     # These anchors intentionally cover more than the wire protocol identity:
@@ -86,7 +101,7 @@ def current_surface(root):
                        root / "cmake/RustRegex.cmake",
                        root / "cmake/regex-syntax-0.8.8.sha256",
                        root / "src/server/regex_syntax/lib.rs"})
-    return {"fields": sorted(fields),
+    return {"fields": sorted(fields), "completion_fields": sorted(completion_fields),
             "routes": sorted(f"{method} {path}" for path, method in routes),
             "native_routes": sorted(f"{method} {path}" for method, path, _ in native_routes),
             "whitelists": nested,
@@ -97,7 +112,7 @@ def current_surface(root):
 
 def check(inventory, actual, root=ROOT):
     errors = []
-    for group in ("fields", "routes", "native_routes"):
+    for group in ("fields", "completion_fields", "routes", "native_routes"):
         recorded = inventory.get(group, {})
         missing = set(actual[group]) - recorded.keys()
         stale = recorded.keys() - set(actual[group])
@@ -123,6 +138,7 @@ def check(inventory, actual, root=ROOT):
 def mutation_checks(inventory, actual):
     # Independent failure modes of the anti-omission gate, not serving tests.
     cases = [dict(actual, fields=actual["fields"] + ["uncatalogued_option"]),
+             dict(actual, completion_fields=actual["completion_fields"] + ["uncatalogued_option"]),
              dict(actual, routes=actual["routes"] + ["GET /uncatalogued"]),
              dict(actual, native_routes=actual["native_routes"] + ["GET /uncatalogued"]),
              dict(actual, sources_sha256=dict(actual["sources_sha256"],
@@ -144,6 +160,7 @@ def main():
     print(json.dumps({"inventory_current": not errors,
                       "semantics_certified": False,
                       "fields": len(actual["fields"]),
+                      "completion_fields": len(actual["completion_fields"]),
                       "routes": len(actual["routes"]),
                       "native_routes": len(actual["native_routes"]),
                       "reviewed_source_anchors": len(actual["sources_sha256"]),

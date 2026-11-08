@@ -70,6 +70,48 @@ class NativeTests(fixture.NginxTests):
         self.assertFalse(any('nginx' in Path(name).name for name in images))
         self.assertEqual(self.stack.request(dict(prompt='native'))[0], 200)
 
+    def test_completions_preserve_body_and_enforce_native_auth(self):
+        self.ready()
+        request = dict(model='cpu-fixture', prompt=[[7, 8], [9]], n=2,
+                       logprobs=3, echo=True)
+        self.assertEqual(self.stack.request(request, path='/v1/completions',
+                                            key='wrong')[0], 401)
+        self.assertEqual(self.stack.forwarded, [])
+        self.assertEqual(self.stack.request(request, path='/v1/completions')[0], 200)
+        row = self.stack.forwarded[-1]
+        self.assertEqual(json.loads(row['body']), request)
+        self.assertEqual((row['path'], row['client'], row['token']),
+                         ('/v1/completions', 'alpha', 'e'*64))
+        self.assertIsNone(row['authorization'])
+
+    def test_model_detail_routes_preserve_encoding_and_permissions(self):
+        self.ready()
+        auth = 'Authorization: Bearer '+'A'*40+'\r\n'
+        for method, path, expected in [
+            ('GET', '/v1/models/org%2Falias', 200),
+            ('GET', '/v1/models/missing', 404),
+            ('DELETE', '/v1/models/cpu-fixture', 403)]:
+            with self.subTest(method=method, path=path):
+                status, _, body = self.raw(auth, method=method, path=path)
+                self.assertEqual(status, expected)
+                self.assertTrue(json.loads(body))
+                row = self.stack.model_requests[-1]
+                self.assertEqual((row['method'], row['path']), (method, path))
+                self.assertEqual((row['client'], row['token']), ('alpha', 'e'*64))
+                self.assertIsNone(row['authorization'])
+
+    def test_completions_data_limit_preserves_model_control_route(self):
+        self.replace_stack(per_client_inflight=1, global_inflight=1)
+        connection, response = self.stream()
+        try:
+            self.assertEqual(self.stack.request(dict(prompt='full'),
+                                                path='/v1/completions')[0], 429)
+            self.assertEqual(self.stack.request(path='/v1/models/cpu-fixture')[0], 200)
+            self.assertEqual(len(self.stack.requests), 1)
+        finally:
+            response.close()
+            connection.close()
+
     def test_duplicate_bearer_and_ambiguous_framing_never_reach_backend(self):
         self.ready()
         auth = 'Authorization: Bearer '+'A'*40+'\r\n'

@@ -238,6 +238,8 @@ def main(argv=None, *, package=None, digest=None):
     prepare.add_argument('--key', type=Path)
     prepare.add_argument('--client-ca', type=Path)
     prepare.add_argument('--client-crl', type=Path)
+    prepare.add_argument('--served-model-name')
+    prepare.add_argument('--model-alias', action='append', default=[])
     for name in ('init', 'run', 'start', 'status', 'diagnostics', 'stop',
                  'tls-status', 'tls-reload'):
         command = commands.add_parser(name)
@@ -255,7 +257,11 @@ def main(argv=None, *, package=None, digest=None):
                 args.cuda_probe, args.nginx, args.policy, args.backend_policy, args.output,
                 native_receipt=args.native_receipt, certificate=args.certificate, key=args.key,
                 native_ingress=args.native_ingress, ingress_mode=args.ingress_mode,
-                client_ca=args.client_ca, client_crl=args.client_crl)
+                client_ca=args.client_ca, client_crl=args.client_crl,
+                model_names=dict(
+                    name=args.served_model_name if args.served_model_name is not None
+                         else 'qwen3.8-flash-next', aliases=args.model_alias)
+                    if args.served_model_name is not None or args.model_alias else None)
         else:
             package = package or args.package
             digest = digest or args.manifest_sha256

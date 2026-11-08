@@ -1,6 +1,7 @@
 # Shared by the Thor release gate and the standalone public host build.
 include(${CMAKE_CURRENT_LIST_DIR}/ChatProtocolIdentity.cmake)
 set(Q4T_HOST_TEST_SOURCES
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/model_catalog.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/client_policy.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/client_request.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_client_policy_test.cpp
@@ -81,8 +82,11 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/custom_regex.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/legacy_tools.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/token_logprobs.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/completion_plan.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/completion_response.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_choices.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_sampling_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_completion_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_prediction_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_legacy_tools_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_custom_tools_test.cpp

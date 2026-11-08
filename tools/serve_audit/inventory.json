@@ -539,6 +539,33 @@
         "include/q4t/server/http_connection.h",
         "docs/SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md"
       ]
+    },
+    "DELETE /v1/models/{model}": {
+      "semantics": "A06 native completions/model registry: DELETE /v1/models/{model}",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "GET /v1/models/{model}": {
+      "semantics": "A06 native completions/model registry: GET /v1/models/{model}",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "POST /v1/completions": {
+      "semantics": "A06 native completions/model registry: POST /v1/completions",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
     }
   },
   "whitelists": {
@@ -719,7 +746,7 @@
       "type",
       "text"
     ],
-    "legacy_tools.cpp:0:\n          function": [
+    "legacy_tools.cpp:0:function": [
       "name",
       "description",
       "parameters"
@@ -735,11 +762,38 @@
     "legacy_tools.cpp:3:*function": [
       "name",
       "arguments"
+    ],
+    "completion_plan.cpp:0:req": [
+      "model",
+      "prompt",
+      "best_of",
+      "echo",
+      "frequency_penalty",
+      "logit_bias",
+      "logprobs",
+      "max_tokens",
+      "n",
+      "presence_penalty",
+      "seed",
+      "stop",
+      "stream",
+      "stream_options",
+      "suffix",
+      "temperature",
+      "top_p",
+      "user",
+      "request_id",
+      "cancel_token",
+      "request_timeout_ms"
+    ],
+    "completion_plan.cpp:1:*options": [
+      "include_usage",
+      "include_obfuscation"
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "f9a7e433812de0656aa89946814b5c4da439bbe1a3392b3a0e0766280d636567",
-    "cmake/ChatProtocolIdentity.cmake": "f047734cf2cc5d022ab8ade6da8044a00798fc8c8b33e61dafb96a6816a8ebad",
+    "CMakeLists.txt": "4ef61f897cd666f997df9979e8e3e8c81cc30799dc74392e8efb66dcfc1891fc",
+    "cmake/ChatProtocolIdentity.cmake": "e474f49574198b54729189d97231938b8d7caab7169de5bf4811c4572fefb307",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
     "cmake/NativeIngress.cmake": "d10f996fdf01e28f29eaa40d9c92f2d78ff02126351188667329b235a22f2346",
@@ -760,22 +814,24 @@
     "include/q4t/server/chat_capabilities.h": "058093147c83d2bf541cb17b19fa67e92ec3168e5d250dd3a20567696748cc49",
     "include/q4t/server/chat_choices.h": "a76cc4a1a1d8b16b1925ec1a5fb9f0951c03fe48494c6623027596624e5b79c2",
     "include/q4t/server/chat_contract.h": "c1aaef06a1ae22f96ce143211a3c6a5a462bb8223d0f86c474f896ab3bb906e0",
-    "include/q4t/server/chat_plan.h": "13528c156ac7e23627357a1b725681d0ebde734ae58150e4089aff28382b3155",
+    "include/q4t/server/chat_plan.h": "8582f55f54b19b4da9f940acb71e60831b33cd04d3eea3a206eed8991ce6e083",
     "include/q4t/server/chat_prompt.h": "1a758fed12a2ef5b3eadc6109cbc99be29de63e088d0d60111ed171730daa54f",
-    "include/q4t/server/chat_response_parser.h": "7674933b21502c057ccf157ed4e4542ade0a2087ff0ea748433290cd87b0e5ad",
-    "include/q4t/server/chat_server.h": "3055d056ab4e48674fe73979a4d31bb45d249d8175143ab95c226207c686c260",
+    "include/q4t/server/chat_response_parser.h": "a915145972763768e8fb88fbaf35407984ebf00872a08afcd149edd5acd25638",
+    "include/q4t/server/chat_server.h": "537da13a242c22e2bebdf7d4b8616385972a01ff4649a10754075c6ccd44b01c",
     "include/q4t/server/chat_template.h": "5d2e9a8c90938fa972d27bd961ee9018ebcd7add541fd009316177af81b9afee",
     "include/q4t/server/chat_tool_history.h": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
     "include/q4t/server/client_identity.h": "c05aad5dc655e91962eae55aab25c09fdcbc2a72ddc37a95585c7288dfac54be",
-    "include/q4t/server/client_policy.h": "6be92f61827c1a7c950173dd020f52e7eb5355c075fb656a6a77791f806b4e31",
+    "include/q4t/server/client_policy.h": "1cc603a855551b303f2a03f59b8def8c7313a47428ea8d1e8aa364f87cfc1741",
     "include/q4t/server/client_request.h": "d08159942c0f0f95c5040546b3aab647eac435546767e96a1c922f3d88957998",
+    "include/q4t/server/completion_plan.h": "3974785c56eb107ef29c4904f7d04476080c1d11315f8d621b7ea49a8856d896",
+    "include/q4t/server/completion_response.h": "4728686120ce9577aa66f60460982212d0450c429eb27d0e2ecdfa9e2b355f98",
     "include/q4t/server/cuda_quota_metrics.h": "40ea24b9df80e446f13c89cf4e5d8ce09741fc67ce3d413096cc1ac10e59cbc2",
     "include/q4t/server/cuda_quota_policy.h": "e4143f1ec2f099edd81796bfca6db5cf916d547456af96c370d43991e176e297",
     "include/q4t/server/custom_grammar.h": "d560f89881ff27ce260c939d046a7b5f5c5afccce2125e4170ef53a661f507ec",
     "include/q4t/server/custom_tools.h": "1f351b6ed81ad868caa4dfa9c54a6f697fcac5a6a8dadef65bd05f2053ef18b9",
     "include/q4t/server/device_memory.h": "1099e20d3b205d3ae03daba0308be7221f5097c78a2fd58c8ca16298277dfc4c",
     "include/q4t/server/grammar_process.h": "9b878e481c02fc83543506ef2b75567d337e25c54c7f430ba1b9a59f49a10c7a",
-    "include/q4t/server/http_connection.h": "dcd12b3f713b9c0318b2f394ee55fb5666a2cfdb092e9a0cb4697cb2e61a4d54",
+    "include/q4t/server/http_connection.h": "0c76534d5f29a13ec83b38fb34b55087a43bdd411d3cd26dcc5e3a2f43a2bbca",
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
     "include/q4t/server/http_observation.h": "4a5c07a112faa4d60f834b2d5e4067522a7fe565ca6ff8acd145ad603999dbdc",
     "include/q4t/server/http_request.h": "f6d52bf328cc33e56ae0ef06dc93051432ac0ddff55575e4e9204eecf35b6be6",
@@ -785,6 +841,7 @@
     "include/q4t/server/lifetime.h": "11c9b381a7f6c5e019dcb57fbc18e2ad76492fca5c5e42960c381e954e5068bc",
     "include/q4t/server/media_admission.h": "5d50347a9c9349d4a7d381792eb5536c2516f7e66ff7d1a1e7b787cd599c8c27",
     "include/q4t/server/memory_admission.h": "ae72d092757e41739e5d85ae7b2a975dccd13e43de8e9286dd831831ba7a7196",
+    "include/q4t/server/model_catalog.h": "19bb1b450170b4d7c1d8895593f41baa1ad91c90aaafc58977894bcf76d52143",
     "include/q4t/server/mtp_policy.h": "28f10c5c885f9465c0f26c22a36bf6be541933a0ed9d9c2da5f0d3983e0a8285",
     "include/q4t/server/output_constraints.h": "f227e73a5826900182eff0505e031115ad67acb39fdd00968a8fc03e8dfed0de",
     "include/q4t/server/output_schema.h": "d097d1874a3e450336cbe26ab62cfa712f2be9d07a7a211aab33007db112b3ed",
@@ -795,7 +852,7 @@
     "include/q4t/server/request_control.h": "fc0c1ab81056c5ab3ddb4b0da8783338312ecedc5f2c4f149df678019c199814",
     "include/q4t/server/request_diagnostics.h": "6a260ff44d95c7d828503c24351fc9d0b659c72033b75577b7d37209cd39c6de",
     "include/q4t/server/request_json.h": "f3fded2db644464f3e187215cfe14ae0280a0099bfbbeca670c7ac4e4492bb72",
-    "include/q4t/server/sampling.h": "fc7d056d4fdc5b14db3028330acbb3f144fc8ab4c2b0d6dd55e6475bdb11dc1f",
+    "include/q4t/server/sampling.h": "202bff18193dddc46f92e3b7d69fef36218faf00e913b292d1e9a9abe7b65141",
     "include/q4t/server/scheduler_submission.h": "2a960c668c25a0c694b811a2c5640c6e6605db7d386b1ba0075e64061aa1c416",
     "include/q4t/server/schema_decimal.h": "f6efd4f652918da2964a65813b6f8d9a972942ec5b02a5fb90b1ad8ad8bd8da0",
     "include/q4t/server/schema_graph.h": "dbca295afe754e7b1b5b0b8a508419ea22a3d3ada39731044f9f251ad78a1531",
@@ -803,7 +860,7 @@
     "include/q4t/server/schema_receipt.h": "ca2076bc75950c749c5e8ec8a7c0ed06c24152b18264f66c72c1ac730235f89b",
     "include/q4t/server/sequence_admission.h": "0c03df6bd8c16d137562de22357c85e367208a6208be12d217adaf6135836b3f",
     "include/q4t/server/serve_fault.h": "47db4bd8dc12f5713ef42c6c89aeee1151867991d17d9b8529d31b4a11123b3f",
-    "include/q4t/server/server_options.h": "87eeefdc39085628d020b752e1cf24cb573e9bbf76e64e1fdf565bcdefb41210",
+    "include/q4t/server/server_options.h": "da251e4eaa2567a603ddfac48a0618a85dade5cfb23b49b113d59362d5da9eff",
     "include/q4t/server/service_health.h": "6b95516f0c81386c469360e106b1abe544080c74f439a9525a0910c556f3490f",
     "include/q4t/server/session_cache.h": "1418f2133535c9396d5a9065604bdb942095da227057992e54f2886caf166e32",
     "include/q4t/server/session_save_timing.h": "317a0c125930305e10596efa2345e5af23f57345ad8059fd4065cb9f9ab5db06",
@@ -815,7 +872,7 @@
     "include/q4t/server/suffix_token_cache.h": "5cf8881109604764d9deb7869901c0f8f8141b181b47865e7d81018eadd21a9b",
     "include/q4t/server/text_stop.h": "560dde9da5f9ea673a22eb2b6ad9ef59e227d55122d041a51ae2c45ef4114f66",
     "include/q4t/server/thinking_budget.h": "902d062939a5f8cc43ac2dd761d4267624645d1a401c47f9ed748f28b2ee36ff",
-    "include/q4t/server/token_logprobs.h": "6c5d8c4d51232fbfa9a119cdcafab4ff75f8b72aaafa591ff6c3a5a3c10118e8",
+    "include/q4t/server/token_logprobs.h": "0923af3be02b72180579e3a8cf32b195acde94996d79b15d37d42be7835d8159",
     "include/q4t/service/guardian_journal.h": "700c8d24b7b8288c1f923cc532f591747a6adfbef42b1013a1d8e178288186a9",
     "include/q4t/service/guardian_process.h": "31b967d4b558b1cdce10bf5acfb4731a9c9952930039285f6ed09af5b010c8f9",
     "include/q4t/service/guardian_quota.h": "a73897aa94fd1a58fb1cfc7c182d2d8bd0cb9cb10e848821e230ce903e2e39a0",
@@ -834,7 +891,7 @@
     "include/q4t/vision/timing.h": "72f98b74ac231c52ca501821eafa57b220a5be1c898e2ace999216e2480e15a6",
     "include/q4t/vision/vision.h": "629c8e8e63a1f06feaac85c038ddd5c75e09cf176e5ef69ca630dc6e8e3500e2",
     "src/io/json.cpp": "525ff67209baae32cca85e8d2d79dbc16791f589146248ef74955a30fd23e17a",
-    "src/main.cpp": "a289b15b8876f4314fc8678075d51359bfdff7dd57df04998946fa985131df7d",
+    "src/main.cpp": "c8eebe59ee5a68528ac77297507972d2546ca104c4e877f3932dac818061ba4c",
     "src/model/model.cu": "18234fb517bcb3cf4cf5a670744bb940fbcf8882631ca3b9223cca29f54f563c",
     "src/model/model_owner.cpp": "cc3a998e52d4cca44bd695f40e1bf01f4ee2d75ce9f0c437d07757582d60e2bf",
     "src/mtp/mtp.cu": "c2e6bb780cc42c80c649dc0e4fa18b6b7e714da17c6baaf46a97938099d07184",
@@ -846,27 +903,29 @@
     "src/runtime/system_memory.cpp": "231e9a7ce5ed49e27e604a7bfa4066b35e83f286026c15986898d996a66acd2f",
     "src/server/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_capabilities.cpp": "05f295e9d571bc91dd967da131f38daeb8363e0058c1d4639f615ed40e0f7cdd",
+    "src/server/chat_capabilities.cpp": "c7092a35a13eed7fb2a6f831e0c516e348cc2a0861ad92e353329b6bafe9717e",
     "src/server/chat_choices.cpp": "ee99c4aca3c1ea07d5929da38325aa2b28a411245c7d794c9cc5f1f8eb23f16a",
     "src/server/chat_contract.cpp": "379dc3c2b40e56808394911f752782ad5e4a7715763b1e47f491fe0246226611",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
-    "src/server/chat_generation.cpp": "d4269c9d324afaa9d72d1f75fbcd79211a19da93939ce5f780b821b9a22e244f",
+    "src/server/chat_generation.cpp": "a5596ae151f567fd51b1096c06cbf5ad141ee3173f21712132c671f52b365e1a",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "5504ac68093b870e0f961a4d0faa1395ed8facf728f0046ec35e34e4843a5120",
+    "src/server/chat_http.cpp": "5781b5c98285a9fa360972c1171a3d55c1fa205532ff3b3248b9e207407dd92f",
     "src/server/chat_input.cpp": "d79be28242ed560ad7be0494284f72b53d1aaa7a272786d17f1b837e81a6d9bb",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
-    "src/server/chat_metrics.cpp": "f12e27e7946dab08e882be25f8cb6fa2273e4d370716872aaf5a59fb30e5cf21",
-    "src/server/chat_plan.cpp": "de382abe5142820ccd7efc5e2bd7d2a335d80e5f2c2a28f1d9522deebca4f563",
-    "src/server/chat_preflight.cpp": "e061d074476438f797fe8804986ade58d0412435a2db69c311b6a396925cc205",
+    "src/server/chat_metrics.cpp": "9a50b19777ed6e32b9902716dd97cde678bb1cd3c3147030975032cffe41fcc6",
+    "src/server/chat_plan.cpp": "14e3bf286d44a8e8373774be4b120cc7c67b331732c645c48937cb4dbd22ff36",
+    "src/server/chat_preflight.cpp": "7a291fe7688d67f4e50ea90332a0bf771bb3ca171df800c2d70828d2bff9c95d",
     "src/server/chat_prompt.cpp": "fd6684419aff480782e12a409af13665eb1b529008b93ea7f67607afd837efcf",
     "src/server/chat_response_parser.cpp": "c59c883a1c5ffea6e888d4692be5cf55c4cadd13c1a70f0284f3639db7e22b19",
     "src/server/chat_scheduler.cpp": "2b6d315bfd12609e343010852f7c15b8248fe5180359a3d7b49d3c1db5b8d1fc",
-    "src/server/chat_server.cpp": "19c040b20e6f1f1cde9d37e23477b2bfa65c4b38ab09cfacdef9281522fda095",
+    "src/server/chat_server.cpp": "e3558919b99fbaa2918f3ab3d729c4b742ae9f0365a10268a1ca62a66ea5259a",
     "src/server/chat_server_internal.h": "f648da039df39e84f9f867c55210afeff3eceac0c3578c61edfaa210957d4286",
     "src/server/chat_template.cpp": "f6e031add54280ff196bda9ef7a817a0ffdf30e83b95bce9575be3912168dd66",
     "src/server/chat_tool_history.cpp": "902f6c0982fd072d4dba4c3f6a34629eec9eaaf604fd5d920822b96ed51f82db",
-    "src/server/client_policy.cpp": "3d28eb74a983b10fbb2fdf218307c0490349c051aee37945ae770a198f45b791",
-    "src/server/client_request.cpp": "418f478a0d94cb270ea507cb6843f0a88a97de0ad2a22192e9f563c67f6fe83e",
+    "src/server/client_policy.cpp": "7b45111253ebee20140b0f405bec5078b6edfa7ddfe37ed8125918b6d3e96255",
+    "src/server/client_request.cpp": "810918c2710d8438842fd41dcc64d5a396941c652390a10cde708fb2c3a62ece",
+    "src/server/completion_plan.cpp": "714facdef55f982082f687220d2227f6195c517a41f835fe78161fc4a1b1656d",
+    "src/server/completion_response.cpp": "75be95aa5a9da31112932cbddaa1e81c0b6cfa31664b03139e1d97f7d7563722",
     "src/server/cuda_memory_backend.h": "aabc6d78d2925ec5280e270964d79d3164ce706732a674b88215554a34d0e6a5",
     "src/server/custom_grammar.cpp": "9fae326d558056d3c189100b9748f9402ec52c30ba8f894b1f73893bfd4da198",
     "src/server/custom_regex.cpp": "eb8ab53b44dbb9ec2011676a854a18e38244975e76955b74a441829bdd67031a",
@@ -875,19 +934,20 @@
     "src/server/grammar_process.cpp": "af14efdbda28b205d7532780d8c6c5c4abc3078c2279257982d875fb3afb40df",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
-    "src/server/http_request.cpp": "614dd52541c9311054be68a790d6b7429503de6edd747b2247eb689273c24d3c",
+    "src/server/http_request.cpp": "36c3f52b2506c6c44e1e36f7c085b5291854d7906c339123a3a34e9d1f88365b",
     "src/server/http_response.cpp": "bf1c62d8f1c24484ec37c2150ede34fdf80487219ecfd9f4e95fdf7b48c4a02f",
-    "src/server/input_contract.cpp": "a099b899699e60dbec6df4053c62eb8ecdaac010e7b271af6ac36842fa0e75d4",
+    "src/server/input_contract.cpp": "a8d8f7412e50df59da2ec5829f4ecd34245dc521edcb61011ea4dff2b492f362",
     "src/server/legacy_tools.cpp": "b0bffcd3c780f35f336b40a152e9837077b9a4c6ea3ede737fcbb14b8514587c",
     "src/server/media_admission.cpp": "11461c31fed0db43fe68e16680812641c0e51371585c216673e4fe2e54500393",
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
+    "src/server/model_catalog.cpp": "8d0808b669e3ecbc95794d8b07bd6a86b38dc310cf93c98e18befade71fd2d7e",
     "src/server/output_constraints.cpp": "1273d5d1643a8cb7ccd2804990d2bcac656cbe5b198096c0a66b6803751e3753",
     "src/server/output_schema.cpp": "6d42d154ce3ac43c2cb2569298af221148813f9233e37c9d9c75eb0f331ee65d",
     "src/server/prediction.cpp": "7e8ccdf7c44dd5c8245230577d42eb7d4cd17c6e2efcf5534a02e6744815733f",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
     "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
     "src/server/regex_syntax/schema_regex.rs": "ad5ecc2fc961a9426068c50452e830da2229c40273088b56f8c6218c26f27fbf",
-    "src/server/sampling.cpp": "8e6a8c446656d8430005b061b10535b391b002362725511d216f9b4229e3d3cb",
+    "src/server/sampling.cpp": "88e247ca6b7c65abbf0977c66fd604e7156cbdefe5d0293e509282678555d31d",
     "src/server/schema_decimal.cpp": "3931972b1ecfd38b0574c6794f447f6b05d1ef78d65e0f73a61eabcb1c2dee2f",
     "src/server/schema_grammar.cpp": "075d6a282f2fc1cda861e3a0de4de132455af3efa9ed30b67b0ad9a5caf56cf2",
     "src/server/schema_grammar.h": "b91cea4dc591de156c078d5c3e8ea74028668484091688a03e62b6c51e6a45cd",
@@ -904,13 +964,13 @@
     "src/server/schema_string_grammar.h": "16f4700fcc6c720c0521482b97de034b9b269d41065695da29d0951b72940405",
     "src/server/schema_token_guard.cpp": "3004a864f26a35f2eade7cf27e31520df348424edde1d6ed985ed5d194755a44",
     "src/server/schema_token_guard.h": "d5943fea23da3d9a36a3662bb1a80da8c75f45dd53cf577e3d1ddaf3b451cdb5",
-    "src/server/server_options.cpp": "a53c04725cd5b5b32a6014484b0b0d40dc13ce825cb8e313a23eeb17d7d3a1f8",
+    "src/server/server_options.cpp": "05b5281eb04946d7b6623e9c8e9598c58c19bd02ca067b2b95575a1587bf9fc3",
     "src/server/session_cache.cpp": "893b6993f4f5abd97d60d482f6fe71c4b5aec16495f54807270849a90ee360f4",
     "src/server/session_state.cpp": "878e97b4ac3ce2f8b79d972a4f94ccd4c2e7c22893b07b5e31e5ba544494562f",
     "src/server/structured_decoder.cpp": "3c2aa771ec7b753b94f8dcda5a63fa59a435fb5826fa876fe7acec4049e44de6",
     "src/server/text_stop.cpp": "2397b27adc873b3ac0697af68352a73c8481830da6053fde0adeca536eaba4dc",
     "src/server/thinking_budget.cpp": "4c91e8320115ee86096bf7287d4950599ca311f137c3a0051b9d64fb53abf259",
-    "src/server/token_logprobs.cpp": "d351efe6b7b560e80776e3555bca8de2fa98216633543ab7e0dfcf74cad42d6a",
+    "src/server/token_logprobs.cpp": "1bfc7a2b5b699a834608ff96465f546b19c543f17596ac92fd9a2205f7ac89de",
     "src/service/cuda_probe.cu": "f91663d4098aa6365db6cf3d3fc437b5b32ee20280b65cc1ee34cb796a48e7fb",
     "src/service/guardian_journal.cpp": "a0a60642d1546c302be84578b7ca6d4475ab9808c108dd82fa4df7133f3b5a12",
     "src/service/guardian_main.cpp": "26f1e5b5be37038ee460ebfddda3bbcf2e03e7ad0c89f25596816719ba747342",
@@ -919,17 +979,17 @@
     "src/service/ingress_admin.cpp": "218c4a3c2ec469dcffbd25c8de1bfe7508bea9a9dd8954ce04661dbb1fa03de8",
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
-    "src/service/ingress_main.cpp": "4839d6823ac2702eeead2a983fd2c871d1bd30758f4f39ff0cb4d69a32c8e9a9",
+    "src/service/ingress_main.cpp": "7cffc48b252a1c778449682e79841dd1c3bded069a649bcd44bd9b344c336d03",
     "src/service/ingress_tls.cpp": "5574d1ca0a45a9237aa3dbcad94258e55c14d36cc944c095eb3003c4713aac9f",
     "src/service/ingress_transport.cpp": "c086f437eef70cb953a0f300413fa28b4468701a8442c2fafd83af719c682454",
-    "src/text/tokenizer.cpp": "bfa059ee7dc64a37eb42d749710b4ad039f125675a93718902cab3b6ade2e7e8",
+    "src/text/tokenizer.cpp": "839f9333817ca010af2dc4bf90a8c24eab4359a5d8eb04192e1789397e0c2faf",
     "src/vision/media_plan.cpp": "30f1858fe11a14bb81f5ee2c80edef68e60cb7a03c7a0ec8132cc29936dff302",
     "src/vision/processor.cpp": "76d421281d76daa42796710ffa4ce6f0227f7788411775740d1ed5d5e11001dc",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "1665ec33247632c7a9f5002048c56b3c788435f6d3281fe1f27269a30706d698",
     "tools/serve_recovery/binding.py": "1f70edbce8cefd92700acf6df130101baa41f575cd24876f7e7d95772ba8cd18",
-    "tools/serve_recovery/bundle.py": "f35d8eb336293577f9b32b60bf3f1e725468b59c1b0d1836d1273ae6400eec0c",
+    "tools/serve_recovery/bundle.py": "3324894076b3095859579a0a597a02c4755de9cec7cc5641caea48dfc84e4766",
     "tools/serve_recovery/child.py": "816c80517e5b13413ae5eb0a3d1f7a392b8848132a7d1965adec2bd49a335e73",
     "tools/serve_recovery/control.py": "bd8307bb3950122111d1d14d2451b54672599179b34a7d9d9ff375ebc53710c1",
     "tools/serve_recovery/controller.py": "5ba2cdf21ad46fe20d690f16a0c7e61f1270f793f922a0aaef5d8c5beecc025d",
@@ -940,7 +1000,7 @@
     "tools/serve_recovery/fixture_model.py": "8c0d28f2ade53cbbbd043bbaf6f8cce6c8b3d3c3e54fa6a0d40ac077aa22cd4f",
     "tools/serve_recovery/fixture_production.py": "8a7a225ecc9ad8514392a7121aad0e702e3259cb63336f2d3890236bdbcdf012",
     "tools/serve_recovery/gateway.py": "6ad44e7e93cb5c76a4cd85a24b48dca6dea314cc5252bb70253694372524a78a",
-    "tools/serve_recovery/gateway_config.py": "7aa7cee50a9e3eda0ad79d7bf5e43bf80f11f96a8867f7a00403191ddff48ba8",
+    "tools/serve_recovery/gateway_config.py": "38cde468cd2d8c4f3c7ce7c484eb1ad4ca7626af33150f2fab80f4238ac8309a",
     "tools/serve_recovery/jobs.py": "31dc2bf5a1e6d91cbfa1ce04a7726c72e5b0cf70a8dec3b12d9e71de3ce96d25",
     "tools/serve_recovery/journal.py": "b965cb03f08932b508c9af083abd7020abe25a5f9d8f5d1ad0920494ed127cac",
     "tools/serve_recovery/ledger.py": "4a2f1586dc4833de32c3caf3a6914babd1a994444355e69d0ede4556f5be1974",
@@ -949,7 +1009,7 @@
     "tools/serve_recovery/observation_io.py": "e49138b50462d1acf1a5ef6b648f8bc5d00655de04ec86f25648385fdab4d772",
     "tools/serve_recovery/ownership.py": "1cb0182ca06ee3c1ebbaab5d598895990ece2a7720aec741ea84ffde68792254",
     "tools/serve_recovery/policy.py": "55b3fe3b0ca81bfb024f70499a77ca91ebe20a004cde1efecabf9e37814f4ff6",
-    "tools/serve_recovery/service.py": "d060fee9d7532a6b6ae3f79b14fd65aa792e0274d765705ed2d909c8a48b0711",
+    "tools/serve_recovery/service.py": "ba53c1a4c8daca5550a4ce9f57323bbc785dd528c566958e2a8c3c28203e2553",
     "tools/serve_recovery/store.py": "0eef06d1a10b4ef0911f671e0378ae3849caeabeaabbbe296981a2e4291e59ee",
     "tools/serve_recovery/tls_control.py": "75399601eb9649189367915fcfb417dbb786adaf37c9f8089c3060234dd3daee"
   },
@@ -1445,6 +1505,51 @@
         "tools/serve_recovery/test_native_browser.py",
         "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
       ]
+    },
+    "DELETE /v1/models/{model}": {
+      "semantics": "A06 native completions/model registry: DELETE /v1/models/{model}",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "GET /v1/models/{model}": {
+      "semantics": "A06 native completions/model registry: GET /v1/models/{model}",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "OPTIONS /v1/completions": {
+      "semantics": "A06 native completions/model registry: OPTIONS /v1/completions",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "OPTIONS /v1/models/{model}": {
+      "semantics": "A06 native completions/model registry: OPTIONS /v1/models/{model}",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "POST /v1/completions": {
+      "semantics": "A06 native completions/model registry: POST /v1/completions",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
     }
   },
   "observation_io_review_20261108": {
@@ -1600,5 +1705,196 @@
     "remaining_required": [
       "A05/A10 media state caching and corresponding schema/tool/identity combinations"
     ]
+  },
+  "completion_fields": {
+    "best_of": {
+      "semantics": "A06 native completions/model registry: best_of",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "cancel_token": {
+      "semantics": "A06 native completions/model registry: cancel_token",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "echo": {
+      "semantics": "A06 native completions/model registry: echo",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "frequency_penalty": {
+      "semantics": "A06 native completions/model registry: frequency_penalty",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "logit_bias": {
+      "semantics": "A06 native completions/model registry: logit_bias",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "logprobs": {
+      "semantics": "A06 native completions/model registry: logprobs",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "max_tokens": {
+      "semantics": "A06 native completions/model registry: max_tokens",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "model": {
+      "semantics": "A06 native completions/model registry: model",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "n": {
+      "semantics": "A06 native completions/model registry: n",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "presence_penalty": {
+      "semantics": "A06 native completions/model registry: presence_penalty",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "prompt": {
+      "semantics": "A06 native completions/model registry: prompt",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "request_id": {
+      "semantics": "A06 native completions/model registry: request_id",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "request_timeout_ms": {
+      "semantics": "A06 native completions/model registry: request_timeout_ms",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "seed": {
+      "semantics": "A06 native completions/model registry: seed",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "stop": {
+      "semantics": "A06 native completions/model registry: stop",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "stream": {
+      "semantics": "A06 native completions/model registry: stream",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "stream_options": {
+      "semantics": "A06 native completions/model registry: stream_options",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "suffix": {
+      "semantics": "A06 native completions/model registry: suffix",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "temperature": {
+      "semantics": "A06 native completions/model registry: temperature",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "top_p": {
+      "semantics": "A06 native completions/model registry: top_p",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "user": {
+      "semantics": "A06 native completions/model registry: user",
+      "boundary": "Implementation under targeted acceptance; no completion claim from inventory presence.",
+      "evidence": [
+        "docs/SERVE_COMPLETIONS_2026-11-08.md",
+        "tests/server_completion_test.cpp",
+        "tools/serve_recovery/test_native_ingress.py"
+      ]
+    }
   }
 }

@@ -276,7 +276,7 @@ void ClientRateLease::Settle(ClientClock::time_point now) noexcept {
   counters_->Advance(now);
   // Charge observed logical usage even if a handler ever exceeds its budget.
   // Such a bug must not silently turn into unaccounted tokens.
-  const uint64_t actual = started_ ? prompt_ + completion_ : 0;
+  const uint64_t actual = started_ ? admitted_prompt_ + completion_ : 0;
   auto& rate = counters_->rate;
   rate.reserved -= reserved_;
   rate.tokens += actual;

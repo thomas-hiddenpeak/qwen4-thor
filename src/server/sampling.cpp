@@ -294,6 +294,9 @@ Status TokenSampler::Select(std::span<const uint16_t> logits,
     for (const auto& candidate : raw)
       sum += std::exp(candidate.value - raw[0].value);
     const double normalizer = std::log(sum);
+    sample->raw_logprob =
+        std::bit_cast<float>(static_cast<uint32_t>(logits[sample->token]) << 16)
+        - raw[0].value - normalizer;
     for (size_t i = 0; i < raw.size() && i < 20; ++i) {
       const double logprob = raw[i].value - raw[0].value - normalizer;
       if (raw[i].token == sample->token) sample->logprob = logprob;

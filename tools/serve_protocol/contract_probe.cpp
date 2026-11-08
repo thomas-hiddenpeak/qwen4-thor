@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "q4t/server/chat_plan.h"
+#include "q4t/server/completion_plan.h"
 #include "q4t/server/chat_prompt.h"
 #include "q4t/server/chat_response_parser.h"
 #include "q4t/server/http_request.h"
@@ -29,7 +30,9 @@ int main() {
       error = {"request_too_large", "body"};
     } else {
       status = q4t::io::ParseJson(raw->str, &input, true,
-                                  fixture.GetString("kind", "chat") == "cancel"
+                                  fixture.GetString("kind") == "completion"
+                                      ? kCompletionJsonLimits
+                                  : fixture.GetString("kind", "chat") == "cancel"
                                       ? kRequestJsonLimits
                                       : kSchemaJsonLimits);
       if (!status) error = {"invalid_json", ""};
@@ -38,6 +41,15 @@ int main() {
     if (kind == "cancel") {
       if (status) status = ValidateCancelContract(input);
       if (!status) error = {"invalid_cancellation", ""};
+    } else if (kind == "completion") {
+      ChatPlanConfig config;
+      config.model = fixture.GetString("model", "qwen3.8-flash-next");
+      config.token_vocab = static_cast<int>(fixture.GetInt("token_vocab", 300000));
+      if (const auto* aliases = fixture.GetArray("model_aliases"))
+        for (const auto& alias : aliases->array)
+          config.model_aliases.push_back(alias.str);
+      CompletionRequestPlan plan;
+      if (status) status = PlanCompletionRequest(input, config, &plan, &error);
     } else if (kind == "chat" || kind == "preflight") {
       const q4t::io::Json* request = &input;
       if (status && kind == "preflight") {
@@ -46,6 +58,9 @@ int main() {
       }
       ChatPlanConfig config;
       config.model = fixture.GetString("model", "qwen3.8-flash-next");
+      if (const auto* aliases = fixture.GetArray("model_aliases"))
+        for (const auto& alias : aliases->array)
+          config.model_aliases.push_back(alias.str);
       // These are declared configuration inputs, not backend availability
       // observations. No grammar compilation or cache access occurs here.
       config.structured = fixture.GetBool("structured", true);

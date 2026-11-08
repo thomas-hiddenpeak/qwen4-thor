@@ -133,9 +133,12 @@ Q4T_TEST(sampling_response_boundary_crossing_token_is_never_retokenized) {
 
 Q4T_TEST(sampling_response_constrained_deferred_content_keeps_provenance) {
   LogprobPipeline pipe(R"("response_format":{"type":"json_object"})");
-  Q4T_CHECK(pipe.Push("hidden") && pipe.Push("</think>") &&
-            pipe.Push("{\"text\":") && pipe.Push("\"<think>\"}"));
+  Q4T_CHECK(pipe.Push("hidden") && pipe.Push("</think>"));
   Q4T_CHECK(pipe.visible.empty());
+  // JSON content became incremental in A05. Probability provenance follows
+  // actual emitted bytes; reasoning remains hidden and quoted tags are data.
+  Q4T_CHECK(pipe.Push("{\"text\":") && pipe.visible == "{\"text\":");
+  Q4T_CHECK(pipe.Push("\"<think>\"}"));
   Q4T_CHECK(pipe.Finish() && pipe.visible == "{\"text\":\"<think>\"}");
   const auto result = Read(pipe.records.Json());
   Q4T_CHECK(result.Find("content")->array.size() == 2);

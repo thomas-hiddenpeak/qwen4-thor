@@ -34,7 +34,7 @@ Q4T_TEST(chat_capabilities_transport_observation_contract) {
   Q4T_CHECK(http->GetBool("observation_during_drain") &&
             http->GetBool("reservation_excludes_unclassified_header_flood"));
   const auto* routes = http->GetArray("observation_routes");
-  Q4T_CHECK(routes && routes->array.size() == 4);
+  Q4T_CHECK(routes && routes->array.size() == 5);
   Q4T_CHECK(observation->GetString("http_receive_failures") ==
             "q4t_http_receive_failures_total");
   Q4T_CHECK(observation->GetString("http_write_failures") ==
@@ -235,5 +235,22 @@ Q4T_TEST(chat_capabilities_media_and_host_failure_boundaries) {
             host->GetString("code") == "host_memory_exhausted" &&
             host->GetBool("fixed_buffer_fallback") &&
             !host->GetBool("recovery_guaranteed"));
+  return true;
+}
+
+Q4T_TEST(chat_capabilities_native_completions_and_models) {
+  q4t::io::Json caps;
+  Q4T_CHECK(q4t::io::ParseJson(
+      q4t::server::ChatCapabilitiesJson("m", false, true), &caps));
+  const auto* completion = caps.Find("completions");
+  Q4T_CHECK(completion && completion->GetString("profile") ==
+            "q4t-completions-v1");
+  Q4T_CHECK(completion->GetBool("usage_includes_unreturned_candidates"));
+  Q4T_CHECK(completion->GetBool("prompt_logprobs"));
+  Q4T_CHECK(completion->GetString("token_input") == "exact_ids");
+  Q4T_CHECK(!completion->GetBool("best_of_selection_streaming", true));
+  const auto* models = caps.Find("models");
+  Q4T_CHECK(models && models->GetInt("loaded_base_delete") == 403);
+  Q4T_CHECK(models->GetInt("max_aliases") == 32);
   return true;
 }

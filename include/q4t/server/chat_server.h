@@ -34,6 +34,7 @@
 #include "q4t/server/server_options.h"
 #include "q4t/server/sequence_admission.h"
 #include "q4t/server/chat_plan.h"
+#include "q4t/server/model_catalog.h"
 #include "q4t/server/chat_prompt.h"
 #include "q4t/model/model_owner.h"
 #include "q4t/mtp/mtp.h"
@@ -162,14 +163,15 @@ class ChatServer {
   void RejectMemoryAdmission(int fd, MemoryState state,
                              MemoryCheckpoint checkpoint);
   void HandleModels(int fd);
+  void HandleModel(int fd, const std::string& method, const std::string& path);
   void HandleCapabilities(int fd);
   void HandleMetrics(int fd);
   void HandlePreflight(int fd, const std::string& body);
   void HandleConfig(int fd);
   ChatPlanConfig PlanningConfig(int fd = -1) const;
-  void HandleChat(int fd, const std::string& body);
+  void HandleChat(int fd, const std::string& body, bool completion = false);
   void HandleChatImpl(int fd, const std::string& body,
-                      detail::ResponseState* response_state);
+                      detail::ResponseState* response_state, bool completion);
 
   // Shared scratch is protected by model_mu_ through default-stream GPU
   // completion and host readback. Only then can another request reuse it.
@@ -370,6 +372,7 @@ class ChatServer {
 
   std::string effective_config_;
   std::string model_name_;
+  ModelCatalog model_catalog_;
   std::string host_ = "127.0.0.1";
   bool allow_media_ = false;
   int port_ = 8000;

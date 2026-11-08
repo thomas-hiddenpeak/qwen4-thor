@@ -13,6 +13,41 @@ class Declarations(unittest.TestCase):
     setUp = old.Case.setUp
     fixture = old.PackageTests.fixture
 
+    def test_completion_schemas_travel_with_optional_registry_and_verify_offline(self):
+        binary, release, model = self.fixture()
+        metadata = pkg.read(release)
+        root = Path(metadata['release_declarations']['directory'])
+        caps = pkg.read(root/'capabilities.json')
+        caps['completions'] = dict(profile='q4t-completions-v1')
+        metadata['chat_protocol']['completions'] = caps['completions']
+        pkg.save(root/'capabilities.json', caps)
+        declaration = metadata['release_declarations']
+        declaration['files']['capabilities.json'] = pkg.sha(root/'capabilities.json')
+        with self.assertRaisesRegex(RuntimeError, 'completion declarations required'):
+            pkg.verify_declarations(metadata)
+        declaration['profile'] = pkg.COMPLETION_DECLARATION_PROFILE
+        for name, source in [('completion_request', 'serve-completion-request-v1'),
+                             ('completion_response', 'serve-completion-transport-v1')]:
+            path = root/'schemas'/(name+'.json')
+            shutil.copyfile(pkg.ROOT/'docs'/(source+'.schema.json'), path)
+            declaration['files']['schemas/'+name+'.json'] = pkg.sha(path)
+            metadata['chat_protocol'][name+'_schema'] = str(path)
+            metadata['chat_protocol'][name+'_schema_sha256'] = pkg.sha(path)
+        pkg.save(release, metadata)
+        names = dict(name='private/base', aliases=['org/alias'])
+        receipt = pkg.prepare(binary, release, model, self.root/'package', model_names=names)
+        shutil.rmtree(root)
+        release.unlink()
+        manifest = pkg.verify(receipt['package'], receipt['manifest_sha256'])
+        self.assertEqual(manifest['settings']['model_names'], names)
+        self.assertEqual(pkg.command(receipt['package'], manifest)[-4:],
+            ['--served-model-name', 'private/base', '--model-alias', 'org/alias'])
+        path = Path(receipt['package'])/'declarations/schemas/completion_response.json'
+        path.chmod(0o600)
+        path.write_text('{}')
+        with self.assertRaisesRegex(RuntimeError, 'package file changed'):
+            pkg.verify(receipt['package'], receipt['manifest_sha256'])
+
     def test_stale_shared_capability_rejected_before_package_creation(self):
         binary, release, model = self.fixture()
         original = pkg.read(release)

@@ -266,6 +266,7 @@ Q4T_TEST(chat_preflight_envelope_and_opt_in_preview) {
 Q4T_TEST(chat_config_effective_sources_and_redaction) {
   auto config = Config();
   ServerOptions opts;
+  config.model_aliases = {"org/alias", "中文"};
   opts.model_dir = "/private-model";
   opts.session_cache_dir = "/private-session";
   opts.max_len = 200000;
@@ -274,6 +275,8 @@ Q4T_TEST(chat_config_effective_sources_and_redaction) {
   Json response;
   Q4T_CHECK(Parse(EffectiveServeConfigJson(opts, config, true, false, 128),
                   &response));
+  Q4T_CHECK(response.GetArray("model_aliases")->array.size() == 2);
+  Q4T_CHECK(response.Find("completions")->GetInt("default_output_tokens") == 16);
   const auto* context = response.Find("max_context_tokens");
   Q4T_CHECK(context->GetInt("requested") == 200000);
   Q4T_CHECK(context->GetInt("effective") == 8192);
@@ -376,5 +379,22 @@ Q4T_TEST(chat_plan_structured_cache_checks_actual_configuration) {
     Q4T_CHECK(PlanChatRequest(request, config, &plan, &error));
     Q4T_CHECK(plan.constraints.active && plan.constraints.json_output);
   }
+  return true;
+}
+
+Q4T_TEST(chat_plan_alias_registry_rejects_unknown_models) {
+  auto config = Config();
+  config.model_aliases = {"org/alias"};
+  Json request;
+  ChatRequestPlan plan;
+  ChatPlanError error;
+  Q4T_CHECK(Parse(R"({"model":"org/alias","messages":[{"role":"user",
+    "content":"q"}]})", &request));
+  Q4T_CHECK(PlanChatRequest(request, config, &plan, &error));
+  Q4T_CHECK(Parse(R"({"model":"missing","messages":[{"role":"user",
+    "content":"q"}]})", &request));
+  Q4T_CHECK(!PlanChatRequest(request, config, &plan, &error));
+  Q4T_CHECK(error.http_status == 404 && error.code == "model_not_found" &&
+            error.param == "model");
   return true;
 }

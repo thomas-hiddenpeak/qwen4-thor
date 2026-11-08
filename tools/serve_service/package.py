@@ -28,6 +28,7 @@ V9_SOURCES = (*V8_SOURCES, 'tools/serve_service/auxiliary.py')
 V10_SOURCES = V9_SOURCES  # Same inventory; new resource-control contract.
 FILES = ('q4t', 'q4t.release.json', 'CMakeCache.txt', 'acceptance.json')
 DECLARATION_PROFILE = 'q4t-release-declarations-v1'
+COMPLETION_DECLARATION_PROFILE = 'q4t-release-declarations-v2'
 DECLARATION_SCHEMAS = ('config', 'message', 'preflight', 'reasoning',
                        'response', 'stop', 'thinking')
 DECLARATION_FILES = ('capabilities.json', 'configuration.json',
@@ -107,7 +108,7 @@ def private_directory(path, repository=ROOT):
 
 
 def settings(port, restart_limit, critical_memory_mib=1024, operations_port=0,
-             nvml_policy='strict'):
+             nvml_policy='strict', model_names=None):
     require(type(nvml_policy) is str and nvml_policy in ('strict', 'degrade'),
             'invalid NVML policy')
     require(type(port) is int and 1024 <= port <= 65535, 'invalid port')
@@ -130,6 +131,18 @@ def settings(port, restart_limit, critical_memory_mib=1024, operations_port=0,
         result['operations_port'] = operations_port
     if nvml_policy == 'degrade':
         result['nvml_policy'] = nvml_policy
+    if model_names is not None:
+        require(type(model_names) is dict and
+                model_names.keys() == {'name', 'aliases'}, 'invalid model registry')
+        aliases = model_names['aliases']
+        require(type(aliases) is list and len(aliases) <= 32,
+                'model aliases must be a list of at most 32 identifiers')
+        names = [model_names['name'], *aliases]
+        require(all(type(name) is str and 1 <= len(name.encode('utf-8')) <= 256 and
+                    all(ord(c) > 32 and ord(c) != 127 for c in name) for name in names),
+                'invalid model identifier')
+        require(len(set(names)) == len(names), 'duplicate model identifier')
+        result['model_names'] = dict(name=names[0], aliases=list(aliases))
     return result
 
 
@@ -150,6 +163,18 @@ def same_json(left, right):
         right, sort_keys=True, allow_nan=False)
 
 
+def declaration_schemas(profile):
+    require(profile in (DECLARATION_PROFILE, COMPLETION_DECLARATION_PROFILE),
+            'unknown release declaration profile')
+    return DECLARATION_SCHEMAS + (('completion_request', 'completion_response')
+        if profile == COMPLETION_DECLARATION_PROFILE else ())
+
+
+def declaration_files(profile):
+    return ('capabilities.json', 'configuration.json',
+            *('schemas/'+name+'.json' for name in declaration_schemas(profile)))
+
+
 def verify_declarations(metadata, directory=None, *, required=False):
     """Check frozen observations, not mutable docs or a live server.
 
@@ -165,8 +190,7 @@ def verify_declarations(metadata, directory=None, *, required=False):
     require(type(declaration) is dict and set(declaration) == {
         'profile', 'directory', 'binary_sha256', 'protocol_sha256', 'files'},
         'invalid release declaration fields')
-    require(declaration['profile'] == DECLARATION_PROFILE,
-            'unknown release declaration profile')
+    schemas = declaration_schemas(declaration['profile'])
     require(type(declaration['directory']) is str,
             'invalid declaration directory')
     original = Path(declaration['directory'])
@@ -175,7 +199,7 @@ def verify_declarations(metadata, directory=None, *, required=False):
     root = Path(directory) if directory is not None else original
     require(root == root.resolve(strict=True), 'symlink declaration directory')
     files = declaration['files']
-    require(type(files) is dict and set(files) == set(DECLARATION_FILES),
+    require(type(files) is dict and set(files) == set(declaration_files(declaration['profile'])),
             'declaration inventory differs')
     for name, digest in files.items():
         path = root/name
@@ -187,6 +211,9 @@ def verify_declarations(metadata, directory=None, *, required=False):
             declaration['protocol_sha256'] == protocol['protocol_sha256'],
             'declaration release identity differs')
     caps, config = (read(root/name) for name in DECLARATION_FILES[:2])
+    if caps.get('completions', {}).get('profile') == 'q4t-completions-v1':
+        require(declaration['profile'] == COMPLETION_DECLARATION_PROFILE,
+                'completion declarations required')
     require(type(caps) is dict and type(config) is dict and
             caps.get('protocol_source_sha256') ==
             config.get('protocol_source_sha256') == protocol['protocol_sha256']
@@ -203,7 +230,7 @@ def verify_declarations(metadata, directory=None, *, required=False):
             'declaration observation versions differ')
     require(same_json(metadata.get('observed_configuration'), config),
             'declaration configuration differs')
-    for name in DECLARATION_SCHEMAS:
+    for name in schemas:
         relative = 'schemas/'+name+'.json'
         require(protocol.get(name+'_schema') == str(original/relative) and
                 protocol.get(name+'_schema_sha256') == files[relative],
@@ -215,9 +242,9 @@ def verify_declarations(metadata, directory=None, *, required=False):
 
 def prepare(binary, release, model, output, port=8080, restart_limit=0,
             critical_memory_mib=1024, client_policy=None, host_resources=None,
-            operations_port=0, nvml_policy='strict'):
+            operations_port=0, nvml_policy='strict', model_names=None):
     config = settings(port, restart_limit, critical_memory_mib, operations_port,
-                      nvml_policy)
+                      nvml_policy, model_names)
     policy_raw = None
     if host_resources is not None:
         from tools.serve_service import resources
@@ -260,7 +287,7 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
         shutil.copyfile(source, dest)
         os.chmod(dest, 0o400)
     names = [*FILES, *('source/'+s for s in sources)]
-    for name in DECLARATION_FILES:
+    for name in declaration_files(metadata['release_declarations']['profile']):
         dest = target/'declarations'/name
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(declarations/name, dest)
@@ -277,7 +304,7 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
         python=dict(path=str(python), sha256=sha(python)),
         files={name: sha(target/name) for name in names},
         weight_shards_rehashed=False, managed_service_accepted=False)
-    manifest['release_declarations'] = DECLARATION_PROFILE
+    manifest['release_declarations'] = metadata['release_declarations']['profile']
     if policy_raw is not None:
         manifest['version'] = 4
         manifest['client_policy'] = cp.binding(policy_raw)
@@ -305,7 +332,8 @@ def verify(package, digest):
     wanted = settings(config['port'], config['restart_limit'],
                       config.get('critical_memory_mib', 1024),
                       config.get('operations_port', 0) if manifest['version'] in (6, 7, 8, 9, 10) else 0,
-                      config.get('nvml_policy', 'strict') if manifest['version'] in (7, 8, 9, 10) else 'strict')
+                      config.get('nvml_policy', 'strict') if manifest['version'] in (7, 8, 9, 10) else 'strict',
+                      config.get('model_names'))
     require(manifest['version'] not in (7, 8, 9, 10) or config.get('nvml_policy') == 'degrade',
             'monitor package requires explicit degradation policy')
     require(manifest['version'] != 10 or 'host_resources' in manifest,
@@ -323,9 +351,8 @@ def verify(package, digest):
                10: V10_SOURCES}[manifest['version']]
     expected = {*FILES, *('source/'+name for name in sources)}
     if 'release_declarations' in manifest:
-        require(manifest['release_declarations'] == DECLARATION_PROFILE,
-                'unknown package declaration profile')
-        expected.update('declarations/'+n for n in DECLARATION_FILES)
+        expected.update('declarations/'+n for n in
+                        declaration_files(manifest['release_declarations']))
     if manifest['version'] == 4 or manifest['version'] in (5, 6, 7, 8, 9, 10) and 'client_policy' in manifest:
         from tools.serve_gateway import client_policy as cp
         expected.add('client-policy.json')
@@ -353,6 +380,9 @@ def verify(package, digest):
     require(('release_declarations' in metadata) ==
             ('release_declarations' in manifest),
             'package declaration profile differs')
+    if 'release_declarations' in manifest:
+        require(manifest['release_declarations'] == metadata['release_declarations']['profile'],
+                'package declaration profile differs')
     verify_declarations(metadata, package/'declarations',
                         required='release_declarations' in manifest)
     accepted_release(metadata, read(package/'acceptance.json'))
@@ -384,4 +414,8 @@ def command(package, manifest):
         args += ['--client-policy-file', str(Path(package)/'client-policy.json')]
     if cfg.get('operations_port', 0):
         args += ['--operations-port', str(cfg['operations_port'])]
+    if 'model_names' in cfg:
+        args += ['--served-model-name', cfg['model_names']['name']]
+        for alias in cfg['model_names']['aliases']:
+            args += ['--model-alias', alias]
     return args

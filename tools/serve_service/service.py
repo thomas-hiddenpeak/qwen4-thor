@@ -218,6 +218,8 @@ def main():
                    help='managed runtime only; preflight remains strict')
     p.add_argument('--critical-memory-mib', type=int, default=1024)
     p.add_argument('--client-policy', type=Path)
+    p.add_argument('--served-model-name')
+    p.add_argument('--model-alias', action='append', default=[])
     p.add_argument('--host-memory-high-mib', type=int)
     p.add_argument('--host-memory-max-mib', type=int)
     p.add_argument('--host-tasks-max', type=int)
@@ -239,7 +241,11 @@ def main():
         result = pkg.prepare(args.binary, args.release, args.model_dir,
                              args.output, args.port, args.restart_limit,
                              args.critical_memory_mib, args.client_policy, selected,
-                             args.operations_port, args.nvml_policy)
+                             args.operations_port, args.nvml_policy,
+                             dict(name=args.served_model_name if args.served_model_name is not None
+                                       else 'qwen3.8-flash-next',
+                                  aliases=args.model_alias)
+                             if args.served_model_name is not None or args.model_alias else None)
     elif args.action == 'run':
         manifest = pkg.verify(args.package, args.manifest_sha256)
         entry = args.package.resolve()/'source/tools/serve_service/service.py'

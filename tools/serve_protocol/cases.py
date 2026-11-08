@@ -395,5 +395,7 @@ def cases():
     prior = json.loads((ROOT / "docs/evidence/serve-preflight-20261103/cpu/template-diff/cases.json").read_text())
     for row in prior:
         add("reused-shape-"+row["id"], row["request"], "reject_param" not in row)
-    assert len(rows) <= 650
+    from tools.serve_protocol.completion_cases import cases as completion_cases
+    rows.extend(completion_cases())
+    assert len(rows) <= 750
     return rows

@@ -21,6 +21,9 @@
 #include <vector>
 
 #include <unicode/normlzr.h>
+#include <unicode/bytestream.h>
+#include <unicode/edits.h>
+#include <unicode/normalizer2.h>
 #include <unicode/parseerr.h>
 #include <unicode/uregex.h>
 #include <unicode/unistr.h>
@@ -773,6 +776,59 @@ Status Tokenizer::Decode(const std::vector<std::uint32_t>& ids,
   if (!flush()) {
     return Status::Fail("decoded output exceeds max_input_bytes");
   }
+  return Status();
+}
+
+Status Tokenizer::EchoByteOffsets(std::string_view source,
+                                  const std::vector<std::uint32_t>& ids,
+                                  bool normalized,
+                                  std::vector<size_t>* offsets,
+                                  const EncodeOptions& options) const {
+  offsets->clear();
+  if (source.size() > impl_->data.limits.max_input_bytes)
+    return Status::Fail("echo prompt exceeds tokenizer byte limit");
+  std::string decoded;
+  auto result = Decode(ids, false, &decoded);
+  if (!result) return result;
+  UErrorCode status = U_ZERO_ERROR;
+  icu::Edits edits;
+  std::string normal;
+  if (normalized) {
+    const auto* nfc = icu::Normalizer2::getNFCInstance(status);
+    if (U_FAILURE(status) || !nfc)
+      return Status::Fail("echo NFC normalizer unavailable");
+    icu::StringByteSink<std::string> sink(&normal);
+    nfc->normalizeUTF8(0, icu::StringPiece(source.data(), source.size()), sink,
+                       &edits, status);
+    if (U_FAILURE(status)) return Status::Fail("echo NFC normalization failed");
+  }
+  if (decoded != (normalized ? normal : source))
+    return Status::Fail("echo tokens do not match the original prompt");
+  auto iterator = edits.getFineIterator();
+  size_t destination = 0;
+  std::vector<size_t> prepared;
+  prepared.reserve(ids.size());
+  for (size_t i = 0; i < ids.size(); ++i) {
+    if (i % 256 == 0 && options.cancelled && options.cancelled())
+      return Status::Fail("echo offset mapping cancelled");
+    size_t original = destination;
+    if (normalized) {
+      if (!iterator.findDestinationIndex(static_cast<int32_t>(destination),
+                                          status) || U_FAILURE(status))
+        return Status::Fail("cannot map echo token to NFC source");
+      original = iterator.sourceIndex();
+      if (!iterator.hasChange())
+        original += destination - iterator.destinationIndex();
+    }
+    prepared.push_back(original);
+    std::string piece;
+    result = Decode({ids[i]}, false, &piece);
+    if (!result) return result;
+    destination += piece.size();
+  }
+  if (destination != decoded.size())
+    return Status::Fail("echo token lengths do not match prompt");
+  *offsets = std::move(prepared);
   return Status();
 }
 

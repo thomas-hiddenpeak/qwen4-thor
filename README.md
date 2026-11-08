@@ -512,6 +512,22 @@ token就绪时点保留为`q4t_target_ready_seconds`，完整本地响应为
 [阶段收尾](docs/REFERENCE_LEARNING_CLOSEOUT_2026-10-29.md)，其他参考见
 [参考项目说明](docs/REFERENCE.md)。
 
+## 原生 Completions 与模型目录
+
+`POST /v1/completions`直接执行原始文本或 token ID，支持批量提示、
+`n`、`best_of`、`echo`、真实提示/输出 `logprobs`、`suffix` 和 JSON/SSE。
+`max_tokens=0`可只回显与计分提示；默认输出预算为16。
+模型目录提供`GET /v1/models`和`GET /v1/models/{model}`，模型id按一个
+URL路径参数编码。只读基础模型的删除返回403，未知模型返回404。
+
+`q4t serve --served-model-name private/base --model-alias org/alias`可配置
+公开名称和别名；`tools/serve_recovery/service.py prepare`与
+`tools/serve_service/service.py prepare`也接收这两个参数并保存在启动
+配置中。鉴权、配额、TLS与CORS均可使用原生入口，外部nginx仍可选。
+字段/schema、当前验收边界和SDK示例见
+[Completions合同](docs/SERVE_COMPLETIONS_2026-11-08.md)及
+[官方SDK接入示例](tools/serve_completions/sdk.mjs)。
+
 ## 许可证
 
 MIT (项目代码)。模型权重遵循其发布方条款。

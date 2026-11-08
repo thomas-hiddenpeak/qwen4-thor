@@ -7,6 +7,7 @@
 #include <limits>
 
 #include "q4t/mtp/suffix_drafter.h"
+#include "q4t/server/model_catalog.h"
 
 namespace q4t::server {
 
@@ -36,6 +37,8 @@ Status ResolveAdmissionLimits(const ServerOptions& options, int effective_slots,
 }
 
 Status ValidateServerOptions(const ServerOptions& options) {
+  if (!ValidServedModels(options.served_model_name, options.model_aliases))
+    return Status::Fail("invalid or duplicate served model name/alias");
   if (options.allow_media &&
       (!options.no_mtp || options.max_seq != 1 || options.no_budget ||
        options.moe_resident_slots != 0 || !options.moe_trace_dir.empty()))
@@ -217,7 +220,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
         key != "--startup-plan" && key != "--mtp-subset-head" &&
         key != "--seq-capacities" && key != "--session-cache-dir" &&
         key != "--prefix-cache-dir" && key != "--prefix-cache-checkpoints" &&
-        key != "--client-policy-file")
+        key != "--client-policy-file" && key != "--served-model-name" &&
+        key != "--model-alias")
       return Status::Fail("unknown serve option: " + std::string(key));
     if (++i == args.size() || args[i].empty() || args[i].starts_with("--"))
       return Status::Fail("missing value for " + std::string(key));
@@ -265,6 +269,10 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       parsed.moe_trace_workload = value;
     } else if (key == "--model-dir") {
       parsed.model_dir = value;
+    } else if (key == "--served-model-name") {
+      parsed.served_model_name = value;
+    } else if (key == "--model-alias") {
+      parsed.model_aliases.emplace_back(value);
     } else if (key == "--moe-hot-list") {
       parsed.moe_hot_list = value;
     } else if (key == "--startup-plan") {

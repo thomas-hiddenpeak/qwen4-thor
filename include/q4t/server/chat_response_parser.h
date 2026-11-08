@@ -62,6 +62,7 @@ class ChatResponseParser {
     schema_receipts_ = receipts;
   }
   std::string MessageJson() const;
+  const std::string& Content() const { return content_; }
   bool HasToolCalls() const { return tool_count_ != 0; }
   const char* ToolFinishReason() const {
     return legacy_function_ ? "function_call" : "tool_calls";

@@ -38,7 +38,8 @@ NATIVE_SOURCES = frozenset(('CMakeLists.txt', 'tests/host/CMakeLists.txt',
       ('tls', 'credentials', 'cors', 'admin')),
     'src/server/http_request.cpp',
     *('include/q4t/server/'+name+'.h' for name in ('http_request', 'http_listener',
-        'http_observation', 'http_connection', 'client_identity', 'serve_fault'))))
+        'http_observation', 'http_connection', 'model_catalog',
+        'client_identity', 'serve_fault'))))
 
 
 def file_identity(path):
@@ -122,7 +123,8 @@ def gateway_config_for(package, manifest, directory):
 
 def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
             backend_policy_path, output, *, native_receipt, certificate=None, key=None,
-            native_ingress=None, ingress_mode='native', client_ca=None, client_crl=None):
+            native_ingress=None, ingress_mode='native', client_ca=None, client_crl=None,
+            model_names=None):
     ledger.require(ingress_mode in ('native', 'nginx'), 'invalid ingress mode')
     native = ingress_mode == 'native'
     executable = native_ingress if native else nginx
@@ -169,7 +171,7 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
     target = engine.private_directory(output)
     receipt = engine.prepare(binary, release, model, target/'engine',
         port=policy['upstream_port'], operations_port=policy['upstream_operations_port'],
-        client_policy=backend_policy_path, nvml_policy='degrade')
+        client_policy=backend_policy_path, nvml_policy='degrade', model_names=model_names)
     (target/'bin').mkdir(mode=0o700)
     executables = EXECUTABLES if native else LEGACY_EXECUTABLES
     for name, source in zip(executables, (guardian, cuda_probe, executable)):

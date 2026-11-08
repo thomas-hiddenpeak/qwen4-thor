@@ -85,6 +85,13 @@ class Tokenizer {
   // `special` flag is true (base tokens are never special).
   Status Decode(const std::vector<std::uint32_t>& ids,
                 bool skip_special_tokens, std::string* out) const;
+  // Map actual token starts back to the original echoed prompt. String inputs
+  // use NFC edits; token-ID inputs use exact decoded bytes (no normalization).
+  // A token starting inside a normalized cluster maps to that source cluster.
+  Status EchoByteOffsets(std::string_view source,
+                         const std::vector<std::uint32_t>& ids,
+                         bool normalized, std::vector<size_t>* offsets,
+                         const EncodeOptions& options = {}) const;
 
   std::size_t BaseVocabSize() const noexcept;
   std::size_t MergeCount() const noexcept;

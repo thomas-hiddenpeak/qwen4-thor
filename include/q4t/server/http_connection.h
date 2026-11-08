@@ -5,6 +5,8 @@
 #include <atomic>
 #include <string_view>
 
+#include "q4t/server/model_catalog.h"
+
 namespace q4t::server {
 
 inline constexpr int kReservedControlConnections = 4;
@@ -28,8 +30,11 @@ inline HttpConnectionClass ClassifyHttpConnection(std::string_view method,
       (method == "POST" && path == "/v1/requests/cancel"))
     return HttpConnectionClass::kControl;
   if (method == "GET" && (path == "/metrics" || path == "/v1/config" ||
-                          path == "/v1/capabilities" || path == "/v1/models"))
+                          path == "/v1/capabilities" || path == "/v1/models" ||
+                          IsModelDetailPath(path)))
     return HttpConnectionClass::kObservation;
+  if (method == "DELETE" && IsModelDetailPath(path))
+    return HttpConnectionClass::kControl;
   return HttpConnectionClass::kBusiness;
 }
 
