@@ -96,6 +96,7 @@ set(protocol_inputs
   cmake/RustRegex.cmake
   cmake/regex-syntax-0.8.8.sha256
   src/server/regex_syntax/lib.rs
+  src/server/regex_syntax/schema_regex.rs
   src/server/chat_capabilities.cpp
   src/server/input_contract.cpp
   src/server/chat_contract.cpp

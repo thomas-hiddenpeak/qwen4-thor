@@ -17,6 +17,16 @@ struct RegexBuffer {
   uint32_t error;
 };
 RegexBuffer q4t_regex_ebnf(const uint8_t* data, size_t size);
+RegexBuffer q4t_schema_regex_ebnf(const uint8_t* const* patterns,
+                                  const size_t* sizes, size_t count,
+                                  uint32_t multiple, int32_t scale);
+struct RegexMatch {
+  uint32_t matched;
+  uint32_t error;
+};
+RegexMatch q4t_schema_regex_matches(const uint8_t* pattern, size_t pattern_size,
+                                    const uint8_t* text, size_t text_size,
+                                    size_t* work);
 void q4t_regex_free(RegexBuffer buffer);
 }
 #endif
@@ -115,6 +125,54 @@ std::string CustomRegexEbnf(std::string_view pattern) {
 #else
   (void)pattern;
   throw std::runtime_error("custom grammar backend is not built");
+#endif
+}
+
+std::string SchemaRegexEbnf(const std::vector<std::string>& patterns,
+                            uint32_t multiple, int32_t scale) {
+#ifdef Q4T_ENABLE_XGRAMMAR
+  std::vector<const uint8_t*> data;
+  std::vector<size_t> sizes;
+  for (const auto& pattern : patterns) {
+    data.push_back(reinterpret_cast<const uint8_t*>(pattern.data()));
+    sizes.push_back(pattern.size());
+  }
+  const auto buffer = q4t_schema_regex_ebnf(data.data(), sizes.data(),
+                                            data.size(), multiple, scale);
+  struct Guard {
+    RegexBuffer value;
+    ~Guard() { q4t_regex_free(value); }
+  } guard{buffer};
+  if (buffer.error == 2)
+    throw std::length_error("schema regex intersection exceeds resource bound");
+  if (buffer.error || !buffer.data || buffer.size > 512 * 1024)
+    throw std::runtime_error("invalid schema regular language");
+  return {reinterpret_cast<const char*>(buffer.data), buffer.size};
+#else
+  (void)patterns;
+  (void)multiple;
+  (void)scale;
+  throw std::runtime_error("schema grammar backend is not built");
+#endif
+}
+
+bool SchemaRegexMatches(std::string_view pattern, std::string_view value,
+                        size_t* work_remaining) {
+#ifdef Q4T_ENABLE_XGRAMMAR
+  const auto result = q4t_schema_regex_matches(
+      reinterpret_cast<const uint8_t*>(pattern.data()), pattern.size(),
+      reinterpret_cast<const uint8_t*>(value.data()), value.size(),
+      work_remaining);
+  if (result.error == 2)
+    throw std::length_error("schema string validation exceeds resource bound");
+  if (result.error || result.matched > 1)
+    throw std::runtime_error("invalid schema regex match");
+  return result.matched != 0;
+#else
+  (void)pattern;
+  (void)value;
+  (void)work_remaining;
+  throw std::runtime_error("schema grammar backend is not built");
 #endif
 }
 

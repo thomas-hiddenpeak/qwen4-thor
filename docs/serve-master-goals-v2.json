@@ -586,6 +586,6 @@
       "release": null
     }
   ],
-  "next_task": "A04",
-  "next": "实现custom text/regex/lark、标准历史/流式/结果，继续A05等全部总计划。"
+  "next_task": "A05",
+  "next": "继续完整schema生成与格式校验，接入工具/媒体/缓存组合并针对性验收，随后A06等全部总计划。"
 }

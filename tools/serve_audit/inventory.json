@@ -732,13 +732,13 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "f333192c1f29569624d4ae5d43cf52cab2a526b38be29b4adcdb26617f1b953a",
-    "cmake/ChatProtocolIdentity.cmake": "c2c388f96c712045bbcf1fe91e95fa5b7ac7bbb9db51e62f51a5faf2993ba00c",
+    "CMakeLists.txt": "4f373296b07c33a1edf85905b81cf7557781c3ce45766fe03b4ee4f3e10791b2",
+    "cmake/ChatProtocolIdentity.cmake": "f8b53fe94b8396d28dec5789d44e7315c052530a3a443dee29495868cbe350fe",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
     "cmake/NativeIngress.cmake": "d10f996fdf01e28f29eaa40d9c92f2d78ff02126351188667329b235a22f2346",
     "cmake/RecoveryProbe.cmake": "b10bd71c92a8c9a9f6545da89ab06585f7c1398a978eb01aae9e18eb716c0271",
-    "cmake/RustRegex.cmake": "3b28dbece860790c0754fecb25921c10887f6028ce806f81fa51d1dd1c88ac56",
+    "cmake/RustRegex.cmake": "99d9e977c34f48ae74d54ef33b432ce5287d668e7573d0b7bac0b7a5655924c3",
     "cmake/StructuredOutput.cmake": "66f791cc30c164e2a3b40c639a699e13077774d9bacf59b3b55a924e134f5b84",
     "cmake/regex-syntax-0.8.8.sha256": "6eba6c50e6a79adfb56202c75e8a3b551fe384f84e8bb7e3f2634fe2791a7880",
     "include/q4t/model/vision_positions.h": "70c7d3d05715fc3916725e0e39cf32becc9ac3a5129fc63129706204ccd9fb22",
@@ -861,8 +861,8 @@
     "src/server/client_request.cpp": "418f478a0d94cb270ea507cb6843f0a88a97de0ad2a22192e9f563c67f6fe83e",
     "src/server/cuda_memory_backend.h": "aabc6d78d2925ec5280e270964d79d3164ce706732a674b88215554a34d0e6a5",
     "src/server/custom_grammar.cpp": "5178e24b7b336fd573587d511eb47d70775ac8c1803d956a8a938754f5572e96",
-    "src/server/custom_regex.cpp": "e264cf43680adea8d8efdb3aa49ea414f920e6e16cc986b151585130d5f26741",
-    "src/server/custom_regex.h": "f049e8f9744406ac5ee30844bf606e74fcc2566217d3e167d83ab14aff0fc8a6",
+    "src/server/custom_regex.cpp": "eb8ab53b44dbb9ec2011676a854a18e38244975e76955b74a441829bdd67031a",
+    "src/server/custom_regex.h": "4916fea56e31101ba2352675c918b82fe76b785b8559c87683d8cc531c3624d5",
     "src/server/custom_tools.cpp": "3e45f9a496439ec1e0d86739acb9c5d01eb6e2c321a96d924cf755b99bc12abd",
     "src/server/grammar_process.cpp": "af14efdbda28b205d7532780d8c6c5c4abc3078c2279257982d875fb3afb40df",
     "src/server/grammar_worker.cpp": "3701fd5e061ef797d9d4b23629e0411a30831c182d4c8ade753e4d677a210163",
@@ -877,10 +877,13 @@
     "src/server/output_schema.cpp": "d1ac1506c823dc128d8f2c95e5489c90d360813b35b37b2bfd52a9bbc512315d",
     "src/server/prediction.cpp": "7e8ccdf7c44dd5c8245230577d42eb7d4cd17c6e2efcf5534a02e6744815733f",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
-    "src/server/regex_syntax/lib.rs": "1decbbd159b63b96bdf1f94da6c7f7927a8d869633ddc8fd5d0924e048bc9289",
+    "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
+    "src/server/regex_syntax/schema_regex.rs": "6f183dc22d71497432d4ddbe5124f18056e3fbe1a40f7d56f2746d272e607431",
     "src/server/sampling.cpp": "8e6a8c446656d8430005b061b10535b391b002362725511d216f9b4229e3d3cb",
     "src/server/schema_decimal.cpp": "3931972b1ecfd38b0574c6794f447f6b05d1ef78d65e0f73a61eabcb1c2dee2f",
     "src/server/schema_graph.cpp": "f75e22ba3abc90a05173499fa3fa959fb64af3fe2fcb63ba6ea92768b9ce9376",
+    "src/server/schema_number_grammar.cpp": "794d96e59285772d4cdcffba18692cd5e4ad275d7adf1e831bfa2417842c5e86",
+    "src/server/schema_number_grammar.h": "288d1f0c6dbf6f070fb39c9944b0162a96aaced01dbe936144dc8d47027ef4ba",
     "src/server/server_options.cpp": "c47e2555d054a8ee27524ecf59936838b717d7292c864c24efeee1279e2dc622",
     "src/server/session_cache.cpp": "68fc36654c7f3a7c14ac41b26e3abd10697e87ffc94bf70fe2052edb9cf751f6",
     "src/server/session_state.cpp": "bc34bd240a68cfb7ba57f78604d898c51e61bc5705b5d9db64bd546f91d64f12",
@@ -1514,8 +1517,10 @@
     "record": "docs/SERVE_SCHEMA_V2_2026-11-08.md",
     "source": [
       "src/server/schema_decimal.cpp",
-      "src/server/schema_graph.cpp"
+      "src/server/schema_graph.cpp",
+      "src/server/schema_number_grammar.cpp",
+      "src/server/regex_syntax/schema_regex.rs"
     ],
-    "acceptance": "Nine targeted CPU helper checks passed; generation language and HTTP integration remain required. Default f8677aaf unchanged."
+    "acceptance": "16 distinct targeted CPU helper checks passed. Two language intersection resource failures retained and repaired without increasing bounds. Full schema generation/string formats/HTTP integration remain required. Default f8677aaf unchanged."
   }
 }

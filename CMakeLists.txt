@@ -478,6 +478,7 @@ if(Q4T_BUILD_TESTS)
     src/server/output_schema.cpp
     src/server/schema_decimal.cpp
     src/server/schema_graph.cpp
+    src/server/schema_number_grammar.cpp
     tests/server_schema_graph_test.cpp
     src/server/output_constraints.cpp
     src/server/grammar_process.cpp
@@ -573,7 +574,8 @@ if(Q4T_BUILD_TESTS)
   target_compile_options(q4t_vision_tower_contract PRIVATE -Wall -Wextra -Werror)
   q4t_link_structured_output(q4t_tests)
   if(Q4T_ENABLE_XGRAMMAR)
-    target_sources(q4t_tests PRIVATE tests/server_structured_decoder_test.cpp)
+    target_sources(q4t_tests PRIVATE tests/server_structured_decoder_test.cpp
+      tests/server_schema_language_test.cpp)
   endif()
   target_include_directories(q4t_tests PRIVATE include)
   target_include_directories(q4t_tests PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})

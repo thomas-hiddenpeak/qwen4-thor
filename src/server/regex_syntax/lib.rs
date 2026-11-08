@@ -3,6 +3,7 @@
 use regex_syntax::hir::{Class, Hir, HirKind, Look};
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
 use std::fmt::Write;
+mod schema_regex;
 
 const LIMIT: usize = 512 * 1024;
 const NODES: usize = 4096;

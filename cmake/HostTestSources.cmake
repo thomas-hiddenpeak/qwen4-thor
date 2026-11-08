@@ -57,6 +57,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/output_schema.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/schema_decimal.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/schema_graph.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/schema_number_grammar.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_schema_graph_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/output_constraints.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/structured_decoder.cpp
@@ -86,5 +87,6 @@ list(APPEND Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_media_admission_test.cpp)
 if(Q4T_ENABLE_XGRAMMAR)
   list(APPEND Q4T_HOST_TEST_SOURCES
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_schema_language_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_structured_decoder_test.cpp)
 endif()

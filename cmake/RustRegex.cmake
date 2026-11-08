@@ -41,7 +41,9 @@ add_custom_command(OUTPUT "${regex_archive}"
     "${CMAKE_CURRENT_LIST_DIR}/../src/server/regex_syntax/lib.rs"
     -o "${regex_archive}"
   DEPENDS "${regex_rlib}"
-    "${CMAKE_CURRENT_LIST_DIR}/../src/server/regex_syntax/lib.rs" VERBATIM)
+    "${CMAKE_CURRENT_LIST_DIR}/../src/server/regex_syntax/lib.rs"
+    "${CMAKE_CURRENT_LIST_DIR}/../src/server/regex_syntax/schema_regex.rs"
+    VERBATIM)
 add_custom_target(q4t_regex_build DEPENDS "${regex_archive}")
 add_library(q4t_regex STATIC IMPORTED GLOBAL)
 set_target_properties(q4t_regex PROPERTIES IMPORTED_LOCATION "${regex_archive}")
