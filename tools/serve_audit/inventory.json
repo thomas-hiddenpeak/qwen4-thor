@@ -732,7 +732,7 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "20237b940b3d76cbe0501095f8afb4d10179f1447d3b5617a55461c14aafd389",
+    "CMakeLists.txt": "f333192c1f29569624d4ae5d43cf52cab2a526b38be29b4adcdb26617f1b953a",
     "cmake/ChatProtocolIdentity.cmake": "c2c388f96c712045bbcf1fe91e95fa5b7ac7bbb9db51e62f51a5faf2993ba00c",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
@@ -791,6 +791,8 @@
     "include/q4t/server/request_json.h": "3c9b06ae9945a775b2aae2d7a85a831d12ddc6cfb9850f4f27454202056d5a22",
     "include/q4t/server/sampling.h": "fc7d056d4fdc5b14db3028330acbb3f144fc8ab4c2b0d6dd55e6475bdb11dc1f",
     "include/q4t/server/scheduler_submission.h": "2a960c668c25a0c694b811a2c5640c6e6605db7d386b1ba0075e64061aa1c416",
+    "include/q4t/server/schema_decimal.h": "f6efd4f652918da2964a65813b6f8d9a972942ec5b02a5fb90b1ad8ad8bd8da0",
+    "include/q4t/server/schema_graph.h": "e600c22cc670c702f63bef768191382807b1defe423d97c6e2334576a812e80c",
     "include/q4t/server/sequence_admission.h": "0c03df6bd8c16d137562de22357c85e367208a6208be12d217adaf6135836b3f",
     "include/q4t/server/serve_fault.h": "47db4bd8dc12f5713ef42c6c89aeee1151867991d17d9b8529d31b4a11123b3f",
     "include/q4t/server/server_options.h": "87eeefdc39085628d020b752e1cf24cb573e9bbf76e64e1fdf565bcdefb41210",
@@ -877,6 +879,8 @@
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
     "src/server/regex_syntax/lib.rs": "1decbbd159b63b96bdf1f94da6c7f7927a8d869633ddc8fd5d0924e048bc9289",
     "src/server/sampling.cpp": "8e6a8c446656d8430005b061b10535b391b002362725511d216f9b4229e3d3cb",
+    "src/server/schema_decimal.cpp": "3931972b1ecfd38b0574c6794f447f6b05d1ef78d65e0f73a61eabcb1c2dee2f",
+    "src/server/schema_graph.cpp": "f75e22ba3abc90a05173499fa3fa959fb64af3fe2fcb63ba6ea92768b9ce9376",
     "src/server/server_options.cpp": "c47e2555d054a8ee27524ecf59936838b717d7292c864c24efeee1279e2dc622",
     "src/server/session_cache.cpp": "68fc36654c7f3a7c14ac41b26e3abd10697e87ffc94bf70fe2052edb9cf751f6",
     "src/server/session_state.cpp": "bc34bd240a68cfb7ba57f78604d898c51e61bc5705b5d9db64bd546f91d64f12",
@@ -1504,5 +1508,14 @@
     "binary_sha256": "f8677aaff4795529dfb8a2fd516887cb44c265d1f5ff22514765c970941c13b7",
     "evidence": "docs/evidence/serve-custom-tools-20261108/audit.json",
     "model_adapter": "Native function/input tags and encoded string, declared name determines standard wire custom type. Two failed business attempts retained; original mixed task passed after adapter repair."
+  },
+  "schema_v2_development_20261108": {
+    "state": "helpers_only_not_wired",
+    "record": "docs/SERVE_SCHEMA_V2_2026-11-08.md",
+    "source": [
+      "src/server/schema_decimal.cpp",
+      "src/server/schema_graph.cpp"
+    ],
+    "acceptance": "Nine targeted CPU helper checks passed; generation language and HTTP integration remain required. Default f8677aaf unchanged."
   }
 }

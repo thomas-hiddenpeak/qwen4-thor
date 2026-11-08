@@ -1,0 +1,51 @@
+# A05：标准结构化输出与组合能力
+
+A04已交付f8677aaf。继续总计划A05，下面是同一任务的实现顺序，
+不是删除剩余能力或停止总目标的理由。依据为2026-11-08抓取的
+[官方结构化输出指南](https://developers.openai.com/api/docs/guides/structured-outputs#supported-schemas)，
+本机原文保存在`.q4t-work/serve-schema-v2-20261108/reference`。
+
+## 确定缺口
+
+- 本地v1拒绝`$defs/$ref`、递归、`anyOf`、数值enum/const与数值/
+  pattern/format；规模仅8层/128节点/32枚举，低于官方范围。
+- Qwen原始XML参数不能区分字符串`null`与JSON null，属性名/值
+  包含闭合标签时也不能直接无损使用；须补模型适配，不能删能力。
+- 固定XGrammar的number multipleOf会被忽略，integer在部分范围
+  组合也忽略multipleOf；float范围固定6位生成精度。仅放宽本地
+  allowlist不能保证约束，必须补自己的精确适配与最终校验。
+- JSON response_format与工具、结构化与session/prefix cache当前
+  被拒绝，媒体组合与结构化SSE也需真实核对，不能只改发现接口。
+
+## 实施与验收
+
+1. 共享schema图与十进制精确值：本地JSON Pointer、递归与anyOf、
+   enum/const、声明次序、required/null，明确资源上限和错误路径。
+   数字比较/整除不能经binary64四舍五入或容差接受错误输出。
+2. 有界生成语言与独立值校验：完整官方关键字，pattern/format与
+   数值约束的组合不被忽略。复用现有隔离worker和静态regex解析器，
+   无新增外部运行服务；展开过大属于资源失败，不冒充已实现通过。
+3. 工具模型适配与协议组合：复杂/nullable参数保持标准arguments，
+   JSON与工具按实际输出分支处理；session/cache、媒体与取消不丢
+   状态或放松约束；SSE逐片可见但成功终态及EOF仍是使用屏障。
+4. 最终编译零警告，按受影响schema/语言正负例、解析/SDK/缓存与
+   工作器边界冻结CPU清单。真实业务普通组≤2启动/8Chat/900秒，
+   媒体独立组另列具体清单；不跑完整性能或全模型正确性。
+5. 真实通过后可回退交付并继续A06等全部总计划。当前仅开发，
+   不把未接入的校验/编译器帮助函数当成对外能力已经完成。
+
+官方基准范围包括10层、总5000属性、总1000枚举及相关字符串规模；
+保留有界编译、进程资源与输出预算。标准子集之外的扩展不默默降级，
+但官方范围内的缺口不能以unsupported或文档说明结案。
+
+## 基础模块开发进展
+
+schema图与精确十进制帮助模块已编写，尚未接入HTTP/生成路径。
+覆盖本地引用/递归/anyOf、精确enum/const、数值范围和整除、Unicode
+长度与标准规模；pattern/format必须提供实际checker，缺失时明确
+失败，不会跳过。现有生产v1保持，下一步生成语言及字符串checker。
+
+`build-01/02`零警告；9项针对性CPU检查最终通过（含1717组独立整数
+余数对照）。首轮8/9通过，$ref错误路径夹具未使用既有转义格式，
+修正并统一根引用错误路径后仅重验该项通过。原件保留在
+`.q4t-work/serve-schema-v2-20261108/cpu-01/02`，未运行GPU。

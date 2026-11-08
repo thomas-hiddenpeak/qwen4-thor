@@ -144,6 +144,12 @@ NVML全OK；619来源与[264原件](evidence/serve-custom-tools-20261108/README.
 字节不变，原ledger/Key/策略/配额保持STOPPED；安装0模型/0Chat，
 GPU/端口/锁释放。A04实现与交付完成；立即推进A05官方结构化schema
 及工具/媒体/缓存组合，总目标保持active，未合main。
+[A05实施顺序](SERVE_SCHEMA_V2_2026-11-08.md)已明确：先共享schema图/精确
+十进制，再有界生成语言与最终校验，随后工具/缓存/媒体组合；
+固定XGrammar会忽略部分multipleOf，不能直接扩大allowlist宣称支持。
+共享schema图/精确十进制帮助模块9项CPU通过、零警告；一个错误路径
+夹具失败已定向修正并保留。尚未接入HTTP/生成，继续生成约束及
+字符串checker，默认f8677aaf不改，未新增GPU。
 
 工作分支`codex/serve-resilience-cd`继续隔离PR #22已接受发布；
 PR #22此前34b06bc1两项CI成功、CLEAN。当前默认服务包以顶部N01—N03交付为准；

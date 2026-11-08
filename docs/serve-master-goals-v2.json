@@ -152,7 +152,9 @@
         "R02",
         "A01"
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/SERVE_SCHEMA_V2_2026-11-08.md"
+      ],
       "release": null
     },
     {

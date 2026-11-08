@@ -476,6 +476,9 @@ if(Q4T_BUILD_TESTS)
     tests/server_thinking_budget_test.cpp
     tests/server_text_stop_test.cpp
     src/server/output_schema.cpp
+    src/server/schema_decimal.cpp
+    src/server/schema_graph.cpp
+    tests/server_schema_graph_test.cpp
     src/server/output_constraints.cpp
     src/server/grammar_process.cpp
     src/server/grammar_worker.cpp
