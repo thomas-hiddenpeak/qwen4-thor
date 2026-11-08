@@ -1,0 +1,25 @@
+[  3%] Built target q4t_trace
+[  7%] Built target q4t_io
+[ 11%] Built target q4t_ple
+[ 11%] Built target q4t_regex_build
+[ 33%] Built target xgrammar
+[ 33%] Built target q4t_runtime
+[ 33%] Built target q4t_text
+[ 37%] Built target q4t_quant
+[ 55%] Built target q4t_model
+[ 59%] Built target q4t_startup_plan
+[100%] Built target q4t_server
+[100%] Built target q4t
+[  0%] Built target q4t_regex_build
+[  4%] Built target q4t_io
+[  4%] Built target q4t_text
+[ 28%] Built target xgrammar
+[100%] Built target q4t_host_tests
+[ 20%] Built target q4t_io
+[ 20%] Built target q4t_text
+[ 20%] Building CXX object CMakeFiles/q4t_http_lifecycle_tests.dir/tools/serve_reliability/http_lifecycle_test.cpp.o
+[ 20%] Linking CXX executable q4t_http_lifecycle_tests
+[100%] Built target q4t_http_lifecycle_tests
+[  0%] Built target q4t_guardian_process
+[  0%] Built target q4t_guardian_journal
+[100%] Built target q4t_ingress

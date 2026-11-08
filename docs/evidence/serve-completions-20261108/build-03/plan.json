@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "cmake",
+    "--build",
+    ".q4t-work/serve-custom-tools-20261108/engine-build",
+    "--parallel",
+    "4",
+    "--target",
+    "q4t",
+    "q4t_host_tests",
+    "q4t_http_lifecycle_tests",
+    "q4t_ingress"
+  ],
+  "repair": "CPU lifecycle fixture namespace only; production build-02 passed"
+}

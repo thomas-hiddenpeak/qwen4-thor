@@ -1,0 +1,9 @@
+{
+  "upstream": "OpenAI official JavaScript SDK",
+  "sdk_version": "7.47.0",
+  "captured": "2026-11-08",
+  "paths": {
+    "completions.ts": "3b521c000d4d2c7cb6fb2eeec64568f4ef9e3aafcb4472202f05e23c972b9807",
+    "models.ts": "58a4d317f9490fbc893c2c6724483fb100db42919f8df80853575c5a4b075f06"
+  }
+}

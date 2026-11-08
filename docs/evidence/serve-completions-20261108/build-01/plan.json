@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "cmake",
+    "--build",
+    ".q4t-work/serve-custom-tools-20261108/engine-build",
+    "--parallel",
+    "4",
+    "--target",
+    "q4t",
+    "q4t_host_tests",
+    "q4t_http_lifecycle_tests",
+    "q4t_ingress"
+  ],
+  "scope": "A06 generation, Models, host contracts and native ingress; necessary build, no model execution"
+}

@@ -1,0 +1,128 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+-- Configuring done (0.1s)
+-- Generating done (0.2s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build
+[  3%] Built target q4t_trace
+[  7%] Built target q4t_io
+[ 11%] Built target q4t_ple
+[ 11%] Built target q4t_regex_build
+[ 11%] Built target q4t_runtime
+[ 11%] Building CXX object CMakeFiles/q4t_text.dir/src/text/tokenizer.cpp.o
+[ 33%] Built target xgrammar
+[ 37%] Built target q4t_quant
+[ 55%] Built target q4t_model
+[ 55%] Building CXX object CMakeFiles/q4t_startup_plan.dir/src/runtime/startup_plan.cpp.o
+[ 55%] Linking CXX static library libq4t_startup_plan.a
+[ 59%] Built target q4t_startup_plan
+[ 59%] Linking CXX static library libq4t_text.a
+[ 59%] Built target q4t_text
+[ 62%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_server.cpp.o
+[ 62%] Building CXX object CMakeFiles/q4t_server.dir/src/server/model_catalog.cpp.o
+[ 62%] Building CXX object CMakeFiles/q4t_server.dir/src/server/client_request.cpp.o
+[ 62%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_device_memory.cpp.o
+[ 66%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_health.cpp.o
+[ 66%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_memory.cpp.o
+[ 66%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_capabilities.cpp.o
+[ 66%] Building CXX object CMakeFiles/q4t_server.dir/src/server/server_options.cpp.o
+[ 66%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_http.cpp.o
+[ 70%] Building CXX object CMakeFiles/q4t_server.dir/src/server/http_response.cpp.o
+[ 70%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_response_parser.cpp.o
+[ 70%] Building CXX object CMakeFiles/q4t_server.dir/src/server/structured_decoder.cpp.o
+[ 70%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_input.cpp.o
+[ 70%] Building CXX object CMakeFiles/q4t_server.dir/src/server/media_admission.cpp.o
+[ 74%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_prompt.cpp.o
+[ 74%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_plan.cpp.o
+[ 74%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_preflight.cpp.o
+[ 74%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_metrics.cpp.o
+[ 74%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_admission.cpp.o
+[ 74%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_scheduler.cpp.o
+[ 77%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_generation.cpp.o
+[ 77%] Building CXX object CMakeFiles/q4t_server.dir/src/server/http_request.cpp.o
+[ 77%] Building CXX object CMakeFiles/q4t_server.dir/src/server/input_contract.cpp.o
+[ 77%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_contract.cpp.o
+[ 81%] Building CXX object CMakeFiles/q4t_server.dir/src/server/sampling.cpp.o
+[ 81%] Building CXX object CMakeFiles/q4t_server.dir/src/server/prediction.cpp.o
+[ 81%] Building CXX object CMakeFiles/q4t_server.dir/src/server/token_logprobs.cpp.o
+[ 81%] Building CXX object CMakeFiles/q4t_server.dir/src/server/completion_plan.cpp.o
+[ 81%] Building CXX object CMakeFiles/q4t_server.dir/src/server/completion_response.cpp.o
+[ 81%] Linking CXX static library libq4t_server.a
+[100%] Built target q4t_server
+[100%] Building CXX object CMakeFiles/q4t.dir/src/main.cpp.o
+[100%] Linking CXX executable q4t
+[100%] Built target q4t
+[  0%] Built target q4t_regex_build
+[  4%] Built target q4t_io
+[ 28%] Built target xgrammar
+[ 28%] Built target q4t_text
+[ 32%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/chat_capabilities.cpp.o
+[ 32%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/chat_contract.cpp.o
+[ 36%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/chat_plan.cpp.o
+[ 36%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/chat_prompt.cpp.o
+[ 36%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/chat_response_parser.cpp.o
+[ 36%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/client_request.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/http_request.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/http_response.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/input_contract.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/media_admission.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/prediction.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/sampling.cpp.o
+[ 44%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/server_options.cpp.o
+[ 44%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/structured_decoder.cpp.o
+[ 44%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/token_logprobs.cpp.o
+[ 44%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_chat_capabilities_test.cpp.o
+[ 44%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_chat_contract_test.cpp.o
+[ 44%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_chat_plan_test.cpp.o
+[ 44%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_chat_response_parser_test.cpp.o
+[ 44%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_chat_sampling_response_test.cpp.o
+[ 48%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_client_policy_test.cpp.o
+[ 48%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_cuda_quota_test.cpp.o
+[ 52%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_custom_tools_test.cpp.o
+[ 52%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_http_observation_test.cpp.o
+[ 52%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_http_request_test.cpp.o
+[ 52%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_legacy_tools_test.cpp.o
+[ 52%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_media_admission_test.cpp.o
+[ 52%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_memory_admission_test.cpp.o
+[ 52%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_options_test.cpp.o
+[ 52%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_output_constraints_test.cpp.o
+[ 52%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_prediction_test.cpp.o
+[ 52%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_sampling_test.cpp.o
+[ 56%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_schema_token_guard_test.cpp.o
+[ 60%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_startup_memory_test.cpp.o
+[ 60%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_structured_decoder_test.cpp.o
+[ 60%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_text_stop_test.cpp.o
+[ 60%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_thinking_budget_test.cpp.o
+[ 60%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/text_tokenizer_test.cpp.o
+[ 60%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/model_catalog.cpp.o
+[ 60%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/completion_plan.cpp.o
+[ 64%] Building CXX object CMakeFiles/q4t_host_tests.dir/src/server/completion_response.cpp.o
+[ 64%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_completion_test.cpp.o
+[ 64%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests
+[ 20%] Built target q4t_io
+[ 20%] Built target q4t_text
+[ 20%] Building CXX object CMakeFiles/q4t_http_lifecycle_tests.dir/src/server/chat_admission.cpp.o
+[ 20%] Building CXX object CMakeFiles/q4t_http_lifecycle_tests.dir/src/server/chat_device_memory.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_http_lifecycle_tests.dir/src/server/chat_health.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_http_lifecycle_tests.dir/src/server/chat_http.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_http_lifecycle_tests.dir/src/server/chat_memory.cpp.o
+[ 60%] Building CXX object CMakeFiles/q4t_http_lifecycle_tests.dir/src/server/client_request.cpp.o
+[ 60%] Building CXX object CMakeFiles/q4t_http_lifecycle_tests.dir/src/server/http_request.cpp.o
+[ 60%] Building CXX object CMakeFiles/q4t_http_lifecycle_tests.dir/src/server/http_response.cpp.o
+[ 60%] Building CXX object CMakeFiles/q4t_http_lifecycle_tests.dir/src/server/input_contract.cpp.o
+[ 60%] Building CXX object CMakeFiles/q4t_http_lifecycle_tests.dir/tools/serve_reliability/admission_contract_test.cpp.o
+[ 60%] Building CXX object CMakeFiles/q4t_http_lifecycle_tests.dir/tools/serve_reliability/http_lifecycle_test.cpp.o
+[ 60%] Linking CXX executable q4t_http_lifecycle_tests
+[100%] Built target q4t_http_lifecycle_tests
+[  0%] Built target q4t_guardian_process
+[  0%] Built target q4t_guardian_journal
+[ 50%] Building CXX object CMakeFiles/q4t_ingress.dir/src/server/http_request.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_main.cpp.o
+[ 50%] Linking CXX executable q4t-ingress
+[100%] Built target q4t_ingress

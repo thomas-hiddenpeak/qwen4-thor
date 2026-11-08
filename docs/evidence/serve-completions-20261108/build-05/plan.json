@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "cmake",
+    "--build",
+    ".q4t-work/serve-custom-tools-20261108/engine-build",
+    "--parallel",
+    "4",
+    "--target",
+    "q4t",
+    "q4t_host_tests",
+    "q4t_ingress",
+    "q4t_guardian"
+  ],
+  "scope": "bind echo tokenizer sources into protocol identity; no semantic changes"
+}
