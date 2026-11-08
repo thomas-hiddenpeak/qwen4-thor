@@ -327,6 +327,20 @@ ObjectReply ResponsesState::Retrieve(std::string id,
                                      const StateAccess& access) {
   return Data(Get(ObjectKind::kResponse, id, access), "response");
 }
+ObjectReply ResponsesState::ReadRecord(const std::string& id,
+                                       const StateAccess& access) {
+  auto result = Get(ObjectKind::kResponse, id, access);
+  if (!result.ok()) return result;
+  const auto* data = result.value.Find("data");
+  const auto* response = data ? data->Find("response") : nullptr;
+  if (!response || response->GetString("id") != id ||
+      !response->GetArray("output") || !data->GetArray("history") ||
+      !data->GetArray("events"))
+    return StateError("Stored response is missing required state");
+  auto record = *data;
+  result.value = std::move(record);
+  return result;
+}
 ObjectReply ResponsesState::Erase(std::string id, const StateAccess& access) {
   auto existing = Get(ObjectKind::kResponse, id, access);
   auto response = Data(existing, "response");

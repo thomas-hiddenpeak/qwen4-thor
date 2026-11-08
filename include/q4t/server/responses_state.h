@@ -48,6 +48,9 @@ class ResponsesState {
   ObjectReply Finish(const io::Json& snapshot, const io::Json& events,
                      const StateAccess& access, ResponseStatePlan* plan);
   ObjectReply Retrieve(std::string id, const StateAccess& access);
+  // Internal authorized state, including history/events; never send this
+  // record directly over HTTP. The API must project the public resource.
+  ObjectReply ReadRecord(const std::string& id, const StateAccess& access);
   ObjectReply Erase(std::string id, const StateAccess& access);
 
  private:

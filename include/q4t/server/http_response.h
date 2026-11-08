@@ -84,6 +84,17 @@ class HttpResponseContext {
     client_lease_ = lease;
   }
   ResponseState* State() { return &state_; }
+  using ErrorObserver = void (*)(void*, int, std::string_view,
+                                 std::string_view) noexcept;
+  void SetErrorObserver(ErrorObserver observer, void* owner) noexcept {
+    error_observer_ = observer;
+    error_observer_owner_ = owner;
+  }
+  void ObserveError(int status, std::string_view message,
+                    std::string_view code) noexcept {
+    if (error_observer_)
+      error_observer_(error_observer_owner_, status, message, code);
+  }
   // Handler-thread-only, non-owning hook. Clear it before its owner dies.
   // Invoked once before terminal publication, including error responses.
   void SetBeforeTerminal(void (*hook)(void*) noexcept, void* owner) noexcept {
@@ -131,6 +142,8 @@ class HttpResponseContext {
   ClientIdentity client_;
   ClientLease* client_lease_ = nullptr;  // Owner outlives this context.
   ResponseState state_ = ResponseState::kUnsent;  // handler thread only
+  ErrorObserver error_observer_ = nullptr;
+  void* error_observer_owner_ = nullptr;
   void (*terminal_hook_)(void*) noexcept = nullptr;
   void* terminal_owner_ = nullptr;
   StreamErrorRenderer stream_error_renderer_ = nullptr;

@@ -4,6 +4,7 @@
 #include <limits>
 
 #include "q4t/server/http_response.h"
+#include "q4t/server/input_contract.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/request_json.h"
 #include "responses_json.h"
@@ -24,16 +25,24 @@ Status Probabilities(std::string_view json, io::Json* out) {
   const auto row_value = [](const io::Json& row, io::Json* result) {
     const auto* token = row.Find("token");
     const auto* score = row.Find("logprob");
+    const auto* bytes = row.GetArray("bytes");
     if (!token || !token->IsString() || !score || !score->IsNumber() ||
-        !std::isfinite(score->number) || score->number > 0)
+        !std::isfinite(score->number) || score->number > 0 || !bytes)
       return Status::Fail("invalid Responses token probability row");
-    *result = Object({{"token", *token}, {"logprob", *score}});
+    for (const auto& byte : bytes->array)
+      if (!IsInputInteger(byte) || byte.number < 0 || byte.number > 255)
+        return Status::Fail("invalid Responses probability token bytes");
+    *result =
+        Object({{"token", *token}, {"bytes", *bytes}, {"logprob", *score}});
     return Status();
   };
   for (const auto& row : content->array) {
     io::Json result;
     status = row_value(row, &result);
     if (!status) return status;
+    Set(&result, "top_logprobs", Array());
+    if (row.Has("top_logprobs") && !row.GetArray("top_logprobs"))
+      return Status::Fail("invalid Responses top probability list");
     if (const auto* top = row.GetArray("top_logprobs")) {
       io::Json candidates = Array();
       for (const auto& candidate : top->array) {
@@ -47,6 +56,19 @@ Status Probabilities(std::string_view json, io::Json* out) {
     out->array.push_back(std::move(result));
   }
   return {};
+}
+// The SDK's delta/done probability shape differs from persisted output_text
+// content: only the latter carries original token bytes. Never reconstruct
+// bytes from normalized text (partial UTF-8 token pieces may differ).
+io::Json EventProbabilities(io::Json probabilities) {
+  for (auto& row : probabilities.array) {
+    std::erase_if(row.object,
+                  [](const auto& field) { return field.first == "bytes"; });
+    for (auto& top : Field(row, "top_logprobs").array)
+      std::erase_if(top.object,
+                    [](const auto& field) { return field.first == "bytes"; });
+  }
+  return probabilities;
 }
 }  // namespace
 
@@ -263,7 +285,7 @@ Status ResponsesOutput::Append(const ResponseDelta& delta,
       auto& logs = Field(part, "logprobs").array;
       logs.insert(logs.end(), probabilities.array.begin(),
                   probabilities.array.end());
-      Set(&fields, "logprobs", std::move(probabilities));
+      Set(&fields, "logprobs", EventProbabilities(std::move(probabilities)));
     }
     Event(delta.kind == ResponseDelta::Kind::kContent
               ? "response.output_text.delta"
@@ -282,7 +304,8 @@ void ResponsesOutput::CloseItem(size_t index, bool incomplete,
     const auto& part = Field(item, "content").array[0];
     auto fields = Location(index, true);
     Set(&fields, "text", *part.Find("text"));
-    if (type == "message") Set(&fields, "logprobs", *part.Find("logprobs"));
+    if (type == "message")
+      Set(&fields, "logprobs", EventProbabilities(*part.Find("logprobs")));
     Event(type == "message" ? "response.output_text.done"
                             : "response.reasoning_text.done",
           std::move(fields), wire);

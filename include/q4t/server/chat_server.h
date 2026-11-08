@@ -170,9 +170,12 @@ class ChatServer {
   void HandlePreflight(int fd, const std::string& body);
   void HandleConfig(int fd);
   ChatPlanConfig PlanningConfig(int fd = -1) const;
-  void HandleChat(int fd, const std::string& body, bool completion = false);
+  enum class GenerationApi { kChat, kCompletion, kResponse };
+  void HandleChat(int fd, const std::string& body,
+                  GenerationApi api = GenerationApi::kChat);
   void HandleChatImpl(int fd, const std::string& body,
-                      detail::ResponseState* response_state, bool completion);
+                      detail::ResponseState* response_state, bool completion,
+                      class ResponsesExecution* responses);
 
   // Shared scratch is protected by model_mu_ through default-stream GPU
   // completion and host readback. Only then can another request reuse it.

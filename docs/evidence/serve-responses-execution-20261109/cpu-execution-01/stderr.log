@@ -1,0 +1,6 @@
+[q4t][http] trace_id=req-9bef0fd669dc3147b91741be3e37eca2 status=503 error=constraint_dependency_unavailable
+[q4t][http] trace_id=req-dbb017b6082121bfad4c1ef46f28046a status=503 error=constraint_dependency_unavailable
+[q4t][http] trace_id=memory-contract error=host_memory_exhausted
+[q4t][http] trace_id=memory-contract error=host_memory_exhausted
+[q4t][http] trace_id=memory-contract error=host_memory_exhausted
+[q4t][http] trace_id=memory-contract error=host_memory_exhausted

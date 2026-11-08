@@ -33,6 +33,7 @@ void SendExceptionResponse(int fd, ResponseState state,
     const char* code = memory ? "host_memory_exhausted" : "internal_error";
     const char* type = memory ? "service_unavailable_error" : "server_error";
     if (context) {
+      context->ObserveError(memory ? 503 : 500, "request failed", code);
       context->StopHeartbeats();
       state = *context->State();
       std::fprintf(stderr, "[q4t][http] trace_id=%s error=%s\n",
@@ -577,6 +578,7 @@ void SendError(int fd, int code, const std::string& message,
                std::string_view param, std::string_view allow) {
   if (error_code.empty()) error_code = ErrorForStatus(code).code;
   if (auto* context = HttpResponseContext::Current(fd)) {
+    context->ObserveError(code, message, error_code);
     context->StopHeartbeats();
     std::fprintf(stderr, "[q4t][http] trace_id=%s status=%d error=%.*s\n",
                  context->TraceId().c_str(), code,
@@ -599,8 +601,10 @@ void SendError(int fd, int code, const std::string& message,
 void SendStreamError(int fd, ResponseState* state, int status,
                      const std::string& message, const WriteOptions& options,
                      std::string_view error_code) {
-  if (auto* context = HttpResponseContext::Current(fd))
+  if (auto* context = HttpResponseContext::Current(fd)) {
+    context->ObserveError(status, message, error_code);
     context->StopHeartbeats();
+  }
   if (*state != ResponseState::kStreaming) return;
   auto* context = HttpResponseContext::Current(fd);
   const std::string tail = context

@@ -1,0 +1,7 @@
+test_responses_preserve_methods_queries_and_authenticated_scope (__main__.NativeTests.test_responses_preserve_methods_queries_and_authenticated_scope) ... ok
+test_responses_share_data_capacity_and_actual_peer_cidr (__main__.NativeTests.test_responses_share_data_capacity_and_actual_peer_cidr) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 3.502s
+
+OK

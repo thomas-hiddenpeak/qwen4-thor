@@ -1,0 +1,10 @@
+[
+  "python3",
+  "-B",
+  "tools/serve_recovery/test_native_ingress.py",
+  "--ingress",
+  ".q4t-work/serve-custom-tools-20261108/engine-build/q4t-ingress",
+  "-v",
+  "NativeTests.test_responses_preserve_methods_queries_and_authenticated_scope",
+  "NativeTests.test_responses_share_data_capacity_and_actual_peer_cidr"
+]

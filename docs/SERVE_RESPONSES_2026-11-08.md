@@ -69,10 +69,26 @@ HTTP 错误可以绑定 Responses 渲染器，内存不足采用固定缓冲区 
 SDK直接消费 C++ 输出的原始 JSON/SSE，不能等同真实模型推理。
 [原始记录](evidence/serve-responses-core-20261108/README.md)含失败与源码摘要。
 
-尚未接通 Responses 路由、完整 envelope/预算/推理选项、生成器或
-对象存储；没有本组 GPU 测试、发行/默认替换或 main 合入。
-接着完成请求规划与共享执行器，推进 A08 本地持久状态。存储须按
-客户端隔离、原子写入/重启恢复，并在独立有界 I/O worker 中执行；
-磁盘依赖失能只能影响依赖存储的请求，不能拖停健康的普通生成。
-previous_response_id 延续 input/output，前次 instructions 不自动继承。
-background 必须真实异步执行和可取消，不能返回假排队状态。
+## 2026-11-09 共享生成与状态读接口
+
+已接进程内共享生成、真实增量/概率/usage、JSON/SSE终态和错误观察。
+store缺省true，持久事务确认前不发送completed；回执丢失返回已知ID供
+查询，不盲目重放或覆盖。已接POST /v1/responses，以及按ID查询/删除、
+input_items分页与include、原始事件续读；原生入口共享身份、容量、TLS。
+previous_response_id延续已解析input/output，前次instructions不自动继承。
+Conversations使用同一隔离对象worker及原子提交，存储故障不改变核心readiness。
+
+[本组证据](evidence/serve-responses-execution-20261109/README.md)：23不同C++、
+6官方SDK CPU、3实际原生入口CPU通过，3次构建零警告。原始失败保留；
+发现并修复最终item概率原字节与delta/done事件形状混用，包含部分UTF-8
+字节保真。仍没有本组GPU业务或默认替换，不能认定A07/A08交付。
+
+后台排队/执行/取消、进行中的持久事件、重启终态恢复、超额失败记录
+闭合、语义item相等与独立item保留治理仍须实现。摘要、压缩/自动截断、
+加密推理、prompt及工具/媒体执行依赖继续纳入A07—A11，临时依赖不可用
+不能作为兼容通过。下一步冻结真实SDK/资料工具业务短验，继续剩余实现。
+
+读取遵循官方[输入items](https://developers.openai.com/api/reference/resources/responses/subresources/input_items/methods/list)、
+[删除](https://developers.openai.com/api/reference/resources/responses/methods/delete)和
+[后台续读](https://developers.openai.com/api/docs/guides/background)合同。
+当前续读使用已保留原事件，终态缺事件返回503，不从文本假造事件。

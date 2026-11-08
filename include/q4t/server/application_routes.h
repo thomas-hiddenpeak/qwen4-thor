@@ -18,6 +18,25 @@ inline bool IsConversationTarget(std::string_view target) {
   return path == "/v1/conversations" || path.starts_with("/v1/conversations/");
 }
 
+inline bool IsResponsesTarget(std::string_view target) {
+  const auto path = target.substr(0, target.find('?'));
+  return path == "/v1/responses" || path.starts_with("/v1/responses/");
+}
+
+inline bool ResponsesMethodAllowed(std::string_view method,
+                                   std::string_view target) {
+  if (target.find('#') != target.npos) return false;
+  auto path = target.substr(0, target.find('?'));
+  constexpr std::string_view root = "/v1/responses";
+  if (path == root) return method == "POST";
+  if (!path.starts_with("/v1/responses/")) return false;
+  path.remove_prefix(root.size() + 1);
+  const auto end = path.find('/');
+  if (!ValidApplicationId(path.substr(0, end))) return false;
+  if (end == path.npos) return method == "GET" || method == "DELETE";
+  return path.substr(end) == "/input_items" && method == "GET";
+}
+
 // Shared ingress/backend route recognition. Query semantics remain the native
 // endpoint's responsibility; no normalization changes the forwarded target.
 inline bool ConversationMethodAllowed(std::string_view method,

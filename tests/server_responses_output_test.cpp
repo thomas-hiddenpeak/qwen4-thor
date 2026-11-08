@@ -10,6 +10,7 @@
 
 #include "q4t/server/http_response.h"
 #include "q4t/server/lifetime.h"
+#include "q4t/server/output_schema.h"
 #include "q4t/server/request_json.h"
 #include "q4t/test.h"
 
@@ -110,7 +111,19 @@ Q4T_TEST(responses_output_text_reasoning_full_lifecycle) {
   Q4T_CHECK(items[0].GetArray("summary")->array.empty());
   const auto& content = items[1].GetArray("content")->array[0];
   Q4T_CHECK(content.GetString("text") == "答案是42✅");
-  Q4T_CHECK(!content.GetArray("logprobs")->array[0].Has("bytes"));
+  const auto& row = content.GetArray("logprobs")->array[0];
+  Q4T_CHECK(OutputJson(*row.GetArray("bytes")) == "[52,50]");
+  Q4T_CHECK(
+      OutputJson(*row.GetArray("top_logprobs")->array[0].GetArray("bytes")) ==
+      "[52,51]");
+  for (const auto& event : events)
+    if (event.GetString("type") == "response.output_text.delta" ||
+        event.GetString("type") == "response.output_text.done")
+      for (const auto& probability : event.GetArray("logprobs")->array) {
+        Q4T_CHECK(!probability.Has("bytes"));
+        for (const auto& top : probability.GetArray("top_logprobs")->array)
+          Q4T_CHECK(!top.Has("bytes"));
+      }
   Q4T_CHECK(!output.Finish(false, 0, {}, 44, &part));
   Q4T_CHECK(!output.Append(Text("late"), "null", &part));
   Q4T_CHECK(!output.Fail("late", "late", &part));
@@ -244,10 +257,28 @@ Q4T_TEST(responses_output_obfuscation_and_malformed_probabilities) {
   std::vector<Json> events;
   Q4T_CHECK(Events(wire, &events));
   Q4T_CHECK(!events[0].GetString("obfuscation").empty());
-  for (const auto json : {"{}", "{", R"({"content":[{"token":"x"}]})",
-                          R"({"content":[{"token":"x","logprob":1}]})"})
+  for (const auto json :
+       {"{}", "{", R"({"content":[{"token":"x"}]})",
+        R"({"content":[{"token":"x","logprob":1}]})",
+        R"({"content":[{"token":"x","logprob":-1}]})",
+        R"({"content":[{"token":"x","logprob":-1,"bytes":[256]}]})",
+        R"({"content":[{"token":"x","logprob":-1,"bytes":[-1]}]})",
+        R"({"content":[{"token":"x","logprob":-1,"bytes":[1.5]}]})"})
     Q4T_CHECK(!output.Append(Text("x"), json, &wire) && wire.empty());
   Q4T_CHECK(output.Snapshot().GetArray("output")->array.empty());
+  Q4T_CHECK(output.Append(
+      Text("�"),
+      R"({"content":[{"token":"�","bytes":[226],"logprob":-1,"top_logprobs":[]}]})",
+      &wire));
+  Q4T_CHECK(output.Finish(false, 0, {1, 0, 1, 0}, 43, &wire));
+  const auto& content = output.Snapshot()
+                            .GetArray("output")
+                            ->array[0]
+                            .GetArray("content")
+                            ->array[0];
+  Q4T_CHECK(
+      OutputJson(*content.GetArray("logprobs")->array[0].GetArray("bytes")) ==
+      "[226]");
   return true;
 }
 

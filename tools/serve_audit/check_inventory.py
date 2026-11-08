@@ -39,7 +39,7 @@ def current_surface(root):
     native_routes.extend((method, "/v1/models/{model}", "true")
                          for method in ("GET", "DELETE"))
     application_routes = (root / "include/q4t/server/application_routes.h").read_text()
-    if 'if (IsConversationTarget(path))' not in dispatch or \
+    if 'IsConversationTarget(path)' not in dispatch or \
             'HandleConversationRequest(*objects_' not in dispatch or \
             'server::ConversationMethodAllowed(method, path)' not in native or \
             'inline bool ConversationMethodAllowed' not in application_routes:
@@ -54,6 +54,16 @@ def current_surface(root):
           for method in ("GET", "DELETE"))]
     routes.extend((path, method) for method, path in conversations)
     native_routes.extend((method, path, "false") for method, path in conversations)
+    if 'ServeResponsesState(fd, *objects_' not in dispatch or \
+            'server::ResponsesMethodAllowed(method, path)' not in native or \
+            'inline bool ResponsesMethodAllowed' not in application_routes:
+        raise ValueError("review dynamic Responses transport extractor")
+    responses = [("GET", "/v1/responses/{response_id}"),
+                 ("DELETE", "/v1/responses/{response_id}"),
+                 ("GET", "/v1/responses/{response_id}/input_items")]
+    routes.extend((path, method) for method, path in responses)
+    native_routes.extend((method, path, "false") for method, path in
+                         [("POST", "/v1/responses"), *responses])
     if 'if (method == "OPTIONS")' in native:
         if 'config.cors.Preflight(' not in native:
             raise ValueError("review native OPTIONS handler before cataloguing")
@@ -65,7 +75,7 @@ def current_surface(root):
     for file in ("chat_contract.cpp", "output_constraints.cpp",
                  "input_contract.cpp", "chat_tool_history.cpp",
                  "chat_template.cpp", "legacy_tools.cpp", "completion_plan.cpp",
-                 "conversation_api.cpp", "responses_plan.cpp"):
+                 "conversation_api.cpp", "responses_plan.cpp", "responses_api.cpp"):
         source = (root / "src/server" / file).read_text()
         for index, item in enumerate(re.finditer(
                 r'(?:Input)?Fields\(\s*([^,]+),\s*\{([^}]+)\}', source)):

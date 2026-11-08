@@ -17,6 +17,11 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/object_store.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/object_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_state.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_execution.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_api.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/application_query.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_api_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_execution_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/conversation_state.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/conversation_api.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_conversation_api_test.cpp

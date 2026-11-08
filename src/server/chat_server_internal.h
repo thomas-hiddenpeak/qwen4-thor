@@ -7,6 +7,7 @@
 #include "q4t/server/serve_fault.h"
 
 namespace q4t::server::detail {
+bool ClientConnectionFailed(int fd);
 bool RequestCancelled(RequestControl* control, int fd);
 bool ValidRequestKey(const std::string& key);
 Status FinishHostReadback(cudaError_t copy_error,

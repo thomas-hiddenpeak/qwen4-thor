@@ -1,0 +1,12 @@
+✔ official stored response survives restart and is actually deleted (93.384836ms)
+✔ official inputItems auto-pagination contains resolved prior input and output (52.098441ms)
+✔ official SSE retrieve resumes exact stored sequence and terminal (39.156228ms)
+✔ official errors and ownership prevent other clients from reading or deleting (45.335456ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5367.486752

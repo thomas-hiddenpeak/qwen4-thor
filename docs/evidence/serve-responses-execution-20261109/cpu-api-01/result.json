@@ -1,0 +1,17 @@
+{
+  "exit_code": 1,
+  "elapsed_seconds": 0.21403020480647683,
+  "binary_sha256": "dc5051cc1c63ebd962fd5ce9d907f5d102be04822be133f53bc8f5425359fb35",
+  "tests": [
+    "responses_api_query_contract_and_routes_before_storage",
+    "responses_api_body_capacity_is_charged_before_reading",
+    "responses_api_history_pagination_and_scope_survive_worker_restart",
+    "responses_api_replay_uses_original_sequence_and_obfuscation_choice",
+    "responses_api_include_projects_without_changing_retained_probabilities",
+    "responses_api_subscriber_timeout_never_cancels_generation_or_fakes_terminal",
+    "responses_api_missing_or_corrupt_event_journal_is_not_reconstructed",
+    "conversation_api_rejects_invalid_wire_contract_before_storage",
+    "http_conversation_routes_are_scoped_business_operations",
+    "http_conversation_body_uses_shared_budget_before_reading"
+  ]
+}

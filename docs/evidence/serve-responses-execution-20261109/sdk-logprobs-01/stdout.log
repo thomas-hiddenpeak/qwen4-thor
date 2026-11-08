@@ -1,0 +1,10 @@
+✔ official create consumes native JSON, reasoning and probabilities (38.523646ms)
+✔ official stream accumulates native text lifecycle (29.168203ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 216.566515

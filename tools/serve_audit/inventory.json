@@ -646,6 +646,46 @@
         "tests/server_conversation_api_test.cpp",
         "tools/serve_recovery/test_native_access.py"
       ]
+    },
+    "DELETE /v1/responses/{response_id}": {
+      "semantics": "原生Responses生成/持久终态，按ID查询/删除、input_items分页/视图与实际事件序号续读；标准错误、独立client身份。OPTIONS复用原生CORS。",
+      "boundary": "源码/针对性CPU已过，未做本组模型验收或默认替换。后台/实时事件与恢复、其余执行依赖仍为必做任务；当前不可用不等于兼容完成。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_2026-11-08.md",
+        "docs/evidence/serve-responses-execution-20261109/README.md",
+        "tests/server_responses_execution_test.cpp",
+        "tests/server_responses_api_test.cpp"
+      ]
+    },
+    "GET /v1/responses/{response_id}": {
+      "semantics": "原生Responses生成/持久终态，按ID查询/删除、input_items分页/视图与实际事件序号续读；标准错误、独立client身份。OPTIONS复用原生CORS。",
+      "boundary": "源码/针对性CPU已过，未做本组模型验收或默认替换。后台/实时事件与恢复、其余执行依赖仍为必做任务；当前不可用不等于兼容完成。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_2026-11-08.md",
+        "docs/evidence/serve-responses-execution-20261109/README.md",
+        "tests/server_responses_execution_test.cpp",
+        "tests/server_responses_api_test.cpp"
+      ]
+    },
+    "GET /v1/responses/{response_id}/input_items": {
+      "semantics": "原生Responses生成/持久终态，按ID查询/删除、input_items分页/视图与实际事件序号续读；标准错误、独立client身份。OPTIONS复用原生CORS。",
+      "boundary": "源码/针对性CPU已过，未做本组模型验收或默认替换。后台/实时事件与恢复、其余执行依赖仍为必做任务；当前不可用不等于兼容完成。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_2026-11-08.md",
+        "docs/evidence/serve-responses-execution-20261109/README.md",
+        "tests/server_responses_execution_test.cpp",
+        "tests/server_responses_api_test.cpp"
+      ]
+    },
+    "POST /v1/responses": {
+      "semantics": "原生Responses生成/持久终态，按ID查询/删除、input_items分页/视图与实际事件序号续读；标准错误、独立client身份。OPTIONS复用原生CORS。",
+      "boundary": "源码/针对性CPU已过，未做本组模型验收或默认替换。后台/实时事件与恢复、其余执行依赖仍为必做任务；当前不可用不等于兼容完成。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_2026-11-08.md",
+        "docs/evidence/serve-responses-execution-20261109/README.md",
+        "tests/server_responses_execution_test.cpp",
+        "tests/server_responses_api_test.cpp"
+      ]
     }
   },
   "whitelists": {
@@ -953,11 +993,17 @@
     ],
     "responses_plan.cpp:8:*stream_options": [
       "include_obfuscation"
+    ],
+    "responses_api.cpp:0:query.value": [
+      "include",
+      "include_obfuscation",
+      "starting_after",
+      "stream"
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "01766dcdf72eb99a8cd09cbda0c78286517bb746ffd315b2b21ea2485bece05e",
-    "cmake/ChatProtocolIdentity.cmake": "b5341ba310cc5d6515a698834d8a4790d2803c177802c372d81c3ad3a1a6477f",
+    "CMakeLists.txt": "6faf88c0079617f958cc218514d3d771befbd7e2c3fe803a067e8dbc13e67577",
+    "cmake/ChatProtocolIdentity.cmake": "3f83b91337138b1d07a945d15587c89a8501a02045dca58b1c65853f4f82868e",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
     "cmake/NativeIngress.cmake": "d10f996fdf01e28f29eaa40d9c92f2d78ff02126351188667329b235a22f2346",
@@ -975,14 +1021,15 @@
     "include/q4t/runtime/model_health.h": "19e05818f3a4462fe5c81e6098549205ce156f03c7aeaa89e593fb319670f26a",
     "include/q4t/runtime/system_memory.h": "52febc4f0b9f067748507224d9924a955470371de88a796e1ea78d379b637d49",
     "include/q4t/server/abort_reason.h": "2bad04553ca1e40595e10d6549d2a3a798bed05fcadd92527f722c48aecb70b5",
-    "include/q4t/server/application_routes.h": "d218e0b77562ad252c0768de045ab6bfe758d5b0e19d0a04d63e195b67fe13dc",
+    "include/q4t/server/application_query.h": "8331a32ad43b1e4eb059a25f1e2d318c351fdda0fbf4555f7bfafd310a9d2c36",
+    "include/q4t/server/application_routes.h": "de37a8a7a8c11c1a1d8a255cc505de0d76242fd8ef74e29fdfeb8ead86b0b9e0",
     "include/q4t/server/chat_capabilities.h": "058093147c83d2bf541cb17b19fa67e92ec3168e5d250dd3a20567696748cc49",
     "include/q4t/server/chat_choices.h": "a76cc4a1a1d8b16b1925ec1a5fb9f0951c03fe48494c6623027596624e5b79c2",
     "include/q4t/server/chat_contract.h": "c1aaef06a1ae22f96ce143211a3c6a5a462bb8223d0f86c474f896ab3bb906e0",
     "include/q4t/server/chat_plan.h": "8582f55f54b19b4da9f940acb71e60831b33cd04d3eea3a206eed8991ce6e083",
     "include/q4t/server/chat_prompt.h": "1a758fed12a2ef5b3eadc6109cbc99be29de63e088d0d60111ed171730daa54f",
     "include/q4t/server/chat_response_parser.h": "43c0d61499e9303cd8bacf92b685f5994d81d8e4b0aaed86edbc38943e941a88",
-    "include/q4t/server/chat_server.h": "6bb293f7e7a258af6f0becd8b0e6f3156b213d88e70b1481583fcbdf5a017b40",
+    "include/q4t/server/chat_server.h": "f0bc00f8dc240699f4050f870f1967252b697194c0b7dcefa2414021d4be505f",
     "include/q4t/server/chat_template.h": "5d2e9a8c90938fa972d27bd961ee9018ebcd7add541fd009316177af81b9afee",
     "include/q4t/server/chat_tool_history.h": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
     "include/q4t/server/client_identity.h": "c05aad5dc655e91962eae55aab25c09fdcbc2a72ddc37a95585c7288dfac54be",
@@ -1002,7 +1049,7 @@
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
     "include/q4t/server/http_observation.h": "4a5c07a112faa4d60f834b2d5e4067522a7fe565ca6ff8acd145ad603999dbdc",
     "include/q4t/server/http_request.h": "f6d52bf328cc33e56ae0ef06dc93051432ac0ddff55575e4e9204eecf35b6be6",
-    "include/q4t/server/http_response.h": "dd0b0603c1878d55c86843b5e21793f21663f95dc4970a3db29dd025ac30dc53",
+    "include/q4t/server/http_response.h": "1f22341b232b40320ce8c10d2c4ad675552de2b0f6b1be88b5c04295df6ab3bf",
     "include/q4t/server/input_contract.h": "03c1dfcc666986f5e06a91fb34cf95bf1818bd67df783794ae0ada63b7ae8881",
     "include/q4t/server/legacy_tools.h": "2bcdb5d01e78379c2f7baaaed0ef902867357a0167f3ce6ea18fbc1fdb9dbfa1",
     "include/q4t/server/lifetime.h": "11c9b381a7f6c5e019dcb57fbc18e2ad76492fca5c5e42960c381e954e5068bc",
@@ -1021,11 +1068,13 @@
     "include/q4t/server/request_control.h": "fc0c1ab81056c5ab3ddb4b0da8783338312ecedc5f2c4f149df678019c199814",
     "include/q4t/server/request_diagnostics.h": "6a260ff44d95c7d828503c24351fc9d0b659c72033b75577b7d37209cd39c6de",
     "include/q4t/server/request_json.h": "f3fded2db644464f3e187215cfe14ae0280a0099bfbbeca670c7ac4e4492bb72",
+    "include/q4t/server/responses_api.h": "0bcf7786486147054e15e292f894026ff10b7a6d458cf99967b458eb6dee89b0",
+    "include/q4t/server/responses_execution.h": "cb986cb624585b411da6fdbdc6eeb7d1d82a7b998a30c13447a4f3d59e400476",
     "include/q4t/server/responses_input.h": "fe63278d2c398b5fe770572cb141561f5a9dec36811fc151b53a33a684cce56a",
     "include/q4t/server/responses_item_shape.h": "0c341d6d0e9f0693daacc35ba97e0929703d9f2de108aa77056fa8f88777ee37",
     "include/q4t/server/responses_output.h": "48c3c92fd25f17e8657fc9c3bf9ebfa6943fb2d7b8401cb977e05f810debacb8",
     "include/q4t/server/responses_plan.h": "3c89b0e3d7fd6363e74f22e76cebafc4678fa81ddbad0197234bf6fd0b284c03",
-    "include/q4t/server/responses_state.h": "fe28e4eb0cb751ff99068a5eaf0a96833fe2ecd9ee6c4181792f65e873ef1e75",
+    "include/q4t/server/responses_state.h": "a8f0bb3ddd9a7bf31b8b3a41dbd70be92a127475a672b40818fc7f5e0ffc1513",
     "include/q4t/server/sampling.h": "202bff18193dddc46f92e3b7d69fef36218faf00e913b292d1e9a9abe7b65141",
     "include/q4t/server/scheduler_submission.h": "2a960c668c25a0c694b811a2c5640c6e6605db7d386b1ba0075e64061aa1c416",
     "include/q4t/server/schema_decimal.h": "f6efd4f652918da2964a65813b6f8d9a972942ec5b02a5fb90b1ad8ad8bd8da0",
@@ -1045,7 +1094,7 @@
     "include/q4t/server/suffix_causal.h": "a0bad73c2a8293367a4e907e06a40d21baec389ba81e9131a248f99432165f2b",
     "include/q4t/server/suffix_token_cache.h": "5cf8881109604764d9deb7869901c0f8f8141b181b47865e7d81018eadd21a9b",
     "include/q4t/server/text_stop.h": "560dde9da5f9ea673a22eb2b6ad9ef59e227d55122d041a51ae2c45ef4114f66",
-    "include/q4t/server/thinking_budget.h": "902d062939a5f8cc43ac2dd761d4267624645d1a401c47f9ed748f28b2ee36ff",
+    "include/q4t/server/thinking_budget.h": "3fe102b73f218f02b8bab0d49a6c6a83040666aef14a1f66e5c0208c937eccf2",
     "include/q4t/server/token_logprobs.h": "4e78d55c74f87be540b134bdd9a537050548118a0ae8a864750c730618a46060",
     "include/q4t/service/guardian_journal.h": "700c8d24b7b8288c1f923cc532f591747a6adfbef42b1013a1d8e178288186a9",
     "include/q4t/service/guardian_process.h": "31b967d4b558b1cdce10bf5acfb4731a9c9952930039285f6ed09af5b010c8f9",
@@ -1076,14 +1125,15 @@
     "src/runtime/startup_reservation.cpp": "3c979fd0e8eb5dec8185148c77677ddad246f401faa92641d2a5f1ec2c033e09",
     "src/runtime/system_memory.cpp": "231e9a7ce5ed49e27e604a7bfa4066b35e83f286026c15986898d996a66acd2f",
     "src/server/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/server/application_query.cpp": "2146fcf1f4cde38e8aa6da3753f185379d0a0dc2b9961b7f85ab40416827dd1c",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
     "src/server/chat_capabilities.cpp": "c7092a35a13eed7fb2a6f831e0c516e348cc2a0861ad92e353329b6bafe9717e",
     "src/server/chat_choices.cpp": "ee99c4aca3c1ea07d5929da38325aa2b28a411245c7d794c9cc5f1f8eb23f16a",
     "src/server/chat_contract.cpp": "379dc3c2b40e56808394911f752782ad5e4a7715763b1e47f491fe0246226611",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
-    "src/server/chat_generation.cpp": "a5596ae151f567fd51b1096c06cbf5ad141ee3173f21712132c671f52b365e1a",
+    "src/server/chat_generation.cpp": "fa60f186d386a194e0bdbbc79dd0fc36858e79966781b3efd4c724c9aa785c40",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "130fed41870979b6d053ab3449c89ad28e16fcdc153e59f72dc3070c9742addd",
+    "src/server/chat_http.cpp": "16be529421435e776c12c67492620448d79324494c582dc37ce7d3b3764f72d7",
     "src/server/chat_input.cpp": "d79be28242ed560ad7be0494284f72b53d1aaa7a272786d17f1b837e81a6d9bb",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
     "src/server/chat_metrics.cpp": "9a50b19777ed6e32b9902716dd97cde678bb1cd3c3147030975032cffe41fcc6",
@@ -1093,7 +1143,7 @@
     "src/server/chat_response_parser.cpp": "69e260c428d83a6383d5d36e0870c7d2be697e953251fddfd081a058445a808b",
     "src/server/chat_scheduler.cpp": "2b6d315bfd12609e343010852f7c15b8248fe5180359a3d7b49d3c1db5b8d1fc",
     "src/server/chat_server.cpp": "8b04ab321d8572f473f112c5fccf3b645036f69d22a114ca87b32d39869f84b3",
-    "src/server/chat_server_internal.h": "f648da039df39e84f9f867c55210afeff3eceac0c3578c61edfaa210957d4286",
+    "src/server/chat_server_internal.h": "980664023b410e97d5d560241d17967a76c719e9e0d27f83dd4c27f296b85018",
     "src/server/chat_template.cpp": "f6e031add54280ff196bda9ef7a817a0ffdf30e83b95bce9575be3912168dd66",
     "src/server/chat_tool_history.cpp": "902f6c0982fd072d4dba4c3f6a34629eec9eaaf604fd5d920822b96ed51f82db",
     "src/server/client_policy.cpp": "7b45111253ebee20140b0f405bec5078b6edfa7ddfe37ed8125918b6d3e96255",
@@ -1101,7 +1151,7 @@
     "src/server/completion_plan.cpp": "714facdef55f982082f687220d2227f6195c517a41f835fe78161fc4a1b1656d",
     "src/server/completion_response.cpp": "75be95aa5a9da31112932cbddaa1e81c0b6cfa31664b03139e1d97f7d7563722",
     "src/server/contracts/openai_item_types_v1.json": "d22c6bb9a38868061556ed9dd76d8d51589a965101d4593684ea049f2945de81",
-    "src/server/conversation_api.cpp": "5ef3d6d8472b78ac1b23d578695dc461f79f9821a0f727739fa75f8ba9cc442e",
+    "src/server/conversation_api.cpp": "c017ac5f05c5907c5db0eccec88a9192a782482f8c58f59f1e6203b14e257ac8",
     "src/server/conversation_state.cpp": "ce53e523231ec970fe1280fc357681110ee7be6f2efb2e18d2516a2129071cce",
     "src/server/cuda_memory_backend.h": "aabc6d78d2925ec5280e270964d79d3164ce706732a674b88215554a34d0e6a5",
     "src/server/custom_grammar.cpp": "9fae326d558056d3c189100b9748f9402ec52c30ba8f894b1f73893bfd4da198",
@@ -1111,8 +1161,8 @@
     "src/server/grammar_process.cpp": "db6c047c571404a9b453fe2c7c06262aac15c80551b6bcc831984e4dd32014f4",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
-    "src/server/http_request.cpp": "12a1f30bb085a2292875e9c4230ae5112c98cd68f60b650d1bc4910048743b82",
-    "src/server/http_response.cpp": "a3a4f06b933b3cfdb3fe96204f7359c3a7824bfc8cf5fd1142473540ac671b7b",
+    "src/server/http_request.cpp": "6404186498f2d4d66ab9b74ced67362983b29cdf0f54335bfd78d0d2bf8a9940",
+    "src/server/http_response.cpp": "20c7ad4ff65efef84db04adf2bfac0ca6d18b3f1ae0e7bc0201243da74c36f75",
     "src/server/input_contract.cpp": "a8d8f7412e50df59da2ec5829f4ecd34245dc521edcb61011ea4dff2b492f362",
     "src/server/legacy_tools.cpp": "b0bffcd3c780f35f336b40a152e9837077b9a4c6ea3ede737fcbb14b8514587c",
     "src/server/media_admission.cpp": "11461c31fed0db43fe68e16680812641c0e51371585c216673e4fe2e54500393",
@@ -1128,12 +1178,14 @@
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
     "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
     "src/server/regex_syntax/schema_regex.rs": "ad5ecc2fc961a9426068c50452e830da2229c40273088b56f8c6218c26f27fbf",
+    "src/server/responses_api.cpp": "11ab9c260537cadd0cbdf763380e5c295d4efb7f7917f65b8d6a89013707fd76",
+    "src/server/responses_execution.cpp": "15a1705f34e63c8e2d58644dacef36e50a810672e5c3719483e595fcdc00748d",
     "src/server/responses_input.cpp": "8fbffc8a3241cb3c34050c454e9181ecac49221898f54d5d3f4cf3fb63e6479b",
     "src/server/responses_item_shape.cpp": "b09c14dfed993b0782d592efa387fd9669e691f907fdd664d6fcd429769235b9",
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
-    "src/server/responses_output.cpp": "cd5611e50d0884583a6fb273af3a2f626d267ed24be4b169b7d19c3355e5b662",
+    "src/server/responses_output.cpp": "c71e6c133468f279cdd77ec1a5b987fd0b6fd7ebe74dd1252b2ca3899c06f191",
     "src/server/responses_plan.cpp": "fc5ca768a836200c11f910f3b8220d67864991278542f63caae92a7fd907984f",
-    "src/server/responses_state.cpp": "0e968d871189e53148ea1c38bee6ad785acbf57cac4c2c1594604f4343dc1fc9",
+    "src/server/responses_state.cpp": "5f374f66cb288353a6fb19107af17f7816de89e80990a661478c0b2e771a163c",
     "src/server/sampling.cpp": "88e247ca6b7c65abbf0977c66fd604e7156cbdefe5d0293e509282678555d31d",
     "src/server/schema_decimal.cpp": "3931972b1ecfd38b0574c6794f447f6b05d1ef78d65e0f73a61eabcb1c2dee2f",
     "src/server/schema_grammar.cpp": "075d6a282f2fc1cda861e3a0de4de132455af3efa9ed30b67b0ad9a5caf56cf2",
@@ -1156,7 +1208,7 @@
     "src/server/session_state.cpp": "878e97b4ac3ce2f8b79d972a4f94ccd4c2e7c22893b07b5e31e5ba544494562f",
     "src/server/structured_decoder.cpp": "3c2aa771ec7b753b94f8dcda5a63fa59a435fb5826fa876fe7acec4049e44de6",
     "src/server/text_stop.cpp": "2397b27adc873b3ac0697af68352a73c8481830da6053fde0adeca536eaba4dc",
-    "src/server/thinking_budget.cpp": "4c91e8320115ee86096bf7287d4950599ca311f137c3a0051b9d64fb53abf259",
+    "src/server/thinking_budget.cpp": "05410d285b3cd6bbdb1d5e19282655f89b5d17a3205a35529e99ec2ec1f60962",
     "src/server/token_logprobs.cpp": "6d315376dcbe02b2b9d35b609b36f9ce02bf22e5a7c81d9ab47bde7e14556927",
     "src/service/cuda_probe.cu": "f91663d4098aa6365db6cf3d3fc437b5b32ee20280b65cc1ee34cb796a48e7fb",
     "src/service/guardian_journal.cpp": "a0a60642d1546c302be84578b7ca6d4475ab9808c108dd82fa4df7133f3b5a12",
@@ -1166,7 +1218,7 @@
     "src/service/ingress_admin.cpp": "218c4a3c2ec469dcffbd25c8de1bfe7508bea9a9dd8954ce04661dbb1fa03de8",
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
-    "src/service/ingress_main.cpp": "379fddf996c615f96ce7cf28d18bfefc90180b9c226a1c825d3d27ec32f5fefe",
+    "src/service/ingress_main.cpp": "0a5bfbf4574ac2515c789bcabe68d6464ea300b7d1e0e1dcc16006f349379416",
     "src/service/ingress_tls.cpp": "5574d1ca0a45a9237aa3dbcad94258e55c14d36cc944c095eb3003c4713aac9f",
     "src/service/ingress_transport.cpp": "c086f437eef70cb953a0f300413fa28b4468701a8442c2fafd83af719c682454",
     "src/text/tokenizer.cpp": "839f9333817ca010af2dc4bf90a8c24eab4359a5d8eb04192e1789397e0c2faf",
@@ -1888,6 +1940,76 @@
         "include/q4t/server/application_routes.h",
         "tests/server_conversation_api_test.cpp",
         "tools/serve_recovery/test_native_access.py"
+      ]
+    },
+    "DELETE /v1/responses/{response_id}": {
+      "semantics": "原生Responses生成/持久终态，按ID查询/删除、input_items分页/视图与实际事件序号续读；标准错误、独立client身份。OPTIONS复用原生CORS。",
+      "boundary": "源码/针对性CPU已过，未做本组模型验收或默认替换。后台/实时事件与恢复、其余执行依赖仍为必做任务；当前不可用不等于兼容完成。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_2026-11-08.md",
+        "docs/evidence/serve-responses-execution-20261109/README.md",
+        "tests/server_responses_execution_test.cpp",
+        "tests/server_responses_api_test.cpp"
+      ]
+    },
+    "GET /v1/responses/{response_id}": {
+      "semantics": "原生Responses生成/持久终态，按ID查询/删除、input_items分页/视图与实际事件序号续读；标准错误、独立client身份。OPTIONS复用原生CORS。",
+      "boundary": "源码/针对性CPU已过，未做本组模型验收或默认替换。后台/实时事件与恢复、其余执行依赖仍为必做任务；当前不可用不等于兼容完成。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_2026-11-08.md",
+        "docs/evidence/serve-responses-execution-20261109/README.md",
+        "tests/server_responses_execution_test.cpp",
+        "tests/server_responses_api_test.cpp"
+      ]
+    },
+    "GET /v1/responses/{response_id}/input_items": {
+      "semantics": "原生Responses生成/持久终态，按ID查询/删除、input_items分页/视图与实际事件序号续读；标准错误、独立client身份。OPTIONS复用原生CORS。",
+      "boundary": "源码/针对性CPU已过，未做本组模型验收或默认替换。后台/实时事件与恢复、其余执行依赖仍为必做任务；当前不可用不等于兼容完成。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_2026-11-08.md",
+        "docs/evidence/serve-responses-execution-20261109/README.md",
+        "tests/server_responses_execution_test.cpp",
+        "tests/server_responses_api_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/responses": {
+      "semantics": "原生Responses生成/持久终态，按ID查询/删除、input_items分页/视图与实际事件序号续读；标准错误、独立client身份。OPTIONS复用原生CORS。",
+      "boundary": "源码/针对性CPU已过，未做本组模型验收或默认替换。后台/实时事件与恢复、其余执行依赖仍为必做任务；当前不可用不等于兼容完成。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_2026-11-08.md",
+        "docs/evidence/serve-responses-execution-20261109/README.md",
+        "tests/server_responses_execution_test.cpp",
+        "tests/server_responses_api_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/responses/{response_id}": {
+      "semantics": "原生Responses生成/持久终态，按ID查询/删除、input_items分页/视图与实际事件序号续读；标准错误、独立client身份。OPTIONS复用原生CORS。",
+      "boundary": "源码/针对性CPU已过，未做本组模型验收或默认替换。后台/实时事件与恢复、其余执行依赖仍为必做任务；当前不可用不等于兼容完成。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_2026-11-08.md",
+        "docs/evidence/serve-responses-execution-20261109/README.md",
+        "tests/server_responses_execution_test.cpp",
+        "tests/server_responses_api_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/responses/{response_id}/input_items": {
+      "semantics": "原生Responses生成/持久终态，按ID查询/删除、input_items分页/视图与实际事件序号续读；标准错误、独立client身份。OPTIONS复用原生CORS。",
+      "boundary": "源码/针对性CPU已过，未做本组模型验收或默认替换。后台/实时事件与恢复、其余执行依赖仍为必做任务；当前不可用不等于兼容完成。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_2026-11-08.md",
+        "docs/evidence/serve-responses-execution-20261109/README.md",
+        "tests/server_responses_execution_test.cpp",
+        "tests/server_responses_api_test.cpp"
+      ]
+    },
+    "POST /v1/responses": {
+      "semantics": "原生Responses生成/持久终态，按ID查询/删除、input_items分页/视图与实际事件序号续读；标准错误、独立client身份。OPTIONS复用原生CORS。",
+      "boundary": "源码/针对性CPU已过，未做本组模型验收或默认替换。后台/实时事件与恢复、其余执行依赖仍为必做任务；当前不可用不等于兼容完成。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_2026-11-08.md",
+        "docs/evidence/serve-responses-execution-20261109/README.md",
+        "tests/server_responses_execution_test.cpp",
+        "tests/server_responses_api_test.cpp"
       ]
     }
   },

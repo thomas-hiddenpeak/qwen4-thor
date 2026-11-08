@@ -107,7 +107,7 @@ class Stack:
                     self.response(200, dict(object='list', data=[dict(id='cpu-fixture')]))
                 elif self.path.startswith('/v1/models/'):
                     self.model_detail('GET')
-                elif self.path.startswith('/v1/conversations/'):
+                elif self.path.startswith(('/v1/conversations/', '/v1/responses/')):
                     self.application('GET')
                 else:
                     self.response(404, dict(error='absent'))
@@ -135,17 +135,17 @@ class Stack:
                     self.response(403, dict(error=dict(code='invalid_gateway_credentials')))
                     return
                 # Transport oracle only. Native endpoint/SDK semantics are
-                # exercised separately by test_conversations_sdk.mjs.
+                # exercised separately by the Conversations/Responses SDK fixtures.
                 self.response(200, dict(cpu_fixture=True, method=method,
                                         path=self.path, client=row['client']))
             def do_DELETE(self):
-                if self.path.startswith('/v1/conversations/'):
+                if self.path.startswith(('/v1/conversations/', '/v1/responses/')):
                     self.application('DELETE')
                 else:
                     self.model_detail('DELETE')
             def do_POST(self):
                 self.close_connection = True
-                if self.path.split('?', 1)[0] == '/v1/conversations' or self.path.startswith('/v1/conversations/'):
+                if self.path.split('?', 1)[0] in ('/v1/conversations', '/v1/responses') or self.path.startswith(('/v1/conversations/', '/v1/responses/')):
                     self.application('POST')
                     return
                 raw = self.rfile.read(int(self.headers.get('Content-Length', '0')))

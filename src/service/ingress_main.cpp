@@ -349,7 +349,8 @@ constexpr RouteSpec kRoutes[] = {
 };
 
 bool Route(const std::string& method, const std::string& path, bool* control) {
-  if (server::ConversationMethodAllowed(method, path)) {
+  if (server::ConversationMethodAllowed(method, path) ||
+      server::ResponsesMethodAllowed(method, path)) {
     *control = false;
     return true;
   }

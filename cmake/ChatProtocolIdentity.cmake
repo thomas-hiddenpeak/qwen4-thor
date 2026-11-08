@@ -75,6 +75,12 @@ set(protocol_inputs
   src/server/object_protocol.h
   include/q4t/server/responses_state.h
   src/server/responses_state.cpp
+  include/q4t/server/responses_execution.h
+  src/server/responses_execution.cpp
+  include/q4t/server/responses_api.h
+  src/server/responses_api.cpp
+  include/q4t/server/application_query.h
+  src/server/application_query.cpp
   include/q4t/server/conversation_state.h
   src/server/conversation_state.cpp
   include/q4t/server/conversation_api.h

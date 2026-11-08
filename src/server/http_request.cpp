@@ -246,7 +246,8 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
     headers->failure = HttpReceiveFailure::kMalformed;
   }
   if (target == "/v1/chat/completions" || target == "/v1/chat/preflight" ||
-      target == "/v1/completions" || IsConversationTarget(target)) {
+      target == "/v1/completions" || IsResponsesTarget(target) ||
+      IsConversationTarget(target)) {
     if (lease && !lease->Acquire(length)) {
       if (failure_status) *failure_status = 503;
       headers->failure = HttpReceiveFailure::kBodyCapacity;

@@ -57,6 +57,26 @@ bool Close(ThinkingBudget* budget, std::string* text) {
 }
 }  // namespace
 
+Q4T_TEST(thinking_usage_tracks_unbounded_tokens_without_forcing_output) {
+  q4t::server::ThinkingBudget usage;
+  Q4T_CHECK(usage.Init(-1, "<think>\n", false, true, true));
+  Q4T_CHECK(!usage.Enabled() && usage.Tracking() && usage.CanSpeculate(100000));
+  Q4T_CHECK(usage.Observe(1, "checking"));
+  Q4T_CHECK(usage.Observe(2, "</thi"));
+  Q4T_CHECK(usage.Observe(3, "nk>answer"));
+  Q4T_CHECK(usage.Observe(4, "<tool_call><think></tool_call>"));
+  Q4T_CHECK(usage.Observe(5, "<think>again"));
+  Q4T_CHECK(usage.Observe(6, "</think>"));
+  Q4T_CHECK(usage.Observe(7, "", true));
+  Q4T_CHECK(usage.ReasoningTokens() == 5 && usage.ForcedTokens() == 0);
+  Q4T_CHECK(usage.Allows("<think>") && usage.ForcedToken() == -1);
+  q4t::server::ThinkingBudget old;
+  Q4T_CHECK(old.Init(-1, "arbitrary legacy prompt", false, false));
+  Q4T_CHECK(!old.Tracking() && old.Observe(1, "<think>"));
+  Q4T_CHECK(old.ReasoningTokens() == 0);
+  return true;
+}
+
 Q4T_TEST(thinking_budget_input_exact_integer_and_modes) {
   for (const auto* wire : {"0", "1", "1e1", "2147483647", "null", "-0"}) {
     auto request =

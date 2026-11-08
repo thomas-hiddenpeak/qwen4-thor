@@ -25,6 +25,7 @@
 #include "q4t/server/request_json.h"
 #include "q4t/server/client_request.h"
 #include "q4t/server/conversation_api.h"
+#include "q4t/server/responses_api.h"
 #include "q4t/server/output_schema.h"
 
 namespace q4t::server {
@@ -308,7 +309,8 @@ void ChatServer::HandleClient(int fd, bool operations) {
       admission = &counter;
       if (method == "POST" &&
           (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
-           path == "/v1/completions" || IsConversationTarget(path))) {
+           path == "/v1/completions" || IsResponsesTarget(path) ||
+           IsConversationTarget(path))) {
         const auto memory = memory_admission_.Observe();
         if (!memory.Allowed()) {
           RecordMemoryRejection(fd, memory.state, MemoryCheckpoint::kHeaders);
@@ -338,8 +340,8 @@ void ChatServer::HandleClient(int fd, bool operations) {
       return;
     }
     if (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
-        path == "/v1/completions" || path == "/v1/requests/cancel" ||
-        IsConversationTarget(path)) {
+        path == "/v1/completions" || IsResponsesTarget(path) ||
+        path == "/v1/requests/cancel" || IsConversationTarget(path)) {
       if (method == "POST") {
         std::string type = headers.content_type;
         for (char& c : type)
@@ -391,7 +393,9 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     if (auto* context = detail::HttpResponseContext::Current(fd))
       context->RecordReceiveFailure(reason, status);
   };
-  if (IsConversationTarget(path)) {
+  if (IsConversationTarget(path) ||
+      (IsResponsesTarget(path) &&
+       path.substr(0, path.find('?')) != "/v1/responses")) {
     const auto* context = detail::HttpResponseContext::Current(fd);
     if (!objects_ || !context || !context->Client().Allowed()) {
       SendError(fd, 503, "Authenticated application state unavailable", {},
@@ -408,6 +412,10 @@ void ChatServer::Dispatch(int fd, const std::string& method,
                          return stop_requested_.load() ||
                                 detail::ClientConnectionFailed(fd);
                        }};
+    if (IsResponsesTarget(path)) {
+      ServeResponsesState(fd, *objects_, method, path, body, access);
+      return;
+    }
     auto reply =
         HandleConversationRequest(*objects_, method, path, body, access);
     if (reply.ok())
@@ -445,7 +453,7 @@ void ChatServer::Dispatch(int fd, const std::string& method,
       path == "/v1/config" || path == "/metrics")
     expected = "GET";
   else if (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
-           path == "/v1/completions" ||
+           path == "/v1/completions" || path == "/v1/responses" ||
            path == "/v1/requests/cancel")
     expected = "POST";
   if (!expected.empty() && method != expected) {
@@ -519,7 +527,11 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     return;
   }
   if (path == "/v1/completions" && method == "POST") {
-    HandleChat(fd, body, true);
+    HandleChat(fd, body, GenerationApi::kCompletion);
+    return;
+  }
+  if (path == "/v1/responses" && method == "POST") {
+    HandleChat(fd, body, GenerationApi::kResponse);
     return;
   }
   rejected(HttpReceiveFailure::kRoute, 404);

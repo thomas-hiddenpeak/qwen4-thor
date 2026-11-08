@@ -2,6 +2,7 @@
 #include "chat_server_internal.h"
 
 #include <new>
+#include <optional>
 #include "cuda_memory_backend.h"
 
 #include <algorithm>
@@ -24,6 +25,7 @@
 #include "q4t/server/chat_choices.h"
 #include "q4t/server/completion_plan.h"
 #include "q4t/server/completion_response.h"
+#include "q4t/server/responses_execution.h"
 #include "q4t/server/token_logprobs.h"
 #include "q4t/server/media_admission.h"
 #include "q4t/server/chat_response_parser.h"
@@ -90,12 +92,32 @@ using detail::SendSimple;
 using detail::SseChunk;
 using detail::WriteAll;
 
-void ChatServer::HandleChat(int fd, const std::string& body, bool completion) {
+void ChatServer::HandleChat(int fd, const std::string& body,
+                            GenerationApi api) {
   detail::ResponseState response = detail::ResponseState::kUnsent;
   auto* context = detail::HttpResponseContext::Current(fd);
   auto* state = context ? context->State() : &response;
+  std::optional<ResponsesExecution> responses;
+  ScopeExit clear_response_hooks([&] {
+    if (context) {
+      context->SetResponsesStream(nullptr, nullptr, nullptr);
+      context->SetErrorObserver(nullptr, nullptr);
+    }
+  });
   try {
-    HandleChatImpl(fd, body, state, completion);
+    if (api == GenerationApi::kResponse) {
+      if (!objects_ || !context || !context->Client().Allowed()) {
+        SendError(fd, 503, "Authenticated application state unavailable", {},
+                  "object_scope_unavailable");
+        return;
+      }
+      responses.emplace(*objects_);
+      context->SetResponsesStream(&ResponsesExecution::RenderStreamError,
+                                  &*responses, responses->Sequence());
+      context->SetErrorObserver(&ResponsesExecution::ObserveError, &*responses);
+    }
+    HandleChatImpl(fd, body, state, api == GenerationApi::kCompletion,
+                   responses ? &*responses : nullptr);
   } catch (const std::bad_alloc&) {
     detail::SendExceptionResponse(fd, *state,
                                   detail::ExceptionKind::kHostMemory);
@@ -106,11 +128,25 @@ void ChatServer::HandleChat(int fd, const std::string& body, bool completion) {
     std::fprintf(stderr, "[q4t] unknown request exception\n");
     detail::SendExceptionResponse(fd, *state);
   }
+  if (responses) {
+    try {
+      const auto closed = responses->CloseUnfinished();
+      if (!closed.ok())
+        std::fprintf(stderr,
+                     "[responses] state close id=%s code=%s unknown=%d\n",
+                     responses->Id().c_str(), closed.code.c_str(),
+                     closed.commit_unknown);
+    } catch (...) {
+      // An auxiliary state failure never terminates/restarts the model.
+      std::fprintf(stderr, "[responses] state close unavailable\n");
+    }
+  }
 }
 
 void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                 detail::ResponseState* response_state,
-                                bool completion) {
+                                bool completion,
+                                ResponsesExecution* responses) {
   auto* http = detail::HttpResponseContext::Current(fd);
   metrics_.requests_total.fetch_add(1, std::memory_order_relaxed);
   const auto t_arrive = std::chrono::steady_clock::now();
@@ -180,7 +216,26 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   std::vector<PreparedCompletionPrompt> completion_prompts;
   uint64_t completion_prompt_tokens = 0, completion_output_tokens = 0;
   ChatPlanError planning_error;
-  if (completion) {
+  if (responses) {
+    const auto& identity = http->Client();
+    StateAccess access{
+        identity.Scoped() ? "client:" + std::string(identity.Id())
+                          : "local:anonymous",
+        t_arrive + std::chrono::milliseconds(original_request.GetInt(
+                       "request_timeout_ms", request_deadline_ms_)),
+        [this, fd] {
+          return stop_requested_.load() || detail::ClientConnectionFailed(fd);
+        }};
+    auto reply = responses->Prepare(original_request, planning_config,
+                                    std::move(access), std::time(nullptr));
+    if (!reply.ok()) {
+      SendError(fd, reply.http_status, reply.message, {}, reply.code,
+                reply.value.GetString("param"));
+      return;
+    }
+    original_request = responses->Generation().generation_request;
+    request_plan = responses->Generation().chat;
+  } else if (completion) {
     s = PlanCompletionRequest(original_request, planning_config,
                                &completion_plan, &planning_error);
     if (s) {
@@ -225,7 +280,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   std::string request_id = req.GetString("request_id");
   // Shape, credentials and exact integer spelling were checked before leases.
   if (!external_id)
-    request_id = detail::NewRequestId(completion ? "cmpl-auto-" : "chatcmpl-auto-");
+    request_id = responses ? responses->Id()
+                           : detail::NewRequestId(
+                                 completion ? "cmpl-auto-" : "chatcmpl-auto-");
   auto deadline = t_arrive + std::chrono::milliseconds(request_deadline_ms_);
   if (req.Has("request_timeout_ms")) {
     deadline =
@@ -257,6 +314,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                  http->TraceId().c_str(), request_id.c_str());
   detail::ServeFaultPoint("handler.after_register");
   const auto cancelled = [&] { return RequestCancelled(control.get(), fd); };
+  if (responses)
+    responses->BindCancellation(deadline, [control, fd] {
+      return RequestCancelled(control.get(), fd);
+    });
   const auto send_cancel_error = [&](const char* message) {
     SendError(
         fd, 409, message,
@@ -475,7 +536,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         sampling.choices == 1
             ? request_id
             : request_id + "_choice_" + std::to_string(choice_index),
-        !stream, request_plan.legacy_output);
+        !stream && !responses, request_plan.legacy_output);
     if (!s.ok()) {
       SendError(fd, 400, s.message());
       return;
@@ -488,7 +549,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       s = thinking_budget.Init(
           reasoning_options.token_budget, prompt, constraints.json_output,
           (request_tools && !request_tools->array.empty()) ||
-              constraints.choice == OutputConstraints::ToolChoice::kNone);
+              constraints.choice == OutputConstraints::ToolChoice::kNone,
+          responses != nullptr);
     if (s && thinking_budget.Enabled()) {
       auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer, cancelled);
       if (!lock.owns_lock()) {
@@ -552,13 +614,23 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     }
     SampledToken selected_sample;
     TokenLogprobs token_logprobs(
-        !stream, completion,
+        !stream && !responses, completion,
         completion && completion_plan.echo
-            ? Utf8Characters(completion_prompt->echo_text) : 0);
+            ? Utf8Characters(completion_prompt->echo_text)
+            : 0,
+        responses != nullptr);
     PredictionCursor prediction(prompt_budget.prediction_tokens);
     uint64_t prediction_pairs = 0;
     uint64_t prediction_pair_matches = 0;
     const auto start_stream = [&] {
+      std::string response_start;
+      if (responses && !responses->Begun()) {
+        const auto started = responses->Begin(&response_start);
+        if (!started.ok()) {
+          SendError(fd, started.http_status, started.message, {}, started.code);
+          return false;
+        }
+      }
       if (!stream) return true;
       if (cancelled()) {
         count_abort();
@@ -568,14 +640,16 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       const detail::WriteOptions options{.control = control.get()};
       if ((!headers_started &&
            !detail::BeginStreamingResponse(fd, response_state, options)) ||
-          !WriteAll(fd, completion
-                            ? CompletionChunk(
-                                  id, model_field, created, choice_index, "", "",
-                                  "null", include_usage,
-                                  completion_plan.include_obfuscation)
-                            : SseChunk(id, model_field, "assistant", "", "",
-                                         choice_index, created, include_usage),
-                     options)) {
+          !WriteAll(
+              fd,
+              responses ? response_start
+              : completion
+                  ? CompletionChunk(id, model_field, created, choice_index, "",
+                                    "", "null", include_usage,
+                                    completion_plan.include_obfuscation)
+                  : SseChunk(id, model_field, "assistant", "", "", choice_index,
+                             created, include_usage),
+              options)) {
         control->Cancel(RequestControl::State::kDisconnect);
         count_abort();
         return false;
@@ -1675,17 +1749,22 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           response_status = token_logprobs.Emit(delta, &logprobs);
           if (!response_status) return false;
         }
+        std::string response_chunk;
+        if (responses) {
+          response_status = responses->Append(delta, logprobs, &response_chunk);
+          if (!response_status) return false;
+        }
         if (!stream) continue;
         detail::ServeFaultPoint("handler.before_content");
-        const auto chunk = completion
-                               ? CompletionChunk(
-                                     id, model_field, created, choice_index,
-                                     delta.text, "", logprobs, include_usage,
-                                     completion_plan.include_obfuscation)
-                               : detail::SseDeltaChunk(
-                                     id, model_field, delta.ToJson(), "",
-                                     choice_index, created, include_usage,
-                                     logprobs);
+        const auto chunk =
+            responses ? response_chunk
+            : completion
+                ? CompletionChunk(id, model_field, created, choice_index,
+                                  delta.text, "", logprobs, include_usage,
+                                  completion_plan.include_obfuscation)
+                : detail::SseDeltaChunk(id, model_field, delta.ToJson(), "",
+                                        choice_index, created, include_usage,
+                                        logprobs);
         if (!write_stream(chunk))
           return false;
         if (!first_delta_sent) {
@@ -1710,8 +1789,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     // tokens. Model history is never reconstructed from parsed response text.
     const auto consume_token = [&](int32_t token) {
       if (completion && is_stop_token(token)) return true;
-      if (!completion && !stream && !thinking_budget.Enabled() && !text_stop.Enabled() &&
-          !sampling.logprobs && !prediction_enabled)
+      if (!responses && !completion && !stream && !thinking_budget.Enabled() &&
+          !text_stop.Enabled() && !sampling.logprobs && !prediction_enabled)
         return true;
       std::string piece;
       {
@@ -1724,12 +1803,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                 return tok_->Decode({static_cast<uint32_t>(id)}, false, bytes);
               });
       }
-      if (response_status && thinking_budget.Enabled())
+      if (response_status && thinking_budget.Tracking())
         response_status =
             thinking_budget.Observe(token, piece, is_stop_token(token));
       if (!response_status) return false;
-      if (completion || stream || text_stop.Enabled() || sampling.logprobs ||
-          prediction_enabled) {
+      if (responses || completion || stream || text_stop.Enabled() ||
+          sampling.logprobs || prediction_enabled) {
         std::vector<detail::Utf8Span> spans;
         const auto normalized =
             utf8.Append(piece, visible_logprobs ? &spans : nullptr);
@@ -2685,14 +2764,16 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       return;
     }
     diagnostic.Stage("response");
-    if (response_status && structured && !structured->Terminated())
+    if (response_status && structured && !structured->Terminated() &&
+        !(responses && finish_reason == "length" &&
+          structured->Failure() == GrammarFailure::kNone))
       response_status = Status::Fail(
           "constrained response did not reach a grammar-accepted stop token");
     // Both transports use the same parser. Never publish a successful terminal
     // (or a session snapshot) for malformed/truncated model tool output.
     if (response_status.ok()) {
-      if (completion || stream || text_stop.Enabled() || sampling.logprobs ||
-          prediction_enabled) {
+      if (responses || completion || stream || text_stop.Enabled() ||
+          sampling.logprobs || prediction_enabled) {
         std::vector<detail::Utf8Span> spans;
         const auto tail = utf8.Finish(visible_logprobs ? &spans : nullptr);
         if (visible_logprobs) token_logprobs.Map(spans);
@@ -2715,8 +2796,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     }
     if (response_status.ok()) {
       std::vector<ResponseDelta> deltas;
-      response_status = response_parser.Finish(finish_reason == "length",
-                                               &deltas, text_stop.Matched());
+      response_status =
+          responses && finish_reason == "length"
+              ? response_parser.FinishIncomplete(&deltas)
+              : response_parser.Finish(finish_reason == "length", &deltas,
+                                       text_stop.Matched());
       if (response_status.ok()) write_deltas(deltas);
     }
     if (text_stop.Enabled()) {
@@ -2782,7 +2866,20 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     }
     // A choice is complete, but the external request retains admission,
     // cancellation and quota ownership until all choices finish.
-    if (completion) {
+    std::string response_terminal;
+    if (responses) {
+      const auto finished = responses->Finish(
+          finish_reason == "length", response_parser.CompletedToolCalls(),
+          {T, restored_prefix, static_cast<int64_t>(generated.size()),
+           thinking_budget.ReasoningTokens()},
+          std::time(nullptr), &response_terminal);
+      if (!finished.ok()) {
+        err_guard.ok = false;
+        SendError(fd, finished.http_status, finished.message, {},
+                  finished.code);
+        return;
+      }
+    } else if (completion) {
       CompletionCandidate candidate;
       candidate.text = (completion_plan.echo ? completion_prompt->echo_text : "") +
                         response_parser.Content();
@@ -2811,7 +2908,18 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     }
     const bool final_choice = choice_index + 1 == sampling.choices;
     if (final_choice) stop_heartbeat.Run();
-    if (stream) {
+    if (responses) {
+      if (stream) {
+        if (http) http->BeforeTerminal();
+        *response_state = detail::ResponseState::kTerminal;
+        write_stream(response_terminal);
+      } else if (!SendSimple(fd, 200, "OK", responses->Output().Json(),
+                             "application/json", {.control = control.get()})) {
+        client_disconnected = true;
+        control->Cancel(RequestControl::State::kDisconnect);
+        count_abort();
+      }
+    } else if (stream) {
       const auto finish_chunk = completion
           ? CompletionChunk(id, model_field, created, choice_index, "",
                               finish_reason,

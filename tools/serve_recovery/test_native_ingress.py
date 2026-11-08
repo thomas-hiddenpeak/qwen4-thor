@@ -156,6 +156,46 @@ class NativeTests(fixture.NginxTests):
             response.close()
             connection.close()
 
+    def test_responses_preserve_methods_queries_and_authenticated_scope(self):
+        self.ready()
+        routes = [('POST', '/v1/responses'),
+                  ('GET', '/v1/responses/resp_1?stream=true&starting_after=1&'
+                          'include_obfuscation=false'),
+                  ('GET', '/v1/responses/resp_1/input_items?limit=2&order=asc&'
+                          'include%5B%5D=message.output_text.logprobs'),
+                  ('DELETE', '/v1/responses/resp_1')]
+        for method, path in routes:
+            with self.subTest(method=method, path=path):
+                body = b'{"input":"query"}' if method == 'POST' else b''
+                before = len(self.stack.application_requests)
+                self.assertEqual(self.raw('Authorization: Bearer wrong\r\n',
+                    method=method, path=path, length=len(body), body=body)[0], 401)
+                self.assertEqual(len(self.stack.application_requests), before)
+                for key, client in [('A', 'alpha'), ('B', 'beta')]:
+                    self.assertEqual(self.raw('Authorization: Bearer '+key*40+'\r\n',
+                        method=method, path=path, length=len(body), body=body)[0], 200)
+                    row = self.stack.application_requests[-1]
+                    self.assertEqual((row['method'], row['path'], row['body']),
+                                     (method, path, body.decode()))
+                    self.assertEqual((row['client'], row['token']), (client, 'e'*64))
+                    self.assertIsNone(row['authorization'])
+
+    def test_responses_share_data_capacity_and_actual_peer_cidr(self):
+        self.replace_stack(per_client_inflight=1, global_inflight=1,
+                           allowed_client_cidrs=['127.0.0.1/32'])
+        auth = 'Authorization: Bearer '+'A'*40+'\r\n'
+        path = '/v1/responses/resp_1/input_items'
+        self.assertEqual(self.raw(auth, method='GET', path=path,
+                                  source='127.0.0.2')[0], 403)
+        connection, response = self.stream()
+        try:
+            self.assertEqual(self.raw(auth, method='GET', path=path)[0], 429)
+            self.assertEqual(self.stack.application_requests, [])
+            self.assertEqual(self.stack.request(path='/livez')[0], 200)
+        finally:
+            response.close()
+            connection.close()
+
     def test_duplicate_bearer_and_ambiguous_framing_never_reach_backend(self):
         self.ready()
         auth = 'Authorization: Bearer '+'A'*40+'\r\n'

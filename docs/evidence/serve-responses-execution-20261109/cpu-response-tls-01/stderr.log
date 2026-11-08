@@ -1,0 +1,6 @@
+test_responses_use_native_tls_cors_and_identity (__main__.AccessTests.test_responses_use_native_tls_cors_and_identity) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 2.777s
+
+OK

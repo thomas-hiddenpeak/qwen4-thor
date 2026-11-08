@@ -12,6 +12,7 @@
 #include "q4t/server/object_store.h"
 int GrammarProcessFixture(int argc, char** argv);
 int ConversationApiFixture(int argc, char** argv);
+int ResponsesApiFixture(int argc, char** argv);
 #endif
 
 int main(int argc, char** argv) {
@@ -26,6 +27,8 @@ int main(int argc, char** argv) {
   if (fixture >= 0) return fixture;
   const int conversation = ConversationApiFixture(argc, argv);
   if (conversation >= 0) return conversation;
+  const int responses = ResponsesApiFixture(argc, argv);
+  if (responses >= 0) return responses;
 #endif
   std::string filter, required;
   bool list = false, allow_skips = false, has_filter = false;
