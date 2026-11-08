@@ -1,0 +1,15 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_responses.test_acceptance"
+  ],
+  "env": {
+    "Q4T_TEST_OUTPUT_DIR": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/cpu-business-driver-01/work",
+    "Q4T_HOST_TESTS": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t_host_tests",
+    "Q4T_NODE_SDK_DIR": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk"
+  }
+}

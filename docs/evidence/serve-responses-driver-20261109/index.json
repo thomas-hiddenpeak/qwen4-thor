@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 46,
+      "sha256": "a8f45dac7bea3472e89afe17d43b7194f6b23875fb02960cc0e2fe1cd2189a49"
+    },
+    {
+      "path": "cpu-business-bridge-01/command.json",
+      "bytes": 456,
+      "sha256": "7ff34dafe44860e4611f9e26f0843916e70cde30a72dc715b0b010eccf22bbe9"
+    },
+    {
+      "path": "cpu-business-bridge-01/result.json",
+      "bytes": 62,
+      "sha256": "cf342b38ca7cade1c772c60a077b0ae6861ae9fc8d1e57d4761ffac0daea7ca3"
+    },
+    {
+      "path": "cpu-business-bridge-01/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "cpu-business-bridge-01/stdout.log",
+      "bytes": 296,
+      "sha256": "9949dec3bb2a646a5170f7c0fc8e1c8939f4dfedb217addbc076346fb536ea44"
+    },
+    {
+      "path": "cpu-business-bridge-01/work/native-bridge/fixture.log",
+      "bytes": 92,
+      "sha256": "99b678a0ac8cf780ae95c4c8b1fe9221c2ee4ab9ed08f0cf24c5299f7798a76f"
+    },
+    {
+      "path": "cpu-business-bridge-01/work/native-bridge/objects/.q4t-format",
+      "bytes": 27,
+      "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b"
+    },
+    {
+      "path": "cpu-business-bridge-01/work/native-bridge/objects/.q4t-lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "cpu-business-bridge-01/work/native-bridge/objects/e47417761d6867ac006d1671754f6c00a96d1f214534a92a7be2b57ee6bfe094.item.item_486ccb22983972620204b225a3c0f293.json",
+      "bytes": 456,
+      "sha256": "73e75751c6efb2580bc8d9a3892f6d0e2720ffa056865ee5ffdf861abde7be62"
+    },
+    {
+      "path": "cpu-business-bridge-01/work/native-bridge/objects/e47417761d6867ac006d1671754f6c00a96d1f214534a92a7be2b57ee6bfe094.item.msg_229fbcbbe2b6b120bcdee90bf883a915.json",
+      "bytes": 506,
+      "sha256": "f31a8426e9bb2992c59f4fec3fd958166325eab420e3a0490c2906fad3036c9c"
+    },
+    {
+      "path": "cpu-business-bridge-01/work/native-bridge/ready.json",
+      "bytes": 28,
+      "sha256": "d26b762817087cc62271c767ae85a5f992c165d6f6d443beacabfa2c1fed591d"
+    },
+    {
+      "path": "cpu-business-driver-01/command.json",
+      "bytes": 491,
+      "sha256": "d3a271d02c3f1901005f64422db83b36ea7e52621920670da0ac6479f69c6d24"
+    },
+    {
+      "path": "cpu-business-driver-01/result.json",
+      "bytes": 63,
+      "sha256": "70f71fdf160216522f0e58312d66f741ed971c3aca63fe988c3a203e10d2ca5f"
+    },
+    {
+      "path": "cpu-business-driver-01/stderr.log",
+      "bytes": 614,
+      "sha256": "90e6f441f9d8aad6f7e8cd376591ebdf337e108310a06138ad2858ed9d57405b"
+    },
+    {
+      "path": "cpu-business-driver-01/stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "source-files.json",
+      "bytes": 547,
+      "sha256": "77c53b428e6742cb5e0376672288cebc8fbda8ad4594bf00842f461483fb8cbc"
+    }
+  ]
+}

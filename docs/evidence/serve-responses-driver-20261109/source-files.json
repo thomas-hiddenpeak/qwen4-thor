@@ -1,0 +1,7 @@
+{
+  "tools/serve_responses/acceptance.py": "745bd17ee695a5591ffaf54bbb2db7d7bf633f89e4b236b8af29cc682ceeeee3",
+  "tools/serve_responses/sdk.mjs": "bdba2de702643da53562dbddcb6afa27d9bc97ea0b3069e18312c4cfb07195a4",
+  "tools/serve_responses/run_sdk.mjs": "7db92cbe35e7ab5406835bcb1e4486f9d02610f206b1bbecf8c5ff9e2b02d7f7",
+  "tools/serve_responses/test_acceptance.py": "fe837f22dd22157d13369b92985ddd38a4d831f74dc5685b2d31c67717d33d87",
+  "tools/serve_responses/test_bridge.mjs": "be7f2c2c22aef9b6f1854876f4c76ff1aff7aa78f3abf53e5f32f1c6f0dab447"
+}

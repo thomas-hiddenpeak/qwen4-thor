@@ -2,6 +2,15 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+[真实业务驱动CPU](evidence/serve-responses-driver-20261109/README.md)3 Python
+及2实际SDK桥接通过。将提交驱动后冻结来源执行GPU首组短验。
+
+Responses源码检查点`3c7538ca`已推送。继续准备第一组真实业务短验，
+冻结1计划启动/7生成，保留2启动/8生成/900秒上限；覆盖无状态JSON、
+概率与续读、推理计量、真实资料工具/回填JSON、截断、同PID Chat。
+状态只写阶段目录，不替换默认。先做3驱动CPU和2实际SDK桥接CPU；
+后台/实时事件/恢复仍继续，不以同步子集通过结束总目标。
+
 Responses共享生成与读接口源码检查点：23不同C++、6官方SDK CPU、
 3实际原生入口通过，3次构建零警告。修复概率最终item缺原始bytes、
 与delta/done混用的真实缺陷；失败原件保留，只重验受影响项。
