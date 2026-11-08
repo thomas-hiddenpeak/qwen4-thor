@@ -37,7 +37,7 @@ try {
   else if (input.action === 'chat') {
     result = await client.chat(input.request, options);
     delete result.raw;
-    if (result.finish_reason === 'tool_calls') {
+    if (['tool_calls', 'function_call'].includes(result.finish_reason)) {
       requireValue(input.tool_profile === 'project-records-v1', 'explicit tool profile required');
       planned = prepareToolCalls(result, VALIDATORS);
     }

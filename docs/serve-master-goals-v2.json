@@ -129,7 +129,25 @@
       "remaining_required": [
         "legacy functions/function_call and function role history",
         "custom tools text/grammar, history and actual execution evidence"
-      ]
+      ],
+      "active_subset": {
+        "name": "legacy functions/function_call",
+        "state": "CPU_verified_business_pending",
+        "plan": "docs/SERVE_LEGACY_TOOLS_2026-11-08.md",
+        "cpu": {
+          "cpp": 31,
+          "request_contracts": 53,
+          "python": 12,
+          "js": 6
+        },
+        "business": {
+          "planned_starts": 1,
+          "planned_chats": 7,
+          "max_starts": 2,
+          "max_chats": 8,
+          "max_seconds": 900
+        }
+      }
     },
     {
       "id": "A05",
@@ -574,5 +592,5 @@
     }
   ],
   "next_task": "A04",
-  "next": "继续A04 legacy functions/function_call和custom text/grammar，随后A05等总计划；子组不是停止点。"
+  "next": "Legacy真实闭环交付后继续custom text/grammar与后续A05等全部计划任务。"
 }

@@ -5,6 +5,7 @@
 #include <limits>
 
 #include "q4t/server/chat_contract.h"
+#include "q4t/server/legacy_tools.h"
 #include "q4t/server/media_admission.h"
 #include "q4t/server/chat_protocol_identity.h"
 #include "q4t/server/http_request.h"
@@ -61,6 +62,16 @@ Status PlanChatRequest(const io::Json& req, const ChatPlanConfig& config,
                        ChatRequestPlan* plan, ChatPlanError* error) {
   *plan = {};
   *error = {};
+  if (HasLegacyTools(req)) {
+    LegacyToolRequest normalized;
+    auto status = NormalizeLegacyTools(req, &normalized, &error->param);
+    if (!status) return status;
+    status = PlanChatRequest(normalized.request, config, plan, error);
+    if (!status) LegacyToolErrorParam(req, &error->param);
+    plan->legacy_output = normalized.legacy_output;
+    plan->normalized_request = std::move(normalized.request);
+    return status;
+  }
   auto status = ValidateChatContract(req, config.model, config.allow_media,
                                      &error->param);
   if (!status) return status;

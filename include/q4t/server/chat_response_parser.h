@@ -2,6 +2,7 @@
 #pragma once
 
 #include <string>
+#include <optional>
 #include <string_view>
 #include <unordered_map>
 #include <unordered_set>
@@ -34,6 +35,7 @@ struct ResponseDelta {
   // Only the first fragment carries the call ID/type/name. Later fragments
   // append arguments for the same index; none authorizes tool execution.
   bool tool_start = true;
+  bool legacy_function = false;
   std::string ToJson() const;
 };
 
@@ -45,13 +47,17 @@ class ChatResponseParser {
   // request must outlive this parser; collect=false bounds streaming memory
   // to one tool block plus delimiter lookahead. Input must be valid UTF-8.
   Status Init(const io::Json& request, std::string_view prompt,
-              const std::string& request_id, bool collect);
+              const std::string& request_id, bool collect,
+              bool legacy_function = false);
   Status Append(std::string_view text, std::vector<ResponseDelta>* deltas);
   // Intentional text stopping may end reasoning, but never a partial tool.
   Status Finish(bool length_limited, std::vector<ResponseDelta>* deltas,
                 bool text_stopped = false);
   std::string MessageJson() const;
   bool HasToolCalls() const { return tool_count_ != 0; }
+  const char* ToolFinishReason() const {
+    return legacy_function_ ? "function_call" : "tool_calls";
+  }
   bool Thinking() const { return region_ == Region::kReasoning; }
   // Earlier bytes cannot produce another delta. Deferred constrained output
   // remains live until Finish validates it and publishes all deltas.
@@ -71,6 +77,8 @@ class ChatResponseParser {
             std::vector<ResponseDelta>* deltas);
 
   bool parsed_ = false;
+  bool legacy_function_ = false;
+  std::optional<io::Json> normalized_request_;
   bool collect_ = false;
   bool initialized_ = false;
   bool finished_ = false;

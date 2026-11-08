@@ -147,7 +147,7 @@ def _message(value):
     require(isinstance(value, dict) and value.get("role") == "assistant",
             "expected assistant message")
     require(not (set(value) - {"role", "content", "reasoning_content", "reasoning",
-                               "tool_calls"}), "unsupported message field")
+                               "tool_calls", "function_call"}), "unsupported message field")
     require("content" in value, "missing message content")
     if value["content"] is not None:
         _text(value["content"], "invalid content")
@@ -160,6 +160,12 @@ def _message(value):
     require(isinstance(calls, list) and len(calls) <= MAX_TOOL_CALLS,
             "invalid tool call list")
     ids = set()
+    function = value.get("function_call")
+    if function is not None:
+        require(not calls and isinstance(function, dict) and
+                set(function) == {"name", "arguments"}, "invalid legacy function call")
+        _text(function.get("name"), "missing function name", True)
+        _arguments(function.get("arguments"))
     for call in calls:
         require(isinstance(call, dict) and call.get("type") == "function",
                 "expected function tool call")
@@ -217,11 +223,14 @@ def _completion(identifier, model, message, finish, usage, logprobs=None,
     _text(identifier, "missing response id", True)
     _text(model, "missing response model", True)
     message = _message(message)
-    require(finish in ("stop", "tool_calls", "length"),
+    require(finish in ("stop", "tool_calls", "function_call", "length"),
             "unsupported or missing finish_reason")
     has_tools = bool(message.get("tool_calls"))
     require(finish != "tool_calls" or has_tools, "tool finish without calls")
-    require(finish != "stop" or not has_tools, "tool calls with stop finish")
+    legacy = message.get("function_call") is not None
+    require(finish != "function_call" or legacy, "function finish without call")
+    require(not legacy or finish in ("function_call", "length"), "legacy call finish mismatch")
+    require(finish != "stop" or not (has_tools or legacy), "tool calls with stop finish")
     return Completion(identifier, model, message, finish, _usage(usage, choice_count),
                       _logprobs(logprobs))
 
@@ -289,6 +298,7 @@ class _ChoiceStream:
         self.choice_count = 1
         self.reasoning_field = None
         self.content, self.reasoning, self.calls = [], [], []
+        self.function_call = None
 
     def feed(self, event):
         _envelope(event, "chat.completion.chunk")
@@ -318,7 +328,7 @@ class _ChoiceStream:
         delta = choice.get("delta")
         require(isinstance(delta, dict), "missing delta")
         require(not (set(delta) - {"role", "content", "reasoning_content", "reasoning",
-                                   "tool_calls"}), "unsupported delta field")
+                                   "tool_calls", "function_call"}), "unsupported delta field")
         if "role" in delta:
             require(not self.role and delta["role"] == "assistant",
                     "invalid or duplicate assistant role")
@@ -337,13 +347,22 @@ class _ChoiceStream:
         require(isinstance(calls, list), "invalid tool delta list")
         for call in calls:
             self.tool(call)
+        function = delta.get("function_call")
+        if function is not None:
+            require(not self.calls and isinstance(function, dict) and
+                    not (set(function) - {"name", "arguments"}), "invalid legacy function delta")
+            if self.function_call is None:
+                self.function_call = dict(name=[], arguments=[])
+            for name, value in function.items():
+                self.function_call[name].append(_text(value, "invalid function " + name))
         finish = choice.get("finish_reason")
         if finish is not None:
-            require(finish in ("stop", "tool_calls", "length"),
+            require(finish in ("stop", "tool_calls", "function_call", "length"),
                     "unsupported finish_reason")
             self.finish = finish
 
     def tool(self, delta):
+        require(self.function_call is None, "mixed function and tool delta dialects")
         require(isinstance(delta, dict), "invalid tool delta")
         index = delta.get("index")
         require(type(index) is int and 0 <= index <= len(self.calls),
@@ -379,6 +398,10 @@ class _ChoiceStream:
                 function=dict(name="".join(c["name"]),
                               arguments="".join(c["arguments"])))
                 for c in self.calls]
+            if not content:
+                message["content"] = None
+        if self.function_call is not None:
+            message["function_call"] = {k: "".join(v) for k,v in self.function_call.items()}
             if not content:
                 message["content"] = None
         return _completion(self.identifier, self.model, message,
@@ -838,6 +861,14 @@ class ToolInvocation:
     arguments: dict
 
 
+def _invocation_calls(message):
+    if message.get("function_call") is not None:
+        # Legacy result association uses the function name, not a wire ID.
+        function = message["function_call"]
+        return [dict(id=function["name"], type="function", function=function)]
+    return message.get("tool_calls", [])
+
+
 def prepare_tool_calls(completion, validators):
     require(hasattr(completion, "message") and hasattr(completion, "finish_reason"),
             "select an explicit choice before preparing tools")
@@ -846,8 +877,8 @@ def prepare_tool_calls(completion, validators):
     validators maps allowed names to pure checks: return None or raise.
     The application, not this helper, owns execution and any side effects.
     """
-    require(completion.finish_reason == "tool_calls", "not a completed tool turn")
-    calls = _message(completion.message).get("tool_calls", [])
+    require(completion.finish_reason in ("tool_calls", "function_call"), "not a completed tool turn")
+    calls = _invocation_calls(_message(completion.message))
     require(calls, "missing tool calls")
     planned = []
     for call in calls:
@@ -862,22 +893,24 @@ def prepare_tool_calls(completion, validators):
 
 
 def append_tool_results(history, completion, results):
-    require(completion.finish_reason == "tool_calls", "not a completed tool turn")
+    require(completion.finish_reason in ("tool_calls", "function_call"), "not a completed tool turn")
     message = _message(completion.message)
-    calls = message.get("tool_calls", [])
+    calls = _invocation_calls(message)
     require(calls and isinstance(results, dict) and
             set(results) == {c["id"] for c in calls},
             "provide exactly one result for every tool call id")
     following = [message]
     for call in calls:
         content = _text(results[call["id"]], "tool results must be text")
-        following.append(dict(role="tool", tool_call_id=call["id"],
-                              content=content))
+        following.append(dict(role="function", name=call["function"]["name"], content=content)
+                         if message.get("function_call") is not None else
+                         dict(role="tool", tool_call_id=call["id"], content=content))
     return deepcopy(history) + following
 
 
 def append_final(history, completion):
     require(completion.finish_reason == "stop" and
-            not completion.message.get("tool_calls"),
+            not completion.message.get("tool_calls") and
+            not completion.message.get("function_call"),
             "length or tool turn is not a final answer")
     return deepcopy(history) + [_message(completion.message)]

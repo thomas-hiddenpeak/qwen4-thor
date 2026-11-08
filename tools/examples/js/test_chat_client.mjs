@@ -46,6 +46,39 @@ function toolMessage() {
     type: 'function', function: { name: 'read', arguments: JSON.stringify({ path: 'docs/MODEL.md', start_line: 1, line_count: 8 }) } })) };
 }
 
+test('legacy function JSON and incremental SSE SDK roundtrip', async () => {
+  const fn = { name: 'read', arguments: '{"path":"中国/MODEL.md"}' };
+  const message = { role: 'assistant', content: null, function_call: fn };
+  const events = [event({ role: 'assistant', content: '' }),
+    event({ function_call: { name: 're', arguments: '{' } }),
+    event({ function_call: { name: 'ad', arguments: '"path":"中国/' } }),
+    event({ function_call: { arguments: 'MODEL.md"}' } }), event({}, 'function_call'),
+    { ...event({}), choices: [], usage: COUNTS }];
+  const left = client(Buffer.from(JSON.stringify(jsonResponse(message, 'function_call'))));
+  const right = client(encode(events), { stream: true });
+  const a = await left.api.chat(request(false)), b = await right.api.chat(request(true));
+  assert.deepEqual(a.message, b.message);
+  const calls = prepareToolCalls(b, { read: value => { assert.equal(value.path, '中国/MODEL.md'); } });
+  assert.equal(calls[0].call_id, 'read');
+  assert.deepEqual(appendToolResults([], b, { read: '真实记录' }).at(-1),
+    { role: 'function', name: 'read', content: '真实记录' });
+  assert.throws(() => appendToolResults([], b, { wrong: 'x' }), ProtocolError);
+  assert.throws(() => appendFinal([], b), ProtocolError);
+});
+
+test('legacy function partial cancellation and mismatched terminal never execute', async () => {
+  const partial = [event({ role: 'assistant', content: '' }),
+    event({ function_call: { name: 'read', arguments: '{}' } })];
+  for (const events of [partial, [...partial, event({}, 'tool_calls')],
+      [...partial, event({}, 'stop')], [...partial, { error: { message: 'cancelled',
+        type: 'server_error', code: 'cancelled', param: null } }]]) {
+    const run = client(encode(events), { stream: true });
+    await assert.rejects(run.api.chat(request(true)));
+  }
+  assert.throws(() => parseSseWire(encode([...partial, event({}, 'function_call'),
+    { ...event({}), choices: [], usage: COUNTS }], false)));
+});
+
 test('JSON and SSE SDK interpretation agrees with strict captured bytes', async () => {
   const raw = Buffer.from(JSON.stringify(jsonResponse())), sse = encode(streamEvents());
   const left = client(raw), right = client(sse, { stream: true });

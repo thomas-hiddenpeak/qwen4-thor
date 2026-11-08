@@ -35,6 +35,7 @@ Status ChatChoices::Add(int index, std::string_view message,
       !Adds(prediction_rejected_, prediction_rejected))
     return Status::Fail("invalid completion choice accounting");
   if (finish != "stop" && finish != "length" && finish != "tool_calls" &&
+      finish != "function_call" &&
       finish != "content_filter")
     return Status::Fail("invalid completion choice finish reason");
   if (!stream_) {

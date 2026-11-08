@@ -123,7 +123,7 @@ class JsSdkClient:
             return _choices_completion(value["id"], value["model"], value["choices"], value["usage"])
         completion = _completion(value["id"], value["model"], value["message"],
                                  value["finish_reason"], value["usage"], value.get("logprobs"))
-        if completion.finish_reason == "tool_calls":
+        if completion.finish_reason in ("tool_calls", "function_call"):
             expected = [asdict(p) for p in prepare_tool_calls(completion, VALIDATORS)]
             require(payload["planned_tools"] == expected, "JS/Python tool plan disagreement")
         return completion

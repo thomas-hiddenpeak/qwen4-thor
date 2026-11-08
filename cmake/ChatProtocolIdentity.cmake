@@ -63,6 +63,7 @@ set(protocol_inputs
   include/q4t/server/chat_contract.h
   include/q4t/server/sampling.h
   include/q4t/server/prediction.h
+  include/q4t/server/legacy_tools.h
   include/q4t/server/token_logprobs.h
   include/q4t/server/chat_choices.h
   include/q4t/server/chat_plan.h
@@ -95,6 +96,7 @@ set(protocol_inputs
   src/server/chat_contract.cpp
   src/server/sampling.cpp
   src/server/prediction.cpp
+  src/server/legacy_tools.cpp
   src/server/token_logprobs.cpp
   src/server/chat_choices.cpp
   src/server/chat_plan.cpp

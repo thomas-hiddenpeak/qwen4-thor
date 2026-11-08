@@ -115,6 +115,12 @@ custom与真实增量参数流，不继续扩大本组测试。
 A04仍有legacy/custom工具待补，随后A05等总计划；总目标保持active，
 不在本子组停止。
 
+[legacy函数接口](SERVE_LEGACY_TOOLS_2026-11-08.md)开始实施：统一
+输入/历史适配、标准function_call响应及旧结果回填，先成组开发。
+31项C++、53项schema/native、12项Python、6项JS已通过，零警告；
+首次JS夹具失败保留。1启动/7Chat业务请求已冻结，尚未执行；
+custom text/grammar随后继续，当前默认945a05ea保持。
+
 工作分支`codex/serve-resilience-cd`继续隔离PR #22已接受发布；
 PR #22此前34b06bc1两项CI成功、CLEAN。当前默认服务包以顶部N01—N03交付为准；
 实现、验证、安装和合main分别记录。

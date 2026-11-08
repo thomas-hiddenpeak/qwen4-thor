@@ -68,14 +68,15 @@ void ChatServer::HandlePreflight(int fd, const std::string& body) {
     send_error();
     return;
   }
-  const auto& req = *envelope.Find("request");
+  const auto& original_request = *envelope.Find("request");
   const auto config = PlanningConfig(fd);
   ChatRequestPlan plan;
-  status = PlanChatRequest(req, config, &plan, &error);
+  status = PlanChatRequest(original_request, config, &plan, &error);
   if (!status) {
     send_error();
     return;
   }
+  const auto& req = plan.Request(original_request);
   RequestControl control(
       "preflight", "",
       arrived + std::chrono::milliseconds(
@@ -94,7 +95,7 @@ void ChatServer::HandlePreflight(int fd, const std::string& body) {
                              &error.param, &error.code);
   if (status) {
     ChatResponseParser parser;
-    status = parser.Init(req, prompt, "preflight", true);
+    status = parser.Init(req, prompt, "preflight", true, plan.legacy_output);
   }
   if (status) {
     ReasoningOptions options;

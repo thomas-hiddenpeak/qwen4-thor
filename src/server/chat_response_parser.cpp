@@ -5,6 +5,7 @@
 #include <unordered_set>
 
 #include "q4t/server/http_response.h"
+#include "q4t/server/legacy_tools.h"
 
 namespace q4t::server {
 namespace {
@@ -157,6 +158,10 @@ size_t Lookahead(std::string_view text, std::string_view marker) {
 
 std::string ResponseDelta::ToJson() const {
   if (kind == Kind::kTool) {
+    if (legacy_function)
+      return "{\"function_call\":{" +
+             (tool_start ? "\"name\":" + Quote(call.name) + ',' : "") +
+             "\"arguments\":" + Quote(call.arguments) + "}}";
     if (tool_start) return "{\"tool_calls\":[" + ToolJson(call, true) + "]}";
     return "{\"tool_calls\":[{\"index\":" + std::to_string(call.index) +
            ",\"function\":{\"arguments\":" + Quote(call.arguments) + "}}]}";
@@ -169,14 +174,26 @@ std::string ResponseDelta::ToJson() const {
 
 Status ChatResponseParser::Init(const io::Json& request,
                                 std::string_view prompt,
-                                const std::string& request_id, bool collect) {
+                                const std::string& request_id, bool collect,
+                                bool legacy_function) {
   if (initialized_) return Fail("parser already initialized");
+  if (HasLegacyTools(request)) {
+    LegacyToolRequest normalized;
+    const auto status = NormalizeLegacyTools(request, &normalized);
+    if (!status) return Fail(status.message());
+    normalized_request_ = std::move(normalized.request);
+    return Init(*normalized_request_, prompt, request_id, collect,
+                normalized.legacy_output);
+  }
   initialized_ = true;
+  legacy_function_ = legacy_function;
   request_ = &request;
   auto reason_status = ParseReasoningOptions(request, &reasoning_options_);
   if (!reason_status) return Fail(reason_status.message());
   auto plan_status = PlanOutputConstraints(request, &constraints_);
   if (!plan_status) return Fail(plan_status.message());
+  if (legacy_function_ && constraints_.parallel)
+    return Fail("legacy response cannot contain parallel calls");
   collect_ = collect || constraints_.active;
   parsed_ = request.Has("messages") && request.GetBool("parse_response", true);
   id_prefix_ = "call_" + request_id + '_';
@@ -303,6 +320,7 @@ void ChatResponseParser::ToolFragment(std::string text, bool start,
   }
   delta.call.arguments = std::move(text);
   delta.tool_start = start;
+  delta.legacy_function = legacy_function_;
   deltas->push_back(std::move(delta));
 }
 
@@ -597,7 +615,10 @@ std::string ChatResponseParser::MessageJson() const {
   if (!reasoning_.empty())
     message += ',' + Quote(ReasoningFieldName(reasoning_options_.field)) + ':' +
                Quote(reasoning_);
-  if (!calls_.empty()) {
+  if (legacy_function_ && !calls_.empty()) {
+    message += ",\"function_call\":{\"name\":" + Quote(calls_[0].name) +
+               ",\"arguments\":" + Quote(calls_[0].arguments) + '}';
+  } else if (!calls_.empty()) {
     message += ",\"tool_calls\":[";
     for (size_t i = 0; i < calls_.size(); ++i) {
       if (i) message += ',';

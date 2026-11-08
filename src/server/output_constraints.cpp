@@ -5,6 +5,7 @@
 
 #include "q4t/server/http_response.h"
 #include "q4t/server/input_contract.h"
+#include "q4t/server/legacy_tools.h"
 #include "q4t/server/output_schema.h"
 
 namespace q4t::server {
@@ -78,6 +79,14 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
                              std::string* error_param) {
   *out = {};
   if (error_param) error_param->clear();
+  if (HasLegacyTools(request)) {
+    LegacyToolRequest normalized;
+    auto status = NormalizeLegacyTools(request, &normalized, error_param);
+    if (!status) return status;
+    status = PlanOutputConstraints(normalized.request, out, error_param);
+    if (!status) LegacyToolErrorParam(request, error_param);
+    return status;
+  }
   const auto invalid = [&](std::string_view path, std::string message) {
     if (error_param) *error_param = path;
     return Status::Fail(std::move(message));

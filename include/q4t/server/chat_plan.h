@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <cstdint>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -54,10 +55,15 @@ struct ChatPlanError {
 };
 
 struct ChatRequestPlan {
+  std::optional<io::Json> normalized_request;
+  bool legacy_output = false;
   OutputConstraints constraints;
   SamplingOptions sampling;
   PredictionOptions prediction;
   std::vector<std::string> stops;
+  const io::Json& Request(const io::Json& original) const {
+    return normalized_request ? *normalized_request : original;
+  }
 };
 
 Status PlanChatRequest(const io::Json& request, const ChatPlanConfig& config,

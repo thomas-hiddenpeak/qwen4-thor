@@ -115,6 +115,21 @@ Q4T_TEST(structured_decoder_required_named_and_parallel_masks) {
   return true;
 }
 
+Q4T_TEST(structured_decoder_legacy_single_function_and_none_masks) {
+  const std::string definitions =
+      R"("enable_thinking":false,"functions":[{"name":"read","parameters":{)"
+      R"("type":"object","properties":{"path":{"type":"string",)"
+      R"("enum":["docs/STATUS.md"]}},"required":["path"],)"
+      R"("additionalProperties":false}}],"function_call":)";
+  const auto named = Plan(definitions + R"({"name":"read"})");
+  Q4T_CHECK(Exact(named, kCall));
+  Q4T_CHECK(!Exact(named, "ordinary text"));
+  Q4T_CHECK(!Exact(named, std::string(kCall) + kCall));
+  Q4T_CHECK(Exact(Plan(definitions + R"("none")"), "ordinary text"));
+  Q4T_CHECK(!Exact(Plan(definitions + R"("none")"), kCall));
+  return true;
+}
+
 Q4T_TEST(structured_decoder_sampling_obeys_mask_before_accept) {
   const auto plan = Plan(
       R"("enable_thinking":false,"response_format":{"type":"json_object"})");

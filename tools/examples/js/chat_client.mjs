@@ -136,7 +136,7 @@ function argumentsObject(raw) {
 }
 
 function message(value) {
-  fields(value, ['role', 'content', 'reasoning', 'reasoning_content', 'tool_calls']);
+  fields(value, ['role', 'content', 'reasoning', 'reasoning_content', 'tool_calls', 'function_call']);
   requireValue(value.role === 'assistant' && Object.hasOwn(value, 'content'), 'expected assistant message');
   if (value.content !== null) text(value.content, 'invalid content');
   const reasoning = ['reasoning', 'reasoning_content'].filter(k => value[k] != null);
@@ -145,6 +145,12 @@ function message(value) {
   const calls = value.tool_calls ?? [];
   requireValue(Array.isArray(calls) && calls.length <= MAX_TOOL_CALLS, 'invalid tool batch');
   const ids = new Set();
+  if (value.function_call != null) {
+    requireValue(!calls.length, 'mixed call dialects');
+    fields(value.function_call, ['name', 'arguments']);
+    text(value.function_call.name, 'missing function name', true);
+    argumentsObject(value.function_call.arguments);
+  }
   for (const call of calls) {
     fields(call, ['id', 'type', 'function']);
     requireValue(call.type === 'function' && !ids.has(text(call.id, 'missing tool ID', true)), 'invalid or duplicate tool ID');
@@ -199,8 +205,9 @@ function choiceResults(id, model, values, counts) {
 function completion(id, model, msg, finish, counts, choiceCount = 1) {
   text(id, 'missing completion ID', true); text(model, 'missing model', true);
   const result = message(msg), calls = result.tool_calls ?? [];
-  requireValue(['stop', 'length', 'tool_calls'].includes(finish), 'unsupported finish reason');
+  requireValue(['stop', 'length', 'tool_calls', 'function_call'].includes(finish), 'unsupported finish reason');
   requireValue((finish === 'tool_calls') === (calls.length > 0), 'finish/tool batch mismatch');
+  requireValue((finish === 'function_call') === (result.function_call != null), 'finish/function mismatch');
   return { id, model, message: result, finish_reason: finish, usage: usage(counts, choiceCount) };
 }
 
@@ -249,7 +256,7 @@ export function parseSseWire(raw) {
     requireValue(integer(choice.index) && choice.index < 128 && !indices.has(choice.index), 'invalid choice index');
     indices.add(choice.index);
     if (!states.has(choice.index)) states.set(choice.index,
-      { role: false, finish: null, content: '', reasoning: '', reasoningField: undefined, calls: [], logprobs: null });
+      { role: false, finish: null, content: '', reasoning: '', reasoningField: undefined, calls: [], functionCall: null, logprobs: null });
     const state = states.get(choice.index);
     requireValue(state.finish === null, 'choice after terminal');
     let { role, finish, content, reasoning, reasoningField, calls } = state;
@@ -263,7 +270,7 @@ export function parseSseWire(raw) {
         state.logprobs.refusal.push(...probabilities.refusal);
       }
     }
-    fields(delta, ['role', 'content', 'reasoning', 'reasoning_content', 'tool_calls']);
+    fields(delta, ['role', 'content', 'reasoning', 'reasoning_content', 'tool_calls', 'function_call']);
     if (Object.hasOwn(delta, 'role')) { requireValue(!role && delta.role === 'assistant', 'invalid role delta'); role = true; }
     requireValue(role, 'delta before role');
     if (delta.content != null) content += text(delta.content, 'invalid content delta');
@@ -273,6 +280,7 @@ export function parseSseWire(raw) {
     }
     requireValue(delta.tool_calls === undefined || Array.isArray(delta.tool_calls), 'invalid tool delta list');
     for (const tool of delta.tool_calls ?? []) {
+      requireValue(state.functionCall === null, 'mixed call dialects');
       fields(tool, ['index', 'id', 'type', 'function']);
       requireValue(integer(tool.index) && tool.index <= calls.length, 'noncontiguous tool index');
       const fn = tool.function ?? {}; fields(fn, ['name', 'arguments']);
@@ -287,8 +295,15 @@ export function parseSseWire(raw) {
       requireValue((tool.id ?? call.id) === call.id && (tool.type ?? 'function') === 'function', 'tool identity changed');
       for (const key of ['name', 'arguments']) if (Object.hasOwn(fn, key)) call.function[key] += text(fn[key], 'invalid tool delta');
     }
+    if (delta.function_call != null) {
+      requireValue(!calls.length, 'mixed call dialects');
+      fields(delta.function_call, ['name', 'arguments']);
+      state.functionCall ??= { name: '', arguments: '' };
+      for (const key of ['name', 'arguments']) if (Object.hasOwn(delta.function_call, key))
+        state.functionCall[key] += text(delta.function_call[key], 'invalid legacy function delta');
+    }
     if (choice.finish_reason != null) {
-      requireValue(['stop', 'length', 'tool_calls'].includes(choice.finish_reason), 'unsupported finish reason');
+      requireValue(['stop', 'length', 'tool_calls', 'function_call'].includes(choice.finish_reason), 'unsupported finish reason');
       finish = choice.finish_reason;
     }
     Object.assign(state, { role, finish, content, reasoning, reasoningField });
@@ -316,17 +331,18 @@ export function parseSseWire(raw) {
   const choices = [...states.entries()].map(([index, state]) => {
     const { calls, content, reasoning, reasoningField } = state;
     requireValue(state.role, 'choice missing role');
-    const msg = { role: 'assistant', content: calls.length && !content ? null : content };
+    const msg = { role: 'assistant', content: (calls.length || state.functionCall) && !content ? null : content };
     if (reasoning) msg[reasoningField] = reasoning;
     if (calls.length) msg.tool_calls = calls;
+    if (state.functionCall) msg.function_call = state.functionCall;
     return { index, message: msg, finish_reason: state.finish, logprobs: state.logprobs };
   });
   return { result: choiceResults(identity[0], identity[1], choices, counts), events };
 }
 
 export function prepareToolCalls(result, validators) {
-  requireValue(result.finish_reason === 'tool_calls', 'not a completed tool turn');
-  return message(result.message).tool_calls.map(call => {
+  requireValue(['tool_calls', 'function_call'].includes(result.finish_reason), 'not a completed tool turn');
+  return invocationCalls(message(result.message)).map(call => {
     const name = call.function.name, args = argumentsObject(call.function.arguments);
     requireValue(Object.hasOwn(validators, name) && typeof validators[name] === 'function', 'unregistered tool');
     requireValue(validators[name](clone(args)) === undefined, 'validator must return undefined or throw');
@@ -334,16 +350,24 @@ export function prepareToolCalls(result, validators) {
   });
 }
 
+function invocationCalls(msg) {
+  return msg.function_call == null ? (msg.tool_calls ?? []) :
+    [{ id: msg.function_call.name, type: 'function', function: msg.function_call }];
+}
+
 export function appendToolResults(history, result, results) {
-  requireValue(result.finish_reason === 'tool_calls' && object(results), 'not a completed tool batch');
-  const msg = message(result.message), calls = msg.tool_calls ?? [];
+  requireValue(['tool_calls', 'function_call'].includes(result.finish_reason) && object(results), 'not a completed tool batch');
+  const msg = message(result.message), calls = invocationCalls(msg);
   requireValue(calls.length && calls.length === Object.keys(results).length && calls.every(c => Object.hasOwn(results, c.id)), 'provide exactly one result per tool ID');
-  return [...clone(history), msg, ...calls.map(c => ({ role: 'tool', tool_call_id: c.id,
+  return [...clone(history), msg, ...calls.map(c => ({
+    ...(msg.function_call != null ? { role: 'function', name: c.function.name } :
+      { role: 'tool', tool_call_id: c.id }),
     content: text(results[c.id], 'tool result must be text') }))];
 }
 
 export function appendFinal(history, result) {
-  requireValue(result.finish_reason === 'stop' && !result.message.tool_calls?.length, 'not a final response');
+  requireValue(result.finish_reason === 'stop' && !result.message.tool_calls?.length &&
+    !result.message.function_call, 'not a final response');
   return [...clone(history), message(result.message)];
 }
 

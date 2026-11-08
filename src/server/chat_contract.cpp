@@ -1,6 +1,7 @@
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/sampling.h"
 #include "q4t/server/prediction.h"
+#include "q4t/server/legacy_tools.h"
 #include "q4t/vision/media_plan.h"
 
 #include <cmath>
@@ -71,6 +72,15 @@ Status TemplateOptions(const io::Json& options) {
 
 Status ValidateChatContract(const io::Json& req, const std::string& model_name,
                             bool allow_media, std::string* error_param) {
+  if (HasLegacyTools(req)) {
+    LegacyToolRequest normalized;
+    auto status = NormalizeLegacyTools(req, &normalized, error_param);
+    if (!status) return status;
+    status = ValidateChatContract(normalized.request, model_name, allow_media,
+                                   error_param);
+    if (!status) LegacyToolErrorParam(req, error_param);
+    return status;
+  }
   std::string local_param;
   if (!error_param) error_param = &local_param;
   error_param->clear();
@@ -80,6 +90,8 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
   };
   auto status = Fields(req,
                        {"model",
+                        "functions",
+                        "function_call",
                         "prompt",
                         "messages",
                         "max_tokens",

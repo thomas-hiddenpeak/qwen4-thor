@@ -35,6 +35,49 @@ def cases():
             fixture=dict(raw=json.dumps(request, ensure_ascii=False, separators=(",", ":"))
                          if raw is None else raw, **config)))
 
+    legacy_fn = deepcopy(tool()["function"])
+    legacy_fn.pop("strict")
+    for name, extra in (("auto", dict(function_call="auto")),
+                        ("none", dict(function_call="none")),
+                        ("named", dict(function_call=dict(name="read"))),
+                        ("default", {}), ("null-choice", dict(function_call=None)),
+                        ("modern-nulls", dict(tools=None, tool_choice=None))):
+        add("legacy-"+name, dict(base(), functions=[legacy_fn], **extra), field="functions")
+    add("legacy-both-nulls", dict(base(), functions=None, function_call=None), field="functions")
+    add("legacy-none-no-functions", dict(base(), function_call="none"), field="function_call")
+    add("legacy-json-none", dict(base(), functions=[legacy_fn], function_call="none",
+        response_format=dict(type="json_object")), field="functions")
+    for name, functions in (("empty", []), ("too-many", [legacy_fn]*129),
+                            ("scalar", 3), ("bad-name", [dict(name="bad name")]),
+                            ("bad-parameters", [dict(name="read", parameters=3)]),
+                            ("unknown-field", [dict(legacy_fn, extra=1)])):
+        add("legacy-functions-"+name, dict(base(), functions=functions), False, field="functions")
+    for name, extra in (("parallel", dict(parallel_tool_calls=True)),
+                        ("tools", dict(tools=[])), ("choice", dict(tool_choice="auto")),
+                        ("required", dict(function_call="required")),
+                        ("bad-choice", dict(function_call=dict(name="read", extra=1))),
+                        ("unparsed", dict(parse_response=False)),
+                        ("stop", dict(stop="END")),
+                        ("json", dict(response_format=dict(type="json_object"))),
+                        ("prediction", dict(prediction=dict(type="content", content="x")))):
+        add("legacy-conflict-"+name, dict(base(), functions=[legacy_fn], **extra), False, field="functions")
+    add("legacy-unknown-choice", dict(base(),functions=[legacy_fn],
+        function_call=dict(name="missing")), False, semantic=True,field="function_call")
+    legacy_history = dict(messages=[dict(role="assistant", function_call=dict(name="read",arguments="{}")),
+        dict(role="function",name="read",content="record")],enable_thinking=False)
+    add("legacy-history",legacy_history,field="messages")
+    null_result=deepcopy(legacy_history);null_result["messages"][1]["content"]=None
+    add("legacy-history-null-result",null_result,field="messages")
+    add("legacy-history-modern-controls",dict(legacy_history,tools=[tool()]),field="messages")
+    for label,modify in (("wrong-name",lambda r:r["messages"][1].update(name="wrong")),
+        ("orphan",lambda r:r["messages"].pop(0)),
+        ("missing",lambda r:r["messages"].pop()),
+        ("bad-json",lambda r:r["messages"][0]["function_call"].update(arguments="[1]"))):
+        row=deepcopy(legacy_history);modify(row)
+        add("legacy-history-"+label,row,False,semantic=True,field="messages")
+    both=deepcopy(legacy_history);both["messages"][0]["tool_calls"]=[]
+    add("legacy-history-mixed-message",both,False,field="messages")
+
     references = [dict(type="function", function=dict(name="read"))]
     def allowed(mode="auto", refs=None):
         return dict(type="allowed_tools", allowed_tools=dict(mode=mode,
@@ -78,7 +121,8 @@ def cases():
     values = dict(model="qwen3.8-flash-next", prompt="q", messages=base()["messages"],
         max_tokens=2, max_completion_tokens=2, stream=True,
         stream_options=dict(include_usage=True), request_id="client-1", cancel_token=HEX,
-        request_timeout_ms=500, tools=[tool()], chat_template_kwargs=dict(enable_thinking=False),
+        request_timeout_ms=500, tools=[tool()], functions=[legacy_fn], function_call="auto",
+        chat_template_kwargs=dict(enable_thinking=False),
         enable_thinking=False, preserve_thinking=True, reasoning_effort="low",
         add_vision_id=True, reasoning_field="reasoning", include_reasoning=False,
         thinking_token_budget=1, temperature=0, top_p=1, n=1, frequency_penalty=0,
@@ -90,7 +134,7 @@ def cases():
     nulls = {"max_tokens", "max_completion_tokens", "stream", "stream_options", "tools",
         "thinking_token_budget", "temperature", "top_p", "n", "frequency_penalty",
         "presence_penalty", "seed", "stop", "logprobs", "top_logprobs", "logit_bias",
-        "response_format", "user", "prediction"}
+        "response_format", "user", "prediction", "functions", "function_call"}
     for field, valid in values.items():
         request, config = base(), {}
         if field == "top_logprobs":

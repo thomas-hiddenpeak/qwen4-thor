@@ -7,6 +7,7 @@
 
 #include "q4t/server/chat_template.h"
 #include "q4t/server/media_admission.h"
+#include "q4t/server/legacy_tools.h"
 
 namespace q4t::server {
 namespace {
@@ -162,6 +163,15 @@ Status PrepareChatPrompt(const io::Json& request,
                          std::string* prompt_out,
                          std::vector<VisionItem>* items_out,
                          std::string* error_param, std::string* error_code) {
+  if (HasLegacyTools(request)) {
+    LegacyToolRequest normalized;
+    auto status = NormalizeLegacyTools(request, &normalized, error_param);
+    if (!status) return status;
+    status = PrepareChatPrompt(normalized.request, constraints, prompt_out,
+                               items_out, error_param, error_code);
+    if (!status) LegacyToolErrorParam(request, error_param);
+    return status;
+  }
   prompt_out->clear();
   items_out->clear();
   error_param->clear();

@@ -45,8 +45,9 @@ int main(int argc, char** argv) {
     std::vector<uint32_t> tokens;
     status = ValidatePreflightEnvelope(*body, &error);
     if (status) {
-      const auto& req = *body->Find("request");
-      status = PlanChatRequest(req, config, &plan, &error);
+      const auto& original = *body->Find("request");
+      status = PlanChatRequest(original, config, &plan, &error);
+      const auto& req = plan.Request(original);
       if (status)
         status = PrepareChatPrompt(req, plan.constraints, &prompt, &items,
                                    &error.param);

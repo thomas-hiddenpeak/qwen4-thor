@@ -89,24 +89,34 @@ def chat_schema():
         function=obj(dict(name=text_name(), arguments=arguments), ("name", "arguments"))),
         ("function",)), obj(dict(type=dict(const="function"), name=text_name(),
                                 arguments=arguments), ("name", "arguments"))])
-    message = obj(dict(role=dict(enum=["system", "developer", "user", "assistant", "tool"]),
+    legacy_call = obj(dict(name=safe, arguments=dict(type="string",
+        **{"x-q4t-json-object-text": True})), ("name", "arguments"))
+    message = obj(dict(role=dict(enum=["system", "developer", "user", "assistant", "tool", "function"]),
         content=content, name=dict(type=["string", "null"],
             **{"x-q4t-max-utf8-bytes": 4096}),
         refusal=dict(type=["string", "null"]),
-        audio=dict(type="null"), annotations=dict(type="null"), function_call=dict(type="null"),
+        audio=dict(type="null"), annotations=dict(type="null"), function_call=nullable(legacy_call),
         reasoning=dict(type=["string", "null"]), reasoning_content=dict(type=["string", "null"]),
         tool_calls=nullable(dict(type="array", maxItems=128, items=ref("historyCall"))),
         tool_call_id=dict(type="string", minLength=1, maxLength=256,
                           **{"x-q4t-max-utf8-bytes": 256})), ("role",))
     message["allOf"] = [
         when(present("role", {"not": dict(const="assistant")}),
-             forbid(["reasoning", "reasoning_content", "tool_calls", "refusal"])),
+             forbid(["reasoning", "reasoning_content", "tool_calls", "refusal", "function_call"])),
         when(present("role", {"not": dict(const="tool")}), forbid(["tool_call_id"])),
-        when({"not": dict(allOf=[present("role", dict(const="assistant")),
+        when(dict(allOf=[{"not": present("role", dict(const="function"))},
+          {"not": dict(allOf=[present("role", dict(const="assistant")),
             dict(anyOf=[present("tool_calls", dict(type="array", minItems=1)),
-                        present("refusal", dict(type="string"))])])},
+                        present("refusal", dict(type="string")),
+                        present("function_call", dict(type="object"))])])}]),
             dict(required=["content"],
                  properties=dict(content=dict(type=["string", "array"])))),
+        when(present("function_call", dict(type="object")),
+            dict(properties=dict(tool_calls=dict(type="null")))),
+        when(present("role", dict(const="function")),
+            dict(required=["name", "content"], properties=dict(
+                name=safe, content=dict(type=["string", "null"])),
+                **forbid(["audio", "annotations", "tool_call_id"]))),
         when(present("role", {"not": dict(const="assistant")}),
             dict(properties=dict(content=dict(anyOf=[dict(type=["string", "null"]),
                 dict(type="array", items={"not": present("type", dict(const="refusal"))})])))),
@@ -116,6 +126,10 @@ def chat_schema():
         strict=dict(type=["boolean", "null"]), parameters=dict(type="object",
             properties=dict(properties=dict(type="object")))), ("name",))
     tool = obj(dict(type=dict(const="function"), function=fn), ("type", "function"))
+    legacy_fn = obj(dict(name=safe, description=dict(type="string"),
+        parameters=fn["properties"]["parameters"]), ("name",))
+    legacy_active = dict(anyOf=[present(key, {"not": dict(type="null")})
+                               for key in ("functions", "function_call")])
     node = schema_node()
     root_schema = dict(allOf=[ref("schemaNode"), dict(properties=dict(type=dict(const="object")))])
     response_format = nullable(dict(oneOf=[obj(dict(type=dict(enum=["text", "json_object"])), ("type",)),
@@ -135,6 +149,8 @@ def chat_schema():
                     present("allowed_tools", present("mode", dict(const="required")))])]))
     strict_tools = present("tools", dict(type="array", contains=present("function", present("strict", dict(const=True)))))
     constrained = dict(anyOf=[json_output, forced, strict_tools,
+        present("functions", nonempty_tools),
+        present("function_call", dict(anyOf=[dict(const="none"), dict(type="object")])),
         present("tool_choice", dict(type="object", **present("type", dict(const="allowed_tools")))),
         present("tool_choice", dict(const="none")), dict(allOf=[present("parallel_tool_calls", dict(const=False)),
             present("tools", nonempty_tools)])])
@@ -153,6 +169,9 @@ def chat_schema():
         request_id=identifier, cancel_token=hex64,
         request_timeout_ms=dict(type="integer", minimum=1, maximum=10800000),
         tools=nullable(dict(type="array", items=ref("tool"))),
+        functions=nullable(dict(type="array", minItems=1, maxItems=128, items=legacy_fn)),
+        function_call=nullable(dict(oneOf=[dict(enum=["auto", "none"]),
+            obj(dict(name=safe), ("name",))])),
         chat_template_kwargs=template, **template["properties"],
         reasoning_field=dict(enum=["reasoning_content", "reasoning"], default="reasoning_content"),
         include_reasoning=dict(type="boolean", default=True),
@@ -175,12 +194,12 @@ def chat_schema():
         session_id=hex64, prefix_cache_scope=hex64,
         prefix_cache_write_tokens=dict(anyOf=[dict(const=0), dict(type="integer", minimum=1024, maximum=131072)]),
         parse_response=dict(type="boolean"),
-        tool_choice=dict(oneOf=[dict(enum=["auto", "none", "required"]),
+        tool_choice=nullable(dict(oneOf=[dict(enum=["auto", "none", "required"]),
             obj(dict(type=dict(const="function"), function=obj(dict(name=safe), ("name",))), ("type", "function")),
             obj(dict(type=dict(const="allowed_tools"), allowed_tools=obj(dict(
                 mode=dict(enum=["auto", "required"]), tools=dict(type="array", items=obj(
                     dict(type=dict(const="function"), function=obj(dict(name=safe), ("name",))),
-                    ("type", "function")))), ("mode", "tools"))), ("type", "allowed_tools"))]),
+                    ("type", "function")))), ("mode", "tools"))), ("type", "allowed_tools"))])),
         parallel_tool_calls=dict(type="boolean", default=True))
     result = obj(properties)
     result.update({"$schema": DRAFT, "$id": "urn:q4t:serve-chat-request:v1",
@@ -192,11 +211,20 @@ def chat_schema():
         "oneOf": [present("messages"), present("prompt")],
         "dependentRequired": dict(request_id=["cancel_token"], cancel_token=["request_id"]),
         "allOf": [
+            when(present("tool_choice", dict(type="null")), legacy_active),
+            when(legacy_active, dict(allOf=[parsed, dict(properties=dict(
+                tools=dict(type="null"), tool_choice=dict(type="null"),
+                parallel_tool_calls=dict(const=False)))])),
+            when(present("function_call", dict(type="object")),
+                present("functions", nonempty_tools)),
+            when(dict(allOf=[json_output, present("functions", nonempty_tools)]),
+                present("function_call", dict(const="none"))),
             when(present("prediction", dict(type="object")), dict(properties=dict(
                 n=dict(enum=[None, 1]), logprobs=dict(enum=[None, False]),
                 presence_penalty=dict(type=["number", "null"], maximum=0),
                 frequency_penalty=dict(type=["number", "null"], maximum=0),
-                tools=dict(enum=[None, []]), max_completion_tokens=dict(type="null")))),
+                tools=dict(enum=[None, []]), functions=dict(type="null"),
+                max_completion_tokens=dict(type="null")))),
             when(present("top_logprobs", {"not": dict(type="null")}), present("logprobs", dict(const=True))),
             {"not": dict(required=["max_tokens", "max_completion_tokens"],
                 properties={key: {"not": dict(type="null")} for key in ("max_tokens", "max_completion_tokens")})},
@@ -282,6 +310,9 @@ def semantics():
     # Standard JSON Schema validators ignore x-q4t annotations. These rules
     # are mandatory and evaluated by production C++, never inferred as passed.
     rules = [
+        ("legacy-functions", ["src/server/legacy_tools.cpp", "src/server/chat_plan.cpp",
+             "src/server/chat_response_parser.cpp"],
+         "Non-null functions/function_call choose legacy output: one function_call, matching finish_reason and incremental name/arguments deltas without tool IDs. Normalized controls share production grammar and final validation; no mixing non-null modern controls or parallel=true. Legacy assistant.function_call must have a contiguous role=function result matching its name; null result is empty text. Internal association IDs never escape onto the legacy wire. Errors refer to original legacy input paths. Null controls are omission."),
         ("prediction", ["src/server/prediction.cpp", "src/server/chat_plan.cpp", "src/server/chat_generation.cpp"],
          "Static string/text parts become target-verified tokens. Prediction never forces the target distribution. Accepted tokens are consumed once; remaining provided tokens count as rejected completion tokens. Effective output/context and client quota include them. n>1/logprobs/positive penalties/tools/max_completion_tokens are incompatible only with a non-null prediction."),
         ("json-lexical", ["src/io/json.cpp", "include/q4t/server/request_json.h"],

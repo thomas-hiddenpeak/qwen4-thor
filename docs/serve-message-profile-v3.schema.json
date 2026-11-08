@@ -26,7 +26,8 @@
             "developer",
             "user",
             "assistant",
-            "tool"
+            "tool",
+            "function"
           ]
         },
         "content": {
@@ -73,7 +74,31 @@
           "type": "null"
         },
         "function_call": {
-          "type": "null"
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64,
+                  "pattern": "^[A-Za-z0-9_-]+$"
+                },
+                "arguments": {
+                  "type": "string",
+                  "x-q4t-json-object-text": true
+                }
+              },
+              "required": [
+                "name",
+                "arguments"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "reasoning": {
           "type": [
@@ -160,6 +185,14 @@
                   "properties": {
                     "refusal": {}
                   }
+                },
+                {
+                  "required": [
+                    "function_call"
+                  ],
+                  "properties": {
+                    "function_call": {}
+                  }
                 }
               ]
             }
@@ -195,45 +228,71 @@
         },
         {
           "if": {
-            "not": {
-              "allOf": [
-                {
+            "allOf": [
+              {
+                "not": {
                   "required": [
                     "role"
                   ],
                   "properties": {
                     "role": {
-                      "const": "assistant"
+                      "const": "function"
                     }
                   }
-                },
-                {
-                  "anyOf": [
+                }
+              },
+              {
+                "not": {
+                  "allOf": [
                     {
                       "required": [
-                        "tool_calls"
+                        "role"
                       ],
                       "properties": {
-                        "tool_calls": {
-                          "type": "array",
-                          "minItems": 1
+                        "role": {
+                          "const": "assistant"
                         }
                       }
                     },
                     {
-                      "required": [
-                        "refusal"
-                      ],
-                      "properties": {
-                        "refusal": {
-                          "type": "string"
+                      "anyOf": [
+                        {
+                          "required": [
+                            "tool_calls"
+                          ],
+                          "properties": {
+                            "tool_calls": {
+                              "type": "array",
+                              "minItems": 1
+                            }
+                          }
+                        },
+                        {
+                          "required": [
+                            "refusal"
+                          ],
+                          "properties": {
+                            "refusal": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        {
+                          "required": [
+                            "function_call"
+                          ],
+                          "properties": {
+                            "function_call": {
+                              "type": "object"
+                            }
+                          }
                         }
-                      }
+                      ]
                     }
                   ]
                 }
-              ]
-            }
+              }
+            ]
           },
           "then": {
             "required": [
@@ -246,6 +305,85 @@
                   "array"
                 ]
               }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "function_call"
+            ],
+            "properties": {
+              "function_call": {
+                "type": "object"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "tool_calls": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "role"
+            ],
+            "properties": {
+              "role": {
+                "const": "function"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "name",
+              "content"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "content": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "audio"
+                  ],
+                  "properties": {
+                    "audio": {}
+                  }
+                },
+                {
+                  "required": [
+                    "annotations"
+                  ],
+                  "properties": {
+                    "annotations": {}
+                  }
+                },
+                {
+                  "required": [
+                    "tool_call_id"
+                  ],
+                  "properties": {
+                    "tool_call_id": {}
+                  }
+                }
+              ]
             }
           }
         },

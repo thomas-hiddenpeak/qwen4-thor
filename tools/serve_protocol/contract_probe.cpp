@@ -53,12 +53,14 @@ int main() {
       std::string prompt;
       std::vector<VisionItem> items;
       if (status) status = PlanChatRequest(*request, config, &plan, &error);
+      if (status) request = &plan.Request(*request);
       if (status)
         status = PrepareChatPrompt(*request, plan.constraints, &prompt, &items,
                                    &error.param);
       if (status) {
         ChatResponseParser parser;
-        status = parser.Init(*request, prompt, "contract-probe", true);
+        status = parser.Init(*request, prompt, "contract-probe", true,
+                              plan.legacy_output);
       }
       if (status) {
         ReasoningOptions reasoning;

@@ -180,6 +180,22 @@
                       "string",
                       "null"
                     ]
+                  },
+                  "function_call": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "arguments": {
+                        "type": "string"
+                      }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                      "name",
+                      "arguments"
+                    ]
                   }
                 }
               },
@@ -187,7 +203,8 @@
                 "enum": [
                   "stop",
                   "length",
-                  "tool_calls"
+                  "tool_calls",
+                  "function_call"
                 ]
               }
             }
@@ -240,14 +257,29 @@
                 "maximum": 127
               },
               "delta": {
-                "type": "object"
+                "type": "object",
+                "properties": {
+                  "function_call": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "arguments": {
+                        "type": "string"
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                }
               },
               "finish_reason": {
                 "enum": [
                   null,
                   "stop",
                   "length",
-                  "tool_calls"
+                  "tool_calls",
+                  "function_call"
                 ]
               },
               "logprobs": {

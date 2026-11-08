@@ -2,9 +2,11 @@
 
 #include "q4t/server/chat_tool_history.h"
 #include "q4t/server/input_contract.h"
+#include "q4t/server/legacy_tools.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/reasoning_options.h"
 
+#include <algorithm>
 #include <charconv>
 #include <cmath>
 #include <string_view>
@@ -262,6 +264,24 @@ bool IsChatInstructionRole(std::string_view role) {
 
 Status ValidateChatMessageProfile(const io::Json& messages,
                                   std::string* error_param) {
+  io::Json request;
+  request.type = io::Json::Type::kObject;
+  // Avoid copying ordinary histories on this shared validation path.
+  if (messages.IsArray() &&
+      std::any_of(messages.array.begin(), messages.array.end(),
+                  [](const io::Json& message) {
+                    return message.Has("function_call") ||
+                           message.GetString("role") == "function";
+                  })) {
+    request.object.emplace_back("messages", messages);
+    LegacyToolRequest normalized;
+    auto status = NormalizeLegacyTools(request, &normalized, error_param);
+    if (status)
+      status = ValidateChatMessageProfile(*normalized.request.Find("messages"),
+                                         error_param);
+    if (!status) LegacyToolErrorParam(request, error_param);
+    return status;
+  }
   if (error_param) error_param->clear();
   const auto invalid = [&](std::string param, std::string message) {
     if (error_param) *error_param = std::move(param);
@@ -340,6 +360,12 @@ Status ValidateChatMessageProfile(const io::Json& messages,
 Status RenderChatPrompt(const io::Json& request,
                         const std::vector<std::string>& contents,
                         std::string* prompt) {
+  if (HasLegacyTools(request)) {
+    LegacyToolRequest normalized;
+    const auto status = NormalizeLegacyTools(request, &normalized);
+    return status ? RenderChatPrompt(normalized.request, contents, prompt)
+                  : status;
+  }
   prompt->clear();
   auto definitions = ValidateToolDefinitions(request);
   if (!definitions) return definitions;

@@ -161,8 +161,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   ScopeExit clear_terminal_hook([&] {
     if (http) http->SetBeforeTerminal(nullptr, nullptr);
   });
-  io::Json req;
-  Status s = io::ParseJson(body, &req, true, kRequestJsonLimits);
+  io::Json original_request;
+  Status s = io::ParseJson(body, &original_request, true, kRequestJsonLimits);
   if (!s.ok()) {
     SendError(fd, 400, "invalid JSON: " + s.message(), {}, "invalid_json");
     return;
@@ -172,12 +172,14 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   const auto client = http ? http->Client().Id() : std::string_view();
   ChatRequestPlan request_plan;
   ChatPlanError planning_error;
-  s = PlanChatRequest(req, planning_config, &request_plan, &planning_error);
+  s = PlanChatRequest(original_request, planning_config, &request_plan,
+                       &planning_error);
   if (!s) {
     SendError(fd, 400, s.message(), {}, planning_error.code,
               planning_error.param);
     return;
   }
+  const auto& req = request_plan.Request(original_request);
   const auto& constraints = request_plan.constraints;
   const auto& sampling = request_plan.sampling;
   const bool plain_greedy = sampling.PlainGreedy();
@@ -382,7 +384,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         sampling.choices == 1
             ? request_id
             : request_id + "_choice_" + std::to_string(choice_index),
-        !stream);
+        !stream, request_plan.legacy_output);
     if (!s.ok()) {
       SendError(fd, 400, s.message());
       return;
@@ -2399,7 +2401,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       return;
     }
     if (finish_reason == "stop" && response_parser.HasToolCalls())
-      finish_reason = "tool_calls";
+      finish_reason = response_parser.ToolFinishReason();
     detail::ServeRequestFaultPoint("handler.before_response",
                                    request_id.c_str());
     // Resolve device ownership before a success terminal or cache commit. The
