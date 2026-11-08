@@ -220,11 +220,12 @@
       ],
       "evidence": [],
       "release": null,
-      "development_status": "原生持久对象/事务、Responses历史/终态及Conversations请求处理已完成本组CPU：27不同C++、5实际官方SDK HTTP，含持久重开/分页/归属。完整serve入口、生成、background/cancel、compaction与生命周期继续实施；0 GPU、未发布，不计任务完成。",
+      "development_status": "原生持久对象/事务、Responses历史/终态及Conversations请求处理27不同C++、5官方SDK通过；serve/原生入口/托管状态接入再5不同C++、3实际原生TLS、10不同Python和配置schema通过。实际生成/background/cancel/compaction/生命周期与GPU业务、发布继续，未计完成。",
       "development_evidence": "evidence/serve-object-store-20261108/README.md",
       "transaction_evidence": "evidence/serve-object-transactions-20261108/README.md",
       "state_evidence": "evidence/serve-responses-state-20261109/README.md",
-      "conversation_evidence": "evidence/serve-conversations-20261109/README.md"
+      "conversation_evidence": "evidence/serve-conversations-20261109/README.md",
+      "service_binding_evidence": "evidence/serve-conversation-service-20261109/README.md"
     },
     {
       "id": "A09",
@@ -420,7 +421,8 @@
         {
           "source": "tools/serve_recovery/service.py launch before try",
           "issue": "daemon socketpair setup after lease acquisition can leak the duplicated lease FD on setup failure; make setup cleanup exception-safe",
-          "state": "open"
+          "state": "fixed_cpu_verified_pending_release",
+          "evidence": "evidence/serve-conversation-service-20261109/cpu-startup-lease-01/result.json"
         }
       ]
     },
@@ -623,5 +625,5 @@
     }
   ],
   "next_task": "A07",
-  "next": "实现A07 Responses原生请求/items/SSE并联动A08状态；所有字段保留必做，不以无状态子组结束总目标。"
+  "next": "继续Responses原生共享生成、持久输入/事件/background/cancel与真实业务短验；不在会话接入检查点结束总目标。"
 }

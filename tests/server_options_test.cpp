@@ -1,4 +1,5 @@
 #include "q4t/server/server_options.h"
+#include "q4t/server/object_store_options.h"
 #include "q4t/test.h"
 
 #include <initializer_list>
@@ -18,6 +19,67 @@ bool Parse(std::initializer_list<std::string_view> args, ServerOptions* out) {
   return q4t::server::ParseServerOptions({args.begin(), args.size()}, out).ok();
 }
 }  // namespace
+
+Q4T_TEST(serve_object_store_options_transactional_bounds) {
+  auto options = Defaults();
+  Q4T_CHECK(Parse(
+      {"--object-store-dir", "/private/objects", "--object-max-object-mib", "8",
+       "--object-max-client-mib", "16", "--object-max-total-mib", "32",
+       "--object-max-client-objects", "20", "--object-max-total-objects", "40",
+       "--object-io-timeout-ms", "900"},
+      &options));
+  for (const auto path : {"relative", "/", "/a/../b", "/a/./b", "/a/."}) {
+    Q4T_CHECK(!Parse({"--object-store-dir", path}, &options));
+    Q4T_CHECK(options.object_store_dir == "/private/objects");
+  }
+  for (const auto flag :
+       {"--object-max-object-mib", "--object-max-client-mib",
+        "--object-max-total-mib", "--object-max-client-objects",
+        "--object-max-total-objects", "--object-io-timeout-ms"}) {
+    for (const auto value : {"0", "-1", "2147483647", "1.5", "1x"})
+      Q4T_CHECK(!Parse({flag, value}, &options));
+    Q4T_CHECK(!Parse({flag}, &options));
+  }
+  Q4T_CHECK(!Parse({"--object-max-object-mib", "17"}, &options));
+  Q4T_CHECK(!Parse({"--object-max-client-mib", "7"}, &options));
+  Q4T_CHECK(!Parse({"--object-max-total-mib", "15"}, &options));
+  Q4T_CHECK(!Parse({"--object-max-client-objects", "41"}, &options));
+  Q4T_CHECK(!Parse({"--object-max-total-objects", "19"}, &options));
+  Q4T_CHECK(options.object_max_object_mib == 8 &&
+            options.object_max_client_mib == 16 &&
+            options.object_max_total_mib == 32 &&
+            options.object_max_client_objects == 20 &&
+            options.object_max_total_objects == 40 &&
+            options.object_io_timeout_ms == 900);
+  const auto resolved = q4t::server::ResolveObjectStoreOptions(options, "", "");
+  Q4T_CHECK(resolved.directory == "/private/objects" &&
+            resolved.max_object_bytes == 8ULL << 20 &&
+            resolved.max_client_bytes == 16ULL << 20 &&
+            resolved.max_total_bytes == 32ULL << 20 &&
+            resolved.max_client_objects == 20 &&
+            resolved.max_total_objects == 40 && resolved.io_timeout_ms == 900);
+  return true;
+}
+
+Q4T_TEST(serve_object_store_directory_resolution_never_touches_filesystem) {
+  using q4t::server::ResolveObjectStoreOptions;
+  auto options = Defaults();
+  Q4T_CHECK(ResolveObjectStoreOptions(options, "/not-created", "/home/user")
+                .directory == "/not-created/q4t/objects");
+  Q4T_CHECK(
+      ResolveObjectStoreOptions(options, "relative", "/home/user").directory ==
+      "/home/user/.local/state/q4t/objects");
+  Q4T_CHECK(ResolveObjectStoreOptions(options, "/a/../b", "relative")
+                .directory.empty());
+  Q4T_CHECK(ResolveObjectStoreOptions(options, "", "").directory.empty());
+  options.object_store_dir = "/explicit";
+  Q4T_CHECK(
+      ResolveObjectStoreOptions(options, "/other", "/home/user").directory ==
+      "/explicit");
+  options.object_store_dir = std::string("/private\0suffix", 15);
+  Q4T_CHECK(!q4t::server::ValidateServerOptions(options));
+  return true;
+}
 
 Q4T_TEST(serve_agent_slot_capacity_and_admission) {
   auto options = Defaults();

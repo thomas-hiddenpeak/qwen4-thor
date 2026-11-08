@@ -2,6 +2,17 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+继续将Conversations接入实际serve与原生入口：共享路由识别、API Key
+身份绑定、业务连接/请求体预算、存储目录/配额CLI及动态状态报告。
+本组冻结4项新增CPU、1项配置回归、3项真实原生/TLS入口验证；
+存储目录解析不做主线程文件I/O，存储失败不传播到核心readiness。
+上述5不同C++及3实际原生/TLS通过，实际引擎构建零警告。继续补
+托管目录跨run/controller/model绑定及发行许可，10不同Python通过；
+修复配置schema遗漏媒体v2、N07启动socket失败泄漏租约副本。
+[原件](evidence/serve-conversation-service-20261109/README.md)保留TLS
+参数准备与schema失败，修复只重验相关项；无GPU/默认变更。
+下一步继续Responses实际生成/持久事件/background，不结束总任务。
+
 继续A07/A08实际状态接入：新增Responses历史解析、原生item引用、
 初始记录与响应/会话/items终态事务；上一轮instructions不继承，
 失败/取消不追加会话。新增8项CPU通过、两次构建零警告，覆盖

@@ -1,4 +1,5 @@
 #include "q4t/server/http_request.h"
+#include "q4t/server/application_routes.h"
 
 #include <unistd.h>
 #include <poll.h>
@@ -245,7 +246,7 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
     headers->failure = HttpReceiveFailure::kMalformed;
   }
   if (target == "/v1/chat/completions" || target == "/v1/chat/preflight" ||
-      target == "/v1/completions") {
+      target == "/v1/completions" || IsConversationTarget(target)) {
     if (lease && !lease->Acquire(length)) {
       if (failure_status) *failure_status = 503;
       headers->failure = HttpReceiveFailure::kBodyCapacity;

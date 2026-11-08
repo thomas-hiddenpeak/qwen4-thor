@@ -27,6 +27,10 @@ V8_SOURCES = (*V7_SOURCES, 'tools/serve_service/nvml_policy.py',
 V9_SOURCES = (*V8_SOURCES, 'tools/serve_service/auxiliary.py')
 V10_SOURCES = V9_SOURCES  # Same inventory; new resource-control contract.
 FILES = ('q4t', 'q4t.release.json', 'CMakeCache.txt', 'acceptance.json')
+APPLICATION_LIMITS = dict(max_object_mib=16, max_client_mib=64, max_total_mib=256,
+    max_client_objects=1000, max_total_objects=10000, io_timeout_ms=2000)
+NOTICE_FILES = tuple(sorted(str(p.relative_to(ROOT/'third_party/licenses'))
+    for p in (ROOT/'third_party/licenses').rglob('*') if p.is_file()))
 DECLARATION_PROFILE = 'q4t-release-declarations-v1'
 COMPLETION_DECLARATION_PROFILE = 'q4t-release-declarations-v2'
 DECLARATION_SCHEMAS = ('config', 'message', 'preflight', 'reasoning',
@@ -107,8 +111,28 @@ def private_directory(path, repository=ROOT):
     return path
 
 
+def application_settings(value):
+    require(type(value) is dict and value.keys() ==
+        {'profile', 'directory', *APPLICATION_LIMITS}, 'invalid application state settings')
+    require(value['profile'] == 'q4t-objects-v1', 'unknown application state profile')
+    directory = value['directory']
+    require(type(directory) is str and (not directory or
+        directory.startswith('/') and len(directory.encode()) <= 4096 and
+        '\0' not in directory and any(directory.split('/')) and
+        not {'.', '..'}.intersection(directory.split('/'))),
+        'application directory must be absolute without dot components')
+    require(all(type(value[k]) is int for k in APPLICATION_LIMITS),
+            'application state limits must be integers')
+    require(1 <= value['max_object_mib'] <= 32 and
+        value['max_object_mib'] <= value['max_client_mib'] <=
+            value['max_total_mib'] <= 1048576 and
+        1 <= value['max_client_objects'] <= value['max_total_objects'] <= 100000 and
+        1 <= value['io_timeout_ms'] <= 30000, 'invalid application state limits')
+    return dict(value)
+
+
 def settings(port, restart_limit, critical_memory_mib=1024, operations_port=0,
-             nvml_policy='strict', model_names=None):
+             nvml_policy='strict', model_names=None, application_state=None):
     require(type(nvml_policy) is str and nvml_policy in ('strict', 'degrade'),
             'invalid NVML policy')
     require(type(port) is int and 1024 <= port <= 65535, 'invalid port')
@@ -143,6 +167,8 @@ def settings(port, restart_limit, critical_memory_mib=1024, operations_port=0,
                 'invalid model identifier')
         require(len(set(names)) == len(names), 'duplicate model identifier')
         result['model_names'] = dict(name=names[0], aliases=list(aliases))
+    if application_state is not None:
+        result['application_state'] = application_settings(application_state)
     return result
 
 
@@ -242,7 +268,8 @@ def verify_declarations(metadata, directory=None, *, required=False):
 
 def prepare(binary, release, model, output, port=8080, restart_limit=0,
             critical_memory_mib=1024, client_policy=None, host_resources=None,
-            operations_port=0, nvml_policy='strict', model_names=None):
+            operations_port=0, nvml_policy='strict', model_names=None,
+            application_state=None):
     config = settings(port, restart_limit, critical_memory_mib, operations_port,
                       nvml_policy, model_names)
     policy_raw = None
@@ -269,6 +296,21 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
     require(isinstance(protocol, str) and len(protocol) == 64 and
             all(c in '0123456789abcdef' for c in protocol), 'invalid protocol')
     declarations = verify_declarations(metadata, required=True)
+    observed_state = metadata.get('observed_configuration', {}).get('application_state')
+    if observed_state is not None:
+        require(type(observed_state) is dict and
+            observed_state.get('profile') == 'q4t-objects-v1',
+            'unknown observed application state profile')
+        require(application_state is None or type(application_state) is dict and
+            set(application_state) <= {'directory', *APPLICATION_LIMITS},
+            'unknown application state option')
+        config['application_state'] = application_settings(dict(
+            profile='q4t-objects-v1', directory='',
+            **{k: observed_state.get(k) for k in APPLICATION_LIMITS},
+        ) | (application_state or {}))
+    else:
+        require(application_state is None,
+                'accepted engine does not declare native application state')
     model_files = {p.name: sha(p) for p in sorted(model.glob('*.json'))
                    if p.is_file() and not p.is_symlink()}
     require({'config.json', 'tokenizer.json', 'tokenizer_config.json'} <=
@@ -287,6 +329,13 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
         shutil.copyfile(source, dest)
         os.chmod(dest, 0o400)
     names = [*FILES, *('source/'+s for s in sources)]
+    for name in NOTICE_FILES:
+        source, dest = ROOT/'third_party/licenses'/name, target/'licenses'/name
+        regular(source)
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source, dest)
+        dest.chmod(0o400)
+        names.append('licenses/'+name)
     for name in declaration_files(metadata['release_declarations']['profile']):
         dest = target/'declarations'/name
         dest.parent.mkdir(parents=True, exist_ok=True)
@@ -305,6 +354,7 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
         files={name: sha(target/name) for name in names},
         weight_shards_rehashed=False, managed_service_accepted=False)
     manifest['release_declarations'] = metadata['release_declarations']['profile']
+    manifest['third_party_notices'] = dict(profile='q4t-notices-v1', files=list(NOTICE_FILES))
     if policy_raw is not None:
         manifest['version'] = 4
         manifest['client_policy'] = cp.binding(policy_raw)
@@ -333,7 +383,7 @@ def verify(package, digest):
                       config.get('critical_memory_mib', 1024),
                       config.get('operations_port', 0) if manifest['version'] in (6, 7, 8, 9, 10) else 0,
                       config.get('nvml_policy', 'strict') if manifest['version'] in (7, 8, 9, 10) else 'strict',
-                      config.get('model_names'))
+                      config.get('model_names'), config.get('application_state'))
     require(manifest['version'] not in (7, 8, 9, 10) or config.get('nvml_policy') == 'degrade',
             'monitor package requires explicit degradation policy')
     require(manifest['version'] != 10 or 'host_resources' in manifest,
@@ -350,6 +400,20 @@ def verify(package, digest):
                7: V7_SOURCES, 8: V8_SOURCES, 9: V9_SOURCES,
                10: V10_SOURCES}[manifest['version']]
     expected = {*FILES, *('source/'+name for name in sources)}
+    if 'third_party_notices' in manifest:
+        notices = manifest['third_party_notices']
+        require(type(notices) is dict and notices.keys() == {'profile', 'files'} and
+            notices['profile'] == 'q4t-notices-v1' and type(notices['files']) is list and
+            len(notices['files']) <= 256 and
+            all(type(n) is str and n and '\0' not in n and not n.startswith('/') and
+                not {'', '.', '..'}.intersection(n.split('/')) for n in notices['files']) and
+            len(set(notices['files'])) == len(notices['files']),
+            'invalid third-party notice inventory')
+        require({'openai-node/LICENSE', 'openai-node/README.md',
+                 'structured_output/XGrammar-LICENSE',
+                 'structured_output/regex-syntax-LICENSE-APACHE'} <= set(notices['files']),
+                'required third-party notices absent')
+        expected.update('licenses/'+n for n in notices['files'])
     if 'release_declarations' in manifest:
         expected.update('declarations/'+n for n in
                         declaration_files(manifest['release_declarations']))
@@ -385,6 +449,9 @@ def verify(package, digest):
                 'package declaration profile differs')
     verify_declarations(metadata, package/'declarations',
                         required='release_declarations' in manifest)
+    if 'application_state' in config:
+        require(metadata.get('observed_configuration', {}).get('application_state', {})
+            .get('profile') == 'q4t-objects-v1', 'application state engine declaration absent')
     accepted_release(metadata, read(package/'acceptance.json'))
     require(metadata['binary_sha256'] == manifest['files']['q4t'] and
             metadata['build_cache_sha256'] == manifest['files']['CMakeCache.txt']
@@ -403,7 +470,7 @@ def verify(package, digest):
     return manifest
 
 
-def command(package, manifest):
+def command(package, manifest, *, state_directory=None):
     cfg = manifest['settings']
     args = [str(Path(package)/'q4t'), 'serve', '--model-dir', manifest['model_dir'],
             '--host', '127.0.0.1', '--port', str(cfg['port']), '--mtp']
@@ -418,4 +485,14 @@ def command(package, manifest):
         args += ['--served-model-name', cfg['model_names']['name']]
         for alias in cfg['model_names']['aliases']:
             args += ['--model-alias', alias]
+    if 'application_state' in cfg:
+        objects = application_settings(cfg['application_state'])
+        directory = objects['directory']
+        if not directory:
+            require(state_directory is not None, 'application state needs a deployment directory')
+            directory = str(Path(state_directory)/'application-objects')
+        application_settings(dict(objects, directory=directory))
+        args += ['--object-store-dir', directory]
+        for key in APPLICATION_LIMITS:
+            args += ['--object-'+key.replace('_', '-'), str(objects[key])]
     return args

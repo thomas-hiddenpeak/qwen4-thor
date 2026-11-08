@@ -384,6 +384,24 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
          R"(,"model_aliases":)" + aliases +
          R"(,"completions":{"profile":"q4t-completions-v1",)"
          R"("default_output_tokens":16,"max_batch_candidates":128})"
+         R"(,"application_state":{"profile":"q4t-objects-v1",)"
+         R"("directory_source":)" +
+         Quote(requested.object_store_dir.empty() ? "environment"
+                                                  : "explicit") +
+         R"(,"directory_redacted":true,"isolated_io":true,)"
+         R"("max_object_mib":)" +
+         std::to_string(requested.object_max_object_mib) +
+         R"(,"max_client_mib":)" +
+         std::to_string(requested.object_max_client_mib) +
+         R"(,"max_total_mib":)" +
+         std::to_string(requested.object_max_total_mib) +
+         R"(,"max_client_objects":)" +
+         std::to_string(requested.object_max_client_objects) +
+         R"(,"max_total_objects":)" +
+         std::to_string(requested.object_max_total_objects) +
+         R"(,"io_timeout_ms":)" +
+         std::to_string(requested.object_io_timeout_ms) +
+         R"(,"core_readiness_dependency":false})"
          R"(,"client_policy":{"profile":"q4t-gateway-clients-v1","enabled":)" +
          Bool(config.client_count != 0) + R"(,"sha256":)" +
          Quote(config.client_policy_sha256) + R"(,"clients":)" +

@@ -37,6 +37,15 @@ struct ServerOptions {
   std::string model_dir;
   std::string served_model_name = "qwen3.8-flash-next";
   std::vector<std::string> model_aliases;
+  // Durable application state, independent of model assets and KV caches.
+  // Empty resolves to XDG_STATE_HOME or HOME in the startup owner, without I/O.
+  std::string object_store_dir;
+  int object_max_object_mib = 16;
+  int object_max_client_mib = 64;
+  int object_max_total_mib = 256;
+  int object_max_client_objects = 1000;
+  int object_max_total_objects = 10000;
+  int object_io_timeout_ms = 2000;
   int max_tokens = 256;  // default cap when the request omits max_tokens
   int max_prefill = 0;   // 0 = use ModelConfig default (2048); >0 overrides
   // Max sequence length (sizes the full-attention KV/indexer/rope caches).

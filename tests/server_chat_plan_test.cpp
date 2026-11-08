@@ -1,6 +1,8 @@
 #include "q4t/server/chat_plan.h"
 
 #include <limits>
+#include <cstdlib>
+#include <fstream>
 
 #include "q4t/server/chat_prompt.h"
 #include "q4t/server/request_json.h"
@@ -269,6 +271,7 @@ Q4T_TEST(chat_config_effective_sources_and_redaction) {
   config.model_aliases = {"org/alias", "中文"};
   opts.model_dir = "/private-model";
   opts.session_cache_dir = "/private-session";
+  opts.object_store_dir = "/private-objects";
   opts.max_len = 200000;
   opts.max_tokens = 31;
   opts.supplied_options = {"--max-len"};
@@ -277,6 +280,13 @@ Q4T_TEST(chat_config_effective_sources_and_redaction) {
                   &response));
   Q4T_CHECK(response.GetArray("model_aliases")->array.size() == 2);
   Q4T_CHECK(response.Find("completions")->GetInt("default_output_tokens") == 16);
+  const auto* objects = response.Find("application_state");
+  Q4T_CHECK(objects && objects->GetString("directory_source") == "explicit");
+  Q4T_CHECK(objects->GetBool("directory_redacted") &&
+            objects->GetBool("isolated_io") &&
+            !objects->GetBool("core_readiness_dependency", true));
+  Q4T_CHECK(objects->GetInt("max_client_mib") == 64 &&
+            objects->GetInt("max_total_objects") == 10000);
   const auto* context = response.Find("max_context_tokens");
   Q4T_CHECK(context->GetInt("requested") == 200000);
   Q4T_CHECK(context->GetInt("effective") == 8192);
@@ -300,10 +310,17 @@ Q4T_TEST(chat_config_effective_sources_and_redaction) {
   Q4T_CHECK(opts.supplied_options == original);
   Q4T_CHECK(Parse(EffectiveServeConfigJson(opts, config, false, false, 128),
                   &response));
+  Q4T_CHECK(response.Find("application_state")->GetString("directory_source") ==
+            "environment");
   Q4T_CHECK(response.Find("default_output_tokens")->GetString("source") ==
             "cli");
   Q4T_CHECK(response.Find("max_context_tokens")->GetString("resolution") ==
             "model_config_default");
+  if (const char* output = std::getenv("Q4T_TEST_OUTPUT_DIR")) {
+    std::ofstream wire(std::string(output) + "/config-response.bin");
+    wire << EffectiveServeConfigJson(opts, config, false, false, 128);
+    Q4T_CHECK(wire.good());
+  }
   return true;
 }
 

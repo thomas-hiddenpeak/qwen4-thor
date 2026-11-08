@@ -220,6 +220,9 @@ def main():
     p.add_argument('--client-policy', type=Path)
     p.add_argument('--served-model-name')
     p.add_argument('--model-alias', action='append', default=[])
+    p.add_argument('--object-store-dir')
+    for option in pkg.APPLICATION_LIMITS:
+        p.add_argument('--object-'+option.replace('_', '-'), type=int)
     p.add_argument('--host-memory-high-mib', type=int)
     p.add_argument('--host-memory-max-mib', type=int)
     p.add_argument('--host-tasks-max', type=int)
@@ -245,7 +248,11 @@ def main():
                              dict(name=args.served_model_name if args.served_model_name is not None
                                        else 'qwen3.8-flash-next',
                                   aliases=args.model_alias)
-                             if args.served_model_name is not None or args.model_alias else None)
+                             if args.served_model_name is not None or args.model_alias else None,
+                             application_state=({**({'directory': args.object_store_dir}
+                                 if args.object_store_dir is not None else {}),
+                                 **{k: getattr(args, 'object_'+k) for k in pkg.APPLICATION_LIMITS
+                                    if getattr(args, 'object_'+k) is not None}} or None))
     elif args.action == 'run':
         manifest = pkg.verify(args.package, args.manifest_sha256)
         entry = args.package.resolve()/'source/tools/serve_service/service.py'

@@ -120,11 +120,6 @@ ObjectReply ResolveInput(ObjectStore& objects, const Json& input,
 }
 }  // namespace
 
-bool IsConversationTarget(std::string_view target) {
-  const auto path = target.substr(0, target.find('?'));
-  return path == kRoot || path.starts_with(std::string(kRoot) + '/');
-}
-
 ObjectReply HandleConversationRequest(ObjectStore& objects,
                                       std::string_view method,
                                       std::string_view target,

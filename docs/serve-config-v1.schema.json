@@ -242,124 +242,296 @@
           "const": false
         },
         "media_limits": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "profile": {
-              "const": "q4t-media-admission-v1"
-            },
-            "experimental": {
-              "const": true
-            },
-            "roles": {
-              "const": [
-                "user"
-              ]
-            },
-            "formats": {
-              "const": [
-                "png",
-                "jpeg"
-              ]
-            },
-            "data_url_mime": {
-              "const": [
-                "image/png",
-                "image/jpeg"
-              ]
-            },
-            "raw_base64": {
-              "const": true
-            },
-            "base64": {
-              "const": "canonical_standard_padded"
-            },
-            "image_detail": {
-              "const": [
-                "auto"
-              ]
-            },
-            "remote_urls": {
-              "const": false
-            },
-            "max_items": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "max_frames_per_item": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "max_encoded_bytes": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "max_source_edge": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "max_source_pixels": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "max_decoded_rgb_bytes": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "max_patches": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "max_workspace_bytes": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "decoder_owned_bytes": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "attention_shared_bytes": {
-              "type": [
-                "integer",
-                "null"
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "profile": {
+                  "const": "q4t-media-admission-v1"
+                },
+                "experimental": {
+                  "const": true
+                },
+                "roles": {
+                  "const": [
+                    "user"
+                  ]
+                },
+                "formats": {
+                  "const": [
+                    "png",
+                    "jpeg"
+                  ]
+                },
+                "data_url_mime": {
+                  "const": [
+                    "image/png",
+                    "image/jpeg"
+                  ]
+                },
+                "raw_base64": {
+                  "const": true
+                },
+                "base64": {
+                  "const": "canonical_standard_padded"
+                },
+                "image_detail": {
+                  "const": [
+                    "auto"
+                  ]
+                },
+                "remote_urls": {
+                  "const": false
+                },
+                "max_items": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_frames_per_item": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_encoded_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_source_edge": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_source_pixels": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_decoded_rgb_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_patches": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_workspace_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "decoder_owned_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "attention_shared_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 1
+                },
+                "unknown_device_limit": {
+                  "const": "reject"
+                },
+                "whole_server_ram_limit": {
+                  "const": false
+                },
+                "cancellation": {
+                  "const": "item_frame_and_before_gpu_not_preemptive"
+                }
+              },
+              "required": [
+                "profile",
+                "experimental",
+                "roles",
+                "formats",
+                "data_url_mime",
+                "raw_base64",
+                "base64",
+                "image_detail",
+                "remote_urls",
+                "max_items",
+                "max_frames_per_item",
+                "max_encoded_bytes",
+                "max_source_edge",
+                "max_source_pixels",
+                "max_decoded_rgb_bytes",
+                "max_patches",
+                "max_workspace_bytes",
+                "decoder_owned_bytes",
+                "attention_shared_bytes",
+                "unknown_device_limit",
+                "whole_server_ram_limit",
+                "cancellation"
               ],
-              "minimum": 1
+              "description": "Optional for historical v1 records; emitted by the media admission implementation. Logical source/decoder/workspace limits do not reserve physical RAM."
             },
-            "unknown_device_limit": {
-              "const": "reject"
-            },
-            "whole_server_ram_limit": {
-              "const": false
-            },
-            "cancellation": {
-              "const": "item_frame_and_before_gpu_not_preemptive"
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "profile": {
+                  "const": "q4t-media-admission-v2"
+                },
+                "experimental": {
+                  "const": true
+                },
+                "roles": {
+                  "const": [
+                    "user"
+                  ]
+                },
+                "formats": {
+                  "const": [
+                    "png",
+                    "jpeg"
+                  ]
+                },
+                "data_url_mime": {
+                  "const": [
+                    "image/png",
+                    "image/jpeg"
+                  ]
+                },
+                "raw_base64": {
+                  "const": true
+                },
+                "base64": {
+                  "const": "canonical_standard_padded"
+                },
+                "image_detail": {
+                  "const": [
+                    "auto"
+                  ]
+                },
+                "remote_urls": {
+                  "const": false
+                },
+                "max_items": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_frames_per_item": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_encoded_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_source_edge": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_source_pixels": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_decoded_rgb_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_patches": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max_workspace_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "decoder_owned_bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "attention_shared_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 1
+                },
+                "unknown_device_limit": {
+                  "const": "reject"
+                },
+                "whole_server_ram_limit": {
+                  "const": false
+                },
+                "cancellation": {
+                  "const": "item_frame_and_before_gpu_not_preemptive"
+                },
+                "video_time_field": {
+                  "const": "video_timestamps"
+                },
+                "video_time_unit": {
+                  "const": "seconds"
+                },
+                "video_time_default": {
+                  "const": "frame_index/24"
+                },
+                "max_timestamp_seconds": {
+                  "const": 86400
+                },
+                "temporal_group_frames": {
+                  "const": 2
+                },
+                "timestamp_rounding_decimal_places": {
+                  "const": 1
+                },
+                "video_prompt": {
+                  "const": "timestamp_then_one_boundary_per_temporal_group"
+                },
+                "mtp": {
+                  "const": false
+                },
+                "state_cache": {
+                  "const": false
+                },
+                "chunked_prefill": {
+                  "const": false
+                },
+                "max_execution_slots": {
+                  "const": 1
+                },
+                "client_governance": {
+                  "const": true
+                }
+              },
+              "required": [
+                "profile",
+                "experimental",
+                "roles",
+                "formats",
+                "data_url_mime",
+                "raw_base64",
+                "base64",
+                "image_detail",
+                "remote_urls",
+                "max_items",
+                "max_frames_per_item",
+                "max_encoded_bytes",
+                "max_source_edge",
+                "max_source_pixels",
+                "max_decoded_rgb_bytes",
+                "max_patches",
+                "max_workspace_bytes",
+                "decoder_owned_bytes",
+                "attention_shared_bytes",
+                "unknown_device_limit",
+                "whole_server_ram_limit",
+                "cancellation",
+                "video_time_field",
+                "video_time_unit",
+                "video_time_default",
+                "max_timestamp_seconds",
+                "temporal_group_frames",
+                "timestamp_rounding_decimal_places",
+                "video_prompt",
+                "mtp",
+                "state_cache",
+                "chunked_prefill",
+                "max_execution_slots",
+                "client_governance"
+              ],
+              "description": "Native media v2 includes temporal grouping and actual execution constraints."
             }
-          },
-          "required": [
-            "profile",
-            "experimental",
-            "roles",
-            "formats",
-            "data_url_mime",
-            "raw_base64",
-            "base64",
-            "image_detail",
-            "remote_urls",
-            "max_items",
-            "max_frames_per_item",
-            "max_encoded_bytes",
-            "max_source_edge",
-            "max_source_pixels",
-            "max_decoded_rgb_bytes",
-            "max_patches",
-            "max_workspace_bytes",
-            "decoder_owned_bytes",
-            "attention_shared_bytes",
-            "unknown_device_limit",
-            "whole_server_ram_limit",
-            "cancellation"
-          ],
-          "description": "Optional for historical v1 records; emitted by the media admission implementation. Logical source/decoder/workspace limits do not reserve physical RAM."
+          ]
         }
       },
       "required": [
@@ -1194,6 +1366,102 @@
         "profile",
         "default_output_tokens",
         "max_batch_candidates"
+      ]
+    },
+    "application_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "profile": {
+          "const": "q4t-objects-v1"
+        },
+        "directory_source": {
+          "enum": [
+            "environment",
+            "explicit"
+          ]
+        },
+        "directory_redacted": {
+          "const": true
+        },
+        "isolated_io": {
+          "const": true
+        },
+        "max_object_mib": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32
+        },
+        "max_client_mib": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1048576
+        },
+        "max_total_mib": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1048576
+        },
+        "max_client_objects": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100000
+        },
+        "max_total_objects": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100000
+        },
+        "io_timeout_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 30000
+        },
+        "core_readiness_dependency": {
+          "const": false
+        }
+      },
+      "required": [
+        "profile",
+        "directory_source",
+        "directory_redacted",
+        "isolated_io",
+        "max_object_mib",
+        "max_client_mib",
+        "max_total_mib",
+        "max_client_objects",
+        "max_total_objects",
+        "io_timeout_ms",
+        "core_readiness_dependency"
+      ],
+      "description": "Present when the native application object store is implemented; absent in historical config-v1 records."
+    },
+    "application_state_health": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pending": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "workers_started": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "workers_reaped": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "state",
+        "pending",
+        "workers_started",
+        "workers_reaped"
       ]
     }
   },

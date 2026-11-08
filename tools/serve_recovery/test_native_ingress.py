@@ -112,6 +112,50 @@ class NativeTests(fixture.NginxTests):
             response.close()
             connection.close()
 
+    def test_conversations_preserve_methods_queries_and_authenticated_scope(self):
+        self.ready()
+        routes = [('POST', '/v1/conversations'),
+                  ('POST', '/v1/conversations/conv_1'),
+                  ('GET', '/v1/conversations/conv_1'),
+                  ('DELETE', '/v1/conversations/conv_1'),
+                  ('POST', '/v1/conversations/conv_1/items'),
+                  ('GET', '/v1/conversations/conv_1/items?limit=2&order=asc&'
+                          'include%5B%5D=reasoning.encrypted_content'),
+                  ('GET', '/v1/conversations/conv_1/items/item_1?'
+                          'include%5B%5D=message.output_text.logprobs'),
+                  ('DELETE', '/v1/conversations/conv_1/items/item_1')]
+        for method, path in routes:
+            with self.subTest(method=method, path=path):
+                body = b'{"items":[]}' if method == 'POST' else b''
+                before = len(self.stack.application_requests)
+                self.assertEqual(self.raw('Authorization: Bearer wrong\r\n',
+                    method=method, path=path, length=len(body), body=body)[0], 401)
+                self.assertEqual(len(self.stack.application_requests), before)
+                for key, client in [('A', 'alpha'), ('B', 'beta')]:
+                    self.assertEqual(self.raw('Authorization: Bearer '+key*40+'\r\n',
+                        method=method, path=path, length=len(body), body=body)[0], 200)
+                    row = self.stack.application_requests[-1]
+                    self.assertEqual((row['method'], row['path'], row['body']),
+                                     (method, path, body.decode()))
+                    self.assertEqual((row['client'], row['token']), (client, 'e'*64))
+                    self.assertIsNone(row['authorization'])
+
+    def test_conversations_share_data_capacity_and_actual_peer_cidr(self):
+        self.replace_stack(per_client_inflight=1, global_inflight=1,
+                           allowed_client_cidrs=['127.0.0.1/32'])
+        auth = 'Authorization: Bearer '+'A'*40+'\r\n'
+        path = '/v1/conversations/conv_1/items'
+        self.assertEqual(self.raw(auth, method='GET', path=path,
+                                  source='127.0.0.2')[0], 403)
+        connection, response = self.stream()
+        try:
+            self.assertEqual(self.raw(auth, method='GET', path=path)[0], 429)
+            self.assertEqual(self.stack.application_requests, [])
+            self.assertEqual(self.stack.request(path='/livez')[0], 200)
+        finally:
+            response.close()
+            connection.close()
+
     def test_duplicate_bearer_and_ambiguous_framing_never_reach_backend(self):
         self.ready()
         auth = 'Authorization: Bearer '+'A'*40+'\r\n'

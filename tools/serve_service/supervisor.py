@@ -328,7 +328,8 @@ def run(package, digest, output, *, observe=None, read_memory=None):
                     watchdog.attach(owner)
                     publish('STARTING', backend=owner)
                     pkg.save(output/f"attempt-{state['attempts']}.json",
-                        dict(owner=owner, command=pkg.command(package, manifest),
+                        dict(owner=owner, command=pkg.command(package, manifest,
+                             state_directory=output),
                              started_unix=time.time()))
                     missing, was_ready = None, False
                     def phase_limit():

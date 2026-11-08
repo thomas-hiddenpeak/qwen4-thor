@@ -278,6 +278,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_memory.cpp
   src/server/chat_capabilities.cpp
   src/server/server_options.cpp
+  src/server/object_store_options.cpp
   src/server/chat_http.cpp
   src/server/http_response.cpp
   src/server/chat_response_parser.cpp
@@ -548,6 +549,7 @@ if(Q4T_BUILD_TESTS)
     tests/server_chat_plan_test.cpp
     tests/server_sequence_admission_test.cpp
     src/server/server_options.cpp
+    src/server/object_store_options.cpp
     src/server/http_response.cpp
     tests/server_http_response_test.cpp
     src/server/http_request.cpp
@@ -814,7 +816,8 @@ target_compile_options(q4t_session_target_contract PRIVATE -Wall -Wextra)
 
 add_executable(q4t_prefix_storage_contract EXCLUDE_FROM_ALL
   tools/prefix_cache/storage_contract.cpp src/server/session_cache.cpp
-  src/server/server_options.cpp src/trace/sha256.cpp)
+  src/server/server_options.cpp src/server/object_store_options.cpp
+  src/trace/sha256.cpp)
 target_include_directories(q4t_prefix_storage_contract PRIVATE include)
 target_compile_options(q4t_prefix_storage_contract PRIVATE -Wall -Wextra)
 add_executable(q4t_prefix_state_contract EXCLUDE_FROM_ALL

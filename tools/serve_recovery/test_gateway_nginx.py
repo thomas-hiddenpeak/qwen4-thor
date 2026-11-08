@@ -78,6 +78,7 @@ class Stack:
         self.requests = []
         self.forwarded = []
         self.model_requests = []
+        self.application_requests = []
         self.events = []
         self.errors = []
         self.servers, self.threads = [], []
@@ -106,6 +107,8 @@ class Stack:
                     self.response(200, dict(object='list', data=[dict(id='cpu-fixture')]))
                 elif self.path.startswith('/v1/models/'):
                     self.model_detail('GET')
+                elif self.path.startswith('/v1/conversations/'):
+                    self.application('GET')
                 else:
                     self.response(404, dict(error='absent'))
             def model_detail(self, method):
@@ -121,10 +124,30 @@ class Stack:
                 else:
                     self.response(200, dict(id='cpu-fixture', object='model',
                                             created=42, owned_by='q4t'))
+            def application(self, method):
+                raw = self.rfile.read(int(self.headers.get('Content-Length', '0')))
+                row = dict(method=method, path=self.path, body=raw.decode(),
+                    token=self.headers.get('X-Q4T-Gateway-Token'),
+                    client=self.headers.get('X-Q4T-Client-Id'),
+                    authorization=self.headers.get('Authorization'))
+                stack.application_requests.append(row)
+                if row['token'] != stack.token:
+                    self.response(403, dict(error=dict(code='invalid_gateway_credentials')))
+                    return
+                # Transport oracle only. Native endpoint/SDK semantics are
+                # exercised separately by test_conversations_sdk.mjs.
+                self.response(200, dict(cpu_fixture=True, method=method,
+                                        path=self.path, client=row['client']))
             def do_DELETE(self):
-                self.model_detail('DELETE')
+                if self.path.startswith('/v1/conversations/'):
+                    self.application('DELETE')
+                else:
+                    self.model_detail('DELETE')
             def do_POST(self):
                 self.close_connection = True
+                if self.path.split('?', 1)[0] == '/v1/conversations' or self.path.startswith('/v1/conversations/'):
+                    self.application('POST')
+                    return
                 raw = self.rfile.read(int(self.headers.get('Content-Length', '0')))
                 stack.forwarded.append(dict(token=self.headers.get('X-Q4T-Gateway-Token'),
                     client=self.headers.get('X-Q4T-Client-Id'),

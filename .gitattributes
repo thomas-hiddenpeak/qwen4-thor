@@ -47,3 +47,4 @@ tests/fixtures/responses_items/*.json -text
 third_party/licenses/openai-node/LICENSE -text -whitespace
 docs/evidence/serve-item-shape-20261109/** -text -whitespace
 docs/evidence/serve-conversations-20261109/** -text -whitespace
+docs/evidence/serve-conversation-service-20261109/** -text -whitespace

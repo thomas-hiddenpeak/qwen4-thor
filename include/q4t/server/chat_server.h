@@ -53,6 +53,7 @@
 #include "q4t/server/structured_admission.h"
 #include "q4t/server/device_memory.h"
 #include "q4t/server/grammar_process.h"
+#include "q4t/server/object_store.h"
 #include "q4t/vision/processor.h"
 #include "q4t/vision/media_plan.h"
 #include "q4t/vision/vision.h"
@@ -181,6 +182,7 @@ class ChatServer {
   int AllocSeqId(RequestControl* control, int fd, size_t required = 0);
   RequestRegistry requests_;
   ClientAdmission clients_;
+  std::unique_ptr<ObjectStore> objects_;
   std::mutex connections_mu_;
   std::unordered_set<int> connections_;
   void FreeSeqId(int seq_id);

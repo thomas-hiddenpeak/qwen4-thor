@@ -19,6 +19,7 @@
 #include <vector>
 
 #include "q4t/server/client_identity.h"
+#include "q4t/server/application_routes.h"
 #include "q4t/server/http_listener.h"
 #include "q4t/server/http_request.h"
 #include "q4t/server/model_catalog.h"
@@ -348,6 +349,10 @@ constexpr RouteSpec kRoutes[] = {
 };
 
 bool Route(const std::string& method, const std::string& path, bool* control) {
+  if (server::ConversationMethodAllowed(method, path)) {
+    *control = false;
+    return true;
+  }
   if ((method == "GET" || method == "DELETE") &&
       server::IsModelDetailPath(path) && path.find_first_of("?#") == path.npos) {
     *control = true;

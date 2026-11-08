@@ -1,8 +1,11 @@
 """CPU publication checks; never load a model or contact a service."""
 import copy
+import contextlib
+import io
 from pathlib import Path
 import shutil
 import unittest
+from unittest import mock
 
 from tools.serve_service import package as pkg
 from tools.serve_service import test_service as old
@@ -12,6 +15,82 @@ from tools.verify.startup_delivery import deploy
 class Declarations(unittest.TestCase):
     setUp = old.Case.setUp
     fixture = old.PackageTests.fixture
+
+    def application_fixture(self):
+        binary, release, model = self.fixture()
+        metadata = pkg.read(release)
+        config = metadata['observed_configuration']
+        config['application_state'] = dict(profile='q4t-objects-v1',
+                                           **pkg.APPLICATION_LIMITS)
+        root = Path(metadata['release_declarations']['directory'])
+        pkg.save(root/'configuration.json', config)
+        metadata['release_declarations']['files']['configuration.json'] = pkg.sha(
+            root/'configuration.json')
+        pkg.save(release, metadata)
+        return binary, release, model
+
+    def test_application_state_is_declared_bound_and_kept_outside_generations(self):
+        binary, release, model = self.application_fixture()
+        receipt = pkg.prepare(binary, release, model, self.root/'package',
+                               application_state=dict(max_client_mib=128))
+        manifest = pkg.verify(receipt['package'], receipt['manifest_sha256'])
+        self.assertEqual(manifest['settings']['application_state']['max_client_mib'], 128)
+        with self.assertRaisesRegex(RuntimeError, 'deployment directory'):
+            pkg.command(receipt['package'], manifest)
+        args = pkg.command(receipt['package'], manifest, state_directory=self.root/'state')
+        self.assertEqual(args[args.index('--object-store-dir')+1],
+                         str(self.root/'state/application-objects'))
+        self.assertEqual(args[args.index('--object-max-client-mib')+1], '128')
+        self.assertEqual(args[args.index('--object-io-timeout-ms')+1], '2000')
+        shutil.rmtree(Path(pkg.read(release)['release_declarations']['directory']))
+        release.unlink()
+        pkg.verify(receipt['package'], receipt['manifest_sha256'])
+
+    def test_application_state_override_requires_engine_and_valid_bounded_settings(self):
+        binary, release, model = self.fixture()
+        with self.assertRaisesRegex(RuntimeError, 'does not declare'):
+            pkg.prepare(binary, release, model, self.root/'package',
+                        application_state=dict(directory='/persistent'))
+        self.assertFalse((self.root/'package').exists())
+        value = dict(profile='q4t-objects-v1', directory='', **pkg.APPLICATION_LIMITS)
+        for changes in [dict(directory='/'), dict(directory='/a/../b'),
+            dict(directory='relative'), dict(max_object_mib=33),
+            dict(max_client_mib=1), dict(max_total_objects=999),
+            dict(io_timeout_ms=30001), dict(max_client_objects=True)]:
+            with self.subTest(changes=changes), self.assertRaises(RuntimeError):
+                pkg.application_settings(dict(value, **changes))
+        manifest = dict(settings=pkg.settings(8080, 0, application_state=dict(
+            value, directory='/persistent/objects')), model_dir='/model')
+        args = pkg.command(self.root, manifest)
+        self.assertEqual(args[args.index('--object-store-dir')+1], '/persistent/objects')
+
+    def test_notices_are_copied_verified_and_do_not_need_repository_at_runtime(self):
+        binary, release, model = self.fixture()
+        receipt = pkg.prepare(binary, release, model, self.root/'package')
+        target = Path(receipt['package'])
+        manifest = pkg.verify(target, receipt['manifest_sha256'])
+        self.assertEqual(manifest['third_party_notices']['files'], list(pkg.NOTICE_FILES))
+        for name in pkg.NOTICE_FILES:
+            self.assertEqual((target/'licenses'/name).read_bytes(),
+                             (pkg.ROOT/'third_party/licenses'/name).read_bytes())
+        with mock.patch.object(pkg, 'ROOT', self.root/'absent-source-tree'):
+            pkg.verify(target, receipt['manifest_sha256'])
+        path = target/'licenses/openai-node/LICENSE'
+        path.chmod(0o600)
+        path.write_text('changed')
+        with self.assertRaisesRegex(RuntimeError, 'package file changed'):
+            pkg.verify(target, receipt['manifest_sha256'])
+
+    def test_managed_cli_carries_application_options(self):
+        from tools.serve_service import service
+        args = ['q4t-managed', 'prepare', '--model-dir', '/model', '--output', '/out',
+                '--object-store-dir', '/persistent', '--object-max-total-mib', '512']
+        with mock.patch.object(service.sys, 'argv', args), \
+             mock.patch.object(service.pkg, 'prepare', return_value={}) as prepare, \
+             contextlib.redirect_stdout(io.StringIO()):
+            service.main()
+        self.assertEqual(prepare.call_args.kwargs['application_state'],
+                         dict(directory='/persistent', max_total_mib=512))
 
     def test_completion_schemas_travel_with_optional_registry_and_verify_offline(self):
         binary, release, model = self.fixture()

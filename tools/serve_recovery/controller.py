@@ -33,11 +33,20 @@ def health_fault(value, status):
     return policy.FaultKind.PLE_UNAVAILABLE if value['gpu_healthy'] else policy.FaultKind.CUDA_CONTEXT
 
 
+def model_command(package, base, config, policy_path):
+    command = engine.command(Path(package)/'engine', base,
+                              state_directory=config.get('state_directory'))
+    command[command.index('--client-policy-file')+1] = str(policy_path)
+    return command
+
+
 class Controller:
     def __init__(self, config, channel):
-        ledger.keys(config, ('version', 'package', 'manifest_sha256', 'directory'))
-        ledger.require(type(config['version']) is int and config['version'] == 1,
+        version = config.get('version')
+        ledger.require(type(version) is int and version in (1, 2),
                        'unsupported controller config')
+        ledger.keys(config, ('version', 'package', 'manifest_sha256', 'directory') +
+                    (('state_directory',) if version == 2 else ()))
         self.config, self.channel = config, channel
         self.package = Path(config['package'])
         self.root_pid = int(os.environ['Q4T_GUARDIAN_PID'])
@@ -72,6 +81,10 @@ class Controller:
         self.manifest = bundle.verify(self.package, config['manifest_sha256'])
         self.base = engine.verify(self.package/'engine', self.manifest['engine_manifest_sha256'])
         self.settings = self.base['settings']
+        # Validate state binding before authorizing any model launch. The
+        # directory is deployment-scoped, never controller/model-generation-scoped.
+        engine.command(self.package/'engine', self.base,
+                       state_directory=config.get('state_directory'))
         _, self.base_policy = cp.read(self.package/'engine/client-policy.json')
         self.check_client = core_http.self_check_client(self.base_policy)
         self.phase, self.reason = 'WAIT_DEPENDENCY', 'cold_preflight'
@@ -253,8 +266,7 @@ class Controller:
         raw = binding.policy_bytes(self.base_policy, token)
         policy_path = target/'client-policy.json'
         ingress.save(policy_path, raw)
-        command = engine.command(self.package/'engine', self.base)
-        command[command.index('--client-policy-file')+1] = str(policy_path)
+        command = model_command(self.package, self.base, self.config, policy_path)
         self.credentials = dict(client=self.check_client, token=token)
         self.current_binding = dict(port=self.settings['port'],
             operations_port=self.settings['operations_port'], gateway_token=token,

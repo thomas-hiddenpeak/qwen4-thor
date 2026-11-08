@@ -78,6 +78,9 @@ set(protocol_inputs
   include/q4t/server/conversation_state.h
   src/server/conversation_state.cpp
   include/q4t/server/conversation_api.h
+  include/q4t/server/application_routes.h
+  include/q4t/server/object_store_options.h
+  src/server/object_store_options.cpp
   src/server/conversation_api.cpp
   include/q4t/server/responses_item_shape.h
   src/server/responses_item_shape.cpp

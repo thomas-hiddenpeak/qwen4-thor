@@ -1,0 +1,9 @@
+[
+  "python3",
+  "-B",
+  "tools/serve_responses/check_application_config.py",
+  "--wire",
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/cpu-config-schema-01/config-response.bin",
+  "--output",
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/cpu-config-schema-02/schema-result.json"
+]

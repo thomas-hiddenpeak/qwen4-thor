@@ -6,6 +6,7 @@
 #include <string_view>
 
 #include "q4t/server/object_store.h"
+#include "q4t/server/application_routes.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/trace/sha256.h"
 #include "responses_json.h"
@@ -28,14 +29,7 @@ inline std::string Digest(std::string_view text) {
   return trace::HexDigest(trace::Sha256(
       {reinterpret_cast<const uint8_t*>(text.data()), text.size()}));
 }
-inline bool ValidId(std::string_view id) {
-  if (id.empty() || id.size() > 128) return false;
-  for (const char c : id)
-    if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
-          (c >= '0' && c <= '9') || c == '_' || c == '-'))
-      return false;
-  return true;
-}
+inline bool ValidId(std::string_view id) { return ValidApplicationId(id); }
 inline std::string Kind(ObjectKind kind) {
   switch (kind) {
     case ObjectKind::kResponse:

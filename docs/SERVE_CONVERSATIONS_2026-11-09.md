@@ -1,8 +1,8 @@
 # Conversations原生状态和请求处理
 
 2026-11-09，A07/A08持续实施记录。当前是CPU源码检查点，默认仍为
-已接受A06；生产serve入口、Responses共享生成、后台执行和发行继续
-实施，A07/A08及总目标均未完成。
+已接受A06；生产serve/原生入口源码已接通，Responses共享生成、
+后台执行和实际发布继续实施，A07/A08及总目标均未完成。
 
 ## 实现
 
@@ -45,10 +45,37 @@ metadata或已知ID指定。跨会话游标和item不能串用。
 请求/响应、存储文件与来源摘要。无GPU、默认替换、完整性能或模型
 质量矩阵。此前未修改的证据直接复用。
 
+## 服务与托管接入检查点
+
+实际ChatServer和原生入口共用路径识别，Conversations走业务连接与
+现有认证client，POST通过JSON类型/内存/共享16MiB单请求和48MiB总
+请求体预算。所有方法/query原样传递；操作监听不暴露业务路由。
+
+新增`--object-store-dir`及`--object-max-object-mib`、
+`--object-max-client-mib`、`--object-max-total-mib`、
+`--object-max-client-objects`、`--object-max-total-objects`、
+`--object-io-timeout-ms`。默认16/64/256MiB、1000/10000对象、2000ms。
+直接serve优先显式目录，随后有效绝对XDG_STATE_HOME/q4t/objects或
+HOME/.local/state/q4t/objects；不在模型线程stat/open/mkdir。未配置
+有效目录时状态接口报告不可用，不影响核心readiness。配置隐藏路径，
+`application_state_health`即时报告状态/队列/worker启动与回收数。
+
+统一自恢复服务自动绑定state/application-objects，跨run、controller
+和model代次保持不变；自定义目录和限额可在prepare时选择。旧单代
+managed入口默认绑定本次run，跨独立run复用须显式选择持久目录。
+新参数只用于已验发行声明具有对象能力的引擎，不能强加旧回退包。
+新包复制并验证已有结构化输出及OpenAI SDK派生类型的完整许可。
+
+针对性新增5不同C++、3实际原生/TLS、10不同Python通过，3次构建
+零警告；配置schema补回真实媒体v2并保留历史v1，7个负控通过。
+顺带修复已登记N07启动socketpair失败泄漏租约副本：只关自己的FD，
+不解锁仍存活owner，不启动子进程。两项直接CPU检查通过。
+[原件](evidence/serve-conversation-service-20261109/README.md)保留首次
+TLS夹具参数缺失和旧配置schema失败。无GPU/默认交付。
+
 ## 接续工作
 
-继续实际serve/原生入口路由与鉴权、CLI对象目录和资源配置，随后
-Responses生成/事件、input_items、background/cancel和重启终态恢复；
+继续Responses生成/事件、input_items、background/cancel和重启终态恢复；
 context compaction、媒体/文件/内建工具执行均保留原任务责任。
 源代码检查点不是生产交付，不因此结束总计划。
 

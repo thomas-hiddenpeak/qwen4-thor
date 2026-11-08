@@ -2,11 +2,10 @@
 
 #include <string_view>
 
+#include "q4t/server/application_routes.h"
 #include "q4t/server/conversation_state.h"
 
 namespace q4t::server {
-
-bool IsConversationTarget(std::string_view target);
 
 // The HTTP transport supplies authenticated authority and its bounded lifetime.
 // This handler shares the native ObjectStore; it never forwards HTTP or starts

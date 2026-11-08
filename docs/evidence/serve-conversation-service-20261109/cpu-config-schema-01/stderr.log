@@ -1,0 +1,104 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_preflight/check_schema.py", line 63, in <module>
+    check(Path(sys.argv[1]))
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_preflight/check_schema.py", line 53, in check
+    kinds = [check_value(v, schemas) for v in values]
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_preflight/check_schema.py", line 25, in check_value
+    schemas[kind].validate(value)
+  File "/home/rm01/.local/lib/python3.12/site-packages/jsonschema/validators.py", line 450, in validate
+    raise error
+jsonschema.exceptions.ValidationError: Additional properties are not allowed ('chunked_prefill', 'client_governance', 'max_execution_slots', 'max_timestamp_seconds', 'mtp', 'state_cache', 'temporal_group_frames', 'timestamp_rounding_decimal_places', 'video_prompt', 'video_time_default', 'video_time_field', 'video_time_unit' were unexpected)
+
+Failed validating 'additionalProperties' in schema['properties']['runtime']['properties']['media_limits']:
+    {'type': 'object',
+     'additionalProperties': False,
+     'properties': {'profile': {'const': 'q4t-media-admission-v1'},
+                    'experimental': {'const': True},
+                    'roles': {'const': ['user']},
+                    'formats': {'const': ['png', 'jpeg']},
+                    'data_url_mime': {'const': ['image/png', 'image/jpeg']},
+                    'raw_base64': {'const': True},
+                    'base64': {'const': 'canonical_standard_padded'},
+                    'image_detail': {'const': ['auto']},
+                    'remote_urls': {'const': False},
+                    'max_items': {'type': 'integer', 'minimum': 1},
+                    'max_frames_per_item': {'type': 'integer',
+                                            'minimum': 1},
+                    'max_encoded_bytes': {'type': 'integer', 'minimum': 1},
+                    'max_source_edge': {'type': 'integer', 'minimum': 1},
+                    'max_source_pixels': {'type': 'integer', 'minimum': 1},
+                    'max_decoded_rgb_bytes': {'type': 'integer',
+                                              'minimum': 1},
+                    'max_patches': {'type': 'integer', 'minimum': 1},
+                    'max_workspace_bytes': {'type': 'integer',
+                                            'minimum': 1},
+                    'decoder_owned_bytes': {'type': 'integer',
+                                            'minimum': 1},
+                    'attention_shared_bytes': {'type': ['integer', 'null'],
+                                               'minimum': 1},
+                    'unknown_device_limit': {'const': 'reject'},
+                    'whole_server_ram_limit': {'const': False},
+                    'cancellation': {'const': 'item_frame_and_before_gpu_not_preemptive'}},
+     'required': ['profile',
+                  'experimental',
+                  'roles',
+                  'formats',
+                  'data_url_mime',
+                  'raw_base64',
+                  'base64',
+                  'image_detail',
+                  'remote_urls',
+                  'max_items',
+                  'max_frames_per_item',
+                  'max_encoded_bytes',
+                  'max_source_edge',
+                  'max_source_pixels',
+                  'max_decoded_rgb_bytes',
+                  'max_patches',
+                  'max_workspace_bytes',
+                  'decoder_owned_bytes',
+                  'attention_shared_bytes',
+                  'unknown_device_limit',
+                  'whole_server_ram_limit',
+                  'cancellation'],
+     'description': 'Optional for historical v1 records; emitted by the '
+                    'media admission implementation. Logical '
+                    'source/decoder/workspace limits do not reserve '
+                    'physical RAM.'}
+
+On instance['runtime']['media_limits']:
+    {'profile': 'q4t-media-admission-v2',
+     'experimental': True,
+     'roles': ['user'],
+     'formats': ['png', 'jpeg'],
+     'data_url_mime': ['image/png', 'image/jpeg'],
+     'raw_base64': True,
+     'base64': 'canonical_standard_padded',
+     'image_detail': ['auto'],
+     'remote_urls': False,
+     'video_time_field': 'video_timestamps',
+     'video_time_unit': 'seconds',
+     'video_time_default': 'frame_index/24',
+     'max_timestamp_seconds': 86400,
+     'temporal_group_frames': 2,
+     'timestamp_rounding_decimal_places': 1,
+     'video_prompt': 'timestamp_then_one_boundary_per_temporal_group',
+     'mtp': False,
+     'state_cache': False,
+     'chunked_prefill': False,
+     'max_execution_slots': 1,
+     'client_governance': True,
+     'max_items': 8,
+     'max_frames_per_item': 32,
+     'max_encoded_bytes': 16777216,
+     'max_source_edge': 16384,
+     'max_source_pixels': 16777216,
+     'max_decoded_rgb_bytes': 134217728,
+     'max_patches': 65536,
+     'max_workspace_bytes': 2147483648,
+     'decoder_owned_bytes': 268435456,
+     'attention_shared_bytes': None,
+     'unknown_device_limit': 'reject',
+     'whole_server_ram_limit': False,
+     'cancellation': 'item_frame_and_before_gpu_not_preemptive'}

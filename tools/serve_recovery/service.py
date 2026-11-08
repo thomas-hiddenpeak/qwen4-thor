@@ -122,13 +122,17 @@ def acquire_lease(path):
     return fd
 
 
+def controller_configuration(package, digest, state, run):
+    return dict(version=2, package=str(package), manifest_sha256=digest,
+                directory=str(run), state_directory=str(state))
+
+
 def launch(package, digest, state, *, daemon=False, timeout=360):
     manifest = bundle.verify(package, digest)
     desc = descriptor(state, package, digest)
     package, state = Path(package).resolve(), Path(state).resolve()
     lease = acquire_lease(manifest['lock_path'])
-    parent, endpoint = (socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
-                        if daemon else (None, None))
+    parent = endpoint = None
     process = None
     diagnostics = None
     interrupted = False
@@ -139,10 +143,11 @@ def launch(package, digest, state, *, daemon=False, timeout=360):
         if process is not None and process.poll() is None:
             process.send_signal(signal.SIGTERM)  # This unreaped direct child only.
     try:
+        if daemon:
+            parent, endpoint = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
         run = state/'runs'/str(uuid.uuid4())
         run.mkdir(mode=0o700)
-        controller = dict(version=1, package=str(package), manifest_sha256=digest,
-                          directory=str(run))
+        controller = controller_configuration(package, digest, state, run)
         gateway = bundle.gateway_config_for(package, manifest, run)
         engine.save(run/'controller.json', controller)
         engine.save(run/'gateway.json', gateway)
@@ -240,6 +245,9 @@ def main(argv=None, *, package=None, digest=None):
     prepare.add_argument('--client-crl', type=Path)
     prepare.add_argument('--served-model-name')
     prepare.add_argument('--model-alias', action='append', default=[])
+    prepare.add_argument('--object-store-dir')
+    for option in engine.APPLICATION_LIMITS:
+        prepare.add_argument('--object-'+option.replace('_', '-'), type=int)
     for name in ('init', 'run', 'start', 'status', 'diagnostics', 'stop',
                  'tls-status', 'tls-reload'):
         command = commands.add_parser(name)
@@ -261,7 +269,11 @@ def main(argv=None, *, package=None, digest=None):
                 model_names=dict(
                     name=args.served_model_name if args.served_model_name is not None
                          else 'qwen3.8-flash-next', aliases=args.model_alias)
-                    if args.served_model_name is not None or args.model_alias else None)
+                    if args.served_model_name is not None or args.model_alias else None,
+                application_state=({**({'directory': args.object_store_dir}
+                    if args.object_store_dir is not None else {}),
+                    **{k: getattr(args, 'object_'+k) for k in engine.APPLICATION_LIMITS
+                       if getattr(args, 'object_'+k) is not None}} or None))
         else:
             package = package or args.package
             digest = digest or args.manifest_sha256

@@ -1,4 +1,5 @@
 #include "q4t/server/http_request.h"
+#include "q4t/server/application_routes.h"
 #include "q4t/test.h"
 
 #include <sys/socket.h>
@@ -36,6 +37,66 @@ bool Read(const std::string& wire, std::string* body) {
 }
 
 }  // namespace
+
+Q4T_TEST(http_conversation_routes_are_scoped_business_operations) {
+  using namespace q4t::server;
+  for (const auto path : {"/v1/conversations", "/v1/conversations/conv_1",
+                          "/v1/conversations/conv_1/items",
+                          "/v1/conversations/conv_1/items/item_1"}) {
+    for (const auto method : {"GET", "POST", "DELETE"}) {
+      Q4T_CHECK(ClassifyHttpConnection(method, path) ==
+                HttpConnectionClass::kBusiness);
+      const bool allowed = std::string_view(path) == "/v1/conversations"
+                               ? std::string_view(method) == "POST"
+                           : std::string_view(path).ends_with("/items")
+                               ? std::string_view(method) != "DELETE"
+                           : std::string_view(path).ends_with("/item_1")
+                               ? std::string_view(method) != "POST"
+                               : true;
+      Q4T_CHECK(ConversationMethodAllowed(method, path) == allowed);
+      Q4T_CHECK(
+          ConversationMethodAllowed(
+              method, std::string(path) +
+                          "?include%5B%5D=message.output_text.logprobs") ==
+          allowed);
+    }
+  }
+  for (const auto path : {"/v1/conversations/", "/v1/conversationsx",
+                          "/v1/conversations/../items", "/v1/conversations/a#b",
+                          "/v1/conversations/a/items/", "/v1/conversations/a/b",
+                          "/v1/conversations/a/items/b/c"})
+    Q4T_CHECK(!ConversationMethodAllowed("GET", path));
+  return true;
+}
+
+Q4T_TEST(http_conversation_body_uses_shared_budget_before_reading) {
+  using namespace q4t::server;
+  for (const auto path : {"/v1/conversations", "/v1/conversations/conv_1",
+                          "/v1/conversations/conv_1/items?include%5B%5D=x"}) {
+    const auto prefix =
+        "POST " + std::string(path) +
+        " HTTP/1.1\r\nHost: local\r\nContent-Length: 8192\r\n\r\n";
+    std::string body;
+    Q4T_CHECK(Read(prefix + std::string(8192, 'x'), &body));
+    Q4T_CHECK(body.size() == 8192);
+    int fd[2];
+    Q4T_CHECK(socketpair(AF_UNIX, SOCK_STREAM, 0, fd) == 0);
+    Q4T_CHECK(send(fd[0], prefix.data(), prefix.size(), MSG_NOSIGNAL) > 0);
+    HttpBodyBudget budget(8192);
+    HttpBodyLease occupied(budget), lease(budget);
+    Q4T_CHECK(occupied.Acquire(1));
+    HttpRequestHeaders headers;
+    std::string method, target;
+    int status = 0;
+    const bool ok = ReadHttpRequest(fd[1], &method, &target, &body, 500, &lease,
+                                    &status, &headers);
+    close(fd[0]);
+    close(fd[1]);
+    Q4T_CHECK(!ok && status == 503 && budget.Used() == 1);
+    Q4T_CHECK(headers.failure == HttpReceiveFailure::kBodyCapacity);
+  }
+  return true;
+}
 
 Q4T_TEST(http_connection_classification_exact_route_and_method) {
   using namespace q4t::server;

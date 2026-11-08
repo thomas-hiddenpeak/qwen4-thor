@@ -142,6 +142,28 @@ class BundleTests(unittest.TestCase):
         finally:
             os.close(fd)
 
+    def test_failed_startup_socket_closes_lease_copy_without_unlocking_owner(self):
+        receipt = self.prepare()
+        state = self.directory/'state'
+        service.initialize(receipt['package'], receipt['manifest_sha256'], state)
+        path = self.directory/'cpu-only-lock'
+        with path.open('w+') as owner, path.open('r+') as competitor:
+            fcntl.flock(owner, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            borrowed = os.dup(owner.fileno())
+            with mock.patch.object(service, 'acquire_lease', return_value=borrowed), \
+                 mock.patch.object(service.socket, 'socketpair', side_effect=OSError('EMFILE')), \
+                 mock.patch.object(service.subprocess, 'Popen') as spawn:
+                with self.assertRaisesRegex(OSError, 'EMFILE'):
+                    service.launch(receipt['package'], receipt['manifest_sha256'], state,
+                                   daemon=True)
+            spawn.assert_not_called()
+            with self.assertRaises(OSError):
+                os.fstat(borrowed)
+            with self.assertRaises(BlockingIOError):
+                fcntl.flock(competitor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            owner.close()
+            fcntl.flock(competitor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+
     def test_optional_diagnostic_allocation_failure_still_launches(self):
         receipt = self.prepare()
         state = self.directory/'state'
@@ -209,6 +231,20 @@ class BundleTests(unittest.TestCase):
             self.assertEqual(service.main(arguments), 0)
         self.assertEqual(prepare.call_args.kwargs['ingress_mode'], 'native')
         self.assertIsNone(prepare.call_args.args[5])
+
+    def test_cli_carries_application_state_limits_to_sealed_package(self):
+        arguments = ['prepare']
+        for name in ('binary', 'release', 'model', 'guardian', 'cuda-probe',
+                     'policy', 'backend-policy', 'native-receipt', 'output', 'native-ingress'):
+            arguments += ['--'+name, str(self.directory/name)]
+        arguments += ['--object-store-dir', '/persistent/objects',
+                      '--object-max-client-mib', '128', '--object-io-timeout-ms', '500']
+        with mock.patch.object(service.bundle, 'prepare', return_value={}) as prepare, \
+             contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(service.main(arguments), 0)
+        self.assertEqual(prepare.call_args.kwargs['application_state'],
+                         dict(directory='/persistent/objects', max_client_mib=128,
+                              io_timeout_ms=500))
 
 
 if __name__ == '__main__':

@@ -8,6 +8,7 @@
 
 #include "q4t/mtp/suffix_drafter.h"
 #include "q4t/server/model_catalog.h"
+#include "q4t/server/object_store_options.h"
 
 namespace q4t::server {
 
@@ -37,6 +38,8 @@ Status ResolveAdmissionLimits(const ServerOptions& options, int effective_slots,
 }
 
 Status ValidateServerOptions(const ServerOptions& options) {
+  const auto objects = ValidateObjectStoreOptions(options);
+  if (!objects) return objects;
   if (!ValidServedModels(options.served_model_name, options.model_aliases))
     return Status::Fail("invalid or duplicate served model name/alias");
   if (options.allow_media &&
@@ -214,6 +217,16 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (key == "--moe-resident-slots") integer = &parsed.moe_resident_slots;
     if (key == "--request-deadline-ms") integer = &parsed.request_deadline_ms;
     if (key == "--mtp-k") integer = &parsed.mtp_k;
+    if (key == "--object-max-object-mib")
+      integer = &parsed.object_max_object_mib;
+    if (key == "--object-max-client-mib")
+      integer = &parsed.object_max_client_mib;
+    if (key == "--object-max-total-mib") integer = &parsed.object_max_total_mib;
+    if (key == "--object-max-client-objects")
+      integer = &parsed.object_max_client_objects;
+    if (key == "--object-max-total-objects")
+      integer = &parsed.object_max_total_objects;
+    if (key == "--object-io-timeout-ms") integer = &parsed.object_io_timeout_ms;
     if (!integer && key != "--host" && key != "--model-dir" &&
         key != "--mem-fraction" && key != "--moe-trace-dir" &&
         key != "--moe-trace-workload" && key != "--moe-hot-list" &&
@@ -221,7 +234,7 @@ Status ParseServerOptions(std::span<const std::string_view> args,
         key != "--seq-capacities" && key != "--session-cache-dir" &&
         key != "--prefix-cache-dir" && key != "--prefix-cache-checkpoints" &&
         key != "--client-policy-file" && key != "--served-model-name" &&
-        key != "--model-alias")
+        key != "--model-alias" && key != "--object-store-dir")
       return Status::Fail("unknown serve option: " + std::string(key));
     if (++i == args.size() || args[i].empty() || args[i].starts_with("--"))
       return Status::Fail("missing value for " + std::string(key));
@@ -257,6 +270,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       parsed.prefix_cache_dir = value;
     } else if (key == "--session-cache-dir") {
       parsed.session_cache_dir = value;
+    } else if (key == "--object-store-dir") {
+      parsed.object_store_dir = value;
     } else if (key == "--mtp-subset-head") {
       parsed.mtp_subset_head = value;
     } else if (key == "--client-policy-file") {

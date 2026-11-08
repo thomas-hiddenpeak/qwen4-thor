@@ -38,6 +38,22 @@ def current_surface(root):
         raise ValueError("review dynamic model native route extractor")
     native_routes.extend((method, "/v1/models/{model}", "true")
                          for method in ("GET", "DELETE"))
+    application_routes = (root / "include/q4t/server/application_routes.h").read_text()
+    if 'if (IsConversationTarget(path))' not in dispatch or \
+            'HandleConversationRequest(*objects_' not in dispatch or \
+            'server::ConversationMethodAllowed(method, path)' not in native or \
+            'inline bool ConversationMethodAllowed' not in application_routes:
+        raise ValueError("review dynamic Conversations transport extractor")
+    conversations = [
+        ("POST", "/v1/conversations"),
+        *((method, "/v1/conversations/{conversation_id}")
+          for method in ("GET", "POST", "DELETE")),
+        *((method, "/v1/conversations/{conversation_id}/items")
+          for method in ("GET", "POST")),
+        *((method, "/v1/conversations/{conversation_id}/items/{item_id}")
+          for method in ("GET", "DELETE"))]
+    routes.extend((path, method) for method, path in conversations)
+    native_routes.extend((method, path, "false") for method, path in conversations)
     if 'if (method == "OPTIONS")' in native:
         if 'config.cors.Preflight(' not in native:
             raise ValueError("review native OPTIONS handler before cataloguing")
@@ -48,7 +64,8 @@ def current_surface(root):
     nested = {}
     for file in ("chat_contract.cpp", "output_constraints.cpp",
                  "input_contract.cpp", "chat_tool_history.cpp",
-                 "chat_template.cpp", "legacy_tools.cpp", "completion_plan.cpp"):
+                 "chat_template.cpp", "legacy_tools.cpp", "completion_plan.cpp",
+                 "conversation_api.cpp", "responses_plan.cpp"):
         source = (root / "src/server" / file).read_text()
         for index, item in enumerate(re.finditer(
                 r'(?:Input)?Fields\(\s*([^,]+),\s*\{([^}]+)\}', source)):
@@ -61,6 +78,8 @@ def current_surface(root):
                    set(root.glob("src/service/**/*.cpp")) |
                    set(root.glob("include/q4t/service/**/*.h")) |
                    {p for p in root.glob("tools/serve_recovery/*.py")
+                    if not p.name.startswith("test_")} |
+                   {p for p in root.glob("tools/serve_service/*.py")
                     if not p.name.startswith("test_")} | {
                        root / "src/io/json.cpp", root / "src/text/tokenizer.cpp",
                        root / "src/runtime/system_memory.cpp",

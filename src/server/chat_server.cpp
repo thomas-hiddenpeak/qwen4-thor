@@ -2,6 +2,7 @@
 #include "q4t/mtp/suffix_drafter.h"
 // Existing ChatServer responsibilities; shared state stays in ChatServer.
 #include "chat_server_internal.h"
+#include "q4t/server/object_store_options.h"
 #include "cuda_memory_backend.h"
 
 #include <arpa/inet.h>
@@ -112,6 +113,11 @@ Status ChatServer::Start(const ServerOptions& opts) {
   // Validate before loading the tokenizer or allocating model resources.
   const Status validated = ValidateServerOptions(opts);
   if (!validated.ok()) return validated;
+  const char* state_directory = std::getenv("XDG_STATE_HOME");
+  const char* home_directory = std::getenv("HOME");
+  objects_ = std::make_unique<ObjectStore>(
+      ResolveObjectStoreOptions(opts, state_directory ? state_directory : "",
+                                home_directory ? home_directory : ""));
   if (opts.allow_media) {
     const auto status = vision::CheckVisionConfiguration(opts.model_dir);
     if (!status) return status;

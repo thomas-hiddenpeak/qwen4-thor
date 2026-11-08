@@ -203,6 +203,28 @@ class JobTests(unittest.TestCase):
 
 
 class ControllerTests(unittest.TestCase):
+    def test_application_directory_survives_run_controller_and_model_generations(self):
+        engine = controller.engine
+        base = dict(settings=engine.settings(8080, 0, application_state=dict(
+            profile='q4t-objects-v1', directory='', **engine.APPLICATION_LIMITS)),
+            model_dir='/model', client_policy={})
+        state = ROOT/'.q4t-work/cpu-state-not-created'
+        for run_id, controller_id, model_id in [('run1', 1, 1), ('run1', 2, 2),
+                                               ('run2', 1, 3)]:
+            run = state/'runs'/run_id
+            config = service.controller_configuration('/package', 'a'*64, state, run)
+            policy_path = run/f'controller-{controller_id}'/f'model-{model_id}'/'client-policy.json'
+            args = controller.model_command('/package', base, config, policy_path)
+            self.assertEqual(args[args.index('--object-store-dir')+1],
+                             str(state/'application-objects'))
+            self.assertEqual(args[args.index('--client-policy-file')+1], str(policy_path))
+        del config['state_directory']
+        with self.assertRaisesRegex(RuntimeError, 'deployment directory'):
+            controller.model_command('/package', base, config, policy_path)
+        del base['settings']['application_state']
+        self.assertNotIn('--object-store-dir',
+                         controller.model_command('/package', base, config, policy_path))
+
     def test_changed_bundle_quarantines_before_spending_model_budget(self):
         actor = object.__new__(controller.Controller)
         actor.package, actor.config = ROOT, dict(manifest_sha256='a'*64)

@@ -39,7 +39,16 @@ ChatPlanConfig ChatServer::PlanningConfig(int fd) const {
 }
 
 void ChatServer::HandleConfig(int fd) {
-  detail::SendSimple(fd, 200, "OK", effective_config_, "application/json");
+  const auto health =
+      objects_ ? objects_->Health() : ObjectStoreHealth{"unconfigured"};
+  const auto value = effective_config_.substr(0, effective_config_.size() - 1) +
+                     R"(,"application_state_health":{"state":")" +
+                     detail::JsonEscape(health.state) + '"' + R"(,"pending":)" +
+                     std::to_string(health.pending) + R"(,"workers_started":)" +
+                     std::to_string(health.workers_started) +
+                     R"(,"workers_reaped":)" +
+                     std::to_string(health.workers_reaped) + "}}";
+  detail::SendSimple(fd, 200, "OK", value, "application/json");
 }
 
 void ChatServer::HandlePreflight(int fd, const std::string& body) {

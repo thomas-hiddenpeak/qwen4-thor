@@ -24,6 +24,8 @@
 #include "q4t/server/input_contract.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/client_request.h"
+#include "q4t/server/conversation_api.h"
+#include "q4t/server/output_schema.h"
 
 namespace q4t::server {
 using detail::SendError;
@@ -306,7 +308,7 @@ void ChatServer::HandleClient(int fd, bool operations) {
       admission = &counter;
       if (method == "POST" &&
           (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
-           path == "/v1/completions")) {
+           path == "/v1/completions" || IsConversationTarget(path))) {
         const auto memory = memory_admission_.Observe();
         if (!memory.Allowed()) {
           RecordMemoryRejection(fd, memory.state, MemoryCheckpoint::kHeaders);
@@ -336,8 +338,8 @@ void ChatServer::HandleClient(int fd, bool operations) {
       return;
     }
     if (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
-        path == "/v1/completions" ||
-        path == "/v1/requests/cancel") {
+        path == "/v1/completions" || path == "/v1/requests/cancel" ||
+        IsConversationTarget(path)) {
       if (method == "POST") {
         std::string type = headers.content_type;
         for (char& c : type)
@@ -389,6 +391,34 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     if (auto* context = detail::HttpResponseContext::Current(fd))
       context->RecordReceiveFailure(reason, status);
   };
+  if (IsConversationTarget(path)) {
+    const auto* context = detail::HttpResponseContext::Current(fd);
+    if (!objects_ || !context || !context->Client().Allowed()) {
+      SendError(fd, 503, "Authenticated application state unavailable", {},
+                "object_scope_unavailable");
+      return;
+    }
+    const auto& client = context->Client();
+    const auto scope = client.Scoped() ? "client:" + std::string(client.Id())
+                                       : "local:anonymous";
+    StateAccess access{scope,
+                       std::chrono::steady_clock::now() +
+                           std::chrono::milliseconds(request_deadline_ms_),
+                       [this, fd] {
+                         return stop_requested_.load() ||
+                                detail::ClientConnectionFailed(fd);
+                       }};
+    auto reply =
+        HandleConversationRequest(*objects_, method, path, body, access);
+    if (reply.ok())
+      SendSimple(fd, 200, "OK", OutputJson(reply.value), "application/json",
+                 {access.deadline});
+    else
+      SendError(fd, reply.http_status, reply.message, {access.deadline},
+                reply.code, reply.value.GetString("param"),
+                reply.value.GetString("allow"));
+    return;
+  }
   if (path.find('?') != path.npos) {
     rejected(HttpReceiveFailure::kQuery, 400);
     SendError(fd, 400, "query parameters are not supported", {},

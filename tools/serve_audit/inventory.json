@@ -566,6 +566,86 @@
         "tests/server_completion_test.cpp",
         "tools/serve_recovery/test_native_ingress.py"
       ]
+    },
+    "DELETE /v1/conversations/{conversation_id}": {
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；DELETE /v1/conversations/{conversation_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+      "evidence": [
+        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+        "include/q4t/server/application_routes.h",
+        "tests/server_conversation_api_test.cpp",
+        "tools/serve_recovery/test_native_access.py"
+      ]
+    },
+    "DELETE /v1/conversations/{conversation_id}/items/{item_id}": {
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；DELETE /v1/conversations/{conversation_id}/items/{item_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+      "evidence": [
+        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+        "include/q4t/server/application_routes.h",
+        "tests/server_conversation_api_test.cpp",
+        "tools/serve_recovery/test_native_access.py"
+      ]
+    },
+    "GET /v1/conversations/{conversation_id}": {
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；GET /v1/conversations/{conversation_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+      "evidence": [
+        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+        "include/q4t/server/application_routes.h",
+        "tests/server_conversation_api_test.cpp",
+        "tools/serve_recovery/test_native_access.py"
+      ]
+    },
+    "GET /v1/conversations/{conversation_id}/items": {
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；GET /v1/conversations/{conversation_id}/items",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+      "evidence": [
+        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+        "include/q4t/server/application_routes.h",
+        "tests/server_conversation_api_test.cpp",
+        "tools/serve_recovery/test_native_access.py"
+      ]
+    },
+    "GET /v1/conversations/{conversation_id}/items/{item_id}": {
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；GET /v1/conversations/{conversation_id}/items/{item_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+      "evidence": [
+        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+        "include/q4t/server/application_routes.h",
+        "tests/server_conversation_api_test.cpp",
+        "tools/serve_recovery/test_native_access.py"
+      ]
+    },
+    "POST /v1/conversations": {
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；POST /v1/conversations",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+      "evidence": [
+        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+        "include/q4t/server/application_routes.h",
+        "tests/server_conversation_api_test.cpp",
+        "tools/serve_recovery/test_native_access.py"
+      ]
+    },
+    "POST /v1/conversations/{conversation_id}": {
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；POST /v1/conversations/{conversation_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+      "evidence": [
+        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+        "include/q4t/server/application_routes.h",
+        "tests/server_conversation_api_test.cpp",
+        "tools/serve_recovery/test_native_access.py"
+      ]
+    },
+    "POST /v1/conversations/{conversation_id}/items": {
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；POST /v1/conversations/{conversation_id}/items",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+      "evidence": [
+        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+        "include/q4t/server/application_routes.h",
+        "tests/server_conversation_api_test.cpp",
+        "tools/serve_recovery/test_native_access.py"
+      ]
     }
   },
   "whitelists": {
@@ -789,11 +869,95 @@
     "completion_plan.cpp:1:*options": [
       "include_usage",
       "include_obfuscation"
+    ],
+    "conversation_api.cpp:0:request": [
+      "metadata",
+      "items"
+    ],
+    "conversation_api.cpp:1:request": [
+      "items"
+    ],
+    "conversation_api.cpp:2:request": [
+      "metadata"
+    ],
+    "responses_plan.cpp:0:*object": [
+      "effort",
+      "summary",
+      "generate_summary",
+      "context",
+      "mode"
+    ],
+    "responses_plan.cpp:1:*object": [
+      "format",
+      "verbosity"
+    ],
+    "responses_plan.cpp:2:*value": [
+      "type",
+      "name",
+      "schema",
+      "description",
+      "strict"
+    ],
+    "responses_plan.cpp:3:*value": [
+      "type"
+    ],
+    "responses_plan.cpp:4:*conversation": [
+      "id"
+    ],
+    "responses_plan.cpp:5:*prompt": [
+      "id",
+      "version",
+      "variables"
+    ],
+    "responses_plan.cpp:6:policy": [
+      "type",
+      "compact_threshold"
+    ],
+    "responses_plan.cpp:7:request": [
+      "access_programs",
+      "background",
+      "context_management",
+      "conversation",
+      "include",
+      "input",
+      "instructions",
+      "max_output_tokens",
+      "max_tool_calls",
+      "metadata",
+      "model",
+      "moderation",
+      "parallel_tool_calls",
+      "previous_response_id",
+      "prompt",
+      "prompt_cache_key",
+      "prompt_cache_options",
+      "prompt_cache_retention",
+      "reasoning",
+      "safety_identifier",
+      "service_tier",
+      "store",
+      "stream",
+      "stream_options",
+      "temperature",
+      "text",
+      "tool_choice",
+      "tools",
+      "top_logprobs",
+      "top_p",
+      "truncation",
+      "user",
+      "request_id",
+      "cancel_token",
+      "request_timeout_ms",
+      "seed"
+    ],
+    "responses_plan.cpp:8:*stream_options": [
+      "include_obfuscation"
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "4ef61f897cd666f997df9979e8e3e8c81cc30799dc74392e8efb66dcfc1891fc",
-    "cmake/ChatProtocolIdentity.cmake": "e474f49574198b54729189d97231938b8d7caab7169de5bf4811c4572fefb307",
+    "CMakeLists.txt": "01766dcdf72eb99a8cd09cbda0c78286517bb746ffd315b2b21ea2485bece05e",
+    "cmake/ChatProtocolIdentity.cmake": "b5341ba310cc5d6515a698834d8a4790d2803c177802c372d81c3ad3a1a6477f",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
     "cmake/NativeIngress.cmake": "d10f996fdf01e28f29eaa40d9c92f2d78ff02126351188667329b235a22f2346",
@@ -811,13 +975,14 @@
     "include/q4t/runtime/model_health.h": "19e05818f3a4462fe5c81e6098549205ce156f03c7aeaa89e593fb319670f26a",
     "include/q4t/runtime/system_memory.h": "52febc4f0b9f067748507224d9924a955470371de88a796e1ea78d379b637d49",
     "include/q4t/server/abort_reason.h": "2bad04553ca1e40595e10d6549d2a3a798bed05fcadd92527f722c48aecb70b5",
+    "include/q4t/server/application_routes.h": "d218e0b77562ad252c0768de045ab6bfe758d5b0e19d0a04d63e195b67fe13dc",
     "include/q4t/server/chat_capabilities.h": "058093147c83d2bf541cb17b19fa67e92ec3168e5d250dd3a20567696748cc49",
     "include/q4t/server/chat_choices.h": "a76cc4a1a1d8b16b1925ec1a5fb9f0951c03fe48494c6623027596624e5b79c2",
     "include/q4t/server/chat_contract.h": "c1aaef06a1ae22f96ce143211a3c6a5a462bb8223d0f86c474f896ab3bb906e0",
     "include/q4t/server/chat_plan.h": "8582f55f54b19b4da9f940acb71e60831b33cd04d3eea3a206eed8991ce6e083",
     "include/q4t/server/chat_prompt.h": "1a758fed12a2ef5b3eadc6109cbc99be29de63e088d0d60111ed171730daa54f",
-    "include/q4t/server/chat_response_parser.h": "a915145972763768e8fb88fbaf35407984ebf00872a08afcd149edd5acd25638",
-    "include/q4t/server/chat_server.h": "537da13a242c22e2bebdf7d4b8616385972a01ff4649a10754075c6ccd44b01c",
+    "include/q4t/server/chat_response_parser.h": "43c0d61499e9303cd8bacf92b685f5994d81d8e4b0aaed86edbc38943e941a88",
+    "include/q4t/server/chat_server.h": "6bb293f7e7a258af6f0becd8b0e6f3156b213d88e70b1481583fcbdf5a017b40",
     "include/q4t/server/chat_template.h": "5d2e9a8c90938fa972d27bd961ee9018ebcd7add541fd009316177af81b9afee",
     "include/q4t/server/chat_tool_history.h": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
     "include/q4t/server/client_identity.h": "c05aad5dc655e91962eae55aab25c09fdcbc2a72ddc37a95585c7288dfac54be",
@@ -825,17 +990,19 @@
     "include/q4t/server/client_request.h": "d08159942c0f0f95c5040546b3aab647eac435546767e96a1c922f3d88957998",
     "include/q4t/server/completion_plan.h": "3974785c56eb107ef29c4904f7d04476080c1d11315f8d621b7ea49a8856d896",
     "include/q4t/server/completion_response.h": "4728686120ce9577aa66f60460982212d0450c429eb27d0e2ecdfa9e2b355f98",
+    "include/q4t/server/conversation_api.h": "df3cb4b69686e881fcaa1f9e46f0f97309cb8feddf21a09e457ee86f1842b878",
+    "include/q4t/server/conversation_state.h": "39c6914bd994004e00daa7866bf8588610dd9c7cf7da26d6bbe8df5203ca567e",
     "include/q4t/server/cuda_quota_metrics.h": "40ea24b9df80e446f13c89cf4e5d8ce09741fc67ce3d413096cc1ac10e59cbc2",
     "include/q4t/server/cuda_quota_policy.h": "e4143f1ec2f099edd81796bfca6db5cf916d547456af96c370d43991e176e297",
     "include/q4t/server/custom_grammar.h": "d560f89881ff27ce260c939d046a7b5f5c5afccce2125e4170ef53a661f507ec",
     "include/q4t/server/custom_tools.h": "1f351b6ed81ad868caa4dfa9c54a6f697fcac5a6a8dadef65bd05f2053ef18b9",
     "include/q4t/server/device_memory.h": "1099e20d3b205d3ae03daba0308be7221f5097c78a2fd58c8ca16298277dfc4c",
-    "include/q4t/server/grammar_process.h": "9b878e481c02fc83543506ef2b75567d337e25c54c7f430ba1b9a59f49a10c7a",
+    "include/q4t/server/grammar_process.h": "4d25f8a9a652fd8fa67a100ee78e330bd6504038f871657d39dbe8e4898e50fe",
     "include/q4t/server/http_connection.h": "0c76534d5f29a13ec83b38fb34b55087a43bdd411d3cd26dcc5e3a2f43a2bbca",
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
     "include/q4t/server/http_observation.h": "4a5c07a112faa4d60f834b2d5e4067522a7fe565ca6ff8acd145ad603999dbdc",
     "include/q4t/server/http_request.h": "f6d52bf328cc33e56ae0ef06dc93051432ac0ddff55575e4e9204eecf35b6be6",
-    "include/q4t/server/http_response.h": "f2ce521e7888c0db2e26028a9f9e4b802c269251b0e752a72747473560a03add",
+    "include/q4t/server/http_response.h": "dd0b0603c1878d55c86843b5e21793f21663f95dc4970a3db29dd025ac30dc53",
     "include/q4t/server/input_contract.h": "03c1dfcc666986f5e06a91fb34cf95bf1818bd67df783794ae0ada63b7ae8881",
     "include/q4t/server/legacy_tools.h": "2bcdb5d01e78379c2f7baaaed0ef902867357a0167f3ce6ea18fbc1fdb9dbfa1",
     "include/q4t/server/lifetime.h": "11c9b381a7f6c5e019dcb57fbc18e2ad76492fca5c5e42960c381e954e5068bc",
@@ -843,6 +1010,8 @@
     "include/q4t/server/memory_admission.h": "ae72d092757e41739e5d85ae7b2a975dccd13e43de8e9286dd831831ba7a7196",
     "include/q4t/server/model_catalog.h": "19bb1b450170b4d7c1d8895593f41baa1ad91c90aaafc58977894bcf76d52143",
     "include/q4t/server/mtp_policy.h": "28f10c5c885f9465c0f26c22a36bf6be541933a0ed9d9c2da5f0d3983e0a8285",
+    "include/q4t/server/object_store.h": "a4c48636deed89eb2ed54f8f41662f1c2414f1ae11cffdf48a2403da8f6b86df",
+    "include/q4t/server/object_store_options.h": "50ac339fb5830d363ac62bea2cfb89fe45f6318f48a146addb593bd7522ec319",
     "include/q4t/server/output_constraints.h": "f227e73a5826900182eff0505e031115ad67acb39fdd00968a8fc03e8dfed0de",
     "include/q4t/server/output_schema.h": "d097d1874a3e450336cbe26ab62cfa712f2be9d07a7a211aab33007db112b3ed",
     "include/q4t/server/prediction.h": "2b641a3cb00cb9c788d4418e3a4719e8b4c884352fee4068a7f6f47b9be049fb",
@@ -852,6 +1021,11 @@
     "include/q4t/server/request_control.h": "fc0c1ab81056c5ab3ddb4b0da8783338312ecedc5f2c4f149df678019c199814",
     "include/q4t/server/request_diagnostics.h": "6a260ff44d95c7d828503c24351fc9d0b659c72033b75577b7d37209cd39c6de",
     "include/q4t/server/request_json.h": "f3fded2db644464f3e187215cfe14ae0280a0099bfbbeca670c7ac4e4492bb72",
+    "include/q4t/server/responses_input.h": "fe63278d2c398b5fe770572cb141561f5a9dec36811fc151b53a33a684cce56a",
+    "include/q4t/server/responses_item_shape.h": "0c341d6d0e9f0693daacc35ba97e0929703d9f2de108aa77056fa8f88777ee37",
+    "include/q4t/server/responses_output.h": "48c3c92fd25f17e8657fc9c3bf9ebfa6943fb2d7b8401cb977e05f810debacb8",
+    "include/q4t/server/responses_plan.h": "3c89b0e3d7fd6363e74f22e76cebafc4678fa81ddbad0197234bf6fd0b284c03",
+    "include/q4t/server/responses_state.h": "fe28e4eb0cb751ff99068a5eaf0a96833fe2ecd9ee6c4181792f65e873ef1e75",
     "include/q4t/server/sampling.h": "202bff18193dddc46f92e3b7d69fef36218faf00e913b292d1e9a9abe7b65141",
     "include/q4t/server/scheduler_submission.h": "2a960c668c25a0c694b811a2c5640c6e6605db7d386b1ba0075e64061aa1c416",
     "include/q4t/server/schema_decimal.h": "f6efd4f652918da2964a65813b6f8d9a972942ec5b02a5fb90b1ad8ad8bd8da0",
@@ -860,7 +1034,7 @@
     "include/q4t/server/schema_receipt.h": "ca2076bc75950c749c5e8ec8a7c0ed06c24152b18264f66c72c1ac730235f89b",
     "include/q4t/server/sequence_admission.h": "0c03df6bd8c16d137562de22357c85e367208a6208be12d217adaf6135836b3f",
     "include/q4t/server/serve_fault.h": "47db4bd8dc12f5713ef42c6c89aeee1151867991d17d9b8529d31b4a11123b3f",
-    "include/q4t/server/server_options.h": "da251e4eaa2567a603ddfac48a0618a85dade5cfb23b49b113d59362d5da9eff",
+    "include/q4t/server/server_options.h": "f60469f26757e6eba1170a48e383be9105de4722f5c379355cca0ad5fbd607c1",
     "include/q4t/server/service_health.h": "6b95516f0c81386c469360e106b1abe544080c74f439a9525a0910c556f3490f",
     "include/q4t/server/session_cache.h": "1418f2133535c9396d5a9065604bdb942095da227057992e54f2886caf166e32",
     "include/q4t/server/session_save_timing.h": "317a0c125930305e10596efa2345e5af23f57345ad8059fd4065cb9f9ab5db06",
@@ -872,7 +1046,7 @@
     "include/q4t/server/suffix_token_cache.h": "5cf8881109604764d9deb7869901c0f8f8141b181b47865e7d81018eadd21a9b",
     "include/q4t/server/text_stop.h": "560dde9da5f9ea673a22eb2b6ad9ef59e227d55122d041a51ae2c45ef4114f66",
     "include/q4t/server/thinking_budget.h": "902d062939a5f8cc43ac2dd761d4267624645d1a401c47f9ed748f28b2ee36ff",
-    "include/q4t/server/token_logprobs.h": "0923af3be02b72180579e3a8cf32b195acde94996d79b15d37d42be7835d8159",
+    "include/q4t/server/token_logprobs.h": "4e78d55c74f87be540b134bdd9a537050548118a0ae8a864750c730618a46060",
     "include/q4t/service/guardian_journal.h": "700c8d24b7b8288c1f923cc532f591747a6adfbef42b1013a1d8e178288186a9",
     "include/q4t/service/guardian_process.h": "31b967d4b558b1cdce10bf5acfb4731a9c9952930039285f6ed09af5b010c8f9",
     "include/q4t/service/guardian_quota.h": "a73897aa94fd1a58fb1cfc7c182d2d8bd0cb9cb10e848821e230ce903e2e39a0",
@@ -891,7 +1065,7 @@
     "include/q4t/vision/timing.h": "72f98b74ac231c52ca501821eafa57b220a5be1c898e2ace999216e2480e15a6",
     "include/q4t/vision/vision.h": "629c8e8e63a1f06feaac85c038ddd5c75e09cf176e5ef69ca630dc6e8e3500e2",
     "src/io/json.cpp": "525ff67209baae32cca85e8d2d79dbc16791f589146248ef74955a30fd23e17a",
-    "src/main.cpp": "c8eebe59ee5a68528ac77297507972d2546ca104c4e877f3932dac818061ba4c",
+    "src/main.cpp": "543a009b26fdad79feec49be2078a0d29d727a9067e92734efdc0f7748f180e4",
     "src/model/model.cu": "18234fb517bcb3cf4cf5a670744bb940fbcf8882631ca3b9223cca29f54f563c",
     "src/model/model_owner.cpp": "cc3a998e52d4cca44bd695f40e1bf01f4ee2d75ce9f0c437d07757582d60e2bf",
     "src/mtp/mtp.cu": "c2e6bb780cc42c80c649dc0e4fa18b6b7e714da17c6baaf46a97938099d07184",
@@ -909,16 +1083,16 @@
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
     "src/server/chat_generation.cpp": "a5596ae151f567fd51b1096c06cbf5ad141ee3173f21712132c671f52b365e1a",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "5781b5c98285a9fa360972c1171a3d55c1fa205532ff3b3248b9e207407dd92f",
+    "src/server/chat_http.cpp": "130fed41870979b6d053ab3449c89ad28e16fcdc153e59f72dc3070c9742addd",
     "src/server/chat_input.cpp": "d79be28242ed560ad7be0494284f72b53d1aaa7a272786d17f1b837e81a6d9bb",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
     "src/server/chat_metrics.cpp": "9a50b19777ed6e32b9902716dd97cde678bb1cd3c3147030975032cffe41fcc6",
-    "src/server/chat_plan.cpp": "14e3bf286d44a8e8373774be4b120cc7c67b331732c645c48937cb4dbd22ff36",
-    "src/server/chat_preflight.cpp": "7a291fe7688d67f4e50ea90332a0bf771bb3ca171df800c2d70828d2bff9c95d",
+    "src/server/chat_plan.cpp": "519833b53ef02f32278399e187c90fc41e6550d401cab0358cf970a9eb8ac1bc",
+    "src/server/chat_preflight.cpp": "191cb62631555cc88038e5b8a42030898dd92cb71690e72eab0865bb54c9c474",
     "src/server/chat_prompt.cpp": "fd6684419aff480782e12a409af13665eb1b529008b93ea7f67607afd837efcf",
-    "src/server/chat_response_parser.cpp": "c59c883a1c5ffea6e888d4692be5cf55c4cadd13c1a70f0284f3639db7e22b19",
+    "src/server/chat_response_parser.cpp": "69e260c428d83a6383d5d36e0870c7d2be697e953251fddfd081a058445a808b",
     "src/server/chat_scheduler.cpp": "2b6d315bfd12609e343010852f7c15b8248fe5180359a3d7b49d3c1db5b8d1fc",
-    "src/server/chat_server.cpp": "e3558919b99fbaa2918f3ab3d729c4b742ae9f0365a10268a1ca62a66ea5259a",
+    "src/server/chat_server.cpp": "8b04ab321d8572f473f112c5fccf3b645036f69d22a114ca87b32d39869f84b3",
     "src/server/chat_server_internal.h": "f648da039df39e84f9f867c55210afeff3eceac0c3578c61edfaa210957d4286",
     "src/server/chat_template.cpp": "f6e031add54280ff196bda9ef7a817a0ffdf30e83b95bce9575be3912168dd66",
     "src/server/chat_tool_history.cpp": "902f6c0982fd072d4dba4c3f6a34629eec9eaaf604fd5d920822b96ed51f82db",
@@ -926,27 +1100,40 @@
     "src/server/client_request.cpp": "810918c2710d8438842fd41dcc64d5a396941c652390a10cde708fb2c3a62ece",
     "src/server/completion_plan.cpp": "714facdef55f982082f687220d2227f6195c517a41f835fe78161fc4a1b1656d",
     "src/server/completion_response.cpp": "75be95aa5a9da31112932cbddaa1e81c0b6cfa31664b03139e1d97f7d7563722",
+    "src/server/contracts/openai_item_types_v1.json": "d22c6bb9a38868061556ed9dd76d8d51589a965101d4593684ea049f2945de81",
+    "src/server/conversation_api.cpp": "5ef3d6d8472b78ac1b23d578695dc461f79f9821a0f727739fa75f8ba9cc442e",
+    "src/server/conversation_state.cpp": "ce53e523231ec970fe1280fc357681110ee7be6f2efb2e18d2516a2129071cce",
     "src/server/cuda_memory_backend.h": "aabc6d78d2925ec5280e270964d79d3164ce706732a674b88215554a34d0e6a5",
     "src/server/custom_grammar.cpp": "9fae326d558056d3c189100b9748f9402ec52c30ba8f894b1f73893bfd4da198",
     "src/server/custom_regex.cpp": "eb8ab53b44dbb9ec2011676a854a18e38244975e76955b74a441829bdd67031a",
     "src/server/custom_regex.h": "4916fea56e31101ba2352675c918b82fe76b785b8559c87683d8cc531c3624d5",
     "src/server/custom_tools.cpp": "3e45f9a496439ec1e0d86739acb9c5d01eb6e2c321a96d924cf755b99bc12abd",
-    "src/server/grammar_process.cpp": "af14efdbda28b205d7532780d8c6c5c4abc3078c2279257982d875fb3afb40df",
+    "src/server/grammar_process.cpp": "db6c047c571404a9b453fe2c7c06262aac15c80551b6bcc831984e4dd32014f4",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
-    "src/server/http_request.cpp": "36c3f52b2506c6c44e1e36f7c085b5291854d7906c339123a3a34e9d1f88365b",
-    "src/server/http_response.cpp": "bf1c62d8f1c24484ec37c2150ede34fdf80487219ecfd9f4e95fdf7b48c4a02f",
+    "src/server/http_request.cpp": "12a1f30bb085a2292875e9c4230ae5112c98cd68f60b650d1bc4910048743b82",
+    "src/server/http_response.cpp": "a3a4f06b933b3cfdb3fe96204f7359c3a7824bfc8cf5fd1142473540ac671b7b",
     "src/server/input_contract.cpp": "a8d8f7412e50df59da2ec5829f4ecd34245dc521edcb61011ea4dff2b492f362",
     "src/server/legacy_tools.cpp": "b0bffcd3c780f35f336b40a152e9837077b9a4c6ea3ede737fcbb14b8514587c",
     "src/server/media_admission.cpp": "11461c31fed0db43fe68e16680812641c0e51371585c216673e4fe2e54500393",
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
     "src/server/model_catalog.cpp": "8d0808b669e3ecbc95794d8b07bd6a86b38dc310cf93c98e18befade71fd2d7e",
+    "src/server/object_protocol.h": "37bcaad2864814be50b6ae530d4b2e17028cacbc0fd4e05027e4235965331d9c",
+    "src/server/object_store.cpp": "3c6646fe7da4b34c6476f4034a1a94334e4130d1726b540e21eedd38030db961",
+    "src/server/object_store_options.cpp": "2118353888a2737d16b6dd2213cf73bfedd2f55ec090d6c19addccd85fdd6811",
+    "src/server/object_worker.cpp": "8d25a44e091280f2e8fb4d8ac4e4ee66dc0244629a85fb5b73bef2b9f4d87133",
     "src/server/output_constraints.cpp": "1273d5d1643a8cb7ccd2804990d2bcac656cbe5b198096c0a66b6803751e3753",
     "src/server/output_schema.cpp": "6d42d154ce3ac43c2cb2569298af221148813f9233e37c9d9c75eb0f331ee65d",
     "src/server/prediction.cpp": "7e8ccdf7c44dd5c8245230577d42eb7d4cd17c6e2efcf5534a02e6744815733f",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
     "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
     "src/server/regex_syntax/schema_regex.rs": "ad5ecc2fc961a9426068c50452e830da2229c40273088b56f8c6218c26f27fbf",
+    "src/server/responses_input.cpp": "8fbffc8a3241cb3c34050c454e9181ecac49221898f54d5d3f4cf3fb63e6479b",
+    "src/server/responses_item_shape.cpp": "b09c14dfed993b0782d592efa387fd9669e691f907fdd664d6fcd429769235b9",
+    "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
+    "src/server/responses_output.cpp": "cd5611e50d0884583a6fb273af3a2f626d267ed24be4b169b7d19c3355e5b662",
+    "src/server/responses_plan.cpp": "fc5ca768a836200c11f910f3b8220d67864991278542f63caae92a7fd907984f",
+    "src/server/responses_state.cpp": "0e968d871189e53148ea1c38bee6ad785acbf57cac4c2c1594604f4343dc1fc9",
     "src/server/sampling.cpp": "88e247ca6b7c65abbf0977c66fd604e7156cbdefe5d0293e509282678555d31d",
     "src/server/schema_decimal.cpp": "3931972b1ecfd38b0574c6794f447f6b05d1ef78d65e0f73a61eabcb1c2dee2f",
     "src/server/schema_grammar.cpp": "075d6a282f2fc1cda861e3a0de4de132455af3efa9ed30b67b0ad9a5caf56cf2",
@@ -964,13 +1151,13 @@
     "src/server/schema_string_grammar.h": "16f4700fcc6c720c0521482b97de034b9b269d41065695da29d0951b72940405",
     "src/server/schema_token_guard.cpp": "3004a864f26a35f2eade7cf27e31520df348424edde1d6ed985ed5d194755a44",
     "src/server/schema_token_guard.h": "d5943fea23da3d9a36a3662bb1a80da8c75f45dd53cf577e3d1ddaf3b451cdb5",
-    "src/server/server_options.cpp": "05b5281eb04946d7b6623e9c8e9598c58c19bd02ca067b2b95575a1587bf9fc3",
+    "src/server/server_options.cpp": "2fd39a822532c84b4c81257247e016c6e9662c6abc325bea4ec182577364ea5d",
     "src/server/session_cache.cpp": "893b6993f4f5abd97d60d482f6fe71c4b5aec16495f54807270849a90ee360f4",
     "src/server/session_state.cpp": "878e97b4ac3ce2f8b79d972a4f94ccd4c2e7c22893b07b5e31e5ba544494562f",
     "src/server/structured_decoder.cpp": "3c2aa771ec7b753b94f8dcda5a63fa59a435fb5826fa876fe7acec4049e44de6",
     "src/server/text_stop.cpp": "2397b27adc873b3ac0697af68352a73c8481830da6053fde0adeca536eaba4dc",
     "src/server/thinking_budget.cpp": "4c91e8320115ee86096bf7287d4950599ca311f137c3a0051b9d64fb53abf259",
-    "src/server/token_logprobs.cpp": "1bfc7a2b5b699a834608ff96465f546b19c543f17596ac92fd9a2205f7ac89de",
+    "src/server/token_logprobs.cpp": "6d315376dcbe02b2b9d35b609b36f9ce02bf22e5a7c81d9ab47bde7e14556927",
     "src/service/cuda_probe.cu": "f91663d4098aa6365db6cf3d3fc437b5b32ee20280b65cc1ee34cb796a48e7fb",
     "src/service/guardian_journal.cpp": "a0a60642d1546c302be84578b7ca6d4475ab9808c108dd82fa4df7133f3b5a12",
     "src/service/guardian_main.cpp": "26f1e5b5be37038ee460ebfddda3bbcf2e03e7ad0c89f25596816719ba747342",
@@ -979,7 +1166,7 @@
     "src/service/ingress_admin.cpp": "218c4a3c2ec469dcffbd25c8de1bfe7508bea9a9dd8954ce04661dbb1fa03de8",
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
-    "src/service/ingress_main.cpp": "7cffc48b252a1c778449682e79841dd1c3bded069a649bcd44bd9b344c336d03",
+    "src/service/ingress_main.cpp": "379fddf996c615f96ce7cf28d18bfefc90180b9c226a1c825d3d27ec32f5fefe",
     "src/service/ingress_tls.cpp": "5574d1ca0a45a9237aa3dbcad94258e55c14d36cc944c095eb3003c4713aac9f",
     "src/service/ingress_transport.cpp": "c086f437eef70cb953a0f300413fa28b4468701a8442c2fafd83af719c682454",
     "src/text/tokenizer.cpp": "839f9333817ca010af2dc4bf90a8c24eab4359a5d8eb04192e1789397e0c2faf",
@@ -989,10 +1176,10 @@
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "1665ec33247632c7a9f5002048c56b3c788435f6d3281fe1f27269a30706d698",
     "tools/serve_recovery/binding.py": "1f70edbce8cefd92700acf6df130101baa41f575cd24876f7e7d95772ba8cd18",
-    "tools/serve_recovery/bundle.py": "3324894076b3095859579a0a597a02c4755de9cec7cc5641caea48dfc84e4766",
+    "tools/serve_recovery/bundle.py": "65239b2f193b78dbb9a1b4775d3e7cb711e4b6498dbae68762e5b2170f11006c",
     "tools/serve_recovery/child.py": "816c80517e5b13413ae5eb0a3d1f7a392b8848132a7d1965adec2bd49a335e73",
     "tools/serve_recovery/control.py": "bd8307bb3950122111d1d14d2451b54672599179b34a7d9d9ff375ebc53710c1",
-    "tools/serve_recovery/controller.py": "5ba2cdf21ad46fe20d690f16a0c7e61f1270f793f922a0aaef5d8c5beecc025d",
+    "tools/serve_recovery/controller.py": "4564e6975060a2beaa815999b26c24d71e03f0c951dc1cd8c85f63ddc576ecbe",
     "tools/serve_recovery/core_http.py": "c682bfff760607ebc332a638a21eabdd658d03506c065287d336b170941db3b8",
     "tools/serve_recovery/cpu_exec.py": "6815ad563afb569fa7eb662d48b240066b69bc7da5ff44742a413f25045acfd1",
     "tools/serve_recovery/fixture_controller.py": "0a5edd7e7fa7be1931aa3388c9c1d0da55d2b444bbcb7fc2530225cfc8fde6b6",
@@ -1009,9 +1196,41 @@
     "tools/serve_recovery/observation_io.py": "e49138b50462d1acf1a5ef6b648f8bc5d00655de04ec86f25648385fdab4d772",
     "tools/serve_recovery/ownership.py": "1cb0182ca06ee3c1ebbaab5d598895990ece2a7720aec741ea84ffde68792254",
     "tools/serve_recovery/policy.py": "55b3fe3b0ca81bfb024f70499a77ca91ebe20a004cde1efecabf9e37814f4ff6",
-    "tools/serve_recovery/service.py": "ba53c1a4c8daca5550a4ce9f57323bbc785dd528c566958e2a8c3c28203e2553",
+    "tools/serve_recovery/service.py": "1e4fa0e4f8508c774b38560003d6da2cdf306e489bd0b7013b3e319752c53d00",
     "tools/serve_recovery/store.py": "0eef06d1a10b4ef0911f671e0378ae3849caeabeaabbbe296981a2e4291e59ee",
-    "tools/serve_recovery/tls_control.py": "75399601eb9649189367915fcfb417dbb786adaf37c9f8089c3060234dd3daee"
+    "tools/serve_recovery/tls_control.py": "75399601eb9649189367915fcfb417dbb786adaf37c9f8089c3060234dd3daee",
+    "tools/serve_service/acceptance.py": "a0d52e8c055c6afc1478ee5f65e93daa563c6143e79f529a92d0e73723488cf7",
+    "tools/serve_service/auxiliary.py": "9b818763694570b63efa394e01fc327300d8ee375bc8f7009023937b1061bbdf",
+    "tools/serve_service/backend.py": "49a37862d8040aceed14df796cb24535cacfeced3fe779773ec6925b04eeefa9",
+    "tools/serve_service/closeout.py": "1475638adafe45f52fd4663c5d189ae0804428ba35be0b3d4fa852e64f7a98f8",
+    "tools/serve_service/closeout_acceptance.py": "c7a3c01c757a4c253213cc8997c87a4bd7bb2baf42882ad05f3e117b7f6373cc",
+    "tools/serve_service/controller_closeout.py": "e3067774ade57ec967e141d692e8df6a4dfdbd27bf057a1923179d01019b68ac",
+    "tools/serve_service/controller_death.py": "fcc9e376d995cd8a4b541fc002beaa3bab6affb55c00b1335a7ac1e01d35a4cc",
+    "tools/serve_service/controller_exec.py": "7f37aa2881f2a5e174fee3583d39590c14356f12edfed307eae8718e9643e380",
+    "tools/serve_service/inspection.py": "2930af5fe6564b567a39bb6c9280dfe098be4e78227250660246a9722cfb90b9",
+    "tools/serve_service/inspection_acceptance.py": "e2bb35de9d6b0d5a7e9f97994515fa8ed9a2ba1b9ed5d1f291252c3132835118",
+    "tools/serve_service/inspection_closeout.py": "8f4cb89c743f811d5aa02bec931e5200156824034fe3ea59bbc47227d0e9a050",
+    "tools/serve_service/lease_custody.py": "c3925db0e1f53e81720bbf4c01ab03fbf74a53ec504ab918b9b1042e92ae4c3d",
+    "tools/serve_service/memory.py": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+    "tools/serve_service/memory_acceptance.py": "afaa1a666bdbb7d279d0d48b0db849402849905fed9356ecfd50f5cebe098161",
+    "tools/serve_service/memory_closeout.py": "7e4afadc351746afb89d9ce39377489bfdd9c0ed81d5a5aef90fbbb2b6737a4f",
+    "tools/serve_service/monitor_control.py": "06fc8f1477f166e79e57f6d12d0e0554af949c92f3d26d2dd5b68ba84dcd392c",
+    "tools/serve_service/nvml_acceptance.py": "8db02e4ed57a83f13c8b69d91d1176934fb686895f990ad91eabc75400338e5c",
+    "tools/serve_service/nvml_policy.py": "817b2500044cd2eeed4277ad95d2686bf11f4785282ea1149beb63d62b0ef9a6",
+    "tools/serve_service/package.py": "b7c3b52f3264659d27bbda56ffa99676b89ffe22b095b9d0f77c6dc070f0fc94",
+    "tools/serve_service/resource_cpu.py": "429be87556272388bf3a4f163b8f77f590da25187f8e7f2a4bfbf7752fd205e1",
+    "tools/serve_service/resource_driver_cpu.py": "92830ecaff6f6f9403659127e4ded50d524a84db87af8b47644092f37203855c",
+    "tools/serve_service/resource_kernel.py": "6ccf288aebf24c4a7ea3646898cc05d4ba03618c53dc738e026490ef6e1bdd34",
+    "tools/serve_service/resource_kernel_fix.py": "a12923798cf724b0d77911b75aad6ece8fbfa31c5193112997be09855b03895d",
+    "tools/serve_service/resource_payload.py": "a57623bf2fc1eb916b648787b7abdb76c6ee230be2513ef6c5cfe15d45522c15",
+    "tools/serve_service/resource_report.py": "59bf7a65bac22acc8673acea44c42602bdc40dfe018161a4cff0425954049d3a",
+    "tools/serve_service/resource_stage.py": "4aa07182ad087722b0cdc6a250be0d6d48caa681cb9231c9bdf6a6d341aa8064",
+    "tools/serve_service/resource_worker.py": "dc448b8e295df6282af4027c1e061c06b11a6f0b927027a32ad3f326cd620eec",
+    "tools/serve_service/resources.py": "2b72ea6775ef6067eacb4ce6351a58e4a2bac1145e3869165a142a75f81245b2",
+    "tools/serve_service/service.py": "c525aa1d969cc12938a8643190b7de58e9a056fe55f75df713a488acefb2417d",
+    "tools/serve_service/supervisor.py": "21348143c5e4f46fed07a338977f984a58d6eb7c5e2f1e08caa29157929d6764",
+    "tools/serve_service/supplement.py": "7da3cd37f6a0c1bf746aa8856570b9c7724ba155745c2b9910f5ffc2e8d65d57",
+    "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -1550,6 +1769,126 @@
         "tests/server_completion_test.cpp",
         "tools/serve_recovery/test_native_ingress.py"
       ]
+    },
+    "DELETE /v1/conversations/{conversation_id}": {
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；DELETE /v1/conversations/{conversation_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+      "evidence": [
+        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+        "include/q4t/server/application_routes.h",
+        "tests/server_conversation_api_test.cpp",
+        "tools/serve_recovery/test_native_access.py"
+      ]
+    },
+    "DELETE /v1/conversations/{conversation_id}/items/{item_id}": {
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；DELETE /v1/conversations/{conversation_id}/items/{item_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+      "evidence": [
+        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+        "include/q4t/server/application_routes.h",
+        "tests/server_conversation_api_test.cpp",
+        "tools/serve_recovery/test_native_access.py"
+      ]
+    },
+    "GET /v1/conversations/{conversation_id}": {
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；GET /v1/conversations/{conversation_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+      "evidence": [
+        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+        "include/q4t/server/application_routes.h",
+        "tests/server_conversation_api_test.cpp",
+        "tools/serve_recovery/test_native_access.py"
+      ]
+    },
+    "GET /v1/conversations/{conversation_id}/items": {
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；GET /v1/conversations/{conversation_id}/items",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+      "evidence": [
+        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+        "include/q4t/server/application_routes.h",
+        "tests/server_conversation_api_test.cpp",
+        "tools/serve_recovery/test_native_access.py"
+      ]
+    },
+    "GET /v1/conversations/{conversation_id}/items/{item_id}": {
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；GET /v1/conversations/{conversation_id}/items/{item_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+      "evidence": [
+        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+        "include/q4t/server/application_routes.h",
+        "tests/server_conversation_api_test.cpp",
+        "tools/serve_recovery/test_native_access.py"
+      ]
+    },
+    "OPTIONS /v1/conversations": {
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；OPTIONS /v1/conversations",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+      "evidence": [
+        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+        "include/q4t/server/application_routes.h",
+        "tests/server_conversation_api_test.cpp",
+        "tools/serve_recovery/test_native_access.py"
+      ]
+    },
+    "OPTIONS /v1/conversations/{conversation_id}": {
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；OPTIONS /v1/conversations/{conversation_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+      "evidence": [
+        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+        "include/q4t/server/application_routes.h",
+        "tests/server_conversation_api_test.cpp",
+        "tools/serve_recovery/test_native_access.py"
+      ]
+    },
+    "OPTIONS /v1/conversations/{conversation_id}/items": {
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；OPTIONS /v1/conversations/{conversation_id}/items",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+      "evidence": [
+        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+        "include/q4t/server/application_routes.h",
+        "tests/server_conversation_api_test.cpp",
+        "tools/serve_recovery/test_native_access.py"
+      ]
+    },
+    "OPTIONS /v1/conversations/{conversation_id}/items/{item_id}": {
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；OPTIONS /v1/conversations/{conversation_id}/items/{item_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+      "evidence": [
+        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+        "include/q4t/server/application_routes.h",
+        "tests/server_conversation_api_test.cpp",
+        "tools/serve_recovery/test_native_access.py"
+      ]
+    },
+    "POST /v1/conversations": {
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；POST /v1/conversations",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+      "evidence": [
+        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+        "include/q4t/server/application_routes.h",
+        "tests/server_conversation_api_test.cpp",
+        "tools/serve_recovery/test_native_access.py"
+      ]
+    },
+    "POST /v1/conversations/{conversation_id}": {
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；POST /v1/conversations/{conversation_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+      "evidence": [
+        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+        "include/q4t/server/application_routes.h",
+        "tests/server_conversation_api_test.cpp",
+        "tools/serve_recovery/test_native_access.py"
+      ]
+    },
+    "POST /v1/conversations/{conversation_id}/items": {
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；POST /v1/conversations/{conversation_id}/items",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
+      "evidence": [
+        "docs/SERVE_CONVERSATIONS_2026-11-09.md",
+        "include/q4t/server/application_routes.h",
+        "tests/server_conversation_api_test.cpp",
+        "tools/serve_recovery/test_native_access.py"
+      ]
     }
   },
   "observation_io_review_20261108": {
@@ -1896,5 +2235,14 @@
         "tools/serve_recovery/test_native_ingress.py"
       ]
     }
+  },
+  "responses_conversation_development_20261109": {
+    "state": "cpu_checked_unreleased",
+    "documents": [
+      "docs/SERVE_RESPONSES_2026-11-08.md",
+      "docs/SERVE_OBJECT_STORE_2026-11-08.md",
+      "docs/SERVE_CONVERSATIONS_2026-11-09.md"
+    ],
+    "note": "Responses item/envelope/state modules and Conversations native/managed binding reviewed with targeted evidence; Responses generation/background/tool execution remain required. Add managed service source anchors and shared dynamic route review. No GPU or default release from this source checkpoint."
   }
 }
