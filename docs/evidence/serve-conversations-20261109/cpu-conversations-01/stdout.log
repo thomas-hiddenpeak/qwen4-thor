@@ -1,0 +1,9 @@
+[PASS] conversation_state_crud_restart_and_item_retention
+[PASS] conversation_state_pending_tool_and_later_result
+[PASS] conversation_state_client_and_membership_isolation
+[PASS] conversation_state_ordered_pagination_and_membership_delete
+[PASS] conversation_state_invalid_and_conflicting_items_are_atomic
+[PASS] conversation_state_quota_cannot_publish_partial_conversation
+[PASS] conversation_state_include_projection_preserves_full_history
+[PASS] conversation_state_metadata_and_query_contract
+8 tests, 8 passed, 0 failed, 0 skipped

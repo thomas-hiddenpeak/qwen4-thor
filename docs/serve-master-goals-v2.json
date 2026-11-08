@@ -205,7 +205,8 @@
         "evidence/serve-responses-core-20261108/README.md"
       ],
       "release": null,
-      "development_status": "Native core 30 distinct C++ / 7 SDK CPU passed; envelope/generation planning 10 additional and 2 direct probability CPU regressions passed. Runtime/routes/store remain required; 0 GPU, no release."
+      "development_status": "Native core 30 distinct C++ / 7 SDK CPU passed; envelope/generation planning 10 additional and 2 direct probability CPU regressions passed. Runtime/routes/store remain required; 0 GPU, no release.",
+      "item_shape_evidence": "evidence/serve-item-shape-20261109/README.md"
     },
     {
       "id": "A08",
@@ -219,10 +220,11 @@
       ],
       "evidence": [],
       "release": null,
-      "development_status": "原生隔离存储、多对象事务/无TTL已实现并通过针对性CPU；Responses历史/指令隔离、item归属和终态事务8项CPU通过，对象线程无分配异常兜底6项针对性通过，构建零警告。完整Conversations、列表/事件、路由、background继续接入，无GPU或发布。",
+      "development_status": "原生持久对象/事务、Responses历史/终态及Conversations请求处理已完成本组CPU：27不同C++、5实际官方SDK HTTP，含持久重开/分页/归属。完整serve入口、生成、background/cancel、compaction与生命周期继续实施；0 GPU、未发布，不计任务完成。",
       "development_evidence": "evidence/serve-object-store-20261108/README.md",
       "transaction_evidence": "evidence/serve-object-transactions-20261108/README.md",
-      "state_evidence": "evidence/serve-responses-state-20261109/README.md"
+      "state_evidence": "evidence/serve-responses-state-20261109/README.md",
+      "conversation_evidence": "evidence/serve-conversations-20261109/README.md"
     },
     {
       "id": "A09",

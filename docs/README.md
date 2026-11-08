@@ -1,5 +1,8 @@
 # docs/ — 开发记录文档体系
 
+[Conversations原生状态、请求处理与官方SDK HTTP验证](SERVE_CONVERSATIONS_2026-11-09.md)
+（A07/A08继续开发，尚未发布）。
+
 [A07 Responses原生实现与A08状态衔接](SERVE_RESPONSES_2026-11-08.md)
 （开发中，默认仍为已验A06）。
 

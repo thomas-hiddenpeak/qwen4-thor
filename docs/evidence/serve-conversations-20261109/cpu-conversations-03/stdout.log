@@ -1,0 +1,4 @@
+  CHECK failed: Ok(canonical) && canonical.value.array.size() == 1 (line 344)
+[FAIL] conversation_state_resolves_all_declared_input_variants
+[PASS] conversation_state_optional_reference_discriminator_and_scope
+2 tests, 1 passed, 1 failed, 0 skipped

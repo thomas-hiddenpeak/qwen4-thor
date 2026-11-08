@@ -75,6 +75,10 @@ set(protocol_inputs
   src/server/object_protocol.h
   include/q4t/server/responses_state.h
   src/server/responses_state.cpp
+  include/q4t/server/conversation_state.h
+  src/server/conversation_state.cpp
+  include/q4t/server/conversation_api.h
+  src/server/conversation_api.cpp
   include/q4t/server/responses_item_shape.h
   src/server/responses_item_shape.cpp
   src/server/contracts/openai_item_types_v1.json

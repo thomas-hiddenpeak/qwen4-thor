@@ -4,6 +4,7 @@
 #include <unordered_set>
 
 #include "object_protocol.h"
+#include "q4t/server/responses_item_shape.h"
 
 namespace q4t::server {
 namespace {
@@ -46,6 +47,53 @@ ObjectReply Data(const ObjectReply& stored, std::string_view field) {
   result.value = *value;
   return result;
 }
+ObjectReply Shape(const Json& item, ResponsesItemShape shape,
+                  const std::string& path) {
+  ChatPlanError error;
+  const auto status = ValidateResponsesItemShape(item, shape, &error, path);
+  if (status) return {};
+  auto result = Error(error.http_status, error.code, status.message());
+  result.value = Object({{"param", String(error.param)}});
+  return result;
+}
+void Default(Json* item, const std::string& key, Json value) {
+  if (!Nonnull(*item, key)) Set(item, key, std::move(value));
+}
+void CanonicalItem(Json* item) {
+  if (!item->Has("type") && item->Has("role"))
+    Set(item, "type", String("message"));
+  const auto type = item->GetString("type");
+  if (type == "message") {
+    if (const auto* content = item->Find("content"); content->IsString())
+      Set(item, "content",
+          Array(
+              {Object({{"type", String("input_text")}, {"text", *content}})}));
+  }
+  for (const char* recorded :
+       {"message", "function_call", "function_call_output",
+        "computer_call_output", "tool_search_call", "tool_search_output",
+        "shell_call", "shell_call_output"})
+    if (type == recorded) Default(item, "status", String("completed"));
+  if (type == "tool_search_call" || type == "tool_search_output") {
+    // These are client-supplied historical items, not executions by q4t.
+    Default(item, "execution", String("client"));
+    Default(item, "call_id", Json());
+  }
+  if (type == "shell_call") {
+    Default(item, "environment", Json());
+    auto& action = Field(*item, "action");
+    Default(&action, "max_output_length", Json());
+    Default(&action, "timeout_ms", Json());
+  }
+  if (type == "shell_call_output") Default(item, "max_output_length", Json());
+  if (type == "computer_call_output") {
+    const auto* checks = item->Find("acknowledged_safety_checks");
+    if (checks && checks->IsNull())
+      std::erase_if(item->object, [](const auto& field) {
+        return field.first == "acknowledged_safety_checks";
+      });
+  }
+}
 }  // namespace
 
 ObjectReply ResponsesState::Get(ObjectKind kind, const std::string& id,
@@ -56,6 +104,60 @@ ObjectReply ResponsesState::Get(ObjectKind kind, const std::string& id,
   request.kind = kind;
   request.id = id;
   return objects_.Execute(request, access.deadline, access.cancelled);
+}
+
+ObjectReply ResponsesState::ResolveItems(const Json& input,
+                                         const StateAccess& access,
+                                         size_t maximum) {
+  if (access.scope.empty() || access.scope.size() > 256)
+    return StateError("Authenticated state scope is unavailable");
+  auto items = Array();
+  if (input.IsString())
+    items.array.push_back(Object({{"type", String("message")},
+                                  {"role", String("user")},
+                                  {"content", input}}));
+  else if (input.IsArray())
+    items = input;
+  else if (!input.IsNull())
+    return Error(400, "invalid_request", "input requires text or items");
+  if (items.array.size() > maximum)
+    return Error(400, "input_limit_exceeded", "Input item limit exceeded");
+  for (size_t i = 0; i < items.array.size(); ++i) {
+    auto valid = Shape(items.array[i], ResponsesItemShape::kInput,
+                       "input[" + std::to_string(i) + ']');
+    if (!valid.ok()) return valid;
+    if (items.array[i].GetString("type") == "compaction_trigger" &&
+        i + 1 != items.array.size())
+      return Error(400, "invalid_request",
+                   "compaction_trigger must be the final item");
+  }
+  std::unordered_set<std::string> ids;
+  for (auto& item : items.array) {
+    // The SDK allows an omitted or null discriminator for ItemReference.
+    const auto type = item.GetString("type");
+    if (type == "item_reference" || (type.empty() && !item.Has("role"))) {
+      if (!ValidId(item.GetString("id")))
+        return Error(400, "invalid_request", "Invalid item reference");
+      auto reference =
+          Data(Get(ObjectKind::kConversationItem, item.GetString("id"), access),
+               "item");
+      if (!reference.ok()) return reference;
+      item = std::move(reference.value);
+    } else {
+      CanonicalItem(&item);
+      if (!Nonnull(item, "id")) {
+        auto id = NewObjectId(ObjectKind::kConversationItem);
+        if (id.empty()) return StateError("Input item identity unavailable");
+        Set(&item, "id", String(std::move(id)));
+      }
+    }
+    const auto id = item.GetString("id");
+    if (!ValidId(id) || !ids.insert(id).second)
+      return Error(400, "invalid_request", "Invalid or repeated input item ID");
+  }
+  ObjectReply result;
+  result.value = std::move(items);
+  return result;
 }
 
 ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
@@ -70,19 +172,10 @@ ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
   plan->store = envelope.store;
   plan->request = envelope.request;
   plan->history = Array();
-  plan->own_input = Array();
   const auto* input = envelope.request.Find("input");
-  if (input && input->IsString()) {
-    plan->own_input.array.push_back(Object({{"type", String("message")},
-                                            {"role", String("user")},
-                                            {"content", *input}}));
-  } else if (input && input->IsArray()) {
-    plan->own_input = *input;
-  } else if (input && !input->IsNull()) {
-    return Error(400, "invalid_request", "input requires text or items");
-  }
-  if (plan->own_input.array.size() > 4096)
-    return Error(400, "input_limit_exceeded", "Input exceeds 4096 items");
+  auto resolved = ResolveItems(input ? *input : Json(), access);
+  if (!resolved.ok()) return resolved;
+  plan->own_input = std::move(resolved.value);
   if (!envelope.previous_response_id.empty()) {
     auto previous =
         Get(ObjectKind::kResponse, envelope.previous_response_id, access);
@@ -113,39 +206,6 @@ ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
     plan->conversation_revision = conversation.value.GetInt("revision");
     plan->conversation = *data;
     plan->history = *items;
-  }
-  std::unordered_set<std::string> own_ids;
-  for (auto& item : plan->own_input.array) {
-    if (!item.IsObject())
-      return Error(400, "invalid_request", "Input item must be an object");
-    if (item.GetString("type") == "item_reference") {
-      if (item.object.size() != 2 || !ValidId(item.GetString("id")))
-        return Error(400, "invalid_request", "Invalid item reference");
-      auto reference =
-          Data(Get(ObjectKind::kConversationItem, item.GetString("id"), access),
-               "item");
-      if (!reference.ok()) return reference;
-      item = std::move(reference.value);
-    }
-    if (!item.Has("type") && item.Has("role"))
-      Set(&item, "type", String("message"));
-    if (item.GetString("type") == "message") {
-      if (const auto* content = item.Find("content");
-          content && content->IsString()) {
-        auto parts = Array(
-            {Object({{"type", String("input_text")}, {"text", *content}})});
-        Set(&item, "content", std::move(parts));
-      }
-      if (!item.Has("status")) Set(&item, "status", String("completed"));
-    }
-    if (!item.Has("id")) {
-      auto id = NewObjectId(ObjectKind::kConversationItem);
-      if (id.empty()) return StateError("Input item identity unavailable");
-      Set(&item, "id", String(std::move(id)));
-    }
-    const auto id = item.GetString("id");
-    if (!ValidId(id) || !own_ids.insert(id).second)
-      return Error(400, "invalid_request", "Invalid or repeated input item ID");
   }
   plan->history.array.insert(plan->history.array.end(),
                              plan->own_input.array.begin(),
@@ -188,6 +248,9 @@ ObjectReply ResponsesState::Finish(const Json& snapshot, const Json& events,
       !Terminal(snapshot) || !snapshot.GetArray("output") ||
       !events.IsArray() || (plan->store && plan->response_revision <= 0))
     return StateError("Invalid terminal response state");
+  for (const auto& item : snapshot.GetArray("output")->array)
+    if (!Shape(item, ResponsesItemShape::kOutput, "output").ok())
+      return StateError("Generated response item violates the output contract");
   if (!plan->store && plan->conversation_id.empty()) {
     plan->finished = true;
     return {};
@@ -212,6 +275,16 @@ ObjectReply ResponsesState::Finish(const Json& snapshot, const Json& events,
   if (append) {
     auto conversation = plan->conversation;
     auto* previous = &Field(conversation, "items");
+    if (previous->array.size() + items.array.size() > 4096)
+      return Error(413, "conversation_item_limit",
+                   "Conversation item limit exceeded");
+    std::unordered_set<std::string> membership;
+    for (const auto& item : previous->array)
+      membership.insert(item.GetString("id"));
+    for (const auto& item : items.array)
+      if (!membership.insert(item.GetString("id")).second)
+        return Error(409, "item_already_in_conversation",
+                     "Item already belongs to this conversation");
     previous->array.insert(previous->array.end(), items.array.begin(),
                            items.array.end());
     mutations.push_back(Write(ObjectKind::kConversation, plan->conversation_id,

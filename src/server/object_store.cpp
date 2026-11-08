@@ -349,7 +349,7 @@ ObjectReply ObjectStore::Execute(const ObjectRequest& request,
 ObjectReply ObjectStore::ExecuteBatch(std::span<const ObjectRequest> requests,
                                       Clock::time_point deadline,
                                       const std::function<bool()>& cancelled) {
-  if (requests.empty() || requests.size() > 1024)
+  if (requests.empty() || requests.size() > kMaxTransactionObjects)
     return Error(400, "invalid_object_request", "Invalid transaction size");
   Json mutations = Array();
   size_t bytes = 0;

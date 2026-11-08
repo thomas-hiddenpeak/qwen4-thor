@@ -11,6 +11,7 @@
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
 #include "q4t/server/object_store.h"
 int GrammarProcessFixture(int argc, char** argv);
+int ConversationApiFixture(int argc, char** argv);
 #endif
 
 int main(int argc, char** argv) {
@@ -23,6 +24,8 @@ int main(int argc, char** argv) {
   if (object_worker >= 0) return object_worker;
   const int fixture = GrammarProcessFixture(argc, argv);
   if (fixture >= 0) return fixture;
+  const int conversation = ConversationApiFixture(argc, argv);
+  if (conversation >= 0) return conversation;
 #endif
   std::string filter, required;
   bool list = false, allow_skips = false, has_filter = false;

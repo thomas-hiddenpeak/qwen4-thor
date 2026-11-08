@@ -13,6 +13,9 @@
 namespace q4t::server::object_detail {
 using namespace responses_detail;
 inline constexpr uint64_t kMaxFrame = 64ULL << 20;
+// A response can publish 4096 input items and up to 512 generated items in
+// one commit. The byte, owner and object quotas still bound every transaction.
+inline constexpr size_t kMaxTransactionObjects = 8192;
 inline constexpr uint64_t kVersion = 1;
 struct Frame {
   uint64_t version = kVersion;

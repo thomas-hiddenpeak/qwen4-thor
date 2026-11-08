@@ -35,6 +35,10 @@ struct ResponseStatePlan {
 class ResponsesState {
  public:
   explicit ResponsesState(ObjectStore& objects) : objects_(objects) {}
+  // Shape-check all input before any storage access, resolve owned references,
+  // and populate canonical item metadata. No tool execution or generation.
+  ObjectReply ResolveItems(const io::Json& input, const StateAccess& access,
+                           size_t maximum = 4096);
   ObjectReply Resolve(const ResponsesEnvelope& envelope,
                       const StateAccess& access, ResponseStatePlan* plan);
   ObjectReply Begin(const io::Json& snapshot, const StateAccess& access,

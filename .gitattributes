@@ -46,3 +46,4 @@ src/server/contracts/openai_item_types_v1.json -text
 tests/fixtures/responses_items/*.json -text
 third_party/licenses/openai-node/LICENSE -text -whitespace
 docs/evidence/serve-item-shape-20261109/** -text -whitespace
+docs/evidence/serve-conversations-20261109/** -text -whitespace

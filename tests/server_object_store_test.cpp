@@ -516,6 +516,37 @@ Q4T_TEST(object_store_transaction_rejects_duplicate_and_mixed_ownership) {
   return true;
 }
 
+Q4T_TEST(object_store_transaction_handles_large_response_item_sets) {
+  Fixture f;
+  f.options.max_client_objects = 2000;
+  f.options.io_timeout_ms = 10000;
+  std::vector<ObjectRequest> mutations;
+  for (int i = 0; i < 1025; ++i)
+    mutations.push_back(Request(ObjectOperation::kPut, "item_" + std::to_string(i)));
+  {
+    ObjectStore store(f.options);
+    const auto result = store.ExecuteBatch(mutations, Clock::now() + 15s);
+    Q4T_CHECK(Ok(result) && result.value.GetArray("data")->array.size() == 1025);
+  }
+  ObjectStore restarted(f.options);
+  auto list = Request(ObjectOperation::kList);
+  list.limit = 100;
+  size_t count = 0;
+  while (count < 1100) {
+    const auto page = Run(restarted, list);
+    Q4T_CHECK(Ok(page));
+    const auto* data = page.value.GetArray("data");
+    Q4T_CHECK(data);
+    count += data->array.size();
+    if (!page.value.GetBool("has_more")) break;
+    Q4T_CHECK(!data->array.empty());
+    list.after = data->array.back().GetString("id");
+  }
+  Q4T_CHECK(count == 1025);
+  Q4T_CHECK(Ok(Run(restarted, Request(ObjectOperation::kGet, "item_1024"))));
+  return true;
+}
+
 namespace {
 bool InterruptedTransaction(std::string entry, size_t applied) {
   Injection inject(std::move(entry));

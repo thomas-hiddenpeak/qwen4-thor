@@ -288,7 +288,8 @@ class DiskStore {
     const auto owner = transaction.GetString("owner");
     if (transaction.GetInt("format") != 1 || !Hex(owner, 64) ||
         !ValidId(transaction.GetString("id")) || !changes ||
-        changes->array.empty() || changes->array.size() > 1024)
+        changes->array.empty() ||
+        changes->array.size() > kMaxTransactionObjects)
       return false;
     std::set<std::string> targets;
     std::vector<std::string> encoded;
@@ -366,7 +367,7 @@ class DiskStore {
   ObjectReply Batch(const Json& request) {
     const auto* mutations = request.GetArray("mutations");
     if (!mutations || mutations->array.empty() ||
-        mutations->array.size() > 1024)
+        mutations->array.size() > kMaxTransactionObjects)
       return Error(400, "invalid_object_request", "Invalid transaction size");
     const auto owner = mutations->array.front().GetString("owner");
     if (!Hex(owner, 64))

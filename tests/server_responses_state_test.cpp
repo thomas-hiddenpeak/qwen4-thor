@@ -295,3 +295,24 @@ Q4T_TEST(responses_state_prepared_plan_cannot_change_client) {
                              Access(), &plan)));
   return true;
 }
+
+Q4T_TEST(responses_state_rejects_malformed_generated_items_before_commit) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesState states(objects);
+  ResponseStatePlan plan;
+  Q4T_CHECK(
+      Ok(states.Resolve(Envelope(R"({"input":"hello"})"), Access(), &plan)));
+  Q4T_CHECK(Ok(states.Begin(Snapshot(plan, "in_progress"), Access(), &plan)));
+  const auto invalid = Parse(R"([{"type":"function_call","id":"fc_bad",
+    "call_id":"call_bad","arguments":"{}"}])");
+  Q4T_CHECK(states
+                .Finish(Snapshot(plan, "completed", invalid), Parse("[]"),
+                        Access(), &plan)
+                .code == "response_state_invalid");
+  Q4T_CHECK(states.Retrieve(plan.id, Access()).value.GetString("status") ==
+            "in_progress");
+  Q4T_CHECK(Ok(
+      states.Finish(Snapshot(plan, "failed"), Parse("[]"), Access(), &plan)));
+  return true;
+}
