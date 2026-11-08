@@ -15,7 +15,7 @@ import threading
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools/examples"))
 from chat_client import (_completion, _choices_completion, prepare_tool_calls,
-                         require, validate_capabilities)
+                         require, validate_capabilities, dump_json, load_json)
 from project_records import VALIDATORS, CUSTOM_VALIDATORS
 
 
@@ -41,6 +41,7 @@ class JsSdkClient:
         command = dict(action=action, base_url=self.base_url, model=model,
             protocol_sha256=self.protocol_sha256, timeout_ms=int(self.timeout*1000),
             request=request, tool_profile="project-records-v1", **self.connection)
+        encoded = dump_json(command).encode()
         # A separate inherited pipe forwards raw bytes before the final JSON
         # result, including when the child fails. Only the parent owns the
         # journal writer. No ambient Node preload or module search override.
@@ -80,7 +81,7 @@ class JsSdkClient:
         reader.start()
         try:
             output, errors = process.communicate(
-                json.dumps(command, ensure_ascii=False, allow_nan=False).encode(),
+                encoded,
                 timeout=self.timeout+15)
         finally:
             if process.poll() is None:
@@ -95,7 +96,7 @@ class JsSdkClient:
             raise JsSdkError(dict(message="Node bridge failed before response",
                 stderr=errors.decode(errors="replace"), returncode=process.returncode,
                 captured_bytes=sum(map(len, chunks)), automatic_retry=False))
-        payload = json.loads(output)
+        payload = load_json(output, exact_numbers=True)
         self.last_result = payload
         require(payload["sdk_version"] == "7.47.0", "SDK bridge version drift")
         raw = base64.b64decode(payload["wire_base64"], validate=True)

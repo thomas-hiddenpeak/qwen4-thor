@@ -1563,7 +1563,10 @@
       "src/server/session_state.cpp",
       "src/server/session_cache.cpp",
       "include/q4t/server/session_cache.h",
-      "src/server/server_options.cpp"
+      "src/server/server_options.cpp",
+      "tools/serve_protocol/js_client.py",
+      "tools/serve_protocol/run_sdk.mjs",
+      "tools/serve_schema_v2/acceptance.py"
     ],
     "acceptance": "Target-only text cache now runs in actual generation path, layout-tagged and terminal-published. 77 distinct A05 C++ checks, 49+21 input comparisons and affected client/public-host checks passed. Real schema/tool/cache and media business plus delivery remain required; default unchanged. Media state cache remains required A10 work.",
     "optional_native_dependency": {

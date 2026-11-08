@@ -10,7 +10,8 @@ for await (const chunk of process.stdin) {
   bytes += chunk.length;
   requireValue(bytes <= 16 * 1024 * 1024, 'bridge input limit'); buffers.push(chunk);
 }
-const input = parseJson(new TextDecoder('utf-8', { fatal: true }).decode(Buffer.concat(buffers)));
+const input = parseJson(new TextDecoder('utf-8', { fatal: true }).decode(Buffer.concat(buffers)),
+  { exactNumbers: true });
 const { OpenAI, version } = loadSdk(process.env.Q4T_NODE_SDK_DIR);
 const client = new ChatClient(OpenAI, { baseURL: input.base_url, model: input.model,
   protocolSha256: input.protocol_sha256, timeoutMs: input.timeout_ms ?? 120000,
