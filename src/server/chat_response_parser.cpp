@@ -816,6 +816,21 @@ Status ChatResponseParser::Append(std::string_view text,
   return Status();
 }
 
+Status ChatResponseParser::FinishIncomplete(
+    std::vector<ResponseDelta>* deltas) {
+  if (!status_) return status_;
+  if (!initialized_ || finished_) return Fail("parser already finished");
+  finished_ = true;
+  // Only StreamTool may expose validated incremental argument syntax. Never
+  // reinterpret its unfinished delimiter/body as assistant text.
+  if (region_ != Region::kTool &&
+      (tools_.empty() || !pending_.starts_with("<tool_")))
+    Emit(region_, pending_, deltas);
+  pending_offset_ += pending_.size();
+  pending_.clear();
+  return VerifySchemaReceipts(true);
+}
+
 Status ChatResponseParser::Finish(bool length_limited,
                                   std::vector<ResponseDelta>* deltas,
                                   bool text_stopped) {
@@ -855,8 +870,11 @@ Status ChatResponseParser::Finish(bool length_limited,
   return Status();
 }
 
-Status ChatResponseParser::VerifySchemaReceipts() const {
+Status ChatResponseParser::VerifySchemaReceipts(bool incomplete) const {
   if (!constraints_.schema_receipts) return {};
+  // A partial terminal certifies no current partial JSON value. Completed
+  // earlier calls still need the same semantic receipt as a normal terminal.
+  if (incomplete && calls_.empty()) return {};
   if (!schema_receipts_)
     return Status::Fail("structured semantic receipt source missing");
   std::vector<SchemaReceipt> expected;
@@ -879,7 +897,7 @@ Status ChatResponseParser::VerifySchemaReceipts() const {
     const auto status = add(call.name, *schema, call.arguments);
     if (!status) return status;
   }
-  if (constraints_.json_output && tool_count_ == 0) {
+  if (!incomplete && constraints_.json_output && tool_count_ == 0) {
     const auto* format = request_->Find("response_format");
     const auto* spec = format ? format->Find("json_schema") : nullptr;
     const auto* schema = spec ? spec->Find("schema") : nullptr;
@@ -888,7 +906,11 @@ Status ChatResponseParser::VerifySchemaReceipts() const {
       if (!status) return status;
     }
   }
-  if (expected != *schema_receipts_)
+  if (incomplete
+          ? expected.size() > schema_receipts_->size() ||
+                !std::equal(expected.begin(), expected.end(),
+                             schema_receipts_->begin())
+          : expected != *schema_receipts_)
     return Status::Fail("structured semantic receipt mismatch");
   return {};
 }

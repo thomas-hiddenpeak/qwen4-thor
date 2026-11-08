@@ -1,0 +1,258 @@
+{
+  "profile": "q4t-responses-core-cpu-v1",
+  "default_unchanged": "A06",
+  "gpu_launches": 0,
+  "http_model_acceptance": false,
+  "api_implementation_complete": false,
+  "cpp_distinct_passed": [
+    "chat_response_tool_fragments_wait_for_validated_terminal",
+    "chat_response_truncation_and_length",
+    "responses_input_custom_history_keeps_unstructured_bytes",
+    "responses_input_image_detail_and_tool_media_not_dropped",
+    "responses_input_instructions_roles_and_original_metadata",
+    "responses_input_invalid_tools_never_fabricate_results",
+    "responses_input_plain_text_empty_parts_and_refusal_order",
+    "responses_input_reasoning_parallel_calls_and_reverse_results",
+    "responses_input_tools_allowed_custom_and_source_errors",
+    "responses_input_tools_resolve_strict_defaults_and_effective_schema",
+    "responses_input_tools_strict_opt_out_fallback_and_explicit_failure",
+    "responses_input_unresolved_state_explicit_and_malformed_distinct",
+    "responses_output_failure_has_no_success_or_tool_done",
+    "responses_output_http_exception_uses_fixed_native_error",
+    "responses_output_http_failure_uses_native_terminal_once",
+    "responses_output_http_preheader_errors_still_have_http_status",
+    "responses_output_incomplete_checks_completed_rich_schema_receipts",
+    "responses_output_incomplete_never_completes_partial_tool",
+    "responses_output_incomplete_parser_preserves_chat_contract",
+    "responses_output_obfuscation_and_malformed_probabilities",
+    "responses_output_parallel_function_custom_and_order",
+    "responses_output_rejects_identity_changes_and_orphan_fragments",
+    "responses_output_text_reasoning_full_lifecycle",
+    "responses_output_usage_limits_and_no_double_terminal",
+    "server_http_exception_cannot_append_after_terminal",
+    "server_http_exception_terminal_states",
+    "server_http_host_memory_does_not_append_after_partial_or_terminal",
+    "server_http_host_memory_identity_and_terminal",
+    "server_http_stream_error_is_single_terminal",
+    "server_terminal_handoff_precedes_wire_and_preserves_cleanup"
+  ],
+  "failed_originals": [
+    {
+      "file": "cpu-output-02/stdout.log",
+      "test": "responses_output_incomplete_parser_preserves_chat_contract"
+    },
+    {
+      "file": "cpu-input-01/stdout.log",
+      "test": "responses_input_tools_allowed_custom_and_source_errors"
+    },
+    {
+      "file": "cpu-output-01/stdout.log",
+      "test": "responses_output_incomplete_parser_preserves_chat_contract"
+    }
+  ],
+  "official_sdk_cpu_passed": 7,
+  "sources_sha256": {
+    "include/q4t/server/responses_input.h": "fe63278d2c398b5fe770572cb141561f5a9dec36811fc151b53a33a684cce56a",
+    "include/q4t/server/responses_output.h": "48c3c92fd25f17e8657fc9c3bf9ebfa6943fb2d7b8401cb977e05f810debacb8",
+    "include/q4t/server/chat_response_parser.h": "43c0d61499e9303cd8bacf92b685f5994d81d8e4b0aaed86edbc38943e941a88",
+    "include/q4t/server/http_response.h": "dd0b0603c1878d55c86843b5e21793f21663f95dc4970a3db29dd025ac30dc53",
+    "src/server/responses_input.cpp": "8fbffc8a3241cb3c34050c454e9181ecac49221898f54d5d3f4cf3fb63e6479b",
+    "src/server/responses_output.cpp": "cd5611e50d0884583a6fb273af3a2f626d267ed24be4b169b7d19c3355e5b662",
+    "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
+    "src/server/chat_response_parser.cpp": "69e260c428d83a6383d5d36e0870c7d2be697e953251fddfd081a058445a808b",
+    "src/server/http_response.cpp": "a3a4f06b933b3cfdb3fe96204f7359c3a7824bfc8cf5fd1142473540ac671b7b",
+    "cmake/HostTestSources.cmake": "3e1ca5661533beeafb1b6be6ba1947bee32fd66af865716561a414210e94eeb0",
+    "cmake/ChatProtocolIdentity.cmake": "27c2511316aa597f3d92e3db16289d331a16fc800ddcafca7206d5936ca6a8f3",
+    "CMakeLists.txt": "9c007deedbb6ec687fea94d4dea940bc1a1dac9ba2e2b0289bbd3df6e695567b",
+    "tests/server_responses_input_test.cpp": "3834c3c8c96015ea55c9ac19b43759d40e6cba0c8837499baf5a96ccc4713aba",
+    "tests/server_responses_output_test.cpp": "f4e93569797937c7adade37717fb3a23f9e04cbdcab7f1ee0165336dea7bd5df",
+    "tools/serve_responses/test_sdk.mjs": "e1ae30530516c13c91f13e13fb6c4678e767bb49014d020f258e7124fc59d804"
+  },
+  "files": [
+    {
+      "path": "build-01/build.log",
+      "sha256": "84a391cec391d24cc644249dc41238a04153da37bb77c06802ae4b7aed5fdd52",
+      "bytes": 2306
+    },
+    {
+      "path": "build-01/command.json",
+      "sha256": "d4365e9e1cb6a2f2d971599436b9c8a6565bf2775ea6c269f98a41c92b5fc425",
+      "bytes": 140
+    },
+    {
+      "path": "build-01/result.json",
+      "sha256": "329b532260578757bc7b9b0f9726adaa752b8365e79647bc67d235d45400e3a8",
+      "bytes": 53
+    },
+    {
+      "path": "build-02/build.log",
+      "sha256": "7d021ae7c8308ca4fb6cf8821919330eed2a511086578ff8e84d97a128c531bd",
+      "bytes": 299
+    },
+    {
+      "path": "build-02/result.json",
+      "sha256": "7097f00eceadbe11d119b422494f170623bf9242a5eff3bfcc0253c8c5edb63c",
+      "bytes": 223
+    },
+    {
+      "path": "build-03/build.log",
+      "sha256": "1f122167346b77cc715911ba5e17e11fefc3e5930d1fbd4cec7e444528e6331b",
+      "bytes": 1340
+    },
+    {
+      "path": "build-03/result.json",
+      "sha256": "02d362aa1a27eb88e80700a3a908ac50df4db7703aaf034707e403cce5397ab9",
+      "bytes": 224
+    },
+    {
+      "path": "build-04/build.log",
+      "sha256": "970d4b8f7ad479be313786f8390747040115ca71f3fa0dab720ee319b4a8d68b",
+      "bytes": 3734
+    },
+    {
+      "path": "build-04/result.json",
+      "sha256": "52b7ff2667bbc9092ef163f8b4b27ccc740bae8f8d6d3d4fb8c7e2cb78b533c8",
+      "bytes": 222
+    },
+    {
+      "path": "build-05/build.log",
+      "sha256": "77580a08e0956a6bc14a15ccd5ff5700dc7e0de135f6b758818b0f2bc81633c5",
+      "bytes": 3932
+    },
+    {
+      "path": "build-05/result.json",
+      "sha256": "bb293be4adf3141399501fc44e855e0364015d5b0bdc010c94052f668ce7497a",
+      "bytes": 224
+    },
+    {
+      "path": "cpu-errors-01/required.txt",
+      "sha256": "01d2f4bbefa10bf470447672ce532b47bc85734aec66fec2bfdf1ba8370e4d5d",
+      "bytes": 752
+    },
+    {
+      "path": "cpu-errors-01/result.json",
+      "sha256": "7b69393b92bf0e5297da835bcedb008804587cb5d3276e3f0d2b0c484af5cbb7",
+      "bytes": 330
+    },
+    {
+      "path": "cpu-errors-01/stderr.log",
+      "sha256": "4d47cdb4c543370ce8f9e0ab351a0d48591767a499783c967242307cd9b7fd78",
+      "bytes": 1637
+    },
+    {
+      "path": "cpu-errors-01/stdout.log",
+      "sha256": "46ef0600cc8fea99743664f8d99f46af151977880c93e4e807568ed17c161d41",
+      "bytes": 891
+    },
+    {
+      "path": "cpu-input-01/required.txt",
+      "sha256": "957e0526fd26754c05ed0e48d5e1dfbbe7913904f1e30b978ef60c86a912c269",
+      "bytes": 654
+    },
+    {
+      "path": "cpu-input-01/result.json",
+      "sha256": "72d999606839199a4b4f0d4f891ca906e15ad3ec65653af8ef60531685143056",
+      "bytes": 328
+    },
+    {
+      "path": "cpu-input-01/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "cpu-input-01/stdout.log",
+      "sha256": "119bc5dad67dfc51b71815051dc25239fc6ba0f253369b39ab6f4f2c176012fc",
+      "bytes": 841
+    },
+    {
+      "path": "cpu-output-01/responses/failure.json",
+      "sha256": "902baa2ae5480fde1bb2bfc15841c08076d3107f45a19310fd8dc6d8adce5ef3",
+      "bytes": 620
+    },
+    {
+      "path": "cpu-output-01/responses/failure.wire",
+      "sha256": "07c2e9d39501c38262740dec4383f75e63c0581349f983e1a56b046c4a8810ef",
+      "bytes": 2241
+    },
+    {
+      "path": "cpu-output-01/responses/partial.json",
+      "sha256": "52f7baaeaf90fdc3cbfbe210cd98a295aebd6e5aaffe73100c22c9b81c5b641e",
+      "bytes": 753
+    },
+    {
+      "path": "cpu-output-01/responses/partial.wire",
+      "sha256": "da5b51b913887f57709f311b9fdabb243f056d921cf84dc3cb0fa3f7853d3874",
+      "bytes": 2679
+    },
+    {
+      "path": "cpu-output-01/responses/text.json",
+      "sha256": "f612305d8734f1b98a495afe7b7303e72f0444ad86a0a799bf9f72d7139203d2",
+      "bytes": 991
+    },
+    {
+      "path": "cpu-output-01/responses/text.wire",
+      "sha256": "39c033aea0800eff3ea45c2f1826772fbe6abbe75a94929aaed12d2c1a0ad5e2",
+      "bytes": 5609
+    },
+    {
+      "path": "cpu-output-01/responses/tools.json",
+      "sha256": "d77e87f7f9ffe015d576319bbc4cea2db4001ba852d969a31b1d88d001bbee4d",
+      "bytes": 1086
+    },
+    {
+      "path": "cpu-output-01/responses/tools.wire",
+      "sha256": "3a950ae2fa2e6a224b00b029f5b908473e1abf95733edf916de3d92117a96a38",
+      "bytes": 6200
+    },
+    {
+      "path": "cpu-output-01/result.json",
+      "sha256": "5caf18b885e3654c7b37240eb30a739cd363fd9b6fcab015e44706f255d1efe9",
+      "bytes": 264
+    },
+    {
+      "path": "cpu-output-01/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "cpu-output-01/stdout.log",
+      "sha256": "2b5b0975d0c3c53eab52f3bf28ea716084e7b17873f51068091c1bc29ccd7121",
+      "bytes": 612
+    },
+    {
+      "path": "cpu-output-02/required.txt",
+      "sha256": "b7a8e01c305c173151e207214a69117aa29133eb544c777ee0fffb143bf71037",
+      "bytes": 152
+    },
+    {
+      "path": "cpu-output-02/result.json",
+      "sha256": "facb49b58f3b130f031644a9284462cfb8cd1967e037b39a82534867738b7c24",
+      "bytes": 330
+    },
+    {
+      "path": "cpu-output-02/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "cpu-output-02/stdout.log",
+      "sha256": "18eff597888f1aa79d9712747ba42c6f8ed1126134dc9e177219e4aed73c0b9f",
+      "bytes": 293
+    },
+    {
+      "path": "cpu-sdk-01/result.json",
+      "sha256": "0bc2e88ca3dbb5242fd1adaf0a8468a1b75e24542557b5d17f802f5325c02853",
+      "bytes": 142
+    },
+    {
+      "path": "cpu-sdk-01/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "cpu-sdk-01/stdout.log",
+      "sha256": "78b7219c7a4c700da0f311e9e733c88dff443723f6e41b493154146b08cef50c",
+      "bytes": 620
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+✔ official create consumes native JSON, reasoning and probabilities (39.083037ms)
+✔ official stream accumulates native text lifecycle (24.183593ms)
+✔ official stream accumulates native tools lifecycle (11.471075ms)
+✔ official stream accumulates native partial lifecycle (6.955962ms)
+✔ official stream accumulates native failure lifecycle (6.161866ms)
+✔ official streaming create consumes identical native events (8.669504ms)
+✔ official helper rejects changing response identity (7.068314ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 241.097171

@@ -96,6 +96,21 @@ class HttpResponseContext {
     terminal_hook_ = nullptr;
     if (hook) hook(terminal_owner_);
   }
+  // Owned by the outer handler, including exception unwinding. The renderer
+  // emits native Responses failure events; sequence also supports a fixed-
+  // storage error event when allocation fails. Clear before the owner dies.
+  using StreamErrorRenderer = std::string (*)(
+      void*, int, const std::string&, std::string_view, std::string_view);
+  void SetResponsesStream(StreamErrorRenderer renderer, void* owner,
+                          int64_t* sequence) noexcept {
+    const bool enabled = renderer && sequence;
+    stream_error_renderer_ = enabled ? renderer : nullptr;
+    stream_error_owner_ = enabled ? owner : nullptr;
+    responses_sequence_ = enabled ? sequence : nullptr;
+  }
+  int64_t* ResponsesSequence() const { return responses_sequence_; }
+  std::string StreamError(int status, const std::string& message,
+                          std::string_view code, std::string_view param = {});
   void StartHeartbeats(
       std::shared_ptr<RequestControl> control,
       std::chrono::milliseconds interval = std::chrono::seconds(5));
@@ -118,6 +133,9 @@ class HttpResponseContext {
   ResponseState state_ = ResponseState::kUnsent;  // handler thread only
   void (*terminal_hook_)(void*) noexcept = nullptr;
   void* terminal_owner_ = nullptr;
+  StreamErrorRenderer stream_error_renderer_ = nullptr;
+  void* stream_error_owner_ = nullptr;
+  int64_t* responses_sequence_ = nullptr;
   std::mutex write_mu_;
   std::condition_variable wake_;
   std::thread heartbeat_;

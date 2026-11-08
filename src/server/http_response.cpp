@@ -50,8 +50,20 @@ void SendExceptionResponse(int fd, ResponseState state,
     if (body_size <= 0 || static_cast<size_t>(body_size) >= sizeof(body))
       return;
     char response[1024];
-    const int size =
-        state == ResponseState::kStreaming
+    int size = 0;
+    if (state == ResponseState::kStreaming && context &&
+        context->ResponsesSequence()) {
+      // This path must not call the allocation-using snapshot renderer.
+      auto& sequence = *context->ResponsesSequence();
+      size = std::snprintf(
+          response, sizeof(response),
+          "event: error\r\ndata: {\"type\":\"error\",\"code\":\"%s\","
+          "\"message\":\"request failed\",\"param\":null,"
+          "\"sequence_number\":%lld}\r\n\r\n", code,
+          static_cast<long long>(sequence));
+      if (sequence < INT64_MAX) ++sequence;
+    } else {
+      size = state == ResponseState::kStreaming
             ? std::snprintf(response, sizeof(response),
                             "data: %s\r\n\r\ndata: [DONE]\r\n\r\n", body)
             : std::snprintf(response, sizeof(response),
@@ -63,6 +75,7 @@ void SendExceptionResponse(int fd, ResponseState state,
                             context ? "X-Request-Id: " : "",
                             context ? context->TraceId().c_str() : "",
                             context ? "\r\n" : "", body);
+    }
     if (size <= 0 || static_cast<size_t>(size) >= sizeof(response)) return;
     const WriteOptions terminal{std::chrono::steady_clock::now() +
                                 std::chrono::milliseconds(250)};
@@ -549,6 +562,16 @@ std::string ErrorJson(int status, const std::string& message,
          "}}";
 }
 
+std::string HttpResponseContext::StreamError(
+    int status, const std::string& message, std::string_view code,
+    std::string_view param) {
+  if (stream_error_renderer_)
+    return stream_error_renderer_(stream_error_owner_, status, message, code,
+                                  param);
+  return "data: " + ErrorJson(status, message, code, param) +
+         "\r\n\r\ndata: [DONE]\r\n\r\n";
+}
+
 void SendError(int fd, int code, const std::string& message,
                const WriteOptions& options, std::string_view error_code,
                std::string_view param, std::string_view allow) {
@@ -560,8 +583,7 @@ void SendError(int fd, int code, const std::string& message,
                  static_cast<int>(error_code.size()), error_code.data());
     if (*context->State() == ResponseState::kStreaming) {
       const std::string tail =
-          "data: " + ErrorJson(code, message, error_code, param) +
-          "\r\n\r\ndata: [DONE]\r\n\r\n";
+          context->StreamError(code, message, error_code, param);
       context->BeforeTerminal();
       *context->State() = ResponseState::kTerminal;
       WriteAll(fd, tail, options);
@@ -580,8 +602,11 @@ void SendStreamError(int fd, ResponseState* state, int status,
   if (auto* context = HttpResponseContext::Current(fd))
     context->StopHeartbeats();
   if (*state != ResponseState::kStreaming) return;
-  const std::string tail = "data: " + ErrorJson(status, message, error_code) +
-                           "\r\n\r\ndata: [DONE]\r\n\r\n";
+  auto* context = HttpResponseContext::Current(fd);
+  const std::string tail = context
+      ? context->StreamError(status, message, error_code)
+      : "data: " + ErrorJson(status, message, error_code) +
+          "\r\n\r\ndata: [DONE]\r\n\r\n";
   if (auto* context = HttpResponseContext::Current(fd))
     context->BeforeTerminal();
   *state = ResponseState::kTerminal;

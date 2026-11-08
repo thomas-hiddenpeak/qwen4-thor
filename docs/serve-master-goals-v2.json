@@ -192,7 +192,7 @@
     {
       "id": "A07",
       "required": true,
-      "state": "planned",
+      "state": "implementation_in_progress",
       "implementation": "Responses无状态请求、文本/图片/工具items、reasoning和完整SSE事件生命周期",
       "acceptance": "原生请求执行；function_call_output回填、sequence/终态/错误一致；SDK可直接消费",
       "depends_on": [
@@ -200,8 +200,12 @@
         "A02",
         "A04"
       ],
-      "evidence": [],
-      "release": null
+      "evidence": [
+        "SERVE_RESPONSES_2026-11-08.md",
+        "evidence/serve-responses-core-20261108/README.md"
+      ],
+      "release": null,
+      "development_status": "Input/items/native SSE/error modules: 30 distinct C++ and 7 actual SDK CPU fixture checks passed. Full envelope/routes/generation/state remain required; 0 GPU, no release/default change."
     },
     {
       "id": "A08",
@@ -612,6 +616,6 @@
       "release": null
     }
   ],
-  "next_task": "A05",
-  "next": "继续A07 Responses原生请求、工具items与完整SSE生命周期，联动A08持久对象；全部总任务未完成前不结束目标。"
+  "next_task": "A07",
+  "next": "实现A07 Responses原生请求/items/SSE并联动A08状态；所有字段保留必做，不以无状态子组结束总目标。"
 }

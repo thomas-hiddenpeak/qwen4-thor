@@ -33,3 +33,7 @@ tests/fixtures/schema_formats/LICENSE -text -whitespace
 # Preserve A06 captured protocol bytes and their recorded SHA256 values.
 docs/evidence/serve-completions-20261108/** -text -whitespace
 docs/evidence/serve-completions-20261108/**/*.wire binary
+
+# Preserve native Responses CPU wire and failed originals byte for byte.
+docs/evidence/serve-responses-core-20261108/** -text -whitespace
+docs/evidence/serve-responses-core-20261108/**/*.wire binary

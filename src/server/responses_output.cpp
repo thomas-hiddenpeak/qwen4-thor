@@ -1,0 +1,390 @@
+#include "q4t/server/responses_output.h"
+
+#include <cmath>
+#include <limits>
+
+#include "q4t/server/http_response.h"
+#include "q4t/server/output_schema.h"
+#include "q4t/server/request_json.h"
+#include "responses_json.h"
+
+namespace q4t::server {
+namespace {
+using namespace responses_detail;
+constexpr size_t kNoCall = std::numeric_limits<size_t>::max();
+Status Probabilities(std::string_view json, io::Json* out) {
+  *out = Array();
+  if (json.empty() || json == "null") return {};
+  io::Json parsed;
+  auto status =
+      io::ParseJson(std::string(json), &parsed, true, kRequestJsonLimits);
+  const auto* content = parsed.GetArray("content");
+  if (!status || !content)
+    return Status::Fail("invalid Responses token probability source");
+  const auto row_value = [](const io::Json& row, io::Json* result) {
+    const auto* token = row.Find("token");
+    const auto* score = row.Find("logprob");
+    if (!token || !token->IsString() || !score || !score->IsNumber() ||
+        !std::isfinite(score->number) || score->number > 0)
+      return Status::Fail("invalid Responses token probability row");
+    *result = Object({{"token", *token}, {"logprob", *score}});
+    return Status();
+  };
+  for (const auto& row : content->array) {
+    io::Json result;
+    status = row_value(row, &result);
+    if (!status) return status;
+    if (const auto* top = row.GetArray("top_logprobs")) {
+      io::Json candidates = Array();
+      for (const auto& candidate : top->array) {
+        io::Json value;
+        status = row_value(candidate, &value);
+        if (!status) return status;
+        candidates.array.push_back(std::move(value));
+      }
+      Set(&result, "top_logprobs", std::move(candidates));
+    }
+    out->array.push_back(std::move(result));
+  }
+  return {};
+}
+}  // namespace
+
+Status ResponsesOutput::Init(const io::Json& options, std::string id,
+                             int64_t created, bool obfuscation, size_t limit) {
+  if (initialized_ || !options.IsObject() || id.empty() || created < 0 ||
+      !limit || limit > kStorageLimit)
+    return Status::Fail("invalid Responses output initialization");
+  limit_ = limit;
+  obfuscation_ = obfuscation;
+  response_ = Object({{"id", String(std::move(id))},
+                      {"object", String("response")},
+                      {"created_at", Number(created)},
+                      {"completed_at", {}},
+                      {"status", String("in_progress")},
+                      {"error", {}},
+                      {"incomplete_details", {}},
+                      {"output", Array()},
+                      {"usage", {}}});
+  for (const char* key : {"model",
+                          "instructions",
+                          "metadata",
+                          "temperature",
+                          "top_p",
+                          "parallel_tool_calls",
+                          "tools",
+                          "tool_choice",
+                          "text",
+                          "reasoning",
+                          "store",
+                          "background",
+                          "max_output_tokens",
+                          "max_tool_calls",
+                          "previous_response_id",
+                          "conversation",
+                          "user",
+                          "safety_identifier",
+                          "service_tier",
+                          "truncation",
+                          "top_logprobs",
+                          "access_programs"}) {
+    if (const auto* value = options.Find(key)) Set(&response_, key, *value);
+  }
+  auto status = Charge(OutputJson(response_).size());
+  initialized_ = status.ok();
+  return status;
+}
+
+Status ResponsesOutput::Charge(size_t bytes) {
+  if (bytes > limit_ || bytes_ > limit_ - bytes)
+    return Status::Fail("Responses output storage exhausted");
+  bytes_ += bytes;
+  return {};
+}
+
+void ResponsesOutput::Event(std::string_view type, io::Json fields,
+                            std::string* wire) {
+  Set(&fields, "type", String(std::string(type)));
+  Set(&fields, "sequence_number", Number(sequence_++));
+  if (obfuscation_) {
+    const auto random = detail::NewRequestId("");
+    const size_t size = 128 - ((OutputJson(fields).size() + 18) % 128) +
+                        ((random[0] & 1) ? 128 : 0);
+    std::string padding;
+    while (padding.size() < size) padding += detail::NewRequestId("");
+    padding.resize(size);
+    Set(&fields, "obfuscation", String(std::move(padding)));
+  }
+  *wire += "event: " + std::string(type) + "\r\ndata: " + OutputJson(fields) +
+           "\r\n\r\n";
+}
+
+io::Json& ResponsesOutput::Items() { return Field(response_, "output"); }
+io::Json ResponsesOutput::Location(size_t index, bool content) const {
+  const auto& item = response_.GetArray("output")->array.at(index);
+  auto result =
+      Object({{"item_id", *item.Find("id")}, {"output_index", Number(index)}});
+  if (content) Set(&result, "content_index", Number(0));
+  return result;
+}
+
+Status ResponsesOutput::Start(std::string* wire) {
+  wire->clear();
+  if (!initialized_ || started_ || terminal_)
+    return Status::Fail("Responses stream already started or uninitialized");
+  started_ = true;
+  Event("response.created", Object({{"response", response_}}), wire);
+  Event("response.in_progress", Object({{"response", response_}}), wire);
+  return {};
+}
+
+Status ResponsesOutput::AddItem(ResponseDelta::Kind kind,
+                                const ResponseToolCall* call, size_t* index,
+                                std::string* wire) {
+  if (Items().array.size() >= kMaxItems)
+    return Status::Fail("Responses output item capacity exhausted");
+  io::Json item;
+  if (kind == ResponseDelta::Kind::kTool) {
+    item = Object(
+        {{"id", String(detail::NewRequestId(call->custom ? "ctc_" : "fc_"))},
+         {"type", String(call->custom ? "custom_tool_call" : "function_call")},
+         {"call_id", String(call->id)},
+         {"name", String(call->name)},
+         {call->custom ? "input" : "arguments", String("")}});
+  } else {
+    item = Object(
+        {{"id", String(detail::NewRequestId(
+                    kind == ResponseDelta::Kind::kContent ? "msg_" : "rs_"))},
+         {"type", String(kind == ResponseDelta::Kind::kContent ? "message"
+                                                               : "reasoning")},
+         {"content", Array()}});
+    if (kind == ResponseDelta::Kind::kContent)
+      Set(&item, "role", String("assistant"));
+    else
+      Set(&item, "summary", Array());
+  }
+  Set(&item, "status", String("in_progress"));
+  auto status = Charge(OutputJson(item).size() + sizeof(io::Json) * 8);
+  if (!status) return status;
+  *index = Items().array.size();
+  Items().array.push_back(std::move(item));
+  call_indices_.push_back(call ? call->index : kNoCall);
+  Event("response.output_item.added",
+        Object(
+            {{"output_index", Number(*index)}, {"item", Items().array.back()}}),
+        wire);
+  if (kind != ResponseDelta::Kind::kTool) {
+    auto part = Object({{"type", String(kind == ResponseDelta::Kind::kContent
+                                            ? "output_text"
+                                            : "reasoning_text")},
+                        {"text", String("")}});
+    if (kind == ResponseDelta::Kind::kContent) {
+      Set(&part, "annotations", Array());
+      Set(&part, "logprobs", Array());
+    }
+    Field(Items().array.back(), "content").array.push_back(part);
+    auto fields = Location(*index, true);
+    Set(&fields, "part", std::move(part));
+    Event("response.content_part.added", std::move(fields), wire);
+  }
+  return {};
+}
+
+Status ResponsesOutput::Append(const ResponseDelta& delta,
+                               std::string_view chat_logprobs,
+                               std::string* wire) {
+  wire->clear();
+  if (!started_ || terminal_)
+    return Status::Fail("Responses output is not in progress");
+  const bool tool = delta.kind == ResponseDelta::Kind::kTool;
+  if (!tool && delta.text.empty()) return {};
+  io::Json probabilities;
+  auto status = Probabilities(chat_logprobs, &probabilities);
+  if (!status) return status;
+  const auto& added = tool ? delta.call.arguments : delta.text;
+  if (added.size() > limit_ / 6)
+    return Status::Fail("Responses output fragment exceeds storage limit");
+  status = Charge(added.size() * 6 + OutputJson(probabilities).size() +
+                  probabilities.array.size() * sizeof(io::Json) * 8);
+  if (!status) return status;
+  size_t index = 0;
+  if (tool) {
+    const auto it = calls_.find(delta.call.index);
+    if (delta.tool_start) {
+      if (it != calls_.end() || delta.call.id.empty() ||
+          delta.call.name.empty())
+        return Status::Fail(
+            "invalid Responses tool identity or duplicate start");
+      for (const auto& item : Items().array)
+        if (item.GetString("call_id") == delta.call.id)
+          return Status::Fail("duplicate Responses call_id");
+      status = AddItem(delta.kind, &delta.call, &index, wire);
+      if (!status) return status;
+      calls_.emplace(delta.call.index, index);
+    } else {
+      if (it == calls_.end())
+        return Status::Fail("Responses tool fragment without a start");
+      index = it->second;
+      const auto& item = Items().array[index];
+      if ((!delta.call.id.empty() &&
+           delta.call.id != item.GetString("call_id")) ||
+          (!delta.call.name.empty() &&
+           delta.call.name != item.GetString("name")) ||
+          delta.call.custom != (item.GetString("type") == "custom_tool_call"))
+        return Status::Fail("Responses tool identity changed within stream");
+    }
+  } else {
+    const auto type =
+        delta.kind == ResponseDelta::Kind::kContent ? "message" : "reasoning";
+    if (Items().array.empty() ||
+        Items().array.back().GetString("type") != type) {
+      status = AddItem(delta.kind, nullptr, &index, wire);
+      if (!status) return status;
+    } else {
+      index = Items().array.size() - 1;
+    }
+  }
+  auto& item = Items().array[index];
+  if (tool) {
+    const bool custom = item.GetString("type") == "custom_tool_call";
+    Field(item, custom ? "input" : "arguments").str += added;
+    if (added.empty()) return {};
+    auto fields = Location(index);
+    Set(&fields, "delta", String(added));
+    Event(custom ? "response.custom_tool_call_input.delta"
+                 : "response.function_call_arguments.delta",
+          std::move(fields), wire);
+  } else {
+    auto& part = Field(item, "content").array[0];
+    Field(part, "text").str += added;
+    auto fields = Location(index, true);
+    Set(&fields, "delta", String(added));
+    if (delta.kind == ResponseDelta::Kind::kContent) {
+      auto& logs = Field(part, "logprobs").array;
+      logs.insert(logs.end(), probabilities.array.begin(),
+                  probabilities.array.end());
+      Set(&fields, "logprobs", std::move(probabilities));
+    }
+    Event(delta.kind == ResponseDelta::Kind::kContent
+              ? "response.output_text.delta"
+              : "response.reasoning_text.delta",
+          std::move(fields), wire);
+  }
+  return {};
+}
+
+void ResponsesOutput::CloseItem(size_t index, bool incomplete,
+                                std::string* wire) {
+  auto& item = Items().array[index];
+  Set(&item, "status", String(incomplete ? "incomplete" : "completed"));
+  const auto type = item.GetString("type");
+  if (type == "message" || type == "reasoning") {
+    const auto& part = Field(item, "content").array[0];
+    auto fields = Location(index, true);
+    Set(&fields, "text", *part.Find("text"));
+    if (type == "message") Set(&fields, "logprobs", *part.Find("logprobs"));
+    Event(type == "message" ? "response.output_text.done"
+                            : "response.reasoning_text.done",
+          std::move(fields), wire);
+    fields = Location(index, true);
+    Set(&fields, "part", part);
+    Event("response.content_part.done", std::move(fields), wire);
+  } else if (!incomplete) {
+    const bool custom = type == "custom_tool_call";
+    auto fields = Location(index);
+    Set(&fields, custom ? "input" : "arguments",
+        *item.Find(custom ? "input" : "arguments"));
+    Event(custom ? "response.custom_tool_call_input.done"
+                 : "response.function_call_arguments.done",
+          std::move(fields), wire);
+  }
+  Event("response.output_item.done",
+        Object({{"output_index", Number(index)}, {"item", item}}), wire);
+}
+
+Status ResponsesOutput::Finish(bool incomplete, size_t completed_calls,
+                               const ResponsesUsage& usage,
+                               int64_t completed_at, std::string* wire) {
+  wire->clear();
+  if (!started_ || terminal_ || usage.input_tokens < 0 ||
+      usage.output_tokens < 0 || usage.cached_tokens < 0 ||
+      usage.cached_tokens > usage.input_tokens || usage.reasoning_tokens < 0 ||
+      usage.reasoning_tokens > usage.output_tokens ||
+      usage.input_tokens > INT64_MAX - usage.output_tokens || completed_at < 0)
+    return Status::Fail("invalid Responses terminal or usage");
+  if (!incomplete)
+    for (const auto& [call, index] : calls_) {
+      (void)index;
+      if (call >= completed_calls)
+        return Status::Fail("cannot complete an unvalidated Responses tool");
+    }
+  for (size_t i = 0; i < Items().array.size(); ++i) {
+    const bool partial =
+        incomplete &&
+        (call_indices_[i] != kNoCall ? call_indices_[i] >= completed_calls
+                                     : i + 1 == Items().array.size());
+    CloseItem(i, partial, wire);
+  }
+  Set(&response_, "status", String(incomplete ? "incomplete" : "completed"));
+  if (incomplete)
+    Set(&response_, "incomplete_details",
+        Object({{"reason", String("max_output_tokens")}}));
+  else
+    Set(&response_, "completed_at", Number(completed_at));
+  Set(&response_, "usage",
+      Object({{"input_tokens", Number(usage.input_tokens)},
+              {"input_tokens_details",
+               Object({{"cached_tokens", Number(usage.cached_tokens)}})},
+              {"output_tokens", Number(usage.output_tokens)},
+              {"output_tokens_details",
+               Object({{"reasoning_tokens", Number(usage.reasoning_tokens)}})},
+              {"total_tokens",
+               Number(usage.input_tokens + usage.output_tokens)}}));
+  Event(incomplete ? "response.incomplete" : "response.completed",
+        Object({{"response", response_}}), wire);
+  terminal_ = true;
+  return {};
+}
+
+Status ResponsesOutput::Fail(std::string_view code, std::string_view message,
+                             std::string* wire) {
+  wire->clear();
+  if (!started_ || terminal_)
+    return Status::Fail("Responses failure outside active lifecycle");
+  // No item/argument done events on a failed response.
+  for (auto& item : Items().array) Set(&item, "status", String("incomplete"));
+  Set(&response_, "status", String("failed"));
+  Set(&response_, "error",
+      Object({{"code", String(std::string(code))},
+              {"message", String(std::string(message))}}));
+  Event("response.failed", Object({{"response", response_}}), wire);
+  terminal_ = true;
+  return {};
+}
+
+std::string ResponsesOutput::Json() const { return OutputJson(response_); }
+
+std::string ResponsesOutput::RenderStreamError(void* owner, int status,
+                                               const std::string& message,
+                                               std::string_view code,
+                                               std::string_view param) {
+  auto& output = *static_cast<ResponsesOutput*>(owner);
+  if (output.terminal_) return {};
+  if (code.empty()) code = status >= 500 ? "server_error" : "invalid_request";
+  std::string wire;
+  if (output.started_) {
+    const auto result = output.Fail(code, message, &wire);
+    if (result) return wire;
+  }
+  // A fault can occur after HTTP headers but before response.created. This is
+  // a protocol error event, not a fabricated complete response snapshot.
+  output.Event("error",
+               Object({{"code", String(std::string(code))},
+                       {"message", String(message)},
+                       {"param", param.empty() ? io::Json()
+                                               : String(std::string(param))}}),
+               &wire);
+  output.terminal_ = true;
+  return wire;
+}
+}  // namespace q4t::server

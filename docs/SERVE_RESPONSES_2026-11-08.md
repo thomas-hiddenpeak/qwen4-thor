@@ -1,0 +1,78 @@
+# A07 Responses 原生实现与 A08 状态衔接
+
+2026-11-08；功能开发，不作性能优化结论。当前是实施记录，尚未验收。
+默认继续使用已接受 A06 包；本组不把 store、background、历史或媒体
+缺口从总计划删除。实现/测试子组结束后继续下一项，总目标保持 active。
+
+## 合同与来源
+
+实际官方 JS SDK 7.47.0 的 Responses 类型、流式累积器与解析器作为
+冻结依据；[字段清单](serve-responses-fields-v1.json)记录 SHA256 及
+32 个顶层字段的责任任务。任务归属不是排除清单；尚未完成的合法
+形状仍为缺口，不能将固定拒绝计为兼容通过。
+
+复用原生模型执行、结构化约束、配额和取消。请求转换在进程内完成，
+不得转发到另一个 HTTP 服务。Responses 单独组织 output items、
+sequence_number、工具参数增量及 response.completed/incomplete/failed；
+不发送 Chat 的 [DONE]，不把原始 reasoning_text 假称推理摘要。
+
+官方[工具合同](https://developers.openai.com/api/docs/guides/function-calling)
+另核对缺省 strict：Responses 尝试兼容的严格化，不能兼容时显式返回
+resolved strict=false；显式 true 不得降级，显式 false 保持原 schema。
+Chat 的缺省行为不改。此规则与输入字段来源一起冻结，不默认为两种
+接口的工具参数语义完全相同。
+
+## 连续实施次序
+
+1. 输入归一化：instructions、消息/图片、function/custom 调用与回填、
+   text.format、生成选项。保留 item/call 身份、角色及内容顺序，错误
+   参数指向原始 Responses 字段。
+2. 原生输出状态机：稳定 item 身份、完整 SSE、真实 token usage 与概率、
+   截断 incomplete、错误及无分配异常终态。未完成调用不授权执行。
+3. 接入共享执行器、标准 SDK 与入口/发行声明。store 缺省为 true，
+   必须与 A08 本地对象存储、隔离、TTL 和重启恢复衔接；不可静默丢弃。
+4. A08 previous_response_id/Conversations/background/cancel，A09 文件、
+   A10 媒体/缓存，A11 工具与摘要等依赖继续完成；不因文本子组通过停止。
+
+## 针对性验证
+
+- CPU：输入语义及负控、工具历史关联、schema 组合、SSE 生命周期与
+  错误、截断、取消、资源预算；实际官方 SDK create/stream/parse 消费。
+- 对直接受影响 Chat 合同作回归，未改的数值/性能证据复用；不运行
+  完整正确性或五档性能矩阵。
+- 功能接通后冻结具体真实业务请求，首组上限 2 次模型启动、8 次生成、
+  900 秒；完整阶段使用同一严格 GPU 租约并继承 managed lease FD。
+  无理由重复验证或失败后扩大预算不属于本计划。
+- 实际通过后封存来源、原始结果与回退包，更新适用默认版本并提交
+  推送，再继续其他必做项。CPU 模块通过不能代替 HTTP 或总任务验收。
+
+## 输入与输出模块检查点
+
+`responses_input` 在进程内归一化消息、图片、reasoning、function/custom
+items 和回填；完整原始 items 留给 A08。工具结果按 call_id 关联，
+拒绝缺失、重复和串用；助手 phase 以明确文字标签适配 Qwen，混合
+refusal 保序拆成助手片段。原图 detail 不被改成 auto；媒体后端仍需
+A10 实现各 detail 与工具图片输入，这一适配测试不是媒体业务通过。
+文件、item 引用、加密内容及内建工具须由所属模块解析后接入，当前
+解析依赖错误只是中间状态，仍是全部总计划的未完成工作。
+
+`responses_output` 组织稳定 items/sequence、reasoning_text（summary
+保持空，不伪造摘要）、function/custom 增量、真实计数入口及三类终态。
+长度耗尽保持 incomplete，未完成工具无 arguments/input.done；完成
+的富 schema 调用即使处于 incomplete 整体响应也必须有语义回执。
+HTTP 错误可以绑定 Responses 渲染器，内存不足采用固定缓冲区 error
+事件，保留同一序号与单终态；既有 Chat 错误语义不变。
+
+本组 30 项不同 C++、7 项实际官方 SDK CPU HTTP 夹具通过；5次构建
+零警告。初次测试夹具的生成前缀、合法多片空参数和缺少 messages
+共3次失败保留；只修夹具及重验失败项，不修改解析器迎合断言。
+SDK直接消费 C++ 输出的原始 JSON/SSE，不能等同真实模型推理。
+[原始记录](evidence/serve-responses-core-20261108/README.md)含失败与源码摘要。
+
+尚未接通 Responses 路由、完整 envelope/预算/推理选项、生成器或
+对象存储；没有本组 GPU 测试、发行/默认替换或 main 合入。
+接着完成请求规划与共享执行器，推进 A08 本地持久状态。存储须按
+客户端隔离、原子写入/重启恢复，并在独立有界 I/O worker 中执行；
+磁盘依赖失能只能影响依赖存储的请求，不能拖停健康的普通生成。
+previous_response_id 延续 input/output，前次 instructions 不自动继承。
+background 必须真实异步执行和可取消，不能返回假排队状态。

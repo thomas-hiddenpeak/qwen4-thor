@@ -2,6 +2,16 @@
 
 更新：2026-11-08。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+[A07 Responses进入实施](SERVE_RESPONSES_2026-11-08.md)：冻结实际官方
+SDK的32个顶层字段及跨A08—A11责任，原生items/SSE、工具回填与
+缺省store=true一并保留；先实现输入与输出状态机，再接共享执行和
+本地状态。默认A06不改，尚无本组新增GPU验收，总目标继续active。
+输入/items/SSE及错误出口首组30不同C++、7官方SDK CPU通过，5次
+构建零警告；3次夹具失败原件保留，只重验修复项与受影响行为。
+新增incomplete保留未完成参数、完整调用仍核对schema回执；普通错误
+与无分配异常均有Responses终态。路由/完整请求规划/持久对象尚未
+接通，不计A07交付，继续开发；[CPU证据](evidence/serve-responses-core-20261108/README.md)。
+
 [A06原生Completions/Models已交付](SERVE_COMPLETIONS_2026-11-08.md)：
 50不同C++、51输入/schema、6SDK、4实际原生/TLS、11驱动/托管/发行
 CPU通过；1启动/7生成、51.954秒驱动/52.503秒严格租约、50次NVML

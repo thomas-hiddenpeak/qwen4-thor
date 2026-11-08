@@ -56,6 +56,10 @@ class ChatResponseParser {
   // Intentional text stopping may end reasoning, but never a partial tool.
   Status Finish(bool length_limited, std::vector<ResponseDelta>* deltas,
                 bool text_stopped = false);
+  // Responses has an explicit incomplete terminal. Preserve emitted partial
+  // output, but do not certify a truncated tool or structured value.
+  Status FinishIncomplete(std::vector<ResponseDelta>* deltas);
+  size_t CompletedToolCalls() const { return tool_count_; }
   // The owning request calls this after creating its isolated decoder. The
   // vector remains live through Finish and is updated before each Append.
   void SetSchemaReceipts(const std::vector<SchemaReceipt>* receipts) {
@@ -75,7 +79,7 @@ class ChatResponseParser {
  private:
   enum class Region { kContent, kReasoning, kTool };
   Status Fail(const std::string& message);
-  Status VerifySchemaReceipts() const;
+  Status VerifySchemaReceipts(bool incomplete = false) const;
   Status ParseTool(std::string_view block, ResponseToolCall* call) const;
   Status StreamTool(size_t available, bool complete,
                     std::vector<ResponseDelta>* deltas);

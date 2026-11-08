@@ -1,0 +1,276 @@
+{
+  "profile": "q4t-responses-source-v1",
+  "date": "2026-11-08",
+  "sdk_version": "7.47.0",
+  "sdk_source": ".q4t-work/serve-protocol-20261103/sdk/node_modules/openai",
+  "files": {
+    "package.json": "74cc41a9572343007d6fc1450225778ed7ccdae68ba79fbbcc674e450b9d765b",
+    "LICENSE": "636eb7d79da9bb6d515a4b3fd417aa26679eb3cf16396ddab4bc55fa74e616e4",
+    "src/resources/responses/responses.ts": "f84e394bf08d71403c054ccb4d41d278861f2d19db3ea426e7aec789f3eb5dbb",
+    "src/resources/shared.ts": "15cf6803634242502525c52098acddea16b9c2bb2439f85aa388dd43fa837455",
+    "src/lib/responses/ResponseStream.ts": "15f74066ceb99b0386546c991e92e14dea0d8ec08e0de75b1a72cd4f1f160a55",
+    "src/lib/ResponsesParser.ts": "c43f79d5f1abefe80f0cffae90e81bf651debf9c4b29e334254bb49e546240db"
+  },
+  "fields": [
+    {
+      "field": "access_programs",
+      "owners": [
+        "A07",
+        "A11"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "background",
+      "owners": [
+        "A07",
+        "A08"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "context_management",
+      "owners": [
+        "A07",
+        "A08"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "conversation",
+      "owners": [
+        "A07",
+        "A08"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "include",
+      "owners": [
+        "A07",
+        "A08",
+        "A09",
+        "A10",
+        "A11"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "input",
+      "owners": [
+        "A07",
+        "A08",
+        "A09",
+        "A10",
+        "A11"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "instructions",
+      "owners": [
+        "A07"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "max_output_tokens",
+      "owners": [
+        "A07"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "max_tool_calls",
+      "owners": [
+        "A07",
+        "A11"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "metadata",
+      "owners": [
+        "A07",
+        "A08"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "model",
+      "owners": [
+        "A07"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "moderation",
+      "owners": [
+        "A07",
+        "A11"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "parallel_tool_calls",
+      "owners": [
+        "A07"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "previous_response_id",
+      "owners": [
+        "A07",
+        "A08"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "prompt",
+      "owners": [
+        "A07",
+        "A08"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "prompt_cache_key",
+      "owners": [
+        "A07",
+        "A05",
+        "A10"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "prompt_cache_options",
+      "owners": [
+        "A07",
+        "A05",
+        "A10"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "prompt_cache_retention",
+      "owners": [
+        "A07",
+        "A05",
+        "A10"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "reasoning",
+      "owners": [
+        "A07"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "safety_identifier",
+      "owners": [
+        "A07",
+        "A11"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "service_tier",
+      "owners": [
+        "A07",
+        "N04"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "store",
+      "owners": [
+        "A07",
+        "A08"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "stream",
+      "owners": [
+        "A07"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "stream_options",
+      "owners": [
+        "A07"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "temperature",
+      "owners": [
+        "A07"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "text",
+      "owners": [
+        "A07"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "tool_choice",
+      "owners": [
+        "A07",
+        "A08",
+        "A09",
+        "A10",
+        "A11"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "tools",
+      "owners": [
+        "A07",
+        "A08",
+        "A09",
+        "A10",
+        "A11"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "top_logprobs",
+      "owners": [
+        "A07"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "top_p",
+      "owners": [
+        "A07"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "truncation",
+      "owners": [
+        "A07"
+      ],
+      "state": "required"
+    },
+    {
+      "field": "user",
+      "owners": [
+        "A07",
+        "N04"
+      ],
+      "state": "required"
+    }
+  ],
+  "policy": "Every field remains required; classification is implementation ownership, not an exclusion or compatibility pass."
+}

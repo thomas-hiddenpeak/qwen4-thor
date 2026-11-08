@@ -11,6 +11,11 @@ set(protocol_inputs
   src/server/completion_plan.cpp
   include/q4t/server/completion_response.h
   src/server/completion_response.cpp
+  include/q4t/server/responses_output.h
+  src/server/responses_output.cpp
+  include/q4t/server/responses_input.h
+  src/server/responses_input.cpp
+  src/server/responses_json.h
   include/q4t/model/sequence.h
   include/q4t/runtime/model_health.h
   include/q4t/server/service_health.h
