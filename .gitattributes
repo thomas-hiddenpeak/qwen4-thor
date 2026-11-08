@@ -18,3 +18,6 @@ docs/evidence/serve-tool-stream-20261108/**/*.wire binary
 
 # Preserve exact legacy-function acceptance bytes, including CRLF SSE.
 docs/evidence/serve-legacy-tools-20261108/** -text -whitespace
+
+# Preserve upstream legal notice bytes, including their original whitespace.
+third_party/licenses/structured_output/rust-standard-library/** -text -whitespace
