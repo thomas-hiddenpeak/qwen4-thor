@@ -135,7 +135,8 @@
       ],
       "remaining_required": [
         "custom tools text/grammar, history and actual execution evidence"
-      ]
+      ],
+      "active_subset": "custom text/regex/Lark CPU passed; real bounded business pending"
     },
     {
       "id": "A05",

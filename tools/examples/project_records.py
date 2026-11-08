@@ -1,6 +1,7 @@
 """Bounded read-only project records. Model input is never a command or URL."""
 import hashlib
 import os
+import re
 from pathlib import Path, PurePosixPath
 import stat
 
@@ -50,6 +51,26 @@ def validate_search(args):
 
 VALIDATORS = {"read_project_record": validate_read,
               "search_project_docs": validate_search}
+
+
+CUSTOM_READ_NAMES = {"read_project_record_text", "read_project_record_regex",
+                     "read_project_record_lark"}
+
+
+def parse_custom_read(value):
+    require(isinstance(value, str) and len(value) <= 1024, "custom read input must be bounded text")
+    match = re.fullmatch(r"READ (docs/[A-Za-z0-9_./-]+\.(?:md|json)) ([1-9][0-9]{0,5}) ([1-9][0-9]?)", value)
+    require(match is not None, "expected READ path start_line line_count")
+    args = dict(path=match[1], start_line=int(match[2]), line_count=int(match[3]))
+    validate_read(args)
+    return args
+
+
+def validate_custom_read(value):
+    parse_custom_read(value)
+
+
+CUSTOM_VALIDATORS = {name: validate_custom_read for name in CUSTOM_READ_NAMES}
 
 
 class RecordError(Exception):
@@ -173,6 +194,14 @@ class ProjectRecords:
     def execute(self, invocation):
         # Programming/validation failures propagate; expected source access
         # failures are business tool results the model can report to its caller.
+        if getattr(invocation, "type", None) == "custom":
+            require(invocation.name in CUSTOM_READ_NAMES, "unknown custom project tool")
+            args = parse_custom_read(invocation.input)
+            try:
+                return self.read(args)
+            except RecordError as error:
+                return dict(ok=False, error=dict(code=error.code,
+                    message="Project record could not be read."))
         method = {"read_project_record": self.read,
                   "search_project_docs": self.search}.get(invocation.name)
         require(method is not None, "unknown project tool")

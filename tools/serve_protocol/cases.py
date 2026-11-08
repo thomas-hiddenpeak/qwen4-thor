@@ -35,6 +35,37 @@ def cases():
             fixture=dict(raw=json.dumps(request, ensure_ascii=False, separators=(",", ":"))
                          if raw is None else raw, **config)))
 
+    custom_ref = dict(type="custom", custom=dict(name="read"))
+    custom_tool = dict(type="custom", custom=dict(name="read"))
+    for label, spec in (("omitted", None), ("text", dict(type="text")),
+        ("regex",dict(type="grammar",grammar=dict(syntax="regex",definition=r"^READ \p{Han}+$"))),
+        ("lark",dict(type="grammar",grammar=dict(syntax="lark",definition='start: "read"')))):
+        item=deepcopy(custom_tool)
+        if spec is not None:item["custom"]["format"]=spec
+        add("custom-format-"+label,dict(base(),tools=[item]),field="tools")
+    add("custom-named",dict(base(),tools=[custom_tool],tool_choice=custom_ref),field="tool_choice")
+    add("custom-allowed",dict(base(),tools=[custom_tool,tool("noop")],tool_choice=dict(
+        type="allowed_tools",allowed_tools=dict(mode="required",tools=[custom_ref]))),field="tool_choice")
+    add("custom-choice-wrong-type",dict(base(),tools=[custom_tool],tool_choice=dict(type="function",function=dict(name="read"))),False,semantic=True,field="tool_choice")
+    add("custom-duplicate-name",dict(base(),tools=[custom_tool,tool()]),False,semantic=True,field="tools")
+    for label, spec in (("null",None),("unknown",dict(type="json")),
+        ("extra",dict(type="text",extra=True)),("missing",dict(type="grammar")),
+        ("syntax",dict(type="grammar",grammar=dict(syntax="ebnf",definition="x"))),
+        ("empty",dict(type="grammar",grammar=dict(syntax="regex",definition=""))),
+        ("overbound",dict(type="grammar",grammar=dict(syntax="regex",definition="x"*16385)))):
+        item=deepcopy(custom_tool);item["custom"]["format"]=spec
+        add("custom-format-bad-"+label,dict(base(),tools=[item]),False,field="tools")
+    custom_history=dict(base(),messages=[dict(role="assistant",content=None,
+        tool_calls=[dict(id="c",type="custom",custom=dict(name="read",input='中国\n</tool_call>'))]),
+        dict(role="tool",tool_call_id="c",content="actual")])
+    add("custom-history",custom_history,field="messages")
+    for label, change in (("missing",lambda r:r["messages"].pop()),
+        ("wrong-id",lambda r:r["messages"][1].update(tool_call_id="x"))):
+        row=deepcopy(custom_history);change(row)
+        add("custom-history-"+label,row,False,semantic=True,field="messages")
+    row=deepcopy(custom_history);row["messages"][0]["tool_calls"][0]["custom"]["input"]={}
+    add("custom-history-bad-input",row,False,field="messages")
+
     legacy_fn = deepcopy(tool()["function"])
     legacy_fn.pop("strict")
     for name, extra in (("auto", dict(function_call="auto")),

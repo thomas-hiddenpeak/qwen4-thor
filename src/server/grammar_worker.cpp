@@ -10,6 +10,7 @@
 
 #include "grammar_worker_internal.h"
 #include "q4t/server/structured_admission.h"
+#include "q4t/server/custom_grammar.h"
 
 #ifdef Q4T_ENABLE_XGRAMMAR
 #include <xgrammar/xgrammar.h>
@@ -141,7 +142,8 @@ int WorkerMain(int argc, char** argv) {
     // Retain all compiler and matcher allocation inside this limited process.
     xgrammar::GrammarCompiler compiler(tokenizer, 1, false, 0);
     if (!Reply(WorkerCode::kOk)) return 2;
-    const auto grammar = compiler.CompileStructuralTag(tag);
+    const auto grammar = compiler.CompileStructuralTag(
+        ExpandCustomGrammarFormats(tag));
     if (grammar.MemorySizeBytes() > kCompiledGrammarLimit) {
       Reply(WorkerCode::kResource);
       return 2;

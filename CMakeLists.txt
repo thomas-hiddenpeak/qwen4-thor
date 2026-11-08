@@ -298,6 +298,9 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_contract.cpp
   src/server/sampling.cpp
   src/server/prediction.cpp
+  src/server/custom_tools.cpp
+  src/server/custom_grammar.cpp
+  src/server/custom_regex.cpp
   src/server/legacy_tools.cpp
   src/server/token_logprobs.cpp
   src/server/chat_choices.cpp
@@ -482,12 +485,16 @@ if(Q4T_BUILD_TESTS)
     src/server/chat_contract.cpp
     src/server/sampling.cpp
     src/server/prediction.cpp
+    src/server/custom_tools.cpp
+    src/server/custom_grammar.cpp
+    src/server/custom_regex.cpp
     src/server/legacy_tools.cpp
     src/server/token_logprobs.cpp
     src/server/chat_choices.cpp
     tests/server_sampling_test.cpp
     tests/server_prediction_test.cpp
     tests/server_legacy_tools_test.cpp
+    tests/server_custom_tools_test.cpp
     tests/server_chat_sampling_response_test.cpp
     src/server/chat_prompt.cpp
     src/server/media_admission.cpp
@@ -768,6 +775,7 @@ add_executable(q4t_prefix_seed_contract EXCLUDE_FROM_ALL
   tests/test_main.cpp tests/server_chat_contract_test.cpp
   src/server/input_contract.cpp
   tools/prefix_seed/policy_contract.cpp src/server/chat_contract.cpp
+  src/server/custom_tools.cpp src/server/legacy_tools.cpp
   src/server/chat_tool_history.cpp src/server/output_constraints.cpp
   src/server/chat_template.cpp src/server/chat_response_parser.cpp
   src/server/thinking_budget.cpp

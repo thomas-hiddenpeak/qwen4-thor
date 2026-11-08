@@ -112,14 +112,16 @@
       ]
     },
     "tools": {
-      "semantics": "各模式共用函数定义白名单；strict:null=false",
+      "semantics": "函数与custom定义共用生产合同；custom text/regex/Lark约束、标准input及专用客户端校验开发完成待验；strict:null=false",
       "boundary": "普通 schema 仍为提示，不保证完整 JSON Schema；强约束有限 profile 不变; constrained compiler/matcher isolated in one exec worker with 2GiB RLIMIT_AS and interruptible 10s/2s budgets; no whole-server memory guarantee",
       "evidence": [
         "tests/server_chat_response_parser_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
         "tests/server_chat_contract_test.cpp",
         "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
-        "docs/SERVE_GRAMMAR_ISOLATION_2026-11-02.md"
+        "docs/SERVE_GRAMMAR_ISOLATION_2026-11-02.md",
+        "tests/server_custom_tools_test.cpp",
+        "docs/SERVE_CUSTOM_TOOLS_2026-11-08.md"
       ]
     },
     "chat_template_kwargs": {
@@ -322,7 +324,7 @@
       ]
     },
     "tool_choice": {
-      "semantics": "auto/none/required/named和allowed_tools子集均已针对性验收；后者定义关联、模板/grammar和实际输出校验一致；strict/多工具参数真实增量、成功终态及EOF后才可执行",
+      "semantics": "auto/none/required/named和allowed_tools子集均已针对性验收；后者定义关联、模板/grammar和实际输出校验一致；strict/多工具参数真实增量、成功终态及EOF后才可执行；custom named/allowed引用按类型及名称匹配（新增待验）",
       "boundary": "非 auto 需约束后端；named 恰好一次；只 parsed messages；constrained独立租约限1，忙时503；编译仍协作取消; constrained compiler/matcher isolated in one exec worker with 2GiB RLIMIT_AS and interruptible 10s/2s budgets; no whole-server memory guarantee",
       "evidence": [
         "tests/server_output_constraints_test.cpp",
@@ -625,29 +627,37 @@
     ],
     "output_constraints.cpp:2:tool": [
       "type",
-      "function"
+      "custom"
     ],
-    "output_constraints.cpp:3:*function": [
-      "name"
-    ],
-    "output_constraints.cpp:4:*choice": [
+    "output_constraints.cpp:3:tool": [
       "type",
       "function"
     ],
-    "output_constraints.cpp:5:*fn": [
+    "output_constraints.cpp:4:*function": [
       "name"
     ],
-    "output_constraints.cpp:6:*spec": [
+    "output_constraints.cpp:5:*choice": [
+      "type",
+      "custom"
+    ],
+    "output_constraints.cpp:6:*choice": [
+      "type",
+      "function"
+    ],
+    "output_constraints.cpp:7:*fn": [
+      "name"
+    ],
+    "output_constraints.cpp:8:*spec": [
       "name",
       "description",
       "strict",
       "schema"
     ],
-    "output_constraints.cpp:7:tool": [
+    "output_constraints.cpp:9:tool": [
       "type",
       "function"
     ],
-    "output_constraints.cpp:8:*fn": [
+    "output_constraints.cpp:10:*fn": [
       "name",
       "description",
       "parameters",
@@ -655,29 +665,42 @@
     ],
     "input_contract.cpp:0:tool": [
       "type",
+      "custom"
+    ],
+    "input_contract.cpp:1:tool": [
+      "type",
       "function"
     ],
-    "input_contract.cpp:1:*fn": [
+    "input_contract.cpp:2:*fn": [
       "name",
       "description",
       "parameters",
       "strict"
     ],
-    "input_contract.cpp:2:request": [
+    "input_contract.cpp:3:request": [
       "request_id",
       "cancel_token"
     ],
     "chat_tool_history.cpp:0:call": [
       "id",
       "type",
+      "custom"
+    ],
+    "chat_tool_history.cpp:1:*custom": [
+      "name",
+      "input"
+    ],
+    "chat_tool_history.cpp:2:call": [
+      "id",
+      "type",
       "function"
     ],
-    "chat_tool_history.cpp:1:call": [
+    "chat_tool_history.cpp:3:call": [
       "type",
       "name",
       "arguments"
     ],
-    "chat_tool_history.cpp:2:*fn": [
+    "chat_tool_history.cpp:4:*fn": [
       "name",
       "arguments"
     ],
@@ -708,13 +731,15 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "5b98bdf96ddfb12e61a5f45ba6be553fcc17c25440f2e26e66dd515ca3b02418",
-    "cmake/ChatProtocolIdentity.cmake": "373a7d1362295a0ab3f661791d46088370e6d7e44a4506a7b3ff79d133e90fc3",
+    "CMakeLists.txt": "20237b940b3d76cbe0501095f8afb4d10179f1447d3b5617a55461c14aafd389",
+    "cmake/ChatProtocolIdentity.cmake": "c2c388f96c712045bbcf1fe91e95fa5b7ac7bbb9db51e62f51a5faf2993ba00c",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
     "cmake/NativeIngress.cmake": "d10f996fdf01e28f29eaa40d9c92f2d78ff02126351188667329b235a22f2346",
     "cmake/RecoveryProbe.cmake": "b10bd71c92a8c9a9f6545da89ab06585f7c1398a978eb01aae9e18eb716c0271",
-    "cmake/StructuredOutput.cmake": "fd8c800791a39e03d6447716554eb67cc626a1d20855de512fdc5dc715dd8b30",
+    "cmake/RustRegex.cmake": "3b28dbece860790c0754fecb25921c10887f6028ce806f81fa51d1dd1c88ac56",
+    "cmake/StructuredOutput.cmake": "66f791cc30c164e2a3b40c639a699e13077774d9bacf59b3b55a924e134f5b84",
+    "cmake/regex-syntax-0.8.8.sha256": "6eba6c50e6a79adfb56202c75e8a3b551fe384f84e8bb7e3f2634fe2791a7880",
     "include/q4t/model/vision_positions.h": "70c7d3d05715fc3916725e0e39cf32becc9ac3a5129fc63129706204ccd9fb22",
     "include/q4t/ple/page_reader.h": "bbb35325c82421f6e9608a144672b051d3531b6652b6076d018fec0bff17e86e",
     "include/q4t/ple/ple_embedding.h": "9d61a76df2f96ee7831177de6d9de0c85e2fce1023dd5ba2b40780f2e123db30",
@@ -730,7 +755,7 @@
     "include/q4t/server/chat_contract.h": "c1aaef06a1ae22f96ce143211a3c6a5a462bb8223d0f86c474f896ab3bb906e0",
     "include/q4t/server/chat_plan.h": "52c2a68f9fe089d58bc41e150eb2cd535a8bdaeaf46aaa9ab12128b961b7c085",
     "include/q4t/server/chat_prompt.h": "1a758fed12a2ef5b3eadc6109cbc99be29de63e088d0d60111ed171730daa54f",
-    "include/q4t/server/chat_response_parser.h": "25f2d4b34516acf5c344574e9b1ffa517b88f7ed91cedd7f7738759ae352652b",
+    "include/q4t/server/chat_response_parser.h": "321253dc518ae47b5d52b998b774a43bec08dec280cfa8e60664f966f295db8e",
     "include/q4t/server/chat_server.h": "3055d056ab4e48674fe73979a4d31bb45d249d8175143ab95c226207c686c260",
     "include/q4t/server/chat_template.h": "5d2e9a8c90938fa972d27bd961ee9018ebcd7add541fd009316177af81b9afee",
     "include/q4t/server/chat_tool_history.h": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
@@ -739,6 +764,8 @@
     "include/q4t/server/client_request.h": "d08159942c0f0f95c5040546b3aab647eac435546767e96a1c922f3d88957998",
     "include/q4t/server/cuda_quota_metrics.h": "40ea24b9df80e446f13c89cf4e5d8ce09741fc67ce3d413096cc1ac10e59cbc2",
     "include/q4t/server/cuda_quota_policy.h": "e4143f1ec2f099edd81796bfca6db5cf916d547456af96c370d43991e176e297",
+    "include/q4t/server/custom_grammar.h": "d70d2c7a751984dcf4fbff2fae70010044d89b340feb068b2dff6c52fc0ef4e5",
+    "include/q4t/server/custom_tools.h": "1f351b6ed81ad868caa4dfa9c54a6f697fcac5a6a8dadef65bd05f2053ef18b9",
     "include/q4t/server/device_memory.h": "1099e20d3b205d3ae03daba0308be7221f5097c78a2fd58c8ca16298277dfc4c",
     "include/q4t/server/grammar_process.h": "299273b04e110d15f4b23d74c60ce669e126fb0d7428baf14b7c6c5565a33d22",
     "include/q4t/server/http_connection.h": "dcd12b3f713b9c0318b2f394ee55fb5666a2cfdb092e9a0cb4697cb2e61a4d54",
@@ -752,7 +779,7 @@
     "include/q4t/server/media_admission.h": "5d50347a9c9349d4a7d381792eb5536c2516f7e66ff7d1a1e7b787cd599c8c27",
     "include/q4t/server/memory_admission.h": "ae72d092757e41739e5d85ae7b2a975dccd13e43de8e9286dd831831ba7a7196",
     "include/q4t/server/mtp_policy.h": "28f10c5c885f9465c0f26c22a36bf6be541933a0ed9d9c2da5f0d3983e0a8285",
-    "include/q4t/server/output_constraints.h": "f8f4e130e9993348acf250060d425b0b74492d29048832b1ea4dfe494e5917ba",
+    "include/q4t/server/output_constraints.h": "d8da5e3a86d1552383a982aad78cc75f9ea177d267d90998d69cd524ea3f93d8",
     "include/q4t/server/output_schema.h": "10db6834ae6cc075af9a4948709192e9cafd5f98cad07e7c1016aa5bf240eebe",
     "include/q4t/server/prediction.h": "2b641a3cb00cb9c788d4418e3a4719e8b4c884352fee4068a7f6f47b9be049fb",
     "include/q4t/server/prefix_cache_policy.h": "91ef4f963c51a8098f1e333a74ac3cc56c046cf87f987b0e026a1e27d4c304c4",
@@ -808,7 +835,7 @@
     "src/runtime/system_memory.cpp": "231e9a7ce5ed49e27e604a7bfa4066b35e83f286026c15986898d996a66acd2f",
     "src/server/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_capabilities.cpp": "7e08ac6468f5a516df1c327bfd6f3696814207f26cb2a4f7a4bfd12e4eaccc52",
+    "src/server/chat_capabilities.cpp": "653f98d6e9e7460ca4e6e0decf145b3b3395db491892b0f3f1cf72583b37c373",
     "src/server/chat_choices.cpp": "ee99c4aca3c1ea07d5929da38325aa2b28a411245c7d794c9cc5f1f8eb23f16a",
     "src/server/chat_contract.cpp": "379dc3c2b40e56808394911f752782ad5e4a7715763b1e47f491fe0246226611",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
@@ -821,28 +848,33 @@
     "src/server/chat_plan.cpp": "c10967c86f77026b628be160b67845273ab00bc6894597844965cabf6e2214ee",
     "src/server/chat_preflight.cpp": "af858d7def2c4d45d46bff91a9c7d44854cb6c1bfe59a0e4098bb25ac97e7a57",
     "src/server/chat_prompt.cpp": "fd6684419aff480782e12a409af13665eb1b529008b93ea7f67607afd837efcf",
-    "src/server/chat_response_parser.cpp": "3ee408ac5d2babca3dd1b04d42cae091cafec1ac2fedbcdbfdbb39e133b6eaae",
+    "src/server/chat_response_parser.cpp": "77bbd27579791ca611036f5d3b735029098582b4596de063734189beeec8d4a5",
     "src/server/chat_scheduler.cpp": "2b6d315bfd12609e343010852f7c15b8248fe5180359a3d7b49d3c1db5b8d1fc",
     "src/server/chat_server.cpp": "19c040b20e6f1f1cde9d37e23477b2bfa65c4b38ab09cfacdef9281522fda095",
     "src/server/chat_server_internal.h": "f648da039df39e84f9f867c55210afeff3eceac0c3578c61edfaa210957d4286",
-    "src/server/chat_template.cpp": "419a3dc8b06b4d6c144062711831a0afee1b0206b6524caa806b981960dc6165",
-    "src/server/chat_tool_history.cpp": "3514a29df574c5b21c4dd8b6ecd9407aa3ff50a43a30b51d97fa93c6cd247bed",
+    "src/server/chat_template.cpp": "bb49a3ae0c80c5b3cc0eb54ff3b4ed9979bb71353a938a34b2ab581a6193b0db",
+    "src/server/chat_tool_history.cpp": "4c3588a2c007f968f4ca99ebf974f4d6a34fa1f6f5e6f43a229f49f1935b44a7",
     "src/server/client_policy.cpp": "3d28eb74a983b10fbb2fdf218307c0490349c051aee37945ae770a198f45b791",
     "src/server/client_request.cpp": "418f478a0d94cb270ea507cb6843f0a88a97de0ad2a22192e9f563c67f6fe83e",
     "src/server/cuda_memory_backend.h": "aabc6d78d2925ec5280e270964d79d3164ce706732a674b88215554a34d0e6a5",
+    "src/server/custom_grammar.cpp": "5178e24b7b336fd573587d511eb47d70775ac8c1803d956a8a938754f5572e96",
+    "src/server/custom_regex.cpp": "e264cf43680adea8d8efdb3aa49ea414f920e6e16cc986b151585130d5f26741",
+    "src/server/custom_regex.h": "f049e8f9744406ac5ee30844bf606e74fcc2566217d3e167d83ab14aff0fc8a6",
+    "src/server/custom_tools.cpp": "3e45f9a496439ec1e0d86739acb9c5d01eb6e2c321a96d924cf755b99bc12abd",
     "src/server/grammar_process.cpp": "af14efdbda28b205d7532780d8c6c5c4abc3078c2279257982d875fb3afb40df",
-    "src/server/grammar_worker.cpp": "aca2920b675dce548ceb194690440f00763352ed2d482751100b6345580e560c",
+    "src/server/grammar_worker.cpp": "3701fd5e061ef797d9d4b23629e0411a30831c182d4c8ade753e4d677a210163",
     "src/server/grammar_worker_internal.h": "79d8963200990a0d6b8dacee12c0f886c5612c57bc86e8a3479d942d6bef091a",
     "src/server/http_request.cpp": "614dd52541c9311054be68a790d6b7429503de6edd747b2247eb689273c24d3c",
     "src/server/http_response.cpp": "cadc8360a181dfd6505d1470b64c31bc6bbb5c2195051419b1f52233ab227573",
-    "src/server/input_contract.cpp": "ad9adbffc9638792ec15debeebee803fb43d2085f639281dabd6230146c5cf6a",
+    "src/server/input_contract.cpp": "f295aed0496c4f228f93317498cdc5bd4c2d13e85b7fb8c43ed0136519b88bd9",
     "src/server/legacy_tools.cpp": "b0bffcd3c780f35f336b40a152e9837077b9a4c6ea3ede737fcbb14b8514587c",
     "src/server/media_admission.cpp": "11461c31fed0db43fe68e16680812641c0e51371585c216673e4fe2e54500393",
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
-    "src/server/output_constraints.cpp": "e6b54aea87bc5732e5cbe719999fdf3e82c23f4aa87eb3f4b28f2abb6a1424f1",
+    "src/server/output_constraints.cpp": "0da7df49b596cabeed1f0f98fc3db8c582689d8ce170ea3d6a27569f25292103",
     "src/server/output_schema.cpp": "d1ac1506c823dc128d8f2c95e5489c90d360813b35b37b2bfd52a9bbc512315d",
     "src/server/prediction.cpp": "7e8ccdf7c44dd5c8245230577d42eb7d4cd17c6e2efcf5534a02e6744815733f",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
+    "src/server/regex_syntax/lib.rs": "1decbbd159b63b96bdf1f94da6c7f7927a8d869633ddc8fd5d0924e048bc9289",
     "src/server/sampling.cpp": "8e6a8c446656d8430005b061b10535b391b002362725511d216f9b4229e3d3cb",
     "src/server/server_options.cpp": "c47e2555d054a8ee27524ecf59936838b717d7292c864c24efeee1279e2dc622",
     "src/server/session_cache.cpp": "68fc36654c7f3a7c14ac41b26e3abd10697e87ffc94bf70fe2052edb9cf751f6",
@@ -1463,5 +1495,10 @@
     ],
     "review": "Certificate files read only in exec helper with 2s deadline and 100ms cleanup; unreaped helper retains service-level kernel lease. Failed reload keeps unexpired context; expiry closes new TLS handshakes/admission without model restart. Old contexts finish existing SSE. v4 seals external credential paths; old package inventories preserved. OpenSSL uses explicit fixed library path, no implicit config loading. Early TLS auth rejection drains at most 64KiB/100ms after close_notify, preserving late-body response.",
     "limitations": "Accepted targeted CPU and one-model/six-Chat native TLS business; no remote OCSP/CRL fetching, active-session retroactive revocation, full model/performance or long stability claim. Standard API tasks A and remaining HTTP integration N05 remain active."
+  },
+  "custom_tools_review_20261108": {
+    "state": "implementation_pending_targeted_acceptance",
+    "source": "docs/SERVE_CUSTOM_TOOLS_2026-11-08.md",
+    "regex_dependency": "regex-syntax 0.8.8 statically linked; no runtime service; worker bounds retained"
   }
 }

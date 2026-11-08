@@ -167,15 +167,22 @@ def _message(value):
         _text(function.get("name"), "missing function name", True)
         _arguments(function.get("arguments"))
     for call in calls:
-        require(isinstance(call, dict) and call.get("type") == "function",
-                "expected function tool call")
+        require(isinstance(call, dict) and call.get("type") in ("function", "custom"),
+                "expected function or custom tool call")
+        kind = call["type"]
+        require(set(call) == {"id", "type", kind}, "invalid tool call fields")
         identifier = _text(call.get("id"), "missing tool call id", True)
         require(identifier not in ids, "duplicate tool call id")
         ids.add(identifier)
-        function = call.get("function")
-        require(isinstance(function, dict), "missing function")
-        _text(function.get("name"), "missing function name", True)
-        _arguments(function.get("arguments"))
+        value_field = "input" if kind == "custom" else "arguments"
+        definition = call.get(kind)
+        require(isinstance(definition, dict) and set(definition) == {"name", value_field},
+                "invalid tool payload")
+        _text(definition.get("name"), "missing tool name", True)
+        if kind == "custom":
+            _text(definition.get("input"), "custom input must be text")
+        else:
+            _arguments(definition.get("arguments"))
     return deepcopy(value)
 
 
@@ -367,24 +374,27 @@ class _ChoiceStream:
         index = delta.get("index")
         require(type(index) is int and 0 <= index <= len(self.calls),
                 "non-contiguous tool index")
-        function = delta.get("function", {})
-        require(isinstance(function, dict), "invalid tool function delta")
         if index == len(self.calls):
-            require(index < MAX_TOOL_CALLS and delta.get("type") == "function",
+            require(index < MAX_TOOL_CALLS and delta.get("type") in ("function", "custom"),
                     "invalid tool type or too many calls")
             identifier = _text(delta.get("id"), "missing tool id", True)
-            require(all(c["id"] != identifier for c in self.calls),
-                    "duplicate tool id")
-            _text(function.get("name"), "missing function name", True)
-            self.calls.append(dict(id=identifier, type="function", name=[],
-                                   arguments=[]))
+            require(all(c["id"] != identifier for c in self.calls), "duplicate tool id")
+            kind = delta["type"]
+            require(isinstance(delta.get(kind), dict), "missing initial tool payload")
+            _text(delta[kind].get("name"), "missing tool name", True)
+            self.calls.append(dict(id=identifier, type=kind, name=[], value=[]))
         call = self.calls[index]
-        require(delta.get("id", call["id"]) == call["id"] and
-                delta.get("type", "function") == "function",
-                "tool identity changed mid-stream")
-        for name in ("name", "arguments"):
-            if name in function:
-                call[name].append(_text(function[name], "invalid tool " + name))
+        kind = call["type"]
+        value_field = "input" if kind == "custom" else "arguments"
+        require(not (set(delta) - {"index", "id", "type", kind}) and
+                delta.get("id", call["id"]) == call["id"] and
+                delta.get("type", kind) == kind, "tool identity changed mid-stream")
+        definition = delta.get(kind, {})
+        require(isinstance(definition, dict) and not (set(definition) - {"name", value_field}),
+                "invalid tool delta fields")
+        for source, target in (("name", "name"), (value_field, "value")):
+            if source in definition:
+                call[target].append(_text(definition[source], "invalid tool " + source))
 
     def result(self):
         require(self.role and self.finish is not None and self.usage is not None,
@@ -394,9 +404,9 @@ class _ChoiceStream:
         if reasoning:
             message[self.reasoning_field] = reasoning
         if self.calls:
-            message["tool_calls"] = [dict(id=c["id"], type="function",
-                function=dict(name="".join(c["name"]),
-                              arguments="".join(c["arguments"])))
+            message["tool_calls"] = [dict(id=c["id"], type=c["type"], **{c["type"]:
+                dict(name="".join(c["name"]), **{
+                    "input" if c["type"] == "custom" else "arguments": "".join(c["value"])})})
                 for c in self.calls]
             if not content:
                 message["content"] = None
@@ -861,6 +871,14 @@ class ToolInvocation:
     arguments: dict
 
 
+@dataclass(frozen=True)
+class CustomToolInvocation:
+    call_id: str
+    name: str
+    input: str
+    type: str = "custom"
+
+
 def _invocation_calls(message):
     if message.get("function_call") is not None:
         # Legacy result association uses the function name, not a wire ID.
@@ -869,7 +887,7 @@ def _invocation_calls(message):
     return message.get("tool_calls", [])
 
 
-def prepare_tool_calls(completion, validators):
+def prepare_tool_calls(completion, validators, *, custom_validators=None):
     require(hasattr(completion, "message") and hasattr(completion, "finish_reason"),
             "select an explicit choice before preparing tools")
     """Validate the entire batch without executing any tool or changing history.
@@ -882,6 +900,14 @@ def prepare_tool_calls(completion, validators):
     require(calls, "missing tool calls")
     planned = []
     for call in calls:
+        if call["type"] == "custom":
+            name, value = call["custom"]["name"], call["custom"]["input"]
+            registry = custom_validators or {}
+            require(name in registry and callable(registry[name]),
+                    "unregistered custom tool: " + name)
+            require(registry[name](value) is None, "custom validator must return None or raise")
+            planned.append(CustomToolInvocation(call["id"], name, value))
+            continue
         name = call["function"]["name"]
         require(name in validators and callable(validators[name]),
                 "unregistered tool: " + name)

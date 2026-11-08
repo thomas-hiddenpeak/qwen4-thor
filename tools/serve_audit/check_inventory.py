@@ -82,7 +82,10 @@ def current_surface(root):
                        root / "src/service/cuda_probe.cu",
                        root / "include/q4t/runtime/system_memory.h",
                        root / "src/main.cpp", root / "cmake/StructuredOutput.cmake",
-                       root / "cmake/ChatProtocolIdentity.cmake"})
+                       root / "cmake/ChatProtocolIdentity.cmake",
+                       root / "cmake/RustRegex.cmake",
+                       root / "cmake/regex-syntax-0.8.8.sha256",
+                       root / "src/server/regex_syntax/lib.rs"})
     return {"fields": sorted(fields),
             "routes": sorted(f"{method} {path}" for path, method in routes),
             "native_routes": sorted(f"{method} {path}" for method, path, _ in native_routes),

@@ -89,6 +89,10 @@ def chat_schema():
         function=obj(dict(name=text_name(), arguments=arguments), ("name", "arguments"))),
         ("function",)), obj(dict(type=dict(const="function"), name=text_name(),
                                 arguments=arguments), ("name", "arguments"))])
+    call["oneOf"].append(obj(dict(id=dict(type="string", minLength=1, maxLength=256,
+        **{"x-q4t-max-utf8-bytes": 256}), type=dict(const="custom"),
+        custom=obj(dict(name=safe, input=dict(type="string")), ("name", "input"))),
+        ("id", "type", "custom")))
     legacy_call = obj(dict(name=safe, arguments=dict(type="string",
         **{"x-q4t-json-object-text": True})), ("name", "arguments"))
     message = obj(dict(role=dict(enum=["system", "developer", "user", "assistant", "tool", "function"]),
@@ -126,6 +130,16 @@ def chat_schema():
         strict=dict(type=["boolean", "null"]), parameters=dict(type="object",
             properties=dict(properties=dict(type="object")))), ("name",))
     tool = obj(dict(type=dict(const="function"), function=fn), ("type", "function"))
+    custom_format = dict(oneOf=[obj(dict(type=dict(const="text")), ("type",)),
+        obj(dict(type=dict(const="grammar"), grammar=obj(dict(
+            syntax=dict(enum=["regex", "lark"]), definition=dict(type="string", minLength=1,
+                **{"x-q4t-max-utf8-bytes": 16384})), ("syntax", "definition"))), ("type", "grammar"))])
+    tool = dict(oneOf=[tool, obj(dict(type=dict(const="custom"), custom=obj(dict(
+        name=safe, description=dict(type="string"), format=custom_format), ("name",))),
+        ("type", "custom"))])
+    tool_reference = dict(oneOf=[obj(dict(type=dict(const=kind), **{
+        kind: obj(dict(name=safe), ("name",))}), ("type", kind))
+        for kind in ("function", "custom")])
     legacy_fn = obj(dict(name=safe, description=dict(type="string"),
         parameters=fn["properties"]["parameters"]), ("name",))
     legacy_active = dict(anyOf=[present(key, {"not": dict(type="null")})
@@ -144,11 +158,12 @@ def chat_schema():
     parsed = dict(required=["messages"], properties=dict(parse_response=dict(const=True)))
     json_output = present("response_format", present("type", dict(enum=["json_object", "json_schema"])))
     forced = present("tool_choice", dict(anyOf=[dict(const="required"),
-        dict(type="object", **present("type", dict(const="function"))),
+        dict(type="object", **present("type", dict(enum=["function", "custom"]))),
         dict(type="object", allOf=[present("type", dict(const="allowed_tools")),
                     present("allowed_tools", present("mode", dict(const="required")))])]))
     strict_tools = present("tools", dict(type="array", contains=present("function", present("strict", dict(const=True)))))
     constrained = dict(anyOf=[json_output, forced, strict_tools,
+        present("tools", dict(type="array", contains=present("type", dict(const="custom")))),
         present("functions", nonempty_tools),
         present("function_call", dict(anyOf=[dict(const="none"), dict(type="object")])),
         present("tool_choice", dict(type="object", **present("type", dict(const="allowed_tools")))),
@@ -195,11 +210,9 @@ def chat_schema():
         prefix_cache_write_tokens=dict(anyOf=[dict(const=0), dict(type="integer", minimum=1024, maximum=131072)]),
         parse_response=dict(type="boolean"),
         tool_choice=nullable(dict(oneOf=[dict(enum=["auto", "none", "required"]),
-            obj(dict(type=dict(const="function"), function=obj(dict(name=safe), ("name",))), ("type", "function")),
+            tool_reference,
             obj(dict(type=dict(const="allowed_tools"), allowed_tools=obj(dict(
-                mode=dict(enum=["auto", "required"]), tools=dict(type="array", items=obj(
-                    dict(type=dict(const="function"), function=obj(dict(name=safe), ("name",))),
-                    ("type", "function")))), ("mode", "tools"))), ("type", "allowed_tools"))])),
+                mode=dict(enum=["auto", "required"]), tools=dict(type="array", items=tool_reference)), ("mode", "tools"))), ("type", "allowed_tools"))])),
         parallel_tool_calls=dict(type="boolean", default=True))
     result = obj(properties)
     result.update({"$schema": DRAFT, "$id": "urn:q4t:serve-chat-request:v1",
@@ -310,6 +323,10 @@ def semantics():
     # Standard JSON Schema validators ignore x-q4t annotations. These rules
     # are mandatory and evaluated by production C++, never inferred as passed.
     rules = [
+        ("custom-tools", ["src/server/custom_tools.cpp", "src/server/custom_grammar.cpp",
+             "src/server/custom_regex.cpp", "src/server/regex_syntax/lib.rs",
+             "src/server/chat_response_parser.cpp"],
+         "Custom tools retain type=custom and custom.name/input, with raw text payloads. Omitted format is text; grammar format accepts regex/Lark with definition 1..16384 UTF-8 bytes. Named and allowed references match declared type and name; names are unique across function/custom. Each custom request uses the existing bounded grammar worker. Rust regex syntax and Lark lexer expressions are mapped to the JSON-string model payload without weakening Unicode, escapes, anchors or word boundaries. Expansion512KiB, assertion graph4096 nodes; existing worker time/memory limits remain. Incremental UTF-8/escape decoding is independently compared to the final parse. Success terminal and EOF gate client execution; custom validators are registered separately. Identified custom/function history may share one batch with exactly one result per ID."),
         ("legacy-functions", ["src/server/legacy_tools.cpp", "src/server/chat_plan.cpp",
              "src/server/chat_response_parser.cpp"],
          "Non-null functions/function_call choose legacy output: one function_call, matching finish_reason and incremental name/arguments deltas without tool IDs. Normalized controls share production grammar and final validation; no mixing non-null modern controls or parallel=true. Legacy assistant.function_call must have a contiguous role=function result matching its name; null result is empty text. Internal association IDs never escape onto the legacy wire. Errors refer to original legacy input paths. Null controls are omission."),

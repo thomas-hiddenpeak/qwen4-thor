@@ -14,6 +14,7 @@ struct OutputConstraints {
   enum class ToolChoice { kAuto, kNone, kRequired, kNamed };
   ToolChoice choice = ToolChoice::kAuto;
   std::string named_tool;
+  std::string named_type = "function";
   bool restrict_tools = false;
   std::vector<std::string> allowed_tools;
   bool parallel = true;

@@ -1,6 +1,7 @@
 #include "q4t/server/chat_template.h"
 
 #include "q4t/server/chat_tool_history.h"
+#include "q4t/server/custom_tools.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/legacy_tools.h"
 #include "q4t/server/request_json.h"
@@ -214,6 +215,15 @@ Status AppendToolCalls(const io::Json& message, bool has_content,
   if (!calls->IsArray()) return Status::Fail("tool_calls must be an array");
   for (size_t i = 0; i < calls->array.size(); ++i) {
     const io::Json& call = calls->array[i];
+    if (call.GetString("type") == "custom") {
+      const auto* custom = call.Find("custom");
+      if (!custom) return Status::Fail("missing custom tool history");
+      *prompt += i ? "\n" : (has_content ? "\n\n" : "");
+      *prompt += "<tool_call>\n<custom=" + custom->GetString("name") + ">\n" +
+                 EncodeCustomInput(custom->GetString("input")) +
+                 "\n</custom>\n</tool_call>";
+      continue;
+    }
     const io::Json* fn = call.Find("function");
     if (!fn) fn = &call;
     const io::Json* name = fn->Find("name");
@@ -452,6 +462,20 @@ Status RenderChatPrompt(const io::Json& request,
     }
     *prompt += "\n</tools>";
     *prompt += kToolInstructions;
+    if (std::any_of(tools->array.begin(), tools->array.end(),
+                    [](const io::Json& tool) {
+                      return tool.GetString("type") == "custom";
+                    })) {
+      *prompt +=
+          "\nFor tools whose type is custom, use this distinct format:\n"
+          "<tool_call>\n<custom=tool_name>\n\"JSON-escaped input text\"\n"
+          "</custom>\n</tool_call>\n"
+          "The payload is one JSON string, not a parameter object. Preserve "
+          "the complete input, escaping quotes, backslashes and control "
+          "characters; encode each less-than sign as \\u003c. The declared "
+          "text or grammar format applies to the decoded string. Do not "
+          "add text after a tool call.";
+    }
     if (!system.empty()) *prompt += "\n\n" + system;
     *prompt += "<|im_end|>\n";
   } else if (!system.empty() || !instructions.empty() ||

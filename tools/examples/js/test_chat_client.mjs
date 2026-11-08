@@ -372,3 +372,47 @@ test('tool stream later error invalidates all earlier complete fragments', async
   assert.equal(executions, 0);
   assert.equal(run.requests.length, 1);
 });
+
+test('custom raw input survives SDK mixed JSON/SSE and explicit validators', async () => {
+  const input = 'READ "中国"\n</tool_call>\\😀\0';
+  const calls = [{ id: 'c0', type: 'custom', custom: { name: 'read', input } },
+    { id: 'f1', type: 'function', function: { name: 'noop', arguments: '{}' } }];
+  const msg = { role: 'assistant', content: null, tool_calls: calls };
+  const events = [event({ role: 'assistant', content: '' }),
+    event({ tool_calls: [{ index: 0, id: 'c0', type: 'custom', custom: { name: 'read', input: '' } }] })];
+  for (const c of input) events.push(event({ tool_calls: [{ index: 0, custom: { input: c } }] }));
+  events.push(event({ tool_calls: [{ index: 1, ...calls[1] }] }), event({}, 'tool_calls'), streamEvents().at(-1));
+  const streamed = await client(encode(events), { stream: true }).api.chat(request(true));
+  assert.deepEqual(streamed.message, msg);
+  const json = { id: ID, object: 'chat.completion', model: MODEL, created: 42,
+    choices: [{ index: 0, message: msg, logprobs: null, finish_reason: 'tool_calls' }], usage: COUNTS };
+  const full = await client(Buffer.from(JSON.stringify(json))).api.chat(request(false));
+  assert.deepEqual(full.message, streamed.message);
+  const plan = prepareToolCalls(streamed, { noop: () => {} }, { read: value => { assert.equal(value, input); } });
+  assert.deepEqual(plan[0], { call_id: 'c0', type: 'custom', name: 'read', input });
+  assert.throws(() => prepareToolCalls(streamed, { noop: () => {}, read: () => {} }), ProtocolError);
+  const history = appendToolResults([], streamed, { c0: 'record', f1: 'done' });
+  assert.deepEqual(history[0], msg);
+  assert.deepEqual(history.slice(1).map(v => v.tool_call_id), ['c0', 'f1']);
+});
+
+test('custom streaming rejects type mutation and partial terminal', async () => {
+  const prefix = [event({ role: 'assistant', content: '' }),
+    event({ tool_calls: [{ index: 0, id: 'c0', type: 'custom', custom: { name: 'read', input: 'partial' } }] })];
+  const mutation = event({ tool_calls: [{ index: 0, type: 'function', function: { arguments: '{}' } }] });
+  for (const rows of [prefix, [...prefix, mutation], [...prefix, event({}, 'length'), streamEvents().at(-1)]]) {
+    let count = 0;
+    await assert.rejects(async () => {
+      const result = await client(encode(rows), { stream: true }).api.chat(request(true));
+      for (const _ of prepareToolCalls(result, {}, { read: () => {} })) count++;
+    });
+    assert.equal(count, 0);
+  }
+});
+
+test('custom project DSL validates without executing arbitrary input', async () => {
+  const { parseCustomRead } = await import('./project_profile.mjs');
+  assert.deepEqual(parseCustomRead('READ docs/MODEL.md 1 16'), { path: 'docs/MODEL.md', start_line: 1, line_count: 16 });
+  for (const value of ['READ docs/MODEL.md 1 81', 'READ /etc/passwd 1 8',
+    'READ docs/MODEL.md 1 8\n', 'READ docs/MODEL.md 1 8; ls']) assert.throws(() => parseCustomRead(value));
+});

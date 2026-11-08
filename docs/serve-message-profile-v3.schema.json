@@ -580,6 +580,45 @@
             "arguments"
           ],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "x-q4t-max-utf8-bytes": 256
+            },
+            "type": {
+              "const": "custom"
+            },
+            "custom": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64,
+                  "pattern": "^[A-Za-z0-9_-]+$"
+                },
+                "input": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "input"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "id",
+            "type",
+            "custom"
+          ],
+          "additionalProperties": false
         }
       ]
     }

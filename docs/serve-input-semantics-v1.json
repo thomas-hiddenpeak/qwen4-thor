@@ -14,6 +14,17 @@
   "runtime_preflight": "POST /v1/chat/preflight",
   "rules": [
     {
+      "id": "custom-tools",
+      "sources": [
+        "src/server/custom_tools.cpp",
+        "src/server/custom_grammar.cpp",
+        "src/server/custom_regex.cpp",
+        "src/server/regex_syntax/lib.rs",
+        "src/server/chat_response_parser.cpp"
+      ],
+      "contract": "Custom tools retain type=custom and custom.name/input, with raw text payloads. Omitted format is text; grammar format accepts regex/Lark with definition 1..16384 UTF-8 bytes. Named and allowed references match declared type and name; names are unique across function/custom. Each custom request uses the existing bounded grammar worker. Rust regex syntax and Lark lexer expressions are mapped to the JSON-string model payload without weakening Unicode, escapes, anchors or word boundaries. Expansion512KiB, assertion graph4096 nodes; existing worker time/memory limits remain. Incremental UTF-8/escape decoding is independently compared to the final parse. Success terminal and EOF gate client execution; custom validators are registered separately. Identified custom/function history may share one batch with exactly one result per ID."
+    },
+    {
       "id": "legacy-functions",
       "sources": [
         "src/server/legacy_tools.cpp",
@@ -303,21 +314,25 @@
     "src/server/chat_plan.cpp": "c10967c86f77026b628be160b67845273ab00bc6894597844965cabf6e2214ee",
     "src/server/chat_preflight.cpp": "af858d7def2c4d45d46bff91a9c7d44854cb6c1bfe59a0e4098bb25ac97e7a57",
     "src/server/chat_prompt.cpp": "fd6684419aff480782e12a409af13665eb1b529008b93ea7f67607afd837efcf",
-    "src/server/chat_response_parser.cpp": "3ee408ac5d2babca3dd1b04d42cae091cafec1ac2fedbcdbfdbb39e133b6eaae",
+    "src/server/chat_response_parser.cpp": "77bbd27579791ca611036f5d3b735029098582b4596de063734189beeec8d4a5",
     "src/server/chat_scheduler.cpp": "2b6d315bfd12609e343010852f7c15b8248fe5180359a3d7b49d3c1db5b8d1fc",
     "src/server/chat_server.cpp": "19c040b20e6f1f1cde9d37e23477b2bfa65c4b38ab09cfacdef9281522fda095",
-    "src/server/chat_template.cpp": "419a3dc8b06b4d6c144062711831a0afee1b0206b6524caa806b981960dc6165",
-    "src/server/chat_tool_history.cpp": "3514a29df574c5b21c4dd8b6ecd9407aa3ff50a43a30b51d97fa93c6cd247bed",
+    "src/server/chat_template.cpp": "bb49a3ae0c80c5b3cc0eb54ff3b4ed9979bb71353a938a34b2ab581a6193b0db",
+    "src/server/chat_tool_history.cpp": "4c3588a2c007f968f4ca99ebf974f4d6a34fa1f6f5e6f43a229f49f1935b44a7",
     "src/server/cuda_memory_backend.h": "aabc6d78d2925ec5280e270964d79d3164ce706732a674b88215554a34d0e6a5",
+    "src/server/custom_grammar.cpp": "5178e24b7b336fd573587d511eb47d70775ac8c1803d956a8a938754f5572e96",
+    "src/server/custom_regex.cpp": "e264cf43680adea8d8efdb3aa49ea414f920e6e16cc986b151585130d5f26741",
+    "src/server/custom_tools.cpp": "3e45f9a496439ec1e0d86739acb9c5d01eb6e2c321a96d924cf755b99bc12abd",
     "src/server/http_request.cpp": "614dd52541c9311054be68a790d6b7429503de6edd747b2247eb689273c24d3c",
-    "src/server/input_contract.cpp": "ad9adbffc9638792ec15debeebee803fb43d2085f639281dabd6230146c5cf6a",
+    "src/server/input_contract.cpp": "f295aed0496c4f228f93317498cdc5bd4c2d13e85b7fb8c43ed0136519b88bd9",
     "src/server/legacy_tools.cpp": "b0bffcd3c780f35f336b40a152e9837077b9a4c6ea3ede737fcbb14b8514587c",
     "src/server/media_admission.cpp": "11461c31fed0db43fe68e16680812641c0e51371585c216673e4fe2e54500393",
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
-    "src/server/output_constraints.cpp": "e6b54aea87bc5732e5cbe719999fdf3e82c23f4aa87eb3f4b28f2abb6a1424f1",
+    "src/server/output_constraints.cpp": "0da7df49b596cabeed1f0f98fc3db8c582689d8ce170ea3d6a27569f25292103",
     "src/server/output_schema.cpp": "d1ac1506c823dc128d8f2c95e5489c90d360813b35b37b2bfd52a9bbc512315d",
     "src/server/prediction.cpp": "7e8ccdf7c44dd5c8245230577d42eb7d4cd17c6e2efcf5534a02e6744815733f",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
+    "src/server/regex_syntax/lib.rs": "1decbbd159b63b96bdf1f94da6c7f7927a8d869633ddc8fd5d0924e048bc9289",
     "src/server/sampling.cpp": "8e6a8c446656d8430005b061b10535b391b002362725511d216f9b4229e3d3cb",
     "src/server/server_options.cpp": "c47e2555d054a8ee27524ecf59936838b717d7292c864c24efeee1279e2dc622",
     "src/server/text_stop.cpp": "2397b27adc873b3ac0697af68352a73c8481830da6053fde0adeca536eaba4dc",

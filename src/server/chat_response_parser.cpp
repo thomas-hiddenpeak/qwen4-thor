@@ -144,9 +144,12 @@ std::string ToolJson(const ResponseToolCall& call, bool indexed) {
   return "{" +
          (indexed ? "\"index\":" + std::to_string(call.index) + ','
                   : std::string()) +
-         "\"id\":" + Quote(call.id) + ",\"type\":\"function\",\"function\":{" +
+         "\"id\":" + Quote(call.id) + ",\"type\":" +
+         Quote(call.custom ? "custom" : "function") + ',' +
+         Quote(call.custom ? "custom" : "function") + ":{" +
          "\"name\":" + Quote(call.name) +
-         ",\"arguments\":" + Quote(call.arguments) + "}}";
+         ',' + Quote(call.custom ? "input" : "arguments") + ':' +
+         Quote(call.arguments) + "}}";
 }
 
 size_t Lookahead(std::string_view text, std::string_view marker) {
@@ -164,7 +167,9 @@ std::string ResponseDelta::ToJson() const {
              "\"arguments\":" + Quote(call.arguments) + "}}";
     if (tool_start) return "{\"tool_calls\":[" + ToolJson(call, true) + "]}";
     return "{\"tool_calls\":[{\"index\":" + std::to_string(call.index) +
-           ",\"function\":{\"arguments\":" + Quote(call.arguments) + "}}]}";
+           ',' + Quote(call.custom ? "custom" : "function") + ":{" +
+           Quote(call.custom ? "input" : "arguments") + ':' +
+           Quote(call.arguments) + "}}]}";
   }
   const auto field = kind == Kind::kReasoning
                          ? ReasoningFieldName(reasoning_field)
@@ -205,6 +210,18 @@ Status ChatResponseParser::Init(const io::Json& request,
   const auto* definitions = request.GetArray("tools");
   if (!definitions) return Status();
   for (const auto& tool : definitions->array) {
+    if (tool.GetString("type") == "custom") {
+      const auto* custom = tool.Find("custom");
+      if (!custom || legacy_function_)
+        return Fail("custom definition cannot use legacy response dialect");
+      CustomToolFormat format;
+      const auto status = ParseCustomToolFormat(*custom, &format);
+      if (!status) return Fail(status.message());
+      const auto name = custom->GetString("name");
+      if (!tools_.emplace(name, custom).second) return Fail("duplicate tool name");
+      custom_tools_.insert(name);
+      continue;
+    }
     const auto* fn = tool.Find("function");
     if (tool.GetString("type") != "function" || !fn || !fn->IsObject())
       return Fail("parsed responses require function tool definitions");
@@ -255,11 +272,13 @@ void ChatResponseParser::Emit(Region region, std::string_view text,
 Status ChatResponseParser::ParseTool(std::string_view block,
                                      ResponseToolCall* call) const {
   block = Trim(block);
-  if (!block.starts_with("<function="))
-    return Status::Fail("tool call must start with a function");
+  call->custom = block.starts_with("<custom=");
+  if (!call->custom && !block.starts_with("<function="))
+    return Status::Fail("tool call must start with function or custom");
   const auto end = block.find('>');
   if (end == block.npos) return Status::Fail("incomplete function name");
-  call->name = std::string(block.substr(10, end - 10));
+  const size_t prefix = call->custom ? 8 : 10;
+  call->name = std::string(block.substr(prefix, end - prefix));
   if (!constraints_.AllowsTool(call->name))
     return Status::Fail("generated tool forbidden by tool_choice");
   if ((!constraints_.parallel ||
@@ -268,6 +287,25 @@ Status ChatResponseParser::ParseTool(std::string_view block,
     return Status::Fail("multiple tool calls forbidden by request");
   const auto fn = tools_.find(call->name);
   if (fn == tools_.end()) return Status::Fail("unknown generated tool name");
+  if (call->custom != custom_tools_.contains(call->name))
+    return Status::Fail("generated tool type differs from its definition");
+  if (call->custom) {
+    block.remove_prefix(end + 1);
+    block = Trim(block);
+    constexpr std::string_view closing = "</custom>";
+    if (!block.ends_with(closing))
+      return Status::Fail("incomplete custom closing tag");
+    block.remove_suffix(closing.size());
+    io::Json value;
+    auto status = io::ParseJson(std::string(Trim(block)), &value, true,
+                                {8, 16, kMaxToolBytes, true});
+    if (!status || !value.IsString())
+      return Status::Fail("custom payload must be one JSON string");
+    call->arguments = std::move(value.str);
+    call->index = tool_count_;
+    call->id = id_prefix_ + std::to_string(tool_count_);
+    return Status();
+  }
   const auto* parameters = fn->second->Find("parameters");
   const auto* properties =
       parameters ? parameters->Find("properties") : nullptr;
@@ -314,6 +352,7 @@ void ChatResponseParser::ToolFragment(std::string text, bool start,
   ResponseDelta delta;
   delta.kind = ResponseDelta::Kind::kTool;
   delta.call.index = partial_call_.index;
+  delta.call.custom = partial_call_.custom;
   if (start) {
     delta.call.id = partial_call_.id;
     delta.call.name = partial_call_.name;
@@ -338,9 +377,14 @@ Status ChatResponseParser::StreamTool(size_t available, bool complete,
   if (!tool_header_) {
     whitespace(&tool_parse_offset_);
     const auto rest = block.substr(tool_parse_offset_);
-    constexpr std::string_view prefix = "<function=";
-    if (prefix.starts_with(rest) && !complete) return Status();
-    if (!rest.starts_with(prefix)) return Status::Fail("invalid function tag");
+    constexpr std::string_view function_prefix = "<function=";
+    constexpr std::string_view custom_prefix = "<custom=";
+    if ((function_prefix.starts_with(rest) || custom_prefix.starts_with(rest)) &&
+        !complete)
+      return Status();
+    partial_call_.custom = rest.starts_with(custom_prefix);
+    const auto prefix = partial_call_.custom ? custom_prefix : function_prefix;
+    if (!rest.starts_with(prefix)) return Status::Fail("invalid tool tag");
     const auto end = rest.find('>');
     if (end == rest.npos) {
       if (rest.size() > 266 || complete)
@@ -352,6 +396,8 @@ Status ChatResponseParser::StreamTool(size_t available, bool complete,
     if (!tools_.contains(partial_call_.name) ||
         !constraints_.AllowsTool(partial_call_.name))
       return Status::Fail("unknown or forbidden generated tool");
+    if (partial_call_.custom != custom_tools_.contains(partial_call_.name))
+      return Status::Fail("generated tool type differs from definition");
     if (tool_count_ == kMaxCalls ||
         ((!constraints_.parallel ||
           constraints_.choice == OutputConstraints::ToolChoice::kNamed) &&
@@ -361,7 +407,35 @@ Status ChatResponseParser::StreamTool(size_t available, bool complete,
     partial_call_.id = id_prefix_ + std::to_string(tool_count_);
     tool_parse_offset_ += end + 1;
     tool_header_ = true;
-    ToolFragment("{", true, deltas);
+    ToolFragment(partial_call_.custom ? "" : "{", true, deltas);
+  }
+  if (partial_call_.custom) {
+    if (!custom_input_.Started()) whitespace(&tool_parse_offset_);
+    if (!custom_input_.Done()) {
+      size_t consumed = 0;
+      std::string decoded;
+      auto status = custom_input_.Append(block.substr(tool_parse_offset_),
+                                         &consumed, &decoded);
+      if (!status) return status;
+      tool_parse_offset_ += consumed;
+      if (!decoded.empty()) ToolFragment(std::move(decoded), false, deltas);
+      if (!custom_input_.Done())
+        return complete ? Status::Fail("incomplete custom input") : Status();
+    }
+    whitespace(&tool_parse_offset_);
+    if (!tool_function_closed_) {
+      const auto rest = block.substr(tool_parse_offset_);
+      constexpr std::string_view closing = "</custom>";
+      if (!complete && closing.starts_with(rest)) return Status();
+      if (!rest.starts_with(closing))
+        return Status::Fail("invalid custom closing tag");
+      tool_parse_offset_ += closing.size();
+      tool_function_closed_ = true;
+    }
+    whitespace(&tool_parse_offset_);
+    return tool_parse_offset_ == block.size()
+               ? Status()
+               : Status::Fail("data after custom closing tag");
   }
   while (!tool_function_closed_) {
     if (!tool_parameter_) {
@@ -527,10 +601,11 @@ Status ChatResponseParser::Append(std::string_view text,
       if (!status) return Fail(status.message());
       status = StreamTool(end, true, deltas);
       if (!status) return Fail(status.message());
-      if (partial_call_.arguments + '}' != call.arguments ||
-          partial_call_.name != call.name)
+      if ((call.custom ? partial_call_.arguments
+                       : partial_call_.arguments + '}') != call.arguments ||
+          partial_call_.name != call.name || partial_call_.custom != call.custom)
         return Fail("incremental tool arguments differ from validated call");
-      ToolFragment("}", false, deltas);
+      if (!call.custom) ToolFragment("}", false, deltas);
       ++tool_count_;
       if (collect_) calls_.push_back(call);
       pending_offset_ += end + kToolClose.size();
@@ -568,6 +643,7 @@ Status ChatResponseParser::Append(std::string_view text,
     tool_scan_ = 0;
     if (region_ == Region::kTool) {
       partial_call_ = {};
+      custom_input_ = {};
       tool_parse_offset_ = 0;
       tool_header_ = tool_parameter_ = tool_function_closed_ = false;
       tool_parameters_.clear();

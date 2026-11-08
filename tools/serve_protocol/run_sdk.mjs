@@ -2,7 +2,7 @@
 import { loadSdk } from './sdk.mjs';
 import { writeSync } from 'node:fs';
 import { ChatClient, parseJson, prepareToolCalls, requireValue } from '../examples/js/chat_client.mjs';
-import { VALIDATORS } from '../examples/js/project_profile.mjs';
+import { VALIDATORS, CUSTOM_VALIDATORS } from '../examples/js/project_profile.mjs';
 
 const buffers = [];
 let bytes = 0;
@@ -39,7 +39,7 @@ try {
     delete result.raw;
     if (['tool_calls', 'function_call'].includes(result.finish_reason)) {
       requireValue(input.tool_profile === 'project-records-v1', 'explicit tool profile required');
-      planned = prepareToolCalls(result, VALIDATORS);
+      planned = prepareToolCalls(result, VALIDATORS, CUSTOM_VALIDATORS);
     }
   } else throw new Error('unknown SDK bridge action');
   process.stdout.write(JSON.stringify({ ok: true, sdk_version: version, result,

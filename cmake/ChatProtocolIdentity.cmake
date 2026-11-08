@@ -63,6 +63,8 @@ set(protocol_inputs
   include/q4t/server/chat_contract.h
   include/q4t/server/sampling.h
   include/q4t/server/prediction.h
+  include/q4t/server/custom_tools.h
+  include/q4t/server/custom_grammar.h
   include/q4t/server/legacy_tools.h
   include/q4t/server/token_logprobs.h
   include/q4t/server/chat_choices.h
@@ -91,11 +93,18 @@ set(protocol_inputs
   include/q4t/server/output_constraints.h
   include/q4t/server/structured_decoder.h
   cmake/StructuredOutput.cmake
+  cmake/RustRegex.cmake
+  cmake/regex-syntax-0.8.8.sha256
+  src/server/regex_syntax/lib.rs
   src/server/chat_capabilities.cpp
   src/server/input_contract.cpp
   src/server/chat_contract.cpp
   src/server/sampling.cpp
   src/server/prediction.cpp
+  src/server/custom_tools.cpp
+  src/server/custom_grammar.cpp
+  src/server/custom_regex.cpp
+  src/server/custom_regex.h
   src/server/legacy_tools.cpp
   src/server/token_logprobs.cpp
   src/server/chat_choices.cpp

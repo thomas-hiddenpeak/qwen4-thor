@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools/examples"))
 from chat_client import (_completion, _choices_completion, prepare_tool_calls,
                          require, validate_capabilities)
-from project_records import VALIDATORS
+from project_records import VALIDATORS, CUSTOM_VALIDATORS
 
 
 class JsSdkError(RuntimeError):
@@ -124,6 +124,6 @@ class JsSdkClient:
         completion = _completion(value["id"], value["model"], value["message"],
                                  value["finish_reason"], value["usage"], value.get("logprobs"))
         if completion.finish_reason in ("tool_calls", "function_call"):
-            expected = [asdict(p) for p in prepare_tool_calls(completion, VALIDATORS)]
+            expected = [asdict(p) for p in prepare_tool_calls(completion, VALIDATORS, custom_validators=CUSTOM_VALIDATORS)]
             require(payload["planned_tools"] == expected, "JS/Python tool plan disagreement")
         return completion

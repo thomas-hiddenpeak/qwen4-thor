@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "q4t/io/json.h"
+#include "q4t/server/custom_tools.h"
 #include "q4t/server/output_constraints.h"
 #include "q4t/server/reasoning_options.h"
 #include "q4t/status.h"
@@ -20,6 +21,7 @@ struct ResponseToolCall {
   std::string id;
   std::string name;
   std::string arguments;  // A JSON object, transported as a JSON string.
+  bool custom = false;  // arguments instead holds the decoded custom input.
 };
 
 struct ResponseDelta {
@@ -95,6 +97,7 @@ class ChatResponseParser {
   size_t tool_value_sent_ = 0;
   size_t tool_value_scan_ = 0;
   bool tool_header_ = false;
+  CustomInputStream custom_input_;
   bool tool_parameter_ = false;
   bool tool_string_ = false;
   bool tool_string_started_ = false;
@@ -102,6 +105,7 @@ class ChatResponseParser {
   std::string tool_parameter_name_;
   std::unordered_set<std::string> tool_parameters_;
   std::unordered_map<std::string, const io::Json*> tools_;
+  std::unordered_set<std::string> custom_tools_;
   std::string content_;
   std::string reasoning_;
   std::vector<ResponseToolCall> calls_;

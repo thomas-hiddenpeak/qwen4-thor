@@ -152,12 +152,15 @@ function message(value) {
     argumentsObject(value.function_call.arguments);
   }
   for (const call of calls) {
-    fields(call, ['id', 'type', 'function']);
-    requireValue(call.type === 'function' && !ids.has(text(call.id, 'missing tool ID', true)), 'invalid or duplicate tool ID');
+    requireValue(['function', 'custom'].includes(call?.type), 'invalid tool type');
+    const kind = call.type, key = kind === 'custom' ? 'input' : 'arguments';
+    fields(call, ['id', 'type', kind]);
+    requireValue(!ids.has(text(call.id, 'missing tool ID', true)), 'duplicate tool ID');
     ids.add(call.id);
-    fields(call.function, ['name', 'arguments']);
-    text(call.function.name, 'missing function name', true);
-    argumentsObject(call.function.arguments);
+    fields(call[kind], ['name', key]);
+    text(call[kind].name, 'missing tool name', true);
+    if (kind === 'custom') text(call.custom.input, 'custom input must be text');
+    else argumentsObject(call.function.arguments);
   }
   return clone(value);
 }
@@ -281,19 +284,19 @@ export function parseSseWire(raw) {
     requireValue(delta.tool_calls === undefined || Array.isArray(delta.tool_calls), 'invalid tool delta list');
     for (const tool of delta.tool_calls ?? []) {
       requireValue(state.functionCall === null, 'mixed call dialects');
-      fields(tool, ['index', 'id', 'type', 'function']);
       requireValue(integer(tool.index) && tool.index <= calls.length, 'noncontiguous tool index');
-      const fn = tool.function ?? {}; fields(fn, ['name', 'arguments']);
       if (tool.index === calls.length) {
-        requireValue(calls.length < MAX_TOOL_CALLS && tool.type === 'function', 'invalid tool type/count');
-        const id = text(tool.id, 'missing tool ID', true);
+        requireValue(calls.length < MAX_TOOL_CALLS && ['function', 'custom'].includes(tool.type), 'invalid tool type/count');
+        const id = text(tool.id, 'missing tool ID', true), kind = tool.type;
         requireValue(!calls.some(c => c.id === id), 'duplicate tool ID');
-        text(fn.name, 'missing initial function name', true);
-        calls.push({ id, type: 'function', function: { name: '', arguments: '' } });
+        text(tool[kind]?.name, 'missing initial tool name', true);
+        calls.push({ id, type: kind, [kind]: { name: '', [kind === 'custom' ? 'input' : 'arguments']: '' } });
       }
-      const call = calls[tool.index];
-      requireValue((tool.id ?? call.id) === call.id && (tool.type ?? 'function') === 'function', 'tool identity changed');
-      for (const key of ['name', 'arguments']) if (Object.hasOwn(fn, key)) call.function[key] += text(fn[key], 'invalid tool delta');
+      const call = calls[tool.index], kind = call.type, key = kind === 'custom' ? 'input' : 'arguments';
+      fields(tool, ['index', 'id', 'type', kind]);
+      requireValue((tool.id ?? call.id) === call.id && (tool.type ?? kind) === kind, 'tool identity changed');
+      const part = tool[kind] ?? {}; fields(part, ['name', key]);
+      for (const field of ['name', key]) if (Object.hasOwn(part, field)) call[kind][field] += text(part[field], 'invalid tool delta');
     }
     if (delta.function_call != null) {
       requireValue(!calls.length, 'mixed call dialects');
@@ -340,9 +343,15 @@ export function parseSseWire(raw) {
   return { result: choiceResults(identity[0], identity[1], choices, counts), events };
 }
 
-export function prepareToolCalls(result, validators) {
+export function prepareToolCalls(result, validators, customValidators = {}) {
   requireValue(['tool_calls', 'function_call'].includes(result.finish_reason), 'not a completed tool turn');
   return invocationCalls(message(result.message)).map(call => {
+    if (call.type === 'custom') {
+      const { name, input } = call.custom;
+      requireValue(Object.hasOwn(customValidators, name) && typeof customValidators[name] === 'function', 'unregistered custom tool');
+      requireValue(customValidators[name](input) === undefined, 'validator must return undefined or throw');
+      return { call_id: call.id, type: 'custom', name, input };
+    }
     const name = call.function.name, args = argumentsObject(call.function.arguments);
     requireValue(Object.hasOwn(validators, name) && typeof validators[name] === 'function', 'unregistered tool');
     requireValue(validators[name](clone(args)) === undefined, 'validator must return undefined or throw');

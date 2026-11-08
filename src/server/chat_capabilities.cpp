@@ -172,7 +172,11 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("speculative_tail_not_charged":true,"incomplete_tool":"error",)"
          R"("incomplete_reasoning":"allowed_on_text_stop",)"
          R"("constrained_output":false,"state_cache":false},)"
-         R"("tools":{"type":"function","execution":"client",)" +
+         R"("tools":{"type":"function","execution":"client","types":)" +
+         (constrained ? R"(["function","custom"],)" : R"(["function"],)") +
+         R"("custom_profile":"q4t-custom-tools-v1","custom_formats":)" +
+         (constrained ? R"(["text","regex","lark"],)" : R"([],)") +
+         R"("custom_input":"raw_text","custom_execution_barrier":"successful_terminal_and_eof",)" +
          options +
          R"("options_require_parsed_messages":true,)"
          R"("definition_unknown_fields":"reject_all_modes",)"

@@ -1,5 +1,7 @@
 #include "q4t/server/input_contract.h"
 
+#include "q4t/server/custom_tools.h"
+
 #include <algorithm>
 #include <cmath>
 #include <unordered_set>
@@ -85,6 +87,19 @@ Status ValidateToolDefinitions(const io::Json& request,
   for (size_t index = 0; index < tools->array.size(); ++index) {
     const auto& tool = tools->array[index];
     const auto path = "tools[" + std::to_string(index) + "]";
+    if (tool.GetString("type") == "custom") {
+      auto status = InputFields(tool, {"type", "custom"}, error_param, path);
+      if (!status) return status;
+      const auto* custom = tool.Find("custom");
+      if (!custom) return invalid(path + ".custom", "missing custom definition");
+      CustomToolFormat format;
+      status = ParseCustomToolFormat(*custom, &format, error_param,
+                                     path + ".custom");
+      if (!status) return status;
+      if (!names.insert(custom->GetString("name")).second)
+        return invalid(path + ".custom.name", "duplicate tool name");
+      continue;
+    }
     const auto fn_path = path + ".function";
     auto status = InputFields(tool, {"type", "function"}, error_param, path);
     if (!status) return status;

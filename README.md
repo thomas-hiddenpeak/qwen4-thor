@@ -193,6 +193,7 @@ HTTP/1.0/1.1、Content-Length与连接关闭；不接收chunked请求或Expect�
 #   pip install --user --break-system-packages cmake==4.4.3
 # 要求: g++-14 (nvcc 的 --std=c++23 需 host 编译器支持, GCC 13 会静默忽略)
 #   sudo apt-get install g++-14 pkg-config liburing-dev libicu-dev
+# custom grammar构建另需rustc >= 1.65（本机使用固定1.90.0）；不要求cargo
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_CXX_COMPILER=g++-14 -DCMAKE_CUDA_HOST_COMPILER=g++-14 \
   -DQ4T_CUDA_ARCHITECTURES=110a -DQ4T_ENABLE_XGRAMMAR=ON
@@ -207,7 +208,11 @@ python3 tools/evalscope/gpu_exclusive.py \
 ## 使用
 
 构建参数 ON 复现当前默认的工具控制 / 结构化输出能力，并拉取固定
-XGrammar C++ 依赖。CMake 选项自身默认 OFF，公共 host 构建不联网；
+XGrammar C++ 及 regex-syntax 0.8.8 源码依赖（归档和源码摘要校验）。
+后者由 rustc 静态编译，只在已有隔离工作器内准备 custom regex/Lark；
+不需要部署 Rust 工具链或增加外部服务。许可随包保留于
+[依赖声明](third_party/licenses/structured_output/README.md)。
+CMake 选项自身默认 OFF，公共 host 构建不联网；
 OFF 构建遇到需要约束的请求会明确拒绝，不降级为普通生成。
 
 ```bash

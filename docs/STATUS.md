@@ -128,6 +128,17 @@ A04仍有legacy/custom工具待补，随后A05等总计划；总目标保持acti
 Key/配额保持STOPPED，安装0/0。继续custom text/regex/lark及其
 历史、流式响应和实际执行，A04与全部总目标保持开放。
 
+[custom工具CPU通过](SERVE_CUSTOM_TOOLS_2026-11-08.md)：标准定义/选择、
+历史、custom.input增量解析和客户端专用注册已接入。固定Rust
+regex-syntax静态组件弥补原XGrammar的flags/Unicode/断言缺口，
+复用隔离grammar工作器，无新增运行服务。44项不同C++、72输入/schema、
+20 Python（含3驱动）、9 JS通过；build-05零警告。审查补齐
+Lark转义字面量/占位符冲突边界，仅重验7项语法及新增桥接校验。初次构建
+告警/夹具类型错误与计划准备错误保留，未执行额外GPU尝试。
+下一步1启动/8Chat（上限2/8/900秒）真实text/regex/Lark读取、
+引用、混合调用、截断/取消及MTP继续。默认33c52e4a保持，尚未
+真实业务验收或交付；A04及全部总目标继续开放。
+
 工作分支`codex/serve-resilience-cd`继续隔离PR #22已接受发布；
 PR #22此前34b06bc1两项CI成功、CLEAN。当前默认服务包以顶部N01—N03交付为准；
 实现、验证、安装和合main分别记录。

@@ -2,6 +2,7 @@
 
 - [A04工具选择与增量流](SERVE_TOOL_STREAM_2026-11-08.md)：allowed_tools与逐片参数已验交付；custom继续实施。
 - [Legacy functions/function_call已验交付](SERVE_LEGACY_TOOLS_2026-11-08.md)
+- [Custom工具实施与验收](SERVE_CUSTOM_TOOLS_2026-11-08.md)
 - [A03 prediction](SERVE_PREDICTION_2026-11-08.md)：目标验证、状态回滚、预算与usage；已完成针对性业务和可回退交付。
 - [A03生成参数](SERVE_SAMPLING_2026-11-08.md)：实际采样、多choice、logprobs及验收进展；prediction与剩余总计划继续。
 - [A01/A02消息输入交付](SERVE_CHAT_INPUT_2026-11-08.md)：多指令、name、refusal、schema与实际SDK工具闭环；剩余总计划继续。
