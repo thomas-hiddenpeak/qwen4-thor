@@ -1,0 +1,9 @@
+[
+  "python3",
+  "-I",
+  "-B",
+  "tools/serve_progress/acceptance.py",
+  "verify",
+  "--plan",
+  ".q4t-work/serve-progress-20261109/business-01/plan.json"
+]

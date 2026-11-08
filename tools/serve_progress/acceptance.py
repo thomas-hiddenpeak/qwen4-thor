@@ -27,6 +27,7 @@ spec.loader.exec_module(common)
 common.__file__ = __file__
 original_load = common.load_modules
 LIMITS = dict(starts=2, chats=8, probes=1, controls=2000, seconds=900)
+COMPLETION_LIMITS = dict(LIMITS, starts=3, chats=9)
 save, Budget = common.save, common.Budget
 
 
@@ -59,13 +60,28 @@ def load_modules(plan=None):
 
 def verify(plan):
     bundle, _, _, _, _, engine = load_modules(plan)
-    engine.require(plan['scenario'] == 'native_progress' and
-        plan['limits'] == LIMITS, 'frozen R03 budget changed')
+    scenario = plan['scenario']
+    engine.require(scenario in ('native_progress', 'native_progress_completion') and
+        plan['limits'] == (COMPLETION_LIMITS if scenario.endswith('_completion')
+                          else LIMITS), 'frozen R03 budget changed')
     for name, digest in plan['sources'].items():
         engine.require(engine.sha(ROOT / name) == digest, 'source changed: '+name)
     for row in plan['protected']:
         engine.require(engine.sha(row['path']) == row['sha256'],
             'protected artifact changed: '+row['path'])
+    for row in plan.get('prior_evidence', []):
+        engine.require(engine.sha(row['path']) == row['sha256'],
+            'prior failure evidence changed')
+    if scenario.endswith('_completion'):
+        prior = engine.read(plan['prior_result'])
+        engine.require(prior['status'] == 'FAILED' and
+            prior['cleanup_failure'] is None and
+            'candidate discovery unavailable' in prior['failure'] and
+            prior['budget']['counts'] == plan['prior_counts'] and
+            {k: plan['prior_counts'][k] for k in ('starts', 'chats', 'probes')} ==
+            dict(starts=1, chats=1, probes=0) and
+            prior['seconds'] == plan['prior_seconds'],
+            'continuation must preserve exact failed work consumption')
     result = bundle.verify(plan['package']['package'],
         plan['package']['manifest_sha256'])
     engine.require(result['version'] == 5 and
@@ -75,6 +91,15 @@ def verify(plan):
 
 
 common.load_modules, common.verify = load_modules, verify
+
+
+def discovery_request(port, path, scoped_policy):
+    from tools.serve_ops import transport
+    # Capabilities is a client control operation; local configuration forbids
+    # identity-bearing headers. Preserve the two existing security planes.
+    credentials = (dict(client='alpha', token=scoped_policy['gateway_token'])
+        if path == '/v1/capabilities' else None)
+    return transport.get(port, path, timeout=2, credentials=credentials)
 
 
 def controller_actor(plan, config):
@@ -157,12 +182,15 @@ class Stage(common.Stage):
             'recovered real tool closure quality')
 
     def declarations(self):
-        from tools.serve_ops import transport
+        generated = list((self.output / 'state').rglob('model-1/client-policy.json'))
+        self.engine.require(len(generated) == 1, 'owned generation client policy')
+        scoped_policy = self.engine.read(generated[0])
         for label, path in (('capabilities', '/v1/capabilities'),
                             ('configuration', '/v1/config')):
             self.budget.reserve('controls', label)
-            response = transport.get(self.policy['upstream_operations_port'],
-                path, timeout=2)
+            response = discovery_request(self.policy['upstream_operations_port'],
+                path, scoped_policy)
+            save(self.output / (label+'-http.json'), response)
             self.engine.require(response['http_status'] == 200,
                 'candidate discovery unavailable')
             value = json.loads(response['body'])
@@ -180,9 +208,8 @@ class Stage(common.Stage):
                         actual = actual[part]
                     self.engine.require(actual == wanted,
                         'actual candidate configuration differs: '+dotted)
-                generated = list((self.output / 'state').rglob('model-1/client-policy.json'))
-                self.engine.require(len(generated) == 1 and
-                    value['client_policy']['sha256'] == self.engine.sha(generated[0]),
+                self.engine.require(value['client_policy']['sha256'] ==
+                    self.engine.sha(generated[0]),
                     'actual scoped client policy identity')
             save(self.output / (label+'.json'), value)
 
@@ -243,7 +270,8 @@ class Stage(common.Stage):
             final['business_ready'],
             'lost auxiliary progress restarted a healthy model')
         counts = self.engine.read(self.output / 'counts.json')['counts']
-        self.engine.require(counts['starts'] == 2 and counts['chats'] == 8 and
+        self.engine.require(counts['starts'] == self.plan['limits']['starts'] and
+            counts['chats'] == self.plan['limits']['chats'] and
             counts['probes'] == 1, 'unexpected startup/generation/probe count')
         save(self.output / 'business-final.json', final)
 

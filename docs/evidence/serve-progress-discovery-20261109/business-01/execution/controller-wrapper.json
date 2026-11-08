@@ -1,0 +1,27 @@
+{
+  "original_command": [
+    "/usr/bin/python3.12",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-progress-20261109/business-01/bundle/source/tools/serve_recovery/controller.py",
+    "--config",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-progress-20261109/business-01/execution/state/runs/2cffe9b6-1564-4389-8229-98d92dd7bf18/controller.json"
+  ],
+  "validation_command": [
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/serve_progress/acceptance.py",
+    "controller",
+    "--plan",
+    ".q4t-work/serve-progress-20261109/business-01/plan.json",
+    "--config",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-progress-20261109/business-01/execution/state/runs/2cffe9b6-1564-4389-8229-98d92dd7bf18/controller.json"
+  ],
+  "production_package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-progress-20261109/business-01/bundle",
+    "manifest_sha256": "109b4e7a11d1bbf45bf3590da1ec2f1bb7f11ee44fcfd06c6924387a120a7622",
+    "engine_binary_sha256": "1f3d0de49935ac6b586b67ce1e74673f781480333aba48652836f50eadd0e2be",
+    "recovery_accepted": false
+  }
+}
