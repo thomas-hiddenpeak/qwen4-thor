@@ -1,0 +1,7 @@
+{
+  "binary_sha256": "8a53f39d82b60680255256a58388a8b5e60fd37db5b588248f4833f8912f39b1",
+  "source_commit": "8112ccc4b1d01785be70a8f901a5d0abe73fb8c5",
+  "business": "business-01",
+  "default_replaced": false,
+  "application_scope": "foreground Responses; remaining A07/A08 required"
+}

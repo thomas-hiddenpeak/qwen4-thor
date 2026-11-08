@@ -205,9 +205,10 @@
         "evidence/serve-responses-core-20261108/README.md"
       ],
       "release": null,
-      "development_status": "共享实际生成/持久终态、原生查询/删除/输入历史分页/事件续读已接；本组23不同C++、6官方SDK CPU、3原生入口通过。修复最终概率item缺原始bytes。0 GPU/无发布；后台、实时事件/恢复、配额失败闭合及执行依赖继续，不能作为全部交付。",
+      "development_status": "共享实际生成/持久终态、原生查询/删除/输入历史分页/事件续读已接；本组23不同C++、6官方SDK CPU、3原生入口通过。修复最终概率item缺原始bytes。0 GPU/无发布；后台、实时事件/恢复、配额失败闭合及执行依赖继续，不能作为全部交付。 同步真实业务1启动/7生成/54.739秒通过，53NVML全OK；候选保留、默认未改，后台及其余必做项未完成。",
       "item_shape_evidence": "evidence/serve-item-shape-20261109/README.md",
-      "execution_evidence": "evidence/serve-responses-execution-20261109/README.md"
+      "execution_evidence": "evidence/serve-responses-execution-20261109/README.md",
+      "foreground_business_evidence": "evidence/serve-responses-business-20261109/README.md"
     },
     {
       "id": "A08",
@@ -221,13 +222,14 @@
       ],
       "evidence": [],
       "release": null,
-      "development_status": "共享实际生成/持久终态、原生查询/删除/输入历史分页/事件续读已接；本组23不同C++、6官方SDK CPU、3原生入口通过。修复最终概率item缺原始bytes。0 GPU/无发布；后台、实时事件/恢复、配额失败闭合及执行依赖继续，不能作为全部交付。",
+      "development_status": "共享实际生成/持久终态、原生查询/删除/输入历史分页/事件续读已接；本组23不同C++、6官方SDK CPU、3原生入口通过。修复最终概率item缺原始bytes。0 GPU/无发布；后台、实时事件/恢复、配额失败闭合及执行依赖继续，不能作为全部交付。 同步真实业务1启动/7生成/54.739秒通过，53NVML全OK；候选保留、默认未改，后台及其余必做项未完成。",
       "development_evidence": "evidence/serve-object-store-20261108/README.md",
       "transaction_evidence": "evidence/serve-object-transactions-20261108/README.md",
       "state_evidence": "evidence/serve-responses-state-20261109/README.md",
       "conversation_evidence": "evidence/serve-conversations-20261109/README.md",
       "service_binding_evidence": "evidence/serve-conversation-service-20261109/README.md",
-      "execution_evidence": "evidence/serve-responses-execution-20261109/README.md"
+      "execution_evidence": "evidence/serve-responses-execution-20261109/README.md",
+      "foreground_business_evidence": "evidence/serve-responses-business-20261109/README.md"
     },
     {
       "id": "A09",
@@ -627,5 +629,5 @@
     }
   ],
   "next_task": "A07",
-  "next": "继续A07真实SDK/资料工具业务短验，A08后台执行/取消/实时事件和恢复，以及全部剩余总计划；不在CPU检查点结束。"
+  "next": "继续A08后台排队/执行/取消、实时事件、配额失败收尾与重启恢复；同步业务已过证据复用，继续全部剩余计划。"
 }

@@ -2,6 +2,13 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+[Responses首组真实短验通过](evidence/serve-responses-business-20261109/README.md)：
+1启动/7生成/54.739秒，53次NVML全OK，严格租约child 0。原生JSON/SSE、
+概率原字节/落盘/续读、34推理token、真实资料工具与历史回填约束JSON、
+incomplete及同PID Chat/MTP通过。模型退出0、端口/锁释放、默认未改。
+验收候选8a53f39d单独保留；继续后台执行/取消/实时事件、配额失败收尾
+及恢复，不能把同步子集验收当A07/A08/总计划完成。
+
 [真实业务驱动CPU](evidence/serve-responses-driver-20261109/README.md)3 Python
 及2实际SDK桥接通过。将提交驱动后冻结来源执行GPU首组短验。
 
