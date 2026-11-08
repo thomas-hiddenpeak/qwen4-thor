@@ -41,3 +41,4 @@ docs/evidence/serve-responses-core-20261108/**/*.wire binary
 # Preserve durable-store CPU results, failed originals and record digests.
 docs/evidence/serve-object-store-20261108/** -text -whitespace
 docs/evidence/serve-object-transactions-20261108/** -text -whitespace
+docs/evidence/serve-responses-state-20261109/** -text -whitespace

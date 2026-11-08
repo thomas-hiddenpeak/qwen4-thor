@@ -73,6 +73,8 @@ set(protocol_inputs
   src/server/object_store.cpp
   src/server/object_worker.cpp
   src/server/object_protocol.h
+  include/q4t/server/responses_state.h
+  src/server/responses_state.cpp
   src/server/grammar_worker.cpp
   src/server/grammar_worker_internal.h
   include/q4t/server/abort_reason.h

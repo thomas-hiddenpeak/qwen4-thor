@@ -1,6 +1,17 @@
 # 当前状态
 
-更新：2026-11-08。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
+更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
+
+继续A07/A08实际状态接入：新增Responses历史解析、原生item引用、
+初始记录与响应/会话/items终态事务；上一轮instructions不继承，
+失败/取消不追加会话。新增8项CPU通过、两次构建零警告，覆盖
+无状态不触盘、历史指令隔离、client/item隔离、工具回填、会话CAS
+冲突不能发布completed及失败记录闭合；尚未接HTTP或模型。
+事务检查点`851f3203`已推送；默认A06不变，
+继续完整Conversations/路由/background/生成接入，总目标active。
+继续审查补强对象调度线程最外层异常出口：提前准备故障回执并在
+兜底中不分配内存，防止报错路径bad_alloc终止核心进程；该新增
+缺陷与5项受影响行为CPU通过、构建零警告，不改变设备故障保护。
 
 [A07 Responses进入实施](SERVE_RESPONSES_2026-11-08.md)：冻结实际官方
 SDK的32个顶层字段及跨A08—A11责任，原生items/SSE、工具回填与

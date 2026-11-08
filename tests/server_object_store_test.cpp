@@ -579,3 +579,16 @@ Q4T_TEST(object_store_nonexpiring_single_object_survives_restart) {
   Q4T_CHECK(Ok(result) && result.value.GetInt("expires_at", -1) == 0);
   return true;
 }
+
+Q4T_TEST(object_store_error_reporting_allocation_failure_is_isolated) {
+  Fixture f;
+  ObjectStore store(f.options);
+  FailObjectControllerForTesting();
+  const auto reply = Run(store, Request());
+  Q4T_CHECK(reply.http_status == 503 && reply.code == "object_unavailable");
+  Q4T_CHECK(store.Health().state == "unavailable" &&
+            store.Health().pending == 0);
+  Q4T_CHECK(GrammarContinues());
+  Q4T_CHECK(Run(store, Request()).http_status == 503);
+  return true;
+}

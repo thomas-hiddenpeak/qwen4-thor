@@ -110,6 +110,7 @@ int MaybeRunObjectWorker(int argc, char** argv);
 // Host-only fault injection; neither symbol nor selector exists in q4t serve.
 void ObjectWorkerEntryForTesting(std::string entry);
 void DeferObjectSpawnForTesting(bool enabled);
+void FailObjectControllerForTesting();
 #endif
 
 }  // namespace q4t::server

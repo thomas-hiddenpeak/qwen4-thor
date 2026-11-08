@@ -21,6 +21,7 @@ using namespace std::chrono_literals;
 std::mutex test_mutex;
 std::string test_entry;
 std::atomic<bool> test_defer_spawn{false};
+std::atomic<bool> test_fail_controller{false};
 #endif
 // Process-lifetime ownership survives a destructor's bounded wait. A stuck
 // spawn cannot cause another ObjectStore to create replacement threads.
@@ -86,17 +87,38 @@ struct ObjectStore::State {
   mutable std::mutex mutex;
   std::condition_variable changed;
   std::deque<std::shared_ptr<Job>> jobs;
+  std::shared_ptr<Job> current;
   uint64_t queued_bytes = 0;
   size_t outstanding = 0;
   std::atomic<bool> stop{false};
   bool done = false;
   std::string health = "starting";
+  std::string emergency_health = "unavailable";
   std::shared_ptr<GrammarWorkerCounters> counters =
       std::make_shared<GrammarWorkerCounters>();
 
   void SetHealth(std::string value) {
     const std::lock_guard lock(mutex);
     health = std::move(value);
+  }
+  void FailNoAllocation() noexcept {
+    {
+      const std::lock_guard lock(mutex);
+      if (current) {
+        current->reply.commit_unknown = current->mutation && current->started;
+        current->complete = true;
+      }
+      for (auto& job : jobs) job->complete = true;
+      jobs.clear();
+      current.reset();
+      queued_bytes = 0;
+      outstanding = 0;
+      health.swap(emergency_health);
+      stop.store(true);
+      ControllerOwned().store(false);
+      done = true;
+    }
+    changed.notify_all();
   }
 
   ObjectReply Exchange(detail::GrammarProcess& process, uint64_t sequence,
@@ -146,7 +168,11 @@ struct ObjectStore::State {
           active = jobs.front();
           jobs.pop_front();
           active->started = true;
+          current = active;
         }
+#ifdef Q4T_GRAMMAR_PROCESS_TESTS
+        if (test_fail_controller.load()) throw std::bad_alloc();
+#endif
         ObjectReply reply;
         const auto now = Clock::now();
         if (active->abandoned || now >= active->deadline) {
@@ -215,6 +241,7 @@ struct ObjectStore::State {
           active->complete = true;
           queued_bytes -= active->wire.size();
           --outstanding;
+          current.reset();
         }
         changed.notify_all();
         active.reset();
@@ -222,6 +249,9 @@ struct ObjectStore::State {
     } catch (...) {
       SetHealth("unavailable");
     }
+#ifdef Q4T_GRAMMAR_PROCESS_TESTS
+    if (test_fail_controller.exchange(false)) throw std::bad_alloc();
+#endif
     process.reset();
     {
       const std::lock_guard lock(mutex);
@@ -236,6 +266,7 @@ struct ObjectStore::State {
         job->complete = true;
       }
       jobs.clear();
+      current.reset();
       outstanding = 0;
       queued_bytes = 0;
       ControllerOwned().store(false);
@@ -267,7 +298,15 @@ ObjectStore::ObjectStore(ObjectStoreOptions options)
     return;
   }
   try {
-    std::thread([state = state_] { state->Run(); }).detach();
+    std::thread([state = state_] {
+      try {
+        state->Run();
+      } catch (...) {
+        // Even allocating an error message can fail. This final boundary uses
+        // only fallback replies prepared by the caller before queue admission.
+        state->FailNoAllocation();
+      }
+    }).detach();
   } catch (...) {
     ControllerOwned().store(false);
     state_->health = "unavailable";
@@ -345,6 +384,7 @@ ObjectReply ObjectStore::Dispatch(std::string wire, bool mutation,
       std::min(deadline,
                Clock::now() + std::chrono::milliseconds(options.io_timeout_ms));
   job->mutation = mutation;
+  job->reply = Error(503, "object_unavailable", "Object controller stopped");
   job->wire = std::move(wire);
   if (job->wire.size() > kMaxFrame / 2 ||
       job->wire.size() > options.max_queue_bytes)
@@ -423,5 +463,6 @@ void ObjectWorkerEntryForTesting(std::string entry) {
 void DeferObjectSpawnForTesting(bool enabled) {
   test_defer_spawn.store(enabled);
 }
+void FailObjectControllerForTesting() { test_fail_controller.store(true); }
 #endif
 }  // namespace q4t::server
