@@ -40,3 +40,8 @@ SDK发现metadata=null序列化为metadata=，现按省略处理且拒绝混合�
 验证最终写入失败不发成功终态、原ID查询及同PID核心Chat继续。
 先做2项Python负控与2项官方SDK桥接CPU，保存失败及所有拥有进程
 原件；默认c704eebf不变。通过后可回退发行并继续所有剩余主计划。
+
+首轮在已完成3条生成后，驱动误读SDK分页属性导致FAILED；原始
+服务列表字段完整。见[原件与续验](evidence/serve-chat-storage-prefix-20261109/README.md)。
+桥接CPU补验通过，引擎未改。只续1启动/4Chat/300秒，累计2启动/
+7Chat/600秒；复用前三条，私有复制原状态完成剩余工具及故障场景。

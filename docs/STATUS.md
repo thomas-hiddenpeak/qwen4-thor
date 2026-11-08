@@ -2,6 +2,12 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+Chat首轮1启动/3生成/42.497秒在SDK分页驱动误读处停止：真实
+不保存、双choice JSON/SSE及概率保存均通过；原始列表游标完整。
+驱动修复与CPU补验通过，[原FAILED/续验边界](evidence/serve-chat-storage-prefix-20261109/README.md)。
+模型退出0、1606分配释放；仅续1启动/4Chat/300秒，累计2启动/7Chat，
+私有复制原状态，不重做前三条。默认保留，全部总计划继续。
+
 Chat真实业务驱动2 Python/2官方SDK桥接CPU通过，[原件](evidence/serve-chat-storage-driver-20261109/README.md)。
 接着提交驱动、冻结来源后执行1启动/7 Chat/600秒严格租约短验；
 本组核心代码未再改，继续复用已通过的针对性证据。

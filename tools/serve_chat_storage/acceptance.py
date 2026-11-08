@@ -245,6 +245,10 @@ class Stage(background.Stage):
             require(logs and all(len(row['top_logprobs']) == 2 and math.isfinite(row['logprob']) and
                 row['logprob'] <= 0 and isinstance(row['bytes'], list) for row in logs),
                 'actual stored token probabilities/bytes missing')
+        self.remainder(stored, stream, 7)
+
+    def remainder(self, stored, stream, total_requests):
+        rows = self.plan['requests']
         page = self.sdk_chat('filtered-list', 'list', query=dict(metadata=dict(stage='stream'), model=MODEL, limit=1))
         require(page['data'] == [stream] and not page['has_more'], 'filtered native list')
         tool = self.sdk_chat('tool', 'create', rows['tool'])
@@ -280,7 +284,8 @@ class Stage(background.Stage):
         self.sdk_chat('delete', 'delete', identity=stored['id'])
         self.sdk_chat('deleted-gone', 'retrieve', identity=stored['id'], expected_status=404)
         metrics = self.drained('final')
-        require(metrics['q4t_requests_total'] == 7 and metrics['q4t_requests_success_total'] == 6 and
+        require(metrics['q4t_requests_total'] == total_requests and
+                metrics['q4t_requests_success_total'] == total_requests-1 and
                 metrics['q4t_requests_error_total'] == 1, 'Chat generation accounting')
         status, raw = self.http('/v1/config', label='final-config')
         require(status == 200, 'final config missing')

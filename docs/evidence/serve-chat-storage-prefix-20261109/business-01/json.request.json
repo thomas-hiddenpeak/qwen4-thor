@@ -1,0 +1,25 @@
+{
+  "action": "create",
+  "request": {
+    "model": "qwen3.8-flash-next",
+    "temperature": 0,
+    "enable_thinking": false,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Compute 17 + 25. Reply only with the decimal number."
+      }
+    ],
+    "max_completion_tokens": 64,
+    "store": true,
+    "n": 2,
+    "metadata": {
+      "stage": "json"
+    }
+  },
+  "id": null,
+  "query": null,
+  "base_url": "http://127.0.0.1:18164/v1",
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "timeout_ms": 120000
+}

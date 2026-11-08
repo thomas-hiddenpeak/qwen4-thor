@@ -32,8 +32,11 @@ export async function execute(input) {
     else if (input.action === 'list' || input.action === 'messages') {
       const page = input.action === 'list' ? await chat.list(input.query ?? {}, options) :
         await chat.messages.list(input.id, input.query ?? {}, options);
-      result = { object: 'list', data: page.data, first_id: page.first_id,
-        last_id: page.last_id, has_more: page.has_more };
+      // CursorPage exposes data/has_more, not every raw wire field. Preserve
+      // the already captured response instead of inventing/omitting cursors.
+      result = JSON.parse(Buffer.concat(wire).toString('utf8'));
+      if (JSON.stringify(page.data) !== JSON.stringify(result.data) ||
+          page.has_more !== result.has_more) throw new Error('SDK page differs from wire');
     } else throw new Error('unknown stored Chat SDK action');
     if (input.action === 'create' && input.request.stream) {
       const stream = result;

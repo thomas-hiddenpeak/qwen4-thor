@@ -1,0 +1,11 @@
+{
+  "status": "FAILED",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 294, in run\n    try:self.start();self.business();result['status']=self.success_status\n                     ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_chat_storage/acceptance.py\", line 248, in business\n    page = self.sdk_chat('filtered-list', 'list', query=dict(metadata=dict(stage='stream'), model=MODEL, limit=1))\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_chat_storage/acceptance.py\", line 173, in sdk_chat\n    shape(value, name)\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_chat_storage/acceptance.py\", line 60, in shape\n    require(not failures, str([(list(e.path), e.message[:160]) for e in failures]))\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 57, in require\n    raise RuntimeError(message)\nRuntimeError: [([], \"'first_id' is a required property\"), ([], \"'last_id' is a required property\")]\n",
+  "counts": {
+    "starts": 1,
+    "chats": 3,
+    "controls": 41
+  },
+  "seconds": 42.49692832957953,
+  "binary_sha256": "8fbb50e9a85d1c0797954b3f24dbb7cfd0db835b2777dfe66ab0d2c6aae26e84"
+}

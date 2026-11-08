@@ -42,6 +42,8 @@ test('official management bridge sends one request with exact method/body/query 
       assert.equal(rows.at(-1).url, path);
       assert.deepEqual(body ? JSON.parse(rows.at(-1).body) : rows.at(-1).body, body);
       assert.equal(JSON.parse(Buffer.from(result.wire_base64, 'base64')).object, 'list');
+      assert.equal(result.result.first_id, null);
+      assert.equal(result.result.last_id, null);
     }
     const failed = await execute({ base_url, action: 'retrieve', id: 'missing' });
     assert.equal(failed.ok, false);
