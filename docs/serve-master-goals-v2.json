@@ -204,8 +204,16 @@
         "SERVE_RESPONSES_2026-11-08.md",
         "evidence/serve-responses-core-20261108/README.md"
       ],
-      "release": null,
-      "development_status": "后台实际业务组合验收通过：3启动8生成133.291秒、130次NVML全OK；queued原ID恢复、started保存部分输出失败不重放、Chat正常。两次驱动误判FAILED原件保留。候选0ca69a41保存、默认A06不改；继续对象控制器自身恢复、前台未知提交、保留治理及全部高级执行器/Chat持久化等余项。 前台未知提交协调14 CPU通过；继续修检查点错误流序号后做适用HTTP短验，所有高级执行器等仍必做。 错误流4 CPU修复通过；1启动4生成54.609秒真实worker故障恢复/资料工具/连续流/同PID Chat通过，候选c704eebf保留。准备可回退发行，继续所有剩余项。",
+      "release": {
+        "engine_sha256": "c704eebf3d7f8f03fb566c5ab340277427a9304a09416bed0387676ed028f28f",
+        "engine_release_sha256": "3216d5afdcea78b1f33e37a055c1acfea89eef88b22da2a2c4c75ef19c49c000",
+        "manifest_sha256": "d0e5f43ff23435aa8e95688953687480da5ab16f33525304110db3979f5fc9d8",
+        "release_sha256": "824573f60d62aa8bc12a117bd492e2975b7524b90091c1809f0cb7a8a19b91af",
+        "state": "STOPPED",
+        "merged_main": false,
+        "whole_task_complete": false
+      },
+      "development_status": "已验Responses/Conversations/background/前台未知提交协调随v3原生应用包可回退默认交付。后台3启动8生成与前台1启动4生成真实短验通过，703来源及直接CPU证据复用。高级执行器、Chat持久化、保留治理等仍需完成，继续全部计划。",
       "item_shape_evidence": "evidence/serve-item-shape-20261109/README.md",
       "execution_evidence": "evidence/serve-responses-execution-20261109/README.md",
       "foreground_business_evidence": "evidence/serve-responses-business-20261109/README.md",
@@ -217,7 +225,8 @@
       "declaration_evidence": "evidence/serve-responses-declarations-20261109/README.md",
       "background_business_evidence": "evidence/serve-responses-background-business-20261109/README.md",
       "foreground_reconciliation_evidence": "evidence/serve-foreground-reconciliation-20261109/README.md",
-      "foreground_recovery_business_evidence": "evidence/serve-reconciliation-business-20261109/README.md"
+      "foreground_recovery_business_evidence": "evidence/serve-reconciliation-business-20261109/README.md",
+      "delivery_evidence": "evidence/serve-application-delivery-20261109/README.md"
     },
     {
       "id": "A08",
@@ -230,8 +239,16 @@
         "N04"
       ],
       "evidence": [],
-      "release": null,
-      "development_status": "后台实际业务组合验收通过：3启动8生成133.291秒、130次NVML全OK；queued原ID恢复、started保存部分输出失败不重放、Chat正常。两次驱动误判FAILED原件保留。候选0ca69a41保存、默认A06不改；继续对象控制器自身恢复、前台未知提交、保留治理及全部高级执行器/Chat持久化等余项。 对象控制器有界恢复13不同CPU通过，继续前台未知提交和其余项，尚未发布。 前台未知提交协调14 CPU通过；继续修检查点错误流序号后做适用HTTP短验，所有高级执行器等仍必做。 错误流4 CPU修复通过；1启动4生成54.609秒真实worker故障恢复/资料工具/连续流/同PID Chat通过，候选c704eebf保留。准备可回退发行，继续所有剩余项。",
+      "release": {
+        "engine_sha256": "c704eebf3d7f8f03fb566c5ab340277427a9304a09416bed0387676ed028f28f",
+        "engine_release_sha256": "3216d5afdcea78b1f33e37a055c1acfea89eef88b22da2a2c4c75ef19c49c000",
+        "manifest_sha256": "d0e5f43ff23435aa8e95688953687480da5ab16f33525304110db3979f5fc9d8",
+        "release_sha256": "824573f60d62aa8bc12a117bd492e2975b7524b90091c1809f0cb7a8a19b91af",
+        "state": "STOPPED",
+        "merged_main": false,
+        "whole_task_complete": false
+      },
+      "development_status": "已验Responses/Conversations/background/前台未知提交协调随v3原生应用包可回退默认交付。后台3启动8生成与前台1启动4生成真实短验通过，703来源及直接CPU证据复用。高级执行器、Chat持久化、保留治理等仍需完成，继续全部计划。",
       "development_evidence": "evidence/serve-object-store-20261108/README.md",
       "transaction_evidence": "evidence/serve-object-transactions-20261108/README.md",
       "state_evidence": "evidence/serve-responses-state-20261109/README.md",
@@ -248,7 +265,8 @@
       "background_business_evidence": "evidence/serve-responses-background-business-20261109/README.md",
       "controller_recovery_evidence": "evidence/serve-object-controller-recovery-20261109/README.md",
       "foreground_reconciliation_evidence": "evidence/serve-foreground-reconciliation-20261109/README.md",
-      "foreground_recovery_business_evidence": "evidence/serve-reconciliation-business-20261109/README.md"
+      "foreground_recovery_business_evidence": "evidence/serve-reconciliation-business-20261109/README.md",
+      "delivery_evidence": "evidence/serve-application-delivery-20261109/README.md"
     },
     {
       "id": "A09",
@@ -652,6 +670,6 @@
       "release": null
     }
   ],
-  "next_task": "A07",
-  "next": "已完成后台与前台故障真实短验，准备v3应用声明的可回退发行；随后继续A07/A08高级执行器/Chat持久化/保留治理和全部未完成计划。"
+  "next_task": "A08",
+  "next": "继续Chat持久对象的原生存储、查询、分页、metadata更新/删除及官方客户端短验；随后高级Responses执行器、治理和其余全部计划。"
 }

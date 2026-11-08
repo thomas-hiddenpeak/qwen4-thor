@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/prepare_delivery.py", line 233, in <module>
+    if __name__ == '__main__': main()
+                               ^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/prepare_delivery.py", line 63, in main
+    require(all(sha(directory / n) == h for n, h in index.items()),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-20261108/prepare_delivery.py", line 63, in <genexpr>
+    require(all(sha(directory / n) == h for n, h in index.items()),
+                ^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 61, in sha
+    with Path(path).open('rb') as stream:
+         ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-conversation-service-20261109/version'

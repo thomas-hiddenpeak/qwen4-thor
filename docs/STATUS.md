@@ -2,6 +2,13 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+原生应用接口已可回退默认交付：引擎`c704eebf`/元数据`3216d5af`，
+服务包`d0e5f43f`/发布`824573f6`，v3应用schema/OpenAPI随包。
+后台与前台故障短验、703项来源及针对性CPU复核复用，原生入口
+与已验ELF一致；安装仅离线/help/status，0新增GPU/Chat。
+旧A06完整回退保留，Key/配额/ledger不变且STOPPED；[发行原件](evidence/serve-application-delivery-20261109/README.md)。
+A07/A08仍有Chat持久化、高级执行器和治理必做，继续全部总计划。
+
 前台恢复真实短验通过：1启动/4生成/54.609秒，53次NVML全OK；真实
 资料工具/回填JSON、暂停自有存储worker后的原生回收、连续错误流、
 部分输出协调和同PID Chat通过。8个config样本严格通过，协调槽归零，
@@ -234,7 +241,7 @@ FIM `a + b`、取消后同PID Chat/MTP通过。原驱动最后误把取消计入
 错误，FAILED原件保留；只改断言，1CPU负控及原始线包复核闭合，
 运行时/ELF未变，不追加GPU。进程退出0、端口/锁释放。
 
-当前默认引擎`073b273d`/元数据`0dc4ad2e`；v4服务`8d1f6b50`/发布
+前一A06默认引擎`073b273d`/元数据`0dc4ad2e`；v4服务`8d1f6b50`/发布
 `1575d877`，旧A05 `46d7bf70/fe70b669`、`51d90f4c/b1734181`完整
 回退保留。新增随包补全schema与可选托管别名，6控制源更改有针对性
 CPU，恢复策略及Guardian不变。原策略/Key/配额/ledger保持STOPPED，

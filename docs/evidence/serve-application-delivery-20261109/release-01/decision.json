@@ -1,0 +1,115 @@
+{
+  "status": "PASS_TARGETED_APPLICATION_DELIVERY",
+  "acceptance": "ACCEPT_TARGETED_APPLICATION_APIS",
+  "binary_sha256": "c704eebf3d7f8f03fb566c5ab340277427a9304a09416bed0387676ed028f28f",
+  "protocol_sha256": "e22dd571fd8a391de271e652593495afd92dfdd94f4b0ff50057b34bfad1142f",
+  "source_commit": "14813d78e4cdc9b7253a12789ba5b20f1b63c09b",
+  "original_test_commit": "78d00e50afb2dfd6eab3f6c6a90f4fea54513823",
+  "evidence": {
+    "serve-conversation-service-20261109": {
+      "index_sha256": "8b0f5b16773210045858e0700e13c2a2c0c3a4dd1de8051c3aac436b71d2ee21",
+      "files": 101
+    },
+    "serve-responses-declarations-20261109": {
+      "index_sha256": "0e1cd2a0732623a2b426202b08a53a8da3808f4c433707e221690593d31a0d52",
+      "files": 138
+    },
+    "serve-responses-background-http-20261109": {
+      "index_sha256": "b2f5d7c359318fa2ebd1aa3f4dbd69a968d75d02ff9729a3acd0024547e1ce55",
+      "files": 29
+    },
+    "serve-responses-background-business-20261109": {
+      "index_sha256": "1abcf52188617a336992611beedf4ab58cbea88c156874acbba1ac391883db2d",
+      "files": 187
+    },
+    "serve-object-controller-recovery-20261109": {
+      "index_sha256": "8cf14448dcd04fa116984ee864ae21ada02315da7c3e32e6d1d0ddc9b9eea751",
+      "files": 65
+    },
+    "serve-foreground-reconciliation-20261109": {
+      "index_sha256": "3691388ac36ab0fc79980d40385f34f76e7972a6e8a1f4ab6e21786bdf56a486",
+      "files": 73
+    },
+    "serve-checkpoint-stream-20261109": {
+      "index_sha256": "bc5b92fb8624d048e692d1150f07b330b9f7e07ce1cb1321bf87197d43e73c04",
+      "files": 36
+    },
+    "serve-reconciliation-business-20261109": {
+      "index_sha256": "662a00f41b7c18b4b824cf1705ff651de2a4a83f017d9966c840c9d6542aad6f",
+      "files": 55
+    }
+  },
+  "accepted_foreground": {
+    "status": "ACCEPT_TARGETED_FOREGROUND_RECOVERY",
+    "source_commit": "78d00e50afb2dfd6eab3f6c6a90f4fea54513823",
+    "binary_sha256": "c704eebf3d7f8f03fb566c5ab340277427a9304a09416bed0387676ed028f28f",
+    "counts": {
+      "starts": 1,
+      "chats": 4,
+      "controls": 52
+    },
+    "seconds": 54.609030675143,
+    "nvml_queries": 53,
+    "all_nvml_ok": true,
+    "lease_status": "COMPLETED",
+    "original_results_unchanged": true,
+    "config_schema_samples": 8,
+    "foreground": {
+      "state": "ready",
+      "readiness_dependency": false,
+      "owned": 0,
+      "active": 0,
+      "pending": 0,
+      "reconciled": 1,
+      "errors": 1
+    },
+    "objects": {
+      "state": "ready",
+      "pending": 0,
+      "workers_started": 2,
+      "workers_reaped": 1,
+      "controller_starts": 1,
+      "controller_failures": 0,
+      "controller_recoveries": 0
+    },
+    "model_restarted": false,
+    "owned_worker_fault": "SIGSTOP -> native timeout kill/reap/replacement",
+    "default_changed": false,
+    "full_performance_or_model_quality": false,
+    "remaining_master_tasks_open": true
+  },
+  "accepted_background": {
+    "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-responses-background-business-20261109/decision.json",
+    "sha256": "1c8bc773a6b2fa5329d0ffc3023bf25e234c3849ff9cdc35b0538f82ca2cbb57",
+    "counts": {
+      "starts": 3,
+      "chats": 8,
+      "controls": 242
+    },
+    "seconds": 133.29141091927886,
+    "original_failed_attempts_preserved": true
+  },
+  "reused_package_cases": [
+    "test_application_schemas_required_and_portable",
+    "test_application_schema_tampering_and_old_completion_profile",
+    "test_completion_schemas_travel_with_optional_registry_and_verify_offline"
+  ],
+  "passed_cpu": [
+    "serve-conversation-service-20261109/cpu-application-packaging-01",
+    "serve-conversation-service-20261109/cpu-startup-lease-01",
+    "serve-responses-declarations-20261109/declarations-schema-03",
+    "serve-responses-background-http-20261109/background-native-01",
+    "serve-responses-background-http-20261109/background-tls-02",
+    "serve-object-controller-recovery-20261109/controller-cpu-01",
+    "serve-object-controller-recovery-20261109/controller-cpu-02",
+    "serve-foreground-reconciliation-20261109/foreground-reconciliation-cpu-01",
+    "serve-checkpoint-stream-20261109/checkpoint-stream-cpu-01",
+    "serve-checkpoint-stream-20261109/build-47"
+  ],
+  "runtime_unchanged_after_final_business": true,
+  "additional_gpu_tests": 0,
+  "performance_acceptance": false,
+  "full_model_quality_run": false,
+  "long_stability_accepted": false,
+  "remaining_master_tasks_open": true
+}

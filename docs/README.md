@@ -1,10 +1,10 @@
 # docs/ — 开发记录文档体系
 
 [Conversations原生状态、请求处理与官方SDK HTTP验证](SERVE_CONVERSATIONS_2026-11-09.md)
-（A07/A08继续开发，尚未发布）。
+（已验子集随原生应用包交付，A07/A08继续开发）。
 
 [A07 Responses原生实现与A08状态衔接](SERVE_RESPONSES_2026-11-08.md)
-（开发中，默认仍为已验A06）。
+（已验子集进入默认；[发行原件](evidence/serve-application-delivery-20261109/README.md)，其余能力继续实施）。
 
 [A08原生对象存储及后台任务](SERVE_OBJECT_STORE_2026-11-08.md)
 （开发中，存储故障与核心生成隔离）。

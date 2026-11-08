@@ -5,8 +5,9 @@
 2026-11-09声明对照发现并修复三个原线包遗漏：tool_choice、
 cache_write_tokens、投影SSE的必需logprobs空数组。原同步/后台记录
 保留为这些缺陷的负控，不追认完整线协议通过；详见文末新检查点。
-默认继续使用已接受 A06 包；本组不把 store、background、历史或媒体
-缺口从总计划删除。实现/测试子组结束后继续下一项，总目标保持 active。
+2026-11-09默认已更新为接受的原生应用包c704eebf/d0e5f43f，
+[发行与回退](evidence/serve-application-delivery-20261109/README.md)。尚未实现的高级执行器、Chat持久化与媒体
+缺口继续保留在总计划。实现/测试子组结束后继续下一项，总目标保持 active。
 
 ## 合同与来源
 
