@@ -1,0 +1,6 @@
+{
+  "exit_code": 1,
+  "message": "callable type is not JSON data: () => StringIterator<string>",
+  "source_sha256": "c0a83f1a057edafd1d58c736c15bdb7a1ccf39f9777a18165c5a71f47d02fbba",
+  "capture": "Diagnostic follow-up from exec output; no schema produced."
+}

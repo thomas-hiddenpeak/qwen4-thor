@@ -42,3 +42,7 @@ docs/evidence/serve-responses-core-20261108/**/*.wire binary
 docs/evidence/serve-object-store-20261108/** -text -whitespace
 docs/evidence/serve-object-transactions-20261108/** -text -whitespace
 docs/evidence/serve-responses-state-20261109/** -text -whitespace
+src/server/contracts/openai_item_types_v1.json -text
+tests/fixtures/responses_items/*.json -text
+third_party/licenses/openai-node/LICENSE -text -whitespace
+docs/evidence/serve-item-shape-20261109/** -text -whitespace

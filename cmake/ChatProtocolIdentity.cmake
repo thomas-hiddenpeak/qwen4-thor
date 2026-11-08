@@ -75,6 +75,10 @@ set(protocol_inputs
   src/server/object_protocol.h
   include/q4t/server/responses_state.h
   src/server/responses_state.cpp
+  include/q4t/server/responses_item_shape.h
+  src/server/responses_item_shape.cpp
+  src/server/contracts/openai_item_types_v1.json
+  cmake/responses_item_types.h.in
   src/server/grammar_worker.cpp
   src/server/grammar_worker_internal.h
   include/q4t/server/abort_reason.h
@@ -201,3 +205,11 @@ configure_file("${CMAKE_CURRENT_LIST_DIR}/chat_protocol_identity.h.in"
 file(CONFIGURE
   OUTPUT "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/chat_protocol_sources.json"
   CONTENT "${protocol_sources}\n" @ONLY)
+file(READ "${Q4T_PROTOCOL_ROOT}/src/server/contracts/openai_item_types_v1.json"
+  Q4T_ITEM_TYPES)
+string(FIND "${Q4T_ITEM_TYPES}" ")q4t_types\"" item_delimiter)
+if(NOT item_delimiter EQUAL -1)
+  message(FATAL_ERROR "item type graph contains its C++ literal delimiter")
+endif()
+configure_file("${CMAKE_CURRENT_LIST_DIR}/responses_item_types.h.in"
+  "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/responses_item_types_data.h" @ONLY)

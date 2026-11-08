@@ -1,0 +1,13 @@
+{
+  "command": [
+    "node",
+    "tools/serve_responses/generate_item_types.mjs",
+    ".q4t-work/serve-protocol-20261103/sdk",
+    ".q4t-work/serve-responses-20261108/schema-tool",
+    ".q4t-work/serve-responses-20261108/item-types-01.json"
+  ],
+  "exit_code": 1,
+  "message": "callable type is not JSON data",
+  "source_sha256": "b04906fa6ae8f0bed9c28bf2238892d44aded647a59d48fe0631bac9bc3e3309",
+  "capture": "Error observed in exec output; no output schema produced."
+}

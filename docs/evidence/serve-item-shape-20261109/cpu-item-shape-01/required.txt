@@ -1,0 +1,1 @@
+responses_item_shape_matches_actual_sdk_type_oracle

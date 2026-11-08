@@ -532,6 +532,12 @@ URL路径参数编码。只读基础模型的删除返回403，未知模型返�
 
 MIT (项目代码)。模型权重遵循其发布方条款。
 
+Responses/Conversations开发中的原生item形状合同派生自OpenAI Node
+SDK 7.47.0类型声明，遵循Apache-2.0，保留[原始许可与来源说明](third_party/licenses/openai-node/README.md)。
+提取器使用固定TypeScript5.9.3，仅为开发工具；发行程序不携带或
+运行Node、TypeScript或SDK服务。类型合同不代表对应业务接口已交付，
+实际能力仍以[当前状态](docs/STATUS.md)与针对性验收为准。
+
 本次原生服务入口复用q4t自有POSIX HTTP解析器及进程/JSON组件，未移植
 nginx源码。nginx仅用于可选前置互操作测试及显式旧网关模式；默认新包
 不携带它。后续若引入第三方源码，将列明固定版本、来源、使用范围并

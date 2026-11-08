@@ -1,0 +1,4 @@
+SDK/native item vectors: 634 matched, 13 differed
+  CHECK failed: differences == 0 (line 62)
+[FAIL] responses_item_shape_matches_actual_sdk_type_oracle
+1 tests, 0 passed, 1 failed, 0 skipped
