@@ -1,0 +1,15 @@
+{
+  "scope": "Fixed-capacity per-request progress; not yet inference/controller integration or whole R03 acceptance",
+  "required": [
+    "progress_only_actual_completion_advances_work",
+    "progress_stage_wait_and_observation_are_not_completions",
+    "progress_capacity_is_unknown_without_business_rejection",
+    "progress_slot_reuse_rejects_stale_publisher_without_aba",
+    "progress_owner_release_and_move_keep_lifetimes",
+    "progress_concurrent_capture_never_accepts_mixed_row",
+    "progress_paused_writer_contention_and_clock_are_unknown",
+    "progress_other_work_cannot_hide_old_unfinished_operation"
+  ],
+  "gpu_starts": 0,
+  "default_changed": false
+}

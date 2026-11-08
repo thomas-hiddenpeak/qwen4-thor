@@ -1,0 +1,11 @@
+In file included from /home/rm01/models/dev/qwen4-thor/tests/server_request_progress_test.cpp:1:
+/home/rm01/models/dev/qwen4-thor/include/q4t/server/request_progress.h:190:8: error: declaration of ‘bool q4t::server::ProgressHandle::Change(uint64_t, Change) const’ shadows template parameter
+  190 |   bool Change(uint64_t now, Change change) const noexcept {
+      |        ^~~~~~
+/home/rm01/models/dev/qwen4-thor/include/q4t/server/request_progress.h:189:13: note: template parameter ‘Change’ declared here
+  189 |   template <typename Change>
+      |             ^~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:835: CMakeFiles/q4t_host_tests.dir/tests/server_request_progress_test.cpp.o] Error 1
+gmake[2]: *** [CMakeFiles/Makefile2:2123: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:2130: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:831: q4t_host_tests] Error 2

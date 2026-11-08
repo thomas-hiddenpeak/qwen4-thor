@@ -1,0 +1,17 @@
+{
+  "status": "PASS_PROGRESS_PRIMITIVE_CPU_ONLY",
+  "sources": {
+    "include/q4t/server/request_progress.h": "73aa17e2d513f08e640670c0d4ecf42d8ec2711fea2ee01f4f3b22bf90b9dd23",
+    "tests/server_request_progress_test.cpp": "2852cc6004a4a8067787475f7d85b3a8cc684859f93f2376d09f839f400c0891",
+    "cmake/HostTestSources.cmake": "b00d06a141635d01b7a3332292e2f5c968cbe6b3605c5c128bb6ee4490e9256f"
+  },
+  "tests_passed": 8,
+  "failures_preserved": {
+    "build-01": "template parameter shadows method name; renamed method",
+    "core-cpu-01": "stale pre-build host binary rejected unknown required case; no test ran"
+  },
+  "gpu_starts": 0,
+  "default_changed": false,
+  "runtime_integration_pending": true,
+  "whole_R03_complete": false
+}

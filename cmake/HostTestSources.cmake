@@ -55,6 +55,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_scheduler_submission_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_state_contract_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_request_diagnostics_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_request_progress_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_structured_admission_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/server_options.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/object_store_options.cpp
