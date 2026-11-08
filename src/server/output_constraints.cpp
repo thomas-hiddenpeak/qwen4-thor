@@ -291,8 +291,6 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out,
       (out->restrict_tools && out->allowed_tools.empty()) || !has_tools) {
     payload = out->json_output ? json_payload : TextFormat();
   } else {
-    if (tools->array.size() > 16)
-      return invalid("tools", "constrained requests allow at most 16 tools");
     std::unordered_set<std::string> names;
     std::string tags;
     for (size_t index = 0; index < tools->array.size(); ++index) {

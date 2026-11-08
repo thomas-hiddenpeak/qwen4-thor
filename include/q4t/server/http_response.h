@@ -158,7 +158,8 @@ void SendStreamError(int fd, ResponseState* state, int status,
 void SendResponseParseError(int fd, bool stream, ResponseState* state,
                             const std::string& message,
                             const WriteOptions& options = {},
-                            std::string_view code = "response_parse_failed");
+                            std::string_view code = "response_parse_failed",
+                            int http_status = 502);
 // delta_json is an object serialized by the response parser, never raw input.
 std::string SseDeltaChunk(const std::string& id, const std::string& model,
                           const std::string& delta_json,

@@ -293,7 +293,7 @@ def cases():
     changed = history(); changed["messages"] += deepcopy(changed["messages"][1:])
     add("history-id-reused-next-batch", changed)
     for arguments, accepted in (("{}", True), ({}, True), ("[]", False),
-        ('{"a":1,"a":2}', False), ('{"bad<name":1}', False), (None, False)):
+        ('{"a":1,"a":2}', False), ('{"bad<name":1}', True), (None, False)):
         changed = history(); changed["messages"][1]["tool_calls"][0]["function"]["arguments"] = arguments
         add("history-args-"+str(len(rows)), changed, accepted, semantic=not accepted)
     add("legacy-flat-history", dict(messages=[*base()["messages"], dict(role="assistant",
@@ -314,11 +314,11 @@ def cases():
     add("none-backend-missing", dict(base(), tool_choice="none"), False, semantic=True, structured=False)
     add("none-stop", dict(base(), tool_choice="none", stop="END"), False)
     add("none-empty-stop", dict(base(), tool_choice="none", stop=[]))
-    add("json-with-tools-auto", dict(base(), tools=[tool()], response_format=dict(type="json_object")), False)
+    add("json-with-tools-auto", dict(base(), tools=[tool()], response_format=dict(type="json_object")))
     add("json-with-tools-none", dict(base(), tools=[tool()], response_format=dict(type="json_object"), tool_choice="none"))
     for schema, accepted in ((EMPTY, True), (dict(EMPTY, maximum=1), False),
         (dict(EMPTY, properties=dict(a=dict(type="string"))), True),
-        (dict(EMPTY, properties=dict(a=dict(type="integer", enum=[1]))), False),
+        (dict(EMPTY, properties=dict(a=dict(type="integer", enum=[1]))), True),
         (dict(type="object", properties={}, additionalProperties=True), False)):
         add("output-schema-"+str(len(rows)), dict(base(), response_format=dict(type="json_schema",
             json_schema=dict(name="answer", schema=schema))), accepted)
@@ -328,7 +328,53 @@ def cases():
     xml = dict(EMPTY, properties=dict(a=dict(type=["string", "null"])), required=["a"])
     add("json-nullable-string", dict(base(), response_format=dict(type="json_schema",
         json_schema=dict(name="answer", strict=True, schema=xml))))
-    add("xml-nullable-string", dict(base(), tools=[tool(strict=True, parameters=xml)]), False, semantic=True)
+    add("xml-nullable-string", dict(base(), tools=[tool(strict=True, parameters=xml)]))
+    # Schema-v2 request graph, shape and exact-lexeme contracts. Generation
+    # and worker semantic receipts are covered separately by actual workers.
+    def structured(schema, **extra):
+        return dict(base(), response_format=dict(type="json_schema",
+            json_schema=dict(name="answer", strict=True, schema=schema)), **extra)
+    def object_schema(child):
+        return dict(type="object", properties=dict(v=child), required=["v"],
+                    additionalProperties=False)
+    for label, child in [
+        ("numeric-enum", dict(type="number", enum=[0.3, 9007199254740993])),
+        ("numeric-range", dict(type="number", minimum=0, maximum=12,
+            exclusiveMinimum=0, exclusiveMaximum=12, multipleOf=0.3)),
+        ("type-union", dict(type=["string", "number", "null"])),
+        ("anyof", dict(anyOf=[dict(type="string", pattern="^[A-Z]+$"),
+                             dict(type="integer", minimum=1)])),
+        ("pattern-length", dict(type="string", pattern="^[a-z]+$", minLength=2,
+                                maxLength=30)),
+        ("array-65", dict(type="array", items=dict(type="integer"), maxItems=65)),
+        ("const", dict(type="string", const="null</parameter>")),
+        ("empty-object", dict(type="object", additionalProperties=False))]:
+        add("schema-v2-"+label, structured(object_schema(child)), field="response_format")
+    for fmt in ("date-time", "time", "date", "duration", "email", "hostname", "ipv4", "ipv6", "uuid"):
+        add("schema-v2-format-"+fmt, structured(object_schema(dict(type="string", format=fmt))), field="response_format")
+    linked = object_schema({"$ref":"#/$defs/value"})
+    linked["$defs"] = dict(value=dict(type=["string", "null"]))
+    add("schema-v2-local-ref", structured(linked), field="response_format")
+    root_ref = {"$ref":"#/$defs/root", "$defs":dict(root=linked)}
+    root_ref["$defs"]["root"]["properties"]["v"]["$ref"] = "#/$defs/root/$defs/value"
+    add("schema-v2-root-ref", structured(root_ref), field="response_format")
+    for label, patch in [("nonlocal-ref", {"$ref":"https://example.invalid/schema"}),
+                          ("unknown-keyword", {"allOf":[]}),
+                          ("negative-multiple", dict(type="number", multipleOf=-1))]:
+        add("schema-v2-invalid-"+label, structured(object_schema(patch)), False,
+            field="response_format")
+    exact = structured(object_schema(dict(type="number", enum=["EXACT"])))
+    for number in ("1e400", "1e-400", "9007199254740993"):
+        raw = json.dumps(exact).replace('"EXACT"', number)
+        add("schema-v2-exact-"+number, None, raw=raw, field="response_format")
+    calls = dict(base(), tools=[tool("f"+str(i)) for i in range(128)], tool_choice="required")
+    add("schema-v2-tools-128", calls, field="tools")
+    add("schema-v2-tools-129", dict(calls, tools=calls["tools"]+[tool("f128")]), False, field="tools")
+    add("schema-v2-json-required-tool", structured(EMPTY, tools=[tool()], tool_choice="required"), field="response_format")
+    add("schema-v2-json-custom-auto", structured(EMPTY, tools=[custom_tool]), field="response_format")
+    data_history = history()
+    data_history["messages"][1]["tool_calls"][0]["function"]["arguments"] = {"":None, "bad<name": "</tool_call>"}
+    add("schema-v2-arbitrary-history-keys", data_history, field="messages")
     for request, accepted in ((dict(request_id="client", cancel_token=HEX), True),
         (dict(request_id="client"), False), (dict(request_id="client", cancel_token=HEX, unknown=True), False)):
         add("cancel-"+str(len(rows)), request, accepted, kind="cancel")

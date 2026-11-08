@@ -590,14 +590,14 @@ void SendStreamError(int fd, ResponseState* state, int status,
 
 void SendResponseParseError(int fd, bool stream, ResponseState* state,
                             const std::string& message,
-                            const WriteOptions& options,
-                            std::string_view code) {
+                            const WriteOptions& options, std::string_view code,
+                            int http_status) {
   if (*state != (stream ? ResponseState::kStreaming : ResponseState::kUnsent))
     return;
   if (stream) {
-    SendStreamError(fd, state, 502, message, options, code);
+    SendStreamError(fd, state, http_status, message, options, code);
   } else {
-    SendError(fd, 502, message, options, code);
+    SendError(fd, http_status, message, options, code);
     *state = ResponseState::kTerminal;
   }
 }

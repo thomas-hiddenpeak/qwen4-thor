@@ -156,7 +156,7 @@
         "docs/SERVE_SCHEMA_V2_2026-11-08.md"
       ],
       "release": null,
-      "development_status": "Schema v2 production planner, exact JSON tool/history adapter, provisional streaming, worker semantic receipts and parent terminal verification implemented; 70 distinct targeted A05 CPU checks passed. Published schema/capabilities/client synchronization, cache/media combinations and real GPU business delivery remain required. Default unchanged; not delivered."
+      "development_status": "Production planner/worker/parser and published request schemas/discovery integrated. 72 distinct targeted A05 C++ CPU checks and 49 input-shape/native-plan comparisons passed, including 128 tools and exact data. Example clients, cache/media combinations and real GPU business delivery remain required. Default unchanged; not delivered."
     },
     {
       "id": "A06",

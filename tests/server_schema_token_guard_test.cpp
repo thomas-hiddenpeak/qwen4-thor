@@ -239,6 +239,25 @@ Q4T_TEST(schema_request_closed_empty_object_and_referenced_array) {
   return true;
 }
 
+Q4T_TEST(schema_request_accepts_128_declared_tools_and_bounds_the_next) {
+  auto request = Parse(R"({"messages":[{"role":"user","content":"choose"}],
+      "enable_thinking":false,"tool_choice":"required",
+      "parallel_tool_calls":false,"tools":[]})");
+  auto* tools = &request.object.back().second;
+  for (int i = 0; i < 128; ++i)
+    tools->array.push_back(Parse(R"({"type":"function","function":{"name":"f)" +
+                                 std::to_string(i) + R"("}})"));
+  Q4T_CHECK(RequestRoundTrip(
+      request, "<tool_call>\n<function=f127>\n\n</function>\n</tool_call>", 1,
+      ""));
+  tools->array.push_back(
+      Parse(R"({"type":"function","function":{"name":"f128"}})"));
+  OutputConstraints plan;
+  std::string param;
+  Q4T_CHECK(!PlanOutputConstraints(request, &plan, &param) && param == "tools");
+  return true;
+}
+
 Q4T_TEST(schema_guard_filters_completed_format_tokens_and_receipts) {
   const auto schema = Object(R"({"type":"string","format":"time"})");
   SchemaTokenGuard guard;

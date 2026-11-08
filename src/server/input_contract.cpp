@@ -83,6 +83,8 @@ Status ValidateToolDefinitions(const io::Json& request,
   if (!tools || tools->IsNull()) return Status();
   if (!tools->IsArray())
     return invalid("tools", "tools must be an array or null");
+  if (tools->array.size() > 128)
+    return invalid("tools", "tools must contain at most 128 declarations");
   std::unordered_set<std::string> names;
   for (size_t index = 0; index < tools->array.size(); ++index) {
     const auto& tool = tools->array[index];

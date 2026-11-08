@@ -26,12 +26,12 @@ def strict_json(raw):
         return result
     def number(text):
         value = Decimal(text)
-        if not math.isfinite(float(value)):
-            raise ValueError("nonfinite or unrepresentable JSON number")
+        if not value.is_finite() or len(text) > 16384:
+            raise ValueError("invalid or over-budget exact JSON number")
         return value
     def invalid(_):
         raise ValueError("nonfinite JSON constant")
-    value = json.loads(raw, object_pairs_hook=pairs, parse_float=number, parse_constant=invalid)
+    value = json.loads(raw, object_pairs_hook=pairs, parse_float=number, parse_int=number, parse_constant=invalid)
     def utf8(item):
         if isinstance(item, str):
             item.encode("utf-8")

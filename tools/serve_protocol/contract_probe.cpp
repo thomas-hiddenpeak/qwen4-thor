@@ -28,7 +28,10 @@ int main() {
       status = q4t::Status::Fail("request body exceeds byte limit");
       error = {"request_too_large", "body"};
     } else {
-      status = q4t::io::ParseJson(raw->str, &input, true, kRequestJsonLimits);
+      status = q4t::io::ParseJson(raw->str, &input, true,
+                                  fixture.GetString("kind", "chat") == "cancel"
+                                      ? kRequestJsonLimits
+                                      : kSchemaJsonLimits);
       if (!status) error = {"invalid_json", ""};
     }
     const auto kind = fixture.GetString("kind", "chat");
@@ -79,8 +82,8 @@ int main() {
     std::cout << "{\"accepted\":" << (status ? "true" : "false");
     if (!status)
       std::cout << ",\"response\":"
-                << detail::ErrorJson(400, status.message(), error.code,
-                                     error.param);
+                << detail::ErrorJson(error.http_status, status.message(),
+                                     error.code, error.param);
     std::cout << "}\n";
   }
 }

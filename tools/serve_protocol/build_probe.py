@@ -14,8 +14,11 @@ SOURCES = ["tools/serve_protocol/contract_probe.cpp", "src/io/json.cpp",
     "src/server/reasoning_options.cpp", "src/server/thinking_budget.cpp",
     "src/server/text_stop.cpp", "src/server/input_contract.cpp",
     "src/server/output_constraints.cpp", "src/server/output_schema.cpp",
+    "src/server/schema_graph.cpp", "src/server/schema_decimal.cpp",
+    "src/server/schema_prefix.cpp", "src/server/schema_receipt.cpp",
     "src/server/http_response.cpp", "src/server/session_cache.cpp",
-    "src/trace/sha256.cpp"]
+    "src/trace/sha256.cpp", "src/server/client_policy.cpp",
+    "src/server/media_admission.cpp", "src/vision/media_plan.cpp"]
 
 
 def main():

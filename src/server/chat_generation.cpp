@@ -175,8 +175,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   s = PlanChatRequest(original_request, planning_config, &request_plan,
                        &planning_error);
   if (!s) {
-    SendError(fd, 400, s.message(), {}, planning_error.code,
-              planning_error.param);
+    SendError(fd, planning_error.http_status, s.message(), {},
+              planning_error.code, planning_error.param);
     return;
   }
   const auto& req = request_plan.Request(original_request);
@@ -2414,11 +2414,18 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
             break;
         }
       }
+      const int status =
+          structured && (structured->Failure() == GrammarFailure::kDependency ||
+                         structured->Failure() == GrammarFailure::kResource ||
+                         structured->Failure() == GrammarFailure::kTimeout)
+              ? 503
+              : 502;
       diagnostic.Outcome("error", code);
       const detail::WriteOptions terminal{std::chrono::steady_clock::now() +
                                           std::chrono::milliseconds(250)};
       detail::SendResponseParseError(fd, stream, response_state,
-                                     response_status.message(), terminal, code);
+                                     response_status.message(), terminal, code,
+                                     status);
       cleanup();
       return;
     }

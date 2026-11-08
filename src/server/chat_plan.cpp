@@ -74,7 +74,13 @@ Status PlanChatRequest(const io::Json& req, const ChatPlanConfig& config,
   }
   auto status = ValidateChatContract(req, config.model, config.allow_media,
                                      &error->param);
-  if (!status) return status;
+  if (!status) {
+    if (status.message().starts_with("schema_resource_exhausted:")) {
+      error->code = "constraint_resource_exhausted";
+      error->http_status = 503;
+    }
+    return status;
+  }
   status = ParseSamplingOptions(req, &plan->sampling, &error->param);
   if (!status) return status;
   status = ParsePredictionOptions(req, plan->sampling, &plan->prediction,

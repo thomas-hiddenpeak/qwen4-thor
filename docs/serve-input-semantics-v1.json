@@ -48,7 +48,7 @@
         "src/io/json.cpp",
         "include/q4t/server/request_json.h"
       ],
-      "contract": "UTF-8 JSON; no duplicate keys, nonfinite numbers or trailing data; depth64/65536 values/16MiB decoded string bytes. Integer fields use exact source lexemes, not rounded binary64 values."
+      "contract": "UTF-8 JSON; no duplicate keys, NaN/Infinity literals or trailing data; depth64/65536 values/16MiB decoded string bytes. Chat/preflight/schema/history data retain exact decimal lexemes up to16384 characters, including binary64 overflow/underflow. Generation numeric controls separately require finite/range-valid values. Integer fields use exact source lexemes, not rounded binary64 values. Model/config/cancel readers retain their previous limits."
     },
     {
       "id": "transport-body",
@@ -96,7 +96,7 @@
       "sources": [
         "src/server/chat_tool_history.cpp"
       ],
-      "contract": "Arguments are object or JSON text of an object using production parser budgets. Every top-level argument name is valid. No silent parameter dropping."
+      "contract": "Arguments are object or JSON text of an object using production parser budgets. Argument keys are JSON data, not function identifiers. Exact decimals, arbitrary keys and null/string identity survive rendering, with JSON wrapper and escaped markers when native XML is ambiguous. No silent parameter dropping."
     },
     {
       "id": "historical-batches",
@@ -119,14 +119,19 @@
         "src/server/output_constraints.cpp",
         "src/server/text_stop.cpp"
       ],
-      "contract": "JSON output/none/required/named/strict tools/nonparallel nonempty tools activate constraints. Parsed text required, state caches and effective stop forbidden; JSON plus tools requires none. Compiled tool branches max16 tools and ASCII safe names. Compiled structural tag <=65536 bytes."
+      "contract": "JSON output/none/required/named/strict tools/nonparallel nonempty tools activate constraints. Parsed messages required; state-cache implementation is still pending and effective stop remains forbidden. JSON response_format and tools choose a JSON-content or tool-only branch; required/named force tools. Tool declarations max128 with safe names in constrained mode. Compiled description <=2MiB; resource rejection is distinct from invalid syntax. Incremental content/tool/reasoning deltas remain provisional until successful terminal and EOF."
     },
     {
-      "id": "finite-schema",
+      "id": "schema-v2",
       "sources": [
-        "src/server/output_schema.cpp"
+        "src/server/output_schema.cpp",
+        "src/server/schema_graph.cpp",
+        "src/server/schema_grammar.cpp",
+        "src/server/schema_token_guard.cpp",
+        "src/server/schema_receipt.cpp",
+        "src/server/schema_string.cpp"
       ],
-      "contract": "Root exact object; serialized schema<=16384 bytes; depth<=8/<=128 nodes; object<=32 properties/additionalProperties=false; required unique declared keys, all required in strict mode. Enum1..32 distinct matching string/bool/null; no numeric enums. minItems<=maxItems; bounds0..64. XML top properties ASCII1..64, no reserved XML delimiters in names/enums, no nullable top-level XML string parameters."
+      "contract": "Official structured-output graph: local refs/defs/recursion/anyOf; root resolves to object and excludes root anyOf; closed objects and all properties required when strict. 5000 total properties/10 nesting levels/1000 enum values/120000 constrained characters, with15000 for string enums over250 members. Exact decimal enum/const, numeric bounds and multipleOf; Unicode lengths, arrays, patterns and9 formats. Additional bounded graph/grammar/worker resources fail explicitly. Native-format checks run only in the isolated worker; parent binds schema/tool/value receipts before successful terminal. Simple unambiguous trained XML is retained; rich tool arguments are one JSON object parameter with refs relocated only in model definitions. Published structural schema requires native semantic validation for refs, aggregate limits, exact relationships and strict requirements."
     },
     {
       "id": "response-parser-prefix",
@@ -284,14 +289,14 @@
     "include/q4t/server/media_admission.h": "5d50347a9c9349d4a7d381792eb5536c2516f7e66ff7d1a1e7b787cd599c8c27",
     "include/q4t/server/prefix_cache_policy.h": "91ef4f963c51a8098f1e333a74ac3cc56c046cf87f987b0e026a1e27d4c304c4",
     "include/q4t/server/request_admission.h": "e0b802ab08dd1857cb26b5323e35538bfd0f778add9298da6a972ebdc9fb8f64",
-    "include/q4t/server/request_json.h": "3c9b06ae9945a775b2aae2d7a85a831d12ddc6cfb9850f4f27454202056d5a22",
+    "include/q4t/server/request_json.h": "f3fded2db644464f3e187215cfe14ae0280a0099bfbbeca670c7ac4e4492bb72",
     "include/q4t/server/sequence_admission.h": "0c03df6bd8c16d137562de22357c85e367208a6208be12d217adaf6135836b3f",
     "include/q4t/server/service_health.h": "6b95516f0c81386c469360e106b1abe544080c74f439a9525a0910c556f3490f",
     "include/q4t/server/startup_admission.h": "2da630f79ddebd82e5dc7e410a279a971772b854171c88006929f4c28975d79b",
     "include/q4t/vision/configuration.h": "50f4ab0cacc680c48d87450c168cb6d1a5ac57f51cfaff14963c97b2db1e72a9",
     "include/q4t/vision/media_plan.h": "cb4cbd733f01fa2096da09e0d4f581126dc5e8dbe0c732b1ff966158b6d10f07",
     "include/q4t/vision/processor.h": "9632f9c2a96086497db7193c658df20cf2a5346d8336946f97d180f425cef98e",
-    "src/io/json.cpp": "594c940466b10fbd0efa9c1bc05dd3092d7d1a4041d552716914fd84a740c0e0",
+    "src/io/json.cpp": "525ff67209baae32cca85e8d2d79dbc16791f589146248ef74955a30fd23e17a",
     "src/model/model.cu": "18234fb517bcb3cf4cf5a670744bb940fbcf8882631ca3b9223cca29f54f563c",
     "src/model/model_owner.cpp": "cc3a998e52d4cca44bd695f40e1bf01f4ee2d75ce9f0c437d07757582d60e2bf",
     "src/mtp/mtp.cu": "c2e6bb780cc42c80c649dc0e4fa18b6b7e714da17c6baaf46a97938099d07184",
@@ -305,35 +310,40 @@
     "src/server/chat_choices.cpp": "ee99c4aca3c1ea07d5929da38325aa2b28a411245c7d794c9cc5f1f8eb23f16a",
     "src/server/chat_contract.cpp": "379dc3c2b40e56808394911f752782ad5e4a7715763b1e47f491fe0246226611",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
-    "src/server/chat_generation.cpp": "4a118371d599f4ddace308d9766b8954be0dff31591f135dce968b9b22d5d61d",
+    "src/server/chat_generation.cpp": "deb78728b29e0c07c19c3823ec550d711c8ba8a64e6570f8f34209654f0338c7",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
     "src/server/chat_http.cpp": "5504ac68093b870e0f961a4d0faa1395ed8facf728f0046ec35e34e4843a5120",
     "src/server/chat_input.cpp": "d79be28242ed560ad7be0494284f72b53d1aaa7a272786d17f1b837e81a6d9bb",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
     "src/server/chat_metrics.cpp": "f12e27e7946dab08e882be25f8cb6fa2273e4d370716872aaf5a59fb30e5cf21",
-    "src/server/chat_plan.cpp": "c10967c86f77026b628be160b67845273ab00bc6894597844965cabf6e2214ee",
-    "src/server/chat_preflight.cpp": "af858d7def2c4d45d46bff91a9c7d44854cb6c1bfe59a0e4098bb25ac97e7a57",
+    "src/server/chat_plan.cpp": "de382abe5142820ccd7efc5e2bd7d2a335d80e5f2c2a28f1d9522deebca4f563",
+    "src/server/chat_preflight.cpp": "e061d074476438f797fe8804986ade58d0412435a2db69c311b6a396925cc205",
     "src/server/chat_prompt.cpp": "fd6684419aff480782e12a409af13665eb1b529008b93ea7f67607afd837efcf",
-    "src/server/chat_response_parser.cpp": "671b6e6cbf484b79cd21ff74360558997d070dbef0de01d98fa0eebd8c3d555b",
+    "src/server/chat_response_parser.cpp": "c59c883a1c5ffea6e888d4692be5cf55c4cadd13c1a70f0284f3639db7e22b19",
     "src/server/chat_scheduler.cpp": "2b6d315bfd12609e343010852f7c15b8248fe5180359a3d7b49d3c1db5b8d1fc",
     "src/server/chat_server.cpp": "19c040b20e6f1f1cde9d37e23477b2bfa65c4b38ab09cfacdef9281522fda095",
-    "src/server/chat_template.cpp": "d31dc911d01ee19277b72a71781ee9206935ec249ccb4bd8843b794ceb48cf1b",
-    "src/server/chat_tool_history.cpp": "4c3588a2c007f968f4ca99ebf974f4d6a34fa1f6f5e6f43a229f49f1935b44a7",
+    "src/server/chat_template.cpp": "be470e482f7bdda18c07f7d7c378aafeb9cd648283cc4c762e0031f17794d569",
+    "src/server/chat_tool_history.cpp": "902f6c0982fd072d4dba4c3f6a34629eec9eaaf604fd5d920822b96ed51f82db",
     "src/server/cuda_memory_backend.h": "aabc6d78d2925ec5280e270964d79d3164ce706732a674b88215554a34d0e6a5",
-    "src/server/custom_grammar.cpp": "5178e24b7b336fd573587d511eb47d70775ac8c1803d956a8a938754f5572e96",
-    "src/server/custom_regex.cpp": "e264cf43680adea8d8efdb3aa49ea414f920e6e16cc986b151585130d5f26741",
+    "src/server/custom_grammar.cpp": "23fb0c8421ed4cb86af9ca1bb894d3f2fe8cef6f0109ef68907493a716ae75f3",
+    "src/server/custom_regex.cpp": "eb8ab53b44dbb9ec2011676a854a18e38244975e76955b74a441829bdd67031a",
     "src/server/custom_tools.cpp": "3e45f9a496439ec1e0d86739acb9c5d01eb6e2c321a96d924cf755b99bc12abd",
     "src/server/http_request.cpp": "614dd52541c9311054be68a790d6b7429503de6edd747b2247eb689273c24d3c",
-    "src/server/input_contract.cpp": "f295aed0496c4f228f93317498cdc5bd4c2d13e85b7fb8c43ed0136519b88bd9",
+    "src/server/input_contract.cpp": "a099b899699e60dbec6df4053c62eb8ecdaac010e7b271af6ac36842fa0e75d4",
     "src/server/legacy_tools.cpp": "b0bffcd3c780f35f336b40a152e9837077b9a4c6ea3ede737fcbb14b8514587c",
     "src/server/media_admission.cpp": "11461c31fed0db43fe68e16680812641c0e51371585c216673e4fe2e54500393",
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
-    "src/server/output_constraints.cpp": "7a83e60e810738561311c39acbd3bf097352bafcbf2f35ab0364b05215c0e57e",
-    "src/server/output_schema.cpp": "d1ac1506c823dc128d8f2c95e5489c90d360813b35b37b2bfd52a9bbc512315d",
+    "src/server/output_constraints.cpp": "4458cb04b69fca186f79334c069cc9830fcf5c0ed61d3db1dd056438257c6fe5",
+    "src/server/output_schema.cpp": "6d42d154ce3ac43c2cb2569298af221148813f9233e37c9d9c75eb0f331ee65d",
     "src/server/prediction.cpp": "7e8ccdf7c44dd5c8245230577d42eb7d4cd17c6e2efcf5534a02e6744815733f",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
-    "src/server/regex_syntax/lib.rs": "1decbbd159b63b96bdf1f94da6c7f7927a8d869633ddc8fd5d0924e048bc9289",
+    "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
     "src/server/sampling.cpp": "8e6a8c446656d8430005b061b10535b391b002362725511d216f9b4229e3d3cb",
+    "src/server/schema_grammar.cpp": "1411f2df41fe33a60578801a22fa1baf0f1776a664eed74df67936fd636098aa",
+    "src/server/schema_graph.cpp": "b4a369e5b6882642e350b140afd2ff4002d9ae60e0f42ec8e34aa02de54972a5",
+    "src/server/schema_receipt.cpp": "44e3decd13f5d79f7ae687b55d63f7d3d8da9fba0ca1d75316b838959f687498",
+    "src/server/schema_string.cpp": "8c8e04f94307af5b6f2b7c4993cb88d5eaac18124f2e07e002e5495663e2d791",
+    "src/server/schema_token_guard.cpp": "3004a864f26a35f2eade7cf27e31520df348424edde1d6ed985ed5d194755a44",
     "src/server/server_options.cpp": "c47e2555d054a8ee27524ecf59936838b717d7292c864c24efeee1279e2dc622",
     "src/server/text_stop.cpp": "2397b27adc873b3ac0697af68352a73c8481830da6053fde0adeca536eaba4dc",
     "src/server/thinking_budget.cpp": "4c91e8320115ee86096bf7287d4950599ca311f137c3a0051b9d64fb53abf259",

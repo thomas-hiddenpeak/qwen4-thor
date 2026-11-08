@@ -45,29 +45,44 @@ def text_name(limit=256):
 
 def schema_node():
     types = ["object", "array", "string", "integer", "number", "boolean", "null"]
+    typed = lambda kind: present("type", dict(anyOf=[dict(const=kind),
+        dict(type="array", contains=dict(const=kind))]))
+    bound = dict(type="integer", minimum=0, maximum=2147483647)
     node = obj(dict(type=dict(anyOf=[dict(enum=types), dict(type="array",
-        minItems=1, maxItems=2, uniqueItems=True, items=dict(enum=types),
-        allOf=[when(dict(minItems=2), dict(contains=dict(const="null")))])]),
-        title=dict(type="string", **{"x-q4t-max-utf8-bytes": 2048}),
-        description=dict(type="string", **{"x-q4t-max-utf8-bytes": 2048}),
-        properties=dict(type="object", maxProperties=32,
-            propertyNames=dict(**{"x-q4t-max-utf8-bytes": 128}),
+        minItems=1, maxItems=7, uniqueItems=True, items=dict(enum=types))]),
+        title=dict(type="string"), description=dict(type="string"),
+        properties=dict(type="object", maxProperties=5000,
             additionalProperties=ref("schemaNode")),
         required=dict(type="array", uniqueItems=True, items=dict(type="string")),
         additionalProperties=dict(const=False), items=ref("schemaNode"),
-        minItems=dict(type="integer", minimum=0, maximum=64),
-        maxItems=dict(type="integer", minimum=0, maximum=64),
-        enum=dict(type="array", minItems=1, maxItems=32, uniqueItems=True,
-            items=dict(type=["string", "boolean", "null"],
-                       **{"x-q4t-max-utf8-bytes": 256}))), ("type",))
-    def typed(kind):
-        return present("type", dict(anyOf=[dict(const=kind), dict(type="array",
-            contains=dict(const=kind))]))
+        minItems=bound, maxItems=bound, minLength=bound, maxLength=bound,
+        minimum=dict(type="number"), maximum=dict(type="number"),
+        exclusiveMinimum=dict(type="number"), exclusiveMaximum=dict(type="number"),
+        multipleOf=dict(type="number", exclusiveMinimum=0),
+        pattern=dict(type="string"), format=dict(enum=["date-time", "time", "date",
+            "duration", "email", "hostname", "ipv4", "ipv6", "uuid"]),
+        enum=dict(type="array", minItems=1, maxItems=1000, uniqueItems=True),
+        const={}, default={}, examples=dict(type="array"),
+        anyOf=dict(type="array", minItems=1, items=ref("schemaNode")),
+        **{"$ref": dict(type="string", pattern="^#"),
+           "$defs": dict(type="object", additionalProperties=ref("schemaNode")),
+           "$comment": dict(type="string"), "$schema": dict(type="string")}))
+    reference = any_present(["$ref", "anyOf"])
     node["allOf"] = [
-        when(typed("object"), dict(required=["properties", "additionalProperties"])),
-        when({"not": typed("object")}, forbid(["properties", "required", "additionalProperties"])),
-        when(typed("array"), dict(required=["items"])),
-        when({"not": typed("array")}, forbid(["items", "minItems", "maxItems"]))]
+        any_present(["type", "$ref", "anyOf", "enum", "const"]),
+        when(dict(anyOf=[present("properties"),
+            dict(allOf=[typed("object"), {"not": reference}])]),
+            dict(required=["additionalProperties"])),
+        when(dict(allOf=[typed("array"), {"not": reference}]),
+            dict(required=["items"]))]
+    for kind, fields in [("object", ["properties", "required", "additionalProperties"]),
+                         ("array", ["items", "minItems", "maxItems"]),
+                         ("string", ["minLength", "maxLength", "pattern", "format"])]:
+        node["allOf"].append(when(dict(allOf=[present("type"), {"not": typed(kind)}]),
+                                  forbid(fields)))
+    node["allOf"].append(when(dict(allOf=[present("type"),
+        {"not": dict(anyOf=[typed("number"), typed("integer")])}]),
+        forbid(["minimum", "maximum", "exclusiveMinimum", "exclusiveMaximum", "multipleOf"])))
     return node
 
 
@@ -82,7 +97,7 @@ def chat_schema():
     content = dict(anyOf=[dict(type=["string", "null"]),
         dict(type="array", minItems=1,
              items=dict(oneOf=[ref("textPart"), ref("refusalPart")]))])
-    arguments = dict(anyOf=[dict(type="object", propertyNames=text_name()),
+    arguments = dict(anyOf=[dict(type="object"),
         dict(type="string", **{"x-q4t-json-object-text": True})])
     call = dict(oneOf=[obj(dict(id=dict(type="string", minLength=1, maxLength=256,
         **{"x-q4t-max-utf8-bytes": 256}), type=dict(const="function"),
@@ -145,7 +160,8 @@ def chat_schema():
     legacy_active = dict(anyOf=[present(key, {"not": dict(type="null")})
                                for key in ("functions", "function_call")])
     node = schema_node()
-    root_schema = dict(allOf=[ref("schemaNode"), dict(properties=dict(type=dict(const="object")))])
+    root_schema = dict(allOf=[ref("schemaNode"), {"not": present("anyOf")},
+        dict(anyOf=[present("$ref"), present("type", dict(const="object"))])])
     response_format = nullable(dict(oneOf=[obj(dict(type=dict(enum=["text", "json_object"])), ("type",)),
         obj(dict(type=dict(const="json_schema"), json_schema=obj(dict(name=safe,
             description=dict(type="string"), strict=dict(type=["boolean", "null"]),
@@ -183,7 +199,7 @@ def chat_schema():
         stream_options=nullable(obj(dict(include_usage=dict(type="boolean", default=False)))),
         request_id=identifier, cancel_token=hex64,
         request_timeout_ms=dict(type="integer", minimum=1, maximum=10800000),
-        tools=nullable(dict(type="array", items=ref("tool"))),
+        tools=nullable(dict(type="array", maxItems=128, items=ref("tool"))),
         functions=nullable(dict(type="array", minItems=1, maxItems=128, items=legacy_fn)),
         function_call=nullable(dict(oneOf=[dict(enum=["auto", "none"]),
             obj(dict(name=safe), ("name",))])),
@@ -253,7 +269,6 @@ def chat_schema():
                 present("tool_choice", present("allowed_tools", present("tools", dict(minItems=1))))),
             when(constrained, dict(allOf=[parsed, forbid(["session_id", "prefix_cache_scope"]),
                 dict(properties=dict(stop=dict(enum=[None, []])))])),
-            when(dict(allOf=[json_output, present("tools", nonempty_tools)]), present("tool_choice", dict(const="none"))),
             when(any_present(["session_id", "prefix_cache_scope"]),
                  dict(properties=dict(stop=dict(enum=[None, []]))))],
         "x-q4t": dict(profile="qwen3.8-openai-v3", scope="text; experimental media excluded",
@@ -262,7 +277,8 @@ def chat_schema():
             raw_prompt_always_unparsed=True, parsed_messages_default=True,
             template_option_precedence="chat_template_kwargs overrides top level after both are validated",
             model_omitted="effective served model", output_omitted_or_null="effective configured output default",
-            deadline_omitted="effective configured request deadline", finite_numbers_only=True,
+            deadline_omitted="effective configured request deadline",
+            exact_decimal_data=True, finite_numeric_controls=True,
             duplicate_keys="reject at every JSON object, including historical argument text")})
     return result
 
@@ -333,7 +349,7 @@ def semantics():
         ("prediction", ["src/server/prediction.cpp", "src/server/chat_plan.cpp", "src/server/chat_generation.cpp"],
          "Static string/text parts become target-verified tokens. Prediction never forces the target distribution. Accepted tokens are consumed once; remaining provided tokens count as rejected completion tokens. Effective output/context and client quota include them. n>1/logprobs/positive penalties/tools/max_completion_tokens are incompatible only with a non-null prediction."),
         ("json-lexical", ["src/io/json.cpp", "include/q4t/server/request_json.h"],
-         "UTF-8 JSON; no duplicate keys, nonfinite numbers or trailing data; depth64/65536 values/16MiB decoded string bytes. Integer fields use exact source lexemes, not rounded binary64 values."),
+         "UTF-8 JSON; no duplicate keys, NaN/Infinity literals or trailing data; depth64/65536 values/16MiB decoded string bytes. Chat/preflight/schema/history data retain exact decimal lexemes up to16384 characters, including binary64 overflow/underflow. Generation numeric controls separately require finite/range-valid values. Integer fields use exact source lexemes, not rounded binary64 values. Model/config/cancel readers retain their previous limits."),
         ("transport-body", ["src/server/http_request.cpp", "src/server/chat_http.cpp",
              "include/q4t/server/http_observation.h", "include/q4t/server/http_connection.h"],
          "16MiB Chat/preflight body, 48MiB aggregate reservation; capacity failure is HTTP503/body_capacity_exhausted/param=body before body read. This is not a RAM measurement. Exact GET metrics/config/capabilities/models share four observation connections, independent of four health/cancel controls and business capacity; observation overflow is HTTP503/observation_capacity_exhausted. Primary unclassified headers share its summed handler limit. Explicit operations-port adds a loopback-only independent eight-handler listener (four observation/four control); it rejects generation, preflight and unknown method/path before body, preserving client authentication and cancel authority. Operations headers share only its own eight slots; no local flood isolation. Operations total overflow is HTTP503/operations_capacity_exhausted. Both listeners close on shutdown or setup failure. Cancel body4096. POST application/json UTF-8, no query strings, GET no body, methods exact; framing and header limits apply before parsing. Fixed first receive-failure counters exclude business validation."),
@@ -346,15 +362,17 @@ def semantics():
         ("reasoning-aliases", ["src/server/reasoning_options.cpp"],
          "Only assistant may carry reasoning aliases; two string values must agree byte-for-byte. Null alias may defer to the other. Hidden output preserves computation/usage."),
         ("historical-arguments", ["src/server/chat_tool_history.cpp"],
-         "Arguments are object or JSON text of an object using production parser budgets. Every top-level argument name is valid. No silent parameter dropping."),
+         "Arguments are object or JSON text of an object using production parser budgets. Argument keys are JSON data, not function identifiers. Exact decimals, arbitrary keys and null/string identity survive rendering, with JSON wrapper and escaped markers when native XML is ambiguous. No silent parameter dropping."),
         ("historical-batches", ["src/server/chat_tool_history.cpp"],
          "Any ID in a batch requires all nested calls to have valid unique IDs and type=function. Exactly one contiguous result for every ID; no orphan/duplicate/missing/mixed IDs. Text results may reorder. Unlabelled native legacy has distinct preserved rules; IDs are unique per batch, not globally."),
         ("tool-definitions", ["src/server/input_contract.cpp", "src/server/output_constraints.cpp"],
          "Function names unique. allowed_tools references declared unique names, filters template and grammar, and is checked again on actual output; required needs a nonempty subset, auto may be empty. Incremental tool fragments are provisional until successful whole-response terminal and EOF. Auto/raw parameter schemas advisory, but parameters/properties must be objects. A named choice must exist when compiling tool arguments; none mode removes tools and intentionally does not compile their argument schemas."),
         ("constraint-combinations", ["src/server/output_constraints.cpp", "src/server/text_stop.cpp"],
-         "JSON output/none/required/named/strict tools/nonparallel nonempty tools activate constraints. Parsed text required, state caches and effective stop forbidden; JSON plus tools requires none. Compiled tool branches max16 tools and ASCII safe names. Compiled structural tag <=65536 bytes."),
-        ("finite-schema", ["src/server/output_schema.cpp"],
-         "Root exact object; serialized schema<=16384 bytes; depth<=8/<=128 nodes; object<=32 properties/additionalProperties=false; required unique declared keys, all required in strict mode. Enum1..32 distinct matching string/bool/null; no numeric enums. minItems<=maxItems; bounds0..64. XML top properties ASCII1..64, no reserved XML delimiters in names/enums, no nullable top-level XML string parameters."),
+         "JSON output/none/required/named/strict tools/nonparallel nonempty tools activate constraints. Parsed messages required; state-cache implementation is still pending and effective stop remains forbidden. JSON response_format and tools choose a JSON-content or tool-only branch; required/named force tools. Tool declarations max128 with safe names in constrained mode. Compiled description <=2MiB; resource rejection is distinct from invalid syntax. Incremental content/tool/reasoning deltas remain provisional until successful terminal and EOF."),
+        ("schema-v2", ["src/server/output_schema.cpp", "src/server/schema_graph.cpp",
+             "src/server/schema_grammar.cpp", "src/server/schema_token_guard.cpp",
+             "src/server/schema_receipt.cpp", "src/server/schema_string.cpp"],
+         "Official structured-output graph: local refs/defs/recursion/anyOf; root resolves to object and excludes root anyOf; closed objects and all properties required when strict. 5000 total properties/10 nesting levels/1000 enum values/120000 constrained characters, with15000 for string enums over250 members. Exact decimal enum/const, numeric bounds and multipleOf; Unicode lengths, arrays, patterns and9 formats. Additional bounded graph/grammar/worker resources fail explicitly. Native-format checks run only in the isolated worker; parent binds schema/tool/value receipts before successful terminal. Simple unambiguous trained XML is retained; rich tool arguments are one JSON object parameter with refs relocated only in model definitions. Published structural schema requires native semantic validation for refs, aggregate limits, exact relationships and strict requirements."),
         ("response-parser-prefix", ["src/server/chat_response_parser.cpp", "src/server/thinking_budget.cpp"],
          "Production parser and thinking budget initialization must accept native generation prefix. Real thinking closure token preparation remains execution-time validation."),
         ("sampling-and-choices", ["src/server/sampling.cpp", "src/server/chat_generation.cpp",

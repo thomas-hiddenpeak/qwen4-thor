@@ -3,6 +3,7 @@
 #include <limits>
 
 #include "q4t/server/chat_prompt.h"
+#include "q4t/server/request_json.h"
 #include "q4t/server/structured_decoder.h"
 #include "q4t/test.h"
 
@@ -20,6 +21,29 @@ ChatPlanConfig Config() {
   return config;
 }
 }  // namespace
+
+Q4T_TEST(chat_plan_schema_resource_errors_keep_status_and_parameter) {
+  for (const auto* bound : {"1e400", "-1"}) {
+    const std::string raw =
+        R"({"messages":[{"role":"user","content":"q"}],)"
+        R"("response_format":{"type":"json_schema","json_schema":{)"
+        R"("name":"x","schema":{"type":"object","properties":{)"
+        R"("x":{"type":"array","items":{"type":"string"},"maxItems":)" +
+        std::string(bound) + R"(}},"additionalProperties":false}}}})";
+    Json request;
+    Q4T_CHECK(q4t::io::ParseJson(raw, &request, true, kSchemaJsonLimits));
+    ChatRequestPlan plan;
+    ChatPlanError error;
+    Q4T_CHECK(!PlanChatRequest(request, Config(), &plan, &error));
+    Q4T_CHECK(error.param ==
+              "response_format.json_schema.schema.properties.x.maxItems");
+    const bool resource = std::string_view(bound) == "1e400";
+    Q4T_CHECK(error.http_status == (resource ? 503 : 400));
+    Q4T_CHECK(error.code ==
+              (resource ? "constraint_resource_exhausted" : "invalid_request"));
+  }
+  return true;
+}
 
 Q4T_TEST(chat_plan_uniform_output_and_null_defaults) {
   for (const auto* extra :

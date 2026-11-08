@@ -52,6 +52,7 @@ struct ChatPlanConfig {
 struct ChatPlanError {
   std::string code = "invalid_request";
   std::string param;
+  int http_status = 400;
 };
 
 struct ChatRequestPlan {

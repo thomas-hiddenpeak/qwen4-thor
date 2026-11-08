@@ -515,14 +515,7 @@
                 "arguments": {
                   "anyOf": [
                     {
-                      "type": "object",
-                      "propertyNames": {
-                        "type": "string",
-                        "minLength": 1,
-                        "maxLength": 256,
-                        "pattern": "^[^\\u0000-\\u001f\\u007f<>]+$",
-                        "x-q4t-max-utf8-bytes": 256
-                      }
+                      "type": "object"
                     },
                     {
                       "type": "string",
@@ -559,14 +552,7 @@
             "arguments": {
               "anyOf": [
                 {
-                  "type": "object",
-                  "propertyNames": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 256,
-                    "pattern": "^[^\\u0000-\\u001f\\u007f<>]+$",
-                    "x-q4t-max-utf8-bytes": 256
-                  }
+                  "type": "object"
                 },
                 {
                   "type": "string",

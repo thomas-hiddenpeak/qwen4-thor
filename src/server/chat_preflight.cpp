@@ -62,7 +62,8 @@ void ChatServer::HandlePreflight(int fd, const std::string& body) {
   ChatPlanError error;
   status = ValidatePreflightEnvelope(envelope, &error);
   const auto send_error = [&] {
-    detail::SendError(fd, 400, status.message(), {}, error.code, error.param);
+    detail::SendError(fd, error.http_status, status.message(), {}, error.code,
+                      error.param);
   };
   if (!status) {
     send_error();

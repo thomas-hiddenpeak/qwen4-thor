@@ -695,6 +695,7 @@ if(Q4T_BUILD_TESTS)
       src/trace/sha256.cpp
       src/server/input_contract.cpp src/server/output_schema.cpp
       src/server/schema_graph.cpp src/server/schema_decimal.cpp
+      src/server/custom_tools.cpp
       src/server/http_response.cpp src/trace/router_trace.cpp)
     target_include_directories(q4t_http_lifecycle_tests PRIVATE
       include ${CUDAToolkit_INCLUDE_DIRS})

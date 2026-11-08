@@ -138,6 +138,15 @@ Q4T_TEST(chat_capabilities_option_contract) {
   Q4T_CHECK(tools->GetBool("constrained_decoding") == backend);
   const auto* structured = caps.Find("structured_output");
   Q4T_CHECK(structured && structured->GetBool("available") == backend);
+  Q4T_CHECK(structured->GetString("schema_profile") == "q4t-json-schema-v2");
+  Q4T_CHECK(structured->GetString("stream_payload") ==
+            "incremental_provisional_until_success_terminal_and_eof");
+  Q4T_CHECK(structured->GetString("json_with_tools") ==
+            "json_content_or_tool_calls");
+  Q4T_CHECK(structured->GetInt("max_schema_depth") == 10);
+  Q4T_CHECK(structured->GetInt("max_schema_properties") == 5000);
+  Q4T_CHECK(structured->GetInt("max_tools") == 128);
+  Q4T_CHECK(structured->GetBool("exact_decimal_data"));
   const auto* resources = structured->Find("resources");
   Q4T_CHECK(resources && resources->GetInt("active_limit") == 1);
   Q4T_CHECK(resources->GetInt("cleanup_timeout_ms") ==
