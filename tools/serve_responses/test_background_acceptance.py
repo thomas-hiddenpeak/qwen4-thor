@@ -3,6 +3,7 @@ import copy
 from contextlib import nullcontext
 import json
 from pathlib import Path
+import socket
 import tempfile
 import unittest
 from unittest.mock import Mock, patch, call
@@ -12,6 +13,23 @@ from tools.serve_responses import background_resume as resume
 
 
 class Driver(unittest.TestCase):
+    def test_port_probe_accepts_closed_time_wait_but_rejects_live_listener(self):
+        with socket.socket() as listener:
+            listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            listener.bind(('127.0.0.1', 0))
+            port = listener.getsockname()[1]
+            listener.listen(1)
+            with self.assertRaises(OSError):
+                stage.probe_ports([port])
+            with socket.create_connection(('127.0.0.1', port), timeout=2) as client:
+                accepted, _ = listener.accept()
+                with accepted:
+                    accepted.shutdown(socket.SHUT_WR)
+                    self.assertEqual(client.recv(1), b'')
+        # The listener actively closed the accepted stream. Its TIME_WAIT
+        # must not prevent the same SO_REUSEADDR contract used by q4t serve.
+        stage.probe_ports([port])
+
     def test_cancel_idempotence_compares_same_projection_and_rejects_real_changes(self):
         root = stage.ROOT/'docs/evidence/serve-responses-background-business-20261109/background-business-01'
         first = json.loads((root/'running-cancel.sdk.json').read_text())['result']

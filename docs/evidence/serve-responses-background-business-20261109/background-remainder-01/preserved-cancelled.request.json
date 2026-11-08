@@ -1,0 +1,10 @@
+{
+  "action": "retrieve",
+  "request": null,
+  "id": "resp_b2a3181bacd1051d4f8515cba302d882",
+  "query": null,
+  "stream_mode": null,
+  "base_url": "http://127.0.0.1:18164/v1",
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "timeout_ms": 120000
+}

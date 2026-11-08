@@ -1,0 +1,6 @@
+test_port_probe_accepts_closed_time_wait_but_rejects_live_listener (tools.serve_responses.test_background_acceptance.Driver.test_port_probe_accepts_closed_time_wait_but_rejects_live_listener) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+OK

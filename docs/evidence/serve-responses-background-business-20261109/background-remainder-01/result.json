@@ -1,0 +1,11 @@
+{
+  "status": "FAILED",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 294, in run\n    try:self.start();self.business();result['status']=self.success_status\n                     ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/background_resume.py\", line 130, in business\n    self.crash_recovery()\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/background_acceptance.py\", line 248, in crash_recovery\n    self.start()\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/background_acceptance.py\", line 93, in start\n    sock.bind(('127.0.0.1', port))\nOSError: [Errno 98] Address already in use\n",
+  "counts": {
+    "starts": 1,
+    "chats": 2,
+    "controls": 49
+  },
+  "seconds": 40.68780602188781,
+  "binary_sha256": "0ca69a41d5fe74366842c1626505eaa3850481f214bd9551e8f1d021bf3c3aa7"
+}

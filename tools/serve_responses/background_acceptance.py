@@ -82,15 +82,22 @@ def check_cancel(first, repeated, projected):
     require(expected == projected, 'cancel and GET differ beyond logprobs projection')
 
 
+def probe_ports(ports):
+    for port in ports:
+        with socket.socket() as sock:
+            # Match HttpListeners::Open, including restart over TIME_WAIT.
+            # The real listener still owns the authoritative bind operation.
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            sock.bind(('127.0.0.1', port))
+
+
 class Stage(base.Stage):
     limits = LIMITS
     request_templates = staticmethod(requests)
     success_status = 'PASS_RESPONSES_BACKGROUND_BUSINESS'
 
     def start(self):
-        for port in (self.plan['port'], self.plan['operations_port']):
-            with socket.socket() as sock:
-                sock.bind(('127.0.0.1', port))
+        probe_ports((self.plan['port'], self.plan['operations_port']))
         generation = self.counts['starts'] + 1
         args = [self.plan['binary'], 'serve', '--model-dir', self.plan['model'],
             '--host', '127.0.0.1', '--port', str(self.plan['port']),
@@ -246,6 +253,11 @@ class Stage(base.Stage):
         save(self.out/'after-crash-cleanup.json', read(self.out/'cleanup.json'))
         self.model = None
         self.start()
+        self.finish_recovery(partial, resumed)
+
+    def finish_recovery(self, partial, resumed):
+        rows = self.plan['requests']
+        crashed = partial
         failed = self.wait_response('interrupted-failed', crashed['id'], lambda v: v['status'] == 'failed')
         require(failed['error']['code'] == 'background_execution_interrupted' and
                 foreground.text(failed).startswith(foreground.text(partial)), 'interrupted state lost or replayed')

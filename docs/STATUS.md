@@ -2,6 +2,12 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+后台续验已完成取消事件续读和实际自有模型崩溃，1启动/2生成；
+第二次启动前的驱动端口探测误拒绝TIME_WAIT，修复为与真实监听
+相同的SO_REUSEADDR，CPU活监听拒绝/关闭复用通过。FAILED与现场
+保留，只余1启动/1新Chat/300秒，从原崩溃状态副本继续恢复；累计
+仍3启动/8生成上限，无默认变更。继续总目标所有余项。
+
 后台首轮1启动/5生成/53.597秒在取消对比误判处停止：两次取消一致，
 GET仅裁剪可选logprobs；52次NVML全OK、模型退出0且清理完毕。
 原FAILED保留，2个针对性CPU负控及来源复核通过。[原件/续验边界](evidence/serve-responses-background-business-20261109/README.md)。
