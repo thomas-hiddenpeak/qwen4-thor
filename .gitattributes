@@ -23,6 +23,8 @@ docs/evidence/serve-legacy-tools-20261108/** -text -whitespace
 third_party/licenses/structured_output/rust-standard-library/** -text -whitespace
 
 docs/evidence/serve-custom-tools-20261108/** -text -whitespace
+docs/evidence/serve-schema-v2-20261108/** -text -whitespace
+docs/evidence/serve-schema-v2-20261108/**/*.wire binary
 
 # Keep pinned upstream schema format vectors and their MIT notice byte-exact.
 tests/fixtures/schema_formats/*.json -text -whitespace
