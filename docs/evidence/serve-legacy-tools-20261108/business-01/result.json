@@ -1,0 +1,10 @@
+{
+  "status": "PASS_LEGACY_TOOLS_BUSINESS",
+  "counts": {
+    "starts": 1,
+    "chats": 7,
+    "controls": 52
+  },
+  "seconds": 61.614386218134314,
+  "binary_sha256": "33c52e4ae83d4702af4e15df18475f2434508d6feebc61dfb62eda7dd2227e28"
+}

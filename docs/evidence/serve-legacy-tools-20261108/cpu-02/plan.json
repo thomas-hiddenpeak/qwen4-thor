@@ -1,0 +1,14 @@
+{
+  "js": [
+    "node",
+    "--test",
+    "--test-name-pattern=legacy function JSON",
+    "tools/examples/js/test_chat_client.mjs"
+  ],
+  "bridge": [
+    "python3",
+    "-m",
+    "unittest",
+    "tools.serve_legacy_tools.test_clients.LegacyClients.test_bridge_compares_actual_legacy_tool_plan"
+  ]
+}

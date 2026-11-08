@@ -1,0 +1,36 @@
+✖ legacy function JSON and incremental SSE SDK roundtrip (55.610921ms)
+✔ legacy function partial cancellation and mismatched terminal never execute (40.943176ms)
+✔ split tool deltas produce one complete validated batch (29.52797ms)
+✔ whole batch validation rejects a later unknown tool before execution (0.550743ms)
+✔ tool stream provisional fragments cannot complete before terminal and EOF (34.885796ms)
+✔ tool stream later error invalidates all earlier complete fragments (883.050648ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 5
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1189.103327
+
+✖ failing tests:
+
+test at tools/examples/js/test_chat_client.mjs:49:1
+✖ legacy function JSON and incremental SSE SDK roundtrip (55.610921ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'read'
+  
+      at TestContext.<anonymous> (file:///home/rm01/models/dev/qwen4-thor/tools/examples/js/test_chat_client.mjs:62:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1332:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'read',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

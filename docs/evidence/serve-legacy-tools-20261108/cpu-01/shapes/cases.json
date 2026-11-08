@@ -1,0 +1,479 @@
+[
+  {
+    "id": "legacy-auto",
+    "expected": true,
+    "shape_expected": true,
+    "field": "functions",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"functions\":[{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}],\"function_call\":\"auto\"}"
+    }
+  },
+  {
+    "id": "legacy-none",
+    "expected": true,
+    "shape_expected": true,
+    "field": "functions",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"functions\":[{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}],\"function_call\":\"none\"}"
+    }
+  },
+  {
+    "id": "legacy-named",
+    "expected": true,
+    "shape_expected": true,
+    "field": "functions",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"functions\":[{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}],\"function_call\":{\"name\":\"read\"}}"
+    }
+  },
+  {
+    "id": "legacy-default",
+    "expected": true,
+    "shape_expected": true,
+    "field": "functions",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"functions\":[{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}]}"
+    }
+  },
+  {
+    "id": "legacy-null-choice",
+    "expected": true,
+    "shape_expected": true,
+    "field": "functions",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"functions\":[{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}],\"function_call\":null}"
+    }
+  },
+  {
+    "id": "legacy-modern-nulls",
+    "expected": true,
+    "shape_expected": true,
+    "field": "functions",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"functions\":[{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}],\"tools\":null,\"tool_choice\":null}"
+    }
+  },
+  {
+    "id": "legacy-both-nulls",
+    "expected": true,
+    "shape_expected": true,
+    "field": "functions",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"functions\":null,\"function_call\":null}"
+    }
+  },
+  {
+    "id": "legacy-none-no-functions",
+    "expected": true,
+    "shape_expected": true,
+    "field": "function_call",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"function_call\":\"none\"}"
+    }
+  },
+  {
+    "id": "legacy-json-none",
+    "expected": true,
+    "shape_expected": true,
+    "field": "functions",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"functions\":[{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}],\"function_call\":\"none\",\"response_format\":{\"type\":\"json_object\"}}"
+    }
+  },
+  {
+    "id": "legacy-functions-empty",
+    "expected": false,
+    "shape_expected": false,
+    "field": "functions",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"functions\":[]}"
+    }
+  },
+  {
+    "id": "legacy-functions-too-many",
+    "expected": false,
+    "shape_expected": false,
+    "field": "functions",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"functions\":[{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}},{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}]}"
+    }
+  },
+  {
+    "id": "legacy-functions-scalar",
+    "expected": false,
+    "shape_expected": false,
+    "field": "functions",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"functions\":3}"
+    }
+  },
+  {
+    "id": "legacy-functions-bad-name",
+    "expected": false,
+    "shape_expected": false,
+    "field": "functions",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"functions\":[{\"name\":\"bad name\"}]}"
+    }
+  },
+  {
+    "id": "legacy-functions-bad-parameters",
+    "expected": false,
+    "shape_expected": false,
+    "field": "functions",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"functions\":[{\"name\":\"read\",\"parameters\":3}]}"
+    }
+  },
+  {
+    "id": "legacy-functions-unknown-field",
+    "expected": false,
+    "shape_expected": false,
+    "field": "functions",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"functions\":[{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false},\"extra\":1}]}"
+    }
+  },
+  {
+    "id": "legacy-conflict-parallel",
+    "expected": false,
+    "shape_expected": false,
+    "field": "functions",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"functions\":[{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}],\"parallel_tool_calls\":true}"
+    }
+  },
+  {
+    "id": "legacy-conflict-tools",
+    "expected": false,
+    "shape_expected": false,
+    "field": "functions",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"functions\":[{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}],\"tools\":[]}"
+    }
+  },
+  {
+    "id": "legacy-conflict-choice",
+    "expected": false,
+    "shape_expected": false,
+    "field": "functions",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"functions\":[{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}],\"tool_choice\":\"auto\"}"
+    }
+  },
+  {
+    "id": "legacy-conflict-required",
+    "expected": false,
+    "shape_expected": false,
+    "field": "functions",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"functions\":[{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}],\"function_call\":\"required\"}"
+    }
+  },
+  {
+    "id": "legacy-conflict-bad-choice",
+    "expected": false,
+    "shape_expected": false,
+    "field": "functions",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"functions\":[{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}],\"function_call\":{\"name\":\"read\",\"extra\":1}}"
+    }
+  },
+  {
+    "id": "legacy-conflict-unparsed",
+    "expected": false,
+    "shape_expected": false,
+    "field": "functions",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"functions\":[{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}],\"parse_response\":false}"
+    }
+  },
+  {
+    "id": "legacy-conflict-stop",
+    "expected": false,
+    "shape_expected": false,
+    "field": "functions",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"functions\":[{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}],\"stop\":\"END\"}"
+    }
+  },
+  {
+    "id": "legacy-conflict-json",
+    "expected": false,
+    "shape_expected": false,
+    "field": "functions",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"functions\":[{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}],\"response_format\":{\"type\":\"json_object\"}}"
+    }
+  },
+  {
+    "id": "legacy-conflict-prediction",
+    "expected": false,
+    "shape_expected": false,
+    "field": "functions",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"functions\":[{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}],\"prediction\":{\"type\":\"content\",\"content\":\"x\"}}"
+    }
+  },
+  {
+    "id": "legacy-unknown-choice",
+    "expected": false,
+    "shape_expected": null,
+    "field": "function_call",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"functions\":[{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}],\"function_call\":{\"name\":\"missing\"}}"
+    }
+  },
+  {
+    "id": "legacy-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": "messages",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"assistant\",\"function_call\":{\"name\":\"read\",\"arguments\":\"{}\"}},{\"role\":\"function\",\"name\":\"read\",\"content\":\"record\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "legacy-history-null-result",
+    "expected": true,
+    "shape_expected": true,
+    "field": "messages",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"assistant\",\"function_call\":{\"name\":\"read\",\"arguments\":\"{}\"}},{\"role\":\"function\",\"name\":\"read\",\"content\":null}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "legacy-history-modern-controls",
+    "expected": true,
+    "shape_expected": true,
+    "field": "messages",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"assistant\",\"function_call\":{\"name\":\"read\",\"arguments\":\"{}\"}},{\"role\":\"function\",\"name\":\"read\",\"content\":\"record\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"read\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}}]}"
+    }
+  },
+  {
+    "id": "legacy-history-wrong-name",
+    "expected": false,
+    "shape_expected": null,
+    "field": "messages",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"assistant\",\"function_call\":{\"name\":\"read\",\"arguments\":\"{}\"}},{\"role\":\"function\",\"name\":\"wrong\",\"content\":\"record\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "legacy-history-orphan",
+    "expected": false,
+    "shape_expected": null,
+    "field": "messages",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"function\",\"name\":\"read\",\"content\":\"record\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "legacy-history-missing",
+    "expected": false,
+    "shape_expected": null,
+    "field": "messages",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"assistant\",\"function_call\":{\"name\":\"read\",\"arguments\":\"{}\"}}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "legacy-history-bad-json",
+    "expected": false,
+    "shape_expected": null,
+    "field": "messages",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"assistant\",\"function_call\":{\"name\":\"read\",\"arguments\":\"[1]\"}},{\"role\":\"function\",\"name\":\"read\",\"content\":\"record\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "legacy-history-mixed-message",
+    "expected": false,
+    "shape_expected": false,
+    "field": "messages",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"assistant\",\"function_call\":{\"name\":\"read\",\"arguments\":\"{}\"},\"tool_calls\":[]},{\"role\":\"function\",\"name\":\"read\",\"content\":\"record\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "tools-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "tools",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"read\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}}]}"
+    }
+  },
+  {
+    "id": "tools-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "tools",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":null}"
+    }
+  },
+  {
+    "id": "tools-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "tools",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "tools-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "tools",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "functions-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "functions",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"functions\":[{\"name\":\"read\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}]}"
+    }
+  },
+  {
+    "id": "functions-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "functions",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"functions\":null}"
+    }
+  },
+  {
+    "id": "functions-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "functions",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"functions\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "functions-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "functions",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "function_call-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "function_call",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"function_call\":\"auto\"}"
+    }
+  },
+  {
+    "id": "function_call-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "function_call",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"function_call\":null}"
+    }
+  },
+  {
+    "id": "function_call-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "function_call",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"function_call\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "function_call-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "function_call",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "tool_choice-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "tool_choice",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tool_choice\":\"auto\"}"
+    }
+  },
+  {
+    "id": "tool_choice-null",
+    "expected": false,
+    "shape_expected": false,
+    "field": "tool_choice",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tool_choice\":null}"
+    }
+  },
+  {
+    "id": "tool_choice-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "tool_choice",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tool_choice\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "tool_choice-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "tool_choice",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "legacy-flat-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"assistant\",\"tool_calls\":[{\"name\":\"read\",\"arguments\":{}}]},{\"role\":\"tool\",\"content\":\"result\"}]}"
+    }
+  },
+  {
+    "id": "tools-duplicate-names",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"read\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"read\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}}]}"
+    }
+  },
+  {
+    "id": "tools-unicode-name",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}}]}"
+    }
+  },
+  {
+    "id": "tools-name-byte-overflow",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}}]}"
+    }
+  }
+]

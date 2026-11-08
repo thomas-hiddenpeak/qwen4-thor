@@ -1,0 +1,7 @@
+{
+  "tools/serve_protocol/cases.py": "9206a373d96e12423b5adb613e273f1da02a588f5d4c7b0bcead4e5db3d56044",
+  "tests/server_legacy_tools_test.cpp": "793297123832cb437c520feff6700c37e9b22517ac2e09d4e2aca72eddaa2854",
+  "tools/serve_legacy_tools/acceptance.py": "55e0dfda792a91297070057c64aba478eba729f729f77731bf5cdb2520a1cd90",
+  "tools/serve_legacy_tools/test_clients.py": "171e9825419c26e64030329cd8656572d77d081e6a08a2c73c62c546f761ad68",
+  "tools/serve_legacy_tools/test_acceptance.py": "7562da8c68c78c0437131a3519abf552ff2646cde99309636b00b85e9e60c0d6"
+}

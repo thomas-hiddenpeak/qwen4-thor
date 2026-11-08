@@ -15,3 +15,6 @@ docs/evidence/serve-prediction-20261108/** -text -whitespace
 docs/evidence/serve-prediction-20261108/**/*.wire binary
 docs/evidence/serve-tool-stream-20261108/** -text -whitespace
 docs/evidence/serve-tool-stream-20261108/**/*.wire binary
+
+# Preserve exact legacy-function acceptance bytes, including CRLF SSE.
+docs/evidence/serve-legacy-tools-20261108/** -text -whitespace

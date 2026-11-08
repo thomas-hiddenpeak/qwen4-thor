@@ -111,43 +111,31 @@
       ],
       "evidence": [
         "docs/SERVE_TOOL_STREAM_2026-11-08.md",
-        "docs/evidence/serve-tool-stream-20261108/index.json"
+        "docs/evidence/serve-tool-stream-20261108/index.json",
+        "docs/SERVE_LEGACY_TOOLS_2026-11-08.md",
+        "docs/evidence/serve-legacy-tools-20261108/index.json"
       ],
       "release": {
-        "subset": "allowed_tools/incremental function streams",
-        "binary_sha256": "945a05ea29dde7726f8d2e244ee710a7297a0dd705b888056e8b7b29a99998b7",
-        "manifest_sha256": "d2cc6b9bfda13a49dd1c9d0c9fbf31c83240a623886e7d740509a0e9fc9fd312",
-        "record": "docs/evidence/serve-tool-stream-20261108/delivery-01/result.json"
+        "subset": "allowed_tools/incremental streams and legacy functions",
+        "binary_sha256": "33c52e4ae83d4702af4e15df18475f2434508d6feebc61dfb62eda7dd2227e28",
+        "manifest_sha256": "13f077b634bfdcecddc2eba7a1a83216a531ed6505ed4ffeb9a0fb5be8ca3e93",
+        "record": "docs/evidence/serve-legacy-tools-20261108/delivery-01/result.json"
       },
       "accepted_subsets": [
         {
           "name": "allowed_tools and real incremental function argument streaming",
           "profile": "q4t-tool-stream-v1",
           "full_task_complete": false
+        },
+        {
+          "name": "legacy functions/function_call, history/results and modern migration",
+          "profile": "q4t-legacy-functions-v1",
+          "full_task_complete": false
         }
       ],
       "remaining_required": [
-        "legacy functions/function_call and function role history",
         "custom tools text/grammar, history and actual execution evidence"
-      ],
-      "active_subset": {
-        "name": "legacy functions/function_call",
-        "state": "CPU_verified_business_pending",
-        "plan": "docs/SERVE_LEGACY_TOOLS_2026-11-08.md",
-        "cpu": {
-          "cpp": 31,
-          "request_contracts": 53,
-          "python": 12,
-          "js": 6
-        },
-        "business": {
-          "planned_starts": 1,
-          "planned_chats": 7,
-          "max_starts": 2,
-          "max_chats": 8,
-          "max_seconds": 900
-        }
-      }
+      ]
     },
     {
       "id": "A05",
@@ -592,5 +580,5 @@
     }
   ],
   "next_task": "A04",
-  "next": "Legacy真实闭环交付后继续custom text/grammar与后续A05等全部计划任务。"
+  "next": "实现custom text/regex/lark、标准历史/流式/结果，继续A05等全部总计划。"
 }

@@ -1,0 +1,68 @@
+{
+  "host": {
+    "argv": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-legacy-tools-20261108/engine-build/q4t_host_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-legacy-tools-20261108/cpu-01/host-required.txt"
+    ],
+    "exit_code": 0,
+    "seconds": 0.16471179528161883
+  },
+  "shapes": {
+    "argv": [
+      "python3",
+      "tools/serve_protocol/check_contract.py",
+      "--probe",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-legacy-tools-20261108/engine-build/q4t_contract_probe",
+      "--output",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-legacy-tools-20261108/cpu-01/shapes",
+      "--case-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-legacy-tools-20261108/cpu-01/contract-required.txt"
+    ],
+    "exit_code": 0,
+    "seconds": 0.5651624081656337
+  },
+  "python": {
+    "argv": [
+      "python3",
+      "-m",
+      "unittest",
+      "tools.serve_legacy_tools.test_clients",
+      "tools.serve_legacy_tools.test_acceptance",
+      "tools.examples.test_chat_client.ClientContracts.test_fragmented_interleaved_tools_and_unicode",
+      "tools.examples.test_chat_client.ClientContracts.test_terminal_failures_never_return_a_completion",
+      "tools.examples.test_chat_client.ClientContracts.test_error_after_complete_call_is_failure",
+      "tools.examples.test_chat_client.ClientContracts.test_must_read_through_eof"
+    ],
+    "exit_code": 0,
+    "seconds": 0.21433797432109714
+  },
+  "js": {
+    "argv": [
+      "node",
+      "--test",
+      "--test-name-pattern=legacy function|tool stream|split tool|whole batch",
+      "tools/examples/js/test_chat_client.mjs"
+    ],
+    "exit_code": 1,
+    "seconds": 1.2664060997776687
+  },
+  "schema": {
+    "argv": [
+      "python3",
+      "tools/serve_protocol/build_contract.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.06390425423160195
+  },
+  "sources": {
+    "argv": [
+      "python3",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.06380387488752604
+  }
+}

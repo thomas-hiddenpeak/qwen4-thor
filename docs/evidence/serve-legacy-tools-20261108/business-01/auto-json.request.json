@@ -1,0 +1,43 @@
+{
+  "model": "qwen3.8-flash-next",
+  "enable_thinking": false,
+  "temperature": 0,
+  "max_completion_tokens": 256,
+  "stream": false,
+  "functions": [
+    {
+      "name": "read_project_record",
+      "description": "Read real project documentation or acceptance JSON under docs/, or the installed release metadata build/q4t.release.json. Returns numbered lines, a source SHA256 and an exact citation. Use the returned citation verbatim in the answer.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "enum": [
+              "docs/MODEL.md"
+            ]
+          },
+          "start_line": {
+            "type": "integer"
+          },
+          "line_count": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "path",
+          "start_line",
+          "line_count"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "function_call": "auto",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Read the first 16 lines of docs/MODEL.md with read_project_record. Then return the exact title and citation from the tool."
+    }
+  ]
+}
