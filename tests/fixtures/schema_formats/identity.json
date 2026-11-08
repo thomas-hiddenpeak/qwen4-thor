@@ -1,0 +1,65 @@
+{
+  "commit": "245a45abc90190c0bff04d97e6d2b541b4bb9f12",
+  "files": [
+    {
+      "file": "date.json",
+      "url": "https://raw.githubusercontent.com/json-schema-org/JSON-Schema-Test-Suite/245a45abc90190c0bff04d97e6d2b541b4bb9f12/tests/draft2020-12/optional/format/date.json",
+      "sha256": "db4a534a3deb8c760eb589c70141573b710f7d7511d68212a636b4c2663c9da2",
+      "bytes": 15157
+    },
+    {
+      "file": "date-time.json",
+      "url": "https://raw.githubusercontent.com/json-schema-org/JSON-Schema-Test-Suite/245a45abc90190c0bff04d97e6d2b541b4bb9f12/tests/draft2020-12/optional/format/date-time.json",
+      "sha256": "8373dc33291aa26f3539f4c9df298f2ec3ee9827f3b18f2e58417e894cdb08f6",
+      "bytes": 9276
+    },
+    {
+      "file": "time.json",
+      "url": "https://raw.githubusercontent.com/json-schema-org/JSON-Schema-Test-Suite/245a45abc90190c0bff04d97e6d2b541b4bb9f12/tests/draft2020-12/optional/format/time.json",
+      "sha256": "053320b46f1dd2ff52faecbf04e3222daf81ab0cf908336a474edb7024a2c091",
+      "bytes": 11332
+    },
+    {
+      "file": "duration.json",
+      "url": "https://raw.githubusercontent.com/json-schema-org/JSON-Schema-Test-Suite/245a45abc90190c0bff04d97e6d2b541b4bb9f12/tests/draft2020-12/optional/format/duration.json",
+      "sha256": "6196f87b176da1c56f71d82074823a3449d3bc03ed856b263e9e9ea788a4790d",
+      "bytes": 8671
+    },
+    {
+      "file": "email.json",
+      "url": "https://raw.githubusercontent.com/json-schema-org/JSON-Schema-Test-Suite/245a45abc90190c0bff04d97e6d2b541b4bb9f12/tests/draft2020-12/optional/format/email.json",
+      "sha256": "2d0d8295bd24a445434d016aa8edde7650c0432a83c9106fcf3fbf232b45c79a",
+      "bytes": 13314
+    },
+    {
+      "file": "hostname.json",
+      "url": "https://raw.githubusercontent.com/json-schema-org/JSON-Schema-Test-Suite/245a45abc90190c0bff04d97e6d2b541b4bb9f12/tests/draft2020-12/optional/format/hostname.json",
+      "sha256": "7f9642bc5a9e063c552987bc4adff7387eedcb32e4fc3e500b4932faa38a7ac7",
+      "bytes": 16657
+    },
+    {
+      "file": "ipv4.json",
+      "url": "https://raw.githubusercontent.com/json-schema-org/JSON-Schema-Test-Suite/245a45abc90190c0bff04d97e6d2b541b4bb9f12/tests/draft2020-12/optional/format/ipv4.json",
+      "sha256": "bb519c507d351de09bbb8284a8ab06da4e115b5c2115f2f2525d516be34169c5",
+      "bytes": 7329
+    },
+    {
+      "file": "ipv6.json",
+      "url": "https://raw.githubusercontent.com/json-schema-org/JSON-Schema-Test-Suite/245a45abc90190c0bff04d97e6d2b541b4bb9f12/tests/draft2020-12/optional/format/ipv6.json",
+      "sha256": "39c66aa91e6d764f0a5e94a9b36c4e1a2db11f388c5ff32d5439bafe32072533",
+      "bytes": 9017
+    },
+    {
+      "file": "uuid.json",
+      "url": "https://raw.githubusercontent.com/json-schema-org/JSON-Schema-Test-Suite/245a45abc90190c0bff04d97e6d2b541b4bb9f12/tests/draft2020-12/optional/format/uuid.json",
+      "sha256": "d62b676e83a346a6fe4ad1812a4e8da1e7b99a15c5cfb9e9faa3168c37b9365e",
+      "bytes": 5371
+    },
+    {
+      "file": "LICENSE",
+      "url": "https://raw.githubusercontent.com/json-schema-org/JSON-Schema-Test-Suite/245a45abc90190c0bff04d97e6d2b541b4bb9f12/LICENSE",
+      "sha256": "837402bd25fad9b704265801ca3f92566a98157c1f9a7acd6f446299ba1c305a",
+      "bytes": 1057
+    }
+  ]
+}

@@ -23,6 +23,8 @@ jobs:
           command -v g++-14 >/dev/null || packages+=(g++-14)
           command -v cmake >/dev/null || packages+=(cmake)
           test -f /usr/include/openssl/ssl.h || packages+=(libssl-dev)
+          dpkg-query -W -f='${Status}' libidn2-0 2>/dev/null | \
+            grep -q 'install ok installed' || packages+=(libidn2-0)
           command -v openssl >/dev/null || packages+=(openssl)
           /usr/bin/python3 -c 'import numpy' || packages+=(python3-numpy)
           if ((${#packages[@]})); then

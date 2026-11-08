@@ -732,7 +732,7 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "4f373296b07c33a1edf85905b81cf7557781c3ce45766fe03b4ee4f3e10791b2",
+    "CMakeLists.txt": "783f5eddf0537bc5ab5d56fd2bb167e2a89205487347ecc7ab12d07ce1f07dab",
     "cmake/ChatProtocolIdentity.cmake": "f8b53fe94b8396d28dec5789d44e7315c052530a3a443dee29495868cbe350fe",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
@@ -765,7 +765,7 @@
     "include/q4t/server/client_request.h": "d08159942c0f0f95c5040546b3aab647eac435546767e96a1c922f3d88957998",
     "include/q4t/server/cuda_quota_metrics.h": "40ea24b9df80e446f13c89cf4e5d8ce09741fc67ce3d413096cc1ac10e59cbc2",
     "include/q4t/server/cuda_quota_policy.h": "e4143f1ec2f099edd81796bfca6db5cf916d547456af96c370d43991e176e297",
-    "include/q4t/server/custom_grammar.h": "d70d2c7a751984dcf4fbff2fae70010044d89b340feb068b2dff6c52fc0ef4e5",
+    "include/q4t/server/custom_grammar.h": "d560f89881ff27ce260c939d046a7b5f5c5afccce2125e4170ef53a661f507ec",
     "include/q4t/server/custom_tools.h": "1f351b6ed81ad868caa4dfa9c54a6f697fcac5a6a8dadef65bd05f2053ef18b9",
     "include/q4t/server/device_memory.h": "1099e20d3b205d3ae03daba0308be7221f5097c78a2fd58c8ca16298277dfc4c",
     "include/q4t/server/grammar_process.h": "299273b04e110d15f4b23d74c60ce669e126fb0d7428baf14b7c6c5565a33d22",
@@ -792,7 +792,7 @@
     "include/q4t/server/sampling.h": "fc7d056d4fdc5b14db3028330acbb3f144fc8ab4c2b0d6dd55e6475bdb11dc1f",
     "include/q4t/server/scheduler_submission.h": "2a960c668c25a0c694b811a2c5640c6e6605db7d386b1ba0075e64061aa1c416",
     "include/q4t/server/schema_decimal.h": "f6efd4f652918da2964a65813b6f8d9a972942ec5b02a5fb90b1ad8ad8bd8da0",
-    "include/q4t/server/schema_graph.h": "e600c22cc670c702f63bef768191382807b1defe423d97c6e2334576a812e80c",
+    "include/q4t/server/schema_graph.h": "377a813f8dc1aa8a6da0ba74f8285b1303a7ff04156ee74a2507b1dbd9524636",
     "include/q4t/server/sequence_admission.h": "0c03df6bd8c16d137562de22357c85e367208a6208be12d217adaf6135836b3f",
     "include/q4t/server/serve_fault.h": "47db4bd8dc12f5713ef42c6c89aeee1151867991d17d9b8529d31b4a11123b3f",
     "include/q4t/server/server_options.h": "87eeefdc39085628d020b752e1cf24cb573e9bbf76e64e1fdf565bcdefb41210",
@@ -860,7 +860,7 @@
     "src/server/client_policy.cpp": "3d28eb74a983b10fbb2fdf218307c0490349c051aee37945ae770a198f45b791",
     "src/server/client_request.cpp": "418f478a0d94cb270ea507cb6843f0a88a97de0ad2a22192e9f563c67f6fe83e",
     "src/server/cuda_memory_backend.h": "aabc6d78d2925ec5280e270964d79d3164ce706732a674b88215554a34d0e6a5",
-    "src/server/custom_grammar.cpp": "5178e24b7b336fd573587d511eb47d70775ac8c1803d956a8a938754f5572e96",
+    "src/server/custom_grammar.cpp": "c5412966c45d2e992c61b6cb2763e7e079e836b578d85a64650fc2696baa733d",
     "src/server/custom_regex.cpp": "eb8ab53b44dbb9ec2011676a854a18e38244975e76955b74a441829bdd67031a",
     "src/server/custom_regex.h": "4916fea56e31101ba2352675c918b82fe76b785b8559c87683d8cc531c3624d5",
     "src/server/custom_tools.cpp": "3e45f9a496439ec1e0d86739acb9c5d01eb6e2c321a96d924cf755b99bc12abd",
@@ -881,9 +881,15 @@
     "src/server/regex_syntax/schema_regex.rs": "6f183dc22d71497432d4ddbe5124f18056e3fbe1a40f7d56f2746d272e607431",
     "src/server/sampling.cpp": "8e6a8c446656d8430005b061b10535b391b002362725511d216f9b4229e3d3cb",
     "src/server/schema_decimal.cpp": "3931972b1ecfd38b0574c6794f447f6b05d1ef78d65e0f73a61eabcb1c2dee2f",
-    "src/server/schema_graph.cpp": "f75e22ba3abc90a05173499fa3fa959fb64af3fe2fcb63ba6ea92768b9ce9376",
+    "src/server/schema_grammar.cpp": "1411f2df41fe33a60578801a22fa1baf0f1776a664eed74df67936fd636098aa",
+    "src/server/schema_grammar.h": "b91cea4dc591de156c078d5c3e8ea74028668484091688a03e62b6c51e6a45cd",
+    "src/server/schema_graph.cpp": "4c8592d681400ac10f67bce7daa7eeb8fa50ca3dc061c86fc95818466c68aac1",
+    "src/server/schema_idna.cpp": "214915c2433c13b21828aba703be2ec5e4d44ee7a2a805078f3a307daa2f54fc",
+    "src/server/schema_idna.h": "23325232ba88254bef18f588f0b499bd703693714bea735e498e45b1193d026f",
     "src/server/schema_number_grammar.cpp": "794d96e59285772d4cdcffba18692cd5e4ad275d7adf1e831bfa2417842c5e86",
     "src/server/schema_number_grammar.h": "288d1f0c6dbf6f070fb39c9944b0162a96aaced01dbe936144dc8d47027ef4ba",
+    "src/server/schema_string.cpp": "8c8e04f94307af5b6f2b7c4993cb88d5eaac18124f2e07e002e5495663e2d791",
+    "src/server/schema_string.h": "477bb526c6ce60ebbd64b66e41369c9146422619d178fcfee02a91d8ad3dab1c",
     "src/server/server_options.cpp": "c47e2555d054a8ee27524ecf59936838b717d7292c864c24efeee1279e2dc622",
     "src/server/session_cache.cpp": "68fc36654c7f3a7c14ac41b26e3abd10697e87ffc94bf70fe2052edb9cf751f6",
     "src/server/session_state.cpp": "bc34bd240a68cfb7ba57f78604d898c51e61bc5705b5d9db64bd546f91d64f12",
@@ -1519,8 +1525,18 @@
       "src/server/schema_decimal.cpp",
       "src/server/schema_graph.cpp",
       "src/server/schema_number_grammar.cpp",
-      "src/server/regex_syntax/schema_regex.rs"
+      "src/server/regex_syntax/schema_regex.rs",
+      "src/server/schema_grammar.cpp",
+      "src/server/schema_string.cpp",
+      "src/server/schema_idna.cpp"
     ],
-    "acceptance": "16 distinct targeted CPU helper checks passed. Two language intersection resource failures retained and repaired without increasing bounds. Full schema generation/string formats/HTTP integration remain required. Default f8677aaf unchanged."
+    "acceptance": "35 distinct targeted CPU helper checks and 439 pinned external format string cases ultimately passed; all failed attempts retained. Recursive/compositional grammar and native final-value checker are not yet HTTP wired. String generation, bounded worker dependency isolation, numeric parsing and protocol combinations remain required. Default f8677aaf unchanged.",
+    "optional_native_dependency": {
+      "name": "system libidn2 >= 2.3",
+      "observed": "2.3.7-2build1.1 on this Thor",
+      "scope": "development helper: Punycode hostname/email label validation only",
+      "release_state": "not wired or shipped; bounded worker integration required before delivery",
+      "failure_contract": "dependency-unavailable/resource/invalid label distinct; no model health/restart signal"
+    }
   }
 }

@@ -520,3 +520,10 @@ MIT (项目代码)。模型权重遵循其发布方条款。
 nginx源码。nginx仅用于可选前置互操作测试及显式旧网关模式；默认新包
 不携带它。后续若引入第三方源码，将列明固定版本、来源、使用范围并
 保留其许可要求的版权声明。
+
+schema v2开发的格式回归使用
+[JSON-Schema-Test-Suite固定测试数据](tests/fixtures/schema_formats/README.md)，
+保留原始MIT许可。国际化hostname校验帮助模块按需调用系统
+[libidn2](https://www.gnu.org/software/libidn/#libidn2)的IDNA2008接口
+（LGPL-3.0-or-later库接口），不复制库或启动外部程序。此模块目前
+仍在开发，生成约束与隔离worker接入尚未交付；当前可用能力以STATUS为准。

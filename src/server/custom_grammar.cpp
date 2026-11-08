@@ -306,4 +306,13 @@ std::string ExpandCustomGrammarFormats(std::string_view structural_tag) {
 #endif
 }
 
+std::string EncodeJsonStringGrammar(std::string_view ebnf) {
+#ifdef Q4T_ENABLE_XGRAMMAR
+  return Encoder().Encode(xgrammar::Grammar::FromEBNF(std::string(ebnf)));
+#else
+  (void)ebnf;
+  throw std::runtime_error("schema grammar backend is not built");
+#endif
+}
+
 }  // namespace q4t::server

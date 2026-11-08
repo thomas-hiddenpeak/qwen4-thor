@@ -22,8 +22,11 @@ class OutputSchemaGraph {
   Status Init(const io::Json& root, bool strict, std::string* error_param,
               std::string_view path = "schema");
   Status Check(const io::Json& value, const StringCheck& strings = {}) const;
+  Status CheckNode(const io::Json& schema, const io::Json& value,
+                   const StringCheck& strings = {}) const;
   const io::Json* RefTarget(const io::Json& schema) const;
   const io::Json& Root() const { return *root_; }
+  const std::vector<const io::Json*>& Nodes() const { return order_; }
 
  private:
   Status Collect(const io::Json& schema, const std::string& path, size_t depth);

@@ -345,7 +345,8 @@ Status OutputSchemaGraph::Definition(const Json& schema,
   }
   if (string_count_ > 120000)
     return Error(path, "schema exceeds 120000 constrained characters");
-  if (Has(types, "object") || schema.Has("properties")) {
+  if (schema.Has("properties") ||
+      (Has(types, "object") && !schema.Has("$ref") && !schema.Has("anyOf"))) {
     const auto* properties = schema.Find("properties");
     if (!properties || !properties->IsObject())
       return Error(path + ".properties", "object requires properties map");
@@ -428,7 +429,8 @@ Status OutputSchemaGraph::Init(const Json& root, bool strict,
   std::unordered_set<const Json*> chain;
   while (effective->Has("$ref")) {
     if (!chain.insert(effective).second)
-      return Error(InputParamPath(path, "$ref"), "nonproductive root reference");
+      return Error(InputParamPath(path, "$ref"),
+                   "nonproductive root reference");
     effective = RefTarget(*effective);
   }
   if (effective->GetString("type") != "object" || effective->Has("anyOf"))
@@ -470,7 +472,8 @@ Status OutputSchemaGraph::Value(const Json& schema, const Json& value,
         matched = true;
         break;
       }
-      if (status.message().starts_with("schema_resource_exhausted:"))
+      if (status.message().starts_with("schema_resource_exhausted:") ||
+          status.message().starts_with("schema_dependency_unavailable:"))
         return status;
     }
     if (!matched) return Status::Fail("output does not match anyOf");
@@ -586,8 +589,15 @@ Status OutputSchemaGraph::Value(const Json& schema, const Json& value,
 Status OutputSchemaGraph::Check(const Json& value,
                                 const StringCheck& strings) const {
   if (!valid_) return Status::Fail("schema graph is not initialized");
+  return CheckNode(*root_, value, strings);
+}
+
+Status OutputSchemaGraph::CheckNode(const Json& schema, const Json& value,
+                                    const StringCheck& strings) const {
+  if (!valid_ || !nodes_.contains(&schema))
+    return Status::Fail("schema node is not initialized");
   size_t work = kWork;
   std::unordered_set<const Json*> active;
-  return Value(*root_, value, 0, &work, strings, &active);
+  return Value(schema, value, 0, &work, strings, &active);
 }
 }  // namespace q4t::server

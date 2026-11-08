@@ -479,7 +479,11 @@ if(Q4T_BUILD_TESTS)
     src/server/schema_decimal.cpp
     src/server/schema_graph.cpp
     src/server/schema_number_grammar.cpp
+    src/server/schema_grammar.cpp
+    src/server/schema_string.cpp
+    src/server/schema_idna.cpp
     tests/server_schema_graph_test.cpp
+    tests/server_schema_string_test.cpp
     src/server/output_constraints.cpp
     src/server/grammar_process.cpp
     src/server/grammar_worker.cpp
@@ -575,11 +579,11 @@ if(Q4T_BUILD_TESTS)
   q4t_link_structured_output(q4t_tests)
   if(Q4T_ENABLE_XGRAMMAR)
     target_sources(q4t_tests PRIVATE tests/server_structured_decoder_test.cpp
-      tests/server_schema_language_test.cpp)
+      tests/server_schema_language_test.cpp tests/server_schema_grammar_test.cpp)
   endif()
   target_include_directories(q4t_tests PRIVATE include)
   target_include_directories(q4t_tests PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
-  target_link_libraries(q4t_tests PRIVATE ${Q4T_TEST_LIBS})
+  target_link_libraries(q4t_tests PRIVATE ${Q4T_TEST_LIBS} ${CMAKE_DL_LIBS})
   add_test(NAME q4t_tests COMMAND q4t_tests)
 
   # These research replays require retained private raw input or a caller-
@@ -656,7 +660,7 @@ if(Q4T_BUILD_TESTS)
   q4t_link_structured_output(q4t_host_tests)
   target_include_directories(q4t_host_tests PRIVATE include)
   target_include_directories(q4t_host_tests PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
-  target_link_libraries(q4t_host_tests PRIVATE q4t_io Threads::Threads)
+  target_link_libraries(q4t_host_tests PRIVATE q4t_io Threads::Threads ${CMAKE_DL_LIBS})
   if(Q4T_HAS_ICU)
     target_sources(q4t_host_tests PRIVATE tests/text_tokenizer_test.cpp)
     target_link_libraries(q4t_host_tests PRIVATE q4t_text)
