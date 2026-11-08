@@ -1,0 +1,8 @@
+{
+  "src/server/object_store.cpp": "18a10b8200f7626c2b5067a350e412028cbc50204facc4d0aa27e0531e6a1597",
+  "include/q4t/server/object_store.h": "b4405c2e6fd982dc294bfa05365082ed00b49583e96e24a29aaf23f61eb68dac",
+  "src/server/chat_preflight.cpp": "c136fdfe44ed92bead6dfd2c72665e978f1d80adfec952af7594c1b02609c82b",
+  "tests/server_object_store_test.cpp": "09d8b69472a2a072849c85fcf306fcbd0d8c3d3de808bda898b76ce30bc22183",
+  "docs/serve-config-v1.schema.json": "34674ed9c1b3abf61b30f59df277af2c1e0b1fed28f16b6090e8a832d89735e4",
+  "engine_sha256": "6097310cdb324d77622ea4eb86f3e5afdf8cbc2781923f85d06387b607020f79"
+}

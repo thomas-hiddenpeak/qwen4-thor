@@ -75,6 +75,9 @@ struct ObjectStoreHealth {
   size_t pending = 0;
   uint64_t workers_started = 0;
   uint64_t workers_reaped = 0;
+  uint64_t controller_starts = 0;
+  uint64_t controller_failures = 0;
+  uint64_t controller_recoveries = 0;
 };
 
 class ObjectStore {
@@ -118,6 +121,7 @@ int MaybeRunObjectWorker(int argc, char** argv);
 void ObjectWorkerEntryForTesting(std::string entry);
 void DeferObjectSpawnForTesting(bool enabled);
 void FailObjectControllerForTesting();
+void FailObjectThreadStartForTesting();
 #endif
 
 }  // namespace q4t::server

@@ -52,7 +52,11 @@ void ChatServer::HandleConfig(int fd) {
       detail::JsonEscape(health.state) + '"' + R"(,"pending":)" +
       std::to_string(health.pending) + R"(,"workers_started":)" +
       std::to_string(health.workers_started) + R"(,"workers_reaped":)" +
-      std::to_string(health.workers_reaped) + "}," +
+      std::to_string(health.workers_reaped) + R"(,"controller_starts":)" +
+      std::to_string(health.controller_starts) + R"(,"controller_failures":)" +
+      std::to_string(health.controller_failures) +
+      R"(,"controller_recoveries":)" +
+      std::to_string(health.controller_recoveries) + "}," +
       R"("responses_background":{"state":")" + jobs_state +
       R"(","readiness_dependency":false,"owned":)" +
       std::to_string(jobs.owned) + R"(,"queued":)" +

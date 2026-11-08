@@ -613,13 +613,123 @@ Q4T_TEST(object_store_nonexpiring_single_object_survives_restart) {
 
 Q4T_TEST(object_store_error_reporting_allocation_failure_is_isolated) {
   Fixture f;
+  f.options.restart_backoff_ms = 200;
+  ObjectStore store(f.options);
+  Q4T_CHECK(Ok(Run(store, Request())));
+  FailObjectControllerForTesting();
+  const auto reply = Run(store, Request(ObjectOperation::kPut, "resp_2"));
+  Q4T_CHECK(reply.http_status == 503 && reply.code == "object_unavailable" &&
+            reply.commit_unknown);
+  Q4T_CHECK(store.Health().state == "controller_backoff" &&
+            store.Health().pending == 0);
+  Q4T_CHECK(Run(store, Request()).code == "object_controller_backoff");
+  Q4T_CHECK(GrammarContinues());
+  const auto end = Clock::now() + 2s;
+  while (!store.Health().controller_recoveries && Clock::now() < end)
+    std::this_thread::sleep_for(1ms);
+  Q4T_CHECK(Run(store, Request(ObjectOperation::kGet, "resp_2")).http_status ==
+            404);
+  Q4T_CHECK(Ok(Run(store, Request(ObjectOperation::kGet))));
+  const auto health = store.Health();
+  Q4T_CHECK(health.state == "ready" && health.controller_starts == 1 &&
+            health.controller_failures == 1 &&
+            health.controller_recoveries == 1 && health.workers_started == 2 &&
+            health.workers_reaped == 1);
+  return true;
+}
+
+Q4T_TEST(object_controller_repeated_faults_backoff_and_keep_one_owner) {
+  Fixture f;
+  f.options.restart_limit = 2;
+  f.options.restart_window_ms = 500;
+  f.options.restart_backoff_ms = 20;
   ObjectStore store(f.options);
   FailObjectControllerForTesting();
-  const auto reply = Run(store, Request());
-  Q4T_CHECK(reply.http_status == 503 && reply.code == "object_unavailable");
-  Q4T_CHECK(store.Health().state == "unavailable" &&
-            store.Health().pending == 0);
+  Q4T_CHECK(Run(store, Request()).code == "object_unavailable");
+  auto end = Clock::now() + 2s;
+  while (!store.Health().controller_recoveries && Clock::now() < end)
+    std::this_thread::sleep_for(1ms);
+  FailObjectControllerForTesting();
+  Q4T_CHECK(Run(store, Request()).code == "object_unavailable");
+  for (int i = 0; i < 10; ++i)
+    Q4T_CHECK(Run(store, Request()).code == "object_controller_backoff");
+  Q4T_CHECK(store.Health().controller_failures == 2 &&
+            store.Health().controller_recoveries == 1 &&
+            store.Health().controller_starts == 1 &&
+            store.Health().workers_started == 0);
+  {
+    ObjectStore duplicate(f.options);
+    Q4T_CHECK(duplicate.Health().state == "controller_owned");
+  }
   Q4T_CHECK(GrammarContinues());
-  Q4T_CHECK(Run(store, Request()).http_status == 503);
+  end = Clock::now() + 2s;
+  while (store.Health().controller_recoveries != 2 && Clock::now() < end)
+    std::this_thread::sleep_for(1ms);
+  Q4T_CHECK(Run(store, Request(ObjectOperation::kGet)).http_status == 404);
+  Q4T_CHECK(Ok(Run(store, Request())));
+  Q4T_CHECK(store.Health().controller_starts == 1 &&
+            store.Health().workers_started == 1);
+  return true;
+}
+
+Q4T_TEST(object_controller_failed_thread_start_recovers_on_demand) {
+  Fixture f;
+  f.options.restart_backoff_ms = 50;
+  FailObjectThreadStartForTesting();
+  ObjectStore store(f.options);
+  Q4T_CHECK(store.Health().state == "controller_backoff" &&
+            store.Health().controller_starts == 0);
+  Q4T_CHECK(Run(store, Request()).code == "object_controller_backoff");
+  std::this_thread::sleep_for(60ms);
+  Q4T_CHECK(Ok(Run(store, Request())));
+  Q4T_CHECK(store.Health().controller_starts == 1 &&
+            store.Health().controller_failures == 1 &&
+            store.Health().controller_recoveries == 1);
+  return true;
+}
+
+Q4T_TEST(object_controller_stop_during_backoff_releases_only_own_slot) {
+  Fixture f;
+  f.options.restart_backoff_ms = 5000;
+  {
+    ObjectStore store(f.options);
+    FailObjectControllerForTesting();
+    Q4T_CHECK(Run(store, Request()).code == "object_unavailable");
+    {
+      ObjectStore duplicate(f.options);
+      Q4T_CHECK(duplicate.Health().state == "controller_owned");
+    }
+    ObjectStore still_duplicate(f.options);
+    Q4T_CHECK(still_duplicate.Health().state == "controller_owned");
+  }
+  ObjectStore healthy(f.options);
+  Q4T_CHECK(Ok(Run(healthy, Request())));
+  return true;
+}
+
+Q4T_TEST(object_controller_recovery_cannot_reset_worker_spawn_budget) {
+  Fixture f;
+  f.options.restart_limit = 2;
+  f.options.restart_window_ms = 1000;
+  ObjectStore store(f.options);
+  Q4T_CHECK(Ok(Run(store, Request())));
+  Q4T_CHECK(!chmod(f.options.directory.c_str(), 0500));
+  const auto failed = Run(store, Request(ObjectOperation::kPut, "resp_2"));
+  Q4T_CHECK(!chmod(f.options.directory.c_str(), 0700));
+  Q4T_CHECK(failed.http_status == 503);
+  Q4T_CHECK(Ok(Run(store, Request(ObjectOperation::kGet))));
+  Q4T_CHECK(store.Health().workers_started == 2);
+  FailObjectControllerForTesting();
+  Q4T_CHECK(Run(store, Request()).code == "object_unavailable");
+  auto end = Clock::now() + 500ms;
+  while (!store.Health().controller_recoveries && Clock::now() < end)
+    std::this_thread::sleep_for(1ms);
+  Q4T_CHECK(Run(store, Request(ObjectOperation::kGet)).code ==
+            "object_recovery_backoff");
+  Q4T_CHECK(store.Health().workers_started == 2 && GrammarContinues());
+  std::this_thread::sleep_for(1000ms);
+  Q4T_CHECK(Ok(Run(store, Request(ObjectOperation::kGet))));
+  Q4T_CHECK(store.Health().workers_started == 3 &&
+            store.Health().controller_starts == 1);
   return true;
 }

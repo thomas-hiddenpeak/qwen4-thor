@@ -3,10 +3,12 @@
 #include <sys/random.h>
 
 #include <algorithm>
+#include <array>
 #include <atomic>
 #include <condition_variable>
 #include <deque>
 #include <mutex>
+#include <string_view>
 #include <thread>
 
 #include "object_protocol.h"
@@ -22,6 +24,7 @@ std::mutex test_mutex;
 std::string test_entry;
 std::atomic<bool> test_defer_spawn{false};
 std::atomic<bool> test_fail_controller{false};
+std::atomic<bool> test_fail_thread_start{false};
 #endif
 // Process-lifetime ownership survives a destructor's bounded wait. A stuck
 // spawn cannot cause another ObjectStore to create replacement threads.
@@ -92,31 +95,98 @@ struct ObjectStore::State {
   size_t outstanding = 0;
   std::atomic<bool> stop{false};
   bool done = false;
-  std::string health = "starting";
-  std::string emergency_health = "unavailable";
+  bool controller_active = false;
+  std::string_view health = "starting";
+  uint64_t controller_starts = 0;
+  uint64_t controller_failures = 0;
+  uint64_t controller_recoveries = 0;
+  std::array<Clock::time_point, 10> failures{};
+  size_t failure_count = 0;
+  Clock::time_point controller_retry = Clock::time_point::min();
+  // Worker budgets survive controller exceptions and are owned by the one
+  // dispatcher. Recovering its loop must not reset the process-spawn budget.
+  std::deque<Clock::time_point> starts;
+  Clock::time_point retry_after = Clock::time_point::min();
   std::shared_ptr<GrammarWorkerCounters> counters =
       std::make_shared<GrammarWorkerCounters>();
 
-  void SetHealth(std::string value) {
+  void SetHealth(std::string_view value) {
     const std::lock_guard lock(mutex);
-    health = std::move(value);
+    health = value;
   }
-  void FailNoAllocation() noexcept {
+  // The caller holds mutex. Replies were allocated before admission, so even
+  // bad_alloc during error reporting cannot escape this recovery boundary.
+  void FailPending() noexcept {
+    if (current) {
+      current->reply.commit_unknown = current->mutation && current->started;
+      current->complete = true;
+    }
+    for (auto& job : jobs) job->complete = true;
+    jobs.clear();
+    current.reset();
+    queued_bytes = 0;
+    outstanding = 0;
+  }
+  void RecordFailure() noexcept {
+    const auto now = Clock::now();
+    const auto window = std::chrono::milliseconds(options.restart_window_ms);
+    size_t kept = 0;
+    for (size_t i = 0; i < failure_count; ++i)
+      if (now - failures[i] < window) failures[kept++] = failures[i];
+    failure_count = kept;
+    failures[failure_count++] = now;
+    controller_retry = now + std::chrono::milliseconds(
+                                 std::max(1, options.restart_backoff_ms));
+    if (failure_count >= static_cast<size_t>(options.restart_limit))
+      controller_retry = std::max(controller_retry, failures[0] + window);
+    ++controller_failures;
+    health = "controller_backoff";
+  }
+  void Retire() noexcept {
+    FailPending();
+    health = "stopped";
+    controller_active = false;
+    done = true;
+    ControllerOwned().store(false);
+  }
+  void Launch(const std::shared_ptr<State>& self) {
+    // Called under mutex. Only a confirmed thread-construction failure may
+    // be retried here; a running/stuck dispatcher keeps the unique slot.
+    if (controller_active || done || stop || Clock::now() < controller_retry)
+      return;
+    try {
+#ifdef Q4T_GRAMMAR_PROCESS_TESTS
+      if (test_fail_thread_start.exchange(false)) throw std::bad_alloc();
+#endif
+      std::thread([self] { self->Supervise(); }).detach();
+      controller_active = true;
+      ++controller_starts;
+      if (controller_failures) ++controller_recoveries;
+      health = "starting";
+    } catch (...) {
+      RecordFailure();
+    }
+  }
+  void Supervise() noexcept {
+    while (!stop.load()) {
+      try {
+        Run();
+      } catch (...) {
+        const std::lock_guard lock(mutex);
+        FailPending();
+        RecordFailure();
+      }
+      changed.notify_all();
+      std::unique_lock lock(mutex);
+      if (stop.load()) break;
+      changed.wait_until(lock, controller_retry, [&] { return stop.load(); });
+      if (stop.load()) break;
+      ++controller_recoveries;
+      health = "starting";
+    }
     {
       const std::lock_guard lock(mutex);
-      if (current) {
-        current->reply.commit_unknown = current->mutation && current->started;
-        current->complete = true;
-      }
-      for (auto& job : jobs) job->complete = true;
-      jobs.clear();
-      current.reset();
-      queued_bytes = 0;
-      outstanding = 0;
-      health.swap(emergency_health);
-      stop.store(true);
-      ControllerOwned().store(false);
-      done = true;
+      Retire();
     }
     changed.notify_all();
   }
@@ -155,125 +225,93 @@ struct ObjectStore::State {
 
   void Run() {
     std::unique_ptr<detail::GrammarProcess> process;
-    std::deque<Clock::time_point> starts;
-    auto retry_after = Clock::time_point::min();
     uint64_t sequence = 0;
     std::shared_ptr<Job> active;
-    try {
-      for (;;) {
-        {
-          std::unique_lock lock(mutex);
-          changed.wait(lock, [&] { return stop.load() || !jobs.empty(); });
-          if (stop.load()) break;
-          active = jobs.front();
-          jobs.pop_front();
-          active->started = true;
-          current = active;
-        }
+    for (;;) {
+      {
+        std::unique_lock lock(mutex);
+        changed.wait(lock, [&] { return stop.load() || !jobs.empty(); });
+        if (stop.load()) break;
+        active = jobs.front();
+        jobs.pop_front();
+        active->started = true;
+        current = active;
+      }
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
-        if (test_fail_controller.load()) throw std::bad_alloc();
+      if (test_fail_controller.exchange(false)) throw std::bad_alloc();
 #endif
-        ObjectReply reply;
-        const auto now = Clock::now();
-        if (active->abandoned || now >= active->deadline) {
-          reply = Error(408, "object_cancelled", "Object request expired");
-        } else {
-          if (!process) {
-            while (!starts.empty() &&
-                   now - starts.front() >=
-                       std::chrono::milliseconds(options.restart_window_ms))
-              starts.pop_front();
-            if (detail::IsolatedCleanupPending(
-                    IsolatedWorkerDomain::kObjects)) {
-              SetHealth("cleanup_pending");
-              reply = Error(503, "object_cleanup_pending",
-                            "Object worker cleanup remains unconfirmed");
-            } else if (now < retry_after ||
-                       starts.size() >=
-                           static_cast<size_t>(options.restart_limit)) {
-              SetHealth("backoff");
-              reply = Error(503, "object_recovery_backoff",
-                            "Object worker recovery budget or backoff active");
+      ObjectReply reply;
+      const auto now = Clock::now();
+      if (active->abandoned || now >= active->deadline) {
+        reply = Error(408, "object_cancelled", "Object request expired");
+      } else {
+        if (!process) {
+          while (!starts.empty() &&
+                 now - starts.front() >=
+                     std::chrono::milliseconds(options.restart_window_ms))
+            starts.pop_front();
+          if (detail::IsolatedCleanupPending(IsolatedWorkerDomain::kObjects)) {
+            SetHealth("cleanup_pending");
+            reply = Error(503, "object_cleanup_pending",
+                          "Object worker cleanup remains unconfirmed");
+          } else if (now < retry_after ||
+                     starts.size() >=
+                         static_cast<size_t>(options.restart_limit)) {
+            SetHealth("backoff");
+            reply = Error(503, "object_recovery_backoff",
+                          "Object worker recovery budget or backoff active");
+          } else {
+            starts.push_back(now);
+            SetHealth("starting");
+            GrammarControl control;
+            control.domain = IsolatedWorkerDomain::kObjects;
+            control.counters = counters;
+            sequence = 0;
+            // No per-request callbacks survive in this persistent worker.
+#ifdef Q4T_GRAMMAR_PROCESS_TESTS
+            while (test_defer_spawn.load()) std::this_thread::sleep_for(1ms);
+#endif
+            if (!detail::GrammarProcess::Start(entry.c_str(), control,
+                                               &process)) {
+              reply = Error(503, "object_unavailable",
+                            "Object worker could not start");
             } else {
-              starts.push_back(now);
-              SetHealth("starting");
-              GrammarControl control;
-              control.domain = IsolatedWorkerDomain::kObjects;
-              control.counters = counters;
-              sequence = 0;
-              // No per-request callbacks survive in this persistent worker.
-#ifdef Q4T_GRAMMAR_PROCESS_TESTS
-              while (test_defer_spawn.load()) std::this_thread::sleep_for(1ms);
-#endif
-              if (!detail::GrammarProcess::Start(entry.c_str(), control,
-                                                 &process)) {
-                reply = Error(503, "object_unavailable",
-                              "Object worker could not start");
-              } else {
-                reply = Exchange(*process, ++sequence,
-                                 OutputJson(Config(options)), *active);
-              }
-              if (!reply.ok()) {
-                // Init has no application mutation, even for a Put caller.
-                reply.commit_unknown = false;
-                process.reset();
-                retry_after = Clock::now() + std::chrono::milliseconds(
-                                                 options.restart_backoff_ms);
-                SetHealth("unavailable");
-              }
+              reply = Exchange(*process, ++sequence,
+                               OutputJson(Config(options)), *active);
             }
-          }
-          if (process && reply.ok()) {
-            reply = Exchange(*process, ++sequence, active->wire, *active);
-            if (reply.http_status >= 500) {
+            if (!reply.ok()) {
+              // Init has no application mutation, even for a Put caller.
+              reply.commit_unknown = false;
               process.reset();
               retry_after = Clock::now() + std::chrono::milliseconds(
                                                options.restart_backoff_ms);
               SetHealth("unavailable");
-            } else {
-              SetHealth("ready");
             }
           }
         }
-        {
-          const std::lock_guard lock(mutex);
-          active->reply = std::move(reply);
-          active->complete = true;
-          queued_bytes -= active->wire.size();
-          --outstanding;
-          current.reset();
+        if (process && reply.ok()) {
+          reply = Exchange(*process, ++sequence, active->wire, *active);
+          if (reply.http_status >= 500) {
+            process.reset();
+            retry_after = Clock::now() +
+                          std::chrono::milliseconds(options.restart_backoff_ms);
+            SetHealth("unavailable");
+          } else {
+            SetHealth("ready");
+          }
         }
-        changed.notify_all();
-        active.reset();
       }
-    } catch (...) {
-      SetHealth("unavailable");
-    }
-#ifdef Q4T_GRAMMAR_PROCESS_TESTS
-    if (test_fail_controller.exchange(false)) throw std::bad_alloc();
-#endif
-    process.reset();
-    {
-      const std::lock_guard lock(mutex);
-      if (active) {
-        active->reply = Error(503, "object_unavailable",
-                              "Object controller stopped", active->mutation);
+      {
+        const std::lock_guard lock(mutex);
+        active->reply = std::move(reply);
         active->complete = true;
+        queued_bytes -= active->wire.size();
+        --outstanding;
+        current.reset();
       }
-      for (auto& job : jobs) {
-        job->reply =
-            Error(503, "object_unavailable", "Object controller stopped");
-        job->complete = true;
-      }
-      jobs.clear();
-      current.reset();
-      outstanding = 0;
-      queued_bytes = 0;
-      ControllerOwned().store(false);
-      done = true;
-      health = "stopped";
+      changed.notify_all();
+      active.reset();
     }
-    changed.notify_all();
   }
 };
 
@@ -297,27 +335,15 @@ ObjectStore::ObjectStore(ObjectStoreOptions options)
     state_->done = true;
     return;
   }
-  try {
-    std::thread([state = state_] {
-      try {
-        state->Run();
-      } catch (...) {
-        // Even allocating an error message can fail. This final boundary uses
-        // only fallback replies prepared by the caller before queue admission.
-        state->FailNoAllocation();
-      }
-    }).detach();
-  } catch (...) {
-    ControllerOwned().store(false);
-    state_->health = "unavailable";
-    state_->done = true;
-  }
+  const std::lock_guard lock(state_->mutex);
+  state_->Launch(state_);
 }
 
 ObjectStore::~ObjectStore() {
   state_->stop.store(true);
   state_->changed.notify_all();
   std::unique_lock lock(state_->mutex);
+  if (!state_->controller_active && !state_->done) state_->Retire();
   // A stuck exec/syscall retains the shared state and unique controller slot.
   state_->changed.wait_for(lock, 100ms, [&] { return state_->done; });
 }
@@ -406,6 +432,10 @@ ObjectReply ObjectStore::Dispatch(std::string wire, bool mutation,
   std::unique_lock lock(state_->mutex);
   if (state_->done || state_->stop)
     return Error(503, "object_unavailable", "Object controller unavailable");
+  state_->Launch(state_);
+  if (!state_->controller_active || Clock::now() < state_->controller_retry)
+    return Error(503, "object_controller_backoff",
+                 "Object controller recovery budget or backoff active");
   if (state_->outstanding >= options.max_queue ||
       job->wire.size() > options.max_queue_bytes - state_->queued_bytes)
     return Error(429, "object_queue_full", "Object request queue is full");
@@ -444,8 +474,10 @@ ObjectReply ObjectStore::Dispatch(std::string wire, bool mutation,
 
 ObjectStoreHealth ObjectStore::Health() const {
   const std::lock_guard lock(state_->mutex);
-  return {state_->health, state_->outstanding, state_->counters->started.load(),
-          state_->counters->reaped.load()};
+  return {std::string(state_->health),      state_->outstanding,
+          state_->counters->started.load(), state_->counters->reaped.load(),
+          state_->controller_starts,        state_->controller_failures,
+          state_->controller_recoveries};
 }
 
 std::string NewObjectId(ObjectKind kind) {
@@ -474,5 +506,6 @@ void DeferObjectSpawnForTesting(bool enabled) {
   test_defer_spawn.store(enabled);
 }
 void FailObjectControllerForTesting() { test_fail_controller.store(true); }
+void FailObjectThreadStartForTesting() { test_fail_thread_start.store(true); }
 #endif
 }  // namespace q4t::server

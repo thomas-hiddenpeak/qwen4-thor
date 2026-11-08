@@ -2,6 +2,16 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+对象控制器自身恢复13不同CPU通过：同一线程监护、固定预算退避、
+线程创建失败按需恢复、unknown不重放；组合验证worker预算不被
+控制器恢复重置。两次构建零警告，来源/声明检查通过。[证据](evidence/serve-object-controller-recovery-20261109/README.md)。
+无本组新增GPU或默认变更，继续前台未知提交协调与全部计划。
+
+继续对象控制器自身恢复：同一拥有线程内有界监护、无分配故障出口、
+线程创建失败按需重试，保留worker预算和未确认写入。冻结4项新增/
+受改CPU与8直接回归；控制器阻塞仍持槽，不重启模型。候选保留、
+默认不变，下一步前台未知提交协调及全部总计划。
+
 后台实际业务已组合验收：累计3启动/8生成/133.291秒，130次NVML全OK，
 128资源/59事件schema通过。queued原ID恢复42、started保留部分输出
 明确失败不重放、同PID Chat通过；退出/端口/锁清理。[完整原件](evidence/serve-responses-background-business-20261109/README.md)
