@@ -182,3 +182,25 @@ store=false活动临时保留至持久执行期限加10分钟，完成/取消后
 [14不同C++及4原生入口/TLS](evidence/serve-responses-background-http-20261109/README.md)
 已通过，TLS首次夹具参数缺失与修正保留。完整引擎构建零警告；还需
 SDK/跨进程扫描与真实模型后台验收，正在继续。当前默认A06不改。
+
+## 实际跨进程恢复及标准SDK
+
+存储对象保存scope、boot/PID/进程出生时间/PID namespace和原执行
+deadline；专用扫描只取有界元数据，不发送输入输出或绕过客户端归属。
+复用Guardian既有进程识别原语，新增依赖仅本项目已编译代码与Linux
+/proc，不新增外部守护程序。无状态Responses不调用此状态识别。
+
+只确认旧进程已退出后，queued原ID/历史/原截止期续排，重新获取当前
+客户端准入；已开始任务保存真实部分输出与中断失败，不重放工具。
+旧客户端撤销或期限已过明确失败；活着/无法确认或不同PID namespace
+不接管并显示pending。对象worker退出本身不能证明模型退出。
+
+scanner启动失败每60秒再尝试；已运行扫描器异常可退避再扫，存储
+错误三次后60秒退避。队列满保留磁盘queued并再尝试，不自动重启模型。
+[13不同C++及4官方SDK/5 CPU进程](evidence/serve-responses-recovery-20261109/README.md)
+通过。一次重复控制器夹具误用已修正，只重验失败/受影响项；真实进程
+SIGKILL验证queued完成、started明确failed且执行次数各1。
+
+下一组继续有界后台模型业务与发行/能力合同；前台未知提交同进程
+收尾、对象控制器异常恢复、持久保留治理及Chat存储/其余Responses
+执行选项仍需完成，不以本子组通过关闭A07/A08或总目标。

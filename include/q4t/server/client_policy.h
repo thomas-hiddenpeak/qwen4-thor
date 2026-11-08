@@ -109,6 +109,9 @@ class ClientAdmission {
   const std::string& PolicySha256() const { return policy_.sha256; }
   ClientIdentity Authenticate(std::string_view id,
                               std::string_view gateway_token) const;
+  // Trusted recovery of the immutable server policy, never a request-supplied
+  // identity. It still must acquire the normal client data/rate permits.
+  ClientIdentity RecoveryIdentity(size_t index) const;
   const ClientLimits& Limits(size_t index) const;
   ClientUsage Usage(size_t index) const;
   ClientRateUsage RateUsage(

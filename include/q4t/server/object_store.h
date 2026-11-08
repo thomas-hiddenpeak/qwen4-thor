@@ -92,6 +92,13 @@ class ObjectStore {
                            std::chrono::steady_clock::time_point deadline,
                            const std::function<bool()>& cancelled = {});
   ObjectStoreHealth Health() const;
+  // Trusted service recovery only, never an HTTP/API operation. Returns a
+  // bounded page of active response metadata across scopes, with no input or
+  // output content. The scope is accepted only when its digest matches the
+  // durable owner; the opaque cursor survives deletion of its prior record.
+  ObjectReply ScanResponses(std::string after,
+                            std::chrono::steady_clock::time_point deadline,
+                            const std::function<bool()>& cancelled = {});
 
  private:
   ObjectReply Dispatch(std::string wire, bool mutation,

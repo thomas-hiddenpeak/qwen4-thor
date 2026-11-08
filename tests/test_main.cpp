@@ -13,6 +13,7 @@
 int GrammarProcessFixture(int argc, char** argv);
 int ConversationApiFixture(int argc, char** argv);
 int ResponsesApiFixture(int argc, char** argv);
+int ResponsesJobsFixture(int argc, char** argv);
 #endif
 
 int main(int argc, char** argv) {
@@ -29,6 +30,8 @@ int main(int argc, char** argv) {
   if (conversation >= 0) return conversation;
   const int responses = ResponsesApiFixture(argc, argv);
   if (responses >= 0) return responses;
+  const int jobs = ResponsesJobsFixture(argc, argv);
+  if (jobs >= 0) return jobs;
 #endif
   std::string filter, required;
   bool list = false, allow_skips = false, has_filter = false;

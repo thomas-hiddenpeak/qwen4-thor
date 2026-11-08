@@ -1,0 +1,24 @@
+{
+  "base": "a9a6227e45350abad7eb687ad7c9e7e7279f4ca1",
+  "task": "native background recovery",
+  "cpu": [
+    "responses_recovery_owner_requires_actual_process_exit_or_reuse",
+    "responses_recovery_scan_redacts_payload_and_survives_cursor_deletion",
+    "responses_recovery_resumes_queued_identity_and_fails_started_without_replay",
+    "responses_recovery_preserves_live_and_unknown_owners_without_blocking_jobs",
+    "responses_recovery_revoked_expired_and_spoofed_scope_never_execute",
+    "responses_recovery_capacity_defers_then_resumes_without_new_deadline",
+    "responses_recovery_storage_failure_retries_without_starting_execution",
+    "responses_background_active_retention_covers_execution_deadline",
+    "responses_jobs_count_client_and_input_limits_are_real_admission",
+    "responses_jobs_unknown_start_is_reconciled_without_execution",
+    "responses_execution_stateless_does_not_depend_on_storage",
+    "responses_execution_commits_actual_ordered_events_and_usage"
+  ],
+  "sdk_cases": 4,
+  "sdk_fixture_launches": 5,
+  "gpu": false,
+  "default_change": false,
+  "no_model_restart": true,
+  "next": "bounded real background business, release capabilities and remaining A07/A08"
+}

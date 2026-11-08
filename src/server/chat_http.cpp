@@ -177,9 +177,22 @@ Status ChatServer::Run() {
                  operations_port_);
   try {
     bool draining = false;
+    auto recovery_retry =
+        std::chrono::steady_clock::now() + std::chrono::seconds(60);
     auto drain_until = std::chrono::steady_clock::time_point::max();
     for (;;) {
       detail::PollGrammarWorkers();
+      if (std::chrono::steady_clock::now() >= recovery_retry) {
+        recovery_retry =
+            std::chrono::steady_clock::now() + std::chrono::seconds(60);
+        try {
+          if (background_ && !stop_requested_.load() &&
+              !background_->Health().recovery_configured)
+            background_->StartRecovery(clients_, PlanningConfig());
+        } catch (...) {
+          std::fprintf(stderr, "[responses] recovery startup deferred\n");
+        }
+      }
       if (stop_requested_.load() && !draining) {
         draining = true;
         drain_until =

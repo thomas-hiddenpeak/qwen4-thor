@@ -22,6 +22,7 @@ struct ResponseStatePlan {
   bool store = true;
   bool ephemeral = false;  // Background store=false is retained for polling.
   int64_t execution_deadline_at = 0;  // Unix seconds; restart cannot reset it.
+  io::Json execution_owner;
   io::Json history;        // Full authorized input for this generation.
   io::Json own_input;      // New input, without inherited context/instructions.
   io::Json request;

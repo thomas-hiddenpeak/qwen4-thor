@@ -442,13 +442,14 @@
     },
     "DELETE /v1/responses/{response_id}": {
       "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
-      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
         "tests/server_responses_jobs_test.cpp",
         "tests/server_responses_api_test.cpp",
-        "tools/serve_recovery/test_native_ingress.py"
+        "tools/serve_recovery/test_native_ingress.py",
+        "docs/evidence/serve-responses-recovery-20261109/README.md"
       ]
     },
     "GET /healthz": {
@@ -587,24 +588,26 @@
     },
     "GET /v1/responses/{response_id}": {
       "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
-      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
         "tests/server_responses_jobs_test.cpp",
         "tests/server_responses_api_test.cpp",
-        "tools/serve_recovery/test_native_ingress.py"
+        "tools/serve_recovery/test_native_ingress.py",
+        "docs/evidence/serve-responses-recovery-20261109/README.md"
       ]
     },
     "GET /v1/responses/{response_id}/input_items": {
       "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
-      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
         "tests/server_responses_jobs_test.cpp",
         "tests/server_responses_api_test.cpp",
-        "tools/serve_recovery/test_native_ingress.py"
+        "tools/serve_recovery/test_native_ingress.py",
+        "docs/evidence/serve-responses-recovery-20261109/README.md"
       ]
     },
     "POST /v1/chat/completions": {
@@ -682,24 +685,26 @@
     },
     "POST /v1/responses": {
       "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
-      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
         "tests/server_responses_jobs_test.cpp",
         "tests/server_responses_api_test.cpp",
-        "tools/serve_recovery/test_native_ingress.py"
+        "tools/serve_recovery/test_native_ingress.py",
+        "docs/evidence/serve-responses-recovery-20261109/README.md"
       ]
     },
     "POST /v1/responses/{response_id}/cancel": {
       "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
-      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
         "tests/server_responses_jobs_test.cpp",
         "tests/server_responses_api_test.cpp",
-        "tools/serve_recovery/test_native_ingress.py"
+        "tools/serve_recovery/test_native_ingress.py",
+        "docs/evidence/serve-responses-recovery-20261109/README.md"
       ]
     }
   },
@@ -1017,8 +1022,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "8256d2c8a51858aeb976ae80f7e4618c6d11eab59538deda13f99fb7ad1c6acc",
-    "cmake/ChatProtocolIdentity.cmake": "4c75276f0f4078d76b13c0c1b2b6b0ac6160e93a97b0919974f4b7ad01773290",
+    "CMakeLists.txt": "3870a06c5343a1ef7e4a1ee04d60eaf64a7af2346c0cd19809c0868b0f326e55",
+    "cmake/ChatProtocolIdentity.cmake": "d456db298224c152491329500251b1969155634794ebb1baf6e4f1f76877b3ff",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
     "cmake/NativeIngress.cmake": "d10f996fdf01e28f29eaa40d9c92f2d78ff02126351188667329b235a22f2346",
@@ -1048,7 +1053,7 @@
     "include/q4t/server/chat_template.h": "5d2e9a8c90938fa972d27bd961ee9018ebcd7add541fd009316177af81b9afee",
     "include/q4t/server/chat_tool_history.h": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
     "include/q4t/server/client_identity.h": "c05aad5dc655e91962eae55aab25c09fdcbc2a72ddc37a95585c7288dfac54be",
-    "include/q4t/server/client_policy.h": "6cfd1f52fe34dc44e9efb1004d492be54198935af04f2fcf1fc9bd9c63db7ce6",
+    "include/q4t/server/client_policy.h": "0c08ff6d7363485533a4134ec010dd89de588079eb0ba92d6202440e6e37837a",
     "include/q4t/server/client_request.h": "d08159942c0f0f95c5040546b3aab647eac435546767e96a1c922f3d88957998",
     "include/q4t/server/completion_plan.h": "3974785c56eb107ef29c4904f7d04476080c1d11315f8d621b7ea49a8856d896",
     "include/q4t/server/completion_response.h": "4728686120ce9577aa66f60460982212d0450c429eb27d0e2ecdfa9e2b355f98",
@@ -1072,7 +1077,7 @@
     "include/q4t/server/memory_admission.h": "ae72d092757e41739e5d85ae7b2a975dccd13e43de8e9286dd831831ba7a7196",
     "include/q4t/server/model_catalog.h": "19bb1b450170b4d7c1d8895593f41baa1ad91c90aaafc58977894bcf76d52143",
     "include/q4t/server/mtp_policy.h": "28f10c5c885f9465c0f26c22a36bf6be541933a0ed9d9c2da5f0d3983e0a8285",
-    "include/q4t/server/object_store.h": "a4c48636deed89eb2ed54f8f41662f1c2414f1ae11cffdf48a2403da8f6b86df",
+    "include/q4t/server/object_store.h": "1a003c5b21aaadec9d2b2e9139b506b8d8e9cb81b2bf2385008797d52d772bbb",
     "include/q4t/server/object_store_options.h": "50ac339fb5830d363ac62bea2cfb89fe45f6318f48a146addb593bd7522ec319",
     "include/q4t/server/output_constraints.h": "f227e73a5826900182eff0505e031115ad67acb39fdd00968a8fc03e8dfed0de",
     "include/q4t/server/output_schema.h": "d097d1874a3e450336cbe26ab62cfa712f2be9d07a7a211aab33007db112b3ed",
@@ -1087,10 +1092,11 @@
     "include/q4t/server/responses_execution.h": "add254cdb98dd2be89159dfe524b1426afe92365635fc169837d15597cc762c5",
     "include/q4t/server/responses_input.h": "fe63278d2c398b5fe770572cb141561f5a9dec36811fc151b53a33a684cce56a",
     "include/q4t/server/responses_item_shape.h": "0c341d6d0e9f0693daacc35ba97e0929703d9f2de108aa77056fa8f88777ee37",
-    "include/q4t/server/responses_jobs.h": "2835bdc57d72a1e979b2918c55337c3fbb6d62815a7065fb166c0746d2df687b",
+    "include/q4t/server/responses_jobs.h": "ed40a23c5ba9d031945943009b8a530567f8a709a8db323587220374c50ca2b9",
     "include/q4t/server/responses_output.h": "d3ce4f2fd42db480184503c3437386cf0666474a81ba34e045da424cae9b50ee",
+    "include/q4t/server/responses_owner.h": "56647342474e335ad1039609e93a947bd5c81364a48f018c0d7afe2ffde4c613",
     "include/q4t/server/responses_plan.h": "3c89b0e3d7fd6363e74f22e76cebafc4678fa81ddbad0197234bf6fd0b284c03",
-    "include/q4t/server/responses_state.h": "e1abbc77853057cde5018e46bf1107b7b8c0c1afff5eb816f250243e4ca829e3",
+    "include/q4t/server/responses_state.h": "e3c9e9224356826a2fb792a4caec08864e0790edbe35bb6cfeb52b0bf43bc63e",
     "include/q4t/server/sampling.h": "202bff18193dddc46f92e3b7d69fef36218faf00e913b292d1e9a9abe7b65141",
     "include/q4t/server/scheduler_submission.h": "2a960c668c25a0c694b811a2c5640c6e6605db7d386b1ba0075e64061aa1c416",
     "include/q4t/server/schema_decimal.h": "f6efd4f652918da2964a65813b6f8d9a972942ec5b02a5fb90b1ad8ad8bd8da0",
@@ -1149,21 +1155,21 @@
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
     "src/server/chat_generation.cpp": "6cd7d7d534b3d57c9dd3e96dd204c1679825b7451249427c82e82f4fae1b7a10",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "9ebfc25e4926b7acc8fee2a35e9a1354059dd2023198b1839aa2ab98cf8a6eba",
+    "src/server/chat_http.cpp": "b6c383ea06d9ce32971de2db22aaf002da5da1627732dd192373df77e78903ac",
     "src/server/chat_input.cpp": "d79be28242ed560ad7be0494284f72b53d1aaa7a272786d17f1b837e81a6d9bb",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
     "src/server/chat_metrics.cpp": "9a50b19777ed6e32b9902716dd97cde678bb1cd3c3147030975032cffe41fcc6",
     "src/server/chat_plan.cpp": "519833b53ef02f32278399e187c90fc41e6550d401cab0358cf970a9eb8ac1bc",
-    "src/server/chat_preflight.cpp": "550b016797a0e411b3ba85cf5dbc4e1dc31820d8a048f143555dcb7fd472c42f",
+    "src/server/chat_preflight.cpp": "92f3c53a624f493009f3c5617478d90965136d893cc0b9d782517c0d03d114b3",
     "src/server/chat_prompt.cpp": "fd6684419aff480782e12a409af13665eb1b529008b93ea7f67607afd837efcf",
     "src/server/chat_response_parser.cpp": "69e260c428d83a6383d5d36e0870c7d2be697e953251fddfd081a058445a808b",
     "src/server/chat_responses.cpp": "13fe1f43c32e93d4a4b34184a1da6ae67b1c6d3fe97adb00334e7342fcf8ed41",
     "src/server/chat_scheduler.cpp": "2b6d315bfd12609e343010852f7c15b8248fe5180359a3d7b49d3c1db5b8d1fc",
-    "src/server/chat_server.cpp": "a22be771c687b42203fd94880d2fcbbcf1dfd4411acb0b8074e5748d1664a5e6",
+    "src/server/chat_server.cpp": "83c0304921b1f737ce447646ca5bc5f9f155db876ffde912090052e9a2dda0de",
     "src/server/chat_server_internal.h": "980664023b410e97d5d560241d17967a76c719e9e0d27f83dd4c27f296b85018",
     "src/server/chat_template.cpp": "f6e031add54280ff196bda9ef7a817a0ffdf30e83b95bce9575be3912168dd66",
     "src/server/chat_tool_history.cpp": "902f6c0982fd072d4dba4c3f6a34629eec9eaaf604fd5d920822b96ed51f82db",
-    "src/server/client_policy.cpp": "9394551a3c96c5ba943fda94d2d3d6aa4d28f3c2a37803ccdde3692eb477d67f",
+    "src/server/client_policy.cpp": "40814f21c9e7eb261ebf6db53653815023289d114139392d2113d2dbe4e20e53",
     "src/server/client_request.cpp": "58a2c6a18353ef9b01fea36ccb98f5d57c299dd98d0c297299ea8a2ed2eda575",
     "src/server/completion_plan.cpp": "714facdef55f982082f687220d2227f6195c517a41f835fe78161fc4a1b1656d",
     "src/server/completion_response.cpp": "75be95aa5a9da31112932cbddaa1e81c0b6cfa31664b03139e1d97f7d7563722",
@@ -1186,9 +1192,9 @@
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
     "src/server/model_catalog.cpp": "8d0808b669e3ecbc95794d8b07bd6a86b38dc310cf93c98e18befade71fd2d7e",
     "src/server/object_protocol.h": "37bcaad2864814be50b6ae530d4b2e17028cacbc0fd4e05027e4235965331d9c",
-    "src/server/object_store.cpp": "3c6646fe7da4b34c6476f4034a1a94334e4130d1726b540e21eedd38030db961",
+    "src/server/object_store.cpp": "c5aa6b0a1ce83867cf20ad73cfc49ee1b0a2a8076867d2882351b6254e59c3a3",
     "src/server/object_store_options.cpp": "2118353888a2737d16b6dd2213cf73bfedd2f55ec090d6c19addccd85fdd6811",
-    "src/server/object_worker.cpp": "e3eb1869c8384d310c6661f45d1541c64c7376dc2cbbaa08a2c5ff74fcaf3d3a",
+    "src/server/object_worker.cpp": "183940ad1df1deec1ae5adaf0ac477dd9bb6927bcebea3e4644c9e7205449450",
     "src/server/output_constraints.cpp": "1273d5d1643a8cb7ccd2804990d2bcac656cbe5b198096c0a66b6803751e3753",
     "src/server/output_schema.cpp": "6d42d154ce3ac43c2cb2569298af221148813f9233e37c9d9c75eb0f331ee65d",
     "src/server/prediction.cpp": "7e8ccdf7c44dd5c8245230577d42eb7d4cd17c6e2efcf5534a02e6744815733f",
@@ -1196,14 +1202,15 @@
     "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
     "src/server/regex_syntax/schema_regex.rs": "ad5ecc2fc961a9426068c50452e830da2229c40273088b56f8c6218c26f27fbf",
     "src/server/responses_api.cpp": "6ae36fd8babdb78d1ae3fb7fcb6ed54aa56d4e3b06fef831a1e778220153297e",
-    "src/server/responses_execution.cpp": "d47a6af600ef02b84e2ac5b72184fb6cee8c2e0d1eb468c9fcccb3ebe11aebd2",
+    "src/server/responses_execution.cpp": "05b0e7ff2d30ec41e784c94709d726bb44a19861ceff7994f8bd852c7edab010",
     "src/server/responses_input.cpp": "8fbffc8a3241cb3c34050c454e9181ecac49221898f54d5d3f4cf3fb63e6479b",
     "src/server/responses_item_shape.cpp": "b09c14dfed993b0782d592efa387fd9669e691f907fdd664d6fcd429769235b9",
-    "src/server/responses_jobs.cpp": "9f2e2e69e1b09f2277a9e1eec668fed100336e81acf14a5152ad8c8960dea991",
+    "src/server/responses_jobs.cpp": "fb07df69c1f665c4cb321d613fdf5b48453f83c140b551d529a8cb5f21dadd21",
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
     "src/server/responses_output.cpp": "dc7611ce8ec57a885acf821ae7958c06e11cc7c49dc2b8d6a82024c9475c19f2",
+    "src/server/responses_owner.cpp": "f439f60e6956ac0d61c107d95ec719cd1fbed84eb0c56721ef63cd1f4342a3fc",
     "src/server/responses_plan.cpp": "d520ded85e49bb51dfaa38d92ad3f082789616dc475fdd750008ac483b3ac3e6",
-    "src/server/responses_state.cpp": "82c7f915be04eefd62c15f12d017b793790ffaa3d21adae8467337dabc2bb664",
+    "src/server/responses_state.cpp": "fcf5421c9fa3ffad332ee8143a7a3e103d311a641026cd5da94bba7f8525f35a",
     "src/server/sampling.cpp": "88e247ca6b7c65abbf0977c66fd604e7156cbdefe5d0293e509282678555d31d",
     "src/server/schema_decimal.cpp": "3931972b1ecfd38b0574c6794f447f6b05d1ef78d65e0f73a61eabcb1c2dee2f",
     "src/server/schema_grammar.cpp": "075d6a282f2fc1cda861e3a0de4de132455af3efa9ed30b67b0ad9a5caf56cf2",
@@ -1642,13 +1649,14 @@
     },
     "DELETE /v1/responses/{response_id}": {
       "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
-      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
         "tests/server_responses_jobs_test.cpp",
         "tests/server_responses_api_test.cpp",
-        "tools/serve_recovery/test_native_ingress.py"
+        "tools/serve_recovery/test_native_ingress.py",
+        "docs/evidence/serve-responses-recovery-20261109/README.md"
       ]
     },
     "GET /healthz": {
@@ -1752,24 +1760,26 @@
     },
     "GET /v1/responses/{response_id}": {
       "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
-      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
         "tests/server_responses_jobs_test.cpp",
         "tests/server_responses_api_test.cpp",
-        "tools/serve_recovery/test_native_ingress.py"
+        "tools/serve_recovery/test_native_ingress.py",
+        "docs/evidence/serve-responses-recovery-20261109/README.md"
       ]
     },
     "GET /v1/responses/{response_id}/input_items": {
       "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
-      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
         "tests/server_responses_jobs_test.cpp",
         "tests/server_responses_api_test.cpp",
-        "tools/serve_recovery/test_native_ingress.py"
+        "tools/serve_recovery/test_native_ingress.py",
+        "docs/evidence/serve-responses-recovery-20261109/README.md"
       ]
     },
     "OPTIONS /healthz": {
@@ -1920,46 +1930,50 @@
     },
     "OPTIONS /v1/responses": {
       "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
-      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
         "tests/server_responses_jobs_test.cpp",
         "tests/server_responses_api_test.cpp",
-        "tools/serve_recovery/test_native_ingress.py"
+        "tools/serve_recovery/test_native_ingress.py",
+        "docs/evidence/serve-responses-recovery-20261109/README.md"
       ]
     },
     "OPTIONS /v1/responses/{response_id}": {
       "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
-      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
         "tests/server_responses_jobs_test.cpp",
         "tests/server_responses_api_test.cpp",
-        "tools/serve_recovery/test_native_ingress.py"
+        "tools/serve_recovery/test_native_ingress.py",
+        "docs/evidence/serve-responses-recovery-20261109/README.md"
       ]
     },
     "OPTIONS /v1/responses/{response_id}/cancel": {
       "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
-      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
         "tests/server_responses_jobs_test.cpp",
         "tests/server_responses_api_test.cpp",
-        "tools/serve_recovery/test_native_ingress.py"
+        "tools/serve_recovery/test_native_ingress.py",
+        "docs/evidence/serve-responses-recovery-20261109/README.md"
       ]
     },
     "OPTIONS /v1/responses/{response_id}/input_items": {
       "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
-      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
         "tests/server_responses_jobs_test.cpp",
         "tests/server_responses_api_test.cpp",
-        "tools/serve_recovery/test_native_ingress.py"
+        "tools/serve_recovery/test_native_ingress.py",
+        "docs/evidence/serve-responses-recovery-20261109/README.md"
       ]
     },
     "POST /v1/chat/completions": {
@@ -2039,24 +2053,26 @@
     },
     "POST /v1/responses": {
       "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
-      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
         "tests/server_responses_jobs_test.cpp",
         "tests/server_responses_api_test.cpp",
-        "tools/serve_recovery/test_native_ingress.py"
+        "tools/serve_recovery/test_native_ingress.py",
+        "docs/evidence/serve-responses-recovery-20261109/README.md"
       ]
     },
     "POST /v1/responses/{response_id}/cancel": {
       "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
-      "boundary": "同步真实业务已通过；后台HTTP14 CPU及4实际原生入口/TLS通过，后台SDK/跨进程扫描/真实业务及其余执行依赖继续实施。默认未替换，未计全量兼容交付。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
         "tests/server_responses_jobs_test.cpp",
         "tests/server_responses_api_test.cpp",
-        "tools/serve_recovery/test_native_ingress.py"
+        "tools/serve_recovery/test_native_ingress.py",
+        "docs/evidence/serve-responses-recovery-20261109/README.md"
       ]
     }
   },

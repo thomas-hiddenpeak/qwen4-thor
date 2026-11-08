@@ -7,6 +7,7 @@
 #include "object_protocol.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/responses_item_shape.h"
+#include "q4t/server/responses_owner.h"
 #include "q4t/server/schema_graph.h"
 
 namespace q4t::server {
@@ -62,6 +63,8 @@ Json SavedResponse(const ResponseStatePlan& plan, const Json& response,
   Set(&result, "events_retained", Boolean(!events.array.empty()));
   Set(&result, "continuation",
       Object({{"ephemeral", Boolean(plan.ephemeral)},
+              {"scope", String(plan.scope)},
+              {"owner", plan.execution_owner},
               {"execution_deadline_at", Number(plan.execution_deadline_at)},
               {"conversation_id", String(plan.conversation_id)},
               {"conversation_revision", Number(plan.conversation_revision)}}));
@@ -211,6 +214,7 @@ ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
   if (plan->id.empty()) return StateError("Response identity unavailable");
   plan->store = envelope.store || envelope.background;
   plan->ephemeral = envelope.background && !envelope.store;
+  if (plan->store) plan->execution_owner = CurrentResponseOwner();
   plan->request = envelope.request;
   plan->history = Array();
   const auto* input = envelope.request.Find("input");
@@ -283,6 +287,8 @@ ObjectReply ResponsesState::LoadPlan(const std::string& id,
   plan->response_revision = stored.value.GetInt("revision");
   plan->finished = Terminal(*response);
   if (const auto* continuation = data->Find("continuation")) {
+    if (const auto* owner = continuation->Find("owner"))
+      plan->execution_owner = *owner;
     plan->ephemeral = continuation->GetBool("ephemeral");
     plan->execution_deadline_at = continuation->GetInt("execution_deadline_at");
     plan->conversation_id = continuation->GetString("conversation_id");

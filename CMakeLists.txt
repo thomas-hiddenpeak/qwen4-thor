@@ -268,6 +268,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/responses_state.cpp
   src/server/responses_execution.cpp
   src/server/responses_jobs.cpp
+  src/server/responses_owner.cpp
   src/server/responses_api.cpp
   src/server/application_query.cpp
   src/server/conversation_state.cpp
@@ -342,7 +343,7 @@ if(Q4T_SERVE_FAULT_INJECTION)
   target_compile_definitions(q4t_server PRIVATE Q4T_SERVE_FAULT_INJECTION=1)
 endif()
 target_link_libraries(q4t_server PUBLIC q4t_model q4t_text q4t_io q4t_runtime
-                                        CUDA::cudart)
+                                        CUDA::cudart q4t_guardian_process)
 
 # ---------------------------------------------------------------------------
 # q4t — CLI executable

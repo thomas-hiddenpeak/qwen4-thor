@@ -346,6 +346,16 @@ ObjectReply ObjectStore::Execute(const ObjectRequest& request,
                   deadline, cancelled);
 }
 
+ObjectReply ObjectStore::ScanResponses(std::string after,
+                                       Clock::time_point deadline,
+                                       const std::function<bool()>& cancelled) {
+  if (after.size() > 320)
+    return Error(400, "invalid_object_cursor", "Invalid recovery cursor");
+  return Dispatch(OutputJson(Object({{"operation", String("scan_responses")},
+                                     {"after", String(std::move(after))}})),
+                  false, deadline, cancelled);
+}
+
 ObjectReply ObjectStore::ExecuteBatch(std::span<const ObjectRequest> requests,
                                       Clock::time_point deadline,
                                       const std::function<bool()>& cancelled) {

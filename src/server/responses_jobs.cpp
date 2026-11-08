@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <atomic>
 #include <condition_variable>
+#include <ctime>
 #include <deque>
 #include <mutex>
 #include <thread>
@@ -10,6 +11,7 @@
 
 #include "object_protocol.h"
 #include "q4t/server/lifetime.h"
+#include "q4t/server/responses_owner.h"
 
 namespace q4t::server {
 namespace {
@@ -34,6 +36,11 @@ struct ResponsesJobs::State {
   std::unordered_map<std::string, std::shared_ptr<Job>> jobs;
   std::deque<std::shared_ptr<Job>> queue;
   std::vector<std::thread> workers;
+  std::thread recovery;
+  bool recovery_configured = false;
+  std::atomic<bool> recovery_scanned{false};
+  std::atomic<uint64_t> recovered{0}, interrupted{0}, recovery_errors{0};
+  std::atomic<size_t> recovery_pending{0};
   size_t last_client = kMaxClients;
   size_t bytes = 0;
   std::atomic<bool> stopping{false};
@@ -70,8 +77,15 @@ ResponsesJobs::~ResponsesJobs() {
 ObjectReply ResponsesJobs::Submit(std::unique_ptr<ResponsesExecution> run,
                                   ClientIdentity client,
                                   const TransferPermit& transfer) {
-  if (!run || !run->Prepared() || run->Begun() || !run->Envelope().background ||
-      !client.Allowed() || !transfer)
+  return Adopt(std::move(run), client, transfer, false);
+}
+
+ObjectReply ResponsesJobs::Adopt(std::unique_ptr<ResponsesExecution> run,
+                                 ClientIdentity client,
+                                 const TransferPermit& transfer,
+                                 bool restored) {
+  if (!run || !run->Prepared() || run->Begun() != restored ||
+      !run->Envelope().background || !client.Allowed() || !transfer)
     return Error(500, "background_state_invalid", "Invalid background handoff");
   const auto scope = client.Scoped() ? "client:" + std::string(client.Id())
                                      : "local:anonymous";
@@ -79,8 +93,18 @@ ObjectReply ResponsesJobs::Submit(std::unique_ptr<ResponsesExecution> run,
     return Error(403, "object_scope_mismatch", "Background client changed");
   auto job = std::make_shared<Job>();
   job->bytes = run->RetainedInputBytes();
+  auto duration = state_->options.timeout;
+  if (restored) {
+    const auto remaining = run->ExecutionDeadlineAt() - std::time(nullptr);
+    if (remaining <= 0)
+      return Error(408, "deadline_exceeded",
+                   "Queued response deadline expired");
+    duration = std::min(duration,
+                        std::chrono::duration_cast<std::chrono::milliseconds>(
+                            std::chrono::seconds(remaining)));
+  }
   job->control = std::make_shared<RequestControl>(
-      run->Id(), "", Clock::now() + state_->options.timeout, client.Id());
+      run->Id(), "", Clock::now() + duration, client.Id());
   job->client = client;
   job->run = std::move(run);
   job->run->BindBackgroundControl(job->control);
@@ -92,6 +116,9 @@ ObjectReply ResponsesJobs::Submit(std::unique_ptr<ResponsesExecution> run,
     if (state_->stopping || state_->failed)
       return Error(503, "background_unavailable",
                    "Background executor is stopping");
+    if (state_->jobs.contains(key))
+      return Error(409, "background_already_owned",
+                   "Response already has an owner");
     size_t client_count = 0;
     for (const auto& [_, existing] : state_->jobs)
       client_count += existing->run->Scope() == scope;
@@ -120,7 +147,7 @@ ObjectReply ResponsesJobs::Submit(std::unique_ptr<ResponsesExecution> run,
     }
   });
   std::string ignored;
-  auto result = job->run->Begin(&ignored);
+  auto result = restored ? ObjectReply() : job->run->Begin(&ignored);
   if (!result.ok()) return result;
   if (!transfer(job->permit))
     return Error(503, "background_admission_lost", "Client permit unavailable");
@@ -145,6 +172,165 @@ ObjectReply ResponsesJobs::Submit(std::unique_ptr<ResponsesExecution> run,
   }
   state_->changed.notify_all();
   return accepted;
+}
+
+void ResponsesJobs::StartRecovery(ClientAdmission& clients,
+                                  ChatPlanConfig config) {
+  const std::lock_guard lock(state_->mutex);
+  if (state_->recovery_configured || state_->stopping)
+    throw std::logic_error("Response recovery already configured or stopping");
+  state_->recovery =
+      std::thread([this, &clients, config = std::move(config)]() mutable {
+        Recover(clients, std::move(config));
+      });
+  state_->recovery_configured = true;
+}
+
+void ResponsesJobs::Recover(ClientAdmission& clients,
+                            ChatPlanConfig config) noexcept {
+  while (!state_->stopping.load()) {
+    try {
+      std::unordered_map<std::string, ClientIdentity> identities;
+      std::unordered_map<std::string, std::string> scopes;
+      scopes.emplace(Digest("local:anonymous"), "local:anonymous");
+      for (size_t i = 0; i < std::max<size_t>(1, clients.Size()); ++i) {
+        const auto identity = clients.RecoveryIdentity(i);
+        if (!identity.Allowed()) continue;
+        const auto scope = identity.Scoped()
+                               ? "client:" + std::string(identity.Id())
+                               : "local:anonymous";
+        identities.emplace(scope, identity);
+        scopes.emplace(Digest(scope), scope);
+      }
+      std::string cursor;
+      size_t failures = 0, pending = 0;
+      const auto cancelled = [&] { return state_->stopping.load(); };
+      const auto wait = [&](std::chrono::milliseconds delay) {
+        std::unique_lock lock(state_->mutex);
+        state_->changed.wait_for(lock, delay, cancelled);
+      };
+      while (!cancelled()) {
+        const auto page = state_->objects.ScanResponses(
+            cursor, Clock::now() + std::chrono::seconds(2), cancelled);
+        if (!page.ok()) {
+          ++state_->recovery_errors;
+          ++failures;
+          wait(failures % 3 == 0 ? std::chrono::milliseconds(60000)
+                                 : std::chrono::milliseconds(250));
+          continue;
+        }
+        failures = 0;
+        const auto* rows = page.value.GetArray("data");
+        if (!rows) throw std::runtime_error("Invalid response recovery page");
+        for (const auto& row : rows->array) {
+          if (cancelled()) break;
+          auto scope = row.GetString("scope");
+          if (scope.empty()) {
+            const auto known = scopes.find(row.GetString("owner_digest"));
+            if (known != scopes.end()) scope = known->second;
+          }
+          const auto id = row.GetString("id");
+          {
+            const std::lock_guard lock(state_->mutex);
+            if (state_->jobs.contains(Key(scope, id))) continue;
+          }
+          const auto* owner = row.Find("owner");
+          const auto status = owner ? ResponseOwnerStatus(*owner)
+                                    : ResponseOwnerState::kUnknown;
+          // Includes current foreground execution and other live processes.
+          // A dead storage worker alone never grants replay authority.
+          if (scope.empty() || status != ResponseOwnerState::kGone) {
+            ++pending;
+            continue;
+          }
+          StateAccess access{scope, Clock::now() + std::chrono::seconds(2),
+                             cancelled};
+          const auto identity = identities.find(scope);
+          const auto close = [&](std::string_view code,
+                                 std::string_view message) {
+            const auto result = ResponsesState(state_->objects)
+                                    .Interrupt(id, access, code, message);
+            if (result.ok() || result.http_status == 404)
+              ++state_->interrupted;
+            else {
+              ++pending;
+              ++state_->recovery_errors;
+            }
+          };
+          if (identity == identities.end()) {
+            close("background_client_revoked",
+                  "Original client is no longer authorized");
+            continue;
+          }
+          if (!row.GetBool("background") ||
+              row.GetString("status") != "queued") {
+            close("background_execution_interrupted",
+                  "Previous execution process exited; started work is not "
+                  "replayed");
+            continue;
+          }
+          if (row.GetInt("execution_deadline_at") <= std::time(nullptr)) {
+            close("deadline_exceeded",
+                  "Queued response execution deadline expired");
+            continue;
+          }
+          ClientLease permit;
+          if (!permit.Acquire(clients, identity->second, ClientLane::kData)) {
+            ++pending;
+            continue;
+          }
+          auto run = std::make_unique<ResponsesExecution>(state_->objects);
+          config.client_limits = identity->second.Limits();
+          auto restored = run->RestoreQueued(id, config, access);
+          if (!restored.ok()) {
+            if (restored.http_status >= 500) {
+              ++pending;
+              ++state_->recovery_errors;
+            } else
+              close("background_restore_rejected", restored.message);
+            continue;
+          }
+          restored = Adopt(
+              std::move(run), identity->second,
+              [&](ClientLease& target) { return permit.TransferTo(target); },
+              true);
+          if (restored.ok())
+            ++state_->recovered;
+          else if (restored.code == "background_already_owned")
+            continue;
+          else if (restored.http_status == 408)
+            close(restored.code, restored.message);
+          else {
+            ++pending;
+            ++state_->recovery_errors;
+          }
+        }
+        cursor = page.value.GetString("cursor");
+        if (!page.value.GetBool("has_more")) {
+          state_->recovery_pending = pending;
+          state_->recovery_scanned = true;
+          // Keep observing foreign live/unknown owners and capacity deferrals.
+          // No launches or model restarts are hidden in the recovery loop.
+          if (!pending) return;
+          pending = 0;
+          cursor.clear();
+          wait(std::chrono::milliseconds(1000));
+        } else
+          wait(std::chrono::milliseconds(25));
+      }
+    } catch (...) {
+      ++state_->recovery_errors;
+      // Scanner failure is visible and never stops the healthy model or jobs.
+      state_->recovery_pending.fetch_add(1);
+      try {
+        std::unique_lock lock(state_->mutex);
+        state_->changed.wait_for(lock, std::chrono::seconds(60),
+                                 [&] { return state_->stopping.load(); });
+      } catch (...) {
+        return;  // Never escape the auxiliary thread into std::terminate.
+      }
+    }
+  }
 }
 
 void ResponsesJobs::Release(const std::shared_ptr<Job>& job,
@@ -335,6 +521,7 @@ void ResponsesJobs::RequestStop() noexcept {
 }
 
 void ResponsesJobs::Join() {
+  if (state_->recovery.joinable()) state_->recovery.join();
   for (auto& worker : state_->workers)
     if (worker.joinable()) worker.join();
 }
@@ -346,6 +533,12 @@ ResponsesJobsHealth ResponsesJobs::Health() const {
   health.input_bytes = state_->bytes;
   health.stopping = state_->stopping;
   health.failed = state_->failed;
+  health.recovery_configured = state_->recovery_configured;
+  health.recovery_scanned = state_->recovery_scanned;
+  health.recovered = state_->recovered;
+  health.interrupted = state_->interrupted;
+  health.recovery_errors = state_->recovery_errors;
+  health.recovery_pending = state_->recovery_pending;
   for (const auto& [_, job] : state_->jobs) {
     health.queued += job->stage == Job::Stage::kQueued;
     health.running += job->stage == Job::Stage::kRunning;

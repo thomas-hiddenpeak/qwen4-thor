@@ -7,6 +7,7 @@
 #include "object_protocol.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/request_json.h"
+#include "q4t/server/responses_owner.h"
 
 namespace q4t::server {
 void ResponsesExecution::BindBackgroundControl(
@@ -44,9 +45,10 @@ size_t ResponsesExecution::RetainedInputBytes() const {
   size_t bytes = 0;
   for (const auto* value :
        {&plan_.request, &plan_.history, &plan_.own_input, &plan_.conversation,
-        &envelope_.request, &envelope_.options, &generation_.generation_request,
-        &generation_.effective_tools, &generation_.input.items,
-        &generation_.input.messages, &output_.Snapshot()})
+        &plan_.execution_owner, &envelope_.request, &envelope_.options,
+        &generation_.generation_request, &generation_.effective_tools,
+        &generation_.input.items, &generation_.input.messages,
+        &output_.Snapshot()})
     bytes += OutputJson(*value).size();
   if (generation_.chat.normalized_request)
     bytes += OutputJson(*generation_.chat.normalized_request).size();
@@ -168,6 +170,7 @@ ObjectReply ResponsesExecution::RestoreQueued(const std::string& id,
   }
   status = output_.RestoreQueued(snapshot, events_.array.size());
   if (!status) return OutputError(status);
+  plan_.execution_owner = CurrentResponseOwner();
   checkpoint_bytes_ = event_bytes_;
   checkpoint_time_ = std::chrono::steady_clock::now();
   begun_ = true;

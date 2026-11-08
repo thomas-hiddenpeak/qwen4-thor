@@ -722,6 +722,13 @@ Status ChatServer::Start(const ServerOptions& opts) {
   }
   startup_listeners_ = std::move(pending_listeners);
   model_ready_.store(true);
+  if (background_ && !stop_requested_.load()) {
+    try {
+      background_->StartRecovery(clients_, PlanningConfig());
+    } catch (...) {
+      std::fprintf(stderr, "[responses] recovery scanner unavailable\n");
+    }
+  }
   return Status();
 }
 

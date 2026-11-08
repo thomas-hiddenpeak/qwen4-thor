@@ -215,6 +215,10 @@ class DiskStore {
   ObjectReply Run(const Json& request) {
     if (!initialized_) return IoError();
     const auto operation = request.GetString("operation");
+    if (operation == "scan_responses") {
+      auto pruned = Prune();
+      return pruned.ok() ? ScanResponses(request) : pruned;
+    }
     if (operation == "batch") {
       auto pruned = Prune();
       return pruned.ok() ? Batch(request) : pruned;
@@ -690,6 +694,50 @@ class DiskStore {
     result.value = Public(record);
     return result;
   }
+  ObjectReply ScanResponses(const Json& request) {
+    const auto after = request.GetString("after");
+    if (!after.empty() && !ValidFilename(after))
+      return Error(400, "invalid_object_cursor", "Invalid recovery cursor");
+    auto current = records_.upper_bound(after);
+    auto rows = Array();
+    std::string cursor = after;
+    size_t scanned = 0, responses = 0;
+    for (; current != records_.end() && scanned < 32 && responses < 8;
+         ++current, ++scanned) {
+      cursor = current->first;
+      const auto& metadata = current->second;
+      if (metadata.kind != "response") continue;
+      ++responses;
+      Json record;
+      if (!ReadKnown(current->first, metadata, &record)) return IoError();
+      const auto* data = record.Find("data");
+      const auto* response = data ? data->Find("response") : nullptr;
+      if (!response) continue;
+      const auto status = response->GetString("status");
+      if (status != "queued" && status != "in_progress") continue;
+      const auto* continuation = data->Find("continuation");
+      auto scope = continuation ? continuation->GetString("scope") : "";
+      if (scope.size() > 256 || Digest(scope) != metadata.owner) scope.clear();
+      const auto* owner = continuation ? continuation->Find("owner") : nullptr;
+      rows.array.push_back(Object(
+          {{"id", String(metadata.id)},
+           {"scope", String(scope)},
+           {"owner_digest", String(metadata.owner)},
+           {"owner", owner ? *owner : Json()},
+           {"status", String(status)},
+           {"background", Boolean(response->GetBool("background"))},
+           {"execution_deadline_at",
+            Number(continuation ? continuation->GetInt("execution_deadline_at")
+                                : 0)}}));
+    }
+    ObjectReply result;
+    result.value = Object({{"data", std::move(rows)},
+                           {"cursor", String(cursor)},
+                           {"scanned", Number(scanned)},
+                           {"has_more", Boolean(current != records_.end())}});
+    return result;
+  }
+
   ObjectReply List(const Json& request) {
     const auto limit = request.GetInt("limit");
     const auto after = request.GetString("after"),

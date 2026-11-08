@@ -79,6 +79,10 @@ set(protocol_inputs
   src/server/responses_execution.cpp
   include/q4t/server/responses_api.h
   src/server/responses_api.cpp
+  include/q4t/server/responses_owner.h
+  src/server/responses_owner.cpp
+  include/q4t/service/guardian_process.h
+  src/service/guardian_process.cpp
   include/q4t/server/application_query.h
   src/server/application_query.cpp
   include/q4t/server/conversation_state.h

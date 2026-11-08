@@ -27,6 +27,12 @@ struct ResponsesJobsHealth {
   size_t input_bytes = 0;
   bool stopping = false;
   bool failed = false;
+  bool recovery_configured = false;
+  bool recovery_scanned = false;
+  uint64_t recovered = 0;
+  uint64_t interrupted = 0;
+  uint64_t recovery_errors = 0;
+  size_t recovery_pending = 0;
 };
 
 class ResponsesJobs {
@@ -61,6 +67,9 @@ class ResponsesJobs {
   // Cancel returns a real persisted terminal response. A deadline can end the
   // caller's wait without undoing cancellation or releasing a running owner.
   ObjectReply Cancel(const std::string& id, const StateAccess& access);
+  // One bounded scanner, independent of request/model workers. Client policy
+  // must remain immutable and outlive the manager. No process is signalled.
+  void StartRecovery(ClientAdmission& clients, ChatPlanConfig config);
   void RequestStop() noexcept;
   void Join();
   ResponsesJobsHealth Health() const;
@@ -68,6 +77,10 @@ class ResponsesJobs {
  private:
   struct State;
   std::unique_ptr<State> state_;
+  ObjectReply Adopt(std::unique_ptr<ResponsesExecution> run,
+                    ClientIdentity client, const TransferPermit& transfer,
+                    bool restored);
+  void Recover(ClientAdmission& clients, ChatPlanConfig config) noexcept;
   void Worker() noexcept;
   void Execute(const std::shared_ptr<Job>& job) noexcept;
   void Reconcile(const std::shared_ptr<Job>& job) noexcept;

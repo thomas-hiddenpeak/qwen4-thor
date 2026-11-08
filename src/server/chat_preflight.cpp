@@ -46,20 +46,26 @@ void ChatServer::HandleConfig(int fd) {
                           : jobs.failed   ? "failed"
                           : jobs.stopping ? "stopping"
                                           : "ready";
-  const auto value = effective_config_.substr(0, effective_config_.size() - 1) +
-                     R"(,"application_state_health":{"state":")" +
-                     detail::JsonEscape(health.state) + '"' + R"(,"pending":)" +
-                     std::to_string(health.pending) + R"(,"workers_started":)" +
-                     std::to_string(health.workers_started) +
-                     R"(,"workers_reaped":)" +
-                     std::to_string(health.workers_reaped) + "}," +
-                     R"("responses_background":{"state":")" + jobs_state +
-                     R"(","readiness_dependency":false,"owned":)" +
-                     std::to_string(jobs.owned) + R"(,"queued":)" +
-                     std::to_string(jobs.queued) + R"(,"running":)" +
-                     std::to_string(jobs.running) + R"(,"uncertain":)" +
-                     std::to_string(jobs.uncertain) + R"(,"input_bytes":)" +
-                     std::to_string(jobs.input_bytes) + "}}";
+  const auto value =
+      effective_config_.substr(0, effective_config_.size() - 1) +
+      R"(,"application_state_health":{"state":")" +
+      detail::JsonEscape(health.state) + '"' + R"(,"pending":)" +
+      std::to_string(health.pending) + R"(,"workers_started":)" +
+      std::to_string(health.workers_started) + R"(,"workers_reaped":)" +
+      std::to_string(health.workers_reaped) + "}," +
+      R"("responses_background":{"state":")" + jobs_state +
+      R"(","readiness_dependency":false,"owned":)" +
+      std::to_string(jobs.owned) + R"(,"queued":)" +
+      std::to_string(jobs.queued) + R"(,"running":)" +
+      std::to_string(jobs.running) + R"(,"uncertain":)" +
+      std::to_string(jobs.uncertain) + R"(,"input_bytes":)" +
+      std::to_string(jobs.input_bytes) + R"(,"recovery_configured":)" +
+      (jobs.recovery_configured ? "true" : "false") +
+      R"(,"recovery_scanned":)" + (jobs.recovery_scanned ? "true" : "false") +
+      R"(,"recovery_pending":)" + std::to_string(jobs.recovery_pending) +
+      R"(,"recovered":)" + std::to_string(jobs.recovered) +
+      R"(,"interrupted":)" + std::to_string(jobs.interrupted) +
+      R"(,"recovery_errors":)" + std::to_string(jobs.recovery_errors) + "}}";
   detail::SendSimple(fd, 200, "OK", value, "application/json");
 }
 

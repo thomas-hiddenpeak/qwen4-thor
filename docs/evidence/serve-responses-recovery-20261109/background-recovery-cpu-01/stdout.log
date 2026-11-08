@@ -1,0 +1,14 @@
+[PASS] responses_execution_stateless_does_not_depend_on_storage
+[PASS] responses_execution_commits_actual_ordered_events_and_usage
+[PASS] responses_background_active_retention_covers_execution_deadline
+[PASS] responses_recovery_owner_requires_actual_process_exit_or_reuse
+[PASS] responses_recovery_scan_redacts_payload_and_survives_cursor_deletion
+[PASS] responses_recovery_resumes_queued_identity_and_fails_started_without_replay
+[PASS] responses_recovery_preserves_live_and_unknown_owners_without_blocking_jobs
+[PASS] responses_recovery_revoked_expired_and_spoofed_scope_never_execute
+[PASS] responses_recovery_capacity_defers_then_resumes_without_new_deadline
+  CHECK failed: Wait([&] { return jobs.Health().recovered == 1 && jobs.Health().owned == 0; }) (line 704)
+[FAIL] responses_recovery_storage_failure_retries_without_starting_execution
+[PASS] responses_jobs_count_client_and_input_limits_are_real_admission
+[PASS] responses_jobs_unknown_start_is_reconciled_without_execution
+12 tests, 11 passed, 1 failed, 0 skipped

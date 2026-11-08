@@ -311,6 +311,18 @@ const ClientLimits& ClientAdmission::Limits(size_t index) const {
   return policy_.clients.at(index);
 }
 
+ClientIdentity ClientAdmission::RecoveryIdentity(size_t index) const {
+  ClientIdentity result;
+  if (index >= Size()) {
+    if (!Enabled() && index == 0) result.owner_ = this;
+    return result;
+  }
+  result.owner_ = this;
+  result.limits_ = &policy_.clients[index];
+  result.index_ = index;
+  return result;
+}
+
 ClientUsage ClientAdmission::Usage(size_t index) const {
   if (index >= Size()) throw std::out_of_range("client counter index");
   const auto& counters = counters_[index];
