@@ -478,7 +478,7 @@
     {
       "id": "R01",
       "required": true,
-      "state": "delivered",
+      "state": "implementation_in_progress",
       "implementation": "普通日志/观察阻塞隔离；有界队列/单worker、未回收不增殖、健康核心同PID继续；保留可诊断性",
       "acceptance": "普通日志/观察阻塞隔离；有界队列/单worker、未回收不增殖、健康核心同PID继续；保留可诊断性",
       "depends_on": [],
@@ -500,7 +500,15 @@
         "consumed_starts": 1,
         "consumed_chats": 1,
         "reason": "CPU reproduced namespace source-loading fixture error; unchanged production candidate, one targeted completion"
-      }
+      },
+      "findings": [
+        {
+          "source": "src/server/session_cache.cpp Transfer/Save/Restore and chat_generation.cpp model_mu_",
+          "issue": "Optional cache synchronous pread/pwrite/open/fstat run under cache and model locks; cancellation is checked between calls and cannot bound a blocked call. Isolate filesystem work so unavailable cache does not prevent healthy plain generation.",
+          "state": "open",
+          "prior_delivered_log_and_observation_isolation_preserved": true
+        }
+      ]
     },
     {
       "id": "R02",
@@ -540,7 +548,9 @@
         "evidence/serve-progress-native-20261109/decision.json",
         "evidence/serve-progress-controller-20261109/decision.json",
         "evidence/serve-progress-stages-20261109/decision.json",
-        "evidence/serve-progress-driver-20261109/decision.json"
+        "evidence/serve-progress-driver-20261109/decision.json",
+        "evidence/serve-progress-discovery-20261109/decision.json",
+        "evidence/serve-progress-business-20261109/decision.json"
       ],
       "release": null,
       "plan": "SERVE_PROGRESS_2026-11-09.md",
@@ -552,7 +562,7 @@
         }
       ],
       "remaining": [
-        "bounded actual execution stall recovery and normal/auxiliary-loss business",
+        "cache GPU copies and request allocation/reset/cleanup progress coverage",
         "rollback-capable accepted delivery"
       ]
     },

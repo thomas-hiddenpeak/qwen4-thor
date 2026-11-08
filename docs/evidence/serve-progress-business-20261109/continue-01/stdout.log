@@ -1,0 +1,1 @@
+{"plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-progress-20261109/business-02/plan.json", "limits": {"starts": 3, "chats": 9, "probes": 1, "controls": 2000, "seconds": 900}, "preserved_consumption": {"starts": 1, "chats": 1, "probes": 0, "controls": 162}, "prior_seconds": 45.652702992782, "runtime_unchanged": true}

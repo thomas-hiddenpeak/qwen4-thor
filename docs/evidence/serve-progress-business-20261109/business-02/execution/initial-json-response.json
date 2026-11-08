@@ -1,0 +1,26 @@
+{
+  "status": 200,
+  "headers": {
+    "Content-Type": "application/json",
+    "Content-Length": "302",
+    "X-Request-Id": "req-a2c2a5ebda7e60ac55c4b334fff37fe7",
+    "Connection": "close",
+    "Cache-Control": "no-store"
+  },
+  "seconds": 0.33292925637215376,
+  "value": {
+    "id": "agent-84062d73fbbe850cce603ba2443bd4ff",
+    "model": "qwen3.8-flash-next",
+    "message": {
+      "role": "assistant",
+      "content": "42"
+    },
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 27,
+      "completion_tokens": 3,
+      "total_tokens": 30
+    },
+    "logprobs": null
+  }
+}

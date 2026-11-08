@@ -1,0 +1,25 @@
+{
+  "status": 200,
+  "headers": {
+    "Content-Type": "text/event-stream",
+    "X-Request-Id": "req-3b8745f12bcdda2f8012a2ac7b9a3020",
+    "Connection": "close",
+    "Cache-Control": "no-store"
+  },
+  "seconds": 0.2839164291508496,
+  "value": {
+    "id": "agent-2d4c5cac4e460d0a92f89964a04143d3",
+    "model": "qwen3.8-flash-next",
+    "message": {
+      "role": "assistant",
+      "content": "42"
+    },
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 27,
+      "completion_tokens": 3,
+      "total_tokens": 30
+    },
+    "logprobs": null
+  }
+}
