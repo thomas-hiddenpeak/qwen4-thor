@@ -93,3 +93,5 @@ CPU已通过并保留首次夹具失败原件，见[证据](evidence/serve-acces
 [A07.7c实际业务已接受](evidence/serve-access-program-business-20261110/README.md)：1启动/8生成+5拒绝/55.172秒，53 NVML全OK。继续可回退交付及全部任务。
 
 [A07.7c默认交付完成](evidence/serve-access-program-delivery-20261110/README.md)：包b4c86756/引擎639c6b7b，revision26、STOPPED；旧审核代与业务账本保持，继续A07.8和全部任务。
+
+A07.8 标准input_tokens入口现已[真实业务接受并可回退交付](evidence/serve-input-tokens-delivery-20261110/README.md)，同源模板/计数、标准nullable与零生成额度均有证据；继续全部其他合同，不把此端点完成替代A07整体完成。

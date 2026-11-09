@@ -1,0 +1,6 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-input-tokens-20261110/release-01/bundle",
+  "manifest_sha256": "5a71516a7a2121d26f837039dc20f24c890af2c85227af3a330ab3a2a67b1c5c",
+  "engine_binary_sha256": "70504790ad38e5f245ce55280f6e5578eef549fa723332601e32d7f397662954",
+  "recovery_accepted": false
+}

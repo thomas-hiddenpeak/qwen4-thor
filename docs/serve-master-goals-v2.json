@@ -224,7 +224,11 @@
         "evidence/serve-prompt-cache-cpu-20261110/README.md",
         "evidence/serve-prompt-cache-driver-20261110/README.md",
         "evidence/serve-prompt-cache-business-20261110/README.md",
-        "evidence/serve-prompt-cache-delivery-20261110/README.md"
+        "evidence/serve-prompt-cache-delivery-20261110/README.md",
+        "evidence/serve-input-tokens-cpu-20261110/README.md",
+        "evidence/serve-input-tokens-followup-20261110/README.md",
+        "evidence/serve-input-tokens-business-20261110/README.md",
+        "evidence/serve-input-tokens-delivery-20261110/README.md"
       ],
       "release": {
         "engine_binary_sha256": "639c6b7b6c25095af0aecbd323ba2cead42aeccf49fd5e69fb1774643aed4aec",
@@ -236,7 +240,7 @@
         "service_release_sha256": "ad2cd693508b8f2aea9d3f88641289ad2ce5b8af391f3a6a7f97d5c646899b9b",
         "record": "docs/evidence/serve-access-program-delivery-20261110/result.json"
       },
-      "development_status": "A07.1-A07.7 native execution delivered; A07.8 full contract/endpoint audit remains required",
+      "development_status": "A07.1-A07.7 and standard input_tokens delivered; complete A07.8 item/tool/media contract remains required",
       "item_shape_evidence": "evidence/serve-item-shape-20261109/README.md",
       "execution_evidence": "evidence/serve-responses-execution-20261109/README.md",
       "foreground_business_evidence": "evidence/serve-responses-business-20261109/README.md",
@@ -295,7 +299,7 @@
         },
         "publication_revision": 10
       },
-      "current_work": "A07.8 full contract audit and standard response input token counting; then every remaining master task",
+      "current_work": "A07.8 remaining input/output/include/SSE field audit; A08 retention and all remaining master tasks continue",
       "reasoning_summary": {
         "state": "delivered",
         "cpu_checks": 31,
@@ -791,6 +795,15 @@
           "service_release_sha256": "ad2cd693508b8f2aea9d3f88641289ad2ce5b8af391f3a6a7f97d5c646899b9b"
         },
         "publication_revision": 26
+      },
+      "input_tokens": {
+        "state": "delivered",
+        "endpoint": "/v1/responses/input_tokens",
+        "engine_sha256": "70504790ad38e5f245ce55280f6e5578eef549fa723332601e32d7f397662954",
+        "package_sha256": "5a71516a7a2121d26f837039dc20f24c890af2c85227af3a330ab3a2a67b1c5c",
+        "publication_revision": 28,
+        "evidence": "evidence/serve-input-tokens-delivery-20261110/README.md",
+        "full_task_complete": false
       }
     },
     {
@@ -1436,6 +1449,6 @@
       "release": null
     }
   ],
-  "next_task": "A07.8 input token count targeted validation, then remaining full contract audit and all A/R/Q/G work",
-  "next": "Standard input_tokens route implemented in source; freeze 20 C++ / 2 schema / 2 native ingress CPU, then <=1 model start / 4 generations / 16 counts / 900 seconds real business. Default access-program release remains STOPPED until accepted delivery; master goal remains active."
+  "next_task": "A07.8 remaining complete contract audit, A08 retention/context governance and all A/R/Q/G work",
+  "next": "Standard input_tokens accepted and delivered as 70504790/5a71516a revision28 STOPPED with old access-program rollback and unchanged business journals. Complete every remaining item; no stage ends the master task."
 }

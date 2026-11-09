@@ -69,3 +69,6 @@ docs/evidence/serve-input-tokens-followup-20261110/** -text -diff
 
 # Preserve input token count actual business acceptance.
 docs/evidence/serve-input-tokens-business-20261110/** -text -diff
+
+# Preserve input token count delivery receipts.
+docs/evidence/serve-input-tokens-delivery-20261110/** -text -diff

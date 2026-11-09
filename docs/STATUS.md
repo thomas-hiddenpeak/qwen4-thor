@@ -1,5 +1,9 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+A07.8 标准计数已完成[CPU](evidence/serve-input-tokens-cpu-20261110/README.md)、[nullable补齐](evidence/serve-input-tokens-followup-20261110/README.md)、[真实业务](evidence/serve-input-tokens-business-20261110/README.md)与[可回退交付](evidence/serve-input-tokens-delivery-20261110/README.md)。当前引擎70504790、元数据f1001bf8、包5a71516a，revision28、STOPPED；旧639c6b7b/b4c86756完整回退与业务账本保持。
+
+累计2启动/5生成/19计数/96.469秒、94 NVML全OK；发布8操作、0新增模型/GPU。继续A07.8其余合同与A08等全部总任务，总目标active、未合main。以下历史检查点以本段当前默认为准。
+
 A07.8 [标准计数真实业务接受](evidence/serve-input-tokens-business-20261110/README.md)：累计2启动/5生成/19计数/96.469秒，94 NVML全OK，独立清理确认；实际count=usage、真实工具、历史/密文、nullable默认、零额外生成额度通过。候选70504790，默认639c6b7b保持；继续可回退交付与全部总任务，未合main。
 
 A07.8 [首轮真实计数/工具业务通过、nullable合同补齐CPU通过](evidence/serve-input-tokens-followup-20261110/README.md)：1启动/4生成/15计数/51.451秒，50 NVML全OK并独立清理；补齐count可null而create不可null的四字段默认处理，3直接C++/1驱动通过。追加最多1启动/1生成/4计数/300秒仅验证该差异；累计上限2/5/20/900。默认639c6b7b保持STOPPED，未把局部通过当全部合同完成，全部总任务继续。
