@@ -1,5 +1,7 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+A09.1 SDK夹具已补默认仓库路径与原二进制文件，无环境变量的单项CPU通过，host零警告；其余组件证据复用。继续A09.2分块持久存储，尚未接Files HTTP，默认6a90506e保持。
+
 A09.1 [multipart组件11 C++/2实际SDK编码通过](evidence/serve-multipart-cpu-20261110/README.md)，host零警告；首SDK路径夹具错误保留。仅组件CPU，0网络/模型，Files API和持久IO尚未交付。继续实际文件存储/传输、Uploads、Batch与全部目标；默认6a90506e保持STOPPED。
 
 A09 增量multipart与SDK编码夹具已成组开发，冻结11项CPU，开始必要host构建。覆盖真实SDK字节、跨块边界/二进制、截断和失败停止；尚未测试，Files HTTP/持久IO仍待接入。默认6a90506e保持STOPPED，继续A09全部子项及总目标。

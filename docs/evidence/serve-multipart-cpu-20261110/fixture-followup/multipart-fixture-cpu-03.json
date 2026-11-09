@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "env",
+    "-u",
+    "Q4T_MULTIPART_FIXTURES",
+    ".q4t-work/serve-access-20261109/host/q4t_host_tests",
+    "multipart_actual_official_sdk_file_and_upload_part_bytes"
+  ],
+  "exit_code": 0,
+  "seconds": 0.003686720971018076
+}

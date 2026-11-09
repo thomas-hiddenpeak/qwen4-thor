@@ -230,8 +230,12 @@ Q4T_TEST(multipart_large_input_is_incremental_with_fixed_parser_buffer) {
 }
 
 Q4T_TEST(multipart_actual_official_sdk_file_and_upload_part_bytes) {
-  const auto* directory = std::getenv("Q4T_MULTIPART_FIXTURES");
-  Q4T_CHECK(directory);
+  const auto* override = std::getenv("Q4T_MULTIPART_FIXTURES");
+  const auto directory = override
+      ? std::filesystem::path(override)
+      : std::filesystem::path(__FILE__).parent_path().parent_path() /
+            "docs/evidence/serve-multipart-cpu-20261110/"
+            "multipart-cpu-02/sdk";
   for (const auto* name : {"file", "part"}) {
     q4t::io::Json fixture;
     Q4T_CHECK(q4t::io::ParseJson(
