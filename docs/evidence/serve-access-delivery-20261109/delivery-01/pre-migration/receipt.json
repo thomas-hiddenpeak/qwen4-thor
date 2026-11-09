@@ -1,0 +1,12 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-observation-20261109/release-02/bundle",
+  "manifest_sha256": "b7c2510799d7433208f0f3135f8f38733d20e849a820db5649406d74835ae939",
+  "files": {
+    "q4t.release.json": "f44634f5235c9555a06c20e57fbe86d1606f57ba7b4095e875b2d71ba31b38fc",
+    "q4t": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
+    "service.release.json": "29125ad9dcccd87105e8bbad2670876f66641f03f8d217007ea6dcd56a42849d",
+    "service.json": "6b0d8964d396fd78a5f9f1c6d5bbb8a4a6e9347207c3a901fe4d653545ae97d0"
+  },
+  "ledger_sha256": "2216b9dcd4d0e9753fb41b8698a15055001c2446ac52b5a52e3d2f757b0c884c",
+  "purpose": "Historical pre-migration evidence only. After the durable managed-state fence, do NOT restore this legacy descriptor/engine/service pair."
+}

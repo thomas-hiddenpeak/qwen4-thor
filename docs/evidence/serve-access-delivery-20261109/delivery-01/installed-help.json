@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/release-01/bundle/bin/q4t",
+    "service",
+    "--help"
+  ],
+  "exit_code": 0,
+  "model_starts": 0,
+  "chat_requests": 0
+}

@@ -1,5 +1,7 @@
 # docs/ — 开发记录文档体系
 
+[N04原生密钥、动态客户端限额与用量连续性交付及操作](SERVE_ACCESS_CONTROL_2026-11-09.md)
+
 [R01缓存文件I/O原生隔离与R03组合验收](SERVE_CACHE_IO_ISOLATION_2026-11-09.md)
 
 [Chat持久对象、官方SDK及原生/可选入口](SERVE_CHAT_STORAGE_2026-11-09.md)

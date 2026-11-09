@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/release-01/bundle/bin/q4t",
+    "service",
+    "deploy",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/packaged-01/legacy-state",
+    "--expected-manifest-sha256",
+    "61a6b2e3a1e134f8a310ddde51a78014a376afed1934d17f4b72926ec3ba4473",
+    "--request-id",
+    "5cabfbff-31f6-4b04-9cff-7e751393806a"
+  ],
+  "exit_code": 0,
+  "seconds": 0.7161008920520544
+}

@@ -1,0 +1,19 @@
+{
+  "status": "PASS_N04_DEFAULT_DELIVERY_PREREQUISITES",
+  "acceptance": "ACCEPT_TARGETED_NATIVE_ACCESS_QUOTA_CONTINUITY",
+  "manifest_sha256": "61a6b2e3a1e134f8a310ddde51a78014a376afed1934d17f4b72926ec3ba4473",
+  "business": {
+    "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-access-business-20261109/decision.json",
+    "sha256": "5c5818e0c667da2b7e927b8f554dd9cdfde53d793a37aef927b633e3f3647ec6"
+  },
+  "packaged": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/packaged-01/result.json",
+    "sha256": "5eadc303f4234cf3d1d05293b20a63139ff9344a092a4f3658f4877b6596de96"
+  },
+  "accepted_engine_metadata_sha256": "4c5d11a117fa9b20dc7321878a7833330f6dc492a39109df8cc41fe8c88fe1dd",
+  "model_starts_for_install": 0,
+  "chat_requests_for_install": 0,
+  "performance_acceptance": false,
+  "long_stability_accepted": false,
+  "remaining_master_tasks_open": true
+}

@@ -120,6 +120,13 @@ token预算不足而失败，canonical分词长度不构成生成上限。
 
 ## 原生服务入口与可选前置
 
+原生服务现已支持[密钥轮换/撤销、动态客户端限额和重启用量交接](docs/SERVE_ACCESS_CONTROL_2026-11-09.md#操作入口)。
+配置修改区分持久提交与运行中实际生效；辅助文件失能保留已生效策略，
+正常停止可精确交接，未知交接等待完整配额窗口。兼容包切换保留当前
+密钥、限额和用量，迁移后不能恢复旧静态Key包。默认服务保持停止，
+TLS和外部前置按部署需要选择；[实际交付证据](docs/evidence/serve-access-delivery-20261109/README.md)
+与其余未完成总任务分别记录。
+
 新`service prepare`默认选择原生入口，显式提供`--native-ingress`
 所指的`q4t-ingress`及构建来源回执；不探测、复制或启动nginx。
 `--ingress-mode nginx --nginx PATH`仅保留显式旧网关模式。直接运行
@@ -131,7 +138,7 @@ journal仍使用Python，必要的CUDA、系统与模型依赖不变。
 日志阻塞隔离见[R01交付](docs/SERVE_OBSERVATION_IO_2026-11-08.md)，
 原生入口既有能力见[交付说明](docs/SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)。
 
-当前默认v4包、实际模型TLS短验、凭据管理与回退见
+首次v4接入包、实际模型TLS短验、凭据管理与回退见
 [原生接入交付](docs/SERVE_NATIVE_ACCESS_2026-11-08.md)。
 TLS使用系统OpenSSL 3，不复制nginx代码，也不随包携带nginx。
 构建默认启用`Q4T_ENABLE_NATIVE_TLS=ON`，需要匹配的OpenSSL 3开发头
@@ -157,7 +164,7 @@ location / {
 }
 ```
 
-入口支持8条业务/健康路由及相应CORS预检，认证后的`/livez`只表示入口存活；`/readyz`与
+入口支持[已发布API路由](docs/serve-openapi-v1.json)及相应CORS预检，认证后的`/livez`只表示入口存活；`/readyz`与
 业务请求受模型自检、配额隔离和代次绑定约束，恢复期返回503及
 Retry-After。请求头/体共享10秒绝对接收期限，头64KiB，业务体最多
 16MiB，聚合业务体预留48MiB；32个有界处理槽，数据与控制分别限额。

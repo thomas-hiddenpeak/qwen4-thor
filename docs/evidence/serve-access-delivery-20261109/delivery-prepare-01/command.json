@@ -1,0 +1,8 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    ".q4t-work/serve-access-20261109/prepare_delivery.py"
+  ],
+  "script_sha256": "77c664dd2b86e9986782e646c9f38947c0d1dcb1f66fdc4ebd8efa0233c876cd"
+}

@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/release-01/rollback-bundle/bin/q4t",
+    "service",
+    "limits-apply",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/packaged-01/legacy-state",
+    "--proposal",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/packaged-01/limits-proposal.json",
+    "--wait-seconds",
+    "0"
+  ],
+  "exit_code": 0,
+  "seconds": 0.34115405892953277
+}

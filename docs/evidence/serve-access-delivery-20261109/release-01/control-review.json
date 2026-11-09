@@ -1,0 +1,402 @@
+{
+  "source_commit": "5b1a0bfdd489255c13a2ab3b5c268307570b6fca",
+  "previous_package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-observation-20261109/release-02/bundle",
+  "files": {
+    "tools/evalscope/bounded_log.py": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+    "tools/evalscope/gpu_exclusive.py": "cbc8c0accbcc3194e9792549ff72bc708b35d46deb75b4066c62fdb16bdaa3ad",
+    "tools/evalscope/nvml_process_query.py": "8c292f2b5e778c9c9033539e06659570075999cf6e74f20a7431ea1fd45c1ac3",
+    "tools/release/release.py": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+    "tools/serve_gateway/client_policy.py": "31e95654b65b6e10ead221a3b8811b4b58f053fb9c87b839e19af12d08cb01ef",
+    "tools/serve_gateway/gateway.py": "1e4b200477a5382d62b9fb42c79f816be04451c51629234c8dc31681d89201e4",
+    "tools/serve_gateway/tls.py": "cca002a24c6731ec5f8a08b7d4c3e1a4e61cd10a8e4bac7224fc68fda88e183a",
+    "tools/serve_host/native.py": "4f36c218c6d7cbc76dffb0fe4471919c373922073e9f780c612dd72b8edb3241",
+    "tools/serve_host/native_exporter.py": "086b1c3ced3471a35cd0450a58e132ca65177fffe141ff4016bc73b6fb1dd482",
+    "tools/serve_ops/contracts.py": "0ceb9a926f7e6ddb573a8a7847ae1d2adc0d3cd862a4fcb76efe7746554244e7",
+    "tools/serve_ops/identity.py": "74001ea851d3a7b0d5aee843b3ccee4b669485ed93543bb04799ab42e16847b9",
+    "tools/serve_ops/transport.py": "98d3c326baaa7731078aa706911c743ae10b2278763d5de86f2bc7828650e2aa",
+    "tools/serve_recovery/access_control.py": "3f65d1257735880343990cca6e5c16409ab18b60a707bd901ff0a0dd4c957b1a",
+    "tools/serve_recovery/access_io.py": "953818d9272cb1a92ae070ed8a4804194f9849ed4e99ba0dabbee189f24bd25e",
+    "tools/serve_recovery/access_manager.py": "337d6848235ba35d63b603e72c055343472360d00060b5fe80417025553b238d",
+    "tools/serve_recovery/access_policy.py": "b0e57efefdd193a60fc50f09f8b5202d2333e73bcde2f8009a2bd3ff8fd79bd0",
+    "tools/serve_recovery/access_store.py": "fe2b32d8c9127955c40693053e2576012d64b89b747702e56cd98e55b3fa2753",
+    "tools/serve_recovery/binding.py": "1f70edbce8cefd92700acf6df130101baa41f575cd24876f7e7d95772ba8cd18",
+    "tools/serve_recovery/bundle.py": "742ac4c1de41442f7d542e5c995d5028807f225a329bf9c518c4f07166419c58",
+    "tools/serve_recovery/child.py": "772272690b964c7b57c0998a41bd55d2f8f516b6351bcc9b2e763476f2ee54ae",
+    "tools/serve_recovery/control.py": "f19552b9f83e206130ed285b5d7e5fe9776127dc632e6e403622c17a94e736a1",
+    "tools/serve_recovery/controller.py": "c276226dfc700b7a33bfacf51ef04edb2c0f11bd29fb63f707f45482659867f6",
+    "tools/serve_recovery/core_http.py": "c682bfff760607ebc332a638a21eabdd658d03506c065287d336b170941db3b8",
+    "tools/serve_recovery/cpu_exec.py": "6815ad563afb569fa7eb662d48b240066b69bc7da5ff44742a413f25045acfd1",
+    "tools/serve_recovery/deployment.py": "7c55d80505dd201b8b79010cf4fa6bbbcaf7dee69397d1418125658d81de3466",
+    "tools/serve_recovery/deployment_policy.py": "c76ae19e59fdebf85cbeb83d9ef485828497e1431adb15a817e16902936c3f1d",
+    "tools/serve_recovery/gateway.py": "c75320610cc4fea550cd3a5ba4439f5ac016319eb87697ad54bbb2aaee0ea361",
+    "tools/serve_recovery/gateway_config.py": "0004abcecbca13c58517d494e969632543cd3ff7968c5a59fa397fefedbf35d6",
+    "tools/serve_recovery/initialization.py": "5c8a0584d2fb21a13ab3de8ee5265bf7d898a9e8da5c5ff1f14c45d22c648f60",
+    "tools/serve_recovery/jobs.py": "31dc2bf5a1e6d91cbfa1ce04a7726c72e5b0cf70a8dec3b12d9e71de3ce96d25",
+    "tools/serve_recovery/journal.py": "b965cb03f08932b508c9af083abd7020abe25a5f9d8f5d1ad0920494ed127cac",
+    "tools/serve_recovery/ledger.py": "4a2f1586dc4833de32c3caf3a6914babd1a994444355e69d0ede4556f5be1974",
+    "tools/serve_recovery/model_admin.py": "ec2780d8cad6a5c7e423c6c15d27fda9394815e5182637077a6ad0bcf17c4542",
+    "tools/serve_recovery/monitor.py": "5fb9f01cee45b7d008cde26fea3d9986a030a8a8a06ac435bc86932a0706aed9",
+    "tools/serve_recovery/native_ingress.py": "1eb41afc1e266f54d3d0040ed802d4cf554f1ebc2c5d7833c8d7fb4d2f4990ce",
+    "tools/serve_recovery/observation_io.py": "e49138b50462d1acf1a5ef6b648f8bc5d00655de04ec86f25648385fdab4d772",
+    "tools/serve_recovery/ownership.py": "1cb0182ca06ee3c1ebbaab5d598895990ece2a7720aec741ea84ffde68792254",
+    "tools/serve_recovery/policy.py": "db6e82bff6894c22bfe26a73e787c24362d1102a374bd18659eae81df4457bd2",
+    "tools/serve_recovery/progress.py": "f008b5f27a88cccff92232c3cc385722f67869445f9d75f49c7d8c216c1ab761",
+    "tools/serve_recovery/quota_control.py": "5c1852d88c00af0de630c0fefaf9f161b96bc724d8e09b6f96efee226b7bb0df",
+    "tools/serve_recovery/quota_manager.py": "d4e42ef4e419f8f5a2995a2a4312c05b3a759e04f8a32c1684228d6c350ae445",
+    "tools/serve_recovery/quota_policy.py": "840bebc08cdd79380763997f6172ef9803bad23dfffe6bd094229662450aed9d",
+    "tools/serve_recovery/quota_runtime.py": "ded3f58001ae462c9a3da8c4427415a1c9399800ed5e4a73214d315f4f465f5a",
+    "tools/serve_recovery/quota_store.py": "e31fa84315cf662f83dc1111a52d31c3fd6195b5bc2ba2c6044e4bbf4f011887",
+    "tools/serve_recovery/retention.py": "50ac3f309bb9449748ac49322233b5224820d2047034fd31b0e8793801078077",
+    "tools/serve_recovery/retention_epoch.py": "e6819f11405851206c1093fea6a2c2174c232036c2056c48b5609ff636693640",
+    "tools/serve_recovery/service.py": "f66027517f73fbdbfed6a2b12f12842c704d95178878a3340930ab740f394b23",
+    "tools/serve_recovery/store.py": "acba9fcc611989393ad10aa67092fb0eb3a308833fd52ff3c2cdf5430da0523d",
+    "tools/serve_recovery/tls_control.py": "75399601eb9649189367915fcfb417dbb786adaf37c9f8089c3060234dd3daee",
+    "tools/serve_recovery/usage_control.py": "a6b31714fe67974473911f6bddab33f6687c7a0e4ccf920d3409fe6962994fbc",
+    "tools/serve_recovery/usage_io.py": "8fb62bf04aa3cc1a8602bf3b79b3efdebdf6a80fe0561502596e98db07071472",
+    "tools/serve_recovery/usage_manager.py": "c275ce265478e351c0bde8b6d863d8902995050f308eaaefa272295217f7ed2a",
+    "tools/serve_recovery/usage_policy.py": "08d40b1d5365f7f2ebc2b3883cfbe01f692965c58f80873bef2c165f40f81c0a",
+    "tools/serve_recovery/usage_runtime.py": "b1110f7f69102db7e99339d46b2db2d477413a04c4cd2e0dc46300aa81b2e2c0",
+    "tools/serve_recovery/usage_store.py": "b674797ba44e132ce63b57c3888baa0271e756b7518ef6ff0b90aee9a6397603",
+    "tools/serve_service/auxiliary.py": "9b818763694570b63efa394e01fc327300d8ee375bc8f7009023937b1061bbdf",
+    "tools/serve_service/backend.py": "49a37862d8040aceed14df796cb24535cacfeced3fe779773ec6925b04eeefa9",
+    "tools/serve_service/inspection.py": "2930af5fe6564b567a39bb6c9280dfe098be4e78227250660246a9722cfb90b9",
+    "tools/serve_service/memory.py": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+    "tools/serve_service/monitor_control.py": "06fc8f1477f166e79e57f6d12d0e0554af949c92f3d26d2dd5b68ba84dcd392c",
+    "tools/serve_service/nvml_policy.py": "817b2500044cd2eeed4277ad95d2686bf11f4785282ea1149beb63d62b0ef9a6",
+    "tools/serve_service/package.py": "ff283c216e5c1e6b0f68b363c8cf58b89b98eefec7b59b5d060dfd6b86e7605c",
+    "tools/serve_service/resources.py": "2b72ea6775ef6067eacb4ce6351a58e4a2bac1145e3869165a142a75f81245b2",
+    "tools/serve_service/service.py": "c525aa1d969cc12938a8643190b7de58e9a056fe55f75df713a488acefb2417d",
+    "tools/serve_service/supervisor.py": "1cd25bf75d21917abb35417c3f8bc0283071c47969a0f1e26462177b0b050670",
+    "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f"
+  },
+  "changed": {
+    "tools/serve_gateway/client_policy.py": {
+      "before": "fe0933bab4f288dab00f2e1871efdd312fa7c2a2eb496f7802cad7bad81e4ba7",
+      "after": "31e95654b65b6e10ead221a3b8811b4b58f053fb9c87b839e19af12d08cb01ef"
+    },
+    "tools/serve_host/native.py": {
+      "before": "76398318f061e75dc689298b5d80e6ccfd5ceb58d2d464e3c0da833ce26ff9da",
+      "after": "4f36c218c6d7cbc76dffb0fe4471919c373922073e9f780c612dd72b8edb3241"
+    },
+    "tools/serve_recovery/access_control.py": {
+      "before": null,
+      "after": "3f65d1257735880343990cca6e5c16409ab18b60a707bd901ff0a0dd4c957b1a"
+    },
+    "tools/serve_recovery/access_io.py": {
+      "before": null,
+      "after": "953818d9272cb1a92ae070ed8a4804194f9849ed4e99ba0dabbee189f24bd25e"
+    },
+    "tools/serve_recovery/access_manager.py": {
+      "before": null,
+      "after": "337d6848235ba35d63b603e72c055343472360d00060b5fe80417025553b238d"
+    },
+    "tools/serve_recovery/access_policy.py": {
+      "before": null,
+      "after": "b0e57efefdd193a60fc50f09f8b5202d2333e73bcde2f8009a2bd3ff8fd79bd0"
+    },
+    "tools/serve_recovery/access_store.py": {
+      "before": null,
+      "after": "fe2b32d8c9127955c40693053e2576012d64b89b747702e56cd98e55b3fa2753"
+    },
+    "tools/serve_recovery/bundle.py": {
+      "before": "63dd9d65a3da73b66fcbfa749b419ad53a29542d34792d293bd87ec563e2e3e4",
+      "after": "742ac4c1de41442f7d542e5c995d5028807f225a329bf9c518c4f07166419c58"
+    },
+    "tools/serve_recovery/child.py": {
+      "before": "4707421055f57119c5de561440ca12b7f8967229eabb2191ba5298d6fd39329f",
+      "after": "772272690b964c7b57c0998a41bd55d2f8f516b6351bcc9b2e763476f2ee54ae"
+    },
+    "tools/serve_recovery/control.py": {
+      "before": "bd8307bb3950122111d1d14d2451b54672599179b34a7d9d9ff375ebc53710c1",
+      "after": "f19552b9f83e206130ed285b5d7e5fe9776127dc632e6e403622c17a94e736a1"
+    },
+    "tools/serve_recovery/controller.py": {
+      "before": "7aa77d671c25f2c15a78e75edf71545a4180661f06350ecc4fdad6c5e3aca0b8",
+      "after": "c276226dfc700b7a33bfacf51ef04edb2c0f11bd29fb63f707f45482659867f6"
+    },
+    "tools/serve_recovery/deployment.py": {
+      "before": null,
+      "after": "7c55d80505dd201b8b79010cf4fa6bbbcaf7dee69397d1418125658d81de3466"
+    },
+    "tools/serve_recovery/deployment_policy.py": {
+      "before": null,
+      "after": "c76ae19e59fdebf85cbeb83d9ef485828497e1431adb15a817e16902936c3f1d"
+    },
+    "tools/serve_recovery/gateway.py": {
+      "before": "6ad44e7e93cb5c76a4cd85a24b48dca6dea314cc5252bb70253694372524a78a",
+      "after": "c75320610cc4fea550cd3a5ba4439f5ac016319eb87697ad54bbb2aaee0ea361"
+    },
+    "tools/serve_recovery/gateway_config.py": {
+      "before": "38cde468cd2d8c4f3c7ce7c484eb1ad4ca7626af33150f2fab80f4238ac8309a",
+      "after": "0004abcecbca13c58517d494e969632543cd3ff7968c5a59fa397fefedbf35d6"
+    },
+    "tools/serve_recovery/initialization.py": {
+      "before": null,
+      "after": "5c8a0584d2fb21a13ab3de8ee5265bf7d898a9e8da5c5ff1f14c45d22c648f60"
+    },
+    "tools/serve_recovery/model_admin.py": {
+      "before": null,
+      "after": "ec2780d8cad6a5c7e423c6c15d27fda9394815e5182637077a6ad0bcf17c4542"
+    },
+    "tools/serve_recovery/native_ingress.py": {
+      "before": "99ffd489538c5f391aa17049c28a42b1124eabea33700e35c71c3fc3cda6c7a8",
+      "after": "1eb41afc1e266f54d3d0040ed802d4cf554f1ebc2c5d7833c8d7fb4d2f4990ce"
+    },
+    "tools/serve_recovery/quota_control.py": {
+      "before": null,
+      "after": "5c1852d88c00af0de630c0fefaf9f161b96bc724d8e09b6f96efee226b7bb0df"
+    },
+    "tools/serve_recovery/quota_manager.py": {
+      "before": null,
+      "after": "d4e42ef4e419f8f5a2995a2a4312c05b3a759e04f8a32c1684228d6c350ae445"
+    },
+    "tools/serve_recovery/quota_policy.py": {
+      "before": null,
+      "after": "840bebc08cdd79380763997f6172ef9803bad23dfffe6bd094229662450aed9d"
+    },
+    "tools/serve_recovery/quota_runtime.py": {
+      "before": null,
+      "after": "ded3f58001ae462c9a3da8c4427415a1c9399800ed5e4a73214d315f4f465f5a"
+    },
+    "tools/serve_recovery/quota_store.py": {
+      "before": null,
+      "after": "e31fa84315cf662f83dc1111a52d31c3fd6195b5bc2ba2c6044e4bbf4f011887"
+    },
+    "tools/serve_recovery/retention.py": {
+      "before": "7f78f2cdec4ebc0dcd283ce803b2078769c5144834a63a742e95e6120d8205b9",
+      "after": "50ac3f309bb9449748ac49322233b5224820d2047034fd31b0e8793801078077"
+    },
+    "tools/serve_recovery/retention_epoch.py": {
+      "before": "2e8b7f054276093c599ad2073df408931b9cf0b237a74d16c6214a96a64d1bb7",
+      "after": "e6819f11405851206c1093fea6a2c2174c232036c2056c48b5609ff636693640"
+    },
+    "tools/serve_recovery/service.py": {
+      "before": "72092ca873b20374f8b62c6dbe524a115db65a28a08cc2b62dc9b2666bffbb90",
+      "after": "f66027517f73fbdbfed6a2b12f12842c704d95178878a3340930ab740f394b23"
+    },
+    "tools/serve_recovery/store.py": {
+      "before": "0eef06d1a10b4ef0911f671e0378ae3849caeabeaabbbe296981a2e4291e59ee",
+      "after": "acba9fcc611989393ad10aa67092fb0eb3a308833fd52ff3c2cdf5430da0523d"
+    },
+    "tools/serve_recovery/usage_control.py": {
+      "before": null,
+      "after": "a6b31714fe67974473911f6bddab33f6687c7a0e4ccf920d3409fe6962994fbc"
+    },
+    "tools/serve_recovery/usage_io.py": {
+      "before": null,
+      "after": "8fb62bf04aa3cc1a8602bf3b79b3efdebdf6a80fe0561502596e98db07071472"
+    },
+    "tools/serve_recovery/usage_manager.py": {
+      "before": null,
+      "after": "c275ce265478e351c0bde8b6d863d8902995050f308eaaefa272295217f7ed2a"
+    },
+    "tools/serve_recovery/usage_policy.py": {
+      "before": null,
+      "after": "08d40b1d5365f7f2ebc2b3883cfbe01f692965c58f80873bef2c165f40f81c0a"
+    },
+    "tools/serve_recovery/usage_runtime.py": {
+      "before": null,
+      "after": "b1110f7f69102db7e99339d46b2db2d477413a04c4cd2e0dc46300aa81b2e2c0"
+    },
+    "tools/serve_recovery/usage_store.py": {
+      "before": null,
+      "after": "b674797ba44e132ce63b57c3888baa0271e756b7518ef6ff0b90aee9a6397603"
+    },
+    "tools/serve_service/supervisor.py": {
+      "before": "21348143c5e4f46fed07a338977f984a58d6eb7c5e2f1e08caa29157929d6764",
+      "after": "1cd25bf75d21917abb35417c3f8bc0283071c47969a0f1e26462177b0b050670"
+    }
+  },
+  "native": {
+    "cuda_probe_sha256": "9bcdbb39273e2bdf6e68909a81a0eba56bee2dde3d7a7842a9e5b7ddc80ddb8e",
+    "guardian_sha256": "3a7ae82a95e27790450d4f7f957c6ca0785cc22d5476099b385237805dc20cc3",
+    "ingress_sha256": "ef61ba67fe7dddf5c729a72afca2716da07921353de1fa99769e3ee3d0f75ccc",
+    "provenance": {
+      "build_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build",
+      "build_result": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/native-build-02/result.json",
+      "gpu_operations": 0,
+      "only_compiled": true,
+      "tls": true
+    },
+    "source_files": {
+      "CMakeLists.txt": "9efd5b1c1d0b1ab735d6fcbf673d46c7268f4ffdc7597c29879d0a96aee31840",
+      "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
+      "cmake/NativeIngress.cmake": "96ca30d996381ae0a115a3a3290b2467de0092d17dbe8d57a8fd6a7f8116981e",
+      "cmake/RecoveryProbe.cmake": "b10bd71c92a8c9a9f6545da89ab06585f7c1398a978eb01aae9e18eb716c0271",
+      "include/q4t/io/json.h": "0533555dda689f405f6937bb899a0b70450181bd9d8d47032b915306205e0043",
+      "include/q4t/server/application_routes.h": "b194817965444dcfd8b10cbf07f80fb7d2041cd884fc69ee3b059ae0a06fc719",
+      "include/q4t/server/client_identity.h": "c05aad5dc655e91962eae55aab25c09fdcbc2a72ddc37a95585c7288dfac54be",
+      "include/q4t/server/http_connection.h": "89ff798245f196cad521414caf39267520f6b22489d396d7ee1b72fdb04d388b",
+      "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
+      "include/q4t/server/http_observation.h": "4a5c07a112faa4d60f834b2d5e4067522a7fe565ca6ff8acd145ad603999dbdc",
+      "include/q4t/server/http_request.h": "f6d52bf328cc33e56ae0ef06dc93051432ac0ddff55575e4e9204eecf35b6be6",
+      "include/q4t/server/model_catalog.h": "19bb1b450170b4d7c1d8895593f41baa1ad91c90aaafc58977894bcf76d52143",
+      "include/q4t/server/serve_fault.h": "47db4bd8dc12f5713ef42c6c89aeee1151867991d17d9b8529d31b4a11123b3f",
+      "include/q4t/service/guardian_journal.h": "700c8d24b7b8288c1f923cc532f591747a6adfbef42b1013a1d8e178288186a9",
+      "include/q4t/service/guardian_process.h": "31b967d4b558b1cdce10bf5acfb4731a9c9952930039285f6ed09af5b010c8f9",
+      "include/q4t/service/guardian_quota.h": "eb409d5a22d14fa432da89a9090501a49aa78cd10f57de24b3b8de3405139d93",
+      "include/q4t/service/guardian_wire.h": "5559955899c87230f116ea794ce7f0c0a2a1c6f2d9a2013ad6ec42fa1ffb73c3",
+      "include/q4t/service/ingress_access.h": "4c7b4c36183c9d6dee67c82b06c1390c8480599d96f8823fc07f1a1dfd2e8c71",
+      "include/q4t/service/ingress_access_admin.h": "3f72f8ec723aa5755942847c2583693483c24424ebcc69da0baa282993272d1d",
+      "include/q4t/service/ingress_address.h": "a931eda14ef69728f90401ff626ded167763d27a1da6e41f9184d4a976f191f9",
+      "include/q4t/service/ingress_admin.h": "2e33e97ef00fd363bf08f4ed4cc9235defb84bd070b1e477e465de3a108e7717",
+      "include/q4t/service/ingress_cors.h": "0382a8147351fb09bc53e859edd4cee405b8327fb31460603744a171e70ddd7d",
+      "include/q4t/service/ingress_credentials.h": "eeaec124120e0de170faefea94bc987ed0fc32b19b01ad471b5c4758c647417b",
+      "include/q4t/service/ingress_tls.h": "90199152c3f08f5aa69fd9dc5057c10e4683b321241c3f6142a914dd656906e8",
+      "include/q4t/service/ingress_transport.h": "3cce6e9af213308a4c3b0f2c780b4b32d2c4ad7dc97a7512db70c312fa0ece2b",
+      "include/q4t/status.h": "2d8b7a3407cf08fb805ba003235b83d6496d53a948d7d20821a4fa1604a97378",
+      "include/q4t/trace/router_trace.h": "4db4b53fe8971cb38faaaf7bb12311823aa0eb8bd3a068472c5c6372a5901a72",
+      "include/q4t/trace/sha256.h": "b423a7fa2fdf78d69ed485564b1ee8f5173688d2462902a3a7d25002619495ad",
+      "src/io/json.cpp": "525ff67209baae32cca85e8d2d79dbc16791f589146248ef74955a30fd23e17a",
+      "src/server/http_request.cpp": "836283e471ff1ba5200dae7c956427bcbba743b125c852041213b46522574d8e",
+      "src/service/cuda_probe.cu": "f91663d4098aa6365db6cf3d3fc437b5b32ee20280b65cc1ee34cb796a48e7fb",
+      "src/service/guardian_journal.cpp": "a0a60642d1546c302be84578b7ca6d4475ab9808c108dd82fa4df7133f3b5a12",
+      "src/service/guardian_main.cpp": "87e38886672c0ea05c723dc8b8ce81a25a9a3ffd09ce0ad2a073f7951bc0f764",
+      "src/service/guardian_process.cpp": "2a7ed6213ccb91c450365fa25b7d9ba322b07cf7df653e80489c788e32a7925c",
+      "src/service/guardian_wire.cpp": "95ca742cc01649fcf5b3245a4d0b48ad1d14ee4b142f376d5a095c7f686df12d",
+      "src/service/ingress_access.cpp": "6f138b82aa354c1e7ab62b94dd28aa1a13c9bdbee4fd3e76ec457c3a53593a8e",
+      "src/service/ingress_access_admin.cpp": "80c00ad12e223ab427b4e0b4c6b8c1e912ebd08ca7206201c0b5c5bf08e06917",
+      "src/service/ingress_admin.cpp": "766241235bab9d0e84490f72b66938e93fbee88757099ac2731ed6eae7afd1cc",
+      "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
+      "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
+      "src/service/ingress_main.cpp": "ffef05e6e93cff82550801a536ec56e333cfdaa99f2a3f0e4da21c6bcbc56827",
+      "src/service/ingress_tls.cpp": "5574d1ca0a45a9237aa3dbcad94258e55c14d36cc944c095eb3003c4713aac9f",
+      "src/service/ingress_transport.cpp": "c086f437eef70cb953a0f300413fa28b4468701a8442c2fafd83af719c682454",
+      "src/trace/sha256.cpp": "f4bf76148014282f5283c9c2fab9c87b6aa678d6ace2a983126b31f5c8492883",
+      "tests/host/CMakeLists.txt": "033d30ab9b1e650a0b63f476de0e0956318908c93beb6d7bf6edb375fcc1d758"
+    },
+    "version": 1
+  },
+  "evidence": {
+    "serve-access-primitive-20261109": {
+      "index_sha256": "da45829ff473decdf3aacf0998eb964871c39a8967f871d7c399e3a5e5e868f8",
+      "files": 20
+    },
+    "serve-access-store-20261109": {
+      "index_sha256": "1317465c9ea09a30a48d42ba2a68bf623ad6e372035b36400874caa9ccd5cb7d",
+      "files": 18
+    },
+    "serve-access-native-20261109": {
+      "index_sha256": "18e352dd02b5a0373c0727f78d37aff721db1b69671adc03539f91eaea16cc74",
+      "files": 16
+    },
+    "serve-access-io-20261109": {
+      "index_sha256": "80a81b47e21b2c4d06e4a90f967334ce3ab02a452ac6da00ac24df53578e4389",
+      "files": 8
+    },
+    "serve-access-managed-20261109": {
+      "index_sha256": "79883b7ff6e3e23dc33a896f98afd911b98d06ef2dbbe8a79334756c0aa62b67",
+      "files": 20
+    },
+    "serve-client-policy-20261109": {
+      "index_sha256": "f6f87822211e9e0f2b6231f221d502db9da1bd91e0404f8d4faed9759df74222",
+      "files": 14
+    },
+    "serve-limits-store-20261109": {
+      "index_sha256": "cd00f356fd1c9fa547896b9346531df5be865ecc96055325970526fd05db7b87",
+      "files": 18
+    },
+    "serve-policy-admin-20261109": {
+      "index_sha256": "f0eec8d4ff72e9755cb2d25d83eeba8b4ba0116d2ef0b5ee1dbfd264818c2dcd",
+      "files": 24
+    },
+    "serve-policy-runtime-20261109": {
+      "index_sha256": "68e56f0e822ad69f062428a76347f27a1dbc849ce25d8728cdff1e7c5dd1b615",
+      "files": 17
+    },
+    "serve-policy-coordination-20261109": {
+      "index_sha256": "1fec149a73fa04ede3bb90d7e5286a965dabf2e4fe244aac30dbd90522091d4d",
+      "files": 9
+    },
+    "serve-usage-primitive-20261109": {
+      "index_sha256": "91facc011ca983ce83eaf6c5e4a63da347f2960946d1b57509420e11a09efef9",
+      "files": 15
+    },
+    "serve-usage-store-20261109": {
+      "index_sha256": "31e43408fdfdf2c0753c6e2c2b0f325fd8adc4c251cdefe968dcfbf728edc029",
+      "files": 14
+    },
+    "serve-usage-runtime-20261109": {
+      "index_sha256": "804fba526aefb07b8b09bb4b7989a1cf3854e26cbeff09fb11975bbbb00645e6",
+      "files": 16
+    },
+    "serve-usage-management-20261109": {
+      "index_sha256": "3d91dced47ff7921673eb1a0c06f04278a8dd3ce5be242546eb40a778bc0533b",
+      "files": 14
+    },
+    "serve-deployment-20261109": {
+      "index_sha256": "c4f621e9d92673077417b78336ac9503539ea4daf3ee57a715ff50ae89a7fba1",
+      "files": 15
+    },
+    "serve-initialization-20261109": {
+      "index_sha256": "5b0d1df5acc7a8c337c59c3eae9e5be80535704dbda7b0b54de083abcb2e8746",
+      "files": 10
+    },
+    "serve-access-driver-20261109": {
+      "index_sha256": "94c5bbffd166d6f16a7083732024e82395018542954171600ad29e82f126875d",
+      "files": 15
+    },
+    "serve-access-driver-fix-20261109": {
+      "index_sha256": "e12e72c25e9d80cd2ec8b1713c661cb22fe7fc076779f27003ff6dddceb98f02",
+      "files": 33
+    },
+    "serve-access-config-fix-20261109": {
+      "index_sha256": "beb9b7f23295c73b7ba4e796b46ec1cce3008ade6a0004c1845e9be5613e72ee",
+      "files": 37
+    },
+    "serve-access-checkpoint-20261109": {
+      "index_sha256": "f8b8381d67954a1ce98bb5cc04654ed36482eda9eb578f73171ccd71d038d599",
+      "files": 98
+    },
+    "serve-access-business-20261109": {
+      "index_sha256": "5e4b9a77570149de38bbc3ee1482dd4b61d7b254768fab6139f0b23a4330932a",
+      "files": 51
+    },
+    "serve-native-observation-delivery-20261109": {
+      "index_sha256": "7b61349e5f61625d6c421a605b3e14acbbdac34b4e2fd207b8a4164c45e877ad",
+      "files": 79
+    },
+    "serve-cache-progress-delivery-20261109": {
+      "index_sha256": "f588c40f73662a03ed21779dbf0ad07bdd73dcc4ba81bfbca94255dd6fda3eb4",
+      "files": 36
+    }
+  },
+  "defaults": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+      "sha256": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json",
+      "sha256": "f44634f5235c9555a06c20e57fbe86d1606f57ba7b4095e875b2d71ba31b38fc"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/service.release.json",
+      "sha256": "29125ad9dcccd87105e8bbad2670876f66641f03f8d217007ea6dcd56a42849d"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/service-native-state/service.json",
+      "sha256": "6b0d8964d396fd78a5f9f1c6d5bbb8a4a6e9347207c3a901fe4d653545ae97d0"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json",
+      "sha256": "2216b9dcd4d0e9753fb41b8698a15055001c2446ac52b5a52e3d2f757b0c884c"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-observation-20261109/release-02/bundle/manifest.json",
+      "sha256": "b7c2510799d7433208f0f3135f8f38733d20e849a820db5649406d74835ae939"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-observation-20261109/release-02/bundle/gateway-policy.json",
+      "sha256": "313d3a8acceb3a40f73d6d509f77a98e9cec7218919bf272e8d48ea2484500b8"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-observation-20261109/release-02/bundle/engine/client-policy.json",
+      "sha256": "3b60e1c1f02ca309f04d28f77dc63cddfe9e813b15004147387668d8949edd22"
+    }
+  ],
+  "accepted_candidate": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/business-01/bundle",
+  "runtime_sources_identical_to_business": true,
+  "actual_configuration_provenance": "Unmodified actual native TLS N04 observation; initial alpha then appended beta. Default preserves prior two-client policy and plain loopback listener; corresponding CPU/previous listener evidence is reused. Neither profile is relabeled as the other.",
+  "rollback_scope": "Compatible retained v8 package with identical accepted code, not downgrade to legacy v6; R06 automatic older-version rollback remains a separate required task."
+}

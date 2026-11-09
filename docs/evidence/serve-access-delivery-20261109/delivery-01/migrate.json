@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/release-01/rollback-bundle/bin/q4t",
+    "service",
+    "deploy",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+    "--expected-manifest-sha256",
+    "b7c2510799d7433208f0f3135f8f38733d20e849a820db5649406d74835ae939",
+    "--request-id",
+    "cc9f9044-f174-4e28-9934-18872bb853a2"
+  ],
+  "exit_code": 0,
+  "model_starts": 0,
+  "chat_requests": 0
+}

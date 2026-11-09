@@ -3,7 +3,13 @@
 2026-11-09。R04/N06已默认交付后继续总计划。本组是功能和可靠性
 交付，围绕受影响合同验证，不运行完整性能/全模型正确性矩阵。
 
-当前实现：原生入口认证Bearer，再向核心传递受私有代次凭据保护的
+当前已默认交付原生v8包`61a6b2e3`、引擎`c344d22f`，状态保持STOPPED。
+[真实业务](evidence/serve-access-business-20261109/README.md)与
+[随包CLI/默认及兼容回退交付](evidence/serve-access-delivery-20261109/README.md)
+分别记录；N04已交付，全部总计划继续。以下保留实施起点、分组合同
+和验证过程；当前操作入口见文末。
+
+实施起点：原生入口认证Bearer，再向核心传递受私有代次凭据保护的
 client_id；取消、缓存、对象、会话和公平队列已按这个稳定身份隔离。
 API Key和backend策略随包固定。分钟额度保存在模型进程内，Guardian
 在后继模型接单前保守等待60秒，避免重启提供免费额度；这不等于
@@ -263,3 +269,69 @@ limits文件失能、存储对象身份隔离。正常sealed停止后切包精�
 剩余3启动/16Chat不含已有1/1，累计上限4启动/17Chat/1探针，
 GPU累计时间仍1200秒；原引擎/控制器/入口候选不改，正式发行须
 携带修正schema。全部业务通过后才可接受，默认和总目标保持。
+
+## 操作入口
+
+默认已初始化在`build/service-native-state`，不要重新init这个目录。
+`build/service/bin/q4t service`是原生托管入口，所有修改由本机文件
+权限保护，不通过公开HTTP暴露管理Key。首次配置新目录可用init；
+中断恢复用init-resume，已经发布的策略不会从发行包重置。
+
+```bash
+./build/service/bin/q4t service access-status --state build/service-native-state
+./build/service/bin/q4t service limits-status --state build/service-native-state
+./build/service/bin/q4t service usage-status --state build/service-native-state
+./build/service/bin/q4t service deployment-status --state build/service-native-state
+```
+
+密钥输入为私有JSON，形如`{"version":1,"clients":[{"id":"alpha",
+"api_keys":["替换为32至128位有效随机Key"]}]}`；须提供完整现有身份列表，
+包括beta等其他已配置身份。Key只允许字母、数字、下划线和连字符；
+文件权限0600，父目录0700。重叠轮换先保留新旧两个Key，确认新Key
+生效后再提交仅含新Key的列表；空api_keys撤销该身份全部Key，但不
+移除身份或释放在途请求租约。旧Key指纹不能转授另一身份。
+
+```bash
+./build/service/bin/q4t service access-propose \
+  --state build/service-native-state \
+  --keys .q4t-work/private-access/keys.json \
+  --proposal .q4t-work/private-access/proposal.json
+./build/service/bin/q4t service access-apply \
+  --state build/service-native-state \
+  --proposal .q4t-work/private-access/proposal.json --wait-seconds 3
+```
+
+propose产生UUID和预期revision；用同一提案重试apply可识别未知提交，
+不要在超时后直接换新提案重置意图。`durable=true`只表示已持久提交；
+`live_applied=true`才表示实际入口或模型已确认。在STOPPED状态下
+live_applied为false是预期行为；下次启动必须读取当前持久策略。
+
+限额同样使用limits-propose的`--limits`和limits-apply。输入为
+`version:1`与完整clients数组，字段与backend-policy中的clients
+一致：max_inflight、max_control_inflight、max_prompt_tokens、
+max_output_tokens、max_body_bytes、requests_per_minute、tokens_per_minute。
+新身份先提交限额、等模型实际安装，再提交Key；已有身份的Key撤销
+不依赖限额文件可读。限额降低不取消已有请求，关闭再开启不清空
+用量。客户端槽位和全局容量必须匹配；当前默认全局排队槽为2，
+更多容量的配置入口继续N07任务，不能靠复用或删除身份绕过容量。
+
+`/v1/config.client_policy`是不可变启动绑定，current_client_policy
+才是当前原子策略。usage-status把持久交接源、实际原生确认与
+continuity分别报告：正常已封存的相邻代次可exact恢复；崩溃、
+未知提交或跨boot走保守窗口，不能把旧sealed或零用量假当实时值。
+文件失能不重启健康模型，也不会回退已撤销Key。
+
+升级/回退必须先持久STOPPED，由目标包自己的`bin/q4t service
+deploy|rollback`执行，携带`--state`、`--expected-manifest-sha256`
+及固定UUID的`--request-id`；中断续接同UUID。操作不自动启动模型，
+也不重建当前Key、限额、用量或核心预算。默认发行的兼容回退包与
+默认入口/发布记录的恢复步骤在`build/service.release.json`指向的
+rollback_receipt中；不能直接拷回旧service.json或任何journal。
+当前兼容副本为相同已接受v8代码；自动旧代码回退继续R06，通用默认
+入口发布编排继续N07。旧v6仅留作历史证据，迁移后被核心格式封锁。
+
+本组真实短验累计4启动/15Chat/1探针/304.474秒，287次NVML全OK。
+因保留失败并从交接点续验，原分钟已自然到期；真实模型记录合法
+新窗口200，未到期429合同复用同一C++实现的真实进程CPU证据。
+20条实际随包CPU操作及默认停止状态健康检查通过；安装0模型/Chat。
+长期实跑由用户负责；视觉候选与其余OpenAI/原生接入/恢复任务继续。

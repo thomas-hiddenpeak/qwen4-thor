@@ -1,0 +1,1 @@
+{"proposed": true, "request_id": "f68496f6-5fc3-4ffa-9e3f-fa7b2aa31860", "expected_revision": 0, "candidate": {"configured": true, "revision": 1, "sha256": "e32b98f7faab9413cfe39a3b7ca1fc8f53f211b2d616329fedcf52098c7f8bf2", "clients": 2, "fair_queue": true, "quota_clients": 2, "credential_values_redacted": true}, "committed": false, "live_applied": false}

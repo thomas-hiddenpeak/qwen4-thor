@@ -414,7 +414,7 @@
     {
       "id": "N04",
       "required": true,
-      "state": "implementation_in_progress",
+      "state": "delivered",
       "implementation": "原生密钥轮换/撤销、策略更新、客户端配额与隔离",
       "acceptance": "新旧Key切换、取消/缓存/会话身份不串用，重启不绕过配额；不依赖外部网关私有头建立用户身份",
       "depends_on": [
@@ -440,15 +440,21 @@
         "evidence/serve-access-driver-20261109/decision.json",
         "evidence/serve-access-config-fix-20261109/decision.json",
         "evidence/serve-access-checkpoint-20261109/decision.json",
-        "evidence/serve-access-business-20261109/decision.json"
+        "evidence/serve-access-business-20261109/decision.json",
+        "evidence/serve-access-delivery-20261109/decision.json"
       ],
-      "release": null,
+      "release": {
+        "manifest_sha256": "61a6b2e3a1e134f8a310ddde51a78014a376afed1934d17f4b72926ec3ba4473",
+        "release_sha256": "816114b3e0cd590ae81d6d66dbf21a4c1d50c321fec13ed085dfdb0be0579b55",
+        "engine_sha256": "c344d22ff3befc4464259a020f69ab5ea83efbbf6916e1120ec47faa626b5ad3",
+        "engine_release_sha256": "4c5d11a117fa9b20dc7321878a7833330f6dc492a39109df8cc41fe8c88fe1dd",
+        "rollback_sha256": "ed673b326bb9e40c81b93478fd6c7d0b06a80af94d9381f1e403087fa07975ff",
+        "state": "STOPPED",
+        "merged_main": false
+      },
       "plan": "SERVE_ACCESS_CONTROL_2026-11-09.md",
-      "remaining": [
-        "accepted standalone package CLI and current schema declarations",
-        "compatible rollback package and default delivery"
-      ],
-      "development_status": "真实TLS/SDK/密钥/配额/辅助失能/精确与未知恢复/兼容回退组合通过；累计4启动/15Chat/1探针，默认仍v6。继续接受CLI/回退包与默认交付，N04未完成。"
+      "remaining": [],
+      "development_status": "已完成实际TLS/SDK/工具/辅助失能/密钥与配额/交接及兼容回退，20条接受CLI和停止状态交付检查通过。继续全部总计划。"
     },
     {
       "id": "N05",
@@ -516,6 +522,11 @@
           "evidence": "evidence/serve-conversation-service-20261109/cpu-startup-lease-01/result.json",
           "delivery_evidence": "evidence/serve-application-delivery-20261109/README.md"
         }
+      ],
+      "remaining": [
+        "Native CLI lifecycle and configurable global/client capacity profiles",
+        "Default entry and publication metadata switching transaction integrated with managed deployment",
+        "All other original N07 acceptance conditions"
       ]
     },
     {
@@ -782,6 +793,6 @@
       "release": null
     }
   ],
-  "next_task": "N04",
-  "next": "Native key rotation/revocation, policy updates and quota continuity, then all remaining master tasks."
+  "next_task": "N05",
+  "next": "Native HTTP keep-alive/framing/uploads/trusted proxy/prefix, then N07 and all remaining master tasks; N04 delivered, total goal remains active."
 }
