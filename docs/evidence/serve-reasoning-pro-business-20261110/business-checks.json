@@ -1,0 +1,13 @@
+{
+  "external_requests": 9,
+  "actual_model_steps": 17,
+  "actual_tool_executions": 1,
+  "json_sse_background": true,
+  "original_input_and_sse": true,
+  "summary_encryption_compaction_combination": true,
+  "exact_shared_budget_and_client_accounting": true,
+  "tiny_incomplete_no_answer": true,
+  "prewarm_no_deliberation": true,
+  "default_unchanged": true,
+  "performance_claim": false
+}

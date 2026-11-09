@@ -1,0 +1,10 @@
+{
+  "status": "PASS_RESPONSES_PRO_BUSINESS",
+  "counts": {
+    "starts": 2,
+    "chats": 9,
+    "controls": 85
+  },
+  "seconds": 129.20126201352105,
+  "binary_sha256": "943f8e01cb50ca562744080098ac4016a65c8fa4f6aa58116518df5d586d5dd3"
+}
