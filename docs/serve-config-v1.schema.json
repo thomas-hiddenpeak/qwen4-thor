@@ -1531,6 +1531,12 @@
         "controller_recoveries": {
           "type": "integer",
           "minimum": 0
+        },
+        "key_admin_ready": {
+          "type": "boolean"
+        },
+        "key_admin_readiness_dependency": {
+          "const": false
         }
       },
       "required": [
@@ -1538,7 +1544,15 @@
         "pending",
         "workers_started",
         "workers_reaped"
-      ]
+      ],
+      "dependentRequired": {
+        "key_admin_ready": [
+          "key_admin_readiness_dependency"
+        ],
+        "key_admin_readiness_dependency": [
+          "key_admin_ready"
+        ]
+      }
     },
     "responses_background": {
       "type": "object",

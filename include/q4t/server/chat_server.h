@@ -1,9 +1,8 @@
 // OpenAI-compatible HTTP server for q4t (Phase 1 `serve` command).
 //
-// A minimal, dependency-free HTTP/1.1 server built on POSIX sockets. It serves
-// bounded routes: /healthz, /livez, /readyz, /metrics, /v1/models,
-// /v1/capabilities, /v1/config, /v1/chat/preflight, /v1/chat/completions,
-// and /v1/requests/cancel. Preflight/config are private protocol extensions.
+// Native HTTP/1.1 on POSIX sockets: Chat, Completions, Responses, Conversations
+// and operational routes. Optional crypto/schema/media dependencies are scoped
+// to the features that use them. Preflight/config are protocol extensions.
 //
 // The model is stateful (per-layer SSM/conv/KV caches persist across decode
 // steps). B1 makes requests concurrent: each client is handled on its own
@@ -41,6 +40,7 @@
 #include "q4t/server/request_control.h"
 #include "q4t/server/progress_transport.h"
 #include "q4t/server/client_policy_admin.h"
+#include "q4t/server/state_key_admin.h"
 #include "q4t/status.h"
 #include "q4t/runtime/memory_budget.h"
 #ifdef Q4T_STARTUP_RESERVATION
@@ -195,6 +195,7 @@ class ChatServer {
   ClientAdmission clients_;
   std::unique_ptr<ClientPolicyAdmin> client_policy_admin_;
   std::unique_ptr<ObjectStore> objects_;
+  std::unique_ptr<StateKeyAdmin> state_key_admin_;
   std::unique_ptr<ResponsesJobs> background_;
   std::mutex connections_mu_;
   std::unordered_set<int> connections_;

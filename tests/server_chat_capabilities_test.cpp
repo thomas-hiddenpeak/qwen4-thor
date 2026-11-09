@@ -281,6 +281,9 @@ Q4T_TEST(chat_capabilities_native_responses_state_and_recovery) {
             encrypted->GetBool("key_persistence") &&
             encrypted->GetBool("rotation") &&
             encrypted->GetBool("store_false") &&
+            encrypted->GetString("key_management") ==
+                "native_cli_same_uid_unix_socket" &&
+            !encrypted->GetBool("key_rotation_model_restart", true) &&
             !encrypted->GetBool("cross_provider_keys", true));
   Q4T_CHECK(responses->GetBool("reasoning_summary") && summary &&
             summary->GetBool("shared_output_budget") &&

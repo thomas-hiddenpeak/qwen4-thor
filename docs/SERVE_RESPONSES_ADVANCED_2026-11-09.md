@@ -105,3 +105,11 @@ A07.3 [16 项密码/持久密钥 CPU](evidence/serve-responses-encryption-crypto
 A07.3 [双端 18 CPU 与 22 个实际协议值](evidence/serve-responses-encryption-protocol-20261109/README.md)通过。密文使用 `q4t1:key_id:nonce:tag:ciphertext` 版本封装，认证整个实际 reasoning item 和来源前缀，并以客户端/canonical model/template/item 作为 AAD。完整前缀/匹配后缀/仅密文回填均可，缺失前缀恢复、冲突拒绝；同客户端重用允许，只恢复上下文，不重放工具。原输入持久项不改，生成 token/容量使用恢复后历史，`instructions` 仍属于新请求。原 Qwen reasoning 明文投影仍可见，不能误称整段输出保密或磁盘加密。
 
 首 canonical shape 错误已修并保留失败；host/引擎零警告、候选 687fc18f，0 GPU。继续原生本机密钥管理、实际官方 SDK/模型业务和交付，不在本阶段结束 A07.3 或总目标。
+
+### A07.3 原生密钥运维接入
+
+新增 `q4t state-keys inspect|initialize|rotate --object-store-dir ABS_DIR`；轮换指定 `--expected-revision N`，退役逐个 `--retire KEY_ID`。在线仅同 UID Unix 对端可操作，不开放给业务 HTTP 客户端、不打印密钥、不重启模型。`--offline` 显式采用同一隔离对象 worker/独占锁；运行服务持有对象锁时拒绝，不自动关闭它。未知回执先 inspect，永不自动重放轮换。管理线程保留固定 2 连接、请求 4KiB/回执 16KiB、2 秒对象操作、1 秒写回；失败只关当前请求并继续同一线程，不增殖或重启模型。
+
+`/v1/config.application_state_health` 增加 `key_admin_ready` 和固定 false 的 `key_admin_readiness_dependency`，保留旧记录兼容。冻结 12 C++/2 schema CPU（真实 Unix/CLI/实际提交丢回执/竞争/空闲/取消/依赖恢复），尚未构建测试。默认保持，之后继续必要实际业务及全部总任务。
+
+A07.3 [原生管理 12 C++/2 schema](evidence/serve-responses-encryption-admin-20261109/README.md)首轮通过，实际引擎 71cb526c 零警告。准备真实 SDK/模型业务与交付，默认不动。管理信任边界是本机服务 UID；A11 的不可信代码执行必须隔离 OS 身份/密钥目录/管理套接字，不能用服务 UID 无隔离执行外来代码。

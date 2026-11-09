@@ -29,6 +29,7 @@
 #include "q4t/server/lifetime.h"
 #include "q4t/server/structured_decoder.h"
 #include "q4t/server/object_store.h"
+#include "q4t/server/state_key_admin.h"
 #include "q4t/server/cache_io.h"
 #include "q4t/service/service_cli.h"
 #include "q4t/text/tokenizer.h"
@@ -60,6 +61,8 @@ void PrintUsage(const char* prog) {
       "            (q4t generate \"prompt\" [--max-tokens N])\n"
       "  service   Manage native service lifecycle and deployment\n"
       "            (q4t service --help)\n"
+      "  state-keys  Inspect/rotate native encrypted-state keys\n"
+      "              (q4t state-keys --help)\n"
       "  serve     OpenAI-compatible HTTP API server\n"
       "            (q4t serve [--host IPv4] [--port N] "
       "[--operations-port N] [--model-dir DIR] "
@@ -894,6 +897,8 @@ int main(int argc, char** argv) {
   if (cache_worker >= 0) return cache_worker;
   const int object_worker = q4t::server::MaybeRunObjectWorker(argc, argv);
   if (object_worker >= 0) return object_worker;
+  const int state_keys = q4t::server::MaybeRunStateKeyCommand(argc, argv);
+  if (state_keys >= 0) return state_keys;
   const int worker = q4t::server::MaybeRunGrammarWorker(argc, argv);
   if (worker >= 0) return worker;
   if (argc < 2) {

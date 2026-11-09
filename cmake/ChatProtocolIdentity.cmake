@@ -23,6 +23,9 @@ set(protocol_inputs
   src/server/native_crypto.cpp
   include/q4t/server/state_cipher.h
   src/server/state_cipher.cpp
+  include/q4t/server/state_key_admin.h
+  src/server/state_key_admin.cpp
+  src/server/state_key_cli.cpp
   include/q4t/server/responses_crypto.h
   src/server/responses_crypto.cpp
   src/server/responses_json.h

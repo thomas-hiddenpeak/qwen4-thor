@@ -54,7 +54,9 @@ void ChatServer::HandleConfig(int fd) {
   const auto value =
       effective_config_.substr(0, effective_config_.size() - 1) +
       R"(,"application_state_health":{"state":")" +
-      detail::JsonEscape(health.state) + '"' + R"(,"pending":)" +
+      detail::JsonEscape(health.state) + '"' + R"(,"key_admin_ready":)" +
+      (state_key_admin_ && state_key_admin_->Alive() ? "true" : "false") +
+      R"(,"key_admin_readiness_dependency":false,"pending":)" +
       std::to_string(health.pending) + R"(,"workers_started":)" +
       std::to_string(health.workers_started) + R"(,"workers_reaped":)" +
       std::to_string(health.workers_reaped) + R"(,"controller_starts":)" +
@@ -81,10 +83,9 @@ void ChatServer::HandleConfig(int fd) {
       std::to_string(jobs.foreground_active) + R"(,"pending":)" +
       std::to_string(jobs.foreground_pending) + R"(,"reconciled":)" +
       std::to_string(jobs.foreground_reconciled) + R"(,"errors":)" +
-      std::to_string(jobs.foreground_errors) +
-      R"(},"cache_io":{"session":)" +
-      CacheIoHealthJson(session_cache_.Health()) +
-      R"(,"prefix":)" + CacheIoHealthJson(prefix_cache_.Health()) + "}}";
+      std::to_string(jobs.foreground_errors) + R"(},"cache_io":{"session":)" +
+      CacheIoHealthJson(session_cache_.Health()) + R"(,"prefix":)" +
+      CacheIoHealthJson(prefix_cache_.Health()) + "}}";
   const auto current = value.substr(0, value.size() - 1) +
       R"(,"current_client_policy":)" +
       DescribeClientPolicy(clients_, admission_limits_.inflight,

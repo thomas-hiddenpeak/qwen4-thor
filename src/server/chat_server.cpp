@@ -37,6 +37,7 @@ namespace q4t::server {
 ChatServer::~ChatServer() {
   // Stop the bounded policy worker before destroying queue/client state.
   client_policy_admin_.reset();
+  state_key_admin_.reset();
   // Start may have succeeded without a subsequent Run. Stop accepting TCP
   // connections before releasing the model, including partial startup state.
   startup_listeners_.Close();
@@ -124,9 +125,11 @@ Status ChatServer::Start(const ServerOptions& opts) {
   ProgressExecution loading_execution(ProgressWork::kLoad);
   const char* state_directory = std::getenv("XDG_STATE_HOME");
   const char* home_directory = std::getenv("HOME");
-  objects_ = std::make_unique<ObjectStore>(
+  const auto object_options =
       ResolveObjectStoreOptions(opts, state_directory ? state_directory : "",
-                                home_directory ? home_directory : ""));
+                                home_directory ? home_directory : "");
+  objects_ = std::make_unique<ObjectStore>(object_options);
+  state_key_admin_ = StateKeyAdmin::Start(*objects_, object_options.directory);
   if (opts.allow_media) {
     const auto status = vision::CheckVisionConfiguration(opts.model_dir);
     if (!status) return status;

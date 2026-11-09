@@ -1,3 +1,7 @@
+A07.3 [原生密钥管理 12 C++/2 schema](evidence/serve-responses-encryption-admin-20261109/README.md)全过，host/实际引擎零警告，候选 71cb526c。在线轮换、真实 CLI、离线锁、实际提交丢回执、依赖/停机保护已验；准备必要真实 SDK/模型短验，再可回退交付及全部余项。默认 A07.2 保持 STOPPED，0 新增 GPU。
+
+A07.3 原生本机密钥管理已成组编码：同 UID Unix 通道、运行中查看/初始化/轮换/退役、显式离线独占、未知回执不重放及观测非停服依赖。冻结 12 C++/2 schema CPU，尚未执行，先必要构建。默认 A07.2 保持，接着真实 SDK/模型与可回退交付，全部总任务继续。
+
 A07.3 [加密双端 18 CPU/22 schema 值](evidence/serve-responses-encryption-protocol-20261109/README.md)通过，首 canonical shape 失败及 10 项补验保留；host/引擎零警告，候选 687fc18f，默认 A07.2 不动。继续原生密钥管理、实际 SDK/模型与发行及全部余项；0 新增 GPU，A07.3 尚未交付。
 
 A07.3 协议首轮 18 CPU 有 9 过/9 失败：认证已成功，恢复前缀为带 ID/status 的原生持久 item，却误用外部 input shape 拒绝。改用 canonical conversation shape，外部输入及模型计划校验保留；冻结 9 失败+1 安全负控补验，原件不覆盖。默认不动，继续管理/真实业务及总任务。

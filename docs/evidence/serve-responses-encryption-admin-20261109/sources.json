@@ -1,0 +1,19 @@
+{
+  "include/q4t/server/state_key_admin.h": "0c91321a24065a605a1c0870fcc04ddf4a7526e965c2de47df74b472bd84ebe1",
+  "src/server/state_key_admin.cpp": "45a7e68b206d1e9af6ca528e0989c9321384c86d71f208de804d6eee00260a76",
+  "src/server/state_key_cli.cpp": "5a9852a71edbbd1e27fbdc002204b8d1d5329b098b701750e504b5587dacb811",
+  "tests/server_state_key_admin_test.cpp": "afc8bb28231793c14be3b1df056911416f7091bb1f8506b24f4ee290ef085d71",
+  "tools/serve_responses/test_key_admin_contract.py": "2564507fd6f4468631400a976915f1ca994083c048238e686eca9c7a66b5b418",
+  "include/q4t/server/chat_server.h": "53e78a0bdef7930a353a52c3c2d98ed0eda7667a53827069edd1c9fa05f0040d",
+  "src/server/chat_server.cpp": "b6165f12cc47196a677ce0deed528a6bab2ea64ffc4691ca9f1c3c7a932dbd7e",
+  "src/server/chat_preflight.cpp": "df89d2fa6ed82beb2aca2e636659ef255072f2bcd1aeeb97fe6d249103ee28c0",
+  "src/server/chat_capabilities.cpp": "5c62544a4ff2e36c1ad8575c1efade9abbe881f74ee0a5eabbabc5b8dd79ea81",
+  "src/main.cpp": "10e2ad159002f2a28fa697a1cbac07e45c95b84f612ec711b9cc00b2338e6516",
+  "tests/test_main.cpp": "639202ad4b01411a943d25b24d4ef9b1f1aa6acf6adbaeb2501b3646c1ea4bb5",
+  "tests/server_chat_capabilities_test.cpp": "281a53e9e4c59ccba24d958d608b9a9ce573ad14c37282ba4f140a3869d39cd3",
+  "CMakeLists.txt": "fcffc5d15384f63b6ce63ce4e7760206d9629be5c40e5c8f75f2a1f600336ee4",
+  "cmake/HostTestSources.cmake": "9db884983770eb294fc9f956a4eb026e162f2e1f5ca3f2d1dd0b295d42a360e0",
+  "cmake/ChatProtocolIdentity.cmake": "e12f3f333691c67bec96324e2c1a8b40e9da5f90e6155b8629590b667e791a21",
+  "docs/serve-config-v1.schema.json": "df6c09d94f4fa45df24d84227ab7d2032e71097278241d6991f0d3a74dadc20d",
+  "docs/serve-openapi-bundle-v1.json": "e14891823e2244068f97b88d67bf10ec93ec33181e4be2685de5ab63ce92f46a"
+}

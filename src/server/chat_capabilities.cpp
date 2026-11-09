@@ -58,6 +58,8 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("scope":"authenticated_client_and_canonical_model_template",)"
          R"("origin_prefix":"authenticated_restore_or_matching_suffix",)"
          R"("key_persistence":true,"rotation":true,"store_false":true,)"
+         R"("key_management":"native_cli_same_uid_unix_socket",)"
+         R"("key_rotation_model_restart":false,)"
          R"("plaintext_projection":"still_available","cross_provider_keys":false},)"
          R"("summary":{"modes":["concise","detailed","auto"],)"
          R"("executor":"native_model_step","source":"actual_reasoning",)"

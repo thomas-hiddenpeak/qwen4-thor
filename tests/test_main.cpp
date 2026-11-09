@@ -14,6 +14,7 @@
 
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
 #include "q4t/server/object_store.h"
+#include "q4t/server/state_key_admin.h"
 int CacheIoFixture(int argc, char** argv);
 int GrammarProcessFixture(int argc, char** argv);
 int ConversationApiFixture(int argc, char** argv);
@@ -35,6 +36,8 @@ int main(int argc, char** argv) {
   if (cache_fixture >= 0) return cache_fixture;
   const int object_worker = q4t::server::MaybeRunObjectWorker(argc, argv);
   if (object_worker >= 0) return object_worker;
+  const int state_keys = q4t::server::MaybeRunStateKeyCommand(argc, argv);
+  if (state_keys >= 0) return state_keys;
   const int fixture = GrammarProcessFixture(argc, argv);
   if (fixture >= 0) return fixture;
   const int conversation = ConversationApiFixture(argc, argv);

@@ -211,7 +211,8 @@
         "evidence/serve-responses-summary-business-20261109/README.md",
         "evidence/serve-responses-summary-delivery-20261109/README.md",
         "evidence/serve-responses-encryption-crypto-20261109/README.md",
-        "evidence/serve-responses-encryption-protocol-20261109/README.md"
+        "evidence/serve-responses-encryption-protocol-20261109/README.md",
+        "evidence/serve-responses-encryption-admin-20261109/README.md"
       ],
       "release": {
         "engine_binary_sha256": "8b4899cd268c42a624742b1603f5228dcf9eec08dc5ed4119c2ef78d11840b08",
@@ -315,8 +316,11 @@
         "protocol_cpu_tests": 18,
         "schema_values": 22,
         "protocol_evidence": "evidence/serve-responses-encryption-protocol-20261109/README.md",
-        "candidate_engine_sha256": "687fc18fd3b0ebf03ade36385a112269dbd1f6b0d2be2fa2c020f90b9ec498b4",
-        "business_validated": false
+        "candidate_engine_sha256": "71cb526c8ffe42eed60f1bcfb4185969432b2155ef0f8225f4aa97ec35e0e99a",
+        "business_validated": false,
+        "admin_cpu_checks": 14,
+        "admin_evidence": "evidence/serve-responses-encryption-admin-20261109/README.md",
+        "current_work": "bounded actual SDK/model business and rollback-compatible delivery"
       }
     },
     {
@@ -415,7 +419,10 @@
         "A09"
       ],
       "evidence": [],
-      "release": null
+      "release": null,
+      "security_requirements": [
+        "Untrusted code execution must isolate the service OS UID, private object/key directory and same-UID state-key admin socket; do not run arbitrary client code under the serving UID without isolation."
+      ]
     },
     {
       "id": "A12",

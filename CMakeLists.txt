@@ -259,7 +259,7 @@ add_library(q4t_runtime STATIC src/runtime/memory_budget.cpp
 target_include_directories(q4t_runtime PUBLIC include)
 
 # ---------------------------------------------------------------------------
-# q4t_server — OpenAI-compatible HTTP server (POSIX sockets, no deps)
+# q4t_server — native HTTP/application server with isolated optional backends
 # ---------------------------------------------------------------------------
 include(cmake/ChatProtocolIdentity.cmake)
 add_library(q4t_server STATIC src/server/chat_server.cpp
@@ -348,7 +348,8 @@ target_include_directories(q4t_server PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
 q4t_link_structured_output(q4t_server)
 include(cmake/NativeCrypto.cmake)
 target_sources(q4t_server PRIVATE src/server/native_crypto.cpp
-  src/server/state_cipher.cpp src/server/responses_crypto.cpp)
+  src/server/state_cipher.cpp src/server/responses_crypto.cpp
+  src/server/state_key_admin.cpp src/server/state_key_cli.cpp)
 q4t_link_native_crypto(q4t_server)
 option(Q4T_SERVE_FAULT_INJECTION "Validation-only serving fault hooks" OFF)
 if(Q4T_SERVE_FAULT_INJECTION)
