@@ -1,3 +1,9 @@
+A07.4 [15 个基础/回填 CPU](evidence/serve-compaction-foundation-20261109/README.md)最终通过，首公开消息 ID 转换失败与 2 项补验保留；host 零警告，0 GPU。基础不等于压缩功能交付，继续真实模型步骤、预算/配额、自动阈值/compact 路由与 SSE/持久化，然后所有余项。默认 A07.3 dca3b450/STOPPED 不变。
+
+A07.4 基础 host 构建已零警告（首缺括号失败保留）；继续接入 compaction 与 reasoning 混合认证历史、可省略 ID 回填。12 项直接 CPU 已写未执行，模型压缩执行/自动阈值/compact 路由/SSE/持久化仍在成组开发，默认 A07.3 保持，不结束总目标。
+
+A07.4 继续成组开发：历史/工具/媒体保留分区、实际记忆请求和认证压缩状态已编码，10 项直接 CPU 已写但未执行；先必要 host 构建。随后接入真实模型步骤、预算/计量、自动/独立 compact 与 SSE/持久化，再统一针对验收。默认 A07.3 dca3b450 保持 STOPPED，全部总任务继续。
+
 # 当前 Serve 总目标状态（2026-11-09）
 
 A07.3 已完成[真实加密状态业务](evidence/serve-responses-encryption-business-20261109/README.md)并[可回退默认交付](evidence/serve-responses-encryption-delivery-20261109/README.md)。当前引擎 `71cb526c`、元数据 `2081e08a`、原生包 `dca3b450`，publication revision14，STOPPED；旧 A07.2 包/发布代和核心/客户端账本完整保留。密码/协议/本机管理针对 CPU 通过；真实 2 启动/8 请求/8 内部步/102.244 秒通过，97 NVML 全 OK，清理独立确认。

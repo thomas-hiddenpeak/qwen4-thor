@@ -28,6 +28,8 @@ set(protocol_inputs
   src/server/state_key_cli.cpp
   include/q4t/server/responses_crypto.h
   src/server/responses_crypto.cpp
+  include/q4t/server/responses_compaction.h
+  src/server/responses_compaction.cpp
   src/server/responses_json.h
   include/q4t/model/sequence.h
   include/q4t/runtime/model_health.h

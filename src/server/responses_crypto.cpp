@@ -5,6 +5,7 @@
 
 #include "object_protocol.h"
 #include "q4t/server/chat_protocol_identity.h"
+#include "q4t/server/responses_compaction.h"
 #include "q4t/server/responses_item_shape.h"
 #include "q4t/server/schema_graph.h"
 
@@ -91,6 +92,18 @@ ObjectReply OpenResponsesReasoning(StateCipher& cipher, const Json& history,
     auto active = Active(access);
     if (!active.ok()) return At(std::move(active), i);
     const auto& incoming = history.array[i];
+    if (incoming.GetString("type") == "compaction") {
+      Json compacted;
+      auto opened = OpenResponsesCompaction(cipher, result, incoming, config,
+                                            access, &compacted);
+      if (!opened.ok()) return At(std::move(opened), i);
+      if (compacted.array.size() + history.array.size() - i - 1 > 4096)
+        return At(Error(400, "input_limit_exceeded",
+                        "Restored compaction context exceeds 4096 items"),
+                  i);
+      result = std::move(compacted);
+      continue;
+    }
     if (incoming.GetString("type") != "reasoning" ||
         !Nonnull(incoming, "encrypted_content")) {
       result.array.push_back(incoming);
@@ -176,8 +189,12 @@ ObjectReply SealResponsesReasoning(StateCipher& cipher,
     return Error(500, "response_state_invalid", "Invalid reasoning to seal");
   auto prefix = generation_history;
   for (auto& item : prefix.array) Remove(&item, {"encrypted_content"});
-  for (size_t i = 0; i < index; ++i)
-    prefix.array.push_back(PlainItem(output.array[i]));
+  for (size_t i = 0; i < index; ++i) {
+    // The execution owner already supplies the measured compacted history.
+    // Do not embed an opaque compaction item again in a reasoning prefix.
+    if (output.array[i].GetString("type") != "compaction")
+      prefix.array.push_back(PlainItem(output.array[i]));
+  }
   if (prefix.array.size() >= 4096)
     return Error(400, "input_limit_exceeded",
                  "Reasoning context exceeds 4096 items");

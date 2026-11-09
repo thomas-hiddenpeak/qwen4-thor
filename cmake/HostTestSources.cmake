@@ -9,6 +9,8 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_state_key_admin_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_crypto.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_crypto_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_compaction.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_compaction_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_native_crypto_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_state_cipher_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/model_catalog.cpp

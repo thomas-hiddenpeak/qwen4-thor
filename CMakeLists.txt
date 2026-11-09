@@ -349,6 +349,7 @@ q4t_link_structured_output(q4t_server)
 include(cmake/NativeCrypto.cmake)
 target_sources(q4t_server PRIVATE src/server/native_crypto.cpp
   src/server/state_cipher.cpp src/server/responses_crypto.cpp
+  src/server/responses_compaction.cpp
   src/server/state_key_admin.cpp src/server/state_key_cli.cpp)
 q4t_link_native_crypto(q4t_server)
 option(Q4T_SERVE_FAULT_INJECTION "Validation-only serving fault hooks" OFF)

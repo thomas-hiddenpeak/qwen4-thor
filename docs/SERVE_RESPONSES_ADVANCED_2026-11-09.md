@@ -117,3 +117,18 @@ A07.3 [原生管理 12 C++/2 schema](evidence/serve-responses-encryption-admin-2
 A07.3 [真实业务通过](evidence/serve-responses-encryption-business-20261109/README.md)：2 启动/8 请求/8 内部步/102.244 秒，97 NVML 全 OK；密文无状态续聊、在线换钥/旧 key 保留、文档工具、后台原事件/重启、退役拒绝与同 PID Chat 已验。候选 71cb526c，继续可回退交付后 A07.4 与全部任务。
 
 A07.3 [可回退默认交付完成](evidence/serve-responses-encryption-delivery-20261109/README.md)：引擎 71cb526c、原生包 dca3b450、revision14，STOPPED。8 实际操作首轮通过，旧 A07.2 与核心/客户端账本保持。继续 A07.4 实际压缩、回填与独立 compact 接口及全部余项。
+
+### A07.4 实际上下文压缩：执行设计与基础开发
+
+重新读取[官方压缩指南](https://developers.openai.com/api/docs/guides/compaction)，并核对固定 JS SDK 7.47.0 的 CompactedResponse、ResponseCompactParams、compaction item 与事件。自动模式按真实渲染 token 阈值触发；独立 `/v1/responses/compact` 返回下一窗口，客户端可原样回填。输入 compaction 的 id 可省略，不能误用随机新 ID 使本服务状态无法认证。
+
+本地实现分同一任务内的连续部分：
+
+1. 原生历史分区与认证状态：保留 system/developer、当前自动模式 user turn、媒体和未完成工具依赖；standalone 保留用户消息。并行 call/result 合并区间保护，不将待执行工具摘要成已执行。来源完整语义指纹和保留窗口进入认证边界；密文只携带实际记忆与保留项，不暗藏整个原历史抵消压缩。允许原历史、返回保留窗口或省略前缀回填，冲突拒绝。
+2. 真正模型步骤与容量：在同一外部请求内调用本机模型生成记忆，禁止工具执行；通过实际 tokenizer/媒体展开确认压缩窗口与后续容量，失败不发布成功压缩，不循环重试求收益。原始持久 input_items/Conversations 保持，只有生成窗口使用压缩结果。无可压缩项按 no-op 记录，不编造模型工作/摘要。
+3. 自动模式与完整协议：context_management/compact_threshold、末尾 compaction_trigger、必要 SSE compacting/item 生命周期、后台/取消/重启、额外输入输出/RPM/TPM、原生 compact 路由及官方 SDK，全部接通后进入功能交付。standalone 无 stream/store 参数，不偷换为普通生成请求。缓存选项按 A07.6 同时保留未解决任务，不伪称此处已完成。
+4. 针对性验证/发行：直接 CPU 覆盖分区、认证、配额/预算/终态/路由与持久历史；实际 SDK/模型验证压缩后重要事实/工具继续、实际 token 缩减与错误隔离。复用未变基础，不跑完整性能/全模型质量。通过后可回退默认交付，再继续 A07.5 及全部余项。
+
+当前只完成分区/模型记忆请求和认证状态基础源码，写入 10 项直接 CPU，尚未执行。封装 `q4tc1:item_id:q4t1:...` 中 ID 受内层认证；用途绑定与 reasoning 分离。系统角色不被生成的记忆替代；记忆回填为 assistant 数据。压缩模型执行、计量和公开协议尚在继续，不修改 capability 为已支持。默认 A07.3 dca3b450/STOPPED 保持。
+
+A07.4 [15 项基础/回填 CPU](evidence/serve-compaction-foundation-20261109/README.md)最终通过，首公开消息 ID 形状缺口及 2 项补验保留。host 零警告，0 GPU；原生压缩模型步骤、共享预算/计量、自动阈值/compact 路由/SSE/持久化尚在继续，默认未变，不能把基础当功能交付。

@@ -149,7 +149,8 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
   const bool encrypted_input =
       std::any_of(plan_.history.array.begin(), plan_.history.array.end(),
                   [](const auto& item) {
-                    return item.GetString("type") == "reasoning" &&
+                    return (item.GetString("type") == "reasoning" ||
+                            item.GetString("type") == "compaction") &&
                            Nonnull(item, "encrypted_content");
                   });
   const bool encrypted_state = envelope_.encrypted_reasoning || encrypted_input;

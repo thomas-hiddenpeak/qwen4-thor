@@ -6,6 +6,7 @@
 
 #include "object_protocol.h"
 #include "q4t/server/http_response.h"
+#include "q4t/server/responses_compaction.h"
 #include "q4t/server/responses_item_shape.h"
 #include "q4t/server/responses_owner.h"
 #include "q4t/server/schema_graph.h"
@@ -189,7 +190,13 @@ ObjectReply ResponsesState::ResolveItems(const Json& input,
     } else {
       CanonicalItem(&item);
       if (!Nonnull(item, "id")) {
-        auto id = NewObjectId(ObjectKind::kConversationItem);
+        auto id =
+            item.GetString("type") == "compaction"
+                ? ResponsesCompactionId(item.GetString("encrypted_content"))
+                : NewObjectId(ObjectKind::kConversationItem);
+        if (id.empty() && item.GetString("type") == "compaction")
+          return Error(400, "invalid_encrypted_content",
+                       "Invalid authenticated compaction identity");
         if (id.empty()) return StateError("Input item identity unavailable");
         Set(&item, "id", String(std::move(id)));
       }
