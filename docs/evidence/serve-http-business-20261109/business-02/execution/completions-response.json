@@ -1,0 +1,19 @@
+{
+  "id": "cmpl-auto-4df6268ddd412b2343d3921b85c877ae",
+  "object": "text_completion",
+  "created": 1794215520,
+  "model": "qwen3.8-flash-next",
+  "choices": [
+    {
+      "index": 0,
+      "text": "42",
+      "finish_reason": "stop",
+      "logprobs": null
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 27,
+    "completion_tokens": 3,
+    "total_tokens": 30
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "counts": {
+    "starts": 2,
+    "chats": 12,
+    "probes": 0,
+    "controls": 333
+  },
+  "events": [
+    {
+      "kind": "starts",
+      "label": "controller-1",
+      "ordinal": 2,
+      "monotonic_ns": 2405555379845788
+    },
+    {
+      "kind": "chats",
+      "label": "generation-self-check-1",
+      "ordinal": 6,
+      "monotonic_ns": 2405594675094472
+    },
+    {
+      "kind": "chats",
+      "label": "official-sdk",
+      "ordinal": 7,
+      "monotonic_ns": 2405596878819446
+    },
+    {
+      "kind": "chats",
+      "label": "tool",
+      "ordinal": 8,
+      "monotonic_ns": 2405597468476894
+    },
+    {
+      "kind": "chats",
+      "label": "tool-final",
+      "ordinal": 9,
+      "monotonic_ns": 2405601118866615
+    },
+    {
+      "kind": "chats",
+      "label": "responses",
+      "ordinal": 10,
+      "monotonic_ns": 2405602526163394
+    },
+    {
+      "kind": "chats",
+      "label": "completions",
+      "ordinal": 11,
+      "monotonic_ns": 2405602860555086
+    },
+    {
+      "kind": "chats",
+      "label": "optional-proxy",
+      "ordinal": 12,
+      "monotonic_ns": 2405603189165008
+    }
+  ]
+}

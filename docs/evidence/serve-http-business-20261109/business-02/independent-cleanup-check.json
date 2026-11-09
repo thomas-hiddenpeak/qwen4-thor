@@ -1,0 +1,9 @@
+{
+  "status": "PASS_STOPPED_CLEANUP",
+  "model_owners_gone": true,
+  "ports_released": true,
+  "lock_acquirable": true,
+  "default_unchanged": true,
+  "previous_failure_preserved": true,
+  "new_gpu_operations": 0
+}

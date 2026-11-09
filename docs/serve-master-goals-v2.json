@@ -470,15 +470,17 @@
         "evidence/serve-http-framing-20261109/decision.json",
         "evidence/serve-http-session-20261109/decision.json",
         "evidence/serve-http-proxy-20261109/decision.json",
-        "evidence/serve-http-package-20261109/decision.json"
+        "evidence/serve-http-package-20261109/decision.json",
+        "evidence/serve-http-driver-20261109/decision.json",
+        "evidence/serve-http-prefix-fix-20261109/decision.json",
+        "evidence/serve-http-business-20261109/decision.json"
       ],
       "release": null,
       "plan": "SERVE_HTTP_TRANSPORT_2026-11-09.md",
       "remaining": [
-        "实际模型与SDK短验",
         "可回退默认交付"
       ],
-      "development_status": "Shared framing 28, connection/SSE 54 distinct and proxy/prefix 27 targeted CPU accepted. Native TLS, optional actual CPU proxy and direct paths covered; actual model/SDK package delivery remains."
+      "development_status": "Targeted CPU and actual core/native TLS/SDK/tools/Responses/Completions/optional proxy business passed; initial SDK prefix failure fixed, prior successes reused. Accepted package/default delivery remains."
     },
     {
       "id": "N06",

@@ -1,0 +1,7 @@
+{
+  "status": "PASS_ISOLATED_PACKAGE_VERIFY_FROM_CHECKOUT_PREPARATION",
+  "seconds": 0.5765515109524131,
+  "checks": 1,
+  "gpu_operations": 0,
+  "production_code_changed": false
+}

@@ -1,0 +1,9 @@
+{
+  "status": "PASS_NATIVE_HTTP_TRANSPORT",
+  "actual_proxy": true,
+  "direct_core": true,
+  "native_tls": true,
+  "official_sdk": true,
+  "tools_executed": 1,
+  "model_generations": 1
+}

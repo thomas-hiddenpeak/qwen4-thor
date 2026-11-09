@@ -1,0 +1,12 @@
+data: {"id":"n05-official-sdk","object":"chat.completion.chunk","created":1794215514,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"n05-official-sdk","object":"chat.completion.chunk","created":1794215514,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"4"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"n05-official-sdk","object":"chat.completion.chunk","created":1794215514,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"2"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"n05-official-sdk","object":"chat.completion.chunk","created":1794215514,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+data: {"id":"n05-official-sdk","object":"chat.completion.chunk","created":1794215514,"model":"qwen3.8-flash-next","choices":[],"usage":{"prompt_tokens":27,"completion_tokens":3,"total_tokens":30}}
+
+data: [DONE]
+
