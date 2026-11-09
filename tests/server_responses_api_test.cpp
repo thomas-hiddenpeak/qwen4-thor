@@ -306,6 +306,17 @@ Q4T_TEST(responses_api_replay_uses_original_sequence_and_obfuscation_choice) {
   Q4T_CHECK(replay.wire == wire.substr(first_end));
   Q4T_CHECK(Ok(Read(store, "GET", root + "?stream=true", &replay)));
   Q4T_CHECK(replay.wire.find("\"obfuscation\"") != replay.wire.npos);
+  // Reprojection follows the same delta-only padding contract as live SSE.
+  // Stored original events above must remain byte-identical when unprojected.
+  size_t offset = 0;
+  while ((offset = replay.wire.find("data: ", offset)) != std::string::npos) {
+    offset += 6;
+    const auto end = replay.wire.find("\r\n\r\n", offset);
+    const auto event = Parse(replay.wire.substr(offset, end - offset));
+    Q4T_CHECK(event.Has("obfuscation") ==
+              event.GetString("type").ends_with(".delta"));
+    offset = end + 4;
+  }
   Q4T_CHECK(Ok(Read(
       store, "GET",
       root + "?stream=true&starting_after=" + std::to_string(final), &replay)));

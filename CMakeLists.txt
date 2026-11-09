@@ -275,6 +275,9 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/application_query.cpp
   src/server/conversation_state.cpp
   src/server/conversation_api.cpp
+  src/server/prompt_template.cpp
+  src/server/prompt_registry.cpp
+  src/server/prompt_api.cpp
   src/server/chat_storage.cpp
   src/server/chat_storage_options.cpp
   src/server/responses_item_shape.cpp

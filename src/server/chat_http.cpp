@@ -26,6 +26,7 @@
 #include "q4t/server/request_json.h"
 #include "q4t/server/client_request.h"
 #include "q4t/server/conversation_api.h"
+#include "q4t/server/prompt_registry.h"
 #include "q4t/server/responses_api.h"
 #include "q4t/server/output_schema.h"
 
@@ -345,7 +346,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       if (method == "POST" && !IsResponseCancellation(method, path) &&
           (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
            path == "/v1/completions" || IsResponsesTarget(path) ||
-           IsConversationTarget(path))) {
+           IsConversationTarget(path) || IsPromptTarget(path))) {
         const auto memory = memory_admission_.Observe();
         if (!memory.Allowed()) {
           RecordMemoryRejection(fd, memory.state, MemoryCheckpoint::kHeaders);
@@ -377,7 +378,8 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
     }
     if (IsStoredChatTarget(path) || path == "/v1/chat/preflight" ||
         path == "/v1/completions" || IsResponsesTarget(path) ||
-        path == "/v1/requests/cancel" || IsConversationTarget(path)) {
+        path == "/v1/requests/cancel" || IsConversationTarget(path) ||
+        IsPromptTarget(path)) {
       if (method == "POST" && !(IsResponseCancellation(method, path) &&
                                 body.empty() && headers.content_type.empty())) {
         std::string type = headers.content_type;
@@ -450,7 +452,7 @@ void ChatServer::Dispatch(int fd, const std::string& method,
   if ((IsStoredChatTarget(path) &&
        !(method == "POST" && path.substr(0, path.find('?')) ==
                                 "/v1/chat/completions")) ||
-      IsConversationTarget(path) ||
+      IsConversationTarget(path) || IsPromptTarget(path) ||
       (IsResponsesTarget(path) &&
        path.substr(0, path.find('?')) != "/v1/responses")) {
     const auto* context = detail::HttpResponseContext::Current(fd);
@@ -474,7 +476,10 @@ void ChatServer::Dispatch(int fd, const std::string& method,
                           background_.get());
       return;
     }
-    auto reply = IsStoredChatTarget(path)
+    auto reply = IsPromptTarget(path)
+                     ? HandlePromptRequest(*objects_, method, path, body,
+                                            PlanningConfig(fd), access)
+                     : IsStoredChatTarget(path)
                      ? HandleStoredChatRequest(*objects_, method, path, body,
                                                 access)
                      : HandleConversationRequest(*objects_, method, path, body,

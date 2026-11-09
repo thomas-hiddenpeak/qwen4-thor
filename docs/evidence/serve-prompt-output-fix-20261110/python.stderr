@@ -1,0 +1,9 @@
+test_actual_native_resources_response_and_events (tools.serve_responses.test_prompt_contract.PromptContract.test_actual_native_resources_response_and_events) ... ok
+test_frozen_requests_and_definitions_use_sdk_shapes (tools.serve_responses.test_prompt_acceptance.PromptAcceptance.test_frozen_requests_and_definitions_use_sdk_shapes) ... ok
+test_padding_oracle_rejects_lifecycle_and_missing_delta_padding (tools.serve_responses.test_prompt_acceptance.PromptAcceptance.test_padding_oracle_rejects_lifecycle_and_missing_delta_padding) ... ok
+test_version_oracle_requires_actual_answer_identity_and_usage (tools.serve_responses.test_prompt_acceptance.PromptAcceptance.test_version_oracle_requires_actual_answer_identity_and_usage) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.042s
+
+OK

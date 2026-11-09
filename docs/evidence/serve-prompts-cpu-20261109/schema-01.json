@@ -1,0 +1,15 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_responses.test_prompt_contract",
+    "tools.serve_responses.test_contract.ApplicationContract.test_sdk_graph_and_closed_native_requests",
+    "tools.serve_responses.test_contract.ApplicationContract.test_obfuscation_is_closed_to_documented_delta_events",
+    "tools.serve_responses.test_contract.ApplicationContract.test_openapi_routes_queries_and_no_external_reference_bundle"
+  ],
+  "exit_code": 0,
+  "seconds": 1.0071451663970947
+}

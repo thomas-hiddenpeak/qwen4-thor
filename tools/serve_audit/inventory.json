@@ -435,6 +435,15 @@
     }
   },
   "routes": {
+    "DELETE /v1/chat/completions/{completion_id}": {
+      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
+      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
+      "evidence": [
+        "tests/server_chat_storage_test.cpp",
+        "tools/serve_chat_storage/test_sdk.mjs",
+        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
+      ]
+    },
     "DELETE /v1/conversations/{conversation_id}": {
       "semantics": "原生Conversations会话/成员CRUD、分页与投影；DELETE /v1/conversations/{conversation_id}",
       "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
@@ -462,6 +471,14 @@
         "docs/SERVE_COMPLETIONS_2026-11-08.md",
         "tests/server_completion_test.cpp",
         "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "DELETE /v1/prompts/{prompt_id}": {
+      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp"
       ]
     },
     "DELETE /v1/responses/{response_id}": {
@@ -544,6 +561,33 @@
         "docs/SERVE_GRAMMAR_REAP_2026-11-08.md"
       ]
     },
+    "GET /v1/chat/completions": {
+      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
+      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
+      "evidence": [
+        "tests/server_chat_storage_test.cpp",
+        "tools/serve_chat_storage/test_sdk.mjs",
+        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
+      ]
+    },
+    "GET /v1/chat/completions/{completion_id}": {
+      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
+      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
+      "evidence": [
+        "tests/server_chat_storage_test.cpp",
+        "tools/serve_chat_storage/test_sdk.mjs",
+        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
+      ]
+    },
+    "GET /v1/chat/completions/{completion_id}/messages": {
+      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
+      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
+      "evidence": [
+        "tests/server_chat_storage_test.cpp",
+        "tools/serve_chat_storage/test_sdk.mjs",
+        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
+      ]
+    },
     "GET /v1/config": {
       "semantics": "启动后实际上下文、输出默认、槽位、限制和来源，只读；SRV-02b已验inflight/queued请求值与预算后有效值、capacity_fifo_best_fit策略；新增独立于启动预算的内存门限/恢复余量/样本时效配置，0可显式禁用，不是整机硬限额",
       "boundary": "不公开路径/凭据；不保证可用槽位、全机RAM或未来执行成功；限定HTTP已验；SRV-12b独立观测额度4已限定受载验收，完整头后分类，未分类慢头仍共享总额",
@@ -610,6 +654,30 @@
         "tools/serve_recovery/test_native_ingress.py"
       ]
     },
+    "GET /v1/prompts": {
+      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/prompts/{prompt_id}": {
+      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/prompts/{prompt_id}/versions/{version}": {
+      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
     "GET /v1/responses/{response_id}": {
       "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
       "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
@@ -643,6 +711,15 @@
         "docs/SERVE_MEMORY_ADMISSION_2026-11-03.md",
         "tests/server_memory_admission_test.cpp",
         "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md"
+      ]
+    },
+    "POST /v1/chat/completions/{completion_id}": {
+      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
+      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
+      "evidence": [
+        "tests/server_chat_storage_test.cpp",
+        "tools/serve_chat_storage/test_sdk.mjs",
+        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
       ]
     },
     "POST /v1/chat/preflight": {
@@ -698,6 +775,30 @@
         "tools/serve_recovery/test_native_access.py"
       ]
     },
+    "POST /v1/prompts": {
+      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/prompts/{prompt_id}": {
+      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/prompts/{prompt_id}/versions": {
+      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
     "POST /v1/requests/cancel": {
       "semantics": "仅 request_id/cancel_token；未知/形状错误400，无匹配404，匹配202",
       "boundary": "400不触发取消；202不等于drained；重启无持久状态",
@@ -719,6 +820,15 @@
         "docs/evidence/serve-responses-recovery-20261109/README.md"
       ]
     },
+    "POST /v1/responses/compact": {
+      "semantics": "原生实际记忆模型步骤、认证压缩窗口，返回可直接回填的 CompactedResponse；共享准入、截止与真实用量。",
+      "boundary": "源码已接入；本组直接 CPU、官方 SDK/真实模型与交付尚待验证，不作为完成证据。",
+      "evidence": [
+        "src/server/responses_execution_compaction.cpp",
+        "tests/server_responses_compaction_test.cpp",
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md"
+      ]
+    },
     "POST /v1/responses/{response_id}/cancel": {
       "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
       "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
@@ -729,60 +839,6 @@
         "tests/server_responses_api_test.cpp",
         "tools/serve_recovery/test_native_ingress.py",
         "docs/evidence/serve-responses-recovery-20261109/README.md"
-      ]
-    },
-    "DELETE /v1/chat/completions/{completion_id}": {
-      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
-      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
-      "evidence": [
-        "tests/server_chat_storage_test.cpp",
-        "tools/serve_chat_storage/test_sdk.mjs",
-        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
-      ]
-    },
-    "GET /v1/chat/completions": {
-      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
-      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
-      "evidence": [
-        "tests/server_chat_storage_test.cpp",
-        "tools/serve_chat_storage/test_sdk.mjs",
-        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
-      ]
-    },
-    "GET /v1/chat/completions/{completion_id}": {
-      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
-      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
-      "evidence": [
-        "tests/server_chat_storage_test.cpp",
-        "tools/serve_chat_storage/test_sdk.mjs",
-        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
-      ]
-    },
-    "GET /v1/chat/completions/{completion_id}/messages": {
-      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
-      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
-      "evidence": [
-        "tests/server_chat_storage_test.cpp",
-        "tools/serve_chat_storage/test_sdk.mjs",
-        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
-      ]
-    },
-    "POST /v1/chat/completions/{completion_id}": {
-      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
-      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
-      "evidence": [
-        "tests/server_chat_storage_test.cpp",
-        "tools/serve_chat_storage/test_sdk.mjs",
-        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
-      ]
-    },
-    "POST /v1/responses/compact": {
-      "semantics": "原生实际记忆模型步骤、认证压缩窗口，返回可直接回填的 CompactedResponse；共享准入、截止与真实用量。",
-      "boundary": "源码已接入；本组直接 CPU、官方 SDK/真实模型与交付尚待验证，不作为完成证据。",
-      "evidence": [
-        "src/server/responses_execution_compaction.cpp",
-        "tests/server_responses_compaction_test.cpp",
-        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md"
       ]
     }
   },
@@ -1054,6 +1110,16 @@
       "compact_threshold"
     ],
     "responses_plan.cpp:7:request": [
+      "model",
+      "input",
+      "instructions",
+      "previous_response_id",
+      "prompt_cache_key",
+      "prompt_cache_options",
+      "prompt_cache_retention",
+      "service_tier"
+    ],
+    "responses_plan.cpp:8:request": [
       "access_programs",
       "background",
       "context_management",
@@ -1091,7 +1157,7 @@
       "request_timeout_ms",
       "seed"
     ],
-    "responses_plan.cpp:8:*stream_options": [
+    "responses_plan.cpp:9:*stream_options": [
       "include_obfuscation"
     ],
     "responses_api.cpp:0:query.value": [
@@ -1102,14 +1168,58 @@
     ],
     "chat_storage.cpp:0:request": [
       "metadata"
+    ],
+    "prompt_api.cpp:0:query.value": [
+      "limit",
+      "after",
+      "before",
+      "order"
+    ],
+    "prompt_api.cpp:1:request": [
+      "definition"
+    ],
+    "prompt_api.cpp:2:request": [
+      "definition",
+      "expected_revision"
+    ],
+    "prompt_api.cpp:3:request": [
+      "default_version",
+      "expected_revision"
+    ],
+    "prompt_template.cpp:0:definition": [
+      "request",
+      "variables"
+    ],
+    "prompt_template.cpp:1:*request": [
+      "model",
+      "instructions",
+      "input",
+      "reasoning",
+      "text",
+      "tools",
+      "tool_choice",
+      "parallel_tool_calls",
+      "temperature",
+      "top_p",
+      "top_logprobs",
+      "max_output_tokens",
+      "max_tool_calls",
+      "truncation",
+      "include",
+      "context_management",
+      "prompt_cache_key",
+      "prompt_cache_retention",
+      "prompt_cache_options",
+      "moderation",
+      "access_programs"
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "6846fc8195df1bceba99af2a51af6668036ca8500f7ee4ae401e25b68798d441",
-    "cmake/ChatProtocolIdentity.cmake": "2fa0ead22c4a39a7c30ec3699df5c520961a76bb9af6126ea6eae089c3f9766f",
+    "CMakeLists.txt": "c7e2688fdff7e25c3573148df3d63402f243b309d3c8011843acbafcb03b5fd6",
+    "cmake/ChatProtocolIdentity.cmake": "4498cb6aee7dedaeaeb4e87da42e6a9be154f1126b52299f6ee0aee85c534044",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
-    "cmake/NativeIngress.cmake": "d10f996fdf01e28f29eaa40d9c92f2d78ff02126351188667329b235a22f2346",
+    "cmake/NativeIngress.cmake": "5560a873e8d89b5e034636f006a2b21ace3bdab2bf71dcf688d5028fbbc704b4",
     "cmake/RecoveryProbe.cmake": "b10bd71c92a8c9a9f6545da89ab06585f7c1398a978eb01aae9e18eb716c0271",
     "cmake/RustRegex.cmake": "99d9e977c34f48ae74d54ef33b432ce5287d668e7573d0b7bac0b7a5655924c3",
     "cmake/StructuredOutput.cmake": "66f791cc30c164e2a3b40c639a699e13077774d9bacf59b3b55a924e134f5b84",
@@ -1126,21 +1236,23 @@
     "include/q4t/runtime/system_memory.h": "52febc4f0b9f067748507224d9924a955470371de88a796e1ea78d379b637d49",
     "include/q4t/server/abort_reason.h": "2bad04553ca1e40595e10d6549d2a3a798bed05fcadd92527f722c48aecb70b5",
     "include/q4t/server/application_query.h": "8331a32ad43b1e4eb059a25f1e2d318c351fdda0fbf4555f7bfafd310a9d2c36",
-    "include/q4t/server/application_routes.h": "b194817965444dcfd8b10cbf07f80fb7d2041cd884fc69ee3b059ae0a06fc719",
+    "include/q4t/server/application_routes.h": "1d27e45e73d4e7827bcdd18413c0c3f91d9d81291e93b5202ed4ac031ac404e3",
     "include/q4t/server/cache_health.h": "3b43f963c6621361a93feaf3575cdf5f157a3ff426d13aa03b5bf81a005766d3",
     "include/q4t/server/cache_io.h": "4a851632978959b89c66999d0e4532c345fdd792f1a9f4efadbe5350e8cf0e4f",
     "include/q4t/server/chat_capabilities.h": "058093147c83d2bf541cb17b19fa67e92ec3168e5d250dd3a20567696748cc49",
     "include/q4t/server/chat_choices.h": "a76cc4a1a1d8b16b1925ec1a5fb9f0951c03fe48494c6623027596624e5b79c2",
     "include/q4t/server/chat_contract.h": "c1aaef06a1ae22f96ce143211a3c6a5a462bb8223d0f86c474f896ab3bb906e0",
-    "include/q4t/server/chat_plan.h": "8582f55f54b19b4da9f940acb71e60831b33cd04d3eea3a206eed8991ce6e083",
+    "include/q4t/server/chat_plan.h": "d4049c98ce54985c6ae242808ae75e762ac5405b0e79b8b0712020a1341f8c81",
     "include/q4t/server/chat_prompt.h": "1a758fed12a2ef5b3eadc6109cbc99be29de63e088d0d60111ed171730daa54f",
     "include/q4t/server/chat_response_parser.h": "43c0d61499e9303cd8bacf92b685f5994d81d8e4b0aaed86edbc38943e941a88",
-    "include/q4t/server/chat_server.h": "bfd3d65b71f83e9757c515eb1c127f510d063f97332045496085049e7258b605",
+    "include/q4t/server/chat_server.h": "b9e8a1d1e364c797dbe7ab9936a0cae515035cdeff551e33f419254be74a7a7a",
     "include/q4t/server/chat_storage.h": "1c75252f843b65276fbed00b9ac6c4a2ed8ce7cfdae107ad8aebe164b16f936a",
     "include/q4t/server/chat_template.h": "5d2e9a8c90938fa972d27bd961ee9018ebcd7add541fd009316177af81b9afee",
     "include/q4t/server/chat_tool_history.h": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
     "include/q4t/server/client_identity.h": "c05aad5dc655e91962eae55aab25c09fdcbc2a72ddc37a95585c7288dfac54be",
-    "include/q4t/server/client_policy.h": "0c08ff6d7363485533a4134ec010dd89de588079eb0ba92d6202440e6e37837a",
+    "include/q4t/server/client_policy.h": "e70e50548ff3cbff748a3545a69169499ca95821a49617a9967e4bc459df0bad",
+    "include/q4t/server/client_policy_admin.h": "abe87e7c1dffbb0a66c141a810dda12a70a097956d81ba80347b50d96aced3e8",
+    "include/q4t/server/client_rate_state.h": "e8377a5fcb02288385ae30861d3b4baa8002c7ce55a95e52bdba8b9a741a8ee6",
     "include/q4t/server/client_request.h": "d08159942c0f0f95c5040546b3aab647eac435546767e96a1c922f3d88957998",
     "include/q4t/server/completion_plan.h": "3974785c56eb107ef29c4904f7d04476080c1d11315f8d621b7ea49a8856d896",
     "include/q4t/server/completion_response.h": "4728686120ce9577aa66f60460982212d0450c429eb27d0e2ecdfa9e2b355f98",
@@ -1152,11 +1264,12 @@
     "include/q4t/server/custom_tools.h": "1f351b6ed81ad868caa4dfa9c54a6f697fcac5a6a8dadef65bd05f2053ef18b9",
     "include/q4t/server/device_memory.h": "1099e20d3b205d3ae03daba0308be7221f5097c78a2fd58c8ca16298277dfc4c",
     "include/q4t/server/grammar_process.h": "fbed9c86c91be129af8f1481292ef65edb8a9989090fc1a83e12c6fe7e106e53",
-    "include/q4t/server/http_connection.h": "89ff798245f196cad521414caf39267520f6b22489d396d7ee1b72fdb04d388b",
+    "include/q4t/server/http_connection.h": "bf59f6637fabca94eec9477ee983cff9d8b1527f4889e3023fda3a6c7136fe64",
+    "include/q4t/server/http_framing.h": "b3f3c3b39d2de10180d7acb7529c60b7a46b29d595d8ee72de86604ff378de12",
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
     "include/q4t/server/http_observation.h": "4a5c07a112faa4d60f834b2d5e4067522a7fe565ca6ff8acd145ad603999dbdc",
-    "include/q4t/server/http_request.h": "f6d52bf328cc33e56ae0ef06dc93051432ac0ddff55575e4e9204eecf35b6be6",
-    "include/q4t/server/http_response.h": "17b52efd468e017f9f1648e84572d14f1413fda0117f46944a81c068a256afbc",
+    "include/q4t/server/http_request.h": "cc5ff737d9847c994310f1c264e8b18b0d9b359d73a852b5f217a254b00a9027",
+    "include/q4t/server/http_response.h": "d893a77180768758f16e6b0a682d48318c79b2c1d92c0d432208a1ed8749cfdf",
     "include/q4t/server/input_contract.h": "03c1dfcc666986f5e06a91fb34cf95bf1818bd67df783794ae0ada63b7ae8881",
     "include/q4t/server/legacy_tools.h": "2bcdb5d01e78379c2f7baaaed0ef902867357a0167f3ce6ea18fbc1fdb9dbfa1",
     "include/q4t/server/lifetime.h": "11c9b381a7f6c5e019dcb57fbc18e2ad76492fca5c5e42960c381e954e5068bc",
@@ -1164,6 +1277,7 @@
     "include/q4t/server/memory_admission.h": "ae72d092757e41739e5d85ae7b2a975dccd13e43de8e9286dd831831ba7a7196",
     "include/q4t/server/model_catalog.h": "19bb1b450170b4d7c1d8895593f41baa1ad91c90aaafc58977894bcf76d52143",
     "include/q4t/server/mtp_policy.h": "28f10c5c885f9465c0f26c22a36bf6be541933a0ed9d9c2da5f0d3983e0a8285",
+    "include/q4t/server/native_crypto.h": "0976c2f55c5edaedfc50299db53cd2aa4dd0f0126117aa809e78eea6fa23a224",
     "include/q4t/server/object_store.h": "06d1fb342b952e7f302d19a0a196083d4225a7ecbad235c9cb34db44cd8994b2",
     "include/q4t/server/object_store_options.h": "50ac339fb5830d363ac62bea2cfb89fe45f6318f48a146addb593bd7522ec319",
     "include/q4t/server/output_constraints.h": "f227e73a5826900182eff0505e031115ad67acb39fdd00968a8fc03e8dfed0de",
@@ -1172,6 +1286,7 @@
     "include/q4t/server/prefix_cache_policy.h": "91ef4f963c51a8098f1e333a74ac3cc56c046cf87f987b0e026a1e27d4c304c4",
     "include/q4t/server/progress_context.h": "fc6ed010388bd5e33951d0c585a1b33f7edb07570866cc38c66e7cbee16bcbb3",
     "include/q4t/server/progress_transport.h": "90adb59393f339d011c37d2a602cff6ffaa955e20bbf0c1725b1455640b9a9e3",
+    "include/q4t/server/prompt_registry.h": "debb09d97bf89e8c542936d217983ebd20926c423804208f0b6f318c704fd3cb",
     "include/q4t/server/reasoning_options.h": "19fbaf8e6e9f31767ac5dfd485d4cdaca160e5928069741868402ee7639bfe44",
     "include/q4t/server/request_admission.h": "e0b802ab08dd1857cb26b5323e35538bfd0f778add9298da6a972ebdc9fb8f64",
     "include/q4t/server/request_control.h": "64102f9268cf02f70c8f09bdbc50b87088c69e0a2e97b942c28b5e6d14232b51",
@@ -1179,13 +1294,15 @@
     "include/q4t/server/request_json.h": "f3fded2db644464f3e187215cfe14ae0280a0099bfbbeca670c7ac4e4492bb72",
     "include/q4t/server/request_progress.h": "9ac647e9663547098ac4df80d450c5baf42ac027c33234d8f011342bab5e3478",
     "include/q4t/server/responses_api.h": "2a636939c4c2fbb1806fb7146c0a82aad2ecec1a149609647fde9fd295b6195b",
-    "include/q4t/server/responses_execution.h": "8c9587baac968ca6a2d2bcc740da28428641b2eeb94fa3ebf5cd9f9045015d01",
+    "include/q4t/server/responses_compaction.h": "3c6f96d0bf5fa86b3976566bd6da819e9a389cf7c16e6f67a165f103e832e6e4",
+    "include/q4t/server/responses_crypto.h": "5a8bd0449fed6c5551e00b48ecd571fa579739389c5944952fe791d4d524cc78",
+    "include/q4t/server/responses_execution.h": "88fe6936531061bf5e30517acb4fa8da8bf317ffffeb6106438512f8ba27d220",
     "include/q4t/server/responses_input.h": "fe63278d2c398b5fe770572cb141561f5a9dec36811fc151b53a33a684cce56a",
     "include/q4t/server/responses_item_shape.h": "0c341d6d0e9f0693daacc35ba97e0929703d9f2de108aa77056fa8f88777ee37",
     "include/q4t/server/responses_jobs.h": "f7f9ca848549d3d47dd9b382b3153f65d20d30bc3befb59405c0bdf3412a1343",
-    "include/q4t/server/responses_output.h": "f5de858f0fc47cd194795e8716814b263745d8ad841c2d7f546fbe72c42e9658",
+    "include/q4t/server/responses_output.h": "b15fd7797c1316315760495b45d93bdee9637044ea3cec78be8a941e6be772a0",
     "include/q4t/server/responses_owner.h": "56647342474e335ad1039609e93a947bd5c81364a48f018c0d7afe2ffde4c613",
-    "include/q4t/server/responses_plan.h": "3c89b0e3d7fd6363e74f22e76cebafc4678fa81ddbad0197234bf6fd0b284c03",
+    "include/q4t/server/responses_plan.h": "6c00547649c24bee9cae0f2a7d53dbac0871c3e160070c2addb3b9e2c4b22f02",
     "include/q4t/server/responses_state.h": "0c171182fb9f9b8cf2ec633d5e55b605d64b1bc42c31ccbb621a87dd004e0330",
     "include/q4t/server/sampling.h": "202bff18193dddc46f92e3b7d69fef36218faf00e913b292d1e9a9abe7b65141",
     "include/q4t/server/scheduler_submission.h": "2a960c668c25a0c694b811a2c5640c6e6605db7d386b1ba0075e64061aa1c416",
@@ -1193,7 +1310,7 @@
     "include/q4t/server/schema_graph.h": "dbca295afe754e7b1b5b0b8a508419ea22a3d3ada39731044f9f251ad78a1531",
     "include/q4t/server/schema_prefix.h": "d7db116dc3f2b1135c3a5e2f152396c3e9f67a3c12b05b8d64a785d2274ba838",
     "include/q4t/server/schema_receipt.h": "ca2076bc75950c749c5e8ec8a7c0ed06c24152b18264f66c72c1ac730235f89b",
-    "include/q4t/server/sequence_admission.h": "0c03df6bd8c16d137562de22357c85e367208a6208be12d217adaf6135836b3f",
+    "include/q4t/server/sequence_admission.h": "ed25a8d14d1b09c9bc2d1f4a50b1ed31796c6024c0442e5777db7b2e44337d91",
     "include/q4t/server/serve_fault.h": "47db4bd8dc12f5713ef42c6c89aeee1151867991d17d9b8529d31b4a11123b3f",
     "include/q4t/server/server_options.h": "87c939370fdf77166b44be7a2f3770d4b5db48949e0048c9640a333d159786c9",
     "include/q4t/server/service_health.h": "6b95516f0c81386c469360e106b1abe544080c74f439a9525a0910c556f3490f",
@@ -1201,6 +1318,8 @@
     "include/q4t/server/session_save_timing.h": "317a0c125930305e10596efa2345e5af23f57345ad8059fd4065cb9f9ab5db06",
     "include/q4t/server/session_state.h": "45ee23a8433b6dfce3d72f942ba4ad3bd0019cb25c5e20c7f219fb329af8d3e9",
     "include/q4t/server/startup_admission.h": "2da630f79ddebd82e5dc7e410a279a971772b854171c88006929f4c28975d79b",
+    "include/q4t/server/state_cipher.h": "d883cb8c11ccce3a39c7fadf5c9448b42086ec482258df8ca975d6782d2ec8f3",
+    "include/q4t/server/state_key_admin.h": "0c91321a24065a605a1c0870fcc04ddf4a7526e965c2de47df74b472bd84ebe1",
     "include/q4t/server/structured_admission.h": "d092c28d78e214396c26d2f7eb96e56e94f5148f9355a6d0cb84926b20fca007",
     "include/q4t/server/structured_decoder.h": "90bce7f10c21f8a4f40d9580e825ed963d1c2637a2335586aa10fa91a56d6561",
     "include/q4t/server/suffix_causal.h": "a0bad73c2a8293367a4e907e06a40d21baec389ba81e9131a248f99432165f2b",
@@ -1210,14 +1329,18 @@
     "include/q4t/server/token_logprobs.h": "4e78d55c74f87be540b134bdd9a537050548118a0ae8a864750c730618a46060",
     "include/q4t/service/guardian_journal.h": "700c8d24b7b8288c1f923cc532f591747a6adfbef42b1013a1d8e178288186a9",
     "include/q4t/service/guardian_process.h": "31b967d4b558b1cdce10bf5acfb4731a9c9952930039285f6ed09af5b010c8f9",
-    "include/q4t/service/guardian_quota.h": "a73897aa94fd1a58fb1cfc7c182d2d8bd0cb9cb10e848821e230ce903e2e39a0",
+    "include/q4t/service/guardian_quota.h": "eb409d5a22d14fa432da89a9090501a49aa78cd10f57de24b3b8de3405139d93",
     "include/q4t/service/guardian_wire.h": "5559955899c87230f116ea794ce7f0c0a2a1c6f2d9a2013ad6ec42fa1ffb73c3",
-    "include/q4t/service/ingress_address.h": "a931eda14ef69728f90401ff626ded167763d27a1da6e41f9184d4a976f191f9",
-    "include/q4t/service/ingress_admin.h": "119e08883d819bf6f5b6e721929013d1b2c428f99bf207992624363bac839265",
+    "include/q4t/service/ingress_access.h": "4c7b4c36183c9d6dee67c82b06c1390c8480599d96f8823fc07f1a1dfd2e8c71",
+    "include/q4t/service/ingress_access_admin.h": "3f72f8ec723aa5755942847c2583693483c24424ebcc69da0baa282993272d1d",
+    "include/q4t/service/ingress_address.h": "4f9a65bf46faeb282927a0539f9720f521fc7cb9d0f863be6c132392ee2203e1",
+    "include/q4t/service/ingress_admin.h": "2e33e97ef00fd363bf08f4ed4cc9235defb84bd070b1e477e465de3a108e7717",
     "include/q4t/service/ingress_cors.h": "0382a8147351fb09bc53e859edd4cee405b8327fb31460603744a171e70ddd7d",
     "include/q4t/service/ingress_credentials.h": "eeaec124120e0de170faefea94bc987ed0fc32b19b01ad471b5c4758c647417b",
+    "include/q4t/service/ingress_proxy.h": "fab16d371bc73c9f7cfb9407990fc235603e547f3b036121703ef1b1ce39a559",
     "include/q4t/service/ingress_tls.h": "90199152c3f08f5aa69fd9dc5057c10e4683b321241c3f6142a914dd656906e8",
-    "include/q4t/service/ingress_transport.h": "3cce6e9af213308a4c3b0f2c780b4b32d2c4ad7dc97a7512db70c312fa0ece2b",
+    "include/q4t/service/ingress_transport.h": "7399ad2f96b29cff6aa84705602c8993127eb4804d765e399bc3a1e4d189610e",
+    "include/q4t/service/service_cli.h": "ca8d0ce29ebac6e46d3081c8d0a03513841af9f888b692735d6776a1cac2f692",
     "include/q4t/vision/configuration.h": "50f4ab0cacc680c48d87450c168cb6d1a5ac57f51cfaff14963c97b2db1e72a9",
     "include/q4t/vision/forward_timing.h": "7c642dbda0b464d333f20390f2ef4426954c23c9f6a48d1ee43ae044ce27a138",
     "include/q4t/vision/forward_timing_core.h": "89bdb2f4db849d0b36122d654d0b6627f879f898a0c6142d549399837fb920de",
@@ -1226,7 +1349,7 @@
     "include/q4t/vision/timing.h": "72f98b74ac231c52ca501821eafa57b220a5be1c898e2ace999216e2480e15a6",
     "include/q4t/vision/vision.h": "629c8e8e63a1f06feaac85c038ddd5c75e09cf176e5ef69ca630dc6e8e3500e2",
     "src/io/json.cpp": "525ff67209baae32cca85e8d2d79dbc16791f589146248ef74955a30fd23e17a",
-    "src/main.cpp": "df9f8ac33bc4aabc99972637991afc5386c45b8bf61ed50b28db8d4bbd38dcc2",
+    "src/main.cpp": "10e2ad159002f2a28fa697a1cbac07e45c95b84f612ec711b9cc00b2338e6516",
     "src/model/model.cu": "18234fb517bcb3cf4cf5a670744bb940fbcf8882631ca3b9223cca29f54f563c",
     "src/model/model_owner.cpp": "cc3a998e52d4cca44bd695f40e1bf01f4ee2d75ce9f0c437d07757582d60e2bf",
     "src/mtp/mtp.cu": "c2e6bb780cc42c80c649dc0e4fa18b6b7e714da17c6baaf46a97938099d07184",
@@ -1242,30 +1365,32 @@
     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
     "src/server/cache_worker.cpp": "b8ff127f945835fc91d04b97c6e49b21dfc0047ff846545bc8e4c2ab9a6e0c4a",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_capabilities.cpp": "e674892b7f16f1fd93bd4acf23fe84888967f333c8058c6d3228af9fd30a2e68",
+    "src/server/chat_capabilities.cpp": "3a42978298997c1806bc957a44393f264c8ef2d88e4a56927416c9e949ae344f",
     "src/server/chat_choices.cpp": "ee99c4aca3c1ea07d5929da38325aa2b28a411245c7d794c9cc5f1f8eb23f16a",
     "src/server/chat_contract.cpp": "ec74f4ddeb477288aca098d6d5bfd55a41b56d50d975d7c7594c825df41545a6",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
-    "src/server/chat_generation.cpp": "a3e191a9515cdc4c24ccbb61174b0ce7fb6c65561397604c2e33d2ab9615c91a",
+    "src/server/chat_generation.cpp": "ee345146f7768cd0f424334f1585d54f543a154d01c4633a46727ab80d89fd1d",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "f7f99272753473209ae6ce1b2ca1e384bcf23ac25777edf9eb4a3fb4cb9e1909",
+    "src/server/chat_http.cpp": "89e7c112767927a17775825cec3d372055c6aacd9b2aa2e9e548997b64a81503",
     "src/server/chat_input.cpp": "372b93746fbe236ec1d0caea778b1212d22ab94a18ec4f7ce81adcfba8b8c546",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
     "src/server/chat_metrics.cpp": "9a50b19777ed6e32b9902716dd97cde678bb1cd3c3147030975032cffe41fcc6",
-    "src/server/chat_plan.cpp": "519833b53ef02f32278399e187c90fc41e6550d401cab0358cf970a9eb8ac1bc",
-    "src/server/chat_preflight.cpp": "15231afb827eeea21c9b5da283e1322976fe56c8a461cf8213b883087432f84c",
+    "src/server/chat_plan.cpp": "18c4587d739406cb4f57ef83460bd2a95984d320d672d024a07581c102f07fa2",
+    "src/server/chat_preflight.cpp": "df89d2fa6ed82beb2aca2e636659ef255072f2bcd1aeeb97fe6d249103ee28c0",
     "src/server/chat_prompt.cpp": "fd6684419aff480782e12a409af13665eb1b529008b93ea7f67607afd837efcf",
     "src/server/chat_response_parser.cpp": "69e260c428d83a6383d5d36e0870c7d2be697e953251fddfd081a058445a808b",
     "src/server/chat_responses.cpp": "13fe1f43c32e93d4a4b34184a1da6ae67b1c6d3fe97adb00334e7342fcf8ed41",
     "src/server/chat_scheduler.cpp": "a0844e61f23629d574b1ef9515cf59427cbddf55058453e95f07eda2917f42f6",
-    "src/server/chat_server.cpp": "f7f68be7372b75513a021f04b1223154445f8af7d043e58f33267efbb77c4306",
+    "src/server/chat_server.cpp": "b6165f12cc47196a677ce0deed528a6bab2ea64ffc4691ca9f1c3c7a932dbd7e",
     "src/server/chat_server_internal.h": "6f051dc4614996c581f24d37939ae9067a7342779432d75f079759208e378408",
     "src/server/chat_storage.cpp": "41caab121d69b357700a17d11aa6f1222445ac14f97da20762360d93058a522a",
     "src/server/chat_storage_options.cpp": "44a9da20f7f72b2fc448a02d09fdfb112c38b7cb0a9c8eca3296e43d5c32d99c",
     "src/server/chat_template.cpp": "f6e031add54280ff196bda9ef7a817a0ffdf30e83b95bce9575be3912168dd66",
     "src/server/chat_tool_history.cpp": "902f6c0982fd072d4dba4c3f6a34629eec9eaaf604fd5d920822b96ed51f82db",
-    "src/server/client_policy.cpp": "40814f21c9e7eb261ebf6db53653815023289d114139392d2113d2dbe4e20e53",
-    "src/server/client_request.cpp": "a1fadc973d437f9eddb23f40aeff496e7329c88d5e5dbe24cbd747a9c1936ecc",
+    "src/server/client_policy.cpp": "8fbec179e13ad98234d0f064645166f2e3d7004da101ab4ba95f0f664bac2fe4",
+    "src/server/client_policy_admin.cpp": "50b2107f90879cac09261420c52874e507350d843340096797797c22543e8697",
+    "src/server/client_rate_state.cpp": "bc9d1577ffb84c852243d2088cd8351e3dea21022f50f7a8c0f909f16e056c7a",
+    "src/server/client_request.cpp": "c0d59195886427d5d9852534cececc45d27ccf269d93f19a85a117293e6c16c8",
     "src/server/completion_plan.cpp": "714facdef55f982082f687220d2227f6195c517a41f835fe78161fc4a1b1656d",
     "src/server/completion_response.cpp": "75be95aa5a9da31112932cbddaa1e81c0b6cfa31664b03139e1d97f7d7563722",
     "src/server/contracts/openai_item_types_v1.json": "d22c6bb9a38868061556ed9dd76d8d51589a965101d4593684ea049f2945de81",
@@ -1279,13 +1404,14 @@
     "src/server/grammar_process.cpp": "b0c9f65c7299e896253d139c34defb65143d2cb7ff9e58465f92661fbc04424c",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
-    "src/server/http_request.cpp": "836283e471ff1ba5200dae7c956427bcbba743b125c852041213b46522574d8e",
-    "src/server/http_response.cpp": "73572b76e2fab0783a3d5be4b17ec95aa09c31e9d2956da070445dc0b9dcba84",
+    "src/server/http_request.cpp": "0c7343b38ec201f3e8bda086869a723bc55e37c57117041fa00f09f3f2971b16",
+    "src/server/http_response.cpp": "0da3e7888a67e69d7cf00aa6b71c181724860f1740c4b46d7412b6c5e7f08f96",
     "src/server/input_contract.cpp": "a8d8f7412e50df59da2ec5829f4ecd34245dc521edcb61011ea4dff2b492f362",
     "src/server/legacy_tools.cpp": "b0bffcd3c780f35f336b40a152e9837077b9a4c6ea3ede737fcbb14b8514587c",
     "src/server/media_admission.cpp": "11461c31fed0db43fe68e16680812641c0e51371585c216673e4fe2e54500393",
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
     "src/server/model_catalog.cpp": "8d0808b669e3ecbc95794d8b07bd6a86b38dc310cf93c98e18befade71fd2d7e",
+    "src/server/native_crypto.cpp": "86da5a6cda4b18154f46227074d7fa68b7ec3cbb8bfcdb9a6aaff75b2c9cb8a1",
     "src/server/object_protocol.h": "37bcaad2864814be50b6ae530d4b2e17028cacbc0fd4e05027e4235965331d9c",
     "src/server/object_store.cpp": "dd95823ba28278b291d79bed2a17e2c9eafbb0d1ce18b4bf3995c6c7fc288eb1",
     "src/server/object_store_options.cpp": "2118353888a2737d16b6dd2213cf73bfedd2f55ec090d6c19addccd85fdd6811",
@@ -1294,19 +1420,27 @@
     "src/server/output_schema.cpp": "6d42d154ce3ac43c2cb2569298af221148813f9233e37c9d9c75eb0f331ee65d",
     "src/server/prediction.cpp": "7e8ccdf7c44dd5c8245230577d42eb7d4cd17c6e2efcf5534a02e6744815733f",
     "src/server/progress_transport.cpp": "716b0bfaf8ee031e4a873b59c87136965ab76c1790534f894514fe5c77ec39d4",
+    "src/server/prompt_api.cpp": "03b07433d0586bd24cc9bda3fe99fa647a82527c18a20cbfd820dff1068d22d7",
+    "src/server/prompt_internal.h": "20caa7ae054ffc7b2db8408c06f1de300cf12699b283da4c1af59ff62317073d",
+    "src/server/prompt_registry.cpp": "3d945c05087e6225f6173bda2a89541503f2c07a02c769f3e7d9c1e7f0206a93",
+    "src/server/prompt_template.cpp": "54d51d12ec75012e04e78288452aa5c891a06849b3e2fd88056cf7d17b333f29",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
     "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
     "src/server/regex_syntax/schema_regex.rs": "ad5ecc2fc961a9426068c50452e830da2229c40273088b56f8c6218c26f27fbf",
-    "src/server/responses_api.cpp": "0a9b1ea31b98bd83cc4aee7b6351f80720d3ea61c17ebe554a95228659430dba",
-    "src/server/responses_execution.cpp": "b3ef3afdb737c19f540a1811703f68555ec84327625fa85f43af1426668e8479",
+    "src/server/responses_api.cpp": "a922fb6309aec5efcae895f31081031cdfbe0dac21f03935ef73b735f51f4920",
+    "src/server/responses_compaction.cpp": "9cb02c6a890798d041cad3ac674832d6155ddef221ad3342c65ab4024f6ca58f",
+    "src/server/responses_crypto.cpp": "5e90f0671daeecdacba5d42918c1f796421887012416f001b33c2c38a71e8030",
+    "src/server/responses_execution.cpp": "2fed7c692431c59eb3a724e61e882194cce90097a3ee0e686df86f0f23d95fe2",
+    "src/server/responses_execution_compaction.cpp": "f01a18c3443a2ac66b8aef83d23f5854b46abd17bfb2b3207b4a07bb4f02d88e",
     "src/server/responses_input.cpp": "8fbffc8a3241cb3c34050c454e9181ecac49221898f54d5d3f4cf3fb63e6479b",
     "src/server/responses_item_shape.cpp": "b09c14dfed993b0782d592efa387fd9669e691f907fdd664d6fcd429769235b9",
     "src/server/responses_jobs.cpp": "e5eaf87112d482d23908df7d12b2a4afdec31d63a2fd54f20e29eebfdd206832",
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
-    "src/server/responses_output.cpp": "6c4b32c78576d48372f6de6a2415fdff3d52a370b60634a551955be22a6033d5",
+    "src/server/responses_output.cpp": "83c3f08e20bdb7bb66dc128a783c910118560626062cba181819af0b7f3ba139",
     "src/server/responses_owner.cpp": "f439f60e6956ac0d61c107d95ec719cd1fbed84eb0c56721ef63cd1f4342a3fc",
-    "src/server/responses_plan.cpp": "d520ded85e49bb51dfaa38d92ad3f082789616dc475fdd750008ac483b3ac3e6",
-    "src/server/responses_state.cpp": "fcf5421c9fa3ffad332ee8143a7a3e103d311a641026cd5da94bba7f8525f35a",
+    "src/server/responses_plan.cpp": "99efaaa891d3c14b5e7bcfb7bdb5904e0aa5d5e3c55de51d013e3f5d510721c1",
+    "src/server/responses_state.cpp": "8f1f5433552165c333b7f8288848286e5e3f45df056243f5cd8601486d767fbc",
+    "src/server/responses_summary.cpp": "f1cab4bfe02c3d810925ff3fb7ce4d56cfaea5bd341e5cec606e4cba1c0d9b25",
     "src/server/sampling.cpp": "88e247ca6b7c65abbf0977c66fd604e7156cbdefe5d0293e509282678555d31d",
     "src/server/schema_decimal.cpp": "3931972b1ecfd38b0574c6794f447f6b05d1ef78d65e0f73a61eabcb1c2dee2f",
     "src/server/schema_grammar.cpp": "075d6a282f2fc1cda861e3a0de4de132455af3efa9ed30b67b0ad9a5caf56cf2",
@@ -1327,56 +1461,92 @@
     "src/server/server_options.cpp": "2fd39a822532c84b4c81257247e016c6e9662c6abc325bea4ec182577364ea5d",
     "src/server/session_cache.cpp": "c7f157e9628d1bffbeea288029c62e683d1525d02d9bc5f2e38af259c7ffeec5",
     "src/server/session_state.cpp": "878e97b4ac3ce2f8b79d972a4f94ccd4c2e7c22893b07b5e31e5ba544494562f",
+    "src/server/state_cipher.cpp": "057c45b2ad1007e3d9c8887218ea687eedc38ead904b8bddfaa5712fca928602",
+    "src/server/state_key_admin.cpp": "45a7e68b206d1e9af6ca528e0989c9321384c86d71f208de804d6eee00260a76",
+    "src/server/state_key_cli.cpp": "5a9852a71edbbd1e27fbdc002204b8d1d5329b098b701750e504b5587dacb811",
     "src/server/structured_decoder.cpp": "3c2aa771ec7b753b94f8dcda5a63fa59a435fb5826fa876fe7acec4049e44de6",
     "src/server/text_stop.cpp": "2397b27adc873b3ac0697af68352a73c8481830da6053fde0adeca536eaba4dc",
     "src/server/thinking_budget.cpp": "05410d285b3cd6bbdb1d5e19282655f89b5d17a3205a35529e99ec2ec1f60962",
     "src/server/token_logprobs.cpp": "6d315376dcbe02b2b9d35b609b36f9ce02bf22e5a7c81d9ab47bde7e14556927",
     "src/service/cuda_probe.cu": "f91663d4098aa6365db6cf3d3fc437b5b32ee20280b65cc1ee34cb796a48e7fb",
     "src/service/guardian_journal.cpp": "a0a60642d1546c302be84578b7ca6d4475ab9808c108dd82fa4df7133f3b5a12",
-    "src/service/guardian_main.cpp": "26f1e5b5be37038ee460ebfddda3bbcf2e03e7ad0c89f25596816719ba747342",
+    "src/service/guardian_main.cpp": "a7c7bacec4f927c42e61bff64f1455af01a3d4129562f4ed7a5f28361ee112ad",
     "src/service/guardian_process.cpp": "2a7ed6213ccb91c450365fa25b7d9ba322b07cf7df653e80489c788e32a7925c",
     "src/service/guardian_wire.cpp": "95ca742cc01649fcf5b3245a4d0b48ad1d14ee4b142f376d5a095c7f686df12d",
-    "src/service/ingress_admin.cpp": "218c4a3c2ec469dcffbd25c8de1bfe7508bea9a9dd8954ce04661dbb1fa03de8",
+    "src/service/ingress_access.cpp": "6f138b82aa354c1e7ab62b94dd28aa1a13c9bdbee4fd3e76ec457c3a53593a8e",
+    "src/service/ingress_access_admin.cpp": "80c00ad12e223ab427b4e0b4c6b8c1e912ebd08ca7206201c0b5c5bf08e06917",
+    "src/service/ingress_admin.cpp": "766241235bab9d0e84490f72b66938e93fbee88757099ac2731ed6eae7afd1cc",
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
-    "src/service/ingress_main.cpp": "4715ec10928c023799d1a9bb08568c9b89973eec77a56cdaafe30596e7355984",
-    "src/service/ingress_tls.cpp": "5574d1ca0a45a9237aa3dbcad94258e55c14d36cc944c095eb3003c4713aac9f",
-    "src/service/ingress_transport.cpp": "c086f437eef70cb953a0f300413fa28b4468701a8442c2fafd83af719c682454",
+    "src/service/ingress_main.cpp": "2791847e46c0376d22c7f8d0302088cc45a9135c1c63787b252832e6f019dd34",
+    "src/service/ingress_proxy.cpp": "2ee7ea1d89fb17402feb2d7c3125dde322b61145161b244da35f7b6ddba7372c",
+    "src/service/ingress_tls.cpp": "676c3d18fc242aca0016ebecd182633e8299b7201903e7f7c6f0ea174d0a7d4f",
+    "src/service/ingress_transport.cpp": "9d2117ab9f5df1819e82521c045ac76bc9968322413018721a696fe24b9a5804",
+    "src/service/service_cli.cpp": "8050277163189b926b27b9b4ca88282c65ce7593fc26309c8e415febd01c987e",
     "src/text/tokenizer.cpp": "839f9333817ca010af2dc4bf90a8c24eab4359a5d8eb04192e1789397e0c2faf",
     "src/vision/media_plan.cpp": "30f1858fe11a14bb81f5ee2c80edef68e60cb7a03c7a0ec8132cc29936dff302",
     "src/vision/processor.cpp": "856d82bff8e5a67ce84693a6a2980aedd64b7e76c1e2416c77690108ae82e975",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
-    "tools/serve_gateway/gateway.py": "1e4b200477a5382d62b9fb42c79f816be04451c51629234c8dc31681d89201e4",
+    "tools/serve_gateway/gateway.py": "ce430422002d7168c86e4f85a9936cad0b12aec98679c50565b05b744e35cd40",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
-    "tools/serve_recovery/acceptance.py": "dbb4e8e64c8ef830076cce97f86e2288c2be7722dcd0992389469e7b7900907d",
+    "tools/serve_recovery/acceptance.py": "edb652d4fd38bee8ed52a013c8647ad1ee744a0843a8ef7f27661c39488ec670",
+    "tools/serve_recovery/access_control.py": "3f65d1257735880343990cca6e5c16409ab18b60a707bd901ff0a0dd4c957b1a",
+    "tools/serve_recovery/access_io.py": "953818d9272cb1a92ae070ed8a4804194f9849ed4e99ba0dabbee189f24bd25e",
+    "tools/serve_recovery/access_manager.py": "337d6848235ba35d63b603e72c055343472360d00060b5fe80417025553b238d",
+    "tools/serve_recovery/access_policy.py": "b0e57efefdd193a60fc50f09f8b5202d2333e73bcde2f8009a2bd3ff8fd79bd0",
+    "tools/serve_recovery/access_store.py": "fe2b32d8c9127955c40693053e2576012d64b89b747702e56cd98e55b3fa2753",
     "tools/serve_recovery/binding.py": "1f70edbce8cefd92700acf6df130101baa41f575cd24876f7e7d95772ba8cd18",
-    "tools/serve_recovery/bundle.py": "807b98ca96868e5cacce8c929350b1c4d0f934e1bc4ebd42196ff5a89456fe6c",
-    "tools/serve_recovery/child.py": "4707421055f57119c5de561440ca12b7f8967229eabb2191ba5298d6fd39329f",
-    "tools/serve_recovery/control.py": "bd8307bb3950122111d1d14d2451b54672599179b34a7d9d9ff375ebc53710c1",
-    "tools/serve_recovery/controller.py": "bdfaf3794b709d56457e1973bc2397521c36fbf7dfcda712b002fedfa24b81c4",
+    "tools/serve_recovery/build_tools.py": "86fb140de1b0873b962146f6822511fdbbdef22cf6ba3a8914efa516600cf218",
+    "tools/serve_recovery/bundle.py": "be84015ca750d67851edbed729a8a52546203fab4e85ddc836720ad2d4490c1a",
+    "tools/serve_recovery/child.py": "772272690b964c7b57c0998a41bd55d2f8f516b6351bcc9b2e763476f2ee54ae",
+    "tools/serve_recovery/control.py": "b61f15ad2e7e567ba76ba98d4d760009c2dff4bab59bec044a054fc08328de1b",
+    "tools/serve_recovery/controller.py": "d08ef58651c967ebc6ad1c5768297eaa7833855978f0a1653a715210968bf803",
     "tools/serve_recovery/core_http.py": "c682bfff760607ebc332a638a21eabdd658d03506c065287d336b170941db3b8",
     "tools/serve_recovery/cpu_exec.py": "6815ad563afb569fa7eb662d48b240066b69bc7da5ff44742a413f25045acfd1",
-    "tools/serve_recovery/fixture_controller.py": "0a5edd7e7fa7be1931aa3388c9c1d0da55d2b444bbcb7fc2530225cfc8fde6b6",
-    "tools/serve_recovery/fixture_gateway.py": "0e85e6d3f5db4780571d51b0127f67ca441cc0554d6be35fd61e839c99b2f490",
-    "tools/serve_recovery/fixture_model.py": "8c0d28f2ade53cbbbd043bbaf6f8cce6c8b3d3c3e54fa6a0d40ac077aa22cd4f",
-    "tools/serve_recovery/fixture_production.py": "8a7a225ecc9ad8514392a7121aad0e702e3259cb63336f2d3890236bdbcdf012",
-    "tools/serve_recovery/gateway.py": "6ad44e7e93cb5c76a4cd85a24b48dca6dea314cc5252bb70253694372524a78a",
-    "tools/serve_recovery/gateway_config.py": "38cde468cd2d8c4f3c7ce7c484eb1ad4ca7626af33150f2fab80f4238ac8309a",
+    "tools/serve_recovery/deployment.py": "b6b4b546f4a8269450c11106a9d178e4491196560f1d52062a61b592970cba3d",
+    "tools/serve_recovery/deployment_policy.py": "c76ae19e59fdebf85cbeb83d9ef485828497e1431adb15a817e16902936c3f1d",
+    "tools/serve_recovery/fixture_controller.py": "1065259d978032034008f5af5028442900e81279e78c7645a14e7c16d4f81a03",
+    "tools/serve_recovery/fixture_gateway.py": "2e6923f1b81e8ea60c362e9c18bccddbb4f17b4bdbc52efe3efa11911ea72896",
+    "tools/serve_recovery/fixture_model.py": "b7527fac2f8c3909680aaed91460eeab30b43314059174cba30b12a5dde7e06d",
+    "tools/serve_recovery/fixture_production.py": "defce0b6b814166605a8129f589dfff825312b8320f44938b3f28fc816d6c972",
+    "tools/serve_recovery/gateway.py": "09dd93be270bbd65a1c64a25ad53483561d83da33f10bcbda1e1f88008f09d44",
+    "tools/serve_recovery/gateway_config.py": "531c1c4a1d5fcdaf41f43c5fb5c9d38560c82132677bcad418458379ce290498",
+    "tools/serve_recovery/initialization.py": "5c8a0584d2fb21a13ab3de8ee5265bf7d898a9e8da5c5ff1f14c45d22c648f60",
     "tools/serve_recovery/jobs.py": "31dc2bf5a1e6d91cbfa1ce04a7726c72e5b0cf70a8dec3b12d9e71de3ce96d25",
     "tools/serve_recovery/journal.py": "b965cb03f08932b508c9af083abd7020abe25a5f9d8f5d1ad0920494ed127cac",
     "tools/serve_recovery/ledger.py": "4a2f1586dc4833de32c3caf3a6914babd1a994444355e69d0ede4556f5be1974",
+    "tools/serve_recovery/lifecycle.py": "bea9569eb42352ad8ebbca4a1513de073bb1c83ce8725962c1102d8982d7e2e2",
+    "tools/serve_recovery/model_admin.py": "ec2780d8cad6a5c7e423c6c15d27fda9394815e5182637077a6ad0bcf17c4542",
     "tools/serve_recovery/monitor.py": "5fb9f01cee45b7d008cde26fea3d9986a030a8a8a06ac435bc86932a0706aed9",
-    "tools/serve_recovery/native_ingress.py": "99ffd489538c5f391aa17049c28a42b1124eabea33700e35c71c3fc3cda6c7a8",
+    "tools/serve_recovery/native_ingress.py": "1eb41afc1e266f54d3d0040ed802d4cf554f1ebc2c5d7833c8d7fb4d2f4990ce",
     "tools/serve_recovery/observation_io.py": "e49138b50462d1acf1a5ef6b648f8bc5d00655de04ec86f25648385fdab4d772",
     "tools/serve_recovery/ownership.py": "1cb0182ca06ee3c1ebbaab5d598895990ece2a7720aec741ea84ffde68792254",
     "tools/serve_recovery/policy.py": "db6e82bff6894c22bfe26a73e787c24362d1102a374bd18659eae81df4457bd2",
     "tools/serve_recovery/progress.py": "f008b5f27a88cccff92232c3cc385722f67869445f9d75f49c7d8c216c1ab761",
-    "tools/serve_recovery/service.py": "1e4fa0e4f8508c774b38560003d6da2cdf306e489bd0b7013b3e319752c53d00",
-    "tools/serve_recovery/store.py": "0eef06d1a10b4ef0911f671e0378ae3849caeabeaabbbe296981a2e4291e59ee",
+    "tools/serve_recovery/publication.py": "a3211f3c1e117f0f7922fa8f3ddaed7aaeab36d9293ae4a3324f8f78930b0205",
+    "tools/serve_recovery/publication_files.py": "9db760bdf1ecf5494fc4474b4fbac2e2b87f734f847b590548e325f5b3d83ec1",
+    "tools/serve_recovery/publication_journal.py": "29fb6a8ab795ef6f532de2a3c8eebd6ca2470799c7b181a7e1acae20e4578ee6",
+    "tools/serve_recovery/publication_policy.py": "2d5d71e710b85aeb8410ccf9f7d74d05e4995396299042eccaef5b099562b979",
+    "tools/serve_recovery/quota_control.py": "5c1852d88c00af0de630c0fefaf9f161b96bc724d8e09b6f96efee226b7bb0df",
+    "tools/serve_recovery/quota_manager.py": "d4e42ef4e419f8f5a2995a2a4312c05b3a759e04f8a32c1684228d6c350ae445",
+    "tools/serve_recovery/quota_policy.py": "840bebc08cdd79380763997f6172ef9803bad23dfffe6bd094229662450aed9d",
+    "tools/serve_recovery/quota_runtime.py": "ded3f58001ae462c9a3da8c4427415a1c9399800ed5e4a73214d315f4f465f5a",
+    "tools/serve_recovery/quota_store.py": "e31fa84315cf662f83dc1111a52d31c3fd6195b5bc2ba2c6044e4bbf4f011887",
+    "tools/serve_recovery/retention.py": "50ac3f309bb9449748ac49322233b5224820d2047034fd31b0e8793801078077",
+    "tools/serve_recovery/retention_epoch.py": "e6819f11405851206c1093fea6a2c2174c232036c2056c48b5609ff636693640",
+    "tools/serve_recovery/service.py": "e9abdd1cc76c34439e209a6e982c78b6f9962e2f30a70b072217093a0e34828b",
+    "tools/serve_recovery/store.py": "acba9fcc611989393ad10aa67092fb0eb3a308833fd52ff3c2cdf5430da0523d",
     "tools/serve_recovery/tls_control.py": "75399601eb9649189367915fcfb417dbb786adaf37c9f8089c3060234dd3daee",
+    "tools/serve_recovery/usage_control.py": "a6b31714fe67974473911f6bddab33f6687c7a0e4ccf920d3409fe6962994fbc",
+    "tools/serve_recovery/usage_io.py": "8fb62bf04aa3cc1a8602bf3b79b3efdebdf6a80fe0561502596e98db07071472",
+    "tools/serve_recovery/usage_manager.py": "c275ce265478e351c0bde8b6d863d8902995050f308eaaefa272295217f7ed2a",
+    "tools/serve_recovery/usage_policy.py": "08d40b1d5365f7f2ebc2b3883cfbe01f692965c58f80873bef2c165f40f81c0a",
+    "tools/serve_recovery/usage_runtime.py": "b1110f7f69102db7e99339d46b2db2d477413a04c4cd2e0dc46300aa81b2e2c0",
+    "tools/serve_recovery/usage_store.py": "b674797ba44e132ce63b57c3888baa0271e756b7518ef6ff0b90aee9a6397603",
     "tools/serve_service/acceptance.py": "a0d52e8c055c6afc1478ee5f65e93daa563c6143e79f529a92d0e73723488cf7",
     "tools/serve_service/auxiliary.py": "9b818763694570b63efa394e01fc327300d8ee375bc8f7009023937b1061bbdf",
     "tools/serve_service/backend.py": "49a37862d8040aceed14df796cb24535cacfeced3fe779773ec6925b04eeefa9",
+    "tools/serve_service/capacity.py": "1ea72fb1a54f80200a18a59acd04161eec5b2a54d2dd0fe5cf55acae9182f526",
     "tools/serve_service/closeout.py": "1475638adafe45f52fd4663c5d189ae0804428ba35be0b3d4fa852e64f7a98f8",
     "tools/serve_service/closeout_acceptance.py": "c7a3c01c757a4c253213cc8997c87a4bd7bb2baf42882ad05f3e117b7f6373cc",
     "tools/serve_service/controller_closeout.py": "e3067774ade57ec967e141d692e8df6a4dfdbd27bf057a1923179d01019b68ac",
@@ -1389,10 +1559,10 @@
     "tools/serve_service/memory.py": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
     "tools/serve_service/memory_acceptance.py": "afaa1a666bdbb7d279d0d48b0db849402849905fed9356ecfd50f5cebe098161",
     "tools/serve_service/memory_closeout.py": "7e4afadc351746afb89d9ce39377489bfdd9c0ed81d5a5aef90fbbb2b6737a4f",
-    "tools/serve_service/monitor_control.py": "06fc8f1477f166e79e57f6d12d0e0554af949c92f3d26d2dd5b68ba84dcd392c",
+    "tools/serve_service/monitor_control.py": "4dbf6bc178df8dac83fbb9ed801ecf7d63ecc0bd28360f8b92c9a8555ca37788",
     "tools/serve_service/nvml_acceptance.py": "8db02e4ed57a83f13c8b69d91d1176934fb686895f990ad91eabc75400338e5c",
     "tools/serve_service/nvml_policy.py": "817b2500044cd2eeed4277ad95d2686bf11f4785282ea1149beb63d62b0ef9a6",
-    "tools/serve_service/package.py": "ff283c216e5c1e6b0f68b363c8cf58b89b98eefec7b59b5d060dfd6b86e7605c",
+    "tools/serve_service/package.py": "568c2da53e16ee1a5b6a9709ab4a185654d0c78db421a61791a0827fc1eda293",
     "tools/serve_service/resource_cpu.py": "429be87556272388bf3a4f163b8f77f590da25187f8e7f2a4bfbf7752fd205e1",
     "tools/serve_service/resource_driver_cpu.py": "92830ecaff6f6f9403659127e4ded50d524a84db87af8b47644092f37203855c",
     "tools/serve_service/resource_kernel.py": "6ccf288aebf24c4a7ea3646898cc05d4ba03618c53dc738e026490ef6e1bdd34",
@@ -1402,8 +1572,8 @@
     "tools/serve_service/resource_stage.py": "4aa07182ad087722b0cdc6a250be0d6d48caa681cb9231c9bdf6a6d341aa8064",
     "tools/serve_service/resource_worker.py": "dc448b8e295df6282af4027c1e061c06b11a6f0b927027a32ad3f326cd620eec",
     "tools/serve_service/resources.py": "2b72ea6775ef6067eacb4ce6351a58e4a2bac1145e3869165a142a75f81245b2",
-    "tools/serve_service/service.py": "c525aa1d969cc12938a8643190b7de58e9a056fe55f75df713a488acefb2417d",
-    "tools/serve_service/supervisor.py": "21348143c5e4f46fed07a338977f984a58d6eb7c5e2f1e08caa29157929d6764",
+    "tools/serve_service/service.py": "28f39a045360d93f160c9317803af78e2a7cdec7f175eecd1975eb77799dc2eb",
+    "tools/serve_service/supervisor.py": "16e98461340bdc8d21a46b7273872e856abf3dad403b5530382f0bfee275007f",
     "tools/serve_service/supplement.py": "7da3cd37f6a0c1bf746aa8856570b9c7724ba155745c2b9910f5ffc2e8d65d57",
     "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f"
   },
@@ -1716,6 +1886,15 @@
     ]
   },
   "native_routes": {
+    "DELETE /v1/chat/completions/{completion_id}": {
+      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
+      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
+      "evidence": [
+        "tests/server_chat_storage_test.cpp",
+        "tools/serve_chat_storage/test_sdk.mjs",
+        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
+      ]
+    },
     "DELETE /v1/conversations/{conversation_id}": {
       "semantics": "原生Conversations会话/成员CRUD、分页与投影；DELETE /v1/conversations/{conversation_id}",
       "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
@@ -1743,6 +1922,14 @@
         "docs/SERVE_COMPLETIONS_2026-11-08.md",
         "tests/server_completion_test.cpp",
         "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "DELETE /v1/prompts/{prompt_id}": {
+      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp"
       ]
     },
     "DELETE /v1/responses/{response_id}": {
@@ -1805,6 +1992,33 @@
         "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
       ]
     },
+    "GET /v1/chat/completions": {
+      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
+      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
+      "evidence": [
+        "tests/server_chat_storage_test.cpp",
+        "tools/serve_chat_storage/test_sdk.mjs",
+        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
+      ]
+    },
+    "GET /v1/chat/completions/{completion_id}": {
+      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
+      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
+      "evidence": [
+        "tests/server_chat_storage_test.cpp",
+        "tools/serve_chat_storage/test_sdk.mjs",
+        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
+      ]
+    },
+    "GET /v1/chat/completions/{completion_id}/messages": {
+      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
+      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
+      "evidence": [
+        "tests/server_chat_storage_test.cpp",
+        "tools/serve_chat_storage/test_sdk.mjs",
+        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
+      ]
+    },
     "GET /v1/conversations/{conversation_id}": {
       "semantics": "原生Conversations会话/成员CRUD、分页与投影；GET /v1/conversations/{conversation_id}",
       "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
@@ -1854,6 +2068,30 @@
         "docs/SERVE_COMPLETIONS_2026-11-08.md",
         "tests/server_completion_test.cpp",
         "tools/serve_recovery/test_native_ingress.py"
+      ]
+    },
+    "GET /v1/prompts": {
+      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/prompts/{prompt_id}": {
+      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/prompts/{prompt_id}/versions/{version}": {
+      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp"
       ]
     },
     "GET /v1/responses/{response_id}": {
@@ -1933,6 +2171,24 @@
         "tools/serve_recovery/test_native_access.py",
         "tools/serve_recovery/test_native_browser.py",
         "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+      ]
+    },
+    "OPTIONS /v1/chat/completions/{completion_id}": {
+      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
+      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
+      "evidence": [
+        "tests/server_chat_storage_test.cpp",
+        "tools/serve_chat_storage/test_sdk.mjs",
+        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
+      ]
+    },
+    "OPTIONS /v1/chat/completions/{completion_id}/messages": {
+      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
+      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
+      "evidence": [
+        "tests/server_chat_storage_test.cpp",
+        "tools/serve_chat_storage/test_sdk.mjs",
+        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
       ]
     },
     "OPTIONS /v1/chat/preflight": {
@@ -2015,6 +2271,38 @@
         "tools/serve_recovery/test_native_ingress.py"
       ]
     },
+    "OPTIONS /v1/prompts": {
+      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/prompts/{prompt_id}": {
+      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/prompts/{prompt_id}/versions": {
+      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/prompts/{prompt_id}/versions/{version}": {
+      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
     "OPTIONS /v1/requests/cancel": {
       "semantics": "CORS preflight for the configured actual method/route; Origin/method/header allowlist with credentials rules and Vary.",
       "boundary": "Actual peer CIDR and Host remain required; no model/admission/minute-quota work. Actual subsequent call requires its own Key and model binding.",
@@ -2036,6 +2324,14 @@
         "tests/server_responses_api_test.cpp",
         "tools/serve_recovery/test_native_ingress.py",
         "docs/evidence/serve-responses-recovery-20261109/README.md"
+      ]
+    },
+    "OPTIONS /v1/responses/compact": {
+      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp"
       ]
     },
     "OPTIONS /v1/responses/{response_id}": {
@@ -2084,6 +2380,15 @@
         "docs/SERVE_NATIVE_INGRESS_PLAN_2026-11-08.md",
         "tools/serve_recovery/test_native_access.py",
         "docs/SERVE_NATIVE_ACCESS_2026-11-08.md"
+      ]
+    },
+    "POST /v1/chat/completions/{completion_id}": {
+      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
+      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
+      "evidence": [
+        "tests/server_chat_storage_test.cpp",
+        "tools/serve_chat_storage/test_sdk.mjs",
+        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
       ]
     },
     "POST /v1/chat/preflight": {
@@ -2137,6 +2442,30 @@
         "tools/serve_recovery/test_native_access.py"
       ]
     },
+    "POST /v1/prompts": {
+      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/prompts/{prompt_id}": {
+      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/prompts/{prompt_id}/versions": {
+      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
     "POST /v1/requests/cancel": {
       "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
       "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
@@ -2161,6 +2490,14 @@
         "docs/evidence/serve-responses-recovery-20261109/README.md"
       ]
     },
+    "POST /v1/responses/compact": {
+      "semantics": "Native client-owned immutable Prompt registry with conditional versions, or reviewed native compact route/preflight.",
+      "boundary": "Prompt management is a local extension; authenticated scope, body/quota and CORS policies apply. Prompt verification in progress; compact execution previously accepted.",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
     "POST /v1/responses/{response_id}/cancel": {
       "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
       "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
@@ -2171,69 +2508,6 @@
         "tests/server_responses_api_test.cpp",
         "tools/serve_recovery/test_native_ingress.py",
         "docs/evidence/serve-responses-recovery-20261109/README.md"
-      ]
-    },
-    "DELETE /v1/chat/completions/{completion_id}": {
-      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
-      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
-      "evidence": [
-        "tests/server_chat_storage_test.cpp",
-        "tools/serve_chat_storage/test_sdk.mjs",
-        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
-      ]
-    },
-    "GET /v1/chat/completions": {
-      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
-      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
-      "evidence": [
-        "tests/server_chat_storage_test.cpp",
-        "tools/serve_chat_storage/test_sdk.mjs",
-        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
-      ]
-    },
-    "GET /v1/chat/completions/{completion_id}": {
-      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
-      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
-      "evidence": [
-        "tests/server_chat_storage_test.cpp",
-        "tools/serve_chat_storage/test_sdk.mjs",
-        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
-      ]
-    },
-    "GET /v1/chat/completions/{completion_id}/messages": {
-      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
-      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
-      "evidence": [
-        "tests/server_chat_storage_test.cpp",
-        "tools/serve_chat_storage/test_sdk.mjs",
-        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
-      ]
-    },
-    "OPTIONS /v1/chat/completions/{completion_id}": {
-      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
-      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
-      "evidence": [
-        "tests/server_chat_storage_test.cpp",
-        "tools/serve_chat_storage/test_sdk.mjs",
-        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
-      ]
-    },
-    "OPTIONS /v1/chat/completions/{completion_id}/messages": {
-      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
-      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
-      "evidence": [
-        "tests/server_chat_storage_test.cpp",
-        "tools/serve_chat_storage/test_sdk.mjs",
-        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
-      ]
-    },
-    "POST /v1/chat/completions/{completion_id}": {
-      "semantics": "Native stored Chat: optional store/metadata, completed choices and original inputs, client-scoped CRUD/filter/cursor pagination; native TLS/CORS/control admission.",
-      "boundary": "Implementation in progress; final durable receipt before terminal success. No write replay on unknown receipt. CPU/core accepted, integration and real business pending; does not complete A08.",
-      "evidence": [
-        "tests/server_chat_storage_test.cpp",
-        "tools/serve_chat_storage/test_sdk.mjs",
-        "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
       ]
     }
   },

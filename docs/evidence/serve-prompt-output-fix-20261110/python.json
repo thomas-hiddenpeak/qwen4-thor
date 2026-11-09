@@ -1,0 +1,13 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "tools.serve_responses.test_prompt_contract.PromptContract.test_actual_native_resources_response_and_events",
+    "tools.serve_responses.test_prompt_acceptance",
+    "-v"
+  ],
+  "exit_code": 0,
+  "seconds": 0.32012650975957513
+}

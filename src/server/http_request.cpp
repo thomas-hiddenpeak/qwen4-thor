@@ -325,7 +325,7 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
   const size_t route_limit =
       IsStoredChatTarget(*path) || *path == "/v1/chat/preflight" ||
               *path == "/v1/completions" || IsResponsesTarget(*path) ||
-              IsConversationTarget(*path)
+              IsConversationTarget(*path) || IsPromptTarget(*path)
           ? kChatBodyBytes : 4096;
   const auto reserve = [&](size_t bytes) {
     if (bytes > std::min(route_limit, headers->body_limit)) {

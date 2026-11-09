@@ -134,3 +134,25 @@ A07.3 [可回退默认交付完成](evidence/serve-responses-encryption-delivery
 A07.4 [15 项基础/回填 CPU](evidence/serve-compaction-foundation-20261109/README.md)最终通过，首公开消息 ID 形状缺口及 2 项补验保留。host 零警告，0 GPU；原生压缩模型步骤、共享预算/计量、自动阈值/compact 路由/SSE/持久化尚在继续，默认未变，不能把基础当功能交付。
 
 A07.4 [执行与协议 CPU](evidence/serve-compaction-execution-20261109/README.md)已接受：23 C++/5 schema/2 官方 SDK、57 线协议值。原生模型步骤、共享预算/累计 TPM/一次 RPM、自动阈值（默认上下文4/5）、显式 trigger 与独立 compact 已接通；自动记忆占共享输出一半且最多512，独立用配置默认上限。实际计量未缩短或生成截断不发布成功密文，无可压缩项不编造模型 token。此为功能实现，不作性能优化结论。既有 SSE 填充改为文档要求的 delta-only，严格 schema/SDK 补验通过。真实业务及默认交付尚待推进，之后全部余项继续。
+
+### A07.5 本地 Prompt：不可变版本与实际上下文
+
+2026-11-09开始。固定 JS SDK7.47.0的 ResponsePrompt 为id、可省略version、string/input_text/input_image/input_file变量映射。当前官方[文本指南](https://developers.openai.com/api/docs/guides/text#version-prompts-in-code)已提示云端Prompt对象退役与代码迁移；这是版本差异，不删去本计划中既定的本地兼容能力。注册接口标为q4t原生管理扩展，不冒称云端账号/Prompt互通。
+
+- 复用已隔离的ObjectStore，不增加外部Web服务；原生/v1/prompts创建、分页查询、版本追加/读取、默认版本选择与删除，实际API Key scope控制所有权。每条记录保留至显式删除并计入现有配额。
+- 同一Prompt的版本只追加，不覆盖；默认版本指针用expected_revision比较后更新，旧版本可显式选择。定义与别名一次原子写入，丢回执先读不自动重放。单定义256KiB/64变量/64版本，展开4MiB，容量耗尽明确拒绝。
+- 定义包含generation request和变量类型；只对instructions及input内容做一次文本/媒体替换。变量内容不递归解释，也不能改变消息角色、工具名或schema。请求显式参数覆盖模板缺省；模板input在本次调用input前展开，历史仍由ResponsesState归属校验和拼接。
+- 提交时解析固定版本并保存已经展开的有效请求和标准prompt引用；后台重启使用该快照，不重新读取可能已变化/删除的注册表。展开后继续真实模板/媒体/限额/工具与token计量，不绕过原合同。
+- 先成组实现基础/HTTP/执行/声明，再冻结直接CPU；随后最多2启动/8请求/900秒的真实SDK文本、版本切换、工具及后台短验。已过旧阶段不重复全矩阵。文件变量结构与归属继续连接A09实际文件后端，不能伪造文件内容。
+- 本轮发现SSE回放投影仍对非delta添加obfuscation，连同注册/后台直接受影响用例修复；原持久事件不改写。
+
+A07.5 [27 项 CPU/来源检查](evidence/serve-prompts-cpu-20261109/README.md)及随后发现的[输出引用缺口修复、8 项补验](evidence/serve-prompt-output-fix-20261110/README.md)通过。响应、排队快照及 SSE 生命周期均保留固定后的 prompt 引用；首驱动失败保留。必要构建零警告，真实 SDK/模型短验待执行；默认仍 A07.4。
+
+本地管理接口使用当前 API Key：`POST /v1/prompts` 的 body 是
+`{"definition":{"request":{"input":"{{question}}"},"variables":{"question":"string"}}}`。
+返回本服务 ID 后，通过 Responses 的
+`{"prompt":{"id":"返回的ID","variables":{"question":"17+25等于多少？"}}}`
+执行。`POST /v1/prompts/{id}/versions` 使用 definition 和 expected_revision
+追加版本；`POST /v1/prompts/{id}` 使用 default_version 和 expected_revision
+切换默认，`GET /v1/prompts/{id}/versions/{version}`读取不可变定义。
+删除只影响未来引用，已保存响应/后台有效请求继续持有原版本和上下文。

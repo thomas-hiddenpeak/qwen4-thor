@@ -1208,6 +1208,480 @@
         }
       }
     },
+    "/v1/prompts": {
+      "post": {
+        "operationId": "post_v1_prompts",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/prompt_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "prompt_create",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/prompt_create"
+              }
+            }
+          }
+        },
+        "description": "q4t native Prompt registry, scoped to authenticated client. Immutable versions; revision-conditional append/default selection; durable effective request snapshots. Does not access hosted prompt accounts."
+      },
+      "get": {
+        "operationId": "get_v1_prompts",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            },
+            "style": "form",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/prompt_list"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "prompt_query",
+        "x-q4t-body-contract": "empty body only",
+        "description": "q4t native Prompt registry, scoped to authenticated client. Immutable versions; revision-conditional append/default selection; durable effective request snapshots. Does not access hosted prompt accounts."
+      }
+    },
+    "/v1/prompts/{prompt_id}": {
+      "get": {
+        "operationId": "get_v1_prompts_prompt_id",
+        "parameters": [
+          {
+            "name": "prompt_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/prompt_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only",
+        "description": "q4t native Prompt registry, scoped to authenticated client. Immutable versions; revision-conditional append/default selection; durable effective request snapshots. Does not access hosted prompt accounts."
+      },
+      "post": {
+        "operationId": "post_v1_prompts_prompt_id",
+        "parameters": [
+          {
+            "name": "prompt_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/prompt_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "prompt_select",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/prompt_select"
+              }
+            }
+          }
+        },
+        "description": "q4t native Prompt registry, scoped to authenticated client. Immutable versions; revision-conditional append/default selection; durable effective request snapshots. Does not access hosted prompt accounts."
+      },
+      "delete": {
+        "operationId": "delete_v1_prompts_prompt_id",
+        "parameters": [
+          {
+            "name": "prompt_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/prompt_deleted"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only",
+        "description": "q4t native Prompt registry, scoped to authenticated client. Immutable versions; revision-conditional append/default selection; durable effective request snapshots. Does not access hosted prompt accounts."
+      }
+    },
+    "/v1/prompts/{prompt_id}/versions": {
+      "post": {
+        "operationId": "post_v1_prompts_prompt_id_versions",
+        "parameters": [
+          {
+            "name": "prompt_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/prompt_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "prompt_append",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/prompt_append"
+              }
+            }
+          }
+        },
+        "description": "q4t native Prompt registry, scoped to authenticated client. Immutable versions; revision-conditional append/default selection; durable effective request snapshots. Does not access hosted prompt accounts."
+      }
+    },
+    "/v1/prompts/{prompt_id}/versions/{version}": {
+      "get": {
+        "operationId": "get_v1_prompts_prompt_id_versions_version",
+        "parameters": [
+          {
+            "name": "prompt_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/prompt_version"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only",
+        "description": "q4t native Prompt registry, scoped to authenticated client. Immutable versions; revision-conditional append/default selection; durable effective request snapshots. Does not access hosted prompt accounts."
+      }
+    },
     "/v1/responses": {
       "post": {
         "operationId": "post_v1_responses",
@@ -26906,6 +27380,520 @@
               "last_id",
               "has_more"
             ],
+            "additionalProperties": false
+          },
+          "prompt_definition": {
+            "type": "object",
+            "properties": {
+              "request": {
+                "type": "object",
+                "properties": {
+                  "model": {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/683"
+                  },
+                  "instructions": {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
+                  },
+                  "input": {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/679"
+                  },
+                  "reasoning": {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/818"
+                  },
+                  "text": {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/837"
+                  },
+                  "tools": {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/859"
+                  },
+                  "tool_choice": {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/843"
+                  },
+                  "parallel_tool_calls": {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/368"
+                  },
+                  "temperature": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 2
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "top_p": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "top_logprobs": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 20
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "max_output_tokens": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 2147483647
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "max_tool_calls": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 2147483647
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "truncation": {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/860"
+                  },
+                  "include": {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/668"
+                  },
+                  "context_management": {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/663"
+                  },
+                  "prompt_cache_key": {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
+                  },
+                  "prompt_cache_retention": {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/815"
+                  },
+                  "prompt_cache_options": {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/810"
+                  },
+                  "moderation": {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/794"
+                  },
+                  "access_programs": {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/657"
+                  }
+                },
+                "required": [],
+                "additionalProperties": false
+              },
+              "variables": {
+                "type": "object",
+                "maxProperties": 64,
+                "propertyNames": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64,
+                  "pattern": "^[^\\s{}\\x00-\\x1f\\x7f]+$"
+                },
+                "additionalProperties": {
+                  "enum": [
+                    "string",
+                    "input_text",
+                    "input_image",
+                    "input_file"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "request",
+              "variables"
+            ],
+            "additionalProperties": false
+          },
+          "prompt_create": {
+            "type": "object",
+            "properties": {
+              "definition": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/prompt_definition"
+              }
+            },
+            "required": [
+              "definition"
+            ],
+            "additionalProperties": false
+          },
+          "prompt_append": {
+            "type": "object",
+            "properties": {
+              "definition": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/prompt_definition"
+              },
+              "expected_revision": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "definition",
+              "expected_revision"
+            ],
+            "additionalProperties": false
+          },
+          "prompt_select": {
+            "type": "object",
+            "properties": {
+              "default_version": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,8}$"
+              },
+              "expected_revision": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "default_version",
+              "expected_revision"
+            ],
+            "additionalProperties": false
+          },
+          "prompt_resource": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]{1,128}$"
+              },
+              "object": {
+                "const": "prompt"
+              },
+              "created_at": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "revision": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "default_version": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,8}$"
+              },
+              "versions": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 64,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "version": {
+                      "type": "string",
+                      "pattern": "^[1-9][0-9]{0,8}$"
+                    },
+                    "created_at": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "version",
+                    "created_at"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "id",
+              "object",
+              "created_at",
+              "revision",
+              "default_version",
+              "versions"
+            ],
+            "additionalProperties": false
+          },
+          "prompt_version": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]{1,128}$"
+              },
+              "object": {
+                "const": "prompt.version"
+              },
+              "version": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,8}$"
+              },
+              "created_at": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "definition": {
+                "type": "object",
+                "properties": {
+                  "request": {
+                    "type": "object",
+                    "properties": {
+                      "model": {
+                        "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/683"
+                      },
+                      "instructions": {
+                        "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
+                      },
+                      "input": {
+                        "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/679"
+                      },
+                      "reasoning": {
+                        "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/818"
+                      },
+                      "text": {
+                        "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/837"
+                      },
+                      "tools": {
+                        "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/859"
+                      },
+                      "tool_choice": {
+                        "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/843"
+                      },
+                      "parallel_tool_calls": {
+                        "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/368"
+                      },
+                      "temperature": {
+                        "anyOf": [
+                          {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 2
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "top_p": {
+                        "anyOf": [
+                          {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "top_logprobs": {
+                        "anyOf": [
+                          {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 20
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "max_output_tokens": {
+                        "anyOf": [
+                          {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 2147483647
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "max_tool_calls": {
+                        "anyOf": [
+                          {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 2147483647
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "truncation": {
+                        "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/860"
+                      },
+                      "include": {
+                        "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/668"
+                      },
+                      "context_management": {
+                        "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/663"
+                      },
+                      "prompt_cache_key": {
+                        "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
+                      },
+                      "prompt_cache_retention": {
+                        "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/815"
+                      },
+                      "prompt_cache_options": {
+                        "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/810"
+                      },
+                      "moderation": {
+                        "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/794"
+                      },
+                      "access_programs": {
+                        "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/657"
+                      }
+                    },
+                    "required": [],
+                    "additionalProperties": false
+                  },
+                  "variables": {
+                    "type": "object",
+                    "maxProperties": 64,
+                    "propertyNames": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 64,
+                      "pattern": "^[^\\s{}\\x00-\\x1f\\x7f]+$"
+                    },
+                    "additionalProperties": {
+                      "enum": [
+                        "string",
+                        "input_text",
+                        "input_image",
+                        "input_file"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "request",
+                  "variables"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "id",
+              "object",
+              "version",
+              "created_at",
+              "definition"
+            ],
+            "additionalProperties": false
+          },
+          "prompt_deleted": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]{1,128}$"
+              },
+              "object": {
+                "const": "prompt.deleted"
+              },
+              "deleted": {
+                "const": true
+              }
+            },
+            "required": [
+              "id",
+              "object",
+              "deleted"
+            ],
+            "additionalProperties": false
+          },
+          "prompt_list": {
+            "type": "object",
+            "properties": {
+              "object": {
+                "const": "list"
+              },
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/prompt_resource"
+                }
+              },
+              "first_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "last_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "object",
+              "data",
+              "first_id",
+              "last_id",
+              "has_more"
+            ],
+            "additionalProperties": false
+          },
+          "prompt_query": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100
+              },
+              "order": {
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              },
+              "after": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]{1,128}$"
+              },
+              "before": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]{1,128}$"
+              }
+            },
+            "required": [],
             "additionalProperties": false
           }
         },

@@ -113,7 +113,8 @@ class Stack:
                 elif self.path.startswith('/v1/models/'):
                     self.model_detail('GET')
                 elif (self.path.split('?', 1)[0] == '/v1/chat/completions' or
-                      self.path.startswith(('/v1/conversations/', '/v1/responses/',
+                      self.path.split('?', 1)[0] == '/v1/prompts' or
+                      self.path.startswith(('/v1/prompts/', '/v1/conversations/', '/v1/responses/',
                                             '/v1/chat/completions/'))):
                     self.application('GET')
                 else:
@@ -155,14 +156,14 @@ class Stack:
                 self.response(200, dict(cpu_fixture=True, method=method,
                                         path=self.path, client=row['client']))
             def do_DELETE(self):
-                if self.path.startswith(('/v1/conversations/', '/v1/responses/',
+                if self.path.startswith(('/v1/prompts/', '/v1/conversations/', '/v1/responses/',
                                          '/v1/chat/completions/')):
                     self.application('DELETE')
                 else:
                     self.model_detail('DELETE')
             def do_POST(self):
                 self.close_connection = True
-                if self.path.split('?', 1)[0] in ('/v1/conversations', '/v1/responses') or self.path.startswith(('/v1/conversations/', '/v1/responses/', '/v1/chat/completions/')):
+                if self.path.split('?', 1)[0] in ('/v1/prompts', '/v1/conversations', '/v1/responses') or self.path.startswith(('/v1/prompts/', '/v1/conversations/', '/v1/responses/', '/v1/chat/completions/')):
                     self.application('POST')
                     return
                 raw = self.rfile.read(int(self.headers.get('Content-Length', '0')))

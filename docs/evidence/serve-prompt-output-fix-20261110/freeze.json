@@ -1,0 +1,21 @@
+{
+  "reason": "Actual C++ response omitted SDK prompt reference; fix live/saved/queued lifecycle output. Preserve first oracle failure.",
+  "cpp": [
+    "prompt_effective_request_uses_overrides_and_actual_context",
+    "prompt_queue_restores_frozen_version_after_registry_change_and_delete",
+    "prompt_api_enforces_routes_revision_body_and_query",
+    "responses_output_obfuscation_and_malformed_probabilities"
+  ],
+  "python": [
+    "PromptContract.test_actual_native_resources_response_and_events",
+    "PromptAcceptance (all 3)"
+  ],
+  "sources": {
+    "src/server/responses_output.cpp": "83c3f08e20bdb7bb66dc128a783c910118560626062cba181819af0b7f3ba139",
+    "tests/server_prompt_registry_test.cpp": "1ef84833097a6c8a45ac3fef11fda95d9636c08fd4d6d39393499df0b75f410e",
+    "tools/serve_responses/test_prompt_acceptance.py": "a9919f2ca0d46d4c4c00047d6434721074f593aa08bab66b7fce8599788aa5dc",
+    "tools/serve_responses/prompt_acceptance.py": "6a937f2500a5d050682d91cf86cca18c9492b0035c7d9db0d27d89c64a27c012"
+  },
+  "reuse": "19 C++/6 schema/2 native ingress source-specific evidence; only affected output/source checks rerun",
+  "gpu_starts": 0
+}

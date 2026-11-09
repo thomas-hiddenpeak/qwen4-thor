@@ -350,9 +350,11 @@ constexpr RouteSpec kRoutes[] = {
 
 bool Route(const std::string& method, const std::string& path, bool* control) {
   if (server::ConversationMethodAllowed(method, path) ||
+      server::PromptMethodAllowed(method, path) ||
       server::ResponsesMethodAllowed(method, path) ||
       server::StoredChatMethodAllowed(method, path)) {
     *control = server::IsResponsesObservation(method, path) ||
+               server::IsPromptObservation(method, path) ||
                server::IsResponseCancellation(method, path) ||
                server::IsStoredChatManagement(method, path);
     return true;

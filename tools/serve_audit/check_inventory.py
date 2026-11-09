@@ -68,6 +68,11 @@ def current_surface(root):
             'path.substr(end) == "/cancel"' not in application_routes:
         raise ValueError("review Responses cancellation/control route extractor")
     native_routes.append(("POST", "/v1/responses", "false"))
+    if 'if (IsResponsesCompaction(path))' not in dispatch or \
+            'if (IsResponsesCompaction(path)) return method == "POST"' not in application_routes:
+        raise ValueError("review native compact transport extractor")
+    routes.append(("/v1/responses/compact", "POST"))
+    native_routes.append(("POST", "/v1/responses/compact", "false"))
     native_routes.extend((method, path, "true") for method, path in responses)
     if 'HandleStoredChatRequest(*objects_' not in dispatch or \
             'server::StoredChatMethodAllowed(method, path)' not in native or \
@@ -80,6 +85,17 @@ def current_surface(root):
              ("GET", "/v1/chat/completions/{completion_id}/messages")]
     routes.extend((path, method) for method, path in chats)
     native_routes.extend((method, path, "true") for method, path in chats)
+    if 'HandlePromptRequest(*objects_' not in dispatch or \
+            'server::PromptMethodAllowed(method, path)' not in native or \
+            'inline bool PromptMethodAllowed' not in application_routes:
+        raise ValueError("review dynamic native Prompt registry extractor")
+    prompts = [*((method, "/v1/prompts") for method in ("GET", "POST")),
+               *((method, "/v1/prompts/{prompt_id}") for method in ("GET", "POST", "DELETE")),
+               ("POST", "/v1/prompts/{prompt_id}/versions"),
+               ("GET", "/v1/prompts/{prompt_id}/versions/{version}")]
+    routes.extend((path, method) for method, path in prompts)
+    native_routes.extend((method, path, "true" if method != "POST" else "false")
+                         for method, path in prompts)
     if 'if (method == "OPTIONS")' in native:
         if 'config.cors.Preflight(' not in native:
             raise ValueError("review native OPTIONS handler before cataloguing")
@@ -92,7 +108,7 @@ def current_surface(root):
                  "input_contract.cpp", "chat_tool_history.cpp",
                  "chat_template.cpp", "legacy_tools.cpp", "completion_plan.cpp",
                  "conversation_api.cpp", "responses_plan.cpp", "responses_api.cpp",
-                 "chat_storage.cpp"):
+                 "chat_storage.cpp", "prompt_api.cpp", "prompt_template.cpp"):
         source = (root / "src/server" / file).read_text()
         for index, item in enumerate(re.finditer(
                 r'(?:Input)?Fields\(\s*([^,]+),\s*\{([^}]+)\}', source)):

@@ -71,14 +71,21 @@ ObjectReply ResponsesExecution::Prepare(const Json& request,
   access_ = std::move(access);
   ChatPlanError error;
   Json compact_request;
+  Json expanded_request;
+  const Json* effective = &request;
   Status status;
-  if (standalone_compaction_)
+  if (standalone_compaction_) {
     status = NormalizeResponsesCompactRequest(request, config, &compact_request,
                                               &error);
+    effective = &compact_request;
+  } else if (Nonnull(request, "prompt")) {
+    auto expanded = prompts_.Expand(request, config, access_);
+    if (!expanded.ok()) return expanded;
+    expanded_request = std::move(expanded.value);
+    effective = &expanded_request;
+  }
   if (status)
-    status = ParseResponsesEnvelope(
-        standalone_compaction_ ? compact_request : request, config, &envelope_,
-        &error);
+    status = ParseResponsesEnvelope(*effective, config, &envelope_, &error);
   if (!status) {
     auto reply = Error(error.http_status, error.code, status.message());
     reply.value = Object({{"param", String(error.param)}});
@@ -101,7 +108,7 @@ ObjectReply ResponsesExecution::RequiredExecutors(
   else if (envelope_.reasoning_mode != "standard")
     required = "reasoning.mode";
   for (const char* key :
-       {"prompt", "access_programs", "moderation", "prompt_cache_options"})
+       {"access_programs", "moderation", "prompt_cache_options"})
     if (required.empty() && Nonnull(envelope_.request, key)) required = key;
   if (!required.empty()) {
     auto reply =

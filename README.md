@@ -40,6 +40,9 @@ Responses 的 `truncation:auto` 已接入实际模板、分词与容量规划，
 额外模型输入/输出计入 usage/TPM，外部请求只计一次 RPM。没有实际推理
 时不伪造摘要。认证加密状态已交付；实际压缩/compact 的业务已验，
 发布身份及后续 Prompt/缓存/策略任务继续以该计划和 STATUS 为准。
+本地版本化 Prompt 已完成针对性 CPU，真实业务待验；客户端可通过
+`prompt:{id,version,variables}`引用，省略版本时在请求提交时固定当前默认。
+原生注册接口与使用边界见上述计划，当前已交付默认身份以 STATUS 为准。
 
 [标准生成参数](docs/SERVE_SAMPLING_2026-11-08.md)已交付：temperature/
 top_p、seed、presence/frequency penalty、logit_bias、n=1..128及真实

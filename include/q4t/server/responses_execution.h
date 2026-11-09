@@ -7,6 +7,7 @@
 #include "q4t/server/responses_state.h"
 #include "q4t/server/request_control.h"
 #include "q4t/server/state_cipher.h"
+#include "q4t/server/prompt_registry.h"
 
 namespace q4t::server {
 
@@ -31,6 +32,7 @@ class ResponsesExecution {
                               bool standalone_compaction = false)
       : state_(objects),
         cipher_(objects),
+        prompts_(objects),
         cleanup_(cleanup),
         require_cleanup_(require_cleanup),
         standalone_compaction_(standalone_compaction) {}
@@ -105,6 +107,7 @@ class ResponsesExecution {
   Status RecordOutput(Status status, std::string* wire);
   ResponsesState state_;
   StateCipher cipher_;
+  PromptRegistry prompts_;
   io::Json generation_history_;
   ChatPlanConfig cipher_config_;
   IResponsesCleanup* cleanup_ = nullptr;

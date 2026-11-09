@@ -17164,6 +17164,520 @@
         "has_more"
       ],
       "additionalProperties": false
+    },
+    "prompt_definition": {
+      "type": "object",
+      "properties": {
+        "request": {
+          "type": "object",
+          "properties": {
+            "model": {
+              "$ref": "#/$defs/683"
+            },
+            "instructions": {
+              "$ref": "#/$defs/20"
+            },
+            "input": {
+              "$ref": "#/$defs/679"
+            },
+            "reasoning": {
+              "$ref": "#/$defs/818"
+            },
+            "text": {
+              "$ref": "#/$defs/837"
+            },
+            "tools": {
+              "$ref": "#/$defs/859"
+            },
+            "tool_choice": {
+              "$ref": "#/$defs/843"
+            },
+            "parallel_tool_calls": {
+              "$ref": "#/$defs/368"
+            },
+            "temperature": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 2
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "top_p": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "top_logprobs": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 20
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "max_output_tokens": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 2147483647
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "max_tool_calls": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 2147483647
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "truncation": {
+              "$ref": "#/$defs/860"
+            },
+            "include": {
+              "$ref": "#/$defs/668"
+            },
+            "context_management": {
+              "$ref": "#/$defs/663"
+            },
+            "prompt_cache_key": {
+              "$ref": "#/$defs/20"
+            },
+            "prompt_cache_retention": {
+              "$ref": "#/$defs/815"
+            },
+            "prompt_cache_options": {
+              "$ref": "#/$defs/810"
+            },
+            "moderation": {
+              "$ref": "#/$defs/794"
+            },
+            "access_programs": {
+              "$ref": "#/$defs/657"
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "variables": {
+          "type": "object",
+          "maxProperties": 64,
+          "propertyNames": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "pattern": "^[^\\s{}\\x00-\\x1f\\x7f]+$"
+          },
+          "additionalProperties": {
+            "enum": [
+              "string",
+              "input_text",
+              "input_image",
+              "input_file"
+            ]
+          }
+        }
+      },
+      "required": [
+        "request",
+        "variables"
+      ],
+      "additionalProperties": false
+    },
+    "prompt_create": {
+      "type": "object",
+      "properties": {
+        "definition": {
+          "$ref": "#/$defs/prompt_definition"
+        }
+      },
+      "required": [
+        "definition"
+      ],
+      "additionalProperties": false
+    },
+    "prompt_append": {
+      "type": "object",
+      "properties": {
+        "definition": {
+          "$ref": "#/$defs/prompt_definition"
+        },
+        "expected_revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "definition",
+        "expected_revision"
+      ],
+      "additionalProperties": false
+    },
+    "prompt_select": {
+      "type": "object",
+      "properties": {
+        "default_version": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,8}$"
+        },
+        "expected_revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "default_version",
+        "expected_revision"
+      ],
+      "additionalProperties": false
+    },
+    "prompt_resource": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}$"
+        },
+        "object": {
+          "const": "prompt"
+        },
+        "created_at": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "default_version": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,8}$"
+        },
+        "versions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "items": {
+            "type": "object",
+            "properties": {
+              "version": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,8}$"
+              },
+              "created_at": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "version",
+              "created_at"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "id",
+        "object",
+        "created_at",
+        "revision",
+        "default_version",
+        "versions"
+      ],
+      "additionalProperties": false
+    },
+    "prompt_version": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}$"
+        },
+        "object": {
+          "const": "prompt.version"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,8}$"
+        },
+        "created_at": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "definition": {
+          "type": "object",
+          "properties": {
+            "request": {
+              "type": "object",
+              "properties": {
+                "model": {
+                  "$ref": "#/$defs/683"
+                },
+                "instructions": {
+                  "$ref": "#/$defs/20"
+                },
+                "input": {
+                  "$ref": "#/$defs/679"
+                },
+                "reasoning": {
+                  "$ref": "#/$defs/818"
+                },
+                "text": {
+                  "$ref": "#/$defs/837"
+                },
+                "tools": {
+                  "$ref": "#/$defs/859"
+                },
+                "tool_choice": {
+                  "$ref": "#/$defs/843"
+                },
+                "parallel_tool_calls": {
+                  "$ref": "#/$defs/368"
+                },
+                "temperature": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 2
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "top_p": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "top_logprobs": {
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 20
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "max_output_tokens": {
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 2147483647
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "max_tool_calls": {
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 2147483647
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "truncation": {
+                  "$ref": "#/$defs/860"
+                },
+                "include": {
+                  "$ref": "#/$defs/668"
+                },
+                "context_management": {
+                  "$ref": "#/$defs/663"
+                },
+                "prompt_cache_key": {
+                  "$ref": "#/$defs/20"
+                },
+                "prompt_cache_retention": {
+                  "$ref": "#/$defs/815"
+                },
+                "prompt_cache_options": {
+                  "$ref": "#/$defs/810"
+                },
+                "moderation": {
+                  "$ref": "#/$defs/794"
+                },
+                "access_programs": {
+                  "$ref": "#/$defs/657"
+                }
+              },
+              "required": [],
+              "additionalProperties": false
+            },
+            "variables": {
+              "type": "object",
+              "maxProperties": 64,
+              "propertyNames": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64,
+                "pattern": "^[^\\s{}\\x00-\\x1f\\x7f]+$"
+              },
+              "additionalProperties": {
+                "enum": [
+                  "string",
+                  "input_text",
+                  "input_image",
+                  "input_file"
+                ]
+              }
+            }
+          },
+          "required": [
+            "request",
+            "variables"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "id",
+        "object",
+        "version",
+        "created_at",
+        "definition"
+      ],
+      "additionalProperties": false
+    },
+    "prompt_deleted": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}$"
+        },
+        "object": {
+          "const": "prompt.deleted"
+        },
+        "deleted": {
+          "const": true
+        }
+      },
+      "required": [
+        "id",
+        "object",
+        "deleted"
+      ],
+      "additionalProperties": false
+    },
+    "prompt_list": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "const": "list"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/prompt_resource"
+          }
+        },
+        "first_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "has_more": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "object",
+        "data",
+        "first_id",
+        "last_id",
+        "has_more"
+      ],
+      "additionalProperties": false
+    },
+    "prompt_query": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "order": {
+          "enum": [
+            "asc",
+            "desc"
+          ]
+        },
+        "after": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}$"
+        },
+        "before": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}$"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
     }
   },
   "x-q4t": {

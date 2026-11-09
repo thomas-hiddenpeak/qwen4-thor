@@ -142,6 +142,8 @@ def schema(graph):
         ('id', 'object', 'deleted'))
     from tools.serve_chat_storage.build_contract import definitions as chat_definitions
     definitions.update(chat_definitions())
+    from tools.serve_responses.prompt_contract import definitions as prompt_definitions
+    definitions.update(prompt_definitions(request['properties']))
     return {'$schema': DRAFT, 'title': 'Q4T Chat, Responses and Conversations wire contract',
         '$defs': definitions, 'x-q4t': dict(profile='q4t-application-wire-v1',
             sdk_version=graph['sdk_version'], compiler_version=graph['compiler_version'],
@@ -197,6 +199,13 @@ def add_openapi(paths, response, error):
         return result
 
     endpoints = [
+        ('/v1/prompts', 'post', 'prompt_create', 'prompt_resource', None),
+        ('/v1/prompts', 'get', None, 'prompt_list', 'prompt_query'),
+        ('/v1/prompts/{prompt_id}', 'get', None, 'prompt_resource', None),
+        ('/v1/prompts/{prompt_id}', 'post', 'prompt_select', 'prompt_resource', None),
+        ('/v1/prompts/{prompt_id}', 'delete', None, 'prompt_deleted', None),
+        ('/v1/prompts/{prompt_id}/versions', 'post', 'prompt_append', 'prompt_resource', None),
+        ('/v1/prompts/{prompt_id}/versions/{version}', 'get', None, 'prompt_version', None),
         ('/v1/responses', 'post', 'response_create', 'response', None),
         ('/v1/responses/compact', 'post', 'response_compact', 'compacted_response', None),
         ('/v1/responses/{response_id}', 'get', None, 'response', 'response_retrieve'),
@@ -239,6 +248,8 @@ def add_openapi(paths, response, error):
                    'x-q4t-stream-contract': 'Native sequenced Responses events. No Chat DONE. Persisted original replay with starting_after; background requires original stream=true. Disconnect does not cancel a background job. Cancelled resource retains partial items and ends original events without a fabricated completed/cancelled event.'})
         if path.endswith('/cancel'):
             operation['description'] = 'Idempotent native background cancellation, empty body, 200 real resource. Independent bounded cancellation admission.'
+        if path.startswith('/v1/prompts'):
+            operation['description'] = 'q4t native Prompt registry, scoped to authenticated client. Immutable versions; revision-conditional append/default selection; durable effective request snapshots. Does not access hosted prompt accounts.'
         paths.setdefault(path, {})[method] = operation
 
 

@@ -1,0 +1,12 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "tools.serve_responses.test_prompt_acceptance",
+    "-v"
+  ],
+  "exit_code": 1,
+  "seconds": 0.29283490870147943
+}

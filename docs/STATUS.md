@@ -1,3 +1,5 @@
+A07.5 [输出 Prompt 引用修复与 8 项补验](evidence/serve-prompt-output-fix-20261110/README.md)通过，保留驱动发现缺口的首失败；此前版本/隔离/入口证据复用，必要构建零警告。冻结候选后继续最多 2 启动/8 请求/7 模型步/900 秒的真实 SDK 版本、工具、后台/重启短验。0 新增 GPU，默认 A07.4 保持 STOPPED，全部总任务继续。
+
 # 当前 Serve 总目标状态（2026-11-09）
 
 A07.4 实际上下文压缩已完成[真实业务](evidence/serve-compaction-business-20261109/README.md)、[原生入口](evidence/serve-compaction-ingress-20261109/README.md)和[可回退默认交付](evidence/serve-compaction-delivery-20261109/README.md)。当前引擎 `0c577f54`、元数据 `11eeb4df`、原生包 `c59afb3d`，publication revision16，STOPPED；旧 A07.3 原包/发布代与核心、客户端账本保持。

@@ -11,6 +11,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_crypto_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_compaction.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_compaction_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_prompt_registry_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_native_crypto_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_state_cipher_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/model_catalog.cpp
@@ -51,6 +52,9 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_jobs_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/conversation_state.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/conversation_api.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/prompt_template.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/prompt_registry.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/prompt_api.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_storage.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_storage_options.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_storage_test.cpp

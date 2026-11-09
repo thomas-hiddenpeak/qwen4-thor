@@ -27,6 +27,35 @@ inline bool IsResponsesCompaction(std::string_view target) {
   return target.substr(0, target.find('?')) == "/v1/responses/compact";
 }
 
+inline bool IsPromptTarget(std::string_view target) {
+  const auto path = target.substr(0, target.find('?'));
+  return path == "/v1/prompts" || path.starts_with("/v1/prompts/");
+}
+
+inline bool PromptMethodAllowed(std::string_view method,
+                                 std::string_view target) {
+  if (target.find('#') != target.npos) return false;
+  auto path = target.substr(0, target.find('?'));
+  constexpr std::string_view root = "/v1/prompts";
+  if (path == root) return method == "GET" || method == "POST";
+  if (!path.starts_with("/v1/prompts/")) return false;
+  path.remove_prefix(root.size() + 1);
+  const auto end = path.find('/');
+  if (!ValidApplicationId(path.substr(0, end))) return false;
+  if (end == path.npos)
+    return method == "GET" || method == "POST" || method == "DELETE";
+  path.remove_prefix(end);
+  if (path == "/versions") return method == "POST";
+  return path.starts_with("/versions/") &&
+         ValidApplicationId(path.substr(10)) && method == "GET";
+}
+
+inline bool IsPromptObservation(std::string_view method,
+                                 std::string_view target) {
+  return (method == "GET" || method == "DELETE") &&
+         PromptMethodAllowed(method, target);
+}
+
 inline bool IsStoredChatTarget(std::string_view target) {
   const auto path = target.substr(0, target.find('?'));
   return path == "/v1/chat/completions" ||

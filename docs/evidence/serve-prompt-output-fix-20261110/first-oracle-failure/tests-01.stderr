@@ -1,0 +1,17 @@
+test_frozen_requests_and_definitions_use_sdk_shapes (tools.serve_responses.test_prompt_acceptance.PromptAcceptance.test_frozen_requests_and_definitions_use_sdk_shapes) ... ok
+test_padding_oracle_rejects_lifecycle_and_missing_delta_padding (tools.serve_responses.test_prompt_acceptance.PromptAcceptance.test_padding_oracle_rejects_lifecycle_and_missing_delta_padding) ... ok
+test_version_oracle_requires_actual_answer_identity_and_usage (tools.serve_responses.test_prompt_acceptance.PromptAcceptance.test_version_oracle_requires_actual_answer_identity_and_usage) ... ERROR
+
+======================================================================
+ERROR: test_version_oracle_requires_actual_answer_identity_and_usage (tools.serve_responses.test_prompt_acceptance.PromptAcceptance.test_version_oracle_requires_actual_answer_identity_and_usage)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_prompt_acceptance.py", line 35, in test_version_oracle_requires_actual_answer_identity_and_usage
+    identity = value['prompt']['id']
+               ~~~~~^^^^^^^^^^
+KeyError: 'prompt'
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.015s
+
+FAILED (errors=1)

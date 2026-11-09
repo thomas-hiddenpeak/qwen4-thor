@@ -387,6 +387,28 @@
         },
         "publication_revision": 16,
         "delivery_evidence": "evidence/serve-compaction-delivery-20261109/README.md"
+      },
+      "prompt_registry": {
+        "state": "implementation_in_progress",
+        "cpu_checks": 27,
+        "source_inventory_checked": true,
+        "business_validated": false,
+        "default_delivered": false,
+        "evidence": "evidence/serve-prompts-cpu-20261109/README.md",
+        "business_limits": {
+          "starts": 2,
+          "requests": 8,
+          "model_steps": 7,
+          "seconds": 900
+        }
+      },
+      "prompt_output_fix_cpu_2026_11_10": {
+        "status": "passed",
+        "evidence": "docs/evidence/serve-prompt-output-fix-20261110/README.md",
+        "cpp": 4,
+        "python": 4,
+        "first_oracle_failure_preserved": true,
+        "real_business_pending": true
       }
     },
     {
