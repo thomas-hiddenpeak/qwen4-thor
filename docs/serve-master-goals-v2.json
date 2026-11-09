@@ -204,18 +204,22 @@
         "SERVE_RESPONSES_2026-11-08.md",
         "evidence/serve-responses-core-20261108/README.md",
         "evidence/serve-responses-context-cpu-20261109/README.md",
-        "evidence/serve-responses-context-business-20261109/README.md"
+        "evidence/serve-responses-context-business-20261109/README.md",
+        "evidence/serve-responses-context-delivery-20261109/README.md"
       ],
       "release": {
-        "engine_binary_sha256": "92e600fbcdcadf37271a77405daf498f1fe4fbf2d327ad79a0bf3646bd02ce31",
-        "engine_release_sha256": "dfffcbadb6ba73c2184c06444f28d85979d2d0881d34aca7087bf1ff5fd31e75",
-        "manifest_sha256": "ffbd9d4b52175dc07356933fbfca54ad5143522d3ec9d6ca7bcedcacf0e8887e",
-        "service_release_sha256": "e4d8b32171335bc535021b77712d6eb8c7f3e0e45b4498533afb4d5404eda05e",
+        "engine_binary_sha256": "bb6e702ea5615fea7c11302e7c8ce2b1bec6b8aff9803f2b5cc7bfe84fec270a",
+        "engine_release_sha256": "f2a292f49529cac78f9754e9e52584bdb390d24ce87fd6771516ece5ba0626e5",
+        "generation_sha256": "cd27f38267f02e661935e47f78d537d111c3436a986817b8ff80e41311ad6d53",
+        "manifest_sha256": "c360746edc5a717eeef03b6de0261b0b72630cba6e0d1f5d5b5b5c9c8ad94f79",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-context-20261109/release-04/bundle",
+        "service_acceptance_sha256": "fddbc45ab358832ee81af40feed415b55c64b644b67c818afe8fd2dc6c542fd1",
+        "service_release_sha256": "9b7c7be37eba1c0ff12ba9993f9cae5ceacd0b7f4bdf5aa44144a97a1c1953c5",
         "state": "STOPPED",
         "merged_main": false,
         "whole_task_complete": false
       },
-      "development_status": "Base Responses/Conversations/background/cancel and Chat storage delivered; native N01-N07 complete. Advanced execution remains open; currently implementing A07.1 without changing accepted default. All master tasks continue.",
+      "development_status": "A07.1 delivered with actual token/JSON/SSE/background/tool evidence. Continue A07.2 generated reasoning summary and every remaining advanced/master task; not a final completion.",
       "item_shape_evidence": "evidence/serve-item-shape-20261109/README.md",
       "execution_evidence": "evidence/serve-responses-execution-20261109/README.md",
       "foreground_business_evidence": "evidence/serve-responses-business-20261109/README.md",
@@ -231,7 +235,6 @@
       "delivery_evidence": "evidence/serve-chat-delivery-20261109/README.md",
       "plan": "SERVE_RESPONSES_ADVANCED_2026-11-09.md",
       "remaining_required": [
-        "A07.1 actual token-based automatic context truncation",
         "A07.2 generated reasoning summaries",
         "A07.3 authenticated encrypted reasoning state roundtrip",
         "A07.4 context_management and compact execution",
@@ -241,10 +244,10 @@
         "A07.8 complete input/output/include/SSE/SDK and release audit"
       ],
       "automatic_truncation": {
-        "state": "validated_delivery_pending",
+        "state": "delivered",
         "cpu_tests": 18,
         "engine_sha256": "bb6e702ea5615fea7c11302e7c8ce2b1bec6b8aff9803f2b5cc7bfe84fec270a",
-        "default_delivered": false,
+        "default_delivered": true,
         "business": {
           "status": "PASS_RESPONSES_CONTEXT_TARGETED_BUSINESS",
           "acceptance": "ACCEPT_TARGETED_RESPONSES_CONTEXT",
@@ -269,7 +272,17 @@
           "media_gpu_retested": false,
           "default_changed": false,
           "remaining_master_tasks_open": true
-        }
+        },
+        "release": {
+          "engine_binary_sha256": "bb6e702ea5615fea7c11302e7c8ce2b1bec6b8aff9803f2b5cc7bfe84fec270a",
+          "engine_release_sha256": "f2a292f49529cac78f9754e9e52584bdb390d24ce87fd6771516ece5ba0626e5",
+          "generation_sha256": "cd27f38267f02e661935e47f78d537d111c3436a986817b8ff80e41311ad6d53",
+          "manifest_sha256": "c360746edc5a717eeef03b6de0261b0b72630cba6e0d1f5d5b5b5c9c8ad94f79",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-context-20261109/release-04/bundle",
+          "service_acceptance_sha256": "fddbc45ab358832ee81af40feed415b55c64b644b67c818afe8fd2dc6c542fd1",
+          "service_release_sha256": "9b7c7be37eba1c0ff12ba9993f9cae5ceacd0b7f4bdf5aa44144a97a1c1953c5"
+        },
+        "publication_revision": 10
       }
     },
     {

@@ -1,0 +1,10 @@
+{
+  "label": "legacy-check",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-context-20261109/release-04/bundle/bin/q4t",
+    "service",
+    "check"
+  ],
+  "returncode": 0,
+  "seconds": 0.43374236207455397
+}

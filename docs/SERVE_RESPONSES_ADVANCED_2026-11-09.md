@@ -56,3 +56,12 @@ instructions 保留，默认 disabled 的行为不改变。最多处理既有
 [包含首编译失败的原件](evidence/serve-responses-context-cpu-20261109/README.md)。
 实际 Qwen 分词及官方 SDK 的 JSON/SSE、完整 input_items、真实文档
 工具与后台请求仍待短验。候选 bb6e702e，默认 N06 保持。
+
+### A07.1 实际业务与交付
+
+[真实业务](evidence/serve-responses-context-business-20261109/README.md)
+累计 2 启动/7 请求/93.414 秒，91 NVML 全 OK；真实 42 token 与
+JSON/SSE/后台及完整历史、文档工具/严格 JSON 引用通过。
+[可回退交付](evidence/serve-responses-context-delivery-20261109/README.md)
+8 操作通过，默认 bb6e702e/包 c360746e，revision10、STOPPED。
+首驱动及准备失败全部保留。继续 A07.2—A07.8，全部仍必做。
