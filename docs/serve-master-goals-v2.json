@@ -308,7 +308,7 @@
         "publication_revision": 12
       },
       "encrypted_reasoning": {
-        "state": "implementation_in_progress",
+        "state": "business_accepted_delivery_pending",
         "crypto_key_cpu_tests": 16,
         "crypto_evidence": "evidence/serve-responses-encryption-crypto-20261109/README.md",
         "protocol_roundtrip_implemented": true,
@@ -317,10 +317,10 @@
         "schema_values": 22,
         "protocol_evidence": "evidence/serve-responses-encryption-protocol-20261109/README.md",
         "candidate_engine_sha256": "71cb526c8ffe42eed60f1bcfb4185969432b2155ef0f8225f4aa97ec35e0e99a",
-        "business_validated": false,
+        "business_validated": true,
         "admin_cpu_checks": 14,
         "admin_evidence": "evidence/serve-responses-encryption-admin-20261109/README.md",
-        "current_work": "bounded actual SDK/model business and rollback-compatible delivery",
+        "current_work": "rollback-compatible default delivery, then A07.4 and all master tasks",
         "driver_cpu_checks": 4,
         "driver_evidence": "evidence/serve-responses-encryption-driver-20261109/README.md",
         "business_limits": {
@@ -328,7 +328,8 @@
           "requests": 8,
           "model_steps": 8,
           "seconds": 900
-        }
+        },
+        "business_evidence": "evidence/serve-responses-encryption-business-20261109/README.md"
       }
     },
     {

@@ -1,0 +1,10 @@
+{
+  "status": "PASS_RESPONSES_ENCRYPTION_BUSINESS",
+  "counts": {
+    "starts": 2,
+    "chats": 8,
+    "controls": 92
+  },
+  "seconds": 102.24401643080637,
+  "binary_sha256": "71cb526c8ffe42eed60f1bcfb4185969432b2155ef0f8225f4aa97ec35e0e99a"
+}

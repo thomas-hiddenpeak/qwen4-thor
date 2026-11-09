@@ -1,0 +1,12 @@
+{
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t",
+    "state-keys",
+    "inspect",
+    "--object-store-dir",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-encryption-20261109/business-01/objects"
+  ],
+  "returncode": 0,
+  "stdout": "{\"status\":200,\"code\":\"\",\"message\":\"\",\"commit_unknown\":false,\"value\":{\"version\":1,\"revision\":8,\"active\":\"981656596fb6daeb6ab41ecf5a0fddc2\",\"keys\":[{\"id\":\"4a58c96daea10f5c8acef5113774c236\",\"created_at\":1794233741,\"uses\":4},{\"id\":\"981656596fb6daeb6ab41ecf5a0fddc2\",\"created_at\":1794233751,\"uses\":2}],\"max_keys\":8,\"max_seals_per_key\":1048576}}\n",
+  "stderr": ""
+}

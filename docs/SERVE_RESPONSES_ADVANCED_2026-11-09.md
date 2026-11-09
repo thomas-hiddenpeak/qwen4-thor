@@ -113,3 +113,5 @@ A07.3 [双端 18 CPU 与 22 个实际协议值](evidence/serve-responses-encrypt
 `/v1/config.application_state_health` 增加 `key_admin_ready` 和固定 false 的 `key_admin_readiness_dependency`，保留旧记录兼容。冻结 12 C++/2 schema CPU（真实 Unix/CLI/实际提交丢回执/竞争/空闲/取消/依赖恢复），尚未构建测试。默认保持，之后继续必要实际业务及全部总任务。
 
 A07.3 [原生管理 12 C++/2 schema](evidence/serve-responses-encryption-admin-20261109/README.md)首轮通过，实际引擎 71cb526c 零警告。准备真实 SDK/模型业务与交付，默认不动。管理信任边界是本机服务 UID；A11 的不可信代码执行必须隔离 OS 身份/密钥目录/管理套接字，不能用服务 UID 无隔离执行外来代码。
+
+A07.3 [真实业务通过](evidence/serve-responses-encryption-business-20261109/README.md)：2 启动/8 请求/8 内部步/102.244 秒，97 NVML 全 OK；密文无状态续聊、在线换钥/旧 key 保留、文档工具、后台原事件/重启、退役拒绝与同 PID Chat 已验。候选 71cb526c，继续可回退交付后 A07.4 与全部任务。

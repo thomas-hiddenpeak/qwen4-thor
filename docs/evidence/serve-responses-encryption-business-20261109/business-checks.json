@@ -1,0 +1,13 @@
+{
+  "external_create_attempts": 8,
+  "positive_generations": 7,
+  "internal_model_steps": 8,
+  "actual_tool_executions": 1,
+  "omitted_plaintext_and_origin": true,
+  "live_rotation_no_model_restart": true,
+  "explicit_retirement": true,
+  "persisted_restart": true,
+  "original_sse_replay": true,
+  "per_process_actual_usage": true,
+  "direct_engine_rpm_persistence_claim": false
+}

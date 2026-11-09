@@ -1,0 +1,26 @@
+{
+  "action": "create",
+  "request": {
+    "model": "qwen3.8-flash-next",
+    "temperature": 0,
+    "store": false,
+    "reasoning": {
+      "effort": "low",
+      "summary": "concise"
+    },
+    "max_output_tokens": 384,
+    "include": [
+      "reasoning.encrypted_content"
+    ],
+    "input": "Compute 17 + 25. Reply only with the decimal number."
+  },
+  "id": null,
+  "query": null,
+  "base_url": "http://127.0.0.1:18985/v1",
+  "headers": {
+    "X-Q4T-Client-Id": "encryption-test",
+    "X-Q4T-Gateway-Token": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "timeout_ms": 120000
+}

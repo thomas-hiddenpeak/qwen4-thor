@@ -151,12 +151,22 @@ journal仍使用Python，必要的CUDA、系统与模型依赖不变。
 
 首次v4接入包、实际模型TLS短验、凭据管理与回退见
 [原生接入交付](docs/SERVE_NATIVE_ACCESS_2026-11-08.md)。
-TLS使用系统OpenSSL 3，不复制nginx代码，也不随包携带nginx。
+TLS与认证加密状态使用系统OpenSSL 3，不复制nginx代码，也不随包携带nginx。
 构建默认启用`Q4T_ENABLE_NATIVE_TLS=ON`，需要匹配的OpenSSL 3开发头
 文件及系统运行库；可用`-DQ4T_ENABLE_NATIVE_TLS=OFF`构建明文入口。
-运行时只有显式启用TLS才加载系统libssl/libcrypto；缺库或坏证书
-不会回退明文、停止或重启健康模型。OpenSSL按其Apache-2.0许可使用，
-项目依据其官方API实现传输，未移植其他服务器源码。
+运行时TLS入口按需加载libssl/libcrypto；引擎只有加密状态请求或密钥
+初始化/轮换才加载libcrypto，普通Chat/Responses不依赖其可用性。
+关闭TLS仍需OpenSSL开发头以构建加密状态功能。缺库或坏证书不会
+回退明文、停止或重启健康模型。OpenSSL按其Apache-2.0许可使用，
+项目依据其官方API实现传输与AES-256-GCM，未移植其他服务器源码。
+
+Responses可通过`include:["reasoning.encrypted_content"]`取得本服务
+签发的密文状态，用于无状态续聊或持久会话；绑定客户端、模型和模板。
+原Qwen推理明文投影仍可见，这不等于整段响应或磁盘加密。
+本机服务UID可用`q4t state-keys inspect|initialize|rotate
+--object-store-dir ABS_DIR`管理密钥；轮换要求`--expected-revision N`，
+旧密钥仅通过`--retire KEY_ID`显式退役，无需重启模型。
+详见[加密状态与管理边界](docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md#a073-原生密钥运维接入)。
 
 部署方可自行前置nginx或其他HTTP网关，传递普通Bearer Authorization，
 无需提供q4t内部凭据或准入子请求。nginx前置的最小转发配置如下；
