@@ -930,25 +930,43 @@
         "A08",
         "N05"
       ],
-      "evidence": [],
+      "evidence": [
+        "evidence/serve-files-business-20261110/README.md",
+        "evidence/serve-files-delivery-20261110/README.md"
+      ],
       "release": null,
       "plan": "SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
       "remaining_required": [
-        "A09.1 full contracts and incremental multipart",
-        "A09.2 isolated binary persistence",
-        "A09.3 Files and bounded native transport",
         "A09.4 Uploads completion/cancel/expiry",
         "A09.5 actual file consumption and retention",
         "A09.6 real Batch executor/recovery",
         "A09.7 all eight endpoint backends with A10",
-        "A09.8 SDK/native release and rollback"
+        "A09.8 ongoing SDK/native release and rollback for remaining APIs"
       ],
       "multipart_component_evidence": "evidence/serve-multipart-cpu-20261110/README.md",
-      "next": "Add explicit file capacity policy with compatible migration, native streamed forwarding, actual SDK network and business validation; then complete Uploads/Batch and all tasks.",
+      "next": "Implement Uploads actual part storage, ordered atomic completion, cancellation/expiry and remaining file consumption/Batch; no master scope reduction.",
       "binary_component_evidence": "docs/evidence/serve-binary-cpu-20261110/README.md",
       "http_stream_component_evidence": "docs/evidence/serve-http-body-stream-cpu-20261110/README.md",
       "files_core_component_evidence": "docs/evidence/serve-files-core-cpu-20261110/README.md",
-      "files_transport_component_evidence": "docs/evidence/serve-files-transport-cpu-20261110/README.md"
+      "files_transport_component_evidence": "docs/evidence/serve-files-transport-cpu-20261110/README.md",
+      "files_release": {
+        "engine_binary_sha256": "6a7404c79112dcd6d5772ad6918342c17f165255a36dc71304e8e552dfffa988",
+        "engine_release_sha256": "42e42e6c469bd1e65fc7002b12be832145c126a231209a9a1da7800382fb3857",
+        "generation_sha256": "44a274130a9b68438a9b0911a2be9bc0202e6a899a6f37e3d23e99b1a0b8626b",
+        "manifest_sha256": "cde078faafcf71f89442d9ecad18a0f0cf43f8d560799e51fc058ad8b27f7797",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-files-20261110/release-01/bundle",
+        "service_acceptance_sha256": "bbcd1440be363675e9b31071e9e625f58c9e84388843119611923e5ea4fb8fb0",
+        "service_release_sha256": "6f70e1889444583b386a4bf1218f2d857693bcf50530cc4931484cd793e964ca",
+        "publication_revision": 34,
+        "state": "STOPPED",
+        "main_merged": false
+      },
+      "accepted_subtasks": [
+        "A09.1 incremental multipart and Files contracts",
+        "A09.2 isolated binary persistence",
+        "A09.3 Files and bounded native transport"
+      ],
+      "files_package_component_evidence": "evidence/serve-files-package-cpu-20261110/README.md"
     },
     {
       "id": "A10",
@@ -1534,6 +1552,6 @@
       "release": null
     }
   ],
-  "next_task": "A09.3 Files discovery/schema, package v11 migration, actual engine short acceptance; all A09/A/R/Q/G remain",
-  "next": "File capacity and native TLS streaming accepted in 34 distinct CPU checks; two official SDK network chains each32 requests and17MiB bytes. Default A08 unchanged. Continue all required work."
+  "next_task": "A09.4 Uploads complete native lifecycle, then file consumption/Batch and all remaining master tasks",
+  "next": "Files delivered in v11 package cde078fa with engine6a7404c7, revision34 STOPPED; previous A08 preserved. A09 remains in progress."
 }

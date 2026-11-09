@@ -1,0 +1,15 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index ba95f266..d5e089f5 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -266,6 +266,10 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
+   src/server/object_store.cpp
+   src/server/object_worker.cpp
+   src/server/object_retention.cpp
++  src/server/multipart.cpp
++  src/server/binary_store.cpp
++  src/server/files.cpp
++  src/server/files_http.cpp
+   src/server/responses_state.cpp
+   src/server/responses_execution.cpp
+   src/server/responses_execution_compaction.cpp

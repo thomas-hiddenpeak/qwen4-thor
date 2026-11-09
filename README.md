@@ -180,6 +180,18 @@ Responses可通过`include:["reasoning.encrypted_content"]`取得本服务
 丢回执时重新inspect，不盲目重试。无需重启模型；`--offline`只用于
 可独占的停服目录。详见[留存治理](docs/SERVE_APPLICATION_RETENTION_2026-11-10.md)。
 
+原生Files提供`POST/GET /v1/files`、`GET/DELETE /v1/files/{id}`和
+`GET /v1/files/{id}/content`，兼容官方SDK multipart上传与原字节下载，
+按客户端隔离并持久保存。单File协议上限512MiB（batch输入200MiB），
+部署文件/普通body与存储限额分别生效；上传不整文件缓存到RAM。
+较大文件需显式配置私有客户端策略v4的`max_file_body_bytes`及原生
+入口策略v5的`file_body_bytes`，未升级配置保持原容量，不隐式扩大。
+Files默认batch留存30天，其余永久，可用`expires_after`明确覆盖。
+用法/安全旧包迁移见[客户端容量](docs/SERVE_ACCESS_CONTROL_2026-11-09.md)，
+[业务及发行证据](docs/evidence/serve-files-delivery-20261110/README.md)。
+Uploads、模型原生file_id内容消费与Batch仍是当前必须完成的
+[后续任务](docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md)。
+
 标准`POST /v1/responses/input_tokens`与SDK
 `responses.inputTokens.count()`已通过计数与真实生成usage业务短验。
 它按本模型真实模板/分词和媒体展开计数，可读取当前客户端的历史与

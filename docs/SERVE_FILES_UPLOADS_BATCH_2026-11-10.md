@@ -1,5 +1,15 @@
 # A09 原生 Files、Uploads 与 Batch 连续实现计划
 
+## 当前进展（2026-11-10）
+
+A09.1增量multipart、A09.2分块持久IO、A09.3 Files原生路由/传输与
+v11发行已经过针对性CPU和真实业务接受并发布，见
+[Files交付](evidence/serve-files-delivery-20261110/README.md)。
+当前默认6a7404c7/包cde078fa、revision34、STOPPED；A08原包保留。
+以下“已确认实现缺口”“尚未测试”等起始记录保留历史语境，
+不代表当前Files仍缺失。剩余A09.4—A09.8全部继续，包括真正文件
+内容消费和Batch完整8端点，不以Files完成停止。
+
 起始默认6a90506e/包e8e75470，revision32、STOPPED；A08已交付。
 本页所有子项都是必做任务，部分端点或存储底座通过不等于A09完成。
 A10所需模型后端和A11执行器依赖继续保留，不以拒绝或文档代替实现。

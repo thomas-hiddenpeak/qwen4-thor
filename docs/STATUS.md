@@ -1,5 +1,7 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+A09.3 [Files可回退交付完成](evidence/serve-files-delivery-20261110/README.md)：默认引擎6a7404c7、元数据42e42e6c、v11包cde078fa，revision34、STOPPED。8实际CLI/9.773秒、0新增模型/Chat/GPU，原配置/Key/配额/用量保持，保留A08原包回退。累计2启动/3生成业务接受，首失败保留。继续A09.4 Uploads、实际文件消费、Batch及全部总任务；未合main。以下旧默认和未交付描述以本段为准。
+
 Files接受候选进入v11可回退发行：冻结8条实际封装/发布CLI，保留A08原包、原默认容量/Key/用量账本，发布revision32→34后保持STOPPED。核心6a7404c7/入口6067f4f3已接受；安装0模型/Chat/GPU，不再次扩展测试。随后继续Uploads、原生文件消费、Batch及全部总目标。
 
 A09.3 [实际Files业务接受](evidence/serve-files-business-20261110/README.md)：累计2启动/3生成/14文件操作/99.108秒、97 NVML全OK并独立清理。真实文件/工具与同PID存储失能SSE/恢复通过；保留两次驱动/schema失败，声明CPU修复后0新增GPU。引擎6a7404c7、入口6067f4f3，继续可回退v11交付及全部A09/总任务，默认A08尚未替换。
