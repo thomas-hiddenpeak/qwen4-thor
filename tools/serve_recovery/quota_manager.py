@@ -6,7 +6,7 @@ import time
 import uuid
 
 from tools.serve_gateway import client_policy as cp
-from tools.serve_recovery import access_manager, access_store, control, ledger
+from tools.serve_recovery import access_manager, access_store, ledger, model_admin
 from tools.serve_recovery import quota_control, quota_policy as policy, quota_store, store
 from tools.serve_service import package as engine
 
@@ -86,13 +86,9 @@ def propose(state, desc, limits, destination, request_id=None):
 
 
 def live(desc, manifest):
-    ledger.require(manifest.get('ingress_mode') == 'native' and manifest['version'] >= 8,
-                   'live limits profile required')
-    snapshot = control.binding(desc['service_id'])
-    generation, owner = snapshot.get('model_generation'), snapshot.get('model_owner')
-    ledger.require(ledger.integer(generation, minimum=1) and type(owner) is dict and
-        snapshot.get('model_ready') is True and snapshot.get('stop_requested') is False,
-        'model limits unavailable')
+    snapshot = model_admin.observe(desc, manifest)
+    generation = snapshot['model_generation']
+    owner = dict(pid=snapshot['model_pid'], start_ticks=snapshot['model_start_ticks'])
     # The native socket is tied to the exact live Guardian model owner. A
     # same-UID process at a lookalike address cannot satisfy PID/birth checks.
     channel = quota_control.Channel(quota_control.address(desc['service_id'], generation))
@@ -101,10 +97,7 @@ def live(desc, manifest):
         while time.monotonic()<deadline:
             result = channel.step(owner['pid'], owner['start_ticks'])
             if result['observed'] is not None and not result['error']:
-                current = control.binding(desc['service_id'])
-                ledger.require(current.get('model_ready') is True and not current.get('stop_requested') and
-                    all(current.get(k) == snapshot.get(k) for k in
-                        ('model_owner', 'model_generation', 'binding')), 'model limits generation changed')
+                model_admin.recheck(desc, snapshot)
                 return dict(result['observed'], model_pid=owner['pid'],
                             model_start_ticks=owner['start_ticks'], model_generation=generation)
             time.sleep(.01)

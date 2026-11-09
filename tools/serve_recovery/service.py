@@ -279,7 +279,7 @@ def main(argv=None, *, package=None, digest=None):
                  'retention-plan', 'retention-archive', 'retention-apply', 'retention-resume',
                  'retention-migrate', 'access-status', 'access-propose', 'access-apply',
                  'access-migrate', 'limits-status', 'limits-propose', 'limits-apply',
-                 'limits-migrate'):
+                 'limits-migrate', 'usage-status', 'usage-migrate'):
         command = commands.add_parser(name)
         command.add_argument('--state', type=Path, required=True)
         if package is None:
@@ -336,6 +336,12 @@ def main(argv=None, *, package=None, digest=None):
             elif args.operation in ('run', 'start'):
                 result = launch(package, digest, args.state, daemon=args.operation == 'start',
                                 timeout=getattr(args, 'timeout', 360))
+            elif args.operation.startswith('usage-'):
+                from tools.serve_recovery import usage_manager
+                desc = descriptor(args.state, package, digest)
+                manifest = bundle.verify(package, digest)
+                result = (usage_manager.migrate(args.state, desc, manifest) if args.operation == 'usage-migrate'
+                          else usage_manager.status(args.state, desc, manifest))
             elif args.operation.startswith('limits-'):
                 from tools.serve_recovery import quota_manager
                 desc = descriptor(args.state, package, digest)
@@ -419,7 +425,7 @@ def main(argv=None, *, package=None, digest=None):
             return 1
         if args.operation == 'tls-reload' and not result.get('reloaded'):
             return 1
-        if args.operation in ('access-status', 'limits-status') and result.get('durable_error'):
+        if args.operation in ('access-status', 'limits-status', 'usage-status') and result.get('durable_error'):
             return 1
         return int(result.get('guardian_exit_code', 0) != 0 or result.get('state') == 'UNKNOWN')
     except (OSError, ValueError, RuntimeError) as error:
@@ -431,6 +437,9 @@ def main(argv=None, *, package=None, digest=None):
         if args.operation.startswith('limits-'):
             from tools.serve_recovery import quota_manager
             result = quota_manager.failure(error)
+        if args.operation.startswith('usage-'):
+            from tools.serve_recovery import usage_manager
+            result = usage_manager.failure(error)
         print(json.dumps(result), file=sys.stderr)
         return 1
 

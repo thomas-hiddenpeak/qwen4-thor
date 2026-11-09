@@ -1,0 +1,16 @@
+{
+  "distinct_cpu_passed": 16,
+  "initial_passed": 15,
+  "initial_failed": 1,
+  "targeted_fixture_rerun_passed": 1,
+  "build_reused": true,
+  "gpu_starts": 0,
+  "chat_requests": 0,
+  "default_changed": false,
+  "real_model_business": false,
+  "next": [
+    "packaged upgrade of legacy service descriptor with current policy safety",
+    "native TLS and official SDK/model business",
+    "rollback-compatible delivery"
+  ]
+}

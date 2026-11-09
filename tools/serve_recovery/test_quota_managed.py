@@ -145,7 +145,15 @@ class ManagedQuotaTests(unittest.TestCase):
             self.assertIn('port', admission.request('data', 'beta'))
             native.clients = frozenset(admission.verified_clients)
             self.assertIn('port', request('beta'))
-            self.assertTrue(self.cli('limits-status')[1]['live_applied'])
+            # This fixture already substitutes release/Guardian readiness.
+            # Keep that seam explicit for the new read-only operator route;
+            # native PID/birth/IPC remains real. Full release/parent identity
+            # observation is covered by test_usage_management.
+            observed = dict(model_generation=1, model_pid=model.process.pid,
+                            model_start_ticks=controller.journal.process_start(model.process.pid))
+            with mock.patch.object(manager.model_admin, 'observe', return_value=observed), \
+                 mock.patch.object(manager.model_admin, 'recheck', return_value=observed):
+                self.assertTrue(self.cli('limits-status')[1]['live_applied'])
             with mock.patch.object(admission.policy_channel, 'step', side_effect=AttributeError('CPU observer fault')):
                 admission.update();self.assertIn('port', admission.request('data', 'alpha'))
             changed = dict(current, model_generation=2, gateway_bound_model=0)

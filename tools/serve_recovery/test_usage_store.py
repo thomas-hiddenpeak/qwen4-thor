@@ -74,6 +74,7 @@ class UsageStoreTests(unittest.TestCase):
         new_owner = owner()
         active = self.execute('begin', generation=2, model=new_owner, now=50)
         restored = p.restoration(active, new_owner['boot_id'], 60)
+        self.assertEqual(restored, p.restoration(active, new_owner['boot_id'], 70))
         self.assertEqual(restored['mode'], 'cross_boot')
         client = restored['snapshot']['clients'][0]
         self.assertEqual((client['requests'], client['tokens'], client['admitted'],

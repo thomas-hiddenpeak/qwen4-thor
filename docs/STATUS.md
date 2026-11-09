@@ -1,5 +1,15 @@
 # 当前状态
 
+N04限额/用量管理16个不同CPU通过：首轮15通过/1旧夹具失败，
+修其合成查询后仅重验1项通过，[原件](evidence/serve-usage-management-20261109/README.md)。只读实际生效查询与
+用量分类/STOPPED迁移通过。继续发行升级入口、TLS/真实业务及
+可回退交付，0模型/Chat，默认保持，全部总任务继续。
+
+N04管理修复继续：限额CLI改走只读status并核验模型PID/出生/父与
+ELF身份，新增usage-status/migrate，跨boot恢复指纹固定。冻结16项
+直接CPU，尚未运行；还须补发行包的旧描述符升级入口、TLS实际
+业务与可回退交付，默认保持，全部总目标继续。
+
 N04用量控制器/Guardian27项针对CPU通过、host及生产构建零警告，
 [原件](evidence/serve-usage-runtime-20261109/README.md)。已知/未知恢复、真实停止顺序与保护通过，0模型/Chat，
 默认保持。继续用量查询/迁移并修复限额CLI误用网关专用binding；

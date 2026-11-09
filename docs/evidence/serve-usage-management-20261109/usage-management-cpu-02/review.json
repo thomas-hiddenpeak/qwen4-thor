@@ -1,0 +1,5 @@
+{
+  "reason": "Existing combined fixture uses synthetic release/Guardian data; make its new model_admin seam explicit while retaining real model PID/birth/private IPC. New management tests already verify real parent/ELF and refuse gateway binding access.",
+  "production_changed": false,
+  "rerun": "the one failed combined fixture only"
+}

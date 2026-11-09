@@ -1,0 +1,58 @@
+{
+  "README.md": {
+    "bytes": 1111,
+    "sha256": "4b18f6970d802b16b2ef07e46913fb5e7992a379bf43207d2650b7eb9956c4c3"
+  },
+  "decision.json": {
+    "bytes": 424,
+    "sha256": "e67c640d9fd3f1b2c5be5ccc8c878456ad20d10c77db9e3c40f0c447e6431d4b"
+  },
+  "identity.json": {
+    "bytes": 273,
+    "sha256": "bfbc9e29513722b97cddbea311d97a49f6db0bb12ee8e238c5bcbe9421352ccd"
+  },
+  "usage-management-cpu-01/binaries.json": {
+    "bytes": 188,
+    "sha256": "85c322027e8059b9ad3429a31b91638898692fc8e648da91010c12f352722a37"
+  },
+  "usage-management-cpu-01/command.json": {
+    "bytes": 731,
+    "sha256": "ba7b46fa4d8697ecbfba0797c6b43ef59761cf5da8ffedecebf17a7f28710e78"
+  },
+  "usage-management-cpu-01/result.json": {
+    "bytes": 64,
+    "sha256": "cf87d86254b42968186cdde4db1ab25a46796c26c899881aa374c5992c060aa2"
+  },
+  "usage-management-cpu-01/selection.json": {
+    "bytes": 889,
+    "sha256": "88f38d48d9a4abb25b6547178adcb2b5dc8e4039a3d4788442a885963d10f507"
+  },
+  "usage-management-cpu-01/sources.json": {
+    "bytes": 1002,
+    "sha256": "88100f74e1627864ff45825c5c24e1c750c14735d0fe27eb197f4ce0b3a5a16c"
+  },
+  "usage-management-cpu-01/tests.log": {
+    "bytes": 4063,
+    "sha256": "b8578ca42ceaa11e017cc2fb11182921f88a9382c5908f45c613cd6da627b9ad"
+  },
+  "usage-management-cpu-02/command.json": {
+    "bytes": 190,
+    "sha256": "a849b0868038a663f9ba42ebb2edd6051186893947cc89d588a6aaaff7bfc8f9"
+  },
+  "usage-management-cpu-02/result.json": {
+    "bytes": 63,
+    "sha256": "0e02bb1eeff625ab0223f1fd31fe8b042073b70b0df8efd35e1212e2c33c797f"
+  },
+  "usage-management-cpu-02/review.json": {
+    "bytes": 340,
+    "sha256": "65ce894e22355fd3061038a0f62039553c1af6eb4b3bf310dad68374827394f9"
+  },
+  "usage-management-cpu-02/sources.json": {
+    "bytes": 119,
+    "sha256": "fc8acbcae8b0f4f0a9dfda806e60afe287545afc15c5471b4d923620146a71ee"
+  },
+  "usage-management-cpu-02/tests.log": {
+    "bytes": 310,
+    "sha256": "062bbea880425c2455853e5b88ba035205e4287996bce47dcd4db768cb14765e"
+  }
+}

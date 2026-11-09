@@ -433,16 +433,17 @@
         "evidence/serve-policy-coordination-20261109/decision.json",
         "evidence/serve-usage-primitive-20261109/README.md",
         "evidence/serve-usage-store-20261109/decision.json",
-        "evidence/serve-usage-runtime-20261109/decision.json"
+        "evidence/serve-usage-runtime-20261109/decision.json",
+        "evidence/serve-usage-management-20261109/decision.json"
       ],
       "release": null,
       "plan": "SERVE_ACCESS_CONTROL_2026-11-09.md",
       "remaining": [
-        "usage management and stopped legacy migration; fix limits live observation",
+        "packaged legacy descriptor upgrade and rollback safety across mutable credentials/limits",
         "TLS native bundle and applicable SDK verification",
         "targeted real business and rollback-capable delivery"
       ],
-      "development_status": "用量控制器/Guardian27 CPU及必要生产构建通过，真实模型尚未验收；继续用量CLI/迁移、限额live查询缺陷修复、TLS/SDK实际业务与可回退交付。默认v6保持，N04未完成。"
+      "development_status": "限额live读取权限缺陷已修复；用量CLI/STOPPED迁移16个CPU通过并保留夹具失败原件。继续随包旧描述符升级、TLS/SDK真实模型业务和可回退默认交付。默认v6保持，N04未完成。"
     },
     {
       "id": "N05",

@@ -142,7 +142,9 @@ def restoration(value, boot_id, now_ns):
     result = copy.deepcopy(value['snapshot'])
     if value['source']['boot_id'] == boot_id:
         return dict(mode='exact', snapshot=result)
-    result['captured_ns'] = str(now_ns)
+    # Stable across retries/management queries: this is the durable new-boot
+    # activation instant, not the observer's later sampling time.
+    result['captured_ns'] = value['started_ns']
     for client in result['clients']:
         client.update(window_started=False, window_ns='0', requests='0', tokens='0')
     snapshot(result)

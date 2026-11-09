@@ -1,0 +1,29 @@
+test_cross_boot_receipt_is_stable_and_sealed_snapshot_is_not_live_usage (tools.serve_recovery.test_usage_management.UsageManagementTests.test_cross_boot_receipt_is_stable_and_sealed_snapshot_is_not_live_usage) ... ok
+test_identity_birth_executable_and_generation_changes_refuse_live_claim (tools.serve_recovery.test_usage_management.UsageManagementTests.test_identity_birth_executable_and_generation_changes_refuse_live_claim) ... ok
+test_legacy_usage_migration_is_stopped_exclusive_and_preserves_core (tools.serve_recovery.test_usage_management.UsageManagementTests.test_legacy_usage_migration_is_stopped_exclusive_and_preserves_core) ... ok
+test_limits_cli_observes_real_native_policy_without_gateway_binding_privilege (tools.serve_recovery.test_usage_management.UsageManagementTests.test_limits_cli_observes_real_native_policy_without_gateway_binding_privilege) ... ok
+test_usage_cli_identifies_exact_restore_and_survives_durable_state_loss (tools.serve_recovery.test_usage_management.UsageManagementTests.test_usage_cli_identifies_exact_restore_and_survives_durable_state_loss) ... ok
+test_cross_boot_keeps_totals_but_never_reuses_monotonic_window (tools.serve_recovery.test_usage_store.UsageStoreTests.test_cross_boot_keeps_totals_but_never_reuses_monotonic_window) ... ok
+test_cli_commit_replay_status_capacity_and_separate_key_policy (tools.serve_recovery.test_quota_managed.ManagedQuotaTests.test_cli_commit_replay_status_capacity_and_separate_key_policy) ... ok
+test_controller_policy_errors_never_restart_core_and_start_permission_is_explicit (tools.serve_recovery.test_quota_managed.ManagedQuotaTests.test_controller_policy_errors_never_restart_core_and_start_permission_is_explicit) ... ok
+test_limits_loss_does_not_prevent_existing_key_revocation_or_reinitialize (tools.serve_recovery.test_quota_managed.ManagedQuotaTests.test_limits_loss_does_not_prevent_existing_key_revocation_or_reinitialize) ... ok
+test_new_identity_requires_durable_limits_then_actual_model_installation (tools.serve_recovery.test_quota_managed.ManagedQuotaTests.test_new_identity_requires_durable_limits_then_actual_model_installation) ... FAIL
+test_new_model_requires_post_attach_read_and_helpers_do_not_bypass_empty_tree (tools.serve_recovery.test_quota_managed.ManagedQuotaTests.test_new_model_requires_post_attach_read_and_helpers_do_not_bypass_empty_tree) ... ok
+test_old_limits_migration_is_stopped_exclusive_and_preserves_core_ledger (tools.serve_recovery.test_quota_managed.ManagedQuotaTests.test_old_limits_migration_is_stopped_exclusive_and_preserves_core_ledger) ... ok
+test_default_package_has_native_binary_and_no_nginx_dependency (tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency) ... ok
+test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io (tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io) ... ok
+test_historical_source_inventory_versions_remain_verifiable (tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable) ... ok
+test_live_gateway_credentials_are_not_public_status (tools.serve_recovery.test_runtime.RuntimeTests.test_live_gateway_credentials_are_not_public_status) ... ok
+
+======================================================================
+FAIL: test_new_identity_requires_durable_limits_then_actual_model_installation (tools.serve_recovery.test_quota_managed.ManagedQuotaTests.test_new_identity_requires_durable_limits_then_actual_model_installation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_quota_managed.py", line 148, in test_new_identity_requires_durable_limits_then_actual_model_installation
+    self.assertTrue(self.cli('limits-status')[1]['live_applied'])
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 16 tests in 2.063s
+
+FAILED (failures=1)
