@@ -72,7 +72,7 @@ class BundleTests(unittest.TestCase):
     def test_default_package_has_native_binary_and_no_nginx_dependency(self):
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 8)
+        self.assertEqual(value['version'], 9)
         self.assertIn('source/tools/serve_recovery/quota_manager.py', value['files'])
         self.assertIn('source/tools/serve_recovery/quota_runtime.py', value['files'])
         self.assertIn('source/tools/serve_recovery/usage_runtime.py', value['files'])
@@ -136,7 +136,7 @@ class BundleTests(unittest.TestCase):
         for version, sources in ((1, bundle.LEGACY_SOURCES),
                 (2, bundle.V2_SOURCES), (3, bundle.V3_SOURCES),
                 (4, bundle.V4_SOURCES), (5, bundle.V5_SOURCES), (6, bundle.V6_SOURCES),
-                (7, bundle.V7_SOURCES)):
+                (7, bundle.V7_SOURCES), (8, bundle.V8_SOURCES)):
             with self.subTest(version=version):
                 value = dict(current, version=version,
                     profile='q4t-service-recovery-v'+str(version))
@@ -157,6 +157,70 @@ class BundleTests(unittest.TestCase):
                 (package/'bin/q4t').write_bytes(bundle.launcher(digest,
                     value['python']['path']))
                 self.assertEqual(bundle.verify(package, digest)['version'], version)
+
+    def http_policy(self):
+        value = json.loads(self.policy.read_bytes())
+        value.update(version=4, cors=None, http=dict(path_prefix='/llm/thor',
+            keep_alive_requests=7, keep_alive_idle_seconds=3,
+            request_timeout_seconds=12, proxy=dict(trusted_cidrs=['127.0.0.1/32'],
+                header='forwarded', allow_stripped_prefix=True)))
+        self.save(self.policy, value)
+        return bundle.ingress.policy(value)
+
+    def test_http_profile_seals_normalized_policy_and_preserves_managed_binding(self):
+        policy = self.http_policy()
+        receipt = self.prepare()
+        value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
+        self.assertEqual(value['version'], 9)
+        self.assertEqual(bundle.engine.read(Path(receipt['package'])/'gateway-policy.json'), policy)
+        cfg = bundle.gateway_config_for(receipt['package'], value, self.directory,
+            access=dict(state_directory=str(self.directory/'state'), state_identity=[1, 2],
+                        service_id='11111111-1111-4111-8111-111111111111'))
+        self.assertEqual(cfg['version'], 4)
+        self.assertEqual(cfg['policy'], policy)
+        self.assertEqual(cfg['backend_policy']['version'], 3)
+        self.assertTrue(value['quota_enforced'])
+
+    def test_http_profile_without_optional_proxy_normalizes_safe_defaults(self):
+        value = self.http_policy()
+        value['http'] = {}
+        self.save(self.policy, value)
+        receipt = self.prepare()
+        manifest = bundle.verify(receipt['package'], receipt['manifest_sha256'])
+        actual = bundle.gateway_config_for(receipt['package'], manifest, self.directory)
+        self.assertEqual(actual['policy']['http'], bundle.ingress.http_policy({}))
+        self.assertIsNone(actual['policy']['http']['proxy'])
+
+    def test_http_policy_cannot_claim_an_old_transport_profile(self):
+        self.http_policy()
+        receipt = self.prepare()
+        package = Path(receipt['package'])
+        value = bundle.engine.read(package/'manifest.json')
+        value.update(version=8, profile='q4t-service-recovery-v8')
+        bundle.engine.save(package/'manifest.json', value)
+        digest = bundle.engine.sha(package/'manifest.json')
+        (package/'bin/q4t').chmod(0o700)
+        (package/'bin/q4t').write_bytes(bundle.launcher(digest, value['python']['path']))
+        with self.assertRaisesRegex(ValueError, 'transport profile v9'):
+            bundle.verify(package, digest)
+
+    def test_http_profile_refuses_nginx_mode_before_creating_package(self):
+        self.http_policy()
+        with self.assertRaisesRegex(ValueError, 'legacy policy'):
+            self.prepare(ingress_mode='nginx')
+        self.assertFalse((self.directory/'package').exists())
+
+    def test_transport_build_receipt_requires_framing_and_proxy_sources(self):
+        original = json.loads(self.build.read_bytes())
+        for name in ('include/q4t/server/http_framing.h',
+                     'include/q4t/service/ingress_proxy.h', 'src/service/ingress_proxy.cpp'):
+            with self.subTest(source=name):
+                value = json.loads(json.dumps(original))
+                value['source_files'].pop(name)
+                self.save(self.build, value)
+                with self.assertRaisesRegex(ValueError, 'native build receipt'):
+                    self.prepare()
+                self.assertFalse((self.directory/'package').exists())
 
     def test_launcher_never_hands_guardian_a_regular_file_for_diagnostics(self):
         receipt = self.prepare()

@@ -469,12 +469,13 @@
       "evidence": [
         "evidence/serve-http-framing-20261109/decision.json",
         "evidence/serve-http-session-20261109/decision.json",
-        "evidence/serve-http-proxy-20261109/decision.json"
+        "evidence/serve-http-proxy-20261109/decision.json",
+        "evidence/serve-http-package-20261109/decision.json"
       ],
       "release": null,
       "plan": "SERVE_HTTP_TRANSPORT_2026-11-09.md",
       "remaining": [
-        "发行/旧包兼容、实际模型与SDK短验",
+        "实际模型与SDK短验",
         "可回退默认交付"
       ],
       "development_status": "Shared framing 28, connection/SSE 54 distinct and proxy/prefix 27 targeted CPU accepted. Native TLS, optional actual CPU proxy and direct paths covered; actual model/SDK package delivery remains."

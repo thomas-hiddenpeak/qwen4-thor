@@ -63,6 +63,37 @@ class DeploymentTests(unittest.TestCase):
         observed = native.read_ledger(dict(state=str(self.state), descriptor=d.read_descriptor(self.state)))
         self.assertEqual(observed['desired'], 'STOPPED')
 
+    def test_v8_v9_round_trip_preserves_established_client_state(self):
+        self.switch()
+        previous = self.fixture.directory/'v8'
+        shutil.copytree(self.package, previous)
+        value = bundle.engine.read(previous/'manifest.json')
+        value.update(version=8, profile='q4t-service-recovery-v8')
+        bundle.engine.save(previous/'manifest.json', value)
+        digest = bundle.engine.sha(previous/'manifest.json')
+        (previous/'bin/q4t').chmod(0o700)
+        (previous/'bin/q4t').write_bytes(bundle.launcher(digest, value['python']['path']))
+        before = {name:(self.state/writer.directory_name/'policy.json').read_bytes()
+                  for name,writer in d.FAMILIES.items()}
+        core = self.core()
+        with mock.patch.object(service.subprocess, 'Popen') as start:
+            # First select v8 as a deployment; rollback must never invent
+            # history for a package which has not previously been selected.
+            selected = d.switch(self.state, previous, digest, expected=self.digest,
+                                request_id=str(uuid.uuid4()))
+            forward = d.switch(self.state, self.package, self.digest, expected=digest,
+                               request_id=str(uuid.uuid4()))
+            backward = d.switch(self.state, previous, digest, expected=self.digest,
+                                request_id=str(uuid.uuid4()), rollback=True)
+            start.assert_not_called()
+        for receipt in (selected, forward, backward):
+            self.assertFalse(receipt['model_actions'])
+            self.assertFalse(receipt['automatic_start'])
+        self.assertEqual(self.core(), core)
+        for name,writer in d.FAMILIES.items():
+            self.assertEqual(before[name], (self.state/writer.directory_name/'policy.json').read_bytes())
+        d.ready(self.state, d.read_descriptor(self.state))
+
     def test_rollback_keeps_rotations_revocations_dynamic_limits_and_usage(self):
         self.switch()
         with access_store.open_bound(self.binding) as journal:

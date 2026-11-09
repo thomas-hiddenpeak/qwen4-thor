@@ -1,0 +1,35 @@
+test_http_profile_seals_normalized_policy_and_preserves_managed_binding (tools.serve_recovery.test_native_bundle.BundleTests.test_http_profile_seals_normalized_policy_and_preserves_managed_binding) ... ok
+test_http_profile_without_optional_proxy_normalizes_safe_defaults (tools.serve_recovery.test_native_bundle.BundleTests.test_http_profile_without_optional_proxy_normalizes_safe_defaults) ... ok
+test_http_policy_cannot_claim_an_old_transport_profile (tools.serve_recovery.test_native_bundle.BundleTests.test_http_policy_cannot_claim_an_old_transport_profile) ... ok
+test_http_profile_refuses_nginx_mode_before_creating_package (tools.serve_recovery.test_native_bundle.BundleTests.test_http_profile_refuses_nginx_mode_before_creating_package) ... ok
+test_transport_build_receipt_requires_framing_and_proxy_sources (tools.serve_recovery.test_native_bundle.BundleTests.test_transport_build_receipt_requires_framing_and_proxy_sources) ... ok
+test_default_package_has_native_binary_and_no_nginx_dependency (tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency) ... ok
+test_dynamic_profile_keeps_recovery_gate_when_initial_quotas_are_off (tools.serve_recovery.test_native_bundle.BundleTests.test_dynamic_profile_keeps_recovery_gate_when_initial_quotas_are_off) ... ok
+test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io (tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io) ... ok
+test_historical_source_inventory_versions_remain_verifiable (tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable) ... ok
+test_changed_native_binary_blocks_before_lease_acquisition (tools.serve_recovery.test_native_bundle.BundleTests.test_changed_native_binary_blocks_before_lease_acquisition) ... ok
+test_native_tls_paths_are_sealed_but_credentials_are_reloadable (tools.serve_recovery.test_native_bundle.BundleTests.test_native_tls_paths_are_sealed_but_credentials_are_reloadable) ... ok
+test_cli_defaults_native_and_nginx_is_not_a_required_argument (tools.serve_recovery.test_native_bundle.BundleTests.test_cli_defaults_native_and_nginx_is_not_a_required_argument) ... ok
+test_v8_v9_round_trip_preserves_established_client_state (tools.serve_recovery.test_deployment.DeploymentTests.test_v8_v9_round_trip_preserves_established_client_state) ... ERROR
+test_rollback_keeps_rotations_revocations_dynamic_limits_and_usage (tools.serve_recovery.test_deployment.DeploymentTests.test_rollback_keeps_rotations_revocations_dynamic_limits_and_usage) ... ok
+test_before_and_after_descriptor_rename_resume_same_transaction (tools.serve_recovery.test_deployment.DeploymentTests.test_before_and_after_descriptor_rename_resume_same_transaction) ... ok
+test_legacy_upgrade_and_replay_preserve_core_identity_and_all_budgets (tools.serve_recovery.test_deployment.DeploymentTests.test_legacy_upgrade_and_replay_preserve_core_identity_and_all_budgets) ... ok
+test_new_service_can_upgrade_and_rollback_without_reinitializing_original_package (tools.serve_recovery.test_initialization.InitializationTests.test_new_service_can_upgrade_and_rollback_without_reinitializing_original_package) ... ok
+
+======================================================================
+ERROR: test_v8_v9_round_trip_preserves_established_client_state (tools.serve_recovery.test_deployment.DeploymentTests.test_v8_v9_round_trip_preserves_established_client_state)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_deployment.py", line 80, in test_v8_v9_round_trip_preserves_established_client_state
+    backward = d.switch(self.state, previous, digest, expected=self.digest,
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/deployment.py", line 161, in switch
+    ledger.require(any(d['package'] == target_path and d['manifest_sha256'] == digest
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: rollback target is not retained deployment history
+
+----------------------------------------------------------------------
+Ran 17 tests in 0.926s
+
+FAILED (errors=1)

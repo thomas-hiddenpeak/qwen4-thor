@@ -1,5 +1,15 @@
 # 当前状态
 
+N05 v9包17项CPU最终通过，首轮1夹具准备错误与仅1补验
+[原件保留](evidence/serve-http-package-20261109/README.md)；真实v8默认/回退只读通过，核心与原生零警告。
+0GPU、默认保持STOPPED；继续实际模型/SDK短验、可回退交付，
+随后N07及全部总任务。
+
+N05发行接入开发：v9绑定新HTTP传输、允许policy v4并拒绝冒充旧
+transport版本；v1—v8读取与当前状态保留继续。冻结17项针对CPU
+及真实旧默认/回退包只读核验，尚未执行；必要重编后准备实际短验。
+默认N04保持STOPPED，N05交付及全部总任务继续。
+
 N05可信代理/前缀27项CPU全过（8C++/19Python含实际TLS入口与
 可选代理），构建零警告，[原件](evidence/serve-http-proxy-20261109/README.md)。0GPU/默认N04
 保持STOPPED；继续发行/旧包兼容与实际模型SDK短验、可回退交付，
