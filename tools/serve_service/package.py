@@ -30,8 +30,11 @@ V11_SOURCES = (*V10_SOURCES, 'tools/serve_service/capacity.py')
 FILES = ('q4t', 'q4t.release.json', 'CMakeCache.txt', 'acceptance.json')
 APPLICATION_LIMITS = dict(max_object_mib=16, max_client_mib=64, max_total_mib=256,
     max_client_objects=1000, max_total_objects=10000, io_timeout_ms=2000)
-NOTICE_FILES = tuple(sorted(str(p.relative_to(ROOT/'third_party/licenses'))
-    for p in (ROOT/'third_party/licenses').rglob('*') if p.is_file()))
+NOTICE_ROOT = next((p for p in (ROOT/'third_party/licenses',
+    ROOT.parent/'engine/licenses', ROOT.parent/'licenses') if p.is_dir()),
+    ROOT/'third_party/licenses')
+NOTICE_FILES = tuple(sorted(str(p.relative_to(NOTICE_ROOT))
+    for p in NOTICE_ROOT.rglob('*') if p.is_file()))
 DECLARATION_PROFILE = 'q4t-release-declarations-v1'
 COMPLETION_DECLARATION_PROFILE = 'q4t-release-declarations-v2'
 APPLICATION_DECLARATION_PROFILE = 'q4t-release-declarations-v3'
@@ -56,6 +59,14 @@ PROFILE = dict(name='text-mtp-managed-v1', host='127.0.0.1', max_seq=1,
 def require(condition, message):
     if not condition:
         raise RuntimeError(message)
+
+
+def check_python_runtime():
+    require(sys.version_info >= (3, 11), 'service Python requires version 3.11 or later')
+    names = ('memfd_create', 'MFD_CLOEXEC', 'MFD_ALLOW_SEALING',
+             'pidfd_open', 'waitid', 'P_PIDFD')
+    missing = [name for name in names if not hasattr(os, name)]
+    require(not missing, 'service Python lacks Linux APIs: '+','.join(missing))
 
 
 def sha(path):
@@ -285,7 +296,9 @@ def verify_declarations(metadata, directory=None, *, required=False):
 def prepare(binary, release, model, output, port=8080, restart_limit=0,
             critical_memory_mib=1024, client_policy=None, host_resources=None,
             operations_port=0, nvml_policy='strict', model_names=None,
-            application_state=None, capacity_config=None):
+            application_state=None, capacity_config=None, repository=None):
+    check_python_runtime()
+    repository = ROOT if repository is None else Path(repository).resolve(strict=True)
     profile = None
     if capacity_config is not None:
         from tools.serve_service import capacity
@@ -337,7 +350,7 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
                    if p.is_file() and not p.is_symlink()}
     require({'config.json', 'tokenizer.json', 'tokenizer_config.json'} <=
             model_files.keys(), 'model metadata incomplete')
-    target = private_directory(output)
+    target = private_directory(output, repository)
     for source, name in zip((binary, release, cache, acceptance), FILES):
         shutil.copyfile(source, target/name)
         os.chmod(target/name, 0o500 if name == 'q4t' else 0o400)
@@ -354,7 +367,7 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
         os.chmod(dest, 0o400)
     names = [*FILES, *('source/'+s for s in sources)]
     for name in NOTICE_FILES:
-        source, dest = ROOT/'third_party/licenses'/name, target/'licenses'/name
+        source, dest = NOTICE_ROOT/name, target/'licenses'/name
         regular(source)
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(source, dest)
@@ -372,7 +385,7 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
         (target/'client-policy.json').chmod(0o400)
         names.append('client-policy.json')
     python = Path(sys.executable).resolve()
-    manifest = dict(version=3, repository=str(ROOT), model_dir=str(model),
+    manifest = dict(version=3, repository=str(repository), model_dir=str(model),
         model_files=model_files, protocol_sha256=protocol, settings=config,
         python=dict(path=str(python), sha256=sha(python)),
         files={name: sha(target/name) for name in names},

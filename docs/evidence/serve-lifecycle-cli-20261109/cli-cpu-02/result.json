@@ -1,0 +1,17 @@
+{
+  "status": "FAIL",
+  "tests_run": 5,
+  "failures": [
+    {
+      "test": "test_packaged_native_entry_prepares_new_target_and_round_trips_without_state_reset (tools.serve_recovery.test_lifecycle.NativeEntryTests.test_packaged_native_entry_prepares_new_target_and_round_trips_without_state_reset)",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_lifecycle.py\", line 200, in test_packaged_native_entry_prepares_new_target_and_round_trips_without_state_reset\n    else:self.assertEqual(path.read_bytes(),raw)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: b'{\"f[54 chars]256\":\"b1dad7e9729f29d25cfb4b6f937831a36933d8f5[2189 chars]96]}' != b'{\"f[54 chars]256\":null,\"service_id\":\"d55d2c3b-8970-41c8-af9[582 chars]96]}'\n"
+    },
+    {
+      "test": "test_pinned_interpreter_enforces_diagnostic_and_tls_memfd_seals (tools.serve_recovery.test_lifecycle.NativeEntryTests.test_pinned_interpreter_enforces_diagnostic_and_tls_memfd_seals)",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_lifecycle.py\", line 254, in test_pinned_interpreter_enforces_diagnostic_and_tls_memfd_seals\n    self.assertEqual(result.returncode,0,result.stderr)\nAssertionError: 1 != 0 : Traceback (most recent call last):\n  File \"<string>\", line 5, in <module>\n    fd=service.diagnostic_buffer()\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host/service-tools/d41d0d6a46731d703e2f080f3e1aff69ddf36c51ca2b74a7b0dc1aa928b96fe8/source/tools/serve_recovery/service.py\", line 41, in diagnostic_buffer\n    fd = os.memfd_create('q4t-service-diagnostics', os.MFD_CLOEXEC | os.MFD_ALLOW_SEALING)\n         ^^^^^^^^^^^^^^^\nAttributeError: module 'os' has no attribute 'memfd_create'. Did you mean: 'timerfd_create'?\n\n"
+    }
+  ],
+  "errors": [],
+  "elapsed_seconds": 3.6451711268164217,
+  "gpu_starts": 0
+}

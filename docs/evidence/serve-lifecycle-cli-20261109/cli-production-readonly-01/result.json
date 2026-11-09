@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "commands": [
+    {
+      "operation": "--help",
+      "returncode": 0
+    },
+    {
+      "operation": "check",
+      "returncode": 0
+    },
+    {
+      "operation": "status",
+      "returncode": 0
+    }
+  ],
+  "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t",
+  "binary_sha256": "3072f28c801366b0ab0b3ec718f47102ff955e1ba121ba2b0e321fbc0ffef025",
+  "manifest_sha256": "97423f346090dc36bf30f37a5129ccabca8df5c1fdcccae0cecea21716023dab",
+  "files": {
+    "service.json": "738cea3603de606e0b338d45870ce1eed1b7a6d504e35de8436298c3f8f30b6d",
+    "ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16",
+    "client-access/writer.lock": "cde313fe79bad1d3a733e51e5b54384fdf4816e3b23490b0aa6f8cf25131dc79",
+    "client-access/policy.json": "778cbf21aa1672c5812b4981cec6c4f159413692d88332358e030f199d2a2e5d",
+    "client-limits/writer.lock": "2aecf0e566ff46df26b55e087a0dcfb345d34c4a2b294f52bf66ebb26ff51a82",
+    "client-limits/policy.json": "e0a4b18061e8edf32b73f87dd68acb73c834abb9762e602db73bb3e00fa90343",
+    "client-usage/writer.lock": "a3437fffb54dca8cb3b0f8cff0b75aeab81c7f44f0868d066def399750353d07",
+    "client-usage/policy.json": "8b0a55798498f572abb9ba3e63b944e37940e454785aba23b4c43afedf91051c",
+    "service-deployment/writer.lock": "0e4ef882bf65bdc96001c9510bf673dbdf5d9bb06899f2f1ad0af4d5116224b8",
+    "service-deployment/policy.json": "9efbb37743a20a36ff1b7775c4c2a42454e14cefade14b81ba392c5a528d9ddd"
+  },
+  "preserved": true,
+  "gpu_starts": 0,
+  "model_actions": false,
+  "elapsed_seconds": 0.8705662391148508
+}

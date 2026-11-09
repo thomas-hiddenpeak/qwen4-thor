@@ -1,0 +1,5 @@
+{
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import sys;sys.path.insert(0,sys.argv[1]);from tools.serve_recovery import service\n                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host/service-tools/9329854a3e6fedc11259b72b940d675f0479ecb8b511c71dca6ccf097d3fbf37/source/tools/serve_recovery/service.py\", line 25, in <module>\n    DIAGNOSTIC_SEALS = fcntl.F_SEAL_GROW | fcntl.F_SEAL_SHRINK | fcntl.F_SEAL_SEAL\n                       ^^^^^^^^^^^^^^^^^\nAttributeError: module 'fcntl' has no attribute 'F_SEAL_GROW'\n"
+}

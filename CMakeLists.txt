@@ -355,11 +355,12 @@ target_link_libraries(q4t_server PUBLIC q4t_model q4t_text q4t_io q4t_runtime
 # ---------------------------------------------------------------------------
 # q4t — CLI executable
 # ---------------------------------------------------------------------------
+include(cmake/ServiceCLI.cmake)
 add_executable(q4t src/main.cpp)
 q4t_link_structured_output(q4t)
 target_include_directories(q4t PRIVATE include)
 target_link_libraries(q4t PRIVATE q4t_model q4t_text q4t_ple q4t_quant
-                                  q4t_server CUDA::cudart)
+                                  q4t_server q4t_service_cli CUDA::cudart)
 
 add_library(q4t_startup_plan STATIC
   src/runtime/startup_plan.cpp

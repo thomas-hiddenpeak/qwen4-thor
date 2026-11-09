@@ -112,7 +112,7 @@ class BundleTests(unittest.TestCase):
     def test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io(self):
         self.assertEqual(bundle.V9_SOURCES, bundle.V8_SOURCES)
         self.assertEqual(set(bundle.SOURCES)-set(bundle.V9_SOURCES),
-                         {'tools/serve_service/capacity.py'})
+                         {'tools/serve_service/capacity.py', 'tools/serve_recovery/lifecycle.py'})
         self.assertNotIn('tools/serve_recovery/observation_io.py', bundle.V2_SOURCES)
         self.assertEqual(set(bundle.V3_SOURCES)-set(bundle.V2_SOURCES),
                          {'tools/serve_recovery/observation_io.py'})

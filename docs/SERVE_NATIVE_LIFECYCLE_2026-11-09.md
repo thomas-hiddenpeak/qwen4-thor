@@ -47,3 +47,12 @@ argv 与观察合同、包身份/历史版本、客户端公平容量和 CLI 参
 `.q4t-work/serve-lifecycle-20261109/capacity-cpu-01/plan.json`。含新配置
 及真实 CPU 子进程、封装独立解释器、历史包/监控恢复/设备故障
 保护。另只读核验真实默认 v9 和回退 v8。0 模型/Chat，不涉及 GPU。
+
+## 第二组执行清单
+
+统一入口接通真实首次 prepare 与随包 prepare。修复源码位置/工作区
+混用和许可证寻找，发布包仍保留全部许可。冻结 21 项 CPU，详见
+`.q4t-work/serve-lifecycle-20261109/cli-cpu-01/plan.json`；包括实际
+C++ 分派、独立解释器、prepare/init/check/deploy/rollback/status，
+损坏身份拒绝、只读未知提交及 reload 生效与持久提交分离。另通过
+新入口只读 check/status 当前真实默认，不加载模型。

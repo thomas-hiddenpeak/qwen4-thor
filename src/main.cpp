@@ -30,6 +30,7 @@
 #include "q4t/server/structured_decoder.h"
 #include "q4t/server/object_store.h"
 #include "q4t/server/cache_io.h"
+#include "q4t/service/service_cli.h"
 #include "q4t/text/tokenizer.h"
 
 namespace {
@@ -57,6 +58,8 @@ void PrintUsage(const char* prog) {
       "  models    List catalogued model descriptors\n"
       "  generate  Single greedy generation\n"
       "            (q4t generate \"prompt\" [--max-tokens N])\n"
+      "  service   Manage native service lifecycle and deployment\n"
+      "            (q4t service --help)\n"
       "  serve     OpenAI-compatible HTTP API server\n"
       "            (q4t serve [--host IPv4] [--port N] "
       "[--operations-port N] [--model-dir DIR] "
@@ -884,6 +887,9 @@ int RunServe(int argc, char** argv) {
 }  // namespace
 
 int main(int argc, char** argv) {
+  if (argc > 1 && std::strcmp(argv[1], "service") == 0) {
+    return q4t::service::RunService(argc, argv);
+  }
   const int cache_worker = q4t::server::MaybeRunCacheWorker(argc, argv);
   if (cache_worker >= 0) return cache_worker;
   const int object_worker = q4t::server::MaybeRunObjectWorker(argc, argv);

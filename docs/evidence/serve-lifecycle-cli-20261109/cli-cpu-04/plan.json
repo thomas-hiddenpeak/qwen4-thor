@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "tests": [
+    "tools.serve_recovery.test_lifecycle.NativeEntryTests.test_runtime_requirement_refuses_incomplete_python_before_creating_tools",
+    "tools.serve_recovery.test_lifecycle.NativeEntryTests.test_fresh_build_entry_really_prepares_and_checks_a_package"
+  ],
+  "tests_count": 2,
+  "reason": "Apply the same qualified interpreter check to direct engine preparation before creating output",
+  "gpu_starts": 0
+}

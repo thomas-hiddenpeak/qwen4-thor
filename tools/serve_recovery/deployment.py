@@ -26,9 +26,10 @@ class Store(access_store.Store):
 
 
 @contextmanager
-def claim(state, *, shared=False, name='deployment.lock'):
+def claim(state, *, shared=False, name='deployment.lock', create=True):
     path = Path(state)/name
-    fd = os.open(path, os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW | os.O_CLOEXEC, 0o600)
+    fd = os.open(path, os.O_RDWR | (os.O_CREAT if create else 0) |
+                 os.O_NOFOLLOW | os.O_CLOEXEC, 0o600)
     try:
         held = store.check_file(fd)
         fcntl.flock(fd, (fcntl.LOCK_SH if shared else fcntl.LOCK_EX) | fcntl.LOCK_NB)

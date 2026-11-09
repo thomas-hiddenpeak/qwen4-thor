@@ -71,7 +71,9 @@ def immutable_fd(stack,raw):
     fd=os.memfd_create('q4t-tls-input',os.MFD_CLOEXEC|os.MFD_ALLOW_SEALING)
     stack.callback(os.close,fd)
     with os.fdopen(os.dup(fd),'wb') as stream:stream.write(raw)
-    fcntl.fcntl(fd,fcntl.F_ADD_SEALS,fcntl.F_SEAL_WRITE|fcntl.F_SEAL_GROW|fcntl.F_SEAL_SHRINK|fcntl.F_SEAL_SEAL)
+    # Linux UAPI: Python built with older headers may omit these constants.
+    # A missing Python name must not disable kernel immutability protection.
+    fcntl.fcntl(fd,getattr(fcntl,'F_ADD_SEALS',1033),15)
     os.lseek(fd,0,os.SEEK_SET)
     return fd
 

@@ -22,7 +22,13 @@ from tools.serve_service import package as engine
 
 
 DIAGNOSTIC_BYTES = 64 * 1024
-DIAGNOSTIC_SEALS = fcntl.F_SEAL_GROW | fcntl.F_SEAL_SHRINK | fcntl.F_SEAL_SEAL
+# Linux UAPI values, also needed by Python builds whose build-time headers did
+# not export the names. The kernel still enforces every requested seal.
+ADD_SEALS = getattr(fcntl, 'F_ADD_SEALS', 1033)
+GET_SEALS = getattr(fcntl, 'F_GET_SEALS', 1034)
+DIAGNOSTIC_SEALS = (getattr(fcntl, 'F_SEAL_GROW', 4) |
+                    getattr(fcntl, 'F_SEAL_SHRINK', 2) |
+                    getattr(fcntl, 'F_SEAL_SEAL', 1))
 
 
 def diagnostic_buffer():
@@ -35,7 +41,7 @@ def diagnostic_buffer():
     fd = os.memfd_create('q4t-service-diagnostics', os.MFD_CLOEXEC | os.MFD_ALLOW_SEALING)
     try:
         os.ftruncate(fd, DIAGNOSTIC_BYTES)
-        fcntl.fcntl(fd, fcntl.F_ADD_SEALS, DIAGNOSTIC_SEALS)
+        fcntl.fcntl(fd, ADD_SEALS, DIAGNOSTIC_SEALS)
         return fd
     except BaseException:
         os.close(fd)
@@ -52,7 +58,7 @@ def read_diagnostics(status):
     fd = os.open(path, os.O_RDONLY | os.O_CLOEXEC | os.O_NONBLOCK)
     try:
         ledger.require(os.fstat(fd).st_size == DIAGNOSTIC_BYTES and
-            fcntl.fcntl(fd, fcntl.F_GET_SEALS) == DIAGNOSTIC_SEALS and
+            fcntl.fcntl(fd, GET_SEALS) == DIAGNOSTIC_SEALS and
             journal.process_start(pid) == start, 'invalid diagnostic buffer')
         raw = os.pread(fd, DIAGNOSTIC_BYTES, 0).rstrip(b'\0')
         return dict(retained_bytes=len(raw), capacity=DIAGNOSTIC_BYTES,
@@ -263,7 +269,7 @@ def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360)
         os.close(lease)  # No LOCK_UN on a shared open-file description.
 
 
-def main(argv=None, *, package=None, digest=None):
+def main(argv=None, *, package=None, digest=None, workspace=None):
     os.umask(0o077)
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest='operation', required=True)
@@ -289,7 +295,7 @@ def main(argv=None, *, package=None, digest=None):
     prepare.add_argument('--capacity-config', type=Path)
     for option in engine.APPLICATION_LIMITS:
         prepare.add_argument('--object-'+option.replace('_', '-'), type=int)
-    for name in ('init', 'init-resume', 'run', 'start', 'status', 'diagnostics', 'stop',
+    for name in ('check', 'reload', 'init', 'init-resume', 'run', 'start', 'status', 'diagnostics', 'stop',
                  'tls-status', 'tls-reload', 'observe', 'metrics', 'export',
                  'retention-plan', 'retention-archive', 'retention-apply', 'retention-resume',
                  'retention-migrate', 'access-status', 'access-propose', 'access-apply',
@@ -297,10 +303,13 @@ def main(argv=None, *, package=None, digest=None):
                  'limits-migrate', 'usage-status', 'usage-migrate',
                  'deploy', 'rollback', 'deployment-status'):
         command = commands.add_parser(name)
-        command.add_argument('--state', type=Path, required=True)
-        if package is None:
-            command.add_argument('--package', type=Path, required=True)
-            command.add_argument('--manifest-sha256', required=True)
+        command.add_argument('--state', type=Path, required=name != 'check')
+        command.add_argument('--package', type=Path, default=package, required=package is None)
+        command.add_argument('--manifest-sha256', default=digest, required=digest is None)
+        if name == 'reload':
+            command.add_argument('--component', choices=('tls', 'access', 'limits'), required=True)
+            command.add_argument('--proposal', type=Path)
+            command.add_argument('--wait-seconds', type=int, default=3)
         if name == 'retention-plan':
             command.add_argument('--max-age-days', type=int, default=14)
             command.add_argument('--max-runs', type=int, default=100)
@@ -335,6 +344,8 @@ def main(argv=None, *, package=None, digest=None):
     locks = ExitStack()
     try:
         if args.operation == 'prepare':
+            repository = (workspace if workspace is not None else
+                bundle.verify(package, digest)['repository'] if package is not None else bundle.ROOT)
             result = bundle.prepare(args.binary, args.release, args.model, args.guardian,
                 args.cuda_probe, args.nginx, args.policy, args.backend_policy, args.output,
                 native_receipt=args.native_receipt, certificate=args.certificate, key=args.key,
@@ -342,6 +353,7 @@ def main(argv=None, *, package=None, digest=None):
                 client_ca=args.client_ca, client_crl=args.client_crl,
                 capacity_config=engine.read(args.capacity_config)
                     if args.capacity_config is not None else None,
+                repository=repository,
                 model_names=dict(
                     name=args.served_model_name if args.served_model_name is not None
                          else 'qwen3.8-flash-next', aliases=args.model_alias)
@@ -351,14 +363,19 @@ def main(argv=None, *, package=None, digest=None):
                     **{k: getattr(args, 'object_'+k) for k in engine.APPLICATION_LIMITS
                        if getattr(args, 'object_'+k) is not None}} or None))
         else:
-            package = package or args.package
-            digest = digest or args.manifest_sha256
+            package = args.package
+            digest = args.manifest_sha256
             if args.operation.startswith(('access-', 'limits-', 'usage-')):
                 from tools.serve_recovery import deployment
                 locks.enter_context(deployment.claim(args.state, shared=True))
                 if not args.operation.endswith('-status'):
                     deployment.ready(args.state, descriptor(args.state, package, digest))
-            if args.operation == 'init':
+            if args.operation in ('check', 'reload'):
+                from tools.serve_recovery import lifecycle
+                result = (lifecycle.check(package, digest, args.state) if args.operation == 'check' else
+                    lifecycle.reload(package, digest, args.state, component=args.component,
+                        proposal=args.proposal, wait_seconds=args.wait_seconds))
+            elif args.operation == 'init':
                 result = initialize(package, digest, args.state)
             elif args.operation == 'init-resume':
                 from tools.serve_recovery import initialization
@@ -456,10 +473,14 @@ def main(argv=None, *, package=None, digest=None):
                 except OSError:
                     result = dict(service_id=desc['service_id'], state='UNKNOWN',
                                   business_ready=False, live_control=False)
+                    if args.operation in ('status', 'stop'):
+                        from tools.serve_recovery import lifecycle
+                        try:result = lifecycle.stopped(args.state, package, digest)
+                        except (OSError, ValueError, RuntimeError):pass
         print(json.dumps(result, ensure_ascii=False))
         if args.operation == 'stop' and not result.get('cleanup_confirmed'):
             return 1
-        if args.operation == 'tls-reload' and not result.get('reloaded'):
+        if args.operation in ('tls-reload', 'reload') and not result.get('reloaded'):
             return 1
         if args.operation in ('access-status', 'limits-status', 'usage-status') and result.get('durable_error'):
             return 1

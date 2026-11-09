@@ -534,7 +534,8 @@
         "N06"
       ],
       "evidence": [
-        "evidence/serve-lifecycle-capacity-20261109/README.md"
+        "evidence/serve-lifecycle-capacity-20261109/README.md",
+        "evidence/serve-lifecycle-cli-20261109/README.md"
       ],
       "release": null,
       "findings": [

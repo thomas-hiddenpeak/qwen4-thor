@@ -32,11 +32,15 @@ V8_SOURCES = tuple(sorted(set(V7_SOURCES) | {'tools/serve_recovery/'+name+'.py' 
      'usage_policy', 'usage_store', 'usage_io', 'usage_control', 'usage_runtime',
      'model_admin', 'usage_manager', 'deployment_policy', 'deployment', 'initialization')}))
 V9_SOURCES = V8_SOURCES  # v9 adds HTTP transport, with unchanged Python inventory.
-SOURCES = tuple(sorted(set(V9_SOURCES) | {'tools/serve_service/capacity.py'}))
+SOURCES = tuple(sorted(set(V9_SOURCES) | {'tools/serve_service/capacity.py',
+    'tools/serve_recovery/lifecycle.py'}))
 LEGACY_EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'nginx')
 EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'q4t-ingress')
 NATIVE_SOURCES = frozenset(('CMakeLists.txt', 'tests/host/CMakeLists.txt',
     'cmake/GuardianProcess.cmake', 'cmake/RecoveryProbe.cmake',
+    'cmake/ServiceCLI.cmake', 'include/q4t/service/service_cli.h',
+    'src/service/service_cli.cpp', 'tests/service_cli_fixture.cpp',
+    'tools/serve_recovery/build_tools.py',
     'include/q4t/status.h', 'include/q4t/io/json.h', 'src/io/json.cpp',
     'src/service/cuda_probe.cu', 'src/service/guardian_main.cpp',
     *('include/q4t/service/guardian_'+name+'.h' for name in
@@ -147,7 +151,9 @@ def gateway_config_for(package, manifest, directory, *, access=None):
 def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
             backend_policy_path, output, *, native_receipt, certificate=None, key=None,
             native_ingress=None, ingress_mode='native', client_ca=None, client_crl=None,
-            model_names=None, application_state=None, capacity_config=None):
+            model_names=None, application_state=None, capacity_config=None,
+            repository=None):
+    repository = ROOT if repository is None else Path(repository).resolve(strict=True)
     ledger.require(ingress_mode in ('native', 'nginx'), 'invalid ingress mode')
     native = ingress_mode == 'native'
     executable = native_ingress if native else nginx
@@ -191,14 +197,15 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
         'native build receipt mismatch')
     for name, digest in build['source_files'].items():
         ledger.require(not Path(name).is_absolute() and '..' not in Path(name).parts and
-                       engine.sha(ROOT/name) == digest, 'native source changed since build')
+                       engine.sha(repository/name) == digest, 'native source changed since build')
     if tls is not None:
         tls_control.check(native_ingress, policy, tls, Path(output).parent)
-    target = engine.private_directory(output)
+    target = engine.private_directory(output, repository)
     receipt = engine.prepare(binary, release, model, target/'engine',
         port=policy['upstream_port'], operations_port=policy['upstream_operations_port'],
         client_policy=backend_policy_path, nvml_policy='degrade', model_names=model_names,
-        application_state=application_state, capacity_config=capacity_config)
+        application_state=application_state, capacity_config=capacity_config,
+        repository=repository)
     (target/'bin').mkdir(mode=0o700)
     executables = EXECUTABLES if native else LEGACY_EXECUTABLES
     for name, source in zip(executables, (guardian, cuda_probe, executable)):
@@ -223,8 +230,8 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
     # resolved from a copied bundle's source directory at runtime.
     import subprocess
     common = Path(subprocess.check_output(['git', 'rev-parse', '--path-format=absolute',
-        '--git-common-dir'], cwd=ROOT, text=True).strip())
-    value = dict(version=10, profile='q4t-service-recovery-v10', repository=str(ROOT),
+        '--git-common-dir'], cwd=repository, text=True).strip())
+    value = dict(version=10, profile='q4t-service-recovery-v10', repository=str(repository),
         ingress_mode=ingress_mode,
         engine_manifest_sha256=receipt['manifest_sha256'],
         files={name: engine.sha(target/name) for name in names}, python=base['python'],

@@ -229,8 +229,26 @@ class ControllerTests(unittest.TestCase):
         actor = object.__new__(controller.Controller)
         actor.package, actor.config = ROOT, dict(manifest_sha256='a'*64)
         actor.quarantine, actor.transaction = mock.Mock(), mock.Mock()
-        with mock.patch.object(controller.bundle, 'verify', side_effect=ValueError('changed')):
-            self.assertFalse(actor.load({}))
+        for category in (ValueError, RuntimeError, TypeError, KeyError):
+            actor.quarantine.reset_mock()
+            with mock.patch.object(controller.bundle, 'verify', side_effect=category('changed')):
+                self.assertFalse(actor.load({}))
+            actor.quarantine.assert_called_once_with('identity_invalid')
+            actor.transaction.assert_not_called()
+
+    def test_effective_capacity_mismatch_quarantines_without_retry_or_grant(self):
+        from tools.serve_service import capacity, supervisor
+        from tools.serve_recovery.test_gateway import config
+        actor=object.__new__(controller.Controller)
+        actor.settings=controller.engine.settings(8080,0,
+            capacity_profile=capacity.normalize(dict(version=1,max_len=4096)))
+        actor.settings['operations_port']=0
+        actor.base=dict(protocol_sha256='p',files={'q4t':'b'})
+        actor.quarantine,actor.transaction=mock.Mock(),mock.Mock()
+        observed=dict(process=dict(executable_sha256='b',listener_scope='loopback'),
+            protocol='p',configuration=supervisor.expected_configuration())
+        raw=controller.ledger.canonical(config(ROOT/'build/cpu-profile')['backend_policy'])
+        self.assertIsNone(actor.classify_loaded(observed,raw))
         actor.quarantine.assert_called_once_with('identity_invalid')
         actor.transaction.assert_not_called()
 

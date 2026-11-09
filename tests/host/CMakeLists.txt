@@ -36,6 +36,7 @@ target_link_libraries(q4t_client_policy_fixture PRIVATE Threads::Threads)
 enable_testing()
 include(../../cmake/GuardianProcess.cmake)
 include(../../cmake/NativeIngress.cmake)
+include(../../cmake/ServiceCLI.cmake)
 set(guardian_output "${CMAKE_CURRENT_BINARY_DIR}/guardian-process-tests")
 file(MAKE_DIRECTORY "${guardian_output}")
 add_test(NAME q4t_guardian_process_contracts

@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "tests": [
+    "tools.serve_recovery.test_lifecycle.NativeEntryTests.test_fresh_build_entry_really_prepares_and_checks_a_package",
+    "tools.serve_recovery.test_lifecycle.NativeEntryTests.test_packaged_native_entry_prepares_new_target_and_round_trips_without_state_reset",
+    "tools.serve_recovery.test_lifecycle.NativeEntryTests.test_default_engine_and_service_identity_cannot_diverge",
+    "tools.serve_recovery.test_lifecycle.NativeEntryTests.test_pinned_interpreter_enforces_diagnostic_and_tls_memfd_seals",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_fatal_diagnostic_buffer_cannot_grow_and_is_readable_privately"
+  ],
+  "tests_count": 5,
+  "reason": "CMake-selected Python 3.13 omits Linux memfd seal names; preserve UAPI enforcement",
+  "previous_result": ".q4t-work/serve-lifecycle-20261109/cli-cpu-01/result.json",
+  "reused_passed": 18,
+  "gpu_starts": 0
+}

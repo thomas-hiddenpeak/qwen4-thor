@@ -1,0 +1,5 @@
+[ 25%] Generating service-tools/snapshot.done
+{"snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host/service-tools/f395fc10e121173c0f7c47be8a184919b08c5ccf04240b1b2700d5f020650716", "manifest_sha256": "f395fc10e121173c0f7c47be8a184919b08c5ccf04240b1b2700d5f020650716", "model_actions": false}
+[ 25%] Built target q4t_service_tools
+[ 50%] Built target q4t_service_cli
+[100%] Built target q4t_service_cli_fixture

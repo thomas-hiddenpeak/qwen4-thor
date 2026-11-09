@@ -1,5 +1,43 @@
 # 当前状态
 
+N07 原生生命周期 26 个不同 CPU 最终通过，另 3 条实际 ELF/2 条
+CPU 入口真实默认只读检查通过；构建零警告，[失败与修复原件](evidence/serve-lifecycle-cli-20261109/README.md)。
+候选 ELF 3072f28c、0 模型/GPU，默认 N05/账本保持 STOPPED。
+继续持久发布事务与组合真实短验，再其余全部总任务。
+
+N07 生命周期 26 个不同 CPU 全过；生产 ELF/原生组件零警告。
+冻结实际 ELF help/check/status 三项 CPU 入口确认，0 GPU；
+之后持久发布事务与组合真实模型短验，默认保持 STOPPED。
+
+N07 生命周期 24 个不同 CPU 最终通过，真实默认 check/status 与
+账本字节保持通过。复核补齐容量不符的 RuntimeError 分类，永久
+配置错误进入隔离，冻结 2 项直接 CPU；之后发布事务及真实短验，
+默认 STOPPED、0 GPU，全部目标继续。
+
+N07 实际入口 8 项补验全过：首次/随包 prepare、部署回退与内核
+seal 均通过；同一解释器能力门槛补到直接 engine.prepare，冻结
+2 项相关补验，其余通过项复用。然后实际默认只读、发布事务/业务，
+默认/GPU 保持，总目标继续。
+
+N07 补验 3/5 通过：首次 prepare/check 已通；发现 Python 3.13 还缺
+memfd_create，改为显式合格服务解释器、构建前能力检查，默认系统
+Python。另修夹具对合法部署历史变化的误判；冻结 8 个受解释器身份
+影响的入口用例，原件保留。0 GPU、默认保持，发布/真实业务继续。
+
+N07 首轮生命周期 CPU 18/21 通过，3 实际入口在选中的 Python 3.13
+缺 memfd seal 常量处失败，未进入 prepare/模型。已按本机 Linux
+UAPI 保留全部内核 seal，冻结 3 失败项及 2 seal 直接用例补验；
+首失败保留，默认/GPU 不变。之后发布事务和真实业务，总任务继续。
+
+N07 生命周期已接实际首次/随包 prepare，修复源码目录与工作区、
+许可证来源混用。冻结 21 项直接 CPU 与实际默认 check/status，
+尚未执行；必要重编后运行。0 GPU、默认保持；继续发布事务与真实业务。
+
+N07 统一入口开发：ELF service 分派到绑定解释器/源码的自有工具，
+首次构建可 prepare；check 只读核验、reload 复用 TLS/Key/限额热更新，
+STOPPED 状态与幂等 stop 补齐。正在必要构建，尚无本组测试/GPU；
+后续持久发布事务和组合业务短验，默认保持，总任务继续。
+
 N07 容量 27 项 CPU 与真实旧 v9/v8 只读全部通过，[原件](evidence/serve-lifecycle-capacity-20261109/README.md)。
 0 模型/Chat，默认保持 STOPPED；继续统一 q4t service、发布事务
 及组合真实短验，再全部总任务，N07 和总目标尚未完成。

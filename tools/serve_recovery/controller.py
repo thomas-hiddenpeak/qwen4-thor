@@ -284,6 +284,17 @@ class Controller:
         del proof['dependency_ready']
         return proof
 
+    def classify_loaded(self, value, raw):
+        try:
+            return supervisor.classify(value, self.base['protocol_sha256'],
+                self.base['files']['q4t'], cp.binding(raw), self.settings['operations_port'],
+                self.settings['profile'])
+        except (ValueError, KeyError, TypeError, RuntimeError):
+            # A configuration mismatch is a permanent deployment fault, not
+            # missing telemetry and not a reason to cycle the controller.
+            self.quarantine('identity_invalid')
+            return None
+
     def load(self, proof):
         # Verify immutable deployment inputs again before requesting authority.
         try:
@@ -291,7 +302,7 @@ class Controller:
         except OSError:
             self.phase, self.reason = 'WAIT_DEPENDENCY', 'bundle_unavailable'
             return False
-        except (ValueError, KeyError):
+        except (ValueError, KeyError, TypeError, RuntimeError):
             self.quarantine('identity_invalid')
             return False
         reply = self.transaction('authorize', dict(role='model', proof=proof))
@@ -389,12 +400,8 @@ class Controller:
                 if reply['http_status'] == 200:
                     value = supervisor.probe(self.model.pid, self.settings['port'],
                         self.settings['operations_port'], stopped=self.tick, include_metrics=False)
-                    try:
-                        state = supervisor.classify(value, self.base['protocol_sha256'],
-                            self.base['files']['q4t'], cp.binding(raw), self.settings['operations_port'],
-                            self.settings['profile'])
-                    except (ValueError, KeyError):
-                        self.quarantine('identity_invalid')
+                    state = self.classify_loaded(value, raw)
+                    if state is None:
                         return False
                     if state == 'READY':
                         break
