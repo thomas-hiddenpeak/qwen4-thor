@@ -52,7 +52,8 @@ class Service:
                  device_unknown=False, escape_model=False, bad_ledger=False,
                  stale_grant=False, daemon=False, startup_ms=300000,
                  gateway=False, quota=False, probe_lifecycle=False,
-                 probe_only=False, aux_health=False, production=False):
+                 probe_only=False, aux_health=False, production=False,
+                 usage_handoff=False, quota_restore=None, stop_handoff=False):
         self.directory = Path(tempfile.mkdtemp(prefix='service-', dir=output))
         self.service_id = str(uuid.uuid4())
         with store.Store(self.directory, self.service_id, initialize=True):
@@ -93,6 +94,10 @@ class Service:
             command.append('--probe-only')
         if aux_health:
             command.append('--aux-health')
+        if quota_restore:
+            command += ['--quota-restore', quota_restore]
+        if stop_handoff:
+            command.append('--stop-handoff')
         if production:
             command = [sys.executable, '-I', '-B',
                 str(ROOT/'tools/serve_recovery/fixture_production.py'),
@@ -115,6 +120,7 @@ class Service:
                 parent_start_ticks=journal.process_start(os.getpid()),
                 startup_fd=bootstrap_child.fileno() if daemon else 0,
                 timeout_ms=startup_ms))
+        if usage_handoff:self.config.update(version=2, usage_handoff=True, term_ms=1000)
         self.config_path = self.directory/'config.json'
         self.config_path.write_text(json.dumps(self.config))
         self.config_path.chmod(0o600)
@@ -370,6 +376,38 @@ class RuntimeTests(unittest.TestCase):
         self.assertEqual(second['gateway_pid'], first['gateway_pid'])
         self.assertEqual(second['controller_pid'], first['controller_pid'])
         self.assertTrue(service.stop()['cleanup_confirmed'])
+
+    def test_quota_restore_receipt_opens_only_the_current_bound_generation(self):
+        service = self.launch(models=True, gateway=True, quota=True,
+                              usage_handoff=True, quota_restore='valid')
+        first = service.wait(lambda s: s['business_ready'])
+        signal_identity(first['model_pid'], first['model_start_ticks'], signal.SIGKILL)
+        second = service.wait(lambda s: s['business_ready'] and s['model_generation'] == 2)
+        self.assertEqual(second['quota_wait_ms'], 0)
+        self.assertEqual(second['controller_pid'], first['controller_pid'])
+        self.assertTrue(service.stop()['cleanup_confirmed'])
+
+    def test_invalid_quota_receipts_keep_conservative_gate_without_restarting(self):
+        for mode in ('stale', 'boot', 'digest'):
+            with self.subTest(mode=mode):
+                service = self.launch(models=True, gateway=True, quota=True,
+                                      usage_handoff=True, quota_restore=mode)
+                first = service.wait(lambda s: s['business_ready'])
+                signal_identity(first['model_pid'], first['model_start_ticks'], signal.SIGKILL)
+                blocked = service.wait(lambda s: s['model_generation'] == 2 and
+                    (service.directory/'quota-blocked.json').exists())
+                self.assertFalse(blocked['business_ready'])
+                self.assertGreater(blocked['quota_wait_ms'], 40000)
+                self.assertEqual(blocked['controller_pid'], first['controller_pid'])
+                self.assertTrue(service.stop()['cleanup_confirmed'])
+
+    def test_planned_stop_allows_controller_handoff_before_signalling_model(self):
+        service = self.launch(models=True, gateway=True, quota=True,
+                              usage_handoff=True, stop_handoff=True)
+        service.wait(lambda s: s['business_ready'])
+        self.assertTrue(service.stop()['cleanup_confirmed'])
+        receipt = json.loads((service.directory/'handoff-order.json').read_bytes())
+        self.assertTrue(receipt['before_alive'] and receipt['after_alive'])
 
     def test_production_controller_cpu_backend_model_and_controller_recovery(self):
         service = self.launch(production=True, gateway=True)

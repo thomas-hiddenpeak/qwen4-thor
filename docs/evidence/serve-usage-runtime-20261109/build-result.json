@@ -1,0 +1,41 @@
+[
+  {
+    "command": [
+      "cmake",
+      "-S",
+      "tests/host",
+      "-B",
+      ".q4t-work/serve-access-20261109/host"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.414
+  },
+  {
+    "command": [
+      "cmake",
+      "--build",
+      ".q4t-work/serve-access-20261109/host",
+      "--parallel",
+      "8",
+      "--target",
+      "q4t_host_tests",
+      "q4t_guardian"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 7.795
+  },
+  {
+    "command": [
+      "cmake",
+      "--build",
+      ".q4t-work/serve-custom-tools-20261108/engine-build",
+      "--parallel",
+      "8",
+      "--target",
+      "q4t",
+      "q4t_guardian"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 35.27
+  }
+]

@@ -1,0 +1,3 @@
+[PASS] guardian_quota_restore_receipt_never_applies_to_other_generation
+[PASS] guardian_usage_handoff_cannot_extend_original_cleanup_deadline
+2 tests, 2 passed, 0 failed, 0 skipped

@@ -1,0 +1,26 @@
+{
+  "python": [
+    "tools.serve_recovery.test_usage_runtime",
+    "tools.serve_recovery.test_runtime.RuntimeTests.test_quota_restore_receipt_opens_only_the_current_bound_generation",
+    "tools.serve_recovery.test_runtime.RuntimeTests.test_invalid_quota_receipts_keep_conservative_gate_without_restarting",
+    "tools.serve_recovery.test_runtime.RuntimeTests.test_planned_stop_allows_controller_handoff_before_signalling_model",
+    "tools.serve_recovery.test_runtime.RuntimeTests.test_model_quota_denial_keeps_loop_and_gateway_alive",
+    "tools.serve_recovery.test_runtime.RuntimeTests.test_production_controller_cpu_backend_model_and_controller_recovery",
+    "tools.serve_recovery.test_runtime.RuntimeTests.test_foreground_control_stop_and_lease_release",
+    "tools.serve_recovery.test_runtime.RuntimeTests.test_stop_wins_during_controller_recovery",
+    "tools.serve_recovery.test_runtime.RuntimeTests.test_malformed_optional_observation_keeps_model_and_controller",
+    "tools.serve_recovery.test_quota_managed",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_dynamic_profile_keeps_recovery_gate_when_initial_quotas_are_off",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_launcher_never_hands_guardian_a_regular_file_for_diagnostics"
+  ],
+  "cpp": [
+    "guardian_quota_restore_receipt_never_applies_to_other_generation",
+    "guardian_usage_handoff_cannot_extend_original_cleanup_deadline"
+  ],
+  "count": 27,
+  "classification": "targeted nonperformance usage recovery and stop integration",
+  "gpu_starts": 0
+}

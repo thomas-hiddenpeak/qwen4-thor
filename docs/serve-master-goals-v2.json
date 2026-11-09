@@ -432,16 +432,17 @@
         "evidence/serve-policy-runtime-20261109/decision.json",
         "evidence/serve-policy-coordination-20261109/decision.json",
         "evidence/serve-usage-primitive-20261109/README.md",
-        "evidence/serve-usage-store-20261109/decision.json"
+        "evidence/serve-usage-store-20261109/decision.json",
+        "evidence/serve-usage-runtime-20261109/decision.json"
       ],
       "release": null,
       "plan": "SERVE_ACCESS_CONTROL_2026-11-09.md",
       "remaining": [
-        "minute quota usage continuity across recovery and unknown state",
+        "usage management and stopped legacy migration; fix limits live observation",
         "TLS native bundle and applicable SDK verification",
         "targeted real business and rollback-capable delivery"
       ],
-      "development_status": "托管策略33 CPU、用量原语24 CPU、持久交接/隔离worker16 CPU及1受影响复验通过；继续控制器/Guardian恢复协调与TLS/SDK真实业务及可回退交付。默认v6保持，N04未完成。"
+      "development_status": "用量控制器/Guardian27 CPU及必要生产构建通过，真实模型尚未验收；继续用量CLI/迁移、限额live查询缺陷修复、TLS/SDK实际业务与可回退交付。默认v6保持，N04未完成。"
     },
     {
       "id": "N05",

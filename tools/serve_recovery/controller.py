@@ -98,14 +98,16 @@ class Controller:
                        state_directory=config.get('state_directory'))
         _, self.base_policy = cp.read(self.package/'engine/client-policy.json')
         self.policies = None
+        self.usage = None
         if self.manifest['version'] >= 8 and self.manifest.get('ingress_mode') == 'native':
-            from tools.serve_recovery import quota_policy, quota_runtime
+            from tools.serve_recovery import quota_policy, quota_runtime, usage_runtime
             ledger.require(config['version'] == 4 and
                 config['limits']['service_id'] == channel.service_id and
                 config['limits']['state_directory'] == config['state_directory'],
                 'limits service binding changed')
             self.base_policy = quota_policy.from_base(self.base_policy)
             self.policies = quota_runtime.Policies(config['limits'])
+            self.usage = usage_runtime.Recovery(config['limits'])
         self.check_client = core_http.self_check_client(self.base_policy)
         self.phase, self.reason = 'WAIT_DEPENDENCY', 'cold_preflight'
 
@@ -132,6 +134,12 @@ class Controller:
                                    not self.stopping and not self.frozen)
             except Exception:
                 self.policies.error = 'client_policy_auxiliary_unavailable'
+        if getattr(self, 'usage', None) is not None:
+            try:
+                self.usage.step(allow_start=allow_query and self.model is not None and
+                                not self.stopping and not self.frozen)
+            except Exception:
+                self.usage.error = 'client_usage_auxiliary_unavailable'
         try:
             value = self.progress.poll() if self.progress is not None else None
             self.progress_fault = self.progress_detector.assess(value)
@@ -427,21 +435,31 @@ class Controller:
                     except (OSError, ValueError, RuntimeError, KeyError):
                         pass  # Missing observation alone is not a core fault.
                 time.sleep(.025)
-        # Load can overlap the quota window; readiness cannot bypass it.
         deadline = result['quota_not_before_monotonic_ns']
+        if self.usage is not None and not self.restore_usage(deadline):
+            return False
+        exact_usage = self.usage is not None and self.usage.mode == 'exact' and self.usage.restored
+        # Only a durable consumed handoff and actual native restore can replace
+        # this wait. Missing/uncertain storage keeps the full safe window.
         self.reason = 'quota_window'
-        while time.monotonic_ns() < deadline and not self.stopping:
+        while not exact_usage and time.monotonic_ns() < deadline and not self.stopping:
             self.tick()
             if self.model.poll() is not None or self.protect():
                 return False
             time.sleep(0.025)
         if self.stopping:
             return False
-        for operation, extra in (('bind', dict(binding=self.current_binding)), ('ready', dict(verified=True))):
-            reply = self.transaction(operation, dict(role='model', ticket=self.grant['ticket'], **extra))
-            if not reply['ok']:
-                self.frozen = True
-                return False
+        reply = self.transaction('bind', dict(role='model', ticket=self.grant['ticket'],
+                                              binding=self.current_binding))
+        if not reply['ok']:
+            self.frozen = True
+            return False
+        if exact_usage:
+            self.channel.quota_restored(self.grant['generation'], self.owner['boot_id'], self.usage.receipt)
+        reply = self.transaction('ready', dict(role='model', ticket=self.grant['ticket'], verified=True))
+        if not reply['ok']:
+            self.frozen = True
+            return False
         self.ready = True
         self.phase, self.reason = 'READY', 'serving'
         self.stable_at, self.stable_reported = time.monotonic(), False
@@ -449,12 +467,58 @@ class Controller:
             self.progress.mark_ready(time.monotonic_ns())
         return True
 
+    def restore_usage(self, deadline):
+        attached, attach_at, health_at = False, 0, 0
+        while not self.stopping and (not attached or not self.usage.restored):
+            self.phase, self.reason = 'WAIT_DEPENDENCY', 'client_usage_wait'
+            if not attached and time.monotonic() >= attach_at:
+                attach_at = time.monotonic()+1
+                try:
+                    self.usage.attach(self.owner, self.grant['generation'], deadline)
+                    attached = True
+                except Exception:
+                    self.usage.error = 'client_usage_auxiliary_unavailable'
+            self.tick()
+            if (self.model.poll() is not None or self.watchdog.tripped.is_set() or
+                    self.protect() or self.progress_fault is not None):
+                return False
+            if time.monotonic() >= health_at:
+                health_at = time.monotonic()+2
+                try:
+                    health = core_http.request(self.settings['operations_port'], 'GET',
+                                              '/healthz', stopped=self.tick)
+                    if health_fault(json.loads(health['body']), health['http_status']) is not None:
+                        return False
+                except (OSError, ValueError, RuntimeError, KeyError):
+                    pass
+            time.sleep(.025)
+        return not self.stopping
+
     def close_model(self):
+        if self.grant is not None:
+            self.channel.admission(self.grant['generation'], False)
+        usage = getattr(self, 'usage', None)
+        if (usage is not None and self.stopping and self.ready and not self.monitor.fatal and
+                self.model is not None and self.model.poll() is None and
+                not self.quarantined and not self.frozen and self.progress_fault is None and
+                (self.watchdog is None or not self.watchdog.tripped.is_set())):
+            try:
+                if usage.freeze():
+                    end = time.monotonic()+4
+                    while not usage.sealed and time.monotonic()<end:
+                        self.tick(allow_query=False)
+                        if (self.monitor.fatal or self.model.poll() is not None or
+                                (self.watchdog is not None and self.watchdog.tripped.is_set())):
+                            break
+                        time.sleep(.025)
+            except Exception:
+                usage.error = 'client_usage_handoff_unknown'
+        if usage is not None:
+            try:usage.detach()
+            except Exception:pass
         if self.policies is not None:
             try:self.policies.detach()
             except Exception:pass  # Owned tree cleanup still runs below.
-        if self.grant is not None:
-            self.channel.admission(self.grant['generation'], False)
         self.ready = False
         if self.progress is not None:
             self.progress.close()
@@ -487,6 +551,11 @@ class Controller:
             self.quarantine('cleanup_failed')
             return False
         if self.grant is not None:
+            if self.stopping:
+                # Guardian owns stop retirement and no longer processes model
+                # transactions. Do not spend another receipt timeout here.
+                self.grant = None
+                return True
             reply = self.transaction('retired', dict(role='model', ticket=self.grant['ticket'], verified=True))
             if not reply['ok']:
                 self.frozen = True
@@ -582,6 +651,9 @@ class Controller:
             try:self.policies.close()
             except Exception:pass
         self.close_model()
+        if self.usage is not None:
+            try:self.usage.close()
+            except Exception:pass
 
 
 def main():

@@ -90,10 +90,10 @@ def run_controller(directory):
         model_dir=str(directory), protocol_sha256='c'*64,
         files=dict(q4t=hashlib.sha256(Path('/proc/self/exe').read_bytes()).hexdigest()),
         client_policy=dict(enabled=True))
-    controller.bundle.verify = lambda *_args: dict(engine_manifest_sha256='a'*64, model_assets={})
+    controller.bundle.verify = lambda *_args: dict(version=1, engine_manifest_sha256='a'*64, model_assets={})
     controller.bundle.check_assets = lambda *_args, **_kwargs: None
     controller.engine.verify = lambda *_args: base
-    controller.engine.command = lambda *_args: [sys.executable, '-I', '-B', str(Path(__file__).resolve()),
+    controller.engine.command = lambda *_args, **_kwargs: [sys.executable, '-I', '-B', str(Path(__file__).resolve()),
         '--backend', '--directory', str(directory), '--port', str(ports[1]),
         '--operations-port', str(ports[2]), '--client-policy-file', str(path)]
     controller.ownership.observe = lambda *_args: dict(conflicts=[], unconfirmed_compute=[])

@@ -131,6 +131,7 @@ struct Config {
   std::vector<std::string> controller;
   std::vector<std::string> gateway;
   bool quota_enforced = false;
+  bool usage_handoff = false;
   int lease_fd = -1;
   int64_t term_ns = 30 * kSecond, kill_ns = 5 * kSecond;
   int64_t heartbeat_ns = 15 * kSecond;
@@ -144,14 +145,23 @@ Config ReadConfig(const std::string& path) {
   Json value;
   Require(w::Parse(ReadFile(path, true), &value).ok(),
           "invalid Guardian config");
-  Require(w::HasKeys(value,
+  const auto version = Integer(value, "version");
+  auto fields = value;
+  if (version == 2) {
+    const auto* handoff = value.Find("usage_handoff");
+    Require(handoff && handoff->IsBool(), "invalid usage handoff policy");
+    std::erase_if(fields.object, [](const auto& item) {
+      return item.first == "usage_handoff";
+    });
+  }
+  Require(w::HasKeys(fields,
                      {"version", "directory", "service_id", "python", "journal",
                       "controller", "lease_path", "lease_fd", "resource_mode",
                       "require_hard_memory_limit", "term_ms", "kill_ms",
                       "heartbeat_ms", "critical_memory_mib", "launch",
                       "gateway", "quota_enforced"}),
           "unknown Guardian configuration fields");
-  Require(Integer(value, "version") == 1 &&
+  Require((version == 1 || version == 2) &&
               Text(value, "resource_mode") == "process",
           "unsupported service mode");
   const auto* hard = value.Find("require_hard_memory_limit");
@@ -190,6 +200,9 @@ Config ReadConfig(const std::string& path) {
           "absolute gateway required");
   Require(value.Find("quota_enforced")->IsBool(), "invalid quota policy");
   config.quota_enforced = value.Find("quota_enforced")->boolean;
+  config.usage_handoff = version == 2 && value.GetBool("usage_handoff");
+  Require(!config.usage_handoff || config.quota_enforced,
+          "usage handoff requires quota protection");
   for (const auto* absolute :
        {&config.directory, &config.python, &config.journal, &config.lease_path,
         &config.controller[0]}) {
@@ -531,6 +544,8 @@ class Guardian {
   }
   void RequestStop(int64_t now) {
     if (stopping_) return;
+    stop_handoff_ = config_.usage_handoff && controller_ready_ &&
+                    model_ready_ && !recovering_ && !quarantined_;
     stopping_ = true;
     // A previously stopped snapshot is not proof of the current stop: an
     // activation transaction may still be committing in the journal.
@@ -636,7 +651,8 @@ class Guardian {
       try {
         const auto event = Text(message, "event");
         Require(
-            event == "transaction" || event == "health" || event == "admission"
+            event == "transaction" || event == "health" ||
+                    event == "admission" || event == "quota_restored"
                 ? w::HasKeys(message, {"version", "service_id", "generation",
                                        "sequence", "event", event.c_str()})
                 : w::HasKeys(message, {"version", "service_id", "generation",
@@ -650,9 +666,34 @@ class Guardian {
         ++controller_event_;
         Require(event == "ready" || event == "heartbeat" ||
                     event == "transaction" || event == "health" ||
-                    event == "admission",
+                    event == "admission" || event == "quota_restored",
                 "unknown controller event");
         if (event == "ready") controller_ready_seen_ = true;
+        if (event == "quota_restored") {
+          // A malformed optional recovery receipt cannot restart a healthy
+          // model. Ignore it and retain the conservative quota window.
+          try {
+            const auto& value = *message.Find("quota_restored");
+            Require(w::HasKeys(value, {"model_generation", "source_generation",
+                                       "boot_id", "receipt_sha256"}) &&
+                        config_.usage_handoff && !stopping_ && !recovering_ &&
+                        model_registered_ && !model_ready_committed_ &&
+                        !model_binding_.IsNull() &&
+                        Text(value, "boot_id") == config_.boot_id,
+                    "invalid quota recovery context");
+            const auto receipt = Text(value, "receipt_sha256");
+            Require(receipt.size() == 64 &&
+                        receipt.find_first_not_of("0123456789abcdef") ==
+                            std::string::npos,
+                    "invalid quota recovery receipt");
+            bool exited = true;
+            if (model_.pidfd.Get() >= 0 &&
+                s::ProcessExited(model_.pidfd.Get(), &exited).ok() && !exited)
+              quota_.Restored(Integer(value, "model_generation"),
+                              Integer(value, "source_generation"));
+          } catch (const std::exception&) {
+          }
+        }
         if (event == "admission") {
           const auto& value = *message.Find("admission");
           Require(w::HasKeys(value, {"model_generation", "opened"}) &&
@@ -1097,6 +1138,21 @@ class Guardian {
     return empty;
   }
   bool CleanupController(int64_t now) {
+    if (stopping_ && stop_handoff_ && controller_.pidfd.Get() >= 0) {
+      quota_handoff_grace_.Start(now, cleanup_started_, config_.term_ns);
+      bool exited = true;
+      if (quota_handoff_grace_.Waiting(now) &&
+          s::ProcessExited(controller_.pidfd.Get(), &exited).ok() && !exited) {
+        auto& sent = signalled_[{controller_.identity.pid,
+                                 controller_.identity.start_ticks}];
+        if (sent != SIGTERM) {
+          if (!s::SignalProcess(controller_.pidfd.Get(), SIGTERM).ok())
+            Freeze("owned controller stop signal failed");
+          sent = SIGTERM;
+        }
+        return false;
+      }
+    }
     return CleanupScope(now, cleanup_started_,
                         stopping_ ? s::ProcessIdentity{} : gateway_.identity);
   }
@@ -1483,6 +1539,8 @@ class Guardian {
   Config config_;
   bool activate_ = false, initialized_ = false, desired_running_ = false;
   bool stopping_ = false, stopped_ = false, stop_durable_ = false;
+  bool stop_handoff_ = false;
+  s::QuotaHandoffGrace quota_handoff_grace_;
   bool recovering_ = false, controller_reaped_ = true;
   bool controller_registered_ = false, controller_ready_seen_ = false;
   bool controller_ready_ = false;

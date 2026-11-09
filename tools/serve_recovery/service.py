@@ -86,6 +86,8 @@ def initialize(package, digest, state):
         if manifest['version'] >= 8:
             from tools.serve_recovery import quota_manager
             quota_manager.initialize(state, descriptor, manifest)
+            from tools.serve_recovery import access_store, usage_store
+            usage_store.initialize_bound(access_store.binding(state, descriptor['service_id']))
     return dict(state=str(state), service_id=service_id, initialized=True,
                 desired='STOPPED', automatic_start=False)
 
@@ -188,6 +190,8 @@ def launch(package, digest, state, *, daemon=False, timeout=360):
             launch=dict(mode='daemon' if daemon else 'foreground', parent_pid=os.getpid(),
                 parent_start_ticks=journal.process_start(os.getpid()),
                 startup_fd=endpoint.fileno() if daemon else 0, timeout_ms=int(timeout*1000)))
+        if manifest['version'] >= 8 and manifest.get('ingress_mode') == 'native':
+            config.update(version=2, usage_handoff=True)
         engine.save(run/'guardian.json', config)
         for sig in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP):
             previous[sig] = signal.signal(sig, stop)

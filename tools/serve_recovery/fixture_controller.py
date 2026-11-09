@@ -22,6 +22,8 @@ def main():
     parser.add_argument('--probe-lifecycle', action='store_true')
     parser.add_argument('--probe-only', action='store_true')
     parser.add_argument('--aux-health', action='store_true')
+    parser.add_argument('--quota-restore', choices=('valid', 'stale', 'boot', 'digest'))
+    parser.add_argument('--stop-handoff', action='store_true')
     args = parser.parse_args()
     channel = ControllerChannel()
     if args.escape_child:

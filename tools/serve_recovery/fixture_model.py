@@ -126,6 +126,27 @@ def controller(channel, args):
                     gateway_token=hashlib.sha256(grant['ticket'].encode()).hexdigest(),
                     client_policy_sha256='b'*64, binary_sha256='c'*64,
                     protocol_sha256='d'*64)))
+        if args.stop_handoff:
+            def planned_stop(_signal, _frame):
+                # Synthetic controller work measures actual signal ordering;
+                # it does not pretend to save a real model quota snapshot.
+                before = process.poll() is None
+                time.sleep(.15)
+                after = process.poll() is None
+                (args.model_fixture/'handoff-order.json').write_text(json.dumps(
+                    dict(before_alive=before, after_alive=after, cpu_fixture=True)))
+                cleanup_children()
+                raise SystemExit(0)
+            signal.signal(signal.SIGTERM, planned_stop)
+        if args.quota_restore and grant['generation'] > 1:
+            generation = grant['generation']
+            event = dict(model_generation=generation, source_generation=generation-1,
+                         boot_id=owner['boot_id'], receipt_sha256='a'*64)
+            if args.quota_restore == 'stale':event['model_generation'] -= 1
+            if args.quota_restore == 'boot':event['boot_id'] = '00000000-0000-0000-0000-000000000000'
+            if args.quota_restore == 'digest':event['receipt_sha256'] = 'invalid'
+            channel._send('quota_restored', quota_restored=event)
+            if args.quota_restore == 'valid':quota_deadline = 0
         ready = dict(role='model', ticket=grant['ticket'], verified=True)
         if time.monotonic_ns() < quota_deadline:
             early = channel.transact('ready', ready)

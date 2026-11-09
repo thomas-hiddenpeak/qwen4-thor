@@ -75,6 +75,8 @@ class BundleTests(unittest.TestCase):
         self.assertEqual(value['version'], 8)
         self.assertIn('source/tools/serve_recovery/quota_manager.py', value['files'])
         self.assertIn('source/tools/serve_recovery/quota_runtime.py', value['files'])
+        self.assertIn('source/tools/serve_recovery/usage_runtime.py', value['files'])
+        self.assertIn('source/tools/serve_recovery/usage_io.py', value['files'])
         self.assertIn('source/tools/serve_recovery/access_manager.py', value['files'])
         self.assertIn('source/tools/serve_recovery/access_io.py', value['files'])
         self.assertIn('source/tools/serve_recovery/observation_io.py', value['files'])
@@ -123,7 +125,8 @@ class BundleTests(unittest.TestCase):
              'access_control', 'access_io', 'access_manager')})
         self.assertEqual(set(bundle.SOURCES)-set(bundle.V7_SOURCES),
             {'tools/serve_recovery/'+n+'.py' for n in ('quota_policy', 'quota_store',
-             'quota_control', 'quota_runtime', 'quota_manager')})
+             'quota_control', 'quota_runtime', 'quota_manager', 'usage_policy',
+             'usage_store', 'usage_io', 'usage_control', 'usage_runtime')})
 
     def test_historical_source_inventory_versions_remain_verifiable(self):
         receipt = self.prepare()
@@ -175,6 +178,10 @@ class BundleTests(unittest.TestCase):
             result = service.launch(receipt['package'], receipt['manifest_sha256'], state)
         self.assertEqual(captured['diagnostic'], b'bounded startup reason')
         self.assertFalse((Path(result['run'])/'guardian.log').exists())
+        guardian = json.loads((Path(result['run'])/'guardian.json').read_bytes())
+        self.assertEqual(guardian['version'], 2)
+        self.assertTrue(guardian['usage_handoff'])
+        self.assertTrue((state/'client-usage.json').is_file())
 
     def test_fatal_diagnostic_buffer_cannot_grow_and_is_readable_privately(self):
         fd = service.diagnostic_buffer()

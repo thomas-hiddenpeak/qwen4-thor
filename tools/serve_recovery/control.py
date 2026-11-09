@@ -69,6 +69,12 @@ class ControllerChannel:
         return self._send('admission', admission=dict(
             model_generation=generation, opened=opened))
 
+    def quota_restored(self, generation, boot_id, receipt):
+        ledger.require(ledger.integer(generation, minimum=2) and ledger.identifier(boot_id) and
+            type(receipt) is str and ledger.HASH.fullmatch(receipt), 'invalid quota recovery receipt')
+        return self._send('quota_restored', quota_restored=dict(model_generation=generation,
+            source_generation=generation-1, boot_id=boot_id, receipt_sha256=receipt))
+
     def _send(self, name, **extra):
         ledger.require(self.sequence < ledger.MAX_INTEGER,
                        'controller sequence exhausted')
