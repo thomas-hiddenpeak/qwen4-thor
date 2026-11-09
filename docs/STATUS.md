@@ -1,5 +1,9 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+A07.8 [21 C++/2schema/2原生入口/3驱动CPU通过](evidence/serve-input-tokens-cpu-20261110/README.md)，零警告，首夹具/路径/生成合同失败和定向修复原件保留。已冻结最多1启动/4生成/16计数/900秒，下一步实际SDK计数与usage、真实工具、历史/加密、零额外生成额度验证。默认639c6b7b保持STOPPED，总目标active，全部余项继续。
+
+A07.8 标准 `POST /v1/responses/input_tokens` 成组开发已接入：真实模板/分词与媒体展开、空请求、客户端历史/加密状态只读、零生成和零生成额度；friendly/pragmatic 使用实际提示适配并与生成同源。冻结 20 项直接 C++、2 schema 和原生入口定向检查，下一步独立构建与短验。尚未验收，默认639c6b7b/STOPPED保持；A07.8与全部总任务继续。
+
 A07.7c 原生授权策略完成[CPU](evidence/serve-access-program-cpu-20261110/README.md)、[真实业务](evidence/serve-access-program-business-20261110/README.md)与[可回退交付](evidence/serve-access-program-delivery-20261110/README.md)。当前引擎`639c6b7b`、元数据`11036e4c`、包`b4c86756`，revision26、STOPPED；审核31adcfab完整回退及Key/配额/用量账本保持。默认无测试cyber授权，原生策略可选，standard完整可用。
 
 实际1启动/8生成+5拒绝/8模型步骤/55.172秒，53 NVML全OK；发布8操作、0新增模型/Chat/GPU。继续A07.8全合同核对与标准input_tokens入口，之后全部A/R/Q/G任务。总目标active，未合main。

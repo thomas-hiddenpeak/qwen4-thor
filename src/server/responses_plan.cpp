@@ -281,6 +281,7 @@ Status ParseResponsesEnvelope(const io::Json& request,
                              "model",
                              "moderation",
                              "parallel_tool_calls",
+                             "personality",
                              "previous_response_id",
                              "prompt",
                              "prompt_cache_key",
@@ -371,6 +372,15 @@ Status ParseResponsesEnvelope(const io::Json& request,
     status = ParseModerationOptions(request, config, &result.moderation, error);
   if (status) status = TextOptions(request, &result, error);
   if (!status) return status;
+  if (const auto* value = request.Find("personality")) {
+    if (!value->IsString() || value->str.empty() || value->str.size() > 64)
+      return Invalid(error, "personality", "expected model style preset");
+    if (!OneOf(value->str, {"friendly", "pragmatic"}))
+      return Invalid(error, "personality",
+                     "served model presets are friendly and pragmatic");
+    result.personality = value->str;
+    Set(&result.options, "personality", *value);
+  }
   if (config.client_limits && result.options.GetInt("max_output_tokens") >
                                   config.client_limits->max_output_tokens) {
     *error = {"client_output_limit_exceeded", "max_output_tokens", 400};
@@ -474,7 +484,8 @@ Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
   ResponsesGenerationPlan result;
   auto request = envelope.request;
   Set(&request, "input", resolved_input);
-  auto status = NormalizeResponsesInput(request, &result.input, error);
+  auto status = NormalizeResponsesInput(request, &result.input, error,
+                                        config.count_input_only);
   if (!status) return status;
   result.generation_request = Object({{"messages", result.input.messages}});
   auto& chat = result.generation_request;
@@ -509,6 +520,14 @@ Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
   Set(&chat, "enable_thinking", Boolean(envelope.reasoning_effort != "none"));
   std::string guidance = envelope.access_program.instructions;
   if (!guidance.empty()) guidance += '\n';
+  if (envelope.personality == "friendly")
+    guidance +=
+        "Use a warm, approachable style. Explain clearly and respectfully "
+        "without flattery or changing the facts.\n";
+  else if (envelope.personality == "pragmatic")
+    guidance +=
+        "Use a practical, direct style. Prioritize actionable steps and "
+        "concrete evidence without changing the facts.\n";
   if (OneOf(envelope.reasoning_effort, {"low", "medium", "xhigh"})) {
     Set(&chat, "reasoning_effort", String(envelope.reasoning_effort));
   } else if (envelope.reasoning_effort != "none") {

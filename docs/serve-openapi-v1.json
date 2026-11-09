@@ -1807,6 +1807,71 @@
         }
       }
     },
+    "/v1/responses/input_tokens": {
+      "post": {
+        "operationId": "post_v1_responses_input_tokens",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/input_tokens_response"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "input_tokens_request",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "serve-application-v1.schema.json#/$defs/input_tokens_request"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/responses/{response_id}": {
       "get": {
         "operationId": "get_v1_responses_response_id",

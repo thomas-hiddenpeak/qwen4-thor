@@ -172,6 +172,14 @@ Responses可通过`include:["reasoning.encrypted_content"]`取得本服务
 旧密钥仅通过`--retire KEY_ID`显式退役，无需重启模型。
 详见[加密状态与管理边界](docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md#a073-原生密钥运维接入)。
 
+标准`POST /v1/responses/input_tokens`与SDK
+`responses.inputTokens.count()`已实现计数路径，待本轮业务短验接受。
+它按本模型真实模板/分词和媒体展开计数，可读取当前客户端的历史与
+加密状态，接受空请求；不生成、不写会话、不消耗生成RPM/TPM。
+结果为初始输入，不包含后续摘要/审核等派生步骤。可用
+`personality:"friendly"|"pragmatic"`选择本模型实际提示风格；原生
+Responses生成也接受此字段，以保持计数与生成同源。
+
 上下文压缩可在 Responses 请求指定
 `context_management:[{"type":"compaction","compact_threshold":4096}]`，
 或用末尾 `{"type":"compaction_trigger"}` 显式触发。阈值按实际模板/

@@ -8746,6 +8746,14 @@
         "user": {
           "$ref": "#/$defs/27"
         },
+        "personality": {
+          "type": "string",
+          "enum": [
+            "friendly",
+            "pragmatic"
+          ],
+          "maxLength": 64
+        },
         "seed": {
           "anyOf": [
             {
@@ -10587,6 +10595,14 @@
             "treatment"
           ],
           "additionalProperties": false
+        },
+        "personality": {
+          "type": "string",
+          "enum": [
+            "friendly",
+            "pragmatic"
+          ],
+          "maxLength": 64
         }
       },
       "required": [
@@ -15661,6 +15677,210 @@
     "1157": {
       "const": "response.compaction"
     },
+    "1158": {
+      "type": "object",
+      "properties": {
+        "conversation": {
+          "$ref": "#/$defs/666"
+        },
+        "input": {
+          "$ref": "#/$defs/1151"
+        },
+        "instructions": {
+          "$ref": "#/$defs/20"
+        },
+        "model": {
+          "$ref": "#/$defs/20"
+        },
+        "parallel_tool_calls": {
+          "$ref": "#/$defs/368"
+        },
+        "personality": {
+          "type": "string",
+          "enum": [
+            "friendly",
+            "pragmatic"
+          ],
+          "maxLength": 64
+        },
+        "previous_response_id": {
+          "$ref": "#/$defs/20"
+        },
+        "reasoning": {
+          "$ref": "#/$defs/818"
+        },
+        "text": {
+          "$ref": "#/$defs/1162"
+        },
+        "tool_choice": {
+          "$ref": "#/$defs/1164"
+        },
+        "tools": {
+          "$ref": "#/$defs/1166"
+        },
+        "truncation": {
+          "$ref": "#/$defs/1167"
+        }
+      },
+      "required": [],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "not": {
+            "required": [
+              "previous_response_id",
+              "conversation"
+            ],
+            "properties": {
+              "previous_response_id": {
+                "not": {
+                  "type": "null"
+                }
+              },
+              "conversation": {
+                "not": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "1159": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/304"
+        },
+        {
+          "$ref": "#/$defs/1160"
+        },
+        {
+          "$ref": "#/$defs/1161"
+        }
+      ]
+    },
+    "1160": {
+      "const": "friendly"
+    },
+    "1161": {
+      "const": "pragmatic"
+    },
+    "1162": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/21"
+        },
+        {
+          "$ref": "#/$defs/1163"
+        }
+      ]
+    },
+    "1163": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "$ref": "#/$defs/839"
+        },
+        "verbosity": {
+          "$ref": "#/$defs/842"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "1164": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/21"
+        },
+        {
+          "$ref": "#/$defs/18"
+        },
+        {
+          "$ref": "#/$defs/418"
+        },
+        {
+          "$ref": "#/$defs/844"
+        },
+        {
+          "$ref": "#/$defs/845"
+        },
+        {
+          "$ref": "#/$defs/850"
+        },
+        {
+          "$ref": "#/$defs/853"
+        },
+        {
+          "$ref": "#/$defs/854"
+        },
+        {
+          "$ref": "#/$defs/855"
+        },
+        {
+          "$ref": "#/$defs/857"
+        },
+        {
+          "$ref": "#/$defs/858"
+        },
+        {
+          "$ref": "#/$defs/1165"
+        }
+      ]
+    },
+    "1165": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/292"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "1166": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/21"
+        },
+        {
+          "$ref": "#/$defs/386"
+        }
+      ]
+    },
+    "1167": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/18"
+        },
+        {
+          "$ref": "#/$defs/284"
+        }
+      ]
+    },
+    "1168": {
+      "type": "object",
+      "properties": {
+        "input_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "object": {
+          "$ref": "#/$defs/1169"
+        }
+      },
+      "required": [
+        "input_tokens",
+        "object"
+      ],
+      "additionalProperties": false
+    },
+    "1169": {
+      "const": "response.input_tokens"
+    },
     "input_item": {
       "$ref": "#/$defs/0"
     },
@@ -15714,6 +15934,12 @@
     },
     "compacted_response": {
       "$ref": "#/$defs/1156"
+    },
+    "input_tokens_request": {
+      "$ref": "#/$defs/1158"
+    },
+    "input_tokens_response": {
+      "$ref": "#/$defs/1168"
     },
     "item_include_query": {
       "type": "object",
@@ -17778,6 +18004,7 @@
       "src/resources/conversations/conversations.ts": "f65731936f0822881a3f7becd29d78ec043cb8138a22131c5115e6d8dfa70a58",
       "src/resources/conversations/items.ts": "d15db5536c58775a13bce0ff4c8c0df9df6836210b0ab01dd510b6be9fda4514",
       "src/resources/responses/input-items.ts": "783cbf2ad3cb04abc069ad56100b3cb3a3f6c3c1562611ed1ad16034d85d7928",
+      "src/resources/responses/input-tokens.ts": "edf13a3dc0ca452600aeb84c5b22dc0f842c9c2f59b148eb95581dfc1cce35d8",
       "src/resources/responses/responses.ts": "f84e394bf08d71403c054ccb4d41d278861f2d19db3ea426e7aec789f3eb5dbb",
       "src/resources/shared.ts": "15cf6803634242502525c52098acddea16b9c2bb2439f85aa388dd43fa837455"
     },
@@ -17788,6 +18015,7 @@
       "SDK-added output_text is optional on wire",
       "official HTTP examples use usage:null for active/cancelled responses; completed/incomplete require actual usage",
       "native store echo and native response error codes",
+      "count endpoint uses actual model templates; native create also accepts the model-owned friendly/pragmatic personality presets from the count SDK contract",
       "optional q4t_moderation_usage discloses bounded auxiliary classifier tokens separately from business usage",
       "SDK-documented include_obfuscation adds optional string padding to delta events only",
       "official prompt caching guide permits 12h on request/applied options in addition to the pinned SDK 30m literal",
@@ -17831,6 +18059,6 @@
     ],
     "cancelled_stream": "Resource is cancelled; original events end without fabricated response.cancelled/completed or Chat DONE.",
     "query": "Closed route-specific fields; repeated include[] is an array; exact decimal integers and true/false booleans.",
-    "type_graph_sha256": "54e6b959779f64cd0d27124170f64f0deff5798f3fee9f1ec84ebdc92c50e119"
+    "type_graph_sha256": "3b628c3b6ffd745ccbece4716215b35962f6ee22a34ed88e330f77eeafca3c75"
   }
 }

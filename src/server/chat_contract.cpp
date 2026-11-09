@@ -73,13 +73,14 @@ Status TemplateOptions(const io::Json& options) {
 }  // namespace
 
 Status ValidateChatContract(const io::Json& req, const std::string& model_name,
-                            bool allow_media, std::string* error_param) {
+                            bool allow_media, std::string* error_param,
+                            bool allow_empty_messages) {
   if (HasLegacyTools(req)) {
     LegacyToolRequest normalized;
     auto status = NormalizeLegacyTools(req, &normalized, error_param);
     if (!status) return status;
     status = ValidateChatContract(normalized.request, model_name, allow_media,
-                                   error_param);
+                                   error_param, allow_empty_messages);
     if (!status) LegacyToolErrorParam(req, error_param);
     return status;
   }
@@ -260,9 +261,11 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
       return invalid("tools", "tools requires messages and an array or null");
   }
   if (!messages) return Status();
-  if (!messages->IsArray() || messages->array.empty())
+  if (!messages->IsArray() ||
+      (!allow_empty_messages && messages->array.empty()))
     return invalid("messages", "messages must be a nonempty array");
-  status = ValidateChatMessageProfile(*messages, error_param);
+  status = ValidateChatMessageProfile(*messages, error_param,
+                                      allow_empty_messages);
   if (!status) return status;
   size_t media_items = 0;
   for (size_t index = 0; index < messages->array.size(); ++index) {

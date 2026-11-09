@@ -27,6 +27,10 @@ inline bool IsResponsesCompaction(std::string_view target) {
   return target.substr(0, target.find('?')) == "/v1/responses/compact";
 }
 
+inline bool IsResponsesTokenCount(std::string_view target) {
+  return target.substr(0, target.find('?')) == "/v1/responses/input_tokens";
+}
+
 inline bool IsPromptTarget(std::string_view target) {
   const auto path = target.substr(0, target.find('?'));
   return path == "/v1/prompts" || path.starts_with("/v1/prompts/");
@@ -91,6 +95,7 @@ inline bool ResponsesMethodAllowed(std::string_view method,
   constexpr std::string_view root = "/v1/responses";
   if (path == root) return method == "POST";
   if (IsResponsesCompaction(path)) return method == "POST";
+  if (IsResponsesTokenCount(path)) return method == "POST";
   if (!path.starts_with("/v1/responses/")) return false;
   path.remove_prefix(root.size() + 1);
   const auto end = path.find('/');

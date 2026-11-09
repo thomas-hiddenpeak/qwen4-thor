@@ -204,12 +204,14 @@ class Stage(foreground.Stage):
         self.client.protocol_sha256 = caps['protocol_source_sha256']
 
     def sdk(self, label, action, request=None, *, response_id=None, query=None,
-            expected_status=None, headers=None, drain=True):
+            expected_status=None, headers=None, drain=True, omit_request=False):
         self.budget('chats' if action == 'create' else 'controls')
         command = dict(action=action, request=request, id=response_id, query=query,
             base_url=f"http://127.0.0.1:{self.plan['port']}/v1",
             headers=HEADERS if headers is None else headers,
             sdk_directory=self.plan['sdk']['sdk_directory'], timeout_ms=120000)
+        if omit_request:
+            command.pop('request')
         save(self.out / (label + '.request.json'), command)
         env = {k: v for k, v in os.environ.items() if k not in
                ('NODE_OPTIONS', 'NODE_PATH', 'LD_PRELOAD')}

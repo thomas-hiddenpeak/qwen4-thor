@@ -25,10 +25,12 @@ set(protocol_inputs
   src/server/prompt_registry.cpp
   src/server/prompt_api.cpp
   include/q4t/server/responses_plan.h
+  include/q4t/server/responses_tokens.h
   include/q4t/server/responses_reasoning.h
   include/q4t/server/access_program.h
   include/q4t/server/moderation.h
   src/server/responses_plan.cpp
+  src/server/responses_tokens.cpp
   src/server/responses_summary.cpp
   src/server/responses_reasoning.cpp
   src/server/access_program.cpp
@@ -204,6 +206,7 @@ set(protocol_inputs
   src/server/chat_plan.cpp
   src/server/chat_prompt.cpp
   src/server/chat_preflight.cpp
+  src/server/chat_input_tokens.cpp
   src/server/server_options.cpp
   src/server/chat_generation.cpp
   src/server/chat_responses.cpp

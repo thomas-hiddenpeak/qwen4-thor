@@ -1,0 +1,57 @@
+[
+  {
+    "name": "host",
+    "argv": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host/q4t_host_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-input-tokens-20261110/required-cpu-history.txt"
+    ],
+    "exit_code": 0,
+    "seconds": 0.06374967703595757
+  },
+  {
+    "name": "inventory",
+    "argv": [
+      "python3",
+      "-B",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.1137910638935864
+  },
+  {
+    "name": "application",
+    "argv": [
+      "python3",
+      "-B",
+      "tools/serve_responses/build_contract.py",
+      "--types",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-input-tokens-20261110/application-types.json",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.0637509641237557
+  },
+  {
+    "name": "protocol",
+    "argv": [
+      "python3",
+      "-B",
+      "tools/serve_protocol/build_contract.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.11380512872710824
+  },
+  {
+    "name": "whitespace",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.06384257273748517
+  }
+]

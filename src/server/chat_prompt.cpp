@@ -171,14 +171,15 @@ Status PrepareChatPrompt(const io::Json& request,
                          std::string* prompt_out,
                          std::vector<VisionItem>* items_out,
                          std::string* error_param, std::string* error_code,
-                         ChatPromptLayout* layout) {
+                         ChatPromptLayout* layout, bool allow_empty) {
   if (layout) *layout = {};
   if (HasLegacyTools(request)) {
     LegacyToolRequest normalized;
     auto status = NormalizeLegacyTools(request, &normalized, error_param);
     if (!status) return status;
     status = PrepareChatPrompt(normalized.request, constraints, prompt_out,
-                               items_out, error_param, error_code, layout);
+                               items_out, error_param, error_code, layout,
+                               allow_empty);
     if (!status) LegacyToolErrorParam(request, error_param);
     return status;
   }
@@ -200,7 +201,8 @@ Status PrepareChatPrompt(const io::Json& request,
   std::string& prompt = *prompt_out;
   std::vector<VisionItem>& items = *items_out;
   if (const auto* messages = req.Find("messages")) {
-    const auto profile = ValidateChatMessageProfile(*messages, error_param);
+    const auto profile =
+        ValidateChatMessageProfile(*messages, error_param, allow_empty);
     if (!profile) return profile;
     const auto* options = req.Find("chat_template_kwargs");
     const auto* vision_id = options ? options->Find("add_vision_id") : nullptr;
@@ -219,7 +221,8 @@ Status PrepareChatPrompt(const io::Json& request,
       error_param->clear();
     }
     const auto rendered = RenderChatPrompt(req, contents, &prompt,
-                                           layout ? &layout->messages : nullptr);
+                                           layout ? &layout->messages : nullptr,
+                                           allow_empty);
     if (!rendered) return fail(rendered.message());
   } else {
     prompt = req.GetString("prompt");

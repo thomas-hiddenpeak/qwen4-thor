@@ -60,3 +60,6 @@ docs/evidence/serve-access-program-cpu-20261110/**/*.wire binary
 docs/evidence/serve-access-program-business-20261110/** -text -whitespace
 docs/evidence/serve-access-program-business-20261110/**/*.wire binary
 docs/evidence/serve-access-program-delivery-20261110/** -text -whitespace
+
+# Preserve input token count CPU evidence bytes.
+docs/evidence/serve-input-tokens-cpu-20261110/** -text -diff

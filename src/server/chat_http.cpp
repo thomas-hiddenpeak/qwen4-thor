@@ -380,8 +380,9 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         path == "/v1/completions" || IsResponsesTarget(path) ||
         path == "/v1/requests/cancel" || IsConversationTarget(path) ||
         IsPromptTarget(path)) {
-      if (method == "POST" && !(IsResponseCancellation(method, path) &&
-                                body.empty() && headers.content_type.empty())) {
+      if (method == "POST" &&
+          !((IsResponseCancellation(method, path) || IsResponsesTokenCount(path))
+            && body.empty() && headers.content_type.empty())) {
         std::string type = headers.content_type;
         for (char& c : type)
           if (c >= 'A' && c <= 'Z') c += 'a' - 'A';
@@ -436,6 +437,19 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     if (auto* context = detail::HttpResponseContext::Current(fd))
       context->RecordReceiveFailure(reason, status);
   };
+  if (IsResponsesTokenCount(path)) {
+    if (method != "POST") {
+      rejected(HttpReceiveFailure::kMethod, 405);
+      SendError(fd, 405, "method not allowed", {}, "method_not_allowed",
+                "method", "POST");
+    } else if (path != "/v1/responses/input_tokens") {
+      SendError(fd, 400, "Input count does not accept query parameters", {},
+                "invalid_request", "query");
+    } else {
+      HandleResponsesTokenCount(fd, body);
+    }
+    return;
+  }
   if (IsResponsesCompaction(path)) {
     if (method != "POST") {
       rejected(HttpReceiveFailure::kMethod, 405);

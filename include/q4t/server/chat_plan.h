@@ -44,6 +44,9 @@ struct ChatPlanConfig {
   bool prefix_cache = false;
   // Internal Responses prefill-only execution, never a caller Chat field.
   bool prewarm_only = false;
+  // Internal CPU input counting: no generation slot/output reservation.
+  // Never set from an untrusted Chat field.
+  bool count_input_only = false;
   std::vector<int> capacities;
   std::vector<int> checkpoints;
   uint64_t cuda_quota_limit_bytes = 0;

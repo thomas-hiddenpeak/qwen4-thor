@@ -234,7 +234,7 @@ Status ToolSelection(const Json& original, Json* choice, std::string_view path,
 
 Status NormalizeResponsesInput(const io::Json& request,
                                ResponsesInputPlan* result,
-                               ChatPlanError* error) {
+                               ChatPlanError* error, bool allow_empty) {
   *result = {};
   *error = {};
   ResponsesInputPlan plan;
@@ -490,7 +490,7 @@ Status NormalizeResponsesInput(const io::Json& request,
   }
   auto status = flush();
   if (!status) return status;
-  if (plan.messages.array.empty())
+  if (!allow_empty && plan.messages.array.empty())
     return Invalid(error, "input", "input or instructions required");
   *result = std::move(plan);
   return {};

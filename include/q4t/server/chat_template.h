@@ -31,11 +31,13 @@ struct ChatMessageSpan {
 // Shared by HTTP and the renderer: validate role-specific content, metadata
 // and historical refusal without decoding media or changing the request.
 Status ValidateChatMessageProfile(const io::Json& messages,
-                                  std::string* error_param = nullptr);
+                                  std::string* error_param = nullptr,
+                                  bool allow_empty = false);
 
 Status RenderChatPrompt(const io::Json& request,
                         const std::vector<std::string>& contents,
                         std::string* prompt,
-                        std::vector<ChatMessageSpan>* spans = nullptr);
+                        std::vector<ChatMessageSpan>* spans = nullptr,
+                        bool allow_empty = false);
 
 }  // namespace q4t::server

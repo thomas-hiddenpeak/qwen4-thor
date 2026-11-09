@@ -118,6 +118,14 @@ def schema(graph):
             node['properties']['code'] = dict(type='string', minLength=1)
 
     request = root('response_create')
+    # The SDK exposes this model style option only on count. Native create
+    # accepts the same real preset so counted and generated prompts agree.
+    personality = dict(type='string', enum=['friendly', 'pragmatic'], maxLength=64)
+    request['properties']['personality'] = personality
+    response['properties']['personality'] = personality
+    root('input_tokens_request')['properties']['personality'] = personality
+    root('input_tokens_response')['properties']['input_tokens'] = dict(
+        type='integer', minimum=0)
     request['properties'].update(
         seed=nullable(dict(type='integer', minimum=-(2**63), maximum=2**63-1)),
         request_id=dict(type='string', minLength=1, maxLength=128,
@@ -143,6 +151,7 @@ def schema(graph):
         {'if': dict(required=['stream_options'],
             properties=dict(stream_options={'not': dict(type='null')})),
          'then': dict(required=['stream'], properties=dict(stream=dict(const=True)))}]
+    root('input_tokens_request')['allOf'] = [copy.deepcopy(request['allOf'][0])]
     for name in ('response_retrieve', 'input_items_query', 'conversation_items_query'):
         value = root(name)
         if 'limit' in value['properties']:
@@ -177,6 +186,7 @@ def schema(graph):
             adaptations=['SDK-added output_text is optional on wire',
                 'official HTTP examples use usage:null for active/cancelled responses; completed/incomplete require actual usage',
                 'native store echo and native response error codes',
+                'count endpoint uses actual model templates; native create also accepts the model-owned friendly/pragmatic personality presets from the count SDK contract',
                 'optional q4t_moderation_usage discloses bounded auxiliary classifier tokens separately from business usage',
                 'SDK-documented include_obfuscation adds optional string padding to delta events only',
                 'official prompt caching guide permits 12h on request/applied options in addition to the pinned SDK 30m literal',
@@ -240,6 +250,7 @@ def add_openapi(paths, response, error):
         ('/v1/prompts/{prompt_id}/versions/{version}', 'get', None, 'prompt_version', None),
         ('/v1/responses', 'post', 'response_create', 'response', None),
         ('/v1/responses/compact', 'post', 'response_compact', 'compacted_response', None),
+        ('/v1/responses/input_tokens', 'post', 'input_tokens_request', 'input_tokens_response', None),
         ('/v1/responses/{response_id}', 'get', None, 'response', 'response_retrieve'),
         ('/v1/responses/{response_id}', 'delete', None, 'response_deleted', None),
         ('/v1/responses/{response_id}/cancel', 'post', None, 'response', None),
@@ -270,7 +281,7 @@ def add_openapi(paths, response, error):
             **{'x-q4t-query-contract': query or 'no query',
                'x-q4t-body-contract': body or 'empty body only'})
         if body:
-            optional = path == '/v1/conversations'
+            optional = path in ('/v1/conversations', '/v1/responses/input_tokens')
             operation['requestBody'] = dict(required=not optional,
                 content={'application/json': dict(schema=nullable(external(body))
                     if optional else external(body))})

@@ -33,6 +33,7 @@ Status PrepareChatPrompt(const io::Json& request,
                          std::string* prompt, std::vector<VisionItem>* items,
                          std::string* error_param,
                          std::string* error_code = nullptr,
-                         ChatPromptLayout* layout = nullptr);
+                         ChatPromptLayout* layout = nullptr,
+                         bool allow_empty = false);
 
 }  // namespace q4t::server

@@ -20,7 +20,8 @@ struct ResponsesInputPlan {
 // client-scoped state layer first. This function never performs external I/O.
 Status NormalizeResponsesInput(const io::Json& request,
                                ResponsesInputPlan* result,
-                               ChatPlanError* error);
+                               ChatPlanError* error,
+                               bool allow_empty = false);
 // Maps shared-generation errors back to the caller's Responses input path.
 void ResponsesInputErrorParam(const ResponsesInputPlan& plan,
                               std::string* param);

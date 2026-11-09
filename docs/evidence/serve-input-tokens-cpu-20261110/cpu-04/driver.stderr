@@ -1,0 +1,8 @@
+test_count_budget_and_no_argument_sdk_call_do_not_create_response (tools.serve_responses.test_input_tokens_acceptance.InputTokensAcceptance.test_count_budget_and_no_argument_sdk_call_do_not_create_response) ... ok
+test_exact_usage_oracle_rejects_off_by_one_and_fabricated_counts (tools.serve_responses.test_input_tokens_acceptance.InputTokensAcceptance.test_exact_usage_oracle_rejects_off_by_one_and_fabricated_counts) ... ok
+test_frozen_requests_and_count_contract (tools.serve_responses.test_input_tokens_acceptance.InputTokensAcceptance.test_frozen_requests_and_count_contract) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.012s
+
+OK

@@ -429,6 +429,10 @@ def semantics():
     # Standard JSON Schema validators ignore x-q4t annotations. These rules
     # are mandatory and evaluated by production C++, never inferred as passed.
     rules = [
+        ("responses-input-tokens", ["src/server/responses_tokens.cpp",
+            "src/server/chat_input_tokens.cpp", "src/server/responses_plan.cpp",
+            "src/server/chat_plan.cpp", "src/server/media_admission.cpp"],
+         "POST /v1/responses/input_tokens uses the actual native template, tokenizer and expanded media count. Omitted/null body, null model and empty input use defaults without a dummy message. Strict count-only fields; previous/conversation/encrypted history resolves in the authenticated client scope without beginning or mutating a response. Input/client/context and data concurrency/deadline limits remain; no generation slot, model/tool step, cache write or generation RPM/TPM reservation. Truncation auto protects the current turn and tool dependencies; count has zero output budget. Counts describe initial input, not later generated reasoning/compaction/moderation steps. Friendly/pragmatic model-owned personality presets enter actual system guidance, shared with native Responses create; no claim of hosted-model prompt or tokenizer equivalence. File/tool executors remain linked A09/A10/A11 implementation tasks."),
         ("stored-chat", ["src/server/chat_storage.cpp", "src/server/chat_storage_options.cpp",
             "src/server/chat_generation.cpp", "src/server/object_worker.cpp",
             "include/q4t/server/application_routes.h"],

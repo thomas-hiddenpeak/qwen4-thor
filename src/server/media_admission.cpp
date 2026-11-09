@@ -166,7 +166,9 @@ Status PlanChatMedia(std::span<const VisionItem> items,
     }
   }
   const vision::MediaContextBudget context{
-      tokens.size(), placeholders, static_cast<uint64_t>(config.max_prefill),
+      tokens.size(), placeholders,
+      static_cast<uint64_t>(config.count_input_only ? config.max_len
+                                                    : config.max_prefill),
       static_cast<uint64_t>(config.max_len)};
   const auto checked = vision::PlanMedia({inputs.data(), items.size()}, image,
                                          video, {}, context, device, plan);

@@ -73,6 +73,11 @@ def current_surface(root):
         raise ValueError("review native compact transport extractor")
     routes.append(("/v1/responses/compact", "POST"))
     native_routes.append(("POST", "/v1/responses/compact", "false"))
+    if 'if (IsResponsesTokenCount(path))' not in dispatch or \
+            'if (IsResponsesTokenCount(path)) return method == "POST"' not in application_routes:
+        raise ValueError("review native input token count transport extractor")
+    routes.append(("/v1/responses/input_tokens", "POST"))
+    native_routes.append(("POST", "/v1/responses/input_tokens", "false"))
     native_routes.extend((method, path, "true") for method, path in responses)
     if 'HandleStoredChatRequest(*objects_' not in dispatch or \
             'server::StoredChatMethodAllowed(method, path)' not in native or \
@@ -108,6 +113,7 @@ def current_surface(root):
                  "input_contract.cpp", "chat_tool_history.cpp",
                  "chat_template.cpp", "legacy_tools.cpp", "completion_plan.cpp",
                  "conversation_api.cpp", "responses_plan.cpp", "responses_api.cpp",
+                 "responses_tokens.cpp",
                  "chat_storage.cpp", "prompt_api.cpp", "prompt_template.cpp",
                  "moderation.cpp", "access_program.cpp"):
         source = (root / "src/server" / file).read_text()

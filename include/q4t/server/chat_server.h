@@ -174,6 +174,7 @@ class ChatServer {
   void HandleCapabilities(int fd);
   void HandleMetrics(int fd);
   void HandlePreflight(int fd, const std::string& body);
+  void HandleResponsesTokenCount(int fd, const std::string& body);
   void HandleConfig(int fd);
   ChatPlanConfig PlanningConfig(int fd = -1) const;
   enum class GenerationApi { kChat, kCompletion, kResponse, kCompact };

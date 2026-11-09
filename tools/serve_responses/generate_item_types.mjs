@@ -23,8 +23,9 @@ const source = resolve(sdk, 'src/resources/responses/responses.ts');
 const conversation = resolve(sdk, 'src/resources/conversations/items.ts');
 const conversations = resolve(sdk, 'src/resources/conversations/conversations.ts');
 const inputItems = resolve(sdk, 'src/resources/responses/input-items.ts');
+const inputTokens = resolve(sdk, 'src/resources/responses/input-tokens.ts');
 const program = ts.createProgram([source, conversation,
-  ...(mode ? [conversations, inputItems] : [])], {
+  ...(mode ? [conversations, inputItems, inputTokens] : [])], {
   target: ts.ScriptTarget.ES2022,
   module: ts.ModuleKind.NodeNext,
   moduleResolution: ts.ModuleResolutionKind.NodeNext,
@@ -143,6 +144,8 @@ if (mode) Object.assign(roots, {
   conversation_items_query: exported(conversation, 'ItemListParams'),
   response_compact: exported(source, 'ResponseCompactParams'),
   compacted_response: exported(source, 'CompactedResponse'),
+  input_tokens_request: exported(inputTokens, 'InputTokenCountParams'),
+  input_tokens_response: exported(inputTokens, 'InputTokenCountResponse'),
 });
 const result = {
   profile: mode ? 'q4t-openai-application-types-v1' : 'q4t-openai-item-types-v1',

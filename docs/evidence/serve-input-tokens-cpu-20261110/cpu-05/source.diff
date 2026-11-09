@@ -1,0 +1,1782 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index f10390ab..4f426bae 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -321,6 +321,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
+   src/server/chat_prompt.cpp
+   src/server/chat_plan.cpp
+   src/server/chat_preflight.cpp
++  src/server/chat_input_tokens.cpp
+   src/server/chat_metrics.cpp
+   src/server/chat_admission.cpp
+   src/server/chat_scheduler.cpp
+@@ -345,6 +346,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
+     src/server/responses_output.cpp
+     src/server/responses_input.cpp
+     src/server/responses_plan.cpp
++    src/server/responses_tokens.cpp
+     src/server/responses_summary.cpp
+     src/server/responses_reasoning.cpp
+     src/server/access_program.cpp
+@@ -565,6 +567,7 @@ if(Q4T_BUILD_TESTS)
+     src/server/responses_output.cpp
+     src/server/responses_input.cpp
+     src/server/responses_plan.cpp
++    src/server/responses_tokens.cpp
+     src/server/responses_summary.cpp
+     src/server/responses_reasoning.cpp
+     src/server/access_program.cpp
+@@ -577,6 +580,7 @@ if(Q4T_BUILD_TESTS)
+     tests/server_responses_output_test.cpp
+     tests/server_responses_input_test.cpp
+     tests/server_responses_plan_test.cpp
++    tests/server_responses_tokens_test.cpp
+     tests/server_responses_reasoning_test.cpp
+     tests/server_access_program_test.cpp
+     tests/server_moderation_test.cpp
+diff --git a/README.md b/README.md
+index c1eb38a4..f18184e4 100644
+--- a/README.md
++++ b/README.md
+@@ -172,6 +172,14 @@ Responses可通过`include:["reasoning.encrypted_content"]`取得本服务
+ 旧密钥仅通过`--retire KEY_ID`显式退役，无需重启模型。
+ 详见[加密状态与管理边界](docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md#a073-原生密钥运维接入)。
+ 
++标准`POST /v1/responses/input_tokens`与SDK
++`responses.inputTokens.count()`已实现计数路径，待本轮业务短验接受。
++它按本模型真实模板/分词和媒体展开计数，可读取当前客户端的历史与
++加密状态，接受空请求；不生成、不写会话、不消耗生成RPM/TPM。
++结果为初始输入，不包含后续摘要/审核等派生步骤。可用
++`personality:"friendly"|"pragmatic"`选择本模型实际提示风格；原生
++Responses生成也接受此字段，以保持计数与生成同源。
++
+ 上下文压缩可在 Responses 请求指定
+ `context_management:[{"type":"compaction","compact_threshold":4096}]`，
+ 或用末尾 `{"type":"compaction_trigger"}` 显式触发。阈值按实际模板/
+diff --git a/cmake/ChatProtocolIdentity.cmake b/cmake/ChatProtocolIdentity.cmake
+index ce0e80ff..2b679d29 100644
+--- a/cmake/ChatProtocolIdentity.cmake
++++ b/cmake/ChatProtocolIdentity.cmake
+@@ -25,10 +25,12 @@ set(protocol_inputs
+   src/server/prompt_registry.cpp
+   src/server/prompt_api.cpp
+   include/q4t/server/responses_plan.h
++  include/q4t/server/responses_tokens.h
+   include/q4t/server/responses_reasoning.h
+   include/q4t/server/access_program.h
+   include/q4t/server/moderation.h
+   src/server/responses_plan.cpp
++  src/server/responses_tokens.cpp
+   src/server/responses_summary.cpp
+   src/server/responses_reasoning.cpp
+   src/server/access_program.cpp
+@@ -204,6 +206,7 @@ set(protocol_inputs
+   src/server/chat_plan.cpp
+   src/server/chat_prompt.cpp
+   src/server/chat_preflight.cpp
++  src/server/chat_input_tokens.cpp
+   src/server/server_options.cpp
+   src/server/chat_generation.cpp
+   src/server/chat_responses.cpp
+diff --git a/cmake/HostTestSources.cmake b/cmake/HostTestSources.cmake
+index 1f6d8d52..40f9c82e 100644
+--- a/cmake/HostTestSources.cmake
++++ b/cmake/HostTestSources.cmake
+@@ -145,6 +145,7 @@ set(Q4T_HOST_TEST_SOURCES
+     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_output.cpp
+     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_input.cpp
+     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_plan.cpp
++    ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_tokens.cpp
+     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_summary.cpp
+     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_reasoning.cpp
+     ${CMAKE_CURRENT_LIST_DIR}/../src/server/access_program.cpp
+@@ -156,6 +157,7 @@ set(Q4T_HOST_TEST_SOURCES
+     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_output_test.cpp
+     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_input_test.cpp
+     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_plan_test.cpp
++    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_tokens_test.cpp
+     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_reasoning_test.cpp
+     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_access_program_test.cpp
+     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_moderation_test.cpp
+diff --git a/docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md b/docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md
+index 935a4d77..640c2bfb 100644
+--- a/docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md
++++ b/docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md
+@@ -1,5 +1,7 @@
+ # A07 剩余执行能力逐项推进
+ 
++当前更新（2026-11-10）：A07.1—A07.7 已原生交付，以下原始审计段保留实施背景。当前 A07.8 全合同审查继续：先补标准 input_tokens 入口，再核对未覆盖的 items/include/SSE/SDK 组合；文件解析、内建工具及媒体依赖仍必做，不以路由上线宣称 A07 全部完成。当前开发与有界验证见 STATUS。
++
+ 2026-11-09，源码基线 f979a120。原生接入 N01—N07 已交付；高级
+ Responses 合同继续实施。阶段通过不是 A07 或总计划终点。
+ 
+diff --git a/docs/STATUS.md b/docs/STATUS.md
+index 2b299519..09a0b30f 100644
+--- a/docs/STATUS.md
++++ b/docs/STATUS.md
+@@ -1,5 +1,7 @@
+ # 当前 Serve 总目标状态（2026-11-10）
+ 
++A07.8 标准 `POST /v1/responses/input_tokens` 成组开发已接入：真实模板/分词与媒体展开、空请求、客户端历史/加密状态只读、零生成和零生成额度；friendly/pragmatic 使用实际提示适配并与生成同源。冻结 20 项直接 C++、2 schema 和原生入口定向检查，下一步独立构建与短验。尚未验收，默认639c6b7b/STOPPED保持；A07.8与全部总任务继续。
++
+ A07.7c 原生授权策略完成[CPU](evidence/serve-access-program-cpu-20261110/README.md)、[真实业务](evidence/serve-access-program-business-20261110/README.md)与[可回退交付](evidence/serve-access-program-delivery-20261110/README.md)。当前引擎`639c6b7b`、元数据`11036e4c`、包`b4c86756`，revision26、STOPPED；审核31adcfab完整回退及Key/配额/用量账本保持。默认无测试cyber授权，原生策略可选，standard完整可用。
+ 
+ 实际1启动/8生成+5拒绝/8模型步骤/55.172秒，53 NVML全OK；发布8操作、0新增模型/Chat/GPU。继续A07.8全合同核对与标准input_tokens入口，之后全部A/R/Q/G任务。总目标active，未合main。
+diff --git a/docs/log/2026-11-10.md b/docs/log/2026-11-10.md
+index 0db97570..a55aeb46 100644
+--- a/docs/log/2026-11-10.md
++++ b/docs/log/2026-11-10.md
+@@ -1,5 +1,11 @@
+ # 2026-11-10 开发日志
+ 
++## A07.8 标准输入 token 计数开始验收准备
++
++2026-11-10。官方 SDK 7.47.0 与实际 OpenAPI 交叉核对确认此前遗漏 `/v1/responses/input_tokens`。已接共享模板、分词预算、媒体展开、客户端历史和加密输入，不启动生成/工具，不写会话/响应，不预留输出/生成RPM/TPM；保留客户端输入、截止与并发限制。空输入仅计数路径放行；普通Chat仍拒绝。模型风格friendly/pragmatic进入真实系统提示，计数与生成相同；不冒称云端私有模型提示等价。
++
++标准入口、原生共享路由、SDK、schema/OpenAPI、清单同步成组实现；首次合同生成在清单尚未登记新路由时被一致性断言阻断，原件说明保留，登记后重新生成。冻结20项C++及2schema和原生入口CPU，之后最多1启动/4生成/16计数/900秒实际短验，按直接影响验证，不跑完整性能/质量。当前尚未构建或测试，默认639c6b7b保持。下一步有界验证/发布后继续A07.8其余合同及全部总计划。
++
+ ## A07.7c 可回退默认交付
+ 
+ 2026-11-10：8条实际随包命令通过，默认引擎639c6b7b/元数据11036e4c/包b4c86756，revision26、STOPPED；完整审核旧代与核心/Key/配额/用量账本保持。独立可选策略已封装支持，默认不启用测试授权；无新增模型/Chat/GPU。下一步A07.8合同审计和标准input_tokens入口，再全部剩余总任务，不在阶段结束停止。
+diff --git a/docs/serve-application-v1.schema.json b/docs/serve-application-v1.schema.json
+index 06345064..8489b62e 100644
+--- a/docs/serve-application-v1.schema.json
++++ b/docs/serve-application-v1.schema.json
+@@ -8746,6 +8746,14 @@
+         "user": {
+           "$ref": "#/$defs/27"
+         },
++        "personality": {
++          "type": "string",
++          "enum": [
++            "friendly",
++            "pragmatic"
++          ],
++          "maxLength": 64
++        },
+         "seed": {
+           "anyOf": [
+             {
+@@ -10587,6 +10595,14 @@
+             "treatment"
+           ],
+           "additionalProperties": false
++        },
++        "personality": {
++          "type": "string",
++          "enum": [
++            "friendly",
++            "pragmatic"
++          ],
++          "maxLength": 64
+         }
+       },
+       "required": [
+@@ -15661,6 +15677,210 @@
+     "1157": {
+       "const": "response.compaction"
+     },
++    "1158": {
++      "type": "object",
++      "properties": {
++        "conversation": {
++          "$ref": "#/$defs/666"
++        },
++        "input": {
++          "$ref": "#/$defs/1151"
++        },
++        "instructions": {
++          "$ref": "#/$defs/20"
++        },
++        "model": {
++          "$ref": "#/$defs/20"
++        },
++        "parallel_tool_calls": {
++          "$ref": "#/$defs/368"
++        },
++        "personality": {
++          "type": "string",
++          "enum": [
++            "friendly",
++            "pragmatic"
++          ],
++          "maxLength": 64
++        },
++        "previous_response_id": {
++          "$ref": "#/$defs/20"
++        },
++        "reasoning": {
++          "$ref": "#/$defs/818"
++        },
++        "text": {
++          "$ref": "#/$defs/1162"
++        },
++        "tool_choice": {
++          "$ref": "#/$defs/1164"
++        },
++        "tools": {
++          "$ref": "#/$defs/1166"
++        },
++        "truncation": {
++          "$ref": "#/$defs/1167"
++        }
++      },
++      "required": [],
++      "additionalProperties": false,
++      "allOf": [
++        {
++          "not": {
++            "required": [
++              "previous_response_id",
++              "conversation"
++            ],
++            "properties": {
++              "previous_response_id": {
++                "not": {
++                  "type": "null"
++                }
++              },
++              "conversation": {
++                "not": {
++                  "type": "null"
++                }
++              }
++            }
++          }
++        }
++      ]
++    },
++    "1159": {
++      "anyOf": [
++        {
++          "$ref": "#/$defs/304"
++        },
++        {
++          "$ref": "#/$defs/1160"
++        },
++        {
++          "$ref": "#/$defs/1161"
++        }
++      ]
++    },
++    "1160": {
++      "const": "friendly"
++    },
++    "1161": {
++      "const": "pragmatic"
++    },
++    "1162": {
++      "anyOf": [
++        {
++          "$ref": "#/$defs/21"
++        },
++        {
++          "$ref": "#/$defs/1163"
++        }
++      ]
++    },
++    "1163": {
++      "type": "object",
++      "properties": {
++        "format": {
++          "$ref": "#/$defs/839"
++        },
++        "verbosity": {
++          "$ref": "#/$defs/842"
++        }
++      },
++      "required": [],
++      "additionalProperties": false
++    },
++    "1164": {
++      "anyOf": [
++        {
++          "$ref": "#/$defs/21"
++        },
++        {
++          "$ref": "#/$defs/18"
++        },
++        {
++          "$ref": "#/$defs/418"
++        },
++        {
++          "$ref": "#/$defs/844"
++        },
++        {
++          "$ref": "#/$defs/845"
++        },
++        {
++          "$ref": "#/$defs/850"
++        },
++        {
++          "$ref": "#/$defs/853"
++        },
++        {
++          "$ref": "#/$defs/854"
++        },
++        {
++          "$ref": "#/$defs/855"
++        },
++        {
++          "$ref": "#/$defs/857"
++        },
++        {
++          "$ref": "#/$defs/858"
++        },
++        {
++          "$ref": "#/$defs/1165"
++        }
++      ]
++    },
++    "1165": {
++      "type": "object",
++      "properties": {
++        "type": {
++          "$ref": "#/$defs/292"
++        }
++      },
++      "required": [
++        "type"
++      ],
++      "additionalProperties": false
++    },
++    "1166": {
++      "anyOf": [
++        {
++          "$ref": "#/$defs/21"
++        },
++        {
++          "$ref": "#/$defs/386"
++        }
++      ]
++    },
++    "1167": {
++      "anyOf": [
++        {
++          "$ref": "#/$defs/18"
++        },
++        {
++          "$ref": "#/$defs/284"
++        }
++      ]
++    },
++    "1168": {
++      "type": "object",
++      "properties": {
++        "input_tokens": {
++          "type": "integer",
++          "minimum": 0
++        },
++        "object": {
++          "$ref": "#/$defs/1169"
++        }
++      },
++      "required": [
++        "input_tokens",
++        "object"
++      ],
++      "additionalProperties": false
++    },
++    "1169": {
++      "const": "response.input_tokens"
++    },
+     "input_item": {
+       "$ref": "#/$defs/0"
+     },
+@@ -15715,6 +15935,12 @@
+     "compacted_response": {
+       "$ref": "#/$defs/1156"
+     },
++    "input_tokens_request": {
++      "$ref": "#/$defs/1158"
++    },
++    "input_tokens_response": {
++      "$ref": "#/$defs/1168"
++    },
+     "item_include_query": {
+       "type": "object",
+       "properties": {
+@@ -17778,6 +18004,7 @@
+       "src/resources/conversations/conversations.ts": "f65731936f0822881a3f7becd29d78ec043cb8138a22131c5115e6d8dfa70a58",
+       "src/resources/conversations/items.ts": "d15db5536c58775a13bce0ff4c8c0df9df6836210b0ab01dd510b6be9fda4514",
+       "src/resources/responses/input-items.ts": "783cbf2ad3cb04abc069ad56100b3cb3a3f6c3c1562611ed1ad16034d85d7928",
++      "src/resources/responses/input-tokens.ts": "edf13a3dc0ca452600aeb84c5b22dc0f842c9c2f59b148eb95581dfc1cce35d8",
+       "src/resources/responses/responses.ts": "f84e394bf08d71403c054ccb4d41d278861f2d19db3ea426e7aec789f3eb5dbb",
+       "src/resources/shared.ts": "15cf6803634242502525c52098acddea16b9c2bb2439f85aa388dd43fa837455"
+     },
+@@ -17788,6 +18015,7 @@
+       "SDK-added output_text is optional on wire",
+       "official HTTP examples use usage:null for active/cancelled responses; completed/incomplete require actual usage",
+       "native store echo and native response error codes",
++      "count endpoint uses actual model templates; native create also accepts the model-owned friendly/pragmatic personality presets from the count SDK contract",
+       "optional q4t_moderation_usage discloses bounded auxiliary classifier tokens separately from business usage",
+       "SDK-documented include_obfuscation adds optional string padding to delta events only",
+       "official prompt caching guide permits 12h on request/applied options in addition to the pinned SDK 30m literal",
+@@ -17831,6 +18059,6 @@
+     ],
+     "cancelled_stream": "Resource is cancelled; original events end without fabricated response.cancelled/completed or Chat DONE.",
+     "query": "Closed route-specific fields; repeated include[] is an array; exact decimal integers and true/false booleans.",
+-    "type_graph_sha256": "54e6b959779f64cd0d27124170f64f0deff5798f3fee9f1ec84ebdc92c50e119"
++    "type_graph_sha256": "3b628c3b6ffd745ccbece4716215b35962f6ee22a34ed88e330f77eeafca3c75"
+   }
+ }
+diff --git a/docs/serve-input-semantics-v1.json b/docs/serve-input-semantics-v1.json
+index 2eb3c152..ac0cb9e6 100644
+--- a/docs/serve-input-semantics-v1.json
++++ b/docs/serve-input-semantics-v1.json
+@@ -13,6 +13,17 @@
+   ],
+   "runtime_preflight": "POST /v1/chat/preflight",
+   "rules": [
++    {
++      "id": "responses-input-tokens",
++      "sources": [
++        "src/server/responses_tokens.cpp",
++        "src/server/chat_input_tokens.cpp",
++        "src/server/responses_plan.cpp",
++        "src/server/chat_plan.cpp",
++        "src/server/media_admission.cpp"
++      ],
++      "contract": "POST /v1/responses/input_tokens uses the actual native template, tokenizer and expanded media count. Omitted/null body, null model and empty input use defaults without a dummy message. Strict count-only fields; previous/conversation/encrypted history resolves in the authenticated client scope without beginning or mutating a response. Input/client/context and data concurrency/deadline limits remain; no generation slot, model/tool step, cache write or generation RPM/TPM reservation. Truncation auto protects the current turn and tool dependencies; count has zero output budget. Counts describe initial input, not later generated reasoning/compaction/moderation steps. Friendly/pragmatic model-owned personality presets enter actual system guidance, shared with native Responses create; no claim of hosted-model prompt or tokenizer equivalence. File/tool executors remain linked A09/A10/A11 implementation tasks."
++    },
+     {
+       "id": "stored-chat",
+       "sources": [
+@@ -349,7 +360,7 @@
+     "include/q4t/runtime/cleanup_policy.h": "41acdb66d9bf371534a0b110efc5ab73d233be2c5930dafdec130485a17f3ee7",
+     "include/q4t/runtime/cuda_allocation_quota.h": "2d0fcac32d91fb4629036d3b4bb3d39b902ef2e687eba63d7e658596cdaffb47",
+     "include/q4t/runtime/model_health.h": "19e05818f3a4462fe5c81e6098549205ce156f03c7aeaa89e593fb319670f26a",
+-    "include/q4t/server/application_routes.h": "1d27e45e73d4e7827bcdd18413c0c3f91d9d81291e93b5202ed4ac031ac404e3",
++    "include/q4t/server/application_routes.h": "22bc18c61132b957fdcba05520055066add14cf9ed1b383031ea6b69c29c7950",
+     "include/q4t/server/cache_health.h": "3b43f963c6621361a93feaf3575cdf5f157a3ff426d13aa03b5bf81a005766d3",
+     "include/q4t/server/cache_io.h": "212c22958256a4e7441f0a1a896ddf87e9c4759104680582d6541a58b6b0491c",
+     "include/q4t/server/completion_plan.h": "3974785c56eb107ef29c4904f7d04476080c1d11315f8d621b7ea49a8856d896",
+@@ -389,24 +400,25 @@
+     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
+     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
+     "src/server/chat_choices.cpp": "ee99c4aca3c1ea07d5929da38325aa2b28a411245c7d794c9cc5f1f8eb23f16a",
+-    "src/server/chat_contract.cpp": "c1786828dd6d95ed7ec2b0c2bb4a5fb4418705dbb9a86a92cca59d4790c312a1",
++    "src/server/chat_contract.cpp": "87885c6f285b8a2891f6d337418c161c55dcae46cf5a4dbc1bd75beb6e2b8cac",
+     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
+     "src/server/chat_generation.cpp": "938fd362779ea110bdd6014c980c9b488787a489ba10753e16d8017304e87d50",
+     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
+-    "src/server/chat_http.cpp": "89e7c112767927a17775825cec3d372055c6aacd9b2aa2e9e548997b64a81503",
++    "src/server/chat_http.cpp": "2ac8ee865716d6cbde42edc0090b95ddbff3bc8f1e7f6f09b6e3927b69138553",
+     "src/server/chat_input.cpp": "372b93746fbe236ec1d0caea778b1212d22ab94a18ec4f7ce81adcfba8b8c546",
++    "src/server/chat_input_tokens.cpp": "c827f6fea2207afbed17312b6b9cbd90a6c6d52bfd6b6549d220b7c93cea40d9",
+     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
+     "src/server/chat_metrics.cpp": "4fcb248a3a1f9b2ea0cf5d825bd6afc1ef1dfee34bb859ef594ece4feea8cb27",
+-    "src/server/chat_plan.cpp": "231920fd40e263dd86b7f4b52b975b8beb1a8285388a7fb1d590ef5a5e520165",
++    "src/server/chat_plan.cpp": "0aacd207edb51f426ed3729278f027289ce70d4cf5e228e726c7a534ad701b52",
+     "src/server/chat_preflight.cpp": "c920aff0a7994f2c6a35327a1119c4ccbe699920bdc980476b345a54fdd91e19",
+-    "src/server/chat_prompt.cpp": "3139f82e12f3690eecb91f1b280619983f50878994eca6f50f3a1a890ed5205b",
++    "src/server/chat_prompt.cpp": "91639256c143a659423b42340e92d154ac3f0a6c697b58bae2e20814fe303272",
+     "src/server/chat_response_parser.cpp": "69e260c428d83a6383d5d36e0870c7d2be697e953251fddfd081a058445a808b",
+     "src/server/chat_responses.cpp": "13fe1f43c32e93d4a4b34184a1da6ae67b1c6d3fe97adb00334e7342fcf8ed41",
+     "src/server/chat_scheduler.cpp": "a0844e61f23629d574b1ef9515cf59427cbddf55058453e95f07eda2917f42f6",
+     "src/server/chat_server.cpp": "5b11bdfd2a27ec286cd7f73218f05423af670ece3be183509a4a0fcf82a2bd0d",
+     "src/server/chat_storage.cpp": "41caab121d69b357700a17d11aa6f1222445ac14f97da20762360d93058a522a",
+     "src/server/chat_storage_options.cpp": "44a9da20f7f72b2fc448a02d09fdfb112c38b7cb0a9c8eca3296e43d5c32d99c",
+-    "src/server/chat_template.cpp": "bb9331cc46d88422fd775d4b79c85d03fbb862bef888acdfd2ebd4b8f581e9c7",
++    "src/server/chat_template.cpp": "61acfa8128e1ef75fed9c5cf94ef94b22d9f6629e01c50258c9e9bce1952f2ab",
+     "src/server/chat_tool_history.cpp": "902f6c0982fd072d4dba4c3f6a34629eec9eaaf604fd5d920822b96ed51f82db",
+     "src/server/client_request.cpp": "c0d59195886427d5d9852534cececc45d27ccf269d93f19a85a117293e6c16c8",
+     "src/server/completion_plan.cpp": "714facdef55f982082f687220d2227f6195c517a41f835fe78161fc4a1b1656d",
+@@ -421,7 +433,7 @@
+     "src/server/http_request.cpp": "0c7343b38ec201f3e8bda086869a723bc55e37c57117041fa00f09f3f2971b16",
+     "src/server/input_contract.cpp": "a8d8f7412e50df59da2ec5829f4ecd34245dc521edcb61011ea4dff2b492f362",
+     "src/server/legacy_tools.cpp": "b0bffcd3c780f35f336b40a152e9837077b9a4c6ea3ede737fcbb14b8514587c",
+-    "src/server/media_admission.cpp": "11461c31fed0db43fe68e16680812641c0e51371585c216673e4fe2e54500393",
++    "src/server/media_admission.cpp": "aca67cb60d88c586dcdc58ea9161dca05edc0be9ac1507bb9e91af313822fbf3",
+     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
+     "src/server/model_catalog.cpp": "8d0808b669e3ecbc95794d8b07bd6a86b38dc310cf93c98e18befade71fd2d7e",
+     "src/server/object_store.cpp": "dd95823ba28278b291d79bed2a17e2c9eafbb0d1ce18b4bf3995c6c7fc288eb1",
+@@ -431,13 +443,14 @@
+     "src/server/prediction.cpp": "7e8ccdf7c44dd5c8245230577d42eb7d4cd17c6e2efcf5534a02e6744815733f",
+     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
+     "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
+-    "src/server/responses_api.cpp": "a922fb6309aec5efcae895f31081031cdfbe0dac21f03935ef73b735f51f4920",
++    "src/server/responses_api.cpp": "6480b9f8445a93d2699b674010efba7901a0750deafcc70493afe2c6d9d105e1",
+     "src/server/responses_execution.cpp": "b2ea25a02bf94292b75c3877eaf38658cc6669e1f2e91693dbcc3595a9be18a6",
+     "src/server/responses_jobs.cpp": "e5eaf87112d482d23908df7d12b2a4afdec31d63a2fd54f20e29eebfdd206832",
+-    "src/server/responses_output.cpp": "9b4b4efa98efbc1168d9e9dea29e5ddc3ecfa7376bf21eb14c45b0f0c3bb7175",
++    "src/server/responses_output.cpp": "a14b41905227ad0885753d464a0a08a41619968a370192442cd29a48465d8080",
+     "src/server/responses_owner.cpp": "f439f60e6956ac0d61c107d95ec719cd1fbed84eb0c56721ef63cd1f4342a3fc",
+-    "src/server/responses_plan.cpp": "0998da2c238744fe952eab40f709d5477f4ab9533c1dca4fe488815e02a4bb75",
++    "src/server/responses_plan.cpp": "bca4239897776167468cbc00ae75c79db25022db50d538799dd6b66137720939",
+     "src/server/responses_state.cpp": "8f1f5433552165c333b7f8288848286e5e3f45df056243f5cd8601486d767fbc",
++    "src/server/responses_tokens.cpp": "35c9eb79ffee7cebf6e57951eb0d505837d7632281a0b2bfd6f18df387cd1c64",
+     "src/server/sampling.cpp": "88e247ca6b7c65abbf0977c66fd604e7156cbdefe5d0293e509282678555d31d",
+     "src/server/schema_grammar.cpp": "075d6a282f2fc1cda861e3a0de4de132455af3efa9ed30b67b0ad9a5caf56cf2",
+     "src/server/schema_graph.cpp": "b4a369e5b6882642e350b140afd2ff4002d9ae60e0f42ec8e34aa02de54972a5",
+diff --git a/docs/serve-master-goals-v2.json b/docs/serve-master-goals-v2.json
+index 118140bb..62dd9a1e 100644
+--- a/docs/serve-master-goals-v2.json
++++ b/docs/serve-master-goals-v2.json
+@@ -1436,6 +1436,6 @@
+       "release": null
+     }
+   ],
+-  "next_task": "A07.5",
+-  "next": "Versioned native Prompt registry and actual variables/context execution, then all remaining master tasks"
++  "next_task": "A07.8 input token count targeted validation, then remaining full contract audit and all A/R/Q/G work",
++  "next": "Standard input_tokens route implemented in source; freeze 20 C++ / 2 schema / 2 native ingress CPU, then <=1 model start / 4 generations / 16 counts / 900 seconds real business. Default access-program release remains STOPPED until accepted delivery; master goal remains active."
+ }
+diff --git a/docs/serve-openapi-bundle-v1.json b/docs/serve-openapi-bundle-v1.json
+index b76df347..44466e41 100644
+--- a/docs/serve-openapi-bundle-v1.json
++++ b/docs/serve-openapi-bundle-v1.json
+@@ -1807,6 +1807,71 @@
+         }
+       }
+     },
++    "/v1/responses/input_tokens": {
++      "post": {
++        "operationId": "post_v1_responses_input_tokens",
++        "parameters": [],
++        "responses": {
++          "200": {
++            "description": "JSON response",
++            "headers": {
++              "X-Request-Id": {
++                "schema": {
++                  "type": "string",
++                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
++                },
++                "description": "Trace only; not cancellation credentials or an idempotency key"
++              }
++            },
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/input_tokens_response"
++                }
++              }
++            }
++          },
++          "default": {
++            "description": "Native error; unknown/other-client identities return 404",
++            "headers": {
++              "X-Request-Id": {
++                "schema": {
++                  "type": "string",
++                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
++                },
++                "description": "Trace only; not cancellation credentials or an idempotency key"
++              }
++            },
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
++                }
++              }
++            }
++          }
++        },
++        "x-q4t-query-contract": "no query",
++        "x-q4t-body-contract": "input_tokens_request",
++        "requestBody": {
++          "required": false,
++          "content": {
++            "application/json": {
++              "schema": {
++                "anyOf": [
++                  {
++                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/input_tokens_request"
++                  },
++                  {
++                    "type": "null"
++                  }
++                ]
++              }
++            }
++          }
++        }
++      }
++    },
+     "/v1/responses/{response_id}": {
+       "get": {
+         "operationId": "get_v1_responses_response_id",
+@@ -19085,6 +19150,14 @@
+               "user": {
+                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/27"
+               },
++              "personality": {
++                "type": "string",
++                "enum": [
++                  "friendly",
++                  "pragmatic"
++                ],
++                "maxLength": 64
++              },
+               "seed": {
+                 "anyOf": [
+                   {
+@@ -20926,6 +20999,14 @@
+                   "treatment"
+                 ],
+                 "additionalProperties": false
++              },
++              "personality": {
++                "type": "string",
++                "enum": [
++                  "friendly",
++                  "pragmatic"
++                ],
++                "maxLength": 64
+               }
+             },
+             "required": [
+@@ -26000,6 +26081,210 @@
+           "1157": {
+             "const": "response.compaction"
+           },
++          "1158": {
++            "type": "object",
++            "properties": {
++              "conversation": {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/666"
++              },
++              "input": {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1151"
++              },
++              "instructions": {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
++              },
++              "model": {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
++              },
++              "parallel_tool_calls": {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/368"
++              },
++              "personality": {
++                "type": "string",
++                "enum": [
++                  "friendly",
++                  "pragmatic"
++                ],
++                "maxLength": 64
++              },
++              "previous_response_id": {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
++              },
++              "reasoning": {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/818"
++              },
++              "text": {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1162"
++              },
++              "tool_choice": {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1164"
++              },
++              "tools": {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1166"
++              },
++              "truncation": {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1167"
++              }
++            },
++            "required": [],
++            "additionalProperties": false,
++            "allOf": [
++              {
++                "not": {
++                  "required": [
++                    "previous_response_id",
++                    "conversation"
++                  ],
++                  "properties": {
++                    "previous_response_id": {
++                      "not": {
++                        "type": "null"
++                      }
++                    },
++                    "conversation": {
++                      "not": {
++                        "type": "null"
++                      }
++                    }
++                  }
++                }
++              }
++            ]
++          },
++          "1159": {
++            "anyOf": [
++              {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/304"
++              },
++              {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1160"
++              },
++              {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1161"
++              }
++            ]
++          },
++          "1160": {
++            "const": "friendly"
++          },
++          "1161": {
++            "const": "pragmatic"
++          },
++          "1162": {
++            "anyOf": [
++              {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/21"
++              },
++              {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1163"
++              }
++            ]
++          },
++          "1163": {
++            "type": "object",
++            "properties": {
++              "format": {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/839"
++              },
++              "verbosity": {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/842"
++              }
++            },
++            "required": [],
++            "additionalProperties": false
++          },
++          "1164": {
++            "anyOf": [
++              {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/21"
++              },
++              {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/18"
++              },
++              {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/418"
++              },
++              {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/844"
++              },
++              {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/845"
++              },
++              {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/850"
++              },
++              {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/853"
++              },
++              {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/854"
++              },
++              {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/855"
++              },
++              {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/857"
++              },
++              {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/858"
++              },
++              {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1165"
++              }
++            ]
++          },
++          "1165": {
++            "type": "object",
++            "properties": {
++              "type": {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/292"
++              }
++            },
++            "required": [
++              "type"
++            ],
++            "additionalProperties": false
++          },
++          "1166": {
++            "anyOf": [
++              {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/21"
++              },
++              {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/386"
++              }
++            ]
++          },
++          "1167": {
++            "anyOf": [
++              {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/18"
++              },
++              {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/284"
++              }
++            ]
++          },
++          "1168": {
++            "type": "object",
++            "properties": {
++              "input_tokens": {
++                "type": "integer",
++                "minimum": 0
++              },
++              "object": {
++                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1169"
++              }
++            },
++            "required": [
++              "input_tokens",
++              "object"
++            ],
++            "additionalProperties": false
++          },
++          "1169": {
++            "const": "response.input_tokens"
++          },
+           "input_item": {
+             "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/0"
+           },
+@@ -26054,6 +26339,12 @@
+           "compacted_response": {
+             "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1156"
+           },
++          "input_tokens_request": {
++            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1158"
++          },
++          "input_tokens_response": {
++            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1168"
++          },
+           "item_include_query": {
+             "type": "object",
+             "properties": {
+@@ -28117,6 +28408,7 @@
+             "src/resources/conversations/conversations.ts": "f65731936f0822881a3f7becd29d78ec043cb8138a22131c5115e6d8dfa70a58",
+             "src/resources/conversations/items.ts": "d15db5536c58775a13bce0ff4c8c0df9df6836210b0ab01dd510b6be9fda4514",
+             "src/resources/responses/input-items.ts": "783cbf2ad3cb04abc069ad56100b3cb3a3f6c3c1562611ed1ad16034d85d7928",
++            "src/resources/responses/input-tokens.ts": "edf13a3dc0ca452600aeb84c5b22dc0f842c9c2f59b148eb95581dfc1cce35d8",
+             "src/resources/responses/responses.ts": "f84e394bf08d71403c054ccb4d41d278861f2d19db3ea426e7aec789f3eb5dbb",
+             "src/resources/shared.ts": "15cf6803634242502525c52098acddea16b9c2bb2439f85aa388dd43fa837455"
+           },
+@@ -28127,6 +28419,7 @@
+             "SDK-added output_text is optional on wire",
+             "official HTTP examples use usage:null for active/cancelled responses; completed/incomplete require actual usage",
+             "native store echo and native response error codes",
++            "count endpoint uses actual model templates; native create also accepts the model-owned friendly/pragmatic personality presets from the count SDK contract",
+             "optional q4t_moderation_usage discloses bounded auxiliary classifier tokens separately from business usage",
+             "SDK-documented include_obfuscation adds optional string padding to delta events only",
+             "official prompt caching guide permits 12h on request/applied options in addition to the pinned SDK 30m literal",
+@@ -28170,7 +28463,7 @@
+           ],
+           "cancelled_stream": "Resource is cancelled; original events end without fabricated response.cancelled/completed or Chat DONE.",
+           "query": "Closed route-specific fields; repeated include[] is an array; exact decimal integers and true/false booleans.",
+-          "type_graph_sha256": "54e6b959779f64cd0d27124170f64f0deff5798f3fee9f1ec84ebdc92c50e119"
++          "type_graph_sha256": "3b628c3b6ffd745ccbece4716215b35962f6ee22a34ed88e330f77eeafca3c75"
+         }
+       },
+       "serve-preflight-v1.schema.json": {
+diff --git a/docs/serve-openapi-v1.json b/docs/serve-openapi-v1.json
+index 52eb0b7b..96af294c 100644
+--- a/docs/serve-openapi-v1.json
++++ b/docs/serve-openapi-v1.json
+@@ -1807,6 +1807,71 @@
+         }
+       }
+     },
++    "/v1/responses/input_tokens": {
++      "post": {
++        "operationId": "post_v1_responses_input_tokens",
++        "parameters": [],
++        "responses": {
++          "200": {
++            "description": "JSON response",
++            "headers": {
++              "X-Request-Id": {
++                "schema": {
++                  "type": "string",
++                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
++                },
++                "description": "Trace only; not cancellation credentials or an idempotency key"
++              }
++            },
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "serve-application-v1.schema.json#/$defs/input_tokens_response"
++                }
++              }
++            }
++          },
++          "default": {
++            "description": "Native error; unknown/other-client identities return 404",
++            "headers": {
++              "X-Request-Id": {
++                "schema": {
++                  "type": "string",
++                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
++                },
++                "description": "Trace only; not cancellation credentials or an idempotency key"
++              }
++            },
++            "content": {
++              "application/json": {
++                "schema": {
++                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
++                }
++              }
++            }
++          }
++        },
++        "x-q4t-query-contract": "no query",
++        "x-q4t-body-contract": "input_tokens_request",
++        "requestBody": {
++          "required": false,
++          "content": {
++            "application/json": {
++              "schema": {
++                "anyOf": [
++                  {
++                    "$ref": "serve-application-v1.schema.json#/$defs/input_tokens_request"
++                  },
++                  {
++                    "type": "null"
++                  }
++                ]
++              }
++            }
++          }
++        }
++      }
++    },
+     "/v1/responses/{response_id}": {
+       "get": {
+         "operationId": "get_v1_responses_response_id",
+diff --git a/include/q4t/server/application_routes.h b/include/q4t/server/application_routes.h
+index 460c82be..ba9380be 100644
+--- a/include/q4t/server/application_routes.h
++++ b/include/q4t/server/application_routes.h
+@@ -27,6 +27,10 @@ inline bool IsResponsesCompaction(std::string_view target) {
+   return target.substr(0, target.find('?')) == "/v1/responses/compact";
+ }
+ 
++inline bool IsResponsesTokenCount(std::string_view target) {
++  return target.substr(0, target.find('?')) == "/v1/responses/input_tokens";
++}
++
+ inline bool IsPromptTarget(std::string_view target) {
+   const auto path = target.substr(0, target.find('?'));
+   return path == "/v1/prompts" || path.starts_with("/v1/prompts/");
+@@ -91,6 +95,7 @@ inline bool ResponsesMethodAllowed(std::string_view method,
+   constexpr std::string_view root = "/v1/responses";
+   if (path == root) return method == "POST";
+   if (IsResponsesCompaction(path)) return method == "POST";
++  if (IsResponsesTokenCount(path)) return method == "POST";
+   if (!path.starts_with("/v1/responses/")) return false;
+   path.remove_prefix(root.size() + 1);
+   const auto end = path.find('/');
+diff --git a/include/q4t/server/chat_contract.h b/include/q4t/server/chat_contract.h
+index 7fad1ed0..934ca5b9 100644
+--- a/include/q4t/server/chat_contract.h
++++ b/include/q4t/server/chat_contract.h
+@@ -10,6 +10,7 @@ namespace q4t::server {
+ // Validate transport options before registration, decoding media or GPU work.
+ Status ValidateChatContract(const io::Json& request,
+                             const std::string& model_name, bool allow_media,
+-                            std::string* error_param = nullptr);
++                            std::string* error_param = nullptr,
++                            bool allow_empty_messages = false);
+ 
+ }  // namespace q4t::server
+diff --git a/include/q4t/server/chat_plan.h b/include/q4t/server/chat_plan.h
+index cf5b8fdc..6d9f70f3 100644
+--- a/include/q4t/server/chat_plan.h
++++ b/include/q4t/server/chat_plan.h
+@@ -44,6 +44,9 @@ struct ChatPlanConfig {
+   bool prefix_cache = false;
+   // Internal Responses prefill-only execution, never a caller Chat field.
+   bool prewarm_only = false;
++  // Internal CPU input counting: no generation slot/output reservation.
++  // Never set from an untrusted Chat field.
++  bool count_input_only = false;
+   std::vector<int> capacities;
+   std::vector<int> checkpoints;
+   uint64_t cuda_quota_limit_bytes = 0;
+diff --git a/include/q4t/server/chat_prompt.h b/include/q4t/server/chat_prompt.h
+index 18f93da7..fe3dabc0 100644
+--- a/include/q4t/server/chat_prompt.h
++++ b/include/q4t/server/chat_prompt.h
+@@ -33,6 +33,7 @@ Status PrepareChatPrompt(const io::Json& request,
+                          std::string* prompt, std::vector<VisionItem>* items,
+                          std::string* error_param,
+                          std::string* error_code = nullptr,
+-                         ChatPromptLayout* layout = nullptr);
++                         ChatPromptLayout* layout = nullptr,
++                         bool allow_empty = false);
+ 
+ }  // namespace q4t::server
+diff --git a/include/q4t/server/chat_server.h b/include/q4t/server/chat_server.h
+index 90bc499a..334472d9 100644
+--- a/include/q4t/server/chat_server.h
++++ b/include/q4t/server/chat_server.h
+@@ -174,6 +174,7 @@ class ChatServer {
+   void HandleCapabilities(int fd);
+   void HandleMetrics(int fd);
+   void HandlePreflight(int fd, const std::string& body);
++  void HandleResponsesTokenCount(int fd, const std::string& body);
+   void HandleConfig(int fd);
+   ChatPlanConfig PlanningConfig(int fd = -1) const;
+   enum class GenerationApi { kChat, kCompletion, kResponse, kCompact };
+diff --git a/include/q4t/server/chat_template.h b/include/q4t/server/chat_template.h
+index 3f787b29..4fa746f9 100644
+--- a/include/q4t/server/chat_template.h
++++ b/include/q4t/server/chat_template.h
+@@ -31,11 +31,13 @@ struct ChatMessageSpan {
+ // Shared by HTTP and the renderer: validate role-specific content, metadata
+ // and historical refusal without decoding media or changing the request.
+ Status ValidateChatMessageProfile(const io::Json& messages,
+-                                  std::string* error_param = nullptr);
++                                  std::string* error_param = nullptr,
++                                  bool allow_empty = false);
+ 
+ Status RenderChatPrompt(const io::Json& request,
+                         const std::vector<std::string>& contents,
+                         std::string* prompt,
+-                        std::vector<ChatMessageSpan>* spans = nullptr);
++                        std::vector<ChatMessageSpan>* spans = nullptr,
++                        bool allow_empty = false);
+ 
+ }  // namespace q4t::server
+diff --git a/include/q4t/server/responses_input.h b/include/q4t/server/responses_input.h
+index af017950..34da4542 100644
+--- a/include/q4t/server/responses_input.h
++++ b/include/q4t/server/responses_input.h
+@@ -20,7 +20,8 @@ struct ResponsesInputPlan {
+ // client-scoped state layer first. This function never performs external I/O.
+ Status NormalizeResponsesInput(const io::Json& request,
+                                ResponsesInputPlan* result,
+-                               ChatPlanError* error);
++                               ChatPlanError* error,
++                               bool allow_empty = false);
+ // Maps shared-generation errors back to the caller's Responses input path.
+ void ResponsesInputErrorParam(const ResponsesInputPlan& plan,
+                               std::string* param);
+diff --git a/include/q4t/server/responses_plan.h b/include/q4t/server/responses_plan.h
+index 21bbb179..27d42112 100644
+--- a/include/q4t/server/responses_plan.h
++++ b/include/q4t/server/responses_plan.h
+@@ -34,6 +34,7 @@ struct ResponsesEnvelope {
+   std::string reasoning_effort = "xhigh";
+   std::string reasoning_mode = "standard";
+   std::string verbosity = "medium";
++  std::string personality;
+ };
+ 
+ Status ParseResponsesEnvelope(const io::Json& request,
+diff --git a/src/server/chat_capabilities.cpp b/src/server/chat_capabilities.cpp
+index b6d8e4c8..04aaac43 100644
+--- a/src/server/chat_capabilities.cpp
++++ b/src/server/chat_capabilities.cpp
+@@ -75,6 +75,14 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
+          R"("usage":"actual_tokens","logprobs":"original_token_bytes",)"
+          R"("store_default":true,"previous_response_id":true,)"
+          R"("conversation":true,"input_items":true,"retrieve":true,"delete":true,)"
++         R"("input_tokens":{"endpoint":"/v1/responses/input_tokens",)"
++         R"("enabled":true,"measurement":"actual_template_tokenizer_media",)"
++         R"("empty_input":true,"client_scoped_history":true,)"
++         R"("model_execution":false,"state_mutation":false,)"
++         R"("generation_rpm_tpm":false,"bounded_data_admission":true},)"
++         R"("personality":{"presets":["friendly","pragmatic"],)"
++         R"("executor":"native_system_instruction",)"
++         R"("create_field":"native_extension_to_pinned_sdk"},)"
+          R"("event_replay":"persisted_original_sequence",)"
+          R"("background":{"enabled":true,"cancel":true,)"
+          R"("cancel_status":200,"cancel_idempotent":true,)"
+diff --git a/src/server/chat_contract.cpp b/src/server/chat_contract.cpp
+index c026fd4f..6c197b7a 100644
+--- a/src/server/chat_contract.cpp
++++ b/src/server/chat_contract.cpp
+@@ -73,13 +73,14 @@ Status TemplateOptions(const io::Json& options) {
+ }  // namespace
+ 
+ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
+-                            bool allow_media, std::string* error_param) {
++                            bool allow_media, std::string* error_param,
++                            bool allow_empty_messages) {
+   if (HasLegacyTools(req)) {
+     LegacyToolRequest normalized;
+     auto status = NormalizeLegacyTools(req, &normalized, error_param);
+     if (!status) return status;
+     status = ValidateChatContract(normalized.request, model_name, allow_media,
+-                                   error_param);
++                                   error_param, allow_empty_messages);
+     if (!status) LegacyToolErrorParam(req, error_param);
+     return status;
+   }
+@@ -260,9 +261,11 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
+       return invalid("tools", "tools requires messages and an array or null");
+   }
+   if (!messages) return Status();
+-  if (!messages->IsArray() || messages->array.empty())
++  if (!messages->IsArray() ||
++      (!allow_empty_messages && messages->array.empty()))
+     return invalid("messages", "messages must be a nonempty array");
+-  status = ValidateChatMessageProfile(*messages, error_param);
++  status = ValidateChatMessageProfile(*messages, error_param,
++                                      allow_empty_messages);
+   if (!status) return status;
+   size_t media_items = 0;
+   for (size_t index = 0; index < messages->array.size(); ++index) {
+diff --git a/src/server/chat_http.cpp b/src/server/chat_http.cpp
+index deb0f52d..f4badc75 100644
+--- a/src/server/chat_http.cpp
++++ b/src/server/chat_http.cpp
+@@ -380,8 +380,9 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
+         path == "/v1/completions" || IsResponsesTarget(path) ||
+         path == "/v1/requests/cancel" || IsConversationTarget(path) ||
+         IsPromptTarget(path)) {
+-      if (method == "POST" && !(IsResponseCancellation(method, path) &&
+-                                body.empty() && headers.content_type.empty())) {
++      if (method == "POST" &&
++          !((IsResponseCancellation(method, path) || IsResponsesTokenCount(path))
++            && body.empty() && headers.content_type.empty())) {
+         std::string type = headers.content_type;
+         for (char& c : type)
+           if (c >= 'A' && c <= 'Z') c += 'a' - 'A';
+@@ -436,6 +437,19 @@ void ChatServer::Dispatch(int fd, const std::string& method,
+     if (auto* context = detail::HttpResponseContext::Current(fd))
+       context->RecordReceiveFailure(reason, status);
+   };
++  if (IsResponsesTokenCount(path)) {
++    if (method != "POST") {
++      rejected(HttpReceiveFailure::kMethod, 405);
++      SendError(fd, 405, "method not allowed", {}, "method_not_allowed",
++                "method", "POST");
++    } else if (path != "/v1/responses/input_tokens") {
++      SendError(fd, 400, "Input count does not accept query parameters", {},
++                "invalid_request", "query");
++    } else {
++      HandleResponsesTokenCount(fd, body);
++    }
++    return;
++  }
+   if (IsResponsesCompaction(path)) {
+     if (method != "POST") {
+       rejected(HttpReceiveFailure::kMethod, 405);
+diff --git a/src/server/chat_plan.cpp b/src/server/chat_plan.cpp
+index b0ad798f..cf1ea366 100644
+--- a/src/server/chat_plan.cpp
++++ b/src/server/chat_plan.cpp
+@@ -36,7 +36,7 @@ std::string Array(const std::vector<T>& values) {
+ const char* Bool(bool value) { return value ? "true" : "false"; }
+ 
+ int RequestedOutput(const io::Json& req, const ChatPlanConfig& config) {
+-  if (config.prewarm_only) return 0;
++  if (config.prewarm_only || config.count_input_only) return 0;
+   const int fallback =
+       config.client_limits
+           ? std::min(config.default_max_tokens,
+@@ -86,7 +86,7 @@ Status PlanChatRequest(const io::Json& req, const ChatPlanConfig& config,
+                                             ? model->str
+                                             : config.model,
+                                      config.allow_media,
+-                                     &error->param);
++                                     &error->param, config.count_input_only);
+   if (!status) {
+     if (status.message().starts_with("schema_resource_exhausted:")) {
+       error->code = "constraint_resource_exhausted";
+@@ -150,6 +150,14 @@ Status PlanChatBudget(const io::Json& req, const ChatPlanConfig& config,
+   if (config.client_limits && tokens > config.client_limits->max_prompt_tokens)
+     return Fail(error, "client_prompt_limit_exceeded", input,
+                 "encoded prompt exceeds client token limit");
++  if (config.count_input_only) {
++    if (!tokens || tokens > static_cast<size_t>(config.max_len))
++      return Fail(error, "context_length_exceeded", input,
++                  "input tokens exceed context capacity");
++    budget->required_capacity = tokens;
++    budget->output_source = "input_tokens";
++    return {};
++  }
+   SamplingOptions sampling;
+   auto sampling_status = ParseSamplingOptions(req, &sampling, &error->param);
+   if (!sampling_status) return sampling_status;
+diff --git a/src/server/chat_prompt.cpp b/src/server/chat_prompt.cpp
+index cb501ca8..88c869a7 100644
+--- a/src/server/chat_prompt.cpp
++++ b/src/server/chat_prompt.cpp
+@@ -171,14 +171,15 @@ Status PrepareChatPrompt(const io::Json& request,
+                          std::string* prompt_out,
+                          std::vector<VisionItem>* items_out,
+                          std::string* error_param, std::string* error_code,
+-                         ChatPromptLayout* layout) {
++                         ChatPromptLayout* layout, bool allow_empty) {
+   if (layout) *layout = {};
+   if (HasLegacyTools(request)) {
+     LegacyToolRequest normalized;
+     auto status = NormalizeLegacyTools(request, &normalized, error_param);
+     if (!status) return status;
+     status = PrepareChatPrompt(normalized.request, constraints, prompt_out,
+-                               items_out, error_param, error_code, layout);
++                               items_out, error_param, error_code, layout,
++                               allow_empty);
+     if (!status) LegacyToolErrorParam(request, error_param);
+     return status;
+   }
+@@ -200,7 +201,8 @@ Status PrepareChatPrompt(const io::Json& request,
+   std::string& prompt = *prompt_out;
+   std::vector<VisionItem>& items = *items_out;
+   if (const auto* messages = req.Find("messages")) {
+-    const auto profile = ValidateChatMessageProfile(*messages, error_param);
++    const auto profile =
++        ValidateChatMessageProfile(*messages, error_param, allow_empty);
+     if (!profile) return profile;
+     const auto* options = req.Find("chat_template_kwargs");
+     const auto* vision_id = options ? options->Find("add_vision_id") : nullptr;
+@@ -219,7 +221,8 @@ Status PrepareChatPrompt(const io::Json& request,
+       error_param->clear();
+     }
+     const auto rendered = RenderChatPrompt(req, contents, &prompt,
+-                                           layout ? &layout->messages : nullptr);
++                                           layout ? &layout->messages : nullptr,
++                                           allow_empty);
+     if (!rendered) return fail(rendered.message());
+   } else {
+     prompt = req.GetString("prompt");
+diff --git a/src/server/chat_template.cpp b/src/server/chat_template.cpp
+index a2579818..a78e919a 100644
+--- a/src/server/chat_template.cpp
++++ b/src/server/chat_template.cpp
+@@ -377,7 +377,7 @@ bool IsChatInstructionRole(std::string_view role) {
+ }
+ 
+ Status ValidateChatMessageProfile(const io::Json& messages,
+-                                  std::string* error_param) {
++                                  std::string* error_param, bool allow_empty) {
+   io::Json request;
+   request.type = io::Json::Type::kObject;
+   // Avoid copying ordinary histories on this shared validation path.
+@@ -392,7 +392,7 @@ Status ValidateChatMessageProfile(const io::Json& messages,
+     auto status = NormalizeLegacyTools(request, &normalized, error_param);
+     if (status)
+       status = ValidateChatMessageProfile(*normalized.request.Find("messages"),
+-                                          error_param);
++                                          error_param, allow_empty);
+     if (!status) LegacyToolErrorParam(request, error_param);
+     return status;
+   }
+@@ -401,7 +401,7 @@ Status ValidateChatMessageProfile(const io::Json& messages,
+     if (error_param) *error_param = std::move(param);
+     return Status::Fail(std::move(message));
+   };
+-  if (!messages.IsArray() || messages.array.empty())
++  if (!messages.IsArray() || (!allow_empty && messages.array.empty()))
+     return invalid("messages", "messages must be a nonempty array");
+   for (size_t i = 0; i < messages.array.size(); ++i) {
+     const auto& message = messages.array[i];
+@@ -474,23 +474,25 @@ Status ValidateChatMessageProfile(const io::Json& messages,
+ Status RenderChatPrompt(const io::Json& request,
+                         const std::vector<std::string>& contents,
+                         std::string* prompt,
+-                        std::vector<ChatMessageSpan>* spans) {
++                        std::vector<ChatMessageSpan>* spans, bool allow_empty) {
+   prompt->clear();
+   if (spans) spans->clear();
+   if (HasLegacyTools(request)) {
+     LegacyToolRequest normalized;
+     const auto status = NormalizeLegacyTools(request, &normalized);
+-    return status ? RenderChatPrompt(normalized.request, contents, prompt, spans)
++    return status ? RenderChatPrompt(normalized.request, contents, prompt, spans,
++                                     allow_empty)
+                   : status;
+   }
+   auto definitions = ValidateToolDefinitions(request);
+   if (!definitions) return definitions;
+   const io::Json* messages = request.Find("messages");
+-  if (!messages || !messages->IsArray() || messages->array.empty() ||
++  if (!messages || !messages->IsArray() ||
++      (!allow_empty && messages->array.empty()) ||
+       messages->array.size() != contents.size()) {
+     return Status::Fail("messages must be a nonempty array");
+   }
+-  auto profile = ValidateChatMessageProfile(*messages);
++  auto profile = ValidateChatMessageProfile(*messages, nullptr, allow_empty);
+   if (!profile) return profile;
+   std::vector<size_t> tool_result_order;
+   auto history = PlanToolResultOrder(*messages, &tool_result_order);
+@@ -574,7 +576,7 @@ Status RenderChatPrompt(const io::Json& request,
+     }
+   }
+   const bool leading_instruction =
+-      IsChatInstructionRole(ms[0].GetString("role"));
++      !ms.empty() && IsChatInstructionRole(ms[0].GetString("role"));
+   const std::string system = leading_instruction ? text[0] : "";
+   const auto first_header =
+       leading_instruction ? Header(ms[0], "system") : "<|im_start|>system\n";
+diff --git a/src/server/media_admission.cpp b/src/server/media_admission.cpp
+index 9b40b4a6..3adddbf7 100644
+--- a/src/server/media_admission.cpp
++++ b/src/server/media_admission.cpp
+@@ -166,7 +166,9 @@ Status PlanChatMedia(std::span<const VisionItem> items,
+     }
+   }
+   const vision::MediaContextBudget context{
+-      tokens.size(), placeholders, static_cast<uint64_t>(config.max_prefill),
++      tokens.size(), placeholders,
++      static_cast<uint64_t>(config.count_input_only ? config.max_len
++                                                    : config.max_prefill),
+       static_cast<uint64_t>(config.max_len)};
+   const auto checked = vision::PlanMedia({inputs.data(), items.size()}, image,
+                                          video, {}, context, device, plan);
+diff --git a/src/server/responses_api.cpp b/src/server/responses_api.cpp
+index 353b3901..46d548e9 100644
+--- a/src/server/responses_api.cpp
++++ b/src/server/responses_api.cpp
+@@ -132,7 +132,8 @@ ObjectReply PlanResponsesRead(std::string_view method, std::string_view target,
+   auto path = target.substr(0, separator);
+   if (!IsResponsesTarget(path) || target.find('#') != target.npos)
+     return Error(404, "route_not_found", "Response route not found");
+-  if (path == root || IsResponsesCompaction(path)) return Method("POST");
++  if (path == root || IsResponsesCompaction(path) || IsResponsesTokenCount(path))
++    return Method("POST");
+   path.remove_prefix(root.size() + 1);
+   const auto end = path.find('/');
+   plan->id = path.substr(0, end);
+diff --git a/src/server/responses_input.cpp b/src/server/responses_input.cpp
+index 1c22d3c7..18a1f002 100644
+--- a/src/server/responses_input.cpp
++++ b/src/server/responses_input.cpp
+@@ -234,7 +234,7 @@ Status ToolSelection(const Json& original, Json* choice, std::string_view path,
+ 
+ Status NormalizeResponsesInput(const io::Json& request,
+                                ResponsesInputPlan* result,
+-                               ChatPlanError* error) {
++                               ChatPlanError* error, bool allow_empty) {
+   *result = {};
+   *error = {};
+   ResponsesInputPlan plan;
+@@ -490,7 +490,7 @@ Status NormalizeResponsesInput(const io::Json& request,
+   }
+   auto status = flush();
+   if (!status) return status;
+-  if (plan.messages.array.empty())
++  if (!allow_empty && plan.messages.array.empty())
+     return Invalid(error, "input", "input or instructions required");
+   *result = std::move(plan);
+   return {};
+diff --git a/src/server/responses_output.cpp b/src/server/responses_output.cpp
+index 67ed8582..29b61c9a 100644
+--- a/src/server/responses_output.cpp
++++ b/src/server/responses_output.cpp
+@@ -96,6 +96,7 @@ Status ResponsesOutput::Init(const io::Json& options, std::string id,
+                           "temperature",
+                           "top_p",
+                           "parallel_tool_calls",
++                          "personality",
+                           "tools",
+                           "tool_choice",
+                           "text",
+diff --git a/src/server/responses_plan.cpp b/src/server/responses_plan.cpp
+index ce0b53c1..ae3c3dcf 100644
+--- a/src/server/responses_plan.cpp
++++ b/src/server/responses_plan.cpp
+@@ -281,6 +281,7 @@ Status ParseResponsesEnvelope(const io::Json& request,
+                              "model",
+                              "moderation",
+                              "parallel_tool_calls",
++                             "personality",
+                              "previous_response_id",
+                              "prompt",
+                              "prompt_cache_key",
+@@ -371,6 +372,15 @@ Status ParseResponsesEnvelope(const io::Json& request,
+     status = ParseModerationOptions(request, config, &result.moderation, error);
+   if (status) status = TextOptions(request, &result, error);
+   if (!status) return status;
++  if (const auto* value = request.Find("personality")) {
++    if (!value->IsString() || value->str.empty() || value->str.size() > 64)
++      return Invalid(error, "personality", "expected model style preset");
++    if (!OneOf(value->str, {"friendly", "pragmatic"}))
++      return Invalid(error, "personality",
++                     "served model presets are friendly and pragmatic");
++    result.personality = value->str;
++    Set(&result.options, "personality", *value);
++  }
+   if (config.client_limits && result.options.GetInt("max_output_tokens") >
+                                   config.client_limits->max_output_tokens) {
+     *error = {"client_output_limit_exceeded", "max_output_tokens", 400};
+@@ -474,7 +484,8 @@ Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
+   ResponsesGenerationPlan result;
+   auto request = envelope.request;
+   Set(&request, "input", resolved_input);
+-  auto status = NormalizeResponsesInput(request, &result.input, error);
++  auto status = NormalizeResponsesInput(request, &result.input, error,
++                                        config.count_input_only);
+   if (!status) return status;
+   result.generation_request = Object({{"messages", result.input.messages}});
+   auto& chat = result.generation_request;
+@@ -509,6 +520,14 @@ Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
+   Set(&chat, "enable_thinking", Boolean(envelope.reasoning_effort != "none"));
+   std::string guidance = envelope.access_program.instructions;
+   if (!guidance.empty()) guidance += '\n';
++  if (envelope.personality == "friendly")
++    guidance +=
++        "Use a warm, approachable style. Explain clearly and respectfully "
++        "without flattery or changing the facts.\n";
++  else if (envelope.personality == "pragmatic")
++    guidance +=
++        "Use a practical, direct style. Prioritize actionable steps and "
++        "concrete evidence without changing the facts.\n";
+   if (OneOf(envelope.reasoning_effort, {"low", "medium", "xhigh"})) {
+     Set(&chat, "reasoning_effort", String(envelope.reasoning_effort));
+   } else if (envelope.reasoning_effort != "none") {
+diff --git a/tools/serve_audit/check_inventory.py b/tools/serve_audit/check_inventory.py
+index c0b3ebd1..47004ff9 100644
+--- a/tools/serve_audit/check_inventory.py
++++ b/tools/serve_audit/check_inventory.py
+@@ -73,6 +73,11 @@ def current_surface(root):
+         raise ValueError("review native compact transport extractor")
+     routes.append(("/v1/responses/compact", "POST"))
+     native_routes.append(("POST", "/v1/responses/compact", "false"))
++    if 'if (IsResponsesTokenCount(path))' not in dispatch or \
++            'if (IsResponsesTokenCount(path)) return method == "POST"' not in application_routes:
++        raise ValueError("review native input token count transport extractor")
++    routes.append(("/v1/responses/input_tokens", "POST"))
++    native_routes.append(("POST", "/v1/responses/input_tokens", "false"))
+     native_routes.extend((method, path, "true") for method, path in responses)
+     if 'HandleStoredChatRequest(*objects_' not in dispatch or \
+             'server::StoredChatMethodAllowed(method, path)' not in native or \
+@@ -108,6 +113,7 @@ def current_surface(root):
+                  "input_contract.cpp", "chat_tool_history.cpp",
+                  "chat_template.cpp", "legacy_tools.cpp", "completion_plan.cpp",
+                  "conversation_api.cpp", "responses_plan.cpp", "responses_api.cpp",
++                 "responses_tokens.cpp",
+                  "chat_storage.cpp", "prompt_api.cpp", "prompt_template.cpp",
+                  "moderation.cpp", "access_program.cpp"):
+         source = (root / "src/server" / file).read_text()
+diff --git a/tools/serve_audit/inventory.json b/tools/serve_audit/inventory.json
+index ecb62dc5..d3c13490 100644
+--- a/tools/serve_audit/inventory.json
++++ b/tools/serve_audit/inventory.json
+@@ -858,6 +858,16 @@
+         "tools/serve_recovery/test_native_ingress.py",
+         "docs/evidence/serve-responses-recovery-20261109/README.md"
+       ]
++    },
++    "POST /v1/responses/input_tokens": {
++      "semantics": "Native standard input token count: shared actual template/tokenizer/media expansion; client-scoped existing history; optional/null body; no inference, durable response mutation or generation RPM/TPM.",
++      "boundary": "Targeted CPU and real SDK count-vs-usage validation pending. File and built-in tool resolutions remain required A09/A10/A11 work; shared data/client/body limits and deadline apply.",
++      "evidence": [
++        "include/q4t/server/application_routes.h",
++        "src/server/chat_input_tokens.cpp",
++        "src/server/responses_tokens.cpp",
++        "tests/server_responses_tokens_test.cpp"
++      ]
+     }
+   },
+   "whitelists": {
+@@ -1153,6 +1163,7 @@
+       "model",
+       "moderation",
+       "parallel_tool_calls",
++      "personality",
+       "previous_response_id",
+       "prompt",
+       "prompt_cache_key",
+@@ -1186,6 +1197,20 @@
+       "starting_after",
+       "stream"
+     ],
++    "responses_tokens.cpp:0:normalized": [
++      "conversation",
++      "input",
++      "instructions",
++      "model",
++      "parallel_tool_calls",
++      "personality",
++      "previous_response_id",
++      "reasoning",
++      "text",
++      "tool_choice",
++      "tools",
++      "truncation"
++    ],
+     "chat_storage.cpp:0:request": [
+       "metadata"
+     ],
+@@ -1261,8 +1286,8 @@
+     ]
+   },
+   "sources_sha256": {
+-    "CMakeLists.txt": "3748478f430b7f715362aa6ce0b493e6e227842db43adac27ed66a6f7536be56",
+-    "cmake/ChatProtocolIdentity.cmake": "186b1e23dc0145fb017707a6f0716c0542b16a0826f73edb94faec09704771d4",
++    "CMakeLists.txt": "96f2e1d8aa191b4328f99c825face9a714e5a2a8bffd2fa8d40fa1a22149fbc7",
++    "cmake/ChatProtocolIdentity.cmake": "eea8ce9ae7d17c209f2655c9130aab9a5542cbf39f61ac426494e8cb7857e99c",
+     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
+     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
+     "cmake/NativeIngress.cmake": "5560a873e8d89b5e034636f006a2b21ace3bdab2bf71dcf688d5028fbbc704b4",
+@@ -1283,18 +1308,18 @@
+     "include/q4t/server/abort_reason.h": "2bad04553ca1e40595e10d6549d2a3a798bed05fcadd92527f722c48aecb70b5",
+     "include/q4t/server/access_program.h": "389d4e152faf16fbfd626e1c1b7045acb28a72822e4968a14f02dc06b096614e",
+     "include/q4t/server/application_query.h": "8331a32ad43b1e4eb059a25f1e2d318c351fdda0fbf4555f7bfafd310a9d2c36",
+-    "include/q4t/server/application_routes.h": "1d27e45e73d4e7827bcdd18413c0c3f91d9d81291e93b5202ed4ac031ac404e3",
++    "include/q4t/server/application_routes.h": "22bc18c61132b957fdcba05520055066add14cf9ed1b383031ea6b69c29c7950",
+     "include/q4t/server/cache_health.h": "3b43f963c6621361a93feaf3575cdf5f157a3ff426d13aa03b5bf81a005766d3",
+     "include/q4t/server/cache_io.h": "212c22958256a4e7441f0a1a896ddf87e9c4759104680582d6541a58b6b0491c",
+     "include/q4t/server/chat_capabilities.h": "436234f23e6761e256bb953ea815ede30feceb7e21317e6898390b5d603b79ef",
+     "include/q4t/server/chat_choices.h": "a76cc4a1a1d8b16b1925ec1a5fb9f0951c03fe48494c6623027596624e5b79c2",
+-    "include/q4t/server/chat_contract.h": "c1aaef06a1ae22f96ce143211a3c6a5a462bb8223d0f86c474f896ab3bb906e0",
+-    "include/q4t/server/chat_plan.h": "691fb86402e8a497a820c790b5276c17d1151cfcec760e3e51c93ca0e5a2fae4",
+-    "include/q4t/server/chat_prompt.h": "4fd263a2aeedb67fbef23a0370126f96b58d9e5452de6ba3243362a96b5ac8bb",
++    "include/q4t/server/chat_contract.h": "6e6fe4a81b90adcf99ea9bc9a8b64889ad47a003cc38af37b21a0e771c1ae4a9",
++    "include/q4t/server/chat_plan.h": "b333ba84200a365d59613c0bf592288cbddc714afcb1f48304e37c95727bbc73",
++    "include/q4t/server/chat_prompt.h": "067cc7004281799fc7809f3f544a1a8c41d9665a362439b92fe868515499c78d",
+     "include/q4t/server/chat_response_parser.h": "43c0d61499e9303cd8bacf92b685f5994d81d8e4b0aaed86edbc38943e941a88",
+-    "include/q4t/server/chat_server.h": "4320298e48101fe6c7fb97117ed76335d27c5499c8be8be981ae0f6b802388f7",
++    "include/q4t/server/chat_server.h": "6a1fd424a99cd6f61687cbf04ead66efac11462ea2e3a03534ba252be225838d",
+     "include/q4t/server/chat_storage.h": "1c75252f843b65276fbed00b9ac6c4a2ed8ce7cfdae107ad8aebe164b16f936a",
+-    "include/q4t/server/chat_template.h": "9b6723142b8bb1116ea56df7742f3f56364122dc5a975977b15132ff56ce3e7e",
++    "include/q4t/server/chat_template.h": "62a3dd447e16a74393430ab8ae2d85657e23609cd3c57270ef24c943be587c01",
+     "include/q4t/server/chat_tool_history.h": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
+     "include/q4t/server/client_identity.h": "c05aad5dc655e91962eae55aab25c09fdcbc2a72ddc37a95585c7288dfac54be",
+     "include/q4t/server/client_policy.h": "bd2aefbb0ec6697fd042108905876cd195324ac83485194c526eaf3024dc9de5",
+@@ -1347,14 +1372,15 @@
+     "include/q4t/server/responses_compaction.h": "3c6f96d0bf5fa86b3976566bd6da819e9a389cf7c16e6f67a165f103e832e6e4",
+     "include/q4t/server/responses_crypto.h": "5a8bd0449fed6c5551e00b48ecd571fa579739389c5944952fe791d4d524cc78",
+     "include/q4t/server/responses_execution.h": "89ec70ac8b7719bca46ea2c63b56e458b53a7ffbcfc2e4f2bee704d5eebbd97d",
+-    "include/q4t/server/responses_input.h": "c27a660a9ea2ba19fc7dfd98c9cb5171f4534c229354c80428b16959b7f5c4ea",
++    "include/q4t/server/responses_input.h": "7213d48f5315444a1ee62180dd2ff97ad20a96afed6d990b602947de16cdd089",
+     "include/q4t/server/responses_item_shape.h": "0c341d6d0e9f0693daacc35ba97e0929703d9f2de108aa77056fa8f88777ee37",
+     "include/q4t/server/responses_jobs.h": "f7f9ca848549d3d47dd9b382b3153f65d20d30bc3befb59405c0bdf3412a1343",
+     "include/q4t/server/responses_output.h": "514e42ce23c1d1d2c0fd529fa95b08ae25071e15a3795de913ad05f976bac57d",
+     "include/q4t/server/responses_owner.h": "56647342474e335ad1039609e93a947bd5c81364a48f018c0d7afe2ffde4c613",
+-    "include/q4t/server/responses_plan.h": "25be237862bc646fdbfb3392840d34f6dfb9c94efd4895c4bfba9818052218bf",
++    "include/q4t/server/responses_plan.h": "0a814f78723b25a71db0459f56cdbf9173fb4df4a68b4277837e0d727ebad237",
+     "include/q4t/server/responses_reasoning.h": "d15d08e23a6734189b1241584f1e04200db5ecbbeef167f603da8c512281a5c7",
+     "include/q4t/server/responses_state.h": "0c171182fb9f9b8cf2ec633d5e55b605d64b1bc42c31ccbb621a87dd004e0330",
++    "include/q4t/server/responses_tokens.h": "2b0f68e8e570577d54f0faa7b6e0848ca86c2b6dbf304b12a6839c08edea77f5",
+     "include/q4t/server/sampling.h": "202bff18193dddc46f92e3b7d69fef36218faf00e913b292d1e9a9abe7b65141",
+     "include/q4t/server/scheduler_submission.h": "2a960c668c25a0c694b811a2c5640c6e6605db7d386b1ba0075e64061aa1c416",
+     "include/q4t/server/schema_decimal.h": "f6efd4f652918da2964a65813b6f8d9a972942ec5b02a5fb90b1ad8ad8bd8da0",
+@@ -1417,19 +1443,20 @@
+     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
+     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
+     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
+-    "src/server/chat_capabilities.cpp": "c976b395a3568fd82aa546af275ec227b7557cc42da74e02ff16e0938f3ffd4f",
++    "src/server/chat_capabilities.cpp": "387ba962bfa9c049e8af550b60385f1670bc2f442618f2c0e41f132843d6ca7a",
+     "src/server/chat_choices.cpp": "ee99c4aca3c1ea07d5929da38325aa2b28a411245c7d794c9cc5f1f8eb23f16a",
+-    "src/server/chat_contract.cpp": "c1786828dd6d95ed7ec2b0c2bb4a5fb4418705dbb9a86a92cca59d4790c312a1",
++    "src/server/chat_contract.cpp": "87885c6f285b8a2891f6d337418c161c55dcae46cf5a4dbc1bd75beb6e2b8cac",
+     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
+     "src/server/chat_generation.cpp": "938fd362779ea110bdd6014c980c9b488787a489ba10753e16d8017304e87d50",
+     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
+-    "src/server/chat_http.cpp": "89e7c112767927a17775825cec3d372055c6aacd9b2aa2e9e548997b64a81503",
++    "src/server/chat_http.cpp": "2ac8ee865716d6cbde42edc0090b95ddbff3bc8f1e7f6f09b6e3927b69138553",
+     "src/server/chat_input.cpp": "372b93746fbe236ec1d0caea778b1212d22ab94a18ec4f7ce81adcfba8b8c546",
++    "src/server/chat_input_tokens.cpp": "c827f6fea2207afbed17312b6b9cbd90a6c6d52bfd6b6549d220b7c93cea40d9",
+     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
+     "src/server/chat_metrics.cpp": "4fcb248a3a1f9b2ea0cf5d825bd6afc1ef1dfee34bb859ef594ece4feea8cb27",
+-    "src/server/chat_plan.cpp": "231920fd40e263dd86b7f4b52b975b8beb1a8285388a7fb1d590ef5a5e520165",
++    "src/server/chat_plan.cpp": "0aacd207edb51f426ed3729278f027289ce70d4cf5e228e726c7a534ad701b52",
+     "src/server/chat_preflight.cpp": "c920aff0a7994f2c6a35327a1119c4ccbe699920bdc980476b345a54fdd91e19",
+-    "src/server/chat_prompt.cpp": "3139f82e12f3690eecb91f1b280619983f50878994eca6f50f3a1a890ed5205b",
++    "src/server/chat_prompt.cpp": "91639256c143a659423b42340e92d154ac3f0a6c697b58bae2e20814fe303272",
+     "src/server/chat_response_parser.cpp": "69e260c428d83a6383d5d36e0870c7d2be697e953251fddfd081a058445a808b",
+     "src/server/chat_responses.cpp": "13fe1f43c32e93d4a4b34184a1da6ae67b1c6d3fe97adb00334e7342fcf8ed41",
+     "src/server/chat_scheduler.cpp": "a0844e61f23629d574b1ef9515cf59427cbddf55058453e95f07eda2917f42f6",
+@@ -1437,7 +1464,7 @@
+     "src/server/chat_server_internal.h": "6f051dc4614996c581f24d37939ae9067a7342779432d75f079759208e378408",
+     "src/server/chat_storage.cpp": "41caab121d69b357700a17d11aa6f1222445ac14f97da20762360d93058a522a",
+     "src/server/chat_storage_options.cpp": "44a9da20f7f72b2fc448a02d09fdfb112c38b7cb0a9c8eca3296e43d5c32d99c",
+-    "src/server/chat_template.cpp": "bb9331cc46d88422fd775d4b79c85d03fbb862bef888acdfd2ebd4b8f581e9c7",
++    "src/server/chat_template.cpp": "61acfa8128e1ef75fed9c5cf94ef94b22d9f6629e01c50258c9e9bce1952f2ab",
+     "src/server/chat_tool_history.cpp": "902f6c0982fd072d4dba4c3f6a34629eec9eaaf604fd5d920822b96ed51f82db",
+     "src/server/client_policy.cpp": "bd039b9b6f28adc26f785709bd9f159579ce29aab3620d83a899958befc53582",
+     "src/server/client_policy_admin.cpp": "50b2107f90879cac09261420c52874e507350d843340096797797c22543e8697",
+@@ -1460,7 +1487,7 @@
+     "src/server/http_response.cpp": "0da3e7888a67e69d7cf00aa6b71c181724860f1740c4b46d7412b6c5e7f08f96",
+     "src/server/input_contract.cpp": "a8d8f7412e50df59da2ec5829f4ecd34245dc521edcb61011ea4dff2b492f362",
+     "src/server/legacy_tools.cpp": "b0bffcd3c780f35f336b40a152e9837077b9a4c6ea3ede737fcbb14b8514587c",
+-    "src/server/media_admission.cpp": "11461c31fed0db43fe68e16680812641c0e51371585c216673e4fe2e54500393",
++    "src/server/media_admission.cpp": "aca67cb60d88c586dcdc58ea9161dca05edc0be9ac1507bb9e91af313822fbf3",
+     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
+     "src/server/model_catalog.cpp": "8d0808b669e3ecbc95794d8b07bd6a86b38dc310cf93c98e18befade71fd2d7e",
+     "src/server/moderation.cpp": "ea07d705ed4d22aa5654e9bfd625035b0aff4bdfe5f0796dcfa7c1ef3c57053d",
+@@ -1482,22 +1509,23 @@
+     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
+     "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
+     "src/server/regex_syntax/schema_regex.rs": "ad5ecc2fc961a9426068c50452e830da2229c40273088b56f8c6218c26f27fbf",
+-    "src/server/responses_api.cpp": "a922fb6309aec5efcae895f31081031cdfbe0dac21f03935ef73b735f51f4920",
++    "src/server/responses_api.cpp": "6480b9f8445a93d2699b674010efba7901a0750deafcc70493afe2c6d9d105e1",
+     "src/server/responses_compaction.cpp": "9cb02c6a890798d041cad3ac674832d6155ddef221ad3342c65ab4024f6ca58f",
+     "src/server/responses_crypto.cpp": "5e90f0671daeecdacba5d42918c1f796421887012416f001b33c2c38a71e8030",
+     "src/server/responses_execution.cpp": "b2ea25a02bf94292b75c3877eaf38658cc6669e1f2e91693dbcc3595a9be18a6",
+     "src/server/responses_execution_compaction.cpp": "c02d2fc1038f09532c6e3556bd92ebf9c8015a506f82921157c12724b5521179",
+     "src/server/responses_execution_moderation.cpp": "4f54ccbced1023aaecb27674fbe65b34b7cb872f4fb83eec64e5b7fca2f7e96b",
+-    "src/server/responses_input.cpp": "4e0d3b426b05a991fe1ca29f9b477883fdf7793fcc729ab19e3a25637bc9b80e",
++    "src/server/responses_input.cpp": "050b01ef2c209cd93b322948ceb24b779b04a30e07a539a62fbfb341f2ad24ff",
+     "src/server/responses_item_shape.cpp": "b09c14dfed993b0782d592efa387fd9669e691f907fdd664d6fcd429769235b9",
+     "src/server/responses_jobs.cpp": "e5eaf87112d482d23908df7d12b2a4afdec31d63a2fd54f20e29eebfdd206832",
+     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
+-    "src/server/responses_output.cpp": "9b4b4efa98efbc1168d9e9dea29e5ddc3ecfa7376bf21eb14c45b0f0c3bb7175",
++    "src/server/responses_output.cpp": "a14b41905227ad0885753d464a0a08a41619968a370192442cd29a48465d8080",
+     "src/server/responses_owner.cpp": "f439f60e6956ac0d61c107d95ec719cd1fbed84eb0c56721ef63cd1f4342a3fc",
+-    "src/server/responses_plan.cpp": "0998da2c238744fe952eab40f709d5477f4ab9533c1dca4fe488815e02a4bb75",
++    "src/server/responses_plan.cpp": "bca4239897776167468cbc00ae75c79db25022db50d538799dd6b66137720939",
+     "src/server/responses_reasoning.cpp": "2114cbd94184bcd645329d69d2dd260b14b08e5997267f892684cff061de5ffc",
+     "src/server/responses_state.cpp": "8f1f5433552165c333b7f8288848286e5e3f45df056243f5cd8601486d767fbc",
+     "src/server/responses_summary.cpp": "7412535fe9bd0d316bd54b0ef43eea688a554865fe27fe86eef425a6f15689b7",
++    "src/server/responses_tokens.cpp": "35c9eb79ffee7cebf6e57951eb0d505837d7632281a0b2bfd6f18df387cd1c64",
+     "src/server/sampling.cpp": "88e247ca6b7c65abbf0977c66fd604e7156cbdefe5d0293e509282678555d31d",
+     "src/server/schema_decimal.cpp": "3931972b1ecfd38b0574c6794f447f6b05d1ef78d65e0f73a61eabcb1c2dee2f",
+     "src/server/schema_grammar.cpp": "075d6a282f2fc1cda861e3a0de4de132455af3efa9ed30b67b0ad9a5caf56cf2",
+@@ -2566,6 +2594,26 @@
+         "tools/serve_recovery/test_native_ingress.py",
+         "docs/evidence/serve-responses-recovery-20261109/README.md"
+       ]
++    },
++    "POST /v1/responses/input_tokens": {
++      "semantics": "Native standard input token count: shared actual template/tokenizer/media expansion; client-scoped existing history; optional/null body; no inference, durable response mutation or generation RPM/TPM.",
++      "boundary": "Targeted CPU and real SDK count-vs-usage validation pending. File and built-in tool resolutions remain required A09/A10/A11 work; shared data/client/body limits and deadline apply.",
++      "evidence": [
++        "include/q4t/server/application_routes.h",
++        "src/server/chat_input_tokens.cpp",
++        "src/server/responses_tokens.cpp",
++        "tests/server_responses_tokens_test.cpp"
++      ]
++    },
++    "OPTIONS /v1/responses/input_tokens": {
++      "semantics": "Native CORS preflight resolves the shared standard input token count route.",
++      "boundary": "Targeted CPU and real SDK count-vs-usage validation pending. File and built-in tool resolutions remain required A09/A10/A11 work; shared data/client/body limits and deadline apply.",
++      "evidence": [
++        "include/q4t/server/application_routes.h",
++        "src/server/chat_input_tokens.cpp",
++        "src/server/responses_tokens.cpp",
++        "tests/server_responses_tokens_test.cpp"
++      ]
+     }
+   },
+   "observation_io_review_20261108": {
+diff --git a/tools/serve_protocol/build_contract.py b/tools/serve_protocol/build_contract.py
+index 3b1717eb..525e0a34 100644
+--- a/tools/serve_protocol/build_contract.py
++++ b/tools/serve_protocol/build_contract.py
+@@ -429,6 +429,10 @@ def semantics():
+     # Standard JSON Schema validators ignore x-q4t annotations. These rules
+     # are mandatory and evaluated by production C++, never inferred as passed.
+     rules = [
++        ("responses-input-tokens", ["src/server/responses_tokens.cpp",
++            "src/server/chat_input_tokens.cpp", "src/server/responses_plan.cpp",
++            "src/server/chat_plan.cpp", "src/server/media_admission.cpp"],
++         "POST /v1/responses/input_tokens uses the actual native template, tokenizer and expanded media count. Omitted/null body, null model and empty input use defaults without a dummy message. Strict count-only fields; previous/conversation/encrypted history resolves in the authenticated client scope without beginning or mutating a response. Input/client/context and data concurrency/deadline limits remain; no generation slot, model/tool step, cache write or generation RPM/TPM reservation. Truncation auto protects the current turn and tool dependencies; count has zero output budget. Counts describe initial input, not later generated reasoning/compaction/moderation steps. Friendly/pragmatic model-owned personality presets enter actual system guidance, shared with native Responses create; no claim of hosted-model prompt or tokenizer equivalence. File/tool executors remain linked A09/A10/A11 implementation tasks."),
+         ("stored-chat", ["src/server/chat_storage.cpp", "src/server/chat_storage_options.cpp",
+             "src/server/chat_generation.cpp", "src/server/object_worker.cpp",
+             "include/q4t/server/application_routes.h"],
+diff --git a/tools/serve_responses/build_contract.py b/tools/serve_responses/build_contract.py
+index ceef3273..a0a45e3a 100644
+--- a/tools/serve_responses/build_contract.py
++++ b/tools/serve_responses/build_contract.py
+@@ -118,6 +118,14 @@ def schema(graph):
+             node['properties']['code'] = dict(type='string', minLength=1)
+ 
+     request = root('response_create')
++    # The SDK exposes this model style option only on count. Native create
++    # accepts the same real preset so counted and generated prompts agree.
++    personality = dict(type='string', enum=['friendly', 'pragmatic'], maxLength=64)
++    request['properties']['personality'] = personality
++    response['properties']['personality'] = personality
++    root('input_tokens_request')['properties']['personality'] = personality
++    root('input_tokens_response')['properties']['input_tokens'] = dict(
++        type='integer', minimum=0)
+     request['properties'].update(
+         seed=nullable(dict(type='integer', minimum=-(2**63), maximum=2**63-1)),
+         request_id=dict(type='string', minLength=1, maxLength=128,
+@@ -143,6 +151,7 @@ def schema(graph):
+         {'if': dict(required=['stream_options'],
+             properties=dict(stream_options={'not': dict(type='null')})),
+          'then': dict(required=['stream'], properties=dict(stream=dict(const=True)))}]
++    root('input_tokens_request')['allOf'] = [copy.deepcopy(request['allOf'][0])]
+     for name in ('response_retrieve', 'input_items_query', 'conversation_items_query'):
+         value = root(name)
+         if 'limit' in value['properties']:
+@@ -177,6 +186,7 @@ def schema(graph):
+             adaptations=['SDK-added output_text is optional on wire',
+                 'official HTTP examples use usage:null for active/cancelled responses; completed/incomplete require actual usage',
+                 'native store echo and native response error codes',
++                'count endpoint uses actual model templates; native create also accepts the model-owned friendly/pragmatic personality presets from the count SDK contract',
+                 'optional q4t_moderation_usage discloses bounded auxiliary classifier tokens separately from business usage',
+                 'SDK-documented include_obfuscation adds optional string padding to delta events only',
+                 'official prompt caching guide permits 12h on request/applied options in addition to the pinned SDK 30m literal',
+@@ -240,6 +250,7 @@ def add_openapi(paths, response, error):
+         ('/v1/prompts/{prompt_id}/versions/{version}', 'get', None, 'prompt_version', None),
+         ('/v1/responses', 'post', 'response_create', 'response', None),
+         ('/v1/responses/compact', 'post', 'response_compact', 'compacted_response', None),
++        ('/v1/responses/input_tokens', 'post', 'input_tokens_request', 'input_tokens_response', None),
+         ('/v1/responses/{response_id}', 'get', None, 'response', 'response_retrieve'),
+         ('/v1/responses/{response_id}', 'delete', None, 'response_deleted', None),
+         ('/v1/responses/{response_id}/cancel', 'post', None, 'response', None),
+@@ -270,7 +281,7 @@ def add_openapi(paths, response, error):
+             **{'x-q4t-query-contract': query or 'no query',
+                'x-q4t-body-contract': body or 'empty body only'})
+         if body:
+-            optional = path == '/v1/conversations'
++            optional = path in ('/v1/conversations', '/v1/responses/input_tokens')
+             operation['requestBody'] = dict(required=not optional,
+                 content={'application/json': dict(schema=nullable(external(body))
+                     if optional else external(body))})
+diff --git a/tools/serve_responses/encryption_acceptance.py b/tools/serve_responses/encryption_acceptance.py
+index 4bad02cc..6e579770 100644
+--- a/tools/serve_responses/encryption_acceptance.py
++++ b/tools/serve_responses/encryption_acceptance.py
+@@ -204,12 +204,14 @@ class Stage(foreground.Stage):
+         self.client.protocol_sha256 = caps['protocol_source_sha256']
+ 
+     def sdk(self, label, action, request=None, *, response_id=None, query=None,
+-            expected_status=None, headers=None, drain=True):
++            expected_status=None, headers=None, drain=True, omit_request=False):
+         self.budget('chats' if action == 'create' else 'controls')
+         command = dict(action=action, request=request, id=response_id, query=query,
+             base_url=f"http://127.0.0.1:{self.plan['port']}/v1",
+             headers=HEADERS if headers is None else headers,
+             sdk_directory=self.plan['sdk']['sdk_directory'], timeout_ms=120000)
++        if omit_request:
++            command.pop('request')
+         save(self.out / (label + '.request.json'), command)
+         env = {k: v for k, v in os.environ.items() if k not in
+                ('NODE_OPTIONS', 'NODE_PATH', 'LD_PRELOAD')}
+diff --git a/tools/serve_responses/generate_item_types.mjs b/tools/serve_responses/generate_item_types.mjs
+index 1d59ef33..8af40110 100644
+--- a/tools/serve_responses/generate_item_types.mjs
++++ b/tools/serve_responses/generate_item_types.mjs
+@@ -23,8 +23,9 @@ const source = resolve(sdk, 'src/resources/responses/responses.ts');
+ const conversation = resolve(sdk, 'src/resources/conversations/items.ts');
+ const conversations = resolve(sdk, 'src/resources/conversations/conversations.ts');
+ const inputItems = resolve(sdk, 'src/resources/responses/input-items.ts');
++const inputTokens = resolve(sdk, 'src/resources/responses/input-tokens.ts');
+ const program = ts.createProgram([source, conversation,
+-  ...(mode ? [conversations, inputItems] : [])], {
++  ...(mode ? [conversations, inputItems, inputTokens] : [])], {
+   target: ts.ScriptTarget.ES2022,
+   module: ts.ModuleKind.NodeNext,
+   moduleResolution: ts.ModuleResolutionKind.NodeNext,
+@@ -143,6 +144,8 @@ if (mode) Object.assign(roots, {
+   conversation_items_query: exported(conversation, 'ItemListParams'),
+   response_compact: exported(source, 'ResponseCompactParams'),
+   compacted_response: exported(source, 'CompactedResponse'),
++  input_tokens_request: exported(inputTokens, 'InputTokenCountParams'),
++  input_tokens_response: exported(inputTokens, 'InputTokenCountResponse'),
+ });
+ const result = {
+   profile: mode ? 'q4t-openai-application-types-v1' : 'q4t-openai-item-types-v1',
+diff --git a/tools/serve_responses/sdk.mjs b/tools/serve_responses/sdk.mjs
+index df827c05..ec176ed5 100644
+--- a/tools/serve_responses/sdk.mjs
++++ b/tools/serve_responses/sdk.mjs
+@@ -69,6 +69,8 @@ export async function execute(input) {
+       } else result = value;
+     } else if (input.action === 'compact') {
+       result = await client.responses.compact(input.request, options);
++    } else if (input.action === 'input_tokens') {
++      result = await client.responses.inputTokens.count(input.request, options);
+     } else if (input.action === 'retrieve') {
+       const value = await client.responses.retrieve(input.id, input.query ?? {}, options);
+       if (input.query?.stream) {

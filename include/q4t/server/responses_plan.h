@@ -34,6 +34,7 @@ struct ResponsesEnvelope {
   std::string reasoning_effort = "xhigh";
   std::string reasoning_mode = "standard";
   std::string verbosity = "medium";
+  std::string personality;
 };
 
 Status ParseResponsesEnvelope(const io::Json& request,

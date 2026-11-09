@@ -69,6 +69,8 @@ export async function execute(input) {
       } else result = value;
     } else if (input.action === 'compact') {
       result = await client.responses.compact(input.request, options);
+    } else if (input.action === 'input_tokens') {
+      result = await client.responses.inputTokens.count(input.request, options);
     } else if (input.action === 'retrieve') {
       const value = await client.responses.retrieve(input.id, input.query ?? {}, options);
       if (input.query?.stream) {

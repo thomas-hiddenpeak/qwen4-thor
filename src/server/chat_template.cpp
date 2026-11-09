@@ -377,7 +377,7 @@ bool IsChatInstructionRole(std::string_view role) {
 }
 
 Status ValidateChatMessageProfile(const io::Json& messages,
-                                  std::string* error_param) {
+                                  std::string* error_param, bool allow_empty) {
   io::Json request;
   request.type = io::Json::Type::kObject;
   // Avoid copying ordinary histories on this shared validation path.
@@ -392,7 +392,7 @@ Status ValidateChatMessageProfile(const io::Json& messages,
     auto status = NormalizeLegacyTools(request, &normalized, error_param);
     if (status)
       status = ValidateChatMessageProfile(*normalized.request.Find("messages"),
-                                          error_param);
+                                          error_param, allow_empty);
     if (!status) LegacyToolErrorParam(request, error_param);
     return status;
   }
@@ -401,7 +401,7 @@ Status ValidateChatMessageProfile(const io::Json& messages,
     if (error_param) *error_param = std::move(param);
     return Status::Fail(std::move(message));
   };
-  if (!messages.IsArray() || messages.array.empty())
+  if (!messages.IsArray() || (!allow_empty && messages.array.empty()))
     return invalid("messages", "messages must be a nonempty array");
   for (size_t i = 0; i < messages.array.size(); ++i) {
     const auto& message = messages.array[i];
@@ -474,23 +474,25 @@ Status ValidateChatMessageProfile(const io::Json& messages,
 Status RenderChatPrompt(const io::Json& request,
                         const std::vector<std::string>& contents,
                         std::string* prompt,
-                        std::vector<ChatMessageSpan>* spans) {
+                        std::vector<ChatMessageSpan>* spans, bool allow_empty) {
   prompt->clear();
   if (spans) spans->clear();
   if (HasLegacyTools(request)) {
     LegacyToolRequest normalized;
     const auto status = NormalizeLegacyTools(request, &normalized);
-    return status ? RenderChatPrompt(normalized.request, contents, prompt, spans)
+    return status ? RenderChatPrompt(normalized.request, contents, prompt, spans,
+                                     allow_empty)
                   : status;
   }
   auto definitions = ValidateToolDefinitions(request);
   if (!definitions) return definitions;
   const io::Json* messages = request.Find("messages");
-  if (!messages || !messages->IsArray() || messages->array.empty() ||
+  if (!messages || !messages->IsArray() ||
+      (!allow_empty && messages->array.empty()) ||
       messages->array.size() != contents.size()) {
     return Status::Fail("messages must be a nonempty array");
   }
-  auto profile = ValidateChatMessageProfile(*messages);
+  auto profile = ValidateChatMessageProfile(*messages, nullptr, allow_empty);
   if (!profile) return profile;
   std::vector<size_t> tool_result_order;
   auto history = PlanToolResultOrder(*messages, &tool_result_order);
@@ -574,7 +576,7 @@ Status RenderChatPrompt(const io::Json& request,
     }
   }
   const bool leading_instruction =
-      IsChatInstructionRole(ms[0].GetString("role"));
+      !ms.empty() && IsChatInstructionRole(ms[0].GetString("role"));
   const std::string system = leading_instruction ? text[0] : "";
   const auto first_header =
       leading_instruction ? Header(ms[0], "system") : "<|im_start|>system\n";

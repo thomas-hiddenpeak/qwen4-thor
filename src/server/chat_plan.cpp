@@ -36,7 +36,7 @@ std::string Array(const std::vector<T>& values) {
 const char* Bool(bool value) { return value ? "true" : "false"; }
 
 int RequestedOutput(const io::Json& req, const ChatPlanConfig& config) {
-  if (config.prewarm_only) return 0;
+  if (config.prewarm_only || config.count_input_only) return 0;
   const int fallback =
       config.client_limits
           ? std::min(config.default_max_tokens,
@@ -86,7 +86,7 @@ Status PlanChatRequest(const io::Json& req, const ChatPlanConfig& config,
                                             ? model->str
                                             : config.model,
                                      config.allow_media,
-                                     &error->param);
+                                     &error->param, config.count_input_only);
   if (!status) {
     if (status.message().starts_with("schema_resource_exhausted:")) {
       error->code = "constraint_resource_exhausted";
@@ -150,6 +150,14 @@ Status PlanChatBudget(const io::Json& req, const ChatPlanConfig& config,
   if (config.client_limits && tokens > config.client_limits->max_prompt_tokens)
     return Fail(error, "client_prompt_limit_exceeded", input,
                 "encoded prompt exceeds client token limit");
+  if (config.count_input_only) {
+    if (!tokens || tokens > static_cast<size_t>(config.max_len))
+      return Fail(error, "context_length_exceeded", input,
+                  "input tokens exceed context capacity");
+    budget->required_capacity = tokens;
+    budget->output_source = "input_tokens";
+    return {};
+  }
   SamplingOptions sampling;
   auto sampling_status = ParseSamplingOptions(req, &sampling, &error->param);
   if (!sampling_status) return sampling_status;
