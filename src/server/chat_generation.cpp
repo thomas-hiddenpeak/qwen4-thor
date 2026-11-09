@@ -218,7 +218,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     return;
   }
 
-  const auto planning_config = PlanningConfig(fd);
+  auto planning_config = PlanningConfig(fd);
   const auto client = http ? http->Client().Id() : std::string_view();
   ChatRequestPlan request_plan;
   CompletionRequestPlan completion_plan;
@@ -244,6 +244,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         return;
       }
     }
+    planning_config.prewarm_only = responses->Envelope().cache.prewarm;
     if (responses->Envelope().truncate) {
       const auto context_deadline =
           background
@@ -358,8 +359,16 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   const auto& constraints = request_plan.constraints;
   const auto& sampling = request_plan.sampling;
   const bool plain_greedy = sampling.PlainGreedy();
-  const std::string request_prefix_scope =
-      ClientScopedKey(client, req.GetString("prefix_cache_scope"));
+  const auto& cache_options = responses ? responses->Envelope().cache
+                                         : request_plan.cache;
+  const bool api_cache = !completion && (responses || cache_options.requested);
+  const bool cache_prewarm = responses && cache_options.prewarm;
+  const std::string api_cache_key =
+      "api-v1:" + trace::HexDigest(trace::Sha256(
+                      {reinterpret_cast<const uint8_t*>(cache_options.key.data()),
+                       cache_options.key.size()}));
+  const std::string request_prefix_scope = ClientScopedKey(
+      client, api_cache ? api_cache_key : req.GetString("prefix_cache_scope"));
   const int request_prefix_write_tokens =
       static_cast<int>(req.GetInt("prefix_cache_write_tokens", 0));
   std::vector<std::unique_ptr<SessionLease>> shared_writes;
@@ -484,9 +493,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
 
   std::string prompt;
   std::vector<VisionItem> items;
+  ChatPromptLayout prompt_layout;
   if (!completion)
     s = PrepareChatPrompt(req, constraints, &prompt, &items,
-                          &planning_error.param, &planning_error.code);
+                          &planning_error.param, &planning_error.code,
+                          api_cache ? &prompt_layout : nullptr);
   if (!s) {
     SendError(fd, 400, s.message(), {}, planning_error.code,
               planning_error.param);
@@ -628,7 +639,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     media_plan = {};
     auto status =
         PrepareChatPrompt(step_request, step.constraints, &prompt, &items,
-                          &planning_error.param, &planning_error.code);
+                          &planning_error.param, &planning_error.code,
+                          api_cache ? &prompt_layout : nullptr);
     if (status) {
       auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer, cancelled);
       if (!lock.owns_lock())
@@ -650,7 +662,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     prompt_encoded = status.ok();
     return status;
   };
-  if (responses) {
+  if (responses && !cache_prewarm) {
     const auto selected =
         responses->SelectCompaction(prompt_u32.size(), planning_config);
     if (!selected.ok()) {
@@ -686,6 +698,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                                      : prompt_u32.size(),
         completion                                   ? completion_output_tokens
         : standalone_compact && !compact_step_needed ? 0
+        : cache_prewarm                              ? 0
         : responses                                  ? request_output_limit
                     : prompt_budget.total_output);
     if (result != ClientRateResult::kAllowed) {
@@ -710,6 +723,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       completion_plan.best_of, stream);
   ResponsesSummaryPlan summary_plan;
   ResponsesUsage responses_usage;
+  std::optional<PromptCacheDiagnostics::Observation> cache_observation;
   size_t responses_completed_calls = 0;
   const auto completed_tokens = [&] {
     if (responses) return static_cast<uint64_t>(responses_usage.output_tokens);
@@ -809,11 +823,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         !internal_step && sampling.logprobs &&
         (!completion || completion_plan.logprobs >= 0);
     const bool prediction_enabled = step_plan.prediction.enabled;
-    const int max_tokens = responses ? ChatOutputLimit(req, planning_config)
+    const bool prewarm = cache_prewarm && !internal_step;
+    const int max_tokens = prewarm ? 0
+                          : responses ? ChatOutputLimit(req, planning_config)
                                      : request_output_limit;
-    const std::string prefix_scope = internal_step ? "" : request_prefix_scope;
-    const int prefix_write_tokens =
-        internal_step ? 0 : request_prefix_write_tokens;
+    std::string prefix_scope = internal_step ? "" : request_prefix_scope;
     SessionLease summary_session;
     auto& session = internal_step ? summary_session : request_session;
     if (summary_step || compacted_primary) {
@@ -1170,7 +1184,73 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       return;
     }
     ids.assign(prompt_u32.begin(), prompt_u32.end());
-    const size_t required_capacity = prompt_budget.required_capacity;
+    PromptCachePlan cache_plan;
+    bool cache_available = prefix_cache_.Health().available;
+    if (api_cache && !internal_step) {
+      // Visual token expansion needs a media-aware state fingerprint (A10).
+      // Never route images through the text-only cached prefill path.
+      bool mapped = items.empty();
+      cache_available = cache_available && mapped;
+      if (items.empty() && prompt_u32.size() >= 1024) {
+        std::vector<size_t> offsets;
+        Status planned;
+        {
+          auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer, cancelled);
+          planned = lock.owns_lock()
+                        ? tok_->EchoByteOffsets(prompt, prompt_u32, true,
+                                                 &offsets,
+                                                 {.cancelled = cancelled})
+                        : Status::Fail("Cache mapping cancelled");
+        }
+        std::span<const PromptCacheInputBoundary> boundaries;
+        if (responses)
+          boundaries = responses->Generation().input.cache_boundaries;
+        if (planned) {
+          if (const auto* messages = req.GetArray("messages")) {
+            planned = PlanPromptCacheLayout(
+                cache_options, *messages, prompt_layout, boundaries, offsets,
+                prompt.size(), &cache_plan);
+          } else {
+            const PromptCacheBoundary raw{
+                static_cast<int>(prompt_u32.size()) - 1, 0,
+                PromptCacheBoundary::Kind::kEligibleMessage};
+            planned = PlanPromptCache(cache_options, {&raw, 1},
+                                       static_cast<int>(prompt_u32.size()),
+                                       &cache_plan);
+          }
+        }
+        if (!planned) {
+          mapped = false;
+          cache_available = false;
+          std::fprintf(stderr,
+                       "[prefix-cache] request=%s mapping=unavailable\n",
+                       request_id.c_str());
+        }
+      }
+      if (!mapped ||
+          (cache_plan.reads.empty() && cache_plan.writes.empty()))
+        prefix_scope.clear();
+      if (prewarm && !mapped && prompt_u32.size() >= 1024) {
+        SendError(fd, 503, "Prompt cache prewarm is unavailable", {},
+                  "prompt_cache_unavailable", "prompt_cache_options.prewarm");
+        return;
+      }
+    } else if (!internal_step && request_prefix_write_tokens > 0) {
+      cache_plan.writes.push_back({request_prefix_write_tokens, 1800});
+    }
+    const auto next_cache_boundary = [&](int base, int count) {
+      for (const auto& point : cache_plan.writes)
+        if (point.tokens > base) return std::min(count, point.tokens - base);
+      return count;
+    };
+    const auto cache_boundary = [&](int boundary) -> const PromptCacheWrite* {
+      for (const auto& point : cache_plan.writes)
+        if (point.tokens == boundary) return &point;
+      return nullptr;
+    };
+    int cache_written_tokens = 0;
+    const size_t required_capacity =
+        prewarm ? prompt_u32.size() : prompt_budget.required_capacity;
 
     // B1 multi-request scheduling: each request runs on its own thread. All
     // GPU work uses the DEFAULT stream (the model's per-forward scratch is a
@@ -1428,8 +1508,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                     : 0;
     const bool request_mtp =
         mtp_loaded_ && plain_greedy && !structured && !prediction_enabled &&
-        max_tokens > 0;
-    const bool stream_mtp = request_mtp && explicit_slots;
+        (max_tokens > 0 || prewarm);
+    const bool stream_mtp =
+        request_mtp && (explicit_slots || (api_cache && !prefix_scope.empty()));
     const bool target_cache =
         !request_mtp && (session.cache || !prefix_scope.empty());
     const SessionLayout cache_layout =
@@ -1562,8 +1643,15 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       const auto allocated = allocate_buffer(d_session_trunk, trunk_hc_dim * 2,
                                              "request.session_trunk");
       if (!allocated.ok()) {
-        allocation_error(allocated);
-        return;
+        if (api_cache && !session.cache && allocated.exhausted()) {
+          // Optional cache scratch is not a model health dependency. The
+          // prefill still runs normally; prewarm reports the failed write.
+          prefix_scope.clear();
+          cache_available = false;
+        } else {
+          allocation_error(allocated);
+          return;
+        }
       }
     }
     int restored_prefix = 0;
@@ -1597,9 +1685,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       SessionCache* selected_cache = &session_cache_;
       std::string selected_key = session.key;
       SessionLease shared_read;
-      if (!prefix_scope.empty()) {
+      if (!prefix_scope.empty() && (!api_cache || !cache_plan.reads.empty())) {
         const int shared = prefix_cache_.MatchShared(
-            prefix_scope, ids, &shared_read.key, cache_layout);
+            prefix_scope, ids, &shared_read.key, cache_layout,
+            api_cache ? std::span<const int>(cache_plan.reads)
+                      : std::span<const int>());
         if (shared > 0) shared_read.cache = &prefix_cache_;
         if (shared > prefix) {
           prefix = shared;
@@ -1663,7 +1753,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                    target_cache ? "target" : "mtp");
     };
     const auto save_target = [&](SessionCache* cache, const std::string& key,
-                                 const char* kind) {
+                                 const char* kind,
+                                 SessionCacheLifetime lifetime = {}) {
       RequestDiagnostics::Scope waiting(diagnostic, Wait::kCache);
       const auto begin = std::chrono::steady_clock::now();
       SessionSaveTiming timing(request_id.c_str(), kind);
@@ -1680,7 +1771,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         std::vector<int32_t> prefix(seq.history);
         prefix.push_back(-1);  // No draft token is part of a target snapshot.
         saved = cache->Save(key, prefix, ranges, session_copy, cancelled, -1,
-                            &timing, SessionLayout::kTarget);
+                            &timing, SessionLayout::kTarget, lifetime);
         if (saved.ok()) detail::ServeSnapshotTokens(request_id.c_str(), prefix);
       } else if (saved.ok()) {
         saved = Status::Fail("incomplete target session boundary");
@@ -1696,6 +1787,61 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                    cache->Bytes(),
                    saved.ok() ? "none" : saved.message().c_str(), kind);
       return saved;
+    };
+    const auto save_shared = [&](int boundary) {
+      const auto* point = cache_boundary(boundary);
+      if (!point || prefix_scope.empty() || boundary >= T) return;
+      const auto digest =
+          trace::Sha256({reinterpret_cast<const uint8_t*>(ids.data()),
+                         static_cast<size_t>(boundary) * sizeof(int32_t)});
+      const std::string snapshot_key =
+          prefix_scope + (target_cache ? ":target-v1:" : ":") +
+          trace::HexDigest(digest);
+      if (!prefix_cache_.AcquireNew(snapshot_key,
+                                     api_cache ? point->ttl_seconds : 0))
+        return;
+      auto lease = std::make_unique<SessionLease>();
+      lease->cache = &prefix_cache_;
+      lease->key = snapshot_key;
+      shared_writes.push_back(std::move(lease));
+      const SessionCacheLifetime lifetime =
+          api_cache ? PromptCacheLifetime(cache_options, point->ttl_seconds,
+                                           responses != nullptr)
+                    : SessionCacheLifetime{};
+      Status saved;
+      if (target_cache) {
+        saved = save_target(&prefix_cache_, snapshot_key, "shared", lifetime);
+      } else {
+        RequestDiagnostics::Scope waiting(diagnostic, Wait::kCache);
+        SessionSaveTiming timing(request_id.c_str(), "shared");
+        std::vector<SessionRange> ranges;
+        {
+          SessionSaveTiming::Scope span(&timing, SessionSaveTiming::kRanges);
+          saved = SessionStateRanges(model_.Get(), mtp_, seq_id, boundary,
+                                     d_mtp_g, d_session_trunk, &ranges);
+        }
+        if (saved)
+          saved = prefix_cache_.Save(
+              snapshot_key, {ids.data(), static_cast<size_t>(boundary + 1)},
+              ranges, session_copy, cancelled, -1, &timing,
+              SessionLayout::kMtp, lifetime);
+        timing.Report(saved.ok());
+      }
+      // Track actual persisted coverage; terminal accounting removes the
+      // prefix already counted as a read so nested snapshots do not double
+      // count input tokens. This is local work accounting, not cloud pricing.
+      if (saved) {
+        cache_written_tokens = std::max(cache_written_tokens, boundary);
+        cache_available = true;
+      } else {
+        cache_available = false;
+      }
+      if (session_gpu_error) s = saved;
+      std::fprintf(stderr,
+                   "[prefix-cache] request=%s event=write prefix=%d ttl=%d "
+                   "saved=%d bytes=%zu\n",
+                   request_id.c_str(), boundary, point->ttl_seconds, saved.ok(),
+                   prefix_cache_.Bytes());
     };
     if (score_prompt) {
       // Teacher-forced prompt scores come from real target logits. Bound
@@ -1791,6 +1937,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         s = model::ModelBeginSequence(model_.Get(), &seq, nullptr, seq_id);
       if (s.ok()) s = mtp::MtpResetState(mtp_, nullptr, seq_id);
       if (s.ok() && (session.cache || !prefix_scope.empty())) restore_cache();
+      if (s.ok() && restored_prefix > 0) save_shared(restored_prefix);
       std::vector<int32_t> shifted;
       std::vector<int> positions;
       int chunks = 0;
@@ -1800,27 +1947,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           break;
         }
         const int base = seq.position;
-        int count = std::min(chunk, T - base);
-        if (prefix_write_tokens > base)
-          count = std::min(count, prefix_write_tokens - base);
+        const int count = next_cache_boundary(base, std::min(chunk, T - base));
         const int boundary = base + count;
         const bool last = boundary == T;
-        SessionLease* shared_write = nullptr;
-        if (!last && prefix_write_tokens > 0 &&
-            boundary == prefix_write_tokens) {
-          const auto digest =
-              trace::Sha256({reinterpret_cast<const uint8_t*>(ids.data()),
-                             static_cast<size_t>(boundary) * sizeof(int32_t)});
-          const std::string snapshot_key =
-              prefix_scope + ':' + trace::HexDigest(digest);
-          if (prefix_cache_.AcquireNew(snapshot_key)) {
-            auto lease = std::make_unique<SessionLease>();
-            lease->cache = &prefix_cache_;
-            lease->key = snapshot_key;
-            shared_write = lease.get();
-            shared_writes.push_back(std::move(lease));
-          }
-        }
+        const bool snapshot = !last && cache_boundary(boundary);
         if (router_trace_)
           router_trace_->BeginForward(trace::RouteStage::kPrefill, base, count);
         s = model::ModelPrefillTextChunk(
@@ -1837,6 +1967,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                router_trace_.get(),
                                &metrics_.execution_steps_total);
         if (!s.ok()) break;
+        // A prewarm has no next output token to sample. Earlier boundaries
+        // already contain the complete draft state needed by later requests.
+        if (prewarm && last) {
+          ++chunks;
+          break;
+        }
         shifted.resize(count);
         positions.resize(count);
         for (int i = 0; i < count; ++i) {
@@ -1846,12 +1982,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         }
         s = mtp::MtpDraftExtend(mtp_, shifted.data(), d_trunk_full,
                                 positions.data(), count, &stream_d0, d_mtp_g,
-                                nullptr, seq_id, last, shared_write != nullptr);
+                                nullptr, seq_id, last, snapshot);
         // The target chunk was committed above. Drain a failed draft submission
         // before releasing this request's storage or giving scratch to a peer.
         s = FinishHostReadback(cudaSuccess, &gpu_healthy_, {}, s, nullptr,
                                &metrics_.execution_steps_total);
-        if (s.ok() && (last || shared_write) && d_session_trunk) {
+        if (s.ok() && (last || snapshot) && d_session_trunk) {
           const auto error = cudaMemcpy(
               d_session_trunk,
               d_trunk_full + static_cast<size_t>(count - 1) * trunk_hc_dim,
@@ -1861,36 +1997,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
             s = Status::Fail("session prefill final trunk copy failed");
           }
         }
-        if (s.ok() && shared_write) {
-          RequestDiagnostics::Scope waiting(diagnostic, Wait::kCache);
-          const auto save_begin = std::chrono::steady_clock::now();
-          SessionSaveTiming timing(request_id.c_str(), "shared");
-          std::vector<SessionRange> ranges;
-          Status saved;
-          {
-            SessionSaveTiming::Scope span(&timing, SessionSaveTiming::kRanges);
-            saved = SessionStateRanges(model_.Get(), mtp_, seq_id, boundary,
-                                       d_mtp_g, d_session_trunk, &ranges);
-          }
-          if (saved.ok())
-            saved = prefix_cache_.Save(
-                shared_write->key,
-                {ids.data(), static_cast<size_t>(boundary + 1)}, ranges,
-                session_copy, cancelled, -1, &timing);
-          timing.Report(saved.ok());
-          if (session_gpu_error) s = saved;
-          std::fprintf(stderr,
-                       "[prefix-cache] request=%s event=save prefix=%d "
-                       "bytes=%zu ms=%.3f error=%s\n",
-                       request_id.c_str(), boundary, prefix_cache_.Bytes(),
-                       std::chrono::duration<double, std::milli>(
-                           std::chrono::steady_clock::now() - save_begin)
-                           .count(),
-                       saved.ok() ? "none" : saved.message().c_str());
-        }
+        if (s.ok() && snapshot) save_shared(boundary);
         ++chunks;
       }
-      if (s.ok() && !prefill_cancelled) {
+      if (s.ok() && !prefill_cancelled && !prewarm) {
         s = model::ModelReserveVerifyCheckpoints(model_.Get(), mtp_k_);
         if (s.ok()) s = mtp::MtpReserveScratch(mtp_, mtp_k_ + 1);
         stream_draft_ready = s.ok();
@@ -1915,15 +2025,14 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       if (s.ok())
         s = model::ModelBeginSequence(model_.Get(), &seq, nullptr, seq_id);
       if (s.ok()) restore_cache();
+      if (s.ok() && restored_prefix > 0) save_shared(restored_prefix);
       while (s.ok() && seq.position < T) {
         if (cancelled()) {
           prefill_cancelled = true;
           break;
         }
         const int base = seq.position;
-        int count = std::min(chunk, T - base);
-        if (prefix_write_tokens > base)
-          count = std::min(count, prefix_write_tokens - base);
+        const int count = next_cache_boundary(base, std::min(chunk, T - base));
         const int boundary = base + count;
         const bool last = boundary == T;
         if (router_trace_)
@@ -1941,21 +2050,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         s = FinishHostReadback(copy_error, &gpu_healthy_, {&sequence, 1}, s,
                                router_trace_.get(),
                                &metrics_.execution_steps_total);
-        if (s.ok() && !last && boundary == prefix_write_tokens) {
-          const auto digest =
-              trace::Sha256({reinterpret_cast<const uint8_t*>(ids.data()),
-                             static_cast<size_t>(boundary) * sizeof(int32_t)});
-          const std::string key =
-              prefix_scope + ":target-v1:" + trace::HexDigest(digest);
-          if (prefix_cache_.AcquireNew(key)) {
-            auto lease = std::make_unique<SessionLease>();
-            lease->cache = &prefix_cache_;
-            lease->key = key;
-            shared_writes.push_back(std::move(lease));
-            const auto saved = save_target(&prefix_cache_, key, "shared");
-            if (session_gpu_error) s = saved;
-          }
-        }
+        if (s.ok() && !last) save_shared(boundary);
       }
       if (!s.ok()) seq.Fail();
     } else if (scheduled_chunk_prefill) {
@@ -2231,7 +2326,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
 
     std::vector<int32_t> generated;
     int next_token = -1;
-    std::string finish_reason = max_tokens == 0 ? "length" : "stop";
+    std::string finish_reason = max_tokens == 0 && !prewarm ? "length" : "stop";
     bool generation_failed = false;
     int stop_mtp_steps = 0;
     int stop_mtp_tokens = 0;
@@ -2351,7 +2446,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     // back to plain decode. MTP is precision-safe: the main model verifies
     // every draft token under the documented T>1 near-tie contract; it need not
     // be bit-identical to the T=1 arithmetic path.
-    bool use_mtp = request_mtp && d_trunk_full != nullptr &&
+    bool use_mtp = request_mtp && max_tokens > 0 && d_trunk_full != nullptr &&
                    thinking_budget.CanSpeculate(mtp_k_ + 1);
     int32_t mtp_b = stream_draft_ready ? next_token : -1;
     int32_t mtp_d0 = stream_draft_ready ? stream_d0 : -1;
@@ -3185,14 +3280,22 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       return;
     }
     diagnostic.Stage("response");
-    if (response_status && structured && !structured->Terminated() &&
+    if (prewarm && !cache_plan.writes.empty() &&
+        std::max(cache_written_tokens, restored_prefix) <
+            cache_plan.writes.back().tokens) {
+      err_guard.ok = false;
+      SendError(fd, 503, "Prompt cache prewarm did not persist its prefix", {},
+                "prompt_cache_unavailable", "prompt_cache_options.prewarm");
+      return;
+    }
+    if (!prewarm && response_status && structured && !structured->Terminated() &&
         !(responses && finish_reason == "length" &&
           structured->Failure() == GrammarFailure::kNone))
       response_status = Status::Fail(
           "constrained response did not reach a grammar-accepted stop token");
     // Both transports use the same parser. Never publish a successful terminal
     // (or a session snapshot) for malformed/truncated model tool output.
-    if (response_status.ok()) {
+    if (!prewarm && response_status.ok()) {
       if (responses || completion || stream || text_stop.Enabled() ||
           sampling.logprobs || prediction_enabled) {
         std::vector<detail::Utf8Span> spans;
@@ -3208,14 +3311,14 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
           response_status = tok_->Decode(gen_u32, true, &text);
         }
-        if (response_status.ok()) {
+        if (!prewarm && response_status.ok()) {
           std::vector<ResponseDelta> ignored;
           response_status =
               response_parser.Append(detail::NormalizeUtf8(text), &ignored);
         }
       }
     }
-    if (response_status.ok()) {
+    if (!prewarm && response_status.ok()) {
       std::vector<ResponseDelta> deltas;
       response_status =
           responses && finish_reason == "length"
@@ -3292,11 +3395,22 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       const ResponsesUsage step_usage{
           T, restored_prefix, static_cast<int64_t>(generated.size()),
           internal_step ? static_cast<int64_t>(generated.size())
-                        : thinking_budget.ReasoningTokens()};
+                        : thinking_budget.ReasoningTokens(),
+          std::max(0, cache_written_tokens - restored_prefix)};
       responses_usage.input_tokens += step_usage.input_tokens;
       responses_usage.cached_tokens += step_usage.cached_tokens;
+      responses_usage.cache_write_tokens += step_usage.cache_write_tokens;
       responses_usage.output_tokens += step_usage.output_tokens;
       responses_usage.reasoning_tokens += step_usage.reasoning_tokens;
+      if (!internal_step) {
+        responses->CacheDiagnostics(prompt_cache_diagnostics_.Compare(
+            client, cache_options.comparison_response_id,
+            responses->Output().Snapshot(), ids, restored_prefix,
+            cache_available, compacted_primary));
+        cache_observation = PromptCacheDiagnostics::Observe(
+            responses->Output().Snapshot(), ids,
+            std::max(restored_prefix, cache_written_tokens), compacted_primary);
+      }
       if (compaction_step) {
         if (finish_reason == "length") {
           err_guard.ok = false;
@@ -3322,7 +3436,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           continue;
         }
       }
-      if (!internal_step && finish_reason != "length" &&
+      if (!internal_step && !prewarm && finish_reason != "length" &&
           !responses->Envelope().summary.empty()) {
         s = PlanResponsesSummary(
             responses->Envelope(), responses->Output().Snapshot(),
@@ -3361,6 +3475,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                   finished.ClientCode());
         return;
       }
+      if (cache_observation)
+        prompt_cache_diagnostics_.Remember(client, responses->Id(),
+                                            std::move(*cache_observation));
     } else if (completion) {
       CompletionCandidate candidate;
       candidate.text = (completion_plan.echo ? completion_prompt->echo_text : "") +

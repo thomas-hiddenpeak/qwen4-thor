@@ -275,6 +275,12 @@ Q4T_TEST(chat_capabilities_native_responses_state_and_recovery) {
   Q4T_CHECK(responses->GetBool("previous_response_id") &&
             responses->GetBool("conversation"));
   const auto* summary = responses->Find("summary");
+  const auto* cache = responses->Find("prompt_cache");
+  Q4T_CHECK(cache && cache->GetBool("native_state") &&
+            cache->GetInt("max_writes") == 4 &&
+            cache->GetInt("minimum_tokens") == 1024 &&
+            !cache->GetBool("core_readiness_dependency", true));
+  Q4T_CHECK(cache->GetString("prewarm") == "input_only_no_sampling");
   const auto* encrypted = responses->Find("encrypted_reasoning");
   Q4T_CHECK(encrypted && encrypted->GetBool("enabled") &&
             encrypted->GetString("algorithm") == "AES-256-GCM" &&

@@ -120,26 +120,28 @@ Q4T_TEST(target_session_ranges_preserve_effective_state_and_slot_offsets) {
 }
 
 Q4T_TEST(target_session_layout_is_not_a_shifted_draft_snapshot) {
-  Fixture f;
-  mtp::MtpModel draft;
-  draft.max_seq = draft.cfg.max_seq = 2;
-  draft.cfg.max_len = 16;
-  draft.cfg.hc = 1;
-  draft.cfg.hs = 3;
-  draft.cfg.seq_capacities = {16, 12};
-  draft.full_attn = f.model.layers[1].full;
-  draft.kv_cache = f.kv.data();
-  draft.idx_raw = f.raw.data();
-  draft.idx_comp = f.comp.data();
-  uint16_t g[3]{}, h[3]{};
-  std::vector<SessionRange> target, mtp;
-  Q4T_CHECK(TargetSessionStateRanges(f.model, 1, 5, &target));
-  Q4T_CHECK(SessionStateRanges(f.model, draft, 1, 5, g, h, &mtp));
-  Q4T_CHECK(mtp.size() == target.size() + 5);
-  for (size_t i = 0; i < target.size(); ++i)
-    Q4T_CHECK(target[i].data == mtp[i].data && target[i].bytes == mtp[i].bytes);
-  Q4T_CHECK(mtp[mtp.size() - 2].data == g && mtp.back().data == h);
-  Q4T_CHECK(mtp.back().bytes == 6);
+  for (const bool ragged : {false, true}) {
+    Fixture f(ragged);
+    mtp::MtpModel draft;
+    draft.max_seq = draft.cfg.max_seq = 2;
+    draft.cfg.max_len = 16;
+    draft.cfg.hc = 1;
+    draft.cfg.hs = 3;
+    if (ragged) draft.cfg.seq_capacities = {16, 12};
+    draft.full_attn = f.model.layers[1].full;
+    draft.kv_cache = f.kv.data();
+    draft.idx_raw = f.raw.data();
+    draft.idx_comp = f.comp.data();
+    uint16_t g[3]{}, h[3]{};
+    std::vector<SessionRange> target, mtp;
+    Q4T_CHECK(TargetSessionStateRanges(f.model, 1, 5, &target));
+    Q4T_CHECK(SessionStateRanges(f.model, draft, 1, 5, g, h, &mtp));
+    Q4T_CHECK(mtp.size() == target.size() + 5);
+    for (size_t i = 0; i < target.size(); ++i)
+      Q4T_CHECK(target[i].data == mtp[i].data && target[i].bytes == mtp[i].bytes);
+    Q4T_CHECK(mtp[mtp.size() - 2].data == g && mtp.back().data == h);
+    Q4T_CHECK(mtp.back().bytes == 6);
+  }
   return true;
 }
 

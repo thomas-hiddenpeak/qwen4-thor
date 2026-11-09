@@ -56,6 +56,15 @@ def schema(graph):
     for name, index in graph['roots'].items():
         definitions[name] = ref(index)
 
+    # The current official cache guide adds a 12h request TTL; the pinned SDK
+    # already permits 12h on individual blocks but has a stale request/output
+    # TTL literal. Adapt only the cache-options objects, preserving the graph.
+    for index, node in enumerate(graph['nodes']):
+        fields = {f['name'] for f in node.get('fields', [])}
+        if ({'mode', 'ttl'} <= fields and 'comparison_response_id' in fields
+                and fields <= {'mode', 'ttl', 'prewarm', 'comparison_response_id'}):
+            definitions[str(index)]['properties']['ttl'] = dict(enum=['30m', '12h'])
+
     def root(name):
         return definitions[str(graph['roots'][name])]
 
@@ -101,6 +110,7 @@ def schema(graph):
                         pattern='^[A-Za-z0-9_-]+$'),
         cancel_token=dict(type='string', pattern='^[0-9a-f]{64}$'),
         request_timeout_ms=nullable(dict(type='integer', minimum=1, maximum=10800000)))
+    request['properties']['prompt_cache_key'] = nullable(dict(type='string', maxLength=512))
     request['dependentRequired'] = dict(request_id=['cancel_token'],
                                         cancel_token=['request_id'])
     for name, low, high in [('max_output_tokens', 1, 2147483647),
@@ -154,11 +164,18 @@ def schema(graph):
                 'official HTTP examples use usage:null for active/cancelled responses; completed/incomplete require actual usage',
                 'native store echo and native response error codes',
                 'SDK-documented include_obfuscation adds optional string padding to delta events only',
+                'official prompt caching guide permits 12h on request/applied options in addition to the pinned SDK 30m literal',
                 'exact integer and bounded native options',
                 'native cancellation credentials and timeout/seed extensions',
                 'SDK combined body/query split on actual HTTP boundary',
                 'compact output is a replayable input window including preserved user messages; only this SDK OutputItem[] inconsistency is adapted'],
-            wire_references=[dict(date='2026-11-09',
+            wire_references=[dict(date='2026-11-10',
+                url='https://developers.openai.com/api/docs/guides/prompt-caching',
+                contract='Request and breakpoint TTL 30m/12h; exact eligible boundaries; overlapping read/write token accounting'),
+                dict(date='2026-11-10',
+                url='https://developers.openai.com/api/docs/guides/prompt-caching/diagnostics',
+                contract='Optional client-scoped short-lived hashes; unavailable never fails generation; terminal SSE carries comparison'),
+                dict(date='2026-11-09',
                 url='https://developers.openai.com/api/reference/resources/responses/methods/cancel',
                 contract='Cancelled resource can have usage:null; no fabricated zero usage'),
                 dict(date='2026-11-09',

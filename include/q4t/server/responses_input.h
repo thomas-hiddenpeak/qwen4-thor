@@ -5,6 +5,7 @@
 
 #include "q4t/io/json.h"
 #include "q4t/server/chat_plan.h"
+#include "q4t/server/prompt_cache_policy.h"
 #include "q4t/status.h"
 
 namespace q4t::server {
@@ -12,6 +13,7 @@ struct ResponsesInputPlan {
   io::Json items;     // Original canonical items, including metadata for A08.
   io::Json messages;  // Native model adapter; no internal HTTP request.
   std::vector<std::string> message_paths;
+  std::vector<PromptCacheInputBoundary> cache_boundaries;
 };
 
 // Object/file/encrypted references must be resolved by the owning request's

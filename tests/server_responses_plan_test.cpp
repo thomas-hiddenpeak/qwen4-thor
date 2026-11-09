@@ -221,7 +221,8 @@ Q4T_TEST(responses_plan_lifecycle_fields_survive_and_conflicts_fail) {
   Q4T_CHECK(envelope.background && envelope.conversation_id == "conv_a");
   Q4T_CHECK(envelope.options.Find("prompt")->GetString("version") == "2");
   Q4T_CHECK(envelope.request.Has("context_management"));
-  Q4T_CHECK(envelope.options.Find("prompt_cache_options")->GetBool("prewarm"));
+  Q4T_CHECK(envelope.cache.prewarm &&
+            !envelope.options.Find("prompt_cache_options")->Has("prewarm"));
   Q4T_CHECK(envelope.options.GetString("service_tier") == "priority");
   // Parsing retains execution requirements; this is not a moderation/cache/
   // background acceptance. Their owners must execute before any success.

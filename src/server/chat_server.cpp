@@ -191,9 +191,16 @@ Status ChatServer::Start(const ServerOptions& opts) {
                  SessionCache::kDiskBudget, SessionCache::kRamBudget,
                  SessionCache::kStagingBytes);
   }
-  if (!opts.prefix_cache_dir.empty()) {
+  {
+    // Reuse the owned application-state filesystem for anonymous cache files
+    // unless an operator selects another SSD directory. The isolated worker
+    // performs all filesystem work; failure only disables cache reuse.
+    const auto directory = opts.prefix_cache_dir.empty()
+                               ? object_options.directory + "-prompt-cache"
+                               : opts.prefix_cache_dir;
     const Status cache_status =
-        prefix_cache_.Open(opts.prefix_cache_dir, 1024, size_t{8} << 30);
+        prefix_cache_.Open(directory, 1024, size_t{8} << 30, false,
+                            opts.prefix_cache_dir.empty());
     if (!cache_status.ok()) {
       std::fprintf(stderr, "[prefix-cache] unavailable; generation continues\n");
     }

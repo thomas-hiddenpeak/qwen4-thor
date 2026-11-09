@@ -27,6 +27,7 @@
 #include "q4t/trace/router_collector.h"
 #include "q4t/server/suffix_token_cache.h"
 #include "q4t/server/session_cache.h"
+#include "q4t/server/prompt_cache_diagnostics.h"
 #include "q4t/server/http_request.h"
 #include "q4t/server/http_listener.h"
 #include "q4t/server/http_response.h"
@@ -420,6 +421,7 @@ class ChatServer {
   SuffixTokenCache suffix_token_cache_;
   SessionCache session_cache_;
   SessionCache prefix_cache_{IsolatedWorkerDomain::kPrefixCache};
+  PromptCacheDiagnostics prompt_cache_diagnostics_;
   std::vector<int> prefix_cache_checkpoints_;
   // Global intervals sampled at request completion under model_mu_. With
   // concurrent slots an interval can include work from several requests.

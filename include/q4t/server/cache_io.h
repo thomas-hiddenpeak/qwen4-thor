@@ -30,6 +30,7 @@ struct CacheIoOptions {
   int backoff_ms = 500;
   int restart_window_ms = 60000;
   int restart_limit = 3;
+  bool create_directory = false;
 };
 struct CacheIoHealth {
   std::string_view state = "disabled";

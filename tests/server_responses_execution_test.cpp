@@ -5,6 +5,7 @@
 
 #include <cstdlib>
 #include <filesystem>
+#include <fstream>
 #include <thread>
 
 #include "q4t/server/conversation_state.h"
@@ -63,6 +64,60 @@ ResponseDelta Text(std::string text) {
   return delta;
 }
 }  // namespace
+
+Q4T_TEST(responses_cache_prewarm_empty_output_usage_and_diagnostics_persist) {
+  Fixture fixture;
+  ObjectStore store(fixture.options);
+  ResponsesExecution run(store);
+  const auto request = Parse(R"({"input":"prefix","store":true,
+    "prompt_cache_key":"customer","reasoning":{"effort":"none"},
+    "prompt_cache_options":{"prewarm":true,"ttl":"12h"}})");
+  Q4T_CHECK(Ok(run.Prepare(request, Config(), Access(), 42)));
+  Q4T_CHECK(run.Envelope().cache.prewarm);
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)));
+  run.CacheDiagnostics(Parse(R"({"type":"unavailable"})"));
+  Q4T_CHECK(Ok(run.Finish(false, 0, {1400, 0, 0, 0, 1300}, 43, &wire)));
+  const auto& snapshot = run.Output().Snapshot();
+  Q4T_CHECK(snapshot.GetString("status") == "completed" &&
+            snapshot.GetArray("output")->array.empty());
+  Q4T_CHECK(snapshot.Find("usage")->GetInt("output_tokens") == 0 &&
+            snapshot.Find("usage")->Find("input_tokens_details")
+                ->GetInt("cache_write_tokens") == 1300);
+  Q4T_CHECK(snapshot.Find("prompt_cache_options")->GetString("ttl") == "12h" &&
+            !snapshot.Find("prompt_cache_options")->Has("prewarm"));
+  const auto record = ResponsesState(store).ReadRecord(run.Id(), Access());
+  Q4T_CHECK(Ok(record));
+  Q4T_CHECK(OutputJson(*record.value.Find("response")) == run.Output().Json());
+  const auto& terminal = record.value.GetArray("events")->array.back();
+  Q4T_CHECK(terminal.GetString("type") == "response.completed" &&
+            OutputJson(*terminal.Find("response")) == run.Output().Json());
+  Q4T_CHECK(wire.find("output_item.added") == wire.npos);
+  // Inspect the actual C++ terminal against the separately generated SDK
+  // schema; the Python check does not manufacture missing output properties.
+  if (const char* output = std::getenv("Q4T_TEST_OUTPUT_DIR")) {
+    std::ofstream(std::filesystem::path(output) / "cache-prewarm.json.wire")
+        << run.Output().Json();
+    std::ofstream(std::filesystem::path(output) / "cache-prewarm.sse.wire")
+        << wire;
+  }
+  return true;
+}
+
+Q4T_TEST(responses_cache_usage_cannot_double_count_reads_and_writes) {
+  ObjectStoreOptions options;
+  options.directory = "invalid";
+  ObjectStore store(options);
+  ResponsesExecution run(store);
+  Q4T_CHECK(Prepare(&run, R"(,"store":false,"prompt_cache_options":{"mode":"explicit"})"));
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)));
+  Q4T_CHECK(!run.Finish(false, 0, {1400, 1000, 0, 0, 500}, 43, &wire).ok());
+  Q4T_CHECK(!run.Finished() && wire.empty());
+  Q4T_CHECK(Ok(run.Finish(false, 0, {1400, 1000, 0, 0, 400}, 43, &wire)));
+  Q4T_CHECK(store.Health().workers_started == 0);
+  return true;
+}
 
 namespace {
 Json ContextRequest(bool background = false) {

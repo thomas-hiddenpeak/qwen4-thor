@@ -1,6 +1,7 @@
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/sampling.h"
 #include "q4t/server/prediction.h"
+#include "q4t/server/prompt_cache_policy.h"
 #include "q4t/server/legacy_tools.h"
 #include "q4t/vision/media_plan.h"
 
@@ -130,6 +131,8 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
                         "session_id",
                         "prefix_cache_scope",
                         "prefix_cache_write_tokens",
+                        "prompt_cache_key",
+                        "prompt_cache_retention",
                         "parse_response",
                         "tool_choice",
                         "parallel_tool_calls"},
@@ -138,6 +141,12 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
   ChatStorageOptions storage;
   status = ParseChatStorageOptions(req, &storage, error_param);
   if (!status) return status;
+  PromptCacheOptions cache;
+  status = ParsePromptCacheOptions(req, &cache, error_param);
+  if (!status) return status;
+  if (cache.requested && !req.GetString("prefix_cache_scope").empty())
+    return invalid("prefix_cache_scope",
+                   "Choose standard cache controls or a native prefix scope");
   status = ValidateRequestCredentials(req);
   if (!status) {
     const auto* id = req.Find("request_id");

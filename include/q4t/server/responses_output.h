@@ -61,6 +61,7 @@ class ResponsesOutput {
   int64_t* Sequence() { return &sequence_; }
   bool Terminal() const { return terminal_; }
   bool HasSummary() const { return summary_item_ < kMaxItems; }
+  void CacheDiagnostics(io::Json value) noexcept;
 
  private:
   Status Charge(size_t bytes);

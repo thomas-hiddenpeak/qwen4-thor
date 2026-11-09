@@ -4660,6 +4660,30 @@
             "type": "string",
             "pattern": "^[0-9a-f]{64}$"
           },
+          "prompt_cache_key": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 512
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "prompt_cache_retention": {
+            "anyOf": [
+              {
+                "enum": [
+                  "in_memory",
+                  "24h"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "prefix_cache_write_tokens": {
             "anyOf": [
               {
@@ -7047,6 +7071,43 @@
                 }
               }
             }
+          },
+          {
+            "if": {
+              "anyOf": [
+                {
+                  "required": [
+                    "prompt_cache_key"
+                  ],
+                  "properties": {
+                    "prompt_cache_key": {
+                      "not": {
+                        "type": "null"
+                      }
+                    }
+                  }
+                },
+                {
+                  "required": [
+                    "prompt_cache_retention"
+                  ],
+                  "properties": {
+                    "prompt_cache_retention": {
+                      "not": {
+                        "type": "null"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "then": {
+              "not": {
+                "required": [
+                  "prefix_cache_scope"
+                ]
+              }
+            }
           }
         ],
         "x-q4t": {
@@ -7629,6 +7690,30 @@
           "prefix_cache_scope": {
             "type": "string",
             "pattern": "^[0-9a-f]{64}$"
+          },
+          "prompt_cache_key": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 512
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "prompt_cache_retention": {
+            "anyOf": [
+              {
+                "enum": [
+                  "in_memory",
+                  "24h"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "prefix_cache_write_tokens": {
             "anyOf": [
@@ -10154,6 +10239,43 @@
                     []
                   ]
                 }
+              }
+            }
+          },
+          {
+            "if": {
+              "anyOf": [
+                {
+                  "required": [
+                    "prompt_cache_key"
+                  ],
+                  "properties": {
+                    "prompt_cache_key": {
+                      "not": {
+                        "type": "null"
+                      }
+                    }
+                  }
+                },
+                {
+                  "required": [
+                    "prompt_cache_retention"
+                  ],
+                  "properties": {
+                    "prompt_cache_retention": {
+                      "not": {
+                        "type": "null"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "then": {
+              "not": {
+                "required": [
+                  "prefix_cache_scope"
+                ]
               }
             }
           },
@@ -18878,7 +19000,15 @@
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/805"
               },
               "prompt_cache_key": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 512
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               },
               "prompt_cache_options": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/810"
@@ -20101,7 +20231,10 @@
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/157"
               },
               "ttl": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/814"
+                "enum": [
+                  "30m",
+                  "12h"
+                ]
               }
             },
             "required": [],
@@ -21784,7 +21917,10 @@
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/944"
               },
               "ttl": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/11"
+                "enum": [
+                  "30m",
+                  "12h"
+                ]
               }
             },
             "required": [
@@ -27482,7 +27618,15 @@
                     "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/663"
                   },
                   "prompt_cache_key": {
-                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 512
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
                   },
                   "prompt_cache_retention": {
                     "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/815"
@@ -27749,7 +27893,15 @@
                         "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/663"
                       },
                       "prompt_cache_key": {
-                        "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 512
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
                       },
                       "prompt_cache_retention": {
                         "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/815"
@@ -27917,12 +28069,23 @@
             "official HTTP examples use usage:null for active/cancelled responses; completed/incomplete require actual usage",
             "native store echo and native response error codes",
             "SDK-documented include_obfuscation adds optional string padding to delta events only",
+            "official prompt caching guide permits 12h on request/applied options in addition to the pinned SDK 30m literal",
             "exact integer and bounded native options",
             "native cancellation credentials and timeout/seed extensions",
             "SDK combined body/query split on actual HTTP boundary",
             "compact output is a replayable input window including preserved user messages; only this SDK OutputItem[] inconsistency is adapted"
           ],
           "wire_references": [
+            {
+              "date": "2026-11-10",
+              "url": "https://developers.openai.com/api/docs/guides/prompt-caching",
+              "contract": "Request and breakpoint TTL 30m/12h; exact eligible boundaries; overlapping read/write token accounting"
+            },
+            {
+              "date": "2026-11-10",
+              "url": "https://developers.openai.com/api/docs/guides/prompt-caching/diagnostics",
+              "contract": "Optional client-scoped short-lived hashes; unavailable never fails generation; terminal SSE carries comparison"
+            },
             {
               "date": "2026-11-09",
               "url": "https://developers.openai.com/api/reference/resources/responses/methods/cancel",

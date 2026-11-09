@@ -364,6 +364,8 @@ Status ParseResponsesEnvelope(const io::Json& request,
     status =
         IntegerOption(request, "top_logprobs", 0, 20, &result.options, error);
   if (status) status = StateOptions(request, &result, error);
+  if (status)
+    status = ParsePromptCacheOptions(request, &result.cache, &error->param);
   if (status) status = Reasoning(request, &result, error);
   if (status) status = TextOptions(request, &result, error);
   if (!status) return status;
@@ -372,23 +374,21 @@ Status ParseResponsesEnvelope(const io::Json& request,
     *error = {"client_output_limit_exceeded", "max_output_tokens", 400};
     return Status::Fail("requested output exceeds client token limit");
   }
-  std::string truncation = "disabled", tier = "default",
-              retention = "in_memory";
+  std::string truncation = "disabled", tier = "default";
   status = ChoiceOption(request, "truncation", {"auto", "disabled"},
                         &truncation, "", error);
   if (status)
     status = ChoiceOption(request, "service_tier",
                           {"auto", "default", "flex", "priority", "scale"},
                           &tier, "", error);
-  if (status)
-    status = ChoiceOption(request, "prompt_cache_retention",
-                          {"in_memory", "24h"}, &retention, "", error);
   if (!status) return status;
   result.truncate = truncation == "auto";
   Set(&result.options, "truncation", String(truncation));
   Set(&result.options, "service_tier",
       String(tier == "auto" ? "default" : tier));
-  Set(&result.options, "prompt_cache_retention", String(retention));
+  Set(&result.options, "prompt_cache_retention", String(result.cache.retention));
+  Set(&result.options, "prompt_cache_options",
+      PublicPromptCacheOptions(result.cache));
   if (const auto* include = request.Find("include");
       include && !include->IsNull()) {
     if (!include->IsArray() || include->array.size() > 8)
@@ -440,8 +440,7 @@ Status ParseResponsesEnvelope(const io::Json& request,
   }
   // These are retained service requirements. Validation of their model/tool
   // policy and application happens in the corresponding service stage.
-  for (const auto* key :
-       {"access_programs", "moderation", "prompt_cache_options"})
+  for (const auto* key : {"access_programs", "moderation"})
     if (const auto* value = request.Find(key); value && !value->IsNull()) {
       if (!value->IsObject())
         return Invalid(error, key, "expected options object");
@@ -529,11 +528,14 @@ Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
     guidance +=
         "Give a detailed final answer with the relevant explanation and "
         "evidence.\n";
-  if (!guidance.empty())
+  if (!guidance.empty()) {
     Field(chat, "messages")
         .array.insert(Field(chat, "messages").array.begin(),
                       Object({{"role", String("system")},
                               {"content", String(guidance)}}));
+    for (auto& boundary : result.input.cache_boundaries)
+      ++boundary.message_index;
+  }
   if (envelope.reasoning_context == "current_turn") {
     auto& messages = Field(chat, "messages").array;
     size_t last_user = 0;
@@ -544,7 +546,9 @@ Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
         return field.first == "reasoning" || field.first == "reasoning_content";
       });
   }
-  status = PlanChatRequest(chat, config, &result.chat, error);
+  auto generation_config = config;
+  generation_config.prewarm_only = envelope.cache.prewarm;
+  status = PlanChatRequest(chat, generation_config, &result.chat, error);
   if (!status) {
     if (!guidance.empty() && error->param.starts_with("messages[")) {
       // Model-adaptation instructions are not caller-controlled input.

@@ -11,6 +11,7 @@
 #include "q4t/server/output_constraints.h"
 #include "q4t/server/sampling.h"
 #include "q4t/server/prediction.h"
+#include "q4t/server/prompt_cache_policy.h"
 #include "q4t/server/client_policy.h"
 #include "q4t/server/server_options.h"
 #include "q4t/status.h"
@@ -39,6 +40,8 @@ struct ChatPlanConfig {
   bool structured = false;
   bool session_cache = false;
   bool prefix_cache = false;
+  // Internal Responses prefill-only execution, never a caller Chat field.
+  bool prewarm_only = false;
   std::vector<int> capacities;
   std::vector<int> checkpoints;
   uint64_t cuda_quota_limit_bytes = 0;
@@ -64,6 +67,7 @@ struct ChatRequestPlan {
   OutputConstraints constraints;
   SamplingOptions sampling;
   PredictionOptions prediction;
+  PromptCacheOptions cache;
   std::vector<std::string> stops;
   const io::Json& Request(const io::Json& original) const {
     return normalized_request ? *normalized_request : original;

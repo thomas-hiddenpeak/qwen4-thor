@@ -36,10 +36,36 @@ struct Storage {
     if (directory >= 0) close(directory);
     std::free(buffer);
   }
-  bool Open(const std::string& path) {
+  static int OpenOwnedPath(const std::string& path) {
+    if (path.empty() || path.front() != '/') return -1;
+    int parent = open("/", O_DIRECTORY | O_RDONLY | O_CLOEXEC);
+    size_t begin = 1;
+    while (parent >= 0 && begin < path.size()) {
+      const auto end = path.find('/', begin);
+      const auto part = path.substr(begin, end == path.npos ? end : end - begin);
+      if (part.empty() || part == "." || part == "..") {
+        close(parent);
+        return -1;
+      }
+      int next = openat(parent, part.c_str(),
+                        O_DIRECTORY | O_RDONLY | O_CLOEXEC | O_NOFOLLOW);
+      if (next < 0 && errno == ENOENT &&
+          (!mkdirat(parent, part.c_str(), 0700) || errno == EEXIST))
+        next = openat(parent, part.c_str(),
+                       O_DIRECTORY | O_RDONLY | O_CLOEXEC | O_NOFOLLOW);
+      close(parent);
+      parent = next;
+      if (end == path.npos) break;
+      begin = end + 1;
+    }
+    return parent;
+  }
+  bool Open(const std::string& path, bool create_directory) {
     if (path.empty() || path.find('\0') != std::string::npos) return false;
-    directory =
-        open(path.c_str(), O_DIRECTORY | O_RDONLY | O_CLOEXEC | O_NOFOLLOW);
+    directory = create_directory
+                    ? OpenOwnedPath(path)
+                    : open(path.c_str(),
+                           O_DIRECTORY | O_RDONLY | O_CLOEXEC | O_NOFOLLOW);
     struct stat st {};
     struct statfs fs {};
     if (directory < 0 || fstat(directory, &st) || fstatfs(directory, &fs) ||
@@ -140,7 +166,7 @@ uint64_t Rss() {
 bool Shape(const Frame& f, bool initialized) {
   if (f.reserved || f.magic != kMagic || !f.generation) return false;
   if (!initialized)
-    return f.operation == kInit && !f.file && !f.offset && f.bytes > 0 &&
+    return f.operation == kInit && !f.file && f.offset <= 1 && f.bytes > 0 &&
            f.bytes <= 4096;
   if (f.operation == kCreate) return !f.file && !f.offset && !f.bytes;
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
@@ -181,7 +207,7 @@ int MaybeRunCacheWorker(int argc, char** argv) {
       if (!generation) {
         std::string path(frame.bytes, '\0');
         if (!detail::WorkerTransfer(path.data(), path.size(), false)) return 3;
-        ok = storage.Open(path);
+        ok = storage.Open(path, frame.offset == 1);
         if (ok) {
           generation = frame.generation;
           reply.code = kOk;

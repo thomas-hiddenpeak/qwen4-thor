@@ -16,6 +16,24 @@
 
 namespace q4t::server {
 struct SessionCacheTestPeer {
+  static void Age(SessionCache& cache, const std::string& key,
+                  std::chrono::seconds elapsed) {
+    const std::lock_guard lock(cache.mutex_);
+    auto& entry = *cache.entries_.at(key);
+    entry.used -= elapsed;
+    entry.expires -= elapsed;
+    if (entry.lifetime.max_age_seconds) entry.retention_end -= elapsed;
+  }
+  static std::chrono::steady_clock::time_point Expiry(SessionCache& cache,
+                                                     const std::string& key) {
+    const std::lock_guard lock(cache.mutex_);
+    return cache.entries_.at(key)->expires;
+  }
+  static bool AtRetentionEnd(SessionCache& cache, const std::string& key) {
+    const std::lock_guard lock(cache.mutex_);
+    const auto& entry = *cache.entries_.at(key);
+    return entry.expires == entry.retention_end;
+  }
   static bool Recover(SessionCache& cache) {
     const auto end = std::chrono::steady_clock::now() + std::chrono::seconds(2);
     while (std::chrono::steady_clock::now() < end) {
@@ -53,6 +71,90 @@ const auto Copy = [](void* host, void* state, size_t bytes, bool restore) {
 };
 const auto Active = [] { return false; };
 }  // namespace
+
+Q4T_TEST(session_cache_long_ttl_survives_short_read_without_restarting_long_ttl) {
+  Fixture f;
+  f.data.resize(32);
+  SessionCache cache;
+  Q4T_CHECK(cache.Open(f.path));
+  Q4T_CHECK(cache.AcquireNew("scope:key"));
+  Q4T_CHECK(cache.Save("scope:key", f.prefix, f.Ranges(), Copy, Active, 71,
+                       nullptr, SessionLayout::kMtp, {43200, 1800, 86400}));
+  cache.Release("scope:key", true);
+  SessionCacheTestPeer::Age(cache, "scope:key", 31min);
+  const auto expiry = SessionCacheTestPeer::Expiry(cache, "scope:key");
+  std::string selected;
+  Q4T_CHECK(cache.MatchShared("scope", f.prefix, &selected) == 8192);
+  int32_t d0 = -1;
+  Q4T_CHECK(cache.Restore(selected, f.Ranges(), Copy, Active, &d0));
+  Q4T_CHECK(d0 == 71 && SessionCacheTestPeer::Expiry(cache, selected) == expiry);
+  cache.Release(selected, true);
+  SessionCacheTestPeer::Age(cache, selected, 12h);
+  Q4T_CHECK(cache.MatchShared("scope", f.prefix, &selected) == 0);
+  return true;
+}
+
+Q4T_TEST(session_cache_read_refresh_cannot_extend_total_retention) {
+  Fixture f;
+  f.data.resize(32);
+  SessionCache cache;
+  Q4T_CHECK(cache.Open(f.path));
+  Q4T_CHECK(cache.Acquire("same"));
+  Q4T_CHECK(cache.Save("same", f.prefix, f.Ranges(), Copy, Active, 71, nullptr,
+                       SessionLayout::kMtp, {1800, 1800, 3600}));
+  cache.Release("same", true);
+  for (int i = 0; i < 2; ++i) {
+    SessionCacheTestPeer::Age(cache, "same", 25min);
+    Q4T_CHECK(cache.Acquire("same") && cache.Match("same", f.prefix) == 8192);
+    Q4T_CHECK(cache.Restore("same", f.Ranges(), Copy, Active, nullptr));
+    cache.Release("same", true);
+  }
+  Q4T_CHECK(SessionCacheTestPeer::AtRetentionEnd(cache, "same"));
+  SessionCacheTestPeer::Age(cache, "same", 11min);
+  Q4T_CHECK(cache.Acquire("same") && cache.Match("same", f.prefix) == 0);
+  cache.Release("same", false);
+  return true;
+}
+
+Q4T_TEST(session_cache_lookup_only_reuses_requested_boundaries) {
+  Fixture f;
+  f.data.resize(32);
+  SessionCache cache;
+  Q4T_CHECK(cache.Open(f.path) && cache.AcquireNew("scope:key"));
+  Q4T_CHECK(cache.Save("scope:key", f.prefix, f.Ranges(), Copy, Active, 71));
+  cache.Release("scope:key", true);
+  std::string key;
+  const std::vector<int> wrong = {4096}, exact = {8192};
+  Q4T_CHECK(cache.MatchShared("scope", f.prefix, &key, SessionLayout::kMtp,
+                              wrong) == 0 && key.empty());
+  Q4T_CHECK(cache.MatchShared("scope", f.prefix, &key, SessionLayout::kMtp,
+                              exact) == 8192 && key == "scope:key");
+  cache.Release(key, true);
+  return true;
+}
+
+Q4T_TEST(session_cache_lifetime_upgrade_requires_a_real_committed_replacement) {
+  Fixture f;
+  f.data.resize(32);
+  SessionCache cache;
+  Q4T_CHECK(cache.Open(f.path) && cache.AcquireNew("scope:key"));
+  Q4T_CHECK(cache.Save("scope:key", f.prefix, f.Ranges(), Copy, Active, 71));
+  cache.Release("scope:key", true);
+  Q4T_CHECK(!cache.AcquireNew("scope:key", 1800));
+  Q4T_CHECK(cache.AcquireNew("scope:key", 43200));
+  Q4T_CHECK(!cache.Save("scope:key", f.prefix, f.Ranges(), Copy, Active, 71,
+                        nullptr, SessionLayout::kMtp, {43200, 1800, 3600}));
+  cache.Release("scope:key", false);
+  Q4T_CHECK(cache.AcquireNew("scope:key", 43200));
+  Q4T_CHECK(cache.Save("scope:key", f.prefix, f.Ranges(), Copy, Active, 71,
+                       nullptr, SessionLayout::kMtp, {43200, 1800, 86400}));
+  cache.Release("scope:key", true);
+  SessionCacheTestPeer::Age(cache, "scope:key", 31min);
+  std::string selected;
+  Q4T_CHECK(cache.MatchShared("scope", f.prefix, &selected) == 8192);
+  cache.Release(selected, true);
+  return true;
+}
 
 Q4T_TEST(session_cache_unavailable_directory_preserves_session_contract) {
   Fixture f;

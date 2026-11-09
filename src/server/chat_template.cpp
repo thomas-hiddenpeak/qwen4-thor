@@ -25,7 +25,8 @@ bool IsSpace(unsigned cp) {
          cp == 0x3000;
 }
 
-std::string Trim(const std::string& s) {
+std::string Trim(const std::string& s, size_t* begin = nullptr,
+                  size_t* bytes = nullptr) {
   size_t first = s.size(), last = 0;
   for (size_t i = 0; i < s.size();) {
     const size_t start = i;
@@ -49,7 +50,10 @@ std::string Trim(const std::string& s) {
       last = i;
     }
   }
-  return first == s.size() ? "" : s.substr(first, last - first);
+  const size_t length = first == s.size() ? 0 : last - first;
+  if (begin) *begin = first;
+  if (bytes) *bytes = length;
+  return s.substr(first, length);
 }
 
 void Quote(const std::string& s, std::string* out) {
@@ -469,12 +473,14 @@ Status ValidateChatMessageProfile(const io::Json& messages,
 
 Status RenderChatPrompt(const io::Json& request,
                         const std::vector<std::string>& contents,
-                        std::string* prompt) {
+                        std::string* prompt,
+                        std::vector<ChatMessageSpan>* spans) {
   prompt->clear();
+  if (spans) spans->clear();
   if (HasLegacyTools(request)) {
     LegacyToolRequest normalized;
     const auto status = NormalizeLegacyTools(request, &normalized);
-    return status ? RenderChatPrompt(normalized.request, contents, prompt)
+    return status ? RenderChatPrompt(normalized.request, contents, prompt, spans)
                   : status;
   }
   auto definitions = ValidateToolDefinitions(request);
@@ -540,11 +546,19 @@ Status RenderChatPrompt(const io::Json& request,
     instructions += EncodeSchemaJson(*specification);
   }
   const auto& ms = messages->array;
+  if (spans) spans->resize(ms.size());
+  const auto begin_content = [&](size_t index) {
+    if (spans) (*spans)[index].prompt_begin = prompt->size();
+  };
+  const auto end_message = [&](size_t index) {
+    if (spans) (*spans)[index].prompt_end = prompt->size();
+  };
   std::vector<std::string> text;
   size_t last_query = ms.size();
   for (size_t i = 0; i < ms.size(); ++i) {
     if (!ms[i].IsObject()) return Status::Fail("message must be an object");
-    text.push_back(Trim(contents[i]));
+    text.push_back(Trim(contents[i], spans ? &(*spans)[i].source_begin : nullptr,
+                        spans ? &(*spans)[i].source_size : nullptr));
     const std::string role = ms[i].GetString("role");
     if (role == "assistant") {
       const auto refusal = Trim(ms[i].GetString("refusal"));
@@ -597,23 +611,36 @@ Status RenderChatPrompt(const io::Json& request,
           "text or grammar format applies to the decoded string. Do not "
           "add text after a tool call.";
     }
-    if (!system.empty()) *prompt += "\n\n" + system;
+    if (!system.empty()) *prompt += "\n\n";
+    if (leading_instruction) begin_content(0);
+    *prompt += system;
     *prompt += "<|im_end|>\n";
+    if (leading_instruction) end_message(0);
   } else if (!system.empty() || !instructions.empty() ||
              (leading_instruction && !Participant(ms[0]).empty())) {
     *prompt = first_header + instructions;
     if (!system.empty()) {
       if (!instructions.empty()) *prompt += "\n\n";
-      *prompt += system;
     }
+    if (leading_instruction) begin_content(0);
+    *prompt += system;
     *prompt += "<|im_end|>\n";
+    if (leading_instruction) end_message(0);
   }
   for (size_t i = 0; i < ms.size(); ++i) {
     const std::string role = ms[i].GetString("role");
     if (IsChatInstructionRole(role)) {
-      if (i) *prompt += Header(ms[i], "system") + text[i] + "<|im_end|>\n";
+      if (i) {
+        *prompt += Header(ms[i], "system");
+        begin_content(i);
+        *prompt += text[i] + "<|im_end|>\n";
+        end_message(i);
+      }
     } else if (role == "user") {
-      *prompt += Header(ms[i], "user") + text[i] + "<|im_end|>\n";
+      *prompt += Header(ms[i], "user");
+      begin_content(i);
+      *prompt += text[i] + "<|im_end|>\n";
+      end_message(i);
     } else if (role == "assistant") {
       *prompt += Header(ms[i], "assistant");
       if (preserve || i > last_query) {
@@ -623,10 +650,12 @@ Status RenderChatPrompt(const io::Json& request,
         *prompt +=
             "<think>\n" + Trim(std::string(reasoning)) + "\n</think>\n\n";
       }
+      begin_content(i);
       *prompt += text[i];
       s = AppendToolCalls(request, ms[i], !text[i].empty(), prompt);
       if (!s) return s;
       *prompt += "<|im_end|>\n";
+      end_message(i);
     } else if (role == "tool") {
       if (i == 0 || ms[i - 1].GetString("role") != "tool") {
         *prompt += "<|im_start|>user";
@@ -635,10 +664,12 @@ Status RenderChatPrompt(const io::Json& request,
       const auto participant = Participant(ms[result]);
       *prompt += "\n<tool_response>\n";
       if (!participant.empty()) *prompt += participant.substr(1) + "\n";
+      begin_content(result);
       *prompt += text[result] + "\n</tool_response>";
       if (i + 1 == ms.size() || ms[i + 1].GetString("role") != "tool") {
         *prompt += "<|im_end|>\n";
       }
+      end_message(result);
     }
   }
   *prompt += "<|im_start|>assistant\n";

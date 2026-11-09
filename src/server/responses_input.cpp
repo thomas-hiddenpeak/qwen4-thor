@@ -105,9 +105,21 @@ Status Parts(const Json& value, const std::string& role, std::string_view path,
     const auto at = std::string(path) + '[' + std::to_string(i) + ']';
     const auto type = part.GetString("type");
     Status status;
+    bool cache_boundary = false;
+    int cache_ttl = 0;
+    status = ParsePromptCacheBreakpoint(part.Find("prompt_cache_breakpoint"),
+                                       at + ".prompt_cache_breakpoint",
+                                       &cache_boundary, &cache_ttl,
+                                       &error->param);
+    if (!status) return status;
+    if (part.Has("prompt_cache_breakpoint") && type != "input_text" &&
+        type != "input_image" && type != "input_file")
+      return Invalid(error, at + ".prompt_cache_breakpoint",
+                     "Cache breakpoints require an input content block");
     Json mapped;
     if (type == "input_text" || type == "output_text") {
-      status = InputFields(part, {"type", "text", "annotations", "logprobs"},
+      status = InputFields(part, {"type", "text", "annotations", "logprobs",
+                                  "prompt_cache_breakpoint"},
                            &error->param, at);
       if (status) status = TextField(part, "text", at, error);
       if (!status) return status;
@@ -133,7 +145,8 @@ Status Parts(const Json& value, const std::string& role, std::string_view path,
         return Invalid(error, at + ".type", "refusal requires assistant");
       mapped = part;
     } else if (type == "input_image") {
-      status = InputFields(part, {"type", "detail", "image_url", "file_id"},
+      status = InputFields(part, {"type", "detail", "image_url", "file_id",
+                                  "prompt_cache_breakpoint"},
                            &error->param, at);
       if (!status) return status;
       if (Nonnull(part, "file_id")) {
@@ -160,6 +173,8 @@ Status Parts(const Json& value, const std::string& role, std::string_view path,
     } else {
       return Invalid(error, at + ".type", "unresolved Responses content type");
     }
+    if (cache_boundary)
+      Set(&mapped, "prompt_cache_breakpoint", *part.Find("prompt_cache_breakpoint"));
     content->array.push_back(std::move(mapped));
   }
   return {};
@@ -226,6 +241,23 @@ Status NormalizeResponsesInput(const io::Json& request,
   plan.items = Array();
   plan.messages = Array();
   const auto append = [&](Json message, std::string path) {
+    // Carry annotations through phase insertion/refusal splitting/tool order,
+    // then keep them separate from the model's closed Chat request shape.
+    if (const auto* value = message.Find("content"); value && value->IsArray()) {
+      auto& content = Field(message, "content");
+      for (size_t i = 0; i < content.array.size(); ++i) {
+        auto& part = content.array[i];
+        if (const auto* boundary = part.Find("prompt_cache_breakpoint")) {
+          const auto ttl = boundary->GetString("ttl");
+          plan.cache_boundaries.push_back(
+              {plan.messages.array.size(), i,
+               ttl.empty() ? 0 : (ttl == "12h" ? 43200 : 1800)});
+          std::erase_if(part.object, [](const auto& field) {
+            return field.first == "prompt_cache_breakpoint";
+          });
+        }
+      }
+    }
     plan.messages.array.push_back(std::move(message));
     plan.message_paths.push_back(std::move(path));
   };

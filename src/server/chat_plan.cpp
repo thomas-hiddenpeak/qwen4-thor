@@ -36,6 +36,7 @@ std::string Array(const std::vector<T>& values) {
 const char* Bool(bool value) { return value ? "true" : "false"; }
 
 int RequestedOutput(const io::Json& req, const ChatPlanConfig& config) {
+  if (config.prewarm_only) return 0;
   const int fallback =
       config.client_limits
           ? std::min(config.default_max_tokens,
@@ -94,6 +95,8 @@ Status PlanChatRequest(const io::Json& req, const ChatPlanConfig& config,
     return status;
   }
   status = ParseSamplingOptions(req, &plan->sampling, &error->param);
+  if (!status) return status;
+  status = ParsePromptCacheOptions(req, &plan->cache, &error->param);
   if (!status) return status;
   status = ParsePredictionOptions(req, plan->sampling, &plan->prediction,
                                   &error->param);
@@ -155,7 +158,8 @@ Status PlanChatBudget(const io::Json& req, const ChatPlanConfig& config,
           static_cast<int>(config.client_limits->max_output_tokens))
     return Fail(error, "client_output_limit_exceeded", OutputSource(req),
                 "requested output exceeds client token limit");
-  if (!tokens || tokens >= static_cast<size_t>(config.max_len))
+  if (!tokens || tokens > static_cast<size_t>(config.max_len) ||
+      (!config.prewarm_only && tokens == static_cast<size_t>(config.max_len)))
     return Fail(error, "context_length_exceeded", input,
                 "prompt tokens must be positive and below context capacity");
   ChatPromptBudget planned;

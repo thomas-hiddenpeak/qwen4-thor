@@ -17,11 +17,15 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
                           std::string* err, bool add_vision_id,
                           int* image_count, int* video_count,
                           size_t message_index, std::string* error_param,
-                          std::string* error_code) {
+                          std::string* error_code,
+                          std::vector<size_t>* part_ends) {
   std::string out;
   const io::Json* content = m.Find("content");
   if (content == nullptr || content->IsNull()) return out;
-  if (content->IsString()) return content->str;
+  if (content->IsString()) {
+    if (part_ends) part_ends->push_back(content->str.size());
+    return content->str;
+  }
   if (!content->IsArray()) {
     *err = "Unexpected content type.";
     return out;
@@ -67,6 +71,7 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
       if (add_vision_id)
         out += "Picture " + std::to_string(*image_count) + ": ";
       out += "<|vision_start|><|image_pad|><|vision_end|>";
+      if (part_ends) part_ends->push_back(out.size());
       continue;
     }
     const io::Json* vf = part.Find("video_frames");
@@ -137,17 +142,20 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
         out += std::format("<{:.1f} seconds>", (times[frame] + last) / 2);
         out += "<|vision_start|><|video_pad|><|vision_end|>";
       }
+      if (part_ends) part_ends->push_back(out.size());
       continue;
     }
     const io::Json* text = part.Find("text");
     if (text && text->IsString()) {
       out += text->str;
+      if (part_ends) part_ends->push_back(out.size());
       continue;
     }
     const auto* refusal = part.Find("refusal");
     if (m.GetString("role") == "assistant" &&
         part.GetString("type") == "refusal" && refusal && refusal->IsString()) {
       out += refusal->str;
+      if (part_ends) part_ends->push_back(out.size());
       continue;
     }
     *err = "Unexpected item type in content.";
@@ -162,13 +170,15 @@ Status PrepareChatPrompt(const io::Json& request,
                          const OutputConstraints& constraints,
                          std::string* prompt_out,
                          std::vector<VisionItem>* items_out,
-                         std::string* error_param, std::string* error_code) {
+                         std::string* error_param, std::string* error_code,
+                         ChatPromptLayout* layout) {
+  if (layout) *layout = {};
   if (HasLegacyTools(request)) {
     LegacyToolRequest normalized;
     auto status = NormalizeLegacyTools(request, &normalized, error_param);
     if (!status) return status;
     status = PrepareChatPrompt(normalized.request, constraints, prompt_out,
-                               items_out, error_param, error_code);
+                               items_out, error_param, error_code, layout);
     if (!status) LegacyToolErrorParam(request, error_param);
     return status;
   }
@@ -197,16 +207,19 @@ Status PrepareChatPrompt(const io::Json& request,
     if (!vision_id) vision_id = req.Find("add_vision_id");
     int image_count = 0, video_count = 0;
     std::vector<std::string> contents;
+    if (layout) layout->part_ends.resize(messages->array.size());
     for (size_t index = 0; index < messages->array.size(); ++index) {
       const auto& message = messages->array[index];
       std::string error;
       contents.push_back(RenderContent(
           message, &items, &error, vision_id && vision_id->boolean,
-          &image_count, &video_count, index, error_param, error_code));
+          &image_count, &video_count, index, error_param, error_code,
+          layout ? &layout->part_ends[index] : nullptr));
       if (!error.empty()) return fail(error);
       error_param->clear();
     }
-    const auto rendered = RenderChatPrompt(req, contents, &prompt);
+    const auto rendered = RenderChatPrompt(req, contents, &prompt,
+                                           layout ? &layout->messages : nullptr);
     if (!rendered) return fail(rendered.message());
   } else {
     prompt = req.GetString("prompt");

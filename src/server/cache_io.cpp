@@ -239,6 +239,7 @@ struct CacheIo::State {
               init.sequence = ++sequence;
               init.generation = current_generation;
               init.operation = kInit;
+              init.offset = options.create_directory ? 1 : 0;
               init.bytes = options.directory.size();
               std::vector<uint8_t> path(options.directory.begin(),
                                         options.directory.end());

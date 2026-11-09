@@ -1,0 +1,45 @@
+[PASS] prompt_cache_retention_bounds_and_modern_ttl_are_independent
+[PASS] prompt_cache_diagnostics_isolate_clients_and_require_actual_restore
+[PASS] prompt_cache_diagnostics_classify_settings_and_expire_without_io
+[PASS] prompt_cache_diagnostics_bound_total_and_per_client_history
+[PASS] prompt_cache_adaptation_offsets_and_zero_output_slot_budget
+[PASS] prompt_cache_policy_applies_mode_lifetime_key_and_prewarm
+[PASS] prompt_cache_chat_standard_controls_and_legacy_scope_conflicts
+[PASS] prompt_cache_policy_rejects_malformed_controls_and_boundaries
+[PASS] prompt_cache_explicit_empty_disables_reads_and_writes
+[PASS] prompt_cache_lookup_preserves_first_and_recent_explicit_boundaries
+[PASS] prompt_cache_writes_share_longer_covering_lifetime_and_four_slots
+[PASS] prompt_cache_source_offsets_never_cross_partial_token_or_nfc_cluster
+[PASS] prompt_cache_rendered_layout_preserves_unicode_trim_and_prompt_bytes
+[PASS] prompt_cache_input_keeps_boundaries_out_of_model_fields
+[PASS] prompt_cache_layout_resolves_content_breakpoint_before_changing_suffix
+[PASS] cache_io_creates_private_default_directory_only_in_worker
+[PASS] cache_io_default_directory_rejects_symlinks_and_public_permissions
+[PASS] cache_io_private_disk_directory_contract
+[PASS] cache_io_bad_frames_generations_and_bounds_rejected
+[PASS] session_cache_long_ttl_survives_short_read_without_restarting_long_ttl
+[PASS] session_cache_read_refresh_cannot_extend_total_retention
+[PASS] session_cache_lookup_only_reuses_requested_boundaries
+[PASS] session_cache_lifetime_upgrade_requires_a_real_committed_replacement
+[PASS] session_cache_unavailable_directory_preserves_session_contract
+[PASS] session_cache_partial_restore_loss_evicts_generation_and_rebuilds
+[PASS] session_cache_cancelled_write_is_unpublished_and_not_replayed
+[CACHE_HEALTH]{"configured":false,"available":false,"state":"disabled","readiness_dependency":false,"generation":0,"workers_started":0,"workers_reaped":0,"workers_active":0,"controller_failures":0,"worker_rss_known":false,"worker_rss_observed_bytes":0,"io_timeout_ms":2000,"restart_limit":3,"restart_window_ms":60000,"block_bytes":8388608,"buffer_payload_limit_bytes":25169920,"buffer_limit_excludes_process_overhead":true}
+[CACHE_HEALTH]{"configured":true,"available":true,"state":"ready","readiness_dependency":false,"generation":23,"workers_started":1,"workers_reaped":0,"workers_active":1,"controller_failures":0,"worker_rss_known":true,"worker_rss_observed_bytes":6463488,"io_timeout_ms":2000,"restart_limit":3,"restart_window_ms":60000,"block_bytes":8388608,"buffer_payload_limit_bytes":25169920,"buffer_limit_excludes_process_overhead":true}
+[PASS] session_cache_health_is_optional_and_contains_no_private_content
+[PASS] responses_cache_prewarm_empty_output_usage_and_diagnostics_persist
+[PASS] responses_cache_usage_cannot_double_count_reads_and_writes
+[PASS] responses_context_background_restore_keeps_events_and_history
+[PASS] responses_execution_stateless_does_not_depend_on_storage
+[PASS] responses_execution_commits_actual_ordered_events_and_usage
+[PASS] chat_capabilities_native_responses_state_and_recovery
+[PASS] chat_template_tool_result_order
+[PASS] chat_template_tool_result_names_follow_ids
+[PASS] responses_plan_rejects_invalid_public_types_and_exact_numbers
+[PASS] responses_plan_lifecycle_fields_survive_and_conflicts_fail
+[PASS] responses_plan_reasoning_effort_and_verbosity_model_adaptation
+[PASS] chat_plan_uniform_output_and_null_defaults
+[PASS] chat_plan_explicit_slot_boundaries
+[PASS] chat_plan_cache_configuration_and_seed_boundary
+[PASS] chat_plan_native_template_and_constraint_adapter
+42 tests, 42 passed, 0 failed, 0 skipped

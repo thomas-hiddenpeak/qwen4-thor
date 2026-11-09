@@ -8661,7 +8661,15 @@
           "$ref": "#/$defs/805"
         },
         "prompt_cache_key": {
-          "$ref": "#/$defs/20"
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 512
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "prompt_cache_options": {
           "$ref": "#/$defs/810"
@@ -9884,7 +9892,10 @@
           "$ref": "#/$defs/157"
         },
         "ttl": {
-          "$ref": "#/$defs/814"
+          "enum": [
+            "30m",
+            "12h"
+          ]
         }
       },
       "required": [],
@@ -11567,7 +11578,10 @@
           "$ref": "#/$defs/944"
         },
         "ttl": {
-          "$ref": "#/$defs/11"
+          "enum": [
+            "30m",
+            "12h"
+          ]
         }
       },
       "required": [
@@ -17265,7 +17279,15 @@
               "$ref": "#/$defs/663"
             },
             "prompt_cache_key": {
-              "$ref": "#/$defs/20"
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 512
+                },
+                {
+                  "type": "null"
+                }
+              ]
             },
             "prompt_cache_retention": {
               "$ref": "#/$defs/815"
@@ -17532,7 +17554,15 @@
                   "$ref": "#/$defs/663"
                 },
                 "prompt_cache_key": {
-                  "$ref": "#/$defs/20"
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "maxLength": 512
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 },
                 "prompt_cache_retention": {
                   "$ref": "#/$defs/815"
@@ -17700,12 +17730,23 @@
       "official HTTP examples use usage:null for active/cancelled responses; completed/incomplete require actual usage",
       "native store echo and native response error codes",
       "SDK-documented include_obfuscation adds optional string padding to delta events only",
+      "official prompt caching guide permits 12h on request/applied options in addition to the pinned SDK 30m literal",
       "exact integer and bounded native options",
       "native cancellation credentials and timeout/seed extensions",
       "SDK combined body/query split on actual HTTP boundary",
       "compact output is a replayable input window including preserved user messages; only this SDK OutputItem[] inconsistency is adapted"
     ],
     "wire_references": [
+      {
+        "date": "2026-11-10",
+        "url": "https://developers.openai.com/api/docs/guides/prompt-caching",
+        "contract": "Request and breakpoint TTL 30m/12h; exact eligible boundaries; overlapping read/write token accounting"
+      },
+      {
+        "date": "2026-11-10",
+        "url": "https://developers.openai.com/api/docs/guides/prompt-caching/diagnostics",
+        "contract": "Optional client-scoped short-lived hashes; unavailable never fails generation; terminal SSE carries comparison"
+      },
       {
         "date": "2026-11-09",
         "url": "https://developers.openai.com/api/reference/resources/responses/methods/cancel",

@@ -84,6 +84,9 @@ class ResponsesExecution {
   const ResponsesEnvelope& Envelope() const { return envelope_; }
   const ResponsesGenerationPlan& Generation() const { return generation_; }
   const ResponsesOutput& Output() const { return output_; }
+  void CacheDiagnostics(io::Json value) noexcept {
+    output_.CacheDiagnostics(std::move(value));
+  }
   int64_t* Sequence() { return output_.Sequence(); }
   const std::string& Id() const { return plan_.id; }
   const std::string& Scope() const { return plan_.scope; }

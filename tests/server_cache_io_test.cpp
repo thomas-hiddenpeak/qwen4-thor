@@ -64,6 +64,48 @@ bool DomainContinues(IsolatedWorkerDomain domain) {
 }
 }  // namespace
 
+Q4T_TEST(cache_io_creates_private_default_directory_only_in_worker) {
+  Injection cleanup;
+  Fixture fixture;
+  const auto root = fixture.options.directory;
+  fixture.options.directory += "/native/cache";
+  fixture.options.create_directory = true;
+  Q4T_CHECK(!fs::exists(fixture.options.directory));
+  CacheIo io(fixture.options);
+  Q4T_CHECK(Ready(io));
+  struct stat info {};
+  Q4T_CHECK(stat(fixture.options.directory.c_str(), &info) == 0 &&
+            (info.st_mode & 0777) == 0700 && info.st_uid == geteuid());
+  CacheFile file;
+  Q4T_CHECK(io.Create(&file));
+  std::vector<uint8_t> input(CacheIo::kAlignment, 51), actual(input.size());
+  Q4T_CHECK(io.Write(file, 0, input) && io.Read(file, 0, actual));
+  Q4T_CHECK(input == actual && fs::is_empty(fixture.options.directory));
+  io.Close(file);
+  return true;
+}
+
+Q4T_TEST(cache_io_default_directory_rejects_symlinks_and_public_permissions) {
+  Injection cleanup;
+  Fixture fixture;
+  const auto root = fixture.options.directory;
+  fs::create_directory(root + "/public");
+  Q4T_CHECK(chmod((root + "/public").c_str(), 0755) == 0);
+  fs::create_directory_symlink(root, root + "/alias");
+  for (const auto& suffix : {"/alias/created", "/public", "/../escaped"}) {
+    auto options = fixture.options;
+    options.directory += suffix;
+    options.create_directory = true;
+    CacheIo io(options);
+    Q4T_CHECK(!io.Initialize());
+  }
+  Q4T_CHECK(!fs::exists(root + "/created"));
+  struct stat info {};
+  Q4T_CHECK(stat((root + "/public").c_str(), &info) == 0 &&
+            (info.st_mode & 0777) == 0755);
+  return true;
+}
+
 int CacheIoFixture(int argc, char** argv) {
   if (argc < 2) return -1;
   const std::string_view entry = argv[1];

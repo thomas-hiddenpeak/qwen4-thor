@@ -25,6 +25,14 @@ struct SessionRange {
 // One private lease covers both layouts; switching layouts is a cache miss.
 enum class SessionLayout { kMtp, kTarget };
 
+struct SessionCacheLifetime {
+  int write_seconds = 1800;
+  int read_refresh_seconds = 1800;
+  // Zero retains the legacy sliding lifetime. API-managed entries apply a
+  // finite total retention cap independently of the recent-access timestamp.
+  int max_age_seconds = 0;
+};
+
 // Capability-keyed prefix snapshots with isolated filesystem I/O. Device copies
 // by the caller, which must own the model scratch/slot until Transfer returns.
 // CPU contracts use the same storage path with a checked host-copy callback.
@@ -47,7 +55,8 @@ class SessionCache {
   SessionCache(const SessionCache&) = delete;
   SessionCache& operator=(const SessionCache&) = delete;
   Status Open(const std::string& directory, int min_prefix = kMinPrefix,
-              size_t disk_budget = kDiskBudget, bool incremental = false);
+              size_t disk_budget = kDiskBudget, bool incremental = false,
+              bool create_directory = false);
   // Configuration is distinct from availability: a failed optional worker
   // must not reject ordinary generation, including requests with session IDs.
   bool Enabled() const { return staging_ && io_; }
@@ -55,9 +64,10 @@ class SessionCache {
   bool Acquire(const std::string& key);
   // Shared snapshots use scope + ':' + SHA256(prefix) as the key. A selected
   // entry is leased until Release, including the interval before Restore.
-  bool AcquireNew(const std::string& key);
+  bool AcquireNew(const std::string& key, int minimum_write_seconds = 0);
   int MatchShared(const std::string& scope, std::span<const int32_t> prompt,
-                  std::string* key, SessionLayout layout = SessionLayout::kMtp);
+                  std::string* key, SessionLayout layout = SessionLayout::kMtp,
+                  std::span<const int> allowed_boundaries = {});
   void Release(const std::string& key, bool success);
   int Match(const std::string& key, std::span<const int32_t> prompt,
             SessionLayout layout = SessionLayout::kMtp);
@@ -69,7 +79,8 @@ class SessionCache {
               std::span<const SessionRange> ranges, const Copy& copy,
               const Cancel& cancel, int32_t d0,
               SessionSaveTiming* timing = nullptr,
-              SessionLayout layout = SessionLayout::kMtp);
+              SessionLayout layout = SessionLayout::kMtp,
+              SessionCacheLifetime lifetime = {});
   size_t Bytes() const;
 
  private:
@@ -94,10 +105,16 @@ class SessionCache {
     std::vector<size_t> sizes;
     std::vector<trace::Digest> digests;
     std::chrono::steady_clock::time_point used;
+    SessionCacheLifetime lifetime;
+    std::chrono::steady_clock::time_point expires;
+    std::chrono::steady_clock::time_point retention_end;
     ~Entry();
   };
   using Entries = std::map<std::string, std::unique_ptr<Entry>>;
   void Refresh();
+  static bool Expired(const Entry& entry,
+                      std::chrono::steady_clock::time_point now);
+  static void Touch(Entry* entry, std::chrono::steady_clock::time_point now);
   void Erase(Entries::iterator it);
   Status SaveIncremental(Entry* entry, std::span<const SessionRange> ranges,
                          const Copy& copy, const Cancel& cancel,

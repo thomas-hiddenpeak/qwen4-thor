@@ -69,8 +69,10 @@ Status SessionStateRanges(const model::Model& model, const mtp::MtpModel& draft,
                           uint16_t* last_main_trunk,
                           std::vector<SessionRange>* ranges) {
   ranges->clear();
-  if (slot < 0 || slot >= draft.max_seq || model.cfg.seq_capacities.empty() ||
-      draft.cfg.seq_capacities.empty() || prefix < 1 ||
+  // SequenceOffset and Capacity cover both uniform and explicitly sized
+  // slots. The state layout is identical; no explicit-capacity opt-in is
+  // required by the standard API cache path.
+  if (slot < 0 || slot >= draft.max_seq || prefix < 1 ||
       prefix >= draft.cfg.Capacity(slot) || !rolling_g || !last_main_trunk)
     return Status::Fail("session state slot/prefix/layout");
   const auto status = TargetSessionStateRanges(model, slot, prefix, ranges);

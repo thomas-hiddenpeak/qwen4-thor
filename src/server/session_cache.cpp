@@ -23,7 +23,8 @@ SessionCache::~SessionCache() {
 }
 
 Status SessionCache::Open(const std::string& directory, int min_prefix,
-                          size_t disk_budget, bool incremental) {
+                          size_t disk_budget, bool incremental,
+                          bool create_directory) {
   if (Enabled()) return Status::Fail("session cache already open");
   if (min_prefix < 1 || min_prefix > kMaxPrefix || !disk_budget ||
       disk_budget > kDiskBudget)
@@ -34,7 +35,8 @@ Status SessionCache::Open(const std::string& directory, int min_prefix,
   }
   staging_ = buffer;
   io_ = std::make_unique<CacheIo>(CacheIoOptions{.directory = directory,
-                                               .domain = domain_});
+                                               .domain = domain_,
+                                               .create_directory = create_directory});
   min_prefix_ = min_prefix;
   disk_budget_ = disk_budget;
   incremental_ = incremental;
@@ -55,31 +57,53 @@ void SessionCache::Refresh() {
   }
 }
 
+bool SessionCache::Expired(const Entry& entry,
+                           std::chrono::steady_clock::time_point now) {
+  return now >= entry.expires;
+}
+
+void SessionCache::Touch(Entry* entry,
+                         std::chrono::steady_clock::time_point now) {
+  entry->used = now;
+  entry->expires = std::min(
+      entry->retention_end,
+      std::max(entry->expires,
+               now + std::chrono::seconds(entry->lifetime.read_refresh_seconds)));
+}
+
 bool SessionCache::Acquire(const std::string& key) {
   const std::lock_guard lock(mutex_);
   return Enabled() && busy_.size() < 32 && busy_.insert(key).second;
 }
-bool SessionCache::AcquireNew(const std::string& key) {
+bool SessionCache::AcquireNew(const std::string& key,
+                              int minimum_write_seconds) {
   const std::lock_guard lock(mutex_);
   Refresh();
-  if (!Enabled() || busy_.size() >= 32 || busy_.contains(key)) return false;
+  if (!Enabled() || busy_.size() >= 32 || busy_.contains(key) ||
+      minimum_write_seconds < 0 || minimum_write_seconds > 86400)
+    return false;
   const auto old = entries_.find(key);
   if (old != entries_.end()) {
-    if (std::chrono::steady_clock::now() - old->second->used <=
-        std::chrono::minutes(30))
+    if (Expired(*old->second, std::chrono::steady_clock::now()))
+      Erase(old);
+    else if (minimum_write_seconds <= old->second->lifetime.write_seconds)
       return false;
-    Erase(old);
+    // A requested longer lifetime needs a real replacement write. Hold the
+    // old entry until Save owns the replacement; a failed save becomes a miss.
   }
   return busy_.insert(key).second;
 }
 
 int SessionCache::MatchShared(const std::string& scope,
                               std::span<const int32_t> prompt, std::string* key,
-                              SessionLayout layout) {
+                              SessionLayout layout,
+                              std::span<const int> allowed_boundaries) {
   const std::lock_guard lock(mutex_);
   key->clear();
   Refresh();
-  if (!Enabled() || busy_.size() >= 32) return 0;
+  if (!Enabled() || busy_.size() >= 32 ||
+      !std::is_sorted(allowed_boundaries.begin(), allowed_boundaries.end()))
+    return 0;
   auto best = entries_.end();
   const auto now = std::chrono::steady_clock::now();
   const std::string group = scope + ':';
@@ -89,13 +113,16 @@ int SessionCache::MatchShared(const std::string& scope,
       continue;
     }
     const auto& e = *it->second;
-    if (now - e.used > std::chrono::minutes(30)) {
+    if (Expired(e, now)) {
       auto expired = it++;
       Erase(expired);
       continue;
     }
     if (it->first.starts_with(group) && e.published && e.layout == layout &&
         e.prefix.size() <= prompt.size() &&
+        (allowed_boundaries.empty() ||
+         std::binary_search(allowed_boundaries.begin(), allowed_boundaries.end(),
+                             static_cast<int>(e.prefix.size()) - 1)) &&
         (best == entries_.end() ||
          e.prefix.size() > best->second->prefix.size()) &&
         std::equal(e.prefix.begin(), e.prefix.end() - 1, prompt.begin()))
@@ -138,8 +165,8 @@ int SessionCache::Match(const std::string& key, std::span<const int32_t> prompt,
   auto it = entries_.find(key);
   if (!busy_.contains(key) || it == entries_.end()) return 0;
   auto& entry = *it->second;
-  if (std::chrono::steady_clock::now() - entry.used >
-      std::chrono::minutes(30)) {
+  const auto now = std::chrono::steady_clock::now();
+  if (Expired(entry, now)) {
     Erase(it);
     return 0;
   }
@@ -147,7 +174,7 @@ int SessionCache::Match(const std::string& key, std::span<const int32_t> prompt,
       entry.prefix.size() > prompt.size() ||
       !std::equal(entry.prefix.begin(), entry.prefix.end() - 1, prompt.begin()))
     return 0;
-  entry.used = std::chrono::steady_clock::now();
+  entry.used = now;
   return static_cast<int>(entry.prefix.size()) - 1;
 }
 
@@ -323,6 +350,10 @@ Status SessionCache::Restore(const std::string& key,
   if (!busy_.contains(key) || it == entries_.end() || !it->second->published)
     return Status::Fail("session cache missing lease/entry");
   auto& entry = *it->second;
+  if (Expired(entry, std::chrono::steady_clock::now())) {
+    Erase(it);
+    return Status::Fail("session cache expired before restore");
+  }
   if (entry.layout != layout)
     return Status::Fail("session cache execution layout mismatch");
   if (ranges.size() != entry.sizes.size())
@@ -333,7 +364,10 @@ Status SessionCache::Restore(const std::string& key,
   const Status s = Transfer(&entry, ranges, copy, cancel, true);
   if (s.ok() && d0) *d0 = entry.d0;
   if (s.ok() && pending) *pending = entry.prefix.back();
-  if (s.ok()) entry.restored = true;
+  if (s.ok()) {
+    entry.restored = true;
+    Touch(&entry, std::chrono::steady_clock::now());
+  }
   if (!s.ok()) Erase(it);
   return s;
 }
@@ -342,7 +376,15 @@ Status SessionCache::Save(const std::string& key,
                           std::span<const int32_t> prefix,
                           std::span<const SessionRange> ranges,
                           const Copy& copy, const Cancel& cancel, int32_t d0,
-                          SessionSaveTiming* timing, SessionLayout layout) {
+                          SessionSaveTiming* timing, SessionLayout layout,
+                          SessionCacheLifetime lifetime) {
+  if (lifetime.write_seconds <= 0 || lifetime.write_seconds > 86400 ||
+      lifetime.read_refresh_seconds < 0 ||
+      lifetime.read_refresh_seconds > 86400 || lifetime.max_age_seconds < 0 ||
+      lifetime.max_age_seconds > 86400 ||
+      (lifetime.max_age_seconds &&
+       lifetime.write_seconds > lifetime.max_age_seconds))
+    return Status::Fail("session cache lifetime limits");
   std::unique_lock<std::mutex> lock;
   {
     SessionSaveTiming::Scope span(timing, SessionSaveTiming::kCacheLock);
@@ -448,6 +490,13 @@ Status SessionCache::Save(const std::string& key,
     return s;
   }
   SessionSaveTiming::Scope span(timing, SessionSaveTiming::kPublish);
+  entry->lifetime = lifetime;
+  entry->used = std::chrono::steady_clock::now();
+  entry->expires = entry->used + std::chrono::seconds(lifetime.write_seconds);
+  entry->retention_end = lifetime.max_age_seconds
+                            ? entry->used +
+                                  std::chrono::seconds(lifetime.max_age_seconds)
+                            : std::chrono::steady_clock::time_point::max();
   bytes_ += std::max(bytes, entry->disk_charge);
   entries_.emplace(key, std::move(entry));
   return Status();

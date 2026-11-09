@@ -16,6 +16,10 @@ set(protocol_inputs
   include/q4t/server/responses_input.h
   src/server/responses_input.cpp
   include/q4t/server/prompt_registry.h
+  include/q4t/server/prompt_cache_policy.h
+  src/server/prompt_cache_policy.cpp
+  include/q4t/server/prompt_cache_diagnostics.h
+  src/server/prompt_cache_diagnostics.cpp
   src/server/prompt_internal.h
   src/server/prompt_template.cpp
   src/server/prompt_registry.cpp

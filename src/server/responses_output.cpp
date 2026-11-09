@@ -107,6 +107,9 @@ Status ResponsesOutput::Init(const io::Json& options, std::string id,
                           "previous_response_id",
                           "conversation",
                           "prompt",
+                          "prompt_cache_key",
+                          "prompt_cache_options",
+                          "prompt_cache_retention",
                           "user",
                           "safety_identifier",
                           "service_tier",
@@ -146,6 +149,15 @@ void ResponsesOutput::Event(std::string_view type, io::Json fields,
 }
 
 io::Json& ResponsesOutput::Items() { return Field(response_, "output"); }
+void ResponsesOutput::CacheDiagnostics(io::Json value) noexcept {
+  try {
+    if (initialized_ && !terminal_ && value.IsObject() &&
+        OutputJson(value).size() <= 512)
+      Set(&response_, "prompt_cache_diagnostics", std::move(value));
+  } catch (...) {
+    // Optional diagnostics must not turn a valid response into a failure.
+  }
+}
 io::Json ResponsesOutput::Location(size_t index, bool content) const {
   const auto& item = response_.GetArray("output")->array.at(index);
   auto result =
@@ -481,6 +493,7 @@ Status ResponsesOutput::Finish(bool incomplete, size_t completed_calls,
       usage.cached_tokens < 0 || usage.cached_tokens > usage.input_tokens ||
       usage.cache_write_tokens < 0 ||
       usage.cache_write_tokens > usage.input_tokens ||
+      usage.cache_write_tokens > usage.input_tokens - usage.cached_tokens ||
       usage.reasoning_tokens < 0 ||
       usage.reasoning_tokens > usage.output_tokens ||
       usage.input_tokens > INT64_MAX - usage.output_tokens || completed_at < 0)

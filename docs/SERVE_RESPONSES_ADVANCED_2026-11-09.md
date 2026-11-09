@@ -160,3 +160,25 @@ A07.5 [27 项 CPU/来源检查](evidence/serve-prompts-cpu-20261109/README.md)�
 2026-11-10：[A07.5 真实业务接受](evidence/serve-prompts-business-20261110/README.md)，2 启动/8 请求/7 步，实际版本结果、模板删除后后台回放和文档工具闭环通过，随后可回退默认交付。
 
 2026-11-10：[A07.5 默认交付](evidence/serve-prompts-delivery-20261110/README.md)完成，原生包945e6f73/revision18，STOPPED；A07.4完整回退与账本保持。A07.6及全部总计划继续。
+
+### A07.6 缓存接入：2026-11-10 连续实现清单
+
+本组是缺失服务语义的实现，非性能优化；不承诺吞吐增益，不跑完整性能/全模型矩阵。
+已有 SessionCache 保存完整目标/MTP 状态并隔离文件 I/O，Responses 尚未接入：options 被执行前拒绝、breakpoint 被输入映射拒绝、写入 usage 一直为零。不得仅回显参数或将这些缺口标成完成。
+
+实现顺序与完成条件：
+
+1. 统一缓存策略与边界：验证 implicit/explicit、prewarm、30m/12h TTL、retention/key 和 comparison_response_id；媒体/file 标记继续沿 A10 解析链保留。按真实模板内容跨度定位，不向模型插入标记串；使用既有 NFC/token 字节偏移确定实际完整 token 边界。显式无断点不读写，隐式选择最后合格消息，最多4个写点；处理最新指南与固定 SDK 的差异并显式记入 schema 来源适配。
+2. 复用本机有界前缀状态：多断点、客户端+key分区、完整目标/MTP状态精确前缀匹配、逐项有效期及总保留边界、容量/取消/损坏/worker失能隔离。未失效条目不会被错误标成命中；没有实际保存/恢复就不增加计数。缓存故障允许普通生成继续，prewarm不得虚报完成缓存写入。
+3. 原生执行与协议：实际 cache read/write tokens，prewarm只运行输入预填充、不采样生成；JSON/SSE/后台/持久响应保持原ID/配额/截止。比较诊断读取同一客户端的原响应，未知/不可用与实际命中分开报告。Chat标准key/retention对接同一缓存策略，保留既有原生scope/checkpoint用法。
+4. 成组完成后冻结直接 CPU：策略/类型/TTL、边界/trim/Unicode/工具顺序、配额/隔离/过期/损坏、零输出/usage/SSE及schema；必要实际 SDK/模型短验覆盖写后命中、显式关闭、key隔离和prewarm，不把合成状态当真实模型证据。待驱动完成后冻结实际启动/请求上限。验证通过再默认可回退交付，随后 A07.7/A07.8 和全部余项。
+
+[官方缓存指南](https://developers.openai.com/api/docs/guides/prompt-caching)现已说明12h请求TTL及新的查找边界；固定7.47.0 SDK仍将请求TTL限制为30m、断点允许12h，并描述80个历史断点。实现以明确的原生兼容合同记录该差异，保持最多4写点；TTL表示缓存策略，不能被宣传成每次必命中或重启后必复用。
+
+A07.6 实际路径成组接入（2026-11-10）：原生多断点目标/MTP状态读写、成功恢复与新写入覆盖分别计数、预热不生成/不触发摘要或压缩、Chat标准key/retention、原生默认缓存目录已接入。默认目录为应用状态路径加 `-prompt-cache`，只由隔离worker创建0700目录和匿名SSD文件；故障不关闭核心，后续请求仍可触发已有有界恢复。现代TTL上限24h；单独旧retention的in_memory/24h分别限制总寿命1h/24h，默认30m空闲刷新；没有云计费承诺。
+
+比较诊断改用进程内近期哈希记录：每客户端16条/总128条/1h，按128token分块估计首差异，仅实际恢复覆盖足够才报hit；保存真实成功响应的哈希，不保留raw token/提示词，不经过对象存储IO，也不重启模型。重启/到期报告comparison_response_not_found，无法归因的物理miss报告unavailable。该实现替代初稿中依赖持久响应读取的诊断路径，以保证辅助依赖隔离；持久JSON/SSE仍保存原诊断结果。
+
+冻结42项直接C++、3项schema/真实C++输出检查及来源清单/生成漂移检查，清单原件在 `.q4t-work/serve-prompt-cache-20261110/validation-plan.json`。尚未执行测试或GPU；开始host与实际引擎必要构建。首次schema准备引用旧graph缺少compacted_response，原始失败说明保留；使用同一固定SDK重新生成完整graph并按依赖顺序重建schema。通过后继续实际业务短验与交付，不结束总目标。
+
+构建后静态审查补充：默认等长槽也需执行MTP缓存。原状态范围已用SequenceOffset/Capacity支持两种布局，移除仅显式槽的旧门禁并补实际streamed入口；保留真实设备错误保护，可选缓存scratch不足只关闭本请求缓存。仍未开始测试，原42host/3schema之外追加2个现有纯CPU状态范围用例，独立 `q4t_session_target_contract`，没有CUDA调用。

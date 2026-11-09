@@ -58,6 +58,8 @@ size_t ResponsesExecution::RetainedInputBytes() const {
   if (compaction_.chat.normalized_request)
     bytes += OutputJson(*compaction_.chat.normalized_request).size();
   for (const auto& path : generation_.input.message_paths) bytes += path.size();
+  bytes += generation_.input.cache_boundaries.size() *
+           sizeof(PromptCacheInputBoundary);
   bytes += generation_.chat.constraints.structural_tag.size();
   return bytes;
 }
@@ -107,8 +109,7 @@ ObjectReply ResponsesExecution::RequiredExecutors(
     required = "background";
   else if (envelope_.reasoning_mode != "standard")
     required = "reasoning.mode";
-  for (const char* key :
-       {"access_programs", "moderation", "prompt_cache_options"})
+  for (const char* key : {"access_programs", "moderation"})
     if (required.empty() && Nonnull(envelope_.request, key)) required = key;
   if (!required.empty()) {
     auto reply =

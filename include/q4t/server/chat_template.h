@@ -2,6 +2,7 @@
 // by the HTTP adapter so decoding image bytes never occurs during formatting.
 #pragma once
 
+#include <cstddef>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -17,6 +18,16 @@ inline constexpr std::string_view kChatMessageProfile = "qwen3.8-openai-v3";
 // message order; a lone unnamed leading instruction retains native bytes.
 bool IsChatInstructionRole(std::string_view role);
 
+// Actual content placement in the rendered prompt. Source coordinates refer
+// to the transport-rendered content before Unicode trim. Assistant/tool
+// framing and reordered tool replies are recorded without modifying bytes.
+struct ChatMessageSpan {
+  size_t source_begin = 0;
+  size_t source_size = 0;
+  size_t prompt_begin = 0;
+  size_t prompt_end = 0;
+};
+
 // Shared by HTTP and the renderer: validate role-specific content, metadata
 // and historical refusal without decoding media or changing the request.
 Status ValidateChatMessageProfile(const io::Json& messages,
@@ -24,6 +35,7 @@ Status ValidateChatMessageProfile(const io::Json& messages,
 
 Status RenderChatPrompt(const io::Json& request,
                         const std::vector<std::string>& contents,
-                        std::string* prompt);
+                        std::string* prompt,
+                        std::vector<ChatMessageSpan>* spans = nullptr);
 
 }  // namespace q4t::server

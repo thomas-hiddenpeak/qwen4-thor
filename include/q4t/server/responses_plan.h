@@ -16,6 +16,7 @@ namespace q4t::server {
 struct ResponsesEnvelope {
   io::Json request;
   io::Json options;
+  PromptCacheOptions cache;
   bool stream = false;
   bool store = true;
   bool background = false;

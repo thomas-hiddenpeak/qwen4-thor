@@ -561,6 +561,30 @@
       "type": "string",
       "pattern": "^[0-9a-f]{64}$"
     },
+    "prompt_cache_key": {
+      "anyOf": [
+        {
+          "type": "string",
+          "maxLength": 512
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "prompt_cache_retention": {
+      "anyOf": [
+        {
+          "enum": [
+            "in_memory",
+            "24h"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
     "prefix_cache_write_tokens": {
       "anyOf": [
         {
@@ -2948,6 +2972,43 @@
               []
             ]
           }
+        }
+      }
+    },
+    {
+      "if": {
+        "anyOf": [
+          {
+            "required": [
+              "prompt_cache_key"
+            ],
+            "properties": {
+              "prompt_cache_key": {
+                "not": {
+                  "type": "null"
+                }
+              }
+            }
+          },
+          {
+            "required": [
+              "prompt_cache_retention"
+            ],
+            "properties": {
+              "prompt_cache_retention": {
+                "not": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "then": {
+        "not": {
+          "required": [
+            "prefix_cache_scope"
+          ]
         }
       }
     }
