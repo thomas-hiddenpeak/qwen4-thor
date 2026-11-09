@@ -1,0 +1,6 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-programs-20261110/release-01/bundle",
+  "manifest_sha256": "b4c8675608718ea2c11ea4a493c0129df38f1d5f3d27264c1c3b11525236831e",
+  "engine_binary_sha256": "639c6b7b6c25095af0aecbd323ba2cead42aeccf49fd5e69fb1774643aed4aec",
+  "recovery_accepted": false
+}

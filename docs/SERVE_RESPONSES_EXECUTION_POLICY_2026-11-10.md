@@ -1,6 +1,6 @@
 # A07.7 原生执行策略连续清单
 
-本项继续总计划，pro、moderation和access_programs均为实现任务，不以参数回显或固定拒绝结案。非性能功能只做直接CPU与对应真实业务短验；不作全模型质量/性能结论。当前默认A07.7b原生审核已可回退交付，继续A07.7c及全部总目标。
+本项继续总计划，pro、moderation和access_programs均为实现任务，不以参数回显或固定拒绝结案。非性能功能只做直接CPU与对应真实业务短验；不作全模型质量/性能结论。A07.7a/b/c已可回退交付，继续A07.8及全部总目标。
 
 ## 来源和本机行为
 
@@ -91,3 +91,5 @@ SDK包含moderation.model和input/output的score/block策略，输出为结果�
 CPU已通过并保留首次夹具失败原件，见[证据](evidence/serve-access-program-cpu-20261110/README.md)。继续实际1启动/8生成/5拒绝/8模型步短验。后续A07.8还须补`POST /v1/responses/input_tokens`标准计数入口；现有Chat preflight不能冒充此端点完成。
 
 [A07.7c实际业务已接受](evidence/serve-access-program-business-20261110/README.md)：1启动/8生成+5拒绝/55.172秒，53 NVML全OK。继续可回退交付及全部任务。
+
+[A07.7c默认交付完成](evidence/serve-access-program-delivery-20261110/README.md)：包b4c86756/引擎639c6b7b，revision26、STOPPED；旧审核代与业务账本保持，继续A07.8和全部任务。

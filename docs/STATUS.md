@@ -1,5 +1,11 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+A07.7c 原生授权策略完成[CPU](evidence/serve-access-program-cpu-20261110/README.md)、[真实业务](evidence/serve-access-program-business-20261110/README.md)与[可回退交付](evidence/serve-access-program-delivery-20261110/README.md)。当前引擎`639c6b7b`、元数据`11036e4c`、包`b4c86756`，revision26、STOPPED；审核31adcfab完整回退及Key/配额/用量账本保持。默认无测试cyber授权，原生策略可选，standard完整可用。
+
+实际1启动/8生成+5拒绝/8模型步骤/55.172秒，53 NVML全OK；发布8操作、0新增模型/Chat/GPU。继续A07.8全合同核对与标准input_tokens入口，之后全部A/R/Q/G任务。总目标active，未合main。
+
+以下历史检查点，当前默认以上段为准。
+
 A07.7c [实际业务通过](evidence/serve-access-program-business-20261110/README.md)：1启动/8生成+5拒绝/8模型步/55.172秒，53 NVML全OK，自有进程/端口/锁释放。原生策略真实上下文、授权拒绝零模型/额度、工具/后台原回放、配置文件失能同PID继续、精确账本均通过；候选639c6b7b。继续可回退交付、A07.8和全部总目标，默认审核31adcfab尚未替换。
 
 A07.7c [18 C++/2schema/4封装/4驱动通过](evidence/serve-access-program-cpu-20261110/README.md)，host/实际引擎零警告；首夹具权限与计步失败及定向补验保留，另9项附带封装检查分列。准备1启动/8生成/5拒绝/8模型步/900秒真实短验，默认31adcfab保持。继续可回退交付、A07.8及全部总任务。

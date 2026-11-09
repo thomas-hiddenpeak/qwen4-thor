@@ -227,16 +227,16 @@
         "evidence/serve-prompt-cache-delivery-20261110/README.md"
       ],
       "release": {
-        "engine_binary_sha256": "31adcfab638c187e27433ad966a1a8817d8dc8ebf56339acc0f83805496860df",
-        "engine_release_sha256": "0d98d70fe6a43b6e55627de86659a32acc415bccf5430bfaa33d70566ef395dd",
-        "generation_sha256": "27c9de3e076368034d94f319219350aa0f0e5d79783cffa8944fdc2d0b19a3fb",
-        "manifest_sha256": "4f71ce5c76c4905554cf4722c0a76a53c7de0550ba87f96f3c57a665f831b32a",
-        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-moderation-20261110/release-01/bundle",
-        "service_acceptance_sha256": "92fa6ee452c94ec1498ac26c7c1820a3a25c405782b00f0a008155b0cb91cea5",
-        "service_release_sha256": "081d960a0e29b975b30480f7823cc1e90e235def69444f76c8dbb88a3f75ad51",
-        "record": "docs/evidence/serve-moderation-delivery-20261110/result.json"
+        "engine_binary_sha256": "639c6b7b6c25095af0aecbd323ba2cead42aeccf49fd5e69fb1774643aed4aec",
+        "engine_release_sha256": "11036e4c877c2cd82998ddb2ca5bf878eeae022b191a3ff1a5cb2705375996b7",
+        "generation_sha256": "9efded02cbe6152c51e00148fd502cb1953f9b527aae1b91a2bd0446f354e257",
+        "manifest_sha256": "b4c8675608718ea2c11ea4a493c0129df38f1d5f3d27264c1c3b11525236831e",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-programs-20261110/release-01/bundle",
+        "service_acceptance_sha256": "c32dceb8f51903573e8ef2a42fe09ec5c06eb7eb54eb892311f1af7067c05183",
+        "service_release_sha256": "ad2cd693508b8f2aea9d3f88641289ad2ce5b8af391f3a6a7f97d5c646899b9b",
+        "record": "docs/evidence/serve-access-program-delivery-20261110/result.json"
       },
-      "development_status": "A07.1-A07.6, A07.7a pro and A07.7b Responses moderation delivered; A07.7c access programs remains required before A07.8",
+      "development_status": "A07.1-A07.7 native execution delivered; A07.8 full contract/endpoint audit remains required",
       "item_shape_evidence": "evidence/serve-item-shape-20261109/README.md",
       "execution_evidence": "evidence/serve-responses-execution-20261109/README.md",
       "foreground_business_evidence": "evidence/serve-responses-business-20261109/README.md",
@@ -252,8 +252,7 @@
       "delivery_evidence": "evidence/serve-chat-delivery-20261109/README.md",
       "plan": "SERVE_RESPONSES_ADVANCED_2026-11-09.md",
       "remaining_required": [
-        "A07.7c actual authorized access program executors",
-        "A07.8 complete input/output/include/SSE/SDK and release audit"
+        "A07.8 complete input/output/include/SSE/SDK and release audit including standard input_tokens endpoint"
       ],
       "automatic_truncation": {
         "state": "delivered",
@@ -296,7 +295,7 @@
         },
         "publication_revision": 10
       },
-      "current_work": "A07.7c bounded actual policy/authorization business then reversible delivery; A07.8 and all master tasks continue",
+      "current_work": "A07.8 full contract audit and standard response input token counting; then every remaining master task",
       "reasoning_summary": {
         "state": "delivered",
         "cpu_checks": 31,
@@ -731,7 +730,7 @@
         "publication_revision": 24
       },
       "access_programs": {
-        "state": "cpu_pass_pending_business",
+        "state": "delivered",
         "native_authority": "q4t-local",
         "cpu": 18,
         "schema": 2,
@@ -743,7 +742,55 @@
           "negative_creates": 5,
           "model_steps": 8,
           "seconds": 900
-        }
+        },
+        "business": {
+          "status": "PASS_RESPONSES_ACCESS_PROGRAM_TARGETED_BUSINESS",
+          "acceptance": "ACCEPT_TARGETED_RESPONSES_ACCESS_PROGRAM",
+          "binary_sha256": "639c6b7b6c25095af0aecbd323ba2cead42aeccf49fd5e69fb1774643aed4aec",
+          "protocol_sha256": "c29b9b1b180a26eb3941a5c81bb33162fbc94087676e9a78dfc119f08b3e4a93",
+          "counts": {
+            "starts": 1,
+            "chats": 13,
+            "controls": 52
+          },
+          "seconds": 55.17177492612973,
+          "actual_generations": 8,
+          "negative_creates": 5,
+          "actual_model_steps": 8,
+          "actual_tool_executions": 1,
+          "nvml_queries": 53,
+          "all_nvml_ok": true,
+          "cleanup_confirmed": true,
+          "model_exit": 0,
+          "cpu_cases": 18,
+          "schema_cases": 2,
+          "package_cases": 4,
+          "driver_cases": 4,
+          "actual_json_sse": true,
+          "model_and_client_authorization": true,
+          "local_policy_actual_context": true,
+          "background_original_replay": true,
+          "denied_requests_zero_model_steps_and_rpm_tpm": true,
+          "removed_runtime_policy_file_no_model_stop": true,
+          "same_pid_ordinary_chat": true,
+          "actual_client_and_global_token_accounting": true,
+          "cloud_authorization_claim": false,
+          "full_model_quality": false,
+          "performance_acceptance": false,
+          "long_stability_accepted": false,
+          "default_changed": false,
+          "remaining_master_tasks_open": true
+        },
+        "release": {
+          "engine_binary_sha256": "639c6b7b6c25095af0aecbd323ba2cead42aeccf49fd5e69fb1774643aed4aec",
+          "engine_release_sha256": "11036e4c877c2cd82998ddb2ca5bf878eeae022b191a3ff1a5cb2705375996b7",
+          "generation_sha256": "9efded02cbe6152c51e00148fd502cb1953f9b527aae1b91a2bd0446f354e257",
+          "manifest_sha256": "b4c8675608718ea2c11ea4a493c0129df38f1d5f3d27264c1c3b11525236831e",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-programs-20261110/release-01/bundle",
+          "service_acceptance_sha256": "c32dceb8f51903573e8ef2a42fe09ec5c06eb7eb54eb892311f1af7067c05183",
+          "service_release_sha256": "ad2cd693508b8f2aea9d3f88641289ad2ce5b8af391f3a6a7f97d5c646899b9b"
+        },
+        "publication_revision": 26
       }
     },
     {
