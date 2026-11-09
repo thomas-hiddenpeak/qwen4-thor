@@ -1,0 +1,46 @@
+{
+  "counts": {
+    "starts": 1,
+    "chats": 5,
+    "probes": 0,
+    "controls": 165
+  },
+  "events": [
+    {
+      "kind": "starts",
+      "label": "controller-1",
+      "ordinal": 1,
+      "monotonic_ns": 2404905364029421
+    },
+    {
+      "kind": "chats",
+      "label": "generation-self-check-1",
+      "ordinal": 1,
+      "monotonic_ns": 2404944386771993
+    },
+    {
+      "kind": "chats",
+      "label": "core-chunked",
+      "ordinal": 2,
+      "monotonic_ns": 2404946225649328
+    },
+    {
+      "kind": "chats",
+      "label": "native-json",
+      "ordinal": 3,
+      "monotonic_ns": 2404946553528797
+    },
+    {
+      "kind": "chats",
+      "label": "native-sse",
+      "ordinal": 4,
+      "monotonic_ns": 2404946972602910
+    },
+    {
+      "kind": "chats",
+      "label": "official-sdk",
+      "ordinal": 5,
+      "monotonic_ns": 2404947467314989
+    }
+  ]
+}

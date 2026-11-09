@@ -1,0 +1,7 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 109
+X-Request-Id: req-fe06d8369718d89da9239aada2b69f94
+Connection: keep-alive
+
+{"object":"list","data":[{"id":"qwen3.8-flash-next","object":"model","created":1794214861,"owned_by":"q4t"}]}

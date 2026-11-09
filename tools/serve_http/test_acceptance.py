@@ -1,6 +1,10 @@
 """N05 harness limits and real frame completion; CPU only."""
 import copy
 import io
+import hashlib
+import json
+from pathlib import Path
+import tempfile
 from types import SimpleNamespace
 import unittest
 from unittest import mock
@@ -52,6 +56,29 @@ class DriverTests(unittest.TestCase):
             stage.generate('blocked',{'p':1},sock,io.BytesIO())
         sock.sendall.assert_not_called()
         self.assertEqual(a.LIMITS,dict(starts=1,chats=10,probes=0,controls=2000,seconds=600))
+
+    def test_prefix_resume_requires_same_cleaned_failure_and_charged_counts(self):
+        root=a.ROOT/'.q4t-work/serve-http-20261109/resume-cpu';root.mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=root) as directory:
+            directory=Path(directory)
+            counts=dict(starts=1,chats=5,probes=0,controls=165)
+            prior=dict(status='FAILED',cleanup_failure=None,package={'pinned':'package'},
+                failure='Node bridge failed before response',budget=dict(counts=counts),
+                models={'1':{'pid':123}},seconds=48)
+            plan=dict(resume_after_prefix=True,package=prior['package'],prior_counts=counts,
+                      prior_seconds=48,prior_evidence=[])
+            for key,value in [('execution',prior),('guard',dict(status='COMMAND_FAILED')),
+                              ('stopped',dict(desired='STOPPED',active={'model':None}))]:
+                path=directory/(key+'.json');path.write_text(json.dumps(value));plan['prior_'+key]=str(path)
+            a.verify_prior(plan)
+            for key,value in [('prior_counts',dict(counts,chats=4)),('prior_seconds',47),
+                              ('package',{'another':'package'})]:
+                with self.assertRaises(ValueError):a.verify_prior(dict(plan,**{key:value}))
+            file=Path(plan['prior_execution']);file.write_text(json.dumps(dict(prior,cleanup_failure='unknown')))
+            with self.assertRaises(ValueError):a.verify_prior(plan)
+            file.write_text(json.dumps(prior));plan['prior_evidence']=[dict(path=str(file),sha256=hashlib.sha256(file.read_bytes()).hexdigest())]
+            file.write_text(json.dumps(dict(prior,failure='unrelated')))
+            with self.assertRaises(ValueError):a.verify_prior(plan)
 
 
 if __name__=='__main__':unittest.main()

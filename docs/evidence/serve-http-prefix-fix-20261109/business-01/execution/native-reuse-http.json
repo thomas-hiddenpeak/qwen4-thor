@@ -1,0 +1,15 @@
+{
+  "status": 200,
+  "headers": {
+    "content-type": "application/json",
+    "content-length": "109",
+    "connection": "keep-alive",
+    "cache-control": "no-store",
+    "x-request-id": "req-e44f22692f284349a789d7bcb357074b",
+    "vary": "Origin",
+    "access-control-allow-origin": "https://client.example",
+    "access-control-allow-credentials": "true",
+    "access-control-expose-headers": "x-request-id, retry-after"
+  },
+  "bytes": 109
+}

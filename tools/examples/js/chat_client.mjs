@@ -515,8 +515,12 @@ export class ChatClient {
   constructor(OpenAI, { baseURL = 'http://127.0.0.1:8080/v1', model = 'qwen3.8-flash-next',
     protocolSha256, timeoutMs = 120000, apiKey, caFile, connectHost, fetchImpl } = {}) {
     const url = new URL(baseURL);
+    const rawPath = /^https?:\/\/[^/?#]+(\/[^?#]*)?$/.exec(baseURL)?.[1];
     requireValue(['http:', 'https:'].includes(url.protocol) && !url.username && !url.password &&
-      !url.search && !url.hash && url.pathname.replace(/\/$/, '') === '/v1', 'expected explicit /v1 base URL');
+      !url.search && !url.hash && rawPath === url.pathname && url.pathname.length <= 516 &&
+      /^(?:\/[A-Za-z0-9._~-]+)*\/v1\/?$/.test(url.pathname) &&
+      url.pathname.split('/').every(part => part !== '.' && part !== '..'),
+    'expected explicit /v1 base URL with an optional canonical path prefix');
     requireValue(integer(timeoutMs) && timeoutMs > 0 && timeoutMs <= 1200000, 'invalid total deadline');
     requireValue(apiKey === undefined || typeof apiKey === 'string' && /^[!-~]{1,4096}$/.test(apiKey), 'invalid API key');
     requireValue(fetchImpl === undefined || typeof fetchImpl === 'function' && caFile === undefined &&

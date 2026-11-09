@@ -1,0 +1,5 @@
+[
+  "/home/rm01/.nvm/versions/node/v24.18.0/bin/node",
+  "--test",
+  "tools/serve_http/test_client_prefix.mjs"
+]

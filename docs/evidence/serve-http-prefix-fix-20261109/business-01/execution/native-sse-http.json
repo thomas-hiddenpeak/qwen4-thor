@@ -1,0 +1,15 @@
+{
+  "status": 200,
+  "headers": {
+    "content-type": "text/event-stream",
+    "connection": "keep-alive",
+    "transfer-encoding": "chunked",
+    "cache-control": "no-store",
+    "x-request-id": "req-8a9e25ca4235e30d8a897e601e26a40c",
+    "vary": "Origin",
+    "access-control-allow-origin": "https://client.example",
+    "access-control-allow-credentials": "true",
+    "access-control-expose-headers": "x-request-id, retry-after"
+  },
+  "bytes": 1077
+}

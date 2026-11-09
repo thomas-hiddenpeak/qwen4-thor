@@ -1,0 +1,6 @@
+[
+  "node",
+  "--input-type=module",
+  "-e",
+  "import {ChatClient} from './tools/examples/js/chat_client.mjs'; new ChatClient(class{}, {baseURL:'https://127.0.0.1:18871/llm/thor/v1',fetchImpl:async()=>{throw new Error('network forbidden')}});"
+]

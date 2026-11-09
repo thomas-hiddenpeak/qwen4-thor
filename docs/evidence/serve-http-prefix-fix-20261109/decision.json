@@ -1,0 +1,26 @@
+{
+  "status": "PASS_TARGETED_CLIENT_PREFIX_FIX_CPU",
+  "tests": 6,
+  "prior_business": "FAILED_SDK_BASE_URL_PREFIX_BEFORE_DISPATCH",
+  "prior": {
+    "starts": 1,
+    "reserved_generations": 5,
+    "actual_generations": 4,
+    "seconds": 48.22298958571628,
+    "cleanup_confirmed": true
+  },
+  "engine_and_ingress_changed": false,
+  "default_changed": false,
+  "remaining": [
+    "SDK/tool/Responses/Completions/actual proxy business",
+    "default delivery",
+    "all remaining master tasks"
+  ],
+  "cumulative_limits": {
+    "starts": 2,
+    "chats": 12,
+    "probes": 0,
+    "controls": 2000,
+    "seconds": 600
+  }
+}

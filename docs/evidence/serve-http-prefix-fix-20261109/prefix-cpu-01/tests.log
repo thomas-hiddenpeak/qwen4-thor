@@ -1,0 +1,9 @@
+test_prefix_rejects_ambiguous_paths_credentials_and_queries (tools.serve_http.test_client_prefix.PrefixTests.test_prefix_rejects_ambiguous_paths_credentials_and_queries) ... ok
+test_prefixed_client_keeps_path_and_authorization_on_actual_http (tools.serve_http.test_client_prefix.PrefixTests.test_prefixed_client_keeps_path_and_authorization_on_actual_http) ... ok
+test_prefix_resume_requires_same_cleaned_failure_and_charged_counts (tools.serve_http.test_acceptance.DriverTests.test_prefix_resume_requires_same_cleaned_failure_and_charged_counts) ... ok
+test_transport_single_post_and_matching_identity (test_chat_client.ClientContracts.test_transport_single_post_and_matching_identity) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.584s
+
+OK

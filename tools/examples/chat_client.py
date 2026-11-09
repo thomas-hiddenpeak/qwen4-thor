@@ -10,6 +10,7 @@ import json
 import math
 import secrets
 import ipaddress
+import re
 import ssl
 import time
 import urllib.error
@@ -745,11 +746,14 @@ class ChatClient:
     def __init__(self, base_url, *, api_key=None, ca_file=None,
                  connect_host=None, timeout=None):
         url = urllib.parse.urlsplit(base_url)
+        path = url.path.removesuffix('/')
         require(url.scheme in ("http", "https") and url.hostname and
                 not url.username and not url.password and not url.query and
-                not url.fragment and url.path.rstrip("/") in ("", "/v1"),
-                "base URL must be an http(s) origin or /v1 endpoint")
-        self.base = urllib.parse.urlunsplit((url.scheme, url.netloc, "/v1", "", ""))
+                not url.fragment and len(url.path) <= 516 and
+                (not path or re.fullmatch(r'(?:/[A-Za-z0-9._~-]+)*/v1', path)) and
+                not {'.', '..'}.intersection(path.split('/')),
+                "base URL must be an http(s) origin or prefixed /v1 endpoint")
+        self.base = urllib.parse.urlunsplit((url.scheme, url.netloc, path or "/v1", "", ""))
         self.api_key = api_key
         require(api_key is None or isinstance(api_key, str) and 1 <= len(api_key) <= 4096 and
                 all(33 <= ord(c) <= 126 for c in api_key), "invalid API key")

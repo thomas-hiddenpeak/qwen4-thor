@@ -1,0 +1,10 @@
+[
+  "/usr/bin/python3",
+  "-B",
+  "-m",
+  "unittest",
+  "-v",
+  "tools.serve_http.test_client_prefix.PrefixTests",
+  "tools.serve_http.test_acceptance.DriverTests.test_prefix_resume_requires_same_cleaned_failure_and_charged_counts",
+  "test_chat_client.ClientContracts.test_transport_single_post_and_matching_identity"
+]
