@@ -435,16 +435,17 @@
         "evidence/serve-usage-store-20261109/decision.json",
         "evidence/serve-usage-runtime-20261109/decision.json",
         "evidence/serve-usage-management-20261109/decision.json",
-        "evidence/serve-deployment-20261109/decision.json"
+        "evidence/serve-deployment-20261109/decision.json",
+        "evidence/serve-initialization-20261109/decision.json"
       ],
       "release": null,
       "plan": "SERVE_ACCESS_CONTROL_2026-11-09.md",
       "remaining": [
-        "initial service bootstrap interruption recovery and actual packaged deployment/compatible rollback",
+        "actual packaged deployment and accepted compatible rollback",
         "TLS native bundle and applicable SDK verification",
         "targeted real business and rollback-capable delivery"
       ],
-      "development_status": "随包STOPPED部署/兼容回退与旧启动器封锁32个不同CPU通过，保留夹具失败原件。继续首次初始化恢复、TLS/SDK真实模型与合格回退默认交付，默认v6保持，N04未完成。"
+      "development_status": "随包STOPPED部署/兼容回退32项及首次初始化续接18项CPU通过。继续原生TLS/SDK真实模型、合格回退默认交付，默认v6保持，N04未完成。"
     },
     {
       "id": "N05",

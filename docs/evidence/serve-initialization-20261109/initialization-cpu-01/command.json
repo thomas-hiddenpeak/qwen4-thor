@@ -1,0 +1,19 @@
+[
+  "python3",
+  "-B",
+  "-m",
+  "unittest",
+  "-v",
+  "tools.serve_recovery.test_initialization",
+  "tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency",
+  "tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io",
+  "tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable",
+  "tools.serve_recovery.test_native_bundle.BundleTests.test_launcher_never_hands_guardian_a_regular_file_for_diagnostics",
+  "tools.serve_recovery.test_access_management.ManagementTests.test_cli_propose_apply_query_replay_and_stale_revision",
+  "tools.serve_recovery.test_access_management.ManagementTests.test_whole_journal_loss_cannot_rebootstrap_and_launch_stays_deferred",
+  "tools.serve_recovery.test_quota_managed.ManagedQuotaTests.test_cli_commit_replay_status_capacity_and_separate_key_policy",
+  "tools.serve_recovery.test_quota_managed.ManagedQuotaTests.test_limits_loss_does_not_prevent_existing_key_revocation_or_reinitialize",
+  "tools.serve_recovery.test_quota_managed.ManagedQuotaTests.test_new_identity_requires_durable_limits_then_actual_model_installation",
+  "tools.serve_recovery.test_deployment.DeploymentTests.test_legacy_upgrade_and_replay_preserve_core_identity_and_all_budgets",
+  "tools.serve_recovery.test_deployment.DeploymentTests.test_rollback_keeps_rotations_revocations_dynamic_limits_and_usage"
+]

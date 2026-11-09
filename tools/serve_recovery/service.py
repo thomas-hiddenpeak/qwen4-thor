@@ -74,6 +74,9 @@ def private_directory(path, repository):
 def initialize(package, digest, state):
     manifest = bundle.verify(package, digest)
     state = private_directory(state, manifest['repository'])
+    if manifest.get('version', 1) >= 8 and manifest.get('ingress_mode') == 'native':
+        from tools.serve_recovery import initialization
+        return initialization.finish(state, package, digest, manifest)
     service_id = str(uuid.uuid4())
     with store.Store(state, service_id, initialize=True):
         pass
@@ -285,7 +288,7 @@ def main(argv=None, *, package=None, digest=None):
     prepare.add_argument('--object-store-dir')
     for option in engine.APPLICATION_LIMITS:
         prepare.add_argument('--object-'+option.replace('_', '-'), type=int)
-    for name in ('init', 'run', 'start', 'status', 'diagnostics', 'stop',
+    for name in ('init', 'init-resume', 'run', 'start', 'status', 'diagnostics', 'stop',
                  'tls-status', 'tls-reload', 'observe', 'metrics', 'export',
                  'retention-plan', 'retention-archive', 'retention-apply', 'retention-resume',
                  'retention-migrate', 'access-status', 'access-propose', 'access-apply',
@@ -354,6 +357,9 @@ def main(argv=None, *, package=None, digest=None):
                     deployment.ready(args.state, descriptor(args.state, package, digest))
             if args.operation == 'init':
                 result = initialize(package, digest, args.state)
+            elif args.operation == 'init-resume':
+                from tools.serve_recovery import initialization
+                result = initialization.finish(args.state, package, digest, bundle.verify(package, digest))
             elif args.operation in ('deploy', 'rollback', 'deployment-status'):
                 from tools.serve_recovery import deployment
                 result = (deployment.status(args.state) if args.operation == 'deployment-status' else

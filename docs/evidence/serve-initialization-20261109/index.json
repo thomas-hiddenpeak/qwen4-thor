@@ -1,0 +1,42 @@
+{
+  "README.md": {
+    "bytes": 1039,
+    "sha256": "0ac7648d0d3f7866f5200f83b8c5ad30a47661218012231e47171289958e44d2"
+  },
+  "decision.json": {
+    "bytes": 282,
+    "sha256": "f89c4084bbe55d53b15ffd0b4a0e4db9d71af16d4b7aa09bc3458a6a03c9a9ef"
+  },
+  "identity.json": {
+    "bytes": 371,
+    "sha256": "8e3ff797635c912be4242610569779f93fae9da5fd81afefe60dc9dd86413eb1"
+  },
+  "initialization-cpu-01/actual-binary.json": {
+    "bytes": 382,
+    "sha256": "8575a0493619be00ac1298710997cf87f4785c62a0bc5b777ebb2b9082be6574"
+  },
+  "initialization-cpu-01/binaries.json": {
+    "bytes": 192,
+    "sha256": "16b043dbef83feece0873e2ab22d44a8ff0a27aeb37ab926b42736ed3d315e14"
+  },
+  "initialization-cpu-01/command.json": {
+    "bytes": 1487,
+    "sha256": "d275662d1657beeeb4279e85515dc47210ffc69d197be59a50d3b33e82c94590"
+  },
+  "initialization-cpu-01/result.json": {
+    "bytes": 64,
+    "sha256": "b4cdfc754237e8ad886ad0e5aa59530344e630b8edad7668cffa54873291bdc1"
+  },
+  "initialization-cpu-01/selection.json": {
+    "bytes": 2441,
+    "sha256": "c17389e156fa49b13eaed90a9836bb96d1031a99b55bbd4fc4a27f2e4ca1ce54"
+  },
+  "initialization-cpu-01/sources.json": {
+    "bytes": 9652,
+    "sha256": "dd5a64426f58a1e69fd2184f52ea17cd85b525720af1f1df48c404b5bea8459c"
+  },
+  "initialization-cpu-01/tests.log": {
+    "bytes": 3786,
+    "sha256": "edc6be9d6e4dbf16f88301c361fd074119faec6449a2ec0bf10920ef287c6d7f"
+  }
+}

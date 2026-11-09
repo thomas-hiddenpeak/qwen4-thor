@@ -1,0 +1,7 @@
+{
+  "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host/q4t_client_policy_fixture",
+  "sha256": "3a871dcb6e10d3861fa216fad78fb05199bbaab4cb593907b0faf2c21d6f6431",
+  "environment_variable": "Q4T_LIMITS_FIXTURE",
+  "requested_metadata_file": "binaries.json",
+  "note": "Runner set unused Q4T_POLICY_FIXTURE; actual default fixture has identical SHA256."
+}

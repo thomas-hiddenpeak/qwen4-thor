@@ -30,7 +30,7 @@ V7_SOURCES = tuple(sorted(set(V6_SOURCES) | {'tools/serve_recovery/'+name+'.py' 
 SOURCES = tuple(sorted(set(V7_SOURCES) | {'tools/serve_recovery/'+name+'.py' for name in
     ('quota_policy', 'quota_store', 'quota_control', 'quota_runtime', 'quota_manager',
      'usage_policy', 'usage_store', 'usage_io', 'usage_control', 'usage_runtime',
-     'model_admin', 'usage_manager', 'deployment_policy', 'deployment')}))
+     'model_admin', 'usage_manager', 'deployment_policy', 'deployment', 'initialization')}))
 LEGACY_EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'nginx')
 EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'q4t-ingress')
 NATIVE_SOURCES = frozenset(('CMakeLists.txt', 'tests/host/CMakeLists.txt',
