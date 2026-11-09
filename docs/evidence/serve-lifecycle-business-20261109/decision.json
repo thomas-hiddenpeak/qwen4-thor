@@ -1,0 +1,43 @@
+{
+  "status": "PASS_TARGETED_NATIVE_LIFECYCLE",
+  "acceptance": "ACCEPT_TARGETED_NATIVE_LIFECYCLE",
+  "binary_sha256": "3072f28c801366b0ab0b3ec718f47102ff955e1ba121ba2b0e321fbc0ffef025",
+  "protocol_sha256": "5af732e20d104e880555b37a5f8abf19df686cdf95de5f112fa6e5ae10d1aef7",
+  "source_commit": "e4943d91e5fb76698202ee62d6aa19bcaee5649a",
+  "cumulative_counts": {
+    "starts": 2,
+    "chats": 6,
+    "probes": 0,
+    "controls": 739
+  },
+  "actual_generations": 6,
+  "cumulative_seconds": 206.69871630938724,
+  "first_failure_preserved": true,
+  "capacity_binding_fixed": true,
+  "actual_capacity": {
+    "name": "text-managed-capacity-v1",
+    "host": "127.0.0.1",
+    "max_seq": 1,
+    "max_len": 4096,
+    "max_prefill": 1024,
+    "max_tokens": 128,
+    "mtp_k": 3,
+    "max_inflight_requests": 6,
+    "max_queued_requests": 4,
+    "min_available_memory_mib": 2048,
+    "memory_recovery_margin_mib": 512,
+    "startup_memory_headroom_mib": 2048,
+    "mtp_enabled": true,
+    "request_deadline_ms": 180000
+  },
+  "lease_status": "COMPLETED",
+  "nvml_samples": 194,
+  "all_nvml_ok": true,
+  "cleanup_confirmed": true,
+  "default_changed": false,
+  "full_performance": false,
+  "full_model_quality": false,
+  "long_stability": false,
+  "remaining_master_tasks_open": true,
+  "cli_evidence": "Production CLI handler with pre-dispatch budget wrappers; actual C++ dispatch/publication covered by targeted CPU"
+}

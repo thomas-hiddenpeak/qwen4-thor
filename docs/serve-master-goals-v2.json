@@ -530,7 +530,7 @@
     {
       "id": "N07",
       "required": true,
-      "state": "implementation_in_progress",
+      "state": "validated_delivery_pending",
       "implementation": "原生配置/发行/CLI生命周期整合",
       "acceptance": "一个自有服务入口可配置上述能力；prepare/check/run/status/reload/stop及回退可用；外部代理只是可选适配",
       "depends_on": [
@@ -546,7 +546,8 @@
         "evidence/serve-lifecycle-cli-20261109/README.md",
         "evidence/serve-lifecycle-publication-20261109/README.md",
         "evidence/serve-lifecycle-driver-20261109/README.md",
-        "evidence/serve-lifecycle-capacity-fix-20261109/README.md"
+        "evidence/serve-lifecycle-capacity-fix-20261109/README.md",
+        "evidence/serve-lifecycle-business-20261109/README.md"
       ],
       "release": null,
       "findings": [
@@ -560,12 +561,11 @@
         {
           "source": "tools/serve_recovery/gateway.py Admission.update",
           "issue": "Independent gateway classifier used fixed default capacity while model controller used selected capacity, preventing native admission",
-          "state": "fixed_cpu_validated_business_pending",
+          "state": "fixed_cpu_and_business_validated_delivery_pending",
           "evidence": "evidence/serve-lifecycle-capacity-fix-20261109/README.md"
         }
       ],
       "remaining": [
-        "Actual custom capacity and lifecycle business, JSON/SSE/project tool closure, live reload and durable cleanup",
         "Accepted native service package and coherent default publication, actual retained rollback, release metadata and actual ELF check/status",
         "Final N07 acceptance review and continuation of all remaining master tasks"
       ],

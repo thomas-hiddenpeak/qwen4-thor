@@ -1,0 +1,68 @@
+{
+  "status": "PASS_BOUNDED_RECOVERY_BUSINESS",
+  "failure": null,
+  "cleanup_failure": null,
+  "seconds": 59.04911835491657,
+  "budget": {
+    "counts": {
+      "starts": 2,
+      "chats": 6,
+      "probes": 0,
+      "controls": 739
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "controller-1",
+        "ordinal": 2,
+        "monotonic_ns": 2413613634829903
+      },
+      {
+        "kind": "chats",
+        "label": "generation-self-check-1",
+        "ordinal": 2,
+        "monotonic_ns": 2413658280817712
+      },
+      {
+        "kind": "chats",
+        "label": "json",
+        "ordinal": 3,
+        "monotonic_ns": 2413660515214128
+      },
+      {
+        "kind": "chats",
+        "label": "sse",
+        "ordinal": 4,
+        "monotonic_ns": 2413660821867214
+      },
+      {
+        "kind": "chats",
+        "label": "tool",
+        "ordinal": 5,
+        "monotonic_ns": 2413661104188599
+      },
+      {
+        "kind": "chats",
+        "label": "tool-final",
+        "ordinal": 6,
+        "monotonic_ns": 2413664476485848
+      }
+    ]
+  },
+  "models": {
+    "1": {
+      "pid": 1090806,
+      "start_ticks": 241361363
+    }
+  },
+  "quota_deadlines": {},
+  "source_commit": "e4943d91e5fb76698202ee62d6aa19bcaee5649a",
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/business-02/bundle",
+    "manifest_sha256": "383c22888e3e9dfce235887aea5e3ed6b1ee86ffa3e65678a05444ad9cbc3ba7",
+    "engine_binary_sha256": "3072f28c801366b0ab0b3ec718f47102ff955e1ba121ba2b0e321fbc0ffef025",
+    "recovery_accepted": false
+  },
+  "default_replaced": false,
+  "performance_acceptance": false
+}

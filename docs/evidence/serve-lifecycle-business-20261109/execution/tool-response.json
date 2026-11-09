@@ -1,0 +1,36 @@
+{
+  "status": 200,
+  "headers": {
+    "Content-Type": "text/event-stream",
+    "Connection": "keep-alive",
+    "Transfer-Encoding": "chunked",
+    "Cache-Control": "no-store",
+    "X-Request-Id": "req-2e4b084ee57c6bad2640ec4232e4ac14"
+  },
+  "seconds": 3.3710171692073345,
+  "value": {
+    "id": "n07-tool",
+    "model": "qwen3.8-flash-next",
+    "message": {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_n07-tool_0",
+          "type": "function",
+          "function": {
+            "name": "read_project_record",
+            "arguments": "{\"path\": \"docs/MODEL.md\", \"start_line\": 1, \"line_count\": 3}"
+          }
+        }
+      ]
+    },
+    "finish_reason": "tool_calls",
+    "usage": {
+      "prompt_tokens": 419,
+      "completion_tokens": 50,
+      "total_tokens": 469
+    },
+    "logprobs": null
+  }
+}

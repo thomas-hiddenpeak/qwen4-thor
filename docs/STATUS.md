@@ -1,5 +1,7 @@
 # 当前状态
 
+N07 真实补验通过：[接受证据](evidence/serve-lifecycle-business-20261109/README.md)。累计 2 启动/6 Chat/206.699 秒严格租约，194 NVML 全 OK；自定义容量、JSON/SSE、真实资料工具、同模型限额 reload、STOPPED/清理通过。默认未改；继续已接受封装、原生发布和实际旧代回退，再 N06 新发现与全部余项。
+
 N07 入口容量修复 9 项 CPU 全过，[首真实失败与修复原件](evidence/serve-lifecycle-capacity-fix-20261109/README.md)。首轮正常清理，默认未动；准备按累计 2 启动/6 Chat/600 秒补验。另把入口拒绝缺少类型原因登记回 N06，后续必须补齐，不因已有阶段交付忽略新发现。
 
 N07 首真实短验发现并保留失败：模型按自定义容量 READY/自检通过，但入口独立 classify 漏传 profile，拒绝绑定。已正常停止清理（1 启动/1 Chat/146.829 秒，137 NVML 全 OK），默认未改。成组补齐封装→入口 profile，冻结 9 项 CPU；随后仅补未到达业务，累计上限 2 启动/6 Chat/600 秒，首耗用不清零。
