@@ -59,6 +59,28 @@ std::string Replace(std::string value, const std::string& old,
   value.replace(pos, old.size(), replacement);
   return value;
 }
+std::string DynamicRaw(uint32_t rpm, uint32_t tpm, uint64_t revision = 0) {
+  auto raw = Replace(Policy(), "\"version\":1",
+                     "\"version\":3,\"fair_queue\":true,\"revision\":" +
+                         std::to_string(revision));
+  const std::string field = "\"max_body_bytes\":1024";
+  size_t at = 0;
+  while ((at = raw.find(field, at)) != raw.npos) {
+    at += field.size();
+    const auto rates = ",\"requests_per_minute\":" + std::to_string(rpm) +
+                       ",\"tokens_per_minute\":" + std::to_string(tpm);
+    raw.insert(at, rates);
+    at += rates.size();
+  }
+  return raw;
+}
+GatewayClientPolicy DynamicPolicy(uint32_t rpm, uint32_t tpm,
+                                  uint64_t revision = 0) {
+  GatewayClientPolicy policy;
+  if (!ParseGatewayClientPolicy(DynamicRaw(rpm, tpm, revision), &policy))
+    throw std::runtime_error("dynamic policy fixture");
+  return policy;
+}
 struct Files {
   std::filesystem::path path;
   Files() {
@@ -128,6 +150,211 @@ std::string Wire(const std::string& headers,
          "Content-Length: 2\r\n\r\n{}";
 }
 }  // namespace
+
+Q4T_TEST(client_dynamic_revision_parser_is_strict_and_transactional) {
+  GatewayClientPolicy parsed;
+  Q4T_CHECK(ParseGatewayClientPolicy(DynamicRaw(10, 200), &parsed));
+  Q4T_CHECK(parsed.version == 3 && parsed.revision == 0);
+  const auto previous = parsed.sha256;
+  const auto raw = DynamicRaw(10, 200);
+  for (const auto& bad : {"-1", "true", "0.0", "9007199254740992",
+                          "18446744073709551616", "null"}) {
+    Q4T_CHECK(!ParseGatewayClientPolicy(
+        Replace(raw, "\"revision\":0", "\"revision\":" + std::string(bad)),
+        &parsed));
+    Q4T_CHECK(parsed.sha256 == previous && parsed.revision == 0);
+  }
+  Q4T_CHECK(!ParseGatewayClientPolicy(
+      Replace(raw, "\"revision\":0", "\"revision\":0,\"revision\":1"),
+      &parsed));
+  Q4T_CHECK(
+      ParseGatewayClientPolicy(DynamicRaw(0, 0, kMaxClientRevision), &parsed));
+  Q4T_CHECK(parsed.revision == kMaxClientRevision);
+  return true;
+}
+
+Q4T_TEST(client_dynamic_update_preserves_snapshots_slots_and_move_ownership) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(10, 200)));
+  auto previous = admission.Authenticate("alpha", kSecret);
+  auto candidate = DynamicPolicy(10, 200, 1);
+  candidate.clients[0].max_prompt_tokens = 32;
+  Q4T_CHECK(admission.Publish(candidate, 0, 8, 8));
+  const auto current = admission.Authenticate("alpha", kSecret);
+  Q4T_CHECK(previous.Limits()->max_prompt_tokens == 64);
+  Q4T_CHECK(current.Limits()->max_prompt_tokens == 32);
+  Q4T_CHECK(previous.Id() == current.Id() &&
+            previous.Index() == current.Index());
+  const auto copied = previous;
+  const auto moved = std::move(previous);
+  Q4T_CHECK(!previous.Allowed() && !previous.Scoped());
+  Q4T_CHECK(copied.Id() == "alpha" && moved.Id() == "alpha");
+  ClientLease denied;
+  Q4T_CHECK(!denied.Acquire(admission, previous, ClientLane::kData));
+  const auto accepted = admission.PolicySha256();
+  Q4T_CHECK(!admission.Publish(candidate, 0, 8, 8));
+  candidate.revision = 2;
+  for (int corruption = 0; corruption < 5; ++corruption) {
+    auto bad = candidate;
+    if (corruption == 0) bad.clients.pop_back();
+    if (corruption == 1) std::swap(bad.clients[0], bad.clients[1]);
+    if (corruption == 2) bad.gateway_token = std::string(64, 'b');
+    if (corruption == 3) bad.fair_queue = false;
+    if (corruption == 4) bad.clients[0].max_inflight = 9;
+    Q4T_CHECK(!admission.Publish(std::move(bad), 1, 8, 8));
+    Q4T_CHECK(admission.PolicySha256() == accepted && admission.Size() == 2);
+  }
+  auto extra = candidate.clients.back();
+  extra.id = "gamma";
+  candidate.clients.push_back(extra);
+  Q4T_CHECK(!admission.Publish(candidate, 1, 8, 2));
+  Q4T_CHECK(admission.Publish(candidate, 1, 8, 8));
+  Q4T_CHECK(admission.Authenticate("gamma", kSecret).Index() == 2);
+  Q4T_CHECK(admission.Usage(2).data_active == 0 && moved.Id() == "alpha");
+  return true;
+}
+
+Q4T_TEST(
+    client_dynamic_lowered_limits_retain_data_control_cancel_and_transfer) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(0, 0)));
+  const auto alpha = admission.Authenticate("alpha", kSecret);
+  auto first = std::make_unique<ClientLease>();
+  auto second = std::make_unique<ClientLease>();
+  Q4T_CHECK(first->Acquire(admission, alpha, ClientLane::kData));
+  Q4T_CHECK(second->Acquire(admission, alpha, ClientLane::kData));
+  ClientLease control, cancel;
+  Q4T_CHECK(control.Acquire(admission, alpha, ClientLane::kControl));
+  Q4T_CHECK(cancel.Acquire(admission, alpha, ClientLane::kCancel));
+  auto candidate = DynamicPolicy(0, 0, 1);
+  candidate.clients[0].max_inflight = 1;
+  Q4T_CHECK(admission.Publish(candidate, 0, 8, 8));
+  Q4T_CHECK(admission.Usage(0).data_active == 2);
+  ClientLease no_data, no_control, no_cancel, beta;
+  Q4T_CHECK(!no_data.Acquire(admission, alpha, ClientLane::kData));
+  Q4T_CHECK(!no_control.Acquire(admission, alpha, ClientLane::kControl));
+  Q4T_CHECK(!no_cancel.Acquire(admission, alpha, ClientLane::kCancel));
+  Q4T_CHECK(beta.Acquire(admission, admission.Authenticate("beta", kSecret),
+                         ClientLane::kData));
+  {
+    ClientLease transferred;
+    Q4T_CHECK(first->TransferTo(transferred));
+    first.reset();
+    second.reset();
+    Q4T_CHECK(admission.Usage(0).data_active == 1);
+    ClientLease full;
+    Q4T_CHECK(!full.Acquire(admission, alpha, ClientLane::kData));
+  }
+  ClientLease available;
+  Q4T_CHECK(available.Acquire(admission, alpha, ClientLane::kData));
+  Q4T_CHECK(admission.Usage(0).control_active == 1 &&
+            admission.Usage(0).cancel_active == 1);
+  return true;
+}
+
+Q4T_TEST(client_dynamic_quota_off_on_keeps_usage_and_rollover_reservations) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(2, 100)));
+  const auto alpha = admission.Authenticate("alpha", kSecret);
+  const auto now = ClientClock::time_point{} + std::chrono::seconds(10);
+  ClientRateLease first;
+  Q4T_CHECK(first.Reserve(admission, alpha, 5, 10, now) ==
+            ClientRateResult::kAllowed);
+  first.Start();
+  first.Completion(4);
+  first.Settle(now);
+  Q4T_CHECK(admission.Publish(DynamicPolicy(0, 0, 1), 0, 8, 8));
+  ClientRateLease during_disabled;
+  Q4T_CHECK(during_disabled.Reserve(admission, alpha, 5, 10, now) ==
+            ClientRateResult::kAllowed);
+  during_disabled.Start();
+  during_disabled.Completion(2);
+  Q4T_CHECK(admission.Publish(DynamicPolicy(2, 100, 2), 1, 8, 8));
+  const auto before = admission.RateUsage(0, now);
+  Q4T_CHECK(before.requests == 2 && before.tokens == 9 &&
+            before.reserved == 15);
+  ClientRateLease no_rpm;
+  Q4T_CHECK(no_rpm.Reserve(admission, alpha, 0, 1, now) ==
+            ClientRateResult::kRpm);
+  Q4T_CHECK(admission.Publish(DynamicPolicy(10, 10, 3), 2, 8, 8));
+  const auto next = now + std::chrono::seconds(61);
+  ClientRateLease no_tpm;
+  Q4T_CHECK(no_tpm.Reserve(admission, alpha, 0, 1, next) ==
+            ClientRateResult::kTpm);
+  during_disabled.Settle(next);
+  const auto after = admission.RateUsage(0, next);
+  Q4T_CHECK(after.requests == 0 && after.tokens == 7 && after.reserved == 0);
+  ClientRateLease remaining;
+  Q4T_CHECK(remaining.Reserve(admission, alpha, 0, 3, next) ==
+            ClientRateResult::kAllowed);
+  remaining.Settle(next);
+  Q4T_CHECK(admission.RateUsage(0, next).reserved == 0);
+  return true;
+}
+
+Q4T_TEST(client_dynamic_stale_identity_uses_current_limits_legacy_stays_fixed) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(20, 1000)));
+  const auto original = admission.Authenticate("alpha", kSecret);
+  auto candidate = DynamicPolicy(1, 1000, 1);
+  candidate.clients[0].max_prompt_tokens = 32;
+  Q4T_CHECK(admission.Publish(candidate, 0, 8, 8));
+  ClientRateLease oversized, first, second;
+  Q4T_CHECK(oversized.Reserve(admission, original, 33, 1) ==
+            ClientRateResult::kInvalid);
+  Q4T_CHECK(first.Reserve(admission, original, 1, 1) ==
+            ClientRateResult::kAllowed);
+  Q4T_CHECK(second.Reserve(admission, original, 1, 1) ==
+            ClientRateResult::kRpm);
+  ClientAdmission legacy;
+  Q4T_CHECK(legacy.Configure(RatePolicy(2, 1000)));
+  Q4T_CHECK(!legacy.Publish(candidate, 0, 8, 8));
+  Q4T_CHECK(legacy.Version() == 2 && legacy.Limits(0).max_prompt_tokens == 64);
+  const auto metrics = ClientPolicyMetrics(admission);
+  Q4T_CHECK(metrics.find("q4t_client_rate_requests{client=\"alpha\"} 1\n") !=
+            std::string::npos);
+  Q4T_CHECK(metrics.find(kSecret) == std::string::npos);
+  return true;
+}
+
+Q4T_TEST(client_dynamic_concurrent_authentication_observes_whole_snapshots) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(0, 0)));
+  std::atomic<bool> done{false}, failed{false};
+  std::atomic<uint64_t> observed{0};
+  std::barrier ready(9);
+  std::vector<std::thread> readers;
+  for (int i = 0; i < 8; ++i)
+    readers.emplace_back([&] {
+      ready.arrive_and_wait();
+      do {
+        const auto identity = admission.Authenticate("alpha", kSecret);
+        const auto* limits = identity.Limits();
+        if (!identity.Allowed() || identity.Id() != "alpha" ||
+            identity.Index() != 0 || !limits ||
+            !((limits->max_prompt_tokens == 64 &&
+               limits->max_output_tokens == 16) ||
+              (limits->max_prompt_tokens == 32 &&
+               limits->max_output_tokens == 8)))
+          failed.store(true);
+        observed.fetch_add(1);
+      } while (!done.load());
+    });
+  ready.arrive_and_wait();
+  for (uint64_t revision = 1; revision <= 200; ++revision) {
+    auto candidate = DynamicPolicy(0, 0, revision);
+    if (revision % 2) {
+      candidate.clients[0].max_prompt_tokens = 32;
+      candidate.clients[0].max_output_tokens = 8;
+    }
+    if (!admission.Publish(candidate, revision - 1, 8, 8)) failed.store(true);
+  }
+  done.store(true);
+  for (auto& reader : readers) reader.join();
+  Q4T_CHECK(!failed.load() && observed.load() >= 8);
+  Q4T_CHECK(admission.Snapshot()->revision == 200);
+  return true;
+}
 
 Q4T_TEST(client_rate_policy_v2_strict_and_v1_unchanged) {
   auto v2 =
@@ -707,20 +934,21 @@ Q4T_TEST(client_stored_chat_control_scope_is_independent_of_generation) {
   Q4T_CHECK(data2.Acquire(admission, alpha, ClientLane::kData));
   Q4T_CHECK(Read(admission, Wire(Headers(), "/v1/chat/completions")).status ==
             429);
-  for (const auto* target : {"/v1/chat/completions?limit=1",
-                            "/v1/chat/completions/chat_1",
-                            "/v1/chat/completions/chat_1/messages?order=asc"})
+  for (const auto* target :
+       {"/v1/chat/completions?limit=1", "/v1/chat/completions/chat_1",
+        "/v1/chat/completions/chat_1/messages?order=asc"})
     Q4T_CHECK(Read(admission, Wire(Headers(), target, "GET")).ok);
-  Q4T_CHECK(Read(admission, Wire(Headers(), "/v1/chat/completions/chat_1"))
-                .ok);
+  Q4T_CHECK(Read(admission, Wire(Headers(), "/v1/chat/completions/chat_1")).ok);
   Q4T_CHECK(observation.Acquire(admission, alpha, ClientLane::kControl));
-  Q4T_CHECK(Read(admission, Wire(Headers(), "/v1/chat/completions", "GET"))
-                .status == 429);
-  Q4T_CHECK(Read(admission, Wire(Headers("beta"), "/v1/chat/completions",
-                                  "GET")).ok);
+  Q4T_CHECK(
+      Read(admission, Wire(Headers(), "/v1/chat/completions", "GET")).status ==
+      429);
+  Q4T_CHECK(
+      Read(admission, Wire(Headers("beta"), "/v1/chat/completions", "GET")).ok);
   Q4T_CHECK(Read(admission, Wire(Headers(), "/v1/requests/cancel")).ok);
-  Q4T_CHECK(Read(admission, Wire(Headers("foreign"), "/v1/chat/completions",
-                                  "GET")).status == 401);
+  Q4T_CHECK(
+      Read(admission, Wire(Headers("foreign"), "/v1/chat/completions", "GET"))
+          .status == 401);
   return true;
 }
 
@@ -728,7 +956,8 @@ Q4T_TEST(client_token_budget_defaults_aliases_and_encoded_boundaries) {
   ClientAdmission admission;
   Q4T_CHECK(Configure(&admission));
   ChatPlanConfig config;
-  config.client_limits = &admission.Limits(0);
+  const auto identity = admission.RecoveryIdentity(0);
+  config.client_limits = identity.Limits();
   ChatRequestPlan plan;
   ChatPromptBudget budget;
   ChatPlanError error;

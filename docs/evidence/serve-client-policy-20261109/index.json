@@ -1,0 +1,58 @@
+{
+  "README.md": {
+    "bytes": 1329,
+    "sha256": "ef7e894b22c2132c9308f70da9a9835c39fd08d614b3b1a89d3a65d502bdb5ec"
+  },
+  "decision.json": {
+    "bytes": 554,
+    "sha256": "79fdebc87d997bb4056edc4c8a0bcc39e49701f888d41f4abeefa4593430ad9d"
+  },
+  "identity.json": {
+    "bytes": 1019,
+    "sha256": "306ab78ad436f38779da57b2cc86147d3ab4306be5401311a1b61c12f157a4a0"
+  },
+  "quota-build-01/result.json": {
+    "bytes": 184,
+    "sha256": "f9d6015eb00d274432c6b8730a9983024c74953195388297d5a145247255a0fb"
+  },
+  "quota-build-01/sources.json": {
+    "bytes": 322,
+    "sha256": "cab02fc04acb94749defecdf24d69c045a19ccab7eef5791784507b329f55062"
+  },
+  "quota-build-02/build.log": {
+    "bytes": 17140,
+    "sha256": "91163f97b02eafdc686c3046544d58bbb6b227d187cd2b10a543840a34193f3a"
+  },
+  "quota-build-02/commands.json": {
+    "bytes": 148,
+    "sha256": "7a5520942276d0e8cf8b5924a05fc5587b359a5087cc923c95e940358dbe1c25"
+  },
+  "quota-build-02/required.txt": {
+    "bytes": 1735,
+    "sha256": "b3b4518b7397daf4d097f611cb15aba331abf27ea2f393755308a4d28cea9d52"
+  },
+  "quota-build-02/result.json": {
+    "bytes": 119,
+    "sha256": "fd6fa11c2f689e2f11044321f0b1fc2ea994391d87e253ad3f96fbd9afab21ae"
+  },
+  "quota-build-02/sources.json": {
+    "bytes": 322,
+    "sha256": "cab02fc04acb94749defecdf24d69c045a19ccab7eef5791784507b329f55062"
+  },
+  "quota-cpu-01/commands.json": {
+    "bytes": 160,
+    "sha256": "c111bac62f1ce9878dcbf4c489023140ee7e6ceb3ef77f93683819b845912afe"
+  },
+  "quota-cpu-01/result.json": {
+    "bytes": 244,
+    "sha256": "a96dc7ce5eb211b03b379f3241d3b0d94a0af487181ec67cacf95b1354cea462"
+  },
+  "quota-cpu-01/stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "quota-cpu-01/stdout.txt": {
+    "bytes": 1993,
+    "sha256": "4654a843560356f2f443e92f0b759366cab46ed597c2ba28f86804fab46725e7"
+  }
+}

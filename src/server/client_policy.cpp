@@ -64,7 +64,9 @@ bool ValidLimits(const ClientLimits& value) {
 }
 
 bool ValidPolicy(const GatewayClientPolicy& policy) {
-  if ((policy.version != 1 && policy.version != 2) ||
+  if ((policy.version != 1 && policy.version != 2 && policy.version != 3) ||
+      policy.revision > kMaxClientRevision ||
+      (policy.version < 3 && policy.revision != 0) ||
       (policy.version == 1 && policy.fair_queue) ||
       !Hex64(policy.gateway_token) || !Hex64(policy.sha256) ||
       policy.clients.empty() || policy.clients.size() > kMaxClients)
@@ -76,6 +78,14 @@ bool ValidPolicy(const GatewayClientPolicy& policy) {
          (limits.requests_per_minute || limits.tokens_per_minute)))
       return false;
   return true;
+}
+
+bool FairCapacity(const GatewayClientPolicy& policy, int inflight, int queued) {
+  if (!policy.fair_queue) return true;
+  uint64_t total = 0;
+  for (const auto& client : policy.clients) total += client.max_inflight;
+  return inflight > 0 && queued >= static_cast<int>(policy.clients.size()) &&
+         total <= static_cast<uint64_t>(inflight);
 }
 
 bool SameFile(const struct stat& before, const struct stat& after) {
@@ -103,14 +113,30 @@ Status ParseGatewayClientPolicy(std::string_view raw,
                                    .reject_duplicate_keys = true};
   if (!io::ParseJson(std::string(raw), &root, true, limits)) return Invalid();
   uint32_t version = 0;
-  if (!Integer(root.Find("version"), 2, &version) ||
-      !(version == 1 ? Fields(root, {"version", "gateway_token", "clients"})
-                     : Fields(root, {"version", "gateway_token", "clients",
-                                     "fair_queue"})))
+  if (!Integer(root.Find("version"), 3, &version) ||
+      !(version == 1   ? Fields(root, {"version", "gateway_token", "clients"})
+        : version == 2 ? Fields(root, {"version", "gateway_token", "clients",
+                                       "fair_queue"})
+                       : Fields(root, {"version", "gateway_token", "clients",
+                                       "fair_queue", "revision"})))
     return Invalid();
   GatewayClientPolicy policy;
   policy.version = version;
-  if (version == 2) {
+  if (version == 3) {
+    const auto* revision = root.Find("revision");
+    if (!revision || !revision->IsNumber() || revision->str.empty())
+      return Invalid();
+    for (char c : revision->str)
+      if (c < '0' || c > '9') return Invalid();
+    const auto result = std::from_chars(
+        revision->str.data(), revision->str.data() + revision->str.size(),
+        policy.revision);
+    if (result.ec != std::errc() ||
+        result.ptr != revision->str.data() + revision->str.size() ||
+        policy.revision > kMaxClientRevision)
+      return Invalid();
+  }
+  if (version >= 2) {
     const auto* fair = root.Find("fair_queue");
     if (!fair || !fair->IsBool()) return Invalid();
     policy.fair_queue = root.GetBool("fair_queue");
@@ -130,7 +156,7 @@ Status ParseGatewayClientPolicy(std::string_view raw,
                                "max_body_bytes", "requests_per_minute",
                                "tokens_per_minute"})))
       return Invalid();
-    if (version == 2 && (!Integer(entry.Find("requests_per_minute"), 1000000,
+    if (version >= 2 && (!Integer(entry.Find("requests_per_minute"), 1000000,
                                   &value.requests_per_minute, true) ||
                          !Integer(entry.Find("tokens_per_minute"), 1000000000,
                                   &value.tokens_per_minute, true)))
@@ -189,18 +215,40 @@ Status LoadGatewayClientPolicy(const std::string& path,
 }
 
 Status ClientAdmission::Configure(GatewayClientPolicy policy) {
+  const std::lock_guard lock(policy_mutex_);
   if (Enabled()) return Status::Fail("client policy already configured");
   if (!ValidPolicy(policy)) return Invalid();
-  policy_ = std::move(policy);
+  policy_.store(std::make_shared<const GatewayClientPolicy>(std::move(policy)),
+                std::memory_order_release);
+  return Status();
+}
+
+Status ClientAdmission::Publish(GatewayClientPolicy policy,
+                                uint64_t expected_revision,
+                                uint32_t global_inflight,
+                                uint32_t global_queued) {
+  const std::lock_guard lock(policy_mutex_);
+  const auto previous = Snapshot();
+  if (!previous || previous->version != 3 || policy.version != 3 ||
+      !ValidPolicy(policy) || expected_revision != previous->revision ||
+      policy.revision <= previous->revision ||
+      policy.gateway_token != previous->gateway_token ||
+      policy.fair_queue != previous->fair_queue ||
+      policy.clients.size() < previous->clients.size() ||
+      global_inflight > INT32_MAX || global_queued > INT32_MAX ||
+      !q4t::server::FairCapacity(policy, global_inflight, global_queued))
+    return Status::Fail("invalid client policy update");
+  for (size_t i = 0; i < previous->clients.size(); ++i)
+    if (policy.clients[i].id != previous->clients[i].id)
+      return Status::Fail("client slots cannot be reassigned");
+  policy_.store(std::make_shared<const GatewayClientPolicy>(std::move(policy)),
+                std::memory_order_release);
   return Status();
 }
 
 bool ClientAdmission::FairCapacity(int inflight, int queued) const {
-  if (!FairQueue()) return true;
-  uint64_t total = 0;
-  for (const auto& client : policy_.clients) total += client.max_inflight;
-  return inflight > 0 && queued >= static_cast<int>(Size()) &&
-         total <= static_cast<uint64_t>(inflight);
+  const auto policy = Snapshot();
+  return !policy || q4t::server::FairCapacity(*policy, inflight, queued);
 }
 
 void ClientAdmission::Counters::Advance(ClientClock::time_point now) {
@@ -235,16 +283,22 @@ ClientRateResult ClientRateLease::Reserve(ClientAdmission& admission,
                                           ClientClock::time_point now) {
   if (attempted_) return ClientRateResult::kInvalid;
   attempted_ = true;
-  if (identity.owner_ != &admission) return ClientRateResult::kInvalid;
+  if (identity.owner_ != &admission || !identity.Allowed())
+    return ClientRateResult::kInvalid;
   if (!identity.Scoped())
     return admission.Enabled() ? ClientRateResult::kInvalid
                                : ClientRateResult::kAllowed;
-  const auto* limits = identity.limits_;
-  if (identity.index_ >= admission.Size() ||
-      limits != &admission.policy_.clients[identity.index_] ||
-      prompt > limits->max_prompt_tokens || output > limits->max_output_tokens)
+  const auto policy = admission.Snapshot();
+  if (!policy || identity.index_ >= policy->clients.size() ||
+      identity.Id() != policy->clients[identity.index_].id)
     return ClientRateResult::kInvalid;
-  if (!limits->requests_per_minute && !limits->tokens_per_minute)
+  const auto* limits = &policy->clients[identity.index_];
+  if (prompt > limits->max_prompt_tokens || output > limits->max_output_tokens)
+    return ClientRateResult::kInvalid;
+  // v3 records usage even while enforcement is disabled. Re-enabling a quota
+  // cannot erase requests, tokens or outstanding reservations in the window.
+  if (policy->version < 3 && !limits->requests_per_minute &&
+      !limits->tokens_per_minute)
     return ClientRateResult::kAllowed;
   auto& counter = admission.counters_[identity.index_];
   const std::lock_guard lock(counter.mutex);
@@ -287,7 +341,8 @@ void ClientRateLease::Settle(ClientClock::time_point now) noexcept {
 ClientIdentity ClientAdmission::Authenticate(
     std::string_view id, std::string_view gateway_token) const {
   ClientIdentity result;
-  if (!Enabled()) {
+  const auto policy = Snapshot();
+  if (!policy) {
     if (id.empty() && gateway_token.empty()) result.owner_ = this;
     return result;
   }
@@ -295,30 +350,33 @@ ClientIdentity ClientAdmission::Authenticate(
   unsigned char difference = 0;
   for (size_t i = 0; i < 64; ++i)
     difference |= static_cast<unsigned char>(gateway_token[i]) ^
-                  static_cast<unsigned char>(policy_.gateway_token[i]);
+                  static_cast<unsigned char>(policy->gateway_token[i]);
   if (difference) return result;
-  for (size_t i = 0; i < Size(); ++i) {
-    if (policy_.clients[i].id != id) continue;
+  for (size_t i = 0; i < policy->clients.size(); ++i) {
+    if (policy->clients[i].id != id) continue;
     result.owner_ = this;
-    result.limits_ = &policy_.clients[i];
+    result.policy_ = policy;
     result.index_ = i;
     return result;
   }
   return result;
 }
 
-const ClientLimits& ClientAdmission::Limits(size_t index) const {
-  return policy_.clients.at(index);
+ClientLimits ClientAdmission::Limits(size_t index) const {
+  const auto policy = Snapshot();
+  if (!policy) throw std::out_of_range("client policy index");
+  return policy->clients.at(index);
 }
 
 ClientIdentity ClientAdmission::RecoveryIdentity(size_t index) const {
   ClientIdentity result;
-  if (index >= Size()) {
-    if (!Enabled() && index == 0) result.owner_ = this;
+  const auto policy = Snapshot();
+  if (!policy || index >= policy->clients.size()) {
+    if (!policy && index == 0) result.owner_ = this;
     return result;
   }
   result.owner_ = this;
-  result.limits_ = &policy_.clients[index];
+  result.policy_ = policy;
   result.index_ = index;
   return result;
 }
@@ -369,7 +427,7 @@ bool ClientLease::Acquire(ClientAdmission& admission,
                           const ClientIdentity& identity, ClientLane lane) {
   if (attempted_) return false;
   attempted_ = true;
-  if (identity.owner_ != &admission ||
+  if (identity.owner_ != &admission || !identity.Allowed() ||
       (lane != ClientLane::kData && lane != ClientLane::kControl &&
        lane != ClientLane::kCancel))
     return false;
@@ -377,8 +435,9 @@ bool ClientLease::Acquire(ClientAdmission& admission,
     admitted_ = !admission.Enabled();
     return admitted_;
   }
-  if (identity.index_ >= admission.Size() ||
-      identity.limits_ != &admission.policy_.clients[identity.index_])
+  const auto policy = admission.Snapshot();
+  if (!policy || identity.index_ >= policy->clients.size() ||
+      identity.Id() != policy->clients[identity.index_].id)
     return false;
   auto& counters = admission.counters_[identity.index_];
   const bool control = lane == ClientLane::kControl;
@@ -389,9 +448,10 @@ bool ClientLease::Acquire(ClientAdmission& admission,
   auto& rejected = cancel    ? counters.cancel_rejected
                    : control ? counters.control_rejected
                              : counters.data_rejected;
-  const uint32_t limit = cancel    ? 1
-                         : control ? identity.limits_->max_control_inflight
-                                   : identity.limits_->max_inflight;
+  const uint32_t limit =
+      cancel    ? 1
+      : control ? policy->clients[identity.index_].max_control_inflight
+                : policy->clients[identity.index_].max_inflight;
   auto& finishing = cancel    ? counters.cancel_finishing
                     : control ? counters.control_finishing
                               : counters.data_finishing;
@@ -420,7 +480,7 @@ std::string ClientPolicyMetrics(const ClientAdmission& admission) {
     out += std::string("# HELP ") + name + ' ' + help + "\n# TYPE " + name +
            ' ' + type + '\n';
   };
-  header("q4t_client_policy_enabled", "Immutable gateway policy enabled.",
+  header("q4t_client_policy_enabled", "Gateway client policy enabled.",
          "gauge");
   out +=
       "q4t_client_policy_enabled " + std::to_string(admission.Enabled()) + '\n';
@@ -439,15 +499,16 @@ std::string ClientPolicyMetrics(const ClientAdmission& admission) {
   header("q4t_client_rate_window_remaining_ms",
          "Fixed window remaining milliseconds.", "gauge");
   header("q4t_client_rate_admitted_total",
-         "Chats accepted by enabled rate policy.", "counter");
+         "Chats tracked by logical rate accounting.", "counter");
   header("q4t_client_rate_settled_tokens_total",
          "Logical tokens settled since startup.", "counter");
   header("q4t_client_rate_rejected_total", "Minute quota refusals by reason.",
          "counter");
   header("q4t_client_rate_limit", "Configured minute quota; zero disables.",
          "gauge");
-  for (size_t i = 0; i < admission.Size(); ++i) {
-    const auto& limits = admission.Limits(i);
+  const auto policy = admission.Snapshot();
+  for (size_t i = 0; policy && i < policy->clients.size(); ++i) {
+    const auto& limits = policy->clients[i];
     const auto usage = admission.Usage(i);
     const auto rate = admission.RateUsage(i);
     const auto client_label = "{client=\"" + limits.id + "\"} ";

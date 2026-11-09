@@ -1,0 +1,7 @@
+{
+  "status": "FAILED",
+  "phase": "required_list_preparation",
+  "reason": "single-line regex omitted clang-format wrapped test declarations",
+  "model_starts": 0,
+  "tests_run": 0
+}

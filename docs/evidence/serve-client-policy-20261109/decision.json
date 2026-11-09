@@ -1,0 +1,19 @@
+{
+  "status": "PASS_DYNAMIC_ADMISSION_PRIMITIVES_TARGETED_CPU",
+  "new_tests": 6,
+  "affected_client_tests": 25,
+  "passed": 31,
+  "failed": 0,
+  "skipped": 0,
+  "build_warnings": 0,
+  "model_starts": 0,
+  "real_chat_generations": 0,
+  "default_changed": false,
+  "remaining": [
+    "durable backend policy and native management publication",
+    "restart quota continuity and unknown recovery",
+    "new client coordination with key publication",
+    "TLS SDK and real model business plus rollback delivery"
+  ],
+  "remaining_master_tasks_open": true
+}

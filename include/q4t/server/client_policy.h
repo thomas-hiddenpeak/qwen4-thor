@@ -1,4 +1,4 @@
-// Immutable gateway policy and per-client request ownership. No CUDA state.
+// Atomic gateway policy snapshots and stable request ownership. No CUDA state.
 #pragma once
 
 #include <array>
@@ -7,6 +7,7 @@
 #include <condition_variable>
 #include <cstddef>
 #include <cstdint>
+#include <memory>
 #include <mutex>
 #include <string>
 #include <string_view>
@@ -19,6 +20,7 @@ namespace q4t::server {
 
 inline constexpr size_t kClientPolicyBytes = 64 * 1024;
 inline constexpr size_t kMaxClients = 64;
+inline constexpr uint64_t kMaxClientRevision = (uint64_t{1} << 53) - 1;
 inline constexpr auto kClientHandoffWait = std::chrono::milliseconds(100);
 
 struct ClientLimits {
@@ -34,6 +36,7 @@ struct ClientLimits {
 
 struct GatewayClientPolicy {
   uint32_t version = 1;
+  uint64_t revision = 0;
   bool fair_queue = false;
   std::string gateway_token;
   std::string sha256;
@@ -56,12 +59,17 @@ class ClientRateLease;
 // only Authenticate can create a legacy or authenticated identity.
 class ClientIdentity {
  public:
-  bool Allowed() const { return owner_ != nullptr; }
-  bool Scoped() const { return limits_ != nullptr; }
-  const ClientLimits* Limits() const { return limits_; }
+  bool Allowed() const { return owner_ && (index_ == kMaxClients || Limits()); }
+  bool Scoped() const { return Limits() != nullptr; }
+  const ClientLimits* Limits() const {
+    return policy_ && index_ < policy_->clients.size()
+               ? &policy_->clients[index_]
+               : nullptr;
+  }
   size_t Index() const { return index_; }
   std::string_view Id() const {
-    return limits_ ? std::string_view(limits_->id) : std::string_view();
+    const auto* limits = Limits();
+    return limits ? std::string_view(limits->id) : std::string_view();
   }
 
  private:
@@ -69,7 +77,7 @@ class ClientIdentity {
   friend class ClientLease;
   friend class ClientRateLease;
   const ClientAdmission* owner_ = nullptr;
-  const ClientLimits* limits_ = nullptr;
+  std::shared_ptr<const GatewayClientPolicy> policy_;
   size_t index_ = kMaxClients;
 };
 
@@ -96,23 +104,41 @@ struct ClientRateUsage {
   uint64_t window_remaining_ms = 0;
 };
 
-// Configure at most once, before publishing to handlers. Global server limits
-// still apply. Clients cannot allocate new quota keys through request headers.
+// Configure once. Only v3 permits explicit revisioned updates; client slots and
+// counter storage never move. Global limits still apply. HTTP headers cannot
+// allocate clients or change policy.
 class ClientAdmission {
  public:
   Status Configure(GatewayClientPolicy policy);
-  bool Enabled() const { return !policy_.clients.empty(); }
-  size_t Size() const { return policy_.clients.size(); }
-  uint32_t Version() const { return policy_.version; }
-  bool FairQueue() const { return policy_.fair_queue; }
+  Status Publish(GatewayClientPolicy policy, uint64_t expected_revision,
+                 uint32_t global_inflight, uint32_t global_queued);
+  std::shared_ptr<const GatewayClientPolicy> Snapshot() const {
+    return policy_.load(std::memory_order_acquire);
+  }
+  bool Enabled() const { return bool(Snapshot()); }
+  size_t Size() const {
+    const auto policy = Snapshot();
+    return policy ? policy->clients.size() : 0;
+  }
+  uint32_t Version() const {
+    const auto policy = Snapshot();
+    return policy ? policy->version : 1;
+  }
+  bool FairQueue() const {
+    const auto policy = Snapshot();
+    return policy && policy->fair_queue;
+  }
   bool FairCapacity(int inflight, int queued) const;
-  const std::string& PolicySha256() const { return policy_.sha256; }
+  std::string PolicySha256() const {
+    const auto policy = Snapshot();
+    return policy ? policy->sha256 : std::string();
+  }
   ClientIdentity Authenticate(std::string_view id,
                               std::string_view gateway_token) const;
-  // Trusted recovery of the immutable server policy, never a request-supplied
+  // Trusted recovery of a current server snapshot, never a request-supplied
   // identity. It still must acquire the normal client data/rate permits.
   ClientIdentity RecoveryIdentity(size_t index) const;
-  const ClientLimits& Limits(size_t index) const;
+  ClientLimits Limits(size_t index) const;
   ClientUsage Usage(size_t index) const;
   ClientRateUsage RateUsage(
       size_t index, ClientClock::time_point now = ClientClock::now()) const;
@@ -137,7 +163,8 @@ class ClientAdmission {
     ClientRateUsage rate;
     void Advance(ClientClock::time_point now);
   };
-  GatewayClientPolicy policy_;
+  std::mutex policy_mutex_;
+  std::atomic<std::shared_ptr<const GatewayClientPolicy>> policy_;
   std::array<Counters, kMaxClients> counters_;
 };
 

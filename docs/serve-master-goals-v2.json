@@ -425,7 +425,8 @@
         "evidence/serve-access-store-20261109/decision.json",
         "evidence/serve-access-native-20261109/decision.json",
         "evidence/serve-access-io-20261109/decision.json",
-        "evidence/serve-access-managed-20261109/decision.json"
+        "evidence/serve-access-managed-20261109/decision.json",
+        "evidence/serve-client-policy-20261109/decision.json"
       ],
       "release": null,
       "plan": "SERVE_ACCESS_CONTROL_2026-11-09.md",
@@ -435,7 +436,7 @@
         "TLS native bundle and applicable SDK verification",
         "targeted real business and rollback-capable delivery"
       ],
-      "development_status": "快照/持久事务/隔离I/O和托管CLI/实际入口CPU通过；动态额度、新客户端协调、重启连续性、TLS与真实业务交付继续。默认保持v6，N04未完成。"
+      "development_status": "托管凭据管理CPU和动态准入31项CPU通过；继续持久backend策略、私有发布、新客户端协调与重启用量，再TLS/真实业务交付。默认v6保持，N04未完成。"
     },
     {
       "id": "N05",
