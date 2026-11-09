@@ -325,7 +325,10 @@ void ServeResponsesState(int fd, ObjectStore& objects, std::string_view method,
       plan.starting_after = replay.last_sequence;
       if (replay.terminal) {
         http->BeforeTerminal();
-        *http->State() = detail::ResponseState::kTerminal;
+        // The entire retained terminal (or empty resume after it) has already
+        // been written. Mark completion so the connection owner emits the
+        // final HTTP chunk; kTerminal requires a subsequent successful write.
+        *http->State() = detail::ResponseState::kComplete;
         return;
       }
       if (std::chrono::steady_clock::now() >= heartbeat) {

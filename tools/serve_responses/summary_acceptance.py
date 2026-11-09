@@ -2,11 +2,13 @@
 import argparse
 import base64
 import copy
+import fcntl
 import http.client
 import json
 import os
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -67,10 +69,55 @@ def check_steps(log, response, expected):
 
 
 def prepare(args):
+    prior = None
+    if args.resume_from:
+        directory = args.resume_from.resolve(strict=True)
+        old = read(directory/'plan.json')
+        result = read(directory/'result.json')
+        cleanup = read(directory/'cleanup.json')
+        require(result['status'] == 'FAILED' and result['counts']['starts'] == 1 and
+                result['counts']['chats'] == 3 and 'detailed-replay' in result['error'] and
+                cleanup['model_exit'] == 0 and not cleanup['remaining'] and
+                cleanup['ports_released'], 'resume requires known first failure and cleanup')
+        allowed = {'src/server/responses_api.cpp', 'tests/server_responses_api_test.cpp',
+                   'tools/serve_responses/summary_acceptance.py',
+                   'tools/serve_responses/test_summary_acceptance.py'}
+        changes = {n for n, h in old['sources'].items() if sha(ROOT/n) != h}
+        require(changes <= allowed and 'src/server/responses_api.cpp' in changes,
+                'resume changed generation or unrelated sources')
+        samples = [json.loads(v) for v in (directory/'lease/nvml-queries.jsonl').read_text().splitlines()]
+        require(samples and all(v['status'] == 'OK' for v in samples), 'prior monitoring failed')
+        current = foreground.base.lifecycle.guard.processes()
+        require(not any(current.get(int(pid), {}).get('start_ticks') == v['start_ticks']
+                        for pid, v in cleanup['owned'].items()), 'prior owned process remains')
+        background.probe_ports((old['port'], old['operations_port']))
+        with foreground.base.lifecycle.guard.common_lock().open('a+') as lock:
+            fcntl.flock(lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+            fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
+        values = [read(directory/(name+'-summary.json'))['response']
+                  for name in ('concise', 'detailed', 'auto')]
+        for value in values:
+            check_summary(value, arithmetic=True)
+            check_steps((directory/'model.log').read_text(), value, 2)
+        metrics = read(directory/'auto-drain.metrics.json')[-1]
+        require(metrics['q4t_client_rate_admitted_total{client="summary-test"}'] == 3 and
+                metrics['q4t_client_rate_reserved_tokens{client="summary-test"}'] == 0 and
+                metrics['q4t_client_rate_settled_tokens_total{client="summary-test"}'] ==
+                sum(v['usage']['total_tokens'] for v in values), 'prior actual rate accounting')
+        replay = read(directory/'detailed-replay.sdk.json')
+        require(not replay['ok'] and replay['error']['message'] == 'terminated' and
+                replay['chunks'][-1]['type'] == 'response.completed', 'different replay defect')
+        prior = dict(directory=str(directory), counts=result['counts'], seconds=result['seconds'],
+            files={str(p): sha(p) for p in directory.rglob('*') if p.is_file()},
+            reused_generation=3, reused_model_steps=6, verified_cleanup=True,
+            source_changes=sorted(changes))
     background.prepare(args, rows=requests(), limits=LIMITS, scope=__doc__)
     path = args.output.resolve() / 'plan.json'
     plan = read(path)
     plan['planned'] = dict(starts=1, chats=8, maximum_internal_model_steps=MAX_MODEL_STEPS)
+    if prior:
+        plan['prior'] = prior
+        plan['planned'].update(starts=2, additional_starts=1, additional_chats=5)
     plan['mutations'] = ['only owned test model, isolated objects and synthetic test client policy']
     plan['derived_requests'] = ['actual document tool result and previous_response_id',
         'SDK retrieve/input_items/replay only refer to owned response identities',
@@ -83,6 +130,18 @@ class Stage(foreground.Stage):
     limits = LIMITS
     request_templates = staticmethod(requests)
     success_status = 'PASS_RESPONSES_SUMMARY_BUSINESS'
+
+    def __init__(self, plan):
+        super().__init__(plan)
+        self.prior = None
+        if plan.get('prior'):
+            prior = plan['prior']
+            require(all(sha(p) == h for p, h in prior['files'].items()), 'prior evidence drift')
+            self.prior = Path(prior['directory'])
+            self.counts.update(prior['counts'])
+            self.started -= prior['seconds']
+            # Only completed, owned test records. Preserve the original evidence.
+            shutil.copytree(self.prior/'objects', self.out/'objects')
 
     def http(self, path, body=None, *, label=None, timeout=30):
         if body is None:
@@ -179,15 +238,20 @@ class Stage(foreground.Stage):
         rows = self.plan['requests']
         require(read(self.out/'capabilities.json')['responses']['reasoning_summary'],
                 'summary capability absent')
-        self.budget('controls')
-        status, raw = self.http('/v1/chat/preflight', dict(request=dict(
-            model=foreground.MODEL, messages=[dict(role='user', content=rows['concise']['input'])],
-            enable_thinking=True, reasoning_effort='low', max_completion_tokens=384,
-            temperature=0), include_token_ids=True), label='primary-preflight')
-        require(status == 200, 'real primary preflight failed')
-        prompt_tokens = json.loads(raw)['prompt_tokens']
-        values = []
-        for label in ('concise', 'detailed', 'auto'):
+        if self.prior:
+            prompt_tokens = read(self.prior/'primary-preflight.wire')['prompt_tokens']
+            values = [read(self.prior/(name+'-summary.json'))['response']
+                      for name in ('concise', 'detailed', 'auto')]
+        else:
+            self.budget('controls')
+            status, raw = self.http('/v1/chat/preflight', dict(request=dict(
+                model=foreground.MODEL, messages=[dict(role='user', content=rows['concise']['input'])],
+                enable_thinking=True, reasoning_effort='low', max_completion_tokens=384,
+                temperature=0), include_token_ids=True), label='primary-preflight')
+            require(status == 200, 'real primary preflight failed')
+            prompt_tokens = json.loads(raw)['prompt_tokens']
+            values = []
+        for label in (() if self.prior else ('concise', 'detailed', 'auto')):
             value = self.sdk(label, 'create', rows[label], drain=label != 'auto')
             if label == 'auto':
                 value = background.Stage.wait_response(self, 'auto-done', value['id'],
@@ -240,21 +304,26 @@ class Stage(foreground.Stage):
         require(chat_status == 200 and chat['choices'][0]['message']['content'].strip() == '42',
                 'ordinary Chat continuation')
         metrics = self.drained('final')
-        expected_input = sum(v['usage']['input_tokens'] for v in values) + chat['usage']['prompt_tokens']
-        expected_output = sum(v['usage']['output_tokens'] for v in values) + chat['usage']['completion_tokens']
+        current_values = values[3:] if self.prior else values
+        expected_input = sum(v['usage']['input_tokens'] for v in current_values) + chat['usage']['prompt_tokens']
+        expected_output = sum(v['usage']['output_tokens'] for v in current_values) + chat['usage']['completion_tokens']
         key = '{client="summary-test"}'
-        require(metrics['q4t_requests_total'] == 8 and metrics['q4t_requests_success_total'] == 8 and
+        current_count = 5 if self.prior else 8
+        require(metrics['q4t_requests_total'] == current_count and metrics['q4t_requests_success_total'] == current_count and
                 metrics['q4t_requests_error_total'] == 0, 'one external request accounting')
-        require(metrics['q4t_client_rate_admitted_total'+key] == 8 and
+        require(metrics['q4t_client_rate_admitted_total'+key] == current_count and
                 metrics['q4t_client_rate_reserved_tokens'+key] == 0 and
                 metrics['q4t_client_rate_settled_tokens_total'+key] == expected_input + expected_output,
                 'client RPM/TPM/reservation differs from actual total usage')
         require(metrics['q4t_prompt_tokens_total'] == expected_input and
                 metrics['q4t_generation_tokens_total'] == expected_output, 'internal step token metrics')
         steps = len(re.findall(r'^\[sampling\] request=', (self.out/'model.log').read_text(), re.M))
+        if self.prior:
+            steps += self.plan['prior']['reused_model_steps']
         require(steps == MAX_MODEL_STEPS, 'internal model step bound')
         save(self.out/'business-checks.json', dict(internal_model_steps=steps,
-            external_requests=8, input_tokens=expected_input, output_tokens=expected_output,
+            external_requests=8, current_run_requests=current_count,
+            current_run_input_tokens=expected_input, current_run_output_tokens=expected_output,
             real_tool_executions=1, shared_budget=True, actual_summary=True,
             single_rpm=True, cumulative_tpm=True))
 
@@ -266,6 +335,7 @@ def main():
     command.add_argument('--binary', type=Path, required=True)
     command.add_argument('--output', type=Path, required=True)
     command.add_argument('--port', type=int, default=18983)
+    command.add_argument('--resume-from', type=Path)
     command = modes.add_parser('run')
     command.add_argument('--plan', type=Path, required=True)
     args = parser.parse_args()

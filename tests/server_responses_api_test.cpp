@@ -241,6 +241,48 @@ Q4T_TEST(responses_api_history_pagination_and_scope_survive_worker_restart) {
   return true;
 }
 
+Q4T_TEST(responses_api_replay_completes_http_chunks_before_connection_reuse) {
+  Fixture fixture;
+  ObjectStore store(fixture.options);
+  ResponsesExecution run(store);
+  std::string generated;
+  Q4T_CHECK(Begin(&run, &generated));
+  Q4T_CHECK(run.AppendSummary("Actual summary", &generated));
+  Q4T_CHECK(Finish(&run, &generated));
+  const auto root = "/v1/responses/" + run.Id();
+  for (const bool empty : {false, true}) {
+    const auto target =
+        root + "?stream=true&include_obfuscation=false" +
+        (empty ? "&starting_after=" + std::to_string(*run.Sequence() - 1) : "");
+    int fd[2];
+    Q4T_CHECK(socketpair(AF_UNIX, SOCK_STREAM, 0, fd) == 0);
+    {
+      detail::HttpResponseContext http(fd[0]);
+      http.SetKeepAlive(true);
+      ServeResponsesState(fd[0], store, "GET", target, "", Access());
+      Q4T_CHECK(http.FinishResponse());
+      Q4T_CHECK(!http.FinishResponse());
+    }
+    {
+      detail::HttpResponseContext http(fd[0]);
+      http.SetKeepAlive(true);
+      Q4T_CHECK(detail::SendSimple(fd[0], 200, "OK", "{}", "application/json"));
+      Q4T_CHECK(http.FinishResponse());
+    }
+    shutdown(fd[0], SHUT_WR);
+    const auto wire = Receive(fd[1]);
+    close(fd[0]);
+    close(fd[1]);
+    Q4T_CHECK(wire.find("Transfer-Encoding: chunked\r\n") != wire.npos);
+    const auto boundary = wire.find("0\r\n\r\nHTTP/1.1 200 OK");
+    Q4T_CHECK(boundary != wire.npos && wire.ends_with("{}"));
+    Q4T_CHECK((wire.find("response.completed") != wire.npos) == !empty);
+    Q4T_CHECK((wire.find("reasoning_summary_text.done") != wire.npos) ==
+              !empty);
+  }
+  return true;
+}
+
 Q4T_TEST(responses_api_replay_uses_original_sequence_and_obfuscation_choice) {
   Fixture fixture;
   ObjectStore store(fixture.options);

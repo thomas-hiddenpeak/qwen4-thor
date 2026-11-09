@@ -1,0 +1,11 @@
+{
+  "status": "FAILED",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 294, in run\n    try:self.start();self.business();result['status']=self.success_status\n                     ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/summary_acceptance.py\", line 204, in business\n    replay = self.sdk('detailed-replay', 'retrieve', response_id=values[1]['id'],\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/summary_acceptance.py\", line 166, in sdk\n    require(len(result['exchanges']) == 1 and run.returncode == 0 and result['ok'],\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 61, in require\n    raise RuntimeError(message)\nRuntimeError: SDK request failed: detailed-replay {'class': 'TypeError', 'message': 'terminated'}\n",
+  "counts": {
+    "starts": 1,
+    "chats": 3,
+    "controls": 85
+  },
+  "seconds": 49.95138427987695,
+  "binary_sha256": "9e801550ba5ad0e64a1fb35021bd29971fe7465658c63f25d95d9886f16f6a90"
+}
