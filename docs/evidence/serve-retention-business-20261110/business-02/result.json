@@ -1,0 +1,10 @@
+{
+  "status": "PASS_APPLICATION_RETENTION_BUSINESS",
+  "counts": {
+    "starts": 1,
+    "chats": 1,
+    "controls": 38
+  },
+  "seconds": 38.298074529040605,
+  "binary_sha256": "6a90506e72fd25d5bfdd654a7916ece863b958b5cb6e27e5c7d599d36949dc3a"
+}

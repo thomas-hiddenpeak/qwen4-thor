@@ -1,0 +1,21 @@
+{
+  "status": "PASS_APPLICATION_RETENTION_TARGETED_BUSINESS",
+  "acceptance": "ACCEPT_TARGETED_APPLICATION_RETENTION",
+  "binary_sha256": "6a90506e72fd25d5bfdd654a7916ece863b958b5cb6e27e5c7d599d36949dc3a",
+  "protocol_sha256": "6a139e9d7170f4915de61131b811ebb477a6ee8b03c54ce565f79c35f1742004",
+  "all_nvml_ok": true,
+  "cleanup_confirmed": true,
+  "starts": 3,
+  "generations": 4,
+  "model_steps": 4,
+  "seconds": 118.33398287231103,
+  "nvml_samples": 114,
+  "cpp_tests": 28,
+  "driver_tests": 4,
+  "initial_failure": "GET include logprobs comparison in driver; production unchanged; original FAILED retained.",
+  "prior_business": "evidence/serve-retention-followup-20261110/business-01",
+  "performance_acceptance": false,
+  "full_model_quality": false,
+  "long_stability_accepted": false,
+  "remaining_master_tasks_open": true
+}
