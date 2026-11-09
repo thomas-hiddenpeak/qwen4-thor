@@ -1,0 +1,1 @@
+{"durable": {"configured": true, "revision": 0, "sha256": "42c72c47bee82d808fa2807e53a8e903b9c2153d06bf3a054222fe636e3ed348", "clients": 2, "fair_queue": true, "quota_clients": 2, "credential_values_redacted": true}, "durable_error": "", "live": null, "live_error": "limits_live_unknown", "receipt": null, "receipt_known": false, "live_applied": false, "model_actions": false}

@@ -1,0 +1,15 @@
+{
+  "label": "02-new-deploy",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/release-02/bundle/bin/q4t",
+    "service",
+    "deploy",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/packaged-01/state",
+    "--expected-manifest-sha256",
+    "61a6b2e3a1e134f8a310ddde51a78014a376afed1934d17f4b72926ec3ba4473",
+    "--request-id",
+    "6e4af79d-a570-4934-ae0b-7632d3bf442a"
+  ],
+  "exit_code": 0
+}

@@ -1,0 +1,6 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/release-01/bundle",
+  "manifest_sha256": "946c8e173a7e13e2ba9aa2413a14dff72a9a25e6d912f121508f130743f54e8f",
+  "engine_binary_sha256": "6281ece590c200027fdf3a73c5d87ffd7fd65b6fca5cf9b640f9c303109997d0",
+  "recovery_accepted": false
+}

@@ -1,0 +1,21 @@
+{
+  "label": "07-old-rollback",
+  "argv": [
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/release-02/bundle/source/tools/serve_recovery/service.py",
+    "rollback",
+    "--package",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/release-01/bundle",
+    "--manifest-sha256",
+    "61a6b2e3a1e134f8a310ddde51a78014a376afed1934d17f4b72926ec3ba4473",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/packaged-01/state",
+    "--expected-manifest-sha256",
+    "97423f346090dc36bf30f37a5129ccabca8df5c1fdcccae0cecea21716023dab",
+    "--request-id",
+    "8c0e55de-2185-4952-b476-ff1bf1d6697a"
+  ],
+  "exit_code": 0
+}

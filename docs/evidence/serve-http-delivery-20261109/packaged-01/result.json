@@ -1,0 +1,14 @@
+{
+  "status": "PASS_N05_ACCEPTED_PACKAGED_CLI",
+  "cli_commands": 10,
+  "client_imports": 2,
+  "seconds": 4.596368116792291,
+  "manifest_sha256": "97423f346090dc36bf30f37a5129ccabca8df5c1fdcccae0cecea21716023dab",
+  "rollback_manifest_sha256": "61a6b2e3a1e134f8a310ddde51a78014a376afed1934d17f4b72926ec3ba4473",
+  "core_values_preserved": true,
+  "client_journals_preserved": true,
+  "state": "STOPPED",
+  "gpu_operations": 0,
+  "model_starts": 0,
+  "chat_requests": 0
+}

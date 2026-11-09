@@ -156,7 +156,7 @@ location / {
     proxy_pass http://127.0.0.1:18161;
     proxy_http_version 1.1;
     proxy_set_header Host $http_host;
-    proxy_set_header Connection close;
+    proxy_set_header Connection "";
     proxy_buffering off;
     proxy_request_buffering on;
     proxy_cache off;
@@ -168,8 +168,13 @@ location / {
 业务请求受模型自检、配额隔离和代次绑定约束，恢复期返回503及
 Retry-After。请求头/体共享10秒绝对接收期限，头64KiB，业务体最多
 16MiB，聚合业务体预留48MiB；32个有界处理槽，数据与控制分别限额。
-HTTP/1.0/1.1、Content-Length与连接关闭；不接收chunked请求或Expect，
-每连接只处理一个请求；不重放POST/工具，不在新模型上续接被中断的SSE。
+HTTP/1.0/1.1支持Content-Length；HTTP/1.1支持有界chunked请求和
+认证/准入后的`100-continue`，有界持久连接逐请求重新认证。核心默认
+每连接最多100请求、空闲5秒；原生policy v4可配置限额、路径前缀与
+显式可信代理链。SSE具备完整chunk framing，截断关闭；不重放POST/
+工具，不在新模型上续接被中断的流。Python/官方SDK客户端支持
+`https://host/llm/thor/v1`这样的前缀地址，详情和部署例见
+[原生HTTP接入](docs/SERVE_HTTP_TRANSPORT_2026-11-09.md)。
 可选前置普通HTTP与SSE、原生浏览器调用已验；实际TLS已在本机网卡
 地址和自身/32白名单完成模型业务短验，跨主机生产证书/域名按部署配置。
 

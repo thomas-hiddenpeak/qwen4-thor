@@ -1,0 +1,21 @@
+{
+  "status": "PASS_N05_NATIVE_HTTP_DEFAULT_DELIVERY",
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/release-02/bundle",
+  "manifest_sha256": "97423f346090dc36bf30f37a5129ccabca8df5c1fdcccae0cecea21716023dab",
+  "engine_binary_sha256": "6281ece590c200027fdf3a73c5d87ffd7fd65b6fca5cf9b640f9c303109997d0",
+  "engine_release_sha256": "f2a333efa92f80013f3d375cca7f8140c9796bd26dd20fcb86d1722ebc6ead2e",
+  "service_release_sha256": "ab9ea64b6cf75264f8f8314aa25df666005595ba35e2dc3a822cb58c99dacfba",
+  "ingress_sha256": "da2d65b49c935b83cba2a3e1c7db05eb04f40d95c6f148e5f00e9c7f3d3001b5",
+  "service_id": "dcb9dc2e-2824-49b2-a4f8-9b7b4f834b6d",
+  "ledger_sha256": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16",
+  "core_state_sha256": "3e3f934f7fa9b71e7f81b8be5ef3d8c1b16a50e06d7cc436f815e0e47ad8f820",
+  "rollback_receipt": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/delivery-01/rollback/receipt.json",
+  "rollback_sha256": "916783a879e54776017c42c843f9bbb1c333b2cc55b0b42acccd7bb319600a58",
+  "rollback_package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/release-01/bundle",
+  "ledger_bytes_preserved": true,
+  "client_journal_bytes_preserved": true,
+  "desired": "STOPPED",
+  "model_starts": 0,
+  "chat_requests": 0,
+  "remaining_master_tasks_open": true
+}

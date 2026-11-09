@@ -1,7 +1,7 @@
 # N05 原生 HTTP 接入
 
-本任务是功能/可靠性交付，不作性能优化主张。默认 N04/v8 保持
-STOPPED，全部总计划继续。没有把新路由、上传或代理兼容从目标删除。
+本任务是功能/可靠性交付，不作性能优化主张。N05已通过实际业务与可回退默认交付，默认
+保持STOPPED，全部总计划继续。没有把新路由、上传或代理兼容从目标删除。
 
 ## 实现次序与合同
 
@@ -129,3 +129,46 @@ Python实际HTTP/坏路径/旧传输合同、JS官方SDK实际HTTP/坏路径、
 用新模块回退旧包、旧包观察、重新部署新包及当前部署状态；验证
 现有journal/核心预算保持。另2项完整客户端快照导入检查，0GPU。
 N07将整合统一入口与默认发布事务，仍是必须完成的下一项。
+
+## 已交付能力与启用
+
+[默认交付证据](evidence/serve-http-delivery-20261109/README.md)：引擎
+`6281ece5`、原生v9包`97423f34`，服务发布`ab9ea64b`。当前默认
+仍用原policy v2、明文loopback及原Key/限额，连接复用/分块/100
+已生效；TLS、CORS、可信代理与前缀按部署显式启用。全部N05目标
+有对应CPU/业务与发布，N07及全部其余任务继续。
+
+准备自有原生发行时，在既有gateway-policy基础上选择`version: 4`，
+可设置如下`http`字段（省略的HTTP字段归一化为默认值）：
+
+```json
+{
+  "keep_alive_requests": 100,
+  "keep_alive_idle_seconds": 5,
+  "request_timeout_seconds": 10,
+  "path_prefix": "/llm/thor",
+  "proxy": {
+    "trusted_cidrs": ["127.0.0.1/32"],
+    "header": "forwarded",
+    "allow_stripped_prefix": false
+  }
+}
+```
+
+`proxy: null`禁用转发信任；`path_prefix: ""`使用根路径。开启信任时
+前置必须清理客户端伪造的转发字段并生成可信链；原生仍验证API Key
+及实际恢复的来源CIDR。允许前置剥离前缀时，还须显式开启
+allow_stripped_prefix并传递精确X-Forwarded-Prefix；直连使用完整
+路径，不凭未受信任头跳过前缀。Key不转交内部客户端头。
+
+包由现有`q4t service prepare`选择policy文件，TLS凭据/CORS沿用
+N01—N04入口；没有强制nginx。配置有闭合字段与有界取值，详见
+前文及`tools/serve_gateway/gateway.py`。统一配置/入口由N07继续
+整合，不能将其未完成隐藏为本阶段之外的问题。
+
+手动回退保留真实旧v8及匹配元数据，精确命令见
+[回退回执](evidence/serve-http-delivery-20261109/rollback/receipt.json)。
+先取得全局独占并确认持久STOPPED，用新v9随包service模块选取旧
+目标，再切换匹配程序、元数据和service链接。旧v8 launcher不认识
+CURRENT=v9；不能直接拿它做跨版本选取。保留当前Key/限额/用量
+和核心journal，禁止恢复旧状态备份；回退后的HTTP能力按旧v8声明。

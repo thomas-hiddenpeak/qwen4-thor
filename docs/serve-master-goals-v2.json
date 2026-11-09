@@ -459,7 +459,7 @@
     {
       "id": "N05",
       "required": true,
-      "state": "implementation_in_progress",
+      "state": "delivered",
       "implementation": "完整所需HTTP接入：复用连接、合法分块/上传、SSE、可信代理/路径前缀、慢客户端边界",
       "acceptance": "实际协议夹具及相应SDK；防请求走私与流中换代；前置有/无都通过，兼容新增标准路由",
       "depends_on": [
@@ -473,14 +473,22 @@
         "evidence/serve-http-package-20261109/decision.json",
         "evidence/serve-http-driver-20261109/decision.json",
         "evidence/serve-http-prefix-fix-20261109/decision.json",
-        "evidence/serve-http-business-20261109/decision.json"
+        "evidence/serve-http-business-20261109/decision.json",
+        "evidence/serve-http-delivery-20261109/decision.json"
       ],
-      "release": null,
+      "release": {
+        "manifest_sha256": "97423f346090dc36bf30f37a5129ccabca8df5c1fdcccae0cecea21716023dab",
+        "release_sha256": "ab9ea64b6cf75264f8f8314aa25df666005595ba35e2dc3a822cb58c99dacfba",
+        "engine_sha256": "6281ece590c200027fdf3a73c5d87ffd7fd65b6fca5cf9b640f9c303109997d0",
+        "engine_release_sha256": "f2a333efa92f80013f3d375cca7f8140c9796bd26dd20fcb86d1722ebc6ead2e",
+        "rollback_sha256": "916783a879e54776017c42c843f9bbb1c333b2cc55b0b42acccd7bb319600a58",
+        "state": "STOPPED",
+        "merged_main": false,
+        "whole_task_complete": true
+      },
       "plan": "SERVE_HTTP_TRANSPORT_2026-11-09.md",
-      "remaining": [
-        "可回退默认交付"
-      ],
-      "development_status": "Targeted CPU and actual core/native TLS/SDK/tools/Responses/Completions/optional proxy business passed; initial SDK prefix failure fixed, prior successes reused. Accepted package/default delivery remains."
+      "remaining": [],
+      "development_status": "All N05 targeted contracts, actual business and qualified default/manual rollback delivery complete. Remaining master tasks active."
     },
     {
       "id": "N06",
@@ -514,7 +522,7 @@
     {
       "id": "N07",
       "required": true,
-      "state": "planned",
+      "state": "implementation_in_progress",
       "implementation": "原生配置/发行/CLI生命周期整合",
       "acceptance": "一个自有服务入口可配置上述能力；prepare/check/run/status/reload/stop及回退可用；外部代理只是可选适配",
       "depends_on": [
@@ -806,6 +814,6 @@
       "release": null
     }
   ],
-  "next_task": "N05",
-  "next": "Native HTTP keep-alive/framing/uploads/trusted proxy/prefix, then N07 and all remaining master tasks; N04 delivered, total goal remains active."
+  "next_task": "N07",
+  "next": "Unified native service CLI, configurable capacity profiles and default publication transaction, then every remaining master task. N05 delivered; total goal remains active."
 }
