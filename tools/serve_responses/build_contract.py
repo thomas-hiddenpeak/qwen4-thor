@@ -88,6 +88,14 @@ def schema(graph):
     response = root('response')
     response['required'].remove('output_text')
     response['properties']['store'] = dict(type='boolean')
+    # Native auxiliary classification is separately disclosed and charged to
+    # the same client TPM lease; ordinary usage remains business generation.
+    response['properties']['q4t_moderation_usage'] = obj(dict(
+        input_tokens=dict(type='integer', minimum=0),
+        output_tokens=dict(type='integer', minimum=0, maximum=1024),
+        total_tokens=dict(type='integer', minimum=0),
+        model_steps=dict(type='integer', minimum=0, maximum=2)),
+        ['input_tokens', 'output_tokens', 'total_tokens', 'model_steps'])
     # The pinned TypeScript interface omits null, but official HTTP examples
     # explicitly return usage:null before completion and after cancellation.
     response['properties']['usage'] = nullable(response['properties']['usage'])
@@ -163,6 +171,7 @@ def schema(graph):
             adaptations=['SDK-added output_text is optional on wire',
                 'official HTTP examples use usage:null for active/cancelled responses; completed/incomplete require actual usage',
                 'native store echo and native response error codes',
+                'optional q4t_moderation_usage discloses bounded auxiliary classifier tokens separately from business usage',
                 'SDK-documented include_obfuscation adds optional string padding to delta events only',
                 'official prompt caching guide permits 12h on request/applied options in addition to the pinned SDK 30m literal',
                 'exact integer and bounded native options',

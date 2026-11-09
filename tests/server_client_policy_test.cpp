@@ -1091,6 +1091,49 @@ Q4T_TEST(client_rate_completion_batch_charges_only_admitted_prompts_once) {
   return true;
 }
 
+Q4T_TEST(client_rate_auxiliary_output_is_bounded_charged_and_shares_one_rpm) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(1, 120)));
+  const auto client = admission.Authenticate("alpha", kSecret);
+  const auto now = ClientClock::now();
+  ClientRateLease rate;
+  Q4T_CHECK(rate.Reserve(admission, client, 20, 16, now, 64) ==
+            ClientRateResult::kAllowed);
+  Q4T_CHECK(admission.RateUsage(0, now).reserved == 100 &&
+            admission.RateUsage(0, now).requests == 1);
+  rate.Start();
+  rate.Completion(12);  // Actual classification output.
+  Q4T_CHECK(rate.ExtendPrompt(admission, client, 10, now) ==
+            ClientRateResult::kAllowed);
+  rate.StartPrompt(30);
+  rate.Completion(12 + 6);  // Classification plus business generation.
+  rate.Settle(now);
+  const auto usage = admission.RateUsage(0, now);
+  Q4T_CHECK(usage.requests == 1 && usage.admitted == 1 && usage.reserved == 0 &&
+            usage.tokens == 48 && usage.settled_tokens == 48);
+  return true;
+}
+
+Q4T_TEST(client_rate_auxiliary_cannot_bypass_tpm_or_public_output_limit) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(10, 60)));
+  const auto client = admission.Authenticate("alpha", kSecret);
+  const auto now = ClientClock::now();
+  ClientRateLease quota, capacity, public_limit, overflow;
+  Q4T_CHECK(quota.Reserve(admission, client, 20, 16, now, 64) ==
+            ClientRateResult::kTpm);
+  Q4T_CHECK(capacity.Reserve(admission, client, 1, 1, now,
+                             kMaxAuxiliaryOutputTokens + 1) ==
+            ClientRateResult::kInvalid);
+  Q4T_CHECK(public_limit.Reserve(admission, client, 1, 17, now, 1) ==
+            ClientRateResult::kInvalid);
+  Q4T_CHECK(overflow.Reserve(admission, client, UINT64_MAX, 1, now, 1) ==
+            ClientRateResult::kInvalid);
+  const auto usage = admission.RateUsage(0, now);
+  Q4T_CHECK(usage.requests == 0 && usage.admitted == 0 && usage.reserved == 0);
+  return true;
+}
+
 Q4T_TEST(client_rate_internal_step_preserves_one_rpm_and_charges_actual_input) {
   for (const bool admitted : {false, true}) {
     ClientAdmission admission;

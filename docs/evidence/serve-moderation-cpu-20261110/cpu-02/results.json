@@ -1,0 +1,36 @@
+[
+  {
+    "name": "host",
+    "argv": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host/q4t_host_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-moderation-20261110/required-cpu-fix.txt"
+    ],
+    "exit_code": 0,
+    "seconds": 0.031678843311965466
+  },
+  {
+    "name": "schema",
+    "argv": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "tools.serve_responses.test_moderation_contract",
+      "-v"
+    ],
+    "exit_code": 0,
+    "seconds": 0.21388658042997122
+  },
+  {
+    "name": "inventory",
+    "argv": [
+      "python3",
+      "-B",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ],
+    "exit_code": 1,
+    "seconds": 0.16385827539488673
+  }
+]

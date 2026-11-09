@@ -11,6 +11,7 @@
 
 #include "q4t/io/json.h"
 #include "q4t/server/chat_response_parser.h"
+#include "q4t/server/moderation.h"
 #include "q4t/status.h"
 
 namespace q4t::server {
@@ -49,7 +50,8 @@ class ResponsesOutput {
   // Only calls with a validated closing delimiter may receive arguments.done.
   Status Finish(bool incomplete, size_t completed_calls,
                 const ResponsesUsage& usage, int64_t completed_at,
-                std::string* wire, const ResponsesReasoningSeal& seal = {});
+                std::string* wire, const ResponsesReasoningSeal& seal = {},
+                bool content_filtered = false);
   Status Fail(std::string_view code, std::string_view message,
               std::string* wire);
   static std::string RenderStreamError(void* owner, int status,
@@ -62,6 +64,7 @@ class ResponsesOutput {
   bool Terminal() const { return terminal_; }
   bool HasSummary() const { return summary_item_ < kMaxItems; }
   void CacheDiagnostics(io::Json value) noexcept;
+  Status Moderation(const io::Json& results, const ModerationUsage& usage);
 
  private:
   Status Charge(size_t bytes);

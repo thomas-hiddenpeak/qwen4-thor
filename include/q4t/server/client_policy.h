@@ -20,6 +20,9 @@ namespace q4t::server {
 
 inline constexpr size_t kClientPolicyBytes = 64 * 1024;
 inline constexpr size_t kMaxClients = 64;
+// Optional request-owned classifiers have a separate, fixed internal ceiling;
+// they never increase the public generation budget or escape TPM accounting.
+inline constexpr uint64_t kMaxAuxiliaryOutputTokens = 1024;
 inline constexpr uint64_t kMaxClientRevision = (uint64_t{1} << 53) - 1;
 inline constexpr auto kClientHandoffWait = std::chrono::milliseconds(100);
 
@@ -216,7 +219,8 @@ class ClientRateLease {
   ClientRateResult Reserve(ClientAdmission& admission,
                            const ClientIdentity& identity, uint64_t prompt,
                            uint64_t output,
-                           ClientClock::time_point now = ClientClock::now());
+                           ClientClock::time_point now = ClientClock::now(),
+                           uint64_t auxiliary_output = 0);
   // Reserve actual additional input for a subsequent internal model step.
   // Keeps the original RPM admission and shared output reservation; cumulative
   // input must still fit the client's prompt limit. StartPrompt charges only

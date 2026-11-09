@@ -148,15 +148,18 @@ class Stage(foreground.Stage):
         finally:
             conn.close()
 
-    def start(self):
-        background.probe_ports((self.plan['port'], self.plan['operations_port']))
-        generation = self.counts['starts'] + 1
-        policy = dict(version=3, revision=0, fair_queue=True,
+    def client_policy(self):
+        return dict(version=3, revision=0, fair_queue=True,
             gateway_token=HEADERS['X-Q4T-Gateway-Token'], clients=[dict(id=CLIENT,
                 max_inflight=4, max_control_inflight=4, max_prompt_tokens=16384,
                 max_output_tokens=512, max_body_bytes=1048576,
                 requests_per_minute=self.requests_per_minute,
                 tokens_per_minute=self.tokens_per_minute)])
+
+    def start(self):
+        background.probe_ports((self.plan['port'], self.plan['operations_port']))
+        generation = self.counts['starts'] + 1
+        policy = self.client_policy()
         save(self.out / 'client-policy.json', policy)
         args = [self.plan['binary'], 'serve', '--model-dir', self.plan['model'],
             '--host', '127.0.0.1', '--port', str(self.plan['port']),
@@ -197,10 +200,11 @@ class Stage(foreground.Stage):
         self.client.protocol_sha256 = caps['protocol_source_sha256']
 
     def sdk(self, label, action, request=None, *, response_id=None, query=None,
-            expected_status=None):
+            expected_status=None, headers=None, drain=True):
         self.budget('chats' if action == 'create' else 'controls')
         command = dict(action=action, request=request, id=response_id, query=query,
-            base_url=f"http://127.0.0.1:{self.plan['port']}/v1", headers=HEADERS,
+            base_url=f"http://127.0.0.1:{self.plan['port']}/v1",
+            headers=HEADERS if headers is None else headers,
             sdk_directory=self.plan['sdk']['sdk_directory'], timeout_ms=120000)
         save(self.out / (label + '.request.json'), command)
         env = {k: v for k, v in os.environ.items() if k not in
@@ -228,7 +232,8 @@ class Stage(foreground.Stage):
             if result.get('chunks'):
                 check_done_events(result)
         self.same_model()
-        self.drained(label + '-drain')
+        if drain:
+            self.drained(label + '-drain')
         return result.get('result')
 
     def keys(self, label, action='inspect', *, revision=None, retire=()):

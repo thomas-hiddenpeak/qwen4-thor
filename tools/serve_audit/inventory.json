@@ -1232,11 +1232,22 @@
       "prompt_cache_options",
       "moderation",
       "access_programs"
+    ],
+    "moderation.cpp:0:*moderation": [
+      "model",
+      "policy"
+    ],
+    "moderation.cpp:1:*policy": [
+      "input",
+      "output"
+    ],
+    "moderation.cpp:2:*rule": [
+      "mode"
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "3ce705fdeacde5feb6bdc4d92831e45b96f6bc5c138adcc70bfd160f8c49518d",
-    "cmake/ChatProtocolIdentity.cmake": "9792a207da7d1c483570f606b75be2542f21bfcc390acb2985a0f332f18abf36",
+    "CMakeLists.txt": "07740671b129453c5f8238abc8d7c0cf2bdf26aa4e6907872c470c8a78340709",
+    "cmake/ChatProtocolIdentity.cmake": "3181d8bc8941f373e3b4388d10ccc95b1c831dd077f82de5553369a8f56909ec",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
     "cmake/NativeIngress.cmake": "5560a873e8d89b5e034636f006a2b21ace3bdab2bf71dcf688d5028fbbc704b4",
@@ -1270,7 +1281,7 @@
     "include/q4t/server/chat_template.h": "9b6723142b8bb1116ea56df7742f3f56364122dc5a975977b15132ff56ce3e7e",
     "include/q4t/server/chat_tool_history.h": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
     "include/q4t/server/client_identity.h": "c05aad5dc655e91962eae55aab25c09fdcbc2a72ddc37a95585c7288dfac54be",
-    "include/q4t/server/client_policy.h": "e70e50548ff3cbff748a3545a69169499ca95821a49617a9967e4bc459df0bad",
+    "include/q4t/server/client_policy.h": "bd2aefbb0ec6697fd042108905876cd195324ac83485194c526eaf3024dc9de5",
     "include/q4t/server/client_policy_admin.h": "abe87e7c1dffbb0a66c141a810dda12a70a097956d81ba80347b50d96aced3e8",
     "include/q4t/server/client_rate_state.h": "e8377a5fcb02288385ae30861d3b4baa8002c7ce55a95e52bdba8b9a741a8ee6",
     "include/q4t/server/client_request.h": "d08159942c0f0f95c5040546b3aab647eac435546767e96a1c922f3d88957998",
@@ -1296,6 +1307,7 @@
     "include/q4t/server/media_admission.h": "5d50347a9c9349d4a7d381792eb5536c2516f7e66ff7d1a1e7b787cd599c8c27",
     "include/q4t/server/memory_admission.h": "ae72d092757e41739e5d85ae7b2a975dccd13e43de8e9286dd831831ba7a7196",
     "include/q4t/server/model_catalog.h": "19bb1b450170b4d7c1d8895593f41baa1ad91c90aaafc58977894bcf76d52143",
+    "include/q4t/server/moderation.h": "3a81e2254c524b1353e68aff24d3319ccab31b81fd2b2faa2631505e2f7c8e86",
     "include/q4t/server/mtp_policy.h": "28f10c5c885f9465c0f26c22a36bf6be541933a0ed9d9c2da5f0d3983e0a8285",
     "include/q4t/server/native_crypto.h": "0976c2f55c5edaedfc50299db53cd2aa4dd0f0126117aa809e78eea6fa23a224",
     "include/q4t/server/object_store.h": "06d1fb342b952e7f302d19a0a196083d4225a7ecbad235c9cb34db44cd8994b2",
@@ -1318,13 +1330,13 @@
     "include/q4t/server/responses_api.h": "2a636939c4c2fbb1806fb7146c0a82aad2ecec1a149609647fde9fd295b6195b",
     "include/q4t/server/responses_compaction.h": "3c6f96d0bf5fa86b3976566bd6da819e9a389cf7c16e6f67a165f103e832e6e4",
     "include/q4t/server/responses_crypto.h": "5a8bd0449fed6c5551e00b48ecd571fa579739389c5944952fe791d4d524cc78",
-    "include/q4t/server/responses_execution.h": "94b758407895fe58611d4be2ba004a14059c35c4d6cf66d13312e4d99859e710",
+    "include/q4t/server/responses_execution.h": "89ec70ac8b7719bca46ea2c63b56e458b53a7ffbcfc2e4f2bee704d5eebbd97d",
     "include/q4t/server/responses_input.h": "c27a660a9ea2ba19fc7dfd98c9cb5171f4534c229354c80428b16959b7f5c4ea",
     "include/q4t/server/responses_item_shape.h": "0c341d6d0e9f0693daacc35ba97e0929703d9f2de108aa77056fa8f88777ee37",
     "include/q4t/server/responses_jobs.h": "f7f9ca848549d3d47dd9b382b3153f65d20d30bc3befb59405c0bdf3412a1343",
-    "include/q4t/server/responses_output.h": "c9332f6f97f51549ca11485d700b39f52d92e4d4d9355126a6489328eb6f8f1d",
+    "include/q4t/server/responses_output.h": "514e42ce23c1d1d2c0fd529fa95b08ae25071e15a3795de913ad05f976bac57d",
     "include/q4t/server/responses_owner.h": "56647342474e335ad1039609e93a947bd5c81364a48f018c0d7afe2ffde4c613",
-    "include/q4t/server/responses_plan.h": "49d1f0e222c20788c78b7dd4a983aee5462a852b2cf557979b300ce73ea0de1b",
+    "include/q4t/server/responses_plan.h": "e0860925add29fe7f06db794fa0bc69e9424d28c34eae662f4d8082c6e3f2639",
     "include/q4t/server/responses_reasoning.h": "d15d08e23a6734189b1241584f1e04200db5ecbbeef167f603da8c512281a5c7",
     "include/q4t/server/responses_state.h": "0c171182fb9f9b8cf2ec633d5e55b605d64b1bc42c31ccbb621a87dd004e0330",
     "include/q4t/server/sampling.h": "202bff18193dddc46f92e3b7d69fef36218faf00e913b292d1e9a9abe7b65141",
@@ -1388,11 +1400,11 @@
     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_capabilities.cpp": "70ee9b08042a1177c1470636227ce9d162a9725b1a403b9f4ee1752a563c8b52",
+    "src/server/chat_capabilities.cpp": "4edf26746263652707d38897ad6b2f9efac9dbbce270dececb2ad64122c3b4b9",
     "src/server/chat_choices.cpp": "ee99c4aca3c1ea07d5929da38325aa2b28a411245c7d794c9cc5f1f8eb23f16a",
     "src/server/chat_contract.cpp": "c1786828dd6d95ed7ec2b0c2bb4a5fb4418705dbb9a86a92cca59d4790c312a1",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
-    "src/server/chat_generation.cpp": "7dc7874550e27e6fcbffc586e918b166ad1d79ba829e50586b0cc8d248d7f2c0",
+    "src/server/chat_generation.cpp": "938fd362779ea110bdd6014c980c9b488787a489ba10753e16d8017304e87d50",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
     "src/server/chat_http.cpp": "89e7c112767927a17775825cec3d372055c6aacd9b2aa2e9e548997b64a81503",
     "src/server/chat_input.cpp": "372b93746fbe236ec1d0caea778b1212d22ab94a18ec4f7ce81adcfba8b8c546",
@@ -1410,7 +1422,7 @@
     "src/server/chat_storage_options.cpp": "44a9da20f7f72b2fc448a02d09fdfb112c38b7cb0a9c8eca3296e43d5c32d99c",
     "src/server/chat_template.cpp": "bb9331cc46d88422fd775d4b79c85d03fbb862bef888acdfd2ebd4b8f581e9c7",
     "src/server/chat_tool_history.cpp": "902f6c0982fd072d4dba4c3f6a34629eec9eaaf604fd5d920822b96ed51f82db",
-    "src/server/client_policy.cpp": "8fbec179e13ad98234d0f064645166f2e3d7004da101ab4ba95f0f664bac2fe4",
+    "src/server/client_policy.cpp": "bd039b9b6f28adc26f785709bd9f159579ce29aab3620d83a899958befc53582",
     "src/server/client_policy_admin.cpp": "50b2107f90879cac09261420c52874e507350d843340096797797c22543e8697",
     "src/server/client_rate_state.cpp": "bc9d1577ffb84c852243d2088cd8351e3dea21022f50f7a8c0f909f16e056c7a",
     "src/server/client_request.cpp": "c0d59195886427d5d9852534cececc45d27ccf269d93f19a85a117293e6c16c8",
@@ -1434,6 +1446,7 @@
     "src/server/media_admission.cpp": "11461c31fed0db43fe68e16680812641c0e51371585c216673e4fe2e54500393",
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
     "src/server/model_catalog.cpp": "8d0808b669e3ecbc95794d8b07bd6a86b38dc310cf93c98e18befade71fd2d7e",
+    "src/server/moderation.cpp": "ea07d705ed4d22aa5654e9bfd625035b0aff4bdfe5f0796dcfa7c1ef3c57053d",
     "src/server/native_crypto.cpp": "86da5a6cda4b18154f46227074d7fa68b7ec3cbb8bfcdb9a6aaff75b2c9cb8a1",
     "src/server/object_protocol.h": "37bcaad2864814be50b6ae530d4b2e17028cacbc0fd4e05027e4235965331d9c",
     "src/server/object_store.cpp": "dd95823ba28278b291d79bed2a17e2c9eafbb0d1ce18b4bf3995c6c7fc288eb1",
@@ -1455,15 +1468,16 @@
     "src/server/responses_api.cpp": "a922fb6309aec5efcae895f31081031cdfbe0dac21f03935ef73b735f51f4920",
     "src/server/responses_compaction.cpp": "9cb02c6a890798d041cad3ac674832d6155ddef221ad3342c65ab4024f6ca58f",
     "src/server/responses_crypto.cpp": "5e90f0671daeecdacba5d42918c1f796421887012416f001b33c2c38a71e8030",
-    "src/server/responses_execution.cpp": "3bc3be0bd4706ee653c700169637b6b6a5bdb7740e5c50054e7d74b27bddf3ab",
+    "src/server/responses_execution.cpp": "765962612e5b753d14c152314bb74ab4f6c6edd85faab06d2c18e3d79098acca",
     "src/server/responses_execution_compaction.cpp": "f01a18c3443a2ac66b8aef83d23f5854b46abd17bfb2b3207b4a07bb4f02d88e",
+    "src/server/responses_execution_moderation.cpp": "4f54ccbced1023aaecb27674fbe65b34b7cb872f4fb83eec64e5b7fca2f7e96b",
     "src/server/responses_input.cpp": "4e0d3b426b05a991fe1ca29f9b477883fdf7793fcc729ab19e3a25637bc9b80e",
     "src/server/responses_item_shape.cpp": "b09c14dfed993b0782d592efa387fd9669e691f907fdd664d6fcd429769235b9",
     "src/server/responses_jobs.cpp": "e5eaf87112d482d23908df7d12b2a4afdec31d63a2fd54f20e29eebfdd206832",
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
-    "src/server/responses_output.cpp": "d2cd4bccd687d6f0ce709f7f956dcf4855caa93cd832a1958bb7d1a0a4432bb0",
+    "src/server/responses_output.cpp": "33f24f6713760f94e55e7bbd3449ae090e06d274fbe58e65e5eeb1706e5b2922",
     "src/server/responses_owner.cpp": "f439f60e6956ac0d61c107d95ec719cd1fbed84eb0c56721ef63cd1f4342a3fc",
-    "src/server/responses_plan.cpp": "77faeca546ab3c60e9670d61e43121dbecad8233ddb8c3289ae8a199588f4e56",
+    "src/server/responses_plan.cpp": "c79f7a79f1bf310ef0d30d38639b28c65d1d793f27c311ecba2f37f6293d4c01",
     "src/server/responses_reasoning.cpp": "2114cbd94184bcd645329d69d2dd260b14b08e5997267f892684cff061de5ffc",
     "src/server/responses_state.cpp": "8f1f5433552165c333b7f8288848286e5e3f45df056243f5cd8601486d767fbc",
     "src/server/responses_summary.cpp": "f1cab4bfe02c3d810925ff3fb7ce4d56cfaea5bd341e5cec606e4cba1c0d9b25",
@@ -2959,7 +2973,7 @@
     ]
   },
   "reasoning_pro_development_20261110": {
-    "status": "IMPLEMENTED_PENDING_TARGETED_VALIDATION",
+    "status": "DELIVERED",
     "sources": [
       "CMakeLists.txt",
       "cmake/ChatProtocolIdentity.cmake",
@@ -2975,6 +2989,34 @@
     "frozen_checks": {
       "cpp": 19,
       "schema": 2
-    }
+    },
+    "acceptance_evidence": [
+      "docs/evidence/serve-reasoning-pro-cpu-20261110/README.md",
+      "docs/evidence/serve-reasoning-pro-business-20261110/README.md",
+      "docs/evidence/serve-reasoning-pro-delivery-20261110/README.md"
+    ]
+  },
+  "moderation_development_20261110": {
+    "status": "CPU_ACCEPTED_PENDING_ACTUAL_BUSINESS",
+    "plan": "docs/SERVE_RESPONSES_EXECUTION_POLICY_2026-11-10.md",
+    "review": "Reviewed actual served-model classification and strict 13 scores, real message/tool data, input-before-business, shared cancellation, private output across SSE/state/replay, approval-before-publication, score error continuation and block fail-closed, bounded independent auxiliary output and cumulative client TPM, explicit response step sequencing without model/tool replay. Source inventory is not runtime certification.",
+    "frozen_checks": {
+      "cpp": 29,
+      "schema": 2
+    },
+    "sources": [
+      "include/q4t/server/moderation.h",
+      "src/server/moderation.cpp",
+      "src/server/chat_generation.cpp",
+      "src/server/responses_execution_moderation.cpp",
+      "src/server/responses_execution.cpp",
+      "src/server/responses_output.cpp",
+      "src/server/client_policy.cpp",
+      "tools/serve_responses/build_contract.py"
+    ],
+    "cpu_status": "29 distinct C++ and 2 schema passed; original foreground-cancel fixture failure retained and only corrected test rerun. Inventory preparation originally replaced annotated maps with extracted key lists; restored original semantics/evidence maps and only refreshed reviewed source/whitelist anchors. Remaining artifact checks pending.",
+    "acceptance_evidence": [
+      "docs/evidence/serve-moderation-cpu-20261110/README.md"
+    ]
   }
 }

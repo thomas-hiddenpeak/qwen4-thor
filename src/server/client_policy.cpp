@@ -412,9 +412,14 @@ Status ClientAdmission::FreezeRates(ClientRateState* state,
 ClientRateResult ClientRateLease::Reserve(ClientAdmission& admission,
                                           const ClientIdentity& identity,
                                           uint64_t prompt, uint64_t output,
-                                          ClientClock::time_point now) {
+                                          ClientClock::time_point now,
+                                          uint64_t auxiliary_output) {
   if (attempted_) return ClientRateResult::kInvalid;
   attempted_ = true;
+  if (auxiliary_output > kMaxAuxiliaryOutputTokens ||
+      output > UINT64_MAX - auxiliary_output ||
+      prompt > UINT64_MAX - output - auxiliary_output)
+    return ClientRateResult::kInvalid;
   if (identity.owner_ != &admission || !identity.Allowed())
     return ClientRateResult::kInvalid;
   if (!identity.Scoped()) {
@@ -448,7 +453,7 @@ ClientRateResult ClientRateLease::Reserve(ClientAdmission& admission,
     rate.rpm_rejected = Add(rate.rpm_rejected, 1);
     return ClientRateResult::kRpm;
   }
-  const uint64_t amount = prompt + output;
+  const uint64_t amount = prompt + output + auxiliary_output;
   if (limits->tokens_per_minute && Add(Add(rate.tokens, rate.reserved),
                                        amount) > limits->tokens_per_minute) {
     rate.tpm_rejected = Add(rate.tpm_rejected, 1);

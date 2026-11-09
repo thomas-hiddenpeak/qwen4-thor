@@ -1,5 +1,6 @@
 // Existing ChatServer responsibilities; shared state stays in ChatServer.
 #include "chat_server_internal.h"
+#include "responses_json.h"
 
 #include <new>
 #include <optional>
@@ -634,7 +635,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     return status;
   };
   const auto prepare_step = [&](const ChatRequestPlan& step,
-                                const io::Json& original) {
+                                const io::Json& original,
+                                bool auxiliary = false) {
+    auto step_config = planning_config;
+    if (auxiliary) {
+      step_config.client_limits = nullptr;
+      step_config.prewarm_only = false;
+    }
     const auto& step_request = step.Request(original);
     items.clear();
     media_plan = {};
@@ -647,7 +654,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       if (!lock.owns_lock())
         return Status::Fail("Internal step cancelled waiting for tokenizer");
       status = EncodeChatPrompt(
-          step_request, planning_config, prompt,
+          step_request, step_config, prompt,
           [&](std::string_view text, std::vector<uint32_t>* out) {
             return tok_->Encode(text, out, {.cancelled = cancelled});
           },
@@ -655,10 +662,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     }
     if (status && !items.empty()) {
       const auto& model = model_.Get().cfg;
-      status = ExpandChatMedia(
-          step_request, items, model.image_token_id, model.video_token_id,
-          proc_cfg_, video_proc_cfg_, vision_device_budget_, planning_config,
-          &prompt_u32, &media_plan, &prompt_budget, &planning_error);
+      status = ExpandChatMedia(step_request, items, model.image_token_id,
+                               model.video_token_id, proc_cfg_, video_proc_cfg_,
+                               vision_device_budget_, step_config, &prompt_u32,
+                               &media_plan, &prompt_budget, &planning_error);
     }
     prompt_encoded = status.ok();
     return status;
@@ -682,7 +689,55 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                             responses->Envelope().reasoning_mode == "pro";
   ResponsesSummaryPlan pro_plan;
   std::string pro_notes;
-  if (compact_step_needed) {
+  const auto moderation_options =
+      responses ? responses->Envelope().moderation : ModerationOptions{};
+  const bool moderate_output = moderation_options.enabled && !cache_prewarm;
+  ModerationPlan input_moderation, output_moderation;
+  ModerationUsage moderation_usage;
+  auto moderation_results = responses_detail::Object(
+      {{"input", ModerationError("moderation_not_executed",
+                                 "Input classification has not executed")},
+       {"output", ModerationError("moderation_not_executed",
+                                  "Output classification has not executed")}});
+  bool input_review = false;
+  if (moderation_options.enabled) {
+    ModerationContent content;
+    s = CollectModerationInput(*req.GetArray("messages"), &content,
+                               &planning_error);
+    if (s)
+      s = PlanModeration(moderation_options, content, planning_config,
+                         kMaxModerationStepTokens, &input_moderation,
+                         &planning_error);
+    if (s)
+      s = prepare_step(input_moderation.chat, input_moderation.request, true);
+    if (!s) {
+      if (cancelled()) {
+        count_abort();
+        send_cancel_error("Input moderation preparation cancelled");
+        return;
+      }
+      responses_detail::Set(&moderation_results, "input",
+                            ModerationError("moderation_preparation_failed",
+                                            s.message().substr(0, 1024)));
+      if (moderation_options.input == ModerationMode::kBlock) {
+        SendError(fd, 503, "Required input classification unavailable", {},
+                  "moderation_unavailable", "moderation");
+        return;
+      }
+      // The rejected auxiliary preparation may have changed prompt buffers.
+      // Restore the actual primary before admission; never execute its prompt
+      // under the classifier plan or charge the wrong input.
+      s = prepare_step(request_plan, original_request);
+      if (!s) {
+        SendError(fd, planning_error.http_status, s.message(), {},
+                  planning_error.code, planning_error.param);
+        return;
+      }
+    } else {
+      input_review = true;
+    }
+  }
+  if (compact_step_needed && !input_review) {
     s = prepare_step(responses->Compaction().chat,
                      responses->Compaction().request);
     if (!s) {
@@ -695,11 +750,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       }
       return;
     }
-  } else if (pro_selected) {
+  } else if (pro_selected && !compact_step_needed) {
     s = PlanResponsesDeliberation(responses->Generation(), request_output_limit,
                                   0, planning_config, &pro_plan,
                                   &planning_error);
-    if (s) s = prepare_step(pro_plan.chat, pro_plan.request);
+    if (s && !input_review) s = prepare_step(pro_plan.chat, pro_plan.request);
     if (!s) {
       if (cancelled()) {
         count_abort();
@@ -712,6 +767,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     }
   }
   if (planning_config.client_limits) {
+    if (prompt_u32.size() > planning_config.client_limits->max_prompt_tokens) {
+      SendError(fd, 400, "Initial step exceeds client input limit", {},
+                "client_prompt_limit_exceeded", "moderation");
+      return;
+    }
     const auto result = rate_lease.Reserve(
         clients_, http->Client(),
         completion                                   ? completion_prompt_tokens
@@ -721,7 +781,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         : standalone_compact && !compact_step_needed ? 0
         : cache_prewarm                              ? 0
         : responses                                  ? request_output_limit
-                    : prompt_budget.total_output);
+                    : prompt_budget.total_output,
+        ClientClock::now(),
+        (input_review + moderate_output) * kMaxModerationStepTokens);
     if (result != ClientRateResult::kAllowed) {
       const char* code =
           result == ClientRateResult::kRpm   ? "client_rpm_exhausted"
@@ -747,7 +809,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   std::optional<PromptCacheDiagnostics::Observation> cache_observation;
   size_t responses_completed_calls = 0;
   const auto completed_tokens = [&] {
-    if (responses) return static_cast<uint64_t>(responses_usage.output_tokens);
+    if (responses)
+      return static_cast<uint64_t>(responses_usage.output_tokens +
+                                   moderation_usage.output_tokens);
     return completion ? completion_choices.CompletionTokens()
                       : choices.CompletionTokens();
   };
@@ -774,74 +838,213 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     return false;
   };
 
-  if (compact_selected && !compact_step_needed) {
-    std::string wire, part;
+  enum class ResponseStep {
+    kInputReview,
+    kCompaction,
+    kPro,
+    kPrimary,
+    kSummary,
+    kOutputReview,
+    kFinish
+  };
+  const auto first_business_step = compact_step_needed
+                                       ? ResponseStep::kCompaction
+                                   : pro_selected ? ResponseStep::kPro
+                                                  : ResponseStep::kPrimary;
+  auto response_step =
+      input_review ? ResponseStep::kInputReview : first_business_step;
+  bool response_incomplete = false, response_filtered = false;
+  bool output_hold_started = false;
+  bool compact_noop_pending = compact_selected && !compact_step_needed;
+  const auto begin_response = [&](std::string* wire) {
     ObjectReply result;
-    if (!responses->Begun()) result = responses->Begin(&wire);
-    if (result.ok()) result = responses->StartCompaction(&part);
-    wire += part;
-    part.clear();
-    if (result.ok())
-      result = responses->CompleteCompaction("", 0, planning_config,
-                                             measure_context, &part);
-    wire += part;
-    if (result.ok() && standalone_compact) {
-      rate_lease.StartPrompt(0);
-      result = responses->Finish(false, 0, {}, std::time(nullptr), &part);
+    wire->clear();
+    if (!responses->Begun()) result = responses->Begin(wire);
+    if (result.ok() && moderate_output &&
+        moderation_options.output == ModerationMode::kBlock &&
+        !output_hold_started) {
+      result = responses->HoldUnreviewedOutput();
+      if (result.ok()) output_hold_started = true;
+    }
+    return result;
+  };
+  const auto finish_response = [&] {
+    std::string wire, terminal;
+    auto result = begin_response(&wire);
+    if (result.ok() && moderation_options.enabled) {
+      s = responses->SetModerationResults(moderation_results, moderation_usage);
+      if (!s) {
+        SendError(fd, 503, s.message(), {}, "moderation_metadata_failed");
+        return false;
+      }
+    }
+    if (result.ok()) {
+      diagnostic.Stage("storage");
+      RequestDiagnostics::Scope waiting(diagnostic, Wait::kStorage);
+      result = responses->Finish(response_incomplete, responses_completed_calls,
+                                 responses_usage, std::time(nullptr), &terminal,
+                                 response_filtered);
     }
     if (!result.ok()) {
+      err_guard.ok = false;
       SendError(fd, result.http_status, result.ClientMessage(), {},
-                result.ClientCode(), result.value.GetString("param"));
+                result.ClientCode());
+      return false;
+    }
+    if (cache_observation && !response_filtered)
+      prompt_cache_diagnostics_.Remember(client, responses->Id(),
+                                         std::move(*cache_observation));
+    if (stream) {
+      if (!headers_started) {
+        if (!detail::BeginStreamingResponse(fd, response_state,
+                                            {.control = control.get()})) {
+          count_abort();
+          return false;
+        }
+        headers_started = true;
+      }
+      if (!wire.empty() && !write_stream(wire)) return false;
+      if (http) http->BeforeTerminal();
+      *response_state = detail::ResponseState::kTerminal;
+      if (!write_stream(terminal)) return false;
+    } else if (!SendSimple(fd, 200, "OK", responses->ResultJson(),
+                           "application/json", {.control = control.get()})) {
+      control->Cancel(RequestControl::State::kDisconnect);
+      count_abort();
+      return false;
+    }
+    *response_state = detail::ResponseState::kComplete;
+    if (control->Cancelled() || !control->Finish()) {
+      count_abort();
+      return false;
+    }
+    err_guard.ok = true;
+    const auto elapsed = std::chrono::duration<double>(
+                             std::chrono::steady_clock::now() - t_arrive)
+                             .count();
+    metrics_.response_seconds.Observe(elapsed);
+    metrics_.e2e_seconds.Observe(elapsed);
+    request_session.success = !response_filtered;
+    for (auto& lease : shared_writes) lease->success = !response_filtered;
+    diagnostic.Outcome("success",
+                       response_filtered ? "content_filter" : "completed");
+    metrics_.requests_success.fetch_add(1, std::memory_order_relaxed);
+    return true;
+  };
+  const auto finish_review = [&](bool input, io::Json report) {
+    const auto mode =
+        input ? moderation_options.input : moderation_options.output;
+    const auto decision = DecideModeration(mode, report);
+    responses_detail::Set(&moderation_results, input ? "input" : "output",
+                          std::move(report));
+    if (responses->Begun()) {
+      s = responses->SetModerationResults(moderation_results, moderation_usage);
+      if (!s) {
+        SendError(fd, 503, s.message(), {}, "moderation_metadata_failed");
+        return false;
+      }
+    }
+    if (decision == ModerationDecision::kUnavailable) {
+      responses->DiscardUnreviewedOutput();
+      SendError(fd, 503, "Required classification unavailable", {},
+                "moderation_unavailable", "moderation");
+      return false;
+    }
+    if (decision == ModerationDecision::kBlocked) {
+      responses->DiscardUnreviewedOutput();
+      response_incomplete = response_filtered = true;
+      response_step = ResponseStep::kFinish;
+      return true;
+    }
+    if (!input && responses->OutputHeld()) {
+      std::string wire;
+      const auto published = responses->PublishReviewedOutput(
+          *moderation_results.Find("output"), &wire);
+      if (!published.ok()) {
+        SendError(fd, published.http_status, published.ClientMessage(), {},
+                  published.ClientCode());
+        return false;
+      }
+      if (stream && !write_stream(wire)) return false;
+    }
+    response_step = input ? first_business_step : ResponseStep::kFinish;
+    return true;
+  };
+  ResponsesGenerationPlan continuation_generation;
+  // At most six model steps and one non-model terminal. No automatic retries
+  // of a generated answer, classification, compaction, or tool call.
+  for (int choice_index = 0; choice_index < (responses ? 7 : sampling.choices);
+       ++choice_index) {
+    if (responses && response_step == ResponseStep::kFinish) {
+      finish_response();
       return;
     }
-    if (standalone_compact) {
-      if (!SendSimple(fd, 200, "OK", responses->ResultJson(),
-                      "application/json", {.control = control.get()})) {
-        control->Cancel(RequestControl::State::kDisconnect);
-        count_abort();
+    if (compact_noop_pending && response_step != ResponseStep::kInputReview) {
+      std::string wire, part;
+      auto result = begin_response(&wire);
+      if (result.ok()) result = responses->StartCompaction(&part);
+      wire += part;
+      part.clear();
+      if (result.ok())
+        result = responses->CompleteCompaction("", 0, planning_config,
+                                               measure_context, &part);
+      wire += part;
+      if (!result.ok()) {
+        SendError(fd, result.http_status, result.ClientMessage(), {},
+                  result.ClientCode(), result.value.GetString("param"));
         return;
       }
-      err_guard.ok = true;
-      control->Finish();
-      diagnostic.Outcome("success", "compaction_noop");
-      metrics_.requests_success.fetch_add(1, std::memory_order_relaxed);
-      return;
-    }
-    if (stream) {
-      if (!detail::BeginStreamingResponse(fd, response_state,
-                                          {.control = control.get()}) ||
-          !write_stream(wire))
+      compact_noop_pending = false;
+      if (standalone_compact) {
+        rate_lease.StartPrompt(0);
+        finish_response();
         return;
-      headers_started = true;
-      if (http) http->StartHeartbeats(control);
+      }
+      if (stream) {
+        if ((!headers_started &&
+             !detail::BeginStreamingResponse(fd, response_state,
+                                             {.control = control.get()})) ||
+            !write_stream(wire))
+          return;
+        headers_started = true;
+        if (http) http->StartHeartbeats(control);
+      }
     }
-  }
-  ResponsesGenerationPlan continuation_generation;
-  const int pro_index = compact_step_needed ? 1 : 0;
-  const int primary_index = pro_index + (pro_selected ? 1 : 0);
-  for (int choice_index = 0;
-       choice_index <
-       (standalone_compact ? 1 : sampling.choices + primary_index) +
-           (summary_plan.needed ? 1 : 0);
-       ++choice_index) {
-    const bool compaction_step = compact_step_needed && choice_index == 0;
-    const bool pro_step = pro_selected && choice_index == pro_index;
+    const bool compaction_step =
+        responses && response_step == ResponseStep::kCompaction;
+    const bool pro_step = responses && response_step == ResponseStep::kPro;
     const bool summary_step =
-        responses && summary_plan.needed && choice_index == primary_index + 1;
-    const bool internal_step = compaction_step || pro_step || summary_step;
+        responses && response_step == ResponseStep::kSummary;
+    const bool input_moderation_step =
+        responses && response_step == ResponseStep::kInputReview;
+    const bool moderation_step =
+        input_moderation_step ||
+        (responses && response_step == ResponseStep::kOutputReview);
+    const auto review_failed = [&](const char* code,
+                                   const std::string& message) {
+      return finish_review(input_moderation_step,
+                           ModerationError(code, message.substr(0, 1024)));
+    };
+    const auto& moderation_plan =
+        input_moderation_step ? input_moderation : output_moderation;
+    const bool internal_step =
+        compaction_step || pro_step || summary_step || moderation_step;
     const bool compacted_primary = compact_step_needed && !internal_step;
-    const bool continued_primary = primary_index > 0 && !internal_step;
-    const auto& step_plan = compaction_step      ? responses->Compaction().chat
-                            : pro_step           ? pro_plan.chat
-                            : summary_step       ? summary_plan.chat
-                            : continued_primary  ? continuation_generation.chat
-                                                 : request_plan;
+    const bool continued_primary =
+        (compact_step_needed || pro_selected) && !internal_step;
+    const auto& step_plan = moderation_step     ? moderation_plan.chat
+                            : compaction_step   ? responses->Compaction().chat
+                            : pro_step          ? pro_plan.chat
+                            : summary_step      ? summary_plan.chat
+                            : continued_primary ? continuation_generation.chat
+                                                : request_plan;
     const auto& req = step_plan.Request(
-        compaction_step      ? responses->Compaction().request
-        : pro_step           ? pro_plan.request
-        : summary_step       ? summary_plan.request
-        : continued_primary  ? continuation_generation.generation_request
-                             : original_request);
+        moderation_step     ? moderation_plan.request
+        : compaction_step   ? responses->Compaction().request
+        : pro_step          ? pro_plan.request
+        : summary_step      ? summary_plan.request
+        : continued_primary ? continuation_generation.generation_request
+                            : original_request);
     const auto& constraints = step_plan.constraints;
     const auto& sampling = step_plan.sampling;
     const bool plain_greedy = sampling.PlainGreedy();
@@ -850,23 +1053,31 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         (!completion || completion_plan.logprobs >= 0);
     const bool prediction_enabled = step_plan.prediction.enabled;
     const bool prewarm = cache_prewarm && !internal_step;
-    const int max_tokens = prewarm ? 0
-                          : responses ? ChatOutputLimit(req, planning_config)
-                                     : request_output_limit;
+    const int max_tokens = prewarm           ? 0
+                           : moderation_step ? kMaxModerationStepTokens
+                           : responses ? ChatOutputLimit(req, planning_config)
+                                       : request_output_limit;
     std::string prefix_scope = internal_step ? "" : request_prefix_scope;
     SessionLease summary_session;
     auto& session = internal_step ? summary_session : request_session;
     if (responses && choice_index > 0) {
       err_guard.ok = false;
       diagnostic.Stage("encode");
-      const char* param = summary_step  ? "reasoning.summary"
-                          : pro_selected ? "reasoning.mode"
-                                         : "context_management";
-      s = prepare_step(step_plan, req);
+      const char* param = moderation_step ? "moderation"
+                          : summary_step  ? "reasoning.summary"
+                          : pro_selected  ? "reasoning.mode"
+                                          : "context_management";
+      s = prepare_step(step_plan, req, moderation_step);
       if (!s) {
         if (cancelled()) {
           count_abort();
           send_cancel_error("Internal step preparation cancelled");
+        } else if (moderation_step) {
+          if (!finish_review(input_moderation_step,
+                             ModerationError("moderation_preparation_failed",
+                                             s.message().substr(0, 1024))))
+            return;
+          continue;
         } else {
           SendError(fd, planning_error.http_status, s.message(), {},
                     planning_error.code, param);
@@ -874,9 +1085,16 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         return;
       }
       if (planning_config.client_limits) {
-        const uint64_t total_prompt =
-            responses_usage.input_tokens + prompt_u32.size();
+        const uint64_t total_prompt = responses_usage.input_tokens +
+                                      moderation_usage.input_tokens +
+                                      prompt_u32.size();
         if (total_prompt > planning_config.client_limits->max_prompt_tokens) {
+          if (moderation_step) {
+            if (!review_failed("client_prompt_limit_exceeded",
+                               "Classification cumulative input limit"))
+              return;
+            continue;
+          }
           SendError(fd, 400,
                     "Internal step exceeds cumulative client input limit", {},
                     "client_prompt_limit_exceeded", param);
@@ -886,6 +1104,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                                       prompt_u32.size());
         if (extended != ClientRateResult::kAllowed) {
           const bool tpm = extended == ClientRateResult::kTpm;
+          if (moderation_step) {
+            if (!review_failed(
+                    tpm ? "client_tpm_exhausted" : "step_admission_unavailable",
+                    "Classification input reservation unavailable"))
+              return;
+            continue;
+          }
           SendError(fd, tpm ? 429 : 503,
                     "Internal step input reservation unavailable", {},
                     tpm ? "client_tpm_exhausted" : "step_admission_unavailable",
@@ -925,7 +1150,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         sampling.choices == 1
             ? request_id
             : request_id + "_choice_" + std::to_string(choice_index),
-        (collect_chat && !responses) || compaction_step,
+        (collect_chat && !responses) || compaction_step || moderation_step,
         step_plan.legacy_output);
     if (!s.ok()) {
       SendError(fd, 400, s.message());
@@ -1014,8 +1239,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     uint64_t prediction_pair_matches = 0;
     const auto start_stream = [&] {
       std::string response_start;
-      if (responses && !responses->Begun()) {
-        const auto started = responses->Begin(&response_start);
+      if (responses) {
+        const auto started = begin_response(&response_start);
         if (!started.ok()) {
           SendError(fd, started.http_status, started.ClientMessage(), {},
                     started.ClientCode());
@@ -1081,12 +1306,24 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       }
       if (admission == StructuredRequestLease::Result::kBusy) {
         metrics_.structured_rejected.fetch_add(1, std::memory_order_relaxed);
+        if (moderation_step) {
+          if (!review_failed("structured_capacity_exhausted",
+                             "Classification grammar capacity exhausted"))
+            return;
+          continue;
+        }
         SendError(fd, 503, "structured request capacity exhausted", {},
                   "structured_capacity_exhausted");
         return;
       }
       if (detail::GrammarCleanupPending()) {
         metrics_.structured_rejected.fetch_add(1, std::memory_order_relaxed);
+        if (moderation_step) {
+          if (!review_failed("structured_capacity_exhausted",
+                             "Classification grammar cleanup pending"))
+            return;
+          continue;
+        }
         SendError(fd, 503,
                   "grammar worker cleanup still owns structured capacity", {},
                   "structured_capacity_exhausted");
@@ -1109,6 +1346,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       const auto vocab_size = tok_->VocabSize();
       if (vocab_size <= 0 || vocab_size > 300000) {
         metrics_.structured_prepare_failed.fetch_add(1);
+        if (moderation_step) {
+          if (!review_failed("constraint_compile_failed",
+                             "Invalid classification vocabulary"))
+            return;
+          continue;
+        }
         SendError(fd, 400, "invalid structured vocabulary size", {},
                   "constraint_compile_failed");
         return;
@@ -1117,6 +1360,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       VocabularyStorageBudget storage;
       if (!storage.Charge(vocabulary.capacity() * sizeof(std::string))) {
         metrics_.structured_prepare_failed.fetch_add(1);
+        if (moderation_step) {
+          if (!review_failed("constraint_compile_failed",
+                             "Classification vocabulary capacity exhausted"))
+            return;
+          continue;
+        }
         SendError(fd, 400, "structured vocabulary storage budget exceeded", {},
                   "constraint_compile_failed");
         return;
@@ -1174,6 +1423,25 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       if (!s) {
         metrics_.structured_prepare_failed.fetch_add(1,
                                                      std::memory_order_relaxed);
+        if (moderation_step) {
+          const auto* code = compile_failure == GrammarFailure::kTimeout
+                                 ? "constraint_compile_timeout"
+                             : compile_failure == GrammarFailure::kResource
+                                 ? "constraint_resource_exhausted"
+                             : compile_failure == GrammarFailure::kDependency
+                                 ? "constraint_dependency_unavailable"
+                             : compile_failure == GrammarFailure::kWorker
+                                 ? "constraint_worker_failed"
+                             : compile_failure == GrammarFailure::kUnavailable
+                                 ? "structured_capacity_exhausted"
+                                 : "constraint_compile_failed";
+          if (compile_failure == GrammarFailure::kTimeout)
+            metrics_.structured_compile_timeouts.fetch_add(1);
+          if (compile_failure == GrammarFailure::kResource)
+            metrics_.structured_resource_exhausted.fetch_add(1);
+          if (!review_failed(code, s.message())) return;
+          continue;
+        }
         if (compile_failure == GrammarFailure::kTimeout) {
           metrics_.structured_compile_timeouts.fetch_add(1);
           SendError(fd, 503, s.message(), {}, "constraint_compile_timeout");
@@ -1326,7 +1594,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         admitted_completion_prompt_tokens += prompt_u32.size();
       rate_lease.StartPrompt(admitted_completion_prompt_tokens);
     } else if (responses) {
-      rate_lease.StartPrompt(responses_usage.input_tokens + prompt_u32.size());
+      rate_lease.StartPrompt(responses_usage.input_tokens +
+                             moderation_usage.input_tokens + prompt_u32.size());
     } else {
       rate_lease.Start();
     }
@@ -2271,11 +2540,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         }
         std::string response_chunk;
         if (responses) {
-          if (compaction_step) {
+          if (compaction_step || moderation_step) {
             response_status =
                 delta.kind == ResponseDelta::Kind::kContent
                     ? Status()
-                    : Status::Fail("Compaction emitted non-text output");
+                    : Status::Fail("Private executor emitted non-text output");
           } else if (pro_step) {
             if (delta.kind == ResponseDelta::Kind::kTool ||
                 delta.text.size() > 1024 * 1024 - pro_notes.size()) {
@@ -2299,7 +2568,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           }
           if (!response_status) return false;
         }
-        if (!stream || compaction_step) continue;
+        if (!stream || compaction_step || moderation_step ||
+            (responses && responses->OutputHeld()))
+          continue;
         detail::ServeFaultPoint("handler.before_content");
         const auto chunk =
             responses ? response_chunk
@@ -3275,6 +3546,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                              std::memory_order_relaxed);
     metrics_.generation_tokens_total.fetch_add(generated.size(),
                                                std::memory_order_relaxed);
+    if (moderation_step) {
+      moderation_usage.input_tokens += T;
+      moderation_usage.output_tokens += generated.size();
+      ++moderation_usage.model_steps;
+    }
 
 #ifdef Q4T_SERVE_FAULT_INJECTION
     // Preserve the actual constrained path before validation or a blocked
@@ -3308,6 +3584,14 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       if (RejectUnhealthy(fd, terminal)) {
         cleanup();
         return;
+      }
+      if (moderation_step) {
+        cleanup();
+        if (RejectUnhealthy(fd, terminal)) return;
+        if (!review_failed("moderation_generation_failed",
+                           "Classification generation failed"))
+          return;
+        continue;
       }
       if (stream) {
         detail::SendStreamError(fd, response_state, 500, "generation failed",
@@ -3404,6 +3688,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                          structured->Failure() == GrammarFailure::kTimeout)
               ? 503
               : 502;
+      if (moderation_step) {
+        cleanup();
+        if (RejectUnhealthy(fd)) return;
+        if (!review_failed(code, response_status.message())) return;
+        continue;
+      }
       diagnostic.Outcome("error", code);
       const detail::WriteOptions terminal{std::chrono::steady_clock::now() +
                                           std::chrono::milliseconds(250)};
@@ -3429,8 +3719,21 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     }
     // A choice is complete, but the external request retains admission,
     // cancellation and quota ownership until all choices finish.
-    std::string response_terminal;
     if (responses) {
+      if (moderation_step) {
+        io::Json report;
+        s = finish_reason == "length"
+                ? Status::Fail("Classification exhausted its output budget")
+                : ParseModerationResult(response_parser.Content(),
+                                        moderation_plan, 0.5, &report);
+        if (!s)
+          report = ModerationError("moderation_scores_invalid", s.message());
+        trace_outcome = s ? trace::RequestOutcome::kSuccess
+                          : trace::RequestOutcome::kFailed;
+        cleanup();
+        if (!finish_review(input_moderation_step, std::move(report))) return;
+        continue;
+      }
       const ResponsesUsage step_usage{
           T, restored_prefix, static_cast<int64_t>(generated.size()),
           internal_step ? static_cast<int64_t>(generated.size())
@@ -3482,6 +3785,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
               return;
             }
           }
+          response_step =
+              pro_selected ? ResponseStep::kPro : ResponseStep::kPrimary;
           trace_outcome = trace::RequestOutcome::kSuccess;
           cleanup();
           continue;
@@ -3505,6 +3810,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
             return;
           }
           continuation_generation = std::move(answer);
+          response_step = ResponseStep::kPrimary;
           trace_outcome = trace::RequestOutcome::kSuccess;
           cleanup();
           continue;
@@ -3524,6 +3830,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         }
         if (summary_plan.needed) {
           responses_completed_calls = response_parser.CompletedToolCalls();
+          response_step = ResponseStep::kSummary;
           trace_outcome = trace::RequestOutcome::kSuccess;
           cleanup();
           continue;
@@ -3536,22 +3843,36 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                   "response_summary_empty", "reasoning.summary");
         return;
       }
-      diagnostic.Stage("storage");
-      RequestDiagnostics::Scope waiting(diagnostic, Wait::kStorage);
-      const auto finished = responses->Finish(
-          finish_reason == "length" || summary_plan.budget_exhausted,
-          summary_step ? responses_completed_calls
-                       : response_parser.CompletedToolCalls(),
-          responses_usage, std::time(nullptr), &response_terminal);
-      if (!finished.ok()) {
-        err_guard.ok = false;
-        SendError(fd, finished.http_status, finished.ClientMessage(), {},
-                  finished.ClientCode());
-        return;
+      response_incomplete =
+          finish_reason == "length" || summary_plan.budget_exhausted;
+      if (!summary_step)
+        responses_completed_calls = response_parser.CompletedToolCalls();
+      if (moderate_output) {
+        ModerationContent content;
+        s = CollectModerationOutput(
+            *responses->Output().Snapshot().GetArray("output"), &content,
+            &planning_error);
+        if (s)
+          s = PlanModeration(moderation_options, content, planning_config,
+                             kMaxModerationStepTokens, &output_moderation,
+                             &planning_error);
+        trace_outcome = trace::RequestOutcome::kSuccess;
+        cleanup();
+        if (!s) {
+          if (!finish_review(false,
+                             ModerationError("moderation_preparation_failed",
+                                             s.message().substr(0, 1024))))
+            return;
+        } else {
+          response_step = ResponseStep::kOutputReview;
+        }
+        continue;
       }
-      if (cache_observation)
-        prompt_cache_diagnostics_.Remember(client, responses->Id(),
-                                            std::move(*cache_observation));
+      const bool success = finish_response();
+      trace_outcome = success ? trace::RequestOutcome::kSuccess
+                              : trace::RequestOutcome::kFailed;
+      cleanup();
+      return;
     } else if (completion) {
       CompletionCandidate candidate;
       candidate.text = (completion_plan.echo ? completion_prompt->echo_text : "") +
@@ -3604,18 +3925,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       }
       stored_chat_response = OutputJson(stored.value);
     }
-    if (responses) {
-      if (stream) {
-        if (http) http->BeforeTerminal();
-        *response_state = detail::ResponseState::kTerminal;
-        write_stream(response_terminal);
-      } else if (!SendSimple(fd, 200, "OK", responses->ResultJson(),
-                             "application/json", {.control = control.get()})) {
-        client_disconnected = true;
-        control->Cancel(RequestControl::State::kDisconnect);
-        count_abort();
-      }
-    } else if (stream) {
+    if (stream) {
       const auto finish_chunk = completion
           ? CompletionChunk(id, model_field, created, choice_index, "",
                               finish_reason,
@@ -3695,8 +4005,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       diagnostic.Outcome("success", "completed");
       metrics_.requests_success.fetch_add(1, std::memory_order_relaxed);
     }
-    if (responses) break;  // A budget-exhausted internal step may finish early.
   }  // Each choice releases its model/grammar buffers before the next one.
+  if (responses)
+    SendError(fd, 500, "Internal response step bound exceeded", {},
+              "response_step_limit");
 }
 
 }  // namespace q4t::server

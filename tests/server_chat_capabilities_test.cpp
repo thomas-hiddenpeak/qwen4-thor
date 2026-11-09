@@ -275,6 +275,14 @@ Q4T_TEST(chat_capabilities_native_responses_state_and_recovery) {
   Q4T_CHECK(responses->GetBool("previous_response_id") &&
             responses->GetBool("conversation"));
   const auto* summary = responses->Find("summary");
+  const auto* moderation = responses->Find("moderation");
+  Q4T_CHECK(moderation && moderation->GetBool("enabled") &&
+            moderation->GetString("executor") == "native_served_model" &&
+            moderation->GetBool("block_output_before_publication") &&
+            moderation->GetBool("same_client_tpm") &&
+            moderation->GetInt("max_steps") == 2 &&
+            moderation->GetInt("auxiliary_output_tokens_per_step") == 512 &&
+            !moderation->GetBool("model_restart_on_error", true));
   const auto* execution = responses->Find("reasoning_execution");
   Q4T_CHECK(execution && execution->GetString("pro") ==
                             "native_deliberation_then_answer" &&

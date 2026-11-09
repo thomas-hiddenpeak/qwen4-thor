@@ -481,12 +481,37 @@ void ResponsesOutput::CloseItem(size_t index, bool incomplete,
         Object({{"output_index", Number(index)}, {"item", item}}), wire);
 }
 
+Status ResponsesOutput::Moderation(const io::Json& results,
+                                   const ModerationUsage& usage) {
+  const auto* input = results.Find("input");
+  const auto* output = results.Find("output");
+  if (!initialized_ || terminal_ || !results.IsObject() ||
+      results.object.size() != 2 || !input || !output ||
+      !ValidModerationReport(*input) || !ValidModerationReport(*output) ||
+      usage.input_tokens < 0 || usage.output_tokens < 0 ||
+      usage.output_tokens > 2 * kMaxModerationStepTokens ||
+      usage.input_tokens > INT64_MAX - usage.output_tokens ||
+      usage.model_steps < 0 || usage.model_steps > 2)
+    return Status::Fail("Invalid moderation metadata or actual usage");
+  auto status = Charge(OutputJson(results).size() + 256);
+  if (!status) return status;
+  Set(&response_, "moderation", results);
+  Set(&response_, "q4t_moderation_usage",
+      Object(
+          {{"input_tokens", Number(usage.input_tokens)},
+           {"output_tokens", Number(usage.output_tokens)},
+           {"total_tokens", Number(usage.input_tokens + usage.output_tokens)},
+           {"model_steps", Number(usage.model_steps)}}));
+  return {};
+}
+
 Status ResponsesOutput::Finish(bool incomplete, size_t completed_calls,
                                const ResponsesUsage& usage,
                                int64_t completed_at, std::string* wire,
-                               const ResponsesReasoningSeal& seal) {
+                               const ResponsesReasoningSeal& seal,
+                               bool content_filtered) {
   wire->clear();
-  if (!started_ || terminal_ ||
+  if (!started_ || terminal_ || (content_filtered && !incomplete) ||
       (compaction_item_ != kMaxItems && !compaction_done_) ||
       response_.GetString("status") != "in_progress" ||
       usage.input_tokens < 0 || usage.output_tokens < 0 ||
@@ -530,7 +555,8 @@ Status ResponsesOutput::Finish(bool incomplete, size_t completed_calls,
   Set(&response_, "status", String(incomplete ? "incomplete" : "completed"));
   if (incomplete)
     Set(&response_, "incomplete_details",
-        Object({{"reason", String("max_output_tokens")}}));
+        Object({{"reason", String(content_filtered ? "content_filter"
+                                                   : "max_output_tokens")}}));
   else
     Set(&response_, "completed_at", Number(completed_at));
   Set(&response_, "usage",

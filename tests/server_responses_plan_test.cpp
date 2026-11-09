@@ -216,7 +216,7 @@ Q4T_TEST(responses_plan_lifecycle_fields_survive_and_conflicts_fail) {
       "prompt_cache_key":"bucket","prompt_cache_retention":"24h",
       "prompt_cache_options":{"mode":"explicit","prewarm":true},
       "context_management":[{"type":"compaction","compact_threshold":4096}],
-      "moderation":{"model":"actual-backend"},"service_tier":"priority"})",
+      "moderation":{"model":"base"},"service_tier":"priority"})",
                      &envelope, &error));
   Q4T_CHECK(envelope.background && envelope.conversation_id == "conv_a");
   Q4T_CHECK(envelope.options.Find("prompt")->GetString("version") == "2");
@@ -224,6 +224,7 @@ Q4T_TEST(responses_plan_lifecycle_fields_survive_and_conflicts_fail) {
   Q4T_CHECK(envelope.cache.prewarm &&
             !envelope.options.Find("prompt_cache_options")->Has("prewarm"));
   Q4T_CHECK(envelope.options.GetString("service_tier") == "priority");
+  Q4T_CHECK(envelope.moderation.enabled && envelope.moderation.model == "base");
   // Parsing retains execution requirements; this is not a moderation/cache/
   // background acceptance. Their owners must execute before any success.
   Q4T_CHECK(

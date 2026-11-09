@@ -367,6 +367,8 @@ Status ParseResponsesEnvelope(const io::Json& request,
   if (status)
     status = ParsePromptCacheOptions(request, &result.cache, &error->param);
   if (status) status = Reasoning(request, &result, error);
+  if (status)
+    status = ParseModerationOptions(request, config, &result.moderation, error);
   if (status) status = TextOptions(request, &result, error);
   if (!status) return status;
   if (config.client_limits && result.options.GetInt("max_output_tokens") >

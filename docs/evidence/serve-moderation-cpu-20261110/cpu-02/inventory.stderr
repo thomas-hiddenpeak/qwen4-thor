@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_audit/check_inventory.py", line 238, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_audit/check_inventory.py", line 223, in main
+    errors = check(inventory, actual)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_audit/check_inventory.py", line 182, in check
+    missing = set(actual[group]) - recorded.keys()
+                                   ^^^^^^^^^^^^^
+AttributeError: 'list' object has no attribute 'keys'

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <optional>
 
 #include "q4t/server/responses_output.h"
 #include "q4t/server/responses_compaction.h"
@@ -49,6 +50,13 @@ class ResponsesExecution {
   ObjectReply StartRunning(std::string* wire);
   ObjectReply Cancel();
   ObjectReply Checkpoint();
+  // Block policy keeps all generated items/events private until the actual
+  // classifier approves them. GET/replay continue to see the safe checkpoint.
+  ObjectReply HoldUnreviewedOutput();
+  ObjectReply PublishReviewedOutput(const io::Json& moderation,
+                                    std::string* wire);
+  void DiscardUnreviewedOutput() noexcept;
+  bool OutputHeld() const { return moderation_safe_.has_value(); }
   void BindCancellation(std::chrono::steady_clock::time_point deadline,
                         std::function<bool()> cancelled) {
     access_.deadline = deadline;
@@ -75,7 +83,9 @@ class ResponsesExecution {
   std::string ResultJson() const;
   ObjectReply Finish(bool incomplete, size_t completed_calls,
                      const ResponsesUsage& usage, int64_t completed_at,
-                     std::string* wire);
+                     std::string* wire, bool content_filtered = false);
+  Status SetModerationResults(const io::Json& results,
+                              const ModerationUsage& usage);
   // After model/grammar cleanup, close ordinary error/exception paths without
   // inheriting a disconnected client's cancellation or already-expired timer.
   // A lost mutation receipt is never retried or overwritten speculatively.
@@ -141,6 +151,10 @@ class ResponsesExecution {
   // Valid generated events withheld by a failed checkpoint. Error rendering
   // sends this original prefix before its terminal; no sequence is invented.
   std::string failure_prefix_;
+  std::optional<ResponsesOutput> moderation_safe_;
+  size_t moderation_safe_events_ = 0;
+  size_t moderation_safe_bytes_ = 0;
+  std::string moderation_wire_;
   std::shared_ptr<RequestControl> background_control_;
   int failure_status_ = 0;
   std::array<char, 128> failure_code_{};

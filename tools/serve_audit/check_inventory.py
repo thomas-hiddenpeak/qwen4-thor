@@ -108,7 +108,8 @@ def current_surface(root):
                  "input_contract.cpp", "chat_tool_history.cpp",
                  "chat_template.cpp", "legacy_tools.cpp", "completion_plan.cpp",
                  "conversation_api.cpp", "responses_plan.cpp", "responses_api.cpp",
-                 "chat_storage.cpp", "prompt_api.cpp", "prompt_template.cpp"):
+                 "chat_storage.cpp", "prompt_api.cpp", "prompt_template.cpp",
+                 "moderation.cpp"):
         source = (root / "src/server" / file).read_text()
         for index, item in enumerate(re.finditer(
                 r'(?:Input)?Fields\(\s*([^,]+),\s*\{([^}]+)\}', source)):

@@ -1,0 +1,11 @@
+test_actual_step_oracle_rejects_skipped_or_replayed_generation (tools.serve_responses.test_moderation_acceptance.ModerationAcceptance.test_actual_step_oracle_rejects_skipped_or_replayed_generation) ... ok
+test_business_preserves_single_start_and_separate_limited_client (tools.serve_responses.test_moderation_acceptance.ModerationAcceptance.test_business_preserves_single_start_and_separate_limited_client) ... ok
+test_filtered_sse_rejects_private_delta_and_public_sequence_gap (tools.serve_responses.test_moderation_acceptance.ModerationAcceptance.test_filtered_sse_rejects_private_delta_and_public_sequence_gap) ... ok
+test_fixed_distinct_requests_use_standard_shapes_and_budgets (tools.serve_responses.test_moderation_acceptance.ModerationAcceptance.test_fixed_distinct_requests_use_standard_shapes_and_budgets) ... ok
+test_review_rejects_missing_fake_usage_wrong_model_and_partial_scores (tools.serve_responses.test_moderation_acceptance.ModerationAcceptance.test_review_rejects_missing_fake_usage_wrong_model_and_partial_scores) ... ok
+test_sdk_honors_explicit_client_and_can_observe_active_background (tools.serve_responses.test_moderation_acceptance.ModerationAcceptance.test_sdk_honors_explicit_client_and_can_observe_active_background) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.062s
+
+OK

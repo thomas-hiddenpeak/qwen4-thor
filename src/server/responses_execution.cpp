@@ -107,7 +107,7 @@ ObjectReply ResponsesExecution::RequiredExecutors(
   std::string required;
   if (envelope_.background && !background_executor)
     required = "background";
-  for (const char* key : {"access_programs", "moderation"})
+  for (const char* key : {"access_programs"})
     if (required.empty() && Nonnull(envelope_.request, key)) required = key;
   if (!required.empty()) {
     auto reply =
@@ -334,6 +334,7 @@ ObjectReply ResponsesExecution::Begin(std::string* wire) {
 ObjectReply ResponsesExecution::Checkpoint() {
   if (!begun_ || plan_.finished || commit_unknown_)
     return Error(500, "response_state_invalid", "Invalid response checkpoint");
+  if (moderation_safe_) return {};  // Private draft is not a public checkpoint.
   auto reply = BindMutationResult(
       state_.Checkpoint(output_.Snapshot(), events_, access_, &plan_));
   if (reply.ok()) {
@@ -369,6 +370,7 @@ ObjectReply ResponsesExecution::Cancel() {
   if (plan_.finished) return {};
   if (!begun_ || commit_unknown_)
     return Error(409, "response_state_invalid", "Response cannot be cancelled");
+  DiscardUnreviewedOutput();
   auto candidate = output_;
   auto status = candidate.Cancel();
   if (!status) return OutputError(status);
@@ -406,12 +408,25 @@ Status ResponsesExecution::AppendSummary(std::string_view text,
 }
 
 Status ResponsesExecution::RecordOutput(Status status, std::string* wire) {
-  if (!status) return status;
+  if (!status) {
+    if (moderation_safe_) wire->clear();
+    return status;
+  }
   status = Capture(*wire, &events_, &event_bytes_);
   if (!status) {
-    failure_prefix_ = std::move(*wire);
+    if (!moderation_safe_) failure_prefix_ = std::move(*wire);
     wire->clear();
     return status;
+  }
+  if (moderation_safe_) {
+    if (wire->size() >
+        ResponsesOutput::kStorageLimit - moderation_wire_.size()) {
+      wire->clear();
+      return Status::Fail("Moderation output hold capacity exhausted");
+    }
+    moderation_wire_ += *wire;
+    wire->clear();
+    return {};
   }
   if (status && plan_.store &&
       (event_bytes_ - checkpoint_bytes_ >= 64 * 1024 ||
@@ -430,11 +445,14 @@ Status ResponsesExecution::RecordOutput(Status status, std::string* wire) {
 
 ObjectReply ResponsesExecution::Finish(bool incomplete, size_t completed_calls,
                                        const ResponsesUsage& usage,
-                                       int64_t completed_at,
-                                       std::string* wire) {
+                                       int64_t completed_at, std::string* wire,
+                                       bool content_filtered) {
   wire->clear();
   if (!begun_ || plan_.finished || commit_unknown_)
     return Error(500, "response_state_invalid", "Invalid response finish");
+  if (moderation_safe_)
+    return Error(409, "moderation_review_pending",
+                 "Unreviewed output cannot finish");
   // Work on a candidate: a failed transaction must not consume a success
   // sequence number or make the live renderer think it already completed.
   auto candidate = output_;
@@ -451,8 +469,9 @@ ObjectReply ResponsesExecution::Finish(bool incomplete, size_t completed_calls,
                                  index, cipher_config_, access_, opaque);
       return encryption.ok() ? Status() : Status::Fail(encryption.message);
     };
-  auto status = candidate.Finish(incomplete, completed_calls, usage,
-                                 completed_at, &terminal, seal);
+  auto status =
+      candidate.Finish(incomplete, completed_calls, usage, completed_at,
+                       &terminal, seal, content_filtered);
   if (!encryption.ok()) return encryption;
   if (status) status = Capture(terminal, &events, &bytes);
   if (!status) return OutputError(status);
@@ -492,6 +511,7 @@ std::string ResponsesExecution::RenderStreamError(void* owner, int status,
                                                   std::string_view param) {
   auto& run = *static_cast<ResponsesExecution*>(owner);
   ObserveError(owner, status, message, code);
+  run.DiscardUnreviewedOutput();
   std::string prefix = std::move(run.failure_prefix_);
   run.failure_prefix_.clear();
   if (run.commit_unknown_) {
@@ -516,6 +536,7 @@ std::string ResponsesExecution::RenderStreamError(void* owner, int status,
 }
 
 ObjectReply ResponsesExecution::CloseUnfinished() {
+  DiscardUnreviewedOutput();
   ScopeExit release_cleanup([&] {
     if (cleanup_ticket_) {
       cleanup_->Close(cleanup_ticket_,

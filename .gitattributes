@@ -48,3 +48,7 @@ third_party/licenses/openai-node/LICENSE -text -whitespace
 docs/evidence/serve-item-shape-20261109/** -text -whitespace
 docs/evidence/serve-conversations-20261109/** -text -whitespace
 docs/evidence/serve-conversation-service-20261109/** -text -whitespace
+
+# Preserve moderation wire, failed originals and source patches byte for byte.
+docs/evidence/serve-moderation-cpu-20261110/** -text -whitespace
+docs/evidence/serve-moderation-cpu-20261110/**/*.wire binary

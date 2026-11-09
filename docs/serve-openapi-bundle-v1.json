@@ -20867,6 +20867,36 @@
               },
               "store": {
                 "type": "boolean"
+              },
+              "q4t_moderation_usage": {
+                "type": "object",
+                "properties": {
+                  "input_tokens": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "output_tokens": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1024
+                  },
+                  "total_tokens": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "model_steps": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2
+                  }
+                },
+                "required": [
+                  "input_tokens",
+                  "output_tokens",
+                  "total_tokens",
+                  "model_steps"
+                ],
+                "additionalProperties": false
               }
             },
             "required": [
@@ -28068,6 +28098,7 @@
             "SDK-added output_text is optional on wire",
             "official HTTP examples use usage:null for active/cancelled responses; completed/incomplete require actual usage",
             "native store echo and native response error codes",
+            "optional q4t_moderation_usage discloses bounded auxiliary classifier tokens separately from business usage",
             "SDK-documented include_obfuscation adds optional string padding to delta events only",
             "official prompt caching guide permits 12h on request/applied options in addition to the pinned SDK 30m literal",
             "exact integer and bounded native options",

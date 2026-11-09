@@ -63,7 +63,186 @@ ResponseDelta Text(std::string text) {
   delta.text = std::move(text);
   return delta;
 }
+Json ModerationReport(bool flagged) {
+  ModerationPlan plan;
+  plan.model = "cpu";
+  plan.text = true;
+  Json result;
+  const auto status = ParseModerationResult(
+      flagged ? R"({"scores":[0,0,0,0,0,0,0,0,0,0,0,0.9,0]})"
+              : R"({"scores":[0,0,0,0,0,0,0,0,0,0,0,0.1,0]})",
+      plan, 0.5, &result);
+  if (!status) throw std::runtime_error(status.message());
+  return result;
+}
 }  // namespace
+
+Q4T_TEST(responses_moderation_hold_hides_sse_checkpoint_and_background_replay) {
+  for (const bool background : {false, true}) {
+    Fixture fixture;
+    ObjectStore store(fixture.options);
+    ResponsesExecution run(store);
+    const auto request = Parse(
+        std::string(R"({"input":"question","background":)") +
+        (background ? "true" : "false") +
+        R"(,"stream":true,"stream_options":{"include_obfuscation":false}})");
+    Q4T_CHECK(Ok(run.Prepare(request, Config(), Access(), 42, background)));
+    std::string wire;
+    Q4T_CHECK(Ok(run.Begin(&wire)));
+    if (background) Q4T_CHECK(Ok(run.StartRunning(&wire)));
+    Q4T_CHECK(Ok(run.HoldUnreviewedOutput()));
+    Q4T_CHECK(run.Append(Text("PRIVATE_UNREVIEWED_OUTPUT"), "null", &wire));
+    Q4T_CHECK(wire.empty() && Ok(run.Checkpoint()));
+    auto stored = ResponsesState(store).Retrieve(run.Id(), Access());
+    Q4T_CHECK(Ok(stored) && stored.value.GetArray("output")->array.empty());
+    ResponsesReadPlan read;
+    read.id = run.Id();
+    read.stream = true;
+    read.obfuscation = false;
+    ResponsesReplay replay;
+    Q4T_CHECK(Ok(ReadResponsesState(store, read, Access(), &replay)));
+    Q4T_CHECK(!replay.terminal &&
+              replay.wire.find("PRIVATE_UNREVIEWED_OUTPUT") ==
+                  replay.wire.npos);
+    Q4T_CHECK(run.Finish(false, 0, {20, 0, 4, 0}, 43, &wire).code ==
+              "moderation_review_pending");
+    Q4T_CHECK(run.PublishReviewedOutput(ModerationReport(true), &wire).code ==
+              "moderation_not_approved");
+    Q4T_CHECK(wire.empty() && run.OutputHeld());
+    Q4T_CHECK(Ok(run.PublishReviewedOutput(ModerationReport(false), &wire)));
+    Q4T_CHECK(wire.find("PRIVATE_UNREVIEWED_OUTPUT") != wire.npos &&
+              !run.OutputHeld());
+    Q4T_CHECK(Ok(run.Finish(false, 0, {20, 0, 4, 0}, 43, &wire)));
+    stored = ResponsesState(store).Retrieve(run.Id(), Access());
+    Q4T_CHECK(Ok(stored) && stored.value.GetString("status") == "completed" &&
+              OutputJson(stored.value).find("PRIVATE_UNREVIEWED_OUTPUT") !=
+                  std::string::npos);
+  }
+  return true;
+}
+
+Q4T_TEST(responses_moderation_cancel_and_errors_discard_all_private_prefixes) {
+  for (const bool cancel : {false, true}) {
+    Fixture fixture;
+    ObjectStore store(fixture.options);
+    ResponsesExecution run(store);
+    if (cancel)
+      Q4T_CHECK(Ok(run.Prepare(
+          Parse(R"({"input":"question","background":true})"), Config(),
+          Access(), 42, true)));
+    else
+      Q4T_CHECK(Prepare(&run));
+    std::string wire;
+    Q4T_CHECK(Ok(run.Begin(&wire)));
+    if (cancel) Q4T_CHECK(Ok(run.StartRunning(&wire)));
+    Q4T_CHECK(Ok(run.HoldUnreviewedOutput()));
+    const std::string private_text = "PRIVATE_PREFIX" + std::string(65536, 'x');
+    Q4T_CHECK(run.Append(Text(private_text), "null", &wire) && wire.empty());
+    if (cancel) {
+      Q4T_CHECK(Ok(run.Cancel()));
+    } else {
+      wire = ResponsesExecution::RenderStreamError(
+          &run, 503, "Classifier unavailable", "moderation_failed",
+          "moderation");
+      Q4T_CHECK(wire.find("PRIVATE_PREFIX") == wire.npos &&
+                wire.find("response.output_text.delta") == wire.npos);
+      Q4T_CHECK(Ok(run.CloseUnfinished()));
+    }
+    const auto record = ResponsesState(store).ReadRecord(run.Id(), Access());
+    Q4T_CHECK(Ok(record) &&
+              OutputJson(record.value).find("PRIVATE_PREFIX") ==
+                  std::string::npos &&
+              record.value.Find("response")->GetString("status") ==
+                  (cancel ? "cancelled" : "failed"));
+    Q4T_CHECK(!run.OutputHeld());
+  }
+  return true;
+}
+
+Q4T_TEST(responses_moderation_rejects_fake_approval_and_late_hold) {
+  Fixture fixture;
+  ObjectStore store(fixture.options);
+  ResponsesExecution held(store), late(store);
+  Q4T_CHECK(Prepare(&held) && Prepare(&late));
+  std::string wire;
+  Q4T_CHECK(Ok(held.Begin(&wire)) && Ok(held.HoldUnreviewedOutput()));
+  Q4T_CHECK(held.Append(Text("private text"), "null", &wire));
+  Q4T_CHECK(
+      held.PublishReviewedOutput(
+              Parse(R"({"type":"moderation_result","flagged":false})"), &wire)
+          .code == "moderation_not_approved");
+  Q4T_CHECK(held.OutputHeld() && wire.empty() && Ok(held.CloseUnfinished()));
+  Q4T_CHECK(Ok(late.Begin(&wire)) &&
+            late.Append(Text("public"), "null", &wire));
+  Q4T_CHECK(late.HoldUnreviewedOutput().code == "moderation_hold_invalid");
+  Q4T_CHECK(Ok(late.CloseUnfinished()));
+  return true;
+}
+
+Q4T_TEST(responses_moderation_lost_approval_receipt_cannot_leak_or_replay) {
+  struct Reset {
+    ~Reset() { ObjectWorkerEntryForTesting({}); }
+  } reset;
+  ObjectWorkerEntryForTesting("--q4t-object-worker-second-put-lost-ack");
+  Fixture fixture;
+  fixture.options.io_timeout_ms = 100;
+  ObjectStore store(fixture.options);
+  ResponsesExecution run(store);
+  Q4T_CHECK(Prepare(&run));
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)) && Ok(run.HoldUnreviewedOutput()));
+  Q4T_CHECK(run.Append(Text("PRIVATE_UNKNOWN_RECEIPT"), "null", &wire));
+  Q4T_CHECK(!run.PublishReviewedOutput(ModerationReport(false), &wire).ok());
+  Q4T_CHECK(run.CommitUnknown() && run.OutputHeld() && wire.empty());
+  wire = ResponsesExecution::RenderStreamError(
+      &run, 503, "Review checkpoint receipt unavailable",
+      "object_transport_error", "");
+  Q4T_CHECK(wire.find("PRIVATE_UNKNOWN_RECEIPT") == wire.npos &&
+            wire.find("object_commit_unknown") != wire.npos &&
+            wire.find("response.completed") == wire.npos &&
+            wire.find("response.failed") == wire.npos);
+  Q4T_CHECK(Ok(run.CloseUnfinished()));
+  return true;
+}
+
+Q4T_TEST(responses_moderation_filtered_terminal_retains_usage_without_content) {
+  Fixture fixture;
+  ObjectStore store(fixture.options);
+  ResponsesExecution run(store);
+  Q4T_CHECK(Prepare(
+      &run,
+      R"(,"stream":true,"stream_options":{"include_obfuscation":false})"));
+  std::string wire, all;
+  Q4T_CHECK(Ok(run.Begin(&wire)));
+  all += wire;
+  Q4T_CHECK(Ok(run.HoldUnreviewedOutput()));
+  Q4T_CHECK(run.Append(Text("PRIVATE_BLOCKED"), "null", &wire) && wire.empty());
+  auto results = Parse(R"({"input":null,"output":null})");
+  results.object[0].second = ModerationReport(false);
+  results.object[1].second = ModerationReport(true);
+  Q4T_CHECK(run.SetModerationResults(results, {100, 40, 2}));
+  run.DiscardUnreviewedOutput();
+  Q4T_CHECK(Ok(run.Finish(true, 0, {80, 0, 13, 0}, 43, &wire, true)));
+  all += wire;
+  const auto& output = run.Output().Snapshot();
+  Q4T_CHECK(output.GetArray("output")->array.empty() &&
+            output.Find("incomplete_details")->GetString("reason") ==
+                "content_filter" &&
+            output.Find("moderation")->Find("output")->GetBool("flagged"));
+  Q4T_CHECK(output.Find("usage")->GetInt("total_tokens") == 93 &&
+            output.Find("q4t_moderation_usage")->GetInt("total_tokens") ==
+                140 &&
+            all.find("PRIVATE_BLOCKED") == all.npos);
+  if (const char* directory = std::getenv("Q4T_TEST_OUTPUT_DIR")) {
+    std::ofstream(std::filesystem::path(directory) /
+                  "moderation-block.json.wire")
+        << run.Output().Json();
+    std::ofstream(std::filesystem::path(directory) /
+                  "moderation-block.sse.wire")
+        << all;
+  }
+  return true;
+}
 
 Q4T_TEST(responses_pro_persists_reasoning_mode_usage_and_original_input) {
   Fixture fixture;

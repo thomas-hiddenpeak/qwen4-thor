@@ -6,6 +6,7 @@
 
 #include "q4t/io/json.h"
 #include "q4t/server/chat_plan.h"
+#include "q4t/server/moderation.h"
 #include "q4t/server/responses_input.h"
 #include "q4t/status.h"
 
@@ -17,6 +18,7 @@ struct ResponsesEnvelope {
   io::Json request;
   io::Json options;
   PromptCacheOptions cache;
+  ModerationOptions moderation;
   bool stream = false;
   bool store = true;
   bool background = false;
