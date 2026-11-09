@@ -15,6 +15,9 @@ struct ObjectRetentionInfo {
   bool active = false;
   bool uncertain = false;
   std::vector<std::string> references;
+  // Immutable internal binary fragments have no independent lifetime. Only
+  // a live staging/file/upload/read root can retain them.
+  bool collect_when_unreferenced = false;
   size_t Bytes() const;
 };
 

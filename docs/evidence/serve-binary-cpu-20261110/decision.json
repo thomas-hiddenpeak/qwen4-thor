@@ -1,0 +1,9 @@
+{
+  "decision": "COMPONENT_CPU_ACCEPTED",
+  "tests": 25,
+  "model_starts": 0,
+  "gpu_tests": 0,
+  "default_unchanged": "6a90506e",
+  "api_accepted": false,
+  "remaining": "Native bounded HTTP transport, complete Files/Uploads/Batch and all master tasks"
+}

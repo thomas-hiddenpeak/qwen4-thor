@@ -6,6 +6,7 @@
 #include <unordered_set>
 
 #include "q4t/server/application_routes.h"
+#include "q4t/server/binary_store.h"
 #include "q4t/trace/sha256.h"
 
 namespace q4t::server {
@@ -72,6 +73,17 @@ class Inspector {
       Reference(prompt->Find("id"));
     Items(request->Find("input"));
     Items(request->Find("messages"));
+  }
+
+  void Blob(const Json& data) {
+    const auto* blob = data.Find("blob");
+    BinaryManifest manifest;
+    if (!blob || !ParseBinaryManifest(*blob, &manifest)) {
+      value.uncertain = true;
+      return;
+    }
+    const auto* chunks = blob->GetArray("chunks");
+    for (const auto& chunk : chunks->array) Reference(chunk.Find("id"));
   }
 
   ObjectRetentionInfo Finish() {
@@ -149,6 +161,19 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
         else
           inspector.value.uncertain = true;
       }
+  } else if (kind == "file" && data.GetString("format") == "q4t.file.v1") {
+    inspector.Blob(data);
+  } else if (kind == "tool_run") {
+    const auto format = data.GetString("format");
+    if (format == "q4t.binary_chunk.v1") {
+      inspector.value.collect_when_unreferenced = true;
+    } else if (format == "q4t.binary_stage.v1" ||
+               format == "q4t.binary_read.v1" ||
+               format == "q4t.upload_part.v1") {
+      inspector.Blob(data);
+    } else {
+      inspector.value.uncertain = true;
+    }
   } else {
     // Future Files/Batch/tool executors must register their real lifecycle and
     // dependency extraction before automatic collection can safely use them.
@@ -184,7 +209,8 @@ Status PlanObjectRetention(std::span<const ObjectRetentionNode> nodes,
       return Status::Fail("Retention planning metadata limit exceeded");
     identities[Key(n.owner, n.id)].push_back(i);
     if (n.retention->uncertain) uncertain_owners.insert(n.owner);
-    candidate[i] = (n.expires > 0 && n.expires <= now) ||
+    candidate[i] = n.retention->collect_when_unreferenced ||
+                   (n.expires > 0 && n.expires <= now) ||
                    (item_created_before && n.kind == "item" && n.expires == 0 &&
                     n.created < item_created_before);
     fingerprint += std::string(n.owner) + ':' + std::string(n.kind) + ':' +

@@ -1,0 +1,13 @@
+{
+  "include/q4t/server/binary_store.h": "b2e853ebce4b0580c2305fbccc4145d739d4251443922dd13b91f48bae6f1db9",
+  "src/server/binary_store.cpp": "46c59ff21e6633ec5e57d5827a694788afd8be12d1bf5e733e99445ba6b74629",
+  "include/q4t/server/object_retention.h": "75aafff391e86eb2ec62706d7bf0233f62612c41e83f98c01930fd582493850b",
+  "src/server/object_retention.cpp": "b082242a28b27b1847fdef97c8cbf47f6d4724fd8443f220b1e26e256810dce2",
+  "src/server/object_worker.cpp": "2a9c4001945993837ae8f201f571b262be1bcb242a39d98a03328f808a3382cc",
+  "tests/server_binary_store_test.cpp": "c2343cc7c6589e1edd1f53bf1068840c36ab934903187fd4073dd563896484a8",
+  "tests/server_object_retention_test.cpp": "e2e272374d781ef4a6c3cdca401c5b1f3d6f3e5cc4f73b19d6b4e6d15e1ec92c",
+  "tests/server_object_store_test.cpp": "2db56703cada393484a425907c405e799e03dd9d45c19250e96cf6579686e883",
+  "cmake/HostTestSources.cmake": "61ead6067515bb0bbd3ec8f4e3c55b27836e9ba0ce505413a457e734064194c5",
+  "cmake/ChatProtocolIdentity.cmake": "1258a89bb8c7f491d68286032f2be9fe3b7c5e85a9b79b1be22dbdc8991b4fbe",
+  "CMakeLists.txt": "bb722bae6c587d995dd87d55b80be1a655b8eee67efe398f4745356cf252030d"
+}

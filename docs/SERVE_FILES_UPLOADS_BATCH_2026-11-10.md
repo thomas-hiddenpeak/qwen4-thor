@@ -99,3 +99,13 @@ multipart_actual_official_sdk_file_and_upload_part_bytes
 IO及全部其他子项，不结束阶段或总目标。
 
 组件[11 C++/2 SDK编码CPU已通过](evidence/serve-multipart-cpu-20261110/README.md)，保留首SDK目录夹具失败；仅组件接受，不替代A09其余出口。
+
+## A09.2 分块持久IO实现与CPU冻结
+
+使用现有隔离ObjectStore worker和format1原子journal：私有tool_run分块/暂存/读租约、file发布根；无新磁盘文件格式，旧版本可读取而不理解新回收规则。每块最多1MiB，规范Base64保存、SHA256逐块校验；总manifest最多8GiB/16384块，实际JSON/编码字节计既有配额。容量配置与HTTP协议容量分别记录，不能整文件缓冲。
+
+暂存每次追加原子写块+引用；完整请求经调用方确认后，发布根与删除暂存同事务，可附带父Upload CAS。未知回执保留原id/stage_id，不自动重放或清理。读租约与来源根revision CAS同事务，文件删除不破坏已开始的有界读；暂存和读租约最长1小时，未引用块回收；未知类型仍保护整个owner。HTTP路由尚未接入，不能据组件通过宣称Files API已可用。
+
+冻结25项CPU，清单`.q4t-work/serve-files-20261110/required-binary.txt`：12新增实际磁盘/内层校验/二进制/权限/隔离/配额/冲突/删除/到期重启/取消/未知回执与事务恢复，受影响留存和2项IO故障隔离；必要host构建零警告要求，不涉及GPU或全性能/全模型矩阵。全部通过后继续A09.3与其余全部目标。
+
+分块持久底座[25项CPU已通过](evidence/serve-binary-cpu-20261110/README.md)，无GPU；继续实际HTTP/Files/Uploads集成，不以底座组件终止A09或总目标。

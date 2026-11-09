@@ -731,7 +731,8 @@ class DiskStore {
   ObjectReply Prune() {
     const auto now = Now();
     if (std::none_of(records_.begin(), records_.end(), [&](const auto& row) {
-          return row.second.expires > 0 && row.second.expires <= now;
+          return row.second.retention.collect_when_unreferenced ||
+                 (row.second.expires > 0 && row.second.expires <= now);
         }))
       return {};
     ObjectRetentionPlan plan;

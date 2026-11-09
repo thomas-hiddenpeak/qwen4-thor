@@ -1,5 +1,9 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+A09.2 [分块持久IO25项CPU通过](evidence/serve-binary-cpu-20261110/README.md)，host零警告。实际磁盘/权限/配额/读保护/过期/3种未知提交恢复通过，0GPU；仅底座接受，继续Files原生流式HTTP、Uploads/Batch与全部目标，默认6a90506e保持。
+
+A09.2分块持久IO成组开发完成，冻结25项直接CPU（12新增存储、受影响留存与隔离）。已有worker原子事务、SHA256校验、读引用/暂存回收及未知回执禁止重放已接入；仅底座尚未测试，Files HTTP/Uploads/Batch全部继续。默认6a90506e保持STOPPED，无GPU。
+
 A09.1 SDK夹具已补默认仓库路径与原二进制文件，无环境变量的单项CPU通过，host零警告；其余组件证据复用。继续A09.2分块持久存储，尚未接Files HTTP，默认6a90506e保持。
 
 A09.1 [multipart组件11 C++/2实际SDK编码通过](evidence/serve-multipart-cpu-20261110/README.md)，host零警告；首SDK路径夹具错误保留。仅组件CPU，0网络/模型，Files API和持久IO尚未交付。继续实际文件存储/传输、Uploads、Batch与全部目标；默认6a90506e保持STOPPED。
