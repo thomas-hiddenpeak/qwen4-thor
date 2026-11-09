@@ -1,0 +1,110 @@
+{
+  "status": "PASS_N07_ACCEPTED_PACKAGED_CLI",
+  "commands": [
+    {
+      "label": "help",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/bundle/engine/q4t",
+        "service",
+        "--help"
+      ],
+      "exit_code": 0,
+      "seconds": 0.3847080683335662
+    },
+    {
+      "label": "new-package-check",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/bundle/engine/q4t",
+        "service",
+        "check"
+      ],
+      "exit_code": 0,
+      "seconds": 0.6775413327850401
+    },
+    {
+      "label": "old-selected-check",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/bundle/engine/q4t",
+        "service",
+        "check",
+        "--package",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/release-02/bundle",
+        "--manifest-sha256",
+        "97423f346090dc36bf30f37a5129ccabca8df5c1fdcccae0cecea21716023dab",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state"
+      ],
+      "exit_code": 0,
+      "seconds": 0.6916530183516443
+    },
+    {
+      "label": "old-selected-status",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/bundle/engine/q4t",
+        "service",
+        "status",
+        "--package",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/release-02/bundle",
+        "--manifest-sha256",
+        "97423f346090dc36bf30f37a5129ccabca8df5c1fdcccae0cecea21716023dab",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state"
+      ],
+      "exit_code": 0,
+      "seconds": 0.412479224614799
+    },
+    {
+      "label": "publication-status",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/bundle/engine/q4t",
+        "service",
+        "publish-status",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state"
+      ],
+      "exit_code": 0,
+      "seconds": 0.39600202022120357
+    },
+    {
+      "label": "sealed-legacy-entry",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/bundle/bin/q4t",
+        "service",
+        "check"
+      ],
+      "exit_code": 0,
+      "seconds": 0.4188262699171901
+    },
+    {
+      "label": "python-client-import",
+      "argv": [
+        "/usr/bin/python3",
+        "-I",
+        "-B",
+        "-c",
+        "import sys;sys.path.insert(0,sys.argv[1]);import chat_client,deadline_http,project_records;print(\"PASS_CLIENT_IMPORTS\")",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/clients/tools/examples"
+      ],
+      "exit_code": 0,
+      "seconds": 0.0712502608075738
+    },
+    {
+      "label": "node-client-import",
+      "argv": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "await import(process.argv[1]); await import(process.argv[2]); console.log(\"PASS_CLIENT_IMPORTS\");",
+        "file:///home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/clients/tools/examples/js/chat_client.mjs",
+        "file:///home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/clients/tools/examples/js/project_profile.mjs"
+      ],
+      "exit_code": 0,
+      "seconds": 0.05256819212809205
+    }
+  ],
+  "manifest_sha256": "22849b0d4a1157affd5e80d398fd1ba45a673fd767f75e3f6b3fb7ec1edcd927",
+  "engine_binary_sha256": "3072f28c801366b0ab0b3ec718f47102ff955e1ba121ba2b0e321fbc0ffef025",
+  "state_preserved": true,
+  "model_starts": 0,
+  "chat_requests": 0
+}

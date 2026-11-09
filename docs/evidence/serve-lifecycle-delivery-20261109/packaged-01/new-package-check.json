@@ -1,0 +1,10 @@
+{
+  "label": "new-package-check",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/bundle/engine/q4t",
+    "service",
+    "check"
+  ],
+  "exit_code": 0,
+  "seconds": 0.6775413327850401
+}

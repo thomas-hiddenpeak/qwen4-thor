@@ -18,8 +18,11 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 原生恢复151项不同CPU与3启动/18Chat真实短验通过，nginx仅可选前置。
 后续[原生TLS/浏览器交付](docs/SERVE_NATIVE_ACCESS_2026-11-08.md)新增
 71项不同CPU及1启动/6Chat；支持IPv4/IPv6、证书轮换、mTLS与CORS。
-本机`build/service/bin/q4t service`已安装，状态`build/service-native-state`
-保持停止；原`build/q4t serve`保留原含义。Python控制面依赖仍保留，
+本机统一入口 `build/q4t service` 已安装，状态 `build/service-native-state`
+保持停止；`build/q4t serve` 保留原含义。[原生生命周期](docs/SERVE_NATIVE_LIFECYCLE_2026-11-09.md)
+提供容量配置、check/status/reload/stop 与持久发布/续接/旧代回退。
+默认程序、包和元数据由发布事务共同选择；开发构建使用独立
+`.q4t-work/` 目录，避免覆盖已管理的 `build/q4t`。Python控制面依赖仍保留，
 长稳由用户实跑；其余兼容/恢复任务持续按总计划推进，旧包可回退。
 
 当前默认程序（身份见[STATUS](docs/STATUS.md)）已包含工具/推理输出解析、JSON/SSE、带ID工具

@@ -514,10 +514,12 @@
         "service_release_sha256": "29125ad9dcccd87105e8bbad2670876f66641f03f8d217007ea6dcd56a42849d",
         "state": "STOPPED",
         "merged_main": false,
-        "whole_task_complete": true
+        "whole_task_complete": false
       },
       "plan": "SERVE_NATIVE_OBSERVATION_2026-11-09.md",
-      "remaining": [],
+      "remaining": [
+        "Propagate bounded typed gateway binding/identity/capacity/observation failure to native status without restarting healthy model"
+      ],
       "findings": [
         {
           "source": "tools/serve_recovery/gateway.py Admission.update exception projection",
@@ -530,7 +532,7 @@
     {
       "id": "N07",
       "required": true,
-      "state": "validated_delivery_pending",
+      "state": "delivered",
       "implementation": "原生配置/发行/CLI生命周期整合",
       "acceptance": "一个自有服务入口可配置上述能力；prepare/check/run/status/reload/stop及回退可用；外部代理只是可选适配",
       "depends_on": [
@@ -547,9 +549,22 @@
         "evidence/serve-lifecycle-publication-20261109/README.md",
         "evidence/serve-lifecycle-driver-20261109/README.md",
         "evidence/serve-lifecycle-capacity-fix-20261109/README.md",
-        "evidence/serve-lifecycle-business-20261109/README.md"
+        "evidence/serve-lifecycle-business-20261109/README.md",
+        "evidence/serve-lifecycle-delivery-20261109/README.md"
       ],
-      "release": null,
+      "release": {
+        "engine_binary_sha256": "3072f28c801366b0ab0b3ec718f47102ff955e1ba121ba2b0e321fbc0ffef025",
+        "engine_release_sha256": "1b507ad9ddfe340c264014c3ffebacacc949635e40fa6ea8677f03572ff4f48d",
+        "generation_sha256": "f59c8e64861c0397c100fa89c445f82ad37eb5cd269d5d1259befe80429b9a9a",
+        "manifest_sha256": "22849b0d4a1157affd5e80d398fd1ba45a673fd767f75e3f6b3fb7ec1edcd927",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/bundle",
+        "service_acceptance_sha256": "59271b716d3a0ed9b329de386a1d07e954073099d1e38f90d819846c72765f6a",
+        "service_release_sha256": "4a20bce4f5ac20340c787f81eaf44be3bbbebe0ad37f48cd7780ca5d7c46c9f2",
+        "state": "STOPPED",
+        "publication_revision": 6,
+        "merged_main": false,
+        "whole_task_complete": true
+      },
       "findings": [
         {
           "source": "tools/serve_recovery/service.py launch before try",
@@ -561,20 +576,19 @@
         {
           "source": "tools/serve_recovery/gateway.py Admission.update",
           "issue": "Independent gateway classifier used fixed default capacity while model controller used selected capacity, preventing native admission",
-          "state": "fixed_cpu_and_business_validated_delivery_pending",
-          "evidence": "evidence/serve-lifecycle-capacity-fix-20261109/README.md"
+          "state": "fixed_validated_delivered",
+          "evidence": "evidence/serve-lifecycle-capacity-fix-20261109/README.md",
+          "delivery_evidence": "evidence/serve-lifecycle-delivery-20261109/README.md"
         }
       ],
-      "remaining": [
-        "Accepted native service package and coherent default publication, actual retained rollback, release metadata and actual ELF check/status",
-        "Final N07 acceptance review and continuation of all remaining master tasks"
-      ],
+      "remaining": [],
       "plan": "SERVE_NATIVE_LIFECYCLE_2026-11-09.md",
       "implemented_cpu_validated": [
         "Configurable exact capacity binding and fairness checks; 27 targeted CPU cases",
         "Native ELF service dispatch/prepare/check/reload/deploy/rollback; 26 distinct CPU cases plus actual readonly default checks",
         "Coordinated default generation publication/resume/rollback and short-write recovery; 25 distinct CPU cases"
-      ]
+      ],
+      "development_status": "Native capacity, actual CLI, resumable coordinated publication and real old-generation rollback delivered; all remaining master tasks continue."
     },
     {
       "id": "R01",
@@ -840,6 +854,6 @@
       "release": null
     }
   ],
-  "next_task": "N07",
+  "next_task": "N06",
   "next": "Unified native service CLI, configurable capacity profiles and default publication transaction, then every remaining master task. N05 delivered; total goal remains active."
 }

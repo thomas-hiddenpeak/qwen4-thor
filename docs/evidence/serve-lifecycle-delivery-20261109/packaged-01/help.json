@@ -1,0 +1,10 @@
+{
+  "label": "help",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/bundle/engine/q4t",
+    "service",
+    "--help"
+  ],
+  "exit_code": 0,
+  "seconds": 0.3847080683335662
+}

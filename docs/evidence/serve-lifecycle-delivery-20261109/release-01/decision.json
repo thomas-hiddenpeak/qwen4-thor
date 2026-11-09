@@ -1,0 +1,81 @@
+{
+  "status": "PASS_TARGETED_NATIVE_LIFECYCLE_DELIVERY",
+  "acceptance": "ACCEPT_TARGETED_NATIVE_LIFECYCLE",
+  "binary_sha256": "3072f28c801366b0ab0b3ec718f47102ff955e1ba121ba2b0e321fbc0ffef025",
+  "protocol_sha256": "5af732e20d104e880555b37a5f8abf19df686cdf95de5f112fa6e5ae10d1aef7",
+  "source_commit": "b8b8dc97b1d565322d5db01dea6c6225b0ad67c5",
+  "actual_business": {
+    "status": "PASS_TARGETED_NATIVE_LIFECYCLE",
+    "acceptance": "ACCEPT_TARGETED_NATIVE_LIFECYCLE",
+    "binary_sha256": "3072f28c801366b0ab0b3ec718f47102ff955e1ba121ba2b0e321fbc0ffef025",
+    "protocol_sha256": "5af732e20d104e880555b37a5f8abf19df686cdf95de5f112fa6e5ae10d1aef7",
+    "source_commit": "e4943d91e5fb76698202ee62d6aa19bcaee5649a",
+    "cumulative_counts": {
+      "starts": 2,
+      "chats": 6,
+      "probes": 0,
+      "controls": 739
+    },
+    "actual_generations": 6,
+    "cumulative_seconds": 206.69871630938724,
+    "first_failure_preserved": true,
+    "capacity_binding_fixed": true,
+    "actual_capacity": {
+      "name": "text-managed-capacity-v1",
+      "host": "127.0.0.1",
+      "max_seq": 1,
+      "max_len": 4096,
+      "max_prefill": 1024,
+      "max_tokens": 128,
+      "mtp_k": 3,
+      "max_inflight_requests": 6,
+      "max_queued_requests": 4,
+      "min_available_memory_mib": 2048,
+      "memory_recovery_margin_mib": 512,
+      "startup_memory_headroom_mib": 2048,
+      "mtp_enabled": true,
+      "request_deadline_ms": 180000
+    },
+    "lease_status": "COMPLETED",
+    "nvml_samples": 194,
+    "all_nvml_ok": true,
+    "cleanup_confirmed": true,
+    "default_changed": false,
+    "full_performance": false,
+    "full_model_quality": false,
+    "long_stability": false,
+    "remaining_master_tasks_open": true,
+    "cli_evidence": "Production CLI handler with pre-dispatch budget wrappers; actual C++ dispatch/publication covered by targeted CPU"
+  },
+  "evidence": {
+    "serve-lifecycle-capacity-20261109": {
+      "index_sha256": "2aaa9ec20cd3cf0e133350949ad894ac38d17e32b421882d65b6f8803adb8aed",
+      "files": 8
+    },
+    "serve-lifecycle-cli-20261109": {
+      "index_sha256": "599f70b911dc6e0e9bd66fbc88e783ac4ec2be7b19f2381718700a27068e60fd",
+      "files": 88
+    },
+    "serve-lifecycle-publication-20261109": {
+      "index_sha256": "9438fafcd66334501c074e3b5bbf0c07e95518d26fbe6c0bc5f373bd4908186d",
+      "files": 11
+    },
+    "serve-lifecycle-driver-20261109": {
+      "index_sha256": "2c3856550d2b73bfa0114f1cd295c0a0917a2e90eb1a22bcc1e127bd7c30b30d",
+      "files": 12
+    },
+    "serve-lifecycle-capacity-fix-20261109": {
+      "index_sha256": "33fdb55d390675d0c44da2fb495adc0bbf37a7a49427b33f78eef74a0a1b9400",
+      "files": 20
+    },
+    "serve-lifecycle-business-20261109": {
+      "index_sha256": "1d3d0c3f1b27e22e4e0d346310a7cf94263f7ec908398f6e88d48b611d2030c7",
+      "files": 41
+    }
+  },
+  "additional_gpu_tests": 0,
+  "full_model_quality": false,
+  "performance_acceptance": false,
+  "long_stability_accepted": false,
+  "remaining_master_tasks_open": true
+}

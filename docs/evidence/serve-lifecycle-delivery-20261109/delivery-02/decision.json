@@ -1,0 +1,33 @@
+{
+  "status": "PASS_N07_DEFAULT_DELIVERY_PREREQUISITES",
+  "acceptance": "ACCEPT_TARGETED_NATIVE_LIFECYCLE",
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/bundle",
+  "manifest_sha256": "22849b0d4a1157affd5e80d398fd1ba45a673fd767f75e3f6b3fb7ec1edcd927",
+  "source_commit": "b8b8dc97b1d565322d5db01dea6c6225b0ad67c5",
+  "accepted_release": "d32205a80ef858de961e9672c28727b8459154ca7c408319b51b6ff7b679c161",
+  "packaged_cli": "861586481dd7fb96847d3e14c7b37786800125d72477d7eec797ff3330ddc914",
+  "business": "70a92c050ab6a3c2c18eca5da06221b52fcd0ea87e5022674221c3a2824c0ac6",
+  "publication_cpu": "9438fafcd66334501c074e3b5bbf0c07e95518d26fbe6c0bc5f373bd4908186d",
+  "default_capacity": {
+    "name": "text-managed-capacity-v1",
+    "host": "127.0.0.1",
+    "max_seq": 1,
+    "max_len": 8192,
+    "max_prefill": 2048,
+    "max_tokens": 256,
+    "mtp_k": 3,
+    "max_inflight_requests": 8,
+    "max_queued_requests": 2,
+    "min_available_memory_mib": 2048,
+    "memory_recovery_margin_mib": 512,
+    "startup_memory_headroom_mib": 2048,
+    "mtp_enabled": true,
+    "request_deadline_ms": 1200000
+  },
+  "default_profile_evidence": "Actual N07 custom context/prefill/output/admission/deadline and MTP k3. Default preserves N05 numeric settings and client policy; exact argv/profile CPU and prior N05 actual evidence reused.",
+  "installation_pending": true,
+  "performance_acceptance": false,
+  "full_model_quality": false,
+  "long_stability_accepted": false,
+  "remaining_master_tasks_open": true
+}
