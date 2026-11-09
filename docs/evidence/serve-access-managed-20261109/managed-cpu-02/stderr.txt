@@ -1,0 +1,6 @@
+test_binding_marker_interruption_and_state_swap_fail_closed (tools.serve_recovery.test_access_management.ManagementTests.test_binding_marker_interruption_and_state_swap_fail_closed) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.042s
+
+OK

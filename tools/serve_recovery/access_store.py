@@ -14,6 +14,97 @@ from tools.serve_recovery import access_policy as policy, ledger, store
 
 MAX_RECEIPTS = 128
 FORMAT = 'q4t-client-access-store-v1'
+MARKER = 'client-access.json'
+
+
+def binding(state, service_id):
+    state = Path(state).absolute()
+    info = state.stat(follow_symlinks=False)
+    ledger.require(state.resolve(strict=True) == state and stat.S_ISDIR(info.st_mode) and
+        info.st_uid == os.geteuid() and stat.S_IMODE(info.st_mode) == 0o700 and
+        ledger.identifier(service_id), 'private access state required')
+    return dict(state_directory=str(state), service_id=service_id,
+                state_identity=[info.st_dev, info.st_ino])
+
+
+def marker_value(value):
+    return dict(format='q4t-client-access-binding-v1', service_id=value['service_id'],
+                state_identity=value['state_identity'])
+
+
+def check_binding(value):
+    state = Path(value['state_directory'])
+    ledger.require(binding(state, value['service_id']) == value, 'access state changed')
+    fd = os.open(state / MARKER, os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW | os.O_NONBLOCK)
+    try:
+        before = store.check_file(fd)
+        ledger.require(0 < before.st_size <= 1024, 'access binding size')
+        raw = os.read(fd, 1025)
+        after = store.check_file(fd)
+        ledger.require(len(raw) == before.st_size and all(getattr(before, k) == getattr(after, k)
+            for k in ('st_dev', 'st_ino', 'st_size', 'st_mtime_ns', 'st_ctime_ns')) and
+            store.decode(raw) == marker_value(value), 'access binding changed')
+    finally:
+        os.close(fd)
+
+
+def sync_binding(value):
+    """Re-establish parent-entry durability before claiming a bound policy."""
+    check_binding(value)
+    state = Path(value['state_directory'])
+    marker = os.open(state / MARKER, os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW | os.O_NONBLOCK)
+    try:
+        store.check_file(marker)
+        os.fsync(marker)
+    finally:os.close(marker)
+    directory = os.open(state, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    try:os.fsync(directory)
+    finally:os.close(directory)
+    check_binding(value)
+
+
+def open_bound(value):
+    check_binding(value)
+    current = Store(Path(value['state_directory']) / 'client-access', value['service_id'],
+                    value['state_identity'])
+    try:
+        sync_binding(value)
+        return current
+    except BaseException:
+        current.close()
+        raise
+
+
+def initialize_bound(value, initial):
+    """Explicit one-time operator initialization, never a runtime fallback.
+
+    The outer permanent marker survives loss of the entire journal directory.
+    A crash before journal creation stays unavailable, rather than resurrecting
+    sealed package keys. Existing markers permit recovery of existing data only.
+    """
+    state = Path(value['state_directory'])
+    ledger.require(binding(state, value['service_id']) == value, 'access state changed')
+    first = not os.path.lexists(state / MARKER)
+    if first:
+        ledger.require(not os.path.lexists(state / 'client-access'), 'unbound access journal')
+        fd = os.open(state / MARKER, os.O_WRONLY | os.O_CREAT | os.O_EXCL |
+                     os.O_CLOEXEC | os.O_NOFOLLOW, 0o600)
+        try:
+            store.Store.write_all(fd, ledger.canonical(marker_value(value)))
+            os.fsync(fd)
+        finally:
+            os.close(fd)
+        directory = os.open(state, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        try:os.fsync(directory)
+        finally:os.close(directory)
+    check_binding(value)
+    with Store(state / 'client-access', value['service_id'], value['state_identity'],
+               initialize=initial if first else None) as journal:
+        result = policy.describe(journal.head['state']['policy'])
+    # fsync inside the child directory does not persist its entry in state.
+    # Repeating this on recovery also closes a prior unknown parent sync.
+    sync_binding(value)
+    return dict(result, initialized=first, durable=True, live_applied=False)
 
 
 class Store:

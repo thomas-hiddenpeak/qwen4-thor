@@ -64,10 +64,12 @@ def native_config(value, token):
 
 class Stack:
     def __init__(self, output, *, native_ingress=None, policy_overrides=None,
-                 tls=None, ssl_context=None):
+                 tls=None, ssl_context=None, access=None):
         self.directory = Path(tempfile.mkdtemp(
             prefix='native-' if native_ingress else 'nginx-', dir=output))
-        self.service_id = str(uuid.uuid4())
+        self.service_id = access['service_id'] if access is not None else str(uuid.uuid4())
+        self.gateway_generation = 1
+        self.native_ingress = native_ingress
         self.generation, self.token = 1, 'e'*64
         self.ready, self.peer_available = True, True
         self.bound = 0
@@ -210,6 +212,7 @@ class Stack:
         if native_ingress:
             self.value.update(version=2, native_ingress=self.value.pop('nginx'),
                 native_ingress_sha256=self.value.pop('nginx_sha256'))
+            if access is not None:self.value.update(version=3, access=access)
         self.value['binary_sha256'] = hashlib.sha256(Path('/proc/self/exe').read_bytes()).hexdigest()
         self.value['policy'].update(per_client_rps=100, burst=100)
         self.value['policy'].update(policy_overrides or {})
@@ -222,19 +225,28 @@ class Stack:
         self.listener.listen(8)
         self.listener.settimeout(0.1)
         self.thread(self.peer)
+        self.log = (self.directory/'worker.log').open('wb')
+        self.start_gateway()
+
+    def start_gateway(self):
         self.channel, endpoint = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
         self.channel.settimeout(0.1)
         self.thread(self.receive_events)
-        self.log = (self.directory/'worker.log').open('wb')
         self.process = subprocess.Popen([sys.executable, '-I', '-B',
-            str(ROOT/'tools/serve_recovery'/('native_ingress.py' if native_ingress
+            str(ROOT/'tools/serve_recovery'/('native_ingress.py' if self.native_ingress
                                            else 'gateway.py')), '--config', str(self.path)],
             env=dict(PATH='/no-systemd-or-dbus', LANG='C.UTF-8',
-                Q4T_SERVICE_ID=self.service_id, Q4T_GATEWAY_GENERATION='1',
+                Q4T_SERVICE_ID=self.service_id, Q4T_GATEWAY_GENERATION=str(self.gateway_generation),
                 Q4T_CONTROL_FD=str(endpoint.fileno()), Q4T_GUARDIAN_PID=str(os.getpid()),
                 Q4T_GUARDIAN_START=str(journal.process_start(os.getpid()))),
             pass_fds=(endpoint.fileno(),), stdout=self.log, stderr=self.log)
         endpoint.close()
+
+    def restart_gateway(self):
+        self.process.terminate();self.process.wait(timeout=5)
+        self.channel.close()
+        self.gateway_generation += 1;self.bound = 0
+        self.start_gateway()
 
     def thread(self, function):
         worker = threading.Thread(target=function, daemon=True)
@@ -253,6 +265,12 @@ class Stack:
                 try:
                     sock.settimeout(1)
                     message = journal.receive(sock)
+                    if message['op'] == 'status':
+                        journal.send(sock, dict(version=1, service_id=self.service_id,
+                            guardian_pid=os.getpid(), gateway_pid=self.process.pid,
+                            gateway_start_ticks=journal.process_start(self.process.pid),
+                            gateway_generation=self.gateway_generation))
+                        continue
                     if message['op'] != 'binding' or not self.peer_available:
                         continue
                     value = snapshot(self.value, generation=self.generation, token=self.token)
@@ -267,9 +285,10 @@ class Stack:
                     continue
 
     def receive_events(self):
+        channel = self.channel
         while not self.stopped.is_set():
             try:
-                value = journal.receive(self.channel)
+                value = journal.receive(channel)
             except TimeoutError:
                 continue
             except OSError:

@@ -12,12 +12,21 @@ ERRORS = {'service_recovering', 'service_quarantined', 'service_stopping',
 
 
 def validate(value):
-    native = value.get('version') == 2
+    native = value.get('version') in (2, 3)
     executable = 'native_ingress' if native else 'nginx'
     ledger.keys(value, ('version', 'directory', executable, executable+'_sha256',
-        'policy', 'backend_policy', 'binary_sha256', 'protocol_sha256', 'tls'))
-    ledger.require(type(value['version']) is int and value['version'] in (1, 2),
+        'policy', 'backend_policy', 'binary_sha256', 'protocol_sha256', 'tls',
+        *(('access',) if value.get('version') == 3 else ())))
+    ledger.require(type(value['version']) is int and value['version'] in (1, 2, 3),
                    'invalid gateway config version')
+    if value['version'] == 3:
+        access = value['access']
+        ledger.keys(access, ('state_directory', 'service_id', 'state_identity'))
+        ledger.require(type(access['state_directory']) is str and
+            Path(access['state_directory']).is_absolute() and ledger.identifier(access['service_id']) and
+            type(access['state_identity']) is list and len(access['state_identity']) == 2 and
+            all(ledger.integer(n, minimum=1) for n in access['state_identity']),
+            'invalid access state binding')
     for key in ('directory', executable):
         ledger.require(type(value[key]) is str and Path(value[key]).is_absolute(),
                        'absolute gateway path required')

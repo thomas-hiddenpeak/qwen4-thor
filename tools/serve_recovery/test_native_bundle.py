@@ -70,7 +70,9 @@ class BundleTests(unittest.TestCase):
     def test_default_package_has_native_binary_and_no_nginx_dependency(self):
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 6)
+        self.assertEqual(value['version'], 7)
+        self.assertIn('source/tools/serve_recovery/access_manager.py', value['files'])
+        self.assertIn('source/tools/serve_recovery/access_io.py', value['files'])
         self.assertIn('source/tools/serve_recovery/observation_io.py', value['files'])
         self.assertIn('source/tools/serve_recovery/progress.py', value['files'])
         self.assertEqual(value['ingress_mode'], 'native')
@@ -98,9 +100,12 @@ class BundleTests(unittest.TestCase):
                          {'tools/serve_recovery/tls_control.py'})
         self.assertEqual(set(bundle.V5_SOURCES)-set(bundle.V4_SOURCES),
                          {'tools/serve_recovery/progress.py'})
-        self.assertEqual(set(bundle.SOURCES)-set(bundle.V5_SOURCES),
+        self.assertEqual(set(bundle.V6_SOURCES)-set(bundle.V5_SOURCES),
                          {'tools/serve_host/native.py', 'tools/serve_host/native_exporter.py',
                           'tools/serve_recovery/retention.py', 'tools/serve_recovery/retention_epoch.py'})
+        self.assertEqual(set(bundle.SOURCES)-set(bundle.V6_SOURCES),
+            {'tools/serve_recovery/'+n+'.py' for n in ('access_policy', 'access_store',
+             'access_control', 'access_io', 'access_manager')})
 
     def test_historical_source_inventory_versions_remain_verifiable(self):
         receipt = self.prepare()
@@ -108,7 +113,7 @@ class BundleTests(unittest.TestCase):
         current = bundle.engine.read(package/'manifest.json')
         for version, sources in ((1, bundle.LEGACY_SOURCES),
                 (2, bundle.V2_SOURCES), (3, bundle.V3_SOURCES),
-                (4, bundle.V4_SOURCES), (5, bundle.V5_SOURCES)):
+                (4, bundle.V4_SOURCES), (5, bundle.V5_SOURCES), (6, bundle.V6_SOURCES)):
             with self.subTest(version=version):
                 value = dict(current, version=version,
                     profile='q4t-service-recovery-v'+str(version))

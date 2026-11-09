@@ -33,7 +33,7 @@ class AccessIoTests(unittest.TestCase):
         self.service_id = str(uuid.uuid4())
         self.initial = policy.from_keys([dict(id='alpha', api_keys=[ALPHA]),
                                          dict(id='beta', api_keys=[BETA])])
-        with self.open(initialize=self.initial):pass
+        access_store.initialize_bound(access_store.binding(self.state, self.service_id), self.initial)
 
     def open(self, **options):
         return access_store.Store(self.state / 'client-access', self.service_id,

@@ -1,0 +1,8 @@
+[
+  [
+    "/usr/bin/python3",
+    "-B",
+    "-c",
+    "import unittest\nfrom pathlib import Path\nfrom tools.serve_recovery import test_native_ingress as legacy\nlegacy.INGRESS=Path('.q4t-work/serve-access-20261109/host/q4t-ingress').resolve()\nlegacy.NativeTests.output=Path('.q4t-work/serve-access-20261109/legacy-fixtures').resolve()\nlegacy.NativeTests.output.mkdir(exist_ok=True)\nnames=['tools.serve_recovery.test_access_management']\nnames += ['tools.serve_recovery.test_native_bundle.BundleTests.'+n for n in ['test_default_package_has_native_binary_and_no_nginx_dependency','test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io','test_historical_source_inventory_versions_remain_verifiable','test_launcher_never_hands_guardian_a_regular_file_for_diagnostics']]\nnames += ['tools.serve_recovery.test_access_io.AccessIoTests.'+n for n in ['test_real_journal_new_revision_and_large_fragmented_history','test_writer_busy_and_corrupt_policy_keep_one_worker','test_private_fds_and_missing_file_leave_native_snapshot_serving']]\nnames += ['tools.serve_recovery.test_native_ingress.NativeTests.test_generation_rebind_rotates_token_and_strips_forged_client_headers']\nresult=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromNames(names))\nraise SystemExit(not result.wasSuccessful())\n"
+  ]
+]

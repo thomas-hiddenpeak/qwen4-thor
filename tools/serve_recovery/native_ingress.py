@@ -21,6 +21,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from tools.serve_gateway import gateway as files
 from tools.serve_recovery import control, gateway_config, journal, ledger, tls_control
+from tools.serve_recovery import access_control, access_io
 from tools.serve_recovery.gateway import Admission, listener
 
 
@@ -100,7 +101,11 @@ class AdmissionSocket:
 
 def run(config, channel):
     gateway_config.validate(config)
-    ledger.require(config['version'] == 2, 'native ingress configuration required')
+    ledger.require(config['version'] in (2, 3), 'native ingress configuration required')
+    managed_access = config['version'] == 3
+    if managed_access:
+        ledger.require(config['access']['service_id'] == channel.service_id,
+                       'credential service identity differs from Guardian')
     directory = Path(config['directory'])
     info = directory.lstat()
     ledger.require(stat.S_ISDIR(info.st_mode) and info.st_uid == os.geteuid() and
@@ -127,6 +132,8 @@ def run(config, channel):
     address = f'q4t-ingress-{os.geteuid()}-{channel.service_id}-{channel.generation}'
     tls_observation = tls_control.Observation(address) if config['tls'] else None
     tls_ready = True
+    access_ready = not managed_access
+    reader = publisher = None
     server = AdmissionSocket(address, (c['id'] for c in config['policy']['clients']),
         admission.request, lambda: process.pid if process is not None and
                                   process.poll() is None else None)
@@ -135,6 +142,12 @@ def run(config, channel):
             parent_start_ticks=journal.process_start(os.getpid()), address=address,
             policy=files.policy(config['policy']), tls=config['tls'],
             tls_lease=f'q4t-tls-{os.geteuid()}-{channel.service_id}')
+        if managed_access:
+            settings.update(version=3, access_deferred=True)
+            value = config['access']
+            reader = access_io.Reader(value['state_directory'], value['service_id'],
+                                      value['state_identity'])
+            publisher = access_control.Publisher(address)
         files.save(runtime/'ingress.json', ledger.canonical(settings)+b'\n')
         process = subprocess.Popen([sys.executable, '-I', '-B',
             str(ROOT/'tools/serve_recovery/cpu_exec.py'), '--parent-pid', str(os.getpid()),
@@ -155,6 +168,15 @@ def run(config, channel):
         channel.event('ready')
         next_update = 0
         while not tick():
+            if reader is not None:
+                reader.step()
+                if reader.available:
+                    publisher.desired(reader.value)
+                observed = publisher.step(process.pid)
+                if observed['live_applied']:
+                    access_ready = True
+                # Missing files or IPC do not invalidate an already installed
+                # native snapshot, signal the model, or replenish quotas.
             if tls_observation is not None:
                 observed = tls_observation.step(process.pid)
                 if observed is not None:
@@ -163,11 +185,17 @@ def run(config, channel):
                         channel.unbound()
                     tls_ready = observed
             if time.monotonic() >= next_update:
-                if tls_ready:
+                if tls_ready and access_ready:
                     admission.update()
                 next_update = time.monotonic()+0.25
             server.step()
     finally:
+        if publisher is not None:publisher.close()
+        if reader is not None:
+            end = time.monotonic() + 1
+            while not reader.close() and time.monotonic() < end:time.sleep(.01)
+            # A non-reaped worker retains its inherited claim. A successor
+            # gateway cannot multiply storage workers while it remains stuck.
         server.close()
         if tls_observation is not None:
             tls_observation.close()

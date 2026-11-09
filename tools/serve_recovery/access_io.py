@@ -217,8 +217,9 @@ def worker(args):
                     stat.S_ISDIR(info.st_mode) and info.st_uid == os.geteuid() and
                     stat.S_IMODE(info.st_mode) == 0o700,
                     'reader state identity changed')
-                with access_store.Store(state / 'client-access', args.service_id,
-                                        [args.state_device, args.state_inode]) as journal_store:
+                value = dict(state_directory=str(state), service_id=args.service_id,
+                             state_identity=[args.state_device, args.state_inode])
+                with access_store.open_bound(value) as journal_store:
                     payload = ledger.canonical(journal_store.head['state']['policy'])
             except BlockingIOError:
                 error = 'writer_busy'

@@ -80,6 +80,9 @@ def initialize(package, digest, state):
         package=str(Path(package).resolve()), manifest_sha256=digest)
     engine.save(state/'service.json', descriptor)
     (state/'runs').mkdir(mode=0o700)
+    if manifest['version'] >= 7 and manifest.get('ingress_mode') == 'native':
+        from tools.serve_recovery import access_manager
+        access_manager.initialize(state, descriptor, manifest)
     return dict(state=str(state), service_id=service_id, initialized=True,
                 desired='STOPPED', automatic_start=False)
 
@@ -157,7 +160,13 @@ def launch(package, digest, state, *, daemon=False, timeout=360):
         run = state/'runs'/str(uuid.uuid4())
         run.mkdir(mode=0o700)
         controller = controller_configuration(package, digest, state, run)
-        gateway = bundle.gateway_config_for(package, manifest, run)
+        access = None
+        if manifest['version'] >= 7 and manifest.get('ingress_mode') == 'native':
+            from tools.serve_recovery import access_store
+            access = access_store.binding(state, desc['service_id'])
+            # No journal read in this process or silent legacy-key fallback.
+            # The isolated reader gates the public credential configuration.
+        gateway = bundle.gateway_config_for(package, manifest, run, access=access)
         engine.save(run/'controller.json', controller)
         engine.save(run/'gateway.json', gateway)
         python = manifest['python']['path']
@@ -260,7 +269,8 @@ def main(argv=None, *, package=None, digest=None):
     for name in ('init', 'run', 'start', 'status', 'diagnostics', 'stop',
                  'tls-status', 'tls-reload', 'observe', 'metrics', 'export',
                  'retention-plan', 'retention-archive', 'retention-apply', 'retention-resume',
-                 'retention-migrate'):
+                 'retention-migrate', 'access-status', 'access-propose', 'access-apply',
+                 'access-migrate'):
         command = commands.add_parser(name)
         command.add_argument('--state', type=Path, required=True)
         if package is None:
@@ -282,6 +292,14 @@ def main(argv=None, *, package=None, digest=None):
         if name == 'start':
             command.add_argument('--daemon', action='store_true', required=True)
             command.add_argument('--timeout', type=timeout_seconds, default=360)
+        if name in ('access-status', 'access-propose'):
+            command.add_argument('--request-id')
+        if name == 'access-propose':
+            command.add_argument('--keys', type=Path, required=True)
+            command.add_argument('--proposal', type=Path, required=True)
+        if name == 'access-apply':
+            command.add_argument('--proposal', type=Path, required=True)
+            command.add_argument('--wait-seconds', type=int, default=3)
     args = parser.parse_args(argv)
     try:
         if args.operation == 'prepare':
@@ -306,6 +324,24 @@ def main(argv=None, *, package=None, digest=None):
             elif args.operation in ('run', 'start'):
                 result = launch(package, digest, args.state, daemon=args.operation == 'start',
                                 timeout=getattr(args, 'timeout', 360))
+            elif args.operation.startswith('access-'):
+                from tools.serve_recovery import access_manager
+                desc = descriptor(args.state, package, digest)
+                manifest = bundle.verify(package, digest)
+                ledger.require(manifest.get('ingress_mode') == 'native',
+                               'native credential management required')
+                if args.operation == 'access-migrate':
+                    result = access_manager.migrate(args.state, desc, manifest)
+                elif args.operation == 'access-status':
+                    result = access_manager.status(args.state, desc, manifest, args.request_id)
+                else:
+                    ledger.require(manifest['version'] >= 7, 'live credential profile required')
+                    if args.operation == 'access-propose':
+                        result = access_manager.propose(args.state, desc, args.keys,
+                            args.proposal, args.request_id)
+                    else:
+                        result = access_manager.apply(args.state, desc, manifest, args.proposal,
+                                                      wait_seconds=args.wait_seconds)
             elif args.operation.startswith('retention-'):
                 from tools.serve_recovery import retention
                 from tools.serve_host import native
@@ -356,10 +392,16 @@ def main(argv=None, *, package=None, digest=None):
             return 1
         if args.operation == 'tls-reload' and not result.get('reloaded'):
             return 1
+        if args.operation == 'access-status' and result.get('durable_error'):
+            return 1
         return int(result.get('guardian_exit_code', 0) != 0 or result.get('state') == 'UNKNOWN')
     except (OSError, ValueError, RuntimeError) as error:
         # Fixed error class only: do not print private config or API credentials.
-        print(json.dumps(dict(status='FAILED', category=type(error).__name__)), file=sys.stderr)
+        result = dict(status='FAILED', category=type(error).__name__)
+        if args.operation.startswith('access-'):
+            from tools.serve_recovery import access_manager
+            result = access_manager.failure(error)
+        print(json.dumps(result), file=sys.stderr)
         return 1
 
 
