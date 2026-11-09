@@ -1,0 +1,19 @@
+{
+  "status": "PASS_DRIVER_CPU_ONLY",
+  "tests": 5,
+  "gpu_starts": 0,
+  "generation_requests": 0,
+  "source_parent": "67aac7bdfb3654b5e15f527fd928a35eafbe0f65",
+  "sources": {
+    "tools/serve_responses/cache_acceptance.py": "68f747a3af2ec87d6eb1a15adf5a385c18cd39123e352200793049f94c2ff95c",
+    "tools/serve_responses/test_cache_acceptance.py": "dbfee86563c6f4ba3c0dc4dd32f78c038f463fcf44543678a4cb44b5b436fdff",
+    "tools/serve_responses/encryption_acceptance.py": "4e70f8a667010d67478468c67af2d66f170936da479b6de1b6f4a2507df7d778"
+  },
+  "business_limits": {
+    "starts": 1,
+    "chats": 10,
+    "seconds": 900
+  },
+  "default_changed": false,
+  "master_goal_complete": false
+}

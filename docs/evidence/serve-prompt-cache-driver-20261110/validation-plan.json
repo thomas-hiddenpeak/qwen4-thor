@@ -1,0 +1,18 @@
+{
+  "scope": "cache driver oracles only; no CUDA/model",
+  "tests": 5,
+  "command": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "tools.serve_responses.test_cache_acceptance",
+    "-v"
+  ],
+  "gpu": {
+    "starts": 1,
+    "chats": 10,
+    "seconds": 900
+  },
+  "source_only_change": true
+}

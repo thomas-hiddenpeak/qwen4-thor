@@ -122,6 +122,8 @@ class Stage(foreground.Stage):
     limits = LIMITS
     request_templates = staticmethod(requests)
     success_status = 'PASS_RESPONSES_ENCRYPTION_BUSINESS'
+    requests_per_minute = 8
+    tokens_per_minute = 32768
 
     def http(self, path, body=None, *, label=None, timeout=30):
         if body is None:
@@ -153,7 +155,8 @@ class Stage(foreground.Stage):
             gateway_token=HEADERS['X-Q4T-Gateway-Token'], clients=[dict(id=CLIENT,
                 max_inflight=4, max_control_inflight=4, max_prompt_tokens=16384,
                 max_output_tokens=512, max_body_bytes=1048576,
-                requests_per_minute=8, tokens_per_minute=32768)])
+                requests_per_minute=self.requests_per_minute,
+                tokens_per_minute=self.tokens_per_minute)])
         save(self.out / 'client-policy.json', policy)
         args = [self.plan['binary'], 'serve', '--model-dir', self.plan['model'],
             '--host', '127.0.0.1', '--port', str(self.plan['port']),
