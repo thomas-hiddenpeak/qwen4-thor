@@ -1,5 +1,9 @@
 # 当前状态
 
+N07 入口容量修复 9 项 CPU 全过，[首真实失败与修复原件](evidence/serve-lifecycle-capacity-fix-20261109/README.md)。首轮正常清理，默认未动；准备按累计 2 启动/6 Chat/600 秒补验。另把入口拒绝缺少类型原因登记回 N06，后续必须补齐，不因已有阶段交付忽略新发现。
+
+N07 首真实短验发现并保留失败：模型按自定义容量 READY/自检通过，但入口独立 classify 漏传 profile，拒绝绑定。已正常停止清理（1 启动/1 Chat/146.829 秒，137 NVML 全 OK），默认未改。成组补齐封装→入口 profile，冻结 9 项 CPU；随后仅补未到达业务，累计上限 2 启动/6 Chat/600 秒，首耗用不清零。
+
 N07 驱动 9 项 CPU 全过，必要构建零警告、候选 ELF 3072f28c 不变；[驱动证据](evidence/serve-lifecycle-driver-20261109/README.md)。开始冻结并执行已授权 1 启动/5 Chat/600 秒的真实容量/CLI handler 短验；此前发布/分派 CPU 复用，默认 N05 保持。之后可回退交付，再其余全部目标。
 
 N07 发布阶段 86183749 已推送。真实业务驱动成组，冻结 9 项直接 CPU；实际模型短验冻结 1 启动/5 Chat（含自检）/600 秒，自定义容量、CLI handler run/check/status/reload/stop、JSON/SSE 与资料工具闭环，同严格租约。先构建/CPU，尚未占 GPU，默认保持；之后交付与其余全部任务。

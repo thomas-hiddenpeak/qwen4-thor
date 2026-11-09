@@ -142,7 +142,8 @@ class Admission:
                 observation = supervisor.probe(owner['pid'], value['port'],
                     value['operations_port'], stopped=self.stopped, include_metrics=False)
                 result = supervisor.classify(observation, value['protocol_sha256'],
-                    value['binary_sha256'], expected, value['operations_port'])
+                    value['binary_sha256'], expected, value['operations_port'],
+                    self.config.get('capacity_profile'))
                 ledger.require(result == 'READY', 'new backend is not ready')
                 current = self.fresh()
                 ledger.require(current['model_ready'] and not current['stop_requested'] and

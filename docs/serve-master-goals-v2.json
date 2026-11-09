@@ -493,7 +493,7 @@
     {
       "id": "N06",
       "required": true,
-      "state": "delivered",
+      "state": "implementation_in_progress",
       "implementation": "原生运维/指标/诊断与R04 exporter互通",
       "acceptance": "不安装Prometheus/exporter仍能看必要状态；观察失效不拖核心；真实健康与陈旧/未知分开",
       "depends_on": [
@@ -517,7 +517,15 @@
         "whole_task_complete": true
       },
       "plan": "SERVE_NATIVE_OBSERVATION_2026-11-09.md",
-      "remaining": []
+      "remaining": [],
+      "findings": [
+        {
+          "source": "tools/serve_recovery/gateway.py Admission.update exception projection",
+          "issue": "Independent gateway binding rejection closes admission but root status exposes no typed cause; report bounded identity/capacity/observation reasons without restarting a healthy model",
+          "state": "implementation_pending",
+          "evidence": "evidence/serve-lifecycle-capacity-fix-20261109/business-01/execution/status.jsonl"
+        }
+      ]
     },
     {
       "id": "N07",
@@ -537,7 +545,8 @@
         "evidence/serve-lifecycle-capacity-20261109/README.md",
         "evidence/serve-lifecycle-cli-20261109/README.md",
         "evidence/serve-lifecycle-publication-20261109/README.md",
-        "evidence/serve-lifecycle-driver-20261109/README.md"
+        "evidence/serve-lifecycle-driver-20261109/README.md",
+        "evidence/serve-lifecycle-capacity-fix-20261109/README.md"
       ],
       "release": null,
       "findings": [
@@ -547,6 +556,12 @@
           "state": "fixed_validated_delivered",
           "evidence": "evidence/serve-conversation-service-20261109/cpu-startup-lease-01/result.json",
           "delivery_evidence": "evidence/serve-application-delivery-20261109/README.md"
+        },
+        {
+          "source": "tools/serve_recovery/gateway.py Admission.update",
+          "issue": "Independent gateway classifier used fixed default capacity while model controller used selected capacity, preventing native admission",
+          "state": "fixed_cpu_validated_business_pending",
+          "evidence": "evidence/serve-lifecycle-capacity-fix-20261109/README.md"
         }
       ],
       "remaining": [

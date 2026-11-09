@@ -23,6 +23,7 @@ common=importlib.util.module_from_spec(spec);spec.loader.exec_module(common)
 common.__file__=__file__
 original_load=common.load_modules
 LIMITS=dict(starts=1,chats=5,probes=0,controls=2000,seconds=600)
+COMPLETION_LIMITS=dict(LIMITS,starts=2,chats=6)
 save=common.save
 
 
@@ -54,12 +55,14 @@ def load_modules(plan=None):
 
 def verify(plan):
     bundle,_,_,_,_,engine=load_modules(plan)
-    engine.require(plan['scenario']=='native_service_lifecycle' and plan['limits']==LIMITS,
+    limits=COMPLETION_LIMITS if plan.get('resume_capacity_binding') else LIMITS
+    engine.require(plan['scenario']=='native_service_lifecycle' and plan['limits']==limits,
                    'N07 frozen budget changed')
     for name,digest in plan['sources'].items():
         engine.require(engine.sha(ROOT/name)==digest,'N07 source drift: '+name)
     for row in plan['protected']:
         engine.require(engine.sha(row['path'])==row['sha256'],'N07 protected identity changed')
+    verify_prior(plan)
     manifest=bundle.verify(plan['package']['package'],plan['package']['manifest_sha256'])
     engine.require(manifest['version']==10 and manifest['ingress_mode']=='native' and
         not manifest['tls'],'N07 native loopback validation profile required')
@@ -67,6 +70,27 @@ def verify(plan):
     engine.require(core['version']==11 and core['settings']['profile']==plan['capacity_profile'],
                    'N07 capacity differs from frozen plan')
     return manifest
+
+
+def verify_prior(plan):
+    if not plan.get('resume_capacity_binding'):return
+    import hashlib
+    for row in plan['prior_evidence']:
+        if hashlib.sha256(Path(row['path']).read_bytes()).hexdigest()!=row['sha256']:
+            raise ValueError('N07 prior failure evidence changed')
+    prior=json.loads(Path(plan['prior_execution']).read_bytes())
+    guard=json.loads(Path(plan['prior_guard']).read_bytes())
+    stopped=json.loads(Path(plan['prior_stopped']).read_bytes())
+    early=json.loads(Path(plan['prior_early_stop']).read_bytes())
+    counts=prior['budget']['counts']
+    if not (prior['status']=='FAILED' and prior['cleanup_failure'] is None and
+            guard['status']=='COMMAND_FAILED' and
+            early['status']=='EARLY_STOP_KNOWN_IMPLEMENTATION_FAILURE' and
+            (counts['starts'],counts['chats'],counts['probes'])==(1,1,0) and
+            plan['prior_counts']==counts and plan['prior_seconds']>=prior['seconds'] and
+            stopped['desired']=='STOPPED' and not any(stopped['active'].values()) and
+            prior['package']['engine_binary_sha256']==plan['package']['engine_binary_sha256']):
+        raise ValueError('N07 only the recorded cleaned capacity-binding failure may resume')
 
 
 common.load_modules,common.verify=load_modules,verify

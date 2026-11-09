@@ -1,0 +1,44 @@
+{
+  "status": "FAILED",
+  "failure": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/acceptance.py\", line 832, in run\n    self.exercise()\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_lifecycle/native_acceptance.py\", line 126, in exercise\n    first=self.ready(1)\n          ^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/acceptance.py\", line 454, in ready\n    result = self.wait(lambda s: s['model_generation'] == generation and s['business_ready'])\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/acceptance.py\", line 443, in wait\n    last = self.sample()\n           ^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/acceptance.py\", line 410, in sample\n    value = self.control.request(self.service_id, 'status', timeout=2)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/business-01/bundle/source/tools/serve_recovery/control.py\", line 17, in request\n    return _request(service_id, operation, timeout=timeout)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/business-01/bundle/source/tools/serve_recovery/control.py\", line 33, in _request\n    result = journal.receive(sock)\n             ^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/business-01/bundle/source/tools/serve_recovery/journal.py\", line 57, in receive\n    data, ancillary, flags, _address = sock.recvmsg(MAX_FRAME)\n                                       ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/acceptance.py\", line 818, in expired\n    def expired(*_args): raise TimeoutError('bounded execution deadline; cleanup only')\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTimeoutError: bounded execution deadline; cleanup only\n",
+  "cleanup_failure": null,
+  "seconds": 145.34799856506288,
+  "budget": {
+    "counts": {
+      "starts": 1,
+      "chats": 1,
+      "probes": 0,
+      "controls": 549
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "controller-1",
+        "ordinal": 1,
+        "monotonic_ns": 2413032056121367
+      },
+      {
+        "kind": "chats",
+        "label": "generation-self-check-1",
+        "ordinal": 1,
+        "monotonic_ns": 2413072093411268
+      }
+    ]
+  },
+  "models": {
+    "1": {
+      "pid": 1089030,
+      "start_ticks": 241303205
+    }
+  },
+  "quota_deadlines": {},
+  "source_commit": "58ba104ebd555ce4456554fb962bef49d3bdd688",
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/business-01/bundle",
+    "manifest_sha256": "7b766423df2388c0bb2be3a6527f0c24915bbdbd3ccc2dd969171dac355e5105",
+    "engine_binary_sha256": "3072f28c801366b0ab0b3ec718f47102ff955e1ba121ba2b0e321fbc0ffef025",
+    "recovery_accepted": false
+  },
+  "default_replaced": false,
+  "performance_acceptance": false
+}

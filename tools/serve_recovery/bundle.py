@@ -146,7 +146,8 @@ def gateway_config_for(package, manifest, directory, *, access=None):
         **{name: str(package/'bin'/executable),
            name+'_sha256': manifest['files']['bin/'+executable]},
         policy=policy, backend_policy=backend, binary_sha256=base['files']['q4t'],
-        protocol_sha256=base['protocol_sha256'], tls=tls))
+        protocol_sha256=base['protocol_sha256'], tls=tls,
+        **({'capacity_profile':base['settings']['profile']} if base.get('version') == 11 else {})))
 
 
 def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,

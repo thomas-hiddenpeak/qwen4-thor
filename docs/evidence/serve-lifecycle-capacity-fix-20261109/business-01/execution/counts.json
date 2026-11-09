@@ -1,0 +1,22 @@
+{
+  "counts": {
+    "starts": 1,
+    "chats": 1,
+    "probes": 0,
+    "controls": 549
+  },
+  "events": [
+    {
+      "kind": "starts",
+      "label": "controller-1",
+      "ordinal": 1,
+      "monotonic_ns": 2413032056121367
+    },
+    {
+      "kind": "chats",
+      "label": "generation-self-check-1",
+      "ordinal": 1,
+      "monotonic_ns": 2413072093411268
+    }
+  ]
+}

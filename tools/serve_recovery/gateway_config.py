@@ -16,7 +16,8 @@ def validate(value):
     executable = 'native_ingress' if native else 'nginx'
     ledger.keys(value, ('version', 'directory', executable, executable+'_sha256',
         'policy', 'backend_policy', 'binary_sha256', 'protocol_sha256', 'tls',
-        *(('access',) if value.get('version') in (3, 4) else ())))
+        *(('access',) if value.get('version') in (3, 4) else ()),
+        *(('capacity_profile',) if 'capacity_profile' in value else ())))
     ledger.require(type(value['version']) is int and value['version'] in (1, 2, 3, 4),
                    'invalid gateway config version')
     if value['version'] in (3, 4):
@@ -35,6 +36,10 @@ def validate(value):
                        'invalid gateway source identity')
     p = g.policy(value['policy'])
     cp.match_clients(p, value['backend_policy'])
+    if 'capacity_profile' in value:
+        from tools.serve_service import capacity
+        capacity.validate(value['capacity_profile'])
+        capacity.check_clients(value['capacity_profile'],value['backend_policy'])
     ledger.require(value['version'] != 4 or value['backend_policy']['version'] == 3,
                    'dynamic ingress requires a versioned model policy')
     ledger.require('upstream_operations_port' in p,
