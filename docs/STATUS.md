@@ -1,3 +1,5 @@
+A07.2 [真实摘要业务接受](evidence/serve-responses-summary-business-20261109/README.md)：累计 2 启动/8 外部请求/13 内部步/115.690 秒，112 NVML 全 OK，正常清理。三种摘要/JSON/SSE/后台/原记录回放、一次 RPM/累计 TPM、共享预算与真实文档工具闭环通过，候选 8b4899cd；保留首回放失败。继续可回退交付及 A07.3/所有总任务，默认尚未替换。
+
 A07.2 [回放修复 5 CPU 全过与首次实际失败原件](evidence/serve-responses-summary-replay-fix-20261109/README.md)，引擎/host 零警告。准备仅续余下 5 请求，并复制保留的原记录验证实际 SDK SSE 回放；三种已过模型生成复用，累计上限不增。默认保持，总任务继续。
 
 A07.2 首真实 3 种摘要/JSON/SSE/后台及追加 usage 成功，但 GET SSE 回放漏 HTTP zero chunk，SDK 在已收终态后报 terminated。1 启动/3 请求/49.951 秒，正常退出/清理；已定位并修复响应完成状态，冻结 5 CPU，只续余下 5 请求和实际旧记录回放，累计 2/8/13/900 不变。默认仍 A07.1，不把该缺陷跳过。
