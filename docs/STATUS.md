@@ -1,14 +1,12 @@
-A07.5 [真实 Prompt 业务接受](evidence/serve-prompts-business-20261110/README.md)：2 启动/8 请求/7 模型步/86.754 秒，82 NVML 全 OK，清理独立确认。v1/v2 实际上下文、JSON/SSE、后台/重启、删除模板后原事件回放、真实文档工具及错误隔离均通过；候选 8feec073。默认 A07.4 尚未替换，继续可回退交付，再 A07.6 缓存及完整总任务。
+# 当前 Serve 总目标状态（2026-11-10）
 
-# 当前 Serve 总目标状态（2026-11-09）
+A07.5 本地 Prompt 已完成[针对 CPU](evidence/serve-prompts-cpu-20261109/README.md)、[输出缺口修复](evidence/serve-prompt-output-fix-20261110/README.md)、[真实业务](evidence/serve-prompts-business-20261110/README.md)与[可回退默认交付](evidence/serve-prompts-delivery-20261110/README.md)。当前引擎 `8feec073`、元数据 `349eecf3`、原生包 `945e6f73`，publication revision18，STOPPED；旧 A07.4 原包/发布代与核心、客户端账本保持。
 
-A07.4 实际上下文压缩已完成[真实业务](evidence/serve-compaction-business-20261109/README.md)、[原生入口](evidence/serve-compaction-ingress-20261109/README.md)和[可回退默认交付](evidence/serve-compaction-delivery-20261109/README.md)。当前引擎 `0c577f54`、元数据 `11eeb4df`、原生包 `c59afb3d`，publication revision16，STOPPED；旧 A07.3 原包/发布代与核心、客户端账本保持。
+实际模板版本 v1/v2 得到 42/73，显式旧版及重启默认正确；后台模板删除后原响应/SSE继续回放，真实文档工具闭环、精确用量和错误隔离通过。2 启动/8 请求/7 模型步/86.754秒，82 NVML 全OK并独立清理；安装8条操作通过且0模型/Chat。首次输出漏字段的失败与修复均保留。
 
-实际自动阈值、显式 trigger、独立 compact、认证记忆回填、摘要/加密组合、后台原事件重启回放与真实文档工具闭环通过；原窗口1160→恢复加新问题130 token。2 启动/8 请求/9 内部步/102.499秒，97 NVML全OK并独立确认清理。原生路由2项CPU、安装8条实际操作全过；首发布准备别名读取错误及修复保留。
+A07.1—A07.5已交付，A07整体和总目标仍 active、尚未合 main。现在连续推进 **A07.6 实际缓存控制、断点/TTL与用量**，随后 A07.7—A07.8 及 A/R/Q/G 全部余项；阶段交付不会结束总目标。非性能任务只做直接针对验证，长稳实跑由用户负责。
 
-A07.1—A07.4已交付，A07整体和总目标仍 active、尚未合 main。现在连续推进 **A07.5 版本化本地 Prompt 注册与变量解析**，随后 A07.6—A07.8 及 A/R/Q/G 全部余项；不会以阶段交付结束任务。非性能任务只做直接针对验证，长稳实跑由用户负责。
-
-以下保留历史检查点，当前默认以上段为准；A07.3 开发原件见开发日志及证据目录。
+以下保留历史检查点，当前默认以上段为准；A07.3—A07.5 开发原件见开发日志及证据目录。
 
 A07.2 [真实摘要业务接受](evidence/serve-responses-summary-business-20261109/README.md)：累计 2 启动/8 外部请求/13 内部步/115.690 秒，112 NVML 全 OK，正常清理。三种摘要/JSON/SSE/后台/原记录回放、一次 RPM/累计 TPM、共享预算与真实文档工具闭环通过，候选 8b4899cd；保留首回放失败。继续可回退交付及 A07.3/所有总任务，默认尚未替换。
 

@@ -223,18 +223,18 @@
         "evidence/serve-compaction-delivery-20261109/README.md"
       ],
       "release": {
-        "engine_binary_sha256": "0c577f541c893e13fc69b8557d7742b0cf4fcf8cbe19244fbdd4182b085c9f64",
-        "engine_release_sha256": "11eeb4dfb61eb49ba2ca4e20370dd1860af63c7597a5c12d26295a1a031026fa",
-        "generation_sha256": "f1663bf0f34c939b67eca03c0ddcf72250d9e15da80acf7d3c4f378387a6ad0d",
-        "manifest_sha256": "c59afb3d81c9919265737de164292f49a2f004ac9b5328b73a447f0763ab0635",
-        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-compaction-20261109/release-01/bundle",
-        "service_acceptance_sha256": "36e5f9385f5abe2e17dbbd83049ffd1e074f7ce2aaa6d8d49d7d5d5024b5f193",
-        "service_release_sha256": "04c2f6c6386360d85c08faf342b8f705857ca462f7f695e1a69b6befad2ce514",
+        "engine_binary_sha256": "8feec07312974996b7cdab811756dc7fae076cfb036891f11248923641ed4f05",
+        "engine_release_sha256": "349eecf3937225c1c01db6243fcd9ed319d9a4b612eed0431f41ea85ba42ae82",
+        "generation_sha256": "6be1619289eff0e82b1d9f310a42c9bb76072b57f0e0274a9ef35d7ebd075645",
+        "manifest_sha256": "945e6f73b94a6b7062de690a6a5619fc7eb06ba6341531396deec0f0a56ccb4a",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-prompts-20261109/release-01/bundle",
+        "service_acceptance_sha256": "1f90c17eb3c4e6bcd94adc14723666051dabf037bf19bf2683a750cf3e920743",
+        "service_release_sha256": "a31e04ba377c9619f2d2d6fcf13861d5b5f225682c5808cd4a1d75ee4b08c0e7",
         "state": "STOPPED",
         "merged_main": false,
         "whole_task_complete": false
       },
-      "development_status": "A07.1–A07.4 delivered; continue A07.5 and all master tasks.",
+      "development_status": "A07.1–A07.5 delivered; continue A07.6 and all master tasks.",
       "item_shape_evidence": "evidence/serve-item-shape-20261109/README.md",
       "execution_evidence": "evidence/serve-responses-execution-20261109/README.md",
       "foreground_business_evidence": "evidence/serve-responses-business-20261109/README.md",
@@ -250,7 +250,6 @@
       "delivery_evidence": "evidence/serve-chat-delivery-20261109/README.md",
       "plan": "SERVE_RESPONSES_ADVANCED_2026-11-09.md",
       "remaining_required": [
-        "A07.5 versioned local prompt registry and variables",
         "A07.6 actual prompt cache execution/TTL/breakpoints",
         "A07.7 reasoning mode/moderation/access program executors",
         "A07.8 complete input/output/include/SSE/SDK and release audit"
@@ -296,7 +295,7 @@
         },
         "publication_revision": 10
       },
-      "current_work": "A07.5 versioned local prompt registry, typed variables, ownership and native context execution",
+      "current_work": "A07.6 actual prompt cache execution, TTL, breakpoints, usage and failure isolation",
       "reasoning_summary": {
         "state": "delivered",
         "cpu_checks": 31,
@@ -389,17 +388,29 @@
         "delivery_evidence": "evidence/serve-compaction-delivery-20261109/README.md"
       },
       "prompt_registry": {
-        "state": "implementation_in_progress",
+        "state": "delivered_targeted",
         "cpu_checks": 27,
         "source_inventory_checked": true,
-        "business_validated": false,
-        "default_delivered": false,
+        "business_validated": true,
+        "default_delivered": true,
         "evidence": "evidence/serve-prompts-cpu-20261109/README.md",
         "business_limits": {
           "starts": 2,
           "requests": 8,
           "model_steps": 7,
           "seconds": 900
+        },
+        "business_evidence": "docs/evidence/serve-prompts-business-20261110/README.md",
+        "output_fix_evidence": "docs/evidence/serve-prompt-output-fix-20261110/README.md",
+        "delivery_evidence": "docs/evidence/serve-prompts-delivery-20261110/README.md",
+        "release": {
+          "engine_binary_sha256": "8feec07312974996b7cdab811756dc7fae076cfb036891f11248923641ed4f05",
+          "engine_release_sha256": "349eecf3937225c1c01db6243fcd9ed319d9a4b612eed0431f41ea85ba42ae82",
+          "generation_sha256": "6be1619289eff0e82b1d9f310a42c9bb76072b57f0e0274a9ef35d7ebd075645",
+          "manifest_sha256": "945e6f73b94a6b7062de690a6a5619fc7eb06ba6341531396deec0f0a56ccb4a",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-prompts-20261109/release-01/bundle",
+          "service_acceptance_sha256": "1f90c17eb3c4e6bcd94adc14723666051dabf037bf19bf2683a750cf3e920743",
+          "service_release_sha256": "a31e04ba377c9619f2d2d6fcf13861d5b5f225682c5808cd4a1d75ee4b08c0e7"
         }
       },
       "prompt_output_fix_cpu_2026_11_10": {
@@ -408,10 +419,10 @@
         "cpp": 4,
         "python": 4,
         "first_oracle_failure_preserved": true,
-        "real_business_pending": true
+        "real_business_pending": false
       },
       "prompt_actual_business_2026_11_10": {
-        "status": "accepted_delivery_pending",
+        "status": "accepted_delivered",
         "evidence": "docs/evidence/serve-prompts-business-20261110/README.md",
         "starts": 2,
         "requests": 8,

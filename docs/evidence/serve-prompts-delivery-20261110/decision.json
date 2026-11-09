@@ -1,0 +1,28 @@
+{
+  "status": "PASS_TARGETED_RESPONSES_PROMPT_RELEASE",
+  "acceptance": "ACCEPT_TARGETED_RESPONSES_PROMPT",
+  "actual_business": {
+    "status": "PASS_RESPONSES_PROMPT_TARGETED_BUSINESS",
+    "binary_sha256": "8feec07312974996b7cdab811756dc7fae076cfb036891f11248923641ed4f05",
+    "protocol_sha256": "729447c424318d5b85f73d0e93f1ab8a715987b7d3858df03f9aa079fa8db46b",
+    "counts": {
+      "starts": 2,
+      "chats": 8,
+      "controls": 93
+    },
+    "seconds": 86.75399710191414,
+    "model_steps": 7,
+    "nvml_samples": 82,
+    "all_nvml_ok": true,
+    "cleanup_confirmed": true,
+    "scope": "Actual pinned/default Prompt versions, JSON/SSE, original background restart replay after template deletion, real document tool, precise request accounting and invalid-variable isolation; no performance or full-quality claim"
+  },
+  "source_commit": "e14ae59a18a644cb7b499df6b0467d563e0913ff",
+  "binary_sha256": "8feec07312974996b7cdab811756dc7fae076cfb036891f11248923641ed4f05",
+  "protocol_sha256": "729447c424318d5b85f73d0e93f1ab8a715987b7d3858df03f9aa079fa8db46b",
+  "source_review_sha256": "7b4786bd127ddc3a2429f11dfe9d4a37a61dff5fbf9d3b6b87e31585c235885d",
+  "full_model_quality": false,
+  "performance_acceptance": false,
+  "long_stability_accepted": false,
+  "remaining_master_tasks_open": true
+}
