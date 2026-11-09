@@ -2,6 +2,12 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+R04/N06已可回退默认交付：原生v6包b7c25107/服务发布29125ad9，
+引擎1ff729a0及元数据f44634f5保持。真实CLI/export/旧run迁移归档
+清理闭环和3项包合同通过，[交付与失败原件](evidence/serve-native-observation-delivery-20261109/README.md)；0生产删除/0模型/Chat，
+ledger/Key/配额不变且STOPPED。继续N04密钥轮换、撤销与配额连续性
+及全部余项；归档全盘治理仍R08，工作分支未合main。
+
 随包仓库定位与历史依赖修复通过4新增/3受影响CPU；真实默认只读
 遍历133元数据/476保护路径，[原件](evidence/serve-retention-lineage-20261109/README.md)保留7次FAILED。
 旧权限不改，父摘要及计划内全量摘要重核；0生产删除/0模型/Chat。

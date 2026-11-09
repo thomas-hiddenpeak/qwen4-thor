@@ -1,0 +1,4 @@
+{
+  "init_observe_metrics": "packaged-01",
+  "reason": "Driver expected nonexistent metric prefix; actual q4t_service_business_ready was correct. No production change."
+}

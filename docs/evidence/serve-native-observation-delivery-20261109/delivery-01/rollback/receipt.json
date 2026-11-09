@@ -1,0 +1,15 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-cache-io-20261109/release-01/bundle",
+  "manifest_sha256": "fac58f347f8ba65857d9c8c7b2a1abf07668f80bd59b6d4dfa1b422358d2c10f",
+  "service_id": "dcb9dc2e-2824-49b2-a4f8-9b7b4f834b6d",
+  "ledger_sha256": "2216b9dcd4d0e9753fb41b8698a15055001c2446ac52b5a52e3d2f757b0c884c",
+  "engine_unchanged": {
+    "binary_sha256": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
+    "release_sha256": "f44634f5235c9555a06c20e57fbe86d1606f57ba7b4095e875b2d71ba31b38fc"
+  },
+  "files": {
+    "service.release.json": "1370792e5f6472fbb5ad2017b8893876f154e0b836081097d719eceff12200bb",
+    "service.json": "915d0e69f9c6eb6b03bef3bed32eafdcdbeeaf921b64b86ee49281e4e45e196f"
+  },
+  "procedure": "With GPU/Guardian/writer locks and durably STOPPED ledger, restore these two records and repoint build/service to previous package. Engine, keys, quota and ledger remain unchanged."
+}

@@ -1,0 +1,8 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/build/service/bin/q4t",
+    "service",
+    "--help"
+  ],
+  "exit_code": 0
+}

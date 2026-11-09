@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-observation-20261109/packaged_check.py", line 95, in <module>
+    result=main()
+           ^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-observation-20261109/packaged_check.py", line 37, in main
+    metrics=call('metrics','metrics');require('q4t_native_business_ready 0' in metrics,'stopped metrics')
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 57, in require
+    raise RuntimeError(message)
+RuntimeError: stopped metrics

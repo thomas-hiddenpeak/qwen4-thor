@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/build/service/bin/q4t",
+    "service",
+    "metrics",
+    "--state",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state"
+  ],
+  "exit_code": 0
+}

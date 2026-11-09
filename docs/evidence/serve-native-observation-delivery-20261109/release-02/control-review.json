@@ -1,0 +1,124 @@
+{
+  "previous_package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-cache-io-20261109/release-01/bundle",
+  "source_commit": "240cd50412d028e82b8d0a405d06f1fc2bcf14a2",
+  "files": {
+    "tools/evalscope/bounded_log.py": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+    "tools/evalscope/gpu_exclusive.py": "cbc8c0accbcc3194e9792549ff72bc708b35d46deb75b4066c62fdb16bdaa3ad",
+    "tools/evalscope/nvml_process_query.py": "8c292f2b5e778c9c9033539e06659570075999cf6e74f20a7431ea1fd45c1ac3",
+    "tools/release/release.py": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+    "tools/serve_gateway/client_policy.py": "fe0933bab4f288dab00f2e1871efdd312fa7c2a2eb496f7802cad7bad81e4ba7",
+    "tools/serve_gateway/gateway.py": "1e4b200477a5382d62b9fb42c79f816be04451c51629234c8dc31681d89201e4",
+    "tools/serve_gateway/tls.py": "cca002a24c6731ec5f8a08b7d4c3e1a4e61cd10a8e4bac7224fc68fda88e183a",
+    "tools/serve_host/native.py": "76398318f061e75dc689298b5d80e6ccfd5ceb58d2d464e3c0da833ce26ff9da",
+    "tools/serve_host/native_exporter.py": "086b1c3ced3471a35cd0450a58e132ca65177fffe141ff4016bc73b6fb1dd482",
+    "tools/serve_ops/contracts.py": "0ceb9a926f7e6ddb573a8a7847ae1d2adc0d3cd862a4fcb76efe7746554244e7",
+    "tools/serve_ops/identity.py": "74001ea851d3a7b0d5aee843b3ccee4b669485ed93543bb04799ab42e16847b9",
+    "tools/serve_ops/transport.py": "98d3c326baaa7731078aa706911c743ae10b2278763d5de86f2bc7828650e2aa",
+    "tools/serve_recovery/binding.py": "1f70edbce8cefd92700acf6df130101baa41f575cd24876f7e7d95772ba8cd18",
+    "tools/serve_recovery/bundle.py": "63dd9d65a3da73b66fcbfa749b419ad53a29542d34792d293bd87ec563e2e3e4",
+    "tools/serve_recovery/child.py": "4707421055f57119c5de561440ca12b7f8967229eabb2191ba5298d6fd39329f",
+    "tools/serve_recovery/control.py": "bd8307bb3950122111d1d14d2451b54672599179b34a7d9d9ff375ebc53710c1",
+    "tools/serve_recovery/controller.py": "7aa77d671c25f2c15a78e75edf71545a4180661f06350ecc4fdad6c5e3aca0b8",
+    "tools/serve_recovery/core_http.py": "c682bfff760607ebc332a638a21eabdd658d03506c065287d336b170941db3b8",
+    "tools/serve_recovery/cpu_exec.py": "6815ad563afb569fa7eb662d48b240066b69bc7da5ff44742a413f25045acfd1",
+    "tools/serve_recovery/gateway.py": "6ad44e7e93cb5c76a4cd85a24b48dca6dea314cc5252bb70253694372524a78a",
+    "tools/serve_recovery/gateway_config.py": "38cde468cd2d8c4f3c7ce7c484eb1ad4ca7626af33150f2fab80f4238ac8309a",
+    "tools/serve_recovery/jobs.py": "31dc2bf5a1e6d91cbfa1ce04a7726c72e5b0cf70a8dec3b12d9e71de3ce96d25",
+    "tools/serve_recovery/journal.py": "b965cb03f08932b508c9af083abd7020abe25a5f9d8f5d1ad0920494ed127cac",
+    "tools/serve_recovery/ledger.py": "4a2f1586dc4833de32c3caf3a6914babd1a994444355e69d0ede4556f5be1974",
+    "tools/serve_recovery/monitor.py": "5fb9f01cee45b7d008cde26fea3d9986a030a8a8a06ac435bc86932a0706aed9",
+    "tools/serve_recovery/native_ingress.py": "99ffd489538c5f391aa17049c28a42b1124eabea33700e35c71c3fc3cda6c7a8",
+    "tools/serve_recovery/observation_io.py": "e49138b50462d1acf1a5ef6b648f8bc5d00655de04ec86f25648385fdab4d772",
+    "tools/serve_recovery/ownership.py": "1cb0182ca06ee3c1ebbaab5d598895990ece2a7720aec741ea84ffde68792254",
+    "tools/serve_recovery/policy.py": "db6e82bff6894c22bfe26a73e787c24362d1102a374bd18659eae81df4457bd2",
+    "tools/serve_recovery/progress.py": "f008b5f27a88cccff92232c3cc385722f67869445f9d75f49c7d8c216c1ab761",
+    "tools/serve_recovery/retention.py": "7f78f2cdec4ebc0dcd283ce803b2078769c5144834a63a742e95e6120d8205b9",
+    "tools/serve_recovery/retention_epoch.py": "2e8b7f054276093c599ad2073df408931b9cf0b237a74d16c6214a96a64d1bb7",
+    "tools/serve_recovery/service.py": "72092ca873b20374f8b62c6dbe524a115db65a28a08cc2b62dc9b2666bffbb90",
+    "tools/serve_recovery/store.py": "0eef06d1a10b4ef0911f671e0378ae3849caeabeaabbbe296981a2e4291e59ee",
+    "tools/serve_recovery/tls_control.py": "75399601eb9649189367915fcfb417dbb786adaf37c9f8089c3060234dd3daee",
+    "tools/serve_service/auxiliary.py": "9b818763694570b63efa394e01fc327300d8ee375bc8f7009023937b1061bbdf",
+    "tools/serve_service/backend.py": "49a37862d8040aceed14df796cb24535cacfeced3fe779773ec6925b04eeefa9",
+    "tools/serve_service/inspection.py": "2930af5fe6564b567a39bb6c9280dfe098be4e78227250660246a9722cfb90b9",
+    "tools/serve_service/memory.py": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+    "tools/serve_service/monitor_control.py": "06fc8f1477f166e79e57f6d12d0e0554af949c92f3d26d2dd5b68ba84dcd392c",
+    "tools/serve_service/nvml_policy.py": "817b2500044cd2eeed4277ad95d2686bf11f4785282ea1149beb63d62b0ef9a6",
+    "tools/serve_service/package.py": "ff283c216e5c1e6b0f68b363c8cf58b89b98eefec7b59b5d060dfd6b86e7605c",
+    "tools/serve_service/resources.py": "2b72ea6775ef6067eacb4ce6351a58e4a2bac1145e3869165a142a75f81245b2",
+    "tools/serve_service/service.py": "c525aa1d969cc12938a8643190b7de58e9a056fe55f75df713a488acefb2417d",
+    "tools/serve_service/supervisor.py": "21348143c5e4f46fed07a338977f984a58d6eb7c5e2f1e08caa29157929d6764",
+    "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f"
+  },
+  "changed": {
+    "tools/serve_host/native.py": {
+      "before": null,
+      "after": "76398318f061e75dc689298b5d80e6ccfd5ceb58d2d464e3c0da833ce26ff9da"
+    },
+    "tools/serve_host/native_exporter.py": {
+      "before": null,
+      "after": "086b1c3ced3471a35cd0450a58e132ca65177fffe141ff4016bc73b6fb1dd482"
+    },
+    "tools/serve_recovery/bundle.py": {
+      "before": "807b98ca96868e5cacce8c929350b1c4d0f934e1bc4ebd42196ff5a89456fe6c",
+      "after": "63dd9d65a3da73b66fcbfa749b419ad53a29542d34792d293bd87ec563e2e3e4"
+    },
+    "tools/serve_recovery/controller.py": {
+      "before": "bdfaf3794b709d56457e1973bc2397521c36fbf7dfcda712b002fedfa24b81c4",
+      "after": "7aa77d671c25f2c15a78e75edf71545a4180661f06350ecc4fdad6c5e3aca0b8"
+    },
+    "tools/serve_recovery/retention.py": {
+      "before": null,
+      "after": "7f78f2cdec4ebc0dcd283ce803b2078769c5144834a63a742e95e6120d8205b9"
+    },
+    "tools/serve_recovery/retention_epoch.py": {
+      "before": null,
+      "after": "2e8b7f054276093c599ad2073df408931b9cf0b237a74d16c6214a96a64d1bb7"
+    },
+    "tools/serve_recovery/service.py": {
+      "before": "1e4fa0e4f8508c774b38560003d6da2cdf306e489bd0b7013b3e319752c53d00",
+      "after": "72092ca873b20374f8b62c6dbe524a115db65a28a08cc2b62dc9b2666bffbb90"
+    }
+  },
+  "default": {
+    "q4t": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
+    "q4t.release.json": "f44634f5235c9555a06c20e57fbe86d1606f57ba7b4095e875b2d71ba31b38fc",
+    "service.release.json": "1370792e5f6472fbb5ad2017b8893876f154e0b836081097d719eceff12200bb",
+    "service-native-state/service.json": "915d0e69f9c6eb6b03bef3bed32eafdcdbeeaf921b64b86ee49281e4e45e196f",
+    "service-native-state/ledger.json": "2216b9dcd4d0e9753fb41b8698a15055001c2446ac52b5a52e3d2f757b0c884c"
+  },
+  "evidence": {
+    "serve-native-observation-20261109": {
+      "index_sha256": "f911e1333743ce67d75c04c11abcb11084016e7dcbb9d8784336416dbcb2b5eb",
+      "files": 12
+    },
+    "serve-run-retention-20261109": {
+      "index_sha256": "90d1c4ae9ec5277c50475875428faa02e6ee74a1eacac01477b7ada9f3d2b4b1",
+      "files": 20
+    },
+    "serve-retention-epoch-20261109": {
+      "index_sha256": "fa2d54b50676085bd7d291777278a9d47d893471abd4301efecb9d4d75bb46ff",
+      "files": 12
+    },
+    "serve-retention-lineage-20261109": {
+      "index_sha256": "342c5b006aa79fd3d0d745820cd56149763472c75ece7c2a4d7105a605a9c7d5",
+      "files": 29
+    },
+    "serve-cache-progress-delivery-20261109": {
+      "index_sha256": "f588c40f73662a03ed21779dbf0ad07bdd73dcc4ba81bfbca94255dd6fda3eb4",
+      "files": 36
+    },
+    "serve-cache-io-business-20261109": {
+      "index_sha256": "596c9d7206cb96847160335614381d3340aef467c397dc633a4ae247426b43bf",
+      "files": 81
+    },
+    "serve-progress-business-20261109": {
+      "index_sha256": "a591fcdd908d00f4a3f112812be56f5cae0ca5d2bd5f61ebee0dbdf968f8d44e",
+      "files": 67
+    }
+  },
+  "engine_sources_unchanged": 365,
+  "native_sources_unchanged": 38,
+  "controller_change": "Accept v3 with optional advisory retention_context; model/recovery behavior unchanged.",
+  "engine_metadata_unchanged": true,
+  "gpu_tests_reused": true
+}

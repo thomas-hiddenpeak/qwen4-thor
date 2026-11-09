@@ -439,7 +439,7 @@
     {
       "id": "N06",
       "required": true,
-      "state": "implementation_in_progress",
+      "state": "delivered",
       "implementation": "原生运维/指标/诊断与R04 exporter互通",
       "acceptance": "不安装Prometheus/exporter仍能看必要状态；观察失效不拖核心；真实健康与陈旧/未知分开",
       "depends_on": [
@@ -450,14 +450,20 @@
         "evidence/serve-native-observation-20261109/decision.json",
         "evidence/serve-run-retention-20261109/decision.json",
         "evidence/serve-retention-epoch-20261109/decision.json",
-        "evidence/serve-retention-lineage-20261109/decision.json"
+        "evidence/serve-retention-lineage-20261109/decision.json",
+        "evidence/serve-native-observation-delivery-20261109/decision.json"
       ],
-      "release": null,
+      "release": {
+        "engine_binary_sha256": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
+        "engine_release_sha256": "f44634f5235c9555a06c20e57fbe86d1606f57ba7b4095e875b2d71ba31b38fc",
+        "manifest_sha256": "b7c2510799d7433208f0f3135f8f38733d20e849a820db5649406d74835ae939",
+        "service_release_sha256": "29125ad9dcccd87105e8bbad2670876f66641f03f8d217007ea6dcd56a42849d",
+        "state": "STOPPED",
+        "merged_main": false,
+        "whole_task_complete": true
+      },
       "plan": "SERVE_NATIVE_OBSERVATION_2026-11-09.md",
-      "remaining": [
-        "actual packaged CLI/export/retention integration",
-        "rollback-capable delivery"
-      ]
+      "remaining": []
     },
     {
       "id": "N07",
@@ -600,7 +606,7 @@
     {
       "id": "R04",
       "required": true,
-      "state": "implementation_in_progress",
+      "state": "delivered",
       "implementation": "当前包exporter接入、unknown/stale投影及受保护留存清理",
       "acceptance": "当前包exporter接入、unknown/stale投影及受保护留存清理",
       "depends_on": [
@@ -610,14 +616,20 @@
         "evidence/serve-native-observation-20261109/decision.json",
         "evidence/serve-run-retention-20261109/decision.json",
         "evidence/serve-retention-epoch-20261109/decision.json",
-        "evidence/serve-retention-lineage-20261109/decision.json"
+        "evidence/serve-retention-lineage-20261109/decision.json",
+        "evidence/serve-native-observation-delivery-20261109/decision.json"
       ],
-      "release": null,
+      "release": {
+        "engine_binary_sha256": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
+        "engine_release_sha256": "f44634f5235c9555a06c20e57fbe86d1606f57ba7b4095e875b2d71ba31b38fc",
+        "manifest_sha256": "b7c2510799d7433208f0f3135f8f38733d20e849a820db5649406d74835ae939",
+        "service_release_sha256": "29125ad9dcccd87105e8bbad2670876f66641f03f8d217007ea6dcd56a42849d",
+        "state": "STOPPED",
+        "merged_main": false,
+        "whole_task_complete": true
+      },
       "plan": "SERVE_NATIVE_OBSERVATION_2026-11-09.md",
-      "remaining": [
-        "actual packaged CLI/export/retention integration",
-        "rollback-capable delivery"
-      ]
+      "remaining": []
     },
     {
       "id": "R05",
@@ -743,6 +755,6 @@
       "release": null
     }
   ],
-  "next_task": "R04",
-  "next": "Native current-service observation/export and protected retention, then N04 and all remaining master tasks."
+  "next_task": "N04",
+  "next": "Native key rotation/revocation, policy updates and quota continuity, then all remaining master tasks."
 }

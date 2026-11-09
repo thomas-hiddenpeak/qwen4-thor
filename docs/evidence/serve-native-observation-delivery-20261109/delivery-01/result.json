@@ -1,0 +1,20 @@
+{
+  "status": "PASS_NATIVE_OBSERVATION_RETENTION_DEFAULT_DELIVERY",
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-observation-20261109/release-02/bundle",
+  "manifest_sha256": "b7c2510799d7433208f0f3135f8f38733d20e849a820db5649406d74835ae939",
+  "engine_binary_sha256": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
+  "engine_release_sha256": "f44634f5235c9555a06c20e57fbe86d1606f57ba7b4095e875b2d71ba31b38fc",
+  "service_release_sha256": "29125ad9dcccd87105e8bbad2670876f66641f03f8d217007ea6dcd56a42849d",
+  "service_id": "dcb9dc2e-2824-49b2-a4f8-9b7b4f834b6d",
+  "ledger_sha256": "2216b9dcd4d0e9753fb41b8698a15055001c2446ac52b5a52e3d2f757b0c884c",
+  "ledger_preserved": true,
+  "desired": "STOPPED",
+  "rollback_receipt": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-observation-20261109/delivery-01/rollback/receipt.json",
+  "rollback_sha256": "f5c4922567b4f7dc7f55a5360acad2c42f8cf6bd92a62f8a6e942c840fac6700",
+  "model_starts": 0,
+  "chat_requests": 0,
+  "production_runs_removed": 0,
+  "policy_keys_quota_unchanged": true,
+  "remaining_master_tasks_open": true,
+  "seconds": 1.5550405667163432
+}
