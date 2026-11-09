@@ -38,6 +38,12 @@ struct HttpRequestHeaders {
   std::string origin;
   std::string cors_method;
   std::string cors_headers;
+  // Untrusted until an explicit ingress proxy policy validates the TCP peer.
+  std::string forwarded;
+  std::string forwarded_for;
+  std::string forwarded_host;
+  std::string forwarded_proto;
+  std::string forwarded_prefix;
   std::string error_code;
   std::string error_param;
   size_t content_length = 0;

@@ -30,6 +30,7 @@
 #include "q4t/service/ingress_cors.h"
 #include "q4t/service/ingress_credentials.h"
 #include "q4t/service/ingress_transport.h"
+#include "q4t/service/ingress_proxy.h"
 
 namespace q4t::service::ingress {
 namespace {
@@ -69,6 +70,7 @@ struct Config {
   bool access_deferred = false;
   TlsFiles credentials;
   Cors cors;
+  HttpPolicy http;
   int port = 0;
   int backend = 0;
   int operations = 0;
@@ -125,7 +127,7 @@ Config Load(const char* path) {
   for (unsigned char c : config.address)
     Require((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '-');
   const auto& policy = *root.Find("policy");
-  const auto version = Number(policy, "version", 2, 3);
+  const auto version = Number(policy, "version", 2, 4);
   Require(
       version == 2
           ? wire::HasKeys(
@@ -134,23 +136,30 @@ Config Load(const char* path) {
                          "allowed_client_cidrs", "per_client_inflight",
                          "global_inflight", "per_client_rps", "burst",
                          "body_bytes", "upstream_idle_seconds"})
+          : version == 3 ? wire::HasKeys(
+                policy, {"version", "listen_host", "listen_port", "server_name",
+                         "upstream_port", "upstream_operations_port", "clients",
+                         "allowed_client_cidrs", "per_client_inflight",
+                         "global_inflight", "per_client_rps", "burst",
+                         "body_bytes", "upstream_idle_seconds", "cors"})
           : wire::HasKeys(
                 policy, {"version", "listen_host", "listen_port", "server_name",
                          "upstream_port", "upstream_operations_port", "clients",
                          "allowed_client_cidrs", "per_client_inflight",
                          "global_inflight", "per_client_rps", "burst",
-                         "body_bytes", "upstream_idle_seconds", "cors"}));
+                         "body_bytes", "upstream_idle_seconds", "cors", "http"}));
   config.listen = Text(policy, "listen_host", 45);
   const auto listen = Address::Parse(config.listen);
   Require(listen.family != AF_UNSPEC);
   config.host = Text(policy, "server_name", 253);
   for (unsigned char c : config.host)
     Require((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '-' ||
-            c == '.' || (version == 3 && c == ':'));
-  if (version == 3) {
+            c == '.' || (version >= 3 && c == ':'));
+  if (version >= 3) {
     const auto* cors = policy.Find("cors");
     Require(cors && (cors->IsNull() || config.cors.Load(*cors)));
   }
+  if (version == 4) Require(config.http.Load(*policy.Find("http")));
   if (root_version >= 2) {
     const auto* tls = root.Find("tls");
     Require(tls != nullptr);
@@ -392,11 +401,15 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
   };
   const auto admit = [&] {
     if (!headers.request_id.empty()) request_id = headers.request_id;
+    ResolvedRequest resolved;
+    if (!config.http.Resolve(headers, source, path, config.tls, &resolved))
+      return reject(400, "gateway_invalid_forwarding_or_prefix");
+    path = resolved.target;
     const bool source_allowed = std::any_of(
         config.networks.begin(), config.networks.end(),
-        [&](const auto& network) { return network.Contains(source); });
+        [&](const auto& network) { return network.Contains(resolved.source); });
     if (!source_allowed) return reject(403, "gateway_source_denied");
-    if (!HostMatches(headers.host, config.host))
+    if (!HostMatches(resolved.host, config.host))
       return reject(400, "gateway_bad_request");
     if (!config.cors.Response(headers.origin, &client.extra_headers))
       return reject(403, "cors_origin_denied");
@@ -443,7 +456,8 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
   const auto interim = [&](Clock::time_point deadline) {
     return client.Send("HTTP/1.1 100 Continue\r\n\r\n", deadline);
   };
-  if (!server::ReadHttpRequest(client.Fd(), &method, &path, &body, 10000,
+  if (!server::ReadHttpRequest(client.Fd(), &method, &path, &body,
+                               config.http.request_timeout_ms,
                                &body_lease, &status, &headers, admit,
                                receive, state, interim)) {
     if (!rejected) {
@@ -602,12 +616,14 @@ int Run(const Config& config) {
                                      Clock::time_point deadline) {
               return client.Read(data, size, deadline);
             };
-            for (size_t request = 0; request < 100 && !stopped.load(); ++request) {
+            for (int request = 0; request < config.http.keep_alive_requests &&
+                                  !stopped.load(); ++request) {
               if (request && !server::AwaitHttpRequest(client.Fd(), &state,
-                                                       5000, receive)) break;
+                    config.http.keep_alive_idle_ms, receive)) break;
               started = false;
               if (!Handle(client, config, capacity, access, budget, source,
-                           &started, &state, request + 1 < 100)) break;
+                           &started, &state,
+                           request + 1 < config.http.keep_alive_requests)) break;
             }
           }
         } catch (...) {

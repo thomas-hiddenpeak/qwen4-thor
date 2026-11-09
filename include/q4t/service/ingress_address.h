@@ -1,4 +1,4 @@
-// Literal addresses only. Never trust forwarded headers for source admission.
+// Literal addresses/CIDRs only; callers establish explicit proxy trust first.
 #pragma once
 
 #include <arpa/inet.h>

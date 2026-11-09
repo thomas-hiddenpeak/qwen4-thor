@@ -49,7 +49,8 @@ NATIVE_SOURCES = frozenset(('CMakeLists.txt', 'tests/host/CMakeLists.txt',
       ('address', 'tls', 'credentials', 'cors', 'admin')),
     *('src/service/ingress_'+name+'.cpp' for name in
       ('tls', 'credentials', 'cors', 'admin')),
-    'src/server/http_request.cpp',
+    'src/server/http_request.cpp', 'include/q4t/server/http_framing.h',
+    'src/service/ingress_proxy.cpp', 'include/q4t/service/ingress_proxy.h',
     *('include/q4t/server/'+name+'.h' for name in ('http_request', 'http_listener',
         'http_observation', 'http_connection', 'model_catalog',
         'client_identity', 'serve_fault', 'application_routes'))))

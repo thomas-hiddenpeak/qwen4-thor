@@ -191,9 +191,39 @@ def cors_policy(value):
     return value
 
 
+def http_policy(value):
+    defaults = dict(keep_alive_requests=100, keep_alive_idle_seconds=5,
+                    request_timeout_seconds=10, path_prefix='', proxy=None)
+    require(type(value) is dict and value.keys() <= defaults.keys(),
+            'invalid native HTTP policy fields')
+    result = dict(defaults, **value)
+    for field, maximum in [('keep_alive_requests', 1000),
+                            ('keep_alive_idle_seconds', 60),
+                            ('request_timeout_seconds', 120)]:
+        require(type(result[field]) is int and 1 <= result[field] <= maximum,
+                'invalid HTTP limit: '+field)
+    prefix = result['path_prefix']
+    require(type(prefix) is str and len(prefix) <= 512 and (not prefix or
+        (re.fullmatch(r'(?:/[a-zA-Z0-9._~-]+)+', prefix) and
+         all(part not in ('.', '..') for part in prefix[1:].split('/')))),
+        'invalid native path prefix')
+    proxy = result['proxy']
+    if proxy is not None:
+        require(type(proxy) is dict and proxy.keys() ==
+                {'trusted_cidrs', 'header', 'allow_stripped_prefix'},
+                'invalid trusted proxy fields')
+        require(proxy['header'] in ('forwarded', 'x-forwarded') and
+                type(proxy['allow_stripped_prefix']) is bool and
+                (not proxy['allow_stripped_prefix'] or bool(prefix)),
+                'invalid trusted proxy protocol/prefix')
+        result['proxy'] = dict(proxy, trusted_cidrs=client_sources(
+            proxy['trusted_cidrs'], dual_stack=True))
+    return result
+
+
 def policy(value):
     require(isinstance(value, dict) and type(value.get('version')) is int and
-            value['version'] in (1, 2, 3), 'unsupported policy version')
+            value['version'] in (1, 2, 3, 4), 'unsupported policy version')
     required = {'version', 'listen_host', 'listen_port', 'server_name',
                 'upstream_port', 'clients'}
     if value['version'] >= 2:
@@ -201,29 +231,32 @@ def policy(value):
     require(isinstance(value, dict) and required <= value.keys() and
             value.keys() <= required | DEFAULTS.keys() |
             ({'upstream_operations_port'} if value['version'] >= 2 else set()) |
-            ({'cors'} if value['version'] == 3 else set()),
+            ({'cors'} if value['version'] >= 3 else set()) |
+            ({'http'} if value['version'] == 4 else set()),
             'unknown/missing policy field')
     value = dict(DEFAULTS, **value)
     if value['version'] >= 2:
         value['allowed_client_cidrs'] = client_sources(value['allowed_client_cidrs'],
-                                                       dual_stack=value['version'] == 3)
-    if value['version'] == 3:
+                                                       dual_stack=value['version'] >= 3)
+    if value['version'] >= 3:
         value['cors'] = cors_policy(value.get('cors'))
+    if value['version'] == 4:
+        value['http'] = http_policy(value.get('http', {}))
     require(isinstance(value['listen_host'], str), 'numeric IPv4 string required')
     try:
-        address = (ipaddress.ip_address(value['listen_host']) if value['version'] == 3 else
+        address = (ipaddress.ip_address(value['listen_host']) if value['version'] >= 3 else
                    ipaddress.IPv4Address(value['listen_host']))
     except (ValueError, TypeError):
         raise ValueError('numeric IPv4 listen_host required') from None
     private = address.version == 4 and any(address in ipaddress.IPv4Network(net) for net in
                   ('10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16'))
-    require((value['version'] == 3 and not address.is_unspecified and
+    require((value['version'] >= 3 and not address.is_unspecified and
              not address.is_multicast and '%' not in value['listen_host'] and
              str(address) == value['listen_host']) or str(address) == '127.0.0.1' or private,
             'only explicit loopback or RFC1918 interface is supported')
     name = value['server_name']
     literal_v6 = False
-    if value['version'] == 3 and isinstance(name, str):
+    if value['version'] >= 3 and isinstance(name, str):
         try:
             literal_v6 = str(ipaddress.IPv6Address(name)) == name and '%' not in name
         except ValueError:

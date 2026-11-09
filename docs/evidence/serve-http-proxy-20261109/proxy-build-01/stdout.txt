@@ -1,0 +1,33 @@
+-- GPU guard Python: /usr/bin/python3
+-- Configuring done (0.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host
+[ 16%] Built target q4t_guardian_process
+[ 50%] Built target q4t_guardian_journal
+[ 66%] Built target q4t_ingress_access
+[ 83%] Building CXX object CMakeFiles/q4t_ingress_proxy_tests.dir/home/rm01/models/dev/qwen4-thor/src/service/ingress_proxy.cpp.o
+[ 83%] Building CXX object CMakeFiles/q4t_ingress_proxy_tests.dir/home/rm01/models/dev/qwen4-thor/tests/ingress_proxy_test.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_ingress_proxy_tests.dir/home/rm01/models/dev/qwen4-thor/src/server/http_request.cpp.o
+[100%] Linking CXX executable q4t_ingress_proxy_tests
+[100%] Built target q4t_ingress_proxy_tests
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+-- Configuring done (0.1s)
+-- Generating done (0.2s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build
+[  0%] Built target q4t_guardian_process
+[ 33%] Built target q4t_guardian_journal
+[ 33%] Built target q4t_ingress_access
+[ 33%] Building CXX object CMakeFiles/q4t_ingress.dir/src/server/http_request.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_cors.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_main.cpp.o
+[ 33%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_tls.cpp.o
+[ 66%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_proxy.cpp.o
+[100%] Linking CXX executable q4t-ingress
+[100%] Built target q4t_ingress

@@ -53,3 +53,32 @@ helpers；模型真实执行留到 N05 组合短验，不重复模型数值/性�
 现有依赖这些代码的响应/观察及入口用例选择直接受影响项，执行前
 记录精确名字/数量；未改变的 reader 证据复用，若新改动影响它则
 只补受影响项。
+
+### 可信代理/前缀组（实现前冻结）
+
+原生policy v4增加独立http配置：keep_alive_requests 1..1000（默认100）、
+keep_alive_idle_seconds 1..60（默认5）、request_timeout_seconds 1..120
+（默认10）、path_prefix（默认空），proxy默认null。
+proxy显式选择`forwarded`或`x-forwarded`，列出trusted_cidrs，并声明
+是否允许前置剥离已配置prefix。v1—v3默认行为及只读旧包仍须兼容。
+
+只有直接TCP对端受信任才解释转发信息，按for链从右向左穿过受信任
+代理，到首个非受信任来源停止；未受信任前缀不能覆盖来源。API Key
+仍由原生验证，私有客户端头一律拒绝。Host按有效公用Host校验；proto
+仅接受http/https。采用X-Forwarded系列的代理须覆盖Host/Proto/Prefix
+头，不能把客户端自填值原样当授权事实；原生检查字段和配置匹配。
+未知/混乱/无法证明来源的已启用代理链拒绝，不回退成受信任代理IP。
+
+prefix只做一次有分段边界的移除，保持剩余原始编码/查询；受信任
+proxy声明X-Forwarded-Prefix且等于配置，才可选择接受已剥离路径。
+直连与前置两条路径均要通过。CPU验证覆盖双栈可信链/伪造、strict
+配置、header解析、prefix与编码/对象归属、实际原生HTTP/TLS直连与
+代理、定制超时/请求数；精确清单在组实现完成后、首次执行前冻结。
+随后补包合同和完整N05实际业务/可回退交付，不能据此删除A09上传
+对象或其他未完成任务。
+
+### 可信代理组验证结果
+
+27项（8C++/19Python与实际入口含TLS/可选CPU前置）全部通过，
+构建零警告，原件见[evidence](evidence/serve-http-proxy-20261109/README.md)。
+尚未完成发行/旧包兼容与实际模型业务，不宣称N05交付；0GPU。

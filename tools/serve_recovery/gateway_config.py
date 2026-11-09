@@ -41,7 +41,7 @@ def validate(value):
                    'recovery requires a separate operations listener')
     tls = value['tls']
     if native:
-        ledger.require(p['version'] in (2, 3), 'native ingress requires explicit CIDRs')
+        ledger.require(p['version'] in (2, 3, 4), 'native ingress requires explicit CIDRs')
     else:
         ledger.require(p['version'] in (1, 2), 'nginx profile requires legacy policy')
     if tls is None:

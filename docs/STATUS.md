@@ -1,5 +1,15 @@
 # 当前状态
 
+N05可信代理/前缀27项CPU全过（8C++/19Python含实际TLS入口与
+可选代理），构建零警告，[原件](evidence/serve-http-proxy-20261109/README.md)。0GPU/默认N04
+保持STOPPED；继续发行/旧包兼容与实际模型SDK短验、可回退交付，
+随后N07及全部总任务，不以本组代替实际业务。
+
+N05可信代理/前缀开发：原生policy v4显式可信CIDR/转发格式、静态
+prefix及有界HTTP参数，默认不信任转发头；每请求仍需API Key。
+冻结8C++/19Python与实际入口CPU含TLS/前置（共27），尚未测试，
+正在必要构建。随后包兼容/实际模型短验及交付，默认N04保持，总目标继续。
+
 N05连接/SSE 54个不同CPU通过（29host/25实际入口含TLS），首轮8
 夹具错误与仅8补验[原件保留](evidence/serve-http-session-20261109/README.md)，生产无需修正。核心及TLS入口零警告，
 0 GPU/默认N04保持STOPPED；继续可信代理/前缀、配置/发行及实际

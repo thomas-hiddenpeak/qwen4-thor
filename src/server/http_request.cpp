@@ -268,6 +268,22 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
                               ? headers->cors_method
                               : headers->cors_headers;
       destination = value;
+    } else if (name == "forwarded" || name == "x-forwarded-for" ||
+               name == "x-forwarded-host" || name == "x-forwarded-proto" ||
+               name == "x-forwarded-prefix") {
+      auto& field = name == "forwarded" ? headers->forwarded
+                    : name == "x-forwarded-for" ? headers->forwarded_for
+                    : name == "x-forwarded-host" ? headers->forwarded_host
+                    : name == "x-forwarded-proto" ? headers->forwarded_proto
+                                                  : headers->forwarded_prefix;
+      if (value.empty() || value.size() > 8192 || field.size() > 8192 - value.size())
+        return false;
+      if (!field.empty()) {
+        if ((name != "forwarded" && name != "x-forwarded-for") ||
+            field.size() == 8192 - value.size()) return false;
+        field += ',';
+      }
+      field.append(value);
     } else if (name == "content-type") {
       if (seen_type) {
         headers->error_code = "duplicate_content_type";

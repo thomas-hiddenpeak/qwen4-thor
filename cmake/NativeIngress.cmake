@@ -12,6 +12,7 @@ option(Q4T_ENABLE_NATIVE_TLS "Build optional native TLS (system OpenSSL 3)" ON)
 add_executable(q4t_ingress
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_main.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_transport.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_proxy.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_tls.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_credentials.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_cors.cpp
@@ -40,6 +41,12 @@ endif()
 target_compile_features(q4t_ingress PRIVATE cxx_std_23)
 target_compile_options(q4t_ingress PRIVATE -Wall -Wextra -Werror)
 if(NOT DEFINED Q4T_BUILD_TESTS OR Q4T_BUILD_TESTS)
+  add_executable(q4t_ingress_proxy_tests
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/ingress_proxy_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_proxy.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/http_request.cpp)
+  target_link_libraries(q4t_ingress_proxy_tests PRIVATE q4t_ingress_access)
+  target_compile_options(q4t_ingress_proxy_tests PRIVATE -Wall -Wextra -Werror)
   add_executable(q4t_ingress_access_tests
     ${CMAKE_CURRENT_LIST_DIR}/../tests/ingress_access_test.cpp)
   target_link_libraries(q4t_ingress_access_tests PRIVATE q4t_ingress_access)
