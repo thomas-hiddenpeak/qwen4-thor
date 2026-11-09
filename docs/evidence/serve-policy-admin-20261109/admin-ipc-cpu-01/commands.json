@@ -1,0 +1,10 @@
+[
+  [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_recovery.test_quota_admin"
+  ]
+]

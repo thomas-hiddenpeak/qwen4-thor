@@ -1,0 +1,20 @@
+[
+  [
+    "clang-format",
+    "--dry-run",
+    "--Werror",
+    "include/q4t/server/client_policy_admin.h",
+    "src/server/client_policy_admin.cpp",
+    "tests/client_policy_admin_fixture.cpp"
+  ],
+  [
+    "cmake",
+    "--build",
+    ".q4t-work/serve-access-20261109/host",
+    "--target",
+    "q4t_client_policy_fixture",
+    "q4t_host_tests",
+    "--parallel",
+    "4"
+  ]
+]

@@ -1,0 +1,4 @@
+[PASS] admission_client_rotation_and_per_client_oldest_eligible
+[PASS] admission_client_append_preserves_rotation_and_existing_tickets
+[PASS] admission_client_queue_share_cancel_and_idle_work_conservation
+3 tests, 3 passed, 0 failed, 0 skipped

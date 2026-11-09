@@ -23,6 +23,14 @@ target_include_directories(q4t_client_policy_check PRIVATE ../../include)
 target_compile_options(q4t_client_policy_check PRIVATE -Wall -Wextra -Werror)
 target_link_libraries(q4t_client_policy_check PRIVATE Threads::Threads)
 
+add_executable(q4t_client_policy_fixture
+  ../client_policy_admin_fixture.cpp ../../src/server/client_policy.cpp
+  ../../src/server/client_policy_admin.cpp ../../src/service/guardian_process.cpp
+  ../../src/trace/sha256.cpp ../../src/io/json.cpp)
+target_include_directories(q4t_client_policy_fixture PRIVATE ../../include)
+target_compile_options(q4t_client_policy_fixture PRIVATE -Wall -Wextra -Werror)
+target_link_libraries(q4t_client_policy_fixture PRIVATE Threads::Threads)
+
 enable_testing()
 include(../../cmake/GuardianProcess.cmake)
 include(../../cmake/NativeIngress.cmake)

@@ -1,0 +1,10 @@
+test_dead_publisher_cannot_finish_an_inherited_inflight_publication (tools.serve_recovery.test_quota_admin.QuotaAdminTests.test_dead_publisher_cannot_finish_an_inherited_inflight_publication) ... ok
+test_foreign_process_is_readonly_with_actual_peer_credentials (tools.serve_recovery.test_quota_admin.QuotaAdminTests.test_foreign_process_is_readonly_with_actual_peer_credentials) ... ok
+test_fragmented_update_preserves_usage_and_survives_management_loss (tools.serve_recovery.test_quota_admin.QuotaAdminTests.test_fragmented_update_preserves_usage_and_survives_management_loss) ... ok
+test_message_bounds_deadlines_and_ancillary_fds_do_not_leak (tools.serve_recovery.test_quota_admin.QuotaAdminTests.test_message_bounds_deadlines_and_ancillary_fds_do_not_leak) ... ok
+test_stale_invalid_capacity_token_and_callback_failures_are_atomic (tools.serve_recovery.test_quota_admin.QuotaAdminTests.test_stale_invalid_capacity_token_and_callback_failures_are_atomic) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 2.451s
+
+OK

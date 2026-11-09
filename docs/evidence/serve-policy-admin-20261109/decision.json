@@ -1,0 +1,18 @@
+{
+  "state": "PASS_PRIVATE_MODEL_POLICY_CPU_PENDING_MANAGED_INTEGRATION",
+  "targeted_tests": 8,
+  "ipc_tests": 5,
+  "queue_tests": 3,
+  "build_warnings": 0,
+  "initial_failure": "Existing Makefile did not contain the newly added target; reconfigured and rebuilt without source changes.",
+  "model_starts": 0,
+  "chat_requests": 0,
+  "default_changed": false,
+  "remaining": [
+    "managed model/controller policy synchronization",
+    "new client coordinated admission",
+    "quota recovery continuity",
+    "native TLS SDK real business and rollback-capable delivery"
+  ],
+  "all_master_tasks_continue": true
+}

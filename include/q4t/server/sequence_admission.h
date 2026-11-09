@@ -34,10 +34,15 @@ class SequenceAdmissionQueue {
   SequenceAdmissionQueue(const SequenceAdmissionQueue&) = delete;
   SequenceAdmissionQueue& operator=(const SequenceAdmissionQueue&) = delete;
   size_t Size() const { return size_; }
-  // Set once before serving, with a validated immutable client inventory.
+  // Set once before serving, with a validated initial client inventory.
   void ConfigureClients(size_t count) {
     clients_ = count;
     next_client_ = 0;
+  }
+  // Called under the queue mutex after an append-only policy publication.
+  // Existing tickets keep their slot and the next client's turn is retained.
+  void AppendClients(size_t count) noexcept {
+    if (clients_ && count >= clients_) clients_ = count;
   }
   void Granted(const Ticket& ticket) noexcept {
     if (clients_) next_client_ = (ticket.client_ + 1) % clients_;

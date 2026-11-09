@@ -1,0 +1,15 @@
+{
+  "state": "FAILED",
+  "elapsed_seconds": 0.148,
+  "results": [
+    {
+      "exit_code": 0,
+      "warnings": 0
+    },
+    {
+      "exit_code": 2,
+      "warnings": 0
+    }
+  ],
+  "error": "build or style failed"
+}

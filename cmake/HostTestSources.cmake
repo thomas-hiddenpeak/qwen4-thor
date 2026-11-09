@@ -3,6 +3,7 @@ include(${CMAKE_CURRENT_LIST_DIR}/ChatProtocolIdentity.cmake)
 set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/model_catalog.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/client_policy.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/client_policy_admin.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/client_request.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_client_policy_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/runtime_cleanup_test.cpp
