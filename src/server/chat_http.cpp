@@ -318,6 +318,8 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
                               &identity, &failure_status))
         return false;
       context.SetClient(identity, &client_lease);
+      if (IsCancellationRequest(method, path))
+        lease.SelectBudget(cancel_body_budget_);
       if (kind == HttpConnectionClass::kBusiness && stop_requested_.load()) {
         failure_status = 503;
         headers.error_code = "server_draining";
@@ -347,11 +349,11 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         return false;
       }
       admission = &counter;
-      if ((method == "POST" && !IsResponseCancellation(method, path) &&
+      if ((method == "POST" && !IsCancellationRequest(method, path) &&
           (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
            path == "/v1/completions" || IsResponsesTarget(path) ||
            IsConversationTarget(path) || IsPromptTarget(path) ||
-           IsFileTarget(path))) ||
+           IsFileTarget(path) || IsUploadTarget(path))) ||
           (method == "GET" && IsFileTarget(path) &&
            !IsFileMetadata(method, path))) {
         const auto memory = memory_admission_.Observe();
@@ -363,7 +365,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
           return false;
         }
       }
-      if (IsFileTarget(path)) {
+      if (IsFileTarget(path) || IsUploadTarget(path)) {
         if (!objects_) {
           failure_status = 503;
           headers.error_code = "object_scope_unavailable";
@@ -374,8 +376,9 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         BinaryAccess access{
             scope, std::chrono::steady_clock::now() +
                        std::chrono::milliseconds(request_deadline_ms_),
-            [this, fd] {
-              return stop_requested_.load() || detail::ClientConnectionFailed(fd);
+            [this, fd, cancellation = IsUploadCancellation(method, path)] {
+              return (!cancellation && stop_requested_.load()) ||
+                     detail::ClientConnectionFailed(fd);
             }};
         file_request = std::make_unique<FileHttpRequest>(*objects_, access);
         const auto ready = file_request->Prepare(method, path,

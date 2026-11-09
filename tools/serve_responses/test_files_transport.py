@@ -33,7 +33,7 @@ LIMIT = 512*1024**2+65536
 class Stack:
     def __init__(self, directory, certs, *, native=True, tls=True,
                  core_limit=LIMIT, edge_limit=LIMIT, legacy_core=False,
-                 legacy_edge=False, prefix=''):
+                 legacy_edge=False, prefix='', json_limit=1024):
         self.directory = directory
         directory.mkdir(mode=0o700)
         self.logs = []
@@ -48,7 +48,7 @@ class Stack:
         private = dict(base['backend_policy'], version=3 if legacy_core else 4,
                        revision=0, gateway_token=self.token)
         for client in private['clients']:
-            client['max_body_bytes'] = 1024
+            client['max_body_bytes'] = json_limit
             if not legacy_core:client['max_file_body_bytes'] = core_limit
         (directory/'policy.json').write_text(json.dumps(private))
         (directory/'policy.json').chmod(0o600)
@@ -69,7 +69,7 @@ class Stack:
             self.port = free_port()
             raw = dict(base['policy'], version=4 if legacy_edge else 5,
                 listen_port=self.port, upstream_port=ready['port'],
-                upstream_operations_port=ready['operations'], body_bytes=1024,
+                upstream_operations_port=ready['operations'], body_bytes=json_limit,
                 per_client_rps=100, burst=100, http=dict(path_prefix=prefix))
             if not legacy_edge:raw['file_body_bytes'] = edge_limit
             policy = gateway.policy(raw)

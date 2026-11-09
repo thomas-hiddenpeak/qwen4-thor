@@ -42,6 +42,34 @@ inline bool IsFileMetadata(std::string_view method, std::string_view target) {
          !path.ends_with("/content");
 }
 
+inline bool IsUploadTarget(std::string_view target) {
+  const auto path = target.substr(0, target.find('?'));
+  return path == "/v1/uploads" || path.starts_with("/v1/uploads/");
+}
+inline bool UploadMethodAllowed(std::string_view method,
+                                std::string_view target) {
+  if (method != "POST" || target.find('#') != target.npos) return false;
+  auto path = target.substr(0, target.find('?'));
+  if (path == "/v1/uploads") return true;
+  if (!path.starts_with("/v1/uploads/")) return false;
+  path.remove_prefix(12);
+  const auto slash = path.find('/');
+  if (slash == path.npos || !ValidApplicationId(path.substr(0, slash)))
+    return false;
+  const auto action = path.substr(slash);
+  return action == "/parts" || action == "/complete" || action == "/cancel";
+}
+inline bool IsUploadCancellation(std::string_view method,
+                                 std::string_view target) {
+  return UploadMethodAllowed(method, target) &&
+         target.substr(0, target.find('?')).ends_with("/cancel");
+}
+inline bool IsBinaryUpload(std::string_view method, std::string_view target) {
+  const auto path = target.substr(0, target.find('?'));
+  return (method == "POST" && path == "/v1/files") ||
+         (UploadMethodAllowed(method, target) && path.ends_with("/parts"));
+}
+
 inline bool IsResponsesTarget(std::string_view target) {
   const auto path = target.substr(0, target.find('?'));
   return path == "/v1/responses" || path.starts_with("/v1/responses/");
@@ -139,7 +167,8 @@ inline bool IsResponseCancellation(std::string_view method,
 inline bool IsCancellationRequest(std::string_view method,
                                   std::string_view target) {
   return (method == "POST" && target == "/v1/requests/cancel") ||
-         IsResponseCancellation(method, target);
+         IsResponseCancellation(method, target) ||
+         IsUploadCancellation(method, target);
 }
 
 inline bool IsResponsesObservation(std::string_view method,

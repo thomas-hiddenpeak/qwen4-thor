@@ -1,0 +1,101 @@
+{
+  "reason": "Reviewed Uploads core27 evidence, actual Files/Uploads HTTP dispatch, bounded binary route capacities and independent cancellation reservations. No model/kernel changes.",
+  "sources": {
+    "CMakeLists.txt": {
+      "previous": "ab801a60e498b12129bf7d6e2c7d0b143e992704c15e4e3642bc485a002a9f3b",
+      "current": "266e95aa11e1c3f0a7139ab48801bd45113625e20b221f20c6e90d70ae1b25ad"
+    },
+    "cmake/ChatProtocolIdentity.cmake": {
+      "previous": "258c5f2153fbcf5ba303ab6f3929b9304fea94e4e6162e298dd89f15d3b9bdeb",
+      "current": "2c9ffec8cb4bf57a13778d65de3eb903df265c5ef898817cd9fe8a62284161ba"
+    },
+    "include/q4t/server/application_routes.h": {
+      "previous": "9998a8e925039f35a3bca7b530e81f55674720862aa272395cec23e193f9d080",
+      "current": "743e6bdf954f49412d1b548dd172f5beb63b6d1cbeefbee58f1b1f5315f40aba"
+    },
+    "include/q4t/server/chat_server.h": {
+      "previous": "6a1fd424a99cd6f61687cbf04ead66efac11462ea2e3a03534ba252be225838d",
+      "current": "c9053b2df9f3b5bd6ea4cbd526cb334bebd27bcae53ac5b47dcd1b4254c66a41"
+    },
+    "include/q4t/server/files_http.h": {
+      "previous": "43fd2dab8a608b3da12a110fc89922847b03fec78c62c5fc5359fbe40c838f3e",
+      "current": "1a3e9ae8012985df4e3acd3caa1c45bf331395ad8d00048b1d03ebb34ffab720"
+    },
+    "include/q4t/server/http_request.h": {
+      "previous": "958858f2e58d5854ad0682f07503797dbc9589607bf9d80836d357b0bd2745b4",
+      "current": "407385927ca20b08fd10f7383d319f30edd9ac62a216b2d7f44932a27860dc53"
+    },
+    "include/q4t/server/native_crypto.h": {
+      "previous": "0976c2f55c5edaedfc50299db53cd2aa4dd0f0126117aa809e78eea6fa23a224",
+      "current": "1a0c8acb43c9da06cca484c7dba9819a1147354a80563bd9ffb0c0b3c49ed5d8"
+    },
+    "include/q4t/server/object_retention.h": {
+      "previous": "75aafff391e86eb2ec62706d7bf0233f62612c41e83f98c01930fd582493850b",
+      "current": "58dd242c9cacb3f6b53c2a5f0643605948d048587dd7c2a5937ea117104ec85a"
+    },
+    "include/q4t/server/object_store.h": {
+      "previous": "cfb404e83c981c57df0aba450192ff1a0952ad77c825921f8b898fd151125d73",
+      "current": "48c6b832d4b2b51626873da8db48486723a1ddd1abc0feabdbe2a86ac13506fc"
+    },
+    "include/q4t/server/uploads.h": {
+      "previous": null,
+      "current": "f80063e995a42a742bcd614b47de9ab987892f33f9697d934ce794626e6c1bb6"
+    },
+    "src/server/binary_store.cpp": {
+      "previous": "46c59ff21e6633ec5e57d5827a694788afd8be12d1bf5e733e99445ba6b74629",
+      "current": "1a359bed8aa374c82ef2d9c59cd2881910086f00ebd4609d44523c23d6cc8a01"
+    },
+    "src/server/chat_capabilities.cpp": {
+      "previous": "dd1300735ed9819a7e4a38476b9d22ade15ad87debc9cd6feb0dab50304036e5",
+      "current": "8baab78f379f6c8f4c5f03e260d92a82ed82024c5a652afe8ed9551e9806e73a"
+    },
+    "src/server/chat_http.cpp": {
+      "previous": "c86cb51e2fef129c64da3a355bab0e512a0165c914ac35afccbec814e9d1510b",
+      "current": "cb9956a65a1ca86d2266d92881273a90ba59c3dd7e2863733e83b4cac4e12e71"
+    },
+    "src/server/chat_metrics.cpp": {
+      "previous": "4fcb248a3a1f9b2ea0cf5d825bd6afc1ef1dfee34bb859ef594ece4feea8cb27",
+      "current": "9bfdbed223753fb2f6d9304e7472537ae81f31a6f619b5d2e7db42a7722e1cce"
+    },
+    "src/server/client_request.cpp": {
+      "previous": "5b60020ae66fa706ca7c9eb23b6e726d6a997136a10bfe8f02d85d90b6e0f635",
+      "current": "1e2bc36326d94d46347865c77534bc2a2608b29857be46c958e7af3f2e244fc4"
+    },
+    "src/server/files_http.cpp": {
+      "previous": "fb790e173216e6a8f20272c67e2556e1e08479cbc74b766da28df8df0c5cb50d",
+      "current": "ff724c486b34f2013747d06194086cdd11b876c347d97db2034da22ae73139ef"
+    },
+    "src/server/http_request.cpp": {
+      "previous": "01251905c5120fe61972f73c4a7cb3df36c23c48096f86fad07cee80d2ac3c04",
+      "current": "6a9633c3989b3160d09ef3da134df9c1659051bff97c43db1d82275bd9e038ac"
+    },
+    "src/server/native_crypto.cpp": {
+      "previous": "86da5a6cda4b18154f46227074d7fa68b7ec3cbb8bfcdb9a6aaff75b2c9cb8a1",
+      "current": "a5740ad331e2d6736f235c32279fd60d767f94a98925a4af83695c8b5f3c6cc4"
+    },
+    "src/server/object_retention.cpp": {
+      "previous": "b082242a28b27b1847fdef97c8cbf47f6d4724fd8443f220b1e26e256810dce2",
+      "current": "4e4355dfcaa3d76888aeea7e4e2731d930bbac2d0c4a791d213e94d788e3376a"
+    },
+    "src/server/object_store.cpp": {
+      "previous": "116f7a3037668c5ee147ce8d490f41dc15253838a63ea3579c3c302e5a998144",
+      "current": "426410b171fcba29a97e3ce36b886c0f16e8dfaefc65bf107e0e3b715e7dabe3"
+    },
+    "src/server/object_worker.cpp": {
+      "previous": "677f77ea1ae334286fa1eea447bac9b26f825c081050515fb23141cfa9542c09",
+      "current": "7f5dfc8fe711f0549de61cede5faf6a8dfa48cecd47463dd641d5fb68d39e576"
+    },
+    "src/server/uploads.cpp": {
+      "previous": null,
+      "current": "b20ff4a0ebcc7ebcb7530775b09dc95c0c1e1083e811e42a4062e8a7fbec49af"
+    },
+    "src/service/ingress_main.cpp": {
+      "previous": "2065c4c03ba0f207fa3c6baf718296193c1c0326dc76ab495e6ee77be744cf55",
+      "current": "52b7a9dca54ab655edc425aa81b7400c41a5f6ca7d7b66c5cb2bd6d6aba558ed"
+    },
+    "tools/serve_gateway/gateway.py": {
+      "previous": "dbe684a93596e82e5ef54f57ec20e7d7bf45d6aec14cdb2e6073af06dca9fecd",
+      "current": "bf27cec345bbd9cf57359f66f7cd252cd03cb4b202d4ee7f9118e96835c0ce22"
+    }
+  }
+}

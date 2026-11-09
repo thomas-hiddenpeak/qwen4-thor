@@ -367,10 +367,11 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
       server::PromptMethodAllowed(method, path) ||
       server::ResponsesMethodAllowed(method, path) ||
       server::FileMethodAllowed(method, path) ||
+      server::UploadMethodAllowed(method, path) ||
       server::StoredChatMethodAllowed(method, path)) {
     *control = server::IsResponsesObservation(method, path) ||
                server::IsPromptObservation(method, path) ||
-               server::IsResponseCancellation(method, path) ||
+               server::IsCancellationRequest(method, path) ||
                server::IsFileMetadata(method, path) ||
                server::IsStoredChatManagement(method, path);
     return true;
@@ -392,6 +393,7 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
 
 bool Handle(Connection& client, const Config& config, Capacity& capacity,
             ClientAccess& access, server::HttpBodyBudget& budget,
+            server::HttpBodyBudget& cancel_budget,
             Address source, bool* started, server::HttpRequestState* state,
             bool allow_keep_alive) {
   client.extra_headers.clear();
@@ -502,13 +504,14 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
       return reject(400, "invalid_client_header");
     if (!Route(method, path, &lease.control))
       return reject(404, "gateway_route_not_found");
-    streaming = method == "POST" && path == "/v1/files";
+    streaming = server::IsBinaryUpload(method, path);
     headers.body_limit = streaming ? config.file_body_bytes : config.body_bytes;
     if (headers.content_length > headers.body_limit)
       return reject(413, "gateway_body_too_large");
     if (method == "GET" && headers.content_length)
       return reject(400, "gateway_bad_request");
     lease.cancel = server::IsCancellationRequest(method, path);
+    if (lease.cancel) body_lease.SelectBudget(cancel_budget);
     lease.acquired =
         capacity.Acquire(lease.client, lease.control, lease.cancel);
     if (!lease.acquired) return reject(429, "gateway_rate_limit");
@@ -697,6 +700,7 @@ int Run(const Config& config) {
   Require(listeners.Open(config.listen, config.port, 0).ok());
   Capacity capacity(config);
   server::HttpBodyBudget budget(server::kAggregateChatBodyBytes);
+  server::HttpBodyBudget cancel_budget(server::kCancelBodyBudgetBytes);
   std::array<Slot, 32> slots;
   while (!stopped.load(std::memory_order_relaxed)) {
     if (credentials) credentials->Step(reload_credentials.exchange(false));
@@ -747,7 +751,8 @@ int Run(const Config& config) {
               if (request && !server::AwaitHttpRequest(client.Fd(), &state,
                     config.http.keep_alive_idle_ms, receive)) break;
               started = false;
-              if (!Handle(client, config, capacity, access, budget, source,
+              if (!Handle(client, config, capacity, access, budget, cancel_budget,
+                           source,
                            &started, &state,
                            request + 1 < config.http.keep_alive_requests)) break;
             }

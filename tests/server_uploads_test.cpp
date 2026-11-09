@@ -1,5 +1,8 @@
 #include "q4t/server/uploads.h"
 
+#include <sys/socket.h>
+#include <unistd.h>
+
 #include <barrier>
 #include <cstdlib>
 #include <ctime>
@@ -9,6 +12,10 @@
 
 #include "../src/server/object_protocol.h"
 #include "q4t/server/files.h"
+#include "q4t/server/files_http.h"
+#include "q4t/server/chat_capabilities.h"
+#include "q4t/server/http_connection.h"
+#include "q4t/server/http_response.h"
 #include "q4t/server/native_crypto.h"
 #include "q4t/server/object_retention.h"
 #include "q4t/test.h"
@@ -133,6 +140,76 @@ ObjectRequest Copy(const Json& stored) {
   request.data = *stored.Find("data");
   return request;
 }
+std::string Http(ObjectStore& objects, const std::string& wire,
+                 HttpBodyBudget* occupied = nullptr) {
+  int sockets[2];
+  if (socketpair(AF_UNIX, SOCK_STREAM | SOCK_CLOEXEC, 0, sockets))
+    throw std::runtime_error("uploads socketpair");
+  HttpBodyBudget normal(kAggregateChatBodyBytes),
+      cancel(kCancelBodyBudgetBytes);
+  std::thread server([&] {
+    detail::HttpResponseContext context(sockets[0]);
+    FileHttpRequest request(objects, Access());
+    HttpBodyLease lease(occupied ? *occupied : normal);
+    HttpBodyStream stream;
+    HttpRequestHeaders headers;
+    std::string method, target, body;
+    ObjectReply preparation;
+    int status = 400;
+    const auto admit = [&] {
+      if (IsCancellationRequest(method, target)) lease.SelectBudget(cancel);
+      preparation =
+          request.Prepare(method, target, headers.content_type, &stream);
+      headers.body_limit = request.WireLimit();
+      if (!preparation.ok()) status = preparation.http_status;
+      return preparation.ok();
+    };
+    if (ReadHttpRequest(sockets[0], &method, &target, &body, 3000, &lease,
+                        &status, &headers, admit, {}, nullptr, {}, &stream)) {
+      request.Serve(sockets[0]);
+    } else {
+      const auto* error =
+          !preparation.ok() ? &preparation : request.UploadFailure();
+      detail::SendError(sockets[0], error ? error->http_status : status,
+                        error ? error->ClientMessage() : "transport failure",
+                        {}, error ? error->ClientCode() : headers.error_code,
+                        {}, error ? error->value.GetString("allow") : "");
+    }
+    shutdown(sockets[0], SHUT_WR);
+  });
+  size_t offset = 0;
+  while (offset < wire.size()) {
+    const auto sent = send(sockets[1], wire.data() + offset,
+                           wire.size() - offset, MSG_NOSIGNAL);
+    if (sent <= 0) break;
+    offset += sent;
+  }
+  shutdown(sockets[1], SHUT_WR);
+  std::string response;
+  char buffer[4096];
+  for (;;) {
+    const auto size = recv(sockets[1], buffer, sizeof(buffer), 0);
+    if (size <= 0) break;
+    response.append(buffer, size);
+  }
+  server.join();
+  close(sockets[0]);
+  close(sockets[1]);
+  return response;
+}
+std::string Post(std::string path, std::string body,
+                 std::string type = "application/json") {
+  return "POST " + path + " HTTP/1.1\r\nHost: local\r\nContent-Length: " +
+         std::to_string(body.size()) + "\r\n" +
+         (type.empty() ? "" : "Content-Type: " + type + "\r\n") + "\r\n" + body;
+}
+Json JsonBody(const std::string& response) {
+  Json result;
+  if (!q4t::io::ParseJson(response.substr(response.find("\r\n\r\n") + 4),
+                          &result))
+    throw std::runtime_error("HTTP response JSON");
+  return result;
+}
 }  // namespace
 
 Q4T_TEST(uploads_fields_capacity_mime_defaults_and_scope) {
@@ -239,11 +316,11 @@ Q4T_TEST(uploads_subset_repeated_parts_preserve_exact_order_and_binary_bytes) {
   Q4T_CHECK(Ok(complete) &&
             Content(objects, complete.value.Find("file")->GetString("id")) ==
                 bytes + bytes);
-  Q4T_CHECK(Count(objects) == 3);  // Receipt, File, one immutable chunk.
+  Q4T_CHECK(Count(objects) == 4);  // Receipt, File, two v11-compatible chunks.
   BinaryManifest repeated{
       6, {{"chunk_1", Digest(bytes), 3}, {"chunk_1", Digest(bytes), 3}}},
       parsed;
-  Q4T_CHECK(ParseBinaryManifest(BinaryManifestJson(repeated), &parsed));
+  Q4T_CHECK(!ParseBinaryManifest(BinaryManifestJson(repeated), &parsed));
   repeated.chunks[1].sha256 = Digest("xyz");
   Q4T_CHECK(!ParseBinaryManifest(BinaryManifestJson(repeated), &parsed));
   return true;
@@ -623,5 +700,199 @@ Q4T_TEST(
   BinaryStore binary(objects);
   Q4T_CHECK(Ok(binary.Read(Access(), read, 63, &actual)) && actual == chunk &&
             Ok(binary.Close(Access(), &read)));
+  return true;
+}
+
+Q4T_TEST(uploads_http_actual_json_multipart_completion_and_schema_output) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  auto created = Http(objects, Post("/v1/uploads", OutputJson(Body())));
+  Q4T_CHECK(created.starts_with("HTTP/1.1 200 "));
+  const auto upload = JsonBody(created);
+  const auto id = upload.GetString("id");
+  auto part = Http(objects, Post("/v1/uploads/" + id + "/parts", Wire("abc"),
+                                 "multipart/form-data; boundary=p"));
+  Q4T_CHECK(part.starts_with("HTTP/1.1 200 "));
+  const auto part_value = JsonBody(part);
+  auto completed = Http(
+      objects,
+      Post("/v1/uploads/" + id + "/complete",
+           std::string(6000, ' ') +
+               OutputJson(CompleteBody({part_value.GetString("id")},
+                                       "900150983cd24fb0d6963f7d28e17f72"))));
+  Q4T_CHECK(completed.starts_with("HTTP/1.1 200 "));
+  const auto value = JsonBody(completed);
+  Q4T_CHECK(Content(objects, value.Find("file")->GetString("id")) == "abc");
+  Uploads uploads(objects);
+  const auto cancelled_id = Create(uploads, Body());
+  const auto cancelled =
+      Http(objects, Post("/v1/uploads/" + cancelled_id + "/cancel", "", ""));
+  Q4T_CHECK(cancelled.starts_with("HTTP/1.1 200 ") &&
+            JsonBody(cancelled).GetString("status") == "cancelled");
+  Json capabilities;
+  Q4T_CHECK(q4t::io::ParseJson(ChatCapabilitiesJson("m", false, true),
+                               &capabilities));
+  const auto* upload_caps = capabilities.Find("uploads");
+  Q4T_CHECK(upload_caps &&
+            upload_caps->GetInt("max_part_bytes") ==
+                static_cast<int64_t>(kUploadPartBytes) &&
+            upload_caps->GetInt("expires_seconds") == 3600 &&
+            !upload_caps->GetBool("core_readiness_dependency", true));
+  const auto* output = std::getenv("Q4T_TEST_OUTPUT_DIR");
+  const auto root = fs::absolute(output ? output : ".q4t-work/uploads-cpu");
+  fs::create_directories(root);
+  std::ofstream file(root / "uploads-contract.json");
+  file << OutputJson(Object({{"created", upload},
+                             {"part", part_value},
+                             {"completed", value},
+                             {"cancelled", JsonBody(cancelled)},
+                             {"capabilities", capabilities}}));
+  Q4T_CHECK(file.good());
+  return true;
+}
+
+Q4T_TEST(
+    uploads_http_rejects_invalid_routes_fields_and_complete_mime_truncation) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  Uploads uploads(objects);
+  const auto id = Create(uploads, Body());
+  for (const auto& [wire, status] :
+       {std::pair{
+            std::string("GET /v1/uploads HTTP/1.1\r\nHost: local\r\n\r\n"),
+            405},
+        {Post("/v1/uploads/" + id, "{}"), 404},
+        {Post("/v1/uploads?x=1", OutputJson(Body())), 400},
+        {Post("/v1/uploads", OutputJson(Body()), "text/plain"), 415},
+        {Post("/v1/uploads", "null"), 400},
+        {Post("/v1/uploads", "{\"bytes\":3,\"bytes\":4}"), 400},
+        {Post("/v1/uploads/" + id + "/cancel", "{\"ignored\":true}"), 400},
+        {Post("/v1/uploads/" + id + "/cancel", "{}", ""), 415}}) {
+    const auto response = Http(objects, wire);
+    Q4T_CHECK(response.starts_with("HTTP/1.1 " + std::to_string(status) + " "));
+    if (status == 405) Q4T_CHECK(response.find("Allow: POST") != response.npos);
+  }
+  const auto body = Wire("abc");
+  char size[32];
+  std::snprintf(size, sizeof(size), "%zx", body.size());
+  const auto request =
+      "POST /v1/uploads/" + id +
+      "/parts HTTP/1.1\r\nHost: local\r\nTransfer-Encoding: chunked\r\n"
+      "Content-Type: multipart/form-data; boundary=p\r\n\r\n" +
+      size + "\r\n" + body + "\r\n0\r\nContent-Length: 0\r\n\r\n";
+  Q4T_CHECK(Http(objects, request).starts_with("HTTP/1.1 400 "));
+  auto stored = objects.Execute(Request(id), Access().deadline);
+  Q4T_CHECK(stored.value.Find("data")->GetArray("parts")->array.empty());
+  return true;
+}
+
+Q4T_TEST(
+    uploads_cancel_works_with_full_data_memory_and_lease_is_not_transferable) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  Uploads uploads(objects);
+  const auto id = Create(uploads, Body());
+  HttpBodyBudget data(kAggregateChatBodyBytes), spare(kCancelBodyBudgetBytes);
+  HttpBodyLease holder(data);
+  Q4T_CHECK(holder.Acquire(kAggregateChatBodyBytes) &&
+            !holder.SelectBudget(spare));
+  Q4T_CHECK(data.Used() == kAggregateChatBodyBytes && spare.Used() == 0);
+  const auto denied = Http(objects,
+                           Post("/v1/uploads/" + id + "/parts", Wire("abc"),
+                                "multipart/form-data; boundary=p"),
+                           &data);
+  Q4T_CHECK(denied.starts_with("HTTP/1.1 503 ") &&
+            JsonBody(denied).Find("error")->GetString("code") ==
+                "body_capacity_exhausted");
+  const auto cancelled =
+      Http(objects, Post("/v1/uploads/" + id + "/cancel", "{}"), &data);
+  Q4T_CHECK(cancelled.starts_with("HTTP/1.1 200 ") &&
+            JsonBody(cancelled).GetString("status") == "cancelled" &&
+            data.Used() == kAggregateChatBodyBytes);
+  for (const auto& path :
+       {"/v1/uploads", "/v1/uploads/upload_x/parts",
+        "/v1/uploads/upload_x/complete", "/v1/uploads/upload_x/cancel"})
+    Q4T_CHECK(UploadMethodAllowed("POST", path));
+  Q4T_CHECK(ClassifyHttpConnection("POST", "/v1/uploads/upload_x/cancel") ==
+                HttpConnectionClass::kControl &&
+            ClassifyHttpConnection("POST", "/v1/uploads/upload_x/parts") ==
+                HttpConnectionClass::kBusiness);
+  Q4T_CHECK(!UploadMethodAllowed("POST", "/v1/uploads/upload_x//parts") &&
+            !IsBinaryUpload("POST", "/v1/uploads/upload_x/complete") &&
+            !IsUploadCancellation("GET", "/v1/uploads/upload_x/cancel"));
+  return true;
+}
+
+Q4T_TEST(uploads_repeated_part_checksum_failure_reclaims_only_private_copies) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  Uploads uploads(objects);
+  const auto id = Create(uploads, Body(6));
+  const auto part = Add(objects, id, "abc");
+  const auto bad = uploads.Complete(
+      Access(), id, CompleteBody({part, part}, std::string(32, '0')));
+  Q4T_CHECK(bad.code == "invalid_request" &&
+            bad.value.GetString("param") == "md5");
+  Q4T_CHECK(Count(objects) == 3 &&
+            uploads.Retrieve(Access(), id).value.GetString("status") ==
+                "pending");
+  const auto complete =
+      uploads.Complete(Access(), id, CompleteBody({part, part}));
+  Q4T_CHECK(Ok(complete) &&
+            Content(objects, complete.value.Find("file")->GetString("id")) ==
+                "abcabc");
+  return true;
+}
+
+Q4T_TEST(
+    uploads_repeated_part_quota_failure_does_not_publish_or_drop_original) {
+  Fixture fixture;
+  fixture.options.max_client_objects = 4;
+  ObjectStore objects(fixture.options);
+  Uploads uploads(objects);
+  const auto id = Create(uploads, Body(6));
+  const auto part = Add(objects, id, "abc");
+  const auto result =
+      uploads.Complete(Access(), id, CompleteBody({part, part}));
+  Q4T_CHECK(result.http_status == 429 && !result.commit_unknown &&
+            Count(objects) == 3);
+  Q4T_CHECK(uploads.Retrieve(Access(), id).value.GetString("status") ==
+                "pending" &&
+            Ok(objects.Execute(Request(part), Access().deadline)) &&
+            Files(objects)
+                .List(Access(), Object())
+                .value.GetArray("data")
+                ->array.empty());
+  return true;
+}
+
+Q4T_TEST(uploads_legacy_manifest_emits_private_store_for_old_bundle_check) {
+  Fixture fixture;
+  std::string id;
+  {
+    ObjectStore objects(fixture.options);
+    Uploads uploads(objects);
+    const auto upload = Create(uploads, Body(6));
+    const auto part = Add(objects, upload, "abc");
+    const auto completed =
+        uploads.Complete(Access(), upload, CompleteBody({part, part}));
+    Q4T_CHECK(Ok(completed));
+    id = completed.value.Find("file")->GetString("id");
+    Q4T_CHECK(Content(objects, id) == "abcabc");
+    // Remove only this test receipt so the old runtime can independently
+    // validate the published File/chunks without unknown Upload root formats.
+    Q4T_CHECK(Ok(objects.Execute(Request(upload, ObjectOperation::kErase),
+                                 Access().deadline)));
+    Q4T_CHECK(Count(objects) == 3);
+  }
+  const auto* output = std::getenv("Q4T_TEST_OUTPUT_DIR");
+  auto root = fs::absolute(output ? output : ".q4t-work/uploads-cpu");
+  fs::create_directories(root);
+  std::ofstream receipt(root / "uploads-legacy-store.json");
+  receipt << OutputJson(
+      Object({{"directory", String(fixture.options.directory)},
+              {"file_id", String(id)},
+              {"content_sha256", String(Digest("abcabc"))}}));
+  Q4T_CHECK(receipt.good());
   return true;
 }

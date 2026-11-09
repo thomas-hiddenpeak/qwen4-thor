@@ -1537,6 +1537,312 @@
         "x-q4t-storage": "Private bounded chunks, isolated filesystem worker, atomic publication; no automatic upload replay"
       }
     },
+    "/v1/uploads": {
+      "post": {
+        "operationId": "post_v1_uploads",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/upload_create"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/upload_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Client-scoped durable Upload; parts retain original IDs, completion verifies actual bytes and atomically publishes File.",
+        "x-q4t-limits": {
+          "upload_bytes": 8589934592,
+          "part_bytes": 67108864,
+          "part_wire_bytes": 67174400,
+          "parts_per_upload": 8192,
+          "manifest_chunks": 16384,
+          "upload_lifetime_seconds": 3600,
+          "receipt_grace_seconds": 86400,
+          "json_wire_bytes": 16384,
+          "storage_quota_separate": true
+        },
+        "x-q4t-recovery": "Unknown receipt retains original IDs. Matching complete parameters reconcile the original File without replay. Cancel/expiry release unfinished parts; completed File retains its own lifetime."
+      }
+    },
+    "/v1/uploads/{upload_id}/parts": {
+      "post": {
+        "operationId": "post_v1_uploads_upload_id_parts",
+        "parameters": [
+          {
+            "name": "upload_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/upload_part_create"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/upload_part_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Client-scoped durable Upload; parts retain original IDs, completion verifies actual bytes and atomically publishes File.",
+        "x-q4t-limits": {
+          "upload_bytes": 8589934592,
+          "part_bytes": 67108864,
+          "part_wire_bytes": 67174400,
+          "parts_per_upload": 8192,
+          "manifest_chunks": 16384,
+          "upload_lifetime_seconds": 3600,
+          "receipt_grace_seconds": 86400,
+          "json_wire_bytes": 16384,
+          "storage_quota_separate": true
+        },
+        "x-q4t-recovery": "Unknown receipt retains original IDs. Matching complete parameters reconcile the original File without replay. Cancel/expiry release unfinished parts; completed File retains its own lifetime."
+      }
+    },
+    "/v1/uploads/{upload_id}/complete": {
+      "post": {
+        "operationId": "post_v1_uploads_upload_id_complete",
+        "parameters": [
+          {
+            "name": "upload_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/upload_complete"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/upload_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Client-scoped durable Upload; parts retain original IDs, completion verifies actual bytes and atomically publishes File.",
+        "x-q4t-limits": {
+          "upload_bytes": 8589934592,
+          "part_bytes": 67108864,
+          "part_wire_bytes": 67174400,
+          "parts_per_upload": 8192,
+          "manifest_chunks": 16384,
+          "upload_lifetime_seconds": 3600,
+          "receipt_grace_seconds": 86400,
+          "json_wire_bytes": 2097152,
+          "storage_quota_separate": true
+        },
+        "x-q4t-recovery": "Unknown receipt retains original IDs. Matching complete parameters reconcile the original File without replay. Cancel/expiry release unfinished parts; completed File retains its own lifetime."
+      }
+    },
+    "/v1/uploads/{upload_id}/cancel": {
+      "post": {
+        "operationId": "post_v1_uploads_upload_id_cancel",
+        "parameters": [
+          {
+            "name": "upload_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/upload_cancel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/upload_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Client-scoped durable Upload; parts retain original IDs, completion verifies actual bytes and atomically publishes File.",
+        "x-q4t-limits": {
+          "upload_bytes": 8589934592,
+          "part_bytes": 67108864,
+          "part_wire_bytes": 67174400,
+          "parts_per_upload": 8192,
+          "manifest_chunks": 16384,
+          "upload_lifetime_seconds": 3600,
+          "receipt_grace_seconds": 86400,
+          "json_wire_bytes": 16384,
+          "storage_quota_separate": true
+        },
+        "x-q4t-recovery": "Unknown receipt retains original IDs. Matching complete parameters reconcile the original File without replay. Cancel/expiry release unfinished parts; completed File retains its own lifetime."
+      }
+    },
     "/v1/prompts": {
       "post": {
         "operationId": "post_v1_prompts",
@@ -3401,7 +3707,8 @@
         "conversations",
         "application_items",
         "stored_chat",
-        "files"
+        "files",
+        "uploads"
       ],
       "limits": [
         "data/control inflight",

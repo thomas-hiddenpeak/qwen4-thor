@@ -260,8 +260,10 @@ void ChatServer::HandleMetrics(int fd) {
   gauge("q4t_operations_control_connections",
         "Operations control connections (limit 4).",
         operations_control_conns_.load());
-  gauge("q4t_request_body_bytes", "Reserved chat body bytes (48 MiB cap).",
+  gauge("q4t_request_body_bytes", "Reserved application body bytes (48 MiB cap).",
         body_budget_.Used());
+  gauge("q4t_cancel_body_bytes", "Reserved cancellation bytes (32 MiB cap).",
+        cancel_body_budget_.Used());
   gauge("q4t_active_chats", "Admitted chat/preflight through output cleanup.",
         active_chats_.load());
   gauge("q4t_queued_requests", "Slot waiters, excluding preprocessing.",

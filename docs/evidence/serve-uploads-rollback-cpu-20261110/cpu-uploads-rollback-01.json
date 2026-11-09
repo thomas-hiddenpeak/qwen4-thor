@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "env",
+    "Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-uploads-20261110/rollback-state-01",
+    ".q4t-work/serve-access-20261109/host/q4t_host_tests",
+    "--required-list",
+    ".q4t-work/serve-uploads-20261110/required-rollback.txt"
+  ],
+  "exit_code": 0,
+  "seconds": 0.4144285870715976
+}

@@ -17,6 +17,7 @@ namespace q4t::server {
 
 inline constexpr size_t kChatBodyBytes = 16 * 1024 * 1024;
 inline constexpr size_t kAggregateChatBodyBytes = 48 * 1024 * 1024;
+inline constexpr size_t kCancelBodyBudgetBytes = 32 * 1024 * 1024;
 
 inline bool ValidHttpRequestId(std::string_view id) {
   if (id.empty() || id.size() > 128) return false;
@@ -81,23 +82,29 @@ class HttpBodyBudget {
 
 class HttpBodyLease {
  public:
-  explicit HttpBodyLease(HttpBodyBudget& budget) : budget_(budget) {}
-  ~HttpBodyLease() { budget_.Release(bytes_); }
+  explicit HttpBodyLease(HttpBodyBudget& budget) : budget_(&budget) {}
+  ~HttpBodyLease() { budget_->Release(bytes_); }
   HttpBodyLease(const HttpBodyLease&) = delete;
   HttpBodyLease& operator=(const HttpBodyLease&) = delete;
+  // Trusted route admission selects a reserved partition before any body work.
+  bool SelectBudget(HttpBodyBudget& budget) {
+    if (bytes_) return false;
+    budget_ = &budget;
+    return true;
+  }
   bool Acquire(size_t bytes) {
-    if (bytes_ || !budget_.Acquire(bytes)) return false;
+    if (bytes_ || !budget_->Acquire(bytes)) return false;
     bytes_ = bytes;
     return true;
   }
   bool GrowTo(size_t bytes) {
-    if (bytes < bytes_ || !budget_.Acquire(bytes - bytes_)) return false;
+    if (bytes < bytes_ || !budget_->Acquire(bytes - bytes_)) return false;
     bytes_ = bytes;
     return true;
   }
 
  private:
-  HttpBodyBudget& budget_;
+  HttpBodyBudget* budget_;
   size_t bytes_ = 0;
 };
 

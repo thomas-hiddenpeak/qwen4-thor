@@ -1537,6 +1537,312 @@
         "x-q4t-storage": "Private bounded chunks, isolated filesystem worker, atomic publication; no automatic upload replay"
       }
     },
+    "/v1/uploads": {
+      "post": {
+        "operationId": "post_v1_uploads",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/upload_create"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/upload_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Client-scoped durable Upload; parts retain original IDs, completion verifies actual bytes and atomically publishes File.",
+        "x-q4t-limits": {
+          "upload_bytes": 8589934592,
+          "part_bytes": 67108864,
+          "part_wire_bytes": 67174400,
+          "parts_per_upload": 8192,
+          "manifest_chunks": 16384,
+          "upload_lifetime_seconds": 3600,
+          "receipt_grace_seconds": 86400,
+          "json_wire_bytes": 16384,
+          "storage_quota_separate": true
+        },
+        "x-q4t-recovery": "Unknown receipt retains original IDs. Matching complete parameters reconcile the original File without replay. Cancel/expiry release unfinished parts; completed File retains its own lifetime."
+      }
+    },
+    "/v1/uploads/{upload_id}/parts": {
+      "post": {
+        "operationId": "post_v1_uploads_upload_id_parts",
+        "parameters": [
+          {
+            "name": "upload_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/upload_part_create"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/upload_part_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Client-scoped durable Upload; parts retain original IDs, completion verifies actual bytes and atomically publishes File.",
+        "x-q4t-limits": {
+          "upload_bytes": 8589934592,
+          "part_bytes": 67108864,
+          "part_wire_bytes": 67174400,
+          "parts_per_upload": 8192,
+          "manifest_chunks": 16384,
+          "upload_lifetime_seconds": 3600,
+          "receipt_grace_seconds": 86400,
+          "json_wire_bytes": 16384,
+          "storage_quota_separate": true
+        },
+        "x-q4t-recovery": "Unknown receipt retains original IDs. Matching complete parameters reconcile the original File without replay. Cancel/expiry release unfinished parts; completed File retains its own lifetime."
+      }
+    },
+    "/v1/uploads/{upload_id}/complete": {
+      "post": {
+        "operationId": "post_v1_uploads_upload_id_complete",
+        "parameters": [
+          {
+            "name": "upload_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/upload_complete"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/upload_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Client-scoped durable Upload; parts retain original IDs, completion verifies actual bytes and atomically publishes File.",
+        "x-q4t-limits": {
+          "upload_bytes": 8589934592,
+          "part_bytes": 67108864,
+          "part_wire_bytes": 67174400,
+          "parts_per_upload": 8192,
+          "manifest_chunks": 16384,
+          "upload_lifetime_seconds": 3600,
+          "receipt_grace_seconds": 86400,
+          "json_wire_bytes": 2097152,
+          "storage_quota_separate": true
+        },
+        "x-q4t-recovery": "Unknown receipt retains original IDs. Matching complete parameters reconcile the original File without replay. Cancel/expiry release unfinished parts; completed File retains its own lifetime."
+      }
+    },
+    "/v1/uploads/{upload_id}/cancel": {
+      "post": {
+        "operationId": "post_v1_uploads_upload_id_cancel",
+        "parameters": [
+          {
+            "name": "upload_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/upload_cancel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/upload_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Client-scoped durable Upload; parts retain original IDs, completion verifies actual bytes and atomically publishes File.",
+        "x-q4t-limits": {
+          "upload_bytes": 8589934592,
+          "part_bytes": 67108864,
+          "part_wire_bytes": 67174400,
+          "parts_per_upload": 8192,
+          "manifest_chunks": 16384,
+          "upload_lifetime_seconds": 3600,
+          "receipt_grace_seconds": 86400,
+          "json_wire_bytes": 16384,
+          "storage_quota_separate": true
+        },
+        "x-q4t-recovery": "Unknown receipt retains original IDs. Matching complete parameters reconcile the original File without replay. Cancel/expiry release unfinished parts; completed File retains its own lifetime."
+      }
+    },
     "/v1/prompts": {
       "post": {
         "operationId": "post_v1_prompts",
@@ -3401,7 +3707,8 @@
         "conversations",
         "application_items",
         "stored_chat",
-        "files"
+        "files",
+        "uploads"
       ],
       "limits": [
         "data/control inflight",
@@ -10737,7 +11044,7 @@
         }
       },
       "serve-application-v1.schema.json": {
-        "title": "Q4T Chat, Responses, Conversations and Files wire contract",
+        "title": "Q4T Chat, Responses, Conversations, Files and Uploads wire contract",
         "$defs": {
           "0": {
             "anyOf": [
@@ -26938,6 +27245,197 @@
             ],
             "additionalProperties": false
           },
+          "upload_resource": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "object": {
+                "const": "upload"
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 8589934592
+              },
+              "created_at": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "expires_at": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "filename": {
+                "type": "string",
+                "minLength": 1
+              },
+              "purpose": {
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "pending",
+                  "completed",
+                  "cancelled",
+                  "expired"
+                ]
+              },
+              "file": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/file_resource"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "object",
+              "bytes",
+              "created_at",
+              "expires_at",
+              "filename",
+              "purpose",
+              "status"
+            ],
+            "additionalProperties": false
+          },
+          "upload_part_resource": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "object": {
+                "const": "upload.part"
+              },
+              "created_at": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "upload_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              }
+            },
+            "required": [
+              "id",
+              "object",
+              "created_at",
+              "upload_id"
+            ],
+            "additionalProperties": false
+          },
+          "upload_create": {
+            "type": "object",
+            "properties": {
+              "bytes": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 8589934592
+              },
+              "filename": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1024
+              },
+              "mime_type": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 255
+              },
+              "purpose": {
+                "enum": [
+                  "assistants",
+                  "batch",
+                  "fine-tune",
+                  "vision",
+                  "user_data",
+                  "evals"
+                ]
+              },
+              "expires_after": {
+                "type": "object",
+                "properties": {
+                  "anchor": {
+                    "const": "created_at"
+                  },
+                  "seconds": {
+                    "type": "integer",
+                    "minimum": 3600,
+                    "maximum": 2592000
+                  }
+                },
+                "required": [
+                  "anchor",
+                  "seconds"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "bytes",
+              "filename",
+              "mime_type",
+              "purpose"
+            ],
+            "additionalProperties": false
+          },
+          "upload_complete": {
+            "type": "object",
+            "properties": {
+              "part_ids": {
+                "type": "array",
+                "maxItems": 8192,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[A-Za-z0-9_-]+$"
+                }
+              },
+              "md5": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{32}$"
+              }
+            },
+            "required": [
+              "part_ids"
+            ],
+            "additionalProperties": false
+          },
+          "upload_cancel": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "upload_part_create": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "string",
+                "format": "binary"
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "additionalProperties": false
+          },
           "item_include_query": {
             "type": "object",
             "properties": {
@@ -29004,7 +29502,9 @@
             "src/resources/responses/input-tokens.ts": "edf13a3dc0ca452600aeb84c5b22dc0f842c9c2f59b148eb95581dfc1cce35d8",
             "src/resources/responses/responses.ts": "f84e394bf08d71403c054ccb4d41d278861f2d19db3ea426e7aec789f3eb5dbb",
             "src/resources/shared.ts": "15cf6803634242502525c52098acddea16b9c2bb2439f85aa388dd43fa837455",
-            "src/resources/files.ts": "ca78d34f73bef9a683b5fb2bbeb57af219478027b54ee243b611a1d4a12e04d7"
+            "src/resources/files.ts": "ca78d34f73bef9a683b5fb2bbeb57af219478027b54ee243b611a1d4a12e04d7",
+            "src/resources/uploads/uploads.ts": "53450b5df300f270948be9d9a4b395518da3bc9d1767c1d740ac5cbfa9d7aaf8",
+            "src/resources/uploads/parts.ts": "c32650dd5cae8a377915533d12dcbab8835e47e875b6162107664a8887ab3136"
           },
           "license_sha256": "636eb7d79da9bb6d515a4b3fd417aa26679eb3cf16396ddab4bc55fa74e616e4",
           "compiler_sha256": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675",

@@ -71,6 +71,7 @@ int FilesApiFixture(int argc, char** argv) {
         << "{\"port\":" << ports[0] << ",\"operations\":" << ports[1]
         << ",\"pid\":" << getpid() << "}\n";
     HttpBodyBudget budget(kAggregateChatBodyBytes);
+    HttpBodyBudget cancel_budget(kCancelBodyBudgetBytes);
     std::atomic<int> active{0};
     std::atomic<bool> stopping{false};
     std::vector<std::thread> workers;
@@ -123,13 +124,16 @@ int FilesApiFixture(int argc, char** argv) {
                   headers.client_id = "beta";
                 if (!headers.client_id.empty()) headers.gateway_token = token;
               }
-              if (operations && !IsFileMetadata(method, target)) {
+              if (operations && !IsFileMetadata(method, target) &&
+                  !IsUploadCancellation(method, target)) {
                 failure = 404;
                 return false;
               }
               if (!AdmitClientRequest(method, target, &headers, clients,
                                       &client_lease, &identity, &failure))
                 return false;
+              if (IsCancellationRequest(method, target))
+                body_lease.SelectBudget(cancel_budget);
               BinaryAccess access{"client:" + std::string(identity.Id()),
                                   Clock::now() + 30s,
                                   [&] { return stopping.load(); }};

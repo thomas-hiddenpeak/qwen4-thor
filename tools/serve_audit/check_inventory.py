@@ -64,7 +64,7 @@ def current_surface(root):
                  ("GET", "/v1/responses/{response_id}/input_items")]
     routes.extend((path, method) for method, path in responses)
     if 'server::IsResponsesObservation(method, path)' not in native or \
-            'server::IsResponseCancellation(method, path)' not in native or \
+            'server::IsCancellationRequest(method, path)' not in native or \
             'path.substr(end) == "/cancel"' not in application_routes:
         raise ValueError("review Responses cancellation/control route extractor")
     native_routes.append(("POST", "/v1/responses", "false"))
@@ -114,6 +114,20 @@ def current_surface(root):
     # its actual dispatcher exists; common parsing alone is not API support.
     if 'server::FileMethodAllowed(method, path)' in native:
         native_routes.extend((method, path, "false") for method, path in files)
+    if 'IsUploadTarget(path)' in dispatch:
+        http = (root / 'src/server/files_http.cpp').read_text()
+        if 'PrepareUpload(method, target' not in http or \
+                'uploads.Complete(access_, id_, body)' not in http or \
+                'uploads.Cancel(access_, id_)' not in http or \
+                'part_->Finish()' not in http:
+            raise ValueError('review actual Uploads handlers before cataloguing')
+        uploads = [('POST', '/v1/uploads'),
+                   *(('POST', '/v1/uploads/{upload_id}/' + action)
+                     for action in ('parts', 'complete', 'cancel'))]
+        routes.extend((path, method) for method, path in uploads)
+        if 'server::UploadMethodAllowed(method, path)' in native:
+            native_routes.extend((method, path, 'true' if path.endswith('/cancel')
+                                  else 'false') for method, path in uploads)
     if 'if (method == "OPTIONS")' in native:
         if 'config.cors.Preflight(' not in native:
             raise ValueError("review native OPTIONS handler before cataloguing")
@@ -128,7 +142,7 @@ def current_surface(root):
                  "conversation_api.cpp", "responses_plan.cpp", "responses_api.cpp",
                  "responses_tokens.cpp",
                  "chat_storage.cpp", "prompt_api.cpp", "prompt_template.cpp",
-                 "moderation.cpp", "access_program.cpp", "files.cpp"):
+                 "moderation.cpp", "access_program.cpp", "files.cpp", "uploads.cpp"):
         source = (root / "src/server" / file).read_text()
         for index, item in enumerate(re.finditer(
                 r'(?:Input)?Fields\(\s*([^,]+),\s*\{([^}]+)\}', source)):

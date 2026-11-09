@@ -1,5 +1,11 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+A09.4 [重复Part回退兼容7项CPU及实际旧包检查通过](evidence/serve-uploads-rollback-cpu-20261110/README.md)：恢复旧v1 manifest唯一块合同，重复内容独立计费；旧v11实际读取无uncertain且记录SHA保持，构建零警告。HTTP/TLS未变证据复用，0GPU、默认6a7404c7保持STOPPED；继续真实业务/发行和全部总目标。
+
+A09.4 [HTTP/TLS 16 C++与11 Python通过](evidence/serve-uploads-http-cpu-20261110/README.md)，官方SDK两链各32实际请求/17MiB，满载取消与断流不发布通过，构建零警告。发行审查发现重复Part的新manifest与旧v11不兼容，已改为独立计费副本并恢复原v1 parser，冻结7项CPU与1次实际旧包离线inspect；只重验影响项。默认6a7404c7/STOPPED，0GPU，后续业务/发行及全部总目标继续。
+
+A09.4 Uploads原生HTTP/TLS、发现/schema与SDK实链已成组开发，冻结16 C++、3合同与7实网Python，加1既有原生取消检查。修复共享body预算耗尽阻断取消的边界，取消独立32MiB有界预留；文件限额仅用于Files/Part，JSON仍受普通限额。开始独立host/引擎/原生入口必要构建，尚未测试，0GPU、默认v11保持STOPPED；通过后继续适用业务与发行及全部任务。
+
 A09.4 [Uploads生命周期27项CPU通过](evidence/serve-uploads-core-cpu-20261110/README.md)，19.588秒，host零警告。64MiB/8并发/顺序MD5/取消到期/三类未知回执与受影响存储加密通过；首缺头文件构建原件保留。0GPU、默认6a7404c7保持STOPPED；继续原生HTTP/TLS/实际SDK、发行及全部总目标。
 
 A09.4 Uploads持久生命周期已成组开发，冻结27项针对性CPU：15新增含64MiB边界/并行分块/顺序与MD5/取消到期/三类未知回执，以及12受影响存储、留存、加密与Files用例。复用隔离worker，原子生成File和提交前到期校验；没有新增外部服务。先独立必要host构建，尚未测试/GPU，默认v11保持STOPPED；随后接原生HTTP/TLS、SDK与发行，再继续全部总目标。

@@ -229,6 +229,49 @@ Q4T_TEST(client_file_admission_separates_json_and_exact_upload_route) {
   return true;
 }
 
+Q4T_TEST(client_upload_parts_use_file_limit_and_cancel_reserved_lane) {
+  ClientAdmission current, old;
+  Q4T_CHECK(current.Configure(FilePolicy()));
+  Q4T_CHECK(old.Configure(DynamicPolicy(3, 100)));
+  for (auto* admission : {&current, &old}) {
+    for (const auto* path : {"/v1/uploads", "/v1/uploads/upload_x/parts",
+                             "/v1/uploads/upload_x/complete",
+                             "/v1/uploads/upload_x/parts/extra"}) {
+      HttpRequestHeaders headers;
+      headers.client_id = "alpha";
+      headers.gateway_token = kSecret;
+      headers.content_length = 17ULL << 20;
+      ClientLease lease;
+      ClientIdentity identity;
+      int status = 0;
+      const bool allowed = AdmitClientRequest(
+          "POST", path, &headers, *admission, &lease, &identity, &status);
+      const bool part = admission == &current &&
+                        std::string_view(path) == "/v1/uploads/upload_x/parts";
+      Q4T_CHECK(allowed == part);
+      if (!allowed) Q4T_CHECK(status == 413);
+    }
+  }
+  const auto identity = current.Authenticate("alpha", kSecret);
+  std::vector<std::unique_ptr<ClientLease>> holders;
+  for (unsigned i = 0; i < identity.Limits()->max_inflight; ++i) {
+    auto lease = std::make_unique<ClientLease>();
+    Q4T_CHECK(lease->Acquire(current, identity, ClientLane::kData));
+    holders.push_back(std::move(lease));
+  }
+  HttpRequestHeaders headers;
+  headers.client_id = "alpha";
+  headers.gateway_token = kSecret;
+  ClientLease cancel;
+  ClientIdentity admitted;
+  int status = 0;
+  Q4T_CHECK(AdmitClientRequest("POST", "/v1/uploads/upload_x/cancel", &headers,
+                               current, &cancel, &admitted, &status));
+  Q4T_CHECK(current.Usage(0).cancel_active == 1 &&
+            current.RateUsage(0).requests == 0);
+  return true;
+}
+
 Q4T_TEST(client_file_chunked_cannot_bypass_current_or_legacy_limit) {
   for (const auto bytes : {2048, 2049}) {
     for (const bool legacy : {false, true}) {

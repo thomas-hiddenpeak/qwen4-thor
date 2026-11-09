@@ -339,6 +339,7 @@ class ChatServer {
   // in the AllocSeqId queue at once, so a connection flood cannot spawn
   // unbounded threads. Excess connections are refused (503) to shed load.
   HttpBodyBudget body_budget_{kAggregateChatBodyBytes};
+  HttpBodyBudget cancel_body_budget_{kCancelBodyBudgetBytes};
   std::atomic<int> active_chats_{0};
   std::atomic<int> active_conns_{0};
   std::atomic<int> public_conns_{0};

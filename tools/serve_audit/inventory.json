@@ -5,23 +5,23 @@
   "meaning": "Surface inventory only; every row retains explicit limitations. Source drift requires renewed review, not blind hash refresh.",
   "fields": {
     "model": {
-      "semantics": "\u5fc5\u987b\u7b49\u4e8e\u56fa\u5b9a\u670d\u52a1\u540d\uff1b\u7701\u7565\u53ef\u7528",
-      "boundary": "\u65e0\u522b\u540d\u548c\u8be6\u60c5\uff1b\u540d\u79f0\u7531\u5e38\u91cf\u8bbe\u5b9a",
+      "semantics": "必须等于固定服务名；省略可用",
+      "boundary": "无别名和详情；名称由常量设定",
       "evidence": [
         "tests/server_chat_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
       ]
     },
     "prompt": {
-      "semantics": "\u975e\u7a7a\u539f\u59cb prompt\uff0c\u8f93\u51fa raw",
-      "boundary": "\u4e0e messages \u4e92\u65a5\uff1b\u4e0d\u89e3\u6790\u5de5\u5177/\u63a8\u7406",
+      "semantics": "非空原始 prompt，输出 raw",
+      "boundary": "与 messages 互斥；不解析工具/推理",
       "evidence": [
         "tests/server_chat_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
       ]
     },
     "messages": {
-      "semantics": "qwen3.8-openai-v3\uff1a\u6309\u5e8f\u591a\u6761system/developer\u6620\u5c04system ChatML\uff1bJSON\u8f6c\u4e49name\uff1bassistant refusal\u5386\u53f2\uff1b\u65e0\u9700user\uff1b\u5fc5\u586bcontent\u4e0e\u975e\u7a7a\u5185\u5bb9\u6570\u7ec4\uff1b\u5de5\u5177ID/\u7ed3\u679c\u6b21\u5e8f\u53ca\u63a8\u7406\u522b\u540d\u5408\u540c\u4fdd\u6301\u3002",
+      "semantics": "qwen3.8-openai-v3：按序多条system/developer映射system ChatML；JSON转义name；assistant refusal历史；无需user；必填content与非空内容数组；工具ID/结果次序及推理别名合同保持。",
       "boundary": "Explicit media profile: user-only PNG/JPEG, video_frames with optional increasing video_timestamps; pair timestamps/boundaries and strict positions. Media requires no-MTP/single slot; expanded tokens govern preflight/quota. JPEG stb decode not Pillow bit-equivalent. Physical RAM and universal quality not guaranteed; current visual acceptance separate. New instruction/name/refusal serialization is an explicit model-template adapter, not original Jinja equivalence. Standard legacy/custom histories delivered under A04; audio/file content remains A10 work. This is not complete OpenAI compatibility.",
       "evidence": [
         "tests/server_chat_tool_history_test.cpp",
@@ -42,8 +42,8 @@
       ]
     },
     "max_tokens": {
-      "semantics": "\u6570\u5b57\u539f\u6587\u7cbe\u786e\u6574\u6570 [1,2147483647] \u6216 null\uff0c\u603b\u751f\u6210 token \u9884\u7b97\u542b\u63a8\u7406",
-      "boundary": "\u4e24\u4e2a\u9884\u7b97\u53ea\u80fd\u4e00\u4e2a\u975e null\uff1b\u5bb9\u91cf\u53ef\u80fd\u8fdb\u4e00\u6b65\u9650\u5236\uff1b\u975e\u6cd5\u820d\u5165\u503c\u62d2\u7edd",
+      "semantics": "数字原文精确整数 [1,2147483647] 或 null，总生成 token 预算含推理",
+      "boundary": "两个预算只能一个非 null；容量可能进一步限制；非法舍入值拒绝",
       "evidence": [
         "tests/server_chat_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -51,8 +51,8 @@
       ]
     },
     "max_completion_tokens": {
-      "semantics": "\u6570\u5b57\u539f\u6587\u7cbe\u786e\u6574\u6570 [1,2147483647] \u6216 null\uff0c\u603b\u751f\u6210 token \u9884\u7b97\u542b\u63a8\u7406",
-      "boundary": "\u4e24\u4e2a\u9884\u7b97\u53ea\u80fd\u4e00\u4e2a\u975e null\uff1b\u5bb9\u91cf\u53ef\u80fd\u8fdb\u4e00\u6b65\u9650\u5236\uff1b\u975e\u6cd5\u820d\u5165\u503c\u62d2\u7edd",
+      "semantics": "数字原文精确整数 [1,2147483647] 或 null，总生成 token 预算含推理",
+      "boundary": "两个预算只能一个非 null；容量可能进一步限制；非法舍入值拒绝",
       "evidence": [
         "tests/server_chat_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -60,7 +60,7 @@
       ]
     },
     "stream": {
-      "semantics": "bool \u6216 null\uff1bnull=false\uff0cJSON \u6216 SSE",
+      "semantics": "bool 或 null；null=false，JSON 或 SSE",
       "boundary": "Development: structured JSON/reasoning/tool fragments are provisional, with final semantic validation before successful terminal; first role and idle heartbeat remain. Default is the prior accepted release until A05 business delivery.",
       "evidence": [
         "tests/server_http_response_test.cpp",
@@ -73,8 +73,8 @@
       ]
     },
     "stream_options": {
-      "semantics": "\u5bf9\u8c61\u6216 null\uff1bnull \u4e0d\u8bf7\u6c42 usage",
-      "boundary": "\u4ec5 include_usage bool\uff1b\u5c1a\u65e0\u5176\u4ed6\u6d41\u63a7\u9009\u9879",
+      "semantics": "对象或 null；null 不请求 usage",
+      "boundary": "仅 include_usage bool；尚无其他流控选项",
       "evidence": [
         "tests/server_chat_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -82,8 +82,8 @@
       ]
     },
     "request_id": {
-      "semantics": "ASCII \u5b57\u6bcd\u6570\u5b57/\u4e0b\u5212\u7ebf/\u77ed\u6a2a\u7ebf\uff0c1..128\uff1b\u9700\u5408\u6cd5 cancel_token",
-      "boundary": "JSON ID\u7ed1\u5b9a\u53d6\u6d88\u51ed\u636e\uff1b\u4e0eHTTP\u8ffd\u8e2a\u5934\u72ec\u7acb\uff1b\u81ea\u52a8ID\u4e3a128\u968f\u673a\u4f4d\uff0c\u4e0d\u63d0\u4f9b\u5e42\u7b49\u91cd\u653e Optional gateway client policy namespaces this value by authenticated client; independent cancellation credentials and exact prefix checks still apply.",
+      "semantics": "ASCII 字母数字/下划线/短横线，1..128；需合法 cancel_token",
+      "boundary": "JSON ID绑定取消凭据；与HTTP追踪头独立；自动ID为128随机位，不提供幂等重放 Optional gateway client policy namespaces this value by authenticated client; independent cancellation credentials and exact prefix checks still apply.",
       "evidence": [
         "tests/server_state_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -93,8 +93,8 @@
       ]
     },
     "cancel_token": {
-      "semantics": "\u663e\u5f0f request_id \u914d\u5957 64 \u4f4d\u5c0f\u5199 hex\uff1b\u6ce8\u518c\u524d\u68c0\u67e5",
-      "boundary": "\u53d6\u6d88 handler \u5171\u7528\u51ed\u636e\u5f62\u72b6\uff1b\u4e0d\u662f\u7f51\u5173\u9274\u6743 Optional gateway client policy namespaces this value by authenticated client; independent cancellation credentials and exact prefix checks still apply.",
+      "semantics": "显式 request_id 配套 64 位小写 hex；注册前检查",
+      "boundary": "取消 handler 共用凭据形状；不是网关鉴权 Optional gateway client policy namespaces this value by authenticated client; independent cancellation credentials and exact prefix checks still apply.",
       "evidence": [
         "tests/server_state_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -104,8 +104,8 @@
       ]
     },
     "request_timeout_ms": {
-      "semantics": "\u539f\u6587\u7cbe\u786e\u6574\u6570 [1,10800000]\uff1b\u6ce8\u518c\u524d\u62d2\u7edd\u9519\u8bef\u503c",
-      "boundary": "\u4e0d\u542b\u8bfb\u53d6 body\uff1b\u7f16\u8bd1\u5185\u4e0d\u53ef\u62a2\u5360\uff0c\u524d\u540e\u534f\u4f5c\u53d6\u6d88\uff1bshutdown\u7b49\u5f85in-flight\u7f16\u8bd1\uff0c\u975e\u786c\u65f6\u95f4\u4fdd\u8bc1",
+      "semantics": "原文精确整数 [1,10800000]；注册前拒绝错误值",
+      "boundary": "不含读取 body；编译内不可抢占，前后协作取消；shutdown等待in-flight编译，非硬时间保证",
       "evidence": [
         "tests/server_state_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -114,8 +114,8 @@
       ]
     },
     "tools": {
-      "semantics": "\u51fd\u6570\u4e0ecustom\u5b9a\u4e49\u5171\u7528\u751f\u4ea7\u5408\u540c\uff1bcustom text/regex/Lark\u7ea6\u675f\u3001\u6807\u51c6input\u53ca\u4e13\u7528\u5ba2\u6237\u7aef\u6821\u9a8c\u5df2\u9488\u5bf9\u6027CPU\u4e0e\u771f\u5b9e\u4e1a\u52a1\u9a8c\u6536\uff1bstrict:null=false",
-      "boundary": "\u666e\u901a schema \u4ecd\u4e3a\u63d0\u793a\uff0c\u4e0d\u4fdd\u8bc1\u5b8c\u6574 JSON Schema\uff1b\u5f3a\u7ea6\u675f\u6709\u9650 profile \u4e0d\u53d8; constrained compiler/matcher isolated in one exec worker with 2GiB RLIMIT_AS and interruptible 10s/2s budgets; no whole-server memory guarantee",
+      "semantics": "函数与custom定义共用生产合同；custom text/regex/Lark约束、标准input及专用客户端校验已针对性CPU与真实业务验收；strict:null=false",
+      "boundary": "普通 schema 仍为提示，不保证完整 JSON Schema；强约束有限 profile 不变; constrained compiler/matcher isolated in one exec worker with 2GiB RLIMIT_AS and interruptible 10s/2s budgets; no whole-server memory guarantee",
       "evidence": [
         "tests/server_chat_response_parser_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -129,24 +129,24 @@
       ]
     },
     "chat_template_kwargs": {
-      "semantics": "\u539f\u751f\u6a21\u677f\u56db\u4e2a\u9009\u9879\uff1b\u5d4c\u5957\u503c\u8986\u76d6\u9876\u5c42",
-      "boundary": "\u4ec5 messages\uff1b\u975e\u901a\u7528 Jinja \u6ce8\u5165\u63a5\u53e3",
+      "semantics": "原生模板四个选项；嵌套值覆盖顶层",
+      "boundary": "仅 messages；非通用 Jinja 注入接口",
       "evidence": [
         "tests/server_chat_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
       ]
     },
     "enable_thinking": {
-      "semantics": "\u63a7\u5236\u6a21\u677f\u7684\u521d\u59cb\u601d\u8003\u524d\u7f00",
-      "boundary": "\u4e0d\u662f\u54cd\u5e94\u9690\u85cf\u5f00\u5173\uff1b\u5d4c\u5957\u53c2\u6570\u4f18\u5148",
+      "semantics": "控制模板的初始思考前缀",
+      "boundary": "不是响应隐藏开关；嵌套参数优先",
       "evidence": [
         "tests/server_chat_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
       ]
     },
     "preserve_thinking": {
-      "semantics": "\u4fdd\u7559\u5386\u53f2reasoning/reasoning_content\u7684\u5355\u4e00\u539f\u751f\u63a8\u7406\u69fd",
-      "boundary": "\u6a21\u677f\u9009\u9879\uff0c\u4e0d\u662f\u6301\u4e45\u4f1a\u8bdd\uff1b\u522b\u540d\u975enull\u51b2\u7a81\u62d2\u7edd\uff0cassistant\u7f3a\u7701/null\u4e3a\u7a7a",
+      "semantics": "保留历史reasoning/reasoning_content的单一原生推理槽",
+      "boundary": "模板选项，不是持久会话；别名非null冲突拒绝，assistant缺省/null为空",
       "evidence": [
         "tests/server_chat_tool_history_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -154,24 +154,24 @@
       ]
     },
     "reasoning_effort": {
-      "semantics": "low/medium/xhigh \u63d0\u793a\u8bcd\u9009\u62e9",
-      "boundary": "\u65e0\u72ec\u7acb\u8ba1\u7b97\u9884\u7b97\uff1b\u4e0e\u73b0\u4ee3 reasoning \u5b57\u6bb5\u4e0d\u7b49\u540c G2",
+      "semantics": "low/medium/xhigh 提示词选择",
+      "boundary": "无独立计算预算；与现代 reasoning 字段不等同 G2",
       "evidence": [
         "tests/server_chat_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
       ]
     },
     "add_vision_id": {
-      "semantics": "\u5b9e\u9a8c\u5a92\u4f53\u5360\u4f4d\u7684\u7f16\u53f7\u9009\u9879",
-      "boundary": "\u7eaf\u6587\u672c\u65e0\u6548\u679c\uff1b\u5a92\u4f53\u9ed8\u8ba4\u7981\u7528",
+      "semantics": "实验媒体占位的编号选项",
+      "boundary": "纯文本无效果；媒体默认禁用",
       "evidence": [
         "tests/server_chat_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
       ]
     },
     "temperature": {
-      "semantics": "A03\u91c7\u6837\u5b50\u7ec4\u9488\u5bf9\u6027\u9a8c\u6536\u901a\u8fc7\uff1a0\u20142\uff0c\u9ed8\u8ba4/null=1\uff1b0\u4f7f\u7528greedy\uff0c\u6b63\u6e29\u5ea6\u771f\u5b9e\u91c7\u6837",
-      "boundary": "\u975egreedy\u4e0d\u8fdb\u5165MTP/packed argmax\uff1b\u6d6e\u70b9\u7aef\u70b9\u539f\u6587\u548cunderflow\u6821\u9a8c",
+      "semantics": "A03采样子组针对性验收通过：0—2，默认/null=1；0使用greedy，正温度真实采样",
+      "boundary": "非greedy不进入MTP/packed argmax；浮点端点原文和underflow校验",
       "evidence": [
         "docs/SERVE_SAMPLING_2026-11-08.md",
         "tests/server_sampling_test.cpp",
@@ -179,8 +179,8 @@
       ]
     },
     "top_p": {
-      "semantics": "A03\u91c7\u6837\u5b50\u7ec4\u9488\u5bf9\u6027\u9a8c\u6536\u901a\u8fc7\uff1a0\u20141 nucleus\uff0c\u9ed8\u8ba4/null=1\uff1b0\u81f3\u5c11\u4fdd\u7559\u6700\u9ad8\u9879",
-      "boundary": "\u5728temperature\u7f29\u653e\u540e\u622a\u65ad\u5e76\u91cd\u65b0\u5f52\u4e00\uff1btemperature0\u4ecdargmax",
+      "semantics": "A03采样子组针对性验收通过：0—1 nucleus，默认/null=1；0至少保留最高项",
+      "boundary": "在temperature缩放后截断并重新归一；temperature0仍argmax",
       "evidence": [
         "docs/SERVE_SAMPLING_2026-11-08.md",
         "tests/server_sampling_test.cpp",
@@ -188,8 +188,8 @@
       ]
     },
     "n": {
-      "semantics": "A03\u91c7\u6837\u5b50\u7ec4\u9488\u5bf9\u6027\u9a8c\u6536\u901a\u8fc7\uff1a1\u2014128\u72ec\u7acbchoice\uff0c\u9ed8\u8ba4/null=1\uff1b\u4e32\u884c\u6267\u884c\u3001\u5355\u4e00\u8bf7\u6c42\u51c6\u5165/\u53d6\u6d88",
-      "boundary": "\u8f93\u5165\u8ba1\u4e00\u6b21\uff0c\u6240\u6709\u8f93\u51fa\u6c47\u603b\uff1b\u603b\u8f93\u51fa\u914d\u989d\u4e0e\u54cd\u5e94\u5b58\u50a8\u9884\u7b97\u6709\u754c",
+      "semantics": "A03采样子组针对性验收通过：1—128独立choice，默认/null=1；串行执行、单一请求准入/取消",
+      "boundary": "输入计一次，所有输出汇总；总输出配额与响应存储预算有界",
       "evidence": [
         "docs/SERVE_SAMPLING_2026-11-08.md",
         "tests/server_sampling_test.cpp",
@@ -197,8 +197,8 @@
       ]
     },
     "frequency_penalty": {
-      "semantics": "A03\u91c7\u6837\u5b50\u7ec4\u9488\u5bf9\u6027\u9a8c\u6536\u901a\u8fc7\uff1a-2\u20142\uff0c\u9ed8\u8ba4/null=0\uff1b\u6309\u672cchoice\u5df2\u751f\u6210token\u6b21\u6570\u8c03\u6574",
-      "boundary": "\u4e0d\u6df7\u7528prompt\u6216\u5176\u4ed6choice\u5386\u53f2\uff1b\u5728\u6e29\u5ea6\u524d\u5e94\u7528",
+      "semantics": "A03采样子组针对性验收通过：-2—2，默认/null=0；按本choice已生成token次数调整",
+      "boundary": "不混用prompt或其他choice历史；在温度前应用",
       "evidence": [
         "docs/SERVE_SAMPLING_2026-11-08.md",
         "tests/server_sampling_test.cpp",
@@ -206,8 +206,8 @@
       ]
     },
     "presence_penalty": {
-      "semantics": "A03\u91c7\u6837\u5b50\u7ec4\u9488\u5bf9\u6027\u9a8c\u6536\u901a\u8fc7\uff1a-2\u20142\uff0c\u9ed8\u8ba4/null=0\uff1b\u672cchoice\u5df2\u51fa\u73b0token\u4ec5\u6263\u4e00\u6b21",
-      "boundary": "\u5728\u6e29\u5ea6\u524d\u5e94\u7528\uff1bgrammar/mask\u4e0d\u80fd\u88abpenalty\u7ed5\u8fc7",
+      "semantics": "A03采样子组针对性验收通过：-2—2，默认/null=0；本choice已出现token仅扣一次",
+      "boundary": "在温度前应用；grammar/mask不能被penalty绕过",
       "evidence": [
         "docs/SERVE_SAMPLING_2026-11-08.md",
         "tests/server_sampling_test.cpp",
@@ -215,8 +215,8 @@
       ]
     },
     "repetition_penalty": {
-      "semantics": "\u4ec5\u6570\u5b66\u7cbe\u786e\u7684 1",
-      "boundary": "\u6269\u5c55\u9009\u9879 null \u4ecd\u62d2\u7edd\uff1b\u5176\u4ed6\u503c\u4e0d\u652f\u6301",
+      "semantics": "仅数学精确的 1",
+      "boundary": "扩展选项 null 仍拒绝；其他值不支持",
       "evidence": [
         "tests/server_chat_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -224,8 +224,8 @@
       ]
     },
     "seed": {
-      "semantics": "A03\u91c7\u6837\u5b50\u7ec4\u9488\u5bf9\u6027\u9a8c\u6536\u901a\u8fc7\uff1a\u539f\u6587\u7cbe\u786esigned int64\u6216null\uff1b\u6bcfchoice\u72ec\u7acb\u6d3e\u751fRNG",
-      "boundary": "\u540c\u5b9e\u73b0/\u8f93\u5165\u6761\u4ef6best effort\uff1bJS\u666e\u901anumber\u4ec5\u7cbe\u786e\u8868\u793asafe integer",
+      "semantics": "A03采样子组针对性验收通过：原文精确signed int64或null；每choice独立派生RNG",
+      "boundary": "同实现/输入条件best effort；JS普通number仅精确表示safe integer",
       "evidence": [
         "docs/SERVE_SAMPLING_2026-11-08.md",
         "tests/server_sampling_test.cpp",
@@ -233,8 +233,8 @@
       ]
     },
     "stop": {
-      "semantics": "\u5df2\u9a8c\uff1a\u5355\u4e32\u6216\u6700\u591a4\u4e2a\u975e\u7a7aUTF-8\u5b57\u7b26\u4e32\uff0c\u6bcf\u4e32256\u5b57\u8282\uff1bnull/[]\u7981\u7528\uff0c\u589e\u91cf\u5339\u914d\u540e\u4e0d\u53d1\u5e03\u505c\u6b62\u4e32/\u5c3e\u90e8",
-      "boundary": "strict\u8f93\u51fa\u548cstate cache\u7ec4\u5408\u62d2\u7edd\uff1b\u5305\u542b\u63a8\u7406/\u5de5\u5177\u6807\u8bb0\uff0c\u90e8\u5206\u5de5\u5177\u9519\u8bef\uff1bMTP\u5df2\u7b97\u540e\u7f00\u4e0d\u8ba1completion\uff0c\u4e0d\u5ba3\u79f0\u6ca1\u6709\u989d\u5916\u8ba1\u7b97",
+      "semantics": "已验：单串或最多4个非空UTF-8字符串，每串256字节；null/[]禁用，增量匹配后不发布停止串/尾部",
+      "boundary": "strict输出和state cache组合拒绝；包含推理/工具标记，部分工具错误；MTP已算后缀不计completion，不宣称没有额外计算",
       "evidence": [
         "tests/server_text_stop_test.cpp",
         "docs/SERVE_TEXT_STOP_2026-11-03.md",
@@ -243,8 +243,8 @@
       ]
     },
     "logprobs": {
-      "semantics": "A03\u91c7\u6837\u5b50\u7ec4\u9488\u5bf9\u6027\u9a8c\u6536\u901a\u8fc7\uff1aboolean/null\uff0c\u771f\u5b9e\u539f\u59cb\u6a21\u578b\u5206\u5e03\u7684content token\u6982\u7387",
-      "boundary": "raw top20\u4e4b\u5916\u7684\u6240\u9009token=-9999\uff1b\u9690\u85cf-only token\u6392\u9664\uff0c\u8de8\u754ctoken\u539fbytes\u4fdd\u7559\u4e00\u6b21",
+      "semantics": "A03采样子组针对性验收通过：boolean/null，真实原始模型分布的content token概率",
+      "boundary": "raw top20之外的所选token=-9999；隐藏-only token排除，跨界token原bytes保留一次",
       "evidence": [
         "docs/SERVE_SAMPLING_2026-11-08.md",
         "tests/server_sampling_test.cpp",
@@ -252,8 +252,8 @@
       ]
     },
     "top_logprobs": {
-      "semantics": "A03\u91c7\u6837\u5b50\u7ec4\u9488\u5bf9\u6027\u9a8c\u6536\u901a\u8fc7\uff1a0\u201420\u6574\u6570/null\uff1b\u975enull\u5fc5\u987blogprobs=true",
-      "boundary": "\u6bcf\u4e2a\u6240\u9009content token\u7684\u539f\u5206\u5e03\u5019\u9009\uff0c\u4e0d\u662fmask/nucleus\u540e\u7684\u6761\u4ef6\u6982\u7387",
+      "semantics": "A03采样子组针对性验收通过：0—20整数/null；非null必须logprobs=true",
+      "boundary": "每个所选content token的原分布候选，不是mask/nucleus后的条件概率",
       "evidence": [
         "docs/SERVE_SAMPLING_2026-11-08.md",
         "tests/server_sampling_test.cpp",
@@ -261,8 +261,8 @@
       ]
     },
     "logit_bias": {
-      "semantics": "A03\u91c7\u6837\u5b50\u7ec4\u9488\u5bf9\u6027\u9a8c\u6536\u901a\u8fc7\uff1a\u8bcd\u8868\u5185token ID\u6620\u5c04-100\u2014100\uff1bnull\u4e3a\u7a7a",
-      "boundary": "\u6570\u503c\u522b\u540dID\u4e0d\u80fd\u91cd\u590d\uff0c\u771f\u5b9e\u8c03\u6574\u9009\u62e9\u5206\u5e03\uff1b\u4ecd\u670d\u4ecegrammar/\u505c\u6b62\u8fb9\u754c",
+      "semantics": "A03采样子组针对性验收通过：词表内token ID映射-100—100；null为空",
+      "boundary": "数值别名ID不能重复，真实调整选择分布；仍服从grammar/停止边界",
       "evidence": [
         "docs/SERVE_SAMPLING_2026-11-08.md",
         "tests/server_sampling_test.cpp",
@@ -285,8 +285,8 @@
       ]
     },
     "user": {
-      "semantics": "\u5b57\u7b26\u4e32\u6216 null\uff0c\u53ef\u9009\u5143\u6570\u636e",
-      "boundary": "\u4e0d\u7528\u4e8e\u9274\u6743\u3001\u9694\u79bb\u3001\u8def\u7531\u6216\u65e5\u5fd7\u6807\u7b7e",
+      "semantics": "字符串或 null，可选元数据",
+      "boundary": "不用于鉴权、隔离、路由或日志标签",
       "evidence": [
         "tests/server_chat_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -294,8 +294,8 @@
       ]
     },
     "session_id": {
-      "semantics": "\u540c\u8fdb\u7a0b\u72ec\u5360 SSD KV cache \u80fd\u529b key",
-      "boundary": "\u663e\u5f0f\u542f\u7528\uff1b\u4e0d\u662f\u6301\u4e45\u5bf9\u8bdd\u6216\u6062\u590d API\uff1b\u7ed3\u6784\u5316\u6587\u672c\u7ec4\u5408\u5df2\u6309A05\u5b9e\u9645\u9a8c\u6536 Optional gateway client policy namespaces this value by authenticated client; independent cancellation credentials and exact prefix checks still apply. Development R01 isolates file I/O in independent native workers; cache failure becomes a miss/save failure without model restart. CPU passed; combined real business and default delivery remain required.",
+      "semantics": "同进程独占 SSD KV cache 能力 key",
+      "boundary": "显式启用；不是持久对话或恢复 API；结构化文本组合已按A05实际验收 Optional gateway client policy namespaces this value by authenticated client; independent cancellation credentials and exact prefix checks still apply. Development R01 isolates file I/O in independent native workers; cache failure becomes a miss/save failure without model restart. CPU passed; combined real business and default delivery remain required.",
       "evidence": [
         "tests/server_state_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -305,8 +305,8 @@
       ]
     },
     "prefix_cache_scope": {
-      "semantics": "\u540c\u8fdb\u7a0b\u5171\u4eab\u524d\u7f00 cache \u80fd\u529b key",
-      "boundary": "\u663e\u5f0f\u542f\u7528\uff1b\u4e0d\u662f\u79df\u6237\u9694\u79bb\u6216 OpenAI prompt_cache_key Optional gateway client policy namespaces this value by authenticated client; independent cancellation credentials and exact prefix checks still apply. Development R01 isolates file I/O in independent native workers; cache failure becomes a miss/save failure without model restart. CPU passed; combined real business and default delivery remain required.",
+      "semantics": "同进程共享前缀 cache 能力 key",
+      "boundary": "显式启用；不是租户隔离或 OpenAI prompt_cache_key Optional gateway client policy namespaces this value by authenticated client; independent cancellation credentials and exact prefix checks still apply. Development R01 isolates file I/O in independent native workers; cache failure becomes a miss/save failure without model restart. CPU passed; combined real business and default delivery remain required.",
       "evidence": [
         "tests/server_state_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -316,8 +316,8 @@
       ]
     },
     "prefix_cache_write_tokens": {
-      "semantics": "\u539f\u6587\u7cbe\u786e\u6574\u6570 0 \u6216 [1024,131072]",
-      "boundary": "\u6b63\u503c\u5fc5\u987b\u63d0\u4f9b prefix_cache_scope\uff1b\u4e0d\u6269\u5927\u7f13\u5b58\u7ec4\u5408\u652f\u6301 Development R01 isolates file I/O in independent native workers; cache failure becomes a miss/save failure without model restart. CPU passed; combined real business and default delivery remain required.",
+      "semantics": "原文精确整数 0 或 [1024,131072]",
+      "boundary": "正值必须提供 prefix_cache_scope；不扩大缓存组合支持 Development R01 isolates file I/O in independent native workers; cache failure becomes a miss/save failure without model restart. CPU passed; combined real business and default delivery remain required.",
       "evidence": [
         "tests/server_state_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -328,16 +328,16 @@
       ]
     },
     "parse_response": {
-      "semantics": "messages \u9ed8\u8ba4 true\uff1bfalse \u8fd4\u56de raw",
-      "boundary": "false \u4e0d\u53ef\u4e0e\u5de5\u5177\u63a7\u5236\u6216\u7ea6\u675f\u4fdd\u8bc1\u7ec4\u5408",
+      "semantics": "messages 默认 true；false 返回 raw",
+      "boundary": "false 不可与工具控制或约束保证组合",
       "evidence": [
         "tests/server_chat_response_parser_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
       ]
     },
     "tool_choice": {
-      "semantics": "auto/none/required/named\u548callowed_tools\u5b50\u96c6\u5747\u5df2\u9488\u5bf9\u6027\u9a8c\u6536\uff1b\u540e\u8005\u5b9a\u4e49\u5173\u8054\u3001\u6a21\u677f/grammar\u548c\u5b9e\u9645\u8f93\u51fa\u6821\u9a8c\u4e00\u81f4\uff1bstrict/\u591a\u5de5\u5177\u53c2\u6570\u771f\u5b9e\u589e\u91cf\u3001\u6210\u529f\u7ec8\u6001\u53caEOF\u540e\u624d\u53ef\u6267\u884c\uff1bcustom named/allowed\u5f15\u7528\u6309\u7c7b\u578b\u53ca\u540d\u79f0\u5339\u914d\uff08\u5df2\u9a8c\u6536\uff09",
-      "boundary": "\u975e auto \u9700\u7ea6\u675f\u540e\u7aef\uff1bnamed \u6070\u597d\u4e00\u6b21\uff1b\u53ea parsed messages\uff1bconstrained\u72ec\u7acb\u79df\u7ea6\u96501\uff0c\u5fd9\u65f6503\uff1b\u7f16\u8bd1\u4ecd\u534f\u4f5c\u53d6\u6d88; constrained compiler/matcher isolated in one exec worker with 2GiB RLIMIT_AS and interruptible 10s/2s budgets; no whole-server memory guarantee",
+      "semantics": "auto/none/required/named和allowed_tools子集均已针对性验收；后者定义关联、模板/grammar和实际输出校验一致；strict/多工具参数真实增量、成功终态及EOF后才可执行；custom named/allowed引用按类型及名称匹配（已验收）",
+      "boundary": "非 auto 需约束后端；named 恰好一次；只 parsed messages；constrained独立租约限1，忙时503；编译仍协作取消; constrained compiler/matcher isolated in one exec worker with 2GiB RLIMIT_AS and interruptible 10s/2s budgets; no whole-server memory guarantee",
       "evidence": [
         "tests/server_output_constraints_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -349,8 +349,8 @@
       ]
     },
     "parallel_tool_calls": {
-      "semantics": "false \u6700\u591a\u4e00\u6b21\uff1btrue \u5141\u8bb8\u591a\u8c03\u7528",
-      "boundary": "\u4e0d\u662f\u5de5\u5177\u6267\u884c\u5e76\u53d1\u5f00\u5173\uff1bfalse+tools \u8d70\u7ea6\u675f\uff1bconstrained\u72ec\u7acb\u79df\u7ea6\u96501\uff0c\u5fd9\u65f6503\uff1b\u7f16\u8bd1\u4ecd\u534f\u4f5c\u53d6\u6d88; constrained compiler/matcher isolated in one exec worker with 2GiB RLIMIT_AS and interruptible 10s/2s budgets; no whole-server memory guarantee",
+      "semantics": "false 最多一次；true 允许多调用",
+      "boundary": "不是工具执行并发开关；false+tools 走约束；constrained独立租约限1，忙时503；编译仍协作取消; constrained compiler/matcher isolated in one exec worker with 2GiB RLIMIT_AS and interruptible 10s/2s budgets; no whole-server memory guarantee",
       "evidence": [
         "tests/server_output_constraints_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -360,8 +360,8 @@
       ]
     },
     "include_reasoning": {
-      "semantics": "\u9ed8\u8ba4true\uff1bfalse\u4e0d\u6536\u96c6/\u53d1\u5e03\u5df2\u89e3\u6790\u7684\u63a8\u7406\u6b63\u6587\uff1b\u89e3\u6790\u4e0e\u9519\u8bef\u7ec8\u6001\u4fdd\u7559",
-      "boundary": "\u53ea\u652f\u6301parsed messages\uff0c\u663e\u5f0fnull\u62d2\u7edd\uff1b\u4e0d\u51cf\u5c11\u751f\u6210\u6216usage\uff0c\u4e0d\u8fc7\u6ee4content\u4e2d\u7684\u81ea\u8ff0\uff1b05a\u9650\u5b9aCPU/HTTP/\u5de5\u5177\u95ed\u73af\u5df2\u9a8c",
+      "semantics": "默认true；false不收集/发布已解析的推理正文；解析与错误终态保留",
+      "boundary": "只支持parsed messages，显式null拒绝；不减少生成或usage，不过滤content中的自述；05a限定CPU/HTTP/工具闭环已验",
       "evidence": [
         "tests/server_chat_response_parser_test.cpp",
         "tests/server_chat_message_profile_test.cpp",
@@ -370,8 +370,8 @@
       ]
     },
     "reasoning_field": {
-      "semantics": "\u9009\u62e9reasoning\u6216reasoning_content\uff0c\u9ed8\u8ba4\u540e\u8005\uff1bJSON/SSE\u540c\u4e00\u54cd\u5e94\u53ea\u4f7f\u7528\u4e00\u4e2a\u5b57\u6bb5",
-      "boundary": "\u4ec5parsed messages\uff0c\u975e\u6cd5\u503c/null\u62d2\u7edd\uff1b\u975eResponses API\uff0c\u4e0d\u4ee3\u8868\u63a8\u7406\u9884\u7b97",
+      "semantics": "选择reasoning或reasoning_content，默认后者；JSON/SSE同一响应只使用一个字段",
+      "boundary": "仅parsed messages，非法值/null拒绝；非Responses API，不代表推理预算",
       "evidence": [
         "tests/server_chat_response_parser_test.cpp",
         "tools/examples/test_chat_client.py",
@@ -380,8 +380,8 @@
       ]
     },
     "thinking_token_budget": {
-      "semantics": "\u7f3a\u7701/null\u5173\u95ed\uff1bparsed messages\u7cbe\u786e\u6574\u65700..2147483647\uff1b\u81ea\u7136token\u8ba1\u91cf/\u6709\u9650\u5f3a\u5236\u95ed\u5408\u5e76\u7ee7\u7eed\u7b54\u6848",
-      "boundary": "\u81ea\u7136closing\u8ba1\u9884\u7b97\uff1bforced\u4e3a\u539f\u751f\u6362\u884c/\u95ed\u5408/\u7a7a\u884c\u53ca\u5fc5\u8981UTF8\u8865\u9f50\uff0c\u6700\u591a14\u5e76\u8ba1completion\uff1b\u603b\u8f93\u51fa\u4f18\u5148\uff1bMTP\u6279\u524d\u7559pending\u518dhost\u5c3e\u90e8\uff1b\u771f\u5b9eHTTP\u9884\u7b971\u539f\u5931\u8d25\u4fdd\u7559\uff0c\u4fee\u6b63\u540e19\u7528\u4f8b\u9650\u5b9a\u901a\u8fc7\uff1b\u5b8c\u6574head/seq1",
+      "semantics": "缺省/null关闭；parsed messages精确整数0..2147483647；自然token计量/有限强制闭合并继续答案",
+      "boundary": "自然closing计预算；forced为原生换行/闭合/空行及必要UTF8补齐，最多14并计completion；总输出优先；MTP批前留pending再host尾部；真实HTTP预算1原失败保留，修正后19用例限定通过；完整head/seq1",
       "evidence": [
         "tests/server_thinking_budget_test.cpp",
         "tests/server_structured_decoder_test.cpp",
@@ -392,8 +392,8 @@
       ]
     },
     "prediction": {
-      "semantics": "A03\u9488\u5bf9\u6027\u9a8c\u6536\u4ea4\u4ed8\uff1a\u5b57\u7b26\u4e32/text parts\u76ee\u6807\u9a8c\u8bc1/\u90e8\u5206\u56de\u6eda\uff0caccepted/rejected usage\uff1b\u62d2\u7eddtoken\u8ba1\u5165\u9884\u7b97/\u914d\u989d\uff0c\u5b9e\u9645JSON/SSE/strict/bias/\u53d6\u6d88\u540eMTP\u901a\u8fc7",
-      "boundary": "\u5b98\u65b9\u7ec4\u5408\u6761\u4ef6\uff1b\u5b9e\u9645token\u9884\u7b97\u548c\u76ee\u6807\u72b6\u6001\u4ecd\u987b\u9488\u5bf9\u6027\u9a8c\u6536",
+      "semantics": "A03针对性验收交付：字符串/text parts目标验证/部分回滚，accepted/rejected usage；拒绝token计入预算/配额，实际JSON/SSE/strict/bias/取消后MTP通过",
+      "boundary": "官方组合条件；实际token预算和目标状态仍须针对性验收",
       "evidence": [
         "docs/SERVE_PREDICTION_2026-11-08.md",
         "tests/server_prediction_test.cpp"
@@ -434,7 +434,7 @@
       ]
     },
     "prompt_cache_key": {
-      "semantics": "\u6807\u51c6\u7f13\u5b58\u5206\u7ec4\u952e\uff1a\u6700\u591a512\u4e2aUnicode\u5b57\u7b26\uff1b\u6309\u5df2\u8ba4\u8bc1\u5ba2\u6237\u7aef\u548c\u952e\u6458\u8981\u9694\u79bb\uff0c\u5b9e\u9645 token \u524d\u7f00\u4e0e\u5e03\u5c40\u4ecd\u987b\u76f8\u7b49\u3002",
+      "semantics": "标准缓存分组键：最多512个Unicode字符；按已认证客户端和键摘要隔离，实际 token 前缀与布局仍须相等。",
       "boundary": "A07.6 implementation under targeted validation; bounded SSD anonymous snapshots, cache failure falls back to core inference. Text state only; media fingerprints remain required A10 work.",
       "evidence": [
         "tests/server_prompt_cache_test.cpp",
@@ -443,7 +443,7 @@
       ]
     },
     "prompt_cache_retention": {
-      "semantics": "\u6807\u51c6 in_memory/24h \u63a7\u5236\u539f\u751f\u6761\u76ee\u603b\u4fdd\u7559\u4e0a\u9650\uff1b\u73b0\u4ee3 Responses TTL \u4f18\u5148\u3002",
+      "semantics": "标准 in_memory/24h 控制原生条目总保留上限；现代 Responses TTL 优先。",
       "boundary": "A07.6 implementation under targeted validation; bounded SSD anonymous snapshots, cache failure falls back to core inference. Text state only; media fingerprints remain required A10 work.",
       "evidence": [
         "tests/server_prompt_cache_test.cpp",
@@ -463,8 +463,8 @@
       ]
     },
     "DELETE /v1/conversations/{conversation_id}": {
-      "semantics": "\u539f\u751fConversations\u4f1a\u8bdd/\u6210\u5458CRUD\u3001\u5206\u9875\u4e0e\u6295\u5f71\uff1bDELETE /v1/conversations/{conversation_id}",
-      "boundary": "\u4f7f\u7528\u5df2\u8ba4\u8bc1client\u4e0e\u4e1a\u52a1\u51c6\u5165\uff1bCPU\u5904\u7406\u5668/\u5b98\u65b9SDK\u548c\u539f\u751fTLS\u5df2\u9a8c\uff0c\u5b9e\u9645serve\u6a21\u578b\u4e1a\u52a1\u4e0e\u53d1\u5e03\u5f85\u7eed\uff1b\u4e0d\u4ee5\u76ee\u5f55\u6536\u5f55\u66ff\u4ee3\u9a8c\u6536\u3002",
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；DELETE /v1/conversations/{conversation_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
       "evidence": [
         "docs/SERVE_CONVERSATIONS_2026-11-09.md",
         "include/q4t/server/application_routes.h",
@@ -473,8 +473,8 @@
       ]
     },
     "DELETE /v1/conversations/{conversation_id}/items/{item_id}": {
-      "semantics": "\u539f\u751fConversations\u4f1a\u8bdd/\u6210\u5458CRUD\u3001\u5206\u9875\u4e0e\u6295\u5f71\uff1bDELETE /v1/conversations/{conversation_id}/items/{item_id}",
-      "boundary": "\u4f7f\u7528\u5df2\u8ba4\u8bc1client\u4e0e\u4e1a\u52a1\u51c6\u5165\uff1bCPU\u5904\u7406\u5668/\u5b98\u65b9SDK\u548c\u539f\u751fTLS\u5df2\u9a8c\uff0c\u5b9e\u9645serve\u6a21\u578b\u4e1a\u52a1\u4e0e\u53d1\u5e03\u5f85\u7eed\uff1b\u4e0d\u4ee5\u76ee\u5f55\u6536\u5f55\u66ff\u4ee3\u9a8c\u6536\u3002",
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；DELETE /v1/conversations/{conversation_id}/items/{item_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
       "evidence": [
         "docs/SERVE_CONVERSATIONS_2026-11-09.md",
         "include/q4t/server/application_routes.h",
@@ -500,8 +500,8 @@
       ]
     },
     "DELETE /v1/responses/{response_id}": {
-      "semantics": "Responses\u539f\u751f\u751f\u6210\u548c\u6301\u4e45\u72b6\u6001\uff1b\u540e\u53f0\u62e5\u6709\u4efb\u52a1\u4e0e\u51c6\u5165\u3001\u6309ID\u67e5\u8be2/\u539f\u4e8b\u4ef6\u7eed\u8bfb/\u53d6\u6d88\uff0c\u67e5\u8be2\u4e0e\u53d6\u6d88\u4f7f\u7528\u72ec\u7acb\u989d\u5ea6\uff0cOPTIONS\u590d\u7528\u539f\u751fCORS\u3002",
-      "boundary": "\u540c\u6b65\u771f\u5b9e\u4e1a\u52a1\u5df2\u9a8c\uff1b\u540e\u53f0HTTP/\u6062\u590d\u9488\u5bf9\u6027CPU\u548c\u5b98\u65b9SDK\u5df2\u9a8c\uff0c\u540e\u53f0\u6a21\u578b\u4e1a\u52a1/\u53d1\u884c\u3001\u524d\u53f0\u672a\u77e5\u63d0\u4ea4\u6536\u5c3e\u548c\u5bf9\u8c61\u63a7\u5236\u5668/\u4fdd\u7559\u6cbb\u7406\u53ca\u5176\u4ed6\u6267\u884c\u4f9d\u8d56\u7ee7\u7eed\u5fc5\u505a\u3002\u9ed8\u8ba4\u672a\u66ff\u6362\uff0c\u4e0d\u8ba1\u5168\u91cf\u5b8c\u6210\u3002",
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
@@ -512,8 +512,8 @@
       ]
     },
     "GET /healthz": {
-      "semantics": "\u670d\u52a1/GPU\u53caPLE\u6c38\u4e45\u4f9d\u8d56\u5065\u5eb7\uff1b\u7eafPLE\u8bfb\u53d6\u6545\u969c\u8fd4\u56de503\u4f46gpu_healthy\u4fdd\u6301\u771f\u5b9e\u503c",
-      "boundary": "P0\u6e90\u7801\u4e0eCPU\u5408\u540c\uff1b\u65e7\u5c01\u5b58\u5305\u4fdd\u6301\u65e7\u8bed\u4e49\uff1b\u4e0d\u4ee5\u6a21\u578b\u6545\u969c\u5192\u5145GPU\u5931\u6548",
+      "semantics": "服务/GPU及PLE永久依赖健康；纯PLE读取故障返回503但gpu_healthy保持真实值",
+      "boundary": "P0源码与CPU合同；旧封存包保持旧语义；不以模型故障冒充GPU失效",
       "evidence": [
         "docs/SERVE_RELIABILITY_2026-10-30.md",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -522,8 +522,8 @@
       ]
     },
     "GET /livez": {
-      "semantics": "\u670d\u52a1\u5faa\u73af\u5b58\u6d3b\uff1bGPU/PLE\u6c38\u4e45\u6545\u969c\u4e0e\u5185\u5b58\u51c6\u5165\u5173\u95ed\u4e0d\u81ea\u52a8\u7b49\u4e8e\u8fdb\u7a0b\u6b7b\u4ea1",
-      "boundary": "\u52a0\u8f7d\u540e\u624d\u76d1\u542c\uff1b\u63a7\u5236\u5165\u53e34\u8fde\u63a5\u9884\u7559\u3001\u6392\u7a7a\u7a97\u53e3\u81f3\u591a2\u79d2\uff1b\u4e0d\u4fdd\u8bc1header\u6d2a\u6cdb\u4e0b\u53ef\u7528",
+      "semantics": "服务循环存活；GPU/PLE永久故障与内存准入关闭不自动等于进程死亡",
+      "boundary": "加载后才监听；控制入口4连接预留、排空窗口至多2秒；不保证header洪泛下可用",
       "evidence": [
         "tools/serve_reliability/http_lifecycle_test.cpp",
         "tools/serve_stage_a/verify.py",
@@ -536,8 +536,8 @@
       ]
     },
     "GET /metrics": {
-      "semantics": "\u72ec\u7acbslot_wait/admission/generation_exit/response\uff1b\u56fa\u5b9a\u539f\u56e0\u53d6\u6d88\u8ba1\u6570\uff1bconstrained\u51c6\u5907\u4e0e\u79df\u7ea6\u6307\u6807\uff1bSRV-02b\u5df2\u9a8cslot\u7b49\u5019\u6570\u3001queue/text\u51c6\u5165\u62d2\u7edd\u56fa\u5b9a\u8ba1\u6570\uff1bSRV-01b\u5df2\u9a8c\u6bcf\u8fde\u63a5\u9996\u6b21\u63a5\u6536/\u5199\u5931\u8d25\u56fa\u5b9a\u539f\u56e0/\u6765\u6e90\uff0c\u5fc3\u8df3join\u540e\u53d1\u5e03\uff0c\u4e0echat\u7ed3\u679c\u5206\u5f00\uff1b\u65b0\u589e\u56fa\u5b9a4\u5185\u5b58\u72b6\u6001\u30013\u68c0\u67e5\u70b9\u00d72\u62d2\u7edd\u539f\u56e0\u53ca\u6709\u6548\u8bfb\u6570/\u9608\u503c\uff0c\u4e0d\u8ba1\u4e3a\u7269\u7406\u5cf0\u503c",
-      "boundary": "queue/e2e\u4fdd\u7559\u539f\u8bed\u4e49\u7684\u5f03\u7528\u522b\u540d\uff1b\u5b58\u50a8\u8ba1\u91cf\u975ecompiler\u5cf0\u503c\uff1b\u5c40\u90e8\u5199\u5b8c\u4e0d\u4fdd\u8bc1\u5ba2\u6237\u7aef\u6d88\u8d39\uff1bSRV-12b\u72ec\u7acb\u89c2\u6d4b\u989d\u5ea64\u5df2\u9650\u5b9a\u53d7\u8f7d\u9a8c\u6536\uff0c\u5b8c\u6574\u5934\u540e\u5206\u7c7b\uff0c\u672a\u5206\u7c7b\u6162\u5934\u4ecd\u5171\u4eab\u603b\u989d",
+      "semantics": "独立slot_wait/admission/generation_exit/response；固定原因取消计数；constrained准备与租约指标；SRV-02b已验slot等候数、queue/text准入拒绝固定计数；SRV-01b已验每连接首次接收/写失败固定原因/来源，心跳join后发布，与chat结果分开；新增固定4内存状态、3检查点×2拒绝原因及有效读数/阈值，不计为物理峰值",
+      "boundary": "queue/e2e保留原语义的弃用别名；存储计量非compiler峰值；局部写完不保证客户端消费；SRV-12b独立观测额度4已限定受载验收，完整头后分类，未分类慢头仍共享总额",
       "evidence": [
         "src/server/chat_metrics.cpp",
         "tools/serve_resources/verify.py",
@@ -553,8 +553,8 @@
       ]
     },
     "GET /readyz": {
-      "semantics": "\u6a21\u578b\u52a0\u8f7d\u4e14\u670d\u52a1/GPU/PLE\u4f9d\u8d56\u5065\u5eb7\u3001\u672a\u6392\u7a7a\u3001\u5185\u5b58\u51c6\u5165\u5f00\u653e\uff1b\u666e\u901a\u5fd9\u4e0d\u6539\u53d8ready",
-      "boundary": "\u52a0\u8f7d\u540e\u624d\u76d1\u542c\uff1b\u63a7\u5236\u5165\u53e34\u8fde\u63a5\u9884\u7559\u3001\u6392\u7a7a\u7a97\u53e3\u81f3\u591a2\u79d2\uff1b\u4e0d\u4fdd\u8bc1header\u6d2a\u6cdb\u4e0b\u53ef\u7528",
+      "semantics": "模型加载且服务/GPU/PLE依赖健康、未排空、内存准入开放；普通忙不改变ready",
+      "boundary": "加载后才监听；控制入口4连接预留、排空窗口至多2秒；不保证header洪泛下可用",
       "evidence": [
         "tools/serve_reliability/http_lifecycle_test.cpp",
         "tools/serve_stage_a/verify.py",
@@ -567,8 +567,8 @@
       ]
     },
     "GET /v1/capabilities": {
-      "semantics": "\u5b9e\u73b0/\u6a21\u677f\u6e90\u7801\u8eab\u4efd\u4e0e\u80fd\u529b\u8fb9\u754c",
-      "boundary": "implementation_only\uff1b\u4e0d\u662f\u53d1\u5e03/\u5b9e\u9645\u914d\u7f6e\u5b8c\u6574\u8bc1\u660e\uff1b\u660e\u793a\u5355constrained\u79df\u7ea6\u3001\u7f16\u8bd1\u4e0d\u53ef\u62a2\u5360\u53ca\u975eRSS\u786c\u4e0a\u9650\uff1bSRV-12b\u72ec\u7acb\u89c2\u6d4b\u989d\u5ea64\u5df2\u9650\u5b9a\u53d7\u8f7d\u9a8c\u6536\uff0c\u5b8c\u6574\u5934\u540e\u5206\u7c7b\uff0c\u672a\u5206\u7c7b\u6162\u5934\u4ecd\u5171\u4eab\u603b\u989d",
+      "semantics": "实现/模板源码身份与能力边界",
+      "boundary": "implementation_only；不是发布/实际配置完整证明；明示单constrained租约、编译不可抢占及非RSS硬上限；SRV-12b独立观测额度4已限定受载验收，完整头后分类，未分类慢头仍共享总额",
       "evidence": [
         "tests/server_chat_capabilities_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -607,8 +607,8 @@
       ]
     },
     "GET /v1/config": {
-      "semantics": "\u542f\u52a8\u540e\u5b9e\u9645\u4e0a\u4e0b\u6587\u3001\u8f93\u51fa\u9ed8\u8ba4\u3001\u69fd\u4f4d\u3001\u9650\u5236\u548c\u6765\u6e90\uff0c\u53ea\u8bfb\uff1bSRV-02b\u5df2\u9a8cinflight/queued\u8bf7\u6c42\u503c\u4e0e\u9884\u7b97\u540e\u6709\u6548\u503c\u3001capacity_fifo_best_fit\u7b56\u7565\uff1b\u65b0\u589e\u72ec\u7acb\u4e8e\u542f\u52a8\u9884\u7b97\u7684\u5185\u5b58\u95e8\u9650/\u6062\u590d\u4f59\u91cf/\u6837\u672c\u65f6\u6548\u914d\u7f6e\uff0c0\u53ef\u663e\u5f0f\u7981\u7528\uff0c\u4e0d\u662f\u6574\u673a\u786c\u9650\u989d",
-      "boundary": "\u4e0d\u516c\u5f00\u8def\u5f84/\u51ed\u636e\uff1b\u4e0d\u4fdd\u8bc1\u53ef\u7528\u69fd\u4f4d\u3001\u5168\u673aRAM\u6216\u672a\u6765\u6267\u884c\u6210\u529f\uff1b\u9650\u5b9aHTTP\u5df2\u9a8c\uff1bSRV-12b\u72ec\u7acb\u89c2\u6d4b\u989d\u5ea64\u5df2\u9650\u5b9a\u53d7\u8f7d\u9a8c\u6536\uff0c\u5b8c\u6574\u5934\u540e\u5206\u7c7b\uff0c\u672a\u5206\u7c7b\u6162\u5934\u4ecd\u5171\u4eab\u603b\u989d",
+      "semantics": "启动后实际上下文、输出默认、槽位、限制和来源，只读；SRV-02b已验inflight/queued请求值与预算后有效值、capacity_fifo_best_fit策略；新增独立于启动预算的内存门限/恢复余量/样本时效配置，0可显式禁用，不是整机硬限额",
+      "boundary": "不公开路径/凭据；不保证可用槽位、全机RAM或未来执行成功；限定HTTP已验；SRV-12b独立观测额度4已限定受载验收，完整头后分类，未分类慢头仍共享总额",
       "evidence": [
         "docs/SERVE_PREFLIGHT_2026-11-03.md",
         "docs/serve-config-v1.schema.json",
@@ -623,8 +623,8 @@
       ]
     },
     "GET /v1/conversations/{conversation_id}": {
-      "semantics": "\u539f\u751fConversations\u4f1a\u8bdd/\u6210\u5458CRUD\u3001\u5206\u9875\u4e0e\u6295\u5f71\uff1bGET /v1/conversations/{conversation_id}",
-      "boundary": "\u4f7f\u7528\u5df2\u8ba4\u8bc1client\u4e0e\u4e1a\u52a1\u51c6\u5165\uff1bCPU\u5904\u7406\u5668/\u5b98\u65b9SDK\u548c\u539f\u751fTLS\u5df2\u9a8c\uff0c\u5b9e\u9645serve\u6a21\u578b\u4e1a\u52a1\u4e0e\u53d1\u5e03\u5f85\u7eed\uff1b\u4e0d\u4ee5\u76ee\u5f55\u6536\u5f55\u66ff\u4ee3\u9a8c\u6536\u3002",
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；GET /v1/conversations/{conversation_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
       "evidence": [
         "docs/SERVE_CONVERSATIONS_2026-11-09.md",
         "include/q4t/server/application_routes.h",
@@ -633,8 +633,8 @@
       ]
     },
     "GET /v1/conversations/{conversation_id}/items": {
-      "semantics": "\u539f\u751fConversations\u4f1a\u8bdd/\u6210\u5458CRUD\u3001\u5206\u9875\u4e0e\u6295\u5f71\uff1bGET /v1/conversations/{conversation_id}/items",
-      "boundary": "\u4f7f\u7528\u5df2\u8ba4\u8bc1client\u4e0e\u4e1a\u52a1\u51c6\u5165\uff1bCPU\u5904\u7406\u5668/\u5b98\u65b9SDK\u548c\u539f\u751fTLS\u5df2\u9a8c\uff0c\u5b9e\u9645serve\u6a21\u578b\u4e1a\u52a1\u4e0e\u53d1\u5e03\u5f85\u7eed\uff1b\u4e0d\u4ee5\u76ee\u5f55\u6536\u5f55\u66ff\u4ee3\u9a8c\u6536\u3002",
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；GET /v1/conversations/{conversation_id}/items",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
       "evidence": [
         "docs/SERVE_CONVERSATIONS_2026-11-09.md",
         "include/q4t/server/application_routes.h",
@@ -643,8 +643,8 @@
       ]
     },
     "GET /v1/conversations/{conversation_id}/items/{item_id}": {
-      "semantics": "\u539f\u751fConversations\u4f1a\u8bdd/\u6210\u5458CRUD\u3001\u5206\u9875\u4e0e\u6295\u5f71\uff1bGET /v1/conversations/{conversation_id}/items/{item_id}",
-      "boundary": "\u4f7f\u7528\u5df2\u8ba4\u8bc1client\u4e0e\u4e1a\u52a1\u51c6\u5165\uff1bCPU\u5904\u7406\u5668/\u5b98\u65b9SDK\u548c\u539f\u751fTLS\u5df2\u9a8c\uff0c\u5b9e\u9645serve\u6a21\u578b\u4e1a\u52a1\u4e0e\u53d1\u5e03\u5f85\u7eed\uff1b\u4e0d\u4ee5\u76ee\u5f55\u6536\u5f55\u66ff\u4ee3\u9a8c\u6536\u3002",
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；GET /v1/conversations/{conversation_id}/items/{item_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
       "evidence": [
         "docs/SERVE_CONVERSATIONS_2026-11-09.md",
         "include/q4t/server/application_routes.h",
@@ -653,8 +653,8 @@
       ]
     },
     "GET /v1/models": {
-      "semantics": "\u56fa\u5b9a\u5355\u6a21\u578b\u5217\u8868",
-      "boundary": "created \u4e3a\u67e5\u8be2\u65f6\u523b\uff1b\u65e0\u8be6\u60c5/\u522b\u540d\uff1b\u666e\u901a\u6a21\u578b\u540d\u56fa\u5b9a\uff1bSRV-12b\u72ec\u7acb\u89c2\u6d4b\u989d\u5ea64\u5df2\u9650\u5b9a\u53d7\u8f7d\u9a8c\u6536\uff0c\u5b8c\u6574\u5934\u540e\u5206\u7c7b\uff0c\u672a\u5206\u7c7b\u6162\u5934\u4ecd\u5171\u4eab\u603b\u989d",
+      "semantics": "固定单模型列表",
+      "boundary": "created 为查询时刻；无详情/别名；普通模型名固定；SRV-12b独立观测额度4已限定受载验收，完整头后分类，未分类慢头仍共享总额",
       "evidence": [
         "docs/APPLICATION_SERVICE_RESULT_2026-11-02.md",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -697,8 +697,8 @@
       ]
     },
     "GET /v1/responses/{response_id}": {
-      "semantics": "Responses\u539f\u751f\u751f\u6210\u548c\u6301\u4e45\u72b6\u6001\uff1b\u540e\u53f0\u62e5\u6709\u4efb\u52a1\u4e0e\u51c6\u5165\u3001\u6309ID\u67e5\u8be2/\u539f\u4e8b\u4ef6\u7eed\u8bfb/\u53d6\u6d88\uff0c\u67e5\u8be2\u4e0e\u53d6\u6d88\u4f7f\u7528\u72ec\u7acb\u989d\u5ea6\uff0cOPTIONS\u590d\u7528\u539f\u751fCORS\u3002",
-      "boundary": "\u540c\u6b65\u771f\u5b9e\u4e1a\u52a1\u5df2\u9a8c\uff1b\u540e\u53f0HTTP/\u6062\u590d\u9488\u5bf9\u6027CPU\u548c\u5b98\u65b9SDK\u5df2\u9a8c\uff0c\u540e\u53f0\u6a21\u578b\u4e1a\u52a1/\u53d1\u884c\u3001\u524d\u53f0\u672a\u77e5\u63d0\u4ea4\u6536\u5c3e\u548c\u5bf9\u8c61\u63a7\u5236\u5668/\u4fdd\u7559\u6cbb\u7406\u53ca\u5176\u4ed6\u6267\u884c\u4f9d\u8d56\u7ee7\u7eed\u5fc5\u505a\u3002\u9ed8\u8ba4\u672a\u66ff\u6362\uff0c\u4e0d\u8ba1\u5168\u91cf\u5b8c\u6210\u3002",
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
@@ -709,8 +709,8 @@
       ]
     },
     "GET /v1/responses/{response_id}/input_items": {
-      "semantics": "Responses\u539f\u751f\u751f\u6210\u548c\u6301\u4e45\u72b6\u6001\uff1b\u540e\u53f0\u62e5\u6709\u4efb\u52a1\u4e0e\u51c6\u5165\u3001\u6309ID\u67e5\u8be2/\u539f\u4e8b\u4ef6\u7eed\u8bfb/\u53d6\u6d88\uff0c\u67e5\u8be2\u4e0e\u53d6\u6d88\u4f7f\u7528\u72ec\u7acb\u989d\u5ea6\uff0cOPTIONS\u590d\u7528\u539f\u751fCORS\u3002",
-      "boundary": "\u540c\u6b65\u771f\u5b9e\u4e1a\u52a1\u5df2\u9a8c\uff1b\u540e\u53f0HTTP/\u6062\u590d\u9488\u5bf9\u6027CPU\u548c\u5b98\u65b9SDK\u5df2\u9a8c\uff0c\u540e\u53f0\u6a21\u578b\u4e1a\u52a1/\u53d1\u884c\u3001\u524d\u53f0\u672a\u77e5\u63d0\u4ea4\u6536\u5c3e\u548c\u5bf9\u8c61\u63a7\u5236\u5668/\u4fdd\u7559\u6cbb\u7406\u53ca\u5176\u4ed6\u6267\u884c\u4f9d\u8d56\u7ee7\u7eed\u5fc5\u505a\u3002\u9ed8\u8ba4\u672a\u66ff\u6362\uff0c\u4e0d\u8ba1\u5168\u91cf\u5b8c\u6210\u3002",
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
@@ -721,8 +721,8 @@
       ]
     },
     "POST /v1/chat/completions": {
-      "semantics": "messages/prompt\uff0cJSON/SSE\uff0c\u5355\u6a21\u578b\u6587\u672c\u751f\u6210\uff1b\u65b0\u589ebody\u524d/\u51c6\u5907/slot\u4ea4\u63a5\u7684\u5168\u5c40MemAvailable\u51c6\u5165\uff0c\u5931\u6548\u8bfb\u6570\u4e5f\u62d2\u7edd\uff1bCPU/\u539f\u751f\u672a\u52a0\u8f7dHTTP\u53ca\u771f\u5b9e\u9ad8floor/\u9ed8\u8ba4\u4e1a\u52a1\u5df2\u9a8c\uff1b\u540c\u6a21\u578b\u52a8\u6001\u538b\u529b\u6062\u590d\u672a\u9a8c",
-      "boundary": "application/json UTF-8\uff1b\u65b9\u6cd5405\u3001query400\uff1b\u666e\u901a\u8fde\u63a5\u4e0eactive chat\u4ecd\u6709\u754c\uff1b\u9996\u5e27\u540e\u9519\u8bef\u8d70SSE",
+      "semantics": "messages/prompt，JSON/SSE，单模型文本生成；新增body前/准备/slot交接的全局MemAvailable准入，失效读数也拒绝；CPU/原生未加载HTTP及真实高floor/默认业务已验；同模型动态压力恢复未验",
+      "boundary": "application/json UTF-8；方法405、query400；普通连接与active chat仍有界；首帧后错误走SSE",
       "evidence": [
         "docs/STRUCTURED_OUTPUT_RESULT_2026-11-02.md",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -741,7 +741,7 @@
       ]
     },
     "POST /v1/chat/preflight": {
-      "semantics": "\u79c1\u6709q4t-preflight-v1\uff1a\u5171\u7528\u771f\u5b9e\u6821\u9a8c\u3001\u6a21\u677f\u3001\u5206\u8bcd\u548c\u9884\u7b97\uff1b\u5305\u88c5\u8bf7\u6c42/\u53ef\u9009\u6587\u672c\u4e0eID\uff1b\u540c\u4e00\u5185\u5b58\u51c6\u5165\u95e8\uff0cbody\u524d\u53ca\u51c6\u5907\u524d\u68c0\u67e5\uff0c\u4e0d\u80fd\u7528\u9884\u68c0\u7ed5\u8fc7",
+      "semantics": "私有q4t-preflight-v1：共用真实校验、模板、分词和预算；包装请求/可选文本与ID；同一内存准入门，body前及准备前检查，不能用预检绕过",
       "boundary": "Read-only planning; optional media header/geometry and expanded tokens share generation planner. No pixel decode, GPU, grammar compilation, slot/rate reservation or execution guarantee. Preview retains one placeholder per temporal group; token_ids expanded.",
       "evidence": [
         "docs/SERVE_PREFLIGHT_2026-11-03.md",
@@ -764,8 +764,8 @@
       ]
     },
     "POST /v1/conversations": {
-      "semantics": "\u539f\u751fConversations\u4f1a\u8bdd/\u6210\u5458CRUD\u3001\u5206\u9875\u4e0e\u6295\u5f71\uff1bPOST /v1/conversations",
-      "boundary": "\u4f7f\u7528\u5df2\u8ba4\u8bc1client\u4e0e\u4e1a\u52a1\u51c6\u5165\uff1bCPU\u5904\u7406\u5668/\u5b98\u65b9SDK\u548c\u539f\u751fTLS\u5df2\u9a8c\uff0c\u5b9e\u9645serve\u6a21\u578b\u4e1a\u52a1\u4e0e\u53d1\u5e03\u5f85\u7eed\uff1b\u4e0d\u4ee5\u76ee\u5f55\u6536\u5f55\u66ff\u4ee3\u9a8c\u6536\u3002",
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；POST /v1/conversations",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
       "evidence": [
         "docs/SERVE_CONVERSATIONS_2026-11-09.md",
         "include/q4t/server/application_routes.h",
@@ -774,8 +774,8 @@
       ]
     },
     "POST /v1/conversations/{conversation_id}": {
-      "semantics": "\u539f\u751fConversations\u4f1a\u8bdd/\u6210\u5458CRUD\u3001\u5206\u9875\u4e0e\u6295\u5f71\uff1bPOST /v1/conversations/{conversation_id}",
-      "boundary": "\u4f7f\u7528\u5df2\u8ba4\u8bc1client\u4e0e\u4e1a\u52a1\u51c6\u5165\uff1bCPU\u5904\u7406\u5668/\u5b98\u65b9SDK\u548c\u539f\u751fTLS\u5df2\u9a8c\uff0c\u5b9e\u9645serve\u6a21\u578b\u4e1a\u52a1\u4e0e\u53d1\u5e03\u5f85\u7eed\uff1b\u4e0d\u4ee5\u76ee\u5f55\u6536\u5f55\u66ff\u4ee3\u9a8c\u6536\u3002",
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；POST /v1/conversations/{conversation_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
       "evidence": [
         "docs/SERVE_CONVERSATIONS_2026-11-09.md",
         "include/q4t/server/application_routes.h",
@@ -784,8 +784,8 @@
       ]
     },
     "POST /v1/conversations/{conversation_id}/items": {
-      "semantics": "\u539f\u751fConversations\u4f1a\u8bdd/\u6210\u5458CRUD\u3001\u5206\u9875\u4e0e\u6295\u5f71\uff1bPOST /v1/conversations/{conversation_id}/items",
-      "boundary": "\u4f7f\u7528\u5df2\u8ba4\u8bc1client\u4e0e\u4e1a\u52a1\u51c6\u5165\uff1bCPU\u5904\u7406\u5668/\u5b98\u65b9SDK\u548c\u539f\u751fTLS\u5df2\u9a8c\uff0c\u5b9e\u9645serve\u6a21\u578b\u4e1a\u52a1\u4e0e\u53d1\u5e03\u5f85\u7eed\uff1b\u4e0d\u4ee5\u76ee\u5f55\u6536\u5f55\u66ff\u4ee3\u9a8c\u6536\u3002",
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；POST /v1/conversations/{conversation_id}/items",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
       "evidence": [
         "docs/SERVE_CONVERSATIONS_2026-11-09.md",
         "include/q4t/server/application_routes.h",
@@ -818,8 +818,8 @@
       ]
     },
     "POST /v1/requests/cancel": {
-      "semantics": "\u4ec5 request_id/cancel_token\uff1b\u672a\u77e5/\u5f62\u72b6\u9519\u8bef400\uff0c\u65e0\u5339\u914d404\uff0c\u5339\u914d202",
-      "boundary": "400\u4e0d\u89e6\u53d1\u53d6\u6d88\uff1b202\u4e0d\u7b49\u4e8edrained\uff1b\u91cd\u542f\u65e0\u6301\u4e45\u72b6\u6001",
+      "semantics": "仅 request_id/cancel_token；未知/形状错误400，无匹配404，匹配202",
+      "boundary": "400不触发取消；202不等于drained；重启无持久状态",
       "evidence": [
         "tools/serve_reliability/http_lifecycle_test.cpp",
         "tests/server_chat_contract_test.cpp",
@@ -827,8 +827,8 @@
       ]
     },
     "POST /v1/responses": {
-      "semantics": "Responses\u539f\u751f\u751f\u6210\u548c\u6301\u4e45\u72b6\u6001\uff1b\u540e\u53f0\u62e5\u6709\u4efb\u52a1\u4e0e\u51c6\u5165\u3001\u6309ID\u67e5\u8be2/\u539f\u4e8b\u4ef6\u7eed\u8bfb/\u53d6\u6d88\uff0c\u67e5\u8be2\u4e0e\u53d6\u6d88\u4f7f\u7528\u72ec\u7acb\u989d\u5ea6\uff0cOPTIONS\u590d\u7528\u539f\u751fCORS\u3002",
-      "boundary": "\u540c\u6b65\u771f\u5b9e\u4e1a\u52a1\u5df2\u9a8c\uff1b\u540e\u53f0HTTP/\u6062\u590d\u9488\u5bf9\u6027CPU\u548c\u5b98\u65b9SDK\u5df2\u9a8c\uff0c\u540e\u53f0\u6a21\u578b\u4e1a\u52a1/\u53d1\u884c\u3001\u524d\u53f0\u672a\u77e5\u63d0\u4ea4\u6536\u5c3e\u548c\u5bf9\u8c61\u63a7\u5236\u5668/\u4fdd\u7559\u6cbb\u7406\u53ca\u5176\u4ed6\u6267\u884c\u4f9d\u8d56\u7ee7\u7eed\u5fc5\u505a\u3002\u9ed8\u8ba4\u672a\u66ff\u6362\uff0c\u4e0d\u8ba1\u5168\u91cf\u5b8c\u6210\u3002",
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
@@ -839,8 +839,8 @@
       ]
     },
     "POST /v1/responses/compact": {
-      "semantics": "\u539f\u751f\u5b9e\u9645\u8bb0\u5fc6\u6a21\u578b\u6b65\u9aa4\u3001\u8ba4\u8bc1\u538b\u7f29\u7a97\u53e3\uff0c\u8fd4\u56de\u53ef\u76f4\u63a5\u56de\u586b\u7684 CompactedResponse\uff1b\u5171\u4eab\u51c6\u5165\u3001\u622a\u6b62\u4e0e\u771f\u5b9e\u7528\u91cf\u3002",
-      "boundary": "\u6e90\u7801\u5df2\u63a5\u5165\uff1b\u672c\u7ec4\u76f4\u63a5 CPU\u3001\u5b98\u65b9 SDK/\u771f\u5b9e\u6a21\u578b\u4e0e\u4ea4\u4ed8\u5c1a\u5f85\u9a8c\u8bc1\uff0c\u4e0d\u4f5c\u4e3a\u5b8c\u6210\u8bc1\u636e\u3002",
+      "semantics": "原生实际记忆模型步骤、认证压缩窗口，返回可直接回填的 CompactedResponse；共享准入、截止与真实用量。",
+      "boundary": "源码已接入；本组直接 CPU、官方 SDK/真实模型与交付尚待验证，不作为完成证据。",
       "evidence": [
         "src/server/responses_execution_compaction.cpp",
         "tests/server_responses_compaction_test.cpp",
@@ -848,8 +848,8 @@
       ]
     },
     "POST /v1/responses/{response_id}/cancel": {
-      "semantics": "Responses\u539f\u751f\u751f\u6210\u548c\u6301\u4e45\u72b6\u6001\uff1b\u540e\u53f0\u62e5\u6709\u4efb\u52a1\u4e0e\u51c6\u5165\u3001\u6309ID\u67e5\u8be2/\u539f\u4e8b\u4ef6\u7eed\u8bfb/\u53d6\u6d88\uff0c\u67e5\u8be2\u4e0e\u53d6\u6d88\u4f7f\u7528\u72ec\u7acb\u989d\u5ea6\uff0cOPTIONS\u590d\u7528\u539f\u751fCORS\u3002",
-      "boundary": "\u540c\u6b65\u771f\u5b9e\u4e1a\u52a1\u5df2\u9a8c\uff1b\u540e\u53f0HTTP/\u6062\u590d\u9488\u5bf9\u6027CPU\u548c\u5b98\u65b9SDK\u5df2\u9a8c\uff0c\u540e\u53f0\u6a21\u578b\u4e1a\u52a1/\u53d1\u884c\u3001\u524d\u53f0\u672a\u77e5\u63d0\u4ea4\u6536\u5c3e\u548c\u5bf9\u8c61\u63a7\u5236\u5668/\u4fdd\u7559\u6cbb\u7406\u53ca\u5176\u4ed6\u6267\u884c\u4f9d\u8d56\u7ee7\u7eed\u5fc5\u505a\u3002\u9ed8\u8ba4\u672a\u66ff\u6362\uff0c\u4e0d\u8ba1\u5168\u91cf\u5b8c\u6210\u3002",
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
@@ -927,6 +927,54 @@
         "src/server/files_http.cpp",
         "tests/server_files_test.cpp",
         "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md"
+      ]
+    },
+    "POST /v1/uploads": {
+      "semantics": "Native scoped Uploads create/part/complete/cancel; ordered verified chunks and atomic File publication. OPTIONS uses configured native CORS.",
+      "boundary": "Development: core27 targeted CPU accepted; native HTTP/TLS/SDK integration checks frozen next. Explicit body/storage limits, unknown receipt retains original IDs; file consumption/Batch remain required tasks.",
+      "evidence": [
+        "src/server/uploads.cpp",
+        "src/server/files_http.cpp",
+        "tests/server_uploads_test.cpp",
+        "tools/serve_responses/test_uploads_transport.py",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
+        "docs/evidence/serve-uploads-core-cpu-20261110/README.md"
+      ]
+    },
+    "POST /v1/uploads/{upload_id}/cancel": {
+      "semantics": "Native scoped Uploads create/part/complete/cancel; ordered verified chunks and atomic File publication. OPTIONS uses configured native CORS.",
+      "boundary": "Development: core27 targeted CPU accepted; native HTTP/TLS/SDK integration checks frozen next. Explicit body/storage limits, unknown receipt retains original IDs; file consumption/Batch remain required tasks.",
+      "evidence": [
+        "src/server/uploads.cpp",
+        "src/server/files_http.cpp",
+        "tests/server_uploads_test.cpp",
+        "tools/serve_responses/test_uploads_transport.py",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
+        "docs/evidence/serve-uploads-core-cpu-20261110/README.md"
+      ]
+    },
+    "POST /v1/uploads/{upload_id}/complete": {
+      "semantics": "Native scoped Uploads create/part/complete/cancel; ordered verified chunks and atomic File publication. OPTIONS uses configured native CORS.",
+      "boundary": "Development: core27 targeted CPU accepted; native HTTP/TLS/SDK integration checks frozen next. Explicit body/storage limits, unknown receipt retains original IDs; file consumption/Batch remain required tasks.",
+      "evidence": [
+        "src/server/uploads.cpp",
+        "src/server/files_http.cpp",
+        "tests/server_uploads_test.cpp",
+        "tools/serve_responses/test_uploads_transport.py",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
+        "docs/evidence/serve-uploads-core-cpu-20261110/README.md"
+      ]
+    },
+    "POST /v1/uploads/{upload_id}/parts": {
+      "semantics": "Native scoped Uploads create/part/complete/cancel; ordered verified chunks and atomic File publication. OPTIONS uses configured native CORS.",
+      "boundary": "Development: core27 targeted CPU accepted; native HTTP/TLS/SDK integration checks frozen next. Explicit body/storage limits, unknown receipt retains original IDs; file consumption/Batch remain required tasks.",
+      "evidence": [
+        "src/server/uploads.cpp",
+        "src/server/files_http.cpp",
+        "tests/server_uploads_test.cpp",
+        "tools/serve_responses/test_uploads_transport.py",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
+        "docs/evidence/serve-uploads-core-cpu-20261110/README.md"
       ]
     }
   },
@@ -1349,11 +1397,25 @@
       "limit",
       "order",
       "purpose"
+    ],
+    "uploads.cpp:0:body": [
+      "bytes",
+      "filename",
+      "mime_type",
+      "purpose",
+      "expires_after"
+    ],
+    "uploads.cpp:1:*expiry": [
+      "anchor",
+      "seconds"
+    ],
+    "uploads.cpp:2:body": [
+      "part_ids"
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "ab801a60e498b12129bf7d6e2c7d0b143e992704c15e4e3642bc485a002a9f3b",
-    "cmake/ChatProtocolIdentity.cmake": "258c5f2153fbcf5ba303ab6f3929b9304fea94e4e6162e298dd89f15d3b9bdeb",
+    "CMakeLists.txt": "266e95aa11e1c3f0a7139ab48801bd45113625e20b221f20c6e90d70ae1b25ad",
+    "cmake/ChatProtocolIdentity.cmake": "2c9ffec8cb4bf57a13778d65de3eb903df265c5ef898817cd9fe8a62284161ba",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
     "cmake/NativeIngress.cmake": "5560a873e8d89b5e034636f006a2b21ace3bdab2bf71dcf688d5028fbbc704b4",
@@ -1374,7 +1436,7 @@
     "include/q4t/server/abort_reason.h": "2bad04553ca1e40595e10d6549d2a3a798bed05fcadd92527f722c48aecb70b5",
     "include/q4t/server/access_program.h": "389d4e152faf16fbfd626e1c1b7045acb28a72822e4968a14f02dc06b096614e",
     "include/q4t/server/application_query.h": "8331a32ad43b1e4eb059a25f1e2d318c351fdda0fbf4555f7bfafd310a9d2c36",
-    "include/q4t/server/application_routes.h": "9998a8e925039f35a3bca7b530e81f55674720862aa272395cec23e193f9d080",
+    "include/q4t/server/application_routes.h": "743e6bdf954f49412d1b548dd172f5beb63b6d1cbeefbee58f1b1f5315f40aba",
     "include/q4t/server/binary_store.h": "b2e853ebce4b0580c2305fbccc4145d739d4251443922dd13b91f48bae6f1db9",
     "include/q4t/server/cache_health.h": "3b43f963c6621361a93feaf3575cdf5f157a3ff426d13aa03b5bf81a005766d3",
     "include/q4t/server/cache_io.h": "212c22958256a4e7441f0a1a896ddf87e9c4759104680582d6541a58b6b0491c",
@@ -1384,7 +1446,7 @@
     "include/q4t/server/chat_plan.h": "b333ba84200a365d59613c0bf592288cbddc714afcb1f48304e37c95727bbc73",
     "include/q4t/server/chat_prompt.h": "067cc7004281799fc7809f3f544a1a8c41d9665a362439b92fe868515499c78d",
     "include/q4t/server/chat_response_parser.h": "43c0d61499e9303cd8bacf92b685f5994d81d8e4b0aaed86edbc38943e941a88",
-    "include/q4t/server/chat_server.h": "6a1fd424a99cd6f61687cbf04ead66efac11462ea2e3a03534ba252be225838d",
+    "include/q4t/server/chat_server.h": "c9053b2df9f3b5bd6ea4cbd526cb334bebd27bcae53ac5b47dcd1b4254c66a41",
     "include/q4t/server/chat_storage.h": "1c75252f843b65276fbed00b9ac6c4a2ed8ce7cfdae107ad8aebe164b16f936a",
     "include/q4t/server/chat_template.h": "62a3dd447e16a74393430ab8ae2d85657e23609cd3c57270ef24c943be587c01",
     "include/q4t/server/chat_tool_history.h": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
@@ -1404,13 +1466,13 @@
     "include/q4t/server/device_memory.h": "1099e20d3b205d3ae03daba0308be7221f5097c78a2fd58c8ca16298277dfc4c",
     "include/q4t/server/file_limits.h": "70c0b62a0cf92fc0cf502a60bad87920d576bc7f9c3391c7fd7c72f977183529",
     "include/q4t/server/files.h": "3e3e7515cd34f4ab66e0efa7023956cf4eb88455156881aa818bf5ec1e170fb9",
-    "include/q4t/server/files_http.h": "43fd2dab8a608b3da12a110fc89922847b03fec78c62c5fc5359fbe40c838f3e",
+    "include/q4t/server/files_http.h": "1a3e9ae8012985df4e3acd3caa1c45bf331395ad8d00048b1d03ebb34ffab720",
     "include/q4t/server/grammar_process.h": "fbed9c86c91be129af8f1481292ef65edb8a9989090fc1a83e12c6fe7e106e53",
     "include/q4t/server/http_connection.h": "7781ebea44133e149d25292bcb20db324d7e8c366c24a176cf776163d6b0268d",
     "include/q4t/server/http_framing.h": "b3f3c3b39d2de10180d7acb7529c60b7a46b29d595d8ee72de86604ff378de12",
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
     "include/q4t/server/http_observation.h": "603f10404ef826dab21b6eb451723413b7794a5772c6215178552eef3b381072",
-    "include/q4t/server/http_request.h": "958858f2e58d5854ad0682f07503797dbc9589607bf9d80836d357b0bd2745b4",
+    "include/q4t/server/http_request.h": "407385927ca20b08fd10f7383d319f30edd9ac62a216b2d7f44932a27860dc53",
     "include/q4t/server/http_response.h": "707dab9e9d0f4dd20a1d1a3427c8faa54d3394f9494103edd34c3cac210a589e",
     "include/q4t/server/input_contract.h": "03c1dfcc666986f5e06a91fb34cf95bf1818bd67df783794ae0ada63b7ae8881",
     "include/q4t/server/legacy_tools.h": "2bcdb5d01e78379c2f7baaaed0ef902867357a0167f3ce6ea18fbc1fdb9dbfa1",
@@ -1421,9 +1483,9 @@
     "include/q4t/server/moderation.h": "3a81e2254c524b1353e68aff24d3319ccab31b81fd2b2faa2631505e2f7c8e86",
     "include/q4t/server/mtp_policy.h": "28f10c5c885f9465c0f26c22a36bf6be541933a0ed9d9c2da5f0d3983e0a8285",
     "include/q4t/server/multipart.h": "d5561b82cb3517424c922165fffce518046ec1e45436a2d66c7946c870f8c33f",
-    "include/q4t/server/native_crypto.h": "0976c2f55c5edaedfc50299db53cd2aa4dd0f0126117aa809e78eea6fa23a224",
-    "include/q4t/server/object_retention.h": "75aafff391e86eb2ec62706d7bf0233f62612c41e83f98c01930fd582493850b",
-    "include/q4t/server/object_store.h": "cfb404e83c981c57df0aba450192ff1a0952ad77c825921f8b898fd151125d73",
+    "include/q4t/server/native_crypto.h": "1a0c8acb43c9da06cca484c7dba9819a1147354a80563bd9ffb0c0b3c49ed5d8",
+    "include/q4t/server/object_retention.h": "58dd242c9cacb3f6b53c2a5f0643605948d048587dd7c2a5937ea117104ec85a",
+    "include/q4t/server/object_store.h": "48c6b832d4b2b51626873da8db48486723a1ddd1abc0feabdbe2a86ac13506fc",
     "include/q4t/server/object_store_options.h": "50ac339fb5830d363ac62bea2cfb89fe45f6318f48a146addb593bd7522ec319",
     "include/q4t/server/output_constraints.h": "f227e73a5826900182eff0505e031115ad67acb39fdd00968a8fc03e8dfed0de",
     "include/q4t/server/output_schema.h": "d097d1874a3e450336cbe26ab62cfa712f2be9d07a7a211aab33007db112b3ed",
@@ -1476,6 +1538,7 @@
     "include/q4t/server/text_stop.h": "560dde9da5f9ea673a22eb2b6ad9ef59e227d55122d041a51ae2c45ef4114f66",
     "include/q4t/server/thinking_budget.h": "3fe102b73f218f02b8bab0d49a6c6a83040666aef14a1f66e5c0208c937eccf2",
     "include/q4t/server/token_logprobs.h": "4e78d55c74f87be540b134bdd9a537050548118a0ae8a864750c730618a46060",
+    "include/q4t/server/uploads.h": "f80063e995a42a742bcd614b47de9ab987892f33f9697d934ce794626e6c1bb6",
     "include/q4t/service/guardian_journal.h": "700c8d24b7b8288c1f923cc532f591747a6adfbef42b1013a1d8e178288186a9",
     "include/q4t/service/guardian_process.h": "31b967d4b558b1cdce10bf5acfb4731a9c9952930039285f6ed09af5b010c8f9",
     "include/q4t/service/guardian_quota.h": "eb409d5a22d14fa432da89a9090501a49aa78cd10f57de24b3b8de3405139d93",
@@ -1516,17 +1579,17 @@
     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_capabilities.cpp": "dd1300735ed9819a7e4a38476b9d22ade15ad87debc9cd6feb0dab50304036e5",
+    "src/server/chat_capabilities.cpp": "8baab78f379f6c8f4c5f03e260d92a82ed82024c5a652afe8ed9551e9806e73a",
     "src/server/chat_choices.cpp": "ee99c4aca3c1ea07d5929da38325aa2b28a411245c7d794c9cc5f1f8eb23f16a",
     "src/server/chat_contract.cpp": "87885c6f285b8a2891f6d337418c161c55dcae46cf5a4dbc1bd75beb6e2b8cac",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
     "src/server/chat_generation.cpp": "938fd362779ea110bdd6014c980c9b488787a489ba10753e16d8017304e87d50",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "c86cb51e2fef129c64da3a355bab0e512a0165c914ac35afccbec814e9d1510b",
+    "src/server/chat_http.cpp": "cb9956a65a1ca86d2266d92881273a90ba59c3dd7e2863733e83b4cac4e12e71",
     "src/server/chat_input.cpp": "372b93746fbe236ec1d0caea778b1212d22ab94a18ec4f7ce81adcfba8b8c546",
     "src/server/chat_input_tokens.cpp": "c827f6fea2207afbed17312b6b9cbd90a6c6d52bfd6b6549d220b7c93cea40d9",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
-    "src/server/chat_metrics.cpp": "4fcb248a3a1f9b2ea0cf5d825bd6afc1ef1dfee34bb859ef594ece4feea8cb27",
+    "src/server/chat_metrics.cpp": "9bfdbed223753fb2f6d9304e7472537ae81f31a6f619b5d2e7db42a7722e1cce",
     "src/server/chat_plan.cpp": "8fb25d37abfd75646db8aa641107dd63341591873bec7cec9f6f7f3700d1e68d",
     "src/server/chat_preflight.cpp": "c920aff0a7994f2c6a35327a1119c4ccbe699920bdc980476b345a54fdd91e19",
     "src/server/chat_prompt.cpp": "91639256c143a659423b42340e92d154ac3f0a6c697b58bae2e20814fe303272",
@@ -1542,7 +1605,7 @@
     "src/server/client_policy.cpp": "1843d5eed7f38a3c4fb3a087d97cf2d5b03e87c5c9d3977409ab08ba7a5e135f",
     "src/server/client_policy_admin.cpp": "5d1703539b6fa159e1ea9210698c0030f7170da054bbb069b4417ea3ad27a2ed",
     "src/server/client_rate_state.cpp": "bc9d1577ffb84c852243d2088cd8351e3dea21022f50f7a8c0f909f16e056c7a",
-    "src/server/client_request.cpp": "5b60020ae66fa706ca7c9eb23b6e726d6a997136a10bfe8f02d85d90b6e0f635",
+    "src/server/client_request.cpp": "1e2bc36326d94d46347865c77534bc2a2608b29857be46c958e7af3f2e244fc4",
     "src/server/completion_plan.cpp": "714facdef55f982082f687220d2227f6195c517a41f835fe78161fc4a1b1656d",
     "src/server/completion_response.cpp": "75be95aa5a9da31112932cbddaa1e81c0b6cfa31664b03139e1d97f7d7563722",
     "src/server/contracts/openai_item_types_v1.json": "d22c6bb9a38868061556ed9dd76d8d51589a965101d4593684ea049f2945de81",
@@ -1554,11 +1617,11 @@
     "src/server/custom_regex.h": "4916fea56e31101ba2352675c918b82fe76b785b8559c87683d8cc531c3624d5",
     "src/server/custom_tools.cpp": "3e45f9a496439ec1e0d86739acb9c5d01eb6e2c321a96d924cf755b99bc12abd",
     "src/server/files.cpp": "5765030ff4056bc593a54fe6a07c501c559cedd4910f3f5bdba291342cc328da",
-    "src/server/files_http.cpp": "fb790e173216e6a8f20272c67e2556e1e08479cbc74b766da28df8df0c5cb50d",
+    "src/server/files_http.cpp": "ff724c486b34f2013747d06194086cdd11b876c347d97db2034da22ae73139ef",
     "src/server/grammar_process.cpp": "b0c9f65c7299e896253d139c34defb65143d2cb7ff9e58465f92661fbc04424c",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
-    "src/server/http_request.cpp": "01251905c5120fe61972f73c4a7cb3df36c23c48096f86fad07cee80d2ac3c04",
+    "src/server/http_request.cpp": "6a9633c3989b3160d09ef3da134df9c1659051bff97c43db1d82275bd9e038ac",
     "src/server/http_response.cpp": "865cf625d089e8bf0a8e0f276161ac272c68a6bd4b766426ff77d9f74b595d88",
     "src/server/input_contract.cpp": "a8d8f7412e50df59da2ec5829f4ecd34245dc521edcb61011ea4dff2b492f362",
     "src/server/legacy_tools.cpp": "b0bffcd3c780f35f336b40a152e9837077b9a4c6ea3ede737fcbb14b8514587c",
@@ -1567,12 +1630,12 @@
     "src/server/model_catalog.cpp": "8d0808b669e3ecbc95794d8b07bd6a86b38dc310cf93c98e18befade71fd2d7e",
     "src/server/moderation.cpp": "ea07d705ed4d22aa5654e9bfd625035b0aff4bdfe5f0796dcfa7c1ef3c57053d",
     "src/server/multipart.cpp": "dbca4c49b4f25a062f5e8ecd578cd533b3847141c0ad36579e8a5519bdefe6d0",
-    "src/server/native_crypto.cpp": "86da5a6cda4b18154f46227074d7fa68b7ec3cbb8bfcdb9a6aaff75b2c9cb8a1",
+    "src/server/native_crypto.cpp": "a5740ad331e2d6736f235c32279fd60d767f94a98925a4af83695c8b5f3c6cc4",
     "src/server/object_protocol.h": "37bcaad2864814be50b6ae530d4b2e17028cacbc0fd4e05027e4235965331d9c",
-    "src/server/object_retention.cpp": "b082242a28b27b1847fdef97c8cbf47f6d4724fd8443f220b1e26e256810dce2",
-    "src/server/object_store.cpp": "116f7a3037668c5ee147ce8d490f41dc15253838a63ea3579c3c302e5a998144",
+    "src/server/object_retention.cpp": "4e4355dfcaa3d76888aeea7e4e2731d930bbac2d0c4a791d213e94d788e3376a",
+    "src/server/object_store.cpp": "426410b171fcba29a97e3ce36b886c0f16e8dfaefc65bf107e0e3b715e7dabe3",
     "src/server/object_store_options.cpp": "2118353888a2737d16b6dd2213cf73bfedd2f55ec090d6c19addccd85fdd6811",
-    "src/server/object_worker.cpp": "677f77ea1ae334286fa1eea447bac9b26f825c081050515fb23141cfa9542c09",
+    "src/server/object_worker.cpp": "7f5dfc8fe711f0549de61cede5faf6a8dfa48cecd47463dd641d5fb68d39e576",
     "src/server/output_constraints.cpp": "1273d5d1643a8cb7ccd2804990d2bcac656cbe5b198096c0a66b6803751e3753",
     "src/server/output_schema.cpp": "6d42d154ce3ac43c2cb2569298af221148813f9233e37c9d9c75eb0f331ee65d",
     "src/server/prediction.cpp": "7e8ccdf7c44dd5c8245230577d42eb7d4cd17c6e2efcf5534a02e6744815733f",
@@ -1631,6 +1694,7 @@
     "src/server/text_stop.cpp": "2397b27adc873b3ac0697af68352a73c8481830da6053fde0adeca536eaba4dc",
     "src/server/thinking_budget.cpp": "05410d285b3cd6bbdb1d5e19282655f89b5d17a3205a35529e99ec2ec1f60962",
     "src/server/token_logprobs.cpp": "6d315376dcbe02b2b9d35b609b36f9ce02bf22e5a7c81d9ab47bde7e14556927",
+    "src/server/uploads.cpp": "b36af1ee4e8a011e2be968e2e1e613699812d856cbbf205720fb9022ed1897c7",
     "src/service/cuda_probe.cu": "f91663d4098aa6365db6cf3d3fc437b5b32ee20280b65cc1ee34cb796a48e7fb",
     "src/service/guardian_journal.cpp": "a0a60642d1546c302be84578b7ca6d4475ab9808c108dd82fa4df7133f3b5a12",
     "src/service/guardian_main.cpp": "a7c7bacec4f927c42e61bff64f1455af01a3d4129562f4ed7a5f28361ee112ad",
@@ -1641,7 +1705,7 @@
     "src/service/ingress_admin.cpp": "766241235bab9d0e84490f72b66938e93fbee88757099ac2731ed6eae7afd1cc",
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
-    "src/service/ingress_main.cpp": "2065c4c03ba0f207fa3c6baf718296193c1c0326dc76ab495e6ee77be744cf55",
+    "src/service/ingress_main.cpp": "52b7a9dca54ab655edc425aa81b7400c41a5f6ca7d7b66c5cb2bd6d6aba558ed",
     "src/service/ingress_proxy.cpp": "2ee7ea1d89fb17402feb2d7c3125dde322b61145161b244da35f7b6ddba7372c",
     "src/service/ingress_tls.cpp": "676c3d18fc242aca0016ebecd182633e8299b7201903e7f7c6f0ea174d0a7d4f",
     "src/service/ingress_transport.cpp": "aead02740d23e335bdcea7ab376c38578c55eb979bd62ac69c7dc47a7a48c4d2",
@@ -1650,7 +1714,7 @@
     "src/vision/media_plan.cpp": "30f1858fe11a14bb81f5ee2c80edef68e60cb7a03c7a0ec8132cc29936dff302",
     "src/vision/processor.cpp": "856d82bff8e5a67ce84693a6a2980aedd64b7e76c1e2416c77690108ae82e975",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
-    "tools/serve_gateway/gateway.py": "dbe684a93596e82e5ef54f57ec20e7d7bf45d6aec14cdb2e6073af06dca9fecd",
+    "tools/serve_gateway/gateway.py": "bf27cec345bbd9cf57359f66f7cd252cd03cb4b202d4ee7f9118e96835c0ce22",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "edb652d4fd38bee8ed52a013c8647ad1ee744a0843a8ef7f27661c39488ec670",
     "tools/serve_recovery/access_control.py": "3f65d1257735880343990cca6e5c16409ab18b60a707bd901ff0a0dd4c957b1a",
@@ -1795,7 +1859,7 @@
     "runtime_sha256": "a3fd64a34a67f619bf2978faf152d6f455652d048a1e7a2cdc48caf784898184",
     "report": "docs/SERVE_TEXT_STOP_RESULT_2026-11-03.md"
   },
-  "review_note": "2026-11-03 SRV-07\uff1a\u5ba1\u6838\u5171\u7528\u89c4\u5212/\u6e32\u67d3\u62c6\u5206\u3001\u751f\u6210\u524d\u5206\u8bcd\u3001\u4e24\u7c7b\u9884\u7b97\u4fdd\u7559\u3001\u53ea\u8bfb\u8d44\u6e90\u8fb9\u754c\u4e0e\u914d\u7f6e\u6765\u6e90\uff1bCPU\u6709\u8bc1\u636e\uff0c\u771f\u5b9eHTTP\u5c1a\u5f85\u9a8c\u3002",
+  "review_note": "2026-11-03 SRV-07：审核共用规划/渲染拆分、生成前分词、两类预算保留、只读资源边界与配置来源；CPU有证据，真实HTTP尚待验。",
   "admission_review_20261103": {
     "status": "accepted_bounded",
     "scope": "CAS inflight lease, capacity FIFO slot queue, cancellation cleanup and discovery/metrics",
@@ -2059,8 +2123,8 @@
       ]
     },
     "DELETE /v1/conversations/{conversation_id}": {
-      "semantics": "\u539f\u751fConversations\u4f1a\u8bdd/\u6210\u5458CRUD\u3001\u5206\u9875\u4e0e\u6295\u5f71\uff1bDELETE /v1/conversations/{conversation_id}",
-      "boundary": "\u4f7f\u7528\u5df2\u8ba4\u8bc1client\u4e0e\u4e1a\u52a1\u51c6\u5165\uff1bCPU\u5904\u7406\u5668/\u5b98\u65b9SDK\u548c\u539f\u751fTLS\u5df2\u9a8c\uff0c\u5b9e\u9645serve\u6a21\u578b\u4e1a\u52a1\u4e0e\u53d1\u5e03\u5f85\u7eed\uff1b\u4e0d\u4ee5\u76ee\u5f55\u6536\u5f55\u66ff\u4ee3\u9a8c\u6536\u3002",
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；DELETE /v1/conversations/{conversation_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
       "evidence": [
         "docs/SERVE_CONVERSATIONS_2026-11-09.md",
         "include/q4t/server/application_routes.h",
@@ -2069,8 +2133,8 @@
       ]
     },
     "DELETE /v1/conversations/{conversation_id}/items/{item_id}": {
-      "semantics": "\u539f\u751fConversations\u4f1a\u8bdd/\u6210\u5458CRUD\u3001\u5206\u9875\u4e0e\u6295\u5f71\uff1bDELETE /v1/conversations/{conversation_id}/items/{item_id}",
-      "boundary": "\u4f7f\u7528\u5df2\u8ba4\u8bc1client\u4e0e\u4e1a\u52a1\u51c6\u5165\uff1bCPU\u5904\u7406\u5668/\u5b98\u65b9SDK\u548c\u539f\u751fTLS\u5df2\u9a8c\uff0c\u5b9e\u9645serve\u6a21\u578b\u4e1a\u52a1\u4e0e\u53d1\u5e03\u5f85\u7eed\uff1b\u4e0d\u4ee5\u76ee\u5f55\u6536\u5f55\u66ff\u4ee3\u9a8c\u6536\u3002",
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；DELETE /v1/conversations/{conversation_id}/items/{item_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
       "evidence": [
         "docs/SERVE_CONVERSATIONS_2026-11-09.md",
         "include/q4t/server/application_routes.h",
@@ -2096,8 +2160,8 @@
       ]
     },
     "DELETE /v1/responses/{response_id}": {
-      "semantics": "Responses\u539f\u751f\u751f\u6210\u548c\u6301\u4e45\u72b6\u6001\uff1b\u540e\u53f0\u62e5\u6709\u4efb\u52a1\u4e0e\u51c6\u5165\u3001\u6309ID\u67e5\u8be2/\u539f\u4e8b\u4ef6\u7eed\u8bfb/\u53d6\u6d88\uff0c\u67e5\u8be2\u4e0e\u53d6\u6d88\u4f7f\u7528\u72ec\u7acb\u989d\u5ea6\uff0cOPTIONS\u590d\u7528\u539f\u751fCORS\u3002",
-      "boundary": "\u540c\u6b65\u771f\u5b9e\u4e1a\u52a1\u5df2\u9a8c\uff1b\u540e\u53f0HTTP/\u6062\u590d\u9488\u5bf9\u6027CPU\u548c\u5b98\u65b9SDK\u5df2\u9a8c\uff0c\u540e\u53f0\u6a21\u578b\u4e1a\u52a1/\u53d1\u884c\u3001\u524d\u53f0\u672a\u77e5\u63d0\u4ea4\u6536\u5c3e\u548c\u5bf9\u8c61\u63a7\u5236\u5668/\u4fdd\u7559\u6cbb\u7406\u53ca\u5176\u4ed6\u6267\u884c\u4f9d\u8d56\u7ee7\u7eed\u5fc5\u505a\u3002\u9ed8\u8ba4\u672a\u66ff\u6362\uff0c\u4e0d\u8ba1\u5168\u91cf\u5b8c\u6210\u3002",
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
@@ -2108,8 +2172,8 @@
       ]
     },
     "GET /healthz": {
-      "semantics": "Bearer\u9274\u6743\u540e\u6838\u5bf9\u5f53\u524d\u4ee3\u6b21\u51c6\u5165\uff0c\u518d\u8f6c\u53d1\u5230\u76f8\u5e94\u539f\u751f\u540e\u7aef\u76d1\u542c\u5668",
-      "boundary": "\u8bfb\u4f53\u524d\u4e0e\u8f6c\u53d1\u524d\u5fc5\u987b\u662f\u540c\u4e00\u51c6\u5165\u7ed1\u5b9a\uff1b\u6062\u590d\u671f503\uff1b\u4e0d\u7ed5\u8fc7\u540e\u7aef\u914d\u989d\uff1b\u65e0\u81ea\u52a8\u91cd\u653e\u3002",
+      "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
+      "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
       "evidence": [
         "src/service/ingress_main.cpp",
         "tools/serve_recovery/test_native_ingress.py",
@@ -2120,7 +2184,7 @@
       ]
     },
     "GET /livez": {
-      "semantics": "\u539f\u751f\u670d\u52a1\u5165\u53e3\u672c\u8eab\u5b58\u6d3b\uff0c\u9700Bearer\u9274\u6743",
+      "semantics": "原生服务入口本身存活，需Bearer鉴权",
       "boundary": "Actual-peer IPv4/IPv6 CIDR, optional native TLS and CORS; bounded close-delimited HTTP. Live does not imply model ready; no replay. Native TLS/CORS targeted business accepted; no full-model or long-stability claim.",
       "evidence": [
         "src/service/ingress_main.cpp",
@@ -2132,8 +2196,8 @@
       ]
     },
     "GET /readyz": {
-      "semantics": "Bearer\u9274\u6743\u540e\u6838\u5bf9\u5f53\u524d\u4ee3\u6b21\u51c6\u5165\uff0c\u518d\u8f6c\u53d1\u5230\u76f8\u5e94\u539f\u751f\u540e\u7aef\u76d1\u542c\u5668",
-      "boundary": "\u8bfb\u4f53\u524d\u4e0e\u8f6c\u53d1\u524d\u5fc5\u987b\u662f\u540c\u4e00\u51c6\u5165\u7ed1\u5b9a\uff1b\u6062\u590d\u671f503\uff1b\u4e0d\u7ed5\u8fc7\u540e\u7aef\u914d\u989d\uff1b\u65e0\u81ea\u52a8\u91cd\u653e\u3002",
+      "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
+      "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
       "evidence": [
         "src/service/ingress_main.cpp",
         "tools/serve_recovery/test_native_ingress.py",
@@ -2144,8 +2208,8 @@
       ]
     },
     "GET /v1/capabilities": {
-      "semantics": "Bearer\u9274\u6743\u540e\u6838\u5bf9\u5f53\u524d\u4ee3\u6b21\u51c6\u5165\uff0c\u518d\u8f6c\u53d1\u5230\u76f8\u5e94\u539f\u751f\u540e\u7aef\u76d1\u542c\u5668",
-      "boundary": "\u8bfb\u4f53\u524d\u4e0e\u8f6c\u53d1\u524d\u5fc5\u987b\u662f\u540c\u4e00\u51c6\u5165\u7ed1\u5b9a\uff1b\u6062\u590d\u671f503\uff1b\u4e0d\u7ed5\u8fc7\u540e\u7aef\u914d\u989d\uff1b\u65e0\u81ea\u52a8\u91cd\u653e\u3002",
+      "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
+      "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
       "evidence": [
         "src/service/ingress_main.cpp",
         "tools/serve_recovery/test_native_ingress.py",
@@ -2183,8 +2247,8 @@
       ]
     },
     "GET /v1/conversations/{conversation_id}": {
-      "semantics": "\u539f\u751fConversations\u4f1a\u8bdd/\u6210\u5458CRUD\u3001\u5206\u9875\u4e0e\u6295\u5f71\uff1bGET /v1/conversations/{conversation_id}",
-      "boundary": "\u4f7f\u7528\u5df2\u8ba4\u8bc1client\u4e0e\u4e1a\u52a1\u51c6\u5165\uff1bCPU\u5904\u7406\u5668/\u5b98\u65b9SDK\u548c\u539f\u751fTLS\u5df2\u9a8c\uff0c\u5b9e\u9645serve\u6a21\u578b\u4e1a\u52a1\u4e0e\u53d1\u5e03\u5f85\u7eed\uff1b\u4e0d\u4ee5\u76ee\u5f55\u6536\u5f55\u66ff\u4ee3\u9a8c\u6536\u3002",
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；GET /v1/conversations/{conversation_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
       "evidence": [
         "docs/SERVE_CONVERSATIONS_2026-11-09.md",
         "include/q4t/server/application_routes.h",
@@ -2193,8 +2257,8 @@
       ]
     },
     "GET /v1/conversations/{conversation_id}/items": {
-      "semantics": "\u539f\u751fConversations\u4f1a\u8bdd/\u6210\u5458CRUD\u3001\u5206\u9875\u4e0e\u6295\u5f71\uff1bGET /v1/conversations/{conversation_id}/items",
-      "boundary": "\u4f7f\u7528\u5df2\u8ba4\u8bc1client\u4e0e\u4e1a\u52a1\u51c6\u5165\uff1bCPU\u5904\u7406\u5668/\u5b98\u65b9SDK\u548c\u539f\u751fTLS\u5df2\u9a8c\uff0c\u5b9e\u9645serve\u6a21\u578b\u4e1a\u52a1\u4e0e\u53d1\u5e03\u5f85\u7eed\uff1b\u4e0d\u4ee5\u76ee\u5f55\u6536\u5f55\u66ff\u4ee3\u9a8c\u6536\u3002",
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；GET /v1/conversations/{conversation_id}/items",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
       "evidence": [
         "docs/SERVE_CONVERSATIONS_2026-11-09.md",
         "include/q4t/server/application_routes.h",
@@ -2203,8 +2267,8 @@
       ]
     },
     "GET /v1/conversations/{conversation_id}/items/{item_id}": {
-      "semantics": "\u539f\u751fConversations\u4f1a\u8bdd/\u6210\u5458CRUD\u3001\u5206\u9875\u4e0e\u6295\u5f71\uff1bGET /v1/conversations/{conversation_id}/items/{item_id}",
-      "boundary": "\u4f7f\u7528\u5df2\u8ba4\u8bc1client\u4e0e\u4e1a\u52a1\u51c6\u5165\uff1bCPU\u5904\u7406\u5668/\u5b98\u65b9SDK\u548c\u539f\u751fTLS\u5df2\u9a8c\uff0c\u5b9e\u9645serve\u6a21\u578b\u4e1a\u52a1\u4e0e\u53d1\u5e03\u5f85\u7eed\uff1b\u4e0d\u4ee5\u76ee\u5f55\u6536\u5f55\u66ff\u4ee3\u9a8c\u6536\u3002",
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；GET /v1/conversations/{conversation_id}/items/{item_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
       "evidence": [
         "docs/SERVE_CONVERSATIONS_2026-11-09.md",
         "include/q4t/server/application_routes.h",
@@ -2213,8 +2277,8 @@
       ]
     },
     "GET /v1/models": {
-      "semantics": "Bearer\u9274\u6743\u540e\u6838\u5bf9\u5f53\u524d\u4ee3\u6b21\u51c6\u5165\uff0c\u518d\u8f6c\u53d1\u5230\u76f8\u5e94\u539f\u751f\u540e\u7aef\u76d1\u542c\u5668",
-      "boundary": "\u8bfb\u4f53\u524d\u4e0e\u8f6c\u53d1\u524d\u5fc5\u987b\u662f\u540c\u4e00\u51c6\u5165\u7ed1\u5b9a\uff1b\u6062\u590d\u671f503\uff1b\u4e0d\u7ed5\u8fc7\u540e\u7aef\u914d\u989d\uff1b\u65e0\u81ea\u52a8\u91cd\u653e\u3002",
+      "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
+      "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
       "evidence": [
         "src/service/ingress_main.cpp",
         "tools/serve_recovery/test_native_ingress.py",
@@ -2258,8 +2322,8 @@
       ]
     },
     "GET /v1/responses/{response_id}": {
-      "semantics": "Responses\u539f\u751f\u751f\u6210\u548c\u6301\u4e45\u72b6\u6001\uff1b\u540e\u53f0\u62e5\u6709\u4efb\u52a1\u4e0e\u51c6\u5165\u3001\u6309ID\u67e5\u8be2/\u539f\u4e8b\u4ef6\u7eed\u8bfb/\u53d6\u6d88\uff0c\u67e5\u8be2\u4e0e\u53d6\u6d88\u4f7f\u7528\u72ec\u7acb\u989d\u5ea6\uff0cOPTIONS\u590d\u7528\u539f\u751fCORS\u3002",
-      "boundary": "\u540c\u6b65\u771f\u5b9e\u4e1a\u52a1\u5df2\u9a8c\uff1b\u540e\u53f0HTTP/\u6062\u590d\u9488\u5bf9\u6027CPU\u548c\u5b98\u65b9SDK\u5df2\u9a8c\uff0c\u540e\u53f0\u6a21\u578b\u4e1a\u52a1/\u53d1\u884c\u3001\u524d\u53f0\u672a\u77e5\u63d0\u4ea4\u6536\u5c3e\u548c\u5bf9\u8c61\u63a7\u5236\u5668/\u4fdd\u7559\u6cbb\u7406\u53ca\u5176\u4ed6\u6267\u884c\u4f9d\u8d56\u7ee7\u7eed\u5fc5\u505a\u3002\u9ed8\u8ba4\u672a\u66ff\u6362\uff0c\u4e0d\u8ba1\u5168\u91cf\u5b8c\u6210\u3002",
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
@@ -2270,8 +2334,8 @@
       ]
     },
     "GET /v1/responses/{response_id}/input_items": {
-      "semantics": "Responses\u539f\u751f\u751f\u6210\u548c\u6301\u4e45\u72b6\u6001\uff1b\u540e\u53f0\u62e5\u6709\u4efb\u52a1\u4e0e\u51c6\u5165\u3001\u6309ID\u67e5\u8be2/\u539f\u4e8b\u4ef6\u7eed\u8bfb/\u53d6\u6d88\uff0c\u67e5\u8be2\u4e0e\u53d6\u6d88\u4f7f\u7528\u72ec\u7acb\u989d\u5ea6\uff0cOPTIONS\u590d\u7528\u539f\u751fCORS\u3002",
-      "boundary": "\u540c\u6b65\u771f\u5b9e\u4e1a\u52a1\u5df2\u9a8c\uff1b\u540e\u53f0HTTP/\u6062\u590d\u9488\u5bf9\u6027CPU\u548c\u5b98\u65b9SDK\u5df2\u9a8c\uff0c\u540e\u53f0\u6a21\u578b\u4e1a\u52a1/\u53d1\u884c\u3001\u524d\u53f0\u672a\u77e5\u63d0\u4ea4\u6536\u5c3e\u548c\u5bf9\u8c61\u63a7\u5236\u5668/\u4fdd\u7559\u6cbb\u7406\u53ca\u5176\u4ed6\u6267\u884c\u4f9d\u8d56\u7ee7\u7eed\u5fc5\u505a\u3002\u9ed8\u8ba4\u672a\u66ff\u6362\uff0c\u4e0d\u8ba1\u5168\u91cf\u5b8c\u6210\u3002",
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
@@ -2375,8 +2439,8 @@
       ]
     },
     "OPTIONS /v1/conversations": {
-      "semantics": "\u539f\u751fConversations\u4f1a\u8bdd/\u6210\u5458CRUD\u3001\u5206\u9875\u4e0e\u6295\u5f71\uff1bOPTIONS /v1/conversations",
-      "boundary": "\u4f7f\u7528\u5df2\u8ba4\u8bc1client\u4e0e\u4e1a\u52a1\u51c6\u5165\uff1bCPU\u5904\u7406\u5668/\u5b98\u65b9SDK\u548c\u539f\u751fTLS\u5df2\u9a8c\uff0c\u5b9e\u9645serve\u6a21\u578b\u4e1a\u52a1\u4e0e\u53d1\u5e03\u5f85\u7eed\uff1b\u4e0d\u4ee5\u76ee\u5f55\u6536\u5f55\u66ff\u4ee3\u9a8c\u6536\u3002",
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；OPTIONS /v1/conversations",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
       "evidence": [
         "docs/SERVE_CONVERSATIONS_2026-11-09.md",
         "include/q4t/server/application_routes.h",
@@ -2385,8 +2449,8 @@
       ]
     },
     "OPTIONS /v1/conversations/{conversation_id}": {
-      "semantics": "\u539f\u751fConversations\u4f1a\u8bdd/\u6210\u5458CRUD\u3001\u5206\u9875\u4e0e\u6295\u5f71\uff1bOPTIONS /v1/conversations/{conversation_id}",
-      "boundary": "\u4f7f\u7528\u5df2\u8ba4\u8bc1client\u4e0e\u4e1a\u52a1\u51c6\u5165\uff1bCPU\u5904\u7406\u5668/\u5b98\u65b9SDK\u548c\u539f\u751fTLS\u5df2\u9a8c\uff0c\u5b9e\u9645serve\u6a21\u578b\u4e1a\u52a1\u4e0e\u53d1\u5e03\u5f85\u7eed\uff1b\u4e0d\u4ee5\u76ee\u5f55\u6536\u5f55\u66ff\u4ee3\u9a8c\u6536\u3002",
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；OPTIONS /v1/conversations/{conversation_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
       "evidence": [
         "docs/SERVE_CONVERSATIONS_2026-11-09.md",
         "include/q4t/server/application_routes.h",
@@ -2395,8 +2459,8 @@
       ]
     },
     "OPTIONS /v1/conversations/{conversation_id}/items": {
-      "semantics": "\u539f\u751fConversations\u4f1a\u8bdd/\u6210\u5458CRUD\u3001\u5206\u9875\u4e0e\u6295\u5f71\uff1bOPTIONS /v1/conversations/{conversation_id}/items",
-      "boundary": "\u4f7f\u7528\u5df2\u8ba4\u8bc1client\u4e0e\u4e1a\u52a1\u51c6\u5165\uff1bCPU\u5904\u7406\u5668/\u5b98\u65b9SDK\u548c\u539f\u751fTLS\u5df2\u9a8c\uff0c\u5b9e\u9645serve\u6a21\u578b\u4e1a\u52a1\u4e0e\u53d1\u5e03\u5f85\u7eed\uff1b\u4e0d\u4ee5\u76ee\u5f55\u6536\u5f55\u66ff\u4ee3\u9a8c\u6536\u3002",
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；OPTIONS /v1/conversations/{conversation_id}/items",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
       "evidence": [
         "docs/SERVE_CONVERSATIONS_2026-11-09.md",
         "include/q4t/server/application_routes.h",
@@ -2405,8 +2469,8 @@
       ]
     },
     "OPTIONS /v1/conversations/{conversation_id}/items/{item_id}": {
-      "semantics": "\u539f\u751fConversations\u4f1a\u8bdd/\u6210\u5458CRUD\u3001\u5206\u9875\u4e0e\u6295\u5f71\uff1bOPTIONS /v1/conversations/{conversation_id}/items/{item_id}",
-      "boundary": "\u4f7f\u7528\u5df2\u8ba4\u8bc1client\u4e0e\u4e1a\u52a1\u51c6\u5165\uff1bCPU\u5904\u7406\u5668/\u5b98\u65b9SDK\u548c\u539f\u751fTLS\u5df2\u9a8c\uff0c\u5b9e\u9645serve\u6a21\u578b\u4e1a\u52a1\u4e0e\u53d1\u5e03\u5f85\u7eed\uff1b\u4e0d\u4ee5\u76ee\u5f55\u6536\u5f55\u66ff\u4ee3\u9a8c\u6536\u3002",
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；OPTIONS /v1/conversations/{conversation_id}/items/{item_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
       "evidence": [
         "docs/SERVE_CONVERSATIONS_2026-11-09.md",
         "include/q4t/server/application_routes.h",
@@ -2478,8 +2542,8 @@
       ]
     },
     "OPTIONS /v1/responses": {
-      "semantics": "Responses\u539f\u751f\u751f\u6210\u548c\u6301\u4e45\u72b6\u6001\uff1b\u540e\u53f0\u62e5\u6709\u4efb\u52a1\u4e0e\u51c6\u5165\u3001\u6309ID\u67e5\u8be2/\u539f\u4e8b\u4ef6\u7eed\u8bfb/\u53d6\u6d88\uff0c\u67e5\u8be2\u4e0e\u53d6\u6d88\u4f7f\u7528\u72ec\u7acb\u989d\u5ea6\uff0cOPTIONS\u590d\u7528\u539f\u751fCORS\u3002",
-      "boundary": "\u540c\u6b65\u771f\u5b9e\u4e1a\u52a1\u5df2\u9a8c\uff1b\u540e\u53f0HTTP/\u6062\u590d\u9488\u5bf9\u6027CPU\u548c\u5b98\u65b9SDK\u5df2\u9a8c\uff0c\u540e\u53f0\u6a21\u578b\u4e1a\u52a1/\u53d1\u884c\u3001\u524d\u53f0\u672a\u77e5\u63d0\u4ea4\u6536\u5c3e\u548c\u5bf9\u8c61\u63a7\u5236\u5668/\u4fdd\u7559\u6cbb\u7406\u53ca\u5176\u4ed6\u6267\u884c\u4f9d\u8d56\u7ee7\u7eed\u5fc5\u505a\u3002\u9ed8\u8ba4\u672a\u66ff\u6362\uff0c\u4e0d\u8ba1\u5168\u91cf\u5b8c\u6210\u3002",
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
@@ -2498,8 +2562,8 @@
       ]
     },
     "OPTIONS /v1/responses/{response_id}": {
-      "semantics": "Responses\u539f\u751f\u751f\u6210\u548c\u6301\u4e45\u72b6\u6001\uff1b\u540e\u53f0\u62e5\u6709\u4efb\u52a1\u4e0e\u51c6\u5165\u3001\u6309ID\u67e5\u8be2/\u539f\u4e8b\u4ef6\u7eed\u8bfb/\u53d6\u6d88\uff0c\u67e5\u8be2\u4e0e\u53d6\u6d88\u4f7f\u7528\u72ec\u7acb\u989d\u5ea6\uff0cOPTIONS\u590d\u7528\u539f\u751fCORS\u3002",
-      "boundary": "\u540c\u6b65\u771f\u5b9e\u4e1a\u52a1\u5df2\u9a8c\uff1b\u540e\u53f0HTTP/\u6062\u590d\u9488\u5bf9\u6027CPU\u548c\u5b98\u65b9SDK\u5df2\u9a8c\uff0c\u540e\u53f0\u6a21\u578b\u4e1a\u52a1/\u53d1\u884c\u3001\u524d\u53f0\u672a\u77e5\u63d0\u4ea4\u6536\u5c3e\u548c\u5bf9\u8c61\u63a7\u5236\u5668/\u4fdd\u7559\u6cbb\u7406\u53ca\u5176\u4ed6\u6267\u884c\u4f9d\u8d56\u7ee7\u7eed\u5fc5\u505a\u3002\u9ed8\u8ba4\u672a\u66ff\u6362\uff0c\u4e0d\u8ba1\u5168\u91cf\u5b8c\u6210\u3002",
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
@@ -2510,8 +2574,8 @@
       ]
     },
     "OPTIONS /v1/responses/{response_id}/cancel": {
-      "semantics": "Responses\u539f\u751f\u751f\u6210\u548c\u6301\u4e45\u72b6\u6001\uff1b\u540e\u53f0\u62e5\u6709\u4efb\u52a1\u4e0e\u51c6\u5165\u3001\u6309ID\u67e5\u8be2/\u539f\u4e8b\u4ef6\u7eed\u8bfb/\u53d6\u6d88\uff0c\u67e5\u8be2\u4e0e\u53d6\u6d88\u4f7f\u7528\u72ec\u7acb\u989d\u5ea6\uff0cOPTIONS\u590d\u7528\u539f\u751fCORS\u3002",
-      "boundary": "\u540c\u6b65\u771f\u5b9e\u4e1a\u52a1\u5df2\u9a8c\uff1b\u540e\u53f0HTTP/\u6062\u590d\u9488\u5bf9\u6027CPU\u548c\u5b98\u65b9SDK\u5df2\u9a8c\uff0c\u540e\u53f0\u6a21\u578b\u4e1a\u52a1/\u53d1\u884c\u3001\u524d\u53f0\u672a\u77e5\u63d0\u4ea4\u6536\u5c3e\u548c\u5bf9\u8c61\u63a7\u5236\u5668/\u4fdd\u7559\u6cbb\u7406\u53ca\u5176\u4ed6\u6267\u884c\u4f9d\u8d56\u7ee7\u7eed\u5fc5\u505a\u3002\u9ed8\u8ba4\u672a\u66ff\u6362\uff0c\u4e0d\u8ba1\u5168\u91cf\u5b8c\u6210\u3002",
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
@@ -2522,8 +2586,8 @@
       ]
     },
     "OPTIONS /v1/responses/{response_id}/input_items": {
-      "semantics": "Responses\u539f\u751f\u751f\u6210\u548c\u6301\u4e45\u72b6\u6001\uff1b\u540e\u53f0\u62e5\u6709\u4efb\u52a1\u4e0e\u51c6\u5165\u3001\u6309ID\u67e5\u8be2/\u539f\u4e8b\u4ef6\u7eed\u8bfb/\u53d6\u6d88\uff0c\u67e5\u8be2\u4e0e\u53d6\u6d88\u4f7f\u7528\u72ec\u7acb\u989d\u5ea6\uff0cOPTIONS\u590d\u7528\u539f\u751fCORS\u3002",
-      "boundary": "\u540c\u6b65\u771f\u5b9e\u4e1a\u52a1\u5df2\u9a8c\uff1b\u540e\u53f0HTTP/\u6062\u590d\u9488\u5bf9\u6027CPU\u548c\u5b98\u65b9SDK\u5df2\u9a8c\uff0c\u540e\u53f0\u6a21\u578b\u4e1a\u52a1/\u53d1\u884c\u3001\u524d\u53f0\u672a\u77e5\u63d0\u4ea4\u6536\u5c3e\u548c\u5bf9\u8c61\u63a7\u5236\u5668/\u4fdd\u7559\u6cbb\u7406\u53ca\u5176\u4ed6\u6267\u884c\u4f9d\u8d56\u7ee7\u7eed\u5fc5\u505a\u3002\u9ed8\u8ba4\u672a\u66ff\u6362\uff0c\u4e0d\u8ba1\u5168\u91cf\u5b8c\u6210\u3002",
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
@@ -2534,8 +2598,8 @@
       ]
     },
     "POST /v1/chat/completions": {
-      "semantics": "Bearer\u9274\u6743\u540e\u6838\u5bf9\u5f53\u524d\u4ee3\u6b21\u51c6\u5165\uff0c\u518d\u8f6c\u53d1\u5230\u76f8\u5e94\u539f\u751f\u540e\u7aef\u76d1\u542c\u5668",
-      "boundary": "\u8bfb\u4f53\u524d\u4e0e\u8f6c\u53d1\u524d\u5fc5\u987b\u662f\u540c\u4e00\u51c6\u5165\u7ed1\u5b9a\uff1b\u6062\u590d\u671f503\uff1b\u4e0d\u7ed5\u8fc7\u540e\u7aef\u914d\u989d\uff1b\u65e0\u81ea\u52a8\u91cd\u653e\u3002",
+      "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
+      "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
       "evidence": [
         "src/service/ingress_main.cpp",
         "tools/serve_recovery/test_native_ingress.py",
@@ -2555,8 +2619,8 @@
       ]
     },
     "POST /v1/chat/preflight": {
-      "semantics": "Bearer\u9274\u6743\u540e\u6838\u5bf9\u5f53\u524d\u4ee3\u6b21\u51c6\u5165\uff0c\u518d\u8f6c\u53d1\u5230\u76f8\u5e94\u539f\u751f\u540e\u7aef\u76d1\u542c\u5668",
-      "boundary": "\u8bfb\u4f53\u524d\u4e0e\u8f6c\u53d1\u524d\u5fc5\u987b\u662f\u540c\u4e00\u51c6\u5165\u7ed1\u5b9a\uff1b\u6062\u590d\u671f503\uff1b\u4e0d\u7ed5\u8fc7\u540e\u7aef\u914d\u989d\uff1b\u65e0\u81ea\u52a8\u91cd\u653e\u3002",
+      "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
+      "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
       "evidence": [
         "src/service/ingress_main.cpp",
         "tools/serve_recovery/test_native_ingress.py",
@@ -2576,8 +2640,8 @@
       ]
     },
     "POST /v1/conversations": {
-      "semantics": "\u539f\u751fConversations\u4f1a\u8bdd/\u6210\u5458CRUD\u3001\u5206\u9875\u4e0e\u6295\u5f71\uff1bPOST /v1/conversations",
-      "boundary": "\u4f7f\u7528\u5df2\u8ba4\u8bc1client\u4e0e\u4e1a\u52a1\u51c6\u5165\uff1bCPU\u5904\u7406\u5668/\u5b98\u65b9SDK\u548c\u539f\u751fTLS\u5df2\u9a8c\uff0c\u5b9e\u9645serve\u6a21\u578b\u4e1a\u52a1\u4e0e\u53d1\u5e03\u5f85\u7eed\uff1b\u4e0d\u4ee5\u76ee\u5f55\u6536\u5f55\u66ff\u4ee3\u9a8c\u6536\u3002",
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；POST /v1/conversations",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
       "evidence": [
         "docs/SERVE_CONVERSATIONS_2026-11-09.md",
         "include/q4t/server/application_routes.h",
@@ -2586,8 +2650,8 @@
       ]
     },
     "POST /v1/conversations/{conversation_id}": {
-      "semantics": "\u539f\u751fConversations\u4f1a\u8bdd/\u6210\u5458CRUD\u3001\u5206\u9875\u4e0e\u6295\u5f71\uff1bPOST /v1/conversations/{conversation_id}",
-      "boundary": "\u4f7f\u7528\u5df2\u8ba4\u8bc1client\u4e0e\u4e1a\u52a1\u51c6\u5165\uff1bCPU\u5904\u7406\u5668/\u5b98\u65b9SDK\u548c\u539f\u751fTLS\u5df2\u9a8c\uff0c\u5b9e\u9645serve\u6a21\u578b\u4e1a\u52a1\u4e0e\u53d1\u5e03\u5f85\u7eed\uff1b\u4e0d\u4ee5\u76ee\u5f55\u6536\u5f55\u66ff\u4ee3\u9a8c\u6536\u3002",
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；POST /v1/conversations/{conversation_id}",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
       "evidence": [
         "docs/SERVE_CONVERSATIONS_2026-11-09.md",
         "include/q4t/server/application_routes.h",
@@ -2596,8 +2660,8 @@
       ]
     },
     "POST /v1/conversations/{conversation_id}/items": {
-      "semantics": "\u539f\u751fConversations\u4f1a\u8bdd/\u6210\u5458CRUD\u3001\u5206\u9875\u4e0e\u6295\u5f71\uff1bPOST /v1/conversations/{conversation_id}/items",
-      "boundary": "\u4f7f\u7528\u5df2\u8ba4\u8bc1client\u4e0e\u4e1a\u52a1\u51c6\u5165\uff1bCPU\u5904\u7406\u5668/\u5b98\u65b9SDK\u548c\u539f\u751fTLS\u5df2\u9a8c\uff0c\u5b9e\u9645serve\u6a21\u578b\u4e1a\u52a1\u4e0e\u53d1\u5e03\u5f85\u7eed\uff1b\u4e0d\u4ee5\u76ee\u5f55\u6536\u5f55\u66ff\u4ee3\u9a8c\u6536\u3002",
+      "semantics": "原生Conversations会话/成员CRUD、分页与投影；POST /v1/conversations/{conversation_id}/items",
+      "boundary": "使用已认证client与业务准入；CPU处理器/官方SDK和原生TLS已验，实际serve模型业务与发布待续；不以目录收录替代验收。",
       "evidence": [
         "docs/SERVE_CONVERSATIONS_2026-11-09.md",
         "include/q4t/server/application_routes.h",
@@ -2630,8 +2694,8 @@
       ]
     },
     "POST /v1/requests/cancel": {
-      "semantics": "Bearer\u9274\u6743\u540e\u6838\u5bf9\u5f53\u524d\u4ee3\u6b21\u51c6\u5165\uff0c\u518d\u8f6c\u53d1\u5230\u76f8\u5e94\u539f\u751f\u540e\u7aef\u76d1\u542c\u5668",
-      "boundary": "\u8bfb\u4f53\u524d\u4e0e\u8f6c\u53d1\u524d\u5fc5\u987b\u662f\u540c\u4e00\u51c6\u5165\u7ed1\u5b9a\uff1b\u6062\u590d\u671f503\uff1b\u4e0d\u7ed5\u8fc7\u540e\u7aef\u914d\u989d\uff1b\u65e0\u81ea\u52a8\u91cd\u653e\u3002",
+      "semantics": "Bearer鉴权后核对当前代次准入，再转发到相应原生后端监听器",
+      "boundary": "读体前与转发前必须是同一准入绑定；恢复期503；不绕过后端配额；无自动重放。",
       "evidence": [
         "src/service/ingress_main.cpp",
         "tools/serve_recovery/test_native_ingress.py",
@@ -2642,8 +2706,8 @@
       ]
     },
     "POST /v1/responses": {
-      "semantics": "Responses\u539f\u751f\u751f\u6210\u548c\u6301\u4e45\u72b6\u6001\uff1b\u540e\u53f0\u62e5\u6709\u4efb\u52a1\u4e0e\u51c6\u5165\u3001\u6309ID\u67e5\u8be2/\u539f\u4e8b\u4ef6\u7eed\u8bfb/\u53d6\u6d88\uff0c\u67e5\u8be2\u4e0e\u53d6\u6d88\u4f7f\u7528\u72ec\u7acb\u989d\u5ea6\uff0cOPTIONS\u590d\u7528\u539f\u751fCORS\u3002",
-      "boundary": "\u540c\u6b65\u771f\u5b9e\u4e1a\u52a1\u5df2\u9a8c\uff1b\u540e\u53f0HTTP/\u6062\u590d\u9488\u5bf9\u6027CPU\u548c\u5b98\u65b9SDK\u5df2\u9a8c\uff0c\u540e\u53f0\u6a21\u578b\u4e1a\u52a1/\u53d1\u884c\u3001\u524d\u53f0\u672a\u77e5\u63d0\u4ea4\u6536\u5c3e\u548c\u5bf9\u8c61\u63a7\u5236\u5668/\u4fdd\u7559\u6cbb\u7406\u53ca\u5176\u4ed6\u6267\u884c\u4f9d\u8d56\u7ee7\u7eed\u5fc5\u505a\u3002\u9ed8\u8ba4\u672a\u66ff\u6362\uff0c\u4e0d\u8ba1\u5168\u91cf\u5b8c\u6210\u3002",
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
@@ -2662,8 +2726,8 @@
       ]
     },
     "POST /v1/responses/{response_id}/cancel": {
-      "semantics": "Responses\u539f\u751f\u751f\u6210\u548c\u6301\u4e45\u72b6\u6001\uff1b\u540e\u53f0\u62e5\u6709\u4efb\u52a1\u4e0e\u51c6\u5165\u3001\u6309ID\u67e5\u8be2/\u539f\u4e8b\u4ef6\u7eed\u8bfb/\u53d6\u6d88\uff0c\u67e5\u8be2\u4e0e\u53d6\u6d88\u4f7f\u7528\u72ec\u7acb\u989d\u5ea6\uff0cOPTIONS\u590d\u7528\u539f\u751fCORS\u3002",
-      "boundary": "\u540c\u6b65\u771f\u5b9e\u4e1a\u52a1\u5df2\u9a8c\uff1b\u540e\u53f0HTTP/\u6062\u590d\u9488\u5bf9\u6027CPU\u548c\u5b98\u65b9SDK\u5df2\u9a8c\uff0c\u540e\u53f0\u6a21\u578b\u4e1a\u52a1/\u53d1\u884c\u3001\u524d\u53f0\u672a\u77e5\u63d0\u4ea4\u6536\u5c3e\u548c\u5bf9\u8c61\u63a7\u5236\u5668/\u4fdd\u7559\u6cbb\u7406\u53ca\u5176\u4ed6\u6267\u884c\u4f9d\u8d56\u7ee7\u7eed\u5fc5\u505a\u3002\u9ed8\u8ba4\u672a\u66ff\u6362\uff0c\u4e0d\u8ba1\u5168\u91cf\u5b8c\u6210\u3002",
+      "semantics": "Responses原生生成和持久状态；后台拥有任务与准入、按ID查询/原事件续读/取消，查询与取消使用独立额度，OPTIONS复用原生CORS。",
+      "boundary": "同步真实业务已验；后台HTTP/恢复针对性CPU和官方SDK已验，后台模型业务/发行、前台未知提交收尾和对象控制器/保留治理及其他执行依赖继续必做。默认未替换，不计全量完成。",
       "evidence": [
         "docs/SERVE_RESPONSES_2026-11-08.md",
         "docs/evidence/serve-responses-background-http-20261109/README.md",
@@ -2694,7 +2758,7 @@
       ]
     },
     "DELETE /v1/files/{file_id}": {
-      "semantics": "\u539f\u751fFiles\u4f20\u8f93/metadata\u89c2\u5bdf\u4e0elist/content\u4e1a\u52a1\u51c6\u5165\uff0c\u4e0a\u4f20\u5b8c\u6574HTTP\u540e\u624d\u8f6c\u53d1\u5b8c\u6210\u6807\u8bb0",
+      "semantics": "原生Files传输/metadata观察与list/content业务准入，上传完整HTTP后才转发完成标记",
       "boundary": "Targeted CPU network accepted (official SDK and native TLS, including 17MiB bytes). Package/discovery/migration and actual engine business still required; not total A09 completion.",
       "evidence": [
         "src/service/ingress_main.cpp",
@@ -2704,7 +2768,7 @@
       ]
     },
     "GET /v1/files": {
-      "semantics": "\u539f\u751fFiles\u4f20\u8f93/metadata\u89c2\u5bdf\u4e0elist/content\u4e1a\u52a1\u51c6\u5165\uff0c\u4e0a\u4f20\u5b8c\u6574HTTP\u540e\u624d\u8f6c\u53d1\u5b8c\u6210\u6807\u8bb0",
+      "semantics": "原生Files传输/metadata观察与list/content业务准入，上传完整HTTP后才转发完成标记",
       "boundary": "Targeted CPU network accepted (official SDK and native TLS, including 17MiB bytes). Package/discovery/migration and actual engine business still required; not total A09 completion.",
       "evidence": [
         "src/service/ingress_main.cpp",
@@ -2714,7 +2778,7 @@
       ]
     },
     "GET /v1/files/{file_id}": {
-      "semantics": "\u539f\u751fFiles\u4f20\u8f93/metadata\u89c2\u5bdf\u4e0elist/content\u4e1a\u52a1\u51c6\u5165\uff0c\u4e0a\u4f20\u5b8c\u6574HTTP\u540e\u624d\u8f6c\u53d1\u5b8c\u6210\u6807\u8bb0",
+      "semantics": "原生Files传输/metadata观察与list/content业务准入，上传完整HTTP后才转发完成标记",
       "boundary": "Targeted CPU network accepted (official SDK and native TLS, including 17MiB bytes). Package/discovery/migration and actual engine business still required; not total A09 completion.",
       "evidence": [
         "src/service/ingress_main.cpp",
@@ -2724,7 +2788,7 @@
       ]
     },
     "GET /v1/files/{file_id}/content": {
-      "semantics": "\u539f\u751fFiles\u4f20\u8f93/metadata\u89c2\u5bdf\u4e0elist/content\u4e1a\u52a1\u51c6\u5165\uff0c\u4e0a\u4f20\u5b8c\u6574HTTP\u540e\u624d\u8f6c\u53d1\u5b8c\u6210\u6807\u8bb0",
+      "semantics": "原生Files传输/metadata观察与list/content业务准入，上传完整HTTP后才转发完成标记",
       "boundary": "Targeted CPU network accepted (official SDK and native TLS, including 17MiB bytes). Package/discovery/migration and actual engine business still required; not total A09 completion.",
       "evidence": [
         "src/service/ingress_main.cpp",
@@ -2734,7 +2798,7 @@
       ]
     },
     "OPTIONS /v1/files": {
-      "semantics": "\u539f\u751fFiles\u4f20\u8f93/metadata\u89c2\u5bdf\u4e0elist/content\u4e1a\u52a1\u51c6\u5165\uff0c\u4e0a\u4f20\u5b8c\u6574HTTP\u540e\u624d\u8f6c\u53d1\u5b8c\u6210\u6807\u8bb0",
+      "semantics": "原生Files传输/metadata观察与list/content业务准入，上传完整HTTP后才转发完成标记",
       "boundary": "Targeted CPU network accepted (official SDK and native TLS, including 17MiB bytes). Package/discovery/migration and actual engine business still required; not total A09 completion.",
       "evidence": [
         "src/service/ingress_main.cpp",
@@ -2744,7 +2808,7 @@
       ]
     },
     "OPTIONS /v1/files/{file_id}": {
-      "semantics": "\u539f\u751fFiles\u4f20\u8f93/metadata\u89c2\u5bdf\u4e0elist/content\u4e1a\u52a1\u51c6\u5165\uff0c\u4e0a\u4f20\u5b8c\u6574HTTP\u540e\u624d\u8f6c\u53d1\u5b8c\u6210\u6807\u8bb0",
+      "semantics": "原生Files传输/metadata观察与list/content业务准入，上传完整HTTP后才转发完成标记",
       "boundary": "Targeted CPU network accepted (official SDK and native TLS, including 17MiB bytes). Package/discovery/migration and actual engine business still required; not total A09 completion.",
       "evidence": [
         "src/service/ingress_main.cpp",
@@ -2754,7 +2818,7 @@
       ]
     },
     "OPTIONS /v1/files/{file_id}/content": {
-      "semantics": "\u539f\u751fFiles\u4f20\u8f93/metadata\u89c2\u5bdf\u4e0elist/content\u4e1a\u52a1\u51c6\u5165\uff0c\u4e0a\u4f20\u5b8c\u6574HTTP\u540e\u624d\u8f6c\u53d1\u5b8c\u6210\u6807\u8bb0",
+      "semantics": "原生Files传输/metadata观察与list/content业务准入，上传完整HTTP后才转发完成标记",
       "boundary": "Targeted CPU network accepted (official SDK and native TLS, including 17MiB bytes). Package/discovery/migration and actual engine business still required; not total A09 completion.",
       "evidence": [
         "src/service/ingress_main.cpp",
@@ -2764,13 +2828,109 @@
       ]
     },
     "POST /v1/files": {
-      "semantics": "\u539f\u751fFiles\u4f20\u8f93/metadata\u89c2\u5bdf\u4e0elist/content\u4e1a\u52a1\u51c6\u5165\uff0c\u4e0a\u4f20\u5b8c\u6574HTTP\u540e\u624d\u8f6c\u53d1\u5b8c\u6210\u6807\u8bb0",
+      "semantics": "原生Files传输/metadata观察与list/content业务准入，上传完整HTTP后才转发完成标记",
       "boundary": "Targeted CPU network accepted (official SDK and native TLS, including 17MiB bytes). Package/discovery/migration and actual engine business still required; not total A09 completion.",
       "evidence": [
         "src/service/ingress_main.cpp",
         "src/server/files_http.cpp",
         "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
         "docs/evidence/serve-files-transport-cpu-20261110/README.md"
+      ]
+    },
+    "OPTIONS /v1/uploads": {
+      "semantics": "Native scoped Uploads create/part/complete/cancel; ordered verified chunks and atomic File publication. OPTIONS uses configured native CORS.",
+      "boundary": "Development: core27 targeted CPU accepted; native HTTP/TLS/SDK integration checks frozen next. Explicit body/storage limits, unknown receipt retains original IDs; file consumption/Batch remain required tasks.",
+      "evidence": [
+        "src/server/uploads.cpp",
+        "src/server/files_http.cpp",
+        "tests/server_uploads_test.cpp",
+        "tools/serve_responses/test_uploads_transport.py",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
+        "docs/evidence/serve-uploads-core-cpu-20261110/README.md"
+      ]
+    },
+    "OPTIONS /v1/uploads/{upload_id}/cancel": {
+      "semantics": "Native scoped Uploads create/part/complete/cancel; ordered verified chunks and atomic File publication. OPTIONS uses configured native CORS.",
+      "boundary": "Development: core27 targeted CPU accepted; native HTTP/TLS/SDK integration checks frozen next. Explicit body/storage limits, unknown receipt retains original IDs; file consumption/Batch remain required tasks.",
+      "evidence": [
+        "src/server/uploads.cpp",
+        "src/server/files_http.cpp",
+        "tests/server_uploads_test.cpp",
+        "tools/serve_responses/test_uploads_transport.py",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
+        "docs/evidence/serve-uploads-core-cpu-20261110/README.md"
+      ]
+    },
+    "OPTIONS /v1/uploads/{upload_id}/complete": {
+      "semantics": "Native scoped Uploads create/part/complete/cancel; ordered verified chunks and atomic File publication. OPTIONS uses configured native CORS.",
+      "boundary": "Development: core27 targeted CPU accepted; native HTTP/TLS/SDK integration checks frozen next. Explicit body/storage limits, unknown receipt retains original IDs; file consumption/Batch remain required tasks.",
+      "evidence": [
+        "src/server/uploads.cpp",
+        "src/server/files_http.cpp",
+        "tests/server_uploads_test.cpp",
+        "tools/serve_responses/test_uploads_transport.py",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
+        "docs/evidence/serve-uploads-core-cpu-20261110/README.md"
+      ]
+    },
+    "OPTIONS /v1/uploads/{upload_id}/parts": {
+      "semantics": "Native scoped Uploads create/part/complete/cancel; ordered verified chunks and atomic File publication. OPTIONS uses configured native CORS.",
+      "boundary": "Development: core27 targeted CPU accepted; native HTTP/TLS/SDK integration checks frozen next. Explicit body/storage limits, unknown receipt retains original IDs; file consumption/Batch remain required tasks.",
+      "evidence": [
+        "src/server/uploads.cpp",
+        "src/server/files_http.cpp",
+        "tests/server_uploads_test.cpp",
+        "tools/serve_responses/test_uploads_transport.py",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
+        "docs/evidence/serve-uploads-core-cpu-20261110/README.md"
+      ]
+    },
+    "POST /v1/uploads": {
+      "semantics": "Native scoped Uploads create/part/complete/cancel; ordered verified chunks and atomic File publication. OPTIONS uses configured native CORS.",
+      "boundary": "Development: core27 targeted CPU accepted; native HTTP/TLS/SDK integration checks frozen next. Explicit body/storage limits, unknown receipt retains original IDs; file consumption/Batch remain required tasks.",
+      "evidence": [
+        "src/server/uploads.cpp",
+        "src/server/files_http.cpp",
+        "tests/server_uploads_test.cpp",
+        "tools/serve_responses/test_uploads_transport.py",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
+        "docs/evidence/serve-uploads-core-cpu-20261110/README.md"
+      ]
+    },
+    "POST /v1/uploads/{upload_id}/cancel": {
+      "semantics": "Native scoped Uploads create/part/complete/cancel; ordered verified chunks and atomic File publication. OPTIONS uses configured native CORS.",
+      "boundary": "Development: core27 targeted CPU accepted; native HTTP/TLS/SDK integration checks frozen next. Explicit body/storage limits, unknown receipt retains original IDs; file consumption/Batch remain required tasks.",
+      "evidence": [
+        "src/server/uploads.cpp",
+        "src/server/files_http.cpp",
+        "tests/server_uploads_test.cpp",
+        "tools/serve_responses/test_uploads_transport.py",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
+        "docs/evidence/serve-uploads-core-cpu-20261110/README.md"
+      ]
+    },
+    "POST /v1/uploads/{upload_id}/complete": {
+      "semantics": "Native scoped Uploads create/part/complete/cancel; ordered verified chunks and atomic File publication. OPTIONS uses configured native CORS.",
+      "boundary": "Development: core27 targeted CPU accepted; native HTTP/TLS/SDK integration checks frozen next. Explicit body/storage limits, unknown receipt retains original IDs; file consumption/Batch remain required tasks.",
+      "evidence": [
+        "src/server/uploads.cpp",
+        "src/server/files_http.cpp",
+        "tests/server_uploads_test.cpp",
+        "tools/serve_responses/test_uploads_transport.py",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
+        "docs/evidence/serve-uploads-core-cpu-20261110/README.md"
+      ]
+    },
+    "POST /v1/uploads/{upload_id}/parts": {
+      "semantics": "Native scoped Uploads create/part/complete/cancel; ordered verified chunks and atomic File publication. OPTIONS uses configured native CORS.",
+      "boundary": "Development: core27 targeted CPU accepted; native HTTP/TLS/SDK integration checks frozen next. Explicit body/storage limits, unknown receipt retains original IDs; file consumption/Batch remain required tasks.",
+      "evidence": [
+        "src/server/uploads.cpp",
+        "src/server/files_http.cpp",
+        "tests/server_uploads_test.cpp",
+        "tools/serve_responses/test_uploads_transport.py",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
+        "docs/evidence/serve-uploads-core-cpu-20261110/README.md"
       ]
     }
   },

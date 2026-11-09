@@ -460,6 +460,18 @@ ObjectReply Uploads::Complete(const BinaryAccess& access, const std::string& id,
     return ChecksumError();
   BinaryStore binary(objects_);
   BinaryManifest assembled;
+  BinaryStage copies;
+  std::unordered_set<std::string> chunks;
+  ScopeExit discard_copies([&] {
+    if (copies.id.empty() || copies.closed || copies.commit_unknown) return;
+    try {
+      auto bounded = access;
+      bounded.deadline = Clock::now() + 200ms;
+      bounded.cancelled = {};
+      binary.Abort(bounded, &copies);
+    } catch (...) {
+    }
+  });
   // The pending Upload protects all parts. Each read also pins exact chunks
   // while checking them; the final parent CAS defeats concurrent cancel/add.
   for (const auto& part : parts->array) {
@@ -503,11 +515,22 @@ ObjectReply Uploads::Complete(const BinaryAccess& access, const std::string& id,
       if (!checked.ok()) return checked;
       if (!expected_md5.empty() && md5.Update(bytes) != CryptoResult::kOk)
         return ChecksumError();
+      auto chunk = read.manifest.chunks[i];
+      if (!chunks.insert(chunk.id).second) {
+        // Durable file v1 requires unique chunk identities, including in the
+        // retained rollback engine. Repeated Parts need accounted immutable
+        // copies, not a newer manifest silently unreadable by v11.
+        if (copies.id.empty()) {
+          checked = binary.Begin(access, kBinaryMaxBytes, 3600, &copies);
+          if (!checked.ok()) return checked;
+        }
+        checked = binary.Append(access, &copies, bytes);
+        if (!checked.ok()) return checked;
+        chunk = copies.manifest.chunks.back();
+      }
+      assembled.chunks.push_back(std::move(chunk));
     }
     assembled.bytes += read.manifest.bytes;
-    assembled.chunks.insert(assembled.chunks.end(),
-                            read.manifest.chunks.begin(),
-                            read.manifest.chunks.end());
   }
   if (assembled.bytes != static_cast<uint64_t>(upload.GetInt("bytes")))
     return Invalid("Completed byte count does not match declared bytes",
@@ -545,9 +568,16 @@ ObjectReply Uploads::Complete(const BinaryAccess& access, const std::string& id,
   Set(&parent.data, "parts", Array());
   Set(&parent.data, "completed_parts", *parts);
   Set(&parent.data, "completed_md5", String(expected_md5));
-  const std::array requests{std::move(root), std::move(parent)};
+  std::vector requests{std::move(root), std::move(parent)};
+  if (!copies.id.empty()) {
+    auto erase = Request(access, copies.id, ObjectOperation::kErase);
+    erase.expected_revision = copies.revision;
+    requests.push_back(std::move(erase));
+  }
   auto result =
       objects_.ExecuteBatch(requests, access.deadline, access.cancelled);
+  if (result.ok()) copies.closed = true;
+  if (result.commit_unknown) copies.commit_unknown = true;
   if (result.ok())
     result.value = std::move(upload);
   else

@@ -190,3 +190,15 @@ Upload上限8GiB/1小时，每Part64MiB；部署每Upload最多8192个Part、组
 冻结27项CPU，完整清单`.q4t-work/serve-uploads-20261110/required-core.txt`。新增15项含真实SDK编码、64MiB固定块边界、8并发、重启后继续、取消到期、损坏内容、可选库失能与Create/Part/Complete三种未知回执。另12项直接覆盖原Files、原子journal、留存与加密。只构建/验证此组，无GPU；HTTP/TLS/发现/发行尚待下一组接入，不宣称Uploads交付完成。
 
 Uploads生命周期[27项针对性CPU已通过](evidence/serve-uploads-core-cpu-20261110/README.md)，首必要构建漏头文件记录保留、最终零警告，无GPU。继续标准HTTP/TLS、实际SDK和发行，不宣称A09.4已经交付。
+
+## Uploads原生HTTP/TLS成组验证冻结
+
+4个标准POST端点接实际原生handler，Part流式上限64MiB+65536；Create/Cancel JSON上限16KiB、Complete 2MiB，普通JSON与文件客户端容量分开生效，旧配置不扩大。空body cancel兼容SDK，额外字段/查询/非法Content-Type/非完整HTTP不发布状态。取消在核心/原生入口均使用独立32MiB预留；48MiB业务预算或客户端data名额填满不阻止合法取消。新指标q4t_cancel_body_bytes单列预留。
+
+冻结16 C++（`.q4t-work/serve-uploads-20261110/required-http.txt`）、`UploadsContractTests`3项、`UploadsTransportTests`7项及原生`test_response_cancel_has_reserved_capacity_beside_full_stream_controls`1项。官方SDK实际直接核心/TLS带prefix两链、17MiB Part/MD5/原字节、隔离/取消/完成核对；实网覆盖完整MIME后的HTTP trailer拒绝、提前413、data两槽占满仍可取消、旧限额与>4KiB合法JSON。前置父准入仅身份测试适配，传输/SDK/对象worker是真实实现。组件27项证据复用，不再重跑64MiB边界或无关模型矩阵。
+
+首次合同生成在增加路由清单前触发来源门禁，按依赖先登记实际handler/路由与来源，再生成成功；不是运行时测试失败。必要host/实际引擎/TLS入口构建，未启动模型或GPU。本组完成后继续实际业务与发行，未验能力不提前替换默认。
+
+原生HTTP组[16 C++与11 Python已通过](evidence/serve-uploads-http-cpu-20261110/README.md)，官方SDK两链各32实际请求和17MiB+13字节，0GPU。发行审查发现重复Part产生旧v11不识别的manifest；改为重复内容独立不可变块、仍计原存储配额，原BinaryStore实现与已交付v11源文件逐字一致。最终File/Upload/私有copy stage删除同事务，未知回执不清理；错误保留原Part，副本有界回收。冻结7 CPU（required-rollback.txt）及实际保留旧包`state-retention inspect --offline`读取独立测试产物，核对旧解析无uncertain；不启动模型、不检查业务目录。非重复路径的已过HTTP/SDK证据复用，最终适用业务和发行继续。
+
+[重复Part回退兼容验证通过](evidence/serve-uploads-rollback-cpu-20261110/README.md)，7 CPU+1次真实旧包离线检查，0GPU。实际旧包不认识Upload receipt时保守保护scope；已完成File和chunks完全可读，记录保持。继续业务/发行和余项。

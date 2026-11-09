@@ -1,0 +1,31 @@
+{
+  "status": "PASS_TARGETED_UPLOADS_HTTP_CPU",
+  "cpp": 16,
+  "python_contract": 3,
+  "python_network": 7,
+  "existing_native_cancel": 1,
+  "build_warnings": 0,
+  "identities": {
+    "host_binary_sha256": "b743d6190377214e24ceb2d0a1746cea0bf19af91411a374a18e2732a2685ce5",
+    "default_engine_sha256": "6a7404c79112dcd6d5772ad6918342c17f165255a36dc71304e8e552dfffa988",
+    "engine_binary_sha256": "ebbd4c6b0e972e27f3ec19d6bfa9bdceac2501e6e43b5cc486c1fced3a128ec6",
+    "native_ingress_sha256": "4083131f27c4b3b5c7ce8ae250d0bde646fdf59db5cc12819e65722923f4d13d"
+  },
+  "sdk": [
+    {
+      "test": "test_official_sdk_native_tls_prefix_order_md5_and_large_part",
+      "requests": 32,
+      "bytes": 17825805
+    },
+    {
+      "test": "test_official_sdk_direct_core_order_md5_and_large_part",
+      "requests": 32,
+      "bytes": 17825805
+    }
+  ],
+  "model_starts": 0,
+  "gpu_queries": 0,
+  "default_changed": false,
+  "rollback_repeated_manifest_fix_required": true,
+  "remaining_master_tasks_open": true
+}

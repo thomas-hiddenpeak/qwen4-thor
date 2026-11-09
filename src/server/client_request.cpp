@@ -31,7 +31,7 @@ bool AdmitClientRequest(std::string_view method, std::string_view path,
   if (identity->Scoped()) {
     const auto& limits = *identity->Limits();
     headers->body_limit =
-        method == "POST" && path == "/v1/files" && limits.max_file_body_bytes
+        IsBinaryUpload(method, path) && limits.max_file_body_bytes
             ? limits.max_file_body_bytes
             : limits.max_body_bytes;
   }
