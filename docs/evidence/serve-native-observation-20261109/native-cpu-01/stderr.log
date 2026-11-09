@@ -1,0 +1,15 @@
+test_actual_http_bounds_methods_and_slow_connection (tools.serve_host.test_native.NativeTests.test_actual_http_bounds_methods_and_slow_connection) ... ok
+test_actual_private_status_channel_has_no_mutating_operation (tools.serve_host.test_native.NativeTests.test_actual_private_status_channel_has_no_mutating_operation) ... ok
+test_auxiliary_unknown_and_missing_resources_do_not_override_ready (tools.serve_host.test_native.NativeTests.test_auxiliary_unknown_and_missing_resources_do_not_override_ready) ... ok
+test_birth_namespace_and_descriptor_replacement_are_not_trusted (tools.serve_host.test_native.NativeTests.test_birth_namespace_and_descriptor_replacement_are_not_trusted) ... ok
+test_current_stopped_delivery_readonly_and_legacy_v5_verification (tools.serve_host.test_native.NativeTests.test_current_stopped_delivery_readonly_and_legacy_v5_verification) ... ok
+test_freshness_does_not_renew_ready_or_turn_missing_values_into_zero (tools.serve_host.test_native.NativeTests.test_freshness_does_not_renew_ready_or_turn_missing_values_into_zero) ... ok
+test_real_collector_timeout_reap_budget_and_single_owner (tools.serve_host.test_native.NativeTests.test_real_collector_timeout_reap_budget_and_single_owner) ... ok
+test_default_package_has_native_binary_and_no_nginx_dependency (tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency) ... ok
+test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io (tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io) ... ok
+test_historical_source_inventory_versions_remain_verifiable (tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 11.877s
+
+OK

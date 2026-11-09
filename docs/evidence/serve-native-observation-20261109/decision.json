@@ -1,0 +1,26 @@
+{
+  "status": "PASS_NATIVE_OBSERVATION_TARGETED_CPU_PENDING_DELIVERY",
+  "distinct_cpu_cases": 10,
+  "affected_reruns": 3,
+  "gpu_starts": 0,
+  "chat_requests": 0,
+  "observer_worker_starts_in_timeout_case": 3,
+  "observer_worker_reaps_in_timeout_case": 3,
+  "actual_loopback_http": true,
+  "actual_private_seqpacket": true,
+  "current_stopped_bundle_readonly": true,
+  "legacy_inventory_versions": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "default_changed": false,
+  "pending": [
+    "protected run retention and archive integrity",
+    "actual shipped v6 CLI/export invocation",
+    "rollback-capable delivery"
+  ],
+  "remaining_master_tasks_open": true
+}

@@ -1,0 +1,8 @@
+test_auxiliary_unknown_and_missing_resources_do_not_override_ready (tools.serve_host.test_native.NativeTests.test_auxiliary_unknown_and_missing_resources_do_not_override_ready) ... ok
+test_actual_private_status_channel_has_no_mutating_operation (tools.serve_host.test_native.NativeTests.test_actual_private_status_channel_has_no_mutating_operation) ... ok
+test_current_stopped_delivery_readonly_and_legacy_v5_verification (tools.serve_host.test_native.NativeTests.test_current_stopped_delivery_readonly_and_legacy_v5_verification) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 1.131s
+
+OK

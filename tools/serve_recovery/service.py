@@ -249,12 +249,14 @@ def main(argv=None, *, package=None, digest=None):
     for option in engine.APPLICATION_LIMITS:
         prepare.add_argument('--object-'+option.replace('_', '-'), type=int)
     for name in ('init', 'run', 'start', 'status', 'diagnostics', 'stop',
-                 'tls-status', 'tls-reload'):
+                 'tls-status', 'tls-reload', 'observe', 'metrics', 'export'):
         command = commands.add_parser(name)
         command.add_argument('--state', type=Path, required=True)
         if package is None:
             command.add_argument('--package', type=Path, required=True)
             command.add_argument('--manifest-sha256', required=True)
+        if name == 'export':
+            command.add_argument('--port', type=int, required=True)
         if name == 'start':
             command.add_argument('--daemon', action='store_true', required=True)
             command.add_argument('--timeout', type=timeout_seconds, default=360)
@@ -282,6 +284,15 @@ def main(argv=None, *, package=None, digest=None):
             elif args.operation in ('run', 'start'):
                 result = launch(package, digest, args.state, daemon=args.operation == 'start',
                                 timeout=getattr(args, 'timeout', 360))
+            elif args.operation == 'export':
+                from tools.serve_host.native_exporter import export
+                return export(package, digest, args.state, args.port)
+            elif args.operation in ('observe', 'metrics'):
+                from tools.serve_host import native
+                result = native.current(native.collect(native.bind(package, digest, args.state)))
+                if args.operation == 'metrics':
+                    print(native.metrics(result), end='')
+                    return int(result['state'] == 'UNKNOWN')
             else:
                 desc = descriptor(args.state, package, digest)
                 try:

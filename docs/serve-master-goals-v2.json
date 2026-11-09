@@ -439,15 +439,23 @@
     {
       "id": "N06",
       "required": true,
-      "state": "planned",
+      "state": "implementation_in_progress",
       "implementation": "原生运维/指标/诊断与R04 exporter互通",
       "acceptance": "不安装Prometheus/exporter仍能看必要状态；观察失效不拖核心；真实健康与陈旧/未知分开",
       "depends_on": [
         "R01",
         "R04"
       ],
-      "evidence": [],
-      "release": null
+      "evidence": [
+        "evidence/serve-native-observation-20261109/decision.json"
+      ],
+      "release": null,
+      "plan": "SERVE_NATIVE_OBSERVATION_2026-11-09.md",
+      "remaining": [
+        "protected retention and archive integrity",
+        "actual packaged CLI/export verification",
+        "rollback-capable delivery"
+      ]
     },
     {
       "id": "N07",
@@ -590,14 +598,22 @@
     {
       "id": "R04",
       "required": true,
-      "state": "planned",
+      "state": "implementation_in_progress",
       "implementation": "当前包exporter接入、unknown/stale投影及受保护留存清理",
       "acceptance": "当前包exporter接入、unknown/stale投影及受保护留存清理",
       "depends_on": [
         "R01"
       ],
-      "evidence": [],
-      "release": null
+      "evidence": [
+        "evidence/serve-native-observation-20261109/decision.json"
+      ],
+      "release": null,
+      "plan": "SERVE_NATIVE_OBSERVATION_2026-11-09.md",
+      "remaining": [
+        "protected retention and archive integrity",
+        "actual packaged CLI/export verification",
+        "rollback-capable delivery"
+      ]
     },
     {
       "id": "R05",

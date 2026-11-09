@@ -1,4 +1,26 @@
-# 托管 host 资源观测
+# 原生服务与旧托管 host 资源观测
+
+当前Guardian服务使用项目原生观察入口，无nginx/NVML/Prometheus要求：
+
+```bash
+build/service/bin/q4t service observe --state build/service-native-state
+build/service/bin/q4t service metrics --state build/service-native-state
+build/service/bin/q4t service export --state build/service-native-state --port 19448
+```
+
+新入口随v6包发行；当前实现/验收以[STATUS](../../docs/STATUS.md)为准。
+export前台监听127.0.0.1，提供只读GET/HEAD `/metrics`、`/status`；
+不启动服务或发生成/探测/重启请求。采集器独立进程，单worker最多
+3次/60秒启动，未回收保留容量；采集4秒无回复终止该采集器。HTTP
+16连接、8KiB头、128KiB响应、2秒连接期限，内存快照超过3秒即UNKNOWN。
+公开状态不包含PID、路径、凭据或请求内容；固定标签，不无限增加代次
+标签。服务可接单与辅助观察UNKNOWN分别表示；资源缺失省略数值。
+/proc RSS/Threads仅该进程记账，不是Thor总RAM或硬资源限额。
+observe/metrics是显式一次只读采集，export独占该state的观察器锁；
+只有export自动有界恢复自己的采集器，不能操作模型或Guardian。
+
+以下为保留的旧backend v5/v6与可选nginx exporter入口，不是当前原生
+服务的默认部署依赖。
 
 只读绑定一个 v5 后端包及一次 run，读取受管 cgroup 的 host 内存、
 任务计数和保护事件，并为 Prometheus 提供独立的 loopback `/metrics`。

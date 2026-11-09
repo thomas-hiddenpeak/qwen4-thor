@@ -2,6 +2,15 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+原生观察首组10个CPU通过，复核后3个受影响项补验通过，[原件](evidence/serve-native-observation-20261109/README.md)。
+真实只读私有IPC/HTTP、collector超时回收与3/60秒预算、旧v1—v5兼容
+通过；0模型/0Chat，当前默认v5保持STOPPED。继续保护留存、实际v6
+随包CLI/export和可回退交付，R04/N06及全部总任务仍在推进。
+
+继续[R04/N06原生观测与保护留存](SERVE_NATIVE_OBSERVATION_2026-11-09.md)：旧host exporter强制nginx且不识别
+当前包。补当前服务只读身份/新鲜度、独立采集及原生HTTP，再保护
+活动代次/回退/未归档故障。首组8类CPU，当前默认STOPPED保持。
+
 R01缓存隔离及R03进度恢复已默认交付：引擎1ff729a0/元数据f44634f5，
 原生v5包fac58f34/发布1370792e。[完整发行/回退](evidence/serve-cache-progress-delivery-20261109/README.md)保留旧版及首索引失败，
 698来源/208协议来源和10组证据核验；安装0模型/0Chat，ledger/密钥/

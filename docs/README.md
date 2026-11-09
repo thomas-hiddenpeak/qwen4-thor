@@ -512,3 +512,5 @@
 
 - [Serve工业化持续目标与验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)
 - [Serve B2推理协议与控制](SERVE_STAGE_B2_2026-11-03.md)
+
+- [当前原生服务观测与保护留存](SERVE_NATIVE_OBSERVATION_2026-11-09.md)
