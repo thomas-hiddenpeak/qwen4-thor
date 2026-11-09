@@ -49,6 +49,7 @@ class Reader:
         self.next_start = self.next_read = 0
         self.deadline = 0
         self.sequence = 0
+        self.completed_sequence = 0
         self.phase = None
         self.killed = self.closed = self.available = False
         self.stopping = False
@@ -104,6 +105,7 @@ class Reader:
             self.socket, self.claim = parent, claim
             parent = claim = None
             self.started += 1;self.killed = self.stopping = False;self.sequence = 0
+            self.completed_sequence = 0
             self.phase = 'starting';self.deadline = now + TIMEOUT
         except (OSError, ValueError, RuntimeError):
             self.error = 'reader_start_failed';self.next_start = now + 1
@@ -151,13 +153,14 @@ class Reader:
                     ledger.require(hashlib.sha256(self.payload).hexdigest() == self.expected_digest,
                                    'reader payload digest changed')
                     self.value = self.contract.validate(store.decode(self.payload))
+                    self.completed_sequence = self.sequence
                     self.payload.clear();self.available = True;self.error = ''
                     self.phase = 'idle';self.next_read = self.clock() + 1
                     return
             else:
                 raise ledger.LedgerError('unsolicited access reader reply')
 
-    def step(self):
+    def step(self, *, allow_start=True):
         now = self.clock()
         try:
             if self.process is not None and self.process.poll() is not None:
@@ -166,7 +169,7 @@ class Reader:
                 if self.claim is not None:self.claim.close();self.claim = None
                 self.disable();self.next_start = now + 1
             if self.process is None:
-                if not self.closed and now >= self.next_start:self.start()
+                if not self.closed and allow_start and now >= self.next_start:self.start()
                 return
             if self.closed or self.stopping:
                 self.disable();return

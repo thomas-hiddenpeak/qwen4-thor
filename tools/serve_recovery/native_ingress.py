@@ -27,9 +27,10 @@ from tools.serve_recovery.gateway import Admission, listener
 
 class AdmissionSocket:
     """One bounded packet per connection, only from the pinned native child."""
-    def __init__(self, address, clients, decide, child_pid):
+    def __init__(self, address, clients, decide, child_pid, *, include_client=False):
         self.clients, self.decide = frozenset(clients), decide
         self.child_pid = child_pid
+        self.include_client = include_client
         self.selector = selectors.DefaultSelector()
         self.listener = socket.socket(socket.AF_UNIX, socket.SOCK_SEQPACKET)
         try:
@@ -85,7 +86,8 @@ class AdmissionSocket:
                 ledger.require(type(value['version']) is int and value['version'] == 1
                     and type(value['client']) is str and value['client'] in self.clients
                     and value['lane'] in ('data', 'control'), 'invalid native admission')
-                result = self.decide(value['lane'])
+                result = (self.decide(value['lane'], value['client']) if self.include_client
+                          else self.decide(value['lane']))
                 raw = ledger.canonical(result)
                 ledger.require(len(raw) <= 4096, 'oversized native admission reply')
                 sock.send(raw)
@@ -101,8 +103,8 @@ class AdmissionSocket:
 
 def run(config, channel):
     gateway_config.validate(config)
-    ledger.require(config['version'] in (2, 3), 'native ingress configuration required')
-    managed_access = config['version'] == 3
+    ledger.require(config['version'] in (2, 3, 4), 'native ingress configuration required')
+    managed_access = config['version'] >= 3
     if managed_access:
         ledger.require(config['access']['service_id'] == channel.service_id,
                        'credential service identity differs from Guardian')
@@ -136,7 +138,8 @@ def run(config, channel):
     reader = publisher = None
     server = AdmissionSocket(address, (c['id'] for c in config['policy']['clients']),
         admission.request, lambda: process.pid if process is not None and
-                                  process.poll() is None else None)
+                                  process.poll() is None else None,
+        include_client=config['version'] == 4)
     try:
         settings = dict(version=2, parent_pid=os.getpid(),
             parent_start_ticks=journal.process_start(os.getpid()), address=address,
@@ -187,6 +190,8 @@ def run(config, channel):
             if time.monotonic() >= next_update:
                 if tls_ready and access_ready:
                     admission.update()
+                    if config['version'] == 4:
+                        server.clients = frozenset(admission.verified_clients)
                 next_update = time.monotonic()+0.25
             server.step()
     finally:

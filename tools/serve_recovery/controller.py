@@ -43,11 +43,12 @@ def model_command(package, base, config, policy_path):
 
 def validate_configuration(config):
     version = config.get('version')
-    ledger.require(type(version) is int and version in (1, 2, 3),
+    ledger.require(type(version) is int and version in (1, 2, 3, 4),
                    'unsupported controller config')
     ledger.keys(config, ('version', 'package', 'manifest_sha256', 'directory') +
         (('state_directory',) if version >= 2 else ()) +
-        (('retention_context',) if version >= 3 else ()))
+        (('retention_context',) if version >= 3 else ()) +
+        (('limits',) if version >= 4 else ()))
     # Retention-only provenance never participates in model/recovery decisions.
 
 
@@ -96,6 +97,15 @@ class Controller:
         engine.command(self.package/'engine', self.base,
                        state_directory=config.get('state_directory'))
         _, self.base_policy = cp.read(self.package/'engine/client-policy.json')
+        self.policies = None
+        if self.manifest['version'] >= 8 and self.manifest.get('ingress_mode') == 'native':
+            from tools.serve_recovery import quota_policy, quota_runtime
+            ledger.require(config['version'] == 4 and
+                config['limits']['service_id'] == channel.service_id and
+                config['limits']['state_directory'] == config['state_directory'],
+                'limits service binding changed')
+            self.base_policy = quota_policy.from_base(self.base_policy)
+            self.policies = quota_runtime.Policies(config['limits'])
         self.check_client = core_http.self_check_client(self.base_policy)
         self.phase, self.reason = 'WAIT_DEPENDENCY', 'cold_preflight'
 
@@ -116,6 +126,12 @@ class Controller:
         self.monitor.tick(allow_query=allow_query and not self.stopping and not self.frozen)
         if self.logger is not None:
             self.logger.tick()
+        if getattr(self, 'policies', None) is not None:
+            try:
+                self.policies.step(allow_start=allow_query and self.model is not None and
+                                   not self.stopping and not self.frozen)
+            except Exception:
+                self.policies.error = 'client_policy_auxiliary_unavailable'
         try:
             value = self.progress.poll() if self.progress is not None else None
             self.progress_fault = self.progress_detector.assess(value)
@@ -383,6 +399,34 @@ class Controller:
         self.completed_self_checks += 1
         check = core_http.self_check(self.settings['port'], self.credentials, stopped=self.tick)
         self.logger.save_self_check(check)
+        if self.policies is not None:
+            # The bootstrap self-check runs before new user limits apply. A
+            # stored but unapplied policy may hold admission closed; it must
+            # never turn auxiliary unavailability into model restart churn.
+            attached, attach_at, health_at = False, 0, 0
+            while not self.stopping and (not attached or not self.policies.installed):
+                self.phase, self.reason = 'WAIT_DEPENDENCY', 'client_policy_wait'
+                if not attached and time.monotonic() >= attach_at:
+                    attach_at = time.monotonic()+1
+                    try:
+                        self.policies.attach(self.owner, self.grant['generation'], token)
+                        attached = True
+                    except Exception:
+                        self.policies.error = 'client_policy_auxiliary_unavailable'
+                self.tick()
+                if (self.model.poll() is not None or self.watchdog.tripped.is_set() or
+                        self.protect() or self.progress_fault is not None):
+                    return False
+                if time.monotonic() >= health_at:
+                    health_at = time.monotonic() + 2
+                    try:
+                        health = core_http.request(self.settings['operations_port'], 'GET',
+                                                  '/healthz', stopped=self.tick)
+                        if health_fault(json.loads(health['body']), health['http_status']) is not None:
+                            return False
+                    except (OSError, ValueError, RuntimeError, KeyError):
+                        pass  # Missing observation alone is not a core fault.
+                time.sleep(.025)
         # Load can overlap the quota window; readiness cannot bypass it.
         deadline = result['quota_not_before_monotonic_ns']
         self.reason = 'quota_window'
@@ -406,6 +450,9 @@ class Controller:
         return True
 
     def close_model(self):
+        if self.policies is not None:
+            try:self.policies.detach()
+            except Exception:pass  # Owned tree cleanup still runs below.
         if self.grant is not None:
             self.channel.admission(self.grant['generation'], False)
         self.ready = False
@@ -531,6 +578,9 @@ class Controller:
                 self.close_model()
             self.idle(0.1)
         self.monitor.cancel()
+        if self.policies is not None:
+            try:self.policies.close()
+            except Exception:pass
         self.close_model()
 
 

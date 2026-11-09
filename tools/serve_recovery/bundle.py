@@ -25,8 +25,10 @@ V5_SOURCES = tuple(sorted(set(V4_SOURCES) | {'tools/serve_recovery/progress.py'}
 V6_SOURCES = tuple(sorted(set(V5_SOURCES) | {'tools/serve_host/native.py',
     'tools/serve_host/native_exporter.py', 'tools/serve_recovery/retention.py',
     'tools/serve_recovery/retention_epoch.py'}))
-SOURCES = tuple(sorted(set(V6_SOURCES) | {'tools/serve_recovery/'+name+'.py' for name in
+V7_SOURCES = tuple(sorted(set(V6_SOURCES) | {'tools/serve_recovery/'+name+'.py' for name in
     ('access_policy', 'access_store', 'access_control', 'access_io', 'access_manager')}))
+SOURCES = tuple(sorted(set(V7_SOURCES) | {'tools/serve_recovery/'+name+'.py' for name in
+    ('quota_policy', 'quota_store', 'quota_control', 'quota_runtime', 'quota_manager')}))
 LEGACY_EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'nginx')
 EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'q4t-ingress')
 NATIVE_SOURCES = frozenset(('CMakeLists.txt', 'tests/host/CMakeLists.txt',
@@ -115,6 +117,9 @@ def gateway_config_for(package, manifest, directory, *, access=None):
     base = engine.verify(package/'engine', manifest['engine_manifest_sha256'])
     policy = ingress.parse(ingress.read_file(package/'gateway-policy.json', private=True))
     _, backend = cp.read(package/'engine/client-policy.json')
+    if manifest['version'] >= 8 and manifest.get('ingress_mode') == 'native':
+        from tools.serve_recovery import quota_policy
+        backend = quota_policy.from_base(backend)
     tls = None
     if manifest['version'] >= 4 and manifest.get('ingress_mode') == 'native':
         tls = manifest['tls_configuration']
@@ -125,7 +130,8 @@ def gateway_config_for(package, manifest, directory, *, access=None):
     name = 'native_ingress' if native else 'nginx'
     ledger.require(access is None or (native and manifest['version'] >= 7),
                    'credential binding requires native access profile')
-    return gateway_config.validate(dict(version=3 if access is not None else 2 if native else 1,
+    return gateway_config.validate(dict(version=(4 if manifest['version'] >= 8 else 3)
+        if access is not None else 2 if native else 1,
         directory=str(directory), **({'access': access} if access is not None else {}),
         **{name: str(package/'bin'/executable),
            name+'_sha256': manifest['files']['bin/'+executable]},
@@ -210,14 +216,14 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
     import subprocess
     common = Path(subprocess.check_output(['git', 'rev-parse', '--path-format=absolute',
         '--git-common-dir'], cwd=ROOT, text=True).strip())
-    value = dict(version=7, profile='q4t-service-recovery-v7', repository=str(ROOT),
+    value = dict(version=8, profile='q4t-service-recovery-v8', repository=str(ROOT),
         ingress_mode=ingress_mode,
         engine_manifest_sha256=receipt['manifest_sha256'],
         files={name: engine.sha(target/name) for name in names}, python=base['python'],
         model_assets=assets(Path(base['model_dir'])), weight_shards_rehashed=False,
         resource_mode='process', require_hard_memory_limit=False,
         lock_path=str(common.parent/'.q4t-work/gpu-exclusive.lock'),
-        quota_enforced=bool(binding.quota_enforced(backend)), tls=certificate is not None,
+        quota_enforced=bool(native or binding.quota_enforced(backend)), tls=certificate is not None,
         tls_configuration=tls)
     engine.save(target/'manifest.json', value)
     digest = engine.sha(target/'manifest.json')
@@ -237,9 +243,9 @@ def verify(package, digest):
     ledger.keys(value, ('version', 'profile', 'repository', 'engine_manifest_sha256',
         'files', 'python', 'model_assets', 'weight_shards_rehashed', 'resource_mode',
         'require_hard_memory_limit', 'lock_path', 'quota_enforced', 'tls',
-        *(('ingress_mode',) if version in (2, 3, 4, 5, 6, 7) else ()),
-        *(('tls_configuration',) if version in (4, 5, 6, 7) else ())))
-    ledger.require(type(version) is int and version in (1, 2, 3, 4, 5, 6, 7) and
+        *(('ingress_mode',) if version in (2, 3, 4, 5, 6, 7, 8) else ()),
+        *(('tls_configuration',) if version in (4, 5, 6, 7, 8) else ())))
+    ledger.require(type(version) is int and version in (1, 2, 3, 4, 5, 6, 7, 8) and
         value['profile'] == 'q4t-service-recovery-v'+str(version) and
         value.get('ingress_mode', 'nginx') in ('native', 'nginx') and
         value['resource_mode'] == 'process' and
@@ -248,16 +254,16 @@ def verify(package, digest):
         'invalid recovery profile')
     native = value.get('ingress_mode', 'nginx') == 'native'
     executables = EXECUTABLES if native else LEGACY_EXECUTABLES
-    sources = (SOURCES if version == 7 else V6_SOURCES if version == 6 else
+    sources = (SOURCES if version == 8 else V7_SOURCES if version == 7 else V6_SOURCES if version == 6 else
                V5_SOURCES if version == 5 else V4_SOURCES if version == 4 else
                V3_SOURCES if version == 3 else
                V2_SOURCES if version == 2 else LEGACY_SOURCES)
     names = {*('bin/'+name for name in executables), *('source/'+name for name in sources),
              'gateway-policy.json', 'native-build.json'}
-    if version in (4, 5, 6, 7):
+    if version in (4, 5, 6, 7, 8):
         ledger.require((value['tls_configuration'] is not None) == (native and value['tls']),
                        'TLS configuration and native mode differ')
-    if value['tls'] and not (version in (4, 5, 6, 7) and native):
+    if value['tls'] and not (version in (4, 5, 6, 7, 8) and native):
         names |= {'certificate.pem', 'private-key.pem'}
     ledger.require(type(value['files']) is dict and value['files'].keys() == names,
                    'recovery source inventory changed')
@@ -273,7 +279,8 @@ def verify(package, digest):
                    Path(value['repository']).is_absolute(), 'invalid deployment paths')
     gateway = gateway_config_for(package, value, package)
     core_http.self_check_client(gateway['backend_policy'])
-    ledger.require(value['quota_enforced'] == bool(binding.quota_enforced(gateway['backend_policy'])),
+    ledger.require(value['quota_enforced'] == bool((version >= 8 and native) or
+        binding.quota_enforced(gateway['backend_policy'])),
                    'quota gate differs from immutable client limits')
     check_assets(Path(base['model_dir']), value['model_assets'])
     return value

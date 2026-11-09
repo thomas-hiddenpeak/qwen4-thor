@@ -83,6 +83,9 @@ def initialize(package, digest, state):
     if manifest['version'] >= 7 and manifest.get('ingress_mode') == 'native':
         from tools.serve_recovery import access_manager
         access_manager.initialize(state, descriptor, manifest)
+        if manifest['version'] >= 8:
+            from tools.serve_recovery import quota_manager
+            quota_manager.initialize(state, descriptor, manifest)
     return dict(state=str(state), service_id=service_id, initialized=True,
                 desired='STOPPED', automatic_start=False)
 
@@ -164,6 +167,7 @@ def launch(package, digest, state, *, daemon=False, timeout=360):
         if manifest['version'] >= 7 and manifest.get('ingress_mode') == 'native':
             from tools.serve_recovery import access_store
             access = access_store.binding(state, desc['service_id'])
+            if manifest['version'] >= 8:controller.update(version=4, limits=access)
             # No journal read in this process or silent legacy-key fallback.
             # The isolated reader gates the public credential configuration.
         gateway = bundle.gateway_config_for(package, manifest, run, access=access)
@@ -270,7 +274,8 @@ def main(argv=None, *, package=None, digest=None):
                  'tls-status', 'tls-reload', 'observe', 'metrics', 'export',
                  'retention-plan', 'retention-archive', 'retention-apply', 'retention-resume',
                  'retention-migrate', 'access-status', 'access-propose', 'access-apply',
-                 'access-migrate'):
+                 'access-migrate', 'limits-status', 'limits-propose', 'limits-apply',
+                 'limits-migrate'):
         command = commands.add_parser(name)
         command.add_argument('--state', type=Path, required=True)
         if package is None:
@@ -292,12 +297,15 @@ def main(argv=None, *, package=None, digest=None):
         if name == 'start':
             command.add_argument('--daemon', action='store_true', required=True)
             command.add_argument('--timeout', type=timeout_seconds, default=360)
-        if name in ('access-status', 'access-propose'):
+        if name in ('access-status', 'access-propose', 'limits-status', 'limits-propose'):
             command.add_argument('--request-id')
         if name == 'access-propose':
             command.add_argument('--keys', type=Path, required=True)
             command.add_argument('--proposal', type=Path, required=True)
-        if name == 'access-apply':
+        if name == 'limits-propose':
+            command.add_argument('--limits', type=Path, required=True)
+            command.add_argument('--proposal', type=Path, required=True)
+        if name in ('access-apply', 'limits-apply'):
             command.add_argument('--proposal', type=Path, required=True)
             command.add_argument('--wait-seconds', type=int, default=3)
     args = parser.parse_args(argv)
@@ -324,6 +332,21 @@ def main(argv=None, *, package=None, digest=None):
             elif args.operation in ('run', 'start'):
                 result = launch(package, digest, args.state, daemon=args.operation == 'start',
                                 timeout=getattr(args, 'timeout', 360))
+            elif args.operation.startswith('limits-'):
+                from tools.serve_recovery import quota_manager
+                desc = descriptor(args.state, package, digest)
+                manifest = bundle.verify(package, digest)
+                ledger.require(manifest.get('ingress_mode') == 'native', 'native limits management required')
+                if args.operation == 'limits-migrate':result = quota_manager.migrate(args.state, desc, manifest)
+                elif args.operation == 'limits-status':
+                    result = quota_manager.status(args.state, desc, manifest, args.request_id)
+                else:
+                    ledger.require(manifest['version'] >= 8, 'live limits profile required')
+                    if args.operation == 'limits-propose':
+                        result = quota_manager.propose(args.state, desc, args.limits, args.proposal, args.request_id)
+                    else:
+                        result = quota_manager.apply(args.state, desc, manifest, args.proposal,
+                                                     wait_seconds=args.wait_seconds)
             elif args.operation.startswith('access-'):
                 from tools.serve_recovery import access_manager
                 desc = descriptor(args.state, package, digest)
@@ -392,7 +415,7 @@ def main(argv=None, *, package=None, digest=None):
             return 1
         if args.operation == 'tls-reload' and not result.get('reloaded'):
             return 1
-        if args.operation == 'access-status' and result.get('durable_error'):
+        if args.operation in ('access-status', 'limits-status') and result.get('durable_error'):
             return 1
         return int(result.get('guardian_exit_code', 0) != 0 or result.get('state') == 'UNKNOWN')
     except (OSError, ValueError, RuntimeError) as error:
@@ -401,6 +424,9 @@ def main(argv=None, *, package=None, digest=None):
         if args.operation.startswith('access-'):
             from tools.serve_recovery import access_manager
             result = access_manager.failure(error)
+        if args.operation.startswith('limits-'):
+            from tools.serve_recovery import quota_manager
+            result = quota_manager.failure(error)
         print(json.dumps(result), file=sys.stderr)
         return 1
 

@@ -83,9 +83,18 @@ def open_journal(state, service_id):
     return access_store.open_bound(value)
 
 
-def allowed_clients(value, desc):
-    # Dynamic backend/client-slot updates are the next part of N04. Do not
-    # acknowledge a new public identity that the present backend cannot admit.
+def allowed_clients(value, desc, state, previous):
+    # Rotation/revocation of existing identities must remain available if the
+    # unrelated limits journal fails. Only adding an identity needs its proof.
+    if {c['id'] for c in value['clients']} <= {c['id'] for c in previous['clients']}:return
+    manifest = private_json(Path(desc['package']) / 'manifest.json')
+    if manifest['version'] >= 8 and manifest.get('ingress_mode') == 'native':
+        from tools.serve_recovery import quota_store
+        with quota_store.open_bound(access_store.binding(state, desc['service_id'])) as limits:
+            known = {c['id'] for c in limits.head['state']['policy']['clients']}
+        ledger.require({c['id'] for c in value['clients']} <= known,
+                       'client membership requires coordinated backend policy publication')
+        return
     base = private_json(Path(desc['package']) / 'engine/client-policy.json')
     ledger.require({c['id'] for c in value['clients']} == {c['id'] for c in base['clients']},
                    'client membership requires coordinated backend policy publication')
@@ -100,7 +109,7 @@ def propose(state, desc, keys, destination, request_id=None):
     with open_journal(state, desc['service_id']) as current:
         previous = current.head['state']['policy']
         candidate = policy.from_keys(value['clients'], previous)
-        allowed_clients(candidate, desc)
+        allowed_clients(candidate, desc, state, previous)
         proposal = dict(format=PROPOSAL, service_id=desc['service_id'],
             state_identity=current.state_identity, request_id=request_id,
             expected_revision=previous['revision'], policy=candidate)
@@ -179,8 +188,9 @@ def apply(state, desc, manifest, proposal_path, *, wait_seconds=3):
     binding = access_store.binding(state, desc['service_id'])
     ledger.require(proposal['format'] == PROPOSAL and proposal['service_id'] == desc['service_id'] and
         proposal['state_identity'] == binding['state_identity'], 'credential proposal identity changed')
-    policy.validate(proposal['policy']);allowed_clients(proposal['policy'], desc)
+    policy.validate(proposal['policy'])
     with open_journal(state, desc['service_id']) as current:
+        allowed_clients(proposal['policy'], desc, state, current.head['state']['policy'])
         receipt = current.transact(proposal['request_id'], proposal['expected_revision'], proposal['policy'])
     end = time.monotonic() + wait_seconds
     observed, error = None, 'credential_live_unknown'

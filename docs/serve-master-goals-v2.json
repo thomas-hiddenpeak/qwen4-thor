@@ -429,17 +429,17 @@
         "evidence/serve-client-policy-20261109/decision.json",
         "evidence/serve-limits-store-20261109/decision.json",
         "evidence/serve-policy-admin-20261109/decision.json",
-        "evidence/serve-policy-runtime-20261109/decision.json"
+        "evidence/serve-policy-runtime-20261109/decision.json",
+        "evidence/serve-policy-coordination-20261109/decision.json"
       ],
       "release": null,
       "plan": "SERVE_ACCESS_CONTROL_2026-11-09.md",
       "remaining": [
-        "dynamic backend policy and coordinated new clients",
-        "minute quota usage continuity across policy and recovery",
+        "minute quota usage continuity across recovery and unknown state",
         "TLS native bundle and applicable SDK verification",
         "targeted real business and rollback-capable delivery"
       ],
-      "development_status": "模型线程接入/独立限额reader/实际发布与绑定21项CPU通过，生产零警告编译；继续完整托管控制器协调、新身份/用量恢复和CLI，再TLS/真实业务交付。默认v6保持，N04未完成。"
+      "development_status": "托管v8/控制器/入口新身份协调与限额CLI33项CPU通过；继续运行用量持久与未知恢复、TLS/官方客户端及真实模型可回退交付。默认v6保持，N04未完成。"
     },
     {
       "id": "N05",

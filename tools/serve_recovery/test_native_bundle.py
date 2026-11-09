@@ -44,6 +44,7 @@ class BundleTests(unittest.TestCase):
             ingress_sha256=bundle.engine.sha(self.ingress)))
         self.base = dict(files={'q4t': bundle.engine.sha(self.binary)},
             protocol_sha256='c'*64, model_dir=str(self.model),
+            settings=bundle.engine.settings(18182, 0, operations_port=18183),
             python=dict(path=sys.executable, sha256='b'*64))
         self.patch = mock.patch.object(bundle.engine, 'verify', return_value=self.base)
         self.patch.start()
@@ -60,6 +61,7 @@ class BundleTests(unittest.TestCase):
             destination.mkdir(mode=0o700)
             shutil.copyfile(self.backend, destination/'client-policy.json')
             (destination/'client-policy.json').chmod(0o600)
+            bundle.engine.save(destination/'manifest.json', self.base)
             return dict(manifest_sha256='a'*64, binary_sha256=self.base['files']['q4t'])
         with mock.patch.object(bundle.engine, 'prepare', side_effect=engine_prepare):
             return bundle.prepare(self.binary, self.directory/'release.json', self.model,
@@ -70,7 +72,9 @@ class BundleTests(unittest.TestCase):
     def test_default_package_has_native_binary_and_no_nginx_dependency(self):
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 7)
+        self.assertEqual(value['version'], 8)
+        self.assertIn('source/tools/serve_recovery/quota_manager.py', value['files'])
+        self.assertIn('source/tools/serve_recovery/quota_runtime.py', value['files'])
         self.assertIn('source/tools/serve_recovery/access_manager.py', value['files'])
         self.assertIn('source/tools/serve_recovery/access_io.py', value['files'])
         self.assertIn('source/tools/serve_recovery/observation_io.py', value['files'])
@@ -92,6 +96,17 @@ class BundleTests(unittest.TestCase):
             service.launch(receipt['package'], receipt['manifest_sha256'], self.directory/'state')
         lease.assert_not_called()
 
+    def test_dynamic_profile_keeps_recovery_gate_when_initial_quotas_are_off(self):
+        value = json.loads(self.backend.read_bytes())
+        for client in value['clients']:
+            client['requests_per_minute'] = client['tokens_per_minute'] = 0
+        self.save(self.backend, value)
+        receipt = self.prepare();manifest = bundle.verify(receipt['package'], receipt['manifest_sha256'])
+        self.assertTrue(manifest['quota_enforced'])
+        cfg = bundle.gateway_config_for(receipt['package'], manifest, self.directory)
+        self.assertEqual(cfg['backend_policy']['version'], 3)
+        self.assertFalse(bundle.binding.quota_enforced(cfg['backend_policy']))
+
     def test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io(self):
         self.assertNotIn('tools/serve_recovery/observation_io.py', bundle.V2_SOURCES)
         self.assertEqual(set(bundle.V3_SOURCES)-set(bundle.V2_SOURCES),
@@ -103,9 +118,12 @@ class BundleTests(unittest.TestCase):
         self.assertEqual(set(bundle.V6_SOURCES)-set(bundle.V5_SOURCES),
                          {'tools/serve_host/native.py', 'tools/serve_host/native_exporter.py',
                           'tools/serve_recovery/retention.py', 'tools/serve_recovery/retention_epoch.py'})
-        self.assertEqual(set(bundle.SOURCES)-set(bundle.V6_SOURCES),
+        self.assertEqual(set(bundle.V7_SOURCES)-set(bundle.V6_SOURCES),
             {'tools/serve_recovery/'+n+'.py' for n in ('access_policy', 'access_store',
              'access_control', 'access_io', 'access_manager')})
+        self.assertEqual(set(bundle.SOURCES)-set(bundle.V7_SOURCES),
+            {'tools/serve_recovery/'+n+'.py' for n in ('quota_policy', 'quota_store',
+             'quota_control', 'quota_runtime', 'quota_manager')})
 
     def test_historical_source_inventory_versions_remain_verifiable(self):
         receipt = self.prepare()
@@ -113,7 +131,8 @@ class BundleTests(unittest.TestCase):
         current = bundle.engine.read(package/'manifest.json')
         for version, sources in ((1, bundle.LEGACY_SOURCES),
                 (2, bundle.V2_SOURCES), (3, bundle.V3_SOURCES),
-                (4, bundle.V4_SOURCES), (5, bundle.V5_SOURCES), (6, bundle.V6_SOURCES)):
+                (4, bundle.V4_SOURCES), (5, bundle.V5_SOURCES), (6, bundle.V6_SOURCES),
+                (7, bundle.V7_SOURCES)):
             with self.subTest(version=version):
                 value = dict(current, version=version,
                     profile='q4t-service-recovery-v'+str(version))

@@ -86,7 +86,7 @@ class ManagementTests(unittest.TestCase):
              mock.patch.object(service.subprocess, 'Popen', return_value=process):
             result = service.launch(self.package, self.digest, self.state)
         cfg = manager.private_json(Path(result['run']) / 'gateway.json')
-        self.assertEqual(cfg['version'], 3)
+        self.assertEqual(cfg['version'], 4)
         self.assertEqual(cfg['access'], access_store.binding(self.state, self.desc['service_id']))
         gateway_config.validate(cfg)
         cfg['access']['state_identity'][0] = True
@@ -180,6 +180,7 @@ class ManagedIngressTests(unittest.TestCase):
         self.desc = dict(service_id=self.id, package=str(self.package))
         self.manifest = dict(version=7, ingress_mode='native',
             files={'bin/q4t-ingress': hashlib.sha256(self.binary.read_bytes()).hexdigest()})
+        save(self.package/'manifest.json', self.manifest)
 
     def start(self):
         self.stack = Stack(self.root, native_ingress=self.binary, access=self.binding)

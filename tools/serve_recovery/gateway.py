@@ -76,9 +76,14 @@ class Admission:
         self.cached = None
         self.pidfd = None
         self.retry_at = 0
+        self.policy_channel = None
+        self.verified_clients = ()
 
     def close(self):
         self.cached = None
+        if self.policy_channel is not None:self.policy_channel.close()
+        self.policy_channel = None
+        self.verified_clients = ()
         if self.pidfd is not None:
             os.close(self.pidfd)
             self.pidfd = None
@@ -114,7 +119,8 @@ class Admission:
         try:
             snapshot = self.fresh()
             if self.matches(snapshot):
-                if snapshot['gateway_bound_model'] != snapshot['model_generation']:
+                installed = self.update_policy(snapshot)
+                if installed and snapshot['gateway_bound_model'] != snapshot['model_generation']:
                     self.channel.bound(snapshot['model_generation'])
                 return
             self.close()
@@ -144,7 +150,7 @@ class Admission:
                     'generation changed during gateway verification')
                 self.cached, self.pidfd = key, fd
                 fd = None
-                self.channel.bound(snapshot['model_generation'])
+                if self.update_policy(snapshot):self.channel.bound(snapshot['model_generation'])
             finally:
                 if fd is not None:
                     os.close(fd)
@@ -152,11 +158,36 @@ class Admission:
             self.close()
             self.channel.unbound()
 
-    def request(self, lane):
+    def update_policy(self, snapshot):
+        if self.config['version'] != 4:return True
+        try:
+            from tools.serve_recovery import quota_control
+            if self.policy_channel is None:
+                self.policy_channel = quota_control.Channel(quota_control.address(
+                    self.channel.service_id, snapshot['model_generation']))
+            owner = snapshot['model_owner']
+            value = self.policy_channel.step(owner['pid'], owner['start_ticks'])
+            observed = value['observed']
+            if observed is not None and not value['error']:
+                ids = tuple(observed['clients'])
+                prefix = self.verified_clients or tuple(c['id'] for c in self.config['backend_policy']['clients'])
+                ledger.require(observed['configured'] and observed['mutable'] and
+                    len(ids) >= len(prefix) and ids[:len(prefix)] == prefix,
+                    'model client slots changed')
+                self.verified_clients = ids
+        except Exception:
+            pass
+        # Installed slots cannot be removed/reused within this model. A lost
+        # optional observation retains known clients; a new generation resets.
+        return bool(self.verified_clients)
+
+    def request(self, lane, client=None):
         try:
             snapshot = self.fresh()
             if not self.matches(snapshot) or not snapshot['business_ready']:
                 return dict(error=unavailable(snapshot))
+            if self.config['version'] == 4 and client not in self.verified_clients:
+                return dict(error='service_binding_unavailable')
             value = snapshot['binding']
             return dict(port=value['operations_port' if lane == 'control' else 'port'],
                         token=value['gateway_token'])

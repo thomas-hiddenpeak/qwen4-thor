@@ -12,14 +12,14 @@ ERRORS = {'service_recovering', 'service_quarantined', 'service_stopping',
 
 
 def validate(value):
-    native = value.get('version') in (2, 3)
+    native = value.get('version') in (2, 3, 4)
     executable = 'native_ingress' if native else 'nginx'
     ledger.keys(value, ('version', 'directory', executable, executable+'_sha256',
         'policy', 'backend_policy', 'binary_sha256', 'protocol_sha256', 'tls',
-        *(('access',) if value.get('version') == 3 else ())))
-    ledger.require(type(value['version']) is int and value['version'] in (1, 2, 3),
+        *(('access',) if value.get('version') in (3, 4) else ())))
+    ledger.require(type(value['version']) is int and value['version'] in (1, 2, 3, 4),
                    'invalid gateway config version')
-    if value['version'] == 3:
+    if value['version'] in (3, 4):
         access = value['access']
         ledger.keys(access, ('state_directory', 'service_id', 'state_identity'))
         ledger.require(type(access['state_directory']) is str and
@@ -35,6 +35,8 @@ def validate(value):
                        'invalid gateway source identity')
     p = g.policy(value['policy'])
     cp.match_clients(p, value['backend_policy'])
+    ledger.require(value['version'] != 4 or value['backend_policy']['version'] == 3,
+                   'dynamic ingress requires a versioned model policy')
     ledger.require('upstream_operations_port' in p,
                    'recovery requires a separate operations listener')
     tls = value['tls']
