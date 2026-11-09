@@ -203,7 +203,8 @@
       "evidence": [
         "SERVE_RESPONSES_2026-11-08.md",
         "evidence/serve-responses-core-20261108/README.md",
-        "evidence/serve-responses-context-cpu-20261109/README.md"
+        "evidence/serve-responses-context-cpu-20261109/README.md",
+        "evidence/serve-responses-context-business-20261109/README.md"
       ],
       "release": {
         "engine_binary_sha256": "92e600fbcdcadf37271a77405daf498f1fe4fbf2d327ad79a0bf3646bd02ce31",
@@ -240,10 +241,35 @@
         "A07.8 complete input/output/include/SSE/SDK and release audit"
       ],
       "automatic_truncation": {
-        "state": "targeted_cpu_passed_real_business_pending",
+        "state": "validated_delivery_pending",
         "cpu_tests": 18,
         "engine_sha256": "bb6e702ea5615fea7c11302e7c8ce2b1bec6b8aff9803f2b5cc7bfe84fec270a",
-        "default_delivered": false
+        "default_delivered": false,
+        "business": {
+          "status": "PASS_RESPONSES_CONTEXT_TARGETED_BUSINESS",
+          "acceptance": "ACCEPT_TARGETED_RESPONSES_CONTEXT",
+          "binary_sha256": "bb6e702ea5615fea7c11302e7c8ce2b1bec6b8aff9803f2b5cc7bfe84fec270a",
+          "protocol_sha256": "88a8e832ef21f024a13c317931d5ab05b89f16d25ffb16736c3a8838772727bf",
+          "counts": {
+            "starts": 2,
+            "chats": 7,
+            "controls": 97
+          },
+          "seconds": 93.41345523949713,
+          "nvml_queries": 91,
+          "all_nvml_ok": true,
+          "cleanup_confirmed": true,
+          "previous_failure": "docs/evidence/serve-responses-context-driver-fix-20261109",
+          "reused_json": true,
+          "real_input_tokens": 42,
+          "cpu_cases": 18,
+          "driver_fix_cases": 2,
+          "full_model_quality": false,
+          "performance_acceptance": false,
+          "media_gpu_retested": false,
+          "default_changed": false,
+          "remaining_master_tasks_open": true
+        }
       }
     },
     {

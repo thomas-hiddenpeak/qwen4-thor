@@ -1,3 +1,5 @@
+A07.1 真实短验通过：[原件与接受决定](evidence/serve-responses-context-business-20261109/README.md)。累计 2 启动/7 请求/93.414 秒、91 NVML 全 OK，JSON/SSE/后台实际 42 输入 token、当前任务 42、完整历史和文档工具/JSON 引用闭环通过。默认 N06 尚未改；继续可回退发布，再 A07.2 与全部总任务。
+
 A07.1 首真实 JSON/分词通过，但驱动误比较 input_text 公开投影而失败；1 启动/1 请求/40.568 秒已清理。仅驱动修复 2 CPU 与实际历史核对通过，[全部原件](evidence/serve-responses-context-driver-fix-20261109/README.md)。候选不变，续验复用已过 JSON，补剩余 6 请求，累计 2/8/900 上限保持；默认 N06 不动，全部总任务继续。
 
 A07.1 自动裁剪 16 项 C++ 与 2 项驱动 CPU 全过，host/实际引擎零警告，[原件含首编译夹具失败](evidence/serve-responses-context-cpu-20261109/README.md)。候选 bb6e702e，默认 N06 保持 STOPPED；下一步真实分词/SDK、JSON/SSE、工具与后台短验，随后交付并继续 A07 其余全部能力。
