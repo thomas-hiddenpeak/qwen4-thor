@@ -1,0 +1,34 @@
+{
+  "README.md": {
+    "bytes": 1065,
+    "sha256": "53b3ccd068b790befff13a33d25454a54f2d3d2953143c98faf05e577fa878db"
+  },
+  "decision.json": {
+    "bytes": 224,
+    "sha256": "f9483480075a674818c5c58489f3896b568c6dd1f30b72304631bd8a014a54cd"
+  },
+  "identity.json": {
+    "bytes": 458,
+    "sha256": "006ae6c20ee176364922f8a165661c47ab96baf22272c64cbe095a7cf054400e"
+  },
+  "io-cpu-01/commands.json": {
+    "bytes": 124,
+    "sha256": "b4db7914d97dc7321e513f45dcb24d0d1b10ba1b1a7e5451a57e4020f21d6f64"
+  },
+  "io-cpu-01/result.json": {
+    "bytes": 220,
+    "sha256": "1a4cea79714a79b5231622989609b750362fd94840529bc8f72218dddd4b679b"
+  },
+  "io-cpu-01/sources.json": {
+    "bytes": 984,
+    "sha256": "2d74731af5349a766df4976089c2939ae79b09a8c139588c5888725b3a02b76a"
+  },
+  "io-cpu-01/stderr.txt": {
+    "bytes": 1342,
+    "sha256": "b327f9f0d7a493f8e7c193ce5b9f766cf148fa2df76b5a17098e9374bf525e0b"
+  },
+  "io-cpu-01/stdout.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

@@ -1,0 +1,12 @@
+test_competing_service_claim_never_spawns_another_worker (tools.serve_recovery.test_access_io.AccessIoTests.test_competing_service_claim_never_spawns_another_worker) ... ok
+test_parent_exit_before_module_load_retains_inherited_claim (tools.serve_recovery.test_access_io.AccessIoTests.test_parent_exit_before_module_load_retains_inherited_claim) ... ok
+test_private_fds_and_missing_file_leave_native_snapshot_serving (tools.serve_recovery.test_access_io.AccessIoTests.test_private_fds_and_missing_file_leave_native_snapshot_serving) ... ok
+test_real_journal_new_revision_and_large_fragmented_history (tools.serve_recovery.test_access_io.AccessIoTests.test_real_journal_new_revision_and_large_fragmented_history) ... ok
+test_stopped_reader_timeout_reap_and_fixed_launch_budget (tools.serve_recovery.test_access_io.AccessIoTests.test_stopped_reader_timeout_reap_and_fixed_launch_budget) ... ok
+test_writer_busy_and_corrupt_policy_keep_one_worker (tools.serve_recovery.test_access_io.AccessIoTests.test_writer_busy_and_corrupt_policy_keep_one_worker) ... ok
+test_wrong_sequence_truncated_frame_and_blocked_send_are_bounded (tools.serve_recovery.test_access_io.AccessIoTests.test_wrong_sequence_truncated_frame_and_blocked_send_are_bounded) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 10.532s
+
+OK
