@@ -26,6 +26,7 @@ V8_SOURCES = (*V7_SOURCES, 'tools/serve_service/nvml_policy.py',
               'tools/serve_service/monitor_control.py')
 V9_SOURCES = (*V8_SOURCES, 'tools/serve_service/auxiliary.py')
 V10_SOURCES = V9_SOURCES  # Same inventory; new resource-control contract.
+V11_SOURCES = (*V10_SOURCES, 'tools/serve_service/capacity.py')
 FILES = ('q4t', 'q4t.release.json', 'CMakeCache.txt', 'acceptance.json')
 APPLICATION_LIMITS = dict(max_object_mib=16, max_client_mib=64, max_total_mib=256,
     max_client_objects=1000, max_total_objects=10000, io_timeout_ms=2000)
@@ -133,7 +134,8 @@ def application_settings(value):
 
 
 def settings(port, restart_limit, critical_memory_mib=1024, operations_port=0,
-             nvml_policy='strict', model_names=None, application_state=None):
+             nvml_policy='strict', model_names=None, application_state=None,
+             capacity_profile=None):
     require(type(nvml_policy) is str and nvml_policy in ('strict', 'degrade'),
             'invalid NVML policy')
     require(type(port) is int and 1024 <= port <= 65535, 'invalid port')
@@ -168,6 +170,9 @@ def settings(port, restart_limit, critical_memory_mib=1024, operations_port=0,
                 'invalid model identifier')
         require(len(set(names)) == len(names), 'duplicate model identifier')
         result['model_names'] = dict(name=names[0], aliases=list(aliases))
+    if capacity_profile is not None:
+        from tools.serve_service import capacity
+        result['profile'] = capacity.validate(capacity_profile)
     if application_state is not None:
         result['application_state'] = application_settings(application_state)
     return result
@@ -280,16 +285,22 @@ def verify_declarations(metadata, directory=None, *, required=False):
 def prepare(binary, release, model, output, port=8080, restart_limit=0,
             critical_memory_mib=1024, client_policy=None, host_resources=None,
             operations_port=0, nvml_policy='strict', model_names=None,
-            application_state=None):
+            application_state=None, capacity_config=None):
+    profile = None
+    if capacity_config is not None:
+        from tools.serve_service import capacity
+        profile = capacity.normalize(capacity_config)
     config = settings(port, restart_limit, critical_memory_mib, operations_port,
-                      nvml_policy, model_names)
+                      nvml_policy, model_names, capacity_profile=profile)
     policy_raw = None
     if host_resources is not None:
         from tools.serve_service import resources
         resources.validate(host_resources)
     if client_policy is not None:
         from tools.serve_gateway import client_policy as cp
-        policy_raw, _ = cp.read(client_policy)
+        policy_raw, clients = cp.read(client_policy)
+        if profile is not None:
+            capacity.check_clients(profile, clients)
     binary, release, model = map(lambda p: Path(p).resolve(),
                                  (binary, release, model))
     regular(binary)
@@ -333,6 +344,8 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
     sources = V5_SOURCES if host_resources is not None or operations_port else (V4_SOURCES if policy_raw is not None else SOURCES)
     if nvml_policy == 'degrade':
         sources = V10_SOURCES if host_resources is not None else V9_SOURCES
+    if profile is not None:
+        sources = V11_SOURCES
     for name in sources:
         source, dest = ROOT/name, target/'source'/name
         regular(source)
@@ -377,6 +390,8 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
         manifest['version'] = 6
     if nvml_policy == 'degrade':
         manifest['version'] = 10 if host_resources is not None else 9
+    if profile is not None:
+        manifest['version'] = 11
     save(target/'manifest.json', manifest)
     verify(target, sha(target/'manifest.json'))
     return dict(package=str(target), manifest_sha256=sha(target/'manifest.json'),
@@ -387,14 +402,15 @@ def verify(package, digest):
     package = Path(package).resolve(strict=True)
     require(sha(package/'manifest.json') == digest, 'package manifest changed')
     manifest = read(package/'manifest.json')
-    require(type(manifest['version']) is int and manifest['version'] in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
+    require(type(manifest['version']) is int and manifest['version'] in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11),
             'unsupported package version')
     config = manifest['settings']
     wanted = settings(config['port'], config['restart_limit'],
                       config.get('critical_memory_mib', 1024),
-                      config.get('operations_port', 0) if manifest['version'] in (6, 7, 8, 9, 10) else 0,
-                      config.get('nvml_policy', 'strict') if manifest['version'] in (7, 8, 9, 10) else 'strict',
-                      config.get('model_names'), config.get('application_state'))
+                      config.get('operations_port', 0) if manifest['version'] in (6, 7, 8, 9, 10, 11) else 0,
+                      config.get('nvml_policy', 'strict') if manifest['version'] in (7, 8, 9, 10, 11) else 'strict',
+                      config.get('model_names'), config.get('application_state'),
+                      config['profile'] if manifest['version'] == 11 else None)
     require(manifest['version'] not in (7, 8, 9, 10) or config.get('nvml_policy') == 'degrade',
             'monitor package requires explicit degradation policy')
     require(manifest['version'] != 10 or 'host_resources' in manifest,
@@ -405,11 +421,11 @@ def verify(package, digest):
         for key in ('critical_memory_mib', 'memory_poll_seconds',
                     'memory_low_seconds', 'memory_unknown_seconds'):
             del wanted[key]
-    require(config == wanted, 'unknown managed configuration')
+    require(same_json(config, wanted), 'unknown managed configuration')
     sources = {1: LEGACY_SOURCES, 2: V2_SOURCES, 3: SOURCES,
                4: V4_SOURCES, 5: V5_SOURCES, 6: V5_SOURCES,
                7: V7_SOURCES, 8: V8_SOURCES, 9: V9_SOURCES,
-               10: V10_SOURCES}[manifest['version']]
+               10: V10_SOURCES, 11: V11_SOURCES}[manifest['version']]
     expected = {*FILES, *('source/'+name for name in sources)}
     if 'third_party_notices' in manifest:
         notices = manifest['third_party_notices']
@@ -428,15 +444,18 @@ def verify(package, digest):
     if 'release_declarations' in manifest:
         expected.update('declarations/'+n for n in
                         declaration_files(manifest['release_declarations']))
-    if manifest['version'] == 4 or manifest['version'] in (5, 6, 7, 8, 9, 10) and 'client_policy' in manifest:
+    if manifest['version'] == 4 or manifest['version'] in (5, 6, 7, 8, 9, 10, 11) and 'client_policy' in manifest:
         from tools.serve_gateway import client_policy as cp
         expected.add('client-policy.json')
-        raw, _ = cp.read(package/'client-policy.json')
+        raw, clients = cp.read(package/'client-policy.json')
+        if manifest['version'] == 11:
+            from tools.serve_service import capacity
+            capacity.check_clients(config['profile'], clients)
         require(manifest.get('client_policy') == cp.binding(raw),
                 'client policy binding differs')
     else:
         require('client_policy' not in manifest, 'legacy package cannot scope clients')
-    if manifest['version'] == 5 or manifest['version'] in (6, 7, 8, 9, 10) and 'host_resources' in manifest:
+    if manifest['version'] == 5 or manifest['version'] in (6, 7, 8, 9, 10, 11) and 'host_resources' in manifest:
         from tools.serve_service import resources
         resources.validate(manifest['host_resources'])
         resources.verify_dependencies(manifest['resource_dependencies'])
@@ -484,9 +503,10 @@ def verify(package, digest):
 def command(package, manifest, *, state_directory=None):
     cfg = manifest['settings']
     args = [str(Path(package)/'q4t'), 'serve', '--model-dir', manifest['model_dir'],
-            '--host', '127.0.0.1', '--port', str(cfg['port']), '--mtp']
-    for key, value in PROFILE.items():
-        if key not in ('name', 'host'):
+            '--host', '127.0.0.1', '--port', str(cfg['port']),
+            '--mtp' if cfg['profile'].get('mtp_enabled', True) else '--no-mtp']
+    for key, value in cfg['profile'].items():
+        if key not in ('name', 'host', 'mtp_enabled'):
             args += ['--'+key.replace('_', '-'), str(value)]
     if 'client_policy' in manifest:
         args += ['--client-policy-file', str(Path(package)/'client-policy.json')]

@@ -533,7 +533,9 @@
         "N05",
         "N06"
       ],
-      "evidence": [],
+      "evidence": [
+        "evidence/serve-lifecycle-capacity-20261109/README.md"
+      ],
       "release": null,
       "findings": [
         {
@@ -548,7 +550,8 @@
         "Native CLI lifecycle and configurable global/client capacity profiles",
         "Default entry and publication metadata switching transaction integrated with managed deployment",
         "All other original N07 acceptance conditions"
-      ]
+      ],
+      "plan": "SERVE_NATIVE_LIFECYCLE_2026-11-09.md"
     },
     {
       "id": "R01",

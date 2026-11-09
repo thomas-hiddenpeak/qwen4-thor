@@ -1,5 +1,18 @@
 # 当前状态
 
+N07 容量 27 项 CPU 与真实旧 v9/v8 只读全部通过，[原件](evidence/serve-lifecycle-capacity-20261109/README.md)。
+0 模型/Chat，默认保持 STOPPED；继续统一 q4t service、发布事务
+及组合真实短验，再全部总任务，N07 和总目标尚未完成。
+
+N07 容量配置已贯通实际 argv/观察/客户端公平容量，新增引擎 v11、
+外层 v10 并保留历史清单。冻结 27 项针对 CPU 与真实 v9/v8 只读
+核验，尚未执行；随后统一入口/发布事务及真实短验，默认保持。
+
+N07 审计确认容量 profile 未贯通实际命令/健康核验、ELF 缺 service
+入口、默认四件套缺持久发布事务；按[完整实现计划](SERVE_NATIVE_LIFECYCLE_2026-11-09.md)成组开发。
+先修容量合同/旧包兼容，再 CLI/发布及真实短验，尚无新测试/GPU。
+默认 N05 保持 STOPPED；所有 A/N/R/Q/G 总任务继续。
+
 N05已可回退默认交付：引擎6281ece5/元数据f2a333ef、原生v9
 包97423f34、服务发布ab9ea64b，[交付与实际回退原件](evidence/serve-http-delivery-20261109/README.md)。10随包CLI/
 2客户端导入/6安装操作通过；核心与Key/限额/用量journal字节保持，

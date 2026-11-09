@@ -391,7 +391,8 @@ class Controller:
                         self.settings['operations_port'], stopped=self.tick, include_metrics=False)
                     try:
                         state = supervisor.classify(value, self.base['protocol_sha256'],
-                            self.base['files']['q4t'], cp.binding(raw), self.settings['operations_port'])
+                            self.base['files']['q4t'], cp.binding(raw), self.settings['operations_port'],
+                            self.settings['profile'])
                     except (ValueError, KeyError):
                         self.quarantine('identity_invalid')
                         return False

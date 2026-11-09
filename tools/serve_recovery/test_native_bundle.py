@@ -72,7 +72,7 @@ class BundleTests(unittest.TestCase):
     def test_default_package_has_native_binary_and_no_nginx_dependency(self):
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 9)
+        self.assertEqual(value['version'], 10)
         self.assertIn('source/tools/serve_recovery/quota_manager.py', value['files'])
         self.assertIn('source/tools/serve_recovery/quota_runtime.py', value['files'])
         self.assertIn('source/tools/serve_recovery/usage_runtime.py', value['files'])
@@ -110,6 +110,9 @@ class BundleTests(unittest.TestCase):
         self.assertFalse(bundle.binding.quota_enforced(cfg['backend_policy']))
 
     def test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io(self):
+        self.assertEqual(bundle.V9_SOURCES, bundle.V8_SOURCES)
+        self.assertEqual(set(bundle.SOURCES)-set(bundle.V9_SOURCES),
+                         {'tools/serve_service/capacity.py'})
         self.assertNotIn('tools/serve_recovery/observation_io.py', bundle.V2_SOURCES)
         self.assertEqual(set(bundle.V3_SOURCES)-set(bundle.V2_SOURCES),
                          {'tools/serve_recovery/observation_io.py'})
@@ -123,7 +126,7 @@ class BundleTests(unittest.TestCase):
         self.assertEqual(set(bundle.V7_SOURCES)-set(bundle.V6_SOURCES),
             {'tools/serve_recovery/'+n+'.py' for n in ('access_policy', 'access_store',
              'access_control', 'access_io', 'access_manager')})
-        self.assertEqual(set(bundle.SOURCES)-set(bundle.V7_SOURCES),
+        self.assertEqual(set(bundle.V8_SOURCES)-set(bundle.V7_SOURCES),
             {'tools/serve_recovery/'+n+'.py' for n in ('quota_policy', 'quota_store',
              'quota_control', 'quota_runtime', 'quota_manager', 'usage_policy',
              'usage_store', 'usage_io', 'usage_control', 'usage_runtime',
@@ -136,7 +139,7 @@ class BundleTests(unittest.TestCase):
         for version, sources in ((1, bundle.LEGACY_SOURCES),
                 (2, bundle.V2_SOURCES), (3, bundle.V3_SOURCES),
                 (4, bundle.V4_SOURCES), (5, bundle.V5_SOURCES), (6, bundle.V6_SOURCES),
-                (7, bundle.V7_SOURCES), (8, bundle.V8_SOURCES)):
+                (7, bundle.V7_SOURCES), (8, bundle.V8_SOURCES), (9, bundle.V9_SOURCES)):
             with self.subTest(version=version):
                 value = dict(current, version=version,
                     profile='q4t-service-recovery-v'+str(version))
@@ -171,7 +174,7 @@ class BundleTests(unittest.TestCase):
         policy = self.http_policy()
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 9)
+        self.assertEqual(value['version'], 10)
         self.assertEqual(bundle.engine.read(Path(receipt['package'])/'gateway-policy.json'), policy)
         cfg = bundle.gateway_config_for(receipt['package'], value, self.directory,
             access=dict(state_directory=str(self.directory/'state'), state_identity=[1, 2],
@@ -375,6 +378,24 @@ class BundleTests(unittest.TestCase):
         self.assertEqual(prepare.call_args.kwargs['application_state'],
                          dict(directory='/persistent/objects', max_client_mib=128,
                               io_timeout_ms=500))
+
+    def test_cli_carries_capacity_input_to_sealed_package(self):
+        path = self.directory/'capacity.json'
+        selected = dict(version=1, max_len=4096, mtp_enabled=False)
+        self.save(path, selected)
+        arguments = ['prepare', '--capacity-config', str(path)]
+        for name in ('binary', 'release', 'model', 'guardian', 'cuda-probe',
+                     'policy', 'backend-policy', 'native-receipt', 'output', 'native-ingress'):
+            arguments += ['--'+name, str(self.directory/name)]
+        with mock.patch.object(service.bundle, 'prepare', return_value={}) as prepare, \
+             contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(service.main(arguments), 0)
+        self.assertEqual(prepare.call_args.kwargs['capacity_config'], selected)
+
+    def test_capacity_overcommit_rejected_before_outer_package_creation(self):
+        with self.assertRaisesRegex(RuntimeError, 'client fairness'):
+            self.prepare(capacity_config=dict(version=1, max_inflight_requests=3))
+        self.assertFalse((self.directory/'package').exists())
 
 
 if __name__ == '__main__':

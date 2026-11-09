@@ -1,0 +1,9 @@
+{
+  "status": "PASS_TARGETED_CAPACITY_CPU",
+  "tests_passed": 27,
+  "real_old_packages_verified": 2,
+  "gpu_starts": 0,
+  "default_changed": false,
+  "task_complete": false,
+  "next": "N07 unified lifecycle and publication transaction"
+}

@@ -31,7 +31,8 @@ V8_SOURCES = tuple(sorted(set(V7_SOURCES) | {'tools/serve_recovery/'+name+'.py' 
     ('quota_policy', 'quota_store', 'quota_control', 'quota_runtime', 'quota_manager',
      'usage_policy', 'usage_store', 'usage_io', 'usage_control', 'usage_runtime',
      'model_admin', 'usage_manager', 'deployment_policy', 'deployment', 'initialization')}))
-SOURCES = V8_SOURCES  # v9 adds HTTP policy/transport; Python inventory is unchanged.
+V9_SOURCES = V8_SOURCES  # v9 adds HTTP transport, with unchanged Python inventory.
+SOURCES = tuple(sorted(set(V9_SOURCES) | {'tools/serve_service/capacity.py'}))
 LEGACY_EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'nginx')
 EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'q4t-ingress')
 NATIVE_SOURCES = frozenset(('CMakeLists.txt', 'tests/host/CMakeLists.txt',
@@ -146,7 +147,7 @@ def gateway_config_for(package, manifest, directory, *, access=None):
 def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
             backend_policy_path, output, *, native_receipt, certificate=None, key=None,
             native_ingress=None, ingress_mode='native', client_ca=None, client_crl=None,
-            model_names=None, application_state=None):
+            model_names=None, application_state=None, capacity_config=None):
     ledger.require(ingress_mode in ('native', 'nginx'), 'invalid ingress mode')
     native = ingress_mode == 'native'
     executable = native_ingress if native else nginx
@@ -157,6 +158,9 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
     _, backend = cp.read(backend_policy_path)
     cp.match_clients(policy, backend)
     core_http.self_check_client(backend)
+    if capacity_config is not None:
+        from tools.serve_service import capacity
+        capacity.check_clients(capacity.normalize(capacity_config), backend)
     ledger.require((certificate is None) == (key is None), 'incomplete TLS configuration')
     if native:
         ledger.require(policy['version'] in (2, 3, 4), 'native ingress requires source CIDRs')
@@ -194,7 +198,7 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
     receipt = engine.prepare(binary, release, model, target/'engine',
         port=policy['upstream_port'], operations_port=policy['upstream_operations_port'],
         client_policy=backend_policy_path, nvml_policy='degrade', model_names=model_names,
-        application_state=application_state)
+        application_state=application_state, capacity_config=capacity_config)
     (target/'bin').mkdir(mode=0o700)
     executables = EXECUTABLES if native else LEGACY_EXECUTABLES
     for name, source in zip(executables, (guardian, cuda_probe, executable)):
@@ -220,7 +224,7 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
     import subprocess
     common = Path(subprocess.check_output(['git', 'rev-parse', '--path-format=absolute',
         '--git-common-dir'], cwd=ROOT, text=True).strip())
-    value = dict(version=9, profile='q4t-service-recovery-v9', repository=str(ROOT),
+    value = dict(version=10, profile='q4t-service-recovery-v10', repository=str(ROOT),
         ingress_mode=ingress_mode,
         engine_manifest_sha256=receipt['manifest_sha256'],
         files={name: engine.sha(target/name) for name in names}, python=base['python'],
@@ -247,9 +251,9 @@ def verify(package, digest):
     ledger.keys(value, ('version', 'profile', 'repository', 'engine_manifest_sha256',
         'files', 'python', 'model_assets', 'weight_shards_rehashed', 'resource_mode',
         'require_hard_memory_limit', 'lock_path', 'quota_enforced', 'tls',
-        *(('ingress_mode',) if version in (2, 3, 4, 5, 6, 7, 8, 9) else ()),
-        *(('tls_configuration',) if version in (4, 5, 6, 7, 8, 9) else ())))
-    ledger.require(type(version) is int and version in (1, 2, 3, 4, 5, 6, 7, 8, 9) and
+        *(('ingress_mode',) if version in (2, 3, 4, 5, 6, 7, 8, 9, 10) else ()),
+        *(('tls_configuration',) if version in (4, 5, 6, 7, 8, 9, 10) else ())))
+    ledger.require(type(version) is int and version in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10) and
         value['profile'] == 'q4t-service-recovery-v'+str(version) and
         value.get('ingress_mode', 'nginx') in ('native', 'nginx') and
         value['resource_mode'] == 'process' and
@@ -258,17 +262,18 @@ def verify(package, digest):
         'invalid recovery profile')
     native = value.get('ingress_mode', 'nginx') == 'native'
     executables = EXECUTABLES if native else LEGACY_EXECUTABLES
-    sources = (SOURCES if version == 9 else V8_SOURCES if version == 8 else
+    sources = (SOURCES if version == 10 else V9_SOURCES if version == 9 else
+               V8_SOURCES if version == 8 else
                V7_SOURCES if version == 7 else V6_SOURCES if version == 6 else
                V5_SOURCES if version == 5 else V4_SOURCES if version == 4 else
                V3_SOURCES if version == 3 else
                V2_SOURCES if version == 2 else LEGACY_SOURCES)
     names = {*('bin/'+name for name in executables), *('source/'+name for name in sources),
              'gateway-policy.json', 'native-build.json'}
-    if version in (4, 5, 6, 7, 8, 9):
+    if version in (4, 5, 6, 7, 8, 9, 10):
         ledger.require((value['tls_configuration'] is not None) == (native and value['tls']),
                        'TLS configuration and native mode differ')
-    if value['tls'] and not (version in (4, 5, 6, 7, 8, 9) and native):
+    if value['tls'] and not (version in (4, 5, 6, 7, 8, 9, 10) and native):
         names |= {'certificate.pem', 'private-key.pem'}
     ledger.require(type(value['files']) is dict and value['files'].keys() == names,
                    'recovery source inventory changed')
@@ -277,6 +282,8 @@ def verify(package, digest):
         ledger.require((package/name).resolve().is_relative_to(package) and
                        engine.sha(package/name) == wanted, 'recovery file identity changed')
     base = engine.verify(package/'engine', value['engine_manifest_sha256'])
+    ledger.require(base.get('version', 1) != 11 or version >= 10,
+                   'managed capacity requires recovery profile v10')
     ledger.require(base['python'] == value['python'] and
         (package/'bin/q4t').read_bytes() == launcher(digest, value['python']['path']),
         'recovery launcher/interpreter changed')

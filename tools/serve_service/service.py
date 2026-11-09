@@ -53,7 +53,7 @@ def run(package, digest, output):
     pkg.save(output/'controller.json', dict(version=2,
         owner=supervisor.process_identity(os.getpid()), lock_path=str(lock_path),
         observation_context=inspection.current_context(),
-        auxiliary_isolation=manifest.get('version') in (9, 10),
+        auxiliary_isolation=manifest.get('version') in (9, 10, 11),
         package=str(Path(package).resolve()), manifest_sha256=digest,
         created_unix=time.time()))
     command = [manifest['python']['path'], '-I', '-B',
@@ -221,6 +221,7 @@ def main():
     p.add_argument('--served-model-name')
     p.add_argument('--model-alias', action='append', default=[])
     p.add_argument('--object-store-dir')
+    p.add_argument('--capacity-config', type=Path)
     for option in pkg.APPLICATION_LIMITS:
         p.add_argument('--object-'+option.replace('_', '-'), type=int)
     p.add_argument('--host-memory-high-mib', type=int)
@@ -249,6 +250,8 @@ def main():
                                        else 'qwen3.8-flash-next',
                                   aliases=args.model_alias)
                              if args.served_model_name is not None or args.model_alias else None,
+                             capacity_config=pkg.read(args.capacity_config)
+                                 if args.capacity_config is not None else None,
                              application_state=({**({'directory': args.object_store_dir}
                                  if args.object_store_dir is not None else {}),
                                  **{k: getattr(args, 'object_'+k) for k in pkg.APPLICATION_LIMITS

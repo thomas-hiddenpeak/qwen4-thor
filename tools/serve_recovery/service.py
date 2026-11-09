@@ -286,6 +286,7 @@ def main(argv=None, *, package=None, digest=None):
     prepare.add_argument('--served-model-name')
     prepare.add_argument('--model-alias', action='append', default=[])
     prepare.add_argument('--object-store-dir')
+    prepare.add_argument('--capacity-config', type=Path)
     for option in engine.APPLICATION_LIMITS:
         prepare.add_argument('--object-'+option.replace('_', '-'), type=int)
     for name in ('init', 'init-resume', 'run', 'start', 'status', 'diagnostics', 'stop',
@@ -339,6 +340,8 @@ def main(argv=None, *, package=None, digest=None):
                 native_receipt=args.native_receipt, certificate=args.certificate, key=args.key,
                 native_ingress=args.native_ingress, ingress_mode=args.ingress_mode,
                 client_ca=args.client_ca, client_crl=args.client_crl,
+                capacity_config=engine.read(args.capacity_config)
+                    if args.capacity_config is not None else None,
                 model_names=dict(
                     name=args.served_model_name if args.served_model_name is not None
                          else 'qwen3.8-flash-next', aliases=args.model_alias)

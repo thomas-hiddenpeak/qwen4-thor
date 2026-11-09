@@ -94,27 +94,33 @@ class RotatingLog:
         self.thread.start()
 
 
-def expected_configuration():
-    p = pkg.PROFILE
+def expected_configuration(profile=None):
+    p = pkg.PROFILE if profile is None else profile
     return dict(max_context_tokens=p['max_len'], max_sequences=p['max_seq'],
         prefill_chunk_tokens=p['max_prefill'],
         max_inflight_requests=p['max_inflight_requests'],
-        max_queued_requests=p['max_queued_requests'], mtp_enabled=True,
-        structured_backend=True, memory_enabled=True,
+        max_queued_requests=p['max_queued_requests'],
+        mtp_enabled=p.get('mtp_enabled', True), structured_backend=True,
+        memory_enabled=p['min_available_memory_mib'] != 0,
         memory_floor_mib=p['min_available_memory_mib'],
-        memory_recovery_mib=p['min_available_memory_mib']+
-                            p['memory_recovery_margin_mib'])
+        memory_recovery_mib=(p['min_available_memory_mib'] +
+            p['memory_recovery_margin_mib'] if p['min_available_memory_mib'] else 0))
 
 
-def classify(probe, protocol, binary, client_policy=None, operations_port=0):
+def classify(probe, protocol, binary, client_policy=None, operations_port=0,
+             profile=None):
     """Only validated observations affect supervision; busy is not failure."""
     pkg.require(probe['process']['executable_sha256'] == binary and
                 probe['process']['listener_scope'] == 'loopback',
                 'backend executable/listener mismatch')
     pkg.require(probe['protocol'] == protocol, 'backend protocol mismatch')
-    pkg.require(all(probe['configuration'].get(k) == v
-                    for k, v in expected_configuration().items()),
+    pkg.require(all(k in probe['configuration'] and
+                    pkg.same_json(probe['configuration'][k], v)
+                    for k, v in expected_configuration(profile).items()),
                 'effective serving configuration differs')
+    if profile is not None and profile.get('name') != pkg.PROFILE['name']:
+        from tools.serve_service import capacity
+        capacity.observation(profile, probe['configuration'])
     if client_policy is not None:
         from tools.serve_gateway import client_policy as cp
         cp.observed_matches(probe.get('client_policy'), client_policy)
@@ -224,10 +230,10 @@ def run(package, digest, output, *, observe=None, read_memory=None):
     manifest = pkg.verify(package, digest)
     cfg = manifest['settings']
     observations = None
-    if manifest.get('version') in (9, 10):
+    if manifest.get('version') in (9, 10, 11):
         from tools.serve_service import auxiliary
-        pkg.require(cfg.get('nvml_policy') == 'degrade' and
-                    cfg['restart_limit'] == 0,
+        pkg.require(manifest['version'] == 11 or
+                    cfg.get('nvml_policy') == 'degrade' and cfg['restart_limit'] == 0,
                     'auxiliary isolation requires degradation without restart')
         observations = auxiliary.Observations()
     stopping = threading.Event()
@@ -256,7 +262,7 @@ def run(package, digest, output, *, observe=None, read_memory=None):
         if envelope is not None:
             state['host_resources'] = dict(policy=envelope.selected, observation=envelope.latest,
                 violation=envelope.error, payload_removed=envelope.closed)
-            if manifest.get('version') == 10:
+            if manifest.get('version') in (10, 11):
                 state['host_resources'].update(runtime_verification='CGROUPFS',
                     runtime_manager_observation='NOT_QUERIED',
                     statistics_gap_samples=envelope.statistics_gap_samples)
@@ -294,7 +300,7 @@ def run(package, digest, output, *, observe=None, read_memory=None):
                 if 'host_resources' in manifest:
                     from tools.serve_service import resources
                     options = ({'isolate_manager': True}
-                               if manifest.get('version') == 10 else {})
+                               if manifest.get('version') in (10, 11) else {})
                     envelope = resources.Envelope(manifest['host_resources'], output,
                                                   **options)
                 watchdog.start()
@@ -371,7 +377,7 @@ def run(package, digest, output, *, observe=None, read_memory=None):
                             check_limit()
                             status = classify(observation, manifest['protocol_sha256'],
                                               manifest['files']['q4t'],
-                                              manifest.get('client_policy'), operations_port)
+                                              manifest.get('client_policy'), operations_port, cfg['profile'])
                             pkg.require(status != 'GPU_UNHEALTHY', 'GPU unhealthy')
                             pkg.require(status != 'BACKEND_UNHEALTHY',
                                         'Backend unhealthy')
