@@ -1,3 +1,7 @@
+A07.3 [密码/持久密钥 16 CPU](evidence/serve-responses-encryption-crypto-20261109/README.md)全过，host 零警告，初编译失败保留。继续真实 Responses 加密往返、前缀绑定、管理与业务交付，不在基础阶段停止；默认 A07.2/STOPPED 保持，0 新增 GPU。
+
+A07.3 认证加密与持久密钥基础已成组编码，冻结 16 项直接 CPU，先必要构建；尚未执行验证。AES-256-GCM 使用系统 OpenSSL，独立上下文/懒加载、原子计数与轮换、显式旧密钥退役；Responses 两端/前缀绑定和运维入口仍在实现，不能视为功能交付。默认 A07.2 保持 STOPPED，继续全部总任务。
+
 # 当前 Serve 总目标状态（2026-11-09）
 
 A07.2 已完成[真实摘要/工具/账本短验](evidence/serve-responses-summary-business-20261109/README.md)并[可回退默认交付](evidence/serve-responses-summary-delivery-20261109/README.md)。当前引擎 `8b4899cd`、元数据 `96e004ef`、原生包 `bbb4c13b`，publication revision12，STOPPED；旧 A07.1/核心与客户端账本保持。28 C++/3 驱动 CPU、累计 2 启动/8 请求/13 内部步/115.690 秒通过，112 NVML 全 OK，回放缺陷及修复证据保留。

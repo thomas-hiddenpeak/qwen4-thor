@@ -18,6 +18,11 @@ set(protocol_inputs
   include/q4t/server/responses_plan.h
   src/server/responses_plan.cpp
   src/server/responses_summary.cpp
+  cmake/NativeCrypto.cmake
+  include/q4t/server/native_crypto.h
+  src/server/native_crypto.cpp
+  include/q4t/server/state_cipher.h
+  src/server/state_cipher.cpp
   src/server/responses_json.h
   include/q4t/model/sequence.h
   include/q4t/runtime/model_health.h

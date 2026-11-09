@@ -346,6 +346,10 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
 target_include_directories(q4t_server PUBLIC include)
 target_include_directories(q4t_server PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
 q4t_link_structured_output(q4t_server)
+include(cmake/NativeCrypto.cmake)
+target_sources(q4t_server PRIVATE src/server/native_crypto.cpp
+  src/server/state_cipher.cpp)
+q4t_link_native_crypto(q4t_server)
 option(Q4T_SERVE_FAULT_INJECTION "Validation-only serving fault hooks" OFF)
 if(Q4T_SERVE_FAULT_INJECTION)
   target_compile_definitions(q4t_server PRIVATE Q4T_SERVE_FAULT_INJECTION=1)
@@ -636,6 +640,9 @@ if(Q4T_BUILD_TESTS)
   target_link_libraries(q4t_vision_tower_contract PRIVATE ${Q4T_TEST_LIBS})
   target_compile_options(q4t_vision_tower_contract PRIVATE -Wall -Wextra -Werror)
   q4t_link_structured_output(q4t_tests)
+  target_sources(q4t_tests PRIVATE src/server/native_crypto.cpp
+    tests/server_native_crypto_test.cpp)
+  q4t_link_native_crypto(q4t_tests)
   if(Q4T_ENABLE_XGRAMMAR)
     target_sources(q4t_tests PRIVATE tests/server_structured_decoder_test.cpp
       tests/server_schema_language_test.cpp tests/server_schema_grammar_test.cpp
@@ -726,6 +733,7 @@ if(Q4T_BUILD_TESTS)
   add_executable(q4t_host_tests ${Q4T_HOST_TEST_SOURCES})
   target_compile_definitions(q4t_host_tests PRIVATE Q4T_GRAMMAR_PROCESS_TESTS=1)
   q4t_link_structured_output(q4t_host_tests)
+  q4t_link_native_crypto(q4t_host_tests)
   target_include_directories(q4t_host_tests PRIVATE include)
   target_include_directories(q4t_host_tests PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
   target_link_libraries(q4t_host_tests PRIVATE q4t_io Threads::Threads ${CMAKE_DL_LIBS})

@@ -91,3 +91,13 @@ A07.2 [23 C++/3 驱动 CPU/64 schema 值](evidence/serve-responses-summary-cpu-2
 A07.2 [实际业务已通过](evidence/serve-responses-summary-business-20261109/README.md)：累计 2 启动/8 请求/13 内部步/115.690 秒，112 NVML 全 OK。首回放 framing 缺陷已修并保留失败，复用 3 次生成，完成余下 5 请求及原记录回放。三种摘要、后台/SSE、共享预算、一次 RPM/累计 TPM 与真实文档工具闭环接受；继续可回退交付，全部剩余子项仍必做。
 
 A07.2 [默认交付完成](evidence/serve-responses-summary-delivery-20261109/README.md)：引擎 8b4899cd、包 bbb4c13b、revision12，STOPPED。8 实际命令通过，原业务账本保持，旧 A07.1 保留回退；两次发布前准备失败也保留。继续 A07.3 加密状态及全部余项，不在此停止总任务。
+
+### A07.3 认证加密与密钥基础开发
+
+原生 AES-256-GCM 固定 256 位密钥/96 位随机 nonce/128 位 tag，使用系统 OpenSSL 3 的独立 provider context，懒加载；错误只影响加密请求，不传播为模型失能。解密必须通过最终认证才返回明文。密钥经既有隔离对象 worker 原子持久，内部 scope 与客户端空间分离；每 key 最多 2^20 次 seal、最多 8 个保留 key，轮换要求当前 revision，旧 key 只能显式退役。普通回退仍能读取原有对象格式。
+
+冻结 16 项直接 CPU（NIST 已知答案、所有认证组件篡改、长度/随机数、不可用恢复、重启/归属、轮换/版本/容量/退役、持久故障、并发、取消、普通 Responses 继续）；尚未构建/测试。真正 Responses 双端与前缀绑定、管理入口和真实业务继续必做，本基础不算 A07.3 交付。
+
+密码 API 依据 [OpenSSL EVP](https://docs.openssl.org/3.0/man3/EVP_EncryptInit/) 和 [独立库上下文](https://docs.openssl.org/3.0/man3/OSSL_LIB_CTX/)，已知答案采用 [OpenSSL 公布的 NIST 数值向量](https://github.com/openssl/openssl/blob/openssl-3.0.13/demos/cipher/aesgcm.c)；未复制其实现代码，也未引入外部服务进程。
+
+A07.3 [16 项密码/持久密钥 CPU](evidence/serve-responses-encryption-crypto-20261109/README.md)全过，host 零警告、首编译失败保留，0 GPU。继续协议双端/前缀/管理与真实业务，不把基础标为整体功能完成。

@@ -1,0 +1,13 @@
+{
+  "cmake/NativeCrypto.cmake": "e3cb47a73df50a9fb1e7fdb6aef02e6a26dc9fb1344a368cdfccae4dbe7ca8d8",
+  "cmake/HostTestSources.cmake": "eefbd40022846549e677608c33f42ff06b148bac7f0637f5d0598981b2a2e44c",
+  "cmake/ChatProtocolIdentity.cmake": "828df314f7c89a9c7fc6c706064a508172c6124136782c545666370ac2dd7e6b",
+  "CMakeLists.txt": "b1f6026af12642642b68ec37627a83346a1a47011e1315f2cbbab13f28adfb1a",
+  "tests/host/CMakeLists.txt": "a2c5cf8d9d8a0a8acc2fef8cb24cbb2b2f0840eaca5187b3f21d5de0b08e2359",
+  "include/q4t/server/native_crypto.h": "0976c2f55c5edaedfc50299db53cd2aa4dd0f0126117aa809e78eea6fa23a224",
+  "src/server/native_crypto.cpp": "86da5a6cda4b18154f46227074d7fa68b7ec3cbb8bfcdb9a6aaff75b2c9cb8a1",
+  "include/q4t/server/state_cipher.h": "d883cb8c11ccce3a39c7fadf5c9448b42086ec482258df8ca975d6782d2ec8f3",
+  "src/server/state_cipher.cpp": "057c45b2ad1007e3d9c8887218ea687eedc38ead904b8bddfaa5712fca928602",
+  "tests/server_native_crypto_test.cpp": "5cb9da9ef736cef91be66976f4c00e77bc331de87c874f30e5c1573f23bf0cff",
+  "tests/server_state_cipher_test.cpp": "fbc833aaad6aa7f4d5f86095a83010f33662193745496f3cda70b02dc9245d57"
+}

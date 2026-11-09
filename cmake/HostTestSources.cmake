@@ -1,6 +1,11 @@
 # Shared by the Thor release gate and the standalone public host build.
 include(${CMAKE_CURRENT_LIST_DIR}/ChatProtocolIdentity.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/NativeCrypto.cmake)
 set(Q4T_HOST_TEST_SOURCES
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/native_crypto.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/state_cipher.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_native_crypto_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_state_cipher_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/model_catalog.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/client_policy.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/client_policy_admin.cpp
