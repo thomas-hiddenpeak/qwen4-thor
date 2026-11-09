@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "tools.serve_responses.test_reasoning_acceptance.ReasoningAcceptance.test_frozen_requests_cover_distinct_real_execution_paths",
+    "tools.serve_responses.test_reasoning_acceptance.ReasoningAcceptance.test_business_uses_already_started_model_without_second_start",
+    "-v"
+  ],
+  "exit_code": 0,
+  "seconds": 0.29078454012051225
+}

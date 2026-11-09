@@ -31,3 +31,5 @@ SDK包含moderation.model和input/output的score/block策略，输出为结果�
 ## A07.7a 当前验收进展
 
 [19 C++与2schema已通过](evidence/serve-reasoning-pro-cpu-20261110/README.md)，首次空工具依赖缺陷及仅7项补验保留。实际SDK驱动冻结最多1启动/9请求/17模型步骤/900秒：JSON pro、SSE摘要、加密后台原回放/原输入、真实文档工具与严格JSON闭环、1-token不完整、pro预热零输出、自动压缩后pro、同PID普通Chat；精确总usage/RPM/TPM与执行次数。4项驱动CPU先行。默认A07.6未动，实际业务尚未执行。
+
+实际驱动首次因重复start在请求前失败，1启动/0请求/40.127秒已正常清理；[修复与2项补CPU](evidence/serve-reasoning-pro-driver-fix-20261110/README.md)。累计限额改为2启动，其余9请求/17模型步/900秒保持并计入首次时间；模型/生产源码不变，原件保留，仅续未执行部分。

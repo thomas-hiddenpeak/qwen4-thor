@@ -1,0 +1,10 @@
+{
+  "owned_remaining": [],
+  "ports_released": true,
+  "lock_acquired_and_released": true,
+  "lock": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "default_preserved": true,
+  "nvml_queries": 40,
+  "all_nvml_ok": true,
+  "model_exit": 0
+}
