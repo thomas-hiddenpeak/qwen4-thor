@@ -20897,6 +20897,35 @@
                   "model_steps"
                 ],
                 "additionalProperties": false
+              },
+              "q4t_access_program": {
+                "type": "object",
+                "properties": {
+                  "authority": {
+                    "const": "q4t-local"
+                  },
+                  "policy_sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  },
+                  "backend_model": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "treatment": {
+                    "enum": [
+                      "standard",
+                      "operator_system_instructions"
+                    ]
+                  }
+                },
+                "required": [
+                  "authority",
+                  "policy_sha256",
+                  "backend_model",
+                  "treatment"
+                ],
+                "additionalProperties": false
               }
             },
             "required": [
