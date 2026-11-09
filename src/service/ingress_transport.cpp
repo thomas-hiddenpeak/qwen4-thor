@@ -17,6 +17,7 @@
 
 #include "q4t/service/guardian_wire.h"
 #include "q4t/server/http_framing.h"
+#include "q4t/server/http_request.h"
 
 namespace q4t::service::ingress {
 std::atomic<bool> stopped{false};
@@ -201,22 +202,12 @@ bool Connection::Handshake(const std::shared_ptr<TlsContext>& context) {
 }
 
 Connection::~Connection() {
-  if (!tls_) return;
   // An early 401/413 may race the next encrypted request-body record. Closing
   // with unread TCP bytes produces RST and can discard the response just sent.
   // Send close_notify, half-close writes, then drain only a bounded transport
   // tail; never parse or dispatch another application request.
   tls_.reset();
-  ::shutdown(fd_, SHUT_WR);
-  const auto deadline = Clock::now() + 100ms;
-  std::array<char, 4096> tail{};
-  size_t discarded = 0;
-  while (discarded < 65536 && Wait(fd_, POLLIN, deadline)) {
-    const auto n = ::recv(fd_, tail.data(), tail.size(), MSG_DONTWAIT);
-    if (n < 0 && (errno == EINTR || errno == EAGAIN)) continue;
-    if (n <= 0) break;
-    discarded += n;
-  }
+  q4t::server::DrainHttpClose(fd_);
 }
 
 ssize_t Connection::Read(void* data, size_t size, Clock::time_point deadline) {

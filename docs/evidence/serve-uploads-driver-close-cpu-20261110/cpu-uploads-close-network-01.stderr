@@ -1,0 +1,8 @@
+test_cancelled_part_error_survives_body_sent_after_response (tools.serve_responses.test_uploads_transport.UploadsTransportTests.test_cancelled_part_error_survives_body_sent_after_response) ... ok
+test_early_core_limit_interrupts_paused_tls_part (tools.serve_responses.test_uploads_transport.UploadsTransportTests.test_early_core_limit_interrupts_paused_tls_part) ... ok
+test_legacy_gateway_cap_and_json_cap_remain_independent (tools.serve_responses.test_files_transport.FilesTransportTests.test_legacy_gateway_cap_and_json_cap_remain_independent) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 2.224s
+
+OK

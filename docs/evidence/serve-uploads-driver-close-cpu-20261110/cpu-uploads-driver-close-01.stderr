@@ -1,0 +1,6 @@
+test_actual_sdk_bridge_repeat_checksum_reconciliation_and_cancel (tools.serve_responses.test_uploads_acceptance.UploadsAcceptanceTests.test_actual_sdk_bridge_repeat_checksum_reconciliation_and_cancel) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.899s
+
+OK

@@ -1,0 +1,6 @@
+test_actual_native_resources_match_published_schema (tools.serve_responses.test_uploads_contract.UploadsContractTests.test_actual_native_resources_match_published_schema) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+OK

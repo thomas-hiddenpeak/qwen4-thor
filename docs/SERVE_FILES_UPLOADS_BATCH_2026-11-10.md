@@ -202,3 +202,9 @@ Uploads生命周期[27项针对性CPU已通过](evidence/serve-uploads-core-cpu-
 原生HTTP组[16 C++与11 Python已通过](evidence/serve-uploads-http-cpu-20261110/README.md)，官方SDK两链各32实际请求和17MiB+13字节，0GPU。发行审查发现重复Part产生旧v11不识别的manifest；改为重复内容独立不可变块、仍计原存储配额，原BinaryStore实现与已交付v11源文件逐字一致。最终File/Upload/私有copy stage删除同事务，未知回执不清理；错误保留原Part，副本有界回收。冻结7 CPU（required-rollback.txt）及实际保留旧包`state-retention inspect --offline`读取独立测试产物，核对旧解析无uncertain；不启动模型、不检查业务目录。非重复路径的已过HTTP/SDK证据复用，最终适用业务和发行继续。
 
 [重复Part回退兼容验证通过](evidence/serve-uploads-rollback-cpu-20261110/README.md)，7 CPU+1次真实旧包离线检查，0GPU。实际旧包不认识Upload receipt时保守保护scope；已完成File和chunks完全可读，记录保持。继续业务/发行和余项。
+
+## Uploads实际业务冻结
+
+A09.4 真实业务驱动已准备，冻结1启动/2生成/32文件操作/600秒。审查发现发现JSON complete/cancel重复键，已分离布尔能力与语义描述；冻结1 C++实际产出和3 Python（1合同/2新驱动）再短验。模型尚未启动，默认6a7404c7保持；文件原生消费与Batch及全部总任务继续。 实际SDK通过直接核心/原生TLS创建与分块，真实文档完成后下载并驱动两次工具生成；重复Part原字节/MD5错误后恢复/完成核对，取消与外客户端拒绝；精确核对生成用量、清理自有进程/端口/锁。Guardian原实现证据复用，前置父准入为绑定实际模型身份的测试适配。
+
+A09.4 驱动CPU暴露真实迟到Part连接EPIPE：提前409关闭时有未读请求体。另1次诊断发现SDK本地data URI探测误计为重试，已修驱动计数并保留失败；再次诊断确认真实EPIPE。核心/原生明文统一半关闭并限100ms/64KiB只丢弃尾部，TLS复用该合同。冻结4 C++和5 Python直接影响项，不重复已过核心/64MiB矩阵；0GPU、默认保持，后续短验/发行与全部任务继续。 5 Python为新SDK桥接失败项、直接核心迟到body保留409、原生TLS提前413、明文旧容量边界及原生下游断流无重放。

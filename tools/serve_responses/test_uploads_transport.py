@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import socket
 import time
 import unittest
 
@@ -65,6 +66,22 @@ class UploadsTransportTests(unittest.TestCase):
 
     def test_official_sdk_direct_core_order_md5_and_large_part(self):self.sdk(False)
     def test_official_sdk_native_tls_prefix_order_md5_and_large_part(self):self.sdk(True)
+
+    def test_cancelled_part_error_survives_body_sent_after_response(self):
+        server = self.stack(native=False)
+        identity = self.create(server)
+        status, _ = server.request('POST', '/v1/uploads/'+identity+'/cancel', b'')
+        self.assertEqual(status, 200)
+        with server.socket() as sock:
+            sock.sendall(self.head(server, identity))
+            response = http.client.HTTPResponse(sock);response.begin()
+            self.assertEqual(response.status, 409)
+            self.assertEqual(json.loads(response.read())['error']['code'], 'upload_not_pending')
+            body = part_body()
+            sock.sendall(f'{len(body):x}\r\n'.encode()+body+b'\r\n0\r\n\r\n')
+            sock.shutdown(socket.SHUT_WR)
+            self.assertEqual(sock.recv(1), b'')
+        self.assertEqual(self.records(server, 'q4t.upload_part.v1'), [])
 
     def test_malformed_http_trailer_does_not_publish_valid_multipart_part(self):
         server = self.stack()

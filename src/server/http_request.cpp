@@ -23,6 +23,29 @@ using http::Trim;
 
 }  // namespace
 
+void DrainHttpClose(int fd) noexcept {
+  if (fd < 0) return;
+  ::shutdown(fd, SHUT_WR);
+  const auto deadline = std::chrono::steady_clock::now() +
+                        std::chrono::milliseconds(100);
+  char tail[4096];
+  size_t discarded = 0;
+  while (discarded < 65536) {
+    const auto left = std::chrono::duration_cast<std::chrono::milliseconds>(
+        deadline - std::chrono::steady_clock::now()).count();
+    if (left <= 0) return;
+    pollfd event{fd, POLLIN, 0};
+    const int ready = ::poll(&event, 1, static_cast<int>(left));
+    if (ready < 0 && errno == EINTR) continue;
+    if (ready <= 0 || (event.revents & POLLNVAL)) return;
+    const auto n = ::recv(fd, tail, std::min(sizeof(tail), 65536 - discarded),
+                          MSG_DONTWAIT);
+    if (n < 0 && (errno == EINTR || errno == EAGAIN)) continue;
+    if (n <= 0) return;
+    discarded += static_cast<size_t>(n);
+  }
+}
+
 bool AwaitHttpRequest(int fd, HttpRequestState* state, int idle_ms,
                       const HttpReceive& receive) {
   if (!state->pending.empty()) return true;

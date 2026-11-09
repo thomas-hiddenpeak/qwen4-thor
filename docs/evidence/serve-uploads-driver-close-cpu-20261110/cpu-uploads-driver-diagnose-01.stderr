@@ -1,0 +1,36 @@
+test_actual_sdk_bridge_repeat_checksum_reconciliation_and_cancel (tools.serve_responses.test_uploads_acceptance.UploadsAcceptanceTests.test_actual_sdk_bridge_repeat_checksum_reconciliation_and_cancel) ... FAIL
+
+======================================================================
+FAIL: test_actual_sdk_bridge_repeat_checksum_reconciliation_and_cancel (tools.serve_responses.test_uploads_acceptance.UploadsAcceptanceTests.test_actual_sdk_bridge_repeat_checksum_reconciliation_and_cancel)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_uploads_acceptance.py", line 53, in test_actual_sdk_bridge_repeat_checksum_reconciliation_and_cancel
+    part = call('part', driver.part_body(raw), upload['id'])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_uploads_acceptance.py", line 40, in call
+    self.assertFalse(run.stderr, run.stderr)
+AssertionError: "node:internal/modules/run_main:107\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: SDK replay or missing actual request\n\n2 !== 1\n\n    at file:///home/rm01/models/dev/qwen4-thor/tools/serve_responses/run_uploads_sdk.mjs:56:8\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: 2,\n  expected: 1,\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n\nNode.js v24.18.0\n" is not false : node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: SDK replay or missing actual request
+
+2 !== 1
+
+    at file:///home/rm01/models/dev/qwen4-thor/tools/serve_responses/run_uploads_sdk.mjs:56:8
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 2,
+  expected: 1,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.18.0
+
+
+----------------------------------------------------------------------
+Ran 1 test in 1.577s
+
+FAILED (failures=1)

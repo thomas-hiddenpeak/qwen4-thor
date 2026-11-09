@@ -23,6 +23,10 @@ class UploadsContractTests(unittest.TestCase):
         self.assertTrue(errors(invalid, 'upload_resource'))
         self.assertEqual(values['completed']['file']['bytes'], 3)
         caps = values['capabilities']['uploads']
+        self.assertIs(caps['complete'], True)
+        self.assertIs(caps['cancel'], True)
+        self.assertEqual(caps['completion_contract'], 'actual_bytes_then_atomic_file_and_upload')
+        self.assertEqual(caps['cancel_capacity'], 'independent_admission_and_body_budget')
         self.assertEqual(caps['max_bytes'], uploads.UPLOAD_BYTES)
         self.assertEqual(caps['max_part_bytes'], uploads.PART_BYTES)
         self.assertFalse(caps['core_readiness_dependency'])

@@ -1,0 +1,20 @@
+test_actual_sdk_bridge_repeat_checksum_reconciliation_and_cancel (tools.serve_responses.test_uploads_acceptance.UploadsAcceptanceTests.test_actual_sdk_bridge_repeat_checksum_reconciliation_and_cancel) ... ERROR
+
+======================================================================
+ERROR: test_actual_sdk_bridge_repeat_checksum_reconciliation_and_cancel (tools.serve_responses.test_uploads_acceptance.UploadsAcceptanceTests.test_actual_sdk_bridge_repeat_checksum_reconciliation_and_cancel)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_uploads_acceptance.py", line 61, in test_actual_sdk_bridge_repeat_checksum_reconciliation_and_cancel
+    call('part', driver.part_body(raw), pending['id'], 409)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_uploads_acceptance.py", line 45, in call
+    driver.files.check_exchange(value, status)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/files_acceptance.py", line 60, in check_exchange
+    require(len(value['exchanges']) == 1 and value['exchanges'][0]['status'] == status,
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 61, in require
+    raise RuntimeError(message)
+RuntimeError: Files status or replay differs
+
+----------------------------------------------------------------------
+Ran 1 test in 1.884s
+
+FAILED (errors=1)

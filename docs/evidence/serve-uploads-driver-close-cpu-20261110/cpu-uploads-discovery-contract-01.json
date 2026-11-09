@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "env",
+    "Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-uploads-20261110/discovery-state-01",
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_responses.test_uploads_contract.UploadsContractTests.test_actual_native_resources_match_published_schema"
+  ],
+  "exit_code": 0,
+  "seconds": 0.16405506199225783
+}

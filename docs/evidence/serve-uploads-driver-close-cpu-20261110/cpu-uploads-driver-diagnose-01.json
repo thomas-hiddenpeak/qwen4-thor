@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "env",
+    "Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-uploads-20261110/driver-diagnose-01",
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_responses.test_uploads_acceptance.UploadsAcceptanceTests.test_actual_sdk_bridge_repeat_checksum_reconciliation_and_cancel"
+  ],
+  "exit_code": 1,
+  "seconds": 1.9663128689862788
+}

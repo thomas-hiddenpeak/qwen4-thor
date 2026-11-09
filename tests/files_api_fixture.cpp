@@ -100,6 +100,7 @@ int FilesApiFixture(int argc, char** argv) {
         active.fetch_add(1);
         workers.emplace_back([&, fd, operations = i == 1] {
           ScopeExit close_peer([&] {
+            DrainHttpClose(fd);
             close(fd);
             active.fetch_sub(1);
           });

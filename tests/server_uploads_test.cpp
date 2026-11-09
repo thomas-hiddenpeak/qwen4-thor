@@ -730,10 +730,15 @@ Q4T_TEST(uploads_http_actual_json_multipart_completion_and_schema_output) {
   Q4T_CHECK(cancelled.starts_with("HTTP/1.1 200 ") &&
             JsonBody(cancelled).GetString("status") == "cancelled");
   Json capabilities;
+  q4t::io::JsonParseLimits limits;
+  limits.reject_duplicate_keys = true;
   Q4T_CHECK(q4t::io::ParseJson(ChatCapabilitiesJson("m", false, true),
-                               &capabilities));
+                               &capabilities, false, limits));
   const auto* upload_caps = capabilities.Find("uploads");
   Q4T_CHECK(upload_caps &&
+            upload_caps->GetBool("complete") && upload_caps->GetBool("cancel") &&
+            upload_caps->GetString("completion_contract") ==
+                "actual_bytes_then_atomic_file_and_upload" &&
             upload_caps->GetInt("max_part_bytes") ==
                 static_cast<int64_t>(kUploadPartBytes) &&
             upload_caps->GetInt("expires_seconds") == 3600 &&

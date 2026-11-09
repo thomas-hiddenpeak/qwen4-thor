@@ -1,5 +1,11 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+A09.4 [发现/驱动/提前拒绝5 C++和7 Python已接受](evidence/serve-uploads-driver-close-cpu-20261110/README.md)：真实EPIPE与重名JSON已修复，原失败/探测误计保留；官方SDK迟到Part返回409、100ms/64KiB关闭及TLS/明文保护通过。零警告、0GPU、默认保持；开始冻结1启动/2生成/32文件操作/600秒业务，再发行及全部总任务。
+
+A09.4 驱动CPU暴露真实迟到Part连接EPIPE：提前409关闭时有未读请求体。另1次诊断发现SDK本地data URI探测误计为重试，已修驱动计数并保留失败；再次诊断确认真实EPIPE。核心/原生明文统一半关闭并限100ms/64KiB只丢弃尾部，TLS复用该合同。冻结4 C++和5 Python直接影响项，不重复已过核心/64MiB矩阵；0GPU、默认保持，后续短验/发行与全部任务继续。
+
+A09.4 真实业务驱动已准备，冻结1启动/2生成/32文件操作/600秒。审查发现发现JSON complete/cancel重复键，已分离布尔能力与语义描述；冻结1 C++实际产出和3 Python（1合同/2新驱动）再短验。模型尚未启动，默认6a7404c7保持；文件原生消费与Batch及全部总任务继续。
+
 A09.4 [重复Part回退兼容7项CPU及实际旧包检查通过](evidence/serve-uploads-rollback-cpu-20261110/README.md)：恢复旧v1 manifest唯一块合同，重复内容独立计费；旧v11实际读取无uncertain且记录SHA保持，构建零警告。HTTP/TLS未变证据复用，0GPU、默认6a7404c7保持STOPPED；继续真实业务/发行和全部总目标。
 
 A09.4 [HTTP/TLS 16 C++与11 Python通过](evidence/serve-uploads-http-cpu-20261110/README.md)，官方SDK两链各32实际请求/17MiB，满载取消与断流不发布通过，构建零警告。发行审查发现重复Part的新manifest与旧v11不兼容，已改为独立计费副本并恢复原v1 parser，冻结7项CPU与1次实际旧包离线inspect；只重验影响项。默认6a7404c7/STOPPED，0GPU，后续业务/发行及全部总目标继续。

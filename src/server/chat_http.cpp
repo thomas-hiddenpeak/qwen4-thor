@@ -58,6 +58,7 @@ bool ValidRequestKey(const std::string& key) { return ValidCancelToken(key); }
 }  // namespace detail
 
 void ChatServer::FinishConnection(int fd, bool operations) noexcept {
+  DrainHttpClose(fd);
   {
     const std::lock_guard<std::mutex> lock(connections_mu_);
     connections_.erase(fd);
@@ -79,6 +80,7 @@ void ChatServer::StartConnection(int fd, bool operations) {
     if (registered) {
       FinishConnection(fd, operations);
     } else {
+      DrainHttpClose(fd);
       ::close(fd);
       if (counted) {
         (operations ? operations_conns_ : public_conns_).fetch_sub(1);

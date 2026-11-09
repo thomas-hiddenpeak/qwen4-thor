@@ -153,6 +153,10 @@ using HttpContinue =
 // leases. Reads at most one byte; TLS adapters also see already decrypted data.
 bool AwaitHttpRequest(int fd, HttpRequestState* state, int idle_ms = 5000,
                       const HttpReceive& receive = {});
+// After the final response, half-close writes and discard at most 64 KiB for
+// 100 ms. This preserves early HTTP errors against a racing request body/RST.
+// Never parses/dispatches the tail; ownership and close(fd) remain with caller.
+void DrainHttpClose(int fd) noexcept;
 bool ReadHttpRequest(int fd, std::string* method, std::string* path,
                      std::string* body, int timeout_ms = 30000,
                      HttpBodyLease* lease = nullptr,

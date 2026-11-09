@@ -7,6 +7,7 @@
 
 #include <charconv>
 #include <stdexcept>
+#include <thread>
 
 namespace {
 using namespace q4t::server;
@@ -187,5 +188,44 @@ Q4T_TEST(http_session_idle_deadline_and_pending_input) {
     return 1;
   }));
   Q4T_CHECK(used && state.pending == "G");
+  return true;
+}
+
+Q4T_TEST(http_close_sends_final_response_before_draining_late_body) {
+  Pair pair;
+  HttpResponseContext context(pair.fd[0]);
+  SendError(pair.fd[0], 409, "Upload is cancelled", {}, "upload_cancelled");
+  std::thread ending([&] { DrainHttpClose(pair.fd[0]); });
+  char wire[4096];
+  const auto received = ::recv(pair.fd[1], wire, sizeof(wire), 0);
+  const bool response = received > 0 &&
+      std::string_view(wire, received).find("upload_cancelled") !=
+          std::string_view::npos;
+  // A final response is already available even if the upload body is late.
+  const std::string late = "POST /never-dispatch HTTP/1.1\r\n\r\n";
+  const auto sent = ::send(pair.fd[1], late.data(), late.size(), MSG_NOSIGNAL);
+  ::shutdown(pair.fd[1], SHUT_WR);
+  ending.join();
+  Q4T_CHECK(response && sent == static_cast<ssize_t>(late.size()));
+  Q4T_CHECK(::recv(pair.fd[0], wire, sizeof(wire), MSG_DONTWAIT) == 0);
+  Q4T_CHECK(::recv(pair.fd[1], wire, sizeof(wire), 0) == 0);
+  return true;
+}
+
+Q4T_TEST(http_close_drain_bounds_idle_time_and_unparsed_tail_bytes) {
+  Pair idle;
+  auto start = std::chrono::steady_clock::now();
+  DrainHttpClose(idle.fd[0]);
+  Q4T_CHECK(std::chrono::steady_clock::now() - start < 1s);
+  Pair large;
+  const std::string tail(65536 + 4096, 'x');
+  Q4T_CHECK(::send(large.fd[1], tail.data(), tail.size(), MSG_NOSIGNAL) ==
+            static_cast<ssize_t>(tail.size()));
+  start = std::chrono::steady_clock::now();
+  DrainHttpClose(large.fd[0]);
+  Q4T_CHECK(std::chrono::steady_clock::now() - start < 1s);
+  char remaining[8192];
+  Q4T_CHECK(::recv(large.fd[0], remaining, sizeof(remaining), MSG_DONTWAIT) ==
+            4096);
   return true;
 }
