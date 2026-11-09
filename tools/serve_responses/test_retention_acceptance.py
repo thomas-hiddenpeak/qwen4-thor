@@ -8,6 +8,17 @@ from tools.serve_service.package import read
 
 
 class RetentionAcceptance(unittest.TestCase):
+    def test_stored_projection_uses_actual_failed_comparison(self):
+        root = driver.ROOT/'docs/evidence/serve-retention-followup-20261110/business-01'
+        original = read(root/'initial.sdk.json')['result']
+        projected = read(root/'first-retrieve.sdk.json')['result']
+        driver.check_stored(original, projected)
+        changed = copy.deepcopy(projected)
+        changed['output'][0]['encrypted_content'] = 'corrupt'
+        with self.assertRaises(RuntimeError):
+            driver.check_stored(original, changed)
+        self.assertEqual(driver.RESUME_LIMITS, dict(starts=1, chats=1, controls=2000, seconds=300))
+
     def test_frozen_requests_and_budget(self):
         self.assertEqual(driver.LIMITS, dict(starts=2, chats=4, controls=2000, seconds=900))
         self.assertEqual(len(driver.requests()), 4)

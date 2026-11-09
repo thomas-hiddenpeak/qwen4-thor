@@ -1,8 +1,11 @@
 """A08 actual SDK state/retention closure: <=2 starts/4 generations/900 seconds."""
 import argparse
+import copy
+import fcntl
 import json
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -16,6 +19,7 @@ from tools.serve_responses import summary_acceptance as summary
 from tools.serve_service.package import read, require, save, sha
 
 LIMITS = dict(starts=2, chats=4, controls=2000, seconds=900)
+RESUME_LIMITS = dict(starts=1, chats=1, controls=2000, seconds=300)
 
 
 def requests():
@@ -34,6 +38,18 @@ def requests():
 def check_answer(value):
     encrypted.encrypted_items(value)
     require(encrypted.foreground.text(value).strip() == '42', 'actual arithmetic/history failed')
+
+
+def check_stored(original, projected):
+    """GET with encrypted include still omits unrequested text logprobs."""
+    expected = copy.deepcopy(original)
+    expected.pop('output_text', None)
+    for item in expected['output']:
+        if item['type'] == 'message':
+            for part in item['content']:
+                part.pop('logprobs', None)
+    actual = {k: v for k, v in projected.items() if k != 'output_text'}
+    require(actual == expected, 'durable previous response changed')
 
 
 def check_plan(receipt, *, applied=False):
@@ -56,11 +72,44 @@ def check_plan(receipt, *, applied=False):
 
 
 def prepare(args):
-    background.prepare(args, rows=requests(), limits=LIMITS, scope=__doc__)
+    prior = None
+    if args.resume_from:
+        directory = args.resume_from.resolve(strict=True)
+        old = read(directory/'plan.json')
+        result = read(directory/'result.json')
+        cleanup = read(directory/'cleanup.json')
+        require(result['status'] == 'FAILED' and result['counts']['starts'] == 2 and
+                result['counts']['chats'] == 3 and 'durable previous response changed' in result['error'] and
+                cleanup['model_exit'] == 0 and not cleanup['remaining'] and cleanup['ports_released'],
+                'unexpected prior boundary or cleanup')
+        changes = {n for n, h in old['sources'].items() if sha(ROOT/n) != h}
+        require(changes == {'tools/serve_responses/retention_acceptance.py',
+                            'tools/serve_responses/test_retention_acceptance.py'},
+                'resume changed production or unrelated source')
+        require(sha(args.binary) == old['binary_sha256'], 'resume binary changed')
+        samples = [json.loads(line) for line in (directory/'lease/nvml-queries.jsonl').read_text().splitlines()]
+        require(samples and all(row['status'] == 'OK' for row in samples), 'prior monitor failed')
+        current = encrypted.foreground.base.lifecycle.guard.processes()
+        require(not any(current.get(int(pid), {}).get('start_ticks') == v['start_ticks']
+                        for pid, v in cleanup['owned'].items()), 'prior owned process remains')
+        background.probe_ports((old['port'], old['operations_port']))
+        with encrypted.foreground.base.lifecycle.guard.common_lock().open('a+') as lock:
+            fcntl.flock(lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+            fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
+        check_stored(read(directory/'initial.sdk.json')['result'],
+                     read(directory/'first-retrieve.sdk.json')['result'])
+        prior = dict(directory=str(directory), counts=result['counts'], seconds=result['seconds'],
+            files={str(p): sha(p) for p in directory.rglob('*') if p.is_file()},
+            source_changes=sorted(changes), combined_limits=dict(starts=3, chats=4, seconds=900))
+    background.prepare(args, rows=requests(), limits=RESUME_LIMITS if prior else LIMITS, scope=__doc__)
     path = args.output.resolve()/'plan.json'
     plan = read(path)
     plan['sources']['tools/serve_responses/retention_acceptance.py'] = sha(Path(__file__))
     plan['planned'] = dict(starts=2, chats=4, model_steps=4)
+    if prior:
+        plan['prior'] = prior
+        plan['planned'] = dict(starts=1, chats=1, model_steps=1,
+                               combined_starts=3, combined_chats=4, combined_seconds=900)
     plan['mutations'] = ['only private SDK conversations/responses and state-retention '
         'collect using actual exact plan; no editing or deleting object files',
         'graceful owned model stop then one explicit restart on same private store']
@@ -77,6 +126,17 @@ class Stage(encrypted.Stage):
     limits = LIMITS
     request_templates = staticmethod(requests)
     success_status = 'PASS_APPLICATION_RETENTION_BUSINESS'
+
+    def __init__(self, plan):
+        if plan.get('prior'):
+            self.limits = RESUME_LIMITS
+        super().__init__(plan)
+        self.prior = None
+        if plan.get('prior'):
+            prior = plan['prior']
+            require(all(sha(p) == h for p, h in prior['files'].items()), 'prior evidence drift')
+            self.prior = Path(prior['directory'])
+            shutil.copytree(self.prior/'objects', self.out/'objects')
 
     def retention(self, label, cutoff=0, plan=None, *, expected_status=200, offline=False):
         self.budget('controls')
@@ -107,6 +167,8 @@ class Stage(encrypted.Stage):
         return check_plan(receipt, applied=bool(plan))
 
     def business(self):
+        if self.prior:
+            return self.resume_business()
         rows = self.plan['requests']
         conversation = self.sdk('conversation', 'conversation_create', dict(items=[
             dict(role='user', content='Remember that the project validation result is 42.')]))
@@ -161,8 +223,7 @@ class Stage(encrypted.Stage):
         require(replay == stored, 'stored background events changed across retention/restart')
         fetched = self.sdk('first-retrieve', 'retrieve', response_id=first['id'],
             query=dict(include=['reasoning.encrypted_content']))
-        require({k: v for k, v in fetched.items() if k != 'output_text'} == first,
-                'durable previous response changed')
+        check_stored(first, fetched)
         last = self.sdk('encrypted-continuation', 'create',
                         encrypted.continuation(rows['encrypted'], stored))
         check_answer(last)
@@ -179,6 +240,26 @@ class Stage(encrypted.Stage):
             history_and_ciphertext_survive_restart=True, original_background_sse=True,
             exact_per_process_usage=True, performance_claim=False))
 
+    def resume_business(self):
+        first = read(self.prior/'initial.sdk.json')['result']
+        stored = read(self.prior/'background.sdk.json')['result']
+        fetched = self.sdk('first-retrieve', 'retrieve', response_id=first['id'],
+            query=dict(include=['reasoning.encrypted_content']))
+        check_stored(first, fetched)
+        last = self.sdk('encrypted-continuation', 'create',
+                        encrypted.continuation(requests()['encrypted'], stored))
+        check_answer(last)
+        self.accounting('final-accounting', [last])
+        log = (self.out/'model-1.log').read_text()
+        summary.check_steps(log, last, 1)
+        require(len(re.findall(r'^\[sampling\] request=', log, re.M)) == 1,
+                'resume repeated model work')
+        save(self.out/'business-checks.json', dict(additional_generations=1,
+            model_steps=1, combined_generations=4, combined_starts=3,
+            exact_get_projection=True, encrypted_state_continues_after_restart=True,
+            exact_per_process_usage=True, production_unchanged=True,
+            reused_prior_business=True, performance_claim=False))
+
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -187,6 +268,7 @@ def main():
     command.add_argument('--binary', type=Path, required=True)
     command.add_argument('--output', type=Path, required=True)
     command.add_argument('--port', type=int, default=19003)
+    command.add_argument('--resume-from', type=Path)
     command = sub.add_parser('run')
     command.add_argument('--plan', type=Path, required=True)
     args = parser.parse_args()

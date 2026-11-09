@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t",
+    "state-retention",
+    "inspect",
+    "--object-store-dir",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-retention-20261110/business-01/objects",
+    "--limit",
+    "128",
+    "--item-created-before",
+    "1794256841"
+  ],
+  "returncode": 0,
+  "stdout": "{\"status\":200,\"code\":\"\",\"message\":\"\",\"commit_unknown\":false,\"value\":{\"object\":\"q4t.state_retention\",\"plan_sha256\":\"8f98e3d70f303c1d7ad6abaf154e6c85fa70f64a678a7ce63b2b0333ac3e91be\",\"applied\":false,\"item_created_before\":1794256841,\"limit\":128,\"eligible_objects\":0,\"selected_bytes\":0,\"protected_active\":0,\"protected_references\":5,\"protected_uncertain\":1,\"deleted_objects\":0,\"has_more\":false,\"candidates\":[]}}\n",
+  "stderr": ""
+}

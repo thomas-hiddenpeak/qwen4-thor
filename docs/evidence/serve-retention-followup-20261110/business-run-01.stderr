@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/retention_acceptance.py", line 201, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/retention_acceptance.py", line 197, in main
+    Stage(read(args.plan)).run()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py", line 294, in run
+    try:self.start();self.business();result['status']=self.success_status
+                     ^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/retention_acceptance.py", line 164, in business
+    require({k: v for k, v in fetched.items() if k != 'output_text'} == first,
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 61, in require
+    raise RuntimeError(message)
+RuntimeError: durable previous response changed

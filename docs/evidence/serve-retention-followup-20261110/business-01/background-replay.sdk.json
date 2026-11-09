@@ -1,0 +1,743 @@
+{
+  "ok": true,
+  "result": {
+    "id": "resp_18e6a93f1f49df96cc45e2e60afa1145",
+    "object": "response",
+    "created_at": 1794256843,
+    "completed_at": 1794256844,
+    "status": "completed",
+    "error": null,
+    "incomplete_details": null,
+    "output": [
+      {
+        "id": "rs_7370f9ba12061e65fec2e24aba490eda",
+        "type": "reasoning",
+        "content": [
+          {
+            "type": "reasoning_text",
+            "text": "The user wants me to compute 17 + 25 and reply only with the decimal number.\n\n17 + 25 = 42\n"
+          }
+        ],
+        "summary": [],
+        "status": "completed",
+        "encrypted_content": "q4t1:054c16202494511e6abf8ae172cc51c9:4098cabc15d97e8cbe9839b0:21c3e7533f7799615504c2234496c51a:492d3de50da6f940cc13fd16ae1d2824e8762a0c5d1c993ff592b81080d9d444ac0936b5eb46cb7049ab0ae525fbf3f0cebd6c9489596d33e50cf6848a5200d6f4180ed5edc9157aaad6245ea23b377faa6ffa15a6db331aca161d65f80c5d59efc1f459eb23d8273ab1e960dc33bd371ac578aaf2c466fe56feb593b634f79125e3d4cbd56dc52da7e80a3a4e4ac817e1644b1114341a9477d1a797cd8dfcb23b4b9f93df4f0a5fae251bd2cf63ede57f634d4193de69230b6ecb27fc46b292496f0b827af7022312dba388e21b68dc42d81f7012d191204df145e453cdcc668ca2f3ef21182bd8ebef126b80040aeb3392c19006269ba8ef527e68fbd3747ef6bd7f44d7143feb3c2fe5fe8ca672debbd665f7e56925a12994fdf7c8484f4f51622352dcba4f5d01b97c5a3aa35bd92fdd75e3951309ee4ab268b06dec4da1d88c95a17804b3a722e77c9acd216d41503e25768439803c282adcd0bdd4d8295fc464383a45c2c13e42900485fc57b21b6f8997aefd7a5954a1fe4de824cddc0ab2ac759511ba7a6d6861bd76f3be89e4c448db173221d646736c5c712639b0013af921a10b7505a7edc7f96b6974a4eec0657b4ba69d4e628d11d83cc3953cca55ee97d9169e831fc0ee7e564b7e9c8cfd"
+      },
+      {
+        "id": "msg_a4e98a825f5dc46f6d5b618383054de5",
+        "type": "message",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "\n\n42",
+            "annotations": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed"
+      }
+    ],
+    "usage": {
+      "input_tokens": 56,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens": 38,
+      "output_tokens_details": {
+        "reasoning_tokens": 34
+      },
+      "total_tokens": 94
+    },
+    "model": "qwen3.8-flash-next",
+    "instructions": null,
+    "metadata": {},
+    "temperature": 0,
+    "top_p": 1,
+    "parallel_tool_calls": true,
+    "tools": [],
+    "tool_choice": "auto",
+    "text": {
+      "format": {
+        "type": "text"
+      },
+      "verbosity": "medium"
+    },
+    "reasoning": {
+      "effort": "low",
+      "context": "all_turns",
+      "mode": "standard",
+      "summary": null
+    },
+    "store": true,
+    "background": true,
+    "max_output_tokens": 384,
+    "max_tool_calls": null,
+    "previous_response_id": null,
+    "prompt_cache_options": {
+      "mode": "implicit",
+      "ttl": "30m"
+    },
+    "prompt_cache_retention": "in_memory",
+    "service_tier": "default",
+    "truncation": "disabled",
+    "top_logprobs": 0,
+    "access_programs": null
+  },
+  "chunks": [
+    {
+      "response": {
+        "id": "resp_18e6a93f1f49df96cc45e2e60afa1145",
+        "object": "response",
+        "created_at": 1794256843,
+        "completed_at": null,
+        "status": "queued",
+        "error": null,
+        "incomplete_details": null,
+        "output": [],
+        "usage": null,
+        "model": "qwen3.8-flash-next",
+        "instructions": null,
+        "metadata": {},
+        "temperature": 0,
+        "top_p": 1,
+        "parallel_tool_calls": true,
+        "tools": [],
+        "tool_choice": "auto",
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "reasoning": {
+          "effort": "low",
+          "context": "all_turns",
+          "mode": "standard",
+          "summary": null
+        },
+        "store": true,
+        "background": true,
+        "max_output_tokens": 384,
+        "max_tool_calls": null,
+        "previous_response_id": null,
+        "prompt_cache_options": {
+          "mode": "implicit",
+          "ttl": "30m"
+        },
+        "prompt_cache_retention": "in_memory",
+        "service_tier": "default",
+        "truncation": "disabled",
+        "top_logprobs": 0,
+        "access_programs": null
+      },
+      "type": "response.created",
+      "sequence_number": 0
+    },
+    {
+      "response": {
+        "id": "resp_18e6a93f1f49df96cc45e2e60afa1145",
+        "object": "response",
+        "created_at": 1794256843,
+        "completed_at": null,
+        "status": "queued",
+        "error": null,
+        "incomplete_details": null,
+        "output": [],
+        "usage": null,
+        "model": "qwen3.8-flash-next",
+        "instructions": null,
+        "metadata": {},
+        "temperature": 0,
+        "top_p": 1,
+        "parallel_tool_calls": true,
+        "tools": [],
+        "tool_choice": "auto",
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "reasoning": {
+          "effort": "low",
+          "context": "all_turns",
+          "mode": "standard",
+          "summary": null
+        },
+        "store": true,
+        "background": true,
+        "max_output_tokens": 384,
+        "max_tool_calls": null,
+        "previous_response_id": null,
+        "prompt_cache_options": {
+          "mode": "implicit",
+          "ttl": "30m"
+        },
+        "prompt_cache_retention": "in_memory",
+        "service_tier": "default",
+        "truncation": "disabled",
+        "top_logprobs": 0,
+        "access_programs": null
+      },
+      "type": "response.queued",
+      "sequence_number": 1
+    },
+    {
+      "response": {
+        "id": "resp_18e6a93f1f49df96cc45e2e60afa1145",
+        "object": "response",
+        "created_at": 1794256843,
+        "completed_at": null,
+        "status": "in_progress",
+        "error": null,
+        "incomplete_details": null,
+        "output": [],
+        "usage": null,
+        "model": "qwen3.8-flash-next",
+        "instructions": null,
+        "metadata": {},
+        "temperature": 0,
+        "top_p": 1,
+        "parallel_tool_calls": true,
+        "tools": [],
+        "tool_choice": "auto",
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "reasoning": {
+          "effort": "low",
+          "context": "all_turns",
+          "mode": "standard",
+          "summary": null
+        },
+        "store": true,
+        "background": true,
+        "max_output_tokens": 384,
+        "max_tool_calls": null,
+        "previous_response_id": null,
+        "prompt_cache_options": {
+          "mode": "implicit",
+          "ttl": "30m"
+        },
+        "prompt_cache_retention": "in_memory",
+        "service_tier": "default",
+        "truncation": "disabled",
+        "top_logprobs": 0,
+        "access_programs": null
+      },
+      "type": "response.in_progress",
+      "sequence_number": 2
+    },
+    {
+      "output_index": 0,
+      "item": {
+        "id": "rs_7370f9ba12061e65fec2e24aba490eda",
+        "type": "reasoning",
+        "content": [],
+        "summary": [],
+        "status": "in_progress"
+      },
+      "type": "response.output_item.added",
+      "sequence_number": 3
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "part": {
+        "type": "reasoning_text",
+        "text": ""
+      },
+      "type": "response.content_part.added",
+      "sequence_number": 4
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": "The",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 5
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": " user",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 6
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": " wants",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 7
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": " me",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 8
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": " to",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 9
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": " compute",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 10
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": " ",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 11
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": "1",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 12
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": "7",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 13
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": " +",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 14
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": " ",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 15
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": "2",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 16
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": "5",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 17
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": " and",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 18
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": " reply",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 19
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": " only",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 20
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": " with",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 21
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": " the",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 22
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": " decimal",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 23
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": " number",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 24
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": ".",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 25
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": "\n\n",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 26
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": "1",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 27
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": "7",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 28
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": " +",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 29
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": " ",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 30
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": "2",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 31
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": "5",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 32
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": " =",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 33
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": " ",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 34
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": "4",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 35
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": "2",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 36
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "delta": "\n",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 37
+    },
+    {
+      "output_index": 1,
+      "item": {
+        "id": "msg_a4e98a825f5dc46f6d5b618383054de5",
+        "type": "message",
+        "content": [],
+        "role": "assistant",
+        "status": "in_progress"
+      },
+      "type": "response.output_item.added",
+      "sequence_number": 38
+    },
+    {
+      "item_id": "msg_a4e98a825f5dc46f6d5b618383054de5",
+      "output_index": 1,
+      "content_index": 0,
+      "part": {
+        "type": "output_text",
+        "text": "",
+        "annotations": []
+      },
+      "type": "response.content_part.added",
+      "sequence_number": 39
+    },
+    {
+      "item_id": "msg_a4e98a825f5dc46f6d5b618383054de5",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": "\n\n",
+      "logprobs": [],
+      "type": "response.output_text.delta",
+      "sequence_number": 40
+    },
+    {
+      "item_id": "msg_a4e98a825f5dc46f6d5b618383054de5",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": "4",
+      "logprobs": [],
+      "type": "response.output_text.delta",
+      "sequence_number": 41
+    },
+    {
+      "item_id": "msg_a4e98a825f5dc46f6d5b618383054de5",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": "2",
+      "logprobs": [],
+      "type": "response.output_text.delta",
+      "sequence_number": 42
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "text": "The user wants me to compute 17 + 25 and reply only with the decimal number.\n\n17 + 25 = 42\n",
+      "type": "response.reasoning_text.done",
+      "sequence_number": 43
+    },
+    {
+      "item_id": "rs_7370f9ba12061e65fec2e24aba490eda",
+      "output_index": 0,
+      "content_index": 0,
+      "part": {
+        "type": "reasoning_text",
+        "text": "The user wants me to compute 17 + 25 and reply only with the decimal number.\n\n17 + 25 = 42\n"
+      },
+      "type": "response.content_part.done",
+      "sequence_number": 44
+    },
+    {
+      "output_index": 0,
+      "item": {
+        "id": "rs_7370f9ba12061e65fec2e24aba490eda",
+        "type": "reasoning",
+        "content": [
+          {
+            "type": "reasoning_text",
+            "text": "The user wants me to compute 17 + 25 and reply only with the decimal number.\n\n17 + 25 = 42\n"
+          }
+        ],
+        "summary": [],
+        "status": "completed",
+        "encrypted_content": "q4t1:054c16202494511e6abf8ae172cc51c9:4098cabc15d97e8cbe9839b0:21c3e7533f7799615504c2234496c51a:492d3de50da6f940cc13fd16ae1d2824e8762a0c5d1c993ff592b81080d9d444ac0936b5eb46cb7049ab0ae525fbf3f0cebd6c9489596d33e50cf6848a5200d6f4180ed5edc9157aaad6245ea23b377faa6ffa15a6db331aca161d65f80c5d59efc1f459eb23d8273ab1e960dc33bd371ac578aaf2c466fe56feb593b634f79125e3d4cbd56dc52da7e80a3a4e4ac817e1644b1114341a9477d1a797cd8dfcb23b4b9f93df4f0a5fae251bd2cf63ede57f634d4193de69230b6ecb27fc46b292496f0b827af7022312dba388e21b68dc42d81f7012d191204df145e453cdcc668ca2f3ef21182bd8ebef126b80040aeb3392c19006269ba8ef527e68fbd3747ef6bd7f44d7143feb3c2fe5fe8ca672debbd665f7e56925a12994fdf7c8484f4f51622352dcba4f5d01b97c5a3aa35bd92fdd75e3951309ee4ab268b06dec4da1d88c95a17804b3a722e77c9acd216d41503e25768439803c282adcd0bdd4d8295fc464383a45c2c13e42900485fc57b21b6f8997aefd7a5954a1fe4de824cddc0ab2ac759511ba7a6d6861bd76f3be89e4c448db173221d646736c5c712639b0013af921a10b7505a7edc7f96b6974a4eec0657b4ba69d4e628d11d83cc3953cca55ee97d9169e831fc0ee7e564b7e9c8cfd"
+      },
+      "type": "response.output_item.done",
+      "sequence_number": 45
+    },
+    {
+      "item_id": "msg_a4e98a825f5dc46f6d5b618383054de5",
+      "output_index": 1,
+      "content_index": 0,
+      "text": "\n\n42",
+      "logprobs": [],
+      "type": "response.output_text.done",
+      "sequence_number": 46
+    },
+    {
+      "item_id": "msg_a4e98a825f5dc46f6d5b618383054de5",
+      "output_index": 1,
+      "content_index": 0,
+      "part": {
+        "type": "output_text",
+        "text": "\n\n42",
+        "annotations": []
+      },
+      "type": "response.content_part.done",
+      "sequence_number": 47
+    },
+    {
+      "output_index": 1,
+      "item": {
+        "id": "msg_a4e98a825f5dc46f6d5b618383054de5",
+        "type": "message",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "\n\n42",
+            "annotations": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed"
+      },
+      "type": "response.output_item.done",
+      "sequence_number": 48
+    },
+    {
+      "response": {
+        "id": "resp_18e6a93f1f49df96cc45e2e60afa1145",
+        "object": "response",
+        "created_at": 1794256843,
+        "completed_at": 1794256844,
+        "status": "completed",
+        "error": null,
+        "incomplete_details": null,
+        "output": [
+          {
+            "id": "rs_7370f9ba12061e65fec2e24aba490eda",
+            "type": "reasoning",
+            "content": [
+              {
+                "type": "reasoning_text",
+                "text": "The user wants me to compute 17 + 25 and reply only with the decimal number.\n\n17 + 25 = 42\n"
+              }
+            ],
+            "summary": [],
+            "status": "completed",
+            "encrypted_content": "q4t1:054c16202494511e6abf8ae172cc51c9:4098cabc15d97e8cbe9839b0:21c3e7533f7799615504c2234496c51a:492d3de50da6f940cc13fd16ae1d2824e8762a0c5d1c993ff592b81080d9d444ac0936b5eb46cb7049ab0ae525fbf3f0cebd6c9489596d33e50cf6848a5200d6f4180ed5edc9157aaad6245ea23b377faa6ffa15a6db331aca161d65f80c5d59efc1f459eb23d8273ab1e960dc33bd371ac578aaf2c466fe56feb593b634f79125e3d4cbd56dc52da7e80a3a4e4ac817e1644b1114341a9477d1a797cd8dfcb23b4b9f93df4f0a5fae251bd2cf63ede57f634d4193de69230b6ecb27fc46b292496f0b827af7022312dba388e21b68dc42d81f7012d191204df145e453cdcc668ca2f3ef21182bd8ebef126b80040aeb3392c19006269ba8ef527e68fbd3747ef6bd7f44d7143feb3c2fe5fe8ca672debbd665f7e56925a12994fdf7c8484f4f51622352dcba4f5d01b97c5a3aa35bd92fdd75e3951309ee4ab268b06dec4da1d88c95a17804b3a722e77c9acd216d41503e25768439803c282adcd0bdd4d8295fc464383a45c2c13e42900485fc57b21b6f8997aefd7a5954a1fe4de824cddc0ab2ac759511ba7a6d6861bd76f3be89e4c448db173221d646736c5c712639b0013af921a10b7505a7edc7f96b6974a4eec0657b4ba69d4e628d11d83cc3953cca55ee97d9169e831fc0ee7e564b7e9c8cfd"
+          },
+          {
+            "id": "msg_a4e98a825f5dc46f6d5b618383054de5",
+            "type": "message",
+            "content": [
+              {
+                "type": "output_text",
+                "text": "\n\n42",
+                "annotations": []
+              }
+            ],
+            "role": "assistant",
+            "status": "completed"
+          }
+        ],
+        "usage": {
+          "input_tokens": 56,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 38,
+          "output_tokens_details": {
+            "reasoning_tokens": 34
+          },
+          "total_tokens": 94
+        },
+        "model": "qwen3.8-flash-next",
+        "instructions": null,
+        "metadata": {},
+        "temperature": 0,
+        "top_p": 1,
+        "parallel_tool_calls": true,
+        "tools": [],
+        "tool_choice": "auto",
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "reasoning": {
+          "effort": "low",
+          "context": "all_turns",
+          "mode": "standard",
+          "summary": null
+        },
+        "store": true,
+        "background": true,
+        "max_output_tokens": 384,
+        "max_tool_calls": null,
+        "previous_response_id": null,
+        "prompt_cache_options": {
+          "mode": "implicit",
+          "ttl": "30m"
+        },
+        "prompt_cache_retention": "in_memory",
+        "service_tier": "default",
+        "truncation": "disabled",
+        "top_logprobs": 0,
+        "access_programs": null
+      },
+      "type": "response.completed",
+      "sequence_number": 49
+    }
+  ],
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:19003/v1/responses/resp_18e6a93f1f49df96cc45e2e60afa1145?stream=true&include_obfuscation=false&include%5B%5D=reasoning.encrypted_content",
+      "method": "GET"
+    }
+  ]
+}

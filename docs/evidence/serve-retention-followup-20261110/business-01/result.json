@@ -1,0 +1,11 @@
+{
+  "status": "FAILED",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 294, in run\n    try:self.start();self.business();result['status']=self.success_status\n                     ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/retention_acceptance.py\", line 164, in business\n    require({k: v for k, v in fetched.items() if k != 'output_text'} == first,\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 61, in require\n    raise RuntimeError(message)\nRuntimeError: durable previous response changed\n",
+  "counts": {
+    "starts": 2,
+    "chats": 3,
+    "controls": 96
+  },
+  "seconds": 80.03590834327042,
+  "binary_sha256": "6a90506e72fd25d5bfdd654a7916ece863b958b5cb6e27e5c7d599d36949dc3a"
+}
