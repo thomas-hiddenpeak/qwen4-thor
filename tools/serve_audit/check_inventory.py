@@ -101,6 +101,19 @@ def current_surface(root):
     routes.extend((path, method) for method, path in prompts)
     native_routes.extend((method, path, "true" if method != "POST" else "false")
                          for method, path in prompts)
+    if 'IsFileTarget(path)' not in dispatch or \
+            'file_request->Serve(fd)' not in dispatch or \
+            'inline bool FileMethodAllowed' not in application_routes:
+        raise ValueError("review native Files transport extractor")
+    files = [("POST", "/v1/files"), ("GET", "/v1/files"),
+             ("GET", "/v1/files/{file_id}"),
+             ("DELETE", "/v1/files/{file_id}"),
+             ("GET", "/v1/files/{file_id}/content")]
+    routes.extend((path, method) for method, path in files)
+    # The core is being integrated first. Only record an ingress route after
+    # its actual dispatcher exists; common parsing alone is not API support.
+    if 'server::FileMethodAllowed(method, path)' in native:
+        native_routes.extend((method, path, "false") for method, path in files)
     if 'if (method == "OPTIONS")' in native:
         if 'config.cors.Preflight(' not in native:
             raise ValueError("review native OPTIONS handler before cataloguing")
@@ -115,7 +128,7 @@ def current_surface(root):
                  "conversation_api.cpp", "responses_plan.cpp", "responses_api.cpp",
                  "responses_tokens.cpp",
                  "chat_storage.cpp", "prompt_api.cpp", "prompt_template.cpp",
-                 "moderation.cpp", "access_program.cpp"):
+                 "moderation.cpp", "access_program.cpp", "files.cpp"):
         source = (root / "src/server" / file).read_text()
         for index, item in enumerate(re.finditer(
                 r'(?:Input)?Fields\(\s*([^,]+),\s*\{([^}]+)\}', source)):

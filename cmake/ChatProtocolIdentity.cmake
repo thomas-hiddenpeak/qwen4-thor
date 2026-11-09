@@ -121,6 +121,10 @@ set(protocol_inputs
   src/server/multipart.cpp
   include/q4t/server/binary_store.h
   src/server/binary_store.cpp
+  include/q4t/server/files.h
+  src/server/files.cpp
+  include/q4t/server/files_http.h
+  src/server/files_http.cpp
   src/server/object_protocol.h
   include/q4t/server/responses_state.h
   src/server/responses_state.cpp

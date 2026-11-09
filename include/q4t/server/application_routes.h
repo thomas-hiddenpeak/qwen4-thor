@@ -18,6 +18,30 @@ inline bool IsConversationTarget(std::string_view target) {
   return path == "/v1/conversations" || path.starts_with("/v1/conversations/");
 }
 
+inline bool IsFileTarget(std::string_view target) {
+  const auto path = target.substr(0, target.find('?'));
+  return path == "/v1/files" || path.starts_with("/v1/files/");
+}
+inline bool FileMethodAllowed(std::string_view method,
+                               std::string_view target) {
+  if (target.find('#') != target.npos) return false;
+  auto path = target.substr(0, target.find('?'));
+  if (path == "/v1/files") return method == "GET" || method == "POST";
+  if (!path.starts_with("/v1/files/")) return false;
+  path.remove_prefix(10);
+  const auto slash = path.find('/');
+  if (!ValidApplicationId(path.substr(0, slash))) return false;
+  if (slash == path.npos) return method == "GET" || method == "DELETE";
+  return path.substr(slash) == "/content" && method == "GET";
+}
+inline bool IsFileMetadata(std::string_view method, std::string_view target) {
+  const auto path = target.substr(0, target.find('?'));
+  // Lists and content downloads use the business resource partition. Small
+  // metadata/delete operations may share the reserved observation partition.
+  return FileMethodAllowed(method, target) && path != "/v1/files" &&
+         !path.ends_with("/content");
+}
+
 inline bool IsResponsesTarget(std::string_view target) {
   const auto path = target.substr(0, target.find('?'));
   return path == "/v1/responses" || path.starts_with("/v1/responses/");

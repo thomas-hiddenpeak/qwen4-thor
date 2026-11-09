@@ -868,6 +868,66 @@
         "src/server/responses_tokens.cpp",
         "tests/server_responses_tokens_test.cpp"
       ]
+    },
+    "DELETE /v1/files/{file_id}": {
+      "semantics": "Native Files handler: multipart durable create, public metadata/list/delete and fixed-length binary download.",
+      "boundary": "Core integration in development; component tests do not certify native ingress, SDK business or deployment. Old scoped body limits remain enforced pending separate file capacity configuration.",
+      "evidence": [
+        "include/q4t/server/files.h",
+        "include/q4t/server/files_http.h",
+        "src/server/files.cpp",
+        "src/server/files_http.cpp",
+        "tests/server_files_test.cpp",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md"
+      ]
+    },
+    "GET /v1/files/{file_id}": {
+      "semantics": "Native Files handler: multipart durable create, public metadata/list/delete and fixed-length binary download.",
+      "boundary": "Core integration in development; component tests do not certify native ingress, SDK business or deployment. Old scoped body limits remain enforced pending separate file capacity configuration.",
+      "evidence": [
+        "include/q4t/server/files.h",
+        "include/q4t/server/files_http.h",
+        "src/server/files.cpp",
+        "src/server/files_http.cpp",
+        "tests/server_files_test.cpp",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md"
+      ]
+    },
+    "GET /v1/files/{file_id}/content": {
+      "semantics": "Native Files handler: multipart durable create, public metadata/list/delete and fixed-length binary download.",
+      "boundary": "Core integration in development; component tests do not certify native ingress, SDK business or deployment. Old scoped body limits remain enforced pending separate file capacity configuration.",
+      "evidence": [
+        "include/q4t/server/files.h",
+        "include/q4t/server/files_http.h",
+        "src/server/files.cpp",
+        "src/server/files_http.cpp",
+        "tests/server_files_test.cpp",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md"
+      ]
+    },
+    "GET /v1/files": {
+      "semantics": "Native Files handler: multipart durable create, public metadata/list/delete and fixed-length binary download.",
+      "boundary": "Core integration in development; component tests do not certify native ingress, SDK business or deployment. Old scoped body limits remain enforced pending separate file capacity configuration.",
+      "evidence": [
+        "include/q4t/server/files.h",
+        "include/q4t/server/files_http.h",
+        "src/server/files.cpp",
+        "src/server/files_http.cpp",
+        "tests/server_files_test.cpp",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md"
+      ]
+    },
+    "POST /v1/files": {
+      "semantics": "Native Files handler: multipart durable create, public metadata/list/delete and fixed-length binary download.",
+      "boundary": "Core integration in development; component tests do not certify native ingress, SDK business or deployment. Old scoped body limits remain enforced pending separate file capacity configuration.",
+      "evidence": [
+        "include/q4t/server/files.h",
+        "include/q4t/server/files_http.h",
+        "src/server/files.cpp",
+        "src/server/files_http.cpp",
+        "tests/server_files_test.cpp",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md"
+      ]
     }
   },
   "whitelists": {
@@ -1283,11 +1343,17 @@
     "access_program.cpp:1:client": [
       "id",
       "grant"
+    ],
+    "files.cpp:0:query": [
+      "after",
+      "limit",
+      "order",
+      "purpose"
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "bb722bae6c587d995dd87d55b80be1a655b8eee67efe398f4745356cf252030d",
-    "cmake/ChatProtocolIdentity.cmake": "1258a89bb8c7f491d68286032f2be9fe3b7c5e85a9b79b1be22dbdc8991b4fbe",
+    "CMakeLists.txt": "ab801a60e498b12129bf7d6e2c7d0b143e992704c15e4e3642bc485a002a9f3b",
+    "cmake/ChatProtocolIdentity.cmake": "cf6579041bea696049c607a5f1e6ea51c808528bed8eedcb18d48876912c22df",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
     "cmake/NativeIngress.cmake": "5560a873e8d89b5e034636f006a2b21ace3bdab2bf71dcf688d5028fbbc704b4",
@@ -1308,7 +1374,7 @@
     "include/q4t/server/abort_reason.h": "2bad04553ca1e40595e10d6549d2a3a798bed05fcadd92527f722c48aecb70b5",
     "include/q4t/server/access_program.h": "389d4e152faf16fbfd626e1c1b7045acb28a72822e4968a14f02dc06b096614e",
     "include/q4t/server/application_query.h": "8331a32ad43b1e4eb059a25f1e2d318c351fdda0fbf4555f7bfafd310a9d2c36",
-    "include/q4t/server/application_routes.h": "22bc18c61132b957fdcba05520055066add14cf9ed1b383031ea6b69c29c7950",
+    "include/q4t/server/application_routes.h": "9998a8e925039f35a3bca7b530e81f55674720862aa272395cec23e193f9d080",
     "include/q4t/server/binary_store.h": "b2e853ebce4b0580c2305fbccc4145d739d4251443922dd13b91f48bae6f1db9",
     "include/q4t/server/cache_health.h": "3b43f963c6621361a93feaf3575cdf5f157a3ff426d13aa03b5bf81a005766d3",
     "include/q4t/server/cache_io.h": "212c22958256a4e7441f0a1a896ddf87e9c4759104680582d6541a58b6b0491c",
@@ -1336,13 +1402,15 @@
     "include/q4t/server/custom_grammar.h": "d560f89881ff27ce260c939d046a7b5f5c5afccce2125e4170ef53a661f507ec",
     "include/q4t/server/custom_tools.h": "1f351b6ed81ad868caa4dfa9c54a6f697fcac5a6a8dadef65bd05f2053ef18b9",
     "include/q4t/server/device_memory.h": "1099e20d3b205d3ae03daba0308be7221f5097c78a2fd58c8ca16298277dfc4c",
+    "include/q4t/server/files.h": "d0bf2c21d8fdacb40ccdf1c7c3f9591b758c6ff992c3b45e63e527c71610cd69",
+    "include/q4t/server/files_http.h": "43fd2dab8a608b3da12a110fc89922847b03fec78c62c5fc5359fbe40c838f3e",
     "include/q4t/server/grammar_process.h": "fbed9c86c91be129af8f1481292ef65edb8a9989090fc1a83e12c6fe7e106e53",
-    "include/q4t/server/http_connection.h": "bf59f6637fabca94eec9477ee983cff9d8b1527f4889e3023fda3a6c7136fe64",
+    "include/q4t/server/http_connection.h": "7781ebea44133e149d25292bcb20db324d7e8c366c24a176cf776163d6b0268d",
     "include/q4t/server/http_framing.h": "b3f3c3b39d2de10180d7acb7529c60b7a46b29d595d8ee72de86604ff378de12",
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
     "include/q4t/server/http_observation.h": "603f10404ef826dab21b6eb451723413b7794a5772c6215178552eef3b381072",
     "include/q4t/server/http_request.h": "958858f2e58d5854ad0682f07503797dbc9589607bf9d80836d357b0bd2745b4",
-    "include/q4t/server/http_response.h": "d893a77180768758f16e6b0a682d48318c79b2c1d92c0d432208a1ed8749cfdf",
+    "include/q4t/server/http_response.h": "707dab9e9d0f4dd20a1d1a3427c8faa54d3394f9494103edd34c3cac210a589e",
     "include/q4t/server/input_contract.h": "03c1dfcc666986f5e06a91fb34cf95bf1818bd67df783794ae0ada63b7ae8881",
     "include/q4t/server/legacy_tools.h": "2bcdb5d01e78379c2f7baaaed0ef902867357a0167f3ce6ea18fbc1fdb9dbfa1",
     "include/q4t/server/lifetime.h": "11c9b381a7f6c5e019dcb57fbc18e2ad76492fca5c5e42960c381e954e5068bc",
@@ -1354,7 +1422,7 @@
     "include/q4t/server/multipart.h": "d5561b82cb3517424c922165fffce518046ec1e45436a2d66c7946c870f8c33f",
     "include/q4t/server/native_crypto.h": "0976c2f55c5edaedfc50299db53cd2aa4dd0f0126117aa809e78eea6fa23a224",
     "include/q4t/server/object_retention.h": "75aafff391e86eb2ec62706d7bf0233f62612c41e83f98c01930fd582493850b",
-    "include/q4t/server/object_store.h": "0fffcef7381c0197669e908c91428ec6b2c8be9a09b39d9447a96b62933c04f4",
+    "include/q4t/server/object_store.h": "cfb404e83c981c57df0aba450192ff1a0952ad77c825921f8b898fd151125d73",
     "include/q4t/server/object_store_options.h": "50ac339fb5830d363ac62bea2cfb89fe45f6318f48a146addb593bd7522ec319",
     "include/q4t/server/output_constraints.h": "f227e73a5826900182eff0505e031115ad67acb39fdd00968a8fc03e8dfed0de",
     "include/q4t/server/output_schema.h": "d097d1874a3e450336cbe26ab62cfa712f2be9d07a7a211aab33007db112b3ed",
@@ -1453,7 +1521,7 @@
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
     "src/server/chat_generation.cpp": "938fd362779ea110bdd6014c980c9b488787a489ba10753e16d8017304e87d50",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "2ac8ee865716d6cbde42edc0090b95ddbff3bc8f1e7f6f09b6e3927b69138553",
+    "src/server/chat_http.cpp": "c86cb51e2fef129c64da3a355bab0e512a0165c914ac35afccbec814e9d1510b",
     "src/server/chat_input.cpp": "372b93746fbe236ec1d0caea778b1212d22ab94a18ec4f7ce81adcfba8b8c546",
     "src/server/chat_input_tokens.cpp": "c827f6fea2207afbed17312b6b9cbd90a6c6d52bfd6b6549d220b7c93cea40d9",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
@@ -1473,7 +1541,7 @@
     "src/server/client_policy.cpp": "bd039b9b6f28adc26f785709bd9f159579ce29aab3620d83a899958befc53582",
     "src/server/client_policy_admin.cpp": "50b2107f90879cac09261420c52874e507350d843340096797797c22543e8697",
     "src/server/client_rate_state.cpp": "bc9d1577ffb84c852243d2088cd8351e3dea21022f50f7a8c0f909f16e056c7a",
-    "src/server/client_request.cpp": "c0d59195886427d5d9852534cececc45d27ccf269d93f19a85a117293e6c16c8",
+    "src/server/client_request.cpp": "74bb0ee5bdd7713d0ea5e285fb1a93f7df7190db415e9151a3634dd6ea7da292",
     "src/server/completion_plan.cpp": "714facdef55f982082f687220d2227f6195c517a41f835fe78161fc4a1b1656d",
     "src/server/completion_response.cpp": "75be95aa5a9da31112932cbddaa1e81c0b6cfa31664b03139e1d97f7d7563722",
     "src/server/contracts/openai_item_types_v1.json": "d22c6bb9a38868061556ed9dd76d8d51589a965101d4593684ea049f2945de81",
@@ -1484,11 +1552,13 @@
     "src/server/custom_regex.cpp": "eb8ab53b44dbb9ec2011676a854a18e38244975e76955b74a441829bdd67031a",
     "src/server/custom_regex.h": "4916fea56e31101ba2352675c918b82fe76b785b8559c87683d8cc531c3624d5",
     "src/server/custom_tools.cpp": "3e45f9a496439ec1e0d86739acb9c5d01eb6e2c321a96d924cf755b99bc12abd",
+    "src/server/files.cpp": "5765030ff4056bc593a54fe6a07c501c559cedd4910f3f5bdba291342cc328da",
+    "src/server/files_http.cpp": "fb790e173216e6a8f20272c67e2556e1e08479cbc74b766da28df8df0c5cb50d",
     "src/server/grammar_process.cpp": "b0c9f65c7299e896253d139c34defb65143d2cb7ff9e58465f92661fbc04424c",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
     "src/server/http_request.cpp": "01251905c5120fe61972f73c4a7cb3df36c23c48096f86fad07cee80d2ac3c04",
-    "src/server/http_response.cpp": "0da3e7888a67e69d7cf00aa6b71c181724860f1740c4b46d7412b6c5e7f08f96",
+    "src/server/http_response.cpp": "865cf625d089e8bf0a8e0f276161ac272c68a6bd4b766426ff77d9f74b595d88",
     "src/server/input_contract.cpp": "a8d8f7412e50df59da2ec5829f4ecd34245dc521edcb61011ea4dff2b492f362",
     "src/server/legacy_tools.cpp": "b0bffcd3c780f35f336b40a152e9837077b9a4c6ea3ede737fcbb14b8514587c",
     "src/server/media_admission.cpp": "aca67cb60d88c586dcdc58ea9161dca05edc0be9ac1507bb9e91af313822fbf3",
@@ -1499,9 +1569,9 @@
     "src/server/native_crypto.cpp": "86da5a6cda4b18154f46227074d7fa68b7ec3cbb8bfcdb9a6aaff75b2c9cb8a1",
     "src/server/object_protocol.h": "37bcaad2864814be50b6ae530d4b2e17028cacbc0fd4e05027e4235965331d9c",
     "src/server/object_retention.cpp": "b082242a28b27b1847fdef97c8cbf47f6d4724fd8443f220b1e26e256810dce2",
-    "src/server/object_store.cpp": "231f9e6c55a213d609e27581fdcc8b8041e4b8c04a7714c1192df5ed1a14516f",
+    "src/server/object_store.cpp": "116f7a3037668c5ee147ce8d490f41dc15253838a63ea3579c3c302e5a998144",
     "src/server/object_store_options.cpp": "2118353888a2737d16b6dd2213cf73bfedd2f55ec090d6c19addccd85fdd6811",
-    "src/server/object_worker.cpp": "2a9c4001945993837ae8f201f571b262be1bcb242a39d98a03328f808a3382cc",
+    "src/server/object_worker.cpp": "677f77ea1ae334286fa1eea447bac9b26f825c081050515fb23141cfa9542c09",
     "src/server/output_constraints.cpp": "1273d5d1643a8cb7ccd2804990d2bcac656cbe5b198096c0a66b6803751e3753",
     "src/server/output_schema.cpp": "6d42d154ce3ac43c2cb2569298af221148813f9233e37c9d9c75eb0f331ee65d",
     "src/server/prediction.cpp": "7e8ccdf7c44dd5c8245230577d42eb7d4cd17c6e2efcf5534a02e6744815733f",

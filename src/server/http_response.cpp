@@ -570,6 +570,44 @@ bool SendSimple(int fd, int code, const char* status, const std::string& body,
   return written;
 }
 
+bool SendBinaryResponse(int fd, uint64_t length,
+                         const std::function<bool(std::string*)>& next,
+                         const WriteOptions& options,
+                         std::string_view content_type) {
+  if (content_type != "application/octet-stream" &&
+      content_type != "application/json") return false;
+  auto* context = HttpResponseContext::Current(fd);
+  if (context && *context->State() != ResponseState::kUnsent) return false;
+  const bool persistent = context && context->KeepAlive();
+  const std::string header =
+      "HTTP/1.1 200 OK\r\nContent-Type: " + std::string(content_type) +
+      "\r\nContent-Length: " + std::to_string(length) + "\r\n" +
+      RequestIdHeader(fd) +
+      (persistent ? "Connection: keep-alive\r\n\r\n"
+                  : "Connection: close\r\n\r\n");
+  if (context) {
+    context->LengthResponse();
+    // Until all declared bytes succeed, exception handling must close without
+    // adding a second response or text/event-stream error to binary content.
+    *context->State() = ResponseState::kHeadersStarted;
+  }
+  if (!WriteAll(fd, header, options)) return false;
+  std::string chunk;
+  while (length) {
+    chunk.clear();
+    if (!next(&chunk) || chunk.empty() ||
+        chunk.size() > (1ULL << 20) || chunk.size() > length)
+      return false;
+    if (!WriteAll(fd, chunk, options)) return false;
+    length -= chunk.size();
+  }
+  if (context) {
+    context->BeforeTerminal();
+    *context->State() = ResponseState::kComplete;
+  }
+  return true;
+}
+
 namespace {
 struct ErrorInfo {
   const char* reason;

@@ -115,3 +115,13 @@ IO及全部其他子项，不结束阶段或总目标。
 共享reader增加可信准入设置的增量消费者；固定工作内存预留与总字节分离，单次callback最多8192字节，原绝对deadline涵盖回调。CL/chunked同时适用，framing/trailer全部成功后才允许调用方发布；普通JSON路由和限额保持。8新增测试含按需生成17MiB二进制的CL/chunked（源/接收端都不持有完整body）、容量/100顺序、总量/metadata限额、回调异常/停止、接收全payload后的截断、pipeline、绝对截止与未启用时原限额。合计冻结32项受影响CPU，见`.q4t-work/serve-files-20261110/required-http-stream.txt`。当前尚未接Files路由、无GPU，不代表API已验收；全部任务继续。
 
 HTTP流式组件[32项CPU已通过](evidence/serve-http-body-stream-cpu-20261110/README.md)，无GPU，继续Files/原生TLS实际接入，不作为API或总任务完成。
+
+## Files接口接入细化（开发中）
+
+官方[列表](https://developers.openai.com/api/reference/resources/files/methods/list)核对limit1..10000、默认10000及desc；[上传](https://developers.openai.com/api/reference/resources/files/methods/create)核对batch默认30天、其他用途默认永久，以及created_at锚点/3600..2592000秒。固定SDK字段保持，新增官方查询补足共享CursorPage未写明的默认。FilePurpose中的evals真实保存，不偷偷改用途。
+
+文件名仅元数据，UTF-8/1..1024字节部署边界；512MiB File、200MiB Batch输入，batch/fine-tune后缀.jsonl。multipart字段最多4个、每文本字段4096字节；真实内容消费/JSONL任务验证在后续必做执行器。list worker按100条公开投影，省略manifest；输出逐FileObject计长并发送，避免整页JSON复制。保留8MiB上传/下载与32MiB列表工作预留，小型retrieve/delete走观察分区，list/content走业务分区，健康/取消保留。核心Files HTTP已成组接入但本组尚未构建测试，原生TLS/SDK实链仍在开发，不作为交付结案。
+
+Files核心成组冻结16项直接CPU，清单`.q4t-work/serve-files-20261110/required-files-core.txt`。11新增字段/实际SDK编码/分页跨页/隐藏内部文件/隔离/真实socket下载/截断语义，以及5项受影响原分页/隔离/分类/响应。旧scoped max_body_bytes仍严格取交集，不以流式解码绕过原授权限额；独立file容量与原生TLS路线是下一必做集成项。必要host与引擎构建，本组无GPU，不宣称完整Files接口交付。
+
+Files核心[16项CPU已通过](evidence/serve-files-core-cpu-20261110/README.md)，必要host/实际引擎零警告，无GPU；下一必做项是独立文件容量配置与原生流式入口、实际SDK/业务，不作为A09或总目标完成。

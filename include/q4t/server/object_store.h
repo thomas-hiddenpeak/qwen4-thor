@@ -65,6 +65,9 @@ struct ObjectRequest {
   std::string after;
   std::string before;
   bool descending = true;
+  // Trusted Files list projection: omit binary manifests from IPC pages.
+  // Valid only for list/file; durable records and ordinary readers are intact.
+  bool file_metadata_only = false;
 };
 
 struct ObjectReply {

@@ -1,5 +1,11 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+A09.3 [Files核心16项CPU通过](evidence/serve-files-core-cpu-20261110/README.md)，host/实际引擎零警告。SDK原编码、6用途/留存、分页跨页/隔离/原字节socket与中断保护通过；尚缺原生TLS转发、独立容量配置、实际SDK联网与业务验收。0GPU，默认6a90506e保持，继续全部目标。
+
+A09.3 Files核心/持久字段与HTTP handler已成组开发，冻结16项直接CPU：实际SDK编码、6用途与留存、分页跨worker页/筛选、非法输入/隔离/清理、原字节下载和截断不追加SSE。保留原scoped字节限制，后续需独立文件容量配置与原生TLS接入；尚未测试，无GPU，默认6a90506e保持。
+
+A09.3 Files字段、持久元数据/分页、核心流式上传与原字节下载已进入成组接入。列表内部按100条读取公开投影，标准最多10000条逐对象发送；流式截断不追加SSE。尚未构建/测试此组，原生TLS转发及SDK真实链仍在开发；默认6a90506e保持，全部任务继续。
+
 A09.3 [HTTP流式body32项CPU通过](evidence/serve-http-body-stream-cpu-20261110/README.md)，host零警告；17MiB CL/chunked固定窗口、准入/截断/限额/截止/旧JSON行为通过。0GPU，继续Files原生路由与Uploads/Batch等全部任务，默认6a90506e保持。
 
 A09.3 HTTP增量body消费已成组开发，冻结32项CPU（8新增、既有接收/分帧/观察受影响项）。固定内存预留与总上传字节分离，回调失败/超时停止，完整HTTP成功后才允许发布。尚未测试或启用Files路由；继续实际Files/Uploads/Batch及全部目标，默认6a90506e保持、0GPU。

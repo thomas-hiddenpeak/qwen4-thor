@@ -906,6 +906,21 @@ class DiskStore {
       Json record;
       if (!ReadKnown(name, metadata, &record)) return IoError();
       bytes += metadata.bytes;
+      if (request.GetBool("file_metadata_only")) {
+        if (request.GetString("kind") != "file")
+          return Error(400, "invalid_object_request", "Invalid file projection");
+        const auto* data = record.Find("data");
+        const auto* blob = data ? data->Find("blob") : nullptr;
+        auto metadata_only = Object();
+        if (data) {
+          Set(&metadata_only, "format", String(data->GetString("format")));
+          if (const auto* file = data->Find("file"))
+            Set(&metadata_only, "file", *file);
+        }
+        Set(&metadata_only, "binary_bytes",
+            Number(blob ? blob->GetInt("bytes", -1) : -1));
+        Set(&record, "data", std::move(metadata_only));
+      }
       items.array.push_back(Public(record));
     }
     auto first = items.array.empty()

@@ -1,0 +1,11 @@
+{
+  "decision": "CORE_COMPONENT_CPU_ACCEPTED",
+  "tests": 16,
+  "new_tests": 11,
+  "warnings": 0,
+  "model_starts": 0,
+  "gpu_tests": 0,
+  "native_ingress_accepted": false,
+  "actual_sdk_network_accepted": false,
+  "default_unchanged": "6a90506e"
+}

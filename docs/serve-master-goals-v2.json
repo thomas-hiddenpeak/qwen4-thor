@@ -944,9 +944,10 @@
         "A09.8 SDK/native release and rollback"
       ],
       "multipart_component_evidence": "evidence/serve-multipart-cpu-20261110/README.md",
-      "next": "Complete Files fields/routes and actual native streamed upload/download, then Uploads, Batch and all remaining execution paths.",
+      "next": "Add explicit file capacity policy with compatible migration, native streamed forwarding, actual SDK network and business validation; then complete Uploads/Batch and all tasks.",
       "binary_component_evidence": "docs/evidence/serve-binary-cpu-20261110/README.md",
-      "http_stream_component_evidence": "docs/evidence/serve-http-body-stream-cpu-20261110/README.md"
+      "http_stream_component_evidence": "docs/evidence/serve-http-body-stream-cpu-20261110/README.md",
+      "files_core_component_evidence": "docs/evidence/serve-files-core-cpu-20261110/README.md"
     },
     {
       "id": "A10",

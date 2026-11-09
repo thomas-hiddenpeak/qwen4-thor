@@ -26,6 +26,7 @@
 #include "q4t/server/request_json.h"
 #include "q4t/server/client_request.h"
 #include "q4t/server/conversation_api.h"
+#include "q4t/server/files_http.h"
 #include "q4t/server/prompt_registry.h"
 #include "q4t/server/responses_api.h"
 #include "q4t/server/output_schema.h"
@@ -295,6 +296,9 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
     std::string method, path, body;
     HttpBodyLease lease(body_budget_);
     HttpRequestHeaders headers;
+    HttpBodyStream body_stream;
+    std::unique_ptr<FileHttpRequest> file_request;
+    ObjectReply file_preparation;
     std::atomic<int>* admission = nullptr;
     ScopeExit release_admission([&] {
       if (admission) admission->fetch_sub(1);
@@ -343,10 +347,13 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         return false;
       }
       admission = &counter;
-      if (method == "POST" && !IsResponseCancellation(method, path) &&
+      if ((method == "POST" && !IsResponseCancellation(method, path) &&
           (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
            path == "/v1/completions" || IsResponsesTarget(path) ||
-           IsConversationTarget(path) || IsPromptTarget(path))) {
+           IsConversationTarget(path) || IsPromptTarget(path) ||
+           IsFileTarget(path))) ||
+          (method == "GET" && IsFileTarget(path) &&
+           !IsFileMetadata(method, path))) {
         const auto memory = memory_admission_.Observe();
         if (!memory.Allowed()) {
           RecordMemoryRejection(fd, memory.state, MemoryCheckpoint::kHeaders);
@@ -356,10 +363,40 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
           return false;
         }
       }
+      if (IsFileTarget(path)) {
+        if (!objects_) {
+          failure_status = 503;
+          headers.error_code = "object_scope_unavailable";
+          return false;
+        }
+        const auto scope = identity.Scoped()
+            ? "client:" + std::string(identity.Id()) : "local:anonymous";
+        BinaryAccess access{
+            scope, std::chrono::steady_clock::now() +
+                       std::chrono::milliseconds(request_deadline_ms_),
+            [this, fd] {
+              return stop_requested_.load() || detail::ClientConnectionFailed(fd);
+            }};
+        file_request = std::make_unique<FileHttpRequest>(*objects_, access);
+        const auto ready = file_request->Prepare(method, path,
+                                                  headers.content_type,
+                                                  &body_stream);
+        if (!ready.ok()) {
+          file_preparation = ready;
+          failure_status = ready.http_status;
+          headers.error_code = ready.ClientCode();
+          headers.error_param = ready.value.GetString("param");
+          return false;
+        }
+        headers.body_limit = identity.Scoped()
+            ? std::min<uint64_t>(headers.body_limit, file_request->WireLimit())
+            : file_request->WireLimit();
+      }
       return true;
     };
     if (!ReadHttpRequest(fd, &method, &path, &body, 30000, &lease,
-                         &failure_status, &headers, admit, {}, state)) {
+                         &failure_status, &headers, admit, {}, state, {},
+                         &body_stream)) {
       if (!headers.request_id.empty()) context.SetTraceId(headers.request_id);
       context.RecordReceiveFailure(headers.failure, failure_status,
                                    headers.system_error);
@@ -372,8 +409,15 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
                            : failure_status == 417 ? "Expectation Failed"
                            : failure_status == 429 ? "Too Many Requests"
                                                    : "Bad Request";
-      SendError(fd, failure_status, reason, {}, headers.error_code,
-                headers.error_param);
+      const auto* file_error = !file_preparation.ok() ? &file_preparation
+          : file_request ? file_request->UploadFailure() : nullptr;
+      if (file_error)
+        SendError(fd, file_error->http_status, file_error->ClientMessage(), {},
+                    file_error->ClientCode(), file_error->value.GetString("param"),
+                    file_error->value.GetString("allow"));
+      else
+        SendError(fd, failure_status, reason, {}, headers.error_code,
+                    headers.error_param);
       return false;
     }
     if (IsStoredChatTarget(path) || path == "/v1/chat/preflight" ||
@@ -408,7 +452,10 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
     context.SetKeepAlive(headers.keep_alive && allow_keep_alive &&
                             !stop_requested_.load(), headers.http11);
     dispatch_started = true;
-    Dispatch(fd, method, path, body);
+    if (file_request)
+      file_request->Serve(fd);
+    else
+      Dispatch(fd, method, path, body);
     static const bool access_log = std::getenv("Q4T_ACCESS_LOG") != nullptr;
     if (access_log) {
       const double ms = std::chrono::duration<double, std::milli>(
