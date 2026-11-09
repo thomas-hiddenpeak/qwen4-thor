@@ -1,5 +1,6 @@
 """Unified recovery service entrypoint; no systemd, shell loop or auto install."""
 import argparse
+from contextlib import ExitStack
 import fcntl
 import json
 import os
@@ -99,9 +100,9 @@ def descriptor(state, package, digest):
         info.st_uid == os.geteuid() and stat.S_IMODE(info.st_mode) == 0o700,
         'private canonical service state required')
     value = ingress.parse(ingress.read_file(state/'service.json', private=True))
-    ledger.keys(value, ('version', 'service_id', 'package', 'manifest_sha256'))
-    ledger.require(type(value['version']) is int and value['version'] == 1 and
-        ledger.identifier(value['service_id']) and
+    from tools.serve_recovery import deployment_policy
+    deployment_policy.descriptor(value)
+    ledger.require(
         value['package'] == str(Path(package).resolve()) and value['manifest_sha256'] == digest,
         'service identity or deployment changed')
     return value
@@ -145,8 +146,18 @@ def controller_configuration(package, digest, state, run):
 
 
 def launch(package, digest, state, *, daemon=False, timeout=360):
+    # Held until Guardian owns its instance lock (or foreground exit). The
+    # descriptor cannot change between validation and the actual startup.
+    from tools.serve_recovery import deployment
     manifest = bundle.verify(package, digest)
+    with deployment.claim(state, shared=True):
+        return launch_owned(package, digest, state, manifest=manifest, daemon=daemon, timeout=timeout)
+
+
+def launch_owned(package, digest, state, *, manifest, daemon=False, timeout=360):
     desc = descriptor(state, package, digest)
+    from tools.serve_recovery import deployment
+    deployment.ready(state, desc)
     package, state = Path(package).resolve(), Path(state).resolve()
     lease = acquire_lease(manifest['lock_path'])
     parent = endpoint = None
@@ -279,7 +290,8 @@ def main(argv=None, *, package=None, digest=None):
                  'retention-plan', 'retention-archive', 'retention-apply', 'retention-resume',
                  'retention-migrate', 'access-status', 'access-propose', 'access-apply',
                  'access-migrate', 'limits-status', 'limits-propose', 'limits-apply',
-                 'limits-migrate', 'usage-status', 'usage-migrate'):
+                 'limits-migrate', 'usage-status', 'usage-migrate',
+                 'deploy', 'rollback', 'deployment-status'):
         command = commands.add_parser(name)
         command.add_argument('--state', type=Path, required=True)
         if package is None:
@@ -312,7 +324,11 @@ def main(argv=None, *, package=None, digest=None):
         if name in ('access-apply', 'limits-apply'):
             command.add_argument('--proposal', type=Path, required=True)
             command.add_argument('--wait-seconds', type=int, default=3)
+        if name in ('deploy', 'rollback'):
+            command.add_argument('--expected-manifest-sha256', required=True)
+            command.add_argument('--request-id', required=True)
     args = parser.parse_args(argv)
+    locks = ExitStack()
     try:
         if args.operation == 'prepare':
             result = bundle.prepare(args.binary, args.release, args.model, args.guardian,
@@ -331,8 +347,19 @@ def main(argv=None, *, package=None, digest=None):
         else:
             package = package or args.package
             digest = digest or args.manifest_sha256
+            if args.operation.startswith(('access-', 'limits-', 'usage-')):
+                from tools.serve_recovery import deployment
+                locks.enter_context(deployment.claim(args.state, shared=True))
+                if not args.operation.endswith('-status'):
+                    deployment.ready(args.state, descriptor(args.state, package, digest))
             if args.operation == 'init':
                 result = initialize(package, digest, args.state)
+            elif args.operation in ('deploy', 'rollback', 'deployment-status'):
+                from tools.serve_recovery import deployment
+                result = (deployment.status(args.state) if args.operation == 'deployment-status' else
+                    deployment.switch(args.state, package, digest,
+                        expected=args.expected_manifest_sha256, request_id=args.request_id,
+                        rollback=args.operation == 'rollback'))
             elif args.operation in ('run', 'start'):
                 result = launch(package, digest, args.state, daemon=args.operation == 'start',
                                 timeout=getattr(args, 'timeout', 360))
@@ -442,6 +469,8 @@ def main(argv=None, *, package=None, digest=None):
             result = usage_manager.failure(error)
         print(json.dumps(result), file=sys.stderr)
         return 1
+    finally:
+        locks.close()
 
 
 if __name__ == '__main__':

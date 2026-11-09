@@ -16,6 +16,16 @@ from tools.serve_recovery import ledger
 LOCK = 'writer.lock'
 STATE = 'ledger.json'
 PENDING = 'ledger.pending'
+CONTRACT_PENDING = 'ledger.contract.pending'
+SERVICE_CONTRACT = 'q4t-service-state-v2'
+
+
+def envelope_keys(value):
+    ledger.keys(value, ('sha256', 'previous_sha256', 'state',
+                       *(('service_contract',) if 'service_contract' in value else ())))
+    ledger.require('service_contract' not in value or
+                   value['service_contract'] == SERVICE_CONTRACT,
+                   'unknown service state contract')
 
 
 def stamp():
@@ -63,6 +73,7 @@ class Store:
         self.lock_fd = -1
         self.poisoned = False
         self.state = None
+        self.service_contract = False
         try:
             if initialize:
                 self.directory.mkdir(mode=0o700, parents=False, exist_ok=True)
@@ -100,6 +111,7 @@ class Store:
                                type(marker.get('version')) is int and
                                marker == identity,
                                'persistent service identity mismatch')
+                self.reconcile_contract()
                 self.reconcile_pending()
                 self.state = self.read_state(STATE)
                 # Reaffirm an ambiguous rename after a former writer died
@@ -139,7 +151,7 @@ class Store:
 
     def read_envelope(self, name):
         envelope = self.read(name)
-        ledger.keys(envelope, ('sha256', 'previous_sha256', 'state'))
+        envelope_keys(envelope)
         ledger.require(envelope['sha256'] == ledger.digest(envelope['state']),
                        'ledger checksum mismatch')
         previous = envelope['previous_sha256']
@@ -151,7 +163,52 @@ class Store:
         return envelope
 
     def read_state(self, name):
-        return self.read_envelope(name)['state']
+        value = self.read_envelope(name)
+        self.service_contract = 'service_contract' in value
+        return value['state']
+
+    def reconcile_contract(self):
+        if not self.exists(CONTRACT_PENDING):return
+        current = self.read_envelope(STATE)
+        raw = ledger.canonical(dict(current, service_contract=SERVICE_CONTRACT))
+        # Unlike a grant transaction, this file can only add a format fence.
+        # A short write may be completed from the still authoritative ledger;
+        # no spent grant, revision or desired state is reconstructed or reset.
+        fd = os.open(CONTRACT_PENDING, os.O_RDWR | os.O_NOFOLLOW | os.O_CLOEXEC,
+                     dir_fd=self.dir_fd)
+        try:
+            info = check_file(fd)
+            ledger.require(info.st_size <= len(raw) and
+                raw.startswith(os.pread(fd, len(raw)+1, 0)), 'service contract predecessor changed')
+            if info.st_size != len(raw):
+                os.ftruncate(fd, 0);self.write_all(fd, raw)
+            os.fsync(fd)
+        finally:os.close(fd)
+        with self.open_file(CONTRACT_PENDING) as file:os.fsync(file.fileno())
+        os.replace(CONTRACT_PENDING, STATE, src_dir_fd=self.dir_fd, dst_dir_fd=self.dir_fd)
+        os.fsync(self.dir_fd)
+
+    def require_service_contract(self):
+        """One-way legacy fence; preserve every ledger value and spent grant.
+
+        Old journal code rejects the extra envelope field before any grant.
+        This also fences a legacy launcher that read its descriptor before a
+        concurrent STOPPED upgrade. Only the explicit deployment owner calls it.
+        """
+        ledger.require(not self.poisoned and not self.exists(PENDING),
+                       'service contract requires recovered writer')
+        if self.service_contract:return
+        value = dict(self.read_envelope(STATE), service_contract=SERVICE_CONTRACT)
+        try:
+            fd = os.open(CONTRACT_PENDING, os.O_CREAT | os.O_EXCL | os.O_WRONLY |
+                         os.O_NOFOLLOW | os.O_CLOEXEC, 0o600, dir_fd=self.dir_fd)
+            try:self.write_all(fd, ledger.canonical(value));os.fsync(fd)
+            finally:os.close(fd)
+            self.reconcile_contract()
+            self.service_contract = True
+        except BaseException:
+            self.poisoned = True
+            raise
 
     def reconcile_pending(self):
         if not self.exists(PENDING):
@@ -163,7 +220,11 @@ class Store:
         envelope = self.read_envelope(PENDING)
         pending = envelope['state']
         if self.exists(STATE):
-            old = self.read_state(STATE)
+            previous = self.read_envelope(STATE)
+            ledger.require('service_contract' not in previous or
+                           envelope.get('service_contract') == SERVICE_CONTRACT,
+                           'service contract cannot regress')
+            old = previous['state']
             ledger.require(pending['revision'] == old['revision']+1,
                            'unreconciled pending revision')
             ledger.require(envelope['previous_sha256'] == ledger.digest(old),
@@ -196,7 +257,8 @@ class Store:
         ledger.require(not self.poisoned, 'journal is frozen after I/O failure')
         ledger.validate(state, self.service_id)
         data = ledger.canonical(dict(sha256=ledger.digest(state), state=state,
-            previous_sha256=ledger.digest(self.state) if self.state else None))
+            previous_sha256=ledger.digest(self.state) if self.state else None,
+            **({'service_contract': SERVICE_CONTRACT} if self.service_contract else {})))
         try:
             fd = os.open(PENDING, os.O_WRONLY | os.O_CREAT | os.O_EXCL |
                          os.O_NOFOLLOW | os.O_CLOEXEC, 0o600,

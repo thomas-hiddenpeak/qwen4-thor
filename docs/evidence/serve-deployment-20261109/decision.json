@@ -1,0 +1,17 @@
+{
+  "distinct_cpu_passed": 32,
+  "initial_passed": 21,
+  "initial_failed_fixture": 10,
+  "targeted_passed": 12,
+  "new_retention_case": 1,
+  "gpu_starts": 0,
+  "chat_requests": 0,
+  "default_changed": false,
+  "real_model_business": false,
+  "legacy_store_fence_verified": true,
+  "remaining": [
+    "initial service bootstrap interruption recovery",
+    "native TLS and actual SDK/model business",
+    "accepted compatible rollback and default delivery"
+  ]
+}

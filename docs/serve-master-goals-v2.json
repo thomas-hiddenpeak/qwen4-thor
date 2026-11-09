@@ -434,16 +434,17 @@
         "evidence/serve-usage-primitive-20261109/README.md",
         "evidence/serve-usage-store-20261109/decision.json",
         "evidence/serve-usage-runtime-20261109/decision.json",
-        "evidence/serve-usage-management-20261109/decision.json"
+        "evidence/serve-usage-management-20261109/decision.json",
+        "evidence/serve-deployment-20261109/decision.json"
       ],
       "release": null,
       "plan": "SERVE_ACCESS_CONTROL_2026-11-09.md",
       "remaining": [
-        "packaged legacy descriptor upgrade and rollback safety across mutable credentials/limits",
+        "initial service bootstrap interruption recovery and actual packaged deployment/compatible rollback",
         "TLS native bundle and applicable SDK verification",
         "targeted real business and rollback-capable delivery"
       ],
-      "development_status": "限额live读取权限缺陷已修复；用量CLI/STOPPED迁移16个CPU通过并保留夹具失败原件。继续随包旧描述符升级、TLS/SDK真实模型业务和可回退默认交付。默认v6保持，N04未完成。"
+      "development_status": "随包STOPPED部署/兼容回退与旧启动器封锁32个不同CPU通过，保留夹具失败原件。继续首次初始化恢复、TLS/SDK真实模型与合格回退默认交付，默认v6保持，N04未完成。"
     },
     {
       "id": "N05",

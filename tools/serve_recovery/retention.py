@@ -115,10 +115,8 @@ def open_relative(root, name, flags):
 def state_descriptor(state):
     state, identity = private_directory(state)
     desc = native.private_json(state / 'service.json')
-    ledger.keys(desc, ('version', 'service_id', 'package', 'manifest_sha256'))
-    ledger.require(type(desc['version']) is int and desc['version'] == 1 and
-        ledger.identifier(desc['service_id']) and ledger.HASH.fullmatch(desc['manifest_sha256']),
-        'invalid service retention identity')
+    from tools.serve_recovery import deployment_policy
+    deployment_policy.descriptor(desc)
     return state, identity, desc
 
 
@@ -336,6 +334,12 @@ def dependencies(state, *, anchors=None, records=None):
     queue = [(Path(p), None, False) for p in (anchors if anchors is not None else (
         root / 'build/q4t.release.json', root / 'build/service.release.json',
         Path(state) / 'service.json'))]
+    from tools.serve_recovery import deployment
+    desc = state_descriptor(state)[2]
+    deployed = Path(state)/deployment.Store.marker_name
+    if desc['version'] == 2 or os.path.lexists(deployed):
+        queue.extend((p, None, False) for p in (deployed,
+            Path(state)/deployment.Store.directory_name/'policy.json'))
     seen, paths = {}, set()
     follow = {'previous_release', 'previous_service_release', 'rollback_receipt'}
     keep = follow | {'package', 'previous_binary', 'build_cache',
@@ -351,6 +355,16 @@ def dependencies(state, *, anchors=None, records=None):
         ledger.require(len(seen) < 256, 'release dependency bound')
         value, digest = dependency_json(path, expected)
         seen[path] = digest; paths.add(path)
+        if value.get('format') == deployment.Store.format:
+            deployment.Store.validate_state(value['state'])
+            ledger.require(value['sha256'] == ledger.digest(value['state']) and
+                value['service_id'] == desc['service_id'] and
+                value['state_identity'] == native.inode(state), 'deployment retention identity')
+            selected = value['state']['policy']
+            for item in [selected['current'], selected['target'], *selected['history']]:
+                if item is not None:
+                    package = Path(item['package']);paths.add(package)
+                    queue.append((package/'manifest.json', item['manifest_sha256'], False))
         inherited = value.get('inherited_release')
         for key in keep:
             raw = value.get(key)
@@ -381,6 +395,13 @@ def dependencies(state, *, anchors=None, records=None):
 
 @contextmanager
 def claim(state):
+    from tools.serve_recovery import deployment
+    with deployment.claim(state, shared=True):
+        with catalog_claim(state) as catalog:yield catalog
+
+
+@contextmanager
+def catalog_claim(state):
     state, _, _ = state_descriptor(state)
     directory = state / 'retention'
     directory.mkdir(mode=0o700, exist_ok=True)

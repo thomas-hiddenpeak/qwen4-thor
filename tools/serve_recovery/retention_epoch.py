@@ -12,20 +12,21 @@ import stat
 import time
 
 from tools.serve_host import native
-from tools.serve_recovery import bundle, ledger, retention as r, service
+from tools.serve_recovery import bundle, ledger, retention as r, service, store
 
 FORMAT = 'q4t.service.retention-epoch.v1'
 
 
 def stopped_snapshot(state, service_id):
     envelope = native.private_json(Path(state) / 'ledger.json')
-    ledger.keys(envelope, ('sha256', 'previous_sha256', 'state'))
+    store.envelope_keys(envelope)
     value = envelope['state']
     ledger.require(envelope['sha256'] == ledger.digest(value), 'retention ledger checksum')
     ledger.validate(value, service_id)
     ledger.require(value['desired'] == 'STOPPED' and not any(value['active'].values()),
                    'epoch migration needs durable STOPPED with no active grants')
     ledger.require(not os.path.lexists(Path(state) / 'ledger.pending'), 'ambiguous stop commit')
+    ledger.require(not os.path.lexists(Path(state) / store.CONTRACT_PENDING), 'ambiguous service contract')
     marker = native.private_json(Path(state) / 'writer.lock')
     ledger.require(marker == dict(version=1, service_id=service_id), 'writer service identity changed')
     return dict(ledger=envelope, marker=marker)

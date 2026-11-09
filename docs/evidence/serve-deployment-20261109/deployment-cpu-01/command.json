@@ -1,0 +1,16 @@
+[
+  "python3",
+  "-B",
+  "-m",
+  "unittest",
+  "-v",
+  "tools.serve_recovery.test_deployment",
+  "tools.serve_recovery.test_ledger.StoreTests",
+  "tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency",
+  "tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io",
+  "tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable",
+  "tools.serve_host.test_native.NativeTests.test_birth_namespace_and_descriptor_replacement_are_not_trusted",
+  "tools.serve_recovery.test_retention_epoch.EpochTests.test_legacy_run_migrates_then_archives_and_retires",
+  "tools.serve_recovery.test_access_management.ManagementTests.test_whole_journal_loss_cannot_rebootstrap_and_launch_stays_deferred",
+  "tools.serve_recovery.test_access_management.ManagementTests.test_cli_propose_apply_query_replay_and_stale_revision"
+]

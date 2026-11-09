@@ -1,0 +1,62 @@
+{
+  "README.md": {
+    "bytes": 1155,
+    "sha256": "9bffd6bcd33a73f8b82d4f386a04d85fb6c9a7e29cc9df3c682a97e5f2392e8b"
+  },
+  "decision.json": {
+    "bytes": 461,
+    "sha256": "2215568fc4f69f63a339e3a87badf3be6cccbcff3dc798984bf87698ca1d1d26"
+  },
+  "deployment-cpu-01/command.json": {
+    "bytes": 976,
+    "sha256": "effb8aebcdafe5e515265957c023db430b14170627be9ab84756149970ee84ae"
+  },
+  "deployment-cpu-01/legacy-source.json": {
+    "bytes": 228,
+    "sha256": "25c341b92f8d7582e6d3c9a61ca4b4a077d3cb43a0da5cd255e4e1a594138f5f"
+  },
+  "deployment-cpu-01/result.json": {
+    "bytes": 64,
+    "sha256": "51bc2f1ca9c1e5702499dcafb457b6284556ea48e2d87bc7f00f744e27a9c610"
+  },
+  "deployment-cpu-01/selection.json": {
+    "bytes": 3652,
+    "sha256": "6caf3201986d54991509eac932882427e54c840b59e49de96c252e2d9f421f0b"
+  },
+  "deployment-cpu-01/sources.json": {
+    "bytes": 9528,
+    "sha256": "0a0da8cdfd4b0ddcedf66cee1f575dd8060734b88a99f46ecca59b59d5d11eca"
+  },
+  "deployment-cpu-01/tests.log": {
+    "bytes": 16476,
+    "sha256": "ae806ebd6898c13230a31616637928cb8ee729d7d1daebd40f83acf4fedae1c9"
+  },
+  "deployment-cpu-02/command.json": {
+    "bytes": 205,
+    "sha256": "bda45a4b75c36536e90e43d9f7cef4720804c8578a93a0d7f5d6ec9c1ff528b6"
+  },
+  "deployment-cpu-02/legacy-source.json": {
+    "bytes": 228,
+    "sha256": "25c341b92f8d7582e6d3c9a61ca4b4a077d3cb43a0da5cd255e4e1a594138f5f"
+  },
+  "deployment-cpu-02/result.json": {
+    "bytes": 64,
+    "sha256": "cb3a4a97bf145f02a23e862d3b5ad928822e6a887a78b6f13af6b05759c069a1"
+  },
+  "deployment-cpu-02/selection.json": {
+    "bytes": 1550,
+    "sha256": "d93a8feb5eb1a46f0b664919e58f7b5e24e139e0b274a241c3fc2274381314b1"
+  },
+  "deployment-cpu-02/sources.json": {
+    "bytes": 9528,
+    "sha256": "a07d249c28a2646bb9e7fb26c4474dd4c455cb6a005e1a6a539ad9e58cc034a6"
+  },
+  "deployment-cpu-02/tests.log": {
+    "bytes": 2433,
+    "sha256": "bad0036e480706ec9af8be809ed3d5af8b5af4654ec3ead3c5defb7024bc6954"
+  },
+  "identity.json": {
+    "bytes": 490,
+    "sha256": "54b5e44603715ce6f488071f33ebde3cbe3e5ab0bb162dc8f269152f4073cb9c"
+  }
+}

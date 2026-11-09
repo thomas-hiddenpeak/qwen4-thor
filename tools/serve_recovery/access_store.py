@@ -112,6 +112,87 @@ def initialize_bound(value, initial, writer=None):
     return dict(result, initialized=first, durable=True, live_applied=False)
 
 
+def bootstrap_bound(value, initial, writer=None):
+    """Explicit unpublished bootstrap with recoverable partial initial writes.
+
+    Only an operator holding the deployment/Guardian/core locks may use this.
+    The outer marker is published LAST: its absence proves that open_bound()
+    could never expose this journal. An existing marker NEVER permits reset.
+    """
+    writer = Store if writer is None else writer
+    state = Path(value['state_directory'])
+    ledger.require(binding(state, value['service_id']) == value, 'bootstrap state changed')
+    writer.contract.validate(initial)
+    ledger.require(initial['revision'] == 0, 'bootstrap revision')
+    if os.path.lexists(state/writer.marker_name):
+        with open_bound(value, writer) as current:
+            return dict(writer.contract.describe(current.head['state']['policy']),
+                        initialized=False, durable=True, live_applied=False)
+    directory = state/writer.directory_name
+    directory.mkdir(mode=0o700, exist_ok=True)
+    info = directory.lstat()
+    ledger.require(directory.resolve(strict=True) == directory and stat.S_ISDIR(info.st_mode) and
+        info.st_uid == os.geteuid() and stat.S_IMODE(info.st_mode) == 0o700,
+        'private bootstrap journal required')
+    fd = os.open(directory/'writer.lock', os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW | os.O_CLOEXEC, 0o600)
+    try:
+        held = store.check_file(fd);fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        named = (directory/'writer.lock').lstat()
+        ledger.require((held.st_dev, held.st_ino) == (named.st_dev, named.st_ino) and
+            not os.path.lexists(state/writer.marker_name) and
+            {p.name for p in directory.iterdir()} <= {'writer.lock', 'policy.json', 'policy.pending'},
+            'bootstrap journal changed')
+        marker = ledger.canonical(dict(format=writer.format, service_id=value['service_id'],
+                                       state_identity=value['state_identity']))
+        ledger.require(held.st_size <= len(marker) and marker.startswith(os.pread(fd, len(marker)+1, 0)),
+                       'bootstrap writer identity changed')
+        os.ftruncate(fd, 0);store.Store.write_all(fd, marker);os.fsync(fd)
+        contents = dict(policy=initial, receipts=[])
+        envelope = dict(format=writer.format, service_id=value['service_id'],
+            state_identity=value['state_identity'], previous_sha256=None,
+            sha256=ledger.digest(contents), state=contents)
+        raw = ledger.canonical(envelope)
+        committed = directory/'policy.json'
+        if os.path.lexists(committed):
+            # Already initialized before a crash at outer marker publication.
+            current = os.open(committed, os.O_RDONLY | os.O_NOFOLLOW | os.O_CLOEXEC)
+            try:
+                size = store.check_file(current).st_size
+                ledger.require(size == len(raw) and os.pread(current, len(raw)+1, 0) == raw,
+                               'unpublished bootstrap is not initial state')
+                os.fsync(current)
+            finally:os.close(current)
+            ledger.require(not os.path.lexists(directory/'policy.pending'), 'bootstrap pending collision')
+        else:
+            pending = os.open(directory/'policy.pending', os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW | os.O_CLOEXEC, 0o600)
+            try:
+                size = store.check_file(pending).st_size
+                ledger.require(size <= len(raw) and raw.startswith(os.pread(pending, len(raw)+1, 0)),
+                               'bootstrap pending differs')
+                os.ftruncate(pending, 0);store.Store.write_all(pending, raw);os.fsync(pending)
+            finally:os.close(pending)
+            os.replace(directory/'policy.pending', committed)
+        child = os.open(directory, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC)
+        try:os.fsync(child)
+        finally:os.close(child)
+        parent = os.open(state, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC)
+        try:
+            os.fsync(parent)
+            temporary = writer.marker_name+'.pending'
+            marker_fd = os.open(state/temporary, os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW | os.O_CLOEXEC, 0o600)
+            try:
+                store.check_file(marker_fd);os.ftruncate(marker_fd, 0)
+                store.Store.write_all(marker_fd, ledger.canonical(marker_value(value, writer)))
+                os.fsync(marker_fd)
+            finally:os.close(marker_fd)
+            ledger.require(not os.path.lexists(state/writer.marker_name), 'bootstrap publication raced')
+            os.replace(state/temporary, state/writer.marker_name);os.fsync(parent)
+        finally:os.close(parent)
+    finally:os.close(fd)
+    sync_binding(value, writer)
+    return dict(writer.contract.describe(initial), initialized=True, durable=True, live_applied=False)
+
+
 class Store:
     contract = policy
     format = FORMAT

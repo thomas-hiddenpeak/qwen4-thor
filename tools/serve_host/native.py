@@ -121,8 +121,9 @@ def read_ledger(binding):
     directory = Path(binding['state'])
     # Never reconcile a pending commit or acquire the writer lock as an observer.
     ledger.require(not os.path.lexists(directory / 'ledger.pending'), 'ambiguous ledger commit')
+    ledger.require(not os.path.lexists(directory / store.CONTRACT_PENDING), 'ambiguous service contract')
     value = private_json(directory / 'ledger.json')
-    ledger.keys(value, ('sha256', 'previous_sha256', 'state'))
+    store.envelope_keys(value)
     ledger.require(value['sha256'] == ledger.digest(value['state']), 'ledger checksum')
     ledger.validate(value['state'], binding['descriptor']['service_id'])
     value = value['state']

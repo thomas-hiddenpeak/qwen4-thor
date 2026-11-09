@@ -1,0 +1,17 @@
+{
+  "count": 12,
+  "tests": [
+    "tools.serve_recovery.test_deployment.DeploymentTests.test_legacy_upgrade_and_replay_preserve_core_identity_and_all_budgets",
+    "tools.serve_recovery.test_deployment.DeploymentTests.test_rollback_keeps_rotations_revocations_dynamic_limits_and_usage",
+    "tools.serve_recovery.test_deployment.DeploymentTests.test_before_and_after_descriptor_rename_resume_same_transaction",
+    "tools.serve_recovery.test_deployment.DeploymentTests.test_partial_unpublished_bootstrap_recovers_but_published_loss_never_resets",
+    "tools.serve_recovery.test_deployment.DeploymentTests.test_bootstrap_outer_marker_publication_can_resume_without_reseeding",
+    "tools.serve_recovery.test_deployment.DeploymentTests.test_owned_locks_nonstopped_state_and_changed_request_refuse_switch",
+    "tools.serve_recovery.test_deployment.DeploymentTests.test_bad_package_or_client_capacity_does_not_publish_pending_switch",
+    "tools.serve_recovery.test_deployment.DeploymentTests.test_readonly_observation_and_retention_protect_selected_and_rollback_packages",
+    "tools.serve_recovery.test_deployment.DeploymentTests.test_cli_pinned_target_upgrade_status_and_error_do_not_expose_keys",
+    "tools.serve_recovery.test_deployment.DeploymentTests.test_retention_lock_cannot_overlap_a_deployment_switch",
+    "tools.serve_recovery.test_deployment.DeploymentTests.test_actual_retained_legacy_store_cannot_grant_after_upgrade",
+    "tools.serve_recovery.test_retention_epoch.EpochTests.test_legacy_run_migrates_then_archives_and_retires"
+  ]
+}

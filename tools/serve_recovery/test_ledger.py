@@ -340,6 +340,31 @@ class StoreTests(unittest.TestCase):
         self.writer.close()
         self.writer = store.Store(self.directory, SERVICE, clock=self.clock)
 
+    def test_deployment_fence_preserves_budget_and_survives_later_transactions(self):
+        self.send('desired', state='RUNNING')
+        before = deepcopy(self.writer.state)
+        self.writer.require_service_contract()
+        self.assertEqual(self.writer.state, before)
+        self.reopen()
+        self.assertTrue(self.writer.service_contract)
+        self.assertEqual(self.writer.state, before)
+        self.send('desired', state='STOPPED')
+        self.reopen()
+        self.assertTrue(self.writer.service_contract)
+        self.assertEqual(self.writer.state['desired'], 'STOPPED')
+
+    def test_partial_deployment_fence_replays_without_rebuilding_core_state(self):
+        self.send('desired', state='RUNNING')
+        before = deepcopy(self.writer.state)
+        def partial(fd, raw):
+            os.write(fd, raw[:23]);raise OSError('CPU short contract write')
+        with mock.patch.object(store.Store, 'write_all', side_effect=partial), self.assertRaises(OSError):
+            self.writer.require_service_contract()
+        self.reopen()
+        self.assertTrue(self.writer.service_contract)
+        self.assertEqual(self.writer.state, before)
+        self.assertFalse((self.directory/store.CONTRACT_PENDING).exists())
+
     def test_single_writer_and_service_identity_are_enforced(self):
         with self.assertRaises(BlockingIOError):
             store.Store(self.directory, SERVICE, clock=self.clock)

@@ -127,7 +127,7 @@ class BundleTests(unittest.TestCase):
             {'tools/serve_recovery/'+n+'.py' for n in ('quota_policy', 'quota_store',
              'quota_control', 'quota_runtime', 'quota_manager', 'usage_policy',
              'usage_store', 'usage_io', 'usage_control', 'usage_runtime',
-             'model_admin', 'usage_manager')})
+             'model_admin', 'usage_manager', 'deployment_policy', 'deployment')})
 
     def test_historical_source_inventory_versions_remain_verifiable(self):
         receipt = self.prepare()
