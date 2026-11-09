@@ -1,5 +1,9 @@
 # 当前状态
 
+N05续验准备在GPU前被源码命名空间保护拦下：准备脚本已导入
+checkout helper，改为独立解释器核验封装模块；1项实际包只读
+检查通过，0新增模型/Chat。生产候选未变，继续同一剩余预算。
+
 N05客户端前缀6项针对CPU通过，[失败与修复原件](evidence/serve-http-prefix-fix-20261109/README.md)。引擎/入口保持；
 独立核对STOPPED/端口/拥有进程/锁后续剩余SDK/工具/Responses/
 Completions/实际前置，累计2启动/12预扣/600秒，不重跑已过项。

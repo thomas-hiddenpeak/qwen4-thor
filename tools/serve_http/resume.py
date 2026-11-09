@@ -14,6 +14,16 @@ from tools.serve_service import package as p
 BASE=ROOT/'.q4t-work/serve-http-20261109'
 
 
+def verify_isolated(plan):
+    # Preparation imports checkout helpers; execution must pin production
+    # modules from the sealed package in a fresh interpreter namespace.
+    code=('import json,sys;sys.path.insert(0,'+repr(str(ROOT))+');'
+          'from tools.serve_http.acceptance import verify;verify(json.load(sys.stdin))')
+    result=subprocess.run([sys.executable,'-I','-B','-c',code],input=json.dumps(plan),
+        text=True,capture_output=True,timeout=30)
+    p.require(result.returncode==0,'isolated package verification failed: '+result.stderr)
+
+
 def main():
     out=BASE/'business-02';prior_dir=BASE/'business-01'
     p.require(not out.exists(),'resume output exists')
@@ -48,7 +58,7 @@ def main():
         plan['sources'][n]=p.sha(ROOT/n)
     plan['source_commit']=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
     plan['reuse']='Prior self-check/core chunked/100, native JSON/SSE, reuse/reauth; same engine/ingress/runtime.'
-    a.verify_prior(plan);a.verify(plan)
+    a.verify_prior(plan);verify_isolated(plan)
     out.mkdir(mode=0o700);p.save(out/'plan.json',plan)
     p.save(out/'independent-cleanup-check.json',dict(status='PASS_STOPPED_CLEANUP',
         model_owners_gone=True,ports_released=True,lock_acquirable=True,default_unchanged=True,
