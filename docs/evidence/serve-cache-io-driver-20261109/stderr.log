@@ -1,0 +1,8 @@
+test_failed_restore_log_and_non_refundable_request_budget (tools.serve_cache_io.test_acceptance.DriverTests.test_failed_restore_log_and_non_refundable_request_budget) ... ok
+test_owned_cache_directory_selection_and_birth_rejection (tools.serve_cache_io.test_acceptance.DriverTests.test_owned_cache_directory_selection_and_birth_rejection) ... ok
+test_private_progress_wire_capture_preserves_bytes_and_wait_boundary (tools.serve_cache_io.test_acceptance.DriverTests.test_private_progress_wire_capture_preserves_bytes_and_wait_boundary) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.100s
+
+OK

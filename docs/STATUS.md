@@ -2,6 +2,14 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+缓存真实驱动3/3 CPU通过，[原件](evidence/serve-cache-io-driver-20261109/README.md)。
+继续冻结1启动/最多8 Chat/600秒实际短验；模型保持同PID、只暂停
+自有缓存worker，记录实际等待/恢复及JSON/SSE，默认暂不更换。
+
+缓存源码/CPU检查点6bad93cb已推送；真实驱动冻结1启动/最多8条Chat/
+600秒连续严格租约，覆盖shared/private、target/MTP、worker故障
+与同PID恢复及实际进度。先验3个驱动CPU；默认保持，全部总计划继续。
+
 R01缓存文件隔离CPU完成：16个不同C++用例、3个真实存储程序及
 健康schema负控通过；301来源检查、生产构建零警告。候选1ff729a0
 独立保存，[90项原件](evidence/serve-cache-io-cpu-20261109/README.md)保留夹具构建失败及针对补验。
