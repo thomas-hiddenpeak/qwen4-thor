@@ -9,6 +9,7 @@
 #include "q4t/server/lifetime.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/responses_owner.h"
+#include "q4t/server/responses_crypto.h"
 
 namespace q4t::server {
 void ResponsesExecution::BindBackgroundControl(
@@ -49,7 +50,7 @@ size_t ResponsesExecution::RetainedInputBytes() const {
         &plan_.execution_owner, &envelope_.request, &envelope_.options,
         &generation_.generation_request, &generation_.effective_tools,
         &generation_.input.items, &generation_.input.messages,
-        &output_.Snapshot()})
+        &generation_history_, &output_.Snapshot()})
     bytes += OutputJson(*value).size();
   if (generation_.chat.normalized_request)
     bytes += OutputJson(*generation_.chat.normalized_request).size();
@@ -86,8 +87,6 @@ ObjectReply ResponsesExecution::RequiredExecutors(
   std::string required;
   if (envelope_.background && !background_executor)
     required = "background";
-  else if (envelope_.encrypted_reasoning)
-    required = "reasoning.encrypted_content";
   else if (envelope_.reasoning_mode != "standard")
     required = "reasoning.mode";
   for (const char* key :
@@ -147,13 +146,31 @@ ObjectReply ResponsesExecution::FitContext(const ChatPlanConfig& config,
 
 ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
                                                int64_t created) {
+  const bool encrypted_input =
+      std::any_of(plan_.history.array.begin(), plan_.history.array.end(),
+                  [](const auto& item) {
+                    return item.GetString("type") == "reasoning" &&
+                           Nonnull(item, "encrypted_content");
+                  });
+  const bool encrypted_state = envelope_.encrypted_reasoning || encrypted_input;
+  if (encrypted_state) {
+    auto opened = OpenResponsesReasoning(cipher_, plan_.history, config,
+                                         access_, &generation_history_);
+    if (!opened.ok()) return opened;
+  }
   ChatPlanError error;
-  auto status = PrepareResponsesGeneration(envelope_, plan_.history, config,
-                                           &generation_, &error);
+  auto status = PrepareResponsesGeneration(
+      envelope_, encrypted_state ? generation_history_ : plan_.history, config,
+      &generation_, &error);
   if (!status) {
     auto reply = Error(error.http_status, error.code, status.message());
     reply.value = Object({{"param", String(error.param)}});
     return reply;
+  }
+  if (envelope_.encrypted_reasoning) {
+    auto ready = cipher_.Ready(access_);
+    if (!ready.ok()) return ready;
+    cipher_config_.model = config.model;
   }
   Set(&envelope_.options, "tools", generation_.effective_tools);
   // Keep the public Responses shape, not Chat's nested function/custom shape.
@@ -399,8 +416,19 @@ ObjectReply ResponsesExecution::Finish(bool incomplete, size_t completed_calls,
   auto events = events_;
   size_t bytes = event_bytes_;
   std::string terminal;
+  ObjectReply encryption;
+  ResponsesReasoningSeal seal;
+  if (envelope_.encrypted_reasoning)
+    seal = [&](size_t index, std::string* opaque) {
+      encryption =
+          SealResponsesReasoning(cipher_, generation_history_,
+                                 *candidate.Snapshot().GetArray("output"),
+                                 index, cipher_config_, access_, opaque);
+      return encryption.ok() ? Status() : Status::Fail(encryption.message);
+    };
   auto status = candidate.Finish(incomplete, completed_calls, usage,
-                                 completed_at, &terminal);
+                                 completed_at, &terminal, seal);
+  if (!encryption.ok()) return encryption;
   if (status) status = Capture(terminal, &events, &bytes);
   if (!status) return OutputError(status);
   // Cancellation and success have one monotonic decision point. A cancel that

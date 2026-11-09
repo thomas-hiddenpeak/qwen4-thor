@@ -3,6 +3,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <functional>
 #include <string>
 #include <string_view>
 #include <unordered_map>
@@ -20,6 +21,8 @@ struct ResponsesUsage {
   int64_t reasoning_tokens = 0;
   int64_t cache_write_tokens = 0;
 };
+using ResponsesReasoningSeal =
+    std::function<Status(size_t index, std::string* opaque)>;
 
 class ResponsesOutput {
  public:
@@ -44,7 +47,7 @@ class ResponsesOutput {
   // Only calls with a validated closing delimiter may receive arguments.done.
   Status Finish(bool incomplete, size_t completed_calls,
                 const ResponsesUsage& usage, int64_t completed_at,
-                std::string* wire);
+                std::string* wire, const ResponsesReasoningSeal& seal = {});
   Status Fail(std::string_view code, std::string_view message,
               std::string* wire);
   static std::string RenderStreamError(void* owner, int status,

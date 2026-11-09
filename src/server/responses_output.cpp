@@ -425,7 +425,8 @@ void ResponsesOutput::CloseItem(size_t index, bool incomplete,
 
 Status ResponsesOutput::Finish(bool incomplete, size_t completed_calls,
                                const ResponsesUsage& usage,
-                               int64_t completed_at, std::string* wire) {
+                               int64_t completed_at, std::string* wire,
+                               const ResponsesReasoningSeal& seal) {
   wire->clear();
   if (!started_ || terminal_ ||
       response_.GetString("status") != "in_progress" ||
@@ -448,7 +449,22 @@ Status ResponsesOutput::Finish(bool incomplete, size_t completed_calls,
         incomplete &&
         (call_indices_[i] != kNoCall ? call_indices_[i] >= completed_calls
                                      : i + 1 == Items().array.size());
-    CloseItem(i, partial, wire);
+    Set(&Items().array[i], "status",
+        String(partial ? "incomplete" : "completed"));
+  }
+  // Encryption can fail; no done/terminal events escape before all required
+  // state has actually been sealed. The execution owner works on a candidate.
+  if (seal)
+    for (size_t i = 0; i < Items().array.size(); ++i) {
+      if (Items().array[i].GetString("type") != "reasoning") continue;
+      std::string opaque;
+      auto status = seal(i, &opaque);
+      if (status) status = Charge(opaque.size() + sizeof(io::Json));
+      if (!status) return status;
+      Set(&Items().array[i], "encrypted_content", String(std::move(opaque)));
+    }
+  for (size_t i = 0; i < Items().array.size(); ++i) {
+    CloseItem(i, Items().array[i].GetString("status") == "incomplete", wire);
   }
   Set(&response_, "status", String(incomplete ? "incomplete" : "completed"));
   if (incomplete)

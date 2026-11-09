@@ -1,0 +1,34 @@
+{
+  "phase": "A07.3 encrypted Responses input/output",
+  "state": "FROZEN_NOT_RUN",
+  "cpu_tests": 18,
+  "names": [
+    "responses_crypto_stateless_roundtrip_restores_actual_reasoning",
+    "responses_crypto_origin_prefix_full_suffix_and_conflict",
+    "responses_crypto_sse_summary_and_persisted_events_share_ciphertext",
+    "responses_crypto_previous_response_survives_store_restart",
+    "responses_crypto_conversation_restores_without_mutating_stored_items",
+    "responses_crypto_background_queued_restore_uses_persistent_keys",
+    "responses_crypto_wrong_owner_model_and_plaintext_are_rejected",
+    "responses_crypto_restored_tool_context_does_not_execute_tools",
+    "responses_crypto_incomplete_reasoning_is_not_promoted_to_complete",
+    "responses_crypto_restored_context_is_measured_and_truncated_normally",
+    "responses_crypto_seal_failure_never_publishes_success_terminal",
+    "chat_capabilities_native_responses_state_and_recovery",
+    "responses_execution_stateless_does_not_depend_on_storage",
+    "responses_output_text_reasoning_full_lifecycle",
+    "responses_output_parallel_function_custom_and_order",
+    "responses_output_incomplete_never_completes_partial_tool",
+    "responses_summary_checkpoint_replay_and_followup_keep_derived_item",
+    "responses_output_usage_limits_and_no_double_terminal"
+  ],
+  "schema": "fixed official SDK 7.47.0 response/event graph",
+  "gpu": 0,
+  "default_unchanged": true,
+  "remaining": [
+    "native key administration",
+    "actual SDK/model business",
+    "delivery",
+    "all master tasks"
+  ]
+}

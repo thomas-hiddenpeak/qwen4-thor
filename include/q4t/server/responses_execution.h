@@ -5,6 +5,7 @@
 #include "q4t/server/responses_output.h"
 #include "q4t/server/responses_state.h"
 #include "q4t/server/request_control.h"
+#include "q4t/server/state_cipher.h"
 
 namespace q4t::server {
 
@@ -26,7 +27,10 @@ class ResponsesExecution {
   explicit ResponsesExecution(ObjectStore& objects,
                               IResponsesCleanup* cleanup = nullptr,
                               bool require_cleanup = false)
-      : state_(objects), cleanup_(cleanup), require_cleanup_(require_cleanup) {}
+      : state_(objects),
+        cipher_(objects),
+        cleanup_(cleanup),
+        require_cleanup_(require_cleanup) {}
   ResponsesExecution(const ResponsesExecution&) = delete;
   ResponsesExecution& operator=(const ResponsesExecution&) = delete;
   ObjectReply Prepare(const io::Json& request, const ChatPlanConfig& config,
@@ -83,6 +87,9 @@ class ResponsesExecution {
   ObjectReply PlanGeneration(const ChatPlanConfig& config, int64_t created);
   Status RecordOutput(Status status, std::string* wire);
   ResponsesState state_;
+  StateCipher cipher_;
+  io::Json generation_history_;
+  ChatPlanConfig cipher_config_;
   IResponsesCleanup* cleanup_ = nullptr;
   bool require_cleanup_ = false;
   uint64_t cleanup_ticket_ = 0;

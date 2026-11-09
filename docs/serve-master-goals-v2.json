@@ -210,7 +210,8 @@
         "evidence/serve-responses-summary-replay-fix-20261109/README.md",
         "evidence/serve-responses-summary-business-20261109/README.md",
         "evidence/serve-responses-summary-delivery-20261109/README.md",
-        "evidence/serve-responses-encryption-crypto-20261109/README.md"
+        "evidence/serve-responses-encryption-crypto-20261109/README.md",
+        "evidence/serve-responses-encryption-protocol-20261109/README.md"
       ],
       "release": {
         "engine_binary_sha256": "8b4899cd268c42a624742b1603f5228dcf9eec08dc5ed4119c2ef78d11840b08",
@@ -309,8 +310,13 @@
         "state": "implementation_in_progress",
         "crypto_key_cpu_tests": 16,
         "crypto_evidence": "evidence/serve-responses-encryption-crypto-20261109/README.md",
-        "protocol_roundtrip_implemented": false,
-        "default_delivered": false
+        "protocol_roundtrip_implemented": true,
+        "default_delivered": false,
+        "protocol_cpu_tests": 18,
+        "schema_values": 22,
+        "protocol_evidence": "evidence/serve-responses-encryption-protocol-20261109/README.md",
+        "candidate_engine_sha256": "687fc18fd3b0ebf03ade36385a112269dbd1f6b0d2be2fa2c020f90b9ec498b4",
+        "business_validated": false
       }
     },
     {

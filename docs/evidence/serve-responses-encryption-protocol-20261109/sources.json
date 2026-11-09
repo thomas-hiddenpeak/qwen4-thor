@@ -1,0 +1,14 @@
+{
+  "CMakeLists.txt": "d1c6008bf6ee2a48d2d5bded7be0f878c25f449955fd1b2c0642a596d73128d2",
+  "cmake/HostTestSources.cmake": "2ba0c73da0b9d809ee7d90f676c53514da38dbd595860484e76d6a29d5d1891c",
+  "cmake/ChatProtocolIdentity.cmake": "efbe8896050d05029c229041327aff86209ca4ab56cd9c7ffcd135ff9805a1d3",
+  "include/q4t/server/responses_crypto.h": "5a8bd0449fed6c5551e00b48ecd571fa579739389c5944952fe791d4d524cc78",
+  "src/server/responses_crypto.cpp": "c1b3024f1f3846d13288762b03570a91bdd70a441afdec175ac190072295ea14",
+  "include/q4t/server/responses_execution.h": "c230424d54f739afb62143ad2dd09edd39781c2abd89bea88b5df1e136b37bc2",
+  "src/server/responses_execution.cpp": "b8112d824813e9fa41b7ed9533a818b93bcb4ac0cd85560ee1181f8386312e7c",
+  "include/q4t/server/responses_output.h": "f05da7f0db58b8293bb202ba57ec85081557aea134e2bc767b2a88915e69a2f1",
+  "src/server/responses_output.cpp": "dde95216b316f6af5f1eead08c7eb7091adf8552572687acd12e3ef54c705945",
+  "src/server/chat_capabilities.cpp": "8d6c3a9c8a75dee638a63f491def9c6041538f872ba8d7c78baf78c1a53a173d",
+  "tests/server_chat_capabilities_test.cpp": "7cd3b07a570f2616dbe1a1212bc67bf1fe1a14d3413f57eecbc45d93b6623ea5",
+  "tests/server_responses_crypto_test.cpp": "6cb49e6c3e4d225d744591375ad95cfeaee521db42c60ded86accfb6f185122a"
+}

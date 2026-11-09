@@ -23,6 +23,8 @@ set(protocol_inputs
   src/server/native_crypto.cpp
   include/q4t/server/state_cipher.h
   src/server/state_cipher.cpp
+  include/q4t/server/responses_crypto.h
+  src/server/responses_crypto.cpp
   src/server/responses_json.h
   include/q4t/model/sequence.h
   include/q4t/runtime/model_health.h

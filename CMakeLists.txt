@@ -348,7 +348,7 @@ target_include_directories(q4t_server PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
 q4t_link_structured_output(q4t_server)
 include(cmake/NativeCrypto.cmake)
 target_sources(q4t_server PRIVATE src/server/native_crypto.cpp
-  src/server/state_cipher.cpp)
+  src/server/state_cipher.cpp src/server/responses_crypto.cpp)
 q4t_link_native_crypto(q4t_server)
 option(Q4T_SERVE_FAULT_INJECTION "Validation-only serving fault hooks" OFF)
 if(Q4T_SERVE_FAULT_INJECTION)

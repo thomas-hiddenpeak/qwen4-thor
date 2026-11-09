@@ -275,6 +275,13 @@ Q4T_TEST(chat_capabilities_native_responses_state_and_recovery) {
   Q4T_CHECK(responses->GetBool("previous_response_id") &&
             responses->GetBool("conversation"));
   const auto* summary = responses->Find("summary");
+  const auto* encrypted = responses->Find("encrypted_reasoning");
+  Q4T_CHECK(encrypted && encrypted->GetBool("enabled") &&
+            encrypted->GetString("algorithm") == "AES-256-GCM" &&
+            encrypted->GetBool("key_persistence") &&
+            encrypted->GetBool("rotation") &&
+            encrypted->GetBool("store_false") &&
+            !encrypted->GetBool("cross_provider_keys", true));
   Q4T_CHECK(responses->GetBool("reasoning_summary") && summary &&
             summary->GetBool("shared_output_budget") &&
             summary->GetBool("usage_includes_extra_input") &&

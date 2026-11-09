@@ -101,3 +101,7 @@ A07.2 [默认交付完成](evidence/serve-responses-summary-delivery-20261109/RE
 密码 API 依据 [OpenSSL EVP](https://docs.openssl.org/3.0/man3/EVP_EncryptInit/) 和 [独立库上下文](https://docs.openssl.org/3.0/man3/OSSL_LIB_CTX/)，已知答案采用 [OpenSSL 公布的 NIST 数值向量](https://github.com/openssl/openssl/blob/openssl-3.0.13/demos/cipher/aesgcm.c)；未复制其实现代码，也未引入外部服务进程。
 
 A07.3 [16 项密码/持久密钥 CPU](evidence/serve-responses-encryption-crypto-20261109/README.md)全过，host 零警告、首编译失败保留，0 GPU。继续协议双端/前缀/管理与真实业务，不把基础标为整体功能完成。
+
+A07.3 [双端 18 CPU 与 22 个实际协议值](evidence/serve-responses-encryption-protocol-20261109/README.md)通过。密文使用 `q4t1:key_id:nonce:tag:ciphertext` 版本封装，认证整个实际 reasoning item 和来源前缀，并以客户端/canonical model/template/item 作为 AAD。完整前缀/匹配后缀/仅密文回填均可，缺失前缀恢复、冲突拒绝；同客户端重用允许，只恢复上下文，不重放工具。原输入持久项不改，生成 token/容量使用恢复后历史，`instructions` 仍属于新请求。原 Qwen reasoning 明文投影仍可见，不能误称整段输出保密或磁盘加密。
+
+首 canonical shape 错误已修并保留失败；host/引擎零警告、候选 687fc18f，0 GPU。继续原生本机密钥管理、实际官方 SDK/模型业务和交付，不在本阶段结束 A07.3 或总目标。

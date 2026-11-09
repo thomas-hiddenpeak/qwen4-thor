@@ -4,6 +4,8 @@ include(${CMAKE_CURRENT_LIST_DIR}/NativeCrypto.cmake)
 set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/native_crypto.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/state_cipher.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_crypto.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_crypto_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_native_crypto_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_state_cipher_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/model_catalog.cpp

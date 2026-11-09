@@ -1,3 +1,9 @@
+A07.3 [加密双端 18 CPU/22 schema 值](evidence/serve-responses-encryption-protocol-20261109/README.md)通过，首 canonical shape 失败及 10 项补验保留；host/引擎零警告，候选 687fc18f，默认 A07.2 不动。继续原生密钥管理、实际 SDK/模型与发行及全部余项；0 新增 GPU，A07.3 尚未交付。
+
+A07.3 协议首轮 18 CPU 有 9 过/9 失败：认证已成功，恢复前缀为带 ID/status 的原生持久 item，却误用外部 input shape 拒绝。改用 canonical conversation shape，外部输入及模型计划校验保留；冻结 9 失败+1 安全负控补验，原件不覆盖。默认不动，继续管理/真实业务及总任务。
+
+A07.3 已接通认证加密 reasoning 输出与输入恢复，绑定客户端/模型/模板/来源前缀，持久/无状态/后台共路；冻结 18 项协议 CPU 与实际输出 schema，尚未验证。默认 A07.2 保持 STOPPED，继续原生密钥管理、真实业务及全部任务，不把源码声明当验收。
+
 A07.3 [密码/持久密钥 16 CPU](evidence/serve-responses-encryption-crypto-20261109/README.md)全过，host 零警告，初编译失败保留。继续真实 Responses 加密往返、前缀绑定、管理与业务交付，不在基础阶段停止；默认 A07.2/STOPPED 保持，0 新增 GPU。
 
 A07.3 认证加密与持久密钥基础已成组编码，冻结 16 项直接 CPU，先必要构建；尚未执行验证。AES-256-GCM 使用系统 OpenSSL，独立上下文/懒加载、原子计数与轮换、显式旧密钥退役；Responses 两端/前缀绑定和运维入口仍在实现，不能视为功能交付。默认 A07.2 保持 STOPPED，继续全部总任务。
