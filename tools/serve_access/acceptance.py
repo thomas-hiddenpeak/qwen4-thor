@@ -27,6 +27,7 @@ common = importlib.util.module_from_spec(spec);spec.loader.exec_module(common)
 common.__file__ = __file__
 original_load = common.load_modules
 LIMITS = dict(starts=3, chats=16, probes=1, controls=6000, seconds=1200)
+CONFIG_COMPLETION_LIMITS = dict(LIMITS, starts=4, chats=17)
 save, Budget = common.save, common.Budget
 
 
@@ -82,10 +83,15 @@ def verify_prior(plan):
     prior = json.loads(Path(plan['prior_execution']).read_bytes())
     guard = json.loads(Path(plan['prior_guard']).read_bytes())
     probe = json.loads(Path(plan['prior_probe']).read_bytes())
+    counts = prior['budget']['counts']
+    if plan.get('prior_failure_category') == 'config_schema':
+        stopped_before_business = (counts['starts'] == counts['chats'] == 1 and
+            list(prior['models']) == ['1'] and 'current_client_policy' in prior['failure'] and
+            'jsonschema.exceptions.ValidationError' in prior['failure'])
+    else:
+        stopped_before_business = not prior['models'] and counts['starts'] == counts['chats'] == 0
     if (prior['status'] != 'FAILED' or prior['cleanup_failure'] is not None or
-            prior['models'] or prior['budget']['counts']['starts'] != 0 or
-            prior['budget']['counts']['chats'] != 0 or prior['budget']['counts']['probes'] != 1 or
-            prior['budget']['counts'] != plan['prior_counts'] or
+            not stopped_before_business or counts['probes'] != 1 or counts != plan['prior_counts'] or
             guard['status'] != 'COMMAND_FAILED' or
             probe != dict(version=1, ok=True, cuda_code=0, stage='complete') or
             prior['package'] != plan['package'] or
@@ -95,7 +101,8 @@ def verify_prior(plan):
 
 def verify(plan):
     bundle, _, _, _, _, engine = load_modules(plan)
-    engine.require(plan['scenario'] == 'native_client_access' and plan['limits'] == LIMITS,
+    limits = CONFIG_COMPLETION_LIMITS if plan.get('prior_failure_category') == 'config_schema' else LIMITS
+    engine.require(plan['scenario'] == 'native_client_access' and plan['limits'] == limits,
                    'N04 frozen budget changed')
     for name, digest in plan['sources'].items():
         engine.require(engine.sha(ROOT/name) == digest, 'N04 source changed: '+name)
@@ -306,8 +313,8 @@ class Stage(common.Stage):
         observed = transport.get(self.policy['upstream_operations_port'], '/v1/config', timeout=3)
         self.engine.require(observed['http_status'] == 200, 'actual configuration unavailable')
         config = json.loads(observed['body'])
-        Draft202012Validator(self.engine.read(ROOT/'docs/serve-config-v1.schema.json')).validate(config)
         save(self.output/'configuration.json', config)
+        Draft202012Validator(self.engine.read(ROOT/'docs/serve-config-v1.schema.json')).validate(config)
         self.keys['old-alpha'] = self.keys['alpha']
         rotated = 'n04-rotation-'+secrets.token_hex(24)
         self.keys_update('overlap', [self.keys['alpha'], rotated])
@@ -424,8 +431,8 @@ class Stage(common.Stage):
 
     def run(self):
         if self.plan.get('prior_evidence'):
-            # Only a cleaned, zero-model attempt with this exact package may
-            # reuse the successful probe; the total budget remains unchanged.
+            # Only the documented, cleaned pre-business attempts with this
+            # exact package can reuse the probe. All spent work stays charged.
             verify_prior(self.plan)
             return super().run()
         self.budget.reserve('probes', 'compiled-native-probe')

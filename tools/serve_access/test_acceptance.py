@@ -68,6 +68,27 @@ class DriverTests(unittest.TestCase):
         Path(plan['prior_probe']).write_bytes(b'changed')
         with self.assertRaisesRegex(ValueError,'evidence changed'):a.verify_prior(plan)
 
+    def test_config_completion_cannot_hide_more_work_or_another_failure(self):
+        stage = self.stage()
+        prior = dict(status='FAILED',cleanup_failure=None,models={'1':{'pid':123}},seconds=49,
+            failure='jsonschema.exceptions.ValidationError: current_client_policy',
+            budget=dict(counts=dict(starts=1,chats=1,probes=1,controls=405)),package={'exact':'package'})
+        plan = dict(prior_failure_category='config_schema',prior_counts=prior['budget']['counts'],
+                    prior_seconds=116,package=prior['package'])
+        paths = {}
+        for name, value in [('execution',prior),('guard',dict(status='COMMAND_FAILED')),
+                ('probe',dict(version=1,ok=True,cuda_code=0,stage='complete'))]:
+            paths[name] = stage.output/(name+'.json');a.save(paths[name],value)
+            plan['prior_'+name] = str(paths[name])
+        def seal():
+            plan['prior_evidence'] = [dict(path=str(p),sha256=hashlib.sha256(p.read_bytes()).hexdigest())
+                                      for p in paths.values()]
+        seal();a.verify_prior(plan)
+        for change in (dict(failure='unrelated failure'),dict(cleanup_failure='unknown'),
+                       dict(budget=dict(counts=dict(prior['budget']['counts'],chats=2)))):
+            a.save(paths['execution'],dict(prior,**change));seal()
+            with self.assertRaisesRegex(ValueError,'cannot be reused'):a.verify_prior(plan)
+
     def test_pending_gate_requires_exact_identity_and_keeps_production_verifier(self):
         metadata = dict(validation_only=True,acceptance='VALIDATION_ONLY_N04',binary_sha256='a'*64)
         decision = dict(status='PENDING_REAL_BUSINESS_N04',observed=False)

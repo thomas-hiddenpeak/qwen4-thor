@@ -27925,10 +27925,22 @@
                 "const": true
               },
               "mutable": {
-                "const": false
+                "type": "boolean"
               },
               "per_client_ram_limit": {
                 "const": false
+              },
+              "snapshot": {
+                "const": "startup"
+              },
+              "revision": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "content_sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
               }
             },
             "required": [
@@ -27940,6 +27952,57 @@
               "credential_values_redacted",
               "mutable",
               "per_client_ram_limit"
+            ],
+            "description": "Immutable startup binding. The v3 snapshot is not the currently applied policy; see current_client_policy.",
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "mutable": {
+                      "const": true
+                    }
+                  }
+                },
+                "then": {
+                  "required": [
+                    "snapshot",
+                    "revision",
+                    "content_sha256"
+                  ],
+                  "properties": {
+                    "enabled": {
+                      "const": true
+                    },
+                    "clients": {
+                      "minimum": 1
+                    },
+                    "sha256": {
+                      "pattern": "^[a-f0-9]{64}$"
+                    }
+                  }
+                },
+                "else": {
+                  "not": {
+                    "anyOf": [
+                      {
+                        "required": [
+                          "snapshot"
+                        ]
+                      },
+                      {
+                        "required": [
+                          "revision"
+                        ]
+                      },
+                      {
+                        "required": [
+                          "content_sha256"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
             ]
           },
           "observability_version": {
@@ -28017,7 +28080,8 @@
               "policy_version": {
                 "enum": [
                   1,
-                  2
+                  2,
+                  3
                 ]
               },
               "fair_queue": {
@@ -28621,6 +28685,114 @@
               "session",
               "prefix"
             ]
+          },
+          "current_client_policy": {
+            "description": "Current atomic model policy, distinct from the startup binding; publisher loss does not erase an installed policy. No credential values are exposed.",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "profile": {
+                "const": "q4t-native-client-policy-v1"
+              },
+              "configured": {
+                "type": "boolean"
+              },
+              "mutable": {
+                "type": "boolean"
+              },
+              "publisher_alive": {
+                "type": "boolean"
+              },
+              "revision": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "sha256": {
+                "type": "string"
+              },
+              "content_sha256": {
+                "type": "string"
+              },
+              "global_inflight": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 2147483647
+              },
+              "global_queued": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "credential_values_redacted": {
+                "const": true
+              },
+              "clients": {
+                "type": "array",
+                "maxItems": 64,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_-]{0,31}$"
+                }
+              }
+            },
+            "required": [
+              "profile",
+              "configured",
+              "mutable",
+              "publisher_alive",
+              "revision",
+              "sha256",
+              "content_sha256",
+              "global_inflight",
+              "global_queued",
+              "credential_values_redacted",
+              "clients"
+            ],
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "configured": {
+                      "const": true
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "clients": {
+                      "minItems": 1
+                    },
+                    "sha256": {
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "content_sha256": {
+                      "pattern": "^[a-f0-9]{64}$"
+                    }
+                  }
+                },
+                "else": {
+                  "properties": {
+                    "clients": {
+                      "maxItems": 0
+                    },
+                    "sha256": {
+                      "const": ""
+                    },
+                    "content_sha256": {
+                      "const": ""
+                    },
+                    "mutable": {
+                      "const": false
+                    },
+                    "revision": {
+                      "const": 0
+                    }
+                  }
+                }
+              }
+            ]
           }
         },
         "required": [
@@ -28671,6 +28843,50 @@
                 "limits": {
                   "properties": {
                     "unclassified_shares_total": {
+                      "const": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "required": [
+                "client_governance"
+              ],
+              "properties": {
+                "client_governance": {
+                  "required": [
+                    "policy_version"
+                  ],
+                  "properties": {
+                    "policy_version": {
+                      "const": 3
+                    }
+                  }
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "client_policy",
+                "current_client_policy"
+              ],
+              "properties": {
+                "client_policy": {
+                  "properties": {
+                    "mutable": {
+                      "const": true
+                    }
+                  }
+                },
+                "current_client_policy": {
+                  "properties": {
+                    "mutable": {
+                      "const": true
+                    },
+                    "configured": {
                       "const": true
                     }
                   }
