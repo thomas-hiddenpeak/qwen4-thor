@@ -888,6 +888,14 @@ Q4T_TEST(client_http_auth_and_body_reject_before_reservation) {
       Replace(Wire(Headers()), "Content-Length: 2", "Content-Length: 1025"));
   Q4T_CHECK(!huge.ok && huge.status == 413 && huge.bytes == 0);
   Q4T_CHECK(huge.headers.error_code == "client_body_limit_exceeded");
+  const auto chunk_head =
+      "POST /v1/chat/completions HTTP/1.1\r\nHost: local\r\n" + Headers() +
+      "Transfer-Encoding: chunked\r\n\r\n";
+  const auto chunk_ok = Read(admission, chunk_head + "2\r\n{}\r\n0\r\n\r\n");
+  Q4T_CHECK(chunk_ok.ok && chunk_ok.bytes == 2 && chunk_ok.body == "{}");
+  const auto chunk_huge = Read(admission, chunk_head + "401\r\n");
+  Q4T_CHECK(!chunk_huge.ok && chunk_huge.status == 413 &&
+            chunk_huge.bytes == 0 && admission.Usage(0).data_active == 0);
   const auto truncated =
       Read(admission,
            Replace(Wire(Headers()), "Content-Length: 2", "Content-Length: 10"));

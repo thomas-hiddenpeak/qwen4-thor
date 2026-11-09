@@ -212,7 +212,7 @@ Q4T_TEST(http_rejects_ambiguous_framing) {
            "Content-Length: 2\r\nContent-Length: 2",
            "Transfer-Encoding: chunked",
            "Content-Length: 2\r\nTransfer-Encoding: chunked",
-           "Expect: 100-continue", " Content-Length: 2",
+           "Expect: unsupported", " Content-Length: 2",
            "Content-Length : 2", "BrokenHeader", "Host: second"}) {
     Q4T_CHECK(!Read(std::string("POST / HTTP/1.1\r\nHost: local\r\n") +
                        fields + "\r\n\r\n{}", &body));

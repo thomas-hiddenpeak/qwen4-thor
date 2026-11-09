@@ -399,7 +399,7 @@ void Handle(Connection& client, const Config& config, Capacity& capacity,
     if (method == "OPTIONS") {
       bool control = false;
       if (headers.origin.empty() || headers.cors_method.empty() ||
-          headers.content_length || !headers.client_id.empty() ||
+          (headers.content_length || headers.chunked) || !headers.client_id.empty() ||
           !headers.gateway_token.empty())
         return reject(400, "cors_invalid_preflight");
       if (!Route(headers.cors_method, path, &control) ||
@@ -422,6 +422,7 @@ void Handle(Connection& client, const Config& config, Capacity& capacity,
       return reject(404, "gateway_route_not_found");
     if (headers.content_length > config.body_bytes)
       return reject(413, "gateway_body_too_large");
+    headers.body_limit = config.body_bytes;
     if (method == "GET" && headers.content_length)
       return reject(400, "gateway_bad_request");
     lease.cancel = server::IsCancellationRequest(method, path);
@@ -436,9 +437,12 @@ void Handle(Connection& client, const Config& config, Capacity& capacity,
                            Clock::time_point deadline) {
     return client.Read(data, size, deadline);
   };
+  const auto interim = [&](Clock::time_point deadline) {
+    return client.Send("HTTP/1.1 100 Continue\r\n\r\n", deadline);
+  };
   if (!server::ReadHttpRequest(client.Fd(), &method, &path, &body, 10000,
                                &body_lease, &status, &headers, admit,
-                               receive)) {
+                               receive, nullptr, interim)) {
     if (!rejected) {
       config.cors.Response(headers.origin, &client.extra_headers);
       if (headers.failure == server::HttpReceiveFailure::kBodyTooLarge)

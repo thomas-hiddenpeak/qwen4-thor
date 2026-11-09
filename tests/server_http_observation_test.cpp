@@ -72,7 +72,9 @@ Q4T_TEST(http_observation_receive_shape_and_size_reasons) {
         {"POST /other HTTP/1.1\r\nHost: t\r\nContent-Length: 4097\r\n\r\n",
          HttpReceiveFailure::kBodyTooLarge}}) {
     const auto result = Read(fixture.first);
-    Q4T_CHECK(!result.accepted && result.status == 400);
+    Q4T_CHECK(!result.accepted &&
+              result.status == (fixture.second == HttpReceiveFailure::kBodyTooLarge
+                                    ? 413 : 400));
     Q4T_CHECK(result.headers.failure == fixture.second);
   }
   const auto header =

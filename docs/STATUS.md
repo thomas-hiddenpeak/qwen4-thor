@@ -1,5 +1,15 @@
 # 当前状态
 
+N05共享framing 28/28 CPU通过（9新增/19受影响），host/入口零警告，
+[原件](evidence/serve-http-framing-20261109/README.md)。chunked/100及限额/截断/剩余字节通过；尚未实现连接复用和
+完整SSE传输，继续这些及代理/前缀、实际短验与交付。0 GPU，默认
+N04保持STOPPED，N05和全部总目标继续。
+
+N05开始原生HTTP传输补齐：共享解析、连接复用/SSE、可信代理与路径
+前缀及发行接入全部保留。先实现有界chunked/100-continue/剩余缓冲，
+冻结直接CPU；本组尚未测试，默认N04包保持STOPPED。随后实际SDK/
+模型短验及可回退交付，再继续N07和全部总任务。
+
 N04已可回退默认交付：引擎c344d22f/元数据4c5d11a1，原生v8包
 61a6b2e3、服务发布816114b3。[20条随包CLI与交付原件](evidence/serve-access-delivery-20261109/README.md)。核心状态值/
 预算/UUID及原Key/限额保持；账本envelope已单向升级，旧v6不可

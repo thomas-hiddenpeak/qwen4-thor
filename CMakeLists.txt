@@ -497,6 +497,7 @@ if(Q4T_BUILD_TESTS)
     src/server/memory_admission.cpp
     tests/model_sequence_test.cpp
     tests/server_http_request_test.cpp
+    tests/server_http_framing_test.cpp
     tests/server_http_observation_test.cpp
     tests/server_chat_contract_test.cpp
     src/server/chat_capabilities.cpp

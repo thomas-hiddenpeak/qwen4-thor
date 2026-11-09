@@ -1,0 +1,14 @@
+{
+  "CMakeLists.txt": "c07200aeadba1f2d34583df483fd7947e43f36b1ae638f01750f615511be89dc",
+  "cmake/HostTestSources.cmake": "df19ba905528b4fec2e0ac60e7a4e255c3a36353fb22927c720a85184f75bece",
+  "cmake/ChatProtocolIdentity.cmake": "7a4aeab24041a0ca49fbce9dd322364da5d01aa1a25990e953704c8ac551c3dc",
+  "include/q4t/server/http_request.h": "212747f73ee467ffd3382df020964cc4dbe7754b51215da65ecd0a9115467ae4",
+  "include/q4t/server/http_framing.h": "e22c3bf8158183a9224312db8861b8c39392da7f13348c8a855cc5ef93d8a3b0",
+  "src/server/http_request.cpp": "da7163da7f58885e1ba9ef58a5235af4a71d77b2d90c634b80574a22c002e7be",
+  "src/server/client_request.cpp": "21abed21b782324885fc2b85313d9e0aee4d007ed5aa52bddaca561c15990641",
+  "src/service/ingress_main.cpp": "51ce3010885a1dbb761da5d83798a140a3bc6704eaede16cec225895e0a165ef",
+  "tests/server_http_framing_test.cpp": "d8970f7dcdd21591a12e6e59e3b123f175e1f227963f4fee739ad4edf11a7b51",
+  "tests/server_http_request_test.cpp": "b2c85fdd08546ac3d0eb7bb0b10dfa7eec2a973a1e32544d123177f6ba7b0a3b",
+  "tests/server_http_observation_test.cpp": "90d18cc0730028d81f60a4d9209d1c5cbc773a7c8de7aceef6730f8f807a7ae2",
+  "tests/server_client_policy_test.cpp": "044e00f5548b454c772c316351b895e095509cc5744e390ac7d23f26359f208b"
+}

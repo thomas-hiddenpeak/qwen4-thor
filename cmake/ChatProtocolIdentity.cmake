@@ -138,6 +138,7 @@ set(protocol_inputs
   include/q4t/server/chat_tool_history.h
   include/q4t/server/http_response.h
   include/q4t/server/http_request.h
+  include/q4t/server/http_framing.h
   include/q4t/server/http_connection.h
   include/q4t/server/http_listener.h
   include/q4t/server/http_observation.h

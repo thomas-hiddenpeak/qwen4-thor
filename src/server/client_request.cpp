@@ -28,6 +28,8 @@ bool AdmitClientRequest(std::string_view method, std::string_view path,
   *identity =
       admission.Authenticate(headers->client_id, headers->gateway_token);
   if (!identity->Allowed()) return fail(401, "client_authentication_failed");
+  if (identity->Scoped())
+    headers->body_limit = identity->Limits()->max_body_bytes;
   if (identity->Scoped() &&
       headers->content_length > identity->Limits()->max_body_bytes)
     return fail(413, "client_body_limit_exceeded");

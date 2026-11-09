@@ -76,6 +76,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/vision_timing_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/vision_forward_timing_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_http_request_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_http_framing_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_http_observation_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_http_response_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/http_response.cpp

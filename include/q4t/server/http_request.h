@@ -1,4 +1,4 @@
-// Bounded, connection-close HTTP request reader for the runner.
+// Bounded HTTP/1.x request reader shared by the runner and native ingress.
 #pragma once
 
 #include <atomic>
@@ -7,6 +7,8 @@
 #include <functional>
 #include <string>
 #include <string_view>
+#include <utility>
+#include <vector>
 
 #include "q4t/server/http_connection.h"
 #include "q4t/server/http_observation.h"
@@ -39,6 +41,14 @@ struct HttpRequestHeaders {
   std::string error_code;
   std::string error_param;
   size_t content_length = 0;
+  // Unknown decoded length during admission. content_length becomes the actual
+  // decoded length on success. Admission may lower body_limit before reads.
+  bool chunked = false;
+  bool expect_continue = false;
+  bool keep_alive = false;
+  size_t body_limit = kChatBodyBytes;
+  // Separate from routing/auth/framing. These never override header fields.
+  std::vector<std::pair<std::string, std::string>> trailers;
   HttpReceiveFailure failure = HttpReceiveFailure::kNone;
   int system_error = 0;
 };
@@ -73,30 +83,49 @@ class HttpBodyLease {
     bytes_ = bytes;
     return true;
   }
+  bool GrowTo(size_t bytes) {
+    if (bytes < bytes_ || !budget_.Acquire(bytes - bytes_)) return false;
+    bytes_ = bytes;
+    return true;
+  }
 
  private:
   HttpBodyBudget& budget_;
   size_t bytes_ = 0;
 };
 
-// Supports HTTP/1.0 and HTTP/1.1 origin-form requests with Content-Length.
-// Rejects transfer encoding, Expect, duplicate framing/Host, malformed fields,
+struct HttpRequestState {
+  // Only the current request reader may mutate this buffer. No dispatch until
+  // the preceding response and all of its cleanup have finished.
+  std::string pending;
+};
+
+// Supports HTTP/1.x origin-form, Content-Length and HTTP/1.1 chunked framing.
+// Rejects mixed/duplicate framing, duplicate Host and malformed fields.
 // Headers <=64 KiB; chat/preflight bodies <=16 MiB, other routes <=4 KiB.
 // timeout_ms is an absolute header+body deadline, unaffected by progress.
-// A supplied lease reserves chat bytes before body reads (released by caller).
+// A supplied lease reserves bytes before body reads (released by caller).
 // Headers expose validated transport metadata. admit runs after headers and
 // before body reservation/reads; false rejects without consuming the body.
-// Failure status is 400, 408 (deadline), or 503 (budget); caller closes socket.
+// Admission may lower body_limit. Chunked reservations grow before each chunk.
+// A supplied state preserves bytes belonging to a subsequent request. Without
+// it the caller must close. Any failure requires closing, never resynchronizing.
+// Interim 100 is sent only after admission and known capacity/length checks;
+// it never starts the final response. Custom transports must supply its sender.
 // A transport adapter must honor the same absolute deadline; ETIMEDOUT denotes
 // a deadline, zero EOF, and other negative results a socket failure.
 using HttpReceive = std::function<ssize_t(
     void*, size_t, std::chrono::steady_clock::time_point)>;
+using HttpContinue =
+    std::function<bool(std::chrono::steady_clock::time_point)>;
 bool ReadHttpRequest(int fd, std::string* method, std::string* path,
                      std::string* body, int timeout_ms = 30000,
                      HttpBodyLease* lease = nullptr,
                      int* failure_status = nullptr,
                      HttpRequestHeaders* headers = nullptr,
                      const std::function<bool()>& admit = {},
-                     const HttpReceive& receive = {});
+                     const HttpReceive& receive = {},
+                     HttpRequestState* state = nullptr,
+                     const HttpContinue& send_continue = {});
 
 }  // namespace q4t::server

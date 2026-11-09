@@ -459,15 +459,25 @@
     {
       "id": "N05",
       "required": true,
-      "state": "planned",
+      "state": "implementation_in_progress",
       "implementation": "完整所需HTTP接入：复用连接、合法分块/上传、SSE、可信代理/路径前缀、慢客户端边界",
       "acceptance": "实际协议夹具及相应SDK；防请求走私与流中换代；前置有/无都通过，兼容新增标准路由",
       "depends_on": [
         "A01",
         "N01"
       ],
-      "evidence": [],
-      "release": null
+      "evidence": [
+        "evidence/serve-http-framing-20261109/decision.json"
+      ],
+      "release": null,
+      "plan": "SERVE_HTTP_TRANSPORT_2026-11-09.md",
+      "remaining": [
+        "共享HTTP framing/100-continue/有界分块与复用缓冲",
+        "核心与原生入口连接复用、SSE完整帧与断连边界",
+        "可信代理、路径前缀与配置/发行接入",
+        "针对性CPU、实际SDK/模型短验与可回退交付"
+      ],
+      "development_status": "Shared chunked/Expect/framing primitives passed 28 targeted CPU checks. Connection reuse/SSE, trusted proxy/prefix and actual delivery remain required."
     },
     {
       "id": "N06",
