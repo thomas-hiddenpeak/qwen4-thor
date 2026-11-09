@@ -1,0 +1,15 @@
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_reasoning_test.cpp: In function ‘std::string {anonymous}::Prompt(const q4t::server::ChatRequestPlan&, const q4t::io::Json&)’:
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_reasoning_test.cpp:41:40: error: too few arguments to function ‘q4t::Status q4t::server::PrepareChatPrompt(const q4t::io::Json&, const OutputConstraints&, std::string*, std::vector<VisionItem>*, std::string*, std::string*, ChatPromptLayout*)’
+   41 |   const auto status = PrepareChatPrompt(plan.Request(original),
+      |                       ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+   42 |                                         plan.constraints, &result, &media);
+      |                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/rm01/models/dev/qwen4-thor/tests/server_responses_reasoning_test.cpp:5:
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/chat_prompt.h:31:8: note: declared here
+   31 | Status PrepareChatPrompt(const io::Json& request,
+      |        ^~~~~~~~~~~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:2193: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_reasoning_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:139: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:146: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:135: q4t_host_tests] Error 2

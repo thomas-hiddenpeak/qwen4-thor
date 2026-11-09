@@ -107,8 +107,6 @@ ObjectReply ResponsesExecution::RequiredExecutors(
   std::string required;
   if (envelope_.background && !background_executor)
     required = "background";
-  else if (envelope_.reasoning_mode != "standard")
-    required = "reasoning.mode";
   for (const char* key : {"access_programs", "moderation"})
     if (required.empty() && Nonnull(envelope_.request, key)) required = key;
   if (!required.empty()) {

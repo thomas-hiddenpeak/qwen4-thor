@@ -1,0 +1,70 @@
+[
+  {
+    "name": "host",
+    "argv": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host/q4t_host_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-reasoning-pro-20261110/required-cpu-fix.txt"
+    ],
+    "exit_code": 0,
+    "seconds": 0.06381723191589117
+  },
+  {
+    "name": "schema",
+    "argv": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "tools.serve_responses.test_reasoning_contract",
+      "-v"
+    ],
+    "exit_code": 0,
+    "seconds": 0.16451793862506747
+  },
+  {
+    "name": "inventory",
+    "argv": [
+      "python3",
+      "-B",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.11403382988646626
+  },
+  {
+    "name": "application",
+    "argv": [
+      "python3",
+      "-B",
+      "tools/serve_responses/build_contract.py",
+      "--types",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-prompt-cache-20261110/application-types.json",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.06388405011966825
+  },
+  {
+    "name": "protocol",
+    "argv": [
+      "python3",
+      "-B",
+      "tools/serve_protocol/build_contract.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.11388402804732323
+  },
+  {
+    "name": "whitespace",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.03237167093902826
+  }
+]

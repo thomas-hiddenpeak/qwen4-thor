@@ -275,6 +275,13 @@ Q4T_TEST(chat_capabilities_native_responses_state_and_recovery) {
   Q4T_CHECK(responses->GetBool("previous_response_id") &&
             responses->GetBool("conversation"));
   const auto* summary = responses->Find("summary");
+  const auto* execution = responses->Find("reasoning_execution");
+  Q4T_CHECK(execution && execution->GetString("pro") ==
+                            "native_deliberation_then_answer" &&
+            execution->GetBool("effort_independent") &&
+            execution->GetBool("shared_output_budget") &&
+            !execution->GetBool("speculative_tool_execution", true) &&
+            !execution->GetBool("cloud_model_equivalence", true));
   const auto* cache = responses->Find("prompt_cache");
   Q4T_CHECK(cache && cache->GetBool("native_state") &&
             cache->GetInt("max_writes") == 4 &&

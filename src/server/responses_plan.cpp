@@ -106,7 +106,7 @@ Status Reasoning(const Json& request, ResponsesEnvelope* result,
     if (result->summary.empty()) result->summary = legacy;
     if (Nonnull(*object, "mode")) {
       const auto* mode = object->Find("mode");
-      if (!mode->IsString() || mode->str.empty() || mode->str.size() > 128)
+      if (!mode->IsString() || !OneOf(mode->str, {"standard", "pro"}))
         return Invalid(error, "reasoning.mode", "invalid reasoning mode");
       result->reasoning_mode = mode->str;
     }

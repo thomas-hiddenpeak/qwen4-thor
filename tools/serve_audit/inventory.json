@@ -1235,8 +1235,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "9fb5c81493b4ebffaa3c34aa341747dfdf82268c4e148f2e6bf57ceae19d0e28",
-    "cmake/ChatProtocolIdentity.cmake": "3e00e9d582dead8f4754c0d9df970f509849602a0090e807970f27edbc531b31",
+    "CMakeLists.txt": "3ce705fdeacde5feb6bdc4d92831e45b96f6bc5c138adcc70bfd160f8c49518d",
+    "cmake/ChatProtocolIdentity.cmake": "9792a207da7d1c483570f606b75be2542f21bfcc390acb2985a0f332f18abf36",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
     "cmake/NativeIngress.cmake": "5560a873e8d89b5e034636f006a2b21ace3bdab2bf71dcf688d5028fbbc704b4",
@@ -1325,6 +1325,7 @@
     "include/q4t/server/responses_output.h": "c9332f6f97f51549ca11485d700b39f52d92e4d4d9355126a6489328eb6f8f1d",
     "include/q4t/server/responses_owner.h": "56647342474e335ad1039609e93a947bd5c81364a48f018c0d7afe2ffde4c613",
     "include/q4t/server/responses_plan.h": "49d1f0e222c20788c78b7dd4a983aee5462a852b2cf557979b300ce73ea0de1b",
+    "include/q4t/server/responses_reasoning.h": "d15d08e23a6734189b1241584f1e04200db5ecbbeef167f603da8c512281a5c7",
     "include/q4t/server/responses_state.h": "0c171182fb9f9b8cf2ec633d5e55b605d64b1bc42c31ccbb621a87dd004e0330",
     "include/q4t/server/sampling.h": "202bff18193dddc46f92e3b7d69fef36218faf00e913b292d1e9a9abe7b65141",
     "include/q4t/server/scheduler_submission.h": "2a960c668c25a0c694b811a2c5640c6e6605db7d386b1ba0075e64061aa1c416",
@@ -1387,11 +1388,11 @@
     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
-    "src/server/chat_capabilities.cpp": "15a0ed38d4f54d7a37c1a91954978f106d5daaa955df2a48ef405a08a091bd5f",
+    "src/server/chat_capabilities.cpp": "70ee9b08042a1177c1470636227ce9d162a9725b1a403b9f4ee1752a563c8b52",
     "src/server/chat_choices.cpp": "ee99c4aca3c1ea07d5929da38325aa2b28a411245c7d794c9cc5f1f8eb23f16a",
     "src/server/chat_contract.cpp": "c1786828dd6d95ed7ec2b0c2bb4a5fb4418705dbb9a86a92cca59d4790c312a1",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
-    "src/server/chat_generation.cpp": "a8c18eb6c2efbeaa1fe3cdde3ffca487bb4c6e0258f5fbc5b3279aebfd236f27",
+    "src/server/chat_generation.cpp": "7dc7874550e27e6fcbffc586e918b166ad1d79ba829e50586b0cc8d248d7f2c0",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
     "src/server/chat_http.cpp": "89e7c112767927a17775825cec3d372055c6aacd9b2aa2e9e548997b64a81503",
     "src/server/chat_input.cpp": "372b93746fbe236ec1d0caea778b1212d22ab94a18ec4f7ce81adcfba8b8c546",
@@ -1454,7 +1455,7 @@
     "src/server/responses_api.cpp": "a922fb6309aec5efcae895f31081031cdfbe0dac21f03935ef73b735f51f4920",
     "src/server/responses_compaction.cpp": "9cb02c6a890798d041cad3ac674832d6155ddef221ad3342c65ab4024f6ca58f",
     "src/server/responses_crypto.cpp": "5e90f0671daeecdacba5d42918c1f796421887012416f001b33c2c38a71e8030",
-    "src/server/responses_execution.cpp": "6cb9be25c9bb32516676181b65731eefedb6483eb58dc3fb198d838eb391f452",
+    "src/server/responses_execution.cpp": "3bc3be0bd4706ee653c700169637b6b6a5bdb7740e5c50054e7d74b27bddf3ab",
     "src/server/responses_execution_compaction.cpp": "f01a18c3443a2ac66b8aef83d23f5854b46abd17bfb2b3207b4a07bb4f02d88e",
     "src/server/responses_input.cpp": "4e0d3b426b05a991fe1ca29f9b477883fdf7793fcc729ab19e3a25637bc9b80e",
     "src/server/responses_item_shape.cpp": "b09c14dfed993b0782d592efa387fd9669e691f907fdd664d6fcd429769235b9",
@@ -1462,7 +1463,8 @@
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
     "src/server/responses_output.cpp": "d2cd4bccd687d6f0ce709f7f956dcf4855caa93cd832a1958bb7d1a0a4432bb0",
     "src/server/responses_owner.cpp": "f439f60e6956ac0d61c107d95ec719cd1fbed84eb0c56721ef63cd1f4342a3fc",
-    "src/server/responses_plan.cpp": "4c87b231f6381e8a64836fe7fa44ff81b455516ed81ed06c9ba61648d88d703d",
+    "src/server/responses_plan.cpp": "77faeca546ab3c60e9670d61e43121dbecad8233ddb8c3289ae8a199588f4e56",
+    "src/server/responses_reasoning.cpp": "2114cbd94184bcd645329d69d2dd260b14b08e5997267f892684cff061de5ffc",
     "src/server/responses_state.cpp": "8f1f5433552165c333b7f8288848286e5e3f45df056243f5cd8601486d767fbc",
     "src/server/responses_summary.cpp": "f1cab4bfe02c3d810925ff3fb7ce4d56cfaea5bd341e5cec606e4cba1c0d9b25",
     "src/server/sampling.cpp": "88e247ca6b7c65abbf0977c66fd604e7156cbdefe5d0293e509282678555d31d",
@@ -2914,7 +2916,7 @@
     "pending": "Bounded real cache/resource-progress business and rollback/default delivery; all master tasks remain active."
   },
   "prompt_cache_development_20261110": {
-    "status": "IMPLEMENTED_PENDING_TARGETED_VALIDATION",
+    "status": "IMPLEMENTED_VALIDATED_DELIVERED",
     "review": "Reviewed actual render/token boundary mapping, legacy cache compatibility, isolated storage/TTL, zero-output prewarm, separate read/new-write usage, bounded hash-only diagnostics and targeted tests. No default or GPU acceptance implied. Final grouped review adds actual cache capability declaration, native worker-only owned directory creation, no-IO diagnostic bounds and prewarm output/slot admission.",
     "sources": [
       "CMakeLists.txt",
@@ -2949,6 +2951,30 @@
       "src/server/session_cache.cpp",
       "src/server/session_state.cpp"
     ],
-    "uniform_slot_review": "Reuse SequenceOffset/Capacity for uniform MTP state and actual streaming cache path; optional snapshot scratch exhaustion degrades only cache, CUDA errors retain protection. Add two direct CPU range tests before any validation."
+    "uniform_slot_review": "Reuse SequenceOffset/Capacity for uniform MTP state and actual streaming cache path; optional snapshot scratch exhaustion degrades only cache, CUDA errors retain protection. Add two direct CPU range tests before any validation.",
+    "acceptance_evidence": [
+      "docs/evidence/serve-prompt-cache-cpu-20261110/README.md",
+      "docs/evidence/serve-prompt-cache-business-20261110/README.md",
+      "docs/evidence/serve-prompt-cache-delivery-20261110/README.md"
+    ]
+  },
+  "reasoning_pro_development_20261110": {
+    "status": "IMPLEMENTED_PENDING_TARGETED_VALIDATION",
+    "sources": [
+      "CMakeLists.txt",
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/server/responses_reasoning.h",
+      "src/server/chat_capabilities.cpp",
+      "src/server/chat_generation.cpp",
+      "src/server/responses_execution.cpp",
+      "src/server/responses_plan.cpp",
+      "src/server/responses_reasoning.cpp"
+    ],
+    "review": "Reviewed native deliberation/answer with independent effort, no deliberation tool authorization, assistant-data notes, original final schema, shared output/TPM/RPM/cancellation, compaction and summary continuation, original history/cache boundaries and queued-only restore. Source inventory does not certify runtime behavior. First CPU found empty normalized tools unnecessarily forced a structured backend. Only nonempty definitions now force tool_choice=none; plain pro uses no optional grammar backend, and emitted tools still fail the executor. Rerun seven affected planners; preserve original failure and unaffected passes.",
+    "plan": "docs/SERVE_RESPONSES_EXECUTION_POLICY_2026-11-10.md",
+    "frozen_checks": {
+      "cpp": 19,
+      "schema": 2
+    }
   }
 }

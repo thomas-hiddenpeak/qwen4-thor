@@ -65,6 +65,75 @@ ResponseDelta Text(std::string text) {
 }
 }  // namespace
 
+Q4T_TEST(responses_pro_persists_reasoning_mode_usage_and_original_input) {
+  Fixture fixture;
+  ObjectStore store(fixture.options);
+  ResponsesExecution run(store);
+  const auto request = Parse(R"({"input":"17+25?","store":true,"stream":true,
+    "stream_options":{"include_obfuscation":false},
+    "reasoning":{"mode":"pro","effort":"none"}})");
+  Q4T_CHECK(Ok(run.Prepare(request, Config(), Access(), 42)));
+  std::string wire, all;
+  Q4T_CHECK(Ok(run.Begin(&wire)));
+  all += wire;
+  auto note = Text("Checked addition: 17 + 25 = 42.");
+  note.kind = ResponseDelta::Kind::kReasoning;
+  Q4T_CHECK(run.Append(note, "null", &wire));
+  all += wire;
+  Q4T_CHECK(run.Append(Text("42"), "null", &wire));
+  all += wire;
+  Q4T_CHECK(Ok(run.Finish(false, 0, {140, 0, 12, 9}, 43, &wire)));
+  all += wire;
+  const auto record = ResponsesState(store).ReadRecord(run.Id(), Access());
+  Q4T_CHECK(Ok(record));
+  Q4T_CHECK(OutputJson(*record.value.Find("response")) == run.Output().Json());
+  const auto& output = run.Output().Snapshot();
+  Q4T_CHECK(output.Find("reasoning")->GetString("mode") == "pro" &&
+            output.Find("reasoning")->GetString("effort") == "none");
+  Q4T_CHECK(output.Find("usage")->GetInt("total_tokens") == 152 &&
+            output.Find("usage")->Find("output_tokens_details")
+                    ->GetInt("reasoning_tokens") == 9);
+  Q4T_CHECK(OutputJson(*record.value.Find("own_input")).find("Checked addition")
+                == std::string::npos);
+  Q4T_CHECK(output.GetArray("output")->array.size() == 2 &&
+            all.find("response.reasoning_text.delta") != std::string::npos);
+  if (const char* directory = std::getenv("Q4T_TEST_OUTPUT_DIR")) {
+    std::ofstream(std::filesystem::path(directory) / "pro.json.wire")
+        << run.Output().Json();
+    std::ofstream(std::filesystem::path(directory) / "pro.sse.wire") << all;
+  }
+  return true;
+}
+
+Q4T_TEST(responses_pro_queued_restore_cancel_and_no_started_replay) {
+  Fixture fixture;
+  ObjectStore store(fixture.options);
+  ResponsesExecution queued(store);
+  const auto request = Parse(R"({"input":"17+25?","background":true,
+    "reasoning":{"mode":"pro","effort":"none"}})");
+  Q4T_CHECK(Ok(queued.Prepare(request, Config(), Access(), 42, true)));
+  std::string wire;
+  Q4T_CHECK(Ok(queued.Begin(&wire)));
+  ResponsesExecution restored(store);
+  Q4T_CHECK(Ok(restored.RestoreQueued(queued.Id(), Config(), Access())));
+  Q4T_CHECK(restored.Envelope().reasoning_mode == "pro");
+  Q4T_CHECK(Ok(restored.StartRunning(&wire)));
+  auto note = Text("Partial actual working note");
+  note.kind = ResponseDelta::Kind::kReasoning;
+  Q4T_CHECK(restored.Append(note, "null", &wire));
+  Q4T_CHECK(Ok(restored.Checkpoint()));
+  Q4T_CHECK(Ok(restored.Cancel()));
+  const auto record = ResponsesState(store).Retrieve(queued.Id(), Access());
+  Q4T_CHECK(Ok(record) && record.value.GetString("status") == "cancelled");
+  Q4T_CHECK(record.value.Find("reasoning")->GetString("mode") == "pro" &&
+            OutputJson(*record.value.GetArray("output"))
+                    .find("Partial actual working note") != std::string::npos);
+  ResponsesExecution again(store);
+  Q4T_CHECK(again.RestoreQueued(queued.Id(), Config(), Access()).code ==
+              "response_not_queued");
+  return true;
+}
+
 Q4T_TEST(responses_cache_prewarm_empty_output_usage_and_diagnostics_persist) {
   Fixture fixture;
   ObjectStore store(fixture.options);

@@ -12,6 +12,7 @@
 #include "q4t/server/responses_api.h"
 #include "q4t/server/responses_crypto.h"
 #include "q4t/server/responses_execution.h"
+#include "q4t/server/responses_reasoning.h"
 #include "q4t/test.h"
 
 namespace {
@@ -636,6 +637,55 @@ Q4T_TEST(compaction_execution_cancellation_after_measurement_has_no_done) {
       &wire);
   Q4T_CHECK(reply.code == "request_cancelled" && wire.empty());
   Q4T_CHECK(Ok(run.CloseUnfinished()));
+  return true;
+}
+
+Q4T_TEST(responses_pro_compaction_and_summary_share_actual_remaining_budget) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  auto request = ExecutionRequest();
+  Field(&request, "reasoning") =
+      Parse(R"({"mode":"pro","effort":"none","summary":"concise"})");
+  ResponsesExecution run(objects);
+  Q4T_CHECK(Ok(run.Prepare(request, Config(), Access(), 10)));
+  const auto original = OutputJson(run.Generation().input.items);
+  Q4T_CHECK(Ok(run.SelectCompaction(600, Config())));
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)) && Ok(run.StartCompaction(&wire)));
+  Q4T_CHECK(Ok(run.CompleteCompaction("Verified result is 42", 24, Config(),
+                                     Measured(80), &wire)));
+  const auto compacted = OutputJson(run.Generation().input.items);
+  Q4T_CHECK(compacted != original);
+  ResponsesSummaryPlan work;
+  ChatPlanError error;
+  Q4T_CHECK(PlanResponsesDeliberation(run.Generation(), 128, 24, Config(),
+                                      &work, &error));
+  Q4T_CHECK(work.request.GetInt("max_completion_tokens") == 34 &&
+            OutputJson(work.request).find("Verified result is 42") !=
+                std::string::npos);
+  ResponsesGenerationPlan answer;
+  Q4T_CHECK(PlanResponsesDeliberatedAnswer(
+      run.Generation(), "The recorded result is 42", 128, 54, Config(),
+      &answer, &error));
+  Q4T_CHECK(answer.generation_request.GetInt("max_completion_tokens") == 74 &&
+            OutputJson(answer.input.items) == compacted);
+  ResponseDelta note;
+  note.kind = ResponseDelta::Kind::kReasoning;
+  note.text = "The recorded result is 42";
+  Q4T_CHECK(run.Append(note, "null", &wire));
+  auto final = note;
+  final.kind = ResponseDelta::Kind::kContent;
+  final.text = "42";
+  Q4T_CHECK(run.Append(final, "null", &wire));
+  ResponsesSummaryPlan summary;
+  Q4T_CHECK(PlanResponsesSummary(run.Envelope(), run.Output().Snapshot(),
+                                 128, 60, Config(), &summary, &error));
+  Q4T_CHECK(summary.needed &&
+            summary.request.GetInt("max_completion_tokens") == 68 &&
+            OutputJson(summary.request).find(note.text) != std::string::npos);
+  Q4T_CHECK(run.AppendSummary("Checked the actual recorded result", &wire));
+  Q4T_CHECK(Ok(run.Finish(false, 0, {600, 0, 70, 64}, 11, &wire)));
+  Q4T_CHECK(run.Output().Snapshot().GetString("status") == "completed");
   return true;
 }
 

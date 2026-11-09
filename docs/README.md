@@ -1,5 +1,7 @@
 # docs/ — 开发记录文档体系
 
+[A07.7原生推敲、审核与访问执行策略](SERVE_RESPONSES_EXECUTION_POLICY_2026-11-10.md)
+
 [N04原生密钥、动态客户端限额与用量连续性交付及操作](SERVE_ACCESS_CONTROL_2026-11-09.md)
 
 [R01缓存文件I/O原生隔离与R03组合验收](SERVE_CACHE_IO_ISOLATION_2026-11-09.md)

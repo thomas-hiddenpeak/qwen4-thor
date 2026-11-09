@@ -298,7 +298,7 @@
         },
         "publication_revision": 10
       },
-      "current_work": "A07.7 actual reasoning mode, moderation and authorized access program executors",
+      "current_work": "A07.7a native pro CPU passed; execute bounded actual business, then rollback-capable delivery and continue moderation/access programs plus all master tasks",
       "reasoning_summary": {
         "state": "delivered",
         "cpu_checks": 31,
@@ -643,6 +643,19 @@
         "delivery_evidence": "evidence/serve-prompt-cache-delivery-20261110/README.md",
         "media_cache_remaining_in_A10": true,
         "full_task_complete": false
+      },
+      "reasoning_pro": {
+        "state": "cpu_validated_pending_real_business",
+        "evidence": [
+          "docs/evidence/serve-reasoning-pro-cpu-20261110/README.md",
+          "docs/evidence/serve-reasoning-pro-driver-20261110/README.md"
+        ],
+        "implementation": "Native actual bounded deliberation then original final answer/tool/schema contract; independent effort and shared budget/usage/cancellation, compaction/summary/encryption/background combinations",
+        "remaining": [
+          "real business",
+          "rollback-capable delivery"
+        ],
+        "full_A07_complete": false
       }
     },
     {

@@ -1,0 +1,8 @@
+[PASS] responses_pro_compaction_and_summary_share_actual_remaining_budget
+[PASS] responses_pro_effort_independent_and_unknown_mode_rejected
+[PASS] responses_pro_work_preserves_context_but_cannot_authorize_tools
+[PASS] responses_pro_final_preserves_schema_and_uses_actual_notes_as_data
+[PASS] responses_pro_budget_limits_after_compaction_and_tiny_request
+[PASS] responses_pro_notes_bounds_and_no_fabricated_continuation
+[PASS] responses_pro_original_history_and_cache_boundaries_do_not_mutate
+7 tests, 7 passed, 0 failed, 0 skipped

@@ -28,6 +28,7 @@
 #include "q4t/server/completion_plan.h"
 #include "q4t/server/completion_response.h"
 #include "q4t/server/responses_execution.h"
+#include "q4t/server/responses_reasoning.h"
 #include "q4t/server/token_logprobs.h"
 #include "q4t/server/media_admission.h"
 #include "q4t/server/chat_response_parser.h"
@@ -676,6 +677,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       compact_selected && responses->Compaction().compacted_items != 0;
   const bool standalone_compact =
       responses && responses->StandaloneCompaction();
+  const bool pro_selected = responses && !cache_prewarm &&
+                            !standalone_compact &&
+                            responses->Envelope().reasoning_mode == "pro";
+  ResponsesSummaryPlan pro_plan;
+  std::string pro_notes;
   if (compact_step_needed) {
     s = prepare_step(responses->Compaction().chat,
                      responses->Compaction().request);
@@ -686,6 +692,21 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       } else {
         SendError(fd, planning_error.http_status, s.message(), {},
                   planning_error.code, "context_management");
+      }
+      return;
+    }
+  } else if (pro_selected) {
+    s = PlanResponsesDeliberation(responses->Generation(), request_output_limit,
+                                  0, planning_config, &pro_plan,
+                                  &planning_error);
+    if (s) s = prepare_step(pro_plan.chat, pro_plan.request);
+    if (!s) {
+      if (cancelled()) {
+        count_abort();
+        send_cancel_error("Pro deliberation preparation cancelled");
+      } else {
+        SendError(fd, planning_error.http_status, s.message(), {},
+                  planning_error.code, "reasoning.mode");
       }
       return;
     }
@@ -795,27 +816,32 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       if (http) http->StartHeartbeats(control);
     }
   }
-  ResponsesGenerationPlan compacted_generation;
-  const int primary_index = compact_step_needed ? 1 : 0;
+  ResponsesGenerationPlan continuation_generation;
+  const int pro_index = compact_step_needed ? 1 : 0;
+  const int primary_index = pro_index + (pro_selected ? 1 : 0);
   for (int choice_index = 0;
        choice_index <
        (standalone_compact ? 1 : sampling.choices + primary_index) +
            (summary_plan.needed ? 1 : 0);
        ++choice_index) {
     const bool compaction_step = compact_step_needed && choice_index == 0;
+    const bool pro_step = pro_selected && choice_index == pro_index;
     const bool summary_step =
         responses && summary_plan.needed && choice_index == primary_index + 1;
-    const bool internal_step = compaction_step || summary_step;
+    const bool internal_step = compaction_step || pro_step || summary_step;
     const bool compacted_primary = compact_step_needed && !internal_step;
-    const auto& step_plan = compaction_step     ? responses->Compaction().chat
-                            : summary_step      ? summary_plan.chat
-                            : compacted_primary ? compacted_generation.chat
-                                                : request_plan;
+    const bool continued_primary = primary_index > 0 && !internal_step;
+    const auto& step_plan = compaction_step      ? responses->Compaction().chat
+                            : pro_step           ? pro_plan.chat
+                            : summary_step       ? summary_plan.chat
+                            : continued_primary  ? continuation_generation.chat
+                                                 : request_plan;
     const auto& req = step_plan.Request(
-        compaction_step     ? responses->Compaction().request
-        : summary_step      ? summary_plan.request
-        : compacted_primary ? compacted_generation.generation_request
-                            : original_request);
+        compaction_step      ? responses->Compaction().request
+        : pro_step           ? pro_plan.request
+        : summary_step       ? summary_plan.request
+        : continued_primary  ? continuation_generation.generation_request
+                             : original_request);
     const auto& constraints = step_plan.constraints;
     const auto& sampling = step_plan.sampling;
     const bool plain_greedy = sampling.PlainGreedy();
@@ -830,11 +856,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     std::string prefix_scope = internal_step ? "" : request_prefix_scope;
     SessionLease summary_session;
     auto& session = internal_step ? summary_session : request_session;
-    if (summary_step || compacted_primary) {
+    if (responses && choice_index > 0) {
       err_guard.ok = false;
       diagnostic.Stage("encode");
-      const char* param =
-          summary_step ? "reasoning.summary" : "context_management";
+      const char* param = summary_step  ? "reasoning.summary"
+                          : pro_selected ? "reasoning.mode"
+                                         : "context_management";
       s = prepare_step(step_plan, req);
       if (!s) {
         if (cancelled()) {
@@ -2249,6 +2276,18 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                 delta.kind == ResponseDelta::Kind::kContent
                     ? Status()
                     : Status::Fail("Compaction emitted non-text output");
+          } else if (pro_step) {
+            if (delta.kind == ResponseDelta::Kind::kTool ||
+                delta.text.size() > 1024 * 1024 - pro_notes.size()) {
+              response_status = Status::Fail(
+                  "Pro deliberation emitted a tool or exceeded note capacity");
+            } else {
+              auto reasoning = delta;
+              reasoning.kind = ResponseDelta::Kind::kReasoning;
+              response_status =
+                  responses->Append(reasoning, "null", &response_chunk);
+              if (response_status) pro_notes += delta.text;
+            }
           } else if (summary_step) {
             response_status =
                 delta.kind == ResponseDelta::Kind::kContent
@@ -3430,7 +3469,42 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         }
         if (stream && !write_stream(compact_wire)) return;
         if (!standalone_compact) {
-          compacted_generation = responses->Generation();
+          continuation_generation = responses->Generation();
+          if (pro_selected) {
+            s = PlanResponsesDeliberation(
+                continuation_generation, request_output_limit,
+                responses_usage.output_tokens, planning_config, &pro_plan,
+                &planning_error);
+            if (!s) {
+              err_guard.ok = false;
+              SendError(fd, planning_error.http_status, s.message(), {},
+                        planning_error.code, "reasoning.mode");
+              return;
+            }
+          }
+          trace_outcome = trace::RequestOutcome::kSuccess;
+          cleanup();
+          continue;
+        }
+      }
+      if (pro_step) {
+        if (responses_usage.output_tokens == request_output_limit) {
+          // Actual deliberation consumed the caller's whole remaining budget.
+          // Publish an incomplete reasoning-only response, never refill it.
+          finish_reason = "length";
+        } else {
+          ResponsesGenerationPlan answer;
+          s = PlanResponsesDeliberatedAnswer(
+              responses->Generation(), pro_notes, request_output_limit,
+              responses_usage.output_tokens, planning_config, &answer,
+              &planning_error);
+          if (!s) {
+            err_guard.ok = false;
+            SendError(fd, planning_error.http_status, s.message(), {},
+                      planning_error.code, "reasoning.mode");
+            return;
+          }
+          continuation_generation = std::move(answer);
           trace_outcome = trace::RequestOutcome::kSuccess;
           cleanup();
           continue;
@@ -3621,6 +3695,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       diagnostic.Outcome("success", "completed");
       metrics_.requests_success.fetch_add(1, std::memory_order_relaxed);
     }
+    if (responses) break;  // A budget-exhausted internal step may finish early.
   }  // Each choice releases its model/grammar buffers before the next one.
 }
 

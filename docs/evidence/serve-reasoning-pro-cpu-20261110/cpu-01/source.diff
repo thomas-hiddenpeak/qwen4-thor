@@ -1,0 +1,619 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 0e3b41be..f4346180 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -346,6 +346,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
+     src/server/responses_input.cpp
+     src/server/responses_plan.cpp
+     src/server/responses_summary.cpp
++    src/server/responses_reasoning.cpp
+   src/server/chat_choices.cpp
+   src/server/chat_tool_history.cpp
+                              src/server/chat_template.cpp)
+@@ -562,6 +563,7 @@ if(Q4T_BUILD_TESTS)
+     src/server/responses_input.cpp
+     src/server/responses_plan.cpp
+     src/server/responses_summary.cpp
++    src/server/responses_reasoning.cpp
+     src/server/chat_choices.cpp
+     src/server/model_catalog.cpp
+     tests/server_sampling_test.cpp
+@@ -569,6 +571,7 @@ if(Q4T_BUILD_TESTS)
+     tests/server_responses_output_test.cpp
+     tests/server_responses_input_test.cpp
+     tests/server_responses_plan_test.cpp
++    tests/server_responses_reasoning_test.cpp
+     tests/server_responses_context_test.cpp
+     tests/server_prediction_test.cpp
+     tests/server_legacy_tools_test.cpp
+diff --git a/cmake/ChatProtocolIdentity.cmake b/cmake/ChatProtocolIdentity.cmake
+index 7c1ae10c..f2d12d77 100644
+--- a/cmake/ChatProtocolIdentity.cmake
++++ b/cmake/ChatProtocolIdentity.cmake
+@@ -25,8 +25,10 @@ set(protocol_inputs
+   src/server/prompt_registry.cpp
+   src/server/prompt_api.cpp
+   include/q4t/server/responses_plan.h
++  include/q4t/server/responses_reasoning.h
+   src/server/responses_plan.cpp
+   src/server/responses_summary.cpp
++  src/server/responses_reasoning.cpp
+   cmake/NativeCrypto.cmake
+   include/q4t/server/native_crypto.h
+   src/server/native_crypto.cpp
+diff --git a/cmake/HostTestSources.cmake b/cmake/HostTestSources.cmake
+index 9d358a65..159ad6b6 100644
+--- a/cmake/HostTestSources.cmake
++++ b/cmake/HostTestSources.cmake
+@@ -146,12 +146,14 @@ set(Q4T_HOST_TEST_SOURCES
+     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_input.cpp
+     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_plan.cpp
+     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_summary.cpp
++    ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_reasoning.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_choices.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_sampling_test.cpp
+     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_completion_test.cpp
+     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_output_test.cpp
+     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_input_test.cpp
+     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_plan_test.cpp
++    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_reasoning_test.cpp
+     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_context_test.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_prediction_test.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_legacy_tools_test.cpp
+diff --git a/docs/README.md b/docs/README.md
+index 3ba16d16..1d6206a8 100644
+--- a/docs/README.md
++++ b/docs/README.md
+@@ -1,5 +1,7 @@
+ # docs/ — 开发记录文档体系
+ 
++[A07.7原生推敲、审核与访问执行策略](SERVE_RESPONSES_EXECUTION_POLICY_2026-11-10.md)
++
+ [N04原生密钥、动态客户端限额与用量连续性交付及操作](SERVE_ACCESS_CONTROL_2026-11-09.md)
+ 
+ [R01缓存文件I/O原生隔离与R03组合验收](SERVE_CACHE_IO_ISOLATION_2026-11-09.md)
+diff --git a/docs/STATUS.md b/docs/STATUS.md
+index a896f6c4..6181bfe8 100644
+--- a/docs/STATUS.md
++++ b/docs/STATUS.md
+@@ -4,7 +4,7 @@ A07.6 原生缓存已完成[44项C++/3项schema](evidence/serve-prompt-cache-cpu
+ 
+ 实际1启动/10请求/67.369秒，65次NVML全OK、正常退出且独立清理确认；预热输出0，2断点写入，MTP/目标恢复2181/2291 tokens与用量一致。key隔离、显式无断点、标准Chat、后台原SSE及文档工具闭环通过。首次命令漏传租约继承在模型前失败，原件保留。安装8操作通过，0模型/Chat。TTL到期只援引针对CPU，不冒称12h实跑；不作性能优化结论。
+ 
+-A07.1—A07.6已交付，A07整体和总目标仍active、未合main。现在连续推进 **A07.7执行策略：reasoning mode、实际moderation与授权程序**，然后A07.8及A/R/Q/G全部余项。媒体缓存由A10继续；范围不缩减、阶段不当终点。非性能任务只做直接针对验证，长稳实跑由用户负责。
++A07.1—A07.6已交付，A07整体和总目标仍active、未合main。[A07.7执行策略](SERVE_RESPONSES_EXECUTION_POLICY_2026-11-10.md)持续实施：pro已接入实际推敲/回答、共享预算和流式路径，冻结19项直接C++/2项schema、开始必要构建，尚未验证；moderation与授权程序继续必做，然后A07.8及A/R/Q/G全部余项。媒体缓存由A10继续；范围不缩减、阶段不当终点。非性能任务只做直接针对验证，长稳实跑由用户负责。
+ 
+ 以下保留历史检查点，当前默认以上段为准；A07.3—A07.5 开发原件见开发日志及证据目录。
+ 
+diff --git a/docs/log/2026-11-10.md b/docs/log/2026-11-10.md
+index d5400737..ec75cbf4 100644
+--- a/docs/log/2026-11-10.md
++++ b/docs/log/2026-11-10.md
+@@ -1,5 +1,17 @@
+ # 2026-11-10 开发日志
+ 
++## A07.7a 成组复核完成并冻结19 C++/2 schema
++
++- 做了什么：补齐压缩后原生推敲/回答/摘要组合预算用例及真实C++输出schema检查，冻结19项C++和2项schema；核对循环、共享配额、缓存和持久原输入。源码库存补回A07.6已交付状态，A07.7保持未验收。
++- 为什么：模式不只是多调用一次模型，还须防预算重置、工具权限变化及后台重放；只验证直接影响范围。
++- 下一步：独立host/实际引擎必要构建和成组CPU，再冻结对应实际业务短验；默认A07.6保持，持续全部任务。
++
++## A07.7a 原生pro推敲与回答成组开发
++
++- 做了什么：读取官方执行模式/moderation/授权说明及固定SDK，编写原生pro额外模型步骤，实际笔记为assistant数据，原工具/最终schema保持，统一预算/配额/取消与压缩续接；新增直接CPU用例尚未执行。详细连续清单docs/SERVE_RESPONSES_EXECUTION_POLICY_2026-11-10.md。
++- 为什么：mode需要真实额外模型工作，不能只回显或改effort；不冒称云端私有算法/模型能力。
++- 下一步：静态复核后冻结针对清单、必要构建和成组短验；A07.7b/c与全部余项仍必做。默认A07.6保持STOPPED。
++
+ ## A07.6 可回退默认交付完成，继续执行策略缺口
+ 
+ - 做了什么：8条实际随包命令首轮通过，默认引擎bd45853b/元数据4040451c/包485e774f，publication revision20、STOPPED。保留A07.5完整原包/发布代，核心及客户端账本字节不变，0新增模型/Chat。证据docs/evidence/serve-prompt-cache-delivery-20261110。
+diff --git a/docs/serve-input-semantics-v1.json b/docs/serve-input-semantics-v1.json
+index f25cadbb..e9788de0 100644
+--- a/docs/serve-input-semantics-v1.json
++++ b/docs/serve-input-semantics-v1.json
+@@ -391,7 +391,7 @@
+     "src/server/chat_choices.cpp": "ee99c4aca3c1ea07d5929da38325aa2b28a411245c7d794c9cc5f1f8eb23f16a",
+     "src/server/chat_contract.cpp": "c1786828dd6d95ed7ec2b0c2bb4a5fb4418705dbb9a86a92cca59d4790c312a1",
+     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
+-    "src/server/chat_generation.cpp": "a8c18eb6c2efbeaa1fe3cdde3ffca487bb4c6e0258f5fbc5b3279aebfd236f27",
++    "src/server/chat_generation.cpp": "7dc7874550e27e6fcbffc586e918b166ad1d79ba829e50586b0cc8d248d7f2c0",
+     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
+     "src/server/chat_http.cpp": "89e7c112767927a17775825cec3d372055c6aacd9b2aa2e9e548997b64a81503",
+     "src/server/chat_input.cpp": "372b93746fbe236ec1d0caea778b1212d22ab94a18ec4f7ce81adcfba8b8c546",
+@@ -432,11 +432,11 @@
+     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
+     "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
+     "src/server/responses_api.cpp": "a922fb6309aec5efcae895f31081031cdfbe0dac21f03935ef73b735f51f4920",
+-    "src/server/responses_execution.cpp": "6cb9be25c9bb32516676181b65731eefedb6483eb58dc3fb198d838eb391f452",
++    "src/server/responses_execution.cpp": "3bc3be0bd4706ee653c700169637b6b6a5bdb7740e5c50054e7d74b27bddf3ab",
+     "src/server/responses_jobs.cpp": "e5eaf87112d482d23908df7d12b2a4afdec31d63a2fd54f20e29eebfdd206832",
+     "src/server/responses_output.cpp": "d2cd4bccd687d6f0ce709f7f956dcf4855caa93cd832a1958bb7d1a0a4432bb0",
+     "src/server/responses_owner.cpp": "f439f60e6956ac0d61c107d95ec719cd1fbed84eb0c56721ef63cd1f4342a3fc",
+-    "src/server/responses_plan.cpp": "4c87b231f6381e8a64836fe7fa44ff81b455516ed81ed06c9ba61648d88d703d",
++    "src/server/responses_plan.cpp": "77faeca546ab3c60e9670d61e43121dbecad8233ddb8c3289ae8a199588f4e56",
+     "src/server/responses_state.cpp": "8f1f5433552165c333b7f8288848286e5e3f45df056243f5cd8601486d767fbc",
+     "src/server/sampling.cpp": "88e247ca6b7c65abbf0977c66fd604e7156cbdefe5d0293e509282678555d31d",
+     "src/server/schema_grammar.cpp": "075d6a282f2fc1cda861e3a0de4de132455af3efa9ed30b67b0ad9a5caf56cf2",
+diff --git a/src/server/chat_capabilities.cpp b/src/server/chat_capabilities.cpp
+index a73652cf..eb500913 100644
+--- a/src/server/chat_capabilities.cpp
++++ b/src/server/chat_capabilities.cpp
+@@ -54,6 +54,12 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
+          R"("json":true,"stream":true,"chat_done_sentinel":false,)"
+          R"("output_items":["message","reasoning","function_call","custom_tool_call","compaction"],)"
+          R"("reasoning_text":true,"reasoning_summary":true,)"
++         R"("reasoning_execution":{"modes":["standard","pro"],)"
++         R"("pro":"native_deliberation_then_answer",)"
++         R"("deliberation_budget":"one_third_remaining_up_to_512_minimum_1",)"
++         R"("effort_independent":true,"shared_output_budget":true,)"
++         R"("usage_includes_all_steps":true,"shared_cancellation":true,)"
++         R"("speculative_tool_execution":false,"cloud_model_equivalence":false},)"
+          R"("encrypted_reasoning":{"enabled":true,"algorithm":"AES-256-GCM",)"
+          R"("scope":"authenticated_client_and_canonical_model_template",)"
+          R"("origin_prefix":"authenticated_restore_or_matching_suffix",)"
+diff --git a/src/server/chat_generation.cpp b/src/server/chat_generation.cpp
+index 06161820..0dcf3bcd 100644
+--- a/src/server/chat_generation.cpp
++++ b/src/server/chat_generation.cpp
+@@ -28,6 +28,7 @@
+ #include "q4t/server/completion_plan.h"
+ #include "q4t/server/completion_response.h"
+ #include "q4t/server/responses_execution.h"
++#include "q4t/server/responses_reasoning.h"
+ #include "q4t/server/token_logprobs.h"
+ #include "q4t/server/media_admission.h"
+ #include "q4t/server/chat_response_parser.h"
+@@ -676,6 +677,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+       compact_selected && responses->Compaction().compacted_items != 0;
+   const bool standalone_compact =
+       responses && responses->StandaloneCompaction();
++  const bool pro_selected = responses && !cache_prewarm &&
++                            !standalone_compact &&
++                            responses->Envelope().reasoning_mode == "pro";
++  ResponsesSummaryPlan pro_plan;
++  std::string pro_notes;
+   if (compact_step_needed) {
+     s = prepare_step(responses->Compaction().chat,
+                      responses->Compaction().request);
+@@ -689,6 +695,21 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+       }
+       return;
+     }
++  } else if (pro_selected) {
++    s = PlanResponsesDeliberation(responses->Generation(), request_output_limit,
++                                  0, planning_config, &pro_plan,
++                                  &planning_error);
++    if (s) s = prepare_step(pro_plan.chat, pro_plan.request);
++    if (!s) {
++      if (cancelled()) {
++        count_abort();
++        send_cancel_error("Pro deliberation preparation cancelled");
++      } else {
++        SendError(fd, planning_error.http_status, s.message(), {},
++                  planning_error.code, "reasoning.mode");
++      }
++      return;
++    }
+   }
+   if (planning_config.client_limits) {
+     const auto result = rate_lease.Reserve(
+@@ -795,27 +816,32 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+       if (http) http->StartHeartbeats(control);
+     }
+   }
+-  ResponsesGenerationPlan compacted_generation;
+-  const int primary_index = compact_step_needed ? 1 : 0;
++  ResponsesGenerationPlan continuation_generation;
++  const int pro_index = compact_step_needed ? 1 : 0;
++  const int primary_index = pro_index + (pro_selected ? 1 : 0);
+   for (int choice_index = 0;
+        choice_index <
+        (standalone_compact ? 1 : sampling.choices + primary_index) +
+            (summary_plan.needed ? 1 : 0);
+        ++choice_index) {
+     const bool compaction_step = compact_step_needed && choice_index == 0;
++    const bool pro_step = pro_selected && choice_index == pro_index;
+     const bool summary_step =
+         responses && summary_plan.needed && choice_index == primary_index + 1;
+-    const bool internal_step = compaction_step || summary_step;
++    const bool internal_step = compaction_step || pro_step || summary_step;
+     const bool compacted_primary = compact_step_needed && !internal_step;
+-    const auto& step_plan = compaction_step     ? responses->Compaction().chat
+-                            : summary_step      ? summary_plan.chat
+-                            : compacted_primary ? compacted_generation.chat
+-                                                : request_plan;
++    const bool continued_primary = primary_index > 0 && !internal_step;
++    const auto& step_plan = compaction_step      ? responses->Compaction().chat
++                            : pro_step           ? pro_plan.chat
++                            : summary_step       ? summary_plan.chat
++                            : continued_primary  ? continuation_generation.chat
++                                                 : request_plan;
+     const auto& req = step_plan.Request(
+-        compaction_step     ? responses->Compaction().request
+-        : summary_step      ? summary_plan.request
+-        : compacted_primary ? compacted_generation.generation_request
+-                            : original_request);
++        compaction_step      ? responses->Compaction().request
++        : pro_step           ? pro_plan.request
++        : summary_step       ? summary_plan.request
++        : continued_primary  ? continuation_generation.generation_request
++                             : original_request);
+     const auto& constraints = step_plan.constraints;
+     const auto& sampling = step_plan.sampling;
+     const bool plain_greedy = sampling.PlainGreedy();
+@@ -830,11 +856,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+     std::string prefix_scope = internal_step ? "" : request_prefix_scope;
+     SessionLease summary_session;
+     auto& session = internal_step ? summary_session : request_session;
+-    if (summary_step || compacted_primary) {
++    if (responses && choice_index > 0) {
+       err_guard.ok = false;
+       diagnostic.Stage("encode");
+-      const char* param =
+-          summary_step ? "reasoning.summary" : "context_management";
++      const char* param = summary_step  ? "reasoning.summary"
++                          : pro_selected ? "reasoning.mode"
++                                         : "context_management";
+       s = prepare_step(step_plan, req);
+       if (!s) {
+         if (cancelled()) {
+@@ -2249,6 +2276,18 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+                 delta.kind == ResponseDelta::Kind::kContent
+                     ? Status()
+                     : Status::Fail("Compaction emitted non-text output");
++          } else if (pro_step) {
++            if (delta.kind == ResponseDelta::Kind::kTool ||
++                delta.text.size() > 1024 * 1024 - pro_notes.size()) {
++              response_status = Status::Fail(
++                  "Pro deliberation emitted a tool or exceeded note capacity");
++            } else {
++              auto reasoning = delta;
++              reasoning.kind = ResponseDelta::Kind::kReasoning;
++              response_status =
++                  responses->Append(reasoning, "null", &response_chunk);
++              if (response_status) pro_notes += delta.text;
++            }
+           } else if (summary_step) {
+             response_status =
+                 delta.kind == ResponseDelta::Kind::kContent
+@@ -3430,7 +3469,42 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+         }
+         if (stream && !write_stream(compact_wire)) return;
+         if (!standalone_compact) {
+-          compacted_generation = responses->Generation();
++          continuation_generation = responses->Generation();
++          if (pro_selected) {
++            s = PlanResponsesDeliberation(
++                continuation_generation, request_output_limit,
++                responses_usage.output_tokens, planning_config, &pro_plan,
++                &planning_error);
++            if (!s) {
++              err_guard.ok = false;
++              SendError(fd, planning_error.http_status, s.message(), {},
++                        planning_error.code, "reasoning.mode");
++              return;
++            }
++          }
++          trace_outcome = trace::RequestOutcome::kSuccess;
++          cleanup();
++          continue;
++        }
++      }
++      if (pro_step) {
++        if (responses_usage.output_tokens == request_output_limit) {
++          // Actual deliberation consumed the caller's whole remaining budget.
++          // Publish an incomplete reasoning-only response, never refill it.
++          finish_reason = "length";
++        } else {
++          ResponsesGenerationPlan answer;
++          s = PlanResponsesDeliberatedAnswer(
++              responses->Generation(), pro_notes, request_output_limit,
++              responses_usage.output_tokens, planning_config, &answer,
++              &planning_error);
++          if (!s) {
++            err_guard.ok = false;
++            SendError(fd, planning_error.http_status, s.message(), {},
++                      planning_error.code, "reasoning.mode");
++            return;
++          }
++          continuation_generation = std::move(answer);
+           trace_outcome = trace::RequestOutcome::kSuccess;
+           cleanup();
+           continue;
+@@ -3621,6 +3695,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+       diagnostic.Outcome("success", "completed");
+       metrics_.requests_success.fetch_add(1, std::memory_order_relaxed);
+     }
++    if (responses) break;  // A budget-exhausted internal step may finish early.
+   }  // Each choice releases its model/grammar buffers before the next one.
+ }
+ 
+diff --git a/src/server/responses_execution.cpp b/src/server/responses_execution.cpp
+index bedcd7bd..ea43051c 100644
+--- a/src/server/responses_execution.cpp
++++ b/src/server/responses_execution.cpp
+@@ -107,8 +107,6 @@ ObjectReply ResponsesExecution::RequiredExecutors(
+   std::string required;
+   if (envelope_.background && !background_executor)
+     required = "background";
+-  else if (envelope_.reasoning_mode != "standard")
+-    required = "reasoning.mode";
+   for (const char* key : {"access_programs", "moderation"})
+     if (required.empty() && Nonnull(envelope_.request, key)) required = key;
+   if (!required.empty()) {
+diff --git a/src/server/responses_plan.cpp b/src/server/responses_plan.cpp
+index 47861d0f..14fc0c1b 100644
+--- a/src/server/responses_plan.cpp
++++ b/src/server/responses_plan.cpp
+@@ -106,7 +106,7 @@ Status Reasoning(const Json& request, ResponsesEnvelope* result,
+     if (result->summary.empty()) result->summary = legacy;
+     if (Nonnull(*object, "mode")) {
+       const auto* mode = object->Find("mode");
+-      if (!mode->IsString() || mode->str.empty() || mode->str.size() > 128)
++      if (!mode->IsString() || !OneOf(mode->str, {"standard", "pro"}))
+         return Invalid(error, "reasoning.mode", "invalid reasoning mode");
+       result->reasoning_mode = mode->str;
+     }
+diff --git a/tests/server_chat_capabilities_test.cpp b/tests/server_chat_capabilities_test.cpp
+index a38fc8d6..1ab311dd 100644
+--- a/tests/server_chat_capabilities_test.cpp
++++ b/tests/server_chat_capabilities_test.cpp
+@@ -275,6 +275,13 @@ Q4T_TEST(chat_capabilities_native_responses_state_and_recovery) {
+   Q4T_CHECK(responses->GetBool("previous_response_id") &&
+             responses->GetBool("conversation"));
+   const auto* summary = responses->Find("summary");
++  const auto* execution = responses->Find("reasoning_execution");
++  Q4T_CHECK(execution && execution->GetString("pro") ==
++                            "native_deliberation_then_answer" &&
++            execution->GetBool("effort_independent") &&
++            execution->GetBool("shared_output_budget") &&
++            !execution->GetBool("speculative_tool_execution", true) &&
++            !execution->GetBool("cloud_model_equivalence", true));
+   const auto* cache = responses->Find("prompt_cache");
+   Q4T_CHECK(cache && cache->GetBool("native_state") &&
+             cache->GetInt("max_writes") == 4 &&
+diff --git a/tests/server_responses_compaction_test.cpp b/tests/server_responses_compaction_test.cpp
+index c41874b3..2c93a8ab 100644
+--- a/tests/server_responses_compaction_test.cpp
++++ b/tests/server_responses_compaction_test.cpp
+@@ -12,6 +12,7 @@
+ #include "q4t/server/responses_api.h"
+ #include "q4t/server/responses_crypto.h"
+ #include "q4t/server/responses_execution.h"
++#include "q4t/server/responses_reasoning.h"
+ #include "q4t/test.h"
+ 
+ namespace {
+@@ -639,6 +640,55 @@ Q4T_TEST(compaction_execution_cancellation_after_measurement_has_no_done) {
+   return true;
+ }
+ 
++Q4T_TEST(responses_pro_compaction_and_summary_share_actual_remaining_budget) {
++  Fixture f;
++  ObjectStore objects(f.options);
++  auto request = ExecutionRequest();
++  Field(&request, "reasoning") =
++      Parse(R"({"mode":"pro","effort":"none","summary":"concise"})");
++  ResponsesExecution run(objects);
++  Q4T_CHECK(Ok(run.Prepare(request, Config(), Access(), 10)));
++  const auto original = OutputJson(run.Generation().input.items);
++  Q4T_CHECK(Ok(run.SelectCompaction(600, Config())));
++  std::string wire;
++  Q4T_CHECK(Ok(run.Begin(&wire)) && Ok(run.StartCompaction(&wire)));
++  Q4T_CHECK(Ok(run.CompleteCompaction("Verified result is 42", 24, Config(),
++                                     Measured(80), &wire)));
++  const auto compacted = OutputJson(run.Generation().input.items);
++  Q4T_CHECK(compacted != original);
++  ResponsesSummaryPlan work;
++  ChatPlanError error;
++  Q4T_CHECK(PlanResponsesDeliberation(run.Generation(), 128, 24, Config(),
++                                      &work, &error));
++  Q4T_CHECK(work.request.GetInt("max_completion_tokens") == 34 &&
++            OutputJson(work.request).find("Verified result is 42") !=
++                std::string::npos);
++  ResponsesGenerationPlan answer;
++  Q4T_CHECK(PlanResponsesDeliberatedAnswer(
++      run.Generation(), "The recorded result is 42", 128, 54, Config(),
++      &answer, &error));
++  Q4T_CHECK(answer.generation_request.GetInt("max_completion_tokens") == 74 &&
++            OutputJson(answer.input.items) == compacted);
++  ResponseDelta note;
++  note.kind = ResponseDelta::Kind::kReasoning;
++  note.text = "The recorded result is 42";
++  Q4T_CHECK(run.Append(note, "null", &wire));
++  auto final = note;
++  final.kind = ResponseDelta::Kind::kContent;
++  final.text = "42";
++  Q4T_CHECK(run.Append(final, "null", &wire));
++  ResponsesSummaryPlan summary;
++  Q4T_CHECK(PlanResponsesSummary(run.Envelope(), run.Output().Snapshot(),
++                                 128, 60, Config(), &summary, &error));
++  Q4T_CHECK(summary.needed &&
++            summary.request.GetInt("max_completion_tokens") == 68 &&
++            OutputJson(summary.request).find(note.text) != std::string::npos);
++  Q4T_CHECK(run.AppendSummary("Checked the actual recorded result", &wire));
++  Q4T_CHECK(Ok(run.Finish(false, 0, {600, 0, 70, 64}, 11, &wire)));
++  Q4T_CHECK(run.Output().Snapshot().GetString("status") == "completed");
++  return true;
++}
++
+ Q4T_TEST(compaction_execution_budget_cannot_refill_or_skip_primary) {
+   Fixture f;
+   ObjectStore objects(f.options);
+diff --git a/tests/server_responses_execution_test.cpp b/tests/server_responses_execution_test.cpp
+index fe091ee4..3c2b1a3c 100644
+--- a/tests/server_responses_execution_test.cpp
++++ b/tests/server_responses_execution_test.cpp
+@@ -65,6 +65,75 @@ ResponseDelta Text(std::string text) {
+ }
+ }  // namespace
+ 
++Q4T_TEST(responses_pro_persists_reasoning_mode_usage_and_original_input) {
++  Fixture fixture;
++  ObjectStore store(fixture.options);
++  ResponsesExecution run(store);
++  const auto request = Parse(R"({"input":"17+25?","store":true,"stream":true,
++    "stream_options":{"include_obfuscation":false},
++    "reasoning":{"mode":"pro","effort":"none"}})");
++  Q4T_CHECK(Ok(run.Prepare(request, Config(), Access(), 42)));
++  std::string wire, all;
++  Q4T_CHECK(Ok(run.Begin(&wire)));
++  all += wire;
++  auto note = Text("Checked addition: 17 + 25 = 42.");
++  note.kind = ResponseDelta::Kind::kReasoning;
++  Q4T_CHECK(run.Append(note, "null", &wire));
++  all += wire;
++  Q4T_CHECK(run.Append(Text("42"), "null", &wire));
++  all += wire;
++  Q4T_CHECK(Ok(run.Finish(false, 0, {140, 0, 12, 9}, 43, &wire)));
++  all += wire;
++  const auto record = ResponsesState(store).ReadRecord(run.Id(), Access());
++  Q4T_CHECK(Ok(record));
++  Q4T_CHECK(OutputJson(*record.value.Find("response")) == run.Output().Json());
++  const auto& output = run.Output().Snapshot();
++  Q4T_CHECK(output.Find("reasoning")->GetString("mode") == "pro" &&
++            output.Find("reasoning")->GetString("effort") == "none");
++  Q4T_CHECK(output.Find("usage")->GetInt("total_tokens") == 152 &&
++            output.Find("usage")->Find("output_tokens_details")
++                    ->GetInt("reasoning_tokens") == 9);
++  Q4T_CHECK(OutputJson(*record.value.Find("own_input")).find("Checked addition")
++                == std::string::npos);
++  Q4T_CHECK(output.GetArray("output")->array.size() == 2 &&
++            all.find("response.reasoning_text.delta") != std::string::npos);
++  if (const char* directory = std::getenv("Q4T_TEST_OUTPUT_DIR")) {
++    std::ofstream(std::filesystem::path(directory) / "pro.json.wire")
++        << run.Output().Json();
++    std::ofstream(std::filesystem::path(directory) / "pro.sse.wire") << all;
++  }
++  return true;
++}
++
++Q4T_TEST(responses_pro_queued_restore_cancel_and_no_started_replay) {
++  Fixture fixture;
++  ObjectStore store(fixture.options);
++  ResponsesExecution queued(store);
++  const auto request = Parse(R"({"input":"17+25?","background":true,
++    "reasoning":{"mode":"pro","effort":"none"}})");
++  Q4T_CHECK(Ok(queued.Prepare(request, Config(), Access(), 42, true)));
++  std::string wire;
++  Q4T_CHECK(Ok(queued.Begin(&wire)));
++  ResponsesExecution restored(store);
++  Q4T_CHECK(Ok(restored.RestoreQueued(queued.Id(), Config(), Access())));
++  Q4T_CHECK(restored.Envelope().reasoning_mode == "pro");
++  Q4T_CHECK(Ok(restored.StartRunning(&wire)));
++  auto note = Text("Partial actual working note");
++  note.kind = ResponseDelta::Kind::kReasoning;
++  Q4T_CHECK(restored.Append(note, "null", &wire));
++  Q4T_CHECK(Ok(restored.Checkpoint()));
++  Q4T_CHECK(Ok(restored.Cancel()));
++  const auto record = ResponsesState(store).Retrieve(queued.Id(), Access());
++  Q4T_CHECK(Ok(record) && record.value.GetString("status") == "cancelled");
++  Q4T_CHECK(record.value.Find("reasoning")->GetString("mode") == "pro" &&
++            OutputJson(*record.value.GetArray("output"))
++                    .find("Partial actual working note") != std::string::npos);
++  ResponsesExecution again(store);
++  Q4T_CHECK(again.RestoreQueued(queued.Id(), Config(), Access()).code ==
++              "response_not_queued");
++  return true;
++}
++
+ Q4T_TEST(responses_cache_prewarm_empty_output_usage_and_diagnostics_persist) {
+   Fixture fixture;
+   ObjectStore store(fixture.options);
+diff --git a/tools/serve_audit/inventory.json b/tools/serve_audit/inventory.json
+index 7425f396..0c426baa 100644
+--- a/tools/serve_audit/inventory.json
++++ b/tools/serve_audit/inventory.json
+@@ -1235,8 +1235,8 @@
+     ]
+   },
+   "sources_sha256": {
+-    "CMakeLists.txt": "9fb5c81493b4ebffaa3c34aa341747dfdf82268c4e148f2e6bf57ceae19d0e28",
+-    "cmake/ChatProtocolIdentity.cmake": "3e00e9d582dead8f4754c0d9df970f509849602a0090e807970f27edbc531b31",
++    "CMakeLists.txt": "3ce705fdeacde5feb6bdc4d92831e45b96f6bc5c138adcc70bfd160f8c49518d",
++    "cmake/ChatProtocolIdentity.cmake": "9792a207da7d1c483570f606b75be2542f21bfcc390acb2985a0f332f18abf36",
+     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
+     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
+     "cmake/NativeIngress.cmake": "5560a873e8d89b5e034636f006a2b21ace3bdab2bf71dcf688d5028fbbc704b4",
+@@ -1325,6 +1325,7 @@
+     "include/q4t/server/responses_output.h": "c9332f6f97f51549ca11485d700b39f52d92e4d4d9355126a6489328eb6f8f1d",
+     "include/q4t/server/responses_owner.h": "56647342474e335ad1039609e93a947bd5c81364a48f018c0d7afe2ffde4c613",
+     "include/q4t/server/responses_plan.h": "49d1f0e222c20788c78b7dd4a983aee5462a852b2cf557979b300ce73ea0de1b",
++    "include/q4t/server/responses_reasoning.h": "d15d08e23a6734189b1241584f1e04200db5ecbbeef167f603da8c512281a5c7",
+     "include/q4t/server/responses_state.h": "0c171182fb9f9b8cf2ec633d5e55b605d64b1bc42c31ccbb621a87dd004e0330",
+     "include/q4t/server/sampling.h": "202bff18193dddc46f92e3b7d69fef36218faf00e913b292d1e9a9abe7b65141",
+     "include/q4t/server/scheduler_submission.h": "2a960c668c25a0c694b811a2c5640c6e6605db7d386b1ba0075e64061aa1c416",
+@@ -1387,11 +1388,11 @@
+     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
+     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
+     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
+-    "src/server/chat_capabilities.cpp": "15a0ed38d4f54d7a37c1a91954978f106d5daaa955df2a48ef405a08a091bd5f",
++    "src/server/chat_capabilities.cpp": "70ee9b08042a1177c1470636227ce9d162a9725b1a403b9f4ee1752a563c8b52",
+     "src/server/chat_choices.cpp": "ee99c4aca3c1ea07d5929da38325aa2b28a411245c7d794c9cc5f1f8eb23f16a",
+     "src/server/chat_contract.cpp": "c1786828dd6d95ed7ec2b0c2bb4a5fb4418705dbb9a86a92cca59d4790c312a1",
+     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
+-    "src/server/chat_generation.cpp": "a8c18eb6c2efbeaa1fe3cdde3ffca487bb4c6e0258f5fbc5b3279aebfd236f27",
++    "src/server/chat_generation.cpp": "7dc7874550e27e6fcbffc586e918b166ad1d79ba829e50586b0cc8d248d7f2c0",
+     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
+     "src/server/chat_http.cpp": "89e7c112767927a17775825cec3d372055c6aacd9b2aa2e9e548997b64a81503",
+     "src/server/chat_input.cpp": "372b93746fbe236ec1d0caea778b1212d22ab94a18ec4f7ce81adcfba8b8c546",
+@@ -1454,7 +1455,7 @@
+     "src/server/responses_api.cpp": "a922fb6309aec5efcae895f31081031cdfbe0dac21f03935ef73b735f51f4920",
+     "src/server/responses_compaction.cpp": "9cb02c6a890798d041cad3ac674832d6155ddef221ad3342c65ab4024f6ca58f",
+     "src/server/responses_crypto.cpp": "5e90f0671daeecdacba5d42918c1f796421887012416f001b33c2c38a71e8030",
+-    "src/server/responses_execution.cpp": "6cb9be25c9bb32516676181b65731eefedb6483eb58dc3fb198d838eb391f452",
++    "src/server/responses_execution.cpp": "3bc3be0bd4706ee653c700169637b6b6a5bdb7740e5c50054e7d74b27bddf3ab",
+     "src/server/responses_execution_compaction.cpp": "f01a18c3443a2ac66b8aef83d23f5854b46abd17bfb2b3207b4a07bb4f02d88e",
+     "src/server/responses_input.cpp": "4e0d3b426b05a991fe1ca29f9b477883fdf7793fcc729ab19e3a25637bc9b80e",
+     "src/server/responses_item_shape.cpp": "b09c14dfed993b0782d592efa387fd9669e691f907fdd664d6fcd429769235b9",
+@@ -1462,7 +1463,8 @@
+     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
+     "src/server/responses_output.cpp": "d2cd4bccd687d6f0ce709f7f956dcf4855caa93cd832a1958bb7d1a0a4432bb0",
+     "src/server/responses_owner.cpp": "f439f60e6956ac0d61c107d95ec719cd1fbed84eb0c56721ef63cd1f4342a3fc",
+-    "src/server/responses_plan.cpp": "4c87b231f6381e8a64836fe7fa44ff81b455516ed81ed06c9ba61648d88d703d",
++    "src/server/responses_plan.cpp": "77faeca546ab3c60e9670d61e43121dbecad8233ddb8c3289ae8a199588f4e56",
++    "src/server/responses_reasoning.cpp": "bff683eebe99a7cb26697c99e6b4ebd95c446f8ac3ab8f00fee4caabaa853c00",
+     "src/server/responses_state.cpp": "8f1f5433552165c333b7f8288848286e5e3f45df056243f5cd8601486d767fbc",
+     "src/server/responses_summary.cpp": "f1cab4bfe02c3d810925ff3fb7ce4d56cfaea5bd341e5cec606e4cba1c0d9b25",
+     "src/server/sampling.cpp": "88e247ca6b7c65abbf0977c66fd604e7156cbdefe5d0293e509282678555d31d",
+@@ -2914,7 +2916,7 @@
+     "pending": "Bounded real cache/resource-progress business and rollback/default delivery; all master tasks remain active."
+   },
+   "prompt_cache_development_20261110": {
+-    "status": "IMPLEMENTED_PENDING_TARGETED_VALIDATION",
++    "status": "IMPLEMENTED_VALIDATED_DELIVERED",
+     "review": "Reviewed actual render/token boundary mapping, legacy cache compatibility, isolated storage/TTL, zero-output prewarm, separate read/new-write usage, bounded hash-only diagnostics and targeted tests. No default or GPU acceptance implied. Final grouped review adds actual cache capability declaration, native worker-only owned directory creation, no-IO diagnostic bounds and prewarm output/slot admission.",
+     "sources": [
+       "CMakeLists.txt",
+@@ -2949,6 +2951,30 @@
+       "src/server/session_cache.cpp",
+       "src/server/session_state.cpp"
+     ],
+-    "uniform_slot_review": "Reuse SequenceOffset/Capacity for uniform MTP state and actual streaming cache path; optional snapshot scratch exhaustion degrades only cache, CUDA errors retain protection. Add two direct CPU range tests before any validation."
++    "uniform_slot_review": "Reuse SequenceOffset/Capacity for uniform MTP state and actual streaming cache path; optional snapshot scratch exhaustion degrades only cache, CUDA errors retain protection. Add two direct CPU range tests before any validation.",
++    "acceptance_evidence": [
++      "docs/evidence/serve-prompt-cache-cpu-20261110/README.md",
++      "docs/evidence/serve-prompt-cache-business-20261110/README.md",
++      "docs/evidence/serve-prompt-cache-delivery-20261110/README.md"
++    ]
++  },
++  "reasoning_pro_development_20261110": {
++    "status": "IMPLEMENTED_PENDING_TARGETED_VALIDATION",
++    "sources": [
++      "CMakeLists.txt",
++      "cmake/ChatProtocolIdentity.cmake",
++      "include/q4t/server/responses_reasoning.h",
++      "src/server/chat_capabilities.cpp",
++      "src/server/chat_generation.cpp",
++      "src/server/responses_execution.cpp",
++      "src/server/responses_plan.cpp",
++      "src/server/responses_reasoning.cpp"
++    ],
++    "review": "Reviewed native deliberation/answer with independent effort, no deliberation tool authorization, assistant-data notes, original final schema, shared output/TPM/RPM/cancellation, compaction and summary continuation, original history/cache boundaries and queued-only restore. Source inventory does not certify runtime behavior.",
++    "plan": "docs/SERVE_RESPONSES_EXECUTION_POLICY_2026-11-10.md",
++    "frozen_checks": {
++      "cpp": 19,
++      "schema": 2
++    }
+   }
+ }
