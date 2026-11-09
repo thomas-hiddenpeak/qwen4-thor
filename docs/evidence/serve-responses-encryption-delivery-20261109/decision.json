@@ -1,0 +1,48 @@
+{
+  "status": "PASS_TARGETED_RESPONSES_ENCRYPTION_RELEASE",
+  "acceptance": "ACCEPT_TARGETED_RESPONSES_ENCRYPTION",
+  "actual_business": {
+    "status": "PASS_RESPONSES_ENCRYPTION_TARGETED_BUSINESS",
+    "acceptance": "ACCEPT_TARGETED_RESPONSES_ENCRYPTION",
+    "all_nvml_ok": true,
+    "nvml_samples": 97,
+    "cleanup_confirmed": true,
+    "binary_sha256": "71cb526c8ffe42eed60f1bcfb4185969432b2155ef0f8225f4aa97ec35e0e99a",
+    "protocol_sha256": "7fc6547fadc2063540b0636889fb5aac30c53168cb4ceb038bdf70b66b14014f",
+    "counts": {
+      "starts": 2,
+      "chats": 8,
+      "controls": 92
+    },
+    "seconds": 102.24401643080637,
+    "internal_model_steps": 8,
+    "cpu_groups": {
+      "crypto_and_keys": 16,
+      "protocol": 18,
+      "admin_cpp": 12,
+      "admin_schema": 2,
+      "driver": 4
+    },
+    "passed": [
+      "actual AES-256-GCM reasoning and derived summary JSON",
+      "official SDK opaque-only origin restoration and SSE",
+      "live same-UID native CLI rotation without model restart",
+      "real project document function result to strict JSON title/citation using retained old key",
+      "background durable ciphertext and original SSE replay after explicit own model restart",
+      "explicit old-key retirement rejects before sampling; same-PID ordinary MTP Chat continues",
+      "per-process usage and client RPM/TPM equal actual model work"
+    ],
+    "no_performance_acceptance": true,
+    "no_full_model_quality_claim": true,
+    "long_stability_by_user": true,
+    "remaining_master_tasks_open": true
+  },
+  "source_commit": "fb3fed5cd2b1c3022824210f6289559e1e0c2e19",
+  "binary_sha256": "71cb526c8ffe42eed60f1bcfb4185969432b2155ef0f8225f4aa97ec35e0e99a",
+  "protocol_sha256": "7fc6547fadc2063540b0636889fb5aac30c53168cb4ceb038bdf70b66b14014f",
+  "source_review_sha256": "b440f1fe64d2f66314121eb230b8403c9ab57510f97a8082df55cb865bae1ae2",
+  "full_model_quality": false,
+  "performance_acceptance": false,
+  "long_stability_accepted": false,
+  "remaining_master_tasks_open": true
+}

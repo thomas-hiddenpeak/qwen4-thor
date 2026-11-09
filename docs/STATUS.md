@@ -1,28 +1,12 @@
-A07.3 [真实密文业务通过](evidence/serve-responses-encryption-business-20261109/README.md)：2 启动/8 请求/8 内部步/102.244 秒，97 NVML 全 OK，清理独立确认。官方 SDK/密文回填/在线换钥/真实文档工具/重启回放/退役拒绝与普通 MTP Chat 通过；候选 71cb526c。继续可回退交付与 A07.4/全部任务，默认暂不改。
-
-A07.3 [4 项驱动 CPU](evidence/serve-responses-encryption-driver-20261109/README.md)通过（计数源审查后 1 项追加，5 次执行）；候选 71cb526c 不变，准备严格租约下 2 启动/8 请求/8 内部步/900 秒真实业务。默认 A07.2 保持，验收后交付并连续推进全部余项。
-
-A07.3 实际密文业务驱动成组准备：冻结 4 项驱动 CPU；随后最多 2 启动/8 请求（1 拒绝）/8 内部步/900 秒，覆盖官方 SDK 密文回填、在线换钥/退役、真实文档工具、后台原事件与重启续接。默认 A07.2 保持，尚未新增 GPU；验证后交付并继续全部余项。
-
-A07.3 [原生密钥管理 12 C++/2 schema](evidence/serve-responses-encryption-admin-20261109/README.md)全过，host/实际引擎零警告，候选 71cb526c。在线轮换、真实 CLI、离线锁、实际提交丢回执、依赖/停机保护已验；准备必要真实 SDK/模型短验，再可回退交付及全部余项。默认 A07.2 保持 STOPPED，0 新增 GPU。
-
-A07.3 原生本机密钥管理已成组编码：同 UID Unix 通道、运行中查看/初始化/轮换/退役、显式离线独占、未知回执不重放及观测非停服依赖。冻结 12 C++/2 schema CPU，尚未执行，先必要构建。默认 A07.2 保持，接着真实 SDK/模型与可回退交付，全部总任务继续。
-
-A07.3 [加密双端 18 CPU/22 schema 值](evidence/serve-responses-encryption-protocol-20261109/README.md)通过，首 canonical shape 失败及 10 项补验保留；host/引擎零警告，候选 687fc18f，默认 A07.2 不动。继续原生密钥管理、实际 SDK/模型与发行及全部余项；0 新增 GPU，A07.3 尚未交付。
-
-A07.3 协议首轮 18 CPU 有 9 过/9 失败：认证已成功，恢复前缀为带 ID/status 的原生持久 item，却误用外部 input shape 拒绝。改用 canonical conversation shape，外部输入及模型计划校验保留；冻结 9 失败+1 安全负控补验，原件不覆盖。默认不动，继续管理/真实业务及总任务。
-
-A07.3 已接通认证加密 reasoning 输出与输入恢复，绑定客户端/模型/模板/来源前缀，持久/无状态/后台共路；冻结 18 项协议 CPU 与实际输出 schema，尚未验证。默认 A07.2 保持 STOPPED，继续原生密钥管理、真实业务及全部任务，不把源码声明当验收。
-
-A07.3 [密码/持久密钥 16 CPU](evidence/serve-responses-encryption-crypto-20261109/README.md)全过，host 零警告，初编译失败保留。继续真实 Responses 加密往返、前缀绑定、管理与业务交付，不在基础阶段停止；默认 A07.2/STOPPED 保持，0 新增 GPU。
-
-A07.3 认证加密与持久密钥基础已成组编码，冻结 16 项直接 CPU，先必要构建；尚未执行验证。AES-256-GCM 使用系统 OpenSSL，独立上下文/懒加载、原子计数与轮换、显式旧密钥退役；Responses 两端/前缀绑定和运维入口仍在实现，不能视为功能交付。默认 A07.2 保持 STOPPED，继续全部总任务。
-
 # 当前 Serve 总目标状态（2026-11-09）
 
-A07.2 已完成[真实摘要/工具/账本短验](evidence/serve-responses-summary-business-20261109/README.md)并[可回退默认交付](evidence/serve-responses-summary-delivery-20261109/README.md)。当前引擎 `8b4899cd`、元数据 `96e004ef`、原生包 `bbb4c13b`，publication revision12，STOPPED；旧 A07.1/核心与客户端账本保持。28 C++/3 驱动 CPU、累计 2 启动/8 请求/13 内部步/115.690 秒通过，112 NVML 全 OK，回放缺陷及修复证据保留。
+A07.3 已完成[真实加密状态业务](evidence/serve-responses-encryption-business-20261109/README.md)并[可回退默认交付](evidence/serve-responses-encryption-delivery-20261109/README.md)。当前引擎 `71cb526c`、元数据 `2081e08a`、原生包 `dca3b450`，publication revision14，STOPPED；旧 A07.2 包/发布代和核心/客户端账本完整保留。密码/协议/本机管理针对 CPU 通过；真实 2 启动/8 请求/8 内部步/102.244 秒通过，97 NVML 全 OK，清理独立确认。
 
-总目标 active、尚未合 main。现在继续 A07.3 认证加密推理状态往返，随后 A07.4—A07.8 及 A/R/Q/G 其余全部任务。摘要阶段不是总目标完成；非性能任务继续针对性验证，长稳由用户实跑。以下保留各阶段当时的状态，当前默认以上段为准。
+已验密文无状态回填、客户端/模型/模板/来源认证、原生在线换钥与显式退役、真实文档工具、后台持久与原 SSE 重启回放；退役密文拒绝不触发采样，普通 MTP Chat 继续。原 Qwen reasoning 明文投影仍可见，不代表全输出/磁盘加密。
+
+总目标 active、尚未合 main。现在继续 **A07.4 实际上下文压缩与 compact 接口**，随后 A07.5—A07.8 及 A/R/Q/G 全部余项。非性能任务只做针对验证，长稳由用户实跑，阶段不是总目标终点。
+
+以下保留历史检查点，当前默认以上段为准；A07.3 开发原件见开发日志及证据目录。
 
 A07.2 [真实摘要业务接受](evidence/serve-responses-summary-business-20261109/README.md)：累计 2 启动/8 外部请求/13 内部步/115.690 秒，112 NVML 全 OK，正常清理。三种摘要/JSON/SSE/后台/原记录回放、一次 RPM/累计 TPM、共享预算与真实文档工具闭环通过，候选 8b4899cd；保留首回放失败。继续可回退交付及 A07.3/所有总任务，默认尚未替换。
 

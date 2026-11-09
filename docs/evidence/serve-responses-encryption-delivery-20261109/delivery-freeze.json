@@ -1,0 +1,20 @@
+{
+  "script_sha256": "dc6840820ee2c139c1cb7e4d6faba731fff08eddfc2a4715a4ceb440935c1110",
+  "checks": [
+    "sealed-check",
+    "previous-check",
+    "legacy-check",
+    "publish",
+    "default-check",
+    "default-status",
+    "default-observe",
+    "default-publication"
+  ],
+  "starts": 0,
+  "chats": 0,
+  "gpu_queries": 0,
+  "predecessor_revision": 12,
+  "predecessor_manifest": "bbb4c13bc4b149fec303215b90819dc0d9c3db473f8553402c4838886715cc09",
+  "target_engine": "71cb526c8ffe42eed60f1bcfb4185969432b2155ef0f8225f4aa97ec35e0e99a",
+  "state_policy": "preserve core/client journals and STOPPED intent; retain actual prior package"
+}

@@ -115,3 +115,5 @@ A07.3 [双端 18 CPU 与 22 个实际协议值](evidence/serve-responses-encrypt
 A07.3 [原生管理 12 C++/2 schema](evidence/serve-responses-encryption-admin-20261109/README.md)首轮通过，实际引擎 71cb526c 零警告。准备真实 SDK/模型业务与交付，默认不动。管理信任边界是本机服务 UID；A11 的不可信代码执行必须隔离 OS 身份/密钥目录/管理套接字，不能用服务 UID 无隔离执行外来代码。
 
 A07.3 [真实业务通过](evidence/serve-responses-encryption-business-20261109/README.md)：2 启动/8 请求/8 内部步/102.244 秒，97 NVML 全 OK；密文无状态续聊、在线换钥/旧 key 保留、文档工具、后台原事件/重启、退役拒绝与同 PID Chat 已验。候选 71cb526c，继续可回退交付后 A07.4 与全部任务。
+
+A07.3 [可回退默认交付完成](evidence/serve-responses-encryption-delivery-20261109/README.md)：引擎 71cb526c、原生包 dca3b450、revision14，STOPPED。8 实际操作首轮通过，旧 A07.2 与核心/客户端账本保持。继续 A07.4 实际压缩、回填与独立 compact 接口及全部余项。
