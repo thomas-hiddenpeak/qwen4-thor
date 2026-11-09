@@ -35,3 +35,9 @@ CPU 检查，包含缺陷复现、模板读取顺序、count/compact 默认和�
 模板、后台恢复证据，不重跑完整性能或整模型质量矩阵。
 
 [CPU验收](evidence/serve-request-fields-cpu-20261110/README.md)通过，首驱动夹具错误和定向补验保留。当前默认70504790与完整回退保持，下一步实际短验，通过后交付并继续全部计划任务。
+
+## 本组交付
+
+13 C++/2schema/2驱动及实际1启动/2生成/2计数/10拒绝通过，
+40.241秒、40 NVML全OK。默认5935be0a/b39ad17e，revision30、
+STOPPED，上一代完整保留。[交付证据](evidence/serve-request-fields-delivery-20261110/README.md)。

@@ -1,0 +1,6 @@
+{
+  "request_id": "299ccc71-497c-40d0-b5b2-7a1661a7d694",
+  "expected_revision": 28,
+  "expected_manifest_sha256": "5a71516a7a2121d26f837039dc20f24c890af2c85227af3a330ab3a2a67b1c5c",
+  "target_manifest_sha256": "b39ad17e425e71cef0798c7d1f130c0dc6cebbb2d0332678af52acc23c6a1d0d"
+}

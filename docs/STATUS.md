@@ -1,5 +1,7 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+A07.8 字段合同完成[CPU](evidence/serve-request-fields-cpu-20261110/README.md)、[实际业务](evidence/serve-request-fields-business-20261110/README.md)及[可回退交付](evidence/serve-request-fields-delivery-20261110/README.md)。当前引擎5935be0a、元数据675ef104、包b39ad17e，revision30、STOPPED；旧70504790/5a71516a与业务账本保持。8发布操作、0新增模型/GPU。继续A07.8依赖项与A08留存治理等全部总任务，未合main。以下历史以此当前默认为准。
+
 A07.8 [字段合同真实业务通过](evidence/serve-request-fields-business-20261110/README.md)：1启动/2生成/2计数/10拒绝/40.241秒，40 NVML全OK并独立清理；合法JSON/SSE、精确错误与零额外生成账本通过。候选5935be0a，继续可回退交付及A08等全部总任务，默认70504790尚未替换。
 
 A07.8 [字段合同13 C++/2schema/2驱动通过](evidence/serve-request-fields-cpu-20261110/README.md)，44 SDK向量一致，host/引擎零警告；首驱动错用场景夹具的失败与单项修复保留。下一步1启动/2生成/2计数/10拒绝/600秒业务短验，再可回退交付及全部总任务；默认70504790保持。

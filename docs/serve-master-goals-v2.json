@@ -231,16 +231,15 @@
         "evidence/serve-input-tokens-delivery-20261110/README.md"
       ],
       "release": {
-        "engine_binary_sha256": "639c6b7b6c25095af0aecbd323ba2cead42aeccf49fd5e69fb1774643aed4aec",
-        "engine_release_sha256": "11036e4c877c2cd82998ddb2ca5bf878eeae022b191a3ff1a5cb2705375996b7",
-        "generation_sha256": "9efded02cbe6152c51e00148fd502cb1953f9b527aae1b91a2bd0446f354e257",
-        "manifest_sha256": "b4c8675608718ea2c11ea4a493c0129df38f1d5f3d27264c1c3b11525236831e",
-        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-programs-20261110/release-01/bundle",
-        "service_acceptance_sha256": "c32dceb8f51903573e8ef2a42fe09ec5c06eb7eb54eb892311f1af7067c05183",
-        "service_release_sha256": "ad2cd693508b8f2aea9d3f88641289ad2ce5b8af391f3a6a7f97d5c646899b9b",
-        "record": "docs/evidence/serve-access-program-delivery-20261110/result.json"
+        "engine_binary_sha256": "5935be0ab5b3f3ddaed910f7f7e719cc9e148f576b36b959087d9878d6a6ed97",
+        "engine_release_sha256": "675ef10407a3b59ee4ffcf872d919a767acdd641907e3f4b67a5ebab8d6118bc",
+        "generation_sha256": "120215b4b3eb2d5365fb7984b8b5a65c4103a551ae1736f2a5ab381ae8f8ea1e",
+        "manifest_sha256": "b39ad17e425e71cef0798c7d1f130c0dc6cebbb2d0332678af52acc23c6a1d0d",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-request-fields-20261110/release-01/bundle",
+        "service_acceptance_sha256": "fe24aecd28f6258da1bf8251bf50b4cd32d036c39a024761fd0164463c71b024",
+        "service_release_sha256": "9edaea12f6df8fbe533e14815e061030abcb1463c673e7aa2173d2f3e234d668"
       },
-      "development_status": "A07.1-A07.7 and standard input_tokens delivered; complete A07.8 item/tool/media contract remains required",
+      "development_status": "A07.1-A07.7, standard input_tokens and remaining core field/default fixes delivered; tool/media/refusal/item/include/SSE integration remains required",
       "item_shape_evidence": "evidence/serve-item-shape-20261109/README.md",
       "execution_evidence": "evidence/serve-responses-execution-20261109/README.md",
       "foreground_business_evidence": "evidence/serve-responses-business-20261109/README.md",
@@ -299,7 +298,7 @@
         },
         "publication_revision": 10
       },
-      "current_work": "A07.8 remaining input/output/include/SSE field audit; A08 retention and all remaining master tasks continue",
+      "current_work": "Complete source-linked remaining item/include/SSE audit, then A08 retention dependency and all required master tasks",
       "reasoning_summary": {
         "state": "delivered",
         "cpu_checks": 31,
@@ -806,7 +805,7 @@
         "full_task_complete": false
       },
       "request_field_audit": {
-        "state": "business_validated_delivery_pending",
+        "state": "delivered",
         "plan": "SERVE_RESPONSES_FIELD_AUDIT_2026-11-10.md",
         "sdk_vectors": 44,
         "cpu_cpp_cases": 13,
@@ -840,7 +839,18 @@
           "full_model_quality": false,
           "long_stability_accepted": false,
           "remaining_master_tasks_open": true
-        }
+        },
+        "release": {
+          "engine_binary_sha256": "5935be0ab5b3f3ddaed910f7f7e719cc9e148f576b36b959087d9878d6a6ed97",
+          "engine_release_sha256": "675ef10407a3b59ee4ffcf872d919a767acdd641907e3f4b67a5ebab8d6118bc",
+          "generation_sha256": "120215b4b3eb2d5365fb7984b8b5a65c4103a551ae1736f2a5ab381ae8f8ea1e",
+          "manifest_sha256": "b39ad17e425e71cef0798c7d1f130c0dc6cebbb2d0332678af52acc23c6a1d0d",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-request-fields-20261110/release-01/bundle",
+          "service_acceptance_sha256": "fe24aecd28f6258da1bf8251bf50b4cd32d036c39a024761fd0164463c71b024",
+          "service_release_sha256": "9edaea12f6df8fbe533e14815e061030abcb1463c673e7aa2173d2f3e234d668"
+        },
+        "publication_revision": 30,
+        "delivery_evidence": "evidence/serve-request-fields-delivery-20261110/README.md"
       }
     },
     {
