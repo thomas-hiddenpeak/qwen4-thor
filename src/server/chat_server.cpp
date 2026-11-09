@@ -140,6 +140,16 @@ Status ChatServer::Start(const ServerOptions& opts) {
     if (status) status = clients_.Configure(std::move(policy));
     if (!status) return status;
   }
+  if (!opts.access_program_policy_file.empty()) {
+    auto policy = std::make_shared<AccessProgramPolicy>();
+    auto status = LoadAccessProgramPolicy(opts.access_program_policy_file,
+                                          policy.get());
+    if (status)
+      status = BindAccessProgramPolicy(*policy, opts.served_model_name,
+                                        clients_.Snapshot().get());
+    if (!status) return status;
+    access_program_policy_ = std::move(policy);
+  }
   // Keep the actual listening descriptors across startup. A probe followed by
   // close would let another process take the port while model loading runs.
   HttpListeners pending_listeners;

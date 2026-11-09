@@ -147,6 +147,7 @@ set(Q4T_HOST_TEST_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_plan.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_summary.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_reasoning.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/access_program.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/moderation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_execution_moderation.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_choices.cpp
@@ -156,6 +157,7 @@ set(Q4T_HOST_TEST_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_input_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_plan_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_reasoning_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_access_program_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_moderation_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_context_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_prediction_test.cpp

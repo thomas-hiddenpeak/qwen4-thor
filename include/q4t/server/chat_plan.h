@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <memory>
 #include <cstdint>
 #include <optional>
 #include <string>
@@ -8,6 +9,7 @@
 #include <vector>
 
 #include "q4t/io/json.h"
+#include "q4t/server/access_program.h"
 #include "q4t/server/output_constraints.h"
 #include "q4t/server/sampling.h"
 #include "q4t/server/prediction.h"
@@ -53,6 +55,7 @@ struct ChatPlanConfig {
   bool client_fair_queue = false;
   const ClientLimits* client_limits = nullptr;
   std::vector<std::string> model_aliases;
+  std::shared_ptr<const AccessProgramPolicy> access_program_policy;
 };
 
 struct ChatPlanError {

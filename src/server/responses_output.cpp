@@ -115,7 +115,8 @@ Status ResponsesOutput::Init(const io::Json& options, std::string id,
                           "service_tier",
                           "truncation",
                           "top_logprobs",
-                          "access_programs"}) {
+                          "access_programs",
+                          "q4t_access_program"}) {
     if (const auto* value = options.Find(key)) Set(&response_, key, *value);
   }
   auto status = Charge(OutputJson(response_).size());

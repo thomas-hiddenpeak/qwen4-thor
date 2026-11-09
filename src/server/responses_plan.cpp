@@ -440,9 +440,12 @@ Status ParseResponsesEnvelope(const io::Json& request,
       result.obfuscation = value->boolean;
     }
   }
-  // These are retained service requirements. Validation of their model/tool
-  // policy and application happens in the corresponding service stage.
-  for (const auto* key : {"access_programs", "moderation"})
+  status = ResolveAccessProgram(request, config, &result.access_program, error);
+  if (!status) return status;
+  Set(&result.options, "access_programs", result.access_program.selected);
+  if (!result.access_program.provenance.IsNull())
+    Set(&result.options, "q4t_access_program", result.access_program.provenance);
+  for (const auto* key : {"moderation"})
     if (const auto* value = request.Find(key); value && !value->IsNull()) {
       if (!value->IsObject())
         return Invalid(error, key, "expected options object");
@@ -504,7 +507,8 @@ Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
     Set(&chat, "response_format", format);
   }
   Set(&chat, "enable_thinking", Boolean(envelope.reasoning_effort != "none"));
-  std::string guidance;
+  std::string guidance = envelope.access_program.instructions;
+  if (!guidance.empty()) guidance += '\n';
   if (OneOf(envelope.reasoning_effort, {"low", "medium", "xhigh"})) {
     Set(&chat, "reasoning_effort", String(envelope.reasoning_effort));
   } else if (envelope.reasoning_effort != "none") {
@@ -512,15 +516,15 @@ Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
     // explicit natural-language adaptation, not a false numeric token promise.
     Set(&chat, "reasoning_effort", String("medium"));
     if (envelope.reasoning_effort == "minimal")
-      guidance =
+      guidance +=
           "Use minimal reasoning: only the essential steps needed for an "
           "accurate answer.\n";
     else if (envelope.reasoning_effort == "high")
-      guidance =
+      guidance +=
           "Use high reasoning effort: check assumptions and verify the "
           "important steps before answering.\n";
     else
-      guidance =
+      guidance +=
           "Use maximum reasoning effort within the output budget: examine "
           "alternatives and verify the result carefully.\n";
   }

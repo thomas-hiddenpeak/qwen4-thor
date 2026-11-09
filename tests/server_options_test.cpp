@@ -20,6 +20,20 @@ bool Parse(std::initializer_list<std::string_view> args, ServerOptions* out) {
 }
 }  // namespace
 
+Q4T_TEST(serve_access_program_option_requires_trusted_client_policy) {
+  auto options = Defaults();
+  Q4T_CHECK(!Parse({"--access-program-policy-file", "/private/access.json"},
+                   &options));
+  Q4T_CHECK(options.access_program_policy_file.empty());
+  Q4T_CHECK(Parse({"--client-policy-file", "/private/clients.json",
+                  "--access-program-policy-file", "/private/access.json"},
+                 &options));
+  Q4T_CHECK(options.access_program_policy_file == "/private/access.json");
+  Q4T_CHECK(!Parse({"--access-program-policy-file"}, &options));
+  Q4T_CHECK(options.access_program_policy_file == "/private/access.json");
+  return true;
+}
+
 Q4T_TEST(serve_object_store_options_transactional_bounds) {
   auto options = Defaults();
   Q4T_CHECK(Parse(

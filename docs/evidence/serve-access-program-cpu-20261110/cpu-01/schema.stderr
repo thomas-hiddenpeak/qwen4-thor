@@ -1,0 +1,32 @@
+test_actual_native_json_and_sse_keep_provenance (tools.serve_responses.test_access_program_contract.AccessProgramContract.test_actual_native_json_and_sse_keep_provenance) ... ok
+test_request_selection_exact_shape (tools.serve_responses.test_access_program_contract.AccessProgramContract.test_request_selection_exact_shape) ... ok
+test_binding_cannot_claim_cloud_approval_or_invent_clients (tools.serve_responses.test_access_program_contract.AccessProgramPackage.test_binding_cannot_claim_cloud_approval_or_invent_clients) ... ok
+test_no_program_configuration_keeps_existing_command (tools.serve_responses.test_access_program_contract.AccessProgramPackage.test_no_program_configuration_keeps_existing_command) ... ok
+test_private_reader_retains_original_client_parser (tools.serve_responses.test_access_program_contract.AccessProgramPackage.test_private_reader_retains_original_client_parser) ... ok
+test_sealed_package_survives_source_removal_and_rejects_tampering (tools.serve_responses.test_access_program_contract.AccessProgramPackage.test_sealed_package_survives_source_removal_and_rejects_tampering) ... ERROR
+test_critical_floor_is_explicit_bounded_and_pinned (tools.serve_service.test_service.PackageTests.test_critical_floor_is_explicit_bounded_and_pinned) ... ok
+test_inconsistent_acceptance_rejected_before_output_creation (tools.serve_service.test_service.PackageTests.test_inconsistent_acceptance_rejected_before_output_creation) ... ok
+test_invalid_port_or_unbounded_restart_rejected (tools.serve_service.test_service.PackageTests.test_invalid_port_or_unbounded_restart_rejected) ... ok
+test_legacy_package_inventory_keeps_legacy_configuration (tools.serve_service.test_service.PackageTests.test_legacy_package_inventory_keeps_legacy_configuration) ... ok
+test_package_or_model_changes_are_rejected (tools.serve_service.test_service.PackageTests.test_package_or_model_changes_are_rejected) ... ok
+test_snapshot_is_independent_of_worktree_and_original_pair (tools.serve_service.test_service.PackageTests.test_snapshot_is_independent_of_worktree_and_original_pair) ... ok
+test_unit_has_no_automatic_activation_and_binds_snapshot (tools.serve_service.test_service.PackageTests.test_unit_has_no_automatic_activation_and_binds_snapshot) ... ok
+test_unknown_config_or_inventory_rejected (tools.serve_service.test_service.PackageTests.test_unknown_config_or_inventory_rejected) ... ok
+test_v2_inventory_retains_memory_without_inspection (tools.serve_service.test_service.PackageTests.test_v2_inventory_retains_memory_without_inspection) ... ok
+
+======================================================================
+ERROR: test_sealed_package_survives_source_removal_and_rejects_tampering (tools.serve_responses.test_access_program_contract.AccessProgramPackage.test_sealed_package_survives_source_removal_and_rejects_tampering)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_access_program_contract.py", line 128, in test_sealed_package_survives_source_removal_and_rejects_tampering
+    with (target/'access-program-policy.json').open('ab') as stream:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-programs-20261110/package-fixtures/tmpu_quisva/package/access-program-policy.json'
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.464s
+
+FAILED (errors=1)

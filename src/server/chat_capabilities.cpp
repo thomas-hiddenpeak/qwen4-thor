@@ -20,7 +20,8 @@ std::string Quote(const std::string& value) {
 
 std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
                                  bool mtp_enabled,
-                                 uint64_t media_attention_shared_bytes) {
+                                 uint64_t media_attention_shared_bytes,
+                                 const AccessProgramPolicy* access) {
   const bool constrained = kStructuredDecodingAvailable;
   const bool cleanup_pending = detail::GrammarCleanupPending();
   const std::string options =
@@ -127,8 +128,9 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("auxiliary_output_tokens_per_step":512,"max_steps":2,)"
          R"("usage":"q4t_moderation_usage","same_client_tpm":true,)"
          R"("single_request_admission":true,"model_restart_on_error":false},)"
+         R"("access_programs":)" +
+         OutputJson(AccessProgramCapabilities(access)) + "," +
          R"("pending_execution":[)"
-         R"("access_programs",)"
          R"("file_resolution","builtin_tools"]})"
          R"(,"conversations":{"profile":"q4t-conversations-v1",)"
          R"("endpoint":"/v1/conversations","create":true,"retrieve":true,)"

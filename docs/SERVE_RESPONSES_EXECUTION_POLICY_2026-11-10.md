@@ -55,3 +55,37 @@ SDK包含moderation.model和input/output的score/block策略，输出为结果�
 [实际审核业务已接受](evidence/serve-moderation-business-20261110/README.md)：1启动/10请求/28步骤/129.587秒，122 NVML全OK，所有正反例、6步组合、工具和真实账本通过；正常清理。继续可回退发布，然后c及全部总目标。
 
 [A07.7b默认交付完成](evidence/serve-moderation-delivery-20261110/README.md)：8实际操作通过，包4f71ce5c/引擎31adcfab/元数据0d98d70f，revision24、STOPPED，pro完整回退及原账本保持。继续c与所有总任务；独立/v1/moderations属于A10标准模型接口，仍须接入，不能以本次Responses字段实现代替。
+
+## A07.7c 实施合同（2026-11-10）
+
+冻结为原生请求授权与实际模型策略接入，不宣称本地Qwen拥有OpenAI私有Daybreak权重或组织批准。无策略配置时，省略/空对象按standard执行并返回null，显式standard保留选择；错误值/null/未知字段给400，模型不适配与权限不足分别400/403。
+
+可选私有策略文件绑定实际served model、native blue/red层级、最低客户端授权、默认选择与standard回退；可信客户端来自已有鉴权，不从请求元数据或自报身份授予权限。配置的原生策略指令实际进入模型上下文、计入token与配额，并在pro/压缩/摘要续接保留。响应额外标识q4t-local策略身份，不能冒充OpenAI批准；审核分类器保持独立固定合同，不接受放宽分类的策略指令。
+
+策略在进程启动前一次加载；运行期文件失能不停止健康模型。后台排队恢复重新核对授权与原策略身份，变更不能悄悄改用另一策略或重放已有执行。原输入记录保留，缓存根据真实上下文字节隔离。发行包须封装可选策略并核验身份；无配置无外部依赖。
+
+成组开发后冻结直接CPU清单，覆盖严格输入/权限矩阵、真实模板与子步骤、恢复拒绝、私有文件、封装与SDK schema；随后最多1次模型启动、8次生成、900秒业务短验，含JSON/SSE、真实文档工具闭环、后台回放、未授权请求零模型步及同PID普通Chat。全部已过证据复用，不跑全模型/性能矩阵。云端账号/私有模型接入仍属G00/A10待解决依赖，不以本地配置冒充云端验收；完成本组继续A07.8及全部总任务。
+
+### 原生策略可选配置
+
+`q4t serve --client-policy-file /private/clients.json --access-program-policy-file /private/program.json`。文件须为当前用户独占的普通文件（0600/0400、单链接）；原生发行prepare增加`--access-program-policy /private/program.json`，封装独立副本、绑定内容和模型。无此配置仍完整执行standard路径，不要求nginx或云端服务。
+
+```json
+{
+  "version": 1,
+  "authority": "q4t-local",
+  "model": "qwen3.8-flash-next",
+  "cyber_tier": "blue",
+  "minimum_grant": "red",
+  "default_selection": "model_tier",
+  "standard_allowed": true,
+  "program_instructions": "Use actual evidence to review authorized defensive project tasks.",
+  "clients": [{"id": "reviewer", "grant": "red"}]
+}
+```
+
+`reviewer`须已存在于可信client policy；blue层级也可要求red最低授权。默认选择支持standard或model_tier；blue无授权且允许standard时仅隐式回退，显式选择失败给403，red隐式选择不因无权限回退。选错模型层级给400。局部策略授权不等于模型供应商批准，也不是OS工具沙箱或内容安全保证；实际工具权限仍由执行器独立决定。普通Chat现有模型入口不被此Responses配置改造成云端Cyber模型。
+
+输入历史不写入服务端策略，输出以`q4t_access_program`披露本地authority、model、策略哈希与实际treatment。推理摘要/压缩沿用策略，固定审核分类器不接收这些指令。后台已排队对象重启时重新核对策略身份和当前授权；改变策略需要显式新部署，禁止静默恢复为新待遇。
+
+CPU已通过并保留首次夹具失败原件，见[证据](evidence/serve-access-program-cpu-20261110/README.md)。继续实际1启动/8生成/5拒绝/8模型步短验。后续A07.8还须补`POST /v1/responses/input_tokens`标准计数入口；现有Chat preflight不能冒充此端点完成。

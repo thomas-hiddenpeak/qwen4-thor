@@ -55,3 +55,5 @@ docs/evidence/serve-moderation-cpu-20261110/**/*.wire binary
 docs/evidence/serve-moderation-business-20261110/** -text -whitespace
 docs/evidence/serve-moderation-business-20261110/**/*.wire binary
 docs/evidence/serve-moderation-delivery-20261110/** -text -whitespace
+docs/evidence/serve-access-program-cpu-20261110/** -text -whitespace
+docs/evidence/serve-access-program-cpu-20261110/**/*.wire binary

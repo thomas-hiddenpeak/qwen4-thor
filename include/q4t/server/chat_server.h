@@ -194,6 +194,7 @@ class ChatServer {
   int AllocSeqId(RequestControl* control, int fd, size_t required = 0);
   RequestRegistry requests_;
   ClientAdmission clients_;
+  std::shared_ptr<const AccessProgramPolicy> access_program_policy_;
   std::unique_ptr<ClientPolicyAdmin> client_policy_admin_;
   std::unique_ptr<ObjectStore> objects_;
   std::unique_ptr<StateKeyAdmin> state_key_admin_;

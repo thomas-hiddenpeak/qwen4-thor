@@ -598,3 +598,13 @@ schema v2的格式回归使用
 仅用于hostname/email，缺失时局部报依赖不可用，不停止健康模型。
 schema v2已完成针对性业务验收并安装本机默认；工作分支尚未合main。
 实际交付及剩余组合任务见[当前状态](docs/STATUS.md)。
+
+
+### 可选原生 Responses 访问策略
+
+`access_programs.cyber`支持标准选择及模型/客户端分离授权。可用
+`--access-program-policy-file`配置本地模型策略，发行prepare用
+`--access-program-policy`封装私有副本；不依赖nginx或云端服务。
+本地执行以`q4t_access_program.authority=q4t-local`标识，不能当作
+OpenAI Daybreak批准或私有模型。配置、恢复边界与验收进展见
+[原生执行策略](docs/SERVE_RESPONSES_EXECUTION_POLICY_2026-11-10.md#原生策略可选配置)。

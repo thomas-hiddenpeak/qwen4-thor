@@ -293,10 +293,55 @@ def verify_declarations(metadata, directory=None, *, required=False):
     return root
 
 
+def access_program_binding(raw, clients, model):
+    """Validate the native policy without importing model/CUDA code."""
+    import json
+    from tools.serve_gateway import client_policy as cp
+    require(type(raw) is bytes and 0 < len(raw) <= cp.MAX_BYTES,
+            'invalid access program file size')
+    try:
+        value = json.loads(raw.decode('utf-8'), object_pairs_hook=cp.unique,
+                           parse_constant=lambda _: cp.require(False))
+    except (ValueError, UnicodeError, RecursionError):
+        raise ValueError('invalid native access program policy') from None
+    require(type(value) is dict and set(value) == {
+        'version', 'authority', 'model', 'cyber_tier', 'minimum_grant',
+        'default_selection', 'standard_allowed', 'program_instructions', 'clients'},
+        'invalid access program fields')
+    require(type(value['version']) is int and value['version'] == 1 and
+            value['authority'] == 'q4t-local' and value['model'] == model,
+            'invalid access program authority or model')
+    tier, grant = value['cyber_tier'], value['minimum_grant']
+    require(tier in ('blue', 'red') and grant in ('blue', 'red') and
+            (tier != 'red' or grant == 'red'), 'invalid native model tier')
+    require(value['default_selection'] in ('standard', 'model_tier') and
+            type(value['standard_allowed']) is bool and
+            (value['default_selection'] != 'standard' or value['standard_allowed']),
+            'invalid native program default')
+    instructions = value['program_instructions']
+    require(type(instructions) is str and instructions.strip(' \t\n\r\v\f') and
+            len(instructions.encode('utf-8')) <= 16384 and '\0' not in instructions,
+            'invalid native program instructions')
+    cp.validate(clients)
+    grants = value['clients']
+    require(type(grants) is list and len(grants) <= cp.MAX_BYTES // 1024,
+            'invalid native program grants')
+    known, seen = {v['id'] for v in clients['clients']}, set()
+    for entry in grants:
+        require(type(entry) is dict and set(entry) == {'id', 'grant'} and
+                type(entry['id']) is str and entry['id'] in known and
+                entry['id'] not in seen and entry['grant'] in ('blue', 'red'),
+                'invalid native client grant')
+        seen.add(entry['id'])
+    return dict(profile='q4t-access-program-policy-v1', authority='q4t-local',
+                model=model, sha256=hashlib.sha256(raw).hexdigest())
+
+
 def prepare(binary, release, model, output, port=8080, restart_limit=0,
             critical_memory_mib=1024, client_policy=None, host_resources=None,
             operations_port=0, nvml_policy='strict', model_names=None,
-            application_state=None, capacity_config=None, repository=None):
+            application_state=None, capacity_config=None, repository=None,
+            access_program_policy=None):
     check_python_runtime()
     repository = ROOT if repository is None else Path(repository).resolve(strict=True)
     profile = None
@@ -314,6 +359,12 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
         policy_raw, clients = cp.read(client_policy)
         if profile is not None:
             capacity.check_clients(profile, clients)
+    access_raw, access_binding = None, None
+    if access_program_policy is not None:
+        require(policy_raw is not None, 'access programs require client policy')
+        access_raw = cp.read_private(access_program_policy)
+        access_binding = access_program_binding(access_raw, clients,
+            config.get('model_names', {}).get('name', 'qwen3.8-flash-next'))
     binary, release, model = map(lambda p: Path(p).resolve(),
                                  (binary, release, model))
     regular(binary)
@@ -331,6 +382,10 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
     require(isinstance(protocol, str) and len(protocol) == 64 and
             all(c in '0123456789abcdef' for c in protocol), 'invalid protocol')
     declarations = verify_declarations(metadata, required=True)
+    if access_raw is not None:
+        require(read(declarations/'capabilities.json').get('responses', {})
+                .get('access_programs', {}).get('enabled') is True,
+                'accepted engine lacks native access programs')
     observed_state = metadata.get('observed_configuration', {}).get('application_state')
     if observed_state is not None:
         require(type(observed_state) is dict and
@@ -384,12 +439,19 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
             stream.write(policy_raw)
         (target/'client-policy.json').chmod(0o400)
         names.append('client-policy.json')
+    if access_raw is not None:
+        with (target/'access-program-policy.json').open('xb') as stream:
+            stream.write(access_raw)
+        (target/'access-program-policy.json').chmod(0o400)
+        names.append('access-program-policy.json')
     python = Path(sys.executable).resolve()
     manifest = dict(version=3, repository=str(repository), model_dir=str(model),
         model_files=model_files, protocol_sha256=protocol, settings=config,
         python=dict(path=str(python), sha256=sha(python)),
         files={name: sha(target/name) for name in names},
         weight_shards_rehashed=False, managed_service_accepted=False)
+    if access_binding is not None:
+        manifest['access_program_policy'] = access_binding
     manifest['release_declarations'] = metadata['release_declarations']['profile']
     manifest['third_party_notices'] = dict(profile='q4t-notices-v1', files=list(NOTICE_FILES))
     if policy_raw is not None:
@@ -475,6 +537,14 @@ def verify(package, digest):
     else:
         require('host_resources' not in manifest and 'resource_dependencies' not in manifest,
                 'legacy package cannot declare host resource protection')
+    if 'access_program_policy' in manifest:
+        require('client_policy' in manifest,
+                'access programs require sealed client policy')
+        expected.add('access-program-policy.json')
+        access_raw = cp.read_private(package/'access-program-policy.json')
+        require(manifest['access_program_policy'] == access_program_binding(
+            access_raw, clients, config.get('model_names', {}).get(
+                'name', 'qwen3.8-flash-next')), 'access program binding differs')
     require(set(manifest['files']) == expected, 'package inventory differs')
     for name, wanted in manifest['files'].items():
         path = package/name
@@ -492,6 +562,10 @@ def verify(package, digest):
                 'package declaration profile differs')
     verify_declarations(metadata, package/'declarations',
                         required='release_declarations' in manifest)
+    if 'access_program_policy' in manifest:
+        require(read(package/'declarations/capabilities.json').get('responses', {})
+                .get('access_programs', {}).get('enabled') is True,
+                'engine access program declaration absent')
     if 'application_state' in config:
         require(metadata.get('observed_configuration', {}).get('application_state', {})
             .get('profile') == 'q4t-objects-v1', 'application state engine declaration absent')
@@ -523,6 +597,9 @@ def command(package, manifest, *, state_directory=None):
             args += ['--'+key.replace('_', '-'), str(value)]
     if 'client_policy' in manifest:
         args += ['--client-policy-file', str(Path(package)/'client-policy.json')]
+    if 'access_program_policy' in manifest:
+        args += ['--access-program-policy-file',
+                 str(Path(package)/'access-program-policy.json')]
     if cfg.get('operations_port', 0):
         args += ['--operations-port', str(cfg['operations_port'])]
     if 'model_names' in cfg:

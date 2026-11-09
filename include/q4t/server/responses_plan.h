@@ -19,6 +19,7 @@ struct ResponsesEnvelope {
   io::Json options;
   PromptCacheOptions cache;
   ModerationOptions moderation;
+  AccessProgramSelection access_program;
   bool stream = false;
   bool store = true;
   bool background = false;

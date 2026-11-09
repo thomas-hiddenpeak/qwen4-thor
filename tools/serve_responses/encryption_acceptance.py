@@ -156,6 +156,9 @@ class Stage(foreground.Stage):
                 requests_per_minute=self.requests_per_minute,
                 tokens_per_minute=self.tokens_per_minute)])
 
+    def extra_model_args(self):
+        return []
+
     def start(self):
         background.probe_ports((self.plan['port'], self.plan['operations_port']))
         generation = self.counts['starts'] + 1
@@ -168,6 +171,7 @@ class Stage(foreground.Stage):
             '--max-tokens', '384', '--max-inflight-requests', '8',
             '--max-queued-requests', '2', '--object-store-dir', str(self.out/'objects'),
             '--client-policy-file', str(self.out/'client-policy.json')]
+        args += self.extra_model_args()
         save(self.out / f'model-{generation}-command.json', args)
         self.budget('starts')
         with (self.out / f'model-{generation}.log').open('xb', buffering=0) as log:

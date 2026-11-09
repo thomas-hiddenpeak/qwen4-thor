@@ -107,8 +107,6 @@ ObjectReply ResponsesExecution::RequiredExecutors(
   std::string required;
   if (envelope_.background && !background_executor)
     required = "background";
-  for (const char* key : {"access_programs"})
-    if (required.empty() && Nonnull(envelope_.request, key)) required = key;
   if (!required.empty()) {
     auto reply =
         Error(503, "response_executor_unavailable",
@@ -229,6 +227,16 @@ ObjectReply ResponsesExecution::RestoreQueued(const std::string& id,
   auto status =
       ParseResponsesEnvelope(plan_.request, config, &envelope_, &error);
   if (!status) return Error(error.http_status, error.code, status.message());
+  // Queued work may resume only with the original actual treatment. A new
+  // grant/default/policy must not silently alter previously accepted work.
+  for (const auto* key : {"access_programs", "q4t_access_program"}) {
+    const auto* prior = snapshot.Find(key);
+    const auto* current = envelope_.options.Find(key);
+    if (OutputJson(prior ? *prior : Json()) !=
+        OutputJson(current ? *current : Json()))
+      return Error(409, "response_access_program_changed",
+                   "Queued response access program policy changed");
+  }
   auto result = RequiredExecutors(true);
   if (result.ok())
     result = PlanGeneration(config, snapshot.GetInt("created_at"));

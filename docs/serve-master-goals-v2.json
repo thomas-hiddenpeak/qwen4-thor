@@ -296,7 +296,7 @@
         },
         "publication_revision": 10
       },
-      "current_work": "A07.7c actual authorized access program executors; then A07.8 and all remaining master tasks, including A10 standalone moderation endpoint",
+      "current_work": "A07.7c bounded actual policy/authorization business then reversible delivery; A07.8 and all master tasks continue",
       "reasoning_summary": {
         "state": "delivered",
         "cpu_checks": 31,
@@ -729,6 +729,21 @@
           "service_release_sha256": "081d960a0e29b975b30480f7823cc1e90e235def69444f76c8dbb88a3f75ad51"
         },
         "publication_revision": 24
+      },
+      "access_programs": {
+        "state": "cpu_pass_pending_business",
+        "native_authority": "q4t-local",
+        "cpu": 18,
+        "schema": 2,
+        "package": 4,
+        "driver": 4,
+        "planned": {
+          "starts": 1,
+          "generations": 8,
+          "negative_creates": 5,
+          "model_steps": 8,
+          "seconds": 900
+        }
       }
     },
     {

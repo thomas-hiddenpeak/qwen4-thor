@@ -30,6 +30,7 @@ struct ServerOptions {
   std::string host = "127.0.0.1";
   std::string
       client_policy_file;  // Private immutable gateway policy, optional.
+  std::string access_program_policy_file;  // Optional native policy snapshot.
   int port = 8000;
   // Optional independent local operations listener; 0 disables. Always
   // 127.0.0.1, with its own bounded handlers; never serves generation.

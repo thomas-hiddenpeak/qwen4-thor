@@ -113,6 +113,9 @@ Status ValidateServerOptions(const ServerOptions& options) {
       options.operations_port == options.port)
     return Status::Fail(
         "operations-port must be 0 or a distinct port [1,65535]");
+  if (!options.access_program_policy_file.empty() &&
+      options.client_policy_file.empty())
+    return Status::Fail("access-program-policy-file requires client policy");
   if (options.model_dir.empty()) return Status::Fail("model-dir is empty");
   if (options.max_tokens < 1)
     return Status::Fail("max-tokens must be positive");
@@ -233,7 +236,9 @@ Status ParseServerOptions(std::span<const std::string_view> args,
         key != "--startup-plan" && key != "--mtp-subset-head" &&
         key != "--seq-capacities" && key != "--session-cache-dir" &&
         key != "--prefix-cache-dir" && key != "--prefix-cache-checkpoints" &&
-        key != "--client-policy-file" && key != "--served-model-name" &&
+        key != "--client-policy-file" &&
+        key != "--access-program-policy-file" &&
+        key != "--served-model-name" &&
         key != "--model-alias" && key != "--object-store-dir")
       return Status::Fail("unknown serve option: " + std::string(key));
     if (++i == args.size() || args[i].empty() || args[i].starts_with("--"))
@@ -274,6 +279,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       parsed.object_store_dir = value;
     } else if (key == "--mtp-subset-head") {
       parsed.mtp_subset_head = value;
+    } else if (key == "--access-program-policy-file") {
+      parsed.access_program_policy_file = value;
     } else if (key == "--client-policy-file") {
       parsed.client_policy_file = value;
     } else if (key == "--host") {

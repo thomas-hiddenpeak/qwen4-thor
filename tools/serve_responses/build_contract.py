@@ -96,6 +96,12 @@ def schema(graph):
         total_tokens=dict(type='integer', minimum=0),
         model_steps=dict(type='integer', minimum=0, maximum=2)),
         ['input_tokens', 'output_tokens', 'total_tokens', 'model_steps'])
+    response['properties']['q4t_access_program'] = obj(dict(
+        authority=dict(const='q4t-local'),
+        policy_sha256=dict(type='string', pattern='^[0-9a-f]{64}$'),
+        backend_model=dict(type='string', minLength=1),
+        treatment=dict(enum=['standard', 'operator_system_instructions'])),
+        ['authority', 'policy_sha256', 'backend_model', 'treatment'])
     # The pinned TypeScript interface omits null, but official HTTP examples
     # explicitly return usage:null before completion and after cancellation.
     response['properties']['usage'] = nullable(response['properties']['usage'])

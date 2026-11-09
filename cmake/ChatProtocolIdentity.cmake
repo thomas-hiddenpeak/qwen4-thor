@@ -26,10 +26,12 @@ set(protocol_inputs
   src/server/prompt_api.cpp
   include/q4t/server/responses_plan.h
   include/q4t/server/responses_reasoning.h
+  include/q4t/server/access_program.h
   include/q4t/server/moderation.h
   src/server/responses_plan.cpp
   src/server/responses_summary.cpp
   src/server/responses_reasoning.cpp
+  src/server/access_program.cpp
   src/server/moderation.cpp
   src/server/responses_execution_moderation.cpp
   cmake/NativeCrypto.cmake

@@ -1,0 +1,60 @@
+[
+  {
+    "name": "package-fix",
+    "argv": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "tools.serve_responses.test_access_program_contract.AccessProgramPackage.test_sealed_package_survives_source_removal_and_rejects_tampering",
+      "-v"
+    ],
+    "exit_code": 0,
+    "seconds": 0.31420794781297445
+  },
+  {
+    "name": "inventory",
+    "argv": [
+      "python3",
+      "-B",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.1140386089682579
+  },
+  {
+    "name": "application",
+    "argv": [
+      "python3",
+      "-B",
+      "tools/serve_responses/build_contract.py",
+      "--types",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-prompt-cache-20261110/application-types.json",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.06393706891685724
+  },
+  {
+    "name": "protocol",
+    "argv": [
+      "python3",
+      "-B",
+      "tools/serve_protocol/build_contract.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.11390159511938691
+  },
+  {
+    "name": "whitespace",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.06488323025405407
+  }
+]

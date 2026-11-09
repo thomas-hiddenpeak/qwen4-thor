@@ -62,6 +62,7 @@ Status PlanResponsesSummary(const ResponsesEnvelope& envelope,
       Object({{"role", String("system")}, {"content", String(instruction)}}));
   messages.array.push_back(
       Object({{"role", String("user")}, {"content", String(reasoning)}}));
+  AddAccessProgramInstructions(envelope.access_program, &messages);
   ResponsesSummaryPlan candidate;
   candidate.request = Object(
       {{"model", String(envelope.options.GetString("model", config.model))},

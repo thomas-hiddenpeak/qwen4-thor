@@ -49,6 +49,14 @@ ObjectReply ResponsesExecution::SelectCompaction(size_t input_tokens,
   if (candidate.compacted_items && !standalone_compaction_ && budget < 2)
     return Error(400, "compaction_budget_exhausted",
                  "Compaction and continuation require at least two tokens");
+  if (candidate.compacted_items &&
+      !envelope_.access_program.instructions.empty()) {
+    AddAccessProgramInstructions(envelope_.access_program,
+                                 &Field(candidate.request, "messages"));
+    status =
+        PlanChatRequest(candidate.request, config, &candidate.chat, &error);
+    if (!status) return Failure(status, error);
+  }
   if (standalone_compaction_ && candidate.compacted_items) {
     const auto instructions = envelope_.options.GetString("instructions");
     if (!instructions.empty()) {

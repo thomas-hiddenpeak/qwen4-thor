@@ -293,6 +293,7 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
     prepare.add_argument('--model-alias', action='append', default=[])
     prepare.add_argument('--object-store-dir')
     prepare.add_argument('--capacity-config', type=Path)
+    prepare.add_argument('--access-program-policy', type=Path)
     for option in engine.APPLICATION_LIMITS:
         prepare.add_argument('--object-'+option.replace('_', '-'), type=int)
     for name in ('check', 'reload', 'init', 'init-resume', 'run', 'start', 'status', 'diagnostics', 'stop',
@@ -362,7 +363,7 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                 client_ca=args.client_ca, client_crl=args.client_crl,
                 capacity_config=engine.read(args.capacity_config)
                     if args.capacity_config is not None else None,
-                repository=repository,
+                repository=repository, access_program_policy=args.access_program_policy,
                 model_names=dict(
                     name=args.served_model_name if args.served_model_name is not None
                          else 'qwen3.8-flash-next', aliases=args.model_alias)

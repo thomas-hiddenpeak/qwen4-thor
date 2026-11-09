@@ -1,0 +1,23 @@
+test_actual_wire_based_oracle_rejects_false_selection_and_context (tools.serve_responses.test_access_program_acceptance.AccessProgramAcceptance.test_actual_wire_based_oracle_rejects_false_selection_and_context) ... ok
+test_frozen_requests_and_negative_cases (tools.serve_responses.test_access_program_acceptance.AccessProgramAcceptance.test_frozen_requests_and_negative_cases) ... ok
+test_model_steps_reject_denied_execution_skips_and_replays (tools.serve_responses.test_access_program_acceptance.AccessProgramAcceptance.test_model_steps_reject_denied_execution_skips_and_replays) ... ERROR
+test_policy_copy_and_business_do_not_start_another_model (tools.serve_responses.test_access_program_acceptance.AccessProgramAcceptance.test_policy_copy_and_business_do_not_start_another_model) ... ok
+
+======================================================================
+ERROR: test_model_steps_reject_denied_execution_skips_and_replays (tools.serve_responses.test_access_program_acceptance.AccessProgramAcceptance.test_model_steps_reject_denied_execution_skips_and_replays)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_access_program_acceptance.py", line 68, in test_model_steps_reject_denied_execution_skips_and_replays
+    check_steps(log, values, chat)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/access_program_acceptance.py", line 82, in check_steps
+    summary.check_steps(log, value, 1)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/summary_acceptance.py", line 68, in check_steps
+    require(choices == list(range(expected)), 'actual internal model steps differ')
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 61, in require
+    raise RuntimeError(message)
+RuntimeError: actual internal model steps differ
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.032s
+
+FAILED (errors=1)

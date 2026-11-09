@@ -72,7 +72,7 @@ void PrintUsage(const char* prog) {
       "[--min-available-memory-mib N] [--memory-recovery-margin-mib N] "
       "[--startup-memory-headroom-mib N] "
       "[--cuda-allocation-limit-mib auto|0|N] "
-      "[--client-policy-file FILE] "
+      "[--client-policy-file FILE] [--access-program-policy-file FILE] "
       "[--seq-capacities N,N,...] [--mtp | --no-mtp] [--mtp-suffix] "
       "[--session-cache-dir DIR] [--prefix-cache-dir DIR] "
       "[--object-store-dir DIR] [--object-max-object-mib N] "

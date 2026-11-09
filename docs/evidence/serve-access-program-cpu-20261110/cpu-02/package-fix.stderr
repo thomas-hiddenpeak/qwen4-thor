@@ -1,0 +1,6 @@
+test_sealed_package_survives_source_removal_and_rejects_tampering (tools.serve_responses.test_access_program_contract.AccessProgramPackage.test_sealed_package_survives_source_removal_and_rejects_tampering) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.054s
+
+OK

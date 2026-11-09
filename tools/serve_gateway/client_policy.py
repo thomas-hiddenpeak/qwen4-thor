@@ -75,7 +75,7 @@ def parse(raw):
         raise ValueError('invalid private gateway client policy') from None
 
 
-def read(path):
+def read_private(path):
     fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | os.O_CLOEXEC)
     try:
         info = os.fstat(fd)
@@ -94,9 +94,14 @@ def read(path):
         require(all(getattr(info, key) == getattr(after, key) for key in fields)
                 and len(raw) == info.st_size)
         raw = bytes(raw)
-        return raw, parse(raw)
+        return raw
     finally:
         os.close(fd)
+
+
+def read(path):
+    raw = read_private(path)
+    return raw, parse(raw)
 
 
 def binding(raw):

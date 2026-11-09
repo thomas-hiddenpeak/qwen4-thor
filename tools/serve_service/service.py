@@ -218,6 +218,7 @@ def main():
                    help='managed runtime only; preflight remains strict')
     p.add_argument('--critical-memory-mib', type=int, default=1024)
     p.add_argument('--client-policy', type=Path)
+    p.add_argument('--access-program-policy', type=Path)
     p.add_argument('--served-model-name')
     p.add_argument('--model-alias', action='append', default=[])
     p.add_argument('--object-store-dir')
@@ -250,6 +251,7 @@ def main():
                                        else 'qwen3.8-flash-next',
                                   aliases=args.model_alias)
                              if args.served_model_name is not None or args.model_alias else None,
+                             access_program_policy=args.access_program_policy,
                              capacity_config=pkg.read(args.capacity_config)
                                  if args.capacity_config is not None else None,
                              application_state=({**({'directory': args.object_store_dir}

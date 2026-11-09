@@ -1,0 +1,25 @@
+[
+  {
+    "name": "host",
+    "argv": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host/q4t_host_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-programs-20261110/required-cpu.txt"
+    ],
+    "exit_code": 0,
+    "seconds": 0.06376355094835162
+  },
+  {
+    "name": "schema",
+    "argv": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "tools.serve_responses.test_access_program_contract",
+      "-v"
+    ],
+    "exit_code": 1,
+    "seconds": 0.7144746710546315
+  }
+]
