@@ -1,0 +1,6 @@
+{
+  "service_id": "5887a34d-23df-4943-adb8-2bbdcb8f3e3f",
+  "resumed_sealed_deployment": true,
+  "reseeded": false,
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/business-01/bundle-second"
+}

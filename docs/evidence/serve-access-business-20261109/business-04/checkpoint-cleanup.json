@@ -1,0 +1,42 @@
+{
+  "status": "PASS_STOPPED_DEPLOYMENT_CHECKPOINT",
+  "models_started_after_deploy": 0,
+  "owned_processes_gone": true,
+  "ports_released": true,
+  "locks_released": true,
+  "owned_identities": [
+    {
+      "pid": 1041361,
+      "start_ticks": 239747607
+    },
+    {
+      "pid": 1041369,
+      "start_ticks": 239747648
+    },
+    {
+      "pid": 1041376,
+      "start_ticks": 239747793
+    },
+    {
+      "pid": 1041363,
+      "start_ticks": 239747620
+    },
+    {
+      "pid": 1041362,
+      "start_ticks": 239747608
+    }
+  ],
+  "service_id": "5887a34d-23df-4943-adb8-2bbdcb8f3e3f",
+  "descriptor": {
+    "deployment_id": "2587043f-88d3-4a77-888b-f9329bfc72ec",
+    "deployment_revision": 2,
+    "manifest_sha256": "c5609b71d7669a322538e63295de5163d2f28744711ed17b0738d04d6719a614",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/business-01/bundle-second",
+    "service_id": "5887a34d-23df-4943-adb8-2bbdcb8f3e3f",
+    "version": 2
+  },
+  "model_starts": 0,
+  "chat_requests": 0,
+  "original_cleanup_failure_preserved": true,
+  "checkpoint_not_reseeded": true
+}

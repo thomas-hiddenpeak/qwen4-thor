@@ -1,0 +1,7 @@
+{
+  "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/business-04/execution/second-unsealed.json",
+  "sha256": "9bc415a0cc1cd446d6a2cbe9b5348c35c1410d2ddf8c980f31fd3c0dd49ef774",
+  "phase": "active",
+  "generation": 2,
+  "snapshot_kind": "uncommitted active predecessor, not reusable as exact closed usage"
+}

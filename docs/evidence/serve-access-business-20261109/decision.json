@@ -1,0 +1,106 @@
+{
+  "status": "PASS_TARGETED_NATIVE_ACCESS_QUOTA_CONTINUITY",
+  "acceptance": "ACCEPT_TARGETED_NATIVE_ACCESS_QUOTA_CONTINUITY",
+  "binary_sha256": "c344d22ff3befc4464259a020f69ab5ea83efbbf6916e1120ec47faa626b5ad3",
+  "manifest_sha256": "c5609b71d7669a322538e63295de5163d2f28744711ed17b0738d04d6719a614",
+  "protocol_sha256": "cdd4b06d9d6e76b1bd9f8c95a430cebb08c43ed59a7e5706b199719b1c17c472",
+  "source_commit": "9bebbf6373b0e8e0c2aa61343dae1b0fdee042d8",
+  "counts": {
+    "starts": 4,
+    "chats": 15,
+    "probes": 1,
+    "controls": 1012
+  },
+  "seconds": 304.47355449944735,
+  "rounds": [
+    {
+      "round": 1,
+      "status": "COMMAND_FAILED",
+      "seconds": 66.43207156891003,
+      "nvml_queries": 63
+    },
+    {
+      "round": 2,
+      "status": "COMMAND_FAILED",
+      "seconds": 49.345081123989075,
+      "nvml_queries": 47
+    },
+    {
+      "round": 3,
+      "status": "COMMAND_FAILED",
+      "seconds": 67.78058162890375,
+      "nvml_queries": 64
+    },
+    {
+      "round": 4,
+      "status": "COMPLETED",
+      "seconds": 120.91582017764449,
+      "nvml_queries": 113
+    }
+  ],
+  "nvml_queries": 287,
+  "all_nvml_ok": true,
+  "lease_status": "COMPLETED",
+  "first_three_failures_preserved": true,
+  "default_changed": false,
+  "production_runtime_changed_during_retries": false,
+  "actual_business": {
+    "rotation": true,
+    "new_client": true,
+    "off_on_usage": true,
+    "auxiliary_loss_same_model": true,
+    "stored_identity": true,
+    "exact_restore": true,
+    "same_window_checked": false,
+    "unknown_guard": true,
+    "compatible_rollback": true,
+    "official_sdk": true,
+    "actual_document_tool": true,
+    "reused_passed_first_generation": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/business-03/execution"
+  },
+  "same_live_minute_gpu_observed": false,
+  "same_minute_contract_reused": "Real C++ interprocess CPU usage tests preserve unexpired quotas; real model exact restore here observed naturally expired window after preserved checkpoint.",
+  "ready_observed": {
+    "2": 2398192.560967376,
+    "3": 2398264.854902157
+  },
+  "quota_deadlines": {
+    "2": 2398212.152698624,
+    "3": 2398264.1554618613
+  },
+  "unknown_guard_satisfied": true,
+  "exact_restore_released_before_conservative_deadline": true,
+  "cleanup_confirmed": true,
+  "standalone_accepted_cli_pending": true,
+  "accepted_default_delivery_pending": true,
+  "evidence": {
+    "serve-access-driver-fix-20261109": {
+      "index_sha256": "e12e72c25e9d80cd2ec8b1713c661cb22fe7fc076779f27003ff6dddceb98f02",
+      "files": 33
+    },
+    "serve-access-config-fix-20261109": {
+      "index_sha256": "beb9b7f23295c73b7ba4e796b46ec1cce3008ade6a0004c1845e9be5613e72ee",
+      "files": 37
+    },
+    "serve-access-checkpoint-20261109": {
+      "index_sha256": "f8b8381d67954a1ce98bb5cc04654ed36482eda9eb578f73171ccd71d038d599",
+      "files": 98
+    },
+    "serve-usage-runtime-20261109": {
+      "index_sha256": "804fba526aefb07b8b09bb4b7989a1cf3854e26cbeff09fb11975bbbb00645e6",
+      "files": 16
+    },
+    "serve-usage-primitive-20261109": {
+      "index_sha256": "91facc011ca983ce83eaf6c5e4a63da347f2960946d1b57509420e11a09efef9",
+      "files": 15
+    },
+    "serve-usage-store-20261109": {
+      "index_sha256": "31e43408fdfdf2c0753c6e2c2b0f325fd8adc4c251cdefe968dcfbf728edc029",
+      "files": 14
+    }
+  },
+  "performance_acceptance": false,
+  "full_model_quality_run": false,
+  "long_stability_accepted": false,
+  "remaining_master_tasks_open": true
+}

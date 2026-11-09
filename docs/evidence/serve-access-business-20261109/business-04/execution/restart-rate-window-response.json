@@ -1,0 +1,27 @@
+{
+  "status": 200,
+  "headers": {
+    "Content-Type": "application/json",
+    "Content-Length": "287",
+    "X-Request-Id": "req-2183c9fdb07422e9784939605e652f80",
+    "Connection": "close",
+    "Cache-Control": "no-store",
+    "Vary": "Origin"
+  },
+  "seconds": 0.340349858161062,
+  "value": {
+    "id": "n04-restart-rate-window",
+    "model": "qwen3.8-flash-next",
+    "message": {
+      "role": "assistant",
+      "content": "42"
+    },
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 27,
+      "completion_tokens": 3,
+      "total_tokens": 30
+    },
+    "logprobs": null
+  }
+}

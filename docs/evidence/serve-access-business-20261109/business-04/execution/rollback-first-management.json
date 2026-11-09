@@ -1,0 +1,38 @@
+{
+  "exit_code": 0,
+  "result": {
+    "revision": 4,
+    "phase": "stable",
+    "current": {
+      "version": 2,
+      "service_id": "5887a34d-23df-4943-adb8-2bbdcb8f3e3f",
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/business-01/bundle",
+      "manifest_sha256": "c5609b71d7669a322538e63295de5163d2f28744711ed17b0738d04d6719a614",
+      "deployment_revision": 3,
+      "deployment_id": "5e725c9d-69b7-4c92-b781-05c752e6238f"
+    },
+    "target": null,
+    "history": [
+      {
+        "deployment_id": "1e84041e-e36a-4493-b550-dd21198ca282",
+        "deployment_revision": 1,
+        "manifest_sha256": "c5609b71d7669a322538e63295de5163d2f28744711ed17b0738d04d6719a614",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/business-01/bundle",
+        "service_id": "5887a34d-23df-4943-adb8-2bbdcb8f3e3f",
+        "version": 2
+      },
+      {
+        "deployment_id": "2587043f-88d3-4a77-888b-f9329bfc72ec",
+        "deployment_revision": 2,
+        "manifest_sha256": "c5609b71d7669a322538e63295de5163d2f28744711ed17b0738d04d6719a614",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/business-01/bundle-second",
+        "service_id": "5887a34d-23df-4943-adb8-2bbdcb8f3e3f",
+        "version": 2
+      }
+    ],
+    "model_actions": false,
+    "switched": true,
+    "replayed": false,
+    "automatic_start": false
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "status": "PASS_BOUNDED_RECOVERY_BUSINESS",
+  "failure": null,
+  "cleanup_failure": null,
+  "seconds": 119.61129897506908,
+  "budget": {
+    "counts": {
+      "starts": 4,
+      "chats": 15,
+      "probes": 1,
+      "controls": 1012
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "controller-2",
+        "ordinal": 3,
+        "monotonic_ns": 2398152176482173
+      },
+      {
+        "kind": "chats",
+        "label": "generation-self-check-2",
+        "ordinal": 11,
+        "monotonic_ns": 2398190893162796
+      },
+      {
+        "kind": "chats",
+        "label": "restart-rate-window",
+        "ordinal": 12,
+        "monotonic_ns": 2398192876975195
+      },
+      {
+        "kind": "chats",
+        "label": "upgraded-sdk",
+        "ordinal": 13,
+        "monotonic_ns": 2398193405204954
+      },
+      {
+        "kind": "starts",
+        "label": "controller-3",
+        "ordinal": 4,
+        "monotonic_ns": 2398204168088189
+      },
+      {
+        "kind": "chats",
+        "label": "generation-self-check-3",
+        "ordinal": 14,
+        "monotonic_ns": 2398245199715481
+      },
+      {
+        "kind": "chats",
+        "label": "recovered-sse",
+        "ordinal": 15,
+        "monotonic_ns": 2398265205769106
+      }
+    ]
+  },
+  "models": {
+    "2": {
+      "pid": 1046061,
+      "start_ticks": 239815217
+    },
+    "3": {
+      "pid": 1046966,
+      "start_ticks": 239820416
+    }
+  },
+  "quota_deadlines": {
+    "2": 2398212.152698624,
+    "3": 2398264.1554618613
+  },
+  "source_commit": "9bebbf6373b0e8e0c2aa61343dae1b0fdee042d8",
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/business-01/bundle-second",
+    "manifest_sha256": "c5609b71d7669a322538e63295de5163d2f28744711ed17b0738d04d6719a614",
+    "engine_binary_sha256": "c344d22ff3befc4464259a020f69ab5ea83efbbf6916e1120ec47faa626b5ad3",
+    "recovery_accepted": false
+  },
+  "default_replaced": false,
+  "performance_acceptance": false
+}

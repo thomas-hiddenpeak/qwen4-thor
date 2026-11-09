@@ -1,0 +1,35 @@
+{
+  "status": 200,
+  "headers": {
+    "Content-Type": "application/json",
+    "Content-Length": "295",
+    "X-Request-Id": "req-4563410dae521b6d383680bbe6a4f20e",
+    "Connection": "close",
+    "Cache-Control": "no-store",
+    "Vary": "Origin"
+  },
+  "seconds": 0.05392138473689556,
+  "value": {
+    "id": "n04-beta-stored",
+    "object": "chat.completion",
+    "created": 1794207454,
+    "model": "qwen3.8-flash-next",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "42"
+        },
+        "finish_reason": "stop",
+        "logprobs": null
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 27,
+      "completion_tokens": 3,
+      "total_tokens": 30
+    },
+    "metadata": null
+  }
+}

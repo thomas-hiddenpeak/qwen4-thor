@@ -1,0 +1,28 @@
+{
+  "exit_code": 0,
+  "result": {
+    "durable": {
+      "revision": 4,
+      "generation": 3,
+      "phase": "active",
+      "sha256": "891eca38ec7e26af5141ddd6dd1aa9c93c98ea103e594ad2cede9e85e290414c",
+      "sealed": false,
+      "model_actions": false,
+      "snapshot_kind": "none"
+    },
+    "durable_error": "",
+    "live": {
+      "recovered": true,
+      "frozen": false,
+      "receipt_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "sealed_snapshot": false,
+      "model_generation": 3,
+      "model_pid": 1046966,
+      "model_start_ticks": 239820416,
+      "quota_wait_ms": 0
+    },
+    "live_error": "",
+    "continuity": "conservative_new_window",
+    "model_actions": false
+  }
+}
