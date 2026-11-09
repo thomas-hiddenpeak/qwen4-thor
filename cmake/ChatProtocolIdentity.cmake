@@ -17,6 +17,7 @@ set(protocol_inputs
   src/server/responses_input.cpp
   include/q4t/server/responses_plan.h
   src/server/responses_plan.cpp
+  src/server/responses_summary.cpp
   src/server/responses_json.h
   include/q4t/model/sequence.h
   include/q4t/runtime/model_health.h

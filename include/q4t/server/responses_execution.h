@@ -49,6 +49,7 @@ class ResponsesExecution {
   int64_t ExecutionDeadlineAt() const { return plan_.execution_deadline_at; }
   Status Append(const ResponseDelta& delta, std::string_view probabilities,
                 std::string* wire);
+  Status AppendSummary(std::string_view text, std::string* wire);
   ObjectReply Finish(bool incomplete, size_t completed_calls,
                      const ResponsesUsage& usage, int64_t completed_at,
                      std::string* wire);
@@ -80,6 +81,7 @@ class ResponsesExecution {
   ObjectReply BindMutationResult(ObjectReply reply);
   ObjectReply RequiredExecutors(bool background_executor) const;
   ObjectReply PlanGeneration(const ChatPlanConfig& config, int64_t created);
+  Status RecordOutput(Status status, std::string* wire);
   ResponsesState state_;
   IResponsesCleanup* cleanup_ = nullptr;
   bool require_cleanup_ = false;

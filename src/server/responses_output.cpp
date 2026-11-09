@@ -335,12 +335,56 @@ Status ResponsesOutput::Append(const ResponseDelta& delta,
   return {};
 }
 
+Status ResponsesOutput::AppendSummary(std::string_view text,
+                                      std::string* wire) {
+  wire->clear();
+  if (!started_ || terminal_ || response_.GetString("status") != "in_progress")
+    return Status::Fail("Responses summary is not in progress");
+  if (text.empty()) return {};
+  if (text.size() > limit_ / 6)
+    return Status::Fail("Responses summary fragment exceeds storage limit");
+  auto status = Charge(text.size() * 6 + sizeof(io::Json) * 8);
+  if (!status) return status;
+  if (summary_item_ == kMaxItems) {
+    if (Items().array.size() >= kMaxItems)
+      return Status::Fail("Responses output item capacity exhausted");
+    auto item = Object({{"id", String(detail::NewRequestId("rs_"))},
+                        {"type", String("reasoning")},
+                        {"status", String("in_progress")},
+                        {"summary", Array()}});
+    status = Charge(OutputJson(item).size() + sizeof(io::Json) * 8);
+    if (!status) return status;
+    summary_item_ = Items().array.size();
+    Items().array.push_back(std::move(item));
+    call_indices_.push_back(kNoCall);
+    Event("response.output_item.added",
+          Object({{"output_index", Number(summary_item_)},
+                  {"item", Items().array.back()}}),
+          wire);
+    auto part =
+        Object({{"type", String("summary_text")}, {"text", String("")}});
+    Field(Items().array.back(), "summary").array.push_back(part);
+    auto fields = Location(summary_item_);
+    Set(&fields, "summary_index", Number(0));
+    Set(&fields, "part", std::move(part));
+    Event("response.reasoning_summary_part.added", std::move(fields), wire);
+  }
+  auto& part = Field(Items().array[summary_item_], "summary").array[0];
+  Field(part, "text").str.append(text);
+  auto fields = Location(summary_item_);
+  Set(&fields, "summary_index", Number(0));
+  Set(&fields, "delta", String(std::string(text)));
+  Event("response.reasoning_summary_text.delta", std::move(fields), wire);
+  return {};
+}
+
 void ResponsesOutput::CloseItem(size_t index, bool incomplete,
                                 std::string* wire) {
   auto& item = Items().array[index];
   Set(&item, "status", String(incomplete ? "incomplete" : "completed"));
   const auto type = item.GetString("type");
-  if (type == "message" || type == "reasoning") {
+  if (type == "message" || (type == "reasoning" && item.GetArray("content") &&
+                            !item.GetArray("content")->array.empty())) {
     const auto& part = Field(item, "content").array[0];
     auto fields = Location(index, true);
     Set(&fields, "text", *part.Find("text"));
@@ -352,7 +396,7 @@ void ResponsesOutput::CloseItem(size_t index, bool incomplete,
     fields = Location(index, true);
     Set(&fields, "part", part);
     Event("response.content_part.done", std::move(fields), wire);
-  } else if (!incomplete) {
+  } else if (type != "reasoning" && !incomplete) {
     const bool custom = type == "custom_tool_call";
     auto fields = Location(index);
     Set(&fields, custom ? "input" : "arguments",
@@ -360,6 +404,20 @@ void ResponsesOutput::CloseItem(size_t index, bool incomplete,
     Event(custom ? "response.custom_tool_call_input.done"
                  : "response.function_call_arguments.done",
           std::move(fields), wire);
+  }
+  if (type == "reasoning") {
+    const auto& summary = Field(item, "summary").array;
+    for (size_t i = 0; i < summary.size(); ++i) {
+      auto fields = Location(index);
+      Set(&fields, "summary_index", Number(i));
+      Set(&fields, "text", *summary[i].Find("text"));
+      Event("response.reasoning_summary_text.done", std::move(fields), wire);
+      fields = Location(index);
+      Set(&fields, "summary_index", Number(i));
+      Set(&fields, "part", summary[i]);
+      if (incomplete) Set(&fields, "status", String("incomplete"));
+      Event("response.reasoning_summary_part.done", std::move(fields), wire);
+    }
   }
   Event("response.output_item.done",
         Object({{"output_index", Number(index)}, {"item", item}}), wire);

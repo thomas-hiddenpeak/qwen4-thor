@@ -339,6 +339,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
     src/server/responses_output.cpp
     src/server/responses_input.cpp
     src/server/responses_plan.cpp
+    src/server/responses_summary.cpp
   src/server/chat_choices.cpp
   src/server/chat_tool_history.cpp
                              src/server/chat_template.cpp)
@@ -548,6 +549,7 @@ if(Q4T_BUILD_TESTS)
     src/server/responses_output.cpp
     src/server/responses_input.cpp
     src/server/responses_plan.cpp
+    src/server/responses_summary.cpp
     src/server/chat_choices.cpp
     src/server/model_catalog.cpp
     tests/server_sampling_test.cpp

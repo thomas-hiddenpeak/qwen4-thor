@@ -31,6 +31,7 @@ export async function execute(input) {
   let bytes = 0, events, result, error, stopped = false;
   const timeout = setTimeout(() => controller.abort(), input.timeout_ms ?? 120000);
   const client = new OpenAI({ baseURL: input.base_url, apiKey: input.api_key ?? 'local',
+    defaultHeaders: input.headers,
     maxRetries: 0, timeout: input.timeout_ms ?? 120000,
     fetch: async (url, options) => {
       exchanges.push({ url: String(url), method: options.method, body: options.body });

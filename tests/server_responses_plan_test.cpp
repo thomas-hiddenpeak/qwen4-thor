@@ -33,6 +33,62 @@ bool Envelope(const std::string& text, ResponsesEnvelope* result,
 }
 }  // namespace
 
+Q4T_TEST(responses_summary_plan_uses_actual_reasoning_and_shared_budget) {
+  const auto snapshot = Read(R"({"output":[
+    {"type":"reasoning","content":[{"type":"reasoning_text", "text":"17 + 25 = 42; checked addition."}],"summary":[]},
+    {"type":"message","role":"assistant","content":[{"type":"output_text","text":"42"}]}]})");
+  std::vector<std::string> prompts;
+  for (const auto& mode : {"concise", "detailed", "auto"}) {
+    ResponsesEnvelope envelope;
+    ChatPlanError error;
+    Q4T_CHECK(Envelope(
+        std::string(R"({"input":"original task","reasoning":{"summary":")") +
+            mode + R"("},"stream":true})",
+        &envelope, &error));
+    const auto original = OutputJson(envelope.request);
+    ResponsesSummaryPlan summary;
+    Q4T_CHECK(PlanResponsesSummary(envelope, snapshot, 256, 200, Config(),
+                                   &summary, &error));
+    Q4T_CHECK(summary.needed && !summary.budget_exhausted);
+    Q4T_CHECK(summary.request.GetInt("max_completion_tokens") == 56);
+    Q4T_CHECK(!summary.request.GetBool("enable_thinking", true));
+    Q4T_CHECK(summary.chat.sampling.PlainGreedy() &&
+              !summary.chat.constraints.active &&
+              !summary.request.Has("tools"));
+    const auto* messages = summary.request.GetArray("messages");
+    Q4T_CHECK(messages && messages->array.size() == 2 &&
+              messages->array[1].GetString("content") ==
+                  "17 + 25 = 42; checked addition.");
+    prompts.push_back(messages->array[0].GetString("content"));
+    Q4T_CHECK(OutputJson(envelope.request) == original);
+  }
+  Q4T_CHECK(prompts[0] != prompts[1] && prompts[1] != prompts[2] &&
+            prompts[0] != prompts[2]);
+  return true;
+}
+
+Q4T_TEST(responses_summary_plan_no_fabricated_analysis_or_replenished_budget) {
+  ResponsesEnvelope envelope;
+  ChatPlanError error;
+  Q4T_CHECK(Envelope(R"({"input":"question","reasoning":{"summary":"auto"}})",
+                     &envelope, &error));
+  ResponsesSummaryPlan summary;
+  const auto none = Read(
+      R"({"output":[{"type":"message","content":[{"type":"output_text","text":"42"}]}]})");
+  Q4T_CHECK(
+      PlanResponsesSummary(envelope, none, 256, 3, Config(), &summary, &error));
+  Q4T_CHECK(!summary.needed && !summary.budget_exhausted);
+  const auto actual = Read(
+      R"({"output":[{"type":"reasoning","content":[{"type":"reasoning_text","text":"actual analysis"}],"summary":[]}]})");
+  Q4T_CHECK(PlanResponsesSummary(envelope, actual, 256, 256, Config(), &summary,
+                                 &error));
+  Q4T_CHECK(!summary.needed && summary.budget_exhausted);
+  Q4T_CHECK(!PlanResponsesSummary(envelope, actual, 256, 257, Config(),
+                                  &summary, &error));
+  Q4T_CHECK(error.http_status == 500 && !summary.needed);
+  return true;
+}
+
 Q4T_TEST(responses_plan_defaults_keep_real_storage_requirement) {
   ResponsesEnvelope envelope;
   ChatPlanError error;

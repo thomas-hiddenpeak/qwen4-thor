@@ -205,7 +205,8 @@
         "evidence/serve-responses-core-20261108/README.md",
         "evidence/serve-responses-context-cpu-20261109/README.md",
         "evidence/serve-responses-context-business-20261109/README.md",
-        "evidence/serve-responses-context-delivery-20261109/README.md"
+        "evidence/serve-responses-context-delivery-20261109/README.md",
+        "evidence/serve-responses-summary-cpu-20261109/README.md"
       ],
       "release": {
         "engine_binary_sha256": "bb6e702ea5615fea7c11302e7c8ce2b1bec6b8aff9803f2b5cc7bfe84fec270a",
@@ -283,7 +284,8 @@
           "service_release_sha256": "9b7c7be37eba1c0ff12ba9993f9cae5ceacd0b7f4bdf5aa44144a97a1c1953c5"
         },
         "publication_revision": 10
-      }
+      },
+      "current_work": "A07.2 actual native summary and single-request usage: 23 C++/3 driver/64 schema checks passed; bounded real business pending, all remaining advanced tasks required"
     },
     {
       "id": "A08",

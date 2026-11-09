@@ -217,6 +217,13 @@ class ClientRateLease {
                            const ClientIdentity& identity, uint64_t prompt,
                            uint64_t output,
                            ClientClock::time_point now = ClientClock::now());
+  // Reserve actual additional input for a subsequent internal model step.
+  // Keeps the original RPM admission and shared output reservation; cumulative
+  // input must still fit the client's prompt limit. StartPrompt charges only
+  // after the new step is admitted, including cancellation before admission.
+  ClientRateResult ExtendPrompt(
+      ClientAdmission& admission, const ClientIdentity& identity,
+      uint64_t additional, ClientClock::time_point now = ClientClock::now());
   void Start() noexcept { StartPrompt(prompt_); }
   // Cumulative distinct prompt tokens admitted from a pre-reserved batch.
   // Repeated candidates do not charge the same input again.
@@ -228,6 +235,8 @@ class ClientRateLease {
   void Settle(ClientClock::time_point now = ClientClock::now()) noexcept;
 
  private:
+  const ClientAdmission* admission_ = nullptr;
+  size_t client_ = kMaxClients;
   ClientAdmission::Counters* counters_ = nullptr;
   uint64_t prompt_ = 0;
   uint64_t admitted_prompt_ = 0;

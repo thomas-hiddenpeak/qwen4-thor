@@ -1,0 +1,6 @@
+{
+  "reason": "Only failed cancellation fixture corrected to background queued/running lifecycle; production and 22 passed cases unchanged",
+  "required": [
+    "responses_summary_incomplete_failed_and_cancelled_never_complete"
+  ]
+}

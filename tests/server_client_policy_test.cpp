@@ -1091,6 +1091,123 @@ Q4T_TEST(client_rate_completion_batch_charges_only_admitted_prompts_once) {
   return true;
 }
 
+Q4T_TEST(client_rate_internal_step_preserves_one_rpm_and_charges_actual_input) {
+  for (const bool admitted : {false, true}) {
+    ClientAdmission admission;
+    Q4T_CHECK(admission.Configure(DynamicPolicy(1, 100)));
+    const auto client = admission.Authenticate("alpha", kSecret);
+    const auto now = ClientClock::now();
+    ClientRateLease rate;
+    Q4T_CHECK(rate.Reserve(admission, client, 20, 16, now) ==
+              ClientRateResult::kAllowed);
+    rate.Start();
+    rate.Completion(6);
+    Q4T_CHECK(rate.ExtendPrompt(admission, client, 30, now) ==
+              ClientRateResult::kAllowed);
+    Q4T_CHECK(admission.RateUsage(0, now).reserved == 66 &&
+              admission.RateUsage(0, now).requests == 1);
+    if (admitted) {
+      rate.StartPrompt(50);
+      rate.Completion(10);
+    }
+    rate.Settle(now);
+    const auto usage = admission.RateUsage(0, now);
+    Q4T_CHECK(usage.requests == 1 && usage.admitted == 1 &&
+              usage.reserved == 0 && usage.tokens == (admitted ? 60u : 26u));
+    Q4T_CHECK(rate.ExtendPrompt(admission, client, 1, now) ==
+              ClientRateResult::kInvalid);
+  }
+  return true;
+}
+
+Q4T_TEST(client_rate_internal_step_rejection_keeps_original_reservation) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(1, 60)));
+  const auto client = admission.Authenticate("alpha", kSecret);
+  const auto now = ClientClock::now();
+  ClientRateLease rate;
+  Q4T_CHECK(rate.Reserve(admission, client, 20, 16, now) ==
+            ClientRateResult::kAllowed);
+  Q4T_CHECK(rate.ExtendPrompt(admission, client, 1, now) ==
+            ClientRateResult::kInvalid);
+  rate.Start();
+  Q4T_CHECK(rate.ExtendPrompt(admission, client, 30, now) ==
+            ClientRateResult::kTpm);
+  Q4T_CHECK(rate.ExtendPrompt(admission, client, 45, now) ==
+            ClientRateResult::kInvalid);
+  Q4T_CHECK(rate.ExtendPrompt(admission,
+                              admission.Authenticate("beta", kSecret), 1,
+                              now) == ClientRateResult::kInvalid);
+  const auto failed = admission.RateUsage(0, now);
+  Q4T_CHECK(failed.reserved == 36 && failed.requests == 1 &&
+            failed.tpm_rejected == 1);
+  Q4T_CHECK(rate.ExtendPrompt(admission, client, 24, now) ==
+            ClientRateResult::kAllowed);
+  rate.StartPrompt(44);
+  rate.Completion(8);
+  rate.Settle(now);
+  Q4T_CHECK(admission.RateUsage(0, now).tokens == 52);
+  return true;
+}
+
+Q4T_TEST(client_rate_internal_step_legacy_is_bound_and_cumulative) {
+  ClientAdmission admission;
+  Q4T_CHECK(Configure(&admission));
+  const auto client = admission.Authenticate("alpha", kSecret);
+  const auto wrong = admission.Authenticate("beta", kSecret);
+  ClientRateLease failed;
+  Q4T_CHECK(failed.Reserve(admission, client, 65, 16) ==
+            ClientRateResult::kInvalid);
+  failed.Start();
+  Q4T_CHECK(failed.ExtendPrompt(admission, client, 1) ==
+            ClientRateResult::kInvalid);
+  ClientRateLease rate;
+  Q4T_CHECK(rate.Reserve(admission, client, 20, 16) ==
+            ClientRateResult::kAllowed);
+  rate.Start();
+  Q4T_CHECK(rate.ExtendPrompt(admission, wrong, 10) ==
+            ClientRateResult::kInvalid);
+  Q4T_CHECK(rate.ExtendPrompt(admission, client, 30) ==
+            ClientRateResult::kAllowed);
+  Q4T_CHECK(rate.ExtendPrompt(admission, client, 15) ==
+            ClientRateResult::kInvalid);
+  Q4T_CHECK(rate.ExtendPrompt(admission, client, 14) ==
+            ClientRateResult::kAllowed);
+  rate.Settle();
+  Q4T_CHECK(rate.ExtendPrompt(admission, client, 0) ==
+            ClientRateResult::kInvalid);
+  return true;
+}
+
+Q4T_TEST(client_rate_internal_step_window_and_freeze_do_not_reset_admission) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(1, 100)));
+  Q4T_CHECK(admission.EnableRateRecovery());
+  Q4T_CHECK(admission.RestoreRates(nullptr, std::string(64, '1')));
+  const auto client = admission.Authenticate("alpha", kSecret);
+  const auto now = ClientClock::now();
+  ClientRateLease rate;
+  Q4T_CHECK(rate.Reserve(admission, client, 20, 16, now) ==
+            ClientRateResult::kAllowed);
+  rate.Start();
+  const auto later = now + std::chrono::seconds(60);
+  Q4T_CHECK(rate.ExtendPrompt(admission, client, 20, later) ==
+            ClientRateResult::kAllowed);
+  const auto usage = admission.RateUsage(0, later);
+  Q4T_CHECK(usage.requests == 0 && usage.admitted == 1 && usage.reserved == 56);
+  ClientRateState state;
+  Q4T_CHECK(!admission.FreezeRates(&state, later));
+  Q4T_CHECK(rate.ExtendPrompt(admission, client, 1, later) ==
+            ClientRateResult::kFrozen);
+  rate.StartPrompt(40);
+  rate.Completion(9);
+  rate.Settle(later);
+  Q4T_CHECK(admission.FreezeRates(&state, later));
+  Q4T_CHECK(state.clients[0].usage.tokens == 49 &&
+            state.clients[0].usage.reserved == 0);
+  return true;
+}
+
 Q4T_TEST(client_rate_checkpoint_drains_reservations_and_never_reopens) {
   ClientAdmission admission;
   Q4T_CHECK(admission.Configure(DynamicPolicy(3, 100)));

@@ -417,9 +417,11 @@ ClientRateResult ClientRateLease::Reserve(ClientAdmission& admission,
   attempted_ = true;
   if (identity.owner_ != &admission || !identity.Allowed())
     return ClientRateResult::kInvalid;
-  if (!identity.Scoped())
-    return admission.Enabled() ? ClientRateResult::kInvalid
-                               : ClientRateResult::kAllowed;
+  if (!identity.Scoped()) {
+    if (admission.Enabled()) return ClientRateResult::kInvalid;
+    admission_ = &admission;
+    return ClientRateResult::kAllowed;
+  }
   const auto policy = admission.Snapshot();
   if (!policy || identity.index_ >= policy->clients.size() ||
       identity.Id() != policy->clients[identity.index_].id)
@@ -430,8 +432,12 @@ ClientRateResult ClientRateLease::Reserve(ClientAdmission& admission,
   // v3 records usage even while enforcement is disabled. Re-enabling a quota
   // cannot erase requests, tokens or outstanding reservations in the window.
   if (policy->version < 3 && !limits->requests_per_minute &&
-      !limits->tokens_per_minute)
+      !limits->tokens_per_minute) {
+    admission_ = &admission;
+    client_ = identity.index_;
+    prompt_ = prompt;
     return ClientRateResult::kAllowed;
+  }
   auto& counter = admission.counters_[identity.index_];
   const std::lock_guard lock(counter.mutex);
   if (admission.rates_frozen_) return ClientRateResult::kFrozen;
@@ -453,12 +459,60 @@ ClientRateResult ClientRateLease::Reserve(ClientAdmission& admission,
   rate.reserved += amount;
   ++counter.rate_active;
   counters_ = &counter;
+  admission_ = &admission;
+  client_ = identity.index_;
   prompt_ = prompt;
   reserved_ = amount;
   return ClientRateResult::kAllowed;
 }
 
+ClientRateResult ClientRateLease::ExtendPrompt(ClientAdmission& admission,
+                                               const ClientIdentity& identity,
+                                               uint64_t additional,
+                                               ClientClock::time_point now) {
+  if (!started_ || admission_ != &admission || identity.owner_ != &admission ||
+      identity.index_ != client_ || !identity.Allowed())
+    return ClientRateResult::kInvalid;
+  if (!identity.Scoped())
+    return admission.Enabled() ? ClientRateResult::kInvalid
+                               : ClientRateResult::kAllowed;
+  const auto policy = admission.Snapshot();
+  if (!policy || identity.index_ >= policy->clients.size() ||
+      identity.Id() != policy->clients[identity.index_].id)
+    return ClientRateResult::kInvalid;
+  const auto& limits = policy->clients[identity.index_];
+  if (additional > limits.max_prompt_tokens ||
+      prompt_ > limits.max_prompt_tokens - additional)
+    return ClientRateResult::kInvalid;
+  if (!counters_) {
+    if (policy->version >= 3 || limits.requests_per_minute ||
+        limits.tokens_per_minute)
+      return ClientRateResult::kInvalid;
+    prompt_ += additional;
+    return ClientRateResult::kAllowed;
+  }
+  if (counters_ != &admission.counters_[identity.index_])
+    return ClientRateResult::kInvalid;
+  const std::lock_guard lock(counters_->mutex);
+  if (admission.rates_frozen_) return ClientRateResult::kFrozen;
+  counters_->Advance(now);
+  auto& rate = counters_->rate;
+  if (limits.tokens_per_minute && Add(Add(rate.tokens, rate.reserved),
+                                      additional) > limits.tokens_per_minute) {
+    rate.tpm_rejected = Add(rate.tpm_rejected, 1);
+    return ClientRateResult::kTpm;
+  }
+  if (additional > UINT64_MAX - rate.reserved ||
+      additional > UINT64_MAX - reserved_)
+    return ClientRateResult::kInvalid;
+  rate.reserved += additional;
+  reserved_ += additional;
+  prompt_ += additional;
+  return ClientRateResult::kAllowed;
+}
+
 void ClientRateLease::Settle(ClientClock::time_point now) noexcept {
+  admission_ = nullptr;
   if (!counters_) return;
   const std::lock_guard lock(counters_->mutex);
   counters_->Advance(now);

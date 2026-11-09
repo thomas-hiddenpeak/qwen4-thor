@@ -134,6 +134,100 @@ Q4T_TEST(responses_output_text_reasoning_full_lifecycle) {
   return true;
 }
 
+Q4T_TEST(responses_summary_has_distinct_item_deltas_and_actual_usage) {
+  ResponsesOutput output;
+  std::string wire, part;
+  Q4T_CHECK(output.Init(Options(), "resp_summary", 42, false));
+  Q4T_CHECK(output.Start(&wire));
+  Q4T_CHECK(output.Append(Text("17 plus 25 is 42. Verify the sum.", true),
+                          "null", &part));
+  wire += part;
+  Q4T_CHECK(output.Append(Text("42"), "null", &part));
+  wire += part;
+  Q4T_CHECK(output.AppendSummary("Calculated ", &part));
+  wire += part;
+  const auto identity =
+      output.Snapshot().GetArray("output")->array[2].GetString("id");
+  Q4T_CHECK(output.AppendSummary("and checked the sum.", &part));
+  wire += part;
+  Q4T_CHECK(output.Finish(false, 0, {43, 0, 16, 10}, 44, &part));
+  wire += part;
+  std::vector<Json> events;
+  Q4T_CHECK(Events(wire, &events));
+  std::vector<std::string> summary_types;
+  for (const auto& event : events) {
+    const auto type = event.GetString("type");
+    if (!type.starts_with("response.reasoning_summary_")) continue;
+    summary_types.push_back(type);
+    Q4T_CHECK(event.GetString("item_id") == identity &&
+              event.GetInt("output_index") == 2 &&
+              event.GetInt("summary_index", -1) == 0 &&
+              !event.Has("content_index"));
+  }
+  Q4T_CHECK(summary_types ==
+            std::vector<std::string>({"response.reasoning_summary_part.added",
+                                      "response.reasoning_summary_text.delta",
+                                      "response.reasoning_summary_text.delta",
+                                      "response.reasoning_summary_text.done",
+                                      "response.reasoning_summary_part.done"}));
+  const auto& items = output.Snapshot().GetArray("output")->array;
+  Q4T_CHECK(items.size() == 3 && items[0].GetArray("summary")->array.empty());
+  Q4T_CHECK(!items[2].Has("content") && items[2].GetString("id") == identity);
+  Q4T_CHECK(items[2].GetArray("summary")->array[0].GetString("text") ==
+            "Calculated and checked the sum.");
+  Q4T_CHECK(output.Snapshot().Find("usage")->GetInt("total_tokens") == 59);
+  Q4T_CHECK(!output.AppendSummary("late", &part) && part.empty());
+  Q4T_CHECK(Save("summary", output, wire));
+  return true;
+}
+
+Q4T_TEST(responses_summary_incomplete_failed_and_cancelled_never_complete) {
+  for (int terminal = 0; terminal < 3; ++terminal) {
+    ResponsesOutput output;
+    std::string wire, part;
+    auto options = Options();
+    if (terminal == 2)
+      for (auto& [key, value] : options.object)
+        if (key == "background") value.boolean = true;
+    Q4T_CHECK(output.Init(options, "resp_summary_partial", 42, false));
+    Q4T_CHECK(output.Start(&wire));
+    if (terminal == 2) {
+      Q4T_CHECK(output.StartRunning(&part));
+      wire += part;
+    }
+    Q4T_CHECK(output.AppendSummary("Actual partial summary", &part));
+    wire += part;
+    if (terminal == 0) {
+      Q4T_CHECK(output.Finish(true, 0, {40, 0, 9, 5}, 44, &part));
+      wire += part;
+    } else if (terminal == 1) {
+      Q4T_CHECK(
+          output.Fail("summary_failed", "actual executor failure", &part));
+      wire += part;
+    } else {
+      Q4T_CHECK(output.Cancel());
+    }
+    std::vector<Json> events;
+    Q4T_CHECK(Events(wire, &events));
+    Q4T_CHECK(wire.find("response.completed") == wire.npos);
+    if (terminal == 0) {
+      bool partial = false;
+      for (const auto& event : events)
+        if (event.GetString("type") == "response.reasoning_summary_part.done")
+          partial = event.GetString("status") == "incomplete";
+      Q4T_CHECK(partial);
+    } else {
+      Q4T_CHECK(wire.find("summary_text.done") == wire.npos &&
+                wire.find("summary_part.done") == wire.npos &&
+                wire.find("response.output_item.done") == wire.npos);
+    }
+    Q4T_CHECK(!output.AppendSummary("late", &part));
+    Q4T_CHECK(
+        Save("summary_partial_" + std::to_string(terminal), output, wire));
+  }
+  return true;
+}
+
 Q4T_TEST(responses_output_parallel_function_custom_and_order) {
   ResponsesOutput output;
   std::string wire, part;

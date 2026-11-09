@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "cpp_distinct": 23,
+  "driver_cases": 3,
+  "wire_values": 64,
+  "first_cpp": {
+    "passed": 22,
+    "failed": 1
+  },
+  "targeted_recheck": {
+    "passed": 1,
+    "failed": 0
+  },
+  "build_zero_warnings": true,
+  "gpu_tested": false,
+  "engine_sha256": "9e801550ba5ad0e64a1fb35021bd29971fe7465658c63f25d95d9886f16f6a90"
+}

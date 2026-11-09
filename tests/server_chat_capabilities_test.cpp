@@ -274,6 +274,13 @@ Q4T_TEST(chat_capabilities_native_responses_state_and_recovery) {
             !responses->GetBool("chat_done_sentinel", true));
   Q4T_CHECK(responses->GetBool("previous_response_id") &&
             responses->GetBool("conversation"));
+  const auto* summary = responses->Find("summary");
+  Q4T_CHECK(responses->GetBool("reasoning_summary") && summary &&
+            summary->GetBool("shared_output_budget") &&
+            summary->GetBool("usage_includes_extra_input") &&
+            summary->GetBool("single_request_admission") &&
+            summary->GetBool("shared_cancellation") &&
+            summary->GetString("source") == "actual_reasoning");
   const auto* truncation = responses->Find("truncation");
   Q4T_CHECK(truncation && truncation->GetBool("auto") &&
             truncation->GetBool("disabled") &&

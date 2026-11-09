@@ -213,6 +213,95 @@ Q4T_TEST(responses_context_deadline_cancel_and_missing_measurement_are_atomic) {
   return true;
 }
 
+Q4T_TEST(responses_summary_checkpoint_replay_and_followup_keep_derived_item) {
+  for (const bool background : {false, true}) {
+    Fixture fixture;
+    ObjectStore store(fixture.options);
+    ResponsesExecution run(store);
+    auto request = Parse(R"({"input":"17 plus 25", "stream":true,
+      "reasoning":{"effort":"low","summary":"concise"}})");
+    request.object.emplace_back("background",
+                                Parse(background ? "true" : "false"));
+    Q4T_CHECK(Ok(run.Prepare(request, Config(), Access(), 42, background)));
+    std::string wire;
+    Q4T_CHECK(Ok(run.Begin(&wire)));
+    if (background) Q4T_CHECK(Ok(run.StartRunning(&wire)));
+    auto reasoning = Text("17 + 25 = 42. Check addition.");
+    reasoning.kind = ResponseDelta::Kind::kReasoning;
+    Q4T_CHECK(run.Append(reasoning, "null", &wire));
+    Q4T_CHECK(run.Append(Text("42"), "null", &wire));
+    Q4T_CHECK(run.AppendSummary("Added the values", &wire));
+    Q4T_CHECK(Ok(run.Checkpoint()));
+    ResponsesReadPlan read;
+    read.id = run.Id();
+    read.stream = true;
+    read.obfuscation = false;
+    ResponsesReplay prefix;
+    Q4T_CHECK(Ok(ReadResponsesState(store, read, Access(), &prefix)));
+    Q4T_CHECK(!prefix.terminal &&
+              prefix.wire.find("reasoning_summary_text.delta") !=
+                  prefix.wire.npos);
+    Q4T_CHECK(prefix.wire.find("response.completed") == prefix.wire.npos);
+    Q4T_CHECK(run.AppendSummary(" and checked the result.", &wire));
+    Q4T_CHECK(Ok(run.Finish(false, 0, {43, 0, 16, 10}, 43, &wire)));
+    read.starting_after = prefix.last_sequence;
+    ResponsesReplay tail;
+    Q4T_CHECK(Ok(ReadResponsesState(store, read, Access(), &tail)));
+    Q4T_CHECK(tail.terminal &&
+              tail.wire.find("reasoning_summary_part.done") != tail.wire.npos);
+    const auto stored = ResponsesState(store).Retrieve(run.Id(), Access());
+    Q4T_CHECK(Ok(stored));
+    const auto& item = stored.value.GetArray("output")->array.back();
+    Q4T_CHECK(!item.Has("content") &&
+              item.GetArray("summary")->array[0].GetString("text") ==
+                  "Added the values and checked the result.");
+    ResponsesExecution next(store);
+    Q4T_CHECK(Ok(
+        next.Prepare(Parse(R"({"input":"continue","previous_response_id":")" +
+                           run.Id() + R"("})"),
+                     Config(), Access(), 44)));
+    Q4T_CHECK(
+        OutputJson(next.Generation().input.items).find(item.GetString("id")) !=
+        std::string::npos);
+  }
+  return true;
+}
+
+Q4T_TEST(
+    responses_summary_checkpoint_failure_preserves_prefix_without_success) {
+  struct Reset {
+    ~Reset() { ObjectWorkerEntryForTesting({}); }
+  } reset;
+  ObjectWorkerEntryForTesting("--q4t-object-worker-second-put-lost-ack");
+  Fixture fixture;
+  fixture.options.io_timeout_ms = 100;
+  ObjectStore store(fixture.options);
+  ResponsesExecution run(store);
+  Q4T_CHECK(Prepare(&run));
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)));
+  const auto next = *run.Sequence();
+  Q4T_CHECK(!run.AppendSummary(std::string(65536, 's'), &wire));
+  Q4T_CHECK(run.CommitUnknown() && wire.empty());
+  const auto failed = ResponsesExecution::RenderStreamError(
+      &run, 503, "missing receipt", "object_transport_error", "");
+  Q4T_CHECK(failed.find("reasoning_summary_text.delta") != failed.npos &&
+            failed.find("object_commit_unknown") != failed.npos &&
+            failed.find("response.completed") == failed.npos &&
+            failed.find("summary_text.done") == failed.npos);
+  size_t begin = 0;
+  int64_t sequence = next;
+  while ((begin = failed.find("data: ", begin)) != failed.npos) {
+    const auto end = failed.find("\r\n", begin);
+    Q4T_CHECK(Parse(failed.substr(begin + 6, end - begin - 6))
+                  .GetInt("sequence_number") == sequence++);
+    begin = end;
+  }
+  Q4T_CHECK(sequence == next + 4);
+  Q4T_CHECK(Ok(run.CloseUnfinished()));
+  return true;
+}
+
 Q4T_TEST(responses_execution_stateless_does_not_depend_on_storage) {
   ObjectStoreOptions options;
   options.directory = "invalid";

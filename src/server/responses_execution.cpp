@@ -86,8 +86,6 @@ ObjectReply ResponsesExecution::RequiredExecutors(
   std::string required;
   if (envelope_.background && !background_executor)
     required = "background";
-  else if (!envelope_.summary.empty())
-    required = "reasoning.summary";
   else if (envelope_.encrypted_reasoning)
     required = "reasoning.encrypted_content";
   else if (envelope_.reasoning_mode != "standard")
@@ -353,7 +351,19 @@ Status ResponsesExecution::Append(const ResponseDelta& delta,
     wire->clear();
     return Status::Fail("Response cannot accept execution output");
   }
-  auto status = output_.Append(delta, probabilities, wire);
+  return RecordOutput(output_.Append(delta, probabilities, wire), wire);
+}
+
+Status ResponsesExecution::AppendSummary(std::string_view text,
+                                         std::string* wire) {
+  if (!begun_ || plan_.finished || commit_unknown_) {
+    wire->clear();
+    return Status::Fail("Response cannot accept summary output");
+  }
+  return RecordOutput(output_.AppendSummary(text, wire), wire);
+}
+
+Status ResponsesExecution::RecordOutput(Status status, std::string* wire) {
   if (!status) return status;
   status = Capture(*wire, &events_, &event_bytes_);
   if (!status) {

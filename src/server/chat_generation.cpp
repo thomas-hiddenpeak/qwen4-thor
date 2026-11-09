@@ -354,24 +354,21 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   }
   const auto& constraints = request_plan.constraints;
   const auto& sampling = request_plan.sampling;
-  const bool visible_logprobs =
-      sampling.logprobs && (!completion || completion_plan.logprobs >= 0);
   const bool plain_greedy = sampling.PlainGreedy();
-  const bool prediction_enabled = request_plan.prediction.enabled;
-  const std::string prefix_scope =
+  const std::string request_prefix_scope =
       ClientScopedKey(client, req.GetString("prefix_cache_scope"));
-  const int prefix_write_tokens =
+  const int request_prefix_write_tokens =
       static_cast<int>(req.GetInt("prefix_cache_write_tokens", 0));
   std::vector<std::unique_ptr<SessionLease>> shared_writes;
-  SessionLease session;
-  session.key = ClientScopedKey(client, req.GetString("session_id"));
-  if (!session.key.empty()) {
-    if (!session_cache_.Acquire(session.key)) {
+  SessionLease request_session;
+  request_session.key = ClientScopedKey(client, req.GetString("session_id"));
+  if (!request_session.key.empty()) {
+    if (!session_cache_.Acquire(request_session.key)) {
       SendError(fd, 409, "session is busy or lease capacity exhausted", {},
                 "session_busy", "session_id");
       return;
     }
-    session.cache = &session_cache_;
+    request_session.cache = &session_cache_;
   }
 
   const io::Json* external_id = req.Find("request_id");
@@ -466,8 +463,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     err_guard.ok = true;
   };
 
-  const int max_tokens = completion ? completion_plan.max_tokens
-                                    : ChatOutputLimit(req, planning_config);
+  const int request_output_limit = completion
+                                       ? completion_plan.max_tokens
+                                       : ChatOutputLimit(req, planning_config);
 
   // stream flag.
   const bool stream = req.GetBool("stream", false);
@@ -609,7 +607,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   CompletionChoices completion_choices(
       static_cast<int>(completion_plan.prompts.size()), completion_plan.n,
       completion_plan.best_of, stream);
+  ResponsesSummaryPlan summary_plan;
+  ResponsesUsage responses_usage;
+  size_t responses_completed_calls = 0;
   const auto completed_tokens = [&] {
+    if (responses) return static_cast<uint64_t>(responses_usage.output_tokens);
     return completion ? completion_choices.CompletionTokens()
                       : choices.CompletionTokens();
   };
@@ -636,7 +638,80 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     return false;
   };
 
-  for (int choice_index = 0; choice_index < sampling.choices; ++choice_index) {
+  for (int choice_index = 0;
+       choice_index < sampling.choices + (summary_plan.needed ? 1 : 0);
+       ++choice_index) {
+    const bool summary_step =
+        responses && summary_plan.needed && choice_index == 1;
+    const auto& step_plan = summary_step ? summary_plan.chat : request_plan;
+    const auto& req = summary_step ? step_plan.Request(summary_plan.request)
+                                   : request_plan.Request(original_request);
+    const auto& constraints = step_plan.constraints;
+    const auto& sampling = step_plan.sampling;
+    const bool plain_greedy = sampling.PlainGreedy();
+    const bool visible_logprobs =
+        !summary_step && sampling.logprobs &&
+        (!completion || completion_plan.logprobs >= 0);
+    const bool prediction_enabled = step_plan.prediction.enabled;
+    const int max_tokens = summary_step ? ChatOutputLimit(req, planning_config)
+                                        : request_output_limit;
+    const std::string prefix_scope = summary_step ? "" : request_prefix_scope;
+    const int prefix_write_tokens =
+        summary_step ? 0 : request_prefix_write_tokens;
+    SessionLease summary_session;
+    auto& session = summary_step ? summary_session : request_session;
+    if (summary_step) {
+      err_guard.ok = false;
+      diagnostic.Stage("encode");
+      items.clear();
+      media_plan = {};
+      s = PrepareChatPrompt(req, constraints, &prompt, &items,
+                            &planning_error.param, &planning_error.code);
+      if (s) {
+        auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer, cancelled);
+        if (!lock.owns_lock()) {
+          count_abort();
+          send_cancel_error("summary cancelled waiting for tokenizer");
+          return;
+        }
+        s = EncodeChatPrompt(
+            req, planning_config, prompt,
+            [&](std::string_view text, std::vector<uint32_t>* out) {
+              return tok_->Encode(text, out, {.cancelled = cancelled});
+            },
+            &prompt_u32, &prompt_budget, &planning_error);
+      }
+      if (!s) {
+        if (cancelled()) {
+          count_abort();
+          send_cancel_error("summary preparation cancelled");
+        } else {
+          SendError(fd, planning_error.http_status, s.message(), {},
+                    planning_error.code, "reasoning.summary");
+        }
+        return;
+      }
+      prompt_encoded = true;
+      if (planning_config.client_limits) {
+        const uint64_t total_prompt =
+            responses_usage.input_tokens + prompt_u32.size();
+        if (total_prompt > planning_config.client_limits->max_prompt_tokens) {
+          SendError(fd, 400, "Summary exceeds cumulative client input limit",
+                    {}, "client_prompt_limit_exceeded", "reasoning.summary");
+          return;
+        }
+        const auto extended = rate_lease.ExtendPrompt(clients_, http->Client(),
+                                                      prompt_u32.size());
+        if (extended != ClientRateResult::kAllowed) {
+          const bool tpm = extended == ClientRateResult::kTpm;
+          SendError(
+              fd, tpm ? 429 : 503, "Summary input reservation unavailable", {},
+              tpm ? "client_tpm_exhausted" : "summary_admission_unavailable",
+              "reasoning.summary");
+          return;
+        }
+      }
+    }
     PreparedCompletionPrompt* completion_prompt = nullptr;
     if (completion) {
       completion_prompt =
@@ -661,14 +736,14 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         request_id.c_str(), choice_index, sampling.choices,
         sampling.temperature, sampling.top_p, sampling.logprobs,
         plain_greedy ? "greedy" : "target_logits");
-    TextStopStream text_stop(request_plan.stops);
+    TextStopStream text_stop(step_plan.stops);
     ChatResponseParser response_parser;
     s = response_parser.Init(
         req, prompt,
         sampling.choices == 1
             ? request_id
             : request_id + "_choice_" + std::to_string(choice_index),
-        collect_chat && !responses, request_plan.legacy_output);
+        collect_chat && !responses, step_plan.legacy_output);
     if (!s.ok()) {
       SendError(fd, 400, s.message());
       return;
@@ -991,6 +1066,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       if (choice_index % completion_plan.best_of == 0)
         admitted_completion_prompt_tokens += prompt_u32.size();
       rate_lease.StartPrompt(admitted_completion_prompt_tokens);
+    } else if (responses) {
+      rate_lease.StartPrompt(responses_usage.input_tokens + prompt_u32.size());
     } else {
       rate_lease.Start();
     }
@@ -1920,7 +1997,15 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         }
         std::string response_chunk;
         if (responses) {
-          response_status = responses->Append(delta, logprobs, &response_chunk);
+          if (summary_step) {
+            response_status =
+                delta.kind == ResponseDelta::Kind::kContent
+                    ? responses->AppendSummary(delta.text, &response_chunk)
+                    : Status::Fail("Summary executor emitted non-text output");
+          } else {
+            response_status =
+                responses->Append(delta, logprobs, &response_chunk);
+          }
           if (!response_status) return false;
         }
         if (!stream) continue;
@@ -2894,7 +2979,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     }
 
     if (completion ? choice_index % completion_plan.best_of == 0
-                   : choice_index == 0)
+                   : responses || choice_index == 0)
       metrics_.prompt_tokens_total.fetch_add(static_cast<uint64_t>(T),
                                              std::memory_order_relaxed);
     metrics_.generation_tokens_total.fetch_add(generated.size(),
@@ -3047,13 +3132,48 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     // cancellation and quota ownership until all choices finish.
     std::string response_terminal;
     if (responses) {
+      const ResponsesUsage step_usage{
+          T, restored_prefix, static_cast<int64_t>(generated.size()),
+          summary_step ? static_cast<int64_t>(generated.size())
+                       : thinking_budget.ReasoningTokens()};
+      if (!summary_step && finish_reason != "length" &&
+          !responses->Envelope().summary.empty()) {
+        s = PlanResponsesSummary(
+            responses->Envelope(), responses->Output().Snapshot(),
+            request_output_limit, generated.size(), planning_config,
+            &summary_plan, &planning_error);
+        if (!s) {
+          err_guard.ok = false;
+          SendError(fd, planning_error.http_status, s.message(), {},
+                    planning_error.code, "reasoning.summary");
+          return;
+        }
+        if (summary_plan.needed) {
+          responses_usage = step_usage;
+          responses_completed_calls = response_parser.CompletedToolCalls();
+          trace_outcome = trace::RequestOutcome::kSuccess;
+          cleanup();
+          continue;
+        }
+      }
+      if (summary_step && finish_reason != "length" &&
+          !responses->Output().HasSummary()) {
+        err_guard.ok = false;
+        SendError(fd, 502, "Summary executor returned no summary", {},
+                  "response_summary_empty", "reasoning.summary");
+        return;
+      }
+      responses_usage.input_tokens += step_usage.input_tokens;
+      responses_usage.cached_tokens += step_usage.cached_tokens;
+      responses_usage.output_tokens += step_usage.output_tokens;
+      responses_usage.reasoning_tokens += step_usage.reasoning_tokens;
       diagnostic.Stage("storage");
       RequestDiagnostics::Scope waiting(diagnostic, Wait::kStorage);
       const auto finished = responses->Finish(
-          finish_reason == "length", response_parser.CompletedToolCalls(),
-          {T, restored_prefix, static_cast<int64_t>(generated.size()),
-           thinking_budget.ReasoningTokens()},
-          std::time(nullptr), &response_terminal);
+          finish_reason == "length" || summary_plan.budget_exhausted,
+          summary_step ? responses_completed_calls
+                       : response_parser.CompletedToolCalls(),
+          responses_usage, std::time(nullptr), &response_terminal);
       if (!finished.ok()) {
         err_guard.ok = false;
         SendError(fd, finished.http_status, finished.ClientMessage(), {},
@@ -3087,7 +3207,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       SendError(fd, 503, s.message(), {}, "response_storage_exhausted");
       return;
     }
-    const bool final_choice = choice_index + 1 == sampling.choices;
+    const bool final_choice = responses || choice_index + 1 == sampling.choices;
     if (final_choice) stop_heartbeat.Run();
     std::string stored_chat_response;
     if (!responses && !completion && final_choice &&
@@ -3198,7 +3318,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           std::chrono::duration<double>(std::chrono::steady_clock::now() -
                                         t_arrive)
               .count());
-      session.success = true;
+      request_session.success = true;
       for (auto& lease : shared_writes) lease->success = true;
       diagnostic.Outcome("success", "completed");
       metrics_.requests_success.fetch_add(1, std::memory_order_relaxed);

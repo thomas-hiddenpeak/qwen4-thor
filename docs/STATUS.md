@@ -1,3 +1,9 @@
+A07.2 [23 C++、3 驱动 CPU 和 64 个协议值](evidence/serve-responses-summary-cpu-20261109/README.md)通过，保留首取消夹具失败及仅 1 项补验。实际引擎 9e801550，零警告；冻结最多 2 启动/8 外部请求/13 内部步骤/900 秒的真实摘要、JSON/SSE/后台、客户端账本与文档工具闭环短验。默认 A07.1 不动，总目标继续。
+
+A07.2 摘要实际模型步骤已接入同一请求，额外输入/输出、一次 RPM、累计 TPM、共享输出预算/截止与取消、独立派生 item 及持久检查点成组完成。冻结 23 项直接 CPU 与实际产出 schema 检查，开始独立必要构建；尚未验证，默认 A07.1 保持 STOPPED，全部总任务继续。
+
+A07.2 推理摘要继续开发：独立 summary item/SSE/不完整终态及持久检查点已编码，实际摘要模型步骤与同一请求预算/配额仍在接入，尚未构建或测试。本阶段不等于功能交付；已接受 A07.1 默认 c360746e 保持 STOPPED。
+
 A07.1 已可回退默认交付：[8 条实际检查/发布及准备失败原件](evidence/serve-responses-context-delivery-20261109/README.md)。默认引擎 bb6e702e/元数据 f2a292f4、原生包 c360746e、publication revision10，STOPPED；原 N06 代与核心/客户端账本保持。下一项 A07.2 真实推理摘要及所有剩余任务，总目标 active、未合 main。
 
 A07.1 真实短验通过：[原件与接受决定](evidence/serve-responses-context-business-20261109/README.md)。累计 2 启动/7 请求/93.414 秒、91 NVML 全 OK，JSON/SSE/后台实际 42 输入 token、当前任务 42、完整历史和文档工具/JSON 引用闭环通过。默认 N06 尚未改；继续可回退发布，再 A07.2 与全部总任务。

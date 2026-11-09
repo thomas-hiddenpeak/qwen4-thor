@@ -45,6 +45,20 @@ struct ResponsesGenerationPlan {
   size_t truncated_items = 0;
 };
 
+struct ResponsesSummaryPlan {
+  bool needed = false;
+  bool budget_exhausted = false;
+  io::Json request;
+  ChatRequestPlan chat;
+};
+
+// Prepare a distinct model step from actual generated reasoning, without
+// changing original inputs or silently replenishing the output budget.
+Status PlanResponsesSummary(const ResponsesEnvelope& envelope,
+                            const io::Json& snapshot, int output_limit,
+                            int64_t output_used, const ChatPlanConfig& config,
+                            ResponsesSummaryPlan* plan, ChatPlanError* error);
+
 // Measures the actual model template, tokenizer and expanded media without
 // generating tokens or mutating stored history. Only context overflow permits
 // truncation; credentials, malformed input and client quotas are not bypassed.

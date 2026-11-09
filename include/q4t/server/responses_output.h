@@ -37,6 +37,10 @@ class ResponsesOutput {
   Status Cancel();
   Status Append(const ResponseDelta& delta, std::string_view chat_logprobs,
                 std::string* wire);
+  // Actual separately generated summary text. Never reinterpret a reasoning
+  // delta as a summary. This creates one derived reasoning item, without raw
+  // reasoning content, and preserves its identity across summary deltas.
+  Status AppendSummary(std::string_view text, std::string* wire);
   // Only calls with a validated closing delimiter may receive arguments.done.
   Status Finish(bool incomplete, size_t completed_calls,
                 const ResponsesUsage& usage, int64_t completed_at,
@@ -51,6 +55,7 @@ class ResponsesOutput {
   const io::Json& Snapshot() const { return response_; }
   int64_t* Sequence() { return &sequence_; }
   bool Terminal() const { return terminal_; }
+  bool HasSummary() const { return summary_item_ < kMaxItems; }
 
  private:
   Status Charge(size_t bytes);
@@ -63,6 +68,7 @@ class ResponsesOutput {
   io::Json response_;
   std::unordered_map<size_t, size_t> calls_;
   std::vector<size_t> call_indices_;
+  size_t summary_item_ = kMaxItems;
   size_t limit_ = kStorageLimit;
   size_t bytes_ = 0;
   int64_t sequence_ = 0;
