@@ -514,3 +514,4 @@
 - [Serve B2推理协议与控制](SERVE_STAGE_B2_2026-11-03.md)
 
 - [当前原生服务观测与保护留存](SERVE_NATIVE_OBSERVATION_2026-11-09.md)
+- [原生密钥、客户端策略与配额连续性](SERVE_ACCESS_CONTROL_2026-11-09.md)

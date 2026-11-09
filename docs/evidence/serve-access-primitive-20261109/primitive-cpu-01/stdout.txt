@@ -1,0 +1,7 @@
+[PASS] AccessOverlapRevocationAndAdmittedIdentity
+[PASS] AccessRevisionAndMalformedPolicyAreAtomic
+[PASS] AccessStableSlotsAndHistoricalOwnership
+[PASS] AccessRestartRetainsRevocationHistory
+[PASS] AccessConcurrentPublicationHasCompleteSnapshots
+[PASS] AccessBoundsAndPublicStatusContainNoCredentials
+6 tests, 6 passed, 0 failed, 0 skipped

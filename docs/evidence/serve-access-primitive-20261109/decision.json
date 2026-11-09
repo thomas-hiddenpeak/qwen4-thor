@@ -1,0 +1,16 @@
+{
+  "status": "PASS_NATIVE_ACCESS_SNAPSHOT_PRIMITIVE_PENDING_INTEGRATION",
+  "targeted_tests": 6,
+  "build_warnings": 0,
+  "model_starts": 0,
+  "chat_requests": 0,
+  "default_changed": false,
+  "initial_configuration_failure": "Missing OpenSSL development headers in default include path. Independent non-TLS access primitive built with Q4T_ENABLE_NATIVE_TLS=OFF; delivered TLS-enabled native entrypoint unchanged.",
+  "remaining": [
+    "durable transactions and native management",
+    "actual entrypoint integration",
+    "dynamic quotas and continuity",
+    "targeted real business and rollback-capable delivery"
+  ],
+  "remaining_master_tasks_open": true
+}

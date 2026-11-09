@@ -2,6 +2,14 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+N04认证快照原语6/6 CPU通过、独立host零警告，[原件](evidence/serve-access-primitive-20261109/README.md)。稳定客户端槽位、
+重叠轮换/撤销、旧Key归属与并发原子发布通过；尚未接实际入口。
+继续持久事务/管理、动态额度与真实组合；默认v6/引擎保持，0GPU。
+
+开始[N04原生密钥/策略与配额连续性](SERVE_ACCESS_CONTROL_2026-11-09.md)：固定Key和策略、仅保守重启窗口仍有缺口。
+先实现稳定身份/多Key原子快照，冻结6类CPU；随后持久事务、管理
+接入、动态额度和真实业务组合。默认v6/引擎保持，全部总计划继续。
+
 R04/N06已可回退默认交付：原生v6包b7c25107/服务发布29125ad9，
 引擎1ff729a0及元数据f44634f5保持。真实CLI/export/旧run迁移归档
 清理闭环和3项包合同通过，[交付与失败原件](evidence/serve-native-observation-delivery-20261109/README.md)；0生产删除/0模型/Chat，

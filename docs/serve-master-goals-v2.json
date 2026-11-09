@@ -414,14 +414,24 @@
     {
       "id": "N04",
       "required": true,
-      "state": "planned",
+      "state": "implementation_in_progress",
       "implementation": "原生密钥轮换/撤销、策略更新、客户端配额与隔离",
       "acceptance": "新旧Key切换、取消/缓存/会话身份不串用，重启不绕过配额；不依赖外部网关私有头建立用户身份",
       "depends_on": [
         "A01"
       ],
-      "evidence": [],
-      "release": null
+      "evidence": [
+        "evidence/serve-access-primitive-20261109/decision.json"
+      ],
+      "release": null,
+      "plan": "SERVE_ACCESS_CONTROL_2026-11-09.md",
+      "remaining": [
+        "native atomic credential snapshots and stable identities",
+        "durable updates and private native management",
+        "live quota updates and restart continuity",
+        "targeted real business and rollback-capable delivery"
+      ],
+      "development_status": "认证快照原语6项针对CPU通过，尚待实际入口/持久事务/动态额度/连续性及真实业务交付。"
     },
     {
       "id": "N05",
