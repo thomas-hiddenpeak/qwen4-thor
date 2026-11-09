@@ -1,0 +1,117 @@
+{
+  "status": "PASS_TARGETED_CACHE_PROGRESS_DELIVERY",
+  "acceptance": "ACCEPT_TARGETED_CACHE_IO_AND_NATIVE_PROGRESS",
+  "binary_sha256": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
+  "protocol_sha256": "bc61c809ce0360c62ca82244d550e6845b582ac75cfb3e2d26a51d3ad1f29197",
+  "source_commit": "254e8321a3b7520516d5a95e34cc2ac015a19c4d",
+  "original_test_commit": "311b66f70b98e5da2cf625ce149bde3fd8a34dae",
+  "evidence": {
+    "serve-cache-io-cpu-20261109": {
+      "index_sha256": "850a7979548326ee2f347c3c38b450045c8e82ba2f7f76440dbdd5fd2d6ec407",
+      "files": 90
+    },
+    "serve-cache-io-driver-20261109": {
+      "index_sha256": "5ca5ce38c769fc5f7ce26b5a09708f94d6e216096308f7626773b8e86c84075f",
+      "files": 6
+    },
+    "serve-cache-io-business-20261109": {
+      "index_sha256": "596c9d7206cb96847160335614381d3340aef467c397dc633a4ae247426b43bf",
+      "files": 81
+    },
+    "serve-progress-core-20261109": {
+      "index_sha256": "febf8b782a917269f22e0a23b4877f062df5ebdabe45b390db2188ad1e63cf81",
+      "files": 20
+    },
+    "serve-progress-native-20261109": {
+      "index_sha256": "8b4f34b36c6242e83e6b191b3d74ecb1ea21e3437610bfc1b030d2f34ea47789",
+      "files": 22
+    },
+    "serve-progress-controller-20261109": {
+      "index_sha256": "7d0121c9cb13fa4ece9e21f2702828df510114d7640bd1b5e60c41cf10f635eb",
+      "files": 15
+    },
+    "serve-progress-stages-20261109": {
+      "index_sha256": "e3bb6aaf94bad25a5612ba70ad693ed816ef9ca492699e7f13333d95e2a388a5",
+      "files": 46
+    },
+    "serve-progress-resource-20261109": {
+      "index_sha256": "b7a8348d4b53a7b52c5bb5049028c47acc0dfa71c4bf5c5452f90d31b5f30e54",
+      "files": 20
+    },
+    "serve-progress-business-20261109": {
+      "index_sha256": "a591fcdd908d00f4a3f112812be56f5cae0ca5d2bd5f61ebee0dbdf968f8d44e",
+      "files": 67
+    },
+    "serve-chat-delivery-20261109": {
+      "index_sha256": "a01928268ec8ad5997878ae54f39806dd76dd699f586be506116caf1651886e0",
+      "files": 31
+    }
+  },
+  "accepted_business": {
+    "status": "ACCEPT_TARGETED_CACHE_IO_AND_NATIVE_PROGRESS",
+    "binary_sha256": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
+    "protocol_sha256": "bc61c809ce0360c62ca82244d550e6845b582ac75cfb3e2d26a51d3ad1f29197",
+    "source_commit": "311b66f70b98e5da2cf625ce149bde3fd8a34dae",
+    "frozen_sources": 698,
+    "counts": {
+      "starts": 1,
+      "chats": 7,
+      "controls": 56
+    },
+    "seconds": 98.8716205470264,
+    "lease_status": "COMPLETED",
+    "nvml_samples": 93,
+    "all_nvml_ok": true,
+    "same_model": true,
+    "cache_recovered": true,
+    "shared_cache_unchanged": true,
+    "mtp_cached_sse": true,
+    "raw_progress_frames": 393,
+    "cache_wait_samples": 30,
+    "cache_device_samples": 0,
+    "progress_shutdown_unknown": {
+      "progress_disconnected": 8
+    },
+    "startup_reservations_freed": 1619,
+    "allocation_note": "Intermediate server_destroyed quota still has 6 entries/125239296 bytes; process exits 0 and final NVML has no compute process. Do not claim that intermediate snapshot proves zero live allocations.",
+    "cleanup_confirmed": true,
+    "default_changed": false,
+    "performance_acceptance": false,
+    "full_model_quality_run": false,
+    "reused": [
+      "serve-cache-io-cpu-20261109",
+      "serve-cache-io-driver-20261109",
+      "serve-progress-resource-20261109",
+      "serve-progress-business-20261109"
+    ],
+    "progress_sampling": "250ms can miss short device/resource scopes; direct CPU bindings reused.",
+    "remaining": [
+      "rollback-capable accepted delivery",
+      "all remaining master tasks"
+    ]
+  },
+  "passed_cpu": [
+    "serve-cache-io-cpu-20261109/primitive-01",
+    "serve-cache-io-cpu-20261109/integration-01",
+    "serve-cache-io-cpu-20261109/session-02",
+    "serve-cache-io-cpu-20261109/prefix-02",
+    "serve-cache-io-cpu-20261109/incremental-01",
+    "serve-cache-io-cpu-20261109/target-01",
+    "serve-cache-io-cpu-20261109/target-02",
+    "serve-cache-io-cpu-20261109/health-01",
+    "serve-cache-io-cpu-20261109/inventory-02",
+    "serve-cache-io-cpu-20261109/declarations-02",
+    "serve-cache-io-cpu-20261109/build-05",
+    "serve-progress-controller-20261109/controller-cpu-01",
+    "serve-progress-controller-20261109/rollback-verify-01",
+    "serve-progress-resource-20261109/resource-cpu-01",
+    "serve-progress-resource-20261109/resource-python-01"
+  ],
+  "previous_application_acceptance_reused": "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-chat-delivery-20261109/README.md",
+  "runtime_unchanged_after_final_business": true,
+  "additional_gpu_tests": 0,
+  "performance_acceptance": false,
+  "full_model_quality_run": false,
+  "long_stability_accepted": false,
+  "remaining_master_tasks_open": true
+}

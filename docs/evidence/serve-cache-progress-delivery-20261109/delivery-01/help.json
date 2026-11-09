@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/build/service/bin/q4t",
+    "service",
+    "--help"
+  ],
+  "returncode": 0,
+  "model_starts": 0,
+  "chat_requests": 0
+}

@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-cache-io-20261109/prepare_delivery.py", line 222, in <module>
+    if __name__ == '__main__': main()
+                               ^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-cache-io-20261109/prepare_delivery.py", line 59, in main
+    files = {n: h['sha256'] if isinstance(h, dict) else h for n, h in files.items()}
+                ~^^^^^^^^^^
+KeyError: 'sha256'
