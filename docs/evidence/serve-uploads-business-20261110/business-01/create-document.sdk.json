@@ -1,0 +1,29 @@
+{
+  "ok": true,
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "method": "POST",
+      "path": "/v1/uploads",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-length": "191",
+        "content-type": "application/json",
+        "x-request-id": "req-3344522ee18d6bc74f40a34349e249de"
+      },
+      "wire_base64": "eyJpZCI6InVwbG9hZF81ZDMxOTJhNjg0MTI3Njc5MTFkNzJmODA2ZGU2YTI1NSIsIm9iamVjdCI6InVwbG9hZCIsImJ5dGVzIjoxNDYyMCwiY3JlYXRlZF9hdCI6MTc5NDI2NzA1OSwiZXhwaXJlc19hdCI6MTc5NDI3MDY1OSwiZmlsZW5hbWUiOiJNT0RFTC5tZCIsInB1cnBvc2UiOiJ1c2VyX2RhdGEiLCJzdGF0dXMiOiJwZW5kaW5nIn0="
+    }
+  ],
+  "result": {
+    "id": "upload_5d3192a68412767911d72f806de6a255",
+    "object": "upload",
+    "bytes": 14620,
+    "created_at": 1794267059,
+    "expires_at": 1794270659,
+    "filename": "MODEL.md",
+    "purpose": "user_data",
+    "status": "pending"
+  },
+  "attempts": 1
+}

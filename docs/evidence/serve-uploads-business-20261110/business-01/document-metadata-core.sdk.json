@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "method": "GET",
+      "path": "/v1/files/file_94d50336977e2189c626dbf1ce9a79bc",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-length": "165",
+        "content-type": "application/json",
+        "x-request-id": "req-c0401ce31abdf9a68c32fb7c9604bd20"
+      },
+      "wire_base64": "eyJpZCI6ImZpbGVfOTRkNTAzMzY5NzdlMjE4OWM2MjZkYmYxY2U5YTc5YmMiLCJvYmplY3QiOiJmaWxlIiwiYnl0ZXMiOjE0NjIwLCJjcmVhdGVkX2F0IjoxNzk0MjY3MDYwLCJmaWxlbmFtZSI6Ik1PREVMLm1kIiwicHVycG9zZSI6InVzZXJfZGF0YSIsInN0YXR1cyI6InByb2Nlc3NlZCJ9"
+    }
+  ],
+  "result": {
+    "id": "file_94d50336977e2189c626dbf1ce9a79bc",
+    "object": "file",
+    "bytes": 14620,
+    "created_at": 1794267060,
+    "filename": "MODEL.md",
+    "purpose": "user_data",
+    "status": "processed"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "method": "POST",
+      "path": "/files-test/v1/uploads",
+      "status": 200,
+      "headers": {
+        "cache-control": "no-store",
+        "connection": "keep-alive",
+        "content-length": "187",
+        "content-type": "application/json",
+        "x-request-id": "req-8ab23a6d49eb3f9ddb457410555a1214"
+      },
+      "wire_base64": "eyJpZCI6InVwbG9hZF8zMjJmYzk0ZDNjOTIzYzljNzZlOWU3ZDkxYWE4NzhiMCIsIm9iamVjdCI6InVwbG9hZCIsImJ5dGVzIjo1MTIsImNyZWF0ZWRfYXQiOjE3OTQyNjcwNzEsImV4cGlyZXNfYXQiOjE3OTQyNzA2NzEsImZpbGVuYW1lIjoicmVwZWF0LmJpbiIsInB1cnBvc2UiOiJldmFscyIsInN0YXR1cyI6InBlbmRpbmcifQ=="
+    }
+  ],
+  "result": {
+    "id": "upload_322fc94d3c923c9c76e9e7d91aa878b0",
+    "object": "upload",
+    "bytes": 512,
+    "created_at": 1794267071,
+    "expires_at": 1794270671,
+    "filename": "repeat.bin",
+    "purpose": "evals",
+    "status": "pending"
+  },
+  "attempts": 1
+}

@@ -1,5 +1,7 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+A09.4 [真实Uploads业务接受](evidence/serve-uploads-business-20261110/README.md)：1启动/2生成/20文件操作/53.651秒、52 NVML全OK并独立清理。实际SDK/原生TLS文档工具闭环、重复Part/MD5/原完成核对/取消后409/隔离及精确用量通过。候选cdb5ced9/入口a8c5bba3，默认6a7404c7保持；继续可回退发行和全部余项。
+
 A09.4 [发现/驱动/提前拒绝5 C++和7 Python已接受](evidence/serve-uploads-driver-close-cpu-20261110/README.md)：真实EPIPE与重名JSON已修复，原失败/探测误计保留；官方SDK迟到Part返回409、100ms/64KiB关闭及TLS/明文保护通过。零警告、0GPU、默认保持；开始冻结1启动/2生成/32文件操作/600秒业务，再发行及全部总任务。
 
 A09.4 驱动CPU暴露真实迟到Part连接EPIPE：提前409关闭时有未读请求体。另1次诊断发现SDK本地data URI探测误计为重试，已修驱动计数并保留失败；再次诊断确认真实EPIPE。核心/原生明文统一半关闭并限100ms/64KiB只丢弃尾部，TLS复用该合同。冻结4 C++和5 Python直接影响项，不重复已过核心/64MiB矩阵；0GPU、默认保持，后续短验/发行与全部任务继续。

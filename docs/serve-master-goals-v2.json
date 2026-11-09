@@ -944,7 +944,7 @@
         "A09.8 ongoing SDK/native release and rollback for remaining APIs"
       ],
       "multipart_component_evidence": "evidence/serve-multipart-cpu-20261110/README.md",
-      "next": "Complete Uploads native HTTP/TLS, actual SDK and release after27 core CPU checks; continue all required tasks.",
+      "next": "Publish accepted Uploads cdb5ced9 with retained Files v11 rollback; then actual file consumption, Batch and all master work.",
       "binary_component_evidence": "docs/evidence/serve-binary-cpu-20261110/README.md",
       "http_stream_component_evidence": "docs/evidence/serve-http-body-stream-cpu-20261110/README.md",
       "files_core_component_evidence": "docs/evidence/serve-files-core-cpu-20261110/README.md",
@@ -967,7 +967,8 @@
         "A09.3 Files and bounded native transport"
       ],
       "files_package_component_evidence": "evidence/serve-files-package-cpu-20261110/README.md",
-      "uploads_core_component_evidence": "evidence/serve-uploads-core-cpu-20261110/README.md"
+      "uploads_core_component_evidence": "evidence/serve-uploads-core-cpu-20261110/README.md",
+      "uploads_business_evidence": "evidence/serve-uploads-business-20261110/README.md"
     },
     {
       "id": "A10",

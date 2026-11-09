@@ -1,0 +1,15 @@
+{
+  "native_tls": true,
+  "actual_sdk": true,
+  "exact_file_handoff": true,
+  "real_document_tool_closure": true,
+  "repeated_part_bytes": true,
+  "wrong_md5_preserves_pending": true,
+  "completion_reconciles_original": true,
+  "owner_isolation": true,
+  "cancelled_late_part_rejected": true,
+  "exact_generation_usage": true,
+  "file_input_resolution": false,
+  "native_parent_admission": "identity-bound test adapter",
+  "performance_claim": false
+}
