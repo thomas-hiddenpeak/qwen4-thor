@@ -182,3 +182,5 @@ A07.6 实际路径成组接入（2026-11-10）：原生多断点目标/MTP状态
 冻结42项直接C++、3项schema/真实C++输出检查及来源清单/生成漂移检查，清单原件在 `.q4t-work/serve-prompt-cache-20261110/validation-plan.json`。尚未执行测试或GPU；开始host与实际引擎必要构建。首次schema准备引用旧graph缺少compacted_response，原始失败说明保留；使用同一固定SDK重新生成完整graph并按依赖顺序重建schema。通过后继续实际业务短验与交付，不结束总目标。
 
 构建后静态审查补充：默认等长槽也需执行MTP缓存。原状态范围已用SequenceOffset/Capacity支持两种布局，移除仅显式槽的旧门禁并补实际streamed入口；保留真实设备错误保护，可选缓存scratch不足只关闭本请求缓存。仍未开始测试，原42host/3schema之外追加2个现有纯CPU状态范围用例，独立 `q4t_session_target_contract`，没有CUDA调用。
+
+A07.6 [真实业务](evidence/serve-prompt-cache-business-20261110/README.md)及[默认交付](evidence/serve-prompt-cache-delivery-20261110/README.md)完成：1启动/10请求/67.369秒，65 NVML全OK；原生包485e774f/revision20/STOPPED，旧A07.5及账本保持。44C++/3schema/5驱动CPU与实际状态读写证据接通，TTL到期仅CPU证明。继续A07.7/A07.8及所有剩余任务，媒体缓存仍属A10。

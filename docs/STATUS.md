@@ -1,10 +1,10 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
-A07.5 本地 Prompt 已完成[针对 CPU](evidence/serve-prompts-cpu-20261109/README.md)、[输出缺口修复](evidence/serve-prompt-output-fix-20261110/README.md)、[真实业务](evidence/serve-prompts-business-20261110/README.md)与[可回退默认交付](evidence/serve-prompts-delivery-20261110/README.md)。当前引擎 `8feec073`、元数据 `349eecf3`、原生包 `945e6f73`，publication revision18，STOPPED；旧 A07.4 原包/发布代与核心、客户端账本保持。
+A07.6 原生缓存已完成[44项C++/3项schema](evidence/serve-prompt-cache-cpu-20261110/README.md)、[5项驱动CPU](evidence/serve-prompt-cache-driver-20261110/README.md)、[真实业务](evidence/serve-prompt-cache-business-20261110/README.md)与[可回退默认交付](evidence/serve-prompt-cache-delivery-20261110/README.md)。当前引擎 `bd45853b`、元数据 `4040451c`、原生包 `485e774f`，publication revision20，STOPPED；旧A07.5完整回退、核心和客户端账本保持。
 
-实际模板版本 v1/v2 得到 42/73，显式旧版及重启默认正确；后台模板删除后原响应/SSE继续回放，真实文档工具闭环、精确用量和错误隔离通过。2 启动/8 请求/7 模型步/86.754秒，82 NVML 全OK并独立清理；安装8条操作通过且0模型/Chat。首次输出漏字段的失败与修复均保留。
+实际1启动/10请求/67.369秒，65次NVML全OK、正常退出且独立清理确认；预热输出0，2断点写入，MTP/目标恢复2181/2291 tokens与用量一致。key隔离、显式无断点、标准Chat、后台原SSE及文档工具闭环通过。首次命令漏传租约继承在模型前失败，原件保留。安装8操作通过，0模型/Chat。TTL到期只援引针对CPU，不冒称12h实跑；不作性能优化结论。
 
-A07.1—A07.5已交付，A07整体和总目标仍 active、尚未合 main。A07.6 已按[策略/边界、状态、执行、针对验收](SERVE_RESPONSES_ADVANCED_2026-11-09.md)冻结成组实施，原生实际读写/多断点/TTL、零输出预热、实际用量及无IO哈希诊断已成组接入，[44项C++/3项schema及来源检查通过](evidence/serve-prompt-cache-cpu-20261110/README.md)，host/实际引擎零警告；生成物漂移失败及仅补验原件保留；[实际业务已通过](evidence/serve-prompt-cache-business-20261110/README.md)：1启动/10请求/67.369秒，65次NVML全OK、正常清理；继续可回退交付；实际SDK驱动已编写，[5项驱动判据CPU通过](evidence/serve-prompt-cache-driver-20261110/README.md)，冻结1启动/10请求/900秒实际短验；现在连续推进 **实际缓存控制、断点/TTL与用量**，随后 A07.7—A07.8 及 A/R/Q/G 全部余项；阶段交付不会结束总目标。非性能任务只做直接针对验证，长稳实跑由用户负责。
+A07.1—A07.6已交付，A07整体和总目标仍active、未合main。现在连续推进 **A07.7执行策略：reasoning mode、实际moderation与授权程序**，然后A07.8及A/R/Q/G全部余项。媒体缓存由A10继续；范围不缩减、阶段不当终点。非性能任务只做直接针对验证，长稳实跑由用户负责。
 
 以下保留历史检查点，当前默认以上段为准；A07.3—A07.5 开发原件见开发日志及证据目录。
 

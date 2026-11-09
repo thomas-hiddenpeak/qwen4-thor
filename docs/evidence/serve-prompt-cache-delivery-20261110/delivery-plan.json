@@ -1,0 +1,12 @@
+{
+  "commands": 8,
+  "model_starts": 0,
+  "chats": 0,
+  "previous_revision": 18,
+  "previous_package": "945e6f73b94a6b7062de690a6a5619fc7eb06ba6341531396deec0f0a56ccb4a",
+  "next_revision": 20,
+  "default_state": "STOPPED",
+  "business_journals_preserved": true,
+  "rollback": "retain A07.5 original package and publication generation",
+  "source_and_native_control_reuse": true
+}

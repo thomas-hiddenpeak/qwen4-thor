@@ -1,0 +1,13 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 6f641c3c..0e3b41be 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -276,6 +276,8 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
+   src/server/conversation_state.cpp
+   src/server/conversation_api.cpp
+   src/server/prompt_template.cpp
++  src/server/prompt_cache_policy.cpp
++  src/server/prompt_cache_diagnostics.cpp
+   src/server/prompt_registry.cpp
+   src/server/prompt_api.cpp
+   src/server/chat_storage.cpp
