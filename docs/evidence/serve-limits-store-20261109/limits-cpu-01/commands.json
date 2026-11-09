@@ -1,0 +1,14 @@
+[
+  [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_recovery.test_quota_store",
+    "tools.serve_recovery.test_access_store",
+    "tools.serve_recovery.test_access_management.ManagementTests.test_binding_marker_interruption_and_state_swap_fail_closed",
+    "tools.serve_recovery.test_access_io.AccessIoTests.test_real_journal_new_revision_and_large_fragmented_history",
+    "tools.serve_recovery.test_access_management.ManagedIngressTests.test_managed_rotation_live_receipt_and_restart_preserve_revocation"
+  ]
+]

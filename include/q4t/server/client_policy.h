@@ -50,6 +50,9 @@ Status ParseGatewayClientPolicy(std::string_view raw,
 // parent directories are part of the trusted deployment configuration.
 Status LoadGatewayClientPolicy(const std::string& path,
                                GatewayClientPolicy* output);
+// Stable policy identity across model generations; excludes the ephemeral
+// gateway token and raw JSON formatting. Empty for an invalid policy.
+std::string ClientPolicyDigest(const GatewayClientPolicy& policy);
 
 class ClientAdmission;
 class ClientLease;

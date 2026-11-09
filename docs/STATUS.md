@@ -2,6 +2,12 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+N04持久限额/跨语言摘要18项CPU通过（6新增/12受影响），checker
+零警告，[原件](evidence/serve-limits-store-20261109/README.md)。Key/限额journal独立，代次token变化不改变限额身份，
+未知提交/整目录丢失不重置。保存策略不等于恢复运行用量；继续
+隔离reader、模型私有发布、新客户端协调/用量恢复及真实交付。
+默认v6/引擎/ledger保持，0模型/Chat，全部总目标仍推进。
+
 N04动态准入原语31/31 CPU通过（6新增/25受影响），host零警告，
 [原件](evidence/serve-client-policy-20261109/README.md)保留名单准备失败。v3原子快照/稳定槽位、三通道容量、
 额度关闭再启用仍记账、跨分钟预留与旧身份限额检查通过；v1/v2

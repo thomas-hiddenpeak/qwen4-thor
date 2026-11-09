@@ -1,4 +1,4 @@
-"""Private immutable runner policy; no API keys and no automatic service action."""
+"""Private runner policy; v3 supports revisions, with no automatic service action."""
 import hashlib
 import json
 import os
@@ -29,11 +29,15 @@ def unique(pairs):
 
 def validate(value):
     require(type(value) is dict and type(value.get('version')) is int and
-            value['version'] in (1, 2))
-    v2 = value['version'] == 2
-    require(value.keys() == ({'version', 'gateway_token', 'clients', 'fair_queue'}
-                            if v2 else {'version', 'gateway_token', 'clients'}))
-    if v2:
+            value['version'] in (1, 2, 3))
+    rate = value['version'] >= 2
+    fields = {'version', 'gateway_token', 'clients'}
+    if rate:fields.add('fair_queue')
+    if value['version'] == 3:fields.add('revision')
+    require(value.keys() == fields)
+    if value['version'] == 3:
+        require(type(value['revision']) is int and 0 <= value['revision'] <= 2**53 - 1)
+    if rate:
         require(type(value['fair_queue']) is bool)
     require(type(value['gateway_token']) is str and
             re.fullmatch('[a-f0-9]{64}', value['gateway_token']))
@@ -41,7 +45,7 @@ def validate(value):
     require(type(clients) is list and 1 <= len(clients) <= 64)
     ids = set()
     for client in clients:
-        bounds = {**BOUNDS, **RATE_BOUNDS} if v2 else BOUNDS
+        bounds = {**BOUNDS, **RATE_BOUNDS} if rate else BOUNDS
         require(type(client) is dict and client.keys() == {'id', *bounds})
         name = client['id']
         require(type(name) is str and re.fullmatch('[a-z][a-z0-9_-]{0,31}', name))
@@ -50,6 +54,16 @@ def validate(value):
         for field, (minimum, maximum) in bounds.items():
             require(type(client[field]) is int and minimum <= client[field] <= maximum)
     return value
+
+
+def digest(value):
+    """Versioned semantic identity shared with native ClientPolicyDigest."""
+    validate(value)
+    raw = ('q4t-client-policy-v1\n' + str(value['version']) + '\n' +
+           str(value.get('revision', 0)) + '\n' + ('1\n' if value.get('fair_queue') else '0\n'))
+    for client in value['clients']:
+        raw += client['id'] + ''.join(':' + str(client.get(k, 0)) for k in (*BOUNDS, *RATE_BOUNDS)) + '\n'
+    return hashlib.sha256(raw.encode()).hexdigest()
 
 
 def parse(raw):

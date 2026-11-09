@@ -137,7 +137,7 @@ class ManagementTests(unittest.TestCase):
         target = self.fixture.directory / 'interrupted';target.mkdir(mode=0o700)
         binding = access_store.binding(target, str(uuid.uuid4()))
         value = policy.from_keys([dict(id='alpha', api_keys=[ALPHA])])
-        with mock.patch.object(access_store, 'Store', side_effect=OSError('CPU bootstrap fault')):
+        with mock.patch.object(access_store.Store, '__init__', side_effect=OSError('CPU bootstrap fault')):
             with self.assertRaises(OSError):access_store.initialize_bound(binding, value)
         self.assertTrue((target / access_store.MARKER).exists())
         with self.assertRaises(OSError):access_store.initialize_bound(binding, value)

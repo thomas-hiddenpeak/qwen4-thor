@@ -1,0 +1,17 @@
+{
+  "status": "PASS_DURABLE_LIMITS_AND_NATIVE_FINGERPRINT_CPU",
+  "new_tests": 6,
+  "affected_tests": 12,
+  "passed": 18,
+  "build_warnings": 0,
+  "model_starts": 0,
+  "real_chat_generations": 0,
+  "default_changed": false,
+  "runtime_usage_durability_claimed": false,
+  "remaining": [
+    "isolated limits reader and native model publication",
+    "runtime quota recovery and new client coordination",
+    "TLS SDK actual model business and rollback delivery"
+  ],
+  "remaining_master_tasks_open": true
+}

@@ -1,0 +1,6 @@
+[  0%] Building CXX object CMakeFiles/q4t_client_policy_check.dir/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/client_policy_check.cpp.o
+[  0%] Building CXX object CMakeFiles/q4t_client_policy_check.dir/home/rm01/models/dev/qwen4-thor/src/trace/sha256.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_client_policy_check.dir/home/rm01/models/dev/qwen4-thor/src/io/json.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_client_policy_check.dir/home/rm01/models/dev/qwen4-thor/src/server/client_policy.cpp.o
+[100%] Linking CXX executable q4t_client_policy_check
+[100%] Built target q4t_client_policy_check

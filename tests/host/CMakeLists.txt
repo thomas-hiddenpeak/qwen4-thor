@@ -16,6 +16,13 @@ target_include_directories(q4t_host_tests PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DI
 target_compile_options(q4t_host_tests PRIVATE -Wall -Wextra -Werror)
 target_link_libraries(q4t_host_tests PRIVATE Threads::Threads ${CMAKE_DL_LIBS})
 
+add_executable(q4t_client_policy_check
+  ../../tools/serve_recovery/client_policy_check.cpp
+  ../../src/server/client_policy.cpp ../../src/trace/sha256.cpp ../../src/io/json.cpp)
+target_include_directories(q4t_client_policy_check PRIVATE ../../include)
+target_compile_options(q4t_client_policy_check PRIVATE -Wall -Wextra -Werror)
+target_link_libraries(q4t_client_policy_check PRIVATE Threads::Threads)
+
 enable_testing()
 include(../../cmake/GuardianProcess.cmake)
 include(../../cmake/NativeIngress.cmake)

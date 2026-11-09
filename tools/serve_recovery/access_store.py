@@ -27,15 +27,17 @@ def binding(state, service_id):
                 state_identity=[info.st_dev, info.st_ino])
 
 
-def marker_value(value):
-    return dict(format='q4t-client-access-binding-v1', service_id=value['service_id'],
+def marker_value(value, writer=None):
+    writer = Store if writer is None else writer
+    return dict(format=writer.binding_format, service_id=value['service_id'],
                 state_identity=value['state_identity'])
 
 
-def check_binding(value):
+def check_binding(value, writer=None):
+    writer = Store if writer is None else writer
     state = Path(value['state_directory'])
     ledger.require(binding(state, value['service_id']) == value, 'access state changed')
-    fd = os.open(state / MARKER, os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW | os.O_NONBLOCK)
+    fd = os.open(state / writer.marker_name, os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW | os.O_NONBLOCK)
     try:
         before = store.check_file(fd)
         ledger.require(0 < before.st_size <= 1024, 'access binding size')
@@ -43,16 +45,17 @@ def check_binding(value):
         after = store.check_file(fd)
         ledger.require(len(raw) == before.st_size and all(getattr(before, k) == getattr(after, k)
             for k in ('st_dev', 'st_ino', 'st_size', 'st_mtime_ns', 'st_ctime_ns')) and
-            store.decode(raw) == marker_value(value), 'access binding changed')
+            store.decode(raw) == marker_value(value, writer), 'access binding changed')
     finally:
         os.close(fd)
 
 
-def sync_binding(value):
+def sync_binding(value, writer=None):
     """Re-establish parent-entry durability before claiming a bound policy."""
-    check_binding(value)
+    writer = Store if writer is None else writer
+    check_binding(value, writer)
     state = Path(value['state_directory'])
-    marker = os.open(state / MARKER, os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW | os.O_NONBLOCK)
+    marker = os.open(state / writer.marker_name, os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW | os.O_NONBLOCK)
     try:
         store.check_file(marker)
         os.fsync(marker)
@@ -60,54 +63,62 @@ def sync_binding(value):
     directory = os.open(state, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
     try:os.fsync(directory)
     finally:os.close(directory)
-    check_binding(value)
+    check_binding(value, writer)
 
 
-def open_bound(value):
-    check_binding(value)
-    current = Store(Path(value['state_directory']) / 'client-access', value['service_id'],
+def open_bound(value, writer=None):
+    writer = Store if writer is None else writer
+    check_binding(value, writer)
+    current = writer(Path(value['state_directory']) / writer.directory_name, value['service_id'],
                     value['state_identity'])
     try:
-        sync_binding(value)
+        sync_binding(value, writer)
         return current
     except BaseException:
         current.close()
         raise
 
 
-def initialize_bound(value, initial):
+def initialize_bound(value, initial, writer=None):
     """Explicit one-time operator initialization, never a runtime fallback.
 
     The outer permanent marker survives loss of the entire journal directory.
     A crash before journal creation stays unavailable, rather than resurrecting
     sealed package keys. Existing markers permit recovery of existing data only.
     """
+    writer = Store if writer is None else writer
     state = Path(value['state_directory'])
     ledger.require(binding(state, value['service_id']) == value, 'access state changed')
-    first = not os.path.lexists(state / MARKER)
+    first = not os.path.lexists(state / writer.marker_name)
     if first:
-        ledger.require(not os.path.lexists(state / 'client-access'), 'unbound access journal')
-        fd = os.open(state / MARKER, os.O_WRONLY | os.O_CREAT | os.O_EXCL |
+        ledger.require(not os.path.lexists(state / writer.directory_name), 'unbound access journal')
+        fd = os.open(state / writer.marker_name, os.O_WRONLY | os.O_CREAT | os.O_EXCL |
                      os.O_CLOEXEC | os.O_NOFOLLOW, 0o600)
         try:
-            store.Store.write_all(fd, ledger.canonical(marker_value(value)))
+            store.Store.write_all(fd, ledger.canonical(marker_value(value, writer)))
             os.fsync(fd)
         finally:
             os.close(fd)
         directory = os.open(state, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
         try:os.fsync(directory)
         finally:os.close(directory)
-    check_binding(value)
-    with Store(state / 'client-access', value['service_id'], value['state_identity'],
+    check_binding(value, writer)
+    with writer(state / writer.directory_name, value['service_id'], value['state_identity'],
                initialize=initial if first else None) as journal:
-        result = policy.describe(journal.head['state']['policy'])
+        result = writer.contract.describe(journal.head['state']['policy'])
     # fsync inside the child directory does not persist its entry in state.
     # Repeating this on recovery also closes a prior unknown parent sync.
-    sync_binding(value)
+    sync_binding(value, writer)
     return dict(result, initialized=first, durable=True, live_applied=False)
 
 
 class Store:
+    contract = policy
+    format = FORMAT
+    marker_name = MARKER
+    binding_format = 'q4t-client-access-binding-v1'
+    directory_name = 'client-access'
+
     def __init__(self, directory, service_id, state_identity, *, initialize=None):
         ledger.require(ledger.identifier(service_id) and type(state_identity) is list and
             len(state_identity) == 2 and all(ledger.integer(n, minimum=1) for n in state_identity),
@@ -118,7 +129,7 @@ class Store:
         self.poisoned, self.head = False, None
         try:
             if initialize is not None:
-                policy.validate(initialize)
+                self.contract.validate(initialize)
                 ledger.require(initialize['revision'] == 0, 'access bootstrap revision')
                 self.directory.mkdir(mode=0o700, exist_ok=True)
             ledger.require(self.directory.resolve(strict=True) == self.directory,
@@ -136,7 +147,7 @@ class Store:
             store.check_file(self.lock_fd)
             fcntl.flock(self.lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
             self.check_identity()
-            marker = dict(format=FORMAT, service_id=service_id, state_identity=state_identity)
+            marker = dict(format=self.format, service_id=service_id, state_identity=state_identity)
             if initialize is not None:
                 ledger.require(not self.exists('policy.json') and not self.exists('policy.pending'),
                                'access bootstrap collision')
@@ -179,7 +190,7 @@ class Store:
                      os.O_CLOEXEC, dir_fd=self.dir_fd)
         try:
             before = store.check_file(fd)
-            ledger.require(0 < before.st_size <= policy.MAX_BYTES, 'access file byte bound')
+            ledger.require(0 < before.st_size <= self.contract.MAX_BYTES, 'access file byte bound')
             raw = bytearray()
             while len(raw) <= before.st_size:
                 part = os.read(fd, min(65536, before.st_size + 1 - len(raw)))
@@ -197,7 +208,7 @@ class Store:
     def envelope(self, name):
         value = self.read(name)
         ledger.keys(value, ('format', 'service_id', 'state_identity', 'previous_sha256', 'sha256', 'state'))
-        ledger.require(value['format'] == FORMAT and value['service_id'] == self.service_id and
+        ledger.require(value['format'] == self.format and value['service_id'] == self.service_id and
             value['state_identity'] == self.state_identity and
             value['sha256'] == ledger.digest(value['state']) and
             (value['previous_sha256'] is None or type(value['previous_sha256']) is str and
@@ -216,10 +227,10 @@ class Store:
         finally:
             os.close(fd)
 
-    @staticmethod
-    def validate_state(value):
+    @classmethod
+    def validate_state(cls, value):
         ledger.keys(value, ('policy', 'receipts'))
-        policy.validate(value['policy'])
+        cls.contract.validate(value['policy'])
         receipts = value['receipts']
         ledger.require(type(receipts) is list and len(receipts) <= MAX_RECEIPTS,
                        'access receipt count')
@@ -229,13 +240,13 @@ class Store:
             ledger.require(ledger.identifier(receipt['id']) and receipt['id'] not in ids and
                 type(receipt['request_sha256']) is str and ledger.HASH.fullmatch(receipt['request_sha256']) and
                 type(receipt['policy_sha256']) is str and ledger.HASH.fullmatch(receipt['policy_sha256']) and
-                policy.revision(receipt['revision'], minimum=1) and
+                cls.contract.revision(receipt['revision'], minimum=1) and
                 receipt['revision'] > previous, 'invalid access receipt')
             ids.add(receipt['id']); previous = receipt['revision']
         revision = value['policy']['revision']
         ledger.require((revision == 0 and not receipts) or (receipts and
             receipts[-1]['revision'] == revision and
-            receipts[-1]['policy_sha256'] == policy.digest(value['policy'])),
+            receipts[-1]['policy_sha256'] == cls.contract.digest(value['policy'])),
             'access revision lacks receipt')
 
     def reconcile(self):
@@ -246,7 +257,7 @@ class Store:
             current = self.envelope('policy.json')
             ledger.require(pending['previous_sha256'] == current['sha256'],
                            'pending access predecessor changed')
-            policy.transition(current['state']['policy'], pending['state']['policy'])
+            self.contract.transition(current['state']['policy'], pending['state']['policy'])
             ledger.require(pending['state']['receipts'][:-1] ==
                 current['state']['receipts'][-(MAX_RECEIPTS - 1):], 'access receipt chain changed')
         else:
@@ -260,11 +271,11 @@ class Store:
     def commit(self, state):
         ledger.require(not self.poisoned, 'access writer requires recovery')
         self.validate_state(state)
-        value = dict(format=FORMAT, service_id=self.service_id, state_identity=self.state_identity,
+        value = dict(format=self.format, service_id=self.service_id, state_identity=self.state_identity,
             previous_sha256=None if self.head is None else self.head['sha256'],
             sha256=ledger.digest(state), state=state)
         raw = ledger.canonical(value)
-        ledger.require(len(raw) <= policy.MAX_BYTES, 'access journal byte bound')
+        ledger.require(len(raw) <= self.contract.MAX_BYTES, 'access journal byte bound')
         try:
             self.check_identity()
             if self.head is not None:
@@ -288,8 +299,8 @@ class Store:
         ledger.require(not self.poisoned and self.head is not None,
                        'access writer requires recovery')
         ledger.require(ledger.identifier(request_id) and
-            policy.revision(expected_revision), 'access transaction identity')
-        policy.validate(candidate)
+            self.contract.revision(expected_revision), 'access transaction identity')
+        self.contract.validate(candidate)
         request_hash = ledger.digest(dict(expected_revision=expected_revision, policy=candidate))
         state = self.head['state']
         for receipt in state['receipts']:
@@ -297,9 +308,9 @@ class Store:
                 ledger.require(receipt['request_sha256'] == request_hash, 'access idempotency conflict')
                 return dict(receipt, replayed=True, durable=True, live_applied=False)
         ledger.require(state['policy']['revision'] == expected_revision, 'access revision conflict')
-        policy.transition(state['policy'], candidate)
+        self.contract.transition(state['policy'], candidate)
         receipt = dict(id=request_id, request_sha256=request_hash,
-            revision=candidate['revision'], policy_sha256=policy.digest(candidate))
+            revision=candidate['revision'], policy_sha256=self.contract.digest(candidate))
         new = dict(policy=copy.deepcopy(candidate), receipts=[
             *state['receipts'][-(MAX_RECEIPTS - 1):], receipt])
         self.commit(new)

@@ -214,6 +214,24 @@ Status LoadGatewayClientPolicy(const std::string& path,
   return ParseGatewayClientPolicy(raw, output);
 }
 
+std::string ClientPolicyDigest(const GatewayClientPolicy& policy) {
+  if (!ValidPolicy(policy)) return {};
+  std::string raw = "q4t-client-policy-v1\n" + std::to_string(policy.version) +
+                    '\n' + std::to_string(policy.revision) + '\n' +
+                    (policy.fair_queue ? "1\n" : "0\n");
+  for (const auto& client : policy.clients) {
+    raw += client.id;
+    for (const auto value : {client.max_inflight, client.max_control_inflight,
+                             client.max_prompt_tokens, client.max_output_tokens,
+                             client.max_body_bytes, client.requests_per_minute,
+                             client.tokens_per_minute})
+      raw += ':' + std::to_string(value);
+    raw += '\n';
+  }
+  return trace::HexDigest(trace::Sha256(
+      {reinterpret_cast<const uint8_t*>(raw.data()), raw.size()}));
+}
+
 Status ClientAdmission::Configure(GatewayClientPolicy policy) {
   const std::lock_guard lock(policy_mutex_);
   if (Enabled()) return Status::Fail("client policy already configured");
