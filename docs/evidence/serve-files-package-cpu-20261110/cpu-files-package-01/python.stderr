@@ -1,0 +1,28 @@
+test_closed_upload_fields_and_pagination_boundaries (tools.serve_responses.test_files_contract.FilesContractTests.test_closed_upload_fields_and_pagination_boundaries) ... ok
+test_native_file_policy_configuration_matches_full_schema (tools.serve_responses.test_files_contract.FilesContractTests.test_native_file_policy_configuration_matches_full_schema) ... ok
+test_native_records_and_expiration_match_published_schema (tools.serve_responses.test_files_contract.FilesContractTests.test_native_records_and_expiration_match_published_schema) ... ok
+test_sdk_source_multipart_binary_and_route_contracts (tools.serve_responses.test_files_contract.FilesContractTests.test_sdk_source_multipart_binary_and_route_contracts) ... ok
+test_explicit_file_policy_legacy_migration_preserves_usage_and_keys (tools.serve_recovery.test_quota_managed.ManagedQuotaTests.test_explicit_file_policy_legacy_migration_preserves_usage_and_keys) ... ok
+test_cli_commit_replay_status_capacity_and_separate_key_policy (tools.serve_recovery.test_quota_managed.ManagedQuotaTests.test_cli_commit_replay_status_capacity_and_separate_key_policy) ... ok
+test_file_capacity_blocks_old_package_until_explicit_legacy_migration (tools.serve_recovery.test_deployment.DeploymentTests.test_file_capacity_blocks_old_package_until_explicit_legacy_migration) ... ok
+test_rollback_keeps_rotations_revocations_dynamic_limits_and_usage (tools.serve_recovery.test_deployment.DeploymentTests.test_rollback_keeps_rotations_revocations_dynamic_limits_and_usage) ... ok
+test_default_package_has_native_binary_and_no_nginx_dependency (tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency) ... ok
+test_historical_source_inventory_versions_remain_verifiable (tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable) ... ok
+test_file_transport_and_client_capacity_require_v11_identity (tools.serve_recovery.test_native_bundle.BundleTests.test_file_transport_and_client_capacity_require_v11_identity) ... ok
+test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io (tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io) ... ok
+test_http_profile_seals_normalized_policy_and_preserves_managed_binding (tools.serve_recovery.test_native_bundle.BundleTests.test_http_profile_seals_normalized_policy_and_preserves_managed_binding) ... ok
+test_durable_explicit_upgrade_reopens_with_receipt_and_no_downgrade (tools.serve_responses.test_file_capacity.FileCapacityTests.test_durable_explicit_upgrade_reopens_with_receipt_and_no_downgrade) ... ok
+test_actual_admin_upgrade_retains_existing_usage_and_client_slots (tools.serve_responses.test_file_capacity.FileCapacityTests.test_actual_admin_upgrade_retains_existing_usage_and_client_slots) ... FAIL
+
+======================================================================
+FAIL: test_actual_admin_upgrade_retains_existing_usage_and_client_slots (tools.serve_responses.test_file_capacity.FileCapacityTests.test_actual_admin_upgrade_retains_existing_usage_and_client_slots)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_file_capacity.py", line 79, in test_actual_admin_upgrade_retains_existing_usage_and_client_slots
+    self.assertFalse(server.publish(dict(initial, revision=2), 1)['ok'])
+AssertionError: True is not false
+
+----------------------------------------------------------------------
+Ran 15 tests in 1.074s
+
+FAILED (failures=1)

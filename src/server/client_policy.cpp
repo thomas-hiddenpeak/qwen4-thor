@@ -270,8 +270,7 @@ Status ClientAdmission::Publish(GatewayClientPolicy policy,
                                 uint32_t global_queued) {
   const std::lock_guard lock(policy_mutex_);
   const auto previous = Snapshot();
-  if (!previous || previous->version < 3 ||
-      policy.version < previous->version || rates_frozen_ ||
+  if (!previous || previous->version < 3 || policy.version < 3 || rates_frozen_ ||
       !ValidPolicy(policy) || expected_revision != previous->revision ||
       policy.revision <= previous->revision ||
       policy.gateway_token != previous->gateway_token ||
@@ -280,9 +279,17 @@ Status ClientAdmission::Publish(GatewayClientPolicy policy,
       global_inflight > INT32_MAX || global_queued > INT32_MAX ||
       !q4t::server::FairCapacity(policy, global_inflight, global_queued))
     return Status::Fail("invalid client policy update");
-  for (size_t i = 0; i < previous->clients.size(); ++i)
+  for (size_t i = 0; i < previous->clients.size(); ++i) {
     if (policy.clients[i].id != previous->clients[i].id)
       return Status::Fail("client slots cannot be reassigned");
+    // Explicit v4 -> v3 compatibility migration may remove the new field
+    // only after file capacity has been aligned with the legacy body cap.
+    // No hidden change of an effective limit and no counter replacement.
+    if (policy.version < previous->version &&
+        previous->clients[i].max_file_body_bytes !=
+            policy.clients[i].max_body_bytes)
+      return Status::Fail("file capacity must match legacy body limit");
+  }
   policy_.store(std::make_shared<const GatewayClientPolicy>(std::move(policy)),
                 std::memory_order_release);
   return Status();

@@ -135,3 +135,22 @@ A09.3 独立文件容量与原生流式转发已成组开发，冻结15 C++、5�
 TLS首次误选关闭TLS的host产物，4项启动失败原件保留；仅换启用TLS构建后3通过。剩余提前413实际暴露POLLIN|POLLERR先丢弃响应的问题。修复后冻结5项：提前核心错误、downstream disconnect、malformed response、backend quota429、truncated SSE/no replay。其他已过正常链分支未变，复用并保留来源，不重复两次17MiB SDK链。
 
 容量/原生传输[34不同CPU最终接受](evidence/serve-files-transport-cpu-20261110/README.md)，64次官方SDK实际请求，0GPU；继续发行与引擎实际业务，再全部其余子项。
+
+## 发现/schema/发行迁移定向冻结
+
+A09.3 发现/schema与v11发行兼容已成组开发，冻结6 C++/15 Python：实际Files与配置产出、SDK来源/传输schema、显式v4→v3迁移保留用量/Key、不兼容旧包在发布前拒绝，以及旧包验证。默认v3策略不升级、不扩容；开始独立必要构建，尚未测试，0GPU。继续实际引擎短验、发行及A09其余全部目标。
+
+完整6项C++名单：
+
+```text
+client_file_legacy_migration_preserves_capacity_and_usage
+client_file_configuration_emits_actual_schema_value
+files_schema_emits_actual_records_and_expiration
+chat_capabilities_files_separates_capacity_storage_and_consumption
+client_file_revision_upgrade_preserves_inflight_and_rate_recovery
+client_dynamic_update_preserves_snapshots_slots_and_move_ownership
+```
+
+15 Python为 `FilesContractTests` 4项、`ManagedQuotaTests` 新显式旧版迁移与既有CLI账本2项、`DeploymentTests` 新容量阻止旧包与既有回退账本2项、`BundleTests` 默认/历史v1—v10/新v11容量/来源清单/HTTP绑定5项，以及 `FileCapacityTests` 既有持久升级和真实C++管理IPC2项。配置/Files schema验证必须读取本次真实C++输出。另核对生成合同、源码遗漏门禁与实际A08旧包只读校验，不启动服务或GPU。
+
+安全迁移步骤见[客户端策略](SERVE_ACCESS_CONTROL_2026-11-09.md#files-容量策略与旧包回退2026-11-10a09接入中)。只有明确新字段才升级；旧包兼容需要完整两步容量/版本事务，显式null/bool/未知版本拒绝。当前默认v3不需要迁移。后续真实业务预算在驱动就绪后冻结，Files部分接受不能代替Uploads、文件消费、Batch及所有总任务。

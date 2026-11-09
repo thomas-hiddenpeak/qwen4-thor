@@ -1,4 +1,5 @@
 #include "q4t/server/chat_capabilities.h"
+#include "q4t/server/file_limits.h"
 
 #include "q4t/server/chat_protocol_identity.h"
 #include "q4t/server/chat_plan.h"
@@ -148,6 +149,19 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("generation_commit":"atomic_response_conversation_items",)"
          R"("generation_conflict":"revision_checked",)"
          R"("retention":"until_explicit_delete","compaction_executor":true})"
+         R"(,"files":{"profile":"q4t-files-v1","endpoint":"/v1/files",)"
+         R"("create":true,"retrieve":true,"list":true,"delete":true,)"
+         R"("content":true,"multipart":true,"binary_streaming":true,)"
+         R"("max_file_bytes":)" + std::to_string(kFileBytes) +
+         R"(,"max_wire_bytes":)" + std::to_string(kFileWireBytes) +
+         R"(,"client_policy_version":4,"client_limit":"max_file_body_bytes",)"
+         R"("native_ingress_policy_version":5,"ingress_limit":"file_body_bytes",)"
+         R"("legacy_limits_preserved":true,"storage_quota_separate":true,)"
+         R"("scope":"authenticated_client","core_readiness_dependency":false,)"
+         R"("publish":"after_complete_http_multipart_and_durable_commit",)"
+         R"("retention":"explicit_expiry_or_batch_30_days_otherwise_permanent",)"
+         R"("purposes":["assistants","batch","fine-tune","vision","user_data","evals"],)"
+         R"("purpose_is_storage_metadata":true,"file_resolution_pending":true})"
          R"(,"application_state":{"profile":"q4t-objects-v1",)"
          R"("scope":"authenticated_client","isolated_io":true,)"
          R"("core_readiness_dependency":false,"runtime_limits":"/v1/config",)"

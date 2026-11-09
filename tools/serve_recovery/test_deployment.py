@@ -197,6 +197,52 @@ class DeploymentTests(unittest.TestCase):
         d.ready(self.state, d.read_descriptor(self.state))
         self.assertNotIn('service_contract', json.loads((self.state/'ledger.json').read_bytes()))
 
+    def test_file_capacity_blocks_old_package_until_explicit_legacy_migration(self):
+        self.switch()
+        previous = self.fixture.directory/'v10'
+        shutil.copytree(self.package, previous)
+        value = bundle.engine.read(previous/'manifest.json')
+        value.update(version=10, profile='q4t-service-recovery-v10')
+        bundle.engine.save(previous/'manifest.json', value)
+        digest = bundle.engine.sha(previous/'manifest.json')
+        (previous/'bin/q4t').chmod(0o700)
+        (previous/'bin/q4t').write_bytes(bundle.launcher(digest, value['python']['path']))
+        d.switch(self.state, previous, digest, expected=self.digest, request_id=str(uuid.uuid4()))
+        d.switch(self.state, self.package, self.digest, expected=digest, request_id=str(uuid.uuid4()))
+        with quota_store.open_bound(self.binding) as journal:
+            before = journal.head['state']['policy']
+            clients = [dict(c, max_file_body_bytes=512*1024**2+65536) for c in before['clients']]
+            journal.transact(str(uuid.uuid4()), before['revision'], quota_policy.desired(before, clients))
+        paths = ['service.json', 'ledger.json', *(
+            writer.directory_name+'/policy.json' for writer in d.FAMILIES.values())]
+        saved = {name: (self.state/name).read_bytes() for name in paths}
+        with mock.patch.object(service.subprocess, 'Popen') as start:
+            with self.assertRaisesRegex(ValueError, 'file client policy requires recovery profile v11'):
+                d.switch(self.state, previous, digest, expected=self.digest,
+                         request_id=str(uuid.uuid4()), rollback=True)
+            start.assert_not_called()
+        for name, raw in saved.items():self.assertEqual((self.state/name).read_bytes(), raw)
+        self.assertEqual(d.status(self.state)['phase'], 'stable')
+        # Use the same durable transaction path as limits-apply; the CLI
+        # proposal and live C++ usage conservation are tested independently.
+        with quota_store.open_bound(self.binding) as journal:
+            before = journal.head['state']['policy']
+            clients = copy.deepcopy(before['clients'])
+            for client in clients:client['max_file_body_bytes'] = client['max_body_bytes']
+            aligned = quota_policy.desired(before, clients)
+            journal.transact(str(uuid.uuid4()), before['revision'], aligned)
+            for client in clients:client.pop('max_file_body_bytes')
+            legacy = quota_policy.desired(aligned, clients, policy_version=3)
+            journal.transact(str(uuid.uuid4()), aligned['revision'], legacy)
+        limits = (self.state/'client-limits/policy.json').read_bytes()
+        result = d.switch(self.state, previous, digest, expected=self.digest,
+                          request_id=str(uuid.uuid4()), rollback=True)
+        self.assertFalse(result['model_actions']);self.assertFalse(result['automatic_start'])
+        self.assertEqual((self.state/'client-limits/policy.json').read_bytes(), limits)
+        for name in ('client-access/policy.json', 'client-usage/policy.json'):
+            self.assertEqual((self.state/name).read_bytes(), saved[name])
+        d.ready(self.state, d.read_descriptor(self.state))
+
     def test_readonly_observation_and_retention_protect_selected_and_rollback_packages(self):
         self.switch();second = self.fixture.directory/'second';shutil.copytree(self.package, second)
         d.switch(self.state, second, self.digest, expected=self.digest, request_id=str(uuid.uuid4()))

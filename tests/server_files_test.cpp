@@ -151,6 +151,28 @@ Q4T_TEST(files_actual_sdk_upload_retrieve_and_binary_content) {
   return true;
 }
 
+Q4T_TEST(files_schema_emits_actual_records_and_expiration) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  Files files(objects);
+  auto evals = Upload(objects, File("actual document bytes") +
+                                  Text("purpose", "evals") + "--f--");
+  auto batch = Upload(objects, File("{}\n", "batch.jsonl") +
+                                  Text("purpose", "batch") + "--f--");
+  Q4T_CHECK(Ok(evals) && Ok(batch));
+  auto listing = files.List(Access(), Object());
+  auto deleted = files.Erase(Access(), evals.value.GetString("id"));
+  Q4T_CHECK(Ok(listing) && Ok(deleted));
+  const auto* output = std::getenv("Q4T_TEST_OUTPUT_DIR");
+  const auto directory = fs::path(output ? output : ".q4t-work/files-cpu");
+  fs::create_directories(directory);
+  std::ofstream file(directory / "files-contract.json");
+  file << OutputJson(Object({{"evals", evals.value}, {"batch", batch.value},
+                            {"list", listing.value}, {"deleted", deleted.value}}));
+  Q4T_CHECK(file.good());
+  return true;
+}
+
 Q4T_TEST(files_all_purposes_defaults_and_explicit_retention) {
   Fixture fixture;
   ObjectStore objects(fixture.options);

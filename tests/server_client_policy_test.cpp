@@ -332,6 +332,52 @@ Q4T_TEST(client_file_policy_discovery_remains_mutable_and_credential_free) {
   return true;
 }
 
+Q4T_TEST(client_file_legacy_migration_preserves_capacity_and_usage) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(FilePolicy(4096)));
+  Q4T_CHECK(admission.EnableRateRecovery());
+  Q4T_CHECK(admission.RestoreRates(nullptr, std::string(64, '1')));
+  ClientRateLease request;
+  Q4T_CHECK(request.Reserve(admission,
+              admission.Authenticate("alpha", kSecret), 3, 5) ==
+            ClientRateResult::kAllowed);
+  request.Start();
+  request.Completion(2);
+  Q4T_CHECK(!admission.Publish(DynamicPolicy(3, 100, 1), 0, 8, 8));
+  Q4T_CHECK(admission.Publish(FilePolicy(1024, 1), 0, 8, 8));
+  Q4T_CHECK(admission.Publish(DynamicPolicy(3, 100, 2), 1, 8, 8));
+  request.Settle();
+  Q4T_CHECK(admission.Version() == 3 &&
+            admission.Limits(0).max_body_bytes == 1024 &&
+            admission.Limits(0).max_file_body_bytes == 0);
+  ClientRateState checkpoint;
+  Q4T_CHECK(admission.FreezeRates(&checkpoint));
+  ClientAdmission legacy;
+  Q4T_CHECK(legacy.Configure(DynamicPolicy(3, 100, 2)));
+  Q4T_CHECK(legacy.EnableRateRecovery());
+  Q4T_CHECK(legacy.RestoreRates(&checkpoint, std::string(64, '2')));
+  Q4T_CHECK(legacy.RateUsage(0).requests == 1 &&
+            legacy.RateUsage(0).tokens == 5);
+  return true;
+}
+
+Q4T_TEST(client_file_configuration_emits_actual_schema_value) {
+  const auto policy = FilePolicy();
+  ChatPlanConfig config;
+  config.client_policy_version = 4;
+  config.client_policy_sha256 = policy.sha256;
+  config.client_policy_content_sha256 = ClientPolicyDigest(policy);
+  config.client_count = policy.clients.size();
+  const auto* output = std::getenv("Q4T_TEST_OUTPUT_DIR");
+  const auto directory = std::filesystem::path(
+      output ? output : ".q4t-work/files-contract-cpu");
+  std::filesystem::create_directories(directory);
+  std::ofstream file(directory / "files-config.json");
+  file << EffectiveServeConfigJson({}, config, true, true, 8);
+  Q4T_CHECK(file.good());
+  return true;
+}
+
 Q4T_TEST(client_dynamic_revision_parser_is_strict_and_transactional) {
   GatewayClientPolicy parsed;
   Q4T_CHECK(ParseGatewayClientPolicy(DynamicRaw(10, 200), &parsed));

@@ -1208,6 +1208,335 @@
         }
       }
     },
+    "/v1/files": {
+      "post": {
+        "operationId": "post_v1_files",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/file_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Authenticated client-scoped durable file; unrelated clients receive 404.",
+        "x-q4t-storage": "Private bounded chunks, isolated filesystem worker, atomic publication; no automatic upload replay",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/file_multipart"
+              }
+            }
+          }
+        },
+        "x-q4t-sdk-request-shape": {
+          "$ref": "serve-application-v1.schema.json#/$defs/file_create"
+        },
+        "x-q4t-limits": {
+          "file_bytes": 536870912,
+          "wire_bytes": 536936448,
+          "batch_bytes": 209715200,
+          "filename_utf8_bytes": 1024,
+          "client_field": "max_file_body_bytes",
+          "native_ingress_field": "file_body_bytes",
+          "storage_quota": "Separately configured; actual JSON/base64 overhead charged"
+        }
+      },
+      "get": {
+        "operationId": "get_v1_files",
+        "parameters": [
+          {
+            "name": "purpose",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10000,
+              "default": 10000
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "desc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/file_list"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Authenticated client-scoped durable file; unrelated clients receive 404.",
+        "x-q4t-storage": "Private bounded chunks, isolated filesystem worker, atomic publication; no automatic upload replay"
+      }
+    },
+    "/v1/files/{file_id}": {
+      "get": {
+        "operationId": "get_v1_files_file_id",
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/file_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Authenticated client-scoped durable file; unrelated clients receive 404.",
+        "x-q4t-storage": "Private bounded chunks, isolated filesystem worker, atomic publication; no automatic upload replay"
+      },
+      "delete": {
+        "operationId": "delete_v1_files_file_id",
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/file_deleted"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Authenticated client-scoped durable file; unrelated clients receive 404.",
+        "x-q4t-storage": "Private bounded chunks, isolated filesystem worker, atomic publication; no automatic upload replay"
+      }
+    },
+    "/v1/files/{file_id}/content": {
+      "get": {
+        "operationId": "get_v1_files_file_id_content",
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Original binary bytes, bounded streaming with Content-Length",
+            "headers": {
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            },
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Authenticated client-scoped durable file; unrelated clients receive 404.",
+        "x-q4t-storage": "Private bounded chunks, isolated filesystem worker, atomic publication; no automatic upload replay"
+      }
+    },
     "/v1/prompts": {
       "post": {
         "operationId": "post_v1_prompts",
@@ -3071,11 +3400,13 @@
         "responses",
         "conversations",
         "application_items",
-        "stored_chat"
+        "stored_chat",
+        "files"
       ],
       "limits": [
         "data/control inflight",
         "body bytes",
+        "explicit file body bytes",
         "expanded prompt tokens including vision",
         "total output tokens",
         "optional v2 fixed-window requests/tokens per minute"
@@ -3092,9 +3423,11 @@
         "profile": "q4t-client-governance-v1",
         "policy_versions": [
           1,
-          2
+          2,
+          3,
+          4
         ],
-        "enabled_by": "explicit v2 policy fields; zero disables rates",
+        "enabled_by": "v2 rates; v3 revisioned administration; v4 explicit file capacity; zero disables rates",
         "window_seconds": 60,
         "window": "fixed_monotonic",
         "restart": "reset",

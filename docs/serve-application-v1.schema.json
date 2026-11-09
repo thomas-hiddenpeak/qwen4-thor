@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Q4T Chat, Responses and Conversations wire contract",
+  "title": "Q4T Chat, Responses, Conversations and Files wire contract",
   "$defs": {
     "0": {
       "anyOf": [
@@ -15941,6 +15941,245 @@
     "input_tokens_response": {
       "$ref": "#/$defs/1168"
     },
+    "file_resource": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "object": {
+          "const": "file"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "created_at": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "filename": {
+          "type": "string",
+          "minLength": 1
+        },
+        "purpose": {
+          "enum": [
+            "assistants",
+            "batch",
+            "fine-tune",
+            "vision",
+            "user_data",
+            "evals"
+          ]
+        },
+        "status": {
+          "enum": [
+            "uploaded",
+            "processed",
+            "error"
+          ]
+        },
+        "expires_at": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "status_details": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "object",
+        "bytes",
+        "created_at",
+        "filename",
+        "purpose",
+        "status"
+      ],
+      "additionalProperties": false
+    },
+    "file_create": {
+      "type": "object",
+      "properties": {
+        "file": {
+          "type": "string",
+          "format": "binary"
+        },
+        "purpose": {
+          "enum": [
+            "assistants",
+            "batch",
+            "fine-tune",
+            "vision",
+            "user_data",
+            "evals"
+          ]
+        },
+        "expires_after": {
+          "type": "object",
+          "properties": {
+            "anchor": {
+              "const": "created_at"
+            },
+            "seconds": {
+              "type": "integer",
+              "minimum": 3600,
+              "maximum": 2592000
+            }
+          },
+          "required": [
+            "anchor",
+            "seconds"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "file",
+        "purpose"
+      ],
+      "additionalProperties": false
+    },
+    "file_multipart": {
+      "type": "object",
+      "properties": {
+        "file": {
+          "type": "string",
+          "format": "binary"
+        },
+        "purpose": {
+          "enum": [
+            "assistants",
+            "batch",
+            "fine-tune",
+            "vision",
+            "user_data",
+            "evals"
+          ]
+        },
+        "expires_after[anchor]": {
+          "const": "created_at"
+        },
+        "expires_after[seconds]": {
+          "type": "string",
+          "pattern": "^[0-9]+$"
+        }
+      },
+      "required": [
+        "file",
+        "purpose"
+      ],
+      "additionalProperties": false,
+      "dependentRequired": {
+        "expires_after[anchor]": [
+          "expires_after[seconds]"
+        ],
+        "expires_after[seconds]": [
+          "expires_after[anchor]"
+        ]
+      },
+      "x-q4t-expiry-seconds": {
+        "minimum": 3600,
+        "maximum": 2592000
+      }
+    },
+    "file_query": {
+      "type": "object",
+      "properties": {
+        "purpose": {
+          "type": "string"
+        },
+        "after": {
+          "type": "string",
+          "minLength": 1
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000,
+          "default": 10000
+        },
+        "order": {
+          "enum": [
+            "asc",
+            "desc"
+          ],
+          "default": "desc"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "file_list": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "const": "list"
+        },
+        "data": {
+          "type": "array",
+          "maxItems": 10000,
+          "items": {
+            "$ref": "#/$defs/file_resource"
+          }
+        },
+        "has_more": {
+          "type": "boolean"
+        },
+        "first_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "object",
+        "data",
+        "has_more",
+        "first_id",
+        "last_id"
+      ],
+      "additionalProperties": false
+    },
+    "file_deleted": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "object": {
+          "const": "file"
+        },
+        "deleted": {
+          "const": true
+        }
+      },
+      "required": [
+        "id",
+        "object",
+        "deleted"
+      ],
+      "additionalProperties": false
+    },
     "item_include_query": {
       "type": "object",
       "properties": {
@@ -18006,13 +18245,16 @@
       "src/resources/responses/input-items.ts": "783cbf2ad3cb04abc069ad56100b3cb3a3f6c3c1562611ed1ad16034d85d7928",
       "src/resources/responses/input-tokens.ts": "edf13a3dc0ca452600aeb84c5b22dc0f842c9c2f59b148eb95581dfc1cce35d8",
       "src/resources/responses/responses.ts": "f84e394bf08d71403c054ccb4d41d278861f2d19db3ea426e7aec789f3eb5dbb",
-      "src/resources/shared.ts": "15cf6803634242502525c52098acddea16b9c2bb2439f85aa388dd43fa837455"
+      "src/resources/shared.ts": "15cf6803634242502525c52098acddea16b9c2bb2439f85aa388dd43fa837455",
+      "src/resources/files.ts": "ca78d34f73bef9a683b5fb2bbeb57af219478027b54ee243b611a1d4a12e04d7"
     },
     "license_sha256": "636eb7d79da9bb6d515a4b3fd417aa26679eb3cf16396ddab4bc55fa74e616e4",
     "compiler_sha256": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675",
     "semantics": "Structural shapes include required planned capabilities. Shape validity does not promise that a model, tool or state executor is available. Check native planning and runtime capabilities; pending capabilities remain required implementation tasks.",
     "adaptations": [
       "SDK-added output_text is optional on wire",
+      "FileObject.purpose includes evals already accepted by the SDK FilePurpose input; preserve the actual purpose",
+      "Files multipart uses binary file and bracket-encoded expires_after fields; explicit native capacity and storage quotas remain separate",
       "official HTTP examples use usage:null for active/cancelled responses; completed/incomplete require actual usage",
       "native store echo and native response error codes",
       "count endpoint uses actual model templates; native create also accepts the model-owned friendly/pragmatic personality presets from the count SDK contract",

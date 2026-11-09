@@ -1,0 +1,21 @@
+{
+  "status": "PASS_FILES_DECLARATION_PACKAGE_CPU",
+  "cpp_cases": 6,
+  "python_cases": 15,
+  "first_python_passed": 14,
+  "first_python_failed": 1,
+  "retested_python": 1,
+  "build_warnings": 0,
+  "gpu_starts": 0,
+  "default_modified": false,
+  "actual_old_package_verified": true,
+  "business_acceptance": false,
+  "remaining_master_tasks_open": true,
+  "artifacts": {
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t": "6a7404c79112dcd6d5772ad6918342c17f165255a36dc71304e8e552dfffa988",
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t-ingress": "6067f4f36c308a2c4c15e460269952032a6462e5916be390e88581d0537f7e4c",
+    ".q4t-work/serve-access-20261109/host/q4t_host_tests": "aadef44a922d2477d7cebbe76340bb350df2eb9760af11b657375007ad023f8d",
+    ".q4t-work/serve-access-20261109/host/q4t_client_policy_check": "61cf78ac972b769431573ccbc13d3efb3d093c1896f443cbd2c495f6247390cb",
+    ".q4t-work/serve-access-20261109/host/q4t_client_policy_fixture": "4964e10693374df09fbf638f065a0127737aa7a61ca269c70598f5bd098ccdd0"
+  }
+}

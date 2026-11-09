@@ -1208,6 +1208,335 @@
         }
       }
     },
+    "/v1/files": {
+      "post": {
+        "operationId": "post_v1_files",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/file_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Authenticated client-scoped durable file; unrelated clients receive 404.",
+        "x-q4t-storage": "Private bounded chunks, isolated filesystem worker, atomic publication; no automatic upload replay",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/file_multipart"
+              }
+            }
+          }
+        },
+        "x-q4t-sdk-request-shape": {
+          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/file_create"
+        },
+        "x-q4t-limits": {
+          "file_bytes": 536870912,
+          "wire_bytes": 536936448,
+          "batch_bytes": 209715200,
+          "filename_utf8_bytes": 1024,
+          "client_field": "max_file_body_bytes",
+          "native_ingress_field": "file_body_bytes",
+          "storage_quota": "Separately configured; actual JSON/base64 overhead charged"
+        }
+      },
+      "get": {
+        "operationId": "get_v1_files",
+        "parameters": [
+          {
+            "name": "purpose",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10000,
+              "default": 10000
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "desc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/file_list"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Authenticated client-scoped durable file; unrelated clients receive 404.",
+        "x-q4t-storage": "Private bounded chunks, isolated filesystem worker, atomic publication; no automatic upload replay"
+      }
+    },
+    "/v1/files/{file_id}": {
+      "get": {
+        "operationId": "get_v1_files_file_id",
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/file_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Authenticated client-scoped durable file; unrelated clients receive 404.",
+        "x-q4t-storage": "Private bounded chunks, isolated filesystem worker, atomic publication; no automatic upload replay"
+      },
+      "delete": {
+        "operationId": "delete_v1_files_file_id",
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/file_deleted"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Authenticated client-scoped durable file; unrelated clients receive 404.",
+        "x-q4t-storage": "Private bounded chunks, isolated filesystem worker, atomic publication; no automatic upload replay"
+      }
+    },
+    "/v1/files/{file_id}/content": {
+      "get": {
+        "operationId": "get_v1_files_file_id_content",
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Original binary bytes, bounded streaming with Content-Length",
+            "headers": {
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            },
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Authenticated client-scoped durable file; unrelated clients receive 404.",
+        "x-q4t-storage": "Private bounded chunks, isolated filesystem worker, atomic publication; no automatic upload replay"
+      }
+    },
     "/v1/prompts": {
       "post": {
         "operationId": "post_v1_prompts",
@@ -3071,11 +3400,13 @@
         "responses",
         "conversations",
         "application_items",
-        "stored_chat"
+        "stored_chat",
+        "files"
       ],
       "limits": [
         "data/control inflight",
         "body bytes",
+        "explicit file body bytes",
         "expanded prompt tokens including vision",
         "total output tokens",
         "optional v2 fixed-window requests/tokens per minute"
@@ -3092,9 +3423,11 @@
         "profile": "q4t-client-governance-v1",
         "policy_versions": [
           1,
-          2
+          2,
+          3,
+          4
         ],
-        "enabled_by": "explicit v2 policy fields; zero disables rates",
+        "enabled_by": "v2 rates; v3 revisioned administration; v4 explicit file capacity; zero disables rates",
         "window_seconds": 60,
         "window": "fixed_monotonic",
         "restart": "reset",
@@ -10404,7 +10737,7 @@
         }
       },
       "serve-application-v1.schema.json": {
-        "title": "Q4T Chat, Responses and Conversations wire contract",
+        "title": "Q4T Chat, Responses, Conversations and Files wire contract",
         "$defs": {
           "0": {
             "anyOf": [
@@ -26345,6 +26678,245 @@
           "input_tokens_response": {
             "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1168"
           },
+          "file_resource": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "object": {
+                "const": "file"
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "created_at": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "filename": {
+                "type": "string",
+                "minLength": 1
+              },
+              "purpose": {
+                "enum": [
+                  "assistants",
+                  "batch",
+                  "fine-tune",
+                  "vision",
+                  "user_data",
+                  "evals"
+                ]
+              },
+              "status": {
+                "enum": [
+                  "uploaded",
+                  "processed",
+                  "error"
+                ]
+              },
+              "expires_at": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "status_details": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "object",
+              "bytes",
+              "created_at",
+              "filename",
+              "purpose",
+              "status"
+            ],
+            "additionalProperties": false
+          },
+          "file_create": {
+            "type": "object",
+            "properties": {
+              "file": {
+                "type": "string",
+                "format": "binary"
+              },
+              "purpose": {
+                "enum": [
+                  "assistants",
+                  "batch",
+                  "fine-tune",
+                  "vision",
+                  "user_data",
+                  "evals"
+                ]
+              },
+              "expires_after": {
+                "type": "object",
+                "properties": {
+                  "anchor": {
+                    "const": "created_at"
+                  },
+                  "seconds": {
+                    "type": "integer",
+                    "minimum": 3600,
+                    "maximum": 2592000
+                  }
+                },
+                "required": [
+                  "anchor",
+                  "seconds"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "file",
+              "purpose"
+            ],
+            "additionalProperties": false
+          },
+          "file_multipart": {
+            "type": "object",
+            "properties": {
+              "file": {
+                "type": "string",
+                "format": "binary"
+              },
+              "purpose": {
+                "enum": [
+                  "assistants",
+                  "batch",
+                  "fine-tune",
+                  "vision",
+                  "user_data",
+                  "evals"
+                ]
+              },
+              "expires_after[anchor]": {
+                "const": "created_at"
+              },
+              "expires_after[seconds]": {
+                "type": "string",
+                "pattern": "^[0-9]+$"
+              }
+            },
+            "required": [
+              "file",
+              "purpose"
+            ],
+            "additionalProperties": false,
+            "dependentRequired": {
+              "expires_after[anchor]": [
+                "expires_after[seconds]"
+              ],
+              "expires_after[seconds]": [
+                "expires_after[anchor]"
+              ]
+            },
+            "x-q4t-expiry-seconds": {
+              "minimum": 3600,
+              "maximum": 2592000
+            }
+          },
+          "file_query": {
+            "type": "object",
+            "properties": {
+              "purpose": {
+                "type": "string"
+              },
+              "after": {
+                "type": "string",
+                "minLength": 1
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 10000,
+                "default": 10000
+              },
+              "order": {
+                "enum": [
+                  "asc",
+                  "desc"
+                ],
+                "default": "desc"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "file_list": {
+            "type": "object",
+            "properties": {
+              "object": {
+                "const": "list"
+              },
+              "data": {
+                "type": "array",
+                "maxItems": 10000,
+                "items": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/file_resource"
+                }
+              },
+              "has_more": {
+                "type": "boolean"
+              },
+              "first_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "last_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "object",
+              "data",
+              "has_more",
+              "first_id",
+              "last_id"
+            ],
+            "additionalProperties": false
+          },
+          "file_deleted": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "object": {
+                "const": "file"
+              },
+              "deleted": {
+                "const": true
+              }
+            },
+            "required": [
+              "id",
+              "object",
+              "deleted"
+            ],
+            "additionalProperties": false
+          },
           "item_include_query": {
             "type": "object",
             "properties": {
@@ -28410,13 +28982,16 @@
             "src/resources/responses/input-items.ts": "783cbf2ad3cb04abc069ad56100b3cb3a3f6c3c1562611ed1ad16034d85d7928",
             "src/resources/responses/input-tokens.ts": "edf13a3dc0ca452600aeb84c5b22dc0f842c9c2f59b148eb95581dfc1cce35d8",
             "src/resources/responses/responses.ts": "f84e394bf08d71403c054ccb4d41d278861f2d19db3ea426e7aec789f3eb5dbb",
-            "src/resources/shared.ts": "15cf6803634242502525c52098acddea16b9c2bb2439f85aa388dd43fa837455"
+            "src/resources/shared.ts": "15cf6803634242502525c52098acddea16b9c2bb2439f85aa388dd43fa837455",
+            "src/resources/files.ts": "ca78d34f73bef9a683b5fb2bbeb57af219478027b54ee243b611a1d4a12e04d7"
           },
           "license_sha256": "636eb7d79da9bb6d515a4b3fd417aa26679eb3cf16396ddab4bc55fa74e616e4",
           "compiler_sha256": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675",
           "semantics": "Structural shapes include required planned capabilities. Shape validity does not promise that a model, tool or state executor is available. Check native planning and runtime capabilities; pending capabilities remain required implementation tasks.",
           "adaptations": [
             "SDK-added output_text is optional on wire",
+            "FileObject.purpose includes evals already accepted by the SDK FilePurpose input; preserve the actual purpose",
+            "Files multipart uses binary file and bracket-encoded expires_after fields; explicit native capacity and storage quotas remain separate",
             "official HTTP examples use usage:null for active/cancelled responses; completed/incomplete require actual usage",
             "native store echo and native response error codes",
             "count endpoint uses actual model templates; native create also accepts the model-owned friendly/pragmatic personality presets from the count SDK contract",
@@ -30155,7 +30730,8 @@
                 "enum": [
                   1,
                   2,
-                  3
+                  3,
+                  4
                 ]
               },
               "fair_queue": {

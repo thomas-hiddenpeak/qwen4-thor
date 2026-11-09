@@ -1,0 +1,6 @@
+test_actual_admin_upgrade_retains_existing_usage_and_client_slots (tools.serve_responses.test_file_capacity.FileCapacityTests.test_actual_admin_upgrade_retains_existing_usage_and_client_slots) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.074s
+
+OK

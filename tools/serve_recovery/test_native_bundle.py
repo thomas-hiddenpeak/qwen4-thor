@@ -72,7 +72,7 @@ class BundleTests(unittest.TestCase):
     def test_default_package_has_native_binary_and_no_nginx_dependency(self):
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 10)
+        self.assertEqual(value['version'], 11)
         self.assertIn('source/tools/serve_recovery/quota_manager.py', value['files'])
         self.assertIn('source/tools/serve_recovery/quota_runtime.py', value['files'])
         self.assertIn('source/tools/serve_recovery/usage_runtime.py', value['files'])
@@ -111,8 +111,11 @@ class BundleTests(unittest.TestCase):
 
     def test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io(self):
         self.assertEqual(bundle.V9_SOURCES, bundle.V8_SOURCES)
+        self.assertEqual(bundle.SOURCES, bundle.V10_SOURCES)
         self.assertEqual(set(bundle.SOURCES)-set(bundle.V9_SOURCES),
-                         {'tools/serve_service/capacity.py', 'tools/serve_recovery/lifecycle.py'})
+                         {'tools/serve_service/capacity.py', 'tools/serve_recovery/lifecycle.py',
+                          *('tools/serve_recovery/'+n+'.py' for n in
+                            ('publication', 'publication_policy', 'publication_files', 'publication_journal'))})
         self.assertNotIn('tools/serve_recovery/observation_io.py', bundle.V2_SOURCES)
         self.assertEqual(set(bundle.V3_SOURCES)-set(bundle.V2_SOURCES),
                          {'tools/serve_recovery/observation_io.py'})
@@ -139,7 +142,8 @@ class BundleTests(unittest.TestCase):
         for version, sources in ((1, bundle.LEGACY_SOURCES),
                 (2, bundle.V2_SOURCES), (3, bundle.V3_SOURCES),
                 (4, bundle.V4_SOURCES), (5, bundle.V5_SOURCES), (6, bundle.V6_SOURCES),
-                (7, bundle.V7_SOURCES), (8, bundle.V8_SOURCES), (9, bundle.V9_SOURCES)):
+                (7, bundle.V7_SOURCES), (8, bundle.V8_SOURCES), (9, bundle.V9_SOURCES),
+                (10, bundle.V10_SOURCES)):
             with self.subTest(version=version):
                 value = dict(current, version=version,
                     profile='q4t-service-recovery-v'+str(version))
@@ -170,11 +174,41 @@ class BundleTests(unittest.TestCase):
         self.save(self.policy, value)
         return bundle.ingress.policy(value)
 
+    def test_file_transport_and_client_capacity_require_v11_identity(self):
+        public = self.http_policy()
+        public.update(version=5, file_body_bytes=512*1024**2+65536)
+        self.save(self.policy, public)
+        backend = bundle.ingress.parse(self.backend.read_bytes())
+        backend.update(version=4, revision=0)
+        for client in backend['clients']:
+            client['max_file_body_bytes'] = public['file_body_bytes']
+        self.save(self.backend, backend)
+        receipt = self.prepare()
+        package = Path(receipt['package'])
+        value = bundle.verify(package, receipt['manifest_sha256'])
+        self.assertEqual(value['version'], 11)
+        self.assertIn('include/q4t/server/file_limits.h', bundle.NATIVE_SOURCES)
+        # Re-signing a v10 label cannot grant capabilities its format lacks.
+        value.update(version=10, profile='q4t-service-recovery-v10')
+        def sign():
+            bundle.engine.save(package/'manifest.json', value)
+            digest = bundle.engine.sha(package/'manifest.json')
+            (package/'bin/q4t').chmod(0o700)
+            (package/'bin/q4t').write_bytes(bundle.launcher(digest, value['python']['path']))
+            return digest
+        with self.assertRaisesRegex(ValueError, 'file HTTP policy'):
+            bundle.verify(package, sign())
+        public.pop('file_body_bytes');public['version'] = 4
+        self.save(package/'gateway-policy.json', public)
+        value['files']['gateway-policy.json'] = bundle.engine.sha(package/'gateway-policy.json')
+        with self.assertRaisesRegex(ValueError, 'file client policy'):
+            bundle.verify(package, sign())
+
     def test_http_profile_seals_normalized_policy_and_preserves_managed_binding(self):
         policy = self.http_policy()
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 10)
+        self.assertEqual(value['version'], 11)
         self.assertEqual(bundle.engine.read(Path(receipt['package'])/'gateway-policy.json'), policy)
         cfg = bundle.gateway_config_for(receipt['package'], value, self.directory,
             access=dict(state_directory=str(self.directory/'state'), state_identity=[1, 2],

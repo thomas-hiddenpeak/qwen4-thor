@@ -6,6 +6,7 @@
 #include "q4t/io/json.h"
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/chat_protocol_identity.h"
+#include "q4t/server/file_limits.h"
 #include "q4t/server/structured_decoder.h"
 #include "q4t/server/text_stop.h"
 #include "q4t/test.h"
@@ -17,6 +18,26 @@ bool Hash(const std::string& text) {
          });
 }
 }  // namespace
+
+Q4T_TEST(chat_capabilities_files_separates_capacity_storage_and_consumption) {
+  q4t::io::Json value;
+  Q4T_CHECK(q4t::io::ParseJson(
+      q4t::server::ChatCapabilitiesJson("m", false, true), &value));
+  const auto* files = value.Find("files");
+  Q4T_CHECK(files && files->GetString("profile") == "q4t-files-v1");
+  for (const auto* field : {"create", "retrieve", "list", "delete", "content",
+                            "multipart", "binary_streaming",
+                            "legacy_limits_preserved", "storage_quota_separate"})
+    Q4T_CHECK(files->GetBool(field));
+  Q4T_CHECK(files->GetInt("max_file_bytes") ==
+                static_cast<int64_t>(q4t::server::kFileBytes) &&
+            files->GetInt("max_wire_bytes") ==
+                static_cast<int64_t>(q4t::server::kFileWireBytes) &&
+            !files->GetBool("core_readiness_dependency") &&
+            files->GetBool("file_resolution_pending"));
+  Q4T_CHECK(files->GetArray("purposes")->array.size() == 6);
+  return true;
+}
 
 Q4T_TEST(chat_capabilities_transport_observation_contract) {
   q4t::io::Json caps;

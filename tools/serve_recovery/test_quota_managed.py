@@ -17,6 +17,7 @@ from unittest import mock
 from tools.serve_recovery import access_manager, access_store, bundle, controller, gateway
 from tools.serve_recovery import ledger, native_ingress, quota_control, quota_manager as manager, quota_policy
 from tools.serve_recovery import quota_runtime, service, store
+from tools.serve_recovery import usage_store, test_usage_store
 from tools.serve_recovery.test_gateway import snapshot
 from tools.serve_recovery import test_native_bundle as bundle_test, test_progress as progress_test
 from tools.serve_recovery.test_quota_admin import Server
@@ -100,6 +101,47 @@ class ManagedQuotaTests(unittest.TestCase):
         self.assertEqual(result, 1);self.assertEqual(failed['code'], 'limits_capacity_exceeded')
         self.assertEqual((self.state/'ledger.json').read_bytes(), before)
         self.assertEqual((self.state/'client-access/policy.json').read_bytes(), keys)
+
+    def test_explicit_file_policy_legacy_migration_preserves_usage_and_keys(self):
+        owner = test_usage_store.owner()
+        usage_store.execute(self.binding, dict(sequence=1, op='begin', generation=1, owner=owner), now_ns=100)
+        usage_store.execute(self.binding, dict(sequence=2, op='seal', generation=1, owner=owner,
+            snapshot=test_usage_store.snapshot()), now_ns=200)
+        before = {name: (self.state/name).read_bytes() for name in
+                  ('ledger.json', 'client-access/policy.json', 'client-usage/policy.json')}
+        clients = [dict(c, max_file_body_bytes=512*1024**2+65536) for c in self.initial['clients']]
+        proposal = self.propose(clients)
+        self.assertEqual(self.cli('limits-apply', '--proposal', proposal, '--wait-seconds', 0)[0], 0)
+        self.assertEqual(self.cli('limits-status')[1]['durable']['policy_version'], 4)
+        legacy = copy.deepcopy(self.initial['clients'])
+        for bad in (None, True, 5):
+            limits = self.limits(clients)
+            save(limits, dict(version=1, policy_version=bad, clients=clients))
+            rejected = self.fixture.directory/('invalid-'+str(bad)+'.json')
+            self.assertEqual(self.cli('limits-propose', '--limits', limits, '--proposal', rejected)[0], 1)
+            self.assertFalse(rejected.exists())
+        for explicit in (False, True):
+            limits = self.limits(legacy)
+            if explicit:save(limits, dict(version=1, policy_version=3, clients=legacy))
+            rejected = self.fixture.directory/('rejected-'+str(explicit)+'.json')
+            self.assertEqual(self.cli('limits-propose', '--limits', limits, '--proposal', rejected)[0], 1)
+            self.assertFalse(rejected.exists())
+        # First an ordinary v4 capacity update, then an explicit v3 migration.
+        for client in clients:client['max_file_body_bytes'] = client['max_body_bytes']
+        proposal = self.propose(clients)
+        self.assertEqual(self.cli('limits-apply', '--proposal', proposal, '--wait-seconds', 0)[0], 0)
+        limits = self.limits(legacy)
+        save(limits, dict(version=1, policy_version=3, clients=legacy))
+        proposal = self.fixture.directory/'legacy-proposal.json'
+        result, value = self.cli('limits-propose', '--limits', limits, '--proposal', proposal)
+        self.assertEqual(result, 0, value)
+        result, receipt = self.cli('limits-apply', '--proposal', proposal, '--wait-seconds', 0)
+        self.assertEqual(result, 0, receipt)
+        self.assertTrue(receipt['durable']);self.assertFalse(receipt['model_actions'])
+        self.assertTrue(self.cli('limits-apply', '--proposal', proposal, '--wait-seconds', 0)[1]['replayed'])
+        status = self.cli('limits-status')[1]['durable']
+        self.assertEqual((status['policy_version'], status['revision']), (3, 3))
+        for name, raw in before.items():self.assertEqual((self.state/name).read_bytes(), raw)
 
     def test_new_identity_requires_durable_limits_then_actual_model_installation(self):
         model = self.model();policies = self.policies()

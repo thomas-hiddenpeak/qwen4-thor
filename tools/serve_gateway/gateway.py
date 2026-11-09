@@ -25,6 +25,10 @@ DYNAMIC_ROUTES = {'/v1/models/{model}': ('GET', 'DELETE')}
 # Application identities are bounded ASCII tokens; backend owns query parsing.
 # These route declarations are shared by standalone and supervised nginx modes.
 APPLICATION_ROUTES = [
+    ('POST', '/v1/files', 'data'),
+    ('GET', '/v1/files', 'data'),
+    *((method, '/v1/files/{file_id}', 'control') for method in ('GET', 'DELETE')),
+    ('GET', '/v1/files/{file_id}/content', 'data'),
     ('POST', '/v1/responses', 'data'),
     *((method, '/v1/responses/{response_id}', 'control')
       for method in ('GET', 'DELETE')),

@@ -69,7 +69,8 @@ class FileCapacityTests(unittest.TestCase):
         server = Server(initial);self.addCleanup(server.close)
         self.assertTrue(server.command('reserve', id='alpha')['ok'])
         candidate = dict(copy.deepcopy(initial), version=4, revision=1)
-        for client in candidate['clients']:client['max_file_body_bytes'] = 1048576
+        for client in candidate['clients']:
+            client['max_file_body_bytes'] = client['max_body_bytes'] * 2
         self.assertTrue(server.publish(candidate, 0)['ok'])
         self.assertEqual(server.command('status')['reserved'], 8)
         server.command('settle')
@@ -78,6 +79,13 @@ class FileCapacityTests(unittest.TestCase):
         self.assertEqual(server.status()['content_sha256'], cp.digest(candidate))
         self.assertFalse(server.publish(dict(initial, revision=2), 1)['ok'])
         self.assertEqual(server.status()['revision'], 1)
+        aligned = copy.deepcopy(candidate);aligned['revision'] = 2
+        for client in aligned['clients']:client['max_file_body_bytes'] = client['max_body_bytes']
+        self.assertTrue(server.publish(aligned, 1)['ok'])
+        self.assertTrue(server.publish(dict(initial, revision=3), 2)['ok'])
+        self.assertEqual(server.command('status')['tokens'], 5)
+        self.assertFalse(server.command('reserve', id='alpha')['ok'])
+        self.assertEqual(server.status()['revision'], 3)
 
     def test_public_file_limit_is_explicit_and_does_not_expand_json(self):
         base = config(self.state)['policy']

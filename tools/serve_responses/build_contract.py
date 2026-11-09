@@ -55,6 +55,8 @@ def schema(graph):
         definitions[str(index)] = value
     for name, index in graph['roots'].items():
         definitions[name] = ref(index)
+    from tools.serve_responses.files_contract import definitions as file_definitions
+    definitions.update(file_definitions())
 
     # The current official cache guide adds a 12h request TTL; the pinned SDK
     # already permits 12h on individual blocks but has a stale request/output
@@ -177,13 +179,18 @@ def schema(graph):
     definitions.update(chat_definitions())
     from tools.serve_responses.prompt_contract import definitions as prompt_definitions
     definitions.update(prompt_definitions(request['properties']))
-    return {'$schema': DRAFT, 'title': 'Q4T Chat, Responses and Conversations wire contract',
+    from tools.serve_responses.files_contract import SDK_FILES_SHA256
+    return {'$schema': DRAFT, 'title': 'Q4T Chat, Responses, Conversations and Files wire contract',
         '$defs': definitions, 'x-q4t': dict(profile='q4t-application-wire-v1',
             sdk_version=graph['sdk_version'], compiler_version=graph['compiler_version'],
-            sources_sha256=graph['sources_sha256'], license_sha256=graph['license_sha256'],
+            sources_sha256={**graph['sources_sha256'],
+                            'src/resources/files.ts': SDK_FILES_SHA256},
+            license_sha256=graph['license_sha256'],
             compiler_sha256=graph['compiler_sha256'],
             semantics='Structural shapes include required planned capabilities. Shape validity does not promise that a model, tool or state executor is available. Check native planning and runtime capabilities; pending capabilities remain required implementation tasks.',
             adaptations=['SDK-added output_text is optional on wire',
+                'FileObject.purpose includes evals already accepted by the SDK FilePurpose input; preserve the actual purpose',
+                'Files multipart uses binary file and bracket-encoded expires_after fields; explicit native capacity and storage quotas remain separate',
                 'official HTTP examples use usage:null for active/cancelled responses; completed/incomplete require actual usage',
                 'native store echo and native response error codes',
                 'count endpoint uses actual model templates; native create also accepts the model-owned friendly/pragmatic personality presets from the count SDK contract',
@@ -216,6 +223,8 @@ def schema(graph):
 
 def add_openapi(paths, response, error):
     """Add actual application routes, preserving each HTTP method/body/query."""
+    from tools.serve_responses.files_contract import add_openapi as add_files
+    add_files(paths, response, error)
     document = json.loads((ROOT/'docs/serve-application-v1.schema.json').read_text())
     external = lambda name: {'$ref': 'serve-application-v1.schema.json#/$defs/'+name}
 

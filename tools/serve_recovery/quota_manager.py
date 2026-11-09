@@ -33,6 +33,10 @@ def base(desc):
 def capacity(value, desc):
     # The managed profile passes explicit global admission limits to the
     # model; budget-driven sequence capacity does not rewrite these values.
+    if value['version'] >= 4:
+        manifest = engine.read(Path(desc['package'])/'manifest.json')
+        ledger.require(manifest.get('version', 0) >= 11,
+                       'file client policy requires recovery profile v11')
     profile = engine.read(Path(desc['package'])/'engine/manifest.json')['settings']['profile']
     return policy.capacity(value, profile['max_inflight_requests'], profile['max_queued_requests'])
 
@@ -67,11 +71,16 @@ def propose(state, desc, limits, destination, request_id=None):
     request_id = str(uuid.uuid4()) if request_id is None else request_id
     ledger.require(ledger.identifier(request_id), 'canonical limits request UUID required')
     value = access_manager.private_json(limits)
-    ledger.keys(value, ('version', 'clients'))
+    ledger.keys(value, ('version', 'clients',
+                        *(('policy_version',) if 'policy_version' in value else ())))
     ledger.require(type(value['version']) is int and value['version'] == 1, 'limits input version')
+    if 'policy_version' in value:
+        ledger.require(type(value['policy_version']) is int and value['policy_version'] in (3, 4),
+                       'explicit client policy version must be 3 or 4')
     with open_journal(state, desc['service_id']) as current:
         previous = current.head['state']['policy']
-        candidate = capacity(policy.desired(previous, value['clients']), desc)
+        candidate = capacity(policy.desired(previous, value['clients'],
+                                            value.get('policy_version')), desc)
         proposal = dict(format=PROPOSAL, service_id=desc['service_id'],
             state_identity=current.state_identity, request_id=request_id,
             expected_revision=previous['revision'], policy=candidate)

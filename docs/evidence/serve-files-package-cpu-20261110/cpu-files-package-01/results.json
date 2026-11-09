@@ -1,0 +1,36 @@
+[
+  {
+    "name": "host",
+    "argv": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host/q4t_host_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-files-20261110/required-files-package.txt"
+    ],
+    "exit_code": 0,
+    "seconds": 0.031761710066348314
+  },
+  {
+    "name": "python",
+    "argv": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "-v",
+      "tools.serve_responses.test_files_contract.FilesContractTests",
+      "tools.serve_recovery.test_quota_managed.ManagedQuotaTests.test_explicit_file_policy_legacy_migration_preserves_usage_and_keys",
+      "tools.serve_recovery.test_quota_managed.ManagedQuotaTests.test_cli_commit_replay_status_capacity_and_separate_key_policy",
+      "tools.serve_recovery.test_deployment.DeploymentTests.test_file_capacity_blocks_old_package_until_explicit_legacy_migration",
+      "tools.serve_recovery.test_deployment.DeploymentTests.test_rollback_keeps_rotations_revocations_dynamic_limits_and_usage",
+      "tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency",
+      "tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable",
+      "tools.serve_recovery.test_native_bundle.BundleTests.test_file_transport_and_client_capacity_require_v11_identity",
+      "tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io",
+      "tools.serve_recovery.test_native_bundle.BundleTests.test_http_profile_seals_normalized_policy_and_preserves_managed_binding",
+      "tools.serve_responses.test_file_capacity.FileCapacityTests.test_durable_explicit_upgrade_reopens_with_receipt_and_no_downgrade",
+      "tools.serve_responses.test_file_capacity.FileCapacityTests.test_actual_admin_upgrade_retains_existing_usage_and_client_slots"
+    ],
+    "exit_code": 1,
+    "seconds": 1.4153381185606122
+  }
+]
