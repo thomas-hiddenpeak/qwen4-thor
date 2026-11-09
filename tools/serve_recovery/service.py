@@ -259,7 +259,8 @@ def main(argv=None, *, package=None, digest=None):
         prepare.add_argument('--object-'+option.replace('_', '-'), type=int)
     for name in ('init', 'run', 'start', 'status', 'diagnostics', 'stop',
                  'tls-status', 'tls-reload', 'observe', 'metrics', 'export',
-                 'retention-plan', 'retention-archive', 'retention-apply', 'retention-resume'):
+                 'retention-plan', 'retention-archive', 'retention-apply', 'retention-resume',
+                 'retention-migrate'):
         command = commands.add_parser(name)
         command.add_argument('--state', type=Path, required=True)
         if package is None:
@@ -270,7 +271,7 @@ def main(argv=None, *, package=None, digest=None):
             command.add_argument('--max-runs', type=int, default=100)
             command.add_argument('--max-bytes', type=int, default=1024**3)
             command.add_argument('--plan-output', type=Path)
-        if name in ('retention-archive', 'retention-resume'):
+        if name in ('retention-archive', 'retention-resume', 'retention-migrate'):
             command.add_argument('--run', required=True)
         if name == 'retention-archive':
             command.add_argument('--archive', type=Path, required=True)
@@ -316,6 +317,9 @@ def main(argv=None, *, package=None, digest=None):
                         retention.write_new(args.plan_output, ledger.canonical(result))
                 elif args.operation == 'retention-archive':
                     result = retention.archive(args.state, args.run, args.archive)
+                elif args.operation == 'retention-migrate':
+                    from tools.serve_recovery import retention_epoch
+                    result = retention_epoch.migrate(args.state, args.run)
                 elif args.operation == 'retention-resume':
                     result = retention.resume(args.state, args.run)
                 else:

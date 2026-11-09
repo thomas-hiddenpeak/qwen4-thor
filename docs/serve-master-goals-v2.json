@@ -448,12 +448,12 @@
       ],
       "evidence": [
         "evidence/serve-native-observation-20261109/decision.json",
-        "evidence/serve-run-retention-20261109/decision.json"
+        "evidence/serve-run-retention-20261109/decision.json",
+        "evidence/serve-retention-epoch-20261109/decision.json"
       ],
       "release": null,
       "plan": "SERVE_NATIVE_OBSERVATION_2026-11-09.md",
       "remaining": [
-        "legacy/cross-boot ownership migration for usable protected retention",
         "actual packaged CLI/export/retention integration",
         "rollback-capable delivery"
       ]
@@ -607,12 +607,12 @@
       ],
       "evidence": [
         "evidence/serve-native-observation-20261109/decision.json",
-        "evidence/serve-run-retention-20261109/decision.json"
+        "evidence/serve-run-retention-20261109/decision.json",
+        "evidence/serve-retention-epoch-20261109/decision.json"
       ],
       "release": null,
       "plan": "SERVE_NATIVE_OBSERVATION_2026-11-09.md",
       "remaining": [
-        "legacy/cross-boot ownership migration for usable protected retention",
         "actual packaged CLI/export/retention integration",
         "rollback-capable delivery"
       ]

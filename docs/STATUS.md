@@ -2,6 +2,11 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+旧run/跨boot迁移5新增+2受影响CPU通过，[原件](evidence/serve-retention-epoch-20261109/README.md)保留夹具revision失败。
+只在持久STOPPED且账本前后一致时非阻塞核对三锁，锁内无文件I/O；
+旧v2归档/淘汰、旧boot中断resume通过。0生产run删除/0模型/0Chat。
+继续实际v6随包CLI/export/retention组合及可回退交付，默认v5保持。
+
 run归档/保护淘汰检查点完成，10个不同Python用例按受影响项验证，
 [原件](evidence/serve-run-retention-20261109/README.md)保留两轮FAILED。实际归档/删除/中断resume及保护通过；
 复核补仅供留存的boot身份，缺失不影响核心。旧记录/跨boot迁移仍

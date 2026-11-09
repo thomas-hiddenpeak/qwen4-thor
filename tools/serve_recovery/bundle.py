@@ -23,7 +23,8 @@ V3_SOURCES = tuple(sorted(set(V2_SOURCES) | {'tools/serve_recovery/observation_i
 V4_SOURCES = tuple(sorted(set(V3_SOURCES) | {'tools/serve_recovery/tls_control.py'}))
 V5_SOURCES = tuple(sorted(set(V4_SOURCES) | {'tools/serve_recovery/progress.py'}))
 SOURCES = tuple(sorted(set(V5_SOURCES) | {'tools/serve_host/native.py',
-    'tools/serve_host/native_exporter.py', 'tools/serve_recovery/retention.py'}))
+    'tools/serve_host/native_exporter.py', 'tools/serve_recovery/retention.py',
+    'tools/serve_recovery/retention_epoch.py'}))
 LEGACY_EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'nginx')
 EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'q4t-ingress')
 NATIVE_SOURCES = frozenset(('CMakeLists.txt', 'tests/host/CMakeLists.txt',

@@ -125,3 +125,24 @@ host scrape 为 15 秒、规则为 5 秒；30 秒过期门限并不等于最坏�
 ```bash
 python3 -B tools/serve_host/projection_fix.py verify
 ```
+
+
+## 当前原生服务run留存（v6）
+
+`service retention-plan --state STATE --plan-output PLAN`生成只读计划，
+可设置`--max-age-days`、`--max-runs`、`--max-bytes`。只计算runs中文件
+实际分配块；未知字节不会冒充0，受保护对象超额单独报告。state、
+应用对象、模型目录、发行/回退包不是清理候选，归档数量不在该限额中。
+
+`service retention-archive --state STATE --run UUID --archive DIRECTORY`
+先复制到state之外的私有work/build目录，完整字节和身份核验后登记。
+未归档现场、活动引用、发行/回退依赖保留。`service retention-apply
+--state STATE --plan PLAN`复核原计划后执行；异常中断用`service
+retention-resume --state STATE --run UUID`，只删除原清单的未变残留。
+归档及删除均不会停止模型或获取核心持久锁。
+
+旧格式或跨boot身份不明确时，先在服务已持久STOPPED且无活动代次
+时执行`service retention-migrate --state STATE --run UUID`。它不主动
+停止服务；非阻塞核对三把拥有权锁，在锁内不做文件I/O，前后核对
+账本后写外部证明，保留历史配置。任一锁忙、账本变动或归档损坏
+均拒绝；新启动仍必须使用新UUID。清理只在显式命令下执行。

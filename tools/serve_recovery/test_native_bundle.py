@@ -100,7 +100,7 @@ class BundleTests(unittest.TestCase):
                          {'tools/serve_recovery/progress.py'})
         self.assertEqual(set(bundle.SOURCES)-set(bundle.V5_SOURCES),
                          {'tools/serve_host/native.py', 'tools/serve_host/native_exporter.py',
-                          'tools/serve_recovery/retention.py'})
+                          'tools/serve_recovery/retention.py', 'tools/serve_recovery/retention_epoch.py'})
 
     def test_historical_source_inventory_versions_remain_verifiable(self):
         receipt = self.prepare()

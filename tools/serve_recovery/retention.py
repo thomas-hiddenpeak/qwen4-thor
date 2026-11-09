@@ -163,15 +163,24 @@ def references(root, *, retired_context=None):
         try:
             path = run_directory(root.parent, entry.name)
             recognized += 1
-            contexts.append(native.private_json(path / 'controller.json').get('retention_context'))
+            context = run_context(path)
+            if context is not None:
+                contexts.append(dict(boot_id=context['boot_id'],
+                    cutoff_start_ticks=context['parent_start_ticks']))
+            else:
+                from tools.serve_recovery import retention_epoch
+                try:
+                    contexts.append(retention_epoch.read(root.parent, entry.name))
+                except (OSError, ValueError, KeyError, TypeError):
+                    pass
         except (OSError, ValueError, KeyError, TypeError):
             pass  # Unknown layouts are protected, never deletion candidates.
     if not recognized and retired_context is None:
         return set()
     boot = native.stamp()['boot_id']
-    starts = [value['parent_start_ticks'] for value in contexts
+    starts = [value['cutoff_start_ticks'] for value in contexts
         if type(value) is dict and value.get('boot_id') == boot and
-        ledger.integer(value.get('parent_start_ticks'), minimum=1)]
+        ledger.integer(value.get('cutoff_start_ticks'), minimum=1)]
     earliest = min(starts) if starts else None
     found = set()
     with os.scandir('/proc') as scan:
@@ -310,9 +319,22 @@ def run_context(path):
     return value
 
 
+def effective_context(state, run_id, path, *, original=None):
+    context = run_context(path)
+    if context is not None:
+        return dict(boot_id=context['boot_id'], cutoff_start_ticks=context['parent_start_ticks'])
+    from tools.serve_recovery import retention_epoch
+    try:
+        return retention_epoch.read(state, run_id,
+            original=snapshot(path) if original is None else original)
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+
+
 def eligible(state, run_id, *, pins=None, active=None):
     path = run_directory(state, run_id)
-    ledger.require(run_context(path) is not None, 'run owner epoch needs verified migration')
+    ledger.require(effective_context(state, run_id, path) is not None,
+                   'run owner epoch needs verified migration')
     active = references(Path(state) / 'runs') if active is None else active
     ledger.require(run_id not in active, 'run is active')
     pins = dependencies(state) if pins is None else pins
@@ -428,7 +450,7 @@ def plan(state, *, limits=None, now=None, pins=None, active=None):
         try:
             path = run_directory(state, entry.name)
             observed = snapshot(path)
-            if run_context(path) is None:
+            if effective_context(state, entry.name, path, original=observed) is None:
                 reason = 'owner_epoch_unverified'
             elif entry.name in active:
                 reason = 'active'
@@ -497,7 +519,8 @@ def resume_locked(state, run_id, catalog, *, pins=None):
     pins = dependencies(state) if pins is None else pins
     ledger.require(not any(p == path or p.is_relative_to(path) for p in pins
                            for path in (source, trash)), 'retirement dependency protected')
-    archived_context = run_context(Path(receipt['archive']) / 'files')
+    archived_context = effective_context(state, run_id, Path(receipt['archive']) / 'files',
+                                         original=manifest['original'])
     ledger.require(archived_context is not None, 'retirement epoch needs verified migration')
     active = references(root, retired_context=archived_context)
     ledger.require(run_id not in active and trash.name not in active, 'retirement is active')
