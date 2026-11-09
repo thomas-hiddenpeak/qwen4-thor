@@ -1,0 +1,10 @@
+{
+  "status": "PASS_RESPONSES_INPUT_TOKENS_NULL_BUSINESS",
+  "counts": {
+    "starts": 1,
+    "chats": 1,
+    "controls": 49
+  },
+  "seconds": 45.017640884034336,
+  "binary_sha256": "70504790ad38e5f245ce55280f6e5578eef549fa723332601e32d7f397662954"
+}

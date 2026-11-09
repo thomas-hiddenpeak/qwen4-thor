@@ -1,0 +1,95 @@
+{
+  "ok": true,
+  "result": {
+    "id": "resp_ae742af14f40390f47bb451e1d053718",
+    "object": "response",
+    "created_at": 1794254200,
+    "completed_at": 1794254201,
+    "status": "completed",
+    "error": null,
+    "incomplete_details": null,
+    "output": [
+      {
+        "id": "rs_8e18d93edf37bbdd456ef6cb8bf45a53",
+        "type": "reasoning",
+        "content": [
+          {
+            "type": "reasoning_text",
+            "text": "We need answer user's request: Compute 17 + 25. Reply only with decimal number. Need final only number. 17+25=42. Ensure no extra.\n"
+          }
+        ],
+        "summary": [],
+        "status": "completed"
+      },
+      {
+        "id": "msg_b52031a996e97dca0f6b388c62968355",
+        "type": "message",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "\n\n42",
+            "annotations": [],
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed"
+      }
+    ],
+    "usage": {
+      "input_tokens": 68,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens": 47,
+      "output_tokens_details": {
+        "reasoning_tokens": 43
+      },
+      "total_tokens": 115
+    },
+    "model": "qwen3.8-flash-next",
+    "instructions": null,
+    "metadata": {},
+    "temperature": 0,
+    "top_p": 1,
+    "parallel_tool_calls": true,
+    "tools": [],
+    "tool_choice": "auto",
+    "text": {
+      "format": {
+        "type": "text"
+      },
+      "verbosity": "medium"
+    },
+    "reasoning": {
+      "effort": "xhigh",
+      "context": "all_turns",
+      "mode": "standard",
+      "summary": null
+    },
+    "store": false,
+    "background": false,
+    "max_output_tokens": 384,
+    "max_tool_calls": null,
+    "previous_response_id": null,
+    "prompt_cache_options": {
+      "mode": "implicit",
+      "ttl": "30m"
+    },
+    "prompt_cache_retention": "in_memory",
+    "service_tier": "default",
+    "truncation": "disabled",
+    "top_logprobs": 0,
+    "access_programs": null,
+    "output_text": "\n\n42"
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:19003/v1/responses",
+      "method": "POST",
+      "body": "{\"input\":\"Compute 17 + 25. Reply only with the decimal number.\",\"model\":\"qwen3.8-flash-next\",\"temperature\":0,\"max_output_tokens\":384,\"store\":false}"
+    }
+  ]
+}

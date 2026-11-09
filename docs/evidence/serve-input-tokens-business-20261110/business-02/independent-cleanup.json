@@ -1,0 +1,8 @@
+{
+  "owned_processes_absent": true,
+  "ports_bindable": true,
+  "lock_available": true,
+  "default_unchanged": true,
+  "nvml_samples": 44,
+  "all_nvml_ok": true
+}

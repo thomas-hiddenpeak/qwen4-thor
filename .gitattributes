@@ -66,3 +66,6 @@ docs/evidence/serve-input-tokens-cpu-20261110/** -text -diff
 
 # Preserve count nullable follow-up and first actual business.
 docs/evidence/serve-input-tokens-followup-20261110/** -text -diff
+
+# Preserve input token count actual business acceptance.
+docs/evidence/serve-input-tokens-business-20261110/** -text -diff

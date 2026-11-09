@@ -173,7 +173,7 @@ Responses可通过`include:["reasoning.encrypted_content"]`取得本服务
 详见[加密状态与管理边界](docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md#a073-原生密钥运维接入)。
 
 标准`POST /v1/responses/input_tokens`与SDK
-`responses.inputTokens.count()`已实现计数路径，待本轮业务短验接受。
+`responses.inputTokens.count()`已通过计数与真实生成usage业务短验。
 它按本模型真实模板/分词和媒体展开计数，可读取当前客户端的历史与
 加密状态，接受空请求；不生成、不写会话、不消耗生成RPM/TPM。
 结果为初始输入，不包含后续摘要/审核等派生步骤。可用
