@@ -1,0 +1,4 @@
+{
+  "src/server/chat_capabilities.cpp": "ecb15bc66bbd5e1985b7c57aeb8b199b953aed8895e05a6155befe5f3288ba7b",
+  "tests/server_chat_capabilities_test.cpp": "5058527aac4fc64c6431647ef6abf79cbec2af162ea668c3ad74c359fa4f7255"
+}

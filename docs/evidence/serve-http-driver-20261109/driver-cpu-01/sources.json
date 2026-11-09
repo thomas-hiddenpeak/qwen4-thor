@@ -1,0 +1,7 @@
+{
+  "tools/serve_http/prepare.py": "fc3565fe2729c116e83af555da71fa28a3adb78d082181dea108795585af5716",
+  "tools/serve_http/test_keepalive.py": "d6a4ef49c63f554ac4a7f744e314a0319743b7381dce00fa7c461aa8711853f3",
+  "tools/serve_http/test_acceptance.py": "93a69d04ab0f5ff55637993ac35467ef4f5ada218e6234937f74bd908a8eac85",
+  "tools/serve_http/acceptance.py": "6eba6db939e8ac5d18526e9688957974b9d62aaa804457b58b702dcc0b2a5df2",
+  "tools/serve_http/test_proxy.py": "ed0a09abeca31c42ea4b9b97f257bede0d5c7ae2af979b3796fdee2e4c9b21a3"
+}

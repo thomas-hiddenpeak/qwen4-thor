@@ -1,0 +1,78 @@
+{
+  "README.md": {
+    "bytes": 444,
+    "sha256": "3fcbcd25b2659233de913348c3f80e132c346c4ea471e1a27a4bcb0b0424b0e4"
+  },
+  "decision.json": {
+    "bytes": 300,
+    "sha256": "f895f67285dca25f160210106ea4e6e1b29001febb2b8d8b4d45d287e1e9f950"
+  },
+  "discovery-build-01/commands.json": {
+    "bytes": 296,
+    "sha256": "8bed585815d902d8acbd501fc63de909076b6dc0ddcc3bf5ef8fb68fa5438356"
+  },
+  "discovery-build-01/result.json": {
+    "bytes": 71,
+    "sha256": "d59903c77b1fe8aab72331c4b7e9eaec43fa0c56b0a896ead470b718865d493e"
+  },
+  "discovery-build-01/runtime-source.json": {
+    "bytes": 39331,
+    "sha256": "b868e217529e322f98a801cbe6e1d01780ec718440e1cc29e016f873d29915a8"
+  },
+  "discovery-build-01/stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "discovery-build-01/stdout.txt": {
+    "bytes": 3173,
+    "sha256": "4c78357d68b1f3556f37fe979ffe767754ab42c318b8ac03b88654478583461b"
+  },
+  "discovery-cpu-01/command.json": {
+    "bytes": 127,
+    "sha256": "c88f303ee40d1e6be410bd7bc8130a45a1fcb0a37a87cd9ece49666b550b55a7"
+  },
+  "discovery-cpu-01/result.json": {
+    "bytes": 180,
+    "sha256": "fd9c71575ba37a41f90d492ef0d6703d4ade9d3e5c5b56474083861732d15ed1"
+  },
+  "discovery-cpu-01/sources.json": {
+    "bytes": 222,
+    "sha256": "696d6d6cf88e74cda54e9325ad800b6b9de1df3a4f6f9f18f14fd0470db7d48d"
+  },
+  "discovery-cpu-01/tests.log": {
+    "bytes": 23,
+    "sha256": "6a2f9af675daa54300bf0b6e163f46dfc8fc2e5ddd629eeee5f107525eba5e0d"
+  },
+  "discovery-cpu-02/command.json": {
+    "bytes": 146,
+    "sha256": "cc46257da1a6a1978e2be4421d650abc6532115d682c271fef7d0a92268112be"
+  },
+  "discovery-cpu-02/required.txt": {
+    "bytes": 49,
+    "sha256": "7ff861473ab35722edc13d6532d6eda3dab70844dae3ded0d3b7c24eeb8e0ca8"
+  },
+  "discovery-cpu-02/result.json": {
+    "bytes": 208,
+    "sha256": "8c984867eb735a6daa6a121864589775759ebc8aa8fe0da98065788a55185081"
+  },
+  "discovery-cpu-02/tests.log": {
+    "bytes": 95,
+    "sha256": "f9dea03b8415038915b08c492fe573d5b20a3a75c83eb96a5d9bae56f2b1647a"
+  },
+  "driver-cpu-01/command.json": {
+    "bytes": 113,
+    "sha256": "accce0afcd43c5d92446246d0f2bf71aaf53b956dc18943617365ae4c27be851"
+  },
+  "driver-cpu-01/result.json": {
+    "bytes": 91,
+    "sha256": "f2e22eaf7ee6aae69082bf6f52735e5914e472651956926410c51a8f99295eff"
+  },
+  "driver-cpu-01/sources.json": {
+    "bytes": 529,
+    "sha256": "3bf720d4bac86c3f5c6d10006d5f1b6627e1e4dede31b015548d3edf0170ac4d"
+  },
+  "driver-cpu-01/tests.log": {
+    "bytes": 836,
+    "sha256": "73e0438ae2e3ed6381731b8cbfd989ed17c6c6056da4218bd09d975b4d1ff10f"
+  }
+}

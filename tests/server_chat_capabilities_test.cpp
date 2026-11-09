@@ -31,16 +31,25 @@ Q4T_TEST(chat_capabilities_transport_observation_contract) {
   Q4T_CHECK(http && http->GetInt("control_reserved_connections") == 4 &&
             http->GetInt("observation_reserved_connections") == 4);
   Q4T_CHECK(http->GetString("connection_profile") == "q4t-http-partitions-v2");
+  Q4T_CHECK(http->GetBool("connection_reuse"));
+  Q4T_CHECK(http->GetBool("chunked_requests"));
+  Q4T_CHECK(http->GetInt("keep_alive_max_requests") == 100);
+  Q4T_CHECK(http->GetInt("keep_alive_idle_ms") == 5000);
+  Q4T_CHECK(http->GetString("expect_continue") ==
+            "after_authentication_and_admission");
+  Q4T_CHECK(http->GetString("sse_http11_framing") == "chunked");
+  Q4T_CHECK(http->GetString("request_identity") == "reauthenticate_each_request");
+  Q4T_CHECK(http->GetString("truncated_stream") == "close_without_replay");
   Q4T_CHECK(http->GetBool("observation_during_drain") &&
             http->GetBool("reservation_excludes_unclassified_header_flood"));
   const auto* routes = http->GetArray("observation_routes");
-  Q4T_CHECK(routes && routes->array.size() == 8);
+  Q4T_CHECK(routes && routes->array.size() == 13);
   Q4T_CHECK(observation->GetString("http_receive_failures") ==
             "q4t_http_receive_failures_total");
   Q4T_CHECK(observation->GetString("http_write_failures") ==
             "q4t_http_write_failures_total");
   Q4T_CHECK(observation->GetString("transport_counts") ==
-            "first_receive_and_write_failure_per_connection");
+            "first_receive_and_write_failure_per_request");
   Q4T_CHECK(observation->GetString("transport_publication") ==
             "after_heartbeat_join");
   Q4T_CHECK(observation->GetBool("receive_excludes_business_validation"));
