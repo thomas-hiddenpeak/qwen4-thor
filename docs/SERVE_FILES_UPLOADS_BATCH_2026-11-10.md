@@ -109,3 +109,9 @@ IO及全部其他子项，不结束阶段或总目标。
 冻结25项CPU，清单`.q4t-work/serve-files-20261110/required-binary.txt`：12新增实际磁盘/内层校验/二进制/权限/隔离/配额/冲突/删除/到期重启/取消/未知回执与事务恢复，受影响留存和2项IO故障隔离；必要host构建零警告要求，不涉及GPU或全性能/全模型矩阵。全部通过后继续A09.3与其余全部目标。
 
 分块持久底座[25项CPU已通过](evidence/serve-binary-cpu-20261110/README.md)，无GPU；继续实际HTTP/Files/Uploads集成，不以底座组件终止A09或总目标。
+
+## A09.3 HTTP流式接收组件CPU冻结
+
+共享reader增加可信准入设置的增量消费者；固定工作内存预留与总字节分离，单次callback最多8192字节，原绝对deadline涵盖回调。CL/chunked同时适用，framing/trailer全部成功后才允许调用方发布；普通JSON路由和限额保持。8新增测试含按需生成17MiB二进制的CL/chunked（源/接收端都不持有完整body）、容量/100顺序、总量/metadata限额、回调异常/停止、接收全payload后的截断、pipeline、绝对截止与未启用时原限额。合计冻结32项受影响CPU，见`.q4t-work/serve-files-20261110/required-http-stream.txt`。当前尚未接Files路由、无GPU，不代表API已验收；全部任务继续。
+
+HTTP流式组件[32项CPU已通过](evidence/serve-http-body-stream-cpu-20261110/README.md)，无GPU，继续Files/原生TLS实际接入，不作为API或总任务完成。

@@ -1,5 +1,9 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+A09.3 [HTTP流式body32项CPU通过](evidence/serve-http-body-stream-cpu-20261110/README.md)，host零警告；17MiB CL/chunked固定窗口、准入/截断/限额/截止/旧JSON行为通过。0GPU，继续Files原生路由与Uploads/Batch等全部任务，默认6a90506e保持。
+
+A09.3 HTTP增量body消费已成组开发，冻结32项CPU（8新增、既有接收/分帧/观察受影响项）。固定内存预留与总上传字节分离，回调失败/超时停止，完整HTTP成功后才允许发布。尚未测试或启用Files路由；继续实际Files/Uploads/Batch及全部目标，默认6a90506e保持、0GPU。
+
 A09.2 [分块持久IO25项CPU通过](evidence/serve-binary-cpu-20261110/README.md)，host零警告。实际磁盘/权限/配额/读保护/过期/3种未知提交恢复通过，0GPU；仅底座接受，继续Files原生流式HTTP、Uploads/Batch与全部目标，默认6a90506e保持。
 
 A09.2分块持久IO成组开发完成，冻结25项直接CPU（12新增存储、受影响留存与隔离）。已有worker原子事务、SHA256校验、读引用/暂存回收及未知回执禁止重放已接入；仅底座尚未测试，Files HTTP/Uploads/Batch全部继续。默认6a90506e保持STOPPED，无GPU。

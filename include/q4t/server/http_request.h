@@ -107,6 +107,22 @@ struct HttpRequestState {
   std::string pending;
 };
 
+// Set only by trusted route admission. The sink must honor the supplied
+// absolute deadline, consume/copy the view before returning, and stage writes
+// privately. Only ReadHttpRequest returning true authorizes final publication:
+// the sink can receive all payload bytes before a malformed trailer/EOF.
+// Reservation includes the sink's bounded working memory, independent of the
+// decoded wire-byte limit. Ordinary buffered requests retain their limits.
+struct HttpBodyStream {
+  size_t max_bytes = 0;
+  size_t reservation_bytes = 0;
+  size_t max_metadata_bytes = 64 * 1024;
+  std::function<bool(std::string_view,
+                     std::chrono::steady_clock::time_point)> consume;
+  int failure_status = 503;
+  std::string failure_code = "body_consumer_failed";
+};
+
 // Supports HTTP/1.x origin-form, Content-Length and HTTP/1.1 chunked framing.
 // Rejects mixed/duplicate framing, duplicate Host and malformed fields.
 // Headers <=64 KiB; chat/preflight bodies <=16 MiB, other routes <=4 KiB.
@@ -114,7 +130,8 @@ struct HttpRequestState {
 // A supplied lease reserves bytes before body reads (released by caller).
 // Headers expose validated transport metadata. admit runs after headers and
 // before body reservation/reads; false rejects without consuming the body.
-// Admission may lower body_limit. Chunked reservations grow before each chunk.
+// Admission may set body_limit and a stream. Buffered chunked reservations
+// grow before each chunk; streams reserve their fixed working set once.
 // A supplied state preserves bytes belonging to a subsequent request. Without
 // it the caller must close. Any failure requires closing, never resynchronizing.
 // Interim 100 is sent only after admission and known capacity/length checks;
@@ -137,6 +154,7 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
                      const std::function<bool()>& admit = {},
                      const HttpReceive& receive = {},
                      HttpRequestState* state = nullptr,
-                     const HttpContinue& send_continue = {});
+                     const HttpContinue& send_continue = {},
+                     HttpBodyStream* stream = nullptr);
 
 }  // namespace q4t::server

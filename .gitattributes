@@ -85,3 +85,5 @@ docs/evidence/serve-retention-delivery-20261110/** -text
 docs/evidence/serve-multipart-cpu-20261110/** -text
 
 docs/evidence/serve-binary-cpu-20261110/** -text
+
+docs/evidence/serve-http-body-stream-cpu-20261110/** -text

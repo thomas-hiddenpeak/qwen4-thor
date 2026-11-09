@@ -53,7 +53,7 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
                      int* failure_status, HttpRequestHeaders* headers,
                      const std::function<bool()>& admit,
                      const HttpReceive& receive, HttpRequestState* state,
-                     const HttpContinue& send_continue) {
+                     const HttpContinue& send_continue, HttpBodyStream* stream) {
   HttpRequestHeaders local;
   if (!headers) headers = &local;
   *headers = {};
@@ -187,8 +187,7 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
         if (c < '0' || c > '9') return false;
       const auto result =
           std::from_chars(value.data(), value.data() + value.size(), length);
-      if (result.ec == std::errc::result_out_of_range ||
-          (result.ec == std::errc{} && length > kChatBodyBytes)) {
+      if (result.ec == std::errc::result_out_of_range) {
         if (failure_status) *failure_status = 413;
         headers->failure = HttpReceiveFailure::kBodyTooLarge;
         return false;
@@ -322,19 +321,35 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
   }
   // Admission may canonicalize a configured public path prefix. Use the owned
   // admitted path, never a view into buf across append/reallocation.
-  const size_t route_limit =
-      IsStoredChatTarget(*path) || *path == "/v1/chat/preflight" ||
+  const bool streaming = stream && stream->consume;
+  if (streaming &&
+      (!stream->max_bytes || stream->max_bytes > (8ULL << 30) + 65536 ||
+       stream->reservation_bytes < 65536 ||
+       stream->reservation_bytes > kAggregateChatBodyBytes ||
+       stream->max_metadata_bytes < 65536 ||
+       stream->max_metadata_bytes > (16ULL << 20))) {
+    if (failure_status) *failure_status = 503;
+    headers->failure = HttpReceiveFailure::kBodyCapacity;
+    headers->error_code = "invalid_body_stream_capacity";
+    return false;
+  }
+  const size_t route_limit = streaming ? stream->max_bytes :
+      (IsStoredChatTarget(*path) || *path == "/v1/chat/preflight" ||
               *path == "/v1/completions" || IsResponsesTarget(*path) ||
               IsConversationTarget(*path) || IsPromptTarget(*path)
-          ? kChatBodyBytes : 4096;
+          ? kChatBodyBytes : 4096);
+  const size_t body_limit = std::min(route_limit, headers->body_limit);
+  const size_t metadata_limit = streaming ? stream->max_metadata_bytes
+                                           : kMaxHeader;
   const auto reserve = [&](size_t bytes) {
-    if (bytes > std::min(route_limit, headers->body_limit)) {
+    if (bytes > body_limit) {
       if (failure_status) *failure_status = 413;
       headers->failure = HttpReceiveFailure::kBodyTooLarge;
       headers->error_code = "body_limit_exceeded";
       return false;
     }
-    if (lease && !lease->GrowTo(bytes)) {
+    const auto reservation = streaming ? stream->reservation_bytes : bytes;
+    if (lease && !lease->GrowTo(reservation)) {
       if (failure_status) *failure_status = 503;
       headers->failure = HttpReceiveFailure::kBodyCapacity;
       headers->error_code = "body_capacity_exhausted";
@@ -374,15 +389,51 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
   }
   body_phase = true;
   buf.erase(0, head_len);
+  size_t decoded = 0;
+  const auto deliver = [&](std::string_view data) {
+    if (!streaming) {
+      body->append(data);
+      decoded += data.size();
+      return true;
+    }
+    while (!data.empty()) {
+      if (std::chrono::steady_clock::now() >= deadline) {
+        read_deadline();
+        return false;
+      }
+      const auto chunk = data.substr(0, 8192);
+      bool accepted = false;
+      try {
+        accepted = stream->consume(chunk, deadline);
+      } catch (...) {
+        stream->failure_status = 503;
+        stream->failure_code = "body_consumer_exception";
+      }
+      if (!accepted) {
+        if (failure_status)
+          *failure_status = std::clamp(stream->failure_status, 400, 599);
+        headers->failure = HttpReceiveFailure::kBodyConsumer;
+        headers->error_code = stream->failure_code;
+        return false;
+      }
+      if (std::chrono::steady_clock::now() >= deadline) {
+        read_deadline();
+        return false;
+      }
+      decoded += chunk.size();
+      data.remove_prefix(chunk.size());
+    }
+    return true;
+  };
   const auto consume = [&](size_t bytes) {
     const size_t buffered = std::min(bytes, buf.size());
-    body->append(buf.data(), buffered);
+    if (!deliver(std::string_view(buf).substr(0, buffered))) return false;
     buf.erase(0, buffered);
     bytes -= buffered;
     while (bytes) {
       const ssize_t n = read_some(tmp, std::min(bytes, sizeof(tmp)));
       if (n <= 0) return false;
-      body->append(tmp, static_cast<size_t>(n));
+      if (!deliver({tmp, static_cast<size_t>(n)})) return false;
       bytes -= static_cast<size_t>(n);
     }
     return true;
@@ -399,7 +450,7 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
         if (n <= 0) return false;
         buf.append(tmp, static_cast<size_t>(n));
       }
-      if (end + 2 > 8192 || end + 2 > kMaxHeader - metadata) return false;
+      if (end + 2 > 8192 || end + 2 > metadata_limit - metadata) return false;
       metadata += end + 2;
       *output = buf.substr(0, end);
       buf.erase(0, end + 2);
@@ -410,12 +461,12 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
       size_t bytes = 0;
       if (!line(&chunk) || !http::ChunkSize(chunk, &bytes)) return false;
       if (!bytes) break;
-      if (bytes > kChatBodyBytes) {
+      if (bytes > body_limit - decoded) {
         if (failure_status) *failure_status = 413;
         headers->failure = HttpReceiveFailure::kBodyTooLarge;
         return false;
       }
-      if (!reserve(body->size() + bytes) || !consume(bytes)) return false;
+      if (!reserve(decoded + bytes) || !consume(bytes)) return false;
       if (!line(&chunk) || !chunk.empty()) return false;
     }
     for (;;) {
@@ -430,7 +481,7 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
               connection.end()) return false;
       headers->trailers.emplace_back(name, value);
     }
-    headers->content_length = body->size();
+    headers->content_length = decoded;
   }
   if (state) state->pending = std::move(buf);
   headers->failure = HttpReceiveFailure::kNone;

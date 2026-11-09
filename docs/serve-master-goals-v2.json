@@ -944,8 +944,9 @@
         "A09.8 SDK/native release and rollback"
       ],
       "multipart_component_evidence": "evidence/serve-multipart-cpu-20261110/README.md",
-      "next": "Implement native bounded HTTP streaming and complete Files, Uploads, Batch and all required execution paths. Binary component CPU acceptance is not API delivery.",
-      "binary_component_evidence": "docs/evidence/serve-binary-cpu-20261110/README.md"
+      "next": "Complete Files fields/routes and actual native streamed upload/download, then Uploads, Batch and all remaining execution paths.",
+      "binary_component_evidence": "docs/evidence/serve-binary-cpu-20261110/README.md",
+      "http_stream_component_evidence": "docs/evidence/serve-http-body-stream-cpu-20261110/README.md"
     },
     {
       "id": "A10",

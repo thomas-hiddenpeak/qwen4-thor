@@ -1,0 +1,8 @@
+{
+  "decision": "COMPONENT_CPU_ACCEPTED",
+  "tests": 32,
+  "model_starts": 0,
+  "gpu_tests": 0,
+  "api_accepted": false,
+  "default_unchanged": "6a90506e"
+}
