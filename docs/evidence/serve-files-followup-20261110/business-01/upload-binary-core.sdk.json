@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "method": "POST",
+      "path": "/v1/files",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-length": "164",
+        "content-type": "application/json",
+        "x-request-id": "req-57954718b7e51a59f71956c91079cf33"
+      },
+      "wire_base64": "eyJpZCI6ImZpbGVfMmNjNDFhYjA2MDM4MDk1ZjBiNjJjMTY5YjEwZjUxZDkiLCJvYmplY3QiOiJmaWxlIiwiYnl0ZXMiOjI1NiwiY3JlYXRlZF9hdCI6MTc5NDI2Mjg3NSwiZmlsZW5hbWUiOiLljp/lrZfoioIuYmluIiwicHVycG9zZSI6ImV2YWxzIiwic3RhdHVzIjoicHJvY2Vzc2VkIn0="
+    }
+  ],
+  "result": {
+    "id": "file_2cc41ab06038095f0b62c169b10f51d9",
+    "object": "file",
+    "bytes": 256,
+    "created_at": 1794262875,
+    "filename": "\u539f\u5b57\u8282.bin",
+    "purpose": "evals",
+    "status": "processed"
+  }
+}

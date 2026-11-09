@@ -14,6 +14,18 @@ from tools.serve_responses.test_files_transport import Stack
 
 
 class FilesAcceptanceTests(unittest.TestCase):
+    def test_exact_observed_timeout_and_prior_usage_are_not_reinterpreted(self):
+        directory = driver.ROOT/'docs/evidence/serve-files-followup-20261110/business-01'
+        value = driver.read(directory/'storage-unavailable.sdk.json')
+        driver.check_exchange(value, 504, 'object_timeout')
+        driver.prior_accounting(directory)
+        with self.assertRaises(RuntimeError):driver.check_exchange(value, 503, 'object_timeout')
+        for changed in (dict(value, ok=True),
+                        dict(value, exchanges=value['exchanges']*2),
+                        dict(value, error=dict(value['error'], code='object_io_error'))):
+            with self.assertRaises(RuntimeError):driver.check_exchange(changed, 504, 'object_timeout')
+        self.assertEqual(driver.RESUME_LIMITS, dict(starts=1, chats=1, files=16, controls=2000, seconds=300))
+
     def test_download_oracle_requires_original_bytes_size_and_hash(self):
         raw = bytes(range(256))
         value = dict(bytes=len(raw), sha256=hashlib.sha256(raw).hexdigest(),

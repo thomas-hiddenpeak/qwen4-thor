@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_responses.test_files_acceptance.FilesAcceptanceTests.test_exact_observed_timeout_and_prior_usage_are_not_reinterpreted"
+  ],
+  "exit_code": 0,
+  "seconds": 0.3643067320808768
+}

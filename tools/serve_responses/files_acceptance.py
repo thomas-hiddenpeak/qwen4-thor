@@ -6,11 +6,13 @@ real model identity. Guardian recovery is reused, not claimed retested here.
 import argparse
 import base64
 import copy
+import fcntl
 import hashlib
 import http.client
 import json
 import os
 from pathlib import Path
+import shutil
 import signal
 import ssl
 import subprocess
@@ -35,6 +37,7 @@ from tools.serve_service.package import read, require, save, sha
 foreground = encrypted.foreground
 base = foreground.base
 LIMITS = dict(starts=1, chats=3, files=32, controls=2000, seconds=600)
+RESUME_LIMITS = dict(starts=1, chats=1, files=16, controls=2000, seconds=300)
 FILE_LIMIT = 32*1024**2
 OTHER = 'files-other'
 KEY, OTHER_KEY = 'A'*40, 'B'*40
@@ -53,6 +56,27 @@ def check_download(value, raw):
             'actual Files bytes differ')
 
 
+def check_exchange(value, status, error_code=None):
+    require(len(value['exchanges']) == 1 and value['exchanges'][0]['status'] == status,
+            'Files status or replay differs')
+    require(value['ok'] == (status == 200), 'Files terminal differs')
+    if error_code:
+        wire = json.loads(base64.b64decode(value['exchanges'][0]['wire_base64'], validate=True))
+        require(value['error']['status'] == status and value['error']['code'] == error_code and
+                wire['error']['code'] == error_code, 'Files error code differs')
+
+
+def prior_accounting(directory):
+    values = [read(directory/(name+'.sdk.json'))['result'] for name in ('tool', 'follow')]
+    metrics = read(directory/'follow-drain.metrics.json')[-1]
+    tokens = sum(v['usage']['total_tokens'] for v in values)
+    require(metrics['q4t_requests_total'] == 2 and metrics['q4t_requests_success_total'] == 2 and
+        metrics['q4t_requests_error_total'] == 0 and
+        metrics['q4t_client_rate_admitted_total{client="'+encrypted.CLIENT+'"}'] == 2 and
+        metrics['q4t_client_rate_settled_tokens_total{client="'+encrypted.CLIENT+'"}'] == tokens,
+        'prior actual generation usage differs')
+
+
 def tool_result(raw, expected_sha256):
     require(hashlib.sha256(raw).hexdigest() == expected_sha256, 'downloaded document identity')
     lines = raw.decode('utf-8').splitlines()[:3]
@@ -63,7 +87,37 @@ def tool_result(raw, expected_sha256):
 
 
 def prepare(args):
-    background.prepare(args, rows=requests(), limits=LIMITS, scope=__doc__)
+    prior = None
+    if args.resume_from:
+        directory = args.resume_from.resolve(strict=True)
+        old = read(directory/'plan.json');result = read(directory/'result.json')
+        cleanup = read(directory/'cleanup.json')
+        require(result['status'] == 'FAILED' and result['counts']['starts'] == 1 and
+                result['counts']['chats'] == 2 and result['counts']['files'] == 8 and
+                'Files status/replay differs: storage-unavailable' in result['error'] and
+                cleanup['model_exit'] == 0 and not cleanup['remaining'] and
+                cleanup['ports_released'] and cleanup['native_port_released'], 'prior failure boundary')
+        check_exchange(read(directory/'storage-unavailable.sdk.json'), 504, 'object_timeout')
+        prior_accounting(directory)
+        changes = {n for n, h in old['sources'].items() if sha(ROOT/n) != h}
+        require(changes == {'tools/serve_responses/files_acceptance.py',
+                            'tools/serve_responses/test_files_acceptance.py'}, 'unrelated source drift')
+        require(sha(args.binary) == old['binary_sha256'] and
+                sha(args.ingress) == old['ingress']['sha256'], 'production artifact drift')
+        monitor = [json.loads(row) for row in (directory/'lease/nvml-queries.jsonl').read_text().splitlines()]
+        require(monitor and all(row['status'] == 'OK' for row in monitor), 'prior GPU monitoring failed')
+        current = base.lifecycle.guard.processes()
+        require(not any(current.get(int(pid), {}).get('start_ticks') == row['start_ticks']
+                        for pid, row in cleanup['owned'].items()), 'prior owned process remains')
+        background.probe_ports((old['port'], old['operations_port'], old['edge_port']))
+        with base.lifecycle.guard.common_lock().open('a+') as lock:
+            fcntl.flock(lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+            fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
+        prior = dict(directory=str(directory), counts=result['counts'], seconds=result['seconds'],
+            files={str(p): sha(p) for p in directory.rglob('*') if p.is_file()},
+            source_changes=sorted(changes), monitor_samples=len(monitor),
+            combined_limits=dict(starts=2, chats=3, files=32, seconds=600))
+    background.prepare(args, rows=requests(), limits=RESUME_LIMITS if prior else LIMITS, scope=__doc__)
     out = args.output.resolve();path = out/'plan.json';plan = read(path)
     certificates(out/'tls')
     native = args.ingress.resolve(strict=True)
@@ -79,6 +133,10 @@ def prepare(args):
         'stored file recovers after bounded IO worker recovery; no mutation replay',
         'Files do not consume generation RPM/TPM; exact three-generation usage',
         'native parent admission is a test adapter, not a Guardian recovery acceptance']
+    if prior:
+        plan['prior'] = prior
+        plan['derived_requests'] += ['reuse successful seven Files operations and two real tool generations',
+            'copy exact isolated prior object state, no new upload or repeated tool generation']
     save(path, plan)
 
 
@@ -154,8 +212,14 @@ class Stage(encrypted.Stage):
     success_status = 'PASS_FILES_TARGETED_BUSINESS'
 
     def __init__(self, plan):
+        if plan.get('prior'):self.limits = RESUME_LIMITS
         super().__init__(plan)
         self.counts['files'] = 0;self.edge = None
+        self.prior = None
+        if plan.get('prior'):
+            require(all(sha(p) == h for p, h in plan['prior']['files'].items()), 'prior evidence drift')
+            self.prior = Path(plan['prior']['directory'])
+            shutil.copytree(self.prior/'objects', self.out/'objects')
         require(sha(plan['ingress']['path']) == plan['ingress']['sha256'], 'native entry changed')
         for name, digest in plan['tls_inputs'].items():
             require(sha(self.out/name) == digest, 'TLS input changed')
@@ -175,7 +239,7 @@ class Stage(encrypted.Stage):
         self.edge = Edge(self)
 
     def files(self, label, action, request=None, *, file_id=None,
-              direct=False, other=False, expected_status=200):
+              direct=False, other=False, expected_status=200, expected_code=None):
         self.budget('files');self.budget('controls')
         command = dict(action=action, request=request, id=file_id,
             sdk_directory=self.plan['sdk']['sdk_directory'], api_key=OTHER_KEY if other else KEY,
@@ -190,10 +254,8 @@ class Stage(encrypted.Stage):
         (self.out/(label+'.stderr')).write_text(run.stderr)
         require(not run.stderr and run.stdout, 'Files SDK bridge failed')
         value = json.loads(run.stdout);save(self.out/(label+'.sdk.json'), value)
-        require(len(value['exchanges']) == 1 and value['exchanges'][0]['status'] == expected_status,
-                'Files status/replay differs: '+label)
-        require(value['ok'] == (expected_status == 200) and
-                run.returncode == (0 if value['ok'] else 1), 'Files completion differs')
+        check_exchange(value, expected_status, expected_code)
+        require(run.returncode == (0 if value['ok'] else 1), 'Files completion differs')
         if value['ok'] and action != 'content':
             name = 'file_list' if action == 'list' else 'file_deleted' if action == 'delete' else 'file_resource'
             require(not errors(value['result'], name), 'Files actual wire schema')
@@ -202,6 +264,8 @@ class Stage(encrypted.Stage):
         return value.get('result')
 
     def business(self):
+        if self.prior:
+            return self.resume_business()
         document = (ROOT/foreground.DOCUMENT).read_bytes()
         uploaded = self.files('upload-document', 'create', dict(purpose='user_data',
             filename='MODEL.md', data_base64=base64.b64encode(document).decode()))
@@ -232,27 +296,8 @@ class Stage(encrypted.Stage):
         answer = json.loads(foreground.text(final));title = document.decode().splitlines()[0]
         require(final['status'] == 'completed' and answer['title'] in (title, title.lstrip('# ')) and
             answer['citation'] == result['source']['citation'], 'downloaded document tool closure')
-        pid, identity = own_object_worker(base.lifecycle.guard.processes(), self.model.pid)
-        require(identity['executable'] == self.plan['binary'], 'worker executable mismatch')
-        self.history[pid] = identity
-        save(self.out/'fault-injection.json', dict(pid=pid, identity=identity,
-            mutation='SIGSTOP', model_pid=self.model.pid))
-        base.lifecycle.guard.signal_identity(pid, identity, signal.SIGSTOP)
-        try:
-            self.files('storage-unavailable', 'retrieve', file_id=uploaded['id'], expected_status=503)
-            require(self.http('/readyz')[0] == 200, 'storage failure changed core readiness')
-            healthy = self.sdk('healthy-during-storage-fault', 'create', rows['healthy'])
-            require(healthy['status'] == 'completed' and foreground.text(healthy).strip() == '42',
-                    'stateless service failed with auxiliary storage')
-        finally:
-            current = base.lifecycle.guard.processes().get(pid, {})
-            if current.get('start_ticks') == identity['start_ticks']:
-                base.lifecycle.guard.signal_identity(pid, identity, signal.SIGCONT)
-        # Recovery is an explicit read of the original identity, no upload replay.
-        check_download(self.files('document-after-worker-recovery', 'content', file_id=uploaded['id']), document)
-        for label, value in [('document', uploaded), ('binary', blob)]:
-            self.files('delete-'+label, 'delete', file_id=value['id'])
-        require(not self.files('empty-list', 'list')['data'], 'deleted Files still listed')
+        healthy = self.storage_fault(uploaded['id'])
+        self.finish_files(uploaded, blob, document)
         self.accounting('final-accounting', [tool, final, healthy])
         self.same_model()
         save(self.out/'business-checks.json', dict(actual_sdk_files=True, native_tls=True,
@@ -260,6 +305,50 @@ class Stage(encrypted.Stage):
             storage_failure_same_model_sse=True, storage_recovery_preserves_file=True,
             exact_generation_usage=True, generations=3, file_input_resolution=False,
             native_parent_admission='test adapter tied to actual model identity', performance_claim=False))
+
+    def storage_fault(self, file_id):
+        pid, identity = own_object_worker(base.lifecycle.guard.processes(), self.model.pid)
+        require(identity['executable'] == self.plan['binary'], 'worker executable mismatch')
+        self.history[pid] = identity
+        save(self.out/'fault-injection.json', dict(pid=pid, identity=identity,
+            mutation='SIGSTOP', model_pid=self.model.pid))
+        base.lifecycle.guard.signal_identity(pid, identity, signal.SIGSTOP)
+        try:
+            self.files('storage-unavailable', 'retrieve', file_id=file_id,
+                       expected_status=504, expected_code='object_timeout')
+            require(self.http('/readyz')[0] == 200, 'storage failure changed core readiness')
+            healthy = self.sdk('healthy-during-storage-fault', 'create', self.plan['requests']['healthy'])
+            require(healthy['status'] == 'completed' and foreground.text(healthy).strip() == '42',
+                    'stateless service failed with auxiliary storage')
+        finally:
+            current = base.lifecycle.guard.processes().get(pid, {})
+            if current.get('start_ticks') == identity['start_ticks']:
+                base.lifecycle.guard.signal_identity(pid, identity, signal.SIGCONT)
+        return healthy
+
+    def finish_files(self, uploaded, blob, document):
+        # Recovery is an explicit read of the original identity, no upload replay.
+        check_download(self.files('document-after-worker-recovery', 'content', file_id=uploaded['id']), document)
+        for label, value in [('document', uploaded), ('binary', blob)]:
+            self.files('delete-'+label, 'delete', file_id=value['id'])
+        require(not self.files('empty-list', 'list')['data'], 'deleted Files still listed')
+
+    def resume_business(self):
+        uploaded = read(self.prior/'upload-document.sdk.json')['result']
+        blob = read(self.prior/'upload-binary-core.sdk.json')['result']
+        document = (ROOT/foreground.DOCUMENT).read_bytes()
+        require(self.files('restored-metadata', 'retrieve', file_id=uploaded['id']) == uploaded,
+                'prior durable file not retained')
+        healthy = self.storage_fault(uploaded['id'])
+        self.finish_files(uploaded, blob, document)
+        self.accounting('final-accounting', [healthy])
+        prior_accounting(self.prior)
+        self.same_model()
+        save(self.out/'business-checks.json', dict(storage_failure_same_model_sse=True,
+            storage_recovery_preserves_file=True, actual_504_object_timeout=True,
+            exact_generation_usage=True, additional_generations=1, combined_generations=3,
+            combined_starts=2, reused_prior_files_and_tool_closure=True,
+            production_unchanged=True, performance_claim=False))
 
     def cleanup(self):
         try:
@@ -277,6 +366,7 @@ def main():
     command.add_argument('--binary', type=Path, required=True)
     command.add_argument('--ingress', type=Path, required=True)
     command.add_argument('--output', type=Path, required=True)
+    command.add_argument('--resume-from', type=Path)
     command.add_argument('--port', type=int, default=19011)
     command = modes.add_parser('run');command.add_argument('--plan', type=Path, required=True)
     args = parser.parse_args()

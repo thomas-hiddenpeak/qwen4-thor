@@ -1,0 +1,18 @@
+{
+  "pid": 1264197,
+  "identity": {
+    "state": "S",
+    "ppid": 1263366,
+    "pgid": 1263361,
+    "start_ticks": 245295800,
+    "argv": [
+      "q4t-object-worker",
+      "--q4t-object-worker",
+      "1263366",
+      "2147483648"
+    ],
+    "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t"
+  },
+  "mutation": "SIGSTOP",
+  "model_pid": 1263366
+}

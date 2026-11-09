@@ -160,3 +160,7 @@ client_dynamic_update_preserves_snapshots_slots_and_move_ownership
 A09.3 实际业务驱动已成组准备：冻结1模型/3生成/32 Files操作/600秒，同一严格租约；官方SDK直接核心与原生TLS、真实文件下载驱动工具闭环、暂停自有IO worker后同PID stateless SSE及恢复原文件。先执行3项驱动CPU，尚无GPU；默认保持，随后交付及全部任务继续。
 
 驱动`tools/serve_responses/files_acceptance.py`；3项CPU为`test_files_acceptance.FilesAcceptanceTests`。Files原文下载后作为真实工具结果，尚不宣称A09.5的native file_id内容消费。原生入口父准入为模型PID绑定测试适配，使用真实TLS/认证/HTTP/存储；Guardian旧证据复用。暂存目录独立、默认和源身份固定，实际文件请求不自动重试，故障后只按原ID读取；模型正常终止并核对进程、端口、锁清理。
+
+A09.3 首实际1启动/2生成/8 Files操作/58.855秒，57 NVML全OK并独立清理。Files/TLS/真实文档工具闭环已过；存储暂停真实504/object_timeout被驱动错判503，生产不改。冻结1项CPU后仅补1启动/1生成/300秒，累计2/3/32 Files/600秒；原件保留，默认A08保持，全部任务继续。
+
+续验驱动只修504精确错误判定，复制原专属对象状态并校验所有旧证据/来源身份、清理和NVML；拒绝任何生产漂移。额外模型启动用于只续余下一次生成，已完成两次不重做。
