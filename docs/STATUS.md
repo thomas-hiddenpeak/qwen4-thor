@@ -1,3 +1,9 @@
+# 当前 Serve 总目标状态（2026-11-09）
+
+A07.2 已完成[真实摘要/工具/账本短验](evidence/serve-responses-summary-business-20261109/README.md)并[可回退默认交付](evidence/serve-responses-summary-delivery-20261109/README.md)。当前引擎 `8b4899cd`、元数据 `96e004ef`、原生包 `bbb4c13b`，publication revision12，STOPPED；旧 A07.1/核心与客户端账本保持。28 C++/3 驱动 CPU、累计 2 启动/8 请求/13 内部步/115.690 秒通过，112 NVML 全 OK，回放缺陷及修复证据保留。
+
+总目标 active、尚未合 main。现在继续 A07.3 认证加密推理状态往返，随后 A07.4—A07.8 及 A/R/Q/G 其余全部任务。摘要阶段不是总目标完成；非性能任务继续针对性验证，长稳由用户实跑。以下保留各阶段当时的状态，当前默认以上段为准。
+
 A07.2 [真实摘要业务接受](evidence/serve-responses-summary-business-20261109/README.md)：累计 2 启动/8 外部请求/13 内部步/115.690 秒，112 NVML 全 OK，正常清理。三种摘要/JSON/SSE/后台/原记录回放、一次 RPM/累计 TPM、共享预算与真实文档工具闭环通过，候选 8b4899cd；保留首回放失败。继续可回退交付及 A07.3/所有总任务，默认尚未替换。
 
 A07.2 [回放修复 5 CPU 全过与首次实际失败原件](evidence/serve-responses-summary-replay-fix-20261109/README.md)，引擎/host 零警告。准备仅续余下 5 请求，并复制保留的原记录验证实际 SDK SSE 回放；三种已过模型生成复用，累计上限不增。默认保持，总任务继续。

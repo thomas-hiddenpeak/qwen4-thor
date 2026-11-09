@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-summary-20261109/deliver.py", line 208, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-summary-20261109/deliver.py", line 145, in main
+    receipt = bundle.prepare(engine/'q4t',engine/'q4t.release.json',p.read(old/'engine/manifest.json')['model_dir'],
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/bundle.py", line 206, in prepare
+    receipt = engine.prepare(binary, release, model, target/'engine',
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 329, in prepare
+    accepted_release(metadata, read(acceptance))
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 196, in accepted_release
+    require(type(acceptance) is str and acceptance.startswith('ACCEPT_') and
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 61, in require
+    raise RuntimeError(message)
+RuntimeError: explicit accepted release required

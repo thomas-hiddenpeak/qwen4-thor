@@ -35,7 +35,10 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 Responses 的 `truncation:auto` 已接入实际模板、分词与容量规划，
 保留当前任务和工具调用组，持久历史保持完整；前台 JSON/SSE、后台
 及真实文档工具闭环已验，见[实现与交付](docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md)。
-推理摘要、加密状态、压缩等余项仍在该计划中继续实现。
+`reasoning.summary` 的 concise/detailed/auto 已由本机模型独立生成真实摘要，
+提供 summary item/SSE、持久回放与后台执行；共用剩余输出预算和取消，
+额外模型输入/输出计入 usage/TPM，外部请求只计一次 RPM。没有实际推理
+时不伪造摘要。加密状态、压缩等余项仍在该计划中继续实现。
 
 [标准生成参数](docs/SERVE_SAMPLING_2026-11-08.md)已交付：temperature/
 top_p、seed、presence/frequency penalty、logit_bias、n=1..128及真实

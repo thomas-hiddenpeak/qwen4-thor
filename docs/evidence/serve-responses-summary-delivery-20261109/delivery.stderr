@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-summary-20261109/deliver.py", line 208, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-summary-20261109/deliver.py", line 46, in main
+    p.require(old_hash == current['current']['manifest_sha256'] ==
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 61, in require
+    raise RuntimeError(message)
+RuntimeError: A07.1 predecessor required

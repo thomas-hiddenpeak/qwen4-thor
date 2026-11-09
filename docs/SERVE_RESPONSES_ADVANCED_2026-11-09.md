@@ -89,3 +89,5 @@ A07.2 成组实现已接通实际模型步骤与共享预算/请求计量，源�
 A07.2 [23 C++/3 驱动 CPU/64 schema 值](evidence/serve-responses-summary-cpu-20261109/README.md)已过，首夹具失败原件保持。实际短验最多 2 启动、8 外部请求、13 内部生成步骤、900 秒；计划 1 启动、三种真实摘要、后台/SSE 回放、无推理与预算耗尽、真实文档工具闭环与 Chat，含合成测试客户端的实际 RPM/TPM 账本。这里只验证功能及直接受影响行为，不作性能结论。
 
 A07.2 [实际业务已通过](evidence/serve-responses-summary-business-20261109/README.md)：累计 2 启动/8 请求/13 内部步/115.690 秒，112 NVML 全 OK。首回放 framing 缺陷已修并保留失败，复用 3 次生成，完成余下 5 请求及原记录回放。三种摘要、后台/SSE、共享预算、一次 RPM/累计 TPM 与真实文档工具闭环接受；继续可回退交付，全部剩余子项仍必做。
+
+A07.2 [默认交付完成](evidence/serve-responses-summary-delivery-20261109/README.md)：引擎 8b4899cd、包 bbb4c13b、revision12，STOPPED。8 实际命令通过，原业务账本保持，旧 A07.1 保留回退；两次发布前准备失败也保留。继续 A07.3 加密状态及全部余项，不在此停止总任务。

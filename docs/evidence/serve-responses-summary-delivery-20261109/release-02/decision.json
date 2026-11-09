@@ -1,0 +1,47 @@
+{
+  "status": "PASS_TARGETED_RESPONSES_SUMMARY_RELEASE",
+  "acceptance": "ACCEPT_TARGETED_RESPONSES_SUMMARY",
+  "actual_business": {
+    "status": "PASS_RESPONSES_SUMMARY_TARGETED_BUSINESS",
+    "acceptance": "targeted-cpu-and-actual-http-responses-summary-20261109",
+    "all_nvml_ok": true,
+    "nvml_samples": 112,
+    "cleanup_confirmed": true,
+    "binary_sha256": "8b4899cd268c42a624742b1603f5228dcf9eec08dc5ed4119c2ef78d11840b08",
+    "protocol_sha256": "e4cf23b3b87cba85e4b54b767abd7cda333d50c63f77d9285261ca8c700d11bb",
+    "counts": {
+      "starts": 2,
+      "chats": 8,
+      "controls": 129
+    },
+    "seconds": 115.68989735050127,
+    "internal_model_steps": 13,
+    "first_failure_retained": "../serve-responses-summary-replay-fix-20261109/README.md",
+    "reused_actual_generation": {
+      "requests": 3,
+      "reason": "Only retained replay HTTP completion state changed; generation/runtime summary sources byte unchanged, verified frozen source manifests"
+    },
+    "cpp_checks": 28,
+    "driver_checks": 3,
+    "passed": [
+      "concise/detailed/auto actual model summaries",
+      "JSON/SSE/background and original event replay",
+      "one RPM and actual combined input/output TPM",
+      "single max_output_tokens and genuine incomplete response",
+      "real project document tool result to strict JSON citation",
+      "ordinary MTP Chat continuation"
+    ],
+    "no_performance_acceptance": true,
+    "no_full_model_quality_claim": true,
+    "long_stability_by_user": true,
+    "remaining_master_tasks_open": true
+  },
+  "source_commit": "2cb2a141bb894199ab4568d04180a1ab0dda3dee",
+  "binary_sha256": "8b4899cd268c42a624742b1603f5228dcf9eec08dc5ed4119c2ef78d11840b08",
+  "protocol_sha256": "e4cf23b3b87cba85e4b54b767abd7cda333d50c63f77d9285261ca8c700d11bb",
+  "source_review_sha256": "fad3e147671791d1356c138f80f6d05561f8c9c5a19381e4873b47a8383ed071",
+  "full_model_quality": false,
+  "performance_acceptance": false,
+  "long_stability_accepted": false,
+  "remaining_master_tasks_open": true
+}

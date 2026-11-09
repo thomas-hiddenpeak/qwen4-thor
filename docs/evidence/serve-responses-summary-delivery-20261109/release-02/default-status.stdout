@@ -1,0 +1,1 @@
+{"service_id": "dcb9dc2e-2824-49b2-a4f8-9b7b4f834b6d", "state": "STOPPED", "desired": "STOPPED", "live_control": false, "business_ready": false, "cleanup_confirmed": true, "model_actions": false, "automatic_start": false}

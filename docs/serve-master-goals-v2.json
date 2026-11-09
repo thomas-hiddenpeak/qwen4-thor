@@ -206,21 +206,24 @@
         "evidence/serve-responses-context-cpu-20261109/README.md",
         "evidence/serve-responses-context-business-20261109/README.md",
         "evidence/serve-responses-context-delivery-20261109/README.md",
-        "evidence/serve-responses-summary-cpu-20261109/README.md"
+        "evidence/serve-responses-summary-cpu-20261109/README.md",
+        "evidence/serve-responses-summary-replay-fix-20261109/README.md",
+        "evidence/serve-responses-summary-business-20261109/README.md",
+        "evidence/serve-responses-summary-delivery-20261109/README.md"
       ],
       "release": {
-        "engine_binary_sha256": "bb6e702ea5615fea7c11302e7c8ce2b1bec6b8aff9803f2b5cc7bfe84fec270a",
-        "engine_release_sha256": "f2a292f49529cac78f9754e9e52584bdb390d24ce87fd6771516ece5ba0626e5",
-        "generation_sha256": "cd27f38267f02e661935e47f78d537d111c3436a986817b8ff80e41311ad6d53",
-        "manifest_sha256": "c360746edc5a717eeef03b6de0261b0b72630cba6e0d1f5d5b5b5c9c8ad94f79",
-        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-context-20261109/release-04/bundle",
-        "service_acceptance_sha256": "fddbc45ab358832ee81af40feed415b55c64b644b67c818afe8fd2dc6c542fd1",
-        "service_release_sha256": "9b7c7be37eba1c0ff12ba9993f9cae5ceacd0b7f4bdf5aa44144a97a1c1953c5",
+        "engine_binary_sha256": "8b4899cd268c42a624742b1603f5228dcf9eec08dc5ed4119c2ef78d11840b08",
+        "engine_release_sha256": "96e004efa6bb1fcf167a4819929e10a42a71660b4d912cfa54e786b8ce6aa940",
+        "generation_sha256": "236d7dcd751eca4ee0b357cf19535110ae8ad76d8732a0fe435d3d145a5d34d0",
+        "manifest_sha256": "bbb4c13bc4b149fec303215b90819dc0d9c3db473f8553402c4838886715cc09",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-summary-20261109/release-02/bundle",
+        "service_acceptance_sha256": "80d56cedd9f05e84996a8e25310f7a53f0758526096a26c18611899e5c63f760",
+        "service_release_sha256": "3cef6c508573e5f71014de863d8968ce6fdaa5e757dbc90e5ad052754c61df9a",
         "state": "STOPPED",
         "merged_main": false,
         "whole_task_complete": false
       },
-      "development_status": "A07.1 delivered with actual token/JSON/SSE/background/tool evidence. Continue A07.2 generated reasoning summary and every remaining advanced/master task; not a final completion.",
+      "development_status": "A07.1 context and A07.2 actual summaries delivered; continue A07.3 encryption and all remaining master tasks.",
       "item_shape_evidence": "evidence/serve-item-shape-20261109/README.md",
       "execution_evidence": "evidence/serve-responses-execution-20261109/README.md",
       "foreground_business_evidence": "evidence/serve-responses-business-20261109/README.md",
@@ -236,7 +239,6 @@
       "delivery_evidence": "evidence/serve-chat-delivery-20261109/README.md",
       "plan": "SERVE_RESPONSES_ADVANCED_2026-11-09.md",
       "remaining_required": [
-        "A07.2 generated reasoning summaries",
         "A07.3 authenticated encrypted reasoning state roundtrip",
         "A07.4 context_management and compact execution",
         "A07.5 versioned local prompt registry and variables",
@@ -285,7 +287,23 @@
         },
         "publication_revision": 10
       },
-      "current_work": "A07.2 actual native summary and single-request usage: 23 C++/3 driver/64 schema checks passed; bounded real business pending, all remaining advanced tasks required"
+      "current_work": "A07.3 authenticated encrypted reasoning state roundtrip",
+      "reasoning_summary": {
+        "state": "delivered",
+        "cpu_checks": 31,
+        "business_evidence": "evidence/serve-responses-summary-business-20261109/README.md",
+        "delivery_evidence": "evidence/serve-responses-summary-delivery-20261109/README.md",
+        "release": {
+          "engine_binary_sha256": "8b4899cd268c42a624742b1603f5228dcf9eec08dc5ed4119c2ef78d11840b08",
+          "engine_release_sha256": "96e004efa6bb1fcf167a4819929e10a42a71660b4d912cfa54e786b8ce6aa940",
+          "generation_sha256": "236d7dcd751eca4ee0b357cf19535110ae8ad76d8732a0fe435d3d145a5d34d0",
+          "manifest_sha256": "bbb4c13bc4b149fec303215b90819dc0d9c3db473f8553402c4838886715cc09",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-summary-20261109/release-02/bundle",
+          "service_acceptance_sha256": "80d56cedd9f05e84996a8e25310f7a53f0758526096a26c18611899e5c63f760",
+          "service_release_sha256": "3cef6c508573e5f71014de863d8968ce6fdaa5e757dbc90e5ad052754c61df9a"
+        },
+        "publication_revision": 12
+      }
     },
     {
       "id": "A08",
@@ -924,6 +942,6 @@
       "release": null
     }
   ],
-  "next_task": "A07",
-  "next": "Unified native service CLI, configurable capacity profiles and default publication transaction, then every remaining master task. N05 delivered; total goal remains active."
+  "next_task": "A07.3",
+  "next": "Authenticated native encrypted reasoning state, then every remaining master task"
 }
