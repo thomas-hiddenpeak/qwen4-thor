@@ -1,0 +1,10 @@
+[
+  "python3",
+  "-B",
+  "-m",
+  "unittest",
+  "-v",
+  "tools.serve_recovery.test_retention.RetentionTests.test_archive_roundtrip_is_private_and_required_for_every_run",
+  "tools.serve_recovery.test_retention.RetentionTests.test_release_dependencies_and_protected_overage_are_not_deleted",
+  "tools.serve_recovery.test_retention_epoch.EpochTests.test_legacy_run_migrates_then_archives_and_retires"
+]

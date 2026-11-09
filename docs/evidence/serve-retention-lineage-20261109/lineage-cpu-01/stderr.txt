@@ -1,0 +1,9 @@
+test_deployment_repository_is_bound_to_manifest_not_packaged_module_path (tools.serve_recovery.test_retention_lineage.LineageTests.test_deployment_repository_is_bound_to_manifest_not_packaged_module_path) ... ok
+test_legacy_rollback_formats_keep_pinned_metadata_and_packages (tools.serve_recovery.test_retention_lineage.LineageTests.test_legacy_rollback_formats_keep_pinned_metadata_and_packages) ... ok
+test_mutable_legacy_lineage_invalidates_plan_without_changing_pins (tools.serve_recovery.test_retention_lineage.LineageTests.test_mutable_legacy_lineage_invalidates_plan_without_changing_pins) ... ok
+test_nested_inherited_hash_is_enforced_and_conflicts_are_rejected (tools.serve_recovery.test_retention_lineage.LineageTests.test_nested_inherited_hash_is_enforced_and_conflicts_are_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.126s
+
+OK

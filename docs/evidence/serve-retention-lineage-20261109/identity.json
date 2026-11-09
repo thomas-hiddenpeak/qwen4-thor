@@ -1,0 +1,14 @@
+{
+  "base_commit": "db0e886ea78770e3fa60120742c5c20d4ca8b408",
+  "sources": {
+    "tools/serve_recovery/retention.py": "7f78f2cdec4ebc0dcd283ce803b2078769c5144834a63a742e95e6120d8205b9",
+    "tools/serve_recovery/test_retention.py": "3e9367d2f7d7b9c5eae36a373453ba24c96d824631502b4f561d52e6b984603e",
+    "tools/serve_recovery/test_retention_lineage.py": "f886065bc19dadcf9e27ecf41bc217dd8a602c63f9742cb10f6fcdff5d2d93bc"
+  },
+  "default": {
+    "q4t": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
+    "q4t.release.json": "f44634f5235c9555a06c20e57fbe86d1606f57ba7b4095e875b2d71ba31b38fc",
+    "service.release.json": "1370792e5f6472fbb5ad2017b8893876f154e0b836081097d719eceff12200bb",
+    "service-native-state/ledger.json": "2216b9dcd4d0e9753fb41b8698a15055001c2446ac52b5a52e3d2f757b0c884c"
+  }
+}

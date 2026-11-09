@@ -2,6 +2,11 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+随包仓库定位与历史依赖修复通过4新增/3受影响CPU；真实默认只读
+遍历133元数据/476保护路径，[原件](evidence/serve-retention-lineage-20261109/README.md)保留7次FAILED。
+旧权限不改，父摘要及计划内全量摘要重核；0生产删除/0模型/Chat。
+继续实际v6包CLI/export/retention组合及交付，所有总任务保持推进。
+
 旧run/跨boot迁移5新增+2受影响CPU通过，[原件](evidence/serve-retention-epoch-20261109/README.md)保留夹具revision失败。
 只在持久STOPPED且账本前后一致时非阻塞核对三锁，锁内无文件I/O；
 旧v2归档/淘汰、旧boot中断resume通过。0生产run删除/0模型/0Chat。

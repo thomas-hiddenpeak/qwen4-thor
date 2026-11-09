@@ -1,4 +1,5 @@
 """CPU run archive/retirement tests in private work fixtures; no model operations."""
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -25,8 +26,11 @@ class RetentionTests(unittest.TestCase):
         self.state = self.directory / 'state'; self.state.mkdir(mode=0o700)
         (self.state / 'runs').mkdir(mode=0o700)
         self.service_id = str(uuid.uuid4())
+        package = self.directory / 'package'; package.mkdir(mode=0o700)
+        self.write(package / 'manifest.json', dict(repository=str(ROOT)))
+        manifest_hash = hashlib.sha256((package / 'manifest.json').read_bytes()).hexdigest()
         self.write(self.state / 'service.json', dict(version=1, service_id=self.service_id,
-            package=str(self.directory / 'package'), manifest_sha256='a' * 64))
+            package=str(self.directory / 'package'), manifest_sha256=manifest_hash))
         self.write(self.state / 'ledger.json', dict(protected='unchanged sentinel'))
         self.ledger = (self.state / 'ledger.json').read_bytes()
 

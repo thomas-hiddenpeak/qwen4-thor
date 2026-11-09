@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "<stdin>", line 7, in <module>
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 378, in dependencies
+    records.update({str(p): digest for p, digest in seen.items()})
+    ^^^^^^^^^^^^^^
+AttributeError: 'list' object has no attribute 'update'

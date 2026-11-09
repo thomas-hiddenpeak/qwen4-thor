@@ -122,6 +122,20 @@ def state_descriptor(state):
     return state, identity, desc
 
 
+def repository(state):
+    state, _, desc = state_descriptor(state)
+    manifest_path = Path(desc['package']) / 'manifest.json'
+    manifest = native.private_json(manifest_path, MAX_MANIFEST)
+    raw = bounded_file(manifest_path, MAX_MANIFEST)
+    ledger.require(hashlib.sha256(raw).hexdigest() == desc['manifest_sha256'] and
+        ledger.digest(manifest) == ledger.digest(store.decode(raw)), 'deployment manifest changed')
+    root = Path(manifest['repository'])
+    ledger.require(root.is_absolute() and root.resolve(strict=True) == root and
+        any(state.is_relative_to(root / name) for name in ('build', '.q4t-work')),
+        'retention outside deployment repository')
+    return root
+
+
 def run_directory(state, run_id):
     ledger.require(ledger.identifier(run_id), 'canonical run UUID required')
     state, _, desc = state_descriptor(state)
@@ -233,45 +247,135 @@ def references(root, *, retired_context=None):
     return found
 
 
-def dependencies(state, *, anchors=None):
+def dependency_json(path, expected=None):
+    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | os.O_CLOEXEC)
+    try:
+        info = os.fstat(fd)
+        ledger.require(stat.S_ISREG(info.st_mode) and info.st_uid == os.geteuid() and
+            info.st_nlink == 1 and info.st_size <= MAX_MANIFEST,
+            'owned release metadata required')
+        with os.fdopen(os.dup(fd), 'rb') as stream:
+            raw = stream.read(MAX_MANIFEST + 1)
+        ledger.require(len(raw) <= MAX_MANIFEST, 'release metadata bound')
+        actual = hashlib.sha256(raw).hexdigest()
+        ledger.require(expected is None or expected == actual, 'release dependency digest changed')
+        # Historical lineage records may be group writable. They are read-only
+        # protection inputs, never deletion grants or executable acceptance.
+        # Parent receipts remain digest checked; every observed metadata digest
+        # is also frozen into the plan and revalidated before retirement.
+        ledger.require(file_identity(os.fstat(fd)) == file_identity(info),
+                       'release metadata changed during read')
+        return store.decode(raw), actual
+    finally:
+        os.close(fd)
+
+
+def rollback_dependencies(path, value):
+    paths, metadata = set(), []
+    if 'files' in value:
+        files = value['files']
+        ledger.require(type(files) is dict and files and all(type(n) is str and
+            Path(n).name == n and n not in ('.', '..') and type(h) is str and
+            ledger.HASH.fullmatch(h) for n, h in files.items()), 'rollback file inventory changed')
+        unchanged = value.get('engine_unchanged')
+        unchanged = unchanged is True or (type(unchanged) is dict and
+            set(unchanged) == {'binary_sha256', 'release_sha256'} and
+            all(type(h) is str and ledger.HASH.fullmatch(h) for h in unchanged.values()))
+        required = {'service.release.json'} if unchanged else {'q4t.release.json', 'service.release.json'}
+        ledger.require(required <= files.keys(), 'rollback metadata digest absent')
+        paths.update(path.parent / n for n in files)
+        metadata.extend((path.parent / n, h, False) for n, h in files.items()
+                        if n in ('q4t.release.json', 'service.release.json', 'service.json'))
+    elif 'metadata_sha256' in value and 'descriptor_sha256' in value:
+        # The observation-only v3 delivery retained the complete previous
+        # package and these two service records; engine bytes did not change.
+        for name, key in (('service.release.json', 'metadata_sha256'),
+                          ('service.json', 'descriptor_sha256')):
+            digest = value[key]
+            ledger.require(type(digest) is str and ledger.HASH.fullmatch(digest), 'legacy rollback digest')
+            paths.add(path.parent / name); metadata.append((path.parent / name, digest, False))
+    elif 'preserved' in value:
+        rows = value['preserved']
+        ledger.require(type(rows) is list and 1 <= len(rows) <= 32, 'legacy rollback inventory')
+        for row in rows:
+            ledger.keys(row, ('path', 'rollback', 'sha256'))
+            ledger.require(type(row['path']) is str and Path(row['path']).is_absolute() and
+                type(row['rollback']) is str and Path(row['rollback']).is_absolute() and
+                type(row['sha256']) is str and ledger.HASH.fullmatch(row['sha256']),
+                'legacy rollback record')
+            source, target = Path(row['path']), Path(row['rollback'])
+            paths.update((source, target))
+            if source.name in ('q4t.release.json', 'service.release.json', 'service.json'):
+                metadata.append((target, row['sha256'], False))
+    else:
+        raise ledger.LedgerError('unknown rollback receipt inventory')
+    return paths, metadata
+
+
+def pinned_digest(value, target):
+    pending, found, count = [value], set(), 0
+    while pending:
+        node = pending.pop(); count += 1
+        ledger.require(count <= 100000, 'release metadata traversal bound')
+        if type(node) is dict:
+            if node.get('path') == str(target) and 'sha256' in node:
+                digest = node['sha256']
+                ledger.require(type(digest) is str and ledger.HASH.fullmatch(digest),
+                               'release source digest malformed')
+                found.add(digest)
+            pending.extend(v for v in node.values() if type(v) in (dict, list))
+        elif type(node) is list:
+            pending.extend(v for v in node if type(v) in (dict, list))
+    ledger.require(len(found) <= 1, 'ambiguous release source digest')
+    return next(iter(found), None)
+
+
+def dependencies(state, *, anchors=None, records=None):
     """Keep every local release/rollback dependency, including previous releases."""
-    root = Path(__file__).resolve().parents[2]
-    queue = list(anchors if anchors is not None else (
+    root = repository(state)
+    queue = [(Path(p), None, False) for p in (anchors if anchors is not None else (
         root / 'build/q4t.release.json', root / 'build/service.release.json',
-        Path(state) / 'service.json'))
-    seen, paths = set(), set()
+        Path(state) / 'service.json'))]
+    seen, paths = {}, set()
     follow = {'previous_release', 'previous_service_release', 'rollback_receipt'}
     keep = follow | {'package', 'previous_binary', 'build_cache',
         'tested_source_manifest', 'acceptance_decision', 'acceptance_record',
-        'previous_acceptance_record', 'control_review'}
+        'previous_acceptance_record', 'control_review', 'previous_service_entry',
+        'previous_service_metadata', 'previous_state'}
     while queue:
-        path = Path(queue.pop()).absolute()
+        path, expected, rollback = queue.pop()
+        path = path.absolute()
         if path in seen:
+            ledger.require(expected is None or expected == seen[path], 'conflicting release dependency')
             continue
         ledger.require(len(seen) < 256, 'release dependency bound')
-        seen.add(path); paths.add(path)
-        value = native.private_json(path, MAX_MANIFEST)
+        value, digest = dependency_json(path, expected)
+        seen[path] = digest; paths.add(path)
+        inherited = value.get('inherited_release')
         for key in keep:
             raw = value.get(key)
             if type(raw) is str and Path(raw).is_absolute():
-                target = Path(raw)
-                paths.add(target)
+                target = Path(raw); paths.add(target)
                 if key in follow:
-                    queue.append(target)
-                    if key == 'rollback_receipt':
-                        queue.extend(target.parent / n for n in
-                                     ('q4t.release.json', 'service.release.json'))
-        inherited = value.get('inherited_release')
+                    checksum = value.get('rollback_sha256' if key == 'rollback_receipt' else key + '_sha256')
+                    if key == 'previous_release' and type(inherited) is dict and inherited.get('path') == raw:
+                        checksum = inherited.get('sha256')
+                    queue.append((target, checksum or pinned_digest(value, target), key == 'rollback_receipt'))
         if type(inherited) is dict and type(inherited.get('path')) is str:
             target = Path(inherited['path'])
             ledger.require(target.is_absolute(), 'release dependency path')
-            paths.add(target); queue.append(target)
+            paths.add(target); queue.append((target, inherited.get('sha256') or pinned_digest(value, target), False))
+        if rollback:
+            preserved, metadata = rollback_dependencies(path, value)
+            paths.update(preserved); queue.extend(metadata)
         for key in ('release_declarations', 'third_party_notices', 'application_notices'):
             block = value.get(key)
             if type(block) is dict:
                 for field in ('directory', 'source_directory'):
                     if type(block.get(field)) is str:
                         paths.add(Path(block[field]))
+    if records is not None:
+        records.update({str(p): digest for p, digest in seen.items()})
     return paths | {p.resolve() for p in paths}
 
 
@@ -346,10 +450,10 @@ def eligible(state, run_id, *, pins=None, active=None):
 def archive(state, run_id, destination, *, pins=None):
     """Copy an inactive run before granting retirement eligibility; never overwrite."""
     state, state_inode, desc = state_descriptor(state)
-    repository = Path(__file__).resolve().parents[2]
+    repository_root = repository(state)
     destination = Path(destination).absolute()
     ledger.require(destination.resolve() == destination and
-        any(destination.is_relative_to(repository / n) for n in ('build', '.q4t-work')) and
+        any(destination.is_relative_to(repository_root / n) for n in ('build', '.q4t-work')) and
         not destination.is_relative_to(state), 'archive must be outside service state in work/build')
     private_directory(destination.parent)
     with claim(state) as catalog:
@@ -443,7 +547,8 @@ def plan(state, *, limits=None, now=None, pins=None, active=None):
         entries = sorted(itertools.islice(scan, MAX_RUNS + 1), key=lambda e: e.name)
     ledger.require(len(entries) <= MAX_RUNS, 'run directory bound')
     active = references(root) if active is None else active
-    pins = dependencies(state) if pins is None else pins
+    dependency_sources = {}
+    pins = dependencies(state, records=dependency_sources) if pins is None else pins
     protected, candidates, all_bytes_known = [], [], True
     for entry in entries:
         reason, observed = None, None
@@ -484,7 +589,8 @@ def plan(state, *, limits=None, now=None, pins=None, active=None):
             retained.append(row['run_id']); count += 1; total += row['allocated_bytes']
     result = dict(format='q4t.service.retention-plan.v1', service_id=desc['service_id'],
         state_identity=state_inode, runs_identity=runs_inode, at_unix=now,
-        policy=limits, protected=protected, retain=retained, remove=remove,
+        policy=limits, dependency_sources=dependency_sources,
+        protected=protected, retain=retained, remove=remove,
         retained_known_allocated_bytes=total, retained_bytes_complete=all_bytes_known,
         protected_excess_runs=max(0, len(protected) - limits['max_runs']),
         protected_excess_known_bytes=max(0, sum(r['allocated_bytes'] or 0 for r in protected) - limits['max_bytes']),

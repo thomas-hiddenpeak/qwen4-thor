@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "<stdin>", line 7, in <module>
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 318, in dependencies
+    ledger.require(type(checksum) is str and ledger.HASH.fullmatch(checksum),
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: rollback metadata digest absent

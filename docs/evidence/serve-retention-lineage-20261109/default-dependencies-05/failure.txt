@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "<stdin>", line 7, in <module>
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 332, in dependencies
+    value, digest = dependency_json(path, expected)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 264, in dependency_json
+    ledger.require(not info.st_mode & 0o022 or expected == actual,
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/ledger.py", line 40, in require
+    raise LedgerError(message)
+tools.serve_recovery.ledger.LedgerError: mutable release metadata needs pinned digest
