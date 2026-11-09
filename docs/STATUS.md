@@ -1,5 +1,9 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+A09.4 [Uploads生命周期27项CPU通过](evidence/serve-uploads-core-cpu-20261110/README.md)，19.588秒，host零警告。64MiB/8并发/顺序MD5/取消到期/三类未知回执与受影响存储加密通过；首缺头文件构建原件保留。0GPU、默认6a7404c7保持STOPPED；继续原生HTTP/TLS/实际SDK、发行及全部总目标。
+
+A09.4 Uploads持久生命周期已成组开发，冻结27项针对性CPU：15新增含64MiB边界/并行分块/顺序与MD5/取消到期/三类未知回执，以及12受影响存储、留存、加密与Files用例。复用隔离worker，原子生成File和提交前到期校验；没有新增外部服务。先独立必要host构建，尚未测试/GPU，默认v11保持STOPPED；随后接原生HTTP/TLS、SDK与发行，再继续全部总目标。
+
 A09.3 [Files可回退交付完成](evidence/serve-files-delivery-20261110/README.md)：默认引擎6a7404c7、元数据42e42e6c、v11包cde078fa，revision34、STOPPED。8实际CLI/9.773秒、0新增模型/Chat/GPU，原配置/Key/配额/用量保持，保留A08原包回退。累计2启动/3生成业务接受，首失败保留。继续A09.4 Uploads、实际文件消费、Batch及全部总任务；未合main。以下旧默认和未交付描述以本段为准。
 
 Files接受候选进入v11可回退发行：冻结8条实际封装/发布CLI，保留A08原包、原默认容量/Key/用量账本，发布revision32→34后保持STOPPED。核心6a7404c7/入口6067f4f3已接受；安装0模型/Chat/GPU，不再次扩展测试。随后继续Uploads、原生文件消费、Batch及全部总目标。

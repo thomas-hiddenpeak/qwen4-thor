@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <array>
 #include <ctime>
-#include <unordered_set>
+#include <unordered_map>
 
 #include "object_protocol.h"
 
@@ -140,15 +140,18 @@ bool ParseBinaryManifest(const Json& value, BinaryManifest* manifest) {
       chunks->array.size() > kBinaryMaxChunks)
     return false;
   BinaryManifest parsed;
-  std::unordered_set<std::string> ids;
+  std::unordered_map<std::string, std::pair<std::string, int64_t>> ids;
   for (const auto& chunk : chunks->array) {
     const auto id = chunk.GetString("id"), hash = chunk.GetString("sha256");
     const auto count = chunk.GetInt("bytes", -1);
     if (!chunk.IsObject() || !ValidId(id) || !Hex(hash) || count <= 0 ||
         static_cast<uint64_t>(count) > kBinaryChunkBytes ||
-        !ids.insert(id).second ||
         parsed.bytes > kBinaryMaxBytes - static_cast<uint64_t>(count))
       return false;
+    const auto [found, added] = ids.emplace(id, std::make_pair(hash, count));
+    // Ordered Upload parts can repeat the same immutable content. Repeated
+    // references must still describe exactly the same stored chunk.
+    if (!added && found->second != std::make_pair(hash, count)) return false;
     parsed.bytes += count;
     parsed.chunks.push_back({id, hash, static_cast<uint64_t>(count)});
   }

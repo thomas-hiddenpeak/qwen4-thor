@@ -40,6 +40,17 @@ class Library {
       Q4T_CRYPTO_LOAD(EVP_DecryptUpdate);
       Q4T_CRYPTO_LOAD(EVP_DecryptFinal_ex);
 #undef Q4T_CRYPTO_LOAD
+      // Optional checksum symbols must not disable authenticated encryption.
+#define Q4T_MD_LOAD(name) \
+  name = reinterpret_cast<decltype(name)>(dlsym(handle_, #name))
+      Q4T_MD_LOAD(EVP_MD_fetch);
+      Q4T_MD_LOAD(EVP_MD_free);
+      Q4T_MD_LOAD(EVP_MD_CTX_new);
+      Q4T_MD_LOAD(EVP_MD_CTX_free);
+      Q4T_MD_LOAD(EVP_DigestInit_ex2);
+      Q4T_MD_LOAD(EVP_DigestUpdate);
+      Q4T_MD_LOAD(EVP_DigestFinal_ex);
+#undef Q4T_MD_LOAD
       if (!OPENSSL_init_crypto(OPENSSL_INIT_NO_LOAD_CONFIG, nullptr))
         throw std::runtime_error("system libcrypto initialization failed");
     } catch (...) {
@@ -64,6 +75,13 @@ class Library {
   Q4T_CRYPTO_FUNCTION(EVP_DecryptInit_ex2);
   Q4T_CRYPTO_FUNCTION(EVP_DecryptUpdate);
   Q4T_CRYPTO_FUNCTION(EVP_DecryptFinal_ex);
+  Q4T_CRYPTO_FUNCTION(EVP_MD_fetch);
+  Q4T_CRYPTO_FUNCTION(EVP_MD_free);
+  Q4T_CRYPTO_FUNCTION(EVP_MD_CTX_new);
+  Q4T_CRYPTO_FUNCTION(EVP_MD_CTX_free);
+  Q4T_CRYPTO_FUNCTION(EVP_DigestInit_ex2);
+  Q4T_CRYPTO_FUNCTION(EVP_DigestUpdate);
+  Q4T_CRYPTO_FUNCTION(EVP_DigestFinal_ex);
 #undef Q4T_CRYPTO_FUNCTION
 
  private:
@@ -126,6 +144,69 @@ bool Bounds(std::string_view aad, std::string_view text) {
   return aad.size() <= kCryptoAadLimit && text.size() <= kCryptoPlaintextLimit;
 }
 }  // namespace
+
+struct CryptoMd5::State {
+  explicit State(const Library& library) : api(library) {
+    library_context = api.OSSL_LIB_CTX_new();
+    if (library_context)
+      digest = api.EVP_MD_fetch(library_context, "MD5", "provider=default");
+    if (digest) context = api.EVP_MD_CTX_new();
+    ready = context && api.EVP_DigestInit_ex2(context, digest, nullptr) == 1;
+  }
+  ~State() {
+    api.EVP_MD_CTX_free(context);
+    api.EVP_MD_free(digest);
+    if (library_context) {
+      api.OPENSSL_thread_stop_ex(library_context);
+      api.OSSL_LIB_CTX_free(library_context);
+    }
+  }
+  const Library& api;
+  OSSL_LIB_CTX* library_context = nullptr;
+  EVP_MD* digest = nullptr;
+  EVP_MD_CTX* context = nullptr;
+  bool ready = false;
+};
+CryptoMd5::CryptoMd5() = default;
+CryptoMd5::~CryptoMd5() = default;
+CryptoResult CryptoMd5::Begin() {
+  if (state_) return CryptoResult::kInvalid;
+  const auto* api = Api();
+  if (!api || !api->EVP_MD_fetch || !api->EVP_MD_free || !api->EVP_MD_CTX_new ||
+      !api->EVP_MD_CTX_free || !api->EVP_DigestInit_ex2 ||
+      !api->EVP_DigestUpdate || !api->EVP_DigestFinal_ex)
+    return CryptoResult::kUnavailable;
+  state_ = std::make_unique<State>(*api);
+  return state_->ready ? CryptoResult::kOk : CryptoResult::kUnavailable;
+}
+CryptoResult CryptoMd5::Update(std::string_view bytes) {
+  if (!state_ || !state_->ready || bytes.size() > kCryptoPlaintextLimit)
+    return CryptoResult::kInvalid;
+  if (state_->api.EVP_DigestUpdate(state_->context, bytes.data(),
+                                   bytes.size()) != 1) {
+    state_->ready = false;
+    return CryptoResult::kFailure;
+  }
+  return CryptoResult::kOk;
+}
+CryptoResult CryptoMd5::Finish(std::string* hex) {
+  if (!state_ || !state_->ready || !hex) return CryptoResult::kInvalid;
+  state_->ready = false;
+  unsigned char bytes[EVP_MAX_MD_SIZE];
+  unsigned int count = 0;
+  if (state_->api.EVP_DigestFinal_ex(state_->context, bytes, &count) != 1 ||
+      count != 16)
+    return CryptoResult::kFailure;
+  constexpr char digits[] = "0123456789abcdef";
+  std::string result;
+  result.reserve(32);
+  for (unsigned int i = 0; i < count; ++i) {
+    result += digits[bytes[i] >> 4];
+    result += digits[bytes[i] & 15];
+  }
+  *hex = std::move(result);
+  return CryptoResult::kOk;
+}
 
 void CryptoWipe(std::span<uint8_t> out) noexcept {
   // Volatile stores cannot be removed as dead writes by the optimizer.

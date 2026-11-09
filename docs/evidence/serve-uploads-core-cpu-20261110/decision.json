@@ -1,0 +1,16 @@
+{
+  "status": "PASS_TARGETED_UPLOADS_CORE_CPU",
+  "tests": 27,
+  "new_uploads_tests": 15,
+  "affected_existing_tests": 12,
+  "seconds": 19.58792359009385,
+  "host_binary_sha256": "8eb7c49fe22dcb436aa565ac613cf9b2b8e69492f00719a1c33a07fdd60e2325",
+  "default_engine_sha256": "6a7404c79112dcd6d5772ad6918342c17f165255a36dc71304e8e552dfffa988",
+  "default_changed": false,
+  "model_starts": 0,
+  "gpu_queries": 0,
+  "first_build_missing_header_preserved": true,
+  "final_build_warnings": 0,
+  "public_http_sdk_integration_pending": true,
+  "remaining_master_tasks_open": true
+}

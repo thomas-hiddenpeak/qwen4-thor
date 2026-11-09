@@ -178,3 +178,15 @@ A09.3 首实际1启动/2生成/8 Files操作/58.855秒，57 NVML全OK并独立�
 Files续验1启动/1生成/6 Files操作/40.253秒已完成同PID存储超时SSE、原文件恢复与删除，40 NVML全OK并独立清理；最后空列表因声明误用nullable非空游标被schema拒绝。官方Files合同为string，修声明并核对所有真实Files响应，生产引擎不改、不追加GPU。累计2启动/3生成/99.108秒，后续交付及全部任务继续。
 
 [官方Files列表](https://developers.openai.com/api/reference/resources/files/methods/list)明确first_id/last_id为string。空页原生返回空字符串，schema禁止把空页声称has_more或伪造游标；输出purpose含SDK既有生成结果专用值，上传仍限输入6用途。冻结`FilesContractTests.test_actual_empty_file_page_and_all_business_file_outputs`，对两个业务目录原wire及负例复核，声明修复不改引擎/入口/模型合同。
+
+## A09.4 Uploads持久生命周期与CPU冻结
+
+对照固定SDK与官方[创建Upload](https://developers.openai.com/api/reference/resources/uploads/methods/create)、[Part](https://developers.openai.com/api/reference/resources/uploads/subresources/parts/methods/create)、[完成](https://developers.openai.com/api/reference/resources/uploads/methods/complete)，保留6种SDK输入用途。官方HTTP列4种而SDK列6种的差异按较宽兼容合同实现。assistants MIME来源为[支持文件](https://developers.openai.com/api/docs/guides/tools-file-search#supported-files)，vision MIME按[图片输入](https://developers.openai.com/api/docs/guides/images-vision)。
+
+Upload上限8GiB/1小时，每Part64MiB；部署每Upload最多8192个Part、组合manifest最多16384块，物理JSON/base64仍计存储配额。并发分块使用同一root CAS，已知未提交冲突有界重试原Part ID，未知回执不重放。完成按传入顺序消费实际分块、逐块SHA256与可选MD5核验，总字节一致后同事务发布File和completed状态；允许选择/重复已有Part，重复块必须字节及哈希完全相同。相同完成参数可核对原结果，不新建File。
+
+取消/到期释放分块，公共Upload 1小时截止不变；receipt只保留到截止后24小时以核对终态，不继续保留过期分块，也不延长File自身留存。没有新增公开非标准GET Upload。动态引用截止由现有worker留存规划执行，提交前额外检查绝对mutation期限；外层过期记录仍可正确返回expired。MD5仅请求时使用现有系统libcrypto私有默认provider，缺失不影响无MD5上传或普通推理；MD5不用于鉴权。
+
+冻结27项CPU，完整清单`.q4t-work/serve-uploads-20261110/required-core.txt`。新增15项含真实SDK编码、64MiB固定块边界、8并发、重启后继续、取消到期、损坏内容、可选库失能与Create/Part/Complete三种未知回执。另12项直接覆盖原Files、原子journal、留存与加密。只构建/验证此组，无GPU；HTTP/TLS/发现/发行尚待下一组接入，不宣称Uploads交付完成。
+
+Uploads生命周期[27项针对性CPU已通过](evidence/serve-uploads-core-cpu-20261110/README.md)，首必要构建漏头文件记录保留、最终零警告，无GPU。继续标准HTTP/TLS、实际SDK和发行，不宣称A09.4已经交付。

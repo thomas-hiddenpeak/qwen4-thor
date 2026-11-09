@@ -168,9 +168,25 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
     if (format == "q4t.binary_chunk.v1") {
       inspector.value.collect_when_unreferenced = true;
     } else if (format == "q4t.binary_stage.v1" ||
-               format == "q4t.binary_read.v1" ||
-               format == "q4t.upload_part.v1") {
+               format == "q4t.binary_read.v1") {
       inspector.Blob(data);
+    } else if (format == "q4t.upload_part.v1") {
+      inspector.Blob(data);
+      inspector.value.collect_when_unreferenced = true;
+    } else if (format == "q4t.upload.v1") {
+      const auto* upload = data.Find("upload");
+      const auto* parts = data.GetArray("parts");
+      if (!upload || !upload->IsObject() || !parts) {
+        inspector.value.uncertain = true;
+      } else if (upload->GetString("status") == "pending") {
+        inspector.value.references_before = upload->GetInt("expires_at");
+        inspector.value.uncertain = inspector.value.references_before <= 0;
+        for (const auto& part : parts->array) inspector.Reference(&part);
+      } else if (upload->GetString("status") != "completed" &&
+                 upload->GetString("status") != "cancelled" &&
+                 upload->GetString("status") != "expired") {
+        inspector.value.uncertain = true;
+      }
     } else {
       inspector.value.uncertain = true;
     }
@@ -230,6 +246,9 @@ Status PlanObjectRetention(std::span<const ObjectRetentionNode> nodes,
   while (!queue.empty()) {
     const auto i = queue.front();
     queue.pop_front();
+    if (nodes[i].retention->references_before > 0 &&
+        nodes[i].retention->references_before <= now)
+      continue;
     for (const auto& ref : nodes[i].retention->references) {
       if (++work > 2 * 1024 * 1024)
         return Status::Fail("Retention reference work limit exceeded");

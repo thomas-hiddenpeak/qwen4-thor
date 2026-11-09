@@ -68,6 +68,10 @@ struct ObjectRequest {
   // Trusted Files list projection: omit binary manifests from IPC pages.
   // Valid only for list/file; durable records and ordinary readers are intact.
   bool file_metadata_only = false;
+  // Trusted mutation deadline (Unix seconds), checked by the IO worker before
+  // publishing its journal. Zero has no extra condition. Used for expiring
+  // application resources; retention and request timeout remain independent.
+  int64_t mutate_before = 0;
 };
 
 struct ObjectReply {

@@ -18,6 +18,9 @@ struct ObjectRetentionInfo {
   // Immutable internal binary fragments have no independent lifetime. Only
   // a live staging/file/upload/read root can retain them.
   bool collect_when_unreferenced = false;
+  // An Upload retains its receipt after expiration, but no longer retains
+  // unfinished parts. Zero leaves ordinary durable references unchanged.
+  int64_t references_before = 0;
   size_t Bytes() const;
 };
 

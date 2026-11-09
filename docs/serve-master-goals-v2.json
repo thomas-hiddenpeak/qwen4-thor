@@ -944,7 +944,7 @@
         "A09.8 ongoing SDK/native release and rollback for remaining APIs"
       ],
       "multipart_component_evidence": "evidence/serve-multipart-cpu-20261110/README.md",
-      "next": "Implement Uploads actual part storage, ordered atomic completion, cancellation/expiry and remaining file consumption/Batch; no master scope reduction.",
+      "next": "Complete Uploads native HTTP/TLS, actual SDK and release after27 core CPU checks; continue all required tasks.",
       "binary_component_evidence": "docs/evidence/serve-binary-cpu-20261110/README.md",
       "http_stream_component_evidence": "docs/evidence/serve-http-body-stream-cpu-20261110/README.md",
       "files_core_component_evidence": "docs/evidence/serve-files-core-cpu-20261110/README.md",
@@ -966,7 +966,8 @@
         "A09.2 isolated binary persistence",
         "A09.3 Files and bounded native transport"
       ],
-      "files_package_component_evidence": "evidence/serve-files-package-cpu-20261110/README.md"
+      "files_package_component_evidence": "evidence/serve-files-package-cpu-20261110/README.md",
+      "uploads_core_component_evidence": "evidence/serve-uploads-core-cpu-20261110/README.md"
     },
     {
       "id": "A10",

@@ -74,7 +74,8 @@ Json RequestWire(const ObjectRequest& request) {
                  {"after", String(request.after)},
                  {"before", String(request.before)},
                  {"descending", Boolean(request.descending)},
-                 {"file_metadata_only", Boolean(request.file_metadata_only)}});
+                 {"file_metadata_only", Boolean(request.file_metadata_only)},
+                 {"mutate_before", Number(request.mutate_before)}});
 }
 }  // namespace
 
@@ -361,6 +362,8 @@ ObjectReply ObjectStore::Execute(const ObjectRequest& request,
       operation.empty() || request.expected_revision < 0 ||
       request.created_at < 0 || request.created_at > (1LL << 53) - 1 ||
       request.expires_at < -1 || request.expires_at > (1LL << 53) - 1 ||
+      request.mutate_before < 0 || request.mutate_before > (1LL << 53) - 1 ||
+      (request.mutate_before && operation != "put" && operation != "erase") ||
       (request.file_metadata_only && (operation != "list" || kind != "file")) ||
       (operation != "list" && operation != "health" && !ValidId(request.id)) ||
       (operation == "put" && (request.ttl_seconds < 0 ||
@@ -422,6 +425,8 @@ ObjectReply ObjectStore::ExecuteBatch(std::span<const ObjectRequest> requests,
         request.scope.empty() || request.scope.size() > 256 ||
         request.scope != requests.front().scope || !ValidId(request.id) ||
         Kind(request.kind).empty() || request.expected_revision < 0 ||
+        request.mutate_before < 0 ||
+        request.mutate_before > (1LL << 53) - 1 ||
         request.ttl_seconds < 0 ||
         request.ttl_seconds > state_->options.max_ttl_seconds)
       return Error(400, "invalid_object_request",

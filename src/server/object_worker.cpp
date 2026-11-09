@@ -275,6 +275,8 @@ class DiskStore {
     if (operation == "get") {
       result.value = Public(record);
     } else if (operation == "erase") {
+      if (request.GetInt("mutate_before", 0))
+        return Batch(Object({{"mutations", Array({request})}}));
       const auto revision = request.GetInt("revision", -1);
       if (revision < 0 || (revision && revision != found->second.revision))
         return Error(409, "object_revision_conflict",
@@ -508,6 +510,12 @@ class DiskStore {
                  AT_SYMLINK_NOFOLLOW) ||
         errno != ENOENT)
       return IoError();
+    for (const auto& mutation : mutations->array) {
+      const auto cutoff = mutation.GetInt("mutate_before", 0);
+      if (cutoff < 0 || (cutoff && Now() >= cutoff))
+        return Error(409, "object_mutation_expired",
+                     "Resource mutation deadline expired");
+    }
     bool published;
     if (!Publish(".q4t-transaction", journal, &published))
       return IoError(published);
@@ -745,6 +753,9 @@ class DiskStore {
     return CollectRetention(selected);
   }
   ObjectReply Put(const std::string& name, const Json& request) {
+    // Conditioned writes use the same final journal check as transactions.
+    if (request.GetInt("mutate_before", 0))
+      return Batch(Object({{"mutations", Array({request})}}));
     const auto revision = request.GetInt("revision", -1);
     const auto ttl = request.GetInt("ttl");
     const auto* data = request.Find("data");

@@ -3,6 +3,7 @@
 
 #include <array>
 #include <cstdint>
+#include <memory>
 #include <span>
 #include <string>
 #include <string_view>
@@ -35,6 +36,24 @@ CryptoResult CryptoSeal(const CryptoKey& key, const CryptoNonce& nonce,
 CryptoResult CryptoOpen(const CryptoKey& key, const CryptoNonce& nonce,
                         std::string_view aad, std::string_view ciphertext,
                         const CryptoTag& tag, std::string* plaintext);
+
+// Uploads' optional wire checksum, never used for authentication. Streaming
+// updates keep file-sized buffers out of memory. Begin alone loads libcrypto;
+// missing MD5 affects only the request explicitly asking for this checksum.
+class CryptoMd5 {
+ public:
+  CryptoMd5();
+  ~CryptoMd5();
+  CryptoMd5(const CryptoMd5&) = delete;
+  CryptoMd5& operator=(const CryptoMd5&) = delete;
+  CryptoResult Begin();
+  CryptoResult Update(std::string_view bytes);
+  CryptoResult Finish(std::string* hex);
+
+ private:
+  struct State;
+  std::unique_ptr<State> state_;
+};
 
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
 void SetCryptoUnavailableForTesting(bool unavailable);
