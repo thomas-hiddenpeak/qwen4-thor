@@ -1,0 +1,33 @@
+{
+  "status": "PASS_TARGETED_RESPONSES_COMPACTION_RELEASE",
+  "acceptance": "ACCEPT_TARGETED_RESPONSES_COMPACTION",
+  "actual_business": {
+    "status": "PASS_RESPONSES_COMPACTION_TARGETED_BUSINESS",
+    "binary_sha256": "0c577f541c893e13fc69b8557d7742b0cf4fcf8cbe19244fbdd4182b085c9f64",
+    "protocol_sha256": "b4e479abedcaefdc6094bde042f890c8baa9ce2e3236a9983a96a9ad02c6c5cd",
+    "counts": {
+      "starts": 2,
+      "chats": 8,
+      "controls": 83
+    },
+    "seconds": 102.49896823614836,
+    "model_steps": 9,
+    "nvml_samples": 97,
+    "all_nvml_ok": true,
+    "cleanup_confirmed": true,
+    "scope": "Actual automatic/standalone compaction, summary/crypto, measured token reduction, document tool, durable original background replay, exact usage, noop and rejection isolation; no performance/full-model claim",
+    "actual_reduction": {
+      "original_prompt_tokens": 1160,
+      "restored_with_new_turn_tokens": 130,
+      "saved_tokens": 1030
+    }
+  },
+  "source_commit": "26d35203677e932ec797372af73cb5afc15cd63f",
+  "binary_sha256": "0c577f541c893e13fc69b8557d7742b0cf4fcf8cbe19244fbdd4182b085c9f64",
+  "protocol_sha256": "b4e479abedcaefdc6094bde042f890c8baa9ce2e3236a9983a96a9ad02c6c5cd",
+  "source_review_sha256": "5d6378a82e0e22023e8aaab6c335096c6355d1c75a0e4853c1ad68b6d3c35654",
+  "full_model_quality": false,
+  "performance_acceptance": false,
+  "long_stability_accepted": false,
+  "remaining_master_tasks_open": true
+}

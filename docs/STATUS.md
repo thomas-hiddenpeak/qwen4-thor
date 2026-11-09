@@ -1,32 +1,10 @@
-A07.4 [原生入口2项CPU](evidence/serve-compaction-ingress-20261109/README.md)首轮通过，三目标零警告；Ingress95877fbe，Guardian/probe保持。真实引擎0c577f54业务复用、不追加GPU。进入可回退默认交付，随后全部余项。
-
-A07.4 原生入口新增路由冻结2项直接CPU（鉴权/正文与身份、数据准入与观察容量）；必要重编原生三入口。引擎真实业务已通过且身份不变，不追加GPU。通过后可回退交付，再全部余项。
-
-A07.4 [真实业务通过](evidence/serve-compaction-business-20261109/README.md)：2 启动/8 请求/9 步/102.499 秒，97 NVML 全 OK并独立确认清理。实际窗口1160→130 token，事实42、摘要加密组合、后台原事件重启/真实文档工具、精确用量/no-op/篡改后MTP均过。继续原生入口路由/可回退交付及全部余项，默认A07.3暂未变。
-
-A07.4 [4 项实际驱动 CPU](evidence/serve-compaction-driver-20261109/README.md)首轮通过。现在准备冻结实际源码/模型/默认包身份并按 2 启动/8 请求/9 内部步/900 秒严格租约短验；默认仍 A07.3/STOPPED，全部目标继续。
-
-A07.4 真实驱动已写：冻结 4 项驱动 CPU；后续严格租约最多 2 启动/8 请求/9 内部步/900 秒，覆盖实际压缩与摘要/加密、token 缩减、后台工具/重启原事件及配额/清理。尚未 GPU，默认保持；通过后交付并继续所有余项。
-
-A07.4 [23 C++/5 schema/2 SDK CPU](evidence/serve-compaction-execution-20261109/README.md)最终全过，57 协议值；首边界分类/既有 SSE 填充及夹具失败均修复并保留，仅补受影响项。引擎 0c577f54 零警告，0 GPU。继续真实压缩/工具/后台短验和交付，再所有余项；默认 A07.3/STOPPED 不变。
-
-A07.4 成组源码与协议已完成，冻结 22 个直接/受影响 C++、4 Python schema、2 官方 SDK CPU 检查；尚未执行，host/引擎首必要构建零警告，默认 A07.3 不变。通过后准备真实压缩/工具/后台短验及交付，继续总目标。
-
-A07.4 已接入真实压缩步骤、自动阈值/显式 trigger、原生 compact 路由及共享预算/配额；新增源码尚未验证。正在补直接 CPU、协议声明与必要构建，随后真实 SDK/模型短验。默认 A07.3 保持 STOPPED，总目标继续。
-
-A07.4 [15 个基础/回填 CPU](evidence/serve-compaction-foundation-20261109/README.md)最终通过，首公开消息 ID 转换失败与 2 项补验保留；host 零警告，0 GPU。基础不等于压缩功能交付，继续真实模型步骤、预算/配额、自动阈值/compact 路由与 SSE/持久化，然后所有余项。默认 A07.3 dca3b450/STOPPED 不变。
-
-A07.4 基础 host 构建已零警告（首缺括号失败保留）；继续接入 compaction 与 reasoning 混合认证历史、可省略 ID 回填。12 项直接 CPU 已写未执行，模型压缩执行/自动阈值/compact 路由/SSE/持久化仍在成组开发，默认 A07.3 保持，不结束总目标。
-
-A07.4 继续成组开发：历史/工具/媒体保留分区、实际记忆请求和认证压缩状态已编码，10 项直接 CPU 已写但未执行；先必要 host 构建。随后接入真实模型步骤、预算/计量、自动/独立 compact 与 SSE/持久化，再统一针对验收。默认 A07.3 dca3b450 保持 STOPPED，全部总任务继续。
-
 # 当前 Serve 总目标状态（2026-11-09）
 
-A07.3 已完成[真实加密状态业务](evidence/serve-responses-encryption-business-20261109/README.md)并[可回退默认交付](evidence/serve-responses-encryption-delivery-20261109/README.md)。当前引擎 `71cb526c`、元数据 `2081e08a`、原生包 `dca3b450`，publication revision14，STOPPED；旧 A07.2 包/发布代和核心/客户端账本完整保留。密码/协议/本机管理针对 CPU 通过；真实 2 启动/8 请求/8 内部步/102.244 秒通过，97 NVML 全 OK，清理独立确认。
+A07.4 实际上下文压缩已完成[真实业务](evidence/serve-compaction-business-20261109/README.md)、[原生入口](evidence/serve-compaction-ingress-20261109/README.md)和[可回退默认交付](evidence/serve-compaction-delivery-20261109/README.md)。当前引擎 `0c577f54`、元数据 `11eeb4df`、原生包 `c59afb3d`，publication revision16，STOPPED；旧 A07.3 原包/发布代与核心、客户端账本保持。
 
-已验密文无状态回填、客户端/模型/模板/来源认证、原生在线换钥与显式退役、真实文档工具、后台持久与原 SSE 重启回放；退役密文拒绝不触发采样，普通 MTP Chat 继续。原 Qwen reasoning 明文投影仍可见，不代表全输出/磁盘加密。
+实际自动阈值、显式 trigger、独立 compact、认证记忆回填、摘要/加密组合、后台原事件重启回放与真实文档工具闭环通过；原窗口1160→恢复加新问题130 token。2 启动/8 请求/9 内部步/102.499秒，97 NVML全OK并独立确认清理。原生路由2项CPU、安装8条实际操作全过；首发布准备别名读取错误及修复保留。
 
-总目标 active、尚未合 main。现在继续 **A07.4 实际上下文压缩与 compact 接口**，随后 A07.5—A07.8 及 A/R/Q/G 全部余项。非性能任务只做针对验证，长稳由用户实跑，阶段不是总目标终点。
+A07.1—A07.4已交付，A07整体和总目标仍 active、尚未合 main。现在连续推进 **A07.5 版本化本地 Prompt 注册与变量解析**，随后 A07.6—A07.8 及 A/R/Q/G 全部余项；不会以阶段交付结束任务。非性能任务只做直接针对验证，长稳实跑由用户负责。
 
 以下保留历史检查点，当前默认以上段为准；A07.3 开发原件见开发日志及证据目录。
 
