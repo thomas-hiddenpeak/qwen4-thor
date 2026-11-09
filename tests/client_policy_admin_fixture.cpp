@@ -31,14 +31,18 @@ int main(int argc, char** argv) {
     return PublishClientPolicy(admission, queue, mutex, std::move(candidate),
                                expected, 256, 256);
   };
-  auto admin =
-      std::make_unique<ClientPolicyAdmin>(admission, 256, 256, publish);
-  q4t::service::ProcessRecord parent;
-  if (!q4t::service::ReadProcess(std::stoi(argv[2]), &parent) ||
-      !admin->Open(argv[1], parent.identity))
-    return 2;
-  admin->Start();
-  std::cout << admin->Describe() << std::endl;
+  std::unique_ptr<ClientPolicyAdmin> admin;
+  if (mode == "environment") {
+    admin = StartClientPolicyAdmin(admission, 256, 256, publish);
+  } else {
+    admin = std::make_unique<ClientPolicyAdmin>(admission, 256, 256, publish);
+    q4t::service::ProcessRecord parent;
+    if (!q4t::service::ReadProcess(std::stoi(argv[2]), &parent) ||
+        !admin->Open(argv[1], parent.identity))
+      return 2;
+    admin->Start();
+  }
+  std::cout << (admin ? admin->Describe() : "null") << std::endl;
   std::unique_lock held(mutex, std::defer_lock);
   std::unique_ptr<ClientRateLease> lease;
   while (std::getline(std::cin, raw) && raw.size() <= 1024) {

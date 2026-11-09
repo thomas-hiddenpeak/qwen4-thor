@@ -407,7 +407,14 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
          Quote(config.client_policy_sha256) + R"(,"clients":)" +
          std::to_string(config.client_count) +
          R"(,"namespace":"client_id","credential_values_redacted":true,)"
-         R"("mutable":false,"per_client_ram_limit":false},)"
+         R"("mutable":)" + Bool(config.client_policy_version == 3) +
+         (config.client_policy_version == 3
+              ? R"(,"snapshot":"startup","revision":)" +
+                    std::to_string(config.client_policy_revision) +
+                    R"(,"content_sha256":)" +
+                    Quote(config.client_policy_content_sha256)
+              : std::string()) +
+         R"(,"per_client_ram_limit":false},)"
          R"("client_governance":{"profile":"q4t-client-governance-v1",)"
          R"("policy_version":)" +
          std::to_string(config.client_policy_version) + R"(,"fair_queue":)" +

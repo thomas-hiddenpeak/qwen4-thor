@@ -31,10 +31,10 @@ def receive_line(stream):
 
 
 class Server:
-    def __init__(self, policy, mode='normal'):
-        self.address = 'q4t-policy-cpu-' + str(uuid.uuid4())
+    def __init__(self, policy, mode='normal', *, address=None, env=None):
+        self.address = address or 'q4t-policy-cpu-' + str(uuid.uuid4())
         self.process = subprocess.Popen([str(FIXTURE), self.address, str(os.getpid()), mode],
-            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=0)
+            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=0, env=env)
         self.process.stdin.write(ledger.canonical(policy) + b'\n')
         self.initial = receive_line(self.process.stdout)
 

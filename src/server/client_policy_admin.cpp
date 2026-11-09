@@ -116,20 +116,26 @@ bool ClientPolicyAdmin::OwnerAlive() const noexcept {
 }
 
 std::string ClientPolicyAdmin::Describe() const {
-  const auto policy = admission_.Snapshot();
+  return DescribeClientPolicy(admission_, inflight_, queued_, OwnerAlive());
+}
+
+std::string DescribeClientPolicy(const ClientAdmission& admission,
+                                 uint32_t inflight, uint32_t queued,
+                                 bool publisher_alive) {
+  const auto policy = admission.Snapshot();
   std::string result =
       R"({"profile":"q4t-native-client-policy-v1","configured":)";
   result += policy ? "true" : "false";
   result += R"(,"mutable":)";
   result += policy && policy->version == 3 ? "true" : "false";
   result += R"(,"publisher_alive":)";
-  result += OwnerAlive() ? "true" : "false";
+  result += publisher_alive ? "true" : "false";
   result += R"(,"revision":)" + std::to_string(policy ? policy->revision : 0);
   result += R"(,"sha256":")" + (policy ? policy->sha256 : std::string()) + '"';
   result += R"(,"content_sha256":")" +
             (policy ? ClientPolicyDigest(*policy) : std::string()) + '"';
-  result += R"(,"global_inflight":)" + std::to_string(inflight_);
-  result += R"(,"global_queued":)" + std::to_string(queued_);
+  result += R"(,"global_inflight":)" + std::to_string(inflight);
+  result += R"(,"global_queued":)" + std::to_string(queued);
   result += R"(,"credential_values_redacted":true,"clients":[)";
   if (policy)
     for (size_t i = 0; i < policy->clients.size(); ++i) {

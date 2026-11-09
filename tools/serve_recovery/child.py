@@ -19,9 +19,16 @@ from tools.serve_recovery import journal, ledger, progress
 def progress_environment(args, permit):
     """Only the named observation socket survives; its failure is auxiliary."""
     env = {key: value for key, value in os.environ.items()
-           if not key.startswith('Q4T_PROGRESS_')}
+           if not key.startswith(('Q4T_PROGRESS_', 'Q4T_POLICY_'))}
     env['Q4T_CONTROLLER_GENERATION'] = str(args.controller_generation)
     env['Q4T_MODEL_GENERATION'] = str(permit['model_generation'])
+    # These identities came from the mandatory exec permit handshake. Policy
+    # management must not depend on the optional progress socket succeeding.
+    env.pop('Q4T_SERVICE_ID', None)
+    if type(args.service_id) is str and progress.UUID.fullmatch(args.service_id):
+        env.update(Q4T_SERVICE_ID=args.service_id,
+            Q4T_POLICY_PARENT_PID=str(args.parent_pid),
+            Q4T_POLICY_PARENT_START=str(args.parent_start))
     fd = args.progress_fd
     if fd is None or fd < 3 or fd in (args.fd, args.lease_fd):
         return env

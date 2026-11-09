@@ -35,6 +35,8 @@
 namespace q4t::server {
 
 ChatServer::~ChatServer() {
+  // Stop the bounded policy worker before destroying queue/client state.
+  client_policy_admin_.reset();
   // Start may have succeeded without a subsequent Run. Stop accepting TCP
   // connections before releasing the model, including partial startup state.
   startup_listeners_.Close();
@@ -716,6 +718,14 @@ Status ChatServer::Start(const ServerOptions& opts) {
   effective_config_ =
       EffectiveServeConfigJson(opts, PlanningConfig(), budget_valid_,
                                mtp_loaded_, conn_cap_, &startup_memory_);
+  client_policy_admin_ = StartClientPolicyAdmin(
+      clients_, admission_limits_.inflight, admission_limits_.queued,
+      [this](GatewayClientPolicy candidate, uint64_t expected) {
+        return PublishClientPolicy(clients_, seq_waiters_, seq_mu_,
+                                   std::move(candidate), expected,
+                                   admission_limits_.inflight,
+                                   admission_limits_.queued);
+      });
   try {
     ResponsesJobsOptions jobs;
     jobs.max_jobs = std::clamp<size_t>(admission_limits_.inflight, 1, 256);

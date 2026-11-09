@@ -102,6 +102,8 @@ value=dict(barrier_open=barrier_open, lease_open=os.fstat(int(sys.argv[2])).st_n
     controller=os.environ['Q4T_CONTROLLER_GENERATION'],
     model=os.environ['Q4T_MODEL_GENERATION'],
     service=os.environ.get('Q4T_SERVICE_ID'),
+    policy_parent=os.environ.get('Q4T_POLICY_PARENT_PID'),
+    policy_start=os.environ.get('Q4T_POLICY_PARENT_START'),
     progress_fd=os.environ.get('Q4T_PROGRESS_FD'),
     parent_start=os.environ.get('Q4T_PROGRESS_PARENT_START'))
 if value['progress_fd'] is not None:
@@ -117,6 +119,7 @@ print(json.dumps(value))
             '--progress-fd', str(progress_fd), '--service-id', service_id, '--',
             sys.executable, '-I', '-B', '-c', code, str(endpoint.fileno()), str(self.fd)],
             env=dict(os.environ, Q4T_PROGRESS_FD='999', Q4T_PROGRESS_PARENT_START='999',
+                     Q4T_SERVICE_ID='stale', Q4T_POLICY_PARENT_PID='999', Q4T_POLICY_PARENT_START='999',
                      Q4T_CONTROLLER_GENERATION='999', Q4T_MODEL_GENERATION='999'),
             pass_fds=tuple({endpoint.fileno(), self.fd, progress_fd}),
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -133,6 +136,9 @@ print(json.dumps(value))
             self.assertFalse(value['barrier_open'])
             self.assertTrue(value['lease_open'])
             self.assertEqual((value['controller'], value['model']), ('3', '7'))
+            self.assertEqual(value['service'], service_id)
+            self.assertEqual(value['policy_parent'], str(os.getpid()))
+            self.assertEqual(value['policy_start'], str(journal.process_start(os.getpid())))
             child.verify_lease(self.fd, self.path)
             return value, service_id
         finally:

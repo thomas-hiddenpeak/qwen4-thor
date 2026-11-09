@@ -101,8 +101,12 @@ def read(path):
 
 def binding(raw):
     value = parse(raw)
-    return dict(enabled=True, sha256=hashlib.sha256(raw).hexdigest(),
-                clients=len(value['clients']))
+    result = dict(enabled=True, sha256=hashlib.sha256(raw).hexdigest(),
+                  clients=len(value['clients']))
+    if value['version'] == 3:
+        result.update(mutable=True, snapshot='startup', revision=value['revision'],
+                      content_sha256=digest(value))
+    return result
 
 
 def match_clients(gateway, backend):
@@ -121,8 +125,14 @@ def observed_matches(observed, expected):
     require(type(observed) is dict and
             observed.get('profile') == 'q4t-gateway-clients-v1' and
             observed.get('enabled') is True and
-            observed.get('mutable') is False and
+            observed.get('mutable') is expected.get('mutable', False) and
             observed.get('credential_values_redacted') is True and
             type(observed.get('clients')) is int and
             1 <= observed['clients'] <= 64 and
             all(observed.get(key) == value for key, value in expected.items()))
+    if expected.get('mutable') is True:
+        require(type(observed.get('revision')) is int and
+            0 <= observed['revision'] <= 2**53 - 1 and
+            observed.get('snapshot') == 'startup' and
+            type(observed.get('content_sha256')) is str and
+            re.fullmatch('[a-f0-9]{64}', observed['content_sha256']))

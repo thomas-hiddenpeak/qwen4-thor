@@ -1,0 +1,28 @@
+[
+  [
+    "cmake",
+    "-S",
+    "tests/host",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host"
+  ],
+  [
+    "cmake",
+    "--build",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host",
+    "--target",
+    "q4t_client_policy_fixture",
+    "q4t_host_tests",
+    "--parallel",
+    "4"
+  ],
+  [
+    "cmake",
+    "--build",
+    ".q4t-work/serve-custom-tools-20261108/engine-build",
+    "--target",
+    "q4t",
+    "--parallel",
+    "4"
+  ]
+]

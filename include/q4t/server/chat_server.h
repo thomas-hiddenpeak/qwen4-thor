@@ -40,6 +40,7 @@
 #include "q4t/mtp/mtp.h"
 #include "q4t/server/request_control.h"
 #include "q4t/server/progress_transport.h"
+#include "q4t/server/client_policy_admin.h"
 #include "q4t/status.h"
 #include "q4t/runtime/memory_budget.h"
 #ifdef Q4T_STARTUP_RESERVATION
@@ -190,6 +191,7 @@ class ChatServer {
   int AllocSeqId(RequestControl* control, int fd, size_t required = 0);
   RequestRegistry requests_;
   ClientAdmission clients_;
+  std::unique_ptr<ClientPolicyAdmin> client_policy_admin_;
   std::unique_ptr<ObjectStore> objects_;
   std::unique_ptr<ResponsesJobs> background_;
   std::mutex connections_mu_;

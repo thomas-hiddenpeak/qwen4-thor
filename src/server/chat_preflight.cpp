@@ -13,6 +13,7 @@ namespace q4t::server {
 
 ChatPlanConfig ChatServer::PlanningConfig(int fd) const {
   const auto* http = detail::HttpResponseContext::Current(fd);
+  const auto policy = clients_.Snapshot();
   return {.model = model_name_,
           .max_len = max_len_,
           .max_seq = max_seq_,
@@ -31,10 +32,13 @@ ChatPlanConfig ChatServer::PlanningConfig(int fd) const {
           .capacities = seq_capacities_,
           .checkpoints = prefix_cache_checkpoints_,
           .cuda_quota_limit_bytes = cuda_quota_limit_bytes_,
-          .client_policy_sha256 = clients_.PolicySha256(),
-          .client_count = clients_.Size(),
-          .client_policy_version = clients_.Version(),
-          .client_fair_queue = clients_.FairQueue(),
+          .client_policy_sha256 = policy ? policy->sha256 : std::string(),
+          .client_policy_content_sha256 =
+              policy ? ClientPolicyDigest(*policy) : std::string(),
+          .client_policy_revision = policy ? policy->revision : 0,
+          .client_count = policy ? policy->clients.size() : 0,
+          .client_policy_version = policy ? policy->version : 1,
+          .client_fair_queue = policy && policy->fair_queue,
           .client_limits = http ? http->Client().Limits() : nullptr,
           .model_aliases = model_catalog_.Aliases()};
 }
@@ -81,7 +85,13 @@ void ChatServer::HandleConfig(int fd) {
       R"(},"cache_io":{"session":)" +
       CacheIoHealthJson(session_cache_.Health()) +
       R"(,"prefix":)" + CacheIoHealthJson(prefix_cache_.Health()) + "}}";
-  detail::SendSimple(fd, 200, "OK", value, "application/json");
+  const auto current = value.substr(0, value.size() - 1) +
+      R"(,"current_client_policy":)" +
+      DescribeClientPolicy(clients_, admission_limits_.inflight,
+                           admission_limits_.queued,
+                           client_policy_admin_ &&
+                               client_policy_admin_->PublisherAlive()) + '}';
+  detail::SendSimple(fd, 200, "OK", current, "application/json");
 }
 
 void ChatServer::HandlePreflight(int fd, const std::string& body) {

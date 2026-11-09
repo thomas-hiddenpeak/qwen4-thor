@@ -1,4 +1,4 @@
-"""Bounded isolated credential reader; never signals or restarts a model."""
+"""Bounded isolated policy reader; never signals or restarts a model."""
 import argparse
 import hashlib
 import os
@@ -19,18 +19,29 @@ TIMEOUT = 2
 ERRORS = ('state_unavailable', 'state_invalid', 'writer_busy')
 
 
-def claim_address(service_id):
-    ledger.require(ledger.identifier(service_id), 'invalid access service identity')
-    return '\0q4t-access-io-' + str(os.geteuid()) + '-' + service_id
+def family(kind):
+    ledger.require(kind in ('access', 'limits'), 'invalid policy reader family')
+    if kind == 'access':return access_policy, access_store
+    # Old credential-only packages do not need the limits modules.
+    from tools.serve_recovery import quota_policy, quota_store
+    return quota_policy, quota_store
+
+
+def claim_address(service_id, kind='access'):
+    ledger.require(ledger.identifier(service_id) and kind in ('access', 'limits'),
+                   'invalid policy service identity')
+    return '\0q4t-' + kind + '-io-' + str(os.geteuid()) + '-' + service_id
 
 
 class Reader:
-    def __init__(self, state, service_id, state_identity, *, clock=time.monotonic):
+    def __init__(self, state, service_id, state_identity, *, clock=time.monotonic, kind='access'):
         ledger.require(isinstance(state, (str, Path)) and Path(state).is_absolute() and
             ledger.identifier(service_id) and type(state_identity) is list and
             len(state_identity) == 2 and all(ledger.integer(n, minimum=1) for n in state_identity),
             'invalid access reader binding')
         self.state, self.service_id, self.state_identity = str(state), service_id, state_identity
+        self.contract, _ = family(kind)
+        self.kind = kind
         self.clock = clock
         self.process = self.socket = self.claim = None
         self.starts = []
@@ -76,7 +87,7 @@ class Reader:
             # Bind before exec, including before Python can touch source files.
             # An orphan that has not loaded its module still retains this FD.
             claim = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
-            claim.bind(claim_address(self.service_id))
+            claim.bind(claim_address(self.service_id, self.kind))
             parent, child = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
             parent.setblocking(False)
             self.starts.append(now)
@@ -85,6 +96,7 @@ class Reader:
                 '--parent', str(os.getpid()), '--parent-start', str(journal.process_start(os.getpid())),
                 '--state', self.state, '--service-id', self.service_id,
                 '--state-device', str(self.state_identity[0]), '--state-inode', str(self.state_identity[1])]
+            if self.kind != 'access':args += ['--kind', self.kind]
             self.process = subprocess.Popen(args, stdin=subprocess.DEVNULL,
                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
                 env={'PATH': '/usr/bin:/bin', 'LANG': 'C.UTF-8'}, close_fds=True,
@@ -120,7 +132,7 @@ class Reader:
                 ledger.keys(header, ('sequence', 'status', 'bytes', 'sha256', 'error'))
                 ledger.require(type(header['sequence']) is int and header['sequence'] == self.sequence and
                     header['status'] in ('OK', 'ERROR') and ledger.integer(header['bytes']) and
-                    header['bytes'] <= access_policy.MAX_BYTES, 'invalid reader reply')
+                    header['bytes'] <= self.contract.MAX_BYTES, 'invalid reader reply')
                 if header['status'] == 'ERROR':
                     ledger.require(header['bytes'] == 0 and header['sha256'] == '' and
                         header['error'] in ERRORS, 'invalid reader error')
@@ -138,7 +150,7 @@ class Reader:
                 if len(self.payload) == self.expected_bytes:
                     ledger.require(hashlib.sha256(self.payload).hexdigest() == self.expected_digest,
                                    'reader payload digest changed')
-                    self.value = access_policy.validate(store.decode(self.payload))
+                    self.value = self.contract.validate(store.decode(self.payload))
                     self.payload.clear();self.available = True;self.error = ''
                     self.phase = 'idle';self.next_read = self.clock() + 1
                     return
@@ -189,10 +201,12 @@ class Reader:
 
 
 def worker(args):
+    kind = getattr(args, 'kind', 'access')
+    _, writer = family(kind)
     with socket.socket(fileno=args.worker_fd) as channel, socket.socket(fileno=args.claim_fd) as claim:
         journal.verify_parent(channel, args.parent, args.parent_start)
         ledger.require(claim.family == socket.AF_UNIX and claim.type == socket.SOCK_DGRAM and
-            claim.getsockname() == claim_address(args.service_id).encode(), 'reader claim changed')
+            claim.getsockname() == claim_address(args.service_id, kind).encode(), 'reader claim changed')
         channel.settimeout(3)
         channel.send(ledger.canonical(dict(sequence=0, status='READY')))
         sequence = 0
@@ -219,7 +233,7 @@ def worker(args):
                     'reader state identity changed')
                 value = dict(state_directory=str(state), service_id=args.service_id,
                              state_identity=[args.state_device, args.state_inode])
-                with access_store.open_bound(value) as journal_store:
+                with writer.open_bound(value) as journal_store:
                     payload = ledger.canonical(journal_store.head['state']['policy'])
             except BlockingIOError:
                 error = 'writer_busy'
@@ -242,6 +256,7 @@ def main():
         parser.add_argument('--' + name, required=True, type=int)
     parser.add_argument('--state', required=True)
     parser.add_argument('--service-id', required=True)
+    parser.add_argument('--kind', choices=('access', 'limits'), default='access')
     worker(parser.parse_args())
 
 

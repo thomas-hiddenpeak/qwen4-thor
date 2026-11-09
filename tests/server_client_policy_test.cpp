@@ -13,6 +13,7 @@
 #include <thread>
 
 #include "q4t/server/chat_plan.h"
+#include "q4t/server/client_policy_admin.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/request_control.h"
@@ -560,6 +561,38 @@ Q4T_TEST(client_rate_configuration_discloses_optional_contract) {
   Q4T_CHECK(value.Find("client_governance")->GetBool("fair_queue"));
   Q4T_CHECK(value.Find("limits")->GetString("queue_policy") ==
             "client_round_robin_best_fit");
+  return true;
+}
+
+Q4T_TEST(client_dynamic_startup_binding_and_runtime_discovery_are_distinct) {
+  const auto policy = DynamicPolicy(5, 200);
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(policy));
+  ChatPlanConfig config;
+  config.client_policy_version = 3;
+  config.client_policy_sha256 = policy.sha256;
+  config.client_policy_content_sha256 = ClientPolicyDigest(policy);
+  config.client_policy_revision = policy.revision;
+  config.client_count = policy.clients.size();
+  const auto startup = EffectiveServeConfigJson({}, config, true, true, 8);
+  Json decoded;
+  Q4T_CHECK(q4t::io::ParseJson(startup, &decoded));
+  const auto* found = decoded.Find("client_policy");
+  Q4T_CHECK(found && found->GetBool("mutable") &&
+            found->GetString("snapshot") == "startup" &&
+            found->GetString("sha256") == policy.sha256 &&
+            found->GetInt("revision") == 0 &&
+            found->GetString("content_sha256") == ClientPolicyDigest(policy));
+  const auto update = DynamicPolicy(1, 20, 1);
+  Q4T_CHECK(admission.Publish(update, 0, 8, 8));
+  Json current;
+  Q4T_CHECK(q4t::io::ParseJson(
+      DescribeClientPolicy(admission, 8, 8, false), &current));
+  Q4T_CHECK(current.GetInt("revision") == 1 &&
+            current.GetString("content_sha256") == ClientPolicyDigest(update) &&
+            !current.GetBool("publisher_alive"));
+  Q4T_CHECK(EffectiveServeConfigJson({}, config, true, true, 8) == startup);
+  Q4T_CHECK(startup.find(kSecret) == startup.npos);
   return true;
 }
 

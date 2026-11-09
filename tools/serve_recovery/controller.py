@@ -307,14 +307,14 @@ class Controller:
                 # Auxiliary allocation failure cannot prevent a model launch.
                 pass
             progress_args = ([] if publisher is None else
-                ['--progress-fd', str(publisher.fileno()),
-                 '--service-id', self.channel.service_id])
+                ['--progress-fd', str(publisher.fileno())])
             progress_fds = () if publisher is None else (publisher.fileno(),)
             self.model = subprocess.Popen([sys.executable, '-I', '-B',
                 str(ROOT/'tools/serve_recovery/child.py'), '--fd', str(endpoint.fileno()),
                 '--parent-pid', str(os.getpid()), '--parent-start', str(journal.process_start(os.getpid())),
                 '--lease-fd', str(self.lease_fd), '--lease-path', self.lease_path,
                 '--controller-generation', str(self.channel.generation),
+                '--service-id', self.channel.service_id,
                 *progress_args, '--', *command],
                 stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                 pass_fds=(endpoint.fileno(), self.lease_fd, *progress_fds),

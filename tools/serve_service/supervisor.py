@@ -184,7 +184,9 @@ def probe(pid, port, operations_port=0, *, deadline=None, stopped=None,
                 observability_version=version,
                 client_policy=({key: raw_config['client_policy'].get(key) for key in
                     ('profile', 'enabled', 'sha256', 'clients', 'mutable',
-                     'credential_values_redacted')}
+                     'credential_values_redacted',
+                     *(('snapshot', 'revision', 'content_sha256')
+                       if raw_config['client_policy'].get('mutable') is True else ()))}
                     if type(raw_config.get('client_policy')) is dict else None),
                 configuration=configuration,
                 ready=value['ready'], health_status=value['status'],

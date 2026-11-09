@@ -1,0 +1,4 @@
+[PASS] client_rate_configuration_discloses_optional_contract
+[PASS] client_dynamic_startup_binding_and_runtime_discovery_are_distinct
+[PASS] client_policy_config_redaction_and_cli_boundary
+3 tests, 3 passed, 0 failed, 0 skipped

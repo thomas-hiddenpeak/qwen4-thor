@@ -428,7 +428,8 @@
         "evidence/serve-access-managed-20261109/decision.json",
         "evidence/serve-client-policy-20261109/decision.json",
         "evidence/serve-limits-store-20261109/decision.json",
-        "evidence/serve-policy-admin-20261109/decision.json"
+        "evidence/serve-policy-admin-20261109/decision.json",
+        "evidence/serve-policy-runtime-20261109/decision.json"
       ],
       "release": null,
       "plan": "SERVE_ACCESS_CONTROL_2026-11-09.md",
@@ -438,7 +439,7 @@
         "TLS native bundle and applicable SDK verification",
         "targeted real business and rollback-capable delivery"
       ],
-      "development_status": "模型私有发布/队列协调8项CPU通过；继续托管模型与控制器、隔离限额读取、新身份协调/额度恢复，再TLS与真实业务交付。默认v6保持，N04未完成。"
+      "development_status": "模型线程接入/独立限额reader/实际发布与绑定21项CPU通过，生产零警告编译；继续完整托管控制器协调、新身份/用量恢复和CLI，再TLS/真实业务交付。默认v6保持，N04未完成。"
     },
     {
       "id": "N05",

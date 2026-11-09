@@ -27,6 +27,7 @@ class ClientPolicyAdmin {
   void Start();
   void Step() noexcept;
   std::string Describe() const;
+  bool PublisherAlive() const noexcept { return OwnerAlive(); }
 
  private:
   struct Peer {
@@ -53,6 +54,9 @@ class ClientPolicyAdmin {
 };
 
 class SequenceAdmissionQueue;
+std::string DescribeClientPolicy(const ClientAdmission& admission,
+                                 uint32_t inflight, uint32_t queued,
+                                 bool publisher_alive);
 Status PublishClientPolicy(ClientAdmission& admission,
                            SequenceAdmissionQueue& queue, std::mutex& mutex,
                            GatewayClientPolicy candidate, uint64_t expected,
