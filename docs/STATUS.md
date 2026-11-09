@@ -1,5 +1,7 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+A09.4 [Uploads可回退交付完成](evidence/serve-uploads-delivery-20261110/README.md)：默认引擎cdb5ced9、元数据d4559e09、v11包96b75252，revision36、STOPPED。8实际CLI/9.794秒、0新增模型/GPU，原Key/配额/用量与容量保持，保留Files旧代。开始A09.5原生文件内容消费，之后Batch及全部总任务；未合main。
+
 A09.4 [真实Uploads业务接受](evidence/serve-uploads-business-20261110/README.md)：1启动/2生成/20文件操作/53.651秒、52 NVML全OK并独立清理。实际SDK/原生TLS文档工具闭环、重复Part/MD5/原完成核对/取消后409/隔离及精确用量通过。候选cdb5ced9/入口a8c5bba3，默认6a7404c7保持；继续可回退发行和全部余项。
 
 A09.4 [发现/驱动/提前拒绝5 C++和7 Python已接受](evidence/serve-uploads-driver-close-cpu-20261110/README.md)：真实EPIPE与重名JSON已修复，原失败/探测误计保留；官方SDK迟到Part返回409、100ms/64KiB关闭及TLS/明文保护通过。零警告、0GPU、默认保持；开始冻结1启动/2生成/32文件操作/600秒业务，再发行及全部总任务。

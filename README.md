@@ -189,7 +189,8 @@ Responses可通过`include:["reasoning.encrypted_content"]`取得本服务
 Files默认batch留存30天，其余永久，可用`expires_after`明确覆盖。
 用法/安全旧包迁移见[客户端容量](docs/SERVE_ACCESS_CONTROL_2026-11-09.md)，
 [业务及发行证据](docs/evidence/serve-files-delivery-20261110/README.md)。
-Uploads、模型原生file_id内容消费与Batch仍是当前必须完成的
+Uploads已提供原生创建、分块、顺序/MD5完成及取消，生成标准File；重复Part保持原字节，取消有独立准入/内存，见[交付证据](docs/evidence/serve-uploads-delivery-20261110/README.md)。默认部署容量保持，较大Part需显式配置。
+模型原生file_id/file_data/file_url内容消费与Batch仍是当前必须完成的
 [后续任务](docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md)。
 
 标准`POST /v1/responses/input_tokens`与SDK

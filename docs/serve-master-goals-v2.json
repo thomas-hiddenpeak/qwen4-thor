@@ -932,19 +932,20 @@
       ],
       "evidence": [
         "evidence/serve-files-business-20261110/README.md",
-        "evidence/serve-files-delivery-20261110/README.md"
+        "evidence/serve-files-delivery-20261110/README.md",
+        "evidence/serve-uploads-business-20261110/README.md",
+        "evidence/serve-uploads-delivery-20261110/README.md"
       ],
       "release": null,
       "plan": "SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
       "remaining_required": [
-        "A09.4 Uploads completion/cancel/expiry",
         "A09.5 actual file consumption and retention",
         "A09.6 real Batch executor/recovery",
         "A09.7 all eight endpoint backends with A10",
         "A09.8 ongoing SDK/native release and rollback for remaining APIs"
       ],
       "multipart_component_evidence": "evidence/serve-multipart-cpu-20261110/README.md",
-      "next": "Publish accepted Uploads cdb5ced9 with retained Files v11 rollback; then actual file consumption, Batch and all master work.",
+      "next": "A09.5 actual file input resolution and retention, then Batch and all master tasks.",
       "binary_component_evidence": "docs/evidence/serve-binary-cpu-20261110/README.md",
       "http_stream_component_evidence": "docs/evidence/serve-http-body-stream-cpu-20261110/README.md",
       "files_core_component_evidence": "docs/evidence/serve-files-core-cpu-20261110/README.md",
@@ -964,11 +965,24 @@
       "accepted_subtasks": [
         "A09.1 incremental multipart and Files contracts",
         "A09.2 isolated binary persistence",
-        "A09.3 Files and bounded native transport"
+        "A09.3 Files and bounded native transport",
+        "A09.4 Uploads durable lifecycle, native HTTP/TLS, actual SDK/tool business and rollback-safe release"
       ],
       "files_package_component_evidence": "evidence/serve-files-package-cpu-20261110/README.md",
       "uploads_core_component_evidence": "evidence/serve-uploads-core-cpu-20261110/README.md",
-      "uploads_business_evidence": "evidence/serve-uploads-business-20261110/README.md"
+      "uploads_business_evidence": "evidence/serve-uploads-business-20261110/README.md",
+      "uploads_release": {
+        "engine_binary_sha256": "cdb5ced9f58e04e952f64fdab5323c2cd0bbb0db9430f878ca7b8ced78d9b232",
+        "engine_release_sha256": "d4559e09f1e744cbcbefe6224999633e089bcab79bbf2a170748a00abe078d01",
+        "generation_sha256": "afefdd7d47a38696b09fecb8451ed1ec55e724b357922fa23a9ace7150ff43da",
+        "manifest_sha256": "96b7525225e208a0c5b26a43317a2cb118b8f98353eade47c788ed3808c71871",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-uploads-20261110/release-01/bundle",
+        "service_acceptance_sha256": "8ba40cd5d038c2f13903ad4d06b958436db389534d945262adda8100c36fc2cb",
+        "service_release_sha256": "1aa4e6e35db8cf49cbb3d4b54b1d43b620bcb0f1b709b078bd5d52bfc4dd44c5",
+        "publication_revision": 36,
+        "state": "STOPPED",
+        "main_merged": false
+      }
     },
     {
       "id": "A10",
@@ -1554,6 +1568,6 @@
       "release": null
     }
   ],
-  "next_task": "A09.4 Uploads complete native lifecycle, then file consumption/Batch and all remaining master tasks",
-  "next": "Files delivered in v11 package cde078fa with engine6a7404c7, revision34 STOPPED; previous A08 preserved. A09 remains in progress."
+  "next_task": "A09.5 actual file_id/file_data/file_url input consumption, then Batch and all remaining master tasks",
+  "next": "Uploads delivered as enginecdb5ced9/package96b75252, revision36 STOPPED; retained Files v11 rollback. Master remains active."
 }
