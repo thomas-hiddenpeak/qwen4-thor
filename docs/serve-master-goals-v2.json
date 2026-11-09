@@ -860,24 +860,33 @@
     {
       "id": "A08",
       "required": true,
-      "state": "implementation_in_progress",
+      "state": "delivered",
       "implementation": "Chat/Responses\u6301\u4e45\u5bf9\u8c61\u3001store/metadata\u3001previous_response_id\u3001Conversations\u53cabackground/cancel",
       "acceptance": "\u5ba2\u6237\u7aef\u9694\u79bb\u3001\u589e\u5220\u67e5/\u5206\u9875\u3001\u91cd\u542f\u6062\u590d\u3001\u8fc7\u671f\u6cbb\u7406\uff1b\u4e0d\u91cd\u653e\u5df2\u6267\u884c\u5de5\u5177\uff1b\u540e\u53f0\u72b6\u6001\u4e0e\u53d6\u6d88\u771f\u5b9e\u6709\u6548",
       "depends_on": [
         "A07",
         "N04"
       ],
-      "evidence": [],
+      "evidence": [
+        "evidence/serve-retention-cpu-20261110/README.md",
+        "evidence/serve-retention-followup-20261110/README.md",
+        "evidence/serve-retention-business-20261110/README.md",
+        "evidence/serve-retention-delivery-20261110/README.md"
+      ],
       "release": {
-        "engine_binary_sha256": "92e600fbcdcadf37271a77405daf498f1fe4fbf2d327ad79a0bf3646bd02ce31",
-        "engine_release_sha256": "dfffcbadb6ba73c2184c06444f28d85979d2d0881d34aca7087bf1ff5fd31e75",
-        "manifest_sha256": "ffbd9d4b52175dc07356933fbfca54ad5143522d3ec9d6ca7bcedcacf0e8887e",
-        "service_release_sha256": "e4d8b32171335bc535021b77712d6eb8c7f3e0e45b4498533afb4d5404eda05e",
+        "engine_binary_sha256": "6a90506e72fd25d5bfdd654a7916ece863b958b5cb6e27e5c7d599d36949dc3a",
+        "engine_release_sha256": "d6d9c001fd93d40ab3ea78816c6d9fad6408f84a39cc4f38505df31f47d72178",
+        "generation_sha256": "90cc3dde4dd77deada6800dfe6f9bad1b7008c00e844e2c025a276adde867100",
+        "manifest_sha256": "e8e754701d48fb1e4eee22f955b944eb07b62dac11ea25e6732469b32603bee0",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-retention-20261110/release-01/bundle",
+        "service_acceptance_sha256": "0d0b14d862188c3e48ae31cd67bb16524e356513c80ef4932d585e7842a74b4f",
+        "service_release_sha256": "795087e00c9a423113286cb94af557866bd415e3c1d6ff2646299b8146daf390",
         "state": "STOPPED",
+        "publication_revision": 32,
         "merged_main": false,
-        "whole_task_complete": false
+        "whole_task_complete": true
       },
-      "development_status": "Core durable APIs, background/cancel, context/encryption and N04 quota identity delivered. Implementing retention dependency protection and native inspect/collect with bounded conflict-aware cleanup; full A08 remains open.",
+      "development_status": "Chat/Responses persistent objects, scoped CRUD/history/conversations, background/cancel/recovery and dependency-aware retention with native exact-plan collect implemented, targeted-validated and delivered.",
       "development_evidence": "evidence/serve-object-store-20261108/README.md",
       "transaction_evidence": "evidence/serve-object-transactions-20261108/README.md",
       "state_evidence": "evidence/serve-responses-state-20261109/README.md",
@@ -895,17 +904,21 @@
       "controller_recovery_evidence": "evidence/serve-object-controller-recovery-20261109/README.md",
       "foreground_reconciliation_evidence": "evidence/serve-foreground-reconciliation-20261109/README.md",
       "foreground_recovery_business_evidence": "evidence/serve-reconciliation-business-20261109/README.md",
-      "delivery_evidence": "evidence/serve-chat-delivery-20261109/README.md",
+      "delivery_evidence": "evidence/serve-retention-delivery-20261110/README.md",
       "chat_storage_evidence": "evidence/serve-chat-storage-20261109/README.md",
       "chat_business_evidence": "evidence/serve-chat-business-20261109/README.md",
-      "remaining_required": [
-        "A08.1 bounded dependency-aware retention and active-response protection before reconciliation",
-        "A08.2 native inspect/collect and exact-plan atomic cleanup, same-UID live and exclusive offline administration",
-        "A08.3 actual history/conversation/background/encrypted-state and retention business acceptance",
-        "A08.4 reversible delivered package and complete A08 source/evidence audit"
-      ],
+      "remaining_required": [],
       "retention_plan": "SERVE_APPLICATION_RETENTION_2026-11-10.md",
-      "next": "Retention graph/native same-UID inspect+collect implemented; validate frozen 28 C++/3 driver CPU, bounded 2 starts/4 generations/900s, deliver then continue remaining master tasks."
+      "next": "Continue A09 and all remaining master tasks; A08 completion is not the master endpoint.",
+      "retention_cpu": {
+        "cpp": 28,
+        "driver_distinct": 4
+      },
+      "retention_business": {
+        "starts": 3,
+        "generations": 4,
+        "seconds": 118.33398287231103
+      }
     },
     {
       "id": "A09",

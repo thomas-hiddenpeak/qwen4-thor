@@ -9,7 +9,7 @@
 [Chat持久对象、官方SDK及原生/可选入口](SERVE_CHAT_STORAGE_2026-11-09.md)
 
 [Conversations原生状态、请求处理与官方SDK HTTP验证](SERVE_CONVERSATIONS_2026-11-09.md)
-（已验子集随原生应用包交付，A07/A08继续开发）。
+（已验子集随原生应用包交付，A07/A09继续开发）。
 
 [A07 Responses原生实现与A08状态衔接](SERVE_RESPONSES_2026-11-08.md)
 （已验子集进入默认；[发行原件](evidence/serve-application-delivery-20261109/README.md)，其余能力继续实施）。
