@@ -127,6 +127,12 @@ class ObjectStore {
   ObjectReply ScanResponses(std::string after,
                             std::chrono::steady_clock::time_point deadline,
                             const std::function<bool()>& cancelled = {});
+  // Trusted same-UID operator control only. Empty expected_plan inspects;
+  // collection requires the exact prior plan digest and rechecks dependencies.
+  ObjectReply Retention(int64_t item_created_before, size_t limit,
+                        std::string expected_plan,
+                        std::chrono::steady_clock::time_point deadline,
+                        const std::function<bool()>& cancelled = {});
 
  private:
   ObjectReply Dispatch(std::string wire, bool mutation,

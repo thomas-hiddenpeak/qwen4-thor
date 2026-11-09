@@ -904,7 +904,8 @@
         "A08.3 actual history/conversation/background/encrypted-state and retention business acceptance",
         "A08.4 reversible delivered package and complete A08 source/evidence audit"
       ],
-      "retention_plan": "SERVE_APPLICATION_RETENTION_2026-11-10.md"
+      "retention_plan": "SERVE_APPLICATION_RETENTION_2026-11-10.md",
+      "next": "Retention graph/native same-UID inspect+collect implemented; validate frozen 28 C++/3 driver CPU, bounded 2 starts/4 generations/900s, deliver then continue remaining master tasks."
     },
     {
       "id": "A09",

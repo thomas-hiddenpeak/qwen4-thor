@@ -1,5 +1,9 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+A08 [28 C++/3驱动CPU通过](evidence/serve-retention-cpu-20261110/README.md)，host/引擎零警告；首密文判定夹具失败和仅单项修复保留。候选6a90506e，准备同一严格租约最多2启动/4生成/900秒实际SDK历史、会话、后台/密文与原生留存管理短验。默认5935be0a保持；全部总任务继续。
+
+A08 留存治理成组开发完成：活动任务/引用保护、原生inspect/collect、计划冲突与事务恢复，发现合同同步。冻结28项直接C++、3项驱动CPU，开始独立必要构建；尚未测试。业务预算最多2启动/4生成/900秒；默认5935be0a保持STOPPED，之后交付并继续全部总任务。
+
 A07.8 [31 input/28 output/59 SSE逐项执行链核对](serve-responses-execution-audit-v1.json)已登记全部余项：内建工具与max_tool_calls、媒体/file、refusal信号和真实annotation仍须实现，不能按schema通过结案。开始其依赖[A08留存治理](SERVE_APPLICATION_RETENTION_2026-11-10.md)：活动任务/引用保护、原生inspect/collect与有身份的清理；默认5935be0a保持STOPPED。
 
 A07.8 字段合同完成[CPU](evidence/serve-request-fields-cpu-20261110/README.md)、[实际业务](evidence/serve-request-fields-business-20261110/README.md)及[可回退交付](evidence/serve-request-fields-delivery-20261110/README.md)。当前引擎5935be0a、元数据675ef104、包b39ad17e，revision30、STOPPED；旧70504790/5a71516a与业务账本保持。8发布操作、0新增模型/GPU。继续A07.8依赖项与A08留存治理等全部总任务，未合main。以下历史以此当前默认为准。

@@ -17,6 +17,7 @@
 
 #include "object_protocol.h"
 #include "q4t/server/grammar_process.h"
+#include "q4t/server/object_retention.h"
 
 namespace q4t::server {
 namespace {
@@ -128,6 +129,7 @@ struct Metadata {
   std::string owner, kind, id, digest;
   int64_t revision = 0, created = 0, expires = 0;
   uint64_t bytes = 0;
+  ObjectRetentionInfo retention;
 };
 struct Usage {
   uint64_t bytes = 0, count = 0;
@@ -227,12 +229,15 @@ class DiskStore {
     closedir(directory);
     if (!valid) return IoError();
     initialized_ = true;
-    return Prune();
+    // Retention inspect must see expired records before proposing collection.
+    // Ordinary operations still invoke bounded automatic pruning below.
+    return {};
   }
 
   ObjectReply Run(const Json& request) {
     if (!initialized_) return IoError();
     const auto operation = request.GetString("operation");
+    if (operation == "retention") return Retention(request);
     if (operation == "scan_responses") {
       auto pruned = Prune();
       return pruned.ok() ? ScanResponses(request) : pruned;
@@ -595,10 +600,16 @@ class DiskStore {
       return false;
     const auto digest = Digest(OutputJson(*content));
     if (wrapper.GetString("sha256") != digest) return false;
-    *metadata = {content->GetString("owner"),   content->GetString("kind"),
-                 content->GetString("id"),      digest,
-                 content->GetInt("revision"),   content->GetInt("created_at"),
-                 content->GetInt("expires_at"), text.size()};
+    *metadata = {content->GetString("owner"),
+                 content->GetString("kind"),
+                 content->GetString("id"),
+                 digest,
+                 content->GetInt("revision"),
+                 content->GetInt("created_at"),
+                 content->GetInt("expires_at"),
+                 text.size(),
+                 InspectObjectRetention(content->GetString("kind"),
+                                        *content->Find("data"))};
     *record = *content;
     return true;
   }
@@ -609,6 +620,11 @@ class DiskStore {
            actual.bytes == expected.bytes;
   }
   void Add(const std::string& name, Metadata metadata) {
+    if (metadata.retention.Bytes() > 64 * 1024 * 1024 - retention_bytes_) {
+      metadata.retention.uncertain = true;
+      std::vector<std::string>().swap(metadata.retention.references);
+    }
+    retention_bytes_ += metadata.retention.Bytes();
     auto& client = clients_[metadata.owner];
     client.bytes += metadata.bytes;
     ++client.count;
@@ -618,6 +634,7 @@ class DiskStore {
   }
   using Iterator = std::map<std::string, Metadata>::iterator;
   void Remove(Iterator found) {
+    retention_bytes_ -= found->second.retention.Bytes();
     auto client = clients_.find(found->second.owner);
     client->second.bytes -= found->second.bytes;
     if (--client->second.count == 0) clients_.erase(client);
@@ -625,24 +642,106 @@ class DiskStore {
     --total_.count;
     records_.erase(found);
   }
+  ObjectReply PlanRetention(int64_t cutoff, size_t limit,
+                            ObjectRetentionPlan* plan,
+                            std::vector<std::string>* selected) {
+    std::vector<ObjectRetentionNode> nodes;
+    nodes.reserve(records_.size());
+    for (const auto& [name, m] : records_) {
+      (void)name;
+      nodes.push_back({m.owner, m.kind, m.id, m.digest, m.created, m.expires,
+                       m.bytes, &m.retention});
+    }
+    auto status = PlanObjectRetention(nodes, Now(), cutoff, limit, plan);
+    if (!status)
+      return Error(503, "retention_plan_unavailable", status.message());
+    size_t index = 0, selection = 0;
+    for (const auto& [name, m] : records_) {
+      (void)m;
+      if (selection == plan->selected.size()) break;
+      if (plan->selected[selection] == index) {
+        selected->push_back(name);
+        ++selection;
+      }
+      ++index;
+    }
+    return {};
+  }
+  ObjectReply CollectRetention(const std::vector<std::string>& selected) {
+    if (selected.empty()) return {};
+    auto mutations = Array();
+    for (const auto& name : selected) {
+      const auto& m = records_.at(name);
+      mutations.array.push_back(Object({{"operation", String("erase")},
+                                        {"owner", String(m.owner)},
+                                        {"kind", String(m.kind)},
+                                        {"id", String(m.id)},
+                                        {"revision", Number(m.revision)}}));
+    }
+    return Batch(Object({{"mutations", std::move(mutations)}}));
+  }
+  ObjectReply Retention(const Json& request) {
+    const auto cutoff = request.GetInt("item_created_before", -1);
+    const auto limit = request.GetInt("limit", 0);
+    const auto expected = request.GetString("expected_plan");
+    if (cutoff < 0 || cutoff > Now() || limit < 1 || limit > 128 ||
+        (!expected.empty() && !Hex(expected, 64)))
+      return Error(400, "invalid_retention_command",
+                   "Invalid retention cutoff, limit or plan digest");
+    ObjectRetentionPlan plan;
+    std::vector<std::string> selected;
+    auto planned = PlanRetention(cutoff, limit, &plan, &selected);
+    if (!planned.ok()) return planned;
+    if (!expected.empty() && expected != plan.sha256)
+      return Error(
+          409, "retention_plan_changed",
+          "Stored objects or retention eligibility changed; inspect again");
+    auto candidates = Array();
+    for (const auto& name : selected) {
+      const auto& m = records_.at(name);
+      candidates.array.push_back(Object({{"owner_sha256", String(m.owner)},
+                                         {"kind", String(m.kind)},
+                                         {"id", String(m.id)},
+                                         {"revision", Number(m.revision)},
+                                         {"created_at", Number(m.created)},
+                                         {"expires_at", Number(m.expires)},
+                                         {"bytes", Number(m.bytes)}}));
+    }
+    if (!expected.empty()) {
+      auto collected = CollectRetention(selected);
+      if (!collected.ok()) return collected;
+    }
+    ObjectReply reply;
+    reply.value = Object(
+        {{"object", String("q4t.state_retention")},
+         {"plan_sha256", String(plan.sha256)},
+         {"applied", Boolean(!expected.empty())},
+         {"item_created_before", Number(cutoff)},
+         {"limit", Number(limit)},
+         {"eligible_objects", Number(plan.eligible)},
+         {"selected_bytes", Number(plan.bytes)},
+         {"protected_active", Number(plan.active)},
+         {"protected_references", Number(plan.referenced)},
+         {"protected_uncertain", Number(plan.uncertain)},
+         {"deleted_objects", Number(expected.empty() ? 0 : selected.size())},
+         {"has_more", Boolean(plan.eligible > selected.size())},
+         {"candidates", std::move(candidates)}});
+    return reply;
+  }
   ObjectReply Prune() {
     const auto now = Now();
-    bool removed = false;
-    for (auto it = records_.begin(); it != records_.end();) {
-      if (it->second.expires == 0 || it->second.expires > now) {
-        ++it;
-        continue;
-      }
-      Json record;
-      if (!ReadKnown(it->first, it->second, &record) ||
-          unlinkat(root_.Get(), it->first.c_str(), 0))
-        return IoError();
-      auto expired = it++;
-      Remove(expired);
-      removed = true;
-    }
-    if (removed && fsync(root_.Get())) return IoError();
-    return {};
+    if (std::none_of(records_.begin(), records_.end(), [&](const auto& row) {
+          return row.second.expires > 0 && row.second.expires <= now;
+        }))
+      return {};
+    ObjectRetentionPlan plan;
+    std::vector<std::string> selected;
+    auto planned = PlanRetention(0, 128, &plan, &selected);
+    // A bounded maintenance planner cannot deny an otherwise usable read or
+    // write. Its failure is visible through explicit operator inspection;
+    // retained bytes still count toward quotas, with no false reclamation.
+    if (!planned.ok()) return {};
+    return CollectRetention(selected);
   }
   ObjectReply Put(const std::string& name, const Json& request) {
     const auto revision = request.GetInt("revision", -1);
@@ -710,7 +809,8 @@ class DiskStore {
     }
     if (exists) Remove(found);
     Add(name, {owner, request.GetString("kind"), request.GetString("id"),
-               digest, revision + 1, created, expires, text.size()});
+               digest, revision + 1, created, expires, text.size(),
+               InspectObjectRetention(request.GetString("kind"), *data)});
     if (fsync(root_.Get())) return IoError(true);
     ObjectReply result;
     result.value = Public(record);
@@ -827,6 +927,7 @@ class DiskStore {
   std::map<std::string, Metadata> records_;
   std::map<std::string, Usage> clients_;
   Usage total_;
+  size_t retention_bytes_ = 0;
   int pause_after_ = 0;
 };
 }  // namespace

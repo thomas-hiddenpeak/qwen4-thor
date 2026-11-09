@@ -337,6 +337,12 @@ Q4T_TEST(chat_capabilities_native_responses_state_and_recovery) {
   const auto* objects = caps.Find("application_state");
   Q4T_CHECK(objects && objects->GetBool("isolated_io") &&
             !objects->GetBool("core_readiness_dependency", true));
+  const auto* retention = objects->Find("retention");
+  Q4T_CHECK(retention && retention->GetBool("active_tasks_protected") &&
+            retention->GetBool("references_protected") &&
+            retention->GetBool("collect_requires_plan_sha256") &&
+            retention->GetInt("max_batch") == 128 &&
+            retention->GetString("permanent_items_default") == "retain");
   Q4T_CHECK(objects->GetString("controller_recovery") ==
                 "single_owned_thread_bounded_backoff" &&
             objects->GetString("foreground_reconciliation") ==

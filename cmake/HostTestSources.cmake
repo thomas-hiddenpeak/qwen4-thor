@@ -6,6 +6,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/state_cipher.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/state_key_admin.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/state_key_cli.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/state_retention_cli.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_state_key_admin_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_crypto.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_crypto_test.cpp
@@ -38,6 +39,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_session_isolation_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/object_store.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/object_worker.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/object_retention.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_state.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_execution.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_execution_compaction.cpp
@@ -67,6 +69,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_item_shape_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_state_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_object_store_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_object_retention_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/grammar_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_grammar_process_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_capabilities.cpp

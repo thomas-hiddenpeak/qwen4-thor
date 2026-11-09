@@ -1,0 +1,22 @@
+test_answer_oracle_uses_real_encrypted_response (tools.serve_responses.test_retention_acceptance.RetentionAcceptance.test_answer_oracle_uses_real_encrypted_response) ... ERROR
+test_exact_plan_oracle_rejects_payload_leak_and_false_receipt (tools.serve_responses.test_retention_acceptance.RetentionAcceptance.test_exact_plan_oracle_rejects_payload_leak_and_false_receipt) ... ok
+test_frozen_requests_and_budget (tools.serve_responses.test_retention_acceptance.RetentionAcceptance.test_frozen_requests_and_budget) ... ok
+
+======================================================================
+ERROR: test_answer_oracle_uses_real_encrypted_response (tools.serve_responses.test_retention_acceptance.RetentionAcceptance.test_answer_oracle_uses_real_encrypted_response)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_retention_acceptance.py", line 42, in test_answer_oracle_uses_real_encrypted_response
+    driver.check_answer(value)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/retention_acceptance.py", line 35, in check_answer
+    encrypted.encrypted_items(value)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/encryption_acceptance.py", line 55, in encrypted_items
+    require(re.fullmatch(r'q4t1:[0-9a-f]{32}:[0-9a-f]{24}:[0-9a-f]{32}:(?:[0-9a-f]{2})+',
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 61, in require
+    raise RuntimeError(message)
+RuntimeError: invalid authenticated state envelope
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.008s
+
+FAILED (errors=1)

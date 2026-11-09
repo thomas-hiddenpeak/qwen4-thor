@@ -44,6 +44,7 @@ set(protocol_inputs
   include/q4t/server/state_key_admin.h
   src/server/state_key_admin.cpp
   src/server/state_key_cli.cpp
+  src/server/state_retention_cli.cpp
   include/q4t/server/responses_crypto.h
   src/server/responses_crypto.cpp
   include/q4t/server/responses_compaction.h
@@ -114,6 +115,8 @@ set(protocol_inputs
   include/q4t/server/object_store.h
   src/server/object_store.cpp
   src/server/object_worker.cpp
+  include/q4t/server/object_retention.h
+  src/server/object_retention.cpp
   src/server/object_protocol.h
   include/q4t/server/responses_state.h
   src/server/responses_state.cpp

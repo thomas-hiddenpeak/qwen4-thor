@@ -386,6 +386,27 @@ ObjectReply ObjectStore::ScanResponses(std::string after,
                   false, deadline, cancelled);
 }
 
+ObjectReply ObjectStore::Retention(int64_t item_created_before, size_t limit,
+                                   std::string expected_plan,
+                                   Clock::time_point deadline,
+                                   const std::function<bool()>& cancelled) {
+  if (item_created_before < 0 || limit == 0 || limit > 128 ||
+      (!expected_plan.empty() &&
+       (expected_plan.size() != 64 ||
+        !std::all_of(expected_plan.begin(), expected_plan.end(), [](char c) {
+          return (c >= 'a' && c <= 'f') || (c >= '0' && c <= '9');
+        }))))
+    return Error(400, "invalid_retention_command",
+                 "Invalid retention cutoff, limit or plan digest");
+  const bool mutation = !expected_plan.empty();
+  return Dispatch(
+      OutputJson(Object({{"operation", String("retention")},
+                         {"item_created_before", Number(item_created_before)},
+                         {"limit", Number(limit)},
+                         {"expected_plan", String(std::move(expected_plan))}})),
+      mutation, deadline, cancelled);
+}
+
 ObjectReply ObjectStore::ExecuteBatch(std::span<const ObjectRequest> requests,
                                       Clock::time_point deadline,
                                       const std::function<bool()>& cancelled) {

@@ -49,4 +49,7 @@ class StateKeyAdmin {
 // Live operation never starts or restarts a model. Explicit --offline uses the
 // same exclusive durable worker and fails if a running service owns the store.
 int MaybeRunStateKeyCommand(int argc, char** argv);
+// Retention shares the authenticated local transport, not key material or
+// application credentials. No model work is performed by either command.
+int MaybeRunStateRetentionCommand(int argc, char** argv);
 }  // namespace q4t::server

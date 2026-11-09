@@ -38,6 +38,8 @@ int main(int argc, char** argv) {
   if (object_worker >= 0) return object_worker;
   const int state_keys = q4t::server::MaybeRunStateKeyCommand(argc, argv);
   if (state_keys >= 0) return state_keys;
+  const int retention = q4t::server::MaybeRunStateRetentionCommand(argc, argv);
+  if (retention >= 0) return retention;
   const int fixture = GrammarProcessFixture(argc, argv);
   if (fixture >= 0) return fixture;
   const int conversation = ConversationApiFixture(argc, argv);

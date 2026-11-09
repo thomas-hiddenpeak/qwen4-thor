@@ -63,6 +63,8 @@ void PrintUsage(const char* prog) {
       "            (q4t service --help)\n"
       "  state-keys  Inspect/rotate native encrypted-state keys\n"
       "              (q4t state-keys --help)\n"
+      "  state-retention  Inspect/collect protected application state\n"
+      "              (q4t state-retention --help)\n"
       "  serve     OpenAI-compatible HTTP API server\n"
       "            (q4t serve [--host IPv4] [--port N] "
       "[--operations-port N] [--model-dir DIR] "
@@ -899,6 +901,8 @@ int main(int argc, char** argv) {
   if (object_worker >= 0) return object_worker;
   const int state_keys = q4t::server::MaybeRunStateKeyCommand(argc, argv);
   if (state_keys >= 0) return state_keys;
+  const int retention = q4t::server::MaybeRunStateRetentionCommand(argc, argv);
+  if (retention >= 0) return retention;
   const int worker = q4t::server::MaybeRunGrammarWorker(argc, argv);
   if (worker >= 0) return worker;
   if (argc < 2) {

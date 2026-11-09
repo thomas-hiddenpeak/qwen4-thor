@@ -11,6 +11,7 @@
 
 #include <atomic>
 #include <cstdlib>
+#include <ctime>
 #include <cstring>
 #include <filesystem>
 #include <future>
@@ -87,8 +88,8 @@ struct Command {
   int exit = -1;
   std::string text;
 };
-Command Cli(std::vector<std::string> args) {
-  args.insert(args.begin(), {"/proc/self/exe", "state-keys"});
+Command Cli(std::vector<std::string> args, std::string entry = "state-keys") {
+  args.insert(args.begin(), {"/proc/self/exe", std::move(entry)});
   std::vector<char*> argv;
   for (auto& arg : args) argv.push_back(arg.data());
   argv.push_back(nullptr);
@@ -392,3 +393,168 @@ Q4T_TEST(state_key_admin_shutdown_cancels_waiting_io_without_worker_growth) {
   return true;
 }
 #endif
+
+namespace {
+Json Retention(int64_t cutoff = 0, int limit = 32, std::string plan = {}) {
+  return Parse(R"({"version":1,"action":"retention_)" +
+               std::string(plan.empty() ? "inspect" : "collect") +
+               R"(","item_created_before":)" + std::to_string(cutoff) +
+               R"(,"limit":)" + std::to_string(limit) +
+               (plan.empty() ? "" : R"(,"expected_plan":")" + plan + '"') +
+               '}');
+}
+bool SeedRetention(ObjectStore& objects, size_t count = 1) {
+  std::vector<ObjectRequest> requests;
+  for (size_t i = 0; i < count; ++i) {
+    ObjectRequest request;
+    request.operation = ObjectOperation::kPut;
+    request.kind = ObjectKind::kConversationItem;
+    request.id = "item_" + std::to_string(i);
+    request.scope = "client:cpu";
+    request.ttl_seconds = 0;
+    request.created_at = std::time(nullptr) - 10;
+    request.data = Parse(R"({"item":{"type":"message","role":"user",
+      "content":"DO_NOT_EXPOSE_PRIVATE_PAYLOAD"}})");
+    requests.push_back(std::move(request));
+  }
+  return Ok(objects.ExecuteBatch(requests, Clock::now() + 5s));
+}
+}  // namespace
+
+Q4T_TEST(
+    state_retention_admin_actual_live_cli_large_plan_and_exact_collection) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  Q4T_CHECK(SeedRetention(objects, 129));
+  auto admin = StateKeyAdmin::Start(objects, f.options.directory);
+  Q4T_CHECK(admin);
+  const auto cutoff = std::to_string(std::time(nullptr));
+  const auto inspect =
+      Cli({"inspect", "--object-store-dir", f.options.directory,
+           "--item-created-before", cutoff, "--limit", "128"},
+          "state-retention");
+  Q4T_CHECK(inspect.exit == 0 && inspect.text.size() > 16384 &&
+            inspect.text.find("DO_NOT_EXPOSE_PRIVATE_PAYLOAD") ==
+                std::string::npos);
+  const auto reply = Parse(inspect.text);
+  const auto* plan = reply.Find("value");
+  Q4T_CHECK(plan && plan->GetInt("eligible_objects") == 129 &&
+            plan->GetArray("candidates")->array.size() == 128 &&
+            !plan->GetBool("applied") && plan->GetBool("has_more"));
+  const auto collected =
+      Cli({"collect", "--object-store-dir", f.options.directory,
+           "--item-created-before", cutoff, "--limit", "128", "--expected-plan",
+           plan->GetString("plan_sha256")},
+          "state-retention");
+  Q4T_CHECK(collected.exit == 0 &&
+            Parse(collected.text).Find("value")->GetInt("deleted_objects") ==
+                128);
+  const auto remaining = f.Call(Retention(std::time(nullptr)));
+  Q4T_CHECK(Ok(remaining) && remaining.value.GetInt("eligible_objects") == 1 &&
+            admin->Alive() && objects.Health().workers_started == 1);
+  Q4T_CHECK(Ok(f.Call(f.Request("initialize"))) && Ok(f.Call(f.Request())));
+  return true;
+}
+
+Q4T_TEST(
+    state_retention_admin_actual_offline_ownership_and_no_implicit_cleanup) {
+  Fixture f;
+  const auto cutoff = std::time(nullptr);
+  {
+    ObjectStore objects(f.options);
+    Q4T_CHECK(SeedRetention(objects));
+    const auto blocked =
+        Cli({"inspect", "--object-store-dir", f.options.directory, "--offline"},
+            "state-retention");
+    Q4T_CHECK(blocked.exit == 1);
+    Q4T_CHECK(objects.Retention(cutoff, 32, {}, Clock::now() + 3s)
+                  .value.GetInt("eligible_objects") == 1);
+  }
+  const auto offline =
+      Cli({"inspect", "--object-store-dir", f.options.directory, "--offline",
+           "--item-created-before", std::to_string(cutoff)},
+          "state-retention");
+  Q4T_CHECK(offline.exit == 0);
+  const auto reply = Parse(offline.text);
+  Q4T_CHECK(reply.Find("value")->GetInt("eligible_objects") == 1 &&
+            !reply.Find("value")->GetBool("applied"));
+  const auto collect =
+      Cli({"collect", "--object-store-dir", f.options.directory, "--offline",
+           "--item-created-before", std::to_string(cutoff), "--expected-plan",
+           reply.Find("value")->GetString("plan_sha256")},
+          "state-retention");
+  Q4T_CHECK(collect.exit == 0 &&
+            Parse(collect.text).Find("value")->GetInt("deleted_objects") == 1);
+  return true;
+}
+
+Q4T_TEST(
+    state_retention_admin_invalid_options_and_envelopes_do_not_start_worker) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  auto admin = StateKeyAdmin::Start(objects, f.options.directory);
+  Q4T_CHECK(admin);
+  for (const auto& extra : std::vector<std::vector<std::string>>{
+           {"--limit", "129"},
+           {"--limit", "1", "--limit", "2"},
+           {"--item-created-before", "-1"},
+           {"--expected-plan", std::string(64, 'a')},
+           {"--offline", "--offline"},
+           {"--unknown"}}) {
+    std::vector<std::string> args{"inspect", "--object-store-dir",
+                                  f.options.directory};
+    args.insert(args.end(), extra.begin(), extra.end());
+    Q4T_CHECK(Cli(args, "state-retention").exit == 2);
+  }
+  Q4T_CHECK(Cli({"collect", "--object-store-dir", f.options.directory},
+                "state-retention")
+                .exit == 2);
+  for (
+      const auto* raw :
+      {R"({"version":1.5,"action":"retention_inspect","item_created_before":0,"limit":32})",
+       R"({"version":1,"action":"retention_collect","item_created_before":0,"limit":32})",
+       R"({"version":1,"action":"retention_inspect","item_created_before":0,"limit":32,"expected_plan":null})",
+       R"({"version":1,"action":"retention_inspect","item_created_before":0,"limit":1.5})"})
+    Q4T_CHECK(f.Call(Parse(raw)).http_status == 400);
+  Q4T_CHECK(objects.Health().workers_started == 0 && admin->Alive());
+  return true;
+}
+
+Q4T_TEST(state_retention_admin_lost_collection_receipt_is_not_replayed) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  Q4T_CHECK(SeedRetention(objects));
+  const auto cutoff = std::time(nullptr);
+  const auto plan = objects.Retention(cutoff, 32, {}, Clock::now() + 3s);
+  Q4T_CHECK(Ok(plan));
+  sockaddr_un address{};
+  const auto size = Address(f, &address);
+  OwnedFd listener(socket(AF_UNIX, SOCK_SEQPACKET | SOCK_CLOEXEC, 0));
+  Q4T_CHECK(listener.Get() >= 0 &&
+            bind(listener.Get(), reinterpret_cast<sockaddr*>(&address), size) ==
+                0 &&
+            listen(listener.Get(), 1) == 0);
+  auto worker = std::async(std::launch::async, [&] {
+    pollfd ready{listener.Get(), POLLIN, 0};
+    if (poll(&ready, 1, 2000) <= 0) return false;
+    OwnedFd peer(accept4(listener.Get(), nullptr, nullptr, SOCK_CLOEXEC));
+    if (peer.Get() < 0) return false;
+    ready = {peer.Get(), POLLIN, 0};
+    if (poll(&ready, 1, 2000) <= 0) return false;
+    char bytes[4096];
+    const auto received = recv(peer.Get(), bytes, sizeof(bytes), MSG_DONTWAIT);
+    if (received <= 0) return false;
+    const auto applied = HandleStateKeyCommand(
+        objects, Parse(std::string(bytes, received)), Access());
+    return applied.ok() && applied.value.GetInt("deleted_objects") == 1;
+    // Close after actual commit without delivering the receipt.
+  });
+  const auto lost =
+      f.Call(Retention(cutoff, 32, plan.value.GetString("plan_sha256")));
+  Q4T_CHECK(worker.get() && !lost.ok() && lost.commit_unknown);
+  Q4T_CHECK(objects.Retention(cutoff, 32, {}, Clock::now() + 3s)
+                .value.GetInt("eligible_objects") == 0);
+  pollfd ready{listener.Get(), POLLIN, 0};
+  Q4T_CHECK(poll(&ready, 1, 0) == 0);
+  return true;
+}

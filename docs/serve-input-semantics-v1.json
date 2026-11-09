@@ -360,6 +360,18 @@
         "src/server/chat_responses.cpp"
       ],
       "contract": "Responses share native model execution and preserve item identities, actual token usage/probabilities and original sequenced events; no Chat DONE. Store defaults true, previous instructions do not carry forward, client-scoped history and conversation commits use isolated bounded object I/O and atomic revision-checked transactions. Background owns its admission permit and original deadline independently of subscribers; cancel is idempotent empty POST returning200, with independent bounded cancellation capacity. Temporary background records cover execution then600 seconds. Recovery proves old execution owner death using boot/PID birth/namespace identity: queued may resume original ID, started fails with saved partial output and is never replayed. Storage/monitor failure cannot restart the model or close healthy core readiness. Conversations support CRUD, item append/list/retrieve/delete and include projection. Application queries use closed per-route fields with exact integers, true/false booleans and include arrays; other routes keep prior query rejection. State APIs, shape validation and capability declarations do not complete pending compaction/summary/encryption/file/tool executors."
+    },
+    {
+      "id": "native-application-retention",
+      "sources": [
+        "include/q4t/server/object_retention.h",
+        "src/server/object_retention.cpp",
+        "src/server/object_worker.cpp",
+        "src/server/object_store.cpp",
+        "src/server/state_key_admin.cpp",
+        "src/server/state_retention_cli.cpp"
+      ],
+      "contract": "Expiry collection preserves queued/in_progress tasks until recovery has durably recorded a terminal state, and follows typed same-owner references from retained roots. Expired unrooted cycles can be collected; unknown lifecycle/shape preserves that owner's records and is reported. No references are extracted from user text or tool arguments. Permanent conversations/prompts retain explicit-delete semantics; permanent orphan items require an explicit creation-time cutoff, not an inferred orphan age. Native same-UID state-retention inspect/collect uses the existing bounded isolated store/admin channel. Inspect does not apply proposed cleanup; collect rechecks the exact SHA256 plan and returns409 on state/eligibility change. At most128 selected objects from one owner per atomic journal transaction; inspect again for further batches. Planner bounds100000 nodes,64MiB metadata estimate and2M references; resource failure retains data and does not deny otherwise usable CRUD. Lost mutation receipt is commit_unknown with no replay; reinspection/recovery uses the existing journal. Offline access requires exclusive store ownership. No business payload/key bytes in receipts; maintenance errors cannot restart a model or close healthy core readiness."
     }
   ],
   "sources_sha256": {
@@ -383,6 +395,7 @@
     "include/q4t/server/http_request.h": "cc5ff737d9847c994310f1c264e8b18b0d9b359d73a852b5f217a254b00a9027",
     "include/q4t/server/media_admission.h": "5d50347a9c9349d4a7d381792eb5536c2516f7e66ff7d1a1e7b787cd599c8c27",
     "include/q4t/server/model_catalog.h": "19bb1b450170b4d7c1d8895593f41baa1ad91c90aaafc58977894bcf76d52143",
+    "include/q4t/server/object_retention.h": "96b17568ac8d3b0c00d773a421a0989e827797b6e9b768198f329b5c57488bb2",
     "include/q4t/server/prefix_cache_policy.h": "91ef4f963c51a8098f1e333a74ac3cc56c046cf87f987b0e026a1e27d4c304c4",
     "include/q4t/server/request_admission.h": "e0b802ab08dd1857cb26b5323e35538bfd0f778add9298da6a972ebdc9fb8f64",
     "include/q4t/server/request_json.h": "f3fded2db644464f3e187215cfe14ae0280a0099bfbbeca670c7ac4e4492bb72",
@@ -445,8 +458,9 @@
     "src/server/media_admission.cpp": "aca67cb60d88c586dcdc58ea9161dca05edc0be9ac1507bb9e91af313822fbf3",
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
     "src/server/model_catalog.cpp": "8d0808b669e3ecbc95794d8b07bd6a86b38dc310cf93c98e18befade71fd2d7e",
-    "src/server/object_store.cpp": "dd95823ba28278b291d79bed2a17e2c9eafbb0d1ce18b4bf3995c6c7fc288eb1",
-    "src/server/object_worker.cpp": "c0ab9faceb0688a887167f0e47009b8dd5aafb500a1b54c0ad70330ef5502932",
+    "src/server/object_retention.cpp": "32d96463d782aa464b4e7063e1dc5cff74d169e00f83716c9880f4f50c912906",
+    "src/server/object_store.cpp": "231f9e6c55a213d609e27581fdcc8b8041e4b8c04a7714c1192df5ed1a14516f",
+    "src/server/object_worker.cpp": "05de5aa4497a7301e53cf8c3dea07a5cef99327b9cb842e8d3409a1de8d15641",
     "src/server/output_constraints.cpp": "1273d5d1643a8cb7ccd2804990d2bcac656cbe5b198096c0a66b6803751e3753",
     "src/server/output_schema.cpp": "6d42d154ce3ac43c2cb2569298af221148813f9233e37c9d9c75eb0f331ee65d",
     "src/server/prediction.cpp": "7e8ccdf7c44dd5c8245230577d42eb7d4cd17c6e2efcf5534a02e6744815733f",
@@ -468,6 +482,8 @@
     "src/server/schema_token_guard.cpp": "3004a864f26a35f2eade7cf27e31520df348424edde1d6ed985ed5d194755a44",
     "src/server/server_options.cpp": "3388076d3ced924b51cba97ce60dcff1fa15302750a606bb2a7152556913cb9e",
     "src/server/session_cache.cpp": "38e6ec9957ff7625b3f652fd2886dfc3c98b46c5d113af778dbe66fc16d3a3e9",
+    "src/server/state_key_admin.cpp": "816ad3e48bfbec54fe2098f881f48133a2b86239a570fb29a601ac5cdadc18d1",
+    "src/server/state_retention_cli.cpp": "ba09eff3bb06975049ade23c6f86652fd60c8e0738ffb9f2884714214334c2a3",
     "src/server/text_stop.cpp": "2397b27adc873b3ac0697af68352a73c8481830da6053fde0adeca536eaba4dc",
     "src/server/thinking_budget.cpp": "05410d285b3cd6bbdb1d5e19282655f89b5d17a3205a35529e99ec2ec1f60962",
     "src/server/token_logprobs.cpp": "6d315376dcbe02b2b9d35b609b36f9ce02bf22e5a7c81d9ab47bde7e14556927",

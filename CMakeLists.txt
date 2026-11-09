@@ -265,6 +265,7 @@ include(cmake/ChatProtocolIdentity.cmake)
 add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/object_store.cpp
   src/server/object_worker.cpp
+  src/server/object_retention.cpp
   src/server/responses_state.cpp
   src/server/responses_execution.cpp
   src/server/responses_execution_compaction.cpp
@@ -362,7 +363,8 @@ include(cmake/NativeCrypto.cmake)
 target_sources(q4t_server PRIVATE src/server/native_crypto.cpp
   src/server/state_cipher.cpp src/server/responses_crypto.cpp
   src/server/responses_compaction.cpp
-  src/server/state_key_admin.cpp src/server/state_key_cli.cpp)
+  src/server/state_key_admin.cpp src/server/state_key_cli.cpp
+  src/server/state_retention_cli.cpp)
 q4t_link_native_crypto(q4t_server)
 option(Q4T_SERVE_FAULT_INJECTION "Validation-only serving fault hooks" OFF)
 if(Q4T_SERVE_FAULT_INJECTION)

@@ -19,7 +19,7 @@ using namespace object_detail;
 using Clock = std::chrono::steady_clock;
 using namespace std::chrono_literals;
 constexpr size_t kRequestBytes = 4096;
-constexpr size_t kReplyBytes = 16384;
+constexpr size_t kReplyBytes = 128 * 1024;
 socklen_t Address(const std::string& directory, sockaddr_un* address) {
   const auto name = StateKeyAdminAddress(directory);
   if (name.empty() || name.size() + 1 > sizeof(address->sun_path)) return 0;
@@ -61,7 +61,7 @@ ObjectReply Transport(bool submitted) {
 bool Decode(std::string_view text, Json* value) {
   io::JsonParseLimits limits;
   limits.max_depth = 8;
-  limits.max_values = 256;
+  limits.max_values = 4096;
   limits.max_string_bytes = kReplyBytes;
   limits.reject_duplicate_keys = true;
   return io::ParseJson(std::string(text), value, true, limits).ok();
@@ -84,12 +84,34 @@ std::string StateKeyAdminAddress(const std::string& directory) {
 ObjectReply HandleStateKeyCommand(ObjectStore& objects, const Json& request,
                                   const StateAccess& access) {
   std::string bad;
+  const auto action = request.GetString("action");
+  if (action == "retention_inspect" || action == "retention_collect") {
+    const auto* version = request.Find("version");
+    const auto* cutoff = request.Find("item_created_before");
+    const auto* limit = request.Find("limit");
+    const auto* expected = request.Find("expected_plan");
+    const bool collect = action == "retention_collect";
+    if (!InputFields(request,
+                     {"version", "action", "item_created_before", "limit",
+                      "expected_plan"},
+                     &bad, "command") ||
+        !version || !IsInputInteger(*version) || version->AsInt() != 1 ||
+        !cutoff || !IsInputInteger(*cutoff) || cutoff->number < 0 ||
+        cutoff->number > (1LL << 53) - 1 || !limit || !IsInputInteger(*limit) ||
+        limit->number < 1 || limit->number > 128 ||
+        (collect ? (!expected || !expected->IsString() || expected->str.empty())
+                 : expected != nullptr))
+      return Error(400, "invalid_retention_command",
+                   "Invalid local retention command");
+    return objects.Retention(cutoff->AsInt(), limit->AsInt(),
+                             collect ? expected->str : "", access.deadline,
+                             access.cancelled);
+  }
   if (!InputFields(request,
                    {"version", "action", "expected_revision", "retire"}, &bad,
                    "command") ||
       request.GetInt("version") != 1)
     return InvalidCommand();
-  const auto action = request.GetString("action");
   if (action == "inspect" || action == "initialize") {
     if (request.Has("expected_revision") || request.Has("retire"))
       return InvalidCommand();

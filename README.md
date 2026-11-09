@@ -172,6 +172,14 @@ Responses可通过`include:["reasoning.encrypted_content"]`取得本服务
 旧密钥仅通过`--retire KEY_ID`显式退役，无需重启模型。
 详见[加密状态与管理边界](docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md#a073-原生密钥运维接入)。
 
+应用状态的原生留存管理使用 `q4t state-retention inspect
+--object-store-dir ABS_DIR`。自动过期清理保护未结束任务及仍被引用的
+状态；永久孤立条目默认保留，可明确用 `--item-created-before UNIX_SECONDS`
+选择创建时间更早的条目。确认计划后，以相同条件运行 `collect
+--expected-plan SHA256`；每批最多128个同客户端对象，变化返回冲突，
+丢回执时重新inspect，不盲目重试。无需重启模型；`--offline`只用于
+可独占的停服目录。详见[留存治理](docs/SERVE_APPLICATION_RETENTION_2026-11-10.md)。
+
 标准`POST /v1/responses/input_tokens`与SDK
 `responses.inputTokens.count()`已通过计数与真实生成usage业务短验。
 它按本模型真实模板/分词和媒体展开计数，可读取当前客户端的历史与

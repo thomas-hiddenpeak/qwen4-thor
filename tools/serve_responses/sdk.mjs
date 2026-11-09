@@ -83,6 +83,15 @@ export async function execute(input) {
     } else if (input.action === 'input_items') {
       const page = await client.responses.inputItems.list(input.id, input.query ?? {}, options);
       result = { object: 'list', data: page.data, first_id: page.first_id, last_id: page.last_id, has_more: page.has_more };
+    } else if (input.action === 'conversation_create') {
+      result = await client.conversations.create(input.request ?? {}, options);
+    } else if (input.action === 'conversation_retrieve') {
+      result = await client.conversations.retrieve(input.id, options);
+    } else if (input.action === 'conversation_delete') {
+      result = await client.conversations.delete(input.id, options);
+    } else if (input.action === 'conversation_items') {
+      const page = await client.conversations.items.list(input.id, input.query ?? {}, options);
+      result = { object: 'list', data: page.data, first_id: page.first_id, last_id: page.last_id, has_more: page.has_more };
     } else throw new Error('unknown action');
   } catch (problem) {
     error = { class: problem.constructor.name, message: problem.message,

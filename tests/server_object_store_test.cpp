@@ -229,6 +229,7 @@ Q4T_TEST(object_store_expiration_reclaims_persistent_quota) {
   f.options.max_client_objects = 1;
   ObjectStore store(f.options);
   auto expiring = Request();
+  expiring.data = Parse(R"({"response":{"status":"completed","output":[]}})");
   expiring.ttl_seconds = 1;
   const auto written = Run(store, expiring);
   Q4T_CHECK(Ok(written));
