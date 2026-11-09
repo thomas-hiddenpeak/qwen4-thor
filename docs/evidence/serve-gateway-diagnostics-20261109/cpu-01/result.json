@@ -1,0 +1,28 @@
+{
+  "status": "PASS_TARGETED_GATEWAY_DIAGNOSTICS",
+  "cases": 18,
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_recovery.test_gateway_diagnostics.DiagnosticTests",
+    "tools.serve_recovery.test_gateway_diagnostics.ClassifierTests",
+    "tools.serve_recovery.test_gateway_diagnostics.ProjectionTests",
+    "tools.serve_recovery.test_gateway_diagnostics.GuardianTests.test_typed_rejection_and_legacy_recovery_preserve_all_role_identities",
+    "tools.serve_recovery.test_gateway_diagnostics.GuardianTests.test_stale_and_malformed_diagnostics_cannot_recover_or_revoke_current_model",
+    "tools.serve_recovery.test_gateway_capacity.GatewayCapacityTests",
+    "tools.serve_service.test_service.Case.test_memory_unready_is_distinct_from_permanent_backend_failure",
+    "tools.serve_service.test_service.Case.test_effective_mtp_or_admission_mismatch_fails_closed",
+    "tools.serve_host.test_native.NativeTests.test_freshness_does_not_renew_ready_or_turn_missing_values_into_zero",
+    "tools.serve_recovery.test_production.ControllerTests.test_effective_capacity_mismatch_quarantines_without_retry_or_grant"
+  ],
+  "returncode": 0,
+  "seconds": 2.2471533799543977,
+  "guardian_sha256": "cee1507d964bdc65d167212889bf7dca2f5084e74165a56f3313b0ab48af4571",
+  "default_preserved": true,
+  "model_starts": 0,
+  "chat_requests": 0,
+  "gpu_queries": 0
+}

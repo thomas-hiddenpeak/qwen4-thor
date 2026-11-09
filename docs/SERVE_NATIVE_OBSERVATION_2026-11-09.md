@@ -4,6 +4,19 @@
 backend v5/v6且强制nginx；不能作为当前Guardian原生服务的完整观测。
 旧诊断留存仅认识两文件bundle，未保护活动代次、回退依赖或未归档故障。
 
+N07 真实业务暴露的新缺口：模型 READY 而入口独立验证拒绝时，根状态
+缺少具体原因。已补齐固定 `gateway_*` 原因码与模型代次/年龄，经
+`gateway_binding_reason`、`gateway_binding_model_generation`、
+`gateway_binding_age_ms` 返回；原生观察器投影 `gateway_binding`，指标
+为 `q4t_service_gateway_binding_reason{reason="..."}`。容量、身份、观察、
+客户端策略与等待状态分开，不输出原始异常/Key。根 `reason` 保留真实
+保护故障的优先级；入口诊断不改变模型恢复预算，不调用模型重启。
+旧 unbound 消息兼容；新消息过代则忽略，错误诊断仅计辅助投影错误。
+观察器超过 3 秒省略未知诊断，已绑定且业务就绪的 `none` 仍由当前
+就绪状态证明。18 项直接 CPU 通过，见
+[类型诊断证据](evidence/serve-gateway-diagnostics-20261109/README.md)；
+封装/默认交付仍须完成，不能把发现的问题留成永久“限制”。
+
 ## 实施顺序
 
 1. 当前原生服务只读采集：固定包/状态目录/service_id，Guardian私有

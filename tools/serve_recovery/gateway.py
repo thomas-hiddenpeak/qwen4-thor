@@ -78,6 +78,8 @@ class Admission:
         self.retry_at = 0
         self.policy_channel = None
         self.verified_clients = ()
+        self.failure_reason = 'gateway_verifying'
+        self.observed_generation = 0
 
     def close(self):
         self.cached = None
@@ -116,19 +118,36 @@ class Admission:
 
     def update(self):
         """Independent verification runs before opening a new generation."""
+        stage = 'gateway_control_unavailable'
         try:
             snapshot = self.fresh()
+            stage = 'gateway_observation_invalid'
+            ledger.require(ledger.integer(snapshot['model_generation']),
+                           'invalid observed model generation')
+            self.observed_generation = snapshot['model_generation']
             if self.matches(snapshot):
                 installed = self.update_policy(snapshot)
                 if installed and snapshot['gateway_bound_model'] != snapshot['model_generation']:
                     self.channel.bound(snapshot['model_generation'])
+                    self.failure_reason = 'gateway_verifying'
+                elif not installed:
+                    self.reject('gateway_client_policy_unavailable')
                 return
             self.close()
-            self.channel.unbound()
-            if (not snapshot['model_ready'] or snapshot['stop_requested'] or
-                    snapshot['binding'] is None or time.monotonic() < self.retry_at):
+            if snapshot['stop_requested']:
+                self.reject('gateway_stopping')
+                return
+            if not snapshot['model_ready']:
+                self.reject('gateway_model_not_ready')
+                return
+            if snapshot['binding'] is None:
+                self.reject('gateway_binding_unavailable')
+                return
+            self.reject(self.failure_reason)
+            if time.monotonic() < self.retry_at:
                 return
             self.retry_at = time.monotonic()+1
+            stage = 'gateway_identity_mismatch'
             key = self.key(snapshot)
             p, value = self.config['policy'], snapshot['binding']
             expected = binding.validate(value, base=self.config['backend_policy'],
@@ -139,25 +158,41 @@ class Admission:
             try:
                 ledger.require(supervisor.process_identity(owner['pid']) == owner,
                                'gateway model owner changed')
+                stage = 'gateway_observation_unavailable'
                 observation = supervisor.probe(owner['pid'], value['port'],
                     value['operations_port'], stopped=self.stopped, include_metrics=False)
+                stage = 'gateway_observation_invalid'
                 result = supervisor.classify(observation, value['protocol_sha256'],
                     value['binary_sha256'], expected, value['operations_port'],
                     self.config.get('capacity_profile'))
+                stage = 'gateway_backend_not_ready'
                 ledger.require(result == 'READY', 'new backend is not ready')
+                stage = 'gateway_generation_changed'
                 current = self.fresh()
                 ledger.require(current['model_ready'] and not current['stop_requested'] and
                     self.key(current) == key and not select.select([fd], [], [], 0)[0],
                     'generation changed during gateway verification')
                 self.cached, self.pidfd = key, fd
                 fd = None
-                if self.update_policy(snapshot):self.channel.bound(snapshot['model_generation'])
+                if self.update_policy(snapshot):
+                    self.channel.bound(snapshot['model_generation'])
+                    self.failure_reason = 'gateway_verifying'
+                else:
+                    self.reject('gateway_client_policy_unavailable')
             finally:
                 if fd is not None:
                     os.close(fd)
-        except (OSError, ValueError, RuntimeError, KeyError):
+        except (OSError, ValueError, RuntimeError, KeyError, TypeError) as error:
             self.close()
-            self.channel.unbound()
+            if isinstance(error, supervisor.BindingMismatch):
+                stage = error.reason
+            elif isinstance(error, (ValueError, KeyError, TypeError)) and stage == 'gateway_observation_unavailable':
+                stage = 'gateway_observation_invalid'
+            self.reject(stage)
+
+    def reject(self, reason):
+        self.failure_reason = reason
+        self.channel.unbound(reason=reason, generation=self.observed_generation)
 
     def update_policy(self, snapshot):
         if self.config['version'] != 4:return True

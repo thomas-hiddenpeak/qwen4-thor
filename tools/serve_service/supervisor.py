@@ -107,33 +107,58 @@ def expected_configuration(profile=None):
             p['memory_recovery_margin_mib'] if p['min_available_memory_mib'] else 0))
 
 
+class BindingMismatch(RuntimeError):
+    """Stable diagnostic code; the message remains private to the caller."""
+    def __init__(self, reason, message):
+        self.reason = reason
+        super().__init__(message)
+
+
+def binding_require(value, reason, message):
+    if not value:
+        raise BindingMismatch(reason, message)
+
+
 def classify(probe, protocol, binary, client_policy=None, operations_port=0,
              profile=None):
     """Only validated observations affect supervision; busy is not failure."""
-    pkg.require(probe['process']['executable_sha256'] == binary and
+    binding_require(probe['process']['executable_sha256'] == binary and
                 probe['process']['listener_scope'] == 'loopback',
+                'gateway_identity_mismatch',
                 'backend executable/listener mismatch')
-    pkg.require(probe['protocol'] == protocol, 'backend protocol mismatch')
-    pkg.require(all(k in probe['configuration'] and
+    binding_require(probe['protocol'] == protocol, 'gateway_identity_mismatch',
+                    'backend protocol mismatch')
+    binding_require(all(k in probe['configuration'] and
                     pkg.same_json(probe['configuration'][k], v)
                     for k, v in expected_configuration(profile).items()),
+                'gateway_capacity_mismatch',
                 'effective serving configuration differs')
     if profile is not None and profile.get('name') != pkg.PROFILE['name']:
         from tools.serve_service import capacity
-        capacity.observation(profile, probe['configuration'])
+        try:
+            capacity.observation(profile, probe['configuration'])
+        except RuntimeError as error:
+            raise BindingMismatch('gateway_capacity_mismatch',
+                                  'effective capacity differs') from error
     if client_policy is not None:
         from tools.serve_gateway import client_policy as cp
-        cp.observed_matches(probe.get('client_policy'), client_policy)
+        try:
+            cp.observed_matches(probe.get('client_policy'), client_policy)
+        except (ValueError, RuntimeError) as error:
+            raise BindingMismatch('gateway_client_policy_mismatch',
+                                  'client policy differs') from error
     if operations_port:
-        pkg.require(probe.get('operations_port') == operations_port and
+        binding_require(probe.get('operations_port') == operations_port and
                     probe['configuration'].get('operations_port') == operations_port and
                     probe.get('observability_version') == 5 and
                     probe['operations_process']['executable_sha256'] == binary and
                     probe['operations_process']['listener_scope'] == 'loopback',
+                    'gateway_identity_mismatch',
                     'operations listener configuration differs')
     metrics = probe['metrics']
     if metrics is None:
-        pkg.require(isinstance(probe.get('health_status'), str),
+        binding_require(isinstance(probe.get('health_status'), str),
+                    'gateway_observation_invalid',
                     'health observation unavailable')
     if metrics is not None and metrics['q4t_gpu_healthy'] == 0:
         return 'GPU_UNHEALTHY'

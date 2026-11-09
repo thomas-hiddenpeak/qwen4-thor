@@ -54,6 +54,24 @@ uint64_t Integer(const Json& object, const char* key) {
   Require(w::GetUnsigned(object, key, &value).ok(), "missing exact integer");
   return value;
 }
+bool GatewayReason(const std::string& reason) {
+  static constexpr std::array reasons{"none",
+                                      "gateway_verifying",
+                                      "gateway_model_not_ready",
+                                      "gateway_stopping",
+                                      "gateway_binding_unavailable",
+                                      "gateway_control_unavailable",
+                                      "gateway_identity_mismatch",
+                                      "gateway_capacity_mismatch",
+                                      "gateway_client_policy_mismatch",
+                                      "gateway_observation_unavailable",
+                                      "gateway_observation_invalid",
+                                      "gateway_backend_not_ready",
+                                      "gateway_generation_changed",
+                                      "gateway_client_policy_unavailable",
+                                      "gateway_recovering"};
+  return std::find(reasons.begin(), reasons.end(), reason) != reasons.end();
+}
 std::string ReadFile(const std::string& path, bool private_file) {
   s::OwnedFd fd(open(path.c_str(), O_RDONLY | O_CLOEXEC | O_NOFOLLOW));
   Require(fd.Get() >= 0, "cannot open startup file");
@@ -431,6 +449,12 @@ class Guardian {
            (config_.gateway.empty() ||
             (gateway_ready_ && gateway_bound_model_ == model_generation_));
   }
+  void GatewayDiagnostic(const std::string& reason, uint64_t generation,
+                         int64_t now) {
+    gateway_reason_ = reason;
+    gateway_reason_model_ = generation;
+    gateway_reason_at_ = now;
+  }
   Json Status() const {
     const bool observations_unknown =
         !controller_health_.IsNull() &&
@@ -447,6 +471,15 @@ class Guardian {
         : retry_after_ > Now() ? (circuit_open_ ? "CIRCUIT_OPEN" : "RECOVERING")
         : controller_ready_    ? "WAIT_DEPENDENCY"
                                : "STARTING";
+    const bool current_gateway_reason =
+        gateway_reason_at_ > 0 && (gateway_reason_model_ == 0 ||
+                                   gateway_reason_model_ == model_generation_);
+    const auto reason = !failure_.empty() ? failure_
+                        : !stopped_ && !BusinessReady() &&
+                                current_gateway_reason &&
+                                gateway_reason_ != "none"
+                            ? gateway_reason_
+                            : std::string{};
     return w::Object(
         {{"version", w::Unsigned(1)},
          {"service_id", w::String(config_.service_id)},
@@ -492,6 +525,14 @@ class Guardian {
          {"gateway_ready", w::Boolean(gateway_ready_)},
          {"gateway_bound_model", w::Unsigned(gateway_bound_model_)},
          {"gateway_recovering", w::Boolean(gateway_recovering_)},
+         {"gateway_binding_reason",
+          current_gateway_reason ? w::String(gateway_reason_) : Json{}},
+         {"gateway_binding_model_generation",
+          w::Unsigned(gateway_reason_model_)},
+         {"gateway_binding_age_ms",
+          current_gateway_reason
+              ? w::Unsigned((Now() - gateway_reason_at_) / 1'000'000)
+              : Json{}},
          {"quota_wait_ms", w::Unsigned(static_cast<uint64_t>(std::max<int64_t>(
                                0, (quota_.NotBefore() - Now()) / 1'000'000)))},
          {"daemon_detached", w::Boolean(detached_)},
@@ -499,7 +540,7 @@ class Guardian {
          {"stop_requested", w::Boolean(stopping_)},
          {"stop_durable", w::Boolean(stop_durable_)},
          {"cleanup_confirmed", w::Boolean(stopped_)},
-         {"reason", w::String(failure_)}});
+         {"reason", w::String(reason)}});
   }
   void Freeze(const std::string& reason) {
     if (failure_.empty()) failure_ = reason;
@@ -1201,6 +1242,7 @@ class Guardian {
     gateway_recovering_ = true;
     gateway_ready_ = false;
     gateway_bound_model_ = 0;
+    GatewayDiagnostic("gateway_recovering", model_generation_, now);
     gateway_socket_.Reset();
     gateway_cleanup_started_ = now;
   }
@@ -1236,6 +1278,9 @@ class Guardian {
             event == "bound"
                 ? w::HasKeys(message, {"version", "service_id", "generation",
                                        "sequence", "event", "model_generation"})
+            : event == "unbound" && message.Find("binding_failure")
+                ? w::HasKeys(message, {"version", "service_id", "generation",
+                                       "sequence", "event", "binding_failure"})
                 : w::HasKeys(message, {"version", "service_id", "generation",
                                        "sequence", "event"}),
             "invalid gateway event");
@@ -1250,10 +1295,36 @@ class Guardian {
         ++gateway_event_;
         gateway_heartbeat_at_ = now;
         if (event == "ready") gateway_ready_seen_ = true;
-        if (event == "unbound") gateway_bound_model_ = 0;
+        if (event == "unbound") {
+          const auto* diagnostic = message.Find("binding_failure");
+          if (!diagnostic) {
+            gateway_bound_model_ = 0;
+            GatewayDiagnostic("gateway_binding_unavailable", model_generation_,
+                              now);
+          } else {
+            // A malformed or stale diagnostic cannot restart any role or
+            // overwrite the binding of a newer model generation.
+            try {
+              Require(w::HasKeys(*diagnostic, {"reason", "model_generation"}),
+                      "invalid binding diagnostic");
+              const auto reason = Text(*diagnostic, "reason");
+              const auto generation = Integer(*diagnostic, "model_generation");
+              Require(GatewayReason(reason) && reason != "none",
+                      "invalid binding reason");
+              if (generation == 0 || generation == model_generation_) {
+                gateway_bound_model_ = 0;
+                GatewayDiagnostic(reason, generation, now);
+              }
+            } catch (const std::exception&) {
+              ++auxiliary_projection_errors_;
+            }
+          }
+        }
         if (event == "bound" && model_ready_ && !model_binding_.IsNull() &&
-            Integer(message, "model_generation") == model_generation_)
+            Integer(message, "model_generation") == model_generation_) {
           gateway_bound_model_ = model_generation_;
+          GatewayDiagnostic("none", model_generation_, now);
+        }
       } catch (const std::exception&) {
         RecoverGateway(now);
         return;
@@ -1281,6 +1352,7 @@ class Guardian {
     gateway_registered_ = false;
     gateway_ready_seen_ = false;
     gateway_event_ = 0;
+    GatewayDiagnostic("gateway_verifying", model_generation_, now);
     const std::vector<std::string> env{
         "Q4T_SERVICE_ID=" + config_.service_id,
         "Q4T_GATEWAY_GENERATION=" + std::to_string(gateway_generation_),
@@ -1567,6 +1639,9 @@ class Guardian {
   s::OwnedFd gateway_socket_;
   s::LaunchGate gateway_gate_;
   std::string gateway_ticket_;
+  std::string gateway_reason_;
+  uint64_t gateway_reason_model_ = 0;
+  int64_t gateway_reason_at_ = 0;
   bool gateway_reaped_ = true, gateway_recovering_ = false;
   bool gateway_registered_ = false, gateway_ready_seen_ = false;
   bool gateway_ready_ = false;

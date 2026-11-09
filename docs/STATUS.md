@@ -1,5 +1,9 @@
 # 当前状态
 
+N06 类型诊断 18 项 CPU 全过、Guardian 构建零警告，[实际控制通道/进程证据](evidence/serve-gateway-diagnostics-20261109/README.md)。0 GPU/模型/Chat；正在核对未变引擎的业务复用、封装与可回退发布，默认 N07/STOPPED 保持。之后继续全部总任务。
+
+N06 类型诊断已成组接通：入口容量/身份/观察/策略拒绝，经原生 Guardian 状态到指标投影；旧消息兼容，未知/旧代诊断不恢复模型。冻结 18 项直接 CPU，先必要 Guardian 构建。本组尚未测试，默认 N07/STOPPED 保持，随后继续全部总任务。
+
 N07 已可回退默认交付：[封装、实际发布/旧代回退证据](evidence/serve-lifecycle-delivery-20261109/README.md)。
 默认引擎 `3072f28c`/元数据 `1b507ad9`、原生 v10 包 `22849b0d`，
 统一 `build/q4t service`，publication revision 6；核心与 Key/限额/

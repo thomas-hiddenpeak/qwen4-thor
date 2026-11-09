@@ -6,6 +6,15 @@ import time
 
 from tools.serve_recovery import journal, ledger
 
+GATEWAY_REASONS = (
+    'none', 'gateway_verifying', 'gateway_model_not_ready', 'gateway_stopping',
+    'gateway_binding_unavailable', 'gateway_control_unavailable',
+    'gateway_identity_mismatch', 'gateway_capacity_mismatch',
+    'gateway_client_policy_mismatch', 'gateway_observation_unavailable',
+    'gateway_observation_invalid', 'gateway_backend_not_ready',
+    'gateway_generation_changed', 'gateway_client_policy_unavailable',
+    'gateway_recovering')
+
 
 def address(service_id):
     ledger.require(ledger.identifier(service_id), 'invalid service identity')
@@ -142,8 +151,14 @@ class GatewayChannel(ControllerChannel):
                        'invalid model generation')
         self._send('bound', model_generation=generation)
 
-    def unbound(self):
-        self._send('unbound')
+    def unbound(self, reason=None, generation=0):
+        if reason is None:
+            self._send('unbound')  # Historical actor messages remain valid.
+            return
+        ledger.require(reason in GATEWAY_REASONS and reason != 'none' and
+                       ledger.integer(generation), 'invalid binding diagnostic')
+        self._send('unbound', binding_failure=dict(
+            reason=reason, model_generation=generation))
 
     def begin(self, operation, args):
         raise ledger.LedgerError('gateway has no recovery transaction authority')

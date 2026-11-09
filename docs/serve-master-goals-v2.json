@@ -493,7 +493,7 @@
     {
       "id": "N06",
       "required": true,
-      "state": "implementation_in_progress",
+      "state": "validated_delivery_pending",
       "implementation": "原生运维/指标/诊断与R04 exporter互通",
       "acceptance": "不安装Prometheus/exporter仍能看必要状态；观察失效不拖核心；真实健康与陈旧/未知分开",
       "depends_on": [
@@ -505,7 +505,8 @@
         "evidence/serve-run-retention-20261109/decision.json",
         "evidence/serve-retention-epoch-20261109/decision.json",
         "evidence/serve-retention-lineage-20261109/decision.json",
-        "evidence/serve-native-observation-delivery-20261109/decision.json"
+        "evidence/serve-native-observation-delivery-20261109/decision.json",
+        "evidence/serve-gateway-diagnostics-20261109/README.md"
       ],
       "release": {
         "engine_binary_sha256": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
@@ -518,14 +519,15 @@
       },
       "plan": "SERVE_NATIVE_OBSERVATION_2026-11-09.md",
       "remaining": [
-        "Propagate bounded typed gateway binding/identity/capacity/observation failure to native status without restarting healthy model"
+        "Seal and publish accepted typed gateway diagnostics with unchanged engine/business evidence review and targeted packaged checks"
       ],
       "findings": [
         {
           "source": "tools/serve_recovery/gateway.py Admission.update exception projection",
           "issue": "Independent gateway binding rejection closes admission but root status exposes no typed cause; report bounded identity/capacity/observation reasons without restarting a healthy model",
-          "state": "implementation_pending",
-          "evidence": "evidence/serve-lifecycle-capacity-fix-20261109/business-01/execution/status.jsonl"
+          "state": "fixed_cpu_validated_delivery_pending",
+          "evidence": "evidence/serve-lifecycle-capacity-fix-20261109/business-01/execution/status.jsonl",
+          "fix_evidence": "evidence/serve-gateway-diagnostics-20261109/README.md"
         }
       ]
     },

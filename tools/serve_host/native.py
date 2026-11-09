@@ -80,7 +80,8 @@ def empty(reason='source_unavailable', now=None):
     return dict(version=1, sampled=stamp() if now is None else now,
         state='UNKNOWN', reason=reason, sources={n: False for n in SOURCES},
         business_ready=None, observation=None, recovery_frozen=None,
-        generations=None, ledger=None, process=None, runtime=None, auxiliary=None)
+        generations=None, ledger=None, process=None, runtime=None, auxiliary=None,
+        gateway_binding=None)
 
 
 def project_status(value):
@@ -112,9 +113,17 @@ def project_status(value):
                      'pending_records', 'queued_bytes', 'queued_records')
             if all(ledger.integer(io.get(n)) for n in names):
                 auxiliary = {n: io[n] for n in names}
+    gateway = None
+    reason = value.get('gateway_binding_reason')
+    generation = value.get('gateway_binding_model_generation')
+    age = value.get('gateway_binding_age_ms')
+    if (reason in control.GATEWAY_REASONS and ledger.integer(generation) and
+            generation in (0, generations['model']) and ledger.integer(age) and
+            (age <= STALE_SECONDS * 1000 or reason == 'none' and ready)):
+        gateway = dict(reason=reason, model_generation=generation, age_ms=age)
     return dict(state=value['state'], business_ready=ready,
         observation=observation, recovery_frozen=value['recovery_frozen'],
-        generations=generations, auxiliary=auxiliary)
+        generations=generations, auxiliary=auxiliary, gateway_binding=gateway)
 
 
 def read_ledger(binding):
@@ -262,6 +271,12 @@ def metrics(value):
         emit('source_known', int(value['sources'][name]), f'source="{name}"')
     if value['business_ready'] is not None:
         emit('business_ready', int(value['business_ready']))
+    gateway = value.get('gateway_binding')
+    if gateway is not None:
+        for name in control.GATEWAY_REASONS:
+            emit('gateway_binding_reason', int(name == gateway['reason']),
+                 f'reason="{name}"')
+        emit('gateway_binding_age_seconds', gateway['age_ms'] / 1000)
     if value['observation'] is not None:
         for name in ('AVAILABLE', 'UNKNOWN', 'DEVICE_FAILURE'):
             emit('auxiliary_observation', int(value['observation'] == name), f'state="{name}"')
