@@ -1,0 +1,28 @@
+{
+  "ok": true,
+  "sdk_version": "7.47.0",
+  "result": {
+    "id": "schema-v2-greedy",
+    "model": "qwen3.8-flash-next",
+    "message": {
+      "role": "assistant",
+      "content": "42"
+    },
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 8436,
+      "completion_tokens": 3,
+      "total_tokens": 8439,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "headers": {
+      "connection": "close",
+      "content-length": "328",
+      "content-type": "application/json",
+      "x-request-id": "req-2a0cc87d9fb3adc420fa06ce16ae7dcc"
+    }
+  },
+  "wire_base64": "eyJpZCI6InNjaGVtYS12Mi1ncmVlZHkiLCJvYmplY3QiOiJjaGF0LmNvbXBsZXRpb24iLCJjcmVhdGVkIjoxNzk0MTg1MjY4LCJtb2RlbCI6InF3ZW4zLjgtZmxhc2gtbmV4dCIsImNob2ljZXMiOlt7ImluZGV4IjowLCJtZXNzYWdlIjp7InJvbGUiOiJhc3Npc3RhbnQiLCJjb250ZW50IjoiNDIifSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJsb2dwcm9icyI6bnVsbH1dLCJ1c2FnZSI6eyJwcm9tcHRfdG9rZW5zIjo4NDM2LCJjb21wbGV0aW9uX3Rva2VucyI6MywidG90YWxfdG9rZW5zIjo4NDM5LCJwcm9tcHRfdG9rZW5zX2RldGFpbHMiOnsiY2FjaGVkX3Rva2VucyI6MH19fQ=="
+}

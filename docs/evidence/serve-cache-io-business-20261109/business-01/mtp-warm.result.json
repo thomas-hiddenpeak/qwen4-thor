@@ -1,0 +1,18 @@
+{
+  "id": "schema-v2-mtp-warm",
+  "model": "qwen3.8-flash-next",
+  "message": {
+    "role": "assistant",
+    "content": "42"
+  },
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 8469,
+    "completion_tokens": 3,
+    "total_tokens": 8472,
+    "prompt_tokens_details": {
+      "cached_tokens": 8438
+    }
+  },
+  "logprobs": null
+}

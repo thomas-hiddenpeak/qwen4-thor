@@ -2,6 +2,12 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+缓存/资源进度真实组合短验通过：1启动/7Chat/98.872秒，93次NVML全OK。
+自有缓存worker暂停后2秒超时，同PID重新生成且新代恢复；共享缓存及
+MTP缓存SSE保持。393帧原件/30缓存等待，短GPU范围复用CPU，不伪称
+采样全覆盖；1619预留释放、进程/端口清理。[81项原件](evidence/serve-cache-io-business-20261109/README.md)。
+正在可回退交付1ff729a0及R03控制器；随后R04/N04等全部目标继续。
+
 缓存真实驱动3/3 CPU通过，[原件](evidence/serve-cache-io-driver-20261109/README.md)。
 继续冻结1启动/最多8 Chat/600秒实际短验；模型保持同PID、只暂停
 自有缓存worker，记录实际等待/恢复及JSON/SSE，默认暂不更换。

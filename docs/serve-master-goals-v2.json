@@ -487,7 +487,8 @@
         "evidence/serve-observation-io-20261108/closeout/result.json",
         "evidence/serve-observation-io-20261108/delivery-01/result.json",
         "SERVE_CACHE_IO_ISOLATION_2026-11-09.md",
-        "evidence/serve-cache-io-cpu-20261109/decision.json"
+        "evidence/serve-cache-io-cpu-20261109/decision.json",
+        "evidence/serve-cache-io-business-20261109/decision.json"
       ],
       "release": {
         "manifest_sha256": "b7743d20b5af101dde29eed9dc6ac3bdd4b412d00ff6a55c4c0e2ec21847c6a1",
@@ -507,7 +508,7 @@
         {
           "source": "src/server/session_cache.cpp Transfer/Save/Restore and chat_generation.cpp model_mu_",
           "issue": "Optional cache synchronous pread/pwrite/open/fstat run under cache and model locks; cancellation is checked between calls and cannot bound a blocked call. Isolate filesystem work so unavailable cache does not prevent healthy plain generation.",
-          "state": "cpu_validated_pending_real_business",
+          "state": "cpu_and_real_business_validated_pending_delivery",
           "prior_delivered_log_and_observation_isolation_preserved": true
         }
       ],
@@ -515,9 +516,14 @@
         "binary_sha256": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
         "distinct_cpp_cases": 16,
         "storage_programs": 3,
-        "gpu_starts": 0,
-        "default_replaced": false
-      }
+        "gpu_starts": 1,
+        "default_replaced": false,
+        "chat_requests": 7,
+        "real_business_accepted": true
+      },
+      "remaining": [
+        "rollback-capable accepted delivery"
+      ]
     },
     {
       "id": "R02",
@@ -560,7 +566,8 @@
         "evidence/serve-progress-driver-20261109/decision.json",
         "evidence/serve-progress-discovery-20261109/decision.json",
         "evidence/serve-progress-business-20261109/decision.json",
-        "evidence/serve-progress-resource-20261109/decision.json"
+        "evidence/serve-progress-resource-20261109/decision.json",
+        "evidence/serve-cache-io-business-20261109/decision.json"
       ],
       "release": null,
       "plan": "SERVE_PROGRESS_2026-11-09.md",
@@ -568,11 +575,10 @@
         {
           "source": "tools/serve_recovery/controller.py supervise stable transaction",
           "issue": "600 seconds alone marks successful_request without observing actual successful completion; require fresh same-generation completed business evidence",
-          "state": "implemented_cpu_verified_pending_business_delivery"
+          "state": "cpu_and_real_business_validated_pending_delivery"
         }
       ],
       "remaining": [
-        "combined actual cache/resource business after auxiliary filesystem isolation",
         "rollback-capable accepted delivery"
       ]
     },
@@ -712,6 +718,6 @@
       "release": null
     }
   ],
-  "next_task": "R03",
+  "next_task": "R01/R03 accepted delivery, then R04/N04 and all remaining master tasks",
   "next": "实现实际完成进度、忙/等待/卡死分类和有证据恢复，随后R04/N04—N07/A08—A09及全部余项持续推进。"
 }

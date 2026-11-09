@@ -1,0 +1,29 @@
+{
+  "ok": true,
+  "sdk_version": "7.47.0",
+  "result": {
+    "id": "schema-v2-mtp-warm",
+    "model": "qwen3.8-flash-next",
+    "message": {
+      "role": "assistant",
+      "content": "42"
+    },
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 8469,
+      "completion_tokens": 3,
+      "total_tokens": 8472,
+      "prompt_tokens_details": {
+        "cached_tokens": 8438
+      }
+    },
+    "headers": {
+      "cache-control": "no-cache",
+      "connection": "close",
+      "content-type": "text/event-stream",
+      "x-accel-buffering": "no",
+      "x-request-id": "req-76507948374bf82d95b8b434f1081e0a"
+    }
+  },
+  "wire_base64": "ZGF0YTogeyJpZCI6InNjaGVtYS12Mi1tdHAtd2FybSIsIm9iamVjdCI6ImNoYXQuY29tcGxldGlvbi5jaHVuayIsImNyZWF0ZWQiOjE3OTQxODUyNzUsIm1vZGVsIjoicXdlbjMuOC1mbGFzaC1uZXh0IiwiY2hvaWNlcyI6W3siaW5kZXgiOjAsImRlbHRhIjp7InJvbGUiOiJhc3Npc3RhbnQiLCJjb250ZW50IjoiIn0sImZpbmlzaF9yZWFzb24iOm51bGwsImxvZ3Byb2JzIjpudWxsfV0sInVzYWdlIjpudWxsfQ0KDQpkYXRhOiB7ImlkIjoic2NoZW1hLXYyLW10cC13YXJtIiwib2JqZWN0IjoiY2hhdC5jb21wbGV0aW9uLmNodW5rIiwiY3JlYXRlZCI6MTc5NDE4NTI3NSwibW9kZWwiOiJxd2VuMy44LWZsYXNoLW5leHQiLCJjaG9pY2VzIjpbeyJpbmRleCI6MCwiZGVsdGEiOnsiY29udGVudCI6IjQifSwiZmluaXNoX3JlYXNvbiI6bnVsbCwibG9ncHJvYnMiOm51bGx9XSwidXNhZ2UiOm51bGx9DQoNCmRhdGE6IHsiaWQiOiJzY2hlbWEtdjItbXRwLXdhcm0iLCJvYmplY3QiOiJjaGF0LmNvbXBsZXRpb24uY2h1bmsiLCJjcmVhdGVkIjoxNzk0MTg1Mjc1LCJtb2RlbCI6InF3ZW4zLjgtZmxhc2gtbmV4dCIsImNob2ljZXMiOlt7ImluZGV4IjowLCJkZWx0YSI6eyJjb250ZW50IjoiMiJ9LCJmaW5pc2hfcmVhc29uIjpudWxsLCJsb2dwcm9icyI6bnVsbH1dLCJ1c2FnZSI6bnVsbH0NCg0KZGF0YTogeyJpZCI6InNjaGVtYS12Mi1tdHAtd2FybSIsIm9iamVjdCI6ImNoYXQuY29tcGxldGlvbi5jaHVuayIsImNyZWF0ZWQiOjE3OTQxODUyNzUsIm1vZGVsIjoicXdlbjMuOC1mbGFzaC1uZXh0IiwiY2hvaWNlcyI6W3siaW5kZXgiOjAsImRlbHRhIjp7fSwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJsb2dwcm9icyI6bnVsbH1dLCJ1c2FnZSI6bnVsbH0NCg0KZGF0YTogeyJpZCI6InNjaGVtYS12Mi1tdHAtd2FybSIsIm9iamVjdCI6ImNoYXQuY29tcGxldGlvbi5jaHVuayIsImNyZWF0ZWQiOjE3OTQxODUyNzUsIm1vZGVsIjoicXdlbjMuOC1mbGFzaC1uZXh0IiwiY2hvaWNlcyI6W10sInVzYWdlIjp7InByb21wdF90b2tlbnMiOjg0NjksImNvbXBsZXRpb25fdG9rZW5zIjozLCJ0b3RhbF90b2tlbnMiOjg0NzIsInByb21wdF90b2tlbnNfZGV0YWlscyI6eyJjYWNoZWRfdG9rZW5zIjo4NDM4fX19DQoNCmRhdGE6IFtET05FXQ0KDQo="
+}

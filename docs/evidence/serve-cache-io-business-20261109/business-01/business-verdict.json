@@ -1,0 +1,148 @@
+{
+  "requests": 7,
+  "same_model": true,
+  "cache_fault": {
+    "prefix": 0,
+    "error": "cache storage time limit exceeded",
+    "source": "session",
+    "layout": "target"
+  },
+  "recovered": {
+    "prefix": 9032,
+    "error": "none",
+    "source": "session",
+    "layout": "target"
+  },
+  "mtp_restore": {
+    "prefix": 8438,
+    "error": "none",
+    "source": "session",
+    "layout": "mtp"
+  },
+  "cache_before": {
+    "session": {
+      "configured": true,
+      "available": true,
+      "state": "ready",
+      "readiness_dependency": false,
+      "generation": 1,
+      "workers_started": 1,
+      "workers_reaped": 0,
+      "workers_active": 1,
+      "controller_failures": 0,
+      "worker_rss_known": true,
+      "worker_rss_observed_bytes": 191414272,
+      "io_timeout_ms": 2000,
+      "restart_limit": 3,
+      "restart_window_ms": 60000,
+      "block_bytes": 8388608,
+      "buffer_payload_limit_bytes": 25169920,
+      "buffer_limit_excludes_process_overhead": true
+    },
+    "prefix": {
+      "configured": true,
+      "available": true,
+      "state": "ready",
+      "readiness_dependency": false,
+      "generation": 2,
+      "workers_started": 1,
+      "workers_reaped": 0,
+      "workers_active": 1,
+      "controller_failures": 0,
+      "worker_rss_known": true,
+      "worker_rss_observed_bytes": 188252160,
+      "io_timeout_ms": 2000,
+      "restart_limit": 3,
+      "restart_window_ms": 60000,
+      "block_bytes": 8388608,
+      "buffer_payload_limit_bytes": 25169920,
+      "buffer_limit_excludes_process_overhead": true
+    }
+  },
+  "cache_after": {
+    "session": {
+      "configured": true,
+      "available": true,
+      "state": "ready",
+      "readiness_dependency": false,
+      "generation": 3,
+      "workers_started": 2,
+      "workers_reaped": 1,
+      "workers_active": 1,
+      "controller_failures": 0,
+      "worker_rss_known": true,
+      "worker_rss_observed_bytes": 191414272,
+      "io_timeout_ms": 2000,
+      "restart_limit": 3,
+      "restart_window_ms": 60000,
+      "block_bytes": 8388608,
+      "buffer_payload_limit_bytes": 25169920,
+      "buffer_limit_excludes_process_overhead": true
+    },
+    "prefix": {
+      "configured": true,
+      "available": true,
+      "state": "ready",
+      "readiness_dependency": false,
+      "generation": 2,
+      "workers_started": 1,
+      "workers_reaped": 0,
+      "workers_active": 1,
+      "controller_failures": 0,
+      "worker_rss_known": true,
+      "worker_rss_observed_bytes": 188252160,
+      "io_timeout_ms": 2000,
+      "restart_limit": 3,
+      "restart_window_ms": 60000,
+      "block_bytes": 8388608,
+      "buffer_payload_limit_bytes": 25169920,
+      "buffer_limit_excludes_process_overhead": true
+    }
+  },
+  "progress": {
+    "frames": 392,
+    "bytes": 131744,
+    "snapshots": 392,
+    "error": null,
+    "last": {
+      "sequence": 392,
+      "observed_ns": 2375359323581989,
+      "complete": true,
+      "identity": {
+        "pid": 994840,
+        "start_ticks": 237526151,
+        "pid_namespace": 4026531836,
+        "controller_generation": 1,
+        "model_generation": 1,
+        "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+        "service_id": "55527663-ec74-4629-b133-822b16fd3893"
+      },
+      "active": 1,
+      "untracked": 0,
+      "successes": 7,
+      "steps": 350,
+      "rows": [
+        {
+          "ticket": 2,
+          "deadline_ns": 0,
+          "stage": 10,
+          "stage_since_ns": 2375300164366538,
+          "wait": 0,
+          "wait_since_ns": 2375300164366223,
+          "work": 8,
+          "work_id": 2411,
+          "work_since_ns": 2375359315910730,
+          "completed": 2410,
+          "last_completed_ns": 2375359315910564,
+          "updated_ns": 2375359315910730
+        }
+      ],
+      "wire_version": 2
+    },
+    "cache_wait_samples": 30,
+    "cache_device_samples": 0,
+    "unknown": {}
+  },
+  "progress_sampling": "250ms snapshots can miss short device/resource scopes; their direct CPU contracts are reused, not asserted as fully sampled.",
+  "real_tool_closure": "Reuse R03 business-02; tool/history/template code unchanged."
+}
