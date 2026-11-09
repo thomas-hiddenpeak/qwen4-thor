@@ -123,8 +123,17 @@ def acquire_lease(path):
 
 
 def controller_configuration(package, digest, state, run):
-    return dict(version=2, package=str(package), manifest_sha256=digest,
-                directory=str(run), state_directory=str(state))
+    # Advisory provenance shares the already required configuration write.
+    # Missing observation cannot prevent an otherwise valid model launch.
+    try:
+        retention_context = dict(
+            boot_id=Path('/proc/sys/kernel/random/boot_id').read_text().strip(),
+            parent_pid=os.getpid(), parent_start_ticks=journal.process_start(os.getpid()))
+    except (OSError, ValueError, IndexError):
+        retention_context = None
+    return dict(version=3, package=str(package), manifest_sha256=digest,
+                directory=str(run), state_directory=str(state),
+                retention_context=retention_context)
 
 
 def launch(package, digest, state, *, daemon=False, timeout=360):
@@ -249,12 +258,24 @@ def main(argv=None, *, package=None, digest=None):
     for option in engine.APPLICATION_LIMITS:
         prepare.add_argument('--object-'+option.replace('_', '-'), type=int)
     for name in ('init', 'run', 'start', 'status', 'diagnostics', 'stop',
-                 'tls-status', 'tls-reload', 'observe', 'metrics', 'export'):
+                 'tls-status', 'tls-reload', 'observe', 'metrics', 'export',
+                 'retention-plan', 'retention-archive', 'retention-apply', 'retention-resume'):
         command = commands.add_parser(name)
         command.add_argument('--state', type=Path, required=True)
         if package is None:
             command.add_argument('--package', type=Path, required=True)
             command.add_argument('--manifest-sha256', required=True)
+        if name == 'retention-plan':
+            command.add_argument('--max-age-days', type=int, default=14)
+            command.add_argument('--max-runs', type=int, default=100)
+            command.add_argument('--max-bytes', type=int, default=1024**3)
+            command.add_argument('--plan-output', type=Path)
+        if name in ('retention-archive', 'retention-resume'):
+            command.add_argument('--run', required=True)
+        if name == 'retention-archive':
+            command.add_argument('--archive', type=Path, required=True)
+        if name == 'retention-apply':
+            command.add_argument('--plan', type=Path, required=True)
         if name == 'export':
             command.add_argument('--port', type=int, required=True)
         if name == 'start':
@@ -284,6 +305,22 @@ def main(argv=None, *, package=None, digest=None):
             elif args.operation in ('run', 'start'):
                 result = launch(package, digest, args.state, daemon=args.operation == 'start',
                                 timeout=getattr(args, 'timeout', 360))
+            elif args.operation.startswith('retention-'):
+                from tools.serve_recovery import retention
+                from tools.serve_host import native
+                descriptor(args.state, package, digest)
+                if args.operation == 'retention-plan':
+                    result = retention.plan(args.state, limits=retention.policy(
+                        args.max_age_days, args.max_runs, args.max_bytes))
+                    if args.plan_output is not None:
+                        retention.write_new(args.plan_output, ledger.canonical(result))
+                elif args.operation == 'retention-archive':
+                    result = retention.archive(args.state, args.run, args.archive)
+                elif args.operation == 'retention-resume':
+                    result = retention.resume(args.state, args.run)
+                else:
+                    result = retention.apply(args.state, native.private_json(
+                        args.plan, retention.MAX_MANIFEST))
             elif args.operation == 'export':
                 from tools.serve_host.native_exporter import export
                 return export(package, digest, args.state, args.port)

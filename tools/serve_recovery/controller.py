@@ -41,13 +41,19 @@ def model_command(package, base, config, policy_path):
     return command
 
 
+def validate_configuration(config):
+    version = config.get('version')
+    ledger.require(type(version) is int and version in (1, 2, 3),
+                   'unsupported controller config')
+    ledger.keys(config, ('version', 'package', 'manifest_sha256', 'directory') +
+        (('state_directory',) if version >= 2 else ()) +
+        (('retention_context',) if version >= 3 else ()))
+    # Retention-only provenance never participates in model/recovery decisions.
+
+
 class Controller:
     def __init__(self, config, channel):
-        version = config.get('version')
-        ledger.require(type(version) is int and version in (1, 2),
-                       'unsupported controller config')
-        ledger.keys(config, ('version', 'package', 'manifest_sha256', 'directory') +
-                    (('state_directory',) if version == 2 else ()))
+        validate_configuration(config)
         self.config, self.channel = config, channel
         self.package = Path(config['package'])
         self.root_pid = int(os.environ['Q4T_GUARDIAN_PID'])

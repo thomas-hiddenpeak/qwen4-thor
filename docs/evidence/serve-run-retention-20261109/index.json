@@ -1,0 +1,82 @@
+{
+  "README.md": {
+    "bytes": 1480,
+    "sha256": "bf1ae284fa4937976ccb9788dd56d5d5a761b9cee20e972893f5a20c2dc18fd7"
+  },
+  "archive_retention.py": {
+    "bytes": 3459,
+    "sha256": "d3a1f03dfb15b8b621f6f9b0dddd4ac71265e210ba40f886cfd6559eff85d668"
+  },
+  "decision.json": {
+    "bytes": 568,
+    "sha256": "b4490e76bd076cc68587783586e129e1072f23ad1415deea66857237cb4c316d"
+  },
+  "identity.json": {
+    "bytes": 1343,
+    "sha256": "41ae897035cb2f7f025e6555162bdce57d737180808057d0aa671ac23c117464"
+  },
+  "retention-cpu-01/command.json": {
+    "bytes": 95,
+    "sha256": "3eeada3204e5cb91ad99a0828126ecdf7302ecdc23ffb5c85af0e41475af883c"
+  },
+  "retention-cpu-01/result.json": {
+    "bytes": 63,
+    "sha256": "75ccf5e9f7462e8e6b6e73ca3235e82dad3866c5448fd569a4d5cb9c7739fa63"
+  },
+  "retention-cpu-01/stderr.log": {
+    "bytes": 11567,
+    "sha256": "31489c2862decabaaaac609c5015b598bfad64e8a3e1aebf38629a22ad7c1d99"
+  },
+  "retention-cpu-01/stdout.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "retention-cpu-02/command.json": {
+    "bytes": 95,
+    "sha256": "3eeada3204e5cb91ad99a0828126ecdf7302ecdc23ffb5c85af0e41475af883c"
+  },
+  "retention-cpu-02/result.json": {
+    "bytes": 62,
+    "sha256": "ecea57bffef48fa1e6bebd3df6887e9c8375a78c0fc76147939e329e91166438"
+  },
+  "retention-cpu-02/stderr.log": {
+    "bytes": 4044,
+    "sha256": "caca7a33c13168935e67d3c766e723ff0e2b0fb7b4964e8d053f03ea5500484d"
+  },
+  "retention-cpu-02/stdout.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "retention-cpu-03/command.json": {
+    "bytes": 657,
+    "sha256": "aee9b1dea047405cf316a7b1fded06f09defbd0481e8139824ef6f7335466ba7"
+  },
+  "retention-cpu-03/result.json": {
+    "bytes": 62,
+    "sha256": "8b869306528f563b70b23c9310e7177bd7827ea7536c648fde0acc428f79dcf4"
+  },
+  "retention-cpu-03/stderr.log": {
+    "bytes": 1042,
+    "sha256": "2656b7a859aa57429aa94015c43960a45c5d0cd355cdfe110eee1cdd19ac786b"
+  },
+  "retention-cpu-03/stdout.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "retention-cpu-04/command.json": {
+    "bytes": 290,
+    "sha256": "a9ef8d481ba91021b8381f97c406d9471ee3ccb96889999848e5fa9bc58d1883"
+  },
+  "retention-cpu-04/result.json": {
+    "bytes": 62,
+    "sha256": "5687bb8ed479cbba92a8b41e3cc4a72ecce22409a7a01f785893f21ca8bd550e"
+  },
+  "retention-cpu-04/stderr.log": {
+    "bytes": 466,
+    "sha256": "72bfafa66db00163655a73407e1f6eb41ec634f67e7ca533c716f5f9b6c5fceb"
+  },
+  "retention-cpu-04/stdout.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

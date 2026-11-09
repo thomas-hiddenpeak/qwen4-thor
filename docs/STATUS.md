@@ -2,6 +2,11 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+run归档/保护淘汰检查点完成，10个不同Python用例按受影响项验证，
+[原件](evidence/serve-run-retention-20261109/README.md)保留两轮FAILED。实际归档/删除/中断resume及保护通过；
+复核补仅供留存的boot身份，缺失不影响核心。旧记录/跨boot迁移仍
+必须补齐，随包CLI组合及v6交付继续；0生产run删除，默认v5保持。
+
 原生观察首组10个CPU通过，复核后3个受影响项补验通过，[原件](evidence/serve-native-observation-20261109/README.md)。
 真实只读私有IPC/HTTP、collector超时回收与3/60秒预算、旧v1—v5兼容
 通过；0模型/0Chat，当前默认v5保持STOPPED。继续保护留存、实际v6

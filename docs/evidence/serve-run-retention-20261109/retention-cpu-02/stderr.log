@@ -1,0 +1,48 @@
+test_actual_retirement_and_interrupted_resume_keep_archive (tools.serve_recovery.test_retention.RetentionTests.test_actual_retirement_and_interrupted_resume_keep_archive) ... ERROR
+test_archive_roundtrip_is_private_and_required_for_every_run (tools.serve_recovery.test_retention.RetentionTests.test_archive_roundtrip_is_private_and_required_for_every_run) ... ok
+test_changed_archive_source_or_pin_invalidates_old_plan_before_delete (tools.serve_recovery.test_retention.RetentionTests.test_changed_archive_source_or_pin_invalidates_old_plan_before_delete) ... ok
+test_limits_include_actual_allocated_blocks_and_age (tools.serve_recovery.test_retention.RetentionTests.test_limits_include_actual_allocated_blocks_and_age) ... ok
+test_links_and_replaced_directories_cannot_escape_scope (tools.serve_recovery.test_retention.RetentionTests.test_links_and_replaced_directories_cannot_escape_scope) ... ERROR
+test_live_process_reference_is_protected_without_signalling_it (tools.serve_recovery.test_retention.RetentionTests.test_live_process_reference_is_protected_without_signalling_it) ... ok
+test_release_dependencies_and_protected_overage_are_not_deleted (tools.serve_recovery.test_retention.RetentionTests.test_release_dependencies_and_protected_overage_are_not_deleted) ... ok
+
+======================================================================
+ERROR: test_actual_retirement_and_interrupted_resume_keep_archive (tools.serve_recovery.test_retention.RetentionTests.test_actual_retirement_and_interrupted_resume_keep_archive)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_retention.py", line 156, in test_actual_retirement_and_interrupted_resume_keep_archive
+    result = r.resume(self.state, run_id, pins=set())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 528, in resume
+    return resume_locked(state, run_id, catalog, pins=pins)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 481, in resume_locked
+    active = references(root)
+             ^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 198, in references
+    capture(os.fsencode(os.readlink(process / link)))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/proc/2319/cwd'
+
+======================================================================
+ERROR: test_links_and_replaced_directories_cannot_escape_scope (tools.serve_recovery.test_retention.RetentionTests.test_links_and_replaced_directories_cannot_escape_scope)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_retention.py", line 177, in test_links_and_replaced_directories_cannot_escape_scope
+    with self.assertRaises(ValueError):r.apply(self.state, plan, pins=set())
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 535, in apply
+    current = plan(state, limits=expected['policy'], now=expected['at_unix'], pins=pins)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 406, in plan
+    active = references(root) if active is None else active
+             ^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 198, in references
+    capture(os.fsencode(os.readlink(process / link)))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/proc/2319/cwd'
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.992s
+
+FAILED (errors=2)

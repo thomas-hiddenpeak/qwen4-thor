@@ -1,0 +1,145 @@
+test_actual_retirement_and_interrupted_resume_keep_archive (tools.serve_recovery.test_retention.RetentionTests.test_actual_retirement_and_interrupted_resume_keep_archive) ... ERROR
+test_archive_roundtrip_is_private_and_required_for_every_run (tools.serve_recovery.test_retention.RetentionTests.test_archive_roundtrip_is_private_and_required_for_every_run) ... ERROR
+test_changed_archive_source_or_pin_invalidates_old_plan_before_delete (tools.serve_recovery.test_retention.RetentionTests.test_changed_archive_source_or_pin_invalidates_old_plan_before_delete) ... ERROR
+test_limits_include_actual_allocated_blocks_and_age (tools.serve_recovery.test_retention.RetentionTests.test_limits_include_actual_allocated_blocks_and_age) ... ERROR
+test_links_and_replaced_directories_cannot_escape_scope (tools.serve_recovery.test_retention.RetentionTests.test_links_and_replaced_directories_cannot_escape_scope) ... ERROR
+test_live_process_reference_is_protected_without_signalling_it (tools.serve_recovery.test_retention.RetentionTests.test_live_process_reference_is_protected_without_signalling_it) ... ERROR
+test_release_dependencies_and_protected_overage_are_not_deleted (tools.serve_recovery.test_retention.RetentionTests.test_release_dependencies_and_protected_overage_are_not_deleted) ... ERROR
+
+======================================================================
+ERROR: test_actual_retirement_and_interrupted_resume_keep_archive (tools.serve_recovery.test_retention.RetentionTests.test_actual_retirement_and_interrupted_resume_keep_archive)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_retention.py", line 140, in test_actual_retirement_and_interrupted_resume_keep_archive
+    run_id, path = self.run_fixture(); receipt = self.archive(run_id)
+                                                 ^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_retention.py", line 52, in archive
+    return r.archive(self.state, run_id, self.directory / ('archive-' + str(uuid.uuid4())), pins=set())
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 288, in archive
+    path = eligible(state, run_id, pins=pins)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 270, in eligible
+    active = references(Path(state) / 'runs') if active is None else active
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 176, in references
+    capture(os.fsencode(os.readlink(process / link)))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/proc/2319/cwd'
+
+======================================================================
+ERROR: test_archive_roundtrip_is_private_and_required_for_every_run (tools.serve_recovery.test_retention.RetentionTests.test_archive_roundtrip_is_private_and_required_for_every_run)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_retention.py", line 59, in test_archive_roundtrip_is_private_and_required_for_every_run
+    plan = self.plan(limits=r.policy(max_bytes=1))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_retention.py", line 55, in plan
+    return r.plan(self.state, pins=set(), **options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 377, in plan
+    active = references(root) if active is None else active
+             ^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 176, in references
+    capture(os.fsencode(os.readlink(process / link)))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/proc/2319/cwd'
+
+======================================================================
+ERROR: test_changed_archive_source_or_pin_invalidates_old_plan_before_delete (tools.serve_recovery.test_retention.RetentionTests.test_changed_archive_source_or_pin_invalidates_old_plan_before_delete)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_retention.py", line 122, in test_changed_archive_source_or_pin_invalidates_old_plan_before_delete
+    first, path = self.run_fixture(); receipt = self.archive(first)
+                                                ^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_retention.py", line 52, in archive
+    return r.archive(self.state, run_id, self.directory / ('archive-' + str(uuid.uuid4())), pins=set())
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 288, in archive
+    path = eligible(state, run_id, pins=pins)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 270, in eligible
+    active = references(Path(state) / 'runs') if active is None else active
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 176, in references
+    capture(os.fsencode(os.readlink(process / link)))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/proc/2319/cwd'
+
+======================================================================
+ERROR: test_limits_include_actual_allocated_blocks_and_age (tools.serve_recovery.test_retention.RetentionTests.test_limits_include_actual_allocated_blocks_and_age)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_retention.py", line 112, in test_limits_include_actual_allocated_blocks_and_age
+    self.archive(old)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_retention.py", line 52, in archive
+    return r.archive(self.state, run_id, self.directory / ('archive-' + str(uuid.uuid4())), pins=set())
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 288, in archive
+    path = eligible(state, run_id, pins=pins)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 270, in eligible
+    active = references(Path(state) / 'runs') if active is None else active
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 176, in references
+    capture(os.fsencode(os.readlink(process / link)))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/proc/2319/cwd'
+
+======================================================================
+ERROR: test_links_and_replaced_directories_cannot_escape_scope (tools.serve_recovery.test_retention.RetentionTests.test_links_and_replaced_directories_cannot_escape_scope)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_retention.py", line 169, in test_links_and_replaced_directories_cannot_escape_scope
+    with self.assertRaises(ValueError):self.archive(run_id)
+                                       ^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_retention.py", line 52, in archive
+    return r.archive(self.state, run_id, self.directory / ('archive-' + str(uuid.uuid4())), pins=set())
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 288, in archive
+    path = eligible(state, run_id, pins=pins)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 270, in eligible
+    active = references(Path(state) / 'runs') if active is None else active
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 176, in references
+    capture(os.fsencode(os.readlink(process / link)))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/proc/2319/cwd'
+
+======================================================================
+ERROR: test_live_process_reference_is_protected_without_signalling_it (tools.serve_recovery.test_retention.RetentionTests.test_live_process_reference_is_protected_without_signalling_it)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_retention.py", line 82, in test_live_process_reference_is_protected_without_signalling_it
+    self.assertIn(run_id, r.references(self.state / 'runs'))
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 176, in references
+    capture(os.fsencode(os.readlink(process / link)))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/proc/2319/cwd'
+
+======================================================================
+ERROR: test_release_dependencies_and_protected_overage_are_not_deleted (tools.serve_recovery.test_retention.RetentionTests.test_release_dependencies_and_protected_overage_are_not_deleted)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_retention.py", line 95, in test_release_dependencies_and_protected_overage_are_not_deleted
+    self.archive(archived)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_retention.py", line 52, in archive
+    return r.archive(self.state, run_id, self.directory / ('archive-' + str(uuid.uuid4())), pins=set())
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 288, in archive
+    path = eligible(state, run_id, pins=pins)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 270, in eligible
+    active = references(Path(state) / 'runs') if active is None else active
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/retention.py", line 176, in references
+    capture(os.fsencode(os.readlink(process / link)))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/proc/2319/cwd'
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.045s
+
+FAILED (errors=7)

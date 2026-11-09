@@ -1,0 +1,7 @@
+test_unverified_epoch_is_protected_without_disabling_core_launch (tools.serve_recovery.test_retention.RetentionTests.test_unverified_epoch_is_protected_without_disabling_core_launch) ... ok
+test_actual_retirement_and_interrupted_resume_keep_archive (tools.serve_recovery.test_retention.RetentionTests.test_actual_retirement_and_interrupted_resume_keep_archive) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.284s
+
+OK
