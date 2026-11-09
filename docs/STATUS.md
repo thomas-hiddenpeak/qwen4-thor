@@ -1,5 +1,7 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+A07.8 [字段合同真实业务通过](evidence/serve-request-fields-business-20261110/README.md)：1启动/2生成/2计数/10拒绝/40.241秒，40 NVML全OK并独立清理；合法JSON/SSE、精确错误与零额外生成账本通过。候选5935be0a，继续可回退交付及A08等全部总任务，默认70504790尚未替换。
+
 A07.8 [字段合同13 C++/2schema/2驱动通过](evidence/serve-request-fields-cpu-20261110/README.md)，44 SDK向量一致，host/引擎零警告；首驱动错用场景夹具的失败与单项修复保留。下一步1启动/2生成/2计数/10拒绝/600秒业务短验，再可回退交付及全部总任务；默认70504790保持。
 
 A07.8 [字段合同审计](SERVE_RESPONSES_FIELD_AUDIT_2026-11-10.md)成组修复已完成：create非nullable字段与reasoning.mode、count/compact各自默认、fast/ultrafast入口及模板读取前校验。冻结44个SDK字段向量、13项C++/2schema/2驱动和最多1启动/2生成/2计数/10拒绝/600秒短验。尚未测试；默认70504790保持STOPPED，全部总任务继续。

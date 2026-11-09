@@ -1,0 +1,13 @@
+{
+  "generations": 2,
+  "model_steps": 2,
+  "input_counts": 2,
+  "invalid_requests": 10,
+  "exact_error_params": true,
+  "instructions_only_generated": true,
+  "actual_service_tier": "default",
+  "count_nullable_defaults_preserved": true,
+  "exact_generation_rpm_tpm": true,
+  "default_unchanged": true,
+  "performance_claim": false
+}

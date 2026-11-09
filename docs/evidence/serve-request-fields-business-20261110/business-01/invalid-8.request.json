@@ -1,0 +1,10 @@
+{
+  "input": "Compute 17+25.",
+  "instructions": "Answer only the number.",
+  "reasoning": {
+    "mode": null
+  },
+  "prompt": {
+    "id": "prompt_missing"
+  }
+}

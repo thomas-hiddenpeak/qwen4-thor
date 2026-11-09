@@ -806,7 +806,7 @@
         "full_task_complete": false
       },
       "request_field_audit": {
-        "state": "cpu_validated_business_pending",
+        "state": "business_validated_delivery_pending",
         "plan": "SERVE_RESPONSES_FIELD_AUDIT_2026-11-10.md",
         "sdk_vectors": 44,
         "cpu_cpp_cases": 13,
@@ -820,7 +820,27 @@
           "seconds": 600
         },
         "cpu_evidence": "evidence/serve-request-fields-cpu-20261110/README.md",
-        "candidate": "5935be0ab5b3f3ddaed910f7f7e719cc9e148f576b36b959087d9878d6a6ed97"
+        "candidate": "5935be0ab5b3f3ddaed910f7f7e719cc9e148f576b36b959087d9878d6a6ed97",
+        "business_evidence": "evidence/serve-request-fields-business-20261110/README.md",
+        "business": {
+          "status": "PASS_RESPONSES_REQUEST_FIELDS_TARGETED_BUSINESS",
+          "acceptance": "ACCEPT_TARGETED_RESPONSES_REQUEST_FIELDS",
+          "binary_sha256": "5935be0ab5b3f3ddaed910f7f7e719cc9e148f576b36b959087d9878d6a6ed97",
+          "protocol_sha256": "0e4dc01d838128fbb67c93b0247e3ff037b8f7b585f4af86093132fc2c7641d7",
+          "all_nvml_ok": true,
+          "cleanup_confirmed": true,
+          "starts": 1,
+          "generations": 2,
+          "input_counts": 2,
+          "invalid_requests": 10,
+          "model_steps": 2,
+          "seconds": 40.240780336316675,
+          "nvml_samples": 40,
+          "performance_acceptance": false,
+          "full_model_quality": false,
+          "long_stability_accepted": false,
+          "remaining_master_tasks_open": true
+        }
       }
     },
     {

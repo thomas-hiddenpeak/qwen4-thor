@@ -1,0 +1,7 @@
+{
+  "input": true,
+  "instructions": "Answer only the number.",
+  "prompt": {
+    "id": "prompt_missing"
+  }
+}
