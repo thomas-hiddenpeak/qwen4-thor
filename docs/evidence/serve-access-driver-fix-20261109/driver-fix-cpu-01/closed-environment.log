@@ -1,0 +1,1 @@
+PASS: sealed source verification and wrapper reached controller entry under closed environment; Controller not instantiated; no model or GPU operation

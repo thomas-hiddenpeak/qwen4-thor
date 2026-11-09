@@ -55,6 +55,44 @@ def load_modules(plan=None):
     return result
 
 
+def verify_sdk(sdk, *, dispatch=False):
+    # Guardian deliberately gives controllers a closed environment without
+    # PATH. Node is a test-client dependency, never a controller dependency.
+    executable = Path(sdk['node']['path'])
+    with executable.open('rb') as stream:
+        executable_hash = hashlib.file_digest(stream, 'sha256').hexdigest()
+    if (str(executable.resolve(strict=True)) != sdk['node']['path'] or
+            executable_hash != sdk['node']['sha256']):
+        raise ValueError('N04 pinned Node executable changed')
+    if dispatch:
+        selected = shutil.which('node')
+        if selected is None or Path(selected).resolve(strict=True) != executable:
+            raise ValueError('N04 client Node executable changed')
+    for name, digest in sdk['files'].items():
+        if hashlib.sha256((Path(sdk['sdk_directory'])/name).read_bytes()).hexdigest() != digest:
+            raise ValueError('N04 SDK file changed')
+
+
+def verify_prior(plan):
+    if not plan.get('prior_evidence'):
+        return
+    for row in plan['prior_evidence']:
+        if hashlib.sha256(Path(row['path']).read_bytes()).hexdigest() != row['sha256']:
+            raise ValueError('N04 prior failure evidence changed')
+    prior = json.loads(Path(plan['prior_execution']).read_bytes())
+    guard = json.loads(Path(plan['prior_guard']).read_bytes())
+    probe = json.loads(Path(plan['prior_probe']).read_bytes())
+    if (prior['status'] != 'FAILED' or prior['cleanup_failure'] is not None or
+            prior['models'] or prior['budget']['counts']['starts'] != 0 or
+            prior['budget']['counts']['chats'] != 0 or prior['budget']['counts']['probes'] != 1 or
+            prior['budget']['counts'] != plan['prior_counts'] or
+            guard['status'] != 'COMMAND_FAILED' or
+            probe != dict(version=1, ok=True, cuda_code=0, stage='complete') or
+            prior['package'] != plan['package'] or
+            plan['prior_seconds'] < prior['seconds']):
+        raise ValueError('N04 previous attempt cannot be reused')
+
+
 def verify(plan):
     bundle, _, _, _, _, engine = load_modules(plan)
     engine.require(plan['scenario'] == 'native_client_access' and plan['limits'] == LIMITS,
@@ -63,11 +101,8 @@ def verify(plan):
         engine.require(engine.sha(ROOT/name) == digest, 'N04 source changed: '+name)
     for row in [*plan['protected'], *plan['tls_inputs'].values()]:
         engine.require(engine.sha(row['path']) == row['sha256'], 'N04 protected input changed')
-    sdk = plan['sdk']
-    engine.require(str(Path(shutil.which('node')).resolve(strict=True)) == sdk['node']['path'] and
-        engine.sha(sdk['node']['path']) == sdk['node']['sha256'], 'N04 Node executable changed')
-    for name,digest in sdk['files'].items():
-        engine.require(engine.sha(Path(sdk['sdk_directory'])/name) == digest, 'N04 SDK file changed')
+    verify_sdk(plan['sdk'])
+    verify_prior(plan)
     value = bundle.verify(plan['package']['package'], plan['package']['manifest_sha256'])
     engine.require(value['version'] == 8 and value['ingress_mode'] == 'native' and value['tls'],
                    'N04 requires managed native TLS')
@@ -197,6 +232,7 @@ class Stage(common.Stage):
 
     def sdk(self, label, body, *, client='alpha'):
         from tools.serve_protocol.js_client import JsSdkClient
+        verify_sdk(self.plan['sdk'], dispatch=True)
         self.budget.reserve('chats', label);save(self.output/(label+'-request.json'), body)
         sdk = JsSdkClient(f'https://127.0.0.1:{self.port}/v1', self.plan['sdk']['sdk_directory'],
             protocol_sha256=self.plan['protocol_sha256'], timeout=65,
@@ -387,6 +423,11 @@ class Stage(common.Stage):
                 for pair in self.saved_files[:]:self.restore_file(pair)
 
     def run(self):
+        if self.plan.get('prior_evidence'):
+            # Only a cleaned, zero-model attempt with this exact package may
+            # reuse the successful probe; the total budget remains unchanged.
+            verify_prior(self.plan)
+            return super().run()
         self.budget.reserve('probes', 'compiled-native-probe')
         with (self.output/'device-probe.json').open('xb') as output, \
              (self.output/'device-probe.stderr').open('xb') as errors:

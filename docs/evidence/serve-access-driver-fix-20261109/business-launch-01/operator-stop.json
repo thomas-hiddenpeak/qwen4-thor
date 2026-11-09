@@ -1,0 +1,4 @@
+{
+  "pid": 1038570,
+  "reason": "controller circuit open before model start; preserve failure and execute owned cleanup"
+}

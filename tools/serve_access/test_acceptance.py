@@ -1,5 +1,10 @@
 """N04 driver boundaries only; no model, TLS listener or GPU operations."""
 from pathlib import Path
+import hashlib
+import json
+import os
+import subprocess
+import sys
 import tempfile
 from types import SimpleNamespace
 import unittest
@@ -20,6 +25,48 @@ class DriverTests(unittest.TestCase):
         value.output = Path(directory.name);value.scope = value.output/'state';value.scope.mkdir()
         value.saved_files = [];value.engine = SimpleNamespace(require=require)
         return value
+
+    def test_controller_sdk_identity_does_not_need_inherited_path(self):
+        stage = self.stage()
+        executable = Path(sys.executable).resolve()
+        sdk = dict(node=dict(path=str(executable),
+            sha256=hashlib.sha256(executable.read_bytes()).hexdigest()),
+            files={}, sdk_directory=str(stage.output))
+        payload = json.dumps(sdk)
+        command = ('import json,sys; sys.path.insert(0,'+repr(str(a.ROOT))+'); '
+                   'from tools.serve_access.acceptance import verify_sdk; '
+                   'verify_sdk(json.loads(sys.argv[1]))')
+        result = subprocess.run([str(executable), '-I', '-B', '-c', command, payload],
+                                env={}, capture_output=True, text=True, timeout=10)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        with mock.patch.dict(os.environ, {'PATH':str(stage.output)}, clear=True):
+            with self.assertRaisesRegex(ValueError, 'client Node'):
+                a.verify_sdk(sdk, dispatch=True)
+        sdk['node']['sha256'] = '0'*64
+        with self.assertRaisesRegex(ValueError, 'pinned Node'):a.verify_sdk(sdk)
+
+    def test_probe_reuse_requires_cleaned_zero_model_same_package_failure(self):
+        stage = self.stage()
+        prior = dict(status='FAILED', cleanup_failure=None, models={}, seconds=12,
+            budget=dict(counts=dict(starts=0,chats=0,probes=1,controls=7)), package={'exact':'package'})
+        plan = dict(prior_counts=prior['budget']['counts'], prior_seconds=13,
+                    package=prior['package'], prior_evidence=[])
+        for name, value in [('execution',prior),('guard',dict(status='COMMAND_FAILED')),
+                ('probe',dict(version=1,ok=True,cuda_code=0,stage='complete'))]:
+            path = stage.output/(name+'.json');a.save(path,value)
+            plan['prior_'+name] = str(path)
+        def seal():
+            plan['prior_evidence'] = [dict(path=plan['prior_'+name],
+                sha256=hashlib.sha256(Path(plan['prior_'+name]).read_bytes()).hexdigest())
+                for name in ('execution','guard','probe')]
+        seal();a.verify_prior(plan)
+        for change in (dict(cleanup_failure='unknown'),dict(models={'1':{'pid':1}}),
+                       dict(package={'different':'package'})):
+            a.save(Path(plan['prior_execution']),dict(prior,**change));seal()
+            with self.assertRaisesRegex(ValueError,'cannot be reused'):a.verify_prior(plan)
+        a.save(Path(plan['prior_execution']),prior);seal()
+        Path(plan['prior_probe']).write_bytes(b'changed')
+        with self.assertRaisesRegex(ValueError,'evidence changed'):a.verify_prior(plan)
 
     def test_pending_gate_requires_exact_identity_and_keeps_production_verifier(self):
         metadata = dict(validation_only=True,acceptance='VALIDATION_ONLY_N04',binary_sha256='a'*64)

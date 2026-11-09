@@ -1,0 +1,23 @@
+{
+  "status": "DRIVER_FIXED_BUSINESS_PENDING",
+  "first_attempt": {
+    "starts": 0,
+    "chats": 0,
+    "probes": 1,
+    "seconds": 66.43207156891003,
+    "cleanup_confirmed": true,
+    "strict_guard": "COMMAND_FAILED"
+  },
+  "targeted_cpu": 3,
+  "closed_environment_prelude": true,
+  "production_bundle_changed": false,
+  "default_changed": false,
+  "original_limits": {
+    "starts": 3,
+    "chats": 16,
+    "probes": 1,
+    "controls": 6000,
+    "seconds": 1200
+  },
+  "next": "reuse exact probe and candidate, charge original counts/time, run remaining business"
+}

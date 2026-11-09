@@ -1,0 +1,5 @@
+[
+  "tools.serve_access.test_acceptance.DriverTests.test_controller_sdk_identity_does_not_need_inherited_path",
+  "tools.serve_access.test_acceptance.DriverTests.test_probe_reuse_requires_cleaned_zero_model_same_package_failure",
+  "tools.serve_access.test_acceptance.DriverTests.test_pending_gate_requires_exact_identity_and_keeps_production_verifier"
+]
