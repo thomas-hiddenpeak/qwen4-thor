@@ -421,7 +421,8 @@
         "A01"
       ],
       "evidence": [
-        "evidence/serve-access-primitive-20261109/decision.json"
+        "evidence/serve-access-primitive-20261109/decision.json",
+        "evidence/serve-access-store-20261109/decision.json"
       ],
       "release": null,
       "plan": "SERVE_ACCESS_CONTROL_2026-11-09.md",
@@ -431,7 +432,7 @@
         "live quota updates and restart continuity",
         "targeted real business and rollback-capable delivery"
       ],
-      "development_status": "认证快照原语6项针对CPU通过，尚待实际入口/持久事务/动态额度/连续性及真实业务交付。"
+      "development_status": "认证快照6项C++及策略事务9项Python CPU通过，尚待隔离I/O/真实入口管理、动态额度/连续性及真实业务交付。"
     },
     {
       "id": "N05",

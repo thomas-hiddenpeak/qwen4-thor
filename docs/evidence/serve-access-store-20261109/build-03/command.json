@@ -1,0 +1,1 @@
+["cmake", "--build", ".q4t-work/serve-access-20261109/host", "--target", "q4t_ingress_access_tests", "--parallel", "4"]

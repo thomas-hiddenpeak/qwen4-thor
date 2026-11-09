@@ -1,0 +1,17 @@
+{
+  "status": "PASS_ACCESS_POLICY_JOURNAL_TARGETED_CPU_PENDING_LIVE_INTEGRATION",
+  "first_tests": 8,
+  "review_added_test": 1,
+  "affected_review_tests": 3,
+  "distinct_tests": 9,
+  "build_warnings": 0,
+  "native_python_contracts_verified": true,
+  "history_bound": 4096,
+  "receipt_bound": 128,
+  "recovery_reaffirms_file_and_directory_fsync": true,
+  "live_applied_claimed": false,
+  "default_changed": false,
+  "model_starts": 0,
+  "chat_requests": 0,
+  "remaining_master_tasks_open": true
+}

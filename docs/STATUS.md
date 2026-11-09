@@ -2,6 +2,11 @@
 
 更新：2026-11-09。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+N04私有策略事务9个不同CPU通过（首8、复核补1并重验3受影响），
+[原件](evidence/serve-access-store-20261109/README.md)。Python/C++摘要、大历史、幂等/未知提交/重新fsync及损坏
+不恢复旧Key通过。持久不冒充入口生效；继续隔离I/O与原生管理、
+动态额度和真实组合，默认/ledger保持且0GPU，全部目标继续。
+
 N04认证快照原语6/6 CPU通过、独立host零警告，[原件](evidence/serve-access-primitive-20261109/README.md)。稳定客户端槽位、
 重叠轮换/撤销、旧Key归属与并发原子发布通过；尚未接实际入口。
 继续持久事务/管理、动态额度与真实组合；默认v6/引擎保持，0GPU。

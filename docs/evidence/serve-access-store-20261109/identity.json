@@ -1,0 +1,15 @@
+{
+  "base_commit": "22101ce66bb06b4599601899a680bfd2c0721058",
+  "sources": {
+    "tools/serve_recovery/access_policy.py": "b0e57efefdd193a60fc50f09f8b5202d2333e73bcde2f8009a2bd3ff8fd79bd0",
+    "tools/serve_recovery/access_store.py": "65d8116f5ac077d8d9efd1d419d77a2e28a02bd1aaaa18b3d2819628e9692e4f",
+    "tools/serve_recovery/test_access_store.py": "19860dd57e01a93f4c5dc85a5d6556562b286aca1601a05b19c418a57d1ccfa6",
+    "tests/ingress_access_test.cpp": "ac18726a356161149d22ca0c700e2177beb9d856c63633806cdee146ffa674f9"
+  },
+  "default": {
+    "q4t": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
+    "q4t.release.json": "f44634f5235c9555a06c20e57fbe86d1606f57ba7b4095e875b2d71ba31b38fc",
+    "service.release.json": "29125ad9dcccd87105e8bbad2670876f66641f03f8d217007ea6dcd56a42849d",
+    "service-native-state/ledger.json": "2216b9dcd4d0e9753fb41b8698a15055001c2446ac52b5a52e3d2f757b0c884c"
+  }
+}

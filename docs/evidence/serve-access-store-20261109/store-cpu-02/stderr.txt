@@ -1,0 +1,8 @@
+test_complete_pending_before_rename_recovers_once (tools.serve_recovery.test_access_store.AccessStoreTests.test_complete_pending_before_rename_recovers_once) ... ok
+test_postrename_fsync_unknown_commit_is_queryable_without_replay (tools.serve_recovery.test_access_store.AccessStoreTests.test_postrename_fsync_unknown_commit_is_queryable_without_replay) ... ok
+test_recovery_requires_fresh_file_and_directory_durability (tools.serve_recovery.test_access_store.AccessStoreTests.test_recovery_requires_fresh_file_and_directory_durability) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.012s
+
+OK

@@ -1,6 +1,8 @@
 #include "q4t/service/ingress_access.h"
 
 #include <atomic>
+#include <array>
+#include <iostream>
 #include <string>
 #include <thread>
 #include <vector>
@@ -231,4 +233,23 @@ Q4T_TEST(AccessBoundsAndPublicStatusContainNoCredentials) {
   return true;
 }
 
-int main() { return q4t::test::RunAllTests(); }
+int main(int argc, char** argv) {
+  if (argc == 1) return q4t::test::RunAllTests();
+  if (argc != 2 || std::string_view(argv[1]) != "--check-policy") return 2;
+  // CPU interoperability entrypoint, not a production management command.
+  std::string raw;
+  std::array<char, 4096> bytes{};
+  while (std::cin.read(bytes.data(), bytes.size()) || std::cin.gcount()) {
+    raw.append(bytes.data(), static_cast<size_t>(std::cin.gcount()));
+    if (raw.size() > a::kAccessPolicyBytes) return 1;
+  }
+  a::AccessPolicy policy;
+  a::ClientAccess access;
+  std::string status;
+  if (!a::ParseAccessPolicy(raw, &policy).ok() ||
+      !access.Configure(std::move(policy)).ok() ||
+      !w::Encode(access.Describe(), &status).ok())
+    return 1;
+  std::cout << status << '\n';
+  return 0;
+}

@@ -1,0 +1,6 @@
+[ 16%] Built target q4t_guardian_process
+[ 50%] Built target q4t_guardian_journal
+[ 83%] Built target q4t_ingress_access
+[100%] Building CXX object CMakeFiles/q4t_ingress_access_tests.dir/home/rm01/models/dev/qwen4-thor/tests/ingress_access_test.cpp.o
+[100%] Linking CXX executable q4t_ingress_access_tests
+[100%] Built target q4t_ingress_access_tests
