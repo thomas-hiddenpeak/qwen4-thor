@@ -35,3 +35,5 @@ SDK包含moderation.model和input/output的score/block策略，输出为结果�
 实际驱动首次因重复start在请求前失败，1启动/0请求/40.127秒已正常清理；[修复与2项补CPU](evidence/serve-reasoning-pro-driver-fix-20261110/README.md)。累计限额改为2启动，其余9请求/17模型步/900秒保持并计入首次时间；模型/生产源码不变，原件保留，仅续未执行部分。
 
 [实际pro业务已接受](evidence/serve-reasoning-pro-business-20261110/README.md)：累计2启动/9请求/17步骤/129.201秒，所有组合、真实工具、精确账本及清理通过；继续可回退交付和全部任务。
+
+[A07.7a默认交付完成](evidence/serve-reasoning-pro-delivery-20261110/README.md)：8条实际命令通过，包0837b2a7/引擎943f8e01/元数据b138e4d2，revision22、STOPPED；A07.6完整回退与业务账本保留，0新增模型/Chat。继续b/c及全部总目标。

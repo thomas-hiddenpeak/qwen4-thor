@@ -1,10 +1,10 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
-A07.6 原生缓存已完成[44项C++/3项schema](evidence/serve-prompt-cache-cpu-20261110/README.md)、[5项驱动CPU](evidence/serve-prompt-cache-driver-20261110/README.md)、[真实业务](evidence/serve-prompt-cache-business-20261110/README.md)与[可回退默认交付](evidence/serve-prompt-cache-delivery-20261110/README.md)。当前引擎 `bd45853b`、元数据 `4040451c`、原生包 `485e774f`，publication revision20，STOPPED；旧A07.5完整回退、核心和客户端账本保持。
+A07.7a 原生pro已完成[19 C++/2schema](evidence/serve-reasoning-pro-cpu-20261110/README.md)、5项不同驱动CPU、[真实业务](evidence/serve-reasoning-pro-business-20261110/README.md)和[可回退默认交付](evidence/serve-reasoning-pro-delivery-20261110/README.md)。当前引擎 `943f8e01`、元数据 `b138e4d2`、包 `0837b2a7`，publication revision22，STOPPED；完整A07.6回退与核心/API Key/限额/用量账本保持。
 
-实际1启动/10请求/67.369秒，65次NVML全OK、正常退出且独立清理确认；预热输出0，2断点写入，MTP/目标恢复2181/2291 tokens与用量一致。key隔离、显式无断点、标准Chat、后台原SSE及文档工具闭环通过。首次命令漏传租约继承在模型前失败，原件保留。安装8操作通过，0模型/Chat。TTL到期只援引针对CPU，不冒称12h实跑；不作性能优化结论。
+实际累计2启动/9请求/17步骤/129.201秒，124次NVML全OK，模型退出0且独立清理确认。JSON/SSE、推敲/回答/摘要共享预算、加密后台原回放与原输入、真实文档工具、1-token不完整、pro预热零输出及自动压缩组合通过；精确RPM/TPM/用量核对通过。首CPU空工具额外依赖和首驱动重复start均已修复、原件保留。安装8操作通过、0新增模型/Chat。
 
-A07.1—A07.6已交付，A07整体和总目标仍active、未合main。[A07.7执行策略](SERVE_RESPONSES_EXECUTION_POLICY_2026-11-10.md)持续实施：pro已接入实际推敲/回答、共享预算和流式路径，[19项C++/2项schema通过](evidence/serve-reasoning-pro-cpu-20261110/README.md)，首次缺陷和仅7项补验保留；[实际业务已接受](evidence/serve-reasoning-pro-business-20261110/README.md)：累计2启动/9请求/17步骤/129.201秒，全程监控正常并清理；首次驱动失败保留，准备可回退交付；moderation与授权程序继续必做，然后A07.8及A/R/Q/G全部余项。媒体缓存由A10继续；范围不缩减、阶段不当终点。非性能任务只做直接针对验证，长稳实跑由用户负责。
+A07.1—A07.6及A07.7a已交付；[A07.7b/c](SERVE_RESPONSES_EXECUTION_POLICY_2026-11-10.md)继续实际moderation与授权程序，随后A07.8和所有A/R/Q/G余项。总目标active、未合main；不声称云端pro私有算法或模型质量等效，不以子阶段为终点。非性能任务仅针对验证，长稳实跑由用户负责。
 
 以下保留历史检查点，当前默认以上段为准；A07.3—A07.5 开发原件见开发日志及证据目录。
 
