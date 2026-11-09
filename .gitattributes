@@ -63,3 +63,6 @@ docs/evidence/serve-access-program-delivery-20261110/** -text -whitespace
 
 # Preserve input token count CPU evidence bytes.
 docs/evidence/serve-input-tokens-cpu-20261110/** -text -diff
+
+# Preserve count nullable follow-up and first actual business.
+docs/evidence/serve-input-tokens-followup-20261110/** -text -diff

@@ -450,7 +450,7 @@
     "src/server/responses_owner.cpp": "f439f60e6956ac0d61c107d95ec719cd1fbed84eb0c56721ef63cd1f4342a3fc",
     "src/server/responses_plan.cpp": "bca4239897776167468cbc00ae75c79db25022db50d538799dd6b66137720939",
     "src/server/responses_state.cpp": "8f1f5433552165c333b7f8288848286e5e3f45df056243f5cd8601486d767fbc",
-    "src/server/responses_tokens.cpp": "35c9eb79ffee7cebf6e57951eb0d505837d7632281a0b2bfd6f18df387cd1c64",
+    "src/server/responses_tokens.cpp": "c10778b31afa7ceccf26de993db3e6eb68fdf1efc9d96d0ad3d2de0e7103f38c",
     "src/server/sampling.cpp": "88e247ca6b7c65abbf0977c66fd604e7156cbdefe5d0293e509282678555d31d",
     "src/server/schema_grammar.cpp": "075d6a282f2fc1cda861e3a0de4de132455af3efa9ed30b67b0ad9a5caf56cf2",
     "src/server/schema_graph.cpp": "b4a369e5b6882642e350b140afd2ff4002d9ae60e0f42ec8e34aa02de54972a5",

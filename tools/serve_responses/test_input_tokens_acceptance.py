@@ -10,6 +10,15 @@ from tools.serve_service.package import read
 
 
 class InputTokensAcceptance(unittest.TestCase):
+    def test_nullable_followup_keeps_create_and_count_contracts_distinct(self):
+        from tools.serve_responses import input_tokens_null_acceptance as followup
+        self.assertEqual(followup.LIMITS, dict(starts=1, chats=1, controls=2000, seconds=300))
+        self.assertEqual(len(followup.nullable()), 10)
+        self.assertEqual(errors(followup.nullable(), 'input_tokens_request'), [])
+        self.assertTrue(errors(followup.nullable(), 'response_create'))
+        self.assertEqual(len(followup.requests()), 1)
+        self.assertEqual(errors(followup.requests()['initial'], 'response_create'), [])
+
     def test_frozen_requests_and_count_contract(self):
         self.assertEqual(driver.LIMITS, dict(starts=1, chats=4, controls=2000, seconds=900))
         self.assertEqual(driver.MAX_COUNTS, 16)

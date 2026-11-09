@@ -1,0 +1,104 @@
+diff --git a/docs/serve-input-semantics-v1.json b/docs/serve-input-semantics-v1.json
+index ac0cb9e6..15b7944b 100644
+--- a/docs/serve-input-semantics-v1.json
++++ b/docs/serve-input-semantics-v1.json
+@@ -450,7 +450,7 @@
+     "src/server/responses_owner.cpp": "f439f60e6956ac0d61c107d95ec719cd1fbed84eb0c56721ef63cd1f4342a3fc",
+     "src/server/responses_plan.cpp": "bca4239897776167468cbc00ae75c79db25022db50d538799dd6b66137720939",
+     "src/server/responses_state.cpp": "8f1f5433552165c333b7f8288848286e5e3f45df056243f5cd8601486d767fbc",
+-    "src/server/responses_tokens.cpp": "35c9eb79ffee7cebf6e57951eb0d505837d7632281a0b2bfd6f18df387cd1c64",
++    "src/server/responses_tokens.cpp": "c10778b31afa7ceccf26de993db3e6eb68fdf1efc9d96d0ad3d2de0e7103f38c",
+     "src/server/sampling.cpp": "88e247ca6b7c65abbf0977c66fd604e7156cbdefe5d0293e509282678555d31d",
+     "src/server/schema_grammar.cpp": "075d6a282f2fc1cda861e3a0de4de132455af3efa9ed30b67b0ad9a5caf56cf2",
+     "src/server/schema_graph.cpp": "b4a369e5b6882642e350b140afd2ff4002d9ae60e0f42ec8e34aa02de54972a5",
+diff --git a/src/server/responses_tokens.cpp b/src/server/responses_tokens.cpp
+index fdde1ea0..17b4d522 100644
+--- a/src/server/responses_tokens.cpp
++++ b/src/server/responses_tokens.cpp
+@@ -53,9 +53,13 @@ ObjectReply PrepareResponsesTokenCount(const io::Json& request,
+     if (const auto* value = normalized.Find(key); value && value->IsNull())
+       return Invalid(Status::Fail("expected string"),
+                      {"invalid_request", key, 400});
+-  if (const auto* model = normalized.Find("model"); model && model->IsNull())
+-    std::erase_if(normalized.object,
+-                  [](const auto& field) { return field.first == "model"; });
++  // Unlike Responses create, the count SDK permits null for these fields.
++  // Resolve only count's nullable defaults; never relax create's contract.
++  std::erase_if(normalized.object, [](const auto& field) {
++    const auto& key = field.first;
++    return field.second.IsNull() && (key == "model" || key == "text" ||
++                                     key == "tools" || key == "tool_choice");
++  });
+   Set(&normalized, "store", Boolean(false));
+   status = ParseResponsesEnvelope(normalized, config, envelope, &error);
+   if (!status) return Invalid(status, error);
+diff --git a/tests/server_responses_tokens_test.cpp b/tests/server_responses_tokens_test.cpp
+index d44b1e8b..9a816669 100644
+--- a/tests/server_responses_tokens_test.cpp
++++ b/tests/server_responses_tokens_test.cpp
+@@ -144,6 +144,32 @@ Q4T_TEST(responses_tokens_closed_contract_and_model_selection) {
+   return true;
+ }
+ 
++Q4T_TEST(responses_tokens_sdk_nullable_fields_default_only_on_count_endpoint) {
++  Fixture f;
++  Q4T_CHECK(Ok(f.Prepare(Read("{}"))));
++  const auto empty = Prompt(f.plan, true);
++  auto all = Read("{}");
++  for (const auto* name :
++       {"conversation", "input", "instructions", "model", "parallel_tool_calls",
++        "previous_response_id", "reasoning", "text", "tool_choice", "tools"}) {
++    auto request = Read("{}");
++    Set(&request, name, Json());
++    Set(&all, name, Json());
++    Q4T_CHECK(Ok(f.Prepare(request)) && Prompt(f.plan, true) == empty);
++  }
++  Q4T_CHECK(Ok(f.Prepare(all)) && Prompt(f.plan, true) == empty);
++  auto config = f.config;
++  config.count_input_only = false;
++  for (const auto* name : {"model", "text", "tool_choice", "tools"}) {
++    auto request = Read(R"({"input":"hello"})");
++    Set(&request, name, Json());
++    ResponsesExecution run(f.objects);
++    const auto result = run.Prepare(request, config, f.access, 42);
++    Q4T_CHECK(!result.ok() && result.http_status == 400);
++  }
++  return true;
++}
++
+ Q4T_TEST(responses_tokens_generation_template_parity_and_real_personality) {
+   Fixture f;
+   auto config = f.config;
+diff --git a/tools/serve_audit/inventory.json b/tools/serve_audit/inventory.json
+index d3c13490..1025ce8a 100644
+--- a/tools/serve_audit/inventory.json
++++ b/tools/serve_audit/inventory.json
+@@ -1525,7 +1525,7 @@
+     "src/server/responses_reasoning.cpp": "2114cbd94184bcd645329d69d2dd260b14b08e5997267f892684cff061de5ffc",
+     "src/server/responses_state.cpp": "8f1f5433552165c333b7f8288848286e5e3f45df056243f5cd8601486d767fbc",
+     "src/server/responses_summary.cpp": "7412535fe9bd0d316bd54b0ef43eea688a554865fe27fe86eef425a6f15689b7",
+-    "src/server/responses_tokens.cpp": "35c9eb79ffee7cebf6e57951eb0d505837d7632281a0b2bfd6f18df387cd1c64",
++    "src/server/responses_tokens.cpp": "c10778b31afa7ceccf26de993db3e6eb68fdf1efc9d96d0ad3d2de0e7103f38c",
+     "src/server/sampling.cpp": "88e247ca6b7c65abbf0977c66fd604e7156cbdefe5d0293e509282678555d31d",
+     "src/server/schema_decimal.cpp": "3931972b1ecfd38b0574c6794f447f6b05d1ef78d65e0f73a61eabcb1c2dee2f",
+     "src/server/schema_grammar.cpp": "075d6a282f2fc1cda861e3a0de4de132455af3efa9ed30b67b0ad9a5caf56cf2",
+diff --git a/tools/serve_responses/test_input_tokens_acceptance.py b/tools/serve_responses/test_input_tokens_acceptance.py
+index 85c6dd30..827dd6bf 100644
+--- a/tools/serve_responses/test_input_tokens_acceptance.py
++++ b/tools/serve_responses/test_input_tokens_acceptance.py
+@@ -10,6 +10,15 @@ from tools.serve_service.package import read
+ 
+ 
+ class InputTokensAcceptance(unittest.TestCase):
++    def test_nullable_followup_keeps_create_and_count_contracts_distinct(self):
++        from tools.serve_responses import input_tokens_null_acceptance as followup
++        self.assertEqual(followup.LIMITS, dict(starts=1, chats=1, controls=2000, seconds=300))
++        self.assertEqual(len(followup.nullable()), 10)
++        self.assertEqual(errors(followup.nullable(), 'input_tokens_request'), [])
++        self.assertTrue(errors(followup.nullable(), 'response_create'))
++        self.assertEqual(len(followup.requests()), 1)
++        self.assertEqual(errors(followup.requests()['initial'], 'response_create'), [])
++
+     def test_frozen_requests_and_count_contract(self):
+         self.assertEqual(driver.LIMITS, dict(starts=1, chats=4, controls=2000, seconds=900))
+         self.assertEqual(driver.MAX_COUNTS, 16)

@@ -53,9 +53,13 @@ ObjectReply PrepareResponsesTokenCount(const io::Json& request,
     if (const auto* value = normalized.Find(key); value && value->IsNull())
       return Invalid(Status::Fail("expected string"),
                      {"invalid_request", key, 400});
-  if (const auto* model = normalized.Find("model"); model && model->IsNull())
-    std::erase_if(normalized.object,
-                  [](const auto& field) { return field.first == "model"; });
+  // Unlike Responses create, the count SDK permits null for these fields.
+  // Resolve only count's nullable defaults; never relax create's contract.
+  std::erase_if(normalized.object, [](const auto& field) {
+    const auto& key = field.first;
+    return field.second.IsNull() && (key == "model" || key == "text" ||
+                                     key == "tools" || key == "tool_choice");
+  });
   Set(&normalized, "store", Boolean(false));
   status = ParseResponsesEnvelope(normalized, config, envelope, &error);
   if (!status) return Invalid(status, error);

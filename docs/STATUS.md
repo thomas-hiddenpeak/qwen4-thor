@@ -1,5 +1,7 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+A07.8 [首轮真实计数/工具业务通过、nullable合同补齐CPU通过](evidence/serve-input-tokens-followup-20261110/README.md)：1启动/4生成/15计数/51.451秒，50 NVML全OK并独立清理；补齐count可null而create不可null的四字段默认处理，3直接C++/1驱动通过。追加最多1启动/1生成/4计数/300秒仅验证该差异；累计上限2/5/20/900。默认639c6b7b保持STOPPED，未把局部通过当全部合同完成，全部总任务继续。
+
 A07.8 [21 C++/2schema/2原生入口/3驱动CPU通过](evidence/serve-input-tokens-cpu-20261110/README.md)，零警告，首夹具/路径/生成合同失败和定向修复原件保留。已冻结最多1启动/4生成/16计数/900秒，下一步实际SDK计数与usage、真实工具、历史/加密、零额外生成额度验证。默认639c6b7b保持STOPPED，总目标active，全部余项继续。
 
 A07.8 标准 `POST /v1/responses/input_tokens` 成组开发已接入：真实模板/分词与媒体展开、空请求、客户端历史/加密状态只读、零生成和零生成额度；friendly/pragmatic 使用实际提示适配并与生成同源。冻结 20 项直接 C++、2 schema 和原生入口定向检查，下一步独立构建与短验。尚未验收，默认639c6b7b/STOPPED保持；A07.8与全部总任务继续。

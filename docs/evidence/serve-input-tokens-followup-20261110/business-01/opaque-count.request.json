@@ -1,0 +1,45 @@
+{
+  "action": "input_tokens",
+  "request": {
+    "model": "qwen3.8-flash-next",
+    "reasoning": {
+      "effort": "none"
+    },
+    "input": [
+      {
+        "id": "rs_6eac286468b33e2620b614907580fe56",
+        "type": "reasoning",
+        "summary": [],
+        "status": "completed",
+        "encrypted_content": "q4t1:9a265fda728169376287cd7014bbc048:1d2f8e08cfba661909354c46:8a172b1f55efd349be9e3fd5ce8cf4bd:a47694cdca5bdfb521a804613e0862f1386bb096364f4c9b5a171b343add951a8b0477412e54b4654ca11590ff46f971bf3fb2bf875f363336e41f29514c946ec3aacd1a560779aae0a72e72a1dd56bb4c830574321bd2a7ab7a7dad990476852fa9d827715b032b3c2653ce150229e5c6a2f41bc31d3948b26163ec0d463e628ace8e979fc20f80b07db3581bfbba861eff92745bc2bf3b8f62d955bb9b80b85cb8c6743d6a24cdd52a8aeaa63d9d4f71c36253ea3aafc1251d7ace0768d2b0bea726f9dc19d530342b1c288d58cf4b644b736a6d414ad884c85db251504b8de0b8151cf6154323904d4041ef640d037b3ccefc37013990492fe04a901bc145e9b8ad58cf22b756d1aee0b6b2d47fa0dc8b315a3137636e0bb008351c776398730931c7a2920306223820c6227b7ef72a44a6082ab3b67f216def1d23293c6f98b7bb1e04d584fd57ddc3fd5e136680cd1462f17286010052697294919103c910d93c625e526ed79e52858852de504534043ef0c1b3321400a33b173621eaa5bc1b9eedb93dacd4f4b2df6f86cc4532a1279e089fcbac237e798213d3959ee0464a06b6f8c9c908ea6556b1964f16d06d57fed45eb115c8f678384e5dfe5b96dd937354e8d3970137560701576ab90e78e2"
+      },
+      {
+        "id": "msg_f7d8b9d15ac5b3e4967244d8397c4258",
+        "type": "message",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "\n\n42",
+            "annotations": [],
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed"
+      },
+      {
+        "role": "user",
+        "content": "Repeat the previous answer."
+      }
+    ]
+  },
+  "id": null,
+  "query": null,
+  "base_url": "http://127.0.0.1:19003/v1",
+  "headers": {
+    "X-Q4T-Client-Id": "encryption-test",
+    "X-Q4T-Gateway-Token": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "timeout_ms": 120000
+}

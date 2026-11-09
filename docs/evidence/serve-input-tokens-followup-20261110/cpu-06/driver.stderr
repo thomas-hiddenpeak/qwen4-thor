@@ -1,0 +1,6 @@
+test_nullable_followup_keeps_create_and_count_contracts_distinct (tools.serve_responses.test_input_tokens_acceptance.InputTokensAcceptance.test_nullable_followup_keeps_create_and_count_contracts_distinct) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.006s
+
+OK
