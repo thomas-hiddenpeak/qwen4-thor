@@ -1,0 +1,19 @@
+{
+  "docs/SERVE_RESPONSES_FIELD_AUDIT_2026-11-10.md": "d901be60e55e09ec7cd7773c68a5b08f9d27862423c236bba274af1c19db67c8",
+  "tests/fixtures/responses_fields/sdk_vectors.json": "3a4558819f3c51c9db3680d96db4f895fe612b2b86ecbc9760394cd359668a25",
+  "tools/serve_responses/request_fields_acceptance.py": "578c3bc3f9eb6cc8d0ab82c73e418f423355db8b2db463194cf2485a897baa08",
+  "tools/serve_responses/test_request_fields_acceptance.py": "2c47c469aebeb73f28618d64fa37dde6b2e7be42112af62a7b9d9b257ad60f3a",
+  "tools/serve_responses/test_request_fields_contract.py": "27faf08687c62ddfff245810f359977d62dba727bd77b79bab0eb7ba74cb46ad",
+  "docs/STATUS.md": "1a1b81789aae016229f2cca6e27b7e5a30e8f1c75e4bfe06fb85bf082b765ca9",
+  "docs/log/2026-11-10.md": "9b8b687662bc4f0d2e81ddbadf4d62e16530d48b9011c7b726a1061e450df773",
+  "docs/serve-input-semantics-v1.json": "e085ca339a4f8b10e45f1e5a71e870696604862854761cf776f37b1e7908b2ed",
+  "docs/serve-master-goals-v2.json": "8a3b431413c55d14a431853aec10e7fd6a1730b2e7df050998c7cd236953d2e1",
+  "src/server/responses_execution.cpp": "dd3246ee21978dc66f224c6f6afbdb729e821d82eba606e4e525af9589f51ccd",
+  "src/server/responses_plan.cpp": "2eaa26bfb35d0ab75d983ecb298d5e79ebfc48f880e52ed0c65919c907f0e353",
+  "src/server/responses_tokens.cpp": "585533d0ebaa6f75710e4b30ff6c07ec6769548aa34b48dd2e731f6071e2f8ce",
+  "tests/server_responses_execution_test.cpp": "b2aa8d16ec70003cacbd13f709389d11f888b1c1eec98b9d04fe555b8f42d882",
+  "tests/server_responses_plan_test.cpp": "9c74a757e604b62b47f9624f694a6828857e1ce74ef8ba1d1dec80e5df8daa59",
+  "tests/server_responses_tokens_test.cpp": "98c1e9552fe7a7d89b16d78a8259746136659ccc1c24612c90e654f6b6c63d61",
+  "tools/serve_audit/inventory.json": "2ca62a152157745f22dd7be34d654d2b45ca3556b3ccd559577b98720cc53257",
+  "tools/serve_protocol/build_contract.py": "b48051e6f89a26246016e84f419b525bd035653b62784274569b12ae0f74d752"
+}

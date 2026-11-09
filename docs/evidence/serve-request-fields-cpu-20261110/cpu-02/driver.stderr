@@ -1,0 +1,6 @@
+test_business_oracle_rejects_false_tier_and_wrong_output (tools.serve_responses.test_request_fields_acceptance.RequestFieldsAcceptance.test_business_oracle_rejects_false_tier_and_wrong_output) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.015s
+
+OK

@@ -14,6 +14,15 @@
   "runtime_preflight": "POST /v1/chat/preflight",
   "rules": [
     {
+      "id": "responses-request-fields",
+      "sources": [
+        "src/server/responses_plan.cpp",
+        "src/server/responses_execution.cpp",
+        "src/server/responses_tokens.cpp"
+      ],
+      "contract": "Responses create rejects explicit null for access_programs/input/model/prompt_cache_options/text/tool_choice/tools/user and reasoning.mode; nullable fields keep their own defaults. Input type and original envelope are checked before prompt state lookup, then expanded requests are checked against effective client limits. Count and compact normalize only their separately nullable SDK fields. All seven SDK service-tier values are accepted; execution reports the actual default scheduler tier without claiming hosted pricing, dedicated capacity or latency guarantees."
+    },
+    {
       "id": "responses-input-tokens",
       "sources": [
         "src/server/responses_tokens.cpp",
@@ -444,13 +453,13 @@
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
     "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
     "src/server/responses_api.cpp": "6480b9f8445a93d2699b674010efba7901a0750deafcc70493afe2c6d9d105e1",
-    "src/server/responses_execution.cpp": "b2ea25a02bf94292b75c3877eaf38658cc6669e1f2e91693dbcc3595a9be18a6",
+    "src/server/responses_execution.cpp": "dd3246ee21978dc66f224c6f6afbdb729e821d82eba606e4e525af9589f51ccd",
     "src/server/responses_jobs.cpp": "e5eaf87112d482d23908df7d12b2a4afdec31d63a2fd54f20e29eebfdd206832",
     "src/server/responses_output.cpp": "a14b41905227ad0885753d464a0a08a41619968a370192442cd29a48465d8080",
     "src/server/responses_owner.cpp": "f439f60e6956ac0d61c107d95ec719cd1fbed84eb0c56721ef63cd1f4342a3fc",
-    "src/server/responses_plan.cpp": "bca4239897776167468cbc00ae75c79db25022db50d538799dd6b66137720939",
+    "src/server/responses_plan.cpp": "2eaa26bfb35d0ab75d983ecb298d5e79ebfc48f880e52ed0c65919c907f0e353",
     "src/server/responses_state.cpp": "8f1f5433552165c333b7f8288848286e5e3f45df056243f5cd8601486d767fbc",
-    "src/server/responses_tokens.cpp": "c10778b31afa7ceccf26de993db3e6eb68fdf1efc9d96d0ad3d2de0e7103f38c",
+    "src/server/responses_tokens.cpp": "585533d0ebaa6f75710e4b30ff6c07ec6769548aa34b48dd2e731f6071e2f8ce",
     "src/server/sampling.cpp": "88e247ca6b7c65abbf0977c66fd604e7156cbdefe5d0293e509282678555d31d",
     "src/server/schema_grammar.cpp": "075d6a282f2fc1cda861e3a0de4de132455af3efa9ed30b67b0ad9a5caf56cf2",
     "src/server/schema_graph.cpp": "b4a369e5b6882642e350b140afd2ff4002d9ae60e0f42ec8e34aa02de54972a5",

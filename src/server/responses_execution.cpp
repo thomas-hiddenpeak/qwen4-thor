@@ -80,13 +80,19 @@ ObjectReply ResponsesExecution::Prepare(const Json& request,
     status = NormalizeResponsesCompactRequest(request, config, &compact_request,
                                               &error);
     effective = &compact_request;
-  } else if (Nonnull(request, "prompt")) {
-    auto expanded = prompts_.Expand(request, config, access_);
-    if (!expanded.ok()) return expanded;
-    expanded_request = std::move(expanded.value);
-    effective = &expanded_request;
+  } else {
+    // Validate the original envelope before any prompt lookup/expansion. The
+    // expanded request is checked again because template defaults can change
+    // the effective generation settings and client resource requirements.
+    status = ParseResponsesEnvelope(request, config, &envelope_, &error);
+    if (status && Nonnull(request, "prompt")) {
+      auto expanded = prompts_.Expand(request, config, access_);
+      if (!expanded.ok()) return expanded;
+      expanded_request = std::move(expanded.value);
+      effective = &expanded_request;
+    }
   }
-  if (status)
+  if (status && (standalone_compaction_ || effective != &request))
     status = ParseResponsesEnvelope(*effective, config, &envelope_, &error);
   if (!status) {
     auto reply = Error(error.http_status, error.code, status.message());

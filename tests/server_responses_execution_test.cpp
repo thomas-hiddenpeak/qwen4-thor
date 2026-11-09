@@ -77,6 +77,47 @@ Json ModerationReport(bool flagged) {
 }
 }  // namespace
 
+Q4T_TEST(responses_invalid_envelope_fails_before_prompt_state_lookup) {
+  Fixture fixture;
+  ObjectStore store(fixture.options);
+  for (const auto& [field, param] :
+       std::vector<std::pair<std::string, std::string>>{
+           {R"("input":null)", "input"},
+           {R"("input":{})", "input"},
+           {R"("user":null)", "user"},
+           {R"("prompt_cache_options":null)", "prompt_cache_options"},
+           {R"("reasoning":{"mode":null})", "reasoning.mode"},
+           {R"("text":null)", "text"},
+           {R"("unknown_option":true)", "unknown_option"}}) {
+    ResponsesExecution run(store);
+    const auto reply = run.Prepare(
+        Parse(R"({"prompt":{"id":"prompt_missing"},"instructions":"Answer",)" +
+              field + '}'),
+        Config(), Access(), 42);
+    Q4T_CHECK(reply.http_status == 400 &&
+              reply.value.GetString("param") == param);
+  }
+  ResponsesExecution valid(store);
+  Q4T_CHECK(valid.Prepare(Parse(R"({"prompt":{"id":"prompt_missing"}})"),
+                           Config(), Access(), 42)
+                .http_status == 404);
+  return true;
+}
+
+Q4T_TEST(responses_service_tiers_report_actual_execution_mode) {
+  Fixture fixture;
+  ObjectStore store(fixture.options);
+  for (const auto* tier :
+       {"auto", "default", "flex", "scale", "priority", "fast", "ultrafast"}) {
+    ResponsesExecution run(store);
+    Q4T_CHECK(Prepare(&run, std::string(R"(,"store":false,"service_tier":")") +
+                               tier + '"'));
+    Q4T_CHECK(run.Envelope().request.GetString("service_tier") == tier);
+    Q4T_CHECK(run.Output().Snapshot().GetString("service_tier") == "default");
+  }
+  return true;
+}
+
 Q4T_TEST(responses_moderation_hold_hides_sse_checkpoint_and_background_replay) {
   for (const bool background : {false, true}) {
     Fixture fixture;

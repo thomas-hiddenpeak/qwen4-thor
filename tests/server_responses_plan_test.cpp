@@ -1,6 +1,9 @@
 #include "q4t/server/responses_plan.h"
 
 #include <cmath>
+#include <filesystem>
+#include <fstream>
+#include <iterator>
 
 #include "q4t/server/chat_template.h"
 #include "q4t/server/output_schema.h"
@@ -32,6 +35,56 @@ bool Envelope(const std::string& text, ResponsesEnvelope* result,
   return ParseResponsesEnvelope(Read(text), Config(), result, error).ok();
 }
 }  // namespace
+
+Q4T_TEST(responses_plan_sdk_field_nullability_and_tier_oracle) {
+  const auto path = std::filesystem::path(__FILE__).parent_path() /
+                    "fixtures/responses_fields/sdk_vectors.json";
+  std::ifstream file(path);
+  Q4T_CHECK(file.good());
+  const auto document = Read(std::string(std::istreambuf_iterator<char>(file),
+                                        std::istreambuf_iterator<char>()));
+  Q4T_CHECK(document.GetString("profile") == "q4t-sdk-responses-fields-v1");
+  const auto* vectors = document.GetArray("vectors");
+  Q4T_CHECK(vectors && vectors->array.size() == 44);
+  for (const auto& row : vectors->array) {
+    ResponsesEnvelope envelope;
+    ChatPlanError error;
+    const auto status = ParseResponsesEnvelope(*row.Find("request"), Config(),
+                                               &envelope, &error);
+    if (status.ok() != row.GetBool("accepted"))
+      std::fprintf(stderr, "%s: native=%d expected=%d %s %s\n",
+                   row.GetString("name").c_str(), status.ok(),
+                   row.GetBool("accepted"), error.param.c_str(),
+                   status.message().c_str());
+    Q4T_CHECK(status.ok() == row.GetBool("accepted"));
+    if (!status)
+      Q4T_CHECK(error.http_status == 400 &&
+                error.param == row.GetString("param"));
+  }
+  return true;
+}
+
+Q4T_TEST(responses_plan_input_type_and_nullable_compact_adapter) {
+  ResponsesEnvelope envelope;
+  ChatPlanError error;
+  for (const auto* input : {"null", "42", "true", "{}"}) {
+    Q4T_CHECK(!Envelope(std::string("{\"instructions\":\"Answer\",\"input\":") +
+                            input + '}',
+                        &envelope, &error));
+    Q4T_CHECK(error.param == "input" && error.http_status == 400);
+  }
+  Q4T_CHECK(Envelope(R"({"instructions":"Answer"})", &envelope, &error));
+  q4t::io::Json normalized;
+  Q4T_CHECK(NormalizeResponsesCompactRequest(
+      Read(R"({"model":null,"input":null,"prompt_cache_options":null,
+        "instructions":"Answer","service_tier":"fast"})"),
+      Config(), &normalized, &error));
+  Q4T_CHECK(!normalized.Has("input") &&
+            !normalized.Has("prompt_cache_options"));
+  Q4T_CHECK(ParseResponsesEnvelope(normalized, Config(), &envelope, &error));
+  Q4T_CHECK(envelope.options.GetString("model") == "base");
+  return true;
+}
 
 Q4T_TEST(responses_summary_plan_uses_actual_reasoning_and_shared_budget) {
   const auto snapshot = Read(R"({"output":[

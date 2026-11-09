@@ -72,3 +72,5 @@ docs/evidence/serve-input-tokens-business-20261110/** -text -diff
 
 # Preserve input token count delivery receipts.
 docs/evidence/serve-input-tokens-delivery-20261110/** -text -diff
+
+docs/evidence/serve-request-fields-cpu-20261110/** -text

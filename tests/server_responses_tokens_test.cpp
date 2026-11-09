@@ -160,7 +160,7 @@ Q4T_TEST(responses_tokens_sdk_nullable_fields_default_only_on_count_endpoint) {
   Q4T_CHECK(Ok(f.Prepare(all)) && Prompt(f.plan, true) == empty);
   auto config = f.config;
   config.count_input_only = false;
-  for (const auto* name : {"model", "text", "tool_choice", "tools"}) {
+  for (const auto* name : {"input", "model", "text", "tool_choice", "tools"}) {
     auto request = Read(R"({"input":"hello"})");
     Set(&request, name, Json());
     ResponsesExecution run(f.objects);

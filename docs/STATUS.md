@@ -1,5 +1,9 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+A07.8 [字段合同13 C++/2schema/2驱动通过](evidence/serve-request-fields-cpu-20261110/README.md)，44 SDK向量一致，host/引擎零警告；首驱动错用场景夹具的失败与单项修复保留。下一步1启动/2生成/2计数/10拒绝/600秒业务短验，再可回退交付及全部总任务；默认70504790保持。
+
+A07.8 [字段合同审计](SERVE_RESPONSES_FIELD_AUDIT_2026-11-10.md)成组修复已完成：create非nullable字段与reasoning.mode、count/compact各自默认、fast/ultrafast入口及模板读取前校验。冻结44个SDK字段向量、13项C++/2schema/2驱动和最多1启动/2生成/2计数/10拒绝/600秒短验。尚未测试；默认70504790保持STOPPED，全部总任务继续。
+
 A07.8 标准计数已完成[CPU](evidence/serve-input-tokens-cpu-20261110/README.md)、[nullable补齐](evidence/serve-input-tokens-followup-20261110/README.md)、[真实业务](evidence/serve-input-tokens-business-20261110/README.md)与[可回退交付](evidence/serve-input-tokens-delivery-20261110/README.md)。当前引擎70504790、元数据f1001bf8、包5a71516a，revision28、STOPPED；旧639c6b7b/b4c86756完整回退与业务账本保持。
 
 累计2启动/5生成/19计数/96.469秒、94 NVML全OK；发布8操作、0新增模型/GPU。继续A07.8其余合同与A08等全部总任务，总目标active、未合main。以下历史检查点以本段当前默认为准。

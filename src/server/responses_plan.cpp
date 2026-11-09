@@ -104,8 +104,7 @@ Status Reasoning(const Json& request, ResponsesEnvelope* result,
         legacy != result->summary)
       return Invalid(error, "reasoning.summary", "conflicting summary options");
     if (result->summary.empty()) result->summary = legacy;
-    if (Nonnull(*object, "mode")) {
-      const auto* mode = object->Find("mode");
+    if (const auto* mode = object->Find("mode")) {
       if (!mode->IsString() || !OneOf(mode->str, {"standard", "pro"}))
         return Invalid(error, "reasoning.mode", "invalid reasoning mode");
       result->reasoning_mode = mode->str;
@@ -254,6 +253,12 @@ Status NormalizeResponsesCompactRequest(const io::Json& request,
   auto result = request;
   if (request.Find("model")->IsNull())
     Set(&result, "model", String(config.model));
+  // Compact permits null for fields that create requires to be non-null.
+  // Resolve that endpoint's defaults before using the shared create planner.
+  std::erase_if(result.object, [](const auto& field) {
+    return field.second.IsNull() &&
+           (field.first == "input" || field.first == "prompt_cache_options");
+  });
   Set(&result, "store", Boolean(false));
   Set(&result, "reasoning", Object({{"effort", String("none")}}));
   Set(&result, "temperature", Number(0));
@@ -307,6 +312,16 @@ Status ParseResponsesEnvelope(const io::Json& request,
                              "seed"},
                             &error->param, "");
   if (!status) return status;
+  // Omission and explicit null have different contracts in Responses create.
+  // Count/compact normalize their own nullable defaults before reaching here.
+  for (const auto* key : {"access_programs", "input", "model",
+                          "prompt_cache_options", "text", "tool_choice",
+                          "tools", "user"})
+    if (const auto* value = request.Find(key); value && value->IsNull())
+      return Invalid(error, key, "field must not be null");
+  if (const auto* input = request.Find("input");
+      input && !input->IsString() && !input->IsArray())
+    return Invalid(error, "input", "input requires text or an item array");
   ResponsesEnvelope result;
   result.request = request;
   result.options = Object({{"instructions", {}},
@@ -391,7 +406,8 @@ Status ParseResponsesEnvelope(const io::Json& request,
                         &truncation, "", error);
   if (status)
     status = ChoiceOption(request, "service_tier",
-                          {"auto", "default", "flex", "priority", "scale"},
+                          {"auto", "default", "flex", "priority", "scale",
+                           "fast", "ultrafast"},
                           &tier, "", error);
   if (!status) return status;
   result.truncate = truncation == "auto";

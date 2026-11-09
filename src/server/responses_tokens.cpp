@@ -57,8 +57,9 @@ ObjectReply PrepareResponsesTokenCount(const io::Json& request,
   // Resolve only count's nullable defaults; never relax create's contract.
   std::erase_if(normalized.object, [](const auto& field) {
     const auto& key = field.first;
-    return field.second.IsNull() && (key == "model" || key == "text" ||
-                                     key == "tools" || key == "tool_choice");
+    return field.second.IsNull() &&
+           (key == "input" || key == "model" || key == "text" ||
+            key == "tools" || key == "tool_choice");
   });
   Set(&normalized, "store", Boolean(false));
   status = ParseResponsesEnvelope(normalized, config, envelope, &error);

@@ -1,0 +1,464 @@
+{
+  "profile": "q4t-sdk-responses-fields-v1",
+  "sdk_version": "7.47.0",
+  "graph_sha256": "3b628c3b6ffd745ccbece4716215b35962f6ee22a34ed88e330f77eeafca3c75",
+  "sources_sha256": {
+    "src/core/pagination.ts": "9982e3f76b145841d466fe8c9a56e9eea08b869b3d5901d84fe600ea5c7e3da6",
+    "src/resources/conversations/conversations.ts": "f65731936f0822881a3f7becd29d78ec043cb8138a22131c5115e6d8dfa70a58",
+    "src/resources/conversations/items.ts": "d15db5536c58775a13bce0ff4c8c0df9df6836210b0ab01dd510b6be9fda4514",
+    "src/resources/responses/input-items.ts": "783cbf2ad3cb04abc069ad56100b3cb3a3f6c3c1562611ed1ad16034d85d7928",
+    "src/resources/responses/input-tokens.ts": "edf13a3dc0ca452600aeb84c5b22dc0f842c9c2f59b148eb95581dfc1cce35d8",
+    "src/resources/responses/responses.ts": "f84e394bf08d71403c054ccb4d41d278861f2d19db3ea426e7aec789f3eb5dbb",
+    "src/resources/shared.ts": "15cf6803634242502525c52098acddea16b9c2bb2439f85aa388dd43fa837455"
+  },
+  "vectors": [
+    {
+      "name": "access_programs-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "access_programs": null
+      },
+      "accepted": false,
+      "param": "access_programs"
+    },
+    {
+      "name": "background-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "background": null
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "context_management-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "context_management": null
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "conversation-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "conversation": null
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "include-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "include": null
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "input-null",
+      "request": {
+        "input": null,
+        "instructions": "Answer briefly."
+      },
+      "accepted": false,
+      "param": "input"
+    },
+    {
+      "name": "instructions-null",
+      "request": {
+        "input": "hello",
+        "instructions": null
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "max_output_tokens-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "max_output_tokens": null
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "max_tool_calls-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "max_tool_calls": null
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "metadata-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "metadata": null
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "model-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "model": null
+      },
+      "accepted": false,
+      "param": "model"
+    },
+    {
+      "name": "moderation-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "moderation": null
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "parallel_tool_calls-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "parallel_tool_calls": null
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "previous_response_id-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "previous_response_id": null
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "prompt-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "prompt": null
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "prompt_cache_key-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "prompt_cache_key": null
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "prompt_cache_options-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "prompt_cache_options": null
+      },
+      "accepted": false,
+      "param": "prompt_cache_options"
+    },
+    {
+      "name": "prompt_cache_retention-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "prompt_cache_retention": null
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "reasoning-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "reasoning": null
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "safety_identifier-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "safety_identifier": null
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "service_tier-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "service_tier": null
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "store-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "store": null
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "stream-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "stream": null
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "stream_options-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "stream_options": null
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "temperature-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "temperature": null
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "text-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "text": null
+      },
+      "accepted": false,
+      "param": "text"
+    },
+    {
+      "name": "tool_choice-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "tool_choice": null
+      },
+      "accepted": false,
+      "param": "tool_choice"
+    },
+    {
+      "name": "tools-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "tools": null
+      },
+      "accepted": false,
+      "param": "tools"
+    },
+    {
+      "name": "top_logprobs-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "top_logprobs": null
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "top_p-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "top_p": null
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "truncation-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "truncation": null
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "user-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "user": null
+      },
+      "accepted": false,
+      "param": "user"
+    },
+    {
+      "name": "reasoning.context-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "reasoning": {
+          "context": null
+        }
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "reasoning.effort-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "reasoning": {
+          "effort": null
+        }
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "reasoning.generate_summary-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "reasoning": {
+          "generate_summary": null
+        }
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "reasoning.mode-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "reasoning": {
+          "mode": null
+        }
+      },
+      "accepted": false,
+      "param": "reasoning.mode"
+    },
+    {
+      "name": "reasoning.summary-null",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "reasoning": {
+          "summary": null
+        }
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "tier-auto",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "service_tier": "auto"
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "tier-default",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "service_tier": "default"
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "tier-flex",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "service_tier": "flex"
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "tier-scale",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "service_tier": "scale"
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "tier-priority",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "service_tier": "priority"
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "tier-fast",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "service_tier": "fast"
+      },
+      "accepted": true,
+      "param": ""
+    },
+    {
+      "name": "tier-ultrafast",
+      "request": {
+        "input": "hello",
+        "instructions": "Answer briefly.",
+        "service_tier": "ultrafast"
+      },
+      "accepted": true,
+      "param": ""
+    }
+  ]
+}

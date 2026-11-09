@@ -429,6 +429,9 @@ def semantics():
     # Standard JSON Schema validators ignore x-q4t annotations. These rules
     # are mandatory and evaluated by production C++, never inferred as passed.
     rules = [
+        ("responses-request-fields", ["src/server/responses_plan.cpp",
+            "src/server/responses_execution.cpp", "src/server/responses_tokens.cpp"],
+         "Responses create rejects explicit null for access_programs/input/model/prompt_cache_options/text/tool_choice/tools/user and reasoning.mode; nullable fields keep their own defaults. Input type and original envelope are checked before prompt state lookup, then expanded requests are checked against effective client limits. Count and compact normalize only their separately nullable SDK fields. All seven SDK service-tier values are accepted; execution reports the actual default scheduler tier without claiming hosted pricing, dedicated capacity or latency guarantees."),
         ("responses-input-tokens", ["src/server/responses_tokens.cpp",
             "src/server/chat_input_tokens.cpp", "src/server/responses_plan.cpp",
             "src/server/chat_plan.cpp", "src/server/media_admission.cpp"],

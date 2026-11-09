@@ -804,6 +804,23 @@
         "publication_revision": 28,
         "evidence": "evidence/serve-input-tokens-delivery-20261110/README.md",
         "full_task_complete": false
+      },
+      "request_field_audit": {
+        "state": "cpu_validated_business_pending",
+        "plan": "SERVE_RESPONSES_FIELD_AUDIT_2026-11-10.md",
+        "sdk_vectors": 44,
+        "cpu_cpp_cases": 13,
+        "schema_cases": 2,
+        "driver_cases": 2,
+        "business_limits": {
+          "starts": 1,
+          "generations": 2,
+          "input_counts": 2,
+          "rejections": 10,
+          "seconds": 600
+        },
+        "cpu_evidence": "evidence/serve-request-fields-cpu-20261110/README.md",
+        "candidate": "5935be0ab5b3f3ddaed910f7f7e719cc9e148f576b36b959087d9878d6a6ed97"
       }
     },
     {
