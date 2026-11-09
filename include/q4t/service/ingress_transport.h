@@ -35,9 +35,12 @@ class Connection {
   bool Cancelled();
   short PollEvents() const;
   std::string extra_headers;
+  bool keep_alive = false;
+  bool http11 = true;
 
  private:
   int fd_;
+  bool pending_input_ = false;
   std::unique_ptr<TlsStream> tls_;
 };
 
@@ -48,9 +51,9 @@ bool Write(int fd, std::string_view data, Clock::time_point deadline,
            Connection* client = nullptr, bool* started = nullptr);
 void Error(Connection& client, int status, std::string_view code,
            std::string_view request_id, bool* started);
-void Reply(Connection& client, int status, std::string_view body,
+bool Reply(Connection& client, int status, std::string_view body,
            std::string_view request_id, bool* started);
-void Relay(int upstream, Connection& client, int idle_seconds,
+bool Relay(int upstream, Connection& client, int idle_seconds,
            std::string_view request_id, bool* started);
 std::string RequestId();
 

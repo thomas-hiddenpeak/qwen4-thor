@@ -137,15 +137,37 @@ class HttpResponseContext {
   void RecordReceiveFailure(HttpReceiveFailure reason, int status,
                             int system_error = 0);
   HttpWriteObservation WriteFailure();
+  void SetKeepAlive(bool enabled, bool http11 = true) {
+    keep_alive_ = enabled;
+    http11_ = http11;
+  }
+  bool KeepAlive() const { return keep_alive_; }
+  // Enable chunking only after the unencoded response headers were written.
+  void StartChunkedBody() { chunked_ = keep_alive_ && http11_; }
+  bool Http11() const { return http11_; }
+  void LengthResponse() { length_response_ = true; }
+  // Join heartbeats and terminate framing only after a complete logical
+  // response. False means the owner must close, never parse another request.
+  bool FinishResponse();
   bool Write(const char* data, size_t size, const WriteOptions& options,
              ResponseState* header_state = nullptr);
 
  private:
   void HeartbeatLoop();
+  bool WritePayload(const char* data, size_t size,
+                    const WriteOptions& options,
+                    ResponseState* header_state,
+                    HttpWriteObservation* observation);
   // Caller holds write_mu_. Only the first failed write is retained.
   void RecordWriteFailure(HttpWriteObservation value, HttpWriteOrigin origin);
   const int fd_;
   bool detached_ = false;
+  bool keep_alive_ = false;
+  bool http11_ = true;
+  bool chunked_ = false;
+  bool length_response_ = false;
+  bool terminal_written_ = false;
+  bool framing_finished_ = false;
   HttpResponseContext* const previous_;
   std::string trace_id_;
   ClientIdentity client_;

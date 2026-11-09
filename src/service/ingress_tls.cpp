@@ -416,6 +416,7 @@ bool TlsStream::Accept(TlsDeadline deadline) {
 }
 
 ssize_t TlsStream::Read(void* buffer, size_t size, TlsDeadline deadline) {
+  impl_->poll_events = POLLIN;
   auto& api = *impl_->context->impl_->api;
   for (;;) {
     if (std::chrono::steady_clock::now() >= deadline) {
@@ -462,7 +463,10 @@ bool TlsStream::Cancelled() {
   size_t count = 0;
   api.ERR_clear_error();
   const int result = api.SSL_peek_ex(impl_->ssl, &byte, 1, &count);
-  if (result == 1) return true;
+  if (result == 1) {
+    impl_->poll_events = 0;  // Pipeline data belongs to the next request.
+    return false;
+  }
   const int error = api.SSL_get_error(impl_->ssl, result);
   impl_->poll_events = error == SSL_ERROR_WANT_WRITE ? POLLOUT : POLLIN;
   return error != SSL_ERROR_WANT_READ && error != SSL_ERROR_WANT_WRITE;

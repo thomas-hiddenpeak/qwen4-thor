@@ -58,12 +58,11 @@ inline bool Tokens(std::string_view value, std::vector<std::string>* out) {
 // Fields affecting framing, admission, routing, representation interpretation
 // or credentials cannot be late-bound trailers or Connection options.
 inline bool Protected(std::string_view name) {
-  for (const auto field : {"host", "content-length", "transfer-encoding",
-                           "trailer", "expect", "authorization",
-                           "proxy-authorization", "proxy-authenticate",
-                           "cookie", "set-cookie", "content-type",
-                           "content-encoding", "content-range", "range",
-                           "x-request-id", "origin", "forwarded"})
+  for (const auto field :
+       {"host", "content-length", "transfer-encoding", "trailer", "expect",
+        "authorization", "proxy-authorization", "proxy-authenticate", "cookie",
+        "set-cookie", "content-type", "content-encoding", "content-range",
+        "range", "x-request-id", "origin", "forwarded"})
     if (name == field) return true;
   return name.starts_with("x-q4t-") || name.starts_with("x-forwarded-") ||
          name.starts_with("access-control-");
@@ -79,8 +78,8 @@ inline bool ChunkSize(std::string_view line, size_t* size) {
     ++digits;
   }
   if (!digits) return false;
-  const auto parsed = std::from_chars(line.data(), line.data() + digits,
-                                      *size, 16);
+  const auto parsed =
+      std::from_chars(line.data(), line.data() + digits, *size, 16);
   if (parsed.ec != std::errc{}) return false;
   line.remove_prefix(digits);
   while (!line.empty()) {
@@ -111,7 +110,10 @@ inline bool ChunkSize(std::string_view line, size_t* size) {
       while (!line.empty()) {
         unsigned char c = line.front();
         line.remove_prefix(1);
-        if (c == '"') { closed = true; break; }
+        if (c == '"') {
+          closed = true;
+          break;
+        }
         if (c == '\\') {
           if (line.empty()) return false;
           c = line.front();

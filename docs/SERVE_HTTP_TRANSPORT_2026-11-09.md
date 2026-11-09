@@ -41,3 +41,15 @@ receive-observation、client-header admission 用例按实际名字列入清单�
 （framing、chunked、持久连接）、[RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html)
 （100-continue）、[RFC 7239](https://www.rfc-editor.org/rfc/rfc7239.html)
 （可信转发信息）。独立实现，不复制 nginx 源码、不增加外部服务依赖。
+
+### 连接复用/SSE 组（实现前冻结）
+
+共享 reader 28 项已通过并归档。下一组仅验证新响应 framing 与实际
+入口受影响行为：JSON/错误后复用、SSE chunk/心跳/终态、异常或截断
+不补成功结束、HTTP/1.0 回退、每请求独立身份/请求ID/配额、顺序
+pipeline、客户端断开、模型换代只影响后续请求、100及分块请求、
+空闲/请求数边界。用实际 q4t-ingress + CPU 后端夹具和共享响应
+helpers；模型真实执行留到 N05 组合短验，不重复模型数值/性能矩阵。
+现有依赖这些代码的响应/观察及入口用例选择直接受影响项，执行前
+记录精确名字/数量；未改变的 reader 证据复用，若新改动影响它则
+只补受影响项。

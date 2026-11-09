@@ -46,6 +46,7 @@ struct HttpRequestHeaders {
   bool chunked = false;
   bool expect_continue = false;
   bool keep_alive = false;
+  bool http11 = false;
   size_t body_limit = kChatBodyBytes;
   // Separate from routing/auth/framing. These never override header fields.
   std::vector<std::pair<std::string, std::string>> trailers;
@@ -118,6 +119,10 @@ using HttpReceive = std::function<ssize_t(
     void*, size_t, std::chrono::steady_clock::time_point)>;
 using HttpContinue =
     std::function<bool(std::chrono::steady_clock::time_point)>;
+// Starts a new idle window only after the preceding request fully releases its
+// leases. Reads at most one byte; TLS adapters also see already decrypted data.
+bool AwaitHttpRequest(int fd, HttpRequestState* state, int idle_ms = 5000,
+                      const HttpReceive& receive = {});
 bool ReadHttpRequest(int fd, std::string* method, std::string* path,
                      std::string* body, int timeout_ms = 30000,
                      HttpBodyLease* lease = nullptr,

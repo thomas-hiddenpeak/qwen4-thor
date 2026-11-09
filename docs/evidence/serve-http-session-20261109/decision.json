@@ -1,0 +1,22 @@
+{
+  "status": "PASS_TARGETED_HTTP_SESSION_CPU",
+  "distinct_tests": 54,
+  "host": 29,
+  "native": 25,
+  "initial_native_passed": 17,
+  "initial_native_fixture_errors": 8,
+  "affected_retry_passed": 8,
+  "production_code_changed_for_retry": false,
+  "gpu_operations": 0,
+  "default_changed": false,
+  "n05_delivered": false,
+  "engine_candidate_sha256": "7f48e866f7b5e1dcd227ed50d604baf59c75e04b1d2b15964abc8db705588d06",
+  "ingress_candidate_sha256": "e9e551c3a8cc6d27966c01c4944633d64c48a466adc559eaad3bd2cd5b1af558",
+  "remaining": [
+    "trusted proxy and prefix",
+    "configuration/package compatibility",
+    "actual model/SDK business",
+    "rollback and default delivery",
+    "all remaining master tasks"
+  ]
+}

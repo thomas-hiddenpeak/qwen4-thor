@@ -278,6 +278,15 @@ Status ChatServer::Run() {
 }
 
 void ChatServer::HandleClient(int fd, bool operations) {
+  HttpRequestState state;
+  for (size_t request = 0; request < 100 && !stop_requested_.load(); ++request) {
+    if (request && !AwaitHttpRequest(fd, &state)) return;
+    if (!HandleRequest(fd, operations, &state, request + 1 < 100)) return;
+  }
+}
+
+bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
+                              bool allow_keep_alive) {
   ClientLease client_lease;  // Outlives response and heartbeat cleanup.
   detail::HttpResponseContext context(fd, &metrics_.http_transport);
   bool dispatch_started = false;
@@ -349,7 +358,7 @@ void ChatServer::HandleClient(int fd, bool operations) {
       return true;
     };
     if (!ReadHttpRequest(fd, &method, &path, &body, 30000, &lease,
-                         &failure_status, &headers, admit)) {
+                         &failure_status, &headers, admit, {}, state)) {
       if (!headers.request_id.empty()) context.SetTraceId(headers.request_id);
       context.RecordReceiveFailure(headers.failure, failure_status,
                                    headers.system_error);
@@ -359,11 +368,12 @@ void ChatServer::HandleClient(int fd, bool operations) {
                            : failure_status == 403 ? "Forbidden"
                            : failure_status == 404 ? "Not Found"
                            : failure_status == 413 ? "Content Too Large"
+                           : failure_status == 417 ? "Expectation Failed"
                            : failure_status == 429 ? "Too Many Requests"
                                                    : "Bad Request";
       SendError(fd, failure_status, reason, {}, headers.error_code,
                 headers.error_param);
-      return;
+      return false;
     }
     if (IsStoredChatTarget(path) || path == "/v1/chat/preflight" ||
         path == "/v1/completions" || IsResponsesTarget(path) ||
@@ -387,11 +397,13 @@ void ChatServer::HandleClient(int fd, bool operations) {
           context.RecordReceiveFailure(HttpReceiveFailure::kMedia, 415);
           SendError(fd, 415, "Content-Type must be application/json with UTF-8",
                     {}, "unsupported_media_type", "Content-Type");
-          return;
+          return false;
         }
       }
     }
     const auto t0 = std::chrono::steady_clock::now();
+    context.SetKeepAlive(headers.keep_alive && allow_keep_alive &&
+                            !stop_requested_.load(), headers.http11);
     dispatch_started = true;
     Dispatch(fd, method, path, body);
     static const bool access_log = std::getenv("Q4T_ACCESS_LOG") != nullptr;
@@ -402,6 +414,7 @@ void ChatServer::HandleClient(int fd, bool operations) {
       std::fprintf(stderr, "[q4t][http] trace_id=%s elapsed_ms=%.1f\n",
                    context.TraceId().c_str(), ms);
     }
+    return context.FinishResponse() && !stop_requested_.load();
   } catch (const std::bad_alloc&) {
     if (!dispatch_started)
       context.RecordReceiveFailure(HttpReceiveFailure::kException, 503);
@@ -412,6 +425,7 @@ void ChatServer::HandleClient(int fd, bool operations) {
       context.RecordReceiveFailure(HttpReceiveFailure::kException, 500);
     detail::SendExceptionResponse(fd, *context.State());
   }
+  return false;
 }
 
 void ChatServer::Dispatch(int fd, const std::string& method,

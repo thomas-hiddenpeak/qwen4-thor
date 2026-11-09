@@ -79,6 +79,7 @@ class Stack:
         self.stream_disconnected = threading.Event()
         self.requests = []
         self.forwarded = []
+        self.response_hook = None
         self.model_requests = []
         self.application_requests = []
         self.held_application_paths = set()
@@ -175,6 +176,8 @@ class Stack:
                 body = json.loads(raw)
                 generation = stack.generation
                 stack.requests.append(dict(body=body, generation=generation))
+                if stack.response_hook and stack.response_hook(self, body, generation):
+                    return
                 if body.get('drop'):
                     return  # Simulated backend transport failure after accepting a POST.
                 if body.get('quota'):

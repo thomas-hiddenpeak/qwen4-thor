@@ -267,9 +267,10 @@ class NativeTests(fixture.NginxTests):
         auth = 'Authorization: Bearer '+'A'*40+'\r\n'
         for field in ('Authorization: Bearer '+'B'*40+'\r\n',
                       'Content-Length: 0\r\n', 'Transfer-Encoding: chunked\r\n',
-                      'Expect: 100-continue\r\n', 'Host: forbidden\r\n'):
+                      'Host: forbidden\r\n'):
             with self.subTest(field=field.split(':')[0]):
                 self.assertEqual(self.raw(auth+field)[0], 400)
+        self.assertEqual(self.raw(auth+'Expect: unknown\r\n')[0], 417)
         self.assertEqual(self.stack.forwarded, [])
 
     def test_authentication_precedes_body_reads_and_recovery_error(self):

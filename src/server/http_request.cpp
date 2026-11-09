@@ -23,6 +23,31 @@ using http::Trim;
 
 }  // namespace
 
+bool AwaitHttpRequest(int fd, HttpRequestState* state, int idle_ms,
+                      const HttpReceive& receive) {
+  if (!state->pending.empty()) return true;
+  if (idle_ms <= 0) return false;
+  const auto deadline = std::chrono::steady_clock::now() +
+                        std::chrono::milliseconds(idle_ms);
+  char byte;
+  for (;;) {
+    const auto left = std::chrono::duration_cast<std::chrono::milliseconds>(
+        deadline - std::chrono::steady_clock::now()).count();
+    if (left <= 0) return false;
+    if (!receive) {
+      pollfd event{fd, POLLIN, 0};
+      const int ready = ::poll(&event, 1, static_cast<int>(left));
+      if (ready < 0 && errno == EINTR) continue;
+      if (ready <= 0) return false;
+    }
+    const ssize_t n = receive ? receive(&byte, 1, deadline)
+                             : ::recv(fd, &byte, 1, MSG_DONTWAIT);
+    if (n == 1) { state->pending += byte; return true; }
+    if (n < 0 && (errno == EINTR || errno == EAGAIN)) continue;
+    return false;
+  }
+}
+
 bool ReadHttpRequest(int fd, std::string* method, std::string* path,
                      std::string* body, int timeout_ms, HttpBodyLease* lease,
                      int* failure_status, HttpRequestHeaders* headers,
@@ -125,6 +150,7 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
   const auto target = line.substr(first + 1, last - first - 1);
   const auto version = line.substr(last + 1);
   if (version != "HTTP/1.0" && version != "HTTP/1.1") return false;
+  headers->http11 = version == "HTTP/1.1";
   for (unsigned char c : verb)
     if (!IsToken(c)) return false;
   if (target.front() != '/') return false;

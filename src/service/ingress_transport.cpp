@@ -12,9 +12,11 @@
 #include <cerrno>
 #include <charconv>
 #include <cstring>
+#include <cstdio>
 #include <optional>
 
 #include "q4t/service/guardian_wire.h"
+#include "q4t/server/http_framing.h"
 
 namespace q4t::service::ingress {
 std::atomic<bool> stopped{false};
@@ -38,8 +40,8 @@ bool Wait(int fd, short events, Clock::time_point deadline,
                               static_cast<int>(std::min<int64_t>(left, 100)));
     if (result < 0 && errno == EINTR) continue;
     if (result < 0) return false;
-    // One request per connection. Extra request bytes or a disconnected
-    // downstream cancel this relay; never drain/replay them on another model.
+    // Pending pipeline bytes remain unread for the next sequential request;
+    // only actual disconnect cancels this relay. Never replay a dispatched one.
     if (client && fds[1].revents && client->Cancelled()) return false;
     if (fds[0].revents & (POLLERR | POLLNVAL)) return false;
     if (fds[0].revents & (events | POLLHUP | POLLRDHUP)) return true;
@@ -61,8 +63,10 @@ std::string_view Trim(std::string_view value) {
   return value;
 }
 
-bool ResponseHeaders(std::string_view raw, std::string_view extra,
-                     std::string* output, std::optional<size_t>* length) {
+bool ResponseHeaders(std::string_view raw, Connection& client,
+                     std::string_view request_id,
+                     std::string* output, std::optional<size_t>* length,
+                     bool* chunked) {
   size_t pos = raw.find("\r\n");
   if (pos == raw.npos || pos < 12) return false;
   const auto first = raw.substr(0, pos);
@@ -80,6 +84,7 @@ bool ResponseHeaders(std::string_view raw, std::string_view extra,
   output->append("\r\n");
   pos += 2;
   bool seen_type = false;
+  std::vector<std::string> connection;
   while (pos < raw.size()) {
     const size_t end = raw.find("\r\n", pos);
     if (end == raw.npos) return false;
@@ -95,7 +100,12 @@ bool ResponseHeaders(std::string_view raw, std::string_view extra,
     const auto value = Trim(field.substr(colon + 1));
     for (unsigned char c : value)
       if ((c < 32 && c != '\t') || c == 127) return false;
-    if (name == "transfer-encoding") return false;
+    if (name == "transfer-encoding") {
+      if (*chunked || Lower(std::string(value)) != "chunked") return false;
+      *chunked = true;
+    }
+    if (name == "connection" && !server::http::Tokens(value, &connection))
+      return false;
     if (name == "content-length") {
       size_t size = 0;
       const auto result =
@@ -113,17 +123,31 @@ bool ResponseHeaders(std::string_view raw, std::string_view extra,
     // cookies, hop-by-hop options or a second response on this connection.
     if (name == "content-length" || name == "content-type" ||
         name == "retry-after" || name == "www-authenticate" ||
-        name == "x-request-id" || name == "allow") {
+        name == "allow") {
       output->append(field);
       output->append("\r\n");
     }
     pos = end + 2;
   }
+  if (*chunked && length->has_value()) return false;
+  for (const auto& field : connection)
+    if (server::http::Protected(field)) return false;
   if ((status == 204 || status == 304) && length->value_or(0) != 0)
     return false;
+  if ((status == 204 || status == 304) && *chunked) return false;
   if (status == 204 || status == 304) *length = 0;
-  output->append("Connection: close\r\nCache-Control: no-store\r\n");
-  output->append(extra);
+  // A close-delimited legacy response has no trustworthy reusable boundary.
+  // In particular EOF on an old SSE stream must not fabricate a complete frame.
+  client.keep_alive = client.keep_alive &&
+      (length->has_value() || (*chunked && client.http11));
+  output->append(client.keep_alive ? "Connection: keep-alive\r\n"
+                                   : "Connection: close\r\n");
+  if (*chunked && client.http11) output->append("Transfer-Encoding: chunked\r\n");
+  output->append("Cache-Control: no-store\r\n");
+  output->append("X-Request-Id: ");
+  output->append(request_id);
+  output->append("\r\n");
+  output->append(client.extra_headers);
   output->append("\r\n");
   return true;
 }
@@ -167,6 +191,7 @@ Connection::~Connection() {
 }
 
 ssize_t Connection::Read(void* data, size_t size, Clock::time_point deadline) {
+  pending_input_ = false;
   if (tls_) return tls_->Read(data, size, deadline);
   while (Wait(fd_, POLLIN, deadline)) {
     const auto n = ::recv(fd_, data, size, MSG_DONTWAIT);
@@ -184,13 +209,17 @@ bool Connection::Send(std::string_view data, Clock::time_point deadline,
 }
 
 bool Connection::Cancelled() {
+  pollfd peer{fd_, POLLRDHUP, 0};
+  if (::poll(&peer, 1, 0) > 0 &&
+      (peer.revents & (POLLRDHUP | POLLHUP | POLLERR | POLLNVAL))) return true;
   if (tls_) return tls_->Cancelled();
   char byte;
   const auto n = ::recv(fd_, &byte, 1, MSG_PEEK | MSG_DONTWAIT);
-  return n >= 0 || (errno != EAGAIN && errno != EINTR);
+  if (n > 0) pending_input_ = true;
+  return n == 0 || (n < 0 && errno != EAGAIN && errno != EINTR);
 }
 short Connection::PollEvents() const {
-  return tls_ ? tls_->PollEvents() : POLLIN;
+  return tls_ ? tls_->PollEvents() : pending_input_ ? 0 : POLLIN;
 }
 
 std::string RequestId() {
@@ -211,9 +240,9 @@ std::string RequestId() {
   return result;
 }
 
-void Reply(Connection& client, int status, std::string_view body,
+bool Reply(Connection& client, int status, std::string_view body,
            std::string_view request_id, bool* started) {
-  if (*started) return;
+  if (*started) return false;
   const std::string extra =
       status == 401
           ? "WWW-Authenticate: Bearer realm=\"q4t\"\r\n"
@@ -221,14 +250,17 @@ void Reply(Connection& client, int status, std::string_view body,
   const std::string response =
       "HTTP/1.1 " + std::to_string(status) +
       " Response\r\nContent-Type: application/json\r\nContent-Length: " +
-      std::to_string(body.size()) + "\r\nConnection: close\r\n" +
+      std::to_string(body.size()) +
+      (client.keep_alive ? "\r\nConnection: keep-alive\r\n"
+                         : "\r\nConnection: close\r\n") +
       "Cache-Control: no-store\r\nX-Request-Id: " + std::string(request_id) +
       "\r\n" + extra + client.extra_headers + "\r\n" + std::string(body);
-  client.Send(response, Clock::now() + 1s, started);
+  return client.Send(response, Clock::now() + 1s, started);
 }
 
 void Error(Connection& client, int status, std::string_view code,
            std::string_view request_id, bool* started) {
+  client.keep_alive = false;
   const auto value = wire::Object(
       {{"error",
         wire::Object(
@@ -321,7 +353,7 @@ OwnedFd Connect(int port, Connection& client) {
   return fd;
 }
 
-void Relay(int upstream, Connection& client, int idle_seconds,
+bool Relay(int upstream, Connection& client, int idle_seconds,
            std::string_view request_id, bool* started) {
   std::array<char, 16384> buffer{};
   std::string head;
@@ -340,31 +372,102 @@ void Relay(int upstream, Connection& client, int idle_seconds,
   }
   std::string headers;
   std::optional<size_t> length;
+  bool chunked = false;
   if (end == std::string::npos || end + 4 > 65536 ||
       !ResponseHeaders(std::string_view(head).substr(0, end + 2),
-                       client.extra_headers, &headers, &length)) {
+                       client, request_id, &headers, &length, &chunked)) {
+    client.keep_alive = false;
     Error(client, 503, "service_binding_unavailable", request_id, started);
-    return;
+    return false;
   }
-  if (!client.Send(headers, Clock::now() + 15s, started)) return;
+  if (!client.Send(headers, Clock::now() + 15s, started)) return false;
+  head.erase(0, end + 4);
+  const auto read = [&](size_t maximum, Clock::time_point deadline) -> ssize_t {
+    while (Wait(upstream, POLLIN, deadline, &client)) {
+      const auto n = ::recv(upstream, buffer.data(),
+                            std::min(buffer.size(), maximum), MSG_DONTWAIT);
+      if (n < 0 && (errno == EINTR || errno == EAGAIN)) continue;
+      return n;
+    }
+    return -1;
+  };
+  const auto idle = [&] {
+    return Clock::now() + std::chrono::seconds(idle_seconds);
+  };
   size_t delivered = 0;
   const auto emit = [&](std::string_view part) {
-    if (length && part.size() > *length - delivered)
-      part = part.substr(0, *length - delivered);
-    if (!client.Send(part, Clock::now() + 15s)) return false;
+    if (part.empty()) return true;
+    if (length && part.size() > *length - delivered) return false;
+    const auto deadline = Clock::now() + 15s;
+    if (chunked && client.http11) {
+      char prefix[32];
+      const int n = std::snprintf(prefix, sizeof(prefix), "%zx\r\n", part.size());
+      if (n <= 0 || static_cast<size_t>(n) >= sizeof(prefix) ||
+          !client.Send(std::string_view(prefix, n), deadline)) return false;
+    }
+    if (!client.Send(part, deadline)) return false;
+    if (chunked && client.http11 && !client.Send("\r\n", deadline)) return false;
     delivered += part.size();
     return true;
   };
-  if (!emit(std::string_view(head).substr(end + 4))) return;
-  while (!length || delivered < *length) {
-    if (!Wait(upstream, POLLIN,
-              Clock::now() + std::chrono::seconds(idle_seconds), &client))
-      return;
-    const ssize_t n =
-        ::recv(upstream, buffer.data(), buffer.size(), MSG_DONTWAIT);
-    if (n < 0 && (errno == EINTR || errno == EAGAIN)) continue;
-    if (n <= 0) return;  // A truncated response remains truncated.
-    if (!emit(std::string_view(buffer.data(), static_cast<size_t>(n)))) return;
+  if (chunked) {
+    const auto line = [&](std::string* value) {
+      const auto deadline = idle();
+      size_t end;
+      while ((end = head.find("\r\n")) == head.npos) {
+        if (head.size() >= 8192) return false;
+        const auto n = read(8192 - head.size(), deadline);
+        if (n <= 0) return false;
+        head.append(buffer.data(), n);
+      }
+      if (end + 2 > 8192) return false;
+      *value = head.substr(0, end);
+      head.erase(0, end + 2);
+      return true;
+    };
+    std::string raw;
+    for (;;) {
+      size_t size = 0;
+      if (!line(&raw) || !server::http::ChunkSize(raw, &size)) return false;
+      if (!size) break;
+      while (size) {
+        if (head.empty()) {
+          const auto n = read(size, idle());
+          if (n <= 0) return false;
+          head.assign(buffer.data(), n);
+        }
+        const size_t take = std::min(size, head.size());
+        if (!emit(std::string_view(head).substr(0, take))) return false;
+        head.erase(0, take);
+        size -= take;
+      }
+      if (!line(&raw) || !raw.empty()) return false;
+    }
+    size_t trailer_bytes = 0, trailer_fields = 0;
+    for (;;) {
+      if (!line(&raw)) return false;
+      trailer_bytes += raw.size() + 2;
+      if (trailer_bytes > 65536) return false;
+      if (raw.empty()) break;
+      std::string name;
+      std::string_view value;
+      if (++trailer_fields > 128 ||
+          !server::http::Field(raw, &name, &value) ||
+          server::http::Protected(name) || name == "connection" ||
+          name == "keep-alive" || name == "upgrade") return false;
+    }
+    if (!head.empty()) return false;  // Never forward a second upstream reply.
+    if (client.http11 && !client.Send("0\r\n\r\n", Clock::now() + 1s))
+      return false;
+    return client.keep_alive;
   }
+  if (!emit(head)) return false;
+  while (!length || delivered < *length) {
+    const auto n = read(buffer.size(), idle());
+    if (n <= 0) return false;  // A truncated response remains truncated.
+    if (!emit(std::string_view(buffer.data(), static_cast<size_t>(n))))
+      return false;
+  }
+  return client.keep_alive;
 }
 }  // namespace q4t::service::ingress

@@ -383,6 +383,49 @@ bool HttpResponseContext::SetTraceId(std::string_view id) {
   return true;
 }
 
+bool HttpResponseContext::WritePayload(
+    const char* data, size_t size, const WriteOptions& options,
+    ResponseState* header_state, HttpWriteObservation* observation) {
+  if (!chunked_ || header_state)
+    return WriteAllImpl(fd_, data, size, options, header_state, observation);
+  if (!size) return true;  // Only FinishResponse may write the zero chunk.
+  char prefix[32];
+  const int count = std::snprintf(prefix, sizeof(prefix), "%zx\r\n", size);
+  if (count <= 0 || static_cast<size_t>(count) >= sizeof(prefix)) return false;
+  size_t transferred = 0;
+  const auto part = [&](const char* bytes, size_t length) {
+    HttpWriteObservation current;
+    const bool ok = WriteAllImpl(fd_, bytes, length, options, nullptr, &current);
+    transferred += current.transferred;
+    *observation = current;
+    observation->transferred = transferred;
+    return ok;
+  };
+  return part(prefix, count) && part(data, size) && part("\r\n", 2);
+}
+
+bool HttpResponseContext::FinishResponse() {
+  StopHeartbeats();
+  const std::lock_guard<std::mutex> lock(write_mu_);
+  if (!keep_alive_ || framing_finished_ ||
+      write_failure_.reason != HttpWriteFailure::kNone ||
+      (state_ != ResponseState::kComplete &&
+       !(state_ == ResponseState::kTerminal && terminal_written_)))
+    return false;
+  if (!chunked_ && !length_response_) return false;
+  if (chunked_) {
+    HttpWriteObservation observation;
+    if (!WriteAllImpl(fd_, "0\r\n\r\n", 5,
+                      {std::chrono::steady_clock::now() +
+                       std::chrono::seconds(1)}, nullptr, &observation)) {
+      RecordWriteFailure(observation, HttpWriteOrigin::kHandler);
+      return false;
+    }
+  }
+  framing_finished_ = true;
+  return true;
+}
+
 bool HttpResponseContext::Write(const char* data, size_t size,
                                 const WriteOptions& options,
                                 ResponseState* header_state) {
@@ -394,7 +437,7 @@ bool HttpResponseContext::Write(const char* data, size_t size,
   if (write_failure_.reason != HttpWriteFailure::kNone) return false;
   HttpWriteObservation observation;
   try {
-    if (!WriteAllImpl(fd_, data, size, options, header_state, &observation)) {
+    if (!WritePayload(data, size, options, header_state, &observation)) {
       RecordWriteFailure(observation, HttpWriteOrigin::kHandler);
       return false;
     }
@@ -403,6 +446,7 @@ bool HttpResponseContext::Write(const char* data, size_t size,
     RecordWriteFailure(observation, HttpWriteOrigin::kHandler);
     throw;
   }
+  if (state_ == ResponseState::kTerminal) terminal_written_ = true;
   last_write_ = std::chrono::steady_clock::now();
   wake_.notify_all();
   return true;
@@ -455,7 +499,7 @@ void HttpResponseContext::HeartbeatLoop() {
         control_.get()};
     HttpWriteObservation observation;
     try {
-      if (!WriteAllImpl(fd_, comment, sizeof(comment) - 1, options, nullptr,
+      if (!WritePayload(comment, sizeof(comment) - 1, options, nullptr,
                         &observation)) {
         RecordWriteFailure(observation, HttpWriteOrigin::kHeartbeat);
         control_->Cancel(RequestControl::State::kDisconnect);
@@ -479,17 +523,22 @@ bool WriteAll(int fd, const char* data, size_t len,
 
 bool BeginStreamingResponse(int fd, ResponseState* state,
                             const WriteOptions& options) {
+  auto* context = HttpResponseContext::Current(fd);
+  if (context && !context->Http11()) context->SetKeepAlive(false, false);
+  const bool persistent = context && context->KeepAlive();
   const std::string header =
       "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\n"
       "Cache-Control: no-cache\r\nX-Accel-Buffering: no\r\n" +
-      RequestIdHeader(fd) + "Connection: close\r\n\r\n";
+      RequestIdHeader(fd) +
+      (persistent ? "Connection: keep-alive\r\nTransfer-Encoding: chunked\r\n\r\n"
+                  : "Connection: close\r\n\r\n");
   ServeFaultPoint("handler.before_header");
-  auto* context = HttpResponseContext::Current(fd);
   const bool written =
       context ? context->Write(header.data(), header.size(), options, state)
               : WriteAllImpl(fd, header.data(), header.size(), options, state);
   if (!written) return false;
   *state = ResponseState::kStreaming;
+  if (context) context->StartChunkedBody();
   ServeFaultPoint("handler.after_header");
   return true;
 }
@@ -501,15 +550,18 @@ bool WriteAll(int fd, const std::string& s, const WriteOptions& options) {
 bool SendSimple(int fd, int code, const char* status, const std::string& body,
                 const std::string& content_type, const WriteOptions& options,
                 std::string_view allow) {
+  auto* context = HttpResponseContext::Current(fd);
+  const bool persistent = context && context->KeepAlive();
   std::string resp =
       "HTTP/1.1 " + std::to_string(code) + " " + status +
       "\r\nContent-Type: " + content_type +
       "\r\nContent-Length: " + std::to_string(body.size()) + "\r\n" +
       RequestIdHeader(fd) +
       (allow.empty() ? "" : "Allow: " + std::string(allow) + "\r\n") +
-      "Connection: close\r\n\r\n" + body;
-  auto* context = HttpResponseContext::Current(fd);
+      (persistent ? "Connection: keep-alive\r\n\r\n"
+                  : "Connection: close\r\n\r\n") + body;
   if (context) {
+    context->LengthResponse();
     context->BeforeTerminal();
     *context->State() = ResponseState::kTerminal;
   }
@@ -541,6 +593,8 @@ ErrorInfo ErrorForStatus(int status) {
     case 415:
       return {"Unsupported Media Type", "invalid_request_error",
               "unsupported_media_type"};
+    case 417:
+      return {"Expectation Failed", "invalid_request_error", "expectation_failed"};
     case 408:
       return {"Request Timeout", "timeout_error", "request_timeout"};
     case 409:

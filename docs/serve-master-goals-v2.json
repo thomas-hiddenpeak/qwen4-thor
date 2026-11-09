@@ -467,17 +467,17 @@
         "N01"
       ],
       "evidence": [
-        "evidence/serve-http-framing-20261109/decision.json"
+        "evidence/serve-http-framing-20261109/decision.json",
+        "evidence/serve-http-session-20261109/decision.json"
       ],
       "release": null,
       "plan": "SERVE_HTTP_TRANSPORT_2026-11-09.md",
       "remaining": [
-        "共享HTTP framing/100-continue/有界分块与复用缓冲",
-        "核心与原生入口连接复用、SSE完整帧与断连边界",
-        "可信代理、路径前缀与配置/发行接入",
-        "针对性CPU、实际SDK/模型短验与可回退交付"
+        "可信代理/路径前缀与可配置接入",
+        "发行/旧包兼容、实际模型与SDK短验",
+        "可回退默认交付"
       ],
-      "development_status": "Shared chunked/Expect/framing primitives passed 28 targeted CPU checks. Connection reuse/SSE, trusted proxy/prefix and actual delivery remain required."
+      "development_status": "Shared framing 28 targeted CPU plus connection/SSE 54 distinct targeted CPU accepted; 8 fixture errors preserved and fixed without runtime changes. Trusted proxy/prefix, configuration and actual model/SDK delivery remain."
     },
     {
       "id": "N06",

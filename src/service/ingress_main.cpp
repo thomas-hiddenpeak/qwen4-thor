@@ -363,12 +363,15 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
   return false;
 }
 
-void Handle(Connection& client, const Config& config, Capacity& capacity,
+bool Handle(Connection& client, const Config& config, Capacity& capacity,
             ClientAccess& access, server::HttpBodyBudget& budget,
-            Address source, bool* started) {
+            Address source, bool* started, server::HttpRequestState* state,
+            bool allow_keep_alive) {
+  client.extra_headers.clear();
+  client.keep_alive = false;
   std::string method, path, body;
   std::string request_id = RequestId();
-  if (request_id.empty()) return;
+  if (request_id.empty()) return false;
   server::HttpRequestHeaders headers;
   server::HttpBodyLease body_lease(budget);
   Lease lease{capacity};
@@ -376,6 +379,7 @@ void Handle(Connection& client, const Config& config, Capacity& capacity,
   Decision binding;
   int status = 400;
   bool rejected = false;
+  bool preflight = false;
   const auto reject = [&](int code, const char* reason) {
     rejected = true;
     Error(client, code, reason, request_id, started);
@@ -406,9 +410,8 @@ void Handle(Connection& client, const Config& config, Capacity& capacity,
           !config.cors.Preflight(headers.cors_method, headers.cors_headers,
                                  &client.extra_headers))
         return reject(403, "cors_preflight_denied");
-      Reply(client, 204, "", request_id, started);
-      rejected = true;  // Completed locally, with no body/admission/quota work.
-      return false;
+      preflight = true;
+      return true;  // Consume the empty frame without auth/quota work.
     }
     if (!headers.cors_method.empty() || !headers.cors_headers.empty())
       return reject(400, "cors_invalid_preflight");
@@ -442,7 +445,7 @@ void Handle(Connection& client, const Config& config, Capacity& capacity,
   };
   if (!server::ReadHttpRequest(client.Fd(), &method, &path, &body, 10000,
                                &body_lease, &status, &headers, admit,
-                               receive, nullptr, interim)) {
+                               receive, state, interim)) {
     if (!rejected) {
       config.cors.Response(headers.origin, &client.extra_headers);
       if (headers.failure == server::HttpReceiveFailure::kBodyTooLarge)
@@ -452,27 +455,34 @@ void Handle(Connection& client, const Config& config, Capacity& capacity,
                                        : headers.error_code,
             request_id, started);
     }
-    return;
+    return false;
+  }
+  client.keep_alive = headers.keep_alive && allow_keep_alive;
+  client.http11 = headers.http11;
+  if (preflight)
+    return Reply(client, 204, "", request_id, started) && client.keep_alive;
+  if (method == "GET" && !body.empty()) {
+    Error(client, 400, "gateway_bad_request", request_id, started);
+    return false;
   }
   if (path == "/livez") {
-    Reply(client, 200, "{\"live\":true,\"scope\":\"service_entrypoint\"}",
-          request_id, started);
-    return;
+    return Reply(client, 200, "{\"live\":true,\"scope\":\"service_entrypoint\"}",
+                 request_id, started) && client.keep_alive;
   }
   const auto current = authorize();
   if (!current.port || current != binding) {
     Error(client, 503, current.port ? "service_recovering" : current.error,
           request_id, started);
-    return;
+    return false;
   }
   auto upstream = Connect(binding.port, client);
   if (upstream.Get() < 0) {
     Error(client, 503, "service_binding_unavailable", request_id, started);
-    return;
+    return false;
   }
   const std::string head =
       method + " " + path +
-      " HTTP/1.1\r\nHost: 127.0.0.1\r\nConnection: close\r\n" +
+      " HTTP/1.1\r\nHost: 127.0.0.1\r\nConnection: keep-alive\r\n" +
       "Content-Length: " + std::to_string(body.size()) + "\r\n" +
       "X-Request-Id: " + request_id +
       "\r\nX-Q4T-Client-Id: " + std::string(identity.Id()) +
@@ -485,9 +495,9 @@ void Handle(Connection& client, const Config& config, Capacity& capacity,
   if (!Write(upstream.Get(), head, deadline, &client) ||
       !Write(upstream.Get(), body, deadline, &client)) {
     Error(client, 503, "service_binding_unavailable", request_id, started);
-    return;
+    return false;
   }
-  Relay(upstream.Get(), client, config.idle_seconds, request_id, started);
+  return Relay(upstream.Get(), client, config.idle_seconds, request_id, started);
 }
 
 struct Slot {
@@ -586,8 +596,20 @@ int Run(const Config& config) {
         bool started = false;
         try {
           Connection client(slot->fd);
-          if (!config.tls || client.Handshake(context))
-            Handle(client, config, capacity, access, budget, source, &started);
+          if (!config.tls || client.Handshake(context)) {
+            server::HttpRequestState state;
+            const auto receive = [&](void* data, size_t size,
+                                     Clock::time_point deadline) {
+              return client.Read(data, size, deadline);
+            };
+            for (size_t request = 0; request < 100 && !stopped.load(); ++request) {
+              if (request && !server::AwaitHttpRequest(client.Fd(), &state,
+                                                       5000, receive)) break;
+              started = false;
+              if (!Handle(client, config, capacity, access, budget, source,
+                           &started, &state, request + 1 < 100)) break;
+            }
+          }
         } catch (...) {
           if (!started && !config.tls) {
             constexpr std::string_view failure =

@@ -155,6 +155,8 @@ class ChatServer {
   void RecordDeviceMemoryFailure(const DeviceMemoryResult& result,
                                  const char* site) noexcept;
   void HandleClient(int fd, bool operations = false);
+  bool HandleRequest(int fd, bool operations, HttpRequestState* state,
+                     bool allow_keep_alive);
   void StartConnection(int fd, bool operations);
   void FinishConnection(int fd, bool operations) noexcept;
   void Dispatch(int fd, const std::string& method, const std::string& path,

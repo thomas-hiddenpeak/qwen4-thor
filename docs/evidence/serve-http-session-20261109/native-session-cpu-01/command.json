@@ -1,0 +1,6 @@
+[
+  "/usr/bin/python3",
+  "-B",
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/run_native_child.py",
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/native-session-cpu-01/work"
+]
