@@ -69,6 +69,13 @@ set(protocol_inputs
   src/main.cpp
   include/q4t/server/grammar_process.h
   src/server/grammar_process.cpp
+  include/q4t/server/cache_io.h
+  include/q4t/server/cache_health.h
+  src/server/cache_io.cpp
+  src/server/cache_protocol.h
+  src/server/cache_worker.cpp
+  include/q4t/server/session_cache.h
+  src/server/session_cache.cpp
   include/q4t/server/object_store.h
   src/server/object_store.cpp
   src/server/object_worker.cpp

@@ -516,6 +516,13 @@ def semantics():
              "src/server/chat_generation.cpp", "src/server/chat_preflight.cpp",
              "src/server/chat_admission.cpp", "src/server/chat_scheduler.cpp"],
          "Permanent PLE read and existing upload failures latch on the dependency instance. Healthy CUDA alone cannot keep readiness open. Ready/health endpoints return503 and q4t_ready=0 while liveness remains independent; pure reader faults do not change gpu_healthy. New Chat/preflight, slot handoff and execution check the same state. Model faults use model_unhealthy; an already-started stream uses the existing single error terminal when writable. Successful short-read retries, memory recovery and NVML observations cannot clear a permanent fault. No automatic dependency reload or request replay. Existing fatal CUDA completion/cleanup can exit1 before HTTP reporting; that boundary is unchanged.")]
+    rules.append(("native-optional-cache-isolation", [
+        "include/q4t/server/cache_io.h", "include/q4t/server/cache_health.h",
+        "src/server/cache_io.cpp", "src/server/cache_protocol.h",
+        "src/server/cache_worker.cpp", "src/server/grammar_process.cpp",
+        "src/server/session_cache.cpp", "src/server/chat_preflight.cpp",
+        "src/server/chat_server.cpp"],
+        "Private and prefix snapshots use independent exec-only filesystem workers, not an external gateway. The model owns tensor copies and byte checksums; workers inherit no model/GPU lease descriptors. Each file IPC operation waits at most two seconds and checks cancellation; normal multiblock transfers still obey the request deadline. A missing receipt invalidates that cache generation; no write, request or model work is replayed. One controller and worker per domain retain capacity through unconfirmed cleanup; replacement requires actual reap and at most three starts per minute. Optional cache unavailability does not close core readiness or restart a healthy model. Session leases remain held, partial restores require model-state reset, and only successful completion publishes snapshots. Disk charges include actual allocated blocks. Config cache_io reports availability, recovery and observed RSS without directory/session data; three bounded 8MiB payload buffers plus at most4096 initialization bytes are unified RAM, not a whole-process cap or CPU offload."))
     rules.append(("native-completions-and-models", [
         "include/q4t/server/model_catalog.h", "src/server/model_catalog.cpp",
         "include/q4t/server/completion_plan.h", "src/server/completion_plan.cpp",

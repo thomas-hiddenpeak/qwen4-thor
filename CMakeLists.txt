@@ -319,6 +319,8 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_generation.cpp
   src/server/chat_responses.cpp
   src/server/session_cache.cpp
+  src/server/cache_io.cpp
+  src/server/cache_worker.cpp
   src/server/session_state.cpp
   src/server/http_request.cpp
   src/server/input_contract.cpp
@@ -819,9 +821,15 @@ target_include_directories(q4t_sha256_contract PRIVATE include)
 target_compile_definitions(q4t_sha256_contract PRIVATE Q4T_SHA256_TESTING=1)
 target_compile_options(q4t_sha256_contract PRIVATE -Wall -Wextra)
 
+find_package(Threads REQUIRED)
 add_executable(q4t_session_storage_contract EXCLUDE_FROM_ALL
   tools/session_cache/storage_contract.cpp src/server/session_cache.cpp
+  src/server/cache_io.cpp src/server/cache_worker.cpp
+  src/server/grammar_process.cpp
   src/trace/sha256.cpp)
+target_compile_definitions(q4t_session_storage_contract PRIVATE
+  Q4T_GRAMMAR_PROCESS_TESTS=1)
+target_link_libraries(q4t_session_storage_contract PRIVATE Threads::Threads)
 target_include_directories(q4t_session_storage_contract PRIVATE include)
 target_compile_options(q4t_session_storage_contract PRIVATE -Wall -Wextra)
 
@@ -829,14 +837,31 @@ target_compile_options(q4t_session_storage_contract PRIVATE -Wall -Wextra)
 add_executable(q4t_session_target_contract EXCLUDE_FROM_ALL
   tests/test_main.cpp tests/server_session_target_test.cpp)
 target_link_libraries(q4t_session_target_contract PRIVATE q4t_server)
+target_compile_definitions(q4t_session_target_contract PRIVATE
+  Q4T_CACHE_WORKER_ENTRY=1)
 target_compile_options(q4t_session_target_contract PRIVATE -Wall -Wextra)
 
 add_executable(q4t_prefix_storage_contract EXCLUDE_FROM_ALL
   tools/prefix_cache/storage_contract.cpp src/server/session_cache.cpp
+  src/server/cache_io.cpp src/server/cache_worker.cpp
+  src/server/grammar_process.cpp
   src/server/server_options.cpp src/server/object_store_options.cpp
   src/trace/sha256.cpp)
+target_compile_definitions(q4t_prefix_storage_contract PRIVATE
+  Q4T_GRAMMAR_PROCESS_TESTS=1)
+target_link_libraries(q4t_prefix_storage_contract PRIVATE Threads::Threads)
 target_include_directories(q4t_prefix_storage_contract PRIVATE include)
 target_compile_options(q4t_prefix_storage_contract PRIVATE -Wall -Wextra)
+
+add_executable(q4t_incremental_storage_contract EXCLUDE_FROM_ALL
+  tools/session_incremental/storage_contract.cpp src/server/session_cache.cpp
+  src/server/cache_io.cpp src/server/cache_worker.cpp
+  src/server/grammar_process.cpp src/trace/sha256.cpp)
+target_include_directories(q4t_incremental_storage_contract PRIVATE include)
+target_compile_definitions(q4t_incremental_storage_contract PRIVATE
+  Q4T_GRAMMAR_PROCESS_TESTS=1)
+target_link_libraries(q4t_incremental_storage_contract PRIVATE Threads::Threads)
+target_compile_options(q4t_incremental_storage_contract PRIVATE -Wall -Wextra)
 add_executable(q4t_prefix_state_contract EXCLUDE_FROM_ALL
   tools/prefix_cache/state_contract.cpp)
 target_link_libraries(q4t_prefix_state_contract PRIVATE q4t_server)

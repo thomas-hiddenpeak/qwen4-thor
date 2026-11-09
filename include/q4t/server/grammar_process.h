@@ -31,7 +31,9 @@ enum class GrammarFailure {
 
 // Independent fixed-capacity domains: a blocked object-store worker must not
 // consume the grammar slot or degrade ordinary structured generation.
-enum class IsolatedWorkerDomain { kGrammar, kObjects };
+enum class IsolatedWorkerDomain {
+  kGrammar, kObjects, kSessionCache, kPrefixCache
+};
 
 // Independent lifetime: deferred cleanup never retains a server/request
 // callback.
@@ -97,6 +99,8 @@ class GrammarProcess {
                   std::chrono::steady_clock::time_point deadline,
                   const std::function<bool()>& cancelled = {});
   GrammarFailure Failure() const { return failure_; }
+  // Identity of this still-owned direct child; never used after Stop.
+  int Pid() const { return pid_; }
   void ReportRss(uint64_t bytes);
   void Stop();
 

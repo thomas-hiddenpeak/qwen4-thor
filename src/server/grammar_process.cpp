@@ -49,7 +49,14 @@ WorkerOwner& Owner(IsolatedWorkerDomain domain) {
   // the OS closes the descriptors at process exit.
   static auto* grammar = new WorkerOwner;
   static auto* objects = new WorkerOwner;
-  return domain == IsolatedWorkerDomain::kObjects ? *objects : *grammar;
+  static auto* sessions = new WorkerOwner;
+  static auto* prefixes = new WorkerOwner;
+  switch (domain) {
+    case IsolatedWorkerDomain::kObjects: return *objects;
+    case IsolatedWorkerDomain::kSessionCache: return *sessions;
+    case IsolatedWorkerDomain::kPrefixCache: return *prefixes;
+    default: return *grammar;
+  }
 }
 
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
@@ -165,7 +172,9 @@ Status GrammarProcess::Start(const char* entry, const GrammarControl& control,
       control.address_space_bytes > kGrammarAddressSpaceLimit)
     return Status::Fail("invalid grammar worker memory ceiling");
   if (control.domain != IsolatedWorkerDomain::kGrammar &&
-      control.domain != IsolatedWorkerDomain::kObjects)
+      control.domain != IsolatedWorkerDomain::kObjects &&
+      control.domain != IsolatedWorkerDomain::kSessionCache &&
+      control.domain != IsolatedWorkerDomain::kPrefixCache)
     return Status::Fail("invalid isolated worker domain");
   struct sigaction disposition {};
   if (sigaction(SIGCHLD, nullptr, &disposition) ||
@@ -213,8 +222,12 @@ Status GrammarProcess::Start(const char* entry, const GrammarControl& control,
     auto limit = std::to_string(control.address_space_bytes);
     char grammar_name[] = "q4t-grammar-worker";
     char objects_name[] = "q4t-object-worker";
+    char cache_name[] = "q4t-cache-worker";
     char* name = control.domain == IsolatedWorkerDomain::kObjects
                      ? objects_name : grammar_name;
+    if (control.domain == IsolatedWorkerDomain::kSessionCache ||
+        control.domain == IsolatedWorkerDomain::kPrefixCache)
+      name = cache_name;
     char* argv[] = {name, const_cast<char*>(entry), parent.data(), limit.data(),
                     nullptr};
     char locale[] = "LC_ALL=C";

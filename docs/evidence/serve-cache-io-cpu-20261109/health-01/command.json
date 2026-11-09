@@ -1,0 +1,8 @@
+[
+  "python3",
+  "-B",
+  "-m",
+  "tools.serve_cache_io.check_health",
+  "--stdout",
+  ".q4t-work/serve-cache-io-20261109/integration-01/stdout.log"
+]

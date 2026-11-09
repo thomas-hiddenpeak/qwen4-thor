@@ -28336,6 +28336,291 @@
               "errors"
             ],
             "additionalProperties": false
+          },
+          "cache_io": {
+            "type": "object",
+            "description": "Native optional cache worker observations. Omitted in historical config-v1 records; all buffers and worker memory use unified RAM. Buffer cap excludes process/library metadata overhead. Observed RSS is the last reported maximum, zero is unknown when worker_rss_known is false.",
+            "additionalProperties": false,
+            "properties": {
+              "session": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "configured": {
+                    "type": "boolean"
+                  },
+                  "available": {
+                    "type": "boolean"
+                  },
+                  "state": {
+                    "enum": [
+                      "disabled",
+                      "starting",
+                      "ready",
+                      "unavailable",
+                      "cleanup_pending",
+                      "backoff",
+                      "controller_backoff",
+                      "stopped",
+                      "invalid_configuration",
+                      "controller_owned"
+                    ]
+                  },
+                  "readiness_dependency": {
+                    "const": false
+                  },
+                  "generation": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "workers_started": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "workers_reaped": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "controller_failures": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "worker_rss_observed_bytes": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "workers_active": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "worker_rss_known": {
+                    "type": "boolean"
+                  },
+                  "io_timeout_ms": {
+                    "const": 2000
+                  },
+                  "restart_limit": {
+                    "const": 3
+                  },
+                  "restart_window_ms": {
+                    "const": 60000
+                  },
+                  "block_bytes": {
+                    "const": 8388608
+                  },
+                  "buffer_payload_limit_bytes": {
+                    "const": 25169920
+                  },
+                  "buffer_limit_excludes_process_overhead": {
+                    "const": true
+                  }
+                },
+                "required": [
+                  "configured",
+                  "available",
+                  "state",
+                  "readiness_dependency",
+                  "generation",
+                  "workers_started",
+                  "workers_reaped",
+                  "controller_failures",
+                  "worker_rss_observed_bytes",
+                  "workers_active",
+                  "worker_rss_known",
+                  "io_timeout_ms",
+                  "restart_limit",
+                  "restart_window_ms",
+                  "block_bytes",
+                  "buffer_payload_limit_bytes",
+                  "buffer_limit_excludes_process_overhead"
+                ],
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "available": {
+                          "const": true
+                        }
+                      }
+                    },
+                    "then": {
+                      "properties": {
+                        "configured": {
+                          "const": true
+                        },
+                        "state": {
+                          "const": "ready"
+                        },
+                        "generation": {
+                          "minimum": 1
+                        },
+                        "workers_active": {
+                          "const": 1
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "if": {
+                      "properties": {
+                        "worker_rss_known": {
+                          "const": false
+                        }
+                      }
+                    },
+                    "then": {
+                      "properties": {
+                        "worker_rss_observed_bytes": {
+                          "const": 0
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "prefix": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "configured": {
+                    "type": "boolean"
+                  },
+                  "available": {
+                    "type": "boolean"
+                  },
+                  "state": {
+                    "enum": [
+                      "disabled",
+                      "starting",
+                      "ready",
+                      "unavailable",
+                      "cleanup_pending",
+                      "backoff",
+                      "controller_backoff",
+                      "stopped",
+                      "invalid_configuration",
+                      "controller_owned"
+                    ]
+                  },
+                  "readiness_dependency": {
+                    "const": false
+                  },
+                  "generation": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "workers_started": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "workers_reaped": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "controller_failures": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "worker_rss_observed_bytes": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "workers_active": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "worker_rss_known": {
+                    "type": "boolean"
+                  },
+                  "io_timeout_ms": {
+                    "const": 2000
+                  },
+                  "restart_limit": {
+                    "const": 3
+                  },
+                  "restart_window_ms": {
+                    "const": 60000
+                  },
+                  "block_bytes": {
+                    "const": 8388608
+                  },
+                  "buffer_payload_limit_bytes": {
+                    "const": 25169920
+                  },
+                  "buffer_limit_excludes_process_overhead": {
+                    "const": true
+                  }
+                },
+                "required": [
+                  "configured",
+                  "available",
+                  "state",
+                  "readiness_dependency",
+                  "generation",
+                  "workers_started",
+                  "workers_reaped",
+                  "controller_failures",
+                  "worker_rss_observed_bytes",
+                  "workers_active",
+                  "worker_rss_known",
+                  "io_timeout_ms",
+                  "restart_limit",
+                  "restart_window_ms",
+                  "block_bytes",
+                  "buffer_payload_limit_bytes",
+                  "buffer_limit_excludes_process_overhead"
+                ],
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "available": {
+                          "const": true
+                        }
+                      }
+                    },
+                    "then": {
+                      "properties": {
+                        "configured": {
+                          "const": true
+                        },
+                        "state": {
+                          "const": "ready"
+                        },
+                        "generation": {
+                          "minimum": 1
+                        },
+                        "workers_active": {
+                          "const": 1
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "if": {
+                      "properties": {
+                        "worker_rss_known": {
+                          "const": false
+                        }
+                      }
+                    },
+                    "then": {
+                      "properties": {
+                        "worker_rss_observed_bytes": {
+                          "const": 0
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "required": [
+              "session",
+              "prefix"
+            ]
           }
         },
         "required": [

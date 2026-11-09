@@ -65,7 +65,7 @@ struct ServerOptions {
   // E2E accepted 2026-10-14); --no-mtp opts back to plain greedy decode.
   bool no_mtp = false;
   bool mtp_suffix = false;  // Explicit request-local text, fixed-k3 suffix.
-  std::string session_cache_dir;  // Explicit bounded same-process SSD cache.
+  std::string session_cache_dir;  // Explicit bounded isolated SSD cache.
   std::string prefix_cache_dir;   // Separate bounded, scope-keyed shared pool.
   std::vector<int> prefix_cache_checkpoints{8192, 32768, 65536};
   std::string mtp_subset_head;  // Explicit experimental BF16 artifact.

@@ -1,0 +1,2 @@
+PASS checks=55 direct_io=1 staging_bytes=8388608
+PASS incremental_checks=137 staging_bytes=8388608

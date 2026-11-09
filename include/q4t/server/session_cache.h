@@ -11,6 +11,7 @@
 #include <vector>
 
 #include "q4t/status.h"
+#include "q4t/server/cache_io.h"
 #include "q4t/server/session_save_timing.h"
 #include "q4t/trace/sha256.h"
 
@@ -24,7 +25,7 @@ struct SessionRange {
 // One private lease covers both layouts; switching layouts is a cache miss.
 enum class SessionLayout { kMtp, kTarget };
 
-// Same-process, capability-keyed prefix snapshots. Device copies are supplied
+// Capability-keyed prefix snapshots with isolated filesystem I/O. Device copies
 // by the caller, which must own the model scratch/slot until Transfer returns.
 // CPU contracts use the same storage path with a checked host-copy callback.
 class SessionCache {
@@ -39,13 +40,18 @@ class SessionCache {
                                     bool restore)>;
   using Cancel = std::function<bool()>;
 
-  SessionCache() = default;
+  explicit SessionCache(IsolatedWorkerDomain domain =
+                            IsolatedWorkerDomain::kSessionCache)
+      : domain_(domain) {}
   ~SessionCache();
   SessionCache(const SessionCache&) = delete;
   SessionCache& operator=(const SessionCache&) = delete;
   Status Open(const std::string& directory, int min_prefix = kMinPrefix,
               size_t disk_budget = kDiskBudget, bool incremental = false);
-  bool Enabled() const { return directory_fd_ >= 0; }
+  // Configuration is distinct from availability: a failed optional worker
+  // must not reject ordinary generation, including requests with session IDs.
+  bool Enabled() const { return staging_ && io_; }
+  CacheIoHealth Health() const { return io_ ? io_->Health() : CacheIoHealth{}; }
   bool Acquire(const std::string& key);
   // Shared snapshots use scope + ':' + SHA256(prefix) as the key. A selected
   // entry is leased until Release, including the interval before Restore.
@@ -69,7 +75,8 @@ class SessionCache {
  private:
   friend struct SessionCacheTestPeer;
   struct Entry {
-    int fd = -1;
+    CacheFile file;
+    CacheIo* io = nullptr;
     size_t bytes = 0;
     size_t disk_charge = 0;
     bool published = false;
@@ -90,6 +97,7 @@ class SessionCache {
     ~Entry();
   };
   using Entries = std::map<std::string, std::unique_ptr<Entry>>;
+  void Refresh();
   void Erase(Entries::iterator it);
   Status SaveIncremental(Entry* entry, std::span<const SessionRange> ranges,
                          const Copy& copy, const Cancel& cancel,
@@ -98,7 +106,9 @@ class SessionCache {
                   const Copy& copy, const Cancel& cancel, bool restore,
                   SessionSaveTiming* timing = nullptr);
   mutable std::mutex mutex_;
-  int directory_fd_ = -1;
+  IsolatedWorkerDomain domain_;
+  std::unique_ptr<CacheIo> io_;
+  uint64_t generation_ = 0;
   void* staging_ = nullptr;
   size_t bytes_ = 0;
   int min_prefix_ = kMinPrefix;

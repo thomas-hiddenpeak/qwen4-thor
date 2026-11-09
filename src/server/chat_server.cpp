@@ -177,7 +177,9 @@ Status ChatServer::Start(const ServerOptions& opts) {
         session_cache_.Open(opts.session_cache_dir, SessionCache::kMinPrefix,
                             SessionCache::kDiskBudget,
                             incremental && std::strcmp(incremental, "1") == 0);
-    if (!cache_status.ok()) return cache_status;
+    if (!cache_status.ok()) {
+      std::fprintf(stderr, "[session-cache] unavailable; generation continues\n");
+    }
     std::fprintf(stderr,
                  "[session-cache] enabled=1 entries=8 disk_bytes=%zu "
                  "ram_budget=%zu staging_bytes=%zu ttl_seconds=1800\n",
@@ -187,7 +189,9 @@ Status ChatServer::Start(const ServerOptions& opts) {
   if (!opts.prefix_cache_dir.empty()) {
     const Status cache_status =
         prefix_cache_.Open(opts.prefix_cache_dir, 1024, size_t{8} << 30);
-    if (!cache_status.ok()) return cache_status;
+    if (!cache_status.ok()) {
+      std::fprintf(stderr, "[prefix-cache] unavailable; generation continues\n");
+    }
     prefix_cache_checkpoints_ = opts.prefix_cache_checkpoints;
     std::fprintf(stderr,
                  "[prefix-cache] enabled=1 entries=8 disk_bytes=8589934592 "

@@ -1,0 +1,12 @@
+/home/rm01/models/dev/qwen4-thor/tools/session_incremental/storage_contract.cpp: In function ‘int main(int, char**)’:
+/home/rm01/models/dev/qwen4-thor/tools/session_incremental/storage_contract.cpp:112:5: error: ‘fault’ was not declared in this scope
+  112 |     fault = 3;
+      |     ^~~~~
+/home/rm01/models/dev/qwen4-thor/tools/session_incremental/storage_contract.cpp:152:5: error: ‘fault’ was not declared in this scope
+  152 |     fault = 0;
+      |     ^~~~~
+gmake[3]: *** [CMakeFiles/q4t_incremental_storage_contract.dir/build.make:79: CMakeFiles/q4t_incremental_storage_contract.dir/tools/session_incremental/storage_contract.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:2752: CMakeFiles/q4t_incremental_storage_contract.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:2759: CMakeFiles/q4t_incremental_storage_contract.dir/rule] Error 2
+gmake: *** [Makefile:1065: q4t_incremental_storage_contract] Error 2

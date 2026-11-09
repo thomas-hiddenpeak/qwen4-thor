@@ -1,0 +1,9 @@
+[PASS] cache_io_exec_inherits_only_owned_channel
+[PASS] cache_io_private_disk_directory_contract
+[PASS] cache_io_multiblock_bytes_and_actual_sparse_allocation
+[PASS] cache_io_bad_frames_generations_and_bounds_rejected
+[PASS] cache_io_stopped_worker_deadline_and_cancellation_are_bounded
+[PASS] cache_io_unreaped_worker_retains_only_its_own_domain
+[PASS] cache_io_restart_budget_and_stop_intent
+[PASS] cache_io_controller_exception_spawn_stall_and_thread_failure
+8 tests, 8 passed, 0 failed, 0 skipped

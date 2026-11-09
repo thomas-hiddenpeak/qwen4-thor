@@ -4,6 +4,8 @@
 #undef main
 
 int main(int argc, char** argv) {
+  const int worker = q4t::server::MaybeRunCacheWorker(argc, argv);
+  if (worker >= 0) return worker;
   if (argc != 2) return 2;
   if (OriginalContract(argc, argv)) return 1;
   using namespace q4t;
@@ -107,12 +109,12 @@ int main(int argc, char** argv) {
     require(save().reused_bytes == 0, "shrinking range rebuilds");
     restore();
     data[0][0] ^= 1;
-    fault = 3;
+    SessionCacheTestPeer::ShortWrite(cache);
     require(!cache.Save("A", prefix, ranges(), copy, no_cancel, d0),
             "incremental short write");
-    fault = 0;
     require(cache.Bytes() == 0 && !cache.Match("A", prefix),
             "partial update cannot publish or leak disk charge");
+    SessionCacheTestPeer::Recover(cache);
     save();
     restore();
     int copies = 0;
@@ -147,7 +149,6 @@ int main(int argc, char** argv) {
                 SessionCache::kStagingBytes);
     return 0;
   } catch (const std::exception& e) {
-    fault = 0;
     std::fprintf(stderr, "FAIL incremental_checks=%d error=%s\n", checks,
                   e.what());
     return 1;

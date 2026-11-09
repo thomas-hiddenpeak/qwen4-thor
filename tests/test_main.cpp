@@ -4,12 +4,17 @@
 #include <fstream>
 #include <string>
 
+#if defined(Q4T_GRAMMAR_PROCESS_TESTS) || defined(Q4T_CACHE_WORKER_ENTRY)
+#include "q4t/server/cache_io.h"
+#endif
+
 #ifdef Q4T_ENABLE_XGRAMMAR
 #include "q4t/server/structured_decoder.h"
 #endif
 
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
 #include "q4t/server/object_store.h"
+int CacheIoFixture(int argc, char** argv);
 int GrammarProcessFixture(int argc, char** argv);
 int ConversationApiFixture(int argc, char** argv);
 int ResponsesApiFixture(int argc, char** argv);
@@ -17,11 +22,17 @@ int ResponsesJobsFixture(int argc, char** argv);
 #endif
 
 int main(int argc, char** argv) {
+#if defined(Q4T_GRAMMAR_PROCESS_TESTS) || defined(Q4T_CACHE_WORKER_ENTRY)
+  const int cache_worker = q4t::server::MaybeRunCacheWorker(argc, argv);
+  if (cache_worker >= 0) return cache_worker;
+#endif
 #ifdef Q4T_ENABLE_XGRAMMAR
   const int worker = q4t::server::MaybeRunGrammarWorker(argc, argv);
   if (worker >= 0) return worker;
 #endif
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
+  const int cache_fixture = CacheIoFixture(argc, argv);
+  if (cache_fixture >= 0) return cache_fixture;
   const int object_worker = q4t::server::MaybeRunObjectWorker(argc, argv);
   if (object_worker >= 0) return object_worker;
   const int fixture = GrammarProcessFixture(argc, argv);

@@ -1,0 +1,43 @@
+{
+  "candidate": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-cache-io-20261109/candidate/q4t",
+  "candidate_sha256": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
+  "build_cache_sha256": "d07d613aeed1121454debd2cd08a9c1be7249a395e7261e86f0f804d20b68171",
+  "protocol_source_files": 208,
+  "source_base_commit": "1e11ccfafe5498ef3ce76c44cf5eff22578e97b4",
+  "source_modified": {
+    "CMakeLists.txt": "6846fc8195df1bceba99af2a51af6668036ca8500f7ee4ae401e25b68798d441",
+    "cmake/ChatProtocolIdentity.cmake": "2fa0ead22c4a39a7c30ec3699df5c520961a76bb9af6126ea6eae089c3f9766f",
+    "cmake/HostTestSources.cmake": "4250a1a4f9bc6dfc79f607b0135fb680d7e267a3cda5e820a23d19469e24956c",
+    "include/q4t/server/cache_health.h": "3b43f963c6621361a93feaf3575cdf5f157a3ff426d13aa03b5bf81a005766d3",
+    "include/q4t/server/cache_io.h": "4a851632978959b89c66999d0e4532c345fdd792f1a9f4efadbe5350e8cf0e4f",
+    "include/q4t/server/chat_server.h": "bfd3d65b71f83e9757c515eb1c127f510d063f97332045496085049e7258b605",
+    "include/q4t/server/grammar_process.h": "fbed9c86c91be129af8f1481292ef65edb8a9989090fc1a83e12c6fe7e106e53",
+    "include/q4t/server/server_options.h": "87c939370fdf77166b44be7a2f3770d4b5db48949e0048c9640a333d159786c9",
+    "include/q4t/server/session_cache.h": "7cc15ec4f41e15a8221a8b2be9629e569446bd09a7c3d5940a8548a47e95333e",
+    "src/main.cpp": "df9f8ac33bc4aabc99972637991afc5386c45b8bf61ed50b28db8d4bbd38dcc2",
+    "src/server/cache_io.cpp": "1495b6d92a77d9dc373e25ce0b94386a4150f5763ca6f26857901ff2fd8b99ba",
+    "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
+    "src/server/cache_worker.cpp": "b8ff127f945835fc91d04b97c6e49b21dfc0047ff846545bc8e4c2ab9a6e0c4a",
+    "src/server/chat_preflight.cpp": "15231afb827eeea21c9b5da283e1322976fe56c8a461cf8213b883087432f84c",
+    "src/server/chat_server.cpp": "f7f68be7372b75513a021f04b1223154445f8af7d043e58f33267efbb77c4306",
+    "src/server/grammar_process.cpp": "b0c9f65c7299e896253d139c34defb65143d2cb7ff9e58465f92661fbc04424c",
+    "src/server/session_cache.cpp": "c7f157e9628d1bffbeea288029c62e683d1525d02d9bc5f2e38af259c7ffeec5",
+    "tests/server_cache_io_test.cpp": "52f2f7af512d33112e1f639b9b6134e9d2720412b262599743608bc21209da97",
+    "tests/server_session_isolation_test.cpp": "a902c0806d3a24a8b7687b4dddf9fcfb7b124b115de695731a25a5dd2d93edb9",
+    "tests/test_main.cpp": "7f91c3f5b72769497a4bdb2dba868d8fa15dfdd3679a0ffc98e096bd05ad45f7",
+    "tools/prefix_cache/storage_contract.cpp": "4ac723d8ba40b1785559cd8869ce1db05951a9d851a9e23d1aa3964080d0ea5b",
+    "tools/serve_audit/inventory.json": "1f381b43bc0344fd6943658beab015616b80ff12605ce2a5a01ed68207311017",
+    "tools/serve_cache_io/check_health.py": "42c23db23863670c4fc91947c2712ad5388454de9d1e3ad47e2d2cfb98188d83",
+    "tools/serve_protocol/build_contract.py": "07806f3094ed2f136e5d09cfd48315d6ad8598835e4250e751b6b57e9e81874e",
+    "tools/serve_protocol/build_probe.py": "124c9afb9f4e06f147de205f6fe511919265f91738688369efe6eabc2835045b",
+    "tools/session_cache/storage_contract.cpp": "0943a8056d0b4246818b8c52f7573e46de4b7b745077e14a545dfa0bca38b375",
+    "tools/session_incremental/base_storage_contract.cpp": "def76103b068bf3baa87a30ed429666af65fad0fef0e5521dd6f7c4a4a0072f7",
+    "tools/session_incremental/storage_contract.cpp": "8f61c146cd5b76eb227801b8f26793a0f83af1b217569ea2039f71bd4b86e14b"
+  },
+  "protected_default": {
+    "build/q4t": "92e600fbcdcadf37271a77405daf498f1fe4fbf2d327ad79a0bf3646bd02ce31",
+    "build/q4t.release.json": "dfffcbadb6ba73c2184c06444f28d85979d2d0881d34aca7087bf1ff5fd31e75",
+    "build/service.release.json": "e4d8b32171335bc535021b77712d6eb8c7f3e0e45b4498533afb4d5404eda05e",
+    "build/service/manifest.json": "ffbd9d4b52175dc07356933fbfca54ad5143522d3ec9d6ca7bcedcacf0e8887e"
+  }
+}

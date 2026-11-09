@@ -1,4 +1,5 @@
 #include "chat_server_internal.h"
+#include "q4t/server/cache_health.h"
 
 #include "q4t/server/chat_response_parser.h"
 #include "q4t/server/media_admission.h"
@@ -76,7 +77,10 @@ void ChatServer::HandleConfig(int fd) {
       std::to_string(jobs.foreground_active) + R"(,"pending":)" +
       std::to_string(jobs.foreground_pending) + R"(,"reconciled":)" +
       std::to_string(jobs.foreground_reconciled) + R"(,"errors":)" +
-      std::to_string(jobs.foreground_errors) + "}}";
+      std::to_string(jobs.foreground_errors) +
+      R"(},"cache_io":{"session":)" +
+      CacheIoHealthJson(session_cache_.Health()) +
+      R"(,"prefix":)" + CacheIoHealthJson(prefix_cache_.Health()) + "}}";
   detail::SendSimple(fd, 200, "OK", value, "application/json");
 }
 

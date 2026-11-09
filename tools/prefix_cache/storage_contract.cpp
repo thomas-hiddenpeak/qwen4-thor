@@ -5,6 +5,8 @@
 #include "q4t/server/server_options.h"
 
 int main(int argc, char** argv) {
+  const int worker = q4t::server::MaybeRunCacheWorker(argc, argv);
+  if (worker >= 0) return worker;
   if (SessionStorageContract(argc, argv)) return 1;
   using namespace q4t;
   using namespace q4t::server;

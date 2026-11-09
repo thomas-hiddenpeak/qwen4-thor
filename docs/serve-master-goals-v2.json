@@ -479,13 +479,15 @@
       "id": "R01",
       "required": true,
       "state": "implementation_in_progress",
-      "implementation": "普通日志/观察阻塞隔离；有界队列/单worker、未回收不增殖、健康核心同PID继续；保留可诊断性",
-      "acceptance": "普通日志/观察阻塞隔离；有界队列/单worker、未回收不增殖、健康核心同PID继续；保留可诊断性",
+      "implementation": "普通日志/观察阻塞隔离；有界队列/单worker、未回收不增殖、健康核心同PID继续；保留可诊断性；会话/前缀缓存文件I/O原生独立worker、有界IPC与恢复",
+      "acceptance": "普通日志/观察阻塞隔离；有界队列/单worker、未回收不增殖、健康核心同PID继续；保留可诊断性；缓存故障降级、真实字节合同和同PID业务继续",
       "depends_on": [],
       "evidence": [
         "SERVE_OBSERVATION_IO_2026-11-08.md",
         "evidence/serve-observation-io-20261108/closeout/result.json",
-        "evidence/serve-observation-io-20261108/delivery-01/result.json"
+        "evidence/serve-observation-io-20261108/delivery-01/result.json",
+        "SERVE_CACHE_IO_ISOLATION_2026-11-09.md",
+        "evidence/serve-cache-io-cpu-20261109/decision.json"
       ],
       "release": {
         "manifest_sha256": "b7743d20b5af101dde29eed9dc6ac3bdd4b412d00ff6a55c4c0e2ec21847c6a1",
@@ -505,10 +507,17 @@
         {
           "source": "src/server/session_cache.cpp Transfer/Save/Restore and chat_generation.cpp model_mu_",
           "issue": "Optional cache synchronous pread/pwrite/open/fstat run under cache and model locks; cancellation is checked between calls and cannot bound a blocked call. Isolate filesystem work so unavailable cache does not prevent healthy plain generation.",
-          "state": "open",
+          "state": "cpu_validated_pending_real_business",
           "prior_delivered_log_and_observation_isolation_preserved": true
         }
-      ]
+      ],
+      "cache_io_candidate": {
+        "binary_sha256": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
+        "distinct_cpp_cases": 16,
+        "storage_programs": 3,
+        "gpu_starts": 0,
+        "default_replaced": false
+      }
     },
     {
       "id": "R02",

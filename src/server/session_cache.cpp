@@ -1,13 +1,6 @@
 #include "q4t/server/session_cache.h"
 
-#include <fcntl.h>
-#include <linux/magic.h>
-#include <sys/stat.h>
-#include <sys/vfs.h>
-#include <unistd.h>
-
 #include <algorithm>
-#include <cerrno>
 #include <cstdlib>
 #include <cstring>
 #include <memory>
@@ -18,19 +11,14 @@ constexpr size_t kAlignment = 4096;
 size_t Aligned(size_t n) {
   return (n + kAlignment - 1) / kAlignment * kAlignment;
 }
-Status IoError(const char* action) {
-  return Status::Fail(std::string("session cache ") + action + ": " +
-                      std::strerror(errno));
-}
-
 }  // namespace
 
 SessionCache::Entry::~Entry() {
-  if (fd >= 0) close(fd);
+  if (io) io->Close(file);
 }
 SessionCache::~SessionCache() {
   entries_.clear();
-  if (directory_fd_ >= 0) close(directory_fd_);
+  io_.reset();
   std::free(staging_);
 }
 
@@ -40,45 +28,31 @@ Status SessionCache::Open(const std::string& directory, int min_prefix,
   if (min_prefix < 1 || min_prefix > kMaxPrefix || !disk_budget ||
       disk_budget > kDiskBudget)
     return Status::Fail("session cache limits");
-  int fd =
-      open(directory.c_str(), O_DIRECTORY | O_RDONLY | O_CLOEXEC | O_NOFOLLOW);
-  if (fd < 0) return IoError("directory");
-  struct stat st {};
-  struct statfs fs {};
-  if (fstat(fd, &st) || fstatfs(fd, &fs) || st.st_uid != geteuid() ||
-      (st.st_mode & 077) || fs.f_type == TMPFS_MAGIC) {
-    close(fd);
-    return Status::Fail("session cache requires owned private disk directory");
-  }
-  const int probe =
-      openat(fd, ".", O_TMPFILE | O_DIRECT | O_RDWR | O_CLOEXEC, 0600);
-  if (probe < 0) {
-    const Status s = IoError("O_TMPFILE/O_DIRECT");
-    close(fd);
-    return s;
-  }
   void* buffer = nullptr;
   if (posix_memalign(&buffer, kAlignment, kStagingBytes)) {
-    close(probe);
-    close(fd);
     return Status::Fail("session cache staging allocation");
   }
-  std::memset(buffer, 0, kAlignment);
-  const bool ok = pwrite(probe, buffer, kAlignment, 0) == kAlignment &&
-                  pread(probe, buffer, kAlignment, 0) == kAlignment;
-  close(probe);
-  if (!ok) {
-    const Status s = IoError("direct IO preflight");
-    std::free(buffer);
-    close(fd);
-    return s;
-  }
   staging_ = buffer;
-  directory_fd_ = fd;
+  io_ = std::make_unique<CacheIo>(CacheIoOptions{.directory = directory,
+                                               .domain = domain_});
   min_prefix_ = min_prefix;
   disk_budget_ = disk_budget;
   incremental_ = incremental;
-  return Status();
+  const auto status = io_->Initialize();
+  generation_ = io_->Health().generation;
+  return status;
+}
+
+void SessionCache::Refresh() {
+  if (!io_) return;
+  const auto health = io_->Health();
+  if (!health.available || health.generation != generation_) {
+    // Metadata and anonymous files never survive an unconfirmed operation.
+    // Active lease keys remain held until the original request releases them.
+    entries_.clear();
+    bytes_ = 0;
+    generation_ = health.generation;
+  }
 }
 
 bool SessionCache::Acquire(const std::string& key) {
@@ -87,6 +61,7 @@ bool SessionCache::Acquire(const std::string& key) {
 }
 bool SessionCache::AcquireNew(const std::string& key) {
   const std::lock_guard lock(mutex_);
+  Refresh();
   if (!Enabled() || busy_.size() >= 32 || busy_.contains(key)) return false;
   const auto old = entries_.find(key);
   if (old != entries_.end()) {
@@ -103,6 +78,7 @@ int SessionCache::MatchShared(const std::string& scope,
                               SessionLayout layout) {
   const std::lock_guard lock(mutex_);
   key->clear();
+  Refresh();
   if (!Enabled() || busy_.size() >= 32) return 0;
   auto best = entries_.end();
   const auto now = std::chrono::steady_clock::now();
@@ -138,6 +114,7 @@ void SessionCache::Erase(Entries::iterator it) {
 }
 void SessionCache::Release(const std::string& key, bool success) {
   const std::lock_guard lock(mutex_);
+  Refresh();
   auto it = entries_.find(key);
   if (it != entries_.end() && !it->second->published) {
     if (success)
@@ -152,11 +129,12 @@ void SessionCache::Release(const std::string& key, bool success) {
 }
 size_t SessionCache::Bytes() const {
   const std::lock_guard lock(mutex_);
-  return bytes_;
+  return io_ && io_->Health().available ? bytes_ : 0;
 }
 int SessionCache::Match(const std::string& key, std::span<const int32_t> prompt,
                         SessionLayout layout) {
   const std::lock_guard lock(mutex_);
+  Refresh();
   auto it = entries_.find(key);
   if (!busy_.contains(key) || it == entries_.end()) return 0;
   auto& entry = *it->second;
@@ -190,12 +168,10 @@ Status SessionCache::Transfer(Entry* entry,
           return Status::Fail("session cache offset count");
         const size_t disk_offset =
             entry->offsets.empty() ? offset : entry->offsets[block];
-        ssize_t got;
-        do {
-          got = pread(entry->fd, staging_, disk_size, disk_offset);
-        } while (got < 0 && errno == EINTR);
-        if (got != static_cast<ssize_t>(disk_size))
-          return IoError("read/short read");
+        const auto read = io_->Read(
+            entry->file, disk_offset,
+            {static_cast<uint8_t*>(staging_), disk_size}, cancel);
+        if (!read) return read;
         if (block >= entry->digests.size() ||
             trace::Sha256({static_cast<uint8_t*>(staging_), disk_size}) !=
                 entry->digests[block])
@@ -219,15 +195,12 @@ Status SessionCache::Transfer(Entry* entry,
           entry->digests.push_back(
               trace::Sha256({static_cast<uint8_t*>(staging_), disk_size}));
         }
-        ssize_t wrote;
         {
           SessionSaveTiming::Scope span(timing, SessionSaveTiming::kWrite);
-          do {
-            wrote = pwrite(entry->fd, staging_, disk_size, offset);
-          } while (wrote < 0 && errno == EINTR);
+          s = io_->Write(entry->file, offset,
+                         {static_cast<uint8_t*>(staging_), disk_size}, cancel);
         }
-        if (wrote != static_cast<ssize_t>(disk_size))
-          return IoError("write/short write");
+        if (!s) return s;
         if (timing) {
           timing->data_bytes += size;
           timing->disk_bytes += disk_size;
@@ -302,15 +275,13 @@ Status SessionCache::SaveIncremental(Entry* entry,
         }
       } else {
         if (cancel()) return Status::Fail("session cache cancelled");
-        ssize_t wrote;
         {
           SessionSaveTiming::Scope span(timing, SessionSaveTiming::kWrite);
-          do {
-            wrote = pwrite(entry->fd, staging_, disk_size, offset);
-          } while (wrote < 0 && errno == EINTR);
+          status = io_->Write(entry->file, offset,
+                              {static_cast<uint8_t*>(staging_), disk_size},
+                              cancel);
         }
-        if (wrote != static_cast<ssize_t>(disk_size))
-          return IoError("incremental write/short write");
+        if (!status) return status;
         if (timing) {
           timing->data_bytes += size;
           timing->disk_bytes += disk_size;
@@ -323,9 +294,10 @@ Status SessionCache::SaveIncremental(Entry* entry,
     old_block += old_count;
   }
   if (cancel()) return Status::Fail("session cache cancelled");
-  struct stat st {};
-  if (fstat(entry->fd, &st)) return IoError("incremental stat");
-  const size_t allocated = static_cast<size_t>(st.st_blocks) * 512;
+  CacheFileStat st;
+  const auto status = io_->Stat(entry->file, &st, cancel);
+  if (!status) return status;
+  const size_t allocated = st.allocated_bytes;
   if (allocated > entry->bytes + (size_t{64} << 20))
     return Status::Fail("session cache filesystem allocation limit");
   entry->disk_charge = std::max(entry->bytes, allocated);
@@ -334,7 +306,7 @@ Status SessionCache::SaveIncremental(Entry* entry,
   entry->sizes.clear();
   for (const auto& range : ranges) entry->sizes.push_back(range.bytes);
   if (timing) {
-    timing->file_span = st.st_size;
+    timing->file_span = st.span_bytes;
     timing->allocated_bytes = allocated;
   }
   return Status();
@@ -346,6 +318,7 @@ Status SessionCache::Restore(const std::string& key,
                              int32_t* d0, int32_t* pending,
                              SessionLayout layout) {
   const std::lock_guard lock(mutex_);
+  Refresh();
   auto it = entries_.find(key);
   if (!busy_.contains(key) || it == entries_.end() || !it->second->published)
     return Status::Fail("session cache missing lease/entry");
@@ -375,6 +348,7 @@ Status SessionCache::Save(const std::string& key,
     SessionSaveTiming::Scope span(timing, SessionSaveTiming::kCacheLock);
     lock = std::unique_lock<std::mutex>(mutex_);
   }
+  Refresh();
   size_t bytes = 0;
   std::unique_ptr<Entry> entry;
   {
@@ -435,12 +409,13 @@ Status SessionCache::Save(const std::string& key,
     }
   }
   if (!entry) entry = std::make_unique<Entry>();
-  if (entry->fd < 0) {
+  if (!entry->file.id) {
     SessionSaveTiming::Scope span(timing, SessionSaveTiming::kOpen);
-    entry->fd = openat(directory_fd_, ".",
-                       O_TMPFILE | O_DIRECT | O_RDWR | O_CLOEXEC, 0600);
+    const auto status = io_->Create(&entry->file, cancel);
+    if (!status) return status;
+    entry->io = io_.get();
+    generation_ = entry->file.generation;
   }
-  if (entry->fd < 0) return IoError("snapshot file");
   {
     SessionSaveTiming::Scope span(timing, SessionSaveTiming::kMetadata);
     entry->bytes = bytes;
@@ -451,9 +426,22 @@ Status SessionCache::Save(const std::string& key,
     if (!incremental_)
       for (const auto& range : ranges) entry->sizes.push_back(range.bytes);
   }
-  const Status s =
+  Status s =
       incremental_ ? SaveIncremental(entry.get(), ranges, copy, cancel, timing)
                    : Transfer(entry.get(), ranges, copy, cancel, false, timing);
+  if (s && !incremental_) {
+    CacheFileStat stat;
+    s = io_->Stat(entry->file, &stat, cancel);
+    if (s) {
+      entry->disk_charge = std::max(bytes, size_t(stat.allocated_bytes));
+      if (entry->disk_charge > disk_budget_ - bytes_)
+        s = Status::Fail("session cache actual disk allocation limit");
+      if (timing) {
+        timing->file_span = stat.span_bytes;
+        timing->allocated_bytes = stat.allocated_bytes;
+      }
+    }
+  }
   if (!s.ok()) {
     SessionSaveTiming::Scope span(timing, SessionSaveTiming::kCleanup);
     entry.reset();

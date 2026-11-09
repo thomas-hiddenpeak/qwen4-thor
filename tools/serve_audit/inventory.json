@@ -295,30 +295,36 @@
     },
     "session_id": {
       "semantics": "同进程独占 SSD KV cache 能力 key",
-      "boundary": "显式启用；不是持久对话或恢复 API；结构化不组合 Optional gateway client policy namespaces this value by authenticated client; independent cancellation credentials and exact prefix checks still apply.",
+      "boundary": "显式启用；不是持久对话或恢复 API；结构化文本组合已按A05实际验收 Optional gateway client policy namespaces this value by authenticated client; independent cancellation credentials and exact prefix checks still apply. Development R01 isolates file I/O in independent native workers; cache failure becomes a miss/save failure without model restart. CPU passed; combined real business and default delivery remain required.",
       "evidence": [
         "tests/server_state_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
-        "docs/SERVE_CLIENT_ISOLATION_2026-11-04.md"
+        "docs/SERVE_CLIENT_ISOLATION_2026-11-04.md",
+        "tests/server_session_isolation_test.cpp",
+        "docs/SERVE_CACHE_IO_ISOLATION_2026-11-09.md"
       ]
     },
     "prefix_cache_scope": {
       "semantics": "同进程共享前缀 cache 能力 key",
-      "boundary": "显式启用；不是租户隔离或 OpenAI prompt_cache_key Optional gateway client policy namespaces this value by authenticated client; independent cancellation credentials and exact prefix checks still apply.",
+      "boundary": "显式启用；不是租户隔离或 OpenAI prompt_cache_key Optional gateway client policy namespaces this value by authenticated client; independent cancellation credentials and exact prefix checks still apply. Development R01 isolates file I/O in independent native workers; cache failure becomes a miss/save failure without model restart. CPU passed; combined real business and default delivery remain required.",
       "evidence": [
         "tests/server_state_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
-        "docs/SERVE_CLIENT_ISOLATION_2026-11-04.md"
+        "docs/SERVE_CLIENT_ISOLATION_2026-11-04.md",
+        "tests/server_session_isolation_test.cpp",
+        "docs/SERVE_CACHE_IO_ISOLATION_2026-11-09.md"
       ]
     },
     "prefix_cache_write_tokens": {
       "semantics": "原文精确整数 0 或 [1024,131072]",
-      "boundary": "正值必须提供 prefix_cache_scope；不扩大缓存组合支持",
+      "boundary": "正值必须提供 prefix_cache_scope；不扩大缓存组合支持 Development R01 isolates file I/O in independent native workers; cache failure becomes a miss/save failure without model restart. CPU passed; combined real business and default delivery remain required.",
       "evidence": [
         "tests/server_state_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
         "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
+        "tests/server_session_isolation_test.cpp",
+        "docs/SERVE_CACHE_IO_ISOLATION_2026-11-09.md"
       ]
     },
     "parse_response": {
@@ -1090,8 +1096,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "04e918ee3c10dceeaa9b700ae5d3e0f268bad9d73d4808d6718040dc635f2b30",
-    "cmake/ChatProtocolIdentity.cmake": "0c0bb55bdbeabccd34281cd536379b856a4c088a73479cbac6677b508c5bedb7",
+    "CMakeLists.txt": "6846fc8195df1bceba99af2a51af6668036ca8500f7ee4ae401e25b68798d441",
+    "cmake/ChatProtocolIdentity.cmake": "2fa0ead22c4a39a7c30ec3699df5c520961a76bb9af6126ea6eae089c3f9766f",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
     "cmake/NativeIngress.cmake": "d10f996fdf01e28f29eaa40d9c92f2d78ff02126351188667329b235a22f2346",
@@ -1112,13 +1118,15 @@
     "include/q4t/server/abort_reason.h": "2bad04553ca1e40595e10d6549d2a3a798bed05fcadd92527f722c48aecb70b5",
     "include/q4t/server/application_query.h": "8331a32ad43b1e4eb059a25f1e2d318c351fdda0fbf4555f7bfafd310a9d2c36",
     "include/q4t/server/application_routes.h": "b194817965444dcfd8b10cbf07f80fb7d2041cd884fc69ee3b059ae0a06fc719",
+    "include/q4t/server/cache_health.h": "3b43f963c6621361a93feaf3575cdf5f157a3ff426d13aa03b5bf81a005766d3",
+    "include/q4t/server/cache_io.h": "4a851632978959b89c66999d0e4532c345fdd792f1a9f4efadbe5350e8cf0e4f",
     "include/q4t/server/chat_capabilities.h": "058093147c83d2bf541cb17b19fa67e92ec3168e5d250dd3a20567696748cc49",
     "include/q4t/server/chat_choices.h": "a76cc4a1a1d8b16b1925ec1a5fb9f0951c03fe48494c6623027596624e5b79c2",
     "include/q4t/server/chat_contract.h": "c1aaef06a1ae22f96ce143211a3c6a5a462bb8223d0f86c474f896ab3bb906e0",
     "include/q4t/server/chat_plan.h": "8582f55f54b19b4da9f940acb71e60831b33cd04d3eea3a206eed8991ce6e083",
     "include/q4t/server/chat_prompt.h": "1a758fed12a2ef5b3eadc6109cbc99be29de63e088d0d60111ed171730daa54f",
     "include/q4t/server/chat_response_parser.h": "43c0d61499e9303cd8bacf92b685f5994d81d8e4b0aaed86edbc38943e941a88",
-    "include/q4t/server/chat_server.h": "53ddf4ba06ad6c75264550c0db93933bffdd19a963b0b3402210f88b23eaacc5",
+    "include/q4t/server/chat_server.h": "bfd3d65b71f83e9757c515eb1c127f510d063f97332045496085049e7258b605",
     "include/q4t/server/chat_storage.h": "1c75252f843b65276fbed00b9ac6c4a2ed8ce7cfdae107ad8aebe164b16f936a",
     "include/q4t/server/chat_template.h": "5d2e9a8c90938fa972d27bd961ee9018ebcd7add541fd009316177af81b9afee",
     "include/q4t/server/chat_tool_history.h": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
@@ -1134,7 +1142,7 @@
     "include/q4t/server/custom_grammar.h": "d560f89881ff27ce260c939d046a7b5f5c5afccce2125e4170ef53a661f507ec",
     "include/q4t/server/custom_tools.h": "1f351b6ed81ad868caa4dfa9c54a6f697fcac5a6a8dadef65bd05f2053ef18b9",
     "include/q4t/server/device_memory.h": "1099e20d3b205d3ae03daba0308be7221f5097c78a2fd58c8ca16298277dfc4c",
-    "include/q4t/server/grammar_process.h": "4d25f8a9a652fd8fa67a100ee78e330bd6504038f871657d39dbe8e4898e50fe",
+    "include/q4t/server/grammar_process.h": "fbed9c86c91be129af8f1481292ef65edb8a9989090fc1a83e12c6fe7e106e53",
     "include/q4t/server/http_connection.h": "89ff798245f196cad521414caf39267520f6b22489d396d7ee1b72fdb04d388b",
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
     "include/q4t/server/http_observation.h": "4a5c07a112faa4d60f834b2d5e4067522a7fe565ca6ff8acd145ad603999dbdc",
@@ -1178,9 +1186,9 @@
     "include/q4t/server/schema_receipt.h": "ca2076bc75950c749c5e8ec8a7c0ed06c24152b18264f66c72c1ac730235f89b",
     "include/q4t/server/sequence_admission.h": "0c03df6bd8c16d137562de22357c85e367208a6208be12d217adaf6135836b3f",
     "include/q4t/server/serve_fault.h": "47db4bd8dc12f5713ef42c6c89aeee1151867991d17d9b8529d31b4a11123b3f",
-    "include/q4t/server/server_options.h": "f60469f26757e6eba1170a48e383be9105de4722f5c379355cca0ad5fbd607c1",
+    "include/q4t/server/server_options.h": "87c939370fdf77166b44be7a2f3770d4b5db48949e0048c9640a333d159786c9",
     "include/q4t/server/service_health.h": "6b95516f0c81386c469360e106b1abe544080c74f439a9525a0910c556f3490f",
-    "include/q4t/server/session_cache.h": "1418f2133535c9396d5a9065604bdb942095da227057992e54f2886caf166e32",
+    "include/q4t/server/session_cache.h": "7cc15ec4f41e15a8221a8b2be9629e569446bd09a7c3d5940a8548a47e95333e",
     "include/q4t/server/session_save_timing.h": "317a0c125930305e10596efa2345e5af23f57345ad8059fd4065cb9f9ab5db06",
     "include/q4t/server/session_state.h": "45ee23a8433b6dfce3d72f942ba4ad3bd0019cb25c5e20c7f219fb329af8d3e9",
     "include/q4t/server/startup_admission.h": "2da630f79ddebd82e5dc7e410a279a971772b854171c88006929f4c28975d79b",
@@ -1209,7 +1217,7 @@
     "include/q4t/vision/timing.h": "72f98b74ac231c52ca501821eafa57b220a5be1c898e2ace999216e2480e15a6",
     "include/q4t/vision/vision.h": "629c8e8e63a1f06feaac85c038ddd5c75e09cf176e5ef69ca630dc6e8e3500e2",
     "src/io/json.cpp": "525ff67209baae32cca85e8d2d79dbc16791f589146248ef74955a30fd23e17a",
-    "src/main.cpp": "543a009b26fdad79feec49be2078a0d29d727a9067e92734efdc0f7748f180e4",
+    "src/main.cpp": "df9f8ac33bc4aabc99972637991afc5386c45b8bf61ed50b28db8d4bbd38dcc2",
     "src/model/model.cu": "18234fb517bcb3cf4cf5a670744bb940fbcf8882631ca3b9223cca29f54f563c",
     "src/model/model_owner.cpp": "cc3a998e52d4cca44bd695f40e1bf01f4ee2d75ce9f0c437d07757582d60e2bf",
     "src/mtp/mtp.cu": "c2e6bb780cc42c80c649dc0e4fa18b6b7e714da17c6baaf46a97938099d07184",
@@ -1221,6 +1229,9 @@
     "src/runtime/system_memory.cpp": "231e9a7ce5ed49e27e604a7bfa4066b35e83f286026c15986898d996a66acd2f",
     "src/server/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "src/server/application_query.cpp": "7a006ba7839d707cd6da13d9cc6b59d0844795e077009f0fd06ba6e387a388c2",
+    "src/server/cache_io.cpp": "1495b6d92a77d9dc373e25ce0b94386a4150f5763ca6f26857901ff2fd8b99ba",
+    "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
+    "src/server/cache_worker.cpp": "b8ff127f945835fc91d04b97c6e49b21dfc0047ff846545bc8e4c2ab9a6e0c4a",
     "src/server/chat_admission.cpp": "f36462262efd36b205117a855d69ad896a228d1b22e0638a3d96440346aef187",
     "src/server/chat_capabilities.cpp": "e674892b7f16f1fd93bd4acf23fe84888967f333c8058c6d3228af9fd30a2e68",
     "src/server/chat_choices.cpp": "ee99c4aca3c1ea07d5929da38325aa2b28a411245c7d794c9cc5f1f8eb23f16a",
@@ -1233,12 +1244,12 @@
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
     "src/server/chat_metrics.cpp": "9a50b19777ed6e32b9902716dd97cde678bb1cd3c3147030975032cffe41fcc6",
     "src/server/chat_plan.cpp": "519833b53ef02f32278399e187c90fc41e6550d401cab0358cf970a9eb8ac1bc",
-    "src/server/chat_preflight.cpp": "1f3caede284a62b2613dc8cba4e5bfa391a690a042617173e39ddf7bd4b76ae8",
+    "src/server/chat_preflight.cpp": "15231afb827eeea21c9b5da283e1322976fe56c8a461cf8213b883087432f84c",
     "src/server/chat_prompt.cpp": "fd6684419aff480782e12a409af13665eb1b529008b93ea7f67607afd837efcf",
     "src/server/chat_response_parser.cpp": "69e260c428d83a6383d5d36e0870c7d2be697e953251fddfd081a058445a808b",
     "src/server/chat_responses.cpp": "13fe1f43c32e93d4a4b34184a1da6ae67b1c6d3fe97adb00334e7342fcf8ed41",
     "src/server/chat_scheduler.cpp": "a0844e61f23629d574b1ef9515cf59427cbddf55058453e95f07eda2917f42f6",
-    "src/server/chat_server.cpp": "41898280d3c82c4f62d229f4d9d130afc555ea19adffdae2b6918e074bd33582",
+    "src/server/chat_server.cpp": "f7f68be7372b75513a021f04b1223154445f8af7d043e58f33267efbb77c4306",
     "src/server/chat_server_internal.h": "6f051dc4614996c581f24d37939ae9067a7342779432d75f079759208e378408",
     "src/server/chat_storage.cpp": "41caab121d69b357700a17d11aa6f1222445ac14f97da20762360d93058a522a",
     "src/server/chat_storage_options.cpp": "44a9da20f7f72b2fc448a02d09fdfb112c38b7cb0a9c8eca3296e43d5c32d99c",
@@ -1256,7 +1267,7 @@
     "src/server/custom_regex.cpp": "eb8ab53b44dbb9ec2011676a854a18e38244975e76955b74a441829bdd67031a",
     "src/server/custom_regex.h": "4916fea56e31101ba2352675c918b82fe76b785b8559c87683d8cc531c3624d5",
     "src/server/custom_tools.cpp": "3e45f9a496439ec1e0d86739acb9c5d01eb6e2c321a96d924cf755b99bc12abd",
-    "src/server/grammar_process.cpp": "db6c047c571404a9b453fe2c7c06262aac15c80551b6bcc831984e4dd32014f4",
+    "src/server/grammar_process.cpp": "b0c9f65c7299e896253d139c34defb65143d2cb7ff9e58465f92661fbc04424c",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
     "src/server/http_request.cpp": "836283e471ff1ba5200dae7c956427bcbba743b125c852041213b46522574d8e",
@@ -1305,7 +1316,7 @@
     "src/server/schema_token_guard.cpp": "3004a864f26a35f2eade7cf27e31520df348424edde1d6ed985ed5d194755a44",
     "src/server/schema_token_guard.h": "d5943fea23da3d9a36a3662bb1a80da8c75f45dd53cf577e3d1ddaf3b451cdb5",
     "src/server/server_options.cpp": "2fd39a822532c84b4c81257247e016c6e9662c6abc325bea4ec182577364ea5d",
-    "src/server/session_cache.cpp": "893b6993f4f5abd97d60d482f6fe71c4b5aec16495f54807270849a90ee360f4",
+    "src/server/session_cache.cpp": "c7f157e9628d1bffbeea288029c62e683d1525d02d9bc5f2e38af259c7ffeec5",
     "src/server/session_state.cpp": "878e97b4ac3ce2f8b79d972a4f94ccd4c2e7c22893b07b5e31e5ba544494562f",
     "src/server/structured_decoder.cpp": "3c2aa771ec7b753b94f8dcda5a63fa59a435fb5826fa876fe7acec4049e44de6",
     "src/server/text_stop.cpp": "2397b27adc873b3ac0697af68352a73c8481830da6053fde0adeca536eaba4dc",
@@ -2570,5 +2581,29 @@
       "docs/SERVE_CONVERSATIONS_2026-11-09.md"
     ],
     "note": "Responses item/envelope/state modules and Conversations native/managed binding reviewed with targeted evidence; Responses generation/background/tool execution remain required. Add managed service source anchors and shared dynamic route review. No GPU or default release from this source checkpoint."
+  },
+  "cache_io_isolation_20261109": {
+    "state": "CPU_PASS_PENDING_REAL_BUSINESS",
+    "sources_reviewed": [
+      "CMakeLists.txt",
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/server/cache_health.h",
+      "include/q4t/server/cache_io.h",
+      "include/q4t/server/chat_server.h",
+      "include/q4t/server/grammar_process.h",
+      "include/q4t/server/server_options.h",
+      "include/q4t/server/session_cache.h",
+      "src/main.cpp",
+      "src/server/cache_io.cpp",
+      "src/server/cache_protocol.h",
+      "src/server/cache_worker.cpp",
+      "src/server/chat_preflight.cpp",
+      "src/server/chat_server.cpp",
+      "src/server/grammar_process.cpp",
+      "src/server/session_cache.cpp"
+    ],
+    "implementation": "Exec-only filesystem owner; one controller and worker per cache domain; own payload lifetime; 2-second per-operation wait, cancellation, generation invalidation, no replay, confirmed reap before replacement, three starts per minute. Core readiness is independent. Flat and incremental snapshots charge actual allocated disk blocks before publication.",
+    "cpu_evidence": "docs/SERVE_CACHE_IO_ISOLATION_2026-11-09.md",
+    "pending": "Bounded real cache/resource-progress business and rollback/default delivery; all master tasks remain active."
   }
 }

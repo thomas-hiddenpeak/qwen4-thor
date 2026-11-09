@@ -1,0 +1,5 @@
+{
+  "result": "NOT_RUN",
+  "cause": "record_command output parent did not exist; recorder failed before creating output or launching cmake",
+  "resolution": "created stage parent; build-01 is first actual build"
+}

@@ -414,7 +414,7 @@ class ChatServer {
   // Calls are serialized with tok_mu_; Run drains requests before destruction.
   SuffixTokenCache suffix_token_cache_;
   SessionCache session_cache_;
-  SessionCache prefix_cache_;
+  SessionCache prefix_cache_{IsolatedWorkerDomain::kPrefixCache};
   std::vector<int> prefix_cache_checkpoints_;
   // Global intervals sampled at request completion under model_mu_. With
   // concurrent slots an interval can include work from several requests.

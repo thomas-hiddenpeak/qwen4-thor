@@ -1,0 +1,14 @@
+[
+  "cmake",
+  "--build",
+  ".q4t-work/serve-custom-tools-20261108/engine-build",
+  "--target",
+  "q4t",
+  "q4t_host_tests",
+  "q4t_session_storage_contract",
+  "q4t_prefix_storage_contract",
+  "q4t_incremental_storage_contract",
+  "q4t_session_target_contract",
+  "--parallel",
+  "8"
+]
