@@ -107,6 +107,21 @@ struct ClientRateUsage {
   uint64_t window_remaining_ms = 0;
 };
 
+// A sealed snapshot has no outstanding reservations. Monotonic times are
+// meaningful only in the same boot, verified by the recovery coordinator.
+struct ClientRateRecord {
+  std::string id;
+  bool window_started = false;
+  int64_t window_ns = 0;
+  ClientRateUsage usage;
+};
+struct ClientRateState {
+  int64_t captured_ns = 0;
+  uint64_t policy_revision = 0;
+  std::string policy_sha256;
+  std::vector<ClientRateRecord> clients;
+};
+
 // Configure once. Only v3 permits explicit revisioned updates; client slots and
 // counter storage never move. Global limits still apply. HTTP headers cannot
 // allocate clients or change policy.
@@ -145,6 +160,18 @@ class ClientAdmission {
   ClientUsage Usage(size_t index) const;
   ClientRateUsage RateUsage(
       size_t index, ClientClock::time_point now = ClientClock::now()) const;
+  // Only a private controller-owned admin enables the single startup restore.
+  // Self-check accounting may be replaced before public admission opens.
+  Status EnableRateRecovery();
+  Status RestoreRates(const ClientRateState* state, std::string_view receipt,
+                      ClientClock::time_point now = ClientClock::now());
+  // Permanently closes new rate reservations for this process. Busy means
+  // existing leases must settle; retrying never reopens admission.
+  Status FreezeRates(ClientRateState* state,
+                     ClientClock::time_point now = ClientClock::now());
+  bool RatesFrozen() const { return rates_frozen_.load(); }
+  bool RatesRecovered() const { return rates_recovered_.load(); }
+  std::string RateRestoreReceipt() const;
 
  private:
   friend class ClientLease;
@@ -164,14 +191,18 @@ class ClientAdmission {
     bool window_started = false;
     ClientClock::time_point window;
     ClientRateUsage rate;
+    uint64_t rate_active = 0;
     void Advance(ClientClock::time_point now);
   };
-  std::mutex policy_mutex_;
+  mutable std::mutex policy_mutex_;
   std::atomic<std::shared_ptr<const GatewayClientPolicy>> policy_;
   std::array<Counters, kMaxClients> counters_;
+  std::atomic<bool> rates_frozen_{false}, rates_recovered_{false};
+  bool rate_recovery_enabled_ = false;
+  std::string rate_restore_receipt_;
 };
 
-enum class ClientRateResult { kAllowed, kRpm, kTpm, kInvalid };
+enum class ClientRateResult { kAllowed, kRpm, kTpm, kInvalid, kFrozen };
 
 // Fixed-window request/token accounting. Outstanding reservations survive
 // window rollover; actual logical usage is settled in the completion window.

@@ -280,6 +280,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/model_catalog.cpp
   src/server/client_policy.cpp
   src/server/client_policy_admin.cpp
+  src/server/client_rate_state.cpp
   src/server/client_request.cpp
   src/server/chat_device_memory.cpp
   src/server/chat_health.cpp
@@ -735,7 +736,8 @@ if(Q4T_BUILD_TESTS)
       src/server/chat_admission.cpp
       src/server/grammar_process.cpp
       src/server/chat_http.cpp src/server/http_request.cpp
-      src/server/client_policy.cpp src/server/client_request.cpp
+      src/server/client_policy.cpp src/server/client_rate_state.cpp
+      src/server/client_request.cpp
       src/trace/sha256.cpp
       src/server/input_contract.cpp src/server/output_schema.cpp
       src/server/schema_graph.cpp src/server/schema_decimal.cpp

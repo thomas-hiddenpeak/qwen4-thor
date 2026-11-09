@@ -1,0 +1,28 @@
+{
+  "new_cpp": [
+    "client_rate_checkpoint_drains_reservations_and_never_reopens",
+    "client_rate_restart_restores_live_window_and_cumulative_usage",
+    "client_rate_restore_is_one_shot_transactional_and_identity_bound",
+    "client_rate_restore_allows_appended_slots_and_reduced_limits",
+    "client_rate_snapshot_wire_strict_large_and_uint64_exact",
+    "client_rate_restored_counter_saturation_cannot_bypass_tpm",
+    "client_rate_freeze_race_preserves_every_admitted_request"
+  ],
+  "affected_cpp": [
+    "client_rate_policy_v2_strict_and_v1_unchanged",
+    "client_rate_atomic_concurrency_and_per_client_isolation",
+    "client_rate_refund_cancel_failure_and_preterminal_idempotence",
+    "client_rate_pending_survives_window_and_settles_in_current_window",
+    "client_rate_disabled_restart_authentication_and_fair_capacity",
+    "client_rate_tpm_only_atomic_and_restart_reset",
+    "client_dynamic_quota_off_on_keeps_usage_and_rollover_reservations",
+    "client_rate_completion_batch_charges_only_admitted_prompts_once"
+  ],
+  "python": [
+    "tools.serve_recovery.test_quota_usage_admin",
+    "tools.serve_recovery.test_quota_admin"
+  ],
+  "count": 24,
+  "gpu_starts": 0,
+  "scope": "7 new and 8 affected C++ quota tests; 4 new and 5 existing actual CPU private IPC tests"
+}

@@ -8,15 +8,23 @@
 #include <cerrno>
 #include <charconv>
 #include <initializer_list>
+#include <limits>
 #include <set>
 #include <stdexcept>
 #include <utility>
 
 #include "q4t/io/json.h"
+#include "q4t/server/client_rate_state.h"
 #include "q4t/trace/sha256.h"
 
 namespace q4t::server {
 namespace {
+
+uint64_t Add(uint64_t left, uint64_t right) {
+  return left > std::numeric_limits<uint64_t>::max() - right
+             ? std::numeric_limits<uint64_t>::max()
+             : left + right;
+}
 
 bool Fields(const io::Json& value,
             std::initializer_list<std::string_view> fields) {
@@ -248,7 +256,8 @@ Status ClientAdmission::Publish(GatewayClientPolicy policy,
   const std::lock_guard lock(policy_mutex_);
   const auto previous = Snapshot();
   if (!previous || previous->version != 3 || policy.version != 3 ||
-      !ValidPolicy(policy) || expected_revision != previous->revision ||
+      rates_frozen_ || !ValidPolicy(policy) ||
+      expected_revision != previous->revision ||
       policy.revision <= previous->revision ||
       policy.gateway_token != previous->gateway_token ||
       policy.fair_queue != previous->fair_queue ||
@@ -295,6 +304,111 @@ ClientRateUsage ClientAdmission::RateUsage(size_t index,
   return value;
 }
 
+Status ClientAdmission::EnableRateRecovery() {
+  const std::lock_guard lock(policy_mutex_);
+  if (Version() != 3 || rate_recovery_enabled_ || rates_frozen_)
+    return Status::Fail("rate recovery unavailable");
+  rate_recovery_enabled_ = true;
+  return Status();
+}
+
+std::string ClientAdmission::RateRestoreReceipt() const {
+  const std::lock_guard lock(policy_mutex_);
+  return rate_restore_receipt_;
+}
+
+Status ClientAdmission::RestoreRates(const ClientRateState* state,
+                                     std::string_view receipt,
+                                     ClientClock::time_point now) {
+  if (!Hex64(receipt)) return Status::Fail("invalid rate restore receipt");
+  std::string accepted_receipt(receipt);
+  std::unique_lock policy_lock(policy_mutex_, std::try_to_lock);
+  if (!policy_lock.owns_lock()) return Status::Fail("rate recovery busy");
+  if (!rate_recovery_enabled_) return Status::Fail("rate recovery unavailable");
+  if (rates_recovered_)
+    return receipt == rate_restore_receipt_
+               ? Status()
+               : Status::Fail("rate recovery already consumed");
+  if (rates_frozen_) return Status::Fail("rate recovery already frozen");
+  const auto policy = Snapshot();
+  const auto now_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(
+                          now.time_since_epoch())
+                          .count();
+  if (state) {
+    if (!ValidClientRateState(*state) || state->captured_ns > now_ns ||
+        state->policy_revision > policy->revision ||
+        state->clients.size() > policy->clients.size() ||
+        (state->policy_revision == policy->revision &&
+         state->policy_sha256 != ClientPolicyDigest(*policy)))
+      return Status::Fail("rate restore policy mismatch");
+    for (size_t i = 0; i < state->clients.size(); ++i)
+      if (state->clients[i].id != policy->clients[i].id)
+        return Status::Fail("rate restore identity mismatch");
+  }
+  std::array<std::unique_lock<std::mutex>, kMaxClients> locks;
+  for (size_t i = 0; i < policy->clients.size(); ++i) {
+    auto& counter = counters_[i];
+    locks[i] = std::unique_lock(counter.mutex, std::try_to_lock);
+    if (!locks[i].owns_lock() || counter.rate_active || counter.data.load())
+      return Status::Fail("rate recovery busy");
+  }
+  // No request can hold a rate lease or acquire one across this replacement.
+  // The private owner performs it only before its public generation binding.
+  for (size_t i = 0; i < policy->clients.size(); ++i) {
+    auto& counter = counters_[i];
+    counter.rate = {};
+    counter.window_started = false;
+    if (state && i < state->clients.size()) {
+      const auto& record = state->clients[i];
+      counter.rate = record.usage;
+      counter.window_started = record.window_started;
+      counter.window =
+          ClientClock::time_point(std::chrono::nanoseconds(record.window_ns));
+      if (counter.window_started) counter.Advance(now);
+    }
+  }
+  rate_restore_receipt_ = std::move(accepted_receipt);
+  rates_recovered_.store(true);
+  return Status();
+}
+
+Status ClientAdmission::FreezeRates(ClientRateState* state,
+                                    ClientClock::time_point now) {
+  if (!state || Version() != 3 || !rates_recovered_)
+    return Status::Fail("rate recovery incomplete");
+  rates_frozen_.store(true);
+  std::unique_lock policy_lock(policy_mutex_, std::try_to_lock);
+  if (!policy_lock.owns_lock()) return Status::Fail("rate checkpoint busy");
+  const auto policy = Snapshot();
+  std::array<std::unique_lock<std::mutex>, kMaxClients> locks;
+  for (size_t i = 0; i < policy->clients.size(); ++i) {
+    auto& counter = counters_[i];
+    locks[i] = std::unique_lock(counter.mutex, std::try_to_lock);
+    if (!locks[i].owns_lock() || counter.rate_active)
+      return Status::Fail("rate checkpoint busy");
+  }
+  ClientRateState result;
+  result.captured_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(
+                           now.time_since_epoch())
+                           .count();
+  result.policy_revision = policy->revision;
+  result.policy_sha256 = ClientPolicyDigest(*policy);
+  for (size_t i = 0; i < policy->clients.size(); ++i) {
+    const auto& counter = counters_[i];
+    result.clients.push_back(
+        {policy->clients[i].id, counter.window_started,
+         counter.window_started
+             ? std::chrono::duration_cast<std::chrono::nanoseconds>(
+                   counter.window.time_since_epoch())
+                   .count()
+             : 0,
+         counter.rate});
+  }
+  if (!ValidClientRateState(result)) return Status::Fail("invalid rate state");
+  *state = std::move(result);
+  return Status();
+}
+
 ClientRateResult ClientRateLease::Reserve(ClientAdmission& admission,
                                           const ClientIdentity& identity,
                                           uint64_t prompt, uint64_t output,
@@ -320,22 +434,24 @@ ClientRateResult ClientRateLease::Reserve(ClientAdmission& admission,
     return ClientRateResult::kAllowed;
   auto& counter = admission.counters_[identity.index_];
   const std::lock_guard lock(counter.mutex);
+  if (admission.rates_frozen_) return ClientRateResult::kFrozen;
   counter.Advance(now);
   auto& rate = counter.rate;
   if (limits->requests_per_minute &&
       rate.requests >= limits->requests_per_minute) {
-    ++rate.rpm_rejected;
+    rate.rpm_rejected = Add(rate.rpm_rejected, 1);
     return ClientRateResult::kRpm;
   }
   const uint64_t amount = prompt + output;
-  if (limits->tokens_per_minute &&
-      rate.tokens + rate.reserved + amount > limits->tokens_per_minute) {
-    ++rate.tpm_rejected;
+  if (limits->tokens_per_minute && Add(Add(rate.tokens, rate.reserved),
+                                       amount) > limits->tokens_per_minute) {
+    rate.tpm_rejected = Add(rate.tpm_rejected, 1);
     return ClientRateResult::kTpm;
   }
-  ++rate.requests;
-  ++rate.admitted;
+  rate.requests = Add(rate.requests, 1);
+  rate.admitted = Add(rate.admitted, 1);
   rate.reserved += amount;
+  ++counter.rate_active;
   counters_ = &counter;
   prompt_ = prompt;
   reserved_ = amount;
@@ -348,11 +464,12 @@ void ClientRateLease::Settle(ClientClock::time_point now) noexcept {
   counters_->Advance(now);
   // Charge observed logical usage even if a handler ever exceeds its budget.
   // Such a bug must not silently turn into unaccounted tokens.
-  const uint64_t actual = started_ ? admitted_prompt_ + completion_ : 0;
+  const uint64_t actual = started_ ? Add(admitted_prompt_, completion_) : 0;
   auto& rate = counters_->rate;
   rate.reserved -= reserved_;
-  rate.tokens += actual;
-  rate.settled_tokens += actual;
+  rate.tokens = Add(rate.tokens, actual);
+  rate.settled_tokens = Add(rate.settled_tokens, actual);
+  --counters_->rate_active;
   counters_ = nullptr;
 }
 

@@ -18,13 +18,15 @@ target_link_libraries(q4t_host_tests PRIVATE Threads::Threads ${CMAKE_DL_LIBS})
 
 add_executable(q4t_client_policy_check
   ../../tools/serve_recovery/client_policy_check.cpp
-  ../../src/server/client_policy.cpp ../../src/trace/sha256.cpp ../../src/io/json.cpp)
+  ../../src/server/client_policy.cpp ../../src/server/client_rate_state.cpp
+  ../../src/trace/sha256.cpp ../../src/io/json.cpp)
 target_include_directories(q4t_client_policy_check PRIVATE ../../include)
 target_compile_options(q4t_client_policy_check PRIVATE -Wall -Wextra -Werror)
 target_link_libraries(q4t_client_policy_check PRIVATE Threads::Threads)
 
 add_executable(q4t_client_policy_fixture
   ../client_policy_admin_fixture.cpp ../../src/server/client_policy.cpp
+  ../../src/server/client_rate_state.cpp
   ../../src/server/client_policy_admin.cpp ../../src/service/guardian_process.cpp
   ../../src/trace/sha256.cpp ../../src/io/json.cpp)
 target_include_directories(q4t_client_policy_fixture PRIVATE ../../include)

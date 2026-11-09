@@ -31,9 +31,11 @@ set(protocol_inputs
   include/q4t/server/client_identity.h
   include/q4t/server/client_policy.h
   include/q4t/server/client_policy_admin.h
+  include/q4t/server/client_rate_state.h
   include/q4t/server/client_request.h
   src/server/client_policy.cpp
   src/server/client_policy_admin.cpp
+  src/server/client_rate_state.cpp
   src/server/client_request.cpp
   include/q4t/runtime/device_memory.h
   include/q4t/runtime/allocation_quota.h

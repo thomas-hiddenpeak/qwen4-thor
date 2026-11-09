@@ -13,7 +13,9 @@
 #include <initializer_list>
 
 #include "q4t/io/json.h"
+#include "q4t/server/client_rate_state.h"
 #include "q4t/server/sequence_admission.h"
+#include "q4t/trace/sha256.h"
 
 namespace q4t::server {
 namespace {
@@ -105,6 +107,7 @@ bool ClientPolicyAdmin::Open(const std::string& address,
              offsetof(sockaddr_un, sun_path) + address.size() + 1) != 0 ||
       ::listen(listener.Get(), 2) != 0)
     return false;
+  if (!admission_.EnableRateRecovery()) return false;
   listener_ = std::move(listener);
   return true;
 }
@@ -196,6 +199,20 @@ void ClientPolicyAdmin::Reply(Peer& peer, bool ok, const char* error) {
   peer = {};
 }
 
+void ClientPolicyAdmin::UsageReply(Peer& peer, bool ok, const char* error) {
+  std::string reply =
+      std::string(R"({"ok":)") + (ok ? "true" : "false") + R"(,"error":")" +
+      error + R"(","usage":{"recovered":)" +
+      (admission_.RatesRecovered() ? "true" : "false") + R"(,"frozen":)" +
+      (admission_.RatesFrozen() ? "true" : "false") + R"(,"receipt_sha256":")" +
+      admission_.RateRestoreReceipt() + R"(","snapshot":)" +
+      (frozen_rates_.empty() ? "null" : frozen_rates_) + "}}";
+  if (reply.size() <= kClientPolicyBytes)
+    ::send(peer.fd.Get(), reply.data(), reply.size(),
+           MSG_DONTWAIT | MSG_NOSIGNAL);
+  peer = {};
+}
+
 void ClientPolicyAdmin::Receive(Peer& peer) {
   for (int frame = 0; frame < 8 && peer.fd.Get() >= 0; ++frame) {
     std::array<char, 16384> buffer{};
@@ -227,14 +244,37 @@ void ClientPolicyAdmin::Receive(Peer& peer) {
         Reply(peer, true);
         return;
       }
+      const auto op = command.GetString("op");
+      if (Fields(command, {"op"}) &&
+          (op == "usage_status" || op == "usage_freeze")) {
+        if (op == "usage_freeze") {
+          if (!peer.writer || !OwnerAlive()) {
+            UsageReply(peer, false, "client_usage_owner_required");
+            return;
+          }
+          if (frozen_rates_.empty()) {
+            ClientRateState snapshot;
+            if (!admission_.FreezeRates(&snapshot)) {
+              UsageReply(peer, false, "client_usage_not_drained");
+              return;
+            }
+            frozen_rates_ = EncodeClientRateState(snapshot);
+          }
+        }
+        UsageReply(peer, true);
+        return;
+      }
       uint64_t bytes = 0, revision = 0;
       const auto digest = command.GetString("sha256");
+      const bool restoring = op == "usage_restore";
       if (!peer.writer || !OwnerAlive() ||
-          !Fields(command, {"op", "bytes", "sha256", "expected_revision"}) ||
-          command.GetString("op") != "publish" ||
+          !(restoring ? Fields(command, {"op", "bytes", "sha256"})
+                      : (op == "publish" &&
+                         Fields(command, {"op", "bytes", "sha256",
+                                          "expected_revision"}))) ||
           !Number(command, "bytes", &bytes) || !bytes ||
           bytes > kClientPolicyBytes ||
-          !Number(command, "expected_revision", &revision) ||
+          (!restoring && !Number(command, "expected_revision", &revision)) ||
           revision > kMaxClientRevision || digest.size() != 64 ||
           !std::all_of(digest.begin(), digest.end(), [](char c) {
             return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f');
@@ -243,6 +283,7 @@ void ClientPolicyAdmin::Receive(Peer& peer) {
         return;
       }
       peer.bytes = bytes;
+      peer.restoring = restoring;
       peer.expected_revision = revision;
       peer.digest = digest;
       peer.payload.reserve(bytes);
@@ -254,6 +295,23 @@ void ClientPolicyAdmin::Receive(Peer& peer) {
     }
     peer.payload.append(buffer.data(), n);
     if (peer.payload.size() != peer.bytes) continue;
+    if (peer.restoring) {
+      ClientRateState state;
+      const bool reset = peer.payload == "null";
+      const auto digest = trace::HexDigest(
+          trace::Sha256({reinterpret_cast<const uint8_t*>(peer.payload.data()),
+                         peer.payload.size()}));
+      if (!OwnerAlive() || digest != peer.digest ||
+          (!reset && !ParseClientRateState(peer.payload, &state))) {
+        UsageReply(peer, false, "client_usage_restore_invalid");
+        return;
+      }
+      const auto result =
+          admission_.RestoreRates(reset ? nullptr : &state, peer.digest);
+      UsageReply(peer, result.ok(),
+                 result.ok() ? "" : "client_usage_restore_refused");
+      return;
+    }
     GatewayClientPolicy candidate;
     if (!OwnerAlive() || !ParseGatewayClientPolicy(peer.payload, &candidate) ||
         ClientPolicyDigest(candidate) != peer.digest) {

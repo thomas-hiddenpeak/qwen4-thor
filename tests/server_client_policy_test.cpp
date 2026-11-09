@@ -14,6 +14,7 @@
 
 #include "q4t/server/chat_plan.h"
 #include "q4t/server/client_policy_admin.h"
+#include "q4t/server/client_rate_state.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/request_control.h"
@@ -586,8 +587,8 @@ Q4T_TEST(client_dynamic_startup_binding_and_runtime_discovery_are_distinct) {
   const auto update = DynamicPolicy(1, 20, 1);
   Q4T_CHECK(admission.Publish(update, 0, 8, 8));
   Json current;
-  Q4T_CHECK(q4t::io::ParseJson(
-      DescribeClientPolicy(admission, 8, 8, false), &current));
+  Q4T_CHECK(q4t::io::ParseJson(DescribeClientPolicy(admission, 8, 8, false),
+                               &current));
   Q4T_CHECK(current.GetInt("revision") == 1 &&
             current.GetString("content_sha256") == ClientPolicyDigest(update) &&
             !current.GetBool("publisher_alive"));
@@ -1079,5 +1080,237 @@ Q4T_TEST(client_rate_completion_batch_charges_only_admitted_prompts_once) {
   const auto value = admission.RateUsage(0, now);
   Q4T_CHECK(value.tokens == 39 && value.settled_tokens == 39 &&
             value.reserved == 0 && value.requests == 1);
+  return true;
+}
+
+Q4T_TEST(client_rate_checkpoint_drains_reservations_and_never_reopens) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(3, 100)));
+  Q4T_CHECK(admission.EnableRateRecovery());
+  Q4T_CHECK(admission.RestoreRates(nullptr, std::string(64, '1')));
+  const auto alpha = admission.Authenticate("alpha", kSecret);
+  ClientRateLease pending;
+  Q4T_CHECK(pending.Reserve(admission, alpha, 0, 0) ==
+            ClientRateResult::kAllowed);
+  ClientRateState state;
+  Q4T_CHECK(!admission.FreezeRates(&state));
+  Q4T_CHECK(admission.RatesFrozen() && state.clients.empty());
+  ClientRateLease denied;
+  Q4T_CHECK(denied.Reserve(admission, alpha, 3, 5) ==
+            ClientRateResult::kFrozen);
+  Q4T_CHECK(!admission.Publish(DynamicPolicy(10, 100, 1), 0, 8, 8));
+  ClientLease cancel;
+  Q4T_CHECK(cancel.Acquire(admission, alpha, ClientLane::kCancel));
+  pending.Settle();
+  Q4T_CHECK(admission.FreezeRates(&state));
+  Q4T_CHECK(state.clients[0].usage.requests == 1 &&
+            state.clients[0].usage.reserved == 0);
+  Q4T_CHECK(admission.RestoreRates(nullptr, std::string(64, '1')));
+  Q4T_CHECK(admission.RatesFrozen());  // Idempotent reply does not thaw.
+  return true;
+}
+
+Q4T_TEST(client_rate_restart_restores_live_window_and_cumulative_usage) {
+  const auto now = ClientClock::now();
+  ClientAdmission old, next;
+  for (auto* admission : {&old, &next}) {
+    Q4T_CHECK(admission->Configure(DynamicPolicy(1, 100)));
+    Q4T_CHECK(admission->EnableRateRecovery());
+  }
+  Q4T_CHECK(old.RestoreRates(nullptr, std::string(64, '1'), now));
+  ClientRateLease request;
+  Q4T_CHECK(request.Reserve(old, old.Authenticate("alpha", kSecret), 3, 5,
+                            now) == ClientRateResult::kAllowed);
+  request.Start();
+  request.Completion(2);
+  request.Settle(now + std::chrono::seconds(1));
+  ClientRateState state;
+  Q4T_CHECK(old.FreezeRates(&state, now + std::chrono::seconds(2)));
+  Q4T_CHECK(next.RestoreRates(&state, std::string(64, '2'),
+                              now + std::chrono::seconds(10)));
+  ClientRateLease denied;
+  Q4T_CHECK(denied.Reserve(next, next.Authenticate("alpha", kSecret), 1, 1,
+                           now + std::chrono::seconds(11)) ==
+            ClientRateResult::kRpm);
+  const auto usage = next.RateUsage(0, now + std::chrono::seconds(11));
+  Q4T_CHECK(usage.tokens == 5 && usage.admitted == 1 &&
+            usage.settled_tokens == 5 && usage.window_remaining_ms == 49000);
+  ClientRateLease fresh;
+  Q4T_CHECK(fresh.Reserve(next, next.Authenticate("alpha", kSecret), 1, 1,
+                          now + std::chrono::seconds(60)) ==
+            ClientRateResult::kAllowed);
+  fresh.Settle(now + std::chrono::seconds(60));
+  const auto expired = next.RateUsage(0, now + std::chrono::seconds(60));
+  Q4T_CHECK(expired.requests == 1 && expired.tokens == 0 &&
+            expired.admitted == 2 && expired.settled_tokens == 5);
+  return true;
+}
+
+Q4T_TEST(client_rate_restore_is_one_shot_transactional_and_identity_bound) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(10, 100)));
+  Q4T_CHECK(!admission.RestoreRates(nullptr, std::string(64, '1')));
+  Q4T_CHECK(admission.EnableRateRecovery());
+  Q4T_CHECK(!admission.EnableRateRecovery());
+  ClientRateLease check;
+  Q4T_CHECK(check.Reserve(admission, admission.Authenticate("alpha", kSecret),
+                          3, 5) == ClientRateResult::kAllowed);
+  Q4T_CHECK(!admission.RestoreRates(nullptr, std::string(64, '1')));
+  check.Settle();
+  ClientAdmission old;
+  Q4T_CHECK(old.Configure(DynamicPolicy(10, 100)));
+  Q4T_CHECK(old.EnableRateRecovery());
+  Q4T_CHECK(old.RestoreRates(nullptr, std::string(64, '2')));
+  ClientRateState state;
+  Q4T_CHECK(old.FreezeRates(&state));
+  for (int fault = 0; fault < 5; ++fault) {
+    auto bad = state;
+    if (fault == 0) bad.clients[0].id = "foreign";
+    if (fault == 1) ++bad.policy_revision;
+    if (fault == 2) bad.policy_sha256 = std::string(64, 'f');
+    if (fault == 3) bad.captured_ns += 60000000000;
+    if (fault == 4) bad.clients[0].usage.reserved = 1;
+    Q4T_CHECK(!admission.RestoreRates(&bad, std::string(64, '3')));
+    Q4T_CHECK(!admission.RatesRecovered());
+    Q4T_CHECK(admission.RateUsage(0).admitted == 1);
+  }
+  Q4T_CHECK(admission.RestoreRates(&state, std::string(64, '3')));
+  Q4T_CHECK(admission.RateUsage(0).admitted == 0);  // Bootstrap only.
+  ClientRateLease user;
+  Q4T_CHECK(user.Reserve(admission, admission.Authenticate("alpha", kSecret), 3,
+                         5) == ClientRateResult::kAllowed);
+  user.Settle();
+  Q4T_CHECK(admission.RestoreRates(&state, std::string(64, '3')));
+  Q4T_CHECK(!admission.RestoreRates(nullptr, std::string(64, '4')));
+  Q4T_CHECK(admission.RateUsage(0).admitted == 1);
+  return true;
+}
+
+Q4T_TEST(client_rate_restore_allows_appended_slots_and_reduced_limits) {
+  const auto now = ClientClock::now();
+  ClientAdmission old, next;
+  Q4T_CHECK(old.Configure(DynamicPolicy(0, 0)));
+  Q4T_CHECK(old.EnableRateRecovery());
+  Q4T_CHECK(old.RestoreRates(nullptr, std::string(64, '1')));
+  ClientRateLease used;
+  Q4T_CHECK(used.Reserve(old, old.Authenticate("alpha", kSecret), 3, 5, now) ==
+            ClientRateResult::kAllowed);
+  used.Start();
+  used.Completion(2);
+  used.Settle(now);
+  ClientRateState snapshot;
+  Q4T_CHECK(old.FreezeRates(&snapshot, now));
+  auto policy = DynamicPolicy(0, 4, 1);
+  auto extra = policy.clients.front();
+  extra.id = "gamma";
+  policy.clients.push_back(extra);
+  Q4T_CHECK(next.Configure(policy));
+  Q4T_CHECK(next.EnableRateRecovery());
+  Q4T_CHECK(next.RestoreRates(&snapshot, std::string(64, '2'), now));
+  Q4T_CHECK(next.RateUsage(0, now).tokens == 5);
+  ClientRateLease denied, gamma;
+  Q4T_CHECK(denied.Reserve(next, next.Authenticate("alpha", kSecret), 1, 1,
+                           now) == ClientRateResult::kTpm);
+  Q4T_CHECK(gamma.Reserve(next, next.Authenticate("gamma", kSecret), 1, 1,
+                          now) == ClientRateResult::kAllowed);
+  gamma.Settle(now);
+  return true;
+}
+
+Q4T_TEST(client_rate_snapshot_wire_strict_large_and_uint64_exact) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(0, 0)));
+  Q4T_CHECK(admission.EnableRateRecovery());
+  Q4T_CHECK(admission.RestoreRates(nullptr, std::string(64, '1')));
+  ClientRateState snapshot, parsed;
+  Q4T_CHECK(admission.FreezeRates(&snapshot));
+  auto record = snapshot.clients[0];
+  record.window_started = true;
+  record.window_ns = snapshot.captured_ns;
+  record.usage.requests = record.usage.admitted = UINT64_MAX;
+  record.usage.tokens = record.usage.settled_tokens = UINT64_MAX;
+  record.usage.rpm_rejected = record.usage.tpm_rejected = UINT64_MAX;
+  snapshot.clients.clear();
+  for (size_t i = 0; i < kMaxClients; ++i) {
+    record.id = "client_" + std::to_string(i);
+    snapshot.clients.push_back(record);
+  }
+  const auto raw = EncodeClientRateState(snapshot);
+  Q4T_CHECK(!raw.empty() && raw.size() < kClientRateStateBytes);
+  Q4T_CHECK(ParseClientRateState(raw, &parsed));
+  Q4T_CHECK(parsed.clients.size() == 64 &&
+            parsed.clients[0].usage.tokens == UINT64_MAX);
+  for (const auto& bad :
+       {Replace(raw, "\"version\":1", "\"version\":1,\"version\":1"),
+        Replace(raw, "\"18446744073709551615\"", "18446744073709551615"),
+        Replace(raw, "18446744073709551615", "18446744073709551616"),
+        Replace(raw, "\"policy_revision\":\"0\"", "\"policy_revision\":\"00\""),
+        Replace(raw, "client_1\"", "client_0\""), raw + "true"}) {
+    Q4T_CHECK(!ParseClientRateState(bad, &parsed));
+    Q4T_CHECK(parsed.clients[0].usage.tokens == UINT64_MAX);
+  }
+  return true;
+}
+
+Q4T_TEST(client_rate_restored_counter_saturation_cannot_bypass_tpm) {
+  ClientAdmission old, next;
+  Q4T_CHECK(old.Configure(DynamicPolicy(0, 0)));
+  Q4T_CHECK(old.EnableRateRecovery());
+  Q4T_CHECK(old.RestoreRates(nullptr, std::string(64, '1')));
+  ClientRateState state;
+  Q4T_CHECK(old.FreezeRates(&state));
+  auto& record = state.clients[0];
+  record.window_started = true;
+  record.window_ns = state.captured_ns;
+  record.usage.requests = record.usage.admitted = UINT64_MAX;
+  record.usage.tokens = record.usage.settled_tokens = UINT64_MAX;
+  Q4T_CHECK(next.Configure(DynamicPolicy(0, 0)));
+  Q4T_CHECK(next.EnableRateRecovery());
+  Q4T_CHECK(next.RestoreRates(&state, std::string(64, '2')));
+  ClientRateLease accepted;
+  Q4T_CHECK(accepted.Reserve(next, next.Authenticate("alpha", kSecret), 3, 5) ==
+            ClientRateResult::kAllowed);
+  accepted.Start();
+  accepted.Completion(2);
+  accepted.Settle();
+  Q4T_CHECK(next.RateUsage(0).admitted == UINT64_MAX &&
+            next.RateUsage(0).tokens == UINT64_MAX);
+  Q4T_CHECK(next.Publish(DynamicPolicy(0, 10, 1), 0, 8, 8));
+  ClientRateLease denied;
+  Q4T_CHECK(denied.Reserve(next, next.Authenticate("alpha", kSecret), 3, 5) ==
+            ClientRateResult::kTpm);
+  return true;
+}
+
+Q4T_TEST(client_rate_freeze_race_preserves_every_admitted_request) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(0, 0)));
+  Q4T_CHECK(admission.EnableRateRecovery());
+  Q4T_CHECK(admission.RestoreRates(nullptr, std::string(64, '1')));
+  std::barrier start(5);
+  std::atomic<uint64_t> accepted{0};
+  std::vector<std::jthread> workers;
+  for (int i = 0; i < 4; ++i) {
+    workers.emplace_back([&] {
+      const auto identity = admission.Authenticate("alpha", kSecret);
+      start.arrive_and_wait();
+      for (int j = 0; j < 100; ++j) {
+        ClientRateLease lease;
+        if (lease.Reserve(admission, identity, 3, 5) !=
+            ClientRateResult::kAllowed)
+          break;
+        ++accepted;
+        lease.Start();
+        lease.Completion(2);
+      }
+    });
+  }
+  start.arrive_and_wait();
+  ClientRateState snapshot;
+  (void)admission.FreezeRates(&snapshot);
+  workers.clear();
+  Q4T_CHECK(admission.FreezeRates(&snapshot));
+  Q4T_CHECK(snapshot.clients[0].usage.admitted == accepted.load() &&
+            snapshot.clients[0].usage.tokens == accepted.load() * 5);
   return true;
 }

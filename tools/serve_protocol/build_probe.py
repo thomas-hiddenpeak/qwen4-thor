@@ -22,6 +22,7 @@ SOURCES = ["tools/serve_protocol/contract_probe.cpp", "src/io/json.cpp",
     "src/server/cache_io.cpp", "src/server/cache_worker.cpp",
     "src/server/grammar_process.cpp",
     "src/trace/sha256.cpp", "src/server/client_policy.cpp",
+    "src/server/client_rate_state.cpp",
     "src/server/media_admission.cpp", "src/vision/media_plan.cpp"]
 
 

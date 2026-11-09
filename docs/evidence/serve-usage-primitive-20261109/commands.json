@@ -1,0 +1,16 @@
+[
+  [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/usage-primitive-cpu-01/bin/q4t_host_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/usage-primitive-cpu-01/required.txt"
+  ],
+  [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_recovery.test_quota_usage_admin",
+    "tools.serve_recovery.test_quota_admin"
+  ]
+]

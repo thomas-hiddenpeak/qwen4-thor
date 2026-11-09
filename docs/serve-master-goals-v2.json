@@ -430,7 +430,8 @@
         "evidence/serve-limits-store-20261109/decision.json",
         "evidence/serve-policy-admin-20261109/decision.json",
         "evidence/serve-policy-runtime-20261109/decision.json",
-        "evidence/serve-policy-coordination-20261109/decision.json"
+        "evidence/serve-policy-coordination-20261109/decision.json",
+        "docs/evidence/serve-usage-primitive-20261109/README.md"
       ],
       "release": null,
       "plan": "SERVE_ACCESS_CONTROL_2026-11-09.md",

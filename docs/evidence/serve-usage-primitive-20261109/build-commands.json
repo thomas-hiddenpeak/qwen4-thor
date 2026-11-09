@@ -1,0 +1,20 @@
+[
+  [
+    "cmake",
+    "-S",
+    "tests/host",
+    "-B",
+    ".q4t-work/serve-access-20261109/host"
+  ],
+  [
+    "cmake",
+    "--build",
+    ".q4t-work/serve-access-20261109/host",
+    "--parallel",
+    "8",
+    "--target",
+    "q4t_host_tests",
+    "q4t_client_policy_fixture",
+    "q4t_client_policy_check"
+  ]
+]

@@ -517,8 +517,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       const char* code =
           result == ClientRateResult::kRpm   ? "client_rpm_exhausted"
           : result == ClientRateResult::kTpm ? "client_tpm_exhausted"
-                                             : "client_rate_invalid";
-      SendError(fd, result == ClientRateResult::kInvalid ? 500 : 429,
+          : result == ClientRateResult::kFrozen ? "service_draining"
+                                                : "client_rate_invalid";
+      const int status = result == ClientRateResult::kInvalid ? 500
+                         : result == ClientRateResult::kFrozen ? 503
+                                                              : 429;
+      SendError(fd, status,
                 "client minute quota unavailable", {}, code);
       return;
     }

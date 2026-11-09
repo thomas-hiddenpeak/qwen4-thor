@@ -1,0 +1,11 @@
+{
+  "cpu_passed": 24,
+  "build_warnings": 0,
+  "production_runtime_delivery": false,
+  "next": [
+    "durable usage handoff and crash/boot uncertainty",
+    "managed coordinator and Guardian gate",
+    "native TLS/real model business and rollback/default delivery"
+  ],
+  "master_goal_complete": false
+}

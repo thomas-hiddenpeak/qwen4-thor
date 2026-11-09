@@ -34,6 +34,7 @@ class ClientPolicyAdmin {
     service::OwnedFd fd;
     std::chrono::steady_clock::time_point deadline;
     bool writer = false;
+    bool restoring = false;
     size_t bytes = 0;
     uint64_t expected_revision = 0;
     std::string digest;
@@ -42,12 +43,14 @@ class ClientPolicyAdmin {
   bool OwnerAlive() const noexcept;
   void Receive(Peer& peer);
   void Reply(Peer& peer, bool ok, const char* error = "");
+  void UsageReply(Peer& peer, bool ok, const char* error = "");
   ClientAdmission& admission_;
   const uint32_t inflight_, queued_;
   Publish publish_;
   service::ProcessIdentity owner_;
   service::OwnedFd owner_pidfd_, listener_;
   std::array<Peer, 2> peers_;
+  std::string frozen_rates_;
   std::mutex wait_mutex_;
   std::condition_variable wake_;
   std::jthread worker_;
