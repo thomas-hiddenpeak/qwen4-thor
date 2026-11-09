@@ -1,0 +1,37 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+PASS_SERVICE_PYTHON
+-- Configuring done (0.3s)
+-- Generating done (0.2s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build
+[  0%] Built target q4t_guardian_process
+[  3%] Built target q4t_io
+[  7%] Built target q4t_ple
+[  7%] Built target q4t_trace
+[  7%] Built target q4t_regex_build
+[  7%] Built target q4t_runtime
+[  7%] Generating service-tools/snapshot.done
+[ 11%] Built target q4t_text
+[ 30%] Built target xgrammar
+[ 34%] Built target q4t_quant
+[ 50%] Built target q4t_model
+[ 53%] Built target q4t_startup_plan
+{"snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/service-tools/d25d5f97bae33992dcb008402a321667f565ff84f9879028e5d08658fd590118", "manifest_sha256": "d25d5f97bae33992dcb008402a321667f565ff84f9879028e5d08658fd590118", "model_actions": false}
+[ 53%] Built target q4t_service_tools
+[ 53%] Built target q4t_service_cli
+[100%] Built target q4t_server
+[100%] Built target q4t
+[  0%] Built target q4t_guardian_process
+[ 33%] Built target q4t_guardian_journal
+[ 66%] Built target q4t_ingress_access
+[100%] Built target q4t_ingress
+[  0%] Built target q4t_guardian_process
+[100%] Built target q4t_guardian_journal
+[100%] Built target q4t_guardian
+Built target q4t_cuda_probe

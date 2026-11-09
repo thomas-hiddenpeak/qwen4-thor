@@ -1,0 +1,8 @@
+{
+  "tools/serve_lifecycle/native_acceptance.py": "59b5cd22cbb1c1cc6dcee600b85c78e37064b750e2c782008abfae0c1d5970dc",
+  "tools/serve_lifecycle/native_prepare.py": "df456c50b54c978bb4ee17fef066add5b66db706fde3f65fe64dfa020eeed415",
+  "tools/serve_lifecycle/test_native_acceptance.py": "3957dc066ff4e06e51b8bb79731bf3064537dca41512486fe9aff873ff53d7e9",
+  "tools/serve_recovery/acceptance.py": "edb652d4fd38bee8ed52a013c8647ad1ee744a0843a8ef7f27661c39488ec670",
+  "tools/serve_recovery/test_acceptance.py": "dc956fe2a8838d0d514cd14eb661a203a25466edec4e2d7f702659b28afda743",
+  "tools/serve_recovery/bundle.py": "866da0abb232f9468f6590265398310c8c7aa467816fd3bcd9a41cd319dd08d2"
+}

@@ -134,8 +134,9 @@ class PackagedImportTests(unittest.TestCase):
             'package=Path(sys.argv[2]); '
             'mods=driver["load_modules"]({"package":{"package":str(package)}}); '
             'from tools.serve_recovery import controller,observation_io; '
+            'from tools.serve_host import native; '
             'assert all(Path(m.__file__).is_relative_to(package) '
-            'for m in (*mods,controller,observation_io)); '
+            'for m in (*mods,controller,observation_io,native)); '
             'assert observation_io.ROOT==package/"source"; print("SEALED")')
         return subprocess.run([sys.executable, '-I', '-B', '-c', code,
             str(ROOT), str(self.package)], capture_output=True, text=True, timeout=5)
@@ -156,6 +157,17 @@ class PackagedImportTests(unittest.TestCase):
         result = self.invoke('from tools.serve_recovery import control; ')
         self.assertNotEqual(result.returncode, 0)
         self.assertIn('already loaded outside sealed source', result.stderr)
+
+    def test_preloaded_host_projection_cannot_mix_with_sealed_lifecycle(self):
+        result = self.invoke('from tools.serve_host import native; ')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('already loaded outside sealed source', result.stderr)
+
+    def test_missing_sealed_host_projection_cannot_fall_back_to_checkout(self):
+        (self.package/'source/tools/serve_host/native.py').unlink()
+        result = self.invoke()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('ImportError', result.stderr)
 
 
 class DrainTests(unittest.TestCase):

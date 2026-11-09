@@ -535,7 +535,9 @@
       ],
       "evidence": [
         "evidence/serve-lifecycle-capacity-20261109/README.md",
-        "evidence/serve-lifecycle-cli-20261109/README.md"
+        "evidence/serve-lifecycle-cli-20261109/README.md",
+        "evidence/serve-lifecycle-publication-20261109/README.md",
+        "evidence/serve-lifecycle-driver-20261109/README.md"
       ],
       "release": null,
       "findings": [
@@ -548,11 +550,16 @@
         }
       ],
       "remaining": [
-        "Native CLI lifecycle and configurable global/client capacity profiles",
-        "Default entry and publication metadata switching transaction integrated with managed deployment",
-        "All other original N07 acceptance conditions"
+        "Actual custom capacity and lifecycle business, JSON/SSE/project tool closure, live reload and durable cleanup",
+        "Accepted native service package and coherent default publication, actual retained rollback, release metadata and actual ELF check/status",
+        "Final N07 acceptance review and continuation of all remaining master tasks"
       ],
-      "plan": "SERVE_NATIVE_LIFECYCLE_2026-11-09.md"
+      "plan": "SERVE_NATIVE_LIFECYCLE_2026-11-09.md",
+      "implemented_cpu_validated": [
+        "Configurable exact capacity binding and fairness checks; 27 targeted CPU cases",
+        "Native ELF service dispatch/prepare/check/reload/deploy/rollback; 26 distinct CPU cases plus actual readonly default checks",
+        "Coordinated default generation publication/resume/rollback and short-write recovery; 25 distinct CPU cases"
+      ]
     },
     {
       "id": "R01",

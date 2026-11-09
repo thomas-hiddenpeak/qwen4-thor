@@ -103,7 +103,7 @@ def pin_packaged_modules(source):
     # checkout package win. Pin production namespaces before any core import.
     source = Path(source).resolve(strict=True)
     prefixes = ('tools.serve_recovery', 'tools.serve_service',
-                'tools.serve_gateway', 'tools.serve_ops')
+                'tools.serve_gateway', 'tools.serve_ops', 'tools.serve_host')
     for name, module in list(sys.modules.items()):
         if any(name == p or name.startswith(p+'.') for p in prefixes):
             path = getattr(module, '__file__', None)

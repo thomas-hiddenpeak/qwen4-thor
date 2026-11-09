@@ -130,3 +130,20 @@ state/root/CAS/新 request ID。它恢复旧版固定代码/元数据，保留�
 搬走；初次迁移要求现有一致的服务符号链接，或一个新发行目录。
 每个服务保留最多 32 代、128 个不可变请求和最近 16 次选择历史；
 达到上限明确失败，后续统一资源治理仍须实现安全保留/清理。
+
+## 第四组真实业务冻结
+
+先做 9 项驱动 CPU 与必要构建；清单在
+`.q4t-work/serve-lifecycle-20261109/native-driver-cpu-01/plan.json`。
+真实阶段最多 1 次模型启动、5 次 Chat（含自检）、600 秒，同一严格
+GPU 租约；外部监控/竞争失败仍 ENV_ABORT，不增预算、不动他人服务。
+配置变为 context 4096、prefill 1024、默认 output 128、inflight 6、
+queue 4、request deadline 180000ms，MTP k=3 与资源保护保持。
+核验实际有效配置、JSON/SSE 的 42、读取 docs/MODEL.md 前三行并
+返回精确引用、同一模型限额热更新及正常 STOPPED/端口与所有权清理。
+
+模型阶段用封装生产 CLI handler run/check/status/reload/stop；启动
+包裹器只负责发送前预算扣减及精确 pending 元数据的验收放行。
+不称为完整未包裹 ELF run 端到端；C++ 实际分派、prepare/发布/回退
+采用已通过 CPU 证据，最终合格包再做实际 ELF 只读 check/status。
+不重跑无关性能/全模型质量，默认与生产账本保持。

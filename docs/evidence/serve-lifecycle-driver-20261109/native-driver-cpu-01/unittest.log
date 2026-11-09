@@ -1,0 +1,14 @@
+test_pending_candidate_is_exact_and_production_rejection_is_preserved (tools.serve_lifecycle.test_native_acceptance.NativeDriverTests.test_pending_candidate_is_exact_and_production_rejection_is_preserved) ... ok
+test_live_config_projection_uses_effective_values_and_requires_capacity_identity (tools.serve_lifecycle.test_native_acceptance.NativeDriverTests.test_live_config_projection_uses_effective_values_and_requires_capacity_identity) ... ok
+test_failed_cli_stop_still_runs_owned_cleanup (tools.serve_lifecycle.test_native_acceptance.NativeDriverTests.test_failed_cli_stop_still_runs_owned_cleanup) ... ok
+test_successful_cli_stop_waits_before_common_cleanup_and_records_receipt (tools.serve_lifecycle.test_native_acceptance.NativeDriverTests.test_successful_cli_stop_waits_before_common_cleanup_and_records_receipt) ... ok
+test_workspace_regular_package_cannot_shadow_sealed_namespace (tools.serve_recovery.test_acceptance.PackagedImportTests.test_workspace_regular_package_cannot_shadow_sealed_namespace) ... ok
+test_missing_sealed_dependency_cannot_fall_back_to_checkout (tools.serve_recovery.test_acceptance.PackagedImportTests.test_missing_sealed_dependency_cannot_fall_back_to_checkout) ... ok
+test_preloaded_checkout_module_fails_before_any_service_start (tools.serve_recovery.test_acceptance.PackagedImportTests.test_preloaded_checkout_module_fails_before_any_service_start) ... ok
+test_preloaded_host_projection_cannot_mix_with_sealed_lifecycle (tools.serve_recovery.test_acceptance.PackagedImportTests.test_preloaded_host_projection_cannot_mix_with_sealed_lifecycle) ... ok
+test_missing_sealed_host_projection_cannot_fall_back_to_checkout (tools.serve_recovery.test_acceptance.PackagedImportTests.test_missing_sealed_host_projection_cannot_fall_back_to_checkout) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.820s
+
+OK
