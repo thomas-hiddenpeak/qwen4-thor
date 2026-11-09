@@ -436,7 +436,8 @@
         "evidence/serve-usage-runtime-20261109/decision.json",
         "evidence/serve-usage-management-20261109/decision.json",
         "evidence/serve-deployment-20261109/decision.json",
-        "evidence/serve-initialization-20261109/decision.json"
+        "evidence/serve-initialization-20261109/decision.json",
+        "evidence/serve-access-driver-20261109/decision.json"
       ],
       "release": null,
       "plan": "SERVE_ACCESS_CONTROL_2026-11-09.md",
@@ -445,7 +446,7 @@
         "TLS native bundle and applicable SDK verification",
         "targeted real business and rollback-capable delivery"
       ],
-      "development_status": "随包STOPPED部署/兼容回退32项及首次初始化续接18项CPU通过。继续原生TLS/SDK真实模型、合格回退默认交付，默认v6保持，N04未完成。"
+      "development_status": "升级/初始化CPU已完成；真实组合驱动4项与TLS原生构建通过。正在封装pending候选，随后3启动/16 Chat含自检/1探针/1200秒同锁实际业务，默认v6保持，N04未完成。"
     },
     {
       "id": "N05",

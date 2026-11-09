@@ -1,0 +1,17 @@
+{
+  "driver_cpu_passed": 4,
+  "native_build_passed": true,
+  "native_warnings": 0,
+  "initial_build_target_error_preserved": true,
+  "gpu_starts": 0,
+  "chat_requests": 0,
+  "default_changed": false,
+  "limits": {
+    "starts": 3,
+    "chats": 16,
+    "probes": 1,
+    "controls": 6000,
+    "seconds": 1200
+  },
+  "review_after_cpu": "Only exercise/prepare near-minute-expiry branch updated: wait <=3.05s for natural rollover. Four tested gate/cleanup/ready helper bodies unchanged. Real business remains pending."
+}
