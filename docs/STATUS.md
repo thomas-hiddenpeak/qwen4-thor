@@ -1,8 +1,11 @@
 # 当前状态
 
-N06 类型诊断 18 项 CPU 全过、Guardian 构建零警告，[实际控制通道/进程证据](evidence/serve-gateway-diagnostics-20261109/README.md)。0 GPU/模型/Chat；正在核对未变引擎的业务复用、封装与可回退发布，默认 N07/STOPPED 保持。之后继续全部总任务。
-
-N06 类型诊断已成组接通：入口容量/身份/观察/策略拒绝，经原生 Guardian 状态到指标投影；旧消息兼容，未知/旧代诊断不恢复模型。冻结 18 项直接 CPU，先必要 Guardian 构建。本组尚未测试，默认 N07/STOPPED 保持，随后继续全部总任务。
+N06 新发现已修复并交付：[18 项直接 CPU](evidence/serve-gateway-diagnostics-20261109/README.md)及[9 条实际封装/发布操作](evidence/serve-gateway-diagnostics-delivery-20261109/README.md)通过。
+当前默认原生包 `1b1acb17`、Guardian `cee1507d`，publication revision 8，
+STOPPED；引擎 `3072f28c`/元数据 `1b507ad9` 字节未变，核心与客户端
+账本保持。容量/身份/观察/策略拒绝有固定原因与代次/年龄；未知或旧代
+诊断不重启模型。纯诊断复用 N07 真实业务，0 新增模型/Chat/GPU。
+下一项继续 A07 高级 Responses 合同与其余 A/R/Q/G 全部任务。
 
 N07 已可回退默认交付：[封装、实际发布/旧代回退证据](evidence/serve-lifecycle-delivery-20261109/README.md)。
 默认引擎 `3072f28c`/元数据 `1b507ad9`、原生 v10 包 `22849b0d`，
@@ -13,8 +16,7 @@ N07 已可回退默认交付：[封装、实际发布/旧代回退证据](eviden
 已接受，194 次 NVML 全 OK，[实际业务原件](evidence/serve-lifecycle-business-20261109/README.md)。
 默认数值容量沿用 N05，真实自定义容量观察分开记录。
 
-下一项 N06：补齐入口独立绑定失败的类型原因，保持健康模型不重启；
-随后继续全部 A/R/Q/G 余项。N07 交付不等于总完成，未合 main；
+上述 N06 类型原因缺口已继续补齐。N07 交付不等于总完成，未合 main；
 视觉候选及用户长稳边界保持。默认四入口由发布事务管理，必要构建
 使用独立 `.q4t-work/` 目录，避免覆盖已管理的程序别名。
 

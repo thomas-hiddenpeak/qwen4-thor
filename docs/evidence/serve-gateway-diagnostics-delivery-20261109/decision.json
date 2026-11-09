@@ -1,0 +1,84 @@
+{
+  "status": "PASS_N06_TYPED_GATEWAY_DIAGNOSTIC_PREREQUISITES",
+  "acceptance": "ACCEPT_TARGETED_GATEWAY_DIAGNOSTICS",
+  "manifest_sha256": "1b1acb1777337fa6184261d7da08da45dcabd8e756cf65ccffab31a3d0102115",
+  "engine_binary_sha256": "3072f28c801366b0ab0b3ec718f47102ff955e1ba121ba2b0e321fbc0ffef025",
+  "engine_release_sha256": "1b507ad9ddfe340c264014c3ffebacacc949635e40fa6ea8677f03572ff4f48d",
+  "guardian_sha256": "cee1507d964bdc65d167212889bf7dca2f5084e74165a56f3313b0ab48af4571",
+  "source_commit": "055b869665c3fba390765cde548576c854d54abb",
+  "source_review_sha256": "54404b1294ebbb3e0030c9028fe8371650d6acebf2126ad91d16a883092a4a8b",
+  "targeted_cpu": {
+    "status": "PASS_TARGETED_GATEWAY_DIAGNOSTICS",
+    "cases": 18,
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "-m",
+      "unittest",
+      "-v",
+      "tools.serve_recovery.test_gateway_diagnostics.DiagnosticTests",
+      "tools.serve_recovery.test_gateway_diagnostics.ClassifierTests",
+      "tools.serve_recovery.test_gateway_diagnostics.ProjectionTests",
+      "tools.serve_recovery.test_gateway_diagnostics.GuardianTests.test_typed_rejection_and_legacy_recovery_preserve_all_role_identities",
+      "tools.serve_recovery.test_gateway_diagnostics.GuardianTests.test_stale_and_malformed_diagnostics_cannot_recover_or_revoke_current_model",
+      "tools.serve_recovery.test_gateway_capacity.GatewayCapacityTests",
+      "tools.serve_service.test_service.Case.test_memory_unready_is_distinct_from_permanent_backend_failure",
+      "tools.serve_service.test_service.Case.test_effective_mtp_or_admission_mismatch_fails_closed",
+      "tools.serve_host.test_native.NativeTests.test_freshness_does_not_renew_ready_or_turn_missing_values_into_zero",
+      "tools.serve_recovery.test_production.ControllerTests.test_effective_capacity_mismatch_quarantines_without_retry_or_grant"
+    ],
+    "returncode": 0,
+    "seconds": 2.2471533799543977,
+    "guardian_sha256": "cee1507d964bdc65d167212889bf7dca2f5084e74165a56f3313b0ab48af4571",
+    "default_preserved": true,
+    "model_starts": 0,
+    "chat_requests": 0,
+    "gpu_queries": 0
+  },
+  "packaged_checks": [
+    {
+      "label": "sealed-check",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-diagnostics-20261109/release-01/bundle/engine/q4t",
+        "service",
+        "check"
+      ],
+      "returncode": 0,
+      "seconds": 0.6839320417493582
+    },
+    {
+      "label": "selected-check",
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-diagnostics-20261109/release-01/bundle/engine/q4t",
+        "service",
+        "check",
+        "--state",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state",
+        "--package",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/bundle",
+        "--manifest-sha256",
+        "22849b0d4a1157affd5e80d398fd1ba45a673fd767f75e3f6b3fb7ec1edcd927"
+      ],
+      "returncode": 0,
+      "seconds": 1.0043126940727234
+    },
+    {
+      "label": "sealed-projection",
+      "argv": [
+        "/usr/bin/python3",
+        "-I",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-diagnostics-20261109/release-01/projection.py",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-diagnostics-20261109/release-01/bundle/source",
+        "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-progress-business-20261109/business-02/execution/ready-2.json"
+      ],
+      "returncode": 0,
+      "seconds": 0.07240532664582133
+    }
+  ],
+  "real_business_reused": true,
+  "full_performance": false,
+  "full_model_quality": false,
+  "long_stability_accepted": false,
+  "remaining_master_tasks_open": true
+}

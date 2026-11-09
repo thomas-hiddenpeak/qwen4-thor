@@ -1,0 +1,150 @@
+{
+  "source_commit": "055b869665c3fba390765cde548576c854d54abb",
+  "changed_control": {
+    "tools/serve_host/native.py": {
+      "previous": "4f36c218c6d7cbc76dffb0fe4471919c373922073e9f780c612dd72b8edb3241",
+      "selected": "6ae03f6c677bae561d5b431c4b0c97cc3a5b85389458b2539226551751b955ba"
+    },
+    "tools/serve_recovery/control.py": {
+      "previous": "f19552b9f83e206130ed285b5d7e5fe9776127dc632e6e403622c17a94e736a1",
+      "selected": "b61f15ad2e7e567ba76ba98d4d760009c2dff4bab59bec044a054fc08328de1b"
+    },
+    "tools/serve_recovery/gateway.py": {
+      "previous": "8cd1633fbb27bfd2f7553083b3a824e5599d9cb912a832d58bd07b0a6826330f",
+      "selected": "09dd93be270bbd65a1c64a25ad53483561d83da33f10bcbda1e1f88008f09d44"
+    },
+    "tools/serve_service/supervisor.py": {
+      "previous": "2cde422010ff2fabc54184ebabaf384787d83b54dc94dcb03f33391d9cbdd6ca",
+      "selected": "16e98461340bdc8d21a46b7273872e856abf3dad403b5530382f0bfee275007f"
+    }
+  },
+  "changed_native": [
+    "src/service/guardian_main.cpp"
+  ],
+  "engine_binary_unchanged": true,
+  "engine_release_unchanged": true,
+  "protocol_and_request_execution_unchanged": true,
+  "observation_only": true,
+  "existing_rejection_conditions_preserved": true,
+  "real_business_reused": "docs/evidence/serve-lifecycle-business-20261109/decision.json",
+  "targeted_cpu": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-diagnostics-20261109/cpu-01/result.json",
+  "previous_publication": {
+    "status": "PASS",
+    "ready": true,
+    "request_ids": [
+      "0cb79a92-6438-4d86-a159-791804c9d576",
+      "e2d2f8d3-1917-4a75-97e0-aac1d90fb977",
+      "e9043672-5474-4d41-b6c3-c8aa10845800"
+    ],
+    "model_actions": false,
+    "automatic_start": false,
+    "revision": 6,
+    "phase": "stable",
+    "root": "/home/rm01/models/dev/qwen4-thor/build",
+    "current": {
+      "engine_binary_sha256": "3072f28c801366b0ab0b3ec718f47102ff955e1ba121ba2b0e321fbc0ffef025",
+      "engine_release_sha256": "1b507ad9ddfe340c264014c3ffebacacc949635e40fa6ea8677f03572ff4f48d",
+      "generation_sha256": "f59c8e64861c0397c100fa89c445f82ad37eb5cd269d5d1259befe80429b9a9a",
+      "manifest_sha256": "22849b0d4a1157affd5e80d398fd1ba45a673fd767f75e3f6b3fb7ec1edcd927",
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/bundle",
+      "service_acceptance_sha256": "59271b716d3a0ed9b329de386a1d07e954073099d1e38f90d819846c72765f6a",
+      "service_release_sha256": "4a20bce4f5ac20340c787f81eaf44be3bbbebe0ad37f48cd7780ca5d7c46c9f2"
+    },
+    "target": null,
+    "request_id": null,
+    "history": [
+      {
+        "previous": {
+          "engine_binary_sha256": "6281ece590c200027fdf3a73c5d87ffd7fd65b6fca5cf9b640f9c303109997d0",
+          "engine_release_sha256": "f2a333efa92f80013f3d375cca7f8140c9796bd26dd20fcb86d1722ebc6ead2e",
+          "generation_sha256": "e77f1dba92ea91e901b5836558debc5e1761ef7e058282023c7a50bdb4a7f7a1",
+          "manifest_sha256": "97423f346090dc36bf30f37a5129ccabca8df5c1fdcccae0cecea21716023dab",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/release-02/bundle",
+          "service_acceptance_sha256": "a4ddac981a52f53660f1f60262e956e9a04264809425d4eaa208cd629411c85a",
+          "service_release_sha256": "ab9ea64b6cf75264f8f8314aa25df666005595ba35e2dc3a822cb58c99dacfba"
+        },
+        "request_id": "e2d2f8d3-1917-4a75-97e0-aac1d90fb977",
+        "rollback": false,
+        "selected": {
+          "engine_binary_sha256": "3072f28c801366b0ab0b3ec718f47102ff955e1ba121ba2b0e321fbc0ffef025",
+          "engine_release_sha256": "1b507ad9ddfe340c264014c3ffebacacc949635e40fa6ea8677f03572ff4f48d",
+          "generation_sha256": "f59c8e64861c0397c100fa89c445f82ad37eb5cd269d5d1259befe80429b9a9a",
+          "manifest_sha256": "22849b0d4a1157affd5e80d398fd1ba45a673fd767f75e3f6b3fb7ec1edcd927",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/bundle",
+          "service_acceptance_sha256": "59271b716d3a0ed9b329de386a1d07e954073099d1e38f90d819846c72765f6a",
+          "service_release_sha256": "4a20bce4f5ac20340c787f81eaf44be3bbbebe0ad37f48cd7780ca5d7c46c9f2"
+        }
+      },
+      {
+        "previous": {
+          "engine_binary_sha256": "3072f28c801366b0ab0b3ec718f47102ff955e1ba121ba2b0e321fbc0ffef025",
+          "engine_release_sha256": "1b507ad9ddfe340c264014c3ffebacacc949635e40fa6ea8677f03572ff4f48d",
+          "generation_sha256": "f59c8e64861c0397c100fa89c445f82ad37eb5cd269d5d1259befe80429b9a9a",
+          "manifest_sha256": "22849b0d4a1157affd5e80d398fd1ba45a673fd767f75e3f6b3fb7ec1edcd927",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/bundle",
+          "service_acceptance_sha256": "59271b716d3a0ed9b329de386a1d07e954073099d1e38f90d819846c72765f6a",
+          "service_release_sha256": "4a20bce4f5ac20340c787f81eaf44be3bbbebe0ad37f48cd7780ca5d7c46c9f2"
+        },
+        "request_id": "e9043672-5474-4d41-b6c3-c8aa10845800",
+        "rollback": true,
+        "selected": {
+          "engine_binary_sha256": "6281ece590c200027fdf3a73c5d87ffd7fd65b6fca5cf9b640f9c303109997d0",
+          "engine_release_sha256": "f2a333efa92f80013f3d375cca7f8140c9796bd26dd20fcb86d1722ebc6ead2e",
+          "generation_sha256": "e77f1dba92ea91e901b5836558debc5e1761ef7e058282023c7a50bdb4a7f7a1",
+          "manifest_sha256": "97423f346090dc36bf30f37a5129ccabca8df5c1fdcccae0cecea21716023dab",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/release-02/bundle",
+          "service_acceptance_sha256": "a4ddac981a52f53660f1f60262e956e9a04264809425d4eaa208cd629411c85a",
+          "service_release_sha256": "ab9ea64b6cf75264f8f8314aa25df666005595ba35e2dc3a822cb58c99dacfba"
+        }
+      },
+      {
+        "previous": {
+          "engine_binary_sha256": "6281ece590c200027fdf3a73c5d87ffd7fd65b6fca5cf9b640f9c303109997d0",
+          "engine_release_sha256": "f2a333efa92f80013f3d375cca7f8140c9796bd26dd20fcb86d1722ebc6ead2e",
+          "generation_sha256": "e77f1dba92ea91e901b5836558debc5e1761ef7e058282023c7a50bdb4a7f7a1",
+          "manifest_sha256": "97423f346090dc36bf30f37a5129ccabca8df5c1fdcccae0cecea21716023dab",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-http-20261109/release-02/bundle",
+          "service_acceptance_sha256": "a4ddac981a52f53660f1f60262e956e9a04264809425d4eaa208cd629411c85a",
+          "service_release_sha256": "ab9ea64b6cf75264f8f8314aa25df666005595ba35e2dc3a822cb58c99dacfba"
+        },
+        "request_id": "0cb79a92-6438-4d86-a159-791804c9d576",
+        "rollback": false,
+        "selected": {
+          "engine_binary_sha256": "3072f28c801366b0ab0b3ec718f47102ff955e1ba121ba2b0e321fbc0ffef025",
+          "engine_release_sha256": "1b507ad9ddfe340c264014c3ffebacacc949635e40fa6ea8677f03572ff4f48d",
+          "generation_sha256": "f59c8e64861c0397c100fa89c445f82ad37eb5cd269d5d1259befe80429b9a9a",
+          "manifest_sha256": "22849b0d4a1157affd5e80d398fd1ba45a673fd767f75e3f6b3fb7ec1edcd927",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261109/release-01/bundle",
+          "service_acceptance_sha256": "59271b716d3a0ed9b329de386a1d07e954073099d1e38f90d819846c72765f6a",
+          "service_release_sha256": "4a20bce4f5ac20340c787f81eaf44be3bbbebe0ad37f48cd7780ca5d7c46c9f2"
+        }
+      }
+    ]
+  },
+  "original_business_hashes": {
+    "client-access.json": "ae36f4b9304051f3f86fca468b955623d235ecf1cc12fba4a14e170fe57652c6",
+    "client-limits.json": "feee221ec5cd518bc4d0bd3dd5637909038d34b7bec6cbb0fcb8b065c07339e5",
+    "ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16",
+    "client-usage.json": "c7ac671d95111232efe8a0d17372e3e3ee613ea236a4c3e90f2dd401656286ce",
+    "client-usage/writer.lock": "a3437fffb54dca8cb3b0f8cff0b75aeab81c7f44f0868d066def399750353d07",
+    "client-usage/policy.json": "8b0a55798498f572abb9ba3e63b944e37940e454785aba23b4c43afedf91051c",
+    "client-limits/writer.lock": "2aecf0e566ff46df26b55e087a0dcfb345d34c4a2b294f52bf66ebb26ff51a82",
+    "client-limits/policy.json": "e0a4b18061e8edf32b73f87dd68acb73c834abb9762e602db73bb3e00fa90343",
+    "client-access/writer.lock": "cde313fe79bad1d3a733e51e5b54384fdf4816e3b23490b0aa6f8cf25131dc79",
+    "client-access/policy.json": "778cbf21aa1672c5812b4981cec6c4f159413692d88332358e030f199d2a2e5d"
+  },
+  "install_checks": [
+    "sealed package check",
+    "selected old package check",
+    "sealed diagnostic projection",
+    "publish revision 6",
+    "default check",
+    "default status",
+    "default observe",
+    "default metrics",
+    "publication status"
+  ],
+  "model_starts": 0,
+  "chat_requests": 0,
+  "gpu_queries": 0
+}

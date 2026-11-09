@@ -493,7 +493,7 @@
     {
       "id": "N06",
       "required": true,
-      "state": "validated_delivery_pending",
+      "state": "delivered",
       "implementation": "原生运维/指标/诊断与R04 exporter互通",
       "acceptance": "不安装Prometheus/exporter仍能看必要状态；观察失效不拖核心；真实健康与陈旧/未知分开",
       "depends_on": [
@@ -506,28 +506,33 @@
         "evidence/serve-retention-epoch-20261109/decision.json",
         "evidence/serve-retention-lineage-20261109/decision.json",
         "evidence/serve-native-observation-delivery-20261109/decision.json",
-        "evidence/serve-gateway-diagnostics-20261109/README.md"
+        "evidence/serve-gateway-diagnostics-20261109/README.md",
+        "evidence/serve-gateway-diagnostics-delivery-20261109/README.md"
       ],
       "release": {
-        "engine_binary_sha256": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
-        "engine_release_sha256": "f44634f5235c9555a06c20e57fbe86d1606f57ba7b4095e875b2d71ba31b38fc",
-        "manifest_sha256": "b7c2510799d7433208f0f3135f8f38733d20e849a820db5649406d74835ae939",
-        "service_release_sha256": "29125ad9dcccd87105e8bbad2670876f66641f03f8d217007ea6dcd56a42849d",
+        "engine_binary_sha256": "3072f28c801366b0ab0b3ec718f47102ff955e1ba121ba2b0e321fbc0ffef025",
+        "engine_release_sha256": "1b507ad9ddfe340c264014c3ffebacacc949635e40fa6ea8677f03572ff4f48d",
+        "generation_sha256": "35b4cef68116d9460922439e70ad27d45ed83abcf9654de41c0b75df954ec747",
+        "manifest_sha256": "1b1acb1777337fa6184261d7da08da45dcabd8e756cf65ccffab31a3d0102115",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-diagnostics-20261109/release-01/bundle",
+        "service_acceptance_sha256": "b2b424d369e378360c419dff3fd1c0d1b0833585fda633c22f2420ce4f2de02f",
+        "service_release_sha256": "8014bc222ece8c8d80cad14ea69e36b4e0d7e035ff6a790b1c16cb82c83cf9b0",
+        "guardian_sha256": "cee1507d964bdc65d167212889bf7dca2f5084e74165a56f3313b0ab48af4571",
         "state": "STOPPED",
+        "publication_revision": 8,
         "merged_main": false,
-        "whole_task_complete": false
+        "whole_task_complete": true
       },
       "plan": "SERVE_NATIVE_OBSERVATION_2026-11-09.md",
-      "remaining": [
-        "Seal and publish accepted typed gateway diagnostics with unchanged engine/business evidence review and targeted packaged checks"
-      ],
+      "remaining": [],
       "findings": [
         {
           "source": "tools/serve_recovery/gateway.py Admission.update exception projection",
           "issue": "Independent gateway binding rejection closes admission but root status exposes no typed cause; report bounded identity/capacity/observation reasons without restarting a healthy model",
-          "state": "fixed_cpu_validated_delivery_pending",
+          "state": "fixed_validated_delivered",
           "evidence": "evidence/serve-lifecycle-capacity-fix-20261109/business-01/execution/status.jsonl",
-          "fix_evidence": "evidence/serve-gateway-diagnostics-20261109/README.md"
+          "fix_evidence": "evidence/serve-gateway-diagnostics-20261109/README.md",
+          "delivery_evidence": "evidence/serve-gateway-diagnostics-delivery-20261109/README.md"
         }
       ]
     },
@@ -856,6 +861,6 @@
       "release": null
     }
   ],
-  "next_task": "N06",
+  "next_task": "A07",
   "next": "Unified native service CLI, configurable capacity profiles and default publication transaction, then every remaining master task. N05 delivered; total goal remains active."
 }

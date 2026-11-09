@@ -14,8 +14,11 @@ N07 真实业务暴露的新缺口：模型 READY 而入口独立验证拒绝时
 旧 unbound 消息兼容；新消息过代则忽略，错误诊断仅计辅助投影错误。
 观察器超过 3 秒省略未知诊断，已绑定且业务就绪的 `none` 仍由当前
 就绪状态证明。18 项直接 CPU 通过，见
-[类型诊断证据](evidence/serve-gateway-diagnostics-20261109/README.md)；
-封装/默认交付仍须完成，不能把发现的问题留成永久“限制”。
+[类型诊断证据](evidence/serve-gateway-diagnostics-20261109/README.md)。
+随后 9 条实际封装/发布操作通过，[默认交付](evidence/serve-gateway-diagnostics-delivery-20261109/README.md)
+为包 `1b1acb17`、Guardian `cee1507d`，publication revision 8，STOPPED。
+引擎与协议字节保持，N07 真实业务按源码审查复用，0 新增 GPU/生成。
+本项缺口闭合后继续 A07 及全部剩余总任务。
 
 ## 实施顺序
 
