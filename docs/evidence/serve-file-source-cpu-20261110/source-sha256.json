@@ -1,0 +1,11 @@
+{
+  "CMakeLists.txt": "bd369d97bb02ee4fe037d929524a1c036f279384daba505f74dd73a21f0eacbc",
+  "cmake/HostTestSources.cmake": "cfb47c0ed7ad8c8efd55caff01061fa4b6b13a701158096e0ca94f724ba03dae",
+  "cmake/ChatProtocolIdentity.cmake": "3c9e06be73594ae6c1ea9996191be58ab715e2a634d912e7becb8712df8e067c",
+  "include/q4t/server/file_input.h": "6f6670ba1821f8b05d36a8eba1b1b152dde71f840e641753839c71678fa75b1d",
+  "src/server/file_input.cpp": "b5c73041b2e2d5e60fb92e456bd65be3c84018078f04f724ef4c828f0c8c006a",
+  "include/q4t/server/files.h": "c6441097de1d8ff9d260a46abc33feda1446d95cfee2c5573bdd405e0cc836d9",
+  "src/server/files.cpp": "2eb85871d7f22a11ba2ad905448ec5fdf82b80ffed409d4d20da58972c466d4e",
+  "tests/server_file_input_test.cpp": "13e1a65d8566bcec5592298a32442098e7520d0fb59de348cd414b638790795b",
+  "tools/serve_audit/check_inventory.py": "6af0e28dd1b2379373f73c94f3d7da9b143a0dd97bbf9ace5838c071637c04e3"
+}

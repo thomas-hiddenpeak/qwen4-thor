@@ -1,0 +1,40 @@
+{
+  "date": "2026-11-10",
+  "sdk_version": "7.47.0",
+  "sdk_sources": {
+    "src/resources/responses/responses.ts": "f84e394bf08d71403c054ccb4d41d278861f2d19db3ea426e7aec789f3eb5dbb",
+    "src/resources/chat/completions/completions.ts": "c42d4f538cef710809b2eea7bf1193f8093207aefc7a4d3ba3754324f3d85f91",
+    "src/internal/uploads.ts": "dc02cb7e91ed71cc9da169ff6e304f31251981f546a382ef72d1acf36a7d0cbf"
+  },
+  "official": "https://developers.openai.com/api/docs/guides/file-inputs",
+  "contract": {
+    "responses_sources": [
+      "file_id",
+      "file_data",
+      "file_url"
+    ],
+    "chat_sources": [
+      "file_id",
+      "file_data"
+    ],
+    "chat_file_types": [
+      "pdf"
+    ],
+    "responses_file_types": [
+      "pdf",
+      "text_and_code",
+      "rich_documents",
+      "presentations",
+      "spreadsheets"
+    ],
+    "pdf_text_and_images": true,
+    "pdf_detail": [
+      "auto",
+      "low",
+      "high"
+    ],
+    "spreadsheet_rows_per_sheet": 1000,
+    "spreadsheet_generated_summary_and_headers": true,
+    "aggregate_bytes_local_ceiling": 50000000
+  }
+}

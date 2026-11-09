@@ -1,5 +1,11 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+FI01 [来源/受控读取13项CPU通过](evidence/serve-file-source-cpu-20261110/README.md)，10新增+3受影响，0.264秒、host零警告；首夹具构建失败原件保留。仅组件接受、0GPU、默认cdb5ced9保持STOPPED；继续FI02获取/解析与全部执行/业务/总任务。
+
+FI01来源/受控读取成组实现，冻结10新用例和3项受影响Files/分块读取CPU；覆盖nullable/预算/base64/原字节、隔离/取消/校验损坏。开始独立host必要构建，0GPU、默认cdb5ced9保持STOPPED；后续全部解析/执行/持久性/业务与总任务继续。
+
+开始[A09.5原生文件输入全项计划](SERVE_FILE_INPUTS_2026-11-10.md)：来源合同/获取解析、全部执行入口与持久性、PDF/表格真实处理和用量、SDK/发行均保留。已核对官方及固定SDK；先实现客户端受控字节读取和解析底座，不以组件接受替代全部消费。默认cdb5ced9保持STOPPED，尚无新增测试/GPU。
+
 A09.4 [Uploads可回退交付完成](evidence/serve-uploads-delivery-20261110/README.md)：默认引擎cdb5ced9、元数据d4559e09、v11包96b75252，revision36、STOPPED。8实际CLI/9.794秒、0新增模型/GPU，原Key/配额/用量与容量保持，保留Files旧代。开始A09.5原生文件内容消费，之后Batch及全部总任务；未合main。
 
 A09.4 [真实Uploads业务接受](evidence/serve-uploads-business-20261110/README.md)：1启动/2生成/20文件操作/53.651秒、52 NVML全OK并独立清理。实际SDK/原生TLS文档工具闭环、重复Part/MD5/原完成核对/取消后409/隔离及精确用量通过。候选cdb5ced9/入口a8c5bba3，默认6a7404c7保持；继续可回退发行和全部余项。

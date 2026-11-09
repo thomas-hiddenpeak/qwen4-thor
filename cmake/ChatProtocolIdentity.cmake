@@ -123,6 +123,8 @@ set(protocol_inputs
   src/server/binary_store.cpp
   include/q4t/server/uploads.h
   src/server/uploads.cpp
+  include/q4t/server/file_input.h
+  src/server/file_input.cpp
   include/q4t/server/files.h
   include/q4t/server/file_limits.h
   src/server/files.cpp

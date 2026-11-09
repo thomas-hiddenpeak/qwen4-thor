@@ -262,15 +262,24 @@ ObjectReply Files::Erase(const BinaryAccess& access, const std::string& id) {
   return reply;
 }
 ObjectReply Files::Open(const BinaryAccess& access, const std::string& id,
-                        BinaryRead* read) {
-  auto metadata = Retrieve(access, id);
+                        BinaryRead* read, std::string* mime_type,
+                        uint64_t max_bytes) {
+  if (mime_type) mime_type->clear();
+  auto stored = Stored(access, id);
+  if (!stored.ok()) return stored;
+  auto metadata = Public(stored.value);
   if (!metadata.ok()) return metadata;
+  if (static_cast<uint64_t>(metadata.value.GetInt("bytes")) > max_bytes)
+    return Error(413, "file_input_capacity_exceeded",
+                 "File read budget exceeded");
+  const auto mime = stored.value.Find("data")->GetString("mime_type");
   BinaryStore binary(objects_);
   const auto remaining = std::chrono::ceil<std::chrono::seconds>(
                              access.deadline - std::chrono::steady_clock::now())
                              .count();
   auto pinned = binary.Open(access, ObjectKind::kFile, id,
                             std::clamp<int64_t>(remaining + 1, 1, 3600), read);
+  if (pinned.ok() && mime_type) *mime_type = mime;
   return pinned.ok() ? metadata : pinned;
 }
 ObjectReply Files::List(const BinaryAccess& access, const Json& query) {

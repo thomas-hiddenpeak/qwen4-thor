@@ -1411,11 +1411,30 @@
     ],
     "uploads.cpp:2:body": [
       "part_ids"
+    ],
+    "file_input.cpp:0:part": [
+      "type",
+      "file",
+      "prompt_cache_breakpoint"
+    ],
+    "file_input.cpp:1:part": [
+      "type",
+      "file_data",
+      "file_id",
+      "file_url",
+      "filename",
+      "detail",
+      "prompt_cache_breakpoint"
+    ],
+    "file_input.cpp:2:*file": [
+      "file_data",
+      "file_id",
+      "filename"
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "266e95aa11e1c3f0a7139ab48801bd45113625e20b221f20c6e90d70ae1b25ad",
-    "cmake/ChatProtocolIdentity.cmake": "2c9ffec8cb4bf57a13778d65de3eb903df265c5ef898817cd9fe8a62284161ba",
+    "CMakeLists.txt": "bd369d97bb02ee4fe037d929524a1c036f279384daba505f74dd73a21f0eacbc",
+    "cmake/ChatProtocolIdentity.cmake": "3c9e06be73594ae6c1ea9996191be58ab715e2a634d912e7becb8712df8e067c",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
     "cmake/NativeIngress.cmake": "5560a873e8d89b5e034636f006a2b21ace3bdab2bf71dcf688d5028fbbc704b4",
@@ -1465,7 +1484,7 @@
     "include/q4t/server/custom_tools.h": "1f351b6ed81ad868caa4dfa9c54a6f697fcac5a6a8dadef65bd05f2053ef18b9",
     "include/q4t/server/device_memory.h": "1099e20d3b205d3ae03daba0308be7221f5097c78a2fd58c8ca16298277dfc4c",
     "include/q4t/server/file_limits.h": "70c0b62a0cf92fc0cf502a60bad87920d576bc7f9c3391c7fd7c72f977183529",
-    "include/q4t/server/files.h": "3e3e7515cd34f4ab66e0efa7023956cf4eb88455156881aa818bf5ec1e170fb9",
+    "include/q4t/server/files.h": "c6441097de1d8ff9d260a46abc33feda1446d95cfee2c5573bdd405e0cc836d9",
     "include/q4t/server/files_http.h": "1a3e9ae8012985df4e3acd3caa1c45bf331395ad8d00048b1d03ebb34ffab720",
     "include/q4t/server/grammar_process.h": "fbed9c86c91be129af8f1481292ef65edb8a9989090fc1a83e12c6fe7e106e53",
     "include/q4t/server/http_connection.h": "7781ebea44133e149d25292bcb20db324d7e8c366c24a176cf776163d6b0268d",
@@ -1616,7 +1635,7 @@
     "src/server/custom_regex.cpp": "eb8ab53b44dbb9ec2011676a854a18e38244975e76955b74a441829bdd67031a",
     "src/server/custom_regex.h": "4916fea56e31101ba2352675c918b82fe76b785b8559c87683d8cc531c3624d5",
     "src/server/custom_tools.cpp": "3e45f9a496439ec1e0d86739acb9c5d01eb6e2c321a96d924cf755b99bc12abd",
-    "src/server/files.cpp": "5765030ff4056bc593a54fe6a07c501c559cedd4910f3f5bdba291342cc328da",
+    "src/server/files.cpp": "2eb85871d7f22a11ba2ad905448ec5fdf82b80ffed409d4d20da58972c466d4e",
     "src/server/files_http.cpp": "ff724c486b34f2013747d06194086cdd11b876c347d97db2034da22ae73139ef",
     "src/server/grammar_process.cpp": "b0c9f65c7299e896253d139c34defb65143d2cb7ff9e58465f92661fbc04424c",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
@@ -1802,7 +1821,9 @@
     "tools/serve_service/service.py": "0a76144099c92ff4773c8ee2207c8064283a12b3ac1b107b2d03fafae3fbcab0",
     "tools/serve_service/supervisor.py": "16e98461340bdc8d21a46b7273872e856abf3dad403b5530382f0bfee275007f",
     "tools/serve_service/supplement.py": "7da3cd37f6a0c1bf746aa8856570b9c7724ba155745c2b9910f5ffc2e8d65d57",
-    "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f"
+    "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
+    "include/q4t/server/file_input.h": "6f6670ba1821f8b05d36a8eba1b1b152dde71f840e641753839c71678fa75b1d",
+    "src/server/file_input.cpp": "b5c73041b2e2d5e60fb92e456bd65be3c84018078f04f724ef4c828f0c8c006a"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -3419,5 +3440,17 @@
     "cpu_evidence": "docs/evidence/serve-access-program-cpu-20261110/README.md",
     "business_evidence": "docs/evidence/serve-access-program-business-20261110/README.md",
     "delivery_evidence": "docs/evidence/serve-access-program-delivery-20261110/README.md"
+  },
+  "file_input_source_cpu_20261110": {
+    "semantics": "FI01 source contracts and scoped byte acquisition only; no API support claimed before FI02-FI05 execution integration",
+    "reviewed_sources": [
+      "CMakeLists.txt",
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/server/file_input.h",
+      "include/q4t/server/files.h",
+      "src/server/file_input.cpp",
+      "src/server/files.cpp"
+    ],
+    "evidence": "docs/evidence/serve-file-source-cpu-20261110/README.md"
   }
 }

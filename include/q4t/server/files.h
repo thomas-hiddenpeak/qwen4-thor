@@ -49,7 +49,8 @@ class Files {
   // Query uses the shared decoded URL object; 1..10000, default10000/desc.
   ObjectReply List(const BinaryAccess& access, const io::Json& query);
   ObjectReply Open(const BinaryAccess& access, const std::string& id,
-                   BinaryRead* read);
+                   BinaryRead* read, std::string* mime_type = nullptr,
+                   uint64_t max_bytes = kBinaryMaxBytes);
 
  private:
   ObjectReply Stored(const BinaryAccess& access, const std::string& id);
