@@ -89,6 +89,55 @@ class DriverTests(unittest.TestCase):
             a.save(paths['execution'],dict(prior,**change));seal()
             with self.assertRaisesRegex(ValueError,'cannot be reused'):a.verify_prior(plan)
 
+    def test_selected_copy_keeps_primary_evidence_and_rejects_changed_identity(self):
+        primary = dict(package='/accepted/primary',manifest_sha256='a'*64,engine_binary_sha256='b'*64)
+        second = dict(primary,package='/accepted/second')
+        plan = dict(primary_package=primary,second_package=second,package=second)
+        a.verify_selected_package(plan)
+        a.verify_selected_package(dict(plan,package=primary))
+        for candidate in (dict(second,package='/unplanned'),dict(second,manifest_sha256='c'*64),
+                          dict(second,engine_binary_sha256='c'*64)):
+            with self.assertRaisesRegex(ValueError,'unplanned package'):
+                a.verify_selected_package(dict(plan,package=candidate))
+
+    def test_checkpoint_launcher_uses_existing_state_without_initializing_it(self):
+        stage = self.stage();execution = stage.output/'execution';execution.mkdir()
+        service = SimpleNamespace(launch=mock.Mock(return_value=dict(guardian_exit_code=0)),
+                                  initialize=mock.Mock(side_effect=AssertionError('must not reseed')))
+        engine = SimpleNamespace()
+        plan = dict(output=str(stage.output),state_directory=str(stage.scope),
+                    package=dict(package='/fixture',manifest_sha256='a'*64))
+        original = a.subprocess.Popen
+        try:
+            with mock.patch.object(a.common,'load_modules',return_value=(None,None,None,None,service,engine)), \
+                 mock.patch.object(a.common,'verify',return_value=None):
+                self.assertEqual(a.common.launcher(plan,stage.output/'plan.json'),0)
+        finally:a.subprocess.Popen = original
+        service.launch.assert_called_once_with('/fixture','a'*64,stage.scope)
+        service.initialize.assert_not_called()
+
+    def test_unknown_cleanup_cannot_resume_without_independent_stopped_audit(self):
+        stage = self.stage()
+        prior = dict(status='FAILED',cleanup_failure='launcher cleanup failed',models={'1':{'pid':123}},
+            seconds=67,failure='launcher exited unexpectedly',
+            budget=dict(counts=dict(starts=2,chats=10,probes=1,controls=603)),package={'exact':'package'})
+        check = dict(status='PASS_STOPPED_DEPLOYMENT_CHECKPOINT',models_started_after_deploy=0,
+                     owned_processes_gone=True,ports_released=True,locks_released=True)
+        plan = dict(prior_failure_category='sealed_deployment',prior_counts=prior['budget']['counts'],
+                    prior_seconds=184,package=prior['package'])
+        paths = {}
+        for name,value in [('execution',prior),('guard',dict(status='COMMAND_FAILED')),
+                ('probe',dict(version=1,ok=True,cuda_code=0,stage='complete')),('cleanup',check)]:
+            path=stage.output/(name+'.json');a.save(path,value);paths[name]=path
+            plan['checkpoint_cleanup' if name=='cleanup' else 'prior_'+name]=str(path)
+        def seal():
+            plan['prior_evidence']=[dict(path=str(p),sha256=hashlib.sha256(p.read_bytes()).hexdigest())
+                                    for p in paths.values()]
+        seal();a.verify_prior(plan)
+        for field in ('owned_processes_gone','ports_released','locks_released'):
+            a.save(paths['cleanup'],dict(check,**{field:False}));seal()
+            with self.assertRaisesRegex(ValueError,'cannot be reused'):a.verify_prior(plan)
+
     def test_pending_gate_requires_exact_identity_and_keeps_production_verifier(self):
         metadata = dict(validation_only=True,acceptance='VALIDATION_ONLY_N04',binary_sha256='a'*64)
         decision = dict(status='PENDING_REAL_BUSINESS_N04',observed=False)

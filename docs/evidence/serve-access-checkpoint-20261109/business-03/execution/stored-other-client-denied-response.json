@@ -1,0 +1,20 @@
+{
+  "status": 404,
+  "headers": {
+    "Content-Type": "application/json",
+    "Content-Length": "110",
+    "X-Request-Id": "req-efaac2482618172dd5a3856ef050c7d1",
+    "Connection": "close",
+    "Cache-Control": "no-store",
+    "Vary": "Origin"
+  },
+  "seconds": 0.06797715229913592,
+  "value": {
+    "error": {
+      "message": "Object not found",
+      "type": "invalid_request_error",
+      "code": "object_not_found",
+      "param": null
+    }
+  }
+}

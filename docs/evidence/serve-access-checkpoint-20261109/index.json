@@ -1,0 +1,394 @@
+{
+  "README.md": {
+    "bytes": 1173,
+    "sha256": "5f84d02a908b6fb6789d84c137676891adabc99658df9e91b65cbfbca1da8b8e"
+  },
+  "business-03/execution/add-beta-apply-management.json": {
+    "bytes": 1003,
+    "sha256": "56fad420d0e572887f561c5b74fbe57d5bdc1c0be81a069fcd543e3ff0201a10"
+  },
+  "business-03/execution/add-beta-propose-management.json": {
+    "bytes": 468,
+    "sha256": "2e54695d6eae0aa782b907d0a35e2aad9a109b876b943c01c1f26475798d56f9"
+  },
+  "business-03/execution/beta-stored-request.json": {
+    "bytes": 629,
+    "sha256": "55962996e564ee133d3b6b2a0c315f83758eef5810b9b1a7cb496382812c2f1b"
+  },
+  "business-03/execution/beta-stored-response.json": {
+    "bytes": 592,
+    "sha256": "9efc1763bfa6dfedadbfce62a9308354f9f1f1778a61a45f9facaca7efb65da8"
+  },
+  "business-03/execution/beta-stored-wire.bin": {
+    "bytes": 295,
+    "sha256": "05a410c55396df590d263bfd3fc24fef551dbd26fab73d6ace742384677b0985"
+  },
+  "business-03/execution/capabilities.json": {
+    "bytes": 23140,
+    "sha256": "1af34c73ed36d862bb534324592e0ea77fc0ad682632f551673a3ba3c2dfb9cc"
+  },
+  "business-03/execution/chat-02-self-check-request.json": {
+    "bytes": 649,
+    "sha256": "4ff8e010c5fe0f4d74a570487a64d15079e728d5892aa744bc688c062bf4599e"
+  },
+  "business-03/execution/chat-02-self-check-response.json": {
+    "bytes": 447,
+    "sha256": "afe47ee31ea224837d1022523e13902d640a3b80b076fd5ad5cdd815769e7383"
+  },
+  "business-03/execution/configuration.json": {
+    "bytes": 10348,
+    "sha256": "b15086e33078dfb7635f0e42cfae1c4b3add7d1445c45915b0fecccb5169822e"
+  },
+  "business-03/execution/counts.json": {
+    "bytes": 1395,
+    "sha256": "afa9a88461aaed2b080ef0b9bed8f937591ac5d442aa6814658e128c681477f2"
+  },
+  "business-03/execution/fault-key-after-response.json": {
+    "bytes": 517,
+    "sha256": "920008b1ea8dcc64d85a86406a2bd3e35ff14a77af60df49f1d27d30b21b978d"
+  },
+  "business-03/execution/fault-key-after-wire.bin": {
+    "bytes": 125,
+    "sha256": "9cc49f5990bae941470e3b1439ee2ca4186c2fc6038db5a5b1a1260ebd82f7c9"
+  },
+  "business-03/execution/fault-key-before-response.json": {
+    "bytes": 481,
+    "sha256": "8814465a8aaa20e439b5307fa660beccb58d00237f27507da76d7a4af759347a"
+  },
+  "business-03/execution/fault-key-before-wire.bin": {
+    "bytes": 109,
+    "sha256": "1025cfba8321cc413bad356b45c4192764157f457110498659b9a689bfb36d9d"
+  },
+  "business-03/execution/first-stop.json": {
+    "bytes": 1054,
+    "sha256": "428a7d2147052c026a30e4ed905cd9bbb940631fe1df422c833f34ce36edbf7a"
+  },
+  "business-03/execution/initial-capabilities-response.json": {
+    "bytes": 24943,
+    "sha256": "7b4ac7accf3828c7ea01d8e838db5b4a809475867f97eabbc7b9cdb406ae86bc"
+  },
+  "business-03/execution/initial-capabilities-wire.bin": {
+    "bytes": 18520,
+    "sha256": "9e99b59b635553fd559c3b8dd33c59cf76518da73a32f98c4c0ea45d0b63b822"
+  },
+  "business-03/execution/launcher-result.json": {
+    "bytes": 201,
+    "sha256": "f86edfcb3f8c474c0d010f9b5f9f452cae4f93e713482ea50621409acd1cb2d8"
+  },
+  "business-03/execution/limits-lost-sse-request.json": {
+    "bytes": 1076,
+    "sha256": "58d849030ddee108241fc5713109892c6e174f2b3b95b65c60a18cc33b43581c"
+  },
+  "business-03/execution/limits-lost-sse-response.json": {
+    "bytes": 579,
+    "sha256": "fb6fdaae56f2248f1ab284854e92ed0a8e85ff02e7995e1311be41e7204b4a44"
+  },
+  "business-03/execution/limits-lost-sse-wire.bin": {
+    "bytes": 1953,
+    "sha256": "8eb087c6f95980442e7010b7ac80257ef23a2ff4f8d0082443fc6788bf19a9b2"
+  },
+  "business-03/execution/new-client-key-apply-management.json": {
+    "bytes": 804,
+    "sha256": "0225c83fb84e003577feb1e619be67e54a157a46255056d4f78d366a38c3a657"
+  },
+  "business-03/execution/new-client-key-propose-management.json": {
+    "bytes": 493,
+    "sha256": "bf6f956a79ab2e9fc0afdf51033503f07aaa9d314d0db43dbbfef03ae7e16034"
+  },
+  "business-03/execution/new-client-sdk-request.json": {
+    "bytes": 615,
+    "sha256": "535fb627eb77d9330793fa8fa842d7867b5f05f7da742c02654b5c5ed47a92c2"
+  },
+  "business-03/execution/new-client-sdk-response.json": {
+    "bytes": 272,
+    "sha256": "dcf64672c6300614758d071f7e9db73d16c6c35c4465688c7ee3c439fbd7749f"
+  },
+  "business-03/execution/new-client-sdk-wire.bin": {
+    "bytes": 282,
+    "sha256": "c6957e3f37163adf4b2df8245692b1f2514ca08657d52c45754eea549eb9fddc"
+  },
+  "business-03/execution/new-key-control-response.json": {
+    "bytes": 481,
+    "sha256": "8adcf8c8ca69384aff468b95310e21bb5476dee3c918fa1f8812969a4bbdeaa0"
+  },
+  "business-03/execution/new-key-control-wire.bin": {
+    "bytes": 109,
+    "sha256": "1025cfba8321cc413bad356b45c4192764157f457110498659b9a689bfb36d9d"
+  },
+  "business-03/execution/old-key-denied-response.json": {
+    "bytes": 518,
+    "sha256": "10cdf779bb121da64f27a9699ab2fa2a6ff76adab8049c310daf5db5319261af"
+  },
+  "business-03/execution/old-key-denied-wire.bin": {
+    "bytes": 125,
+    "sha256": "9cc49f5990bae941470e3b1439ee2ca4186c2fc6038db5a5b1a1260ebd82f7c9"
+  },
+  "business-03/execution/old-key-overlap-response.json": {
+    "bytes": 482,
+    "sha256": "95507f557e258b748c66b4dd94031dbc2373c3f6ed042ee1a6d1a0b838cc8cb6"
+  },
+  "business-03/execution/old-key-overlap-wire.bin": {
+    "bytes": 109,
+    "sha256": "1025cfba8321cc413bad356b45c4192764157f457110498659b9a689bfb36d9d"
+  },
+  "business-03/execution/overlap-apply-management.json": {
+    "bytes": 804,
+    "sha256": "41b59c13acb4781755b986383c8964e1a9044369891da61dd0d5f6f0ed1aed82"
+  },
+  "business-03/execution/overlap-before-limits-loss-apply-management.json": {
+    "bytes": 804,
+    "sha256": "2a0c17ccbef5ac44902e6e854686a68be1c15c4125b96d7c969e37efb0ce9c82"
+  },
+  "business-03/execution/overlap-before-limits-loss-propose-management.json": {
+    "bytes": 493,
+    "sha256": "dc43219240443ad84767a659fd7c4a734763b53d333fadb23ed9fd4a0545201d"
+  },
+  "business-03/execution/overlap-propose-management.json": {
+    "bytes": 493,
+    "sha256": "09fd43629d3a435c0af74972be450f95f3820881a6afaacf3c4cd31fe32ff2eb"
+  },
+  "business-03/execution/project-final-request.json": {
+    "bytes": 2624,
+    "sha256": "7d3c5d2b91960e367c1fab01d6998285a19fd4382f51a68f3163ee1fa1d21202"
+  },
+  "business-03/execution/project-final-response.json": {
+    "bytes": 616,
+    "sha256": "f7ba1218cabaad8d14aca6b423b5890e0092946bf3700ebeab9ed042b775049b"
+  },
+  "business-03/execution/project-final-wire.bin": {
+    "bytes": 303,
+    "sha256": "1086ecc4c066a3769db8a5eb422e4c39d737d997664e9dcb99f849d6fedae90b"
+  },
+  "business-03/execution/project-tool-request.json": {
+    "bytes": 1882,
+    "sha256": "496b147785b4ac0cad7dd20cffc4715ad4cb77843fa7e561a80c6f10c9fe6a94"
+  },
+  "business-03/execution/project-tool-response.json": {
+    "bytes": 871,
+    "sha256": "a91b2c4c4b2548236ee7d031fbf35dff8f1cb97713f2f5e07c85a39597ab539f"
+  },
+  "business-03/execution/project-tool-result.json": {
+    "bytes": 424,
+    "sha256": "6878a19019b41867871d06dfa82b6d3ba848fd769b0574885c56832ea9b0ca07"
+  },
+  "business-03/execution/project-tool-wire.bin": {
+    "bytes": 7234,
+    "sha256": "00c81a40993f31918399a2c44ac32b1869d3fa725d051b87c5b4ee6ec1f8e74f"
+  },
+  "business-03/execution/ready-1-usage-management.json": {
+    "bytes": 732,
+    "sha256": "1049715b4499b1e4765d511fcdedc10f886c6d472d0c96d3bae5d467cf784bdb"
+  },
+  "business-03/execution/ready-1.json": {
+    "bytes": 1458,
+    "sha256": "e81746ce34752809cad6536bea646d1128883a311c632f81a32a8dd41634b828"
+  },
+  "business-03/execution/result.json": {
+    "bytes": 4069,
+    "sha256": "5ae59495ce2bb23b3b3d65e8efabe73ff5b79920d1c922b7d49fd16787642c30"
+  },
+  "business-03/execution/revoke-during-limits-loss-apply-management.json": {
+    "bytes": 804,
+    "sha256": "a3725e2cfe4d01288ddb3d7e77d3feafbe6867e0ebf5305e3c289199c81b9ef7"
+  },
+  "business-03/execution/revoke-during-limits-loss-propose-management.json": {
+    "bytes": 493,
+    "sha256": "f51f6c6ccfc5252a1f83452dc8e68e086d9c8e094533b26750da8e2d4b782bc2"
+  },
+  "business-03/execution/revoke-old-apply-management.json": {
+    "bytes": 804,
+    "sha256": "3e206e48d6401f228fc8f83eb4ef96a7a969e8ed9cf4fb58f524c8f1082b0570"
+  },
+  "business-03/execution/revoke-old-propose-management.json": {
+    "bytes": 493,
+    "sha256": "b052a7dbf8cdbe93583c2105c577136e44c4cdcfae378be6e62fd800584a01ce"
+  },
+  "business-03/execution/rpm-at-close-request.json": {
+    "bytes": 613,
+    "sha256": "05bb74e91f824f42e34ff215d9c706edcc28ba40d8c37933412c3aed6536252c"
+  },
+  "business-03/execution/rpm-at-close-response.json": {
+    "bytes": 467,
+    "sha256": "5a4a3a1a1bf21f7c8e9accbb4b562d40033c8f379b7ee217415111cd82d1dfbf"
+  },
+  "business-03/execution/rpm-at-close-wire.bin": {
+    "bytes": 124,
+    "sha256": "18a33729d6b54507be223b99852dcb130b507788b228314a63f701eb9323d88b"
+  },
+  "business-03/execution/rpm-off-on-kept-request.json": {
+    "bytes": 616,
+    "sha256": "a94e90258944a6aeb6b4408d138762f4d5b8200de7bd7a060f22b8316fefcee1"
+  },
+  "business-03/execution/rpm-off-on-kept-response.json": {
+    "bytes": 467,
+    "sha256": "c0a17559d4925963a2369f4d5f3bc0d9d2b255f4dbc10f3e661dab2071d56832"
+  },
+  "business-03/execution/rpm-off-on-kept-wire.bin": {
+    "bytes": 124,
+    "sha256": "18a33729d6b54507be223b99852dcb130b507788b228314a63f701eb9323d88b"
+  },
+  "business-03/execution/rpm-on-apply-management.json": {
+    "bytes": 1003,
+    "sha256": "28b5938f40147ea8aaad2213406b597fbf85dcaa0901cbe9a836214540f2767f"
+  },
+  "business-03/execution/rpm-on-propose-management.json": {
+    "bytes": 468,
+    "sha256": "7cf6b95dce0d906bc3791afd6012a73449ed3c48654d485b12bd5ca2832817d8"
+  },
+  "business-03/execution/rpm-one-at-close-apply-management.json": {
+    "bytes": 1003,
+    "sha256": "a420d17210de3090840216917c005987df336bf1848e7df989e211a1404612a6"
+  },
+  "business-03/execution/rpm-one-at-close-propose-management.json": {
+    "bytes": 468,
+    "sha256": "fe4854e20a3be9b8ac697586b8f0e23d820b707197bd65c4d250b709aa31ab73"
+  },
+  "business-03/execution/rpm-two-apply-management.json": {
+    "bytes": 1003,
+    "sha256": "7f9148727aae38273fc5bf1ba69ca43d40122489ce29f3a95f39cced96d4cfef"
+  },
+  "business-03/execution/rpm-two-propose-management.json": {
+    "bytes": 468,
+    "sha256": "6a4e798b2729c7e0465d23cbfa495b029b33ceb9257a567cab7a105d10a3dc3a"
+  },
+  "business-03/execution/second-launcher.log": {
+    "bytes": 927,
+    "sha256": "101785cb3c3906d7ed1219fb2e4beaef2927c9890edef152bf2a5e1573be0d18"
+  },
+  "business-03/execution/second-plan.json": {
+    "bytes": 594101,
+    "sha256": "96a3a585cbb496040af2da7dba352b334fe43b7267cf337e6fc4d2c5bcc5b4e9"
+  },
+  "business-03/execution/status.jsonl": {
+    "bytes": 215032,
+    "sha256": "c7f933a41301cdb2a1a3f2d485687622f254b64222482f2172f6a004c0468bcb"
+  },
+  "business-03/execution/stored-other-client-denied-response.json": {
+    "bytes": 453,
+    "sha256": "bed60be7fe207819ee14f44e678c354c5365b9b5232cf28440c3f640babdf3b2"
+  },
+  "business-03/execution/stored-other-client-denied-wire.bin": {
+    "bytes": 110,
+    "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+  },
+  "business-03/execution/stored-owner-response.json": {
+    "bytes": 758,
+    "sha256": "52832e34bccd7a2a2627046b5edc0fc52e67eba4177f598bfa7205867c0005ee"
+  },
+  "business-03/execution/stored-owner-wire.bin": {
+    "bytes": 295,
+    "sha256": "05a410c55396df590d263bfd3fc24fef551dbd26fab73d6ace742384677b0985"
+  },
+  "business-03/execution/switch-second-management.json": {
+    "bytes": 1029,
+    "sha256": "61e6be7b4896be7131623e1ab988fcd3105e232383e7e63bf6c01582174229ab"
+  },
+  "business-03/execution/tpm-off-apply-management.json": {
+    "bytes": 1003,
+    "sha256": "da0de30c8331731f241e0c6bacff5e71f536d486d0dd7d75948b77621d37a4f0"
+  },
+  "business-03/execution/tpm-off-on-kept-request.json": {
+    "bytes": 616,
+    "sha256": "f4793e11ebf929d27bb5979bce531be1ba622b2670a9b902d0881d69e313af72"
+  },
+  "business-03/execution/tpm-off-on-kept-response.json": {
+    "bytes": 467,
+    "sha256": "4ab95cc4f73c2e8df5031334fe2012194df51a9e364c31dced14e6c249a9e4dc"
+  },
+  "business-03/execution/tpm-off-on-kept-wire.bin": {
+    "bytes": 124,
+    "sha256": "b16f85e985e4f659a1dcff14162ef04974bbc1a820665f0602bf8d79516f847d"
+  },
+  "business-03/execution/tpm-off-propose-management.json": {
+    "bytes": 468,
+    "sha256": "f00be3403d1cb18b0250c7b2d903b108917b443daa46d3fe6b66e26fc86c9096"
+  },
+  "business-03/execution/tpm-on-apply-management.json": {
+    "bytes": 1003,
+    "sha256": "3f16d086b1060c2dba327ff5c5eb0e2f0b332c5a106633f95e12af691b82e52e"
+  },
+  "business-03/execution/tpm-on-propose-management.json": {
+    "bytes": 468,
+    "sha256": "681e2ca488ea94266d33c5cecb32b738930ccdb72d38c1ff9ddf33f87f659b6a"
+  },
+  "business-03/lease/events.jsonl": {
+    "bytes": 12448,
+    "sha256": "d4ac4d45501cf8fe4c20067b3aa9aabad4a1366b2d0b96c198c21975074343a4"
+  },
+  "business-03/lease/exit.json": {
+    "bytes": 698,
+    "sha256": "8009a1b4c78c82c844d65623b1fc9d2857fa2976d7f9ad1d9fbafcfc914b5e63"
+  },
+  "business-03/lease/nvml-queries.jsonl": {
+    "bytes": 153182,
+    "sha256": "0c76a630bd9e591ce005c3fed23e1a01b462892e9cf1d5570ceed969d9a27430"
+  },
+  "business-03/plan.json": {
+    "bytes": 594094,
+    "sha256": "b69dcfc522b3094164fbe06334893c33646460b46762126cbe5964dcc3bd4216"
+  },
+  "business-launch-03/command.json": {
+    "bytes": 452,
+    "sha256": "c0c886ad0b889f5bdb2214db834586e8e4ad4186c9a200bda061312ec70cf92a"
+  },
+  "business-launch-03/result.json": {
+    "bytes": 87,
+    "sha256": "d952215004065da708f77bab7da7a6497ed00c901514345f491641736d0540a2"
+  },
+  "business-launch-03/run.log": {
+    "bytes": 3491,
+    "sha256": "6d8ee8ccd7947a192526811e07edfede6157210778c731e166a37f1e941ff8cd"
+  },
+  "checkpoint-cpu-01/command.json": {
+    "bytes": 535,
+    "sha256": "31efb70f903802cf82056eff555dd0b1fb2b566252ac3a2736204d466b4d70ab"
+  },
+  "checkpoint-cpu-01/result.json": {
+    "bytes": 92,
+    "sha256": "68063d574c4796836e51a8b50f3e5761e80a7cf16c4b99910135da8ac645cd92"
+  },
+  "checkpoint-cpu-01/sources.json": {
+    "bytes": 850,
+    "sha256": "66c1f9b64a740d9fd7424ac7b787a06e2667a746c63bd89110b521abb20ff671"
+  },
+  "checkpoint-cpu-01/tests.log": {
+    "bytes": 868,
+    "sha256": "f8732585960f9602f7a8ee7ae48aab46cd50ce17a4a16bc4a762cc7f9d45fa8b"
+  },
+  "completion-prepare-01/command.json": {
+    "bytes": 60,
+    "sha256": "856c9fa6f13c032f65daf1e6f91cab455dcbd81a78796c43cdf5be0cada8acfc"
+  },
+  "completion-prepare-01/prepare.log": {
+    "bytes": 383,
+    "sha256": "f5c0c71e6af8567b3ab6e4165afee0710af2ba55671e1380514411d4c6b23c76"
+  },
+  "completion-prepare-01/result.json": {
+    "bytes": 53,
+    "sha256": "8fe0eb5e6dda769e8b7959f4ea18b2097cc08dbadafbe450e53ed023aab868e3"
+  },
+  "decision.json": {
+    "bytes": 1001,
+    "sha256": "754339fb8f11809d989598c3a7732f21f58663e4a288fac910b3d40f6f91d122"
+  },
+  "sealed-observation.json": {
+    "bytes": 879,
+    "sha256": "5d77ad074a65b862959173581218bd68285efa22fd687e667e3dce18991fb4ac"
+  },
+  "sources/tools/serve_access/acceptance.py": {
+    "bytes": 29272,
+    "sha256": "fb1def2fc06d9368d4799a1ea7f680d739d3ccaee65bf198bc0482f613402cac"
+  },
+  "sources/tools/serve_access/checkpoint.py": {
+    "bytes": 6846,
+    "sha256": "cee1d72aa748673a3b90db0fd9decf5de077e6e206cd754ba60738b0959b7d74"
+  },
+  "sources/tools/serve_access/test_acceptance.py": {
+    "bytes": 11652,
+    "sha256": "ad9391a8ebe1da3a731d90a9bd1d43d3d52fe2f55df890ac9ef4a5b0e1911d73"
+  },
+  "sources/tools/serve_recovery/acceptance.py": {
+    "bytes": 50885,
+    "sha256": "c68479622069e1f019fdcf58d9a5de1d530e37732ab01627d9f623bbe665d7b1"
+  }
+}

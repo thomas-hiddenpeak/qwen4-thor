@@ -1,0 +1,1 @@
+{"plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/business-03/plan.json", "prior_counts": {"starts": 1, "chats": 1, "probes": 1, "controls": 405}, "remaining_seconds": 1084.222847307101, "limits": {"starts": 4, "chats": 17, "probes": 1, "controls": 6000, "seconds": 1200}, "pending_bundle_unchanged": true, "accepted_release_requires_current_schemas": true}

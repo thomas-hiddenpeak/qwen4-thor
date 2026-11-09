@@ -306,7 +306,8 @@ def launcher(plan, plan_path):
         return original(command, **options)
     subprocess.Popen = spawn
     receipt = plan['package']
-    result = service.launch(receipt['package'], receipt['manifest_sha256'], output/'state')
+    state = Path(plan.get('state_directory', output/'state'))
+    result = service.launch(receipt['package'], receipt['manifest_sha256'], state)
     save(output/'launcher-result.json', result)
     return int(result['guardian_exit_code'] != 0)
 
@@ -788,7 +789,7 @@ class Stage:
                 raise
         self.process.wait(timeout=10)
         self.engine.require(self.process.returncode==0,'launcher cleanup failed')
-        persistent=self.engine.read(self.output/'state/ledger.json')['state']
+        persistent=self.engine.read(getattr(self,'scope',self.output/'state')/'ledger.json')['state']
         save(self.output/'stopped-ledger.json',persistent)
         self.engine.require(persistent['desired']=='STOPPED' and
             all(v is None for v in persistent['active'].values()),'persistent service not stopped')
@@ -808,6 +809,10 @@ class Stage:
             return
         raise RuntimeError('Guardian resurrected after durable stop')
 
+    def initialize_state(self):
+        receipt = self.plan['package']
+        return self.service.initialize(receipt['package'], receipt['manifest_sha256'], self.output/'state')
+
     def run(self):
         failure, cleanup_failure = None,None
         def expired(*_args): raise TimeoutError('bounded execution deadline; cleanup only')
@@ -816,8 +821,7 @@ class Stage:
         signal.setitimer(signal.ITIMER_REAL,
             self.plan['limits']['seconds']-70-self.plan.get('prior_seconds',0))
         try:
-            receipt=self.plan['package']
-            initialized=self.service.initialize(receipt['package'],receipt['manifest_sha256'],self.output/'state')
+            initialized=self.initialize_state()
             self.service_id=initialized['service_id']
             save(self.output/'initialized.json',initialized)
             with (self.output/'launcher.log').open('xb') as log:

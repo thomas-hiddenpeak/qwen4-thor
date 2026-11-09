@@ -1,0 +1,33 @@
+{
+  "exit_code": 0,
+  "result": {
+    "id": "1c72eec6-b76a-46df-a517-afe4afae8bc9",
+    "request_sha256": "d00a6f59d4818ddc1d9d8306f1d33ffe18c3ff8eaacbdfd32cdfec281bd2a8e8",
+    "revision": 5,
+    "policy_sha256": "ee1e37726dba95fd7b49887e052a177e26840435597f2efaa59ab44b4244e180",
+    "replayed": false,
+    "durable": true,
+    "live_applied": true,
+    "live": {
+      "profile": "q4t-native-client-policy-v1",
+      "configured": true,
+      "mutable": true,
+      "publisher_alive": true,
+      "revision": 5,
+      "sha256": "efe2a3dcee2b895b3a685676270f6115e3e19167b5ce04472f84491ce950da4d",
+      "content_sha256": "ee1e37726dba95fd7b49887e052a177e26840435597f2efaa59ab44b4244e180",
+      "global_inflight": 8,
+      "global_queued": 2,
+      "credential_values_redacted": true,
+      "clients": [
+        "alpha",
+        "beta"
+      ],
+      "model_pid": 1041376,
+      "model_start_ticks": 239747793,
+      "model_generation": 1
+    },
+    "live_error": "",
+    "model_actions": false
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "exit_code": 0,
+  "result": {
+    "proposed": true,
+    "request_id": "ecae07bd-f543-4500-86f2-1031074dc9cd",
+    "expected_revision": 0,
+    "candidate": {
+      "configured": true,
+      "revision": 1,
+      "sha256": "281935642f6cfa1d79493e9d85df22e3278e9d5039fcec81fa58f6071da930cd",
+      "clients": 2,
+      "fair_queue": true,
+      "quota_clients": 0,
+      "credential_values_redacted": true
+    },
+    "committed": false,
+    "live_applied": false
+  }
+}

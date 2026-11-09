@@ -1,0 +1,23 @@
+{
+  "status": 200,
+  "headers": {
+    "Content-Type": "application/json",
+    "Content-Length": "109",
+    "X-Request-Id": "req-98bf5a90df293ee7bdca8350c63fed75",
+    "Connection": "close",
+    "Cache-Control": "no-store",
+    "Vary": "Origin"
+  },
+  "seconds": 0.028463332448154688,
+  "value": {
+    "object": "list",
+    "data": [
+      {
+        "id": "qwen3.8-flash-next",
+        "object": "model",
+        "created": 1794207433,
+        "owned_by": "q4t"
+      }
+    ]
+  }
+}

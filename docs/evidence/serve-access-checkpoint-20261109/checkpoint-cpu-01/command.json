@@ -1,0 +1,11 @@
+[
+  "python3",
+  "-B",
+  "-m",
+  "unittest",
+  "-v",
+  "tools.serve_access.test_acceptance.DriverTests.test_selected_copy_keeps_primary_evidence_and_rejects_changed_identity",
+  "tools.serve_access.test_acceptance.DriverTests.test_checkpoint_launcher_uses_existing_state_without_initializing_it",
+  "tools.serve_access.test_acceptance.DriverTests.test_unknown_cleanup_cannot_resume_without_independent_stopped_audit",
+  "tools.serve_access.test_acceptance.DriverTests.test_config_completion_cannot_hide_more_work_or_another_failure"
+]

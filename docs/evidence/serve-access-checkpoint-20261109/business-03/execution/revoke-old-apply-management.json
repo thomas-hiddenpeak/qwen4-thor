@@ -1,0 +1,27 @@
+{
+  "exit_code": 0,
+  "result": {
+    "id": "69ebcd8b-808c-4053-99bb-97df1946f61c",
+    "request_sha256": "6633eb129299d0d4d1b4fb24254ea7142f5ffba9cd293b28259706d8bcbd2a02",
+    "revision": 2,
+    "policy_sha256": "e2c1ffb85f84435a457bb8ea0aa1e29765ffd29607080f6febc33794632297d0",
+    "replayed": false,
+    "durable": true,
+    "live_applied": true,
+    "live": {
+      "configured": true,
+      "revision": 2,
+      "sha256": "e2c1ffb85f84435a457bb8ea0aa1e29765ffd29607080f6febc33794632297d0",
+      "clients": 1,
+      "active_keys": 1,
+      "revoked_clients": 0,
+      "history_keys": 2,
+      "credential_values_redacted": true,
+      "entrypoint_pid": 1041364,
+      "entrypoint_start_ticks": 239747632,
+      "gateway_generation": 1
+    },
+    "live_error": "",
+    "model_actions": false
+  }
+}

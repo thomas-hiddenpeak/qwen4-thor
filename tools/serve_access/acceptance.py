@@ -84,24 +84,43 @@ def verify_prior(plan):
     guard = json.loads(Path(plan['prior_guard']).read_bytes())
     probe = json.loads(Path(plan['prior_probe']).read_bytes())
     counts = prior['budget']['counts']
-    if plan.get('prior_failure_category') == 'config_schema':
+    cleanup_verified = prior['cleanup_failure'] is None
+    if plan.get('prior_failure_category') == 'sealed_deployment':
+        check = json.loads(Path(plan['checkpoint_cleanup']).read_bytes())
+        cleanup_verified = (check['status'] == 'PASS_STOPPED_DEPLOYMENT_CHECKPOINT' and
+            check['models_started_after_deploy'] == 0 and check['owned_processes_gone'] and
+            check['ports_released'] and check['locks_released'] and
+            'launcher cleanup failed' in (prior['cleanup_failure'] or ''))
+        stopped_before_business = (counts['starts'] == 2 and counts['chats'] == 10 and
+            list(prior['models']) == ['1'] and 'launcher exited unexpectedly' in prior['failure'])
+    elif plan.get('prior_failure_category') == 'config_schema':
         stopped_before_business = (counts['starts'] == counts['chats'] == 1 and
             list(prior['models']) == ['1'] and 'current_client_policy' in prior['failure'] and
             'jsonschema.exceptions.ValidationError' in prior['failure'])
     else:
         stopped_before_business = not prior['models'] and counts['starts'] == counts['chats'] == 0
-    if (prior['status'] != 'FAILED' or prior['cleanup_failure'] is not None or
+    if (prior['status'] != 'FAILED' or not cleanup_verified or
             not stopped_before_business or counts['probes'] != 1 or counts != plan['prior_counts'] or
             guard['status'] != 'COMMAND_FAILED' or
             probe != dict(version=1, ok=True, cuda_code=0, stage='complete') or
-            prior['package'] != plan['package'] or
+            prior['package'] != plan.get('primary_package', plan['package']) or
             plan['prior_seconds'] < prior['seconds']):
         raise ValueError('N04 previous attempt cannot be reused')
 
 
+def verify_selected_package(plan):
+    if 'primary_package' not in plan:return
+    primary = plan['primary_package']
+    expected = dict(primary, package=plan['package']['package'])
+    if (plan['package'] != expected or plan['package']['package'] not in
+            (primary['package'], plan['second_package']['package'])):
+        raise ValueError('N04 unplanned package selection')
+
+
 def verify(plan):
     bundle, _, _, _, _, engine = load_modules(plan)
-    limits = CONFIG_COMPLETION_LIMITS if plan.get('prior_failure_category') == 'config_schema' else LIMITS
+    limits = CONFIG_COMPLETION_LIMITS if plan.get('prior_failure_category') in (
+        'config_schema','sealed_deployment') else LIMITS
     engine.require(plan['scenario'] == 'native_client_access' and plan['limits'] == limits,
                    'N04 frozen budget changed')
     for name, digest in plan['sources'].items():
@@ -110,6 +129,7 @@ def verify(plan):
         engine.require(engine.sha(row['path']) == row['sha256'], 'N04 protected input changed')
     verify_sdk(plan['sdk'])
     verify_prior(plan)
+    verify_selected_package(plan)
     value = bundle.verify(plan['package']['package'], plan['package']['manifest_sha256'])
     engine.require(value['version'] == 8 and value['ingress_mode'] == 'native' and value['tls'],
                    'N04 requires managed native TLS')
@@ -157,8 +177,32 @@ class Stage(common.Stage):
         self.scope = self.output/'state'
         self.active_package = self.package
         self.active_digest = plan['package']['manifest_sha256']
+        if plan.get('checkpoint'):
+            self.scope = Path(plan['state_directory'])
+            self.package = Path(plan['primary_package']['package'])
         self.saved_files = []
         self.verdict = {}
+
+    def initialize_state(self):
+        if not self.plan.get('checkpoint'):
+            return super().initialize_state()
+        from tools.serve_recovery import deployment, store
+        for row in self.plan['checkpoint_inputs']:
+            self.engine.require(self.engine.sha(row['path']) == row['sha256'],
+                                'N04 handoff checkpoint changed')
+        desc = deployment.read_descriptor(self.scope)
+        self.engine.require(desc == self.plan['checkpoint_descriptor'], 'N04 checkpoint selection changed')
+        deployment.ready(self.scope, desc)
+        with store.Store(self.scope, desc['service_id']) as core:
+            self.engine.require(core.state['desired'] == 'STOPPED' and not any(core.state['active'].values()),
+                                'N04 checkpoint is not durably stopped')
+        self.keys['old-alpha'] = self.keys['alpha']
+        current = self.engine.read(self.plan['checkpoint_keys'])
+        for row in current['clients']:
+            self.engine.require(len(row['api_keys']) == 1, 'unexpected checkpoint key overlap')
+            self.keys[row['id']] = row['api_keys'][0]
+        return dict(service_id=desc['service_id'], resumed_sealed_deployment=True,
+                    reseeded=False, package=desc['package'])
 
     def request(self, label, body=None, *, client='alpha', path='/v1/models', expected=200):
         from tools.examples import chat_client
@@ -286,7 +330,8 @@ class Stage(common.Stage):
 
     def start_again(self, label):
         plan = dict(self.plan, package=dict(self.plan['package'], package=str(self.active_package),
-                                          manifest_sha256=self.active_digest))
+                                          manifest_sha256=self.active_digest),
+                    primary_package=self.plan.get('primary_package', self.plan['package']))
         path = self.output/(label+'-plan.json');save(path, plan)
         with (self.output/(label+'-launcher.log')).open('xb') as log:
             self.process = subprocess.Popen([sys.executable, '-I', '-B', __file__,
@@ -300,6 +345,11 @@ class Stage(common.Stage):
         self.process = None
 
     def exercise(self):
+        if self.plan.get('checkpoint'):
+            closed = self.engine.read(self.plan['checkpoint_sealed'])
+            stored = self.engine.read(self.plan['checkpoint_stored'])['value']
+            self.finish_handoff(closed, stored['id'], already_started=True)
+            return
         from tools.examples import chat_client
         from tools.examples.project_records import ProjectRecords, VALIDATORS
         from tools.serve_recovery import access_store, usage_store
@@ -384,7 +434,14 @@ class Stage(common.Stage):
         self.active_package, self.active_digest = Path(second['package']), second['manifest_sha256']
         self.management('deploy', 'switch-second', '--expected-manifest-sha256', self.plan['package']['manifest_sha256'],
                         '--request-id', self.plan['switch_id'])
-        self.start_again('second');second_ready = self.ready(2, mode='exact')
+        self.finish_handoff(sealed, stored.id)
+
+    def finish_handoff(self, sealed, stored_id, *, already_started=False):
+        from tools.serve_recovery import access_store, usage_store
+        binding = access_store.binding(self.scope, self.service_id)
+        second = self.plan['second_package']
+        if not already_started:self.start_again('second')
+        second_ready = self.ready(2, mode='exact')
         self.request('revoked-after-upgrade', client='old-alpha', expected=401)
         beta = next(c for c in sealed['snapshot']['clients'] if c['id'] == 'beta')
         expiry = int(beta['window_ns'])+60_000_000_000
@@ -411,7 +468,7 @@ class Stage(common.Stage):
                         '--request-id', self.plan['rollback_id'])
         self.start_again('third');self.ready(3, mode='conservative_new_window')
         self.request('revoked-after-rollback', client='old-alpha', expected=401)
-        self.request('stored-after-rollback', path='/v1/chat/completions/'+stored.id, client='beta')
+        self.request('stored-after-rollback', path='/v1/chat/completions/'+stored_id, client='beta')
         answer = self.request('recovered-sse', answer_body('recovered-sse', stream=True), client='beta')
         self.engine.require(answer.finish_reason == 'stop' and answer.message['content'].strip() == '42',
                             'unknown recovery task quality')
@@ -419,6 +476,8 @@ class Stage(common.Stage):
             auxiliary_loss_same_model=True, stored_identity=True, exact_restore=True,
             same_window_checked=window_live, unknown_guard=True, compatible_rollback=True,
             official_sdk=True, actual_document_tool=True)
+        if self.plan.get('checkpoint'):
+            self.verdict['reused_passed_first_generation'] = self.plan['checkpoint_from']
         save(self.output/'business-verdict.json', self.verdict)
 
     def stop(self):

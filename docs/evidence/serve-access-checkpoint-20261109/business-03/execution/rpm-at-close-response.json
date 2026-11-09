@@ -1,0 +1,20 @@
+{
+  "status": 429,
+  "headers": {
+    "Content-Type": "application/json",
+    "Content-Length": "124",
+    "X-Request-Id": "req-69d74f9839f13a0e69d5c6fd374e4061",
+    "Connection": "close",
+    "Cache-Control": "no-store",
+    "Vary": "Origin"
+  },
+  "seconds": 0.05408364161849022,
+  "value": {
+    "error": {
+      "message": "client minute quota unavailable",
+      "type": "rate_limit_error",
+      "code": "client_rpm_exhausted",
+      "param": null
+    }
+  }
+}

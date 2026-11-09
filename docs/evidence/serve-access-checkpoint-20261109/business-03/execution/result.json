@@ -1,0 +1,92 @@
+{
+  "status": "FAILED",
+  "failure": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/acceptance.py\", line 828, in run\n    self.exercise()\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_access/acceptance.py\", line 387, in exercise\n    self.start_again('second');second_ready = self.ready(2, mode='exact')\n                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_access/acceptance.py\", line 254, in ready\n    result = self.wait(lambda s:s['model_generation'] == generation and s['business_ready'])\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/acceptance.py\", line 440, in wait\n    self.engine.require(self.process.poll() is None, 'launcher exited unexpectedly')\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/business-01/bundle/source/tools/serve_service/package.py\", line 57, in require\n    raise RuntimeError(message)\nRuntimeError: launcher exited unexpectedly\n",
+  "cleanup_failure": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/acceptance.py\", line 834, in run\n    try: self.stop()\n         ^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_access/acceptance.py\", line 427, in stop\n    super().stop();cleaned = True\n    ^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/acceptance.py\", line 790, in stop\n    self.engine.require(self.process.returncode==0,'launcher cleanup failed')\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/business-01/bundle/source/tools/serve_service/package.py\", line 57, in require\n    raise RuntimeError(message)\nRuntimeError: launcher cleanup failed\n",
+  "seconds": 66.9885065429844,
+  "budget": {
+    "counts": {
+      "starts": 2,
+      "chats": 10,
+      "probes": 1,
+      "controls": 603
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "controller-1",
+        "ordinal": 2,
+        "monotonic_ns": 2397477938751011
+      },
+      {
+        "kind": "chats",
+        "label": "generation-self-check-1",
+        "ordinal": 2,
+        "monotonic_ns": 2397516348309453
+      },
+      {
+        "kind": "chats",
+        "label": "project-tool",
+        "ordinal": 3,
+        "monotonic_ns": 2397520772529668
+      },
+      {
+        "kind": "chats",
+        "label": "project-final",
+        "ordinal": 4,
+        "monotonic_ns": 2397524128461619
+      },
+      {
+        "kind": "chats",
+        "label": "new-client-sdk",
+        "ordinal": 5,
+        "monotonic_ns": 2397528513985287
+      },
+      {
+        "kind": "chats",
+        "label": "rpm-off-on-kept",
+        "ordinal": 6,
+        "monotonic_ns": 2397529619619309
+      },
+      {
+        "kind": "chats",
+        "label": "tpm-off-on-kept",
+        "ordinal": 7,
+        "monotonic_ns": 2397531777572965
+      },
+      {
+        "kind": "chats",
+        "label": "limits-lost-sse",
+        "ordinal": 8,
+        "monotonic_ns": 2397535788897093
+      },
+      {
+        "kind": "chats",
+        "label": "beta-stored",
+        "ordinal": 9,
+        "monotonic_ns": 2397536835439621
+      },
+      {
+        "kind": "chats",
+        "label": "rpm-at-close",
+        "ordinal": 10,
+        "monotonic_ns": 2397537799054172
+      }
+    ]
+  },
+  "models": {
+    "1": {
+      "pid": 1041376,
+      "start_ticks": 239747793
+    }
+  },
+  "quota_deadlines": {},
+  "source_commit": "bd31fe02fd30a663add870de43c2f946e42d9e5c",
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/business-01/bundle",
+    "manifest_sha256": "c5609b71d7669a322538e63295de5163d2f28744711ed17b0738d04d6719a614",
+    "engine_binary_sha256": "c344d22ff3befc4464259a020f69ab5ea83efbbf6916e1120ec47faa626b5ad3",
+    "recovery_accepted": false
+  },
+  "default_replaced": false,
+  "performance_acceptance": false
+}
