@@ -255,7 +255,10 @@
       "delivery_evidence": "evidence/serve-chat-delivery-20261109/README.md",
       "plan": "SERVE_RESPONSES_ADVANCED_2026-11-09.md",
       "remaining_required": [
-        "A07.8 complete input/output/include/SSE/SDK and release audit including standard input_tokens endpoint"
+        "Complete native refusal signal/output and delta/done path without fabricating or relabeling moderation",
+        "Complete A09/A10/A11 media/files/builtin tools and all required input/output/include/SSE producers and SDK integration",
+        "Enforce max_tool_calls in actual builtin executor; advanced async/caller/namespace/output_schema and typed output remain required",
+        "Full A07 release audit after dependent implementations; standard input_tokens and request defaults already delivered"
       ],
       "automatic_truncation": {
         "state": "delivered",
@@ -298,7 +301,7 @@
         },
         "publication_revision": 10
       },
-      "current_work": "Complete source-linked remaining item/include/SSE audit, then A08 retention dependency and all required master tasks",
+      "current_work": "A08 persistent retention dependency, then A09/A10/A11 with all remaining A07 event/item tasks retained",
       "reasoning_summary": {
         "state": "delivered",
         "cpu_checks": 31,
@@ -851,7 +854,8 @@
         },
         "publication_revision": 30,
         "delivery_evidence": "evidence/serve-request-fields-delivery-20261110/README.md"
-      }
+      },
+      "execution_audit": "serve-responses-execution-audit-v1.json"
     },
     {
       "id": "A08",
@@ -873,7 +877,7 @@
         "merged_main": false,
         "whole_task_complete": false
       },
-      "development_status": "Chat/Responses/Conversations storage, background/cancel and unknown commits delivered. N04 credential/quota continuity delivered and evidence reusable. Persistent object/item retention governance and advanced context integration remain open.",
+      "development_status": "Core durable APIs, background/cancel, context/encryption and N04 quota identity delivered. Implementing retention dependency protection and native inspect/collect with bounded conflict-aware cleanup; full A08 remains open.",
       "development_evidence": "evidence/serve-object-store-20261108/README.md",
       "transaction_evidence": "evidence/serve-object-transactions-20261108/README.md",
       "state_evidence": "evidence/serve-responses-state-20261109/README.md",
@@ -895,9 +899,12 @@
       "chat_storage_evidence": "evidence/serve-chat-storage-20261109/README.md",
       "chat_business_evidence": "evidence/serve-chat-business-20261109/README.md",
       "remaining_required": [
-        "Persistent application object/item retention governance with active tasks/history dependencies protected",
-        "A07 advanced context/encrypted state integration; preserve identities, scopes and durable cancellation"
-      ]
+        "A08.1 bounded dependency-aware retention and active-response protection before reconciliation",
+        "A08.2 native inspect/collect and exact-plan atomic cleanup, same-UID live and exclusive offline administration",
+        "A08.3 actual history/conversation/background/encrypted-state and retention business acceptance",
+        "A08.4 reversible delivered package and complete A08 source/evidence audit"
+      ],
+      "retention_plan": "SERVE_APPLICATION_RETENTION_2026-11-10.md"
     },
     {
       "id": "A09",

@@ -41,3 +41,9 @@ CPU 检查，包含缺陷复现、模板读取顺序、count/compact 默认和�
 13 C++/2schema/2驱动及实际1启动/2生成/2计数/10拒绝通过，
 40.241秒、40 NVML全OK。默认5935be0a/b39ad17e，revision30、
 STOPPED，上一代完整保留。[交付证据](evidence/serve-request-fields-delivery-20261110/README.md)。
+
+## 未完成执行链继续入总目标
+
+[逐tag审计](serve-responses-execution-audit-v1.json)覆盖31种input item、28种output item、59种SSE事件；不按数量宣称兼容率。文本/function/custom/reasoning/compaction核心已交付，文件/媒体、内建工具/MCP/程序执行、真实检索annotation和原生refusal信号仍须实现。max_tool_calls目前只有解析/回显，必须在A11实际内建执行器中执行总调用上限；不能按字段已接收算完成。
+
+八种include已有存储投影，但没有producer的结果不能生成；A09/A10/A11继续实现producer及事件。先做其依赖A08留存治理，再按计划接Files/Uploads/Batch及真实工具/媒体。所有缺口仍在A07完成判定中。
