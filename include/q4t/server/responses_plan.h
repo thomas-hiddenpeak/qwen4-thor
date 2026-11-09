@@ -36,6 +36,12 @@ Status ParseResponsesEnvelope(const io::Json& request,
                               const ChatPlanConfig& config,
                               ResponsesEnvelope* envelope,
                               ChatPlanError* error);
+// Compact has its own public request shape; never accept create-only options
+// and silently ignore them. It remains stateless and uses the server budget.
+Status NormalizeResponsesCompactRequest(const io::Json& request,
+                                        const ChatPlanConfig& config,
+                                        io::Json* normalized,
+                                        ChatPlanError* error);
 
 struct ResponsesGenerationPlan {
   ResponsesInputPlan input;

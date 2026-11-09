@@ -1,0 +1,12 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "tools.serve_responses.test_contract.ApplicationContract.test_current_native_wire_is_strict",
+    "-v"
+  ],
+  "exit_code": 1,
+  "seconds": 0.1639032461680472
+}

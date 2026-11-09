@@ -67,6 +67,8 @@ export async function execute(input) {
         chunks = [];
         for await (const chunk of value) chunks.push(chunk);
       } else result = value;
+    } else if (input.action === 'compact') {
+      result = await client.responses.compact(input.request, options);
     } else if (input.action === 'retrieve') {
       const value = await client.responses.retrieve(input.id, input.query ?? {}, options);
       if (input.query?.stream) {

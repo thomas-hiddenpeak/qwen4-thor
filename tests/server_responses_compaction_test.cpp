@@ -5,8 +5,11 @@
 #include <algorithm>
 #include <cstdlib>
 #include <filesystem>
+#include <fstream>
 
 #include "q4t/server/output_schema.h"
+#include "q4t/server/application_routes.h"
+#include "q4t/server/responses_api.h"
 #include "q4t/server/responses_crypto.h"
 #include "q4t/server/responses_execution.h"
 #include "q4t/test.h"
@@ -416,5 +419,383 @@ Q4T_TEST(compaction_and_encrypted_reasoning_form_one_authenticated_history) {
   Q4T_CHECK(restored.array.size() == expanded.array.size() + 1);
   Q4T_CHECK(restored.array.back().GetArray("content")->array[0].GetString(
                 "text") == "The verified result is 42.");
+  return true;
+}
+
+namespace {
+Json ExecutionInput() {
+  auto history = History();
+  for (auto& item : history.array)
+    if (item.GetString("role") != "assistant")
+      std::erase_if(item.object,
+                    [](const auto& field) { return field.first == "id"; });
+  return history;
+}
+Json ExecutionRequest(bool automatic = true) {
+  auto request = Parse(R"({"model":"cpu-model","store":true,
+    "max_output_tokens":128,"reasoning":{"effort":"none"}})");
+  Field(&request, "input") = ExecutionInput();
+  if (automatic)
+    Field(&request, "context_management") =
+        Parse(R"([{"type":"compaction","compact_threshold":600}])");
+  return request;
+}
+ResponsesExecution::ContextMeasure Measured(size_t tokens) {
+  return
+      [tokens](const ResponsesGenerationPlan&, size_t* count, ChatPlanError*) {
+        *count = tokens;
+        return q4t::Status();
+      };
+}
+void SaveCompaction(std::string_view name, std::string_view wire) {
+  const char* directory = std::getenv("Q4T_TEST_OUTPUT_DIR");
+  if (!directory) return;
+  const auto root = std::filesystem::path(directory) / "compaction-wire";
+  std::filesystem::create_directories(root);
+  std::ofstream file(root / (std::string(name) + ".wire"));
+  file << wire;
+  if (!file.good()) throw std::runtime_error("cannot export compaction wire");
+}
+size_t Count(std::string_view wire, std::string_view value) {
+  size_t count = 0, pos = 0;
+  while ((pos = wire.find(value, pos)) != wire.npos) {
+    ++count;
+    pos += value.size();
+  }
+  return count;
+}
+}  // namespace
+
+Q4T_TEST(compaction_request_shape_is_separate_and_stateless) {
+  ChatPlanError error;
+  Json normalized;
+  Q4T_CHECK(NormalizeResponsesCompactRequest(
+      Parse(R"({"model":null,"input":"hello","instructions":"Be brief"})"),
+      Config(), &normalized, &error));
+  Q4T_CHECK(normalized.GetString("model") == "cpu-model" &&
+            !normalized.GetBool("store", true) &&
+            normalized.GetString("instructions") == "Be brief");
+  for (const auto* field :
+       {"store", "stream", "background", "max_output_tokens", "tools"}) {
+    auto request = Parse(R"({"model":"cpu-model","input":"hello"})");
+    Field(&request, field) = Parse("null");
+    Q4T_CHECK(!NormalizeResponsesCompactRequest(request, Config(), &normalized,
+                                                &error));
+    Q4T_CHECK(error.param == field);
+  }
+  Q4T_CHECK(!NormalizeResponsesCompactRequest(Parse(R"({"input":"hello"})"),
+                                              Config(), &normalized, &error));
+  Q4T_CHECK(error.param == "model");
+  return true;
+}
+
+Q4T_TEST(compaction_execution_threshold_and_plain_requests_do_not_load_keys) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesExecution below(objects), plain(objects), above(objects);
+  Q4T_CHECK(Ok(below.Prepare(ExecutionRequest(), Config(), Access(), 10)));
+  Q4T_CHECK(Ok(below.SelectCompaction(599, Config())));
+  Q4T_CHECK(!below.CompactionSelected());
+  Q4T_CHECK(Ok(plain.Prepare(ExecutionRequest(false), Config(), Access(), 10)));
+  Q4T_CHECK(Ok(plain.SelectCompaction(7000, Config())));
+  Q4T_CHECK(!plain.CompactionSelected());
+  Q4T_CHECK(objects.Health().workers_started == 0);
+  Q4T_CHECK(Ok(above.Prepare(ExecutionRequest(), Config(), Access(), 10)));
+  Q4T_CHECK(Ok(above.SelectCompaction(600, Config())));
+  Q4T_CHECK(above.CompactionSelected() &&
+            above.Compaction().request.GetInt("max_completion_tokens") == 64);
+  return true;
+}
+
+Q4T_TEST(compaction_execution_trigger_is_not_a_model_message) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  auto request = ExecutionRequest(false);
+  Field(&request, "input")
+      .array.push_back(Parse(R"({"type":"compaction_trigger"})"));
+  ResponsesExecution run(objects);
+  Q4T_CHECK(Ok(run.Prepare(request, Config(), Access(), 10)));
+  Q4T_CHECK(OutputJson(run.Generation().generation_request)
+                .find("compaction_trigger") == std::string::npos);
+  Q4T_CHECK(Ok(run.SelectCompaction(10, Config())) && run.CompactionSelected());
+  Q4T_CHECK(run.Compaction().source.array.size() == 4);
+  return true;
+}
+
+Q4T_TEST(compaction_output_lifecycle_has_one_done_and_no_tool_events) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesExecution run(objects);
+  Q4T_CHECK(Ok(run.Prepare(ExecutionRequest(), Config(), Access(), 10)));
+  Q4T_CHECK(Ok(run.SelectCompaction(600, Config())));
+  std::string wire, events;
+  Q4T_CHECK(Ok(run.Begin(&wire)));
+  events += wire;
+  Q4T_CHECK(Ok(run.StartCompaction(&wire)));
+  events += wire;
+  Q4T_CHECK(wire.find("response.compaction.compacting") != wire.npos);
+  const auto event_begin = wire.find("data: ", wire.find(
+      "event: response.compaction.compacting"));
+  const auto event_end = wire.find("\r\n", event_begin);
+  Q4T_CHECK(!Parse(wire.substr(event_begin + 6, event_end - event_begin - 6))
+                 .Has("obfuscation"));
+  Q4T_CHECK(!run.Finish(false, 0, {}, 11, &wire).ok());
+  Q4T_CHECK(Ok(run.CompleteCompaction("Verified result: 42.", 12, Config(),
+                                      Measured(80), &wire)));
+  events += wire;
+  Q4T_CHECK(run.Generation().generation_request.GetInt(
+                "max_completion_tokens") == 116);
+  ResponseDelta answer;
+  answer.kind = ResponseDelta::Kind::kContent;
+  answer.text = "42";
+  Q4T_CHECK(run.Append(answer, "null", &wire));
+  events += wire;
+  Q4T_CHECK(Ok(run.Finish(false, 0, {680, 0, 14, 12}, 11, &wire)));
+  events += wire;
+  Q4T_CHECK(Count(events, "event: response.output_item.done\r\n") == 2);
+  Q4T_CHECK(Count(events, "event: response.compaction.compacting\r\n") == 1);
+  Q4T_CHECK(events.find("function_call_arguments.done") == events.npos);
+  SaveCompaction("automatic-events", events);
+  SaveCompaction("automatic-result", run.ResultJson());
+  const auto& output = *run.Output().Snapshot().GetArray("output");
+  Q4T_CHECK(output.array[0].GetString("type") == "compaction" &&
+            !output.array[0].Has("status") &&
+            !output.array[0].GetString("encrypted_content").empty());
+  Q4T_CHECK(run.Output().Snapshot().Find("usage")->GetInt("total_tokens") ==
+            694);
+  return true;
+}
+
+Q4T_TEST(compaction_execution_does_not_accept_nonreducing_memory) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesExecution run(objects);
+  Q4T_CHECK(Ok(run.Prepare(ExecutionRequest(), Config(), Access(), 10)));
+  Q4T_CHECK(Ok(run.SelectCompaction(600, Config())));
+  const auto original = OutputJson(run.Generation().generation_request);
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)) && Ok(run.StartCompaction(&wire)));
+  const auto reply =
+      run.CompleteCompaction("memory", 12, Config(), Measured(600), &wire);
+  Q4T_CHECK(reply.code == "compaction_not_reduced" && wire.empty());
+  Q4T_CHECK(OutputJson(run.Generation().generation_request) == original);
+  Q4T_CHECK(run.Output()
+                .Snapshot()
+                .GetArray("output")
+                ->array[0]
+                .GetString("encrypted_content")
+                .empty());
+  ResponsesExecution::ObserveError(&run, reply.http_status, reply.message,
+                                   reply.code);
+  Q4T_CHECK(Ok(run.CloseUnfinished()));
+  Q4T_CHECK(run.Output().Snapshot().GetString("status") == "failed");
+  Q4T_CHECK(
+      !run.Output().Snapshot().GetArray("output")->array[0].Has("status"));
+  return true;
+}
+
+Q4T_TEST(compaction_execution_measurement_failure_preserves_original_window) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesExecution run(objects);
+  Q4T_CHECK(Ok(run.Prepare(ExecutionRequest(), Config(), Access(), 10)));
+  Q4T_CHECK(Ok(run.SelectCompaction(600, Config())));
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)) && Ok(run.StartCompaction(&wire)));
+  const auto original = OutputJson(run.Generation().input.items);
+  const auto reply = run.CompleteCompaction(
+      "memory", 12, Config(),
+      [](const ResponsesGenerationPlan&, size_t*, ChatPlanError* error) {
+        *error = {"context_length_exceeded", "input", 400};
+        return q4t::Status::Fail("expanded media does not fit");
+      },
+      &wire);
+  Q4T_CHECK(reply.code == "context_length_exceeded" && wire.empty());
+  Q4T_CHECK(OutputJson(run.Generation().input.items) == original);
+  Q4T_CHECK(Ok(run.CloseUnfinished()));
+  return true;
+}
+
+Q4T_TEST(compaction_execution_cancellation_after_measurement_has_no_done) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesExecution run(objects);
+  Q4T_CHECK(Ok(run.Prepare(ExecutionRequest(), Config(), Access(), 10)));
+  Q4T_CHECK(Ok(run.SelectCompaction(600, Config())));
+  bool cancelled = false;
+  run.BindCancellation(Clock::now() + 5s, [&] { return cancelled; });
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)) && Ok(run.StartCompaction(&wire)));
+  const auto reply = run.CompleteCompaction(
+      "memory", 12, Config(),
+      [&](const ResponsesGenerationPlan&, size_t* count, ChatPlanError*) {
+        *count = 80;
+        cancelled = true;
+        return q4t::Status();
+      },
+      &wire);
+  Q4T_CHECK(reply.code == "request_cancelled" && wire.empty());
+  Q4T_CHECK(Ok(run.CloseUnfinished()));
+  return true;
+}
+
+Q4T_TEST(compaction_execution_budget_cannot_refill_or_skip_primary) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  auto request = ExecutionRequest();
+  Field(&request, "max_output_tokens") = Parse("1");
+  ResponsesExecution tiny(objects), spent(objects);
+  Q4T_CHECK(Ok(tiny.Prepare(request, Config(), Access(), 10)));
+  Q4T_CHECK(tiny.SelectCompaction(600, Config()).code ==
+            "compaction_budget_exhausted");
+  Q4T_CHECK(!tiny.CompactionSelected());
+  Q4T_CHECK(Ok(spent.Prepare(ExecutionRequest(), Config(), Access(), 10)));
+  Q4T_CHECK(Ok(spent.SelectCompaction(600, Config())));
+  std::string wire;
+  Q4T_CHECK(Ok(spent.Begin(&wire)) && Ok(spent.StartCompaction(&wire)));
+  Q4T_CHECK(
+      spent.CompleteCompaction("memory", 128, Config(), Measured(80), &wire)
+          .code == "compaction_budget_exhausted");
+  Q4T_CHECK(wire.empty() && Ok(spent.CloseUnfinished()));
+  return true;
+}
+
+Q4T_TEST(compaction_standalone_returns_preserved_users_and_replayable_state) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  auto request =
+      Parse(R"({"model":"cpu-model","instructions":"Preserve facts"})");
+  Field(&request, "input") = ExecutionInput();
+  ResponsesExecution run(objects, nullptr, false, true);
+  Q4T_CHECK(Ok(run.Prepare(request, Config(), Access(), 10)));
+  Q4T_CHECK(!run.Envelope().store && !run.Envelope().stream);
+  Q4T_CHECK(Ok(run.SelectCompaction(600, Config())));
+  Q4T_CHECK(run.Compaction().compacted_items == 1 &&
+            OutputJson(run.Compaction().request).find("Preserve facts") !=
+                std::string::npos);
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)) && Ok(run.StartCompaction(&wire)));
+  Q4T_CHECK(Ok(run.CompleteCompaction("Verified result: 42.", 12, Config(),
+                                      Measured(150), &wire)));
+  Q4T_CHECK(Ok(run.Finish(false, 0, {600, 0, 12, 12}, 11, &wire)));
+  SaveCompaction("standalone-result", run.ResultJson());
+  const auto result = Parse(run.ResultJson());
+  Q4T_CHECK(result.GetString("object") == "response.compaction" &&
+            !result.Has("status") && !result.Has("store"));
+  const auto& output = *result.GetArray("output");
+  Q4T_CHECK(output.array.size() == 4 &&
+            output.array[1].GetString("role") == "user" &&
+            !output.array[1].Has("id"));
+  ResponsesExecution resumed(objects);
+  auto next = ExecutionRequest(false);
+  Field(&next, "input") = output;
+  Q4T_CHECK(Ok(resumed.Prepare(next, Config(), Access(), 12)));
+  Q4T_CHECK(OutputJson(resumed.Generation().input.items)
+                .find("Verified result: 42.") != std::string::npos);
+  return true;
+}
+
+Q4T_TEST(compaction_standalone_noop_is_honest_zero_generation) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesExecution run(objects, nullptr, false, true);
+  Q4T_CHECK(Ok(run.Prepare(Parse(R"({"model":"cpu-model","input":"hello"})"),
+                           Config(), Access(), 10)));
+  Q4T_CHECK(Ok(run.SelectCompaction(10, Config())));
+  Q4T_CHECK(run.Compaction().compacted_items == 0 &&
+            run.Compaction().request.IsNull());
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)) && Ok(run.StartCompaction(&wire)));
+  Q4T_CHECK(Ok(run.CompleteCompaction("", 0, Config(), Measured(10), &wire)));
+  Q4T_CHECK(Ok(run.Finish(false, 0, {}, 11, &wire)));
+  const auto result = Parse(run.ResultJson());
+  Q4T_CHECK(result.Find("usage")->GetInt("total_tokens", -1) == 0 &&
+            result.GetArray("output")->array.size() == 2);
+  return true;
+}
+
+Q4T_TEST(compaction_stored_chain_preserves_history_and_removes_old_trigger) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  auto request = ExecutionRequest(false);
+  Field(&request, "input")
+      .array.push_back(Parse(R"({"type":"compaction_trigger"})"));
+  ResponsesExecution run(objects);
+  Q4T_CHECK(Ok(run.Prepare(request, Config(), Access(), 10)));
+  Q4T_CHECK(Ok(run.SelectCompaction(600, Config())));
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)) && Ok(run.StartCompaction(&wire)));
+  Q4T_CHECK(Ok(run.CompleteCompaction("Verified result: 42.", 12, Config(),
+                                      Measured(80), &wire)));
+  ResponseDelta answer;
+  answer.kind = ResponseDelta::Kind::kContent;
+  answer.text = "42";
+  Q4T_CHECK(run.Append(answer, "null", &wire));
+  Q4T_CHECK(Ok(run.Finish(false, 0, {680, 0, 14, 12}, 11, &wire)));
+  ResponsesState state(objects);
+  const auto record = state.ReadRecord(run.Id(), Access());
+  Q4T_CHECK(Ok(record));
+  Q4T_CHECK(record.value.GetArray("history")->array.size() == 5 &&
+            record.value.GetArray("history")->array.back().GetString("type") ==
+                "compaction_trigger");
+  auto next = Parse(R"({"model":"cpu-model","input":"What was the result?"})");
+  String(&next, "previous_response_id", run.Id());
+  ResponsesExecution resumed(objects);
+  Q4T_CHECK(Ok(resumed.Prepare(next, Config(), Access(), 12)));
+  const auto actual = OutputJson(resumed.Generation().generation_request);
+  Q4T_CHECK(actual.find("Verified result: 42.") != std::string::npos &&
+            actual.find("compaction_trigger") == std::string::npos);
+  Q4T_CHECK(Ok(resumed.SelectCompaction(100, Config())) &&
+            !resumed.CompactionSelected());
+  return true;
+}
+
+Q4T_TEST(
+    compaction_background_checkpoint_and_cancel_never_finish_pending_item) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  auto request = ExecutionRequest();
+  Field(&request, "background") = Parse("true");
+  ResponsesExecution queued(objects);
+  Q4T_CHECK(Ok(queued.Prepare(request, Config(), Access(), 10, true)));
+  std::string wire;
+  Q4T_CHECK(Ok(queued.Begin(&wire)));
+  ResponsesExecution run(objects);
+  Q4T_CHECK(Ok(run.RestoreQueued(queued.Id(), Config(), Access())));
+  Q4T_CHECK(Ok(run.StartRunning(&wire)));
+  Q4T_CHECK(Ok(run.SelectCompaction(600, Config())));
+  Q4T_CHECK(Ok(run.StartCompaction(&wire)) && Ok(run.Checkpoint()));
+  Q4T_CHECK(Ok(run.Cancel()));
+  Q4T_CHECK(run.Output().Snapshot().GetString("status") == "cancelled");
+  Q4T_CHECK(!run.CompleteCompaction("memory", 12, Config(), Measured(80), &wire)
+                 .ok());
+  Q4T_CHECK(wire.empty() && Ok(run.CloseUnfinished()));
+  return true;
+}
+
+Q4T_TEST(compaction_route_is_generation_not_observation_or_cancellation) {
+  Q4T_CHECK(IsResponsesCompaction("/v1/responses/compact"));
+  Q4T_CHECK(ResponsesMethodAllowed("POST", "/v1/responses/compact"));
+  Q4T_CHECK(!ResponsesMethodAllowed("GET", "/v1/responses/compact"));
+  Q4T_CHECK(!ResponsesMethodAllowed("DELETE", "/v1/responses/compact"));
+  Q4T_CHECK(!IsResponsesObservation("GET", "/v1/responses/compact"));
+  Q4T_CHECK(!IsResponseCancellation("POST", "/v1/responses/compact"));
+  ResponsesReadPlan plan;
+  const auto reply =
+      PlanResponsesRead("GET", "/v1/responses/compact", "", &plan);
+  Q4T_CHECK(reply.http_status == 405);
+  return true;
+}
+
+Q4T_TEST(compaction_window_capacity_never_returns_an_unreplayable_result) {
+  auto retained = Parse("[]");
+  retained.array.resize(4096, Message("u", "user", "hello"));
+  const auto item = Parse(R"({"type":"compaction","id":"cmp_1",
+    "encrypted_content":"opaque"})");
+  auto window = Parse("[42]");
+  ChatPlanError error;
+  Q4T_CHECK(!ResponsesCompactionWindow(retained, item, &window, &error));
+  Q4T_CHECK(error.code == "compaction_output_limit" &&
+            OutputJson(window) == "[42]");
   return true;
 }

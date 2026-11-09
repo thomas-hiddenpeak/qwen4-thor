@@ -132,3 +132,5 @@ A07.3 [可回退默认交付完成](evidence/serve-responses-encryption-delivery
 当前只完成分区/模型记忆请求和认证状态基础源码，写入 10 项直接 CPU，尚未执行。封装 `q4tc1:item_id:q4t1:...` 中 ID 受内层认证；用途绑定与 reasoning 分离。系统角色不被生成的记忆替代；记忆回填为 assistant 数据。压缩模型执行、计量和公开协议尚在继续，不修改 capability 为已支持。默认 A07.3 dca3b450/STOPPED 保持。
 
 A07.4 [15 项基础/回填 CPU](evidence/serve-compaction-foundation-20261109/README.md)最终通过，首公开消息 ID 形状缺口及 2 项补验保留。host 零警告，0 GPU；原生压缩模型步骤、共享预算/计量、自动阈值/compact 路由/SSE/持久化尚在继续，默认未变，不能把基础当功能交付。
+
+A07.4 [执行与协议 CPU](evidence/serve-compaction-execution-20261109/README.md)已接受：23 C++/5 schema/2 官方 SDK、57 线协议值。原生模型步骤、共享预算/累计 TPM/一次 RPM、自动阈值（默认上下文4/5）、显式 trigger 与独立 compact 已接通；自动记忆占共享输出一半且最多512，独立用配置默认上限。实际计量未缩短或生成截断不发布成功密文，无可压缩项不编造模型 token。此为功能实现，不作性能优化结论。既有 SSE 填充改为文档要求的 delta-only，严格 schema/SDK 补验通过。真实业务及默认交付尚待推进，之后全部余项继续。

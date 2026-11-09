@@ -38,6 +38,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/object_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_state.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_execution.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_execution_compaction.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_jobs.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_owner.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/progress_transport.cpp

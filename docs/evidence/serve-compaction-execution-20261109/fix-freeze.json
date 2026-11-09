@@ -1,0 +1,17 @@
+{
+  "required": [
+    "compaction_window_capacity_never_returns_an_unreplayable_result",
+    "compaction_output_lifecycle_has_one_done_and_no_tool_events"
+  ],
+  "reason": "retained>=4096 was already rejected by generic500 guard; classify caller limit400 before copying, preserve output",
+  "source_sha256": "9cb02c6a890798d041cad3ac674832d6155ddef221ad3342c65ab4024f6ca58f",
+  "reuse": "21 passed C++ and their captured normal output behavior unchanged",
+  "schema_fix": "omit obfuscation only from SDK compaction.compacting event, do not relax schema",
+  "sources": {
+    "src/server/responses_compaction.cpp": "9cb02c6a890798d041cad3ac674832d6155ddef221ad3342c65ab4024f6ca58f",
+    "src/server/responses_output.cpp": "9c23597ad68dccb6bbd90f08715ea0e6d3d972c309cf997be66eb4823da33da4",
+    "tests/server_responses_compaction_test.cpp": "4bec6f8a68354ba8d5ac51eaab2f6f0548e37c1428c8735108d9e138a2f0f10f"
+  },
+  "schema_retest": "only ApplicationContract.test_current_native_wire_is_strict",
+  "sdk_retest": "only official stream helper with changed event"
+}

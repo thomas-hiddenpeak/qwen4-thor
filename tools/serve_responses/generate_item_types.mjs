@@ -141,6 +141,8 @@ if (mode) Object.assign(roots, {
   conversation_items: exported(conversation, 'ConversationItemList'),
   conversation_items_create: exported(conversation, 'ItemCreateParams'),
   conversation_items_query: exported(conversation, 'ItemListParams'),
+  response_compact: exported(source, 'ResponseCompactParams'),
+  compacted_response: exported(source, 'CompactedResponse'),
 });
 const result = {
   profile: mode ? 'q4t-openai-application-types-v1' : 'q4t-openai-item-types-v1',

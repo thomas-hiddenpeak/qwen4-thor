@@ -1,0 +1,8 @@
+{
+  "required": [
+    "responses_output_obfuscation_and_malformed_probabilities"
+  ],
+  "reason": "event oracle expects full preceding sequence; retain already-parsed created/in_progress instead of clearing it",
+  "source_sha256": "17a73f68d35ca416842fda4d8e23ef472565cae35364d08f160a24e12f34c2c7",
+  "production_changed": false
+}

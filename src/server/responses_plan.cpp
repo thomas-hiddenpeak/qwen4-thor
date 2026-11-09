@@ -237,6 +237,30 @@ Status StateOptions(const Json& request, ResponsesEnvelope* result,
 }
 }  // namespace
 
+Status NormalizeResponsesCompactRequest(const io::Json& request,
+                                        const ChatPlanConfig& config,
+                                        io::Json* normalized,
+                                        ChatPlanError* error) {
+  *error = {};
+  auto status =
+      InputFields(request,
+                  {"model", "input", "instructions", "previous_response_id",
+                   "prompt_cache_key", "prompt_cache_options",
+                   "prompt_cache_retention", "service_tier"},
+                  &error->param, "");
+  if (!status) return status;
+  if (!request.Has("model"))
+    return Invalid(error, "model", "compact requires a model field");
+  auto result = request;
+  if (request.Find("model")->IsNull())
+    Set(&result, "model", String(config.model));
+  Set(&result, "store", Boolean(false));
+  Set(&result, "reasoning", Object({{"effort", String("none")}}));
+  Set(&result, "temperature", Number(0));
+  *normalized = std::move(result);
+  return {};
+}
+
 Status ParseResponsesEnvelope(const io::Json& request,
                               const ChatPlanConfig& config,
                               ResponsesEnvelope* envelope,

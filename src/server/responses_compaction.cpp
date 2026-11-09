@@ -259,10 +259,14 @@ std::string ResponsesCompactionId(std::string_view opaque) {
 Status ResponsesCompactionWindow(const Json& retained, const Json& compaction,
                                  Json* window, ChatPlanError* error) {
   *error = {};
-  if (!window || !retained.IsArray() || retained.array.size() >= 4096 ||
+  if (!window || !retained.IsArray() ||
       compaction.GetString("type") != "compaction") {
     *error = {"compaction_output_invalid", "output", 500};
     return Status::Fail("Invalid compacted output window");
+  }
+  if (retained.array.size() >= 4096) {
+    *error = {"compaction_output_limit", "input", 400};
+    return Status::Fail("Compact window exceeds the replayable item limit");
   }
   auto result = retained;
   result.array.push_back(compaction);

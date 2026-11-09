@@ -434,6 +434,19 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     if (auto* context = detail::HttpResponseContext::Current(fd))
       context->RecordReceiveFailure(reason, status);
   };
+  if (IsResponsesCompaction(path)) {
+    if (method != "POST") {
+      rejected(HttpReceiveFailure::kMethod, 405);
+      SendError(fd, 405, "method not allowed", {}, "method_not_allowed",
+                "method", "POST");
+    } else if (path != "/v1/responses/compact") {
+      SendError(fd, 400, "Compact does not accept query parameters", {},
+                "invalid_request", "query");
+    } else {
+      HandleChat(fd, body, GenerationApi::kCompact);
+    }
+    return;
+  }
   if ((IsStoredChatTarget(path) &&
        !(method == "POST" && path.substr(0, path.find('?')) ==
                                 "/v1/chat/completions")) ||

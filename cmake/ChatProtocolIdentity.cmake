@@ -101,6 +101,7 @@ set(protocol_inputs
   src/server/responses_state.cpp
   include/q4t/server/responses_execution.h
   src/server/responses_execution.cpp
+  src/server/responses_execution_compaction.cpp
   include/q4t/server/responses_api.h
   src/server/responses_api.cpp
   include/q4t/server/responses_owner.h

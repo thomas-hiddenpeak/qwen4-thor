@@ -50,10 +50,13 @@ size_t ResponsesExecution::RetainedInputBytes() const {
         &plan_.execution_owner, &envelope_.request, &envelope_.options,
         &generation_.generation_request, &generation_.effective_tools,
         &generation_.input.items, &generation_.input.messages,
-        &generation_history_, &output_.Snapshot()})
+        &generation_history_, &compaction_.source, &compaction_.retained,
+        &compaction_.request, &compaction_window_, &output_.Snapshot()})
     bytes += OutputJson(*value).size();
   if (generation_.chat.normalized_request)
     bytes += OutputJson(*generation_.chat.normalized_request).size();
+  if (compaction_.chat.normalized_request)
+    bytes += OutputJson(*compaction_.chat.normalized_request).size();
   for (const auto& path : generation_.input.message_paths) bytes += path.size();
   bytes += generation_.chat.constraints.structural_tag.size();
   return bytes;
@@ -67,7 +70,15 @@ ObjectReply ResponsesExecution::Prepare(const Json& request,
     return Error(500, "response_state_invalid", "Response already prepared");
   access_ = std::move(access);
   ChatPlanError error;
-  auto status = ParseResponsesEnvelope(request, config, &envelope_, &error);
+  Json compact_request;
+  Status status;
+  if (standalone_compaction_)
+    status = NormalizeResponsesCompactRequest(request, config, &compact_request,
+                                              &error);
+  if (status)
+    status = ParseResponsesEnvelope(
+        standalone_compaction_ ? compact_request : request, config, &envelope_,
+        &error);
   if (!status) {
     auto reply = Error(error.http_status, error.code, status.message());
     reply.value = Object({{"param", String(error.param)}});
@@ -92,9 +103,6 @@ ObjectReply ResponsesExecution::RequiredExecutors(
   for (const char* key :
        {"prompt", "access_programs", "moderation", "prompt_cache_options"})
     if (required.empty() && Nonnull(envelope_.request, key)) required = key;
-  if (const auto* context = envelope_.request.GetArray("context_management");
-      required.empty() && context && !context->array.empty())
-    required = "context_management";
   if (!required.empty()) {
     auto reply =
         Error(503, "response_executor_unavailable",
@@ -146,8 +154,17 @@ ObjectReply ResponsesExecution::FitContext(const ChatPlanConfig& config,
 
 ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
                                                int64_t created) {
+  auto history = plan_.history;
+  compaction_trigger_ =
+      !plan_.own_input.array.empty() &&
+      plan_.own_input.array.back().GetString("type") == "compaction_trigger";
+  // Old triggers remain in original input records but do not recur as future
+  // model messages or contaminate an authenticated compaction prefix.
+  std::erase_if(history.array, [](const auto& item) {
+    return item.GetString("type") == "compaction_trigger";
+  });
   const bool encrypted_input =
-      std::any_of(plan_.history.array.begin(), plan_.history.array.end(),
+      std::any_of(history.array.begin(), history.array.end(),
                   [](const auto& item) {
                     return (item.GetString("type") == "reasoning" ||
                             item.GetString("type") == "compaction") &&
@@ -155,14 +172,15 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
                   });
   const bool encrypted_state = envelope_.encrypted_reasoning || encrypted_input;
   if (encrypted_state) {
-    auto opened = OpenResponsesReasoning(cipher_, plan_.history, config,
-                                         access_, &generation_history_);
+    auto opened = OpenResponsesReasoning(cipher_, history, config, access_,
+                                         &generation_history_);
     if (!opened.ok()) return opened;
+  } else {
+    generation_history_ = std::move(history);
   }
   ChatPlanError error;
-  auto status = PrepareResponsesGeneration(
-      envelope_, encrypted_state ? generation_history_ : plan_.history, config,
-      &generation_, &error);
+  auto status = PrepareResponsesGeneration(envelope_, generation_history_,
+                                           config, &generation_, &error);
   if (!status) {
     auto reply = Error(error.http_status, error.code, status.message());
     reply.value = Object({{"param", String(error.param)}});
@@ -171,8 +189,8 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
   if (envelope_.encrypted_reasoning) {
     auto ready = cipher_.Ready(access_);
     if (!ready.ok()) return ready;
-    cipher_config_.model = config.model;
   }
+  cipher_config_.model = config.model;
   Set(&envelope_.options, "tools", generation_.effective_tools);
   // Keep the public Responses shape, not Chat's nested function/custom shape.
   // NormalizeResponsesTools has already validated the selection and defaults.

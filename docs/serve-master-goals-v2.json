@@ -349,11 +349,18 @@
         "tests_executed": true,
         "business_validated": false,
         "default_delivered": false,
-        "current_work": "native execution, shared budgets, automatic threshold, compact route, SSE/durable state and targeted acceptance",
+        "current_work": "bounded actual SDK/model compaction, facts/tools, background/replay, usage and cleanup acceptance; then rollback-capable delivery and all remaining tasks",
         "input_integration_coded": true,
         "foundation_cpu_tests": 15,
         "foundation_test_executions": 16,
-        "foundation_evidence": "evidence/serve-compaction-foundation-20261109/README.md"
+        "foundation_evidence": "evidence/serve-compaction-foundation-20261109/README.md",
+        "execution_coded": true,
+        "execution_cpu_distinct": 30,
+        "execution_cpp_tests": 23,
+        "execution_schema_tests": 5,
+        "execution_sdk_tests": 2,
+        "execution_evidence": "evidence/serve-compaction-execution-20261109/README.md",
+        "candidate_engine_sha256": "0c577f541c893e13fc69b8557d7742b0cf4fcf8cbe19244fbdd4182b085c9f64"
       }
     },
     {

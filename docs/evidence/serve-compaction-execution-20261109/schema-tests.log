@@ -1,0 +1,20 @@
+test_sdk_graph_and_closed_native_requests (tools.serve_responses.test_contract.ApplicationContract.test_sdk_graph_and_closed_native_requests) ... ok
+test_compact_has_its_own_closed_stateless_contract (tools.serve_responses.test_contract.ApplicationContract.test_compact_has_its_own_closed_stateless_contract) ... ok
+test_current_native_wire_is_strict (tools.serve_responses.test_contract.ApplicationContract.test_current_native_wire_is_strict) ... FAIL
+test_openapi_routes_queries_and_no_external_reference_bundle (tools.serve_responses.test_contract.ApplicationContract.test_openapi_routes_queries_and_no_external_reference_bundle) ... ok
+
+======================================================================
+FAIL: test_current_native_wire_is_strict (tools.serve_responses.test_contract.ApplicationContract.test_current_native_wire_is_strict)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_contract.py", line 169, in test_current_native_wire_is_strict
+    count, rejected = self.audit(Path(path))
+                      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_contract.py", line 111, in audit
+    self.fail(str(rejected[-1]))
+AssertionError: {'file': '.q4t-work/serve-responses-compaction-20261109/execution-cpu-01/fixtures/compaction-wire/automatic-events.wire', 'kind': 'response_event', 'errors': [{'path': [], 'validator': 'additionalProperties', 'message': "Additional properties are not allowed ('obfuscation' was unexpected)"}]}
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.845s
+
+FAILED (failures=1)

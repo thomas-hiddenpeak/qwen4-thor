@@ -132,7 +132,7 @@ ObjectReply PlanResponsesRead(std::string_view method, std::string_view target,
   auto path = target.substr(0, separator);
   if (!IsResponsesTarget(path) || target.find('#') != target.npos)
     return Error(404, "route_not_found", "Response route not found");
-  if (path == root) return Method("POST");
+  if (path == root || IsResponsesCompaction(path)) return Method("POST");
   path.remove_prefix(root.size() + 1);
   const auto end = path.find('/');
   plan->id = path.substr(0, end);

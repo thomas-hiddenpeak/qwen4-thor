@@ -41,6 +41,8 @@ def kind(value, route=''):
     if 'sequence_number' in value:
         return 'response_event'
     name = value.get('object')
+    if name == 'response.compaction':
+        return 'compacted_response'
     if name in ('response', 'conversation'):
         return name
     if name in ('response.deleted', 'conversation.deleted'):
@@ -140,6 +142,27 @@ class ApplicationContract(unittest.TestCase):
         self.assertTrue(errors(dict(items=[], include=[]), 'conversation_items_create'))
         self.assertTrue(errors(dict(limit=101), 'input_items_query'))
         self.assertTrue(errors(dict(starting_after=1), 'response_retrieve'))
+
+    def test_compact_has_its_own_closed_stateless_contract(self):
+        for request in [dict(model=None), dict(model='cpu', input='hi'),
+                        dict(model='cpu', previous_response_id='resp_previous')]:
+            self.assertFalse(errors(request, 'response_compact'))
+        for field in ('stream', 'store', 'background', 'max_output_tokens', 'tools'):
+            self.assertTrue(errors(dict(model='cpu', **{field: None}), 'response_compact'))
+        self.assertTrue(errors(dict(input='hi'), 'response_compact'))
+        self.assertNotIn('text/event-stream', api.openapi()['paths'][
+            '/v1/responses/compact']['post']['responses']['200']['content'])
+
+    def test_obfuscation_is_closed_to_documented_delta_events(self):
+        event = dict(type='response.compaction.compacting', item_id='cmp_a',
+                     output_index=0, sequence_number=0)
+        self.assertFalse(errors(event, 'response_event'))
+        self.assertTrue(errors(dict(event, obfuscation='padding'), 'response_event'))
+        delta = dict(type='response.output_text.delta', item_id='msg_a',
+                     output_index=0, content_index=0, sequence_number=1,
+                     delta='42', logprobs=[], obfuscation='padding')
+        self.assertFalse(errors(delta, 'response_event'))
+        self.assertTrue(errors(dict(delta, obfuscation=1), 'response_event'))
 
     def test_archived_real_business_wire(self):
         checked, rejected = self.audit(ROOT/'docs/evidence/serve-responses-business-20261109/business-01', legacy=True)

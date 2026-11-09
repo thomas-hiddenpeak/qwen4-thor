@@ -1,0 +1,79 @@
+[
+  {
+    "event": "response.created",
+    "sequence": 0,
+    "errors": [
+      "Additional properties are not allowed ('obfuscation' was unexpected)"
+    ]
+  },
+  {
+    "event": "response.in_progress",
+    "sequence": 1,
+    "errors": [
+      "Additional properties are not allowed ('obfuscation' was unexpected)"
+    ]
+  },
+  {
+    "event": "response.output_item.added",
+    "sequence": 2,
+    "errors": [
+      "Additional properties are not allowed ('obfuscation' was unexpected)"
+    ]
+  },
+  {
+    "event": "response.output_item.done",
+    "sequence": 4,
+    "errors": [
+      "Additional properties are not allowed ('obfuscation' was unexpected)"
+    ]
+  },
+  {
+    "event": "response.output_item.added",
+    "sequence": 5,
+    "errors": [
+      "Additional properties are not allowed ('obfuscation' was unexpected)"
+    ]
+  },
+  {
+    "event": "response.content_part.added",
+    "sequence": 6,
+    "errors": [
+      "Additional properties are not allowed ('obfuscation' was unexpected)"
+    ]
+  },
+  {
+    "event": "response.output_text.delta",
+    "sequence": 7,
+    "errors": [
+      "Additional properties are not allowed ('obfuscation' was unexpected)"
+    ]
+  },
+  {
+    "event": "response.output_text.done",
+    "sequence": 8,
+    "errors": [
+      "Additional properties are not allowed ('obfuscation' was unexpected)"
+    ]
+  },
+  {
+    "event": "response.content_part.done",
+    "sequence": 9,
+    "errors": [
+      "Additional properties are not allowed ('obfuscation' was unexpected)"
+    ]
+  },
+  {
+    "event": "response.output_item.done",
+    "sequence": 10,
+    "errors": [
+      "Additional properties are not allowed ('obfuscation' was unexpected)"
+    ]
+  },
+  {
+    "event": "response.completed",
+    "sequence": 11,
+    "errors": [
+      "Additional properties are not allowed ('obfuscation' was unexpected)"
+    ]
+  }
+]

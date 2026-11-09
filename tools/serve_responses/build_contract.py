@@ -3,9 +3,12 @@ import argparse
 import copy
 import hashlib
 import json
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 DRAFT = 'https://json-schema.org/draft/2020-12/schema'
 
 
@@ -55,6 +58,22 @@ def schema(graph):
 
     def root(name):
         return definitions[str(graph['roots'][name])]
+
+    # The SDK declares OutputItem[] here but its own comment and the official
+    # compact guide require preserved user messages and a replayable input
+    # window. Adapt only the compact result, never ordinary response outputs.
+    root('compacted_response')['properties']['output'] = dict(
+        type='array', maxItems=4096, items=ref('input_item'))
+
+    # The pinned SDK describes include_obfuscation on streaming deltas but
+    # omits that optional property from most delta interfaces. Preserve the
+    # documented wire field only for delta events, with strict other events.
+    for index in graph['nodes'][graph['roots']['response_event']]['variants']:
+        node = graph['nodes'][index]
+        tag = next((graph['nodes'][field['type']].get('value')
+                    for field in node.get('fields', []) if field['name'] == 'type'), None)
+        if isinstance(tag, str) and tag.endswith('.delta'):
+            definitions[str(index)]['properties']['obfuscation'] = dict(type='string')
 
     # output_text is added by the SDK after parsing; it is not a wire field.
     response = root('response')
@@ -132,12 +151,17 @@ def schema(graph):
             adaptations=['SDK-added output_text is optional on wire',
                 'official HTTP examples use usage:null for active/cancelled responses; completed/incomplete require actual usage',
                 'native store echo and native response error codes',
+                'SDK-documented include_obfuscation adds optional string padding to delta events only',
                 'exact integer and bounded native options',
                 'native cancellation credentials and timeout/seed extensions',
-                'SDK combined body/query split on actual HTTP boundary'],
+                'SDK combined body/query split on actual HTTP boundary',
+                'compact output is a replayable input window including preserved user messages; only this SDK OutputItem[] inconsistency is adapted'],
             wire_references=[dict(date='2026-11-09',
                 url='https://developers.openai.com/api/reference/resources/responses/methods/cancel',
                 contract='Cancelled resource can have usage:null; no fabricated zero usage'),
+                dict(date='2026-11-09',
+                url='https://developers.openai.com/api/docs/guides/compaction',
+                contract='Standalone compact preserves user messages and returns the canonical next input window with encrypted compaction state'),
                 dict(date='2026-11-09',
                 url='https://developers.openai.com/api/reference/resources/responses/methods/create',
                 contract='response.created example has usage:null; successful final usage includes cache_write_tokens')],
@@ -174,6 +198,7 @@ def add_openapi(paths, response, error):
 
     endpoints = [
         ('/v1/responses', 'post', 'response_create', 'response', None),
+        ('/v1/responses/compact', 'post', 'response_compact', 'compacted_response', None),
         ('/v1/responses/{response_id}', 'get', None, 'response', 'response_retrieve'),
         ('/v1/responses/{response_id}', 'delete', None, 'response_deleted', None),
         ('/v1/responses/{response_id}/cancel', 'post', None, 'response', None),

@@ -23,6 +23,10 @@ inline bool IsResponsesTarget(std::string_view target) {
   return path == "/v1/responses" || path.starts_with("/v1/responses/");
 }
 
+inline bool IsResponsesCompaction(std::string_view target) {
+  return target.substr(0, target.find('?')) == "/v1/responses/compact";
+}
+
 inline bool IsStoredChatTarget(std::string_view target) {
   const auto path = target.substr(0, target.find('?'));
   return path == "/v1/chat/completions" ||
@@ -57,6 +61,7 @@ inline bool ResponsesMethodAllowed(std::string_view method,
   auto path = target.substr(0, target.find('?'));
   constexpr std::string_view root = "/v1/responses";
   if (path == root) return method == "POST";
+  if (IsResponsesCompaction(path)) return method == "POST";
   if (!path.starts_with("/v1/responses/")) return false;
   path.remove_prefix(root.size() + 1);
   const auto end = path.find('/');

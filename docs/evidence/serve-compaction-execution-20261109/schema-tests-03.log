@@ -1,0 +1,7 @@
+test_current_native_wire_is_strict (tools.serve_responses.test_contract.ApplicationContract.test_current_native_wire_is_strict) ... ok
+test_obfuscation_is_closed_to_documented_delta_events (tools.serve_responses.test_contract.ApplicationContract.test_obfuscation_is_closed_to_documented_delta_events) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.038s
+
+OK

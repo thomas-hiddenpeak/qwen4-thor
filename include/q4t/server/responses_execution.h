@@ -3,6 +3,7 @@
 #include <array>
 
 #include "q4t/server/responses_output.h"
+#include "q4t/server/responses_compaction.h"
 #include "q4t/server/responses_state.h"
 #include "q4t/server/request_control.h"
 #include "q4t/server/state_cipher.h"
@@ -26,11 +27,13 @@ class ResponsesExecution {
  public:
   explicit ResponsesExecution(ObjectStore& objects,
                               IResponsesCleanup* cleanup = nullptr,
-                              bool require_cleanup = false)
+                              bool require_cleanup = false,
+                              bool standalone_compaction = false)
       : state_(objects),
         cipher_(objects),
         cleanup_(cleanup),
-        require_cleanup_(require_cleanup) {}
+        require_cleanup_(require_cleanup),
+        standalone_compaction_(standalone_compaction) {}
   ResponsesExecution(const ResponsesExecution&) = delete;
   ResponsesExecution& operator=(const ResponsesExecution&) = delete;
   ObjectReply Prepare(const io::Json& request, const ChatPlanConfig& config,
@@ -54,6 +57,20 @@ class ResponsesExecution {
   Status Append(const ResponseDelta& delta, std::string_view probabilities,
                 std::string* wire);
   Status AppendSummary(std::string_view text, std::string* wire);
+  // Selection uses the real expanded input count, before rate reservation.
+  ObjectReply SelectCompaction(size_t input_tokens,
+                               const ChatPlanConfig& config);
+  ObjectReply StartCompaction(std::string* wire);
+  using ContextMeasure = std::function<Status(const ResponsesGenerationPlan&,
+                                              size_t*, ChatPlanError*)>;
+  ObjectReply CompleteCompaction(std::string_view memory, int64_t output_used,
+                                 const ChatPlanConfig& config,
+                                 const ContextMeasure& measure,
+                                 std::string* wire);
+  const ResponsesCompactionPlan& Compaction() const { return compaction_; }
+  bool CompactionSelected() const { return compaction_selected_; }
+  bool StandaloneCompaction() const { return standalone_compaction_; }
+  std::string ResultJson() const;
   ObjectReply Finish(bool incomplete, size_t completed_calls,
                      const ResponsesUsage& usage, int64_t completed_at,
                      std::string* wire);
@@ -99,6 +116,15 @@ class ResponsesExecution {
   ResponsesGenerationPlan generation_;
   ResponseStatePlan plan_;
   ResponsesOutput output_;
+  ResponsesCompactionPlan compaction_;
+  io::Json compaction_window_;
+  std::string compaction_id_;
+  size_t compaction_source_tokens_ = 0;
+  bool standalone_compaction_ = false;
+  bool compaction_trigger_ = false;
+  bool compaction_selected_ = false;
+  bool compaction_started_ = false;
+  bool compaction_completed_ = false;
   io::Json events_;
   size_t event_bytes_ = 0;
   bool prepared_ = false;

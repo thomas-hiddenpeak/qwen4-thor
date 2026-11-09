@@ -1,0 +1,10 @@
+✔ official stream helper preserves native compaction and continuation (56.125331ms)
+✔ official compact method and acceptance bridge preserve native input window (18.577727ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 225.533862

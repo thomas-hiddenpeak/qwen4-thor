@@ -1,3 +1,9 @@
+A07.4 [23 C++/5 schema/2 SDK CPU](evidence/serve-compaction-execution-20261109/README.md)最终全过，57 协议值；首边界分类/既有 SSE 填充及夹具失败均修复并保留，仅补受影响项。引擎 0c577f54 零警告，0 GPU。继续真实压缩/工具/后台短验和交付，再所有余项；默认 A07.3/STOPPED 不变。
+
+A07.4 成组源码与协议已完成，冻结 22 个直接/受影响 C++、4 Python schema、2 官方 SDK CPU 检查；尚未执行，host/引擎首必要构建零警告，默认 A07.3 不变。通过后准备真实压缩/工具/后台短验及交付，继续总目标。
+
+A07.4 已接入真实压缩步骤、自动阈值/显式 trigger、原生 compact 路由及共享预算/配额；新增源码尚未验证。正在补直接 CPU、协议声明与必要构建，随后真实 SDK/模型短验。默认 A07.3 保持 STOPPED，总目标继续。
+
 A07.4 [15 个基础/回填 CPU](evidence/serve-compaction-foundation-20261109/README.md)最终通过，首公开消息 ID 转换失败与 2 项补验保留；host 零警告，0 GPU。基础不等于压缩功能交付，继续真实模型步骤、预算/配额、自动阈值/compact 路由与 SSE/持久化，然后所有余项。默认 A07.3 dca3b450/STOPPED 不变。
 
 A07.4 基础 host 构建已零警告（首缺括号失败保留）；继续接入 compaction 与 reasoning 混合认证历史、可省略 ID 回填。12 项直接 CPU 已写未执行，模型压缩执行/自动阈值/compact 路由/SSE/持久化仍在成组开发，默认 A07.3 保持，不结束总目标。

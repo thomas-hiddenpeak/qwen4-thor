@@ -44,6 +44,8 @@ class ResponsesOutput {
   // delta as a summary. This creates one derived reasoning item, without raw
   // reasoning content, and preserves its identity across summary deltas.
   Status AppendSummary(std::string_view text, std::string* wire);
+  Status StartCompaction(std::string id, std::string* wire);
+  Status CompleteCompaction(const io::Json& item, std::string* wire);
   // Only calls with a validated closing delimiter may receive arguments.done.
   Status Finish(bool incomplete, size_t completed_calls,
                 const ResponsesUsage& usage, int64_t completed_at,
@@ -72,6 +74,8 @@ class ResponsesOutput {
   std::unordered_map<size_t, size_t> calls_;
   std::vector<size_t> call_indices_;
   size_t summary_item_ = kMaxItems;
+  size_t compaction_item_ = kMaxItems;
+  bool compaction_done_ = false;
   size_t limit_ = kStorageLimit;
   size_t bytes_ = 0;
   int64_t sequence_ = 0;

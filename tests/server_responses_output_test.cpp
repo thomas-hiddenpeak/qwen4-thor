@@ -355,7 +355,7 @@ Q4T_TEST(responses_output_obfuscation_and_malformed_probabilities) {
   Q4T_CHECK(output.Start(&wire));
   std::vector<Json> events;
   Q4T_CHECK(Events(wire, &events));
-  Q4T_CHECK(!events[0].GetString("obfuscation").empty());
+  Q4T_CHECK(!events[0].Has("obfuscation"));
   for (const auto json :
        {"{}", "{", R"({"content":[{"token":"x"}]})",
         R"({"content":[{"token":"x","logprob":1}]})",
@@ -369,6 +369,15 @@ Q4T_TEST(responses_output_obfuscation_and_malformed_probabilities) {
       Text("�"),
       R"({"content":[{"token":"�","bytes":[226],"logprob":-1,"top_logprobs":[]}]})",
       &wire));
+  Q4T_CHECK(Events(wire, &events));
+  bool padded_delta = false;
+  for (const auto& event : events) {
+    if (event.GetString("type").ends_with(".delta")) {
+      Q4T_CHECK(!event.GetString("obfuscation").empty());
+      padded_delta = true;
+    } else Q4T_CHECK(!event.Has("obfuscation"));
+  }
+  Q4T_CHECK(padded_delta);
   Q4T_CHECK(output.Finish(false, 0, {1, 0, 1, 0}, 43, &wire));
   const auto& content = output.Snapshot()
                             .GetArray("output")

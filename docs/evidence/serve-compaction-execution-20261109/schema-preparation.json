@@ -1,0 +1,7 @@
+{
+  "first_inventory_update": "failed: assumed routes list; actual inventory is keyed object",
+  "other_commands": "type extraction and schema publishers continued; outputs inspected",
+  "correction": "added native compact route to keyed inventory; no tests or GPU occurred",
+  "publisher_first_failure": "direct build_contract.py could not import tools; native OpenAPI was temporarily referencing pending compact schema",
+  "publisher_correction": "same ROOT/sys.path bootstrap as protocol publisher; generated schema first, then complete OpenAPI"
+}

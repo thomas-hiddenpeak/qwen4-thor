@@ -130,7 +130,8 @@ void ResponsesOutput::Event(std::string_view type, io::Json fields,
                             std::string* wire) {
   Set(&fields, "type", String(std::string(type)));
   Set(&fields, "sequence_number", Number(sequence_++));
-  if (obfuscation_) {
+  // The public stream option pads delta events, not lifecycle snapshots.
+  if (obfuscation_ && type.ends_with(".delta")) {
     const auto random = detail::NewRequestId("");
     const size_t size = 128 - ((OutputJson(fields).size() + 18) % 128) +
                         ((random[0] & 1) ? 128 : 0);
@@ -378,9 +379,53 @@ Status ResponsesOutput::AppendSummary(std::string_view text,
   return {};
 }
 
+Status ResponsesOutput::StartCompaction(std::string id, std::string* wire) {
+  wire->clear();
+  if (!started_ || terminal_ || compaction_item_ != kMaxItems || id.empty() ||
+      response_.GetString("status") != "in_progress" ||
+      Items().array.size() >= kMaxItems)
+    return Status::Fail("Invalid compaction start");
+  auto item = Object({{"id", String(std::move(id))},
+                      {"type", String("compaction")},
+                      {"encrypted_content", String("")}});
+  auto status = Charge(OutputJson(item).size() + sizeof(io::Json) * 8);
+  if (!status) return status;
+  compaction_item_ = Items().array.size();
+  Items().array.push_back(std::move(item));
+  call_indices_.push_back(kNoCall);
+  Event("response.output_item.added",
+        Object({{"output_index", Number(compaction_item_)},
+                {"item", Items().array.back()}}),
+        wire);
+  Event("response.compaction.compacting", Location(compaction_item_), wire);
+  return {};
+}
+
+Status ResponsesOutput::CompleteCompaction(const io::Json& item,
+                                           std::string* wire) {
+  wire->clear();
+  if (!started_ || terminal_ || compaction_done_ ||
+      compaction_item_ >= Items().array.size() ||
+      item.GetString("type") != "compaction" || item.Has("status") ||
+      item.GetString("encrypted_content").empty() ||
+      item.GetString("id") != Items().array[compaction_item_].GetString("id"))
+    return Status::Fail("Invalid compaction completion");
+  auto status = Charge(OutputJson(item).size());
+  if (!status) return status;
+  Items().array[compaction_item_] = item;
+  compaction_done_ = true;
+  Event("response.output_item.done",
+        Object({{"output_index", Number(compaction_item_)}, {"item", item}}),
+        wire);
+  return {};
+}
+
 void ResponsesOutput::CloseItem(size_t index, bool incomplete,
                                 std::string* wire) {
   auto& item = Items().array[index];
+  // Compaction has no status/arguments/content fields in the SDK contract.
+  // Its done event was published when the authenticated window was ready.
+  if (item.GetString("type") == "compaction") return;
   Set(&item, "status", String(incomplete ? "incomplete" : "completed"));
   const auto type = item.GetString("type");
   if (type == "message" || (type == "reasoning" && item.GetArray("content") &&
@@ -429,6 +474,7 @@ Status ResponsesOutput::Finish(bool incomplete, size_t completed_calls,
                                const ResponsesReasoningSeal& seal) {
   wire->clear();
   if (!started_ || terminal_ ||
+      (compaction_item_ != kMaxItems && !compaction_done_) ||
       response_.GetString("status") != "in_progress" ||
       usage.input_tokens < 0 || usage.output_tokens < 0 ||
       usage.cached_tokens < 0 || usage.cached_tokens > usage.input_tokens ||
@@ -445,6 +491,7 @@ Status ResponsesOutput::Finish(bool incomplete, size_t completed_calls,
         return Status::Fail("cannot complete an unvalidated Responses tool");
     }
   for (size_t i = 0; i < Items().array.size(); ++i) {
+    if (Items().array[i].GetString("type") == "compaction") continue;
     const bool partial =
         incomplete &&
         (call_indices_[i] != kNoCall ? call_indices_[i] >= completed_calls
@@ -495,7 +542,9 @@ Status ResponsesOutput::Fail(std::string_view code, std::string_view message,
   if (!started_ || terminal_)
     return Status::Fail("Responses failure outside active lifecycle");
   // No item/argument done events on a failed response.
-  for (auto& item : Items().array) Set(&item, "status", String("incomplete"));
+  for (auto& item : Items().array)
+    if (item.GetString("type") != "compaction")
+      Set(&item, "status", String("incomplete"));
   Set(&response_, "status", String("failed"));
   Set(&response_, "error",
       Object({{"code", String(std::string(code))},

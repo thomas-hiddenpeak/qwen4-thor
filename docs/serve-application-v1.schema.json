@@ -12048,6 +12048,9 @@
         },
         "type": {
           "$ref": "#/$defs/965"
+        },
+        "obfuscation": {
+          "type": "string"
         }
       },
       "required": [
@@ -12090,6 +12093,9 @@
         },
         "type": {
           "$ref": "#/$defs/969"
+        },
+        "obfuscation": {
+          "type": "string"
         }
       },
       "required": [
@@ -12138,6 +12144,9 @@
         },
         "type": {
           "$ref": "#/$defs/973"
+        },
+        "obfuscation": {
+          "type": "string"
         }
       },
       "required": [
@@ -12591,6 +12600,9 @@
         },
         "type": {
           "$ref": "#/$defs/1004"
+        },
+        "obfuscation": {
+          "type": "string"
         }
       },
       "required": [
@@ -12677,7 +12689,7 @@
           "$ref": "#/$defs/3"
         },
         "obfuscation": {
-          "$ref": "#/$defs/27"
+          "type": "string"
         },
         "output_index": {
           "$ref": "#/$defs/54"
@@ -12752,6 +12764,9 @@
         },
         "type": {
           "$ref": "#/$defs/1015"
+        },
+        "obfuscation": {
+          "type": "string"
         }
       },
       "required": [
@@ -13137,6 +13152,9 @@
         },
         "type": {
           "$ref": "#/$defs/1041"
+        },
+        "obfuscation": {
+          "type": "string"
         }
       },
       "required": [
@@ -13207,6 +13225,9 @@
         },
         "type": {
           "$ref": "#/$defs/1045"
+        },
+        "obfuscation": {
+          "type": "string"
         }
       },
       "required": [
@@ -13277,6 +13298,9 @@
         },
         "type": {
           "$ref": "#/$defs/1049"
+        },
+        "obfuscation": {
+          "type": "string"
         }
       },
       "required": [
@@ -13350,6 +13374,9 @@
         },
         "type": {
           "$ref": "#/$defs/1058"
+        },
+        "obfuscation": {
+          "type": "string"
         }
       },
       "required": [
@@ -13733,6 +13760,9 @@
         },
         "type": {
           "$ref": "#/$defs/1081"
+        },
+        "obfuscation": {
+          "type": "string"
         }
       },
       "required": [
@@ -14142,6 +14172,9 @@
         },
         "type": {
           "$ref": "#/$defs/1106"
+        },
+        "obfuscation": {
+          "type": "string"
         }
       },
       "required": [
@@ -15089,6 +15122,472 @@
       "required": [],
       "additionalProperties": false
     },
+    "1150": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "$ref": "#/$defs/1151"
+        },
+        "instructions": {
+          "$ref": "#/$defs/20"
+        },
+        "model": {
+          "$ref": "#/$defs/1152"
+        },
+        "previous_response_id": {
+          "$ref": "#/$defs/20"
+        },
+        "prompt_cache_key": {
+          "$ref": "#/$defs/20"
+        },
+        "prompt_cache_options": {
+          "$ref": "#/$defs/1153"
+        },
+        "prompt_cache_retention": {
+          "$ref": "#/$defs/815"
+        },
+        "service_tier": {
+          "$ref": "#/$defs/1155"
+        }
+      },
+      "required": [
+        "model"
+      ],
+      "additionalProperties": false
+    },
+    "1151": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/21"
+        },
+        {
+          "$ref": "#/$defs/3"
+        },
+        {
+          "$ref": "#/$defs/908"
+        }
+      ]
+    },
+    "1152": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/21"
+        },
+        {
+          "$ref": "#/$defs/304"
+        },
+        {
+          "$ref": "#/$defs/684"
+        },
+        {
+          "$ref": "#/$defs/685"
+        },
+        {
+          "$ref": "#/$defs/686"
+        },
+        {
+          "$ref": "#/$defs/687"
+        },
+        {
+          "$ref": "#/$defs/688"
+        },
+        {
+          "$ref": "#/$defs/689"
+        },
+        {
+          "$ref": "#/$defs/690"
+        },
+        {
+          "$ref": "#/$defs/691"
+        },
+        {
+          "$ref": "#/$defs/692"
+        },
+        {
+          "$ref": "#/$defs/693"
+        },
+        {
+          "$ref": "#/$defs/694"
+        },
+        {
+          "$ref": "#/$defs/695"
+        },
+        {
+          "$ref": "#/$defs/696"
+        },
+        {
+          "$ref": "#/$defs/697"
+        },
+        {
+          "$ref": "#/$defs/698"
+        },
+        {
+          "$ref": "#/$defs/699"
+        },
+        {
+          "$ref": "#/$defs/700"
+        },
+        {
+          "$ref": "#/$defs/701"
+        },
+        {
+          "$ref": "#/$defs/702"
+        },
+        {
+          "$ref": "#/$defs/703"
+        },
+        {
+          "$ref": "#/$defs/704"
+        },
+        {
+          "$ref": "#/$defs/705"
+        },
+        {
+          "$ref": "#/$defs/706"
+        },
+        {
+          "$ref": "#/$defs/707"
+        },
+        {
+          "$ref": "#/$defs/708"
+        },
+        {
+          "$ref": "#/$defs/709"
+        },
+        {
+          "$ref": "#/$defs/710"
+        },
+        {
+          "$ref": "#/$defs/711"
+        },
+        {
+          "$ref": "#/$defs/712"
+        },
+        {
+          "$ref": "#/$defs/713"
+        },
+        {
+          "$ref": "#/$defs/714"
+        },
+        {
+          "$ref": "#/$defs/715"
+        },
+        {
+          "$ref": "#/$defs/716"
+        },
+        {
+          "$ref": "#/$defs/717"
+        },
+        {
+          "$ref": "#/$defs/718"
+        },
+        {
+          "$ref": "#/$defs/719"
+        },
+        {
+          "$ref": "#/$defs/720"
+        },
+        {
+          "$ref": "#/$defs/721"
+        },
+        {
+          "$ref": "#/$defs/722"
+        },
+        {
+          "$ref": "#/$defs/723"
+        },
+        {
+          "$ref": "#/$defs/724"
+        },
+        {
+          "$ref": "#/$defs/725"
+        },
+        {
+          "$ref": "#/$defs/726"
+        },
+        {
+          "$ref": "#/$defs/727"
+        },
+        {
+          "$ref": "#/$defs/728"
+        },
+        {
+          "$ref": "#/$defs/729"
+        },
+        {
+          "$ref": "#/$defs/730"
+        },
+        {
+          "$ref": "#/$defs/731"
+        },
+        {
+          "$ref": "#/$defs/732"
+        },
+        {
+          "$ref": "#/$defs/733"
+        },
+        {
+          "$ref": "#/$defs/734"
+        },
+        {
+          "$ref": "#/$defs/735"
+        },
+        {
+          "$ref": "#/$defs/736"
+        },
+        {
+          "$ref": "#/$defs/737"
+        },
+        {
+          "$ref": "#/$defs/738"
+        },
+        {
+          "$ref": "#/$defs/739"
+        },
+        {
+          "$ref": "#/$defs/740"
+        },
+        {
+          "$ref": "#/$defs/741"
+        },
+        {
+          "$ref": "#/$defs/742"
+        },
+        {
+          "$ref": "#/$defs/743"
+        },
+        {
+          "$ref": "#/$defs/744"
+        },
+        {
+          "$ref": "#/$defs/745"
+        },
+        {
+          "$ref": "#/$defs/746"
+        },
+        {
+          "$ref": "#/$defs/747"
+        },
+        {
+          "$ref": "#/$defs/748"
+        },
+        {
+          "$ref": "#/$defs/749"
+        },
+        {
+          "$ref": "#/$defs/750"
+        },
+        {
+          "$ref": "#/$defs/751"
+        },
+        {
+          "$ref": "#/$defs/752"
+        },
+        {
+          "$ref": "#/$defs/753"
+        },
+        {
+          "$ref": "#/$defs/754"
+        },
+        {
+          "$ref": "#/$defs/755"
+        },
+        {
+          "$ref": "#/$defs/756"
+        },
+        {
+          "$ref": "#/$defs/757"
+        },
+        {
+          "$ref": "#/$defs/758"
+        },
+        {
+          "$ref": "#/$defs/759"
+        },
+        {
+          "$ref": "#/$defs/760"
+        },
+        {
+          "$ref": "#/$defs/761"
+        },
+        {
+          "$ref": "#/$defs/762"
+        },
+        {
+          "$ref": "#/$defs/763"
+        },
+        {
+          "$ref": "#/$defs/764"
+        },
+        {
+          "$ref": "#/$defs/765"
+        },
+        {
+          "$ref": "#/$defs/766"
+        },
+        {
+          "$ref": "#/$defs/767"
+        },
+        {
+          "$ref": "#/$defs/768"
+        },
+        {
+          "$ref": "#/$defs/769"
+        },
+        {
+          "$ref": "#/$defs/770"
+        },
+        {
+          "$ref": "#/$defs/771"
+        },
+        {
+          "$ref": "#/$defs/772"
+        },
+        {
+          "$ref": "#/$defs/773"
+        },
+        {
+          "$ref": "#/$defs/774"
+        },
+        {
+          "$ref": "#/$defs/775"
+        },
+        {
+          "$ref": "#/$defs/776"
+        },
+        {
+          "$ref": "#/$defs/777"
+        },
+        {
+          "$ref": "#/$defs/778"
+        },
+        {
+          "$ref": "#/$defs/779"
+        },
+        {
+          "$ref": "#/$defs/780"
+        },
+        {
+          "$ref": "#/$defs/781"
+        },
+        {
+          "$ref": "#/$defs/782"
+        },
+        {
+          "$ref": "#/$defs/783"
+        },
+        {
+          "$ref": "#/$defs/784"
+        },
+        {
+          "$ref": "#/$defs/785"
+        },
+        {
+          "$ref": "#/$defs/786"
+        },
+        {
+          "$ref": "#/$defs/787"
+        },
+        {
+          "$ref": "#/$defs/788"
+        },
+        {
+          "$ref": "#/$defs/789"
+        },
+        {
+          "$ref": "#/$defs/790"
+        },
+        {
+          "$ref": "#/$defs/791"
+        },
+        {
+          "$ref": "#/$defs/792"
+        },
+        {
+          "$ref": "#/$defs/793"
+        }
+      ]
+    },
+    "1153": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/21"
+        },
+        {
+          "$ref": "#/$defs/1154"
+        }
+      ]
+    },
+    "1154": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "$ref": "#/$defs/812"
+        },
+        "ttl": {
+          "$ref": "#/$defs/814"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "1155": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/21"
+        },
+        {
+          "$ref": "#/$defs/18"
+        },
+        {
+          "$ref": "#/$defs/829"
+        },
+        {
+          "$ref": "#/$defs/830"
+        },
+        {
+          "$ref": "#/$defs/832"
+        },
+        {
+          "$ref": "#/$defs/833"
+        }
+      ]
+    },
+    "1156": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/54"
+        },
+        "id": {
+          "$ref": "#/$defs/3"
+        },
+        "object": {
+          "$ref": "#/$defs/1157"
+        },
+        "output": {
+          "type": "array",
+          "maxItems": 4096,
+          "items": {
+            "$ref": "#/$defs/input_item"
+          }
+        },
+        "usage": {
+          "$ref": "#/$defs/960"
+        }
+      },
+      "required": [
+        "created_at",
+        "id",
+        "object",
+        "output",
+        "usage"
+      ],
+      "additionalProperties": false
+    },
+    "1157": {
+      "const": "response.compaction"
+    },
     "input_item": {
       "$ref": "#/$defs/0"
     },
@@ -15136,6 +15635,12 @@
     },
     "conversation_items_query": {
       "$ref": "#/$defs/1149"
+    },
+    "response_compact": {
+      "$ref": "#/$defs/1150"
+    },
+    "compacted_response": {
+      "$ref": "#/$defs/1156"
     },
     "item_include_query": {
       "type": "object",
@@ -16680,15 +17185,22 @@
       "SDK-added output_text is optional on wire",
       "official HTTP examples use usage:null for active/cancelled responses; completed/incomplete require actual usage",
       "native store echo and native response error codes",
+      "SDK-documented include_obfuscation adds optional string padding to delta events only",
       "exact integer and bounded native options",
       "native cancellation credentials and timeout/seed extensions",
-      "SDK combined body/query split on actual HTTP boundary"
+      "SDK combined body/query split on actual HTTP boundary",
+      "compact output is a replayable input window including preserved user messages; only this SDK OutputItem[] inconsistency is adapted"
     ],
     "wire_references": [
       {
         "date": "2026-11-09",
         "url": "https://developers.openai.com/api/reference/resources/responses/methods/cancel",
         "contract": "Cancelled resource can have usage:null; no fabricated zero usage"
+      },
+      {
+        "date": "2026-11-09",
+        "url": "https://developers.openai.com/api/docs/guides/compaction",
+        "contract": "Standalone compact preserves user messages and returns the canonical next input window with encrypted compaction state"
       },
       {
         "date": "2026-11-09",
@@ -16704,6 +17216,6 @@
     ],
     "cancelled_stream": "Resource is cancelled; original events end without fabricated response.cancelled/completed or Chat DONE.",
     "query": "Closed route-specific fields; repeated include[] is an array; exact decimal integers and true/false booleans.",
-    "type_graph_sha256": "281c2912b93d6978d42a20e5943e5e50279f22b13ca61f110ff94e64149fad24"
+    "type_graph_sha256": "54e6b959779f64cd0d27124170f64f0deff5798f3fee9f1ec84ebdc92c50e119"
   }
 }

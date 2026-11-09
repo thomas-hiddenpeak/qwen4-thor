@@ -1,0 +1,10 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=official stream helper",
+    "tools/serve_responses/test_compaction_sdk.mjs"
+  ],
+  "exit_code": 0,
+  "seconds": 0.26429525297135115
+}

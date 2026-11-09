@@ -122,14 +122,17 @@ void ChatServer::HandleChat(int fd, const std::string& body,
     }
   });
   try {
-    if (api == GenerationApi::kResponse) {
-      if (TryHandleBackgroundResponse(fd, body)) return;
+    if (api == GenerationApi::kResponse || api == GenerationApi::kCompact) {
+      if (api == GenerationApi::kResponse &&
+          TryHandleBackgroundResponse(fd, body))
+        return;
       if (!objects_ || !context || !context->Client().Allowed()) {
         SendError(fd, 503, "Authenticated application state unavailable", {},
                   "object_scope_unavailable");
         return;
       }
-      responses.emplace(*objects_, background_.get(), true);
+      responses.emplace(*objects_, background_.get(), true,
+                        api == GenerationApi::kCompact);
       context->SetResponsesStream(&ResponsesExecution::RenderStreamError,
                                   &*responses, responses->Sequence());
       context->SetErrorObserver(&ResponsesExecution::ObserveError, &*responses);
@@ -580,13 +583,111 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       return;
     }
   }
+  // Shared actual template/token/media measurement for compact output. It
+  // performs no generation and cannot conceal a malformed or oversized window.
+  const auto measure_context = [&](const ResponsesGenerationPlan& candidate,
+                                   size_t* count, ChatPlanError* error) {
+    const auto& candidate_req =
+        candidate.chat.Request(candidate.generation_request);
+    std::string text;
+    std::vector<VisionItem> media;
+    auto status = PrepareChatPrompt(candidate_req, candidate.chat.constraints,
+                                    &text, &media, &error->param, &error->code);
+    std::vector<uint32_t> tokens;
+    ChatPromptBudget budget;
+    auto config = planning_config;
+    config.client_limits = nullptr;
+    if (status) {
+      auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer, cancelled);
+      if (!lock.owns_lock()) {
+        *error = {"request_cancelled", "input", 499};
+        return Status::Fail("Compaction measurement cancelled");
+      }
+      status = EncodeChatPrompt(
+          candidate_req, config, text,
+          [&](std::string_view value, std::vector<uint32_t>* out) {
+            return tok_->Encode(value, out, {.cancelled = cancelled});
+          },
+          &tokens, &budget, error);
+    }
+    if (status && !media.empty()) {
+      vision::MediaPlan expanded;
+      const auto& model = model_.Get().cfg;
+      status = ExpandChatMedia(candidate_req, media, model.image_token_id,
+                               model.video_token_id, proc_cfg_, video_proc_cfg_,
+                               vision_device_budget_, config, &tokens,
+                               &expanded, &budget, error);
+    }
+    if (status) *count = tokens.size();
+    return status;
+  };
+  const auto prepare_step = [&](const ChatRequestPlan& step,
+                                const io::Json& original) {
+    const auto& step_request = step.Request(original);
+    items.clear();
+    media_plan = {};
+    auto status =
+        PrepareChatPrompt(step_request, step.constraints, &prompt, &items,
+                          &planning_error.param, &planning_error.code);
+    if (status) {
+      auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer, cancelled);
+      if (!lock.owns_lock())
+        return Status::Fail("Internal step cancelled waiting for tokenizer");
+      status = EncodeChatPrompt(
+          step_request, planning_config, prompt,
+          [&](std::string_view text, std::vector<uint32_t>* out) {
+            return tok_->Encode(text, out, {.cancelled = cancelled});
+          },
+          &prompt_u32, &prompt_budget, &planning_error);
+    }
+    if (status && !items.empty()) {
+      const auto& model = model_.Get().cfg;
+      status = ExpandChatMedia(
+          step_request, items, model.image_token_id, model.video_token_id,
+          proc_cfg_, video_proc_cfg_, vision_device_budget_, planning_config,
+          &prompt_u32, &media_plan, &prompt_budget, &planning_error);
+    }
+    prompt_encoded = status.ok();
+    return status;
+  };
+  if (responses) {
+    const auto selected =
+        responses->SelectCompaction(prompt_u32.size(), planning_config);
+    if (!selected.ok()) {
+      SendError(fd, selected.http_status, selected.ClientMessage(), {},
+                selected.ClientCode(), selected.value.GetString("param"));
+      return;
+    }
+  }
+  const bool compact_selected = responses && responses->CompactionSelected();
+  const bool compact_step_needed =
+      compact_selected && responses->Compaction().compacted_items != 0;
+  const bool standalone_compact =
+      responses && responses->StandaloneCompaction();
+  if (compact_step_needed) {
+    s = prepare_step(responses->Compaction().chat,
+                     responses->Compaction().request);
+    if (!s) {
+      if (cancelled()) {
+        count_abort();
+        send_cancel_error("Compaction preparation cancelled");
+      } else {
+        SendError(fd, planning_error.http_status, s.message(), {},
+                  planning_error.code, "context_management");
+      }
+      return;
+    }
+  }
   if (planning_config.client_limits) {
-    const auto result =
-        rate_lease.Reserve(clients_, http->Client(),
-                           completion ? completion_prompt_tokens
-                                      : prompt_u32.size(),
-                           completion ? completion_output_tokens
-                                      : prompt_budget.total_output);
+    const auto result = rate_lease.Reserve(
+        clients_, http->Client(),
+        completion                                   ? completion_prompt_tokens
+        : standalone_compact && !compact_step_needed ? 0
+                                                     : prompt_u32.size(),
+        completion                                   ? completion_output_tokens
+        : standalone_compact && !compact_step_needed ? 0
+        : responses                                  ? request_output_limit
+                    : prompt_budget.total_output);
     if (result != ClientRateResult::kAllowed) {
       const char* code =
           result == ClientRateResult::kRpm   ? "client_rpm_exhausted"
@@ -638,76 +739,116 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     return false;
   };
 
+  if (compact_selected && !compact_step_needed) {
+    std::string wire, part;
+    ObjectReply result;
+    if (!responses->Begun()) result = responses->Begin(&wire);
+    if (result.ok()) result = responses->StartCompaction(&part);
+    wire += part;
+    part.clear();
+    if (result.ok())
+      result = responses->CompleteCompaction("", 0, planning_config,
+                                             measure_context, &part);
+    wire += part;
+    if (result.ok() && standalone_compact) {
+      rate_lease.StartPrompt(0);
+      result = responses->Finish(false, 0, {}, std::time(nullptr), &part);
+    }
+    if (!result.ok()) {
+      SendError(fd, result.http_status, result.ClientMessage(), {},
+                result.ClientCode(), result.value.GetString("param"));
+      return;
+    }
+    if (standalone_compact) {
+      if (!SendSimple(fd, 200, "OK", responses->ResultJson(),
+                      "application/json", {.control = control.get()})) {
+        control->Cancel(RequestControl::State::kDisconnect);
+        count_abort();
+        return;
+      }
+      err_guard.ok = true;
+      control->Finish();
+      diagnostic.Outcome("success", "compaction_noop");
+      metrics_.requests_success.fetch_add(1, std::memory_order_relaxed);
+      return;
+    }
+    if (stream) {
+      if (!detail::BeginStreamingResponse(fd, response_state,
+                                          {.control = control.get()}) ||
+          !write_stream(wire))
+        return;
+      headers_started = true;
+      if (http) http->StartHeartbeats(control);
+    }
+  }
+  ResponsesGenerationPlan compacted_generation;
+  const int primary_index = compact_step_needed ? 1 : 0;
   for (int choice_index = 0;
-       choice_index < sampling.choices + (summary_plan.needed ? 1 : 0);
+       choice_index <
+       (standalone_compact ? 1 : sampling.choices + primary_index) +
+           (summary_plan.needed ? 1 : 0);
        ++choice_index) {
+    const bool compaction_step = compact_step_needed && choice_index == 0;
     const bool summary_step =
-        responses && summary_plan.needed && choice_index == 1;
-    const auto& step_plan = summary_step ? summary_plan.chat : request_plan;
-    const auto& req = summary_step ? step_plan.Request(summary_plan.request)
-                                   : request_plan.Request(original_request);
+        responses && summary_plan.needed && choice_index == primary_index + 1;
+    const bool internal_step = compaction_step || summary_step;
+    const bool compacted_primary = compact_step_needed && !internal_step;
+    const auto& step_plan = compaction_step     ? responses->Compaction().chat
+                            : summary_step      ? summary_plan.chat
+                            : compacted_primary ? compacted_generation.chat
+                                                : request_plan;
+    const auto& req = step_plan.Request(
+        compaction_step     ? responses->Compaction().request
+        : summary_step      ? summary_plan.request
+        : compacted_primary ? compacted_generation.generation_request
+                            : original_request);
     const auto& constraints = step_plan.constraints;
     const auto& sampling = step_plan.sampling;
     const bool plain_greedy = sampling.PlainGreedy();
     const bool visible_logprobs =
-        !summary_step && sampling.logprobs &&
+        !internal_step && sampling.logprobs &&
         (!completion || completion_plan.logprobs >= 0);
     const bool prediction_enabled = step_plan.prediction.enabled;
-    const int max_tokens = summary_step ? ChatOutputLimit(req, planning_config)
-                                        : request_output_limit;
-    const std::string prefix_scope = summary_step ? "" : request_prefix_scope;
+    const int max_tokens = responses ? ChatOutputLimit(req, planning_config)
+                                     : request_output_limit;
+    const std::string prefix_scope = internal_step ? "" : request_prefix_scope;
     const int prefix_write_tokens =
-        summary_step ? 0 : request_prefix_write_tokens;
+        internal_step ? 0 : request_prefix_write_tokens;
     SessionLease summary_session;
-    auto& session = summary_step ? summary_session : request_session;
-    if (summary_step) {
+    auto& session = internal_step ? summary_session : request_session;
+    if (summary_step || compacted_primary) {
       err_guard.ok = false;
       diagnostic.Stage("encode");
-      items.clear();
-      media_plan = {};
-      s = PrepareChatPrompt(req, constraints, &prompt, &items,
-                            &planning_error.param, &planning_error.code);
-      if (s) {
-        auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer, cancelled);
-        if (!lock.owns_lock()) {
-          count_abort();
-          send_cancel_error("summary cancelled waiting for tokenizer");
-          return;
-        }
-        s = EncodeChatPrompt(
-            req, planning_config, prompt,
-            [&](std::string_view text, std::vector<uint32_t>* out) {
-              return tok_->Encode(text, out, {.cancelled = cancelled});
-            },
-            &prompt_u32, &prompt_budget, &planning_error);
-      }
+      const char* param =
+          summary_step ? "reasoning.summary" : "context_management";
+      s = prepare_step(step_plan, req);
       if (!s) {
         if (cancelled()) {
           count_abort();
-          send_cancel_error("summary preparation cancelled");
+          send_cancel_error("Internal step preparation cancelled");
         } else {
           SendError(fd, planning_error.http_status, s.message(), {},
-                    planning_error.code, "reasoning.summary");
+                    planning_error.code, param);
         }
         return;
       }
-      prompt_encoded = true;
       if (planning_config.client_limits) {
         const uint64_t total_prompt =
             responses_usage.input_tokens + prompt_u32.size();
         if (total_prompt > planning_config.client_limits->max_prompt_tokens) {
-          SendError(fd, 400, "Summary exceeds cumulative client input limit",
-                    {}, "client_prompt_limit_exceeded", "reasoning.summary");
+          SendError(fd, 400,
+                    "Internal step exceeds cumulative client input limit", {},
+                    "client_prompt_limit_exceeded", param);
           return;
         }
         const auto extended = rate_lease.ExtendPrompt(clients_, http->Client(),
                                                       prompt_u32.size());
         if (extended != ClientRateResult::kAllowed) {
           const bool tpm = extended == ClientRateResult::kTpm;
-          SendError(
-              fd, tpm ? 429 : 503, "Summary input reservation unavailable", {},
-              tpm ? "client_tpm_exhausted" : "summary_admission_unavailable",
-              "reasoning.summary");
+          SendError(fd, tpm ? 429 : 503,
+                    "Internal step input reservation unavailable", {},
+                    tpm ? "client_tpm_exhausted" : "step_admission_unavailable",
+                    param);
           return;
         }
       }
@@ -743,7 +884,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         sampling.choices == 1
             ? request_id
             : request_id + "_choice_" + std::to_string(choice_index),
-        collect_chat && !responses, step_plan.legacy_output);
+        (collect_chat && !responses) || compaction_step,
+        step_plan.legacy_output);
     if (!s.ok()) {
       SendError(fd, 400, s.message());
       return;
@@ -838,6 +980,16 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                     started.ClientCode());
           return false;
         }
+      }
+      if (compaction_step) {
+        std::string compact_start;
+        const auto started = responses->StartCompaction(&compact_start);
+        if (!started.ok()) {
+          SendError(fd, started.http_status, started.ClientMessage(), {},
+                    started.ClientCode());
+          return false;
+        }
+        response_start += compact_start;
       }
       if (!stream) return true;
       if (cancelled()) {
@@ -1997,7 +2149,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         }
         std::string response_chunk;
         if (responses) {
-          if (summary_step) {
+          if (compaction_step) {
+            response_status =
+                delta.kind == ResponseDelta::Kind::kContent
+                    ? Status()
+                    : Status::Fail("Compaction emitted non-text output");
+          } else if (summary_step) {
             response_status =
                 delta.kind == ResponseDelta::Kind::kContent
                     ? responses->AppendSummary(delta.text, &response_chunk)
@@ -2008,7 +2165,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           }
           if (!response_status) return false;
         }
-        if (!stream) continue;
+        if (!stream || compaction_step) continue;
         detail::ServeFaultPoint("handler.before_content");
         const auto chunk =
             responses ? response_chunk
@@ -3134,14 +3291,43 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     if (responses) {
       const ResponsesUsage step_usage{
           T, restored_prefix, static_cast<int64_t>(generated.size()),
-          summary_step ? static_cast<int64_t>(generated.size())
-                       : thinking_budget.ReasoningTokens()};
-      if (!summary_step && finish_reason != "length" &&
+          internal_step ? static_cast<int64_t>(generated.size())
+                        : thinking_budget.ReasoningTokens()};
+      responses_usage.input_tokens += step_usage.input_tokens;
+      responses_usage.cached_tokens += step_usage.cached_tokens;
+      responses_usage.output_tokens += step_usage.output_tokens;
+      responses_usage.reasoning_tokens += step_usage.reasoning_tokens;
+      if (compaction_step) {
+        if (finish_reason == "length") {
+          err_guard.ok = false;
+          SendError(fd, 502, "Compaction memory exhausted its output budget",
+                    {}, "compaction_incomplete", "context_management");
+          return;
+        }
+        std::string compact_wire;
+        const auto compacted = responses->CompleteCompaction(
+            response_parser.Content(), responses_usage.output_tokens,
+            planning_config, measure_context, &compact_wire);
+        if (!compacted.ok()) {
+          err_guard.ok = false;
+          SendError(fd, compacted.http_status, compacted.ClientMessage(), {},
+                    compacted.ClientCode(), compacted.value.GetString("param"));
+          return;
+        }
+        if (stream && !write_stream(compact_wire)) return;
+        if (!standalone_compact) {
+          compacted_generation = responses->Generation();
+          trace_outcome = trace::RequestOutcome::kSuccess;
+          cleanup();
+          continue;
+        }
+      }
+      if (!internal_step && finish_reason != "length" &&
           !responses->Envelope().summary.empty()) {
         s = PlanResponsesSummary(
             responses->Envelope(), responses->Output().Snapshot(),
-            request_output_limit, generated.size(), planning_config,
-            &summary_plan, &planning_error);
+            request_output_limit, responses_usage.output_tokens,
+            planning_config, &summary_plan, &planning_error);
         if (!s) {
           err_guard.ok = false;
           SendError(fd, planning_error.http_status, s.message(), {},
@@ -3149,7 +3335,6 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           return;
         }
         if (summary_plan.needed) {
-          responses_usage = step_usage;
           responses_completed_calls = response_parser.CompletedToolCalls();
           trace_outcome = trace::RequestOutcome::kSuccess;
           cleanup();
@@ -3163,10 +3348,6 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                   "response_summary_empty", "reasoning.summary");
         return;
       }
-      responses_usage.input_tokens += step_usage.input_tokens;
-      responses_usage.cached_tokens += step_usage.cached_tokens;
-      responses_usage.output_tokens += step_usage.output_tokens;
-      responses_usage.reasoning_tokens += step_usage.reasoning_tokens;
       diagnostic.Stage("storage");
       RequestDiagnostics::Scope waiting(diagnostic, Wait::kStorage);
       const auto finished = responses->Finish(
@@ -3237,7 +3418,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         if (http) http->BeforeTerminal();
         *response_state = detail::ResponseState::kTerminal;
         write_stream(response_terminal);
-      } else if (!SendSimple(fd, 200, "OK", responses->Output().Json(),
+      } else if (!SendSimple(fd, 200, "OK", responses->ResultJson(),
                              "application/json", {.control = control.get()})) {
         client_disconnected = true;
         control->Cancel(RequestControl::State::kDisconnect);

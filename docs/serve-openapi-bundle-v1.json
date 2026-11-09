@@ -1275,6 +1275,64 @@
         }
       }
     },
+    "/v1/responses/compact": {
+      "post": {
+        "operationId": "post_v1_responses_compact",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/compacted_response"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "response_compact",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/response_compact"
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/responses/{response_id}": {
       "get": {
         "operationId": "get_v1_responses_response_id",
@@ -21733,6 +21791,9 @@
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/965"
+              },
+              "obfuscation": {
+                "type": "string"
               }
             },
             "required": [
@@ -21775,6 +21836,9 @@
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/969"
+              },
+              "obfuscation": {
+                "type": "string"
               }
             },
             "required": [
@@ -21823,6 +21887,9 @@
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/973"
+              },
+              "obfuscation": {
+                "type": "string"
               }
             },
             "required": [
@@ -22276,6 +22343,9 @@
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1004"
+              },
+              "obfuscation": {
+                "type": "string"
               }
             },
             "required": [
@@ -22362,7 +22432,7 @@
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
               },
               "obfuscation": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/27"
+                "type": "string"
               },
               "output_index": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
@@ -22437,6 +22507,9 @@
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1015"
+              },
+              "obfuscation": {
+                "type": "string"
               }
             },
             "required": [
@@ -22822,6 +22895,9 @@
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1041"
+              },
+              "obfuscation": {
+                "type": "string"
               }
             },
             "required": [
@@ -22892,6 +22968,9 @@
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1045"
+              },
+              "obfuscation": {
+                "type": "string"
               }
             },
             "required": [
@@ -22962,6 +23041,9 @@
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1049"
+              },
+              "obfuscation": {
+                "type": "string"
               }
             },
             "required": [
@@ -23035,6 +23117,9 @@
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1058"
+              },
+              "obfuscation": {
+                "type": "string"
               }
             },
             "required": [
@@ -23418,6 +23503,9 @@
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1081"
+              },
+              "obfuscation": {
+                "type": "string"
               }
             },
             "required": [
@@ -23827,6 +23915,9 @@
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1106"
+              },
+              "obfuscation": {
+                "type": "string"
               }
             },
             "required": [
@@ -24774,6 +24865,472 @@
             "required": [],
             "additionalProperties": false
           },
+          "1150": {
+            "type": "object",
+            "properties": {
+              "input": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1151"
+              },
+              "instructions": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
+              },
+              "model": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1152"
+              },
+              "previous_response_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
+              },
+              "prompt_cache_key": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
+              },
+              "prompt_cache_options": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1153"
+              },
+              "prompt_cache_retention": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/815"
+              },
+              "service_tier": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1155"
+              }
+            },
+            "required": [
+              "model"
+            ],
+            "additionalProperties": false
+          },
+          "1151": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/21"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/908"
+              }
+            ]
+          },
+          "1152": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/21"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/304"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/684"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/685"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/686"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/687"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/688"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/689"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/690"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/691"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/692"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/693"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/694"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/695"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/696"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/697"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/698"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/699"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/700"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/701"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/702"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/703"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/704"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/705"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/706"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/707"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/708"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/709"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/710"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/711"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/712"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/713"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/714"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/715"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/716"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/717"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/718"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/719"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/720"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/721"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/722"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/723"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/724"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/725"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/726"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/727"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/728"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/729"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/730"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/731"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/732"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/733"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/734"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/735"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/736"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/737"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/738"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/739"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/740"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/741"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/742"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/743"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/744"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/745"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/746"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/747"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/748"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/749"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/750"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/751"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/752"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/753"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/754"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/755"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/756"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/757"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/758"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/759"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/760"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/761"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/762"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/763"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/764"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/765"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/766"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/767"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/768"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/769"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/770"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/771"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/772"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/773"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/774"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/775"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/776"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/777"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/778"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/779"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/780"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/781"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/782"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/783"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/784"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/785"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/786"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/787"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/788"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/789"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/790"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/791"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/792"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/793"
+              }
+            ]
+          },
+          "1153": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/21"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1154"
+              }
+            ]
+          },
+          "1154": {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/812"
+              },
+              "ttl": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/814"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "1155": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/21"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/18"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/829"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/830"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/832"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/833"
+              }
+            ]
+          },
+          "1156": {
+            "type": "object",
+            "properties": {
+              "created_at": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
+              },
+              "object": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1157"
+              },
+              "output": {
+                "type": "array",
+                "maxItems": 4096,
+                "items": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/input_item"
+                }
+              },
+              "usage": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/960"
+              }
+            },
+            "required": [
+              "created_at",
+              "id",
+              "object",
+              "output",
+              "usage"
+            ],
+            "additionalProperties": false
+          },
+          "1157": {
+            "const": "response.compaction"
+          },
           "input_item": {
             "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/0"
           },
@@ -24821,6 +25378,12 @@
           },
           "conversation_items_query": {
             "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1149"
+          },
+          "response_compact": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1150"
+          },
+          "compacted_response": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1156"
           },
           "item_include_query": {
             "type": "object",
@@ -26365,15 +26928,22 @@
             "SDK-added output_text is optional on wire",
             "official HTTP examples use usage:null for active/cancelled responses; completed/incomplete require actual usage",
             "native store echo and native response error codes",
+            "SDK-documented include_obfuscation adds optional string padding to delta events only",
             "exact integer and bounded native options",
             "native cancellation credentials and timeout/seed extensions",
-            "SDK combined body/query split on actual HTTP boundary"
+            "SDK combined body/query split on actual HTTP boundary",
+            "compact output is a replayable input window including preserved user messages; only this SDK OutputItem[] inconsistency is adapted"
           ],
           "wire_references": [
             {
               "date": "2026-11-09",
               "url": "https://developers.openai.com/api/reference/resources/responses/methods/cancel",
               "contract": "Cancelled resource can have usage:null; no fabricated zero usage"
+            },
+            {
+              "date": "2026-11-09",
+              "url": "https://developers.openai.com/api/docs/guides/compaction",
+              "contract": "Standalone compact preserves user messages and returns the canonical next input window with encrypted compaction state"
             },
             {
               "date": "2026-11-09",
@@ -26389,7 +26959,7 @@
           ],
           "cancelled_stream": "Resource is cancelled; original events end without fabricated response.cancelled/completed or Chat DONE.",
           "query": "Closed route-specific fields; repeated include[] is an array; exact decimal integers and true/false booleans.",
-          "type_graph_sha256": "281c2912b93d6978d42a20e5943e5e50279f22b13ca61f110ff94e64149fad24"
+          "type_graph_sha256": "54e6b959779f64cd0d27124170f64f0deff5798f3fee9f1ec84ebdc92c50e119"
         }
       },
       "serve-preflight-v1.schema.json": {

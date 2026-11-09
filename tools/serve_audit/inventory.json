@@ -775,6 +775,15 @@
         "tools/serve_chat_storage/test_sdk.mjs",
         "docs/SERVE_CHAT_STORAGE_2026-11-09.md"
       ]
+    },
+    "POST /v1/responses/compact": {
+      "semantics": "原生实际记忆模型步骤、认证压缩窗口，返回可直接回填的 CompactedResponse；共享准入、截止与真实用量。",
+      "boundary": "源码已接入；本组直接 CPU、官方 SDK/真实模型与交付尚待验证，不作为完成证据。",
+      "evidence": [
+        "src/server/responses_execution_compaction.cpp",
+        "tests/server_responses_compaction_test.cpp",
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md"
+      ]
     }
   },
   "whitelists": {

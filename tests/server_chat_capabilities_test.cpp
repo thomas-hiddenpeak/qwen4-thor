@@ -291,6 +291,13 @@ Q4T_TEST(chat_capabilities_native_responses_state_and_recovery) {
             summary->GetBool("single_request_admission") &&
             summary->GetBool("shared_cancellation") &&
             summary->GetString("source") == "actual_reasoning");
+  const auto* compaction = responses->Find("compaction");
+  Q4T_CHECK(compaction && compaction->GetBool("enabled") &&
+            compaction->GetBool("automatic") &&
+            compaction->GetBool("trigger_item") &&
+            compaction->GetBool("shared_output_budget") &&
+            compaction->GetBool("requires_measured_reduction") &&
+            compaction->GetString("endpoint") == "/v1/responses/compact");
   const auto* truncation = responses->Find("truncation");
   Q4T_CHECK(truncation && truncation->GetBool("auto") &&
             truncation->GetBool("disabled") &&
