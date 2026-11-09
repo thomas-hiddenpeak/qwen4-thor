@@ -1,0 +1,13 @@
+{
+  "external_requests": 10,
+  "actual_model_steps": 28,
+  "actual_tool_executions": 1,
+  "real_classification_and_blocking": true,
+  "private_output_before_approval": true,
+  "score_error_same_model_continuation": true,
+  "original_answer_budget": true,
+  "separate_usage_and_exact_tpm": true,
+  "default_unchanged": true,
+  "performance_claim": false,
+  "calibrated_moderation_quality_claim": false
+}

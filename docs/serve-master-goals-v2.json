@@ -296,7 +296,7 @@
         },
         "publication_revision": 10
       },
-      "current_work": "A07.7b moderation implemented: 29 C++/2schema/6 driver CPU accepted, bounded actual business pending; then delivery, A07.7c, A07.8 and every remaining master task",
+      "current_work": "A07.7b moderation CPU and actual 1-start/10-request/28-step business accepted; reversible delivery pending, then A07.7c/A07.8 and every remaining master task",
       "reasoning_summary": {
         "state": "delivered",
         "cpu_checks": 31,

@@ -52,3 +52,5 @@ docs/evidence/serve-conversation-service-20261109/** -text -whitespace
 # Preserve moderation wire, failed originals and source patches byte for byte.
 docs/evidence/serve-moderation-cpu-20261110/** -text -whitespace
 docs/evidence/serve-moderation-cpu-20261110/**/*.wire binary
+docs/evidence/serve-moderation-business-20261110/** -text -whitespace
+docs/evidence/serve-moderation-business-20261110/**/*.wire binary

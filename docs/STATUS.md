@@ -4,7 +4,7 @@ A07.7a 原生pro已完成[19 C++/2schema](evidence/serve-reasoning-pro-cpu-20261
 
 实际累计2启动/9请求/17步骤/129.201秒，124次NVML全OK，模型退出0且独立清理确认。JSON/SSE、推敲/回答/摘要共享预算、加密后台原回放与原输入、真实文档工具、1-token不完整、pro预热零输出及自动压缩组合通过；精确RPM/TPM/用量核对通过。首CPU空工具额外依赖和首驱动重复start均已修复、原件保留。安装8操作通过、0新增模型/Chat。
 
-A07.1—A07.6及A07.7a已交付；[A07.7b/c](SERVE_RESPONSES_EXECUTION_POLICY_2026-11-10.md)继续实际moderation与授权程序：已成组接入真实分类步骤、输入阻断、私有输出批准发布、失败隔离、独立审核用量与累计TPM，冻结29项C++及2项schema直接用例，[29 C++/2schema与6驱动CPU已通过](evidence/serve-moderation-cpu-20261110/README.md)，首构建/夹具/清单准备失败及仅受影响补验保留；候选待最多1启动/10请求/28模型步/900秒真实短验，随后A07.8和所有A/R/Q/G余项。总目标active、未合main；不声称云端pro私有算法或模型质量等效，不以子阶段为终点。非性能任务仅针对验证，长稳实跑由用户负责。
+A07.7b [实际审核业务通过](evidence/serve-moderation-business-20261110/README.md)：1启动/10请求/28模型步骤/129.587秒，122次NVML全OK，模型正常退出及独立清理通过；29 C++/2schema/6驱动CPU已过。双向阻断、私有SSE/后台、六步组合、实际工具、审核失败同PID继续、预热与精确TPM均通过。继续可回退交付，再A07.7c/A07.8及全部A/R/Q/G任务；默认pro尚未替换，总目标active、未合main。
 
 以下保留历史检查点，当前默认以上段为准；A07.3—A07.5 开发原件见开发日志及证据目录。
 
