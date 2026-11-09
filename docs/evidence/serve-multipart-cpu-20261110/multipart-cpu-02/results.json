@@ -1,0 +1,43 @@
+[
+  {
+    "name": "sdk",
+    "argv": [
+      "node",
+      "tools/serve_responses/multipart_sdk_fixture.mjs",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-files-20261110/multipart-cpu-02/sdk"
+    ],
+    "exit_code": 0,
+    "seconds": 0.16398575529456139
+  },
+  {
+    "name": "host",
+    "argv": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/host/q4t_host_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-files-20261110/required-multipart.txt"
+    ],
+    "exit_code": 0,
+    "seconds": 0.007643428165465593
+  },
+  {
+    "name": "inventory",
+    "argv": [
+      "python3",
+      "-B",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.11393055971711874
+  },
+  {
+    "name": "whitespace",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.03179855039343238
+  }
+]

@@ -1286,8 +1286,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "14f4654c11ef4f9828391b1415c0a5b7aead959707c6cb8c846e096b4b1c2e3b",
-    "cmake/ChatProtocolIdentity.cmake": "ba780290b345acdc2e59b62228454a98faa2ab6d95b26651408fbc3111f01457",
+    "CMakeLists.txt": "23e7b8339266bb58cdf386fc4d6e27c03d48ef6304e79f602ad08c3b5cbe4845",
+    "cmake/ChatProtocolIdentity.cmake": "52252a62bb7be9511351df40a745f36dcb54edecb9a867c77361560b1dc58822",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
     "cmake/NativeIngress.cmake": "5560a873e8d89b5e034636f006a2b21ace3bdab2bf71dcf688d5028fbbc704b4",
@@ -1350,6 +1350,7 @@
     "include/q4t/server/model_catalog.h": "19bb1b450170b4d7c1d8895593f41baa1ad91c90aaafc58977894bcf76d52143",
     "include/q4t/server/moderation.h": "3a81e2254c524b1353e68aff24d3319ccab31b81fd2b2faa2631505e2f7c8e86",
     "include/q4t/server/mtp_policy.h": "28f10c5c885f9465c0f26c22a36bf6be541933a0ed9d9c2da5f0d3983e0a8285",
+    "include/q4t/server/multipart.h": "d5561b82cb3517424c922165fffce518046ec1e45436a2d66c7946c870f8c33f",
     "include/q4t/server/native_crypto.h": "0976c2f55c5edaedfc50299db53cd2aa4dd0f0126117aa809e78eea6fa23a224",
     "include/q4t/server/object_retention.h": "96b17568ac8d3b0c00d773a421a0989e827797b6e9b768198f329b5c57488bb2",
     "include/q4t/server/object_store.h": "0fffcef7381c0197669e908c91428ec6b2c8be9a09b39d9447a96b62933c04f4",
@@ -1492,6 +1493,7 @@
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
     "src/server/model_catalog.cpp": "8d0808b669e3ecbc95794d8b07bd6a86b38dc310cf93c98e18befade71fd2d7e",
     "src/server/moderation.cpp": "ea07d705ed4d22aa5654e9bfd625035b0aff4bdfe5f0796dcfa7c1ef3c57053d",
+    "src/server/multipart.cpp": "dbca4c49b4f25a062f5e8ecd578cd533b3847141c0ad36579e8a5519bdefe6d0",
     "src/server/native_crypto.cpp": "86da5a6cda4b18154f46227074d7fa68b7ec3cbb8bfcdb9a6aaff75b2c9cb8a1",
     "src/server/object_protocol.h": "37bcaad2864814be50b6ae530d4b2e17028cacbc0fd4e05027e4235965331d9c",
     "src/server/object_retention.cpp": "32d96463d782aa464b4e7063e1dc5cff74d169e00f83716c9880f4f50c912906",

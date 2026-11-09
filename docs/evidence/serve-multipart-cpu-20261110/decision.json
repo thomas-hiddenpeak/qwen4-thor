@@ -1,0 +1,11 @@
+{
+  "status": "PASS_TARGETED_MULTIPART_COMPONENT_CPU",
+  "cpp_tests": 11,
+  "sdk_version": "7.47.0",
+  "sdk_encodings": 2,
+  "actual_network_requests": 0,
+  "model_starts": 0,
+  "api_accepted": false,
+  "default_changed": false,
+  "remaining_master_tasks_open": true
+}

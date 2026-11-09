@@ -923,7 +923,7 @@
     {
       "id": "A09",
       "required": true,
-      "state": "planned",
+      "state": "implementation_in_progress",
       "implementation": "Files/Uploads\u53caBatch\u539f\u751f\u4efb\u52a1\u5165\u53e3",
       "acceptance": "\u6587\u4ef6\u7c7b\u578b/\u9650\u989d/\u5f52\u5c5e\u3001\u5206\u5757\u5b8c\u6210/\u53d6\u6d88\u3001\u6279\u4efb\u52a1\u9010\u9879\u7ed3\u679c\u3001\u53d6\u6d88\u4e0e\u91cd\u542f\u540e\u7eed\u8dd1\uff1b\u4e0d\u80fd\u4ec5\u63d0\u4f9b\u79bb\u7ebf\u811a\u672c\u5192\u5145API",
       "depends_on": [
@@ -931,7 +931,20 @@
         "N05"
       ],
       "evidence": [],
-      "release": null
+      "release": null,
+      "plan": "SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
+      "remaining_required": [
+        "A09.1 full contracts and incremental multipart",
+        "A09.2 isolated binary persistence",
+        "A09.3 Files and bounded native transport",
+        "A09.4 Uploads completion/cancel/expiry",
+        "A09.5 actual file consumption and retention",
+        "A09.6 real Batch executor/recovery",
+        "A09.7 all eight endpoint backends with A10",
+        "A09.8 SDK/native release and rollback"
+      ],
+      "multipart_component_evidence": "evidence/serve-multipart-cpu-20261110/README.md",
+      "next": "Implement bounded binary persistence and complete A09 API/transport/execution tasks; component validation is not A09 completion."
     },
     {
       "id": "A10",

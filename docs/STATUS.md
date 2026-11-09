@@ -1,5 +1,11 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+A09.1 [multipart组件11 C++/2实际SDK编码通过](evidence/serve-multipart-cpu-20261110/README.md)，host零警告；首SDK路径夹具错误保留。仅组件CPU，0网络/模型，Files API和持久IO尚未交付。继续实际文件存储/传输、Uploads、Batch与全部目标；默认6a90506e保持STOPPED。
+
+A09 增量multipart与SDK编码夹具已成组开发，冻结11项CPU，开始必要host构建。覆盖真实SDK字节、跨块边界/二进制、截断和失败停止；尚未测试，Files HTTP/持久IO仍待接入。默认6a90506e保持STOPPED，继续A09全部子项及总目标。
+
+开始[A09完整计划](SERVE_FILES_UPLOADS_BATCH_2026-11-10.md)：multipart/二进制持久IO、Files/Uploads、实际文件消费、Batch8端点和恢复/发行全部保留。已按固定SDK核对路由及字段，先补增量解析和存储底座，尚未测试；默认6a90506e保持STOPPED，全部总任务继续。
+
 A08 已完成[CPU/业务/可回退交付](evidence/serve-retention-delivery-20261110/README.md)：当前默认引擎6a90506e、元数据d6d9c001、包e8e75470，revision32、STOPPED。28 C++/4驱动，实际累计3启动/4生成/118.334秒、114 NVML全OK；8发布操作、0新增模型/GPU，保留5935be0a回退与业务账本。继续A09 Files/Uploads/Batch及全部总计划，未合main。以下历史以本段当前默认为准。
 
 A08 [实际业务接受](evidence/serve-retention-business-20261110/README.md)：累计3启动/4生成/118.334秒，114 NVML全OK并独立清理。精确留存管理/历史/会话/后台原SSE与密文重启续聊、实际用量通过；首投影驱动失败保留。候选6a90506e，继续可回退交付，再A09及全部目标；默认5935be0a尚未替换。

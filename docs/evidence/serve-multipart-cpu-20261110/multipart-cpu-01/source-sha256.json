@@ -1,0 +1,15 @@
+{
+  "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md": "18057592df9c7f6d43b1f5bd546afeb1b62063470e64b8fe89cf62b765da44e8",
+  "include/q4t/server/multipart.h": "d5561b82cb3517424c922165fffce518046ec1e45436a2d66c7946c870f8c33f",
+  "src/server/multipart.cpp": "dbca4c49b4f25a062f5e8ecd578cd533b3847141c0ad36579e8a5519bdefe6d0",
+  "tests/server_multipart_test.cpp": "0d8d0c43264869755e3cf7c132f5fcd54746bb844bc691823ff266f17c643267",
+  "tools/serve_responses/multipart_sdk_fixture.mjs": "8532bba019056d48c4426459bce70dd8eb75985b70c2c7ae64f55ce8aa3868ba",
+  "CMakeLists.txt": "23e7b8339266bb58cdf386fc4d6e27c03d48ef6304e79f602ad08c3b5cbe4845",
+  "cmake/ChatProtocolIdentity.cmake": "52252a62bb7be9511351df40a745f36dcb54edecb9a867c77361560b1dc58822",
+  "cmake/HostTestSources.cmake": "3e1341dc8dcfc5668aa2423f87504642137cd78377487a00c350073f02989ae3",
+  "docs/README.md": "75fb5c78859684ad320365c2cab9b544a1123268b474be223cbc2025dfdfaab3",
+  "docs/STATUS.md": "0642498511a36027663987e4ddb8c44b6f1537205ba7712d3041e42292204270",
+  "docs/log/2026-11-10.md": "030ddf50c0a3c3bacb76aaf2293ab0473afb60a65fe24cf63e7c2003d170f5ff",
+  "docs/serve-master-goals-v2.json": "587595a739a290e2f259f0214865a076062ed643c503d372554c20fb2eed6acd",
+  "tools/serve_audit/inventory.json": "552ea4b5c6033df3f3153b91d4156998eefd486267fbafe2160f342ab768b548"
+}

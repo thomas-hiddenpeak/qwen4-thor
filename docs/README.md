@@ -14,6 +14,8 @@
 [A07 Responses原生实现与A08状态衔接](SERVE_RESPONSES_2026-11-08.md)
 （已验子集进入默认；[发行原件](evidence/serve-application-delivery-20261109/README.md)，其余能力继续实施）。
 
+[A09 Files/Uploads/Batch连续实现](SERVE_FILES_UPLOADS_BATCH_2026-11-10.md)
+
 [A08原生对象存储及后台任务](SERVE_OBJECT_STORE_2026-11-08.md)
 （开发中，存储故障与核心生成隔离）。
 

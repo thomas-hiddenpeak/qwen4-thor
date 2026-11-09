@@ -40,6 +40,8 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/object_store.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/object_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/object_retention.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/multipart.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_multipart_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_state.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_execution.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_execution_compaction.cpp

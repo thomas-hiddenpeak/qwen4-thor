@@ -266,6 +266,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/object_store.cpp
   src/server/object_worker.cpp
   src/server/object_retention.cpp
+  src/server/multipart.cpp
   src/server/responses_state.cpp
   src/server/responses_execution.cpp
   src/server/responses_execution_compaction.cpp

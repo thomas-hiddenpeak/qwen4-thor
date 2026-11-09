@@ -1,0 +1,12 @@
+[PASS] multipart_boundary_quotes_case_and_ambiguity
+[PASS] multipart_binary_content_all_fragment_sizes_and_utf8_filename
+[PASS] multipart_false_delimiter_prefixes_remain_exact_payload
+[PASS] multipart_order_repeated_fields_empty_parts_and_mime_padding
+[PASS] multipart_closing_delimiter_without_final_crlf
+[PASS] multipart_truncation_never_authorizes_publication
+[PASS] multipart_rejects_ambiguous_or_malformed_part_headers
+[PASS] multipart_wire_parts_headers_and_ignored_text_are_bounded
+[PASS] multipart_consumer_failure_and_exception_are_sticky
+[PASS] multipart_large_input_is_incremental_with_fixed_parser_buffer
+[PASS] multipart_actual_official_sdk_file_and_upload_part_bytes
+11 tests, 11 passed, 0 failed, 0 skipped
