@@ -409,6 +409,15 @@
         "python": 4,
         "first_oracle_failure_preserved": true,
         "real_business_pending": true
+      },
+      "prompt_actual_business_2026_11_10": {
+        "status": "accepted_delivery_pending",
+        "evidence": "docs/evidence/serve-prompts-business-20261110/README.md",
+        "starts": 2,
+        "requests": 8,
+        "model_steps": 7,
+        "seconds": 86.75399710191414,
+        "candidate": "8feec07312974996b7cdab811756dc7fae076cfb036891f11248923641ed4f05"
       }
     },
     {

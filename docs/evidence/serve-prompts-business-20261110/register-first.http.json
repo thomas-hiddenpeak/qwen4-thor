@@ -1,0 +1,28 @@
+{
+  "method": "POST",
+  "path": "/v1/prompts",
+  "request": {
+    "definition": {
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "temperature": 0,
+        "reasoning": {
+          "effort": "none"
+        },
+        "max_output_tokens": 64,
+        "instructions": "Answer the current question from the authoritative record. Reply only with the decimal project code.",
+        "input": [
+          {
+            "role": "user",
+            "content": "The authoritative project code is 42. {{context}}"
+          }
+        ]
+      },
+      "variables": {
+        "context": "input_text"
+      }
+    }
+  },
+  "status": 200,
+  "seconds": 0.002339256927371025
+}

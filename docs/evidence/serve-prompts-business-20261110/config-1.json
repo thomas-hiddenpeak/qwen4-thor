@@ -1,0 +1,373 @@
+{
+  "object": "q4t.serve.config",
+  "profile": "q4t-config-v1",
+  "observability_version": 5,
+  "protocol_source_sha256": "729447c424318d5b85f73d0e93f1ab8a715987b7d3858df03f9aa079fa8db46b",
+  "model": "qwen3.8-flash-next",
+  "model_aliases": [],
+  "completions": {
+    "profile": "q4t-completions-v1",
+    "default_output_tokens": 16,
+    "max_batch_candidates": 128
+  },
+  "application_state": {
+    "profile": "q4t-objects-v1",
+    "directory_source": "explicit",
+    "directory_redacted": true,
+    "isolated_io": true,
+    "max_object_mib": 16,
+    "max_client_mib": 64,
+    "max_total_mib": 256,
+    "max_client_objects": 1000,
+    "max_total_objects": 10000,
+    "io_timeout_ms": 2000,
+    "core_readiness_dependency": false
+  },
+  "client_policy": {
+    "profile": "q4t-gateway-clients-v1",
+    "enabled": true,
+    "sha256": "8c445b1f3a7db1609535732d46b1c1c508f8ff3836263d09d7776a94e350adcc",
+    "clients": 1,
+    "namespace": "client_id",
+    "credential_values_redacted": true,
+    "mutable": true,
+    "snapshot": "startup",
+    "revision": 0,
+    "content_sha256": "7ad3ae898dd45d8471509361f7caffb1fa5f06499aa16ac4a289a2135bc3e890",
+    "per_client_ram_limit": false
+  },
+  "client_governance": {
+    "profile": "q4t-client-governance-v1",
+    "policy_version": 3,
+    "fair_queue": true,
+    "window_seconds": 60,
+    "window": "fixed_monotonic",
+    "zero_disables": true,
+    "scope": "single_process",
+    "restart": "reset",
+    "preflight_charged": false,
+    "reservation": "prompt_plus_available_output",
+    "settlement": "logical_tokens_in_completion_window",
+    "pending_survives_window": true,
+    "fairness_scope": "prepared_slot_admission",
+    "preemption": false,
+    "latency_guarantee": false
+  },
+  "listeners": {
+    "public": {
+      "host": "127.0.0.1",
+      "port": 18989
+    },
+    "operations": {
+      "host": "127.0.0.1",
+      "port": 18990,
+      "enabled": true,
+      "source": "cli",
+      "unclassified_shares_operations_total": true
+    }
+  },
+  "max_context_tokens": {
+    "requested": 8192,
+    "effective": 8192,
+    "source": "cli",
+    "resolution": "startup_memory_budget"
+  },
+  "max_sequences": {
+    "requested": 1,
+    "effective": 1,
+    "source": "cli",
+    "resolution": "startup_memory_budget"
+  },
+  "prefill_chunk_tokens": {
+    "requested": 2048,
+    "effective": 2048,
+    "source": "cli",
+    "resolution": "requested"
+  },
+  "default_output_tokens": {
+    "requested": 384,
+    "effective": 384,
+    "source": "cli",
+    "resolution": "request_override_then_context_cap"
+  },
+  "request_deadline_ms": {
+    "requested": 1200000,
+    "effective": 1200000,
+    "source": "builtin_default",
+    "resolution": "request_override"
+  },
+  "max_inflight_requests": {
+    "requested": 8,
+    "effective": 8,
+    "source": "cli",
+    "resolution": "requested"
+  },
+  "max_queued_requests": {
+    "requested": 2,
+    "effective": 2,
+    "source": "cli",
+    "resolution": "requested"
+  },
+  "slots": {
+    "capacities": [
+      8192
+    ],
+    "policy": "uniform_context_clip",
+    "availability_endpoint": "/metrics",
+    "reservation": false
+  },
+  "runtime": {
+    "mtp_requested": true,
+    "mtp_enabled": true,
+    "mtp_k": 3,
+    "media_enabled": false,
+    "media_limits": {
+      "profile": "q4t-media-admission-v2",
+      "experimental": true,
+      "roles": [
+        "user"
+      ],
+      "formats": [
+        "png",
+        "jpeg"
+      ],
+      "data_url_mime": [
+        "image/png",
+        "image/jpeg"
+      ],
+      "raw_base64": true,
+      "base64": "canonical_standard_padded",
+      "image_detail": [
+        "auto"
+      ],
+      "remote_urls": false,
+      "video_time_field": "video_timestamps",
+      "video_time_unit": "seconds",
+      "video_time_default": "frame_index/24",
+      "max_timestamp_seconds": 86400,
+      "temporal_group_frames": 2,
+      "timestamp_rounding_decimal_places": 1,
+      "video_prompt": "timestamp_then_one_boundary_per_temporal_group",
+      "mtp": false,
+      "state_cache": false,
+      "chunked_prefill": false,
+      "max_execution_slots": 1,
+      "client_governance": true,
+      "max_items": 8,
+      "max_frames_per_item": 32,
+      "max_encoded_bytes": 16777216,
+      "max_source_edge": 16384,
+      "max_source_pixels": 16777216,
+      "max_decoded_rgb_bytes": 134217728,
+      "max_patches": 65536,
+      "max_workspace_bytes": 2147483648,
+      "decoder_owned_bytes": 268435456,
+      "attention_shared_bytes": null,
+      "unknown_device_limit": "reject",
+      "whole_server_ram_limit": false,
+      "cancellation": "item_frame_and_before_gpu_not_preemptive"
+    },
+    "structured_backend": true,
+    "session_cache": false,
+    "prefix_cache": false,
+    "prefix_checkpoints": [],
+    "memory_budget_enabled": true,
+    "whole_server_ram_limit": false
+  },
+  "startup_memory": {
+    "enabled": true,
+    "headroom_mib": {
+      "requested": 2048,
+      "effective": 2048,
+      "source": "builtin_default",
+      "resolution": "zero_disables"
+    },
+    "source": "linux_global_mem_available",
+    "estimate": "allocation_budget_peak",
+    "failure_policy": "stop_startup",
+    "snapshot_is_reservation": false,
+    "hard_limit": false,
+    "checks": {
+      "before_metadata": {
+        "state": "admitted",
+        "estimate_bytes": null,
+        "headroom_bytes": 2147483648,
+        "required_bytes": 2147483648,
+        "observed_total_bytes": 131920637952,
+        "observed_available_bytes": 124105666560
+      },
+      "before_allocations": {
+        "state": "admitted",
+        "estimate_bytes": 97103842376,
+        "headroom_bytes": 2147483648,
+        "required_bytes": 99251326024,
+        "observed_total_bytes": 131920637952,
+        "observed_available_bytes": 123779158016
+      },
+      "before_ready": {
+        "state": "admitted",
+        "estimate_bytes": null,
+        "headroom_bytes": 2147483648,
+        "required_bytes": 2147483648,
+        "observed_total_bytes": 131920637952,
+        "observed_available_bytes": 35806654464
+      }
+    }
+  },
+  "cuda_allocation_quota": {
+    "profile": "q4t-linked-cuda-quota-v1",
+    "enabled": true,
+    "requested_mib": "auto",
+    "effective_limit_bytes": 118728574156,
+    "source": "builtin_default",
+    "resolution": "mem_fraction_times_mem_total",
+    "scope": "process_requested_cuda_bytes",
+    "allocation_entries": 16384,
+    "stream_entries": 256,
+    "no_budget_bypasses_quota": false,
+    "external_library_calls_covered": false,
+    "physical_ram_limit": false,
+    "reconfiguration": "new_process",
+    "async_credit": "successful_sync",
+    "excluded": [
+      "host_heap",
+      "file_cache",
+      "driver",
+      "external_library_allocations",
+      "cuda_pool_retained"
+    ]
+  },
+  "memory_admission": {
+    "enabled": true,
+    "source": "linux_global_mem_available",
+    "min_available_mib": {
+      "requested": 2048,
+      "effective": 2048,
+      "source": "builtin_default",
+      "resolution": "zero_disables"
+    },
+    "recovery_margin_mib": {
+      "requested": 512,
+      "effective": 512,
+      "source": "builtin_default",
+      "resolution": "ignored_when_disabled"
+    },
+    "recovery_threshold_mib": 2560,
+    "sample_max_age_ms": 250,
+    "failure_policy": "reject_new_work",
+    "active_generation": "continue",
+    "hard_limit": false
+  },
+  "limits": {
+    "text_requests": 8,
+    "queued_requests": 2,
+    "queue_policy": "client_round_robin_best_fit",
+    "queue_order": "slot_admission_arrival",
+    "queue_excludes_preparation": true,
+    "preflight_shares_text_admission": true,
+    "business_connections": 128,
+    "control_connections": 4,
+    "observation_connections": 4,
+    "public_connection_handlers": 136,
+    "operations_connection_handlers": 8,
+    "connection_handlers": 144,
+    "unclassified_shares_total": false,
+    "body_bytes": 16777216,
+    "aggregate_body_bytes": 50331648,
+    "tokenizer_input_bytes": 4000000,
+    "tokenizer_tokens": 4000000,
+    "preflight_response_bytes": 8388608
+  },
+  "configuration_mutable": false,
+  "paths_redacted": true,
+  "application_state_health": {
+    "state": "starting",
+    "key_admin_ready": true,
+    "key_admin_readiness_dependency": false,
+    "pending": 1,
+    "workers_started": 1,
+    "workers_reaped": 0,
+    "controller_starts": 1,
+    "controller_failures": 0,
+    "controller_recoveries": 0
+  },
+  "responses_background": {
+    "state": "ready",
+    "readiness_dependency": false,
+    "owned": 0,
+    "queued": 0,
+    "running": 0,
+    "uncertain": 0,
+    "input_bytes": 0,
+    "recovery_configured": true,
+    "recovery_scanned": false,
+    "recovery_pending": 0,
+    "recovered": 0,
+    "interrupted": 0,
+    "recovery_errors": 0
+  },
+  "responses_reconciliation": {
+    "state": "ready",
+    "readiness_dependency": false,
+    "owned": 0,
+    "active": 0,
+    "pending": 0,
+    "reconciled": 0,
+    "errors": 0
+  },
+  "cache_io": {
+    "session": {
+      "configured": false,
+      "available": false,
+      "state": "disabled",
+      "readiness_dependency": false,
+      "generation": 0,
+      "workers_started": 0,
+      "workers_reaped": 0,
+      "workers_active": 0,
+      "controller_failures": 0,
+      "worker_rss_known": false,
+      "worker_rss_observed_bytes": 0,
+      "io_timeout_ms": 2000,
+      "restart_limit": 3,
+      "restart_window_ms": 60000,
+      "block_bytes": 8388608,
+      "buffer_payload_limit_bytes": 25169920,
+      "buffer_limit_excludes_process_overhead": true
+    },
+    "prefix": {
+      "configured": false,
+      "available": false,
+      "state": "disabled",
+      "readiness_dependency": false,
+      "generation": 0,
+      "workers_started": 0,
+      "workers_reaped": 0,
+      "workers_active": 0,
+      "controller_failures": 0,
+      "worker_rss_known": false,
+      "worker_rss_observed_bytes": 0,
+      "io_timeout_ms": 2000,
+      "restart_limit": 3,
+      "restart_window_ms": 60000,
+      "block_bytes": 8388608,
+      "buffer_payload_limit_bytes": 25169920,
+      "buffer_limit_excludes_process_overhead": true
+    }
+  },
+  "current_client_policy": {
+    "profile": "q4t-native-client-policy-v1",
+    "configured": true,
+    "mutable": true,
+    "publisher_alive": false,
+    "revision": 0,
+    "sha256": "8c445b1f3a7db1609535732d46b1c1c508f8ff3836263d09d7776a94e350adcc",
+    "content_sha256": "7ad3ae898dd45d8471509361f7caffb1fa5f06499aa16ac4a289a2135bc3e890",
+    "global_inflight": 8,
+    "global_queued": 2,
+    "credential_values_redacted": true,
+    "clients": [
+      "encryption-test"
+    ]
+  }
+}

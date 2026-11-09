@@ -1,0 +1,7 @@
+{
+  "method": "DELETE",
+  "path": "/v1/prompts/prompt_b4becc0653d28e381a1cf444770496b3",
+  "request": null,
+  "status": 200,
+  "seconds": 0.0008850069716572762
+}

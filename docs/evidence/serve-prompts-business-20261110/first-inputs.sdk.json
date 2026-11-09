@@ -1,0 +1,44 @@
+{
+  "ok": true,
+  "result": {
+    "object": "list",
+    "data": [
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "input_text",
+            "text": "The authoritative project code is 42. "
+          },
+          {
+            "type": "input_text",
+            "text": "Keep this record available for the question."
+          }
+        ],
+        "type": "message",
+        "status": "completed",
+        "id": "item_b7e9a3ccef3ca144af953f5c5c9a38dd"
+      },
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "input_text",
+            "text": "What is the authoritative project code?"
+          }
+        ],
+        "type": "message",
+        "status": "completed",
+        "id": "item_c0948e02458b63616df99e1877f11966"
+      }
+    ],
+    "has_more": false
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:18989/v1/responses/resp_c613ed4c9ef76f63872774be7d2ac839/input_items?order=asc",
+      "method": "GET"
+    }
+  ]
+}

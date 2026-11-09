@@ -156,3 +156,5 @@ A07.5 [27 项 CPU/来源检查](evidence/serve-prompts-cpu-20261109/README.md)�
 追加版本；`POST /v1/prompts/{id}` 使用 default_version 和 expected_revision
 切换默认，`GET /v1/prompts/{id}/versions/{version}`读取不可变定义。
 删除只影响未来引用，已保存响应/后台有效请求继续持有原版本和上下文。
+
+2026-11-10：[A07.5 真实业务接受](evidence/serve-prompts-business-20261110/README.md)，2 启动/8 请求/7 步，实际版本结果、模板删除后后台回放和文档工具闭环通过，随后可回退默认交付。

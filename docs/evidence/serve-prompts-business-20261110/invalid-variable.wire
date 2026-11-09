@@ -1,0 +1,1 @@
+{"error":{"message":"Prompt variable type mismatch","type":"invalid_request_error","code":"invalid_prompt","param":"prompt.variables.context"}}

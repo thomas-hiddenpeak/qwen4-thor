@@ -1,0 +1,16 @@
+{
+  "status": "PASS_RESPONSES_PROMPT_TARGETED_BUSINESS",
+  "binary_sha256": "8feec07312974996b7cdab811756dc7fae076cfb036891f11248923641ed4f05",
+  "protocol_sha256": "729447c424318d5b85f73d0e93f1ab8a715987b7d3858df03f9aa079fa8db46b",
+  "counts": {
+    "starts": 2,
+    "chats": 8,
+    "controls": 93
+  },
+  "seconds": 86.75399710191414,
+  "model_steps": 7,
+  "nvml_samples": 82,
+  "all_nvml_ok": true,
+  "cleanup_confirmed": true,
+  "scope": "Actual pinned/default Prompt versions, JSON/SSE, original background restart replay after template deletion, real document tool, precise request accounting and invalid-variable isolation; no performance or full-quality claim"
+}

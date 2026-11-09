@@ -1,0 +1,10 @@
+{
+  "owned_same_birth_remaining": [],
+  "ports_rebindable": [
+    18989,
+    18990
+  ],
+  "common_lock_released": true,
+  "default_protected_unchanged": true,
+  "no_additional_gpu_queries": true
+}
