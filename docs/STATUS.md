@@ -1,5 +1,13 @@
 # 当前 Serve 总目标状态（2026-11-10）
 
+A07.7b 原生审核已完成[29 C++/2schema/6驱动CPU](evidence/serve-moderation-cpu-20261110/README.md)、[实际业务](evidence/serve-moderation-business-20261110/README.md)和[可回退默认交付](evidence/serve-moderation-delivery-20261110/README.md)。当前引擎 `31adcfab`、元数据 `0d98d70f`、包 `4f71ce5c`，publication revision24，STOPPED；pro完整回退与核心/API Key/限额/用量账本保持。
+
+真实1启动/10请求/28模型步骤/129.587秒、122 NVML全OK；输入/输出阻断、SSE/后台隔离、压缩/pro/摘要组合、真实文档工具、审核失败同PID继续、预热及精确累计TPM通过。安装8操作通过、0新增模型/Chat/GPU。分类是实际Qwen风险估计，不冒称云端校准质量。
+
+继续A07.7c授权程序、A07.8及全部A/R/Q/G任务，总目标active、未合main。独立/v1/moderations模型接口列入A10明确接入项，Responses嵌入审核交付不能替代该端点。非性能任务继续仅针对验证，长稳由用户实跑。
+
+以下为历史检查点，当前默认以上段为准。
+
 A07.7a 原生pro已完成[19 C++/2schema](evidence/serve-reasoning-pro-cpu-20261110/README.md)、5项不同驱动CPU、[真实业务](evidence/serve-reasoning-pro-business-20261110/README.md)和[可回退默认交付](evidence/serve-reasoning-pro-delivery-20261110/README.md)。当前引擎 `943f8e01`、元数据 `b138e4d2`、包 `0837b2a7`，publication revision22，STOPPED；完整A07.6回退与核心/API Key/限额/用量账本保持。
 
 实际累计2启动/9请求/17步骤/129.201秒，124次NVML全OK，模型退出0且独立清理确认。JSON/SSE、推敲/回答/摘要共享预算、加密后台原回放与原输入、真实文档工具、1-token不完整、pro预热零输出及自动压缩组合通过；精确RPM/TPM/用量核对通过。首CPU空工具额外依赖和首驱动重复start均已修复、原件保留。安装8操作通过、0新增模型/Chat。

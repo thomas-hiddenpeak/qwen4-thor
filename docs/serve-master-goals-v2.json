@@ -227,16 +227,16 @@
         "evidence/serve-prompt-cache-delivery-20261110/README.md"
       ],
       "release": {
-        "engine_binary_sha256": "943f8e01cb50ca562744080098ac4016a65c8fa4f6aa58116518df5d586d5dd3",
-        "engine_release_sha256": "b138e4d2af8b74e9f58bdafce2f696bd3fec7ab14c44785b5d0590984167577f",
-        "generation_sha256": "21ff038ff0315d9799e153781f56299303f3520d9eacba9f1e2395943101f60f",
-        "manifest_sha256": "0837b2a7e2556fbb62255512d9f93b71eae57855b7fde8e09fb7f6c4bc8f9e16",
-        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-reasoning-pro-20261110/release-01/bundle",
-        "service_acceptance_sha256": "f03ec154e3453a8a4974276e5d5c799bb560ce0d9fc96ff606c36d59600dbfd9",
-        "service_release_sha256": "7c43c7aa54c15575bd041955b3ca0b094194249de5ac2cf11ca9a1e331b5e643",
-        "record": "docs/evidence/serve-reasoning-pro-delivery-20261110/result.json"
+        "engine_binary_sha256": "31adcfab638c187e27433ad966a1a8817d8dc8ebf56339acc0f83805496860df",
+        "engine_release_sha256": "0d98d70fe6a43b6e55627de86659a32acc415bccf5430bfaa33d70566ef395dd",
+        "generation_sha256": "27c9de3e076368034d94f319219350aa0f0e5d79783cffa8944fdc2d0b19a3fb",
+        "manifest_sha256": "4f71ce5c76c4905554cf4722c0a76a53c7de0550ba87f96f3c57a665f831b32a",
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-moderation-20261110/release-01/bundle",
+        "service_acceptance_sha256": "92fa6ee452c94ec1498ac26c7c1820a3a25c405782b00f0a008155b0cb91cea5",
+        "service_release_sha256": "081d960a0e29b975b30480f7823cc1e90e235def69444f76c8dbb88a3f75ad51",
+        "record": "docs/evidence/serve-moderation-delivery-20261110/result.json"
       },
-      "development_status": "A07.1-A07.6 and A07.7a pro delivered; moderation/access programs remain mandatory before A07.8",
+      "development_status": "A07.1-A07.6, A07.7a pro and A07.7b Responses moderation delivered; A07.7c access programs remains required before A07.8",
       "item_shape_evidence": "evidence/serve-item-shape-20261109/README.md",
       "execution_evidence": "evidence/serve-responses-execution-20261109/README.md",
       "foreground_business_evidence": "evidence/serve-responses-business-20261109/README.md",
@@ -252,7 +252,7 @@
       "delivery_evidence": "evidence/serve-chat-delivery-20261109/README.md",
       "plan": "SERVE_RESPONSES_ADVANCED_2026-11-09.md",
       "remaining_required": [
-        "A07.7 reasoning mode/moderation/access program executors",
+        "A07.7c actual authorized access program executors",
         "A07.8 complete input/output/include/SSE/SDK and release audit"
       ],
       "automatic_truncation": {
@@ -296,7 +296,7 @@
         },
         "publication_revision": 10
       },
-      "current_work": "A07.7b moderation CPU and actual 1-start/10-request/28-step business accepted; reversible delivery pending, then A07.7c/A07.8 and every remaining master task",
+      "current_work": "A07.7c actual authorized access program executors; then A07.8 and all remaining master tasks, including A10 standalone moderation endpoint",
       "reasoning_summary": {
         "state": "delivered",
         "cpu_checks": 31,
@@ -676,6 +676,59 @@
           "empty tools forced optional grammar",
           "driver duplicate startup"
         ]
+      },
+      "moderation": {
+        "state": "delivered",
+        "scope": "Responses embedded input/output moderation only; standalone API remains mandatory A10",
+        "cpu_checks": 29,
+        "schema_checks": 2,
+        "driver_checks": 6,
+        "business": {
+          "status": "PASS_RESPONSES_MODERATION_TARGETED_BUSINESS",
+          "acceptance": "ACCEPT_TARGETED_RESPONSES_MODERATION",
+          "binary_sha256": "31adcfab638c187e27433ad966a1a8817d8dc8ebf56339acc0f83805496860df",
+          "protocol_sha256": "483a42be4826921bc82ed658ef0cf1cbf816bcd8398d6a957bfc5c33e3ba41c7",
+          "counts": {
+            "starts": 1,
+            "chats": 10,
+            "controls": 161
+          },
+          "seconds": 129.58680572500452,
+          "actual_model_steps": 28,
+          "actual_tool_executions": 1,
+          "nvml_queries": 122,
+          "all_nvml_ok": true,
+          "cleanup_confirmed": true,
+          "model_exit": 0,
+          "cpu_cases": 29,
+          "schema_cases": 2,
+          "driver_cases": 6,
+          "actual_json_sse": true,
+          "input_and_output_blocked_before_publication": true,
+          "background_private_until_approved": true,
+          "actual_compaction_pro_summary_combination": true,
+          "actual_encrypted_background": true,
+          "actual_tool_closure": true,
+          "score_failure_same_model_continuation": true,
+          "prewarm_only_input_review": true,
+          "actual_auxiliary_usage_and_client_tpm": true,
+          "full_model_quality": false,
+          "calibrated_moderation_quality": false,
+          "performance_acceptance": false,
+          "long_stability_accepted": false,
+          "default_changed": false,
+          "remaining_master_tasks_open": true
+        },
+        "release": {
+          "engine_binary_sha256": "31adcfab638c187e27433ad966a1a8817d8dc8ebf56339acc0f83805496860df",
+          "engine_release_sha256": "0d98d70fe6a43b6e55627de86659a32acc415bccf5430bfaa33d70566ef395dd",
+          "generation_sha256": "27c9de3e076368034d94f319219350aa0f0e5d79783cffa8944fdc2d0b19a3fb",
+          "manifest_sha256": "4f71ce5c76c4905554cf4722c0a76a53c7de0550ba87f96f3c57a665f831b32a",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-moderation-20261110/release-01/bundle",
+          "service_acceptance_sha256": "92fa6ee452c94ec1498ac26c7c1820a3a25c405782b00f0a008155b0cb91cea5",
+          "service_release_sha256": "081d960a0e29b975b30480f7823cc1e90e235def69444f76c8dbb88a3f75ad51"
+        },
+        "publication_revision": 24
       }
     },
     {
@@ -762,7 +815,8 @@
           "resolution": "A07.6 delivered actual text key/retention/state/usage. A10 still requires actual media fingerprint and state resume; no media completion claim.",
           "evidence": "evidence/serve-prompt-cache-business-20261110/README.md"
         }
-      ]
+      ],
+      "standalone_moderation_required": "POST /v1/moderations: reuse actual classifier, implement standard input/result cardinality, served-model identity and native ingress/client contract; not delivered by Responses embedded moderation"
     },
     {
       "id": "A11",

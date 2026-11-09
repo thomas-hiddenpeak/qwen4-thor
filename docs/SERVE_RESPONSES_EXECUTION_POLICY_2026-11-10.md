@@ -1,6 +1,6 @@
 # A07.7 原生执行策略连续清单
 
-本项继续总计划，pro、moderation和access_programs均为实现任务，不以参数回显或固定拒绝结案。非性能功能只做直接CPU与对应真实业务短验；不作全模型质量/性能结论。当前默认A07.6保持，全部总目标持续推进。
+本项继续总计划，pro、moderation和access_programs均为实现任务，不以参数回显或固定拒绝结案。非性能功能只做直接CPU与对应真实业务短验；不作全模型质量/性能结论。当前默认A07.7b原生审核已可回退交付，继续A07.7c及全部总目标。
 
 ## 来源和本机行为
 
@@ -53,3 +53,5 @@ SDK包含moderation.model和input/output的score/block策略，输出为结果�
 29项不同C++及2项schema已通过，原构建/取消夹具/清单准备失败完整保留。实际驱动冻结1启动/10请求/28模型步骤/900秒：评分JSON、输入/输出阻断SSE、审核+压缩+pro+回答+摘要共6步、加密后台GET隔离、文档工具两回合、客户端累计输入导致审核失败后业务继续、预热及同PID普通Chat。6项驱动CPU先行；不声称已完成GPU、校准分类质量或性能验收。
 
 [实际审核业务已接受](evidence/serve-moderation-business-20261110/README.md)：1启动/10请求/28步骤/129.587秒，122 NVML全OK，所有正反例、6步组合、工具和真实账本通过；正常清理。继续可回退发布，然后c及全部总目标。
+
+[A07.7b默认交付完成](evidence/serve-moderation-delivery-20261110/README.md)：8实际操作通过，包4f71ce5c/引擎31adcfab/元数据0d98d70f，revision24、STOPPED，pro完整回退及原账本保持。继续c与所有总任务；独立/v1/moderations属于A10标准模型接口，仍须接入，不能以本次Responses字段实现代替。
