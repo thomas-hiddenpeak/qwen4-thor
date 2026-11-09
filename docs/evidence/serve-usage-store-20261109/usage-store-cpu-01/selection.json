@@ -1,0 +1,14 @@
+{
+  "count": 16,
+  "selection": [
+    "tools.serve_recovery.test_usage_store",
+    "tools.serve_recovery.test_usage_io",
+    "tools.serve_recovery.test_access_io.AccessIoTests.test_real_journal_new_revision_and_large_fragmented_history",
+    "tools.serve_recovery.test_access_io.AccessIoTests.test_wrong_sequence_truncated_frame_and_blocked_send_are_bounded",
+    "tools.serve_recovery.test_access_io.AccessIoTests.test_parent_exit_before_module_load_retains_inherited_claim",
+    "tools.serve_recovery.test_quota_runtime.QuotaRuntimeTests.test_independent_readers_feed_actual_model_policy_and_file_failure_preserves_it",
+    "tools.serve_recovery.test_quota_runtime.QuotaRuntimeTests.test_limits_claim_and_stopped_worker_are_separate_and_reap_before_replacement"
+  ],
+  "scope": "8 new durable usage; 3 new isolated usage worker; 3 affected shared reader and 2 limits reader",
+  "gpu_starts": 0
+}

@@ -1,0 +1,5 @@
+{
+  "fixture": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-access-20261109/usage-primitive-cpu-01/bin/q4t_client_policy_fixture",
+  "sha256": "3a871dcb6e10d3861fa216fad78fb05199bbaab4cb593907b0faf2c21d6f6431",
+  "cpp_changed": false
+}

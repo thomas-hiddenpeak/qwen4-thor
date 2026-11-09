@@ -1,0 +1,5 @@
+{
+  "parent_commit": "82806ac76dcc0bdbb79d5ca675bec2baac3456e0",
+  "default_engine": "1ff729a08e75e399a30e090d10a5ce76eb80b394cccb98c02ffff542b056dad6",
+  "default_service": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-native-observation-20261109/release-02/bundle"
+}

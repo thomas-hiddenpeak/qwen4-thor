@@ -1,0 +1,6 @@
+test_unknown_seal_sync_recovers_exactly_and_foreign_identity_is_refused (tools.serve_recovery.test_usage_store.UsageStoreTests.test_unknown_seal_sync_recovers_exactly_and_foreign_identity_is_refused) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.012s
+
+OK

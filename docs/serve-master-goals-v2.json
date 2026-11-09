@@ -431,7 +431,8 @@
         "evidence/serve-policy-admin-20261109/decision.json",
         "evidence/serve-policy-runtime-20261109/decision.json",
         "evidence/serve-policy-coordination-20261109/decision.json",
-        "docs/evidence/serve-usage-primitive-20261109/README.md"
+        "evidence/serve-usage-primitive-20261109/README.md",
+        "evidence/serve-usage-store-20261109/decision.json"
       ],
       "release": null,
       "plan": "SERVE_ACCESS_CONTROL_2026-11-09.md",
@@ -440,7 +441,7 @@
         "TLS native bundle and applicable SDK verification",
         "targeted real business and rollback-capable delivery"
       ],
-      "development_status": "托管v8/控制器/入口新身份协调与限额CLI33项CPU通过；继续运行用量持久与未知恢复、TLS/官方客户端及真实模型可回退交付。默认v6保持，N04未完成。"
+      "development_status": "托管策略33 CPU、用量原语24 CPU、持久交接/隔离worker16 CPU及1受影响复验通过；继续控制器/Guardian恢复协调与TLS/SDK真实业务及可回退交付。默认v6保持，N04未完成。"
     },
     {
       "id": "N05",

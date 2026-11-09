@@ -1,0 +1,8 @@
+[
+  "python3",
+  "-B",
+  "-m",
+  "unittest",
+  "-v",
+  "tools.serve_recovery.test_usage_store.UsageStoreTests.test_unknown_seal_sync_recovers_exactly_and_foreign_identity_is_refused"
+]

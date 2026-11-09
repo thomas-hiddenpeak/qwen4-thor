@@ -1,5 +1,15 @@
 # 当前状态
 
+N04持久用量/隔离worker16个不同CPU通过；复核幂等bool/int校验后
+仅重验1项通过，[原件](evidence/serve-usage-store-20261109/README.md)。active消费/崩溃跳代/跨boot/未知提交
+与真实C++持久恢复通过，0模型/Chat，默认保持。继续托管控制器/
+Guardian、TLS业务及可回退交付，全部总任务仍在推进。
+
+N04继续持久用量交接：active先消耗sealed前驱，崩溃/跳代拒绝旧
+快照复用；跨boot仅保留可信累计量、窗口须保守恢复。独立有界usage
+worker复用隔离I/O且不操作模型。冻结16项直接CPU，尚未运行；
+接着控制器/Guardian及TLS实际交付，默认保持，全部总任务继续。
+
 N04用量恢复原语24项针对CPU通过、host零警告，[原件](evidence/serve-usage-primitive-20261109/README.md)。
 实际C++替换保留旧窗口/累计量，预留结算与一次恢复幂等通过；0模型/
 Chat，默认保持。继续持久交接/跨boot与未知恢复、TLS实际交付，

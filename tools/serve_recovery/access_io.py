@@ -20,15 +20,18 @@ ERRORS = ('state_unavailable', 'state_invalid', 'writer_busy')
 
 
 def family(kind):
-    ledger.require(kind in ('access', 'limits'), 'invalid policy reader family')
+    ledger.require(kind in ('access', 'limits', 'usage'), 'invalid policy reader family')
     if kind == 'access':return access_policy, access_store
+    if kind == 'usage':
+        from tools.serve_recovery import usage_policy, usage_store
+        return usage_policy, usage_store
     # Old credential-only packages do not need the limits modules.
     from tools.serve_recovery import quota_policy, quota_store
     return quota_policy, quota_store
 
 
 def claim_address(service_id, kind='access'):
-    ledger.require(ledger.identifier(service_id) and kind in ('access', 'limits'),
+    ledger.require(ledger.identifier(service_id) and kind in ('access', 'limits', 'usage'),
                    'invalid policy service identity')
     return '\0q4t-' + kind + '-io-' + str(os.geteuid()) + '-' + service_id
 
@@ -180,7 +183,8 @@ class Reader:
             if self.phase == 'idle' and now >= self.next_read:
                 ledger.require(self.sequence < ledger.MAX_INTEGER, 'access reader sequence exhausted')
                 self.sequence += 1
-                self.request = ledger.canonical(dict(sequence=self.sequence, op='load'))
+                self.request = ledger.canonical(dict(self.command(), sequence=self.sequence))
+                ledger.require(len(self.request) <= 65536, 'reader request byte bound')
                 self.phase = 'send';self.deadline = now + TIMEOUT
             if self.phase == 'send':
                 ledger.require(self.socket.send(self.request) == len(self.request),
@@ -190,6 +194,9 @@ class Reader:
             pass
         except (OSError, ValueError, KeyError, TypeError, RuntimeError):
             self.error = 'reader_unknown';self.disable()
+
+    def command(self):
+        return dict(op='load')
 
     def close(self):
         self.closed = True
@@ -216,14 +223,16 @@ def worker(args):
         while True:
             # Idle reads need no timeout; the parent-death handler remains active.
             channel.settimeout(None)
-            raw, ancillary, flags, _ = channel.recvmsg(1024)
+            raw, ancillary, flags, _ = channel.recvmsg(65536 if kind == 'usage' else 1024)
             if not raw:return
             ledger.require(not ancillary and not flags & (socket.MSG_TRUNC | socket.MSG_CTRUNC),
                            'invalid reader request')
             request = store.decode(raw)
-            ledger.keys(request, ('sequence', 'op'))
-            ledger.require(type(request['sequence']) is int and request['sequence'] == sequence + 1 and
-                request['op'] == 'load', 'reader request sequence')
+            if kind != 'usage':
+                ledger.keys(request, ('sequence', 'op'))
+                ledger.require(request['op'] == 'load', 'invalid reader operation')
+            ledger.require(type(request) is dict and type(request.get('sequence')) is int and
+                request['sequence'] == sequence + 1, 'reader request sequence')
             sequence += 1
             error, payload = '', b''
             try:
@@ -236,8 +245,11 @@ def worker(args):
                     'reader state identity changed')
                 value = dict(state_directory=str(state), service_id=args.service_id,
                              state_identity=[args.state_device, args.state_inode])
-                with writer.open_bound(value) as journal_store:
-                    payload = ledger.canonical(journal_store.head['state']['policy'])
+                if kind == 'usage':
+                    payload = ledger.canonical(writer.execute(value, request))
+                else:
+                    with writer.open_bound(value) as journal_store:
+                        payload = ledger.canonical(journal_store.head['state']['policy'])
             except BlockingIOError:
                 error = 'writer_busy'
             except (OSError, RuntimeError):
@@ -259,7 +271,7 @@ def main():
         parser.add_argument('--' + name, required=True, type=int)
     parser.add_argument('--state', required=True)
     parser.add_argument('--service-id', required=True)
-    parser.add_argument('--kind', choices=('access', 'limits'), default='access')
+    parser.add_argument('--kind', choices=('access', 'limits', 'usage'), default='access')
     worker(parser.parse_args())
 
 
