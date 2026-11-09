@@ -1,0 +1,192 @@
+{
+  "status": "PASS_RESPONSES_CACHE_TARGETED_BUSINESS",
+  "binary_sha256": "bd45853b414205f0433d25aee8ff8d3c93b8a16c826336b7446734d101e5feb4",
+  "protocol_sha256": "84086896f14ea478a4daf425e1b2f1726508c40f9ef0a1b705ce1f0de0c41dbe",
+  "source_commit": "350f6ff19f8fb79f00352977f3b754356653d18d",
+  "counts": {
+    "starts": 1,
+    "chats": 10,
+    "controls": 50
+  },
+  "seconds": 67.36931859701872,
+  "all_nvml_ok": true,
+  "nvml_samples": 65,
+  "cleanup_confirmed": true,
+  "default_unchanged": true,
+  "usage": {
+    "prewarm": {
+      "usage": {
+        "input_tokens": 2209,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 2181
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 2209
+      },
+      "diagnostics": null
+    },
+    "hit": {
+      "usage": {
+        "input_tokens": 2209,
+        "input_tokens_details": {
+          "cached_tokens": 2181,
+          "cache_write_tokens": 0
+        },
+        "output_tokens": 3,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 2212
+      },
+      "diagnostics": {
+        "type": "cache_hit"
+      }
+    },
+    "isolated": {
+      "usage": {
+        "input_tokens": 2209,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 2181
+        },
+        "output_tokens": 3,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 2212
+      },
+      "diagnostics": {
+        "type": "cache_miss",
+        "reason": "prompt_cache_key_changed",
+        "comparison_reusable_tokens": 2181,
+        "cache_missed_tokens": 2181
+      }
+    },
+    "disabled": {
+      "usage": {
+        "input_tokens": 2209,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        },
+        "output_tokens": 3,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 2212
+      },
+      "diagnostics": {
+        "type": "unavailable"
+      }
+    },
+    "target": {
+      "usage": {
+        "input_tokens": 2315,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 2291
+        },
+        "output_tokens": 7,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 2322
+      },
+      "diagnostics": null
+    },
+    "target-hit": {
+      "usage": {
+        "input_tokens": 2315,
+        "input_tokens_details": {
+          "cached_tokens": 2291,
+          "cache_write_tokens": 0
+        },
+        "output_tokens": 7,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 2322
+      },
+      "diagnostics": {
+        "type": "cache_hit"
+      }
+    },
+    "tool": {
+      "usage": {
+        "input_tokens": 379,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        },
+        "output_tokens": 50,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 429
+      },
+      "diagnostics": null
+    },
+    "follow": {
+      "usage": {
+        "input_tokens": 459,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        },
+        "output_tokens": 42,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 501
+      },
+      "diagnostics": null
+    },
+    "chat-write": {
+      "usage": {
+        "prompt_tokens": 2209,
+        "completion_tokens": 3,
+        "total_tokens": 2212,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      }
+    },
+    "chat-hit": {
+      "usage": {
+        "prompt_tokens": 2209,
+        "completion_tokens": 3,
+        "total_tokens": 2212,
+        "prompt_tokens_details": {
+          "cached_tokens": 2202
+        }
+      }
+    }
+  },
+  "checks": {
+    "external_requests": 10,
+    "prefill_only_requests": 1,
+    "actual_tool_executions": 1,
+    "successful_shared_layouts": [
+      "mtp",
+      "target"
+    ],
+    "explicit_breakpoints": 2,
+    "exact_cache_usage": true,
+    "exact_client_usage": true,
+    "key_isolation": true,
+    "explicit_no_marker_no_cache": true,
+    "original_background_replay": true,
+    "default_uniform_slots": true,
+    "performance_claim": false,
+    "cross_restart_cache_claim": false
+  },
+  "ttl_expiry_cpu_only": true,
+  "full_model_quality": false,
+  "performance_acceptance": false,
+  "remaining_master_tasks_open": true,
+  "initial_launch_error": "Missing --inherit-lease; 0 model/Chat; original guard failure retained"
+}

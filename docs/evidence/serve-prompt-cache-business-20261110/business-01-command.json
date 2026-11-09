@@ -1,0 +1,18 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "tools/evalscope/gpu_exclusive.py",
+    "--output",
+    ".q4t-work/serve-prompt-cache-20261110/business-01/lease",
+    "--",
+    "python3",
+    "-B",
+    "tools/serve_responses/cache_acceptance.py",
+    "run",
+    "--plan",
+    ".q4t-work/serve-prompt-cache-20261110/business-01/plan.json"
+  ],
+  "returncode": 1,
+  "seconds": 1.3321577268652618
+}

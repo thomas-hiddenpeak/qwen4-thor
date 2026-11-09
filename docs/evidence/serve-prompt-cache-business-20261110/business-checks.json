@@ -1,0 +1,18 @@
+{
+  "external_requests": 10,
+  "prefill_only_requests": 1,
+  "actual_tool_executions": 1,
+  "successful_shared_layouts": [
+    "mtp",
+    "target"
+  ],
+  "explicit_breakpoints": 2,
+  "exact_cache_usage": true,
+  "exact_client_usage": true,
+  "key_isolation": true,
+  "explicit_no_marker_no_cache": true,
+  "original_background_replay": true,
+  "default_uniform_slots": true,
+  "performance_claim": false,
+  "cross_restart_cache_claim": false
+}

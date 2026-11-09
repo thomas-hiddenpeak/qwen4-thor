@@ -1,0 +1,10 @@
+{
+  "status": "PASS_RESPONSES_CACHE_BUSINESS",
+  "counts": {
+    "starts": 1,
+    "chats": 10,
+    "controls": 50
+  },
+  "seconds": 67.36931859701872,
+  "binary_sha256": "bd45853b414205f0433d25aee8ff8d3c93b8a16c826336b7446734d101e5feb4"
+}
