@@ -274,6 +274,11 @@ Q4T_TEST(chat_capabilities_native_responses_state_and_recovery) {
             !responses->GetBool("chat_done_sentinel", true));
   Q4T_CHECK(responses->GetBool("previous_response_id") &&
             responses->GetBool("conversation"));
+  const auto* truncation = responses->Find("truncation");
+  Q4T_CHECK(truncation && truncation->GetBool("auto") &&
+            truncation->GetBool("disabled") &&
+            truncation->GetBool("preserves_active_turn") &&
+            truncation->GetBool("persistent_history_unchanged"));
   const auto* jobs = responses->Find("background");
   Q4T_CHECK(jobs && jobs->GetInt("cancel_status") == 200 &&
             jobs->GetBool("cancel_idempotent") &&

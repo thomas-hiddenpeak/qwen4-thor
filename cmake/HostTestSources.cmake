@@ -131,6 +131,7 @@ set(Q4T_HOST_TEST_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_output_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_input_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_plan_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_context_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_prediction_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_legacy_tools_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_custom_tools_test.cpp

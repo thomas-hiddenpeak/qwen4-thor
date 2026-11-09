@@ -86,8 +86,6 @@ ObjectReply ResponsesExecution::RequiredExecutors(
   std::string required;
   if (envelope_.background && !background_executor)
     required = "background";
-  else if (envelope_.truncate)
-    required = "truncation";
   else if (!envelope_.summary.empty())
     required = "reasoning.summary";
   else if (envelope_.encrypted_reasoning)
@@ -108,6 +106,45 @@ ObjectReply ResponsesExecution::RequiredExecutors(
     return reply;
   }
   return {};
+}
+
+ObjectReply ResponsesExecution::FitContext(const ChatPlanConfig& config,
+                                           const ResponsesContextCheck& check) {
+  const auto* output = output_.Snapshot().GetArray("output");
+  if (!prepared_ || plan_.finished || !output || !output->array.empty())
+    return Error(500, "response_state_invalid",
+                 "Context must be selected before model output");
+  if (envelope_.truncate && !check)
+    return Error(503, "response_executor_unavailable",
+                 "Context measurement is unavailable");
+  ChatPlanError error;
+  const auto cancelled = [&](ChatPlanError* failure) -> Status {
+    if (std::chrono::steady_clock::now() >= access_.deadline) {
+      *failure = {"request_deadline_exceeded", "input", 408};
+      return Status::Fail("Context preparation exceeded request deadline");
+    }
+    if (access_.cancelled && access_.cancelled()) {
+      *failure = {"request_cancelled", "input", 499};
+      return Status::Fail("Context preparation cancelled");
+    }
+    return {};
+  };
+  auto status = FitResponsesContext(
+      envelope_, config,
+      [&](const ResponsesGenerationPlan& candidate, ChatPlanError* failure) {
+        auto active = cancelled(failure);
+        if (!active) return active;
+        const auto measured = check(candidate, failure);
+        active = cancelled(failure);
+        return active ? measured : active;
+      },
+      &generation_, &error);
+  if (status) return {};
+  ResponsesInputErrorParam(generation_.input, &error.param);
+  if (error.param == "max_completion_tokens") error.param = "max_output_tokens";
+  auto reply = Error(error.http_status, error.code, status.message());
+  reply.value = Object({{"param", String(error.param)}});
+  return reply;
 }
 
 ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,

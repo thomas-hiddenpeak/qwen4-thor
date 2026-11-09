@@ -1,0 +1,21 @@
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_context_test.cpp: In function ‘bool q4t_test_fn_responses_context_preserves_fitting_input_and_disabled_contract()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_context_test.cpp:73:25: error: ‘OutputJson’ was not declared in this scope
+   73 |   const auto original = OutputJson(f.plan.generation_request);
+      |                         ^~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_context_test.cpp: In function ‘bool q4t_test_fn_responses_context_trims_old_prefix_keeps_instructions_and_active_turn()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_context_test.cpp:96:25: error: ‘OutputJson’ was not declared in this scope
+   96 |   const auto original = OutputJson(f.envelope.request);
+      |                         ^~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_context_test.cpp: In function ‘bool q4t_test_fn_responses_context_never_drops_oversized_active_user_request()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_context_test.cpp:111:23: error: ‘OutputJson’ was not declared in this scope
+  111 |   const auto before = OutputJson(f.plan.input.items);
+      |                       ^~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_context_test.cpp: In function ‘bool q4t_test_fn_responses_context_callback_error_does_not_partially_replace_plan()’:
+/home/rm01/models/dev/qwen4-thor/tests/server_responses_context_test.cpp:175:23: error: ‘OutputJson’ was not declared in this scope
+  175 |   const auto before = OutputJson(f.plan.input.items);
+      |                       ^~~~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:1899: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_responses_context_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:139: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:146: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:135: q4t_host_tests] Error 2

@@ -241,6 +241,82 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         return;
       }
     }
+    if (responses->Envelope().truncate) {
+      const auto context_deadline =
+          background
+              ? background->deadline()
+              : t_arrive +
+                    std::chrono::milliseconds(
+                        responses->Generation().generation_request.GetInt(
+                            "request_timeout_ms", request_deadline_ms_));
+      const auto context_cancelled = [this, fd, background, context_deadline] {
+        return stop_requested_.load() ||
+               std::chrono::steady_clock::now() >= context_deadline ||
+               (background ? background->Cancelled()
+                           : detail::ClientConnectionFailed(fd));
+      };
+      responses->BindCancellation(context_deadline, context_cancelled);
+      auto reply = responses->FitContext(
+          planning_config,
+          [&](const ResponsesGenerationPlan& candidate,
+              ChatPlanError* error) -> Status {
+            const auto& request =
+                candidate.chat.Request(candidate.generation_request);
+            std::string text;
+            std::vector<VisionItem> media;
+            auto measured =
+                PrepareChatPrompt(request, candidate.chat.constraints, &text,
+                                  &media, &error->param, &error->code);
+            if (!measured) return measured;
+            std::vector<uint32_t> tokens;
+            ChatPromptBudget budget;
+            // Context truncation is not a way to evade a client's token
+            // quota. Enforce that quota on the final selected input below.
+            auto context_config = planning_config;
+            context_config.client_limits = nullptr;
+            {
+              auto lock =
+                  diagnostic.Lock(tok_mu_, Wait::kTokenizer, context_cancelled);
+              if (!lock.owns_lock()) {
+                const bool expired =
+                    std::chrono::steady_clock::now() >= context_deadline;
+                *error = {
+                    expired ? "request_deadline_exceeded" : "request_cancelled",
+                    "input", expired ? 408 : 499};
+                return Status::Fail("Context tokenizer wait cancelled");
+              }
+              measured = EncodeChatPrompt(
+                  request, context_config, text,
+                  [&](std::string_view value, std::vector<uint32_t>* out) {
+                    return tok_->Encode(value, out,
+                                        {.cancelled = context_cancelled});
+                  },
+                  &tokens, &budget, error);
+            }
+            if (measured && !media.empty()) {
+              vision::MediaPlan expanded;
+              const auto& model = model_.Get().cfg;
+              measured = ExpandChatMedia(
+                  request, media, model.image_token_id, model.video_token_id,
+                  proc_cfg_, video_proc_cfg_, vision_device_budget_,
+                  context_config, &tokens, &expanded, &budget, error);
+            }
+            if (context_cancelled()) {
+              const bool expired =
+                  std::chrono::steady_clock::now() >= context_deadline;
+              *error = {
+                  expired ? "request_deadline_exceeded" : "request_cancelled",
+                  "input", expired ? 408 : 499};
+              return Status::Fail("Context preparation cancelled");
+            }
+            return measured;
+          });
+      if (!reply.ok()) {
+        SendError(fd, reply.http_status, reply.ClientMessage(), {},
+                  reply.ClientCode(), reply.value.GetString("param"));
+        return;
+      }
+    }
     original_request = responses->Generation().generation_request;
     request_plan = responses->Generation().chat;
   } else if (completion) {

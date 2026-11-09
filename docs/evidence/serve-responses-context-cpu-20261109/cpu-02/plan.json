@@ -1,0 +1,46 @@
+{
+  "task": "A07.1 actual context truncation",
+  "classification": "nonperformance application protocol",
+  "cases": [
+    "responses_context_preserves_fitting_input_and_disabled_contract",
+    "responses_context_trims_old_prefix_keeps_instructions_and_active_turn",
+    "responses_context_never_drops_oversized_active_user_request",
+    "responses_context_parallel_calls_and_outputs_are_not_split",
+    "responses_context_reasoning_remains_attached_to_following_item",
+    "responses_context_does_not_hide_invalid_tool_history_or_quota",
+    "responses_context_callback_error_does_not_partially_replace_plan",
+    "responses_context_execution_keeps_stored_history_and_input_items",
+    "responses_context_background_restore_keeps_events_and_history",
+    "responses_context_deadline_cancel_and_missing_measurement_are_atomic",
+    "responses_execution_stateless_does_not_depend_on_storage",
+    "responses_execution_commits_actual_ordered_events_and_usage",
+    "responses_background_queued_transition_is_durable_before_generation",
+    "responses_background_restore_queued_keeps_identity_and_resolved_history",
+    "responses_plan_current_turn_reasoning_and_new_instructions",
+    "chat_capabilities_native_responses_state_and_recovery"
+  ],
+  "tests": 16,
+  "sources": {
+    "CMakeLists.txt": "04a50da258748cd717e834fefbec0f3bfbdd99c351ba4317fbed94d617b003c0",
+    "cmake/HostTestSources.cmake": "720e446cec66f3ff651e85547d317ed1527401ac5511e48d8ed144fb20770cf5",
+    "include/q4t/server/responses_execution.h": "6343d0f7c64ca72e95c0993285962f073a7fe434f628618646df59e554472fcf",
+    "include/q4t/server/responses_plan.h": "ab7f4a1ea47b3ad985af9433c63c1ab1a27345e17877e492f9f159f8a6f9a9a1",
+    "src/server/chat_capabilities.cpp": "a19697e1a3fcfadfacc5cddba731decdf5855cb6ed4cfaf394377bb534fde66b",
+    "src/server/chat_generation.cpp": "e9f59dff5a233bcc6aee7b551e6429b11c5b9b0f57fe726fbd8f2408dfc50471",
+    "src/server/responses_execution.cpp": "aadc35122347b8ec3d490c35f0b5b0ba7a1d835218efc2531ecd49c19f4a5f3a",
+    "src/server/responses_plan.cpp": "b1c02b7f6a8922116112d379e3c3b46975100b205b070826441c0c5cff673799",
+    "tests/server_chat_capabilities_test.cpp": "1ae92f7204bbc72c0683a8549c70f556441f69f1f5597f03ffa12444b63718e1",
+    "tests/server_responses_execution_test.cpp": "3753bf8d867d052f42c01cdeac73f2227191b8efbb563168269c05872e70eac1",
+    "tests/server_responses_context_test.cpp": "656858baca41b1dbf269622e33062bbf5d9d6742343979b4d7acaaac11aa90e3"
+  },
+  "protected": {
+    "build/q4t": "3072f28c801366b0ab0b3ec718f47102ff955e1ba121ba2b0e321fbc0ffef025",
+    "build/q4t.release.json": "1b507ad9ddfe340c264014c3ffebacacc949635e40fa6ea8677f03572ff4f48d",
+    "build/service.release.json": "8014bc222ece8c8d80cad14ea69e36b4e0d7e035ff6a790b1c16cb82c83cf9b0"
+  },
+  "gpu_tests": 0,
+  "full_performance": false,
+  "full_model_quality": false,
+  "checks": "Actual template with deterministic byte encoder, atomic tool group protection, stored input and replay prefix unchanged, deadline and cancellation, actual Qwen tokenizer later HTTP",
+  "predecessor": "cpu-01 compile only: test omitted OutputJson declaration; no test execution"
+}

@@ -34,6 +34,8 @@ class ResponsesExecution {
                       bool background_executor = false);
   ObjectReply RestoreQueued(const std::string& id, const ChatPlanConfig& config,
                             StateAccess access);
+  ObjectReply FitContext(const ChatPlanConfig& config,
+                         const ResponsesContextCheck& check);
   ObjectReply Begin(std::string* wire);
   ObjectReply StartRunning(std::string* wire);
   ObjectReply Cancel();

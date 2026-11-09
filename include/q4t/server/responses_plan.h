@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -41,7 +42,18 @@ struct ResponsesGenerationPlan {
   io::Json generation_request;
   io::Json effective_tools;
   ChatRequestPlan chat;
+  size_t truncated_items = 0;
 };
+
+// Measures the actual model template, tokenizer and expanded media without
+// generating tokens or mutating stored history. Only context overflow permits
+// truncation; credentials, malformed input and client quotas are not bypassed.
+using ResponsesContextCheck =
+    std::function<Status(const ResponsesGenerationPlan&, ChatPlanError*)>;
+Status FitResponsesContext(const ResponsesEnvelope& envelope,
+                           const ChatPlanConfig& config,
+                           const ResponsesContextCheck& check,
+                           ResponsesGenerationPlan* plan, ChatPlanError* error);
 
 // resolved_input includes the authorized previous/conversation history and
 // resolved media. No I/O here. Instructions always belong to the new request.

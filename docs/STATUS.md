@@ -1,4 +1,8 @@
+A07.1 自动裁剪 16 项 C++ 与 2 项驱动 CPU 全过，host/实际引擎零警告，[原件含首编译夹具失败](evidence/serve-responses-context-cpu-20261109/README.md)。候选 bb6e702e，默认 N06 保持 STOPPED；下一步真实分词/SDK、JSON/SSE、工具与后台短验，随后交付并继续 A07 其余全部能力。
+
 # 当前状态
+
+A07 高级执行缺口已逐项重审并列入[连续计划](SERVE_RESPONSES_ADVANCED_2026-11-09.md)。先实现 `truncation:auto` 的真实 token/媒体容量裁剪，保留当前任务和工具依赖；摘要/加密/压缩/Prompt/缓存/策略继续必做。裁剪执行与前后台状态用例已成组完成，冻结 16 项直接 CPU，正在独立必要构建；尚未测试，默认 N06 包保持 STOPPED。
 
 N06 新发现已修复并交付：[18 项直接 CPU](evidence/serve-gateway-diagnostics-20261109/README.md)及[9 条实际封装/发布操作](evidence/serve-gateway-diagnostics-delivery-20261109/README.md)通过。
 当前默认原生包 `1b1acb17`、Guardian `cee1507d`，publication revision 8，

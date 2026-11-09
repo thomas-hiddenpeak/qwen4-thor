@@ -555,6 +555,7 @@ if(Q4T_BUILD_TESTS)
     tests/server_responses_output_test.cpp
     tests/server_responses_input_test.cpp
     tests/server_responses_plan_test.cpp
+    tests/server_responses_context_test.cpp
     tests/server_prediction_test.cpp
     tests/server_legacy_tools_test.cpp
     tests/server_custom_tools_test.cpp

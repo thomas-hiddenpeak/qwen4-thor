@@ -1,9 +1,11 @@
 #include "q4t/server/responses_plan.h"
 
 #include <algorithm>
+#include <charconv>
 #include <cmath>
 #include <limits>
 #include <string_view>
+#include <unordered_map>
 #include <unordered_set>
 
 #include "q4t/server/http_response.h"
@@ -547,5 +549,81 @@ Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
   }
   *plan = std::move(result);
   return {};
+}
+
+Status FitResponsesContext(const ResponsesEnvelope& envelope,
+                           const ChatPlanConfig& config,
+                           const ResponsesContextCheck& check,
+                           ResponsesGenerationPlan* plan,
+                           ChatPlanError* error) {
+  if (!envelope.truncate) return {};
+  if (!check) {
+    *error = {"response_executor_unavailable", "truncation", 503};
+    return Status::Fail("Context measurement is unavailable");
+  }
+  auto status = check(*plan, error);
+  if (status || error->code != "context_length_exceeded") return status;
+  const auto overflow = status;
+  const auto overflow_error = *error;
+  const auto& items = plan->input.items.array;
+  if (items.empty()) return status;
+
+  // Protect the active user turn. With tool-result-only history, retain the
+  // last item and every call it depends on. Prefix cuts never split parallel
+  // function/custom calls from their outputs or reasoning from its next item.
+  size_t protected_from = items.size() - 1;
+  for (size_t i = 0; i < items.size(); ++i)
+    if (items[i].GetString("role") == "user") protected_from = i;
+  std::unordered_map<std::string, size_t> calls;
+  std::vector<int> spanning(items.size() + 1, 0);
+  for (size_t i = 0; i < items.size(); ++i) {
+    const auto type = items[i].GetString("type");
+    if (type == "function_call" || type == "custom_tool_call") {
+      calls.emplace(items[i].GetString("call_id"), i);
+    } else if (type == "function_call_output" ||
+               type == "custom_tool_call_output") {
+      const auto found = calls.find(items[i].GetString("call_id"));
+      if (found != calls.end()) {
+        ++spanning[found->second + 1];
+        --spanning[i + 1];
+      }
+    }
+  }
+  int open_calls = 0;
+  for (size_t cut = 1; cut <= protected_from; ++cut) {
+    open_calls += spanning[cut];
+    if (open_calls || items[cut - 1].GetString("type") == "reasoning") continue;
+    auto retained = Array();
+    retained.array.assign(items.begin() + cut, items.end());
+    ResponsesGenerationPlan candidate;
+    status = PrepareResponsesGeneration(envelope, retained, config, &candidate,
+                                        error);
+    if (!status) return status;
+    // Preserve paths into the original resolved input, including failures
+    // discovered while measuring a retained candidate.
+    const size_t removed = plan->truncated_items + cut;
+    for (auto& path : candidate.input.message_paths) {
+      if (!path.starts_with("input[")) continue;
+      const auto end = path.find(']', 6);
+      size_t index = 0;
+      if (end == std::string::npos) continue;
+      const auto parsed =
+          std::from_chars(path.data() + 6, path.data() + end, index);
+      if (parsed.ec == std::errc{} && parsed.ptr == path.data() + end)
+        path.replace(6, end - 6, std::to_string(index + removed));
+    }
+    status = check(candidate, error);
+    if (status) {
+      candidate.truncated_items = removed;
+      *plan = std::move(candidate);
+      return {};
+    }
+    if (error->code != "context_length_exceeded") {
+      ResponsesInputErrorParam(candidate.input, &error->param);
+      return status;
+    }
+  }
+  *error = overflow_error;
+  return overflow;
 }
 }  // namespace q4t::server

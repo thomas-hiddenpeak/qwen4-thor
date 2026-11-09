@@ -8,6 +8,7 @@
 #include <thread>
 
 #include "q4t/server/conversation_state.h"
+#include "q4t/server/chat_prompt.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/responses_api.h"
@@ -62,6 +63,155 @@ ResponseDelta Text(std::string text) {
   return delta;
 }
 }  // namespace
+
+namespace {
+Json ContextRequest(bool background = false) {
+  auto request =
+      Parse(R"({"input":[{"role":"user","content":")" + std::string(2000, 'x') +
+            R"("},{"role":"assistant","content":")" + std::string(2000, 'y') +
+            R"("},{"role":"user","content":"current question"}],
+    "truncation":"auto","reasoning":{"effort":"none"},
+    "stream":true,"stream_options":{"include_obfuscation":false}})");
+  request.object.emplace_back("background",
+                              Parse(background ? "true" : "false"));
+  return request;
+}
+q4t::Status ContextMeasure(const ResponsesGenerationPlan& candidate,
+                           ChatPlanError* failure) {
+  const auto& request = candidate.chat.Request(candidate.generation_request);
+  std::string prompt;
+  std::vector<VisionItem> media;
+  auto status = PrepareChatPrompt(request, candidate.chat.constraints, &prompt,
+                                  &media, &failure->param, &failure->code);
+  if (!status) return status;
+  auto config = Config();
+  config.max_len = 1024;
+  std::vector<uint32_t> tokens;
+  ChatPromptBudget budget;
+  return EncodeChatPrompt(
+      request, config, prompt,
+      [](std::string_view value, std::vector<uint32_t>* out) {
+        out->assign(value.begin(), value.end());
+        return q4t::Status();
+      },
+      &tokens, &budget, failure);
+}
+}  // namespace
+
+Q4T_TEST(responses_context_execution_keeps_stored_history_and_input_items) {
+  Fixture f;
+  ObjectStore store(f.options);
+  ResponsesExecution run(store);
+  Q4T_CHECK(Ok(run.Prepare(ContextRequest(), Config(), Access(), 42)));
+  const auto history = OutputJson(run.Generation().input.items);
+  const auto identity = run.Id();
+  Q4T_CHECK(Ok(run.FitContext(Config(), ContextMeasure)));
+  Q4T_CHECK(run.Generation().truncated_items == 2 && run.Id() == identity);
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)));
+  Q4T_CHECK(run.Append(Text("42"), "null", &wire));
+  Q4T_CHECK(Ok(run.Finish(false, 0, {7, 0, 2, 0}, 43, &wire)));
+  const auto saved = ResponsesState(store).ReadRecord(identity, Access());
+  Q4T_CHECK(Ok(saved));
+  Q4T_CHECK(OutputJson(*saved.value.Find("history")) == history);
+  Q4T_CHECK(OutputJson(*saved.value.Find("own_input")) == history);
+  ResponsesReadPlan read;
+  Q4T_CHECK(Ok(PlanResponsesRead(
+      "GET", "/v1/responses/" + identity + "/input_items?order=asc", "",
+      &read)));
+  ResponsesReplay replay;
+  const auto input = ReadResponsesState(store, read, Access(), &replay);
+  Q4T_CHECK(Ok(input) && OutputJson(*input.value.Find("data")) == history);
+  // A subsequent turn resolves full durable history, including dropped items.
+  ResponsesExecution next(store);
+  Q4T_CHECK(
+      Ok(next.Prepare(Parse(R"({"input":"followup","previous_response_id":")" +
+                            identity + R"(","truncation":"auto"})"),
+                      Config(), Access(), 44)));
+  Q4T_CHECK(next.Generation().input.items.array.size() == 5);
+  Q4T_CHECK(OutputJson(next.Generation().input.items.array[0]) ==
+            OutputJson(Parse(history).array[0]));
+  Q4T_CHECK(Ok(next.FitContext(Config(), ContextMeasure)));
+  return true;
+}
+
+Q4T_TEST(responses_context_background_restore_keeps_events_and_history) {
+  Fixture f;
+  std::string id, history, events;
+  {
+    ObjectStore store(f.options);
+    ResponsesExecution run(store);
+    Q4T_CHECK(
+        Ok(run.Prepare(ContextRequest(true), Config(), Access(), 42, true)));
+    std::string wire;
+    Q4T_CHECK(Ok(run.Begin(&wire)));
+    id = run.Id();
+    const auto saved = ResponsesState(store).ReadRecord(id, Access());
+    Q4T_CHECK(Ok(saved));
+    history = OutputJson(*saved.value.Find("history"));
+    events = OutputJson(*saved.value.Find("events"));
+  }
+  ObjectStore store(f.options);
+  ResponsesExecution run(store);
+  Q4T_CHECK(Ok(run.RestoreQueued(id, Config(), Access())));
+  std::string wire;
+  Q4T_CHECK(Ok(run.StartRunning(&wire)));
+  Q4T_CHECK(Ok(run.FitContext(Config(), ContextMeasure)));
+  Q4T_CHECK(run.Generation().truncated_items == 2 && run.Id() == id);
+  Q4T_CHECK(run.Output().Snapshot().GetInt("created_at") == 42);
+  const auto running = ResponsesState(store).ReadRecord(id, Access());
+  Q4T_CHECK(Ok(running) &&
+            OutputJson(*running.value.Find("history")) == history);
+  const auto prefix = Parse(events);
+  for (size_t i = 0; i < prefix.array.size(); ++i)
+    Q4T_CHECK(OutputJson(running.value.GetArray("events")->array[i]) ==
+              OutputJson(prefix.array[i]));
+  Q4T_CHECK(run.Append(Text("answer"), "null", &wire));
+  Q4T_CHECK(!run.FitContext(Config(), ContextMeasure).ok());
+  Q4T_CHECK(Ok(run.Finish(false, 0, {9, 0, 1, 0}, 43, &wire)));
+  const auto done = ResponsesState(store).ReadRecord(id, Access());
+  Q4T_CHECK(Ok(done) && OutputJson(*done.value.Find("history")) == history);
+  const auto* ordered = done.value.GetArray("events");
+  Q4T_CHECK(ordered &&
+            ordered->array.back().GetString("type") == "response.completed");
+  for (size_t i = 0; i < ordered->array.size(); ++i)
+    Q4T_CHECK(ordered->array[i].GetInt("sequence_number") ==
+              static_cast<int64_t>(i));
+  return true;
+}
+
+Q4T_TEST(responses_context_deadline_cancel_and_missing_measurement_are_atomic) {
+  ObjectStoreOptions options;
+  options.directory = "invalid";
+  ObjectStore store(options);
+  for (const bool expire : {false, true}) {
+    ResponsesExecution run(store);
+    auto request = ContextRequest();
+    request.object.emplace_back("store", Parse("false"));
+    Q4T_CHECK(Ok(run.Prepare(request, Config(), Access(), 42)));
+    const auto original = OutputJson(run.Generation().input.items);
+    Q4T_CHECK(run.FitContext(Config(), {}).code ==
+              "response_executor_unavailable");
+    bool stop = false;
+    run.BindCancellation(expire ? Clock::now() - 1s : Clock::now() + 5s,
+                         [&] { return stop; });
+    int checks = 0;
+    const auto failure =
+        run.FitContext(Config(), [&](const auto& candidate, auto* error) {
+          if (++checks == 2) {
+            stop = true;
+            return q4t::Status();
+          }
+          return ContextMeasure(candidate, error);
+        });
+    Q4T_CHECK(failure.http_status == (expire ? 408 : 499));
+    Q4T_CHECK(checks == (expire ? 0 : 2));
+    Q4T_CHECK(OutputJson(run.Generation().input.items) == original);
+    Q4T_CHECK(!run.Begun() && run.Generation().truncated_items == 0);
+  }
+  Q4T_CHECK(store.Health().workers_started == 0);
+  return true;
+}
 
 Q4T_TEST(responses_execution_stateless_does_not_depend_on_storage) {
   ObjectStoreOptions options;
