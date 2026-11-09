@@ -154,3 +154,9 @@ client_dynamic_update_preserves_snapshots_slots_and_move_ownership
 15 Python为 `FilesContractTests` 4项、`ManagedQuotaTests` 新显式旧版迁移与既有CLI账本2项、`DeploymentTests` 新容量阻止旧包与既有回退账本2项、`BundleTests` 默认/历史v1—v10/新v11容量/来源清单/HTTP绑定5项，以及 `FileCapacityTests` 既有持久升级和真实C++管理IPC2项。配置/Files schema验证必须读取本次真实C++输出。另核对生成合同、源码遗漏门禁与实际A08旧包只读校验，不启动服务或GPU。
 
 安全迁移步骤见[客户端策略](SERVE_ACCESS_CONTROL_2026-11-09.md#files-容量策略与旧包回退2026-11-10a09接入中)。只有明确新字段才升级；旧包兼容需要完整两步容量/版本事务，显式null/bool/未知版本拒绝。当前默认v3不需要迁移。后续真实业务预算在驱动就绪后冻结，Files部分接受不能代替Uploads、文件消费、Batch及所有总任务。
+
+## Files真实业务冻结
+
+A09.3 实际业务驱动已成组准备：冻结1模型/3生成/32 Files操作/600秒，同一严格租约；官方SDK直接核心与原生TLS、真实文件下载驱动工具闭环、暂停自有IO worker后同PID stateless SSE及恢复原文件。先执行3项驱动CPU，尚无GPU；默认保持，随后交付及全部任务继续。
+
+驱动`tools/serve_responses/files_acceptance.py`；3项CPU为`test_files_acceptance.FilesAcceptanceTests`。Files原文下载后作为真实工具结果，尚不宣称A09.5的native file_id内容消费。原生入口父准入为模型PID绑定测试适配，使用真实TLS/认证/HTTP/存储；Guardian旧证据复用。暂存目录独立、默认和源身份固定，实际文件请求不自动重试，故障后只按原ID读取；模型正常终止并核对进程、端口、锁清理。

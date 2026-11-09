@@ -1,0 +1,8 @@
+test_actual_sdk_bridge_files_bytes_wire_fields_and_error (tools.serve_responses.test_files_acceptance.FilesAcceptanceTests.test_actual_sdk_bridge_files_bytes_wire_fields_and_error) ... ok
+test_download_oracle_requires_original_bytes_size_and_hash (tools.serve_responses.test_files_acceptance.FilesAcceptanceTests.test_download_oracle_requires_original_bytes_size_and_hash) ... ok
+test_real_document_tool_result_and_frozen_generation_budget (tools.serve_responses.test_files_acceptance.FilesAcceptanceTests.test_real_document_tool_result_and_frozen_generation_budget) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 1.675s
+
+OK
