@@ -1,0 +1,14 @@
+{
+  "generations": 8,
+  "negative_creates": 5,
+  "actual_model_steps": 8,
+  "real_tool_executions": 1,
+  "actual_trusted_context": true,
+  "removed_policy_file_does_not_stop_model": true,
+  "original_replay": true,
+  "separate_model_and_client_grants": true,
+  "precise_client_accounting": true,
+  "default_unchanged": true,
+  "cloud_approval_claim": false,
+  "performance_claim": false
+}

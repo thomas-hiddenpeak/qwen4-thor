@@ -3039,7 +3039,7 @@
     ]
   },
   "access_program_development_20261110": {
-    "status": "CPU_PASS_PENDING_ACTUAL_BUSINESS",
+    "status": "ACTUAL_BUSINESS_ACCEPTED_PENDING_DELIVERY",
     "plan": "docs/SERVE_RESPONSES_EXECUTION_POLICY_2026-11-10.md",
     "review": "Exact input/defaults; model policy and authenticated client grants; actual operator instruction context in primary/pro/summary/compaction; no classifier contamination; persisted selected program and local provenance; queued recovery identity/grant revalidation; startup-only private file and sealed optional package without cloud approval claims.",
     "frozen_checks": {
@@ -3050,6 +3050,7 @@
       "generations": 8,
       "seconds": 900
     },
-    "cpu_evidence": "docs/evidence/serve-access-program-cpu-20261110/README.md"
+    "cpu_evidence": "docs/evidence/serve-access-program-cpu-20261110/README.md",
+    "business_evidence": "docs/evidence/serve-access-program-business-20261110/README.md"
   }
 }

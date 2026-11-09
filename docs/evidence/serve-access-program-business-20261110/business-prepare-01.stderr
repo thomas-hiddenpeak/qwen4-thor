@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/access_program_acceptance.py", line 242, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/access_program_acceptance.py", line 235, in main
+    prepare(args)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/access_program_acceptance.py", line 88, in prepare
+    background.prepare(args, rows=requests(), limits=LIMITS, scope=__doc__)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/background_acceptance.py", line 44, in prepare
+    base.prepare(args, rows=requests() if rows is None else rows,
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py", line 135, in prepare
+    require(not subprocess.check_output(['git','status','--porcelain'],cwd=ROOT),
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 61, in require
+    raise RuntimeError(message)
+RuntimeError: commit reviewed sources before freezing

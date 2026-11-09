@@ -1,0 +1,18 @@
+{
+  "ok": false,
+  "error": {
+    "class": "BadRequestError",
+    "message": "400 Unknown access field",
+    "status": 400,
+    "code": "invalid_request",
+    "param": "access_programs"
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:18993/v1/responses",
+      "method": "POST",
+      "body": "{\"model\":\"qwen3.8-flash-next\",\"temperature\":0,\"max_output_tokens\":192,\"reasoning\":{\"effort\":\"none\"},\"input\":\"Compute 17 + 25. Reply only with the decimal number.\",\"store\":true,\"access_programs\":{\"cyber\":\"standard\",\"grant\":\"red\"}}"
+    }
+  ]
+}

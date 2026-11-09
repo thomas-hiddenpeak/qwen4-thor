@@ -89,3 +89,5 @@ SDK包含moderation.model和input/output的score/block策略，输出为结果�
 输入历史不写入服务端策略，输出以`q4t_access_program`披露本地authority、model、策略哈希与实际treatment。推理摘要/压缩沿用策略，固定审核分类器不接收这些指令。后台已排队对象重启时重新核对策略身份和当前授权；改变策略需要显式新部署，禁止静默恢复为新待遇。
 
 CPU已通过并保留首次夹具失败原件，见[证据](evidence/serve-access-program-cpu-20261110/README.md)。继续实际1启动/8生成/5拒绝/8模型步短验。后续A07.8还须补`POST /v1/responses/input_tokens`标准计数入口；现有Chat preflight不能冒充此端点完成。
+
+[A07.7c实际业务已接受](evidence/serve-access-program-business-20261110/README.md)：1启动/8生成+5拒绝/55.172秒，53 NVML全OK。继续可回退交付及全部任务。
