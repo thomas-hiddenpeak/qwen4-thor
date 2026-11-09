@@ -28,10 +28,14 @@ bool AdmitClientRequest(std::string_view method, std::string_view path,
   *identity =
       admission.Authenticate(headers->client_id, headers->gateway_token);
   if (!identity->Allowed()) return fail(401, "client_authentication_failed");
-  if (identity->Scoped())
-    headers->body_limit = identity->Limits()->max_body_bytes;
-  if (identity->Scoped() &&
-      headers->content_length > identity->Limits()->max_body_bytes)
+  if (identity->Scoped()) {
+    const auto& limits = *identity->Limits();
+    headers->body_limit =
+        method == "POST" && path == "/v1/files" && limits.max_file_body_bytes
+            ? limits.max_file_body_bytes
+            : limits.max_body_bytes;
+  }
+  if (identity->Scoped() && headers->content_length > headers->body_limit)
     return fail(413, "client_body_limit_exceeded");
   const auto lane =
       IsCancellationRequest(method, path) ? ClientLane::kCancel

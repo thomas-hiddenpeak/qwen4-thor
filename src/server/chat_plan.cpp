@@ -419,8 +419,9 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
          Quote(config.client_policy_sha256) + R"(,"clients":)" +
          std::to_string(config.client_count) +
          R"(,"namespace":"client_id","credential_values_redacted":true,)"
-         R"("mutable":)" + Bool(config.client_policy_version == 3) +
-         (config.client_policy_version == 3
+         R"("mutable":)" +
+         Bool(config.client_policy_version >= 3) +
+         (config.client_policy_version >= 3
               ? R"(,"snapshot":"startup","revision":)" +
                     std::to_string(config.client_policy_revision) +
                     R"(,"content_sha256":)" +

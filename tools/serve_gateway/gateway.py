@@ -223,16 +223,18 @@ def http_policy(value):
 
 def policy(value):
     require(isinstance(value, dict) and type(value.get('version')) is int and
-            value['version'] in (1, 2, 3, 4), 'unsupported policy version')
+            value['version'] in (1, 2, 3, 4, 5), 'unsupported policy version')
     required = {'version', 'listen_host', 'listen_port', 'server_name',
                 'upstream_port', 'clients'}
     if value['version'] >= 2:
         required.add('allowed_client_cidrs')
+    if value['version'] >= 5:
+        required.add('file_body_bytes')
     require(isinstance(value, dict) and required <= value.keys() and
             value.keys() <= required | DEFAULTS.keys() |
             ({'upstream_operations_port'} if value['version'] >= 2 else set()) |
             ({'cors'} if value['version'] >= 3 else set()) |
-            ({'http'} if value['version'] == 4 else set()),
+            ({'http'} if value['version'] >= 4 else set()),
             'unknown/missing policy field')
     value = dict(DEFAULTS, **value)
     if value['version'] >= 2:
@@ -240,7 +242,7 @@ def policy(value):
                                                        dual_stack=value['version'] >= 3)
     if value['version'] >= 3:
         value['cors'] = cors_policy(value.get('cors'))
-    if value['version'] == 4:
+    if value['version'] >= 4:
         value['http'] = http_policy(value.get('http', {}))
     require(isinstance(value['listen_host'], str), 'numeric IPv4 string required')
     try:
@@ -268,6 +270,8 @@ def policy(value):
     bounds = dict(listen_port=(1024,65535), upstream_port=(1024,65535),
         per_client_inflight=(1,8), global_inflight=(1,8), per_client_rps=(1,100),
         burst=(1,128), body_bytes=(1024,16*1024**2), upstream_idle_seconds=(10,3600))
+    if value['version'] >= 5:
+        bounds['file_body_bytes'] = (1024, 512 * 1024**2 + 65536)
     for name, (lower, upper) in bounds.items():
         require(type(value[name]) is int and lower <= value[name] <= upper,
                 'invalid numeric policy: '+name)

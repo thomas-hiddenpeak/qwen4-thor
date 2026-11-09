@@ -12,7 +12,7 @@ revision = access_policy.revision
 
 def validate(value):
     cp.validate(value)
-    ledger.require(value['version'] == 3 and value['gateway_token'] == TOKEN and
+    ledger.require(value['version'] in (3, 4) and value['gateway_token'] == TOKEN and
                    len(ledger.canonical(value)) <= cp.MAX_BYTES,
                    'invalid durable client limits')
     return value
@@ -24,7 +24,7 @@ def digest(value):
 
 def from_base(base):
     cp.validate(base)
-    value = dict(version=3, revision=0, gateway_token=TOKEN,
+    value = dict(version=max(3, base['version']), revision=0, gateway_token=TOKEN,
                  fair_queue=base.get('fair_queue', False), clients=copy.deepcopy(base['clients']))
     for client in value['clients']:
         for name in cp.RATE_BOUNDS:client.setdefault(name, 0)
@@ -33,6 +33,8 @@ def from_base(base):
 
 def transition(previous, candidate):
     validate(previous);validate(candidate)
+    ledger.require(candidate['version'] >= previous['version'],
+                   'client limits version cannot be downgraded')
     ledger.require(previous['revision'] < access_policy.MAX_REVISION and
         candidate['revision'] == previous['revision'] + 1, 'access revision conflict')
     before, after = previous['clients'], candidate['clients']
@@ -47,6 +49,10 @@ def transition(previous, candidate):
 def desired(previous, clients):
     value = dict(copy.deepcopy(validate(previous)), revision=previous['revision'] + 1,
                  clients=copy.deepcopy(clients))
+    # New fields are an explicit operator choice. Existing snapshots retain
+    # their exact version and semantic digest until that transaction occurs.
+    if any(type(c) is dict and 'max_file_body_bytes' in c for c in clients):
+        value['version'] = 4
     return transition(previous, value)
 
 

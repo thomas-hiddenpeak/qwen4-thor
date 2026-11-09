@@ -1,0 +1,20 @@
+test_changed_generation_before_frame_completion_aborts_publication (tools.serve_responses.test_files_transport.FilesTransportTests.test_changed_generation_before_frame_completion_aborts_publication) ... ok
+test_early_core_error_interrupts_paused_tls_upload (tools.serve_responses.test_files_transport.FilesTransportTests.test_early_core_error_interrupts_paused_tls_upload) ... FAIL
+test_malformed_chunk_trailer_never_publishes_complete_multipart (tools.serve_responses.test_files_transport.FilesTransportTests.test_malformed_chunk_trailer_never_publishes_complete_multipart) ... /usr/lib/python3.12/socket.py:844: ResourceWarning: unclosed <ssl.SSLSocket [closed] fd=8, family=2, type=1, proto=6>
+  exceptions.clear()  # raise only the last error
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_official_sdk_native_tls_prefix_files_and_large_bytes (tools.serve_responses.test_files_transport.FilesTransportTests.test_official_sdk_native_tls_prefix_files_and_large_bytes) ... ok
+
+======================================================================
+FAIL: test_early_core_error_interrupts_paused_tls_upload (tools.serve_responses.test_files_transport.FilesTransportTests.test_early_core_error_interrupts_paused_tls_upload)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_files_transport.py", line 202, in test_early_core_error_interrupts_paused_tls_upload
+    self.assertEqual(response.status, 413)
+AssertionError: 503 != 413
+
+----------------------------------------------------------------------
+Ran 4 tests in 4.992s
+
+FAILED (failures=1)

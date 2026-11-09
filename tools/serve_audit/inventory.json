@@ -1353,7 +1353,7 @@
   },
   "sources_sha256": {
     "CMakeLists.txt": "ab801a60e498b12129bf7d6e2c7d0b143e992704c15e4e3642bc485a002a9f3b",
-    "cmake/ChatProtocolIdentity.cmake": "cf6579041bea696049c607a5f1e6ea51c808528bed8eedcb18d48876912c22df",
+    "cmake/ChatProtocolIdentity.cmake": "258c5f2153fbcf5ba303ab6f3929b9304fea94e4e6162e298dd89f15d3b9bdeb",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "4a24e1f088b8898216b2838797c0c3ff3cb44631316da666423e237b8eac92e3",
     "cmake/NativeIngress.cmake": "5560a873e8d89b5e034636f006a2b21ace3bdab2bf71dcf688d5028fbbc704b4",
@@ -1389,7 +1389,7 @@
     "include/q4t/server/chat_template.h": "62a3dd447e16a74393430ab8ae2d85657e23609cd3c57270ef24c943be587c01",
     "include/q4t/server/chat_tool_history.h": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
     "include/q4t/server/client_identity.h": "c05aad5dc655e91962eae55aab25c09fdcbc2a72ddc37a95585c7288dfac54be",
-    "include/q4t/server/client_policy.h": "bd2aefbb0ec6697fd042108905876cd195324ac83485194c526eaf3024dc9de5",
+    "include/q4t/server/client_policy.h": "2d5e505d22cec7a46590e5a7c8fc6b0d3e2253e8b06ab755756fb301d074ef75",
     "include/q4t/server/client_policy_admin.h": "abe87e7c1dffbb0a66c141a810dda12a70a097956d81ba80347b50d96aced3e8",
     "include/q4t/server/client_rate_state.h": "e8377a5fcb02288385ae30861d3b4baa8002c7ce55a95e52bdba8b9a741a8ee6",
     "include/q4t/server/client_request.h": "d08159942c0f0f95c5040546b3aab647eac435546767e96a1c922f3d88957998",
@@ -1402,7 +1402,8 @@
     "include/q4t/server/custom_grammar.h": "d560f89881ff27ce260c939d046a7b5f5c5afccce2125e4170ef53a661f507ec",
     "include/q4t/server/custom_tools.h": "1f351b6ed81ad868caa4dfa9c54a6f697fcac5a6a8dadef65bd05f2053ef18b9",
     "include/q4t/server/device_memory.h": "1099e20d3b205d3ae03daba0308be7221f5097c78a2fd58c8ca16298277dfc4c",
-    "include/q4t/server/files.h": "d0bf2c21d8fdacb40ccdf1c7c3f9591b758c6ff992c3b45e63e527c71610cd69",
+    "include/q4t/server/file_limits.h": "70c0b62a0cf92fc0cf502a60bad87920d576bc7f9c3391c7fd7c72f977183529",
+    "include/q4t/server/files.h": "3e3e7515cd34f4ab66e0efa7023956cf4eb88455156881aa818bf5ec1e170fb9",
     "include/q4t/server/files_http.h": "43fd2dab8a608b3da12a110fc89922847b03fec78c62c5fc5359fbe40c838f3e",
     "include/q4t/server/grammar_process.h": "fbed9c86c91be129af8f1481292ef65edb8a9989090fc1a83e12c6fe7e106e53",
     "include/q4t/server/http_connection.h": "7781ebea44133e149d25292bcb20db324d7e8c366c24a176cf776163d6b0268d",
@@ -1487,7 +1488,7 @@
     "include/q4t/service/ingress_credentials.h": "eeaec124120e0de170faefea94bc987ed0fc32b19b01ad471b5c4758c647417b",
     "include/q4t/service/ingress_proxy.h": "fab16d371bc73c9f7cfb9407990fc235603e547f3b036121703ef1b1ce39a559",
     "include/q4t/service/ingress_tls.h": "90199152c3f08f5aa69fd9dc5057c10e4683b321241c3f6142a914dd656906e8",
-    "include/q4t/service/ingress_transport.h": "7399ad2f96b29cff6aa84705602c8993127eb4804d765e399bc3a1e4d189610e",
+    "include/q4t/service/ingress_transport.h": "f0f3e3434d054093a3d109aaa5300089a82dbbefb8cd2ee807784d5d62b85e90",
     "include/q4t/service/service_cli.h": "ca8d0ce29ebac6e46d3081c8d0a03513841af9f888b692735d6776a1cac2f692",
     "include/q4t/vision/configuration.h": "50f4ab0cacc680c48d87450c168cb6d1a5ac57f51cfaff14963c97b2db1e72a9",
     "include/q4t/vision/forward_timing.h": "7c642dbda0b464d333f20390f2ef4426954c23c9f6a48d1ee43ae044ce27a138",
@@ -1526,7 +1527,7 @@
     "src/server/chat_input_tokens.cpp": "c827f6fea2207afbed17312b6b9cbd90a6c6d52bfd6b6549d220b7c93cea40d9",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
     "src/server/chat_metrics.cpp": "4fcb248a3a1f9b2ea0cf5d825bd6afc1ef1dfee34bb859ef594ece4feea8cb27",
-    "src/server/chat_plan.cpp": "0aacd207edb51f426ed3729278f027289ce70d4cf5e228e726c7a534ad701b52",
+    "src/server/chat_plan.cpp": "8fb25d37abfd75646db8aa641107dd63341591873bec7cec9f6f7f3700d1e68d",
     "src/server/chat_preflight.cpp": "c920aff0a7994f2c6a35327a1119c4ccbe699920bdc980476b345a54fdd91e19",
     "src/server/chat_prompt.cpp": "91639256c143a659423b42340e92d154ac3f0a6c697b58bae2e20814fe303272",
     "src/server/chat_response_parser.cpp": "69e260c428d83a6383d5d36e0870c7d2be697e953251fddfd081a058445a808b",
@@ -1538,10 +1539,10 @@
     "src/server/chat_storage_options.cpp": "44a9da20f7f72b2fc448a02d09fdfb112c38b7cb0a9c8eca3296e43d5c32d99c",
     "src/server/chat_template.cpp": "61acfa8128e1ef75fed9c5cf94ef94b22d9f6629e01c50258c9e9bce1952f2ab",
     "src/server/chat_tool_history.cpp": "902f6c0982fd072d4dba4c3f6a34629eec9eaaf604fd5d920822b96ed51f82db",
-    "src/server/client_policy.cpp": "bd039b9b6f28adc26f785709bd9f159579ce29aab3620d83a899958befc53582",
-    "src/server/client_policy_admin.cpp": "50b2107f90879cac09261420c52874e507350d843340096797797c22543e8697",
+    "src/server/client_policy.cpp": "37ec10f682281e9079964dc566ee8319317f830ae1f1eccdad776e78732e8675",
+    "src/server/client_policy_admin.cpp": "5d1703539b6fa159e1ea9210698c0030f7170da054bbb069b4417ea3ad27a2ed",
     "src/server/client_rate_state.cpp": "bc9d1577ffb84c852243d2088cd8351e3dea21022f50f7a8c0f909f16e056c7a",
-    "src/server/client_request.cpp": "74bb0ee5bdd7713d0ea5e285fb1a93f7df7190db415e9151a3634dd6ea7da292",
+    "src/server/client_request.cpp": "5b60020ae66fa706ca7c9eb23b6e726d6a997136a10bfe8f02d85d90b6e0f635",
     "src/server/completion_plan.cpp": "714facdef55f982082f687220d2227f6195c517a41f835fe78161fc4a1b1656d",
     "src/server/completion_response.cpp": "75be95aa5a9da31112932cbddaa1e81c0b6cfa31664b03139e1d97f7d7563722",
     "src/server/contracts/openai_item_types_v1.json": "d22c6bb9a38868061556ed9dd76d8d51589a965101d4593684ea049f2945de81",
@@ -1640,16 +1641,16 @@
     "src/service/ingress_admin.cpp": "766241235bab9d0e84490f72b66938e93fbee88757099ac2731ed6eae7afd1cc",
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
-    "src/service/ingress_main.cpp": "2791847e46c0376d22c7f8d0302088cc45a9135c1c63787b252832e6f019dd34",
+    "src/service/ingress_main.cpp": "2065c4c03ba0f207fa3c6baf718296193c1c0326dc76ab495e6ee77be744cf55",
     "src/service/ingress_proxy.cpp": "2ee7ea1d89fb17402feb2d7c3125dde322b61145161b244da35f7b6ddba7372c",
     "src/service/ingress_tls.cpp": "676c3d18fc242aca0016ebecd182633e8299b7201903e7f7c6f0ea174d0a7d4f",
-    "src/service/ingress_transport.cpp": "9d2117ab9f5df1819e82521c045ac76bc9968322413018721a696fe24b9a5804",
+    "src/service/ingress_transport.cpp": "aead02740d23e335bdcea7ab376c38578c55eb979bd62ac69c7dc47a7a48c4d2",
     "src/service/service_cli.cpp": "8050277163189b926b27b9b4ca88282c65ce7593fc26309c8e415febd01c987e",
     "src/text/tokenizer.cpp": "839f9333817ca010af2dc4bf90a8c24eab4359a5d8eb04192e1789397e0c2faf",
     "src/vision/media_plan.cpp": "30f1858fe11a14bb81f5ee2c80edef68e60cb7a03c7a0ec8132cc29936dff302",
     "src/vision/processor.cpp": "856d82bff8e5a67ce84693a6a2980aedd64b7e76c1e2416c77690108ae82e975",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
-    "tools/serve_gateway/gateway.py": "ce430422002d7168c86e4f85a9936cad0b12aec98679c50565b05b744e35cd40",
+    "tools/serve_gateway/gateway.py": "0663f472ca8da98eeabf6ee41bdb29aa98acccbbc09890ec9eb83419a843f9c1",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "edb652d4fd38bee8ed52a013c8647ad1ee744a0843a8ef7f27661c39488ec670",
     "tools/serve_recovery/access_control.py": "3f65d1257735880343990cca6e5c16409ab18b60a707bd901ff0a0dd4c957b1a",
@@ -1672,7 +1673,7 @@
     "tools/serve_recovery/fixture_model.py": "b7527fac2f8c3909680aaed91460eeab30b43314059174cba30b12a5dde7e06d",
     "tools/serve_recovery/fixture_production.py": "defce0b6b814166605a8129f589dfff825312b8320f44938b3f28fc816d6c972",
     "tools/serve_recovery/gateway.py": "09dd93be270bbd65a1c64a25ad53483561d83da33f10bcbda1e1f88008f09d44",
-    "tools/serve_recovery/gateway_config.py": "531c1c4a1d5fcdaf41f43c5fb5c9d38560c82132677bcad418458379ce290498",
+    "tools/serve_recovery/gateway_config.py": "384d0b951d7f707f7ec4c827073ccc7a02057317ea765d6d0aec234041ec4073",
     "tools/serve_recovery/initialization.py": "5c8a0584d2fb21a13ab3de8ee5265bf7d898a9e8da5c5ff1f14c45d22c648f60",
     "tools/serve_recovery/jobs.py": "31dc2bf5a1e6d91cbfa1ce04a7726c72e5b0cf70a8dec3b12d9e71de3ce96d25",
     "tools/serve_recovery/journal.py": "b965cb03f08932b508c9af083abd7020abe25a5f9d8f5d1ad0920494ed127cac",
@@ -1691,7 +1692,7 @@
     "tools/serve_recovery/publication_policy.py": "2d5d71e710b85aeb8410ccf9f7d74d05e4995396299042eccaef5b099562b979",
     "tools/serve_recovery/quota_control.py": "5c1852d88c00af0de630c0fefaf9f161b96bc724d8e09b6f96efee226b7bb0df",
     "tools/serve_recovery/quota_manager.py": "d4e42ef4e419f8f5a2995a2a4312c05b3a759e04f8a32c1684228d6c350ae445",
-    "tools/serve_recovery/quota_policy.py": "840bebc08cdd79380763997f6172ef9803bad23dfffe6bd094229662450aed9d",
+    "tools/serve_recovery/quota_policy.py": "eaadf8cae9ce232a78cdd9a1d6b3bb471261303c65e24e3fe741c19e731d72de",
     "tools/serve_recovery/quota_runtime.py": "ded3f58001ae462c9a3da8c4427415a1c9399800ed5e4a73214d315f4f465f5a",
     "tools/serve_recovery/quota_store.py": "e31fa84315cf662f83dc1111a52d31c3fd6195b5bc2ba2c6044e4bbf4f011887",
     "tools/serve_recovery/retention.py": "50ac3f309bb9449748ac49322233b5224820d2047034fd31b0e8793801078077",
@@ -2690,6 +2691,86 @@
         "src/server/chat_input_tokens.cpp",
         "src/server/responses_tokens.cpp",
         "tests/server_responses_tokens_test.cpp"
+      ]
+    },
+    "DELETE /v1/files/{file_id}": {
+      "semantics": "\u539f\u751fFiles\u4f20\u8f93/metadata\u89c2\u5bdf\u4e0elist/content\u4e1a\u52a1\u51c6\u5165\uff0c\u4e0a\u4f20\u5b8c\u6574HTTP\u540e\u624d\u8f6c\u53d1\u5b8c\u6210\u6807\u8bb0",
+      "boundary": "Targeted CPU network accepted (official SDK and native TLS, including 17MiB bytes). Package/discovery/migration and actual engine business still required; not total A09 completion.",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "src/server/files_http.cpp",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
+        "docs/evidence/serve-files-transport-cpu-20261110/README.md"
+      ]
+    },
+    "GET /v1/files": {
+      "semantics": "\u539f\u751fFiles\u4f20\u8f93/metadata\u89c2\u5bdf\u4e0elist/content\u4e1a\u52a1\u51c6\u5165\uff0c\u4e0a\u4f20\u5b8c\u6574HTTP\u540e\u624d\u8f6c\u53d1\u5b8c\u6210\u6807\u8bb0",
+      "boundary": "Targeted CPU network accepted (official SDK and native TLS, including 17MiB bytes). Package/discovery/migration and actual engine business still required; not total A09 completion.",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "src/server/files_http.cpp",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
+        "docs/evidence/serve-files-transport-cpu-20261110/README.md"
+      ]
+    },
+    "GET /v1/files/{file_id}": {
+      "semantics": "\u539f\u751fFiles\u4f20\u8f93/metadata\u89c2\u5bdf\u4e0elist/content\u4e1a\u52a1\u51c6\u5165\uff0c\u4e0a\u4f20\u5b8c\u6574HTTP\u540e\u624d\u8f6c\u53d1\u5b8c\u6210\u6807\u8bb0",
+      "boundary": "Targeted CPU network accepted (official SDK and native TLS, including 17MiB bytes). Package/discovery/migration and actual engine business still required; not total A09 completion.",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "src/server/files_http.cpp",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
+        "docs/evidence/serve-files-transport-cpu-20261110/README.md"
+      ]
+    },
+    "GET /v1/files/{file_id}/content": {
+      "semantics": "\u539f\u751fFiles\u4f20\u8f93/metadata\u89c2\u5bdf\u4e0elist/content\u4e1a\u52a1\u51c6\u5165\uff0c\u4e0a\u4f20\u5b8c\u6574HTTP\u540e\u624d\u8f6c\u53d1\u5b8c\u6210\u6807\u8bb0",
+      "boundary": "Targeted CPU network accepted (official SDK and native TLS, including 17MiB bytes). Package/discovery/migration and actual engine business still required; not total A09 completion.",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "src/server/files_http.cpp",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
+        "docs/evidence/serve-files-transport-cpu-20261110/README.md"
+      ]
+    },
+    "OPTIONS /v1/files": {
+      "semantics": "\u539f\u751fFiles\u4f20\u8f93/metadata\u89c2\u5bdf\u4e0elist/content\u4e1a\u52a1\u51c6\u5165\uff0c\u4e0a\u4f20\u5b8c\u6574HTTP\u540e\u624d\u8f6c\u53d1\u5b8c\u6210\u6807\u8bb0",
+      "boundary": "Targeted CPU network accepted (official SDK and native TLS, including 17MiB bytes). Package/discovery/migration and actual engine business still required; not total A09 completion.",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "src/server/files_http.cpp",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
+        "docs/evidence/serve-files-transport-cpu-20261110/README.md"
+      ]
+    },
+    "OPTIONS /v1/files/{file_id}": {
+      "semantics": "\u539f\u751fFiles\u4f20\u8f93/metadata\u89c2\u5bdf\u4e0elist/content\u4e1a\u52a1\u51c6\u5165\uff0c\u4e0a\u4f20\u5b8c\u6574HTTP\u540e\u624d\u8f6c\u53d1\u5b8c\u6210\u6807\u8bb0",
+      "boundary": "Targeted CPU network accepted (official SDK and native TLS, including 17MiB bytes). Package/discovery/migration and actual engine business still required; not total A09 completion.",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "src/server/files_http.cpp",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
+        "docs/evidence/serve-files-transport-cpu-20261110/README.md"
+      ]
+    },
+    "OPTIONS /v1/files/{file_id}/content": {
+      "semantics": "\u539f\u751fFiles\u4f20\u8f93/metadata\u89c2\u5bdf\u4e0elist/content\u4e1a\u52a1\u51c6\u5165\uff0c\u4e0a\u4f20\u5b8c\u6574HTTP\u540e\u624d\u8f6c\u53d1\u5b8c\u6210\u6807\u8bb0",
+      "boundary": "Targeted CPU network accepted (official SDK and native TLS, including 17MiB bytes). Package/discovery/migration and actual engine business still required; not total A09 completion.",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "src/server/files_http.cpp",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
+        "docs/evidence/serve-files-transport-cpu-20261110/README.md"
+      ]
+    },
+    "POST /v1/files": {
+      "semantics": "\u539f\u751fFiles\u4f20\u8f93/metadata\u89c2\u5bdf\u4e0elist/content\u4e1a\u52a1\u51c6\u5165\uff0c\u4e0a\u4f20\u5b8c\u6574HTTP\u540e\u624d\u8f6c\u53d1\u5b8c\u6210\u6807\u8bb0",
+      "boundary": "Targeted CPU network accepted (official SDK and native TLS, including 17MiB bytes). Package/discovery/migration and actual engine business still required; not total A09 completion.",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "src/server/files_http.cpp",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
+        "docs/evidence/serve-files-transport-cpu-20261110/README.md"
       ]
     }
   },

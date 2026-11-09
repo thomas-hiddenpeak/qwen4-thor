@@ -125,3 +125,13 @@ HTTP流式组件[32项CPU已通过](evidence/serve-http-body-stream-cpu-20261110
 Files核心成组冻结16项直接CPU，清单`.q4t-work/serve-files-20261110/required-files-core.txt`。11新增字段/实际SDK编码/分页跨页/隐藏内部文件/隔离/真实socket下载/截断语义，以及5项受影响原分页/隔离/分类/响应。旧scoped max_body_bytes仍严格取交集，不以流式解码绕过原授权限额；独立file容量与原生TLS路线是下一必做集成项。必要host与引擎构建，本组无GPU，不宣称完整Files接口交付。
 
 Files核心[16项CPU已通过](evidence/serve-files-core-cpu-20261110/README.md)，必要host/实际引擎零警告，无GPU；下一必做项是独立文件容量配置与原生流式入口、实际SDK/业务，不作为A09或总目标完成。
+
+## 文件容量/原生传输定向验证冻结
+
+A09.3 独立文件容量与原生流式转发已成组开发，冻结15 C++、5策略/账本Python、7实际SDK/原生传输与3既有入口检查。私有v4/入口v5显式限额，旧配置不扩大；中途错误/截断/代次切换阻止发布。开始必要独立构建，尚未测试；默认6a90506e保持STOPPED、0GPU，继续发行及A09其余全部任务。
+
+15项C++清单`.q4t-work/serve-files-20261110/required-files-transport.txt`；5策略Python为`test_file_capacity.FileCapacityTests`全部4项及原QuotaStore的C++/Python旧版摘要核对。7实网为`test_files_transport.FilesTransportTests`，其中官方SDK直接核心与TLS/prefix完整Files两链、17MiB+13字节校验，其余为非法trailer、提前413、代次变更、旧入口限额和100-continue。另3既有入口为代次/伪造头、Completions透传与控制容量。仅使用自有CPU夹具，0GPU/模型，不跑完整性能或全模型矩阵；封装版本与迁移、真实模型业务仍必做。
+
+TLS首次误选关闭TLS的host产物，4项启动失败原件保留；仅换启用TLS构建后3通过。剩余提前413实际暴露POLLIN|POLLERR先丢弃响应的问题。修复后冻结5项：提前核心错误、downstream disconnect、malformed response、backend quota429、truncated SSE/no replay。其他已过正常链分支未变，复用并保留来源，不重复两次17MiB SDK链。
+
+容量/原生传输[34不同CPU最终接受](evidence/serve-files-transport-cpu-20261110/README.md)，64次官方SDK实际请求，0GPU；继续发行与引擎实际业务，再全部其余子项。

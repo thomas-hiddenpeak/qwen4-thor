@@ -15,6 +15,7 @@
 
 #include "q4t/io/json.h"
 #include "q4t/server/client_rate_state.h"
+#include "q4t/server/file_limits.h"
 #include "q4t/trace/sha256.h"
 
 namespace q4t::server {
@@ -72,7 +73,7 @@ bool ValidLimits(const ClientLimits& value) {
 }
 
 bool ValidPolicy(const GatewayClientPolicy& policy) {
-  if ((policy.version != 1 && policy.version != 2 && policy.version != 3) ||
+  if ((policy.version < 1 || policy.version > 4) ||
       policy.revision > kMaxClientRevision ||
       (policy.version < 3 && policy.revision != 0) ||
       (policy.version == 1 && policy.fair_queue) ||
@@ -82,6 +83,10 @@ bool ValidPolicy(const GatewayClientPolicy& policy) {
   std::set<std::string> ids;
   for (const auto& limits : policy.clients)
     if (!ValidLimits(limits) || !ids.insert(limits.id).second ||
+        (policy.version < 4
+             ? limits.max_file_body_bytes != 0
+             : limits.max_file_body_bytes < 1024 ||
+                   limits.max_file_body_bytes > kFileWireBytes) ||
         (policy.version == 1 &&
          (limits.requests_per_minute || limits.tokens_per_minute)))
       return false;
@@ -121,7 +126,7 @@ Status ParseGatewayClientPolicy(std::string_view raw,
                                    .reject_duplicate_keys = true};
   if (!io::ParseJson(std::string(raw), &root, true, limits)) return Invalid();
   uint32_t version = 0;
-  if (!Integer(root.Find("version"), 3, &version) ||
+  if (!Integer(root.Find("version"), 4, &version) ||
       !(version == 1   ? Fields(root, {"version", "gateway_token", "clients"})
         : version == 2 ? Fields(root, {"version", "gateway_token", "clients",
                                        "fair_queue"})
@@ -130,7 +135,7 @@ Status ParseGatewayClientPolicy(std::string_view raw,
     return Invalid();
   GatewayClientPolicy policy;
   policy.version = version;
-  if (version == 3) {
+  if (version >= 3) {
     const auto* revision = root.Find("revision");
     if (!revision || !revision->IsNumber() || revision->str.empty())
       return Invalid();
@@ -159,10 +164,18 @@ Status ParseGatewayClientPolicy(std::string_view raw,
               ? Fields(entry, {"id", "max_inflight", "max_control_inflight",
                                "max_prompt_tokens", "max_output_tokens",
                                "max_body_bytes"})
+          : version < 4
+              ? Fields(entry, {"id", "max_inflight", "max_control_inflight",
+                               "max_prompt_tokens", "max_output_tokens",
+                               "max_body_bytes", "requests_per_minute",
+                               "tokens_per_minute"})
               : Fields(entry, {"id", "max_inflight", "max_control_inflight",
                                "max_prompt_tokens", "max_output_tokens",
                                "max_body_bytes", "requests_per_minute",
-                               "tokens_per_minute"})))
+                               "tokens_per_minute", "max_file_body_bytes"})))
+      return Invalid();
+    if (version >= 4 && !Integer(entry.Find("max_file_body_bytes"),
+                                 kFileWireBytes, &value.max_file_body_bytes))
       return Invalid();
     if (version >= 2 && (!Integer(entry.Find("requests_per_minute"), 1000000,
                                   &value.requests_per_minute, true) ||
@@ -234,6 +247,8 @@ std::string ClientPolicyDigest(const GatewayClientPolicy& policy) {
                              client.max_body_bytes, client.requests_per_minute,
                              client.tokens_per_minute})
       raw += ':' + std::to_string(value);
+    if (policy.version >= 4)
+      raw += ':' + std::to_string(client.max_file_body_bytes);
     raw += '\n';
   }
   return trace::HexDigest(trace::Sha256(
@@ -255,9 +270,9 @@ Status ClientAdmission::Publish(GatewayClientPolicy policy,
                                 uint32_t global_queued) {
   const std::lock_guard lock(policy_mutex_);
   const auto previous = Snapshot();
-  if (!previous || previous->version != 3 || policy.version != 3 ||
-      rates_frozen_ || !ValidPolicy(policy) ||
-      expected_revision != previous->revision ||
+  if (!previous || previous->version < 3 ||
+      policy.version < previous->version || rates_frozen_ ||
+      !ValidPolicy(policy) || expected_revision != previous->revision ||
       policy.revision <= previous->revision ||
       policy.gateway_token != previous->gateway_token ||
       policy.fair_queue != previous->fair_queue ||
@@ -306,7 +321,7 @@ ClientRateUsage ClientAdmission::RateUsage(size_t index,
 
 Status ClientAdmission::EnableRateRecovery() {
   const std::lock_guard lock(policy_mutex_);
-  if (Version() != 3 || rate_recovery_enabled_ || rates_frozen_)
+  if (Version() < 3 || rate_recovery_enabled_ || rates_frozen_)
     return Status::Fail("rate recovery unavailable");
   rate_recovery_enabled_ = true;
   return Status();
@@ -374,7 +389,7 @@ Status ClientAdmission::RestoreRates(const ClientRateState* state,
 
 Status ClientAdmission::FreezeRates(ClientRateState* state,
                                     ClientClock::time_point now) {
-  if (!state || Version() != 3 || !rates_recovered_)
+  if (!state || Version() < 3 || !rates_recovered_)
     return Status::Fail("rate recovery incomplete");
   rates_frozen_.store(true);
   std::unique_lock policy_lock(policy_mutex_, std::try_to_lock);

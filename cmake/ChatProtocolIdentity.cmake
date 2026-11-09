@@ -122,6 +122,7 @@ set(protocol_inputs
   include/q4t/server/binary_store.h
   src/server/binary_store.cpp
   include/q4t/server/files.h
+  include/q4t/server/file_limits.h
   src/server/files.cpp
   include/q4t/server/files_http.h
   src/server/files_http.cpp

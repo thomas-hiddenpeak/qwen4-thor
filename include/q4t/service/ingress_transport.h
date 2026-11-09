@@ -46,7 +46,13 @@ class Connection {
 
 Decision Authorize(const std::string& address, pid_t parent,
                    std::string_view client, bool control, int expected_port);
-OwnedFd Connect(int port, Connection& client);
+OwnedFd Connect(int port, Connection& client,
+                Clock::time_point deadline = Clock::time_point::max());
+// An upstream response/close interrupts upload writes instead of waiting on
+// client input or a full upstream socket. No request replay or body buffering.
+bool Readable(int fd);
+bool WriteUpload(int fd, std::string_view data, Clock::time_point deadline,
+                 Connection& client);
 bool Write(int fd, std::string_view data, Clock::time_point deadline,
            Connection* client = nullptr, bool* started = nullptr);
 void Error(Connection& client, int status, std::string_view code,
@@ -54,7 +60,7 @@ void Error(Connection& client, int status, std::string_view code,
 bool Reply(Connection& client, int status, std::string_view body,
            std::string_view request_id, bool* started);
 bool Relay(int upstream, Connection& client, int idle_seconds,
-           std::string_view request_id, bool* started);
+           std::string_view request_id, bool* started, bool error_only = false);
 std::string RequestId();
 
 }  // namespace q4t::service::ingress

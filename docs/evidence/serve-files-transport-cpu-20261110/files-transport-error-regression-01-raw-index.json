@@ -1,0 +1,66 @@
+{
+  ".q4t-work/serve-files-20261110/files-transport-error-regression-01/native-gwnqhwjj/gateway.json": {
+    "sha256": "98b81dc891812d3163249aa58c8419bbc033d6c8e9eb68b7f163595cb4937b02",
+    "bytes": 1484
+  },
+  ".q4t-work/serve-files-20261110/files-transport-error-regression-01/native-gwnqhwjj/worker.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-error-regression-01/native-gwnqhwjj/observations.json": {
+    "sha256": "d1ff75c9504e5156b6361cde7cc519d01c59a2a3bed3fa8cd1f6824d28e3807e",
+    "bytes": 963
+  },
+  ".q4t-work/serve-files-20261110/files-transport-error-regression-01/native-7j04msku/gateway.json": {
+    "sha256": "9e917584ddba4db5ac13566819a3aba923066a389fd0e5ad01f7b85ef84a0aa4",
+    "bytes": 1484
+  },
+  ".q4t-work/serve-files-20261110/files-transport-error-regression-01/native-7j04msku/worker.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-error-regression-01/native-7j04msku/observations.json": {
+    "sha256": "62438f90480c2f41fcec604f0747af2d44725390c3881b8181d39c2fe0f0e85f",
+    "bytes": 950
+  },
+  ".q4t-work/serve-files-20261110/files-transport-error-regression-01/native-d2kw_4xq/gateway.json": {
+    "sha256": "680259902bf78cf34d52124404f420af16d17060e99a00b457ec231cef6bcba7",
+    "bytes": 1484
+  },
+  ".q4t-work/serve-files-20261110/files-transport-error-regression-01/native-d2kw_4xq/worker.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-error-regression-01/native-d2kw_4xq/observations.json": {
+    "sha256": "7802aaa4af067a39e5255c10fd0cd3cac0a5ae7775c767e68d974dd07995487b",
+    "bytes": 2952
+  },
+  ".q4t-work/serve-files-20261110/files-transport-error-regression-01/native-bwcidda5/gateway.json": {
+    "sha256": "ed4fd57a719b65223b1e559895899c1c2a20539c0390407ee1466ef6ef52d771",
+    "bytes": 1484
+  },
+  ".q4t-work/serve-files-20261110/files-transport-error-regression-01/native-bwcidda5/worker.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-error-regression-01/native-bwcidda5/observations.json": {
+    "sha256": "44133440168c44f680b7278a9e92b24956fe1132375bee88bfc3d3b850e3e146",
+    "bytes": 1044
+  },
+  ".q4t-work/serve-files-20261110/files-transport-error-regression-01/native-gwnqhwjj/gateway-1/ingress.json": {
+    "sha256": "cbf57fc86a3a3f79991f3714d863395995b72d5fe407fa04c34278196fdb1595",
+    "bytes": 674
+  },
+  ".q4t-work/serve-files-20261110/files-transport-error-regression-01/native-7j04msku/gateway-1/ingress.json": {
+    "sha256": "8838203c17af5921535bb09ff2b04ecb1522c16aa7cf11800602f0e12f8e039c",
+    "bytes": 674
+  },
+  ".q4t-work/serve-files-20261110/files-transport-error-regression-01/native-d2kw_4xq/gateway-1/ingress.json": {
+    "sha256": "35df3e9d97d5301c73caf33c378c84c6e031e6b404a10c337db334453b93c9f5",
+    "bytes": 674
+  },
+  ".q4t-work/serve-files-20261110/files-transport-error-regression-01/native-bwcidda5/gateway-1/ingress.json": {
+    "sha256": "0ffdc52cad9ae7cb346250a6180ec1bdc2232db98dd1ec13a1f0b12f056a924a",
+    "bytes": 674
+  }
+}

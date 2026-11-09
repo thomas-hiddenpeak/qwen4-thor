@@ -40,13 +40,13 @@ def validate(value):
         from tools.serve_service import capacity
         capacity.validate(value['capacity_profile'])
         capacity.check_clients(value['capacity_profile'],value['backend_policy'])
-    ledger.require(value['version'] != 4 or value['backend_policy']['version'] == 3,
+    ledger.require(value['version'] != 4 or value['backend_policy']['version'] >= 3,
                    'dynamic ingress requires a versioned model policy')
     ledger.require('upstream_operations_port' in p,
                    'recovery requires a separate operations listener')
     tls = value['tls']
     if native:
-        ledger.require(p['version'] in (2, 3, 4), 'native ingress requires explicit CIDRs')
+        ledger.require(p['version'] in (2, 3, 4, 5), 'native ingress requires explicit CIDRs')
     else:
         ledger.require(p['version'] in (1, 2), 'nginx profile requires legacy policy')
     if tls is None:

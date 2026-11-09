@@ -1,0 +1,10 @@
+test_actual_admin_upgrade_retains_existing_usage_and_client_slots (tools.serve_responses.test_file_capacity.FileCapacityTests.test_actual_admin_upgrade_retains_existing_usage_and_client_slots) ... ok
+test_durable_explicit_upgrade_reopens_with_receipt_and_no_downgrade (tools.serve_responses.test_file_capacity.FileCapacityTests.test_durable_explicit_upgrade_reopens_with_receipt_and_no_downgrade) ... ok
+test_file_policy_cpp_python_exact_digest_and_invalid_types (tools.serve_responses.test_file_capacity.FileCapacityTests.test_file_policy_cpp_python_exact_digest_and_invalid_types) ... ok
+test_public_file_limit_is_explicit_and_does_not_expand_json (tools.serve_responses.test_file_capacity.FileCapacityTests.test_public_file_limit_is_explicit_and_does_not_expand_json) ... ok
+test_native_python_digest_ignores_runtime_token_and_json_layout (tools.serve_recovery.test_quota_store.QuotaStoreTests.test_native_python_digest_ignores_runtime_token_and_json_layout) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.085s
+
+OK

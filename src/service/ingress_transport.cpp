@@ -43,7 +43,12 @@ bool Wait(int fd, short events, Clock::time_point deadline,
     // Pending pipeline bytes remain unread for the next sequential request;
     // only actual disconnect cancels this relay. Never replay a dispatched one.
     if (client && fds[1].revents && client->Cancelled()) return false;
-    if (fds[0].revents & (POLLERR | POLLNVAL)) return false;
+    if (fds[0].revents & POLLNVAL) return false;
+    // A rejected streaming upload can close with unread request bytes (RST).
+    // POLLIN|POLLERR still carries its already-sent 413/429 response. Drain
+    // readable bytes first; the later error/EOF must not invent completion.
+    if ((events & POLLIN) && (fds[0].revents & POLLIN)) return true;
+    if (fds[0].revents & POLLERR) return false;
     if (fds[0].revents & (events | POLLHUP | POLLRDHUP)) return true;
   }
   return false;
@@ -64,9 +69,9 @@ std::string_view Trim(std::string_view value) {
 }
 
 bool ResponseHeaders(std::string_view raw, Connection& client,
-                     std::string_view request_id,
-                     std::string* output, std::optional<size_t>* length,
-                     bool* chunked) {
+                     std::string_view request_id, std::string* output,
+                     std::optional<size_t>* length, bool* chunked,
+                     bool error_only) {
   size_t pos = raw.find("\r\n");
   if (pos == raw.npos || pos < 12) return false;
   const auto first = raw.substr(0, pos);
@@ -76,7 +81,8 @@ bool ResponseHeaders(std::string_view raw, Connection& client,
   const auto parsed =
       std::from_chars(first.data() + 9, first.data() + 12, status);
   if (parsed.ec != std::errc{} || parsed.ptr != first.data() + 12 ||
-      status < 200 || status > 599 || (first.size() > 12 && first[12] != ' '))
+      status < (error_only ? 400 : 200) || status > 599 ||
+      (first.size() > 12 && first[12] != ' '))
     return false;
   for (unsigned char c : first)
     if (c < 32 || c > 126) return false;
@@ -162,6 +168,29 @@ bool Write(int fd, std::string_view data, Clock::time_point deadline,
     if (size <= 0) return false;
     if (started) *started = true;
     data.remove_prefix(static_cast<size_t>(size));
+  }
+  return data.empty();
+}
+
+bool Readable(int fd) {
+  if (fd < 0) return false;
+  pollfd event{fd, POLLIN, 0};
+  int result;
+  do {
+    result = ::poll(&event, 1, 0);
+  } while (result < 0 && errno == EINTR);
+  return result != 0;
+}
+
+bool WriteUpload(int fd, std::string_view data, Clock::time_point deadline,
+                 Connection& client) {
+  while (!data.empty() && Wait(fd, POLLIN | POLLOUT, deadline, &client)) {
+    if (Readable(fd)) return false;
+    const ssize_t count =
+        ::send(fd, data.data(), data.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
+    if (count < 0 && (errno == EAGAIN || errno == EINTR)) continue;
+    if (count <= 0) return false;
+    data.remove_prefix(static_cast<size_t>(count));
   }
   return data.empty();
 }
@@ -334,7 +363,7 @@ Decision Authorize(const std::string& address, pid_t parent,
   return {expected_port, token, ""};
 }
 
-OwnedFd Connect(int port, Connection& client) {
+OwnedFd Connect(int port, Connection& client, Clock::time_point deadline) {
   OwnedFd fd(::socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, 0));
   if (fd.Get() < 0) return {};
   sockaddr_in address{};
@@ -344,7 +373,8 @@ OwnedFd Connect(int port, Connection& client) {
   const int connected = ::connect(
       fd.Get(), reinterpret_cast<sockaddr*>(&address), sizeof(address));
   if (connected != 0 && (errno != EINPROGRESS ||
-                         !Wait(fd.Get(), POLLOUT, Clock::now() + 2s, &client)))
+                         !Wait(fd.Get(), POLLOUT,
+                               std::min(deadline, Clock::now() + 2s), &client)))
     return {};
   int error = 0;
   socklen_t size = sizeof(error);
@@ -354,7 +384,7 @@ OwnedFd Connect(int port, Connection& client) {
 }
 
 bool Relay(int upstream, Connection& client, int idle_seconds,
-           std::string_view request_id, bool* started) {
+           std::string_view request_id, bool* started, bool error_only) {
   std::array<char, 16384> buffer{};
   std::string head;
   size_t end = std::string::npos;
@@ -374,8 +404,8 @@ bool Relay(int upstream, Connection& client, int idle_seconds,
   std::optional<size_t> length;
   bool chunked = false;
   if (end == std::string::npos || end + 4 > 65536 ||
-      !ResponseHeaders(std::string_view(head).substr(0, end + 2),
-                       client, request_id, &headers, &length, &chunked)) {
+      !ResponseHeaders(std::string_view(head).substr(0, end + 2), client,
+                       request_id, &headers, &length, &chunked, error_only)) {
     client.keep_alive = false;
     Error(client, 503, "service_binding_unavailable", request_id, started);
     return false;

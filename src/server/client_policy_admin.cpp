@@ -130,7 +130,7 @@ std::string DescribeClientPolicy(const ClientAdmission& admission,
       R"({"profile":"q4t-native-client-policy-v1","configured":)";
   result += policy ? "true" : "false";
   result += R"(,"mutable":)";
-  result += policy && policy->version == 3 ? "true" : "false";
+  result += policy && policy->version >= 3 ? "true" : "false";
   result += R"(,"publisher_alive":)";
   result += publisher_alive ? "true" : "false";
   result += R"(,"revision":)" + std::to_string(policy ? policy->revision : 0);
@@ -168,7 +168,7 @@ std::unique_ptr<ClientPolicyAdmin> StartClientPolicyAdmin(
     ClientAdmission& admission, uint32_t inflight, uint32_t queued,
     ClientPolicyAdmin::Publish publish) noexcept {
   try {
-    if (admission.Version() != 3) return nullptr;
+    if (admission.Version() < 3) return nullptr;
     const auto parent_pid = EnvironmentNumber("Q4T_POLICY_PARENT_PID");
     const auto parent_start = EnvironmentNumber("Q4T_POLICY_PARENT_START");
     const auto generation = EnvironmentNumber("Q4T_MODEL_GENERATION");

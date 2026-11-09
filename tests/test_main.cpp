@@ -18,6 +18,7 @@
 int CacheIoFixture(int argc, char** argv);
 int GrammarProcessFixture(int argc, char** argv);
 int ConversationApiFixture(int argc, char** argv);
+int FilesApiFixture(int argc, char** argv);
 int ResponsesApiFixture(int argc, char** argv);
 int ResponsesJobsFixture(int argc, char** argv);
 #endif
@@ -44,6 +45,8 @@ int main(int argc, char** argv) {
   if (fixture >= 0) return fixture;
   const int conversation = ConversationApiFixture(argc, argv);
   if (conversation >= 0) return conversation;
+  const int files = FilesApiFixture(argc, argv);
+  if (files >= 0) return files;
   const int responses = ResponsesApiFixture(argc, argv);
   if (responses >= 0) return responses;
   const int jobs = ResponsesJobsFixture(argc, argv);

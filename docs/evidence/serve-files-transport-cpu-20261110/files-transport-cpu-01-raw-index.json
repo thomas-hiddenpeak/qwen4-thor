@@ -1,0 +1,410 @@
+{
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/native-regression.stderr": {
+    "sha256": "0190332449b9b0ccb997f1062b9e3dcd990f183e8bf6a3eb81b7c61b9bd78a0c",
+    "bytes": 101
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/policy.stderr": {
+    "sha256": "e2b3004682776d21c64369c7ca64d6d6b3ad69144577bef870786d93fbf50b1f",
+    "bytes": 1067
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/whitespace.stdout": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/results.json": {
+    "sha256": "8a8eb85a73ed742c2a274fb344adef2b40e0e96eeb058e9d8a39b3b82b7add06",
+    "bytes": 1861
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/host.stdout": {
+    "sha256": "ed8c16dcbaa9d3743087c0e9a41a7d8461fdeb93f8441798e69c996bad706981",
+    "bytes": 1030
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/host.stderr": {
+    "sha256": "b63058f2b53c6a30013361eee148a62f069f48270251f5f8aadfde5e3529386b",
+    "bytes": 96
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/inventory.stderr": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network.stdout": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/source-sha256.json": {
+    "sha256": "146c54258a8b584b7624322b215c688f12a4688a00f4574ceb2c1e8ab7e1ec5b",
+    "bytes": 2854
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/whitespace.stderr": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/policy.stdout": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/native-regression.stdout": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/inventory.stdout": {
+    "sha256": "856bb330a69b8008e60f6e1abc0c49c4c1110256af558779b3b9395cba9b290d",
+    "bytes": 220
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network.stderr": {
+    "sha256": "d6b7bd019e5607bea3d9dda4c8dd2ac37e92345db009b1fe159947d0d2572454",
+    "bytes": 6175
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/host/files-1pGTWw/objects/7d93c10dc7d575614c3b92378cdb48c5cc04577b69af19f7909234d08a0605ed.tool_run.tool_run_6f02c1ce5e3f4b2c56076a036bd8fb3f.json": {
+    "sha256": "6f264d7b513f56dc8b3ef1512ef1552cfa41d52aa1f7d7387df641fcea5a683e",
+    "bytes": 443
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/host/files-1pGTWw/objects/.q4t-format": {
+    "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b",
+    "bytes": 27
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/host/files-1pGTWw/objects/7d93c10dc7d575614c3b92378cdb48c5cc04577b69af19f7909234d08a0605ed.file.file_c9e23fe422ed660c3c975e37e522db8b.json": {
+    "sha256": "7c2aba4a35d5036e10487a4b2f4dbd351cac3956772de998e00905e281fa8891",
+    "bytes": 694
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/host/files-1pGTWw/objects/.q4t-lock": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/native-regression/native-mfah08h1/gateway.json": {
+    "sha256": "73f7dc24b17d1ffa8da7c6538169254b1d77cb8019521e291f31a2a03c18ea2c",
+    "bytes": 1475
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/native-regression/native-mfah08h1/worker.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/native-regression/native-mfah08h1/observations.json": {
+    "sha256": "28b215b923fb6aafeb638684df36fdba4b033947a2faf0d57bf4c41ddb71a711",
+    "bytes": 84
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/native-regression/native-477yxz1g/gateway.json": {
+    "sha256": "359ca061dc76e09f9e7eb26ad68e2af109727c3553909d6d21c9efdbc8fe3ac5",
+    "bytes": 1475
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/native-regression/native-477yxz1g/worker.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/native-regression/native-477yxz1g/observations.json": {
+    "sha256": "32859a221f69deb37e132430ccbc69b1eddbf03ec363cfd6cd6cfbd72f81b3c6",
+    "bytes": 2958
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/native-regression/native-y0etkd20/gateway.json": {
+    "sha256": "3a19a98934816520451df74c199dcb490312eb79cec644b1e45dba20e784b48b",
+    "bytes": 1523
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/native-regression/native-y0etkd20/worker.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/native-regression/native-y0etkd20/observations.json": {
+    "sha256": "7c86e6530d8f906f201a261aba931aa8d5cd8b0fbe39c108c4a96858f455aef2",
+    "bytes": 951
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/native-regression/native-7w4_b7y0/gateway.json": {
+    "sha256": "16f09d9274f6238f695a81d1422094e19e8457bf9f8b9353e2aca1d39c7e83f2",
+    "bytes": 1475
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/native-regression/native-7w4_b7y0/worker.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/native-regression/native-7w4_b7y0/observations.json": {
+    "sha256": "7c87c505a1c7ba7aa67f539da3d9d549372d57c357daeb79f768ae4216dae1a3",
+    "bytes": 1143
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/native-regression/native-477yxz1g/gateway-1/ingress.json": {
+    "sha256": "ffc0405997708b9a622fadfe3980f77f2edd39f853624246b5be0c778fe7f850",
+    "bytes": 674
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/native-regression/native-y0etkd20/gateway-1/ingress.json": {
+    "sha256": "e66e5699f1c6868283b289b77ee9e6e5e0607150900bfa80866f89fe905a2db9",
+    "bytes": 674
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/native-regression/native-7w4_b7y0/gateway-1/ingress.json": {
+    "sha256": "aeafe4df98677863253cba18caea3bee9c21cec5ae37868d2c78488f2b1c6d57",
+    "bytes": 674
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_early_core_error_interrupts_paused_tls_upload/ingress.json": {
+    "sha256": "ad2ef9572be55cf2245fcae83d2df626d70e4e71606c9ba75357d40d6b3f4ced",
+    "bytes": 1184
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_early_core_error_interrupts_paused_tls_upload/ready.json": {
+    "sha256": "c4be466c2e2e541c35be1d1f3dcb487a66fc9a8a6bc5e62247c9a3bb67349383",
+    "bytes": 48
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_early_core_error_interrupts_paused_tls_upload/policy.json": {
+    "sha256": "737381facfc945f2b174d15f01e2d42e1858720f5d9601a237b76c7506d0a258",
+    "bytes": 592
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_early_core_error_interrupts_paused_tls_upload/ingress.log": {
+    "sha256": "c240aa0affc010e529f0e2836cf63c0ce001c19e50b194a7c2bd89ff28e6358e",
+    "bytes": 45
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_early_core_error_interrupts_paused_tls_upload/backend.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_changed_generation_before_frame_completion_aborts_publication/ingress.json": {
+    "sha256": "1ed02f58169cd7dc36ec21f8bc1d30195af09a33e4f82d0e57f381affee99fda",
+    "bytes": 1184
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_changed_generation_before_frame_completion_aborts_publication/ready.json": {
+    "sha256": "66da2933579cc853b752c3ffadc2d54baed760ae4bc9b04bc087553748d0157a",
+    "bytes": 48
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_changed_generation_before_frame_completion_aborts_publication/policy.json": {
+    "sha256": "5aa8382a09a9e5e00bae3ec2bbe7312c50af764fbbdf32b623f443e55307836f",
+    "bytes": 602
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_changed_generation_before_frame_completion_aborts_publication/ingress.log": {
+    "sha256": "c240aa0affc010e529f0e2836cf63c0ce001c19e50b194a7c2bd89ff28e6358e",
+    "bytes": 45
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_changed_generation_before_frame_completion_aborts_publication/backend.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_expect_continue_and_incremental_client_framing/ingress.json": {
+    "sha256": "1d7c72af6affa6b5a707e2d59b0f549a07c1e478b39d32696c9f1d9fe3dc606b",
+    "bytes": 839
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_expect_continue_and_incremental_client_framing/ready.json": {
+    "sha256": "2722aed9c9a9927d2314a118eaf0d4de928b322f1022a90e7a6a987e7f4a7d16",
+    "bytes": 48
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_expect_continue_and_incremental_client_framing/policy.json": {
+    "sha256": "5aa8382a09a9e5e00bae3ec2bbe7312c50af764fbbdf32b623f443e55307836f",
+    "bytes": 602
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_expect_continue_and_incremental_client_framing/ingress.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_expect_continue_and_incremental_client_framing/backend.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_malformed_chunk_trailer_never_publishes_complete_multipart/ingress.json": {
+    "sha256": "859ad1f4a8f149ad8a690d87c38a27348c14c670d20b617d62919cc133ad82af",
+    "bytes": 1184
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_malformed_chunk_trailer_never_publishes_complete_multipart/ready.json": {
+    "sha256": "1cc4df9033cb76a5a5938bd1cfbd411be2d42b3a6cd3dbca946686c2af01f3ec",
+    "bytes": 48
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_malformed_chunk_trailer_never_publishes_complete_multipart/policy.json": {
+    "sha256": "5aa8382a09a9e5e00bae3ec2bbe7312c50af764fbbdf32b623f443e55307836f",
+    "bytes": 602
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_malformed_chunk_trailer_never_publishes_complete_multipart/ingress.log": {
+    "sha256": "c240aa0affc010e529f0e2836cf63c0ce001c19e50b194a7c2bd89ff28e6358e",
+    "bytes": 45
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_malformed_chunk_trailer_never_publishes_complete_multipart/backend.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/certs/crlnumber": {
+    "sha256": "8d2510d85c94c519a91dbab464e232a824442bc7f6ef8901d8b5534825373878",
+    "bytes": 5
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/certs/index.txt": {
+    "sha256": "acdc894728eddb0e30fdcf84230b38427d32ae44b621cf31c5182d2d48942e82",
+    "bytes": 60
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/certs/ca.cnf": {
+    "sha256": "25f44cab2abb120bda4d42ccbe6b60a3c620bf7d03d27ffddfe37e850fe53b3b",
+    "bytes": 235
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/certs/other-client.pem": {
+    "sha256": "1732577a2a458040e06692c8506fcfde21cc4c6d060a97dfcb7697bef90cf73e",
+    "bytes": 1151
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/certs/clean.crl": {
+    "sha256": "945e8242b7cf73b60d92f7ef7a6c58e6ec04ee1e417949866879a2abc97b4901",
+    "bytes": 560
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/certs/client.key": {
+    "sha256": "63b1fc55ac9088c3963d11d685f7d4aabe6f768e13d42b17a44faa563bbf045c",
+    "bytes": 1704
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/certs/client.pem": {
+    "sha256": "1adaa2711521fe5bcf1b63605f0deee54d5def3f7bd9e9519115666cf296a948",
+    "bytes": 1151
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/certs/server.csr": {
+    "sha256": "509e24866ae6bc8546997716dcc12ee39e7e25eaf3435c06d45c26ba30ab36af",
+    "bytes": 891
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/certs/next.pem": {
+    "sha256": "351c8a9abc2caea404f1f002a2abc02b3e5f77ee95f495ce64d327204e165a75",
+    "bytes": 1212
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/certs/ca.pem": {
+    "sha256": "f5eea6a656d312ce9cddf2778bcd429fdbd7660c0509398184ca984931df4ad2",
+    "bytes": 1139
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/certs/server.ext": {
+    "sha256": "a0f7804dba0a812a4f68572e526e10843f5cb799b88a01fcdc34c1b155274008",
+    "bytes": 163
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/certs/crlnumber.old": {
+    "sha256": "d6a1a767319c3bf2a337b16e3a14916f63e432872e0f8df1cb73b32a8b338ae4",
+    "bytes": 5
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/certs/expired.pem": {
+    "sha256": "d1f1450282c22d449e8f296976e6c77a71fbf85d6f8218c902b3403763138220",
+    "bytes": 1212
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/certs/index.txt.old": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/certs/index.txt.attr": {
+    "sha256": "f185cb1322492dbcb4c2e4dd179bd3c09958fd39287dad4308e2fbd3c569f669",
+    "bytes": 21
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/certs/serial": {
+    "sha256": "83c02ac2d48c863dab2ccf6870455aadfc2cec073b8db269b517c879d76aa6d9",
+    "bytes": 5
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/certs/ca.key": {
+    "sha256": "9733697cff5409b7feee5982b9371b236f831b500a31a82b75d8153ee527d0a9",
+    "bytes": 1704
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/certs/server.pem": {
+    "sha256": "5a4d61c4fcc6b33353ec2564420f1b19d45dd20cb009daaa74be5e8c3d77d2ee",
+    "bytes": 1212
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/certs/openssl.log": {
+    "sha256": "138e7932e9c2156f31dff0b43928a1ceaa2ca7e8bead5af0aeb81ac7c332393c",
+    "bytes": 5661
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/certs/client.csr": {
+    "sha256": "875bbf5fed425e611c5181a2a7dc92db265127baafd1a92f340898da7b22d706",
+    "bytes": 899
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/certs/server.key": {
+    "sha256": "7f255d4251d62f459add04e0ca2af13fdb95435430c149fdda925d731a663823",
+    "bytes": 1704
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/certs/client.ext": {
+    "sha256": "60b347f311da6da0142a7d96b47a107a812c9e22532995856e2f21f2180a008d",
+    "bytes": 98
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/certs/revoked.crl": {
+    "sha256": "23062e5b768f0e212a841da6d0276cd13f21a48443d9ab150bd0296857db49ed",
+    "bytes": 593
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_legacy_gateway_cap_and_json_cap_remain_independent/ingress.json": {
+    "sha256": "c30601cb72c279de12622bbaafafd236caba64de73be20b7f75419f4580870aa",
+    "bytes": 809
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_legacy_gateway_cap_and_json_cap_remain_independent/ready.json": {
+    "sha256": "25383aebcdb504513a2b5192581a6291bc4b32acaf1f797e3f7f713d11542fbe",
+    "bytes": 48
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_legacy_gateway_cap_and_json_cap_remain_independent/policy.json": {
+    "sha256": "5aa8382a09a9e5e00bae3ec2bbe7312c50af764fbbdf32b623f443e55307836f",
+    "bytes": 602
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_legacy_gateway_cap_and_json_cap_remain_independent/ingress.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_legacy_gateway_cap_and_json_cap_remain_independent/backend.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_official_sdk_real_core_files_and_large_bytes/ready.json": {
+    "sha256": "2f6a79915376268656d0504dd0496be052538da48b8394acf871db64acd72c44",
+    "bytes": 48
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_official_sdk_real_core_files_and_large_bytes/policy.json": {
+    "sha256": "5aa8382a09a9e5e00bae3ec2bbe7312c50af764fbbdf32b623f443e55307836f",
+    "bytes": 602
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_official_sdk_real_core_files_and_large_bytes/backend.log": {
+    "sha256": "b28a8514e03c702cef8797698d881f844230d94c79043e75d8937a9e35930159",
+    "bytes": 654
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_official_sdk_real_core_files_and_large_bytes/sdk.json": {
+    "sha256": "e0b5a26cb7a31116fb6f692c36b775fa34264109699a05a3b7fae4388aec2849",
+    "bytes": 3614
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_official_sdk_real_core_files_and_large_bytes/sdk.stderr": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_official_sdk_real_core_files_and_large_bytes/sdk.stdout": {
+    "sha256": "8df3ef64193c81f59acb761b249b92e638a0d0b827052866fdb5126820b7f856",
+    "bytes": 101
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_official_sdk_native_tls_prefix_files_and_large_bytes/ingress.json": {
+    "sha256": "e9439886a0e958f3ce408820d263c94cdf5d3ee86d4a6ea9914fdacfc3f49520",
+    "bytes": 1188
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_official_sdk_native_tls_prefix_files_and_large_bytes/ready.json": {
+    "sha256": "b650f3d7e20e9dc2f9c269fc230ccddbbe0a59d0c290cb627b702ef272c4c819",
+    "bytes": 48
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_official_sdk_native_tls_prefix_files_and_large_bytes/policy.json": {
+    "sha256": "5aa8382a09a9e5e00bae3ec2bbe7312c50af764fbbdf32b623f443e55307836f",
+    "bytes": 602
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_official_sdk_native_tls_prefix_files_and_large_bytes/ingress.log": {
+    "sha256": "c240aa0affc010e529f0e2836cf63c0ce001c19e50b194a7c2bd89ff28e6358e",
+    "bytes": 45
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_official_sdk_native_tls_prefix_files_and_large_bytes/backend.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_expect_continue_and_incremental_client_framing/objects/f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.tool_run.tool_run_64ae7046adbfe73d1459edb330c42875.json": {
+    "sha256": "322eee8b5b2f7d99296cc9ced389d2262492b31866498c438aae091ace76e11b",
+    "bytes": 777
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_expect_continue_and_incremental_client_framing/objects/f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.file.file_e89d0117529d6995cf493149940e4318.json": {
+    "sha256": "5e7eaa904d7f8311dff282cb32cd2db5131b6b17803cbb53e571f18bfc5335f8",
+    "bytes": 695
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_expect_continue_and_incremental_client_framing/objects/.q4t-format": {
+    "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b",
+    "bytes": 27
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_expect_continue_and_incremental_client_framing/objects/.q4t-lock": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_legacy_gateway_cap_and_json_cap_remain_independent/objects/f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.file.file_d26c09bb9fe692bd4d9ad3e78cbd9554.json": {
+    "sha256": "6f4dacf21120606f1a5b5eb8d37d9e3e791ac16a4eaba1af6172e1a3cc8a0da2",
+    "bytes": 692
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_legacy_gateway_cap_and_json_cap_remain_independent/objects/.q4t-format": {
+    "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b",
+    "bytes": 27
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_legacy_gateway_cap_and_json_cap_remain_independent/objects/f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.tool_run.tool_run_5bc28e7c5b22d12a98630d4ce5b54dbd.json": {
+    "sha256": "b0cbcbfc04774f2953360b4177b6aa439710968875523708e15c8ed93786145b",
+    "bytes": 448
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_legacy_gateway_cap_and_json_cap_remain_independent/objects/.q4t-lock": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_official_sdk_real_core_files_and_large_bytes/objects/.q4t-format": {
+    "sha256": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b",
+    "bytes": 27
+  },
+  ".q4t-work/serve-files-20261110/files-transport-cpu-01/network/test_official_sdk_real_core_files_and_large_bytes/objects/.q4t-lock": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  }
+}

@@ -1,4 +1,4 @@
-"""Private runner policy; v3 supports revisions, with no automatic service action."""
+"""Private runner policy; v4 adds explicit file limits to revisioned v3."""
 import hashlib
 import json
 import os
@@ -12,6 +12,7 @@ BOUNDS = dict(max_inflight=(1, 4096), max_control_inflight=(1, 64),
               max_body_bytes=(1024, 16 * 1024**2))
 RATE_BOUNDS = dict(requests_per_minute=(0, 1000000),
                    tokens_per_minute=(0, 1000000000))
+FILE_BOUNDS = dict(max_file_body_bytes=(1024, 512 * 1024**2 + 65536))
 
 
 def require(value):
@@ -29,13 +30,13 @@ def unique(pairs):
 
 def validate(value):
     require(type(value) is dict and type(value.get('version')) is int and
-            value['version'] in (1, 2, 3))
+            value['version'] in (1, 2, 3, 4))
     rate = value['version'] >= 2
     fields = {'version', 'gateway_token', 'clients'}
     if rate:fields.add('fair_queue')
-    if value['version'] == 3:fields.add('revision')
+    if value['version'] >= 3:fields.add('revision')
     require(value.keys() == fields)
-    if value['version'] == 3:
+    if value['version'] >= 3:
         require(type(value['revision']) is int and 0 <= value['revision'] <= 2**53 - 1)
     if rate:
         require(type(value['fair_queue']) is bool)
@@ -46,6 +47,7 @@ def validate(value):
     ids = set()
     for client in clients:
         bounds = {**BOUNDS, **RATE_BOUNDS} if rate else BOUNDS
+        if value['version'] >= 4:bounds = {**bounds, **FILE_BOUNDS}
         require(type(client) is dict and client.keys() == {'id', *bounds})
         name = client['id']
         require(type(name) is str and re.fullmatch('[a-z][a-z0-9_-]{0,31}', name))
@@ -62,7 +64,10 @@ def digest(value):
     raw = ('q4t-client-policy-v1\n' + str(value['version']) + '\n' +
            str(value.get('revision', 0)) + '\n' + ('1\n' if value.get('fair_queue') else '0\n'))
     for client in value['clients']:
-        raw += client['id'] + ''.join(':' + str(client.get(k, 0)) for k in (*BOUNDS, *RATE_BOUNDS)) + '\n'
+        fields = (*BOUNDS, *RATE_BOUNDS,
+                  *(FILE_BOUNDS if value['version'] >= 4 else ()))
+        raw += client['id'] + ''.join(':' + str(client.get(k, 0))
+                                    for k in fields) + '\n'
     return hashlib.sha256(raw.encode()).hexdigest()
 
 
@@ -108,7 +113,7 @@ def binding(raw):
     value = parse(raw)
     result = dict(enabled=True, sha256=hashlib.sha256(raw).hexdigest(),
                   clients=len(value['clients']))
-    if value['version'] == 3:
+    if value['version'] >= 3:
         result.update(mutable=True, snapshot='startup', revision=value['revision'],
                       content_sha256=digest(value))
     return result

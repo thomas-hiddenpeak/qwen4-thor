@@ -947,7 +947,8 @@
       "next": "Add explicit file capacity policy with compatible migration, native streamed forwarding, actual SDK network and business validation; then complete Uploads/Batch and all tasks.",
       "binary_component_evidence": "docs/evidence/serve-binary-cpu-20261110/README.md",
       "http_stream_component_evidence": "docs/evidence/serve-http-body-stream-cpu-20261110/README.md",
-      "files_core_component_evidence": "docs/evidence/serve-files-core-cpu-20261110/README.md"
+      "files_core_component_evidence": "docs/evidence/serve-files-core-cpu-20261110/README.md",
+      "files_transport_component_evidence": "docs/evidence/serve-files-transport-cpu-20261110/README.md"
     },
     {
       "id": "A10",
@@ -1533,6 +1534,6 @@
       "release": null
     }
   ],
-  "next_task": "A07.8 remaining complete contract audit, A08 retention/context governance and all A/R/Q/G work",
-  "next": "Standard input_tokens accepted and delivered as 70504790/5a71516a revision28 STOPPED with old access-program rollback and unchanged business journals. Complete every remaining item; no stage ends the master task."
+  "next_task": "A09.3 Files discovery/schema, package v11 migration, actual engine short acceptance; all A09/A/R/Q/G remain",
+  "next": "File capacity and native TLS streaming accepted in 34 distinct CPU checks; two official SDK network chains each32 requests and17MiB bytes. Default A08 unchanged. Continue all required work."
 }

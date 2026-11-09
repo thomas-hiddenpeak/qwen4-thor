@@ -4,11 +4,10 @@
 #include <unordered_set>
 
 #include "q4t/server/binary_store.h"
+#include "q4t/server/file_limits.h"
 #include "q4t/server/multipart.h"
 
 namespace q4t::server {
-inline constexpr uint64_t kFileBytes = 512ULL << 20;
-inline constexpr uint64_t kFileWireBytes = kFileBytes + 65536;
 inline constexpr size_t kFileWorkingBytes = 8ULL << 20;
 inline constexpr size_t kFileListWorkingBytes = 32ULL << 20;
 

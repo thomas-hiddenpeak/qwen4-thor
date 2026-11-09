@@ -20,6 +20,7 @@
 
 #include "q4t/server/client_identity.h"
 #include "q4t/server/application_routes.h"
+#include "q4t/server/file_limits.h"
 #include "q4t/server/http_listener.h"
 #include "q4t/server/http_request.h"
 #include "q4t/server/model_catalog.h"
@@ -80,6 +81,7 @@ struct Config {
   int burst = 0;
   int idle_seconds = 0;
   size_t body_bytes = 0;
+  size_t file_body_bytes = 0;
   std::vector<Network> networks;
   std::vector<Client> clients;
 };
@@ -127,7 +129,7 @@ Config Load(const char* path) {
   for (unsigned char c : config.address)
     Require((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '-');
   const auto& policy = *root.Find("policy");
-  const auto version = Number(policy, "version", 2, 4);
+  const auto version = Number(policy, "version", 2, 5);
   Require(
       version == 2
           ? wire::HasKeys(
@@ -136,18 +138,27 @@ Config Load(const char* path) {
                          "allowed_client_cidrs", "per_client_inflight",
                          "global_inflight", "per_client_rps", "burst",
                          "body_bytes", "upstream_idle_seconds"})
-          : version == 3 ? wire::HasKeys(
+      : version == 3
+          ? wire::HasKeys(
                 policy, {"version", "listen_host", "listen_port", "server_name",
                          "upstream_port", "upstream_operations_port", "clients",
                          "allowed_client_cidrs", "per_client_inflight",
                          "global_inflight", "per_client_rps", "burst",
                          "body_bytes", "upstream_idle_seconds", "cors"})
-          : wire::HasKeys(
+      : version == 4
+          ? wire::HasKeys(
                 policy, {"version", "listen_host", "listen_port", "server_name",
                          "upstream_port", "upstream_operations_port", "clients",
                          "allowed_client_cidrs", "per_client_inflight",
                          "global_inflight", "per_client_rps", "burst",
-                         "body_bytes", "upstream_idle_seconds", "cors", "http"}));
+                         "body_bytes", "upstream_idle_seconds", "cors", "http"})
+          : wire::HasKeys(
+                policy,
+                {"version", "listen_host", "listen_port", "server_name",
+                 "upstream_port", "upstream_operations_port", "clients",
+                 "allowed_client_cidrs", "per_client_inflight",
+                 "global_inflight", "per_client_rps", "burst", "body_bytes",
+                 "upstream_idle_seconds", "cors", "http", "file_body_bytes"}));
   config.listen = Text(policy, "listen_host", 45);
   const auto listen = Address::Parse(config.listen);
   Require(listen.family != AF_UNSPEC);
@@ -159,7 +170,7 @@ Config Load(const char* path) {
     const auto* cors = policy.Find("cors");
     Require(cors && (cors->IsNull() || config.cors.Load(*cors)));
   }
-  if (version == 4) Require(config.http.Load(*policy.Find("http")));
+  if (version >= 4) Require(config.http.Load(*policy.Find("http")));
   if (root_version >= 2) {
     const auto* tls = root.Find("tls");
     Require(tls != nullptr);
@@ -205,6 +216,9 @@ Config Load(const char* path) {
   config.burst = Number(policy, "burst", 1, 128);
   config.body_bytes =
       Number(policy, "body_bytes", 1024, server::kChatBodyBytes);
+  config.file_body_bytes = version >= 5 ? Number(policy, "file_body_bytes",
+                                                 1024, server::kFileWireBytes)
+                                        : config.body_bytes;
   config.idle_seconds = Number(policy, "upstream_idle_seconds", 10, 3600);
   const auto* networks = policy.GetArray("allowed_client_cidrs");
   Require(networks && !networks->array.empty() && networks->array.size() <= 32);
@@ -352,10 +366,12 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
   if (server::ConversationMethodAllowed(method, path) ||
       server::PromptMethodAllowed(method, path) ||
       server::ResponsesMethodAllowed(method, path) ||
+      server::FileMethodAllowed(method, path) ||
       server::StoredChatMethodAllowed(method, path)) {
     *control = server::IsResponsesObservation(method, path) ||
                server::IsPromptObservation(method, path) ||
                server::IsResponseCancellation(method, path) ||
+               server::IsFileMetadata(method, path) ||
                server::IsStoredChatManagement(method, path);
     return true;
   }
@@ -384,13 +400,19 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
   std::string request_id = RequestId();
   if (request_id.empty()) return false;
   server::HttpRequestHeaders headers;
+  server::HttpBodyStream upload;
   server::HttpBodyLease body_lease(budget);
+  OwnedFd upstream;
   Lease lease{capacity};
   AccessIdentity identity;
   Decision binding;
   int status = 400;
   bool rejected = false;
   bool preflight = false;
+  bool streaming = false;
+  bool upstream_early = false;
+  const auto request_deadline =
+      Clock::now() + std::chrono::milliseconds(config.http.request_timeout_ms);
   const auto reject = [&](int code, const char* reason) {
     rejected = true;
     Error(client, code, reason, request_id, started);
@@ -400,6 +422,48 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
     return Authorize(config.address, config.parent.pid, identity.Id(),
                      lease.control,
                      lease.control ? config.operations : config.backend);
+  };
+  const auto head = [&](const std::string& framing) {
+    return method + " " + path +
+           " HTTP/1.1\r\nHost: 127.0.0.1\r\nConnection: keep-alive\r\n" +
+           framing + "\r\nX-Request-Id: " + request_id +
+           "\r\nX-Q4T-Client-Id: " + std::string(identity.Id()) +
+           "\r\nX-Q4T-Gateway-Token: " + binding.token + "\r\n" +
+           (headers.content_type.empty()
+                ? ""
+                : "Content-Type: " + headers.content_type + "\r\n") +
+           "\r\n";
+  };
+  const auto upload_binding = [&] {
+    const auto current_identity = access.Authenticate(headers.authorization);
+    if (!current_identity.Allowed() || current_identity.Id() != identity.Id()) {
+      upload.failure_status = 401;
+      upload.failure_code = "gateway_unauthorized";
+      return false;
+    }
+    const auto current = authorize();
+    if (!current.port || current != binding) {
+      upload.failure_code = current.port ? "service_recovering" : current.error;
+      return false;
+    }
+    return true;
+  };
+  const auto begin_upload = [&](Clock::time_point deadline) {
+    if (upstream.Get() >= 0) return true;
+    if (!upload_binding()) return false;
+    if (Clock::now() >= deadline) {
+      upload.failure_status = 408;
+      upload.failure_code = "gateway_request_timeout";
+      return false;
+    }
+    upstream = Connect(binding.port, client, deadline);
+    if (upstream.Get() < 0) return false;
+    if (!WriteUpload(upstream.Get(), head("Transfer-Encoding: chunked"),
+                     deadline, client)) {
+      upstream_early = true;
+      return false;
+    }
+    return true;
   };
   const auto admit = [&] {
     if (!headers.request_id.empty()) request_id = headers.request_id;
@@ -438,9 +502,10 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
       return reject(400, "invalid_client_header");
     if (!Route(method, path, &lease.control))
       return reject(404, "gateway_route_not_found");
-    if (headers.content_length > config.body_bytes)
+    streaming = method == "POST" && path == "/v1/files";
+    headers.body_limit = streaming ? config.file_body_bytes : config.body_bytes;
+    if (headers.content_length > headers.body_limit)
       return reject(413, "gateway_body_too_large");
-    headers.body_limit = config.body_bytes;
     if (method == "GET" && headers.content_length)
       return reject(400, "gateway_bad_request");
     lease.cancel = server::IsCancellationRequest(method, path);
@@ -449,19 +514,62 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
     if (!lease.acquired) return reject(429, "gateway_rate_limit");
     if (path == "/livez") return true;
     binding = authorize();
-    return binding.port != 0 || reject(503, binding.error.c_str());
+    if (!binding.port) return reject(503, binding.error.c_str());
+    if (streaming) {
+      upload.max_bytes = config.file_body_bytes;
+      upload.reservation_bytes = 65536;
+      upload.max_metadata_bytes = 16 * 1024 * 1024;
+      upload.failure_code = "service_binding_unavailable";
+      upload.consume = [&](std::string_view bytes, Clock::time_point deadline) {
+        if (!begin_upload(deadline)) return false;
+        char prefix[32];
+        const int size =
+            std::snprintf(prefix, sizeof(prefix), "%zx\r\n", bytes.size());
+        if (size <= 0 || static_cast<size_t>(size) >= sizeof(prefix))
+          return false;
+        if (!WriteUpload(upstream.Get(), std::string_view(prefix, size),
+                         deadline, client) ||
+            !WriteUpload(upstream.Get(), bytes, deadline, client) ||
+            !WriteUpload(upstream.Get(), "\r\n", deadline, client)) {
+          upstream_early = true;
+          return false;
+        }
+        return true;
+      };
+    }
+    return true;
   };
   const auto receive = [&](void* data, size_t size,
-                           Clock::time_point deadline) {
-    return client.Read(data, size, deadline);
+                           Clock::time_point deadline) -> ssize_t {
+    if (!streaming || upstream.Get() < 0)
+      return client.Read(data, size, deadline);
+    for (;;) {
+      if (Readable(upstream.Get())) {
+        upstream_early = true;
+        errno = ECANCELED;
+        return -1;
+      }
+      // Retry the same TLS read buffer after a bounded WANT_READ timeout so
+      // backend quota/storage errors also interrupt a paused client upload.
+      const auto count =
+          client.Read(data, size, std::min(deadline, Clock::now() + 100ms));
+      if (count >= 0 || errno != ETIMEDOUT || Clock::now() >= deadline)
+        return count;
+    }
   };
   const auto interim = [&](Clock::time_point deadline) {
     return client.Send("HTTP/1.1 100 Continue\r\n\r\n", deadline);
   };
   if (!server::ReadHttpRequest(client.Fd(), &method, &path, &body,
-                               config.http.request_timeout_ms,
-                               &body_lease, &status, &headers, admit,
-                               receive, state, interim)) {
+                               config.http.request_timeout_ms, &body_lease,
+                               &status, &headers, admit, receive, state,
+                               interim, &upload)) {
+    if (upstream_early && upstream.Get() >= 0) {
+      client.keep_alive = false;
+      Relay(upstream.Get(), client, std::min(config.idle_seconds, 2),
+            request_id, started, true);
+      return false;
+    }
     if (!rejected) {
       config.cors.Response(headers.origin, &client.extra_headers);
       if (headers.failure == server::HttpReceiveFailure::kBodyTooLarge)
@@ -485,30 +593,46 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
     return Reply(client, 200, "{\"live\":true,\"scope\":\"service_entrypoint\"}",
                  request_id, started) && client.keep_alive;
   }
+  if (streaming) {
+    if (!begin_upload(request_deadline) || !upload_binding()) {
+      if (upstream_early && upstream.Get() >= 0)
+        Relay(upstream.Get(), client, std::min(config.idle_seconds, 2),
+              request_id, started, true);
+      else
+        Error(client, upload.failure_status, upload.failure_code, request_id,
+              started);
+      return false;
+    }
+    if (Clock::now() >= request_deadline) {
+      Error(client, 408, "gateway_request_timeout", request_id, started);
+      return false;
+    }
+    // Completion is withheld until the entire client frame (including all
+    // trailers) validates and the original binding is still authorized.
+    if (!Write(upstream.Get(), "0\r\n\r\n", request_deadline, &client)) {
+      client.keep_alive = false;
+      Relay(upstream.Get(), client, std::min(config.idle_seconds, 2),
+            request_id, started);
+      return false;
+    }
+    return Relay(upstream.Get(), client, config.idle_seconds, request_id,
+                 started);
+  }
   const auto current = authorize();
   if (!current.port || current != binding) {
     Error(client, 503, current.port ? "service_recovering" : current.error,
           request_id, started);
     return false;
   }
-  auto upstream = Connect(binding.port, client);
+  upstream = Connect(binding.port, client);
   if (upstream.Get() < 0) {
     Error(client, 503, "service_binding_unavailable", request_id, started);
     return false;
   }
-  const std::string head =
-      method + " " + path +
-      " HTTP/1.1\r\nHost: 127.0.0.1\r\nConnection: keep-alive\r\n" +
-      "Content-Length: " + std::to_string(body.size()) + "\r\n" +
-      "X-Request-Id: " + request_id +
-      "\r\nX-Q4T-Client-Id: " + std::string(identity.Id()) +
-      "\r\nX-Q4T-Gateway-Token: " + binding.token + "\r\n" +
-      (headers.content_type.empty()
-           ? ""
-           : "Content-Type: " + headers.content_type + "\r\n") +
-      "\r\n";
   const auto deadline = Clock::now() + 15s;
-  if (!Write(upstream.Get(), head, deadline, &client) ||
+  if (!Write(upstream.Get(),
+             head("Content-Length: " + std::to_string(body.size())), deadline,
+             &client) ||
       !Write(upstream.Get(), body, deadline, &client)) {
     Error(client, 503, "service_binding_unavailable", request_id, started);
     return false;

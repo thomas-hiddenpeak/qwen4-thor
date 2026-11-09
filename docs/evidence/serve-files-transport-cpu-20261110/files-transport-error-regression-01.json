@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "env",
+    "Q4T_TEST_OUTPUT_DIR=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-files-20261110/files-transport-error-regression-01",
+    "python3",
+    "-B",
+    "tools/serve_recovery/test_native_ingress.py",
+    "--ingress",
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t-ingress",
+    "NativeTests.test_downstream_disconnect_closes_upstream_without_replay",
+    "NativeTests.test_malformed_response_is_rejected_without_replaying_post",
+    "NativeTests.test_backend_quota_response_remains_429",
+    "NativeTests.test_truncated_sse_is_not_continued_on_new_generation"
+  ],
+  "exit_code": 0,
+  "seconds": 6.171131452079862
+}

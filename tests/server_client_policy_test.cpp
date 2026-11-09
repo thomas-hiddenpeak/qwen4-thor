@@ -15,6 +15,7 @@
 #include "q4t/server/chat_plan.h"
 #include "q4t/server/client_policy_admin.h"
 #include "q4t/server/client_rate_state.h"
+#include "q4t/server/file_limits.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/request_control.h"
@@ -81,6 +82,27 @@ GatewayClientPolicy DynamicPolicy(uint32_t rpm, uint32_t tpm,
   GatewayClientPolicy policy;
   if (!ParseGatewayClientPolicy(DynamicRaw(rpm, tpm, revision), &policy))
     throw std::runtime_error("dynamic policy fixture");
+  return policy;
+}
+std::string FilePolicyRaw(uint32_t bytes = kFileWireBytes,
+                          uint64_t revision = 0) {
+  auto raw =
+      Replace(DynamicRaw(3, 100, revision), "\"version\":3", "\"version\":4");
+  const std::string field = "\"max_body_bytes\":1024";
+  size_t at = 0;
+  while ((at = raw.find(field, at)) != raw.npos) {
+    at += field.size();
+    const auto extra = ",\"max_file_body_bytes\":" + std::to_string(bytes);
+    raw.insert(at, extra);
+    at += extra.size();
+  }
+  return raw;
+}
+GatewayClientPolicy FilePolicy(uint32_t bytes = kFileWireBytes,
+                               uint64_t revision = 0) {
+  GatewayClientPolicy policy;
+  if (!ParseGatewayClientPolicy(FilePolicyRaw(bytes, revision), &policy))
+    throw std::runtime_error("file policy fixture");
   return policy;
 }
 struct Files {
@@ -152,6 +174,163 @@ std::string Wire(const std::string& headers,
          "Content-Length: 2\r\n\r\n{}";
 }
 }  // namespace
+
+Q4T_TEST(client_file_policy_explicit_schema_and_legacy_limits) {
+  GatewayClientPolicy parsed;
+  Q4T_CHECK(ParseGatewayClientPolicy(FilePolicyRaw(), &parsed));
+  Q4T_CHECK(parsed.version == 4 &&
+            parsed.clients[0].max_file_body_bytes == kFileWireBytes &&
+            parsed.clients[0].max_body_bytes == 1024);
+  const auto previous = parsed.sha256;
+  for (const auto& bad :
+       {Replace(FilePolicyRaw(), "\"version\":4", "\"version\":3"),
+        Replace(DynamicRaw(0, 0), "\"version\":3", "\"version\":4"),
+        FilePolicyRaw(1023), FilePolicyRaw(kFileWireBytes + 1),
+        Replace(FilePolicyRaw(2048), "\"max_file_body_bytes\":2048",
+                "\"max_file_body_bytes\":true")}) {
+    Q4T_CHECK(!ParseGatewayClientPolicy(bad, &parsed));
+    Q4T_CHECK(parsed.sha256 == previous);
+  }
+  for (const auto& raw : {Policy(), DynamicRaw(0, 0)}) {
+    Q4T_CHECK(ParseGatewayClientPolicy(raw, &parsed));
+    Q4T_CHECK(parsed.clients[0].max_file_body_bytes == 0);
+  }
+  auto invalid = DynamicPolicy(0, 0);
+  invalid.clients[0].max_file_body_bytes = 2048;
+  Q4T_CHECK(ClientPolicyDigest(invalid).empty());
+  return true;
+}
+
+Q4T_TEST(client_file_admission_separates_json_and_exact_upload_route) {
+  ClientAdmission current, old;
+  Q4T_CHECK(current.Configure(FilePolicy()));
+  Q4T_CHECK(old.Configure(DynamicPolicy(3, 100)));
+  for (auto* admission : {&current, &old}) {
+    for (const auto* path : {"/v1/files", "/v1/files-extra", "/v1/responses",
+                             "/v1/files/file_x/content"}) {
+      HttpRequestHeaders headers;
+      headers.client_id = "alpha";
+      headers.gateway_token = kSecret;
+      headers.content_length = 17ULL << 20;
+      ClientLease lease;
+      ClientIdentity identity;
+      int status = 0;
+      const bool allowed = AdmitClientRequest(
+          "POST", path, &headers, *admission, &lease, &identity, &status);
+      const bool upload =
+          admission == &current && std::string_view(path) == "/v1/files";
+      Q4T_CHECK(allowed == upload);
+      Q4T_CHECK(headers.body_limit == (upload ? kFileWireBytes : 1024));
+      if (!allowed) Q4T_CHECK(status == 413);
+    }
+  }
+  Q4T_CHECK(current.Usage(0).data_active == 0 &&
+            current.RateUsage(0).requests == 0);
+  return true;
+}
+
+Q4T_TEST(client_file_chunked_cannot_bypass_current_or_legacy_limit) {
+  for (const auto bytes : {2048, 2049}) {
+    for (const bool legacy : {false, true}) {
+      ClientAdmission admission;
+      Q4T_CHECK(
+          admission.Configure(legacy ? DynamicPolicy(0, 0) : FilePolicy(2048)));
+      int sockets[2];
+      Q4T_CHECK(socketpair(AF_UNIX, SOCK_STREAM, 0, sockets) == 0);
+      ScopeExit close([&] {
+        ::close(sockets[0]);
+        ::close(sockets[1]);
+      });
+      std::string wire = "POST /v1/files HTTP/1.1\r\nHost: local\r\n" +
+                         Headers() + "Transfer-Encoding: chunked\r\n\r\n" +
+                         (bytes == 2048 ? "800\r\n" : "801\r\n") +
+                         std::string(bytes, 'x') + "\r\n0\r\n\r\n";
+      Q4T_CHECK(send(sockets[0], wire.data(), wire.size(), MSG_NOSIGNAL) ==
+                static_cast<ssize_t>(wire.size()));
+      HttpRequestHeaders headers;
+      HttpBodyBudget budget(65536);
+      HttpBodyLease memory(budget);
+      HttpBodyStream stream;
+      ClientLease lease;
+      ClientIdentity identity;
+      std::string method, path, body;
+      int status = 0;
+      size_t consumed = 0;
+      const bool result = ReadHttpRequest(
+          sockets[1], &method, &path, &body, 1000, &memory, &status, &headers,
+          [&] {
+            if (!AdmitClientRequest(method, path, &headers, admission, &lease,
+                                    &identity, &status))
+              return false;
+            stream.max_bytes = kFileWireBytes;
+            stream.reservation_bytes = 65536;
+            stream.consume = [&](auto bytes, auto) {
+              consumed += bytes.size();
+              return true;
+            };
+            return true;
+          },
+          {}, nullptr, {}, &stream);
+      Q4T_CHECK(result == (!legacy && bytes == 2048));
+      Q4T_CHECK(body.empty() && consumed == (result ? 2048 : 0));
+      if (!result) Q4T_CHECK(status == 413);
+    }
+  }
+  return true;
+}
+
+Q4T_TEST(client_file_revision_upgrade_preserves_inflight_and_rate_recovery) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(3, 100)));
+  Q4T_CHECK(admission.EnableRateRecovery());
+  Q4T_CHECK(admission.RestoreRates(nullptr, std::string(64, '1')));
+  const auto original = admission.Authenticate("alpha", kSecret);
+  ClientRateLease request;
+  Q4T_CHECK(request.Reserve(admission, original, 3, 5) ==
+            ClientRateResult::kAllowed);
+  request.Start();
+  request.Completion(2);
+  Q4T_CHECK(admission.Publish(FilePolicy(4096, 1), 0, 8, 8));
+  Q4T_CHECK(
+      original.Limits()->max_file_body_bytes == 0 &&
+      admission.Authenticate("alpha", kSecret).Limits()->max_file_body_bytes ==
+          4096);
+  Q4T_CHECK(admission.RateUsage(0).requests == 1);
+  Q4T_CHECK(!admission.Publish(DynamicPolicy(3, 100, 2), 1, 8, 8));
+  request.Settle();
+  ClientRateState state;
+  Q4T_CHECK(admission.FreezeRates(&state));
+  Q4T_CHECK(state.clients[0].usage.tokens == 5);
+  ClientAdmission restarted;
+  Q4T_CHECK(restarted.Configure(FilePolicy(4096, 1)));
+  Q4T_CHECK(restarted.EnableRateRecovery());
+  Q4T_CHECK(restarted.RestoreRates(&state, std::string(64, '2')));
+  Q4T_CHECK(restarted.RateUsage(0).tokens == 5 &&
+            restarted.RateUsage(0).requests == 1);
+  return true;
+}
+
+Q4T_TEST(client_file_policy_discovery_remains_mutable_and_credential_free) {
+  const auto policy = FilePolicy();
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(policy));
+  ChatPlanConfig config;
+  config.client_policy_version = 4;
+  config.client_policy_sha256 = policy.sha256;
+  config.client_policy_content_sha256 = ClientPolicyDigest(policy);
+  config.client_count = policy.clients.size();
+  Json value;
+  const auto raw = EffectiveServeConfigJson({}, config, true, true, 8);
+  Q4T_CHECK(q4t::io::ParseJson(raw, &value));
+  Q4T_CHECK(value.Find("client_policy")->GetBool("mutable") &&
+            value.Find("client_governance")->GetInt("policy_version") == 4 &&
+            raw.find(kSecret) == raw.npos);
+  Q4T_CHECK(
+      q4t::io::ParseJson(DescribeClientPolicy(admission, 8, 8, true), &value));
+  Q4T_CHECK(value.GetBool("mutable") &&
+            value.GetString("content_sha256") == ClientPolicyDigest(policy));
+  return true;
+}
 
 Q4T_TEST(client_dynamic_revision_parser_is_strict_and_transactional) {
   GatewayClientPolicy parsed;

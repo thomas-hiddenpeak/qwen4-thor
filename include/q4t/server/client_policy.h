@@ -35,6 +35,8 @@ struct ClientLimits {
   uint32_t max_body_bytes = 0;
   uint32_t requests_per_minute = 0;
   uint32_t tokens_per_minute = 0;
+  // Zero only for v1-v3: retain their max_body_bytes limit on file uploads.
+  uint32_t max_file_body_bytes = 0;
 };
 
 struct GatewayClientPolicy {
@@ -125,7 +127,7 @@ struct ClientRateState {
   std::vector<ClientRateRecord> clients;
 };
 
-// Configure once. Only v3 permits explicit revisioned updates; client slots and
+// Configure once. v3+ permits explicit revisioned updates; client slots and
 // counter storage never move. Global limits still apply. HTTP headers cannot
 // allocate clients or change policy.
 class ClientAdmission {

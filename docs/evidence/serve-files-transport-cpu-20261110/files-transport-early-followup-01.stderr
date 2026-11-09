@@ -1,0 +1,6 @@
+test_early_core_error_interrupts_paused_tls_upload (tools.serve_responses.test_files_transport.FilesTransportTests.test_early_core_error_interrupts_paused_tls_upload) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.071s
+
+OK

@@ -1,0 +1,71 @@
+test_changed_generation_before_frame_completion_aborts_publication (tools.serve_responses.test_files_transport.FilesTransportTests.test_changed_generation_before_frame_completion_aborts_publication) ... ERROR
+test_early_core_error_interrupts_paused_tls_upload (tools.serve_responses.test_files_transport.FilesTransportTests.test_early_core_error_interrupts_paused_tls_upload) ... ERROR
+test_expect_continue_and_incremental_client_framing (tools.serve_responses.test_files_transport.FilesTransportTests.test_expect_continue_and_incremental_client_framing) ... ok
+test_legacy_gateway_cap_and_json_cap_remain_independent (tools.serve_responses.test_files_transport.FilesTransportTests.test_legacy_gateway_cap_and_json_cap_remain_independent) ... ok
+test_malformed_chunk_trailer_never_publishes_complete_multipart (tools.serve_responses.test_files_transport.FilesTransportTests.test_malformed_chunk_trailer_never_publishes_complete_multipart) ... ERROR
+test_official_sdk_native_tls_prefix_files_and_large_bytes (tools.serve_responses.test_files_transport.FilesTransportTests.test_official_sdk_native_tls_prefix_files_and_large_bytes) ... ERROR
+test_official_sdk_real_core_files_and_large_bytes (tools.serve_responses.test_files_transport.FilesTransportTests.test_official_sdk_real_core_files_and_large_bytes) ... ok
+
+======================================================================
+ERROR: test_changed_generation_before_frame_completion_aborts_publication (tools.serve_responses.test_files_transport.FilesTransportTests.test_changed_generation_before_frame_completion_aborts_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_files_transport.py", line 207, in test_changed_generation_before_frame_completion_aborts_publication
+    server = self.stack()
+             ^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_files_transport.py", line 163, in stack
+    self.server = Stack(self.output/self._testMethodName, self.certs, **settings)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_files_transport.py", line 104, in __init__
+    raise RuntimeError('Native Files ingress failed to start')
+RuntimeError: Native Files ingress failed to start
+
+======================================================================
+ERROR: test_early_core_error_interrupts_paused_tls_upload (tools.serve_responses.test_files_transport.FilesTransportTests.test_early_core_error_interrupts_paused_tls_upload)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_files_transport.py", line 196, in test_early_core_error_interrupts_paused_tls_upload
+    server = self.stack(core_limit=1024)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_files_transport.py", line 163, in stack
+    self.server = Stack(self.output/self._testMethodName, self.certs, **settings)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_files_transport.py", line 104, in __init__
+    raise RuntimeError('Native Files ingress failed to start')
+RuntimeError: Native Files ingress failed to start
+
+======================================================================
+ERROR: test_malformed_chunk_trailer_never_publishes_complete_multipart (tools.serve_responses.test_files_transport.FilesTransportTests.test_malformed_chunk_trailer_never_publishes_complete_multipart)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_files_transport.py", line 184, in test_malformed_chunk_trailer_never_publishes_complete_multipart
+    server = self.stack()
+             ^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_files_transport.py", line 163, in stack
+    self.server = Stack(self.output/self._testMethodName, self.certs, **settings)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_files_transport.py", line 104, in __init__
+    raise RuntimeError('Native Files ingress failed to start')
+RuntimeError: Native Files ingress failed to start
+
+======================================================================
+ERROR: test_official_sdk_native_tls_prefix_files_and_large_bytes (tools.serve_responses.test_files_transport.FilesTransportTests.test_official_sdk_native_tls_prefix_files_and_large_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_files_transport.py", line 181, in test_official_sdk_native_tls_prefix_files_and_large_bytes
+    def test_official_sdk_native_tls_prefix_files_and_large_bytes(self):self.sdk(True)
+                                                                        ^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_files_transport.py", line 168, in sdk
+    server = self.stack(native=native, tls=native, prefix='/q4t' if native else '')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_files_transport.py", line 163, in stack
+    self.server = Stack(self.output/self._testMethodName, self.certs, **settings)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_files_transport.py", line 104, in __init__
+    raise RuntimeError('Native Files ingress failed to start')
+RuntimeError: Native Files ingress failed to start
+
+----------------------------------------------------------------------
+Ran 7 tests in 4.539s
+
+FAILED (errors=4)
