@@ -1,0 +1,76 @@
+{
+  "action": "create",
+  "request": {
+    "model": "qwen3.8-flash-next",
+    "temperature": 0,
+    "max_output_tokens": 512,
+    "reasoning": {
+      "effort": "none"
+    },
+    "input": [
+      {
+        "role": "user",
+        "content": "Remember the verified result of 17 + 25."
+      },
+      {
+        "role": "assistant",
+        "content": "The verified result is 42. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. "
+      },
+      {
+        "role": "user",
+        "content": "Read the first 3 lines of docs/MODEL.md with read_project_record. Use the actual tool result to return the title and exact citation."
+      },
+      {
+        "type": "compaction_trigger"
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "name": "read_project_record",
+        "description": "Read bounded real project document lines and citation.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "const": "docs/MODEL.md"
+            },
+            "start_line": {
+              "type": "integer",
+              "const": 1
+            },
+            "line_count": {
+              "type": "integer",
+              "const": 3
+            }
+          },
+          "required": [
+            "path",
+            "start_line",
+            "line_count"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    ],
+    "tool_choice": "required",
+    "parallel_tool_calls": false,
+    "stream": true,
+    "stream_options": {
+      "include_obfuscation": false
+    },
+    "store": true,
+    "background": true
+  },
+  "id": null,
+  "query": null,
+  "base_url": "http://127.0.0.1:18987/v1",
+  "headers": {
+    "X-Q4T-Client-Id": "encryption-test",
+    "X-Q4T-Gateway-Token": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "timeout_ms": 120000
+}

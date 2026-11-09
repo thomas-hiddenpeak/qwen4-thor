@@ -38,7 +38,8 @@ Responses 的 `truncation:auto` 已接入实际模板、分词与容量规划，
 `reasoning.summary` 的 concise/detailed/auto 已由本机模型独立生成真实摘要，
 提供 summary item/SSE、持久回放与后台执行；共用剩余输出预算和取消，
 额外模型输入/输出计入 usage/TPM，外部请求只计一次 RPM。没有实际推理
-时不伪造摘要。加密状态、压缩等余项仍在该计划中继续实现。
+时不伪造摘要。认证加密状态已交付；实际压缩/compact 的业务已验，
+发布身份及后续 Prompt/缓存/策略任务继续以该计划和 STATUS 为准。
 
 [标准生成参数](docs/SERVE_SAMPLING_2026-11-08.md)已交付：temperature/
 top_p、seed、presence/frequency penalty、logit_bias、n=1..128及真实
@@ -167,6 +168,16 @@ Responses可通过`include:["reasoning.encrypted_content"]`取得本服务
 --object-store-dir ABS_DIR`管理密钥；轮换要求`--expected-revision N`，
 旧密钥仅通过`--retire KEY_ID`显式退役，无需重启模型。
 详见[加密状态与管理边界](docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md#a073-原生密钥运维接入)。
+
+上下文压缩可在 Responses 请求指定
+`context_management:[{"type":"compaction","compact_threshold":4096}]`，
+或用末尾 `{"type":"compaction_trigger"}` 显式触发。阈值按实际模板/
+媒体展开 token 计量，省略时取模型上下文的4/5；实际记忆模型步骤共享
+原请求预算、取消和配额，自动记忆最多使用输出上限的一半且不超过512。
+`POST /v1/responses/compact` 使用配置默认输出预算，返回保留用户消息
+及认证密文的下一输入窗口，可将 `output` 原样作为后续 `input`。
+原始持久历史不删除；截断、无法缩短或认证失败均返回具体错误，
+无可压缩项不编造模型用量。入口原生支持这两种模式，无需外部网关。
 
 部署方可自行前置nginx或其他HTTP网关，传递普通Bearer Authorization，
 无需提供q4t内部凭据或准入子请求。nginx前置的最小转发配置如下；

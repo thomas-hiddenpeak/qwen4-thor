@@ -1,0 +1,1320 @@
+{
+  "ok": true,
+  "result": {
+    "id": "resp_42a9820aa0f9c88f62a1a72409aca39d",
+    "object": "response",
+    "created_at": 1794237650,
+    "completed_at": 1794237655,
+    "status": "completed",
+    "error": null,
+    "incomplete_details": null,
+    "output": [
+      {
+        "id": "cmp_d414842dc19079fb502618d02ec6036a",
+        "type": "compaction",
+        "encrypted_content": "q4tc1:cmp_d414842dc19079fb502618d02ec6036a:q4t1:711ee3f2aa12fe1e2bff336ed6126fee:8b336c1b877f7bc7fe982014:b0c3bc403c8f1711d75823f46d57f7b5:16696de0d070ab783877e546e1abbb5eac2a7afb6b86488280049cd01e55ee5c1f9ef0222d066d9d9541910a738b19cd2bb1412fa11aaf6e11b1684c95ad50c1211a481b6604bff102773116e7cf8f35d0461392064e404a6bf78801d5acebc94980f6c51f966d88a00b4cb80cb3a694f20058edca9d023afe34805320f9134218730db6a4ab1583634a58a18e7447f6c18a80ce97370eca2958cfb0280dc1e1f620f633d9ef757a8a3340309760275b0a65757ec0e13f1be3cc2a06fde2d1fcd37253f383683f290e304335c14fe4090a8ea9cc602c14c3fe6c2e45a6a5deb421c2a1ca76e2dff6f54cfc4389ee370d8e289439d87685c8caa91ce00616d2bc264ab1cafa9ecc8ba67e99fa7ec5f74314d53064f692146569614403c31d2ae82d36117eb6824d59b6028245755fad7faedb71e528f3665f6728a10200aab65d0848a54b170c7b20382928c9853c8c002d33adaeb333ed26c82091fc"
+      },
+      {
+        "id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+        "type": "reasoning",
+        "content": [
+          {
+            "type": "reasoning_text",
+            "text": "The user is asking me to reply with a decimal number that was supposedly a \"verified result\" from earlier in the conversation. Looking at the conversation history, the only number that appeared was \"42\" in the previous assistant message. The user wants me to reply with just the decimal number.\n"
+          }
+        ],
+        "summary": [],
+        "status": "completed",
+        "encrypted_content": "q4t1:711ee3f2aa12fe1e2bff336ed6126fee:fdd11c16ab633c2a93d6c902:b87ed062055be5642a745e7b8fb84df4:05918a42507ba6adae8c1d5308b283863a587ef8b5f4d598689c9e60a3f52b986fbc4e11d67d0fb6a7c7c146c1f52bd07e16456c00823a2381a8f1dbfedd1240fc7aad2a5fd7d8e386bb0a2cc680ffa362f69a4388a526cf324374be52a80445d1afebdbd5d56f50b8adc2ca6dd1109faaf721e456cb3ef1549fad7a9727469891f055f904d65b920b8bbdc40b92e97556adff0c4741b8687edda29ee437e080ede00a1cbb7174bab9dcb35a59d5da910cc5363a8d615f919435e26db593cf14c5fd86239e40092d221febca85082a933e741a5886349f10a66c71b590aaeb7c6155797db4303c6c618adfabade903d9f3d49a7eaed9d7923358d124ab137d1dcb4ed5a52aabcf361c716e903dce384990dc105527eb4be12c8eaeca956bc87451b64229d9c282cc6a55c5f80470a49079708d6f0a86740d008be85266a7dbe995c25810f4e9639bda7f47d78081d2467487c2467b011902f8559096d1cb8a53188ef4da0bcc61569ab212cb8200917d50128f2c766b3af3c8f9a78966d36afdb4a9d1dbf8a2e0706459f1252db30a782a8bdf74dff694bdb264bdd5ded89b4df4f338573980fdc3d50acb5401e7447f8e8e3493f74c41aa9c9759a69ecf53041893a7a2b1a0b5e6160f491f00cc2b77134d3ae40a2d44c969cd43800daf5ec3d21f170b1e6ea995a921de74b8543791bb1989ba2217923d07baab9c6bb66eec2f7b3a9cc0bc1c5d12aca3542e434dd4cdc91fe44a4ac779f5f925f0ccdebd97b9effda8bddcb6b66876f7b5b7bdbbf991baaadecac11b11f05f1127b77a89b75bafbc88b472bbf9b2a4e6cc59013dbc6b4fddb6966327fecea33dc869a1a5a1ae8d9278d37f8518eef1d53a553e70716c164b93e3da2614214278cfdc588725ee88880b6b9fb1e5d3a7b52298a6cd04916bfe58ee3a0a175fd25e65f1f8286fd8ecb3a27b7171a0d6245c86a7a75a16f4b9c25feebf30f6c4b21314f5d168de92aedb3376cefe82de985cd71cbd033a529c59eded47a7b41fb9733ca8a15bde5389b9ef17eda801748c2982439a5fc850935116fec22041bfccfe8433548ae9ef9269f0f27fbe066adc2e3d10fc0dddc3fade518fb4ae35430a451fe73236b9a5c8a65d0813e19f5b220daee413248c20d9aea9557474f58bb99cc60dd8f3c0ac15e4acf870f70f01a4e949fdd3f62259de07db6c1dbc508f03a5a37884233c70ef2e0cb8765f3e6b53181e2cf6ac56005ade3241b32508f7536a7cd6725f832d87b1fa112363ee0f766b"
+      },
+      {
+        "id": "msg_47e2d6bb8010bae2096b7a3d1294e830",
+        "type": "message",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "\n\n42",
+            "annotations": [],
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed"
+      },
+      {
+        "id": "rs_61d29386f2885d328a7b0736ecb78be7",
+        "type": "reasoning",
+        "status": "completed",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "The reasoning identifies \"42\" as the only number present in the prior conversation history and concludes that this is the required decimal response."
+          }
+        ],
+        "encrypted_content": "q4t1:711ee3f2aa12fe1e2bff336ed6126fee:09a70a0a19916fed913da10f:b4f3437a3c3956fe5c09da2ef7f9c109:b2dee800e9ee1e53275dbe0ae1d23f3ff037b1965586f57fb4507b2ebe3bb118e1c6edb93f48ec2a8e1ec326db1e66a7840520b8b444f77db07700216eca4f94d1673ac4748b140359946ea16027d44159eb7f624780dd815e0443f393142a6f4b3b7089f0e417f62494bce4eec835f92b1c7aac656953e9cd1b046e11655c0665574c426657a5754bac4395f3a785bbfd46100bd29502a9a6ee47aa59a059cce5afa314866e534548a4029cd597d2b4bffcbd51acdf81624d8ba9f5c61e1750531c14f8ec61baf827a22dbd94a11d75d3e296a35f3fd271a1802e74b7cdc99d5595c77bcc2c847e07d3b247ba4479886485c48d4d70180ac2feb80548d4d2455a77fb2211bcc02ec63977426a23b2dff564a6d1391a43484ee5e9530cedbf2a3625ed651cc1e516d2aa95d9ee260da34cf65e86a75a5149cc08d6e5615c2f4eedfa020c3ecb3d6b9acb4a51ce55ba8d5b70682c7058429003d37f453750363fea3ee02cab740c32655b2b6989ee30ea4288be7bb08442345f9dbe40559f6bb9374d98b5727f6d90d88ff912491b6382c163d45bc5142c6117830d119f23d4a87e33d17a36417ab545b47d6fe45097fe708ca9f92c0486d9dd72d2891c0b9c1091f65eb7332af3fca10ebe1689aad72dc1c450734ae4fbb9ca88c70d73031e12f91a05efc9206fd86a3e567d85ac76f06e41a0220843252aa34e940d7b23ac12a7425c4453d395dcb31cc2c8c741b489cab20f677db96c0954bd275f7ca4dd7490509d025a98a5cccd109bc0f58601d8b7c95b2918c8297968aac1565ccd1601f4d3644065d5248eae5a5f258929a228bd6e513160db6e1a57dc8969ed2e20f4a2e73c67109aa16d54909268b235c16f8577f561c610f5ca46ff52d767094d5e4bf574e0d9712ed963ca5587f12ef76cb4921ffb0126adb72ded15a7110243bcbc2be542266d50e46cb15fc2cccbce4bda1078ed893d663abb551a2f1cdbf91d7732690c725442a4212f5d0bbd5f727f823e60a20de2131b6ea5a44f8d4036898f0037f502d0720972a60eafc3e97d26c1031dcb1c340048f7c51ed8c55bd84d8ef86f2857b5413e86c8192b54804c94184b9e2fc7a24b601e1096ee11bf0a203594c93761b277aa593ae7fab13c2360e83491d91727cd4b9d463404448ef9e3ffdf14cfd799e383a7c90e8f34c7bbce351c1bcac249a2605d7c9fea8b91e871363e9a78feb6e5d95e1ea78d566c638a646d8ad517bc95bfb905ccbbdf5846ebf72bde26810b56062c6bf1330a94d9947045bbcf6a12357c1c432faf8b5e538641f94726438def473e7a4983b9096bb1edb7ef0416a88ebf76e3eb29adcb6bdfd0fff38e73d0acc467d8bebda33c1e1430b67e8d5a9b66f4463254fcff785164543c415061a7deb90e326aeff7013c201c9c87822f50ebbfab8d10ad5366c6b3ceafa116af1be2e25293dbf0f0520b993d4cb24a2ec493b6dd1184ba1e1c7ea7980f4aeb17e09c32da616ec04bb1d45e3a5868772ec5810bcacfd3fc3872a5007b677aa01b60fedd074fea4991a5f4d19bb7782f193b92902e4097409ef1e2313d204c955c9d259128954435c1086f95624cefa6af7a14a7647484df7f37cbf64284d3be86b36601a837dd8f701254b990525edb95d729ded25344111d2d34b539cb416f35819aaba41ebab5ec2a09d464362793ff96ded644e154d10ff432b1f92477dd857f4b461300b5a5da7aee44fc8060e2301f4c9b59aa9934a23b9c136b4a860a9783f92d5e2e2d58dad4b05c2f19a2c5d80e170aa62e0b67c7a7a2948641c77aae034c021be2ea18465075c85b4c3260ad36f0a41fe553dc1e34da997f4f7abb9def58902924a7937c98ce6026bff2c72dfa44c37da5fd319abc17f2ab773706e54fa09070b4a7da37612f50a2d00c91103a1a9658c7c43169"
+      }
+    ],
+    "usage": {
+      "input_tokens": 1618,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens": 96,
+      "output_tokens_details": {
+        "reasoning_tokens": 92
+      },
+      "total_tokens": 1714
+    },
+    "model": "qwen3.8-flash-next",
+    "instructions": null,
+    "metadata": {},
+    "temperature": 0,
+    "top_p": 1,
+    "parallel_tool_calls": true,
+    "tools": [],
+    "tool_choice": "auto",
+    "text": {
+      "format": {
+        "type": "text"
+      },
+      "verbosity": "medium"
+    },
+    "reasoning": {
+      "effort": "low",
+      "context": "all_turns",
+      "mode": "standard",
+      "summary": "concise"
+    },
+    "store": true,
+    "background": false,
+    "max_output_tokens": 512,
+    "max_tool_calls": null,
+    "previous_response_id": null,
+    "service_tier": "default",
+    "truncation": "disabled",
+    "top_logprobs": 0,
+    "access_programs": null
+  },
+  "chunks": [
+    {
+      "response": {
+        "id": "resp_42a9820aa0f9c88f62a1a72409aca39d",
+        "object": "response",
+        "created_at": 1794237650,
+        "completed_at": null,
+        "status": "in_progress",
+        "error": null,
+        "incomplete_details": null,
+        "output": [],
+        "usage": null,
+        "model": "qwen3.8-flash-next",
+        "instructions": null,
+        "metadata": {},
+        "temperature": 0,
+        "top_p": 1,
+        "parallel_tool_calls": true,
+        "tools": [],
+        "tool_choice": "auto",
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "reasoning": {
+          "effort": "low",
+          "context": "all_turns",
+          "mode": "standard",
+          "summary": "concise"
+        },
+        "store": true,
+        "background": false,
+        "max_output_tokens": 512,
+        "max_tool_calls": null,
+        "previous_response_id": null,
+        "service_tier": "default",
+        "truncation": "disabled",
+        "top_logprobs": 0,
+        "access_programs": null
+      },
+      "type": "response.created",
+      "sequence_number": 0
+    },
+    {
+      "response": {
+        "id": "resp_42a9820aa0f9c88f62a1a72409aca39d",
+        "object": "response",
+        "created_at": 1794237650,
+        "completed_at": null,
+        "status": "in_progress",
+        "error": null,
+        "incomplete_details": null,
+        "output": [],
+        "usage": null,
+        "model": "qwen3.8-flash-next",
+        "instructions": null,
+        "metadata": {},
+        "temperature": 0,
+        "top_p": 1,
+        "parallel_tool_calls": true,
+        "tools": [],
+        "tool_choice": "auto",
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "reasoning": {
+          "effort": "low",
+          "context": "all_turns",
+          "mode": "standard",
+          "summary": "concise"
+        },
+        "store": true,
+        "background": false,
+        "max_output_tokens": 512,
+        "max_tool_calls": null,
+        "previous_response_id": null,
+        "service_tier": "default",
+        "truncation": "disabled",
+        "top_logprobs": 0,
+        "access_programs": null
+      },
+      "type": "response.in_progress",
+      "sequence_number": 1
+    },
+    {
+      "output_index": 0,
+      "item": {
+        "id": "cmp_d414842dc19079fb502618d02ec6036a",
+        "type": "compaction",
+        "encrypted_content": ""
+      },
+      "type": "response.output_item.added",
+      "sequence_number": 2
+    },
+    {
+      "item_id": "cmp_d414842dc19079fb502618d02ec6036a",
+      "output_index": 0,
+      "type": "response.compaction.compacting",
+      "sequence_number": 3
+    },
+    {
+      "output_index": 0,
+      "item": {
+        "id": "cmp_d414842dc19079fb502618d02ec6036a",
+        "type": "compaction",
+        "encrypted_content": "q4tc1:cmp_d414842dc19079fb502618d02ec6036a:q4t1:711ee3f2aa12fe1e2bff336ed6126fee:8b336c1b877f7bc7fe982014:b0c3bc403c8f1711d75823f46d57f7b5:16696de0d070ab783877e546e1abbb5eac2a7afb6b86488280049cd01e55ee5c1f9ef0222d066d9d9541910a738b19cd2bb1412fa11aaf6e11b1684c95ad50c1211a481b6604bff102773116e7cf8f35d0461392064e404a6bf78801d5acebc94980f6c51f966d88a00b4cb80cb3a694f20058edca9d023afe34805320f9134218730db6a4ab1583634a58a18e7447f6c18a80ce97370eca2958cfb0280dc1e1f620f633d9ef757a8a3340309760275b0a65757ec0e13f1be3cc2a06fde2d1fcd37253f383683f290e304335c14fe4090a8ea9cc602c14c3fe6c2e45a6a5deb421c2a1ca76e2dff6f54cfc4389ee370d8e289439d87685c8caa91ce00616d2bc264ab1cafa9ecc8ba67e99fa7ec5f74314d53064f692146569614403c31d2ae82d36117eb6824d59b6028245755fad7faedb71e528f3665f6728a10200aab65d0848a54b170c7b20382928c9853c8c002d33adaeb333ed26c82091fc"
+      },
+      "type": "response.output_item.done",
+      "sequence_number": 4
+    },
+    {
+      "output_index": 1,
+      "item": {
+        "id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+        "type": "reasoning",
+        "content": [],
+        "summary": [],
+        "status": "in_progress"
+      },
+      "type": "response.output_item.added",
+      "sequence_number": 5
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "part": {
+        "type": "reasoning_text",
+        "text": ""
+      },
+      "type": "response.content_part.added",
+      "sequence_number": 6
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": "The",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 7,
+      "obfuscation": "991030ef87bfb43a827cbeb7b40d7ba2b53c848af1e1691f7d2560ff72409b5be8e57d20066f325a4"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " user",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 8,
+      "obfuscation": "6f53e331d772a4d4c15e91223b8b9afb848eaeb3b12554995ce2d00d0a383c5cdfaa91da12557db"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " is",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 9,
+      "obfuscation": "fd998dfd54ebc47267f7653bdc9db61934cf0b88ac8aa891f860f816b46c868d43d25dcd8da40b32a7f679b346f600c74c10ab0d2d3d97a67506909dce9730c64687eed3b8f153771b8fd91eb29d9cab5399822a6f962a04ea4ae3b673065554d0f6cb576bb7eea0d"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " asking",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 10,
+      "obfuscation": "9c9aee566adbfb90c8acc7421bd73f8a20ac66e75fe98932a8606466d72f96a28473bfebb1b7"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " me",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 11,
+      "obfuscation": "ec1fb414a2c18cc9fec6b01b87655bdc3ff93e92e549ef6f171e0f36b3fc3643355e5fe40698e912c4ffc7013bb795f69f5d0a73630bb1437d04b7306744d3534d700ab2b865097071b05a5938224babab0f5987cf3cd3b300019342a75f19774484be5257a7428f"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " to",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 12,
+      "obfuscation": "e733efe9cbb8ba2a08107cbd392f5d8a8eb4d76c963fac154d3d98f85e749e7ddfb76fd0b342ec70f3a6380c26d9de9a7bfdf4cf0981583bb9579a966627a881d41c10fba04c5a389bb1026280f30db427fffa7d172e72bb83bc6ac372942904d3dd3df1502af11d"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " reply",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 13,
+      "obfuscation": "02769b910323cd5d3240538465b3cee3cb4437382010298aa6981d22e9d4536ebe88843cf7eb8148abcc7f368f0ab3aaf0e5d4d412ffaebe15c30a1b1ccfb88972fad0ec495c0df23b8428c7364070a6cdd0e896411dfc288c3cbd79538999c0b6fe034f8e739"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " with",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 14,
+      "obfuscation": "1e46c3687599ed5a3ed77cb5d9780064289a3c623d53c8f24e79627ececce3e7368779af4d81bd"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " a",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 15,
+      "obfuscation": "b30222c01c436ebdd2167ffff4a248debe8501668f4638bc26ec062b4dab84318cab1b978c1f449fc"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " decimal",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 16,
+      "obfuscation": "71a28fec85038865a2e7b4040997e9dcdc8524098c9e1d9d763ae6e81ab1d742cab7a45aeefd0e95a231e432145beef11d4346b60be5a6af1fc445491de2664499fa959364dc57a06d6072c7eea4eaf7494971b9d0c8cabcb6da63197b61ccfda3d3ed29b01"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " number",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 17,
+      "obfuscation": "cefc333388ede71590f2c9039e80c40dea457b93938446c55c4124dbf89530793cbf403bb14fa6c03045d6f013fd99cf91f26e3e619aa86a8ade841e8d63dc427a8021f1df60383d60347bc16d7ab4af3da0c6ce11a97c22a79469835ea193b03fb15385e65a"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " that",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 18,
+      "obfuscation": "df19f7efd9c3dd5e6c2c79e81e1fa5202b475893421ca66cce6b5307d329349a8937731dcb9526"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " was",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 19,
+      "obfuscation": "f1c925062e97a429370caf52965d81bc9c39fc8bd83be6c2d4aac3092230791d4769289d58c4fc1"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " supposedly",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 20,
+      "obfuscation": "51f3bb469ca2d481e2b0edd7c0c02ce9cdaeb2f6eace9086b84a754aadb301815f755395698517dd0ca426d88dbc14e0ab9237362a58a333f43a0fa570b65000e665e02329c6b86940c2096711d380e28d1e9497f8f77993d0a63a50db7160012e41d481"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " a",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 21,
+      "obfuscation": "772dcb20a5da766fe66b9183a1d0163d7452949ca3ca73ce7ca08ceb896e70c563f80ff33977e70dd4f9cb6fedcd0dae76a8b1e060fa5591159a9fa92f2da3fefc69cc1d51ca3dda1866220f29d9156d2adb159e36c25fa626fc48ee4390e64ff403fa0cedd98fdc5"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " \"",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 22,
+      "obfuscation": "4c6ec680ec04cf7b12b0a36422070c0328503e250ffe045128123d688681fc49526a5aeca4a7444a"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": "verified",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 23,
+      "obfuscation": "4cc384b17fb8dfcb61b842c70ad2e390956c7c8faf546f506a91eda4bc020d3292718a89427"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " result",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 24,
+      "obfuscation": "5d00267f7855bf3f042fddf9f5166fd568d39c6adf48aef8e20dfbc342789cf3902e6577420d"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": "\"",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 25,
+      "obfuscation": "f2f2e0dc41f739683490f612d530171850afc714a0089847d9d5dfac6edf66eb9e7790668d4db613c80caa81b963d065c5d4ea85bc612c5203ebc01451bfdda66a77ba944a40e975ad81e2c152e40cbc67b23fb10ba8a4263e8cf13430f0efcff455cce2997b9bd91"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " from",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 26,
+      "obfuscation": "5cf01ef417df5c243f039232a56abc856bba8982196f02f5dba2e77856beba4b50112484f0d26f"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " earlier",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 27,
+      "obfuscation": "d13ec7449e82272365081ecfffc0d2eb733bacf6952c9643e3b7f2466b751b481985199e123"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " in",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 28,
+      "obfuscation": "1894b51133ba2eff4a3518e545734c756a0f163ed892bbcdf178e6bdc0fa539b750a40a331964a94"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " the",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 29,
+      "obfuscation": "752310ccbd86be7b67eea34b4985cbc2c2d114311df35bd521c5b01e23df623388e9aed74b6317748f63c05a62cf2367b8e6e374e2cdc7d988945202d835297b135197d9d8bcf628243b060f8a99d077796eb15e07a83d7db135d74a08df7d45aba10ad80173d75"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " conversation",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 30,
+      "obfuscation": "91d01eafefd1d83ec4eb3c5c6cd0768ad3f061445a92caf2a86fefd2a51055a566c849"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": ".",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 31,
+      "obfuscation": "bae8816b252a3b1cdb83152e7c69c0a86af827865bb06a11eca904fab9ebf6793fdd836643bde0906938ea362ab7b5cbeb378ef8bc74ba91d097bd469c88ae8c4e2d62d3ec93bf863e72cf80e21c971225e64b311a801587e497b1a82de1c6fd73b66129676ec36e1c"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " Looking",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 32,
+      "obfuscation": "87d7069b46e93792ad024380a6c03ca20975e0743d6b4758ea52782c68b1535b9407c63131e"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " at",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 33,
+      "obfuscation": "c7d43dfee821e306f5b6248a5a7f2ba15e83421b335e0acd72d2037e95d2711c41e223584574e04fb93198f91cf2fa3b8b26ee43167dd1350f2f48b5e061fe97f389b2c8f22fea5feb02500aead463cf22fa83b184c750abf02f306f9c4b6e42eb681805e17a536e"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " the",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 34,
+      "obfuscation": "3e6dd3fbfc518a0ea4a9de1be5774028101575f2f6d97fdce5cd0fc61deafba04714d2b32a28cfa0cfd6af2e2248632d539bc8091f064dbef2e7e8b87e796e59228e0289acc9e35c11bbc9f4069e0317cf130fd3c3961c90ce4b6df8b3a42e1cc61be2c64ea9439"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " conversation",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 35,
+      "obfuscation": "33683efbbf9e9949b7d6bb236e538da580ded9e50e00810f769eca3d74586ec8cb0223"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " history",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 36,
+      "obfuscation": "e2021b5ffb4d8fa712c11dccd8789889e3369a6492abc904146b616039753a440598a1e4565333c06047fc37802fec605180aac335f045f94e5bfe1a61159d9d7badabe65b479508c1b7e7aa90a9f2ed15271a5212c84ddee9e557f4c6ae437fdd9d09a4fa5"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": ",",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 37,
+      "obfuscation": "ffce2ad9b12e9639a64fbf25a48cf883e44468fc1b528634f4163a62e2188781101a870de8b6b903bb5f27f460cd3c3779660774fb6257aa78d3af749de16be0de9dde0dedf143a88190abe7fbc64daf6fcd832bca4fe8fb92c21fb21aa1c6e113a8ba22fbad65e7f0"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " the",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 38,
+      "obfuscation": "ba16ba17f0eba2cb95e8518a7cae3f1f173f810fa4e0aa8445b72a98320d534ae98fcaa47917ca1a8e6d43823bb260cf52ec8d43ea4de8bfe501454be268ce20569516aff7082a168f5e0fc43b1d1a773946a4d7f839f951bc55e0feec0037b6f10282b635b6f3d"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " only",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 39,
+      "obfuscation": "37faf5368b94442407e2b3ed37f98c6f738da54d9dd208d136072ec2b5b1d4b7fec75173d8f413ef5ef6565b6268836b548e6719801e7ebf6e85d0f03aeaa36eff9d6af5c411aabd0f2b05cd7e7f193bdf3f41d200d784518ee6559e7b9a0090e25ea795c70450"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " number",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 40,
+      "obfuscation": "11473813b8dc0e330c38ff93ddfb9629cb5629a1aeb3d15df5a74b6a7f18c6b350a554bd060fb21594f5abe8d202a479ac31b068a4828cbee2d191cf59b3d1be1acfb94f7e9c7e9710a801c65e87537c7233d8df9d653258eaf0c6fc20df35c774f40dc4b45c"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " that",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 41,
+      "obfuscation": "cf872966df28f9a409f60f1302b8d01b260e4f24f75311a9c304a513a808fc68ba6e3a9c068b46"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " appeared",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 42,
+      "obfuscation": "9fef08a4d4d921223b99ec3d6d14378a1f4f50c8b7095d95e22df32ccc9065495c0620a971"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " was",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 43,
+      "obfuscation": "11140469aa329b2c4f419ded2007efa344d920021d5704e350fa4faa95183740c2b797a802687155441f7125b4c38f52893358fa701139983b780d9328f02d6099f4222f56e315ab44ea0fd62e517aee78b400bb88a353f59f362a5a69a3545ee7206ea7fcea88a"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " \"",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 44,
+      "obfuscation": "9a1c8f9459000b99b54d658124f257a4f7d6859531a847c92115d89acfe21717f586445d80b93c00"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": "4",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 45,
+      "obfuscation": "ae66c46008f7b5a1427c876507978198ae9489017e21138e81ac0b176b65b85ad8d592fa7dccf3d1d3"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": "2",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 46,
+      "obfuscation": "079649cf0032c277deede43c3e35207d29954c6af3f2d4ee6cfe70c45b2c74dd25f31f8e7fd1ded6b51a1b3136d7d2be51430ee1221a12faa6c6b45fc73cf8391cdecc6c1942af2922eb160c814d3359014a291a4d315c4bc2a1394c9b0814b8c0f525d3005685d993"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": "\"",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 47,
+      "obfuscation": "31c32a89fe1a5eefee6d3f271c3d50ff6ca937ccc0a57a98c982b4ef78b0beacec1bf89284ae9c4d2"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " in",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 48,
+      "obfuscation": "e996b71e617ce9b243328f972b8c4c428595c0cf1840664371746ee9e62e00430d85b3e33ad361b9410679bac781a0208555f87e4b6d57d3b5b4ec5d66d9da32c141ea9d910d5b4690e2e1e4bbc67f685e3ad5cece547778951cec4797fb4a334ec4dcb1dc003047"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " the",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 49,
+      "obfuscation": "d1482e4f4927fefd44352692861d11dc162f5489ba0d25242c198e211b53de7a9bdce723cf00cc6"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " previous",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 50,
+      "obfuscation": "61b62b7db29916f6931840abf4983fe52b6da36062eed3fbe6ed1154bda89d10138f1e0e5a"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " assistant",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 51,
+      "obfuscation": "51278493ef9551e87320f451d12abd1fb61b69c9a1e3e3086890027fa0183f73227d12ad96b8b2e624c29f761985f9d134de537091e876693cd52543937af14698606027ac8657e8521de9ac7a37c64fbfed3cd67c7794544a73a8b62ccb0cd2b89a88ab0"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " message",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 52,
+      "obfuscation": "6398af6a7e8aec428fb5640ce1b0215926449b55e58bf527ea8eb5c3dc48666a66e6d2040ed"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": ".",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 53,
+      "obfuscation": "fc17d9d7b094e97733e41afcd5631d8f1dcea3f5cdb6c166cffc7e9a4965d9d0835234829b351a1150fb4a205092b845feee7096d9db83797967f7840dcd271b36f7816a216294981adc7b6979ea24dfb60c0a3842f4bae69536fca715df678557c5e660402bb3aa81"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " The",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 54,
+      "obfuscation": "00601e3758e5079e0bb9018c5651ce16dcaebc2deb0c8e837c2c9f452c594efdbec9214630c934f"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " user",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 55,
+      "obfuscation": "754b7f3222e9b63cab160b425d3ddba3ab48cc556de7bd12cd8b1d5de1a93ceaa9c750a737dbbd"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " wants",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 56,
+      "obfuscation": "1fe0191a6ee170be83676a9f73301cec3bb03629106897f8807671819800cf926815b808b9a84"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " me",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 57,
+      "obfuscation": "904aed1ce56cea4bf9a2ff35589f7134786ec1fdf942d17230f0e3db69dabf34cc90e6cf4b5e48bad93004b9534d56c78000f6b20953e7e24655a363a8a80804c37c6edf830a65870f4fe915e622c873a0bc7fd6a55cf7de1d3361a5d25a8b0d13d4308d4bbdef9c"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " to",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 58,
+      "obfuscation": "02e64ddcc4501fc1e28e3f0847f3361bacbaecfe25d4f1ab95be3e5c0368c8faf511df219bcdea650e7986271121ae6a523e0405770bb4e07306903eac1e74a6b39baf068d90414b2058e575e512fb5c669571e8bdb3e0695089dd1b8b20ccfc8cb71a5e7f59b583"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " reply",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 59,
+      "obfuscation": "88ccaa5cd07f3003ea59c760123c60809309da60cd26470acf928d9cc200dc1a1ea6617d077a069f831c16b46f33c868fa18504fa6b37f3341e3d3c422976cabd5f2f6c0c17dbe26593aca96d6e58363c58115f836bf64f115ea15cb4f8d00f3dd1afd8c92407"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " with",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 60,
+      "obfuscation": "bc961862d4f8ecb9006e641bd34a2c41caf7a38afa8e5f64e83340fea0e46cdb27b7234035372f"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " just",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 61,
+      "obfuscation": "3990402e1bbd05f7ea58a369a4b4a0c68bae0c655e48a43445914a0d72c15b0e4d332c990c8470d69f9969a3beb0403df884fbf7c15f2d9316400eb5c3a1ceaa7907f33f502acc593841d7e7afbe1621d0b3fa55ab2ba2387a51f98af08dd5413e4d49f10ebdbe"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " the",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 62,
+      "obfuscation": "500ae0edbc47b4e919466f053e2570610f424dd06a78afa5ddc29e50d8bffe070bea73d8e30572b420c4e68061ee7f4417c8734d1278d3ee2fe2e877e8aa0548383d1781b0cea9ff38c80064d0953206ab8073c19c1280fba399e0552105e8af6b01114e106a631"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " decimal",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 63,
+      "obfuscation": "a9b7bf2e88aa51d14f8d29ce0e4da2d884afd6c75326867f8c303afe0b6ef4f51bb3a585da152b9f2614902009aa77f802cf23baae36aef19829227045575984ad456672d47829cb4c1466a17259e9c672403abe80a660572300afa4b23d92f83264f869f18"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": " number",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 64,
+      "obfuscation": "334bb627a7e2850505ceb0a125e2ce64a448c53511a2fe9a444e727939e44e0fd55b60d8371f"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": ".",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 65,
+      "obfuscation": "f5d7ed2f8259521dbba86061801b4956c4a2f110679224594b5b32d0380a39d6ab1390d938caa35e94"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "delta": "\n",
+      "type": "response.reasoning_text.delta",
+      "sequence_number": 66,
+      "obfuscation": "a05389712e61c390471226a3bd76b7a9ed9e46c3d954bec90b6d27e3a8d8896ca5db9758b55e400ef"
+    },
+    {
+      "output_index": 2,
+      "item": {
+        "id": "msg_47e2d6bb8010bae2096b7a3d1294e830",
+        "type": "message",
+        "content": [],
+        "role": "assistant",
+        "status": "in_progress"
+      },
+      "type": "response.output_item.added",
+      "sequence_number": 67
+    },
+    {
+      "item_id": "msg_47e2d6bb8010bae2096b7a3d1294e830",
+      "output_index": 2,
+      "content_index": 0,
+      "part": {
+        "type": "output_text",
+        "text": "",
+        "annotations": [],
+        "logprobs": []
+      },
+      "type": "response.content_part.added",
+      "sequence_number": 68
+    },
+    {
+      "item_id": "msg_47e2d6bb8010bae2096b7a3d1294e830",
+      "output_index": 2,
+      "content_index": 0,
+      "delta": "\n\n",
+      "logprobs": [],
+      "type": "response.output_text.delta",
+      "sequence_number": 69,
+      "obfuscation": "333de65db360f11cde2cd74e5d26a1a605bc424aa3ad2240374b16c80de72478e2d"
+    },
+    {
+      "item_id": "msg_47e2d6bb8010bae2096b7a3d1294e830",
+      "output_index": 2,
+      "content_index": 0,
+      "delta": "4",
+      "logprobs": [],
+      "type": "response.output_text.delta",
+      "sequence_number": 70,
+      "obfuscation": "09a8cec61fd30291f3f0dc6bd86729cdb735aea5395304b961982f3019dd99bc4c1a2b642e196a49f455d4c5224ec63e7e761cfd03b5ceb0a3bbf4b9ad0c6137098db23897acf44a2f39be1dcd9074bbc88850db8945628598b563f2a3157257ad6bb4"
+    },
+    {
+      "item_id": "msg_47e2d6bb8010bae2096b7a3d1294e830",
+      "output_index": 2,
+      "content_index": 0,
+      "delta": "2",
+      "logprobs": [],
+      "type": "response.output_text.delta",
+      "sequence_number": 71,
+      "obfuscation": "8e67a17acf0d5914c3c99ef635e3012b9039f38398607b78c6317d39897bd35c4e98c56fa7450003a888591012ae861777bce33cf5ae118d85b2e56c6e9ca029a0fb7451b4696df2002fb0dc67ed1174e22b4eac03009d275e9413dacf6f260756d098"
+    },
+    {
+      "output_index": 3,
+      "item": {
+        "id": "rs_61d29386f2885d328a7b0736ecb78be7",
+        "type": "reasoning",
+        "status": "in_progress",
+        "summary": []
+      },
+      "type": "response.output_item.added",
+      "sequence_number": 72
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "part": {
+        "type": "summary_text",
+        "text": ""
+      },
+      "type": "response.reasoning_summary_part.added",
+      "sequence_number": 73
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": "The",
+      "type": "response.reasoning_summary_text.delta",
+      "sequence_number": 74,
+      "obfuscation": "13c5f29d7e4fd536647e8e70e929679562fe0f2686fc75e1d25377047b53689f25459cd74de2316ee3cd009e6934faf5dc9207bab3d14a050e2acaca3508dda4838821bdb647964deb00215bb06f9af87b69bacda20e6cfdceb3face53436fb45b6396dc"
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": " reasoning",
+      "type": "response.reasoning_summary_text.delta",
+      "sequence_number": 75,
+      "obfuscation": "9332575acd3feda79390adb393a91707d1800333c42c457f68198616d16bd4ed148b4b4072d6d0cc76805c447653e7f607af385ece14a5a7cb6a864e0749032080f88270f107b926baf242cf4f6749c7dfcf80ca193f556558cf4121a2f47ad2c"
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": " identifies",
+      "type": "response.reasoning_summary_text.delta",
+      "sequence_number": 76,
+      "obfuscation": "676d8842251fea8ffe7f8f34a0ea8f238143716980bedf8de82988ba8d96c7d2"
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": " \"",
+      "type": "response.reasoning_summary_text.delta",
+      "sequence_number": 77,
+      "obfuscation": "281bf67872770134e0f550b4fd7285faeba19e691c25bc5d37541f6bb4c75d918ace14a5c543761d868f97e55c5b35b91218e9090092614b734450664a54867f2a2e92d294fe5f7a1cf1faae88404f0785e4894dc621925642a7d19dadf8538de9645a9f"
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": "4",
+      "type": "response.reasoning_summary_text.delta",
+      "sequence_number": 78,
+      "obfuscation": "981e960a87d6a54a08a87665a7329c065e458f933c58761b89d073b820cca4b569bc00c53e"
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": "2",
+      "type": "response.reasoning_summary_text.delta",
+      "sequence_number": 79,
+      "obfuscation": "88a22c9c3b309101cc55c962d09c94585d5ab7d6ef3103dd7efd5fef2096ad1f0ce6226c30"
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": "\"",
+      "type": "response.reasoning_summary_text.delta",
+      "sequence_number": 80,
+      "obfuscation": "ab1a99cd19560e0dab0f2e508e061b63b984b1ca2d1b78726abac545d16e108813a6513648b632638578fcbb069b3a4d4ea23dde46054f6f9d836519346d973c46a5f287bdfefa86b58e4d8f761adf4116a72b1a123be0b4d45752de6e262644a788080ad"
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": " as",
+      "type": "response.reasoning_summary_text.delta",
+      "sequence_number": 81,
+      "obfuscation": "6c22b26c8d46af3cdca1de9d9cf88f91c8ecb21f1c94ddefe4f8cb7deae4962b2da5d31fe62384c4830567fed40c077d6606b9de9ce37ac27a7254e59714eb4fb7f3da889fed2e7b9fbba54421a6a9e8f2ff00e255198b9035a0db73b57f491a92e9d65f"
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": " the",
+      "type": "response.reasoning_summary_text.delta",
+      "sequence_number": 82,
+      "obfuscation": "58eb6c2bbe10197e3d0fbdb96fad53e4b3424ac8238f270c56cb4b2f1f333bf62affb40"
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": " only",
+      "type": "response.reasoning_summary_text.delta",
+      "sequence_number": 83,
+      "obfuscation": "c097b6a1175d6ae727fd178b8cd719e68ce765173a4b52da44651f4c8c20631878f5de"
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": " number",
+      "type": "response.reasoning_summary_text.delta",
+      "sequence_number": 84,
+      "obfuscation": "57c7c3aee90c3a756a7ec796a9223fd7bce2e2170fe751ee1ff2c793cdefb948e383"
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": " present",
+      "type": "response.reasoning_summary_text.delta",
+      "sequence_number": 85,
+      "obfuscation": "e509bbd622f84a463c296bd72d1249855f0dd4f60e57e56e8a18bc9d9685b7c6eea"
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": " in",
+      "type": "response.reasoning_summary_text.delta",
+      "sequence_number": 86,
+      "obfuscation": "0b64473b92e529766e3e3e22bd191fb6bb5da49215816f0259520130c338b1a3c2790a68d0070b9cf3f0d982db7bc68d62391604be355b85d4083f76c9509c0bb84b93ebe48c44e9ab97bfda9a9d661ec3d51cad071a0cbf53143f7670bf9eed2fb89836"
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": " the",
+      "type": "response.reasoning_summary_text.delta",
+      "sequence_number": 87,
+      "obfuscation": "666c7bbc84f864d35114f72541ffd6967429b03b05589831fa1181b9f64ecdf0dd2559653d64d718794a255d7df894787f858d0f5f642b276abdb0b82a18eaa6ec7264c09d872b3fdf9a660f373860d048c7dec11276f04d5472afa425b69eea6cadb96"
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": " prior",
+      "type": "response.reasoning_summary_text.delta",
+      "sequence_number": 88,
+      "obfuscation": "35706d4f12b8a5a8ff71df5868ea097cc1406be2cb6e6676ced3e9c555570abf461df446a4a5921e60fbc75fbf18838135e94db7951483a8e0296a88f110fd30f3f75a00abf9415271445e817a4c21525efd06a3764be125585e1ec19e4794f47c695"
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": " conversation",
+      "type": "response.reasoning_summary_text.delta",
+      "sequence_number": 89,
+      "obfuscation": "19a2367ce174ce620f362c2df6384b3077cf491936213d32ddb4efc8328f98"
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": " history",
+      "type": "response.reasoning_summary_text.delta",
+      "sequence_number": 90,
+      "obfuscation": "c34a59b13d17533049db86a7ec148f24c5d8d492ee4b8490fa6ade835be7ace0cbf8df1b6b543b05d85f5722d10b541af6560c55949133480add9874f108afa962cfaf2d12798ebb607c136ec06787e6d673d2344451027e53c96d9f7002a5adef9"
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": " and",
+      "type": "response.reasoning_summary_text.delta",
+      "sequence_number": 91,
+      "obfuscation": "92a099d30aa7310dba211101523f02bacdc6486c86f044dce9a8470b453a73bcc5bcea7"
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": " concludes",
+      "type": "response.reasoning_summary_text.delta",
+      "sequence_number": 92,
+      "obfuscation": "ccf82382183fd659354e188b24e4610ef145a9fa3acb66420629be581d84636040e4d7f449009e639d9596bcf1b28868fd1efa88028b01ff2c70c5ba31d7d85708350ec39cad29ee97a6d86305a47340e7d04dec8b883ee9d3f3a3b11c1e25435"
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": " that",
+      "type": "response.reasoning_summary_text.delta",
+      "sequence_number": 93,
+      "obfuscation": "c04795a5d96b1fcc9044b76e3b3979043dbd43e78ebdd454ec1c486fb11c8c9722fe04454625582cd3de0a997911b036f0945f3dff17ea4cdf77c17bcfb0e784e285d29abce1eda35088c28d33fa42756670ef657dfc3c3777ae4093693352981913f8"
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": " this",
+      "type": "response.reasoning_summary_text.delta",
+      "sequence_number": 94,
+      "obfuscation": "2644b718ff53d9395cd164d1cc3bb1bd2e8c10c07d5ebd1ccb7dae590f5f11a39f3cf28e6a69ec75b49fee8ee2b1942ab0d87e61e47a50ad0cde2dbfdecf52ad8b64beafdbca370dbc451bd067e14977e067a1a1e1a8344921f3ea5a99b2655d2530e1"
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": " is",
+      "type": "response.reasoning_summary_text.delta",
+      "sequence_number": 95,
+      "obfuscation": "277912537ffc15907339ac54eb71c22491b6ff0bd2927d329cb9ff4dc94f013a305c64706939fd92cef1977764c50d3bef826a4b88572a58ade999cdaec61a7f78f19815f02a4cc1db9ef9d30ebb43de2247024d9af55abbfc3bd49819d2f291327c3e75"
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": " the",
+      "type": "response.reasoning_summary_text.delta",
+      "sequence_number": 96,
+      "obfuscation": "5b403005f22aa2f0c8223faee86e581f80703ee549c5d9a343a4de37f90cf0c7560285017d434619e27f74439e907fcc706751b4d87622da8f0e5ffc836a417955c16a4bf7849d17e5fb79059f7302767966b48483bc8fd0839075f6e05937ba6dfa80a"
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": " required",
+      "type": "response.reasoning_summary_text.delta",
+      "sequence_number": 97,
+      "obfuscation": "55b044fbd3048759e8aea93f4298d4687040fe70ddb954028dc6609793384aa106ee027ab9e93e5444a41dd4590d143140d0d42746f9c7a340f85c84fde974d11bf6792a1f3745bdc490b43acc016d17902ef16928827da845c9fca060c982c825"
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": " decimal",
+      "type": "response.reasoning_summary_text.delta",
+      "sequence_number": 98,
+      "obfuscation": "173c7617a4ca206cf24e4a8c4995980db1536fc691e7daff40c9ad3ee6926020e79"
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": " response",
+      "type": "response.reasoning_summary_text.delta",
+      "sequence_number": 99,
+      "obfuscation": "b10c3a08a787dea3e26e198607935c6e317d4f24867a95c868d85d452bc8d449d7"
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "delta": ".",
+      "type": "response.reasoning_summary_text.delta",
+      "sequence_number": 100,
+      "obfuscation": "8de652b1816eedb21edebfa2672b411f289d88f3e8d6a841ecf13412f631b74e1d45df9af"
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "text": "The user is asking me to reply with a decimal number that was supposedly a \"verified result\" from earlier in the conversation. Looking at the conversation history, the only number that appeared was \"42\" in the previous assistant message. The user wants me to reply with just the decimal number.\n",
+      "type": "response.reasoning_text.done",
+      "sequence_number": 101
+    },
+    {
+      "item_id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+      "output_index": 1,
+      "content_index": 0,
+      "part": {
+        "type": "reasoning_text",
+        "text": "The user is asking me to reply with a decimal number that was supposedly a \"verified result\" from earlier in the conversation. Looking at the conversation history, the only number that appeared was \"42\" in the previous assistant message. The user wants me to reply with just the decimal number.\n"
+      },
+      "type": "response.content_part.done",
+      "sequence_number": 102
+    },
+    {
+      "output_index": 1,
+      "item": {
+        "id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+        "type": "reasoning",
+        "content": [
+          {
+            "type": "reasoning_text",
+            "text": "The user is asking me to reply with a decimal number that was supposedly a \"verified result\" from earlier in the conversation. Looking at the conversation history, the only number that appeared was \"42\" in the previous assistant message. The user wants me to reply with just the decimal number.\n"
+          }
+        ],
+        "summary": [],
+        "status": "completed",
+        "encrypted_content": "q4t1:711ee3f2aa12fe1e2bff336ed6126fee:fdd11c16ab633c2a93d6c902:b87ed062055be5642a745e7b8fb84df4:05918a42507ba6adae8c1d5308b283863a587ef8b5f4d598689c9e60a3f52b986fbc4e11d67d0fb6a7c7c146c1f52bd07e16456c00823a2381a8f1dbfedd1240fc7aad2a5fd7d8e386bb0a2cc680ffa362f69a4388a526cf324374be52a80445d1afebdbd5d56f50b8adc2ca6dd1109faaf721e456cb3ef1549fad7a9727469891f055f904d65b920b8bbdc40b92e97556adff0c4741b8687edda29ee437e080ede00a1cbb7174bab9dcb35a59d5da910cc5363a8d615f919435e26db593cf14c5fd86239e40092d221febca85082a933e741a5886349f10a66c71b590aaeb7c6155797db4303c6c618adfabade903d9f3d49a7eaed9d7923358d124ab137d1dcb4ed5a52aabcf361c716e903dce384990dc105527eb4be12c8eaeca956bc87451b64229d9c282cc6a55c5f80470a49079708d6f0a86740d008be85266a7dbe995c25810f4e9639bda7f47d78081d2467487c2467b011902f8559096d1cb8a53188ef4da0bcc61569ab212cb8200917d50128f2c766b3af3c8f9a78966d36afdb4a9d1dbf8a2e0706459f1252db30a782a8bdf74dff694bdb264bdd5ded89b4df4f338573980fdc3d50acb5401e7447f8e8e3493f74c41aa9c9759a69ecf53041893a7a2b1a0b5e6160f491f00cc2b77134d3ae40a2d44c969cd43800daf5ec3d21f170b1e6ea995a921de74b8543791bb1989ba2217923d07baab9c6bb66eec2f7b3a9cc0bc1c5d12aca3542e434dd4cdc91fe44a4ac779f5f925f0ccdebd97b9effda8bddcb6b66876f7b5b7bdbbf991baaadecac11b11f05f1127b77a89b75bafbc88b472bbf9b2a4e6cc59013dbc6b4fddb6966327fecea33dc869a1a5a1ae8d9278d37f8518eef1d53a553e70716c164b93e3da2614214278cfdc588725ee88880b6b9fb1e5d3a7b52298a6cd04916bfe58ee3a0a175fd25e65f1f8286fd8ecb3a27b7171a0d6245c86a7a75a16f4b9c25feebf30f6c4b21314f5d168de92aedb3376cefe82de985cd71cbd033a529c59eded47a7b41fb9733ca8a15bde5389b9ef17eda801748c2982439a5fc850935116fec22041bfccfe8433548ae9ef9269f0f27fbe066adc2e3d10fc0dddc3fade518fb4ae35430a451fe73236b9a5c8a65d0813e19f5b220daee413248c20d9aea9557474f58bb99cc60dd8f3c0ac15e4acf870f70f01a4e949fdd3f62259de07db6c1dbc508f03a5a37884233c70ef2e0cb8765f3e6b53181e2cf6ac56005ade3241b32508f7536a7cd6725f832d87b1fa112363ee0f766b"
+      },
+      "type": "response.output_item.done",
+      "sequence_number": 103
+    },
+    {
+      "item_id": "msg_47e2d6bb8010bae2096b7a3d1294e830",
+      "output_index": 2,
+      "content_index": 0,
+      "text": "\n\n42",
+      "logprobs": [],
+      "type": "response.output_text.done",
+      "sequence_number": 104
+    },
+    {
+      "item_id": "msg_47e2d6bb8010bae2096b7a3d1294e830",
+      "output_index": 2,
+      "content_index": 0,
+      "part": {
+        "type": "output_text",
+        "text": "\n\n42",
+        "annotations": [],
+        "logprobs": []
+      },
+      "type": "response.content_part.done",
+      "sequence_number": 105
+    },
+    {
+      "output_index": 2,
+      "item": {
+        "id": "msg_47e2d6bb8010bae2096b7a3d1294e830",
+        "type": "message",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "\n\n42",
+            "annotations": [],
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed"
+      },
+      "type": "response.output_item.done",
+      "sequence_number": 106
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "text": "The reasoning identifies \"42\" as the only number present in the prior conversation history and concludes that this is the required decimal response.",
+      "type": "response.reasoning_summary_text.done",
+      "sequence_number": 107
+    },
+    {
+      "item_id": "rs_61d29386f2885d328a7b0736ecb78be7",
+      "output_index": 3,
+      "summary_index": 0,
+      "part": {
+        "type": "summary_text",
+        "text": "The reasoning identifies \"42\" as the only number present in the prior conversation history and concludes that this is the required decimal response."
+      },
+      "type": "response.reasoning_summary_part.done",
+      "sequence_number": 108
+    },
+    {
+      "output_index": 3,
+      "item": {
+        "id": "rs_61d29386f2885d328a7b0736ecb78be7",
+        "type": "reasoning",
+        "status": "completed",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "The reasoning identifies \"42\" as the only number present in the prior conversation history and concludes that this is the required decimal response."
+          }
+        ],
+        "encrypted_content": "q4t1:711ee3f2aa12fe1e2bff336ed6126fee:09a70a0a19916fed913da10f:b4f3437a3c3956fe5c09da2ef7f9c109:b2dee800e9ee1e53275dbe0ae1d23f3ff037b1965586f57fb4507b2ebe3bb118e1c6edb93f48ec2a8e1ec326db1e66a7840520b8b444f77db07700216eca4f94d1673ac4748b140359946ea16027d44159eb7f624780dd815e0443f393142a6f4b3b7089f0e417f62494bce4eec835f92b1c7aac656953e9cd1b046e11655c0665574c426657a5754bac4395f3a785bbfd46100bd29502a9a6ee47aa59a059cce5afa314866e534548a4029cd597d2b4bffcbd51acdf81624d8ba9f5c61e1750531c14f8ec61baf827a22dbd94a11d75d3e296a35f3fd271a1802e74b7cdc99d5595c77bcc2c847e07d3b247ba4479886485c48d4d70180ac2feb80548d4d2455a77fb2211bcc02ec63977426a23b2dff564a6d1391a43484ee5e9530cedbf2a3625ed651cc1e516d2aa95d9ee260da34cf65e86a75a5149cc08d6e5615c2f4eedfa020c3ecb3d6b9acb4a51ce55ba8d5b70682c7058429003d37f453750363fea3ee02cab740c32655b2b6989ee30ea4288be7bb08442345f9dbe40559f6bb9374d98b5727f6d90d88ff912491b6382c163d45bc5142c6117830d119f23d4a87e33d17a36417ab545b47d6fe45097fe708ca9f92c0486d9dd72d2891c0b9c1091f65eb7332af3fca10ebe1689aad72dc1c450734ae4fbb9ca88c70d73031e12f91a05efc9206fd86a3e567d85ac76f06e41a0220843252aa34e940d7b23ac12a7425c4453d395dcb31cc2c8c741b489cab20f677db96c0954bd275f7ca4dd7490509d025a98a5cccd109bc0f58601d8b7c95b2918c8297968aac1565ccd1601f4d3644065d5248eae5a5f258929a228bd6e513160db6e1a57dc8969ed2e20f4a2e73c67109aa16d54909268b235c16f8577f561c610f5ca46ff52d767094d5e4bf574e0d9712ed963ca5587f12ef76cb4921ffb0126adb72ded15a7110243bcbc2be542266d50e46cb15fc2cccbce4bda1078ed893d663abb551a2f1cdbf91d7732690c725442a4212f5d0bbd5f727f823e60a20de2131b6ea5a44f8d4036898f0037f502d0720972a60eafc3e97d26c1031dcb1c340048f7c51ed8c55bd84d8ef86f2857b5413e86c8192b54804c94184b9e2fc7a24b601e1096ee11bf0a203594c93761b277aa593ae7fab13c2360e83491d91727cd4b9d463404448ef9e3ffdf14cfd799e383a7c90e8f34c7bbce351c1bcac249a2605d7c9fea8b91e871363e9a78feb6e5d95e1ea78d566c638a646d8ad517bc95bfb905ccbbdf5846ebf72bde26810b56062c6bf1330a94d9947045bbcf6a12357c1c432faf8b5e538641f94726438def473e7a4983b9096bb1edb7ef0416a88ebf76e3eb29adcb6bdfd0fff38e73d0acc467d8bebda33c1e1430b67e8d5a9b66f4463254fcff785164543c415061a7deb90e326aeff7013c201c9c87822f50ebbfab8d10ad5366c6b3ceafa116af1be2e25293dbf0f0520b993d4cb24a2ec493b6dd1184ba1e1c7ea7980f4aeb17e09c32da616ec04bb1d45e3a5868772ec5810bcacfd3fc3872a5007b677aa01b60fedd074fea4991a5f4d19bb7782f193b92902e4097409ef1e2313d204c955c9d259128954435c1086f95624cefa6af7a14a7647484df7f37cbf64284d3be86b36601a837dd8f701254b990525edb95d729ded25344111d2d34b539cb416f35819aaba41ebab5ec2a09d464362793ff96ded644e154d10ff432b1f92477dd857f4b461300b5a5da7aee44fc8060e2301f4c9b59aa9934a23b9c136b4a860a9783f92d5e2e2d58dad4b05c2f19a2c5d80e170aa62e0b67c7a7a2948641c77aae034c021be2ea18465075c85b4c3260ad36f0a41fe553dc1e34da997f4f7abb9def58902924a7937c98ce6026bff2c72dfa44c37da5fd319abc17f2ab773706e54fa09070b4a7da37612f50a2d00c91103a1a9658c7c43169"
+      },
+      "type": "response.output_item.done",
+      "sequence_number": 109
+    },
+    {
+      "response": {
+        "id": "resp_42a9820aa0f9c88f62a1a72409aca39d",
+        "object": "response",
+        "created_at": 1794237650,
+        "completed_at": 1794237655,
+        "status": "completed",
+        "error": null,
+        "incomplete_details": null,
+        "output": [
+          {
+            "id": "cmp_d414842dc19079fb502618d02ec6036a",
+            "type": "compaction",
+            "encrypted_content": "q4tc1:cmp_d414842dc19079fb502618d02ec6036a:q4t1:711ee3f2aa12fe1e2bff336ed6126fee:8b336c1b877f7bc7fe982014:b0c3bc403c8f1711d75823f46d57f7b5:16696de0d070ab783877e546e1abbb5eac2a7afb6b86488280049cd01e55ee5c1f9ef0222d066d9d9541910a738b19cd2bb1412fa11aaf6e11b1684c95ad50c1211a481b6604bff102773116e7cf8f35d0461392064e404a6bf78801d5acebc94980f6c51f966d88a00b4cb80cb3a694f20058edca9d023afe34805320f9134218730db6a4ab1583634a58a18e7447f6c18a80ce97370eca2958cfb0280dc1e1f620f633d9ef757a8a3340309760275b0a65757ec0e13f1be3cc2a06fde2d1fcd37253f383683f290e304335c14fe4090a8ea9cc602c14c3fe6c2e45a6a5deb421c2a1ca76e2dff6f54cfc4389ee370d8e289439d87685c8caa91ce00616d2bc264ab1cafa9ecc8ba67e99fa7ec5f74314d53064f692146569614403c31d2ae82d36117eb6824d59b6028245755fad7faedb71e528f3665f6728a10200aab65d0848a54b170c7b20382928c9853c8c002d33adaeb333ed26c82091fc"
+          },
+          {
+            "id": "rs_56e5f291d7e3c7e8248f251c6c1810c1",
+            "type": "reasoning",
+            "content": [
+              {
+                "type": "reasoning_text",
+                "text": "The user is asking me to reply with a decimal number that was supposedly a \"verified result\" from earlier in the conversation. Looking at the conversation history, the only number that appeared was \"42\" in the previous assistant message. The user wants me to reply with just the decimal number.\n"
+              }
+            ],
+            "summary": [],
+            "status": "completed",
+            "encrypted_content": "q4t1:711ee3f2aa12fe1e2bff336ed6126fee:fdd11c16ab633c2a93d6c902:b87ed062055be5642a745e7b8fb84df4:05918a42507ba6adae8c1d5308b283863a587ef8b5f4d598689c9e60a3f52b986fbc4e11d67d0fb6a7c7c146c1f52bd07e16456c00823a2381a8f1dbfedd1240fc7aad2a5fd7d8e386bb0a2cc680ffa362f69a4388a526cf324374be52a80445d1afebdbd5d56f50b8adc2ca6dd1109faaf721e456cb3ef1549fad7a9727469891f055f904d65b920b8bbdc40b92e97556adff0c4741b8687edda29ee437e080ede00a1cbb7174bab9dcb35a59d5da910cc5363a8d615f919435e26db593cf14c5fd86239e40092d221febca85082a933e741a5886349f10a66c71b590aaeb7c6155797db4303c6c618adfabade903d9f3d49a7eaed9d7923358d124ab137d1dcb4ed5a52aabcf361c716e903dce384990dc105527eb4be12c8eaeca956bc87451b64229d9c282cc6a55c5f80470a49079708d6f0a86740d008be85266a7dbe995c25810f4e9639bda7f47d78081d2467487c2467b011902f8559096d1cb8a53188ef4da0bcc61569ab212cb8200917d50128f2c766b3af3c8f9a78966d36afdb4a9d1dbf8a2e0706459f1252db30a782a8bdf74dff694bdb264bdd5ded89b4df4f338573980fdc3d50acb5401e7447f8e8e3493f74c41aa9c9759a69ecf53041893a7a2b1a0b5e6160f491f00cc2b77134d3ae40a2d44c969cd43800daf5ec3d21f170b1e6ea995a921de74b8543791bb1989ba2217923d07baab9c6bb66eec2f7b3a9cc0bc1c5d12aca3542e434dd4cdc91fe44a4ac779f5f925f0ccdebd97b9effda8bddcb6b66876f7b5b7bdbbf991baaadecac11b11f05f1127b77a89b75bafbc88b472bbf9b2a4e6cc59013dbc6b4fddb6966327fecea33dc869a1a5a1ae8d9278d37f8518eef1d53a553e70716c164b93e3da2614214278cfdc588725ee88880b6b9fb1e5d3a7b52298a6cd04916bfe58ee3a0a175fd25e65f1f8286fd8ecb3a27b7171a0d6245c86a7a75a16f4b9c25feebf30f6c4b21314f5d168de92aedb3376cefe82de985cd71cbd033a529c59eded47a7b41fb9733ca8a15bde5389b9ef17eda801748c2982439a5fc850935116fec22041bfccfe8433548ae9ef9269f0f27fbe066adc2e3d10fc0dddc3fade518fb4ae35430a451fe73236b9a5c8a65d0813e19f5b220daee413248c20d9aea9557474f58bb99cc60dd8f3c0ac15e4acf870f70f01a4e949fdd3f62259de07db6c1dbc508f03a5a37884233c70ef2e0cb8765f3e6b53181e2cf6ac56005ade3241b32508f7536a7cd6725f832d87b1fa112363ee0f766b"
+          },
+          {
+            "id": "msg_47e2d6bb8010bae2096b7a3d1294e830",
+            "type": "message",
+            "content": [
+              {
+                "type": "output_text",
+                "text": "\n\n42",
+                "annotations": [],
+                "logprobs": []
+              }
+            ],
+            "role": "assistant",
+            "status": "completed"
+          },
+          {
+            "id": "rs_61d29386f2885d328a7b0736ecb78be7",
+            "type": "reasoning",
+            "status": "completed",
+            "summary": [
+              {
+                "type": "summary_text",
+                "text": "The reasoning identifies \"42\" as the only number present in the prior conversation history and concludes that this is the required decimal response."
+              }
+            ],
+            "encrypted_content": "q4t1:711ee3f2aa12fe1e2bff336ed6126fee:09a70a0a19916fed913da10f:b4f3437a3c3956fe5c09da2ef7f9c109:b2dee800e9ee1e53275dbe0ae1d23f3ff037b1965586f57fb4507b2ebe3bb118e1c6edb93f48ec2a8e1ec326db1e66a7840520b8b444f77db07700216eca4f94d1673ac4748b140359946ea16027d44159eb7f624780dd815e0443f393142a6f4b3b7089f0e417f62494bce4eec835f92b1c7aac656953e9cd1b046e11655c0665574c426657a5754bac4395f3a785bbfd46100bd29502a9a6ee47aa59a059cce5afa314866e534548a4029cd597d2b4bffcbd51acdf81624d8ba9f5c61e1750531c14f8ec61baf827a22dbd94a11d75d3e296a35f3fd271a1802e74b7cdc99d5595c77bcc2c847e07d3b247ba4479886485c48d4d70180ac2feb80548d4d2455a77fb2211bcc02ec63977426a23b2dff564a6d1391a43484ee5e9530cedbf2a3625ed651cc1e516d2aa95d9ee260da34cf65e86a75a5149cc08d6e5615c2f4eedfa020c3ecb3d6b9acb4a51ce55ba8d5b70682c7058429003d37f453750363fea3ee02cab740c32655b2b6989ee30ea4288be7bb08442345f9dbe40559f6bb9374d98b5727f6d90d88ff912491b6382c163d45bc5142c6117830d119f23d4a87e33d17a36417ab545b47d6fe45097fe708ca9f92c0486d9dd72d2891c0b9c1091f65eb7332af3fca10ebe1689aad72dc1c450734ae4fbb9ca88c70d73031e12f91a05efc9206fd86a3e567d85ac76f06e41a0220843252aa34e940d7b23ac12a7425c4453d395dcb31cc2c8c741b489cab20f677db96c0954bd275f7ca4dd7490509d025a98a5cccd109bc0f58601d8b7c95b2918c8297968aac1565ccd1601f4d3644065d5248eae5a5f258929a228bd6e513160db6e1a57dc8969ed2e20f4a2e73c67109aa16d54909268b235c16f8577f561c610f5ca46ff52d767094d5e4bf574e0d9712ed963ca5587f12ef76cb4921ffb0126adb72ded15a7110243bcbc2be542266d50e46cb15fc2cccbce4bda1078ed893d663abb551a2f1cdbf91d7732690c725442a4212f5d0bbd5f727f823e60a20de2131b6ea5a44f8d4036898f0037f502d0720972a60eafc3e97d26c1031dcb1c340048f7c51ed8c55bd84d8ef86f2857b5413e86c8192b54804c94184b9e2fc7a24b601e1096ee11bf0a203594c93761b277aa593ae7fab13c2360e83491d91727cd4b9d463404448ef9e3ffdf14cfd799e383a7c90e8f34c7bbce351c1bcac249a2605d7c9fea8b91e871363e9a78feb6e5d95e1ea78d566c638a646d8ad517bc95bfb905ccbbdf5846ebf72bde26810b56062c6bf1330a94d9947045bbcf6a12357c1c432faf8b5e538641f94726438def473e7a4983b9096bb1edb7ef0416a88ebf76e3eb29adcb6bdfd0fff38e73d0acc467d8bebda33c1e1430b67e8d5a9b66f4463254fcff785164543c415061a7deb90e326aeff7013c201c9c87822f50ebbfab8d10ad5366c6b3ceafa116af1be2e25293dbf0f0520b993d4cb24a2ec493b6dd1184ba1e1c7ea7980f4aeb17e09c32da616ec04bb1d45e3a5868772ec5810bcacfd3fc3872a5007b677aa01b60fedd074fea4991a5f4d19bb7782f193b92902e4097409ef1e2313d204c955c9d259128954435c1086f95624cefa6af7a14a7647484df7f37cbf64284d3be86b36601a837dd8f701254b990525edb95d729ded25344111d2d34b539cb416f35819aaba41ebab5ec2a09d464362793ff96ded644e154d10ff432b1f92477dd857f4b461300b5a5da7aee44fc8060e2301f4c9b59aa9934a23b9c136b4a860a9783f92d5e2e2d58dad4b05c2f19a2c5d80e170aa62e0b67c7a7a2948641c77aae034c021be2ea18465075c85b4c3260ad36f0a41fe553dc1e34da997f4f7abb9def58902924a7937c98ce6026bff2c72dfa44c37da5fd319abc17f2ab773706e54fa09070b4a7da37612f50a2d00c91103a1a9658c7c43169"
+          }
+        ],
+        "usage": {
+          "input_tokens": 1618,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 96,
+          "output_tokens_details": {
+            "reasoning_tokens": 92
+          },
+          "total_tokens": 1714
+        },
+        "model": "qwen3.8-flash-next",
+        "instructions": null,
+        "metadata": {},
+        "temperature": 0,
+        "top_p": 1,
+        "parallel_tool_calls": true,
+        "tools": [],
+        "tool_choice": "auto",
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "reasoning": {
+          "effort": "low",
+          "context": "all_turns",
+          "mode": "standard",
+          "summary": "concise"
+        },
+        "store": true,
+        "background": false,
+        "max_output_tokens": 512,
+        "max_tool_calls": null,
+        "previous_response_id": null,
+        "service_tier": "default",
+        "truncation": "disabled",
+        "top_logprobs": 0,
+        "access_programs": null
+      },
+      "type": "response.completed",
+      "sequence_number": 110
+    }
+  ],
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:18987/v1/responses",
+      "method": "POST",
+      "body": "{\"model\":\"qwen3.8-flash-next\",\"temperature\":0,\"store\":true,\"reasoning\":{\"effort\":\"low\",\"summary\":\"concise\"},\"max_output_tokens\":512,\"input\":[{\"role\":\"user\",\"content\":\"Remember the verified result of 17 + 25.\"},{\"role\":\"assistant\",\"content\":\"The verified result is 42. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. This is a redundant record of the same completed calculation. \"},{\"role\":\"user\",\"content\":\"What was the verified result? Reply only with the decimal number.\"}],\"stream\":true,\"context_management\":[{\"type\":\"compaction\",\"compact_threshold\":128}],\"include\":[\"reasoning.encrypted_content\"]}"
+    }
+  ]
+}

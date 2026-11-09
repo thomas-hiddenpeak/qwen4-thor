@@ -1,0 +1,18 @@
+{
+  "external_attempts": 8,
+  "internal_model_steps": 9,
+  "actual_tool_executions": 1,
+  "actual_token_reduction": {
+    "original_prompt_tokens": 1160,
+    "restored_with_new_turn_tokens": 130,
+    "saved_tokens": 1030
+  },
+  "automatic_and_explicit_trigger": true,
+  "standalone_and_optional_id": true,
+  "reasoning_summary_encryption": true,
+  "original_background_replay_after_restart": true,
+  "no_op_zero_model_tokens": true,
+  "rejected_before_model": true,
+  "per_process_actual_usage": true,
+  "direct_engine_rpm_persistence_claim": false
+}

@@ -1,0 +1,46 @@
+{
+  "ok": true,
+  "result": {
+    "id": "resp_5fa24dfcc0202eb86f6bc2d79960d29b",
+    "object": "response.compaction",
+    "created_at": 1794237713,
+    "output": [
+      {
+        "type": "message",
+        "role": "user",
+        "content": [
+          {
+            "type": "input_text",
+            "text": "Keep this user text unchanged."
+          }
+        ],
+        "status": "completed"
+      },
+      {
+        "id": "cmp_f14c9270ff521d490153bc8663ed278d",
+        "type": "compaction",
+        "encrypted_content": "q4tc1:cmp_f14c9270ff521d490153bc8663ed278d:q4t1:711ee3f2aa12fe1e2bff336ed6126fee:3c2954a90da2a70489e9c2e1:e1248066ff516b34dd92ba976a957657:cb0ce4a2d59723161785b4c92af5b9dd30dffd28737f22c2f0240c9d67646fdb0de59f92e895c3bb24e2c0501b1ec62d32ef4b74eceb797e3a8a573ddc2c6cafa8fadb15b2befe8baed7c6aee024d665d82ead4bc2af38dce0a987517e25ad0bbbb694249634f1c4c94def7a17f530a3c4bee55b5ec7c1e85573f861ff48f76658093c4e93df9e3e30454397b7f58e9257574b3aba6982cbd317538865ac796337ed75c6a7cebcfccb5bd35e9a9a92cc8708f6a3790ae6c8dfcef6ae82a1905f199c18be49d62f45866f1e853200cff3f2d3dee25851ceba19062e8f61b93760b3067575a26f7e0dbaec26d3856bc34fa6cda6b0cd00c355ffe27ec5f4012a0a1b7689f8b0a048f424fffc0ef3b763279b6575b9b3eea6ce45ad57621320084b4155a2aa8ecb7ab68832ddbd130f1d3fd78fb8ab493a40"
+      }
+    ],
+    "usage": {
+      "input_tokens": 0,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens": 0,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 0
+    }
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:18987/v1/responses/compact",
+      "method": "POST",
+      "body": "{\"model\":\"qwen3.8-flash-next\",\"input\":\"Keep this user text unchanged.\"}"
+    }
+  ]
+}

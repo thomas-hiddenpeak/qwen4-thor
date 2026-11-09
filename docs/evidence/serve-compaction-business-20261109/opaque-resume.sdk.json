@@ -1,0 +1,78 @@
+{
+  "ok": true,
+  "result": {
+    "id": "resp_f96913363bc9202b9e8f688b21ee4be2",
+    "object": "response",
+    "created_at": 1794237658,
+    "completed_at": 1794237659,
+    "status": "completed",
+    "error": null,
+    "incomplete_details": null,
+    "output": [
+      {
+        "id": "msg_276c4a74479694e562cf24a63efa7127",
+        "type": "message",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "42",
+            "annotations": [],
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed"
+      }
+    ],
+    "usage": {
+      "input_tokens": 130,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens": 3,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 133
+    },
+    "model": "qwen3.8-flash-next",
+    "instructions": null,
+    "metadata": {},
+    "temperature": 0,
+    "top_p": 1,
+    "parallel_tool_calls": true,
+    "tools": [],
+    "tool_choice": "auto",
+    "text": {
+      "format": {
+        "type": "text"
+      },
+      "verbosity": "medium"
+    },
+    "reasoning": {
+      "effort": "none",
+      "context": "all_turns",
+      "mode": "standard",
+      "summary": null
+    },
+    "store": false,
+    "background": false,
+    "max_output_tokens": 192,
+    "max_tool_calls": null,
+    "previous_response_id": null,
+    "service_tier": "default",
+    "truncation": "disabled",
+    "top_logprobs": 0,
+    "access_programs": null,
+    "output_text": "42"
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:18987/v1/responses",
+      "method": "POST",
+      "body": "{\"model\":\"qwen3.8-flash-next\",\"temperature\":0,\"store\":false,\"reasoning\":{\"effort\":\"none\"},\"max_output_tokens\":192,\"input\":[{\"type\":\"compaction\",\"encrypted_content\":\"q4tc1:cmp_23fceb69a1909130d2b24eeacf9d5db1:q4t1:711ee3f2aa12fe1e2bff336ed6126fee:b7b7b845110e3833e9eb6e4f:763d3c4408becd7e19e585a596a351f6:2dafdc6af426dd3a60b9ec70042539fc8eec9e7e588101d659d3e01079180229bb49b88804cea1dd83ac6cfce4645b485ca4fdc34183504c015fa4cdc01fd169c7e7ba7b3951905135a18c183de8407c21c6d118c7c0d43addbca4cb29d0b78d44c63762ef7c9d7fd69b7f898277112b6ff9be574139e8411fe7fb86ad1cd7d3d65327997c9087c4dc9c36c081cb331041649555b627fbbab88c7c2b71961e60ae91f838767613a121cd8d9e8580700a720568ebf67387e1cac51afd8e1e82fe5a8a72778ca7a7b7011983ad2425cdc1d0fa369c9d76f674deb7023fcd90d61ab82ca6e2c2c52cb7084cb34c070b22ca5de61295d0001e18e5e72414a527886927dc9911ca196cadd43978e6c6dbdedf56d2f300dc7219721c47841fc3fb634016e1708b528baf6838e471ade42c92d6e147df083976466b67547b9a5b0443bc27ce83bbadb93d298d345a2c0affcf0c0d8cb62eec1e0c627d939548ad8407794aed44ce3faddf9c9a9b6309c4b8f4870f86a95a521059e60024cc712759fec14d0ce924e916f6a2f245b03ba4c63502ba98a3a88f3408755430d24bee4dc1d0459cacface9f3f8defecafe6effff1ed41bd87b09a9916eb83d61a1d866c9f732f60e6532831015e4339c12c8462a2c37f390edc89b0ed7bdeae3ea3d3139caa12fb8317af2a1a28c5ab292c5f9bc07f4baf0019fb7e47e80131a6488abe51c1543a83a98433e8470d424b64117341f60206d553e2300bea157013a2b87967128259f7a49743921dd4d565d9ba4ad55ccdc716114057c01dff25bbb9c212da42fa6c4235b869be3fe5bf47bd02b55d3881da4d18829a8ea0a9a912aea739e9031f10b945e70656113cd05a9efc40239905c28134e1cae4c3088fd85cb71c30e257351058fd86355967cc1f1de8f4ad62032e167321bca67d1822f4469a41c13846856f482aecc1a22083d53509f5aed1377427fa1f4b1403080be9bb00fe4e7450eb5ce307b8d4d0e4e04b4783803e96096d7394aacb7d37317475a17f8c5e405a532965d641b9ee\"},{\"role\":\"user\",\"content\":\"What was the verified result? Reply only with the decimal number.\"}]}"
+    }
+  ]
+}

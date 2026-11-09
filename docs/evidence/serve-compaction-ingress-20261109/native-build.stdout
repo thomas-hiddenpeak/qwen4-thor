@@ -1,0 +1,12 @@
+[  0%] Built target q4t_guardian_process
+[  0%] Built target q4t_guardian_journal
+[  0%] Built target q4t_ingress_access
+[  0%] Building CXX object CMakeFiles/q4t_ingress.dir/src/server/http_request.cpp.o
+[  0%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_main.cpp.o
+[  0%] Building CXX object CMakeFiles/q4t_ingress.dir/src/service/ingress_proxy.cpp.o
+[  0%] Linking CXX executable q4t-ingress
+[100%] Built target q4t_ingress
+Built target q4t_guardian_process
+Built target q4t_guardian_journal
+Built target q4t_guardian
+Built target q4t_cuda_probe
