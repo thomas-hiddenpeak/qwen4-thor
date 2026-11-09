@@ -320,7 +320,15 @@
         "business_validated": false,
         "admin_cpu_checks": 14,
         "admin_evidence": "evidence/serve-responses-encryption-admin-20261109/README.md",
-        "current_work": "bounded actual SDK/model business and rollback-compatible delivery"
+        "current_work": "bounded actual SDK/model business and rollback-compatible delivery",
+        "driver_cpu_checks": 4,
+        "driver_evidence": "evidence/serve-responses-encryption-driver-20261109/README.md",
+        "business_limits": {
+          "starts": 2,
+          "requests": 8,
+          "model_steps": 8,
+          "seconds": 900
+        }
       }
     },
     {

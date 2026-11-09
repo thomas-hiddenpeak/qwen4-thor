@@ -1,0 +1,6 @@
+test_budget_and_accounting_reject_extra_generation_or_missing_usage (tools.serve_responses.test_encryption_acceptance.EncryptionAcceptance.test_budget_and_accounting_reject_extra_generation_or_missing_usage) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK

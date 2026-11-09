@@ -1,0 +1,19 @@
+{
+  "tests": [
+    "test_oracles_require_opaque_authenticated_items_and_exact_done_events",
+    "test_key_receipt_rejects_unknown_commit_missing_active_and_private_material",
+    "test_budget_and_accounting_reject_extra_generation_or_missing_usage",
+    "test_official_sdk_sends_opaque_context_once_and_consumes_sse_or_auth_error"
+  ],
+  "sources": {
+    "tools/serve_responses/encryption_acceptance.py": "aa68f7356aff036f312c17f2f0362bc0d43a632eaa4713c9613912c245a43a75",
+    "tools/serve_responses/test_encryption_acceptance.py": "c23d409be4068b3abc21a4a567ea3f9d78f0a77e79b1b9bb809a2b912433791d"
+  },
+  "gpu": false,
+  "limits": {
+    "starts": 2,
+    "chats": 8,
+    "internal_model_steps": 8,
+    "seconds": 900
+  }
+}

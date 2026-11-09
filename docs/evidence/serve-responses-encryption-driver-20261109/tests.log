@@ -1,0 +1,9 @@
+test_budget_and_accounting_reject_extra_generation_or_missing_usage (tools.serve_responses.test_encryption_acceptance.EncryptionAcceptance.test_budget_and_accounting_reject_extra_generation_or_missing_usage) ... ok
+test_key_receipt_rejects_unknown_commit_missing_active_and_private_material (tools.serve_responses.test_encryption_acceptance.EncryptionAcceptance.test_key_receipt_rejects_unknown_commit_missing_active_and_private_material) ... ok
+test_official_sdk_sends_opaque_context_once_and_consumes_sse_or_auth_error (tools.serve_responses.test_encryption_acceptance.EncryptionAcceptance.test_official_sdk_sends_opaque_context_once_and_consumes_sse_or_auth_error) ... ok
+test_oracles_require_opaque_authenticated_items_and_exact_done_events (tools.serve_responses.test_encryption_acceptance.EncryptionAcceptance.test_oracles_require_opaque_authenticated_items_and_exact_done_events) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.801s
+
+OK
