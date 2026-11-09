@@ -1,0 +1,11 @@
+{
+  "cases": [
+    "tools.serve_responses.test_context_acceptance.ContextAcceptance"
+  ],
+  "sources": {
+    "tools/serve_responses/context_acceptance.py": "ac217aed7d5479166d523297c5d30e566207c44be2a4479ef874c48d60a36463",
+    "tools/serve_responses/test_context_acceptance.py": "3c062e90cd01ab2b4d1dd1da6a4bd0b7aef24e224e4d7f184fc0c3f38439d31f"
+  },
+  "gpu": 0,
+  "repair": "Canonical input_text public projection compared without changing source text or order"
+}

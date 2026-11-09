@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "source": ".q4t-work/serve-responses-context-20261109/business-01/json-inputs.sdk.json",
+  "sha256": "ed86e1974af280553ebacf12a53a6b704f97ef6e8ef57af9851348758aeb133e",
+  "model_generation_repeated": false,
+  "diagnosis": "Original strings projected as one input_text part; identical content/role/order and item IDs retained."
+}

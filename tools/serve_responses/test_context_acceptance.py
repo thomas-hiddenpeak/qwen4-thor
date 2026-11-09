@@ -24,7 +24,8 @@ class ContextAcceptance(unittest.TestCase):
 
     def test_history_oracle_rejects_dropped_edited_or_reordered_items(self):
         expected = requests()['json']['input']
-        good = dict(has_more=False, data=[dict(v, id=f'item_{i}')
+        good = dict(has_more=False, data=[dict(v, id=f'item_{i}',
+                    content=[dict(type='input_text', text=v['content'])])
                     for i, v in enumerate(expected)])
         check_history(good, expected)
         changes = [dict(good, has_more=True), dict(good, data=good['data'][1:]),

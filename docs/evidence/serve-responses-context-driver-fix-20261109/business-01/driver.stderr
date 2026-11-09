@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/context_acceptance.py", line 169, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/context_acceptance.py", line 165, in main
+    Stage(read(args.plan)).run()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py", line 294, in run
+    try:self.start();self.business();result['status']=self.success_status
+                     ^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/context_acceptance.py", line 102, in business
+    check_history(inputs, rows[label]['input'])
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/context_acceptance.py", line 45, in check_history
+    require(all(saved.get(k) == v for k, v in original.items()),
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 61, in require
+    raise RuntimeError(message)
+RuntimeError: truncation changed durable input content

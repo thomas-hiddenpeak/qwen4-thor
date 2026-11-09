@@ -1,0 +1,11 @@
+{
+  "status": "FAILED",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 294, in run\n    try:self.start();self.business();result['status']=self.success_status\n                     ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/context_acceptance.py\", line 102, in business\n    check_history(inputs, rows[label]['input'])\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/context_acceptance.py\", line 45, in check_history\n    require(all(saved.get(k) == v for k, v in original.items()),\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 61, in require\n    raise RuntimeError(message)\nRuntimeError: truncation changed durable input content\n",
+  "counts": {
+    "starts": 1,
+    "chats": 1,
+    "controls": 42
+  },
+  "seconds": 40.56768360314891,
+  "binary_sha256": "bb6e702ea5615fea7c11302e7c8ce2b1bec6b8aff9803f2b5cc7bfe84fec270a"
+}

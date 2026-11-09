@@ -1,0 +1,12 @@
+{
+  "action": "input_items",
+  "request": null,
+  "id": "resp_c29d8531e277314f7b060c8c1616c21e",
+  "query": {
+    "order": "asc",
+    "limit": 100
+  },
+  "base_url": "http://127.0.0.1:18981/v1",
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "timeout_ms": 120000
+}
