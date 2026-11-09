@@ -36,6 +36,9 @@ NATIVE_SOURCES = frozenset(('CMakeLists.txt', 'tests/host/CMakeLists.txt',
     *('src/service/guardian_'+name+'.cpp' for name in ('process', 'journal', 'wire')),
     'cmake/NativeIngress.cmake', 'src/service/ingress_main.cpp',
     'src/service/ingress_transport.cpp', 'include/q4t/service/ingress_transport.h',
+    'include/q4t/service/ingress_access.h', 'src/service/ingress_access.cpp',
+    'include/q4t/service/ingress_access_admin.h', 'src/service/ingress_access_admin.cpp',
+    'include/q4t/trace/sha256.h', 'src/trace/sha256.cpp', 'include/q4t/trace/router_trace.h',
     *('include/q4t/service/ingress_'+name+'.h' for name in
       ('address', 'tls', 'credentials', 'cors', 'admin')),
     *('src/service/ingress_'+name+'.cpp' for name in

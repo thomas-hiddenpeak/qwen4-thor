@@ -1,0 +1,12 @@
+test_initial_unavailable_then_complete_authenticated_publication (tools.serve_recovery.test_access_ingress.AccessIngressTests.test_initial_unavailable_then_complete_authenticated_publication) ... ok
+test_large_fragmented_policy_bad_payload_and_slow_peer_do_not_replace (tools.serve_recovery.test_access_ingress.AccessIngressTests.test_large_fragmented_policy_bad_payload_and_slow_peer_do_not_replace) ... ok
+test_legacy_configuration_and_forged_identity_stay_compatible (tools.serve_recovery.test_access_ingress.AccessIngressTests.test_legacy_configuration_and_forged_identity_stay_compatible) ... ok
+test_new_entrypoint_restores_latest_revocation_without_bootstrap_window (tools.serve_recovery.test_access_ingress.AccessIngressTests.test_new_entrypoint_restores_latest_revocation_without_bootstrap_window) ... ok
+test_other_process_can_read_status_but_cannot_publish (tools.serve_recovery.test_access_ingress.AccessIngressTests.test_other_process_can_read_status_but_cannot_publish) ... ok
+test_publisher_does_not_reuse_observation_after_peer_change_or_staleness (tools.serve_recovery.test_access_ingress.AccessIngressTests.test_publisher_does_not_reuse_observation_after_peer_change_or_staleness) ... ok
+test_rotation_keeps_inflight_identity_and_capacity_then_revokes (tools.serve_recovery.test_access_ingress.AccessIngressTests.test_rotation_keeps_inflight_identity_and_capacity_then_revokes) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 10.144s
+
+OK

@@ -233,8 +233,45 @@ Q4T_TEST(AccessBoundsAndPublicStatusContainNoCredentials) {
   return true;
 }
 
+Q4T_TEST(AccessCommittedCatchupPreservesExistingIdentity) {
+  a::ClientAccess access;
+  auto policy = Initial();
+  Q4T_CHECK(access.Configure(policy).ok());
+  const auto admitted = access.Authenticate(Bearer(kAlice));
+  policy.clients[0].key_sha256.clear();
+  AddKey(policy, 0, kNew);
+  policy.revision = 19;
+  Q4T_CHECK(!access.Replace(policy, 0).ok());
+  Q4T_CHECK(access.Synchronize(policy, 0).ok());
+  Q4T_CHECK(!access.Authenticate(Bearer(kAlice)).Allowed());
+  Q4T_CHECK(access.Authenticate(Bearer(kNew)).Revision() == 19);
+  Q4T_CHECK(admitted.Id() == "alice" && admitted.Revision() == 0);
+  Q4T_CHECK(!access.Synchronize(Initial(), 19).ok());
+  Q4T_CHECK(!access.Synchronize(policy, 19).ok());
+  return true;
+}
+
+Q4T_TEST(AccessCatchupCannotChangeHistoricalOwnershipOrSlots) {
+  a::ClientAccess access;
+  auto policy = Initial();
+  Q4T_CHECK(access.Configure(policy).ok());
+  policy.revision = 50;
+  policy.clients[0].key_sha256.clear();
+  policy.clients[1].key_sha256.push_back(a::AccessKeyDigest(kAlice));
+  policy.key_owners[a::AccessKeyDigest(kAlice)] = "bob";
+  Q4T_CHECK(!access.Synchronize(policy, 0).ok());
+  policy = Initial();
+  policy.revision = 50;
+  std::swap(policy.clients[0], policy.clients[1]);
+  Q4T_CHECK(!access.Synchronize(policy, 0).ok());
+  Q4T_CHECK(access.Authenticate(Bearer(kAlice)).Revision() == 0);
+  return true;
+}
+
 int main(int argc, char** argv) {
   if (argc == 1) return q4t::test::RunAllTests();
+  if (argc >= 3 && std::string_view(argv[1]) == "--tests")
+    return q4t::test::RunTests(std::vector<std::string>(argv + 2, argv + argc));
   if (argc != 2 || std::string_view(argv[1]) != "--check-policy") return 2;
   // CPU interoperability entrypoint, not a production management command.
   std::string raw;

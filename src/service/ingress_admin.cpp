@@ -26,7 +26,7 @@ bool IngressAdmin::Open(const std::string& address) {
          ::listen(listener_.Get(), 8) == 0;
 }
 
-void IngressAdmin::Step(Credentials* credentials) {
+void IngressAdmin::Step(Credentials* credentials, ClientAccess* access) {
   const auto now = std::chrono::steady_clock::now();
   // One accepted peer and at most eight tiny requests per event-loop turn.
   OwnedFd accepted(::accept4(listener_.Get(), nullptr, nullptr,
@@ -60,6 +60,15 @@ void IngressAdmin::Step(Credentials* credentials) {
         wire::Parse(std::string(buffer, n), &command) &&
         wire::HasKeys(command, {"op"})) {
       const auto op = command.GetString("op");
+      if (op == "access-status") {
+        const auto status =
+            access ? access->Describe()
+                   : wire::Object({{"configured", wire::Boolean(false)}});
+        std::string reply;
+        if (wire::Encode(status, &reply))
+          ::send(peer.fd.Get(), reply.data(), reply.size(),
+                 MSG_NOSIGNAL | MSG_DONTWAIT);
+      }
       if (op == "status" || op == "reload") {
         const auto before =
             credentials ? credentials->Status().GetInt("load_attempt") : 0;

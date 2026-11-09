@@ -1,0 +1,19 @@
+{
+  "status": "PASS_NATIVE_ACCESS_PUBLICATION_TARGETED_CPU_PENDING_MANAGED_INTEGRATION",
+  "cpp_new_tests": 2,
+  "python_native_tests": 6,
+  "publisher_identity_test": 1,
+  "build_warnings": 0,
+  "native_tls_in_this_build": false,
+  "cpu_backend_only": true,
+  "model_starts": 0,
+  "real_chat_generations": 0,
+  "default_changed": false,
+  "remaining": [
+    "isolated durable I/O helper and recovery bounds",
+    "managed CLI/package integration",
+    "dynamic quotas and restart continuity",
+    "actual model business and rollback-capable delivery"
+  ],
+  "remaining_master_tasks_open": true
+}

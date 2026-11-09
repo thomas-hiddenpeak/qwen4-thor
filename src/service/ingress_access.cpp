@@ -125,12 +125,23 @@ Status ClientAccess::Configure(AccessPolicy policy) {
 }
 
 Status ClientAccess::Replace(AccessPolicy policy, uint64_t expected_revision) {
+  return Publish(std::move(policy), expected_revision, true);
+}
+
+Status ClientAccess::Synchronize(AccessPolicy policy,
+                                 uint64_t expected_revision) {
+  return Publish(std::move(policy), expected_revision, false);
+}
+
+Status ClientAccess::Publish(AccessPolicy policy, uint64_t expected_revision,
+                             bool contiguous) {
   if (!ValidateAccessPolicy(policy).ok()) return Invalid();
   std::lock_guard guard(writer_);
   const auto before = current_.load();
   if (!before || before->revision != expected_revision ||
       expected_revision >= kAccessRevisionLimit ||
-      policy.revision != expected_revision + 1)
+      policy.revision <= expected_revision ||
+      (contiguous && policy.revision != expected_revision + 1))
     return Status::Fail("client access revision conflict");
   if (policy.clients.size() < before->clients.size()) return Invalid();
   for (size_t i = 0; i < before->clients.size(); ++i)

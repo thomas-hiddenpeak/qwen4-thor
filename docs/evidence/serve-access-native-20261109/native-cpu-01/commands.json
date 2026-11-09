@@ -1,0 +1,16 @@
+[
+  [
+    ".q4t-work/serve-access-20261109/host/q4t_ingress_access_tests",
+    "--tests",
+    "AccessCommittedCatchupPreservesExistingIdentity",
+    "AccessCatchupCannotChangeHistoricalOwnershipOrSlots"
+  ],
+  [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_recovery.test_access_ingress"
+  ]
+]

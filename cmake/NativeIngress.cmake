@@ -16,9 +16,10 @@ add_executable(q4t_ingress
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_credentials.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_cors.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_admin.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_access_admin.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/http_request.cpp)
 set_target_properties(q4t_ingress PROPERTIES OUTPUT_NAME q4t-ingress)
-target_link_libraries(q4t_ingress PRIVATE q4t_guardian_journal Threads::Threads)
+target_link_libraries(q4t_ingress PRIVATE q4t_ingress_access Threads::Threads)
 target_compile_definitions(q4t_ingress PRIVATE
   Q4T_ENABLE_NATIVE_TLS=$<BOOL:${Q4T_ENABLE_NATIVE_TLS}>)
 if(Q4T_ENABLE_NATIVE_TLS)
@@ -47,7 +48,7 @@ if(NOT DEFINED Q4T_BUILD_TESTS OR Q4T_BUILD_TESTS)
   add_executable(q4t_ingress_no_tls $<TARGET_PROPERTY:q4t_ingress,SOURCES>)
   set_target_properties(q4t_ingress_no_tls PROPERTIES OUTPUT_NAME q4t-ingress-no-tls)
   target_link_libraries(q4t_ingress_no_tls PRIVATE
-    q4t_guardian_journal Threads::Threads)
+    q4t_ingress_access Threads::Threads)
   target_compile_features(q4t_ingress_no_tls PRIVATE cxx_std_23)
   target_compile_definitions(q4t_ingress_no_tls PRIVATE Q4T_ENABLE_NATIVE_TLS=0)
   target_compile_options(q4t_ingress_no_tls PRIVATE -Wall -Wextra -Werror)

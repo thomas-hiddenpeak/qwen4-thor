@@ -24,6 +24,7 @@
 #include "q4t/server/http_request.h"
 #include "q4t/server/model_catalog.h"
 #include "q4t/service/guardian_wire.h"
+#include "q4t/service/ingress_access_admin.h"
 #include "q4t/service/ingress_address.h"
 #include "q4t/service/ingress_admin.h"
 #include "q4t/service/ingress_cors.h"
@@ -65,6 +66,7 @@ struct Config {
   std::string host;
   std::string listen;
   bool tls = false;
+  bool access_deferred = false;
   TlsFiles credentials;
   Cors cors;
   int port = 0;
@@ -99,14 +101,23 @@ Config Load(const char* path) {
   }
   io::Json root;
   Require(wire::Parse(raw, &root).ok());
-  const auto root_version = Number(root, "version", 1, 2);
+  const auto root_version = Number(root, "version", 1, 3);
   Require(
       root_version == 1
           ? wire::HasKeys(root, {"version", "parent_pid", "parent_start_ticks",
                                  "address", "policy"})
-          : wire::HasKeys(root, {"version", "parent_pid", "parent_start_ticks",
-                                 "address", "policy", "tls", "tls_lease"}));
+      : root_version == 2
+          ? wire::HasKeys(root, {"version", "parent_pid", "parent_start_ticks",
+                                 "address", "policy", "tls", "tls_lease"})
+          : wire::HasKeys(
+                root, {"version", "parent_pid", "parent_start_ticks", "address",
+                       "policy", "tls", "tls_lease", "access_deferred"}));
   Config config;
+  if (root_version == 3) {
+    const auto* deferred = root.Find("access_deferred");
+    Require(deferred && deferred->IsBool() && deferred->boolean);
+    config.access_deferred = true;
+  }
   config.parent.pid =
       static_cast<pid_t>(Number(root, "parent_pid", 2, INT32_MAX));
   config.parent.start_ticks = Number(root, "parent_start_ticks", 1, INT64_MAX);
@@ -140,7 +151,7 @@ Config Load(const char* path) {
     const auto* cors = policy.Find("cors");
     Require(cors && (cors->IsNull() || config.cors.Load(*cors)));
   }
-  if (root_version == 2) {
+  if (root_version >= 2) {
     const auto* tls = root.Find("tls");
     Require(tls != nullptr);
     config.tls = !tls->IsNull();
@@ -246,33 +257,6 @@ bool HostMatches(std::string_view host, const std::string& expected) {
   return true;
 }
 
-size_t Authenticate(std::string_view authorization,
-                    const std::vector<Client>& clients) {
-  if (authorization.size() < 7) return clients.size();
-  constexpr std::string_view scheme = "bearer ";
-  for (size_t i = 0; i < scheme.size(); ++i) {
-    char c = authorization[i];
-    if (c >= 'A' && c <= 'Z') c += 'a' - 'A';
-    if (c != scheme[i]) return clients.size();
-  }
-  const auto key = authorization.substr(7);
-  if (key.size() < 32 || key.size() > 128) return clients.size();
-  size_t matched = clients.size();
-  for (size_t i = 0; i < clients.size(); ++i) {
-    const auto& candidate = clients[i].key;
-    unsigned difference = static_cast<unsigned>(key.size() ^ candidate.size());
-    for (size_t j = 0; j < 128; ++j) {
-      const unsigned a =
-          j < key.size() ? static_cast<unsigned char>(key[j]) : 0;
-      const unsigned b =
-          j < candidate.size() ? static_cast<unsigned char>(candidate[j]) : 0;
-      difference |= a ^ b;
-    }
-    if (!difference) matched = i;
-  }
-  return matched;
-}
-
 struct Usage {
   int active[3] = {0, 0, 0};
   double tokens[3] = {0, 0, 0};
@@ -282,7 +266,7 @@ struct Usage {
 class Capacity {
  public:
   explicit Capacity(const Config& config)
-      : config_(config), usage_(config.clients.size()) {
+      : config_(config), usage_(kAccessClients) {
     for (auto& used : usage_) {
       used.tokens[0] = config.burst + 1;
       used.tokens[1] = 21;
@@ -365,7 +349,8 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
     return true;
   }
   if ((method == "GET" || method == "DELETE") &&
-      server::IsModelDetailPath(path) && path.find_first_of("?#") == path.npos) {
+      server::IsModelDetailPath(path) &&
+      path.find_first_of("?#") == path.npos) {
     *control = true;
     return true;
   }
@@ -379,13 +364,15 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
 }
 
 void Handle(Connection& client, const Config& config, Capacity& capacity,
-            server::HttpBodyBudget& budget, Address source, bool* started) {
+            ClientAccess& access, server::HttpBodyBudget& budget,
+            Address source, bool* started) {
   std::string method, path, body;
   std::string request_id = RequestId();
   if (request_id.empty()) return;
   server::HttpRequestHeaders headers;
   server::HttpBodyLease body_lease(budget);
   Lease lease{capacity};
+  AccessIdentity identity;
   Decision binding;
   int status = 400;
   bool rejected = false;
@@ -395,8 +382,8 @@ void Handle(Connection& client, const Config& config, Capacity& capacity,
     return false;
   };
   const auto authorize = [&] {
-    return Authorize(config.address, config.parent.pid,
-                     config.clients[lease.client].id, lease.control,
+    return Authorize(config.address, config.parent.pid, identity.Id(),
+                     lease.control,
                      lease.control ? config.operations : config.backend);
   };
   const auto admit = [&] {
@@ -425,9 +412,10 @@ void Handle(Connection& client, const Config& config, Capacity& capacity,
     }
     if (!headers.cors_method.empty() || !headers.cors_headers.empty())
       return reject(400, "cors_invalid_preflight");
-    lease.client = Authenticate(headers.authorization, config.clients);
-    if (lease.client == config.clients.size())
-      return reject(401, "gateway_unauthorized");
+    if (!access.Configured()) return reject(503, "access_policy_unavailable");
+    identity = access.Authenticate(headers.authorization);
+    if (!identity.Allowed()) return reject(401, "gateway_unauthorized");
+    lease.client = identity.Index();
     if (!headers.client_id.empty() || !headers.gateway_token.empty())
       return reject(400, "invalid_client_header");
     if (!Route(method, path, &lease.control))
@@ -483,7 +471,7 @@ void Handle(Connection& client, const Config& config, Capacity& capacity,
       " HTTP/1.1\r\nHost: 127.0.0.1\r\nConnection: close\r\n" +
       "Content-Length: " + std::to_string(body.size()) + "\r\n" +
       "X-Request-Id: " + request_id +
-      "\r\nX-Q4T-Client-Id: " + config.clients[lease.client].id +
+      "\r\nX-Q4T-Client-Id: " + std::string(identity.Id()) +
       "\r\nX-Q4T-Gateway-Token: " + binding.token + "\r\n" +
       (headers.content_type.empty()
            ? ""
@@ -526,14 +514,26 @@ int Run(const Config& config) {
           config.parent.pid == ::getppid() &&
           OpenProcess(config.parent, &parent).ok());
   server::HttpListeners listeners;
+  ClientAccess access;
+  AccessPolicy initial;
+  for (const auto& client : config.clients) {
+    const auto digest = AccessKeyDigest(client.key);
+    initial.clients.push_back({client.id, {digest}});
+    initial.key_owners.emplace(digest, client.id);
+  }
+  if (!config.access_deferred)
+    Require(access.Configure(std::move(initial)).ok());
   IngressAdmin admin;
   Require(admin.Open(config.address + "-admin"));
+  AccessAdmin access_admin;
+  Require(access_admin.Open(config.address + "-access", config.parent.pid));
   std::unique_ptr<Credentials> credentials;
   if (config.tls) {
     credentials = std::make_unique<Credentials>(config.credentials);
     do {
       credentials->Step(false);
-      admin.Step(credentials.get());
+      admin.Step(credentials.get(), &access);
+      access_admin.Step(access);
       if (credentials->FinishedInitial()) break;
       pollfd parent_event{parent.Get(), POLLIN, 0};
       if (::poll(&parent_event, 1, 10) > 0) return 1;
@@ -546,7 +546,8 @@ int Run(const Config& config) {
   std::array<Slot, 32> slots;
   while (!stopped.load(std::memory_order_relaxed)) {
     if (credentials) credentials->Step(reload_credentials.exchange(false));
-    admin.Step(credentials.get());
+    admin.Step(credentials.get(), &access);
+    access_admin.Step(access);
     pollfd events[2] = {{listeners.Public(), POLLIN, 0},
                         {parent.Get(), POLLIN, 0}};
     const int ready = ::poll(events, 2, 100);
@@ -582,7 +583,7 @@ int Run(const Config& config) {
         try {
           Connection client(slot->fd);
           if (!config.tls || client.Handshake(context))
-            Handle(client, config, capacity, budget, source, &started);
+            Handle(client, config, capacity, access, budget, source, &started);
         } catch (...) {
           if (!started && !config.tls) {
             constexpr std::string_view failure =

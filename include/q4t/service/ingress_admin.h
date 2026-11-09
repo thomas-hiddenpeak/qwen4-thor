@@ -4,6 +4,7 @@
 #include <string>
 
 #include "q4t/service/guardian_process.h"
+#include "q4t/service/ingress_access.h"
 #include "q4t/service/ingress_credentials.h"
 
 namespace q4t::service::ingress {
@@ -13,7 +14,7 @@ namespace q4t::service::ingress {
 class IngressAdmin {
  public:
   bool Open(const std::string& address);
-  void Step(Credentials* credentials);
+  void Step(Credentials* credentials, ClientAccess* access = nullptr);
 
  private:
   struct Peer {

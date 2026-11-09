@@ -1,0 +1,66 @@
+{
+  "README.md": {
+    "bytes": 1303,
+    "sha256": "b94ba289aa4ca69f4673a269958dd678447553ad9e44dd4c504fd750435cfbd1"
+  },
+  "archive_native.py": {
+    "bytes": 3286,
+    "sha256": "4203cddc25642c588ad7fc81441a12e9648e028704cd544c38a502b5df5886d5"
+  },
+  "build-04/command.json": {
+    "bytes": 135,
+    "sha256": "3bcbb03cbd88442cbd6a1d603e366170eac7e38f93fc222751b11fc995b3f9fc"
+  },
+  "build-04/result.json": {
+    "bytes": 53,
+    "sha256": "c0069c08196b2f999acbbcf6944b283f5e160fa29556b4455073476e04a1148b"
+  },
+  "build-04/sources.json": {
+    "bytes": 736,
+    "sha256": "3e6722a1b952f678b68ac015e9192bf2ea37e75e35589592bcb808e95569bf67"
+  },
+  "build-04/stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "build-04/stdout.txt": {
+    "bytes": 1884,
+    "sha256": "d6d0043f6e88b46a3be266e6c31ece196c17d3c47ca94cec9ba53e172684afdc"
+  },
+  "decision.json": {
+    "bytes": 597,
+    "sha256": "c7309f19ffe9177b0e3e00e9ef1ea3a815ab09a3ae4e29462168d6df493a296e"
+  },
+  "identity.json": {
+    "bytes": 1853,
+    "sha256": "b3a59c5a171615f1d33493d429faa53a93794d7d2af73b98cb0fcc56f857615f"
+  },
+  "native-cpu-01/0-stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "native-cpu-01/0-stdout.txt": {
+    "bytes": 153,
+    "sha256": "c5fd9a67ddd0ab53e378c0758f3741944ec60e118a13acdc0f9548c874c0c046"
+  },
+  "native-cpu-01/1-stderr.txt": {
+    "bytes": 1502,
+    "sha256": "79b6ffb094f8f4b46fb827cffe17bd679bc473dc060d253160e72d4565b531f1"
+  },
+  "native-cpu-01/1-stdout.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "native-cpu-01/commands.json": {
+    "bytes": 326,
+    "sha256": "d7106889ed6904be416cea77591320602ac128ebe499543c854783f83d276551"
+  },
+  "native-cpu-01/result.json": {
+    "bytes": 159,
+    "sha256": "c196cf7c0f372536b5ee2cded7c48a0d40a1bb1d1048263363260a832645120b"
+  },
+  "native-cpu-01/sources.json": {
+    "bytes": 548,
+    "sha256": "2a7d4a01c17abb699daf6ac5457789187ae8b608b5168b6839a94d46d747b0b9"
+  }
+}

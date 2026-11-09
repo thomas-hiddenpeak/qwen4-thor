@@ -60,10 +60,16 @@ class ClientAccess {
  public:
   Status Configure(AccessPolicy policy);
   Status Replace(AccessPolicy policy, uint64_t expected_revision);
+  // A durable journal reader may catch up several committed revisions. Stable
+  // slots and the complete historical ownership map must still extend ours.
+  Status Synchronize(AccessPolicy policy, uint64_t expected_revision);
+  bool Configured() const { return current_.load() != nullptr; }
   AccessIdentity Authenticate(std::string_view authorization) const;
   io::Json Describe() const;
 
  private:
+  Status Publish(AccessPolicy policy, uint64_t expected_revision,
+                 bool contiguous);
   std::atomic<std::shared_ptr<const AccessPolicy>> current_;
   std::mutex writer_;
 };
