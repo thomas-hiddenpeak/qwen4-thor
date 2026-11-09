@@ -15970,7 +15970,10 @@
             "fine-tune",
             "vision",
             "user_data",
-            "evals"
+            "evals",
+            "assistants_output",
+            "batch_output",
+            "fine-tune-results"
           ]
         },
         "status": {
@@ -16128,26 +16131,10 @@
           "type": "boolean"
         },
         "first_id": {
-          "anyOf": [
-            {
-              "type": "string",
-              "minLength": 1
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "last_id": {
-          "anyOf": [
-            {
-              "type": "string",
-              "minLength": 1
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         }
       },
       "required": [
@@ -16157,7 +16144,41 @@
         "first_id",
         "last_id"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "data": {
+                "maxItems": 0
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "first_id": {
+                "const": ""
+              },
+              "last_id": {
+                "const": ""
+              },
+              "has_more": {
+                "const": false
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "first_id": {
+                "minLength": 1
+              },
+              "last_id": {
+                "minLength": 1
+              }
+            }
+          }
+        }
+      ]
     },
     "file_deleted": {
       "type": "object",
@@ -18255,6 +18276,7 @@
       "SDK-added output_text is optional on wire",
       "FileObject.purpose includes evals already accepted by the SDK FilePurpose input; preserve the actual purpose",
       "Files multipart uses binary file and bracket-encoded expires_after fields; explicit native capacity and storage quotas remain separate",
+      "Files HTTP list uses string first_id/last_id; native empty pages use empty strings and has_more=false, not nullable cursors from other list resources",
       "official HTTP examples use usage:null for active/cancelled responses; completed/incomplete require actual usage",
       "native store echo and native response error codes",
       "count endpoint uses actual model templates; native create also accepts the model-owned friendly/pragmatic personality presets from the count SDK contract",

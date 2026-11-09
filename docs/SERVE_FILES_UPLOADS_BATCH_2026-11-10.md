@@ -164,3 +164,7 @@ A09.3 实际业务驱动已成组准备：冻结1模型/3生成/32 Files操作/6
 A09.3 首实际1启动/2生成/8 Files操作/58.855秒，57 NVML全OK并独立清理。Files/TLS/真实文档工具闭环已过；存储暂停真实504/object_timeout被驱动错判503，生产不改。冻结1项CPU后仅补1启动/1生成/300秒，累计2/3/32 Files/600秒；原件保留，默认A08保持，全部任务继续。
 
 续验驱动只修504精确错误判定，复制原专属对象状态并校验所有旧证据/来源身份、清理和NVML；拒绝任何生产漂移。额外模型启动用于只续余下一次生成，已完成两次不重做。
+
+Files续验1启动/1生成/6 Files操作/40.253秒已完成同PID存储超时SSE、原文件恢复与删除，40 NVML全OK并独立清理；最后空列表因声明误用nullable非空游标被schema拒绝。官方Files合同为string，修声明并核对所有真实Files响应，生产引擎不改、不追加GPU。累计2启动/3生成/99.108秒，后续交付及全部任务继续。
+
+[官方Files列表](https://developers.openai.com/api/reference/resources/files/methods/list)明确first_id/last_id为string。空页原生返回空字符串，schema禁止把空页声称has_more或伪造游标；输出purpose含SDK既有生成结果专用值，上传仍限输入6用途。冻结`FilesContractTests.test_actual_empty_file_page_and_all_business_file_outputs`，对两个业务目录原wire及负例复核，声明修复不改引擎/入口/模型合同。

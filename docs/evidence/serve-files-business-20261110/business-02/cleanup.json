@@ -1,0 +1,70 @@
+{
+  "owned": {
+    "1265695": {
+      "state": "R",
+      "ppid": 1265690,
+      "pgid": 1265690,
+      "start_ticks": 245324715,
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t",
+        "serve",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "19011",
+        "--operations-port",
+        "19012",
+        "--mtp",
+        "--max-seq",
+        "1",
+        "--max-len",
+        "8192",
+        "--max-prefill",
+        "2048",
+        "--max-tokens",
+        "384",
+        "--max-inflight-requests",
+        "8",
+        "--max-queued-requests",
+        "2",
+        "--object-store-dir",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-files-20261110/business-02/objects",
+        "--client-policy-file",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-files-20261110/business-02/client-policy.json"
+      ],
+      "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t"
+    },
+    "1266529": {
+      "state": "S",
+      "ppid": 1265690,
+      "pgid": 1265690,
+      "start_ticks": 245328239,
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t-ingress",
+        "--config",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-files-20261110/business-02/ingress.json"
+      ],
+      "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t-ingress"
+    },
+    "1266495": {
+      "state": "S",
+      "ppid": 1265695,
+      "pgid": 1265690,
+      "start_ticks": 245328238,
+      "argv": [
+        "q4t-object-worker",
+        "--q4t-object-worker",
+        "1265695",
+        "2147483648"
+      ],
+      "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t"
+    }
+  },
+  "remaining": [],
+  "model_exit": 0,
+  "ports_released": true,
+  "lease_continuously_held": true,
+  "native_port_released": true
+}

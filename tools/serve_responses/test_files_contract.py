@@ -14,6 +14,33 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 class FilesContractTests(unittest.TestCase):
+    def test_actual_empty_file_page_and_all_business_file_outputs(self):
+        root = ROOT/'docs/evidence/serve-files-business-20261110'
+        empty = json.loads((root/'business-02/empty-list.sdk.json').read_text())['result']
+        self.assertFalse(errors(empty, 'file_list'))
+        self.assertEqual(empty, dict(object='list', data=[], has_more=False, first_id='', last_id=''))
+        for change in (dict(first_id=None), dict(last_id='file_fake'), dict(has_more=True)):
+            self.assertTrue(errors(dict(empty, **change), 'file_list'))
+        checked = 0
+        sources = [ROOT/'docs/evidence/serve-files-followup-20261110/business-01', root/'business-02']
+        for directory in sources:
+            for path in directory.glob('*.sdk.json'):
+                value = json.loads(path.read_text()).get('result')
+                if not isinstance(value, dict) or value.get('object') not in ('file', 'list'):
+                    continue
+                shape = 'file_list' if value['object'] == 'list' else (
+                    'file_deleted' if 'deleted' in value else 'file_resource')
+                self.assertFalse(errors(value, shape), path.name)
+                if shape == 'file_list' and value['data']:
+                    self.assertTrue(errors(dict(value, first_id=''), shape))
+                checked += 1
+        self.assertEqual(checked, 8)
+        exemplar = json.loads((sources[0]/'upload-document.sdk.json').read_text())['result']
+        for purpose in ('assistants_output', 'batch_output', 'fine-tune-results', 'evals'):
+            self.assertFalse(errors(dict(exemplar, purpose=purpose), 'file_resource'))
+        # Output-only purposes cannot be smuggled into a create request.
+        self.assertTrue(errors(dict(file='bytes', purpose='batch_output'), 'file_create'))
+
     def test_native_records_and_expiration_match_published_schema(self):
         directory = Path(os.environ['Q4T_TEST_OUTPUT_DIR'])
         values = json.loads((directory/'files-contract.json').read_text())

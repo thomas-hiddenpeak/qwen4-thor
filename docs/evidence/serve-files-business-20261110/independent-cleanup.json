@@ -1,0 +1,8 @@
+{
+  "status": "PASS_INDEPENDENT_CLEANUP",
+  "processes_gone": true,
+  "ports_released": true,
+  "lock_released": true,
+  "nvml_samples": 40,
+  "all_nvml_ok": true
+}

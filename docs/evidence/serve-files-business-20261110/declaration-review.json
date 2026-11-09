@@ -1,0 +1,24 @@
+{
+  "changes": {
+    "docs/serve-application-v1.schema.json": {
+      "before": "92cc0dbe8a8b64a2b7564989b0d654f98586d4a6af137160c49c531acb603a87",
+      "after": "ad17b877e9cbfe0a79001c30dbebd6d7c26f47cc0682200b78b7e041a2c47274"
+    },
+    "tools/serve_responses/build_contract.py": {
+      "before": "9a7c14f4e64a5bf695492bbf5d776a5b5c1e93513796181d9c996db1faf03c09",
+      "after": "7fd06a350592a6d1c812fadfb314a0c8cb3d66ecee8c7d5cf825eaadca0879d0"
+    },
+    "tools/serve_responses/files_contract.py": {
+      "before": "38467413b2605198efa68038775765a63c463b894abb548efb7fc702467c86e0",
+      "after": "657151394f731fc1b00769d321105b67a07e5174837cd0510013c577b4a8dffb"
+    },
+    "tools/serve_responses/test_files_contract.py": {
+      "before": "e9c47b36f3d8cad1f11bfd15ac84fd369837f5fbd7fd03e268adcded323ab620",
+      "after": "a70f2cfc9d1268aca1be34e1d719b454ffede766e66fbd87eadedef0c226c2ce"
+    }
+  },
+  "source": "https://developers.openai.com/api/reference/resources/files/methods/list",
+  "rule": "Files first_id/last_id are strings; native empty page emits empty strings. Shared nullable cursor assumption was invalid.",
+  "production_code_changed": false,
+  "extra_gpu": 0
+}

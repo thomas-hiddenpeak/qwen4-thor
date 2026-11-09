@@ -8,20 +8,21 @@ import hashlib
 from pathlib import Path
 
 PURPOSES = ['assistants', 'batch', 'fine-tune', 'vision', 'user_data', 'evals']
+OUTPUT_PURPOSES = PURPOSES + ['assistants_output', 'batch_output', 'fine-tune-results']
 FILE_BYTES = 512*1024**2
 WIRE_BYTES = FILE_BYTES+65536
 SDK_FILES_SHA256 = 'ca78d34f73bef9a683b5fb2bbeb57af219478027b54ee243b611a1d4a12e04d7'
 
 
 def definitions():
-    from tools.serve_responses.build_contract import obj, ref, nullable
+    from tools.serve_responses.build_contract import obj, ref
     identity = dict(type='string', minLength=1)
     expiry = obj(dict(anchor=dict(const='created_at'),
                       seconds=dict(type='integer', minimum=3600, maximum=2592000)),
                  ['anchor', 'seconds'])
     resource = obj(dict(id=identity, object=dict(const='file'),
         bytes=dict(type='integer', minimum=0), created_at=dict(type='integer', minimum=0),
-        filename=dict(type='string', minLength=1), purpose=dict(enum=PURPOSES),
+        filename=dict(type='string', minLength=1), purpose=dict(enum=OUTPUT_PURPOSES),
         status=dict(enum=['uploaded', 'processed', 'error']),
         expires_at=dict(type='integer', minimum=0), status_details=dict(type='string')),
         ['id', 'object', 'bytes', 'created_at', 'filename', 'purpose', 'status'])
@@ -41,8 +42,15 @@ def definitions():
                      order=dict(enum=['asc', 'desc'], default='desc')))
     listing = obj(dict(object=dict(const='list'),
         data=dict(type='array', maxItems=10000, items=ref('file_resource')),
-        has_more=dict(type='boolean'), first_id=nullable(identity), last_id=nullable(identity)),
+        has_more=dict(type='boolean'), first_id=dict(type='string'), last_id=dict(type='string')),
         ['object', 'data', 'has_more', 'first_id', 'last_id'])
+    # Files HTTP describes string cursors, unlike some other list resources.
+    # Empty native pages use empty strings; never invent a usable cursor.
+    listing['allOf'] = [dict(
+        **{'if': dict(properties=dict(data=dict(maxItems=0)))},
+        then=dict(properties=dict(first_id=dict(const=''), last_id=dict(const=''),
+                                  has_more=dict(const=False))),
+        **{'else': dict(properties=dict(first_id=dict(minLength=1), last_id=dict(minLength=1)))})]
     deleted = obj(dict(id=identity, object=dict(const='file'), deleted=dict(const=True)),
                   ['id', 'object', 'deleted'])
     return dict(file_resource=resource, file_create=upload, file_multipart=multipart,

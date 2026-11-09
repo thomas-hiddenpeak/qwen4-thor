@@ -191,6 +191,7 @@ def schema(graph):
             adaptations=['SDK-added output_text is optional on wire',
                 'FileObject.purpose includes evals already accepted by the SDK FilePurpose input; preserve the actual purpose',
                 'Files multipart uses binary file and bracket-encoded expires_after fields; explicit native capacity and storage quotas remain separate',
+                'Files HTTP list uses string first_id/last_id; native empty pages use empty strings and has_more=false, not nullable cursors from other list resources',
                 'official HTTP examples use usage:null for active/cancelled responses; completed/incomplete require actual usage',
                 'native store echo and native response error codes',
                 'count endpoint uses actual model templates; native create also accepts the model-owned friendly/pragmatic personality presets from the count SDK contract',

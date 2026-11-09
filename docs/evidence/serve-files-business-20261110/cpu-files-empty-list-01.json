@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_responses.test_files_contract.FilesContractTests.test_actual_empty_file_page_and_all_business_file_outputs"
+  ],
+  "exit_code": 0,
+  "seconds": 0.1640833793208003
+}
