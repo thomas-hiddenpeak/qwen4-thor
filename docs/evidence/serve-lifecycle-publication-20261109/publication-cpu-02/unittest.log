@@ -1,0 +1,7 @@
+test_generation_copy_after_chmod_before_rename_is_resumable (tools.serve_recovery.test_publication.PublicationTests.test_generation_copy_after_chmod_before_rename_is_resumable) ... ok
+test_generation_partial_with_public_permissions_or_link_is_never_reused (tools.serve_recovery.test_publication.PublicationTests.test_generation_partial_with_public_permissions_or_link_is_never_reused) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.310s
+
+OK

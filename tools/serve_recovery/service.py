@@ -301,7 +301,8 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                  'retention-migrate', 'access-status', 'access-propose', 'access-apply',
                  'access-migrate', 'limits-status', 'limits-propose', 'limits-apply',
                  'limits-migrate', 'usage-status', 'usage-migrate',
-                 'deploy', 'rollback', 'deployment-status'):
+                 'deploy', 'rollback', 'deployment-status',
+                 'publish', 'publish-status', 'publish-resume', 'publish-rollback'):
         command = commands.add_parser(name)
         command.add_argument('--state', type=Path, required=name != 'check')
         command.add_argument('--package', type=Path, default=package, required=package is None)
@@ -340,6 +341,14 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
         if name in ('deploy', 'rollback'):
             command.add_argument('--expected-manifest-sha256', required=True)
             command.add_argument('--request-id', required=True)
+        if name in ('publish','publish-resume','publish-rollback'):
+            command.add_argument('--request-id', required=True)
+        if name in ('publish','publish-rollback'):
+            command.add_argument('--default-root', type=Path, required=True)
+            command.add_argument('--expected-manifest-sha256', required=True)
+            command.add_argument('--expected-revision', type=int, required=True)
+        if name == 'publish':command.add_argument('--service-release',type=Path,required=True)
+        if name == 'publish-rollback':command.add_argument('--generation-sha256',required=True)
     args = parser.parse_args(argv)
     locks = ExitStack()
     try:
@@ -380,6 +389,17 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
             elif args.operation == 'init-resume':
                 from tools.serve_recovery import initialization
                 result = initialization.finish(args.state, package, digest, bundle.verify(package, digest))
+            elif args.operation.startswith('publish'):
+                from tools.serve_recovery import publication
+                if args.operation == 'publish-status':result = publication.status(args.state)
+                elif args.operation == 'publish-resume':
+                    result = publication.execute(args.state,request_id=args.request_id,resume=True)
+                else:
+                    result = publication.execute(args.state,request_id=args.request_id,
+                        root=args.default_root,package=package,digest=digest,
+                        release=getattr(args,'service_release',None),
+                        expected=args.expected_manifest_sha256,revision=args.expected_revision,
+                        generation=getattr(args,'generation_sha256',None))
             elif args.operation in ('deploy', 'rollback', 'deployment-status'):
                 from tools.serve_recovery import deployment
                 result = (deployment.status(args.state) if args.operation == 'deployment-status' else
@@ -484,8 +504,9 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
             return 1
         if args.operation in ('access-status', 'limits-status', 'usage-status') and result.get('durable_error'):
             return 1
-        return int(result.get('guardian_exit_code', 0) != 0 or result.get('state') == 'UNKNOWN')
-    except (OSError, ValueError, RuntimeError) as error:
+        return int(result.get('guardian_exit_code', 0) != 0 or result.get('state') == 'UNKNOWN' or
+                   result.get('status') == 'UNKNOWN')
+    except (OSError, ValueError, RuntimeError, KeyError, TypeError) as error:
         # Fixed error class only: do not print private config or API credentials.
         result = dict(status='FAILED', category=type(error).__name__)
         if args.operation.startswith('access-'):

@@ -33,7 +33,8 @@ V8_SOURCES = tuple(sorted(set(V7_SOURCES) | {'tools/serve_recovery/'+name+'.py' 
      'model_admin', 'usage_manager', 'deployment_policy', 'deployment', 'initialization')}))
 V9_SOURCES = V8_SOURCES  # v9 adds HTTP transport, with unchanged Python inventory.
 SOURCES = tuple(sorted(set(V9_SOURCES) | {'tools/serve_service/capacity.py',
-    'tools/serve_recovery/lifecycle.py'}))
+    'tools/serve_recovery/lifecycle.py', *('tools/serve_recovery/'+name+'.py' for name in
+    ('publication','publication_policy','publication_files','publication_journal'))}))
 LEGACY_EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'nginx')
 EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'q4t-ingress')
 NATIVE_SOURCES = frozenset(('CMakeLists.txt', 'tests/host/CMakeLists.txt',

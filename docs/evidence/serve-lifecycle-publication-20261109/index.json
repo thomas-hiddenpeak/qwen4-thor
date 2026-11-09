@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "files": {
+    "README.md": "3e71d1a47c5a7fd49a9fd680b286a9ac447252ed912a2e3c5ade5f0eee3af318",
+    "publication-cpu-01/plan.json": "16e5555d82e216b2f90f7a552c2eb7d6b0624cffde552a5e2b38337fa722a376",
+    "publication-cpu-01/result.json": "c46ed9be5abe8ece868cd64c5ba4d0a45e581d691213d953c95fc67c8e63782b",
+    "publication-cpu-01/run.py": "a114bd9111affc216e73dcb0a312adff14398a95f9a9e30df194d2fc652875af",
+    "publication-cpu-01/sources.json": "bcebaa75d02846755989b036c5d92414c9ba259446838cc7f41e1df2c4ed1001",
+    "publication-cpu-01/unittest.log": "25a96e54f8c90e0a10d5a3f9f0a4156e7907659d7f702ee86ad9c983a20c722f",
+    "publication-cpu-02/plan.json": "12de56628d06ea518c1502b7935d12575c89a804ed6d9ec3cb08091e42bdbc23",
+    "publication-cpu-02/result.json": "10927ad75f5144dac848174b8a8ab4db44e42b988eb41cb879ef8f7965588f30",
+    "publication-cpu-02/run.py": "f7a9c8c760f8f85b48ca99c1939b0b01294f3aa4498736aa57a879dd30a244ae",
+    "publication-cpu-02/sources.json": "75e03dc3d79aeb3f075d4678909b5cb8e713bd627089c152917715700c89f5a0",
+    "publication-cpu-02/unittest.log": "6d6380655f56e73bd663e83f3f4230e8c9c3569af9895929c4265869e5a78331"
+  }
+}

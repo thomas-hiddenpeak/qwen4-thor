@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "tests": [
+    "tools.serve_recovery.test_publication.PublicationTests.test_publish_replay_and_actual_old_generation_rollback_preserve_business_state",
+    "tools.serve_recovery.test_publication.PublicationTests.test_default_switch_fault_resumes_and_fences_new_launch",
+    "tools.serve_recovery.test_publication.PublicationTests.test_process_exit_during_selection_releases_ownership_and_resumes",
+    "tools.serve_recovery.test_publication.PublicationTests.test_pointer_rename_before_directory_sync_resumes_same_generation",
+    "tools.serve_recovery.test_publication.PublicationTests.test_initial_publication_writer_short_write_retries_without_reset",
+    "tools.serve_recovery.test_publication.PublicationTests.test_initial_publication_policy_short_write_retries_without_reset",
+    "tools.serve_recovery.test_publication.PublicationTests.test_initial_binding_short_write_retries_without_reset",
+    "tools.serve_recovery.test_publication.PublicationTests.test_publication_prepare_short_write_reconstructs_only_same_intent",
+    "tools.serve_recovery.test_publication.PublicationTests.test_publication_finish_short_write_requires_selected_default",
+    "tools.serve_recovery.test_publication.PublicationTests.test_deployment_prepare_short_write_reconstructs_only_same_intent",
+    "tools.serve_recovery.test_publication.PublicationTests.test_deployment_finish_short_write_requires_selected_default",
+    "tools.serve_recovery.test_publication.PublicationTests.test_finish_cannot_be_recovered_when_default_selection_is_unknown",
+    "tools.serve_recovery.test_publication.PublicationTests.test_unrelated_partial_bytes_never_repaired_or_removed",
+    "tools.serve_recovery.test_publication.PublicationTests.test_immutable_intent_short_write_can_only_resume_same_original_request",
+    "tools.serve_recovery.test_publication.PublicationTests.test_generation_copy_after_chmod_before_rename_is_resumable",
+    "tools.serve_recovery.test_publication.PublicationTests.test_identity_acceptance_and_predecessor_rejection_leave_defaults_unchanged",
+    "tools.serve_recovery.test_publication.PublicationTests.test_locks_active_grants_and_uncoordinated_deploy_are_refused",
+    "tools.serve_recovery.test_publication.PublicationTests.test_lost_published_journal_never_rebootstraps_old_initial_intent",
+    "tools.serve_recovery.test_publication.PublicationTests.test_fresh_default_resumes_after_initial_same_generation_selection",
+    "tools.serve_recovery.test_publication.NativePublicationTests.test_real_native_cli_publishes_checks_rolls_back_and_preserves_state",
+    "tools.serve_recovery.test_lifecycle.LifecycleTests.test_check_preserves_all_journals_and_never_launches",
+    "tools.serve_recovery.test_lifecycle.LifecycleTests.test_pending_policy_or_bad_envelope_stays_unknown_without_repair",
+    "tools.serve_recovery.test_deployment.DeploymentTests.test_legacy_upgrade_and_replay_preserve_core_identity_and_all_budgets",
+    "tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency"
+  ],
+  "tests_count": 24,
+  "scope": "N07 default publication, bootstrap and transaction short writes, actual process death and native CLI, isolated CPU lease; affected lifecycle/legacy contracts only",
+  "gpu_starts": 0,
+  "chat_requests": 0
+}

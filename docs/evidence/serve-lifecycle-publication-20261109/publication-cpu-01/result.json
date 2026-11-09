@@ -1,0 +1,13 @@
+{
+  "status": "FAIL",
+  "tests_run": 24,
+  "failures": [],
+  "errors": [
+    {
+      "test": "test_generation_copy_after_chmod_before_rename_is_resumable (tools.serve_recovery.test_publication.PublicationTests.test_generation_copy_after_chmod_before_rename_is_resumable)",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_publication.py\", line 213, in test_generation_copy_after_chmod_before_rename_is_resumable\n    self.assertTrue(fired);self.publish();self.check_complete()\n                           ^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_publication.py\", line 67, in publish\n    return p.execute(self.state,request_id=self.request,root=self.root,package=self.target,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/publication.py\", line 263, in execute\n    intent = prepare_intent(state,desc,package,digest,release,root,expected,\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/publication.py\", line 114, in prepare_intent\n    current = files.snapshot(root, state, desc, desc['package'], desc['manifest_sha256'],\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/publication_files.py\", line 174, in snapshot\n    copy_file(source, target/name, value['files'][name], executable=name == 'q4t')\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/publication_files.py\", line 132, in copy_file\n    store.check_file(check)\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/store.py\", line 57, in check_file\n    ledger.require(stat.S_ISREG(info.st_mode) and info.st_nlink == 1 and\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/ledger.py\", line 40, in require\n    raise LedgerError(message)\ntools.serve_recovery.ledger.LedgerError: private regular file required\n"
+    }
+  ],
+  "elapsed_seconds": 9.562104889191687,
+  "gpu_starts": 0
+}

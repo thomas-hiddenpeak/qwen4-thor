@@ -47,6 +47,11 @@ def read_descriptor(state):
 
 
 def ready(state, desc):
+    if (os.path.lexists(Path(state)/'service-publication.json') or
+            os.path.lexists(Path(state)/'service-publication') or
+            os.path.lexists(Path(state)/'service-publication-intents')):
+        from tools.serve_recovery import publication
+        publication.ready(state, desc)
     if desc['version'] == 1 and not os.path.lexists(Path(state)/Store.marker_name):
         return
     with access_store.open_bound(access_store.binding(state, desc['service_id']), Store) as current:
@@ -122,19 +127,42 @@ def consistent_clients(access, limits, target):
         {c['id'] for c in access['clients']} <= set(ids), 'target client contract changed')
 
 
-def switch(state, package, digest, *, expected, request_id, rollback=False):
+def switch(state, package, digest, *, expected, request_id, rollback=False,
+           _publication=None, _writer=None, _locked_core=None):
     ledger.require(ledger.identifier(request_id) and type(expected) is str and
                    ledger.HASH.fullmatch(expected), 'deployment request identity')
     state = Path(state).absolute()
     desc = read_descriptor(state)
     binding = access_store.binding(state, desc['service_id'])
     target_path = str(Path(package).resolve(strict=True))
+    writer = Store if _writer is None else _writer
+    ledger.require(_writer is None or _publication is not None,
+                   'deployment journal recovery requires publication ownership')
     # These locks exclude both new launchers and an already running Guardian.
     # Core writer ownership also excludes a stale pre-upgrade launcher worker.
     with ExitStack() as stack:
-        stack.enter_context(claim(state))
-        stack.enter_context(claim(state, name='guardian.lock'))
-        core = stack.enter_context(store.Store(state, desc['service_id']))
+        if _publication is None:
+            stack.enter_context(claim(state, shared=True, name='publication.lock'))
+            ledger.require(not os.path.lexists(state/'service-publication.json') and
+                not os.path.lexists(state/'service-publication') and
+                not os.path.lexists(state/'service-publication-intents'),
+                'published service requires coordinated default publication')
+        if _locked_core is None:
+            stack.enter_context(claim(state))
+            stack.enter_context(claim(state, name='guardian.lock'))
+            core = stack.enter_context(store.Store(state, desc['service_id']))
+        else:
+            ledger.require(_publication is not None and _locked_core.directory == state and
+                _locked_core.service_id == desc['service_id'], 'publication ownership differs')
+            held = os.fstat(_locked_core.lock_fd);named = (state/store.LOCK).lstat()
+            directory = os.fstat(_locked_core.dir_fd);current_directory = state.lstat()
+            ledger.require(not _locked_core.poisoned and
+                (held.st_dev,held.st_ino) == (named.st_dev,named.st_ino) and
+                (directory.st_dev,directory.st_ino) ==
+                    (current_directory.st_dev,current_directory.st_ino) and
+                _locked_core.read_state(store.STATE) == _locked_core.state,
+                'publication core ownership changed')
+            core = _locked_core
         ledger.require(core.state['desired'] == 'STOPPED' and not any(core.state['active'].values()),
                        'deployment requires durable STOPPED')
         ledger.require(read_descriptor(state) == desc, 'deployment descriptor raced')
@@ -143,8 +171,8 @@ def switch(state, package, digest, *, expected, request_id, rollback=False):
                            'missing established deployment journal')
             # Verify the new package before creating a durable transaction.
             check_target(desc, dict(desc, package=target_path, manifest_sha256=digest))
-            access_store.bootstrap_bound(binding, policy.initial(desc), Store)
-        journal = stack.enter_context(access_store.open_bound(binding, Store))
+            access_store.bootstrap_bound(binding, policy.initial(desc), writer)
+        journal = stack.enter_context(access_store.open_bound(binding, writer))
         value = journal.head['state']['policy']
         journals = {}
         if value['phase'] == 'stable':
@@ -154,6 +182,8 @@ def switch(state, package, digest, *, expected, request_id, rollback=False):
                     value['history'] and value['history'][-1]['manifest_sha256'] == expected,
                     'deployment idempotency conflict')
                 bundle.verify(desc['package'], desc['manifest_sha256'])
+                if _publication is not None:
+                    _publication(value['history'][-1], desc)
                 return dict(policy.describe(value), switched=True, replayed=True, automatic_start=False)
             ledger.require(desc['manifest_sha256'] == expected and
                 all(d.get('deployment_id') != request_id for d in value['history']),
@@ -191,6 +221,11 @@ def switch(state, package, digest, *, expected, request_id, rollback=False):
         consistent_clients(journals['access'].head['state']['policy'],
                            journals['limits'].head['state']['policy'], value['target'])
         write_descriptor(state, value['target'])
+        # All launchers that understand v8/v9 already reject this prepared
+        # phase. Publish the coherent default generation before finalizing it.
+        # An exception deliberately leaves a resumable prepared transaction.
+        if _publication is not None:
+            _publication(value['current'], value['target'])
         candidate = policy.finish(value)
         journal.transact(str(uuid.uuid5(uuid.UUID(request_id), 'finish')), value['revision'], candidate)
         ledger.require(read_descriptor(state) == candidate['current'], 'deployment commit differs')

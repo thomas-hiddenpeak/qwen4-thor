@@ -55,6 +55,8 @@ def selected_state(state, package, digest):
                        'deployment needs resume')
     else:
         ledger.require(desc['version'] == 1, 'deployment journal unavailable')
+    from tools.serve_recovery import publication
+    if publication.present(state):publication.ready(state,desc)
     return desc
 
 

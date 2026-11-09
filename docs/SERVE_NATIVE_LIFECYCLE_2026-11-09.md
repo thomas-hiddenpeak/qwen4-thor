@@ -56,3 +56,77 @@ argv 与观察合同、包身份/历史版本、客户端公平容量和 CLI 参
 C++ 分派、独立解释器、prepare/init/check/deploy/rollback/status，
 损坏身份拒绝、只读未知提交及 reload 生效与持久提交分离。另通过
 新入口只读 check/status 当前真实默认，不加载模型。
+
+## 发布事务的实现合同（开发中）
+
+- 每代固定 ELF、引擎元数据、服务包指针和服务元数据；默认四入口
+  指向同一个 current 选择点。读取者固定代并核验身份，不声称跨
+  多次独立 open 能获得同一瞬间快照。
+- publish 复用 STOPPED 部署事务：先持久 prepared，再切默认代，
+  最后完成部署选择。已有 v8/v9 启动器也拒绝 prepared 部署；
+  中断后同请求/前驱可恢复，不能无条件清 pending 或恢复旧业务账本。
+- 先核验接受决定及新旧不可变包，保留旧默认代。首迁移先保持
+  旧代、逐个转换别名，全部目录落盘后才切新代。当前程序和服务
+  包自身身份不匹配时原生入口拒绝执行。
+- 发布具有独立持久 intent/receipt、CAS 和有界历史，与全局租约、
+  服务部署/Guardian/核心写锁协调。不会在发布时自动启动或停止
+  模型；未 STOPPED 或锁忙时明确失败。原生状态查询揭示 pending。
+- 普通 deploy/rollback 在已关联默认发行后须走协调发布，避免
+  只改服务描述符；提供 publish/status/resume/rollback 的自有命令。
+  回退选取真实保留代，保持当前 Key/限额/用量与核心预算。
+- 外层发布阶段与默认指针切换不是一个文件操作；提交未知时不能
+  当成功，入口用部署阶段和发布身份一起判断，续接验证每个前驱。
+
+先完成 policy、代快照/持久切换、部署回调及 CLI 再冻结针对 CPU
+用例。随后同租约组合模型短验；当前仅开始开发，尚无发布测试。
+
+发布恢复必须覆盖短写：不可变 request intent 先落盘，再改变发布
+journal；只对同一请求、同一前驱的合法字节前缀续写。prepared 后
+的 finish 恢复须先核对/续接部署和默认选择，不能仅凭 partial 文件
+推定已发布。发布代内复制服务接受记录，原路径只作来源，不作为
+回退时唯一必需文件。当前已实现 policy/文件层与部署回调，协调器、
+短写恢复、CLI 和测试仍在开发，不能把部分代码当 N07 完成。
+
+## 第三组执行清单
+
+发布开发已成组，冻结 24 项 CPU，具体名称见
+`.q4t-work/serve-lifecycle-20261109/publication-cpu-01/plan.json`。
+涵盖发布及部署 prepare/finish 短写、初始 writer/policy/绑定短写、
+不可变意图续接、未知字节拒绝、指针 fsync/进程直接退出、
+实际原生 CLI 发布/回退、锁/活动状态和旧代接受记录保持。
+仅用独立 CPU 锁及合成资产；0 模型/Chat/GPU，随后真实组合短验。
+
+第三组结果：25 个不同 CPU 最终通过，26 次执行；首次 23/24，
+拷贝完整改只读后未 rename 的中断误用 0600 账本检查，单独修正
+制品权限并补验失败与权限负控两项。真实 CLI 发布/回退通过，
+原件见 [发布 CPU 证据](evidence/serve-lifecycle-publication-20261109/README.md)。
+
+## 原生发布命令
+
+本组新构建/随包 ELF 提供 `q4t service publish`、`publish-status`、
+`publish-resume`、`publish-rollback`。当前默认在真实业务接受前保持
+N05，首次迁移使用新构建的入口；不能要求旧 ELF 识别新的命令。
+
+发布须指定 `--state`、`--default-root`、目标 `--package` 和
+`--manifest-sha256`、已接受的 `--service-release`、当前
+`--expected-manifest-sha256`、`--expected-revision` 及唯一
+`--request-id`。首次 publication revision 为 0，后续从
+`publish-status` 读取。服务必须已确认 STOPPED；发布不会隐式停止
+或启动。全局租约与部署/Guardian/核心锁贯穿至最后接受回执。
+
+中断后用相同入口执行 `publish-resume --state ... --request-id ...`。
+若不可变请求本身还未完整提交，重复原完整 publish 参数；只有该
+请求的合法字节前缀可续写。未知内容、前驱改变或丢失已发布账本
+明确失败并保留现场，不删除 pending、不恢复旧业务预算。
+
+`publish-rollback` 使用保留历史中的 `--generation-sha256` 及上述
+state/root/CAS/新 request ID。它恢复旧版固定代码/元数据，保留当前
+密钥/限额/用量与重启预算；状态仍 STOPPED。已关联默认发行的服务
+禁止用普通 deploy/rollback 单独改变描述符。旧时代工具不能识别
+新包时，从当前合格入口选择目标，不从旧包执行跨代前向切换。
+
+每代包含程序、引擎元数据、服务包指针、服务元数据和接受记录副本。
+默认四入口指向同一个代选择点。已有物理 service 目录不会被隐式
+搬走；初次迁移要求现有一致的服务符号链接，或一个新发行目录。
+每个服务保留最多 32 代、128 个不可变请求和最近 16 次选择历史；
+达到上限明确失败，后续统一资源治理仍须实现安全保留/清理。

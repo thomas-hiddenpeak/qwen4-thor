@@ -1,0 +1,15 @@
+{
+  "tools/serve_recovery/publication.py": "a3211f3c1e117f0f7922fa8f3ddaed7aaeab36d9293ae4a3324f8f78930b0205",
+  "tools/serve_recovery/publication_files.py": "4da198a7c8061e1c4eb128258c0fa89b307d0fb732a513d1120476cc2158abc5",
+  "tools/serve_recovery/publication_policy.py": "2d5d71e710b85aeb8410ccf9f7d74d05e4995396299042eccaef5b099562b979",
+  "tools/serve_recovery/publication_journal.py": "9cc2d106032cb44b8aa3cde8b662cc81468ab649d1df92ddb4064df79096aa3f",
+  "tools/serve_recovery/deployment.py": "b6b4b546f4a8269450c11106a9d178e4491196560f1d52062a61b592970cba3d",
+  "tools/serve_recovery/lifecycle.py": "bea9569eb42352ad8ebbca4a1513de073bb1c83ce8725962c1102d8982d7e2e2",
+  "tools/serve_recovery/service.py": "e9abdd1cc76c34439e209a6e982c78b6f9962e2f30a70b072217093a0e34828b",
+  "tools/serve_recovery/bundle.py": "866da0abb232f9468f6590265398310c8c7aa467816fd3bcd9a41cd319dd08d2",
+  "tools/serve_recovery/access_store.py": "fe2b32d8c9127955c40693053e2576012d64b89b747702e56cd98e55b3fa2753",
+  "tools/serve_recovery/test_publication.py": "e7d20fe17e76084dfece4839282980ab013272bbb1cd09ea1e4516ad48ece4c6",
+  "tools/serve_recovery/test_lifecycle.py": "e1660eb0e0312ca8d00ff9aa33d518aed7184eddc69bbc97c2564f9aefd57157",
+  "tools/serve_recovery/test_deployment.py": "71a164d0b4c3e1ec0fe9fe83d6501b9498d58bd48eb7d8437a640286844ebbe3",
+  "tools/serve_recovery/build_tools.py": "86fb140de1b0873b962146f6822511fdbbdef22cf6ba3a8914efa516600cf218"
+}
