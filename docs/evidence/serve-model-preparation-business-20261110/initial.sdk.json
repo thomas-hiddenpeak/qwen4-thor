@@ -1,0 +1,97 @@
+{
+  "ok": true,
+  "result": {
+    "id": "resp_ab27f739748992c2ad38ca3ed147b9d6",
+    "object": "response",
+    "created_at": 1794293860,
+    "completed_at": 1794293874,
+    "status": "completed",
+    "error": null,
+    "incomplete_details": null,
+    "output": [
+      {
+        "id": "msg_d0185c33121b87861ded6042e9802abf",
+        "type": "message",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "{\"value\":42}",
+            "annotations": [],
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed"
+      }
+    ],
+    "usage": {
+      "input_tokens": 856,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens": 176,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 1032
+    },
+    "model": "qwen3.8-flash-next",
+    "instructions": null,
+    "metadata": {},
+    "temperature": 0,
+    "top_p": 1,
+    "parallel_tool_calls": true,
+    "tools": [],
+    "tool_choice": "auto",
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "file_value",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "verbosity": "medium"
+    },
+    "reasoning": {
+      "effort": "none",
+      "context": "all_turns",
+      "mode": "standard",
+      "summary": null
+    },
+    "store": true,
+    "background": false,
+    "max_output_tokens": 128,
+    "max_tool_calls": null,
+    "previous_response_id": null,
+    "prompt_cache_options": {
+      "mode": "implicit",
+      "ttl": "30m"
+    },
+    "prompt_cache_retention": "in_memory",
+    "service_tier": "default",
+    "truncation": "disabled",
+    "top_logprobs": 0,
+    "access_programs": null,
+    "output_text": "{\"value\":42}"
+  },
+  "sdk_version": "7.47.0",
+  "exchanges": [
+    {
+      "url": "http://127.0.0.1:19031/v1/responses",
+      "method": "POST",
+      "body": "{\"model\":\"qwen3.8-flash-next\",\"temperature\":0,\"reasoning\":{\"effort\":\"none\"},\"max_output_tokens\":128,\"text\":{\"format\":{\"type\":\"json_schema\",\"name\":\"file_value\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"value\":{\"type\":\"integer\"}},\"required\":[\"value\"],\"additionalProperties\":false}}},\"store\":true,\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_file\",\"filename\":\"values.csv\",\"file_data\":\"bmFtZSx2YWx1ZQphbHBoYSw0MgpiZXRhLDcK\"},{\"type\":\"input_text\",\"text\":\"Read the attached table. Return alpha's value in the JSON value field.\"}]}]}"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "protected_defaults_unchanged": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": true,
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": true,
+    "/home/rm01/models/dev/qwen4-thor/build/service.release.json": true,
+    "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": true
+  },
+  "candidate_sha256": "2e896950c16e0e3344e3586fa25054bd9e8138da0b8c7e8f1be37316e570a4a8",
+  "sources_unchanged": true,
+  "owned_identities_remaining": [],
+  "lock_available_at_observation": true,
+  "ports_released_by_driver": true,
+  "guard_status": "COMPLETED"
+}

@@ -1,0 +1,13 @@
+{
+  "generations": 4,
+  "model_steps": 6,
+  "original_csv_sha256": "66814afaa0478832bfb0abc7d51d68c3d219697c90f57115d13a4274cefd1f76",
+  "actual_model_preparation": true,
+  "frozen_previous_summary_reused": true,
+  "actual_background_preparation": true,
+  "sse_lifecycle": true,
+  "exact_generation_rpm_tpm": true,
+  "same_model_ordinary_chat": true,
+  "default_unchanged": true,
+  "performance_claim": false
+}

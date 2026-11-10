@@ -1,0 +1,10 @@
+{
+  "status": "PASS_RESPONSES_FILE_PREPARATION_BUSINESS",
+  "counts": {
+    "starts": 1,
+    "chats": 4,
+    "controls": 236
+  },
+  "seconds": 69.94938183715567,
+  "binary_sha256": "2e896950c16e0e3344e3586fa25054bd9e8138da0b8c7e8f1be37316e570a4a8"
+}
