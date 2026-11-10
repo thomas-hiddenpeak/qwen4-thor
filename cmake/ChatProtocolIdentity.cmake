@@ -270,6 +270,7 @@ set(protocol_inputs
   src/server/progress_transport.cpp
   include/q4t/server/chat_server.h
   include/q4t/server/request_json.h
+  include/q4t/server/request_limits.h
   include/q4t/server/output_schema.h
   include/q4t/server/output_constraints.h
   include/q4t/server/structured_decoder.h

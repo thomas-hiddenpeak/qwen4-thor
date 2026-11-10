@@ -104,7 +104,7 @@ ObjectReply HandleConversationRequest(ObjectStore& objects,
   }
   Json request = Object();
   if (method == "POST" && !body.empty()) {
-    auto status = io::ParseJson(body, &request, true, kSchemaJsonLimits);
+    auto status = io::ParseJson(body, &request, true, kApplicationJsonLimits);
     if (!status) return Invalid(status.message(), "body");
     if (collection && request.IsNull()) request = Object();
   }

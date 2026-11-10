@@ -11,6 +11,10 @@
 #include <thread>
 #include <vector>
 
+#include "q4t/server/file_input.h"
+#include "q4t/server/request_json.h"
+#include "q4t/trace/sha256.h"
+
 namespace {
 
 bool Read(const std::string& wire, std::string* body) {
@@ -245,6 +249,93 @@ Q4T_TEST(http_body_capacity_and_trailing_bytes) {
   Q4T_CHECK(Read("POST / HTTP/1.1\r\nHost: local\r\n"
                  "Content-Length: 2\r\n\r\n{}trailing", &body));
   Q4T_CHECK(body == "{}");  // Caller closes without dispatching another request.
+  return true;
+}
+
+Q4T_TEST(http_application_inline_50m_preserves_original_decoded_bytes) {
+  using namespace q4t::server;
+  // Real 50,000,000-byte binary source; the document decoder is deliberately
+  // outside this transport/acquisition test. Two source bytes need one pad.
+  std::string encoded(4 * ((kFileInputBytes + 2) / 3), 'A');
+  encoded.back() = '=';
+  std::string payload =
+      R"({"input":[{"role":"user","content":[{"type":"input_file",)"
+      R"("filename":"capacity.bin","file_data":")" +
+      encoded + R"("}]}]})";
+  std::string body;
+  Q4T_CHECK(
+      Read("POST /v1/responses HTTP/1.1\r\nHost: local\r\n"
+           "Content-Length: " +
+               std::to_string(payload.size()) + "\r\n\r\n" + payload,
+           &body));
+  Q4T_CHECK(body == payload && body.size() < kChatBodyBytes);
+  q4t::io::Json request;
+  Q4T_CHECK(q4t::io::ParseJson(body, &request, true, kApplicationJsonLimits));
+  const auto& part =
+      request.GetArray("input")->array[0].GetArray("content")->array[0];
+  FileInputSource source;
+  Q4T_CHECK(
+      ParseFileInputSource(part, FileInputProfile::kResponses, "input", &source)
+          .ok());
+  FileInputBudget budget;
+  FileInputContent content;
+  BinaryAccess access{
+      "capacity",
+      std::chrono::steady_clock::now() + std::chrono::seconds(30),
+      {}};
+  Q4T_CHECK(
+      ReadLocalFileInput(nullptr, access, source, &budget, &content).ok());
+  Q4T_CHECK(content.bytes == std::string(kFileInputBytes, '\0'));
+  Q4T_CHECK(budget.used_bytes == kFileInputBytes && budget.used_files == 1);
+  const auto bytes =
+      std::span(reinterpret_cast<const uint8_t*>(content.bytes.data()),
+                content.bytes.size());
+  Q4T_CHECK(content.sha256 == q4t::trace::HexDigest(q4t::trace::Sha256(bytes)));
+  // The nested tool-argument/schema JSON parser keeps its own 16 MiB bound.
+  q4t::io::Json arguments;
+  Q4T_CHECK(!q4t::io::ParseJson(body, &arguments, true, kSchemaJsonLimits));
+  budget = {};
+  budget.max_bytes = kFileInputBytes - 1;
+  Q4T_CHECK(ReadLocalFileInput(nullptr, access, source, &budget, &content)
+                .http_status == 413);
+  Q4T_CHECK(content.bytes.empty());
+  return true;
+}
+
+Q4T_TEST(http_application_ceiling_and_aggregate_keep_control_independent) {
+  using namespace q4t::server;
+  HttpBodyBudget budget(kAggregateChatBodyBytes),
+      control(kCancelBodyBudgetBytes);
+  {
+    HttpBodyLease first(budget), second(budget), cancellation(control);
+    Q4T_CHECK(first.Acquire(kChatBodyBytes) && second.Acquire(kChatBodyBytes));
+    Q4T_CHECK(cancellation.Acquire(4096));
+    for (const auto* route :
+         {"/v1/chat/completions", "/v1/chat/preflight", "/v1/responses",
+          "/v1/responses/input_tokens", "/v1/responses/compact",
+          "/v1/conversations", "/v1/conversations/conv_1/items"}) {
+      for (const size_t size : {size_t{1}, kChatBodyBytes + 1}) {
+        int fd[2];
+        Q4T_CHECK(socketpair(AF_UNIX, SOCK_STREAM, 0, fd) == 0);
+        const auto wire = "POST " + std::string(route) +
+                          " HTTP/1.1\r\nHost: local\r\nContent-Length: " +
+                          std::to_string(size) + "\r\n\r\n";
+        send(fd[0], wire.data(), wire.size(), MSG_NOSIGNAL);
+        HttpBodyLease lease(budget);
+        HttpRequestHeaders headers;
+        std::string method, path, body;
+        int status = 0;
+        const bool ok = ReadHttpRequest(fd[1], &method, &path, &body, 100,
+                                        &lease, &status, &headers);
+        close(fd[0]);
+        close(fd[1]);
+        Q4T_CHECK(!ok && status == (size == 1 ? 503 : 413));
+        Q4T_CHECK(body.empty() && budget.Used() == kAggregateChatBodyBytes);
+      }
+    }
+    Q4T_CHECK(control.Used() == 4096);
+  }
+  Q4T_CHECK(budget.Used() == 0 && control.Used() == 0);
   return true;
 }
 

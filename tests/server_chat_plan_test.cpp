@@ -274,11 +274,16 @@ Q4T_TEST(chat_config_effective_sources_and_redaction) {
   opts.object_store_dir = "/private-objects";
   opts.max_len = 200000;
   opts.max_tokens = 31;
+  opts.background_max_input_mib = 768;
   opts.supplied_options = {"--max-len"};
   Json response;
   Q4T_CHECK(Parse(EffectiveServeConfigJson(opts, config, true, false, 128),
                   &response));
   Q4T_CHECK(response.GetArray("model_aliases")->array.size() == 2);
+  const auto* limits = response.Find("limits");
+  Q4T_CHECK(limits->GetInt("body_bytes") == 96LL << 20);
+  Q4T_CHECK(limits->GetInt("aggregate_body_bytes") == 192LL << 20);
+  Q4T_CHECK(limits->GetInt("background_input_bytes") == 768LL << 20);
   Q4T_CHECK(response.Find("completions")->GetInt("default_output_tokens") == 16);
   const auto* objects = response.Find("application_state");
   Q4T_CHECK(objects && objects->GetString("directory_source") == "explicit");

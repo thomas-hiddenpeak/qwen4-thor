@@ -591,6 +591,9 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
          Bool(requested.operations_port == 0) + R"(,"body_bytes":)" +
          std::to_string(kChatBodyBytes) + R"(,"aggregate_body_bytes":)" +
          std::to_string(kAggregateChatBodyBytes) +
+         R"(,"background_input_bytes":)" +
+         std::to_string(
+             static_cast<uint64_t>(requested.background_max_input_mib) << 20) +
          R"(,"tokenizer_input_bytes":)" +
          std::to_string(tokenizer.max_input_bytes) + R"(,"tokenizer_tokens":)" +
          std::to_string(tokenizer.max_tokens) +

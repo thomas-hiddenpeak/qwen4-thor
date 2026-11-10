@@ -293,7 +293,7 @@ storage组，以及原字节/数量/展开/累计保留负载、hold期限、单
 
 ## FI03 大inline与私有应用负载（实施中）
 
-普通JSON body/string至多16MiB仍待补齐；物理单对象32MiB上限保留，
+应用body/string的96MiB接线已完成针对性CPU验收；物理单对象32MiB上限保留，
 大应用内容现经私有分块恢复（见下文30项接线验收）。
 50000000原字节的base64约66.7MB，且Responses会保存request/own_input/
 history多处原内容。只提高一层上限、删除原件或以虚构File ID替代均不能
@@ -325,3 +325,24 @@ history多处原内容。只提高一层上限、删除原件或以虚构File ID
 自动应用读写已[30项CPU通过](evidence/serve-object-application-cpu-20261110/README.md)：Chat/Responses/Conversation真实持久状态、公开消息回填、原子批、逻辑分页、内容复用和辅助清理隔离均接通。候选32bdd3cf未发行；继续全部HTTP/JSON/prompt/后台容量、私有快照父引用发布时存在性/身份原子校验、实际业务和新格式兼容回退。上述快照发布校验要防止父提交前保留租约已过期且根已回收，不能接受悬空引用。
 
 私有快照最终发布校验已[23不同CPU接受](evidence/serve-snapshot-publication-cpu-20261110/README.md)：同worker按最终批视图校验存在/归属/SHA/原输入身份，根内容不可变，仅受验证回收器可删除。首回收误拦截失败及定点修复保留；条件单Put回执同步修正。0GPU/默认未变；继续全部受控容量、真实业务/兼容回退和总任务。
+
+## FI03 普通应用输入容量（2026-11-10 CPU接受）
+
+普通HTTP正文上限96MiB、累计192MiB预留；Chat/preflight/Responses/
+input_tokens/Conversation正文采用96MiB累计解码字符串预算。嵌套
+工具参数/schema JSON与Completions解析仍16MiB，控制路由小正文限制
+保持。客户端max_body_bytes、原生入口与可选外部网关body_bytes上限
+同步；既有显式值与网关16MiB默认值不变，部署应显式选择容量。
+
+Prompt变量96MiB；保留变量原件及展开值的结果192MiB，重复展开仍有界；
+定义256KiB不变。后台实际保留输入默认累计512MiB，CLI可选1—2048MiB，
+有效配置可查。该量按JSON序列化及已有文件准备对象计费，既非RSS
+测量也非DRAM保证，执行仍需内存/上下文准入。对象物理/客户端/全局
+配额独立，原来源、提取快照及应用分块都计费；大文件需匹配部署配额。
+
+本组覆盖实际50000000原字节的HTTP/base64解码与模板变量、17MiB
+Conversation公开接口/重启、后台限额/取消释放、原生入口大请求响应
+与较低策略拒绝。没有模型语义、GPU或默认发布结论；统一业务短验、
+格式兼容回退和FI03—FI05全部交付仍继续。
+
+本组[20 C++与5策略/原生入口CPU已接受](evidence/serve-application-capacity-cpu-20261110/README.md)；旧chunked夹具边界失败和单项修复保留，生产候选不变。0GPU/默认字节保持；继续综合业务/兼容回退及全部总任务。

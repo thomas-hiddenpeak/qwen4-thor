@@ -1,0 +1,91 @@
+{
+  "reviewed": {
+    "cmake/ChatProtocolIdentity.cmake": {
+      "before": "494f691076fac4eb0fcee88afc6ba4d56783bc15c9c5360c5b9b411e9f00955d",
+      "after": "7fe854b82efb56b8071f5b7b4016a867a17f591f15fd178793ae3c50cc1ab704"
+    },
+    "include/q4t/server/http_request.h": {
+      "before": "3135504e774692aeecac96077e92495f59c1e293ae4f8b0afd46d2386880dbb0",
+      "after": "2c84737705289d75954f55d41ff1ed810e914fd6087ce3c41b77975f02cd7563"
+    },
+    "include/q4t/server/request_json.h": {
+      "before": "f3fded2db644464f3e187215cfe14ae0280a0099bfbbeca670c7ac4e4492bb72",
+      "after": "db921e7c75126b370d7dcde14ee6ed8108f5eb89618289b2564e4062783e3e3b"
+    },
+    "include/q4t/server/request_limits.h": {
+      "before": null,
+      "after": "551e05c38dc097450da55766fa39ceda75879e7e141385b829aa916e28f9a30a"
+    },
+    "include/q4t/server/responses_jobs.h": {
+      "before": "f7f9ca848549d3d47dd9b382b3153f65d20d30bc3befb59405c0bdf3412a1343",
+      "after": "1d73b7cf39a008f0bbc7a533dcade6197b6234e08da9bc3b3b80451e827ad329"
+    },
+    "include/q4t/server/server_options.h": {
+      "before": "a7172b1d33dd68fdddeec6d10026ba5b9efa0e058d309ee4c35f9028d6b17a16",
+      "after": "f73be30282cc8060212b91263e4ad0da9aa230a5e5f67ba8f9935479962978dd"
+    },
+    "src/main.cpp": {
+      "before": "5080a42dfd7072753018cbf16137f477eeb37a07264088df5d276d10383d514e",
+      "after": "e85ef68c8df36e6e7b1e10bf38c792bb0c10577bff15d38e00fdc1d76f4f9eae"
+    },
+    "src/server/chat_generation.cpp": {
+      "before": "ca254c63b3c4cf5619834de7b35a3d534a67093da19a4e38c82bf9d0a7d2ba6a",
+      "after": "249ab77deab05263e35eb649e36ed84e3fb0581d1ec152eafafb5af44fabdeaa"
+    },
+    "src/server/chat_input_tokens.cpp": {
+      "before": "aa52109b39d58a475b0f2706185326d1cd3c5e3baddcb191fe6905a05f5d7046",
+      "after": "fc994eee27340d6407c5017ac1c2ce22596630b7932136580f1d5e98e437d73c"
+    },
+    "src/server/chat_plan.cpp": {
+      "before": "675caf50ba975c9d8e712ccaf26c29a5014cb0347e2f6f82209ea28acb3c7976",
+      "after": "feda3b33e1e08c27303b00f65918a76a437ee72502a32ae10b1611c8b581d6d1"
+    },
+    "src/server/chat_preflight.cpp": {
+      "before": "4d5b1225c088718475be2d3d6a2aeee550515e87f4e600c7b5c31b5c51d34124",
+      "after": "f7eee8412adcbcaae4f0a319be8350bc9b7ead7f69d8fcb3b12929ff7883074f"
+    },
+    "src/server/chat_responses.cpp": {
+      "before": "13fe1f43c32e93d4a4b34184a1da6ae67b1c6d3fe97adb00334e7342fcf8ed41",
+      "after": "5937c98c629d03b0d451786bb2b94078324d6189935c2e8c3c205da483652ada"
+    },
+    "src/server/chat_server.cpp": {
+      "before": "b79b61deb5585735d495c4089b5da29286d3a4417f689645548f858e3d22d8b8",
+      "after": "37577677783b7a158e177124b57fb2d3d1558cb307054efc0703459c63f0520e"
+    },
+    "src/server/client_policy.cpp": {
+      "before": "97d8ce57dc456dfb1d6929389ebf521fe868e0455f1f88c5e21dadaf7c0a59cc",
+      "after": "d7bb2c4808ddc7929e239b884ff6db142e8f11ed001366fdfa95746a9b0d8780"
+    },
+    "src/server/conversation_api.cpp": {
+      "before": "c017ac5f05c5907c5db0eccec88a9192a782482f8c58f59f1e6203b14e257ac8",
+      "after": "3c8196c30809f764da5cc714b1f89ec7deefab8ecd86942d7f300bac67e96f41"
+    },
+    "src/server/prompt_internal.h": {
+      "before": "20caa7ae054ffc7b2db8408c06f1de300cf12699b283da4c1af59ff62317073d",
+      "after": "171a2463a5117f67e036c9148508f985f4360e143c350e0cb027c3762032e999"
+    },
+    "src/server/prompt_template.cpp": {
+      "before": "54d51d12ec75012e04e78288452aa5c891a06849b3e2fd88056cf7d17b333f29",
+      "after": "ca4a9b18b4de0e1369c88cfd3b579ff5f26af6856aee6e2bb696eb8c24bd9b26"
+    },
+    "src/server/responses_jobs.cpp": {
+      "before": "e5eaf87112d482d23908df7d12b2a4afdec31d63a2fd54f20e29eebfdd206832",
+      "after": "fb2e8bbc43c57905d9bd18d58d3b386ca2f46d376c1164d02ab9da248b31b41c"
+    },
+    "src/server/server_options.cpp": {
+      "before": "4fbc20dae3d0fbe1eb2a6ebb4a4b7d315f883ddd15fee7dd8ddf3ebc372fb882",
+      "after": "ba928033213a34066d8ddf3e775357b417e4bcb72569e41c2fac757cf805df12"
+    },
+    "tools/serve_gateway/client_policy.py": {
+      "before": null,
+      "after": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221"
+    },
+    "tools/serve_gateway/gateway.py": {
+      "before": "bf27cec345bbd9cf57359f66f7cd252cd03cb4b202d4ee7f9118e96835c0ce22",
+      "after": "13172409f808e0fc45b247658fd89a2646dc674e393ff6752db87808bf792688"
+    }
+  },
+  "fields_routes_whitelists_unchanged": true,
+  "review": "Shared96MiB application ceiling and192MiB reservations; five file-bearing parsers; explicit policy caps;192MiB expanded prompt separate from96MiB variables;512MiB configurable background and config discovery. Tool/completion inner JSON, cancellation and persistent quotas retained. Added private Python policy source anchor.",
+  "checker_sha256": "dc9b5414fe7e660b50e652db929fff147ff4724397d716c7c86e240cf9e23a79"
+}

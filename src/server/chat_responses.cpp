@@ -10,7 +10,8 @@ namespace q4t::server {
 
 bool ChatServer::TryHandleBackgroundResponse(int fd, const std::string& body) {
   io::Json request;
-  const auto parsed = io::ParseJson(body, &request, true, kSchemaJsonLimits);
+  const auto parsed =
+      io::ParseJson(body, &request, true, kApplicationJsonLimits);
   // Foreground handling owns complete JSON/type diagnostics.
   if (!parsed || !request.GetBool("background")) return false;
   auto* http = detail::HttpResponseContext::Current(fd);

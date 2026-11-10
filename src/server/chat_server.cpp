@@ -764,6 +764,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
       });
   try {
     ResponsesJobsOptions jobs;
+    jobs.max_input_bytes = static_cast<size_t>(opts.background_max_input_mib)
+                           << 20;
     jobs.max_jobs = std::clamp<size_t>(admission_limits_.inflight, 1, 256);
     jobs.max_client_jobs = jobs.max_jobs;
     jobs.workers =

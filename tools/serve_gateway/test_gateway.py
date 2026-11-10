@@ -59,7 +59,7 @@ class GatewayTests(unittest.TestCase):
         cases=[('listen_host','0.0.0.0'),('listen_host','8.8.8.8'),
             ('listen_host','localhost'),('listen_host','::1'),('listen_host',167772161),
             ('listen_port',True),('listen_port',443),('global_inflight',9),
-            ('per_client_inflight',0),('body_bytes',16*1024**2+1),
+            ('per_client_inflight',0),('body_bytes',96*1024**2+1),
             ('upstream_idle_seconds',0),('burst',0),('version',True),
             ('server_name','good;include bad'),('server_name','a..b'),
             ('server_name','-a.local'),('clients',[]),('extra',1)]

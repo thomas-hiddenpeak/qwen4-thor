@@ -16,6 +16,7 @@
 #include "q4t/io/json.h"
 #include "q4t/server/client_rate_state.h"
 #include "q4t/server/file_limits.h"
+#include "q4t/server/request_limits.h"
 #include "q4t/trace/sha256.h"
 
 namespace q4t::server {
@@ -67,7 +68,7 @@ bool ValidLimits(const ClientLimits& value) {
          value.max_control_inflight <= 64 && value.max_prompt_tokens >= 1 &&
          value.max_prompt_tokens <= 1048576 && value.max_output_tokens >= 1 &&
          value.max_output_tokens <= 1048576 && value.max_body_bytes >= 1024 &&
-         value.max_body_bytes <= 16 * 1024 * 1024 &&
+         value.max_body_bytes <= kChatBodyBytes &&
          value.requests_per_minute <= 1000000 &&
          value.tokens_per_minute <= 1000000000;
 }
@@ -190,7 +191,7 @@ Status ParseGatewayClientPolicy(std::string_view raw,
                  &value.max_prompt_tokens) ||
         !Integer(entry.Find("max_output_tokens"), 1048576,
                  &value.max_output_tokens) ||
-        !Integer(entry.Find("max_body_bytes"), 16 * 1024 * 1024,
+        !Integer(entry.Find("max_body_bytes"), kChatBodyBytes,
                  &value.max_body_bytes))
       return Invalid();
     policy.clients.push_back(std::move(value));

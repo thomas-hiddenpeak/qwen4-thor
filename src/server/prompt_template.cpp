@@ -182,7 +182,7 @@ ObjectReply Render(const Json& definition, const Json& variables) {
   if (!types || !types->IsObject() || !base || !base->IsObject() ||
       types->object.size() > 64 || !variables.IsObject() ||
       variables.object.size() != types->object.size() ||
-      OutputJson(variables).size() > kExpandedBytes)
+      OutputJson(variables).size() > kChatBodyBytes)
     return Invalid("Prompt variables must match the declared names",
                    "prompt.variables");
   for (const auto& [name, type] : types->object) {

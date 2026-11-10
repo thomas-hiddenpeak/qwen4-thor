@@ -837,6 +837,62 @@ Q4T_TEST(responses_jobs_count_client_and_input_limits_are_real_admission) {
   return true;
 }
 
+Q4T_TEST(responses_jobs_large_retained_input_has_exact_admission_and_release) {
+  Fixture f;
+  f.options.max_client_bytes = 256ULL << 20;
+  f.options.max_total_bytes = 512ULL << 20;
+  ObjectStore objects(f.options);
+  auto request = Parse(R"({"input":"","background":true,
+                          "reasoning":{"effort":"none"}})");
+  Field(&request, "input")->str.assign(17ULL << 20, 'x');
+  const auto prepare = [&] {
+    auto run = std::make_unique<ResponsesExecution>(objects);
+    auto access = Access();
+    access.deadline = Clock::now() + 30s;
+    const auto result =
+        run->Prepare(request, Config(), access, std::time(nullptr), true);
+    if (!Ok(result)) throw std::runtime_error("large job preparation");
+    return run;
+  };
+  auto run = prepare();
+  const size_t bytes = run->RetainedInputBytes();
+  Q4T_CHECK(bytes > (64ULL << 20) && bytes < kBackgroundInputBytes);
+  const auto submit = [&](ResponsesJobs& jobs,
+                          std::unique_ptr<ResponsesExecution> input) {
+    const auto client = f.Identity();
+    ClientLease permit;
+    if (!permit.Acquire(f.clients, client, ClientLane::kData))
+      throw std::runtime_error("large job permit");
+    return jobs.Submit(std::move(input), client, [&](ClientLease& target) {
+      return permit.TransferTo(target);
+    });
+  };
+  ResponsesJobsOptions options;
+  options.max_input_bytes = bytes - 1;
+  ResponsesJobs small(objects, options, Complete);
+  Q4T_CHECK(submit(small, std::move(run)).code ==
+            "background_capacity_exhausted");
+  Q4T_CHECK(small.Health().owned == 0 && small.Health().input_bytes == 0);
+  options.max_input_bytes = bytes;
+  std::atomic<bool> executing{false};
+  ResponsesJobs exact(objects, options, [&](auto& job) {
+    executing = true;
+    while (!job.control->Cancelled()) std::this_thread::sleep_for(1ms);
+  });
+  const auto accepted = submit(exact, prepare());
+  Q4T_CHECK(Ok(accepted) && Wait([&] { return executing.load(); }));
+  Q4T_CHECK(exact.Health().owned == 1 && exact.Health().input_bytes == bytes);
+  Q4T_CHECK(f.clients.Usage(0).data_active == 1);
+  exact.RequestStop();
+  exact.Join();
+  Q4T_CHECK(exact.Health().owned == 0 && exact.Health().input_bytes == 0);
+  Q4T_CHECK(f.clients.Usage(0).data_active == 0);
+  const auto restored = ResponsesState(objects).Retrieve(
+      accepted.value.GetString("id"), Access());
+  Q4T_CHECK(Ok(restored) && restored.value.GetString("status") == "cancelled");
+  return true;
+}
+
 Q4T_TEST(responses_jobs_executor_exception_does_not_stop_following_work) {
   Fixture f;
   ObjectStore objects(f.options);

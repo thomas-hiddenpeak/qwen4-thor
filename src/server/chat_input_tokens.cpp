@@ -28,9 +28,9 @@ void ChatServer::HandleResponsesTokenCount(int fd, const std::string& body) {
     return;
   }
   io::Json request;
-  auto status = body.empty()
-                    ? Status()
-                    : io::ParseJson(body, &request, true, kSchemaJsonLimits);
+  auto status = body.empty() ? Status()
+                             : io::ParseJson(body, &request, true,
+                                             kApplicationJsonLimits);
   if (!status) {
     detail::SendError(fd, 400, "invalid JSON: " + status.message(), {},
                       "invalid_json");

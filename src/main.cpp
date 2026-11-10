@@ -89,6 +89,7 @@ void PrintUsage(const char* prog) {
       "[--object-max-client-mib N] [--object-max-total-mib N] "
       "[--object-max-client-objects N] [--object-max-total-objects N] "
       "[--object-io-timeout-ms N] "
+      "[--background-max-input-mib N] "
       "[--prefix-cache-checkpoints 8192,32768,65536] "
       "[--mtp-subset-head DIR] "
       "[--allow-media] "

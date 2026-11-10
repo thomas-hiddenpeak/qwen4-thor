@@ -1,5 +1,6 @@
 """Real native entrypoint, CPU backend/Guardian peers, no GPU or nginx required."""
 import argparse
+import hashlib
 import http.client
 import json
 import os
@@ -289,6 +290,39 @@ class NativeTests(fixture.NginxTests):
         status, _, _ = self.raw('Authorization: Bearer '+'A'*40+'\r\n', length=1025)
         self.assertEqual(status, 413)
         self.assertEqual(self.stack.forwarded, [])
+
+    def test_large_inline_request_and_response_preserve_exact_bytes(self):
+        self.replace_stack(body_bytes=96*1024**2)
+        # Transport oracle only: the peer echoes actual original bytes, never
+        # claims that this binary source was decoded or interpreted by a model.
+        encoded = 'A'*(4*((50000000+2)//3)-1)+'='
+        request = dict(messages=[dict(role='user', content=[dict(type='file',
+            file=dict(filename='capacity.pdf', file_data=encoded))])])
+        raw = json.dumps(request, separators=(',', ':')).encode()
+        def echo(handler, body, generation):
+            handler.response(200, body)
+            return True
+        self.stack.response_hook = echo
+        connection = http.client.HTTPConnection('127.0.0.1',
+            self.stack.value['policy']['listen_port'], timeout=20)
+        try:
+            connection.request('POST', '/v1/chat/completions', raw,
+                {'Authorization': 'Bearer '+'A'*40,
+                 'Content-Type': 'application/json'})
+            response = connection.getresponse()
+            self.assertEqual(response.status, 200)
+            result = json.loads(response.read())
+            self.assertEqual(result, request)
+        finally:
+            connection.close()
+        self.assertEqual(len(self.stack.forwarded), 1)
+        forwarded = self.stack.forwarded[0]
+        self.assertEqual(hashlib.sha256(forwarded['body'].encode()).digest(),
+                         hashlib.sha256(raw).digest())
+        self.assertEqual((forwarded['client'], forwarded['token']),
+                         ('alpha', 'e'*64))
+        self.assertIsNone(forwarded['authorization'])
+        self.assertEqual(self.stack.request(path='/livez')[0], 200)
 
     def test_cidr_checks_actual_peer_not_loopback_listener(self):
         self.replace_stack(allowed_client_cidrs=['127.0.0.1/32'])

@@ -9,7 +9,7 @@ import stat
 MAX_BYTES = 64 * 1024
 BOUNDS = dict(max_inflight=(1, 4096), max_control_inflight=(1, 64),
               max_prompt_tokens=(1, 1048576), max_output_tokens=(1, 1048576),
-              max_body_bytes=(1024, 16 * 1024**2))
+              max_body_bytes=(1024, 96 * 1024**2))
 RATE_BOUNDS = dict(requests_per_minute=(0, 1000000),
                    tokens_per_minute=(0, 1000000000))
 FILE_BOUNDS = dict(max_file_body_bytes=(1024, 512 * 1024**2 + 65536))

@@ -8,6 +8,7 @@
 #include <string_view>
 
 #include "q4t/server/client_policy.h"
+#include "q4t/server/request_limits.h"
 #include "q4t/server/responses_execution.h"
 
 namespace q4t::server {
@@ -16,7 +17,7 @@ struct ResponsesJobsOptions {
   size_t workers = 1;
   size_t max_jobs = 8;
   size_t max_client_jobs = 8;
-  size_t max_input_bytes = 64ULL << 20;
+  size_t max_input_bytes = kBackgroundInputBytes;
   std::chrono::milliseconds timeout{600000};
 };
 

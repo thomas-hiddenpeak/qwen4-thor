@@ -290,7 +290,14 @@ location / {
 入口支持[已发布API路由](docs/serve-openapi-v1.json)及相应CORS预检，认证后的`/livez`只表示入口存活；`/readyz`与
 业务请求受模型自检、配额隔离和代次绑定约束，恢复期返回503及
 Retry-After。请求头/体共享10秒绝对接收期限，头64KiB，业务体最多
-16MiB，聚合业务体预留48MiB；32个有界处理槽，数据与控制分别限额。
+96MiB，聚合业务体预留192MiB；32个有界处理槽，数据与控制分别限额。
+客户端`max_body_bytes`与原生入口`body_bytes`可显式设置更低限额；既有
+策略容量不变。文件输入可容纳50000000原字节的base64，模板变量预算
+96MiB，保留原变量的展开结果预算192MiB；模板定义仍为256KiB。
+后台任务累计保留输入默认512MiB，可用`--background-max-input-mib`
+设置1—2048MiB；此为序列化逻辑量，不是进程RSS。持久化原文件、
+提取快照与大inline内容同时计入对象配额，大文件业务须相应配置
+`--object-max-client-mib`与`--object-max-total-mib`，不会绕过存储配额。
 HTTP/1.0/1.1支持Content-Length；HTTP/1.1支持有界chunked请求和
 认证/准入后的`100-continue`，有界持久连接逐请求重新认证。核心默认
 每连接最多100请求、空闲5秒；原生policy v4可配置限额、路径前缀与
@@ -459,7 +466,7 @@ E2E吞吐收益为完整head约1.98%/1.83%、子集约1.12%/1.05%；decode收益
 超过65536 token预算，其余三个最多65536（输出也占容量）。prefill暂存
 以4096 token分块消费。执行槽仍为4个，解析/排队/生成请求总数上限32；
 16/32突发只验证了短请求，不保证32个长请求的完成时限。单请求body
-上限16MiB、全局body预算48MiB，超限仍会拒绝。长prefill会影响其他请求
+上限96MiB、全局body预算192MiB，超限仍会拒绝。长prefill会影响其他请求
 TTFT，客户端须为排队留足超时。使用、回退及健康检查见
 [长短agent交付记录](docs/MTP_SUFFIX_AGENT_DELIVERED_2026-10-27.md)。
 

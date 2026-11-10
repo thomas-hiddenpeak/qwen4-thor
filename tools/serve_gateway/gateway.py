@@ -277,7 +277,7 @@ def policy(value):
             for part in value['server_name'].split('.'))), 'invalid DNS server_name')
     bounds = dict(listen_port=(1024,65535), upstream_port=(1024,65535),
         per_client_inflight=(1,8), global_inflight=(1,8), per_client_rps=(1,100),
-        burst=(1,128), body_bytes=(1024,16*1024**2), upstream_idle_seconds=(10,3600))
+        burst=(1,128), body_bytes=(1024,96*1024**2), upstream_idle_seconds=(10,3600))
     if value['version'] >= 5:
         bounds['file_body_bytes'] = (1024, 512 * 1024**2 + 65536)
     for name, (lower, upper) in bounds.items():

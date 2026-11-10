@@ -84,7 +84,8 @@ ResponsesJobs::ResponsesJobs(ObjectStore& objects, ResponsesJobsOptions options,
   if (!options.workers || options.workers > 32 || !options.max_jobs ||
       options.max_jobs > 256 || options.workers > options.max_jobs ||
       !options.max_client_jobs || options.max_client_jobs > options.max_jobs ||
-      !options.max_input_bytes || options.max_input_bytes > (256ULL << 20) ||
+      !options.max_input_bytes ||
+      options.max_input_bytes > kMaxBackgroundInputBytes ||
       options.timeout.count() < 1 || options.timeout > std::chrono::hours(24) ||
       !state_->executor)
     throw std::invalid_argument("Invalid background execution limits");

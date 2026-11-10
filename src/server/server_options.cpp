@@ -161,6 +161,9 @@ Status ValidateServerOptions(const ServerOptions& options) {
   if (options.request_deadline_ms < 1000 ||
       options.request_deadline_ms > 10800000)
     return Status::Fail("request-deadline-ms must be in [1000,10800000]");
+  if (options.background_max_input_mib < 1 ||
+      options.background_max_input_mib > 2048)
+    return Status::Fail("background-max-input-mib must be in [1,2048]");
   // k=3 is the measured optimum; the verify forward and MTP scratch scale
   // linearly with k+1, so cap experimentation well below kMaxT.
   if (options.mtp_k < 1 || options.mtp_k > 16)
@@ -222,6 +225,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (key == "--moe-trace-max-mib") integer = &parsed.moe_trace_max_mib;
     if (key == "--moe-resident-slots") integer = &parsed.moe_resident_slots;
     if (key == "--request-deadline-ms") integer = &parsed.request_deadline_ms;
+    if (key == "--background-max-input-mib")
+      integer = &parsed.background_max_input_mib;
     if (key == "--mtp-k") integer = &parsed.mtp_k;
     if (key == "--object-max-object-mib")
       integer = &parsed.object_max_object_mib;

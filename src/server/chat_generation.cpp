@@ -233,8 +233,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   if (internal)
     original_request = internal->request;
   else if (!responses || !responses->Prepared())
-    s = io::ParseJson(body, &original_request, true,
-                      completion ? kCompletionJsonLimits : kSchemaJsonLimits);
+    s = io::ParseJson(
+        body, &original_request, true,
+        completion ? kCompletionJsonLimits : kApplicationJsonLimits);
   if (!s.ok()) {
     SendError(fd, 400, "invalid JSON: " + s.message(), {}, "invalid_json");
     return;

@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "python3",
+    "tools/serve_recovery/test_native_ingress.py",
+    "--ingress",
+    ".q4t-work/serve-custom-tools-20261108/engine-build/q4t-ingress",
+    "NativeTests.test_large_inline_request_and_response_preserve_exact_bytes",
+    "NativeTests.test_header_body_limit_rejects_without_consuming_large_body",
+    "NativeTests.test_data_inflight_limit_preserves_control_capacity",
+    "-v"
+  ],
+  "exit_code": 0,
+  "seconds": 4.6194701991043985
+}

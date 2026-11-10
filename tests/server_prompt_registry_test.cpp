@@ -245,6 +245,32 @@ Q4T_TEST(prompt_missing_extra_and_media_instruction_variables_are_rejected) {
   return true;
 }
 
+Q4T_TEST(
+    prompt_large_file_variable_preserves_source_without_inline_copy_limit) {
+  Fixture f;
+  ObjectStore store(f.options);
+  PromptRegistry registry(store);
+  const auto definition = Parse(R"({"request":{"input":[{"role":"user",
+    "content":"Read {{file}}"}]},"variables":{"file":"input_file"}})");
+  const auto created = registry.Create(definition, Config(), Access());
+  Q4T_CHECK(Ok(created));
+  std::string encoded(4 * ((50000000ULL + 2) / 3), 'A');
+  encoded.back() = '=';
+  auto request =
+      Parse("{\"prompt\":{\"id\":\"" + created.value.GetString("id") +
+            R"(","variables":{"file":{
+        "type":"input_file","filename":"capacity.bin","file_data":")" +
+            encoded + R"("}}}})");
+  const auto result = registry.Expand(request, Config(), Access());
+  Q4T_CHECK(Ok(result));
+  const auto& content =
+      result.value.GetArray("input")->array[0].GetArray("content")->array;
+  Q4T_CHECK(content.size() == 2 &&
+            content[1].GetString("file_data") == encoded);
+  Q4T_CHECK(content[1].GetString("filename") == "capacity.bin");
+  return true;
+}
+
 Q4T_TEST(prompt_text_substitution_preserves_exact_cache_boundary) {
   Fixture f;
   ObjectStore store(f.options);
@@ -383,7 +409,7 @@ Q4T_TEST(prompt_expansion_cannot_bypass_client_output_or_input_bounds) {
   auto vars = *ref.Find("variables");
   Json text;
   text.type = Json::Type::kString;
-  text.str.assign(10000, 'x');
+  text.str.assign(400000, 'x');
   Set(&vars, "value", text);
   Set(&ref, "variables", vars);
   Set(&big, "prompt", ref);

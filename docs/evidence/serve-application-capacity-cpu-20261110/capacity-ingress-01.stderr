@@ -1,0 +1,8 @@
+test_large_inline_request_and_response_preserve_exact_bytes (__main__.NativeTests.test_large_inline_request_and_response_preserve_exact_bytes) ... ok
+test_header_body_limit_rejects_without_consuming_large_body (__main__.NativeTests.test_header_body_limit_rejects_without_consuming_large_body) ... ok
+test_data_inflight_limit_preserves_control_capacity (__main__.NativeTests.test_data_inflight_limit_preserves_control_capacity) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 4.445s
+
+OK

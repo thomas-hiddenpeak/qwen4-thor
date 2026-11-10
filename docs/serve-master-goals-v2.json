@@ -1012,7 +1012,8 @@
         "deployment_policy_and_retained_budget": "evidence/serve-file-policy-cpu-20261110/README.md",
         "private_application_payload": "evidence/serve-application-payload-cpu-20261110/README.md",
         "automatic_application_storage": "evidence/serve-object-application-cpu-20261110/README.md",
-        "atomic_snapshot_publication": "evidence/serve-snapshot-publication-cpu-20261110/README.md"
+        "atomic_snapshot_publication": "evidence/serve-snapshot-publication-cpu-20261110/README.md",
+        "application_input_capacity": "evidence/serve-application-capacity-cpu-20261110/README.md"
       }
     },
     {

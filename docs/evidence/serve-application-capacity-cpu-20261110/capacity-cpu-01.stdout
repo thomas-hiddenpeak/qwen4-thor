@@ -1,0 +1,22 @@
+[PASS] prompt_substitution_is_single_pass_and_preserves_typed_media
+[PASS] prompt_large_file_variable_preserves_source_without_inline_copy_limit
+[PASS] prompt_expansion_cannot_bypass_client_output_or_input_bounds
+[PASS] client_application_body_bounds_preserve_explicit_lower_policy
+[PASS] client_file_admission_separates_json_and_exact_upload_route
+[PASS] client_file_chunked_cannot_bypass_current_or_legacy_limit
+[PASS] responses_jobs_count_client_and_input_limits_are_real_admission
+[PASS] responses_jobs_large_retained_input_has_exact_admission_and_release
+[PASS] conversation_api_rejects_invalid_wire_contract_before_storage
+[PASS] conversation_api_large_inline_body_round_trips_after_store_restart
+[PASS] serve_background_input_budget_is_configurable_and_transactional
+[PASS] json_resource_limits_and_duplicate_keys
+[PASS] http_body_capacity_and_trailing_bytes
+[PASS] http_application_inline_50m_preserves_original_decoded_bytes
+[PASS] http_application_ceiling_and_aggregate_keep_control_independent
+[PASS] http_absolute_deadline_and_body_budget
+[PASS] http_framing_continue_follows_admission_and_reservation
+  CHECK failed: !huge.Read() && huge.status == 413 && huge.body.empty() (line 229)
+[FAIL] http_framing_chunked_capacity_and_unwind
+[PASS] http_framing_large_application_chunk_respects_authenticated_limit
+[PASS] chat_config_effective_sources_and_redaction
+20 tests, 19 passed, 1 failed, 0 skipped

@@ -225,8 +225,32 @@ Q4T_TEST(http_framing_chunked_capacity_and_unwind) {
     }
     Q4T_CHECK(budget.Used() == 0);
   }
-  Reader huge{.input = kChunk + "1000001\r\n"};
+  Reader huge{.input = kChunk + "6000001\r\n"};  // 96 MiB + 1, before body.
   Q4T_CHECK(!huge.Read() && huge.status == 413 && huge.body.empty());
+  return true;
+}
+
+Q4T_TEST(http_framing_large_application_chunk_respects_authenticated_limit) {
+  const std::string bytes(17ULL << 20, 'x');
+  const auto wire = kChunk + "1100000\r\n" + bytes + "\r\n0\r\n\r\n";
+  HttpBodyBudget budget(kAggregateChatBodyBytes);
+  {
+    HttpBodyLease lease(budget);
+    Reader reader{.input = wire};
+    Q4T_CHECK(reader.Read(&lease) && reader.body == bytes);
+    Q4T_CHECK(budget.Used() == bytes.size());
+  }
+  Q4T_CHECK(budget.Used() == 0);
+  {
+    HttpBodyLease lease(budget);
+    Reader reader{.input = wire};
+    Q4T_CHECK(!reader.Read(&lease, [&] {
+      reader.headers.body_limit = 16ULL << 20;
+      return true;
+    }));
+    Q4T_CHECK(reader.status == 413 && reader.body.empty());
+  }
+  Q4T_CHECK(budget.Used() == 0);
   return true;
 }
 

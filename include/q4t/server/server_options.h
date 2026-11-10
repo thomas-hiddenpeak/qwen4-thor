@@ -113,6 +113,8 @@ struct ServerOptions {
   // 1200000 (20 min) is the historical default; raise it for workloads whose
   // first request carries long on-demand expert loads (tiered residency).
   int request_deadline_ms = 1200000;
+  // Logical retained payloads across background jobs, not an RSS estimate.
+  int background_max_input_mib = 512;
 };
 
 // Derived once from validated options, never a second configuration source.

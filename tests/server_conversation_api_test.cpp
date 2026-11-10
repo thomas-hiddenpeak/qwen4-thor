@@ -111,6 +111,51 @@ Q4T_TEST(conversation_api_rejects_invalid_wire_contract_before_storage) {
   return true;
 }
 
+Q4T_TEST(conversation_api_large_inline_body_round_trips_after_store_restart) {
+  const char* env = std::getenv("Q4T_TEST_OUTPUT_DIR");
+  const auto root = fs::absolute(env ? env : ".q4t-work/conversation-capacity");
+  fs::create_directories(root);
+  auto directory = (root / "large-XXXXXX").string();
+  Q4T_CHECK(mkdtemp(directory.data()) != nullptr);
+  ObjectStoreOptions options;
+  options.directory = directory + "/objects";
+  options.max_client_bytes = 128ULL << 20;
+  const std::string encoded(17ULL << 20, 'A');
+  const auto body =
+      R"({"items":[{"role":"user","content":[{"type":"input_file",)"
+      R"("filename":"capacity.bin","file_data":")" +
+      encoded + R"("}]}]})";
+  auto access = Access();
+  access.deadline = Clock::now() + 30s;
+  std::string id;
+  {
+    ObjectStore objects(options);
+    const auto created = HandleConversationRequest(
+        objects, "POST", "/v1/conversations", body, access);
+    if (!created.ok())
+      std::fprintf(stderr, "%s: %s\n", created.code.c_str(),
+                   created.message.c_str());
+    Q4T_CHECK(created.ok());
+    id = created.value.GetString("id");
+  }
+  ObjectStore objects(options);
+  auto result = HandleConversationRequest(
+      objects, "GET", "/v1/conversations/" + id + "/items", "", access);
+  Q4T_CHECK(result.ok());
+  const auto* page = result.value.GetArray("data");
+  Q4T_CHECK(page && page->array.size() == 1);
+  const auto* content = page->array[0].GetArray("content");
+  Q4T_CHECK(content && content->array.size() == 1);
+  Q4T_CHECK(content->array[0].GetString("file_data") == encoded);
+  Q4T_CHECK(result.value.GetString("object") == "list");
+  auto other = access;
+  other.scope = "cpu-client-b";
+  Q4T_CHECK(HandleConversationRequest(
+                objects, "GET", "/v1/conversations/" + id + "/items", "", other)
+                .http_status == 404);
+  return true;
+}
+
 // Test-only real HTTP transport around the production handler and storage.
 // The fixed synthetic bearer->scope mapping is not production authentication.
 int ConversationApiFixture(int argc, char** argv) {

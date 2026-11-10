@@ -12,12 +12,9 @@
 
 #include "q4t/server/http_connection.h"
 #include "q4t/server/http_observation.h"
+#include "q4t/server/request_limits.h"
 
 namespace q4t::server {
-
-inline constexpr size_t kChatBodyBytes = 16 * 1024 * 1024;
-inline constexpr size_t kAggregateChatBodyBytes = 48 * 1024 * 1024;
-inline constexpr size_t kCancelBodyBudgetBytes = 32 * 1024 * 1024;
 
 inline bool ValidHttpRequestId(std::string_view id) {
   if (id.empty() || id.size() > 128) return false;
@@ -132,7 +129,7 @@ struct HttpBodyStream {
 
 // Supports HTTP/1.x origin-form, Content-Length and HTTP/1.1 chunked framing.
 // Rejects mixed/duplicate framing, duplicate Host and malformed fields.
-// Headers <=64 KiB; chat/preflight bodies <=16 MiB, other routes <=4 KiB.
+// Headers <=64 KiB; application bodies <=96 MiB, control bodies <=4 KiB.
 // timeout_ms is an absolute header+body deadline, unaffected by progress.
 // A supplied lease reserves bytes before body reads (released by caller).
 // Headers expose validated transport metadata. admit runs after headers and
@@ -140,11 +137,12 @@ struct HttpBodyStream {
 // Admission may set body_limit and a stream. Buffered chunked reservations
 // grow before each chunk; streams reserve their fixed working set once.
 // A supplied state preserves bytes belonging to a subsequent request. Without
-// it the caller must close. Any failure requires closing, never resynchronizing.
-// Interim 100 is sent only after admission and known capacity/length checks;
-// it never starts the final response. Custom transports must supply its sender.
-// A transport adapter must honor the same absolute deadline; ETIMEDOUT denotes
-// a deadline, zero EOF, and other negative results a socket failure.
+// it the caller must close. Any failure requires closing, never
+// resynchronizing. Interim 100 is sent only after admission and known
+// capacity/length checks; it never starts the final response. Custom transports
+// must supply its sender. A transport adapter must honor the same absolute
+// deadline; ETIMEDOUT denotes a deadline, zero EOF, and other negative results
+// a socket failure.
 using HttpReceive = std::function<ssize_t(
     void*, size_t, std::chrono::steady_clock::time_point)>;
 using HttpContinue =

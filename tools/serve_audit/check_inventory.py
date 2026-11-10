@@ -190,6 +190,7 @@ def current_surface(root):
                        root / "cmake/CudaCleanupBoundary.cmake",
                        root / "CMakeLists.txt",
                        root / "tools/serve_gateway/gateway.py",
+                       root / "tools/serve_gateway/client_policy.py",
                        root / "cmake/GuardianProcess.cmake",
                        root / "cmake/NativeIngress.cmake",
                        root / "cmake/NativeCrypto.cmake",

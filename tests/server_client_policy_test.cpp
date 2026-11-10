@@ -177,6 +177,30 @@ std::string Wire(const std::string& headers,
 }
 }  // namespace
 
+Q4T_TEST(client_application_body_bounds_preserve_explicit_lower_policy) {
+  const auto raw = Replace(Policy(), "\"max_body_bytes\":1024",
+                           "\"max_body_bytes\":100663296");
+  GatewayClientPolicy parsed;
+  Q4T_CHECK(ParseGatewayClientPolicy(raw, &parsed));
+  Q4T_CHECK(parsed.clients[0].max_body_bytes == kChatBodyBytes);
+  ClientAdmission clients;
+  Q4T_CHECK(clients.Configure(std::move(parsed)));
+  Q4T_CHECK(!ParseGatewayClientPolicy(Replace(raw, "100663296", "100663297"),
+                                      &parsed));
+  const auto header = "POST /v1/responses HTTP/1.1\r\nHost: local\r\n";
+  // No body is sent: alpha reaches the read phase (truncated input), while
+  // beta's explicitly smaller policy rejects before reading or reserving it.
+  const auto alpha = Read(
+      clients, header + Headers("alpha") + "Content-Length: 17825792\r\n\r\n");
+  Q4T_CHECK(!alpha.ok && alpha.status == 400 && alpha.admitted);
+  const auto beta = Read(
+      clients, header + Headers("beta") + "Content-Length: 17825792\r\n\r\n");
+  Q4T_CHECK(!beta.ok && beta.status == 413 && beta.bytes == 0);
+  Q4T_CHECK(clients.Usage(0).data_active == 0 &&
+            clients.Usage(1).data_active == 0);
+  return true;
+}
+
 Q4T_TEST(client_file_policy_explicit_schema_and_legacy_limits) {
   GatewayClientPolicy parsed;
   Q4T_CHECK(ParseGatewayClientPolicy(FilePolicyRaw(), &parsed));

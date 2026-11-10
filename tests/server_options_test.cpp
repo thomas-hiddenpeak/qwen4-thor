@@ -75,6 +75,20 @@ Q4T_TEST(serve_object_store_options_transactional_bounds) {
   return true;
 }
 
+Q4T_TEST(serve_background_input_budget_is_configurable_and_transactional) {
+  auto options = Defaults();
+  Q4T_CHECK(options.background_max_input_mib == 512);
+  Q4T_CHECK(Parse({"--background-max-input-mib", "2048"}, &options));
+  for (const auto* value : {"0", "-1", "2049", "1.5", "1x"}) {
+    Q4T_CHECK(!Parse({"--background-max-input-mib", value}, &options));
+    Q4T_CHECK(options.background_max_input_mib == 2048);
+  }
+  Q4T_CHECK(!Parse({"--background-max-input-mib"}, &options));
+  Q4T_CHECK(Parse({"--background-max-input-mib", "1"}, &options));
+  Q4T_CHECK(options.background_max_input_mib == 1);
+  return true;
+}
+
 Q4T_TEST(serve_object_store_directory_resolution_never_touches_filesystem) {
   using q4t::server::ResolveObjectStoreOptions;
   auto options = Defaults();
