@@ -24,7 +24,7 @@ def decimal(value, *, maximum=2**64-1):
 
 def snapshot(value):
     ledger.keys(value, ('version', 'captured_ns', 'policy_revision', 'policy_sha256', 'clients'))
-    ledger.require(type(value['version']) is int and value['version'] == 1 and
+    ledger.require(type(value['version']) is int and value['version'] in (1, 2) and
         decimal(value['captured_ns'], maximum=ledger.MAX_INTEGER) > 0 and
         type(value['policy_sha256']) is str and ledger.HASH.fullmatch(value['policy_sha256']),
         'invalid usage snapshot')
@@ -33,17 +33,24 @@ def snapshot(value):
     ledger.require(type(clients) is list and 1 <= len(clients) <= 64, 'usage client bound')
     ids = set()
     for client in clients:
-        ledger.keys(client, ('id', 'window_started', 'window_ns', *COUNTS))
+        ledger.keys(client, ('id', 'window_started', 'window_ns', *COUNTS,
+                            *(('batch',) if value['version'] == 2 else ())))
         ledger.require(type(client['id']) is str and
             re.fullmatch('[a-z][a-z0-9_-]{0,31}', client['id']) and client['id'] not in ids and
             type(client['window_started']) is bool, 'invalid usage client')
         ids.add(client['id'])
-        window = decimal(client['window_ns'], maximum=ledger.MAX_INTEGER)
-        counts = {k: decimal(client[k]) for k in COUNTS}
-        ledger.require(window <= int(value['captured_ns']) and
-            counts['requests'] <= counts['admitted'] and counts['tokens'] <= counts['settled_tokens'] and
-            (client['window_started'] or not (window or counts['requests'] or counts['tokens'])),
-            'inconsistent usage snapshot')
+        windows = [client]
+        if value['version'] == 2:
+            ledger.keys(client['batch'], ('window_started', 'window_ns', *COUNTS))
+            windows.append(client['batch'])
+        for item in windows:
+            ledger.require(type(item['window_started']) is bool, 'invalid usage window')
+            window = decimal(item['window_ns'], maximum=ledger.MAX_INTEGER)
+            counts = {k: decimal(item[k]) for k in COUNTS}
+            ledger.require(window <= int(value['captured_ns']) and
+                counts['requests'] <= counts['admitted'] and counts['tokens'] <= counts['settled_tokens'] and
+                (item['window_started'] or not (window or counts['requests'] or counts['tokens'])),
+                'inconsistent usage snapshot')
     ledger.require(len(ledger.canonical(value)) <= MAX_SNAPSHOT_BYTES, 'usage snapshot byte bound')
     return value
 
@@ -147,5 +154,8 @@ def restoration(value, boot_id, now_ns):
     result['captured_ns'] = value['started_ns']
     for client in result['clients']:
         client.update(window_started=False, window_ns='0', requests='0', tokens='0')
+        if result['version'] == 2:
+            client['batch'].update(window_started=False, window_ns='0',
+                                   requests='0', tokens='0')
     snapshot(result)
     return dict(mode='cross_boot', snapshot=result)

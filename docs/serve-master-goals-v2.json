@@ -1049,7 +1049,8 @@
         "evidence/serve-batch-native-execution-cpu-20261110/README.md",
         "evidence/serve-batch-validation-rows-cpu-20261110/README.md",
         "evidence/serve-batch-validation-driver-cpu-20261110/README.md",
-        "evidence/serve-batch-jobs-cpu-20261110/README.md"
+        "evidence/serve-batch-jobs-cpu-20261110/README.md",
+        "evidence/serve-batch-rate-origin-cpu-20261110/README.md"
       ],
       "batch_delivery_pending": true
     },
@@ -1638,5 +1639,5 @@
     }
   ],
   "next_task": "A09.6",
-  "next": "A09.6 independent Batch quota source including durable background Responses, scalable 50000-row metadata and incremental finalization, public HTTP/SDK real business and compatible rollback/default; then A09.7 all eight actual backends and all master work."
+  "next": "A09.6 enqueued token reservation, scalable 50000-row metadata/incremental finalization, public HTTP/SDK real business and compatible quota/Response rollback/default; then A09.7 all eight actual backends and all master work."
 }

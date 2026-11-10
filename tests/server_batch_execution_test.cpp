@@ -99,6 +99,7 @@ Q4T_TEST(batch_execution_complete_tools_usage_and_parent_transport_are_preserved
       control->id(), fixture.alpha, permit, control, [&] {
         const auto* current = detail::HttpResponseContext::Current(-1);
         owner_seen = current && current->Client().Id() == "alpha" &&
+                     current->RateDomain() == ClientRateDomain::kBatch &&
                      current->TraceId() == control->id() &&
                      fixture.clients.Usage(0).data_active == 1;
         detail::SendSimple(-1, 200, "OK", kBody, "application/json");
@@ -107,6 +108,7 @@ Q4T_TEST(batch_execution_complete_tools_usage_and_parent_transport_are_preserved
             result.request_id == control->id() && result.response_body == kBody);
   Q4T_CHECK(detail::HttpResponseContext::Current(sockets[0]) == &parent &&
             *parent.State() == detail::ResponseState::kUnsent &&
+            parent.RateDomain() == ClientRateDomain::kOnline &&
             parent.TraceId() == "original-parent");
   char byte;
   Q4T_CHECK(recv(sockets[1], &byte, 1, MSG_DONTWAIT) == -1 &&
@@ -276,7 +278,10 @@ Q4T_TEST(batch_execution_prepared_background_response_transfers_real_lifecycle) 
   ChatPlanConfig config;
   config.model = "cpu-native-background";
   std::atomic<bool> entered = false, proceed = false;
+  std::atomic<bool> correct_origin = false;
   ResponsesJobs jobs(objects, {}, [&](auto& job) {
+    correct_origin = job.run->RateDomain() == ClientRateDomain::kBatch &&
+                     job.control->deadline() <= access.deadline;
     entered = true;
     while (!proceed && !job.control->Cancelled())
       std::this_thread::sleep_for(1ms);
@@ -313,7 +318,7 @@ Q4T_TEST(batch_execution_prepared_background_response_transfers_real_lifecycle) 
   Q4T_CHECK(accepted.GetString("id") == id &&
             accepted.GetString("status") == "queued" &&
             accepted.GetBool("background") && !accepted.GetBool("store"));
-  Q4T_CHECK(Wait([&] { return entered.load(); }) &&
+  Q4T_CHECK(Wait([&] { return entered.load(); }) && correct_origin &&
             !permit.Holds(fixture.alpha, ClientLane::kData) &&
             fixture.clients.Usage(0).data_active == 1 &&
             jobs.Health().foreground_owned == 0);

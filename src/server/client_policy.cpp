@@ -310,9 +310,14 @@ void ClientAdmission::Counters::Advance(ClientClock::time_point now) {
 }
 
 ClientRateUsage ClientAdmission::RateUsage(size_t index,
-                                           ClientClock::time_point now) const {
+                                           ClientClock::time_point now,
+                                           ClientRateDomain domain) const {
   if (index >= Size()) throw std::out_of_range("client rate index");
-  const auto& counter = counters_[index];
+  if (domain != ClientRateDomain::kOnline && domain != ClientRateDomain::kBatch)
+    throw std::invalid_argument("client rate domain");
+  const auto& counter = domain == ClientRateDomain::kBatch
+                            ? batch_counters_[index]
+                            : counters_[index];
   const std::lock_guard lock(counter.mutex);
   auto value = counter.rate;
   if (!counter.window_started ||
@@ -368,26 +373,32 @@ Status ClientAdmission::RestoreRates(const ClientRateState* state,
       if (state->clients[i].id != policy->clients[i].id)
         return Status::Fail("rate restore identity mismatch");
   }
-  std::array<std::unique_lock<std::mutex>, kMaxClients> locks;
+  std::array<std::unique_lock<std::mutex>, kMaxClients * 2> locks;
   for (size_t i = 0; i < policy->clients.size(); ++i) {
     auto& counter = counters_[i];
     locks[i] = std::unique_lock(counter.mutex, std::try_to_lock);
-    if (!locks[i].owns_lock() || counter.rate_active || counter.data.load())
+    auto& batch = batch_counters_[i];
+    locks[i + kMaxClients] = std::unique_lock(batch.mutex, std::try_to_lock);
+    if (!locks[i].owns_lock() || !locks[i + kMaxClients].owns_lock() ||
+        counter.rate_active || batch.rate_active || counter.data.load())
       return Status::Fail("rate recovery busy");
   }
   // No request can hold a rate lease or acquire one across this replacement.
   // The private owner performs it only before its public generation binding.
   for (size_t i = 0; i < policy->clients.size(); ++i) {
-    auto& counter = counters_[i];
-    counter.rate = {};
-    counter.window_started = false;
-    if (state && i < state->clients.size()) {
-      const auto& record = state->clients[i];
-      counter.rate = record.usage;
-      counter.window_started = record.window_started;
-      counter.window =
-          ClientClock::time_point(std::chrono::nanoseconds(record.window_ns));
-      if (counter.window_started) counter.Advance(now);
+    for (bool batch : {false, true}) {
+      auto& counter = batch ? batch_counters_[i] : counters_[i];
+      counter.rate = {};
+      counter.window_started = false;
+      if (state && i < state->clients.size()) {
+        const auto& record = state->clients[i];
+        counter.rate = batch ? record.batch_usage : record.usage;
+        counter.window_started =
+            batch ? record.batch_window_started : record.window_started;
+        counter.window = ClientClock::time_point(std::chrono::nanoseconds(
+            batch ? record.batch_window_ns : record.window_ns));
+        if (counter.window_started) counter.Advance(now);
+      }
     }
   }
   rate_restore_receipt_ = std::move(accepted_receipt);
@@ -403,11 +414,14 @@ Status ClientAdmission::FreezeRates(ClientRateState* state,
   std::unique_lock policy_lock(policy_mutex_, std::try_to_lock);
   if (!policy_lock.owns_lock()) return Status::Fail("rate checkpoint busy");
   const auto policy = Snapshot();
-  std::array<std::unique_lock<std::mutex>, kMaxClients> locks;
+  std::array<std::unique_lock<std::mutex>, kMaxClients * 2> locks;
   for (size_t i = 0; i < policy->clients.size(); ++i) {
     auto& counter = counters_[i];
     locks[i] = std::unique_lock(counter.mutex, std::try_to_lock);
-    if (!locks[i].owns_lock() || counter.rate_active)
+    auto& batch = batch_counters_[i];
+    locks[i + kMaxClients] = std::unique_lock(batch.mutex, std::try_to_lock);
+    if (!locks[i].owns_lock() || !locks[i + kMaxClients].owns_lock() ||
+        counter.rate_active || batch.rate_active)
       return Status::Fail("rate checkpoint busy");
   }
   ClientRateState result;
@@ -426,6 +440,16 @@ Status ClientAdmission::FreezeRates(ClientRateState* state,
                    .count()
              : 0,
          counter.rate});
+    auto& record = result.clients.back();
+    const auto& batch = batch_counters_[i];
+    record.batch_window_started = batch.window_started;
+    record.batch_window_ns =
+        batch.window_started
+            ? std::chrono::duration_cast<std::chrono::nanoseconds>(
+                  batch.window.time_since_epoch())
+                  .count()
+            : 0;
+    record.batch_usage = batch.rate;
   }
   if (!ValidClientRateState(result)) return Status::Fail("invalid rate state");
   *state = std::move(result);
@@ -440,6 +464,9 @@ ClientRateResult ClientRateLease::Reserve(ClientAdmission& admission,
                                           uint64_t preparation_output) {
   if (attempted_) return ClientRateResult::kInvalid;
   attempted_ = true;
+  if (domain_ != ClientRateDomain::kOnline &&
+      domain_ != ClientRateDomain::kBatch)
+    return ClientRateResult::kInvalid;
   if (auxiliary_output > kMaxAuxiliaryOutputTokens ||
       preparation_output > kMaxPreparationOutputTokens ||
       output > UINT64_MAX - auxiliary_output ||
@@ -469,7 +496,9 @@ ClientRateResult ClientRateLease::Reserve(ClientAdmission& admission,
     prompt_ = prompt;
     return ClientRateResult::kAllowed;
   }
-  auto& counter = admission.counters_[identity.index_];
+  auto& counter = domain_ == ClientRateDomain::kBatch
+                      ? admission.batch_counters_[identity.index_]
+                      : admission.counters_[identity.index_];
   const std::lock_guard lock(counter.mutex);
   if (admission.rates_frozen_) return ClientRateResult::kFrozen;
   counter.Advance(now);
@@ -523,8 +552,10 @@ ClientRateResult ClientRateLease::ExtendPrompt(ClientAdmission& admission,
     prompt_ += additional;
     return ClientRateResult::kAllowed;
   }
-  if (counters_ != &admission.counters_[identity.index_])
-    return ClientRateResult::kInvalid;
+  auto* expected = domain_ == ClientRateDomain::kBatch
+                       ? &admission.batch_counters_[identity.index_]
+                       : &admission.counters_[identity.index_];
+  if (counters_ != expected) return ClientRateResult::kInvalid;
   const std::lock_guard lock(counters_->mutex);
   if (admission.rates_frozen_) return ClientRateResult::kFrozen;
   counters_->Advance(now);
@@ -737,11 +768,21 @@ std::string ClientPolicyMetrics(const ClientAdmission& admission) {
          "counter");
   header("q4t_client_rate_limit", "Configured minute quota; zero disables.",
          "gauge");
+  for (const auto* name : {"requests", "tokens", "reserved_tokens",
+                           "window_remaining_ms", "limit"})
+    header(("q4t_client_batch_rate_" + std::string(name)).c_str(),
+           "Independent Batch minute quota accounting.", "gauge");
+  for (const auto* name :
+       {"admitted_total", "settled_tokens_total", "rejected_total"})
+    header(("q4t_client_batch_rate_" + std::string(name)).c_str(),
+           "Independent Batch minute quota accounting.", "counter");
   const auto policy = admission.Snapshot();
   for (size_t i = 0; policy && i < policy->clients.size(); ++i) {
     const auto& limits = policy->clients[i];
     const auto usage = admission.Usage(i);
     const auto rate = admission.RateUsage(i);
+    const auto batch =
+        admission.RateUsage(i, ClientClock::now(), ClientRateDomain::kBatch);
     const auto client_label = "{client=\"" + limits.id + "\"} ";
     const auto gauge = [&](const char* name, uint64_t value) {
       out += std::string(name) + client_label + std::to_string(value) + '\n';
@@ -752,12 +793,26 @@ std::string ClientPolicyMetrics(const ClientAdmission& admission) {
     gauge("q4t_client_rate_window_remaining_ms", rate.window_remaining_ms);
     gauge("q4t_client_rate_admitted_total", rate.admitted);
     gauge("q4t_client_rate_settled_tokens_total", rate.settled_tokens);
+    gauge("q4t_client_batch_rate_requests", batch.requests);
+    gauge("q4t_client_batch_rate_tokens", batch.tokens);
+    gauge("q4t_client_batch_rate_reserved_tokens", batch.reserved);
+    gauge("q4t_client_batch_rate_window_remaining_ms",
+          batch.window_remaining_ms);
+    gauge("q4t_client_batch_rate_admitted_total", batch.admitted);
+    gauge("q4t_client_batch_rate_settled_tokens_total", batch.settled_tokens);
     for (bool tpm : {false, true}) {
       const auto labels = "{client=\"" + limits.id + "\",kind=\"" +
                           (tpm ? "tpm" : "rpm") + "\"} ";
       out += "q4t_client_rate_rejected_total" + labels +
              std::to_string(tpm ? rate.tpm_rejected : rate.rpm_rejected) + '\n';
       out += "q4t_client_rate_limit" + labels +
+             std::to_string(tpm ? limits.tokens_per_minute
+                                : limits.requests_per_minute) +
+             '\n';
+      out += "q4t_client_batch_rate_rejected_total" + labels +
+             std::to_string(tpm ? batch.tpm_rejected : batch.rpm_rejected) +
+             '\n';
+      out += "q4t_client_batch_rate_limit" + labels +
              std::to_string(tpm ? limits.tokens_per_minute
                                 : limits.requests_per_minute) +
              '\n';

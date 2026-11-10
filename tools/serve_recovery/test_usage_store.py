@@ -28,6 +28,74 @@ def snapshot(now=200, clients=2):
 
 
 class UsageStoreTests(unittest.TestCase):
+    def test_batch_snapshot_durable_handoff_and_cross_boot_windows(self):
+        value = snapshot()
+        value['version'] = 2
+        for client in value['clients']:
+            client['batch'] = {k: v for k, v in client.items() if k != 'id'}
+            client['batch'].update(requests='2', tokens='8',
+                                    admitted='5', settled_tokens='21')
+        self.execute('begin')
+        self.execute('seal', value=value, now=200)
+        active = self.execute('begin', generation=2, now=300)
+        self.assertEqual(p.restoration(active, self.owner['boot_id'], 350)
+                         ['snapshot'], value)
+        # A new boot conserves both totals, resetting only minute windows.
+        later = copy.deepcopy(value)
+        later['captured_ns'] = '400'
+        self.execute('seal', generation=2, value=later, now=400)
+        other = owner()
+        rebooted = self.execute('begin', generation=3, model=other, now=500)
+        restored = p.restoration(rebooted, other['boot_id'], 600)['snapshot']
+        self.assertEqual(restored['clients'][0]['settled_tokens'], '15')
+        self.assertEqual(restored['clients'][0]['batch']['settled_tokens'], '21')
+        for client in restored['clients']:
+            for window in [client, client['batch']]:
+                self.assertFalse(window['window_started'])
+                self.assertEqual(window['tokens'], '0')
+                self.assertEqual(window['requests'], '0')
+
+    def test_batch_snapshot_maximum_both_pools_and_invalid_shape(self):
+        value = snapshot(clients=64)
+        value['version'] = 2
+        for client in value['clients']:
+            for key in p.COUNTS:
+                client[key] = str(2**64-1)
+            client['batch'] = {k: v for k, v in client.items() if k != 'id'}
+        p.snapshot(value)
+        self.assertLessEqual(len(ledger.canonical(value)), p.MAX_SNAPSHOT_BYTES)
+        for mutate in [
+            lambda v: v['clients'][0].pop('batch'),
+            lambda v: v['clients'][0]['batch'].update(window_started=1),
+            lambda v: v['clients'][0]['batch'].update(settled_tokens='0'),
+            lambda v: v.update(version=1),
+        ]:
+            bad = copy.deepcopy(value)
+            mutate(bad)
+            with self.assertRaises(ValueError):
+                p.snapshot(bad)
+
+    def test_batch_snapshot_unknown_commit_keeps_both_pools_exact(self):
+        self.execute('begin')
+        value = snapshot()
+        value['version'] = 2
+        for client in value['clients']:
+            client['batch'] = {k: v for k, v in client.items() if k != 'id'}
+        with s.open_bound(self.binding) as writer:
+            previous = writer.head['state']['policy']
+            candidate = p.seal(previous, 1, self.owner, value)
+            fsync = os.fsync
+            def lose(fd):
+                if fd == writer.dir_fd:
+                    raise OSError('Batch usage committed, receipt unknown')
+                return fsync(fd)
+            with mock.patch.object(access_store.os, 'fsync', side_effect=lose):
+                with self.assertRaises(OSError):
+                    writer.transact(str(uuid.uuid4()), 1, candidate)
+        self.assertEqual(self.execute('seal', value=value, now=300), candidate)
+        active = self.execute('begin', generation=2, now=400)
+        self.assertEqual(active['snapshot'], value)
+
     def setUp(self):
         base = ROOT/'.q4t-work/serve-access-20261109/usage-store-fixtures'
         base.mkdir(parents=True, exist_ok=True)

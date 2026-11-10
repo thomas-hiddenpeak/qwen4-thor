@@ -89,6 +89,19 @@ class ResponsesExecution {
   }
   void BindBackgroundControl(std::shared_ptr<RequestControl> control);
   int64_t ExecutionDeadlineAt() const { return plan_.execution_deadline_at; }
+  ClientRateDomain RateDomain() const { return plan_.rate_domain; }
+  std::chrono::steady_clock::time_point InputDeadline() const {
+    return access_.deadline;
+  }
+  // Trusted service origin. It cannot be changed once execution is published.
+  bool BindRateDomain(ClientRateDomain domain) {
+    if (domain != ClientRateDomain::kOnline &&
+        domain != ClientRateDomain::kBatch)
+      return false;
+    if (begun_ || commit_unknown_) return domain == plan_.rate_domain;
+    plan_.rate_domain = domain;
+    return true;
+  }
   Status Append(const ResponseDelta& delta, std::string_view probabilities,
                 std::string* wire);
   Status AppendSummary(std::string_view text, std::string* wire);

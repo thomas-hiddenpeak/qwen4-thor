@@ -249,7 +249,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   // Outlives request/grammar/response buffers; release only after cleanup.
   StructuredRequestLease structured_lease(structured_admission_,
                                           metrics_.structured_active);
-  ClientRateLease owned_rate;
+  ClientRateLease owned_rate(http ? http->RateDomain()
+                                  : ClientRateDomain::kOnline);
   auto& rate_lease = internal ? internal->accounting.Rate() : owned_rate;
   struct TerminalLeases {
     StructuredRequestLease& structured;
@@ -323,6 +324,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                   reply.value.GetString("param"));
         return;
       }
+    }
+    if (!responses->BindRateDomain(http ? http->RateDomain()
+                                        : ClientRateDomain::kOnline)) {
+      SendError(fd, 503, "Response accounting origin changed", {},
+                "response_rate_domain_changed");
+      return;
     }
     planning_config.prewarm_only = responses->Envelope().cache.prewarm;
     if (responses->PendingFileSheets()) {

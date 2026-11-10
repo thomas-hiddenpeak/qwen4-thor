@@ -109,9 +109,12 @@ class HttpResponseContext {
   }
   // Handler-thread-only identity, minted by header admission.
   const ClientIdentity& Client() const { return client_; }
-  void SetClient(ClientIdentity client, ClientLease* lease) {
+  ClientRateDomain RateDomain() const { return rate_domain_; }
+  void SetClient(ClientIdentity client, ClientLease* lease,
+                 ClientRateDomain domain = ClientRateDomain::kOnline) {
     client_ = client;
     client_lease_ = lease;
+    rate_domain_ = domain;
   }
   bool TransferClientLease(ClientLease& destination) noexcept {
     return client_lease_ && client_lease_->TransferTo(destination);
@@ -199,6 +202,7 @@ class HttpResponseContext {
   std::string trace_id_;
   PreparationUsage preparation_usage_;
   ClientIdentity client_;
+  ClientRateDomain rate_domain_ = ClientRateDomain::kOnline;
   ClientLease* client_lease_ = nullptr;  // Owner outlives this context.
   ResponseState state_ = ResponseState::kUnsent;  // handler thread only
   ErrorObserver error_observer_ = nullptr;

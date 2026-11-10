@@ -2,10 +2,12 @@
 
 #include <unistd.h>
 
+#include <algorithm>
 #include <cstdlib>
 #include <filesystem>
 #include <thread>
 
+#include "../src/server/object_protocol.h"
 #include "q4t/server/conversation_state.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/responses_api.h"
@@ -363,5 +365,79 @@ Q4T_TEST(responses_background_lost_start_receipt_never_starts_or_overwrites) {
   Q4T_CHECK(ResponsesState(objects)
                 .Retrieve(run.Id(), Access())
                 .value.GetString("status") == "in_progress");
+  return true;
+}
+
+Q4T_TEST(responses_background_batch_origin_survives_restart_without_rebinding) {
+  Fixture f;
+  std::string id;
+  int64_t deadline = 0;
+  {
+    ObjectStore objects(f.options);
+    ResponsesExecution run(objects);
+    Q4T_CHECK(Ok(Prepare(run)) && run.BindRateDomain(ClientRateDomain::kBatch));
+    auto control =
+        std::make_shared<RequestControl>(run.Id(), "", Clock::now() + 5s);
+    run.BindBackgroundControl(control);
+    deadline = run.ExecutionDeadlineAt();
+    std::string wire;
+    Q4T_CHECK(Ok(run.Begin(&wire)) &&
+              !run.BindRateDomain(ClientRateDomain::kOnline));
+    id = run.Id();
+    const auto stored = Stored(objects, id);
+    Q4T_CHECK(Ok(stored) && stored.value.Find("data")
+                                    ->Find("continuation")
+                                    ->GetString("rate_domain") == "batch");
+  }
+  ObjectStore objects(f.options);
+  ResponsesExecution restored(objects);
+  Q4T_CHECK(Ok(restored.RestoreQueued(id, Config(), Access())) &&
+            restored.RateDomain() == ClientRateDomain::kBatch &&
+            restored.ExecutionDeadlineAt() == deadline &&
+            !restored.BindRateDomain(ClientRateDomain::kOnline));
+  Q4T_CHECK(Ok(restored.Cancel()));
+  return true;
+}
+
+Q4T_TEST(responses_background_legacy_origin_and_unknown_domain_are_strict) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesExecution run(objects);
+  Q4T_CHECK(Ok(Prepare(run, R"(,"metadata":{"rate_domain":"batch"})")));
+  Q4T_CHECK(run.RateDomain() == ClientRateDomain::kOnline);
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)));
+  const auto change = [&](bool legacy) {
+    const auto stored = Stored(objects, run.Id());
+    if (!stored.ok()) return stored;
+    ObjectRequest request;
+    request.operation = ObjectOperation::kPut;
+    request.kind = ObjectKind::kResponse;
+    request.id = run.Id();
+    request.scope = Access().scope;
+    request.data = *stored.value.Find("data");
+    request.expected_revision = stored.value.GetInt("revision");
+    request.created_at = stored.value.GetInt("created_at");
+    request.expires_at = stored.value.GetInt("expires_at");
+    auto& continuation = object_detail::Field(request.data, "continuation");
+    if (legacy) {
+      std::erase_if(continuation.object, [](const auto& field) {
+        return field.first == "rate_domain";
+      });
+    } else {
+      object_detail::Set(&continuation, "rate_domain",
+                         object_detail::String("unconfirmed"));
+    }
+    return objects.Execute(request, Access().deadline);
+  };
+  Q4T_CHECK(Ok(change(false)));
+  ResponsesExecution bad(objects);
+  Q4T_CHECK(bad.RestoreQueued(run.Id(), Config(), Access()).code ==
+            "response_state_invalid");
+  Q4T_CHECK(Ok(change(true)));
+  ResponsesExecution legacy(objects);
+  Q4T_CHECK(Ok(legacy.RestoreQueued(run.Id(), Config(), Access())) &&
+            legacy.RateDomain() == ClientRateDomain::kOnline);
+  Q4T_CHECK(Ok(legacy.Cancel()));
   return true;
 }

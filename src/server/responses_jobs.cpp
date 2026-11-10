@@ -207,6 +207,17 @@ ObjectReply ResponsesJobs::Adopt(std::unique_ptr<ResponsesExecution> run,
   auto job = std::make_shared<Job>();
   job->bytes = run->RetainedInputBytes();
   auto duration = state_->options.timeout;
+  if (!restored && run->RateDomain() == ClientRateDomain::kBatch) {
+    // A detached Batch background job retains the original row/24h bound.
+    // Ordinary online background jobs still outlive their HTTP subscriber.
+    const auto remaining =
+        std::chrono::duration_cast<std::chrono::milliseconds>(
+            run->InputDeadline() - Clock::now());
+    if (remaining.count() <= 0)
+      return Error(408, "deadline_exceeded",
+                   "Original Batch execution deadline expired");
+    duration = std::min(duration, remaining);
+  }
   if (restored) {
     const auto remaining = run->ExecutionDeadlineAt() - std::time(nullptr);
     if (remaining <= 0)

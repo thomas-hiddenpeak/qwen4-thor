@@ -35,7 +35,7 @@ BatchRowResult ExecuteBatchEndpoint(
   FiniteResponse output;
   detail::HttpResponseContext http(
       detail::HttpResponseContext::Detached{-1, &output});
-  http.SetClient(client, &permit);
+  http.SetClient(client, &permit, ClientRateDomain::kBatch);
   if (!http.SetTraceId(request_id))
     return failure(500, "batch_execution_owner_invalid",
                    "Invalid native Batch request identity");

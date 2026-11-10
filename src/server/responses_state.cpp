@@ -69,6 +69,9 @@ Json SavedResponse(const ResponseStatePlan& plan, const Json& response,
               {"scope", String(plan.scope)},
               {"owner", plan.execution_owner},
               {"execution_deadline_at", Number(plan.execution_deadline_at)},
+              {"rate_domain",
+               String(plan.rate_domain == ClientRateDomain::kBatch ? "batch"
+                                                                   : "online")},
               {"conversation_id", String(plan.conversation_id)},
               {"conversation_revision", Number(plan.conversation_revision)}}));
   return result;
@@ -369,6 +372,13 @@ ObjectReply ResponsesState::LoadPlan(const std::string& id,
   plan->response_revision = stored.value.GetInt("revision");
   plan->finished = Terminal(*response);
   if (const auto* continuation = data->Find("continuation")) {
+    if (const auto* domain = continuation->Find("rate_domain")) {
+      if (!domain->IsString() ||
+          (domain->str != "online" && domain->str != "batch"))
+        return StateError("Stored response rate domain is invalid");
+      plan->rate_domain = domain->str == "batch" ? ClientRateDomain::kBatch
+                                                 : ClientRateDomain::kOnline;
+    }
     if (const auto* owner = continuation->Find("owner"))
       plan->execution_owner = *owner;
     plan->ephemeral = continuation->GetBool("ephemeral");

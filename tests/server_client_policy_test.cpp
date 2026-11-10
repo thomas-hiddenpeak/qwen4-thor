@@ -652,6 +652,202 @@ Q4T_TEST(client_dynamic_concurrent_authentication_observes_whole_snapshots) {
   return true;
 }
 
+Q4T_TEST(client_batch_rate_pools_are_independent_and_both_enforced) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(1, 100)));
+  const auto client = admission.Authenticate("alpha", kSecret);
+  const auto now = ClientClock::now();
+  ClientRateLease online, batch(ClientRateDomain::kBatch);
+  Q4T_CHECK(online.Reserve(admission, client, 40, 16, now) ==
+            ClientRateResult::kAllowed);
+  Q4T_CHECK(batch.Reserve(admission, client, 40, 16, now) ==
+            ClientRateResult::kAllowed);
+  ClientRateLease no_online, no_batch(ClientRateDomain::kBatch);
+  Q4T_CHECK(no_online.Reserve(admission, client, 1, 1, now) ==
+            ClientRateResult::kRpm);
+  Q4T_CHECK(no_batch.Reserve(admission, client, 1, 1, now) ==
+            ClientRateResult::kRpm);
+  online.Start();
+  online.Completion(2);
+  online.Settle(now);
+  batch.Start();
+  batch.Completion(5);
+  batch.Settle(now);
+  const auto a = admission.RateUsage(0, now);
+  const auto b = admission.RateUsage(0, now, ClientRateDomain::kBatch);
+  Q4T_CHECK(a.tokens == 42 && b.tokens == 45 && a.admitted == 1 &&
+            b.admitted == 1 && a.rpm_rejected == 1 && b.rpm_rejected == 1 &&
+            a.reserved == 0 && b.reserved == 0);
+  const auto metrics = ClientPolicyMetrics(admission);
+  Q4T_CHECK(metrics.find("q4t_client_batch_rate_settled_tokens_total"
+                         "{client=\"alpha\"} 45") != metrics.npos &&
+            metrics.find("q4t_client_rate_settled_tokens_total"
+                         "{client=\"alpha\"} 42") != metrics.npos);
+  return true;
+}
+
+Q4T_TEST(client_batch_rate_internal_preparation_charges_original_pool) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(1, 200)));
+  const auto client = admission.Authenticate("alpha", kSecret);
+  ClientRateLease rate(ClientRateDomain::kBatch);
+  ModelPreparation preparation(admission, client, rate, 16, 0, 64);
+  Q4T_CHECK(preparation.ReservePrompt(20).ok() && preparation.StartStep());
+  preparation.ObserveOutput(3);
+  preparation.CloseStep();
+  Q4T_CHECK(preparation.ReservePrompt(12).ok() && preparation.StartStep());
+  preparation.ObserveOutput(2);
+  preparation.CloseStep();
+  rate.Settle();
+  const auto now = ClientClock::now();
+  const auto batch = admission.RateUsage(0, now, ClientRateDomain::kBatch);
+  Q4T_CHECK(batch.admitted == 1 && batch.settled_tokens == 37 &&
+            batch.reserved == 0 && admission.RateUsage(0).admitted == 0);
+  ClientRateLease online;
+  Q4T_CHECK(online.Reserve(admission, client, 40, 16) ==
+            ClientRateResult::kAllowed);
+  return true;
+}
+
+Q4T_TEST(client_batch_rate_freeze_waits_for_both_pools_and_restores) {
+  ClientAdmission admission;
+  const auto policy = DynamicPolicy(4, 200);
+  const auto now = ClientClock::now();
+  Q4T_CHECK(admission.Configure(policy) && admission.EnableRateRecovery() &&
+            admission.RestoreRates(nullptr, std::string(64, '1'), now));
+  const auto client = admission.Authenticate("alpha", kSecret);
+  ClientRateLease online, batch(ClientRateDomain::kBatch);
+  Q4T_CHECK(online.Reserve(admission, client, 4, 8, now) ==
+                ClientRateResult::kAllowed &&
+            batch.Reserve(admission, client, 7, 8, now) ==
+                ClientRateResult::kAllowed);
+  online.Start();
+  online.Completion(1);
+  online.Settle(now);
+  ClientRateState saved;
+  Q4T_CHECK(!admission.FreezeRates(&saved, now));
+  batch.Start();
+  batch.Completion(2);
+  batch.Settle(now);
+  Q4T_CHECK(admission.FreezeRates(&saved, now));
+  ClientRateLease late_online, late_batch(ClientRateDomain::kBatch);
+  Q4T_CHECK(late_online.Reserve(admission, client, 1, 1, now) ==
+                ClientRateResult::kFrozen &&
+            late_batch.Reserve(admission, client, 1, 1, now) ==
+                ClientRateResult::kFrozen);
+  const auto encoded = EncodeClientRateState(saved);
+  Q4T_CHECK(encoded.starts_with("{\"version\":2,"));
+  ClientRateState parsed;
+  Q4T_CHECK(ParseClientRateState(encoded, &parsed));
+  ClientAdmission restored;
+  Q4T_CHECK(restored.Configure(policy) && restored.EnableRateRecovery() &&
+            restored.RestoreRates(&parsed, std::string(64, '2'), now));
+  Q4T_CHECK(restored.RateUsage(0, now).tokens == 5 &&
+            restored.RateUsage(0, now, ClientRateDomain::kBatch).tokens == 9 &&
+            restored.RateUsage(0, now, ClientRateDomain::kBatch).requests == 1);
+  return true;
+}
+
+Q4T_TEST(client_batch_rate_snapshot_legacy_and_64_client_maxima) {
+  ClientRateState state;
+  state.captured_ns = 1000;
+  state.policy_sha256 = std::string(64, 'a');
+  for (size_t i = 0; i < kMaxClients; ++i) {
+    ClientRateRecord record;
+    record.id = "client_" + std::to_string(i);
+    record.window_started = true;
+    record.window_ns = 900;
+    record.usage.requests = record.usage.tokens = UINT64_MAX;
+    record.usage.admitted = record.usage.settled_tokens = UINT64_MAX;
+    record.usage.rpm_rejected = record.usage.tpm_rejected = UINT64_MAX;
+    state.clients.push_back(record);
+  }
+  const auto legacy = EncodeClientRateState(state);
+  Q4T_CHECK(legacy.starts_with("{\"version\":1,") &&
+            legacy.find("\"batch\"") == legacy.npos);
+  ClientRateState parsed;
+  Q4T_CHECK(ParseClientRateState(legacy, &parsed) &&
+            parsed.clients[0].batch_usage.admitted == 0);
+  for (auto& record : state.clients) {
+    record.batch_usage = record.usage;
+    record.batch_window_started = true;
+    record.batch_window_ns = 999;
+  }
+  const auto complete = EncodeClientRateState(state);
+  Q4T_CHECK(!complete.empty() && complete.size() <= kClientRateStateBytes &&
+            ParseClientRateState(complete, &parsed) &&
+            parsed.clients.size() == kMaxClients &&
+            parsed.clients.back().batch_usage.settled_tokens == UINT64_MAX &&
+            EncodeClientRateState(parsed) == complete);
+  Q4T_CHECK(!ParseClientRateState(
+      Replace(complete, "\"version\":2", "\"version\":1"), &parsed));
+  state.clients[0].batch_usage.reserved = 1;
+  Q4T_CHECK(EncodeClientRateState(state).empty());
+  return true;
+}
+
+Q4T_TEST(client_batch_rate_policy_update_preserves_pool_and_rollover) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(10, 100)));
+  const auto client = admission.Authenticate("alpha", kSecret);
+  const auto now = ClientClock::now();
+  ClientRateLease batch(ClientRateDomain::kBatch);
+  Q4T_CHECK(batch.Reserve(admission, client, 40, 16, now) ==
+            ClientRateResult::kAllowed);
+  batch.Start();
+  Q4T_CHECK(admission.Publish(DynamicPolicy(1, 64, 1), 0, 4, 2));
+  ClientRateLease online, second(ClientRateDomain::kBatch);
+  Q4T_CHECK(online.Reserve(admission, client, 40, 16, now) ==
+                ClientRateResult::kAllowed &&
+            second.Reserve(admission, client, 1, 1, now) ==
+                ClientRateResult::kRpm);
+  const auto next = now + std::chrono::seconds(61);
+  ClientRateLease rollover(ClientRateDomain::kBatch);
+  Q4T_CHECK(rollover.Reserve(admission, client, 9, 0, next) ==
+            ClientRateResult::kTpm);
+  batch.Completion(3);
+  batch.Settle(next);
+  Q4T_CHECK(admission.RateUsage(0, next, ClientRateDomain::kBatch).tokens ==
+                43 &&
+            admission.RateUsage(0, next).tokens == 0);
+  return true;
+}
+
+Q4T_TEST(client_batch_rate_internal_wrapper_inherits_trusted_origin) {
+  using namespace q4t::server::detail;
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(1, 200)));
+  const auto client = admission.Authenticate("alpha", kSecret);
+  ClientRateLease rate(ClientRateDomain::kBatch);
+  ModelPreparation accounting(admission, client, rate, 16, 0, 64);
+  HttpResponseContext parent(HttpResponseContext::Detached{});
+  parent.SetClient(client, nullptr, ClientRateDomain::kBatch);
+  auto control =
+      std::make_shared<RequestControl>("batch-parent", "", kDeadline);
+  Json request;
+  InternalModelStep step{
+      request, {}, accounting, [] { return ObjectReply{}; }, {}, false, {},
+      {},      0,  0};
+  bool same_origin = false;
+  const auto reply = ExecuteInternalModelStep(
+      -1, &step, control, [&](ResponseState*, auto owner) {
+        same_origin = owner == control &&
+                      HttpResponseContext::Current(-1)->RateDomain() ==
+                          ClientRateDomain::kBatch;
+        if (!accounting.ReservePrompt(20).ok() || !accounting.StartStep())
+          throw std::runtime_error("Batch preparation accounting");
+        accounting.ObserveOutput(7);
+        step.completed = true;  // Explicit CPU native ownership callback.
+      });
+  rate.Settle();
+  Q4T_CHECK(reply.ok() && same_origin &&
+            HttpResponseContext::Current(-1) == &parent &&
+            admission.RateUsage(0).admitted == 0 &&
+            admission.RateUsage(0, ClientClock::now(), ClientRateDomain::kBatch)
+                    .tokens == 27);
+  return true;
+}
+
 Q4T_TEST(client_rate_policy_v2_strict_and_v1_unchanged) {
   auto v2 =
       Replace(Policy(), "\"version\":1", "\"version\":2,\"fair_queue\":true");

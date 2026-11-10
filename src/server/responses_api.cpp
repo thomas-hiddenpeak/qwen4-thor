@@ -45,6 +45,11 @@ void ServePreparedBackgroundResponse(
     return;
   }
   const auto id = run->Id();
+  if (!run->BindRateDomain(http->RateDomain())) {
+    detail::SendError(fd, 503, "Background accounting origin changed", {},
+                      "response_rate_domain_changed");
+    return;
+  }
   const bool stream = run->Envelope().stream;
   // Construct the subscriber target before transferring run: a fast owned
   // job can finish and release it immediately after Submit returns.

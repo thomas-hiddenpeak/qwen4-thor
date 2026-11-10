@@ -302,3 +302,15 @@ A09.4 [真实Uploads业务接受](evidence/serve-uploads-business-20261110/READM
 创建先生成私有Batch ID并保留固定任务槽，再持久提交；回执丢失/异常仍有本进程所有者对账。逐行开始票据同样提前固定，只有已确认开始回执可调用模型；不知道开始结果时按原票据与排空证明关闭为中断，不重放。完成JSON保留至确认证据，存储重试只写原结果。扫描仅接管已证实死亡的根，running行还必须核对原execution_owner或同任务本地排空票据，不能仅凭根被接管授权。取消首先持久化，再通知实际RequestControl；执行/grammar排空后提交行并生成部分结果File。执行准入使用既有客户端data槽，排队验证不占data槽；独立Batch速率仍是下一组必做，尚未接公开HTTP或声称实际GPU接受。结果缓冲先按最大完整JSON预留，最多1GiB显式限额；此值为payload预留，不是总RAM计量。任务验证每轮一行，结果汇总仍用现有有界存储接口；最大50000行容量/汇总调度需接着完成。
 
 2026-11-10。原生Batch任务[23不同CPU接受](evidence/serve-batch-jobs-cpu-20261110/README.md)：首20/22、2故障注入修正补验全过，双worker容量1项全过；实际取消排空、进程死亡/丢回执不重放、scope/匿名准入及扫描恢复通过。最终零警告/481锚点，0GPU/默认保持。继续独立Batch配额（含后台Responses）、50000行容量/增量汇总、公开HTTP实际业务与全部总任务。
+
+## 独立Batch配额与后台来源
+
+2026-11-10。继续独立Batch配额：已成组接入可信执行来源、与在线池分离的RPM/TPM计数、双池冻结/恢复、v1/v2快照及Python持久交接，后台Responses保存来源并继承原Batch期限，内部文档准备沿原池计账。各池独立执行既有客户端配置的分钟限额，并发/GPU准入仍共享；尚未构建/测试，0GPU/默认保持。接着完成针对性证据、入队token预算与最大容量、公开HTTP实际闭环和全部总任务。
+
+来源只由原生Batch执行器设置，不能由请求body/header选择；普通HTTP保持online，内置文档准备继承父来源，后台Responses通过私有continuation持久保留。两个池独立执行同一当前客户端RPM/TPM配置，记录各自窗口/预留/累计值；共享data槽和模型资源保护。现阶段未新增配置字段或给Batch无条件免计账，后续入队token配额另接实际token计数。已用Batch池的快照采用v2嵌套batch，未用Batch仍输出原v1；64客户端双池uint64最坏形状约38KiB，保持48KiB原限额。旧v1缺失Batch视为历史无Batch业务，跨boot只重置两个分钟窗口、保留累计计数。新格式必须同步兼容回退reader后才可交付，不能清空账本换取可回退。尚无本组接受结论。
+
+2026-11-10。独立Batch配额/后台来源组已完成实现，冻结18 C++（8新、2扩展、8直接）+4 Python：双池RPM/TPM/滚动预留/策略更新、冻结恢复与64客户端最大快照、实际内部准备和后台持久来源、原期限、真实账本丢回执/跨boot。尚未构建或执行，0GPU/默认保持；继续入队token预算、50000行容量/汇总与公开实际业务及全部总任务。
+
+冻结清单：`.q4t-work/serve-batches-20261110/required-rate-origin.txt`、`required-rate-origin-python.txt`。v2账本仍≤48KiB，新增原生指标与online既有指标并存。后台新任务只在Batch来源时夹住原父期限，普通HTTP后台独立于订阅连接的合同保持。
+
+2026-11-10。独立Batch配额/后台来源[18 C+++4 Python首次全过](evidence/serve-batch-rate-origin-cpu-20261110/README.md)：双池独立分钟记账、内部准备/后台来源与原期限、64客户端最大快照、真实账本丢回执/跨boot均通过。零警告/481锚点，0GPU/默认保持。继续入队token预算、50000行metadata/增量汇总、公开HTTP实际业务与兼容回退及全部总任务。

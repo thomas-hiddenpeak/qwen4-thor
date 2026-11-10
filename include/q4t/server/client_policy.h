@@ -93,6 +93,9 @@ class ClientIdentity {
 };
 
 enum class ClientLane { kData, kControl, kCancel };
+// Trusted execution origin, never selected by a public JSON/header field.
+// Each pool enforces the configured per-client minute limits independently.
+enum class ClientRateDomain { kOnline, kBatch };
 
 struct ClientUsage {
   uint32_t data_active = 0;
@@ -122,6 +125,9 @@ struct ClientRateRecord {
   bool window_started = false;
   int64_t window_ns = 0;
   ClientRateUsage usage;
+  bool batch_window_started = false;
+  int64_t batch_window_ns = 0;
+  ClientRateUsage batch_usage = {};
 };
 struct ClientRateState {
   int64_t captured_ns = 0;
@@ -174,7 +180,8 @@ class ClientAdmission {
   ClientLimits Limits(size_t index) const;
   ClientUsage Usage(size_t index) const;
   ClientRateUsage RateUsage(
-      size_t index, ClientClock::time_point now = ClientClock::now()) const;
+      size_t index, ClientClock::time_point now = ClientClock::now(),
+      ClientRateDomain domain = ClientRateDomain::kOnline) const;
   // Only a private controller-owned admin enables the single startup restore.
   // Self-check accounting may be replaced before public admission opens.
   Status EnableRateRecovery();
@@ -212,6 +219,7 @@ class ClientAdmission {
   mutable std::mutex policy_mutex_;
   std::atomic<std::shared_ptr<const GatewayClientPolicy>> policy_;
   std::array<Counters, kMaxClients> counters_;
+  std::array<Counters, kMaxClients> batch_counters_;
   std::atomic<bool> rates_frozen_{false}, rates_recovered_{false};
   bool rate_recovery_enabled_ = false;
   std::string rate_restore_receipt_;
@@ -226,6 +234,7 @@ class ClientRateLease {
  public:
   ~ClientRateLease() { Settle(); }
   ClientRateLease() = default;
+  explicit ClientRateLease(ClientRateDomain domain) : domain_(domain) {}
   ClientRateLease(const ClientRateLease&) = delete;
   ClientRateLease& operator=(const ClientRateLease&) = delete;
   ClientRateResult Reserve(ClientAdmission& admission,
@@ -252,6 +261,7 @@ class ClientRateLease {
   void Settle(ClientClock::time_point now = ClientClock::now()) noexcept;
 
  private:
+  const ClientRateDomain domain_ = ClientRateDomain::kOnline;
   const ClientAdmission* admission_ = nullptr;
   size_t client_ = kMaxClients;
   ClientAdmission::Counters* counters_ = nullptr;

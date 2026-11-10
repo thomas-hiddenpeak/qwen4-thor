@@ -38,7 +38,7 @@ bool ChatServer::TryHandleBackgroundResponse(int fd, const std::string& body) {
 
 void ChatServer::RunBackgroundResponse(ResponsesJobs::Job& job) {
   detail::HttpResponseContext http(detail::HttpResponseContext::Detached{});
-  http.SetClient(job.client, &job.permit);
+  http.SetClient(job.client, &job.permit, job.run->RateDomain());
   http.SetTraceId(job.run->Id());
   // Observe actual failures. Do not use the live SSE error renderer here:
   // cancellation is finalized by the owner after all generation cleanup.

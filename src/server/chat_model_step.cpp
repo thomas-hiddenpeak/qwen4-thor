@@ -22,7 +22,7 @@ ObjectReply ExecuteInternalModelStep(
   });
   detail::HttpResponseContext context(
       detail::HttpResponseContext::Detached{fd});
-  context.SetClient(parent->Client(), nullptr);
+  context.SetClient(parent->Client(), nullptr, parent->RateDomain());
   context.SetTraceId(parent->TraceId());
   context.SetErrorObserver(
       [](void* owner, int status, std::string_view message,
