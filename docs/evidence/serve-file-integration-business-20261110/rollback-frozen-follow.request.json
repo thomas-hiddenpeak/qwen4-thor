@@ -1,0 +1,46 @@
+{
+  "action": "create",
+  "request": {
+    "model": "qwen3.8-flash-next",
+    "temperature": 0,
+    "reasoning": {
+      "effort": "none"
+    },
+    "max_output_tokens": 128,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "file_value",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "store": true,
+    "stream": true,
+    "stream_options": {
+      "include_obfuscation": false
+    },
+    "input": "From the previous table, return beta's value in the JSON value field.",
+    "previous_response_id": "resp_fdcf9c2cd285d1f6417c7594f9e12d26"
+  },
+  "id": null,
+  "query": null,
+  "base_url": "http://127.0.0.1:19041/v1",
+  "headers": {
+    "X-Q4T-Client-Id": "encryption-test",
+    "X-Q4T-Gateway-Token": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "timeout_ms": 120000
+}

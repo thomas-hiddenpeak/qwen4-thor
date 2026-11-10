@@ -346,3 +346,13 @@ Conversation公开接口/重启、后台限额/取消释放、原生入口大请
 格式兼容回退和FI03—FI05全部交付仍继续。
 
 本组[20 C++与5策略/原生入口CPU已接受](evidence/serve-application-capacity-cpu-20261110/README.md)；旧chunked夹具边界失败和单项修复保留，生产候选不变。0GPU/默认字节保持；继续综合业务/兼容回退及全部总任务。
+
+## FI03—FI05 综合业务与格式回退接受（2026-11-10）
+
+[实际业务通过](evidence/serve-file-integration-business-20261110/README.md)：
+192.380秒同一严格GPU租约，3启动/7生成/9模型步骤。默认MTP、PDF
+实际数字+颜色/预检、CSV新SSE与计数用量、冻结摘要不重复准备、
+17MiB原件跨版本回读及继续实际生成均过。前一eee源码读取器已
+验证新状态格式，旧Uploads不能作为该格式回退；下一步封包与
+有界部署交付，随后Batch及全部总任务。默认尚未替换，长稳仍由
+用户负责。

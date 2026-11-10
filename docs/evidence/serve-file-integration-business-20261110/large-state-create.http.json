@@ -1,0 +1,12 @@
+{
+  "status": 200,
+  "headers": {
+    "Content-Type": "application/json",
+    "Content-Length": "108",
+    "X-Request-Id": "req-0bac0464a8f194f93c21a7878e130cd6",
+    "Connection": "keep-alive"
+  },
+  "seconds": 1.926867177709937,
+  "body_bytes": 108,
+  "body_sha256": "6c2f1475db22f6c55f878b9734d64aabf4bafd73bcb9598c7315569da96a358c"
+}
