@@ -1,0 +1,9 @@
+test_application_limits_must_be_bound_before_package_creation (tools.serve_recovery.test_native_bundle.BundleTests.test_application_limits_must_be_bound_before_package_creation) ... ok
+test_default_package_has_native_binary_and_no_nginx_dependency (tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency) ... ok
+test_file_transport_and_client_capacity_require_v11_identity (tools.serve_recovery.test_native_bundle.BundleTests.test_file_transport_and_client_capacity_require_v11_identity) ... ok
+test_native_build_receipt_must_bind_ingress_binary (tools.serve_recovery.test_native_bundle.BundleTests.test_native_build_receipt_must_bind_ingress_binary) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.099s
+
+OK

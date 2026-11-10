@@ -1837,7 +1837,7 @@
     "tools/serve_recovery/access_store.py": "fe2b32d8c9127955c40693053e2576012d64b89b747702e56cd98e55b3fa2753",
     "tools/serve_recovery/binding.py": "1f70edbce8cefd92700acf6df130101baa41f575cd24876f7e7d95772ba8cd18",
     "tools/serve_recovery/build_tools.py": "86fb140de1b0873b962146f6822511fdbbdef22cf6ba3a8914efa516600cf218",
-    "tools/serve_recovery/bundle.py": "4b8dc1f860834a3d059d60f6ee813025e7b862cab8f8943ca9fe4e20239b1bdc",
+    "tools/serve_recovery/bundle.py": "fab9a524d4b76417909d5f8172faa886f67667b0185dd0bda7780caa1cbf7252",
     "tools/serve_recovery/child.py": "772272690b964c7b57c0998a41bd55d2f8f516b6351bcc9b2e763476f2ee54ae",
     "tools/serve_recovery/control.py": "b61f15ad2e7e567ba76ba98d4d760009c2dff4bab59bec044a054fc08328de1b",
     "tools/serve_recovery/controller.py": "d08ef58651c967ebc6ad1c5768297eaa7833855978f0a1653a715210968bf803",

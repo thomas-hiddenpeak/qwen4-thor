@@ -61,7 +61,8 @@ NATIVE_SOURCES = frozenset(('CMakeLists.txt', 'tests/host/CMakeLists.txt',
     'src/service/ingress_proxy.cpp', 'include/q4t/service/ingress_proxy.h',
     *('include/q4t/server/'+name+'.h' for name in ('http_request', 'http_listener',
         'http_observation', 'http_connection', 'model_catalog',
-        'client_identity', 'serve_fault', 'application_routes', 'file_limits'))))
+        'client_identity', 'serve_fault', 'application_routes', 'file_limits',
+        'request_limits'))))
 
 
 def file_identity(path):

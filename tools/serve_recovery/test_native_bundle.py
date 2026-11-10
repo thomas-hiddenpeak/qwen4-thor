@@ -359,6 +359,22 @@ class BundleTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'native build receipt'):
             self.prepare()
 
+    def test_application_limits_must_be_bound_before_package_creation(self):
+        original = json.loads(self.build.read_text())
+        name = 'include/q4t/server/request_limits.h'
+        self.assertIn(name, original['source_files'])
+        for missing in (True, False):
+            with self.subTest(missing=missing):
+                value = json.loads(json.dumps(original))
+                if missing:
+                    value['source_files'].pop(name)
+                else:
+                    value['source_files'][name] = '0'*64
+                self.save(self.build, value)
+                with self.assertRaisesRegex(ValueError, 'native (build receipt|source changed)'):
+                    self.prepare()
+                self.assertFalse((self.directory/'package').exists())
+
     def test_native_mode_validates_tls_before_packaging_and_rejects_plaintext_lan(self):
         with mock.patch.object(bundle.tls_control, 'check',
                 side_effect=ValueError('native TLS credential validation failed')), \
