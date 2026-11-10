@@ -243,6 +243,16 @@ class ClientRateLease {
                            ClientClock::time_point now = ClientClock::now(),
                            uint64_t auxiliary_output = 0,
                            uint64_t preparation_output = 0);
+  // Trusted Batch scheduling, before a durable execution ticket. Success
+  // reserves one RPM plus the input/output envelope; the native handler later
+  // calls Reserve exactly once to consume it without charging a second RPM.
+  // A denied attempt owns no reservation and cannot be reused for a retry.
+  ClientRateResult PrechargeBatch(
+      ClientAdmission& admission, const ClientIdentity& identity,
+      uint64_t prompt_capacity, uint64_t output,
+      ClientClock::time_point now = ClientClock::now(),
+      uint64_t auxiliary_output = 0, uint64_t preparation_output = 0);
+  bool PrechargedFor(const ClientIdentity& identity) const;
   // Reserve actual additional input for a subsequent internal model step.
   // Keeps the original RPM admission and shared output reservation; cumulative
   // input must still fit the client's prompt limit. StartPrompt charges only
@@ -261,6 +271,11 @@ class ClientRateLease {
   void Settle(ClientClock::time_point now = ClientClock::now()) noexcept;
 
  private:
+  ClientRateResult ClaimPrecharge(ClientAdmission& admission,
+                                  const ClientIdentity& identity,
+                                  uint64_t prompt, uint64_t output,
+                                  uint64_t auxiliary_output,
+                                  uint64_t preparation_output);
   const ClientRateDomain domain_ = ClientRateDomain::kOnline;
   const ClientAdmission* admission_ = nullptr;
   size_t client_ = kMaxClients;
@@ -271,6 +286,10 @@ class ClientRateLease {
   uint64_t completion_ = 0;
   bool started_ = false;
   bool attempted_ = false;
+  bool precharged_ = false, precharge_claimed_ = false;
+  ClientIdentity precharged_identity_;
+  uint64_t prompt_capacity_ = 0, output_capacity_ = 0;
+  uint64_t auxiliary_capacity_ = 0, preparation_capacity_ = 0;
 };
 
 // Holds a client's quota through headers/body/preparation/queue/response.

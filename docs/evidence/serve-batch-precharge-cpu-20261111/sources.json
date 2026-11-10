@@ -1,0 +1,5 @@
+{
+  "include/q4t/server/client_policy.h": "ae1aa5d734b1bf0793e406f83f663684f0601b4b0a0bf969244d6e7137d697f1",
+  "src/server/client_policy.cpp": "580498e43ed4df176f5fb32fdb7ca9302f040020fda5b2a357cb8187da9352df",
+  "tests/server_client_policy_test.cpp": "af131cc24ee572e8aaecc348dbb5c576b8d7d937e58baf3f51fa5155a831089c"
+}

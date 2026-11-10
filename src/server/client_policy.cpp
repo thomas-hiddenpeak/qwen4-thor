@@ -462,6 +462,12 @@ ClientRateResult ClientRateLease::Reserve(ClientAdmission& admission,
                                           ClientClock::time_point now,
                                           uint64_t auxiliary_output,
                                           uint64_t preparation_output) {
+  if (precharged_) {
+    if (precharge_claimed_) return ClientRateResult::kInvalid;
+    precharge_claimed_ = true;
+    return ClaimPrecharge(admission, identity, prompt, output, auxiliary_output,
+                          preparation_output);
+  }
   if (attempted_) return ClientRateResult::kInvalid;
   attempted_ = true;
   if (domain_ != ClientRateDomain::kOnline &&
@@ -527,6 +533,68 @@ ClientRateResult ClientRateLease::Reserve(ClientAdmission& admission,
   return ClientRateResult::kAllowed;
 }
 
+ClientRateResult ClientRateLease::PrechargeBatch(
+    ClientAdmission& admission, const ClientIdentity& identity,
+    uint64_t prompt_capacity, uint64_t output, ClientClock::time_point now,
+    uint64_t auxiliary_output, uint64_t preparation_output) {
+  if (domain_ != ClientRateDomain::kBatch || attempted_)
+    return ClientRateResult::kInvalid;
+  const auto result = Reserve(admission, identity, prompt_capacity, output, now,
+                              auxiliary_output, preparation_output);
+  if (result != ClientRateResult::kAllowed) return result;
+  precharged_ = true;
+  precharged_identity_ = identity;
+  prompt_capacity_ = prompt_capacity;
+  output_capacity_ = output;
+  auxiliary_capacity_ = auxiliary_output;
+  preparation_capacity_ = preparation_output;
+  // No native model input has been admitted. Unused capacity is refunded on
+  // cancellation or failed publication; observed work alone is settled.
+  prompt_ = 0;
+  return result;
+}
+
+bool ClientRateLease::PrechargedFor(const ClientIdentity& identity) const {
+  return precharged_ && admission_ && domain_ == ClientRateDomain::kBatch &&
+         identity.owner_ == admission_ && identity.Allowed() &&
+         identity.index_ == precharged_identity_.index_ &&
+         identity.Id() == precharged_identity_.Id();
+}
+
+ClientRateResult ClientRateLease::ClaimPrecharge(
+    ClientAdmission& admission, const ClientIdentity& identity, uint64_t prompt,
+    uint64_t output, uint64_t auxiliary_output, uint64_t preparation_output) {
+  if (admission_ != &admission || !PrechargedFor(identity) ||
+      prompt > prompt_capacity_ || output > output_capacity_ ||
+      auxiliary_output > auxiliary_capacity_ ||
+      preparation_output > preparation_capacity_)
+    return ClientRateResult::kInvalid;
+  if (!identity.Scoped()) {
+    if (admission.Enabled()) return ClientRateResult::kInvalid;
+    prompt_ = prompt;
+    return ClientRateResult::kAllowed;
+  }
+  const auto policy = admission.Snapshot();
+  if (!policy || client_ >= policy->clients.size() ||
+      identity.Id() != policy->clients[client_].id)
+    return ClientRateResult::kInvalid;
+  const auto& limits = policy->clients[client_];
+  if (prompt > limits.max_prompt_tokens || output > limits.max_output_tokens)
+    return ClientRateResult::kInvalid;
+  if (!counters_) {
+    if (policy->version >= 3 || limits.requests_per_minute ||
+        limits.tokens_per_minute)
+      return ClientRateResult::kInvalid;
+  } else {
+    if (counters_ != &admission.batch_counters_[client_])
+      return ClientRateResult::kInvalid;
+    const std::lock_guard lock(counters_->mutex);
+    if (admission.rates_frozen_) return ClientRateResult::kFrozen;
+  }
+  prompt_ = prompt;
+  return ClientRateResult::kAllowed;
+}
+
 ClientRateResult ClientRateLease::ExtendPrompt(ClientAdmission& admission,
                                                const ClientIdentity& identity,
                                                uint64_t additional,
@@ -560,17 +628,23 @@ ClientRateResult ClientRateLease::ExtendPrompt(ClientAdmission& admission,
   if (admission.rates_frozen_) return ClientRateResult::kFrozen;
   counters_->Advance(now);
   auto& rate = counters_->rate;
-  if (limits.tokens_per_minute && Add(Add(rate.tokens, rate.reserved),
-                                      additional) > limits.tokens_per_minute) {
+  // Consume already reserved input capacity first. Additional work beyond it
+  // still goes through the same atomic minute limit.
+  const auto unused = precharged_ && prompt_capacity_ > prompt_
+                          ? prompt_capacity_ - prompt_
+                          : 0;
+  const auto extra = additional > unused ? additional - unused : 0;
+  if ((extra || !precharged_) && limits.tokens_per_minute &&
+      Add(Add(rate.tokens, rate.reserved), extra) > limits.tokens_per_minute) {
     rate.tpm_rejected = Add(rate.tpm_rejected, 1);
     return ClientRateResult::kTpm;
   }
-  if (additional > UINT64_MAX - rate.reserved ||
-      additional > UINT64_MAX - reserved_)
+  if (extra > UINT64_MAX - rate.reserved || extra > UINT64_MAX - reserved_)
     return ClientRateResult::kInvalid;
-  rate.reserved += additional;
-  reserved_ += additional;
+  rate.reserved += extra;
+  reserved_ += extra;
   prompt_ += additional;
+  if (precharged_) prompt_capacity_ = std::max(prompt_capacity_, prompt_);
   return ClientRateResult::kAllowed;
 }
 

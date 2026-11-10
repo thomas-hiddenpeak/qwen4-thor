@@ -1054,7 +1054,8 @@
         "evidence/serve-batch-capacity-cpu-20261110/README.md",
         "evidence/serve-batch-input-meter-cpu-20261110/README.md",
         "evidence/serve-batch-queue-quota-cpu-20261110/README.md",
-        "evidence/serve-batch-recount-cpu-20261111/README.md"
+        "evidence/serve-batch-recount-cpu-20261111/README.md",
+        "evidence/serve-batch-precharge-cpu-20261111/README.md"
       ],
       "batch_delivery_pending": true
     },

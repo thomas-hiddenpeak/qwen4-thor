@@ -1,0 +1,16 @@
+{
+  "status": "PASS_BATCH_PRECHARGE_COMPONENT_CPU",
+  "distinct_tests": 19,
+  "new_tests": 7,
+  "passed": 19,
+  "failed": 0,
+  "skipped": 0,
+  "seconds": 0.007685394957661629,
+  "gpu_starts": 0,
+  "builds_final_zero_warning": true,
+  "source_anchors": 487,
+  "engine_sha256": "f24d27ff7fec34990498d589877b5c1dfe90454ef7d598fd7f3ee0265d35fcd8",
+  "host_sha256": "aae583d96e6a7c54c55a06d8ee6edf402ed66bff16849ce287ff02aec1b62adb",
+  "default_sha256": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082",
+  "remaining": "Native budget planning, scheduler wait before durable start, scoped ownership transfer including background Responses/recovery, actual HTTP/SDK/CLI and compatible release; all master tasks."
+}

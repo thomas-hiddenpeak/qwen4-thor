@@ -1,0 +1,29 @@
+{
+  "new": [
+    "client_batch_precharge_claims_once_and_keeps_online_pool_independent",
+    "client_batch_precharge_native_preparation_consumes_shared_envelope",
+    "client_batch_precharge_concurrent_reservations_are_atomic",
+    "client_batch_precharge_scope_envelope_and_failed_claim_are_sticky",
+    "client_batch_precharge_extensions_use_credit_then_enforce_tpm",
+    "client_batch_precharge_rollover_freeze_and_unused_refund",
+    "client_batch_precharge_legacy_anonymous_and_live_policy_contracts"
+  ],
+  "direct": [
+    "client_rate_refund_cancel_failure_and_preterminal_idempotence",
+    "client_rate_atomic_concurrency_and_per_client_isolation",
+    "client_rate_internal_step_preserves_one_rpm_and_charges_actual_input",
+    "client_rate_internal_step_rejection_keeps_original_reservation",
+    "client_rate_internal_step_legacy_is_bound_and_cumulative",
+    "client_rate_internal_step_window_and_freeze_do_not_reset_admission",
+    "client_batch_rate_pools_are_independent_and_both_enforced",
+    "client_batch_rate_internal_preparation_charges_original_pool",
+    "client_batch_rate_policy_update_preserves_pool_and_rollover",
+    "client_batch_rate_internal_wrapper_inherits_trusted_origin",
+    "client_rate_checkpoint_drains_reservations_and_never_reopens",
+    "client_rate_restart_restores_live_window_and_cumulative_usage"
+  ],
+  "total": 19,
+  "max_seconds": 1200,
+  "gpu_starts": 0,
+  "note": "Trusted Batch rate reservation component; scheduler yielding, endpoint/context ownership transfer and background recovery still required."
+}
