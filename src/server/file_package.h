@@ -7,16 +7,10 @@
 #include <string_view>
 #include <vector>
 
-#include "q4t/server/file_input.h"
+#include "q4t/server/file_document.h"
 
 namespace q4t::server::file_detail {
-struct PackageLimits {
-  uint64_t max_bytes = 128ULL << 20;
-  uint64_t max_entry_bytes = 32ULL << 20;
-  size_t max_entries = 4096;
-  size_t max_xml_nodes = 1000000;
-  size_t max_xml_depth = 64;
-};
+using PackageLimits = FilePackageLimits;
 struct PackageEntry {
   std::string name, bytes;
 };

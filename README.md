@@ -180,8 +180,11 @@ Office容器底座在独立worker内按需加载系统libarchive 13/libxml2 2，
 构建需`libarchive-dev`与`libxml2-dev`头文件。原生适配采用内存ZIP
 读取及禁用外部实体的XML读取，进入纯内存沙箱后解析；不解压到主机
 目录。系统包分别保留BSD与MIT等原始许可（见其copyright文件），
-q4t没有复制这些库源码或随包分发库。容器组件已验，Office具体内容
-映射仍在实施，未把解析库可加载当作文件输入API已交付。
+q4t没有复制这些库源码或随包分发库。OpenXML/ODF内容和原生RTF解析
+已做针对性CPU验证；RTF代码页仅在解析子进程通过系统libc的iconv
+预加载，实际未使用的代码页缺失不影响其他文档。Legacy Office、
+Apple/Google来源适配及完整API消费仍在实施，组件通过不等于文件
+输入API已交付。
 
 Responses可通过`include:["reasoning.encrypted_content"]`取得本服务
 签发的密文状态，用于无状态续聊或持久会话；绑定客户端、模型和模板。

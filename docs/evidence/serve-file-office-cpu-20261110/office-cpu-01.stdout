@@ -1,0 +1,52 @@
+[PASS] file_office_word_actual_stories_tables_and_rtf_import
+[PASS] file_office_strict_namespaces_and_compatibility_choose_one_branch
+[PASS] file_office_slides_follow_relationship_order_and_include_notes
+[PASS] file_office_xlsx_actual_coordinates_strings_styles_and_formula_cache
+[PASS] file_office_xlsx_first_thousand_and_implicit_general_style
+[PASS] file_office_odf_text_slides_and_repeated_sparse_sheet_rows
+office broken.docx: 400 invalid_file_document
+office bad-target.docx: 400 invalid_file_document
+office external.docx: 400 invalid_file_document
+office bad-shared.xlsx: 400 invalid_file_document
+office bad-numeric.xlsx: 400 invalid_file_document
+office bad-position.xlsx: 400 invalid_file_document
+[PASS] file_office_bad_content_and_external_relationships_publish_nothing
+office sheets.xlsx: 413 file_document_capacity
+office sheets.xlsx: 413 file_document_capacity
+office sheets.xlsx: 413 file_document_capacity
+office sheets.xlsx: 413 file_document_capacity
+office sheets.xlsx: 413 file_document_capacity
+office sheets.xlsx: 413 file_document_capacity
+office sheets.xlsx: 413 file_document_capacity
+office nested.docx: 413 file_document_capacity
+[PASS] file_office_nested_content_and_independent_capacity_budgets
+[PASS] file_rtf_unicode_scoped_fallback_surrogates_and_alternate_text
+[PASS] file_rtf_font_codepage_and_multibyte_hex_are_not_replaced
+[PASS] file_rtf_ignored_objects_fields_and_deleted_text_cannot_leak
+[PASS] file_rtf_symbols_table_controls_and_binary_fallback_count
+[PASS] file_rtf_scope_end_stops_fallback_and_font_metadata_stays_private
+rtf: 400 invalid_file_document
+rtf: 400 invalid_file_document
+rtf: 400 invalid_file_document
+rtf: 400 invalid_file_document
+rtf: 400 invalid_file_document
+rtf: 400 invalid_file_document
+rtf: 400 invalid_file_document
+rtf: 400 invalid_file_document
+[PASS] file_rtf_malformed_group_unicode_and_multibyte_publish_nothing
+rtf: 413 file_document_capacity
+rtf: 413 file_document_capacity
+rtf: 503 file_character_encoding_unavailable
+[PASS] file_rtf_capacity_and_missing_codepage_leave_next_document_healthy
+[PASS] file_package_bounds_expansion_entry_count_and_cancellation
+[PASS] file_pdf_actual_text_and_every_page_images
+[PASS] file_document_magic_and_metadata_dispatch_do_not_read_binary_as_text
+[PASS] file_document_budgets_apply_to_actual_utf8_cells_and_structure
+[PASS] file_document_worker_actual_text_and_sheet_match_original_data
+[PASS] file_document_worker_sandbox_denies_external_capabilities
+[PASS] file_document_worker_bad_documents_and_budgets_do_not_poison_next_request
+[PASS] file_document_worker_cancel_during_actual_raw_input_transfer
+[PASS] file_document_worker_stall_and_crash_have_bounded_owned_recovery
+[PASS] file_document_worker_deferred_exit_keeps_slot_and_loop_reaps
+[PASS] file_document_worker_invalid_owner_and_config_launch_nothing
+26 tests, 26 passed, 0 failed, 0 skipped

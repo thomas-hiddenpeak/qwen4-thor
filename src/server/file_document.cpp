@@ -2,6 +2,7 @@
 
 #include <algorithm>
 
+#include "file_package.h"
 #include "object_protocol.h"
 #include "q4t/server/http_framing.h"
 
@@ -29,7 +30,11 @@ bool Valid(const FileDocumentLimits& limits) {
   return limits.max_text_bytes > 0 && limits.max_text_bytes <= (16ULL << 20) &&
          limits.max_cell_bytes > 0 && limits.max_cell_bytes <= (4ULL << 20) &&
          limits.max_columns > 0 && limits.max_columns <= 16384 &&
-         limits.max_cells > 0 && limits.max_cells <= 1000000;
+         limits.max_cells > 0 && limits.max_cells <= 1000000 &&
+         limits.max_sheets > 0 && limits.max_sheets <= 256 &&
+         limits.max_nested_documents <= 4 && limits.timeout_ms > 0 &&
+         limits.timeout_ms <= 120000 &&
+         file_detail::ValidPackageLimits(limits.package);
 }
 bool Scalar(uint32_t cp) {
   return cp && cp <= 0x10ffff && !(cp >= 0xd800 && cp <= 0xdfff) &&
@@ -244,7 +249,12 @@ FileDocumentFormat ClassifyFileDocument(const FileInputContent& input) {
       std::string_view(input.mime_type).substr(0, input.mime_type.find(';'))));
   if (extension == ".pdf" || mime == "application/pdf")
     return FileDocumentFormat::kPdf;
-  if (extension == ".docx" || extension == ".pptx" || extension == ".xlsx" ||
+  if (extension == ".docx" || extension == ".docm" || extension == ".dotx" ||
+      extension == ".dotm" || extension == ".pptx" || extension == ".pptm" ||
+      extension == ".potx" || extension == ".potm" || extension == ".ppsx" ||
+      extension == ".ppsm" || extension == ".ppam" || extension == ".xlsx" ||
+      extension == ".xlsm" || extension == ".xltx" || extension == ".xltm" ||
+      extension == ".xlam" || extension == ".xlsb" ||
       extension == ".odt" || extension == ".odp" || extension == ".ods" ||
       extension == ".pages" || extension == ".key" || extension == ".numbers" ||
       mime ==
@@ -259,7 +269,11 @@ FileDocumentFormat ClassifyFileDocument(const FileInputContent& input) {
       mime == "application/vnd.oasis.opendocument.presentation" ||
       mime == "application/vnd.oasis.opendocument.spreadsheet")
     return FileDocumentFormat::kOfficeZip;
-  if (extension == ".doc" || extension == ".ppt" || extension == ".xls" ||
+  if (extension == ".doc" || extension == ".dot" || extension == ".ppt" ||
+      extension == ".pot" || extension == ".ppa" || extension == ".pps" ||
+      extension == ".pwz" || extension == ".wiz" || extension == ".xls" ||
+      extension == ".xla" || extension == ".xlb" || extension == ".xlc" ||
+      extension == ".xlm" || extension == ".xlt" || extension == ".xlw" ||
       mime == "application/msword" || mime == "application/vnd.ms-powerpoint" ||
       mime == "application/vnd.ms-excel")
     return FileDocumentFormat::kOfficeBinary;

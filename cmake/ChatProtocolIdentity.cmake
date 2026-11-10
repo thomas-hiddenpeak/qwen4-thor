@@ -139,6 +139,18 @@ set(protocol_inputs
   src/server/file_package.cpp
   src/server/file_package_runtime.h
   src/server/file_package_runtime.cpp
+  src/server/file_office.h
+  src/server/file_office_internal.h
+  src/server/file_office.cpp
+  src/server/file_office_common.cpp
+  src/server/file_office_xml.cpp
+  src/server/file_office_text.cpp
+  src/server/file_office_sheet.cpp
+  src/server/file_office_odf.cpp
+  src/server/file_rtf.h
+  src/server/file_rtf_encoding.h
+  src/server/file_rtf.cpp
+  src/server/file_rtf_encoding.cpp
   cmake/NativeDocuments.cmake
   include/q4t/server/file_pdf.h
   src/server/file_pdf.cpp

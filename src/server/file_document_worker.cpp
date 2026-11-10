@@ -4,7 +4,10 @@
 
 #include <algorithm>
 #include <cstring>
+#include <unordered_set>
 
+#include "file_office.h"
+#include "file_rtf.h"
 #include "object_protocol.h"
 
 namespace q4t::server {
@@ -20,7 +23,9 @@ bool Native(FileDocumentFormat format) {
   return format == FileDocumentFormat::kText ||
          format == FileDocumentFormat::kCsv ||
          format == FileDocumentFormat::kTsv ||
-         format == FileDocumentFormat::kIif;
+         format == FileDocumentFormat::kIif ||
+         format == FileDocumentFormat::kOfficeZip ||
+         format == FileDocumentFormat::kRtf;
 }
 ObjectReply Failed(GrammarFailure failure) {
   if (failure == GrammarFailure::kCancelled)
@@ -58,16 +63,21 @@ bool Decode(const Json& value, const FileInputContent& input,
   const auto* text = value.Find("text");
   const auto* sheets = value.GetArray("sheets");
   if (!text || !text->IsString() || text->str.size() > limits.max_text_bytes ||
-      !sheets || sheets->array.size() > 1 ||
+      !sheets || sheets->array.size() > limits.max_sheets ||
       value.GetString("source_sha256") != Digest(input.bytes))
     return false;
   auto encoding = value.GetString("encoding");
   if (encoding != "utf-8" && encoding != "utf-16le" && encoding != "utf-16be" &&
       encoding != "utf-32le" && encoding != "utf-32be")
     return false;
-  const bool is_text = ClassifyFileDocument(input) == FileDocumentFormat::kText;
+  const auto format = ClassifyFileDocument(input);
+  const bool is_text =
+      format == FileDocumentFormat::kText || format == FileDocumentFormat::kRtf;
+  const bool office = format == FileDocumentFormat::kOfficeZip;
   if ((is_text && !sheets->array.empty()) ||
-      (!is_text && (sheets->array.size() != 1 || !text->str.empty())))
+      (!is_text && !office &&
+       (sheets->array.size() != 1 || !text->str.empty())) ||
+      ((office || format == FileDocumentFormat::kRtf) && encoding != "utf-8"))
     return false;
   FileDocument next;
   next.text = text->str;
@@ -75,19 +85,25 @@ bool Decode(const Json& value, const FileInputContent& input,
   next.source_sha256 = value.GetString("source_sha256");
   uint64_t bytes = next.text.size();
   size_t cells = 0;
+  std::unordered_set<std::string> names;
   for (const auto& item : sheets->array) {
     const auto* rows = item.GetArray("rows");
     const auto source_rows = item.GetInt("source_rows", -1);
     const auto columns = item.GetInt("columns", -1);
+    const auto* name = item.Find("name");
     if (!rows || rows->array.size() > FileDocumentLimits::kSheetRows ||
         source_rows < 0 ||
-        source_rows > static_cast<int64_t>(input.bytes.size()) + 1 ||
-        static_cast<uint64_t>(source_rows) < rows->array.size() ||
+        source_rows > (office ? 1000000000
+                              : static_cast<int64_t>(input.bytes.size()) + 1) ||
+        std::min<uint64_t>(source_rows, FileDocumentLimits::kSheetRows) !=
+            rows->array.size() ||
         columns < 0 || static_cast<uint64_t>(columns) > limits.max_columns ||
-        item.GetString("name") != input.filename)
+        !name || !name->IsString() || name->str.size() > 1024 ||
+        (office ? name->str.empty() : name->str != input.filename) ||
+        !names.insert(name->str).second)
       return false;
     FileDocumentSheet sheet;
-    sheet.name = input.filename;
+    sheet.name = name->str;
     sheet.source_rows = source_rows;
     sheet.columns = columns;
     for (const auto& row : rows->array) {
@@ -141,7 +157,9 @@ ObjectReply ParseNativeFileDocument(const FileInputContent& input,
       (control.cancelled && control.cancelled()))
     return Failed(GrammarFailure::kCancelled);
   if (Clock::now() >= access.deadline) return Failed(GrammarFailure::kTimeout);
-  control.compile_deadline = std::min(access.deadline, Clock::now() + 10s);
+  control.compile_deadline =
+      std::min(access.deadline,
+               Clock::now() + std::chrono::milliseconds(limits.timeout_ms));
   control.domain = IsolatedWorkerDomain::kFileParse;
   std::unique_ptr<detail::GrammarProcess> process;
   GrammarFailure failure;
@@ -151,13 +169,23 @@ ObjectReply ParseNativeFileDocument(const FileInputContent& input,
 #endif
   if (!detail::GrammarProcess::Start(entry, control, &process, &failure))
     return Failed(failure);
-  auto request = Object({{"filename", String(input.filename)},
-                         {"mime_type", String(input.mime_type)},
-                         {"bytes", Number(input.bytes.size())},
-                         {"max_text_bytes", Number(limits.max_text_bytes)},
-                         {"max_cell_bytes", Number(limits.max_cell_bytes)},
-                         {"max_columns", Number(limits.max_columns)},
-                         {"max_cells", Number(limits.max_cells)}});
+  auto request =
+      Object({{"filename", String(input.filename)},
+              {"mime_type", String(input.mime_type)},
+              {"bytes", Number(input.bytes.size())},
+              {"format", Number(static_cast<int>(ClassifyFileDocument(input)))},
+              {"max_text_bytes", Number(limits.max_text_bytes)},
+              {"max_cell_bytes", Number(limits.max_cell_bytes)},
+              {"max_columns", Number(limits.max_columns)},
+              {"max_cells", Number(limits.max_cells)},
+              {"max_sheets", Number(limits.max_sheets)},
+              {"max_nested", Number(limits.max_nested_documents)},
+              {"timeout_ms", Number(limits.timeout_ms)},
+              {"package_bytes", Number(limits.package.max_bytes)},
+              {"entry_bytes", Number(limits.package.max_entry_bytes)},
+              {"entries", Number(limits.package.max_entries)},
+              {"xml_nodes", Number(limits.package.max_xml_nodes)},
+              {"xml_depth", Number(limits.package.max_xml_depth)}});
   auto text = OutputJson(request);
   Frame header{kVersion, 1, text.size()}, response;
   auto transfer = [&](void* bytes, size_t size, bool write) {
@@ -198,9 +226,8 @@ ObjectReply ParseNativeFileDocument(const FileInputContent& input,
 int MaybeRunFileDocumentWorker(int argc, char** argv) {
   if (argc < 2 || std::strcmp(argv[1], "--file-document-worker")) return -1;
   if (!detail::EnterGrammarWorker(argc, argv)) return 2;
-  const rlimit cpu{10, 10};
-  if (setrlimit(RLIMIT_CPU, &cpu) || !detail::EnterNativeDocumentSandbox())
-    return 2;
+  const rlimit cpu{120, 120};
+  if (setrlimit(RLIMIT_CPU, &cpu)) return 2;
   try {
     Frame frame;
     if (!detail::WorkerTransfer(&frame, sizeof(frame), false) ||
@@ -222,7 +249,33 @@ int MaybeRunFileDocumentWorker(int argc, char** argv) {
     limits.max_cell_bytes = request.GetInt("max_cell_bytes", 0);
     limits.max_columns = request.GetInt("max_columns", 0);
     limits.max_cells = request.GetInt("max_cells", 0);
+    limits.max_sheets = request.GetInt("max_sheets", 0);
+    limits.max_nested_documents = request.GetInt("max_nested", -1);
+    limits.timeout_ms = request.GetInt("timeout_ms", 0);
+    limits.package.max_bytes = request.GetInt("package_bytes", 0);
+    limits.package.max_entry_bytes = request.GetInt("entry_bytes", 0);
+    limits.package.max_entries = request.GetInt("entries", 0);
+    limits.package.max_xml_nodes = request.GetInt("xml_nodes", 0);
+    limits.package.max_xml_depth = request.GetInt("xml_depth", 0);
     if (!ValidFileDocumentLimits(limits)) return 3;
+    const int format_value = request.GetInt("format", -1);
+    if (format_value < 0 ||
+        format_value > static_cast<int>(FileDocumentFormat::kRtf))
+      return 3;
+    const auto format = static_cast<FileDocumentFormat>(format_value);
+    if (!Native(format)) return 3;
+    ObjectReply runtime;
+    if (format == FileDocumentFormat::kOfficeZip)
+      runtime = file_detail::LoadPackageRuntime();
+    if (runtime.ok() && (format == FileDocumentFormat::kRtf ||
+                         format == FileDocumentFormat::kOfficeZip))
+      // Preload available code pages, but only a real conversion may require
+      // one. Missing RTF codecs must not reject an XLSX/ODF or Unicode-only
+      // RTF that never uses them. DecodeRtfBytes reports the specific failure.
+      file_detail::LoadRtfRuntime();
+    // Only bounded trusted control metadata has been read. Decode source
+    // bytes after capabilities are removed, including on codec-load failure.
+    if (!detail::EnterNativeDocumentSandbox()) return 2;
     input.bytes.resize(bytes);
     if (!detail::WorkerTransfer(input.bytes.data(), input.bytes.size(), false))
       return 3;
@@ -230,9 +283,21 @@ int MaybeRunFileDocumentWorker(int argc, char** argv) {
     ObjectReply reply;
     try {
       const BinaryAccess access{
-          "native-document-worker", Clock::now() + 10s, {}};
-      reply = ParsePlainFileDocument(input, ClassifyFileDocument(input), limits,
-                                     access, &document);
+          "native-document-worker",
+          Clock::now() + std::chrono::milliseconds(limits.timeout_ms),
+          {}};
+      if (!runtime.ok())
+        reply = runtime;
+      else if (ClassifyFileDocument(input) != format)
+        return 3;
+      else if (format == FileDocumentFormat::kOfficeZip)
+        reply = file_detail::ParseOfficePackage(input, limits, limits.package,
+                                                access, &document);
+      else if (format == FileDocumentFormat::kRtf)
+        reply = file_detail::ParseRtfDocument(input, limits, access, &document);
+      else
+        reply =
+            ParsePlainFileDocument(input, format, limits, access, &document);
       if (reply.ok()) reply.value = Wire(document);
     } catch (const std::bad_alloc&) {
       reply = Error(503, "file_document_memory_capacity",
@@ -241,7 +306,10 @@ int MaybeRunFileDocumentWorker(int argc, char** argv) {
       reply = Error(503, "file_document_failed", "Document extraction failed");
     }
     text = OutputJson(WireReply(reply));
-    if (text.empty() || text.size() > kMaxFrame) return 3;
+    if (text.size() > kMaxFrame)
+      text = OutputJson(WireReply(Error(413, "file_document_capacity",
+                                        "Document response exceeds capacity")));
+    if (text.empty()) return 3;
     frame = {kVersion, 1, text.size()};
     if (!detail::WorkerTransfer(&frame, sizeof(frame), true) ||
         !detail::WorkerTransfer(text.data(), text.size(), true))

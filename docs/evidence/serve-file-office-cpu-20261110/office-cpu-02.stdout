@@ -1,0 +1,7 @@
+[PASS] file_office_word_actual_stories_tables_and_rtf_import
+[PASS] file_office_xlsx_actual_coordinates_strings_styles_and_formula_cache
+rtf: 413 file_document_capacity
+rtf: 413 file_document_capacity
+rtf: 503 file_character_encoding_unavailable
+[PASS] file_rtf_capacity_and_missing_codepage_leave_next_document_healthy
+3 tests, 3 passed, 0 failed, 0 skipped

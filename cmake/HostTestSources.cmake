@@ -54,6 +54,16 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_document_sandbox.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_package.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_package_runtime.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_office.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_office_common.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_office_xml.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_office_text.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_office_sheet.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_office_odf.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_rtf.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_rtf_encoding.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_office_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_rtf_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_package_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_pdf.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_pdf_worker.cpp

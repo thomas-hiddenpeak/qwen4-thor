@@ -18,11 +18,22 @@ enum class FileDocumentFormat {
   kOfficeBinary,
   kRtf
 };
+struct FilePackageLimits {
+  uint64_t max_bytes = 128ULL << 20;
+  uint64_t max_entry_bytes = 32ULL << 20;
+  size_t max_entries = 4096;
+  size_t max_xml_nodes = 1000000;
+  size_t max_xml_depth = 64;
+};
 struct FileDocumentLimits {
   uint64_t max_text_bytes = 4ULL << 20;
   uint64_t max_cell_bytes = 1ULL << 20;
   size_t max_columns = 1024;
   size_t max_cells = 131072;
+  size_t max_sheets = 256;
+  size_t max_nested_documents = 4;
+  uint64_t timeout_ms = 10000;
+  FilePackageLimits package;
   // The standard file-input spreadsheet contract consumes the first 1000
   // rows per sheet. This limit is not a substitute for generated summaries.
   static constexpr size_t kSheetRows = 1000;

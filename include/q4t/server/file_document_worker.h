@@ -4,9 +4,9 @@
 #include "q4t/server/grammar_process.h"
 
 namespace q4t::server {
-// Native text/delimited extraction in an exec-only, syscall-restricted child.
-// Complex document codecs use the same ownership/budget contract when added;
-// callers must dispatch those formats to their actual decoder.
+// Native text/delimited, RTF and OpenXML/OpenDocument extraction in an
+// exec-only, syscall-restricted child. Codec libraries are loaded only in
+// that owned child, before sandbox entry and before parsing document bytes.
 ObjectReply ParseNativeFileDocument(const FileInputContent& input,
                                     const FileDocumentLimits& limits,
                                     const BinaryAccess& access,
