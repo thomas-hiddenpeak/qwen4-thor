@@ -1,0 +1,9 @@
+{
+  "reason": "SDK reached native tasks; CPU fixture inherited finite quota but omitted required planner. Supply explicit CPU 4-input/16-output planner/meter and actual reservation claim/settlement. 40ms polling exceeded separate 10rps control limit: use125ms within original60poll limit. Production unchanged; config schema and20C++ pass reused.",
+  "required": [
+    "tools.serve_responses.test_batches_transport.BatchTransportTests.test_official_sdk_core_batch_lifecycle",
+    "tools.serve_responses.test_batches_transport.BatchTransportTests.test_official_sdk_native_tls_prefix_batch_lifecycle"
+  ],
+  "count": 2,
+  "gpu_starts": 0
+}

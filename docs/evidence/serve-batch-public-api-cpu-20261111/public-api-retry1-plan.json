@@ -1,0 +1,7 @@
+{
+  "reason": "Only new CLI fixture lacked required model_dir. Production unchanged; reuse 19 passes. SDK did not execute: wrong venv omitted jsonschema; select existing protocol environment.",
+  "required": [
+    "batch_config_native_cli_budget_and_effective_discovery"
+  ],
+  "gpu_starts": 0
+}

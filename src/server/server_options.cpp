@@ -164,6 +164,13 @@ Status ValidateServerOptions(const ServerOptions& options) {
   if (options.background_max_input_mib < 1 ||
       options.background_max_input_mib > 2048)
     return Status::Fail("background-max-input-mib must be in [1,2048]");
+  if (options.batch_workers < 1 || options.batch_workers > 8 ||
+      options.batch_max_jobs < 1 || options.batch_max_jobs > 64 ||
+      options.batch_workers > options.batch_max_jobs ||
+      options.batch_max_client_jobs < 1 ||
+      options.batch_max_client_jobs > options.batch_max_jobs ||
+      options.batch_max_result_mib < 96 || options.batch_max_result_mib > 1024)
+    return Status::Fail("invalid Batch worker/job/result limits");
   // k=3 is the measured optimum; the verify forward and MTP scratch scale
   // linearly with k+1, so cap experimentation well below kMaxT.
   if (options.mtp_k < 1 || options.mtp_k > 16)
@@ -227,6 +234,16 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (key == "--request-deadline-ms") integer = &parsed.request_deadline_ms;
     if (key == "--background-max-input-mib")
       integer = &parsed.background_max_input_mib;
+    if (key == "--batch-workers") integer = &parsed.batch_workers;
+    if (key == "--batch-max-jobs") integer = &parsed.batch_max_jobs;
+    if (key == "--batch-max-client-jobs")
+      integer = &parsed.batch_max_client_jobs;
+    if (key == "--batch-max-result-mib") integer = &parsed.batch_max_result_mib;
+    uint64_t* wide = nullptr;
+    if (key == "--batch-model-queue-tokens")
+      wide = &parsed.batch_model_queue_tokens;
+    if (key == "--batch-client-model-queue-tokens")
+      wide = &parsed.batch_client_model_queue_tokens;
     if (key == "--mtp-k") integer = &parsed.mtp_k;
     if (key == "--object-max-object-mib")
       integer = &parsed.object_max_object_mib;
@@ -238,7 +255,7 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (key == "--object-max-total-objects")
       integer = &parsed.object_max_total_objects;
     if (key == "--object-io-timeout-ms") integer = &parsed.object_io_timeout_ms;
-    if (!integer && key != "--host" && key != "--model-dir" &&
+    if (!integer && !wide && key != "--host" && key != "--model-dir" &&
         key != "--mem-fraction" && key != "--moe-trace-dir" &&
         key != "--moe-trace-workload" && key != "--moe-hot-list" &&
         key != "--startup-plan" && key != "--mtp-subset-head" &&
@@ -252,6 +269,14 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (++i == args.size() || args[i].empty() || args[i].starts_with("--"))
       return Status::Fail("missing value for " + std::string(key));
     const auto value = args[i];
+    if (wide) {
+      const auto parsed_number =
+          std::from_chars(value.data(), value.data() + value.size(), *wide);
+      if (parsed_number.ec != std::errc() ||
+          parsed_number.ptr != value.data() + value.size())
+        return Status::Fail("invalid integer for " + std::string(key));
+      continue;
+    }
     if (key == "--cuda-allocation-limit-mib") {
       if (value == "auto") {
         parsed.cuda_allocation_limit_mib = -1;

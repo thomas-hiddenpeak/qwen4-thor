@@ -594,6 +594,17 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
          R"(,"background_input_bytes":)" +
          std::to_string(
              static_cast<uint64_t>(requested.background_max_input_mib) << 20) +
+         R"(,"batch_workers":)" + std::to_string(requested.batch_workers) +
+         R"(,"batch_max_jobs":)" + std::to_string(requested.batch_max_jobs) +
+         R"(,"batch_max_client_jobs":)" +
+         std::to_string(requested.batch_max_client_jobs) +
+         R"(,"batch_result_bytes":)" +
+         std::to_string(static_cast<uint64_t>(requested.batch_max_result_mib)
+                        << 20) +
+         R"(,"batch_model_queue_tokens":)" +
+         std::to_string(requested.batch_model_queue_tokens) +
+         R"(,"batch_client_model_queue_tokens":)" +
+         std::to_string(requested.batch_client_model_queue_tokens) +
          R"(,"tokenizer_input_bytes":)" +
          std::to_string(tokenizer.max_input_bytes) + R"(,"tokenizer_tokens":)" +
          std::to_string(tokenizer.max_tokens) +

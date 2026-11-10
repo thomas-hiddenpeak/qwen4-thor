@@ -1,0 +1,65 @@
+test_actual_cpp_batch_and_config_schema_and_pinned_source (tools.serve_responses.test_batches_transport.BatchTransportTests.test_actual_cpp_batch_and_config_schema_and_pinned_source) ... ok
+test_official_sdk_core_batch_lifecycle (tools.serve_responses.test_batches_transport.BatchTransportTests.test_official_sdk_core_batch_lifecycle) ... FAIL
+test_official_sdk_native_tls_prefix_batch_lifecycle (tools.serve_responses.test_batches_transport.BatchTransportTests.test_official_sdk_native_tls_prefix_batch_lifecycle) ... FAIL
+
+======================================================================
+FAIL: test_official_sdk_core_batch_lifecycle (tools.serve_responses.test_batches_transport.BatchTransportTests.test_official_sdk_core_batch_lifecycle)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_batches_transport.py", line 47, in test_official_sdk_core_batch_lifecycle
+    def test_official_sdk_core_batch_lifecycle(self):self.sdk(False)
+                                                     ^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_batches_transport.py", line 36, in sdk
+    self.assertEqual(result.returncode,0,result.stderr.decode())
+AssertionError: 1 != 0 : file:///home/rm01/models/dev/qwen4-thor/tools/serve_responses/batches_sdk.mjs:32
+  throw new Error('Original native Batch did not reach expected status');
+        ^
+
+Error: Original native Batch did not reach expected status
+    at wait (file:///home/rm01/models/dev/qwen4-thor/tools/serve_responses/batches_sdk.mjs:32:9)
+    at async file:///home/rm01/models/dev/qwen4-thor/tools/serve_responses/batches_sdk.mjs:41:19
+
+Node.js v24.18.0
+
+
+======================================================================
+FAIL: test_official_sdk_native_tls_prefix_batch_lifecycle (tools.serve_responses.test_batches_transport.BatchTransportTests.test_official_sdk_native_tls_prefix_batch_lifecycle)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_batches_transport.py", line 48, in test_official_sdk_native_tls_prefix_batch_lifecycle
+    def test_official_sdk_native_tls_prefix_batch_lifecycle(self):self.sdk(True)
+                                                                  ^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_batches_transport.py", line 36, in sdk
+    self.assertEqual(result.returncode,0,result.stderr.decode())
+AssertionError: 1 != 0 : /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk/node_modules/openai/core/error.js:63
+            return new RateLimitError(status, error, message, headers);
+                   ^
+
+RateLimitError: 429 Service entrypoint rejected request
+    at APIError.generate (/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk/node_modules/openai/core/error.js:63:20)
+    at OpenAI.makeStatusError (/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk/node_modules/openai/client.js:449:32)
+    at OpenAI.makeRequest (/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk/node_modules/openai/client.js:1017:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async wait (file:///home/rm01/models/dev/qwen4-thor/tools/serve_responses/batches_sdk.mjs:28:19)
+    at async file:///home/rm01/models/dev/qwen4-thor/tools/serve_responses/batches_sdk.mjs:41:19 {
+  status: 429,
+  headers: Headers {},
+  requestID: 'req-76c23f036f2572223d0a077e4e2ff8d0',
+  error: {
+    message: 'Service entrypoint rejected request',
+    type: 'gateway_error',
+    param: null,
+    code: 'gateway_rate_limit'
+  },
+  code: 'gateway_rate_limit',
+  param: null,
+  type: 'gateway_error'
+}
+
+Node.js v24.18.0
+
+
+----------------------------------------------------------------------
+Ran 3 tests in 5.129s
+
+FAILED (failures=2)

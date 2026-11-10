@@ -151,6 +151,8 @@ set(protocol_inputs
   src/server/batch_validation.cpp
   include/q4t/server/batch_jobs.h
   src/server/batch_jobs.cpp
+  include/q4t/server/batch_api.h
+  src/server/batch_api.cpp
   include/q4t/server/file_input.h
   src/server/file_input.cpp
   src/server/file_image.cpp

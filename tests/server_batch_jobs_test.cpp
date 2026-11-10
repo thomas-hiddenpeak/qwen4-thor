@@ -7,11 +7,18 @@
 #include <atomic>
 #include <cstdlib>
 #include <filesystem>
+#include <fstream>
 #include <mutex>
 #include <thread>
+#include <tuple>
 
 #include "../src/server/object_protocol.h"
 #include "q4t/server/files.h"
+#include "q4t/server/batch_api.h"
+#include "q4t/server/client_request.h"
+#include "q4t/server/http_connection.h"
+#include "q4t/server/chat_capabilities.h"
+#include "q4t/server/object_store_options.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/responses_owner.h"
@@ -121,6 +128,11 @@ BatchCreate Options(const std::string& file) {
   options.endpoint = "/v1/responses";
   options.metadata = Object();
   return options;
+}
+std::string BatchRequest(const std::string& file) {
+  return OutputJson(Object({{"input_file_id", String(file)},
+                            {"endpoint", String("/v1/responses")},
+                            {"completion_window", String("24h")}}));
 }
 // Actual finite response, admission and durable lifecycle; generation is an
 // explicit CPU fixture, not a model quality or real GPU business assertion.
@@ -874,5 +886,245 @@ Q4T_TEST(
               jobs.Health().reserved_result_bytes == 0 &&
               fixture.clients.Usage(0).data_active == 0);
   }
+  return true;
+}
+
+Q4T_TEST(batch_api_actual_lifecycle_scope_query_and_output) {
+  Fixture f;
+  ObjectStore objects(f.objects);
+  const auto file = File(objects, Input(2));
+  std::atomic<int> calls{0};
+  BatchJobs jobs(objects, f.clients, f.config, f.jobs, Native(calls));
+  const auto accepted =
+      HandleBatchRequest(objects, &jobs, "POST", "/v1/batches",
+                         BatchRequest(file), f.alpha, Access());
+  Q4T_CHECK(Ok(accepted) && accepted.value.GetString("status") == "validating");
+  const auto id = accepted.value.GetString("id");
+  Q4T_CHECK(HandleBatchRequest(objects, &jobs, "GET", "/v1/batches/" + id, "",
+                               f.beta, Access("client:beta"))
+                .http_status == 404);
+  Q4T_CHECK(HandleBatchRequest(objects, &jobs, "GET", "/v1/batches/" + id, "",
+                               f.alpha, Access("client:beta"))
+                .http_status == 403);
+  Q4T_CHECK(Ok(Finished(objects, jobs, id)));
+  const auto result = HandleBatchRequest(
+      objects, &jobs, "GET", "/v1/batches/" + id, "", f.alpha, Access());
+  Q4T_CHECK(Ok(result) && calls == 2 &&
+            result.value.Find("request_counts")->GetInt("completed") == 2);
+  const auto content =
+      Content(objects, result.value.GetString("output_file_id"));
+  Q4T_CHECK(content.find("item-0") != content.npos &&
+            content.find("item-1") != content.npos);
+  const auto listed = HandleBatchRequest(
+      objects, &jobs, "GET", "/v1/batches?limit=1", "", f.alpha, Access());
+  Q4T_CHECK(Ok(listed) && listed.value.GetArray("data")->array.size() == 1 &&
+            listed.value.GetArray("data")->array[0].GetString("id") == id);
+  const auto empty = HandleBatchRequest(
+      objects, &jobs, "GET", "/v1/batches?after=" + id, "", f.alpha, Access());
+  Q4T_CHECK(Ok(empty) && empty.value.GetArray("data")->array.empty());
+  const auto* output = std::getenv("Q4T_TEST_OUTPUT_DIR");
+  const auto directory =
+      std::filesystem::path(output ? output : ".q4t-work/batch-api-cpu");
+  std::filesystem::create_directories(directory);
+  std::ofstream stream(directory / "batches-contract.json");
+  stream << OutputJson(Object({{"created", accepted.value},
+                               {"completed", result.value},
+                               {"list", listed.value},
+                               {"empty", empty.value}}));
+  Q4T_CHECK(stream.good());
+  return true;
+}
+
+Q4T_TEST(batch_api_cancel_drains_running_row_and_skips_remaining) {
+  Fixture f;
+  ObjectStore objects(f.objects);
+  const auto file = File(objects, Input(2));
+  std::atomic<int> calls{0};
+  std::atomic<bool> release{false};
+  BatchJobs jobs(objects, f.clients, f.config, f.jobs,
+                 Native(calls, [&] { Wait([&] { return release.load(); }); }));
+  ScopeExit unblock([&] { release = true; });
+  const auto accepted =
+      HandleBatchRequest(objects, &jobs, "POST", "/v1/batches",
+                         BatchRequest(file), f.alpha, Access());
+  Q4T_CHECK(Ok(accepted) && Wait([&] { return calls == 1; }));
+  const auto id = accepted.value.GetString("id");
+  const auto cancel = HandleBatchRequest(objects, &jobs, "POST",
+                                         "/v1/batches/" + id + "/cancel", "",
+                                         f.alpha, Access());
+  Q4T_CHECK(Ok(cancel) && cancel.value.GetString("status") == "cancelling");
+  Q4T_CHECK(jobs.Health().active == 1 && f.clients.Usage(0).data_active == 1);
+  release = true;
+  const auto final = Finished(objects, jobs, id);
+  Q4T_CHECK(Ok(final) && calls == 1 &&
+            final.value.GetString("status") == "cancelled" &&
+            f.clients.Usage(0).data_active == 0);
+  const auto again = HandleBatchRequest(objects, &jobs, "POST",
+                                        "/v1/batches/" + id + "/cancel", "{}",
+                                        f.alpha, Access());
+  Q4T_CHECK(Ok(again) && OutputJson(again.value) == OutputJson(final.value));
+  return true;
+}
+
+Q4T_TEST(batch_api_closed_http_contract_never_publishes_invalid_requests) {
+  Fixture f;
+  ObjectStore objects(f.objects);
+  std::atomic<int> calls{0};
+  BatchJobs jobs(objects, f.clients, f.config, f.jobs, Native(calls));
+  for (const auto* body :
+       {"", "[]", "null",
+        "{\"completion_window\":\"24h\",\"completion_window\":\"24h\"}",
+        "{\"input_file_id\":\"file_a\",\"endpoint\":\"/v1/"
+        "responses\",\"completion_window\":\"24h\",\"owner\":\"beta\"}"})
+    Q4T_CHECK(HandleBatchRequest(objects, &jobs, "POST", "/v1/batches", body,
+                                 f.alpha, Access())
+                  .http_status == 400);
+  for (const auto* path :
+       {"/v1/batches?limit=0", "/v1/batches?limit=101",
+        "/v1/batches?limit=1&limit=2", "/v1/batches?before=batch_x",
+        "/v1/batches?limit=1e1", "/v1/batches?limit=%GG",
+        "/v1/batches/batch_x?limit=1"})
+    Q4T_CHECK(
+        HandleBatchRequest(objects, &jobs, "GET", path, "", f.alpha, Access())
+            .http_status == 400);
+  for (const auto* path :
+       {"/v1/batches/", "/v1/batches/x/unknown", "/v1/batches/x/cancel/",
+        "/v1/batches/x#fragment", "/v1/batches/x%2fy", "/v1/not-batches"})
+    Q4T_CHECK(
+        HandleBatchRequest(objects, &jobs, "GET", path, "", f.alpha, Access())
+            .http_status == 404);
+  const auto method = HandleBatchRequest(
+      objects, &jobs, "DELETE", "/v1/batches/x", "", f.alpha, Access());
+  Q4T_CHECK(method.http_status == 405 &&
+            method.value.GetString("allow") == "GET");
+  Q4T_CHECK(HandleBatchRequest(objects, &jobs, "GET", "/v1/batches", "{}",
+                               f.alpha, Access())
+                .http_status == 400);
+  Q4T_CHECK(HandleBatchRequest(objects, &jobs, "POST", "/v1/batches/x/cancel",
+                               "{\"force\":true}", f.alpha, Access())
+                .http_status == 400);
+  Q4T_CHECK(BatchState(objects)
+                .List(Access(), Object())
+                .value.GetArray("data")
+                ->array.empty() &&
+            calls == 0);
+  return true;
+}
+
+Q4T_TEST(batch_api_unavailable_executor_keeps_original_read_and_cancel) {
+  Fixture f;
+  ObjectStore objects(f.objects);
+  const auto file = File(objects, Input(1));
+  Q4T_CHECK(HandleBatchRequest(objects, nullptr, "POST", "/v1/batches",
+                               BatchRequest(file), f.alpha, Access())
+                .code == "batch_executor_unavailable");
+  Q4T_CHECK(BatchState(objects)
+                .List(Access(), Object())
+                .value.GetArray("data")
+                ->array.empty());
+  const auto original = BatchState(objects).Create(Access(), Options(file));
+  Q4T_CHECK(Ok(original));
+  const auto path = "/v1/batches/" + original.value.GetString("id");
+  Q4T_CHECK(Ok(HandleBatchRequest(objects, nullptr, "GET", path, "", f.alpha,
+                                  Access())));
+  const auto cancelled = HandleBatchRequest(
+      objects, nullptr, "POST", path + "/cancel", "", f.alpha, Access());
+  Q4T_CHECK(Ok(cancelled) &&
+            cancelled.value.GetString("status") == "cancelling");
+  return true;
+}
+
+Q4T_TEST(batch_api_saturated_data_preserves_control_and_cancel_lanes) {
+  Fixture f;
+  ClientLease held;
+  Q4T_CHECK(held.Acquire(f.clients, f.alpha, ClientLane::kData));
+  for (const auto& [method, target, allowed, classification] : std::vector<
+           std::tuple<std::string, std::string, bool, HttpConnectionClass>>{
+           {"POST", "/v1/batches", false, HttpConnectionClass::kBusiness},
+           {"GET", "/v1/batches?limit=2", false,
+            HttpConnectionClass::kBusiness},
+           {"GET", "/v1/batches/batch_x", true,
+            HttpConnectionClass::kObservation},
+           {"POST", "/v1/batches/batch_x/cancel", true,
+            HttpConnectionClass::kControl}}) {
+    Q4T_CHECK(ClassifyHttpConnection(method, target) == classification &&
+              BatchMethodAllowed(method, target));
+    HttpRequestHeaders headers;
+    headers.client_id = "alpha";
+    headers.gateway_token = std::string(64, 'a');
+    ClientLease request;
+    ClientIdentity identity;
+    int failure = 0;
+    Q4T_CHECK(AdmitClientRequest(method, target, &headers, f.clients, &request,
+                                 &identity, &failure) == allowed);
+    if (!allowed) Q4T_CHECK(failure == 429);
+  }
+  Q4T_CHECK(!IsCancellationRequest("POST", "/v1/batches/x/cancel/extra") &&
+            !IsBatchObservation("GET", "/v1/batches/x%2fy"));
+  return true;
+}
+
+Q4T_TEST(batch_config_native_cli_budget_and_effective_discovery) {
+  ServerOptions options;
+  options.model_dir = "/unused/model";
+  const std::vector<std::string_view> args{"--batch-workers",
+                                           "2",
+                                           "--batch-max-jobs",
+                                           "6",
+                                           "--batch-max-client-jobs",
+                                           "3",
+                                           "--batch-max-result-mib",
+                                           "192",
+                                           "--batch-model-queue-tokens",
+                                           "9007199254740991",
+                                           "--batch-client-model-queue-tokens",
+                                           "4294967296"};
+  Q4T_CHECK(ParseServerOptions(args, &options));
+  const auto resolved =
+      ResolveObjectStoreOptions(options, "/tmp/cpu-state", "");
+  Q4T_CHECK(resolved.batch_model_queue_tokens == (1ULL << 53) - 1 &&
+            resolved.batch_client_model_queue_tokens == 4294967296ULL &&
+            options.batch_workers == 2);
+  for (const auto& pair :
+       std::vector<std::pair<std::string_view, std::string_view>>{
+           {"--batch-workers", "0"},
+           {"--batch-workers", "9"},
+           {"--batch-max-jobs", "1"},
+           {"--batch-max-client-jobs", "7"},
+           {"--batch-max-result-mib", "95"},
+           {"--batch-max-result-mib", "1025"},
+           {"--batch-model-queue-tokens", "1"},
+           {"--batch-client-model-queue-tokens", "0"},
+           {"--batch-model-queue-tokens", "9007199254740992"},
+           {"--batch-model-queue-tokens", "18446744073709551616"},
+           {"--batch-model-queue-tokens", "-1"},
+           {"--batch-model-queue-tokens", "1.5"},
+           {"--batch-model-queue-tokens", "true"}}) {
+    const std::array invalid{pair.first, pair.second};
+    Q4T_CHECK(!ParseServerOptions(invalid, &options));
+    Q4T_CHECK(options.batch_workers == 2 &&
+              options.batch_model_queue_tokens == (1ULL << 53) - 1);
+  }
+  ChatPlanConfig config;
+  q4t::io::Json effective, capabilities;
+  const auto wire = EffectiveServeConfigJson(options, config, true, true, 8);
+  Q4T_CHECK(q4t::io::ParseJson(wire, &effective) &&
+            q4t::io::ParseJson(ChatCapabilitiesJson("cpu", false, true),
+                               &capabilities));
+  Q4T_CHECK(effective.Find("limits")->GetInt("batch_workers") == 2 &&
+            effective.Find("limits")->GetInt("batch_result_bytes") ==
+                (192LL << 20));
+  const auto* batches = capabilities.Find("batches");
+  Q4T_CHECK(batches && batches->GetBool("create") &&
+            batches->GetBool("cancel") &&
+            batches->GetArray("execution_endpoints")->array.size() == 3 &&
+            !batches->GetBool("core_readiness_dependency"));
+  const auto* out = std::getenv("Q4T_TEST_OUTPUT_DIR");
+  const auto directory =
+      std::filesystem::path(out ? out : ".q4t-work/batch-api-cpu");
+  std::filesystem::create_directories(directory);
+  std::ofstream file(directory / "batches-config.json");
+  file << wire;
+  Q4T_CHECK(file.good());
   return true;
 }

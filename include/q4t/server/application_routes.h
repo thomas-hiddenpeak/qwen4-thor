@@ -18,6 +18,37 @@ inline bool IsConversationTarget(std::string_view target) {
   return path == "/v1/conversations" || path.starts_with("/v1/conversations/");
 }
 
+inline bool IsBatchTarget(std::string_view target) {
+  const auto path = target.substr(0, target.find('?'));
+  return path == "/v1/batches" || path.starts_with("/v1/batches/");
+}
+inline bool BatchMethodAllowed(std::string_view method,
+                               std::string_view target) {
+  if (target.find('#') != target.npos) return false;
+  auto path = target.substr(0, target.find('?'));
+  constexpr std::string_view root = "/v1/batches";
+  if (path == root) return method == "GET" || method == "POST";
+  if (!path.starts_with("/v1/batches/")) return false;
+  path.remove_prefix(root.size() + 1);
+  const auto slash = path.find('/');
+  if (!ValidApplicationId(path.substr(0, slash))) return false;
+  return slash == path.npos
+             ? method == "GET"
+             : path.substr(slash) == "/cancel" && method == "POST";
+}
+inline bool IsBatchCancellation(std::string_view method,
+                                std::string_view target) {
+  return BatchMethodAllowed(method, target) && method == "POST" &&
+         target.substr(0, target.find('?')).ends_with("/cancel");
+}
+inline bool IsBatchObservation(std::string_view method,
+                               std::string_view target) {
+  // The bounded but larger list uses business capacity; small retrieve and
+  // cancellation retain independent access while generation is saturated.
+  return method == "GET" && BatchMethodAllowed(method, target) &&
+         target.substr(0, target.find('?')) != "/v1/batches";
+}
+
 inline bool IsFileTarget(std::string_view target) {
   const auto path = target.substr(0, target.find('?'));
   return path == "/v1/files" || path.starts_with("/v1/files/");
@@ -168,6 +199,7 @@ inline bool IsCancellationRequest(std::string_view method,
                                   std::string_view target) {
   return (method == "POST" && target == "/v1/requests/cancel") ||
          IsResponseCancellation(method, target) ||
+         IsBatchCancellation(method, target) ||
          IsUploadCancellation(method, target);
 }
 

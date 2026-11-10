@@ -51,6 +51,11 @@ void ChatServer::HandleConfig(int fd) {
   const auto health =
       objects_ ? objects_->Health() : ObjectStoreHealth{"unconfigured"};
   const auto jobs = background_ ? background_->Health() : ResponsesJobsHealth{};
+  const auto batches = batches_ ? batches_->Health() : BatchJobsHealth{};
+  const auto batch_state = !batches_          ? "unavailable"
+                           : batches.failed   ? "failed"
+                           : batches.stopping ? "stopping"
+                                              : "ready";
   const auto jobs_state = !background_    ? "unavailable"
                           : jobs.failed   ? "failed"
                           : jobs.stopping ? "stopping"
@@ -70,6 +75,20 @@ void ChatServer::HandleConfig(int fd) {
       std::to_string(health.controller_recoveries) +
       R"(,"auxiliary_cleanup_failures":)" +
       std::to_string(health.auxiliary_cleanup_failures) + "}," +
+      R"("batches":{"state":")" + batch_state +
+      R"(","readiness_dependency":false,"owned":)" +
+      std::to_string(batches.owned) + R"(,"active":)" +
+      std::to_string(batches.active) + R"(,"reserved_result_bytes":)" +
+      std::to_string(batches.reserved_result_bytes) + R"(,"rate_waiting":)" +
+      std::to_string(batches.rate_waiting) + R"(,"rate_deferrals":)" +
+      std::to_string(batches.rate_deferrals) + R"(,"turns":)" +
+      std::to_string(batches.turns) + R"(,"errors":)" +
+      std::to_string(batches.errors) + R"(,"recovered":)" +
+      std::to_string(batches.recovered) + R"(,"interrupted":)" +
+      std::to_string(batches.interrupted) + R"(,"recovery_errors":)" +
+      std::to_string(batches.recovery_errors) + R"(,"recovery_pending":)" +
+      std::to_string(batches.recovery_pending) + R"(,"recovery_scanned":)" +
+      (batches.recovery_scanned ? "true" : "false") + "}," +
       R"("responses_background":{"state":")" + jobs_state +
       R"(","readiness_dependency":false,"owned":)" +
       std::to_string(jobs.owned) + R"(,"queued":)" +

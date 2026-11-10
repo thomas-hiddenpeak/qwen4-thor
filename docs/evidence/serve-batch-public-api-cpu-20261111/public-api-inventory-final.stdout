@@ -1,0 +1,23 @@
+{
+  "inventory_current": false,
+  "semantics_certified": false,
+  "fields": 45,
+  "completion_fields": 21,
+  "routes": 53,
+  "native_routes": 87,
+  "reviewed_source_anchors": 489,
+  "mutation_checks": 0,
+  "errors": [
+    "missing evidence reference: docs/evidence/serve-batch-public-api-cpu-20261111/README.md",
+    "missing evidence reference: docs/evidence/serve-batch-public-api-cpu-20261111/README.md",
+    "missing evidence reference: docs/evidence/serve-batch-public-api-cpu-20261111/README.md",
+    "missing evidence reference: docs/evidence/serve-batch-public-api-cpu-20261111/README.md",
+    "missing evidence reference: docs/evidence/serve-batch-public-api-cpu-20261111/README.md",
+    "missing evidence reference: docs/evidence/serve-batch-public-api-cpu-20261111/README.md",
+    "missing evidence reference: docs/evidence/serve-batch-public-api-cpu-20261111/README.md",
+    "missing evidence reference: docs/evidence/serve-batch-public-api-cpu-20261111/README.md",
+    "missing evidence reference: docs/evidence/serve-batch-public-api-cpu-20261111/README.md",
+    "missing evidence reference: docs/evidence/serve-batch-public-api-cpu-20261111/README.md",
+    "missing evidence reference: docs/evidence/serve-batch-public-api-cpu-20261111/README.md"
+  ]
+}

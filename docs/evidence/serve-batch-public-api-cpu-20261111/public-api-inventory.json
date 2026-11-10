@@ -1,0 +1,8 @@
+{
+  "argv": [
+    "python3",
+    "tools/serve_audit/check_inventory.py"
+  ],
+  "exit_code": 0,
+  "seconds": 0.11407576082274318
+}

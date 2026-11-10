@@ -1208,6 +1208,283 @@
         }
       }
     },
+    "/v1/batches": {
+      "post": {
+        "operationId": "post_v1_batches",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/batch_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native client-scoped asynchronous task; input frozen before execution, independent Batch minute pool; original deadline and no started-row replay.",
+        "x-q4t-limits": {
+          "input_bytes": 200000000,
+          "requests": 50000,
+          "window_seconds": 86400,
+          "queue_tokens": "configured per model and per authenticated client/model",
+          "storage_quota_separate": true
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/batch_create"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get_v1_batches",
+        "parameters": [
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/batch_list"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native client-scoped asynchronous task; input frozen before execution, independent Batch minute pool; original deadline and no started-row replay.",
+        "x-q4t-limits": {
+          "input_bytes": 200000000,
+          "requests": 50000,
+          "window_seconds": 86400,
+          "queue_tokens": "configured per model and per authenticated client/model",
+          "storage_quota_separate": true
+        }
+      }
+    },
+    "/v1/batches/{batch_id}": {
+      "get": {
+        "operationId": "get_v1_batches_batch_id",
+        "parameters": [
+          {
+            "name": "batch_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/batch_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native client-scoped asynchronous task; input frozen before execution, independent Batch minute pool; original deadline and no started-row replay.",
+        "x-q4t-limits": {
+          "input_bytes": 200000000,
+          "requests": 50000,
+          "window_seconds": 86400,
+          "queue_tokens": "configured per model and per authenticated client/model",
+          "storage_quota_separate": true
+        }
+      }
+    },
+    "/v1/batches/{batch_id}/cancel": {
+      "post": {
+        "operationId": "post_v1_batches_batch_id_cancel",
+        "parameters": [
+          {
+            "name": "batch_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/batch_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Native client-scoped asynchronous task; input frozen before execution, independent Batch minute pool; original deadline and no started-row replay.",
+        "x-q4t-limits": {
+          "input_bytes": 200000000,
+          "requests": 50000,
+          "window_seconds": 86400,
+          "queue_tokens": "configured per model and per authenticated client/model",
+          "storage_quota_separate": true
+        },
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/batch_cancel"
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/files": {
       "post": {
         "operationId": "post_v1_files",
@@ -3708,7 +3985,8 @@
         "application_items",
         "stored_chat",
         "files",
-        "uploads"
+        "uploads",
+        "batches"
       ],
       "limits": [
         "data/control inflight",
@@ -11106,7 +11384,7 @@
         }
       },
       "serve-application-v1.schema.json": {
-        "title": "Q4T Chat, Responses, Conversations, Files and Uploads wire contract",
+        "title": "Q4T Chat, Responses, Conversations, Files, Uploads and Batches wire contract",
         "$defs": {
           "0": {
             "anyOf": [
@@ -27498,6 +27776,421 @@
             ],
             "additionalProperties": false
           },
+          "batch_create": {
+            "type": "object",
+            "properties": {
+              "input_file_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "endpoint": {
+                "enum": [
+                  "/v1/responses",
+                  "/v1/chat/completions",
+                  "/v1/embeddings",
+                  "/v1/completions",
+                  "/v1/moderations",
+                  "/v1/images/generations",
+                  "/v1/images/edits",
+                  "/v1/videos"
+                ]
+              },
+              "completion_window": {
+                "const": "24h"
+              },
+              "metadata": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "maxProperties": 16,
+                    "propertyNames": {
+                      "minLength": 1,
+                      "maxLength": 64
+                    },
+                    "additionalProperties": {
+                      "type": "string",
+                      "maxLength": 512
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "output_expires_after": {
+                "type": "object",
+                "properties": {
+                  "anchor": {
+                    "const": "created_at"
+                  },
+                  "seconds": {
+                    "type": "integer",
+                    "minimum": 3600,
+                    "maximum": 2592000
+                  }
+                },
+                "required": [
+                  "anchor",
+                  "seconds"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "input_file_id",
+              "endpoint",
+              "completion_window"
+            ],
+            "additionalProperties": false
+          },
+          "batch_resource": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "object": {
+                "const": "batch"
+              },
+              "endpoint": {
+                "enum": [
+                  "/v1/responses",
+                  "/v1/chat/completions",
+                  "/v1/embeddings",
+                  "/v1/completions",
+                  "/v1/moderations",
+                  "/v1/images/generations",
+                  "/v1/images/edits",
+                  "/v1/videos"
+                ]
+              },
+              "input_file_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "completion_window": {
+                "const": "24h"
+              },
+              "created_at": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "status": {
+                "enum": [
+                  "validating",
+                  "failed",
+                  "in_progress",
+                  "finalizing",
+                  "completed",
+                  "expired",
+                  "cancelling",
+                  "cancelled"
+                ]
+              },
+              "metadata": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "maxProperties": 16,
+                    "propertyNames": {
+                      "minLength": 1,
+                      "maxLength": 64
+                    },
+                    "additionalProperties": {
+                      "type": "string",
+                      "maxLength": 512
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "model": {
+                "type": "string"
+              },
+              "request_counts": {
+                "type": "object",
+                "properties": {
+                  "total": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 50000
+                  },
+                  "completed": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 50000
+                  },
+                  "failed": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 50000
+                  }
+                },
+                "required": [
+                  "total",
+                  "completed",
+                  "failed"
+                ],
+                "additionalProperties": false
+              },
+              "usage": {
+                "type": "object",
+                "properties": {
+                  "input_tokens": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "output_tokens": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "total_tokens": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "input_tokens_details": {
+                    "type": "object",
+                    "properties": {
+                      "cached_tokens": {
+                        "type": "integer",
+                        "minimum": 0
+                      }
+                    },
+                    "required": [
+                      "cached_tokens"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "output_tokens_details": {
+                    "type": "object",
+                    "properties": {
+                      "reasoning_tokens": {
+                        "type": "integer",
+                        "minimum": 0
+                      }
+                    },
+                    "required": [
+                      "reasoning_tokens"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "input_tokens",
+                  "output_tokens",
+                  "total_tokens",
+                  "input_tokens_details",
+                  "output_tokens_details"
+                ],
+                "additionalProperties": false
+              },
+              "output_file_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[A-Za-z0-9_-]+$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "error_file_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[A-Za-z0-9_-]+$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "errors": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "object": {
+                        "const": "list"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string"
+                            },
+                            "message": {
+                              "type": "string"
+                            },
+                            "line": {
+                              "anyOf": [
+                                {
+                                  "type": "integer",
+                                  "minimum": 1
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "param": {
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            }
+                          },
+                          "required": [],
+                          "additionalProperties": false
+                        }
+                      }
+                    },
+                    "required": [
+                      "object",
+                      "data"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "cancelled_at": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "cancelling_at": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "completed_at": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "expired_at": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "expires_at": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "failed_at": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "finalizing_at": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "in_progress_at": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "id",
+              "object",
+              "endpoint",
+              "input_file_id",
+              "completion_window",
+              "created_at",
+              "status"
+            ],
+            "additionalProperties": false
+          },
+          "batch_query": {
+            "type": "object",
+            "properties": {
+              "after": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100,
+                "default": 20
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "batch_list": {
+            "type": "object",
+            "properties": {
+              "object": {
+                "const": "list"
+              },
+              "data": {
+                "type": "array",
+                "maxItems": 100,
+                "items": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/batch_resource"
+                }
+              },
+              "first_id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "last_id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "object",
+              "data",
+              "first_id",
+              "last_id",
+              "has_more"
+            ],
+            "additionalProperties": false
+          },
+          "batch_cancel": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
           "item_include_query": {
             "type": "object",
             "properties": {
@@ -28115,6 +28808,9 @@
                         },
                         {
                           "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chat_input_videoPart"
+                        },
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chat_input_filePart"
                         }
                       ]
                     }
@@ -28727,7 +29423,7 @@
                   {
                     "type": "string",
                     "minLength": 1,
-                    "description": "Canonical padded standard base64 or exact PNG/JPEG data URL; no network URLs."
+                    "description": "PNG/JPEG/static GIF/WebP bytes in canonical base64 or a data URI, or credential-free HTTP(S) under deployment fetch policy."
                   },
                   {
                     "type": "object",
@@ -28735,10 +29431,15 @@
                       "url": {
                         "type": "string",
                         "minLength": 1,
-                        "description": "Canonical padded standard base64 or exact PNG/JPEG data URL; no network URLs."
+                        "description": "PNG/JPEG/static GIF/WebP bytes in canonical base64 or a data URI, or credential-free HTTP(S) under deployment fetch policy."
                       },
                       "detail": {
-                        "const": "auto"
+                        "enum": [
+                          "auto",
+                          "low",
+                          "high",
+                          "original"
+                        ]
                       }
                     },
                     "required": [
@@ -29566,7 +30267,8 @@
             "src/resources/shared.ts": "15cf6803634242502525c52098acddea16b9c2bb2439f85aa388dd43fa837455",
             "src/resources/files.ts": "ca78d34f73bef9a683b5fb2bbeb57af219478027b54ee243b611a1d4a12e04d7",
             "src/resources/uploads/uploads.ts": "53450b5df300f270948be9d9a4b395518da3bc9d1767c1d740ac5cbfa9d7aaf8",
-            "src/resources/uploads/parts.ts": "c32650dd5cae8a377915533d12dcbab8835e47e875b6162107664a8887ab3136"
+            "src/resources/uploads/parts.ts": "c32650dd5cae8a377915533d12dcbab8835e47e875b6162107664a8887ab3136",
+            "src/resources/batches.ts": "71e29b0995aab78190942e05642fbd37c082a3fcadd5005f3eb57b97d417e164"
           },
           "license_sha256": "636eb7d79da9bb6d515a4b3fd417aa26679eb3cf16396ddab4bc55fa74e616e4",
           "compiler_sha256": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675",
@@ -30503,6 +31205,199 @@
                       "client_governance"
                     ],
                     "description": "Native media v2 includes temporal grouping and actual execution constraints."
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "profile": {
+                        "const": "q4t-media-admission-v3"
+                      },
+                      "experimental": {
+                        "const": true
+                      },
+                      "roles": {
+                        "const": [
+                          "user"
+                        ]
+                      },
+                      "formats": {
+                        "const": [
+                          "png",
+                          "jpeg",
+                          "gif"
+                        ]
+                      },
+                      "data_url_mime": {
+                        "const": [
+                          "image/png",
+                          "image/jpeg",
+                          "image/gif"
+                        ]
+                      },
+                      "raw_base64": {
+                        "const": true
+                      },
+                      "base64": {
+                        "const": "canonical_standard_padded"
+                      },
+                      "image_detail": {
+                        "const": [
+                          "auto",
+                          "low",
+                          "high",
+                          "original"
+                        ]
+                      },
+                      "remote_urls": {
+                        "const": false
+                      },
+                      "max_items": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "max_frames_per_item": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "max_encoded_bytes": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "max_source_edge": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "max_source_pixels": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "max_decoded_rgb_bytes": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "max_patches": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "max_workspace_bytes": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "decoder_owned_bytes": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "attention_shared_bytes": {
+                        "type": [
+                          "integer",
+                          "null"
+                        ],
+                        "minimum": 1
+                      },
+                      "unknown_device_limit": {
+                        "const": "reject"
+                      },
+                      "whole_server_ram_limit": {
+                        "const": false
+                      },
+                      "cancellation": {
+                        "const": "item_frame_and_before_gpu_not_preemptive"
+                      },
+                      "video_time_field": {
+                        "const": "video_timestamps"
+                      },
+                      "video_time_unit": {
+                        "const": "seconds"
+                      },
+                      "video_time_default": {
+                        "const": "frame_index/24"
+                      },
+                      "max_timestamp_seconds": {
+                        "const": 86400
+                      },
+                      "temporal_group_frames": {
+                        "const": 2
+                      },
+                      "timestamp_rounding_decimal_places": {
+                        "const": 1
+                      },
+                      "video_prompt": {
+                        "const": "timestamp_then_one_boundary_per_temporal_group"
+                      },
+                      "mtp": {
+                        "const": false
+                      },
+                      "state_cache": {
+                        "const": false
+                      },
+                      "chunked_prefill": {
+                        "const": false
+                      },
+                      "max_execution_slots": {
+                        "const": 1
+                      },
+                      "client_governance": {
+                        "const": true
+                      },
+                      "animated_images": {
+                        "const": false
+                      },
+                      "detail_policy": {
+                        "const": {
+                          "auto": "qwen_reference_smart_resize",
+                          "low": {
+                            "longest_edge": 512,
+                            "max_pixels": 262144
+                          },
+                          "high": {
+                            "longest_edge": 2048,
+                            "max_pixels": 4194304
+                          },
+                          "original": "preserve_pixels_pad_right_bottom_edge",
+                          "configured_pixel_limit_applies": true
+                        }
+                      }
+                    },
+                    "required": [
+                      "profile",
+                      "experimental",
+                      "roles",
+                      "formats",
+                      "data_url_mime",
+                      "raw_base64",
+                      "base64",
+                      "image_detail",
+                      "remote_urls",
+                      "max_items",
+                      "max_frames_per_item",
+                      "max_encoded_bytes",
+                      "max_source_edge",
+                      "max_source_pixels",
+                      "max_decoded_rgb_bytes",
+                      "max_patches",
+                      "max_workspace_bytes",
+                      "decoder_owned_bytes",
+                      "attention_shared_bytes",
+                      "unknown_device_limit",
+                      "whole_server_ram_limit",
+                      "cancellation",
+                      "video_time_field",
+                      "video_time_unit",
+                      "video_time_default",
+                      "max_timestamp_seconds",
+                      "temporal_group_frames",
+                      "timestamp_rounding_decimal_places",
+                      "video_prompt",
+                      "mtp",
+                      "state_cache",
+                      "chunked_prefill",
+                      "max_execution_slots",
+                      "client_governance",
+                      "animated_images",
+                      "detail_policy"
+                    ],
+                    "description": "Native media v3: static GIF and per-image detail/resize policy; historical versions retain their exact schemas."
                   }
                 ]
               }
@@ -30549,10 +31444,10 @@
                 "type": "boolean"
               },
               "body_bytes": {
-                "const": 16777216
+                "const": 100663296
               },
               "aggregate_body_bytes": {
-                "const": 50331648
+                "const": 201326592
               },
               "tokenizer_input_bytes": {
                 "type": "integer",
@@ -30590,6 +31485,41 @@
                   0,
                   8
                 ]
+              },
+              "background_input_bytes": {
+                "type": "integer",
+                "minimum": 1048576,
+                "maximum": 2147483648
+              },
+              "batch_workers": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 8
+              },
+              "batch_max_jobs": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 64
+              },
+              "batch_max_client_jobs": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 64
+              },
+              "batch_result_bytes": {
+                "type": "integer",
+                "minimum": 100663296,
+                "maximum": 1073741824
+              },
+              "batch_model_queue_tokens": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "batch_client_model_queue_tokens": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
               }
             },
             "required": [
@@ -31583,6 +32513,14 @@
               },
               "recovery_scanned": {
                 "type": "boolean"
+              },
+              "rate_waiting": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "rate_deferrals": {
+                "type": "integer",
+                "minimum": 0
               }
             },
             "required": [
@@ -32040,6 +32978,484 @@
                   }
                 }
               }
+            ]
+          },
+          "batches": {
+            "type": "object",
+            "properties": {
+              "state": {
+                "enum": [
+                  "unavailable",
+                  "failed",
+                  "stopping",
+                  "ready"
+                ]
+              },
+              "readiness_dependency": {
+                "const": false
+              },
+              "recovery_scanned": {
+                "type": "boolean"
+              },
+              "owned": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "active": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "reserved_result_bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "rate_waiting": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "rate_deferrals": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "turns": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "errors": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "recovered": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "interrupted": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "recovery_errors": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "recovery_pending": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "state",
+              "readiness_dependency",
+              "recovery_scanned",
+              "owned",
+              "active",
+              "reserved_result_bytes",
+              "rate_waiting",
+              "rate_deferrals",
+              "turns",
+              "errors",
+              "recovered",
+              "interrupted",
+              "recovery_errors",
+              "recovery_pending"
+            ],
+            "additionalProperties": false
+          },
+          "file_inputs": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "max_source_bytes": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 50000000
+              },
+              "max_files": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4096
+              },
+              "max_rendered_bytes": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 536870912
+              },
+              "max_retained_bytes": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 1073741824
+              },
+              "hold_seconds": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 3600
+              },
+              "summary_output_tokens": {
+                "type": "integer",
+                "minimum": 64,
+                "maximum": 65536
+              },
+              "total_summary_output_tokens": {
+                "type": "integer",
+                "minimum": 64,
+                "maximum": 65536
+              },
+              "extraction_timeout_ms": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 120000
+              },
+              "document": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "max_text_bytes": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 16777216
+                  },
+                  "max_cell_bytes": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 4194304
+                  },
+                  "max_columns": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 16384
+                  },
+                  "max_cells": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 1000000
+                  },
+                  "max_sheets": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 256
+                  },
+                  "max_nested_documents": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 4
+                  },
+                  "max_embedded_documents": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 1024
+                  },
+                  "timeout_ms": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 120000
+                  }
+                },
+                "required": [
+                  "max_text_bytes",
+                  "max_cell_bytes",
+                  "max_columns",
+                  "max_cells",
+                  "max_sheets",
+                  "max_nested_documents",
+                  "max_embedded_documents",
+                  "timeout_ms"
+                ]
+              },
+              "package": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "max_bytes": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 536870912
+                  },
+                  "max_entry_bytes": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 67108864
+                  },
+                  "max_entries": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 65536
+                  },
+                  "max_xml_nodes": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 2000000
+                  },
+                  "max_xml_depth": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 128
+                  }
+                },
+                "required": [
+                  "max_bytes",
+                  "max_entry_bytes",
+                  "max_entries",
+                  "max_xml_nodes",
+                  "max_xml_depth"
+                ]
+              },
+              "pdf": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "max_pages": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 256
+                  },
+                  "max_pixels": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 268435456
+                  },
+                  "max_image_bytes": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 268435456
+                  },
+                  "timeout_ms": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 120000
+                  }
+                },
+                "required": [
+                  "max_pages",
+                  "max_pixels",
+                  "max_image_bytes",
+                  "timeout_ms"
+                ]
+              },
+              "legacy": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "max_converted_bytes": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 50000000
+                  },
+                  "timeout_ms": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 120000
+                  }
+                },
+                "required": [
+                  "max_converted_bytes",
+                  "timeout_ms"
+                ]
+              },
+              "legacy_io": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "write_bytes": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1073741824
+                  },
+                  "file_creations": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 65536
+                  },
+                  "thread_creations": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 256
+                  },
+                  "notifications": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 2000000
+                  }
+                },
+                "required": [
+                  "write_bytes",
+                  "file_creations",
+                  "thread_creations",
+                  "notifications"
+                ]
+              },
+              "image": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "max_bytes": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 50000000
+                  },
+                  "max_pixels": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 268435456
+                  },
+                  "max_edge": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 65536
+                  },
+                  "max_conversion_bytes": {
+                    "type": "integer",
+                    "minimum": 1024,
+                    "maximum": 268435456
+                  },
+                  "codec_timeout_ms": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 30000
+                  }
+                },
+                "required": [
+                  "max_bytes",
+                  "max_pixels",
+                  "max_edge",
+                  "max_conversion_bytes",
+                  "codec_timeout_ms"
+                ]
+              },
+              "storage": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "max_bytes": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 536870912
+                  },
+                  "max_metadata_bytes": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 33554432
+                  },
+                  "max_parts": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 1024
+                  }
+                },
+                "required": [
+                  "max_bytes",
+                  "max_metadata_bytes",
+                  "max_parts"
+                ]
+              },
+              "fetch": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "public_networks": {
+                    "type": "boolean"
+                  },
+                  "allow_http": {
+                    "type": "boolean"
+                  },
+                  "allowed_networks_count": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 128
+                  },
+                  "allowed_hosts_count": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 128
+                  },
+                  "ports": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 128,
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 65535
+                    }
+                  },
+                  "custom_ca": {
+                    "type": "boolean"
+                  },
+                  "timeout_ms": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 30000
+                  },
+                  "max_redirects": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10
+                  }
+                },
+                "required": [
+                  "public_networks",
+                  "allow_http",
+                  "allowed_networks_count",
+                  "allowed_hosts_count",
+                  "ports",
+                  "custom_ca",
+                  "timeout_ms",
+                  "max_redirects"
+                ]
+              },
+              "profile": {
+                "const": "q4t-file-input-policy-v1"
+              },
+              "sha256": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "configured": {
+                "type": "boolean"
+              },
+              "request_override": {
+                "const": false
+              },
+              "model_media_items": {
+                "const": 8
+              },
+              "spreadsheet_rows": {
+                "const": 1000
+              },
+              "retained_budget_is_rss_limit": {
+                "const": false
+              },
+              "body_storage_context_admission_separate": {
+                "const": true
+              }
+            },
+            "required": [
+              "max_source_bytes",
+              "max_files",
+              "max_rendered_bytes",
+              "max_retained_bytes",
+              "hold_seconds",
+              "summary_output_tokens",
+              "total_summary_output_tokens",
+              "extraction_timeout_ms",
+              "document",
+              "package",
+              "pdf",
+              "legacy",
+              "legacy_io",
+              "image",
+              "storage",
+              "fetch",
+              "profile",
+              "sha256",
+              "configured",
+              "request_override",
+              "model_media_items",
+              "spreadsheet_rows",
+              "retained_budget_is_rss_limit",
+              "body_storage_context_admission_separate"
             ]
           }
         },

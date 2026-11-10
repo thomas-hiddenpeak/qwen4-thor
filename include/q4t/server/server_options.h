@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <vector>
 
 #include "q4t/runtime/sequence_capacity.h"
@@ -115,6 +116,13 @@ struct ServerOptions {
   int request_deadline_ms = 1200000;
   // Logical retained payloads across background jobs, not an RSS estimate.
   int background_max_input_mib = 512;
+  // Native Batch task/input capacity, independent of per-minute client rates.
+  int batch_workers = 1;
+  int batch_max_jobs = 8;
+  int batch_max_client_jobs = 4;
+  int batch_max_result_mib = 256;
+  uint64_t batch_model_queue_tokens = 1ULL << 30;
+  uint64_t batch_client_model_queue_tokens = 1ULL << 28;
 };
 
 // Derived once from validated options, never a second configuration source.

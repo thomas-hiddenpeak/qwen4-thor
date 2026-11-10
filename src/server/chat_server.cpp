@@ -43,6 +43,7 @@ ChatServer::~ChatServer() {
   // Start may have succeeded without a subsequent Run. Stop accepting TCP
   // connections before releasing the model, including partial startup state.
   startup_listeners_.Close();
+  if (batches_) batches_->RequestStop();
   if (background_) background_->RequestStop();
   // Release any requests queued in AllocSeqId so their threads can exit.
   {
@@ -54,6 +55,7 @@ ChatServer::~ChatServer() {
   // d_sched_logits_ under model_mu_, so it must be joined before those are
   // freed).
   StopScheduler();
+  if (batches_) batches_->Join();
   if (background_) background_->Join();
   model_.Get().router_trace = nullptr;
   router_trace_.reset();
@@ -781,6 +783,37 @@ Status ChatServer::Start(const ServerOptions& opts) {
   startup_listeners_ = std::move(pending_listeners);
   ProgressExecution::Completed();
   model_ready_.store(true);
+  try {
+    BatchJobsOptions jobs;
+    jobs.workers = opts.batch_workers;
+    jobs.max_jobs = opts.batch_max_jobs;
+    jobs.max_client_jobs = opts.batch_max_client_jobs;
+    jobs.max_result_bytes = static_cast<size_t>(opts.batch_max_result_mib)
+                            << 20;
+    jobs.turn_timeout = std::chrono::milliseconds(request_deadline_ms_);
+    batches_ = std::make_unique<BatchJobs>(
+        *objects_, clients_, PlanningConfig(), jobs,
+        [this](const auto& endpoint, const auto& row, const auto& frozen,
+               const auto& client, auto& permit, const auto& control,
+               auto rate) {
+          return RunBatchRequest(endpoint, row, frozen, client, permit, control,
+                                 std::move(rate));
+        },
+        [this](auto endpoint, const auto& row, const auto& frozen,
+               const auto& config, const auto& access, auto* budget) {
+          return MeasureBatchRequest(endpoint, row, frozen, config, access,
+                                     budget);
+        },
+        [this](auto endpoint, const auto& row, const auto& frozen,
+               const auto& config, const auto& access, auto* rate) {
+          BatchInputBudget input;
+          return MeasureBatchRequest(endpoint, row, frozen, config, access,
+                                     &input, rate);
+        });
+  } catch (...) {
+    // Batch availability is independent of healthy online inference.
+    std::fprintf(stderr, "[batches] executor unavailable\n");
+  }
   if (background_ && !stop_requested_.load()) {
     try {
       background_->StartRecovery(clients_, PlanningConfig());

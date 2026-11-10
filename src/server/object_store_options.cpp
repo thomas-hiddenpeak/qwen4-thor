@@ -20,6 +20,13 @@ bool ValidDirectory(std::string_view path) {
 }  // namespace
 
 Status ValidateObjectStoreOptions(const ServerOptions& options) {
+  constexpr uint64_t maximum = (1ULL << 53) - 1;
+  if (!options.batch_model_queue_tokens ||
+      options.batch_model_queue_tokens > maximum ||
+      !options.batch_client_model_queue_tokens ||
+      options.batch_client_model_queue_tokens >
+          options.batch_model_queue_tokens)
+    return Status::Fail("invalid Batch model/client queued input token limits");
   if (!options.object_store_dir.empty() &&
       !ValidDirectory(options.object_store_dir))
     return Status::Fail(
@@ -58,6 +65,9 @@ ObjectStoreOptions ResolveObjectStoreOptions(const ServerOptions& options,
   result.max_client_objects = options.object_max_client_objects;
   result.max_total_objects = options.object_max_total_objects;
   result.io_timeout_ms = options.object_io_timeout_ms;
+  result.batch_model_queue_tokens = options.batch_model_queue_tokens;
+  result.batch_client_model_queue_tokens =
+      options.batch_client_model_queue_tokens;
   return result;
 }
 }  // namespace q4t::server

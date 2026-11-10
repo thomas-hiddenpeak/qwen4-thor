@@ -944,7 +944,7 @@
         "A09.8 ongoing SDK/native release and rollback for remaining APIs"
       ],
       "multipart_component_evidence": "evidence/serve-multipart-cpu-20261110/README.md",
-      "next": "A09.6 public HTTP/SDK/CLI, actual model business and compatible rollback/default; finalize permanent output-capacity failure without replay; A09.7/8 and all master tasks remain required.",
+      "next": "A09.6 aggregate actual usage, finite permanent finalization failure and bounded auxiliary owner construction recovery, then actual model business and compatible rollback/default. A09.7/8 and all master tasks remain required.",
       "binary_component_evidence": "docs/evidence/serve-binary-cpu-20261110/README.md",
       "http_stream_component_evidence": "docs/evidence/serve-http-body-stream-cpu-20261110/README.md",
       "files_core_component_evidence": "docs/evidence/serve-files-core-cpu-20261110/README.md",
@@ -1063,7 +1063,15 @@
       "batch_minute_wait_status": "34 targeted CPU checks accepted after 2 fixture repairs, production unchanged across CPU rounds. Native initial/execution budgets and fair minute quota gate before original row ticket implemented. Recovery background admission/public actual business/CLI/rollback/default remain required.",
       "batch_minute_wait_component_evidence": "evidence/serve-batch-minute-wait-cpu-20261111/README.md",
       "batch_background_rate_status": "26/26 targeted CPU first-round accepted; original queued owner/deadline/cancel, native current-policy budget, fair minute wait/data reacquisition, actual child exit and lost Start receipt validated. Public actual business/delivery remain pending.",
-      "batch_background_rate_component_evidence": "evidence/serve-batch-background-rate-cpu-20261111/README.md"
+      "batch_background_rate_component_evidence": "evidence/serve-batch-background-rate-cpu-20261111/README.md",
+      "batch_public_integration_status": "20 distinct C++ and 3 Python checks accepted. Official SDK actual core22/TLS-prefix19 HTTP requests against native tasks/disk with explicit CPU generation. Fixture/schema failures retained and fixed; runtime source unchanged after first CPU. GPU/model/rollback/default acceptance still required.",
+      "batch_pre_delivery_remaining": [
+        "Aggregate real per-row usage into Batch usage with durable exactly-once accounting, including cache/reasoning details and cancelled/error work where available; no invented zero totals.",
+        "Close deterministic finalization byte/chunk capacity exhaustion finitely, preserve original results and receipt uncertainty; never retry the model or spin finalization forever.",
+        "Complete bounded actual model business and compatible state/quota rollback/default delivery; focused public C++/SDK core/TLS checks have passed.",
+        "Audit application task-owner construction failure recovery: temporary auxiliary startup failure must have a bounded retry path without core restart or duplicate live owners."
+      ],
+      "batch_public_component_evidence": "evidence/serve-batch-public-api-cpu-20261111/README.md"
     },
     {
       "id": "A10",
@@ -1649,6 +1657,6 @@
       "release": null
     }
   ],
-  "next_task": "继续A09公开Batch HTTP/SDK/CLI接入、结果汇总永久容量故障闭合、实际模型业务短验与兼容回退/default；全部总任务继续。",
-  "next": "A09.6 public native Batch API/SDK/configuration, finite permanent finalization failure, actual model business and compatible rollback/default; A09.7/8 and every master task."
+  "next_task": "继续A09真实usage汇总、永久容量终结与辅助任务所有者恢复；实际模型业务、兼容回退/default及全部总任务。",
+  "next": "A09.6 aggregate actual usage, finite permanent finalization failure and bounded auxiliary owner construction recovery, then actual model business and compatible rollback/default. A09.7/8 and all master tasks remain required."
 }

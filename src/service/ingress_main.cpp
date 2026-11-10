@@ -368,8 +368,10 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
       server::ResponsesMethodAllowed(method, path) ||
       server::FileMethodAllowed(method, path) ||
       server::UploadMethodAllowed(method, path) ||
+      server::BatchMethodAllowed(method, path) ||
       server::StoredChatMethodAllowed(method, path)) {
     *control = server::IsResponsesObservation(method, path) ||
+               server::IsBatchObservation(method, path) ||
                server::IsPromptObservation(method, path) ||
                server::IsCancellationRequest(method, path) ||
                server::IsFileMetadata(method, path) ||

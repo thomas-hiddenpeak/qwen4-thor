@@ -1,5 +1,33 @@
 # A09 原生 Files、Uploads 与 Batch 连续实现计划
 
+## 2026-11-11 公开Batch接入（CPU/SDK接受，待业务/交付）
+
+共享原生处理器已连接`POST/GET /v1/batches`、`GET /v1/batches/{id}`及
+`POST /v1/batches/{id}/cancel`；核心与自有TLS入口使用相同路由分类。
+提交、列表走业务容量，单条查询与取消保留独立准入。执行器失能时
+仍可读取/取消已有持久任务；不触发模型重启。启动在模型就绪后
+创建Batch任务所有者，退出先停止任务并排空实际执行，随后释放模型。
+
+| 配置 | 默认值 | 合同 |
+|---|---:|---|
+| `--batch-workers` | 1 | 1..8，不超过任务槽位；模型槽与在线业务共享 |
+| `--batch-max-jobs` | 8 | 1..64，当前进程拥有的持久任务数量 |
+| `--batch-max-client-jobs` | 4 | 1..总任务槽，同一客户端不独占队列 |
+| `--batch-max-result-mib` | 256 | 96..1024，返回结果工作集预留，不是GPU容量 |
+| `--batch-model-queue-tokens` | 1073741824 | 每规范模型累计入队输入token，1..2^53−1 |
+| `--batch-client-model-queue-tokens` | 268435456 | 每客户端/模型输入token，不超过模型总额 |
+
+上述token额度与RPM/TPM、对象存储容量分别核算；不会把旧已接受的
+工作在配置下调后自动抹掉。`/v1/config`报告有效额度和Batch队列、
+等待、恢复/错误状态。`/v1/capabilities`区分已接原生文本执行端点
+与仍需实现的其他后端；后者继续属于A09.7/A10，不能作为总目标免责。
+
+[20 C++及3 Python检查通过](evidence/serve-batch-public-api-cpu-20261111/README.md)：真实任务/隔离/取消、原生CLI配置和产出
+schema，以及官方SDK经核心直连、原生TLS+prefix的两条实际网络链。
+CPU生成输出明确标为夹具；尚未实际模型验收，不宣称Batch已可回退交付。
+接下来必须补汇总真实usage、永久输出容量失败终结、辅助任务所有者
+启动失败的有界恢复，再完成适用模型短验与兼容状态/配额回退发行。
+
 ## 当前进展（2026-11-10）
 
 2026-11-10。A09.5[文件输入可回退交付](evidence/serve-file-inputs-delivery-20261110/README.md)完成：默认43472e76/元数据229e023d/包0dc8948d、rev40 STOPPED；兼容回退2657eb16/包32af8803已入保留历史。15实际CLI、21.440秒、0新增GPU，原Key/显式配额与账本保持。继续A09.6 Batch执行/取消/恢复及全部总任务，未合main。

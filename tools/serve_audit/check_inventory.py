@@ -128,6 +128,20 @@ def current_surface(root):
         if 'server::UploadMethodAllowed(method, path)' in native:
             native_routes.extend((method, path, 'true' if path.endswith('/cancel')
                                   else 'false') for method, path in uploads)
+    if 'IsBatchTarget(path)' in dispatch:
+        batch = (root / 'src/server/batch_api.cpp').read_text()
+        if not re.search(r'HandleBatchRequest\(\s*\*objects_', dispatch) or \
+                'jobs->Submit(access, options, client)' not in batch or \
+                'jobs->Cancel(access, id)' not in batch or \
+                'inline bool BatchMethodAllowed' not in application_routes:
+            raise ValueError('review actual Batch owner and handlers before cataloguing')
+        batches = [('POST', '/v1/batches'), ('GET', '/v1/batches'),
+                   ('GET', '/v1/batches/{batch_id}'),
+                   ('POST', '/v1/batches/{batch_id}/cancel')]
+        routes.extend((path, method) for method, path in batches)
+        if 'server::BatchMethodAllowed(method, path)' in native:
+            native_routes.extend((method, path, 'false' if path == '/v1/batches'
+                                  else 'true') for method, path in batches)
     if 'if (method == "OPTIONS")' in native:
         if 'config.cors.Preflight(' not in native:
             raise ValueError("review native OPTIONS handler before cataloguing")
@@ -143,7 +157,7 @@ def current_surface(root):
                  "responses_tokens.cpp",
                  "chat_storage.cpp", "prompt_api.cpp", "prompt_template.cpp",
                  "moderation.cpp", "access_program.cpp", "files.cpp", "uploads.cpp",
-                 "file_input.cpp", "file_fetch_policy.cpp", "batch_input.cpp", "batch_state.cpp"):
+                 "file_input.cpp", "file_fetch_policy.cpp", "batch_input.cpp", "batch_state.cpp", "batch_api.cpp"):
         source = (root / "src/server" / file).read_text()
         for index, item in enumerate(re.finditer(
                 r'(?:Input)?Fields\(\s*([^,]+),\s*\{([^}]+)\}', source)):

@@ -27,6 +27,7 @@
 #include "q4t/server/client_request.h"
 #include "q4t/server/conversation_api.h"
 #include "q4t/server/files_http.h"
+#include "q4t/server/batch_api.h"
 #include "q4t/server/prompt_registry.h"
 #include "q4t/server/responses_api.h"
 #include "q4t/server/output_schema.h"
@@ -207,6 +208,7 @@ Status ChatServer::Run() {
         drain_until =
             std::chrono::steady_clock::now() + std::chrono::seconds(2);
         requests_.CancelAll();
+        if (batches_) batches_->RequestStop();
         if (background_) background_->RequestStop();
         {
           const std::lock_guard<std::mutex> lock(seq_mu_);
@@ -262,6 +264,7 @@ Status ChatServer::Run() {
   RequestStop();
   std::fprintf(stderr, "[q4t] shutting down: draining in-flight requests...\n");
   requests_.CancelAll();
+  if (batches_) batches_->RequestStop();
   if (background_) background_->RequestStop();
   {
     const std::lock_guard<std::mutex> lock(connections_mu_);
@@ -273,6 +276,7 @@ Status ChatServer::Run() {
     seq_stopping_ = true;
   }
   seq_cv_.notify_all();
+  if (batches_) batches_->Join();
   if (background_) background_->Join();
   while (active_conns_.load(std::memory_order_acquire) > 0)
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -352,10 +356,11 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       }
       admission = &counter;
       if ((method == "POST" && !IsCancellationRequest(method, path) &&
-          (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
-           path == "/v1/completions" || IsResponsesTarget(path) ||
-           IsConversationTarget(path) || IsPromptTarget(path) ||
-           IsFileTarget(path) || IsUploadTarget(path))) ||
+           (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
+            path == "/v1/completions" || IsResponsesTarget(path) ||
+            IsConversationTarget(path) || IsPromptTarget(path) ||
+            IsBatchTarget(path) || IsFileTarget(path) ||
+            IsUploadTarget(path))) ||
           (method == "GET" && IsFileTarget(path) &&
            !IsFileMetadata(method, path))) {
         const auto memory = memory_admission_.Observe();
@@ -428,10 +433,11 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
     if (IsStoredChatTarget(path) || path == "/v1/chat/preflight" ||
         path == "/v1/completions" || IsResponsesTarget(path) ||
         path == "/v1/requests/cancel" || IsConversationTarget(path) ||
-        IsPromptTarget(path)) {
-      if (method == "POST" &&
-          !((IsResponseCancellation(method, path) || IsResponsesTokenCount(path))
-            && body.empty() && headers.content_type.empty())) {
+        IsPromptTarget(path) || IsBatchTarget(path)) {
+      if (method == "POST" && !((IsResponseCancellation(method, path) ||
+                                 IsResponsesTokenCount(path) ||
+                                 IsBatchCancellation(method, path)) &&
+                                body.empty() && headers.content_type.empty())) {
         std::string type = headers.content_type;
         for (char& c : type)
           if (c >= 'A' && c <= 'Z') c += 'a' - 'A';
@@ -516,9 +522,10 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     return;
   }
   if ((IsStoredChatTarget(path) &&
-       !(method == "POST" && path.substr(0, path.find('?')) ==
-                                "/v1/chat/completions")) ||
+       !(method == "POST" &&
+         path.substr(0, path.find('?')) == "/v1/chat/completions")) ||
       IsConversationTarget(path) || IsPromptTarget(path) ||
+      IsBatchTarget(path) ||
       (IsResponsesTarget(path) &&
        path.substr(0, path.find('?')) != "/v1/responses")) {
     const auto* context = detail::HttpResponseContext::Current(fd);
@@ -530,26 +537,30 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     const auto& client = context->Client();
     const auto scope = client.Scoped() ? "client:" + std::string(client.Id())
                                        : "local:anonymous";
-    StateAccess access{scope,
-                       std::chrono::steady_clock::now() +
-                           std::chrono::milliseconds(request_deadline_ms_),
-                       [this, fd] {
-                         return stop_requested_.load() ||
-                                detail::ClientConnectionFailed(fd);
-                       }};
+    StateAccess access{
+        scope,
+        std::chrono::steady_clock::now() +
+            std::chrono::milliseconds(request_deadline_ms_),
+        [this, fd, cancellation = IsCancellationRequest(method, path)] {
+          return (!cancellation && stop_requested_.load()) ||
+                 detail::ClientConnectionFailed(fd);
+        }};
     if (IsResponsesTarget(path)) {
       ServeResponsesState(fd, *objects_, method, path, body, access,
                           background_.get());
       return;
     }
-    auto reply = IsPromptTarget(path)
-                     ? HandlePromptRequest(*objects_, method, path, body,
-                                            PlanningConfig(fd), access)
-                     : IsStoredChatTarget(path)
-                     ? HandleStoredChatRequest(*objects_, method, path, body,
-                                                access)
-                     : HandleConversationRequest(*objects_, method, path, body,
-                                                  access);
+    auto reply =
+        IsBatchTarget(path)
+            ? HandleBatchRequest(
+                  *objects_, batches_.get(), method, path, body, client,
+                  {access.scope, access.deadline, access.cancelled})
+        : IsPromptTarget(path)
+            ? HandlePromptRequest(*objects_, method, path, body,
+                                  PlanningConfig(fd), access)
+        : IsStoredChatTarget(path)
+            ? HandleStoredChatRequest(*objects_, method, path, body, access)
+            : HandleConversationRequest(*objects_, method, path, body, access);
     if (reply.ok())
       SendSimple(fd, 200, "OK", OutputJson(reply.value), "application/json",
                  {access.deadline});

@@ -577,6 +577,18 @@ def semantics():
         "src/server/object_worker.cpp", "src/server/object_store.cpp",
         "src/server/state_key_admin.cpp", "src/server/state_retention_cli.cpp"],
         "Expiry collection preserves queued/in_progress tasks until recovery has durably recorded a terminal state, and follows typed same-owner references from retained roots. Expired unrooted cycles can be collected; unknown lifecycle/shape preserves that owner's records and is reported. No references are extracted from user text or tool arguments. Permanent conversations/prompts retain explicit-delete semantics; permanent orphan items require an explicit creation-time cutoff, not an inferred orphan age. Native same-UID state-retention inspect/collect uses the existing bounded isolated store/admin channel. Inspect does not apply proposed cleanup; collect rechecks the exact SHA256 plan and returns409 on state/eligibility change. At most128 selected objects from one owner per atomic journal transaction; inspect again for further batches. Planner bounds100000 nodes,64MiB metadata estimate and2M references; resource failure retains data and does not deny otherwise usable CRUD. Lost mutation receipt is commit_unknown with no replay; reinspection/recovery uses the existing journal. Offline access requires exclusive store ownership. No business payload/key bytes in receipts; maintenance errors cannot restart a model or close healthy core readiness."))
+    rules.append(("native-batches", [
+        "include/q4t/server/batch_api.h", "src/server/batch_api.cpp",
+        "src/server/batch_input.cpp", "src/server/batch_state.cpp",
+        "src/server/batch_results.cpp", "src/server/batch_jobs.cpp",
+        "src/server/batch_budget.cpp", "src/server/batch_preparation.cpp",
+        "src/server/batch_validation.cpp", "src/server/batch_execution.cpp",
+        "src/server/responses_jobs.cpp", "src/server/client_policy.cpp",
+        "src/server/client_rate_state.cpp", "src/server/chat_http.cpp",
+        "src/server/chat_server.cpp", "src/server/object_store_options.cpp",
+        "src/server/server_options.cpp", "include/q4t/server/server_options.h",
+        "include/q4t/server/application_routes.h", "src/service/ingress_main.cpp"],
+        "Native create/retrieve/list/cancel with authenticated scope and original 24h window. Frozen JSONL accepts at most50000 rows/200000000 bytes. Queue input tokens are atomic per canonical model and client/model; legacy frozen input is recounted without replay. Separate Batch minute pools precharge all native steps before a durable row start; temporary shortage yields without data/result leases, impossible whole-window budgets are finite failures. Queued background Responses transfer the same precharge; recovery preserves original identity/deadline and reacquires current-policy data/rate admission. Started work or unknown starts never replay. CLI worker/job/result/input budgets and auxiliary health are native; failure never restarts a healthy model. Available model endpoints and still-required backends are separately reported, and actual business/release evidence is independent of these structural declarations."))
     paths = sorted({p for _, sources, _ in rules for p in sources})
     return dict(profile="q4t-input-semantics-v1", required=True,
         structural_schema="serve-chat-request-v1.schema.json",
@@ -681,7 +693,7 @@ def openapi():
                 internal_headers=["X-Q4T-Client-Id", "X-Q4T-Gateway-Token"],
                 identity="gateway overwrites internal headers; runner validates configured client and independent shared credential before body admission",
                 scoped_resources=["request_id", "cancellation", "session_id", "prefix_cache_scope",
-                                  "responses", "conversations", "application_items", "stored_chat", "files", "uploads"],
+                                  "responses", "conversations", "application_items", "stored_chat", "files", "uploads", "batches"],
                 limits=["data/control inflight", "body bytes", "explicit file body bytes", "expanded prompt tokens including vision", "total output tokens",
                         "optional v2 fixed-window requests/tokens per minute"],
                 refusals=dict(authentication=401, local_admin_with_identity=403,

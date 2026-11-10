@@ -13,8 +13,10 @@
 #include "q4t/server/client_request.h"
 #include "q4t/server/application_routes.h"
 #include "q4t/server/files_http.h"
+#include "q4t/server/batch_api.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/lifetime.h"
+#include "q4t/server/output_schema.h"
 
 namespace {
 using namespace q4t::server;
@@ -30,8 +32,10 @@ std::string Read(const fs::path& path) {
 }  // namespace
 
 int FilesApiFixture(int argc, char** argv) {
-  if (argc != 3 || std::string_view(argv[1]) != "--files-api-fixture")
+  if (argc != 3 || (std::string_view(argv[1]) != "--files-api-fixture" &&
+                    std::string_view(argv[1]) != "--batch-api-fixture"))
     return -1;
+  const bool batch_fixture = std::string_view(argv[1]) == "--batch-api-fixture";
   try {
     const auto directory = fs::absolute(argv[2]);
     GatewayClientPolicy policy;
@@ -45,6 +49,56 @@ int FilesApiFixture(int argc, char** argv) {
     options.max_client_bytes = 256ULL << 20;
     options.max_total_bytes = 512ULL << 20;
     ObjectStore objects(options);
+    std::unique_ptr<BatchJobs> batches;
+    if (batch_fixture) {
+      ChatPlanConfig config;
+      config.model = "batch-cpu";
+      config.structured = true;
+      BatchJobsOptions jobs;
+      jobs.turn_timeout = 30s;
+      jobs.scan_interval = 100ms;
+      batches = std::make_unique<BatchJobs>(
+          objects, clients, config, jobs,
+          [&](const auto&, const auto& row, const auto&, const auto& client,
+              auto& permit, const auto& control, auto rate) {
+            return ExecuteBatchEndpoint(
+                control->id(), client, permit, control,
+                [&] {
+                  const auto& charge =
+                      detail::HttpResponseContext::Current(-1)->BatchRate();
+                  if (!charge || charge->Reserve(clients, client, 4, 16) !=
+                                     ClientRateResult::kAllowed)
+                    throw std::runtime_error("CPU fixture rate ownership");
+                  charge->Start();
+                  const auto* metadata = row.body.Find("metadata");
+                  if (metadata && metadata->GetString("fixture") == "hold") {
+                    while (!control->Cancelled())
+                      std::this_thread::sleep_for(1ms);
+                    detail::SendError(-1, 499, "CPU fixture cancelled", {},
+                                      "batch_cancelled");
+                    return;
+                  }
+                  // Explicit CPU generation fixture; native HTTP/task/storage
+                  // are real. Actual model quality is accepted separately.
+                  charge->Completion(2);
+                  detail::SendSimple(
+                      -1, 200, "OK",
+                      R"({"object":"response","output":[{"type":"function_call","call_id":"call_cpu","name":"lookup","arguments":"{\"key\":42}"}],"usage":{"input_tokens":4,"output_tokens":2,"total_tokens":6}})",
+                      "application/json");
+                },
+                std::move(rate));
+          },
+          [](const auto&, const auto&, const auto&, const auto&, const auto&,
+             BatchInputBudget* output) {
+            *output = {4, true};  // The explicit CPU fixture's input count.
+            return ObjectReply{};
+          },
+          [](const auto&, const auto&, const auto&, const auto&, const auto&,
+             BatchRateBudget* output) {
+            *output = {4, 16};  // Same count/output cap used by the fixture.
+            return ObjectReply{};
+          });
+    }
     std::array<int, 2> listeners{-1, -1};
     ScopeExit close_listener([&] {
       for (int fd : listeners)
@@ -77,7 +131,9 @@ int FilesApiFixture(int argc, char** argv) {
     std::vector<std::thread> workers;
     ScopeExit stop_workers([&] {
       stopping.store(true);
+      if (batches) batches->RequestStop();
       for (auto& worker : workers) worker.join();
+      if (batches) batches->Join();
     });
     const auto end = Clock::now() + 120s;
     for (int count = 0; count < 256 && Clock::now() < end;) {
@@ -126,7 +182,9 @@ int FilesApiFixture(int argc, char** argv) {
                 if (!headers.client_id.empty()) headers.gateway_token = token;
               }
               if (operations && !IsFileMetadata(method, target) &&
-                  !IsUploadCancellation(method, target)) {
+                  !IsUploadCancellation(method, target) &&
+                  !(batch_fixture && (IsBatchObservation(method, target) ||
+                                      IsBatchCancellation(method, target)))) {
                 failure = 404;
                 return false;
               }
@@ -135,6 +193,7 @@ int FilesApiFixture(int argc, char** argv) {
                 return false;
               if (IsCancellationRequest(method, target))
                 body_lease.SelectBudget(cancel_budget);
+              if (batch_fixture && IsBatchTarget(target)) return true;
               BinaryAccess access{"client:" + std::string(identity.Id()),
                                   Clock::now() + 30s,
                                   [&] { return stopping.load(); }};
@@ -165,7 +224,22 @@ int FilesApiFixture(int argc, char** argv) {
                                   headers.error_code);
               return;
             }
-            file->Serve(fd);
+            if (file) {
+              file->Serve(fd);
+            } else {
+              const auto reply = HandleBatchRequest(
+                  objects, batches.get(), method, target, body, identity,
+                  {"client:" + std::string(identity.Id()), Clock::now() + 30s,
+                   [&] { return stopping.load(); }});
+              if (reply.ok())
+                detail::SendSimple(fd, 200, "OK", OutputJson(reply.value),
+                                   "application/json");
+              else
+                detail::SendError(fd, reply.http_status, reply.ClientMessage(),
+                                  {}, reply.ClientCode(),
+                                  reply.value.GetString("param"),
+                                  reply.value.GetString("allow"));
+            }
           } catch (const std::exception&) {
             detail::SendExceptionResponse(fd, *context.State());
           }
