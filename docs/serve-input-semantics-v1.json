@@ -476,7 +476,7 @@
     "src/server/model_catalog.cpp": "8d0808b669e3ecbc95794d8b07bd6a86b38dc310cf93c98e18befade71fd2d7e",
     "src/server/object_retention.cpp": "0753089c518d4ff1423b390986eef83aafb0d8bf90afefc46ccf6e83469dfb0a",
     "src/server/object_store.cpp": "9082ac05767b2ff6511d7ec42027ed7b41473b47c4fed673e3d5cbc25f133c99",
-    "src/server/object_worker.cpp": "cb56ec09fe78cced61775d09eea7a2904ad16aaa3bdd1e9bfbc5f458bc909f41",
+    "src/server/object_worker.cpp": "ed09e5c312fcc6598ac83fb83f3cf27d421f072f6d673866dba597f9e05409aa",
     "src/server/output_constraints.cpp": "1273d5d1643a8cb7ccd2804990d2bcac656cbe5b198096c0a66b6803751e3753",
     "src/server/output_schema.cpp": "6d42d154ce3ac43c2cb2569298af221148813f9233e37c9d9c75eb0f331ee65d",
     "src/server/prediction.cpp": "7e8ccdf7c44dd5c8245230577d42eb7d4cd17c6e2efcf5534a02e6744815733f",

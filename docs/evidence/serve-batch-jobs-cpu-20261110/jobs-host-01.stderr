@@ -1,0 +1,17 @@
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_jobs_test.cpp: In lambda function:
+/home/rm01/models/dev/qwen4-thor/tests/server_batch_jobs_test.cpp:124:25: error: too few arguments to function ‘bool q4t::server::detail::SendSimple(int, int, const char*, const std::string&, const std::string&, const WriteOptions&, std::string_view)’
+  124 |       detail::SendSimple(
+      |       ~~~~~~~~~~~~~~~~~~^
+  125 |           -1, 200, "application/json",
+      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 |           R"({"object":"response","output":[{"type":"function_call","call_id":"call_cpu","name":"lookup","arguments":"{\"key\":42}"}],"usage":{"input_tokens":4,"output_tokens":2,"total_tokens":6}})");
+      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/rm01/models/dev/qwen4-thor/tests/server_batch_jobs_test.cpp:15:
+/home/rm01/models/dev/qwen4-thor/tests/host/../../include/q4t/server/http_response.h:233:6: note: declared here
+  233 | bool SendSimple(int fd, int code, const char* status, const std::string& body,
+      |      ^~~~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_host_tests.dir/build.make:947: CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_batch_jobs_test.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:139: CMakeFiles/q4t_host_tests.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:146: CMakeFiles/q4t_host_tests.dir/rule] Error 2
+gmake: *** [Makefile:135: q4t_host_tests] Error 2

@@ -161,7 +161,12 @@ bool BatchTerminal(std::string_view status) {
 }
 
 ObjectReply BatchState::Create(const BinaryAccess& access,
-                               const BatchCreate& options) {
+                               const BatchCreate& options,
+                               const std::string& reserved_id) {
+  if (!reserved_id.empty() &&
+      (!reserved_id.starts_with("batch_") || reserved_id.size() != 38 ||
+       !ValidApplicationId(reserved_id)))
+    return Invalid("Invalid reserved Batch identity");
   // Revalidate typed inputs; a caller cannot bypass the public contract.
   auto input =
       Object({{"input_file_id", String(options.input_file_id)},
@@ -191,7 +196,8 @@ ObjectReply BatchState::Create(const BinaryAccess& access,
                       &read);
   if (!reply.ok()) return reply;
   ScopeExit cleanup([&] { CleanupRead(objects_, &read); });
-  const auto id = NewObjectId(ObjectKind::kBatch);
+  const auto id = reserved_id.empty() ? NewObjectId(ObjectKind::kBatch)
+                                       : reserved_id;
   if (id.empty())
     return Error(503, "object_entropy_unavailable", "No secure batch ID");
   const auto now = std::time(nullptr);

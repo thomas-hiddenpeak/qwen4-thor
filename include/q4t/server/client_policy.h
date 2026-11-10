@@ -164,6 +164,13 @@ class ClientAdmission {
   // Trusted recovery of a current server snapshot, never a request-supplied
   // identity. It still must acquire the normal client data/rate permits.
   ClientIdentity RecoveryIdentity(size_t index) const;
+  // Verify an existing authenticated identity against this admission's current
+  // policy without taking another concurrency permit.
+  bool OwnsIdentity(const ClientIdentity& identity) const {
+    if (identity.owner_ != this || !identity.Allowed()) return false;
+    const auto current = RecoveryIdentity(identity.Index());
+    return current.Allowed() && current.Id() == identity.Id();
+  }
   ClientLimits Limits(size_t index) const;
   ClientUsage Usage(size_t index) const;
   ClientRateUsage RateUsage(

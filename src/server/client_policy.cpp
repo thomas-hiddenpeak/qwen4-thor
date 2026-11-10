@@ -593,7 +593,9 @@ ClientIdentity ClientAdmission::RecoveryIdentity(size_t index) const {
   ClientIdentity result;
   const auto policy = Snapshot();
   if (!policy || index >= policy->clients.size()) {
-    if (!policy && index == 0) result.owner_ = this;
+    // Enumeration uses slot zero; an authenticated anonymous identity carries
+    // kMaxClients. Both name the same unscoped owner, never a configured slot.
+    if (!policy && (index == 0 || index == kMaxClients)) result.owner_ = this;
     return result;
   }
   result.owner_ = this;

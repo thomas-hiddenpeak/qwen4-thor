@@ -59,11 +59,13 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/batch_preparation.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/batch_execution.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/batch_validation.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/batch_jobs.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_batch_input_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_batch_state_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_batch_results_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_batch_preparation_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_batch_execution_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_batch_jobs_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_input.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_image.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_webp.cpp

@@ -1205,9 +1205,16 @@ int MaybeRunObjectWorker(int argc, char** argv) {
       std::strcmp(argv[1], "--q4t-object-worker-read-close-lost-ack") == 0;
   const bool lose_application_ack =
       std::strcmp(argv[1], "--q4t-object-worker-application-lost-ack") == 0;
+  const bool lose_batch_create =
+      std::strcmp(argv[1], "--q4t-object-worker-batch-create-lost-ack") == 0;
+  const bool lose_batch_start =
+      std::strcmp(argv[1], "--q4t-object-worker-batch-start-lost-ack") == 0;
+  const bool lose_batch_result =
+      std::strcmp(argv[1], "--q4t-object-worker-batch-result-lost-ack") == 0;
   int successful_puts = 0;
   matched = matched || lose_ack || lose_second_ack || lose_snapshot_ack ||
-            lose_cleanup_ack || lose_application_ack;
+            lose_cleanup_ack || lose_application_ack || lose_batch_create ||
+            lose_batch_start || lose_batch_result;
   if (std::strcmp(argv[1], "--q4t-object-worker-commit-pause") == 0) {
     matched = true;
     pause_after = -1;
@@ -1242,6 +1249,30 @@ int MaybeRunObjectWorker(int argc, char** argv) {
         reply = store.Run(request);
       }
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
+      if (reply.ok() &&
+          (lose_batch_create || lose_batch_start || lose_batch_result))
+        if (const auto* mutations = request.GetArray("mutations")) {
+          const bool page_update = std::any_of(
+              mutations->array.begin(), mutations->array.end(),
+              [](const Json& mutation) {
+                const auto* data = mutation.Find("data");
+                return mutation.GetString("operation") == "put" && data &&
+                       data->GetString("format") == "q4t.batch_page.v1";
+              });
+          for (const auto& mutation : mutations->array) {
+            const auto* data = mutation.Find("data");
+            if (!data || mutation.GetString("operation") != "put") continue;
+            const auto format = data->GetString("format");
+            const bool root = format == "q4t.batch.v1";
+            if ((lose_batch_create && root &&
+                 mutation.GetInt("revision", -1) == 0) ||
+                (lose_batch_start && page_update && root &&
+                 data->GetInt("running") == 1) ||
+                (lose_batch_result && format == "q4t.batch_result.v1" &&
+                 mutation.GetInt("revision", -1) == 0))
+              for (;;) pause();  // Actual atomic commit, no receipt.
+          }
+        }
       if (reply.ok() && lose_cleanup_ack &&
           request.GetString("operation") == "erase" &&
           request.GetString("kind") == "tool_run")

@@ -265,7 +265,14 @@ ObjectReply BatchState::ReadInputRow(const BinaryAccess& access,
 }
 
 ObjectReply BatchState::StartRow(const BinaryAccess& access,
-                                 const std::string& id, size_t index) {
+                                 const std::string& id, size_t index,
+                                 const std::string& reserved_request_id) {
+  if (!reserved_request_id.empty() &&
+      (!reserved_request_id.starts_with("req_tool_run_") ||
+       reserved_request_id.size() != 45 ||
+       !ValidApplicationId(reserved_request_id)))
+    return Error(500, "batch_request_identity_invalid",
+                 "Invalid reserved execution identity");
   auto loaded = Owned(access, id);
   if (!loaded.ok()) return loaded;
   auto root = Update(access, loaded.value, ObjectKind::kBatch);
@@ -278,7 +285,8 @@ ObjectReply BatchState::StartRow(const BinaryAccess& access,
   auto page = Update(access, loaded_page.value, ObjectKind::kToolRun);
   auto& row = Entry(page, index);
   if (row.GetString("status") != "pending") return Conflict();
-  const auto request_id = Identity("req_");
+  const auto request_id = reserved_request_id.empty() ? Identity("req_")
+                                                       : reserved_request_id;
   if (request_id.empty())
     return Error(503, "object_entropy_unavailable", "No request ID");
   Set(&row, "status", String("running"));

@@ -1,0 +1,22 @@
+{
+  "status": "PASS_NATIVE_BATCH_JOBS_CPU",
+  "distinct_tests": 23,
+  "new_tests": 15,
+  "direct_tests": 8,
+  "initial_tests": 22,
+  "initial_pass": 20,
+  "initial_fail": 2,
+  "retry_pass": 2,
+  "parallel_capacity_pass": 1,
+  "initial_seconds": 12.278141557238996,
+  "retry_seconds": 1.315516880247742,
+  "parallel_seconds": 0.11402197415009141,
+  "gpu_starts": 0,
+  "engine_sha256": "2a7d54931416e07981e2dde6b7757ee3c31833941a57fddbf267f8664d1a155a",
+  "host_sha256": "916d77af73f5fa3c8b072e2f34b3dfb27e823ecad4539b9974291bd7d22403bd",
+  "default_sha256": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082",
+  "builds_zero_warning": true,
+  "anchors": 481,
+  "scope": "Actual task workers, native finite-response CPU generation fixtures, row validation and output Files, three real lost-receipt faults, child process death, cancellation drain, scoped and anonymous admission, two-worker result capacity and recovery scanner controller failure",
+  "remaining": "Independent Batch rate source including durable background Responses, scalable 50000-row metadata and incremental finalization, HTTP/SDK real model business, compatible rollback/default and all master tasks"
+}
