@@ -52,7 +52,8 @@ class BinaryStore {
                     int lifetime_seconds, BinaryStage* stage);
   ObjectReply Append(const BinaryAccess& access, BinaryStage* stage,
                      std::string_view bytes);
-  // Root is a known file, upload-part or private input snapshot. Its blob is
+  // Root is a known file, upload-part, batch/result or private input snapshot.
+  // Its blob is
   // from the staged manifest; optional parent mutations share the same commit.
   ObjectReply Publish(const BinaryAccess& access, BinaryStage* stage,
                       ObjectRequest root,

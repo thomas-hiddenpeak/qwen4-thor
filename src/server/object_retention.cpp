@@ -8,6 +8,7 @@
 #include "q4t/server/application_routes.h"
 #include "q4t/server/application_payload.h"
 #include "q4t/server/binary_store.h"
+#include "q4t/server/batch_state.h"
 #include "q4t/server/input_snapshot.h"
 #include "q4t/trace/sha256.h"
 
@@ -195,6 +196,23 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
         else
           inspector.value.uncertain = true;
       }
+  } else if (kind == "batch" && data.GetString("format") == "q4t.batch.v1") {
+    inspector.Blob(data);
+    const auto* batch = data.Find("batch");
+    const auto* pages = data.GetArray("pages");
+    if (!batch || !batch->IsObject() || !pages ||
+        pages->array.size() > kBatchPages) {
+      inspector.value.uncertain = true;
+    } else {
+      const auto status = batch->GetString("status");
+      inspector.value.active = status == "validating" ||
+                               status == "in_progress" ||
+                               status == "finalizing" || status == "cancelling";
+      inspector.value.uncertain |= !inspector.value.active && !BatchTerminal(status);
+      for (const auto& page : pages->array) inspector.Reference(&page);
+      // Result Files have their own declared expiry. A historical Batch
+      // receipt must not pin their content beyond output_expires_after.
+    }
   } else if (kind == "file" && data.GetString("format") == "q4t.file.v1") {
     inspector.Blob(data);
   } else if (kind == "input_snapshot" &&
@@ -211,6 +229,25 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
     } else if (format == "q4t.upload_part.v1") {
       inspector.Blob(data);
       inspector.value.collect_when_unreferenced = true;
+    } else if (format == "q4t.batch_result.v1") {
+      inspector.Blob(data);
+      inspector.value.collect_when_unreferenced = true;
+    } else if (format == "q4t.batch_page.v1") {
+      inspector.value.collect_when_unreferenced = true;
+      const auto* rows = data.GetArray("rows");
+      if (!rows || rows->array.empty() || rows->array.size() > kBatchPageRows ||
+          !ValidApplicationId(data.GetString("batch_id"))) {
+        inspector.value.uncertain = true;
+      } else {
+        for (const auto& row : rows->array) {
+          const auto status = row.GetString("status");
+          inspector.value.uncertain |= status != "pending" && status != "running" &&
+                                       status != "completed" && status != "failed";
+          inspector.Reference(row.Find("result_id"));
+          inspector.Snapshots(row);
+          inspector.Request(row.Find("request_dependencies"));
+        }
+      }
     } else if (format == "q4t.input_snapshot_hold.v1") {
       const auto id = data.GetString("snapshot_id");
       inspector.value.uncertain = !id.starts_with("input_snapshot_");

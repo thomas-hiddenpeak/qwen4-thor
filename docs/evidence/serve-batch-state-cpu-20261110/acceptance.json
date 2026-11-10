@@ -1,0 +1,14 @@
+{
+  "status": "PASS_DURABLE_BATCH_STATE_CPU",
+  "tests": 23,
+  "seconds": 3.017497082706541,
+  "gpu_starts": 0,
+  "default_sha256": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082",
+  "engine_sha256": "915445fb368a37a23e72ae3da50f9ba22484f3459d971edc818cadca3615c092",
+  "host_sha256": "139d7165e3e9a83743260914a28940a8840962c390a28008ac2c08059189f5c4",
+  "anchors": 469,
+  "builds_zero_warning": true,
+  "first_build": "engine JSON Find parameter mismatch; final corrected; host incremental freshness build recorded",
+  "contract": "First check detected newly added Batch list whitelist; reviewed and regenerated then check passed.",
+  "remaining": "Actual endpoint execution/results/recovery scan/HTTP/native SDK/business/default release and all master goals"
+}

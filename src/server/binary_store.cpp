@@ -119,7 +119,9 @@ void Identity(ObjectReply* reply, const std::string& id,
 bool Root(const ObjectRequest& root) {
   const auto format = root.data.GetString("format");
   return (root.kind == ObjectKind::kFile && format == "q4t.file.v1") ||
-         (root.kind == ObjectKind::kToolRun && format == "q4t.upload_part.v1") ||
+         (root.kind == ObjectKind::kBatch && format == "q4t.batch.v1") ||
+         (root.kind == ObjectKind::kToolRun &&
+          (format == "q4t.upload_part.v1" || format == "q4t.batch_result.v1")) ||
          (root.kind == ObjectKind::kInputSnapshot &&
           format == "q4t.input_snapshot.v1");
 }
@@ -269,6 +271,7 @@ ObjectReply BinaryStore::Open(const BinaryAccess& access, ObjectKind kind,
   if (!read || !read->id.empty() || lifetime_seconds < 1 ||
       lifetime_seconds > 3600 ||
       (kind != ObjectKind::kFile && kind != ObjectKind::kToolRun &&
+       kind != ObjectKind::kBatch &&
        kind != ObjectKind::kInputSnapshot))
     return Invalid("Invalid binary read capacity or lifetime");
   auto request = Request(access, id, ObjectOperation::kGet);

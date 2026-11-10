@@ -1,0 +1,18 @@
+{
+  "changed": [
+    "CMakeLists.txt",
+    "cmake/ChatProtocolIdentity.cmake",
+    "include/q4t/server/batch_state.h",
+    "include/q4t/server/binary_store.h",
+    "src/server/batch_state.cpp",
+    "src/server/binary_store.cpp",
+    "src/server/object_retention.cpp"
+  ],
+  "new_whitelists": {
+    "batch_state.cpp:0:query": [
+      "after",
+      "limit"
+    ]
+  },
+  "note": "Private lifecycle and BinaryStore/retention hooks only; public routes unchanged. JSON helper parameter corrected to existing Find API after first necessary build."
+}
