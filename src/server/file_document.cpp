@@ -32,6 +32,8 @@ bool Valid(const FileDocumentLimits& limits) {
          limits.max_columns > 0 && limits.max_columns <= 16384 &&
          limits.max_cells > 0 && limits.max_cells <= 1000000 &&
          limits.max_sheets > 0 && limits.max_sheets <= 256 &&
+         limits.max_embedded_documents > 0 &&
+         limits.max_embedded_documents <= 1024 &&
          limits.max_nested_documents <= 4 && limits.timeout_ms > 0 &&
          limits.timeout_ms <= 120000 &&
          file_detail::ValidPackageLimits(limits.package);

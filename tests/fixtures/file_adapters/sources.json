@@ -78,5 +78,28 @@
       "decompress index.apxl.gz; insert original first-slide notes; store as index.apxl"
     ],
     "sha256": "b9978b5a4cc20ac8743cefe6dda76fd25ca7ec8f0e173def3fc2b1f25e1ae3c0"
+  },
+  {
+    "filename": "keynote-notes-gzip.key",
+    "url": "https://raw.githubusercontent.com/LibreOffice/core/libreoffice-24.2.7.2/writerperfect/qa/unit/data/impress/libetonyek/pass/Keynote_2.key",
+    "upstream_sha256": "ded6dc98bb001690adeeb4884ed77ea90724847b670b98835d72fe3d492c1c0b",
+    "removed": [
+      "Contents/",
+      "Contents/PkgInfo",
+      "QuickLook/",
+      "QuickLook/Thumbnail.jpg",
+      "theme-files/",
+      "theme-files/tile_paper_gray.jpg",
+      "theme-files/tile_paper_green.jpg",
+      "theme-files/tile_paper_blue.jpg",
+      "theme-files/tile_paper_yellow.jpg",
+      "theme-files/tile_paper_purple.jpg",
+      "theme-files/tile_paper_red.jpg"
+    ],
+    "changes": [
+      "decompress index.apxl.gz; insert original first-slide notes; store as index.apxl",
+      "gzip the derived XML with mtime=0 and store as index.apxl.gz"
+    ],
+    "sha256": "072fb25288e6bdfc0f4c19f443f2fac1ebcb046c79b570327ac4e59de4cebb0f"
   }
 ]

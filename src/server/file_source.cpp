@@ -17,6 +17,8 @@ bool Identifier(std::string_view value, size_t limit) {
   return true;
 }
 std::string ShortcutKind(const FileInputContent& input) {
+  // Real binary signatures take precedence over display-only shortcut names.
+  if (ClassifyFileDocument(input) != FileDocumentFormat::kText) return {};
   const auto dot = input.filename.rfind('.');
   const auto extension =
       dot == input.filename.npos ? "" : http::Lower(input.filename.substr(dot));

@@ -40,6 +40,23 @@ ObjectReply Failed(GrammarFailure failure) {
                "Document extraction worker unavailable");
 }
 Json Wire(const FileDocument& document) {
+  auto path_json = [](const std::vector<std::string>& path) {
+    auto value = Array();
+    for (const auto& part : path) value.array.push_back(String(part));
+    return value;
+  };
+  auto pending = Array(), embedded = Array();
+  for (const auto& item : document.pending)
+    pending.array.push_back(
+        Object({{"offset", Number(item.text_offset)},
+                {"depth", Number(item.depth)},
+                {"path", path_json(item.path)},
+                {"filename", String(item.source.filename)},
+                {"bytes", Number(item.source.bytes.size())},
+                {"sha256", String(Digest(item.source.bytes))}}));
+  for (const auto& item : document.embedded)
+    embedded.array.push_back(Object({{"path", path_json(item.path)},
+                                     {"sha256", String(item.source_sha256)}}));
   auto sheets = Array();
   for (const auto& sheet : document.sheets) {
     auto rows = Array();
@@ -56,7 +73,27 @@ Json Wire(const FileDocument& document) {
   return Object({{"text", String(document.text)},
                  {"encoding", String(document.encoding)},
                  {"source_sha256", String(document.source_sha256)},
+                 {"pending", std::move(pending)},
+                 {"embedded", std::move(embedded)},
                  {"sheets", std::move(sheets)}});
+}
+bool Path(const Json& value, size_t depth, std::vector<std::string>* path) {
+  if (!value.IsArray() || value.array.empty() || value.array.size() > depth)
+    return false;
+  for (const auto& part : value.array) {
+    if (!part.IsString() || part.str.empty() || part.str.size() > 1024)
+      return false;
+    for (unsigned char c : part.str)
+      if (c < 32 || c == 127) return false;
+    path->push_back(part.str);
+  }
+  return true;
+}
+bool DigestText(std::string_view value) {
+  if (value.size() != 64) return false;
+  for (char c : value)
+    if (!(c >= '0' && c <= '9') && !(c >= 'a' && c <= 'f')) return false;
+  return true;
 }
 bool Decode(const Json& value, const FileInputContent& input,
             const FileDocumentLimits& limits, FileDocument* output) {
@@ -74,6 +111,13 @@ bool Decode(const Json& value, const FileInputContent& input,
   const bool is_text =
       format == FileDocumentFormat::kText || format == FileDocumentFormat::kRtf;
   const bool office = format == FileDocumentFormat::kOfficeZip;
+  const auto* pending = value.GetArray("pending");
+  const auto* embedded = value.GetArray("embedded");
+  if (!pending || !embedded ||
+      pending->array.size() + embedded->array.size() >
+          limits.max_embedded_documents ||
+      (!office && (!pending->array.empty() || !embedded->array.empty())))
+    return false;
   if ((is_text && !sheets->array.empty()) ||
       (!is_text && !office &&
        (sheets->array.size() != 1 || !text->str.empty())) ||
@@ -83,6 +127,42 @@ bool Decode(const Json& value, const FileInputContent& input,
   next.text = text->str;
   next.encoding = std::move(encoding);
   next.source_sha256 = value.GetString("source_sha256");
+  uint64_t source_bytes = 0;
+  size_t previous_offset = 0;
+  for (const auto& item : pending->array) {
+    const auto offset = item.GetInt("offset", -1),
+               depth = item.GetInt("depth", -1),
+               size = item.GetInt("bytes", -1);
+    const auto* path = item.Find("path");
+    FileDocumentPending decoded;
+    decoded.source.filename = item.GetString("filename");
+    decoded.source.sha256 = item.GetString("sha256");
+    if (offset < 0 || static_cast<uint64_t>(offset) > next.text.size() ||
+        static_cast<uint64_t>(offset) < previous_offset || depth <= 0 ||
+        static_cast<uint64_t>(depth) > limits.max_nested_documents ||
+        size < 0 ||
+        static_cast<uint64_t>(size) > kFileInputBytes - source_bytes || !path ||
+        !Path(*path, limits.max_nested_documents, &decoded.path) ||
+        decoded.path.size() != static_cast<uint64_t>(depth) ||
+        decoded.source.filename != decoded.path.back() ||
+        !DigestText(decoded.source.sha256))
+      return false;
+    previous_offset = offset;
+    source_bytes += size;
+    decoded.text_offset = offset;
+    decoded.depth = depth;
+    decoded.source.bytes.resize(size);
+    next.pending.push_back(std::move(decoded));
+  }
+  for (const auto& item : embedded->array) {
+    const auto* path = item.Find("path");
+    FileDocumentEmbedded decoded;
+    decoded.source_sha256 = item.GetString("sha256");
+    if (!path || !Path(*path, limits.max_nested_documents, &decoded.path) ||
+        !DigestText(decoded.source_sha256))
+      return false;
+    next.embedded.push_back(std::move(decoded));
+  }
   uint64_t bytes = next.text.size();
   size_t cells = 0;
   std::unordered_set<std::string> names;
@@ -180,6 +260,7 @@ ObjectReply ParseNativeFileDocument(const FileInputContent& input,
               {"max_cells", Number(limits.max_cells)},
               {"max_sheets", Number(limits.max_sheets)},
               {"max_nested", Number(limits.max_nested_documents)},
+              {"max_embedded", Number(limits.max_embedded_documents)},
               {"timeout_ms", Number(limits.timeout_ms)},
               {"package_bytes", Number(limits.package.max_bytes)},
               {"entry_bytes", Number(limits.package.max_entry_bytes)},
@@ -214,6 +295,12 @@ ObjectReply ParseNativeFileDocument(const FileInputContent& input,
   FileDocument next;
   if (!Decode(reply.value, input, limits, &next))
     return Failed(GrammarFailure::kWorker);
+  for (auto& item : next.pending) {
+    if (!transfer(item.source.bytes.data(), item.source.bytes.size(), false))
+      return Failed(process->Failure());
+    if (Digest(item.source.bytes) != item.source.sha256)
+      return Failed(GrammarFailure::kWorker);
+  }
   if ((access.cancelled && access.cancelled()) ||
       (control.cancelled && control.cancelled()))
     return Failed(GrammarFailure::kCancelled);
@@ -251,6 +338,7 @@ int MaybeRunFileDocumentWorker(int argc, char** argv) {
     limits.max_cells = request.GetInt("max_cells", 0);
     limits.max_sheets = request.GetInt("max_sheets", 0);
     limits.max_nested_documents = request.GetInt("max_nested", -1);
+    limits.max_embedded_documents = request.GetInt("max_embedded", 0);
     limits.timeout_ms = request.GetInt("timeout_ms", 0);
     limits.package.max_bytes = request.GetInt("package_bytes", 0);
     limits.package.max_entry_bytes = request.GetInt("entry_bytes", 0);
@@ -306,14 +394,21 @@ int MaybeRunFileDocumentWorker(int argc, char** argv) {
       reply = Error(503, "file_document_failed", "Document extraction failed");
     }
     text = OutputJson(WireReply(reply));
-    if (text.size() > kMaxFrame)
-      text = OutputJson(WireReply(Error(413, "file_document_capacity",
-                                        "Document response exceeds capacity")));
+    if (text.size() > kMaxFrame) {
+      reply = Error(413, "file_document_capacity",
+                    "Document response exceeds capacity");
+      text = OutputJson(WireReply(reply));
+    }
     if (text.empty()) return 3;
     frame = {kVersion, 1, text.size()};
     if (!detail::WorkerTransfer(&frame, sizeof(frame), true) ||
         !detail::WorkerTransfer(text.data(), text.size(), true))
       return 3;
+    if (reply.ok())
+      for (auto& item : document.pending)
+        if (!detail::WorkerTransfer(item.source.bytes.data(),
+                                    item.source.bytes.size(), true))
+          return 3;
     return 0;
   } catch (...) {
     return 4;

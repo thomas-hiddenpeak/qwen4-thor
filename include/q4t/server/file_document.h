@@ -32,6 +32,7 @@ struct FileDocumentLimits {
   size_t max_cells = 131072;
   size_t max_sheets = 256;
   size_t max_nested_documents = 4;
+  size_t max_embedded_documents = 32;
   uint64_t timeout_ms = 10000;
   FilePackageLimits package;
   // The standard file-input spreadsheet contract consumes the first 1000
@@ -47,10 +48,23 @@ struct FileDocumentSheet {
 struct FileDocumentPage {
   uint32_t number = 0, width = 0, height = 0;
   std::string png;
+  // Empty for the outer file. Each component is a containing package member,
+  // never a host path; page number remains relative to its source PDF.
+  std::vector<std::string> source_path{};
 };
 struct FileDocumentConversion {
   std::string codec, product, version, build_id;
   std::string output_format, output_sha256;
+};
+struct FileDocumentEmbedded {
+  std::vector<std::string> path;
+  std::string source_sha256;
+  FileDocumentConversion conversion;
+};
+struct FileDocumentPending {
+  size_t text_offset = 0, depth = 0;
+  std::vector<std::string> path;
+  FileInputContent source;
 };
 struct FileDocument {
   std::string text, encoding, source_sha256;
@@ -59,6 +73,10 @@ struct FileDocument {
   // Empty codec means no system Office conversion. Converted formula values
   // must not be presented as the original binary document's cached results.
   FileDocumentConversion conversion;
+  std::vector<FileDocumentEmbedded> embedded;
+  // Private intermediate output from the memory-only parser. The unified
+  // extractor resolves all entries before publishing a complete document.
+  std::vector<FileDocumentPending> pending;
 };
 bool ValidFileDocumentLimits(const FileDocumentLimits& limits);
 

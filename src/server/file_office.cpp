@@ -2,6 +2,7 @@
 
 #include "file_rtf.h"
 #include "object_protocol.h"
+#include "q4t/server/http_framing.h"
 
 namespace q4t::server::file_detail {
 namespace {
@@ -18,6 +19,12 @@ ObjectReply ApplePackage(OfficeContext& context, bool* apple) {
     *apple = true;
     return {};
   }
+  for (const char* name : {"index.xml.gz", "index.apxl.gz"})
+    if (const auto* part = context.Part(name);
+        part && part->starts_with("\x1f\x8b")) {
+      *apple = true;
+      return {};
+    }
   for (const char* name : {"index.xml", "index.apxl"}) {
     if (!context.Part(name)) continue;
     auto reply = context.Xml(name, [&](const XmlNode& node) -> ObjectReply {
@@ -165,6 +172,27 @@ ObjectReply OfficeContext::Alternate(std::string_view source,
   input.bytes = *Part(part);
   FileDocument child;
   const auto format = ClassifyFileDocument(input);
+  const auto pending = [&]() -> ObjectReply {
+    if (document.embedded.size() + document.pending.size() >=
+        limits.max_embedded_documents)
+      return OfficeCapacity();
+    uint64_t bytes = input.bytes.size();
+    if (bytes > kFileInputBytes) return OfficeCapacity();
+    for (const auto& item : document.pending) {
+      if (item.source.bytes.size() > kFileInputBytes - bytes)
+        return OfficeCapacity();
+      bytes += item.source.bytes.size();
+    }
+    document.pending.push_back(
+        {document.text.size(), nested_documents + 1, {part}, std::move(input)});
+    return Text("\n");
+  };
+  const auto filename = http::Lower(input.filename);
+  if (format == FileDocumentFormat::kOfficeZip &&
+      !input.bytes.starts_with("PK") &&
+      (filename.ends_with(".pages") || filename.ends_with(".numbers") ||
+       filename.ends_with(".key")))
+    return pending();
   if (format == FileDocumentFormat::kRtf)
     reply = ParseRtfDocument(input, limits, access, &child);
   else if (format == FileDocumentFormat::kOfficeZip)
@@ -176,9 +204,30 @@ ObjectReply OfficeContext::Alternate(std::string_view source,
            format == FileDocumentFormat::kIif)
     reply = ParsePlainFileDocument(input, format, limits, access, &child);
   else
-    return object_detail::Error(503, "file_nested_codec_required",
-                                "Nested document requires its format decoder");
+    return pending();
+  if (reply.code == "file_nested_codec_required") return pending();
   if (!reply.ok()) return reply;
+  if (child.embedded.size() + child.pending.size() + document.embedded.size() +
+          document.pending.size() + 1 >
+      limits.max_embedded_documents)
+    return OfficeCapacity();
+  uint64_t pending_bytes = 0;
+  for (const auto* items : {&document.pending, &child.pending})
+    for (const auto& item : *items) {
+      if (item.source.bytes.size() > kFileInputBytes - pending_bytes)
+        return OfficeCapacity();
+      pending_bytes += item.source.bytes.size();
+    }
+  document.embedded.push_back({{part}, object_detail::Digest(input.bytes), {}});
+  for (auto& item : child.embedded) {
+    item.path.insert(item.path.begin(), part);
+    document.embedded.push_back(std::move(item));
+  }
+  for (auto& item : child.pending) {
+    item.text_offset += document.text.size();
+    item.path.insert(item.path.begin(), part);
+    document.pending.push_back(std::move(item));
+  }
   reply = Text(child.text);
   if (!reply.ok()) return reply;
   for (const auto& sheet : child.sheets) {

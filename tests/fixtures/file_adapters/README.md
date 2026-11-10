@@ -21,3 +21,6 @@ XLSB `String1`/`String2`. Modern Keynote contains one empty slide; its binary
 Keynote derivative decompresses `index.apxl.gz` and inserts original Unicode
 notes into the existing first-slide paragraph. The transform is recorded;
 the notes are not passed as separate plaintext input to the decoder.
+`keynote-notes-gzip.key` retains the compressed `index.apxl.gz` variant of
+that same document and original notes. Both variants are reproducible with
+the preparation script and have separate digests in `sources.json`.

@@ -75,6 +75,29 @@ def prepare(output, downloaded=None):
         records.append(dict(filename=name, url=BASE + relative,
                             upstream_sha256=digest, removed=removed, changes=changes,
                             sha256=hashlib.sha256(data).hexdigest()))
+    # Preserve the older container's compressed-XML variant with the same
+    # original notes, so this is actual content coverage rather than a renamed
+    # modern document. No photo/preview member is restored.
+    source = zipfile.ZipFile(output / "keynote-notes.key")
+    stream = io.BytesIO()
+    with zipfile.ZipFile(stream, "w") as target:
+        for item in source.infolist():
+            name = item.filename
+            data = source.read(item)
+            if name == "index.apxl":
+                name += ".gz"
+                data = gzip.compress(data, mtime=0)
+            info = zipfile.ZipInfo(name, (2026, 11, 10, 0, 0, 0))
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.external_attr = 0o100644 << 16
+            target.writestr(info, data)
+    data = stream.getvalue()
+    (output / "keynote-notes-gzip.key").write_bytes(data)
+    original = next(item for item in records if item["filename"] == "keynote-notes.key")
+    record = dict(original, filename="keynote-notes-gzip.key",
+                  changes=original["changes"] + ["gzip the derived XML with mtime=0 and store as index.apxl.gz"],
+                  sha256=hashlib.sha256(data).hexdigest())
+    records.append(record)
     (output / "sources.json").write_text(json.dumps(records, indent=2) + "\n")
 
 

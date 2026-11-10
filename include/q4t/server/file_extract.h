@@ -6,6 +6,7 @@
 
 namespace q4t::server {
 struct FileExtractOptions {
+  uint64_t timeout_ms = 30000;
   FileDocumentLimits document;
   FilePdfOptions pdf;
   FileLegacyOptions legacy;

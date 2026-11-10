@@ -1,0 +1,14 @@
+/home/rm01/models/dev/qwen4-thor/src/server/file_extract.cpp: In function ‘q4t::server::ObjectReply q4t::server::{anonymous}::Tree(const q4t::server::FileInputContent&, const q4t::server::FileExtractOptions&, std::string_view, const q4t::server::BinaryAccess&, q4t::server::GrammarControl, size_t, Remaining*, q4t::server::FileDocument*)’:
+/home/rm01/models/dev/qwen4-thor/src/server/file_extract.cpp:135:42: error: ‘OutputJson’ is not a member of ‘q4t::server::object_detail’; did you mean ‘q4t::server::OutputJson’?
+  135 |                           object_detail::OutputJson(path) + "; SHA256 " +
+      |                                          ^~~~~~~~~~
+In file included from /home/rm01/models/dev/qwen4-thor/src/server/object_protocol.h:10,
+                 from /home/rm01/models/dev/qwen4-thor/src/server/file_extract.cpp:5:
+/home/rm01/models/dev/qwen4-thor/include/q4t/server/output_schema.h:28:13: note: ‘q4t::server::OutputJson’ declared here
+   28 | std::string OutputJson(const io::Json& value);
+      |             ^~~~~~~~~~
+gmake[3]: *** [CMakeFiles/q4t_server.dir/build.make:499: CMakeFiles/q4t_server.dir/src/server/file_extract.cpp.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/Makefile2:1224: CMakeFiles/q4t_server.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:1371: CMakeFiles/q4t.dir/rule] Error 2
+gmake: *** [Makefile:558: q4t] Error 2

@@ -156,6 +156,23 @@ Q4T_TEST(file_source_inline_identity_and_chat_restriction) {
             receipt.content.bytes.empty());
   return true;
 }
+Q4T_TEST(file_source_binary_signatures_override_google_shortcut_metadata) {
+  for (const auto* bytes : {"%PDF-1.7", "PK\x03\x04", "{\\rtf1 "}) {
+    const auto encoded = Encoded(bytes);
+    FileInputSource source;
+    source.filename = "display-only.gdoc";
+    source.value = encoded;
+    source.pdf_only = std::string_view(bytes).starts_with("%PDF");
+    FileInputBudget budget;
+    FileSourceReceipt receipt;
+    GrammarControl control;
+    control.counters = std::make_shared<GrammarWorkerCounters>();
+    Q4T_CHECK(ResolveFileInput(nullptr, Access(), source, {}, &budget, &receipt, control).ok());
+    Q4T_CHECK(receipt.content.bytes == bytes && !receipt.indirect_source &&
+              receipt.urls.empty() && control.counters->started == 0);
+  }
+  return true;
+}
 Q4T_TEST(file_source_google_shortcut_requires_matching_type_and_fetch_policy) {
   const auto encoded =
       Encoded("{\"url\":\"https://docs.google.com/document/d/abc/edit\"}");
