@@ -1,0 +1,23 @@
+test_count_usage_headers_are_complete_strict_and_absent_for_frozen (tools.serve_responses.test_file_integration_acceptance.FileIntegrationAcceptance.test_count_usage_headers_are_complete_strict_and_absent_for_frozen) ... ok
+test_pdf_oracle_requires_real_number_color_and_complete_answer (tools.serve_responses.test_file_integration_acceptance.FileIntegrationAcceptance.test_pdf_oracle_requires_real_number_color_and_complete_answer) ... ok
+test_public_stored_message_projection_restores_only_original_input (tools.serve_responses.test_file_integration_acceptance.FileIntegrationAcceptance.test_public_stored_message_projection_restores_only_original_input) ... ok
+test_requests_profiles_and_original_pdf_identity (tools.serve_responses.test_file_integration_acceptance.FileIntegrationAcceptance.test_requests_profiles_and_original_pdf_identity) ... FAIL
+
+======================================================================
+FAIL: test_requests_profiles_and_original_pdf_identity (tools.serve_responses.test_file_integration_acceptance.FileIntegrationAcceptance.test_requests_profiles_and_original_pdf_identity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_responses/test_file_integration_acceptance.py", line 20, in test_requests_profiles_and_original_pdf_identity
+    self.assertEqual(list(chat.iter_errors(rows[name])), [])
+AssertionError: Lists differ: [<ValidationError: "[{'type': 'file', 'fil[1078 chars]as">] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+<ValidationError: "[{'type': 'file', 'file': {'filename': 'page.pdf', 'file_data': 'JVBERi0xLjcKMSAwIG9iago8PCAvVHlwZSAvQ2F0YWxvZyAvUGFnZXMgMiAwIFIgPj4KZW5kb2JqCjIgMCBvYmoKPDwgL1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgPj4KZW5kb2JqCjMgMCBvYmoKPDwgL1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvTWVkaWFCb3ggWzAgMCAyMDAgMTAwXSAvUmVzb3VyY2VzIDw8IC9Gb250IDw8IC9GMSA0IDAgUiA+PiA+PiAvQ29udGVudHMgNSAwIFIgPj4KZW5kb2JqCjQgMCBvYmoKPDwgL1R5cGUgL0ZvbnQgL1N1YnR5cGUgL1R5cGUxIC9CYXNlRm9udCAvSGVsdmV0aWNhID4+CmVuZG9iago1IDAgb2JqCjw8IC9MZW5ndGggODggPj4Kc3RyZWFtCjAgMSAwIHJnIDAgMCAyMDAgMTAwIHJlIGYKMCAwIDAgcmcgQlQgL0YxIDEyIFRmIDEwIDUwIFRkIChFbWJlZGRlZCBhY3R1YWwgUERGIDQyKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA2CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAwOSAwMDAwMCBuIAowMDAwMDAwMDU4IDAwMDAwIG4gCjAwMDAwMDAxMTUgMDAwMDAgbiAKMDAwMDAwMDI0MSAwMDAwMCBuIAowMDAwMDAwMzExIDAwMDAwIG4gCnRyYWlsZXIKPDwgL1NpemUgNiAvUm9vdCAxIDAgUiA+PgpzdGFydHhyZWYKNDQ4CiUlRU9GCg=='}}, {'type': 'text', 'text': 'Read the PDF page. Return the printed number in value, and the page background color in color as lowercase English.'}] is not valid under any of the given schemas">
+
+Diff is 1133 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.006s
+
+FAILED (failures=1)

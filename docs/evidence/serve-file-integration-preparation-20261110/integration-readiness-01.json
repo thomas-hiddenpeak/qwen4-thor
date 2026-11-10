@@ -1,0 +1,14 @@
+{
+  "candidate_sha256": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082",
+  "rollback_sha256": "2657eb168192aa6c9cf3e1dd77c52d1f9dea053d237777dc4b56e18d30134a96",
+  "rollback_source_commit": "eee091b4634d95f855e8c5937bb0a4a3c500bcda",
+  "zero_warnings": true,
+  "driver_cpu_unique_passed": 4,
+  "first_cpu_passed": 3,
+  "first_cpu_failed": 1,
+  "repaired_cpu_passed": 1,
+  "gpu_starts": 0,
+  "qualification": "Rollback built from pinned prior source; actual cross-version business remains pending.",
+  "driver_sha256": "9befc30101b3a35f00d642089db01358c45b5e8d8c9a8a2a1845207e901fded6",
+  "rollback_build_cache_sha256": "a5550c5898747cf25c44d530b8d374036843532ac8bce8403a81314fecbe1532"
+}

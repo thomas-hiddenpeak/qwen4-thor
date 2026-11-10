@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "python3",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_responses.test_file_integration_acceptance"
+  ],
+  "exit_code": 1,
+  "seconds": 0.31429318292066455
+}

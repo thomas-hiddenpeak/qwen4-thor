@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "python3",
+    "-m",
+    "unittest",
+    "-v",
+    "tools.serve_responses.test_file_integration_acceptance.FileIntegrationAcceptance.test_requests_profiles_and_original_pdf_identity"
+  ],
+  "exit_code": 0,
+  "seconds": 0.31420610286295414
+}

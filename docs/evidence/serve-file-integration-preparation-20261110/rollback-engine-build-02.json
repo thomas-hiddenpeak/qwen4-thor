@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "cmake",
+    "--build",
+    ".q4t-work/serve-file-inputs-20261110/rollback-source/.q4t-work/engine-build",
+    "--target",
+    "q4t",
+    "--parallel",
+    "4"
+  ],
+  "exit_code": 0,
+  "seconds": 158.47697084024549
+}
