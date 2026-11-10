@@ -1,0 +1,17 @@
+{
+  ".q4t-work/serve-access-20261109/host/q4t_host_tests": "66e73c48c3f50c719e463821847af1f1d046c3266907c2bc2141acfcf3e38700",
+  ".q4t-work/serve-custom-tools-20261108/engine-build/q4t": "376a6b1fad9b17d5f52561aa02be5ae90303588fe5b61d7a6d5bdc4be4ffec8a",
+  "CMakeLists.txt": "a244572eac03250bd31bcd3e5181cfb1793ab5a375c04af8d8867b0148085c9e",
+  "cmake/ChatProtocolIdentity.cmake": "a03ab90054e479164449be233b578e6b3e346c9444867b3f5b731a9c2bc1feb2",
+  "cmake/HostTestSources.cmake": "89b526c977dae822d7d7c7d38ce1627d777c9ff7b7f20ba4d011d69e611671bc",
+  "include/q4t/server/binary_store.h": "eae10d9395b3ab040197c819803e062f4a709943995682f2d661f5a0b65736b5",
+  "include/q4t/server/input_snapshot.h": "1bbabc3f36787d5c977016c7dbd5611172f7840b3b1b21ffafb7e3ff76394535",
+  "include/q4t/server/object_retention.h": "94a2339c1de9c1adbcc7f8b8f2766243a287c4294da721c7f9654e0741734774",
+  "include/q4t/server/object_store.h": "403f4ab2b5897ca75f131701a175053fe45e22387ce0f0b6c8c5daea97c50f88",
+  "src/server/binary_store.cpp": "f61b0b88bfcae9a5e271419aca7fe66e4820f644b9a007501ad32ba48a8d9b2f",
+  "src/server/input_snapshot.cpp": "e8ba90822999386390bbbd82652e140fff8247c5472c216bcf414a0b66fd61e2",
+  "src/server/object_protocol.h": "4665aeccac638b7a65eb36e8383d9afa7ad64d929cd52127d8afbde059cef7b2",
+  "src/server/object_retention.cpp": "b4fb0d6e56826921f6162f33ede77fe3911a3de5a40bbcdc3935291cdf055347",
+  "src/server/object_worker.cpp": "a95e147b93155f8d69002f74d3336cf69cece2a45ec4e52b918b55cfc373e008",
+  "tests/server_input_snapshot_test.cpp": "11e4f58d813395dbf0903429c384225d12f665c1bbb49f852473a6cfaf8741d0"
+}

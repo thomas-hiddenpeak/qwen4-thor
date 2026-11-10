@@ -119,7 +119,9 @@ void Identity(ObjectReply* reply, const std::string& id,
 bool Root(const ObjectRequest& root) {
   const auto format = root.data.GetString("format");
   return (root.kind == ObjectKind::kFile && format == "q4t.file.v1") ||
-         (root.kind == ObjectKind::kToolRun && format == "q4t.upload_part.v1");
+         (root.kind == ObjectKind::kToolRun && format == "q4t.upload_part.v1") ||
+         (root.kind == ObjectKind::kInputSnapshot &&
+          format == "q4t.input_snapshot.v1");
 }
 }  // namespace
 
@@ -260,12 +262,14 @@ ObjectReply BinaryStore::Abort(const BinaryAccess& access, BinaryStage* stage) {
 }
 ObjectReply BinaryStore::Open(const BinaryAccess& access, ObjectKind kind,
                               const std::string& id, int lifetime_seconds,
-                              BinaryRead* read) {
+                              BinaryRead* read, Json* pinned_data) {
+  if (pinned_data) *pinned_data = {};
   auto checked = Access(access);
   if (!checked.ok()) return checked;
   if (!read || !read->id.empty() || lifetime_seconds < 1 ||
       lifetime_seconds > 3600 ||
-      (kind != ObjectKind::kFile && kind != ObjectKind::kToolRun))
+      (kind != ObjectKind::kFile && kind != ObjectKind::kToolRun &&
+       kind != ObjectKind::kInputSnapshot))
     return Invalid("Invalid binary read capacity or lifetime");
   auto request = Request(access, id, ObjectOperation::kGet);
   request.kind = kind;
@@ -301,6 +305,7 @@ ObjectReply BinaryStore::Open(const BinaryAccess& access, ObjectKind kind,
     next.commit_unknown = reply.commit_unknown;
     *read = std::move(next);
   }
+  if (reply.ok() && pinned_data) *pinned_data = *data;
   return reply;
 }
 ObjectReply BinaryStore::Read(const BinaryAccess& access,

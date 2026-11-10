@@ -995,7 +995,8 @@
         "codec_io_budget": "evidence/serve-file-codec-budget-cpu-20261110/README.md",
         "legacy": "evidence/serve-file-legacy-cpu-20261110/README.md",
         "source_format_adapters": "evidence/serve-file-adapters-cpu-20261110/README.md",
-        "nested_documents": "evidence/serve-file-nested-cpu-20261110/README.md"
+        "nested_documents": "evidence/serve-file-nested-cpu-20261110/README.md",
+        "immutable_snapshot": "evidence/serve-input-snapshot-cpu-20261110/README.md"
       }
     },
     {

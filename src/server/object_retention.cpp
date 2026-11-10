@@ -7,6 +7,7 @@
 
 #include "q4t/server/application_routes.h"
 #include "q4t/server/binary_store.h"
+#include "q4t/server/input_snapshot.h"
 #include "q4t/trace/sha256.h"
 
 namespace q4t::server {
@@ -86,6 +87,24 @@ class Inspector {
     for (const auto& chunk : chunks->array) Reference(chunk.Find("id"));
   }
 
+  void Snapshots(const Json& data) {
+    const auto* snapshots = data.Find("input_snapshots");
+    if (!snapshots) return;  // Records written before file input support.
+    if (!snapshots->IsArray() || snapshots->array.size() > 4096) {
+      value.uncertain = true;
+      return;
+    }
+    for (const auto& binding : snapshots->array) {
+      const auto* snapshot = binding.Find("snapshot");
+      InputSnapshotRef reference;
+      if (!snapshot || !ParseInputSnapshotReference(*snapshot, &reference)) {
+        value.uncertain = true;
+        return;
+      }
+      Reference(snapshot->Find("id"));
+    }
+  }
+
   ObjectRetentionInfo Finish() {
     auto& references = value.references;
     std::sort(references.begin(), references.end());
@@ -163,6 +182,10 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
       }
   } else if (kind == "file" && data.GetString("format") == "q4t.file.v1") {
     inspector.Blob(data);
+  } else if (kind == "input_snapshot" &&
+             data.GetString("format") == "q4t.input_snapshot.v1") {
+    inspector.Blob(data);
+    inspector.value.collect_when_unreferenced = true;
   } else if (kind == "tool_run") {
     const auto format = data.GetString("format");
     if (format == "q4t.binary_chunk.v1") {
@@ -173,6 +196,10 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
     } else if (format == "q4t.upload_part.v1") {
       inspector.Blob(data);
       inspector.value.collect_when_unreferenced = true;
+    } else if (format == "q4t.input_snapshot_hold.v1") {
+      const auto id = data.GetString("snapshot_id");
+      inspector.value.uncertain = !id.starts_with("input_snapshot_");
+      inspector.Reference(data.Find("snapshot_id"));
     } else if (format == "q4t.upload.v1") {
       const auto* upload = data.Find("upload");
       const auto* parts = data.GetArray("parts");
@@ -195,6 +222,11 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
     // dependency extraction before automatic collection can safely use them.
     inspector.value.uncertain = true;
   }
+  // Snapshot validation adds uncertainty; ordinary shape checks above must
+  // never overwrite a malformed private dependency's conservative protection.
+  if (kind == "response" || kind == "conversation" || kind == "item" ||
+      kind == "chat")
+    inspector.Snapshots(data);
   return inspector.Finish();
 }
 

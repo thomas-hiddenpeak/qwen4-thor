@@ -23,7 +23,8 @@ enum class ObjectKind {
   kFile,
   kBatch,
   kToolRun,
-  kPrompt
+  kPrompt,
+  kInputSnapshot
 };
 enum class ObjectOperation { kGet, kPut, kErase, kList, kHealth };
 

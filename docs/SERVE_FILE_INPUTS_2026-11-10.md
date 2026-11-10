@@ -168,3 +168,16 @@ owned进程处理通知、截止/取消及EOF后清理，不执行解码器的�
 统一来源/分派已完成[24项CPU及Google公开样表真实导出](evidence/serve-file-adapters-cpu-20261110/README.md)。Apple/XLSB实际内容、Google快捷方式与累计字节/私有来源、系统转换版本/BuildId和双SHA均已进入组件；API快照仍须保留这些信息。嵌入文档、全部FI03—FI05和总任务继续实施，不据组件接受结案。
 
 嵌入文档组件[30项针对性CPU接受](evidence/serve-file-nested-cpu-20261110/README.md)：实际DOC/PDF多层内容、完整私有回执、整树预算/期限及取消/原子失败通过；并补签名优先和压缩iWork。候选136ecbaa未发行，0GPU，继续FI03—FI05所有消费/持久/模型/业务与全部总任务。
+
+## FI03 私有快照组件与发行义务
+
+[21项不同CPU接受](evidence/serve-input-snapshot-cpu-20261110/README.md)。
+私有input_snapshot对象保存真实元数据/字节/摘要，复用1MiB有配额
+分块，准备租约与发布原子提交；应用私有引用接管生命周期，失去
+全部引用后可回收。丢回执保留ID和不确定状态，不重放。默认总量
+128MiB、元数据16MiB/1024段，部署可至512MiB/32MiB，不能替代
+请求全局RAM/原字节准入。具体文档/全部消费入口接线仍继续实施。
+
+FI05必须提供能识别input_snapshot存储类型的配套回退程序；旧
+Uploads二进制不能直接用于已有新类型的目录。不得删除新业务
+历史来伪造回退成功。当前默认与其状态目录未改，组件候选未发行。

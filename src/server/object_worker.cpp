@@ -968,8 +968,10 @@ int MaybeRunObjectWorker(int argc, char** argv) {
       std::strcmp(argv[1], "--q4t-object-worker-lost-ack") == 0;
   const bool lose_second_ack =
       std::strcmp(argv[1], "--q4t-object-worker-second-put-lost-ack") == 0;
+  const bool lose_snapshot_ack =
+      std::strcmp(argv[1], "--q4t-object-worker-snapshot-lost-ack") == 0;
   int successful_puts = 0;
-  matched = matched || lose_ack || lose_second_ack;
+  matched = matched || lose_ack || lose_second_ack || lose_snapshot_ack;
   if (std::strcmp(argv[1], "--q4t-object-worker-commit-pause") == 0) {
     matched = true;
     pause_after = -1;
@@ -1004,6 +1006,13 @@ int MaybeRunObjectWorker(int argc, char** argv) {
         reply = store.Run(request);
       }
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
+      if (reply.ok() && lose_snapshot_ack)
+        if (const auto* mutations = request.GetArray("mutations"))
+          for (const auto& mutation : mutations->array)
+            if (mutation.GetString("kind") == "input_snapshot" &&
+                mutation.GetString("operation") == "put" &&
+                mutation.GetInt("revision", -1) == 0)
+              for (;;) pause();  // Atomic snapshot/hold commit, no receipt.
       if (reply.ok() && request.GetString("operation") == "put") {
         ++successful_puts;
         if (lose_ack || (lose_second_ack && successful_puts == 2))

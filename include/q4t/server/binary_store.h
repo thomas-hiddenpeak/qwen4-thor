@@ -52,7 +52,7 @@ class BinaryStore {
                     int lifetime_seconds, BinaryStage* stage);
   ObjectReply Append(const BinaryAccess& access, BinaryStage* stage,
                      std::string_view bytes);
-  // Root is a known file or upload-part record. Its blob field is assigned
+  // Root is a known file, upload-part or private input snapshot. Its blob is
   // from the staged manifest; optional parent mutations share the same commit.
   ObjectReply Publish(const BinaryAccess& access, BinaryStage* stage,
                       ObjectRequest root,
@@ -62,7 +62,7 @@ class BinaryStore {
   // public file after Open cannot invalidate an active bounded download.
   ObjectReply Open(const BinaryAccess& access, ObjectKind kind,
                    const std::string& id, int lifetime_seconds,
-                   BinaryRead* read);
+                   BinaryRead* read, io::Json* pinned_data = nullptr);
   ObjectReply Read(const BinaryAccess& access, const BinaryRead& read,
                    size_t chunk, std::string* bytes);
   ObjectReply Close(const BinaryAccess& access, BinaryRead* read);

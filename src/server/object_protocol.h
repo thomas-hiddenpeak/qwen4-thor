@@ -48,11 +48,13 @@ inline std::string Kind(ObjectKind kind) {
       return "tool_run";
     case ObjectKind::kPrompt:
       return "prompt";
+    case ObjectKind::kInputSnapshot:
+      return "input_snapshot";
   }
   return {};
 }
 inline bool ValidKind(std::string_view kind) {
-  for (int i = 0; i <= static_cast<int>(ObjectKind::kPrompt); ++i)
+  for (int i = 0; i <= static_cast<int>(ObjectKind::kInputSnapshot); ++i)
     if (kind == Kind(static_cast<ObjectKind>(i))) return true;
   return false;
 }
