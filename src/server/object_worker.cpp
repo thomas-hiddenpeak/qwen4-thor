@@ -16,6 +16,7 @@
 #include <vector>
 
 #include "object_protocol.h"
+#include "q4t/server/application_payload.h"
 #include "q4t/server/grammar_process.h"
 #include "q4t/server/object_retention.h"
 
@@ -51,6 +52,21 @@ ObjectReply IoError(bool uncertain = false) {
   return Error(503, "object_io_error",
                "Durable object storage is unavailable or inconsistent",
                uncertain);
+}
+bool ApplicationKind(std::string_view kind) {
+  return kind == "chat" || kind == "response" || kind == "conversation" ||
+         kind == "item" || kind == "prompt" || kind == "batch";
+}
+ObjectReply SnapshotConflict() {
+  return Error(409, "input_snapshot_reference_conflict",
+               "Private input snapshot is absent or its identity changed");
+}
+ObjectReply ImmutableSnapshot(const Json& data, const Json* previous) {
+  if (!data.IsObject() || data.GetString("format") != "q4t.input_snapshot.v1" ||
+      (previous && OutputJson(data) != OutputJson(*previous)))
+    return Error(409, "input_snapshot_immutable",
+                 "Changed input content requires a new immutable snapshot");
+  return {};
 }
 ObjectReply Times(const Json& request, int64_t now, int64_t existing_created,
                    int64_t max_ttl, int64_t* created, int64_t* expires) {
@@ -275,6 +291,9 @@ class DiskStore {
     if (operation == "get") {
       result.value = Public(record);
     } else if (operation == "erase") {
+      if (kind == "input_snapshot")
+        return Error(409, "input_snapshot_immutable",
+                     "Private snapshots are reclaimed by reference retention");
       if (request.GetInt("mutate_before", 0))
         return Batch(Object({{"mutations", Array({request})}}));
       const auto revision = request.GetInt("revision", -1);
@@ -393,7 +412,85 @@ class DiskStore {
            wrapper.GetString("sha256") == Digest(OutputJson(*transaction)) &&
            Apply(*transaction, true);
   }
-  ObjectReply Batch(const Json& request) {
+  using SnapshotChanges = std::map<std::string, const Json*>;
+  using SnapshotIdentities =
+      std::map<std::string, std::pair<std::string, std::string>>;
+  ObjectReply PrivateSnapshotReferences(const Json& record,
+                                        const SnapshotChanges& changes,
+                                        SnapshotIdentities* checked) {
+    if (!ApplicationKind(record.GetString("kind"))) return {};
+    const auto* data = record.Find("data");
+    if (!data || !data->IsObject()) return {};
+    struct Dependency {
+      InputSnapshotRef reference;
+      std::string binding;
+    };
+    std::vector<Dependency> dependencies;
+    if (const auto* inputs = data->Find("input_snapshots");
+        inputs && !inputs->IsNull()) {
+      if (!inputs->IsArray() || inputs->array.size() > 4096)
+        return SnapshotConflict();
+      for (const auto& input : inputs->array) {
+        const auto* snapshot = input.Find("snapshot");
+        Dependency dependency;
+        if (!snapshot ||
+            !ParseInputSnapshotReference(*snapshot, &dependency.reference))
+          return SnapshotConflict();
+        if (const auto* binding = input.Find("binding_sha256")) {
+          if (!binding->IsString() || !Hex(binding->str, 64))
+            return SnapshotConflict();
+          dependency.binding = binding->str;
+        }
+        dependencies.push_back(std::move(dependency));
+      }
+    }
+    std::vector<ApplicationStringRef> strings;
+    if (!ParseApplicationPayloadReferences(*data, &strings))
+      return SnapshotConflict();
+    for (const auto& string : strings)
+      dependencies.push_back(
+          {string.snapshot,
+           Digest("q4t.application_string.v1:" + string.sha256)});
+    const auto owner = record.GetString("owner");
+    for (const auto& dependency : dependencies) {
+      const auto& reference = dependency.reference;
+      const auto name = owner + ".input_snapshot." + reference.id + ".json";
+      auto found = checked->find(name);
+      if (found == checked->end()) {
+        if (checked->size() >= kMaxTransactionObjects)
+          return Error(413, "object_dependency_capacity",
+                       "Transaction snapshot dependencies exceed capacity");
+        Json loaded;
+        const Json* root = nullptr;
+        if (const auto update = changes.find(name); update != changes.end()) {
+          root = update->second;
+        } else {
+          const auto stored = records_.find(name);
+          if (stored == records_.end()) return SnapshotConflict();
+          if (!ReadKnown(name, stored->second, &loaded)) return IoError();
+          root = &loaded;
+        }
+        const auto* root_data = root->Find("data");
+        if (!root->IsObject() || root->GetString("owner") != owner ||
+            root->GetString("kind") != "input_snapshot" ||
+            root->GetString("id") != reference.id ||
+            root->GetInt("expires_at", -1) != 0 || !root_data ||
+            root_data->GetString("format") != "q4t.input_snapshot.v1")
+          return SnapshotConflict();
+        found = checked
+                    ->emplace(name,
+                              std::pair{Digest(OutputJson(*root_data)),
+                                        root_data->GetString("binding_sha256")})
+                    .first;
+      }
+      if (found->second.first != reference.sha256 ||
+          (!dependency.binding.empty() &&
+           found->second.second != dependency.binding))
+        return SnapshotConflict();
+    }
+    return {};
+  }
+  ObjectReply Batch(const Json& request, bool retention = false) {
     const auto* mutations = request.GetArray("mutations");
     if (!mutations || mutations->array.empty() ||
         mutations->array.size() > kMaxTransactionObjects)
@@ -418,6 +515,9 @@ class DiskStore {
           (operation != "put" && operation != "erase"))
         return Error(400, "invalid_object_request",
                      "Invalid transaction mutation");
+      if (kind == "input_snapshot" && operation == "erase" && !retention)
+        return Error(409, "input_snapshot_immutable",
+                     "Private snapshots are reclaimed by reference retention");
       const auto name = owner + "." + kind + "." + id + ".json";
       if (!targets.insert(name).second)
         return Error(400, "invalid_object_request",
@@ -450,10 +550,19 @@ class DiskStore {
         const auto* data = mutation.Find("data");
         if (!data || ttl < 0 || ttl > options_.max_ttl_seconds)
           return Error(400, "invalid_object_request", "Invalid object write");
+        if (kind == "input_snapshot") {
+          auto immutable = ImmutableSnapshot(
+              *data, exists ? previous.Find("data") : nullptr);
+          if (!immutable.ok()) return immutable;
+        }
         int64_t created = 0, expires = 0;
         auto timing = Times(mutation, now, exists ? found->second.created : 0,
                              options_.max_ttl_seconds, &created, &expires);
         if (!timing.ok()) return timing;
+        if (kind == "input_snapshot" && expires != 0)
+          return Error(
+              409, "input_snapshot_immutable",
+              "Private snapshot retention is determined by references");
         record = Object({{"format", Number(1)},
                          {"owner", String(owner)},
                          {"kind", String(kind)},
@@ -482,6 +591,18 @@ class DiskStore {
           Object({{"name", String(name)},
                   {"old_sha256", String(exists ? found->second.digest : "")},
                   {"record", std::move(record)}}));
+    }
+    // Read the final transaction view, independent of mutation order. The
+    // same exclusive IO worker makes this check and publishes the decision;
+    // no pruning or other application write can run between them.
+    SnapshotChanges final;
+    for (const auto& change : changes.array)
+      final.emplace(change.GetString("name"), change.Find("record"));
+    SnapshotIdentities checked;
+    for (const auto& change : changes.array) {
+      auto references =
+          PrivateSnapshotReferences(*change.Find("record"), final, &checked);
+      if (!references.ok()) return references;
     }
     if ((projected.bytes > options_.max_total_bytes &&
          projected.bytes > total_.bytes) ||
@@ -686,7 +807,10 @@ class DiskStore {
                                         {"id", String(m.id)},
                                         {"revision", Number(m.revision)}}));
     }
-    return Batch(Object({{"mutations", std::move(mutations)}}));
+    // The planner has checked all incoming references under this worker's
+    // exclusive ownership. This authority is an internal call argument,
+    // never a wire field or a generic caller's erase permission.
+    return Batch(Object({{"mutations", std::move(mutations)}}), true);
   }
   ObjectReply Retention(const Json& request) {
     const auto cutoff = request.GetInt("item_created_before", -1);
@@ -754,8 +878,16 @@ class DiskStore {
   }
   ObjectReply Put(const std::string& name, const Json& request) {
     // Conditioned writes use the same final journal check as transactions.
-    if (request.GetInt("mutate_before", 0))
-      return Batch(Object({{"mutations", Array({request})}}));
+    if (request.GetInt("mutate_before", 0)) {
+      auto reply = Batch(Object({{"mutations", Array({request})}}));
+      if (reply.ok()) {
+        const auto* rows = reply.value.GetArray("data");
+        if (!rows || rows->array.size() != 1) return IoError(true);
+        auto record = rows->array[0];
+        reply.value = std::move(record);
+      }
+      return reply;
+    }
     const auto revision = request.GetInt("revision", -1);
     const auto ttl = request.GetInt("ttl");
     const auto* data = request.Find("data");
@@ -769,6 +901,11 @@ class DiskStore {
       return Error(409, "object_revision_conflict", "Object revision changed");
     Json previous;
     if (exists && !ReadKnown(name, found->second, &previous)) return IoError();
+    if (request.GetString("kind") == "input_snapshot") {
+      auto immutable =
+          ImmutableSnapshot(*data, exists ? previous.Find("data") : nullptr);
+      if (!immutable.ok()) return immutable;
+    }
     // No unindexed file may be overwritten, even if another process ignored
     // our advisory lock. Only a successfully read expected revision replaces.
     struct stat info {};
@@ -781,6 +918,9 @@ class DiskStore {
     auto timing = Times(request, now, exists ? found->second.created : 0,
                          options_.max_ttl_seconds, &created, &expires);
     if (!timing.ok()) return timing;
+    if (request.GetString("kind") == "input_snapshot" && expires != 0)
+      return Error(409, "input_snapshot_immutable",
+                   "Private snapshot retention is determined by references");
     const auto owner = request.GetString("owner");
     auto record = Object({{"format", Number(1)},
                           {"owner", String(owner)},
@@ -790,6 +930,9 @@ class DiskStore {
                           {"created_at", Number(created)},
                           {"expires_at", Number(expires)},
                           {"data", *data}});
+    SnapshotIdentities checked;
+    auto references = PrivateSnapshotReferences(record, {}, &checked);
+    if (!references.ok()) return references;
     const auto digest = Digest(OutputJson(record));
     const auto text =
         OutputJson(Object({{"record", record}, {"sha256", String(digest)}}));

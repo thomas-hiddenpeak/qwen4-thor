@@ -221,10 +221,9 @@ Q4T_TEST(input_snapshot_scope_binding_root_digest_and_pinned_metadata) {
   request.operation = ObjectOperation::kPut;
   request.expected_revision = record.value.GetInt("revision");
   Set(&request.data, "binding_sha256", String(Digest("tampered")));
-  Q4T_CHECK(Ok(Run(objects, request)));
-  Q4T_CHECK(snapshots.Read(Access(), reference, kBinding, {}, &value).code ==
-                "input_snapshot_inconsistent" &&
-            value.metadata.IsNull());
+  Q4T_CHECK(Run(objects, request).code == "input_snapshot_immutable");
+  Q4T_CHECK(Ok(snapshots.Read(Access(), reference, kBinding, {}, &value)) &&
+            value.parts == std::vector<std::string>{"actual payload"});
   Q4T_CHECK(Ok(snapshots.Release(Access(), &hold)) && Count(objects) == 0);
   return true;
 }
@@ -404,5 +403,207 @@ Q4T_TEST(input_snapshot_actual_lost_cleanup_receipt_keeps_verified_content) {
             objects.Health().auxiliary_cleanup_failures == 2);
   Reaped(objects);
   Q4T_CHECK(objects.Health().workers_started == 2);
+  return true;
+}
+
+Q4T_TEST(input_snapshot_parent_publication_requires_owned_exact_live_root) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  InputSnapshotStore snapshots(objects);
+  InputSnapshotRef reference;
+  InputSnapshotHold hold;
+  Q4T_CHECK(Ok(Save(snapshots, &reference, &hold)));
+  auto wrong = reference;
+  wrong.sha256 = Digest("different immutable content");
+  for (const auto kind :
+       {ObjectKind::kResponse, ObjectKind::kChat, ObjectKind::kConversation,
+        ObjectKind::kConversationItem}) {
+    auto parent = Parent(kind, wrong);
+    Q4T_CHECK(Run(objects, parent).code == "input_snapshot_reference_conflict");
+    parent.operation = ObjectOperation::kGet;
+    Q4T_CHECK(Run(objects, parent).http_status == 404);
+  }
+  auto parent = Parent(ObjectKind::kChat, reference);
+  parent.scope = "client:other";
+  Q4T_CHECK(Run(objects, parent).code == "input_snapshot_reference_conflict");
+  parent.scope = Access().scope;
+  auto& binding = Field(parent.data, "input_snapshots").array[0];
+  Set(&binding, "binding_sha256", String(Digest("wrong original part")));
+  Q4T_CHECK(Run(objects, parent).code == "input_snapshot_reference_conflict");
+  Set(&binding, "binding_sha256", String(kBinding));
+  Q4T_CHECK(Ok(snapshots.Release(Access(), &hold)) && Count(objects) == 0);
+  Q4T_CHECK(Run(objects, parent).code == "input_snapshot_reference_conflict" &&
+            Count(objects) == 0);
+  return true;
+}
+
+Q4T_TEST(input_snapshot_failed_reference_update_leaves_atomic_group_unchanged) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  InputSnapshotStore snapshots(objects);
+  InputSnapshotRef reference;
+  InputSnapshotHold hold;
+  Q4T_CHECK(Ok(Save(snapshots, &reference, &hold)));
+  auto parent = Parent(ObjectKind::kChat, reference);
+  Q4T_CHECK(Ok(Run(objects, parent)));
+  Q4T_CHECK(Ok(snapshots.Release(Access(), &hold)));
+  auto original = parent.data;
+  parent.expected_revision = 1;
+  auto& snapshot =
+      Field(Field(parent.data, "input_snapshots").array[0], "snapshot");
+  Set(&snapshot, "sha256", String(Digest("wrong root identity")));
+  auto sibling =
+      Request(ObjectKind::kChat, "chatcmpl_sibling", ObjectOperation::kPut);
+  sibling.data = Object({{"messages", Array()}});
+  const auto failed =
+      objects.ExecuteBatch(std::array{sibling, parent}, Access().deadline);
+  Q4T_CHECK(failed.code == "input_snapshot_reference_conflict" &&
+            !failed.commit_unknown);
+  sibling.operation = ObjectOperation::kGet;
+  Q4T_CHECK(Run(objects, sibling).http_status == 404);
+  parent.operation = ObjectOperation::kGet;
+  const auto read = Run(objects, parent);
+  Q4T_CHECK(Ok(read) && read.value.GetInt("revision") == 1 &&
+            OutputJson(*read.value.Find("data")) == OutputJson(original));
+  return true;
+}
+
+Q4T_TEST(input_snapshot_parent_and_new_root_publish_in_either_batch_order) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  InputSnapshotStore snapshots(objects);
+  InputSnapshotRef reference;
+  InputSnapshotHold hold;
+  Q4T_CHECK(Ok(Save(snapshots, &reference, &hold)));
+  const auto stored =
+      Run(objects, Request(ObjectKind::kInputSnapshot, reference.id));
+  Q4T_CHECK(Ok(stored));
+  std::vector<InputSnapshotRef> clones;
+  std::vector<ObjectRequest> parents;
+  for (const bool parent_first : {false, true}) {
+    auto root =
+        Request(ObjectKind::kInputSnapshot,
+                NewObjectId(ObjectKind::kInputSnapshot), ObjectOperation::kPut);
+    root.data = *stored.value.Find("data");
+    InputSnapshotRef clone{root.id, reference.sha256};
+    auto parent = Parent(ObjectKind::kChat, clone);
+    const auto group =
+        parent_first ? std::array{parent, root} : std::array{root, parent};
+    Q4T_CHECK(Ok(objects.ExecuteBatch(group, Access().deadline)));
+    clones.push_back(clone);
+    parents.push_back(parent);
+  }
+  Q4T_CHECK(Ok(snapshots.Release(Access(), &hold)));
+  for (size_t i = 0; i < clones.size(); ++i) {
+    InputSnapshot restored;
+    Q4T_CHECK(
+        Ok(snapshots.Read(Access(), clones[i], kBinding, {}, &restored)) &&
+        restored.parts == std::vector<std::string>{"actual payload"});
+    parents[i].operation = ObjectOperation::kErase;
+    Q4T_CHECK(Ok(Run(objects, parents[i])));
+  }
+  Q4T_CHECK(Count(objects) == 0);
+  return true;
+}
+
+Q4T_TEST(input_snapshot_direct_mutation_or_delete_cannot_break_live_parent) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  InputSnapshotStore snapshots(objects);
+  InputSnapshotRef reference;
+  InputSnapshotHold hold;
+  Q4T_CHECK(Ok(Save(snapshots, &reference, &hold)));
+  auto parent = Parent(ObjectKind::kChat, reference);
+  Q4T_CHECK(Ok(Run(objects, parent)) && Ok(snapshots.Release(Access(), &hold)));
+  auto root = Request(ObjectKind::kInputSnapshot, reference.id);
+  const auto saved = Run(objects, root);
+  Q4T_CHECK(Ok(saved));
+  root.operation = ObjectOperation::kPut;
+  root.data = *saved.value.Find("data");
+  root.expected_revision = saved.value.GetInt("revision");
+  Set(&root.data, "binding_sha256", String(Digest("changed")));
+  Q4T_CHECK(Run(objects, root).code == "input_snapshot_immutable");
+  Q4T_CHECK(objects.ExecuteBatch(std::span(&root, 1), Access().deadline).code ==
+            "input_snapshot_immutable");
+  root.data = *saved.value.Find("data");
+  root.ttl_seconds = 60;
+  Q4T_CHECK(Run(objects, root).code == "input_snapshot_immutable");
+  root.operation = ObjectOperation::kErase;
+  Q4T_CHECK(Run(objects, root).code == "input_snapshot_immutable");
+  parent.expected_revision = 1;
+  Q4T_CHECK(
+      objects.ExecuteBatch(std::array{root, parent}, Access().deadline).code ==
+      "input_snapshot_immutable");
+  InputSnapshot restored;
+  Q4T_CHECK(Ok(snapshots.Read(Access(), reference, kBinding, {}, &restored)) &&
+            restored.parts == std::vector<std::string>{"actual payload"});
+  return true;
+}
+
+Q4T_TEST(input_snapshot_expired_preparation_cannot_publish_dangling_parent) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  InputSnapshotStore snapshots(objects);
+  InputSnapshotRef reference;
+  InputSnapshotHold hold;
+  Q4T_CHECK(Ok(snapshots.Save(Access(), kBinding, Object(), {}, {}, 2,
+                              &reference, &hold)));
+  auto parent = Parent(ObjectKind::kChat, reference);
+  const auto until = Clock::now() + 3s;
+  while (std::time(nullptr) < hold.expires_at && Clock::now() < until)
+    std::this_thread::sleep_for(5ms);
+  Q4T_CHECK(std::time(nullptr) >= hold.expires_at);
+  // The next worker operation prunes the expired hold/root before deciding
+  // whether the parent can commit. There is no accepted dangling reference.
+  Q4T_CHECK(Run(objects, parent).code == "input_snapshot_reference_conflict" &&
+            Count(objects) == 0);
+  return true;
+}
+
+Q4T_TEST(input_snapshot_prompt_private_bindings_participate_in_retention) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  InputSnapshotStore snapshots(objects);
+  InputSnapshotRef reference;
+  InputSnapshotHold hold;
+  Q4T_CHECK(Ok(Save(snapshots, &reference, &hold)));
+  auto parent = Parent(ObjectKind::kPrompt, reference);
+  Set(&parent.data, "versions", Array());
+  Q4T_CHECK(Ok(Run(objects, parent)) && Ok(snapshots.Release(Access(), &hold)));
+  InputSnapshot restored;
+  Q4T_CHECK(Ok(snapshots.Read(Access(), reference, kBinding, {}, &restored)) &&
+            restored.parts == std::vector<std::string>{"actual payload"});
+  parent.operation = ObjectOperation::kErase;
+  Q4T_CHECK(Ok(Run(objects, parent)) && Count(objects) == 0);
+  return true;
+}
+
+Q4T_TEST(input_snapshot_conditioned_parent_write_keeps_single_object_receipt) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  InputSnapshotStore snapshots(objects);
+  InputSnapshotRef reference;
+  InputSnapshotHold hold;
+  Q4T_CHECK(Ok(Save(snapshots, &reference, &hold)));
+  auto parent = Parent(ObjectKind::kChat, reference);
+  parent.mutate_before = std::time(nullptr) + 60;
+  const auto first = Run(objects, parent);
+  Q4T_CHECK(Ok(first) && first.value.GetString("id") == parent.id &&
+            first.value.GetInt("revision") == 1 &&
+            OutputJson(*first.value.Find("data")) == OutputJson(parent.data));
+  Set(&parent.data, "content", String(std::string(300 * 1024, 'x')));
+  parent.expected_revision = 1;
+  const auto large = Run(objects, parent);
+  Q4T_CHECK(Ok(large) && !large.commit_unknown &&
+            large.value.GetString("id") == parent.id &&
+            large.value.GetInt("revision") == 2 &&
+            OutputJson(*large.value.Find("data")) == OutputJson(parent.data));
+  parent.expected_revision = 2;
+  parent.mutate_before = std::time(nullptr) - 1;
+  const auto late = Run(objects, parent);
+  Q4T_CHECK(late.code == "object_mutation_expired" && !late.commit_unknown);
+  parent.operation = ObjectOperation::kGet;
+  parent.mutate_before = 0;
+  Q4T_CHECK(Run(objects, parent).value.GetInt("revision") == 2);
   return true;
 }

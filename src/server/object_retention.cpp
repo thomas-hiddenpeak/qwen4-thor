@@ -240,11 +240,10 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
   // Snapshot validation adds uncertainty; ordinary shape checks above must
   // never overwrite a malformed private dependency's conservative protection.
   if (kind == "response" || kind == "conversation" || kind == "item" ||
-      kind == "chat")
+      kind == "chat" || kind == "prompt" || kind == "batch") {
     inspector.Snapshots(data);
-  if (kind == "response" || kind == "conversation" || kind == "item" ||
-      kind == "chat" || kind == "prompt" || kind == "batch")
     inspector.Payloads(data);
+  }
   return inspector.Finish();
 }
 

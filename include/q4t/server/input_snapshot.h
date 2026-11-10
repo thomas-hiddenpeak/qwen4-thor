@@ -30,6 +30,10 @@ bool ParseInputSnapshotReference(const io::Json& value,
 // the reference before releasing it. Crashes leave only an expiring hold.
 // No re-fetch or codec execution occurs on Read. Unknown commits are never
 // replayed or "cleaned up" speculatively.
+// The durable worker validates parent references at final publication. Root
+// content is immutable and reclaimed only by reference retention; changed
+// content gets a new root ID, while read/preparation pins may CAS the same
+// data.
 class InputSnapshotStore {
  public:
   explicit InputSnapshotStore(ObjectStore& objects)

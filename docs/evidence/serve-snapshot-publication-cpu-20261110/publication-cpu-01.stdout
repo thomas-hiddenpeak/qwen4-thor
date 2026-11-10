@@ -1,0 +1,35 @@
+  CHECK failed: Count(objects) == 0 (line 194)
+[FAIL] application_payload_reuse_pins_root_across_old_parent_deletion
+  CHECK failed: Ok(objects.Execute(request, Access().deadline)) (line 502)
+[FAIL] object_application_update_reuses_content_and_preserves_real_nulls
+  CHECK failed: result.http_status == 409 && !result.commit_unknown && Count(objects) == before (line 530)
+[FAIL] object_application_batch_deduplicates_and_conflicts_remain_atomic
+[PASS] object_application_unknown_parent_preserves_actual_single_and_batch
+[PASS] input_binding_response_previous_and_item_reference_keep_exact_snapshot
+[PASS] input_binding_first_use_conversation_items_survive_copy_and_delete
+[PASS] input_binding_explicit_tool_output_preserves_immutable_file
+  CHECK failed: Count(objects) == 0 (line 154)
+[FAIL] input_snapshot_live_application_roots_retain_and_last_delete_reclaims
+  CHECK failed: Ok(snapshots.Release(Access(), &hold)) && Count(objects) == 0 (line 227)
+[FAIL] input_snapshot_scope_binding_root_digest_and_pinned_metadata
+[PASS] input_snapshot_unknown_publish_recovers_original_root_and_hold
+  CHECK failed: Ok(snapshots.Release(Access(), &hold)) && Ok(snapshots.Release(Access(), &pin)) && Count(objects) == 0 (line 377)
+[FAIL] input_snapshot_long_parent_deadline_preserves_absolute_hold
+  CHECK failed: Ok(snapshots.Release(Access(), &hold)) && Count(objects) == 0 (line 434)
+[FAIL] input_snapshot_parent_publication_requires_owned_exact_live_root
+[PASS] input_snapshot_failed_reference_update_leaves_atomic_group_unchanged
+  CHECK failed: Ok(snapshots.Read(Access(), clones[i], kBinding, {}, &restored)) && restored.parts == std::vector<std::string>{"actual payload"} (line 499)
+[FAIL] input_snapshot_parent_and_new_root_publish_in_either_batch_order
+[PASS] input_snapshot_direct_mutation_or_delete_cannot_break_live_parent
+  CHECK failed: Run(objects, parent).code == "input_snapshot_reference_conflict" && Count(objects) == 0 (line 558)
+[FAIL] input_snapshot_expired_preparation_cannot_publish_dangling_parent
+  CHECK failed: Ok(Run(objects, parent)) && Count(objects) == 0 (line 577)
+[FAIL] input_snapshot_prompt_private_bindings_participate_in_retention
+[PASS] input_snapshot_conditioned_parent_write_keeps_single_object_receipt
+[PASS] chat_files_stored_originals_replay_after_restart_and_decoder_outage
+  CHECK failed: Ok(record) && OutputJson(*record.value.Find("input_snapshots")) != raw_reference (line 245)
+[FAIL] responses_files_queue_freezes_raw_sheet_and_checkpoints_completed_step
+[PASS] responses_files_conversation_retains_snapshots_with_store_false
+[PASS] object_store_transaction_handles_large_response_item_sets
+[PASS] object_store_transaction_recovers_partial_file_installation
+23 tests, 12 passed, 11 failed, 0 skipped

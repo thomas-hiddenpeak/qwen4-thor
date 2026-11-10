@@ -323,3 +323,5 @@ history多处原内容。只提高一层上限、删除原件或以虚构File ID
 自动重启模型。相应CPU故障验证与API回填必须完成后再统一业务短验。
 
 自动应用读写已[30项CPU通过](evidence/serve-object-application-cpu-20261110/README.md)：Chat/Responses/Conversation真实持久状态、公开消息回填、原子批、逻辑分页、内容复用和辅助清理隔离均接通。候选32bdd3cf未发行；继续全部HTTP/JSON/prompt/后台容量、私有快照父引用发布时存在性/身份原子校验、实际业务和新格式兼容回退。上述快照发布校验要防止父提交前保留租约已过期且根已回收，不能接受悬空引用。
+
+私有快照最终发布校验已[23不同CPU接受](evidence/serve-snapshot-publication-cpu-20261110/README.md)：同worker按最终批视图校验存在/归属/SHA/原输入身份，根内容不可变，仅受验证回收器可删除。首回收误拦截失败及定点修复保留；条件单Put回执同步修正。0GPU/默认未变；继续全部受控容量、真实业务/兼容回退和总任务。
