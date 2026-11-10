@@ -83,7 +83,7 @@ ObjectReply BatchValidation::Check(const BatchInputRow& row,
   if (prepared_) return Invalid();
   prepared_.emplace();
   auto result = preparation_.Prepare(access_, id_, endpoint_, row, config_,
-                                       &*prepared_);
+                                     &*prepared_, meter_);
   if (result.ok()) checked->canonical_model = prepared_->canonical_model;
   return result;
 }
@@ -97,7 +97,8 @@ ObjectReply BatchValidation::Stage(BatchInputRow&& row) {
                             Digest(row.custom_id),
                             prepared_->reference,
                             prepared_->binding_sha256,
-                            prepared_->inline_input};
+                            prepared_->inline_input,
+                            prepared_->input_budget};
   auto reply = batches_.AppendValidatedRow(access_, id_, position,
                                             prepared_->canonical_model);
   ReleasePrepared(reply.commit_unknown);

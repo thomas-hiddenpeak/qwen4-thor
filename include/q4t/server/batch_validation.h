@@ -10,9 +10,14 @@
 namespace q4t::server {
 class BatchValidation {
  public:
-  BatchValidation(ObjectStore& objects, std::string id, ChatPlanConfig config)
-      : objects_(objects), batches_(objects), preparation_(objects),
-        id_(std::move(id)), config_(std::move(config)) {}
+  BatchValidation(ObjectStore& objects, std::string id, ChatPlanConfig config,
+                  BatchInputMeter meter = {})
+      : objects_(objects),
+        batches_(objects),
+        preparation_(objects),
+        id_(std::move(id)),
+        config_(std::move(config)),
+        meter_(std::move(meter)) {}
   ~BatchValidation();
   BatchValidation(const BatchValidation&) = delete;
   BatchValidation& operator=(const BatchValidation&) = delete;
@@ -38,6 +43,7 @@ class BatchValidation {
   BatchPreparation preparation_;
   std::string id_, scope_, endpoint_, model_, chunk_;
   ChatPlanConfig config_;
+  BatchInputMeter meter_;
   BinaryAccess access_;
   BinaryManifest source_;
   std::unique_ptr<BatchInput> input_;

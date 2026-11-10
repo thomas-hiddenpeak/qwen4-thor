@@ -154,12 +154,16 @@ ValidationWork ValidationInput(ObjectStore& objects,
 }
 bool Publish(ObjectStore& objects, const Work& work,
                BatchPreparedInput* prepared) {
-  BatchRowPosition position{work.row.line,         work.row.offset,
-                            work.row.wire_bytes,   Digest(work.row.custom_id),
-                            prepared->reference,   prepared->binding_sha256,
-                            prepared->inline_input};
-  auto result = BatchState(objects).AppendValidationPage(
-      Access(), work.id, std::span(&position, 1));
+  BatchRowPosition position{work.row.line,          work.row.offset,
+                            work.row.wire_bytes,    Digest(work.row.custom_id),
+                            prepared->reference,    prepared->binding_sha256,
+                            prepared->inline_input, prepared->input_budget};
+  auto result =
+      prepared->input_budget.tokens
+          ? BatchState(objects).AppendValidatedRow(Access(), work.id, position,
+                                                   prepared->canonical_model)
+          : BatchState(objects).AppendValidationPage(Access(), work.id,
+                                                     std::span(&position, 1));
   BatchPreparation(objects).Published(Access(), prepared, result.commit_unknown);
   return Ok(result);
 }
@@ -957,5 +961,336 @@ Q4T_TEST(batch_inline_input_actual_lost_page_receipt_survives_restart) {
   Json restored;
   Q4T_CHECK(Ok(Load(objects, work, &restored)) &&
             restored.Find("request")->GetString("input") == "frozen only once");
+  return true;
+}
+
+namespace {
+// Explicit CPU codec: one byte per text token, with real single-token FIM/
+// seed and visual placeholder contracts. No claim of model BPE equivalence.
+constexpr std::string_view kBudgetSpecials[] = {
+    "<|fim_prefix|>", "<|fim_suffix|>", "<|fim_middle|>", "<|endoftext|>"};
+BatchTokenCodec BudgetCodec(std::string* encoded = nullptr) {
+  BatchTokenCodec codec;
+  codec.encode = [encoded](std::string_view text, std::vector<uint32_t>* out) {
+    if (encoded) *encoded = text;
+    out->clear();
+    for (size_t i = 0; i < std::size(kBudgetSpecials); ++i)
+      if (text == kBudgetSpecials[i]) {
+        out->push_back(500 + i);
+        return q4t::Status{};
+      }
+    while (!text.empty()) {
+      if (text.starts_with("<|image_pad|>")) {
+        out->push_back(1000);
+        text.remove_prefix(std::string_view("<|image_pad|>").size());
+      } else {
+        out->push_back(static_cast<unsigned char>(text.front()));
+        text.remove_prefix(1);
+      }
+    }
+    return q4t::Status{};
+  };
+  codec.decode = [](const std::vector<uint32_t>& ids, std::string* text) {
+    if (ids.size() == 1 && ids[0] >= 500 && ids[0] < 504) {
+      *text = kBudgetSpecials[ids[0] - 500];
+      return q4t::Status{};
+    }
+    text->assign(ids.size(), 't');
+    return q4t::Status{};
+  };
+  codec.expand_media =
+      [](const Json& request, std::span<const VisionItem> items,
+         const ChatPlanConfig& config, std::vector<uint32_t>* tokens,
+         ChatPromptBudget* budget, ChatPlanError* error) {
+        q4t::vision::MediaPlan media;
+        return ExpandChatMedia(request, items, 1000, 1001, {}, {}, {48128},
+                               config, tokens, &media, budget, error);
+      };
+  return codec;
+}
+BatchInputMeter Meter(ObjectStore& objects, BatchTokenCodec codec) {
+  return [&objects, codec = std::move(codec)](
+             std::string_view endpoint, const BatchInputRow& row,
+             const Json& frozen, const ChatPlanConfig& config,
+             const BinaryAccess& access, BatchInputBudget* budget) {
+    return MeasureBatchInput(objects, endpoint, row, frozen, config, access,
+                             codec, budget);
+  };
+}
+}  // namespace
+
+Q4T_TEST(batch_budget_native_chat_and_responses_templates_persist_exact_count) {
+  Fixture fixture;
+  fixture.config.token_vocab = 2048;
+  Work work;
+  BatchInputBudget budget;
+  {
+    ObjectStore objects(fixture.options);
+    std::string text;
+    const auto meter = Meter(objects, BudgetCodec(&text));
+    auto request =
+        Object({{"messages", Array({Object({{"role", String("developer")},
+                                            {"content", String("Read only")}}),
+                                    Object({{"role", String("user")},
+                                            {"content", String("查询 42")}})})},
+                {"max_tokens", Number(16)}});
+    auto chat = Create(objects, request, "/v1/chat/completions");
+    BatchPreparedInput prepared;
+    Q4T_CHECK(Ok(BatchPreparation(objects).Prepare(
+        Access(), chat.id, chat.endpoint, chat.row, fixture.config, &prepared,
+        meter)));
+    Q4T_CHECK(prepared.input_budget.exact &&
+              prepared.input_budget.tokens == text.size() &&
+              text.find("Read only") != text.npos &&
+              text.find("查询 42") != text.npos &&
+              Publish(objects, chat, &prepared));
+    work = Create(objects, Response("frozen 42"));
+    BatchPreparedInput response;
+    Q4T_CHECK(Ok(BatchPreparation(objects).Prepare(
+        Access(), work.id, work.endpoint, work.row, fixture.config, &response,
+        meter)));
+    Q4T_CHECK(response.input_budget.exact &&
+              response.input_budget.tokens == text.size() &&
+              Publish(objects, work, &response));
+    budget = response.input_budget;
+    const auto root = BatchState(objects).Load(Access(), work.id);
+    Q4T_CHECK(Ok(root) &&
+              root.value.Find("data")->GetInt("enqueued_input_tokens") ==
+                  static_cast<int64_t>(budget.tokens) &&
+              root.value.Find("data")->GetInt("metered_rows") == 1);
+  }
+  ObjectStore objects(fixture.options);
+  const auto row = BatchState(objects).Row(Access(), work.id, 0);
+  BatchInputBudget restored;
+  Q4T_CHECK(Ok(row) && row.value.Find("input_budget") &&
+            ParseBatchInputBudget(*row.value.Find("input_budget"), &restored) &&
+            restored.tokens == budget.tokens && restored.exact);
+  return true;
+}
+
+Q4T_TEST(batch_budget_completion_fim_multi_prompt_raw_tokens_and_empty_seed) {
+  Fixture fixture;
+  fixture.config.token_vocab = 2048;
+  ObjectStore objects(fixture.options);
+  const auto meter = Meter(objects, BudgetCodec());
+  for (int i = 0; i < 2; ++i) {
+    auto request = Object(
+        {{"prompt",
+          i ? String("")
+            : Array({Array({Number(11), Number(12)}), Array({Number(21)})})},
+         {"max_tokens", Number(0)},
+         {"echo", Boolean(true)}});
+    Set(&request, "model", String(fixture.config.model));
+    if (!i) {
+      Set(&request, "suffix", String("ab"));
+      Set(&request, "n", Number(2));
+      Set(&request, "best_of", Number(2));
+    }
+    auto work = Create(objects, request, "/v1/completions");
+    BatchPreparedInput prepared;
+    Q4T_CHECK(Ok(BatchPreparation(objects).Prepare(
+        Access(), work.id, work.endpoint, work.row, fixture.config, &prepared,
+        meter)));
+    // Each prompt contributes its input once; choices do not multiply it.
+    Q4T_CHECK(prepared.input_budget.exact &&
+              prepared.input_budget.tokens == (i ? 1 : 13) &&
+              Publish(objects, work, &prepared));
+  }
+  return true;
+}
+
+Q4T_TEST(batch_budget_visual_expansion_counts_actual_patch_tokens) {
+  Fixture fixture;
+  fixture.config.token_vocab = 2048;
+  ObjectStore objects(fixture.options);
+  const auto request = Object(
+      {{"messages",
+        Array({Object(
+            {{"role", String("user")},
+             {"content",
+              Array({Object(
+                  {{"type", String("image_url")},
+                   {"image_url",
+                    Object({{"url", String("data:image/png;base64,"
+                                           "iVBORw0KGgoAAAANSUhEUgAAARAAAAEQCAI"
+                                           "AAAD3aLxC")}})}})})}})})}});
+  auto work = Create(objects, request, "/v1/chat/completions");
+  std::string text;
+  auto codec = BudgetCodec(&text);
+  BatchPreparedInput prepared;
+  Q4T_CHECK(Ok(BatchPreparation(objects).Prepare(
+      Access(), work.id, work.endpoint, work.row, fixture.config, &prepared,
+      Meter(objects, codec))));
+  std::vector<uint32_t> base;
+  Q4T_CHECK(codec.encode(text, &base));
+  Q4T_CHECK(prepared.input_budget.exact &&
+            prepared.input_budget.tokens == base.size() - 1 + 64);
+  codec.expand_media = {};
+  BatchInputBudget unchanged{123, false};
+  Q4T_CHECK(Publish(objects, work, &prepared));
+  Json frozen;
+  Q4T_CHECK(Ok(Load(objects, work, &frozen)));
+  const auto failure =
+      MeasureBatchInput(objects, work.endpoint, work.row, frozen,
+                        fixture.config, Access(), codec, &unchanged);
+  Q4T_CHECK(failure.code == "batch_media_count_unavailable" &&
+            unchanged.tokens == 123 && !unchanged.exact);
+  return true;
+}
+
+Q4T_TEST(
+    batch_budget_pending_csv_reserves_context_without_model_or_fake_count) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto file = Upload(objects, "name,value\nalpha,42\n", "facts.csv");
+  auto work = Create(objects, WithFile(file));
+  ClientLimits limits;
+  limits.max_prompt_tokens = 4096;
+  limits.max_output_tokens = 2048;
+  limits.max_body_bytes = 1 << 20;
+  fixture.config.client_limits = &limits;
+  auto codec = BudgetCodec();
+  size_t encoded = 0;
+  codec.encode = [&](std::string_view, std::vector<uint32_t>*) {
+    ++encoded;
+    return q4t::Status::Fail("no model summary or final prompt exists yet");
+  };
+  BatchPreparedInput prepared;
+  Q4T_CHECK(Ok(BatchPreparation(objects).Prepare(
+      Access(), work.id, work.endpoint, work.row, fixture.config, &prepared,
+      Meter(objects, codec))));
+  Q4T_CHECK(!prepared.input_budget.exact &&
+            prepared.input_budget.tokens == 4096 && encoded == 0 &&
+            Publish(objects, work, &prepared));
+  const auto public_responses =
+      Run(objects, Request(ObjectKind::kResponse, {}, ObjectOperation::kList));
+  Q4T_CHECK(Ok(public_responses) &&
+            public_responses.value.GetArray("data")->array.empty());
+  return true;
+}
+
+Q4T_TEST(
+    batch_budget_cancellation_limits_and_malformed_counts_are_transactional) {
+  Fixture fixture;
+  fixture.config.token_vocab = 2048;
+  ObjectStore objects(fixture.options);
+  auto work = Create(objects,
+                     Object({{"prompt", String("abcdef")},
+                             {"max_tokens", Number(1)},
+                             {"model", String(fixture.config.model)}}),
+                     "/v1/completions");
+  const auto frozen = Object({{"kind", String("completion")}});
+  for (int i = 0; i < 4; ++i) {
+    auto codec = BudgetCodec();
+    auto access = Access();
+    auto config = fixture.config;
+    bool cancelled = false;
+    if (i == 0) access.deadline = Clock::now() - 1ms;
+    if (i == 1) {
+      access.cancelled = [&] { return cancelled; };
+      codec.encode = [&](std::string_view, std::vector<uint32_t>* tokens) {
+        cancelled = true;
+        tokens->assign(6, 1);
+        return q4t::Status{};
+      };
+    }
+    if (i == 2) config.max_len = 4;
+    if (i == 3)
+      codec.encode = [](std::string_view, std::vector<uint32_t>*) {
+        return q4t::Status::Fail("CPU codec failure");
+      };
+    BatchInputBudget result{77, false};
+    auto reply = MeasureBatchInput(objects, work.endpoint, work.row, frozen,
+                                   config, access, codec, &result);
+    Q4T_CHECK(!reply.ok() && result.tokens == 77 && !result.exact);
+    if (i == 0) Q4T_CHECK(reply.http_status == 408);
+    if (i == 1) Q4T_CHECK(reply.http_status == 499);
+    if (i == 2) Q4T_CHECK(reply.code == "context_length_exceeded");
+  }
+  for (int i = 0; i < 5; ++i) {
+    auto value = BatchInputBudgetJson({1, true});
+    if (i == 0) Set(&value, "tokens", Number(0));
+    if (i == 1) Set(&value, "tokens", Number(kBatchTokenLimit + 1));
+    if (i == 2) Set(&value, "tokens", Boolean(true));
+    if (i == 3) Set(&value, "mode", String("estimated_as_exact"));
+    if (i == 4) Set(&value, "extra", Number(1));
+    BatchInputBudget result{91, false};
+    Q4T_CHECK(!ParseBatchInputBudget(value, &result) && result.tokens == 91 &&
+              !result.exact);
+  }
+  return true;
+}
+
+Q4T_TEST(batch_budget_validation_restart_reuses_original_metered_prefix) {
+  Fixture fixture;
+  fixture.config.token_vocab = 2048;
+  ValidationWork work;
+  uint64_t first = 0;
+  {
+    ObjectStore objects(fixture.options);
+    work = ValidationInput(objects, {Response("first"), Response("second")});
+    BatchValidation validation(objects, work.id, fixture.config,
+                               Meter(objects, BudgetCodec()));
+    Q4T_CHECK(Ok(validation.Step(Access())) && !validation.Complete());
+    const auto root = BatchState(objects).Load(Access(), work.id);
+    Q4T_CHECK(Ok(root));
+    first = root.value.Find("data")->GetInt("enqueued_input_tokens");
+    Q4T_CHECK(first > 0 &&
+              root.value.Find("data")->GetInt("metered_rows") == 1);
+  }
+  ObjectStore objects(fixture.options);
+  size_t metered = 0;
+  auto actual = Meter(objects, BudgetCodec());
+  BatchInputMeter meter =
+      [&](std::string_view endpoint, const BatchInputRow& row,
+          const Json& frozen, const ChatPlanConfig& config,
+          const BinaryAccess& access, BatchInputBudget* output) {
+        ++metered;
+        if (row.line != 2)
+          return Error(500, "recounted", "recounted frozen prefix");
+        return actual(endpoint, row, frozen, config, access, output);
+      };
+  BatchValidation validation(objects, work.id, fixture.config, meter);
+  for (int i = 0; i < 5 && !validation.Complete(); ++i)
+    Q4T_CHECK(Ok(validation.Step(Access())));
+  const auto root = BatchState(objects).Load(Access(), work.id);
+  const auto second = BatchState(objects).Row(Access(), work.id, 1);
+  BatchInputBudget count;
+  Q4T_CHECK(validation.Complete() && metered == 1 && Ok(root) && Ok(second) &&
+            second.value.Find("input_budget") &&
+            ParseBatchInputBudget(*second.value.Find("input_budget"), &count) &&
+            root.value.Find("data")->GetInt("metered_rows") == 2 &&
+            root.value.Find("data")->GetInt("enqueued_input_tokens") ==
+                static_cast<int64_t>(first + count.tokens));
+  return true;
+}
+
+Q4T_TEST(
+    batch_budget_responses_context_truncation_uses_selected_native_prompt) {
+  Fixture fixture;
+  fixture.config.token_vocab = 2048;
+  fixture.config.max_len = 300;
+  ObjectStore objects(fixture.options);
+  auto request = Object(
+      {{"input", Array({Object({{"role", String("user")},
+                                {"content", String(std::string(500, 'o'))}}),
+                        Object({{"role", String("assistant")},
+                                {"content", String("old answer")}}),
+                        Object({{"role", String("user")},
+                                {"content", String("retain 42")}})})},
+       {"max_output_tokens", Number(16)},
+       {"truncation", String("auto")},
+       {"reasoning", Object({{"effort", String("none")}})}});
+  auto work = Create(objects, request);
+  std::string encoded;
+  BatchPreparedInput prepared;
+  Q4T_CHECK(Ok(BatchPreparation(objects).Prepare(
+      Access(), work.id, work.endpoint, work.row, fixture.config, &prepared,
+      Meter(objects, BudgetCodec(&encoded)))));
+  Q4T_CHECK(prepared.input_budget.exact &&
+            prepared.input_budget.tokens == encoded.size() &&
+            prepared.input_budget.tokens < 300 &&
+            encoded.find("retain 42") != encoded.npos &&
+            encoded.find(std::string(50, 'o')) == encoded.npos);
   return true;
 }

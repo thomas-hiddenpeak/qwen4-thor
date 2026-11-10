@@ -1,0 +1,21 @@
+{
+  "status": "PASS_BATCH_INPUT_METER_TARGETED_CPU",
+  "distinct_tests": 19,
+  "new_tests": 7,
+  "first_passed": 16,
+  "first_failed": 3,
+  "retry_passed": 2,
+  "retry_failed": 1,
+  "final_retry_passed": 1,
+  "production_changed_after_tests": false,
+  "first_seconds": 14.634213589131832,
+  "retry_seconds": 0.11389697203412652,
+  "final_retry_seconds": 0.031803760677576065,
+  "gpu_starts": 0,
+  "builds_final_zero_warning": true,
+  "source_anchors": 485,
+  "engine_sha256": "b8801c40c25c63c200af03693b8478bceda362e44e5abd68bbd85be81396527e",
+  "host_sha256": "bb1adca40b2564835c2d113f2842fe06ba1e72386b5bc0e9032b3a84608ec596",
+  "default_sha256": "43472e764d89139995b2e967ccb7c62d4a768f922ef09bebd02abe082164d082",
+  "remaining": "Atomic per-model/per-client enqueued token quota, minute quota waiting, public HTTP/SDK actual model business, compatible rollback/default delivery, all master tasks"
+}

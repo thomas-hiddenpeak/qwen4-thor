@@ -5,6 +5,8 @@
 #include "q4t/server/output_schema.h"
 #include "q4t/server/responses_api.h"
 #include "q4t/server/request_json.h"
+#include "q4t/server/batch_budget.h"
+#include "q4t/server/request_control.h"
 
 namespace q4t::server {
 
@@ -44,6 +46,53 @@ void ChatServer::RunBackgroundResponse(ResponsesJobs::Job& job) {
   // cancellation is finalized by the owner after all generation cleanup.
   http.SetErrorObserver(&ResponsesExecution::ObserveError, job.run.get());
   HandleChatImpl(-1, "", http.State(), false, job.run.get(), job.control);
+}
+
+ObjectReply ChatServer::MeasureBatchRequest(std::string_view endpoint,
+                                            const BatchInputRow& row,
+                                            const io::Json& prepared,
+                                            const ChatPlanConfig& config,
+                                            const BinaryAccess& access,
+                                            BatchInputBudget* budget) {
+  if (!objects_) {
+    ObjectReply reply;
+    reply.http_status = 503;
+    reply.code = "object_store_unavailable";
+    reply.message = "Batch storage is unavailable";
+    return reply;
+  }
+  const auto cancelled = [&] {
+    return stop_requested_.load() ||
+           std::chrono::steady_clock::now() >= access.deadline ||
+           (access.cancelled && access.cancelled());
+  };
+  BatchTokenCodec codec;
+  codec.encode = [&](std::string_view text, std::vector<uint32_t>* tokens) {
+    auto lock = LockUnlessCancelled(tok_mu_, cancelled);
+    if (!lock.owns_lock())
+      return Status::Fail("Batch tokenizer wait cancelled");
+    return tok_->Encode(text, tokens, {.cancelled = cancelled});
+  };
+  codec.decode = [&](const std::vector<uint32_t>& tokens, std::string* text) {
+    auto lock = LockUnlessCancelled(tok_mu_, cancelled);
+    if (!lock.owns_lock())
+      return Status::Fail("Batch tokenizer wait cancelled");
+    return tok_->Decode(tokens, false, text);
+  };
+  codec.expand_media =
+      [&](const io::Json& request, std::span<const VisionItem> images,
+          const ChatPlanConfig& planning, std::vector<uint32_t>* tokens,
+          ChatPromptBudget* prompt, ChatPlanError* error) {
+        vision::MediaPlan media;
+        const auto& model = model_.Get().cfg;
+        return ExpandChatMedia(request, images, model.image_token_id,
+                               model.video_token_id, proc_cfg_, video_proc_cfg_,
+                               vision_device_budget_, planning, tokens, &media,
+                               prompt, error);
+      };
+  return MeasureBatchInput(*objects_, endpoint, row, prepared, config,
+                           {access.scope, access.deadline, cancelled}, codec,
+                           budget);
 }
 
 BatchRowResult ChatServer::RunBatchRequest(

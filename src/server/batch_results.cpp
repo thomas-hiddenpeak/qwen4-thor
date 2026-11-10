@@ -162,6 +162,12 @@ ObjectReply BatchState::Page(const BinaryAccess& access, const Json& stored,
   for (size_t i = 0; i < rows->array.size(); ++i) {
     const auto& row = rows->array[i];
     const auto* result = row.Find("result_id");
+    BatchInputBudget budget;
+    if (const auto* input = row.Find("input_budget");
+        input && !ParseBatchInputBudget(*input, &budget))
+      return Corrupt();
+    if (data.Has("enqueued_input_tokens") != row.Has("input_budget"))
+      return Corrupt();
     const auto status = row.GetString("status");
     if (!Integer(row, "line", first + i + 1, first + i + 1) ||
         !Integer(row, "offset", 0, bytes - 1) ||

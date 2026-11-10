@@ -58,6 +58,7 @@ struct BatchJobs::State {
   ChatPlanConfig config;
   BatchJobsOptions options;
   Executor execute;
+  BatchInputMeter meter;
   mutable std::mutex mutex;
   std::condition_variable changed;
   std::vector<std::shared_ptr<Job>> jobs;
@@ -69,18 +70,19 @@ struct BatchJobs::State {
   uint64_t recovery_errors = 0, recovery_pending = 0;
   bool recovery_scanned = false;
   State(ObjectStore& o, ClientAdmission& c, ChatPlanConfig p,
-        BatchJobsOptions limits, Executor e)
+        BatchJobsOptions limits, Executor e, BatchInputMeter measure)
       : objects(o),
         clients(c),
         config(std::move(p)),
         options(limits),
         execute(std::move(e)),
+        meter(std::move(measure)),
         jobs(limits.max_jobs) {}
 };
 
 BatchJobs::BatchJobs(ObjectStore& objects, ClientAdmission& clients,
                      ChatPlanConfig config, BatchJobsOptions options,
-                     Executor execute) {
+                     Executor execute, BatchInputMeter meter) {
   if (!options.workers || options.workers > 8 || !options.max_jobs ||
       options.max_jobs > 64 || options.workers > options.max_jobs ||
       !options.max_client_jobs || options.max_client_jobs > options.max_jobs ||
@@ -93,7 +95,7 @@ BatchJobs::BatchJobs(ObjectStore& objects, ClientAdmission& clients,
       options.scan_interval.count() < 1 || !execute)
     throw std::invalid_argument("Invalid native Batch executor limits");
   state_ = std::make_unique<State>(objects, clients, std::move(config), options,
-                                   std::move(execute));
+                                   std::move(execute), std::move(meter));
   try {
     for (size_t i = 0; i < options.workers; ++i)
       state_->workers.emplace_back([this] { Worker(); });
@@ -401,8 +403,8 @@ ObjectReply BatchJobs::Turn(const std::shared_ptr<Job>& job, bool* terminal) {
       job->validation_client = job->client;
       auto config = state_->config;
       config.client_limits = job->validation_client.Limits();
-      job->validation =
-          std::make_unique<BatchValidation>(state_->objects, job->id, config);
+      job->validation = std::make_unique<BatchValidation>(
+          state_->objects, job->id, config, state_->meter);
     }
     access.cancelled = [&] { return state_->stopping.load() || job->cancel; };
     auto result = job->validation->Step(access);

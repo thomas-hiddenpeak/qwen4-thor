@@ -137,6 +137,18 @@ set(protocol_inputs
   include/q4t/server/batch_state.h
   src/server/batch_state.cpp
   src/server/batch_results.cpp
+  include/q4t/server/batch_checkpoint.h
+  src/server/batch_checkpoint.cpp
+  include/q4t/server/batch_budget.h
+  src/server/batch_budget.cpp
+  include/q4t/server/batch_preparation.h
+  src/server/batch_preparation.cpp
+  include/q4t/server/batch_execution.h
+  src/server/batch_execution.cpp
+  include/q4t/server/batch_validation.h
+  src/server/batch_validation.cpp
+  include/q4t/server/batch_jobs.h
+  src/server/batch_jobs.cpp
   include/q4t/server/file_input.h
   src/server/file_input.cpp
   src/server/file_image.cpp

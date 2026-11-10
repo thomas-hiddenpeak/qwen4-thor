@@ -5,6 +5,7 @@
 #include <span>
 
 #include "q4t/server/batch_input.h"
+#include "q4t/server/batch_budget.h"
 #include "q4t/server/binary_store.h"
 #include "q4t/server/input_snapshot.h"
 
@@ -20,6 +21,7 @@ struct BatchRowPosition {
   InputSnapshotRef prepared_input = {};
   std::string prepared_binding_sha256 = {};
   io::Json prepared_inline = {};
+  BatchInputBudget input_budget = {};
 };
 struct BatchRowResult {
   // The durable StartRow ticket, not a client-provided request ID.

@@ -10,6 +10,7 @@ struct BatchPreparedInput {
   InputSnapshotHold hold;
   std::string binding_sha256, canonical_model;
   io::Json inline_input = {};
+  BatchInputBudget input_budget;
 };
 
 class BatchPreparation {
@@ -20,7 +21,8 @@ class BatchPreparation {
   // The resulting immutable root must be retained in a validation page.
   ObjectReply Prepare(const BinaryAccess& access, const std::string& batch_id,
                       std::string_view endpoint, const BatchInputRow& row,
-                      const ChatPlanConfig& config, BatchPreparedInput* output);
+                      const ChatPlanConfig& config, BatchPreparedInput* output,
+                      const BatchInputMeter& meter = {});
   ObjectReply Read(const BinaryAccess& access, const std::string& batch_id,
                    std::string_view endpoint, const BatchInputRow& row,
                    const io::Json& checkpoint, io::Json* prepared);

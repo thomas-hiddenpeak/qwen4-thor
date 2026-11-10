@@ -94,6 +94,10 @@ ObjectReply CheckBatchPageMutation(const Json& data, const Json* previous) {
     return Immutable();
   for (const auto& row : rows->array) {
     if (!row.IsObject()) return Immutable();
+    BatchInputBudget budget;
+    if (const auto* input = row.Find("input_budget");
+        input && !ParseBatchInputBudget(*input, &budget))
+      return Immutable();
     if (const auto* input = row.Find("prepared_inline")) {
       if (data.GetString("format") != "q4t.batch_page.v2" ||
           row.Has("input_snapshots") || !ValidBatchInlineInput(*input))
@@ -116,8 +120,9 @@ ObjectReply CheckBatchPageMutation(const Json& data, const Json* previous) {
   for (size_t i = 0; i < old_rows->array.size(); ++i) {
     const auto& old = old_rows->array[i];
     const auto& next = rows->array[i];
-    for (const auto* key : {"line", "offset", "wire_bytes", "custom_id_sha256",
-                            "input_snapshots", "prepared_inline"})
+    for (const auto* key :
+         {"line", "offset", "wire_bytes", "custom_id_sha256", "input_snapshots",
+          "prepared_inline", "input_budget"})
       if (!Same(old, next, key)) return Immutable();
     // Once an inline result is durable, subsequent page updates may only
     // affect other rows. Binary-backed legacy result semantics are unchanged.

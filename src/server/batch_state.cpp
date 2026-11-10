@@ -134,6 +134,13 @@ ObjectReply Public(const Json& stored) {
                  (status == "in_progress" &&
                   batch->GetString("model") != model->str))))
     return Corrupt();
+  if (data->Has("enqueued_input_tokens") || data->Has("metered_rows")) {
+    if (!Integer(*data, "enqueued_input_tokens", 1, kBatchTokenLimit) ||
+        !Integer(*data, "metered_rows", 1, kBatchRequests) ||
+        data->GetInt("metered_rows") != data->GetInt("validated_rows") ||
+        !model)
+      return Corrupt();
+  }
   return result;
 }
 ObjectReply Commit(ObjectStore& objects, const BinaryAccess& access,
@@ -354,6 +361,11 @@ ObjectReply BatchState::AppendRows(
   if (incremental && previous_count && previous_model.empty())
     return Invalid("Cannot reinterpret earlier unbound validation rows");
   bool frozen = root.data.GetBool("inputs_frozen");
+  const bool metered = rows.front().input_budget.tokens > 0;
+  if ((metered && canonical_model.empty()) ||
+      (previous_count && metered != root.data.Has("enqueued_input_tokens")))
+    return Invalid("Cannot change Batch input metering during validation");
+  uint64_t enqueued = root.data.GetInt("enqueued_input_tokens");
   auto entries = Array();
   for (const auto& row : rows) {
     if (row.line != static_cast<uint64_t>(count + 1) ||
@@ -395,6 +407,17 @@ ObjectReply BatchState::AppendRows(
                !row.prepared_binding_sha256.empty()) {
       return Invalid("Incomplete prepared row reference");
     }
+    if (metered != (row.input_budget.tokens > 0))
+      return Invalid("Batch input metering must cover every row");
+    if (metered) {
+      BatchInputBudget checked;
+      auto budget = BatchInputBudgetJson(row.input_budget);
+      if (!ParseBatchInputBudget(budget, &checked) ||
+          row.input_budget.tokens > kBatchTokenLimit - enqueued)
+        return Invalid("Batch input token budget exceeds capacity");
+      enqueued += row.input_budget.tokens;
+      Set(&entries.array.back(), "input_budget", std::move(budget));
+    }
     ++count;
     offset += row.wire_bytes;
   }
@@ -428,6 +451,10 @@ ObjectReply BatchState::AppendRows(
   if (frozen) Set(&root.data, "inputs_frozen", Boolean(true));
   if (incremental)
     Set(&root.data, "canonical_model", String(canonical_model));
+  if (metered) {
+    Set(&root.data, "enqueued_input_tokens", Number(enqueued));
+    Set(&root.data, "metered_rows", Number(count));
+  }
   root.mutate_before = deadline;
   std::array mutations{std::move(page), std::move(root)};
   auto reply =

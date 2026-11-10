@@ -1,0 +1,23 @@
+[PASS] batch_validation_rows_concurrent_same_offset_commits_exactly_once
+[PASS] batch_finalization_row_budget_and_checkpoint_restart
+[PASS] batch_preparation_deleted_files_and_previous_restore_after_restart
+[PASS] batch_preparation_csv_store_false_restores_unexecuted_sheet
+[PASS] batch_preparation_chat_pdf_restores_original_bytes_and_store_binding
+[PASS] batch_preparation_completion_alias_and_raw_tokens_use_native_contract
+[PASS] batch_validation_driver_yields_one_row_and_admits_only_after_whole_file
+[PASS] batch_validation_driver_restart_rechecks_source_and_reuses_deleted_file
+[PASS] batch_validation_driver_model_change_cannot_reinterpret_frozen_prefix
+[PASS] batch_inline_input_scope_deadline_binding_and_immutable_page
+[PASS] batch_budget_native_chat_and_responses_templates_persist_exact_count
+  CHECK failed: Ok(BatchPreparation(objects).Prepare( Access(), work.id, work.endpoint, work.row, fixture.config, &prepared, meter)) (line 1085)
+[FAIL] batch_budget_completion_fim_multi_prompt_raw_tokens_and_empty_seed
+  CHECK failed: failure.code == "batch_media_count_unavailable" && unchanged.tokens == 123 && !unchanged.exact (line 1128)
+[FAIL] batch_budget_visual_expansion_counts_actual_patch_tokens
+[PASS] batch_budget_pending_csv_reserves_context_without_model_or_fake_count
+  CHECK failed: reply.http_status == 499 (line 1198)
+[FAIL] batch_budget_cancellation_limits_and_malformed_counts_are_transactional
+[PASS] batch_budget_validation_restart_reuses_original_metered_prefix
+[PASS] batch_budget_responses_context_truncation_uses_selected_native_prompt
+[PASS] batch_jobs_actual_native_finite_rows_and_output_file
+[PASS] batch_jobs_actual_unknown_result_reconciles_without_replay
+19 tests, 16 passed, 3 failed, 0 skipped

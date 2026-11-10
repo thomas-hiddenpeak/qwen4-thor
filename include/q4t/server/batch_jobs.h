@@ -32,7 +32,8 @@ class BatchJobs {
       const ClientIdentity&, ClientLease&,
       const std::shared_ptr<RequestControl>&)>;
   BatchJobs(ObjectStore& objects, ClientAdmission& clients,
-            ChatPlanConfig config, BatchJobsOptions options, Executor execute);
+            ChatPlanConfig config, BatchJobsOptions options, Executor execute,
+            BatchInputMeter meter = {});
   ~BatchJobs();
   BatchJobs(const BatchJobs&) = delete;
   BatchJobs& operator=(const BatchJobs&) = delete;

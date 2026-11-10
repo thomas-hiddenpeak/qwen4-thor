@@ -1,0 +1,5 @@
+  CHECK failed: Ok(BatchPreparation(objects).Prepare( Access(), work.id, work.endpoint, work.row, fixture.config, &prepared, meter)) (line 1086)
+[FAIL] batch_budget_completion_fim_multi_prompt_raw_tokens_and_empty_seed
+[PASS] batch_budget_visual_expansion_counts_actual_patch_tokens
+[PASS] batch_budget_cancellation_limits_and_malformed_counts_are_transactional
+3 tests, 2 passed, 1 failed, 0 skipped

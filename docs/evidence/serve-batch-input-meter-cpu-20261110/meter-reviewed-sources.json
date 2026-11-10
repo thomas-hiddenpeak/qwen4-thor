@@ -1,0 +1,21 @@
+{
+  "changed": [
+    "CMakeLists.txt",
+    "cmake/ChatProtocolIdentity.cmake",
+    "include/q4t/server/batch_budget.h",
+    "include/q4t/server/batch_jobs.h",
+    "include/q4t/server/batch_preparation.h",
+    "include/q4t/server/batch_state.h",
+    "include/q4t/server/batch_validation.h",
+    "include/q4t/server/chat_server.h",
+    "src/server/batch_budget.cpp",
+    "src/server/batch_checkpoint.cpp",
+    "src/server/batch_jobs.cpp",
+    "src/server/batch_preparation.cpp",
+    "src/server/batch_results.cpp",
+    "src/server/batch_state.cpp",
+    "src/server/batch_validation.cpp",
+    "src/server/chat_responses.cpp"
+  ],
+  "anchors": 485
+}

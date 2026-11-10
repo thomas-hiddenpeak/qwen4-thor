@@ -193,6 +193,12 @@ class ChatServer {
       const std::string& endpoint, const BatchInputRow& row,
       const io::Json& frozen_inputs, const ClientIdentity& client,
       ClientLease& permit, const std::shared_ptr<RequestControl>& control);
+  ObjectReply MeasureBatchRequest(std::string_view endpoint,
+                                  const BatchInputRow& row,
+                                  const io::Json& prepared,
+                                  const ChatPlanConfig& config,
+                                  const BinaryAccess& access,
+                                  BatchInputBudget* budget);
   ObjectReply RunInternalModelStep(int fd, InternalModelStep* step,
                                    std::shared_ptr<RequestControl> control);
   bool TryHandleBackgroundResponse(int fd, const std::string& body);

@@ -46,10 +46,13 @@ ObjectReply PlanningError(const Status& status, const ChatPlanError& error) {
 }
 }  // namespace
 
-ObjectReply BatchPreparation::Prepare(
-    const BinaryAccess& access, const std::string& batch_id,
-    std::string_view endpoint, const BatchInputRow& row,
-    const ChatPlanConfig& config, BatchPreparedInput* output) {
+ObjectReply BatchPreparation::Prepare(const BinaryAccess& access,
+                                      const std::string& batch_id,
+                                      std::string_view endpoint,
+                                      const BatchInputRow& row,
+                                      const ChatPlanConfig& config,
+                                      BatchPreparedInput* output,
+                                      const BatchInputMeter& meter) {
   if (!output || !output->reference.id.empty() || !output->hold.id.empty() ||
       !output->inline_input.IsNull())
     return Invalid();
@@ -97,6 +100,19 @@ ObjectReply BatchPreparation::Prepare(
     return reply;
   }
   const auto text = OutputJson(prepared);
+  if (meter) {
+    reply =
+        meter(endpoint, row, prepared, config, access, &output->input_budget);
+    if (!reply.ok()) {
+      uncertain = reply.commit_unknown;
+      return reply;
+    }
+    BatchInputBudget checked;
+    if (!ParseBatchInputBudget(BatchInputBudgetJson(output->input_budget),
+                               &checked))
+      return Error(503, "batch_budget_invalid",
+                   "Native Batch input meter returned an invalid budget");
+  }
   if (text.size() <= kBatchInlineBytes && dependencies.array.empty()) {
     output->inline_input =
         Object({{"format", String("q4t.batch_inline_input.v1")},
