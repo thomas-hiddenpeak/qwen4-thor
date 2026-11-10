@@ -24,6 +24,7 @@ struct MediaPlan;
 
 namespace q4t::server {
 struct FileExpansionOptions;
+struct FileExpansionUsage;
 
 inline constexpr std::string_view kPreflightProfile = "q4t-preflight-v1";
 inline constexpr size_t kPreflightResponseBytes = 8 * 1024 * 1024;
@@ -48,6 +49,9 @@ struct ChatPlanConfig {
   // Internal CPU input counting: no generation slot/output reservation.
   // Never set from an untrusted Chat field.
   bool count_input_only = false;
+  // Pure validation before request-owned file acquisition. The renderer must
+  // receive the expanded request, with this flag cleared.
+  bool preparing_file_inputs = false;
   std::vector<int> capacities;
   std::vector<int> checkpoints;
   uint64_t cuda_quota_limit_bytes = 0;
@@ -118,7 +122,8 @@ Status ChatPreflightJson(const io::Json& envelope, const ChatPlanConfig& config,
                          const std::string& prompt,
                          const std::vector<uint32_t>& tokens,
                          std::string* output, ChatPlanError* error,
-                         const vision::MediaPlan* media = nullptr);
+                         const vision::MediaPlan* media = nullptr,
+                         const FileExpansionUsage* files = nullptr);
 
 struct StartupMemoryChecks;
 std::string EffectiveServeConfigJson(

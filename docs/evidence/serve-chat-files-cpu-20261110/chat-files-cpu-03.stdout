@@ -1,0 +1,3 @@
+[PASS] chat_files_stored_originals_replay_after_restart_and_decoder_outage
+[PASS] chat_files_unknown_parent_publication_retains_absolute_holds
+2 tests, 2 passed, 0 failed, 0 skipped

@@ -11,6 +11,7 @@
 
 #include "q4t/server/chat_tool_history.h"
 #include "q4t/server/chat_storage.h"
+#include "q4t/server/file_input.h"
 #include "q4t/server/chat_template.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/media_admission.h"
@@ -74,13 +75,15 @@ Status TemplateOptions(const io::Json& options) {
 
 Status ValidateChatContract(const io::Json& req, const std::string& model_name,
                             bool allow_media, std::string* error_param,
-                            bool allow_empty_messages) {
+                            bool allow_empty_messages,
+                            bool preparing_file_inputs) {
   if (HasLegacyTools(req)) {
     LegacyToolRequest normalized;
     auto status = NormalizeLegacyTools(req, &normalized, error_param);
     if (!status) return status;
     status = ValidateChatContract(normalized.request, model_name, allow_media,
-                                   error_param, allow_empty_messages);
+                                  error_param, allow_empty_messages,
+                                  preparing_file_inputs);
     if (!status) LegacyToolErrorParam(req, error_param);
     return status;
   }
@@ -296,6 +299,20 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
       if (!part.IsObject())
         return Status::Fail("content part must be an object");
       const std::string type = part.GetString("type");
+      if (preparing_file_inputs && type == "file") {
+        status = Fields(part, {"type", "file"});
+        if (!status) return status;
+        if (!allow_media)
+          return Status::Fail("PDF input requires media processing enabled");
+        if (message.GetString("role") != "user")
+          return Status::Fail("file input requires user role");
+        FileInputSource source;
+        const auto parsed = ParseFileInputSource(part, FileInputProfile::kChat,
+                                                 part_param, &source);
+        if (!parsed.ok())
+          return invalid(parsed.value.GetString("param"), parsed.message);
+        continue;
+      }
       if (type == "refusal") {
         // Role, single-part shape and payload were checked by the shared
         // message profile, including direct/preflight renderer callers.
@@ -356,6 +373,13 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
           *error_param = part_param + ".image_url";
           status = url(*part.Find("image_url"));
           if (!status) return status;
+          if (preparing_file_inputs) {
+            FileInputSource source;
+            const auto parsed = ParseImageInputSource(
+                part, FileInputProfile::kChat, part_param, &source);
+            if (!parsed.ok())
+              return invalid(parsed.value.GetString("param"), parsed.message);
+          }
         } else {
           *error_param = part_param + ".video_frames";
           const auto* frames = part.Find("video_frames");

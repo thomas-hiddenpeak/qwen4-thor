@@ -1,0 +1,7 @@
+{
+  "reviewed": [
+    "include/q4t/server/chat_file_inputs.h",
+    "src/server/chat_file_inputs.cpp"
+  ],
+  "review": "Published hold cleanup is noexcept and independently bounded at 250ms, preserving completed business results after disconnect/expired deadline. Unknown parent retains absolute holds; no replay."
+}

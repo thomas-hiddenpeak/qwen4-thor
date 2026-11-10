@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "tools.serve_protocol.test_file_inputs",
+    "tools.vision_service.test_input.Inputs.test_schema_roles_controls_and_timestamps"
+  ],
+  "exit_code": 0,
+  "seconds": 0.3642716556787491
+}

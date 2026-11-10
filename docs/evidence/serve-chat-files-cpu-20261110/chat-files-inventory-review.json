@@ -1,0 +1,21 @@
+{
+  "reviewed": [
+    "CMakeLists.txt",
+    "cmake/ChatProtocolIdentity.cmake",
+    "include/q4t/server/chat_contract.h",
+    "include/q4t/server/chat_file_inputs.h",
+    "include/q4t/server/chat_plan.h",
+    "include/q4t/server/chat_storage.h",
+    "src/server/chat_contract.cpp",
+    "src/server/chat_file_inputs.cpp",
+    "src/server/chat_generation.cpp",
+    "src/server/chat_plan.cpp",
+    "src/server/chat_preflight.cpp",
+    "src/server/chat_storage.cpp",
+    "src/server/file_input.cpp"
+  ],
+  "anchors": 459,
+  "semantic_keys_unchanged": true,
+  "whitelist_review": "One Chat content part type/file whitelist inserted; later extractor indices remapped exactly. All other whitelists unchanged.",
+  "review": "Full prevalidation precedes file acquisition; Chat/preflight use actual expanded pages/images. Raw public messages remain unchanged. Only successful final Chat publication owns remapped private snapshot references; unknown publication retains holds. Source/format errors remain per request, no model restart."
+}

@@ -2,6 +2,7 @@
 #include "q4t/server/cache_health.h"
 
 #include "q4t/server/chat_response_parser.h"
+#include "q4t/server/chat_file_inputs.h"
 #include "q4t/server/media_admission.h"
 #include "q4t/server/request_admission.h"
 #include "q4t/server/reasoning_options.h"
@@ -127,17 +128,18 @@ void ChatServer::HandlePreflight(int fd, const std::string& body) {
   }
   const auto& original_request = *envelope.Find("request");
   const auto config = PlanningConfig(fd);
+  auto validation_config = config;
+  validation_config.preparing_file_inputs = true;
   ChatRequestPlan plan;
-  status = PlanChatRequest(original_request, config, &plan, &error);
+  status = PlanChatRequest(original_request, validation_config, &plan, &error);
   if (!status) {
     send_error();
     return;
   }
-  const auto& req = plan.Request(original_request);
   RequestControl control(
       "preflight", "",
-      arrived + std::chrono::milliseconds(
-                    req.GetInt("request_timeout_ms", request_deadline_ms_)));
+      arrived + std::chrono::milliseconds(original_request.GetInt(
+                    "request_timeout_ms", request_deadline_ms_)));
   const auto cancelled = [&] {
     if (stop_requested_.load())
       control.Cancel(RequestControl::State::kShutdown);
@@ -146,6 +148,19 @@ void ChatServer::HandlePreflight(int fd, const std::string& body) {
   const auto send_cancel = [&] {
     detail::SendError(fd, 409, "preflight cancelled", {}, control.Reason());
   };
+  const auto* http = detail::HttpResponseContext::Current(fd);
+  const BinaryAccess access{http && http->Client().Scoped()
+                                ? "client:" + std::string(http->Client().Id())
+                                : "local:anonymous",
+                            control.deadline(), cancelled};
+  ChatFileInputs files(objects_.get());
+  const auto prepared = files.Prepare(original_request, config, access, &plan);
+  if (!prepared.ok()) {
+    detail::SendError(fd, prepared.http_status, prepared.ClientMessage(), {},
+                      prepared.ClientCode(), prepared.value.GetString("param"));
+    return;
+  }
+  const auto& req = plan.Request(original_request);
   std::string prompt;
   std::vector<VisionItem> items;
   status = PrepareChatPrompt(req, plan.constraints, &prompt, &items,
@@ -203,7 +218,7 @@ void ChatServer::HandlePreflight(int fd, const std::string& body) {
   std::string response;
   if (status)
     status = ChatPreflightJson(envelope, config, plan, budget, prompt, tokens,
-                               &response, &error, &media);
+                               &response, &error, &media, files.Usage());
   if (!status) {
     send_error();
     return;

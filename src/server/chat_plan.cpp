@@ -5,6 +5,7 @@
 #include <limits>
 
 #include "q4t/server/chat_contract.h"
+#include "q4t/server/file_expansion.h"
 #include "q4t/server/legacy_tools.h"
 #include "q4t/server/media_admission.h"
 #include "q4t/server/chat_protocol_identity.h"
@@ -82,11 +83,10 @@ Status PlanChatRequest(const io::Json& req, const ChatPlanConfig& config,
     error->param = "model";
     return Status::Fail("model is not registered by this server");
   }
-  auto status = ValidateChatContract(req, model && model->IsString()
-                                            ? model->str
-                                            : config.model,
-                                     config.allow_media,
-                                     &error->param, config.count_input_only);
+  auto status = ValidateChatContract(
+      req, model && model->IsString() ? model->str : config.model,
+      config.allow_media, &error->param, config.count_input_only,
+      config.preparing_file_inputs);
   if (!status) {
     if (status.message().starts_with("schema_resource_exhausted:")) {
       error->code = "constraint_resource_exhausted";
@@ -268,7 +268,8 @@ Status ChatPreflightJson(const io::Json& envelope, const ChatPlanConfig& config,
                          const std::string& prompt,
                          const std::vector<uint32_t>& tokens,
                          std::string* output, ChatPlanError* error,
-                         const vision::MediaPlan* media) {
+                         const vision::MediaPlan* media,
+                         const FileExpansionUsage* files) {
   output->clear();
   const bool explicit_slots = !config.capacities.empty();
   std::string out =
@@ -320,6 +321,15 @@ Status ChatPreflightJson(const io::Json& envelope, const ChatPlanConfig& config,
            R"("prompt_preview":"one_placeholder_per_temporal_group",)"
            R"("token_ids":"expanded_for_inference",)"
            R"("execution_and_quality_validated":false})";
+  }
+  if (files) {
+    out += R"(,"file_preparation":{"source_bytes":)" +
+           std::to_string(files->source_bytes) + R"(,"text_bytes":)" +
+           std::to_string(files->text_bytes) + R"(,"files":)" +
+           std::to_string(files->files) + R"(,"pdf_pages_rasterized":)" +
+           std::to_string(files->pages) + R"(,"images":)" +
+           std::to_string(files->images) +
+           R"(,"snapshots_persisted":false,"model_steps":0})";
   }
   if (config.client_limits) {
     out += R"(,"client_limits":{"max_prompt_tokens":)" +

@@ -1,0 +1,3 @@
+invalid_request: object must be closed
+[q4t][http] trace_id=req-a917582a65bc5dd3fb8480b4a757d7cb status=504 error=object_commit_unknown
+[q4t][http] trace_id=req-52824a90f43688f3247778d2e1a0c440 status=504 error=object_commit_unknown

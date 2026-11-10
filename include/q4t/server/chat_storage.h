@@ -33,7 +33,8 @@ class StoredChats {
  public:
   explicit StoredChats(ObjectStore& objects) : objects_(objects) {}
   ObjectReply Save(const io::Json& request, const io::Json& response,
-                   const StateAccess& access);
+                   const StateAccess& access,
+                   const io::Json& input_snapshots = {});
   ObjectReply Retrieve(const std::string& id, const StateAccess& access);
   ObjectReply Update(const std::string& id, const io::Json& metadata,
                      const StateAccess& access);
@@ -50,7 +51,8 @@ class StoredChats {
 // Metadata is returned even when store=false, without touching storage.
 ObjectReply FinalizeStoredChat(ObjectStore* objects, const io::Json& request,
                                const std::string& response,
-                               const StateAccess& access);
+                               const StateAccess& access,
+                               const io::Json& input_snapshots = {});
 ObjectReply HandleStoredChatRequest(ObjectStore& objects,
                                     std::string_view method,
                                     std::string_view target,

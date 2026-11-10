@@ -5,7 +5,9 @@
 
 #include "object_protocol.h"
 #include "q4t/server/application_query.h"
+#include "q4t/server/chat_file_inputs.h"
 #include "q4t/server/input_contract.h"
+#include "q4t/server/input_snapshot_bindings.h"
 #include "q4t/server/request_json.h"
 
 namespace q4t::server {
@@ -124,7 +126,8 @@ ObjectReply ParseOptions(const Json& query, bool messages,
 }  // namespace
 
 ObjectReply StoredChats::Save(const Json& request, const Json& response,
-                              const StateAccess& access) {
+                              const StateAccess& access,
+                              const Json& input_snapshots) {
   ChatStorageOptions options;
   std::string param;
   auto status = ParseChatStorageOptions(request, &options, &param);
@@ -156,13 +159,13 @@ ObjectReply StoredChats::Save(const Json& request, const Json& response,
          finish != "function_call" && finish != "content_filter"))
       return Invalid("Only complete generated choices can be stored", "store");
   }
-  Json stored_messages = Array();
+  Json stored_messages = Array(), original_items = Array();
   for (size_t index = 0; index < messages->array.size(); ++index) {
     auto message = messages->array[index];
     if (!message.IsObject())
       return Invalid("Invalid input message", "messages");
-    Set(&message, "id",
-        String("chatmsg_" + Digest(id + ":" + std::to_string(index))));
+    Set(&message, "id", String(StoredChatMessageId(id, index)));
+    original_items.array.push_back(message);
     if (!message.Has("name")) Set(&message, "name", Json());
     const auto* content = message.Find("content");
     if (content && content->IsArray()) {
@@ -190,6 +193,13 @@ ObjectReply StoredChats::Save(const Json& request, const Json& response,
   write.data = Object({{"version", Number(1)},
                        {"response", resource},
                        {"messages", std::move(stored_messages)}});
+  if (!input_snapshots.IsNull()) {
+    Json verified;
+    auto checked =
+        MergeInputSnapshots(input_snapshots, original_items, &verified);
+    if (!checked.ok()) return checked;
+    Set(&write.data, "input_snapshots", std::move(verified));
+  }
   auto result = objects_.Execute(write, access.deadline, access.cancelled);
   if (!result.ok()) return result;
   result.value = std::move(resource);
@@ -310,7 +320,8 @@ ObjectReply StoredChats::Messages(const std::string& id,
 
 ObjectReply FinalizeStoredChat(ObjectStore* objects, const Json& request,
                                const std::string& response,
-                               const StateAccess& access) {
+                               const StateAccess& access,
+                               const Json& input_snapshots) {
   ChatStorageOptions options;
   std::string param;
   auto status = ParseChatStorageOptions(request, &options, &param);
@@ -322,7 +333,7 @@ ObjectReply FinalizeStoredChat(ObjectStore* objects, const Json& request,
     if (!objects)
       return Error(503, "object_scope_unavailable",
                    "Application state unavailable");
-    return StoredChats(*objects).Save(request, value, access);
+    return StoredChats(*objects).Save(request, value, access, input_snapshots);
   }
   if (options.has_metadata) Set(&value, "metadata", options.metadata);
   return Result(std::move(value));

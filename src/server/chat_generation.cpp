@@ -26,6 +26,7 @@
 #include "q4t/mtp/suffix_drafter.h"
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/chat_choices.h"
+#include "q4t/server/chat_file_inputs.h"
 #include "q4t/server/chat_storage.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/completion_plan.h"
@@ -254,6 +255,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   std::optional<ModelPreparation> preparation;
   std::string preparation_wire;
   ChatRequestPlan request_plan;
+  ChatFileInputs chat_files(objects_.get());
   CompletionRequestPlan completion_plan;
   std::vector<PreparedCompletionPrompt> completion_prompts;
   uint64_t completion_prompt_tokens = 0, completion_output_tokens = 0;
@@ -437,8 +439,46 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       request_plan.stops = completion_plan.stops;
     }
   } else {
-    s = PlanChatRequest(original_request, planning_config, &request_plan,
+    auto validation_config = planning_config;
+    validation_config.preparing_file_inputs = !internal;
+    s = PlanChatRequest(original_request, validation_config, &request_plan,
                         &planning_error);
+    const auto* messages = original_request.GetArray("messages");
+    if (s && !internal && messages && HasFileInputs(*messages)) {
+      if (original_request.GetBool("store") &&
+          (!objects_ || !http || !http->Client().Allowed())) {
+        SendError(fd, 503, "Authenticated application state unavailable", {},
+                  "object_scope_unavailable", "store");
+        return;
+      }
+      const auto deadline =
+          t_arrive + std::chrono::milliseconds(original_request.GetInt(
+                         "request_timeout_ms", request_deadline_ms_));
+      preparation_control = requests_.Register(
+          original_request.GetString("request_id",
+                                     detail::NewRequestId("chatcmpl-auto-")),
+          original_request.GetString("cancel_token"), deadline, client);
+      if (!preparation_control) {
+        SendError(fd, 409, "request_id already active", {},
+                  "request_id_conflict", "request_id");
+        return;
+      }
+      owns_preparation_control = true;
+      const BinaryAccess access{
+          http && http->Client().Scoped()
+              ? "client:" + std::string(http->Client().Id())
+              : "local:anonymous",
+          deadline, [preparation_control, fd] {
+            return RequestCancelled(preparation_control.get(), fd);
+          }};
+      auto prepared = chat_files.Prepare(original_request, planning_config,
+                                         access, &request_plan);
+      if (!prepared.ok()) {
+        SendError(fd, prepared.http_status, prepared.ClientMessage(), {},
+                  prepared.ClientCode(), prepared.value.GetString("param"));
+        return;
+      }
+    }
   }
   if (!s) {
     SendError(fd, planning_error.http_status, s.message(), {},
@@ -493,9 +533,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   std::string request_id = req.GetString("request_id");
   // Shape, credentials and exact integer spelling were checked before leases.
   if (!external_id)
-    request_id = responses ? responses->Id()
-                           : detail::NewRequestId(
-                                 completion ? "cmpl-auto-" : "chatcmpl-auto-");
+    request_id = preparation_control ? preparation_control->id()
+                 : responses
+                     ? responses->Id()
+                     : detail::NewRequestId(completion ? "cmpl-auto-"
+                                                       : "chatcmpl-auto-");
   auto deadline = t_arrive + std::chrono::milliseconds(request_deadline_ms_);
   if (req.Has("request_timeout_ms")) {
     deadline =
@@ -4065,8 +4107,20 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       }
       diagnostic.Stage("storage");
       RequestDiagnostics::Scope waiting(diagnostic, Wait::kStorage);
-      auto stored = FinalizeStoredChat(objects_.get(), original_request,
-                                       stored_chat_response, chat_state_access);
+      io::Json input_snapshots;
+      const BinaryAccess file_access{chat_state_access.scope,
+                                     chat_state_access.deadline,
+                                     chat_state_access.cancelled};
+      auto stored = chat_storage.store
+                        ? chat_files.Persist(id, file_access, &input_snapshots)
+                        : ObjectReply{};
+      if (stored.ok()) {
+        stored = FinalizeStoredChat(objects_.get(), original_request,
+                                    stored_chat_response, chat_state_access,
+                                    input_snapshots);
+        if (stored.ok() || stored.commit_unknown)
+          chat_files.Published(file_access, stored.commit_unknown);
+      }
       if (!stored.ok()) {
         err_guard.ok = false;
         SendError(fd, stored.http_status,

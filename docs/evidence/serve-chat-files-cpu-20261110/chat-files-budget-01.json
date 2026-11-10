@@ -1,0 +1,25 @@
+{
+  "tests": [
+    "chat_files_pdf_reaches_template_and_preflight_without_public_rewrite",
+    "chat_files_webp_preserves_detail_and_legacy_function_controls",
+    "chat_files_validate_whole_envelope_before_any_state_or_decoder_io",
+    "chat_files_media_role_and_pdf_contract_do_not_silently_drop_content",
+    "chat_files_cancellation_deadline_and_ordinary_text_are_isolated",
+    "chat_files_stored_originals_replay_after_restart_and_decoder_outage",
+    "chat_files_bindings_reject_modified_original_before_chat_publication",
+    "chat_files_unknown_parent_publication_retains_absolute_holds",
+    "chat_contract_media_rejected_before_decoding",
+    "chat_contract_no_silent_message_semantics",
+    "chat_plan_native_template_and_constraint_adapter",
+    "chat_preflight_envelope_and_opt_in_preview",
+    "chat_storage_original_messages_preserve_parts_and_tool_history",
+    "chat_storage_crud_restart_and_metadata_retention",
+    "chat_storage_lost_final_receipt_is_retrievable_without_replay",
+    "file_expansion_actual_pdf_page_and_chat_profile_are_complete"
+  ],
+  "new": 8,
+  "affected": 8,
+  "cpu_seconds": 120,
+  "gpu_starts": 0,
+  "network_requests": 0
+}

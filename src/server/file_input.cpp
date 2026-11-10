@@ -237,7 +237,8 @@ ObjectReply ParseImageInputSource(const Json& part, FileInputProfile profile,
                           "prompt_cache_breakpoint"},
                          &error, path);
   if (!checked) return Invalid(checked.message(), error);
-  if (part.GetString("type") != (chat ? "image_url" : "input_image"))
+  if (part.GetString("type") != (chat ? "image_url" : "input_image") &&
+      !(chat && !part.Has("type") && part.Has("image_url")))
     return Invalid("Unexpected image input type", path + ".type");
   const auto* url = part.Find("image_url");
   const auto* id = part.Find("file_id");

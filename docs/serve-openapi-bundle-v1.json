@@ -8683,6 +8683,9 @@
                         },
                         {
                           "$ref": "#/components/schemas/serve-vision-request-v1.schema.json/$defs/videoPart"
+                        },
+                        {
+                          "$ref": "#/components/schemas/serve-vision-request-v1.schema.json/$defs/filePart"
                         }
                       ]
                     }
@@ -10022,7 +10025,7 @@
                   {
                     "type": "string",
                     "minLength": 1,
-                    "description": "Canonical padded standard base64 or exact PNG/JPEG data URL; no network URLs."
+                    "description": "PNG/JPEG/static GIF/WebP bytes in canonical base64 or a data URI, or credential-free HTTP(S) under deployment fetch policy."
                   },
                   {
                     "type": "object",
@@ -10030,10 +10033,15 @@
                       "url": {
                         "type": "string",
                         "minLength": 1,
-                        "description": "Canonical padded standard base64 or exact PNG/JPEG data URL; no network URLs."
+                        "description": "PNG/JPEG/static GIF/WebP bytes in canonical base64 or a data URI, or credential-free HTTP(S) under deployment fetch policy."
                       },
                       "detail": {
-                        "const": "auto"
+                        "enum": [
+                          "auto",
+                          "low",
+                          "high",
+                          "original"
+                        ]
                       }
                     },
                     "required": [
@@ -10046,6 +10054,60 @@
             },
             "required": [
               "image_url"
+            ],
+            "additionalProperties": false
+          },
+          "filePart": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "file"
+              },
+              "file": {
+                "type": "object",
+                "properties": {
+                  "file_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[A-Za-z0-9_-]+$"
+                  },
+                  "file_data": {
+                    "type": "string"
+                  },
+                  "filename": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1024,
+                    "pattern": "^[^\\u0000-\\u001f\\u007f]+$",
+                    "x-q4t-max-utf8-bytes": 1024
+                  }
+                },
+                "required": [],
+                "additionalProperties": false,
+                "oneOf": [
+                  {
+                    "required": [
+                      "file_id"
+                    ],
+                    "properties": {
+                      "file_id": {}
+                    }
+                  },
+                  {
+                    "required": [
+                      "file_data"
+                    ],
+                    "properties": {
+                      "file_data": {}
+                    }
+                  }
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "file"
             ],
             "additionalProperties": false
           },
@@ -11032,8 +11094,8 @@
           "acceptance": "separate release attestation",
           "temporal_patch_size": 2,
           "max_media_items": 8,
+          "file_inputs": "Chat file parts require actual PDF; original text and pages use common preparation, preflight and stored snapshot ownership",
           "unsupported": [
-            "remote_urls",
             "video_container_on_server",
             "audio",
             "MTP",

@@ -379,7 +379,19 @@ def vision_schema():
     uri = dict(type="string", minLength=1,
         description="Canonical padded standard base64 or exact PNG/JPEG data URL; no network URLs.")
     url = dict(oneOf=[uri, obj(dict(url=uri, detail=dict(const="auto")), ("url",))])
-    result["$defs"]["imagePart"] = obj(dict(type=dict(const="image_url"), image_url=url), ("image_url",))
+    image_uri = dict(type="string", minLength=1,
+        description="PNG/JPEG/static GIF/WebP bytes in canonical base64 or a data URI, or credential-free HTTP(S) under deployment fetch policy.")
+    image_url = dict(oneOf=[image_uri, obj(dict(url=image_uri,
+        detail=dict(enum=["auto", "low", "high", "original"])), ("url",))])
+    result["$defs"]["imagePart"] = obj(dict(type=dict(const="image_url"), image_url=image_url), ("image_url",))
+    file = obj(dict(file_id=dict(type="string", minLength=1, maxLength=128,
+        pattern=r"^[A-Za-z0-9_-]+$"), file_data=dict(type="string"),
+        filename=dict(type="string", minLength=1, maxLength=1024,
+            pattern=r"^[^\u0000-\u001f\u007f]+$",
+            **{"x-q4t-max-utf8-bytes": 1024})))
+    file["oneOf"] = [present("file_id"), present("file_data")]
+    result["$defs"]["filePart"] = obj(dict(type=dict(const="file"), file=file),
+        ("type", "file"))
     result["$defs"]["videoPart"] = obj(dict(type=dict(const="video_frames"),
         video_frames=dict(type="array", minItems=2, maxItems=32, items=url),
         video_timestamps=dict(type="array", minItems=2, maxItems=32,
@@ -387,7 +399,8 @@ def vision_schema():
             description="One strictly increasing seconds value per source frame. Omission means 24fps from zero.")), ("video_frames",))
     message = result["$defs"]["message"]
     message["properties"]["content"]["anyOf"][1]["items"] = dict(oneOf=[
-        ref("textPart"), ref("refusalPart"), ref("imagePart"), ref("videoPart")])
+        ref("textPart"), ref("refusalPart"), ref("imagePart"), ref("videoPart"),
+        ref("filePart")])
     message["allOf"].append(when(present("role", {"not":dict(const="user")}),
         dict(properties=dict(content=dict(anyOf=[dict(type=["string", "null"]),
             dict(type="array", items=dict(oneOf=[ref("textPart"), ref("refusalPart")]))])))))
@@ -395,7 +408,8 @@ def vision_schema():
         server_flags=["--allow-media", "--no-mtp", "--max-seq", "1"],
         required_semantic_validation=True, acceptance="separate release attestation",
         temporal_patch_size=2, max_media_items=8,
-        unsupported=["remote_urls", "video_container_on_server", "audio", "MTP",
+        file_inputs="Chat file parts require actual PDF; original text and pages use common preparation, preflight and stored snapshot ownership",
+        unsupported=["video_container_on_server", "audio", "MTP",
                      "state_cache", "media_chunked_prefill", "multiple_execution_slots"])
     result["allOf"].append(forbid(["session_id", "prefix_cache_scope"]))
     return result
@@ -429,6 +443,10 @@ def semantics():
     # Standard JSON Schema validators ignore x-q4t annotations. These rules
     # are mandatory and evaluated by production C++, never inferred as passed.
     rules = [
+        ("chat-file-inputs", ["src/server/chat_file_inputs.cpp",
+            "src/server/file_expansion.cpp", "src/server/chat_storage.cpp",
+            "src/server/chat_preflight.cpp", "src/server/chat_generation.cpp"],
+         "Chat and preflight validate the complete request before acquiring files. Standard user file parts accept PDF file_id or file_data with optional filename. PDF text and all admitted page images enter the actual template; image URL inputs use common bounded PNG/JPEG/static GIF/WebP acquisition and conversion with auto/low/high/original detail. Generation owns cancellation during preparation. Stored Chat retains original content_parts and private immutable snapshot references bound to completion/message identity; an unknown parent publication keeps absolute holds and is never regenerated. Preflight owns prepared bytes only for that call, reports actual rasterized page/source counts and performs no model execution. Combined media, token, decoder and storage budgets remain enforced; this implementation still requires integrated business/release acceptance."),
         ("responses-request-fields", ["src/server/responses_plan.cpp",
             "src/server/responses_execution.cpp", "src/server/responses_tokens.cpp"],
          "Responses create rejects explicit null for access_programs/input/model/prompt_cache_options/text/tool_choice/tools/user and reasoning.mode; nullable fields keep their own defaults. Input type and original envelope are checked before prompt state lookup, then expanded requests are checked against effective client limits. Count and compact normalize only their separately nullable SDK fields. All seven SDK service-tier values are accepted; execution reports the actual default scheduler tier without claiming hosted pricing, dedicated capacity or latency guarantees."),

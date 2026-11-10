@@ -175,6 +175,8 @@ set(protocol_inputs
   src/server/file_extract.cpp
   src/server/file_snapshot.cpp
   src/server/file_expansion.cpp
+  src/server/chat_file_inputs.cpp
+  include/q4t/server/chat_file_inputs.h
   src/server/model_preparation.cpp
   include/q4t/server/model_preparation.h
   src/server/chat_model_step.cpp
